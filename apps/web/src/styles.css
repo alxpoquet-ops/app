@@ -16,18 +16,39 @@
   --recap: #b9a6ea;
   --radius: 22px;
   --shadow: 0 2px 0 rgba(43, 42, 51, 0.06), 0 8px 24px rgba(43, 42, 51, 0.06);
+  --banner-bg: #fff3d6;
+  --banner-ink: #5b4510;
+  --alert-bg: #ffe1d6;
+  --alert-ink: #6b2109;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #18171c;
     --card: #232229;
     --ink: #f4f1ec;
     --muted: #a7a2ad;
     --line: #34323b;
     --shadow: none;
+    --banner-bg: #3b3220;
+    --banner-ink: #f6e2b5;
+    --alert-bg: #4a2418;
+    --alert-ink: #ffd6c7;
     color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --bg: #18171c;
+  --card: #232229;
+  --ink: #f4f1ec;
+  --muted: #a7a2ad;
+  --line: #34323b;
+  --shadow: none;
+  --banner-bg: #3b3220;
+  --banner-ink: #f6e2b5;
+  --alert-bg: #4a2418;
+  --alert-ink: #ffd6c7;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -120,8 +141,7 @@ button { cursor: pointer; border: 0; background: none; touch-action: manipulatio
 .check.on .box { background: var(--go); border-color: var(--go); color: #fff; }
 .check.on { opacity: 0.7; }
 .reason { background: var(--card); border-left: 6px solid var(--accent); padding: 12px 14px; border-radius: 12px; font-size: 16px; }
-.banner { background: #fff3d6; color: #5b4510; border-radius: 18px; padding: 14px 16px; display: flex; gap: 12px; align-items: center; }
-@media (prefers-color-scheme: dark) { .banner { background: #3b3220; color: #f6e2b5; } }
+.banner { background: var(--banner-bg); color: var(--banner-ink); border-radius: 18px; padding: 14px 16px; display: flex; gap: 12px; align-items: center; }
 
 /* ---------- Listes (stock, achats…) ---------- */
 .seg { display: flex; gap: 8px; background: var(--card); padding: 6px; border-radius: 18px; box-shadow: var(--shadow); }
@@ -148,8 +168,7 @@ button { cursor: pointer; border: 0; background: none; touch-action: manipulatio
 .kpi .k { font-size: 15px; color: var(--muted); font-weight: 600; }
 .kpi .v { font-size: 30px; font-weight: 900; margin-top: 4px; line-height: 1.1; }
 .kpi .v.s { font-size: 20px; }
-.kpi.alert { background: #ffe1d6; color: #6b2109; }
-@media (prefers-color-scheme: dark) { .kpi.alert { background: #4a2418; color: #ffd6c7; } }
+.kpi.alert { background: var(--alert-bg); color: var(--alert-ink); }
 
 /* ---------- Formulaires (réglages) ---------- */
 .field { display: flex; flex-direction: column; gap: 6px; }

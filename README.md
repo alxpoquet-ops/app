@@ -18,7 +18,13 @@
 - **RÉCAP** : 8 informations, aucun tableau.
 - PWA installable, **100 % hors-ligne**, synchronisée entre PC, téléphone et tablette.
 
-## Démarrer
+## Ouvrir sans rien installer
+
+Télécharge **[BOSS-IA.html](BOSS-IA.html)** et ouvre-le d'un double-clic (Chrome, Edge, Firefox ou Safari).
+Tout fonctionne directement, tes données restent dans ce navigateur. Pour régénérer ce fichier :
+`npm run build:standalone -w @boss/web`.
+
+## Démarrer (version complète : synchro multi-appareils + IA)
 
 ```bash
 npm install

@@ -26,7 +26,21 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
+  const [storageError, setStorageError] = useState(false);
+  useEffect(() => {
+    db.open().catch(() => setStorageError(true));
+  }, []);
   const hasProfile = useLiveQuery(async () => (await db.t('profile').count()) > 0);
+  if (storageError)
+    return (
+      <div className="app">
+        <div className="empty">
+          <div className="e">🔒</div>
+          Ton navigateur empêche BOSS IA d'enregistrer tes données (navigation privée ou cookies bloqués).
+          Ouvre l'application dans une fenêtre normale.
+        </div>
+      </div>
+    );
   if (hasProfile === undefined) return null;
 
   return (
