@@ -1,0 +1,5 @@
+# Godot cache / imports (regenerated automatically)
+game/.godot/
+*.import.tmp
+# Local export output (the zipped build lives in releases/)
+build/

@@ -1,0 +1,12 @@
+{
+  "coffee_machine_used": {"name": "Machine à café d'occasion", "category": "machine", "price": 220, "speed": 0.75, "quality": 0.85, "energy_per_hour": 0.6, "wear_per_use": 0.9, "start_condition": 62, "maintenance": 1.0, "comfort": 0, "decor": 0, "size": [1.2, 0.8], "color": "#8d99ae"},
+  "coffee_machine":      {"name": "Machine à café standard",   "category": "machine", "price": 650, "speed": 1.0,  "quality": 1.0,  "energy_per_hour": 0.8, "wear_per_use": 0.5, "start_condition": 100, "maintenance": 1.5, "comfort": 0, "decor": 0, "size": [1.2, 0.8], "color": "#c0c0c0"},
+  "coffee_machine_pro":  {"name": "Percolateur italien Pro",   "category": "machine", "price": 1700, "speed": 1.6, "quality": 1.25, "energy_per_hour": 1.4, "wear_per_use": 0.3, "start_condition": 100, "maintenance": 3.0, "comfort": 0, "decor": 1, "size": [1.4, 0.9], "color": "#c9a227"},
+  "display_case":        {"name": "Vitrine à viennoiseries",   "category": "display", "price": 280, "speed": 1.0, "quality": 1.0, "energy_per_hour": 0.3, "wear_per_use": 0.1, "start_condition": 100, "maintenance": 0.5, "comfort": 0, "decor": 1, "size": [1.6, 0.8], "color": "#a8dadc"},
+  "table_set":           {"name": "Table et chaises",          "category": "furniture", "price": 110, "comfort": 3, "decor": 1, "size": [1.6, 1.6], "color": "#bc8a5f"},
+  "sofa":                {"name": "Canapé moelleux",           "category": "furniture", "price": 260, "comfort": 6, "decor": 2, "size": [2.0, 0.9], "color": "#6d597a"},
+  "plant":               {"name": "Plante verte",              "category": "decor", "price": 35,  "comfort": 0, "decor": 2, "size": [0.6, 0.6], "color": "#52b788"},
+  "lamp":                {"name": "Lampadaire rétro",          "category": "decor", "price": 70,  "comfort": 1, "decor": 3, "size": [0.5, 0.5], "color": "#ffd166"},
+  "arcade":              {"name": "Borne d'arcade",            "category": "decor", "price": 420, "comfort": 2, "decor": 6, "size": [0.9, 0.9], "color": "#ef476f", "energy_per_hour": 0.4},
+  "jukebox":             {"name": "Juke-box",                  "category": "decor", "price": 350, "comfort": 3, "decor": 5, "size": [0.9, 0.7], "color": "#118ab2", "energy_per_hour": 0.3}
+}

@@ -1,0 +1,255 @@
+{
+  "cafe": {
+    "name": "Café",
+    "kind": "retail",
+    "demand_category": "cafe",
+    "enterable": true,
+    "open_hour": 7,
+    "close_hour": 22,
+    "menu": {
+      "espresso": {
+        "name": "Espresso",
+        "needs": {
+          "roasted_coffee": 1
+        },
+        "base_price": 2.5,
+        "machine": true,
+        "prep_time": 4.0,
+        "weight": 0.4
+      },
+      "cappuccino": {
+        "name": "Cappuccino",
+        "needs": {
+          "roasted_coffee": 1,
+          "milk": 1
+        },
+        "base_price": 3.8,
+        "machine": true,
+        "prep_time": 6.0,
+        "weight": 0.38
+      },
+      "croissant": {
+        "name": "Croissant",
+        "needs": {
+          "croissant": 1
+        },
+        "base_price": 2.2,
+        "machine": false,
+        "prep_time": 1.5,
+        "weight": 0.22
+      }
+    },
+    "inputs": [
+      "roasted_coffee",
+      "milk",
+      "croissant"
+    ],
+    "stock_capacity": 400,
+    "staff_role": "Barista",
+    "base_wage": 28,
+    "max_staff": 5,
+    "build_cost": 600,
+    "size": [
+      12,
+      10
+    ],
+    "color": "#e07a5f",
+    "workers_per_hour": 8
+  },
+  "coffee_farm": {
+    "name": "Ferme caféière",
+    "kind": "producer",
+    "enterable": false,
+    "open_hour": 6,
+    "close_hour": 20,
+    "recipe": {
+      "inputs": {},
+      "outputs": {
+        "coffee_beans": 1
+      }
+    },
+    "rate_per_worker": 5,
+    "energy_per_unit": 0.03,
+    "inputs": [],
+    "outputs": [
+      "coffee_beans"
+    ],
+    "stock_capacity": 900,
+    "staff_role": "Ouvrier agricole",
+    "base_wage": 22,
+    "max_staff": 6,
+    "size": [
+      16,
+      12
+    ],
+    "color": "#81b29a"
+  },
+  "dairy": {
+    "name": "Laiterie",
+    "kind": "producer",
+    "enterable": false,
+    "open_hour": 5,
+    "close_hour": 20,
+    "recipe": {
+      "inputs": {},
+      "outputs": {
+        "milk": 1
+      }
+    },
+    "rate_per_worker": 8,
+    "energy_per_unit": 0.04,
+    "inputs": [],
+    "outputs": [
+      "milk"
+    ],
+    "stock_capacity": 900,
+    "staff_role": "Éleveur",
+    "base_wage": 22,
+    "max_staff": 6,
+    "size": [
+      14,
+      10
+    ],
+    "color": "#f4f1de"
+  },
+  "wheat_farm": {
+    "name": "Ferme céréalière",
+    "kind": "producer",
+    "enterable": false,
+    "open_hour": 6,
+    "close_hour": 20,
+    "recipe": {
+      "inputs": {},
+      "outputs": {
+        "wheat": 1
+      }
+    },
+    "rate_per_worker": 8,
+    "energy_per_unit": 0.02,
+    "inputs": [],
+    "outputs": [
+      "wheat"
+    ],
+    "stock_capacity": 1200,
+    "staff_role": "Céréalier",
+    "base_wage": 20,
+    "max_staff": 6,
+    "size": [
+      14,
+      10
+    ],
+    "color": "#f2cc8f"
+  },
+  "mill": {
+    "name": "Moulin",
+    "kind": "producer",
+    "enterable": false,
+    "open_hour": 6,
+    "close_hour": 21,
+    "recipe": {
+      "inputs": {
+        "wheat": 1
+      },
+      "outputs": {
+        "flour": 1
+      }
+    },
+    "rate_per_worker": 10,
+    "energy_per_unit": 0.05,
+    "inputs": [
+      "wheat"
+    ],
+    "outputs": [
+      "flour"
+    ],
+    "stock_capacity": 900,
+    "staff_role": "Meunier",
+    "base_wage": 22,
+    "max_staff": 4,
+    "size": [
+      10,
+      10
+    ],
+    "color": "#d8c3a5"
+  },
+  "roastery": {
+    "name": "Torréfaction",
+    "kind": "producer",
+    "enterable": false,
+    "open_hour": 6,
+    "close_hour": 21,
+    "recipe": {
+      "inputs": {
+        "coffee_beans": 1
+      },
+      "outputs": {
+        "roasted_coffee": 1
+      }
+    },
+    "rate_per_worker": 12,
+    "energy_per_unit": 0.08,
+    "inputs": [
+      "coffee_beans"
+    ],
+    "outputs": [
+      "roasted_coffee"
+    ],
+    "stock_capacity": 900,
+    "staff_role": "Torréfacteur",
+    "base_wage": 26,
+    "max_staff": 5,
+    "size": [
+      16,
+      12
+    ],
+    "color": "#9c6644"
+  },
+  "bakery": {
+    "name": "Boulangerie",
+    "kind": "producer",
+    "enterable": false,
+    "demand_category": "bakery",
+    "open_hour": 5,
+    "close_hour": 20,
+    "recipe": {
+      "inputs": {
+        "flour": 1,
+        "milk": 1
+      },
+      "outputs": {
+        "croissant": 2
+      }
+    },
+    "rate_per_worker": 6,
+    "energy_per_unit": 0.06,
+    "menu": {
+      "croissant": {
+        "name": "Croissant",
+        "needs": {
+          "croissant": 1
+        },
+        "base_price": 1.7,
+        "machine": false,
+        "prep_time": 1.0,
+        "weight": 1.0
+      }
+    },
+    "inputs": [
+      "flour",
+      "milk"
+    ],
+    "outputs": [
+      "croissant"
+    ],
+    "stock_capacity": 600,
+    "staff_role": "Boulanger",
+    "base_wage": 27,
+    "max_staff": 5,
+    "size": [
+      12,
+      10
+    ],
+    "color": "#f6bd60",
+    "workers_per_hour": 12
+  }
+}

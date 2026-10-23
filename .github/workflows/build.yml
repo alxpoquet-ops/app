@@ -1,0 +1,39 @@
+name: Test & build Windows
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GODOT_VERSION: 4.4.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot + Windows export templates
+        run: |
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          unzip -q Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 godot
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          unzip -q -j Godot_v${GODOT_VERSION}-stable_export_templates.tpz 'templates/windows_release_x86_64*' 'templates/version.txt' -d ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+
+      - name: Import project (builds the class cache)
+        run: timeout 300 ./godot --headless --path game --editor --quit || true
+
+      - name: Self-test (economy + scene + gameplay loops)
+        run: timeout 300 ./godot --headless --path game -- --selftest
+
+      - name: Export Windows build
+        run: |
+          mkdir -p build/windows
+          timeout 300 ./godot --headless --path game --export-release "Windows Desktop" ../build/windows/BourgadeInc.exe
+          test -f build/windows/BourgadeInc.pck
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BourgadeInc-Windows
+          path: build/windows
