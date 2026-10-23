@@ -3,8 +3,8 @@ config_version=5
 
 [application]
 
-config/name="Bourgade Inc."
-config/description="Monde ouvert, métiers, entreprises et économie partagée."
+config/name="Grand Hotel Wobble"
+config/description="Gestion d un hôtel de luxe : métiers, personnel, clients, pannes."
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
@@ -14,7 +14,7 @@ config/icon="res://icon.svg"
 GameData="*res://scripts/core/game_data.gd"
 Identity="*res://scripts/core/identity_service.gd"
 Clock="*res://scripts/core/game_clock.gd"
-Economy="*res://scripts/economy/economy.gd"
+Hotel="*res://scripts/sim/hotel.gd"
 SaveSystem="*res://scripts/core/save_system.gd"
 
 [display]

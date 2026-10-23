@@ -1,0 +1,9 @@
+{
+  "elevator_speed": {"name": "Ascenseur rapide",           "cost": 2500, "desc": "L'ascenseur va 60% plus vite (moins d'attente)."},
+  "washer_2":       {"name": "Deuxième lave-linge",        "cost": 1400, "desc": "Double la capacité de la laverie."},
+  "cafe_pro":       {"name": "Percolateur italien Pro",    "cost": 2200, "desc": "Café 40% plus rapide, meilleure qualité (+satisfaction)."},
+  "keycards":       {"name": "Cartes-clés RFID",           "cost": 1200, "desc": "Moins de cartes perdues, check-in 30% plus rapide."},
+  "soundproofing":  {"name": "Isolation phonique",         "cost": 3000, "desc": "Divise par deux les plaintes pour bruit."},
+  "smart_maintenance": {"name": "Maintenance préventive",  "cost": 2800, "desc": "Les pannes en chambre sont 35% moins fréquentes."},
+  "website":        {"name": "Site web & réservation en ligne", "cost": 1800, "desc": "+20% de demande."}
+}

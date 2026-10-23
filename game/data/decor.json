@@ -1,0 +1,14 @@
+{
+  "sofa":       {"name": "Canapé de lobby",     "price": 380, "comfort": 4, "size": [2.2, 1.0], "color": "#6d597a"},
+  "armchair":   {"name": "Fauteuil club",       "price": 220, "comfort": 3, "size": [1.0, 1.0], "color": "#9d4edd"},
+  "plant":      {"name": "Plante tropicale",    "price": 60,  "comfort": 1, "size": [0.8, 0.8], "color": "#52b788"},
+  "table_set":  {"name": "Table de café",       "price": 140, "comfort": 2, "size": [1.6, 1.6], "color": "#bc8a5f", "cafe_seats": 2},
+  "piano":      {"name": "Piano à queue",       "price": 1800, "comfort": 10, "size": [2.0, 2.2], "color": "#111111"},
+  "fountain":   {"name": "Fontaine intérieure", "price": 950, "comfort": 7, "size": [2.0, 2.0], "color": "#90e0ef"},
+  "statue":     {"name": "Statue dorée",        "price": 600, "comfort": 5, "size": [1.0, 1.0], "color": "#ffd166"},
+  "rug":        {"name": "Tapis persan",        "price": 260, "comfort": 3, "size": [3.0, 2.0], "color": "#9b2226", "flat": true},
+  "lamp":       {"name": "Lampadaire",          "price": 90,  "comfort": 1, "size": [0.6, 0.6], "color": "#ffd166"},
+  "arcade":     {"name": "Borne d'arcade",      "price": 420, "comfort": 3, "size": [0.9, 0.9], "color": "#ef476f"},
+  "massage":    {"name": "Fauteuil massant (salle du personnel)", "price": 500, "comfort": 0, "staff_comfort": 6, "size": [1.0, 1.2], "color": "#e76f51"},
+  "coffee_corner": {"name": "Coin café du personnel", "price": 250, "comfort": 0, "staff_comfort": 4, "size": [1.2, 0.8], "color": "#8d6346"}
+}

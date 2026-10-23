@@ -1,0 +1,6 @@
+{
+  "standard":   {"name": "Standard",   "rank": 1, "base_price": 85,  "renovate_cost": 900,  "upkeep": 4,  "clean_mult": 1.0, "comfort": 1, "color": "#8ecae6", "bed": "#a8dadc"},
+  "superieure": {"name": "Supérieure", "rank": 2, "base_price": 125, "renovate_cost": 1600, "upkeep": 6,  "clean_mult": 1.15, "comfort": 2, "color": "#90be6d", "bed": "#cdb4db"},
+  "deluxe":     {"name": "Deluxe",     "rank": 3, "base_price": 190, "renovate_cost": 2600, "upkeep": 9,  "clean_mult": 1.3, "comfort": 3, "color": "#f9c74f", "bed": "#ffafcc"},
+  "suite":      {"name": "Suite",      "rank": 4, "base_price": 340, "renovate_cost": 4200, "upkeep": 15, "clean_mult": 1.6, "comfort": 4, "color": "#f94144", "bed": "#e9c46a"}
+}

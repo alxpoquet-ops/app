@@ -1,0 +1,15 @@
+{
+  "produits_entretien":   {"name": "Produits d'entretien",   "price": 1.2, "pack": 20, "start": 30, "threshold": 12},
+  "linge":                {"name": "Linge neuf (parures)",   "price": 6.0, "pack": 10, "start": 14, "threshold": 0},
+  "kits_accueil":         {"name": "Kits d'accueil",         "price": 2.0, "pack": 20, "start": 30, "threshold": 10},
+  "minibar":              {"name": "Produits de minibar",    "price": 1.5, "pack": 20, "start": 40, "threshold": 15},
+  "cafe_grains":          {"name": "Café (doses)",           "price": 0.6, "pack": 50, "start": 80, "threshold": 25},
+  "lait":                 {"name": "Lait (doses)",           "price": 0.3, "pack": 50, "start": 60, "threshold": 20},
+  "viennoiseries":        {"name": "Viennoiseries",          "price": 0.7, "pack": 30, "start": 40, "threshold": 15},
+  "ingredients":          {"name": "Ingrédients (plats)",    "price": 4.0, "pack": 10, "start": 15, "threshold": 5},
+  "pieces_electriques":   {"name": "Pièces électriques",     "price": 6.0, "pack": 5,  "start": 6,  "threshold": 2},
+  "pieces_electroniques": {"name": "Pièces électroniques",   "price": 25.0, "pack": 2, "start": 2,  "threshold": 1},
+  "pieces_plomberie":     {"name": "Pièces de plomberie",    "price": 10.0, "pack": 3, "start": 3,  "threshold": 1},
+  "filtres_clim":         {"name": "Filtres de climatisation", "price": 8.0, "pack": 3, "start": 3, "threshold": 1},
+  "pieces_mecaniques":    {"name": "Pièces mécaniques",      "price": 30.0, "pack": 2, "start": 2,  "threshold": 1}
+}

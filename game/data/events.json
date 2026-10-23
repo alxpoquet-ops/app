@@ -1,0 +1,12 @@
+[
+  {"id": "festival",   "title": "Festival de musique en ville", "text": "+50% de touristes et de routards pendant 2 jours.", "days": 2, "demand": {"touriste": 1.5, "routard": 1.5}},
+  {"id": "conference", "title": "Grand congrès international",  "text": "Les voyageurs d'affaires affluent (+120%).",        "days": 2, "demand": {"affaires": 2.2}},
+  {"id": "heatwave",   "title": "Canicule !",                   "text": "Les climatisations tombent en panne 4× plus souvent, le café se vend mieux.", "days": 2, "break": {"ac": 4.0}, "cafe": 1.3},
+  {"id": "romance",    "title": "Saint-Valentin",               "text": "Les couples réservent en masse, room service très demandé.", "days": 1, "demand": {"couple": 2.5}},
+  {"id": "vip_visit",  "title": "Une star cherche un palace",   "text": "Une célébrité veut une suite : si tout est parfait, la presse en parlera !", "days": 1, "demand": {"vip": 8.0}},
+  {"id": "inspection", "title": "Inspection d'hygiène",         "text": "Un inspecteur contrôlera la propreté à 16h (chambres libres sales et flaques = amende).", "days": 1, "inspection": true},
+  {"id": "power_surge","title": "Surtension sur le réseau",     "text": "Plusieurs lampes et prises ont grillé dans les étages !", "days": 1, "instant_breaks": {"lamp": 3, "socket": 2}},
+  {"id": "flu",        "title": "Épidémie de grippe",           "text": "Deux employés sont malades aujourd'hui.", "days": 1, "sick": 2},
+  {"id": "influencer", "title": "Une influenceuse séjourne ici", "text": "Son avis comptera triple : soignez-la !", "days": 1, "demand": {"couple": 1.3}, "influencer": true},
+  {"id": "strike",     "title": "Grève des transporteurs",      "text": "Les livraisons de fournitures prennent deux fois plus de temps.", "days": 2, "delivery_mult": 2.0}
+]

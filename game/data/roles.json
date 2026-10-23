@@ -1,0 +1,13 @@
+{
+  "reception":   {"name": "Réceptionniste",          "wage": 62, "post": "reception_staff",  "outfit": "#1d3557", "hat": "",        "desc": "Enregistre les arrivées, encaisse les départs."},
+  "porter":      {"name": "Bagagiste",               "wage": 46, "post": "porter_post",      "outfit": "#9d0208", "hat": "#9d0208", "desc": "Monte les bagages en chambre (pourboires, satisfaction)."},
+  "housekeeper": {"name": "Valet / femme de chambre", "wage": 50, "post": "staff_room",      "outfit": "#6c757d", "hat": "",        "desc": "Nettoie les chambres libérées et fait les recouches."},
+  "governess":   {"name": "Gouvernant(e)",           "wage": 64, "post": "staff_room",       "outfit": "#3a0ca3", "hat": "",        "desc": "Prépare les chambres : linge, kit d'accueil, minibar, contrôle."},
+  "technician":  {"name": "Technicien de maintenance", "wage": 68, "post": "workshop",       "outfit": "#ff7b00", "hat": "#ffb703", "desc": "Répare lampes, prises, télés, douches, clims, ascenseur, machines."},
+  "laundry":     {"name": "Blanchisseur",            "wage": 44, "post": "laundry",          "outfit": "#48cae4", "hat": "",        "desc": "Lave et plie le linge sale pour la gouvernance."},
+  "barista":     {"name": "Barista / serveur",       "wage": 48, "post": "cafe_staff",       "outfit": "#264653", "hat": "#2a9d8f", "desc": "Sert les clients du café (petits-déjeuners !)."},
+  "cook":        {"name": "Cuisinier room service",  "wage": 66, "post": "kitchen",          "outfit": "#f8f9fa", "hat": "#f8f9fa", "desc": "Cuisine et livre les commandes en chambre."},
+  "concierge":   {"name": "Concierge",               "wage": 70, "post": "concierge_staff",  "outfit": "#000000", "hat": "",        "desc": "Taxis, restaurants, spectacles : commissions et clients ravis."},
+  "security":    {"name": "Veilleur de nuit / sécurité", "wage": 58, "post": "lobby",        "outfit": "#212529", "hat": "#495057", "desc": "Gère le bruit la nuit, les cartes-clés perdues."},
+  "cleaner":     {"name": "Agent d'entretien",       "wage": 42, "post": "staff_room",       "outfit": "#52b788", "hat": "",        "desc": "Nettoie les flaques et les parties communes."}
+}

@@ -1,0 +1,26 @@
+{
+  "floors": 5,
+  "floor_height": 4.0,
+  "half_x": 20, "half_z": 12, "corridor_half": 1.5,
+  "rooms": [
+    {"idx": 1, "side": "N", "x0": -20, "x1": -11},
+    {"idx": 2, "side": "N", "x0": -11, "x1": -4},
+    {"idx": 3, "side": "N", "x0": 6,   "x1": 13},
+    {"idx": 4, "side": "N", "x0": 13,  "x1": 20},
+    {"idx": 5, "side": "S", "x0": -20, "x1": -10},
+    {"idx": 6, "side": "S", "x0": -10, "x1": 0},
+    {"idx": 7, "side": "S", "x0": 0,   "x1": 10},
+    {"idx": 8, "side": "S", "x0": 10,  "x1": 20}
+  ],
+  "floor_tiers": {"1": "standard", "2": "superieure", "3": "deluxe", "4": "suite"},
+  "unlocked_start": ["101", "102", "105", "106"],
+  "elevator": {"x0": -4, "x1": 2, "z0": -6, "z1": -1.5},
+  "linen": {"x0": 2, "x1": 6},
+  "ground_rooms": [
+    {"id": "laundry",    "name": "Laverie",         "x0": -20, "x1": -11},
+    {"id": "workshop",   "name": "Atelier technique", "x0": -11, "x1": -4},
+    {"id": "storage",    "name": "Réserve",         "x0": 2,   "x1": 6},
+    {"id": "staff_room", "name": "Salle du personnel", "x0": 6, "x1": 13},
+    {"id": "kitchen",    "name": "Cuisine",         "x0": 13,  "x1": 20}
+  ]
+}

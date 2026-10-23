@@ -1,31 +1,48 @@
 extends Node
 ## Static, data-driven definitions loaded from res://data/*.json.
-## Adding a good, a business type or a piece of equipment = editing JSON, not code.
+## New jobs, tasks, rooms, supplies or events = editing JSON, not code.
 
-var goods: Dictionary = {}
-var business_types: Dictionary = {}
-var equipment: Dictionary = {}
+var building: Dictionary = {}
+var room_tiers: Dictionary = {}
+var room_items: Dictionary = {}
+var facilities: Dictionary = {}
+var supplies: Dictionary = {}
+var menu: Dictionary = {}
+var roles: Dictionary = {}
+var tasks: Dictionary = {}
+var guests: Dictionary = {}
+var events: Array = []
+var decor: Dictionary = {}
+var upgrades: Dictionary = {}
 var balance: Dictionary = {}
-var layout: Dictionary = {}
 var names: Dictionary = {}
 
 
 func _ready() -> void:
-	goods = _load("res://data/goods.json")
-	business_types = _load("res://data/business_types.json")
-	equipment = _load("res://data/equipment.json")
-	balance = _load("res://data/balance.json")
-	layout = _load("res://data/world_layout.json")
-	names = _load("res://data/names.json")
+	building = _load("building")
+	room_tiers = _load("room_tiers")
+	room_items = _load("room_items")
+	facilities = _load("facilities")
+	supplies = _load("supplies")
+	menu = _load("menu")
+	roles = _load("roles")
+	tasks = _load("tasks")
+	guests = _load("guests")
+	events = _load("events")
+	decor = _load("decor")
+	upgrades = _load("upgrades")
+	balance = _load("balance")
+	names = _load("names")
 
 
-func _load(path: String) -> Dictionary:
+func _load(n: String):
+	var path := "res://data/%s.json" % n
 	var f := FileAccess.open(path, FileAccess.READ)
 	if f == null:
 		push_error("GameData: missing %s" % path)
 		return {}
 	var parsed = JSON.parse_string(f.get_as_text())
-	if typeof(parsed) != TYPE_DICTIONARY:
+	if parsed == null:
 		push_error("GameData: invalid JSON in %s" % path)
 		return {}
 	return parsed
@@ -35,36 +52,15 @@ func bal(key: String, default_value = 0.0):
 	return balance.get(key, default_value)
 
 
-func good_name(id: String) -> String:
-	return goods.get(id, {}).get("name", id)
+func floor_height() -> float:
+	return float(building.get("floor_height", 4.0))
 
 
-func good_base_price(id: String) -> float:
-	return float(goods.get(id, {}).get("base_price", 1.0))
-
-
-func btype(id: String) -> Dictionary:
-	return business_types.get(id, {})
-
-
-func equip(id: String) -> Dictionary:
-	return equipment.get(id, {})
-
-
-## Returns the business type ids that produce a given good.
-func producers_of(good: String) -> Array:
-	var out := []
-	for t in business_types:
-		if good in business_types[t].get("outputs", []):
-			out.append(t)
-	return out
+func floor_name(f: int) -> String:
+	return "Rez-de-chaussée" if f == 0 else ("1er étage" if f == 1 else "%de étage" % f)
 
 
 func random_person_name(rng: RandomNumberGenerator) -> String:
 	var first: Array = names.get("first", ["Alex"])
 	var last: Array = names.get("last", ["Dupont"])
 	return "%s %s" % [first[rng.randi() % first.size()], last[rng.randi() % last.size()]]
-
-
-static func color(hex: String) -> Color:
-	return Color.html(hex)

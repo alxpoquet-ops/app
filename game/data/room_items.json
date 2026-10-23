@@ -1,0 +1,8 @@
+{
+  "lamp":    {"name": "Lampe",          "part": "pieces_electriques",   "repair_time": 8,  "break_per_day": 0.045, "sat_penalty": 6,  "trade": "électricité"},
+  "socket":  {"name": "Prise électrique", "part": "pieces_electriques", "repair_time": 10, "break_per_day": 0.03,  "sat_penalty": 7,  "trade": "électricité"},
+  "tv":      {"name": "Télévision",     "part": "pieces_electroniques", "repair_time": 14, "break_per_day": 0.035, "sat_penalty": 8,  "trade": "électronique"},
+  "shower":  {"name": "Douche",         "part": "pieces_plomberie",     "repair_time": 16, "break_per_day": 0.03,  "sat_penalty": 12, "trade": "plomberie"},
+  "ac":      {"name": "Climatisation",  "part": "filtres_clim",         "repair_time": 12, "break_per_day": 0.03,  "sat_penalty": 9,  "trade": "climatisation"},
+  "minibar": {"name": "Minibar",        "part": "pieces_electriques",   "repair_time": 10, "break_per_day": 0.02,  "sat_penalty": 4,  "trade": "froid"}
+}

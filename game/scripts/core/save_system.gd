@@ -4,7 +4,7 @@ extends Node
 ## the world while each client only keeps its own preferences.
 
 const SAVE_DIR := "user://saves"
-const VERSION := 1
+const VERSION := 2
 
 signal saved(path: String)
 signal loaded(path: String)
@@ -24,7 +24,7 @@ func save_game(slot: String = "slot1") -> bool:
 		"version": VERSION,
 		"saved_at": Time.get_datetime_string_from_system(),
 		"clock": Clock.to_dict(),
-		"economy": Economy.to_dict(),
+		"hotel": Hotel.to_dict(),
 		"player": {},
 	}
 	var world := get_tree().get_first_node_in_group("world")
@@ -59,8 +59,8 @@ func read_save(slot: String = "slot1") -> Dictionary:
 	return d
 
 
-## Restores economy + clock. The world rebuilds its nodes from Economy afterwards.
+## Restores hotel + clock. The world rebuilds its nodes from Hotel afterwards.
 func apply_save(d: Dictionary) -> void:
 	Clock.from_dict(d.get("clock", {}))
-	Economy.from_dict(d.get("economy", {}))
+	Hotel.from_dict(d.get("hotel", {}))
 	loaded.emit(slot_path())

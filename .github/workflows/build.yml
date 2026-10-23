@@ -24,16 +24,16 @@ jobs:
       - name: Import project (builds the class cache)
         run: timeout 300 ./godot --headless --path game --editor --quit || true
 
-      - name: Self-test (economy + scene + gameplay loops)
-        run: timeout 300 ./godot --headless --path game -- --selftest
+      - name: Self-test (simulation + scene + jobs)
+        run: timeout 900 ./godot --headless --fixed-fps 60 --path game -- --selftest
 
       - name: Export Windows build
         run: |
           mkdir -p build/windows
-          timeout 300 ./godot --headless --path game --export-release "Windows Desktop" ../build/windows/BourgadeInc.exe
-          test -f build/windows/BourgadeInc.pck
+          timeout 300 ./godot --headless --path game --export-release "Windows Desktop" ../build/windows/GrandHotelWobble.exe
+          test -f build/windows/GrandHotelWobble.pck
 
       - uses: actions/upload-artifact@v4
         with:
-          name: BourgadeInc-Windows
+          name: GrandHotelWobble-Windows
           path: build/windows

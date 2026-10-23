@@ -1,0 +1,9 @@
+{
+  "espresso":       {"name": "Espresso",            "where": "cafe", "price": 2.8,  "needs": {"cafe_grains": 1}, "machine": true},
+  "cappuccino":     {"name": "Cappuccino",          "where": "cafe", "price": 4.0,  "needs": {"cafe_grains": 1, "lait": 1}, "machine": true},
+  "croissant":      {"name": "Croissant",           "where": "cafe", "price": 2.5,  "needs": {"viennoiseries": 1}, "machine": false},
+  "petit_dejeuner": {"name": "Petit-déjeuner",      "where": "cafe", "price": 14.0, "needs": {"cafe_grains": 1, "lait": 1, "viennoiseries": 2}, "machine": true},
+  "club_sandwich":  {"name": "Club sandwich",       "where": "room", "price": 18.0, "needs": {"ingredients": 1}},
+  "diner":          {"name": "Dîner gastronomique", "where": "room", "price": 42.0, "needs": {"ingredients": 2}},
+  "minibar_item":   {"name": "Article de minibar",  "where": "minibar", "price": 6.0, "needs": {}}
+}

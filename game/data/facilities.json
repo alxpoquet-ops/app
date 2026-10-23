@@ -1,0 +1,7 @@
+{
+  "elevator":     {"name": "Ascenseur",          "part": "pieces_mecaniques", "repair_time": 20, "break_per_day": 0.06, "point": "elevator_front:0"},
+  "cafe_machine": {"name": "Machine à café",     "part": "pieces_mecaniques", "repair_time": 14, "break_per_day": 0.05, "point": "cafe_machine"},
+  "washer_1":     {"name": "Lave-linge n°1",     "part": "pieces_mecaniques", "repair_time": 14, "break_per_day": 0.04, "point": "washer_1"},
+  "washer_2":     {"name": "Lave-linge n°2",     "part": "pieces_mecaniques", "repair_time": 14, "break_per_day": 0.04, "point": "washer_2", "locked": true},
+  "stove":        {"name": "Piano de cuisson",   "part": "pieces_mecaniques", "repair_time": 16, "break_per_day": 0.03, "point": "kitchen"}
+}
