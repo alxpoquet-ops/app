@@ -113,6 +113,7 @@ func _process(delta: float) -> void:
 				if i < SERVE_SPOTS.size():
 					if n.state != "ordering":
 						n.state = "ordering"
+						n.data["order_t"] = _now()
 						n.say("%s ?" % item_name(n.data.item), 999.0, Color("#fff1a8"))
 					n.face(_g(Vector3(n.position.x, 0, STAFF_Z)))
 				elif n.state == "walking_in":
@@ -141,8 +142,21 @@ func _complete(n: NPC, paid: float) -> void:
 
 
 # ------------------------------------------------------------------ AI baristas
+func _now() -> float:
+	return Time.get_ticks_msec() / 1000.0
+
+
+## True when a player is on shift here and standing in the building.
+func _player_on_shift() -> bool:
+	var p = building.world.player if building.world else null
+	return p != null and building.is_player_inside() and player_can_work(p)
+
+
 func _sync_workers(b: Business) -> void:
+	# A player on shift takes the place of one AI barista (frees a machine).
 	var wanted: int = min(b.employees.size(), 3)
+	if _player_on_shift() and b.is_ai():
+		wanted = max(0, wanted - 1)
 	while workers.size() < wanted:
 		var w := NPC.new()
 		building.add_child(w)
@@ -177,9 +191,14 @@ func _update_worker(w: NPC, delta: float) -> void:
 		return
 	match w.state:
 		"idle":
+			var player_here := _player_on_shift()
 			for n in customers:
-				if n.state == "ordering" and n.data.claimed == null:
-					_start_order(w, n)
+				if n.state != "ordering" or n.data.claimed != null:
+					continue
+				# Leave fresh orders to the player; help only if a customer waits too long.
+				if player_here and _now() - float(n.data.get("order_t", 0.0)) < 12.0:
+					continue
+				if _start_order(w, n):
 					break
 		"to_station":
 			if not w.is_moving():
@@ -217,14 +236,15 @@ func _update_worker(w: NPC, delta: float) -> void:
 				w.go([_g(Vector3(-1.5 + workers.find(w) * 1.4, 0, -3.3))])
 
 
-func _start_order(w: NPC, n: NPC) -> void:
+func _start_order(w: NPC, n: NPC) -> bool:
 	var b := biz()
 	var needs_machine: bool = b.menu()[n.data.item].get("machine", false)
 	var station = _find_station(needs_machine, w)
 	if station == null:
-		_leave(n, "Pas de %s ici ?!" % ("machine" if needs_machine else "vitrine"), Color("#ff6b6b"))
-		Economy.record_lost_customer(biz_id, "stock")
-		return
+		if not _has_station(needs_machine):
+			_leave(n, "Pas de %s ici ?!" % ("machine" if needs_machine else "vitrine"), Color("#ff6b6b"))
+			Economy.record_lost_customer(biz_id, "stock")
+		return false   # every machine is busy: wait for one to free up
 	n.data.claimed = w
 	w.data.customer = n
 	if needs_machine:
@@ -232,6 +252,15 @@ func _start_order(w: NPC, n: NPC) -> void:
 		w.data.machine = station
 	w.state = "to_station"
 	w.go([_g(Vector3(station.position.x, 0, STAFF_Z)), station.to_global(Vector3(0, 0, 0.85))])
+	return true
+
+
+func _has_station(machine: bool) -> bool:
+	for e in building.equipment_nodes:
+		var cat: String = GameData.equip(e.def_id).get("category", "")
+		if cat == ("machine" if machine else "display"):
+			return true
+	return false
 
 
 func _find_station(machine: bool, user) -> EquipmentNode:

@@ -141,14 +141,14 @@ func _machine_prompt(p: Player) -> String:
 	if svc == null:
 		return ""
 	if busy_by != null and busy_by != p:
-		return "Machine occupée…"
+		return "Machine occupée par un collègue — attendez quelques secondes"
 	if not p.carrying.is_empty():
 		return ""
 	if not svc.player_can_work(p):
 		return svc.work_hint(p)
 	var c = svc.next_order_for(true)
 	if c == null:
-		return "Aucune commande de boisson en attente"
+		return "Machine libre — aucun client n'attend de boisson pour l'instant"
 	return "[E] Préparer : %s" % svc.item_name(c.data.item)
 
 

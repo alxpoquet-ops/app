@@ -180,7 +180,9 @@ func _gameplay_barista(w: World) -> void:
 	var pid := Identity.local_id()
 	var bb: BusinessBuilding = w.buildings["cafe_coin"]
 	var b: Business = bb.biz()
-	b.employees.clear()          # no AI barista: the player must serve
+	# Reproduce the real situation: AI baristas are present while the player works.
+	while b.employees.size() < 2:
+		b.employees.append(Economy._make_candidate(b, 1.0))
 	b.stock["roasted_coffee"] = 50.0
 	b.stock["milk"] = 50.0
 	Economy.live_businesses["cafe_coin"] = 0
@@ -197,6 +199,8 @@ func _gameplay_barista(w: World) -> void:
 		await get_tree().create_timer(0.25).timeout
 		t += 0.25
 	ok(not svc.customers.is_empty() and svc.customers[0].state == "ordering", "customer walked to the counter and ordered")
+	ok(svc.workers.size() == 1, "player on shift replaces one AI barista (%d visible)" % svc.workers.size())
+	ok(svc.customers.size() > 0 and svc.customers[0].data.claimed == null, "AI baristas leave the fresh order to the player")
 	var machine: EquipmentNode = null
 	for e in bb.equipment_nodes:
 		if GameData.equip(e.def_id).category == "machine":
