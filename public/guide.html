@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guide des comptes · Publik</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body { padding-bottom: 40px; }
+    .guide { max-width: 760px; margin: 0 auto; padding: 28px 16px; }
+    .guide section { margin-top: 18px; }
+    .guide ol li { margin-bottom: 8px; }
+    .guide code { background: var(--surface-2); padding: 2px 6px; border-radius: 6px; font-size: .88em; overflow-wrap: anywhere; }
+    .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+  </style>
+</head>
+<body>
+  <div class="guide">
+    <a href="/#/comptes" class="btn ghost small">← Retour à l'app</a>
+    <h1 style="margin-top:14px">Relier tes réseaux</h1>
+    <p class="muted">Deux façons de faire. Le mode <strong>simple</strong> prend 5 minutes. Le mode <strong>direct</strong> est gratuit mais demande de créer une « application développeur » sur chaque réseau (une seule fois).</p>
+    <div class="toc"><a class="chip" href="#simple">Mode simple</a><a class="chip" href="#youtube">YouTube</a><a class="chip" href="#meta">Facebook & Instagram</a><a class="chip" href="#tiktok">TikTok</a><a class="chip" href="#x">X</a><a class="chip" href="#ia">Clé IA</a></div>
+
+    <section class="card" id="simple">
+      <h2>Mode simple · Upload-Post</h2>
+      <ol>
+        <li>Crée un compte sur <a href="https://www.upload-post.com" target="_blank" rel="noopener">upload-post.com</a> (offre gratuite pour commencer, puis abonnement selon le volume).</li>
+        <li>Menu <em>Manage Users</em> → crée un profil, par exemple <code>moi</code>.</li>
+        <li>Sur ce profil, connecte TikTok, Instagram, Facebook, YouTube et X (boutons « Connect »).</li>
+        <li>Menu <em>API Keys</em> → crée une clé et copie-la.</li>
+        <li>Dans Publik : <em>Comptes</em> → <em>Simple</em> → colle la clé et le nom du profil → <em>Tester la connexion</em>.</li>
+      </ol>
+      <p class="small muted">Instagram et Facebook exigent un compte <strong>professionnel</strong> (créateur ou entreprise) relié à une Page Facebook. Ça se change gratuitement dans les réglages de l'app Instagram.</p>
+    </section>
+
+    <section class="card">
+      <h2>Mode direct · avant de commencer</h2>
+      <p>Les réseaux renvoient vers ton app après la connexion : elle doit donc avoir une <strong>adresse publique en https</strong> (ex. <code>https://publik.mondomaine.fr</code>). Renseigne-la dans <em>Réglages → Adresse publique</em>. Chaque carte de l'écran <em>Comptes</em> affiche l'<strong>adresse de redirection</strong> exacte à copier.</p>
+    </section>
+
+    <section class="card" id="youtube">
+      <h2>YouTube</h2>
+      <ol>
+        <li>Va sur <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">console.cloud.google.com</a> → crée un projet « Publik ».</li>
+        <li><em>API et services → Bibliothèque</em> → active <strong>YouTube Data API v3</strong>.</li>
+        <li><em>Écran de consentement OAuth</em> → type « Externe » → ajoute ton adresse Gmail comme <em>utilisateur test</em>.</li>
+        <li><em>Identifiants → Créer → ID client OAuth</em> → type « Application Web » → colle l'adresse de redirection affichée dans Publik.</li>
+        <li>Copie le <em>Client ID</em> et le <em>Client secret</em> dans Publik, puis clique <em>Connecter YouTube</em>.</li>
+      </ol>
+      <p class="small muted">Quota gratuit : environ 6 vidéos par jour. Les vidéos verticales de moins de 3 minutes deviennent des Shorts.</p>
+    </section>
+
+    <section class="card" id="meta">
+      <h2>Facebook & Instagram</h2>
+      <ol>
+        <li>Il te faut une <strong>Page Facebook</strong> et un compte <strong>Instagram professionnel</strong> relié à cette Page.</li>
+        <li>Sur <a href="https://developers.facebook.com/apps/" target="_blank" rel="noopener">developers.facebook.com</a> → <em>Créer une app</em> → cas d'usage « Autre » → type « Entreprise ».</li>
+        <li>Ajoute les produits <strong>Facebook Login for Business</strong> et <strong>Instagram</strong> (API Instagram avec connexion Facebook).</li>
+        <li>Dans <em>Facebook Login → Paramètres</em>, colle l'adresse de redirection de Publik dans « URI de redirection OAuth valides ».</li>
+        <li><em>Paramètres → Général</em> : copie l'<em>ID de l'app</em> et la <em>Clé secrète</em> dans Publik, puis <em>Connecter</em>.</li>
+      </ol>
+      <p class="small muted">Tant que l'app est en mode « développement », elle fonctionne pour tes propres comptes (administrateur de l'app) : c'est suffisant pour un usage personnel.</p>
+    </section>
+
+    <section class="card" id="tiktok">
+      <h2>TikTok</h2>
+      <ol>
+        <li>Sur <a href="https://developers.tiktok.com/" target="_blank" rel="noopener">developers.tiktok.com</a> → <em>Manage apps → Connect an app</em>.</li>
+        <li>Ajoute les produits <strong>Login Kit</strong> et <strong>Content Posting API</strong> (active « Direct Post »).</li>
+        <li>Scopes : <code>user.info.basic</code> et <code>video.publish</code>. Colle l'adresse de redirection de Publik dans Login Kit.</li>
+        <li>Copie <em>Client key</em> et <em>Client secret</em> dans Publik, puis <em>Connecter TikTok</em>.</li>
+      </ol>
+      <p class="small muted">Tant que TikTok n'a pas audité ton app, les vidéos sont publiées en <strong>privé</strong> (tu peux ensuite les passer en public depuis l'app TikTok). Pour publier directement en public, demande l'audit depuis le portail développeur.</p>
+    </section>
+
+    <section class="card" id="x">
+      <h2>X (Twitter)</h2>
+      <ol>
+        <li>Sur <a href="https://developer.x.com/en/portal/dashboard" target="_blank" rel="noopener">developer.x.com</a> → crée un projet et une app (offre gratuite possible pour publier).</li>
+        <li><em>User authentication settings</em> → active OAuth 2.0, type « Web App », permissions <em>Read and write</em>.</li>
+        <li>Colle l'adresse de redirection de Publik dans « Callback URI ».</li>
+        <li>Copie le <em>Client ID</em> et le <em>Client Secret</em> (OAuth 2.0) dans Publik, puis <em>Connecter</em>.</li>
+      </ol>
+    </section>
+
+    <section class="card" id="ia">
+      <h2>Clé IA (facultatif, recommandé)</h2>
+      <ol>
+        <li>Crée un compte sur <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a> et ajoute quelques euros de crédit.</li>
+        <li><em>API Keys → Create key</em>, copie la clé (<code>sk-ant-…</code>).</li>
+        <li>Dans Publik : <em>Réglages → Intelligence artificielle</em>.</li>
+      </ol>
+      <p class="small muted">L'IA regarde tes images, garde les plus belles, écrit l'accroche, les sous-titres, et des légendes + hashtags adaptés à chaque réseau. Compte quelques centimes par vidéo.</p>
+    </section>
+  </div>
+</body>
+</html>

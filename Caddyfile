@@ -1,0 +1,7 @@
+# Certificat HTTPS automatique (Let's Encrypt) pour ton domaine.
+{$DOMAIN} {
+	encode gzip
+	reverse_proxy app:3000 {
+		flush_interval -1
+	}
+}

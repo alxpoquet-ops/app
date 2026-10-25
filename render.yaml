@@ -1,0 +1,18 @@
+# Déploiement en un clic sur Render.com (Blueprint) — disque persistant inclus.
+services:
+  - type: web
+    name: publik
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/status
+    disk:
+      name: publik-data
+      mountPath: /data
+      sizeGB: 5
+    envVars:
+      - key: DATA_DIR
+        value: /data
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: APP_PASSWORD
+        sync: false

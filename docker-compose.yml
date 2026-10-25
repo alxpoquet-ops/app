@@ -1,0 +1,32 @@
+# Lancement : `docker compose up -d`
+# Avec un nom de domaine (HTTPS automatique) : renseigne DOMAIN dans .env puis
+# `docker compose --profile https up -d`
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      PUBLIC_URL: ${PUBLIC_URL:-}
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      - publik-data:/data
+
+  caddy:
+    image: caddy:2.8
+    profiles: ["https"]
+    restart: unless-stopped
+    depends_on: [app]
+    environment:
+      DOMAIN: ${DOMAIN:-}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+
+volumes:
+  publik-data:
+  caddy-data:
