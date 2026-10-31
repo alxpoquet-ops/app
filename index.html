@@ -18,7 +18,7 @@
   <link rel="preload" href="assets/fonts/fraunces-latin-full-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/jost-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/css/style.css">
-  <script>document.documentElement.classList.add('js');</script>
+  <script>document.documentElement.classList.add('js');window.addEventListener('error',function(){document.documentElement.classList.remove('js');});</script>
   <script src="assets/js/data.js" defer></script>
   <script src="assets/js/flowers.js" defer></script>
   <script src="assets/js/app.js" defer></script>
@@ -268,7 +268,7 @@
                 <h3><span class="b-num">4</span> Un petit mot <small>facultatif</small></h3>
                 <label class="field field--counter">
                   <span class="sr-only">Message de la petite carte</span>
-                  <textarea rows="2" maxlength="80" placeholder="Joyeux anniversaire ma belle…" data-b-message></textarea>
+                  <textarea id="b-message" rows="2" maxlength="80" placeholder="Joyeux anniversaire ma belle…" data-b-message></textarea>
                   <span class="counter" data-b-counter>0/80</span>
                 </label>
               </div>
@@ -380,21 +380,21 @@
 
           <form class="contact-form reveal" style="--i:2" data-contact-form novalidate>
             <div class="field-row">
-              <label class="field"><span>Prénom &amp; nom</span><input name="name" type="text" autocomplete="name" required></label>
-              <label class="field"><span>E-mail ou téléphone</span><input name="reply" type="text" autocomplete="email" required></label>
+              <label class="field"><span>Prénom &amp; nom</span><input id="c-name" name="name" type="text" autocomplete="name" required></label>
+              <label class="field"><span>E-mail ou téléphone</span><input id="c-reply" name="reply" type="text" autocomplete="email" required></label>
             </div>
             <div class="field-row">
               <label class="field"><span>Sujet</span>
-                <select name="subject">
+                <select id="c-subject" name="subject">
                   <option>Une commande</option>
                   <option>Un bouquet sur mesure</option>
                   <option>Mariage &amp; événements</option>
                   <option>Une question</option>
                 </select>
               </label>
-              <label class="field"><span>Date souhaitée <small>(facultatif)</small></span><input name="date" type="date"></label>
+              <label class="field"><span>Date souhaitée <small>(facultatif)</small></span><input id="c-date" name="date" type="date"></label>
             </div>
-            <label class="field"><span>Votre message</span><textarea name="message" rows="5" required placeholder="Racontez-nous votre envie…"></textarea></label>
+            <label class="field"><span>Votre message</span><textarea id="c-message" name="message" rows="5" required placeholder="Racontez-nous votre envie…"></textarea></label>
             <div class="form-actions" data-form-actions></div>
             <p class="form-note">Votre message est préparé ici, puis envoyé depuis Instagram ou votre messagerie&nbsp;: rien n’est enregistré sur ce site.</p>
           </form>

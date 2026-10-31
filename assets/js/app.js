@@ -9,6 +9,7 @@
   const S = window.SITE || {};
   const FC = window.FC_FLOWERS;
   if (!FC) return;
+  const PREVIEW = !!window.FC_PREVIEW; // version d'aperçu (page claude.ai)
   S.products = S.products || [];
   S.colors = S.colors || {};
   S.flowers = S.flowers || {};
@@ -62,9 +63,8 @@
     toastT = setTimeout(() => toastEl.classList.remove('is-on'), 2900);
   }
 
-  /* ---------- Copier du texte ---------- */
-  function copyText(text) {
-    let ok = false;
+  /* ---------- Copier du texte (promesse : true si la copie a réussi) ---------- */
+  function legacyCopy(text) {
     try {
       const ta = document.createElement('textarea');
       ta.value = text;
@@ -72,14 +72,19 @@
       ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
       document.body.appendChild(ta);
       ta.select();
-      ok = document.execCommand('copy');
+      const ok = document.execCommand('copy');
       ta.remove();
-    } catch (e) { ok = false; }
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(() => {}, () => {});
-      ok = true;
+      return ok;
+    } catch (e) {
+      return false;
     }
-    return ok;
+  }
+  function copyText(text) {
+    const legacy = legacyCopy(text);
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(() => true, () => legacy);
+    }
+    return Promise.resolve(legacy);
   }
 
   /* ---------- Verrouillage du défilement ---------- */
@@ -422,8 +427,17 @@
         else toast('Oups, l’envoi n’a pas abouti. Essayez via Instagram.');
       } else {
         const copied = copyText(msg.body);
-        window.open(IG_DM, '_blank', 'noopener');
-        showDone('instagram', msg, Object.assign({ copied }, opts));
+        let opened = false;
+        try {
+          const w = window.open(IG_DM, '_blank');
+          if (w) {
+            opened = true;
+            try { w.opener = null; } catch (err) { /* sans importance */ }
+          }
+        } catch (err) {
+          opened = false;
+        }
+        showDone('instagram', msg, Object.assign({ copied, opened }, opts));
       }
       if (opts.onSent) opts.onSent();
     });
@@ -434,27 +448,43 @@
     clearTimeout(toastT);
     if (toastEl) toastEl.classList.remove('is-on');
     const art = FC.bouquet({ paper: 'poudre', ribbon: 'satin_rose', flowers: [['tulipe', 'rose'], ['marguerite', 'blanc'], ['rose', 'lilas'], ['cosmos', 'peche'], ['gypsophile', 'blanc'], ['eucalyptus']] }, { fit: true, aspect: 0.94, pad: 10, label: 'Un bouquet pour vous remercier' });
-    const texts = {
-      instagram: (opts.copied
-        ? `Votre message est copié${NB}! La conversation Instagram s’est ouverte dans un nouvel onglet${NB}: il ne reste plus qu’à le coller et à l’envoyer.`
-        : `La conversation Instagram s’est ouverte dans un nouvel onglet. Copiez le message ci-dessous, collez-le et envoyez-le.`),
-      email: `Votre messagerie s’est ouverte avec le message prêt à partir. Il ne reste plus qu’à cliquer sur «${NB}Envoyer${NB}».`,
-      form: `Votre message nous est bien parvenu. Nous vous répondons très vite${NB}!`
-    };
-    const title = via === 'form' ? `Merci, message envoyé${NB}!` : `Merci, c’est presque fini${NB}!`;
+    let text;
+    if (via === 'instagram') {
+      text = opts.opened
+        ? `La conversation Instagram s’est ouverte dans un nouvel onglet${NB}: collez-y votre message et envoyez-le.`
+        : 'Ouvrez la conversation Instagram avec le bouton ci-dessous, collez-y votre message et envoyez-le.';
+    } else if (via === 'email') {
+      text = `Votre messagerie devrait s’ouvrir avec le message prêt. Sinon, copiez-le et envoyez-le à ${EMAIL}.`;
+    } else {
+      text = `Votre message nous est bien parvenu. Nous vous répondons très vite${NB}!`;
+    }
+    const title = via === 'form' ? `Merci, message envoyé${NB}!` : `Votre message est prêt${NB}!`;
+    const mailHref = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(msg.subject) + '&body=' + encodeURIComponent(msg.body);
     const html = '<div class="dialog-body done">' +
       `<div class="done-art">${art}</div>` +
       `<h2 id="modal-title">${title}</h2>` +
-      `<p>${esc(texts[via])}</p>` +
-      (via !== 'form' ? `<textarea rows="6" readonly aria-label="Votre message">${esc(msg.body)}</textarea>` : '') +
+      `<p>${esc(text)}</p>` +
+      (via !== 'form' ? `<p class="copy-status" data-copy-status hidden></p><textarea id="done-message" rows="6" readonly aria-label="Votre message">${esc(msg.body)}</textarea>` : '') +
       '<div class="form-actions">' +
-      (via === 'instagram' ? `<a class="btn btn-primary" href="${IG_DM}" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg> Ouvrir Instagram</a><button class="btn btn-ghost" type="button" data-copy>Copier le message</button>` : '') +
+      (via === 'instagram' ? `<a class="btn btn-primary" href="${IG_DM}" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg> Ouvrir la conversation</a>` : '') +
+      (via === 'email' ? `<a class="btn btn-primary" href="${esc(mailHref)}"><svg><use href="#i-mail"/></svg> Ouvrir ma messagerie</a>` : '') +
+      (via !== 'form' ? '<button class="btn btn-ghost" type="button" data-copy>Copier le message</button>' : '') +
       (opts.order ? '<button class="btn btn-ghost" type="button" data-clear>Vider mon panier</button>' : '') +
       '<button class="btn btn-soft" type="button" data-close>Fermer</button>' +
       '</div></div>';
     openModal(html, (root) => {
+      const status = $('[data-copy-status]', root);
+      const copyBtn = $('[data-copy]', root);
+      const markCopied = (ok, fromClick) => {
+        if (!status) return;
+        status.hidden = false;
+        status.textContent = ok ? `Message copié${NB}: il ne reste plus qu’à le coller.` : 'Sélectionnez le message ci-dessous pour le copier.';
+        if (ok && copyBtn) copyBtn.textContent = 'Message copié';
+        if (!ok && fromClick) { const ta = $('textarea', root); ta.focus(); ta.select(); }
+      };
+      if (opts.copied && opts.copied.then) opts.copied.then((ok) => markCopied(ok, false));
       root.addEventListener('click', (e) => {
-        if (e.target.closest('[data-copy]')) { copyText(msg.body); toast('Message copié'); }
+        if (e.target.closest('[data-copy]')) copyText(msg.body).then((ok) => markCopied(ok, true));
         if (e.target.closest('[data-clear]')) {
           cart = [];
           saveCart();
@@ -855,15 +885,22 @@
       syncControls();
       bUpdate();
     });
-    $('[data-b-share]').addEventListener('click', () => {
+    const shareBtn = $('[data-b-share]');
+    if (shareBtn && PREVIEW) shareBtn.hidden = true;
+    if (shareBtn) shareBtn.addEventListener('click', () => {
       if (!bState.flowers.length) { toast('Ajoutez d’abord quelques fleurs'); return; }
       const url = location.href.split('#')[0] + '#bouquet=' + encode(serialize(bState));
       if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
         navigator.share({ title: BRAND, text: 'Regarde le bouquet que j’ai composé !', url }).catch(() => {});
-      } else {
-        copyText(url);
-        toast(`Lien de votre bouquet copié${NB}: partagez-le${NB}!`);
+        return;
       }
+      copyText(url).then((ok) => {
+        if (ok) { toast(`Lien de votre bouquet copié${NB}: partagez-le${NB}!`); return; }
+        openModal('<div class="dialog-body"><h2 id="modal-title">Le lien de votre bouquet</h2>' +
+          `<p>Copiez ce lien pour partager votre composition${NB}:</p>` +
+          `<label class="field"><span class="sr-only">Lien du bouquet</span><input id="share-link" type="text" readonly value="${esc(url)}"></label></div>`,
+          (root) => { const i = $('input', root); setTimeout(() => { i.focus(); i.select(); }, 80); }, { narrow: true });
+      });
     });
     $('[data-b-add]').addEventListener('click', () => {
       if (!bState.flowers.length) { toast('Ajoutez au moins une fleur à votre bouquet'); return; }
@@ -880,7 +917,7 @@
     });
 
     // La première animation se lance quand le compositeur devient visible.
-    if ('IntersectionObserver' in window) {
+    if (!PREVIEW && 'IntersectionObserver' in window) {
       const so = new IntersectionObserver((en) => {
         if (en.some((x) => x.isIntersecting)) {
           so.disconnect();
@@ -973,7 +1010,7 @@
    * ------------------------------------------------------------------ */
   const heroEl = $('[data-hero-bouquet]');
   if (heroEl && S.hero && S.hero.bouquet) {
-    heroEl.innerHTML = FC.bouquet(S.hero.bouquet, { animate: !reduceMotion, mascot: true, viewBox: '0 40 400 470', label: 'Bouquet pastel de fleurs en fil chenille, emballé dans du papier rose' });
+    heroEl.innerHTML = FC.bouquet(S.hero.bouquet, { animate: !reduceMotion, gentle: PREVIEW, mascot: true, viewBox: '0 40 400 470', label: 'Bouquet pastel de fleurs en fil chenille, emballé dans du papier rose' });
   }
   const petalsEl = $('[data-petals]');
   if (petalsEl && !reduceMotion) {
@@ -1022,6 +1059,19 @@
       else if (drawer.classList.contains('is-open')) trap($('.drawer-panel', drawer), e);
     }
   });
+
+  /* ------------------------------------------------------------------ *
+   * Mention « aperçu » (version claude.ai uniquement)
+   * ------------------------------------------------------------------ */
+  if (PREVIEW) {
+    const pill = document.createElement('div');
+    pill.className = 'preview-pill';
+    pill.setAttribute('role', 'note');
+    pill.innerHTML = '<svg aria-hidden="true"><use href="#i-info"/></svg><span>Aperçu : textes, prix et visuels d’exemple</span>' +
+      '<button type="button" aria-label="Masquer ce message"><svg aria-hidden="true"><use href="#i-close"/></svg></button>';
+    $('button', pill).addEventListener('click', () => pill.remove());
+    document.body.appendChild(pill);
+  }
 
   /* ------------------------------------------------------------------ *
    * Démarrage

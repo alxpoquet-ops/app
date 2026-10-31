@@ -473,7 +473,7 @@
       }
       vb = `${r1(x0)} ${r1(y0)} ${r1(w)} ${r1(h)}`;
     }
-    return `<svg class="fc-svg${anim ? ' fc-anim' : ''}" viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(opt.label || 'Illustration de bouquet')}">${s}</svg>`;
+    return `<svg class="fc-svg${anim ? ' fc-anim' : ''}${anim && opt.gentle ? ' fc-gentle' : ''}" viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(opt.label || 'Illustration de bouquet')}">${s}</svg>`;
   }
 
   /* ------------------------------------------------------------------ *
