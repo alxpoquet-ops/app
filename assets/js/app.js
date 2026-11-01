@@ -1134,7 +1134,7 @@
     const pill = document.createElement('div');
     pill.className = 'preview-pill';
     pill.setAttribute('role', 'note');
-    pill.innerHTML = '<svg aria-hidden="true"><use href="#i-info"/></svg><span>Aperçu : textes, prix et visuels d’exemple</span>' +
+    pill.innerHTML = '<svg aria-hidden="true"><use href="#i-info"/></svg><span>Aperçu du site · version de travail</span>' +
       '<button type="button" aria-label="Masquer ce message"><svg aria-hidden="true"><use href="#i-close"/></svg></button>';
     $('button', pill).addEventListener('click', () => pill.remove());
     document.body.appendChild(pill);
