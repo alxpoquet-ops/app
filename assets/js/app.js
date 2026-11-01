@@ -47,10 +47,10 @@
   const colorName = (k) => (S.colors[k] ? S.colors[k].name : k);
   const flowerInfo = (t) => S.flowers[t] || { name: t, plural: t, price: 0 };
   const plural = (n, one, many) => n + ' ' + (n > 1 ? many : one);
-  const DELIV = S.delivery || { radiusKm: 20, pricePerKm: 0.4 };
+  const DELIV = Object.assign({ price: 5, radiusKm: 20, pricePerKm: 0.4 }, S.delivery || {});
   const CITY = (S.brand && S.brand.city) || 'Signy-l’Abbaye';
   const FB = (S.contact && S.contact.facebook) || '';
-  const deliveryText = () => `Livraison possible dans un rayon de ${DELIV.radiusKm}${NB}km autour de ${CITY}, puis ${price(DELIV.pricePerKm)} par kilomètre supplémentaire.`;
+  const deliveryText = () => `Livraison${NB}: ${price(DELIV.price)} dans un rayon de ${DELIV.radiusKm}${NB}km autour de ${CITY}, puis ${price(DELIV.pricePerKm)} par kilomètre supplémentaire.`;
   const frDate = (iso) => {
     const p = String(iso || '').split('-');
     return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso;
@@ -529,24 +529,43 @@
   }
 
   /* ---------- Commande ---------- */
+  const deliveryOptions = () => [
+    { value: 'retrait', label: `Retrait à l’atelier (${CITY})`, fee: 0 },
+    { value: 'livraison', label: `Livraison${NB}: ${price(DELIV.price)} jusqu’à ${DELIV.radiusKm}${NB}km, puis ${price(DELIV.pricePerKm)}/km`, fee: DELIV.price },
+    { value: 'a-definir', label: 'À définir ensemble', fee: 0 }
+  ];
+  const deliveryOption = (v) => deliveryOptions().find((o) => o.value === v) || deliveryOptions()[0];
+  function orderTotal(fee) {
+    const t = cartSums();
+    const sum = t.sum + (fee || 0);
+    if (!t.ask) return price(sum);
+    return sum ? price(sum) + ' + sur devis' : 'Sur devis';
+  }
+  const feeLine = () => `Livraison jusqu’à ${DELIV.radiusKm}${NB}km`;
   function composeOrder(d) {
+    const opt = deliveryOption(d.delivery);
     const lines = [`Bonjour ${BRAND}${NB}!`, '', `J’aimerais commander${NB}:`, ''];
     cart.forEach((it) => {
       lines.push(`• ${it.name}${it.qty > 1 ? ' × ' + it.qty : ''} — ${lineText(it)}`);
       if (it.option) lines.push('   ' + it.option);
     });
-    lines.push('', `Total${NB}: ${totalText()}`, '', `Remise souhaitée${NB}: ${d.delivery}`);
-    if (d.place && d.place.trim()) lines.push(`Lieu de livraison${NB}: ${d.place.trim()}`);
+    if (opt.fee) lines.push(`• ${feeLine()} — ${price(opt.fee)} (puis ${price(DELIV.pricePerKm)} par kilomètre supplémentaire)`);
+    lines.push('', `Total${NB}: ${orderTotal(opt.fee)}`, '', `Retrait ou livraison${NB}: ${opt.label}`);
+    if (opt.value === 'livraison' && d.place && d.place.trim()) lines.push(`Lieu de livraison${NB}: ${d.place.trim()}`);
     if (d.date) lines.push(`Pour le${NB}: ${frDate(d.date)}`);
     lines.push(`Nom${NB}: ${d.name}`, `Contact${NB}: ${d.reply}`);
     if (d.note && d.note.trim()) lines.push('', d.note.trim());
     lines.push('', 'Merci beaucoup !');
     return { subject: 'Demande de commande — ' + d.name, body: lines.join('\n') };
   }
+  function recapHTML(fee) {
+    return `<ul>${cart.map((it) => `<li><span>${esc(it.name)}${it.qty > 1 ? ' × ' + it.qty : ''}</span><span>${lineText(it)}</span></li>`).join('')}` +
+      (fee ? `<li><span>${esc(feeLine())}</span><span>${price(fee)}</span></li>` : '') +
+      `</ul><div class="tot"><span>Total</span><span>${orderTotal(fee)}</span></div>`;
+  }
   function openCheckout() {
     if (!cart.length) return;
-    const pickup = `Retrait à l’atelier (${CITY})`;
-    const delivery = `Livraison (${DELIV.radiusKm}${NB}km autour de ${CITY}, puis ${price(DELIV.pricePerKm)}/km)`;
+    const opts = deliveryOptions();
     const html = '<div class="dialog-body">' +
       '<h2 id="modal-title">Finaliser ma demande</h2>' +
       `<p>Quelques informations et c’est tout${NB}: je prépare votre message, il ne restera plus qu’à l’envoyer. Je vous réponds pour confirmer le prix, la date et la remise.</p>` +
@@ -555,24 +574,26 @@
       '<label class="field"><span>Prénom &amp; nom</span><input id="o-name" name="name" autocomplete="name" required autofocus></label>' +
       '<label class="field"><span>E-mail ou téléphone</span><input id="o-reply" name="reply" autocomplete="email" required></label>' +
       '</div><div class="field-row">' +
-      `<label class="field"><span>Retrait ou livraison</span><select id="o-delivery" name="delivery"><option>${esc(pickup)}</option><option>${esc(delivery)}</option><option>À définir ensemble</option></select></label>` +
+      `<label class="field"><span>Retrait ou livraison</span><select id="o-delivery" name="delivery">${opts.map((o) => `<option value="${o.value}">${esc(o.label)}</option>`).join('')}</select></label>` +
       '<label class="field"><span>Pour le <small>(facultatif)</small></span><input id="o-date" type="date" name="date"></label>' +
       '</div>' +
       '<label class="field" data-place hidden><span>Ville de livraison</span><input id="o-place" name="place" autocomplete="address-level2" placeholder="Par exemple : Rethel"></label>' +
       `<p class="form-note" data-place-note hidden>${esc(deliveryText())}</p>` +
       '<label class="field"><span>Un mot à ajouter <small>(facultatif)</small></span><textarea id="o-note" name="note" rows="2"></textarea></label>' +
-      `<div class="order-recap"><ul>${cart.map((it) => `<li><span>${esc(it.name)}${it.qty > 1 ? ' × ' + it.qty : ''}</span><span>${lineText(it)}</span></li>`).join('')}</ul><div class="tot"><span>Total</span><span>${totalText()}</span></div></div>` +
+      `<div class="order-recap" data-recap>${recapHTML(0)}</div>` +
       `<div class="form-actions">${sendButtons()}</div>` +
       `<p class="form-note">Aucun paiement n’est demandé sur ce site${NB}: on en parle ensemble, après confirmation.</p>` +
       '</form></div>';
     openModal(html, (root) => {
       const form = $('form', root);
-      const sel = form.elements.delivery, place = $('[data-place]', root), note = $('[data-place-note]', root);
+      const sel = form.elements.delivery, place = $('[data-place]', root), note = $('[data-place-note]', root), recap = $('[data-recap]', root);
       sel.addEventListener('change', () => {
-        const isDelivery = sel.selectedIndex === 1;
+        const opt = deliveryOption(sel.value);
+        const isDelivery = opt.value === 'livraison';
         place.hidden = !isDelivery;
         note.hidden = !isDelivery;
         form.elements.place.required = isDelivery;
+        recap.innerHTML = recapHTML(opt.fee);
       });
       bindSend(form, composeOrder, { order: true });
     }, { narrow: true });
@@ -724,9 +745,9 @@
         if (e.target.closest('[data-pm-quote]')) {
           closeModal();
           const souvenir = p.id === 'souvenir';
-          prefillContact(souvenir ? 'Une composition sous cloche' : 'Un bouquet sur mesure',
+          prefillContact(souvenir ? 'Une composition souvenir' : 'Un bouquet sur mesure',
             souvenir
-              ? `Bonjour, je souhaiterais une composition sous cloche, en souvenir d’un être cher.\nCouleurs ou fleurs souhaitées${NB}: \nPour le${NB}: `
+              ? `Bonjour, je souhaiterais une composition souvenir en bocal, en mémoire d’un être cher.\nCouleurs ou fleurs souhaitées${NB}: \nPour le${NB}: `
               : `Bonjour${NB}! J’aimerais un devis pour «${NB}${p.name}${NB}».\nDate souhaitée${NB}: \nCouleurs ou fleurs souhaitées${NB}: `);
         }
       });
@@ -1059,10 +1080,37 @@
           { bg: '#E2F1E7', html: FC.icon('hortensia', FC.hex('lilas')), label: 'Hortensia lilas' },
           { bg: '#FBEBDD', html: FC.atelier(), label: 'Dans l’atelier' }
         ];
-    instaEl.innerHTML = tiles.map((t, i) =>
-      `<a class="insta-tile reveal" style="--i:${i};--bg:${t.bg}" href="${esc(t.url || IG_URL)}" target="_blank" rel="noopener" aria-label="Voir sur Instagram${t.label ? ' : ' + esc(t.label) : ''}">` +
-      `<span class="insta-art">${t.html}</span><span class="insta-over"><svg><use href="#i-instagram"/></svg></span></a>`
-    ).join('');
+    const renderTiles = (list) => {
+      instaEl.innerHTML = list.map((t, i) =>
+        `<a class="insta-tile reveal" style="--i:${i};--bg:${t.bg}" href="${esc(t.url || IG_URL)}" target="_blank" rel="noopener" aria-label="Voir sur Instagram${t.label ? ' : ' + esc(t.label) : ''}">` +
+        `<span class="insta-art">${t.html}</span><span class="insta-over"><svg><use href="#i-instagram"/></svg></span></a>`
+      ).join('');
+    };
+    renderTiles(tiles);
+
+    // Dernières publications : flux JSON (Behold.so ou API Instagram) si une adresse est renseignée.
+    const feedUrl = S.instagram && S.instagram.feedUrl;
+    if (feedUrl && window.fetch) {
+      fetch(feedUrl)
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))))
+        .then((json) => {
+          const list = Array.isArray(json) ? json : (json && (json.posts || json.data)) || [];
+          const latest = list.map((p) => {
+            const sizes = p.sizes || {};
+            const pick = (k) => sizes[k] && sizes[k].mediaUrl;
+            const video = /video/i.test(p.mediaType || p.media_type || '');
+            const src = pick('medium') || pick('small') || pick('large') ||
+              (video ? p.thumbnailUrl || p.thumbnail_url : p.mediaUrl || p.media_url) || p.thumbnailUrl || p.thumbnail_url;
+            const caption = String(p.prunedCaption || p.caption || '').split('\n')[0].trim().slice(0, 120);
+            return src ? { bg: '#F8E1E6', url: p.permalink || IG_URL, label: caption || 'Publication Instagram', html: `<img src="${esc(src)}" alt="${esc(caption)}" loading="lazy" decoding="async">` } : null;
+          }).filter(Boolean).slice(0, 6);
+          if (latest.length) {
+            renderTiles(latest);
+            reveal(instaEl);
+          }
+        })
+        .catch((err) => { if (window.console) console.warn('[Flore & Chenilles] flux Instagram indisponible, photos de secours affichées', err); });
+    }
   });
 
   /* ------------------------------------------------------------------ *

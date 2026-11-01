@@ -36,7 +36,8 @@ window.SITE = {
 
   /* ---------- Livraison & retrait ---------- */
   delivery: {
-    radiusKm: 20,     // livraison possible dans ce rayon autour de l'atelier
+    price: 5,         // prix de la livraison dans le rayon ci-dessous (en €)
+    radiusKm: 20,     // rayon autour de l'atelier
     pricePerKm: 0.4   // puis ce prix par kilomètre supplémentaire (en €)
   },
 
@@ -296,14 +297,14 @@ window.SITE = {
     },
     {
       id: 'souvenir',
-      name: 'Fleurs du souvenir sous cloche',
+      name: 'Fleurs du souvenir en bocal',
       category: 'sur-mesure',
       price: null,
       quote: true,
       badge: 'En souvenir',
       bg: '#EDF0F2',
-      bouquet: { container: 'cloche', flowers: [['rose', 'blanc'], ['hortensia', 'lavande'], ['lys', 'blanc'], ['rose', 'rose'], ['pavot', 'mauve'], ['eucalyptus'], ['eucalyptus']] },
-      desc: 'Pour honorer la mémoire d’un être cher : une composition de fleurs éternelles, à l’abri sous une cloche de verre, pour fleurir une sépulture avec délicatesse en toute saison.',
+      bouquet: { container: 'bocal', flowers: [['rose', 'blanc'], ['hortensia', 'lavande'], ['lys', 'blanc'], ['rose', 'rose'], ['pavot', 'mauve'], ['eucalyptus'], ['eucalyptus']] },
+      desc: 'Pour honorer la mémoire d’un être cher : une composition de fleurs éternelles dans un bocal transparent qui la protège des intempéries, pour fleurir une sépulture avec délicatesse en toute saison.',
       illustration: 'Illustration : chaque composition est réalisée sur-mesure, selon vos souhaits.'
     },
     {
@@ -327,7 +328,7 @@ window.SITE = {
     { id: 'naissance', title: 'Naissance', text: 'Tout doux et sans pollen : parfait pour une chambre de bébé.', bg: '#E3EDF8', preset: { paper: 'ciel', ribbon: 'ivoire', message: 'Bienvenue petit cœur', flowers: [['hortensia', 'ciel'], ['tulipe', 'blanc'], ['rose', 'ciel'], ['gerbera', 'blanc'], ['eucalyptus']] } },
     { id: 'evenements', title: 'Mariage & évènements', text: 'Bouquets, centres de table, décorations : je fleuris vos évènements sur-mesure.', bg: '#F5EFE8', preset: { paper: 'nacre', ribbon: 'ivoire', message: 'Pour la vie', flowers: [['arum', 'blanc'], ['lys', 'blanc'], ['rose', 'blanc'], ['hortensia', 'blanc'], ['gerbera', 'rose'], ['eucalyptus'], ['eucalyptus']] } },
     { id: 'maitresse', title: 'Merci la maîtresse', text: 'Une fleur éternelle pour remercier la maîtresse, le maître ou l’ATSEM : 5 € la fleur.', bg: '#F1E9F8', product: 'fleur-unite', preset: { paper: 'nacre', ribbon: 'satin_rose', message: 'Merci pour cette belle année', flowers: [['lys', 'rose']] } },
-    { id: 'souvenir', title: 'En souvenir', text: 'Une composition sous cloche de verre, pour fleurir avec délicatesse la sépulture d’un être cher.', bg: '#EDF0F2', product: 'souvenir', preset: { container: 'cloche', flowers: [['rose', 'blanc'], ['hortensia', 'lavande'], ['lys', 'blanc'], ['rose', 'rose'], ['eucalyptus']] } },
+    { id: 'souvenir', title: 'En souvenir', text: 'Une composition dans un bocal transparent, à l’abri des intempéries, pour fleurir avec délicatesse la sépulture d’un être cher.', bg: '#EDF0F2', product: 'souvenir', preset: { container: 'bocal', flowers: [['rose', 'blanc'], ['hortensia', 'lavande'], ['lys', 'blanc'], ['rose', 'rose'], ['eucalyptus']] } },
     { id: 'merci', title: 'Juste parce que', text: 'Les plus jolis bouquets n’attendent pas d’occasion.', bg: '#FBEEDF', preset: { paper: 'lin', ribbon: 'peche', message: 'Juste parce que', flowers: [['tournesol'], ['pavot', 'orange'], ['gerbera', 'jaune'], ['tulipe', 'jaune'], ['eucalyptus']] } }
   ],
 
@@ -339,6 +340,11 @@ window.SITE = {
 
   /* ---------- Instagram : photos de la mosaïque, reliées à leur publication ---------- */
   instagram: {
+    // Pour afficher automatiquement les dernières publications : créez un flux gratuit
+    // sur https://behold.so (connectez @flore_et_chenilles), puis collez ici l'adresse
+    // « JSON feed URL », par exemple 'https://feeds.behold.so/abc123'.
+    // Tant que c'est vide (ou si le flux ne répond pas), les photos ci-dessous s'affichent.
+    feedUrl: '',
     photos: [
       { src: 'assets/photos/insta-hortensias.jpg', alt: 'Hortensias bleus et lilas', url: 'https://www.instagram.com/p/DZU2kcKAtXf/' },
       { src: 'assets/photos/insta-tournesol.jpg', alt: 'Tournesol et petites fleurs mauves', url: 'https://www.instagram.com/p/Da3c-dyjutu/' },

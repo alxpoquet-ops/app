@@ -16,9 +16,9 @@ Il suffit d'héberger ces fichiers (GitHub Pages, Netlify, OVH…).
 | **Comment ça se passe** | Les 4 étapes, du choix à la remise |
 | **Mes créations** | 13 créations avec leurs vraies photos, leurs compositions et ses mots ; lien vers chaque publication Instagram ; bouton « Personnaliser ce bouquet » |
 | **Votre bouquet à vous** | Compositeur interactif avec ses fleurs (lys, arum, pavot, gerbera, rose, tulipe, hortensia, tournesol, jonquille, feuillage), papier, ruban et petit mot |
-| **Occasions** | Anniversaire, naissance, évènements, « merci la maîtresse » (fleur à 5 €), fleurs du souvenir sous cloche, juste parce que |
-| **Livraison & retrait** | Retrait à l'atelier ; livraison dans un rayon de 20 km autour de Signy-l'Abbaye, puis 0,40 € par kilomètre supplémentaire |
-| **Réseaux** | Mosaïque de publications Instagram, lien Facebook (à renseigner) |
+| **Occasions** | Anniversaire, naissance, évènements, « merci la maîtresse » (fleur à 5 €), fleurs du souvenir en bocal, juste parce que |
+| **Livraison & retrait** | Retrait à l'atelier ; livraison 5 € dans un rayon de 20 km autour de Signy-l'Abbaye, puis 0,40 € par kilomètre supplémentaire (ajoutée automatiquement au total de la demande) |
+| **Réseaux** | Mosaïque Instagram (dernières publications automatiques via Behold, sinon photos du site), lien Facebook (à renseigner) |
 | **FAQ & contact** | Questions fréquentes et formulaire qui prépare le message pour Instagram (ou l'e-mail) |
 
 Le panier s'appelle « Ma sélection » : on y ajoute ses coups de cœur, puis on envoie une demande.
@@ -56,7 +56,7 @@ Tout le contenu « vivant » est rassemblé dans **`assets/js/data.js`**, commen
 - `products` : les créations (nom, photo, composition, ses mots, lien Instagram…) ;
 - `price` : `null` affiche « Sur demande » ; mettez un nombre (`price: 45`) pour afficher un prix ;
   `quote: true` affiche « Sur devis » avec un bouton « Demander un devis » ;
-- `delivery` : rayon de livraison (20 km) et prix au kilomètre supplémentaire (0,40 €) ;
+- `delivery` : prix de la livraison (5 €), rayon (20 km) et prix au kilomètre supplémentaire (0,40 €) ;
 - `contact.facebook` : **collez ici l'adresse de la page Facebook** pour afficher les boutons Facebook ;
 - `contact.email` : ajoutez une adresse pour proposer « Envoyer par e-mail » ;
 - `flowers`, `colors`, `papers`, `ribbons` : les fleurs et palettes du compositeur ;
@@ -68,6 +68,20 @@ Les textes de présentation (accueil, atelier, FAQ…) se modifient directement 
 Après une modification de `style.css`, `app.js`, `flowers.js` ou `data.js`, changez le numéro
 `?v=…` des quatre liens en haut de `index.html` (par exemple `?v=20261102`) : les visiteurs
 chargeront aussitôt la nouvelle version au lieu d'une copie gardée en mémoire par leur navigateur.
+
+## Afficher automatiquement les dernières publications Instagram
+
+La mosaïque « Sur les réseaux » peut se mettre à jour toute seule, grâce au service gratuit
+[Behold](https://behold.so) (6 dernières publications, actualisées toutes les 24 h) :
+
+1. Créez un compte gratuit sur behold.so.
+2. Cliquez sur « Connect Instagram » et connectez le compte **@flore_et_chenilles**
+   (il faut ses identifiants Instagram).
+3. Créez un flux de type « JSON », puis copiez son adresse (« Feed URL »), qui ressemble à
+   `https://feeds.behold.so/abc123`.
+4. Collez-la dans `assets/js/data.js`, à la ligne `feedUrl: ''`, puis changez le numéro `?v=` dans `index.html`.
+
+Tant que l'adresse est vide, ou si le service ne répond pas, les photos actuelles du site s'affichent.
 
 ## Ajouter une création ou une photo
 

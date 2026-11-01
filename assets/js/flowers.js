@@ -348,7 +348,7 @@
     paper: { B: { x: 200, y: 345 }, C: { x: 200, y: 208 } },
     pot: { B: { x: 200, y: 352 }, C: { x: 200, y: 220 } },
     none: { B: { x: 200, y: 360 }, C: { x: 200, y: 214 } },
-    cloche: { B: { x: 200, y: 426 }, C: { x: 200, y: 320 } }
+    bocal: { B: { x: 200, y: 424 }, C: { x: 200, y: 322 } }
   };
   const GOLDEN = Math.PI * (3 - Math.sqrt(5));
   const FILLER_ANGLES = [-16, 20, -34, 38, 2, -48, 50, -25, 29, -42, 44, -7, 11, -30, 34];
@@ -378,7 +378,7 @@
     fill.forEach((it, j) => {
       const base = FILLER_ANGLES[j % FILLER_ANGLES.length];
       const a = base * spread;
-      const L = ((B.y - C.y) * 0.9 + fr * 0.6 + (j % 3) * 8) * (1 - (0.25 * Math.abs(a)) / 50) * (container === 'cloche' ? 0.62 : 1);
+      const L = ((B.y - C.y) * 0.9 + fr * 0.6 + (j % 3) * 8) * (1 - (0.25 * Math.abs(a)) / 50) * (container === 'bocal' ? 0.6 : 1);
       res.push({ it, a, L, rot: a, s: 0.98, z: -1000 + j });
     });
     return res;
@@ -420,22 +420,22 @@
       `<rect x="128" y="346" width="144" height="24" rx="11" fill="${p.base}" stroke="${p.dark}" stroke-width="1.6"/>` +
       `<rect x="138" y="351" width="58" height="5" rx="2.5" fill="${p.light}" opacity=".85"/>`;
   }
-  /** Socle en bois, mousse et cloche de verre (dessinée par-dessus les fleurs). */
-  function clocheBase() {
-    return '<ellipse cx="200" cy="456" rx="120" ry="16" fill="#B98C69"/>' +
-      '<rect x="80" y="438" width="240" height="18" fill="#C99C77"/>' +
-      '<ellipse cx="200" cy="438" rx="120" ry="16" fill="#DDB590"/>' +
-      '<ellipse cx="200" cy="438" rx="104" ry="11" fill="none" stroke="#C99C77" stroke-width="1.2" opacity=".7"/>' +
-      '<ellipse cx="200" cy="431" rx="62" ry="10" fill="#A9BE95"/>';
+  /** Fond du bocal (ombre et mousse) puis bocal transparent avec son couvercle, dessiné par-dessus les fleurs. */
+  function bocalBase() {
+    return '<ellipse cx="200" cy="448" rx="112" ry="10" fill="#4A2C3D" opacity=".08"/>' +
+      '<path d="M104 300V430Q104 442 116 442H284Q296 442 296 430V300Z" fill="#FFFFFF" fill-opacity=".1"/>' +
+      '<ellipse cx="200" cy="428" rx="82" ry="11" fill="#A9BE95"/>' +
+      '<ellipse cx="186" cy="425" rx="40" ry="5" fill="#BFD0AC" opacity=".8"/>';
   }
-  function clocheGlass() {
-    return '<path d="M88 438V300C88 212 138 158 200 158C262 158 312 212 312 300V438Z" fill="#FFFFFF" fill-opacity=".16" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="2.6"/>' +
-      '<path d="M88 438V300C88 212 138 158 200 158C262 158 312 212 312 300V438" fill="none" stroke="#8FA2B6" stroke-opacity=".28" stroke-width="1.2"/>' +
-      '<path d="M110 412V302C110 240 136 202 172 186" fill="none" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="7" stroke-linecap="round"/>' +
-      '<path d="M290 330C290 300 286 276 278 256" fill="none" stroke="#FFFFFF" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"/>' +
-      '<ellipse cx="200" cy="157" rx="15" ry="5" fill="#FFFFFF" fill-opacity=".5" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="1.6"/>' +
-      '<circle cx="200" cy="146" r="9" fill="#FFFFFF" fill-opacity=".45" stroke="#FFFFFF" stroke-opacity=".95" stroke-width="1.6"/>' +
-      '<path d="M88 438Q200 452 312 438" fill="none" stroke="#FFFFFF" stroke-opacity=".6" stroke-width="2"/>';
+  function bocalJar() {
+    const body = 'M116 442Q104 442 104 430V238Q104 210 134 201L148 197V184H252V197L266 201Q296 210 296 238V430Q296 442 284 442Z';
+    return `<path d="${body}" fill="#FFFFFF" fill-opacity=".14" stroke="#FFFFFF" stroke-opacity=".95" stroke-width="2.6" stroke-linejoin="round"/>` +
+      `<path d="${body}" fill="none" stroke="#8FA2B6" stroke-opacity=".3" stroke-width="1.1" stroke-linejoin="round"/>` +
+      '<path d="M122 418V248Q122 228 140 220" fill="none" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="7" stroke-linecap="round"/>' +
+      '<path d="M280 330V258" fill="none" stroke="#FFFFFF" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"/>' +
+      '<rect x="140" y="160" width="120" height="28" rx="8" fill="#D9BE9C" stroke="#BE9F7B" stroke-width="1.6"/>' +
+      '<rect x="140" y="170" width="120" height="4" fill="#C8AA86" opacity=".7"/>' +
+      '<rect x="150" y="164" width="44" height="4" rx="2" fill="#F1DFC6" opacity=".9"/>';
   }
 
   function wrapText(txt, max, lines) {
@@ -535,7 +535,7 @@
     const rp = pal(hexOf('ribbons', cfg.ribbon, '#E6A4B6'));
     let s = '';
     if (container === 'paper') s += `<g class="fc-paper" transform="${kT}">${backPaper(pp)}</g>`;
-    if (container === 'cloche') s += clocheBase();
+    if (container === 'bocal') s += bocalBase();
 
     let stems = anim
       ? `<g stroke="${STEM.dark}" stroke-width="4.6">${stemAnim}</g><g stroke="${STEM.base}" stroke-width="3">${stemAnim}</g>`
@@ -550,10 +550,10 @@
     if (container === 'paper') s += `<g class="fc-paper" transform="${kT}">${frontPaper(pp)}</g>`;
     if (container === 'pot') s += potSVG(pal(hexOf('pots', cfg.pot, '#EDC3AE')));
     s += `<g class="fc-heads" filter="url(#fc-fuzz)">${heads}</g>`;
-    if (container === 'cloche') s += clocheGlass();
+    if (container === 'bocal') s += bocalJar();
 
     const bowY = container === 'paper' ? B.y + 30 * k : B.y;
-    if (container !== 'pot' && container !== 'cloche' && items.length) {
+    if (container !== 'pot' && container !== 'bocal' && items.length) {
       s += `<g transform="translate(${B.x} ${r1(bowY)}) scale(${(container === 'none' ? 0.62 : k).toFixed(3)})"><g class="fc-bow">${container === 'none' ? bowInner(rp).replace(/<path data-s="base"[^>]*\/><path data-s="light"[^>]*\/>/, '') : bowInner(rp)}</g></g>`;
     }
     if (opt.mascot && container === 'paper') s += `<g class="fc-mascot">${mascot(B.x + 18 * k, B.y - 46 * k, 0.7)}</g>`;
@@ -576,8 +576,8 @@
         add(B.x + (346 - 200) * k, B.y + (502 - 345) * k, 0);
       } else if (container === 'pot') {
         add(128, 346, 0); add(272, 482, 0);
-      } else if (container === 'cloche') {
-        add(80, 136, 0); add(320, 472, 0);
+      } else if (container === 'bocal') {
+        add(96, 150, 0); add(304, 458, 0);
       } else {
         add(B.x, items.length === 1 ? B.y + 90 : 488, 0); add(B.x - 40, B.y, 0); add(B.x + 40, B.y, 0);
       }
