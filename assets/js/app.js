@@ -47,6 +47,10 @@
   const colorName = (k) => (S.colors[k] ? S.colors[k].name : k);
   const flowerInfo = (t) => S.flowers[t] || { name: t, plural: t, price: 0 };
   const plural = (n, one, many) => n + ' ' + (n > 1 ? many : one);
+  const DELIV = S.delivery || { radiusKm: 20, pricePerKm: 0.4 };
+  const CITY = (S.brand && S.brand.city) || 'Signy-l’Abbaye';
+  const FB = (S.contact && S.contact.facebook) || '';
+  const deliveryText = () => `Livraison possible dans un rayon de ${DELIV.radiusKm}${NB}km autour de ${CITY}, puis ${price(DELIV.pricePerKm)} par kilomètre supplémentaire.`;
   const frDate = (iso) => {
     const p = String(iso || '').split('-');
     return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso;
@@ -109,6 +113,12 @@
     $$('[data-email-row]').forEach((el) => { el.hidden = false; });
   }
   $$('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
+  if (FB) {
+    $$('[data-fb]').forEach((a) => { a.href = FB; a.hidden = false; });
+    $$('[data-fb-row]').forEach((el) => { el.hidden = false; });
+  }
+  $$('[data-city]').forEach((el) => { el.textContent = CITY; });
+  $$('[data-delivery]').forEach((el) => { el.textContent = deliveryText(); });
 
   /* ------------------------------------------------------------------ *
    * En-tête, chenille de progression, navigation
@@ -194,13 +204,20 @@
   }
   function productArt(p, idx, o) {
     o = o || {};
-    if (p.image) return `<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" decoding="async">`;
+    const choice = idx == null ? null : p.options && p.options.choices[idx || 0];
+    const img = (choice && choice.image) || p.image;
+    if (img) return `<img src="${esc(img)}" alt="${esc(p.name + (choice ? ' : ' + choice.name : ''))}" loading="lazy" decoding="async">`;
     if (p.giftcard || !p.bouquet) return FC.giftcard();
     return FC.bouquet(resolveBouquet(p, idx), { fit: true, aspect: o.aspect || 0.9, pad: o.pad != null ? o.pad : 18, label: p.name });
   }
   function productPrice(p, idx) {
     const ch = p.options && p.options.choices[idx || 0];
     return ch && ch.price != null ? ch.price : p.price;
+  }
+  function priceText(p, idx) {
+    const v = productPrice(p, idx);
+    if (v == null) return p.quote ? 'Sur devis' : 'Sur demande';
+    return (p.priceFrom ? 'dès ' : '') + price(v);
   }
   const findProduct = (id) => S.products.find((x) => x.id === id);
 
@@ -237,7 +254,7 @@
   /* ------------------------------------------------------------------ *
    * Panier
    * ------------------------------------------------------------------ */
-  let cart = store.get('fc-cart', []);
+  let cart = store.get('fc-cart-v2', []);
   if (!Array.isArray(cart)) cart = [];
   const drawer = $('#cart');
   const cartItemsEl = $('[data-cart-items]');
@@ -245,10 +262,19 @@
   const cartTotalEl = $('[data-cart-total]');
   const cartCountEl = $('[data-cart-count]');
   const cartBtn = $('.cart-btn');
-  const cartTotal = () => cart.reduce((s, it) => s + it.price * it.qty, 0);
+  const cartSums = () => cart.reduce((acc, it) => {
+    if (it.price == null) acc.ask += it.qty; else acc.sum += it.price * it.qty;
+    return acc;
+  }, { sum: 0, ask: 0 });
+  const totalText = () => {
+    const t = cartSums();
+    if (!t.ask) return price(t.sum);
+    return t.sum ? price(t.sum) + ' + sur devis' : 'Sur devis';
+  };
+  const lineText = (it) => (it.price == null ? 'Sur demande' : price(it.price * it.qty));
   const cartQty = () => cart.reduce((s, it) => s + it.qty, 0);
 
-  function saveCart() { store.set('fc-cart', cart); }
+  function saveCart() { store.set('fc-cart-v2', cart); }
   function addToCart(item) {
     const ex = cart.find((c) => c.key === item.key);
     if (ex) ex.qty = Math.min(99, ex.qty + item.qty);
@@ -271,7 +297,7 @@
       price: productPrice(p, idx),
       qty: qty || 1
     });
-    toast(`«${NB}${p.name}${ch ? ' – ' + ch.name : ''}${NB}» est dans votre panier`);
+    toast(`«${NB}${p.name}${ch ? ' – ' + ch.name : ''}${NB}» est dans votre sélection`);
   }
   function itemThumb(it) {
     if (it.kind === 'custom' && it.bouquet) return { bg: '#F8E4E9', html: FC.bouquet(it.bouquet, { fit: true, aspect: 1, pad: 10, label: it.name }) };
@@ -283,14 +309,14 @@
     const n = cartQty();
     cartCountEl.textContent = n;
     cartCountEl.classList.toggle('has', n > 0);
-    cartBtn.setAttribute('aria-label', n ? `Ouvrir le panier (${plural(n, 'article', 'articles')})` : 'Ouvrir le panier');
+    cartBtn.setAttribute('aria-label', n ? `Ouvrir ma sélection (${plural(n, 'création', 'créations')})` : 'Ouvrir ma sélection');
     if (!cart.length) {
       cartItemsEl.innerHTML =
         '<div class="cart-empty">' +
         `<div class="cart-empty-art">${FC.bouquet({ container: 'none', ribbon: 'satin_rose', flowers: [['tulipe', 'rose']] }, { fit: true, aspect: 0.9, pad: 10, label: 'Une tulipe toute seule' })}</div>` +
-        '<h3>Votre panier est encore vide</h3>' +
+        '<h3>Votre sélection est encore vide</h3>' +
         `<p>Cette petite tulipe se sent bien seule… Offrez-lui un peu de compagnie${NB}!</p>` +
-        '<a class="btn btn-primary" href="#boutique" data-close>Découvrir la boutique</a>' +
+        '<a class="btn btn-primary" href="#boutique" data-close>Voir mes créations</a>' +
         '</div>';
       cartFoot.hidden = true;
       return;
@@ -302,10 +328,10 @@
         `<div class="ci-thumb" style="--bg:${esc(th.bg)}">${th.html}</div>` +
         `<div><div class="ci-name">${esc(it.name)}</div>${it.option ? `<div class="ci-opt">${esc(it.option)}</div>` : ''}` +
         `<div class="qty" role="group" aria-label="Quantité"><button type="button" data-cq="-1" data-i="${i}" aria-label="Retirer un exemplaire">−</button><output aria-live="polite">${it.qty}</output><button type="button" data-cq="1" data-i="${i}" aria-label="Ajouter un exemplaire">+</button></div></div>` +
-        `<div class="ci-side"><span class="ci-price">${price(it.price * it.qty)}</span><button type="button" class="ci-remove" data-del="${i}">Retirer</button></div>` +
+        `<div class="ci-side"><span class="ci-price${it.price == null ? ' is-ask' : ''}">${lineText(it)}</span><button type="button" class="ci-remove" data-del="${i}">Retirer</button></div>` +
         '</div>';
     }).join('');
-    cartTotalEl.textContent = price(cartTotal());
+    cartTotalEl.textContent = totalText();
     if (focusSel) {
       const f = $(focusSel, cartItemsEl);
       if (f) f.focus({ preventScroll: true });
@@ -327,7 +353,7 @@
       cart.splice(+d.dataset.del, 1);
       saveCart();
       renderCart();
-      toast('Article retiré du panier');
+      toast('Création retirée de votre sélection');
     }
   });
 
@@ -447,7 +473,7 @@
     opts = opts || {};
     clearTimeout(toastT);
     if (toastEl) toastEl.classList.remove('is-on');
-    const art = FC.bouquet({ paper: 'poudre', ribbon: 'satin_rose', flowers: [['tulipe', 'rose'], ['marguerite', 'blanc'], ['rose', 'lilas'], ['cosmos', 'peche'], ['gypsophile', 'blanc'], ['eucalyptus']] }, { fit: true, aspect: 0.94, pad: 10, label: 'Un bouquet pour vous remercier' });
+    const art = FC.bouquet({ paper: 'poudre', ribbon: 'satin_rose', flowers: [['lys', 'mauve'], ['pavot', 'lavande'], ['gerbera', 'blanc'], ['rose', 'rose'], ['tulipe', 'jaune'], ['eucalyptus']] }, { fit: true, aspect: 0.94, pad: 10, label: 'Un bouquet pour vous remercier' });
     let text;
     if (via === 'instagram') {
       text = opts.opened
@@ -498,37 +524,52 @@
 
   /* ---------- Commande ---------- */
   function composeOrder(d) {
-    const lines = [`Bonjour ${BRAND}${NB}!`, '', `Je souhaite passer commande${NB}:`, ''];
+    const lines = [`Bonjour ${BRAND}${NB}!`, '', `J’aimerais commander${NB}:`, ''];
     cart.forEach((it) => {
-      lines.push(`• ${it.name}${it.qty > 1 ? ' × ' + it.qty : ''} — ${price(it.price * it.qty)}`);
+      lines.push(`• ${it.name}${it.qty > 1 ? ' × ' + it.qty : ''} — ${lineText(it)}`);
       if (it.option) lines.push('   ' + it.option);
     });
-    lines.push('', `Total${NB}: ${price(cartTotal())}`, '', `Remise souhaitée${NB}: ${d.delivery}`);
+    lines.push('', `Total${NB}: ${totalText()}`, '', `Remise souhaitée${NB}: ${d.delivery}`);
+    if (d.place && d.place.trim()) lines.push(`Lieu de livraison${NB}: ${d.place.trim()}`);
     if (d.date) lines.push(`Pour le${NB}: ${frDate(d.date)}`);
     lines.push(`Nom${NB}: ${d.name}`, `Contact${NB}: ${d.reply}`);
     if (d.note && d.note.trim()) lines.push('', d.note.trim());
     lines.push('', 'Merci beaucoup !');
-    return { subject: 'Commande — ' + d.name, body: lines.join('\n') };
+    return { subject: 'Demande de commande — ' + d.name, body: lines.join('\n') };
   }
   function openCheckout() {
     if (!cart.length) return;
+    const pickup = `Retrait à l’atelier (${CITY})`;
+    const delivery = `Livraison (${DELIV.radiusKm}${NB}km autour de ${CITY}, puis ${price(DELIV.pricePerKm)}/km)`;
     const html = '<div class="dialog-body">' +
-      '<h2 id="modal-title">Finaliser ma commande</h2>' +
-      `<p>Quelques informations et c’est tout${NB}: nous préparons votre message de commande, il ne restera plus qu’à l’envoyer. Nous vous répondrons pour confirmer les détails, le paiement et la remise.</p>` +
+      '<h2 id="modal-title">Finaliser ma demande</h2>' +
+      `<p>Quelques informations et c’est tout${NB}: je prépare votre message, il ne restera plus qu’à l’envoyer. Je vous réponds pour confirmer le prix, la date et la remise.</p>` +
       '<form novalidate>' +
       '<div class="field-row">' +
-      '<label class="field"><span>Prénom &amp; nom</span><input name="name" autocomplete="name" required autofocus></label>' +
-      '<label class="field"><span>E-mail ou téléphone</span><input name="reply" autocomplete="email" required></label>' +
+      '<label class="field"><span>Prénom &amp; nom</span><input id="o-name" name="name" autocomplete="name" required autofocus></label>' +
+      '<label class="field"><span>E-mail ou téléphone</span><input id="o-reply" name="reply" autocomplete="email" required></label>' +
       '</div><div class="field-row">' +
-      '<label class="field"><span>Remise souhaitée</span><select name="delivery"><option>Remise en main propre</option><option>Envoi postal</option><option>À définir ensemble</option></select></label>' +
-      '<label class="field"><span>Pour le <small>(facultatif)</small></span><input type="date" name="date"></label>' +
+      `<label class="field"><span>Retrait ou livraison</span><select id="o-delivery" name="delivery"><option>${esc(pickup)}</option><option>${esc(delivery)}</option><option>À définir ensemble</option></select></label>` +
+      '<label class="field"><span>Pour le <small>(facultatif)</small></span><input id="o-date" type="date" name="date"></label>' +
       '</div>' +
-      '<label class="field"><span>Un mot à ajouter <small>(facultatif)</small></span><textarea name="note" rows="2"></textarea></label>' +
-      `<div class="order-recap"><ul>${cart.map((it) => `<li><span>${esc(it.name)}${it.qty > 1 ? ' × ' + it.qty : ''}</span><span>${price(it.price * it.qty)}</span></li>`).join('')}</ul><div class="tot"><span>Total</span><span>${price(cartTotal())}</span></div></div>` +
+      '<label class="field" data-place hidden><span>Ville de livraison</span><input id="o-place" name="place" autocomplete="address-level2" placeholder="Par exemple : Rethel"></label>' +
+      `<p class="form-note" data-place-note hidden>${esc(deliveryText())}</p>` +
+      '<label class="field"><span>Un mot à ajouter <small>(facultatif)</small></span><textarea id="o-note" name="note" rows="2"></textarea></label>' +
+      `<div class="order-recap"><ul>${cart.map((it) => `<li><span>${esc(it.name)}${it.qty > 1 ? ' × ' + it.qty : ''}</span><span>${lineText(it)}</span></li>`).join('')}</ul><div class="tot"><span>Total</span><span>${totalText()}</span></div></div>` +
       `<div class="form-actions">${sendButtons()}</div>` +
-      `<p class="form-note">Aucun paiement n’est demandé sur ce site${NB}: il est convenu ensemble, après confirmation.</p>` +
+      `<p class="form-note">Aucun paiement n’est demandé sur ce site${NB}: on en parle ensemble, après confirmation.</p>` +
       '</form></div>';
-    openModal(html, (root) => bindSend($('form', root), composeOrder, { order: true }), { narrow: true });
+    openModal(html, (root) => {
+      const form = $('form', root);
+      const sel = form.elements.delivery, place = $('[data-place]', root), note = $('[data-place-note]', root);
+      sel.addEventListener('change', () => {
+        const isDelivery = sel.selectedIndex === 1;
+        place.hidden = !isDelivery;
+        note.hidden = !isDelivery;
+        form.elements.place.required = isDelivery;
+      });
+      bindSend(form, composeOrder, { order: true });
+    }, { narrow: true });
   }
 
   /* ---------- Formulaire de contact ---------- */
@@ -568,19 +609,21 @@
   }
   function renderProducts(instant) {
     const list = S.products.filter((p) => activeCat === 'all' || p.category === activeCat);
+    const n = list.length;
     gridEl.innerHTML = list.map((p, i) => {
-      const colored = p.options ? p.options.choices.filter((c) => c.color) : [];
-      const dots = colored.length > 1 ? `<span class="dots" aria-hidden="true">${colored.slice(0, 4).map((c) => `<i style="--c:${FC.hex(c.color)}"></i>`).join('')}</span>` : '';
-      return `<article class="product${instant ? '' : ' reveal'}" style="--i:${i % 3}">` +
+      const last = i === n - 1;
+      const wide = (last && n % 3 === 1 ? ' wide3' : '') + (last && n % 2 === 1 ? ' wide2' : '');
+      const ask = productPrice(p, 0) == null;
+      return `<article class="product${wide}${instant ? '' : ' reveal'}" style="--i:${i % 3}">` +
         `<button class="product-media${p.image ? ' has-photo' : ''}" type="button" style="--bg:${esc(p.bg || '#F8E1E6')}" data-open="${esc(p.id)}" aria-label="Voir ${esc(p.name)}">` +
         (p.badge ? `<span class="badge">${esc(p.badge)}</span>` : '') +
-        `<span class="product-art">${productArt(p, 0)}</span></button>` +
+        `<span class="product-art">${productArt(p, null)}</span></button>` +
         '<div class="product-body">' +
         `<h3><button type="button" data-open="${esc(p.id)}">${esc(p.name)}</button></h3>` +
         `<p>${esc(p.desc)}</p>` +
         '<div class="product-foot">' +
-        `<span class="price">${p.priceFrom ? '<small>dès</small> ' : ''}${price(p.price)}</span>${dots}` +
-        `<button class="add-btn" type="button" data-quick="${esc(p.id)}" aria-label="${p.priceFrom ? 'Demander un devis : ' : 'Ajouter au panier : '}${esc(p.name)}"><svg><use href="#i-${p.priceFrom ? 'arrow' : 'plus'}"/></svg></button>` +
+        `<span class="price${ask ? ' is-ask' : ''}">${priceText(p, 0)}</span>` +
+        `<button class="add-btn${p.quote ? ' is-quote' : ''}" type="button" data-quick="${esc(p.id)}" aria-label="${p.quote ? 'Demander un devis : ' : 'Ajouter à ma sélection : '}${esc(p.name)}"><svg><use href="#i-${p.quote ? 'arrow' : 'plus'}"/></svg></button>` +
         '</div></div></article>';
     }).join('');
     if (!instant) reveal(gridEl);
@@ -604,7 +647,7 @@
     if (!q) return;
     const p = findProduct(q.dataset.quick);
     if (!p) return;
-    if (p.priceFrom) { openProduct(p.id); return; }
+    if (p.quote || p.priceFrom) { openProduct(p.id); return; }
     addProduct(p, 0, 1);
     q.classList.add('is-done');
     q.innerHTML = '<svg><use href="#i-check"/></svg>';
@@ -618,27 +661,33 @@
     const p = findProduct(id);
     if (!p) return;
     let idx = 0, qty = 1;
-    const priceHTML = (i) => (p.priceFrom ? '<small>à partir de</small> ' : '') + price(productPrice(p, i));
     const opts = p.options
       ? `<div><span class="pm-label" id="pm-opt-label">${esc(p.options.label)}</span><div class="pills" role="radiogroup" aria-labelledby="pm-opt-label">` +
         p.options.choices.map((c, i) => `<button type="button" class="pill" role="radio" aria-checked="${i === 0}" data-choice="${i}">${c.color ? `<i style="--c:${FC.hex(c.color)}"></i>` : ''}${esc(c.name)}</button>`).join('') +
         '</div></div>'
       : '';
-    const actions = p.priceFrom
+    const compo = p.composition && p.composition.length
+      ? `<div><span class="pm-label">Composition</span><ul class="pm-compo">${p.composition.map((c) => `<li><i style="--c:${FC.hex(c.color)}"></i><span><strong>${esc(colorName(c.color))}</strong>${NB}: ${esc(c.text)}</span></li>`).join('')}</ul></div>`
+      : '';
+    const words = p.words ? `<blockquote class="pm-words"><p>«${NB}${esc(p.words)}${NB}»</p><cite><svg aria-hidden="true"><use href="#i-chenille"/></svg> Flore &amp; Chenilles</cite></blockquote>` : '';
+    const actions = p.quote
       ? '<button type="button" class="btn btn-primary" data-pm-quote>Demander un devis <svg><use href="#i-arrow"/></svg></button>'
       : '<div class="qty" role="group" aria-label="Quantité"><button type="button" data-q="-1" aria-label="Retirer un exemplaire">−</button><output data-q-val aria-live="polite">1</output><button type="button" data-q="1" aria-label="Ajouter un exemplaire">+</button></div>' +
-        '<button type="button" class="btn btn-primary" data-pm-add><svg><use href="#i-bag"/></svg> Ajouter au panier</button>';
+        '<button type="button" class="btn btn-primary" data-pm-add><svg><use href="#i-bag"/></svg> Ajouter à ma sélection</button>';
+    const links = (p.preset && stage ? `<button type="button" class="pm-link" data-pm-custom><svg><use href="#i-sparkle"/></svg> Personnaliser ce bouquet</button>` : '') +
+      (p.post ? `<a class="pm-link" href="${esc(p.post)}" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg> Voir la publication</a>` : '');
     const html = '<div class="pm">' +
-      `<div class="pm-media" style="--bg:${esc(p.bg || '#F8E1E6')}"><div class="pm-art" data-pm-art>${productArt(p, 0, { aspect: 0.92 })}</div></div>` +
+      `<div class="pm-media${p.image ? ' has-photo' : ''}" style="--bg:${esc(p.bg || '#F8E1E6')}"><div class="pm-art" data-pm-art>${productArt(p, 0, { aspect: 0.92 })}</div></div>` +
       '<div class="pm-info">' +
       (p.badge ? `<span class="badge badge--inline">${esc(p.badge)}</span>` : '') +
       `<h2 id="modal-title">${esc(p.name)}</h2>` +
-      `<p class="pm-price" data-pm-price>${priceHTML(0)}</p>` +
+      `<p class="pm-price${productPrice(p, 0) == null ? ' is-ask' : ''}" data-pm-price>${priceText(p, 0)}</p>` +
+      words +
       `<p class="pm-desc">${esc(p.desc)}</p>` +
-      (p.details ? `<ul class="pm-details">${p.details.map((d) => `<li><svg><use href="#i-check"/></svg>${esc(d)}</li>`).join('')}</ul>` : '') +
-      opts +
+      compo + opts +
       `<div class="pm-actions">${actions}</div>` +
-      '<p class="tiny">Fait main à la commande · Couleurs ajustables sur simple demande</p>' +
+      (links ? `<div class="pm-links">${links}</div>` : '') +
+      (p.illustration ? `<p class="tiny">${esc(p.illustration)}</p>` : '<p class="tiny">Fait main à la commande · Couleurs ajustables sur simple demande</p>') +
       '</div></div>';
     openModal(html, (root) => {
       root.addEventListener('click', (e) => {
@@ -646,8 +695,8 @@
         if (c) {
           idx = +c.dataset.choice;
           $$('[data-choice]', root).forEach((x) => x.setAttribute('aria-checked', String(x === c)));
-          if (p.bouquet && !p.image) $('[data-pm-art]', root).innerHTML = productArt(p, idx, { aspect: 0.92 });
-          $('[data-pm-price]', root).innerHTML = priceHTML(idx);
+          $('[data-pm-art]', root).innerHTML = productArt(p, idx, { aspect: 0.92 });
+          $('[data-pm-price]', root).textContent = priceText(p, idx);
           return;
         }
         const qb = e.target.closest('[data-q]');
@@ -661,9 +710,18 @@
           closeModal();
           return;
         }
+        if (e.target.closest('[data-pm-custom]')) {
+          closeModal();
+          loadPreset(p.preset, p.name);
+          return;
+        }
         if (e.target.closest('[data-pm-quote]')) {
           closeModal();
-          prefillContact('Mariage & événements', `Bonjour${NB}! J’aimerais un devis pour «${NB}${p.name}${NB}».\nDate de l’événement${NB}: \nCouleurs souhaitées${NB}: \nNombre de pièces (bouquet, boutonnières…)${NB}: `);
+          const souvenir = p.id === 'souvenir';
+          prefillContact(souvenir ? 'Une composition sous cloche' : 'Un bouquet sur mesure',
+            souvenir
+              ? `Bonjour, je souhaiterais une composition sous cloche, en souvenir d’un être cher.\nCouleurs ou fleurs souhaitées${NB}: \nPour le${NB}: `
+              : `Bonjour${NB}! J’aimerais un devis pour «${NB}${p.name}${NB}».\nDate souhaitée${NB}: \nCouleurs ou fleurs souhaitées${NB}: `);
         }
       });
     });
@@ -720,12 +778,7 @@
     }
   }
 
-  let bState = fromSerialized(store.get('fc-bouquet', null)) || fromPreset(BLD.start);
-
-  function totals() {
-    const fl = bState.flowers.reduce((s, f) => s + (flowerInfo(f.type).price || 0), 0);
-    return { fl, total: bState.flowers.length ? fl + BASE : 0 };
-  }
+  let bState = fromSerialized(store.get('fc-bouquet-v2', null)) || fromPreset(BLD.start);
   function describe(st) {
     const groups = {}, order = [];
     st.flowers.forEach((f) => {
@@ -754,10 +807,10 @@
   function renderPicker() {
     pickerEl.innerHTML = Object.keys(S.flowers).map((t) => {
       const f = S.flowers[t];
-      return `<button type="button" class="fp" data-add="${esc(t)}" aria-label="Ajouter : ${esc(f.name)}, ${price(f.price)}" title="${esc(f.desc || f.name)}">` +
+      return `<button type="button" class="fp" data-add="${esc(t)}" aria-label="Ajouter : ${esc(f.name)}" title="${esc(f.desc || f.name)}">` +
         '<span class="fp-plus" aria-hidden="true">+</span>' +
         `<span class="fp-art">${FC.icon(t, FC.hex(f.fixedColor || bColor))}</span>` +
-        `<span class="fp-name">${esc(f.name)}</span><span class="fp-price">${price(f.price)}</span></button>`;
+        `<span class="fp-name">${esc(f.name)}</span></button>`;
     }).join('');
   }
   function renderWraps() {
@@ -774,13 +827,12 @@
     bState.flowers.forEach((f) => { if (!have.has(String(f.id))) chipsEl.insertAdjacentHTML('beforeend', chipHTML(f)); });
   }
   function renderSummary() {
-    const n = bState.flowers.length, t = totals();
+    const n = bState.flowers.length;
+    const paper = S.papers[bState.paper] ? S.papers[bState.paper].name.toLowerCase() : '';
+    const ribbon = S.ribbons[bState.ribbon] ? S.ribbons[bState.ribbon].name.toLowerCase() : '';
     $('[data-b-count]').textContent = plural(n, 'fleur', 'fleurs');
-    $('[data-b-total]').textContent = price(t.total);
-    $('[data-b-total-2]').textContent = price(t.total);
-    $('[data-b-flowers-price]').textContent = price(t.fl);
-    $('[data-b-count-2]').textContent = n ? '(' + n + ')' : '';
-    $('[data-b-base]').textContent = price(BASE);
+    $('[data-b-count-2]').textContent = String(n);
+    $('[data-b-wrap]').textContent = `Papier ${paper}, ruban ${ribbon}`;
     $('[data-b-count-max]').textContent = n + ' / ' + MAX;
     preview.classList.toggle('is-empty', n === 0);
     $('[data-b-undo]').disabled = n === 0;
@@ -795,7 +847,7 @@
     if (stage) stage.set(bState);
     renderChips();
     renderSummary();
-    store.set('fc-bouquet', serialize(bState));
+    store.set('fc-bouquet-v2', serialize(bState));
     if (opts && opts.pulse && !reduceMotion) {
       preview.classList.remove('is-pulse');
       void preview.offsetWidth;
@@ -856,19 +908,15 @@
       const pals = BLD.palettes && BLD.palettes.length ? BLD.palettes : [{ colors: Object.keys(S.colors).slice(0, 3) }];
       const pick = (a) => a[Math.floor(Math.random() * a.length)];
       const P = pick(pals);
-      const focal = ['rose', 'tulipe', 'marguerite', 'cosmos', 'hortensia'].filter((t) => S.flowers[t]);
+      const focal = ['lys', 'arum', 'pavot', 'gerbera', 'rose', 'tulipe', 'hortensia'].filter((t) => S.flowers[t]);
       const a = pick(focal), b = pick(focal);
       const n = 6 + Math.floor(Math.random() * 6);
       const fl = [];
       for (let i = 0; i < n; i++) {
         const t = i % 3 === 2 ? pick(focal) : i % 2 ? b : a;
-        let c = P.colors[i % P.colors.length];
-        if (t === 'marguerite' && Math.random() < 0.6) c = pick(['blanc', 'vanille']);
-        fl.push([t, c]);
+        fl.push([t, P.colors[i % P.colors.length]]);
       }
-      if (S.flowers.gypsophile && Math.random() < 0.8) fl.push(['gypsophile', 'blanc']);
-      if (S.flowers.eucalyptus) fl.push(['eucalyptus']);
-      if (S.flowers.lavande && Math.random() < 0.4) fl.push(['lavande', 'lavande']);
+      if (S.flowers.eucalyptus) { fl.push(['eucalyptus']); if (Math.random() < 0.5) fl.push(['eucalyptus']); }
       bState = fromPreset({ flowers: fl, paper: P.paper, ribbon: P.ribbon, message: bState.message });
       syncControls();
       bUpdate({ pulse: true });
@@ -909,11 +957,11 @@
         kind: 'custom',
         name: 'Mon bouquet à moi',
         option: describe(bState),
-        price: totals().total,
+        price: null,
         qty: 1,
         bouquet: { flowers: bState.flowers.map((f) => [f.type, f.color]), paper: bState.paper, ribbon: bState.ribbon }
       });
-      toast(`Votre bouquet est dans le panier${NB}!`);
+      toast(`Votre bouquet est dans votre sélection${NB}!`);
     });
 
     // La première animation se lance quand le compositeur devient visible.
@@ -947,28 +995,32 @@
   /* ------------------------------------------------------------------ *
    * Occasions
    * ------------------------------------------------------------------ */
+  function loadPreset(preset, title) {
+    if (!stage || !preset) return;
+    bState = fromPreset(preset);
+    syncControls();
+    renderChips();
+    renderSummary();
+    $('#bouquet').scrollIntoView({ behavior: smooth, block: 'start' });
+    setTimeout(() => bUpdate({ pulse: true }), reduceMotion ? 0 : 650);
+    toast(`Composition «${NB}${title}${NB}» prête${NB}: ajustez-la à votre goût`);
+  }
   const occEl = $('[data-occasions]');
   if (occEl) {
     occEl.innerHTML = (S.occasions || []).map((o, i) =>
       `<article class="occasion reveal" style="--i:${i % 3};--bg:${esc(o.bg)}">` +
-      `<div class="occ-art">${FC.bouquet(o.preset, { fit: true, aspect: 124 / 140, pad: 6, label: 'Bouquet ' + o.title })}</div>` +
+      `<div class="occ-art">${FC.bouquet(o.preset, { fit: true, aspect: 124 / 140, pad: 6, label: o.title })}</div>` +
       `<div><h3>${esc(o.title)}</h3><p>${esc(o.text)}</p>` +
-      `<button type="button" class="occ-link" data-occ="${esc(o.id)}">Composer ce bouquet <svg><use href="#i-arrow"/></svg></button></div>` +
+      `<button type="button" class="occ-link" data-occ="${esc(o.id)}">${o.product ? 'Découvrir' : 'Composer ce bouquet'} <svg><use href="#i-arrow"/></svg></button></div>` +
       '</article>'
     ).join('');
     occEl.addEventListener('click', (e) => {
       const card = e.target.closest('.occasion');
-      if (!card || !stage) return;
-      const id = $('[data-occ]', card).dataset.occ;
-      const o = (S.occasions || []).find((x) => x.id === id);
+      if (!card) return;
+      const o = (S.occasions || []).find((x) => x.id === $('[data-occ]', card).dataset.occ);
       if (!o) return;
-      bState = fromPreset(o.preset);
-      syncControls();
-      renderChips();
-      renderSummary();
-      $('#bouquet').scrollIntoView({ behavior: smooth, block: 'start' });
-      setTimeout(() => bUpdate({ pulse: true }), reduceMotion ? 0 : 650);
-      toast(`Composition «${NB}${o.title}${NB}» prête${NB}: ajustez-la à votre goût`);
+      if (o.product && findProduct(o.product)) { openProduct(o.product); return; }
+      loadPreset(o.preset, o.title);
     });
   }
 
@@ -990,7 +1042,7 @@
   if (instaEl) {
     const photos = (S.instagram && S.instagram.photos) || [];
     const tiles = photos.length
-      ? photos.slice(0, 6).map((ph) => ({ bg: '#F8E1E6', html: `<img src="${esc(ph.src)}" alt="${esc(ph.alt || '')}" loading="lazy" decoding="async">`, label: ph.alt }))
+      ? photos.slice(0, 6).map((ph) => ({ bg: '#F8E1E6', html: `<img src="${esc(ph.src)}" alt="${esc(ph.alt || '')}" loading="lazy" decoding="async">`, label: ph.alt, url: ph.url }))
       : [
           { bg: '#F8E4E9', html: FC.icon('rose', FC.hex('rose')), label: 'Rose spirale' },
           { bg: '#E3EDF8', html: FC.bouquet({ paper: 'ciel', ribbon: 'ivoire', flowers: [['hortensia', 'ciel'], ['hortensia', 'blanc'], ['rose', 'ciel'], ['marguerite', 'blanc'], ['gypsophile', 'blanc'], ['eucalyptus']] }, { fit: true, aspect: 1, pad: 8, label: 'Bouquet bleu ciel' }), label: 'Bouquet bleu ciel' },
@@ -1000,7 +1052,7 @@
           { bg: '#FBEBDD', html: FC.atelier(), label: 'Dans l’atelier' }
         ];
     instaEl.innerHTML = tiles.map((t, i) =>
-      `<a class="insta-tile reveal" style="--i:${i};--bg:${t.bg}" href="${IG_URL}" target="_blank" rel="noopener" aria-label="Voir sur Instagram${t.label ? ' : ' + esc(t.label) : ''}">` +
+      `<a class="insta-tile reveal" style="--i:${i};--bg:${t.bg}" href="${esc(t.url || IG_URL)}" target="_blank" rel="noopener" aria-label="Voir sur Instagram${t.label ? ' : ' + esc(t.label) : ''}">` +
       `<span class="insta-art">${t.html}</span><span class="insta-over"><svg><use href="#i-instagram"/></svg></span></a>`
     ).join('');
   }
@@ -1008,18 +1060,33 @@
   /* ------------------------------------------------------------------ *
    * Accueil : bouquet, pétales, papillons, nouveauté
    * ------------------------------------------------------------------ */
-  const heroEl = $('[data-hero-bouquet]');
-  if (heroEl && S.hero && S.hero.bouquet) {
-    heroEl.innerHTML = FC.bouquet(S.hero.bouquet, { animate: !reduceMotion, gentle: PREVIEW, mascot: true, viewBox: '0 40 400 470', label: 'Bouquet pastel de fleurs en fil chenille, emballé dans du papier rose' });
-  }
-  const petalsEl = $('[data-petals]');
-  if (petalsEl && !reduceMotion) {
-    const cols = ['#F3C4CF', '#D9CBF0', '#F8CDB5', '#C9DDF2', '#F7E6B0', '#C6E6D3'];
-    let html = '';
-    for (let i = 0; i < 9; i++) {
-      html += `<span class="petal" style="--x:${(6 + Math.random() * 86).toFixed(1)}%;--s:${(9 + Math.random() * 9).toFixed(1)}px;--c:${cols[i % cols.length]};--t:${(10 + Math.random() * 8).toFixed(1)}s;--d:${(-Math.random() * 16).toFixed(1)}s;--dx:${(-50 + Math.random() * 100).toFixed(0)}px;--r:${(200 + Math.random() * 360).toFixed(0)}deg"></span>`;
-    }
-    petalsEl.innerHTML = html;
+  const slidesEl = $('[data-hero-slides]');
+  const dotsEl = $('[data-hero-dots]');
+  const slides = ((S.hero && S.hero.slides) || []).map(findProduct).filter((p) => p && p.image);
+  if (slidesEl && slides.length) {
+    let cur = 0, timer = 0;
+    slidesEl.innerHTML = slides.map((p, i) =>
+      `<span class="hero-slide${i === 0 ? ' is-on' : ''}"><img src="${esc(p.image)}" alt="${esc(p.name)}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async"></span>`
+    ).join('');
+    dotsEl.innerHTML = slides.map((p, i) => `<button type="button" class="${i === 0 ? 'is-on' : ''}" data-dot="${i}" aria-label="${esc(p.name)}"></button>`).join('');
+    const show = (i) => {
+      cur = (i + slides.length) % slides.length;
+      $$('.hero-slide', slidesEl).forEach((el, k) => el.classList.toggle('is-on', k === cur));
+      $$('[data-dot]', dotsEl).forEach((el, k) => el.classList.toggle('is-on', k === cur));
+      slidesEl.setAttribute('aria-label', 'Voir : ' + slides[cur].name);
+    };
+    const play = () => {
+      clearInterval(timer);
+      if (!reduceMotion && slides.length > 1) timer = setInterval(() => show(cur + 1), 4800);
+    };
+    show(0);
+    play();
+    slidesEl.addEventListener('click', () => openProduct(slides[cur].id));
+    dotsEl.addEventListener('click', (e) => {
+      const d = e.target.closest('[data-dot]');
+      if (d) { show(+d.dataset.dot); play(); }
+    });
+    document.addEventListener('visibilitychange', () => (document.hidden ? clearInterval(timer) : play()));
   }
   $$('[data-butterfly]').forEach((el) => { el.innerHTML = FC.butterfly(el.getAttribute('data-butterfly')); });
   const atelierEl = $('[data-atelier]');

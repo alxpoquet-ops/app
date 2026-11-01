@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Flore &amp; Chenilles — Bouquets en fil chenille faits main</title>
-  <meta name="description" content="Flore & Chenilles façonne à la main des bouquets de fleurs en fil chenille, tout en douceur et en couleurs pastel. Des fleurs qui ne fanent jamais, à offrir ou à composer vous-même.">
+  <title>Flore &amp; Chenilles — Fleurs éternelles en fil chenille, Ardennes</title>
+  <meta name="description" content="Flore & Chenilles : bouquets et décorations en fleurs éternelles en fil chenille, faits main avec passion dans un atelier des Ardennes, à Signy-l'Abbaye. Créations sur-mesure pour vos évènements et vos cadeaux.">
   <meta name="theme-color" content="#FBF7F2">
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/img/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="Flore &amp; Chenilles">
   <meta property="og:title" content="Flore &amp; Chenilles — Des fleurs qui ne fanent jamais">
-  <meta property="og:description" content="Bouquets en fil chenille façonnés à la main, dans des tons pastel. Boutique, bouquets sur mesure et idées cadeaux.">
+  <meta property="og:description" content="Bouquets et décorations en fleurs éternelles en fil chenille, faits main dans les Ardennes. Créations sur-mesure, retrait à l'atelier ou livraison autour de Signy-l'Abbaye.">
   <meta property="og:image" content="assets/img/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="assets/fonts/fraunces-latin-full-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -64,6 +64,8 @@
           <circle r="6" fill="#F5D58C" stroke="#E2B65F" stroke-width="1.8"/>
         </g>
       </symbol>
+      <symbol id="i-facebook" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M13.6 21v-7.2h2.4l.4-2.9h-2.8V9.1c0-.8.3-1.4 1.4-1.4h1.5V5.1c-.3 0-1.2-.1-2.2-.1-2.2 0-3.6 1.3-3.6 3.7v2.2H8.3v2.9h2.4V21z"/></symbol>
+      <symbol id="i-chenille" viewBox="0 0 34 18"><g fill="currentColor" stroke="none"><circle cx="4.5" cy="12" r="3.3"/><circle cx="11" cy="11" r="3.7"/><circle cx="18" cy="12" r="3.9"/><circle cx="26" cy="10" r="4.8"/></g><path d="M24.5 5.4Q23 2 20.6 1.6M27.6 5Q29 1.6 31.4 1.4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></symbol>
     </defs>
   </svg>
 
@@ -71,19 +73,20 @@
   <header class="site-header">
     <div class="container header-inner">
       <a class="logo" href="#accueil" aria-label="Flore &amp; Chenilles, retour à l’accueil">
-        <svg class="logo-mark" aria-hidden="true"><use href="#i-logo"/></svg>
+        <img class="logo-img" src="assets/photos/logo.jpg" alt="" width="44" height="44">
         <span class="logo-word">Flore <em>&amp;</em> Chenilles</span>
       </a>
       <nav class="nav" aria-label="Navigation principale">
         <a href="#atelier">L’atelier</a>
-        <a href="#boutique">Boutique</a>
+        <a href="#boutique">Créations</a>
         <a href="#bouquet">Votre bouquet</a>
         <a href="#occasions">Occasions</a>
         <a href="#contact">Contact</a>
       </nav>
       <div class="header-actions">
         <a class="icon-btn hide-sm" data-ig href="https://www.instagram.com/flore_et_chenilles/" target="_blank" rel="noopener" aria-label="Instagram de Flore &amp; Chenilles (nouvel onglet)"><svg><use href="#i-instagram"/></svg></a>
-        <button class="icon-btn cart-btn" type="button" data-open-cart aria-label="Ouvrir le panier">
+        <a class="icon-btn hide-sm" data-fb hidden href="#contact" target="_blank" rel="noopener" aria-label="Facebook de Flore &amp; Chenilles (nouvel onglet)"><svg><use href="#i-facebook"/></svg></a>
+        <button class="icon-btn cart-btn" type="button" data-open-cart aria-label="Ouvrir ma sélection">
           <svg><use href="#i-bag"/></svg><span class="cart-count" data-cart-count>0</span>
         </button>
         <button class="icon-btn burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button>
@@ -95,13 +98,16 @@
   <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
     <nav aria-label="Menu mobile">
       <a href="#atelier" style="--i:0">L’atelier</a>
-      <a href="#boutique" style="--i:1">Boutique</a>
+      <a href="#boutique" style="--i:1">Créations</a>
       <a href="#bouquet" style="--i:2">Votre bouquet</a>
       <a href="#occasions" style="--i:3">Occasions</a>
-      <a href="#faq" style="--i:4">Questions</a>
+      <a href="#livraison" style="--i:4">Livraison</a>
       <a href="#contact" style="--i:5">Contact</a>
     </nav>
-    <a class="btn btn-ghost" data-ig href="https://www.instagram.com/flore_et_chenilles/" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg><span data-ig-handle>@flore_et_chenilles</span></a>
+    <div class="mobile-social">
+      <a class="btn btn-ghost" data-ig href="https://www.instagram.com/flore_et_chenilles/" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg><span data-ig-handle>@flore_et_chenilles</span></a>
+      <a class="btn btn-ghost" data-fb hidden href="#contact" target="_blank" rel="noopener"><svg><use href="#i-facebook"/></svg><span>Facebook</span></a>
+    </div>
   </div>
 
   <main id="main">
@@ -110,41 +116,41 @@
       <div class="hero-bg" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
       <div class="container hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow reveal">Atelier de fleurs en fil chenille</p>
+          <p class="eyebrow reveal">Fleurs éternelles en fil chenille · Ardennes</p>
           <h1 class="display reveal" style="--i:1">Des fleurs tout en douceur, <em>qui ne fanent jamais.</em></h1>
-          <p class="lead reveal" style="--i:2">Chez Flore &amp; Chenilles, chaque pétale est façonné à la main, boucle après boucle, dans des teintes pastel qui font du bien. Des bouquets éternels à offrir… ou à s’offrir.</p>
+          <p class="lead reveal" style="--i:2">Bouquets et décorations en fleurs éternelles, façonnés à la main dans mon atelier des Ardennes. Des créations sur-mesure pour tous vos évènements et vos cadeaux… ou juste pour le plaisir.</p>
           <div class="hero-cta reveal" style="--i:3">
-            <a class="btn btn-primary" href="#boutique">Découvrir la boutique <svg><use href="#i-arrow"/></svg></a>
+            <a class="btn btn-primary" href="#boutique">Voir mes créations <svg><use href="#i-arrow"/></svg></a>
             <a class="btn btn-ghost" href="#bouquet"><svg><use href="#i-sparkle"/></svg> Composer mon bouquet</a>
           </div>
           <ul class="hero-points reveal" style="--i:4">
-            <li><svg><use href="#i-hand"/></svg> Fait main</li>
+            <li><svg><use href="#i-hand"/></svg> Tout à la main</li>
             <li><svg><use href="#i-infinity"/></svg> Ne fane jamais</li>
-            <li><svg><use href="#i-palette"/></svg> Personnalisable</li>
+            <li><svg><use href="#i-palette"/></svg> Sur-mesure</li>
           </ul>
         </div>
 
         <div class="hero-art">
-          <div class="arch arch--hero">
-            <div class="petals" data-petals aria-hidden="true"></div>
-            <div class="hero-bouquet" data-hero-bouquet></div>
+          <div class="arch arch--photo">
+            <button class="hero-slides" type="button" data-hero-slides aria-label="Voir cette création"></button>
+            <div class="hero-dots" data-hero-dots aria-label="Choisir une photo"></div>
           </div>
           <div class="badge-rotate" aria-hidden="true">
             <svg class="ring" viewBox="0 0 120 120">
               <defs><path id="ring-path" d="M60 60m-43 0a43 43 0 1 1 86 0a43 43 0 1 1-86 0"/></defs>
               <circle cx="60" cy="60" r="58" fill="#FFFAF6"/>
               <circle cx="60" cy="60" r="55" fill="none" stroke="#EBD9DE" stroke-dasharray="1 4" stroke-linecap="round"/>
-              <text font-family="Jost, sans-serif" font-size="9.6" font-weight="500" fill="#6E5A6A"><textPath href="#ring-path" textLength="268" lengthAdjust="spacing">FAIT MAIN · AVEC DOUCEUR · POUR TOUJOURS ·</textPath></text>
+              <text font-family="Jost, sans-serif" font-size="9.6" font-weight="500" fill="#6B5262"><textPath href="#ring-path" textLength="268" lengthAdjust="spacing">FAIT MAIN · AVEC PASSION · DANS LES ARDENNES ·</textPath></text>
             </svg>
-            <svg class="badge-core"><use href="#i-logo"/></svg>
+            <img class="badge-core" src="assets/photos/logo.jpg" alt="">
           </div>
           <button class="hero-chip" type="button" data-featured>
             <span class="hero-chip-art" data-featured-art></span>
-            <span class="hero-chip-txt"><small>Nouveauté</small><strong data-featured-name>Bouquet Matin de Mai</strong></span>
+            <span class="hero-chip-txt"><small>Nouveauté</small><strong data-featured-name>Bonsaï azalée</strong></span>
             <svg class="hero-chip-arrow"><use href="#i-arrow"/></svg>
           </button>
-          <div class="butterfly bf1" data-butterfly="#D9CBF0" aria-hidden="true"></div>
-          <div class="butterfly bf2" data-butterfly="#F8CDB5" aria-hidden="true"></div>
+          <div class="butterfly bf1" data-butterfly="#C8A0E2" aria-hidden="true"></div>
+          <div class="butterfly bf2" data-butterfly="#F5B07D" aria-hidden="true"></div>
         </div>
       </div>
       <a class="scroll-hint" href="#atelier" aria-label="Faire défiler vers l’atelier"><span></span></a>
@@ -152,18 +158,18 @@
 
     <div class="marquee" aria-hidden="true">
       <div class="marquee-track">
-        <span>Fait main</span><svg><use href="#i-flower"/></svg>
+        <span>Fait main avec passion</span><svg><use href="#i-flower"/></svg>
         <span>Fleurs éternelles</span><svg><use href="#i-flower"/></svg>
-        <span>Couleurs pastel</span><svg><use href="#i-flower"/></svg>
-        <span>Bouquets sur mesure</span><svg><use href="#i-flower"/></svg>
-        <span>Sans pollen</span><svg><use href="#i-flower"/></svg>
-        <span>Idées cadeaux</span><svg><use href="#i-flower"/></svg>
-        <span>Fait main</span><svg><use href="#i-flower"/></svg>
+        <span>Fils de qualité</span><svg><use href="#i-flower"/></svg>
+        <span>Créations sur-mesure</span><svg><use href="#i-flower"/></svg>
+        <span>Évènements &amp; cadeaux</span><svg><use href="#i-flower"/></svg>
+        <span>Atelier des Ardennes</span><svg><use href="#i-flower"/></svg>
+        <span>Fait main avec passion</span><svg><use href="#i-flower"/></svg>
         <span>Fleurs éternelles</span><svg><use href="#i-flower"/></svg>
-        <span>Couleurs pastel</span><svg><use href="#i-flower"/></svg>
-        <span>Bouquets sur mesure</span><svg><use href="#i-flower"/></svg>
-        <span>Sans pollen</span><svg><use href="#i-flower"/></svg>
-        <span>Idées cadeaux</span><svg><use href="#i-flower"/></svg>
+        <span>Fils de qualité</span><svg><use href="#i-flower"/></svg>
+        <span>Créations sur-mesure</span><svg><use href="#i-flower"/></svg>
+        <span>Évènements &amp; cadeaux</span><svg><use href="#i-flower"/></svg>
+        <span>Atelier des Ardennes</span><svg><use href="#i-flower"/></svg>
       </div>
     </div>
 
@@ -171,20 +177,21 @@
     <section class="section about" id="atelier" aria-labelledby="about-title">
       <div class="container about-grid">
         <div class="about-art reveal">
-          <div class="arch arch--mint"><div class="about-illus" data-atelier></div></div>
-          <div class="sticker"><span>Chaque fleur est unique</span></div>
+          <div class="arch arch--photo"><img class="arch-img" src="assets/photos/about.jpg" alt="Détail du bouquet Améthyste : lys, pavots et hortensias en fil chenille" loading="lazy"></div>
+          <div class="sticker"><span>Fait main dans les Ardennes</span></div>
         </div>
         <div class="about-copy">
           <p class="eyebrow reveal">L’atelier</p>
-          <h2 id="about-title" class="reveal" style="--i:1">Une passion pour les fleurs <em>et la douceur des choses simples</em></h2>
-          <p class="reveal" style="--i:2">Flore &amp; Chenilles, c’est un petit atelier où les fils chenille deviennent tulipes, marguerites et hortensias. Ici, pas de fleurs coupées qui fanent en quelques jours&nbsp;: chaque création est pensée pour durer, et garder intacte l’émotion du moment où on l’a reçue.</p>
-          <p class="reveal" style="--i:3">Tout est réalisé à la main, pétale après pétale, en choisissant chaque couleur comme on composerait une palette de peintre. Le résultat&#8239;? Des bouquets doux au toucher, légers comme un nuage, et tous un peu différents — comme les personnes à qui ils sont destinés.</p>
-          <p class="signature reveal" style="--i:4">Avec douceur, <span>Flore &amp; Chenilles</span></p>
+          <h2 id="about-title" class="reveal" style="--i:1">Fait main dans les Ardennes, <em>avec passion</em></h2>
+          <p class="reveal" style="--i:2">Flore &amp; Chenilles, c’est mon atelier à <span data-city>Signy-l’Abbaye</span>, dans les Ardennes. C’est là que je façonne, avec passion, des bouquets et des décorations en fleurs éternelles&nbsp;: lys, arums, pavots, gerberas, tulipes, hortensias, tournesols…</p>
+          <p class="reveal" style="--i:3">Tout est fait à la main, fleur après fleur. Je sélectionne mes fils chenille pour leur qualité et leur durabilité, pour que chaque création garde ses couleurs et sa douceur, année après année.</p>
+          <p class="reveal" style="--i:4">J’imagine aussi des créations sur-mesure pour vos évènements et vos cadeaux, et j’aime chiner en brocante de jolis contenants à fleurir.</p>
+          <p class="signature reveal" style="--i:5">Avec douceur, <span>Flore &amp; Chenilles</span> <svg class="sig-chenille" aria-hidden="true"><use href="#i-chenille"/></svg></p>
           <div class="values">
-            <article class="value reveal" style="--i:0;--tint:#F8E1E6"><span class="value-ic"><svg><use href="#i-hand"/></svg></span><h3>Fait main</h3><p>Chaque fleur est torsadée, pliée et ajustée à la main, une par une.</p></article>
-            <article class="value reveal" style="--i:1;--tint:#ECE5F8"><span class="value-ic"><svg><use href="#i-infinity"/></svg></span><h3>Éternelles</h3><p>Ni eau, ni entretien&nbsp;: votre bouquet reste beau, saison après saison.</p></article>
-            <article class="value reveal" style="--i:2;--tint:#E2F1E7"><span class="value-ic"><svg><use href="#i-leaf"/></svg></span><h3>Sans pollen</h3><p>Idéales pour les allergiques, les chambres d’enfants et les cadeaux de naissance.</p></article>
-            <article class="value reveal" style="--i:3;--tint:#FBEBDD"><span class="value-ic"><svg><use href="#i-palette"/></svg></span><h3>Sur mesure</h3><p>Fleurs, couleurs, papier, petit mot&nbsp;: un bouquet qui vous ressemble.</p></article>
+            <article class="value reveal" style="--i:0;--tint:#F8E1E6"><span class="value-ic"><svg><use href="#i-hand"/></svg></span><h3>Tout à la main</h3><p>Chaque fleur est pliée, torsadée et ajustée à la main, dans mon atelier.</p></article>
+            <article class="value reveal" style="--i:1;--tint:#ECE5F8"><span class="value-ic"><svg><use href="#i-sparkle"/></svg></span><h3>Fils sélectionnés</h3><p>Choisis pour leur qualité et leur durabilité, pour des couleurs qui tiennent.</p></article>
+            <article class="value reveal" style="--i:2;--tint:#E2F1E7"><span class="value-ic"><svg><use href="#i-infinity"/></svg></span><h3>Éternelles</h3><p>Ni eau ni entretien, et sans pollen&nbsp;: idéal pour les allergiques et les chambres d’enfants.</p></article>
+            <article class="value reveal" style="--i:3;--tint:#FBEBDD"><span class="value-ic"><svg><use href="#i-palette"/></svg></span><h3>Sur-mesure</h3><p>Vos couleurs, vos fleurs, votre occasion&nbsp;: un bouquet à votre image.</p></article>
           </div>
         </div>
       </div>
@@ -198,27 +205,27 @@
           <h2 id="steps-title" class="reveal" style="--i:1">De votre idée <em>à votre bouquet</em></h2>
         </div>
         <ol class="steps-list">
-          <li class="step reveal" style="--i:0;--tint:#F8E1E6"><span class="step-n">1</span><h3>Vous choisissez</h3><p>Un bouquet de la boutique, ou votre propre composition, fleur par fleur.</p></li>
-          <li class="step reveal" style="--i:1;--tint:#ECE5F8"><span class="step-n">2</span><h3>Nous façonnons</h3><p>Votre bouquet prend vie à la main, dans les couleurs que vous avez choisies.</p></li>
-          <li class="step reveal" style="--i:2;--tint:#E2F1E7"><span class="step-n">3</span><h3>Nous emballons</h3><p>Papier tendre, ruban satiné et petit mot&nbsp;: tout est prêt à offrir.</p></li>
-          <li class="step reveal" style="--i:3;--tint:#FBEBDD"><span class="step-n">4</span><h3>Vous offrez</h3><p>Et le sourire qui va avec, lui non plus, ne fanera pas.</p></li>
+          <li class="step reveal" style="--i:0;--tint:#F8E1E6"><span class="step-n">1</span><h3>Vous choisissez</h3><p>Une de mes créations, ou votre propre bouquet, fleur par fleur.</p></li>
+          <li class="step reveal" style="--i:1;--tint:#ECE5F8"><span class="step-n">2</span><h3>Je vous réponds</h3><p>Je confirme avec vous les couleurs, le prix et la date par message.</p></li>
+          <li class="step reveal" style="--i:2;--tint:#E2F1E7"><span class="step-n">3</span><h3>Je façonne</h3><p>Votre création prend vie à la main, dans mon atelier des Ardennes.</p></li>
+          <li class="step reveal" style="--i:3;--tint:#FBEBDD"><span class="step-n">4</span><h3>Vous la recevez</h3><p>Retrait à l’atelier ou livraison autour de Signy-l’Abbaye.</p></li>
         </ol>
       </div>
     </section>
 
-    <!-- ============================== BOUTIQUE ============================== -->
+    <!-- ============================== CRÉATIONS ============================== -->
     <section class="section shop" id="boutique" aria-labelledby="shop-title">
       <div class="container">
         <div class="section-head split">
           <div>
-            <p class="eyebrow reveal">La boutique</p>
-            <h2 id="shop-title" class="reveal" style="--i:1">Nos bouquets <em>prêts à offrir</em></h2>
+            <p class="eyebrow reveal">Mes créations</p>
+            <h2 id="shop-title" class="reveal" style="--i:1">Prêtes à être <em>adoptées</em></h2>
           </div>
-          <p class="section-sub reveal" style="--i:2">Chaque création est réalisée à la main, à la commande. Les couleurs peuvent être adaptées sur simple demande.</p>
+          <p class="section-sub reveal" style="--i:2">Chaque création est faite à la main, sur commande. Les couleurs s’adaptent à vos envies, et les prix sont donnés sur demande.</p>
         </div>
         <div class="filters reveal" role="group" aria-label="Filtrer les créations" data-filters></div>
         <div class="product-grid" data-products aria-live="polite"></div>
-        <p class="shop-note reveal"><svg><use href="#i-info"/></svg> Après votre commande, nous vous écrivons pour convenir ensemble du paiement et de la remise.</p>
+        <p class="shop-note reveal"><svg><use href="#i-info"/></svg> Ajoutez vos coups de cœur à votre sélection, puis envoyez-moi votre demande&nbsp;: je vous réponds avec le prix et un délai.</p>
       </div>
     </section>
 
@@ -229,7 +236,7 @@
           <div class="section-head center">
             <p class="eyebrow reveal">Votre bouquet à vous</p>
             <h2 id="builder-title" class="reveal" style="--i:1">Composez le bouquet <em>de vos rêves</em></h2>
-            <p class="section-sub reveal" style="--i:2">Choisissez vos fleurs, leurs couleurs, l’habillage et un petit mot. Nous le façonnerons à la main, rien que pour vous.</p>
+            <p class="section-sub reveal" style="--i:2">Choisissez vos fleurs et leurs couleurs, le papier, le ruban et un petit mot. Je le façonnerai à la main, rien que pour vous.</p>
           </div>
 
           <div class="builder-grid">
@@ -237,7 +244,7 @@
               <div class="preview-card" data-preview>
                 <svg class="fc-stage" data-stage role="img" aria-label="Aperçu de votre bouquet"></svg>
                 <p class="preview-empty">Votre bouquet prendra forme ici…<br>Ajoutez une première fleur&nbsp;!</p>
-                <div class="preview-meta"><span data-b-count>0 fleur</span><span class="sep"></span><strong data-b-total>0 €</strong></div>
+                <div class="preview-meta"><span data-b-count>0 fleur</span><span class="sep"></span><strong>Prix sur devis</strong></div>
               </div>
               <div class="preview-actions">
                 <button class="btn btn-soft btn-sm" type="button" data-b-surprise><svg><use href="#i-sparkle"/></svg> Surprise</button>
@@ -274,12 +281,12 @@
               </div>
               <div class="b-summary">
                 <dl>
-                  <div><dt>Fleurs <span data-b-count-2></span></dt><dd data-b-flowers-price>0 €</dd></div>
-                  <div><dt>Papier, ruban &amp; petite carte</dt><dd data-b-base>8 €</dd></div>
-                  <div class="total"><dt>Total</dt><dd data-b-total-2>0 €</dd></div>
+                  <div><dt>Fleurs</dt><dd data-b-count-2>0</dd></div>
+                  <div><dt>Habillage</dt><dd data-b-wrap></dd></div>
+                  <div class="total"><dt>Prix</dt><dd>Sur devis</dd></div>
                 </dl>
-                <button class="btn btn-primary btn-block" type="button" data-b-add><svg><use href="#i-bag"/></svg> Ajouter au panier</button>
-                <p class="tiny">Le fil chenille peut varier légèrement d’une teinte à l’autre&nbsp;: c’est tout le charme du fait main.</p>
+                <button class="btn btn-primary btn-block" type="button" data-b-add><svg><use href="#i-bag"/></svg> Ajouter à ma sélection</button>
+                <p class="tiny">Je vous réponds avec un devis personnalisé. Le fil chenille peut varier légèrement d’une teinte à l’autre&nbsp;: c’est tout le charme du fait main.</p>
               </div>
             </div>
           </div>
@@ -291,11 +298,27 @@
     <section class="section occasions" id="occasions" aria-labelledby="occ-title">
       <div class="container">
         <div class="section-head center">
-          <p class="eyebrow reveal">Idées cadeaux</p>
-          <h2 id="occ-title" class="reveal" style="--i:1">Pour chaque <em>jolie occasion</em></h2>
-          <p class="section-sub reveal" style="--i:2">Choisissez une occasion&nbsp;: nous préparons une composition dans le compositeur, que vous pourrez ajuster à votre goût.</p>
+          <p class="eyebrow reveal">Pour chaque moment</p>
+          <h2 id="occ-title" class="reveal" style="--i:1">Des fleurs <em>pour chaque occasion</em></h2>
+          <p class="section-sub reveal" style="--i:2">Choisissez une occasion&nbsp;: je vous propose une composition à ajuster à votre goût, ou une création adaptée.</p>
         </div>
         <div class="occasion-grid" data-occasions></div>
+      </div>
+    </section>
+
+    <!-- ============================== LIVRAISON & RETRAIT ============================== -->
+    <section class="section delivery" id="livraison" aria-labelledby="delivery-title">
+      <div class="container">
+        <div class="delivery-panel reveal">
+          <div class="delivery-intro">
+            <p class="eyebrow">Livraison &amp; retrait</p>
+            <h2 id="delivery-title">Depuis mon atelier <em>des Ardennes</em></h2>
+          </div>
+          <ul class="delivery-list">
+            <li><span class="ci"><svg><use href="#i-pin"/></svg></span><div><strong>Retrait à l’atelier</strong><p>Venez chercher votre création directement à l’atelier, à <span data-city>Signy-l’Abbaye</span>.</p></div></li>
+            <li><span class="ci"><svg><use href="#i-gift"/></svg></span><div><strong>Livraison</strong><p data-delivery>Livraison possible dans un rayon de 20&nbsp;km autour de Signy-l’Abbaye, puis 0,40&nbsp;€ par kilomètre supplémentaire.</p></div></li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -315,11 +338,14 @@
       <div class="container">
         <div class="insta-head">
           <div>
-            <p class="eyebrow reveal">Sur Instagram</p>
+            <p class="eyebrow reveal">Sur les réseaux</p>
             <h2 id="insta-title" class="reveal" style="--i:1"><a data-ig data-ig-handle href="https://www.instagram.com/flore_et_chenilles/" target="_blank" rel="noopener">@flore_et_chenilles</a></h2>
-            <p class="section-sub reveal" style="--i:2">Nouveautés, coulisses de l’atelier et créations sur mesure&nbsp;: retrouvez-nous au quotidien.</p>
+            <p class="section-sub reveal" style="--i:2">Nouveautés, coulisses de l’atelier et créations sur-mesure&nbsp;: retrouvez-moi au quotidien.</p>
           </div>
-          <a class="btn btn-primary reveal" style="--i:3" data-ig href="https://www.instagram.com/flore_et_chenilles/" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg> Nous suivre</a>
+          <div class="insta-actions reveal" style="--i:3">
+            <a class="btn btn-primary" data-ig href="https://www.instagram.com/flore_et_chenilles/" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg> Instagram</a>
+            <a class="btn btn-ghost" data-fb hidden href="#contact" target="_blank" rel="noopener"><svg><use href="#i-facebook"/></svg> Facebook</a>
+          </div>
         </div>
         <div class="insta-grid" data-insta></div>
       </div>
@@ -331,33 +357,37 @@
         <div class="faq-intro">
           <p class="eyebrow reveal">Questions fréquentes</p>
           <h2 id="faq-title" class="reveal" style="--i:1">Tout ce que vous <em>aimeriez savoir</em></h2>
-          <p class="section-sub reveal" style="--i:2">Une autre question&#8239;? Écrivez-nous, on adore parler fleurs.</p>
-          <a class="btn btn-ghost reveal" style="--i:3" href="#contact">Nous écrire <svg><use href="#i-arrow"/></svg></a>
+          <p class="section-sub reveal" style="--i:2">Une autre question&#8239;? Écrivez-moi, j’adore parler fleurs.</p>
+          <a class="btn btn-ghost reveal" style="--i:3" href="#contact">M’écrire <svg><use href="#i-arrow"/></svg></a>
         </div>
         <div class="faq-list">
           <details class="faq-item reveal" style="--i:0">
             <summary>Qu’est-ce qu’une fleur en fil chenille&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
-            <div class="faq-a"><p>Le fil chenille est un fil tout doux, légèrement duveteux, que l’on peut plier et torsader à l’infini. Boucle après boucle, il devient pétale, cœur ou feuillage&nbsp;: le résultat est une fleur légère, douce au toucher, qui garde sa forme et ses couleurs.</p></div>
+            <div class="faq-a"><p>Le fil chenille, que l’on appelle aussi cure-pipe, est un fil tout doux et légèrement duveteux. Je le plie et le torsade à la main pour former pétales, cœurs et feuillages. Je sélectionne mes fils pour leur qualité et leur durabilité&nbsp;: la fleur garde sa forme et ses couleurs, sans eau ni entretien.</p></div>
           </details>
           <details class="faq-item reveal" style="--i:1">
-            <summary>Puis-je choisir mes couleurs&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
-            <div class="faq-a"><p>Bien sûr&nbsp;! Toutes nos créations peuvent être adaptées. Composez votre bouquet fleur par fleur dans «&nbsp;Votre bouquet à vous&nbsp;», ou écrivez-nous pour une demande particulière (couleurs d’un mariage, d’une chambre de bébé…).</p></div>
+            <summary>Combien coûte une création&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
+            <div class="faq-a"><p>Une fleur à l’unité coûte 5&nbsp;€. Pour les bouquets et les créations sur-mesure, le prix dépend du nombre de fleurs et de la composition&nbsp;: envoyez-moi votre demande, je vous réponds avec un devis.</p></div>
           </details>
           <details class="faq-item reveal" style="--i:2">
-            <summary>Combien de temps faut-il pour réaliser ma commande&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
-            <div class="faq-a"><p>Chaque bouquet est façonné à la main, à la commande. Le délai dépend de la taille de la composition et des demandes en cours&nbsp;: nous vous l’indiquons en confirmant votre commande. Pour une date précise, prévenez-nous le plus tôt possible.</p></div>
+            <summary>Puis-je choisir mes couleurs&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
+            <div class="faq-a"><p>Bien sûr&nbsp;! Composez votre bouquet fleur par fleur dans «&nbsp;Votre bouquet à vous&nbsp;», ou parlez-moi de vos idées&nbsp;: les couleurs de votre salon, de votre chambre ou de votre mariage, on peut essayer ensemble.</p></div>
           </details>
           <details class="faq-item reveal" style="--i:3">
-            <summary>Comment entretenir mon bouquet&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
-            <div class="faq-a"><p>Aucun arrosage&nbsp;! Un petit coup de pinceau doux ou de sèche-cheveux à froid suffit à chasser la poussière. Évitez simplement le soleil direct et l’humidité pour garder des couleurs éclatantes très longtemps.</p></div>
+            <summary>Proposez-vous la livraison&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
+            <div class="faq-a"><p data-delivery>Livraison possible dans un rayon de 20&nbsp;km autour de Signy-l’Abbaye, puis 0,40&nbsp;€ par kilomètre supplémentaire.</p><p>Vous pouvez aussi venir chercher votre création à l’atelier, à Signy-l’Abbaye.</p></div>
           </details>
           <details class="faq-item reveal" style="--i:4">
-            <summary>Comment se passent la commande et le paiement&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
-            <div class="faq-a"><p>Ajoutez vos coups de cœur au panier, puis envoyez-nous votre commande en un clic (par message Instagram ou par e-mail). Nous vous répondons pour confirmer les détails, le paiement et la remise de votre bouquet.</p></div>
+            <summary>Faites-vous des compositions pour fleurir une sépulture&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
+            <div class="faq-a"><p>Oui. Pour honorer la mémoire d’un être cher, je réalise des compositions protégées sous une cloche de verre. Elles restent belles au fil des saisons, sans entretien. Parlez-moi de vos souhaits, en toute simplicité.</p></div>
           </details>
           <details class="faq-item reveal" style="--i:5">
-            <summary>Faites-vous des créations pour les mariages et événements&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
-            <div class="faq-a"><p>Avec grand plaisir&nbsp;: bouquet de mariée, boutonnières, centres de table, décorations de baptême… Décrivez-nous votre projet via le formulaire de contact et nous imaginerons ensemble quelque chose d’unique.</p></div>
+            <summary>Combien de temps faut-il pour réaliser ma commande&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
+            <div class="faq-a"><p>Chaque création est façonnée à la main, à la commande. Le délai dépend de la composition&nbsp;: je vous l’indique en confirmant votre demande. Pour une date précise, prévenez-moi le plus tôt possible.</p></div>
+          </details>
+          <details class="faq-item reveal" style="--i:6">
+            <summary>Faites-vous des créations pour les évènements&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
+            <div class="faq-a"><p>Avec plaisir&nbsp;: bouquets, centres de table, décorations pour un mariage, un baptême ou un anniversaire… Décrivez-moi votre projet via le formulaire de contact.</p></div>
           </details>
         </div>
       </div>
@@ -370,11 +400,13 @@
           <div class="contact-copy">
             <p class="eyebrow reveal">Contact</p>
             <h2 id="contact-title" class="reveal" style="--i:1">Écrivons ensemble <em>une jolie histoire</em></h2>
-            <p class="section-sub reveal" style="--i:2">Une commande, un bouquet sur mesure, un mariage à fleurir&#8239;? Laissez-nous un message&nbsp;: nous vous répondrons avec plaisir.</p>
+            <p class="section-sub reveal" style="--i:2">Une commande, un bouquet sur-mesure, un évènement à fleurir&#8239;? Laissez-moi un message&nbsp;: je vous réponds avec plaisir.</p>
             <ul class="contact-list">
               <li class="reveal" style="--i:3"><span class="ci"><svg><use href="#i-instagram"/></svg></span><div><strong>Instagram</strong><a data-ig data-ig-handle href="https://www.instagram.com/flore_et_chenilles/" target="_blank" rel="noopener">@flore_et_chenilles</a></div></li>
-              <li class="reveal" style="--i:4"><span class="ci"><svg><use href="#i-chat"/></svg></span><div><strong>Message privé</strong><a data-ig-dm href="https://ig.me/m/flore_et_chenilles" target="_blank" rel="noopener">Écrire sur Instagram</a></div></li>
-              <li class="reveal" style="--i:5" data-email-row hidden><span class="ci"><svg><use href="#i-mail"/></svg></span><div><strong>E-mail</strong><a data-email href="#contact"></a></div></li>
+              <li class="reveal" style="--i:4" data-fb-row hidden><span class="ci"><svg><use href="#i-facebook"/></svg></span><div><strong>Facebook</strong><a data-fb href="#contact" target="_blank" rel="noopener">Flore &amp; Chenilles</a></div></li>
+              <li class="reveal" style="--i:5"><span class="ci"><svg><use href="#i-chat"/></svg></span><div><strong>Message privé</strong><a data-ig-dm href="https://ig.me/m/flore_et_chenilles" target="_blank" rel="noopener">Écrire sur Instagram</a></div></li>
+              <li class="reveal" style="--i:6"><span class="ci"><svg><use href="#i-pin"/></svg></span><div><strong>Atelier</strong><span class="ci-text"><span data-city>Signy-l’Abbaye</span>, Ardennes</span></div></li>
+              <li class="reveal" style="--i:7" data-email-row hidden><span class="ci"><svg><use href="#i-mail"/></svg></span><div><strong>E-mail</strong><a data-email href="#contact"></a></div></li>
             </ul>
           </div>
 
@@ -389,12 +421,13 @@
                   <option>Une commande</option>
                   <option>Un bouquet sur mesure</option>
                   <option>Mariage &amp; événements</option>
+                  <option>Une composition sous cloche</option>
                   <option>Une question</option>
                 </select>
               </label>
               <label class="field"><span>Date souhaitée <small>(facultatif)</small></span><input id="c-date" name="date" type="date"></label>
             </div>
-            <label class="field"><span>Votre message</span><textarea id="c-message" name="message" rows="5" required placeholder="Racontez-nous votre envie…"></textarea></label>
+            <label class="field"><span>Votre message</span><textarea id="c-message" name="message" rows="5" required placeholder="Racontez-moi votre envie…"></textarea></label>
             <div class="form-actions" data-form-actions></div>
             <p class="form-note">Votre message est préparé ici, puis envoyé depuis Instagram ou votre messagerie&nbsp;: rien n’est enregistré sur ce site.</p>
           </form>
@@ -408,22 +441,24 @@
     <div class="container footer-grid">
       <div class="footer-brand">
         <a class="logo" href="#accueil" aria-label="Flore &amp; Chenilles, retour en haut">
-          <svg class="logo-mark" aria-hidden="true"><use href="#i-logo"/></svg>
+          <img class="logo-img logo-img--lg" src="assets/photos/logo.jpg" alt="" width="64" height="64">
           <span class="logo-word">Flore <em>&amp;</em> Chenilles</span>
         </a>
-        <p>Bouquets en fil chenille façonnés à la main. Des fleurs qui ne fanent jamais, pour celles et ceux qu’on aime.</p>
+        <p>Bouquets et décorations en fleurs éternelles, façonnés à la main avec passion dans mon atelier de <span data-city>Signy-l’Abbaye</span>, dans les Ardennes.</p>
       </div>
       <nav class="footer-nav" aria-label="Plan du site">
         <h3>Explorer</h3>
         <a href="#atelier">L’atelier</a>
-        <a href="#boutique">La boutique</a>
+        <a href="#boutique">Mes créations</a>
         <a href="#bouquet">Votre bouquet à vous</a>
-        <a href="#occasions">Idées cadeaux</a>
+        <a href="#occasions">Occasions</a>
+        <a href="#livraison">Livraison &amp; retrait</a>
         <a href="#faq">Questions fréquentes</a>
       </nav>
       <div class="footer-nav">
         <h3>Restons en lien</h3>
         <a data-ig href="https://www.instagram.com/flore_et_chenilles/" target="_blank" rel="noopener">Instagram</a>
+        <a data-fb hidden href="#contact" target="_blank" rel="noopener">Facebook</a>
         <a data-ig-dm href="https://ig.me/m/flore_et_chenilles" target="_blank" rel="noopener">Message privé</a>
         <a href="#contact">Formulaire de contact</a>
         <a data-email href="#contact" data-email-row hidden></a>
@@ -431,24 +466,24 @@
     </div>
     <p class="footer-big" aria-hidden="true">Flore <em>&amp;</em> Chenilles</p>
     <div class="container footer-bottom">
-      <p>© <span data-year>2026</span> Flore &amp; Chenilles — Fait main avec douceur</p>
+      <p>© <span data-year>2026</span> Flore &amp; Chenilles — Fait main avec passion dans les Ardennes</p>
       <a href="#accueil" class="to-top">Retour en haut <svg><use href="#i-arrow"/></svg></a>
     </div>
   </footer>
 
-  <!-- ============================== PANIER ============================== -->
+  <!-- ============================== MA SÉLECTION ============================== -->
   <div class="drawer" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-hidden="true">
     <div class="drawer-backdrop" data-close></div>
     <aside class="drawer-panel">
       <header class="drawer-head">
-        <h2 id="cart-title">Votre panier</h2>
-        <button class="icon-btn" type="button" data-close aria-label="Fermer le panier"><svg><use href="#i-close"/></svg></button>
+        <h2 id="cart-title">Ma sélection</h2>
+        <button class="icon-btn" type="button" data-close aria-label="Fermer ma sélection"><svg><use href="#i-close"/></svg></button>
       </header>
       <div class="drawer-body" data-cart-items></div>
       <footer class="drawer-foot" data-cart-foot>
         <div class="cart-total"><span>Total</span><strong data-cart-total>0 €</strong></div>
-        <p class="tiny">Paiement et remise convenus ensemble après confirmation de votre commande.</p>
-        <button class="btn btn-primary btn-block" type="button" data-checkout>Finaliser ma commande <svg><use href="#i-arrow"/></svg></button>
+        <p class="tiny">Je vous confirme le prix, la date et la remise (retrait ou livraison) par message.</p>
+        <button class="btn btn-primary btn-block" type="button" data-checkout>Finaliser ma demande <svg><use href="#i-arrow"/></svg></button>
       </footer>
     </aside>
   </div>
@@ -464,6 +499,6 @@
 
   <div class="toast" role="status" aria-live="polite"></div>
 
-  <noscript><p class="noscript">Activez JavaScript pour profiter de la boutique et du compositeur de bouquets.</p></noscript>
+  <noscript><p class="noscript">Activez JavaScript pour profiter des créations et du compositeur de bouquets.</p></noscript>
 </body>
 </html>

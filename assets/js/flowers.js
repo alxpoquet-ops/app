@@ -229,6 +229,94 @@
     }
   };
 
+  const isPale = (hex) => rgbToHsl.apply(null, hexToRgb(hex))[2] > 0.9;
+
+  Object.assign(HEADS, {
+    /* Lys : six pétales pointus en étoile, étamines. */
+    lys(c) {
+      const back = petal(29, 8.5, true), front = petal(30, 9, true), vein = petal(19, 2.6, true);
+      let s = '';
+      for (let i = 0; i < 3; i++) s += `<path d="${back}" transform="rotate(${i * 120 + 60})" fill="${c.mid}" stroke="${c.dark}" stroke-width="2" stroke-linejoin="round"/>`;
+      for (let i = 0; i < 3; i++) {
+        s += `<path d="${front}" transform="rotate(${i * 120})" fill="${c.base}" stroke="${c.dark}" stroke-width="2.1" stroke-linejoin="round"/>`;
+        s += `<path d="${vein}" transform="rotate(${i * 120}) translate(0 -4)" fill="none" stroke="${c.light}" stroke-width="1.4"/>`;
+      }
+      for (let i = 0; i < 6; i++) {
+        const a = rad(i * 60 + 30), x = r1(Math.sin(a) * 15), y = r1(-Math.cos(a) * 15);
+        s += `<path d="M0 0L${x} ${y}" stroke="#EDE3C4" stroke-width="1.3" stroke-linecap="round"/>`;
+        s += `<ellipse cx="${x}" cy="${y}" rx="2.6" ry="1.5" transform="rotate(${i * 60 + 30} ${x} ${y})" fill="#C98A4E"/>`;
+      }
+      return s + '<circle r="3.2" fill="#DCE6B9" stroke="#B9C795" stroke-width="1"/>';
+    },
+
+    /* Arum : un cornet élégant et son pistil doré. */
+    arum(c) {
+      return `<path d="M-1 27C-15 16 -21 -6 -10 -22C-4 -31 11 -32 19 -23C10 -21 5 -12 6 2C6 13 4 21 -1 27Z" fill="${c.base}" stroke="${c.dark}" stroke-width="2.3" stroke-linejoin="round"/>` +
+        `<path d="M-7 -19C-1 -27 10 -27 16 -22C9 -19 5 -12 5 -2C2 -9 -2 -15 -7 -19Z" fill="${c.mid}"/>` +
+        '<path d="M2 6L6 -15" stroke="#E7B94C" stroke-width="6.5" stroke-linecap="round"/>' +
+        '<path d="M2 6L6 -15" stroke="#F4D57A" stroke-width="3.6" stroke-linecap="round"/>' +
+        `<path d="M-10 18C-15 6 -15 -7 -8 -16" fill="none" stroke="${c.light}" stroke-width="1.6" stroke-linecap="round"/>`;
+    },
+
+    /* Pavot : quatre grands pétales ronds, cœur sombre. */
+    pavot(c) {
+      const big = petal(22, 15, false), small = petal(19, 13, false);
+      let s = '';
+      for (let i = 0; i < 4; i++) s += `<path d="${big}" transform="rotate(${i * 90 + 45})" fill="${c.mid}" stroke="${c.dark}" stroke-width="2" stroke-linejoin="round"/>`;
+      for (let i = 0; i < 4; i++) {
+        s += `<path d="${small}" transform="rotate(${i * 90})" fill="${c.base}" stroke="${c.dark}" stroke-width="2" stroke-linejoin="round"/>`;
+        s += `<path d="${petal(11, 5, false)}" transform="rotate(${i * 90}) translate(0 -6)" fill="none" stroke="${c.light}" stroke-width="1.3"/>`;
+      }
+      s += '<circle r="8" fill="#3F3448"/>';
+      for (let i = 0; i < 12; i++) {
+        const a = (i * Math.PI) / 6;
+        s += `<circle cx="${r1(Math.cos(a) * 9.4)}" cy="${r1(Math.sin(a) * 9.4)}" r="1.6" fill="#2F2836"/>`;
+      }
+      return s + '<circle r="3.4" fill="#BFCB9C"/>';
+    },
+
+    /* Gerbera : deux couronnes de fins pétales. */
+    gerbera(c) {
+      const outer = petal(22, 4.4, false), inner = petal(14, 3.6, false);
+      let s = '';
+      for (let i = 0; i < 20; i++) s += `<path d="${outer}" transform="rotate(${r1(i * 18)}) translate(0 -5)" fill="${c.base}" stroke="${c.dark}" stroke-width="1.3" stroke-linejoin="round"/>`;
+      for (let i = 0; i < 16; i++) s += `<path d="${inner}" transform="rotate(${r1(i * 22.5 + 11)}) translate(0 -4)" fill="${c.light}" stroke="${c.dark}" stroke-width="1"/>`;
+      return s + `<circle r="7.5" fill="${c.dark}"/>` + heart(4.8, '#F1E2A6');
+    },
+
+    /* Tournesol : pétales jaunes, grand cœur brun. */
+    tournesol(c) {
+      const outer = petal(22, 6.5, true), inner = petal(18, 6, true);
+      let s = '';
+      for (let i = 0; i < 16; i++) s += `<path d="${outer}" transform="rotate(${r1(i * 22.5)}) translate(0 -9)" fill="${c.base}" stroke="${c.dark}" stroke-width="1.6" stroke-linejoin="round"/>`;
+      for (let i = 0; i < 16; i++) s += `<path d="${inner}" transform="rotate(${r1(i * 22.5 + 11.25)}) translate(0 -8)" fill="${c.light}" stroke="${c.dark}" stroke-width="1.2" stroke-linejoin="round"/>`;
+      s += '<circle r="12.5" fill="#6E4A2C" stroke="#4E331E" stroke-width="2"/>';
+      for (let i = 0; i < 24; i++) {
+        const a = i * 2.39996, rr = 10.5 * Math.sqrt((i + 0.5) / 24);
+        s += `<circle cx="${r1(rr * Math.cos(a))}" cy="${r1(rr * Math.sin(a))}" r="1.3" fill="#8F6842"/>`;
+      }
+      return s;
+    },
+
+    /* Jonquille : six pétales et une couronne froncée. */
+    jonquille(c) {
+      const p6 = petal(22, 9, true);
+      const cor = pal(isPale(c.base) ? '#F4CF67' : tone(c.base, -0.06, 0.18));
+      let s = '';
+      for (let i = 0; i < 6; i++) {
+        s += `<path d="${p6}" transform="rotate(${i * 60})" fill="${c.base}" stroke="${c.dark}" stroke-width="1.8" stroke-linejoin="round"/>`;
+        s += `<path d="${petal(13, 2.6, true)}" transform="rotate(${i * 60}) translate(0 -5)" fill="none" stroke="${c.light}" stroke-width="1.2"/>`;
+      }
+      let d = '';
+      for (let i = 0; i <= 24; i++) {
+        const a = (i / 24) * Math.PI * 2, rr = 9.5 + (i % 2 ? 1.5 : 0);
+        d += (i ? 'L' : 'M') + r1(Math.cos(a) * rr) + ' ' + r1(Math.sin(a) * rr);
+      }
+      return s + `<path d="${d}Z" fill="${cor.base}" stroke="${cor.dark}" stroke-width="1.6" stroke-linejoin="round"/>` +
+        `<circle r="5.6" fill="${cor.dark}" opacity=".5"/><circle r="2.2" fill="#ECE4B2"/>`;
+    }
+  });
+
   /* Métadonnées : « focal » = fleur principale, « filler » = brin/feuillage. */
   const TYPES = {
     rose: { kind: 'focal', size: 1 },
@@ -238,7 +326,13 @@
     hortensia: { kind: 'focal', size: 1.05 },
     lavande: { kind: 'filler', size: 1 },
     gypsophile: { kind: 'filler', size: 1 },
-    eucalyptus: { kind: 'filler', size: 1, fixed: SAGE }
+    eucalyptus: { kind: 'filler', size: 1, fixed: SAGE },
+    lys: { kind: 'focal', size: 1.12 },
+    arum: { kind: 'focal', size: 1 },
+    pavot: { kind: 'focal', size: 1 },
+    gerbera: { kind: 'focal', size: 1 },
+    tournesol: { kind: 'focal', size: 1.08, fixed: '#F5C451' },
+    jonquille: { kind: 'focal', size: 0.98 }
   };
   const kindOf = (t) => (TYPES[t] ? TYPES[t].kind : 'focal');
 
@@ -253,7 +347,8 @@
   const GEO = {
     paper: { B: { x: 200, y: 345 }, C: { x: 200, y: 208 } },
     pot: { B: { x: 200, y: 352 }, C: { x: 200, y: 220 } },
-    none: { B: { x: 200, y: 360 }, C: { x: 200, y: 214 } }
+    none: { B: { x: 200, y: 360 }, C: { x: 200, y: 214 } },
+    cloche: { B: { x: 200, y: 426 }, C: { x: 200, y: 320 } }
   };
   const GOLDEN = Math.PI * (3 - Math.sqrt(5));
   const FILLER_ANGLES = [-16, 20, -34, 38, 2, -48, 50, -25, 29, -42, 44, -7, 11, -30, 34];
@@ -283,7 +378,7 @@
     fill.forEach((it, j) => {
       const base = FILLER_ANGLES[j % FILLER_ANGLES.length];
       const a = base * spread;
-      const L = ((B.y - C.y) * 0.9 + fr * 0.6 + (j % 3) * 8) * (1 - (0.25 * Math.abs(a)) / 50);
+      const L = ((B.y - C.y) * 0.9 + fr * 0.6 + (j % 3) * 8) * (1 - (0.25 * Math.abs(a)) / 50) * (container === 'cloche' ? 0.62 : 1);
       res.push({ it, a, L, rot: a, s: 0.98, z: -1000 + j });
     });
     return res;
@@ -325,6 +420,24 @@
       `<rect x="128" y="346" width="144" height="24" rx="11" fill="${p.base}" stroke="${p.dark}" stroke-width="1.6"/>` +
       `<rect x="138" y="351" width="58" height="5" rx="2.5" fill="${p.light}" opacity=".85"/>`;
   }
+  /** Socle en bois, mousse et cloche de verre (dessinée par-dessus les fleurs). */
+  function clocheBase() {
+    return '<ellipse cx="200" cy="456" rx="120" ry="16" fill="#B98C69"/>' +
+      '<rect x="80" y="438" width="240" height="18" fill="#C99C77"/>' +
+      '<ellipse cx="200" cy="438" rx="120" ry="16" fill="#DDB590"/>' +
+      '<ellipse cx="200" cy="438" rx="104" ry="11" fill="none" stroke="#C99C77" stroke-width="1.2" opacity=".7"/>' +
+      '<ellipse cx="200" cy="431" rx="62" ry="10" fill="#A9BE95"/>';
+  }
+  function clocheGlass() {
+    return '<path d="M88 438V300C88 212 138 158 200 158C262 158 312 212 312 300V438Z" fill="#FFFFFF" fill-opacity=".16" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="2.6"/>' +
+      '<path d="M88 438V300C88 212 138 158 200 158C262 158 312 212 312 300V438" fill="none" stroke="#8FA2B6" stroke-opacity=".28" stroke-width="1.2"/>' +
+      '<path d="M110 412V302C110 240 136 202 172 186" fill="none" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="7" stroke-linecap="round"/>' +
+      '<path d="M290 330C290 300 286 276 278 256" fill="none" stroke="#FFFFFF" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"/>' +
+      '<ellipse cx="200" cy="157" rx="15" ry="5" fill="#FFFFFF" fill-opacity=".5" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="1.6"/>' +
+      '<circle cx="200" cy="146" r="9" fill="#FFFFFF" fill-opacity=".45" stroke="#FFFFFF" stroke-opacity=".95" stroke-width="1.6"/>' +
+      '<path d="M88 438Q200 452 312 438" fill="none" stroke="#FFFFFF" stroke-opacity=".6" stroke-width="2"/>';
+  }
+
   function wrapText(txt, max, lines) {
     const words = String(txt).trim().split(/\s+/).filter(Boolean);
     const out = [];
@@ -422,6 +535,7 @@
     const rp = pal(hexOf('ribbons', cfg.ribbon, '#E6A4B6'));
     let s = '';
     if (container === 'paper') s += `<g class="fc-paper" transform="${kT}">${backPaper(pp)}</g>`;
+    if (container === 'cloche') s += clocheBase();
 
     let stems = anim
       ? `<g stroke="${STEM.dark}" stroke-width="4.6">${stemAnim}</g><g stroke="${STEM.base}" stroke-width="3">${stemAnim}</g>`
@@ -436,9 +550,10 @@
     if (container === 'paper') s += `<g class="fc-paper" transform="${kT}">${frontPaper(pp)}</g>`;
     if (container === 'pot') s += potSVG(pal(hexOf('pots', cfg.pot, '#EDC3AE')));
     s += `<g class="fc-heads" filter="url(#fc-fuzz)">${heads}</g>`;
+    if (container === 'cloche') s += clocheGlass();
 
     const bowY = container === 'paper' ? B.y + 30 * k : B.y;
-    if (container !== 'pot' && items.length) {
+    if (container !== 'pot' && container !== 'cloche' && items.length) {
       s += `<g transform="translate(${B.x} ${r1(bowY)}) scale(${(container === 'none' ? 0.62 : k).toFixed(3)})"><g class="fc-bow">${container === 'none' ? bowInner(rp).replace(/<path data-s="base"[^>]*\/><path data-s="light"[^>]*\/>/, '') : bowInner(rp)}</g></g>`;
     }
     if (opt.mascot && container === 'paper') s += `<g class="fc-mascot">${mascot(B.x + 18 * k, B.y - 46 * k, 0.7)}</g>`;
@@ -461,6 +576,8 @@
         add(B.x + (346 - 200) * k, B.y + (502 - 345) * k, 0);
       } else if (container === 'pot') {
         add(128, 346, 0); add(272, 482, 0);
+      } else if (container === 'cloche') {
+        add(80, 136, 0); add(320, 472, 0);
       } else {
         add(B.x, items.length === 1 ? B.y + 90 : 488, 0); add(B.x - 40, B.y, 0); add(B.x + 40, B.y, 0);
       }
