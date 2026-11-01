@@ -65,6 +65,10 @@ Tout le contenu « vivant » est rassemblé dans **`assets/js/data.js`**, commen
 
 Les textes de présentation (accueil, atelier, FAQ…) se modifient directement dans `index.html`.
 
+Après une modification de `style.css`, `app.js`, `flowers.js` ou `data.js`, changez le numéro
+`?v=…` des quatre liens en haut de `index.html` (par exemple `?v=20261102`) : les visiteurs
+chargeront aussitôt la nouvelle version au lieu d'une copie gardée en mémoire par leur navigateur.
+
 ## Ajouter une création ou une photo
 
 1. Déposez la photo (JPG, format portrait 4:5 idéalement, environ 800 px de large) dans `assets/photos/`.

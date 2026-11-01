@@ -56,6 +56,12 @@
     return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso;
   };
 
+  /* Exécute une partie du site sans qu'une erreur empêche le reste de s'afficher. */
+  function safe(label, fn) {
+    try { fn(); } catch (err) { if (window.console) console.error('[Flore & Chenilles] ' + label, err); }
+  }
+  const setText = (sel, txt) => { const el = $(sel); if (el) el.textContent = txt; };
+
   /* ---------- Notification ---------- */
   const toastEl = $('.toast');
   let toastT = 0;
@@ -830,12 +836,13 @@
     const n = bState.flowers.length;
     const paper = S.papers[bState.paper] ? S.papers[bState.paper].name.toLowerCase() : '';
     const ribbon = S.ribbons[bState.ribbon] ? S.ribbons[bState.ribbon].name.toLowerCase() : '';
-    $('[data-b-count]').textContent = plural(n, 'fleur', 'fleurs');
-    $('[data-b-count-2]').textContent = String(n);
-    $('[data-b-wrap]').textContent = `Papier ${paper}, ruban ${ribbon}`;
-    $('[data-b-count-max]').textContent = n + ' / ' + MAX;
-    preview.classList.toggle('is-empty', n === 0);
-    $('[data-b-undo]').disabled = n === 0;
+    setText('[data-b-count]', plural(n, 'fleur', 'fleurs'));
+    setText('[data-b-count-2]', String(n));
+    setText('[data-b-wrap]', `Papier ${paper}, ruban ${ribbon}`);
+    setText('[data-b-count-max]', n + ' / ' + MAX);
+    if (preview) preview.classList.toggle('is-empty', n === 0);
+    const undo = $('[data-b-undo]');
+    if (undo) undo.disabled = n === 0;
   }
   function syncControls() {
     renderWraps();
@@ -855,7 +862,8 @@
     }
   }
 
-  if (stage) {
+  safe('compositeur', () => {
+    if (!stage) return;
     renderColors();
     renderPicker();
     syncControls();
@@ -976,7 +984,7 @@
     } else {
       bUpdate();
     }
-  }
+  });
 
   function loadFromHash() {
     const m = location.hash.match(/^#bouquet=([\w-]+)/);
@@ -1006,7 +1014,7 @@
     toast(`Composition «${NB}${title}${NB}» prête${NB}: ajustez-la à votre goût`);
   }
   const occEl = $('[data-occasions]');
-  if (occEl) {
+  if (occEl) safe('occasions', () => {
     occEl.innerHTML = (S.occasions || []).map((o, i) =>
       `<article class="occasion reveal" style="--i:${i % 3};--bg:${esc(o.bg)}">` +
       `<div class="occ-art">${FC.bouquet(o.preset, { fit: true, aspect: 124 / 140, pad: 6, label: o.title })}</div>` +
@@ -1022,24 +1030,24 @@
       if (o.product && findProduct(o.product)) { openProduct(o.product); return; }
       loadPreset(o.preset, o.title);
     });
-  }
+  });
 
   /* ------------------------------------------------------------------ *
    * Avis (seulement s'il y en a de vrais dans data.js)
    * ------------------------------------------------------------------ */
-  if (S.reviews && S.reviews.length) {
+  if (S.reviews && S.reviews.length) safe('avis', () => {
     const sec = $('#avis');
     sec.hidden = false;
     $('[data-reviews]', sec).innerHTML = S.reviews.map((r, i) =>
       `<figure class="review reveal" style="--i:${i % 3}"><blockquote>«${NB}${esc(r.text)}${NB}»</blockquote><figcaption>— ${esc(r.name)}${r.occasion ? ', ' + esc(r.occasion) : ''}</figcaption></figure>`
     ).join('');
-  }
+  });
 
   /* ------------------------------------------------------------------ *
    * Instagram
    * ------------------------------------------------------------------ */
   const instaEl = $('[data-insta]');
-  if (instaEl) {
+  if (instaEl) safe('instagram', () => {
     const photos = (S.instagram && S.instagram.photos) || [];
     const tiles = photos.length
       ? photos.slice(0, 6).map((ph) => ({ bg: '#F8E1E6', html: `<img src="${esc(ph.src)}" alt="${esc(ph.alt || '')}" loading="lazy" decoding="async">`, label: ph.alt, url: ph.url }))
@@ -1055,15 +1063,16 @@
       `<a class="insta-tile reveal" style="--i:${i};--bg:${t.bg}" href="${esc(t.url || IG_URL)}" target="_blank" rel="noopener" aria-label="Voir sur Instagram${t.label ? ' : ' + esc(t.label) : ''}">` +
       `<span class="insta-art">${t.html}</span><span class="insta-over"><svg><use href="#i-instagram"/></svg></span></a>`
     ).join('');
-  }
+  });
 
   /* ------------------------------------------------------------------ *
    * Accueil : bouquet, pétales, papillons, nouveauté
    * ------------------------------------------------------------------ */
   const slidesEl = $('[data-hero-slides]');
   const dotsEl = $('[data-hero-dots]');
-  const slides = ((S.hero && S.hero.slides) || []).map(findProduct).filter((p) => p && p.image);
-  if (slidesEl && slides.length) {
+  safe('diaporama', () => {
+    const slides = ((S.hero && S.hero.slides) || []).map(findProduct).filter((p) => p && p.image);
+    if (!slidesEl || !dotsEl || !slides.length) return;
     let cur = 0, timer = 0;
     slidesEl.innerHTML = slides.map((p, i) =>
       `<span class="hero-slide${i === 0 ? ' is-on' : ''}"><img src="${esc(p.image)}" alt="${esc(p.name)}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async"></span>`
@@ -1087,23 +1096,24 @@
       if (d) { show(+d.dataset.dot); play(); }
     });
     document.addEventListener('visibilitychange', () => (document.hidden ? clearInterval(timer) : play()));
-  }
-  $$('[data-butterfly]').forEach((el) => { el.innerHTML = FC.butterfly(el.getAttribute('data-butterfly')); });
+  });
+  safe('papillons', () => {
+    $$('[data-butterfly]').forEach((el) => { el.innerHTML = FC.butterfly(el.getAttribute('data-butterfly')); });
+  });
   const atelierEl = $('[data-atelier]');
   if (atelierEl) atelierEl.innerHTML = FC.atelier();
 
-  const featured = findProduct(S.hero && S.hero.featured) || S.products[0];
   const chip = $('[data-featured]');
-  if (chip && featured) {
+  const featured = findProduct(S.hero && S.hero.featured) || S.products[0];
+  if (chip && featured) safe('nouveauté', () => {
     $('[data-featured-name]', chip).textContent = featured.name;
     $('small', chip).textContent = featured.badge || 'À découvrir';
     $('[data-featured-art]', chip).innerHTML = productArt(featured, 0, { aspect: 1, pad: 6 });
     $('[data-featured-art]', chip).style.background = featured.bg || '';
     chip.setAttribute('aria-label', 'Découvrir : ' + featured.name);
     chip.addEventListener('click', () => openProduct(featured.id));
-  } else if (chip) {
-    chip.hidden = true;
-  }
+  });
+  else if (chip) chip.hidden = true;
 
   /* ------------------------------------------------------------------ *
    * Clavier : Échap & piège de focus
@@ -1130,7 +1140,7 @@
   /* ------------------------------------------------------------------ *
    * Mention « aperçu » (version claude.ai uniquement)
    * ------------------------------------------------------------------ */
-  if (PREVIEW) {
+  if (PREVIEW) safe('aperçu', () => {
     const pill = document.createElement('div');
     pill.className = 'preview-pill';
     pill.setAttribute('role', 'note');
@@ -1138,14 +1148,14 @@
       '<button type="button" aria-label="Masquer ce message"><svg aria-hidden="true"><use href="#i-close"/></svg></button>';
     $('button', pill).addEventListener('click', () => pill.remove());
     document.body.appendChild(pill);
-  }
+  });
 
   /* ------------------------------------------------------------------ *
    * Démarrage
    * ------------------------------------------------------------------ */
-  renderFilters();
-  renderProducts();
-  renderCart();
-  reveal(document);
-  loadFromHash();
+  safe('filtres', renderFilters);
+  safe('créations', () => renderProducts());
+  safe('sélection', () => renderCart());
+  safe('apparitions', () => reveal(document));
+  safe('lien partagé', loadFromHash);
 })();
