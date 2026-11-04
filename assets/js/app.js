@@ -895,6 +895,7 @@
       (p.badge ? `<span class="badge">${esc(p.badge)}</span>` : '') +
       (p.pics.length > 1 ? `<span class="pics-n" aria-hidden="true"><svg><use href="#i-photos"/></svg>${p.pics.length}</span>` : '') +
       (p.gift ? `<span class="gift-tag"><svg aria-hidden="true"><use href="#i-gift"/></svg>${esc(p.gift)}</span>` : '') +
+      (jarOption(p) ? `<span class="gift-tag is-jar" title="${esc(JAR.desc || '')}"><svg aria-hidden="true"><use href="#i-jar"/></svg>Option bocal +${price(JAR.price)}</span>` : '') +
       `<span class="product-art">${productArt(p, null)}</span></button>` +
       '<div class="product-body">' +
       `<h3><button type="button" data-open="${esc(p.id)}">${esc(p.name)}</button></h3>` +
@@ -1034,7 +1035,7 @@
       `<p class="pm-desc">${esc(blurbOf(p))}</p>` +
       (p.category === 'unite' ? whyHTML() : '') +
       compo + opts +
-      (jarOption(p) ? `<label class="pm-jar"><input type="checkbox" id="pm-jar" data-pm-jar><span class="pm-jar-ic" aria-hidden="true"><svg><use href="#i-jar"/></svg></span><span><strong>${esc(JAR.label)}</strong><small>Sur demande, pour ${price(JAR.price)} de plus</small></span><b>+${price(JAR.price)}</b></label>` : '') +
+      (jarOption(p) ? `<label class="pm-jar"><input type="checkbox" id="pm-jar" data-pm-jar><span class="pm-jar-ic" aria-hidden="true"><svg><use href="#i-jar"/></svg></span><span><strong>${esc(JAR.label)}</strong><small>${esc(JAR.desc || 'Sur demande.')}</small></span><b>+${price(JAR.price)}</b></label>` : '') +
       card +
       `<div class="pm-actions">${actions}</div>` +
       (links ? `<div class="pm-links">${links}</div>` : '') +

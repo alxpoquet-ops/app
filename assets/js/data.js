@@ -60,7 +60,11 @@ window.SITE = {
   critters: true,
 
   /* ---------- Bocal transparent : proposé en option pour les fleurs à l'unité ---------- */
-  jar: { price: 5, label: 'Dans un bocal transparent' },
+  jar: {
+    price: 5,
+    label: 'Dans un bocal transparent',
+    desc: 'Il protège la fleur des intempéries : parfait pour fleurir une tombe, par exemple.'
+  },
 
   /* ---------- Emballage (le même pour toutes les créations) ---------- */
   packaging: 'Pochette transparente et nœud',
@@ -148,7 +152,7 @@ window.SITE = {
       id: 'unite',
       name: 'Fleurs à l’unité',
       blurb: 'Une fleur éternelle façonnée à la main, emballée et prête à offrir.',
-      intro: 'Une rose délicate, un pavot mignon, un gerbera tout doux, un joli lys, une tulipe lumineuse… Chaque fleur est à {prix}, emballée dans sa pochette transparente avec un nœud, et sa carte de vœux est offerte. Sur demande, je la glisse dans un bocal transparent pour {bocal} de plus. Envie d’une surprise ? Essayez la fleur mystère.'
+      intro: 'Une rose délicate, un pavot mignon, un gerbera tout doux, un joli lys, une tulipe lumineuse… Chaque fleur est à {prix}, emballée dans sa pochette transparente avec un nœud, et sa carte de vœux est offerte. Sur demande, je la glisse dans un bocal transparent pour {bocal} de plus : il la protège des intempéries, parfait pour fleurir une tombe. Envie d’une surprise ? Essayez la fleur mystère.'
     },
     { id: 'deco', name: 'Déco & cadeaux', blurb: 'Une petite douceur fleurie, faite main, pour la maison ou pour offrir.' }
   ],

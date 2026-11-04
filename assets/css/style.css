@@ -2203,3 +2203,4 @@ h3 { font-size: 1.3rem; }
 .pm-jar small { display: block; font-size: 0.8rem; color: var(--plum-2); }
 .pm-jar b { font-family: var(--serif); font-weight: 400; font-size: 1.05rem; color: var(--rose-ink); white-space: nowrap; }
 .preview-meta strong s, .b-summary dd s { margin-right: 6px; font-size: 0.75em; color: var(--plum-3); }
+.gift-tag.is-jar { color: #4F7896; }
