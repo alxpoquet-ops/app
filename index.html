@@ -17,11 +17,11 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="assets/fonts/fraunces-latin-full-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/jost-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=20261101c">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261104b">
   <script>document.documentElement.classList.add('js');window.addEventListener('error',function(){document.documentElement.classList.remove('js');});</script>
-  <script src="assets/js/data.js?v=20261101c" defer></script>
-  <script src="assets/js/flowers.js?v=20261101c" defer></script>
-  <script src="assets/js/app.js?v=20261101c" defer></script>
+  <script src="assets/js/data.js?v=20261104b" defer></script>
+  <script src="assets/js/flowers.js?v=20261104b" defer></script>
+  <script src="assets/js/app.js?v=20261104b" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Aller au contenu</a>
@@ -65,6 +65,10 @@
         </g>
       </symbol>
       <symbol id="i-facebook" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M13.6 21v-7.2h2.4l.4-2.9h-2.8V9.1c0-.8.3-1.4 1.4-1.4h1.5V5.1c-.3 0-1.2-.1-2.2-.1-2.2 0-3.6 1.3-3.6 3.7v2.2H8.3v2.9h2.4V21z"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+      <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5C9 8 6.5 10.8 6.5 14a5.5 5.5 0 0 0 11 0c0-3.2-2.5-6-5.5-10.5z"/><path d="M9.6 14.6a2.5 2.5 0 0 0 2 2.3"/></symbol>
+      <symbol id="i-photos" viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="13" height="13" rx="2.5"/><path d="M7.5 3.5h10a3 3 0 0 1 3 3v10"/><path d="M4 16l3.5-3.5 3 3 2-2 3.5 3.5"/></symbol>
+      <symbol id="i-truck" viewBox="0 0 24 24"><path d="M3.5 6.5h10v10h-10zM13.5 10h4l3 3.2v3.3h-7"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></symbol>
       <symbol id="i-chenille" viewBox="0 0 34 18"><g fill="currentColor" stroke="none"><circle cx="4.5" cy="12" r="3.3"/><circle cx="11" cy="11" r="3.7"/><circle cx="18" cy="12" r="3.9"/><circle cx="26" cy="10" r="4.8"/></g><path d="M24.5 5.4Q23 2 20.6 1.6M27.6 5Q29 1.6 31.4 1.4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></symbol>
     </defs>
   </svg>
@@ -161,13 +165,17 @@
       <div class="marquee-track">
         <span>Fait main avec passion</span><svg><use href="#i-flower"/></svg>
         <span>Fleurs éternelles</span><svg><use href="#i-flower"/></svg>
+        <span>Sans pollen</span><svg><use href="#i-flower"/></svg>
         <span>Fils de qualité</span><svg><use href="#i-flower"/></svg>
+        <span>Carte de vœux offerte</span><svg><use href="#i-flower"/></svg>
         <span>Créations sur-mesure</span><svg><use href="#i-flower"/></svg>
         <span>Évènements &amp; cadeaux</span><svg><use href="#i-flower"/></svg>
         <span>Atelier des Ardennes</span><svg><use href="#i-flower"/></svg>
         <span>Fait main avec passion</span><svg><use href="#i-flower"/></svg>
         <span>Fleurs éternelles</span><svg><use href="#i-flower"/></svg>
+        <span>Sans pollen</span><svg><use href="#i-flower"/></svg>
         <span>Fils de qualité</span><svg><use href="#i-flower"/></svg>
+        <span>Carte de vœux offerte</span><svg><use href="#i-flower"/></svg>
         <span>Créations sur-mesure</span><svg><use href="#i-flower"/></svg>
         <span>Évènements &amp; cadeaux</span><svg><use href="#i-flower"/></svg>
         <span>Atelier des Ardennes</span><svg><use href="#i-flower"/></svg>
@@ -207,7 +215,7 @@
         </div>
         <ol class="steps-list">
           <li class="step reveal" style="--i:0;--tint:#F8E1E6"><span class="step-n">1</span><h3>Vous choisissez</h3><p>Une de mes créations, ou votre propre bouquet, fleur par fleur.</p></li>
-          <li class="step reveal" style="--i:1;--tint:#ECE5F8"><span class="step-n">2</span><h3>Je vous réponds</h3><p>Je confirme avec vous les couleurs, le prix et la date par message.</p></li>
+          <li class="step reveal" style="--i:1;--tint:#ECE5F8"><span class="step-n">2</span><h3>Je vous réponds</h3><p>Je confirme avec vous les couleurs, le prix et la date par e-mail.</p></li>
           <li class="step reveal" style="--i:2;--tint:#E2F1E7"><span class="step-n">3</span><h3>Je façonne</h3><p>Votre création prend vie à la main, dans mon atelier des Ardennes.</p></li>
           <li class="step reveal" style="--i:3;--tint:#FBEBDD"><span class="step-n">4</span><h3>Vous la recevez</h3><p>Retrait à l’atelier ou livraison autour de Signy-l’Abbaye.</p></li>
         </ol>
@@ -222,11 +230,28 @@
             <p class="eyebrow reveal">Mes créations</p>
             <h2 id="shop-title" class="reveal" style="--i:1">Prêtes à être <em>adoptées</em></h2>
           </div>
-          <p class="section-sub reveal" style="--i:2">Chaque création est faite à la main, sur commande. Les couleurs s’adaptent à vos envies, et les prix sont donnés sur demande.</p>
+          <p class="section-sub reveal" style="--i:2">Chaque création est faite à la main, sur commande, et emballée dans une pochette transparente fermée d’un nœud. Les fleurs à l’unité sont à <span data-unit-price>8&nbsp;€</span>, les bouquets sur demande.</p>
         </div>
         <div class="filters reveal" role="group" aria-label="Filtrer les créations" data-filters></div>
+        <div class="cat-intro" data-cat-intro hidden></div>
         <div class="product-grid" data-products aria-live="polite"></div>
-        <p class="shop-note reveal"><svg><use href="#i-info"/></svg> Ajoutez vos coups de cœur à votre sélection, puis envoyez-moi votre demande&nbsp;: je vous réponds avec le prix et un délai.</p>
+        <div class="shop-more"><button class="btn btn-ghost" type="button" data-shop-more hidden>Voir plus de créations</button></div>
+        <p class="shop-note reveal"><svg><use href="#i-info"/></svg> Ajoutez vos coups de cœur à votre sélection, écrivez votre carte de vœux, puis envoyez-moi votre demande&nbsp;: je vous réponds avec le prix et un délai.</p>
+
+        <div class="why-price reveal">
+          <div class="why-photo"><img src="assets/gallery/g034-s.webp" alt="Deux fleurs à l’unité, chacune dans sa pochette transparente fermée d’un nœud rose" width="480" height="640" loading="lazy" decoding="async"></div>
+          <div class="why-copy">
+            <p class="eyebrow">Le prix d’une fleur</p>
+            <h3>Une fleur à <span data-unit-price>8&nbsp;€</span>, <em>c’est…</em></h3>
+            <ul class="why-list">
+              <li><span class="why-ic"><svg><use href="#i-clock"/></svg></span><div><strong>Du temps</strong><p>Chaque pétale est plié, torsadé et ajusté à la main.</p></div></li>
+              <li><span class="why-ic"><svg class="ic-wide"><use href="#i-chenille"/></svg></span><div><strong>Du matériel</strong><p>Des fils chenille choisis pour leur qualité et leur durabilité.</p></div></li>
+              <li><span class="why-ic"><svg><use href="#i-drop"/></svg></span><div><strong>De la colle</strong><p>Pour que chaque détail tienne bien, longtemps.</p></div></li>
+              <li><span class="why-ic"><svg><use href="#i-gift"/></svg></span><div><strong>Un emballage</strong><p>Une pochette transparente, fermée d’un joli nœud.</p></div></li>
+            </ul>
+            <p class="why-card"><svg><use href="#i-mail"/></svg> Et la carte de vœux est offerte, avec le message de votre choix.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -237,7 +262,7 @@
           <div class="section-head center">
             <p class="eyebrow reveal">Votre bouquet à vous</p>
             <h2 id="builder-title" class="reveal" style="--i:1">Composez le bouquet <em>de vos rêves</em></h2>
-            <p class="section-sub reveal" style="--i:2">Choisissez vos fleurs et leurs couleurs, le papier, le ruban et un petit mot. Je le façonnerai à la main, rien que pour vous.</p>
+            <p class="section-sub reveal" style="--i:2">Choisissez vos fleurs et leurs couleurs, puis écrivez votre carte de vœux&nbsp;: elle est offerte. Je façonne votre bouquet à la main et je l’emballe dans une pochette transparente fermée d’un nœud.</p>
           </div>
 
           <div class="builder-grid">
@@ -266,24 +291,15 @@
                 <div class="b-chips" data-b-chips aria-label="Fleurs de votre bouquet"></div>
               </div>
               <div class="b-step">
-                <h3><span class="b-num">3</span> L’habillage</h3>
-                <p class="b-sub">Papier</p>
-                <div class="swatches swatches--label" role="radiogroup" aria-label="Couleur du papier" data-b-papers></div>
-                <p class="b-sub">Ruban</p>
-                <div class="swatches swatches--label" role="radiogroup" aria-label="Couleur du ruban" data-b-ribbons></div>
-              </div>
-              <div class="b-step">
-                <h3><span class="b-num">4</span> Un petit mot <small>facultatif</small></h3>
-                <label class="field field--counter">
-                  <span class="sr-only">Message de la petite carte</span>
-                  <textarea id="b-message" rows="2" maxlength="80" placeholder="Joyeux anniversaire ma belle…" data-b-message></textarea>
-                  <span class="counter" data-b-counter>0/80</span>
-                </label>
+                <h3><span class="b-num">3</span> Votre carte de vœux <small class="b-free">offerte</small></h3>
+                <p class="b-hint">Votre petit mot apparaît sur la carte, à côté du bouquet. Tout est facultatif.</p>
+                <div data-b-card></div>
               </div>
               <div class="b-summary">
                 <dl>
                   <div><dt>Fleurs</dt><dd data-b-count-2>0</dd></div>
-                  <div><dt>Habillage</dt><dd data-b-wrap></dd></div>
+                  <div><dt>Emballage</dt><dd data-pack>Pochette transparente et nœud</dd></div>
+                  <div><dt>Carte de vœux</dt><dd data-b-card-state>Offerte</dd></div>
                   <div class="total"><dt>Prix</dt><dd>Sur devis</dd></div>
                 </dl>
                 <button class="btn btn-primary btn-block" type="button" data-b-add><svg><use href="#i-bag"/></svg> Ajouter à ma sélection</button>
@@ -316,8 +332,9 @@
             <h2 id="delivery-title">Depuis mon atelier <em>des Ardennes</em></h2>
           </div>
           <ul class="delivery-list">
-            <li><span class="ci"><svg><use href="#i-pin"/></svg></span><div><strong>Retrait à l’atelier</strong><p>Venez chercher votre création directement à l’atelier, à <span data-city>Signy-l’Abbaye</span>.</p></div></li>
-            <li><span class="ci"><svg><use href="#i-gift"/></svg></span><div><strong>Livraison</strong><p data-delivery>Livraison&nbsp;: 5&nbsp;€ dans un rayon de 20&nbsp;km autour de Signy-l’Abbaye, puis 0,40&nbsp;€ par kilomètre supplémentaire.</p></div></li>
+            <li><span class="ci"><svg><use href="#i-pin"/></svg></span><div><strong>Retrait à l’atelier</strong><p>Venez chercher votre création directement à l’atelier, à <span data-city>Signy-l’Abbaye</span>. C’est gratuit.</p></div></li>
+            <li><span class="ci"><svg><use href="#i-truck"/></svg></span><div><strong>Livraison</strong><p data-delivery>Livraison&nbsp;: 5&nbsp;€ jusqu’à 15&nbsp;km, 10&nbsp;€ jusqu’à 25&nbsp;km autour de Signy-l’Abbaye. Au-delà, on en parle ensemble.</p></div></li>
+            <li><span class="ci"><svg><use href="#i-gift"/></svg></span><div><strong>Emballage &amp; carte offerte</strong><p>Chaque création est emballée dans une pochette transparente fermée d’un nœud, avec sa carte de vœux personnalisée, offerte.</p></div></li>
           </ul>
         </div>
       </div>
@@ -368,7 +385,7 @@
           </details>
           <details class="faq-item reveal" style="--i:1">
             <summary>Combien coûte une création&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
-            <div class="faq-a"><p>Une fleur à l’unité coûte 5&nbsp;€. Pour les bouquets et les créations sur-mesure, le prix dépend du nombre de fleurs et de la composition&nbsp;: envoyez-moi votre demande, je vous réponds avec un devis.</p></div>
+            <div class="faq-a"><p>Une fleur à l’unité coûte <span data-unit-price>8&nbsp;€</span>. Une fleur, c’est du temps (chaque pétale est façonné à la main), du matériel (des fils chenille sélectionnés pour leur qualité), de la colle et un emballage&nbsp;: une pochette transparente fermée d’un nœud.</p><p>Pour les bouquets et les créations sur-mesure, le prix dépend du nombre de fleurs et de la composition&nbsp;: envoyez-moi votre demande, je vous réponds avec un devis.</p></div>
           </details>
           <details class="faq-item reveal" style="--i:2">
             <summary>Puis-je choisir mes couleurs&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
@@ -376,17 +393,21 @@
           </details>
           <details class="faq-item reveal" style="--i:3">
             <summary>Proposez-vous la livraison&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
-            <div class="faq-a"><p data-delivery>Livraison&nbsp;: 5&nbsp;€ dans un rayon de 20&nbsp;km autour de Signy-l’Abbaye, puis 0,40&nbsp;€ par kilomètre supplémentaire.</p><p>Vous pouvez aussi venir chercher votre création à l’atelier, à Signy-l’Abbaye.</p></div>
+            <div class="faq-a"><p data-delivery>Livraison&nbsp;: 5&nbsp;€ jusqu’à 15&nbsp;km, 10&nbsp;€ jusqu’à 25&nbsp;km autour de Signy-l’Abbaye. Au-delà, on en parle ensemble.</p><p>Vous pouvez aussi venir chercher gratuitement votre création à l’atelier, à Signy-l’Abbaye.</p></div>
           </details>
           <details class="faq-item reveal" style="--i:4">
+            <summary>Comment mes fleurs sont-elles emballées&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
+            <div class="faq-a"><p>Toutes mes créations sont emballées dans une pochette transparente, fermée d’un joli nœud. J’y ajoute une carte de vœux, offerte&nbsp;: écrivez votre petit mot au moment de la commande, je le glisse avec votre création.</p></div>
+          </details>
+          <details class="faq-item reveal" style="--i:5">
             <summary>Faites-vous des compositions pour fleurir une sépulture&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
             <div class="faq-a"><p>Oui. Pour honorer la mémoire d’un être cher, je réalise des compositions dans un bocal transparent qui les protège des intempéries. Elles restent belles au fil des saisons, sans entretien. Parlez-moi de vos souhaits, en toute simplicité.</p></div>
           </details>
-          <details class="faq-item reveal" style="--i:5">
+          <details class="faq-item reveal" style="--i:6">
             <summary>Combien de temps faut-il pour réaliser ma commande&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
             <div class="faq-a"><p>Chaque création est façonnée à la main, à la commande. Le délai dépend de la composition&nbsp;: je vous l’indique en confirmant votre demande. Pour une date précise, prévenez-moi le plus tôt possible.</p></div>
           </details>
-          <details class="faq-item reveal" style="--i:6">
+          <details class="faq-item reveal" style="--i:7">
             <summary>Faites-vous des créations pour les évènements&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>
             <div class="faq-a"><p>Avec plaisir&nbsp;: bouquets, centres de table, décorations pour un mariage, un baptême ou un anniversaire… Décrivez-moi votre projet via le formulaire de contact.</p></div>
           </details>
@@ -414,23 +435,26 @@
           <form class="contact-form reveal" style="--i:2" data-contact-form novalidate>
             <div class="field-row">
               <label class="field"><span>Prénom &amp; nom</span><input id="c-name" name="name" type="text" autocomplete="name" required></label>
-              <label class="field"><span>E-mail ou téléphone</span><input id="c-reply" name="reply" type="text" autocomplete="email" required></label>
+              <label class="field"><span>E-mail</span><input id="c-email" name="email" type="email" autocomplete="email" inputmode="email" required></label>
             </div>
             <div class="field-row">
-              <label class="field"><span>Sujet</span>
-                <select id="c-subject" name="subject">
-                  <option>Une commande</option>
-                  <option>Un bouquet sur mesure</option>
-                  <option>Mariage &amp; événements</option>
-                  <option>Une composition souvenir</option>
-                  <option>Une question</option>
-                </select>
-              </label>
+              <label class="field"><span>Téléphone <small>(facultatif)</small></span><input id="c-phone" name="phone" type="tel" autocomplete="tel"></label>
               <label class="field"><span>Date souhaitée <small>(facultatif)</small></span><input id="c-date" name="date" type="date"></label>
             </div>
+            <label class="field"><span>Sujet</span>
+              <select id="c-subject" name="subject">
+                <option>Une commande</option>
+                <option>Un bouquet sur mesure</option>
+                <option>Mariage &amp; événements</option>
+                <option>Une composition souvenir</option>
+                <option>Une question</option>
+              </select>
+            </label>
             <label class="field"><span>Votre message</span><textarea id="c-message" name="message" rows="5" required placeholder="Racontez-moi votre envie…"></textarea></label>
+            <label class="hp" aria-hidden="true">Ne pas remplir<input type="text" name="_honey" tabindex="-1" autocomplete="off"></label>
             <div class="form-actions" data-form-actions></div>
-            <p class="form-note">Votre message est préparé ici, puis envoyé depuis Instagram ou votre messagerie&nbsp;: rien n’est enregistré sur ce site.</p>
+            <div class="send-alert" data-send-alert role="alert" hidden></div>
+            <p class="form-note">Votre message m’arrive directement par e-mail et je vous réponds au plus vite. Vos coordonnées servent uniquement à vous répondre.</p>
           </form>
         </div>
       </div>
@@ -483,7 +507,7 @@
       <div class="drawer-body" data-cart-items></div>
       <footer class="drawer-foot" data-cart-foot>
         <div class="cart-total"><span>Total</span><strong data-cart-total>0 €</strong></div>
-        <p class="tiny">Je vous confirme le prix, la date et la remise (retrait ou livraison) par message.</p>
+        <p class="tiny">Votre carte de vœux est offerte&nbsp;: vous l’écrirez à l’étape suivante. Je vous confirme ensuite le prix, la date et la remise.</p>
         <button class="btn btn-primary btn-block" type="button" data-checkout>Finaliser ma demande <svg><use href="#i-arrow"/></svg></button>
       </footer>
     </aside>

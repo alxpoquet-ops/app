@@ -387,32 +387,53 @@
   const paperScale = (n) => 0.5 + 0.5 * Math.min(1, n / 14);
 
   /* ------------------------------------------------------------------ *
-   * Contenants : papier, ruban, pot, étiquette
+   * Contenants : pochette transparente et nœud, pot, bocal, carte de vœux
    * ------------------------------------------------------------------ */
-  function backPaper(p) {
-    return `<path data-c="mid" fill="${p.mid}" d="M200 398L54 214Q92 168 140 184Q170 150 200 162Q230 150 260 184Q308 168 346 214Z"/>` +
-      `<path data-c="base" fill="${p.base}" opacity=".55" d="M200 398L54 214Q92 168 140 184Q170 150 200 162Z"/>` +
-      `<path data-s="dark" stroke="${p.dark}" fill="none" stroke-width="1.2" opacity=".35" d="M54 214Q92 168 140 184Q170 150 200 162Q230 150 260 184Q308 168 346 214"/>`;
+  /* La pochette est dessinée dans le repère du bouquet : liage B = (200, 345),
+     col de la pochette en y = 375, là où se place le nœud. */
+  const FILM = 'fill="#FFFFFF" stroke="#FFFFFF" stroke-linejoin="round" stroke-width="2.2"';
+  const FILM_EDGE = 'fill="none" stroke="#8EA3B8" stroke-opacity=".38" stroke-width="1" stroke-linejoin="round"';
+  const glint = (w, o) => `fill="none" stroke="#FFFFFF" stroke-width="${w}" stroke-opacity="${o}" stroke-linecap="round"`;
+  const POUCH_BACK = 'M187 377L58 198L90 176L112 190L138 150L166 176L200 134L234 176L262 150L288 190L310 176L342 198L213 377Z';
+  const POUCH_FRONT = 'M124 284L143 297L160 290L179 303L200 296L221 303L240 290L257 297L276 284L213 377L187 377Z';
+  const POUCH_SKIRT = 'M188 380C182 404 170 432 159 470Q170 463 179 471Q190 463 200 473Q210 463 221 471Q230 463 241 470C230 432 218 404 212 380Z';
+  /** Fond de la pochette transparente (derrière les tiges). */
+  function pouchBack() {
+    return `<path d="${POUCH_BACK}" ${FILM} fill-opacity=".34" stroke-opacity=".95"/>` +
+      `<path d="${POUCH_BACK}" ${FILM_EDGE}/>` +
+      `<path d="M92 180L189 368M140 154L194 366M260 154L206 366M308 180L211 368" ${glint(2.4, 0.55)}/>` +
+      '<path d="M200 140V364" fill="none" stroke="#9FB4C8" stroke-opacity=".22" stroke-width="1.2"/>';
   }
-  function frontPaper(p) {
-    return `<path data-c="base" fill="${p.base}" d="M108 296C150 316 246 302 292 282L224 494Q200 503 176 494Z"/>` +
-      `<path data-c="light" fill="${p.light}" d="M108 296C136 309 168 314 200 314L190 496Q182 498 176 494Z"/>` +
-      `<path data-s="dark" stroke="${p.dark}" fill="none" stroke-width="1.3" opacity=".55" d="M200 314L190 496"/>` +
-      `<path data-s="dark" stroke="${p.dark}" fill="none" stroke-width="1.5" opacity=".5" d="M108 296C150 316 246 302 292 282"/>` +
-      '<path fill="#fff" opacity=".2" d="M232 300L270 291L216 482L208 484Z"/>';
+  /** Devant de la pochette et petite jupe sous le nœud (les tiges restent visibles). */
+  function pouchFront() {
+    return `<path d="${POUCH_FRONT}" ${FILM} fill-opacity=".3" stroke-opacity=".95"/>` +
+      `<path d="${POUCH_FRONT}" ${FILM_EDGE}/>` +
+      `<path d="M238 298L210 370" ${glint(4, 0.7)}/><path d="M156 296L191 368" ${glint(2, 0.45)}/>` +
+      `<path d="${POUCH_SKIRT}" ${FILM} fill-opacity=".36" stroke-opacity=".95"/>` +
+      `<path d="${POUCH_SKIRT}" ${FILM_EDGE}/>` +
+      `<path d="M205 388Q213 420 225 460" ${glint(3, 0.6)}/>`;
   }
-  /** Nœud de ruban centré en (0,0). */
-  function bowInner(p) {
+  /** Extrémité basse d'une tige, visible à travers la pochette (h : tête, k : échelle, v : variation). */
+  const tailPos = (B, h, k, v) => ({ x: r1(B.x - (h.x - B.x) * 0.15), y: r1(B.y + (112 - (v % 3) * 5) * k) });
+
+  /** Nœud de ruban centré en (0,0) ; sans la bande qui fait le tour si noBand. */
+  function bowInner(p, noBand) {
     const st = 'stroke-width="1.4" stroke-linejoin="round"';
-    return `<path data-s="base" stroke="${p.base}" fill="none" stroke-width="7" stroke-linecap="round" d="M-62 -6Q0 10 62 -10"/>` +
-      `<path data-s="light" stroke="${p.light}" fill="none" stroke-width="1.6" stroke-linecap="round" opacity=".9" d="M-60 -8Q0 7 60 -12"/>` +
-      `<path data-c="dark" fill="${p.dark}" d="M-2 2L-20 46L-12 42L-8 52L4 4Z"/>` +
-      `<path data-c="base" data-s="dark" fill="${p.base}" stroke="${p.dark}" ${st} d="M2 2L22 44L13 41L10 51L-4 4Z"/>` +
-      `<path data-c="base" data-s="dark" fill="${p.base}" stroke="${p.dark}" ${st} d="M0 0C-12 -20 -36 -16 -32 -2C-29 9 -12 8 0 0Z"/>` +
-      `<path data-c="base" data-s="dark" fill="${p.base}" stroke="${p.dark}" ${st} d="M0 0C12 -20 36 -16 32 -2C29 9 12 8 0 0Z"/>` +
-      `<path data-s="light" stroke="${p.light}" fill="none" stroke-width="1.6" stroke-linecap="round" d="M-6 -3C-14 -10 -24 -9 -26 -3"/>` +
-      `<path data-s="light" stroke="${p.light}" fill="none" stroke-width="1.6" stroke-linecap="round" d="M6 -3C14 -10 24 -9 26 -3"/>` +
-      `<ellipse data-c="base" data-s="dark" rx="6.5" ry="5.5" fill="${p.base}" stroke="${p.dark}" stroke-width="1.4"/>`;
+    return (noBand ? '' : `<path stroke="${p.base}" fill="none" stroke-width="7" stroke-linecap="round" d="M-62 -6Q0 10 62 -10"/>` +
+      `<path stroke="${p.light}" fill="none" stroke-width="1.6" stroke-linecap="round" opacity=".9" d="M-60 -8Q0 7 60 -12"/>`) +
+      `<path fill="${p.dark}" d="M-2 2L-20 46L-12 42L-8 52L4 4Z"/>` +
+      `<path fill="${p.base}" stroke="${p.dark}" ${st} d="M2 2L22 44L13 41L10 51L-4 4Z"/>` +
+      `<path fill="${p.base}" stroke="${p.dark}" ${st} d="M0 0C-12 -20 -36 -16 -32 -2C-29 9 -12 8 0 0Z"/>` +
+      `<path fill="${p.base}" stroke="${p.dark}" ${st} d="M0 0C12 -20 36 -16 32 -2C29 9 12 8 0 0Z"/>` +
+      `<path stroke="${p.light}" fill="none" stroke-width="1.6" stroke-linecap="round" d="M-6 -3C-14 -10 -24 -9 -26 -3"/>` +
+      `<path stroke="${p.light}" fill="none" stroke-width="1.6" stroke-linecap="round" d="M6 -3C14 -10 24 -9 26 -3"/>` +
+      `<ellipse rx="6.5" ry="5.5" fill="${p.base}" stroke="${p.dark}" stroke-width="1.4"/>`;
+  }
+  /* Le nœud de la pochette : rose tendre, avec deux rubans frisés. */
+  const BOW = pal('#EDB3C7');
+  function pouchBow() {
+    const curl = (x, s) => `<path d="M${x} 5c${4 * s} 10 ${-6 * s} 15 ${-s} 25c${5 * s} 10 ${-5 * s} 16 ${s} 26c${5 * s} 9 ${-2 * s} 15 ${2 * s} 21" fill="none" stroke="${BOW.mid}" stroke-width="2" stroke-linecap="round"/>`;
+    return curl(-5, 1) + curl(6, -1) + bowInner(BOW, true);
   }
   function potSVG(p) {
     return `<path d="M140 364L260 364L247 468Q200 482 153 468Z" fill="${p.base}" stroke="${p.dark}" stroke-width="1.6" stroke-linejoin="round"/>` +
@@ -458,17 +479,35 @@
     }
     return out;
   }
-  /** Petite étiquette avec le mot doux, accrochée au nœud (bx, by). */
-  function tagSVG(msg, bx, by) {
-    const lines = wrapText(msg, 17, 4);
-    const w = 112, h = 28 + lines.length * 13;
-    const tx = bx + 64, ty = by + 24;
-    const txt = lines.map((ln, i) => `<text x="0" y="${25 + i * 13}" text-anchor="middle">${esc(ln)}</text>`).join('');
-    return `<path d="M${bx + 3} ${by + 4}Q${bx + 30} ${by + 34} ${r1(tx - 1.3)} ${r1(ty + 8.9)}" fill="none" stroke="#C9B6A8" stroke-width="1.1"/>` +
-      `<g transform="translate(${tx} ${ty}) rotate(8)">` +
-      `<rect x="${-w / 2}" y="0" width="${w}" height="${h}" rx="9" fill="#FFFDF9" stroke="#E6D9CF" stroke-width="1.2"/>` +
-      '<circle cx="0" cy="9" r="2.6" fill="none" stroke="#D8C8BC" stroke-width="1.2"/>' +
-      `<g font-family="Fraunces, Georgia, serif" font-style="italic" font-size="11" fill="#6E5A6A">${txt}</g>` +
+  const clip = (t, n) => (t.length > n ? t.slice(0, n - 1) + '…' : t);
+  /* Carte de vœux : { to, msg, from } (ou un simple texte). */
+  function cardParts(card) {
+    if (!card || typeof card !== 'object') card = { msg: card };
+    const to = String(card.to || '').trim(), msg = String(card.msg || '').trim(), from = String(card.from || '').trim();
+    const lines = msg ? wrapText(msg, 19, 4) : [];
+    const h = 24 + (to ? 16 : 0) + lines.length * 14.5 + (from ? 18 : 0) + 6;
+    return { to, from, lines, h: Math.max(58, h), empty: !to && !msg && !from };
+  }
+  const CARD_W = 132, CARD_DX = 90, CARD_DY = 18;
+  /** Petite carte de vœux accrochée au nœud (bx, by). */
+  function cardSVG(card, bx, by) {
+    const c = cardParts(card);
+    if (c.empty) return '';
+    const W = CARD_W, tx = bx + CARD_DX, ty = by + CARD_DY;
+    let y = 24, txt = '';
+    if (c.to) { txt += `<text x="${-W / 2 + 14}" y="${y}" font-size="10.5" fill="#A24E74">${esc(clip(c.to, 22) + (/[,!.?:]$/.test(c.to) ? '' : ','))}</text>`; y += 16; }
+    c.lines.forEach((ln) => { txt += `<text x="0" y="${r1(y)}" text-anchor="middle">${esc(ln)}</text>`; y += 14.5; });
+    if (c.from) txt += `<text x="${W / 2 - 14}" y="${r1(y + 3)}" text-anchor="end" font-size="10.5" fill="#A24E74">${esc('— ' + clip(c.from, 20))}</text>`;
+    const hx = -W / 2 + 13, hy = 11;
+    const ax = r1(tx + hx * Math.cos(rad(7)) - hy * Math.sin(rad(7))), ay = r1(ty + hx * Math.sin(rad(7)) + hy * Math.cos(rad(7)));
+    const flower = [0, 72, 144, 216, 288].map((a) => `<circle cx="${r1(W / 2 - 15 + 3.2 * Math.sin(rad(a)))}" cy="${r1(13 - 3.2 * Math.cos(rad(a)))}" r="2.5" fill="#F3C4CF"/>`).join('');
+    return `<path d="M${bx + 4} ${by + 4}Q${bx + 16} ${by + 28} ${ax} ${ay}" fill="none" stroke="#C9B6A8" stroke-width="1.1"/>` +
+      `<g class="fc-card" transform="translate(${tx} ${ty}) rotate(7)">` +
+      `<rect x="${-W / 2}" y="0" width="${W}" height="${r1(c.h)}" rx="7" fill="#FFFDF9" stroke="#E7D6CE" stroke-width="1.2"/>` +
+      `<rect x="${-W / 2 + 5}" y="5" width="${W - 10}" height="${r1(c.h - 10)}" rx="4" fill="none" stroke="#F0C3D2" stroke-width="1.1" stroke-dasharray="1 4" stroke-linecap="round"/>` +
+      `<circle cx="${hx}" cy="${hy}" r="2.6" fill="#FFFDF9" stroke="#D8C8BC" stroke-width="1.2"/>` +
+      flower + `<circle cx="${W / 2 - 15}" cy="13" r="1.8" fill="${GOLD}"/>` +
+      `<g font-family="Fraunces, Georgia, serif" font-style="italic" font-size="11.5" fill="#5E4A5A">${txt}</g>` +
       '</g>';
   }
 
@@ -518,7 +557,10 @@
     lay.forEach((l, idx) => {
       const h = headPos(B, l.a, l.L);
       let d = `M${B.x} ${B.y}L${r1(h.x)} ${r1(h.y)}`;
-      if (container === 'none') {
+      if (container === 'paper') {
+        const t = tailPos(B, h, k, idx);
+        d = `M${t.x} ${t.y}L${B.x} ${B.y}L${r1(h.x)} ${r1(h.y)}`;
+      } else if (container === 'none') {
         const ex = B.x - (h.x - B.x) * 0.22, ey = items.length === 1 ? B.y + 84 : 484 - (idx % 3) * 3;
         d = `M${r1(h.x)} ${r1(h.y)}L${B.x} ${B.y}L${r1(ex)} ${ey}`;
       }
@@ -531,10 +573,9 @@
         (anim ? '</g>' : '') + '</g>';
     });
 
-    const pp = pal(hexOf('papers', cfg.paper, '#F6EFE6'));
     const rp = pal(hexOf('ribbons', cfg.ribbon, '#E6A4B6'));
     let s = '';
-    if (container === 'paper') s += `<g class="fc-paper" transform="${kT}">${backPaper(pp)}</g>`;
+    if (container === 'paper') s += `<g class="fc-paper" transform="${kT}">${pouchBack()}</g>`;
     if (container === 'bocal') s += bocalBase();
 
     let stems = anim
@@ -547,17 +588,17 @@
     }
     s += `<g class="fc-stems" filter="url(#fc-fuzz)" fill="none" stroke-linecap="round" stroke-linejoin="round">${stems}</g>`;
 
-    if (container === 'paper') s += `<g class="fc-paper" transform="${kT}">${frontPaper(pp)}</g>`;
+    if (container === 'paper') s += `<g class="fc-paper" transform="${kT}">${pouchFront()}</g>`;
     if (container === 'pot') s += potSVG(pal(hexOf('pots', cfg.pot, '#EDC3AE')));
     s += `<g class="fc-heads" filter="url(#fc-fuzz)">${heads}</g>`;
     if (container === 'bocal') s += bocalJar();
 
     const bowY = container === 'paper' ? B.y + 30 * k : B.y;
     if (container !== 'pot' && container !== 'bocal' && items.length) {
-      s += `<g transform="translate(${B.x} ${r1(bowY)}) scale(${(container === 'none' ? 0.62 : k).toFixed(3)})"><g class="fc-bow">${container === 'none' ? bowInner(rp).replace(/<path data-s="base"[^>]*\/><path data-s="light"[^>]*\/>/, '') : bowInner(rp)}</g></g>`;
+      s += `<g transform="translate(${B.x} ${r1(bowY)}) scale(${(container === 'none' ? 0.62 : k).toFixed(3)})"><g class="fc-bow">${container === 'none' ? bowInner(rp, true) : pouchBow()}</g></g>`;
     }
     if (opt.mascot && container === 'paper') s += `<g class="fc-mascot">${mascot(B.x + 18 * k, B.y - 46 * k, 0.7)}</g>`;
-    if (opt.tag && cfg.message) s += tagSVG(cfg.message, B.x, bowY);
+    if (opt.tag && (cfg.card || cfg.message)) s += cardSVG(cfg.card || cfg.message, B.x, bowY);
 
     let vb = opt.viewBox || '0 20 400 490';
     if (opt.fit) {
@@ -572,14 +613,18 @@
         if (kindOf(l.it.type) === 'filler') { const t = headPos(h, l.a, 68); add(t.x, t.y, 12); }
       });
       if (container === 'paper') {
-        add(B.x + (54 - 200) * k, B.y + (160 - 345) * k, 0);
-        add(B.x + (346 - 200) * k, B.y + (502 - 345) * k, 0);
+        add(B.x + (56 - 200) * k, B.y + (132 - 345) * k, 0);
+        add(B.x + (344 - 200) * k, B.y + (482 - 345) * k, 0);
       } else if (container === 'pot') {
         add(128, 346, 0); add(272, 482, 0);
       } else if (container === 'bocal') {
         add(96, 150, 0); add(304, 458, 0);
       } else {
         add(B.x, items.length === 1 ? B.y + 90 : 488, 0); add(B.x - 40, B.y, 0); add(B.x + 40, B.y, 0);
+      }
+      if (opt.tag && (cfg.card || cfg.message)) {
+        const c = cardParts(cfg.card || cfg.message);
+        if (!c.empty) add(B.x + CARD_DX + CARD_W / 2 + 10, bowY + CARD_DY + c.h + 10, 0);
       }
       const pad = opt.pad != null ? opt.pad : 16;
       x0 -= pad; y0 -= pad; x1 += pad; y1 += pad;
@@ -646,7 +691,7 @@
       '<text x="200" y="214" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-style="italic" font-size="31" fill="#4B3A48">Carte cadeau</text>' +
       '<text x="200" y="244" text-anchor="middle" font-family="Jost, Arial, sans-serif" font-size="11" letter-spacing="3.5" fill="#6E5A6A">FLORE &amp; CHENILLES</text>' +
       `<g filter="url(#fc-fuzz)"><g transform="translate(96 150) scale(.8)">${HEADS.cosmos(pal('#D9CBF0'))}</g><g transform="translate(306 272) scale(.7)">${HEADS.rose(pal('#F8CDB5'))}</g></g></g>` +
-      `<g transform="translate(286 132) rotate(14) scale(.8)">${bowInner(pal('#E6A4B6')).replace(/<path data-s="base"[^>]*\/><path data-s="light"[^>]*\/>/, '')}</g>` +
+      `<g transform="translate(286 132) rotate(14) scale(.8)">${bowInner(pal('#E6A4B6'), true)}</g>` +
       '</svg>';
   }
 
@@ -678,28 +723,27 @@
   /* ------------------------------------------------------------------ *
    * Scène animée pour « Votre bouquet à vous »
    * ------------------------------------------------------------------ */
-  function createStage(svg, opts) {
-    opts = opts || {};
+  function createStage(svg) {
     const NS = 'http://www.w3.org/2000/svg';
     const B = GEO.paper.B;
     svg.innerHTML =
       '<g class="st-back"></g>' +
-      `<g class="st-stems" filter="url(#fc-fuzz)" fill="none" stroke-linecap="round"><g class="st-s1" stroke="${STEM.dark}" stroke-width="4.6"></g><g class="st-s2" stroke="${STEM.base}" stroke-width="3"></g></g>` +
+      `<g class="st-stems" filter="url(#fc-fuzz)" fill="none" stroke-linecap="round" stroke-linejoin="round"><g class="st-s1" stroke="${STEM.dark}" stroke-width="4.6"></g><g class="st-s2" stroke="${STEM.base}" stroke-width="3"></g></g>` +
       '<g class="st-front"></g><g class="st-heads" filter="url(#fc-fuzz)"></g><g class="st-bow"></g><g class="st-tag"></g>';
     const q = (c) => svg.querySelector(c);
     const back = q('.st-back'), front = q('.st-front'), s1g = q('.st-s1'), s2g = q('.st-s2');
     const headsG = q('.st-heads'), bowG = q('.st-bow'), tagG = q('.st-tag');
-    const p0 = pal('#F6EFE6');
-    back.innerHTML = backPaper(p0);
-    front.innerHTML = frontPaper(p0);
-    bowG.innerHTML = bowInner(pal('#E6A4B6'));
+    back.innerHTML = pouchBack();
+    front.innerHTML = pouchFront();
+    bowG.innerHTML = pouchBow();
 
     const nodes = new Map();
     const k0 = paperScale(0);
     const paperK = { cur: k0, from: k0, to: k0, t0: 0 };
     const ASPECT = 400 / 490;
+    let cardH = 0;
     /* Cadre « caméra » : zoome sur le bouquet et recule quand il grandit. */
-    function fitBox(lay, k, hasTag) {
+    function fitBox(lay, k) {
       let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
       const add = (x, y, r) => {
         x0 = Math.min(x0, x - r); y0 = Math.min(y0, y - r);
@@ -710,9 +754,9 @@
         add(h.x, h.y, 32 * l.s);
         if (kindOf(l.it.type) === 'filler') { const t = headPos(h, l.a, 68); add(t.x, t.y, 12); }
       });
-      add(B.x + (54 - 200) * k, B.y + (160 - 345) * k, 0);
-      add(B.x + (346 - 200) * k, B.y + (502 - 345) * k, 0);
-      if (hasTag) add(B.x + 128, B.y + 24 + 30 * k + 84, 0);
+      add(B.x + (56 - 200) * k, B.y + (132 - 345) * k, 0);
+      add(B.x + (344 - 200) * k, B.y + (482 - 345) * k, 0);
+      if (cardH) add(B.x + CARD_DX + CARD_W / 2 + 10, B.y + 30 * k + CARD_DY + cardH + 12, 0);
       const pad = 20;
       y0 -= pad; y1 += pad;
       let hw = Math.max(B.x - x0, x1 - B.x) + pad;
@@ -722,12 +766,12 @@
       else { const nh = w / ASPECT; y0 -= nh - h; h = nh; }
       return [B.x - w / 2, y0, w, h];
     }
-    const cam = { cur: fitBox([], k0, false), from: null, to: null, t0: 0 };
+    const cam = { cur: fitBox([], k0), from: null, to: null, t0: 0 };
     cam.from = cam.cur.slice(); cam.to = cam.cur.slice();
     const applyCam = () => svg.setAttribute('viewBox', cam.cur.map(r1).join(' '));
     const reduce = !!(global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches);
     const DUR = reduce ? 1 : 760;
-    const cur = { paper: null, ribbon: null, message: null };
+    let curCard = null;
     let raf = 0;
     const mk = (t) => document.createElementNS(NS, t);
 
@@ -738,65 +782,56 @@
       bowG.setAttribute('transform', `translate(${B.x} ${r1(B.y + 30 * k)}) scale(${k.toFixed(4)})`);
       tagG.setAttribute('transform', `translate(0 ${r1((k - 1) * 30)})`);
     }
-    function draw(n) {
+    function draw(n, k) {
       const c = n.cur, h = headPos(B, c.a, c.L);
       const x = r1(h.x), y = r1(h.y);
       n.head.setAttribute('transform', `translate(${x} ${y}) rotate(${r1(c.rot)}) scale(${Math.max(0, c.s).toFixed(3)})`);
-      n.l1.setAttribute('x2', x); n.l1.setAttribute('y2', y);
-      n.l2.setAttribute('x2', x); n.l2.setAttribute('y2', y);
+      const t = tailPos(B, h, k, n.v);
+      const d = `M${t.x} ${t.y}L${B.x} ${B.y}L${x} ${y}`;
+      n.l1.setAttribute('d', d);
+      n.l2.setAttribute('d', d);
     }
     function tick(now) {
       let active = false;
+      let tk = (now - paperK.t0) / DUR;
+      if (tk < 1) active = true;
+      tk = clamp(tk, 0, 1);
+      const ek = easeOutCubic(tk);
+      paperK.cur = lerp(paperK.from, paperK.to, ek);
       nodes.forEach((n, id) => {
         let t = (now - n.t0 - n.delay) / DUR;
         if (t < 1) active = true;
         t = clamp(t, 0, 1);
         const e = easeOutCubic(t), es = n.pop ? easeOutBack(t) : e;
         n.cur = { a: lerp(n.from.a, n.to.a, e), L: lerp(n.from.L, n.to.L, e), rot: lerp(n.from.rot, n.to.rot, e), s: lerp(n.from.s, n.to.s, es) };
-        draw(n);
+        draw(n, paperK.cur);
         if (t >= 1 && n.removing) {
           n.head.remove(); n.l1.remove(); n.l2.remove();
           nodes.delete(id);
         }
       });
-      let tk = (now - paperK.t0) / DUR;
-      if (tk < 1) active = true;
-      tk = clamp(tk, 0, 1);
-      const ek = easeOutCubic(tk);
-      paperK.cur = lerp(paperK.from, paperK.to, ek);
       applyK(paperK.cur);
       cam.cur = cam.from.map((v, i) => lerp(v, cam.to[i], ek));
       applyCam();
       raf = active ? requestAnimationFrame(tick) : 0;
     }
-    function recolor(root, p) {
-      root.querySelectorAll('[data-c]').forEach((e) => { e.style.fill = p[e.getAttribute('data-c')]; });
-      root.querySelectorAll('[data-s]').forEach((e) => { e.style.stroke = p[e.getAttribute('data-s')]; });
-    }
-    function setPaper(key) {
-      if (key === cur.paper) return;
-      cur.paper = key;
-      const p = pal(hexOf('papers', key, '#F6EFE6'));
-      recolor(back, p); recolor(front, p);
-    }
-    function setRibbon(key) {
-      if (key === cur.ribbon) return;
-      cur.ribbon = key;
-      recolor(bowG, pal(hexOf('ribbons', key, '#E6A4B6')));
-    }
-    function setTag(msg) {
-      msg = String(msg || '').trim();
-      if (msg === cur.message) return;
-      cur.message = msg;
-      tagG.innerHTML = msg ? tagSVG(msg, B.x, B.y + 30) : '';
+    function setCard(card) {
+      const c = cardParts(card);
+      const key = c.empty ? '' : JSON.stringify([c.to, c.lines, c.from]);
+      cardH = c.empty ? 0 : c.h;
+      if (key === curCard) return;
+      curCard = key;
+      tagG.innerHTML = c.empty ? '' : cardSVG(card, B.x, B.y + 30);
     }
 
+    let seq = 0;
     function set(cfg) {
       const now = performance.now();
       const items = normalize(cfg);
       const lay = layout(items, 'paper');
       const seen = new Set();
       let born = 0;
+      setCard(cfg.card || cfg.message);
       lay.forEach((l) => {
         const id = l.it.id;
         seen.add(id);
@@ -806,10 +841,9 @@
           if (n) { n.head.remove(); n.l1.remove(); n.l2.remove(); }
           const head = mk('g');
           head.innerHTML = headSVG(l.it.type, l.it.hex);
-          const l1 = mk('line'), l2 = mk('line');
-          [l1, l2].forEach((ln) => { ln.setAttribute('x1', B.x); ln.setAttribute('y1', B.y); });
+          const l1 = mk('path'), l2 = mk('path');
           s1g.appendChild(l1); s2g.appendChild(l2);
-          n = { head, l1, l2, cur: { a: to.a, L: to.L * 0.45, rot: to.rot, s: 0 }, pop: true, delay: born++ * 60 };
+          n = { head, l1, l2, v: seq++, cur: { a: to.a, L: to.L * 0.45, rot: to.rot, s: 0 }, pop: true, delay: born++ * 60 };
           nodes.set(id, n);
         } else {
           n.pop = false; n.delay = 0;
@@ -826,8 +860,7 @@
       });
       Array.from(nodes.values()).sort((p, q2) => p.z - q2.z).forEach((n) => headsG.appendChild(n.head));
       paperK.from = paperK.cur; paperK.to = paperScale(items.length); paperK.t0 = now;
-      cam.from = cam.cur.slice(); cam.to = fitBox(lay, paperK.to, !!String(cfg.message || '').trim());
-      setPaper(cfg.paper); setRibbon(cfg.ribbon); setTag(cfg.message);
+      cam.from = cam.cur.slice(); cam.to = fitBox(lay, paperK.to);
       if (!raf) raf = requestAnimationFrame(tick);
     }
 
@@ -845,6 +878,7 @@
     bouquet: bouquetSVG,
     icon: flowerIconSVG,
     stage: createStage,
+    card: cardSVG,
     atelier: atelierSVG,
     giftcard: giftcardSVG,
     butterfly: butterflySVG,

@@ -1,6 +1,7 @@
 /*!
  * Flore & Chenilles — interactions du site
- * Boutique, panier, compositeur « Votre bouquet à vous », contact, animations.
+ * Boutique, sélection, compositeur « Votre bouquet à vous », cartes de vœux,
+ * envoi des messages par e-mail, animations.
  * Le contenu (produits, prix, couleurs…) se modifie dans assets/js/data.js.
  */
 (function () {
@@ -13,9 +14,7 @@
   S.products = S.products || [];
   S.colors = S.colors || {};
   S.flowers = S.flowers || {};
-  S.papers = S.papers || {};
-  S.ribbons = S.ribbons || {};
-  FC.register({ colors: S.colors, papers: S.papers, ribbons: S.ribbons, pots: S.pots });
+  FC.register({ colors: S.colors, pots: S.pots });
 
   /* ------------------------------------------------------------------ *
    * Utilitaires
@@ -37,20 +36,32 @@
       try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* stockage indisponible : tant pis */ }
     }
   };
+  const NB = ' ';
   const BRAND = (S.brand && S.brand.name) || 'Flore & Chenilles';
   const IG = (S.brand && S.brand.instagram) || 'flore_et_chenilles';
   const IG_URL = 'https://www.instagram.com/' + IG + '/';
   const IG_DM = 'https://ig.me/m/' + IG;
-  const EMAIL = (S.contact && S.contact.email) || '';
-  const ENDPOINT = (S.contact && S.contact.formEndpoint) || '';
-  const NB = ' ';
-  const colorName = (k) => (S.colors[k] ? S.colors[k].name : k);
-  const flowerInfo = (t) => S.flowers[t] || { name: t, plural: t, price: 0 };
-  const plural = (n, one, many) => n + ' ' + (n > 1 ? many : one);
-  const DELIV = Object.assign({ price: 5, radiusKm: 20, pricePerKm: 0.4 }, S.delivery || {});
   const CITY = (S.brand && S.brand.city) || 'Signy-l’Abbaye';
-  const FB = (S.contact && S.contact.facebook) || '';
-  const deliveryText = () => `Livraison${NB}: ${price(DELIV.price)} dans un rayon de ${DELIV.radiusKm}${NB}km autour de ${CITY}, puis ${price(DELIV.pricePerKm)} par kilomètre supplémentaire.`;
+  const C = S.contact || {};
+  const FB = String(C.facebook || '').trim();
+  const EMAIL = String(C.email || '').trim();
+  const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v || '').trim());
+  const MAIL_OK = isEmail(EMAIL); // une vraie adresse (et non un alias FormSubmit)
+  const ENDPOINT = String(C.formEndpoint || '').trim();
+  // Les messages partent par e-mail via FormSubmit (ou un autre service si formEndpoint est rempli).
+  const SEND_URL = ENDPOINT || (EMAIL ? 'https://formsubmit.co/ajax/' + EMAIL : '');
+  const UNIT = S.unitPrice != null && !isNaN(+S.unitPrice) ? +S.unitPrice : 8;
+  const PACK = S.packaging || 'Pochette transparente et nœud';
+  const CARD = Object.assign({ maxLength: 160, suggestions: [] }, S.card || {});
+  const ZONES = ((S.delivery && S.delivery.zones) || []).filter((z) => z && z.upToKm > 0 && z.price != null).sort((a, b) => a.upToKm - b.upToKm);
+  const colorName = (k) => (S.colors[k] ? S.colors[k].name : k);
+  const flowerInfo = (t) => S.flowers[t] || { name: t, plural: t };
+  const plural = (n, one, many) => n + ' ' + (n > 1 ? many : one);
+  const withPrice = (txt) => String(txt || '').replace(/\{prix\}/g, price(UNIT));
+  const zonesText = () => ZONES.map((z) => `${price(z.price)} jusqu’à ${z.upToKm}${NB}km`).join(', ');
+  const deliveryText = () => ZONES.length
+    ? `Livraison${NB}: ${zonesText()} autour de ${CITY}. Au-delà, on en parle ensemble.`
+    : `Livraison autour de ${CITY}${NB}: on en parle ensemble.`;
   const frDate = (iso) => {
     const p = String(iso || '').split('-');
     return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso;
@@ -109,12 +120,12 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * Liens & coordonnées
+   * Liens, coordonnées et textes calculés
    * ------------------------------------------------------------------ */
   $$('[data-ig]').forEach((a) => { a.href = IG_URL; });
   $$('[data-ig-dm]').forEach((a) => { a.href = IG_DM; });
   $$('[data-ig-handle]').forEach((el) => { el.textContent = '@' + IG; });
-  if (EMAIL) {
+  if (MAIL_OK && C.showEmail !== false) {
     $$('[data-email]').forEach((a) => { a.href = 'mailto:' + EMAIL; a.textContent = EMAIL; });
     $$('[data-email-row]').forEach((el) => { el.hidden = false; });
   }
@@ -125,6 +136,8 @@
   }
   $$('[data-city]').forEach((el) => { el.textContent = CITY; });
   $$('[data-delivery]').forEach((el) => { el.textContent = deliveryText(); });
+  $$('[data-unit-price]').forEach((el) => { el.textContent = price(UNIT); });
+  $$('[data-pack]').forEach((el) => { el.textContent = PACK; });
 
   /* ------------------------------------------------------------------ *
    * En-tête, chenille de progression, navigation
@@ -198,8 +211,38 @@
   const reveal = (root) => $$('.reveal:not(.is-in)', root).forEach((el) => (io ? io.observe(el) : el.classList.add('is-in')));
 
   /* ------------------------------------------------------------------ *
-   * Illustrations produits
+   * Créations : photos, prix, illustrations
    * ------------------------------------------------------------------ */
+  /* 'g087' → photos de la galerie (vignette + grande image) ; sinon un chemin d'image. */
+  function pic(ref) {
+    if (!ref) return null;
+    if (typeof ref === 'object') {
+      const s = ref.s || ref.image;
+      return s ? { s, l: ref.l || ref.large || s } : null;
+    }
+    const r = String(ref).trim();
+    if (/^g\d+$/i.test(r)) return { s: 'assets/gallery/' + r + '-s.webp', l: 'assets/gallery/' + r + '.webp' };
+    return { s: r, l: r };
+  }
+  S.products.forEach((p) => {
+    if (p.photo && !p.image) {
+      const g = pic(p.photo);
+      if (g) { p.image = g.s; p.large = g.l; }
+    }
+    p.pics = (p.image ? [{ s: p.image, l: p.large || p.image }] : []).concat((p.more || []).map(pic).filter(Boolean));
+    if (p.options && Array.isArray(p.options.choices)) {
+      p.options.choices.forEach((c) => {
+        const g = pic(c.image);
+        if (g) { c.image = g.s; c.large = g.l; }
+      });
+    } else {
+      delete p.options;
+    }
+  });
+  const findProduct = (id) => S.products.find((x) => x.id === id);
+  const catOf = (id) => (S.categories || []).find((c) => c.id === id) || {};
+  const blurbOf = (p) => p.desc || catOf(p.category).blurb || '';
+
   function resolveBouquet(p, idx) {
     const choices = (p.options && p.options.choices) || [];
     const ch = choices[idx || 0];
@@ -208,24 +251,97 @@
       flowers: (p.bouquet.flowers || []).map((f) => [f[0], f[1] === '$main' ? main : f[1]])
     });
   }
+  const GRID_SIZES = '(max-width: 899px) 48vw, 400px';
+  /**
+   * Illustration d'une création : photo du choix (idx), photo n° o.pic, ou dessin.
+   * o.large : grande image (fenêtre) ; o.sizes : taille d'affichage pour le navigateur.
+   */
   function productArt(p, idx, o) {
     o = o || {};
     const choice = idx == null ? null : p.options && p.options.choices[idx || 0];
-    const img = (choice && choice.image) || p.image;
-    if (img) return `<img src="${esc(img)}" alt="${esc(p.name + (choice ? ' : ' + choice.name : ''))}" loading="lazy" decoding="async">`;
+    if (choice && choice.image) {
+      const src = o.large ? choice.large || choice.image : choice.image;
+      return `<img src="${esc(src)}" alt="${esc(p.name + ' : ' + choice.name)}"${o.large ? '' : ' loading="lazy"'} decoding="async">`;
+    }
+    const ph = p.pics && (p.pics[o.pic || 0] || p.pics[0]);
+    if (ph) {
+      if (o.large) return `<img src="${esc(ph.l)}" alt="${esc(p.name)}" decoding="async">`;
+      const set = ph.l && ph.l !== ph.s ? ` srcset="${esc(ph.s)} 480w, ${esc(ph.l)} 960w" sizes="${esc(o.sizes || GRID_SIZES)}"` : '';
+      return `<img src="${esc(ph.s)}"${set} alt="${esc(p.name)}" loading="lazy" decoding="async">`;
+    }
     if (p.giftcard || !p.bouquet) return FC.giftcard();
     return FC.bouquet(resolveBouquet(p, idx), { fit: true, aspect: o.aspect || 0.9, pad: o.pad != null ? o.pad : 18, label: p.name });
   }
   function productPrice(p, idx) {
     const ch = p.options && p.options.choices[idx || 0];
-    return ch && ch.price != null ? ch.price : p.price;
+    if (ch && ch.price != null) return ch.price;
+    if (p.price != null) return p.price;
+    return p.category === 'unite' && !p.quote ? UNIT : null;
   }
   function priceText(p, idx) {
     const v = productPrice(p, idx);
     if (v == null) return p.quote ? 'Sur devis' : 'Sur demande';
     return (p.priceFrom ? 'dès ' : '') + price(v);
   }
-  const findProduct = (id) => S.products.find((x) => x.id === id);
+
+  /* ------------------------------------------------------------------ *
+   * Cartes de vœux (offertes avec chaque création)
+   * ------------------------------------------------------------------ */
+  const cleanCard = (c) => {
+    c = c || {};
+    const t = (v, n) => String(v || '').trim().slice(0, n);
+    return { to: t(c.to, 40), msg: t(c.msg, CARD.maxLength), from: t(c.from, 40) };
+  };
+  const cardEmpty = (c) => { c = cleanCard(c); return !c.to && !c.msg && !c.from; };
+  function cardLine(c) {
+    c = cleanCard(c);
+    const parts = [];
+    if (c.to) parts.push('Pour ' + c.to);
+    if (c.msg) parts.push(`«${NB}${c.msg}${NB}»`);
+    if (c.from) parts.push('de la part de ' + c.from);
+    return parts.join(' — ');
+  }
+  /** Champs d'une carte de vœux (pour, message, de la part de) + idées de messages. */
+  function cardFieldsHTML(id, card) {
+    const c = cleanCard(card);
+    const max = CARD.maxLength;
+    return '<div class="card-fields" data-card-fields>' +
+      '<div class="field-row">' +
+      `<label class="field"><span>Pour <small>(facultatif)</small></span><input id="${id}-to" type="text" data-card="to" maxlength="40" placeholder="Léa" autocomplete="off" value="${esc(c.to)}"></label>` +
+      `<label class="field"><span>De la part de <small>(facultatif)</small></span><input id="${id}-from" type="text" data-card="from" maxlength="40" placeholder="Marie" autocomplete="off" value="${esc(c.from)}"></label>` +
+      '</div>' +
+      `<label class="field field--counter"><span>Votre message</span><textarea id="${id}-msg" data-card="msg" rows="2" maxlength="${max}" placeholder="Joyeux anniversaire ma belle…">${esc(c.msg)}</textarea><span class="counter" data-card-count>${c.msg.length}/${max}</span></label>` +
+      (CARD.suggestions.length
+        ? `<div class="card-ideas" role="group" aria-label="Idées de messages">${CARD.suggestions.map((t) => `<button type="button" class="card-idea" data-card-idea="${esc(t)}">${esc(t)}</button>`).join('')}</div>`
+        : '') +
+      '</div>';
+  }
+  function readCard(fields) {
+    const g = (k) => { const el = $(`[data-card="${k}"]`, fields); return el ? el.value : ''; };
+    return cleanCard({ to: g('to'), msg: g('msg'), from: g('from') });
+  }
+  /** Écoute les champs de carte d'un conteneur ; onChange(fields, carte) à chaque saisie. */
+  function bindCard(root, onChange) {
+    root.addEventListener('input', (e) => {
+      const el = e.target;
+      if (!el.matches || !el.matches('[data-card]')) return;
+      const fields = el.closest('[data-card-fields]');
+      if (el.dataset.card === 'msg') {
+        const n = $('[data-card-count]', fields);
+        if (n) n.textContent = el.value.length + '/' + el.maxLength;
+      }
+      onChange(fields, readCard(fields));
+    });
+    root.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-card-idea]');
+      if (!b) return;
+      const ta = $('[data-card="msg"]', b.closest('[data-card-fields]'));
+      if (!ta) return;
+      ta.value = b.dataset.cardIdea.slice(0, ta.maxLength);
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+      ta.focus();
+    });
+  }
 
   /* ------------------------------------------------------------------ *
    * Fenêtre modale
@@ -234,16 +350,17 @@
   const modalContent = $('[data-modal-content]', modal);
   let modalReturn = null;
   function openModal(html, bind, opts) {
+    opts = opts || {};
     if (!modal.classList.contains('is-open')) modalReturn = document.activeElement;
     modalContent.innerHTML = html;
-    modal.classList.toggle('modal--narrow', !!(opts && opts.narrow));
+    modal.classList.toggle('modal--narrow', !!opts.narrow);
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     lockScroll(true, 'modal');
     $('.modal-panel', modal).scrollTop = 0;
     if (bind) bind(modalContent.firstElementChild);
     setTimeout(() => {
-      const f = $('[autofocus]', modalContent) || $('.modal-close', modal);
+      const f = (opts.focus && $(opts.focus, modalContent)) || $('[autofocus]', modalContent) || $('.modal-close', modal);
       if (f) f.focus({ preventScroll: true });
     }, 60);
   }
@@ -251,6 +368,7 @@
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
     lockScroll(false, 'modal');
+    navIds = [];
     if (modalReturn && document.contains(modalReturn) && modalReturn.focus) modalReturn.focus({ preventScroll: true });
   }
   modal.addEventListener('click', (e) => {
@@ -258,7 +376,7 @@
   });
 
   /* ------------------------------------------------------------------ *
-   * Panier
+   * Ma sélection
    * ------------------------------------------------------------------ */
   let cart = store.get('fc-cart-v2', []);
   if (!Array.isArray(cart)) cart = [];
@@ -272,11 +390,17 @@
     if (it.price == null) acc.ask += it.qty; else acc.sum += it.price * it.qty;
     return acc;
   }, { sum: 0, ask: 0 });
-  const totalText = () => {
+  const ucfirst = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  /** Total de la sélection, avec la livraison choisie (opt) si besoin. */
+  function totalText(opt) {
     const t = cartSums();
-    if (!t.ask) return price(t.sum);
-    return t.sum ? price(t.sum) + ' + sur devis' : 'Sur devis';
-  };
+    const sum = t.sum + ((opt && opt.fee) || 0);
+    const extra = [];
+    if (t.ask) extra.push('sur devis');
+    if (opt && opt.ask) extra.push('livraison à voir ensemble');
+    if (!extra.length) return price(sum);
+    return ucfirst((sum ? price(sum) + ' + ' : '') + extra.join(' + '));
+  }
   const lineText = (it) => (it.price == null ? 'Sur demande' : price(it.price * it.qty));
   const cartQty = () => cart.reduce((s, it) => s + it.qty, 0);
 
@@ -291,25 +415,32 @@
     void cartBtn.offsetWidth;
     cartBtn.classList.add('bump');
   }
-  function addProduct(p, idx, qty) {
+  function addProduct(p, idx, qty, extra) {
+    extra = extra || {};
     const ch = p.options && p.options.choices[idx || 0];
+    const col = extra.color && S.colors[extra.color] ? extra.color : '';
+    const card = cardEmpty(extra.card) ? null : cleanCard(extra.card);
+    let option = ch ? p.options.label + NB + ': ' + ch.name.charAt(0).toLowerCase() + ch.name.slice(1) : '';
+    if (p.options && p.options.colors) option += `, couleur${NB}: ` + (col ? colorName(col).toLowerCase() : 'à préciser');
     addToCart({
-      key: p.id + (ch ? '|' + ch.name : ''),
+      key: [p.id, ch ? ch.name : '', col, card ? JSON.stringify(card) : ''].join('|'),
       kind: 'product',
       id: p.id,
       choice: idx || 0,
+      color: col,
       name: p.name,
-      option: ch ? p.options.label + ' : ' + ch.name : '',
+      option,
       price: productPrice(p, idx),
-      qty: qty || 1
+      qty: qty || 1,
+      card
     });
-    toast(`«${NB}${p.name}${ch ? ' – ' + ch.name : ''}${NB}» est dans votre sélection`);
+    toast(`«${NB}${p.name}${NB}» est dans votre sélection`);
   }
   function itemThumb(it) {
     if (it.kind === 'custom' && it.bouquet) return { bg: '#F8E4E9', html: FC.bouquet(it.bouquet, { fit: true, aspect: 1, pad: 10, label: it.name }) };
     const p = findProduct(it.id);
     if (!p) return { bg: '#F8E4E9', html: '' };
-    return { bg: p.bg || '#F8E4E9', html: productArt(p, it.choice || 0, { aspect: 1, pad: 10 }) };
+    return { bg: p.bg || '#F8E4E9', html: productArt(p, p.options ? it.choice || 0 : null, { aspect: 1, pad: 10, sizes: '80px' }) };
   }
   function renderCart(focusSel) {
     const n = cartQty();
@@ -319,7 +450,7 @@
     if (!cart.length) {
       cartItemsEl.innerHTML =
         '<div class="cart-empty">' +
-        `<div class="cart-empty-art">${FC.bouquet({ container: 'none', ribbon: 'satin_rose', flowers: [['tulipe', 'rose']] }, { fit: true, aspect: 0.9, pad: 10, label: 'Une tulipe toute seule' })}</div>` +
+        `<div class="cart-empty-art">${FC.bouquet({ container: 'none', flowers: [['tulipe', 'rose']] }, { fit: true, aspect: 0.9, pad: 10, label: 'Une tulipe toute seule' })}</div>` +
         '<h3>Votre sélection est encore vide</h3>' +
         `<p>Cette petite tulipe se sent bien seule… Offrez-lui un peu de compagnie${NB}!</p>` +
         '<a class="btn btn-primary" href="#boutique" data-close>Voir mes créations</a>' +
@@ -330,9 +461,12 @@
     cartFoot.hidden = false;
     cartItemsEl.innerHTML = cart.map((it, i) => {
       const th = itemThumb(it);
+      const card = cardEmpty(it.card)
+        ? '<div class="ci-card is-empty"><svg aria-hidden="true"><use href="#i-mail"/></svg>Carte de vœux offerte</div>'
+        : `<div class="ci-card"><svg aria-hidden="true"><use href="#i-mail"/></svg><span>${esc(cardLine(it.card))}</span></div>`;
       return '<div class="cart-item">' +
         `<div class="ci-thumb" style="--bg:${esc(th.bg)}">${th.html}</div>` +
-        `<div><div class="ci-name">${esc(it.name)}</div>${it.option ? `<div class="ci-opt">${esc(it.option)}</div>` : ''}` +
+        `<div><div class="ci-name">${esc(it.name)}</div>${it.option ? `<div class="ci-opt">${esc(it.option)}</div>` : ''}${card}` +
         `<div class="qty" role="group" aria-label="Quantité"><button type="button" data-cq="-1" data-i="${i}" aria-label="Retirer un exemplaire">−</button><output aria-live="polite">${it.qty}</output><button type="button" data-cq="1" data-i="${i}" aria-label="Ajouter un exemplaire">+</button></div></div>` +
         `<div class="ci-side"><span class="ci-price${it.price == null ? ' is-ask' : ''}">${lineText(it)}</span><button type="button" class="ci-remove" data-del="${i}">Retirer</button></div>` +
         '</div>';
@@ -391,197 +525,215 @@
   });
 
   /* ------------------------------------------------------------------ *
-   * Envoi des messages (Instagram, e-mail ou formulaire en ligne)
+   * Envoi des messages par e-mail
    * ------------------------------------------------------------------ */
-  function sendButtons() {
-    let s = '';
-    if (ENDPOINT) s += '<button class="btn btn-primary" type="submit" value="form"><svg><use href="#i-mail"/></svg> Envoyer le message</button>';
-    s += `<button class="btn ${ENDPOINT ? 'btn-ghost' : 'btn-primary'}" type="submit" value="instagram"><svg><use href="#i-instagram"/></svg> Envoyer sur Instagram</button>`;
-    if (EMAIL) s += '<button class="btn btn-ghost" type="submit" value="email"><svg><use href="#i-mail"/></svg> Envoyer par e-mail</button>';
-    return s;
-  }
   function validate(form) {
     let first = null;
-    $$('[required]', form).forEach((el) => {
-      const bad = !String(el.value || '').trim();
+    $$('input, select, textarea', form).forEach((el) => {
+      if (el.disabled || el.name === '_honey') return;
+      const v = String(el.value || '').trim();
+      const missing = el.required && !v;
+      const badMail = !missing && !!v && el.type === 'email' && !isEmail(v);
       const f = el.closest('.field');
-      if (f) f.classList.toggle('is-invalid', bad);
-      if (bad && !first) first = el;
+      if (f) {
+        f.classList.toggle('is-invalid', missing || badMail);
+        f.classList.toggle('is-invalid-email', badMail);
+      }
+      if ((missing || badMail) && !first) first = el;
     });
     if (first) {
       first.focus();
-      toast('Il manque juste une petite information');
+      toast(first.type === 'email' && String(first.value || '').trim() ? 'Votre adresse e-mail semble incomplète' : 'Il manque juste une petite information');
       return false;
     }
     return true;
   }
   document.addEventListener('input', (e) => {
     const f = e.target.closest && e.target.closest('.field.is-invalid');
-    if (f && String(e.target.value || '').trim()) f.classList.remove('is-invalid');
+    if (f && String(e.target.value || '').trim()) f.classList.remove('is-invalid', 'is-invalid-email');
   });
 
-  async function postForm(data) {
+  /** Envoie le message (FormSubmit ou autre service). Résultat : { ok, reason }. */
+  async function sendMail(d, msg) {
+    if (!SEND_URL) return { ok: false, reason: 'none' };
+    const body = {
+      _subject: msg.subject,
+      _template: 'table',
+      _captcha: 'false',
+      _replyto: d.email,
+      email: d.email,
+      Nom: d.name,
+      'Téléphone': (d.phone || '').trim() || '—',
+      Message: msg.body
+    };
+    if (!ENDPOINT) body._autoresponse = `Bonjour ${d.name}, merci pour votre message ! Je l’ai bien reçu et je vous réponds très vite. — ${BRAND}`;
     try {
-      const r = await fetch(ENDPOINT, {
+      const r = await fetch(SEND_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(body)
       });
-      return r.ok;
+      let j = null;
+      try { j = await r.json(); } catch (e) { j = null; }
+      const flag = !j ? true : j.success != null ? String(j.success) === 'true' : j.ok != null ? !!j.ok : true;
+      if (r.ok && flag) return { ok: true };
+      return { ok: false, reason: j && /activ/i.test(String(j.message || '')) ? 'activation' : 'error' };
     } catch (e) {
-      return false;
+      return { ok: false, reason: 'network' };
     }
+  }
+  const mailtoHref = (msg) => 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(msg.subject) + '&body=' + encodeURIComponent(msg.body);
+  const sendButton = (label) => `<button class="btn btn-primary" type="submit" data-send><svg><use href="#i-mail"/></svg> <span>${esc(label)}</span></button>`;
+  const honeypot = '<label class="hp" aria-hidden="true">Ne pas remplir<input type="text" name="_honey" tabindex="-1" autocomplete="off"></label>';
+
+  /* Message d'erreur sous le formulaire : réessayer, écrire par e-mail ou copier le message. */
+  function showSendAlert(form, reason, msg) {
+    const box = $('[data-send-alert]', form);
+    if (!box) return;
+    let text;
+    if (reason === 'none') text = `<strong>L’envoi par e-mail n’est pas encore activé sur le site.</strong> Copiez votre message et envoyez-le-moi en message privé${NB}: je vous réponds très vite.`;
+    else if (reason === 'activation') text = `<strong>Le formulaire est en cours d’activation.</strong> Réessayez un peu plus tard, ou envoyez-moi votre message autrement${NB}:`;
+    else text = `<strong>Oups, votre message n’est pas parti.</strong> Vérifiez votre connexion puis réessayez, ou envoyez-le-moi autrement${NB}:`;
+    box.innerHTML = `<p>${text}</p><div class="send-alert-actions">` +
+      (reason !== 'none' ? '<button class="btn btn-primary btn-sm" type="submit">Réessayer</button>' : '') +
+      (MAIL_OK ? `<a class="btn btn-ghost btn-sm" href="${esc(mailtoHref(msg))}"><svg><use href="#i-mail"/></svg> Écrire par e-mail</a>` : '') +
+      (reason === 'none' ? `<a class="btn btn-ghost btn-sm" href="${IG_DM}" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg> Message privé</a>` : '') +
+      '<button class="btn btn-ghost btn-sm" type="button" data-copy-msg>Copier mon message</button>' +
+      '</div>';
+    box.hidden = false;
+    $('[data-copy-msg]', box).addEventListener('click', (e) => {
+      copyText(msg.body).then((ok) => {
+        e.target.textContent = ok ? 'Message copié' : 'Copie impossible';
+      });
+    });
+    box.scrollIntoView({ behavior: smooth, block: 'nearest' });
   }
 
   function bindSend(form, compose, opts) {
     opts = opts || {};
-    let via = ENDPOINT ? 'form' : 'instagram';
-    form.addEventListener('click', (e) => {
-      const b = e.target.closest('button[type="submit"]');
-      if (b) via = b.value;
-    });
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (e.submitter && e.submitter.value) via = e.submitter.value;
+      if (form.dataset.busy) return;
+      const alertBox = $('[data-send-alert]', form);
+      if (alertBox) { alertBox.hidden = true; alertBox.innerHTML = ''; }
       if (!validate(form)) return;
       const data = {};
       new FormData(form).forEach((v, k) => { data[k] = String(v); });
+      if (data._honey) { showDone('sent', null, opts); return; } // robot : on ne fait rien
       const msg = compose(data);
-      if (via === 'email' && EMAIL) {
-        window.location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(msg.subject) + '&body=' + encodeURIComponent(msg.body);
-        showDone('email', msg, opts);
-      } else if (via === 'form' && ENDPOINT) {
-        const btns = $$('button[type="submit"]', form);
-        btns.forEach((b) => { b.disabled = true; });
-        const ok = await postForm(Object.assign({ _subject: msg.subject, message: msg.body }, data));
-        btns.forEach((b) => { b.disabled = false; });
-        if (ok) showDone('form', msg, opts);
-        else toast('Oups, l’envoi n’a pas abouti. Essayez via Instagram.');
+      if (PREVIEW) { showDone('preview', msg, opts); return; }
+      if (!SEND_URL) { showSendAlert(form, 'none', msg); return; }
+      const btn = $('[data-send]', form);
+      const label = btn ? btn.innerHTML : '';
+      form.dataset.busy = '1';
+      if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner" aria-hidden="true"></span> <span>Envoi en cours…</span>'; }
+      const res = await sendMail(data, msg);
+      delete form.dataset.busy;
+      if (btn) { btn.disabled = false; btn.innerHTML = label; }
+      if (res.ok) {
+        if (opts.onSent) opts.onSent();
+        showDone('sent', msg, Object.assign({ email: data.email }, opts));
       } else {
-        const copied = copyText(msg.body);
-        let opened = false;
-        try {
-          const w = window.open(IG_DM, '_blank');
-          if (w) {
-            opened = true;
-            try { w.opener = null; } catch (err) { /* sans importance */ }
-          }
-        } catch (err) {
-          opened = false;
-        }
-        showDone('instagram', msg, Object.assign({ copied, opened }, opts));
+        showSendAlert(form, res.reason, msg);
       }
-      if (opts.onSent) opts.onSent();
     });
   }
 
-  function showDone(via, msg, opts) {
+  function showDone(kind, msg, opts) {
     opts = opts || {};
     clearTimeout(toastT);
     if (toastEl) toastEl.classList.remove('is-on');
-    const art = FC.bouquet({ paper: 'poudre', ribbon: 'satin_rose', flowers: [['lys', 'mauve'], ['pavot', 'lavande'], ['gerbera', 'blanc'], ['rose', 'rose'], ['tulipe', 'jaune'], ['eucalyptus']] }, { fit: true, aspect: 0.94, pad: 10, label: 'Un bouquet pour vous remercier' });
+    const art = FC.bouquet({ flowers: [['lys', 'mauve'], ['pavot', 'lavande'], ['gerbera', 'blanc'], ['rose', 'rose'], ['tulipe', 'jaune'], ['eucalyptus']] }, { fit: true, aspect: 0.94, pad: 10, label: 'Un bouquet pour vous remercier' });
+    const preview = kind === 'preview';
+    const title = preview ? `Votre message est prêt${NB}!` : `Merci, c’est envoyé${NB}!`;
     let text;
-    if (via === 'instagram') {
-      text = opts.opened
-        ? `La conversation Instagram s’est ouverte dans un nouvel onglet${NB}: collez-y votre message et envoyez-le.`
-        : 'Ouvrez la conversation Instagram avec le bouton ci-dessous, collez-y votre message et envoyez-le.';
-    } else if (via === 'email') {
-      text = `Votre messagerie devrait s’ouvrir avec le message prêt. Sinon, copiez-le et envoyez-le à ${EMAIL}.`;
-    } else {
-      text = `Votre message nous est bien parvenu. Nous vous répondons très vite${NB}!`;
-    }
-    const title = via === 'form' ? `Merci, message envoyé${NB}!` : `Votre message est prêt${NB}!`;
-    const mailHref = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(msg.subject) + '&body=' + encodeURIComponent(msg.body);
+    if (preview) text = `Ceci est un aperçu du site${NB}: une fois en ligne, ce message partira directement par e-mail à ${BRAND}.`;
+    else if (opts.order) text = `Votre demande m’est bien parvenue. Je vous réponds très vite${opts.email ? ' à ' + opts.email : ''} pour confirmer le prix, la date et la remise.`;
+    else text = `Votre message m’est bien parvenu. Je vous réponds très vite${opts.email ? ' à ' + opts.email : ''}.`;
     const html = '<div class="dialog-body done">' +
       `<div class="done-art">${art}</div>` +
       `<h2 id="modal-title">${title}</h2>` +
       `<p>${esc(text)}</p>` +
-      (via !== 'form' ? `<p class="copy-status" data-copy-status hidden></p><textarea id="done-message" rows="6" readonly aria-label="Votre message">${esc(msg.body)}</textarea>` : '') +
-      '<div class="form-actions">' +
-      (via === 'instagram' ? `<a class="btn btn-primary" href="${IG_DM}" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg> Ouvrir la conversation</a>` : '') +
-      (via === 'email' ? `<a class="btn btn-primary" href="${esc(mailHref)}"><svg><use href="#i-mail"/></svg> Ouvrir ma messagerie</a>` : '') +
-      (via !== 'form' ? '<button class="btn btn-ghost" type="button" data-copy>Copier le message</button>' : '') +
-      (opts.order ? '<button class="btn btn-ghost" type="button" data-clear>Vider mon panier</button>' : '') +
-      '<button class="btn btn-soft" type="button" data-close>Fermer</button>' +
-      '</div></div>';
-    openModal(html, (root) => {
-      const status = $('[data-copy-status]', root);
-      const copyBtn = $('[data-copy]', root);
-      const markCopied = (ok, fromClick) => {
-        if (!status) return;
-        status.hidden = false;
-        status.textContent = ok ? `Message copié${NB}: il ne reste plus qu’à le coller.` : 'Sélectionnez le message ci-dessous pour le copier.';
-        if (ok && copyBtn) copyBtn.textContent = 'Message copié';
-        if (!ok && fromClick) { const ta = $('textarea', root); ta.focus(); ta.select(); }
-      };
-      if (opts.copied && opts.copied.then) opts.copied.then((ok) => markCopied(ok, false));
-      root.addEventListener('click', (e) => {
-        if (e.target.closest('[data-copy]')) copyText(msg.body).then((ok) => markCopied(ok, true));
-        if (e.target.closest('[data-clear]')) {
-          cart = [];
-          saveCart();
-          renderCart();
-          toast('Panier vidé');
-          closeModal();
-        }
-      });
-    }, { narrow: true });
+      (preview && msg ? `<textarea rows="7" readonly aria-label="Votre message">${esc(msg.body)}</textarea>` : '') +
+      '<div class="form-actions"><button class="btn btn-primary" type="button" data-close>Fermer</button></div></div>';
+    openModal(html, null, { narrow: true });
   }
 
   /* ---------- Commande ---------- */
-  const deliveryOptions = () => [
-    { value: 'retrait', label: `Retrait à l’atelier (${CITY})`, fee: 0 },
-    { value: 'livraison', label: `Livraison${NB}: ${price(DELIV.price)} jusqu’à ${DELIV.radiusKm}${NB}km, puis ${price(DELIV.pricePerKm)}/km`, fee: DELIV.price },
-    { value: 'a-definir', label: 'À définir ensemble', fee: 0 }
-  ];
-  const deliveryOption = (v) => deliveryOptions().find((o) => o.value === v) || deliveryOptions()[0];
-  function orderTotal(fee) {
-    const t = cartSums();
-    const sum = t.sum + (fee || 0);
-    if (!t.ask) return price(sum);
-    return sum ? price(sum) + ' + sur devis' : 'Sur devis';
+  function deliveryOptions() {
+    const list = [{ value: 'retrait', label: `Retrait à l’atelier, à ${CITY} (gratuit)`, fee: 0 }];
+    let from = 0;
+    ZONES.forEach((z, i) => {
+      const range = from ? `de ${from} à ${z.upToKm}${NB}km` : `jusqu’à ${z.upToKm}${NB}km`;
+      list.push({ value: 'zone' + i, label: `Livraison ${range} (${price(z.price)})`, feeLabel: 'Livraison ' + range, fee: z.price, delivery: true });
+      from = z.upToKm;
+    });
+    if (from) list.push({ value: 'loin', label: `Livraison à plus de ${from}${NB}km (à voir ensemble)`, fee: 0, delivery: true, ask: true });
+    else list.push({ value: 'livraison', label: 'Livraison (à voir ensemble)', fee: 0, delivery: true, ask: true });
+    list.push({ value: 'a-definir', label: 'Je ne sais pas encore', fee: 0 });
+    return list;
   }
-  const feeLine = () => `Livraison jusqu’à ${DELIV.radiusKm}${NB}km`;
+  const deliveryOption = (v) => deliveryOptions().find((o) => o.value === v) || deliveryOptions()[0];
   function composeOrder(d) {
     const opt = deliveryOption(d.delivery);
     const lines = [`Bonjour ${BRAND}${NB}!`, '', `J’aimerais commander${NB}:`, ''];
     cart.forEach((it) => {
       lines.push(`• ${it.name}${it.qty > 1 ? ' × ' + it.qty : ''} — ${lineText(it)}`);
       if (it.option) lines.push('   ' + it.option);
+      lines.push(`   Carte de vœux${NB}: ` + (cardEmpty(it.card) ? 'sans message' : cardLine(it.card)));
     });
-    if (opt.fee) lines.push(`• ${feeLine()} — ${price(opt.fee)} (puis ${price(DELIV.pricePerKm)} par kilomètre supplémentaire)`);
-    lines.push('', `Total${NB}: ${orderTotal(opt.fee)}`, '', `Retrait ou livraison${NB}: ${opt.label}`);
-    if (opt.value === 'livraison' && d.place && d.place.trim()) lines.push(`Lieu de livraison${NB}: ${d.place.trim()}`);
+    if (opt.fee) lines.push(`• ${opt.feeLabel} — ${price(opt.fee)}`);
+    lines.push('', `Total${NB}: ${totalText(opt)}`, `Emballage${NB}: ${PACK.toLowerCase()}`, '', `Retrait ou livraison${NB}: ${opt.label}`);
+    if (opt.delivery && d.address && d.address.trim()) lines.push(`Adresse de livraison${NB}: ${d.address.trim()}`);
     if (d.date) lines.push(`Pour le${NB}: ${frDate(d.date)}`);
-    lines.push(`Nom${NB}: ${d.name}`, `Contact${NB}: ${d.reply}`);
+    lines.push(`Nom${NB}: ${d.name}`, `E-mail${NB}: ${d.email}`);
+    if (d.phone && d.phone.trim()) lines.push(`Téléphone${NB}: ${d.phone.trim()}`);
     if (d.note && d.note.trim()) lines.push('', d.note.trim());
     lines.push('', 'Merci beaucoup !');
-    return { subject: 'Demande de commande — ' + d.name, body: lines.join('\n') };
+    return { subject: `Nouvelle commande — ${d.name}`, body: lines.join('\n') };
   }
-  function recapHTML(fee) {
+  function recapHTML(opt) {
     return `<ul>${cart.map((it) => `<li><span>${esc(it.name)}${it.qty > 1 ? ' × ' + it.qty : ''}</span><span>${lineText(it)}</span></li>`).join('')}` +
-      (fee ? `<li><span>${esc(feeLine())}</span><span>${price(fee)}</span></li>` : '') +
-      `</ul><div class="tot"><span>Total</span><span>${orderTotal(fee)}</span></div>`;
+      (opt && opt.fee ? `<li><span>${esc(opt.feeLabel)}</span><span>${price(opt.fee)}</span></li>` : '') +
+      `<li class="is-free"><span>Emballage (${esc(PACK.toLowerCase())}) et carte${cart.length > 1 ? 's' : ''} de vœux</span><span>Offerts</span></li>` +
+      `</ul><div class="tot"><span>Total</span><span>${totalText(opt)}</span></div>`;
+  }
+  /* Une carte de vœux par création, modifiable avant l'envoi. */
+  function orderCardsHTML() {
+    return '<div class="oc">' +
+      `<p class="oc-head"><svg aria-hidden="true"><use href="#i-mail"/></svg> <span><strong>Vos cartes de vœux, offertes.</strong> Écrivez un petit mot pour chaque création (facultatif).</span></p>` +
+      cart.map((it, i) => {
+        const empty = cardEmpty(it.card);
+        return `<details class="oc-item" data-oc="${i}"${cart.length === 1 && empty ? ' open' : ''}>` +
+          `<summary><span class="oc-name">${esc(it.name)}${it.qty > 1 ? ' × ' + it.qty : ''}</span><span class="oc-state" data-oc-state>${empty ? 'Écrire la carte' : esc(cardLine(it.card))}</span></summary>` +
+          cardFieldsHTML('oc' + i, it.card) +
+          '</details>';
+      }).join('') +
+      '</div>';
   }
   function openCheckout() {
     if (!cart.length) return;
     const opts = deliveryOptions();
     const html = '<div class="dialog-body">' +
       '<h2 id="modal-title">Finaliser ma demande</h2>' +
-      `<p>Quelques informations et c’est tout${NB}: je prépare votre message, il ne restera plus qu’à l’envoyer. Je vous réponds pour confirmer le prix, la date et la remise.</p>` +
+      `<p>Quelques informations et c’est tout${NB}: votre demande m’arrive directement par e-mail. Je vous réponds pour confirmer le prix, la date et la remise.</p>` +
       '<form novalidate>' +
       '<div class="field-row">' +
       '<label class="field"><span>Prénom &amp; nom</span><input id="o-name" name="name" autocomplete="name" required autofocus></label>' +
-      '<label class="field"><span>E-mail ou téléphone</span><input id="o-reply" name="reply" autocomplete="email" required></label>' +
+      '<label class="field"><span>E-mail</span><input id="o-email" name="email" type="email" autocomplete="email" inputmode="email" required></label>' +
       '</div><div class="field-row">' +
-      `<label class="field"><span>Retrait ou livraison</span><select id="o-delivery" name="delivery">${opts.map((o) => `<option value="${o.value}">${esc(o.label)}</option>`).join('')}</select></label>` +
+      '<label class="field"><span>Téléphone <small>(facultatif)</small></span><input id="o-phone" name="phone" type="tel" autocomplete="tel"></label>' +
       '<label class="field"><span>Pour le <small>(facultatif)</small></span><input id="o-date" type="date" name="date"></label>' +
       '</div>' +
-      '<label class="field" data-place hidden><span>Ville de livraison</span><input id="o-place" name="place" autocomplete="address-level2" placeholder="Par exemple : Rethel"></label>' +
-      `<p class="form-note" data-place-note hidden>${esc(deliveryText())}</p>` +
+      `<label class="field"><span>Retrait ou livraison</span><select id="o-delivery" name="delivery">${opts.map((o) => `<option value="${o.value}">${esc(o.label)}</option>`).join('')}</select></label>` +
+      '<label class="field" data-place hidden><span>Adresse de livraison</span><input id="o-address" name="address" autocomplete="street-address" placeholder="Numéro, rue, ville"></label>' +
+      `<p class="form-note" data-place-note hidden>${esc(deliveryText())} Je vous confirme le tarif selon votre adresse.</p>` +
+      orderCardsHTML() +
       '<label class="field"><span>Un mot à ajouter <small>(facultatif)</small></span><textarea id="o-note" name="note" rows="2"></textarea></label>' +
-      `<div class="order-recap" data-recap>${recapHTML(0)}</div>` +
-      `<div class="form-actions">${sendButtons()}</div>` +
+      `<div class="order-recap" data-recap>${recapHTML(opts[0])}</div>` +
+      honeypot +
+      `<div class="form-actions">${sendButton('Envoyer ma demande')}</div>` +
+      '<div class="send-alert" data-send-alert role="alert" hidden></div>' +
       `<p class="form-note">Aucun paiement n’est demandé sur ce site${NB}: on en parle ensemble, après confirmation.</p>` +
       '</form></div>';
     openModal(html, (root) => {
@@ -589,27 +741,40 @@
       const sel = form.elements.delivery, place = $('[data-place]', root), note = $('[data-place-note]', root), recap = $('[data-recap]', root);
       sel.addEventListener('change', () => {
         const opt = deliveryOption(sel.value);
-        const isDelivery = opt.value === 'livraison';
-        place.hidden = !isDelivery;
-        note.hidden = !isDelivery;
-        form.elements.place.required = isDelivery;
-        recap.innerHTML = recapHTML(opt.fee);
+        place.hidden = !opt.delivery;
+        note.hidden = !opt.delivery;
+        form.elements.address.required = !!opt.delivery;
+        if (!opt.delivery) place.classList.remove('is-invalid');
+        recap.innerHTML = recapHTML(opt);
       });
-      bindSend(form, composeOrder, { order: true });
+      bindCard(root, (fields, card) => {
+        const item = fields.closest('[data-oc]');
+        const it = item && cart[+item.dataset.oc];
+        if (!it) return;
+        it.card = cardEmpty(card) ? null : card;
+        saveCart();
+        $('[data-oc-state]', item).textContent = it.card ? cardLine(it.card) : 'Écrire la carte';
+      });
+      bindSend(form, composeOrder, {
+        order: true,
+        onSent: () => { cart = []; saveCart(); renderCart(); }
+      });
     }, { narrow: true });
   }
 
   /* ---------- Formulaire de contact ---------- */
   const contactForm = $('[data-contact-form]');
   function composeContact(d) {
-    const lines = [`Bonjour ${BRAND}${NB}!`, '', d.message.trim(), '', '— ' + d.name, `Contact${NB}: ${d.reply}`, `Sujet${NB}: ${d.subject}`];
+    const lines = [`Bonjour ${BRAND}${NB}!`, '', d.message.trim(), '', '— ' + d.name, `E-mail${NB}: ${d.email}`];
+    if (d.phone && d.phone.trim()) lines.push(`Téléphone${NB}: ${d.phone.trim()}`);
+    lines.push(`Sujet${NB}: ${d.subject}`);
     if (d.date) lines.push(`Date souhaitée${NB}: ${frDate(d.date)}`);
-    return { subject: d.subject + ' — ' + d.name, body: lines.join('\n') };
+    return { subject: `${d.subject} — ${d.name}`, body: lines.join('\n') };
   }
-  if (contactForm) {
-    $('[data-form-actions]', contactForm).innerHTML = sendButtons();
+  if (contactForm) safe('contact', () => {
+    $('[data-form-actions]', contactForm).innerHTML = sendButton('Envoyer mon message');
     bindSend(contactForm, composeContact, { onSent: () => contactForm.reset() });
-  }
+  });
   function prefillContact(subject, message) {
     if (!contactForm) return;
     const sel = contactForm.elements.subject;
@@ -622,9 +787,14 @@
   /* ------------------------------------------------------------------ *
    * Boutique
    * ------------------------------------------------------------------ */
+  const STEP = 12;
   let activeCat = 'all';
+  let shown = STEP;
   const filtersEl = $('[data-filters]');
   const gridEl = $('[data-products]');
+  const moreBtn = $('[data-shop-more]');
+  const introEl = $('[data-cat-intro]');
+  const shopList = () => S.products.filter((p) => activeCat === 'all' || p.category === activeCat);
 
   function renderFilters() {
     const cats = (S.categories || [{ id: 'all', name: 'Tout' }])
@@ -634,47 +804,81 @@
       return `<button type="button" class="filter" data-cat="${esc(c.id)}" aria-pressed="${c.id === activeCat}">${esc(c.name)}<span class="n">${n}</span></button>`;
     }).join('');
   }
-  function renderProducts(instant) {
-    const list = S.products.filter((p) => activeCat === 'all' || p.category === activeCat);
-    const n = list.length;
-    gridEl.innerHTML = list.map((p, i) => {
-      const last = i === n - 1;
-      const wide = (last && n % 3 === 1 ? ' wide3' : '') + (last && n % 2 === 1 ? ' wide2' : '');
-      const ask = productPrice(p, 0) == null;
-      return `<article class="product${wide}${instant ? '' : ' reveal'}" style="--i:${i % 3}">` +
-        `<button class="product-media${p.image ? ' has-photo' : ''}" type="button" style="--bg:${esc(p.bg || '#F8E1E6')}" data-open="${esc(p.id)}" aria-label="Voir ${esc(p.name)}">` +
-        (p.badge ? `<span class="badge">${esc(p.badge)}</span>` : '') +
-        `<span class="product-art">${productArt(p, null)}</span></button>` +
-        '<div class="product-body">' +
-        `<h3><button type="button" data-open="${esc(p.id)}">${esc(p.name)}</button></h3>` +
-        `<p>${esc(p.desc)}</p>` +
-        '<div class="product-foot">' +
-        `<span class="price${ask ? ' is-ask' : ''}">${priceText(p, 0)}</span>` +
-        `<button class="add-btn${p.quote ? ' is-quote' : ''}" type="button" data-quick="${esc(p.id)}" aria-label="${p.quote ? 'Demander un devis : ' : 'Ajouter à ma sélection : '}${esc(p.name)}"><svg><use href="#i-${p.quote ? 'arrow' : 'plus'}"/></svg></button>` +
-        '</div></div></article>';
+  function productCard(p, i, cls) {
+    const ask = productPrice(p, 0) == null;
+    const quick = p.quote || (p.options && p.options.colors);
+    return `<article class="product${cls}" style="--i:${i % 3}">` +
+      `<button class="product-media${p.pics.length ? ' has-photo' : ''}" type="button" style="--bg:${esc(p.bg || '#F8E1E6')}" data-open="${esc(p.id)}" aria-label="Voir ${esc(p.name)}">` +
+      (p.badge ? `<span class="badge">${esc(p.badge)}</span>` : '') +
+      (p.pics.length > 1 ? `<span class="pics-n" aria-hidden="true"><svg><use href="#i-photos"/></svg>${p.pics.length}</span>` : '') +
+      `<span class="product-art">${productArt(p, null)}</span></button>` +
+      '<div class="product-body">' +
+      `<h3><button type="button" data-open="${esc(p.id)}">${esc(p.name)}</button></h3>` +
+      `<p>${esc(blurbOf(p))}</p>` +
+      '<div class="product-foot">' +
+      `<span class="price${ask ? ' is-ask' : ''}">${priceText(p, 0)}</span>` +
+      `<button class="add-btn${p.quote ? ' is-quote' : ''}" type="button" data-quick="${esc(p.id)}" aria-label="${p.quote ? 'Demander un devis : ' : quick ? 'Choisir : ' : 'Ajouter à ma sélection : '}${esc(p.name)}"><svg><use href="#i-${p.quote ? 'arrow' : 'plus'}"/></svg></button>` +
+      '</div></div></article>';
+  }
+  /** mode : undefined (premier affichage), 'instant' (changement de filtre), nombre (index des nouvelles cartes après « Voir plus »). */
+  function renderProducts(mode) {
+    const list = shopList();
+    const n = Math.min(shown, list.length);
+    const complete = n >= list.length;
+    const from = typeof mode === 'number' ? mode : mode === 'instant' ? Infinity : 0;
+    gridEl.innerHTML = list.slice(0, n).map((p, i) => {
+      const last = complete && i === n - 1;
+      const cls = (last && n % 3 === 1 ? ' wide3' : '') + (last && n % 2 === 1 ? ' wide2' : '') + (i >= from ? ' reveal' : '');
+      return productCard(p, i, cls);
     }).join('');
-    if (!instant) reveal(gridEl);
+    if (moreBtn) {
+      moreBtn.hidden = complete;
+      moreBtn.innerHTML = `Voir plus de créations <span class="n">${list.length - n}</span>`;
+    }
+    if (introEl) {
+      const intro = withPrice(catOf(activeCat).intro || '');
+      introEl.hidden = !intro;
+      introEl.innerHTML = intro ? `<svg aria-hidden="true"><use href="#i-flower"/></svg><p>${esc(intro)}</p>` : '';
+    }
+    reveal(gridEl);
+  }
+  function setCategory(cat, instant) {
+    activeCat = cat;
+    shown = STEP;
+    $$('[data-cat]', filtersEl).forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.cat === cat)));
+    if (instant || reduceMotion) { renderProducts('instant'); return; }
+    gridEl.classList.add('is-switching');
+    setTimeout(() => {
+      renderProducts('instant');
+      requestAnimationFrame(() => gridEl.classList.remove('is-switching'));
+    }, 280);
+  }
+  function showCategory(cat) {
+    if (!S.products.some((p) => p.category === cat)) return;
+    setCategory(cat, true);
+    $('#boutique').scrollIntoView({ behavior: smooth, block: 'start' });
   }
   filtersEl.addEventListener('click', (e) => {
     const b = e.target.closest('[data-cat]');
     if (!b || b.dataset.cat === activeCat) return;
-    activeCat = b.dataset.cat;
-    $$('[data-cat]', filtersEl).forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-    if (reduceMotion) { renderProducts(true); return; }
-    gridEl.classList.add('is-switching');
-    setTimeout(() => {
-      renderProducts(true);
-      requestAnimationFrame(() => gridEl.classList.remove('is-switching'));
-    }, 280);
+    setCategory(b.dataset.cat);
+  });
+  if (moreBtn) moreBtn.addEventListener('click', () => {
+    const from = shown;
+    shown += STEP;
+    renderProducts(from);
+    const next = $$('.product', gridEl)[from];
+    const btn = next && $('[data-open]', next);
+    if (btn) btn.focus({ preventScroll: true });
   });
   gridEl.addEventListener('click', (e) => {
     const o = e.target.closest('[data-open]');
-    if (o) { openProduct(o.dataset.open); return; }
+    if (o) { openProduct(o.dataset.open, shopList().map((p) => p.id)); return; }
     const q = e.target.closest('[data-quick]');
     if (!q) return;
     const p = findProduct(q.dataset.quick);
     if (!p) return;
-    if (p.quote || p.priceFrom) { openProduct(p.id); return; }
+    if (p.quote || p.priceFrom || (p.options && p.options.colors)) { openProduct(p.id, shopList().map((x) => x.id)); return; }
     addProduct(p, 0, 1);
     q.classList.add('is-done');
     q.innerHTML = '<svg><use href="#i-check"/></svg>';
@@ -684,62 +888,119 @@
     }, 1500);
   });
 
-  function openProduct(id) {
+  /* ---------- Fiche d'une création (avec navigation précédente / suivante) ---------- */
+  let navIds = [];
+  let currentId = '';
+  const WHY = [['clock', 'du temps'], ['chenille', 'du matériel'], ['drop', 'de la colle'], ['gift', 'un emballage']];
+  const whyHTML = () => `<div class="pm-why"><p>Une fleur, c’est${NB}:</p><ul>${WHY.map((w) => `<li><svg aria-hidden="true"><use href="#i-${w[0]}"/></svg>${w[1]}</li>`).join('')}</ul></div>`;
+
+  function openProduct(id, nav, focusSel) {
     const p = findProduct(id);
     if (!p) return;
-    let idx = 0, qty = 1;
-    const opts = p.options
-      ? `<div><span class="pm-label" id="pm-opt-label">${esc(p.options.label)}</span><div class="pills" role="radiogroup" aria-labelledby="pm-opt-label">` +
-        p.options.choices.map((c, i) => `<button type="button" class="pill" role="radio" aria-checked="${i === 0}" data-choice="${i}">${c.color ? `<i style="--c:${FC.hex(c.color)}"></i>` : ''}${esc(c.name)}</button>`).join('') +
-        '</div></div>'
+    currentId = id;
+    if (nav) navIds = nav.filter((x) => findProduct(x));
+    if (navIds.indexOf(id) < 0) navIds = [];
+    const pos = navIds.indexOf(id);
+    let idx = 0, qty = 1, color = '', picIdx = 0;
+    const o = p.options;
+    const icon = (c) => (c.type && S.flowers[c.type] ? `<span class="pill-ic" aria-hidden="true">${FC.icon(c.type, FC.hex(color || c.color || 'rose'))}</span>` : (c.color ? `<i style="--c:${FC.hex(c.color)}"></i>` : ''));
+    const pillsHTML = () => o.choices.map((c, i) => `<button type="button" class="pill" role="radio" aria-checked="${i === idx}" data-choice="${i}">${icon(c)}${esc(c.name)}</button>`).join('');
+    const colorKeys = Object.keys(S.colors).filter((k) => !S.colors[k].hidden);
+    const opts = o
+      ? `<div><span class="pm-label" id="pm-opt-label">${esc(o.label)}</span><div class="pills" role="radiogroup" aria-labelledby="pm-opt-label" data-pills>${pillsHTML()}</div></div>` +
+        (o.colors
+          ? `<div><span class="pm-label" id="pm-col-label">Sa couleur <em data-col-name>à choisir</em></span><div class="swatches swatches--sm" role="radiogroup" aria-labelledby="pm-col-label">` +
+            colorKeys.map((k) => `<button type="button" class="swatch" role="radio" aria-checked="false" aria-label="${esc(S.colors[k].name)}" title="${esc(S.colors[k].name)}" data-pm-color="${esc(k)}" style="--c:${esc(S.colors[k].hex)}"></button>`).join('') +
+            '</div></div>'
+          : '')
       : '';
     const compo = p.composition && p.composition.length
       ? `<div><span class="pm-label">Composition</span><ul class="pm-compo">${p.composition.map((c) => `<li><i style="--c:${FC.hex(c.color)}"></i><span><strong>${esc(colorName(c.color))}</strong>${NB}: ${esc(c.text)}</span></li>`).join('')}</ul></div>`
       : '';
     const words = p.words ? `<blockquote class="pm-words"><p>«${NB}${esc(p.words)}${NB}»</p><cite><svg aria-hidden="true"><use href="#i-chenille"/></svg> Flore &amp; Chenilles</cite></blockquote>` : '';
+    const card = p.quote ? '' :
+      '<details class="pm-card"><summary><svg aria-hidden="true"><use href="#i-mail"/></svg><span><strong>Carte de vœux offerte</strong> Écrire mon message</span></summary>' +
+      cardFieldsHTML('pm-card', null) + '</details>';
     const actions = p.quote
       ? '<button type="button" class="btn btn-primary" data-pm-quote>Demander un devis <svg><use href="#i-arrow"/></svg></button>'
       : '<div class="qty" role="group" aria-label="Quantité"><button type="button" data-q="-1" aria-label="Retirer un exemplaire">−</button><output data-q-val aria-live="polite">1</output><button type="button" data-q="1" aria-label="Ajouter un exemplaire">+</button></div>' +
         '<button type="button" class="btn btn-primary" data-pm-add><svg><use href="#i-bag"/></svg> Ajouter à ma sélection</button>';
-    const links = (p.preset && stage ? `<button type="button" class="pm-link" data-pm-custom><svg><use href="#i-sparkle"/></svg> Personnaliser ce bouquet</button>` : '') +
-      (p.post ? `<a class="pm-link" href="${esc(p.post)}" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg> Voir la publication</a>` : '');
+    const links = (p.preset && stage ? '<button type="button" class="pm-link" data-pm-custom><svg><use href="#i-sparkle"/></svg> Personnaliser ce bouquet</button>' : '') +
+      (p.post ? `<a class="pm-link" href="${esc(p.post)}" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg> Voir la publication</a>` : '') +
+      (!p.quote ? '<button type="button" class="pm-link" data-pm-ask><svg><use href="#i-palette"/></svg> La même dans d’autres couleurs</button>' : '');
+    const thumbs = p.pics.length > 1
+      ? `<div class="pm-thumbs" role="group" aria-label="Photos de la création">${p.pics.map((ph, i) => `<button type="button" class="pm-thumb" data-pic="${i}" aria-pressed="${i === 0}" aria-label="Photo ${i + 1} sur ${p.pics.length}"><img src="${esc(ph.s)}" alt="" loading="lazy" decoding="async"></button>`).join('')}</div>`
+      : '';
+    const navBtns = pos >= 0 && navIds.length > 1
+      ? '<button type="button" class="icon-btn pm-nav pm-prev" data-pm-nav="-1" aria-label="Création précédente"><svg><use href="#i-arrow"/></svg></button>' +
+        '<button type="button" class="icon-btn pm-nav pm-next" data-pm-nav="1" aria-label="Création suivante"><svg><use href="#i-arrow"/></svg></button>' +
+        `<span class="pm-count">${pos + 1} / ${navIds.length}</span>`
+      : '';
+    const cat = catOf(p.category).name;
     const html = '<div class="pm">' +
-      `<div class="pm-media${p.image ? ' has-photo' : ''}" style="--bg:${esc(p.bg || '#F8E1E6')}"><div class="pm-art" data-pm-art>${productArt(p, 0, { aspect: 0.92 })}</div></div>` +
+      `<div class="pm-media${p.pics.length ? ' has-photo' : ''}" style="--bg:${esc(p.bg || '#F8E1E6')}"><div class="pm-art" data-pm-art>${productArt(p, null, { aspect: 0.92, large: true })}</div>${thumbs}${navBtns}</div>` +
       '<div class="pm-info">' +
+      (cat && p.category !== 'sur-mesure' ? `<p class="pm-cat">${esc(cat)}</p>` : '') +
       (p.badge ? `<span class="badge badge--inline">${esc(p.badge)}</span>` : '') +
       `<h2 id="modal-title">${esc(p.name)}</h2>` +
       `<p class="pm-price${productPrice(p, 0) == null ? ' is-ask' : ''}" data-pm-price>${priceText(p, 0)}</p>` +
       words +
-      `<p class="pm-desc">${esc(p.desc)}</p>` +
-      compo + opts +
+      `<p class="pm-desc">${esc(blurbOf(p))}</p>` +
+      (p.category === 'unite' ? whyHTML() : '') +
+      compo + opts + card +
       `<div class="pm-actions">${actions}</div>` +
       (links ? `<div class="pm-links">${links}</div>` : '') +
-      (p.illustration ? `<p class="tiny">${esc(p.illustration)}</p>` : '<p class="tiny">Fait main à la commande · Couleurs ajustables sur simple demande</p>') +
+      (p.illustration ? `<p class="tiny">${esc(p.illustration)}</p>` : `<p class="tiny">Fait main à la commande · ${esc(PACK)} · Carte de vœux offerte</p>`) +
       '</div></div>';
     openModal(html, (root) => {
+      const art = $('[data-pm-art]', root);
+      const showPic = (i) => {
+        picIdx = i;
+        art.innerHTML = productArt(p, null, { aspect: 0.92, large: true, pic: i });
+        $$('[data-pic]', root).forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.pic === i)));
+      };
       root.addEventListener('click', (e) => {
+        const nb = e.target.closest('[data-pm-nav]');
+        if (nb) { stepProduct(+nb.dataset.pmNav); return; }
+        const th = e.target.closest('[data-pic]');
+        if (th) { showPic(+th.dataset.pic); return; }
         const c = e.target.closest('[data-choice]');
         if (c) {
           idx = +c.dataset.choice;
           $$('[data-choice]', root).forEach((x) => x.setAttribute('aria-checked', String(x === c)));
-          $('[data-pm-art]', root).innerHTML = productArt(p, idx, { aspect: 0.92 });
+          art.innerHTML = productArt(p, idx, { aspect: 0.92, large: true });
+          $$('[data-pic]', root).forEach((b) => b.setAttribute('aria-pressed', 'false'));
           $('[data-pm-price]', root).textContent = priceText(p, idx);
+          return;
+        }
+        const sw = e.target.closest('[data-pm-color]');
+        if (sw) {
+          color = sw.dataset.pmColor;
+          $$('[data-pm-color]', root).forEach((x) => x.setAttribute('aria-checked', String(x === sw)));
+          $('[data-col-name]', root).textContent = colorName(color).toLowerCase();
+          $('[data-pills]', root).innerHTML = pillsHTML();
           return;
         }
         const qb = e.target.closest('[data-q]');
         if (qb) {
-          qty = Math.max(1, Math.min(20, qty + +qb.dataset.q));
+          qty = Math.max(1, Math.min(30, qty + +qb.dataset.q));
           $('[data-q-val]', root).textContent = qty;
           return;
         }
         if (e.target.closest('[data-pm-add]')) {
-          addProduct(p, idx, qty);
+          const fields = $('[data-card-fields]', root);
+          addProduct(p, o ? idx : 0, qty, { color, card: fields ? readCard(fields) : null });
           closeModal();
           return;
         }
         if (e.target.closest('[data-pm-custom]')) {
           closeModal();
           loadPreset(p.preset, p.name);
+          return;
+        }
+        if (e.target.closest('[data-pm-ask]')) {
+          closeModal();
+          prefillContact('Un bouquet sur mesure', `Bonjour${NB}! J’aimerais «${NB}${p.name}${NB}», mais dans d’autres couleurs${NB}: \nPour le${NB}: `);
           return;
         }
         if (e.target.closest('[data-pm-quote]')) {
@@ -751,7 +1012,31 @@
               : `Bonjour${NB}! J’aimerais un devis pour «${NB}${p.name}${NB}».\nDate souhaitée${NB}: \nCouleurs ou fleurs souhaitées${NB}: `);
         }
       });
-    });
+      bindCard(root, () => {});
+      // Glisser du doigt sur la photo : création précédente / suivante (ou photo suivante).
+      const media = $('.pm-media', root);
+      let x0 = null, y0 = null;
+      media.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+      media.addEventListener('touchend', (e) => {
+        if (x0 == null) return;
+        const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+        x0 = null;
+        if (Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy)) return;
+        const d = dx < 0 ? 1 : -1;
+        if (p.pics.length > 1 && picIdx + d >= 0 && picIdx + d < p.pics.length) showPic(picIdx + d);
+        else if (navIds.length > 1) stepProduct(d);
+      }, { passive: true });
+      // Précharge les photos des créations voisines.
+      [-1, 1].forEach((d) => {
+        const n = navIds.length > 1 && pos >= 0 ? findProduct(navIds[(pos + d + navIds.length) % navIds.length]) : null;
+        if (n && n.pics.length) { const im = new Image(); im.src = n.pics[0].l; }
+      });
+    }, { focus: focusSel });
+  }
+  function stepProduct(d) {
+    if (navIds.length < 2) return;
+    const i = Math.max(0, navIds.indexOf(currentId));
+    openProduct(navIds[(i + d + navIds.length) % navIds.length], null, `[data-pm-nav="${d}"]`);
   }
 
   /* ------------------------------------------------------------------ *
@@ -759,17 +1044,13 @@
    * ------------------------------------------------------------------ */
   const BLD = S.builder || {};
   const MAX = BLD.maxFlowers || 20;
-  const BASE = BLD.basePrice || 0;
   const stageSvg = $('[data-stage]');
   const preview = $('[data-preview]');
   const stage = stageSvg ? FC.stage(stageSvg) : null;
   const colorsEl = $('[data-b-colors]');
   const pickerEl = $('[data-b-flowers]');
   const chipsEl = $('[data-b-chips]');
-  const papersEl = $('[data-b-papers]');
-  const ribbonsEl = $('[data-b-ribbons]');
-  const msgEl = $('[data-b-message]');
-  const counterEl = $('[data-b-counter]');
+  const cardHost = $('[data-b-card]');
   const firstKey = (o) => Object.keys(o)[0];
   let uid = 1;
   let bColor = (BLD.start && S.colors[BLD.start.color] && BLD.start.color) || firstKey(S.colors);
@@ -781,17 +1062,22 @@
       .slice(0, MAX)
       .map((f) => ({ id: uid++, type: f[0], color: S.flowers[f[0]].fixedColor || (S.colors[f[1]] ? f[1] : bColor) }));
   }
-  function fromPreset(pr) {
+  /** Bouquet à partir d'un modèle ; la carte garde ce qui était déjà écrit (keep) sauf indication contraire. */
+  function fromPreset(pr, keep) {
     pr = pr || {};
+    const c = pr.card || {};
+    const k = keep || {};
     return {
       flowers: toItems(pr.flowers),
-      paper: S.papers[pr.paper] ? pr.paper : firstKey(S.papers),
-      ribbon: S.ribbons[pr.ribbon] ? pr.ribbon : firstKey(S.ribbons),
-      message: typeof pr.message === 'string' ? pr.message.slice(0, 80) : ''
+      card: cleanCard({
+        to: c.to != null ? c.to : k.to,
+        msg: typeof pr.message === 'string' ? pr.message : c.msg != null ? c.msg : k.msg,
+        from: c.from != null ? c.from : k.from
+      })
     };
   }
-  const serialize = (st) => ({ f: st.flowers.map((f) => [f.type, f.color]), p: st.paper, r: st.ribbon, m: st.message });
-  const fromSerialized = (o) => (o && Array.isArray(o.f) ? fromPreset({ flowers: o.f, paper: o.p, ribbon: o.r, message: o.m }) : null);
+  const serialize = (st) => ({ f: st.flowers.map((f) => [f.type, f.color]), t: st.card.to, m: st.card.msg, d: st.card.from });
+  const fromSerialized = (o) => (o && Array.isArray(o.f) ? fromPreset({ flowers: o.f, card: { to: o.t || '', msg: o.m || '', from: o.d || '' } }) : null);
   function encode(o) {
     return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
@@ -812,17 +1098,12 @@
       if (!groups[f.type]) { groups[f.type] = {}; order.push(f.type); }
       groups[f.type][f.color] = (groups[f.type][f.color] || 0) + 1;
     });
-    const parts = order.map((t) => {
+    return order.map((t) => {
       const g = groups[t], info = flowerInfo(t), cols = Object.keys(g);
       const n = cols.reduce((s, c) => s + g[c], 0);
       const detail = info.fixedColor ? '' : ' (' + cols.map((c) => (cols.length > 1 ? g[c] + ' ' : '') + colorName(c).toLowerCase()).join(', ') + ')';
       return n + ' ' + (n > 1 ? info.plural : info.name).toLowerCase() + detail;
-    });
-    let s = parts.join(', ');
-    s += ' · Papier ' + (S.papers[st.paper] ? S.papers[st.paper].name.toLowerCase() : st.paper);
-    s += ', ruban ' + (S.ribbons[st.ribbon] ? S.ribbons[st.ribbon].name.toLowerCase() : st.ribbon);
-    if (st.message && st.message.trim()) s += ` · Petit mot${NB}: «${NB}${st.message.trim()}${NB}»`;
-    return s;
+    }).join(', ');
   }
 
   function renderColors() {
@@ -840,11 +1121,6 @@
         `<span class="fp-name">${esc(f.name)}</span></button>`;
     }).join('');
   }
-  function renderWraps() {
-    const sw = (group, key, attr) => `<button type="button" class="swatch" role="radio" aria-checked="${key === bState[attr]}" data-${attr}="${esc(key)}" style="--c:${esc(group[key].hex)}"><i></i>${esc(group[key].name)}</button>`;
-    papersEl.innerHTML = Object.keys(S.papers).map((k) => sw(S.papers, k, 'paper')).join('');
-    ribbonsEl.innerHTML = Object.keys(S.ribbons).map((k) => sw(S.ribbons, k, 'ribbon')).join('');
-  }
   const chipHTML = (f) =>
     `<button type="button" class="chip" data-remove="${f.id}" style="--c:${FC.hex(f.color)}" aria-label="Retirer : ${esc(flowerInfo(f.type).name)} ${esc(colorName(f.color))}"><i></i>${esc(flowerInfo(f.type).name)}<svg><use href="#i-close"/></svg></button>`;
   function renderChips() {
@@ -855,20 +1131,16 @@
   }
   function renderSummary() {
     const n = bState.flowers.length;
-    const paper = S.papers[bState.paper] ? S.papers[bState.paper].name.toLowerCase() : '';
-    const ribbon = S.ribbons[bState.ribbon] ? S.ribbons[bState.ribbon].name.toLowerCase() : '';
     setText('[data-b-count]', plural(n, 'fleur', 'fleurs'));
     setText('[data-b-count-2]', String(n));
-    setText('[data-b-wrap]', `Papier ${paper}, ruban ${ribbon}`);
     setText('[data-b-count-max]', n + ' / ' + MAX);
+    setText('[data-b-card-state]', cardEmpty(bState.card) ? 'Offerte' : 'Offerte, avec votre mot');
     if (preview) preview.classList.toggle('is-empty', n === 0);
     const undo = $('[data-b-undo]');
     if (undo) undo.disabled = n === 0;
   }
   function syncControls() {
-    renderWraps();
-    msgEl.value = bState.message || '';
-    counterEl.textContent = msgEl.value.length + '/' + msgEl.maxLength;
+    if (cardHost) cardHost.innerHTML = cardFieldsHTML('b-card', bState.card);
   }
   function bUpdate(opts) {
     stageStarted = true;
@@ -913,23 +1185,8 @@
       bState.flowers = bState.flowers.filter((f) => String(f.id) !== b.dataset.remove);
       bUpdate();
     });
-    papersEl.addEventListener('click', (e) => {
-      const b = e.target.closest('[data-paper]');
-      if (!b) return;
-      bState.paper = b.dataset.paper;
-      $$('[data-paper]', papersEl).forEach((x) => x.setAttribute('aria-checked', String(x === b)));
-      bUpdate();
-    });
-    ribbonsEl.addEventListener('click', (e) => {
-      const b = e.target.closest('[data-ribbon]');
-      if (!b) return;
-      bState.ribbon = b.dataset.ribbon;
-      $$('[data-ribbon]', ribbonsEl).forEach((x) => x.setAttribute('aria-checked', String(x === b)));
-      bUpdate();
-    });
-    msgEl.addEventListener('input', () => {
-      bState.message = msgEl.value;
-      counterEl.textContent = msgEl.value.length + '/' + msgEl.maxLength;
+    if (cardHost) bindCard(cardHost, (fields, card) => {
+      bState.card = card;
       bUpdate();
     });
 
@@ -946,8 +1203,7 @@
         fl.push([t, P.colors[i % P.colors.length]]);
       }
       if (S.flowers.eucalyptus) { fl.push(['eucalyptus']); if (Math.random() < 0.5) fl.push(['eucalyptus']); }
-      bState = fromPreset({ flowers: fl, paper: P.paper, ribbon: P.ribbon, message: bState.message });
-      syncControls();
+      bState = fromPreset({ flowers: fl }, bState.card);
       bUpdate({ pulse: true });
       toast(`Et voilà une composition surprise${NB}!`);
     });
@@ -957,8 +1213,7 @@
       bUpdate();
     });
     $('[data-b-reset]').addEventListener('click', () => {
-      bState.flowers = [];
-      bState.message = '';
+      bState = { flowers: [], card: cleanCard(null) };
       syncControls();
       bUpdate();
     });
@@ -988,7 +1243,8 @@
         option: describe(bState),
         price: null,
         qty: 1,
-        bouquet: { flowers: bState.flowers.map((f) => [f.type, f.color]), paper: bState.paper, ribbon: bState.ribbon }
+        card: cardEmpty(bState.card) ? null : cleanCard(bState.card),
+        bouquet: { flowers: bState.flowers.map((f) => [f.type, f.color]) }
       });
       toast(`Votre bouquet est dans votre sélection${NB}!`);
     });
@@ -1026,7 +1282,7 @@
    * ------------------------------------------------------------------ */
   function loadPreset(preset, title) {
     if (!stage || !preset) return;
-    bState = fromPreset(preset);
+    bState = fromPreset(preset, bState.card);
     syncControls();
     renderChips();
     renderSummary();
@@ -1039,8 +1295,8 @@
     occEl.innerHTML = (S.occasions || []).map((o, i) =>
       `<article class="occasion reveal" style="--i:${i % 3};--bg:${esc(o.bg)}">` +
       `<div class="occ-art">${FC.bouquet(o.preset, { fit: true, aspect: 124 / 140, pad: 6, label: o.title })}</div>` +
-      `<div><h3>${esc(o.title)}</h3><p>${esc(o.text)}</p>` +
-      `<button type="button" class="occ-link" data-occ="${esc(o.id)}">${o.product ? 'Découvrir' : 'Composer ce bouquet'} <svg><use href="#i-arrow"/></svg></button></div>` +
+      `<div><h3>${esc(o.title)}</h3><p>${esc(withPrice(o.text))}</p>` +
+      `<button type="button" class="occ-link" data-occ="${esc(o.id)}">${o.product || o.cat ? 'Découvrir' : 'Composer ce bouquet'} <svg><use href="#i-arrow"/></svg></button></div>` +
       '</article>'
     ).join('');
     occEl.addEventListener('click', (e) => {
@@ -1048,6 +1304,7 @@
       if (!card) return;
       const o = (S.occasions || []).find((x) => x.id === $('[data-occ]', card).dataset.occ);
       if (!o) return;
+      if (o.cat && S.products.some((p) => p.category === o.cat)) { showCategory(o.cat); return; }
       if (o.product && findProduct(o.product)) { openProduct(o.product); return; }
       loadPreset(o.preset, o.title);
     });
@@ -1073,11 +1330,11 @@
     const tiles = photos.length
       ? photos.slice(0, 6).map((ph) => ({ bg: '#F8E1E6', html: `<img src="${esc(ph.src)}" alt="${esc(ph.alt || '')}" loading="lazy" decoding="async">`, label: ph.alt, url: ph.url }))
       : [
-          { bg: '#F8E4E9', html: FC.icon('rose', FC.hex('rose')), label: 'Rose spirale' },
-          { bg: '#E3EDF8', html: FC.bouquet({ paper: 'ciel', ribbon: 'ivoire', flowers: [['hortensia', 'ciel'], ['hortensia', 'blanc'], ['rose', 'ciel'], ['marguerite', 'blanc'], ['gypsophile', 'blanc'], ['eucalyptus']] }, { fit: true, aspect: 1, pad: 8, label: 'Bouquet bleu ciel' }), label: 'Bouquet bleu ciel' },
-          { bg: '#F1EAF8', html: FC.bouquet({ container: 'none', ribbon: 'lilas', flowers: [['tulipe', 'lilas'], ['tulipe', 'rose'], ['tulipe', 'lavande']] }, { fit: true, aspect: 1, pad: 8, label: 'Trois tulipes' }), label: 'Trois tulipes' },
-          { bg: '#F6F0D8', html: FC.bouquet({ container: 'pot', pot: 'lilas', flowers: [['cosmos', 'rose'], ['marguerite', 'blanc'], ['cosmos', 'peche'], ['eucalyptus']] }, { fit: true, aspect: 1, pad: 8, label: 'Petit pot fleuri' }), label: 'Petit pot fleuri' },
-          { bg: '#E2F1E7', html: FC.icon('hortensia', FC.hex('lilas')), label: 'Hortensia lilas' },
+          { bg: '#F8E4E9', html: FC.icon('rose', FC.hex('rose')), label: 'Rose' },
+          { bg: '#E3EDF8', html: FC.bouquet({ flowers: [['hortensia', 'ciel'], ['hortensia', 'blanc'], ['rose', 'ciel'], ['eucalyptus']] }, { fit: true, aspect: 1, pad: 8, label: 'Bouquet bleu ciel' }), label: 'Bouquet bleu ciel' },
+          { bg: '#F1EAF8', html: FC.bouquet({ container: 'none', flowers: [['tulipe', 'mauve'], ['tulipe', 'rose'], ['tulipe', 'lavande']] }, { fit: true, aspect: 1, pad: 8, label: 'Trois tulipes' }), label: 'Trois tulipes' },
+          { bg: '#F6F0D8', html: FC.bouquet({ container: 'pot', pot: 'lilas', flowers: [['jonquille', 'jaune'], ['jonquille', 'jaune'], ['eucalyptus']] }, { fit: true, aspect: 1, pad: 8, label: 'Petit pot fleuri' }), label: 'Petit pot fleuri' },
+          { bg: '#E2F1E7', html: FC.icon('hortensia', FC.hex('lavande')), label: 'Hortensia' },
           { bg: '#FBEBDD', html: FC.atelier(), label: 'Dans l’atelier' }
         ];
     const renderTiles = (list) => {
@@ -1090,16 +1347,16 @@
 
     // Dernières publications : flux JSON (Behold.so ou API Instagram) si une adresse est renseignée.
     const feedUrl = S.instagram && S.instagram.feedUrl;
-    if (feedUrl && window.fetch) {
+    if (feedUrl && window.fetch && !PREVIEW) {
       fetch(feedUrl)
         .then((r) => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))))
         .then((json) => {
           const list = Array.isArray(json) ? json : (json && (json.posts || json.data)) || [];
           const latest = list.map((p) => {
             const sizes = p.sizes || {};
-            const pick = (k) => sizes[k] && sizes[k].mediaUrl;
+            const pickSize = (k) => sizes[k] && sizes[k].mediaUrl;
             const video = /video/i.test(p.mediaType || p.media_type || '');
-            const src = pick('medium') || pick('small') || pick('large') ||
+            const src = pickSize('medium') || pickSize('small') || pickSize('large') ||
               (video ? p.thumbnailUrl || p.thumbnail_url : p.mediaUrl || p.media_url) || p.thumbnailUrl || p.thumbnail_url;
             const caption = String(p.prunedCaption || p.caption || '').split('\n')[0].trim().slice(0, 120);
             return src ? { bg: '#F8E1E6', url: p.permalink || IG_URL, label: caption || 'Publication Instagram', html: `<img src="${esc(src)}" alt="${esc(caption)}" loading="lazy" decoding="async">` } : null;
@@ -1114,7 +1371,7 @@
   });
 
   /* ------------------------------------------------------------------ *
-   * Accueil : bouquet, pétales, papillons, nouveauté
+   * Accueil : diaporama, papillons, nouveauté
    * ------------------------------------------------------------------ */
   const slidesEl = $('[data-hero-slides]');
   const dotsEl = $('[data-hero-dots]');
@@ -1123,7 +1380,7 @@
     if (!slidesEl || !dotsEl || !slides.length) return;
     let cur = 0, timer = 0;
     slidesEl.innerHTML = slides.map((p, i) =>
-      `<span class="hero-slide${i === 0 ? ' is-on' : ''}"><img src="${esc(p.image)}" alt="${esc(p.name)}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async"></span>`
+      `<span class="hero-slide${i === 0 ? ' is-on' : ''}"><img src="${esc(p.slideImage || p.large || p.image)}" alt="${esc(p.name)}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async"></span>`
     ).join('');
     dotsEl.innerHTML = slides.map((p, i) => `<button type="button" class="${i === 0 ? 'is-on' : ''}" data-dot="${i}" aria-label="${esc(p.name)}"></button>`).join('');
     const show = (i) => {
@@ -1138,7 +1395,7 @@
     };
     show(0);
     play();
-    slidesEl.addEventListener('click', () => openProduct(slides[cur].id));
+    slidesEl.addEventListener('click', () => openProduct(slides[cur].id, slides.map((p) => p.id)));
     dotsEl.addEventListener('click', (e) => {
       const d = e.target.closest('[data-dot]');
       if (d) { show(+d.dataset.dot); play(); }
@@ -1156,7 +1413,7 @@
   if (chip && featured) safe('nouveauté', () => {
     $('[data-featured-name]', chip).textContent = featured.name;
     $('small', chip).textContent = featured.badge || 'À découvrir';
-    $('[data-featured-art]', chip).innerHTML = productArt(featured, 0, { aspect: 1, pad: 6 });
+    $('[data-featured-art]', chip).innerHTML = productArt(featured, null, { aspect: 1, pad: 6, sizes: '72px' });
     $('[data-featured-art]', chip).style.background = featured.bg || '';
     chip.setAttribute('aria-label', 'Découvrir : ' + featured.name);
     chip.addEventListener('click', () => openProduct(featured.id));
@@ -1164,10 +1421,10 @@
   else if (chip) chip.hidden = true;
 
   /* ------------------------------------------------------------------ *
-   * Clavier : Échap & piège de focus
+   * Clavier : Échap, flèches & piège de focus
    * ------------------------------------------------------------------ */
   function trap(container, e) {
-    const f = $$('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])', container)
+    const f = $$('a[href], button:not([disabled]), input, select, textarea, summary, [tabindex]:not([tabindex="-1"])', container)
       .filter((el) => el.offsetParent !== null);
     if (!f.length) return;
     const first = f[0], last = f[f.length - 1];
@@ -1182,6 +1439,11 @@
     } else if (e.key === 'Tab') {
       if (modal.classList.contains('is-open')) trap($('.modal-panel', modal), e);
       else if (drawer.classList.contains('is-open')) trap($('.drawer-panel', drawer), e);
+    } else if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && modal.classList.contains('is-open') && $('[data-pm-nav]', modal)) {
+      const t = e.target;
+      if (t && t.matches && t.matches('input, textarea, select, [contenteditable]')) return;
+      e.preventDefault();
+      stepProduct(e.key === 'ArrowRight' ? 1 : -1);
     }
   });
 

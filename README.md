@@ -11,25 +11,51 @@ Il suffit d'héberger ces fichiers (GitHub Pages, Netlify, OVH…).
 
 | Section | Contenu |
 | --- | --- |
-| **Accueil** | Diaporama de ses bouquets, logo, nouveauté mise en avant (bonsaï azalée) |
+| **Accueil** | Diaporama de ses bouquets, logo, nouveauté mise en avant (bonsaï azalée), bandeau « fait main, fleurs éternelles, sans pollen, carte de vœux offerte… » |
 | **L'atelier** | Fait main avec passion dans les Ardennes, fils sélectionnés pour leur qualité et leur durabilité |
 | **Comment ça se passe** | Les 4 étapes, du choix à la remise |
-| **Mes créations** | 13 créations avec leurs vraies photos, leurs compositions et ses mots ; lien vers chaque publication Instagram ; bouton « Personnaliser ce bouquet » |
-| **Votre bouquet à vous** | Compositeur interactif avec ses fleurs (lys, arum, pavot, gerbera, rose, tulipe, hortensia, tournesol, jonquille, feuillage), papier, ruban et petit mot |
-| **Occasions** | Anniversaire, naissance, évènements, « merci la maîtresse » (fleur à 5 €), fleurs du souvenir en bocal, juste parce que |
-| **Livraison & retrait** | Retrait à l'atelier ; livraison 5 € dans un rayon de 20 km autour de Signy-l'Abbaye, puis 0,40 € par kilomètre supplémentaire (ajoutée automatiquement au total de la demande) |
+| **Mes créations** | Les 64 créations, toutes en vente : bouquets, fleurs à l'unité (8 €), déco & cadeaux, sur-mesure. Filtres, bouton « Voir plus », plusieurs photos par création, flèches (ou glisser du doigt) pour passer d'une création à l'autre, carte de vœux à écrire, lien vers la publication Instagram |
+| **Le prix d'une fleur** | « Une fleur à 8 €, c'est… » du temps, du matériel, de la colle et un emballage, et la carte de vœux offerte |
+| **Votre bouquet à vous** | Compositeur interactif avec ses fleurs (lys, arum, pavot, gerbera, rose, tulipe, hortensia, tournesol, jonquille, feuillage), emballé dans une pochette transparente avec un nœud, et sa carte de vœux personnalisée (pour, message, de la part de) |
+| **Occasions** | Anniversaire, naissance, évènements, « merci la maîtresse » (fleurs à 8 €), fleurs du souvenir en bocal, juste parce que |
+| **Livraison & retrait** | Retrait gratuit à l'atelier ; livraison 5 € jusqu'à 15 km et 10 € jusqu'à 25 km autour de Signy-l'Abbaye (ajoutée automatiquement au total), au-delà à voir ensemble |
 | **Réseaux** | Mosaïque Instagram (dernières publications automatiques via Behold, sinon photos du site), lien Facebook (à renseigner) |
-| **FAQ & contact** | Questions fréquentes et formulaire qui prépare le message pour Instagram (ou l'e-mail) |
+| **FAQ & contact** | Questions fréquentes et formulaire qui **envoie directement un e-mail** |
 
-Le panier s'appelle « Ma sélection » : on y ajoute ses coups de cœur, puis on envoie une demande.
-Le message de commande récapitule tout : créations, compositions, retrait ou livraison (avec la ville), date et coordonnées.
+Le panier s'appelle « Ma sélection ». À la fin, la demande récapitule tout : créations, options, cartes de vœux,
+retrait ou livraison (avec l'adresse), date et coordonnées, puis elle part **par e-mail**, sans passer par Instagram.
+Aucun paiement n'est demandé sur le site : Laurine confirme le prix, la date et la remise.
+
+Chaque création est emballée dans une **pochette transparente fermée d'un nœud**. Ce n'est pas une option :
+le client choisit seulement ses fleurs et écrit sa **carte de vœux, offerte**.
 
 ## D'où viennent les contenus
 
-Les photos, les noms des bouquets, leurs compositions et les phrases entre guillemets viennent des
-12 publications les plus récentes du compte Instagram (photos et images extraites de ses vidéos).
-Instagram n'affiche pas les publications plus anciennes sans être connecté, et Facebook demande
-une connexion : pour ajouter d'autres créations, il suffit de déposer leurs photos (voir plus bas).
+Les noms des bouquets, leurs compositions et les phrases entre guillemets viennent du compte Instagram.
+Les photos viennent d'Instagram et du dossier de photos de Laurine (dossier `assets/gallery/` :
+une vignette `-s.webp` et une grande image `.webp` pour chaque photo).
+
+## Recevoir les messages et les commandes par e-mail
+
+Le formulaire de contact et la demande de commande envoient un e-mail grâce au service gratuit
+[FormSubmit](https://formsubmit.co) : pas de compte à créer.
+
+1. Dans `assets/js/data.js`, écrivez l'adresse de Laurine à la ligne `email: ''` (rubrique `contact`),
+   par exemple `email: 'laurine@exemple.fr'`, puis changez le numéro `?v=` dans `index.html` (voir plus bas).
+2. Une fois le site en ligne, envoyez un premier message de test depuis le formulaire de contact.
+3. FormSubmit envoie alors un e-mail à cette adresse : cliquez sur **« Activate Form »**.
+   Ce premier message sert seulement à l'activation.
+4. C'est tout : chaque message et chaque commande arrivent ensuite directement dans la boîte mail.
+   Pour répondre au client, il suffit de cliquer sur « Répondre ».
+
+Bon à savoir :
+
+- `showEmail: true` affiche aussi l'adresse sur le site (contact, pied de page). Mettez `false` pour la cacher.
+- Pour ne pas laisser l'adresse dans le code, FormSubmit fournit après activation un identifiant
+  aléatoire (« random string ») : il peut remplacer l'adresse dans `email`.
+- Pour utiliser un autre service (Formspree…), collez son adresse dans `formEndpoint`.
+- Tant qu'aucune adresse n'est renseignée, le site propose au visiteur de copier son message
+  et de l'envoyer en message privé.
 
 ## Voir le site
 
@@ -53,21 +79,34 @@ puis ouvrez <http://localhost:8000>.
 
 Tout le contenu « vivant » est rassemblé dans **`assets/js/data.js`**, commenté en français :
 
-- `products` : les créations (nom, photo, composition, ses mots, lien Instagram…) ;
-- `price` : `null` affiche « Sur demande » ; mettez un nombre (`price: 45`) pour afficher un prix ;
-  `quote: true` affiche « Sur devis » avec un bouton « Demander un devis » ;
-- `delivery` : prix de la livraison (5 €), rayon (20 km) et prix au kilomètre supplémentaire (0,40 €) ;
+- `unitPrice` : le prix d'une fleur à l'unité (8 €), utilisé partout sur le site ;
+- `products` : les créations, dans l'ordre d'affichage (nom, catégorie, photos, description…) ;
+- `price` : sans prix, une création est « sur demande » (sauf les fleurs à l'unité, au prix d'une fleur) ;
+  mettez un nombre (`price: 45`) pour afficher un prix ; `quote: true` affiche « Sur devis » ;
+- `delivery.zones` : les zones de livraison (5 € jusqu'à 15 km, 10 € jusqu'à 25 km) ;
+- `packaging` : le texte de l'emballage (pochette transparente et nœud) ;
+- `card.suggestions` : les idées de messages proposées pour la carte de vœux ;
+- `contact.email` : l'adresse qui reçoit les messages (voir plus haut) ;
 - `contact.facebook` : **collez ici l'adresse de la page Facebook** pour afficher les boutons Facebook ;
-- `contact.email` : ajoutez une adresse pour proposer « Envoyer par e-mail » ;
-- `flowers`, `colors`, `papers`, `ribbons` : les fleurs et palettes du compositeur ;
+- `categories` : les filtres de la boutique (avec la phrase d'introduction des fleurs à l'unité) ;
+- `flowers`, `colors` : les fleurs et couleurs du compositeur ;
 - `occasions` : les cartes « pour chaque occasion » ;
 - `reviews` : vos avis clients (la section n'apparaît que s'il y en a).
 
 Les textes de présentation (accueil, atelier, FAQ…) se modifient directement dans `index.html`.
 
 Après une modification de `style.css`, `app.js`, `flowers.js` ou `data.js`, changez le numéro
-`?v=…` des quatre liens en haut de `index.html` (par exemple `?v=20261102`) : les visiteurs
+`?v=…` des quatre liens en haut de `index.html` (par exemple `?v=20261110`) : les visiteurs
 chargeront aussitôt la nouvelle version au lieu d'une copie gardée en mémoire par leur navigateur.
+
+## Ajouter une création
+
+1. Pour une photo du dossier de Laurine : créez la vignette et la grande image dans `assets/gallery/`
+   (`g151-s.webp`, environ 480 px de large, et `g151.webp`, environ 1200 px), puis écrivez `photo: 'g151'`.
+   Pour une photo JPG classique : déposez-la dans `assets/photos/` (format portrait 4:5, environ 800 px
+   de large) et écrivez `image: 'assets/photos/mon-bouquet.jpg'`.
+2. Dans `data.js`, copiez une ligne de `products` et changez `id`, `name`, `category`, `photo`, `desc`…
+3. D'autres photos de la même création : `more: ['g152', 'g153']`.
 
 ## Afficher automatiquement les dernières publications Instagram
 
@@ -83,16 +122,11 @@ La mosaïque « Sur les réseaux » peut se mettre à jour toute seule, grâce a
 
 Tant que l'adresse est vide, ou si le service ne répond pas, les photos actuelles du site s'affichent.
 
-## Ajouter une création ou une photo
-
-1. Déposez la photo (JPG, format portrait 4:5 idéalement, environ 800 px de large) dans `assets/photos/`.
-2. Dans `data.js`, copiez un bloc de `products` et changez `id`, `name`, `image`, `desc`…
-3. Pour la mosaïque, ajoutez une ligne dans `instagram.photos` avec `src`, `alt` et `url` (le lien de la publication).
-
 ## À compléter avant la mise en ligne
 
+- [ ] Écrire l'adresse e-mail de Laurine dans `contact.email`, puis activer le formulaire (voir plus haut).
 - [ ] Coller l'adresse de la page Facebook dans `contact.facebook`.
-- [ ] Indiquer les prix connus (`price`) si vous souhaitez les afficher.
+- [ ] Indiquer les prix connus des bouquets (`price`) si vous souhaitez les afficher.
 - [ ] Ajouter des mentions légales : elles sont obligatoires en France pour un site professionnel
       (nom ou raison sociale, SIRET, adresse, hébergeur).
 - [ ] Une fois le site en ligne, remplacer dans `index.html` le chemin de `og:image` par son adresse complète
@@ -104,9 +138,10 @@ Tant que l'adresse est vide, ou si le service ne répond pas, les photos actuell
 index.html              la page
 assets/css/style.css    la mise en forme (couleurs dans :root)
 assets/js/data.js       le contenu modifiable
-assets/js/flowers.js    le moteur d'illustrations (fleurs en fil chenille, en SVG)
-assets/js/app.js        créations, sélection, compositeur, formulaires, animations
-assets/photos/          ses photos et son logo
+assets/js/flowers.js    le moteur d'illustrations (fleurs en fil chenille, pochette, carte, en SVG)
+assets/js/app.js        créations, sélection, compositeur, cartes de vœux, envoi des e-mails, animations
+assets/photos/          ses photos (JPG) et son logo
+assets/gallery/         les photos de Laurine (vignettes et grandes images WebP)
 assets/fonts/           polices Fraunces et Jost, auto-hébergées (licence SIL OFL)
 assets/img/             favicon, icône mobile, image de partage
 ```
