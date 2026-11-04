@@ -54,6 +54,23 @@
   const PACK = S.packaging || 'Pochette transparente et nœud';
   const CARD = Object.assign({ maxLength: 160, suggestions: [] }, S.card || {});
   const ZONES = ((S.delivery && S.delivery.zones) || []).filter((z) => z && z.upToKm > 0 && z.price != null).sort((a, b) => a.upToKm - b.upToKm);
+  /* Offre de lancement : active entre promo.from et promo.until (inclus). */
+  const PROMO = (() => {
+    const pr = S.promo || {};
+    const pct = +pr.percent || 0;
+    if (!(pct > 0 && pct < 100)) return null;
+    const day = (iso, end) => {
+      const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      return m ? new Date(+m[1], +m[2] - 1, +m[3], end ? 23 : 0, end ? 59 : 0, end ? 59 : 0) : null;
+    };
+    const from = day(pr.from), until = day(pr.until, true), now = new Date();
+    if ((from && now < from) || (until && now > until)) return null;
+    return { pct, label: pr.label || 'Offre de lancement', until };
+  })();
+  const round2 = (n) => Math.round(n * 100) / 100;
+  const withPromo = (v) => (PROMO && v != null ? round2((v * (100 - PROMO.pct)) / 100) : v);
+  const pctText = () => (PROMO ? `−${PROMO.pct}${NB}%` : '');
+  const untilText = () => (PROMO && PROMO.until ? PROMO.until.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '');
   const colorName = (k) => (S.colors[k] ? S.colors[k].name : k);
   const flowerInfo = (t) => S.flowers[t] || { name: t, plural: t };
   const plural = (n, one, many) => n + ' ' + (n > 1 ? many : one);
@@ -252,6 +269,7 @@
     });
   }
   const GRID_SIZES = '(max-width: 899px) 48vw, 400px';
+  const ARTS = { mystery: FC.mystery };
   /**
    * Illustration d'une création : photo du choix (idx), photo n° o.pic, ou dessin.
    * o.large : grande image (fenêtre) ; o.sizes : taille d'affichage pour le navigateur.
@@ -263,6 +281,7 @@
       const src = o.large ? choice.large || choice.image : choice.image;
       return `<img src="${esc(src)}" alt="${esc(p.name + ' : ' + choice.name)}"${o.large ? '' : ' loading="lazy"'} decoding="async">`;
     }
+    if (p.art && ARTS[p.art]) return ARTS[p.art]();
     const ph = p.pics && (p.pics[o.pic || 0] || p.pics[0]);
     if (ph) {
       if (o.large) return `<img src="${esc(ph.l)}" alt="${esc(p.name)}" decoding="async">`;
@@ -282,6 +301,12 @@
     const v = productPrice(p, idx);
     if (v == null) return p.quote ? 'Sur devis' : 'Sur demande';
     return (p.priceFrom ? 'dès ' : '') + price(v);
+  }
+  /** Prix affiché, barré et remisé pendant l'offre de lancement. */
+  function priceHTML(p, idx) {
+    const v = productPrice(p, idx);
+    if (v == null || !PROMO) return esc(priceText(p, idx));
+    return `<s>${price(v)}</s> <ins>${p.priceFrom ? 'dès ' : ''}${price(withPromo(v))}</ins>`;
   }
 
   /* ------------------------------------------------------------------ *
@@ -386,20 +411,35 @@
   const cartTotalEl = $('[data-cart-total]');
   const cartCountEl = $('[data-cart-count]');
   const cartBtn = $('.cart-btn');
+  const cartPromoEl = $('[data-cart-promo]');
   const cartSums = () => cart.reduce((acc, it) => {
     if (it.price == null) acc.ask += it.qty; else acc.sum += it.price * it.qty;
     return acc;
   }, { sum: 0, ask: 0 });
   const ucfirst = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const BF_COLS = ['#C8A0E2', '#F5B07D', '#F4ADC5', '#A8D3F0', '#8ED6D0', '#F7D25E', '#B3B0EC'];
+  /** Montants de la sélection : sous-total, remise de lancement, livraison (opt), total. */
+  function cartTotals(opt) {
+    const t = cartSums();
+    const disc = PROMO ? round2((t.sum * PROMO.pct) / 100) : 0;
+    const fee = (opt && opt.fee) || 0;
+    return { sum: t.sum, ask: t.ask, disc, fee, total: round2(t.sum - disc + fee) };
+  }
   /** Total de la sélection, avec la livraison choisie (opt) si besoin. */
   function totalText(opt) {
-    const t = cartSums();
-    const sum = t.sum + ((opt && opt.fee) || 0);
+    const c = cartTotals(opt);
     const extra = [];
-    if (t.ask) extra.push('sur devis');
+    if (c.ask) extra.push('sur devis');
     if (opt && opt.ask) extra.push('livraison à voir ensemble');
-    if (!extra.length) return price(sum);
-    return ucfirst((sum ? price(sum) + ' + ' : '') + extra.join(' + '));
+    if (!extra.length) return price(c.total);
+    return ucfirst((c.total ? price(c.total) + ' + ' : '') + extra.join(' + '));
+  }
+  /** Ligne « Offre de lancement » : montant déduit, ou remise à appliquer au devis. */
+  function promoLine() {
+    if (!PROMO) return null;
+    const c = cartTotals();
+    if (!c.disc && !c.ask) return null;
+    return { label: `${PROMO.label} (${pctText()})`, value: c.disc ? '−' + price(c.disc) : 'sur le devis', note: c.disc && c.ask ? 'aussi sur les créations sur demande' : '' };
   }
   const lineText = (it) => (it.price == null ? 'Sur demande' : price(it.price * it.qty));
   const cartQty = () => cart.reduce((s, it) => s + it.qty, 0);
@@ -414,6 +454,28 @@
     cartBtn.classList.remove('bump');
     void cartBtn.offsetWidth;
     cartBtn.classList.add('bump');
+  }
+  /** Un petit papillon vole du bouton jusqu'au panier. */
+  function flyToCart(from) {
+    if (reduceMotion || !from || !from.getBoundingClientRect || !cartBtn || !document.body.animate) return;
+    const a = from.getBoundingClientRect(), b = cartBtn.getBoundingClientRect();
+    if (!a.width || !b.width) return;
+    const el = document.createElement('div');
+    el.className = 'flyer';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = FC.butterfly(BF_COLS[Math.floor(Math.random() * BF_COLS.length)]);
+    document.body.appendChild(el);
+    const x0 = a.left + a.width / 2 - 19, y0 = a.top + a.height / 2 - 17;
+    const x1 = b.left + b.width / 2 - 19, y1 = b.top + b.height / 2 - 17;
+    const mx = (x0 + x1) / 2 + (Math.random() - 0.5) * 140, my = Math.min(y0, y1) - 90 - Math.random() * 60;
+    const anim = el.animate([
+      { transform: `translate(${x0}px, ${y0}px) scale(.4)`, opacity: 0 },
+      { transform: `translate(${(x0 + mx) / 2}px, ${(y0 + my) / 2}px) scale(1) rotate(-12deg)`, opacity: 1, offset: 0.3 },
+      { transform: `translate(${mx}px, ${my}px) scale(1) rotate(10deg)`, opacity: 1, offset: 0.62 },
+      { transform: `translate(${x1}px, ${y1}px) scale(.4) rotate(0deg)`, opacity: 0.3 }
+    ], { duration: 1150, easing: 'cubic-bezier(.45,0,.25,1)' });
+    anim.onfinish = () => el.remove();
+    anim.oncancel = () => el.remove();
   }
   function addProduct(p, idx, qty, extra) {
     extra = extra || {};
@@ -472,6 +534,11 @@
         '</div>';
     }).join('');
     cartTotalEl.textContent = totalText();
+    const pl = promoLine();
+    if (cartPromoEl) {
+      cartPromoEl.hidden = !pl;
+      cartPromoEl.innerHTML = pl ? `<span>${esc(pl.label)}</span><span>${esc(pl.value)}</span>` : '';
+    }
     if (focusSel) {
       const f = $(focusSel, cartItemsEl);
       if (f) f.focus({ preventScroll: true });
@@ -682,6 +749,8 @@
       if (it.option) lines.push('   ' + it.option);
       lines.push(`   Carte de vœux${NB}: ` + (cardEmpty(it.card) ? 'sans message' : cardLine(it.card)));
     });
+    const pl = promoLine();
+    if (pl) lines.push(`• ${pl.label} — ${pl.value}${pl.note ? ' (' + pl.note + ')' : ''}`);
     if (opt.fee) lines.push(`• ${opt.feeLabel} — ${price(opt.fee)}`);
     lines.push('', `Total${NB}: ${totalText(opt)}`, `Emballage${NB}: ${PACK.toLowerCase()}`, '', `Retrait ou livraison${NB}: ${opt.label}`);
     if (opt.delivery && d.address && d.address.trim()) lines.push(`Adresse de livraison${NB}: ${d.address.trim()}`);
@@ -693,7 +762,9 @@
     return { subject: `Nouvelle commande — ${d.name}`, body: lines.join('\n') };
   }
   function recapHTML(opt) {
+    const pl = promoLine();
     return `<ul>${cart.map((it) => `<li><span>${esc(it.name)}${it.qty > 1 ? ' × ' + it.qty : ''}</span><span>${lineText(it)}</span></li>`).join('')}` +
+      (pl ? `<li class="is-promo"><span>${esc(pl.label)}</span><span>${esc(pl.value)}</span></li>` : '') +
       (opt && opt.fee ? `<li><span>${esc(opt.feeLabel)}</span><span>${price(opt.fee)}</span></li>` : '') +
       `<li class="is-free"><span>Emballage (${esc(PACK.toLowerCase())}) et carte${cart.length > 1 ? 's' : ''} de vœux</span><span>Offerts</span></li>` +
       `</ul><div class="tot"><span>Total</span><span>${totalText(opt)}</span></div>`;
@@ -816,7 +887,7 @@
       `<h3><button type="button" data-open="${esc(p.id)}">${esc(p.name)}</button></h3>` +
       `<p>${esc(blurbOf(p))}</p>` +
       '<div class="product-foot">' +
-      `<span class="price${ask ? ' is-ask' : ''}">${priceText(p, 0)}</span>` +
+      `<span class="price${ask ? ' is-ask' : ''}${PROMO && !ask ? ' is-promo' : ''}">${priceHTML(p, 0)}</span>` +
       `<button class="add-btn${p.quote ? ' is-quote' : ''}" type="button" data-quick="${esc(p.id)}" aria-label="${p.quote ? 'Demander un devis : ' : quick ? 'Choisir : ' : 'Ajouter à ma sélection : '}${esc(p.name)}"><svg><use href="#i-${p.quote ? 'arrow' : 'plus'}"/></svg></button>` +
       '</div></div></article>';
   }
@@ -880,6 +951,7 @@
     if (!p) return;
     if (p.quote || p.priceFrom || (p.options && p.options.colors)) { openProduct(p.id, shopList().map((x) => x.id)); return; }
     addProduct(p, 0, 1);
+    flyToCart(q);
     q.classList.add('is-done');
     q.innerHTML = '<svg><use href="#i-check"/></svg>';
     setTimeout(() => {
@@ -891,7 +963,7 @@
   /* ---------- Fiche d'une création (avec navigation précédente / suivante) ---------- */
   let navIds = [];
   let currentId = '';
-  const WHY = [['clock', 'du temps'], ['chenille', 'du matériel'], ['drop', 'de la colle'], ['gift', 'un emballage']];
+  const WHY = [['clock', 'du temps'], ['chenille', 'des fils chenille'], ['stem', 'une tige de fer'], ['tape', 'du scotch de masquage'], ['drop', 'de la colle'], ['brush', 'du maquillage'], ['gift', 'un emballage'], ['heart', 'et plein d’amour']];
   const whyHTML = () => `<div class="pm-why"><p>Une fleur, c’est${NB}:</p><ul>${WHY.map((w) => `<li><svg aria-hidden="true"><use href="#i-${w[0]}"/></svg>${w[1]}</li>`).join('')}</ul></div>`;
 
   function openProduct(id, nav, focusSel) {
@@ -943,7 +1015,7 @@
       (cat && p.category !== 'sur-mesure' ? `<p class="pm-cat">${esc(cat)}</p>` : '') +
       (p.badge ? `<span class="badge badge--inline">${esc(p.badge)}</span>` : '') +
       `<h2 id="modal-title">${esc(p.name)}</h2>` +
-      `<p class="pm-price${productPrice(p, 0) == null ? ' is-ask' : ''}" data-pm-price>${priceText(p, 0)}</p>` +
+      `<p class="pm-price${productPrice(p, 0) == null ? ' is-ask' : ''}"><span data-pm-price>${priceHTML(p, 0)}</span>${PROMO ? ` <span class="promo-tag">${pctText()}</span>` : ''}</p>` +
       words +
       `<p class="pm-desc">${esc(blurbOf(p))}</p>` +
       (p.category === 'unite' ? whyHTML() : '') +
@@ -970,7 +1042,7 @@
           $$('[data-choice]', root).forEach((x) => x.setAttribute('aria-checked', String(x === c)));
           art.innerHTML = productArt(p, idx, { aspect: 0.92, large: true });
           $$('[data-pic]', root).forEach((b) => b.setAttribute('aria-pressed', 'false'));
-          $('[data-pm-price]', root).textContent = priceText(p, idx);
+          $('[data-pm-price]', root).innerHTML = priceHTML(p, idx);
           return;
         }
         const sw = e.target.closest('[data-pm-color]');
@@ -988,6 +1060,7 @@
           return;
         }
         if (e.target.closest('[data-pm-add]')) {
+          flyToCart(e.target.closest('[data-pm-add]'));
           const fields = $('[data-card-fields]', root);
           addProduct(p, o ? idx : 0, qty, { color, card: fields ? readCard(fields) : null });
           closeModal();
@@ -1246,6 +1319,7 @@
         card: cardEmpty(bState.card) ? null : cleanCard(bState.card),
         bouquet: { flowers: bState.flowers.map((f) => [f.type, f.color]) }
       });
+      flyToCart($('[data-b-add]'));
       toast(`Votre bouquet est dans votre sélection${NB}!`);
     });
 
@@ -1419,6 +1493,140 @@
     chip.addEventListener('click', () => openProduct(featured.id));
   });
   else if (chip) chip.hidden = true;
+
+  /* ------------------------------------------------------------------ *
+   * Offre de lancement : accueil, boutique et bandeau défilant
+   * ------------------------------------------------------------------ */
+  if (PROMO) safe('offre de lancement', () => {
+    const until = untilText();
+    const pill = $('[data-promo-pill]');
+    if (pill) {
+      const short = PROMO.until ? PROMO.until.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) : '';
+      pill.innerHTML = `<span class="promo-pct">${pctText()}</span><span>${esc(PROMO.label)}${short ? `<span class="pp-date"> · jusqu’au ${esc(short)}</span>` : ''}</span><svg aria-hidden="true"><use href="#i-arrow"/></svg>`;
+      pill.hidden = false;
+    }
+    const banner = $('[data-promo-banner]');
+    if (banner) {
+      banner.innerHTML = `<span class="promo-pct">${pctText()}</span><p><strong>${esc(PROMO.label)}${NB}:</strong> ${PROMO.pct}${NB}% de remise sur toutes les créations${until ? ' jusqu’au ' + esc(until) : ''}. La remise est appliquée automatiquement à votre demande.</p>`;
+      banner.hidden = false;
+    }
+    $$('.marquee-track > span').forEach((sp) => {
+      if (sp.textContent === 'Fait main avec passion') sp.insertAdjacentHTML('beforebegin', `<span class="mq-promo">${esc(PROMO.label)} ${pctText()}</span><svg><use href="#i-flower"/></svg>`);
+    });
+  });
+
+  /* ------------------------------------------------------------------ *
+   * Papillons et chenilles : un peu de vie sur toute la page
+   * ------------------------------------------------------------------ */
+  // Où vivent les petites bêtes : conteneur, espèce, place (classe CSS), trajet (part de la largeur).
+  const CRITTERS = [
+    { host: '.hero-art', kind: 'cat', cls: 'c-hero', track: 0.4 },
+    { host: '.marquee-wrap', kind: 'cat', cls: 'c-marquee', track: 0.62 },
+    { host: '.about-art', kind: 'bf', cls: 'b-about' },
+    { host: '.steps-list', kind: 'cat', cls: 'c-steps', track: 0.78 },
+    { host: '#boutique .section-head', kind: 'bf', cls: 'b-shop', rest: true },
+    { host: '.why-price', kind: 'cat', cls: 'c-why', track: 0.46 },
+    { host: '.why-price', kind: 'bf', cls: 'b-why' },
+    { host: '.builder-panel', kind: 'bf', cls: 'b-builder' },
+    { host: '#occasions .section-head', kind: 'bf', cls: 'b-occ', rest: true },
+    { host: '.delivery-panel', kind: 'cat', cls: 'c-deliv', track: 0.4 },
+    { host: '.insta-head', kind: 'bf', cls: 'b-insta' },
+    { host: '.faq-intro', kind: 'cat', cls: 'c-faq', sleepy: true },
+    { host: '.contact-panel', kind: 'bf', cls: 'b-contact' },
+    { host: '.footer-big', kind: 'cat', cls: 'c-footer', track: 0.7 }
+  ];
+  const CAT_COLS = [
+    ['#C6E6D3', '#C9DDF2', '#D9CBF0', '#F8CDB5', '#F3C4CF'],
+    ['#F8CDB5', '#F7E3A1', '#C6E6D3', '#C9DDF2', '#D9CBF0'],
+    ['#D9CBF0', '#F3C4CF', '#F8CDB5', '#C6E6D3', '#C9DDF2']
+  ];
+  const CAT_HEADS = ['#F3C4CF', '#C9DDF2', '#F8CDB5'];
+  const SAYINGS = ['Coucou !', 'Un jour, je serai papillon !', 'Miam, une fleur !', 'Tout doux…', 'Bonne journée !', 'Tu as vu mes couleurs ?', 'Je fais le tour de l’atelier !'];
+  const critters = [];
+  function sizeTracks() {
+    critters.forEach((c) => {
+      if (!c.track) return;
+      const track = Math.max(0, Math.round(c.host.clientWidth * c.track - c.el.offsetWidth));
+      c.el.style.setProperty('--track', track + 'px');
+      c.el.style.setProperty('--dur', Math.max(16, Math.round(track / 14)) + 's');
+    });
+  }
+  if (S.critters !== false) safe('papillons et chenilles', () => {
+    const awake = 'IntersectionObserver' in window
+      ? new IntersectionObserver((en) => en.forEach((e) => e.target.classList.toggle('is-awake', e.isIntersecting)), { rootMargin: '120px 0px' })
+      : null;
+    CRITTERS.forEach((c, i) => {
+      const host = $(c.host);
+      if (!host) return;
+      const el = document.createElement('div');
+      el.className = `critter critter-${c.kind} ${c.cls}${c.rest ? ' is-resting' : ''}${c.sleepy ? ' is-sleeping' : ''}`;
+      el.setAttribute('aria-hidden', 'true');
+      const look = { colors: CAT_COLS[i % CAT_COLS.length], head: CAT_HEADS[i % CAT_HEADS.length] };
+      if (c.kind === 'bf') {
+        el.style.setProperty('--delay', (-i * 1.7).toFixed(1) + 's');
+        el.innerHTML = `<div class="bf-float"><div class="bf-flee">${FC.butterfly(BF_COLS[i % BF_COLS.length])}</div></div>`;
+        const flee = () => {
+          if (el.classList.contains('is-off')) return;
+          el.style.setProperty('--fx', ((Math.random() < 0.5 ? -1 : 1) * (80 + Math.random() * 90)).toFixed(0) + 'px');
+          el.classList.add('is-off');
+          setTimeout(() => el.classList.remove('is-off'), 2800);
+        };
+        el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') flee(); });
+        el.addEventListener('click', flee);
+      } else {
+        el.innerHTML = `<div class="cp-walk"><div class="cp-flip"><div class="cp-body">${FC.cuteCaterpillar(Object.assign({ sleepy: c.sleepy }, look))}</div></div>` +
+          '<span class="cp-bubble"></span><span class="cp-heart"><svg><use href="#i-heart"/></svg></span>' +
+          (c.sleepy ? '<span class="cp-z"><i>z</i><i>z</i><i>z</i></span>' : '') + '</div>';
+        el.addEventListener('click', () => {
+          if (el.classList.contains('is-happy')) return;
+          const body = $('.cp-body', el);
+          if (c.sleepy) {
+            body.innerHTML = FC.cuteCaterpillar(look);
+            el.classList.remove('is-sleeping');
+            $('.cp-bubble', el).textContent = 'Oh ! Coucou !';
+          } else {
+            $('.cp-bubble', el).textContent = SAYINGS[Math.floor(Math.random() * SAYINGS.length)];
+          }
+          el.classList.add('is-happy');
+          setTimeout(() => {
+            el.classList.remove('is-happy');
+            if (c.sleepy) setTimeout(() => {
+              body.innerHTML = FC.cuteCaterpillar(Object.assign({ sleepy: true }, look));
+              el.classList.add('is-sleeping');
+            }, 1800);
+          }, 2600);
+        });
+      }
+      host.appendChild(el);
+      critters.push({ el, host, track: c.track });
+      if (awake) awake.observe(el); else el.classList.add('is-awake');
+    });
+    sizeTracks();
+    let rt = 0;
+    window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(sizeTracks, 200); }, { passive: true });
+
+    // De temps en temps, un papillon traverse l'écran.
+    if (reduceMotion || PREVIEW || !document.body.animate) return;
+    const visit = () => {
+      if (document.hidden || locks.size) { setTimeout(visit, 8000); return; }
+      const w = window.innerWidth, h = window.innerHeight;
+      const el = document.createElement('div');
+      el.className = 'flyer flyer--visit';
+      el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = FC.butterfly(BF_COLS[Math.floor(Math.random() * BF_COLS.length)]);
+      document.body.appendChild(el);
+      const ltr = Math.random() < 0.5, y0 = h * (0.18 + Math.random() * 0.5), frames = [];
+      for (let k = 0; k <= 8; k++) {
+        const t = k / 8, x = ltr ? -60 + (w + 120) * t : w + 60 - (w + 120) * t;
+        frames.push({ transform: `translate(${x.toFixed(0)}px, ${(y0 + Math.sin(t * Math.PI * 2.4) * 46 - t * 70).toFixed(0)}px) rotate(${(Math.sin(t * 11) * 14).toFixed(0)}deg)` });
+      }
+      const anim = el.animate(frames, { duration: 10000 + Math.random() * 5000, easing: 'linear' });
+      const done = () => { el.remove(); setTimeout(visit, 20000 + Math.random() * 25000); };
+      anim.onfinish = done;
+      anim.oncancel = done;
+    };
+    setTimeout(visit, 9000);
+  });
 
   /* ------------------------------------------------------------------ *
    * Clavier : Échap, flèches & piège de focus

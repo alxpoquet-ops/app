@@ -43,6 +43,20 @@ window.SITE = {
   /* ---------- Prix d'une fleur à l'unité (en €) ---------- */
   unitPrice: 8,
 
+  /* ---------- Offre de lancement ----------
+     Remise appliquée automatiquement à toutes les créations, du jour « from »
+     au jour « until » inclus (format AAAA-MM-JJ). Après cette date, l'offre
+     disparaît toute seule du site. Pour la supprimer plus tôt : percent: 0. */
+  promo: {
+    label: 'Offre de lancement',
+    percent: 10,
+    from: '2026-11-04',
+    until: '2027-01-04'
+  },
+
+  /* ---------- Papillons et chenilles animés un peu partout sur la page ---------- */
+  critters: true,
+
   /* ---------- Emballage (le même pour toutes les créations) ---------- */
   packaging: 'Pochette transparente et nœud',
 
@@ -129,7 +143,7 @@ window.SITE = {
       id: 'unite',
       name: 'Fleurs à l’unité',
       blurb: 'Une fleur éternelle façonnée à la main, emballée et prête à offrir.',
-      intro: 'Une rose délicate, un pavot mignon, un gerbera tout doux, un joli lys, une tulipe lumineuse… Chaque fleur est à {prix}, emballée dans sa pochette transparente avec un nœud, et sa carte de vœux est offerte.'
+      intro: 'Une rose délicate, un pavot mignon, un gerbera tout doux, un joli lys, une tulipe lumineuse… Chaque fleur est à {prix}, emballée dans sa pochette transparente avec un nœud, et sa carte de vœux est offerte. Envie d’une surprise ? Essayez la fleur mystère.'
     },
     { id: 'deco', name: 'Déco & cadeaux', blurb: 'Une petite douceur fleurie, faite main, pour la maison ou pour offrir.' },
     { id: 'sur-mesure', name: 'Sur-mesure' }
@@ -192,6 +206,16 @@ window.SITE = {
           { name: 'Un arum élégant', type: 'arum', image: 'g040' }
         ]
       }
+    },
+    {
+      id: 'fleur-mystere',
+      name: 'Fleur mystère',
+      category: 'unite',
+      price: 6,
+      art: 'mystery', // illustration dessinée : une fleur en point d'interrogation
+      badge: 'Surprise',
+      bg: '#F1EAF9',
+      desc: 'Laissez-moi vous surprendre : je choisis la fleur et sa couleur parmi mes créations du moment. Elle arrive dans sa pochette transparente fermée d’un nœud, avec sa carte de vœux offerte.'
     },
     {
       id: 'bonsai',

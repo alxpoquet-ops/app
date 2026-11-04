@@ -706,6 +706,68 @@
       '</svg>';
   }
 
+  /* ------------------------------------------------------------------ *
+   * Fleur mystère : un fil chenille plié en point d'interrogation, dans sa pochette
+   * ------------------------------------------------------------------ */
+  function mysterySVG() {
+    const B = GEO.paper.B, k = 0.62;
+    const kT = `translate(${B.x} ${B.y}) scale(${k}) translate(${-B.x} ${-B.y})`;
+    const hx = 200, hy = 196;
+    const t = tailPos(B, { x: hx, y: hy }, k, 0);
+    const stem = `M${t.x} ${t.y}L${B.x} ${B.y}L${hx} ${hy + 64}`;
+    const q = 'M-25 -28C-27 -64 27 -70 29 -36C31 -12 1 -12 0 16';
+    const pk = pal('#E9A3C0');
+    const lf = `fill="${LEAF.base}" stroke="${LEAF.dark}" stroke-width="1.8"`;
+    const star = (x, y, sc, c) => `<path transform="translate(${x} ${y}) scale(${sc})" d="M0 -10C1 -3 3 -1 10 0C3 1 1 3 0 10C-1 3 -3 1 -10 0C-3 -1 -1 -3 0 -10Z" fill="${c}"/>`;
+    return '<svg class="fc-svg" viewBox="64 92 272 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fleur mystère : une fleur surprise dans sa pochette">' +
+      `<g transform="${kT}">${pouchBack()}</g>` +
+      `<g filter="url(#fc-fuzz)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="${stem}" stroke="${STEM.dark}" stroke-width="4.6"/><path d="${stem}" stroke="${STEM.base}" stroke-width="3"/>` +
+      `<path d="${petal(46, 9, true)}" ${lf} transform="translate(${hx} ${hy + 112}) rotate(-38)"/><path d="${petal(40, 8, true)}" ${lf} transform="translate(${hx} ${hy + 128}) rotate(34)"/></g>` +
+      `<g transform="${kT}">${pouchFront()}</g>` +
+      `<g filter="url(#fc-fuzz)" transform="translate(${hx} ${hy}) scale(1.12)" fill="none" stroke-linecap="round" stroke-linejoin="round">` +
+      `<path d="${q}" stroke="${pk.dark}" stroke-width="18"/><path d="${q}" stroke="${pk.base}" stroke-width="13.5"/><path d="M-19 -36C-17 -54 9 -58 17 -44" stroke="${pk.light}" stroke-width="3.2" opacity=".9"/>` +
+      `<circle cy="42" r="10.5" fill="${pk.base}" stroke="${pk.dark}" stroke-width="2.4"/></g>` +
+      star(132, 150, 1.1, GOLD) + star(270, 132, 0.8, '#C8A0E2') + star(284, 222, 0.62, '#A8D3F0') + star(118, 236, 0.55, '#F5B07D') +
+      `<g transform="translate(${B.x} ${r1(B.y + 30 * k)}) scale(${k})">${pouchBow()}</g>` +
+      '</svg>';
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Petite chenille toute douce (de profil, tournée vers la droite)
+   * opts : { colors: [...5 couleurs], head, sleepy }
+   * ------------------------------------------------------------------ */
+  function cuteCaterpillarSVG(opts) {
+    opts = opts || {};
+    const cols = opts.colors && opts.colors.length ? opts.colors : ['#C6E6D3', '#C9DDF2', '#D9CBF0', '#F8CDB5', '#F3C4CF'];
+    const head = opts.head || '#F3C4CF';
+    const ink = '#5E4A5A';
+    let segs = '';
+    [[15, 39, 9.5], [31, 37.5, 10.2], [48, 38.5, 10.8], [65, 37, 11.3], [82, 37.5, 11.8]].forEach((c, i) => {
+      const col = cols[i % cols.length], p = pal(col);
+      segs += `<g class="cp-seg" style="--i:${i}">` +
+        `<path d="M${c[0] - 4} ${r1(c[1] + c[2] - 3)}l-1.5 6M${c[0] + 4} ${r1(c[1] + c[2] - 3)}l1.5 6" stroke="${tone(col, -0.3, 0.05)}" stroke-width="2" stroke-linecap="round"/>` +
+        `<circle cx="${c[0]}" cy="${c[1]}" r="${c[2]}" fill="${col}" stroke="${p.dark}" stroke-width="1.4"/>` +
+        `<circle cx="${c[0]}" cy="${c[1]}" r="${r1(c[2] + 1.2)}" fill="none" stroke="${p.light}" stroke-width="1.8" stroke-dasharray="1.2 3" stroke-linecap="round"/>` +
+        `<ellipse cx="${r1(c[0] - c[2] * 0.3)}" cy="${r1(c[1] - c[2] * 0.42)}" rx="${r1(c[2] * 0.36)}" ry="${r1(c[2] * 0.22)}" fill="#fff" opacity=".55"/>` +
+        '</g>';
+    });
+    const hp = pal(head);
+    const eyes = opts.sleepy
+      ? `<path d="M103 27.5Q106.5 30.5 110 27.5" fill="none" stroke="${ink}" stroke-width="1.8" stroke-linecap="round"/>`
+      : `<g class="cp-eye"><circle cx="106.5" cy="26.5" r="4.6" fill="#fff" stroke="${tone(head, -0.2)}" stroke-width=".8"/><circle cx="107.6" cy="27" r="2.6" fill="${ink}"/><circle cx="108.4" cy="25.9" r=".9" fill="#fff"/></g>`;
+    return '<svg viewBox="0 0 124 58" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' +
+      segs +
+      '<g class="cp-head">' +
+      `<g class="cp-ant" fill="none" stroke="${ink}" stroke-width="1.6" stroke-linecap="round"><path d="M95 19Q92 9 87 5"/><path d="M103 17Q106 8 112 4"/></g>` +
+      `<circle cx="87" cy="5" r="2.8" fill="${GOLD}"/><circle cx="112" cy="4" r="2.8" fill="${GOLD}"/>` +
+      `<circle cx="100" cy="30" r="14.5" fill="${head}" stroke="${hp.dark}" stroke-width="1.5"/>` +
+      `<circle cx="100" cy="30" r="15.7" fill="none" stroke="${hp.light}" stroke-width="1.8" stroke-dasharray="1.2 3" stroke-linecap="round"/>` +
+      eyes +
+      `<ellipse cx="109.5" cy="35" rx="3.6" ry="2.3" fill="#EBA7BC" opacity=".85"/>` +
+      `<path d="M100.5 36.5Q104 40 108 37.5" fill="none" stroke="${ink}" stroke-width="1.6" stroke-linecap="round"/>` +
+      '</g></svg>';
+  }
+
   /** Chenille de la barre de progression (segments animables). */
   function caterpillarSVG() {
     const cols = ['#C6E6D3', '#C9DDF2', '#D9CBF0', '#F8CDB5'];
@@ -879,6 +941,8 @@
     icon: flowerIconSVG,
     stage: createStage,
     card: cardSVG,
+    mystery: mysterySVG,
+    cuteCaterpillar: cuteCaterpillarSVG,
     atelier: atelierSVG,
     giftcard: giftcardSVG,
     butterfly: butterflySVG,
