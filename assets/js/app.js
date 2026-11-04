@@ -52,6 +52,7 @@
   const SEND_URL = ENDPOINT || (EMAIL ? 'https://formsubmit.co/ajax/' + EMAIL : '');
   const UNIT = S.unitPrice != null && !isNaN(+S.unitPrice) ? +S.unitPrice : 8;
   const PACK = S.packaging || 'Pochette transparente et nœud';
+  const JAR = Object.assign({ price: 5, label: 'Dans un bocal transparent' }, S.jar || {});
   const CARD = Object.assign({ maxLength: 160, suggestions: [] }, S.card || {});
   const ZONES = ((S.delivery && S.delivery.zones) || []).filter((z) => z && z.upToKm > 0 && z.price != null).sort((a, b) => a.upToKm - b.upToKm);
   /* Offre de lancement : active entre promo.from et promo.until (inclus). */
@@ -74,7 +75,7 @@
   const colorName = (k) => (S.colors[k] ? S.colors[k].name : k);
   const flowerInfo = (t) => S.flowers[t] || { name: t, plural: t };
   const plural = (n, one, many) => n + ' ' + (n > 1 ? many : one);
-  const withPrice = (txt) => String(txt || '').replace(/\{prix\}/g, price(UNIT));
+  const withPrice = (txt) => String(txt || '').replace(/\{prix\}/g, price(UNIT)).replace(/\{bocal\}/g, price(JAR.price));
   const zonesText = () => ZONES.map((z) => `${price(z.price)} jusqu’à ${z.upToKm}${NB}km`).join(', ');
   const deliveryText = () => ZONES.length
     ? `Livraison${NB}: ${zonesText()} autour de ${CITY}. Au-delà, on en parle ensemble.`
@@ -295,18 +296,24 @@
     const ch = p.options && p.options.choices[idx || 0];
     if (ch && ch.price != null) return ch.price;
     if (p.price != null) return p.price;
+    if (p.count > 0) return p.count * UNIT + (p.jar ? JAR.price : 0);
     return p.category === 'unite' && !p.quote ? UNIT : null;
   }
+  /* Les fleurs à l'unité peuvent être glissées dans un bocal transparent. */
+  const jarOption = (p) => p.category === 'unite' && !p.jar && JAR.price != null;
   function priceText(p, idx) {
     const v = productPrice(p, idx);
     if (v == null) return p.quote ? 'Sur devis' : 'Sur demande';
     return (p.priceFrom ? 'dès ' : '') + price(v);
   }
   /** Prix affiché, barré et remisé pendant l'offre de lancement. */
-  function priceHTML(p, idx) {
-    const v = productPrice(p, idx);
-    if (v == null || !PROMO) return esc(priceText(p, idx));
-    return `<s>${price(v)}</s> <ins>${p.priceFrom ? 'dès ' : ''}${price(withPromo(v))}</ins>`;
+  function priceHTML(p, idx, add) {
+    let v = productPrice(p, idx);
+    if (v == null) return esc(priceText(p, idx));
+    v += add || 0;
+    const from = p.priceFrom ? 'dès ' : '';
+    if (!PROMO) return esc(from + price(v));
+    return `<s>${price(v)}</s> <ins>${from}${price(withPromo(v))}</ins>`;
   }
 
   /* ------------------------------------------------------------------ *
@@ -484,15 +491,20 @@
     const card = cardEmpty(extra.card) ? null : cleanCard(extra.card);
     let option = ch ? p.options.label + NB + ': ' + ch.name.charAt(0).toLowerCase() + ch.name.slice(1) : '';
     if (p.options && p.options.colors) option += `, couleur${NB}: ` + (col ? colorName(col).toLowerCase() : 'à préciser');
+    const jar = !!extra.jar && jarOption(p);
+    const notes = [option, jar ? `${JAR.label.toLowerCase()} (+${price(JAR.price)})` : '', p.jar ? 'en bocal transparent' : '', p.gift ? p.gift.toLowerCase() : ''].filter(Boolean);
+    option = notes.join(' · ');
+    option = option.charAt(0).toUpperCase() + option.slice(1);
+    const base = productPrice(p, idx);
     addToCart({
-      key: [p.id, ch ? ch.name : '', col, card ? JSON.stringify(card) : ''].join('|'),
+      key: [p.id, ch ? ch.name : '', col, jar ? 'bocal' : '', card ? JSON.stringify(card) : ''].join('|'),
       kind: 'product',
       id: p.id,
       choice: idx || 0,
       color: col,
       name: p.name,
       option,
-      price: productPrice(p, idx),
+      price: base == null ? null : base + (jar ? JAR.price : 0),
       qty: qty || 1,
       card
     });
@@ -882,6 +894,7 @@
       `<button class="product-media${p.pics.length ? ' has-photo' : ''}" type="button" style="--bg:${esc(p.bg || '#F8E1E6')}" data-open="${esc(p.id)}" aria-label="Voir ${esc(p.name)}">` +
       (p.badge ? `<span class="badge">${esc(p.badge)}</span>` : '') +
       (p.pics.length > 1 ? `<span class="pics-n" aria-hidden="true"><svg><use href="#i-photos"/></svg>${p.pics.length}</span>` : '') +
+      (p.gift ? `<span class="gift-tag"><svg aria-hidden="true"><use href="#i-gift"/></svg>${esc(p.gift)}</span>` : '') +
       `<span class="product-art">${productArt(p, null)}</span></button>` +
       '<div class="product-body">' +
       `<h3><button type="button" data-open="${esc(p.id)}">${esc(p.name)}</button></h3>` +
@@ -973,7 +986,7 @@
     if (nav) navIds = nav.filter((x) => findProduct(x));
     if (navIds.indexOf(id) < 0) navIds = [];
     const pos = navIds.indexOf(id);
-    let idx = 0, qty = 1, color = '', picIdx = 0;
+    let idx = 0, qty = 1, color = '', picIdx = 0, jar = false;
     const o = p.options;
     const icon = (c) => (c.type && S.flowers[c.type] ? `<span class="pill-ic" aria-hidden="true">${FC.icon(c.type, FC.hex(color || c.color || 'rose'))}</span>` : (c.color ? `<i style="--c:${FC.hex(c.color)}"></i>` : ''));
     const pillsHTML = () => o.choices.map((c, i) => `<button type="button" class="pill" role="radio" aria-checked="${i === idx}" data-choice="${i}">${icon(c)}${esc(c.name)}</button>`).join('');
@@ -1017,9 +1030,12 @@
       `<h2 id="modal-title">${esc(p.name)}</h2>` +
       `<p class="pm-price${productPrice(p, 0) == null ? ' is-ask' : ''}"><span data-pm-price>${priceHTML(p, 0)}</span>${PROMO ? ` <span class="promo-tag">${pctText()}</span>` : ''}</p>` +
       words +
+      (p.count ? `<p class="pm-count-line">${p.count}${NB}fleurs × ${price(UNIT)}${p.jar ? ' + bocal ' + price(JAR.price) : ''}${p.gift ? ' · ' + esc(p.gift.toLowerCase()) : ''}</p>` : (p.gift ? `<p class="pm-count-line">${esc(p.gift)}</p>` : '')) +
       `<p class="pm-desc">${esc(blurbOf(p))}</p>` +
       (p.category === 'unite' ? whyHTML() : '') +
-      compo + opts + card +
+      compo + opts +
+      (jarOption(p) ? `<label class="pm-jar"><input type="checkbox" id="pm-jar" data-pm-jar><span class="pm-jar-ic" aria-hidden="true"><svg><use href="#i-jar"/></svg></span><span><strong>${esc(JAR.label)}</strong><small>Sur demande, pour ${price(JAR.price)} de plus</small></span><b>+${price(JAR.price)}</b></label>` : '') +
+      card +
       `<div class="pm-actions">${actions}</div>` +
       (links ? `<div class="pm-links">${links}</div>` : '') +
       (p.illustration ? `<p class="tiny">${esc(p.illustration)}</p>` : `<p class="tiny">Fait main à la commande · ${esc(PACK)} · Carte de vœux offerte</p>`) +
@@ -1042,7 +1058,7 @@
           $$('[data-choice]', root).forEach((x) => x.setAttribute('aria-checked', String(x === c)));
           art.innerHTML = productArt(p, idx, { aspect: 0.92, large: true });
           $$('[data-pic]', root).forEach((b) => b.setAttribute('aria-pressed', 'false'));
-          $('[data-pm-price]', root).innerHTML = priceHTML(p, idx);
+          $('[data-pm-price]', root).innerHTML = priceHTML(p, idx, jar ? JAR.price : 0);
           return;
         }
         const sw = e.target.closest('[data-pm-color]');
@@ -1062,7 +1078,7 @@
         if (e.target.closest('[data-pm-add]')) {
           flyToCart(e.target.closest('[data-pm-add]'));
           const fields = $('[data-card-fields]', root);
-          addProduct(p, o ? idx : 0, qty, { color, card: fields ? readCard(fields) : null });
+          addProduct(p, o ? idx : 0, qty, { color, jar, card: fields ? readCard(fields) : null });
           closeModal();
           return;
         }
@@ -1086,6 +1102,11 @@
         }
       });
       bindCard(root, () => {});
+      const jarBox = $('[data-pm-jar]', root);
+      if (jarBox) jarBox.addEventListener('change', () => {
+        jar = jarBox.checked;
+        $('[data-pm-price]', root).innerHTML = priceHTML(p, o ? idx : 0, jar ? JAR.price : 0);
+      });
       // Glisser du doigt sur la photo : création précédente / suivante (ou photo suivante).
       const media = $('.pm-media', root);
       let x0 = null, y0 = null;
@@ -1202,10 +1223,16 @@
     const have = new Set($$('.chip', chipsEl).map((c) => c.dataset.remove));
     bState.flowers.forEach((f) => { if (!have.has(String(f.id))) chipsEl.insertAdjacentHTML('beforeend', chipHTML(f)); });
   }
+  /* Prix du bouquet composé : chaque fleur au prix d'une fleur, le feuillage est offert. */
+  const bouquetPrice = (st) => st.flowers.filter((f) => !(S.flowers[f.type] && S.flowers[f.type].foliage)).length * UNIT;
   function renderSummary() {
     const n = bState.flowers.length;
-    setText('[data-b-count]', plural(n, 'fleur', 'fleurs'));
-    setText('[data-b-count-2]', String(n));
+    const bp = bouquetPrice(bState);
+    const bpHTML = PROMO && bp ? `<s>${price(bp)}</s> ${price(withPromo(bp))}` : esc(price(bp));
+    $$('[data-b-price], [data-b-price-2]').forEach((el) => { el.innerHTML = bpHTML; });
+    const leaves = bState.flowers.filter((f) => S.flowers[f.type] && S.flowers[f.type].foliage).length;
+    setText('[data-b-count]', plural(n - leaves, 'fleur', 'fleurs') + (leaves ? ' + feuillage' : ''));
+    setText('[data-b-count-2]', String(n - leaves) + (leaves ? ' + ' + plural(leaves, 'feuillage', 'feuillages') : ''));
     setText('[data-b-count-max]', n + ' / ' + MAX);
     setText('[data-b-card-state]', cardEmpty(bState.card) ? 'Offerte' : 'Offerte, avec votre mot');
     if (preview) preview.classList.toggle('is-empty', n === 0);
@@ -1314,7 +1341,7 @@
         kind: 'custom',
         name: 'Mon bouquet à moi',
         option: describe(bState),
-        price: null,
+        price: bouquetPrice(bState),
         qty: 1,
         card: cardEmpty(bState.card) ? null : cleanCard(bState.card),
         bouquet: { flowers: bState.flowers.map((f) => [f.type, f.color]) }

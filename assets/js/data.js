@@ -5,9 +5,11 @@
    fleurs du compositeur « Votre bouquet à vous », les occasions et les
    coordonnées. Pas besoin de toucher au reste du code.
 
-   Prix : les fleurs à l'unité coûtent unitPrice (8 €) ; les autres créations
-   sont « sur demande » tant qu'aucun prix n'est indiqué. Pour afficher un
-   prix, ajoutez par exemple price: 45 dans la création.
+   Prix : une fleur coûte unitPrice (8 €). Pour un bouquet, count = nombre de
+   fleurs : son prix est calculé tout seul (count × 8 €, + 5 € s'il est en
+   bocal). Pour un prix fixe, écrivez price: 35. Sans prix ni count, une
+   création est « sur demande ». gift: 'Vase offert' affiche une petite
+   vignette sur la photo.
 
    Photos :
    - photo: 'g087' utilise les images de la galerie de Laurine
@@ -31,7 +33,7 @@ window.SITE = {
     // L'envoi passe par le service gratuit FormSubmit (formsubmit.co) : au tout
     // premier envoi, FormSubmit écrit à cette adresse pour faire confirmer
     // l'activation (un clic sur « Activate Form »). Ensuite, tout arrive directement.
-    email: '',
+    email: 'floreetchenilles@gmail.com',
     // Afficher aussi cette adresse sur le site (rubrique Contact et pied de page) ?
     showEmail: true,
     // Lien de la page Facebook, si vous voulez l'afficher (ex. 'https://www.facebook.com/...').
@@ -56,6 +58,9 @@ window.SITE = {
 
   /* ---------- Papillons et chenilles animés un peu partout sur la page ---------- */
   critters: true,
+
+  /* ---------- Bocal transparent : proposé en option pour les fleurs à l'unité ---------- */
+  jar: { price: 5, label: 'Dans un bocal transparent' },
 
   /* ---------- Emballage (le même pour toutes les créations) ---------- */
   packaging: 'Pochette transparente et nœud',
@@ -110,7 +115,7 @@ window.SITE = {
     hortensia: { name: 'Hortensia', plural: 'Hortensias', desc: 'Un nuage de petites fleurs.' },
     tournesol: { name: 'Tournesol', plural: 'Tournesols', desc: 'Un soleil au milieu du bouquet.', fixedColor: 'tournesol' },
     jonquille: { name: 'Jonquille', plural: 'Jonquilles', desc: 'Le printemps toute l’année.' },
-    eucalyptus: { name: 'Feuillage', plural: 'Feuillages', desc: 'Pour habiller le bouquet.', fixedColor: 'sauge' }
+    eucalyptus: { name: 'Feuillage', plural: 'Feuillages', desc: 'Pour habiller le bouquet (offert).', fixedColor: 'sauge', foliage: true }
   },
 
   builder: {
@@ -143,10 +148,9 @@ window.SITE = {
       id: 'unite',
       name: 'Fleurs à l’unité',
       blurb: 'Une fleur éternelle façonnée à la main, emballée et prête à offrir.',
-      intro: 'Une rose délicate, un pavot mignon, un gerbera tout doux, un joli lys, une tulipe lumineuse… Chaque fleur est à {prix}, emballée dans sa pochette transparente avec un nœud, et sa carte de vœux est offerte. Envie d’une surprise ? Essayez la fleur mystère.'
+      intro: 'Une rose délicate, un pavot mignon, un gerbera tout doux, un joli lys, une tulipe lumineuse… Chaque fleur est à {prix}, emballée dans sa pochette transparente avec un nœud, et sa carte de vœux est offerte. Sur demande, je la glisse dans un bocal transparent pour {bocal} de plus. Envie d’une surprise ? Essayez la fleur mystère.'
     },
-    { id: 'deco', name: 'Déco & cadeaux', blurb: 'Une petite douceur fleurie, faite main, pour la maison ou pour offrir.' },
-    { id: 'sur-mesure', name: 'Sur-mesure' }
+    { id: 'deco', name: 'Déco & cadeaux', blurb: 'Une petite douceur fleurie, faite main, pour la maison ou pour offrir.' }
   ],
 
   /*
@@ -159,6 +163,7 @@ window.SITE = {
   products: [
     {
       id: 'pastel',
+      count: 6, gift: 'Vase offert',
       name: 'Bouquet pastel aux perles',
       category: 'bouquets',
       image: 'assets/photos/pastel.jpg',
@@ -170,6 +175,7 @@ window.SITE = {
     },
     {
       id: 'amethyste',
+      count: 8,
       name: 'Bouquet Améthyste',
       category: 'bouquets',
       image: 'assets/photos/amethyste.jpg',
@@ -219,6 +225,7 @@ window.SITE = {
     },
     {
       id: 'bonsai',
+      price: 35,
       name: 'Bonsaï azalée',
       category: 'deco',
       badge: 'Nouveauté',
@@ -230,6 +237,7 @@ window.SITE = {
     },
     {
       id: 'sunny',
+      count: 7,
       name: 'Bouquet Sunny',
       category: 'bouquets',
       image: 'assets/photos/sunny.jpg',
@@ -243,9 +251,10 @@ window.SITE = {
       ],
       preset: { flowers: [['arum', 'blanc'], ['lys', 'blanc'], ['gerbera', 'blanc'], ['pavot', 'jaune'], ['tulipe', 'jaune'], ['rose', 'jaune'], ['gerbera', 'jaune'], ['eucalyptus']] }
     },
-    { id: 'pavots-multicolores', name: 'Pavots multicolores', category: 'bouquets', photo: 'g087', desc: 'Des pavots de toutes les couleurs, rouge, bleu, lilas, orange… Un bouquet joyeux comme un jour de fête.' },
+    { id: 'pavots-multicolores', count: 13, name: 'Pavots multicolores', category: 'bouquets', photo: 'g087', desc: 'Des pavots de toutes les couleurs, rouge, bleu, lilas, orange… Un bouquet joyeux comme un jour de fête.' },
     {
       id: 'rubis',
+      count: 7,
       name: 'Bouquet Rubis',
       category: 'bouquets',
       image: 'assets/photos/rubis.jpg',
@@ -272,6 +281,7 @@ window.SITE = {
     },
     {
       id: 'coquelicots',
+      count: 10,
       name: 'Bouquet de coquelicots',
       category: 'bouquets',
       image: 'assets/photos/coquelicots.jpg',
@@ -279,30 +289,31 @@ window.SITE = {
       bg: '#F7E3E1',
       desc: 'Des coquelicots rouges, des brins de lavande et du mimosa : un bouquet champêtre et lumineux.'
     },
-    { id: 'roses-bleues', name: 'Roses bleues', category: 'bouquets', photo: 'g075', desc: 'Des roses dans tous les bleus, du bleu ciel au bleu roi, avec leur feuillage.' },
+    { id: 'roses-bleues', count: 4, name: 'Roses bleues', category: 'bouquets', photo: 'g075', desc: 'Des roses dans tous les bleus, du bleu ciel au bleu roi, avec leur feuillage.' },
     {
       id: 'gateau',
-      name: 'Gâteau d’anniversaire',
+      price: 15,
+      name: 'Boîte gâteau d’anniversaire',
       category: 'deco',
       image: 'assets/photos/gateau.jpg',
       more: ['g025'],
       bg: '#E6EFFA',
-      desc: 'Un petit gâteau en fil chenille, avec sa bougie et ses fraises, à offrir pour un anniversaire. Il ne fond pas et se garde pour toujours.'
+      desc: 'Une petite boîte en forme de gâteau d’anniversaire, avec sa bougie et ses fraises en fil chenille : on peut y glisser un petit cadeau. Elle ne fond pas et se garde pour toujours.'
     },
     {
       id: 'a-votre-image',
-      name: 'Un bouquet à votre image',
-      category: 'sur-mesure',
-      quote: true,
-      badge: 'Sur-mesure',
+      count: 8,
+      name: 'Bouquet bleu et violet',
+      category: 'bouquets',
       image: 'assets/photos/odile.jpg',
       post: 'https://www.instagram.com/p/DZsDjVbghCY/',
       bg: '#ECE9F8',
       words: 'C’est une commande que j’ai reçue, et la voici terminée ! N’hésitez pas à me commander un bouquet à votre image.',
-      desc: 'Vos couleurs, vos fleurs préférées, votre occasion : je compose un bouquet rien que pour vous, comme celui-ci en bleu et violet.'
+      desc: 'Un bouquet composé pour une commande, en bleu et violet. Vos couleurs, vos fleurs préférées, votre occasion : je peux composer le vôtre, rien que pour vous.'
     },
     {
       id: 'colore',
+      count: 7,
       name: 'Bouquet coloré',
       category: 'bouquets',
       image: 'assets/photos/colore.jpg',
@@ -312,18 +323,20 @@ window.SITE = {
       desc: 'Un bouquet joyeux et multicolore. Une idée de couleurs pour votre salon ou votre chambre ? On peut essayer ensemble.',
       preset: { flowers: [['lys', 'fuchsia'], ['arum', 'turquoise'], ['gerbera', 'turquoise'], ['tulipe', 'jaune'], ['rose', 'fuchsia'], ['pavot', 'orange'], ['eucalyptus']] }
     },
-    { id: 'lys-roses', name: 'Lys roses', category: 'bouquets', photo: 'g005', more: ['g080'], desc: 'Une gerbe de lys roses aux étamines blanches. Sur la deuxième photo, elle est prête à offrir dans sa pochette transparente.' },
+    { id: 'lys-roses', count: 3, name: 'Lys roses', category: 'bouquets', photo: 'g005', more: ['g080'], desc: 'Une gerbe de lys roses aux étamines blanches. Sur la deuxième photo, elle est prête à offrir dans sa pochette transparente.' },
     {
       id: 'lavande',
+      price: 15,
       name: 'Arrosoir de lavande',
       category: 'deco',
       image: 'assets/photos/lavande.jpg',
       bg: '#EEE9F5',
       desc: 'Des brins de lavande en fil chenille dans un petit arrosoir en métal : une touche champêtre pour la maison.'
     },
-    { id: 'hortensia-lys', name: 'Hortensia bleu et lys roses', category: 'bouquets', photo: 'g027', desc: 'Un nuage d’hortensia bleu ciel, des lys roses et un arum bleu : un bouquet frais et tendre.' },
+    { id: 'hortensia-lys', count: 8, name: 'Hortensia bleu et lys roses', category: 'bouquets', photo: 'g027', desc: 'Un nuage d’hortensia bleu ciel, des lys roses et un arum bleu : un bouquet frais et tendre.' },
     {
       id: 'tulipes',
+      count: 3,
       name: 'Tulipes',
       category: 'bouquets',
       image: 'assets/photos/tulipes.jpg',
@@ -338,10 +351,11 @@ window.SITE = {
       ],
       preset: { flowers: [['tulipe', 'bleu'], ['tulipe', 'rose'], ['tulipe', 'jaune'], ['eucalyptus']] }
     },
-    { id: 'arums-de-feu', name: 'Arums de feu', category: 'bouquets', photo: 'g104', desc: 'Des arums rouges et jaunes, éclatants comme un coucher de soleil.' },
-    { id: 'pensees-seaux', name: 'Pensées en mini seaux', category: 'deco', photo: 'g037', desc: 'De petites pensées de toutes les couleurs, chacune dans son mini seau en métal.' },
+    { id: 'arums-de-feu', count: 5, name: 'Arums de feu', category: 'bouquets', photo: 'g104', desc: 'Des arums rouges et jaunes, éclatants comme un coucher de soleil.' },
+    { id: 'pensees-seaux', price: 15, name: 'Pensées en mini arrosoir', category: 'deco', photo: 'g037', desc: 'De jolies pensées dans un mini arrosoir en métal. Couleurs au choix : jaune, violet, bordeaux, blanc, orange ou bleu.' },
     {
       id: 'hortensias',
+      count: 3,
       name: 'Hortensias',
       category: 'bouquets',
       image: 'assets/photos/hortensias.jpg',
@@ -357,29 +371,32 @@ window.SITE = {
     },
     {
       id: 'muguet',
+      price: 8,
       name: 'Bouquet de muguet',
       category: 'bouquets',
       image: 'assets/photos/muguet.jpg',
       bg: '#EEF2EA',
       desc: 'Des clochettes de muguet toutes blanches, nouées d’un ruban : le porte-bonheur qui ne fane pas.'
     },
-    { id: 'bouquet-soleil', name: 'Bouquet soleil', category: 'bouquets', photo: 'g129', desc: 'Gerberas, roses et lys dans des tons orangés et dorés : un bouquet plein de soleil.' },
-    { id: 'lys-orange', name: 'Lys orange et jaunes', category: 'bouquets', photo: 'g092', more: ['g065'], desc: 'Une brassée de lys orange et jaune pâle, pleine de lumière.' },
+    { id: 'bouquet-soleil', count: 10, name: 'Bouquet soleil', category: 'bouquets', photo: 'g129', desc: 'Gerberas, roses et lys dans des tons orangés et dorés : un bouquet plein de soleil.' },
+    { id: 'lys-orange', count: 4, name: 'Lys orange et jaunes', category: 'bouquets', photo: 'g092', more: ['g065'], desc: 'Une brassée de lys orange et jaune pâle, pleine de lumière.' },
     {
       id: 'souvenir',
+      count: 5,
+      jar: true, // + le prix du bocal transparent
       name: 'Fleurs du souvenir en bocal',
-      category: 'sur-mesure',
-      quote: true,
+      category: 'bouquets',
       badge: 'En souvenir',
       bg: '#EDF0F2',
       bouquet: { container: 'bocal', flowers: [['rose', 'blanc'], ['hortensia', 'lavande'], ['lys', 'blanc'], ['rose', 'rose'], ['pavot', 'mauve'], ['eucalyptus'], ['eucalyptus']] },
       desc: 'Pour honorer la mémoire d’un être cher : une composition de fleurs éternelles dans un bocal transparent qui la protège des intempéries, pour fleurir une sépulture avec délicatesse en toute saison.',
-      illustration: 'Illustration : chaque composition est réalisée sur-mesure, selon vos souhaits.'
+      illustration: 'Illustration : chaque composition est réalisée selon vos souhaits. Le prix suit le nombre de fleurs (8 € la fleur), bocal compris.'
     },
-    { id: 'rose-tendre', name: 'Bouquet rose tendre', category: 'bouquets', photo: 'g002', desc: 'Des lys, des gerberas et de petites roses dans toutes les nuances de rose.' },
-    { id: 'mauve-violet', name: 'Bouquet mauve et violet', category: 'bouquets', photo: 'g017', desc: 'Un grand lys mauve, un gerbera rose et des hortensias violets.' },
+    { id: 'rose-tendre', count: 11, gift: 'Vase offert', name: 'Bouquet rose tendre', category: 'bouquets', photo: 'g002', desc: 'Des lys, des gerberas et de petites roses dans toutes les nuances de rose.' },
+    { id: 'mauve-violet', count: 7, name: 'Bouquet mauve et violet', category: 'bouquets', photo: 'g017', desc: 'Un grand lys mauve, un gerbera rose et des hortensias violets.' },
     {
       id: 'jonquilles',
+      price: 8, gift: 'Pot offert',
       name: 'Petit pot de jonquilles',
       category: 'deco',
       image: 'assets/photos/jonquilles.jpg',
@@ -389,43 +406,45 @@ window.SITE = {
       desc: 'Des jonquilles jaunes dans un pot lilas noué d’un ruban : le printemps toute l’année.',
       preset: { flowers: [['jonquille', 'jaune'], ['jonquille', 'jaune'], ['jonquille', 'jaune'], ['jonquille', 'jaune'], ['jonquille', 'jaune'], ['eucalyptus']] }
     },
-    { id: 'bouquet-jonquilles', name: 'Bouquet de jonquilles', category: 'bouquets', photo: 'g078', more: ['g015'], desc: 'Des jonquilles crème et jaune soleil, comme au premier jour du printemps.' },
-    { id: 'lys-bordeaux', name: 'Lys blanc et bordeaux', category: 'bouquets', photo: 'g058', desc: 'Des lys blanc et bordeaux, de petites roses et des brins de muguet, noués d’un ruban rose.' },
-    { id: 'petit-pastel', name: 'Petit bouquet pastel', category: 'bouquets', photo: 'g016', desc: 'Un petit bouquet tout doux : lys pêche, roses et hortensia lilas.' },
+    { id: 'bouquet-jonquilles', count: 8, gift: 'Vase offert', name: 'Bouquet de jonquilles', category: 'bouquets', photo: 'g078', more: ['g015'], desc: 'Des jonquilles crème et jaune soleil, comme au premier jour du printemps.' },
+    { id: 'lys-bordeaux', count: 7, gift: 'Vase offert', name: 'Lys blanc et bordeaux', category: 'bouquets', photo: 'g058', desc: 'Des lys blanc et bordeaux, de petites roses et des brins de muguet, noués d’un ruban rose.' },
+    { id: 'petit-pastel', count: 6, gift: 'Vase offert', name: 'Petit bouquet pastel', category: 'bouquets', photo: 'g016', desc: 'Un petit bouquet tout doux : lys pêche, roses et hortensia lilas.' },
     {
       id: 'pensees',
+      price: 8, gift: 'Pot offert',
       name: 'Pensées en pot',
       category: 'deco',
       image: 'assets/photos/pensees.jpg',
       bg: '#EFE8F6',
       desc: 'Des pensées blanches, mauves et jaunes dans un petit pot lilas : un air de printemps, toute l’année.'
     },
-    { id: 'arrosoir-fleuri', name: 'Arrosoir fleuri', category: 'deco', photo: 'g141', more: ['g007'], desc: 'Un petit arrosoir garni de fleurs : ici en rose, et en jaune et orange sur la deuxième photo.' },
-    { id: 'tulipes-bleues', name: 'Tulipes bleues', category: 'bouquets', photo: 'g088', desc: 'Des tulipes dans un camaïeu de bleus, du bleu ciel au bleu roi.' },
-    { id: 'tulipes-de-feu', name: 'Tulipes de feu', category: 'bouquets', photo: 'g024', desc: 'Des tulipes rouges, orange et jaunes : un bouquet qui réchauffe.' },
-    { id: 'tulipes-rouges-roses', name: 'Tulipes rouges et roses', category: 'bouquets', photo: 'g093', desc: 'Des tulipes rouges, roses et orangées, avec leurs longues feuilles.' },
+    { id: 'arrosoir-fleuri', price: 15, name: 'Arrosoir fleuri', category: 'deco', photo: 'g141', more: ['g007'], desc: 'Un petit arrosoir garni de fleurs : ici en rose, et en jaune et orange sur la deuxième photo.' },
+    { id: 'tulipes-bleues', count: 4, name: 'Tulipes bleues', category: 'bouquets', photo: 'g088', desc: 'Des tulipes dans un camaïeu de bleus, du bleu ciel au bleu roi.' },
+    { id: 'tulipes-de-feu', count: 7, name: 'Tulipes de feu', category: 'bouquets', photo: 'g024', desc: 'Des tulipes rouges, orange et jaunes : un bouquet qui réchauffe.' },
+    { id: 'tulipes-rouges-roses', count: 8, name: 'Tulipes rouges et roses', category: 'bouquets', photo: 'g093', desc: 'Des tulipes rouges, roses et orangées, avec leurs longues feuilles.' },
     {
       id: 'centre-de-table',
+      count: 6,
+      priceFrom: true, // fleurs des deux côtés : le prix dépend de la taille
+      gift: 'Vase offert',
       name: 'Centre de table tournesols',
-      category: 'sur-mesure',
-      quote: true,
-      badge: 'Sur commande',
+      category: 'bouquets',
       image: 'assets/photos/tournesols.jpg',
       post: 'https://www.instagram.com/p/Da3c-dyjutu/',
       bg: '#FCEFD9',
       words: 'Peu importe où l’on est assis à la table, le bouquet offre des fleurs à voir de chaque côté.',
-      desc: 'Une commande spéciale pour fleurir une table : des tournesols, de petites fleurs bleues et mauves et du feuillage. Pour tous vos projets fleuris, demandez-moi un devis.'
+      desc: 'Une commande spéciale pour fleurir une table : des tournesols, de petites fleurs bleues et mauves et du feuillage. Le prix dépend de la taille : 8 € la fleur, vase offert.'
     },
-    { id: 'tulipes-jaunes-orange', name: 'Tulipes jaunes et orange', category: 'bouquets', photo: 'g004', desc: 'Des tulipes jaunes et orange, lumineuses comme un matin de printemps.' },
-    { id: 'roses-rouges', name: 'Roses rouges', category: 'bouquets', photo: 'g094', desc: 'Des roses rouges et framboise avec leur feuillage : un classique qui ne fane jamais.' },
-    { id: 'roses-flamboyantes', name: 'Roses flamboyantes', category: 'bouquets', photo: 'g144', desc: 'Des roses orange, rouges et jaunes, pleines de chaleur.' },
-    { id: 'lys-bleus', name: 'Lys bleus', category: 'bouquets', photo: 'g107', desc: 'Des lys bleus et bleu ciel aux étamines blanches : un bouquet original et lumineux.' },
-    { id: 'bouquet-a-offrir', name: 'Petit bouquet à offrir', category: 'bouquets', photo: 'g057', desc: 'Un lys rose, une rose rouge et un gerbera, dans leur pochette transparente fermée d’un nœud.' },
-    { id: 'roses-blanches', name: 'Roses blanches et roses', category: 'bouquets', photo: 'g077', desc: 'Des roses blanches et roses dans leur pochette transparente fermée d’un nœud, prêtes à offrir.' },
-    { id: 'tournesol-pot', name: 'Tournesol en pot', category: 'deco', photo: 'g031', desc: 'Un tournesol tout rond dans un petit pot en terre cuite : un rayon de soleil pour la maison.' },
-    { id: 'marguerites-pichet', name: 'Marguerites au pichet', category: 'deco', photo: 'g083', desc: 'Des marguerites blanches au cœur jaune, dans un pichet vert.' },
-    { id: 'marguerites-pot', name: 'Pot de marguerites', category: 'deco', photo: 'g143', desc: 'Un petit pot de marguerites blanches, frais et champêtre.' },
-    { id: 'lavande-jaune', name: 'Lavande à l’arrosoir jaune', category: 'deco', photo: 'g134', desc: 'Des brins de lavande dans un petit arrosoir jaune.' },
+    { id: 'tulipes-jaunes-orange', count: 3, name: 'Tulipes jaunes et orange', category: 'bouquets', photo: 'g004', desc: 'Des tulipes jaunes et orange, lumineuses comme un matin de printemps.' },
+    { id: 'roses-rouges', count: 4, name: 'Roses rouges', category: 'bouquets', photo: 'g094', desc: 'Des roses rouges et framboise avec leur feuillage : un classique qui ne fane jamais.' },
+    { id: 'roses-flamboyantes', count: 4, name: 'Roses flamboyantes', category: 'bouquets', photo: 'g144', desc: 'Des roses orange, rouges et jaunes, pleines de chaleur.' },
+    { id: 'lys-bleus', count: 4, name: 'Lys bleus', category: 'bouquets', photo: 'g107', desc: 'Des lys bleus et bleu ciel aux étamines blanches : un bouquet original et lumineux.' },
+    { id: 'bouquet-a-offrir', count: 6, name: 'Petit bouquet à offrir', category: 'bouquets', photo: 'g057', desc: 'Un lys rose, une rose rouge et un gerbera, dans leur pochette transparente fermée d’un nœud.' },
+    { id: 'roses-blanches', count: 2, name: 'Roses blanches et roses', category: 'bouquets', photo: 'g077', desc: 'Des roses blanches et roses dans leur pochette transparente fermée d’un nœud, prêtes à offrir.' },
+    { id: 'tournesol-pot', price: 8, gift: 'Pot offert', name: 'Tournesol en pot', category: 'deco', photo: 'g031', desc: 'Un tournesol tout rond dans un petit pot en terre cuite : un rayon de soleil pour la maison.' },
+    { id: 'marguerites-pichet', price: 8, gift: 'Vase offert', name: 'Marguerites au pichet', category: 'deco', photo: 'g083', desc: 'Des marguerites blanches au cœur jaune, dans un pichet vert.' },
+    { id: 'marguerites-pot', price: 8, gift: 'Pot offert', name: 'Pot de marguerites', category: 'deco', photo: 'g143', desc: 'Un petit pot de marguerites blanches, frais et champêtre.' },
+    { id: 'lavande-jaune', price: 15, name: 'Lavande à l’arrosoir jaune', category: 'deco', photo: 'g134', desc: 'Des brins de lavande dans un petit arrosoir jaune.' },
 
     /* --- Fleurs à l'unité : chacune au prix d'une fleur (unitPrice) --- */
     { id: 'u-rose-rouge', name: 'Rose rouge', category: 'unite', photo: 'g044' },
@@ -456,7 +475,7 @@ window.SITE = {
     { id: 'naissance', title: 'Naissance', text: 'Tout doux et sans pollen : parfait pour une chambre de bébé.', bg: '#E3EDF8', preset: { message: 'Bienvenue, petit cœur', flowers: [['hortensia', 'ciel'], ['tulipe', 'blanc'], ['rose', 'ciel'], ['gerbera', 'blanc'], ['eucalyptus']] } },
     { id: 'evenements', title: 'Mariage & évènements', text: 'Bouquets, centres de table, décorations : je fleuris vos évènements sur-mesure.', bg: '#F5EFE8', preset: { message: 'Pour la vie', flowers: [['arum', 'blanc'], ['lys', 'blanc'], ['rose', 'blanc'], ['hortensia', 'blanc'], ['gerbera', 'rose'], ['eucalyptus'], ['eucalyptus']] } },
     { id: 'maitresse', title: 'Merci la maîtresse', text: 'Une fleur éternelle pour remercier la maîtresse, le maître ou l’ATSEM : {prix} la fleur, avec sa carte offerte.', bg: '#F1E9F8', cat: 'unite', preset: { message: 'Merci pour cette belle année', flowers: [['lys', 'rose']] } },
-    { id: 'souvenir', title: 'En souvenir', text: 'Une composition dans un bocal transparent, à l’abri des intempéries, pour fleurir avec délicatesse la sépulture d’un être cher.', bg: '#EDF0F2', product: 'souvenir', preset: { container: 'bocal', flowers: [['rose', 'blanc'], ['hortensia', 'lavande'], ['lys', 'blanc'], ['rose', 'rose'], ['eucalyptus']] } },
+    { id: 'souvenir', title: 'En souvenir', text: 'Une composition dans un bocal transparent, à l’abri des intempéries, pour fleurir avec délicatesse la sépulture d’un être cher. Une seule fleur aussi : le bocal est à {bocal}.', bg: '#EDF0F2', product: 'souvenir', preset: { container: 'bocal', flowers: [['rose', 'blanc'], ['hortensia', 'lavande'], ['lys', 'blanc'], ['rose', 'rose'], ['eucalyptus']] } },
     { id: 'merci', title: 'Juste parce que', text: 'Les plus jolis bouquets n’attendent pas d’occasion.', bg: '#FBEEDF', preset: { message: 'Juste parce que', flowers: [['tournesol'], ['pavot', 'orange'], ['gerbera', 'jaune'], ['tulipe', 'jaune'], ['eucalyptus']] } }
   ],
 
