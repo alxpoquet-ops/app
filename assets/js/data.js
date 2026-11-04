@@ -63,7 +63,7 @@ window.SITE = {
   jar: {
     price: 5,
     label: 'Dans un bocal transparent',
-    desc: 'À l’abri de la pluie et du vent, elle traverse les saisons : une douce attention pour fleurir la sépulture d’un être cher.'
+    desc: 'Je fixe la fleur à l’intérieur du bocal : protégée de la pluie et du vent, elle traverse les saisons. Une douce attention pour fleurir la sépulture d’un être cher.'
   },
 
   /* ---------- Emballage (le même pour toutes les créations) ---------- */
@@ -152,7 +152,7 @@ window.SITE = {
       id: 'unite',
       name: 'Fleurs à l’unité',
       blurb: 'Une fleur éternelle façonnée à la main, emballée et prête à offrir.',
-      intro: 'Une rose délicate, un pavot mignon, un gerbera tout doux, un joli lys, une tulipe lumineuse… Chaque fleur est à {prix}, emballée dans sa pochette transparente avec un nœud, et sa carte de vœux est offerte. Sur demande, elle peut se blottir dans un bocal transparent, pour {bocal} de plus : à l’abri de la pluie et du vent, elle fleurira avec douceur la sépulture d’un être cher. Envie d’une surprise ? Essayez la fleur mystère.'
+      intro: 'Une rose délicate, un pavot mignon, un gerbera tout doux, un joli lys, une tulipe lumineuse… Chaque fleur est emballée dans sa pochette transparente avec un nœud, et sa carte de vœux est offerte. Sur demande, je la fixe à l’intérieur d’un bocal transparent : protégée de la pluie et du vent, elle fleurira avec douceur la sépulture d’un être cher. Envie d’une surprise ? Essayez la fleur mystère.'
     },
     { id: 'deco', name: 'Déco & cadeaux', blurb: 'Une petite douceur fleurie, faite main, pour la maison ou pour offrir.' }
   ],
@@ -468,7 +468,7 @@ window.SITE = {
     { id: 'naissance', title: 'Naissance', text: 'Tout doux et sans pollen : parfait pour une chambre de bébé.', bg: '#E3EDF8', preset: { message: 'Bienvenue, petit cœur', flowers: [['hortensia', 'ciel'], ['tulipe', 'blanc'], ['rose', 'ciel'], ['gerbera', 'blanc'], ['eucalyptus']] } },
     { id: 'evenements', title: 'Mariage & évènements', text: 'Bouquets, centres de table, décorations : je fleuris vos évènements sur-mesure.', bg: '#F5EFE8', preset: { message: 'Pour la vie', flowers: [['arum', 'blanc'], ['lys', 'blanc'], ['rose', 'blanc'], ['hortensia', 'blanc'], ['gerbera', 'rose'], ['eucalyptus'], ['eucalyptus']] } },
     { id: 'maitresse', title: 'Merci la maîtresse', text: 'Une fleur éternelle pour remercier la maîtresse, le maître ou l’ATSEM : {prix} la fleur, avec sa carte offerte.', bg: '#F1E9F8', cat: 'unite', preset: { message: 'Merci pour cette belle année', flowers: [['lys', 'rose']] } },
-    { id: 'souvenir', title: 'En souvenir', text: 'Une fleur blottie dans un bocal transparent, à l’abri de la pluie et du vent, pour fleurir avec délicatesse la sépulture d’un être cher. Le bocal est à {bocal} de plus.', bg: '#EDF0F2', cat: 'unite', preset: { container: 'bocal', flowers: [['rose', 'blanc']] } },
+    { id: 'souvenir', title: 'En souvenir', text: 'Une fleur fixée à l’intérieur d’un bocal transparent, protégée de la pluie et du vent, pour fleurir avec délicatesse la sépulture d’un être cher.', bg: '#EDF0F2', cat: 'unite', preset: { container: 'bocal', flowers: [['rose', 'blanc']] } },
     { id: 'merci', title: 'Juste parce que', text: 'Les plus jolis bouquets n’attendent pas d’occasion.', bg: '#FBEEDF', preset: { message: 'Juste parce que', flowers: [['tournesol'], ['pavot', 'orange'], ['gerbera', 'jaune'], ['tulipe', 'jaune'], ['eucalyptus']] } }
   ],
 
