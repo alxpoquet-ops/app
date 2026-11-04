@@ -59,6 +59,10 @@ window.SITE = {
   /* ---------- Papillons et chenilles animés un peu partout sur la page ---------- */
   critters: true,
 
+  /* ---------- Petite blague : en haut à gauche, un papillon qui éclate au clic ----------
+     Mettez false pour la retirer. */
+  blague: true,
+
   /* ---------- Bocal transparent : en option, uniquement pour les fleurs seules ---------- */
   jar: {
     price: 5,

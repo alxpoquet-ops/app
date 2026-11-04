@@ -959,16 +959,15 @@ h3 { font-size: 1.3rem; }
   top: 14px;
   left: 14px;
   z-index: 2;
-  padding: 5px 12px;
+  padding: 6px 13px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.88);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  font-size: 0.7rem;
-  font-weight: 500;
+  background: #EEE5FA;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9), 0 8px 16px -10px rgba(74, 44, 61, 0.45);
+  font-size: 0.72rem;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--plum);
+  color: #5B3F73;
 }
 .badge--inline { position: static; align-self: flex-start; background: var(--blush); }
 .product-body { display: flex; flex-direction: column; flex: 1; padding: 18px 20px 20px; }
@@ -1070,14 +1069,13 @@ h3 { font-size: 1.3rem; }
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 4px 9px;
+  padding: 5px 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.88);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  font-size: 0.74rem;
-  font-weight: 500;
-  color: var(--plum);
+  background: #F1EBFA;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9), 0 8px 16px -10px rgba(74, 44, 61, 0.45);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #5B3F73;
 }
 .pics-n svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 @media (max-width: 600px) { .pics-n { right: 8px; bottom: 8px; padding: 3px 7px; font-size: 0.68rem; } }
@@ -2018,11 +2016,11 @@ h3 { font-size: 1.3rem; }
   height: 30px;
   padding: 0 10px;
   border-radius: 999px;
-  background: var(--rose-ink);
+  background: #F7D3E1;
   font-family: var(--serif);
   font-size: 0.98rem;
-  font-weight: 500;
-  color: #fff;
+  font-weight: 600;
+  color: #9C3F69;
   white-space: nowrap;
 }
 .promo-banner {
@@ -2041,7 +2039,7 @@ h3 { font-size: 1.3rem; }
 .price.is-promo { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 0 7px; }
 .price s, .pm-price s { font-size: 0.72em; color: var(--plum-3); text-decoration-thickness: 1px; }
 .price ins, .pm-price ins { text-decoration: none; color: var(--rose-ink); }
-.promo-tag { display: inline-block; margin-left: 4px; padding: 3px 10px; border-radius: 999px; background: var(--rose-ink); vertical-align: middle; font-family: var(--sans); font-size: 0.76rem; font-weight: 500; font-style: normal; color: #fff; }
+.promo-tag { display: inline-block; margin-left: 4px; padding: 3px 10px; border-radius: 999px; background: #F7D3E1; vertical-align: middle; font-family: var(--sans); font-size: 0.76rem; font-weight: 600; font-style: normal; color: #9C3F69; }
 .cart-promo, .order-recap li.is-promo { color: var(--rose-ink); }
 .cart-promo { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 4px; font-size: 0.9rem; }
 .cart-promo[hidden] { display: none; }
@@ -2167,20 +2165,23 @@ h3 { font-size: 1.3rem; }
   z-index: 2;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 11px 5px 8px;
+  gap: 7px;
+  padding: 7px 14px 7px 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 6px 14px -8px rgba(74, 44, 61, 0.45);
-  font-size: 0.74rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--rose-ink);
+  background: #FBDDE8;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.95), 0 10px 20px -10px rgba(74, 44, 61, 0.5);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #9C3F69;
 }
-.gift-tag svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-@media (max-width: 600px) { .gift-tag { left: 8px; bottom: 8px; padding: 3px 8px 3px 6px; font-size: 0.66rem; } .gift-tag svg { width: 12px; height: 12px; } }
+.gift-tag.is-pot { background: #DDF0E3; color: #3B7552; }
+.gift-tag svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 600px) {
+  .gift-tag { left: 8px; bottom: 8px; gap: 5px; padding: 4px 10px 4px 7px; font-size: 0.7rem; }
+  .gift-tag svg { width: 13px; height: 13px; }
+  .badge { padding: 4px 10px; font-size: 0.64rem; }
+}
 .pm-count-line { margin: -8px 0 0; font-size: 0.86rem; letter-spacing: 0.02em; color: var(--plum-2); }
 .pm-jar {
   display: grid;
@@ -2203,4 +2204,46 @@ h3 { font-size: 1.3rem; }
 .pm-jar small { display: block; font-size: 0.8rem; color: var(--plum-2); }
 .pm-jar b { font-family: var(--serif); font-weight: 400; font-size: 1.05rem; color: var(--rose-ink); white-space: nowrap; }
 .preview-meta strong s, .b-summary dd s { margin-right: 6px; font-size: 0.75em; color: var(--plum-3); }
-.gift-tag.is-jar { color: #4F7896; }
+.gift-tag.is-jar { background: #DCEBFA; color: #3D6B91; }
+
+/* ---------- Tri des créations ---------- */
+.shop-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; margin-bottom: 30px; }
+.shop-tools .filters { margin-bottom: 0; }
+.sort-field { display: inline-flex; align-items: center; gap: 10px; margin-left: auto; }
+.sort-field > span { font-size: 0.74rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--plum-2); }
+.sort-field select {
+  height: 42px;
+  padding: 0 40px 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236B5262' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;
+  font: inherit;
+  font-size: 0.92rem;
+  color: var(--plum);
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.25s, box-shadow 0.25s, background-color 0.25s;
+}
+.sort-field select:hover { background-color: #fff; }
+.sort-field select:focus-visible { outline: none; border-color: #CFA2B4; box-shadow: 0 0 0 4px rgba(227, 163, 179, 0.22); }
+@media (max-width: 600px) { .sort-field { margin-left: 0; } }
+
+/* ---------- Petite blague (à retirer facilement : blague: false dans data.js) ---------- */
+.joke-bf { position: absolute; z-index: 40; top: calc(var(--header-h) + 8px); left: max(12px, 1.4vw); width: 54px; height: 48px; cursor: pointer; filter: drop-shadow(0 6px 7px rgba(74, 44, 61, 0.25)); -webkit-tap-highlight-color: transparent; }
+.joke-bf svg { width: 100%; height: 100%; overflow: visible; }
+.joke-float { width: 100%; height: 100%; animation: bfFloat 6.5s ease-in-out infinite; }
+.joke-bf .bf-wing { animation-duration: 0.4s; }
+.joke-bf.is-popped { pointer-events: none; animation: jokePop 0.42s ease-in forwards; }
+@keyframes jokePop { 35% { transform: scale(1.35); } 100% { transform: scale(0); opacity: 0; } }
+.joke-bit { position: absolute; z-index: 41; width: 11px; height: 8px; margin: -4px 0 0 -5px; border-radius: 2px 7px; background: var(--c); pointer-events: none; animation: jokeBit 0.9s cubic-bezier(.2, .7, .3, 1) forwards; }
+@keyframes jokeBit { to { transform: translate(var(--dx), var(--dy)) rotate(var(--r)); opacity: 0; } }
+.joke-stain { position: absolute; z-index: 39; width: 92px; height: 92px; margin: -46px 0 0 -46px; pointer-events: none; }
+.joke-stain svg { width: 100%; height: 100%; overflow: visible; animation: jokeSplat 0.38s cubic-bezier(.3, 1.6, .5, 1) both; }
+@keyframes jokeSplat { from { transform: scale(0.15); } }
+.joke-drip { position: absolute; left: 50%; top: 58%; width: 6px; height: var(--len); margin-left: -3px; border-radius: 3px; background: linear-gradient(90deg, #8E0E24, #B3172F 45%, #8E0E24); animation: jokeDrip 3.4s cubic-bezier(.45, 0, .55, 1) 0.35s both; }
+.joke-drip::after { content: ''; position: absolute; left: -3.5px; bottom: -10px; width: 13px; height: 15px; border-radius: 50% 50% 50% 50% / 58% 58% 42% 42%; background: #A3122B; }
+.joke-drip--2 { left: 30%; top: 62%; width: 4px; margin-left: -2px; animation-duration: 2.6s; animation-delay: 0.6s; }
+.joke-drip--2::after { left: -3px; bottom: -8px; width: 10px; height: 11px; }
+@keyframes jokeDrip { from { height: 0; } }
+@media (prefers-reduced-motion: reduce) { .joke-float, .joke-stain svg, .joke-drip, .joke-bit { animation: none; } }

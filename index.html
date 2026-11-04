@@ -17,11 +17,11 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="assets/fonts/fraunces-latin-full-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/jost-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=20261104h">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261104i">
   <script>document.documentElement.classList.add('js');window.addEventListener('error',function(){document.documentElement.classList.remove('js');});</script>
-  <script src="assets/js/data.js?v=20261104h" defer></script>
-  <script src="assets/js/flowers.js?v=20261104h" defer></script>
-  <script src="assets/js/app.js?v=20261104h" defer></script>
+  <script src="assets/js/data.js?v=20261104i" defer></script>
+  <script src="assets/js/flowers.js?v=20261104i" defer></script>
+  <script src="assets/js/app.js?v=20261104i" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">Aller au contenu</a>
@@ -240,7 +240,16 @@
           <p class="section-sub reveal" style="--i:2">Chaque création est faite à la main, sur commande, et emballée dans une pochette transparente fermée d’un nœud, avec sa carte de vœux offerte.</p>
         </div>
         <div class="promo-banner" data-promo-banner hidden></div>
-        <div class="filters reveal" role="group" aria-label="Filtrer les créations" data-filters></div>
+        <div class="shop-tools reveal">
+          <div class="filters" role="group" aria-label="Filtrer les créations" data-filters></div>
+          <label class="sort-field" for="shop-sort"><span>Trier</span>
+            <select id="shop-sort" data-sort>
+              <option value="">Mes coups de cœur</option>
+              <option value="asc">Prix croissant</option>
+              <option value="desc">Prix décroissant</option>
+            </select>
+          </label>
+        </div>
         <div class="cat-intro" data-cat-intro hidden></div>
         <div class="product-grid" data-products aria-live="polite"></div>
         <div class="shop-more"><button class="btn btn-ghost" type="button" data-shop-more hidden>Voir plus de créations</button></div>
