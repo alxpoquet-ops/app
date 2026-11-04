@@ -152,7 +152,7 @@ window.SITE = {
       id: 'unite',
       name: 'Fleurs à l’unité',
       blurb: 'Une fleur éternelle façonnée à la main, emballée et prête à offrir.',
-      intro: 'Une rose délicate, un pavot mignon, un gerbera tout doux, un joli lys, une tulipe lumineuse… Chaque fleur est emballée dans sa pochette transparente avec un nœud, et sa carte de vœux est offerte. Sur demande, je la fixe à l’intérieur d’un bocal transparent : protégée de la pluie et du vent, elle fleurira avec douceur la sépulture d’un être cher. Envie d’une surprise ? Essayez la fleur mystère.'
+      intro: 'Une rose délicate, un pavot mignon, un gerbera tout doux, un joli lys, une tulipe lumineuse… Chaque fleur est emballée dans sa pochette transparente avec un nœud, et sa carte de vœux est offerte. Sur demande, je la fixe à l’intérieur d’un bocal transparent : protégée de la pluie et du vent, elle fleurira avec douceur la sépulture d’un être cher.'
     },
     { id: 'deco', name: 'Déco & cadeaux', blurb: 'Une petite douceur fleurie, faite main, pour la maison ou pour offrir.' }
   ],
@@ -216,16 +216,6 @@ window.SITE = {
           { name: 'Un arum élégant', type: 'arum', image: 'g040' }
         ]
       }
-    },
-    {
-      id: 'fleur-mystere',
-      name: 'Fleur mystère',
-      category: 'unite',
-      price: 6,
-      art: 'mystery', // illustration dessinée : une fleur en point d'interrogation
-      badge: 'Surprise',
-      bg: '#F1EAF9',
-      desc: 'Laissez-moi vous surprendre : je choisis la fleur et sa couleur parmi mes créations du moment. Elle arrive dans sa pochette transparente fermée d’un nœud, avec sa carte de vœux offerte.'
     },
     {
       id: 'bonsai',
