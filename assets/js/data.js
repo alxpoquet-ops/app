@@ -6,8 +6,8 @@
    coordonnées. Pas besoin de toucher au reste du code.
 
    Prix : une fleur coûte unitPrice (8 €). Pour un bouquet, count = nombre de
-   fleurs : son prix est calculé tout seul (count × 8 €, + 5 € s'il est en
-   bocal). Pour un prix fixe, écrivez price: 35. Sans prix ni count, une
+   fleurs : son prix est calculé tout seul (count × 8 €). Pour un prix fixe,
+   écrivez price: 35 (il passe avant count). Sans prix ni count, une
    création est « sur demande ». gift: 'Vase offert' affiche une petite
    vignette sur la photo.
 
@@ -59,11 +59,11 @@ window.SITE = {
   /* ---------- Papillons et chenilles animés un peu partout sur la page ---------- */
   critters: true,
 
-  /* ---------- Bocal transparent : proposé en option pour les fleurs à l'unité ---------- */
+  /* ---------- Bocal transparent : en option, uniquement pour les fleurs seules ---------- */
   jar: {
     price: 5,
     label: 'Dans un bocal transparent',
-    desc: 'Il protège la fleur des intempéries : parfait pour fleurir une tombe, par exemple.'
+    desc: 'À l’abri de la pluie et du vent, elle traverse les saisons : une douce attention pour fleurir la sépulture d’un être cher.'
   },
 
   /* ---------- Emballage (le même pour toutes les créations) ---------- */
@@ -152,7 +152,7 @@ window.SITE = {
       id: 'unite',
       name: 'Fleurs à l’unité',
       blurb: 'Une fleur éternelle façonnée à la main, emballée et prête à offrir.',
-      intro: 'Une rose délicate, un pavot mignon, un gerbera tout doux, un joli lys, une tulipe lumineuse… Chaque fleur est à {prix}, emballée dans sa pochette transparente avec un nœud, et sa carte de vœux est offerte. Sur demande, je la glisse dans un bocal transparent pour {bocal} de plus : il la protège des intempéries, parfait pour fleurir une tombe. Envie d’une surprise ? Essayez la fleur mystère.'
+      intro: 'Une rose délicate, un pavot mignon, un gerbera tout doux, un joli lys, une tulipe lumineuse… Chaque fleur est à {prix}, emballée dans sa pochette transparente avec un nœud, et sa carte de vœux est offerte. Sur demande, elle peut se blottir dans un bocal transparent, pour {bocal} de plus : à l’abri de la pluie et du vent, elle fleurira avec douceur la sépulture d’un être cher. Envie d’une surprise ? Essayez la fleur mystère.'
     },
     { id: 'deco', name: 'Déco & cadeaux', blurb: 'Une petite douceur fleurie, faite main, pour la maison ou pour offrir.' }
   ],
@@ -255,7 +255,7 @@ window.SITE = {
       ],
       preset: { flowers: [['arum', 'blanc'], ['lys', 'blanc'], ['gerbera', 'blanc'], ['pavot', 'jaune'], ['tulipe', 'jaune'], ['rose', 'jaune'], ['gerbera', 'jaune'], ['eucalyptus']] }
     },
-    { id: 'pavots-multicolores', count: 13, name: 'Pavots multicolores', category: 'bouquets', photo: 'g087', desc: 'Des pavots de toutes les couleurs, rouge, bleu, lilas, orange… Un bouquet joyeux comme un jour de fête.' },
+    { id: 'pavots-multicolores', price: 78, name: 'Pavots multicolores', category: 'bouquets', photo: 'g087', desc: 'Des pavots de toutes les couleurs, rouge, bleu, lilas, orange… Un bouquet joyeux comme un jour de fête.' },
     {
       id: 'rubis',
       count: 7,
@@ -274,6 +274,7 @@ window.SITE = {
     },
     {
       id: 'theiere',
+      price: 38,
       name: 'Théière fleurie',
       category: 'deco',
       badge: 'Pièce unique',
@@ -285,7 +286,7 @@ window.SITE = {
     },
     {
       id: 'coquelicots',
-      count: 10,
+      price: 27,
       name: 'Bouquet de coquelicots',
       category: 'bouquets',
       image: 'assets/photos/coquelicots.jpg',
@@ -330,7 +331,7 @@ window.SITE = {
     { id: 'lys-roses', count: 3, name: 'Lys roses', category: 'bouquets', photo: 'g005', more: ['g080'], desc: 'Une gerbe de lys roses aux étamines blanches. Sur la deuxième photo, elle est prête à offrir dans sa pochette transparente.' },
     {
       id: 'lavande',
-      price: 15,
+      price: 31,
       name: 'Arrosoir de lavande',
       category: 'deco',
       image: 'assets/photos/lavande.jpg',
@@ -375,7 +376,7 @@ window.SITE = {
     },
     {
       id: 'muguet',
-      price: 8,
+      price: 25,
       name: 'Bouquet de muguet',
       category: 'bouquets',
       image: 'assets/photos/muguet.jpg',
@@ -384,23 +385,11 @@ window.SITE = {
     },
     { id: 'bouquet-soleil', count: 10, name: 'Bouquet soleil', category: 'bouquets', photo: 'g129', desc: 'Gerberas, roses et lys dans des tons orangés et dorés : un bouquet plein de soleil.' },
     { id: 'lys-orange', count: 4, name: 'Lys orange et jaunes', category: 'bouquets', photo: 'g092', more: ['g065'], desc: 'Une brassée de lys orange et jaune pâle, pleine de lumière.' },
-    {
-      id: 'souvenir',
-      count: 5,
-      jar: true, // + le prix du bocal transparent
-      name: 'Fleurs du souvenir en bocal',
-      category: 'bouquets',
-      badge: 'En souvenir',
-      bg: '#EDF0F2',
-      bouquet: { container: 'bocal', flowers: [['rose', 'blanc'], ['hortensia', 'lavande'], ['lys', 'blanc'], ['rose', 'rose'], ['pavot', 'mauve'], ['eucalyptus'], ['eucalyptus']] },
-      desc: 'Pour honorer la mémoire d’un être cher : une composition de fleurs éternelles dans un bocal transparent qui la protège des intempéries, pour fleurir une sépulture avec délicatesse en toute saison.',
-      illustration: 'Illustration : chaque composition est réalisée selon vos souhaits. Le prix suit le nombre de fleurs (8 € la fleur), bocal compris.'
-    },
     { id: 'rose-tendre', count: 11, gift: 'Vase offert', name: 'Bouquet rose tendre', category: 'bouquets', photo: 'g002', desc: 'Des lys, des gerberas et de petites roses dans toutes les nuances de rose.' },
     { id: 'mauve-violet', count: 7, name: 'Bouquet mauve et violet', category: 'bouquets', photo: 'g017', desc: 'Un grand lys mauve, un gerbera rose et des hortensias violets.' },
     {
       id: 'jonquilles',
-      price: 8, gift: 'Pot offert',
+      price: 12, gift: 'Pot offert',
       name: 'Petit pot de jonquilles',
       category: 'deco',
       image: 'assets/photos/jonquilles.jpg',
@@ -415,7 +404,7 @@ window.SITE = {
     { id: 'petit-pastel', count: 6, gift: 'Vase offert', name: 'Petit bouquet pastel', category: 'bouquets', photo: 'g016', desc: 'Un petit bouquet tout doux : lys pêche, roses et hortensia lilas.' },
     {
       id: 'pensees',
-      price: 8, gift: 'Pot offert',
+      price: 18, gift: 'Pot offert',
       name: 'Pensées en pot',
       category: 'deco',
       image: 'assets/photos/pensees.jpg',
@@ -445,10 +434,10 @@ window.SITE = {
     { id: 'lys-bleus', count: 4, name: 'Lys bleus', category: 'bouquets', photo: 'g107', desc: 'Des lys bleus et bleu ciel aux étamines blanches : un bouquet original et lumineux.' },
     { id: 'bouquet-a-offrir', count: 6, name: 'Petit bouquet à offrir', category: 'bouquets', photo: 'g057', desc: 'Un lys rose, une rose rouge et un gerbera, dans leur pochette transparente fermée d’un nœud.' },
     { id: 'roses-blanches', count: 2, name: 'Roses blanches et roses', category: 'bouquets', photo: 'g077', desc: 'Des roses blanches et roses dans leur pochette transparente fermée d’un nœud, prêtes à offrir.' },
-    { id: 'tournesol-pot', price: 8, gift: 'Pot offert', name: 'Tournesol en pot', category: 'deco', photo: 'g031', desc: 'Un tournesol tout rond dans un petit pot en terre cuite : un rayon de soleil pour la maison.' },
-    { id: 'marguerites-pichet', price: 8, gift: 'Vase offert', name: 'Marguerites au pichet', category: 'deco', photo: 'g083', desc: 'Des marguerites blanches au cœur jaune, dans un pichet vert.' },
-    { id: 'marguerites-pot', price: 8, gift: 'Pot offert', name: 'Pot de marguerites', category: 'deco', photo: 'g143', desc: 'Un petit pot de marguerites blanches, frais et champêtre.' },
-    { id: 'lavande-jaune', price: 15, name: 'Lavande à l’arrosoir jaune', category: 'deco', photo: 'g134', desc: 'Des brins de lavande dans un petit arrosoir jaune.' },
+    { id: 'tournesol-pot', price: 14, gift: 'Pot offert', name: 'Tournesol en pot', category: 'deco', photo: 'g031', desc: 'Un tournesol tout rond dans un petit pot en terre cuite : un rayon de soleil pour la maison.' },
+    { id: 'marguerites-pichet', price: 15, gift: 'Vase offert', name: 'Marguerites au pichet', category: 'deco', photo: 'g083', desc: 'Des marguerites blanches au cœur jaune, dans un pichet vert.' },
+    { id: 'marguerites-pot', price: 16, gift: 'Pot offert', name: 'Pot de marguerites', category: 'deco', photo: 'g143', desc: 'Un petit pot de marguerites blanches, frais et champêtre.' },
+    { id: 'lavande-jaune', price: 31, name: 'Lavande à l’arrosoir jaune', category: 'deco', photo: 'g134', desc: 'Des brins de lavande dans un petit arrosoir jaune.' },
 
     /* --- Fleurs à l'unité : chacune au prix d'une fleur (unitPrice) --- */
     { id: 'u-rose-rouge', name: 'Rose rouge', category: 'unite', photo: 'g044' },
@@ -479,7 +468,7 @@ window.SITE = {
     { id: 'naissance', title: 'Naissance', text: 'Tout doux et sans pollen : parfait pour une chambre de bébé.', bg: '#E3EDF8', preset: { message: 'Bienvenue, petit cœur', flowers: [['hortensia', 'ciel'], ['tulipe', 'blanc'], ['rose', 'ciel'], ['gerbera', 'blanc'], ['eucalyptus']] } },
     { id: 'evenements', title: 'Mariage & évènements', text: 'Bouquets, centres de table, décorations : je fleuris vos évènements sur-mesure.', bg: '#F5EFE8', preset: { message: 'Pour la vie', flowers: [['arum', 'blanc'], ['lys', 'blanc'], ['rose', 'blanc'], ['hortensia', 'blanc'], ['gerbera', 'rose'], ['eucalyptus'], ['eucalyptus']] } },
     { id: 'maitresse', title: 'Merci la maîtresse', text: 'Une fleur éternelle pour remercier la maîtresse, le maître ou l’ATSEM : {prix} la fleur, avec sa carte offerte.', bg: '#F1E9F8', cat: 'unite', preset: { message: 'Merci pour cette belle année', flowers: [['lys', 'rose']] } },
-    { id: 'souvenir', title: 'En souvenir', text: 'Une composition dans un bocal transparent, à l’abri des intempéries, pour fleurir avec délicatesse la sépulture d’un être cher. Une seule fleur aussi : le bocal est à {bocal}.', bg: '#EDF0F2', product: 'souvenir', preset: { container: 'bocal', flowers: [['rose', 'blanc'], ['hortensia', 'lavande'], ['lys', 'blanc'], ['rose', 'rose'], ['eucalyptus']] } },
+    { id: 'souvenir', title: 'En souvenir', text: 'Une fleur blottie dans un bocal transparent, à l’abri de la pluie et du vent, pour fleurir avec délicatesse la sépulture d’un être cher. Le bocal est à {bocal} de plus.', bg: '#EDF0F2', cat: 'unite', preset: { container: 'bocal', flowers: [['rose', 'blanc']] } },
     { id: 'merci', title: 'Juste parce que', text: 'Les plus jolis bouquets n’attendent pas d’occasion.', bg: '#FBEEDF', preset: { message: 'Juste parce que', flowers: [['tournesol'], ['pavot', 'orange'], ['gerbera', 'jaune'], ['tulipe', 'jaune'], ['eucalyptus']] } }
   ],
 

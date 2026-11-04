@@ -895,7 +895,7 @@
       (p.badge ? `<span class="badge">${esc(p.badge)}</span>` : '') +
       (p.pics.length > 1 ? `<span class="pics-n" aria-hidden="true"><svg><use href="#i-photos"/></svg>${p.pics.length}</span>` : '') +
       (p.gift ? `<span class="gift-tag"><svg aria-hidden="true"><use href="#i-gift"/></svg>${esc(p.gift)}</span>` : '') +
-      (jarOption(p) ? `<span class="gift-tag is-jar" title="${esc(JAR.desc || '')}"><svg aria-hidden="true"><use href="#i-jar"/></svg>Option bocal +${price(JAR.price)}</span>` : '') +
+      (jarOption(p) ? `<span class="gift-tag is-jar" title="${esc(JAR.desc || '')}"><svg aria-hidden="true"><use href="#i-jar"/></svg>Bocal</span>` : '') +
       `<span class="product-art">${productArt(p, null)}</span></button>` +
       '<div class="product-body">' +
       `<h3><button type="button" data-open="${esc(p.id)}">${esc(p.name)}</button></h3>` +
@@ -1096,9 +1096,9 @@
         if (e.target.closest('[data-pm-quote]')) {
           closeModal();
           const souvenir = p.id === 'souvenir';
-          prefillContact(souvenir ? 'Une composition souvenir' : 'Un bouquet sur mesure',
+          prefillContact(souvenir ? 'Une fleur souvenir en bocal' : 'Un bouquet sur mesure',
             souvenir
-              ? `Bonjour, je souhaiterais une composition souvenir en bocal, en mémoire d’un être cher.\nCouleurs ou fleurs souhaitées${NB}: \nPour le${NB}: `
+              ? `Bonjour, je souhaiterais une fleur en bocal, en mémoire d’un être cher.\nFleur et couleur souhaitées${NB}: \nPour le${NB}: `
               : `Bonjour${NB}! J’aimerais un devis pour «${NB}${p.name}${NB}».\nDate souhaitée${NB}: \nCouleurs ou fleurs souhaitées${NB}: `);
         }
       });

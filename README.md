@@ -14,12 +14,12 @@ Il suffit d'héberger ces fichiers (GitHub Pages, Netlify, OVH…).
 | **Accueil** | Diaporama de ses bouquets, logo, nouveauté mise en avant (bonsaï azalée), pastille « Offre de lancement −10 % », bandeau « fait main, fleurs éternelles, sans pollen, carte de vœux offerte… » |
 | **L'atelier** | Fait main avec passion dans les Ardennes, fils sélectionnés pour leur qualité et leur durabilité |
 | **Comment ça se passe** | Les 4 étapes, du choix à la remise |
-| **Mes créations** | Les 65 créations, toutes en vente avec leur prix : bouquets (8 € par fleur, vase offert pour ceux présentés en vase), fleurs à l'unité (8 €, bocal transparent en option à +5 €), fleur mystère (6 €), déco & cadeaux (bonsaï 35 €, boîtes gâteau et arrosoirs 15 €, petites fleurs en pot 8 € pot offert). Filtres, bouton « Voir plus », plusieurs photos par création, flèches (ou glisser du doigt) pour passer d'une création à l'autre, carte de vœux à écrire, lien vers la publication Instagram |
+| **Mes créations** | Les 64 créations, toutes en vente avec leur prix : bouquets (8 € par fleur ou prix fixé par Laurine, vase offert pour ceux présentés en vase), fleurs à l'unité (8 €, vignette « Bocal » : bocal transparent en option à +5 €, à l'abri de la pluie et du vent), fleur mystère (6 €), déco & cadeaux (théière 38 €, bonsaï 35 €, arrosoirs de lavande 31 €, petits pots de 12 à 18 €, boîte gâteau 15 €). Filtres, bouton « Voir plus », plusieurs photos par création, flèches (ou glisser du doigt) pour passer d'une création à l'autre, carte de vœux à écrire, lien vers la publication Instagram |
 | **Le prix d'une fleur** | « Une fleur à 8 €, c'est… » du temps, des fils chenille, une tige de fer, du scotch de masquage, de la colle, du maquillage, un emballage et plein d'amour, avec la carte de vœux offerte |
 | **Offre de lancement** | −10 % sur toutes les créations jusqu'au 4 janvier 2027 : prix barrés, remise déduite automatiquement du total et indiquée dans l'e-mail de commande ; l'offre disparaît toute seule après la date |
 | **Papillons et chenilles** | Une quinzaine de petites bêtes animées un peu partout : chenilles qui se promènent (et parlent quand on clique dessus), une chenille qui dort dans la FAQ, papillons qui s'envolent quand on les approche, un papillon qui traverse l'écran de temps en temps et un autre qui apporte chaque création jusqu'au panier |
 | **Votre bouquet à vous** | Compositeur interactif, avec son prix calculé (8 € par fleur, feuillage offert), avec ses fleurs (lys, arum, pavot, gerbera, rose, tulipe, hortensia, tournesol, jonquille, feuillage), emballé dans une pochette transparente avec un nœud, et sa carte de vœux personnalisée (pour, message, de la part de) |
-| **Occasions** | Anniversaire, naissance, évènements, « merci la maîtresse » (fleurs à 8 €), fleurs du souvenir en bocal, juste parce que |
+| **Occasions** | Anniversaire, naissance, évènements, « merci la maîtresse » (fleurs à 8 €), une fleur en bocal pour fleurir une sépulture, juste parce que |
 | **Livraison & retrait** | Retrait gratuit à l'atelier ; livraison 5 € jusqu'à 15 km et 10 € jusqu'à 25 km autour de Signy-l'Abbaye (ajoutée automatiquement au total), au-delà à voir ensemble |
 | **Réseaux** | Mosaïque Instagram (dernières publications automatiques via Behold, sinon photos du site), lien Facebook (à renseigner) |
 | **FAQ & contact** | Questions fréquentes et formulaire qui **envoie directement un e-mail** |
@@ -89,7 +89,7 @@ Tout le contenu « vivant » est rassemblé dans **`assets/js/data.js`**, commen
   mettez `percent: 0` pour l'arrêter plus tôt ;
 - `critters` : `false` pour retirer les papillons et chenilles animés ;
 - `products` : les créations, dans l'ordre d'affichage (nom, catégorie, photos, description…) ;
-- sans `price` ni `count`, une création est « sur demande » (c'est le cas de la théière, pièce unique) ;
+- sans `price` ni `count`, une création est « sur demande » ;
 - `delivery.zones` : les zones de livraison (5 € jusqu'à 15 km, 10 € jusqu'à 25 km) ;
 - `packaging` : le texte de l'emballage (pochette transparente et nœud) ;
 - `card.suggestions` : les idées de messages proposées pour la carte de vœux ;
