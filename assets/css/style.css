@@ -2052,7 +2052,7 @@ h3 { font-size: 1.3rem; }
 .pm-why svg[aria-hidden] use[href="#i-heart"] { fill: currentColor; }
 
 /* ---------- Papillons et chenilles ---------- */
-.marquee-wrap, .why-price, .delivery-panel, .contact-panel, .insta-head, .footer-big, #boutique .section-head, #occasions .section-head { position: relative; }
+.marquee-wrap, .why-price, .delivery-panel, .contact-panel, .insta-head, .footer-bottom, #boutique .section-head, #occasions .section-head { position: relative; }
 .critter { position: absolute; z-index: 3; cursor: pointer; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
 .critter svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .critter:not(.is-awake), .critter:not(.is-awake) * { animation-play-state: paused !important; }
@@ -2143,7 +2143,7 @@ h3 { font-size: 1.3rem; }
 .b-insta { right: 30%; top: -34px; }
 .c-faq { position: relative; display: block; margin-top: 34px; width: 78px; height: 37px; }
 .b-contact { left: 38%; top: -22px; }
-.c-footer { left: 8%; top: 6%; }
+.c-footer { left: 6%; top: -33px; }
 @media (max-width: 600px) {
   .critter-cat { width: 56px; height: 26px; }
   .pp-date { display: none; }
@@ -2229,21 +2229,3 @@ h3 { font-size: 1.3rem; }
 .sort-field select:focus-visible { outline: none; border-color: #CFA2B4; box-shadow: 0 0 0 4px rgba(227, 163, 179, 0.22); }
 @media (max-width: 600px) { .sort-field { margin-left: 0; } }
 
-/* ---------- Petite blague (à retirer facilement : blague: false dans data.js) ---------- */
-.joke-bf { position: absolute; z-index: 40; top: calc(var(--header-h) + 8px); left: max(12px, 1.4vw); width: 54px; height: 48px; cursor: pointer; filter: drop-shadow(0 6px 7px rgba(74, 44, 61, 0.25)); -webkit-tap-highlight-color: transparent; }
-.joke-bf svg { width: 100%; height: 100%; overflow: visible; }
-.joke-float { width: 100%; height: 100%; animation: bfFloat 6.5s ease-in-out infinite; }
-.joke-bf .bf-wing { animation-duration: 0.4s; }
-.joke-bf.is-popped { pointer-events: none; animation: jokePop 0.42s ease-in forwards; }
-@keyframes jokePop { 35% { transform: scale(1.35); } 100% { transform: scale(0); opacity: 0; } }
-.joke-bit { position: absolute; z-index: 41; width: 11px; height: 8px; margin: -4px 0 0 -5px; border-radius: 2px 7px; background: var(--c); pointer-events: none; animation: jokeBit 0.9s cubic-bezier(.2, .7, .3, 1) forwards; }
-@keyframes jokeBit { to { transform: translate(var(--dx), var(--dy)) rotate(var(--r)); opacity: 0; } }
-.joke-stain { position: absolute; z-index: 39; width: 92px; height: 92px; margin: -46px 0 0 -46px; pointer-events: none; }
-.joke-stain svg { width: 100%; height: 100%; overflow: visible; animation: jokeSplat 0.38s cubic-bezier(.3, 1.6, .5, 1) both; }
-@keyframes jokeSplat { from { transform: scale(0.15); } }
-.joke-drip { position: absolute; left: 50%; top: 58%; width: 6px; height: var(--len); margin-left: -3px; border-radius: 3px; background: linear-gradient(90deg, #8E0E24, #B3172F 45%, #8E0E24); animation: jokeDrip 3.4s cubic-bezier(.45, 0, .55, 1) 0.35s both; }
-.joke-drip::after { content: ''; position: absolute; left: -3.5px; bottom: -10px; width: 13px; height: 15px; border-radius: 50% 50% 50% 50% / 58% 58% 42% 42%; background: #A3122B; }
-.joke-drip--2 { left: 30%; top: 62%; width: 4px; margin-left: -2px; animation-duration: 2.6s; animation-delay: 0.6s; }
-.joke-drip--2::after { left: -3px; bottom: -8px; width: 10px; height: 11px; }
-@keyframes jokeDrip { from { height: 0; } }
-@media (prefers-reduced-motion: reduce) { .joke-float, .joke-stain svg, .joke-drip, .joke-bit { animation: none; } }

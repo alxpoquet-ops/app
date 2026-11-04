@@ -88,7 +88,6 @@ Tout le contenu « vivant » est rassemblé dans **`assets/js/data.js`**, commen
 - `promo` : l'offre de lancement (pourcentage, date de début `from` et de fin `until`, au format AAAA-MM-JJ) ;
   mettez `percent: 0` pour l'arrêter plus tôt ;
 - `critters` : `false` pour retirer les papillons et chenilles animés ;
-- `blague` : `false` pour retirer la petite blague (le papillon en haut à gauche qui éclate au clic) ;
 - `products` : les créations, dans l'ordre d'affichage (nom, catégorie, photos, description…) ;
 - sans `price` ni `count`, une création est « sur demande » ;
 - `delivery.zones` : les zones de livraison (5 € jusqu'à 15 km, 10 € jusqu'à 25 km) ;

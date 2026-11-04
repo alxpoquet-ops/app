@@ -1574,7 +1574,7 @@
     { host: '.insta-head', kind: 'bf', cls: 'b-insta' },
     { host: '.faq-intro', kind: 'cat', cls: 'c-faq', sleepy: true },
     { host: '.contact-panel', kind: 'bf', cls: 'b-contact' },
-    { host: '.footer-big', kind: 'cat', cls: 'c-footer', track: 0.7 }
+    { host: '.footer-bottom', kind: 'cat', cls: 'c-footer', track: 0.7 }
   ];
   const CAT_COLS = [
     ['#C6E6D3', '#C9DDF2', '#D9CBF0', '#F8CDB5', '#F3C4CF'],
@@ -1667,51 +1667,6 @@
       anim.oncancel = done;
     };
     setTimeout(visit, 9000);
-  });
-
-  /* ------------------------------------------------------------------ *
-   * Petite blague (à retirer facilement : blague: false dans data.js)
-   * Un papillon en haut à gauche éclate au clic : tache et traînée rouges.
-   * ------------------------------------------------------------------ */
-  if (S.blague) safe('blague', () => {
-    const bf = document.createElement('div');
-    bf.className = 'joke-bf';
-    bf.setAttribute('aria-hidden', 'true');
-    bf.innerHTML = `<div class="joke-float">${FC.butterfly('#B9A6E2')}</div>`;
-    document.body.appendChild(bf);
-    const splat = '<svg viewBox="-50 -50 100 100" aria-hidden="true">' +
-      '<path fill="#A3122B" d="M23.6 0.0Q33.8 8.3 22.4 11.7Q25.4 22.5 14.0 20.3Q13.3 35.0 2.7 22.1Q-4.7 38.8 -7.9 20.7Q-21.7 31.4 -16.7 14.8Q-30.2 15.8 -23.4 5.8Q-42.9 0.0 -22.0 -5.4Q-31.6 -16.6 -18.8 -16.7Q-25.2 -36.5 -8.8 -23.3Q-4.6 -37.5 3.2 -26.7Q11.9 -31.4 14.9 -21.6Q27.3 -24.2 20.1 -10.6Q33.4 -8.2 23.6 0.0Z"/>' +
-      '<path fill="#C4243F" d="M-8-16C-2-22 9-20 13-12S8 4-1 3-15-9-8-16Z" opacity=".55"/>' +
-      '<circle cx="-38" cy="-22" r="3.4" fill="#A3122B"/><circle cx="40" cy="-30" r="2.6" fill="#A3122B"/>' +
-      '<circle cx="44" cy="20" r="3.8" fill="#A3122B"/><circle cx="-41" cy="28" r="2.4" fill="#A3122B"/>' +
-      '<circle cx="-6" cy="-44" r="2.2" fill="#A3122B"/><circle cx="-2" cy="-25" r="3" fill="#fff" opacity=".35"/>' +
-      '</svg>';
-    bf.addEventListener('click', () => {
-      if (bf.classList.contains('is-popped')) return;
-      const r = bf.getBoundingClientRect();
-      const x = r.left + r.width / 2 + window.scrollX, y = r.top + r.height / 2 + window.scrollY;
-      bf.classList.add('is-popped');
-      const wings = ['#B9A6E2', '#D9CBF0', '#9E86D2', '#F3C4CF'];
-      for (let i = 0; i < 12; i++) {
-        const a = (i / 12) * Math.PI * 2 + Math.random() * 0.4, d = 40 + Math.random() * 50;
-        const bit = document.createElement('i');
-        bit.className = 'joke-bit';
-        bit.setAttribute('aria-hidden', 'true');
-        bit.style.cssText = `left:${x}px;top:${y}px;--dx:${(Math.cos(a) * d).toFixed(0)}px;--dy:${(Math.sin(a) * d).toFixed(0)}px;--r:${(Math.random() * 540 - 270).toFixed(0)}deg;--c:${wings[i % wings.length]}`;
-        document.body.appendChild(bit);
-        setTimeout(() => bit.remove(), 1000);
-      }
-      const stain = document.createElement('div');
-      stain.className = 'joke-stain';
-      stain.setAttribute('aria-hidden', 'true');
-      stain.style.left = x + 'px';
-      stain.style.top = y + 'px';
-      const len = Math.max(90, Math.round(window.scrollY + window.innerHeight - y - 30));
-      stain.innerHTML = splat + `<span class="joke-drip" style="--len:${len}px"></span><span class="joke-drip joke-drip--2" style="--len:${Math.round(len * 0.42)}px"></span>`;
-      document.body.appendChild(stain);
-      setTimeout(() => bf.remove(), 450);
-      toast(`Oups… pauvre papillon${NB}!`);
-    });
   });
 
   /* ------------------------------------------------------------------ *
