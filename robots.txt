@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://alxpoquet-ops.github.io/app/sitemap.xml

@@ -1717,4 +1717,11 @@
   safe('sélection', () => renderCart());
   safe('apparitions', () => reveal(document));
   safe('lien partagé', loadFromHash);
+  /* Lien direct vers une création (pages de contenu) : …/#creation-<identifiant> */
+  function openFromHash() {
+    const m = location.hash.match(/^#creation-([\w-]+)$/);
+    if (m && findProduct(m[1])) openProduct(m[1], shopList().map((p) => p.id));
+  }
+  window.addEventListener('hashchange', openFromHash);
+  safe('création demandée', openFromHash);
 })();

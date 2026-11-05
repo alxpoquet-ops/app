@@ -129,6 +129,51 @@ La mosaïque « Sur les réseaux » peut se mettre à jour toute seule, grâce a
 
 Tant que l'adresse est vide, ou si le service ne répond pas, les photos actuelles du site s'affichent.
 
+## Référencement (SEO) : les pages d'entrée
+
+En plus de la page du site, 96 pages de contenu servent de portes d'entrée depuis Google.
+Elles renvoient toutes vers le site, mais le site ne les affiche pas dans son menu :
+
+| Dossier | Pages |
+| --- | --- |
+| `creations/…/` | une page par création (photo, prix, composition, langage des fleurs, lien « Commander sur le site ») |
+| `fleurs/…/` | rose, tulipe, lys, gerbera, pavot et coquelicot, arum, hortensia, tournesol, muguet, lavande, jonquille, marguerite, pensée |
+| `occasions/…/` | cadeau maîtresse, fleur pour une sépulture, anniversaire, naissance, mariage, fête des mères, Saint-Valentin, remerciement, fête des grands-mères, Noël |
+| `conseils/…/` | la fleur en fil chenille, l'entretien, le comparatif avec les fleurs séchées et stabilisées, les fleurs sans pollen, le prix d'un bouquet, composer son bouquet, 40 idées de messages pour la carte |
+| `fleurs-eternelles-ardennes/`, `livraison-fleurs-signy-l-abbaye/` | les pages locales |
+| `guide/` | le plan de toutes les pages |
+
+Chaque page a son titre, sa description, son adresse de référence (canonical), son image de partage
+et des données structurées pour Google (produit avec son prix, fil d'Ariane, article…).
+`sitemap.xml` liste toutes les adresses. La page d'accueil décrit l'atelier comme un artisan fleuriste
+de Signy-l'Abbaye. Un lien `…/#creation-<identifiant>` ouvre directement la fiche d'une création sur le site.
+
+**Mettre les pages à jour.** Les pages sont fabriquées à partir de `assets/js/data.js` (créations, prix)
+et de `tools/seo/content.js` (textes). Après une modification, lancez depuis le dossier du site :
+
+```bash
+node tools/seo/build.js
+```
+
+Si le site change d'adresse (nom de domaine), indiquez la nouvelle adresse :
+
+```bash
+SITE_URL=https://www.floreetchenilles.fr/ node tools/seo/build.js
+```
+
+**Faire connaître le site à Google.**
+
+1. Ouvrez [Google Search Console](https://search.google.com/search-console), ajoutez une propriété
+   « Préfixe d'URL » avec l'adresse `https://alxpoquet-ops.github.io/app/`, puis validez-la
+   (méthode « Balise HTML » : envoyez-moi la balise, je l'ajoute à `index.html`).
+2. Dans « Sitemaps », envoyez `sitemap.xml`. Google découvre alors toutes les pages.
+3. Créez une fiche [Google Business Profile](https://www.google.com/business/) « Flore & Chenilles »
+   (zone desservie : Signy-l'Abbaye et ses environs) : c'est ce qui compte le plus pour les
+   recherches locales, comme « fleurs éternelles Ardennes ».
+4. Bon à savoir : sur GitHub Pages, un fichier `robots.txt` n'est lu qu'à la racine d'un nom de domaine.
+   Avec un nom de domaine à vous (par exemple floreetchenilles.fr), le `robots.txt` fourni
+   fonctionne tel quel et le référencement en profite.
+
 ## À compléter avant la mise en ligne
 
 - [ ] Activer le formulaire : envoyer un premier message depuis le site, puis cliquer sur « Activate Form »
@@ -136,8 +181,7 @@ Tant que l'adresse est vide, ou si le service ne répond pas, les photos actuell
 - [ ] Coller l'adresse de la page Facebook dans `contact.facebook`.
 - [ ] Ajouter des mentions légales : elles sont obligatoires en France pour un site professionnel
       (nom ou raison sociale, SIRET, adresse, hébergeur).
-- [ ] Une fois le site en ligne, remplacer dans `index.html` le chemin de `og:image` par son adresse complète
-      (par exemple `https://alxpoquet-ops.github.io/app/assets/img/og-image.png`) pour de beaux aperçus de lien.
+- [ ] Déclarer le site dans Google Search Console et envoyer `sitemap.xml` (voir « Référencement »).
 
 ## Structure
 
@@ -151,4 +195,8 @@ assets/photos/          ses photos (JPG) et son logo
 assets/gallery/         les photos de Laurine (vignettes et grandes images WebP)
 assets/fonts/           polices Fraunces et Jost, auto-hébergées (licence SIL OFL)
 assets/img/             favicon, icône mobile, image de partage
+assets/css/pages.css    la mise en forme des pages de contenu
+tools/seo/              le générateur des pages de contenu (build.js) et leurs textes (content.js)
+creations/ fleurs/ occasions/ conseils/ guide/ …   les pages de contenu générées
+sitemap.xml robots.txt  le plan du site pour les moteurs de recherche
 ```
