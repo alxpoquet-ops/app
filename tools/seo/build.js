@@ -26,7 +26,7 @@ const ROOT = path.resolve(__dirname, '..', '..');
 const BASE = String(process.env.SITE_URL || 'https://alxpoquet-ops.github.io/app/').replace(/\/?$/, '/');
 const TODAY = new Date().toISOString().slice(0, 10);
 const FIRST_PUBLISHED = '2026-11-05';
-const CSS_VERSION = '20261105c';
+const CSS_VERSION = '20261105d';
 
 /* ---------- Données ---------- */
 const sandbox = { window: {} };
@@ -68,6 +68,8 @@ products.forEach((p) => {
 const bySlug = new Map(products.map((p) => [slugOf.get(p.id), p]));
 const findCreation = (key) => byId.get(key) || bySlug.get(key);
 const catName = (id) => ((S.categories || []).find((c) => c.id === id) || {}).name || '';
+/* Tout ce qui est dans un vase est une création unique (un seul exemplaire). */
+const isUnique = (p) => (p.unique != null ? !!p.unique : /vase/i.test(p.gift || ''));
 function priceOf(p) {
   if (p.price != null) return p.price;
   if (p.count > 0) return p.count * UNIT + (p.jar ? JAR : 0);
@@ -348,7 +350,9 @@ products.forEach((p) => {
   if (p.count) first.p.push(`Ce bouquet compte ${p.count} fleurs, à ${fmt(UNIT)} la fleur ; le feuillage est offert.`);
   if (p.priceFrom) first.p.push('Ses fleurs se regardent des deux côtés : le prix dépend de sa taille, je vous le confirme avec votre demande.');
   sections.push(first);
-  const incl = ['Façonné à la main, à la commande, dans mon atelier de ' + CITY + '.', 'Emballé dans une pochette transparente fermée d’un nœud.', 'Une carte de vœux offerte, avec le message de votre choix.'];
+  const incl = [isUnique(p)
+    ? `Une création unique, façonnée à la main dans mon atelier de ${CITY} : il n’en existe qu’un seul exemplaire${/vase/i.test(p.gift || '') ? ', avec son vase' : ''}.`
+    : 'Façonné à la main, à la commande, dans mon atelier de ' + CITY + '.', 'Emballé dans une pochette transparente fermée d’un nœud.', 'Une carte de vœux offerte, avec le message de votre choix.'];
   if (p.gift) incl.push(p.gift + ' avec cette création.');
   if (p.category === 'unite') incl.push(`Sur demande, la fleur peut être fixée à l’intérieur d’un bocal transparent, pour ${fmt(JAR)} de plus : protégée de la pluie et du vent, elle peut fleurir une sépulture.`);
   sections.push({ h: 'Ce qui est compris', ul: incl, tint: 'mint' });
@@ -376,7 +380,7 @@ products.forEach((p) => {
     price: priceLabel(p),
     priceNote: p.count ? `${p.count} fleurs × ${fmt(UNIT)}` : p.category === 'unite' ? 'la fleur' : '',
     lead: p.category === 'unite' ? 'Une fleur éternelle, emballée et prête à offrir, avec sa carte de vœux.' : 'Fait main dans les Ardennes, emballé avec soin, avec sa carte de vœux offerte.',
-    tags: [p.gift ? { label: p.gift, cls: /pot/i.test(p.gift) ? 'is-mint' : 'is-pink' } : null, p.category === 'unite' ? { label: 'Bocal en option', cls: 'is-sky' } : null, { label: 'Carte de vœux offerte' }, { label: 'Sans pollen', cls: 'is-mint' }].filter(Boolean),
+    tags: [isUnique(p) ? { label: 'Création unique', cls: 'is-butter' } : null, p.gift ? { label: p.gift, cls: /pot/i.test(p.gift) ? 'is-mint' : 'is-pink' } : null, p.category === 'unite' ? { label: 'Bocal en option', cls: 'is-sky' } : null, { label: 'Carte de vœux offerte' }, { label: 'Sans pollen', cls: 'is-mint' }].filter(Boolean),
     ctas: [{ label: 'Commander sur le site', href: `#creation-${p.id}` }, { label: 'Composer mon bouquet', href: '#bouquet' }],
     sections,
     cards: { title: 'Vous aimerez aussi', list: related.slice(0, 8) },

@@ -84,6 +84,8 @@ Tout le contenu « vivant » est rassemblé dans **`assets/js/data.js`**, commen
 - `unitPrice` : le prix d'une fleur (8 €), utilisé partout sur le site ;
 - `count` (dans une création) : le nombre de fleurs du bouquet ; son prix est calculé tout seul
   (`count` × 8 €). `price: 35` donne un prix fixe. `gift: 'Vase offert'` ajoute la petite vignette sur la photo ;
+  tout ce qui est dans un vase devient une **création unique** (vignette « Création unique », un seul exemplaire
+  dans la sélection) ; `unique: false` l'enlève, `unique: true` l'ajoute à une autre création ;
 - `jar` : le bocal transparent proposé en option pour les fleurs à l'unité (5 €) ;
 - `promo` : l'offre de lancement (pourcentage, date de début `from` et de fin `until`, au format AAAA-MM-JJ) ;
   mettez `percent: 0` pour l'arrêter plus tôt ;

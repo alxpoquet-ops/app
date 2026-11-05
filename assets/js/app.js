@@ -304,6 +304,10 @@
   }
   /* Les fleurs à l'unité peuvent être glissées dans un bocal transparent. */
   const jarOption = (p) => p.category === 'unite' && !p.jar && JAR.price != null;
+  /* Tout ce qui est dans un vase est une création unique (un seul exemplaire). */
+  const isUnique = (p) => !!p && (p.unique != null ? !!p.unique : /vase/i.test(p.gift || ''));
+  const uniqueText = (p) => 'Il n’en existe qu’un seul exemplaire' + (/vase/i.test(p.gift || '') ? ', avec son vase.' : '.');
+  const inCart = (id) => cart.some((c) => c.kind === 'product' && c.id === id);
   function priceText(p, idx) {
     const v = productPrice(p, idx);
     if (v == null) return p.quote ? 'Sur devis' : 'Sur demande';
@@ -490,13 +494,17 @@
   }
   function addProduct(p, idx, qty, extra) {
     extra = extra || {};
+    if (isUnique(p)) {
+      if (inCart(p.id)) { toast(`«${NB}${p.name}${NB}» est une création unique, déjà dans votre sélection`); return false; }
+      qty = 1;
+    }
     const ch = p.options && p.options.choices[idx || 0];
     const col = extra.color && S.colors[extra.color] ? extra.color : '';
     const card = cardEmpty(extra.card) ? null : cleanCard(extra.card);
     let option = ch ? p.options.label + NB + ': ' + ch.name.charAt(0).toLowerCase() + ch.name.slice(1) : '';
     if (p.options && p.options.colors) option += `, couleur${NB}: ` + (col ? colorName(col).toLowerCase() : 'à préciser');
     const jar = !!extra.jar && jarOption(p);
-    const notes = [option, jar ? `${JAR.label.toLowerCase()} (+${price(JAR.price)})` : '', p.jar ? 'en bocal transparent' : '', p.gift ? p.gift.toLowerCase() : ''].filter(Boolean);
+    const notes = [option, jar ? `${JAR.label.toLowerCase()} (+${price(JAR.price)})` : '', p.jar ? 'en bocal transparent' : '', isUnique(p) ? 'création unique' : '', p.gift ? p.gift.toLowerCase() : ''].filter(Boolean);
     option = notes.join(' · ');
     option = option.charAt(0).toUpperCase() + option.slice(1);
     const base = productPrice(p, idx);
@@ -513,6 +521,7 @@
       card
     });
     toast(`«${NB}${p.name}${NB}» est dans votre sélection`);
+    return true;
   }
   function itemThumb(it) {
     if (it.kind === 'custom' && it.bouquet) return { bg: '#F8E4E9', html: FC.bouquet(it.bouquet, { fit: true, aspect: 1, pad: 10, label: it.name }) };
@@ -537,15 +546,19 @@
       return;
     }
     cartFoot.hidden = false;
+    cart.forEach((it) => { if (it.kind === 'product' && it.qty > 1 && isUnique(findProduct(it.id))) it.qty = 1; });
     cartItemsEl.innerHTML = cart.map((it, i) => {
       const th = itemThumb(it);
+      const one = it.kind === 'product' && isUnique(findProduct(it.id));
+      /* « Création unique » est déjà dans la vignette : inutile de le répéter. */
+      const opt = one && it.option ? it.option.replace(/^Création unique( · )?/, '').replace(/^./, (c) => c.toUpperCase()) : it.option;
       const card = cardEmpty(it.card)
         ? '<div class="ci-card is-empty"><svg aria-hidden="true"><use href="#i-mail"/></svg>Carte de vœux offerte</div>'
         : `<div class="ci-card"><svg aria-hidden="true"><use href="#i-mail"/></svg><span>${esc(cardLine(it.card))}</span></div>`;
       return '<div class="cart-item">' +
         `<div class="ci-thumb" style="--bg:${esc(th.bg)}">${th.html}</div>` +
-        `<div><div class="ci-name">${esc(it.name)}</div>${it.option ? `<div class="ci-opt">${esc(it.option)}</div>` : ''}${card}` +
-        `<div class="qty" role="group" aria-label="Quantité"><button type="button" data-cq="-1" data-i="${i}" aria-label="Retirer un exemplaire">−</button><output aria-live="polite">${it.qty}</output><button type="button" data-cq="1" data-i="${i}" aria-label="Ajouter un exemplaire">+</button></div></div>` +
+        `<div><div class="ci-name">${esc(it.name)}</div>${opt ? `<div class="ci-opt">${esc(opt)}</div>` : ''}${card}` +
+        (one ? `<div class="ci-unique"><svg aria-hidden="true"><use href="#i-sparkle"/></svg>Création unique</div></div>` : `<div class="qty" role="group" aria-label="Quantité"><button type="button" data-cq="-1" data-i="${i}" aria-label="Retirer un exemplaire">−</button><output aria-live="polite">${it.qty}</output><button type="button" data-cq="1" data-i="${i}" aria-label="Ajouter un exemplaire">+</button></div></div>`) +
         `<div class="ci-side"><span class="ci-price${it.price == null ? ' is-ask' : ''}">${lineText(it)}</span><button type="button" class="ci-remove" data-del="${i}">Retirer</button></div>` +
         '</div>';
     }).join('');
@@ -906,6 +919,7 @@
     return `<article class="product${cls}" style="--i:${i % 3}">` +
       `<button class="product-media${p.pics.length ? ' has-photo' : ''}" type="button" style="--bg:${esc(p.bg || '#F8E1E6')}" data-open="${esc(p.id)}" aria-label="Voir ${esc(p.name)}">` +
       (p.badge ? `<span class="badge">${esc(p.badge)}</span>` : '') +
+      (isUnique(p) ? `<span class="badge is-unique"><svg aria-hidden="true"><use href="#i-sparkle"/></svg>Création unique</span>` : '') +
       (p.pics.length > 1 ? `<span class="pics-n" aria-hidden="true"><svg><use href="#i-photos"/></svg>${p.pics.length}</span>` : '') +
       (p.gift ? `<span class="gift-tag${/pot/i.test(p.gift) ? ' is-pot' : ''}"><svg aria-hidden="true"><use href="#i-gift"/></svg>${esc(p.gift)}</span>` : '') +
       (jarOption(p) ? `<span class="gift-tag is-jar" title="${esc(JAR.desc || '')}"><svg aria-hidden="true"><use href="#i-jar"/></svg>Bocal</span>` : '') +
@@ -981,7 +995,7 @@
     const p = findProduct(q.dataset.quick);
     if (!p) return;
     if (p.quote || p.priceFrom || (p.options && p.options.colors)) { openProduct(p.id, shopList().map((x) => x.id)); return; }
-    addProduct(p, 0, 1);
+    if (!addProduct(p, 0, 1)) return;
     flyToCart(q);
     q.classList.add('is-done');
     q.innerHTML = '<svg><use href="#i-check"/></svg>';
@@ -1024,10 +1038,13 @@
     const card = p.quote ? '' :
       '<details class="pm-card"><summary><svg aria-hidden="true"><use href="#i-mail"/></svg><span><strong>Carte de vœux offerte</strong> Écrire mon message</span></summary>' +
       cardFieldsHTML('pm-card', null) + '</details>';
+    const one = isUnique(p);
     const actions = p.quote
       ? '<button type="button" class="btn btn-primary" data-pm-quote>Demander un devis <svg><use href="#i-arrow"/></svg></button>'
-      : '<div class="qty" role="group" aria-label="Quantité"><button type="button" data-q="-1" aria-label="Retirer un exemplaire">−</button><output data-q-val aria-live="polite">1</output><button type="button" data-q="1" aria-label="Ajouter un exemplaire">+</button></div>' +
-        '<button type="button" class="btn btn-primary" data-pm-add><svg><use href="#i-bag"/></svg> Ajouter à ma sélection</button>';
+      : one && inCart(p.id)
+        ? '<button type="button" class="btn btn-primary" disabled><svg><use href="#i-check"/></svg> Déjà dans votre sélection</button>'
+        : (one ? '' : '<div class="qty" role="group" aria-label="Quantité"><button type="button" data-q="-1" aria-label="Retirer un exemplaire">−</button><output data-q-val aria-live="polite">1</output><button type="button" data-q="1" aria-label="Ajouter un exemplaire">+</button></div>') +
+          '<button type="button" class="btn btn-primary" data-pm-add><svg><use href="#i-bag"/></svg> Ajouter à ma sélection</button>';
     const links = (p.preset && stage ? '<button type="button" class="pm-link" data-pm-custom><svg><use href="#i-sparkle"/></svg> Personnaliser ce bouquet</button>' : '') +
       (p.post ? `<a class="pm-link" href="${esc(p.post)}" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg> Voir la publication</a>` : '') +
       (!p.quote ? '<button type="button" class="pm-link" data-pm-ask><svg><use href="#i-palette"/></svg> La même dans d’autres couleurs</button>' : '');
@@ -1044,19 +1061,20 @@
       `<div class="pm-media${p.pics.length ? ' has-photo' : ''}" style="--bg:${esc(p.bg || '#F8E1E6')}"><div class="pm-art" data-pm-art>${productArt(p, null, { aspect: 0.92, large: true })}</div>${thumbs}${navBtns}</div>` +
       '<div class="pm-info">' +
       (cat && p.category !== 'sur-mesure' ? `<p class="pm-cat">${esc(cat)}</p>` : '') +
-      (p.badge ? `<span class="badge badge--inline">${esc(p.badge)}</span>` : '') +
+      (p.badge || one ? `<div class="pm-badges">${p.badge ? `<span class="badge badge--inline">${esc(p.badge)}</span>` : ''}${one ? `<span class="badge badge--inline is-unique"><svg aria-hidden="true"><use href="#i-sparkle"/></svg>Création unique</span>` : ''}</div>` : '') +
       `<h2 id="modal-title">${esc(p.name)}</h2>` +
       `<p class="pm-price${productPrice(p, 0) == null ? ' is-ask' : ''}"><span data-pm-price>${priceHTML(p, 0)}</span>${PROMO ? ` <span class="promo-tag">${pctText()}</span>` : ''}</p>` +
       words +
       (p.count ? `<p class="pm-count-line">${p.count}${NB}fleurs × ${price(UNIT)}${p.jar ? ' + bocal ' + price(JAR.price) : ''}${p.gift ? ' · ' + esc(p.gift.toLowerCase()) : ''}</p>` : (p.gift ? `<p class="pm-count-line">${esc(p.gift)}</p>` : '')) +
       `<p class="pm-desc">${esc(blurbOf(p))}</p>` +
+      (one ? `<p class="pm-unique"><svg aria-hidden="true"><use href="#i-sparkle"/></svg><span><strong>Création unique</strong>${esc(uniqueText(p))}</span></p>` : '') +
       (p.category === 'unite' ? whyHTML() : '') +
       compo + opts +
       (jarOption(p) ? `<label class="pm-jar"><input type="checkbox" id="pm-jar" data-pm-jar><span class="pm-jar-ic" aria-hidden="true"><svg><use href="#i-jar"/></svg></span><span><strong>${esc(JAR.label)}</strong><small>${esc(JAR.desc || 'Sur demande.')}</small></span><b>+${price(JAR.price)}</b></label>` : '') +
       card +
       `<div class="pm-actions">${actions}</div>` +
       (links ? `<div class="pm-links">${links}</div>` : '') +
-      (p.illustration ? `<p class="tiny">${esc(p.illustration)}</p>` : `<p class="tiny">Fait main à la commande · ${esc(PACK)} · Carte de vœux offerte</p>`) +
+      (p.illustration ? `<p class="tiny">${esc(p.illustration)}</p>` : `<p class="tiny">${one ? 'Création unique, faite main' : 'Fait main à la commande'} · ${esc(PACK)} · Carte de vœux offerte</p>`) +
       '</div></div>';
     openModal(html, (root) => {
       const art = $('[data-pm-art]', root);

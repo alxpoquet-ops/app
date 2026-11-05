@@ -2248,3 +2248,21 @@ h3 { font-size: 1.3rem; }
 @media (max-width: 819px) {
   .modal--product .modal-panel { height: 92vh; height: 92dvh; }
 }
+
+/* ---------- Création unique (tout ce qui est dans un vase) ---------- */
+.badge.is-unique { display: inline-flex; align-items: center; gap: 6px; background: #FFF0C7; color: #8A6416; }
+.badge.is-unique svg { width: 14px; height: 14px; fill: currentColor; stroke: none; flex: none; }
+.badge + .badge.is-unique { top: 52px; }
+.pm-badges { display: flex; flex-wrap: wrap; gap: 8px; }
+.pm-badges .badge--inline { align-self: auto; }
+.pm-badges .badge--inline.is-unique { background: #FFF0C7; }
+.pm-unique { display: flex; align-items: flex-start; gap: 12px; margin: 0; padding: 12px 16px; border-radius: 18px; background: #FFF7DE; box-shadow: inset 0 0 0 1px #F6E6B4; font-size: 0.88rem; color: #6E5418; }
+.pm-unique svg { flex: none; width: 20px; height: 20px; margin-top: 1px; fill: #D9A93A; }
+.pm-unique strong { display: block; font-family: var(--serif); font-weight: 400; font-size: 1.02rem; color: var(--plum); }
+.ci-unique { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 4px 11px 4px 8px; border-radius: 999px; background: #FFF0C7; font-size: 0.74rem; font-weight: 600; color: #8A6416; }
+.ci-unique svg { width: 13px; height: 13px; fill: currentColor; }
+.pm-actions .btn[disabled] { opacity: 0.7; cursor: default; transform: none; }
+@media (max-width: 600px) {
+  .badge.is-unique svg { width: 11px; height: 11px; }
+  .badge + .badge.is-unique { top: 38px; }
+}

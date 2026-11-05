@@ -11,6 +11,11 @@
    création est « sur demande ». gift: 'Vase offert' affiche une petite
    vignette sur la photo.
 
+   Création unique : tout ce qui est dans un vase (gift: 'Vase offert') est
+   une création unique, en un seul exemplaire, avec la vignette « Création
+   unique ». Écrivez unique: false pour l'enlever, ou unique: true pour
+   l'ajouter à une autre création.
+
    Photos :
    - photo: 'g087' utilise les images de la galerie de Laurine
      (assets/gallery/g087-s.webp pour la vignette, g087.webp en grand) ;
