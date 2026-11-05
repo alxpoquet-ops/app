@@ -275,17 +275,20 @@
    * Illustration d'une création : photo du choix (idx), photo n° o.pic, ou dessin.
    * o.large : grande image (fenêtre) ; o.sizes : taille d'affichage pour le navigateur.
    */
+  /* Photo entière (sans recadrage) sur un fond flou de la même photo : la fenêtre garde sa taille. */
+  const framedImg = (src, alt) => `<img class="pm-img-bg" src="${esc(src)}" alt="" aria-hidden="true" decoding="async"><img class="pm-img" src="${esc(src)}" alt="${esc(alt)}" decoding="async">`;
   function productArt(p, idx, o) {
     o = o || {};
     const choice = idx == null ? null : p.options && p.options.choices[idx || 0];
     if (choice && choice.image) {
       const src = o.large ? choice.large || choice.image : choice.image;
-      return `<img src="${esc(src)}" alt="${esc(p.name + ' : ' + choice.name)}"${o.large ? '' : ' loading="lazy"'} decoding="async">`;
+      if (o.large) return framedImg(src, p.name + ' : ' + choice.name);
+      return `<img src="${esc(src)}" alt="${esc(p.name + ' : ' + choice.name)}" loading="lazy" decoding="async">`;
     }
     if (p.art && ARTS[p.art]) return ARTS[p.art]();
     const ph = p.pics && (p.pics[o.pic || 0] || p.pics[0]);
     if (ph) {
-      if (o.large) return `<img src="${esc(ph.l)}" alt="${esc(p.name)}" decoding="async">`;
+      if (o.large) return framedImg(ph.l, p.name);
       const set = ph.l && ph.l !== ph.s ? ` srcset="${esc(ph.s)} 480w, ${esc(ph.l)} 960w" sizes="${esc(o.sizes || GRID_SIZES)}"` : '';
       return `<img src="${esc(ph.s)}"${set} alt="${esc(p.name)}" loading="lazy" decoding="async">`;
     }
@@ -386,6 +389,7 @@
     if (!modal.classList.contains('is-open')) modalReturn = document.activeElement;
     modalContent.innerHTML = html;
     modal.classList.toggle('modal--narrow', !!opts.narrow);
+    modal.classList.toggle('modal--product', !!opts.product);
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     lockScroll(true, 'modal');
@@ -1139,7 +1143,7 @@
         const n = navIds.length > 1 && pos >= 0 ? findProduct(navIds[(pos + d + navIds.length) % navIds.length]) : null;
         if (n && n.pics.length) { const im = new Image(); im.src = n.pics[0].l; }
       });
-    }, { focus: focusSel });
+    }, { focus: focusSel, product: true });
   }
   function stepProduct(d) {
     if (navIds.length < 2) return;

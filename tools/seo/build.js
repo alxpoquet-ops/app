@@ -26,7 +26,7 @@ const ROOT = path.resolve(__dirname, '..', '..');
 const BASE = String(process.env.SITE_URL || 'https://alxpoquet-ops.github.io/app/').replace(/\/?$/, '/');
 const TODAY = new Date().toISOString().slice(0, 10);
 const FIRST_PUBLISHED = '2026-11-05';
-const CSS_VERSION = '20261105b';
+const CSS_VERSION = '20261105c';
 
 /* ---------- Données ---------- */
 const sandbox = { window: {} };
@@ -77,7 +77,14 @@ const priceLabel = (p) => { const v = priceOf(p); return v == null ? 'Sur demand
 function pics(p) {
   const g = (ref) => (/^g\d+$/.test(ref) ? { s: `assets/gallery/${ref}-s.webp`, l: `assets/gallery/${ref}.webp` } : { s: ref, l: ref });
   const main = p.photo ? g(p.photo) : p.image ? { s: p.image, l: p.image } : null;
-  return (main ? [main] : []).concat((p.more || []).map(g));
+  const list = (main ? [main] : []).concat((p.more || []).map(g));
+  /* Les fleurs au choix ont aussi leur photo. */
+  ((p.options && p.options.choices) || []).forEach((c) => {
+    const ref = c.large || c.image;
+    if (!ref || list.some((x) => x.l === g(ref).l)) return;
+    list.push(Object.assign(g(ref), { alt: c.name }));
+  });
+  return list;
 }
 const creationPath = (p) => `creations/${slugOf.get(p.id)}/`;
 
@@ -119,6 +126,7 @@ function inline(text, pre) {
   });
 }
 function sectionHTML(sec, pre) {
+  if (sec.raw) return sec.raw;
   let h = `<section class="pg-sec${sec.tint ? ' is-' + sec.tint : ''}">`;
   if (sec.h) h += `<h2>${fr(esc(sec.h))}</h2>`;
   if (sec.quote) h += `<blockquote class="pg-quote"><p>« ${fr(esc(sec.quote.text))} »</p>${sec.quote.cite ? `<cite>${esc(sec.quote.cite)}</cite>` : ''}</blockquote>`;
@@ -133,13 +141,65 @@ function sectionHTML(sec, pre) {
   if (sec.html) h += sec.html;
   return h + '</section>';
 }
+/* Photo nette sur tous les écrans : vignette 480 px ou grande image 1200 px selon la place. */
+function imgHTML(ph, alt, pre, sizes, lazy, priority) {
+  const set = ph.l !== ph.s ? ` srcset="${pre}${ph.s} 480w, ${pre}${ph.l} 1200w" sizes="${sizes}"` : '';
+  return `<img src="${pre}${ph.l !== ph.s ? ph.s : ph.l}"${set} alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ''}${priority ? ' fetchpriority="high"' : ''} decoding="async">`;
+}
+/* Les plus belles photos, pour compléter une mosaïque. */
+const SHOWCASE = ['pastel', 'amethyste', 'sunny', 'rubis', 'colore', 'pavots-multicolores', 'roses-bleues', 'bonsai', 'coquelicots', 'lys-bleus', 'hortensias', 'tulipes-bleues', 'bouquet-soleil', 'arums-de-feu', 'theiere', 'lavande'];
+function padList(list, n, exclude) {
+  const out = [];
+  const add = (x) => { if (x && pics(x).length && !out.includes(x) && x !== exclude) out.push(x); };
+  list.forEach(add);
+  SHOWCASE.forEach((id) => add(byId.get(id)));
+  return out.slice(0, n);
+}
+/* Mosaïque « En images » : une grande photo et des petites (5 ou 9 photos pour une grille pleine). */
+function mosaicHTML(list, pre, title, exclude) {
+  const all = padList(list, 9, exclude);
+  const items = all.length >= 9 ? all.slice(0, 9) : all.slice(0, 5);
+  if (items.length < 5) return '';
+  return `<section class="pg-mosaic-sec"><h2>${fr(esc(title))}</h2><ul class="pg-mosaic">` + items.map((x, i) =>
+    `<li${i === 0 ? ' class="is-big"' : ''}><a href="${pre}${creationPath(x)}">${imgHTML(pics(x)[0], x.name + ' en fil chenille, création Flore & Chenilles', pre, i === 0 ? '(max-width: 759px) 92vw, 540px' : '(max-width: 759px) 46vw, 270px', true)}` +
+    `<span class="pg-mosaic-cap"><strong>${esc(x.name)}</strong><span>${esc(priceLabel(x))}</span></span></a></li>`).join('') + '</ul></section>';
+}
+/* Toutes les photos d'une création. */
+function photosHTML(x, pre) {
+  const ph = pics(x);
+  if (ph.length < 2) return '';
+  return `<section class="pg-photos-sec"><h2>${fr(esc(x.name))} en photos</h2><ul class="pg-photos">` +
+    ph.map((y, i) => `<li>${imgHTML(y, y.alt ? `${y.alt} en fil chenille, ${x.name}` : `${x.name} en fil chenille, photo ${i + 1} sur ${ph.length}`, pre, '(max-width: 759px) 92vw, 380px', true)}${y.alt ? `<span class="pg-photos-cap">${esc(y.alt)}</span>` : ''}</li>`).join('') + '</ul></section>';
+}
+/* Grande photo glissée entre deux paragraphes. */
+function figureHTML(x, pre, which) {
+  const ph = pics(x);
+  const y = ph[Math.min(which || 0, ph.length - 1)];
+  return `<figure class="pg-figure"><a href="${pre}${creationPath(x)}">${imgHTML(y, x.name + ' en fil chenille, création Flore & Chenilles', pre, '(max-width: 799px) 92vw, 780px', true)}</a>` +
+    `<figcaption>${esc(x.name)} · ${esc(priceLabel(x))}</figcaption></figure>`;
+}
+function withFigures(sections, list, pre, exclude) {
+  const cands = list.filter((x) => x !== exclude && pics(x).length);
+  if (!cands.length) return sections;
+  const out = [];
+  let k = 0;
+  sections.forEach((sec, i) => {
+    out.push(sec);
+    if ((i === 1 || i === 3) && i < sections.length - 1 && k < cands.length) {
+      const x = cands[(k * 3) % cands.length];
+      out.push({ raw: figureHTML(x, pre, pics(x).length > 1 ? 1 : 0) });
+      k++;
+    }
+  });
+  return out;
+}
 function cardsHTML(list, pre, title) {
   const items = list.filter(Boolean);
   if (!items.length) return '';
   return `<section class="pg-grid-sec"><h2>${fr(esc(title))}</h2><ul class="pg-grid">` + items.map((p) => {
     const ph = pics(p)[0];
     return `<li><a class="pg-card" href="${pre}${creationPath(p)}">` +
-      `<span class="pg-card-img">${ph ? `<img src="${pre}${ph.s}" alt="${esc(p.name)} en fil chenille" loading="lazy" decoding="async" width="480" height="600">` : ''}</span>` +
+      `<span class="pg-card-img">${ph ? imgHTML(ph, p.name + ' en fil chenille', pre, '(max-width: 759px) 46vw, (max-width: 1039px) 30vw, 260px', true) : ''}</span>` +
       `<span class="pg-card-body"><span class="pg-card-name">${esc(p.name)}</span><span class="pg-card-price">${esc(priceLabel(p))}</span></span></a></li>`;
   }).join('') + '</ul></section>';
 }
@@ -202,7 +262,7 @@ function page(o) {
 <main class="pg-wrap">
 ${crumbsHTML}
 <section class="pg-hero">
-<div class="pg-hero-media">${o.image ? `<img src="${pre}${o.image}" alt="${esc(o.imageAlt || o.h1)}" width="900" height="1125" fetchpriority="high">` : ''}</div>
+<div class="pg-hero-media">${o.heroPic ? imgHTML(o.heroPic, o.imageAlt || o.h1, pre, '(max-width: 859px) 72vw, 460px', false, true) : o.image ? `<img src="${pre}${o.image}" alt="${esc(o.imageAlt || o.h1)}" fetchpriority="high">` : ''}</div>
 <div class="pg-hero-copy">
 <p class="pg-eyebrow">${esc(o.eyebrow || 'Flore & Chenilles')}</p>
 <h1>${fr(esc(o.h1))}</h1>
@@ -212,6 +272,7 @@ ${tags}
 <div class="pg-ctas">${ctas}</div>
 </div>
 </section>
+${o.afterHero || ''}
 <div class="pg-body">
 ${(o.sections || []).map((s) => sectionHTML(s, pre)).join('\n')}
 </div>
@@ -309,6 +370,8 @@ products.forEach((p) => {
     h1,
     eyebrow: catName(p.category) + ' · fait main',
     image: ph[0] ? ph[0].l : null,
+    heroPic: ph[0] || null,
+    afterHero: photosHTML(p, prefixFor(pth)),
     imageAlt: name + ' en fil chenille, création Flore & Chenilles',
     price: priceLabel(p),
     priceNote: p.count ? `${p.count} fleurs × ${fmt(UNIT)}` : p.category === 'unite' ? 'la fleur' : '',
@@ -345,11 +408,13 @@ C.flowers.forEach((f) => {
     h1: f.title.split(' : ')[0],
     eyebrow: 'Les fleurs de l’atelier',
     image: hero ? pics(hero)[0].l : null,
+    heroPic: hero ? pics(hero)[0] : null,
+    afterHero: mosaicHTML(list, prefixFor(pth), 'En images', hero),
     imageAlt: f.name + ' en fil chenille, création Flore & Chenilles',
     lead: f.intro[0],
     tags: [{ label: 'Fait main' }, { label: 'Sans pollen', cls: 'is-mint' }, { label: 'Ne fane jamais', cls: 'is-pink' }],
     ctas: [{ label: 'Voir les créations', href: '#boutique' }, { label: 'Composer mon bouquet', href: '#bouquet' }],
-    sections,
+    sections: withFigures(sections, list.slice().reverse(), prefixFor(pth), hero),
     cards: { title: `Mes créations avec ${WITH[f.slug] || 'ces fleurs'}`, list },
     linkGroups: [
       { title: 'Les autres fleurs', links: C.flowers.filter((x) => x !== f).map(flowerLink) },
@@ -357,7 +422,7 @@ C.flowers.forEach((f) => {
     ],
     crumbs: [{ name: 'Les fleurs', path: 'guide/' }, { name: f.name, path: pth }],
     priority: 0.8,
-    ld: [{ '@type': 'CollectionPage', name: f.title, description: f.desc, url: BASE + pth, inLanguage: 'fr-FR', isPartOf: { '@type': 'WebSite', url: BASE, name: 'Flore & Chenilles' }, mainEntity: { '@type': 'ItemList', itemListElement: list.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: BASE + creationPath(p), name: p.name })) } }]
+    ld: [{ '@type': 'CollectionPage', name: f.title, description: f.desc, url: BASE + pth, inLanguage: 'fr-FR', primaryImageOfPage: hero ? BASE + pics(hero)[0].l : undefined, isPartOf: { '@type': 'WebSite', url: BASE, name: 'Flore & Chenilles' }, mainEntity: { '@type': 'ItemList', itemListElement: list.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: BASE + creationPath(p), name: p.name })) } }]
   });
 });
 
@@ -368,6 +433,7 @@ function contentPage(o, kind) {
   const list = o.products.map((id) => byId.get(id)).filter(Boolean);
   const hero = o.hero === 'about' ? null : findCreation(o.hero) || list[0];
   const image = o.hero === 'about' ? 'assets/photos/about.jpg' : hero ? pics(hero)[0].l : null;
+  const heroPic = o.hero === 'about' ? { s: 'assets/photos/about.jpg', l: 'assets/photos/about.jpg' } : hero ? pics(hero)[0] : null;
   const sections = o.sections.map((s) => {
     if (!s.examples) return s;
     const ex = products.filter((p) => p.count && !p.priceFrom).sort((a, b) => a.count - b.count);
@@ -379,7 +445,7 @@ function contentPage(o, kind) {
   const link = kind === 'occasion' ? occasionLink : kind === 'conseil' ? conseilLink : localLink;
   const ld = kind === 'conseil'
     ? [{ '@type': 'Article', headline: o.title, description: o.desc, image: image ? [BASE + image] : undefined, author: { '@type': 'Organization', name: 'Flore & Chenilles', url: BASE }, publisher: { '@id': BASE + '#atelier' }, datePublished: FIRST_PUBLISHED, dateModified: TODAY, mainEntityOfPage: BASE + pth, inLanguage: 'fr-FR' }, ORG]
-    : [{ '@type': 'WebPage', name: o.title, description: o.desc, url: BASE + pth, inLanguage: 'fr-FR', about: { '@id': BASE + '#atelier' }, mainEntity: { '@type': 'ItemList', itemListElement: list.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: BASE + creationPath(p), name: p.name })) } }, ORG];
+    : [{ '@type': 'WebPage', name: o.title, description: o.desc, url: BASE + pth, inLanguage: 'fr-FR', primaryImageOfPage: image ? BASE + image : undefined, about: { '@id': BASE + '#atelier' }, mainEntity: { '@type': 'ItemList', itemListElement: list.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: BASE + creationPath(p), name: p.name })) } }, ORG];
   page({
     path: pth,
     title: o.title.includes('Flore & Chenilles') ? o.title : o.title + ' | Flore & Chenilles',
@@ -387,11 +453,13 @@ function contentPage(o, kind) {
     h1: kind === 'conseil' ? o.name : o.title.replace(/ \| Flore & Chenilles$/, '').split(' : ')[0],
     eyebrow,
     image,
+    heroPic,
+    afterHero: mosaicHTML(list, prefixFor(pth), 'En images', hero),
     imageAlt: o.name + ', créations en fil chenille Flore & Chenilles',
     lead: o.lead,
     tags: kind === 'local' ? [{ label: 'Retrait gratuit à l’atelier', cls: 'is-mint' }, { label: 'Livraison 5 € / 10 €', cls: 'is-sky' }] : [{ label: 'Carte de vœux offerte' }, { label: 'Fait main dans les Ardennes', cls: 'is-pink' }],
     ctas: [o.cta || { label: 'Voir les créations', href: '#boutique' }, kind === 'local' ? { label: 'Me contacter', href: '#contact' } : { label: 'Composer mon bouquet', href: '#bouquet' }],
-    sections,
+    sections: withFigures(sections, padList(list.slice().reverse(), 8, hero), prefixFor(pth), hero),
     cards: { title: kind === 'conseil' ? 'Quelques créations' : 'Mes idées de créations', list },
     linkGroups: [
       { title: kind === 'occasion' ? 'Les autres occasions' : kind === 'conseil' ? 'Les autres conseils' : 'À voir aussi', links: others.filter((x) => x !== o).map(link).concat(kind === 'local' ? C.conseils.slice(0, 3).map(conseilLink) : []) },
@@ -418,6 +486,8 @@ C.local.forEach((o) => contentPage(o, 'local'));
     h1: 'Le guide des fleurs éternelles',
     eyebrow: 'Flore & Chenilles',
     image: 'assets/photos/about.jpg',
+    heroPic: { s: 'assets/photos/about.jpg', l: 'assets/photos/about.jpg' },
+    afterHero: mosaicHTML([], prefixFor('guide/'), 'Quelques créations en images'),
     imageAlt: 'Fleurs en fil chenille de l’atelier Flore & Chenilles',
     lead: 'Les fleurs de l’atelier, des idées pour chaque occasion, des conseils et toutes mes créations faites main dans les Ardennes.',
     ctas: [{ label: 'Découvrir le site', href: '#boutique' }, { label: 'Composer mon bouquet', href: '#bouquet' }],
@@ -441,8 +511,21 @@ pages.forEach((pg) => {
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'index.html'), pg.html);
 });
-const urls = [{ loc: BASE, priority: 1.0 }].concat(pages.map((pg) => ({ loc: BASE + pg.path, priority: pg.priority })));
-fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-  urls.map((u) => `  <url><loc>${esc(u.loc)}</loc><lastmod>${TODAY}</lastmod><priority>${u.priority.toFixed(1)}</priority></url>`).join('\n') + '\n</urlset>\n');
+function imagesOf(pg) {
+  const found = new Set();
+  const base = BASE + pg.path;
+  for (const m of pg.html.matchAll(/<img [^>]*?src="([^"]+)"(?:[^>]*?srcset="([^"]+)")?/g)) {
+    const cand = m[2] ? m[2].split(',').map((x) => x.trim().split(' ')[0]).pop() : m[1];
+    if (/logo|favicon|apple-touch/.test(cand)) continue;
+    found.add(new URL(cand, base).href);
+  }
+  return Array.from(found);
+}
+const homeImages = Array.from(new Set(products.map((p) => pics(p)[0]).filter(Boolean).map((ph) => BASE + ph.l)));
+const urls = [{ loc: BASE, priority: 1.0, images: homeImages }].concat(pages.map((pg) => ({ loc: BASE + pg.path, priority: pg.priority, images: imagesOf(pg) })));
+fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n' +
+  urls.map((u) => `  <url><loc>${esc(u.loc)}</loc><lastmod>${TODAY}</lastmod><priority>${u.priority.toFixed(1)}</priority>` +
+    u.images.slice(0, 1000).map((im) => `<image:image><image:loc>${esc(im)}</image:loc></image:image>`).join('') + '</url>').join('\n') + '\n</urlset>\n');
+const imageCount = urls.reduce((n, u) => n + u.images.length, 0);
 fs.writeFileSync(path.join(ROOT, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${BASE}sitemap.xml\n`);
-console.log(`${pages.length} pages générées, sitemap de ${urls.length} adresses (${BASE})`);
+console.log(`${pages.length} pages générées, sitemap de ${urls.length} adresses et ${imageCount} images (${BASE})`);
