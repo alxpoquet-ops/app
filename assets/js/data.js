@@ -414,7 +414,6 @@ window.SITE = {
     {
       id: 'centre-de-table',
       count: 6,
-      priceFrom: true, // fleurs des deux côtés : le prix dépend de la taille
       gift: 'Vase offert',
       name: 'Centre de table tournesols',
       category: 'bouquets',
@@ -422,7 +421,7 @@ window.SITE = {
       post: 'https://www.instagram.com/p/Da3c-dyjutu/',
       bg: '#FCEFD9',
       words: 'Peu importe où l’on est assis à la table, le bouquet offre des fleurs à voir de chaque côté.',
-      desc: 'Une commande spéciale pour fleurir une table : des tournesols, de petites fleurs bleues et mauves et du feuillage. Le prix dépend de la taille : 8 € la fleur, vase offert.'
+      desc: 'Pour fleurir une table : des tournesols, de petites fleurs bleues et mauves et du feuillage, à admirer de chaque côté. Vase offert.'
     },
     { id: 'tulipes-jaunes-orange', count: 3, name: 'Tulipes jaunes et orange', category: 'bouquets', photo: 'g004', desc: 'Des tulipes jaunes et orange, lumineuses comme un matin de printemps.' },
     { id: 'roses-rouges', count: 4, name: 'Roses rouges', category: 'bouquets', photo: 'g094', desc: 'Des roses rouges et framboise avec leur feuillage : un classique qui ne fane jamais.' },
