@@ -164,3 +164,43 @@ add_filter(
 		return $crumbs;
 	}
 );
+
+/* ---------- Page « Bientôt en ligne » ---------- */
+
+/** La boutique est-elle en mode « bientôt disponible » pour ce visiteur ? (mêmes règles que WooCommerce) */
+function fc_coming_soon_active() {
+	if ( 'yes' !== get_option( 'woocommerce_coming_soon' ) || current_user_can( 'manage_woocommerce' ) ) {
+		return false;
+	}
+	if ( is_admin() || wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || is_feed() || is_robots() ) {
+		return false;
+	}
+	if ( apply_filters( 'woocommerce_coming_soon_exclude', false ) ) {
+		return false;
+	}
+	if ( 'yes' === get_option( 'woocommerce_private_link' ) ) {
+		$key = (string) get_option( 'woocommerce_share_key' );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( $key && ( ( isset( $_GET['woo-share'] ) && $key === $_GET['woo-share'] ) || ( isset( $_COOKIE['woo-share'] ) && $key === $_COOKIE['woo-share'] ) ) ) {
+			return false;
+		}
+	}
+	if ( 'yes' === get_option( 'woocommerce_store_pages_only' ) ) {
+		return function_exists( 'is_woocommerce' ) && ( is_woocommerce() || is_cart() || is_checkout() || is_account_page() );
+	}
+	return true;
+}
+
+/* Avant WooCommerce : notre page, au style du site, à la place de la page générique. */
+add_filter(
+	'template_include',
+	function ( $template ) {
+		if ( ! fc_coming_soon_active() ) {
+			return $template;
+		}
+		header( 'Cache-Control: max-age=60' );
+		include get_template_directory() . '/fc-coming-soon.php';
+		exit; // WooCommerce afficherait sinon sa propre page juste après.
+	},
+	5
+);
