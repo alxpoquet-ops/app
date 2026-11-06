@@ -22,6 +22,25 @@ add_action(
 			'/cart/card'   => array( 'POST', 'fcb_rest_cart_card' ),
 			'/contact'     => array( 'POST', 'fcb_rest_contact' ),
 		);
+		/* Administration à distance (assistant, MCP) : réservée aux gérants de la boutique. */
+		$admin = array(
+			'/admin/status' => array( 'GET', 'fcb_rest_admin_status' ),
+			'/admin/setup'  => array( 'POST', 'fcb_rest_admin_setup' ),
+			'/admin/import' => array( 'POST', 'fcb_rest_admin_import' ),
+		);
+		foreach ( $admin as $route => $def ) {
+			register_rest_route(
+				'fc/v1',
+				$route,
+				array(
+					'methods'             => $def[0],
+					'callback'            => $def[1],
+					'permission_callback' => function () {
+						return current_user_can( 'manage_woocommerce' );
+					},
+				)
+			);
+		}
 		foreach ( $routes as $route => $def ) {
 			register_rest_route(
 				'fc/v1',
@@ -340,4 +359,33 @@ function fcb_rest_contact( WP_REST_Request $r ) {
 		);
 	}
 	return array( 'ok' => true );
+}
+
+/* ---------- Administration à distance ---------- */
+
+function fcb_rest_admin_status() {
+	$rows = array();
+	foreach ( fcb_checklist() as $row ) {
+		$rows[] = array(
+			'ok'   => (bool) $row[0],
+			'text' => $row[1],
+		);
+	}
+	return array(
+		'checklist' => $rows,
+		'theme'     => get_stylesheet(),
+		'settings'  => fcb_settings(),
+	);
+}
+
+function fcb_rest_admin_setup() {
+	fcb_setup_store();
+	return fcb_rest_admin_status();
+}
+
+function fcb_rest_admin_import() {
+	if ( function_exists( 'set_time_limit' ) ) {
+		@set_time_limit( 120 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+	}
+	return fcb_import_step( 3 );
 }
