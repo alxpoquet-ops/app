@@ -297,5 +297,6 @@ function zipDir(dir, out) {
 }
 const zt = zipDir(THEME, 'flore-et-chenilles-theme.zip');
 const zp = zipDir(PLUGIN, 'flore-et-chenilles-boutique.zip');
+const zc = zipDir(path.join(WP, 'plugin-connexion', 'flore-et-chenilles-connexion'), 'flore-et-chenilles-connexion.zip');
 console.log(`${creations.length} créations, ${photoFiles.size} photos à importer, ${seoPages.length} pages de contenu`);
-console.log(`wordpress/dist/flore-et-chenilles-theme.zip (${zt}) · wordpress/dist/flore-et-chenilles-boutique.zip (${zp})`);
+console.log(`wordpress/dist/flore-et-chenilles-theme.zip (${zt}) · wordpress/dist/flore-et-chenilles-boutique.zip (${zp}) · wordpress/dist/flore-et-chenilles-connexion.zip (${zc})`);

@@ -186,6 +186,22 @@ Ouvrez **WooCommerce › Réglages › Visibilité du site**, puis cochez **En l
 
 ---
 
+## Connexion d’un assistant (MCP) : extension « Connexion »
+
+Certains hébergements retirent l’en-tête « Authorization » avant qu’il n’arrive à WordPress. Les mots de passe
+d’application, et donc les MCP comme OneMCP, ne fonctionnent alors pas depuis l’extérieur : l’API répond
+« rest_not_logged_in ».
+
+L’extension [`dist/flore-et-chenilles-connexion.zip`](dist/flore-et-chenilles-connexion.zip) règle ce
+problème :
+
+- elle accepte aussi le mot de passe d’application par l’en-tête `X-FC-Auth`
+  (`Basic base64(identifiant:mot de passe)`) ;
+- WordPress le vérifie ensuite lui-même, comme d’habitude ;
+- vous pouvez la désactiver dès que vous n’en avez plus besoin.
+
+---
+
 ## Au quotidien
 
 - **Ajouter une création**
@@ -233,7 +249,8 @@ manque, et ne modifie jamais une création existante.
 | --- | --- |
 | `theme/flore-et-chenilles/` | `functions.php`, gabarits (`header.php`, `front-page.php`, `page.php`, `woocommerce.php`…), `inc/` (aides, référencement), `assets-src/` (style des pages de la boutique `woo.css`, script `lite.js`) ; `assets/` et `parts/` sont fabriqués |
 | `plugin/flore-et-chenilles-boutique/` | `includes/` : réglages, prix et offre, panier et cartes de vœux, fiche, données de l’accueil, adresses du panier et du contact (`/wp-json/fc/v1/…`), administration, mise en place, import, e-mails, commandes WP-CLI (`wp fcb setup`, `wp fcb import`) ; `data/` et `import/` sont fabriqués |
-| `dist/` | les deux .zip à téléverser |
+| `plugin-connexion/` | la petite extension « Connexion » (mot de passe d’application par l’en-tête X-FC-Auth) |
+| `dist/` | les .zip à téléverser |
 
 Pour la page d’accueil, `assets/js/app.js` fonctionne de deux façons :
 
