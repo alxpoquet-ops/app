@@ -176,13 +176,60 @@ SITE_URL=https://www.floreetchenilles.fr/ node tools/seo/build.js
    Avec un nom de domaine à vous (par exemple floreetchenilles.fr), le `robots.txt` fourni
    fonctionne tel quel et le référencement en profite.
 
+## Héberger le site sur o2switch
+
+Le site n'a besoin que d'un hébergement web classique : o2switch convient parfaitement.
+L'hébergement récupère lui-même le site sur GitHub (le dépôt est public) : aucun mot de passe
+n'est à transmettre. Trois fichiers s'en occupent :
+
+| Fichier | Rôle |
+| --- | --- |
+| `.cpanel.yml` | indique à cPanel comment mettre le site en ligne (bouton « Deploy HEAD Commit ») |
+| `tools/o2switch/deploy.sh` | copie les fichiers du site dans `public_html` (sans les outils ni le README) ; retire les pages supprimées, sans toucher aux autres fichiers |
+| `tools/o2switch/update.sh` | pour une tâche cron : récupère les nouveautés de GitHub et remet le site à jour s'il y en a |
+| `.htaccess` | site en https et sans « www », pages compressées, mise en cache des images, du style et des scripts |
+
+**Première installation (une seule fois, dans cPanel).**
+
+1. **Git™ Version Control** › **Create** : cochez « Clone a Repository », puis
+   - Clone URL : `https://github.com/alxpoquet-ops/app.git`
+   - Repository Path : `repositories/app`
+   - Repository Name : `app`
+2. **Manage** › onglet « Basic Information » › « Checked-Out Branch » : choisissez
+   `claude/fervent-lamport-uzm5xw`, puis **Update**.
+3. Onglet « Pull or Deploy » › **Deploy HEAD Commit** : le site est copié dans `public_html`.
+4. **Mises à jour automatiques** : **Tâches Cron** › « Toutes les 15 minutes », commande :
+
+   ```bash
+   /bin/bash $HOME/repositories/app/tools/o2switch/update.sh > /dev/null 2>&1
+   ```
+
+   Chaque modification publiée sur GitHub arrive ensuite sur o2switch en 15 minutes au plus.
+   Sans tâche cron, il suffit de cliquer sur « Update from Remote » puis « Deploy HEAD Commit ».
+5. **Certificat https** : il est créé automatiquement par o2switch (outil « Let's Encrypt » ou
+   « SSL/TLS Status » dans cPanel) dès que le nom de domaine pointe vers l'hébergement.
+
+Pour un nom de domaine supplémentaire dont le dossier n'est pas `public_html`, donnez le dossier
+en argument : `.../deploy.sh /home/identifiant/floreetchenilles.fr` (et de même pour `update.sh`).
+
+**Passer à votre nom de domaine.** Les adresses de référence (canonical, sitemap, robots.txt,
+image de partage, données structurées de la page d'accueil) se changent en une commande :
+
+```bash
+SITE_URL=https://floreetchenilles.fr/ node tools/seo/build.js
+```
+
+La copie sur GitHub Pages peut rester en ligne : ses pages indiquent alors à Google que l'adresse
+officielle est celle du nom de domaine.
+
 ## À compléter avant la mise en ligne
 
 - [ ] Activer le formulaire : envoyer un premier message depuis le site, puis cliquer sur « Activate Form »
       dans l'e-mail reçu sur floreetchenilles@gmail.com (voir plus haut).
 - [ ] Coller l'adresse de la page Facebook dans `contact.facebook`.
 - [ ] Ajouter des mentions légales : elles sont obligatoires en France pour un site professionnel
-      (nom ou raison sociale, SIRET, adresse, hébergeur).
+      (nom ou raison sociale, SIRET, adresse, hébergeur : o2switch).
+- [ ] Installer le site sur o2switch et passer au nom de domaine (voir « Héberger le site sur o2switch »).
 - [ ] Déclarer le site dans Google Search Console et envoyer `sitemap.xml` (voir « Référencement »).
 
 ## Structure
@@ -198,6 +245,8 @@ assets/gallery/         les photos de Laurine (vignettes et grandes images WebP)
 assets/fonts/           polices Fraunces et Jost, auto-hébergées (licence SIL OFL)
 assets/img/             favicon, icône mobile, image de partage
 assets/css/pages.css    la mise en forme des pages de contenu
+.htaccess, .cpanel.yml  réglages et mise en ligne sur o2switch
+tools/o2switch/         scripts de mise en ligne sur o2switch
 tools/seo/              le générateur des pages de contenu (build.js) et leurs textes (content.js)
 creations/ fleurs/ occasions/ conseils/ guide/ …   les pages de contenu générées
 sitemap.xml robots.txt  le plan du site pour les moteurs de recherche

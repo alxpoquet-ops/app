@@ -532,4 +532,12 @@ fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), '<?xml version="1.0" encoding="
     u.images.slice(0, 1000).map((im) => `<image:image><image:loc>${esc(im)}</image:loc></image:image>`).join('') + '</url>').join('\n') + '\n</urlset>\n');
 const imageCount = urls.reduce((n, u) => n + u.images.length, 0);
 fs.writeFileSync(path.join(ROOT, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${BASE}sitemap.xml\n`);
+/* La page d'accueil prend la même adresse (canonical, image de partage, données structurées). */
+const homeFile = path.join(ROOT, 'index.html');
+const home = fs.readFileSync(homeFile, 'utf8');
+const prevBase = (home.match(/<link rel="canonical" href="([^"]+)">/) || [])[1];
+if (prevBase && prevBase !== BASE) {
+  fs.writeFileSync(homeFile, home.split(prevBase).join(BASE));
+  console.log(`index.html : ${prevBase} → ${BASE}`);
+}
 console.log(`${pages.length} pages générées, sitemap de ${urls.length} adresses et ${imageCount} images (${BASE})`);

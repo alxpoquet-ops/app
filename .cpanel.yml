@@ -1,0 +1,6 @@
+---
+# Mise en ligne sur o2switch (cPanel » Git Version Control » « Deploy HEAD Commit ») :
+# copie le site dans public_html. Voir tools/o2switch/deploy.sh.
+deployment:
+  tasks:
+    - /bin/bash tools/o2switch/deploy.sh
