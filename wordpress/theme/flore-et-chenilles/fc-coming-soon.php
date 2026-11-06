@@ -56,12 +56,13 @@ $fc_mail = fc_setting( 'contact_email' );
 			<a class="soon-logo" href="<?php echo esc_url( home_url( '/' ) ); ?>"><img src="<?php echo esc_url( FC_ASSETS . 'assets/photos/logo.jpg' ); ?>" alt="" width="58" height="58"><span>Flore <em>&amp;</em> Chenilles</span></a>
 			<p class="eyebrow">Bientôt en ligne</p>
 			<h1>Des fleurs qui <em>ne fanent jamais</em>, très bientôt ici.</h1>
-			<p>La boutique de fleurs éternelles en fil chenille, façonnées à la main dans mon atelier de Signy-l’Abbaye, ouvre ses portes dans quelques jours. En attendant, retrouvez mes créations sur Instagram, ou écrivez-moi pour une commande.</p>
+			<p>La boutique en ligne de fleurs éternelles en fil chenille, façonnées à la main dans mon atelier de Signy-l’Abbaye, ouvre ses portes dans quelques jours. En attendant, retrouvez mes créations sur Instagram. Écrivez-moi via les réseaux sociaux pour toute commande.</p>
 			<ul class="soon-points"><li>Fait main dans les Ardennes</li><li>Sans pollen</li><li>Carte de vœux offerte</li></ul>
 			<div class="soon-actions">
 				<a class="btn btn-primary" href="<?php echo esc_url( $fc_ig ); ?>" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg> Suivre sur Instagram</a>
-				<?php if ( $fc_mail ) : ?>
-					<a class="btn btn-ghost" href="mailto:<?php echo esc_attr( antispambot( $fc_mail ) ); ?>"><svg><use href="#i-mail"/></svg> M’écrire</a>
+				<a class="btn btn-ghost" href="https://ig.me/m/<?php echo rawurlencode( fc_setting( 'instagram', 'flore_et_chenilles' ) ); ?>" target="_blank" rel="noopener"><svg><use href="#i-chat"/></svg> M’écrire en message privé</a>
+				<?php if ( fc_setting( 'facebook' ) ) : ?>
+					<a class="btn btn-ghost" href="<?php echo esc_url( fc_setting( 'facebook' ) ); ?>" target="_blank" rel="noopener"><svg><use href="#i-facebook"/></svg> Facebook</a>
 				<?php endif; ?>
 			</div>
 			<p class="soon-foot">© <?php echo esc_html( wp_date( 'Y' ) ); ?> Flore &amp; Chenilles — fleurs éternelles faites main à Signy-l’Abbaye</p>
