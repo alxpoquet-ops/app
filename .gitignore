@@ -1,0 +1,5 @@
+# Version WordPress : fichiers fabriqués par tools/wordpress/build.js (les .zip de wordpress/dist/ sont gardés)
+wordpress/theme/flore-et-chenilles/assets/
+wordpress/theme/flore-et-chenilles/parts/
+wordpress/plugin/flore-et-chenilles-boutique/data/
+wordpress/plugin/flore-et-chenilles-boutique/import/

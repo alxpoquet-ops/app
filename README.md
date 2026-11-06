@@ -176,6 +176,26 @@ SITE_URL=https://www.floreetchenilles.fr/ node tools/seo/build.js
    Avec un nom de domaine à vous (par exemple floreetchenilles.fr), le `robots.txt` fourni
    fonctionne tel quel et le référencement en profite.
 
+## Boutique en ligne avec WordPress (recommandé)
+
+Le dossier [`wordpress/`](wordpress/README.md) contient la version WordPress + WooCommerce :
+
+- le même site ;
+- le paiement par carte et PayPal ;
+- les commandes, le stock et les créations uniques ;
+- les e-mails ;
+- l’import en un clic des 63 créations et des 36 pages de contenu.
+
+Elle s’installe sur o2switch en suivant le [guide pas à pas](wordpress/README.md). Les deux fichiers à
+téléverser sont dans `wordpress/dist/`. Pour les refaire après une modification du site :
+
+```bash
+node tools/wordpress/build.js
+```
+
+La section suivante concerne l’autre possibilité : mettre en ligne le site statique tel quel, sans
+paiement en ligne.
+
 ## Héberger le site sur o2switch
 
 Le site n'a besoin que d'un hébergement web classique : o2switch convient parfaitement.
@@ -246,7 +266,9 @@ assets/fonts/           polices Fraunces et Jost, auto-hébergées (licence SIL 
 assets/img/             favicon, icône mobile, image de partage
 assets/css/pages.css    la mise en forme des pages de contenu
 .htaccess, .cpanel.yml  réglages et mise en ligne sur o2switch
-tools/o2switch/         scripts de mise en ligne sur o2switch
+tools/o2switch/         scripts de mise en ligne sur o2switch (site statique)
+tools/wordpress/        fabrique le thème et l'extension WordPress (wordpress/dist/*.zip)
+wordpress/              la version WordPress + WooCommerce et son guide d'installation
 tools/seo/              le générateur des pages de contenu (build.js) et leurs textes (content.js)
 creations/ fleurs/ occasions/ conseils/ guide/ …   les pages de contenu générées
 sitemap.xml robots.txt  le plan du site pour les moteurs de recherche

@@ -11,6 +11,26 @@
   const FC = window.FC_FLOWERS;
   if (!FC) return;
   const PREVIEW = !!window.FC_PREVIEW; // version d'aperçu (page claude.ai)
+  /* Version WordPress : les créations, le panier et les réglages viennent de la boutique (window.FC_WP). */
+  const WPS = window.FC_WP || null;
+  if (WPS) {
+    ['brand', 'contact', 'instagram', 'jar', 'shop'].forEach((k) => { if (WPS[k]) S[k] = Object.assign({}, S[k] || {}, WPS[k]); });
+    ['products', 'unitPrice', 'promo'].forEach((k) => { if (WPS[k] !== undefined) S[k] = WPS[k]; });
+    if (WPS.assets) S.assetBase = WPS.assets;
+  }
+  const SHOP = S.shop && S.shop.rest ? S.shop : null; // panier WooCommerce
+  /* Chemins des images (« assets/… ») : relatifs au thème dans la version WordPress. */
+  const ASSET = S.assetBase || '';
+  const asset = (u) => (ASSET && typeof u === 'string' && /^assets\//.test(u) ? ASSET + u : u);
+  if (ASSET) {
+    (function fix(o) {
+      Object.keys(o).forEach((k) => {
+        const v = o[k];
+        if (typeof v === 'string') o[k] = asset(v);
+        else if (v && typeof v === 'object' && k !== 'products') fix(v);
+      });
+    })(S);
+  }
   S.products = S.products || [];
   S.colors = S.colors || {};
   S.flowers = S.flowers || {};
@@ -49,7 +69,7 @@
   const MAIL_OK = isEmail(EMAIL); // une vraie adresse (et non un alias FormSubmit)
   const ENDPOINT = String(C.formEndpoint || '').trim();
   // Les messages partent par e-mail via FormSubmit (ou un autre service si formEndpoint est rempli).
-  const SEND_URL = ENDPOINT || (EMAIL ? 'https://formsubmit.co/ajax/' + EMAIL : '');
+  const SEND_URL = SHOP ? SHOP.rest + 'contact' : ENDPOINT || (EMAIL ? 'https://formsubmit.co/ajax/' + EMAIL : '');
   const UNIT = S.unitPrice != null && !isNaN(+S.unitPrice) ? +S.unitPrice : 8;
   const PACK = S.packaging || 'Pochette transparente et nœud';
   const JAR = Object.assign({ price: 5, label: 'Dans un bocal transparent' }, S.jar || {});
@@ -239,19 +259,24 @@
       return s ? { s, l: ref.l || ref.large || s } : null;
     }
     const r = String(ref).trim();
-    if (/^g\d+$/i.test(r)) return { s: 'assets/gallery/' + r + '-s.webp', l: 'assets/gallery/' + r + '.webp' };
-    return { s: r, l: r };
+    if (/^g\d+$/i.test(r)) return { s: asset('assets/gallery/' + r + '-s.webp'), l: asset('assets/gallery/' + r + '.webp') };
+    return { s: asset(r), l: asset(r) };
   }
   S.products.forEach((p) => {
-    if (p.photo && !p.image) {
-      const g = pic(p.photo);
-      if (g) { p.image = g.s; p.large = g.l; }
+    if (Array.isArray(p.pics)) {
+      p.pics = p.pics.map(pic).filter(Boolean);
+      if (p.pics[0] && !p.image) { p.image = p.pics[0].s; p.large = p.pics[0].l; }
+    } else {
+      if (p.photo && !p.image) {
+        const g = pic(p.photo);
+        if (g) { p.image = g.s; p.large = g.l; }
+      }
+      p.pics = (p.image ? [{ s: p.image, l: p.large || p.image }] : []).concat((p.more || []).map(pic).filter(Boolean));
     }
-    p.pics = (p.image ? [{ s: p.image, l: p.large || p.image }] : []).concat((p.more || []).map(pic).filter(Boolean));
     if (p.options && Array.isArray(p.options.choices)) {
       p.options.choices.forEach((c) => {
         const g = pic(c.image);
-        if (g) { c.image = g.s; c.large = g.l; }
+        if (g) { c.image = g.s; c.large = c.large || g.l; }
       });
     } else {
       delete p.options;
@@ -418,8 +443,9 @@
   /* ------------------------------------------------------------------ *
    * Ma sélection
    * ------------------------------------------------------------------ */
-  let cart = store.get('fc-cart-v2', []);
+  let cart = SHOP ? [] : store.get('fc-cart-v2', []);
   if (!Array.isArray(cart)) cart = [];
+  let shopTotals = null; // version WordPress : montants calculés par la boutique
   const drawer = $('#cart');
   const cartItemsEl = $('[data-cart-items]');
   const cartFoot = $('[data-cart-foot]');
@@ -435,6 +461,10 @@
   const BF_COLS = ['#C8A0E2', '#F5B07D', '#F4ADC5', '#A8D3F0', '#8ED6D0', '#F7D25E', '#B3B0EC'];
   /** Montants de la sélection : sous-total, remise de lancement, livraison (opt), total. */
   function cartTotals(opt) {
+    if (shopTotals) {
+      const fee0 = (opt && opt.fee) || 0;
+      return { sum: shopTotals.sum, ask: 0, disc: shopTotals.disc, fee: fee0, total: round2(shopTotals.total + fee0) };
+    }
     const t = cartSums();
     const disc = PROMO ? round2((t.sum * PROMO.pct) / 100) : 0;
     const fee = (opt && opt.fee) || 0;
@@ -459,17 +489,44 @@
   const lineText = (it) => (it.price == null ? 'Sur demande' : price(it.price * it.qty));
   const cartQty = () => cart.reduce((s, it) => s + it.qty, 0);
 
-  function saveCart() { store.set('fc-cart-v2', cart); }
+  function saveCart() { if (!SHOP) store.set('fc-cart-v2', cart); }
+  function bumpCart() {
+    cartBtn.classList.remove('bump');
+    void cartBtn.offsetWidth;
+    cartBtn.classList.add('bump');
+  }
   function addToCart(item) {
     const ex = cart.find((c) => c.key === item.key);
     if (ex) ex.qty = Math.min(99, ex.qty + item.qty);
     else cart.push(item);
     saveCart();
     renderCart();
-    cartBtn.classList.remove('bump');
-    void cartBtn.offsetWidth;
-    cartBtn.classList.add('bump');
+    bumpCart();
   }
+  /** Version WordPress : échange avec le panier de la boutique ; la sélection affichée suit la réponse. */
+  async function shopCall(path, body) {
+    const opt = { method: body ? 'POST' : 'GET', credentials: 'same-origin', headers: { Accept: 'application/json', 'X-FC-Shop': '1' } };
+    if (SHOP.nonce) opt.headers['X-WP-Nonce'] = SHOP.nonce;
+    if (body) { opt.headers['Content-Type'] = 'application/json'; opt.body = JSON.stringify(body); }
+    let r = null, j = null;
+    try {
+      r = await fetch(SHOP.rest + path, opt);
+      j = await r.json();
+    } catch (e) {
+      return { ok: false, message: 'Connexion impossible : vérifiez votre réseau puis réessayez.' };
+    }
+    if (j && Array.isArray(j.items)) {
+      cart = j.items;
+      shopTotals = { sum: +j.sum || 0, disc: +j.disc || 0, total: +j.total || 0 };
+      renderCart();
+    }
+    if (!r.ok || !j || j.ok === false) return { ok: false, message: (j && j.message) || 'Oups, une erreur est survenue. Réessayez dans un instant.' };
+    return { ok: true, data: j };
+  }
+  const payText = () => {
+    const names = (SHOP && SHOP.payments && SHOP.payments.length) ? SHOP.payments : ['carte bancaire', 'PayPal'];
+    return `Paiement sécurisé${NB}: ${names.join(' ou ')}. Retrait à l’atelier ou livraison, au choix à l’étape suivante.`;
+  };
   /** Un petit papillon vole du bouton jusqu'au panier. */
   function flyToCart(from) {
     if (reduceMotion || !from || !from.getBoundingClientRect || !cartBtn || !document.body.animate) return;
@@ -504,6 +561,13 @@
     let option = ch ? p.options.label + NB + ': ' + ch.name.charAt(0).toLowerCase() + ch.name.slice(1) : '';
     if (p.options && p.options.colors) option += `, couleur${NB}: ` + (col ? colorName(col).toLowerCase() : 'à préciser');
     const jar = !!extra.jar && jarOption(p);
+    if (SHOP) {
+      if (p.soldOut) { toast(`«${NB}${p.name}${NB}» a déjà trouvé sa maison`); return false; }
+      shopCall('cart/add', { product: p.wcId, qty: qty || 1, choice: p.options ? idx || 0 : null, color: col, jar, card }).then((res) => {
+        if (res.ok) { bumpCart(); toast(`«${NB}${p.name}${NB}» est dans votre sélection`); } else toast(res.message);
+      });
+      return true;
+    }
     const notes = [option, jar ? `${JAR.label.toLowerCase()} (+${price(JAR.price)})` : '', p.jar ? 'en bocal transparent' : '', isUnique(p) ? 'création unique' : '', p.gift ? p.gift.toLowerCase() : ''].filter(Boolean);
     option = notes.join(' · ');
     option = option.charAt(0).toUpperCase() + option.slice(1);
@@ -578,6 +642,7 @@
     if (q) {
       const i = +q.dataset.i, it = cart[i];
       if (!it) return;
+      if (SHOP) { shopCall('cart/update', { key: it.key, qty: Math.min(99, it.qty + +q.dataset.cq) }).then((res) => { if (!res.ok) toast(res.message); }); return; }
       it.qty = Math.min(99, it.qty + +q.dataset.cq);
       if (it.qty <= 0) { cart.splice(i, 1); saveCart(); renderCart(); return; }
       saveCart();
@@ -585,6 +650,11 @@
       return;
     }
     const d = e.target.closest('[data-del]');
+    if (d && SHOP) {
+      const it = cart[+d.dataset.del];
+      if (it) shopCall('cart/remove', { key: it.key }).then((res) => toast(res.ok ? 'Création retirée de votre sélection' : res.message));
+      return;
+    }
     if (d) {
       cart.splice(+d.dataset.del, 1);
       saveCart();
@@ -597,6 +667,7 @@
   function openCart() {
     drawerReturn = document.activeElement;
     renderCart();
+    if (SHOP) shopCall('cart');
     drawer.classList.add('is-open');
     drawer.setAttribute('aria-hidden', 'false');
     lockScroll(true, 'cart');
@@ -617,7 +688,7 @@
   });
   $('[data-checkout]').addEventListener('click', () => {
     closeCart();
-    setTimeout(openCheckout, 260);
+    setTimeout(SHOP ? openShopCheckout : openCheckout, 260);
   });
 
   /* ------------------------------------------------------------------ *
@@ -652,6 +723,16 @@
   /** Envoie le message (FormSubmit ou autre service). Résultat : { ok, reason }. */
   async function sendMail(d, msg) {
     if (!SEND_URL) return { ok: false, reason: 'none' };
+    if (SHOP) {
+      try {
+        const r = await fetch(SEND_URL, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-FC-Shop': '1' }, body: JSON.stringify(d) });
+        let j = null;
+        try { j = await r.json(); } catch (e) { j = null; }
+        return r.ok && j && j.ok ? { ok: true } : { ok: false, reason: 'error' };
+      } catch (e) {
+        return { ok: false, reason: 'network' };
+      }
+    }
     const body = {
       _subject: msg.subject,
       _template: 'table',
@@ -862,6 +943,40 @@
     }, { narrow: true });
   }
 
+  /* Version WordPress : on écrit ses cartes, puis on passe au paiement sur la page de commande. */
+  function openShopCheckout() {
+    if (!cart.length) return;
+    const html = '<div class="dialog-body">' +
+      '<h2 id="modal-title">Vos cartes de vœux</h2>' +
+      `<p>Avant le paiement, écrivez si vous le souhaitez un petit mot pour chaque création${NB}: la carte est offerte.</p>` +
+      orderCardsHTML() +
+      `<div class="order-recap">${recapHTML()}</div>` +
+      '<div class="form-actions"><button class="btn btn-primary" type="button" data-go-pay>Continuer vers le paiement <svg><use href="#i-arrow"/></svg></button></div>' +
+      `<p class="form-note">${esc(payText())}</p>` +
+      '</div>';
+    openModal(html, (root) => {
+      const changed = new Map();
+      bindCard(root, (fields, card) => {
+        const item = fields.closest('[data-oc]');
+        const it = item && cart[+item.dataset.oc];
+        if (!it) return;
+        changed.set(it.key, card);
+        $('[data-oc-state]', item).textContent = cardEmpty(card) ? 'Écrire la carte' : cardLine(card);
+      });
+      const go = $('[data-go-pay]', root);
+      go.addEventListener('click', async () => {
+        const label = go.innerHTML;
+        go.disabled = true;
+        go.innerHTML = '<span class="spinner" aria-hidden="true"></span> <span>Un instant…</span>';
+        for (const [key, card] of changed) {
+          const res = await shopCall('cart/card', { key, card: cardEmpty(card) ? null : card });
+          if (!res.ok) { toast(res.message); go.disabled = false; go.innerHTML = label; return; }
+        }
+        location.href = SHOP.checkoutUrl;
+      });
+    }, { narrow: true });
+  }
+
   /* ---------- Formulaire de contact ---------- */
   const contactForm = $('[data-contact-form]');
   function composeContact(d) {
@@ -919,7 +1034,8 @@
     return `<article class="product${cls}" style="--i:${i % 3}">` +
       `<button class="product-media${p.pics.length ? ' has-photo' : ''}" type="button" style="--bg:${esc(p.bg || '#F8E1E6')}" data-open="${esc(p.id)}" aria-label="Voir ${esc(p.name)}">` +
       (p.badge ? `<span class="badge">${esc(p.badge)}</span>` : '') +
-      (isUnique(p) ? `<span class="badge is-unique"><svg aria-hidden="true"><use href="#i-sparkle"/></svg>Création unique</span>` : '') +
+      (isUnique(p) && !p.soldOut ? `<span class="badge is-unique"><svg aria-hidden="true"><use href="#i-sparkle"/></svg>Création unique</span>` : '') +
+      (p.soldOut ? '<span class="badge is-sold">Vendue</span>' : '') +
       (p.pics.length > 1 ? `<span class="pics-n" aria-hidden="true"><svg><use href="#i-photos"/></svg>${p.pics.length}</span>` : '') +
       (p.gift ? `<span class="gift-tag${/pot/i.test(p.gift) ? ' is-pot' : ''}"><svg aria-hidden="true"><use href="#i-gift"/></svg>${esc(p.gift)}</span>` : '') +
       (jarOption(p) ? `<span class="gift-tag is-jar" title="${esc(JAR.desc || '')}"><svg aria-hidden="true"><use href="#i-jar"/></svg>Bocal</span>` : '') +
@@ -994,7 +1110,7 @@
     if (!q) return;
     const p = findProduct(q.dataset.quick);
     if (!p) return;
-    if (p.quote || p.priceFrom || (p.options && p.options.colors)) { openProduct(p.id, shopList().map((x) => x.id)); return; }
+    if (p.quote || p.priceFrom || p.linkOnly || p.soldOut || (p.options && p.options.colors)) { openProduct(p.id, shopList().map((x) => x.id)); return; }
     if (!addProduct(p, 0, 1)) return;
     flyToCart(q);
     q.classList.add('is-done');
@@ -1041,13 +1157,18 @@
     const one = isUnique(p);
     const actions = p.quote
       ? '<button type="button" class="btn btn-primary" data-pm-quote>Demander un devis <svg><use href="#i-arrow"/></svg></button>'
+      : p.soldOut
+        ? '<button type="button" class="btn btn-primary" disabled>Vendue</button>'
+      : p.linkOnly && p.url
+        ? `<a class="btn btn-primary" href="${esc(p.url)}">Choisir sur la fiche <svg><use href="#i-arrow"/></svg></a>`
       : one && inCart(p.id)
         ? '<button type="button" class="btn btn-primary" disabled><svg><use href="#i-check"/></svg> Déjà dans votre sélection</button>'
         : (one ? '' : '<div class="qty" role="group" aria-label="Quantité"><button type="button" data-q="-1" aria-label="Retirer un exemplaire">−</button><output data-q-val aria-live="polite">1</output><button type="button" data-q="1" aria-label="Ajouter un exemplaire">+</button></div>') +
           '<button type="button" class="btn btn-primary" data-pm-add><svg><use href="#i-bag"/></svg> Ajouter à ma sélection</button>';
     const links = (p.preset && stage ? '<button type="button" class="pm-link" data-pm-custom><svg><use href="#i-sparkle"/></svg> Personnaliser ce bouquet</button>' : '') +
       (p.post ? `<a class="pm-link" href="${esc(p.post)}" target="_blank" rel="noopener"><svg><use href="#i-instagram"/></svg> Voir la publication</a>` : '') +
-      (!p.quote ? '<button type="button" class="pm-link" data-pm-ask><svg><use href="#i-palette"/></svg> La même dans d’autres couleurs</button>' : '');
+      (!p.quote ? '<button type="button" class="pm-link" data-pm-ask><svg><use href="#i-palette"/></svg> La même dans d’autres couleurs</button>' : '') +
+      (p.url ? `<a class="pm-link" href="${esc(p.url)}"><svg><use href="#i-arrow"/></svg> Voir la fiche complète</a>` : '');
     const thumbs = p.pics.length > 1
       ? `<div class="pm-thumbs" role="group" aria-label="Photos de la création">${p.pics.map((ph, i) => `<button type="button" class="pm-thumb" data-pic="${i}" aria-pressed="${i === 0}" aria-label="Photo ${i + 1} sur ${p.pics.length}"><img src="${esc(ph.s)}" alt="" loading="lazy" decoding="async"></button>`).join('')}</div>`
       : '';
@@ -1067,7 +1188,8 @@
       words +
       (p.count ? `<p class="pm-count-line">${p.count}${NB}fleurs × ${price(UNIT)}${p.jar ? ' + bocal ' + price(JAR.price) : ''}${p.gift ? ' · ' + esc(p.gift.toLowerCase()) : ''}</p>` : (p.gift ? `<p class="pm-count-line">${esc(p.gift)}</p>` : '')) +
       `<p class="pm-desc">${esc(blurbOf(p))}</p>` +
-      (one ? `<p class="pm-unique"><svg aria-hidden="true"><use href="#i-sparkle"/></svg><span><strong>Création unique</strong>${esc(uniqueText(p))}</span></p>` : '') +
+      (p.soldOut ? `<p class="pm-unique is-sold"><svg aria-hidden="true"><use href="#i-heart"/></svg><span><strong>Vendue</strong>Cette création a trouvé sa maison. Je peux vous en composer une semblable${NB}: écrivez-moi.</span></p>`
+        : one ? `<p class="pm-unique"><svg aria-hidden="true"><use href="#i-sparkle"/></svg><span><strong>Création unique</strong>${esc(uniqueText(p))}</span></p>` : '') +
       (p.category === 'unite' ? whyHTML() : '') +
       compo + opts +
       (jarOption(p) ? `<label class="pm-jar"><input type="checkbox" id="pm-jar" data-pm-jar><span class="pm-jar-ic" aria-hidden="true"><svg><use href="#i-jar"/></svg></span><span><strong>${esc(JAR.label)}</strong><small>${esc(JAR.desc || 'Sur demande.')}</small></span><b>+${price(JAR.price)}</b></label>` : '') +
@@ -1372,6 +1494,13 @@
     });
     $('[data-b-add]').addEventListener('click', () => {
       if (!bState.flowers.length) { toast('Ajoutez au moins une fleur à votre bouquet'); return; }
+      if (SHOP) {
+        flyToCart($('[data-b-add]'));
+        shopCall('cart/add', { bouquet: bState.flowers.map((f) => [f.type, f.color]), card: cardEmpty(bState.card) ? null : cleanCard(bState.card) }).then((res) => {
+          if (res.ok) { bumpCart(); toast(`Votre bouquet est dans votre sélection${NB}!`); } else toast(res.message);
+        });
+        return;
+      }
       addToCart({
         key: 'custom-' + Date.now(),
         kind: 'custom',
@@ -1736,7 +1865,7 @@
    * ------------------------------------------------------------------ */
   safe('filtres', renderFilters);
   safe('créations', () => renderProducts());
-  safe('sélection', () => renderCart());
+  safe('sélection', () => { renderCart(); if (SHOP) shopCall('cart'); });
   safe('apparitions', () => reveal(document));
   safe('lien partagé', loadFromHash);
   /* Lien direct vers une création (pages de contenu) : …/#creation-<identifiant> */

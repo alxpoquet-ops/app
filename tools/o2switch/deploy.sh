@@ -18,7 +18,7 @@ main() {
   mkdir -p "$dest"
   list="$(mktemp)"
   git -c core.quotepath=off ls-files \
-    | grep -Ev '^(tools/|README\.md$|\.cpanel\.yml$|\.nojekyll$|\.gitignore$|\.github/)' > "$list"
+    | grep -Ev '^(tools/|wordpress/|README\.md$|\.cpanel\.yml$|\.nojekyll$|\.gitignore$|\.github/)' > "$list"
 
   # Retire du serveur les fichiers supprimés du site depuis la dernière mise en ligne
   # (uniquement des fichiers que ce script avait copiés lui-même).
