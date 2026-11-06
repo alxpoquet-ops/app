@@ -139,7 +139,7 @@ add_action(
 						'email'               => $mail,
 						'priceRange'          => '8 € – 88 €',
 						'currenciesAccepted'  => 'EUR',
-						'paymentAccepted'     => 'Carte bancaire, PayPal',
+						'paymentAccepted'     => 'Carte bancaire',
 						'address'             => array(
 							'@type'           => 'PostalAddress',
 							'addressLocality' => 'Signy-l’Abbaye',

@@ -163,7 +163,7 @@ function fcb_payment_names() {
 		if ( 'yes' !== $g->enabled ) {
 			continue;
 		}
-		if ( false !== strpos( $id, 'stripe' ) || false !== stripos( $g->get_title(), 'carte' ) ) {
+		if ( false !== strpos( $id, 'stripe' ) || false !== strpos( $id, 'mypos' ) || false !== stripos( $g->get_title(), 'carte' ) ) {
 			$names['card'] = 'carte bancaire';
 		} elseif ( false !== strpos( $id, 'ppcp' ) || false !== strpos( $id, 'paypal' ) ) {
 			$names['paypal'] = 'PayPal';

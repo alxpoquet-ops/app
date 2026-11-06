@@ -208,13 +208,13 @@ const mainEnd = html.indexOf('</main>') + '</main>'.length;
 let front = html.slice(mainStart, mainEnd);
 front = replaceOnce(front,
   'Ajoutez vos coups de cœur à votre sélection, écrivez votre carte de vœux, puis envoyez-moi votre demande&nbsp;: je vous confirme la date et la remise.',
-  'Ajoutez vos coups de cœur à votre sélection, écrivez votre carte de vœux, puis réglez en toute sécurité, par carte bancaire ou PayPal&nbsp;: retrait à l’atelier ou livraison, au choix.', 'note de la boutique');
+  'Ajoutez vos coups de cœur à votre sélection, écrivez votre carte de vœux, puis réglez en toute sécurité par carte bancaire&nbsp;: retrait à l’atelier ou livraison, au choix.', 'note de la boutique');
 front = replaceOnce(front,
   'Le délai dépend de la composition&nbsp;: je vous l’indique en confirmant votre demande.',
   'Le délai dépend de la composition&nbsp;: je vous l’indique juste après votre commande. Une création unique est déjà prête.', 'FAQ délai');
 front = replaceOnce(front,
   '<details class="faq-item reveal" style="--i:7">',
-  '<details class="faq-item reveal" style="--i:7">\n            <summary>Comment se passe le paiement&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>\n            <div class="faq-a"><p>Le paiement se fait en ligne, au moment de la commande, par carte bancaire ou par PayPal, en toute sécurité&nbsp;: je n’ai jamais accès à vos données bancaires. Vous choisissez ensuite le retrait à l’atelier ou la livraison, et je vous écris pour convenir du jour.</p></div>\n          </details>\n          <details class="faq-item reveal" style="--i:8">', 'FAQ paiement');
+  '<details class="faq-item reveal" style="--i:7">\n            <summary>Comment se passe le paiement&#8239;?<span class="faq-ic" aria-hidden="true"></span></summary>\n            <div class="faq-a"><p>Le paiement se fait en ligne, au moment de la commande, par carte bancaire, en toute sécurité grâce à myPOS&nbsp;: je n’ai jamais accès à vos données bancaires. Vous choisissez ensuite le retrait à l’atelier ou la livraison, et je vous écris pour convenir du jour.</p></div>\n          </details>\n          <details class="faq-item reveal" style="--i:8">', 'FAQ paiement');
 front = replaceOnce(front, '<div class="insta-grid" data-insta></div>',
   '<?php if ( fc_use_smash_balloon() ) : ?><div class="insta-feed"><?php echo do_shortcode( \'[instagram-feed]\' ); ?></div><?php else : ?><div class="insta-grid" data-insta></div><?php endif; ?>', 'grille Instagram');
 part('front', withSocial(withAssets(front)));
@@ -232,7 +232,7 @@ part('footer', withSocial(homeAnchors(withAssets(footer))));
 let overlays = html.slice(html.indexOf('<!-- ============================== MA SÉLECTION'), html.indexOf('</body>'));
 overlays = replaceOnce(overlays,
   'Votre carte de vœux est offerte&nbsp;: vous l’écrirez à l’étape suivante. Je vous confirme ensuite le prix, la date et la remise.',
-  'Votre carte de vœux est offerte&nbsp;: vous l’écrirez à l’étape suivante. Paiement sécurisé par carte bancaire ou PayPal.', 'note du panier');
+  'Votre carte de vœux est offerte&nbsp;: vous l’écrirez à l’étape suivante. Paiement sécurisé par carte bancaire.', 'note du panier');
 overlays = replaceOnce(overlays, 'data-checkout>Finaliser ma demande <svg>', 'data-checkout>Commander <svg>', 'bouton commander');
 part('overlays', withAssets(overlays));
 

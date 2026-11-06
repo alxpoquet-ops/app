@@ -212,8 +212,7 @@ function fcb_checklist() {
 	return array(
 		array( get_option( 'fcb_setup_done' ), 'Boutique configurée (euros, livraison, pages panier et commande, e-mails)', '' ),
 		array( $total && $imported >= $total, sprintf( 'Créations et pages de contenu importées (%d sur %d)', min( $imported, $total ), $total ), '' ),
-		array( $has( 'stripe' ), 'Paiement par carte : installer « WooCommerce Stripe Payment Gateway », puis connecter votre compte Stripe', $install( 'woocommerce-gateway-stripe' ) ),
-		array( $has( 'ppcp' ) || $has( 'paypal' ), 'Paiement PayPal : installer « WooCommerce PayPal Payments », puis connecter votre compte PayPal', $install( 'woocommerce-paypal-payments' ) ),
+		array( $has( 'mypos' ) || $has( 'stripe' ), 'Paiement par carte : installer « myPOS Checkout », puis y coller le pack de configuration de votre compte myPOS et quitter le mode test', admin_url( 'admin.php?page=wc-settings&tab=checkout&section=mypos_virtual' ) ),
 		array( defined( 'WPMS_PLUGIN_VER' ), 'E-mails fiables : installer « WP Mail SMTP » avec l’adresse e-mail créée chez o2switch', $install( 'wp-mail-smtp' ) ),
 		array( '' !== fcb_opt( 'instagram_feed' ) || shortcode_exists( 'instagram-feed' ), 'Instagram : vos dernières publications (adresse du flux ci-dessous, ou extension « Smash Balloon Instagram Feed »)', $install( 'instagram-feed' ) ),
 		array( $legal['cgv'] && $legal['mentions'] && $legal['privacy'], 'Pages légales : compléter puis publier les CGV, les mentions légales et la politique de confidentialité (brouillons créés)', admin_url( 'edit.php?post_type=page&post_status=draft' ) ),

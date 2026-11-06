@@ -524,7 +524,7 @@
     return { ok: true, data: j };
   }
   const payText = () => {
-    const names = (SHOP && SHOP.payments && SHOP.payments.length) ? SHOP.payments : ['carte bancaire', 'PayPal'];
+    const names = (SHOP && SHOP.payments && SHOP.payments.length) ? SHOP.payments : ['carte bancaire'];
     return `Paiement sécurisé${NB}: ${names.join(' ou ')}. Retrait à l’atelier ou livraison, au choix à l’étape suivante.`;
   };
   /** Un petit papillon vole du bouton jusqu'au panier. */

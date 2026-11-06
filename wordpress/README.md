@@ -6,7 +6,7 @@ La boutique en ligne complète, avec le même site qu’aujourd’hui :
   cartes de vœux, papillons et chenilles, Instagram, FAQ, contact ;
 - **WooCommerce** gère le reste :
   - le panier (« Ma sélection ») et la page de commande ;
-  - le paiement par **carte bancaire** (Stripe) et par **PayPal** ;
+  - le paiement par **carte bancaire** (myPOS) ;
   - le retrait à l’atelier et la livraison à 5 € ou 10 € ;
   - les e-mails de commande, le stock et les factures ;
   - l’espace client.
@@ -103,27 +103,25 @@ Sur cette même page se trouvent aussi :
 - la mention TVA ;
 - l’offre de lancement (−10 % jusqu’au 4 janvier 2027).
 
-### 8. Le paiement par carte et par PayPal
+### 8. Le paiement par carte (myPOS)
 
-Laurine crée elle-même ses comptes de paiement, avec son SIRET et son IBAN. Aucune clé ne passe par
-quelqu’un d’autre.
+Le paiement passe par **myPOS**, avec l’extension officielle « **myPOS Checkout** » (déjà installée sur
+floreetchenilles.fr).
 
-- **Carte bancaire (et Apple Pay, Google Pay)**
-  1. Installez l’extension « WooCommerce Stripe Payment Gateway ».
-  2. Ouvrez **WooCommerce › Réglages › Paiements › Stripe**, puis cliquez sur
-     **Créer ou connecter un compte**.
-- **PayPal**
-  1. Installez l’extension « WooCommerce PayPal Payments ».
-  2. Connectez-la à un compte PayPal **professionnel** (un compte personnel se convertit gratuitement).
-- **Paiement au retrait** (facultatif) : pour payer en espèces à l’atelier, activez
-  **Paiement à la livraison** dans WooCommerce › Réglages › Paiements, puis renommez-le
-  « Paiement au retrait à l’atelier ».
+1. Dans votre compte myPOS (myPOS Account), ouvrez **Paiements en ligne › Boutiques en ligne**, créez
+   la boutique `www.floreetchenilles.fr`, puis copiez son **pack de configuration** (« Configuration
+   Pack »).
+2. Dans WordPress, ouvrez **WooCommerce › Réglages › Paiements › myPOS Checkout**, puis :
+   - collez le pack dans la partie « Production » ;
+   - **décochez le mode test** ;
+   - enregistrez.
+3. Faites une vraie commande test de quelques euros, puis remboursez-la depuis votre compte myPOS.
 
-Stripe et PayPal prennent une petite commission sur chaque paiement : voyez leurs tarifs. L’argent arrive
-ensuite sur le compte bancaire de Laurine.
+Le pack de configuration est une clé secrète : ne l’envoyez à personne, ni par message ni par e-mail.
 
-Avant d’ouvrir la boutique, faites une vraie commande test, puis remboursez-la depuis la commande
-(bouton **Rembourser**).
+**Paiement au retrait** (facultatif) : pour payer en espèces à l’atelier, activez
+**Paiement à la livraison** dans WooCommerce › Réglages › Paiements, puis renommez-le
+« Paiement au retrait à l’atelier ».
 
 ### 9. Les e-mails
 
