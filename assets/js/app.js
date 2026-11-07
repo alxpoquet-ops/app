@@ -1,5 +1,5 @@
 /*!
- * Flore & Chenilles — interactions du site
+ * Flore & Chenilles : interactions du site
  * Boutique, sélection, compositeur « Votre bouquet à vous », cartes de vœux,
  * envoi des messages par e-mail, animations.
  * Le contenu (produits, prix, couleurs…) se modifie dans assets/js/data.js.
@@ -363,7 +363,7 @@
     if (c.to) parts.push('Pour ' + c.to);
     if (c.msg) parts.push(`«${NB}${c.msg}${NB}»`);
     if (c.from) parts.push('de la part de ' + c.from);
-    return parts.join(' — ');
+    return parts.join(', ');
   }
   /** Champs d'une carte de vœux (pour, message, de la part de) + idées de messages. */
   function cardFieldsHTML(id, card) {
@@ -740,10 +740,10 @@
       _replyto: d.email,
       email: d.email,
       Nom: d.name,
-      'Téléphone': (d.phone || '').trim() || '—',
+      'Téléphone': (d.phone || '').trim() || 'non indiqué',
       Message: msg.body
     };
-    if (!ENDPOINT) body._autoresponse = `Bonjour ${d.name}, merci pour votre message ! Je l’ai bien reçu et je vous réponds très vite. — ${BRAND}`;
+    if (!ENDPOINT) body._autoresponse = `Bonjour ${d.name}, merci pour votre message ! Je l’ai bien reçu et je vous réponds très vite. ${BRAND}`;
     try {
       const r = await fetch(SEND_URL, {
         method: 'POST',
@@ -855,13 +855,13 @@
     const opt = deliveryOption(d.delivery);
     const lines = [`Bonjour ${BRAND}${NB}!`, '', `J’aimerais commander${NB}:`, ''];
     cart.forEach((it) => {
-      lines.push(`• ${it.name}${it.qty > 1 ? ' × ' + it.qty : ''} — ${lineText(it)}`);
+      lines.push(`• ${it.name}${it.qty > 1 ? ' × ' + it.qty : ''} : ${lineText(it)}`);
       if (it.option) lines.push('   ' + it.option);
       lines.push(`   Carte de vœux${NB}: ` + (cardEmpty(it.card) ? 'sans message' : cardLine(it.card)));
     });
     const pl = promoLine();
-    if (pl) lines.push(`• ${pl.label} — ${pl.value}${pl.note ? ' (' + pl.note + ')' : ''}`);
-    if (opt.fee) lines.push(`• ${opt.feeLabel} — ${price(opt.fee)}`);
+    if (pl) lines.push(`• ${pl.label} : ${pl.value}${pl.note ? ' (' + pl.note + ')' : ''}`);
+    if (opt.fee) lines.push(`• ${opt.feeLabel} : ${price(opt.fee)}`);
     lines.push('', `Total${NB}: ${totalText(opt)}`, `Emballage${NB}: ${PACK.toLowerCase()}`, '', `Retrait ou livraison${NB}: ${opt.label}`);
     if (opt.delivery && d.address && d.address.trim()) lines.push(`Adresse de livraison${NB}: ${d.address.trim()}`);
     if (d.date) lines.push(`Pour le${NB}: ${frDate(d.date)}`);
@@ -869,7 +869,7 @@
     if (d.phone && d.phone.trim()) lines.push(`Téléphone${NB}: ${d.phone.trim()}`);
     if (d.note && d.note.trim()) lines.push('', d.note.trim());
     lines.push('', 'Merci beaucoup !');
-    return { subject: `Nouvelle commande — ${d.name}`, body: lines.join('\n') };
+    return { subject: `Nouvelle commande de ${d.name}`, body: lines.join('\n') };
   }
   function recapHTML(opt) {
     const pl = promoLine();
@@ -980,11 +980,11 @@
   /* ---------- Formulaire de contact ---------- */
   const contactForm = $('[data-contact-form]');
   function composeContact(d) {
-    const lines = [`Bonjour ${BRAND}${NB}!`, '', d.message.trim(), '', '— ' + d.name, `E-mail${NB}: ${d.email}`];
+    const lines = [`Bonjour ${BRAND}${NB}!`, '', d.message.trim(), '', d.name, `E-mail${NB}: ${d.email}`];
     if (d.phone && d.phone.trim()) lines.push(`Téléphone${NB}: ${d.phone.trim()}`);
     lines.push(`Sujet${NB}: ${d.subject}`);
     if (d.date) lines.push(`Date souhaitée${NB}: ${frDate(d.date)}`);
-    return { subject: `${d.subject} — ${d.name}`, body: lines.join('\n') };
+    return { subject: `${d.subject} : ${d.name}`, body: lines.join('\n') };
   }
   if (contactForm) safe('contact', () => {
     $('[data-form-actions]', contactForm).innerHTML = sendButton('Envoyer mon message');
@@ -1583,7 +1583,7 @@
     const sec = $('#avis');
     sec.hidden = false;
     $('[data-reviews]', sec).innerHTML = S.reviews.map((r, i) =>
-      `<figure class="review reveal" style="--i:${i % 3}"><blockquote>«${NB}${esc(r.text)}${NB}»</blockquote><figcaption>— ${esc(r.name)}${r.occasion ? ', ' + esc(r.occasion) : ''}</figcaption></figure>`
+      `<figure class="review reveal" style="--i:${i % 3}"><blockquote>«${NB}${esc(r.text)}${NB}»</blockquote><figcaption>${esc(r.name)}${r.occasion ? ', ' + esc(r.occasion) : ''}</figcaption></figure>`
     ).join('');
   });
 

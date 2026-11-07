@@ -330,7 +330,7 @@ function fcb_rest_contact( WP_REST_Request $r ) {
 	$phone   = sanitize_text_field( $g( 'phone' ) );
 	$date    = preg_match( '/^\d{4}-\d{2}-\d{2}$/', $g( 'date' ) ) ? $g( 'date' ) : '';
 	$brand   = fcb_brand();
-	$lines   = array( 'Bonjour ' . $brand . ' !', '', trim( $message ), '', '— ' . $name, 'E-mail : ' . $email );
+	$lines   = array( 'Bonjour ' . $brand . ' !', '', trim( $message ), '', $name, 'E-mail : ' . $email );
 	if ( $phone ) {
 		$lines[] = 'Téléphone : ' . $phone;
 	}
@@ -346,14 +346,14 @@ function fcb_rest_contact( WP_REST_Request $r ) {
 	$to   = fcb_opt( 'contact_email' );
 	$to   = is_email( $to ) ? $to : get_option( 'admin_email' );
 	$head = array( 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $name . ' <' . $email . '>' );
-	$ok   = wp_mail( $to, sprintf( '[%s] %s — %s', $brand, $subject ? $subject : 'Un message', $name ), implode( "\n", $lines ), $head );
+	$ok   = wp_mail( $to, sprintf( '[%s] %s : %s', $brand, $subject ? $subject : 'Un message', $name ), implode( "\n", $lines ), $head );
 	if ( ! $ok ) {
 		return new WP_Error( 'fcb_mail', 'Votre message n’est pas parti.', array( 'status' => 500 ) );
 	}
 	if ( 'yes' === fcb_opt( 'autoreply' ) ) {
 		wp_mail(
 			$email,
-			'Merci pour votre message — ' . $brand,
+			'Merci pour votre message, ' . $brand,
 			"Bonjour {$name},\n\nMerci pour votre message ! Je l’ai bien reçu et je vous réponds très vite.\n\nLaurine, {$brand}\n" . home_url( '/' ),
 			array( 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $brand . ' <' . $to . '>' )
 		);

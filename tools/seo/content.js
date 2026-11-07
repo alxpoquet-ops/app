@@ -1,5 +1,5 @@
 /*
- * Flore & Chenilles — textes des pages de contenu (référencement)
+ * Flore & Chenilles : textes des pages de contenu (référencement)
  * ------------------------------------------------------------------
  * Ces pages présentent les fleurs, les occasions et des conseils. Elles
  * renvoient vers le site ; le site, lui, ne les affiche pas dans son menu.

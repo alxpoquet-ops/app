@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Flore & Chenilles — CONTENU DU SITE
+   Flore & Chenilles : CONTENU DU SITE
    --------------------------------------------------------------------------
    C'est ici que l'on modifie les créations, les prix, la livraison, les
    fleurs du compositeur « Votre bouquet à vous », les occasions et les

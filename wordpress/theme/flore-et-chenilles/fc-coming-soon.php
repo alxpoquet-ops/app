@@ -14,7 +14,7 @@ $fc_mail = fc_setting( 'contact_email' );
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<meta name="robots" content="noindex, follow">
 	<meta name="theme-color" content="#FBF7F2">
-	<title>Flore &amp; Chenilles — Bientôt en ligne</title>
+	<title>Flore &amp; Chenilles | Bientôt en ligne</title>
 	<meta name="description" content="La boutique de fleurs éternelles en fil chenille de Flore &amp; Chenilles, faites main à Signy-l’Abbaye (Ardennes), ouvre très bientôt.">
 	<link rel="icon" href="<?php echo esc_url( FC_ASSETS . 'assets/img/favicon.png' ); ?>" type="image/png">
 	<link rel="preload" href="<?php echo esc_url( FC_ASSETS . 'assets/fonts/fraunces-latin-full-normal.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
@@ -65,7 +65,7 @@ $fc_mail = fc_setting( 'contact_email' );
 					<a class="btn btn-ghost" href="<?php echo esc_url( fc_setting( 'facebook' ) ); ?>" target="_blank" rel="noopener"><svg><use href="#i-facebook"/></svg> Facebook</a>
 				<?php endif; ?>
 			</div>
-			<p class="soon-foot">© <?php echo esc_html( wp_date( 'Y' ) ); ?> Flore &amp; Chenilles — fleurs éternelles faites main à Signy-l’Abbaye</p>
+			<p class="soon-foot">© <?php echo esc_html( wp_date( 'Y' ) ); ?> Flore &amp; Chenilles · Fleurs éternelles faites main à Signy-l’Abbaye</p>
 		</div>
 		<div class="soon-art" data-soon-art aria-hidden="true"><div class="soon-bug" data-soon-bug></div></div>
 	</main>

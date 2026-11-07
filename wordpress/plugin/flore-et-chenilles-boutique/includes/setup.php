@@ -214,7 +214,7 @@ function fcb_setup_legal_pages() {
 		. '<p>' . $todo( 'prénom et nom' ) . ', entrepreneur individuel (micro-entreprise), exerçant sous le nom commercial « ' . esc_html( $brand ) . ' ».<br>SIRET : ' . $todo( 'numéro SIRET' ) . '<br>Adresse : ' . $todo( 'adresse de l’atelier' ) . ', 08460 ' . esc_html( $city ) . '<br>E-mail : ' . esc_html( $mail ) . '<br>Téléphone : ' . $todo( 'numéro de téléphone' ) . '</p>'
 		. '<p>Directrice de la publication : ' . $todo( 'prénom et nom' ) . '.</p>'
 		. '<h2>Hébergeur</h2>'
-		. '<p>o2switch, Chemin des Pardiaux, 63000 Clermont-Ferrand, France — www.o2switch.fr ' . $todo( 'vérifier ces informations sur la page « mentions légales » du site o2switch.fr' ) . '</p>'
+		. '<p>o2switch, Chemin des Pardiaux, 63000 Clermont-Ferrand, France, www.o2switch.fr ' . $todo( 'vérifier ces informations sur la page « mentions légales » du site o2switch.fr' ) . '</p>'
 		. '<h2>Propriété intellectuelle</h2>'
 		. '<p>Les créations, photographies, textes et illustrations de ce site sont la propriété de ' . esc_html( $brand ) . '. Toute reproduction, même partielle, est interdite sans autorisation écrite.</p>'
 		. '<h2>Données personnelles</h2>'
@@ -315,7 +315,7 @@ function fcb_setup_store() {
 		'woocommerce_email_background_color'         => '#FBF7F2',
 		'woocommerce_email_body_background_color'    => '#FFFFFF',
 		'woocommerce_email_text_color'               => '#4A2C3D',
-		'woocommerce_email_footer_text'              => fcb_brand() . ' — fleurs éternelles en fil chenille, faites main à ' . $city . ' (Ardennes)',
+		'woocommerce_email_footer_text'              => fcb_brand() . ' · Fleurs éternelles en fil chenille, faites main à ' . $city . ' (Ardennes)',
 	);
 	foreach ( $set as $k => $v ) {
 		update_option( $k, $v );

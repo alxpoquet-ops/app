@@ -230,7 +230,7 @@ function fcb_card_line( $card ) {
 	if ( $card['from'] ) {
 		$parts[] = 'de la part de ' . $card['from'];
 	}
-	return implode( ' — ', $parts );
+	return implode( ', ', $parts );
 }
 
 /* ---------- Bouquet composé sur le site ---------- */

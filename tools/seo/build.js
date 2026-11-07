@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * Flore & Chenilles — génération des pages de contenu (référencement)
+ * Flore & Chenilles : génération des pages de contenu (référencement)
  * ------------------------------------------------------------------
  * Fabrique, à partir du catalogue (assets/js/data.js) et des textes
  * (tools/seo/content.js) :

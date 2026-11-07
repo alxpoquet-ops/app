@@ -11,7 +11,7 @@ function fc_seo_plugin_active() {
 	return defined( 'WPSEO_VERSION' ) || defined( 'RANK_MATH_VERSION' ) || defined( 'AIOSEO_VERSION' ) || defined( 'SEOPRESS_VERSION' );
 }
 
-const FC_HOME_TITLE = 'Flore & Chenilles — Fleurs éternelles en fil chenille, Ardennes';
+const FC_HOME_TITLE = 'Flore & Chenilles | Fleurs éternelles en fil chenille, Ardennes';
 const FC_HOME_DESC  = 'Fleurs éternelles en fil chenille faites main à Signy-l’Abbaye (Ardennes) : bouquets, fleurs à l’unité dès 8 €, carte de vœux offerte. Retrait ou livraison.';
 
 add_filter(
@@ -30,7 +30,7 @@ add_filter(
 add_filter(
 	'document_title_separator',
 	function () {
-		return '—';
+		return '|';
 	}
 );
 
@@ -72,7 +72,7 @@ add_action(
 			return;
 		}
 		$desc  = fc_seo_description();
-		$title = is_front_page() ? 'Flore & Chenilles — Des fleurs qui ne fanent jamais' : wp_get_document_title();
+		$title = is_front_page() ? 'Flore & Chenilles | Des fleurs qui ne fanent jamais' : wp_get_document_title();
 		$url   = is_front_page() ? home_url( '/' ) : ( is_singular() ? get_permalink() : '' );
 		$image = FC_ASSETS . 'assets/img/og-image.png';
 		if ( function_exists( 'is_product' ) && is_product() ) {
