@@ -32,16 +32,18 @@ Tout se règle dans **`src/config.js`** :
 2. **E-mail** de réception des demandes (`email`).
 3. **Domaine** définitif (`url`). Par défaut : `https://www.aled08.fr`.
 4. **Informations légales** (`legal`) : SIRET, immatriculation, assureur et numéro de contrat, **médiateur de la consommation** (obligatoire), hébergeur, mention TVA si vous êtes en franchise (`TVA non applicable, art. 293 B du CGI`).
-5. **Horaires** (`hours`) et **tarifs** (`tarifs`, `kmTiers`) : vérifiez qu'ils correspondent exactement à votre pratique.
+5. **Horaires** (`hours`), **forfait dépannage** (`forfait`), **grille** (`tarifs`) et **supplément kilométrique** (`kmTiers`) : vérifiez qu'ils correspondent exactement à votre pratique.
 6. **Distances** des communes (`communes`) : elles sont **indicatives**. Vérifiez-les, surtout celles proches d'une limite de tranche (Charleville-Mézières, Renwez, Sedan).
 7. **Avis clients** : les avis de `src/content/avis.js` sont des **exemples**. Remplacez-les par de vrais avis (Google…), puis passez `demoReviews: false`. Ne publiez jamais d'avis inventés.
 8. **Photos** : les visuels avant/après (`src/assets/img/realisations/`) sont des illustrations. Remplacez-les dès que possible par vos propres photos de chantier.
 9. **Numéro Enedis** cité dans certaines pages (`09 726 750 08`, dépannage des Ardennes) : vérifiez-le sur enedis.fr.
-10. Relisez les textes qui décrivent vos pratiques (pas de majoration le week-end, diagnostic non facturé quand la panne est connue, devis gratuit) et ajustez-les si besoin.
+10. Relisez les textes qui décrivent vos pratiques et ajustez-les si besoin : forfait dépannage 79 € (déplacement jusqu'à 15 km, recherche de panne, proposition de solution, devis de réparation sans obligation), supplément kilométrique au-delà de 15 km, aucun prix de pièce affiché, réparation sur devis, devis de travaux gratuit, pas de majoration le soir et le week-end.
 
 Le build affiche un rappel tant que des éléments restent à compléter.
 
 ---
+
+Des captures de présentation du site sont disponibles dans `docs/captures/`.
 
 ## Utilisation
 

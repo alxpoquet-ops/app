@@ -73,16 +73,25 @@ const hours = [
   { days: 'Dimanche', short: 'Dim', schemaDays: ['Sunday'], opens: '09:00', closes: '18:00', label: '9 h 00 – 18 h 00' },
 ];
 
-// Grille tarifaire (prix TTC, « à partir de » = intervention simple, matériel standard compris).
+// Forfait dépannage : prix unique, tout compris jusqu'au devis de réparation.
+const forfait = {
+  price: 79,
+  label: 'Forfait dépannage',
+  includes: [
+    { icon: 'car-front', text: 'Le déplacement à domicile', detail: 'jusqu’à 15 km de Signy-l’Abbaye' },
+    { icon: 'search', text: 'La recherche de panne', detail: 'méthodique, mesures à l’appui' },
+    { icon: 'lightbulb', text: 'La proposition de solution', detail: 'expliquée clairement, sans jargon' },
+    { icon: 'file-text', text: 'Le devis de réparation', detail: 'sans aucune obligation' },
+  ],
+};
+
+// Grille tarifaire (prix TTC). Aucun prix de pièce n'est affiché : toute réparation fait l'objet
+// d'un devis remis à la fin du dépannage.
 const tarifs = [
-  { id: 'diagnostic', label: 'Diagnostic de panne', price: 79, from: false, icon: 'search', note: 'Recherche méthodique de l’origine de la panne, mesures et explication claire.' },
-  { id: 'deplacement', label: 'Déplacement', price: 20, from: true, icon: 'car-front', note: 'Jusqu’à 15 km de Signy-l’Abbaye, puis supplément kilométrique selon la distance.' },
-  { id: 'prise', label: 'Remplacement de prise', price: 35, from: true, icon: 'plug', note: 'Prise standard 16 A sur installation existante.' },
-  { id: 'interrupteur', label: 'Remplacement d’interrupteur', price: 35, from: true, icon: 'toggle-right', note: 'Simple allumage ou va-et-vient sur installation existante.' },
-  { id: 'point-lumineux', label: 'Ajout de point lumineux', price: 90, from: true, icon: 'lightbulb', note: 'Création d’un point lumineux avec sa commande, selon accessibilité.' },
-  { id: 'disjoncteur', label: 'Remplacement de disjoncteur', price: 45, from: true, icon: 'zap', note: 'Disjoncteur divisionnaire modulaire dans un tableau existant.' },
-  { id: 'tableau', label: 'Remplacement de tableau électrique', price: 650, from: true, icon: 'panel-top', note: 'Tableau neuf conforme NF C 15-100 : différentiels 30 mA, disjoncteurs, repérage.' },
-  { id: 'securite', label: 'Mise en sécurité', price: null, from: false, icon: 'shield-check', note: 'Sur devis, après visite : chaque installation est différente.' },
+  { id: 'depannage', label: 'Forfait dépannage', price: 79, icon: 'zap', highlight: true, note: 'Déplacement jusqu’à 15 km, recherche de panne, proposition de solution et devis de réparation sans obligation.' },
+  { id: 'km', label: 'Supplément kilométrique', price: null, priceText: '+ 10 € / + 20 €', icon: 'route', note: '15 à 30 km : + 10 € · 30 à 45 km : + 20 € · au-delà de 45 km : sur devis.' },
+  { id: 'reparation', label: 'Réparation et pièces', price: null, priceText: 'Sur devis', icon: 'wrench', note: 'Chiffrée à la fin du dépannage. Vous acceptez ou non, sans obligation.' },
+  { id: 'travaux', label: 'Travaux et installations', price: null, priceText: 'Sur devis', icon: 'clipboard-check', note: 'Tableau, mise en sécurité, éclairage, prises, circuits : devis gratuit et détaillé.' },
 ];
 
 // Tarification kilométrique depuis Signy-l'Abbaye (distance par la route).
@@ -134,7 +143,7 @@ const communes = [
   { name: 'Rocroi', km: 38, page: 'electricien-rocroi', main: true },
   { name: 'Nouzonville', km: 41 },
   { name: 'Juniville', km: 42 },
-  { name: 'Sedan', km: 45, page: 'electricien-sedan', main: true, note: 'Selon l’adresse : + 20 € ou forfait annoncé à l’avance' },
+  { name: 'Sedan', km: 45, page: 'electricien-sedan', main: true, note: 'Forfait dépannage : 99 €, ou supplément annoncé à l’avance selon l’adresse' },
   { name: 'Vouziers', km: 50 },
   { name: 'Revin', km: 55 },
 ];
@@ -143,4 +152,4 @@ function tierFor(km) {
   return kmTiers.find((t) => km <= t.max);
 }
 
-module.exports = { site, hours, tarifs, kmTiers, communes, tierFor };
+module.exports = { site, hours, forfait, tarifs, kmTiers, communes, tierFor };

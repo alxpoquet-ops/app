@@ -14,9 +14,10 @@ function businessSchema() {
     '@type': 'Electrician',
     '@id': site.url + '/#entreprise',
     name: site.name,
-    alternateName: 'ALED08 — Électricien dans les Ardennes',
+    alternateName: 'ALED08 — Dépannage électrique dans les Ardennes',
+    slogan: 'Spécialiste du dépannage électrique, le soir et le week-end',
     description:
-      "Électricien indépendant basé à Signy-l'Abbaye (Ardennes) : dépannage électrique, recherche de panne, remplacement de tableau, prises, interrupteurs, éclairage et mise en sécurité. Interventions en soirée et le week-end sur rendez-vous.",
+      "Électricien spécialiste du dépannage basé à Signy-l'Abbaye (Ardennes). Forfait dépannage 79 € : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Travaux sur devis : tableau, prises, éclairage, mise en sécurité. Le soir et le week-end sur rendez-vous.",
     url: site.url + '/',
     telephone: site.phoneIntl,
     email: site.email,
@@ -51,11 +52,11 @@ function businessSchema() {
         '@type': 'Offer',
         itemOffered: { '@type': 'Service', name: t.label },
         ...(t.price != null
-          ? { priceSpecification: { '@type': 'PriceSpecification', priceCurrency: 'EUR', ...(t.from ? { minPrice: t.price } : { price: t.price }) } }
+          ? { price: t.price, priceCurrency: 'EUR', description: t.note }
           : {}),
       })),
     },
-    knowsAbout: ['Dépannage électrique', 'Recherche de panne électrique', 'Tableau électrique', 'Norme NF C 15-100', 'Mise en sécurité électrique', 'Éclairage LED'],
+    knowsAbout: ['Dépannage électrique', 'Recherche de panne', 'Recherche de panne électrique', 'Tableau électrique', 'Norme NF C 15-100', 'Mise en sécurité électrique', 'Éclairage LED'],
   };
   const sameAs = Object.values(site.social).filter(Boolean);
   if (sameAs.length) b.sameAs = sameAs;
@@ -101,8 +102,8 @@ function header(currentPath) {
   ];
   return `<a class="skip" href="#contenu">Aller au contenu</a>
 <div class="topbar"><div class="container topbar-in">
-  <span class="topbar-item hide-sm">${icon('moon')}Soirs &amp; week-ends, sur rendez-vous</span>
-  <span class="topbar-item hide-sm">${icon('map-pin')}Signy-l’Abbaye · Ardennes (08)</span>
+  <span class="topbar-item hide-sm">${icon('zap')}Spécialiste du dépannage · forfait 79 €</span>
+  <span class="topbar-item hide-lg">${icon('map-pin')}Signy-l’Abbaye · Ardennes (08)</span>
   <span class="topbar-item" data-dispo-wrap>${icon('clock')}<span data-dispo>Créneaux en soirée dès 18 h</span></span>
   <a class="topbar-phone" href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a>
 </div></div>
@@ -111,8 +112,9 @@ function header(currentPath) {
     <a class="brand" href="/" aria-label="ALED08, électricien dans les Ardennes — accueil">${C.logoSvg('lgh')}<span class="brand-text"><strong>ALED08</strong><small>Électricien · Ardennes</small></span></a>
     <nav class="nav" id="nav" aria-label="Navigation principale">
       <ul class="nav-list">
+        <li><a class="nav-link nav-link--hl" href="/prestations/depannage-electrique/"${currentPath === '/prestations/depannage-electrique/' ? ' aria-current="page"' : ''}>${icon('zap')}Dépannage</a></li>
         <li class="has-sub">
-          <a class="nav-link" href="/prestations/"${isActive('/prestations/')}>Prestations</a>
+          <a class="nav-link" href="/prestations/"${currentPath !== '/prestations/depannage-electrique/' ? isActive('/prestations/') : ''}>Prestations</a>
           <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="sub-prestations" aria-label="Afficher les prestations">${icon('chevron-down')}</button>
           <div class="sub" id="sub-prestations"><ul>
             ${mainServices.map((s) => `<li><a href="${s.path}">${icon(s.icon)}<span><strong>${s.name}</strong></span></a></li>`).join('')}
@@ -143,7 +145,7 @@ function footer() {
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand brand-light" href="/">${C.logoSvg('lgf')}<span class="brand-text"><strong>ALED08</strong><small>Électricien · Ardennes</small></span></a>
-      <p>Dépannage, recherche de panne et petits travaux électriques pour les particuliers, par ${site.owner}, électricien installé à Signy-l’Abbaye.</p>
+      <p><strong style="color:#fff">Spécialiste du dépannage électrique</strong> : forfait 79 € (déplacement, recherche de panne, solution et devis). Travaux sur devis pour les particuliers, par ${site.owner}, électricien à Signy-l’Abbaye.</p>
       <ul class="footer-contact">
         <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>
         <li><a href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}WhatsApp</a></li>

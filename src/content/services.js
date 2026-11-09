@@ -9,9 +9,9 @@ module.exports = [
     description: 'Plus de courant, disjoncteur qui saute, prise ou lumière en panne ? Dépannage électrique à domicile dans les Ardennes, le soir et le week-end.',
     kicker: 'Prestation · Dépannage électrique',
     h1: 'Dépannage électrique à domicile, en soirée et le week-end',
-    lead: "Une panne ne prévient pas, et elle arrive rarement aux heures de bureau. Depuis Signy-l'Abbaye, j'interviens chez les particuliers des Ardennes **le soir après 18 h et le week-end**, sur rendez-vous, pour remettre votre installation en service **sans bricolage et sans mauvaise surprise sur la facture**.",
+    lead: "Le dépannage, c'est **ma spécialité**. Une panne ne prévient pas, et elle arrive rarement aux heures de bureau : depuis Signy-l'Abbaye, j'interviens chez les particuliers des Ardennes **le soir après 18 h et le week-end**, sur rendez-vous. **Forfait de 79 €** : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation.",
     prestation: 'depannage',
-    chips: [{ icon: 'clock', text: 'Soirs dès 18 h' }, { icon: 'calendar-days', text: 'Samedi & dimanche' }, { icon: 'euro', text: 'Prix annoncé avant' }],
+    chips: [{ icon: 'zap', text: 'Forfait 79 € tout compris' }, { icon: 'clock', text: 'Soirs dès 18 h' }, { icon: 'calendar-days', text: 'Samedi & dimanche' }],
     intro: `## Les pannes que je dépanne le plus souvent
 
 Un dépannage électrique, ce n'est pas seulement « remettre le disjoncteur ». Si un appareil de protection a coupé, c'est qu'il a détecté quelque chose. Mon travail consiste à **trouver ce qui a provoqué la coupure**, à le corriger durablement, puis à vérifier que tout est de nouveau sûr.`,
@@ -39,16 +39,16 @@ Quelques vérifications simples permettent parfois de gagner du temps, et elles 
 
 ## Pourquoi un dépannage le soir ou le week-end ?
 
-La plupart des entreprises d'électricité travaillent en journée, du lundi au vendredi. Résultat : quand la panne tombe un mardi soir ou un samedi matin, il faut souvent attendre plusieurs jours, ou poser une demi-journée de congé. J'ai fait le choix inverse : **mes créneaux sont justement les soirs de semaine et les week-ends**, quand vous êtes chez vous. Le tarif est le même qu'en semaine, sans majoration.
+La plupart des entreprises d'électricité travaillent en journée, du lundi au vendredi. Résultat : quand la panne tombe un mardi soir ou un samedi matin, il faut souvent attendre plusieurs jours, ou poser une demi-journée de congé. J'ai fait le choix inverse : **mes créneaux sont justement les soirs de semaine et les week-ends**, quand vous êtes chez vous. Le forfait est le même tous les jours, sans majoration.
 
 ## Un dépannage propre, pas un rafistolage
 
 Un domino sous un isolant, un disjoncteur remplacé par un calibre supérieur « pour qu'il arrête de sauter » : ces solutions dépannent dix minutes et créent un vrai risque. Je remplace ce qui doit l'être par du matériel de marque, au bon calibre, en respectant la **norme NF C 15-100**. Si je constate un danger sans rapport avec la panne, je vous le signale clairement, sans vous l'imposer : vous décidez.`,
     steps: [
-      { t: 'Vous m’appelez ou m’écrivez', d: 'Vous décrivez la panne (une photo du tableau sur WhatsApp aide beaucoup). Je vous indique le prix du déplacement et du diagnostic.' },
+      { t: 'Vous m’appelez ou m’écrivez', d: 'Vous décrivez la panne (une photo du tableau sur WhatsApp aide beaucoup). Je vous confirme le forfait pour votre commune.' },
       { t: 'Rendez-vous fixé', d: 'Un créneau le soir ou le week-end, selon vos disponibilités et l’urgence de la situation.' },
-      { t: 'Diagnostic et devis immédiat', d: 'Je localise l’origine de la panne, je vous l’explique et je vous annonce le prix de la réparation avant de la faire.' },
-      { t: 'Réparation et contrôle', d: 'Remise en service, tests des protections et conseils pour éviter que la panne ne revienne.' },
+      { t: 'Recherche, solution et devis', d: 'Je localise l’origine de la panne, je vous l’explique et je vous remets un devis de réparation, sans obligation.' },
+      { t: 'Réparation si vous acceptez', d: 'Remise en service, tests des protections et conseils pour éviter que la panne ne revienne.' },
     ],
     prices: ['diagnostic', 'deplacement', 'prise', 'interrupteur', 'disjoncteur'],
     cases: [
@@ -57,12 +57,12 @@ Un domino sous un isolant, un disjoncteur remplacé par un calibre supérieur «
       { tag: 'Dimanche', icon: 'zap', title: 'Plus de lumière à l’étage après un orage', text: "Après une nuit orageuse, le circuit d'éclairage de l'étage reste coupé. Un interrupteur va-et-vient a été endommagé et met le circuit en court-circuit.", result: 'Interrupteur remplacé, test des autres commandes, conseil sur l’intérêt d’un parafoudre.' },
     ],
     faq: [
-      { q: 'Combien coûte un dépannage électrique ?', a: "Le déplacement démarre à 20 € (sans supplément jusqu'à 15 km de Signy-l'Abbaye) et le diagnostic de panne est à 79 €. La réparation éventuelle (prise dès 35 €, disjoncteur dès 45 €…) vous est annoncée avant d'être réalisée. Voir la [grille tarifaire complète](/tarifs/)." },
+      { q: 'Combien coûte un dépannage électrique ?', a: "Le forfait dépannage est de 79 € : il comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de la panne, la proposition de solution et le devis de réparation. Au-delà de 15 km, comptez 10 € ou 20 € de supplément. La réparation fait l'objet d'un devis, que vous acceptez ou non. Voir les [tarifs](/tarifs/)." },
       { q: 'Intervenez-vous en urgence la nuit ?', a: "Non : j'interviens le soir jusqu'à 21 h 30 et le week-end, sur rendez-vous. Pour une coupure générale de la rue, contactez Enedis. Pour une situation dangereuse (fumée, odeur de brûlé), coupez le courant au disjoncteur général et, en cas de doute, appelez le 18." },
-      { q: 'Faites-vous les dépannages le dimanche ?', a: 'Oui, le dimanche de 9 h à 18 h, sur rendez-vous, au même tarif que les autres jours.' },
-      { q: 'Et si la panne vient de mon compteur Linky ?', a: "Le compteur et le disjoncteur de branchement relèvent d'Enedis. Si mon diagnostic montre que la panne se situe avant votre tableau, je vous le dis et vous oriente vers Enedis, sans facturer de réparation que je ne peux pas faire." },
+      { q: 'Faites-vous les dépannages le dimanche ?', a: 'Oui, le dimanche de 9 h à 18 h, sur rendez-vous, avec le même forfait que les autres jours.' },
+      { q: 'Et si la panne vient de mon compteur Linky ?', a: "Le compteur et le disjoncteur de branchement relèvent d'Enedis. Si mon diagnostic montre que la panne se situe avant votre tableau, je vous le dis et vous oriente vers Enedis : il n'y a alors pas de devis de réparation de ma part." },
     ],
-    cta: { title: 'Panne de courant ? On s’en occupe ce soir ou ce week-end.', text: 'Appelez ou envoyez une photo de votre tableau sur WhatsApp : je vous réponds avec un créneau et un prix clair.' },
+    cta: { title: 'Panne de courant ? On s’en occupe ce soir ou ce week-end.', text: 'Forfait dépannage 79 €, devis de réparation sans obligation. Appelez ou envoyez une photo de votre tableau sur WhatsApp.' },
     links: ['/depannage-electrique-ardennes/', '/disjoncteur-qui-saute/', '/differentiel-qui-saute/', '/panne-courant-partielle/', '/prise-qui-chauffe/', '/electricien-urgence-ardennes/', '/blog/prix-depannage-electrique/', '/blog/pourquoi-une-prise-disjoncte/'],
   },
 
@@ -71,13 +71,13 @@ Un domino sous un isolant, un disjoncteur remplacé par un calibre supérieur «
     key: 'panne',
     path: '/prestations/recherche-de-panne/',
     label: 'Recherche de panne électrique',
-    title: 'Recherche de panne électrique – diagnostic 79 € | ALED08 Ardennes',
-    description: 'Panne intermittente, différentiel qui saute sans raison, circuit mort ? Recherche de panne méthodique avec mesures dans les Ardennes. Diagnostic 79 €.',
+    title: 'Recherche de panne électrique – forfait 79 € | ALED08 Ardennes',
+    description: 'Panne intermittente, différentiel qui saute sans raison, circuit mort ? Recherche méthodique avec mesures dans les Ardennes. Forfait 79 €.',
     kicker: 'Prestation · Recherche de panne',
     h1: 'Recherche de panne électrique : trouver la vraie cause',
     lead: "Certaines pannes sont évidentes. D'autres se cachent : un différentiel qui saute une fois par semaine, un circuit qui coupe seulement quand il pleut, une lumière qui grésille. **La recherche de panne, c'est mon cœur de métier** : une méthode, des appareils de mesure, et une explication claire à la fin.",
     prestation: 'recherche-panne',
-    chips: [{ icon: 'search', text: 'Diagnostic 79 €' }, { icon: 'gauge', text: 'Mesures d’isolement' }, { icon: 'clipboard-check', text: 'Explication claire' }],
+    chips: [{ icon: 'search', text: 'Inclus dans le forfait 79 €' }, { icon: 'gauge', text: 'Mesures d’isolement' }, { icon: 'clipboard-check', text: 'Explication claire' }],
     intro: `## Une méthode plutôt que des suppositions
 
 Changer des pièces au hasard coûte cher et ne règle souvent rien. Ma démarche est toujours la même : **écouter, isoler, mesurer, confirmer**. Votre description compte beaucoup (quand la panne arrive-t-elle ? depuis quand ? après quel événement ?), car elle oriente les premières vérifications.`,
@@ -108,9 +108,9 @@ Une borne mal serrée provoque des lumières qui vacillent, des prises qui chauf
 
 ## Ce que vous obtenez à la fin
 
-Une recherche de panne se termine toujours par une explication concrète : **où était le défaut, pourquoi il s'est produit et comment l'éviter**. Si la réparation est simple et que vous êtes d'accord sur le prix, je la réalise dans la foulée. Si elle demande du matériel spécifique ou plus de temps, je vous remets un devis détaillé.
+Une recherche de panne se termine toujours par une explication concrète : **où était le défaut, pourquoi il s'est produit et comment l'éviter**. Je vous remets ensuite un **devis de réparation**, sans obligation. Si vous l'acceptez et que la réparation est simple, je la réalise dans la foulée ; si elle demande du matériel spécifique, on fixe un nouveau créneau.
 
-> Le diagnostic de panne est facturé 79 €, auxquels s'ajoute le déplacement (dès 20 €). Ce prix est fixe et annoncé au téléphone : pas de compteur horaire qui tourne pendant que je cherche.`,
+> La recherche de panne est comprise dans le forfait dépannage de 79 €, avec le déplacement (jusqu'à 15 km), la proposition de solution et le devis. Ce prix est fixe et annoncé au téléphone : pas de compteur horaire qui tourne pendant que je cherche.`,
     steps: [
       { t: 'Description de la panne', d: 'Au téléphone ou par message : symptômes, fréquence, travaux ou événements récents.' },
       { t: 'Isolement', d: 'Je sépare les circuits et les appareils pour localiser la zone en défaut.' },
@@ -124,9 +124,9 @@ Une recherche de panne se termine toujours par une explication concrète : **où
       { tag: 'Faux contact', icon: 'lightbulb', title: 'Lumières qui baissent quand le four chauffe', text: "Les ampoules du salon faiblissent dès que le four se met en route. Le neutre commun, mal serré dans le tableau, chauffait et créait une chute de tension.", result: 'Borne remplacée, toutes les connexions du tableau contrôlées et resserrées au couple.' },
     ],
     faq: [
-      { q: 'Que comprend le diagnostic à 79 € ?', a: "La recherche méthodique de l'origine de la panne sur place : contrôles, isolement des circuits, mesures et explication. Le déplacement s'ajoute (dès 20 €). La réparation est chiffrée séparément et toujours avant d'être faite." },
+      { q: 'Que comprend le forfait à 79 € ?', a: "Le déplacement jusqu'à 15 km, la recherche méthodique de l'origine de la panne (contrôles, isolement des circuits, mesures), l'explication de la solution et le devis de réparation. La réparation n'est réalisée que si vous acceptez ce devis." },
       { q: 'Et si vous ne trouvez pas la panne ?', a: "Sur une panne intermittente, il arrive que le défaut ne se manifeste pas pendant ma visite. Je vous le dis franchement, je vous explique ce qui a été écarté et je vous propose une méthode pour le prochain déclenchement (relevé des heures, appareils en marche) afin de cibler la suite." },
-      { q: 'Pouvez-vous réparer le jour même ?', a: "Dans la majorité des cas, oui : prises, interrupteurs, disjoncteurs, connexions, luminaires. J'ai dans mon véhicule le matériel courant. Les réparations plus lourdes font l'objet d'un devis." },
+      { q: 'Pouvez-vous réparer le jour même ?', a: "Dans la majorité des cas, oui, une fois le devis accepté : prises, interrupteurs, disjoncteurs, connexions, luminaires. J'ai dans mon véhicule le matériel courant ; une pièce particulière peut nécessiter un second passage." },
       { q: 'Le diagnostic remplace-t-il un diagnostic immobilier ?', a: "Non. Pour une vente ou une location, le diagnostic électrique réglementaire doit être réalisé par un diagnostiqueur certifié. Ma recherche de panne vise à réparer. Voir aussi le [bilan avant achat](/bilan-electrique-avant-achat/)." },
     ],
     cta: { title: 'Une panne qui revient sans prévenir ?', text: 'Décrivez-moi les symptômes : je vous dis au téléphone par où commencer, et je viens mesurer le soir ou le week-end.' },
@@ -138,13 +138,13 @@ Une recherche de panne se termine toujours par une explication concrète : **où
     key: 'tableau',
     path: '/prestations/tableau-electrique/',
     label: 'Tableau électrique',
-    title: 'Remplacement de tableau électrique dès 650 € – Ardennes | ALED08',
-    description: 'Tableau à fusibles, sans différentiel 30 mA ou qui chauffe ? Remplacement de tableau aux normes NF C 15-100 dans les Ardennes, dès 650 €.',
+    title: 'Remplacement de tableau électrique sur devis – Ardennes | ALED08',
+    description: 'Tableau à fusibles, sans différentiel 30 mA ou qui chauffe ? Remplacement de tableau aux normes NF C 15-100 dans les Ardennes, devis gratuit.',
     kicker: 'Prestation · Tableau électrique',
     h1: 'Remplacement de tableau électrique aux normes NF C 15-100',
-    lead: "Le tableau est le cœur de votre installation : c'est lui qui protège les personnes contre l'électrocution et les câbles contre la surchauffe. Un tableau à fusibles, sans différentiel 30 mA ou bricolé au fil des années **ne joue plus ce rôle**. Je le remplace par un tableau neuf, clair et repéré, **à partir de 650 €**.",
+    lead: "Le tableau est le cœur de votre installation : c'est lui qui protège les personnes contre l'électrocution et les câbles contre la surchauffe. Un tableau à fusibles, sans différentiel 30 mA ou bricolé au fil des années **ne joue plus ce rôle**. Je le remplace par un tableau neuf, clair et repéré, **sur devis gratuit et détaillé**.",
     prestation: 'tableau',
-    chips: [{ icon: 'panel-top', text: 'Dès 650 € TTC' }, { icon: 'shield-check', text: 'Différentiels 30 mA' }, { icon: 'calendar-days', text: 'Pose le samedi' }],
+    chips: [{ icon: 'file-text', text: 'Devis gratuit' }, { icon: 'shield-check', text: 'Différentiels 30 mA' }, { icon: 'calendar-days', text: 'Pose le samedi' }],
     intro: `## Faut-il changer votre tableau ?
 
 Un remplacement s'impose, ou mérite d'être sérieusement envisagé, dans les situations suivantes :`,
@@ -173,13 +173,13 @@ Je viens d'abord voir votre installation pour compter les circuits, vérifier la
 
 [[cta]]
 
-## Pourquoi « à partir de 650 € » ?
+## Pourquoi un devis plutôt qu'un prix affiché ?
 
-Ce prix correspond au remplacement d'un tableau simple dans un logement de taille moyenne, avec une terre existante et des circuits en bon état. Le montant final dépend du **nombre de circuits**, du **type de différentiels** nécessaires et des éventuelles reprises (circuit à dédoubler, câble trop court, terre à créer). Tout est détaillé ligne par ligne sur le devis : vous savez ce que vous payez et pourquoi.
+Aucun tableau ne ressemble à un autre. Le montant dépend du **nombre de circuits**, du **type de différentiels** nécessaires et des éventuelles reprises (circuit à dédoubler, câble trop court, terre à créer). Tout est détaillé ligne par ligne sur le devis : vous savez ce que vous payez et pourquoi.
 
 > Le disjoncteur de branchement (celui réglé par Enedis selon votre abonnement) et le compteur ne font pas partie du tableau que je remplace : ils appartiennent au réseau de distribution.`,
     steps: [
-      { t: 'Visite et devis', d: 'Comptage des circuits, contrôle de la terre, photos. Devis détaillé et gratuit.' },
+      { t: 'Visite et devis', d: 'Comptage des circuits, contrôle de la terre, photos. Devis détaillé et gratuit, ou remis à la fin d’un dépannage.' },
       { t: 'Préparation', d: 'Commande du matériel de marque et choix d’un créneau, souvent un samedi.' },
       { t: 'Remplacement', d: 'Coupure de quelques heures, pose, raccordement par peignes, repérage.' },
       { t: 'Essais et explications', d: 'Test de chaque protection, schéma de repérage et prise en main du nouveau tableau.' },
@@ -192,7 +192,7 @@ Ce prix correspond au remplacement d'un tableau simple dans un logement de taill
     ],
     faq: [
       { q: 'Combien de temps faut-il pour remplacer un tableau ?', a: "Pour une maison standard, comptez une demi-journée à une journée. Le courant est coupé pendant ce temps, c'est pourquoi je propose ces chantiers en priorité le samedi." },
-      { q: 'Le prix de 650 € comprend-il le matériel ?', a: "Oui : le coffret, les interrupteurs différentiels, les disjoncteurs, les peignes et la main-d'œuvre pour un tableau simple. Le devis précise exactement le matériel posé et le nombre de circuits." },
+      { q: 'Que comprend le devis de remplacement ?', a: "Le coffret, les interrupteurs différentiels, les disjoncteurs, les peignes de raccordement, le repérage et la main-d'œuvre, ligne par ligne. Vous savez exactement ce qui sera posé et pourquoi." },
       { q: 'Faut-il refaire toute l’installation en même temps ?', a: "Pas forcément. Le tableau neuf apporte immédiatement une protection des personnes grâce aux différentiels 30 mA. Si certains circuits sont en mauvais état, je vous le signale et on peut les reprendre progressivement. Voir [quand refaire son installation](/blog/quand-refaire-son-installation-electrique/)." },
       { q: 'Le Consuel est-il nécessaire ?', a: "Pour un simple remplacement de tableau dans une installation existante, une attestation Consuel n'est généralement pas exigée. Elle l'est en cas de rénovation complète avec remise sous tension par le distributeur. Je vous indique ce qui s'applique à votre cas." },
     ],
@@ -205,13 +205,13 @@ Ce prix correspond au remplacement d'un tableau simple dans un logement de taill
     key: 'prises',
     path: '/prestations/prises-et-interrupteurs/',
     label: 'Prises et interrupteurs',
-    title: 'Remplacement de prises et interrupteurs dès 35 € | ALED08 Ardennes',
-    description: 'Prise cassée, qui chauffe ou sans terre, interrupteur hors service, ajout de prise ou va-et-vient : pose soignée dès 35 €, le soir et le week-end.',
+    title: 'Remplacement de prises et interrupteurs – Ardennes | ALED08',
+    description: 'Prise cassée, qui chauffe ou sans terre, interrupteur hors service, ajout de prise ou va-et-vient : pose soignée sur devis, le soir et le week-end.',
     kicker: 'Prestation · Prises et interrupteurs',
     h1: 'Prises et interrupteurs : remplacement, ajout et prises spécialisées',
-    lead: "Une prise qui bouge dans le mur, un interrupteur qui craque, des multiprises en cascade derrière la télévision : ce sont de petits travaux, mais **ils touchent directement à votre sécurité au quotidien**. Je remplace ou j'ajoute prises et interrupteurs avec du matériel de marque, **à partir de 35 €**.",
+    lead: "Une prise qui bouge dans le mur, un interrupteur qui craque, des multiprises en cascade derrière la télévision : ce sont de petits travaux, mais **ils touchent directement à votre sécurité au quotidien**. Je remplace ou j'ajoute prises et interrupteurs avec du matériel de marque, **sur devis**.",
     prestation: 'prises',
-    chips: [{ icon: 'plug', text: 'Prise dès 35 €' }, { icon: 'toggle-right', text: 'Interrupteur dès 35 €' }, { icon: 'plug-zap', text: 'Prises spécialisées' }],
+    chips: [{ icon: 'plug', text: 'Prises' }, { icon: 'toggle-right', text: 'Interrupteurs et va-et-vient' }, { icon: 'plug-zap', text: 'Prises spécialisées' }],
     intro: `## Les interventions courantes
 
 Ces travaux se font en général en une soirée. Je peux en regrouper plusieurs lors d'un même passage, ce qui évite de payer plusieurs déplacements.`,
@@ -241,7 +241,7 @@ La norme NF C 15-100 limite le nombre de prises par circuit : **8 prises maximum
 Les gros appareils doivent disposer de leur **propre circuit**, avec une protection dédiée : four, lave-linge, lave-vaisselle, sèche-linge, congélateur, plaque de cuisson (en 32 A). Brancher un four sur une prise ordinaire partagée avec la cuisine, c'est la garantie de déclenchements à répétition, voire d'échauffements. Je crée ces lignes depuis le tableau, avec la section de câble adaptée.`,
     steps: [
       { t: 'Liste des besoins', d: 'Vous me listez les prises et interrupteurs à changer ou ajouter, avec photos si possible.' },
-      { t: 'Prix annoncé', d: 'Je vous donne un prix pour l’ensemble avant de venir, déplacement compris.' },
+      { t: 'Devis', d: 'Je vous remets un devis pour l’ensemble, déplacement compris.' },
       { t: 'Pose soignée', d: 'Contrôle des conducteurs et de la terre, pose de niveau, matériel de marque.' },
       { t: 'Vérification', d: 'Test de chaque prise et de chaque commande, nettoyage avant de partir.' },
     ],
@@ -252,11 +252,11 @@ Les gros appareils doivent disposer de leur **propre circuit**, avec une protect
       { tag: 'Électroménager', icon: 'plug-zap', title: 'Le lave-vaisselle fait disjoncter la cuisine', text: "Le lave-vaisselle était branché sur une prise du plan de travail, en même temps que la bouilloire et le grille-pain.", result: 'Création d’une ligne spécialisée 20 A depuis le tableau : fini les coupures pendant le petit-déjeuner.' },
     ],
     faq: [
-      { q: 'Le prix de 35 € comprend-il la prise ?', a: "Oui, pour une prise standard 16 A ou un interrupteur courant posés sur une installation existante. Les modèles particuliers (USB, étanche, design) sont chiffrés à part. Le déplacement s'ajoute (dès 20 €)." },
+      { q: 'Combien coûte le remplacement d’une prise ?', a: "Je ne fixe pas de prix à l'avance : tout dépend de l'état des conducteurs, de la boîte et du modèle choisi. Si la prise est en panne, le forfait dépannage (79 €) couvre la recherche et le devis ; pour une liste de travaux, je vous remets un devis gratuit." },
       { q: 'Pouvez-vous ajouter une prise là où il n’y en a pas ?', a: "Oui, en repiquant sur un circuit existant si la norme le permet, ou en créant un nouveau circuit. Selon les murs, la pose se fait en encastré ou en apparent sous moulure. Je vous présente les deux options et leur prix." },
       { q: 'Mes prises n’ont pas de terre, est-ce grave ?', a: "Sans terre, une fuite de courant sur un appareil métallique peut passer par vous. Le différentiel 30 mA limite ce risque, mais la terre reste indispensable pour les appareils de classe I (lave-linge, four, réfrigérateur…). Voir [mise à la terre](/mise-a-la-terre/)." },
     ],
-    cta: { title: 'Une liste de prises et d’interrupteurs à changer ?', text: 'Regroupez tout en une visite : je vous donne un prix global à l’avance et je m’en occupe en soirée.' },
+    cta: { title: 'Une liste de prises et d’interrupteurs à changer ?', text: 'Regroupez tout en une visite : je vous remets un devis global et je m’en occupe en soirée.' },
     links: ['/prise-specialisee/', '/prise-qui-chauffe/', '/prise-qui-ne-fonctionne-plus/', '/prise-sans-terre/', '/prise-exterieure/', '/prise-renforcee-voiture-electrique/', '/petits-travaux-electriques/'],
   },
 
@@ -266,12 +266,12 @@ Les gros appareils doivent disposer de leur **propre circuit**, avec une protect
     path: '/prestations/eclairage-interieur/',
     label: 'Éclairage intérieur',
     title: 'Installation d’éclairage intérieur et spots LED – Ardennes | ALED08',
-    description: "Ajout de point lumineux dès 90 €, spots LED, plafonniers, appliques, variateurs, remplacement d'éclairage existant : électricien dans les Ardennes.",
+    description: "Ajout de point lumineux, spots LED, plafonniers, appliques, variateurs, remplacement d'éclairage existant : électricien dans les Ardennes, sur devis.",
     kicker: 'Prestation · Éclairage intérieur',
     h1: 'Éclairage intérieur : la bonne lumière, au bon endroit',
-    lead: "Un plafonnier unique au milieu de la pièce, une cuisine où l'on travaille dans son ombre, un escalier mal éclairé : **l'éclairage change complètement le confort d'une maison**. J'installe et je remplace vos luminaires, spots et commandes, et je vous conseille sur la lumière adaptée à chaque pièce. **Ajout de point lumineux dès 90 €.**",
+    lead: "Un plafonnier unique au milieu de la pièce, une cuisine où l'on travaille dans son ombre, un escalier mal éclairé : **l'éclairage change complètement le confort d'une maison**. J'installe et je remplace vos luminaires, spots et commandes, et je vous conseille sur la lumière adaptée à chaque pièce, **sur devis gratuit**.",
     prestation: 'eclairage-interieur',
-    chips: [{ icon: 'lightbulb', text: 'Point lumineux dès 90 €' }, { icon: 'sparkles', text: 'Spots LED' }, { icon: 'sun-moon', text: 'Variateurs' }],
+    chips: [{ icon: 'lightbulb', text: 'Points lumineux' }, { icon: 'sparkles', text: 'Spots LED' }, { icon: 'sun-moon', text: 'Variateurs' }],
     intro: `## Ce que je peux installer chez vous
 
 Que ce soit pour une pièce entière ou un seul luminaire, je m'occupe de l'alimentation, de la commande et de la pose.`,
@@ -314,7 +314,7 @@ Une LED « dimmable » branchée sur un ancien variateur prévu pour halogène g
       { tag: 'Remplacement', icon: 'sparkles', title: 'Des halogènes qui grillaient sans cesse', text: "Huit spots halogènes 12 V au plafond d'un séjour, dont un ou deux grillaient chaque mois, avec des transformateurs fatigués.", result: 'Remplacement par des spots LED 230 V de qualité : plus de transformateurs, consommation divisée par six.' },
     ],
     faq: [
-      { q: 'Combien coûte l’ajout d’un point lumineux ?', a: "À partir de 90 € pour un point lumineux avec sa commande, lorsque l'alimentation est facilement accessible. Le prix augmente si une saignée importante ou un nouveau circuit est nécessaire. Le luminaire peut être fourni par vous ou par moi." },
+      { q: 'Combien coûte l’ajout d’un point lumineux ?', a: "Cela dépend de l'accès à l'alimentation, d'une éventuelle saignée ou d'un nouveau circuit. Je vous remets un devis gratuit après avoir vu la pièce, ou sur photos pour les cas simples. Le luminaire peut être fourni par vous ou par moi." },
       { q: 'Pouvez-vous poser un luminaire que j’ai acheté ?', a: "Oui, bien sûr. Je vérifie simplement qu'il est adapté à la pièce (indice de protection dans une salle de bain, poids pour un lustre) avant la pose." },
       { q: 'Faut-il beaucoup de travaux pour installer des spots ?', a: "Dans un plafond en plaque de plâtre, les spots se posent proprement sans gros travaux. Dans un plafond en béton ou en lambris, c'est plus délicat : je vous propose alors d'autres solutions, comme les rails ou les appliques." },
     ],

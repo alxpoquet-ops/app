@@ -76,7 +76,7 @@ Là où vos observations s'arrêtent, l'électricien mesure. Avec un **contrôle
       { q: 'Peut-on chercher une panne électrique soi-même ?', a: "Les étapes d'observation, de lecture du tableau et de débranchement des appareils sont sans risque. L'ouverture de boîtes, de prises ou du tableau demande en revanche des compétences et du matériel de vérification." },
       { q: 'Pourquoi la panne disparaît-elle quand l’électricien arrive ?', a: "C'est fréquent avec les défauts liés à l'humidité ou à la température. Les mesures d'isolement permettent souvent de détecter le défaut même lorsqu'il ne se manifeste pas." },
     ],
-    cta: { title: 'La panne résiste à votre enquête ?', text: 'Transmettez-moi vos observations : je viens mesurer le soir ou le week-end. Diagnostic 79 €.' },
+    cta: { title: 'La panne résiste à votre enquête ?', text: 'Transmettez-moi vos observations : je viens mesurer le soir ou le week-end. Forfait dépannage 79 €.' },
     links: ['/prestations/recherche-de-panne/', '/disjoncteur-qui-saute/', '/differentiel-qui-saute/', '/panne-courant-partielle/', '/recherche-panne-electrique-ardennes/'],
     related: ['pourquoi-une-prise-disjoncte', 'differentiel-ou-disjoncteur-difference', 'prix-depannage-electrique'],
   },
@@ -131,7 +131,7 @@ Lors d'une vente ou d'une location, le diagnostic électrique pointe systématiq
 
 ## Combien ça coûte ?
 
-Le remplacement d'un tableau démarre généralement autour de quelques centaines d'euros pour un petit logement, et augmente avec le nombre de circuits et de différentiels. Chez ALED08, il est **à partir de 650 €** pour un tableau simple, avec un devis gratuit et détaillé. La plupart du temps, les câbles existants sont conservés : seul le tableau change, en une journée.`,
+Le remplacement d'un tableau démarre généralement autour de quelques centaines d'euros pour un petit logement, et augmente avec le nombre de circuits et de différentiels. Chez ALED08, il fait l'objet d'un **devis gratuit et détaillé**, établi après comptage des circuits. La plupart du temps, les câbles existants sont conservés : seul le tableau change, en une journée.`,
     faq: [
       { q: 'Quelle est la durée de vie d’un tableau électrique ?', a: "Il n'y a pas de date de péremption, mais au-delà de 25 à 30 ans, les tableaux ne correspondent plus aux exigences de sécurité actuelles et leurs composants vieillissent." },
       { q: 'Peut-on simplement ajouter un différentiel à un vieux tableau ?', a: "Parfois, oui, quand le tableau est en bon état et dispose de place. C'est une solution intermédiaire intéressante ; elle ne règle cependant pas le problème des fusibles ou des connexions vétustes." },

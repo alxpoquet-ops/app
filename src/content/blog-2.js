@@ -108,46 +108,46 @@ Ces règles existent justement pour éviter les mauvaises surprises : n'hésitez
 
 ## Les tarifs d'ALED08
 
-Pour la transparence, voici ma grille de base, identique du lundi au dimanche, soirées comprises :
+Chez moi, le principe est simple, et identique du lundi au dimanche, soirées comprises :
 
-- **Déplacement** : 20 € jusqu'à 15 km de Signy-l'Abbaye, puis + 10 € (15 à 30 km) ou + 20 € (30 à 45 km).
-- **Diagnostic de panne** : 79 €.
-- **Remplacement de prise ou d'interrupteur** : à partir de 35 €.
-- **Remplacement de disjoncteur** : à partir de 45 €.
-- **Ajout de point lumineux** : à partir de 90 €.
+- **Forfait dépannage : 79 €.** Il comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de panne, la proposition de solution et le devis de réparation.
+- **Supplément kilométrique** : + 10 € de 15 à 30 km, + 20 € de 30 à 45 km.
+- **Réparation et pièces** : sur devis, remis à la fin du dépannage, **sans obligation**.
+
+Je ne publie volontairement aucun prix de pièce : il dépend de ce que l'on trouve, et un prix « à partir de » ne correspond jamais à votre situation réelle.
 
 ## Trois exemples concrets
 
 ### Une prise morte à Wasigny (≈ 9 km)
 
-La prise du séjour ne fonctionne plus. La recherche montre une borne desserrée sur la prise précédente. Déplacement 20 € + diagnostic 79 € + remplacement d'une prise 35 € : **134 €**.
+La prise du séjour ne fonctionne plus. La recherche montre une borne desserrée sur la prise précédente. Forfait dépannage : **79 €**. Le devis de remise en état est remis sur place ; le client l'accepte et la réparation est faite dans la foulée.
 
 ### Un disjoncteur abîmé à Rethel (≈ 24 km)
 
-Le disjoncteur du lave-linge chauffe et a noirci. Le diagnostic est simple et la cause évidente. Déplacement 30 € + remplacement du disjoncteur 45 € : **75 €**, plus un éventuel diagnostic si la cause doit être recherchée.
+Le disjoncteur du lave-linge chauffe et a noirci. Forfait dépannage : **89 €** (79 € + 10 € de supplément). Le devis de remplacement du disjoncteur est remis immédiatement ; la cliente préfère réfléchir et ne règle que le forfait.
 
 ### Un différentiel qui saute à Charleville-Mézières (≈ 32 km)
 
-Le différentiel déclenche plusieurs fois par semaine. Recherche par mesure d'isolement, défaut trouvé sur une prise extérieure. Déplacement 40 € + diagnostic 79 € + prise extérieure étanche (chiffrée sur place) : environ **150 à 200 €** selon le matériel.
+Le différentiel déclenche plusieurs fois par semaine. Recherche par mesure d'isolement, défaut trouvé sur une prise extérieure. Forfait dépannage : **99 €** (79 € + 20 €). La prise étanche de remplacement fait l'objet d'un devis, accepté et posé le samedi suivant.
 
 ## Comment éviter les arnaques au dépannage
 
 Les dépannages « d'urgence » font l'objet de pratiques abusives régulièrement signalées : prospectus imitant des documents officiels, numéros surtaxés, artisans sans adresse locale, factures exorbitantes. Quelques réflexes :
 
 - **Méfiez-vous des numéros trouvés sur un aimant ou un prospectus** déposé dans votre boîte aux lettres sans nom d'entreprise clair.
-- **Demandez le prix du déplacement et du diagnostic** au téléphone, avant toute venue.
+- **Demandez ce que comprend le prix annoncé** au téléphone, avant toute venue : déplacement, recherche, devis.
 - **Vérifiez l'existence de l'entreprise** : nom, adresse, numéro SIRET.
 - **Exigez un devis** pour toute réparation importante, et ne signez rien dans la précipitation.
 - **Privilégiez un artisan local**, que vous pourrez recontacter.
 
 ## Ce qui fait vraiment le prix
 
-Au final, le prix d'un dépannage dépend surtout de **la difficulté à trouver la panne**. Une panne franche se règle vite ; une panne intermittente demande plus de temps de recherche. C'est pourquoi je pratique un diagnostic au forfait : vous connaissez le prix de la recherche à l'avance, quel que soit le temps qu'elle prend.`,
+Au final, le prix d'un dépannage dépend surtout de **la difficulté à trouver la panne**. Une panne franche se règle vite ; une panne intermittente demande plus de temps de recherche. C'est pourquoi je pratique un forfait dépannage : vous connaissez le prix de la recherche à l'avance, quel que soit le temps qu'elle prend, et la réparation vous est proposée sur devis.`,
     faq: [
-      { q: 'Le diagnostic est-il facturé si je ne fais pas faire la réparation ?', a: "Oui : il correspond au travail de recherche réalisé. Mais la réparation n'est jamais faite sans votre accord sur son prix." },
+      { q: 'Le forfait est-il dû si je refuse le devis de réparation ?', a: "Oui : il rémunère le déplacement, la recherche de la panne et l'établissement du devis. Mais vous ne payez rien de plus, et la réparation n'est jamais faite sans votre accord." },
       { q: 'Un dépannage le dimanche coûte-t-il plus cher ?', a: "Chez de nombreuses entreprises, oui. Chez ALED08, non : les tarifs sont identiques tous les jours." },
     ],
-    cta: { title: 'Combien pour votre dépannage ?', text: 'Appelez-moi : je vous annonce le prix du déplacement et du diagnostic pour votre commune avant de venir.' },
+    cta: { title: 'Combien pour votre dépannage ?', text: 'Appelez-moi : je vous annonce le forfait dépannage pour votre commune avant de venir.' },
     links: ['/tarifs/', '/prestations/depannage-electrique/', '/depannage-electrique-ardennes/', '/electricien-urgence-ardennes/'],
     related: ['pourquoi-faire-appel-a-un-electricien-local', 'comment-trouver-une-panne-electrique', 'pourquoi-une-prise-disjoncte'],
   },

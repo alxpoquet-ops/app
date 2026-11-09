@@ -119,19 +119,19 @@ Les présentes conditions s'appliquent à toutes les prestations d'électricité
 
 ## 2. Prix
 
-Les prix sont exprimés en euros TTC${L.tva ? ` (${L.tva})` : ''}. La grille tarifaire publiée sur la page [Tarifs](/tarifs/) s'applique aux interventions simples. Les mentions « à partir de » correspondent au cas le plus simple ; tout supplément est annoncé avant l'exécution. Les tarifs sont identiques en semaine, en soirée et le week-end.
+Les prix sont exprimés en euros TTC${L.tva ? ` (${L.tva})` : ''}. Le dépannage est facturé au forfait publié sur la page [Tarifs](/tarifs/). Les réparations, les pièces et les travaux font l'objet d'un devis préalable. Les tarifs sont identiques en semaine, en soirée et le week-end.
 
-## 3. Déplacement
+## 3. Forfait dépannage et déplacement
 
-Le déplacement est facturé 20 € jusqu'à 15 km de Signy-l'Abbaye, majoré de 10 € entre 15 et 30 km et de 20 € entre 30 et 45 km. Au-delà de 45 km, le coût du déplacement est fixé à l'avance avec le client. La distance est calculée par la route.
+Le forfait dépannage, d'un montant de 79 € TTC, comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de panne, la proposition de solution et l'établissement d'un devis de réparation. Il est majoré de 10 € entre 15 et 30 km et de 20 € entre 30 et 45 km. Au-delà de 45 km, le supplément est fixé à l'avance avec le client. La distance est calculée par la route.
 
 ## 4. Devis
 
-Le devis est gratuit. Il est obligatoire, et remis avant toute exécution, pour les travaux dont le montant dépasse 150 € TTC, ainsi qu'à la demande du client pour tout montant. Il précise la nature des travaux, le matériel, le prix et sa durée de validité (un mois sauf mention contraire). Les travaux commencent après acceptation écrite et signée du devis.
+Le devis de travaux est gratuit ; le devis de réparation établi lors d'un dépannage est compris dans le forfait. Il est obligatoire, et remis avant toute exécution, pour les travaux dont le montant dépasse 150 € TTC, ainsi qu'à la demande du client pour tout montant. Il précise la nature des travaux, le matériel, le prix et sa durée de validité (un mois sauf mention contraire). Les travaux commencent après acceptation écrite et signée du devis.
 
-## 5. Dépannage et diagnostic
+## 5. Déroulement d'un dépannage
 
-Lors d'un dépannage, le prix du déplacement et du diagnostic est annoncé avant le déplacement. Après le diagnostic, le prix de la réparation est communiqué au client, qui reste libre de l'accepter ou de la refuser. En cas de refus, seuls le déplacement et le diagnostic sont dus.
+Le montant du forfait dépannage, supplément kilométrique éventuel compris, est annoncé au client avant le déplacement. À l'issue de la recherche de panne, un devis de réparation lui est remis ; il reste libre de l'accepter ou de le refuser, sans obligation. En cas de refus, seul le forfait dépannage est dû.
 
 ## 6. Droit de rétractation
 

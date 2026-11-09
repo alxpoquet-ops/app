@@ -24,7 +24,7 @@ Rien de tout cela n'impose de tout refaire. Mais cela demande un électricien qu
 
 Quelques repères simples, que je vous invite à appliquer à moi comme aux autres :
 
-1. Il annonce le **prix du déplacement et du diagnostic** avant de venir.
+1. Il annonce le **prix de son intervention** (déplacement, recherche de panne) avant de venir.
 2. Il remet un **devis écrit** pour tous travaux importants, détaillé ligne par ligne.
 3. Il est **assuré** et l'indique sur ses devis et factures.
 4. Il **explique** ce qu'il a trouvé, sans jargon et sans dramatiser.
@@ -56,7 +56,7 @@ J'interviens dans un rayon d'environ 45 km autour de Signy-l'Abbaye : Rethel et 
     slug: 'depannage-electrique-ardennes', group: 'ardennes', prestation: 'depannage',
     label: 'Dépannage électrique Ardennes',
     title: 'Dépannage électrique Ardennes – soirs & week-ends | ALED08',
-    description: "Dépannage électrique dans les Ardennes le soir et le week-end : plus de courant, disjoncteur qui saute, panne partielle. Diagnostic 79 €, déplacement dès 20 €.",
+    description: "Dépannage électrique dans les Ardennes le soir et le week-end : plus de courant, disjoncteur qui saute, panne partielle. Forfait 79 €, déplacement et devis compris.",
     kicker: 'Dépannage · Ardennes',
     h1: 'Dépannage électrique dans les Ardennes, le soir et le week-end',
     lead: "Vous rentrez du travail et une partie de la maison est dans le noir ? Le disjoncteur refuse de se réarmer un samedi matin ? Dans les Ardennes, j'assure le **dépannage électrique des particuliers** sur les créneaux où les autres sont fermés, avec **un prix annoncé avant de venir**.",
@@ -81,7 +81,7 @@ Si votre compteur est allumé et que vos voisins ont du courant, la panne se sit
 
 ## Ce que coûte un dépannage
 
-Le prix se compose du **déplacement** (20 € jusqu'à 15 km, puis 30 € ou 40 € selon la distance), du **diagnostic** (79 €) et de la **réparation** éventuelle, toujours chiffrée avant. Pour une panne simple, comme un interrupteur défectueux remplacé à 12 km de Signy-l'Abbaye, la facture totale reste souvent sous les 150 €. Pour le détail, lire [quel est le prix d'un dépannage électrique](/blog/prix-depannage-electrique/).`,
+Un dépannage commence toujours par le **forfait de 79 €**, qui couvre mon déplacement (jusqu'à 15 km), la recherche de la panne, la solution proposée et un **devis de réparation que vous êtes libre de refuser**. Au-delà de 15 km, un supplément de 10 € ou 20 € s'ajoute selon la distance. La **réparation** et les pièces ne sont réalisées qu'après acceptation de ce devis : vous gardez la main sur la dépense. Pour le détail, lire [quel est le prix d'un dépannage électrique](/blog/prix-depannage-electrique/).`,
     cases: [
       { tag: 'Priorité hiver', icon: 'thermometer', title: 'Plus de chauffage chez une personne âgée', text: "Un dimanche de janvier, le circuit des radiateurs d'une habitante de 79 ans ne se réarme plus. Sa fille appelle à 10 h.", result: 'Intervention avant midi : un radiateur en court-circuit isolé, chauffage rétabli dans les autres pièces.' },
       { tag: 'Congélateur', icon: 'zap-off', title: 'Un congélateur plein à sauver', text: "Retour de week-end : le différentiel du sous-sol a déclenché depuis la veille et ne se réarme pas. Le congélateur est plein.", result: 'Le congélateur est rebranché sur un circuit sain en attendant, puis le défaut (prise du sous-sol) est réparé.' },
@@ -103,7 +103,7 @@ Le prix se compose du **déplacement** (20 € jusqu'à 15 km, puis 30 € ou 40
     slug: 'recherche-panne-electrique-ardennes', group: 'ardennes', prestation: 'recherche-panne',
     label: 'Recherche de panne électrique Ardennes',
     title: 'Recherche de panne électrique Ardennes – mesures | ALED08',
-    description: "Recherche de panne électrique dans les Ardennes avec de vrais appareils de mesure : isolement, terre, différentiels. Diagnostic à 79 €, le soir et le week-end.",
+    description: "Recherche de panne électrique dans les Ardennes avec de vrais appareils de mesure : isolement, terre, différentiels. Forfait dépannage 79 €, le soir et le week-end.",
     kicker: 'Recherche de panne · Ardennes',
     h1: 'Recherche de panne électrique dans les Ardennes : ce que disent les mesures',
     lead: "Une panne électrique se trouve rarement « au feeling ». Elle se trouve avec **des mesures**, et un peu de méthode. Voici comment je travaille quand on m'appelle dans les Ardennes pour une panne que personne n'a réussi à localiser.",
@@ -134,7 +134,7 @@ Le climat humide et frais du département favorise certaines pannes : condensati
       { tag: 'Terre', icon: 'shield-check', title: 'Des picotements en touchant l’évier', text: "Une légère sensation de picotement en touchant l'évier métallique et le robinet.", result: 'Prise de terre déconnectée retrouvée sous un regard de jardin, refaite et mesurée.' },
     ],
     faq: [
-      { q: 'La recherche de panne est-elle toujours facturée 79 € ?', a: "Oui, c'est un forfait annoncé à l'avance, auquel s'ajoute le déplacement. La réparation est chiffrée séparément, avant d'être réalisée." },
+      { q: 'La recherche de panne est-elle toujours facturée 79 € ?', a: "Oui : elle fait partie du forfait dépannage, qui inclut aussi le déplacement jusqu'à 15 km et le devis de réparation. La réparation n'est faite que si vous acceptez ce devis." },
       { q: 'Et si la panne vient d’un appareil électroménager ?', a: "Je vous le dis clairement, mesures à l'appui. Je ne répare pas l'électroménager, mais vous savez exactement où agir : réparateur, garantie ou remplacement." },
       { q: 'Faut-il que la panne soit présente au moment de votre venue ?', a: "C'est préférable, mais pas indispensable : la mesure d'isolement révèle souvent un défaut même quand il ne fait pas déclencher à ce moment-là." },
     ],
@@ -148,8 +148,8 @@ Le climat humide et frais du département favorise certaines pannes : condensati
   {
     slug: 'tableau-electrique-ardennes', group: 'ardennes', prestation: 'tableau',
     label: 'Tableau électrique Ardennes',
-    title: 'Tableau électrique Ardennes : remplacement dès 650 € | ALED08',
-    description: "Remplacement de tableau électrique dans les Ardennes : composition selon la surface, différentiels 30 mA, repérage, 20 % de réserve. Dès 650 €, pose le samedi.",
+    title: 'Tableau électrique Ardennes : remplacement sur devis | ALED08',
+    description: "Remplacement de tableau électrique dans les Ardennes : composition selon la surface, différentiels 30 mA, repérage, 20 % de réserve. Devis gratuit, pose le samedi.",
     kicker: 'Tableau électrique · Ardennes',
     h1: 'Tableau électrique dans les Ardennes : bien le dimensionner',
     lead: "Un tableau électrique ne se choisit pas sur catalogue. Sa composition dépend de **la surface du logement, du nombre de circuits, du mode de chauffage et des appareils** que vous utilisez. Voici comment je conçois un tableau neuf pour les maisons et appartements des Ardennes.",
@@ -188,7 +188,7 @@ J'utilise du matériel de grandes marques, disponible partout, pour que n'import
     ],
     faq: [
       { q: 'Combien de différentiels faut-il dans un tableau ?', a: "Au minimum deux pour un petit logement, davantage à mesure que la surface et le nombre de circuits augmentent. Je les détermine selon votre logement et ses équipements." },
-      { q: 'Quel est le prix d’un tableau neuf dans les Ardennes ?', a: "À partir de 650 € pour un tableau simple, plus le déplacement selon votre commune. Le prix évolue avec le nombre de circuits et de différentiels ; le devis est gratuit." },
+      { q: 'Quel est le prix d’un tableau neuf dans les Ardennes ?', a: "Il dépend du nombre de circuits, du nombre et du type de différentiels et des reprises éventuelles. Je ne donne donc pas de prix « à partir de » : je compte vos circuits et je vous remets un devis gratuit et détaillé." },
       { q: 'Puis-je ajouter un circuit plus tard ?', a: "Oui : c'est précisément le rôle de la réserve de 20 %. Un tableau bien conçu accepte une plaque à induction ou une recharge de voiture sans être remplacé." },
     ],
     cta: { title: 'Un tableau à remplacer dans les Ardennes ?', text: 'Je viens compter vos circuits et je vous remets un devis détaillé, gratuitement.' },
@@ -354,10 +354,10 @@ Les samedis se remplissent plus vite que les soirées, surtout au printemps et �
     slug: 'depannage-electrique-rethel', group: 'services-villes', city: 'Rethel', prestation: 'depannage',
     label: 'Dépannage électrique à Rethel',
     title: 'Dépannage électrique à Rethel – soir & week-end | ALED08',
-    description: 'Dépannage électrique à Rethel le soir et le week-end : coupure, disjoncteur qui saute, prise ou éclairage en panne. Déplacement 30 €, diagnostic 79 €.',
+    description: 'Dépannage électrique à Rethel le soir et le week-end : coupure, disjoncteur qui saute, prise ou éclairage en panne. Forfait dépannage 89 €, devis compris.',
     kicker: 'Dépannage · Rethel',
     h1: 'Dépannage électrique à Rethel, le soir et le week-end',
-    lead: "Une panne à **Rethel** après votre journée de travail ou un samedi matin ? Je suis à une vingtaine de minutes, et je me déplace **le soir même quand le planning le permet**. Déplacement 30 € (dont 10 € de supplément), diagnostic 79 €, réparation chiffrée avant.",
+    lead: "Une panne à **Rethel** après votre journée de travail ou un samedi matin ? Je suis à une vingtaine de minutes, et je me déplace **le soir même quand le planning le permet**. Forfait dépannage de **89 €** (79 € + 10 € de supplément) : déplacement, recherche de panne, solution et devis de réparation sans obligation.",
     body: `## Les pannes que je rencontre à Rethel
 
 Dans les logements rethélois, beaucoup reconstruits dans les années 1950 ou rénovés par étapes, certaines pannes reviennent régulièrement :
@@ -382,7 +382,7 @@ Repérez la protection en position basse dans votre tableau, débranchez les app
       { tag: 'Jeudi, 20 h', icon: 'lightbulb', title: 'Les lumières de l’étage vacillent', text: "Les ampoules de trois pièces faiblissent et clignotent par moments depuis quelques jours.", result: 'Neutre desserré dans une boîte du palier, connexions refaites et contrôlées.' },
     ],
     faq: [
-      { q: 'Quel est le prix d’un dépannage à Rethel ?', a: "Déplacement 30 € (20 € + 10 € de supplément) et diagnostic 79 €, soit 109 € avant réparation. La réparation éventuelle vous est annoncée avant d'être faite." },
+      { q: 'Quel est le prix d’un dépannage à Rethel ?', a: "89 € : le forfait de 79 € plus 10 € de supplément kilométrique. Il couvre le déplacement, la recherche de la panne et le devis de réparation, que vous acceptez ou non." },
       { q: 'Pouvez-vous venir dans l’heure ?', a: "Cela dépend des rendez-vous déjà prévus. Le plus souvent, je propose un créneau le soir même ou le lendemain soir." },
       { q: 'Intervenez-vous à Sault-lès-Rethel ou Acy-Romance ?', a: "Oui, aux mêmes conditions que Rethel, sous réserve que l'adresse reste dans la tranche des 30 km." },
     ],
@@ -426,11 +426,11 @@ Indiquez-moi le code d'accès, l'étage et la présence ou non d'un ascenseur : 
       { tag: 'Maison de ville', icon: 'plug', title: 'Toutes les prises d’un étage hors service', text: "Dans une maison de ville de Mohon, l'étage n'a plus de prises alors que l'éclairage fonctionne.", result: 'Borne de raccordement fondue dans une boîte du palier, conducteurs recoupés, connexion refaite.' },
     ],
     faq: [
-      { q: 'Quel est le prix d’un dépannage à Charleville-Mézières ?', a: "Déplacement 40 € (20 € + 20 € de supplément), diagnostic 79 €. La réparation est chiffrée sur place avant d'être réalisée." },
+      { q: 'Quel est le prix d’un dépannage à Charleville-Mézières ?', a: "99 €, soit le forfait de 79 € et 20 € de supplément kilométrique. La réparation fait ensuite l'objet d'un devis sur place, sans obligation." },
       { q: 'Je suis locataire : qui paie le dépannage ?', a: "Cela dépend de la cause : l'entretien courant revient en général au locataire, le remplacement d'équipements vétustes au propriétaire. La facture détaillée vous aide à en discuter avec lui." },
       { q: 'La panne vient peut-être des parties communes, que faire ?', a: "Si plusieurs logements sont touchés, prévenez le syndic. Je n'interviens pas sur les parties communes sans mandat du gestionnaire." },
     ],
-    cta: { title: 'Une panne à Charleville-Mézières ?', text: 'J’interviens après 18 h et le week-end. Appelez : prix du déplacement et du diagnostic annoncés tout de suite.' },
+    cta: { title: 'Une panne à Charleville-Mézières ?', text: 'J’interviens après 18 h et le week-end. Appelez : forfait dépannage annoncé tout de suite, devis de réparation sans obligation.' },
     links: ['/electricien-charleville-mezieres/', '/remplacement-tableau-electrique-charleville-mezieres/', '/disjoncteur-qui-saute/', '/panne-courant-partielle/', '/electricien-proprietaire-bailleur/'],
     nearby: ['/electricien-charleville-mezieres/', '/electricien-renwez/', '/electricien-poix-terron/', '/electricien-thin-le-moutier/'],
   },
@@ -461,14 +461,14 @@ Avant ma venue, notez pendant quelques jours **quand la panne se produit** : heu
 
 ## Le déplacement jusqu'à Sedan
 
-Selon votre adresse, le supplément est de **20 €** ou fait l'objet d'un **forfait fixé à l'avance**. Pour rentabiliser le déplacement, profitez-en pour faire changer en même temps une prise abîmée ou un luminaire : vous ne payez qu'un seul déplacement.`,
+Selon votre adresse, le forfait dépannage est de **99 €** (79 € + 20 € de supplément) ou le supplément est **fixé à l'avance**. Profitez du passage pour me signaler les autres petits soucis de la maison : je les intègre au même devis.`,
     cases: [
       { tag: 'Récurrent', icon: 'search', title: 'Un différentiel réarmé chaque semaine depuis un an', text: "Dans une maison du Fond de Givonne, le différentiel saute environ une fois par semaine, sans logique apparente.", result: 'Après relevé des déclenchements par la cliente, défaut trouvé sur le circuit du cellier : prise du congélateur oxydée.' },
       { tag: 'Clignotement', icon: 'lightbulb', title: 'Des spots qui clignotent à faible intensité', text: "Les spots LED du séjour clignotent dès qu'on baisse le variateur, depuis le remplacement des ampoules.", result: 'Variateur remplacé par un modèle compatible LED : éclairage stable sur toute la plage.' },
       { tag: 'Intermittent', icon: 'plug', title: 'La prise du bureau marche un jour sur deux', text: "L'ordinateur s'éteint parfois sans raison, branché sur une prise murale de la chambre-bureau.", result: 'Borne desserrée avec début de chauffe, prise et conducteurs refaits.' },
     ],
     faq: [
-      { q: 'Combien coûte un dépannage planifié à Sedan ?', a: "Déplacement 40 € ou forfait annoncé selon l'adresse, diagnostic 79 €, réparation chiffrée avant. Tout est connu avant que je prenne la route." },
+      { q: 'Combien coûte un dépannage planifié à Sedan ?', a: "Le forfait dépannage, soit 99 € avec le supplément kilométrique ou un montant annoncé selon l'adresse. La réparation fait l'objet d'un devis. Tout est connu avant que je prenne la route." },
       { q: 'Pouvez-vous venir le jour même à Sedan ?', a: "Rarement le jour même, compte tenu de la distance. Je propose généralement un créneau dans la semaine, en soirée ou le week-end." },
       { q: 'Une panne récurrente est-elle dangereuse ?', a: "Elle peut l'être : un échauffement ou un défaut d'isolement qui revient tend à s'aggraver. Mieux vaut la traiter avant qu'elle ne devienne une vraie panne." },
     ],
@@ -479,11 +479,11 @@ Selon votre adresse, le supplément est de **20 €** ou fait l'objet d'un **for
   {
     slug: 'remplacement-tableau-electrique-rethel', group: 'services-villes', city: 'Rethel', prestation: 'tableau',
     label: 'Remplacement de tableau électrique à Rethel',
-    title: 'Remplacement tableau électrique Rethel dès 650 € | ALED08',
-    description: 'Remplacement de tableau électrique à Rethel : maisons de la Reconstruction, tableaux à fusibles, différentiels 30 mA. Dès 650 €, pose le samedi.',
+    title: 'Remplacement tableau électrique à Rethel, sur devis | ALED08',
+    description: 'Remplacement de tableau électrique à Rethel : maisons de la Reconstruction, tableaux à fusibles, différentiels 30 mA. Devis gratuit, pose le samedi.',
     kicker: 'Tableau électrique · Rethel',
     h1: 'Remplacement de tableau électrique à Rethel',
-    lead: "Les logements rethélois issus de la **Reconstruction** conservent souvent un tableau d'origine ou modernisé à moitié. Je remplace ces tableaux par un équipement neuf, **conforme NF C 15-100**, à partir de **650 €**, en une journée, de préférence un samedi.",
+    lead: "Les logements rethélois issus de la **Reconstruction** conservent souvent un tableau d'origine ou modernisé à moitié. Je remplace ces tableaux par un équipement neuf, **conforme NF C 15-100**, sur **devis gratuit et détaillé**, en une journée, de préférence un samedi.",
     body: `## Les tableaux que je remplace à Rethel
 
 Trois profils reviennent régulièrement :
@@ -494,9 +494,9 @@ Trois profils reviennent régulièrement :
 
 Dans tous les cas, l'objectif est le même : **tous les circuits protégés par un différentiel 30 mA**, un disjoncteur au bon calibre pour chaque circuit, et un repérage qui permette à n'importe qui de couper la bonne ligne.
 
-## Un exemple de budget à Rethel
+## Comment est établi le devis
 
-Pour une maison de taille moyenne avec huit à dix circuits en bon état et une terre existante, le budget se situe généralement **autour de 650 à 900 €**, auxquels s'ajoutent les 30 € de déplacement. Ce montant augmente si des circuits doivent être dédoublés, si une terre doit être créée ou si un circuit spécialisé (plaque, recharge) est ajouté. Le devis, gratuit, détaille chaque ligne.
+Je compte d'abord les circuits avec vous, je vérifie la terre et l'état des câbles. Le devis tient compte du **nombre de circuits**, du **nombre et du type de différentiels**, et des reprises éventuelles : circuit à dédoubler, terre à créer, ligne spécialisée à ajouter pour une plaque ou une recharge. Chaque ligne est détaillée, sans prix « d'appel ».
 
 [[cta]]
 
@@ -509,7 +509,7 @@ Arrivée le matin, coupure générale, repérage de chaque circuit avec vous, d�
       { tag: 'Rafistolé', icon: 'cable', title: 'Deux coffrets reliés par des fils volants', text: "Un appartement dont le tableau d'origine alimentait un second coffret par des fils non protégés.", result: 'Un seul tableau, peignes de raccordement, suppression des fils volants.' },
     ],
     faq: [
-      { q: 'Quel est le prix d’un remplacement de tableau à Rethel ?', a: "À partir de 650 €, plus 30 € de déplacement. La plupart des maisons rethéloises se situent entre 650 et 900 € ; le devis gratuit précise le montant exact." },
+      { q: 'Quel est le prix d’un remplacement de tableau à Rethel ?', a: "Il est fixé sur devis, après comptage des circuits : deux maisons de la même rue peuvent avoir des besoins très différents. Le devis est gratuit et sans engagement." },
       { q: 'Combien de temps sans courant ?', a: "De quatre à huit heures selon la maison. Le réfrigérateur et le congélateur tiennent sans problème cette durée s'ils restent fermés." },
       { q: 'Faut-il prévenir Enedis ?', a: "Non, pour un remplacement de tableau, le disjoncteur de branchement et le compteur ne sont pas modifiés. Je coupe simplement l'alimentation en aval." },
     ],
@@ -521,10 +521,10 @@ Arrivée le matin, coupure générale, repérage de chaque circuit avec vous, d�
     slug: 'remplacement-tableau-electrique-charleville-mezieres', group: 'services-villes', city: 'Charleville-Mézières', prestation: 'tableau',
     label: 'Remplacement de tableau électrique à Charleville-Mézières',
     title: 'Tableau électrique Charleville-Mézières : remplacement | ALED08',
-    description: 'Remplacement de tableau électrique à Charleville-Mézières, appartement ou maison de ville : coffret compact, différentiels 30 mA. Dès 650 €.',
+    description: 'Remplacement de tableau électrique à Charleville-Mézières, appartement ou maison de ville : coffret compact, différentiels 30 mA. Devis gratuit.',
     kicker: 'Tableau électrique · Charleville-Mézières',
     h1: 'Remplacement de tableau électrique à Charleville-Mézières',
-    lead: "En appartement comme en maison de ville, **Charleville-Mézières** compte de nombreux tableaux électriques d'un autre âge. Je les remplace **le samedi**, sans gêner le voisinage, par un tableau compact, clair et conforme, **à partir de 650 €**.",
+    lead: "En appartement comme en maison de ville, **Charleville-Mézières** compte de nombreux tableaux électriques d'un autre âge. Je les remplace **le samedi**, sans gêner le voisinage, par un tableau compact, clair et conforme, **sur devis gratuit**.",
     body: `## Remplacer un tableau en appartement
 
 L'appartement pose des contraintes particulières, que je prends en compte dès la visite :
@@ -539,9 +539,9 @@ Dans les maisons sur plusieurs niveaux, la difficulté tient au **repérage** : 
 
 [[cta]]
 
-## Budget à Charleville-Mézières
+## Le devis à Charleville-Mézières
 
-Le remplacement démarre à **650 €** pour un tableau simple, plus **40 € de déplacement**. Un appartement de trois pièces se situe souvent dans la fourchette basse ; une maison de ville sur trois niveaux, avec davantage de circuits, un peu au-dessus. Le devis précise le nombre de différentiels, de disjoncteurs et les éventuelles reprises.`,
+La visite de devis peut avoir lieu en soirée. Un appartement de trois pièces compte moins de circuits qu'une maison de ville sur trois niveaux : le devis reflète cette réalité, en précisant le nombre de différentiels, de disjoncteurs et les éventuelles reprises. Il est gratuit et sans engagement.`,
     cases: [
       { tag: 'Appartement', icon: 'building-2', title: 'Un tableau en bakélite dans un T2 du centre', text: "Un ancien tableau en bakélite avec deux fusibles et un interrupteur rotatif, dans le placard de l'entrée.", result: 'Coffret une rangée avec deux différentiels 30 mA et six circuits, posé en une matinée.' },
       { tag: 'Maison de ville', icon: 'house', title: 'Trois étages, quatorze circuits mélangés', text: "Une maison de ville dont personne ne savait quel disjoncteur alimentait quel étage.", result: 'Repérage complet, tableau trois rangées organisé par étage, schéma plastifié remis aux propriétaires.' },
@@ -550,7 +550,7 @@ Le remplacement démarre à **650 €** pour un tableau simple, plus **40 € de
     faq: [
       { q: 'Mes voisins seront-ils privés de courant ?', a: "Non. Je coupe uniquement votre alimentation, en aval de votre disjoncteur de branchement. Les autres logements ne sont pas concernés." },
       { q: 'Faut-il l’accord de la copropriété ?', a: "Pas pour remplacer votre propre tableau, qui fait partie de votre partie privative. Seuls les travaux sur les parties communes relèvent du syndic." },
-      { q: 'Quel est le prix pour un appartement ?', a: "À partir de 650 € pour un tableau simple, plus 40 € de déplacement. Le devis gratuit tient compte du nombre réel de circuits." },
+      { q: 'Quel est le prix pour un appartement ?', a: "Je l'établis sur devis, selon le nombre réel de circuits et la configuration du placard ou de la gaine technique. Le devis est gratuit." },
     ],
     cta: { title: 'Un tableau à remplacer à Charleville-Mézières ?', text: 'Visite de devis possible en soirée, travaux le samedi : contactez-moi.' },
     links: ['/electricien-charleville-mezieres/', '/depannage-electrique-charleville-mezieres/', '/prestations/tableau-electrique/', '/electricien-proprietaire-bailleur/', '/tableau-electrique-ardennes/'],

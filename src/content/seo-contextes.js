@@ -249,7 +249,7 @@ Concrètement, si vous appelez en fin d'après-midi pour une panne totale à pro
 
 ## Mieux vaut un prix clair qu'une facture surprise
 
-Méfiez-vous des numéros de « dépannage d'urgence » trouvés en tête des moteurs de recherche, parfois sans entreprise locale derrière. Chez moi, le **déplacement et le diagnostic sont annoncés au téléphone** avant que je prenne la route, et la réparation est chiffrée avant d'être faite.`,
+Méfiez-vous des numéros de « dépannage d'urgence » trouvés en tête des moteurs de recherche, parfois sans entreprise locale derrière. Chez moi, le **forfait dépannage est annoncé au téléphone** avant que je prenne la route, et la réparation fait l'objet d'un devis, sans obligation.`,
     cases: [
       { tag: 'Vendredi 18 h', icon: 'zap-off', title: 'Une maison entièrement sans courant', text: "Une famille de Thin-le-Moutier rentre à 18 h : plus rien ne fonctionne, le disjoncteur général refuse de se réarmer.", result: 'Sur place à 18 h 40, câble de la pompe de relevage en court-circuit isolé, maison rétablie à 19 h 30.' },
       { tag: 'Samedi matin', icon: 'flame', title: 'Une odeur de brûlé dans l’entrée', text: "Une odeur de plastique chaud près du tableau, que la propriétaire a eu le bon réflexe de couper.", result: 'Borne de disjoncteur carbonisée, remplacée avec le peigne ; remise sous tension après contrôle.' },
@@ -305,7 +305,7 @@ Le prix du diagnostic est **annoncé à l'avance**, selon la taille du logement 
     ],
     faq: [
       { q: 'Combien de temps dure un diagnostic ?', a: "Environ une à deux heures pour une maison, selon sa taille et la complexité de l'installation." },
-      { q: 'Quel est le prix du diagnostic ?', a: "Il est fixé à l'avance selon la taille du logement et la distance. Pour une panne précise, c'est le diagnostic de panne à 79 € qui s'applique." },
+      { q: 'Quel est le prix du diagnostic ?', a: "Il est fixé à l'avance selon la taille du logement et la distance. Pour une panne précise, c'est le forfait dépannage de 79 € qui s'applique." },
       { q: 'Faut-il couper le courant pendant le diagnostic ?', a: "Quelques coupures courtes sont nécessaires pour les mesures d'isolement et de terre. Je vous préviens avant chacune." },
     ],
     cta: { title: 'Envie d’y voir clair sur votre installation ?', text: 'Un diagnostic, des mesures et une liste de priorités : vous savez par où commencer.' },

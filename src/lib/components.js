@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { site, hours, tarifs, kmTiers, communes, tierFor } = require('../config');
+const { site, hours, forfait, tarifs, kmTiers, communes, tierFor } = require('../config');
 const { icon } = require('./icons');
 const { md, inline, esc, plain } = require('./md');
 const { mainServices } = require('../content/services-list');
@@ -81,9 +81,9 @@ function circuitBg(id = 'c') {
 // ---------------------------------------------------------------- bandeau de confiance
 function trustBar() {
   const items = [
+    ['zap', 'Spécialiste dépannage', 'Recherche de panne méthodique'],
+    ['euro', 'Forfait dépannage 79 €', 'Déplacement et devis compris'],
     ['moon', 'Soirs & week-ends', 'Sur rendez-vous'],
-    ['badge-check', 'Norme NF C 15-100', 'Travail conforme et soigné'],
-    ['euro', 'Tarifs affichés', 'Prix annoncé avant travaux'],
     ['map-pin', 'Artisan local', 'Basé à Signy-l’Abbaye'],
   ];
   return `<section class="trustbar" aria-label="Nos engagements"><div class="container trustbar-in">${items
@@ -95,7 +95,8 @@ function trustBar() {
 function serviceCards(list = mainServices, opts = {}) {
   return `<div class="grid grid-cards${opts.cols === 4 ? ' grid-4' : ''}">${list
     .map(
-      (s) => `<a class="card card-service reveal" href="${s.path}">
+      (s) => `<a class="card card-service reveal${opts.featured === s.key ? ' card-featured' : ''}" href="${s.path}">
+  ${opts.featured === s.key ? `<span class="specialty">${icon('zap')}Ma spécialité</span>` : ''}
   <span class="icon-tile">${icon(s.icon)}</span>
   <h3>${esc(s.name)}</h3>
   ${s.short ? `<p>${esc(s.short)}</p>` : ''}
@@ -117,14 +118,29 @@ function dispoCard() {
   <div class="dispo-head"><span class="dot" aria-hidden="true"></span><span data-dispo>Créneaux en soirée et le week-end</span></div>
   ${hoursTable('hours-dark')}
   <p class="dispo-note">${icon('calendar-days')} Uniquement sur rendez-vous — appelez ou envoyez un message.</p>
-  <ul class="dispo-prices">
-    <li><span>Diagnostic de panne</span><strong>${euro(79)}</strong></li>
-    <li><span>Déplacement</span><strong>dès ${euro(20)}</strong></li>
-    <li><span>Remplacement de prise</span><strong>dès ${euro(35)}</strong></li>
-  </ul>
+  <div class="dispo-forfait">
+    <div class="dispo-forfait-head"><span>Forfait dépannage</span><strong>${euro(forfait.price)}</strong></div>
+    <ul>${forfait.includes.map((i) => `<li>${icon('check')}${i.text}</li>`).join('')}</ul>
+    <p>Réparation sur devis, sans obligation.</p>
+  </div>
   ${btnCall('btn-primary btn-block', 'Appeler maintenant')}
   ${btnWa('btn-wa btn-block', 'Écrire sur WhatsApp')}
 </aside>`;
+}
+
+// ---------------------------------------------------------------- forfait dépannage
+function forfaitBlock(opts = {}) {
+  return `<div class="forfait reveal${opts.compact ? ' forfait--compact' : ''}">
+  <div class="forfait-price">
+    <span class="forfait-label">${icon('zap')}Forfait dépannage</span>
+    <strong>${euro(forfait.price)}<small>TTC</small></strong>
+    <span class="forfait-sub">tout compris jusqu’au devis</span>
+  </div>
+  <ul class="forfait-list">${forfait.includes
+    .map((i) => `<li>${icon(i.icon)}<div><strong>${i.text}</strong><span>${i.detail}</span></div></li>`)
+    .join('')}</ul>
+  <p class="forfait-foot">${icon('info')}<span>La réparation et les pièces font l’objet d’un <strong>devis remis à la fin du dépannage</strong> : vous l’acceptez ou non, sans obligation. Au-delà de 15 km : + 10 € (15 à 30 km) ou + 20 € (30 à 45 km). Même prix le soir et le week-end.</span></p>
+</div>`;
 }
 
 // ---------------------------------------------------------------- grille tarifaire
@@ -133,13 +149,13 @@ function pricingTable(ids) {
   return `<div class="price-table" role="table" aria-label="Grille tarifaire">
   ${list
     .map(
-      (t) => `<div class="price-row" role="row">
+      (t) => `<div class="price-row${t.highlight ? ' price-row--hl' : ''}" role="row">
     <div class="price-label" role="cell">${icon(t.icon)}<div><strong>${t.label}</strong><span>${esc(t.note)}</span></div></div>
-    <div class="price-value" role="cell">${t.price == null ? '<b>Sur devis</b>' : `${t.from ? '<small>à partir de</small>' : ''}<b>${euro(t.price)}</b>`}</div>
+    <div class="price-value" role="cell">${t.price == null ? `<b class="price-text">${esc(t.priceText || 'Sur devis')}</b>` : `<b>${euro(t.price)}</b>`}</div>
   </div>`
     )
     .join('')}
-  <p class="price-foot">Prix TTC${site.legal.tva ? ' — ' + esc(site.legal.tva) : ''}. Tarifs identiques en soirée et le week-end. Le montant exact est toujours annoncé avant toute intervention.</p>
+  <p class="price-foot">Prix TTC${site.legal.tva ? ' — ' + esc(site.legal.tva) : ''}. Aucun prix de pièce n’est fixé à l’avance : chaque réparation est chiffrée sur devis, après le diagnostic. Tarifs identiques en soirée et le week-end.</p>
 </div>`;
 }
 
@@ -147,7 +163,7 @@ function kmTable() {
   return `<div class="km-grid">${kmTiers
     .map(
       (t, i) => `<div class="km-tier km-${i}"><span class="km-range">${t.label}</span><strong>${t.text}</strong><small>${
-        t.supplement === 0 ? 'Déplacement de base : 20 €' : t.supplement ? `Déplacement : ${20 + t.supplement} €` : 'Forfait annoncé à l’avance'
+        t.supplement === 0 ? `Forfait dépannage : ${euro(forfait.price)}` : t.supplement ? `Forfait dépannage : ${euro(forfait.price + t.supplement)}` : 'Supplément annoncé à l’avance'
       }</small></div>`
     )
     .join('')}</div><p class="small muted">Distance calculée par la route depuis Signy-l’Abbaye jusqu’à votre adresse. Le supplément vous est toujours confirmé au téléphone, avant le déplacement.</p>`;
@@ -158,7 +174,13 @@ function distanceBadge(name) {
   const c = communes.find((x) => x.name === name);
   if (!c) return '';
   const t = tierFor(c.km);
-  const sup = c.note || (t.supplement === 0 ? 'Sans supplément kilométrique' : t.supplement ? `Supplément kilométrique : ${t.text}` : 'Déplacement sur devis');
+  const sup = c.note
+    ? c.note
+    : t.supplement === 0
+    ? `Forfait dépannage : ${euro(forfait.price)}, sans supplément kilométrique`
+    : t.supplement
+    ? `Forfait dépannage : ${euro(forfait.price + t.supplement)} (79 € ${t.text})`
+    : 'Supplément kilométrique sur devis';
   return `<div class="distance-badge">${icon('route')}<div><strong>${c.km === 0 ? 'Commune de base d’ALED08' : `≈ ${c.km} km de Signy-l’Abbaye`}</strong><span>${sup}</span></div></div>`;
 }
 
@@ -301,6 +323,6 @@ function communesList(opts = {}) {
 module.exports = {
   register, label, registry, tel, waUrl, devisUrl, euro, logoSvg,
   btnCall, btnDevis, btnWa, breadcrumbs, pageHero, circuitBg, trustBar, serviceCards, hoursTable, dispoCard,
-  pricingTable, kmTable, distanceBadge, steps, cases, faq, ctaBand, inlineCta, relatedLinks, reviewsBlock,
+  forfaitBlock, pricingTable, kmTable, distanceBadge, steps, cases, faq, ctaBand, inlineCta, relatedLinks, reviewsBlock,
   beforeAfter, mapEmbed, communesList,
 };

@@ -114,10 +114,10 @@
   /* ---------- formulaires ---------- */
   var COMMUNES = window.ALED_COMMUNES || null;
   var tierText = function (km) {
-    if (km <= 15) return 'sans supplément kilométrique (déplacement : 20 €)';
-    if (km <= 30) return 'supplément de 10 € (déplacement : 30 €)';
-    if (km <= 45) return 'supplément de 20 € (déplacement : 40 €)';
-    return 'déplacement sur devis, annoncé à l’avance';
+    if (km <= 15) return 'forfait dépannage 79 €, sans supplément kilométrique';
+    if (km <= 30) return 'forfait dépannage 79 € + 10 € de supplément, soit 89 €';
+    if (km <= 45) return 'forfait dépannage 79 € + 20 € de supplément, soit 99 €';
+    return 'supplément kilométrique sur devis, annoncé à l’avance';
   };
   $$('form[data-form]').forEach(function (f) {
     var t = f.querySelector('input[name="_t"]'); if (t) t.value = Date.now();

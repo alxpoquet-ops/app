@@ -4,7 +4,7 @@ module.exports = [
     slug: 'remplacement-tableau-a-fusibles', group: 'services', prestation: 'tableau', serviceType: 'Remplacement de tableau électrique',
     label: 'Remplacement de tableau à fusibles',
     title: 'Remplacer un tableau à fusibles : prix et déroulement | ALED08',
-    description: 'Tableau à fusibles porcelaine ou à cartouches ? Pourquoi et comment le remplacer par un tableau à disjoncteurs et différentiels 30 mA. Dès 650 €.',
+    description: 'Tableau à fusibles porcelaine ou à cartouches ? Pourquoi et comment le remplacer par un tableau à disjoncteurs et différentiels 30 mA. Devis gratuit.',
     kicker: 'Prestation · Tableau à fusibles',
     h1: 'Remplacer un tableau à fusibles par un tableau moderne',
     lead: "Les tableaux à fusibles équipent encore de nombreuses maisons ardennaises. Ils ont rendu de bons services, mais **ils ne protègent pas les personnes** contre l'électrocution et se prêtent à des réparations dangereuses. Leur remplacement est l'une des interventions les plus utiles pour la sécurité d'un logement.",
@@ -38,7 +38,7 @@ Dans la grande majorité des cas, les **câbles existants sont conservés** s'il
     ],
     faq: [
       { q: 'Est-il obligatoire de remplacer un tableau à fusibles ?', a: "Pour un logement existant occupé par son propriétaire, il n'y a pas d'obligation générale. Mais en location, le logement ne doit pas présenter de risque pour la sécurité, et un diagnostic de vente signalera ce tableau comme une anomalie." },
-      { q: 'Combien coûte le remplacement d’un tableau à fusibles ?', a: "À partir de 650 € pour un tableau simple, déplacement en plus. Le prix dépend du nombre de circuits et des éventuelles reprises nécessaires." },
+      { q: 'Combien coûte le remplacement d’un tableau à fusibles ?', a: "Il est établi sur devis gratuit : le prix dépend du nombre de circuits, des différentiels nécessaires et des éventuelles reprises." },
       { q: 'Faut-il refaire tous les câbles ?', a: "Pas forcément. Je mesure l'isolement de chaque circuit avant raccordement : les câbles sains sont conservés, les autres vous sont signalés avec un chiffrage." },
     ],
     cta: { title: 'Encore des fusibles dans votre tableau ?', text: 'Envoyez une photo : je vous dis ce qu’il faut prévoir et à quel prix.' },
@@ -47,11 +47,11 @@ Dans la grande majorité des cas, les **câbles existants sont conservés** s'il
   {
     slug: 'remplacement-disjoncteur', group: 'services', prestation: 'disjoncteur', serviceType: 'Remplacement de disjoncteur',
     label: 'Remplacement de disjoncteur',
-    title: 'Remplacement de disjoncteur dès 45 € – Ardennes | ALED08',
-    description: 'Disjoncteur qui chauffe, ne se réarme plus ou mal calibré : remplacement dès 45 € dans les Ardennes, calibre adapté au câble, le soir et le week-end.',
+    title: 'Remplacement de disjoncteur – Ardennes | ALED08',
+    description: 'Disjoncteur qui chauffe, ne se réarme plus ou mal calibré : remplacement dans les Ardennes, calibre adapté au câble, le soir et le week-end.',
     kicker: 'Prestation · Disjoncteur',
     h1: 'Remplacement de disjoncteur : le bon calibre, au bon endroit',
-    lead: "Un disjoncteur abîmé, qui chauffe ou qui ne se réarme plus doit être remplacé. Mais **remplacer, ce n'est pas copier** : je vérifie que le calibre correspond bien au câble qu'il protège, ce qui n'est pas toujours le cas dans les installations modifiées. **Remplacement dès 45 €.**",
+    lead: "Un disjoncteur abîmé, qui chauffe ou qui ne se réarme plus doit être remplacé. Mais **remplacer, ce n'est pas copier** : je vérifie que le calibre correspond bien au câble qu'il protège, ce qui n'est pas toujours le cas dans les installations modifiées. **Forfait dépannage 79 €, remplacement sur devis.**",
     body: `## Quand faut-il remplacer un disjoncteur ?
 
 - Il **ne se réarme plus**, ou retombe aussitôt alors qu'aucun défaut n'est présent sur le circuit.
@@ -83,11 +83,11 @@ Je remplace les **disjoncteurs divisionnaires** de votre tableau. Le **disjoncte
       { tag: 'Obsolète', icon: 'wrench', title: 'Un modèle introuvable', text: "Un disjoncteur défectueux d'une marque qui n'existe plus, impossible à remplacer à l'identique.", result: 'Adaptation sur rail avec un modèle actuel, raccordement soigné sans modifier le reste du tableau.' },
     ],
     faq: [
-      { q: 'Combien coûte le remplacement d’un disjoncteur ?', a: "À partir de 45 € pour un disjoncteur divisionnaire modulaire courant, plus le déplacement. Un différentiel ou un modèle spécifique est chiffré à part." },
+      { q: 'Combien coûte le remplacement d’un disjoncteur ?', a: "Le forfait dépannage de 79 € couvre la recherche de la cause et le devis. Le remplacement est ensuite chiffré selon le modèle et le calibre nécessaires, sans obligation." },
       { q: 'Puis-je remplacer un disjoncteur moi-même ?', a: "Le travail s'effectue dans le tableau, à proximité de parties sous tension même disjoncteur général coupé. C'est une intervention à confier à un professionnel." },
       { q: 'Mon disjoncteur saute souvent : faut-il le changer ?', a: "Pas forcément : le plus souvent, il signale une surcharge ou un défaut. Voir [disjoncteur qui saute](/disjoncteur-qui-saute/) avant d'envisager un remplacement." },
     ],
-    cta: { title: 'Un disjoncteur à remplacer ?', text: 'Je vérifie le calibre, je remplace et je teste. Dès 45 €, le soir ou le week-end.' },
+    cta: { title: 'Un disjoncteur à remplacer ?', text: 'Je trouve la cause, je vérifie le calibre et je vous remets un devis. Le soir ou le week-end.' },
     links: ['/disjoncteur-qui-saute/', '/prestations/tableau-electrique/', '/ajout-circuit-electrique/', '/prestations/depannage-electrique/', '/blog/differentiel-ou-disjoncteur-difference/'],
   },
   {
@@ -260,7 +260,7 @@ Si vous souhaitez faire varier l'intensité, il faut des spots **dimmables** et 
     faq: [
       { q: 'Peut-on poser des spots dans n’importe quel plafond ?', a: "Idéalement dans un plafond en plaques de plâtre ou un faux plafond, avec un espace suffisant au-dessus. Dans le béton ou le lambris, d'autres solutions sont souvent préférables." },
       { q: 'Les spots LED chauffent-ils ?', a: "Beaucoup moins que les halogènes, mais un peu quand même : ils ont besoin d'un minimum de ventilation, d'où l'importance des capots sous isolant." },
-      { q: 'Combien coûte la pose de spots ?', a: "Cela dépend du nombre de spots, du plafond et de l'alimentation existante. Le devis est gratuit ; l'ajout d'un point lumineux simple démarre à 90 €." },
+      { q: 'Combien coûte la pose de spots ?', a: "Cela dépend du nombre de spots, du plafond et de l'alimentation existante. Je vous remets un devis gratuit, établi sur place ou à partir de photos." },
     ],
     cta: { title: 'Envie de spots dans votre plafond ?', text: 'Je vous propose une implantation, des spots adaptés et un prix détaillé.' },
     links: ['/prestations/eclairage-interieur/', '/remplacement-eclairage-led/', '/lumiere-qui-clignote/', '/electricite-salle-de-bain/', '/blog/bien-choisir-eclairage-led/'],
@@ -303,7 +303,7 @@ Je vous conseille au cas par cas, pour ne remplacer que ce qui doit l'être.`,
     faq: [
       { q: 'Puis-je mettre des tubes LED dans mes anciennes réglettes néon ?', a: "Certains tubes LED sont compatibles, mais le résultat dépend du ballast. Pour une installation fiable et étanche, la réglette LED complète est souvent préférable." },
       { q: 'Les LED fonctionnent-elles dans un garage non chauffé ?', a: "Oui, très bien : contrairement aux néons, elles s'allument instantanément même par grand froid." },
-      { q: 'Combien coûte le remplacement d’un luminaire ?', a: "La pose d'un luminaire sur un point existant est un travail rapide, chiffré selon le nombre de points. L'ajout d'un nouveau point lumineux démarre à 90 €." },
+      { q: 'Combien coûte le remplacement d’un luminaire ?', a: "La pose d'un luminaire sur un point existant est un travail rapide. Je chiffre l'ensemble sur devis, selon le nombre de points et le matériel choisi." },
     ],
     cta: { title: 'Un éclairage à moderniser ?', text: 'Garage, cuisine, séjour : je remplace vos anciens luminaires par des LED fiables.' },
     links: ['/prestations/eclairage-interieur/', '/installation-spots-led/', '/lumiere-qui-clignote/', '/electricien-maubert-fontaine/', '/blog/bien-choisir-eclairage-led/'],

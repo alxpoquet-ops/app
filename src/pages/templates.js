@@ -18,14 +18,6 @@ function body(src, cta) {
   return md(src).replace('<p>[[cta]]</p>', C.inlineCta(cta));
 }
 
-function miniPrices() {
-  const ids = ['diagnostic', 'deplacement', 'prise', 'disjoncteur', 'tableau'];
-  return `<ul class="dispo-prices dispo-prices-light">${tarifs
-    .filter((t) => ids.includes(t.id))
-    .map((t) => `<li><span>${t.label}</span><strong>${t.from ? 'dès ' : ''}${t.price} €</strong></li>`)
-    .join('')}</ul>`;
-}
-
 function aside(p) {
   return `<aside class="aside-sticky" aria-label="Contact et tarifs">
   <div class="aside-card aside-card-dark">
@@ -35,11 +27,7 @@ function aside(p) {
     ${C.btnCall('btn-primary btn-block', 'Appeler')}
     ${C.btnWa('btn-wa btn-block', 'WhatsApp')}
   </div>
-  <div class="aside-card">
-    <h2>${icon('euro')} Tarifs transparents</h2>
-    ${miniPrices()}
-    <a class="btn btn-ghost btn-block" href="/tarifs/">Voir toute la grille</a>
-  </div>
+  ${C.forfaitBlock({ compact: true })}
   ${
     p.nearby && p.nearby.length
       ? `<div class="aside-card"><h2>${icon('map-pin')} ${esc(p.nearbyTitle || 'À proximité')}</h2><ul class="link-cloud">${p.nearby
@@ -142,7 +130,7 @@ function blogPost(a, all) {
     ${toc.length > 2 ? `<nav class="toc" aria-label="Sommaire"><p class="h3" style="margin-bottom:.6em"><strong>Sommaire</strong></p><ol>${toc.map((t) => `<li><a href="#${t.id}">${esc(plain(t.title))}</a></li>`).join('')}</ol></nav>` : ''}
     <div class="aside-card aside-card-dark">
       <h2>${icon('zap')} Un souci chez vous ?</h2>
-      <p class="small">Diagnostic de panne à 79 €, déplacement dès 20 €. Interventions le soir et le week-end.</p>
+      <p class="small">Forfait dépannage 79 € : déplacement, recherche de panne, solution et devis de réparation compris. Le soir et le week-end.</p>
       ${C.btnCall('btn-primary btn-block', 'Appeler')}
       ${C.btnDevis('btn-light btn-block', a.prestation)}
     </div>

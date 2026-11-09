@@ -6,13 +6,13 @@ module.exports = [
     label: "Électricien à Signy-l'Abbaye",
     teaser: 'Ma commune : déplacement sans supplément et créneaux souvent dès le soir même.',
     title: "Électricien à Signy-l'Abbaye (08460) – soir & week-end | ALED08",
-    description: "Électricien installé à Signy-l'Abbaye : dépannage, recherche de panne, tableau, prises, éclairage. Déplacement 20 € sans supplément, le soir et le week-end.",
+    description: "Électricien installé à Signy-l'Abbaye : dépannage, recherche de panne, tableau, prises, éclairage. Forfait dépannage 79 € sans supplément, le soir et le week-end.",
     kicker: "Électricien · Signy-l'Abbaye (08460)",
     h1: "Électricien à Signy-l'Abbaye : l'artisan de la commune",
-    lead: "ALED08 est installé à **Signy-l'Abbaye**. Pour les habitants du bourg et des hameaux, cela veut dire un électricien **à quelques minutes de chez eux**, un déplacement facturé 20 € sans aucun supplément, et souvent un créneau dès le soir même.",
+    lead: "ALED08 est installé à **Signy-l'Abbaye**. Pour les habitants du bourg et des hameaux, cela veut dire un électricien **à quelques minutes de chez eux**, un forfait dépannage de 79 € sans aucun supplément kilométrique, et souvent un créneau dès le soir même.",
     body: `## Le trajet le plus court de ma tournée
 
-Quand on habite Signy-l'Abbaye, faire venir un électricien de Charleville ou de Reims coûte du temps et des frais de route. Ici, je suis votre voisin : le déplacement reste au **tarif de base de 20 €**, comme pour Dommery, Lalobbe, Neuvizy, Mesmont ou Saint-Jean-aux-Bois. Et parce que je n'ai que quelques minutes de route, je peux plus facilement caler un passage en fin de journée, même pour une petite intervention.
+Quand on habite Signy-l'Abbaye, faire venir un électricien de Charleville ou de Reims coûte du temps et des frais de route. Ici, je suis votre voisin : le dépannage reste au **forfait de base de 79 €**, déplacement compris, comme pour Dommery, Lalobbe, Neuvizy, Mesmont ou Saint-Jean-aux-Bois. Et parce que je n'ai que quelques minutes de route, je peux plus facilement caler un passage en fin de journée, même pour une petite intervention.
 
 ## Ce que je vois le plus souvent dans les maisons de Signy
 
@@ -33,7 +33,7 @@ Travailler dans sa propre commune, c'est accepter d'être jugé tous les jours s
       { tag: 'Pavillon', icon: 'thermometer', title: 'Plus d’eau chaude depuis deux jours', text: "Le chauffe-eau électrique ne chauffe plus, alors que le disjoncteur est enclenché. Le contacteur heures creuses du tableau ne se fermait plus la nuit.", result: 'Contacteur remplacé le soir même, chauffe-eau de nouveau fonctionnel dès la nuit suivante.' },
     ],
     faq: [
-      { q: "Combien coûte un déplacement à Signy-l'Abbaye ?", a: "20 €, sans supplément kilométrique. C'est aussi le cas pour toutes les communes situées à moins de 15 km : Wasigny, Thin-le-Moutier, Launois-sur-Vence, Liart, Novion-Porcien et les villages entre elles." },
+      { q: "Le déplacement est-il facturé à Signy-l'Abbaye ?", a: "Il est compris dans le forfait dépannage de 79 €, sans supplément kilométrique. C'est aussi le cas pour toutes les communes situées à moins de 15 km : Wasigny, Thin-le-Moutier, Launois-sur-Vence, Liart, Novion-Porcien et les villages entre elles." },
       { q: 'Pouvez-vous passer le soir même ?', a: "Souvent, oui, puisque je suis sur place. Appelez en fin d'après-midi : s'il me reste un créneau dans la soirée, il est pour vous." },
       { q: 'Intervenez-vous dans les fermes et les hameaux isolés ?', a: "Bien sûr. Les maisons isolées ont souvent des besoins particuliers (lignes longues, dépendances, éclairage de cour) que je connais bien." },
       { q: 'Pouvez-vous refaire l’électricité d’une grange ou d’un atelier ?', a: "Oui : ligne d'alimentation, petit tableau secondaire, éclairage étanche et prises adaptées. Voir la page [ligne pour garage ou atelier](/ligne-electrique-garage-atelier/)." },
@@ -49,10 +49,10 @@ Travailler dans sa propre commune, c'est accepter d'être jugé tous les jours s
     label: 'Électricien à Rethel',
     teaser: 'Maisons de la Reconstruction, appartements du centre : dépannage et travaux le soir et le week-end.',
     title: 'Électricien à Rethel (08300) – dépannage & travaux | ALED08',
-    description: 'Électricien à Rethel pour les particuliers : dépannage, recherche de panne, tableau, prises, éclairage. Le soir et le week-end, supplément de 10 € seulement.',
+    description: 'Électricien à Rethel pour les particuliers : dépannage, recherche de panne, tableau, prises, éclairage. Forfait dépannage 89 €, le soir et le week-end.',
     kicker: 'Électricien · Rethel (08300)',
     h1: 'Électricien à Rethel, en soirée et le week-end',
-    lead: "À une vingtaine de minutes de Signy-l'Abbaye, **Rethel** fait partie de mes secteurs réguliers. J'y interviens chez les particuliers pour les pannes, les tableaux, les prises et l'éclairage, **après 18 h en semaine et le week-end**, avec un supplément kilométrique de seulement **10 €**.",
+    lead: "À une vingtaine de minutes de Signy-l'Abbaye, **Rethel** fait partie de mes secteurs réguliers. J'y interviens chez les particuliers pour les pannes, les tableaux, les prises et l'éclairage, **après 18 h en semaine et le week-end**, avec un **forfait dépannage de 89 €** (79 € + 10 € de supplément kilométrique).",
     body: `## Des installations marquées par l'histoire de la ville
 
 Une grande partie du centre de Rethel a été reconstruite après la Seconde Guerre mondiale. Beaucoup de logements datent donc de la **Reconstruction des années 1950**, et certaines installations électriques en gardent la trace : circuits sans conducteur de terre, sections de câbles prévues pour une époque où l'on branchait une radio et un fer à repasser, tableaux modernisés à moitié.
@@ -77,7 +77,7 @@ J'interviens dans toute la ville, du centre aux quartiers plus récents, ainsi q
       { tag: 'Sous-sol', icon: 'droplets', title: 'Le différentiel saute après les grosses pluies', text: "Dans une maison proche de l'Aisne, les coupures arrivent surtout en automne. Les prises du sous-sol, posées bas sur un mur humide, sont en cause.", result: 'Prises remontées et remplacées par des modèles étanches, boîte de dérivation déplacée hors zone humide.' },
     ],
     faq: [
-      { q: 'Quel est le coût du déplacement à Rethel ?', a: "Rethel se trouve à environ 24 km de Signy-l'Abbaye : le déplacement est de 20 € plus un supplément de 10 €, soit 30 €." },
+      { q: 'Combien coûte un dépannage à Rethel ?', a: "Rethel se trouve à environ 24 km de Signy-l'Abbaye : forfait dépannage de 79 € plus 10 € de supplément, soit 89 €, devis de réparation compris." },
       { q: 'Combien de temps pour obtenir un rendez-vous à Rethel ?', a: "Selon le planning, un créneau peut souvent être proposé dans la semaine, parfois le soir même pour une panne. Le samedi est idéal pour les travaux plus longs." },
       { q: 'Intervenez-vous dans les appartements ?', a: "Oui, sur toute la partie privative : tableau d'abonné, prises, éclairage, circuits. Les parties communes de l'immeuble relèvent du syndic." },
     ],
@@ -112,14 +112,14 @@ J'interviens aussi bien pour les **propriétaires occupants** que pour les **bai
 
 ## Pourquoi faire venir un électricien de Signy-l'Abbaye ?
 
-Parce que je suis disponible quand vous l'êtes. Charleville-Mézières se trouve à environ 32 km : le déplacement est de 20 € plus 20 € de supplément, un montant connu d'avance. En échange, vous évitez de poser une journée de congé et vous avez un artisan qui prend le temps d'expliquer. Pour les pannes, voir aussi le [dépannage à Charleville-Mézières](/depannage-electrique-charleville-mezieres/).`,
+Parce que je suis disponible quand vous l'êtes. Charleville-Mézières se trouve à environ 32 km : le forfait dépannage passe de 79 € à 99 € avec le supplément kilométrique, un montant connu d'avance. En échange, vous évitez de poser une journée de congé et vous avez un artisan qui prend le temps d'expliquer. Pour les pannes, voir aussi le [dépannage à Charleville-Mézières](/depannage-electrique-charleville-mezieres/).`,
     cases: [
       { tag: 'Maison de ville', icon: 'lamp-ceiling', title: 'Des plafonniers sur des fils d’origine', text: "Dans une maison de ville à Mézières, les plafonniers de l'étage étaient raccordés sur des conducteurs gainés de tissu, devenus cassants. Le dernier luminaire posé ne fonctionnait que par intermittence.", result: 'Points lumineux repris avec des conducteurs neufs et des boîtes DCL, luminaires reposés.' },
       { tag: 'Bailleur', icon: 'key-round', title: 'Un T3 à remettre en location', text: "Un propriétaire veut relouer un appartement dont la salle de bain n'a pas de liaison équipotentielle et dont plusieurs prises sont sans terre.", result: 'Mise en sécurité en deux soirées : liaison refaite, prises reprises, compte rendu remis pour le dossier du bailleur.' },
       { tag: 'Pavillon', icon: 'lamp-wall-up', title: 'Une allée de garage dans le noir', text: "Dans un pavillon de l'agglomération, l'allée entre le portail et la porte d'entrée n'était pas éclairée, ce qui inquiétait les propriétaires l'hiver.", result: 'Deux bornes LED et une applique à détection, alimentées par une ligne enterrée sous gaine rouge.' },
     ],
     faq: [
-      { q: 'Combien coûte le déplacement à Charleville-Mézières ?', a: "Environ 32 km depuis Signy-l'Abbaye : déplacement de base 20 € + supplément 20 €, soit 40 €. Je vous confirme le montant pour votre quartier au téléphone." },
+      { q: 'Combien coûte un dépannage à Charleville-Mézières ?', a: "Environ 32 km depuis Signy-l'Abbaye : forfait 79 € + supplément 20 €, soit 99 €, recherche de panne et devis compris. Je vous confirme le montant pour votre quartier au téléphone." },
       { q: 'Intervenez-vous dans les communes de l’agglomération ?', a: "Oui : Villers-Semeuse, Prix-lès-Mézières, Warcq, Aiglemont, Nouzonville et les autres communes d'Ardenne Métropole situées dans ma zone." },
       { q: 'Faut-il prévoir une place de stationnement ?', a: "Si c'est possible, oui : dans le centre, une place proche facilite le transport du matériel. Sinon, ce n'est pas un problème, il suffit de me prévenir." },
       { q: 'Mon logement est en copropriété : qui appeler ?', a: "Pour tout ce qui se trouve après votre tableau (prises, éclairage, circuits), c'est à vous de faire appel à un électricien. Pour la colonne montante ou l'éclairage de la cage d'escalier, contactez votre syndic." },
@@ -143,7 +143,7 @@ Parce que je suis disponible quand vous l'êtes. Charleville-Mézières se trouv
 
 Pour une panne qui vous laisse sans courant en plein hiver, un électricien installé à Sedan même pourra parfois venir plus vite que moi. Je préfère vous le dire. En revanche, si vous cherchez un artisan **disponible en soirée ou le samedi**, qui annonce ses prix à l'avance et prend le temps d'expliquer, je peux organiser mon planning pour venir, en regroupant si possible plusieurs interventions dans le secteur.
 
-Selon votre adresse, le déplacement entre dans la tranche 30–45 km (**20 € de supplément**) ou fait l'objet d'un **forfait annoncé avant**, jamais d'une surprise sur la facture.
+Selon votre adresse, le déplacement entre dans la tranche 30–45 km (**forfait dépannage de 99 €**) ou fait l'objet d'un **supplément annoncé avant**, jamais d'une surprise sur la facture.
 
 ## Les maisons sedanaises et leurs particularités
 
@@ -167,11 +167,11 @@ La ville ancienne, au pied du château fort, compte de nombreuses **maisons haut
       { tag: 'Cave voûtée', icon: 'droplets', title: 'Une cave qui fait sauter le différentiel', text: "La prise et la douille de la cave, en matériel ancien non étanche, provoquaient des déclenchements dès que l'humidité montait.", result: 'Hublot étanche, prise IP55 et interrupteur extérieur à la cave : plus de coupures.' },
     ],
     faq: [
-      { q: 'Combien coûte le déplacement jusqu’à Sedan ?', a: "Sedan est à environ 45 km de Signy-l'Abbaye. Selon l'adresse, le supplément est de 20 € (déplacement 40 €) ou un forfait fixé à l'avance pour les adresses situées au-delà. Je vous le confirme au téléphone." },
+      { q: 'Combien coûte un dépannage à Sedan ?', a: "Sedan est à environ 45 km de Signy-l'Abbaye. Selon l'adresse, le forfait dépannage est de 99 € (79 € + 20 €) ou un supplément est fixé à l'avance pour les adresses situées au-delà. Je vous le confirme au téléphone." },
       { q: 'Intervenez-vous autour de Sedan ?', a: "Oui, dans les communes proches comme Floing, Balan, Glaire, Wadelincourt ou Donchery, avec un déplacement chiffré avant le rendez-vous." },
-      { q: 'Venez-vous pour un simple remplacement de prise à Sedan ?', a: "C'est possible, mais je vous conseille de regrouper plusieurs petits travaux dans la même visite : le coût du déplacement devient alors négligeable." },
+      { q: 'Venez-vous pour un simple remplacement de prise à Sedan ?', a: "C'est possible, sur devis. Le plus intéressant reste de regrouper plusieurs petits travaux dans la même visite, pour un seul déplacement jusqu'à Sedan." },
     ],
-    cta: { title: 'Des travaux à prévoir à Sedan ?', text: 'Planifions-les en soirée ou un samedi : vous connaîtrez le prix du déplacement et des travaux avant ma venue.' },
+    cta: { title: 'Des travaux à prévoir à Sedan ?', text: 'Planifions-les en soirée ou un samedi : vous connaîtrez le prix des travaux, sur devis, avant ma venue.' },
     links: ['/depannage-electrique-sedan/', '/prestations/tableau-electrique/', '/prestations/mise-en-securite/', '/eclairage-exterieur-detecteur/', '/petits-travaux-electriques/', '/zone-intervention/'],
     nearby: ['/electricien-charleville-mezieres/', '/electricien-poix-terron/', '/electricien-renwez/'],
   },
@@ -211,7 +211,7 @@ Le secteur compte de nombreux gîtes et maisons occupées une partie de l'année
       { tag: 'Gîte', icon: 'key-round', title: 'Remise en service avant la saison', text: "Un gîte resté fermé tout l'hiver : à la remise sous tension, le différentiel saute. L'humidité s'était infiltrée dans une boîte de raccordement extérieure.", result: 'Boîte remplacée, mesures d’isolement sur tous les circuits, gîte prêt pour les premiers locataires.' },
     ],
     faq: [
-      { q: 'Quel est le supplément de déplacement pour Rocroi ?', a: "Rocroi se trouve à environ 38 km de Signy-l'Abbaye : supplément de 20 €, soit un déplacement de 40 €." },
+      { q: 'Quel est le prix d’un dépannage à Rocroi ?', a: "Rocroi se trouve à environ 38 km de Signy-l'Abbaye : forfait dépannage de 79 € plus 20 € de supplément, soit 99 €." },
       { q: 'Mon disjoncteur général coupe quand tout chauffe : que faire ?', a: "C'est souvent le signe d'une puissance souscrite insuffisante. Je vérifie d'abord que l'installation n'est pas en cause, puis je vous indique si une augmentation de puissance auprès de votre fournisseur est la bonne solution. Plus d'explications : [disjoncteur qui saute](/disjoncteur-qui-saute/)." },
       { q: 'Intervenez-vous dans les villages autour de Rocroi ?', a: "Oui : Maubert-Fontaine, Rimogne, Bourg-Fidèle, Taillette, Sévigny-la-Forêt et les communes du plateau, avec un supplément selon la distance." },
     ],
@@ -252,7 +252,7 @@ Beaucoup d'habitants du secteur vivent depuis longtemps dans leur maison et souh
       { tag: 'Dépendance', icon: 'cable', title: 'Une ligne aérienne vers l’étable', text: "L'ancienne étable, devenue atelier, était alimentée par un câble aérien tendu entre deux bâtiments, gaine craquelée par le soleil.", result: 'Ligne remplacée par un câble adapté, protégée par un disjoncteur et un différentiel dédiés.' },
     ],
     faq: [
-      { q: 'Y a-t-il un supplément de déplacement à Liart ?', a: "Non. Liart est à environ 13 km de Signy-l'Abbaye : le déplacement reste au tarif de base de 20 €." },
+      { q: 'Y a-t-il un supplément de déplacement à Liart ?', a: "Non. Liart est à environ 13 km de Signy-l'Abbaye : le forfait dépannage reste à 79 €, déplacement compris." },
       { q: 'Pouvez-vous intervenir sur une grange ou une étable ?', a: "Oui, pour l'éclairage, les prises et l'alimentation des dépendances d'une habitation. Pour une exploitation agricole en activité, appelez-moi pour en discuter." },
       { q: 'Quels aménagements pour une personne âgée ?', a: "Éclairage automatique des circulations, interrupteurs lumineux, prises surélevées, éclairage extérieur de l'entrée. Je vous conseille selon la maison et les habitudes de la personne." },
     ],
@@ -292,7 +292,7 @@ Compresseur, poste à souder, scie sur table : les outils d'atelier demandent de
       { tag: 'Atelier', icon: 'hammer', title: 'Le compresseur fait disjoncter le garage', text: "Le compresseur était branché sur la seule prise du garage, partagée avec l'éclairage et le congélateur.", result: 'Ligne dédiée en 2,5 mm² avec deux prises d’atelier et un congélateur sur sa propre protection.' },
     ],
     faq: [
-      { q: 'Combien coûte le déplacement à Novion-Porcien ?', a: "20 €, sans supplément : la commune est à environ 13 km de Signy-l'Abbaye." },
+      { q: 'Combien coûte un dépannage à Novion-Porcien ?', a: "79 €, sans supplément kilométrique : la commune est à environ 13 km de Signy-l'Abbaye." },
       { q: 'Mon assureur demande une attestation après un orage : pouvez-vous la faire ?', a: "Oui. Après contrôle, je vous remets une attestation décrivant les dégâts constatés sur l'installation et les travaux réalisés, utile pour votre déclaration de sinistre." },
       { q: 'Peut-on étaler une mise en sécurité sur plusieurs années ?', a: "Oui, à condition de commencer par ce qui protège les personnes : tableau avec différentiels 30 mA et terre. Le reste peut suivre au rythme de vos travaux." },
     ],
@@ -336,7 +336,7 @@ Les grands jardins du secteur appellent une **prise extérieure** pour les outil
     faq: [
       { q: 'Un différentiel 500 mA suffit-il ?', a: "Non pour la protection des personnes. Il limite le risque d'incendie, mais seul un différentiel 30 mA protège contre l'électrocution. Lire [différentiel ou disjoncteur : quelle différence ?](/blog/differentiel-ou-disjoncteur-difference/)" },
       { q: 'Faut-il refaire toute l’électricité d’un pavillon des années 80 ?', a: "Rarement. Si les câbles sont en bon état et la terre correcte, la mise à niveau du tableau suffit souvent à apporter une vraie sécurité." },
-      { q: 'Y a-t-il un supplément de déplacement ?', a: "Non, Thin-le-Moutier est à environ 9 km de Signy-l'Abbaye : déplacement à 20 €." },
+      { q: 'Y a-t-il un supplément de déplacement ?', a: "Non, Thin-le-Moutier est à environ 9 km de Signy-l'Abbaye : le dépannage est au forfait de 79 €, déplacement inclus." },
     ],
     cta: { title: 'Votre tableau date des années 70 ou 80 ?', text: 'Envoyez-moi une photo : je vous dis s’il faut le compléter ou le remplacer, et à quel prix.' },
     links: ['/prestations/tableau-electrique/', '/electricite-salle-de-bain/', '/prise-exterieure/', '/differentiel-qui-saute/', '/tableau-electrique-ardennes/'],
@@ -377,7 +377,7 @@ Pour une recharge lente la nuit, une **prise renforcée** sur un circuit dédié
       { tag: 'Extension', icon: 'house-plug', title: 'Une véranda sans électricité', text: "Une véranda construite par une entreprise de menuiserie, livrée sans aucune prise ni éclairage.", result: 'Circuit dédié depuis le tableau, trois prises, deux appliques et un plafonnier ventilateur.' },
     ],
     faq: [
-      { q: 'Quel est le supplément de déplacement à Poix-Terron ?', a: "Environ 20 km depuis Signy-l'Abbaye : supplément de 10 €, soit un déplacement de 30 €." },
+      { q: 'Quel est le supplément de déplacement à Poix-Terron ?', a: "Environ 20 km depuis Signy-l'Abbaye : supplément de 10 €, soit un forfait dépannage de 89 €." },
       { q: 'Mon tableau est plein, puis-je quand même ajouter un circuit ?', a: "Souvent, oui : on peut ajouter une rangée ou un petit coffret complémentaire. Si le tableau est ancien ou saturé, son remplacement peut être plus pertinent ; je vous présente les deux options." },
       { q: 'Intervenez-vous à Launois, Mazerny ou Vendresse ?', a: "Oui, comme dans toutes les communes de la vallée de la Vence et des environs, avec un supplément calculé selon la distance." },
     ],
@@ -395,7 +395,7 @@ Pour une recharge lente la nuit, une **prise renforcée** sur un circuit dédié
     description: 'Électricien à Château-Porcien : remise en service après inondation, caves humides, mise en sécurité de maisons anciennes. Le soir et le week-end.',
     kicker: 'Électricien · Château-Porcien (08360)',
     h1: "Électricien à Château-Porcien, sur les bords de l'Aisne",
-    lead: "Ancienne capitale du Porcien bâtie sur les rives de l'Aisne, **Château-Porcien** a des maisons anciennes pleines de charme… et parfois des installations électriques **éprouvées par l'humidité et les crues**. J'y interviens le soir et le week-end, avec un supplément kilométrique de 10 €.",
+    lead: "Ancienne capitale du Porcien bâtie sur les rives de l'Aisne, **Château-Porcien** a des maisons anciennes pleines de charme… et parfois des installations électriques **éprouvées par l'humidité et les crues**. J'y interviens le soir et le week-end, au forfait dépannage de 89 € (supplément kilométrique compris).",
     body: `## Après une crue : ne rien remettre sous tension trop vite
 
 Lorsqu'un sous-sol, une cave ou un rez-de-chaussée a été inondé, l'eau a pu pénétrer dans les boîtes de dérivation, les prises, les gaines et parfois le tableau. Même une fois l'eau retirée, **remettre le courant sans contrôle est dangereux** : les dépôts de boue et l'humidité résiduelle créent des fuites de courant et des risques d'échauffement.
@@ -419,7 +419,7 @@ Même sans crue, l'humidité de la vallée vieillit prématurément le matériel
       { tag: 'Sous-sol', icon: 'lightbulb', title: 'La lumière du sous-sol s’éteint toute seule', text: "Un plafonnier non étanche, où la condensation ruisselait, provoquait des courts-circuits intermittents.", result: 'Hublot LED IP65 posé, boîte de raccordement étanche, interrupteur déplacé dans l’escalier.' },
     ],
     faq: [
-      { q: 'Combien coûte le déplacement à Château-Porcien ?', a: "La commune est à environ 28 km de Signy-l'Abbaye : déplacement de 20 € + 10 € de supplément." },
+      { q: 'Combien coûte un dépannage à Château-Porcien ?', a: "La commune est à environ 28 km de Signy-l'Abbaye : forfait dépannage de 79 € + 10 € de supplément, soit 89 €." },
       { q: 'Faut-il tout remplacer après une inondation ?', a: "Non. On remplace l'appareillage qui a été immergé (prises, interrupteurs, boîtes) et on contrôle les câbles par des mesures d'isolement. Les câbles sains peuvent être conservés." },
       { q: 'Peut-on garder un style ancien avec du matériel moderne ?', a: "Oui : de nombreux fabricants proposent des interrupteurs et prises d'aspect rétro, en porcelaine ou en laiton, parfaitement conformes à la norme actuelle." },
     ],
@@ -463,7 +463,7 @@ Beaucoup de maisons donnent sur une cour ou un porche. Un éclairage à détecti
       { tag: 'Cuisine', icon: 'plug-zap', title: 'Une plaque vitrocéramique sur une prise ordinaire', text: "La plaque de cuisson était raccordée sur une prise 16 A partagée, protégée par un fusible surdimensionné.", result: 'Ligne spécialisée 32 A en 6 mm² créée depuis le nouveau tableau.' },
     ],
     faq: [
-      { q: 'Faut-il un supplément pour Launois-sur-Vence ?', a: "Non, la commune est à environ 11 km de Signy-l'Abbaye : déplacement à 20 €." },
+      { q: 'Faut-il un supplément pour Launois-sur-Vence ?', a: "Non, la commune est à environ 11 km de Signy-l'Abbaye : forfait dépannage à 79 €, sans supplément." },
       { q: 'Un tableau mixte fusibles-disjoncteurs est-il dangereux ?', a: "Pas forcément dans l'immédiat, mais les circuits restés sur fusibles ne bénéficient généralement d'aucune protection 30 mA, et le repérage est souvent impossible. Le regroupement dans un tableau neuf règle les deux problèmes." },
       { q: 'Combien de temps dure le remplacement ?', a: "En général une journée pour une maison de village, avec une coupure de courant de quelques heures. Je le programme volontiers un samedi." },
     ],
@@ -507,7 +507,7 @@ Comme dans tout le fond de vallée, les caves sont fraîches et humides. Un inte
       { tag: 'Cave', icon: 'lightbulb', title: 'L’interrupteur de la cave ne répond plus', text: "L'interrupteur, posé dans la cave elle-même, était rongé par la corrosion. La lumière ne s'allumait plus qu'en forçant.", result: 'Interrupteur déplacé en haut de l’escalier, hublot étanche posé dans la cave.' },
     ],
     faq: [
-      { q: 'Y a-t-il un supplément de déplacement à Wasigny ?', a: "Non, la commune est à environ 9 km de Signy-l'Abbaye : le déplacement est de 20 €." },
+      { q: 'Y a-t-il un supplément de déplacement à Wasigny ?', a: "Non, la commune est à environ 9 km de Signy-l'Abbaye : le déplacement est compris dans le forfait dépannage de 79 €." },
       { q: 'Pouvez-vous intervenir en plusieurs fois sur un chantier de rénovation ?', a: "Oui, c'est même recommandé : une première intervention avant la fermeture des murs, puis une seconde pour la finition. Chaque passage est prévu au devis." },
       { q: 'Je fais mes travaux moi-même : pouvez-vous vérifier mon installation ?', a: "Je peux contrôler une partie réalisée par vous et vous indiquer ce qui doit être corrigé. En revanche, je ne peux pas engager ma responsabilité sur un travail que je n'ai pas réalisé." },
     ],
@@ -522,10 +522,10 @@ Comme dans tout le fond de vallée, les caves sont fraîches et humides. Un inte
     label: 'Électricien à Chaumont-Porcien',
     teaser: 'Village perché exposé aux orages : surtensions, portails, protections.',
     title: 'Électricien à Chaumont-Porcien – orages, dépannage | ALED08',
-    description: 'Électricien à Chaumont-Porcien : dépannage après orage, protection contre les surtensions, portail motorisé, corps de ferme. Supplément de 10 €.',
+    description: 'Électricien à Chaumont-Porcien : dépannage après orage, protection contre les surtensions, portail motorisé, corps de ferme. Forfait dépannage 89 €.',
     kicker: 'Électricien · Chaumont-Porcien (08220)',
     h1: 'Électricien à Chaumont-Porcien : protéger une maison exposée',
-    lead: "Perché sur les hauteurs du Porcien, **Chaumont-Porcien** offre de beaux panoramas… et une exposition marquée aux vents et aux orages. J'y interviens pour les **dépannages après orage**, la protection des équipements sensibles et les travaux dans les corps de ferme, avec un supplément de 10 €.",
+    lead: "Perché sur les hauteurs du Porcien, **Chaumont-Porcien** offre de beaux panoramas… et une exposition marquée aux vents et aux orages. J'y interviens pour les **dépannages après orage**, la protection des équipements sensibles et les travaux dans les corps de ferme, au forfait dépannage de 89 €.",
     body: `## Les équipements électroniques, premières victimes
 
 Il y a vingt ans, un orage grillait surtout la télévision. Aujourd'hui, une maison compte des dizaines d'appareils électroniques sensibles : **box internet, motorisation de portail et de porte de garage, chaudière à régulation électronique, pompe à chaleur, alarme**. Sur un site exposé, une surtension peut en mettre plusieurs hors service d'un coup.
@@ -551,7 +551,7 @@ Dans les anciennes fermes du village, la grange ou l'ancienne écurie est souven
       { tag: 'Ferme', icon: 'warehouse', title: 'La grange fait couper la maison', text: "Le moindre défaut dans la grange (outil, rallonge) faisait déclencher le différentiel général de la maison.", result: 'Tableau secondaire dans la grange avec différentiel 30 mA dédié : la maison reste alimentée.' },
     ],
     faq: [
-      { q: 'Quel est le coût du déplacement à Chaumont-Porcien ?', a: "La commune est à environ 18 km de Signy-l'Abbaye : déplacement de 20 € plus 10 € de supplément." },
+      { q: 'Quel est le prix d’un dépannage à Chaumont-Porcien ?', a: "La commune est à environ 18 km de Signy-l'Abbaye : forfait dépannage 79 € plus 10 € de supplément." },
       { q: 'Un parafoudre protège-t-il d’un coup de foudre direct ?', a: "Non, il limite les surtensions qui arrivent par le réseau, ce qui représente l'immense majorité des dégâts. La protection contre un impact direct relève d'un paratonnerre, une installation différente." },
       { q: 'Pouvez-vous dépanner un portail motorisé ?', a: "Je m'occupe de toute la partie électrique : alimentation, protection, câble, raccordement. Pour la carte électronique ou la mécanique du moteur, je vous oriente vers l'installateur du portail." },
     ],
@@ -569,7 +569,7 @@ Dans les anciennes fermes du village, la grange ou l'ancienne écurie est souven
     description: 'Électricien à Rumigny : installations en apparent à moderniser, prise pour poêle à granulés, éclairage de chemin, dépannage. Soirs et week-ends.',
     kicker: 'Électricien · Rumigny (08290)',
     h1: 'Électricien à Rumigny, en Thiérache ardennaise',
-    lead: "Connue pour son château de la Cour des Prés, **Rumigny** et ses environs comptent de nombreuses longères et maisons de brique au milieu du bocage. J'y interviens le soir et le week-end, avec un supplément kilométrique de 10 €, pour moderniser ces installations souvent posées **en apparent**.",
+    lead: "Connue pour son château de la Cour des Prés, **Rumigny** et ses environs comptent de nombreuses longères et maisons de brique au milieu du bocage. J'y interviens le soir et le week-end (forfait dépannage 89 €, travaux sur devis) pour moderniser ces installations souvent posées **en apparent**.",
     body: `## Les installations en apparent, à moderniser avec goût
 
 Dans les longères aux murs épais, l'électricité a souvent été posée en surface : fils sous baguettes en bois, câbles agrafés le long des poutres, boîtes de dérivation vissées au plafond. Avec le temps, ces installations deviennent fragiles et peu esthétiques.
@@ -591,7 +591,7 @@ Dans le bocage, les maisons sont parfois éloignées de la route. Un éclairage 
       { tag: 'Chemin d’accès', icon: 'route', title: '80 mètres dans le noir', text: "Un chemin de terre de 80 mètres séparait la route de la maison, sans aucun éclairage.", result: 'Quatre bornes LED basses sur une ligne enterrée, commandées par un interrupteur crépusculaire.' },
     ],
     faq: [
-      { q: 'Combien coûte le déplacement à Rumigny ?', a: "Environ 22 km depuis Signy-l'Abbaye : déplacement 20 € + supplément de 10 €." },
+      { q: 'Combien coûte un dépannage à Rumigny ?', a: "Environ 22 km depuis Signy-l'Abbaye : forfait dépannage 79 € + supplément de 10 €, soit 89 €." },
       { q: 'Une installation en apparent est-elle conforme ?', a: "Oui, à condition d'utiliser des conduits ou moulures adaptés et de respecter les règles de fixation et de raccordement. C'est souvent la meilleure solution dans le bâti ancien." },
       { q: 'Faut-il une prise spéciale pour un poêle à granulés ?', a: "Pas une prise spéciale, mais une prise fiable, proche du poêle et convenablement protégée, sans rallonge. Je vérifie aussi la terre, indispensable pour cet appareil." },
     ],
@@ -609,7 +609,7 @@ Dans le bocage, les maisons sont parfois éloignées de la route. Un éclairage 
     description: "Électricien à Maubert-Fontaine : congélateur qui disjoncte, éclairage de garage LED, ajout de prises dans une maison récente, dépannage le soir et le week-end.",
     kicker: 'Électricien · Maubert-Fontaine (08260)',
     h1: 'Électricien à Maubert-Fontaine : fiabiliser le quotidien',
-    lead: "Au carrefour des routes du plateau, près de Rocroi, **Maubert-Fontaine** combine maisons anciennes et constructions récentes. On m'y appelle surtout pour des **problèmes du quotidien** : garage mal éclairé, congélateur qui fait disjoncter, prises manquantes. Supplément kilométrique : 10 €.",
+    lead: "Au carrefour des routes du plateau, près de Rocroi, **Maubert-Fontaine** combine maisons anciennes et constructions récentes. On m'y appelle surtout pour des **problèmes du quotidien** : garage mal éclairé, congélateur qui fait disjoncter, prises manquantes. Forfait dépannage : 89 €.",
     body: `## Le garage, pièce souvent négligée
 
 Le garage concentre souvent les installations les plus bricolées de la maison : réglettes néon qui clignotent l'hiver, prise unique sur laquelle sont branchés congélateur, recharge d'outils et éclairage d'appoint, rallonges posées au sol dans l'humidité.
@@ -635,7 +635,7 @@ Dans les constructions récentes, les besoins portent plutôt sur l'**ajout** : 
       { tag: 'Maison récente', icon: 'plug', title: 'Les prises qui manquaient', text: "Une maison de 2010 où l'entrée, le palier et l'arrière de la maison n'avaient aucune prise.", result: 'Trois prises ajoutées en repiquage sur des circuits disposant de points disponibles.' },
     ],
     faq: [
-      { q: 'Quel est le coût du déplacement à Maubert-Fontaine ?', a: "Environ 27 km depuis Signy-l'Abbaye : déplacement 20 € + supplément de 10 €." },
+      { q: 'Quel est le prix d’un dépannage à Maubert-Fontaine ?', a: "Environ 27 km depuis Signy-l'Abbaye : le forfait dépannage est de 89 €, supplément de 10 € inclus." },
       { q: 'Le congélateur doit-il avoir une prise à part ?', a: "C'est fortement recommandé. Une protection dédiée évite qu'un défaut sur un autre appareil ne le coupe pendant votre absence." },
       { q: 'Peut-on garder les réglettes néon et changer seulement les tubes ?', a: "Certains tubes LED se montent dans d'anciennes réglettes, mais le résultat dépend du ballast d'origine. Une réglette LED complète est souvent plus fiable." },
     ],
@@ -653,7 +653,7 @@ Dans les constructions récentes, les besoins portent plutôt sur l'**ajout** : 
     description: 'Électricien à Renwez et près du lac des Vieilles-Forges : remise en service de résidences secondaires, terrasse, plaque à induction. Soirs et week-ends.',
     kicker: 'Électricien · Renwez (08150)',
     h1: 'Électricien à Renwez et autour du lac des Vieilles-Forges',
-    lead: "Entre son musée de la Forêt et la proximité du **lac des Vieilles-Forges**, Renwez accueille aussi bien des résidents à l'année que des propriétaires de **résidences secondaires**. J'interviens pour les deux, le soir et le week-end, avec un supplément de 10 €.",
+    lead: "Entre son musée de la Forêt et la proximité du **lac des Vieilles-Forges**, Renwez accueille aussi bien des résidents à l'année que des propriétaires de **résidences secondaires**. J'interviens pour les deux, le soir et le week-end, au forfait dépannage de 89 €.",
     body: `## Résidences secondaires : la remise en service
 
 Une maison fermée plusieurs mois en forêt subit l'humidité, les variations de température et parfois la visite de rongeurs. À la réouverture, les problèmes électriques sont fréquents : différentiel qui saute, prise oxydée, luminaire extérieur infiltré.
@@ -682,7 +682,7 @@ Pour les habitants à l'année, les demandes ressemblent à celles de toute l'ag
       { tag: 'Induction', icon: 'plug-zap', title: 'Passer à la plaque à induction', text: "Un tableau complet, sans emplacement libre, empêchait d'ajouter la ligne de la nouvelle plaque.", result: 'Rangée supplémentaire ajoutée au tableau, différentiel type A et ligne 32 A tirée jusqu’à la cuisine.' },
     ],
     faq: [
-      { q: 'Combien coûte le déplacement à Renwez ?', a: "Environ 29 km depuis Signy-l'Abbaye : déplacement 20 € + supplément de 10 €. Pour certaines adresses proches du lac, au-delà de 30 km, le supplément est de 20 € : je vous le confirme avant." },
+      { q: 'Combien coûte un dépannage à Renwez ?', a: "Environ 29 km depuis Signy-l'Abbaye : forfait dépannage 79 € + supplément de 10 €. Pour certaines adresses proches du lac, au-delà de 30 km, le supplément est de 20 € : je vous le confirme avant." },
       { q: 'Pouvez-vous intervenir pendant mon séjour le week-end ?', a: "Oui, c'est justement l'intérêt de mes créneaux du samedi et du dimanche pour les propriétaires de résidences secondaires." },
       { q: 'Faut-il couper le courant pendant l’absence ?', a: "Couper le disjoncteur général protège des surtensions et des défauts pendant l'absence, mais coupe aussi congélateur, alarme ou hors-gel. Je peux séparer les circuits à garder en service." },
     ],
@@ -700,7 +700,7 @@ Pour les habitants à l'année, les demandes ressemblent à celles de toute l'ag
     description: 'Électricien à Signy-le-Petit : chute de tension sur longues lignes, atelier bois, prise pour camping-car, dépannage. Le soir et le week-end.',
     kicker: 'Électricien · Signy-le-Petit (08380)',
     h1: 'Électricien à Signy-le-Petit, aux confins de la Thiérache',
-    lead: "À ne pas confondre avec Signy-l'Abbaye, où je suis installé : **Signy-le-Petit**, près de la frontière belge et de l'étang de la Motte, se trouve à une trentaine de kilomètres. J'y interviens le soir et le week-end, avec un supplément de 20 €, notamment pour les maisons isolées et leurs dépendances.",
+    lead: "À ne pas confondre avec Signy-l'Abbaye, où je suis installé : **Signy-le-Petit**, près de la frontière belge et de l'étang de la Motte, se trouve à une trentaine de kilomètres. J'y interviens le soir et le week-end, au forfait dépannage de 99 €, notamment pour les maisons isolées et leurs dépendances.",
     body: `## Les longues lignes et la chute de tension
 
 En lisière de forêt, certaines maisons et dépendances sont alimentées par des câbles de plusieurs dizaines de mètres. Sur une telle longueur, si la section du câble est insuffisante, **la tension baisse** à l'arrivée : moteurs qui peinent, lampes qui faiblissent, appareils qui se mettent en défaut, et câble qui chauffe.
@@ -722,7 +722,7 @@ Pour un camping-car stationné sur la propriété, ou pour recevoir de la famill
       { tag: 'Camping-car', icon: 'car-front', title: 'Une prise pour le camping-car', text: "Un camping-car stationné l'hiver sur la propriété, maintenu en charge par une rallonge passant sous la porte du garage.", result: 'Prise extérieure IP55 sur circuit dédié, à proximité de l’emplacement de stationnement.' },
     ],
     faq: [
-      { q: 'Combien coûte le déplacement à Signy-le-Petit ?', a: "Environ 32 km depuis Signy-l'Abbaye : déplacement 20 € + supplément de 20 €, soit 40 €." },
+      { q: 'Combien coûte un dépannage à Signy-le-Petit ?', a: "Environ 32 km depuis Signy-l'Abbaye : forfait dépannage 79 € + supplément de 20 €, soit 99 €." },
       { q: 'Comment savoir si mon câble est trop long ou trop fin ?', a: "Des lampes qui baissent quand un moteur démarre, un câble tiède au toucher ou des appareils qui se mettent en défaut sont des signes typiques. Une mesure de tension en charge permet de le confirmer." },
       { q: 'Intervenez-vous aussi côté belge ?', a: "Non, j'interviens uniquement en France, dans les Ardennes." },
     ],
@@ -740,7 +740,7 @@ Pour un camping-car stationné sur la propriété, ou pour recevoir de la famill
     description: "Électricien à Attigny : mise en sécurité d'anciens commerces devenus logements, humidité près du canal, éclairage, dépannage. Soirs et week-ends.",
     kicker: 'Électricien · Attigny (08130)',
     h1: "Électricien à Attigny, entre l'Aisne et le canal des Ardennes",
-    lead: "Ancienne résidence des rois carolingiens, **Attigny** est aujourd'hui un bourg paisible de la vallée de l'Aisne. J'y interviens le soir et le week-end, avec un supplément de 20 €, pour les maisons du bourg et les **anciens commerces devenus logements**.",
+    lead: "Ancienne résidence des rois carolingiens, **Attigny** est aujourd'hui un bourg paisible de la vallée de l'Aisne. J'y interviens le soir et le week-end, au forfait dépannage de 99 €, pour les maisons du bourg et les **anciens commerces devenus logements**.",
     body: `## Quand une boutique devient un logement
 
 Comme dans beaucoup de bourgs, plusieurs anciens commerces d'Attigny ont été transformés en habitations. Leur installation électrique en garde souvent la trace : **circuits prévus pour une vitrine et un comptoir**, tableau commun entre l'ancienne boutique et le logement de l'étage, éclairages au néon, prises en nombre insuffisant dans les nouvelles pièces de vie.
@@ -766,7 +766,7 @@ Dans une cuisine réaménagée, l'éclairage est souvent sous-estimé. Un plafon
       { tag: 'Cuisine', icon: 'lamp-ceiling', title: 'Cuisiner dans son ombre', text: "Une cuisine refaite avec un unique plafonnier au centre de la pièce, derrière la personne au plan de travail.", result: 'Bandeau LED sous les meubles hauts et trois spots orientables au-dessus de l’évier et des plaques.' },
     ],
     faq: [
-      { q: 'Combien coûte le déplacement à Attigny ?', a: "Attigny se trouve à environ 33 km de Signy-l'Abbaye : déplacement 20 € + supplément de 20 €." },
+      { q: 'Combien coûte un dépannage à Attigny ?', a: "Attigny se trouve à environ 33 km de Signy-l'Abbaye : le forfait dépannage y est de 99 € (79 € + 20 €)." },
       { q: 'Un ancien commerce transformé doit-il être remis aux normes ?', a: "Les parties rénovées doivent respecter la norme actuelle. Pour le reste, une mise en sécurité permet d'éliminer les dangers sans tout refaire. Voir [mise aux normes ou mise en sécurité](/mise-aux-normes-electrique/)." },
       { q: 'Intervenez-vous aussi vers Vouziers ?', a: "Vouziers est au-delà de 45 km : c'est possible sur devis, de préférence pour des travaux planifiés." },
     ],
@@ -795,7 +795,7 @@ Dans les Crêtes préardennaises, l'habitat est fait de villages de quelques cen
 
 ## L'avantage d'être au centre
 
-Être installé au centre du territoire change beaucoup de choses pour vous : **un déplacement facturé 20 €** pour la majorité des villages, des créneaux plus faciles à trouver, et la possibilité de repasser rapidement si une seconde intervention est nécessaire. Pour un dépannage en soirée, quelques minutes de route font la différence.
+Être installé au centre du territoire change beaucoup de choses pour vous : **un forfait dépannage de 79 € sans supplément** pour la majorité des villages, des créneaux plus faciles à trouver, et la possibilité de repasser rapidement si une seconde intervention est nécessaire. Pour un dépannage en soirée, quelques minutes de route font la différence.
 
 [[cta]]
 
