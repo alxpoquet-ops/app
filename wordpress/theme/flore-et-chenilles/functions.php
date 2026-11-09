@@ -61,7 +61,7 @@ add_action(
 			}
 		} else {
 			wp_enqueue_style( 'fc-woo', FC_ASSETS . 'assets/css/woo.css', array( 'fc-site' ), fc_asset_ver( 'assets/css/woo.css' ) );
-			if ( is_page() && get_post_meta( get_queried_object_id(), '_fc_seo_page', true ) ) {
+			if ( is_page() && fc_is_seo_page() ) {
 				wp_enqueue_style( 'fc-pages', FC_ASSETS . 'assets/css/pages.css', array( 'fc-woo' ), fc_asset_ver( 'assets/css/pages.css' ) );
 			}
 			wp_enqueue_script( 'fc-lite', FC_ASSETS . 'assets/js/lite.js', array( 'fc-flowers' ), fc_asset_ver( 'assets/js/lite.js' ), array( 'strategy' => 'defer' ) );

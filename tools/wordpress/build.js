@@ -283,7 +283,7 @@ Object.keys(SEO_GROUPS).forEach((g) => {
   });
   seoPages.push(...kids);
 });
-['fleurs-eternelles-ardennes', 'livraison-fleurs-signy-l-abbaye', 'guide'].forEach((d) => seoPages.push(seoPage(d)));
+require(path.join(ROOT, 'tools/seo/content.js')).local.map((x) => x.slug).concat(['guide']).forEach((d) => seoPages.push(seoPage(d)));
 write(path.join(PLUGIN, 'data', 'pages.json'), JSON.stringify(seoPages, null, 1) + '\n');
 
 /* ---------- 5. Les fichiers .zip à téléverser ---------- */

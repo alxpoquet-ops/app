@@ -57,7 +57,7 @@ const flowers = [
     usage: [
       'À l’unité, la tulipe se glisse facilement dans un petit vase. En bouquet, elle se décline en [tulipes de feu](creation:tulipes-de-feu), en [tulipes bleues](creation:tulipes-bleues), en [tulipes rouges et roses](creation:tulipes-rouges-roses) ou en [tulipes jaunes et orange](creation:tulipes-jaunes-orange).'
     ],
-    tip: 'Une tulipe de votre couleur préférée ? Composez-la dans [Votre bouquet à vous](#bouquet) ou précisez-la dans votre demande.',
+    tip: 'Une tulipe de votre couleur préférée ? Composez-la dans [Votre bouquet à vous](#bouquet) ou indiquez-la dans les notes de votre commande.',
     products: ['u-tulipe-bleue', 'u-tulipe-ciel', 'u-tulipe-rouge', 'tulipes', 'tulipes-bleues', 'tulipes-de-feu', 'tulipes-rouges-roses', 'tulipes-jaunes-orange', 'sunny', 'colore']
   },
   {
@@ -261,7 +261,7 @@ const occasions = [
       { h: 'Une fleur pour dire merci', p: ['La maîtresse, le maître, l’ATSEM ou l’AESH ont accompagné votre enfant toute l’année : une fleur en fil chenille est un cadeau simple, joli et durable. Elle se garde sur un bureau ou une étagère, sans eau ni entretien, et rappelle longtemps une belle année.', 'Chaque fleur à l’unité coûte 8 €. Rose, pavot, gerbera, lys, tulipe ou arum : votre enfant peut choisir sa fleur et sa couleur préférées.'] },
       { h: 'Une carte écrite par votre enfant', p: ['Chaque fleur est accompagnée d’une carte de vœux offerte. Indiquez le message au moment de la commande, par exemple :'], msgs: ['Merci pour cette belle année !', 'Merci maîtresse, je ne vous oublierai pas.', 'Pour la meilleure ATSEM du monde.', 'Merci de m’avoir appris à lire (et à rêver).'], tint: 'tint' },
       { h: 'Pour toute la classe', p: ['Vous organisez un cadeau commun avec les autres parents ? Je peux préparer plusieurs fleurs, ou un petit bouquet pour l’équipe de l’école. Écrivez-moi via le [formulaire de contact](#contact) en précisant le nombre de fleurs et la date de fin d’année.'] },
-      { h: 'Comment commander', ol: ['Choisissez une fleur dans [Fleurs à l’unité](#boutique) ou composez-la dans [Votre bouquet à vous](#bouquet).', 'Écrivez le message de la carte de vœux.', 'Envoyez votre demande : je vous confirme la date. Retrait gratuit à l’atelier de Signy-l’Abbaye ou livraison autour de l’atelier.'] }
+      { h: 'Comment commander', ol: ['Choisissez une fleur dans [Fleurs à l’unité](#boutique) ou composez-la dans [Votre bouquet à vous](#bouquet).', 'Écrivez le message de la carte de vœux.', 'Réglez en ligne par carte bancaire, puis choisissez le retrait gratuit à l’atelier de Signy-l’Abbaye ou la livraison autour de l’atelier.'] }
     ],
     products: ['fleur-unite', 'u-rose-rouge', 'u-gerbera-rose', 'u-tulipe-bleue', 'u-lys-rose', 'u-arum-ciel', 'tournesol-pot', 'pensees', 'marguerites-pot', 'jonquilles']
   },
@@ -390,6 +390,92 @@ const occasions = [
       { h: 'Commander à temps', p: ['En décembre, pensez à commander tôt : chaque fleur est façonnée à la main. Retrait gratuit à l’atelier de Signy-l’Abbaye ou livraison autour de l’atelier.'] }
     ],
     products: ['centre-de-table', 'rubis', 'roses-rouges', 'bonsai', 'theiere', 'u-rose-rouge', 'lys-bordeaux', 'gateau']
+  },
+  {
+    slug: 'toussaint',
+    name: 'Toussaint',
+    title: 'Fleurs pour la Toussaint : une fleur éternelle qui résiste au froid',
+    desc: 'Pour la Toussaint, une fleur éternelle en fil chenille fixée dans un bocal transparent : elle résiste au gel, à la pluie et au vent. Faite main.',
+    hero: 'u-lys-peche',
+    lead: 'À la Toussaint, on fleurit les tombes de ceux qu’on aime. Une fleur en fil chenille, fixée dans un bocal transparent, reste belle tout l’hiver : ni le gel, ni la pluie, ni le vent ne l’abîment.',
+    sections: [
+      { h: 'Une fleur qui tient tout l’hiver', p: ['Les chrysanthèmes et les fleurs coupées souffrent vite du froid et de l’humidité de novembre. Une fleur éternelle en fil chenille ne fane pas et ne demande aucun entretien : vous la déposez, et elle garde ses couleurs jusqu’au printemps, et bien au-delà.', 'Fixée à l’intérieur d’un bocal transparent, elle est protégée des intempéries. Le bocal est proposé en option sur toutes les [fleurs à l’unité](#boutique), pour 5 € de plus.'] },
+      { h: 'Quelle fleur choisir ?', ul: ['Une rose bleu ciel ou un lys pêche, pour la douceur et la tendresse.', 'Un coquelicot rouge, la fleur du souvenir.', 'Une rose rouge, pour un amour qui ne s’éteint pas.', 'Un arum bleu ciel, élégant et apaisant.'], p: ['Le sens des couleurs est expliqué dans la page [Signification des couleurs des fleurs](/conseils/signification-couleurs-fleurs/).'], tint: 'mint' },
+      { h: 'Quelques mots pour la carte', msgs: ['Toujours dans nos cœurs.', 'Une pensée pour toi, aujourd’hui comme chaque jour.', 'Tu restes avec nous.', 'Avec tout notre amour.'] },
+      { h: 'Commander à temps', p: ['Chaque fleur est façonnée à la main : pour la Toussaint, pensez à commander une à deux semaines avant. Vous réglez en ligne par carte bancaire, puis vous venez chercher la fleur gratuitement à l’atelier de Signy-l’Abbaye, ou je vous la livre autour de l’atelier. Pour une sépulture tout au long de l’année, voyez aussi [Fleurir une sépulture](/occasions/fleur-sepulture/).'], tint: 'tint' }
+    ],
+    products: ['fleur-unite', 'u-lys-peche', 'u-rose-ciel', 'u-pavot-rouge', 'u-rose-rouge', 'u-arum-ciel', 'u-tulipe-ciel', 'u-lys-bleu']
+  },
+  {
+    slug: 'anniversaire-de-mariage',
+    name: 'Anniversaire de mariage',
+    title: 'Anniversaire de mariage : un bouquet éternel pour célébrer vos noces',
+    desc: 'Pour un anniversaire de mariage, un bouquet en fleurs éternelles fait main dans les Ardennes : il durera aussi longtemps que votre histoire.',
+    hero: 'rose-tendre',
+    lead: 'Un an, dix ans, cinquante ans d’amour : pour un anniversaire de mariage, offrez un bouquet qui ne fanera jamais, façonné à la main fleur par fleur.',
+    sections: [
+      { h: 'Un symbole qui dure', p: ['Les fleurs d’un anniversaire de mariage disent « je t’aime encore, et pour longtemps ». Un bouquet en fil chenille garde ce message intact : il ne fane pas, ne demande pas d’eau et se garde des années sur une étagère ou une table de chevet.', 'Les bouquets présentés en vase sont des créations uniques, et le vase est offert.'] },
+      { h: 'Des idées selon vos noces', ul: ['Noces de coton (1 an) : un petit bouquet tout doux, comme le [Petit bouquet pastel](creation:petit-bouquet-pastel).', 'Noces de porcelaine (20 ans) : des lys blancs et bordeaux, élégants et intemporels.', 'Noces de perle (30 ans) : le [Bouquet pastel aux perles](creation:bouquet-pastel-aux-perles).', 'Noces d’or (50 ans) : un bouquet lumineux de jaunes et d’orangés.'], tint: 'tint' },
+      { h: 'Le bouquet de votre mariage, en éternel', p: ['Vous aimeriez retrouver les couleurs de votre bouquet de mariée ? Composez-le fleur par fleur dans [Votre bouquet à vous](#bouquet) : 8 € la fleur, feuillage offert. Pour une demande particulière, écrivez-moi via les réseaux sociaux.'] },
+      { h: 'Des mots pour la carte', msgs: ['Dix ans, et je te choisirais encore.', 'À nous, pour toujours.', 'Merci pour toutes ces années de bonheur.', 'Mon plus beau voyage, c’est avec toi.'], tint: 'mint' }
+    ],
+    products: ['rose-tendre', 'roses-rouges', 'lys-bordeaux', 'pastel', 'petit-pastel', 'roses-blanches', 'hortensia-lys', 'bouquet-soleil']
+  },
+  {
+    slug: 'cadeau-depart-retraite',
+    name: 'Départ à la retraite et cadeau de collègue',
+    title: 'Cadeau de départ à la retraite ou pour un collègue : des fleurs qui restent',
+    desc: 'Départ à la retraite, mutation, fin de stage : offrez un bouquet ou un bonsaï en fleurs éternelles, fait main, qui se garde au bureau comme à la maison.',
+    hero: 'bonsai',
+    lead: 'Pour dire au revoir et merci à un collègue, un cadeau qui reste : une création en fleurs éternelles, faite main, qui rappellera longtemps les années passées ensemble.',
+    sections: [
+      { h: 'Un cadeau commun facile', p: ['Pour une cagnotte entre collègues, un bouquet en fil chenille est un cadeau à la fois joli et durable. Il ne fane pas pendant le pot de départ, voyage sans souci et trouve sa place partout : bureau, salon, jardin d’hiver.', 'Le [Bonsaï azalée](creation:bonsai-azalee) plaît beaucoup pour un départ à la retraite : il évoque le temps libre et le jardin.'] },
+      { h: 'Selon la personne', ul: ['Pour quelqu’un de solaire : le [Bouquet soleil](creation:bouquet-soleil) ou un [tournesol en pot](creation:tournesol-en-pot).', 'Pour une personne discrète : la [lavande en arrosoir](creation:arrosoir-de-lavande).', 'Pour un passionné de jardin : le bonsaï ou la [théière fleurie](creation:theiere-fleurie).'], tint: 'tint' },
+      { h: 'Une carte signée par tous', p: ['La carte de vœux est offerte avec chaque création : indiquez le message de l’équipe au moment de la commande.'], msgs: ['Bonne retraite ! Profite de chaque jour.', 'Merci pour toutes ces années à tes côtés.', 'L’équipe ne sera plus la même sans toi.', 'Place au jardin, aux voyages et aux grasses matinées !'] }
+    ],
+    products: ['bonsai', 'bouquet-soleil', 'theiere', 'lavande', 'tournesol-pot', 'sunny', 'colore', 'centre-de-table']
+  },
+  {
+    slug: 'bapteme-communion',
+    name: 'Baptême et communion',
+    title: 'Baptême et communion : fleurs éternelles pour la table et les invités',
+    desc: 'Pour un baptême ou une communion : centre de table, petits pots fleuris et fleurs à l’unité à offrir aux invités. Fleurs éternelles faites main.',
+    hero: 'petit-pastel',
+    lead: 'Pour un baptême ou une communion, des fleurs tout en douceur qui décorent la table le jour J, puis se gardent en souvenir de cette belle journée.',
+    sections: [
+      { h: 'Une table fleurie, sans stress', p: ['Les fleurs en fil chenille se préparent à l’avance : pas de risque qu’elles fanent la veille. Un [centre de table](creation:centre-de-table-tournesols) dont les fleurs se voient des deux côtés, quelques [pots de marguerites](creation:pot-de-marguerites), et la table est prête.'] },
+      { h: 'Des souvenirs pour les invités', p: ['Une fleur à l’unité, emballée dans sa pochette transparente fermée d’un nœud, devient un joli cadeau d’invité. Blanc, rose poudré, bleu ciel : choisissez les couleurs de la fête.', 'Pour un grand nombre de fleurs, écrivez-moi via les réseaux sociaux en précisant la date et les couleurs.'], tint: 'tint' },
+      { h: 'Un cadeau pour l’enfant', p: ['Les fleurs en fil chenille ne libèrent aucun pollen : elles ont toute leur place dans une chambre d’enfant. Un petit bouquet pastel ou une fleur à son prénom sur la carte, et le souvenir reste.'], msgs: ['Pour ton baptême, avec tout notre amour.', 'Que ta vie soit douce comme ces fleurs.', 'Joyeuse communion !'] }
+    ],
+    products: ['petit-pastel', 'pastel', 'centre-de-table', 'marguerites-pot', 'roses-blanches', 'fleur-unite', 'muguet', 'hortensias']
+  },
+  {
+    slug: 'paques',
+    name: 'Pâques',
+    title: 'Fleurs de Pâques : jonquilles, tulipes et muguet qui ne fanent pas',
+    desc: 'Pour Pâques et le printemps, des jonquilles, tulipes, pensées et brins de muguet en fil chenille, faits main : une déco fleurie qui revient chaque année.',
+    hero: 'bouquet-jonquilles',
+    lead: 'Jonquilles, tulipes, pensées et muguet : les fleurs du printemps, façonnées à la main en fil chenille, pour une table de Pâques fleurie qui ressort chaque année.',
+    sections: [
+      { h: 'Le printemps sur la table', p: ['À Pâques, la table se pare de jaune et de pastel. Un [bouquet de jonquilles](creation:bouquet-de-jonquilles) en vase, quelques [pensées en pot](creation:pensees-en-pot) et un [arrosoir fleuri](creation:arrosoir-fleuri) suffisent à donner un air de fête.', 'Après la fête, rangez-les dans une boîte : elles ressortiront intactes l’année suivante.'] },
+      { h: 'Les fleurs de saison', ul: ['La [jonquille](/fleurs/jonquille/), qui annonce le retour du soleil.', 'La [tulipe](/fleurs/tulipe/), dans toutes les couleurs.', 'Le [muguet](/fleurs/muguet/), porte-bonheur du mois de mai.', 'La [pensée](/fleurs/pensee/), petite fleur de souvenir.'], tint: 'tint' },
+      { h: 'Un cadeau pour le repas de famille', p: ['Invité à déjeuner ? Plutôt qu’un bouquet qui fanera dans la semaine, offrez un petit pot de fleurs éternelles, avec sa carte de vœux offerte.'] }
+    ],
+    products: ['bouquet-jonquilles', 'jonquilles', 'tulipes', 'tulipes-jaunes-orange', 'muguet', 'pensees', 'marguerites-pichet', 'arrosoir-fleuri']
+  },
+  {
+    slug: 'fleurs-pour-un-homme',
+    name: 'Offrir des fleurs à un homme',
+    title: 'Offrir des fleurs à un homme : bonsaï, tournesols et couleurs franches',
+    desc: 'Quelles fleurs offrir à un homme ? Bonsaï, tournesol, arums de feu ou bleus profonds : des créations en fleurs éternelles, faites main.',
+    hero: 'arums-de-feu',
+    lead: 'Les hommes aussi aiment recevoir des fleurs. Pour la fête des pères, un anniversaire ou un simple merci, voici des créations aux couleurs franches qui leur plaisent.',
+    sections: [
+      { h: 'Des fleurs qui leur ressemblent', ul: ['Le [Bonsaï azalée](creation:bonsai-azalee), un arbre qui ne demande aucun soin.', 'Un [tournesol en pot](creation:tournesol-en-pot), pour le bureau.', 'Les [Arums de feu](creation:arums-de-feu), rouges et jaunes, graphiques.', 'Des [lys bleus](creation:lys-bleus) ou des [roses bleues](creation:roses-bleues), pour la sérénité.'] },
+      { h: 'Pourquoi des fleurs éternelles ?', p: ['Pas de vase à remplir, pas de feuilles qui tombent : une fleur en fil chenille se pose sur un bureau ou une étagère et y reste. C’est un cadeau sans contrainte, qui dure.'], tint: 'tint' },
+      { h: 'Un message simple', msgs: ['Bonne fête, papa !', 'Pour le meilleur des grands-pères.', 'Merci pour tout.', 'Joyeux anniversaire, mon amour.'] }
+    ],
+    products: ['bonsai', 'tournesol-pot', 'arums-de-feu', 'tulipes-de-feu', 'lys-bleus', 'roses-bleues', 'lavande', 'coquelicots']
   }
 ];
 
@@ -481,7 +567,7 @@ const conseils = [
     hero: 'colore',
     lead: 'Sur le site, le compositeur « Votre bouquet à vous » permet de créer son bouquet fleur par fleur, de voir son aperçu et son prix en direct, puis de me l’envoyer.',
     sections: [
-      { h: 'En trois étapes', ol: ['Choisissez une couleur, puis ajoutez vos fleurs : lys, arum, pavot, gerbera, rose, tulipe, hortensia, tournesol, jonquille et feuillage.', 'Écrivez votre carte de vœux, offerte : pour qui, votre message et de la part de qui.', 'Ajoutez le bouquet à votre sélection et envoyez votre demande : je vous confirme la date et la remise.'], tint: 'tint' },
+      { h: 'En trois étapes', ol: ['Choisissez une couleur, puis ajoutez vos fleurs : lys, arum, pavot, gerbera, rose, tulipe, hortensia, tournesol, jonquille et feuillage.', 'Écrivez votre carte de vœux, offerte : pour qui, votre message et de la part de qui.', 'Ajoutez le bouquet à votre sélection et réglez en ligne par carte bancaire : je vous écris ensuite pour convenir du jour.'], tint: 'tint' },
       { h: 'Des harmonies qui marchent', ul: ['Mauve, lavande et fuchsia, comme le bouquet Améthyste.', 'Blanc et jaune, lumineux comme le bouquet Sunny.', 'Bordeaux et rose, comme le bouquet Rubis.', 'Bleu ciel, bleu et lavande, tout en fraîcheur.', 'Rouge, orange et jaune, pour un bouquet plein de soleil.'] },
       { h: 'Le prix, en direct', p: ['Chaque fleur coûte 8 €, et le feuillage est offert : le prix s’affiche à mesure que le bouquet prend forme. Le bouton « Surprise » propose une composition au hasard, et « Partager » donne un lien vers votre bouquet.'] }
     ],
@@ -506,6 +592,62 @@ const conseils = [
       { h: 'Juste parce que', msgs: ['Juste parce que.', 'Pour illuminer ta journée.', 'Une petite douceur, rien que pour toi.', 'Parce que tu le vaux bien.', 'Pense à moi en les regardant.'], tint: 'mint' }
     ],
     products: ['bouquet-a-offrir', 'roses-blanches', 'fleur-unite', 'rose-tendre']
+  },
+  {
+    slug: 'signification-couleurs-fleurs',
+    name: 'Signification des couleurs des fleurs',
+    title: 'Signification des couleurs des fleurs : quel message offrir ?',
+    desc: 'Rouge, rose, blanc, jaune, bleu, orange, violet : la signification des couleurs des fleurs, pour choisir le bon bouquet et le bon message.',
+    hero: 'pavots-multicolores',
+    lead: 'Dans le langage des fleurs, chaque couleur porte un message. Voici comment choisir la teinte d’un bouquet ou d’une fleur seule selon ce que vous voulez dire.',
+    sections: [
+      { h: 'Ce que disent les couleurs', table: { head: ['Couleur', 'Ce qu’elle exprime', 'Pour quelle occasion'], rows: [['Rouge', 'L’amour, la passion', 'Saint-Valentin, anniversaire de mariage'], ['Rose', 'La tendresse, la douceur', 'Fête des mères, naissance, amitié'], ['Blanc', 'La pureté, le respect', 'Baptême, mariage, souvenir'], ['Jaune', 'La joie, l’amitié', 'Remerciement, anniversaire, retraite'], ['Orange', 'L’enthousiasme, l’énergie', 'Encouragements, réussite'], ['Bleu', 'Le rêve, la sérénité', 'Souvenir, apaisement, cadeau à un homme'], ['Violet et mauve', 'L’élégance, le mystère', 'Cadeau raffiné, admiration']] }, tint: 'tint' },
+      { h: 'Et la fleur elle-même ?', p: ['La fleur ajoute sa nuance au message : la [rose](/fleurs/rose/) parle d’amour, le [lys](/fleurs/lys/) de pureté, la [tulipe](/fleurs/tulipe/) de déclaration, le [tournesol](/fleurs/tournesol/) de fidélité, le [coquelicot](/fleurs/pavot-coquelicot/) du souvenir.', 'Une rose bleue, qui n’existe pas au jardin, devient ainsi le symbole de l’impossible et du rêve : en fil chenille, tout devient possible.'] },
+      { h: 'Mélanger les couleurs', p: ['Un bouquet multicolore dit la joie de vivre ; un camaïeu (plusieurs nuances d’une même couleur) dit l’harmonie. Dans [Votre bouquet à vous](#bouquet), vous choisissez chaque fleur et sa couleur, à 8 € la fleur, feuillage offert.'], tint: 'mint' }
+    ],
+    products: ['pavots-multicolores', 'roses-rouges', 'rose-tendre', 'roses-blanches', 'bouquet-soleil', 'roses-bleues', 'amethyste', 'tulipes-de-feu']
+  },
+  {
+    slug: 'fleurs-artificielles-ou-fil-chenille',
+    name: 'Fleurs artificielles ou fleurs en fil chenille ?',
+    title: 'Fleurs artificielles ou fleurs en fil chenille : quelles différences ?',
+    desc: 'Fleurs en tissu, en plastique ou en fil chenille : toucher, fabrication, durée de vie, prix. Le comparatif pour choisir des fleurs qui ne fanent pas.',
+    hero: 'hortensia-lys',
+    lead: 'Pour avoir des fleurs qui ne fanent pas, on pense d’abord aux fleurs artificielles en tissu ou en plastique. Les fleurs en fil chenille sont une autre façon de faire : artisanale, douce et colorée.',
+    sections: [
+      { h: 'Le comparatif', table: { head: ['', 'Fleurs artificielles (tissu, plastique)', 'Fleurs en fil chenille'], rows: [['Fabrication', 'En série, en usine', 'À la main, pétale par pétale'], ['Aspect', 'Imite la fleur naturelle', 'Une fleur stylisée, toute douce, au charme fait main'], ['Toucher', 'Lisse ou plastique', 'Doux et duveteux'], ['Couleurs', 'Celles du catalogue', 'Toutes, au choix, même un lys bleu'], ['Entretien', 'Un coup de plumeau', 'Un coup de sèche-cheveux à froid'], ['Pollen', 'Aucun', 'Aucun']] }, tint: 'tint' },
+      { h: 'Ce qui fait la différence', p: ['Une fleur en fil chenille ne cherche pas à se faire passer pour une vraie : elle assume son côté fait main, tendre et un peu magique. C’est ce qui en fait un cadeau personnel, que l’on ne trouve pas en magasin.', 'Elle se compare aussi aux [fleurs séchées et stabilisées](/conseils/fleurs-eternelles-sechees-stabilisees/), plus fragiles face à l’humidité et à la poussière.'] },
+      { h: 'Pour en savoir plus', p: ['Découvrez [ce qu’est une fleur en fil chenille](/conseils/fleur-en-fil-chenille/), comment [l’entretenir](/conseils/entretien-fleurs-eternelles/), et ce qui explique [son prix](/conseils/prix-bouquet-fil-chenille/).'], tint: 'mint' }
+    ],
+    products: ['hortensia-lys', 'pastel', 'amethyste', 'lys-bleus', 'colore', 'hortensias']
+  },
+  {
+    slug: 'offrir-une-seule-fleur',
+    name: 'Offrir une seule fleur',
+    title: 'Offrir une seule fleur : une attention simple et pleine de sens',
+    desc: 'Une seule rose, un lys, une tulipe : offrir une fleur seule est un geste fort. Fleurs éternelles à l’unité à 8 €, emballées, carte de vœux offerte.',
+    hero: 'u-rose-rouge',
+    lead: 'Une seule fleur, c’est parfois plus fort qu’un grand bouquet : un geste simple, qui va droit au cœur. Et quand elle ne fane jamais, le message reste.',
+    sections: [
+      { h: 'Que veut dire une fleur seule ?', p: ['Offrir une seule rose rouge, c’est dire « je t’aime » sans détour. Une fleur blanche dit le respect, une jaune l’amitié, une bleue la douceur. Voyez la page [Signification des couleurs des fleurs](/conseils/signification-couleurs-fleurs/) pour choisir.'] },
+      { h: 'À 8 € la fleur', p: ['Chaque fleur à l’unité coûte 8 €. Elle est emballée dans une pochette transparente fermée d’un nœud, avec sa carte de vœux offerte. Rose, lys, gerbera, tulipe, pavot, arum : vous choisissez la fleur et sa couleur.', 'Sur demande, je la fixe dans un bocal transparent (+5 €), pour une fleur à poser dehors ou sur une sépulture.'], tint: 'tint' },
+      { h: 'Pour quelles occasions ?', ul: ['Un merci à la [maîtresse](/occasions/cadeau-maitresse/) ou à un collègue.', 'Une déclaration pour la [Saint-Valentin](/occasions/saint-valentin/).', 'Un souvenir à la [Toussaint](/occasions/toussaint/).', 'Un « je pense à toi », juste parce que.'] }
+    ],
+    products: ['fleur-unite', 'u-rose-rouge', 'u-rose-fuchsia', 'u-lys-rose', 'u-gerbera-rose', 'u-tulipe-rouge', 'u-pavot-rouge', 'u-arum-jaune']
+  },
+  {
+    slug: 'decorer-avec-fleurs-eternelles',
+    name: 'Décorer sa maison avec des fleurs éternelles',
+    title: 'Décorer sa maison avec des fleurs éternelles : idées et conseils',
+    desc: 'Entrée, salon, cuisine, chambre : idées pour décorer sa maison avec des fleurs éternelles en fil chenille, en vase, en pot, en arrosoir ou en théière.',
+    hero: 'theiere',
+    lead: 'Des fleurs toute l’année, sans arrosage ni fleurs fanées à jeter : voici quelques idées pour fleurir chaque pièce de la maison avec des fleurs en fil chenille.',
+    sections: [
+      { h: 'Pièce par pièce', ul: ['Dans l’entrée : un [arrosoir fleuri](creation:arrosoir-fleuri) ou la [lavande en arrosoir](creation:arrosoir-de-lavande), pour un accueil champêtre.', 'Au salon : un grand bouquet en vase, ou le [Bonsaï azalée](creation:bonsai-azalee).', 'Dans la cuisine : la [théière fleurie](creation:theiere-fleurie) ou des [marguerites au pichet](creation:marguerites-au-pichet).', 'Dans la chambre : des fleurs sans pollen, idéales pour les personnes allergiques.'] },
+      { h: 'Les bons réflexes', p: ['Les fleurs en fil chenille aiment les pièces sèches : évitez la salle de bain et le plein soleil direct, qui finit par pâlir les couleurs. Un petit coup de sèche-cheveux à froid suffit à enlever la poussière.'], tint: 'tint' },
+      { h: 'Changer au fil des saisons', p: ['Jonquilles et tulipes au printemps, tournesols l’été, tons chauds à l’automne, rouge et blanc à Noël : composez votre propre bouquet de saison dans [Votre bouquet à vous](#bouquet), et rangez les autres dans une boîte jusqu’à l’année suivante.'], tint: 'mint' }
+    ],
+    products: ['theiere', 'bonsai', 'lavande', 'arrosoir-fleuri', 'marguerites-pichet', 'centre-de-table', 'hortensias', 'pensees-seaux']
   }
 ];
 
@@ -535,9 +677,23 @@ const local = [
     sections: [
       { h: 'Les tarifs de livraison', table: { head: ['Distance depuis l’atelier', 'Prix'], rows: [['Retrait à l’atelier, à Signy-l’Abbaye', 'Gratuit'], ['Jusqu’à 15 km', '5 €'], ['De 15 à 25 km', '10 €'], ['Au-delà de 25 km', 'On en parle ensemble']] }, p: ['Le tarif dépend de la distance par la route jusqu’à votre adresse : je vous le confirme avec votre commande.'], tint: 'tint' },
       { h: 'Quelques communes des environs', p: ['Signy-l’Abbaye, Wasigny, Launois-sur-Vence, Novion-Porcien, Liart, Chaumont-Porcien, Thin-le-Moutier, Rumigny, Poix-Terron, Château-Porcien, Rethel, Charleville-Mézières… et tous les villages alentour. Votre commune n’y figure pas ? Écrivez-moi via le [formulaire de contact](#contact).'] },
-      { h: 'Comment se passe une commande', ol: ['Ajoutez vos créations à votre sélection sur le site et écrivez votre carte de vœux.', 'Choisissez le retrait à l’atelier ou la livraison, puis envoyez votre demande.', 'Je vous confirme le prix, la date et la remise par e-mail. Aucun paiement n’est demandé sur le site.'] }
+      { h: 'Comment se passe une commande', ol: ['Ajoutez vos créations à votre sélection sur le site et écrivez votre carte de vœux.', 'Choisissez le retrait à l’atelier ou la livraison, puis réglez en ligne par carte bancaire, en toute sécurité.', 'Je vous écris ensuite pour convenir du jour du retrait ou de la livraison.'] }
     ],
     products: ['sunny', 'bouquet-soleil', 'u-rose-rouge', 'tournesol-pot']
+  },
+  {
+    slug: 'artisan-fleuriste-signy-l-abbaye',
+    name: 'Artisan fleuriste à Signy-l’Abbaye',
+    title: 'Artisan fleuriste à Signy-l’Abbaye : fleurs éternelles faites main',
+    desc: 'À Signy-l’Abbaye, dans les Ardennes, Flore & Chenilles façonne à la main des fleurs éternelles en fil chenille : bouquets, fleurs à l’unité, déco.',
+    hero: 'amethyste',
+    lead: 'À Signy-l’Abbaye, entre Rethel et Charleville-Mézières, un petit atelier façonne des fleurs qui ne fanent jamais : des bouquets, des fleurs à l’unité et des décorations en fil chenille.',
+    sections: [
+      { h: 'Un fleuriste pas comme les autres', p: ['Ici, pas de fleurs coupées ni de chambre froide : chaque fleur est façonnée à la main en fil chenille, pétale par pétale. Le résultat ne fane pas, ne demande pas d’eau et se garde des années.', 'Bouquets ronds ou en vase, fleurs à l’unité à 8 €, petits pots, arrosoirs fleuris, bonsaï : toutes les créations sont visibles [dans la boutique](#boutique).'] },
+      { h: 'Commander simplement', ol: ['Choisissez une création, ou composez votre bouquet dans [Votre bouquet à vous](#bouquet).', 'Écrivez le message de votre carte de vœux, offerte.', 'Réglez en ligne par carte bancaire, puis choisissez le retrait gratuit à l’atelier ou la livraison autour de Signy-l’Abbaye.'], tint: 'tint' },
+      { h: 'Autour de l’atelier', p: ['La livraison coûte 5 € jusqu’à 15 km et 10 € jusqu’à 25 km. Voir la page [Livraison autour de Signy-l’Abbaye](/livraison-fleurs-signy-l-abbaye/) et la présentation de l’atelier : [Fleurs éternelles dans les Ardennes](/fleurs-eternelles-ardennes/).'] }
+    ],
+    products: ['amethyste', 'pastel', 'fleur-unite', 'bonsai', 'sunny', 'rose-tendre', 'lavande', 'coquelicots']
   }
 ];
 

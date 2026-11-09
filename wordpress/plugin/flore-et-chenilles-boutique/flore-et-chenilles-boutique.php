@@ -3,7 +3,7 @@
  * Plugin Name:       Flore & Chenilles – Boutique
  * Plugin URI:        https://github.com/alxpoquet-ops/app
  * Description:       La boutique de Flore & Chenilles pour WooCommerce : carte de vœux offerte, option bocal, créations uniques, offre de lancement, compositeur « Votre bouquet à vous », formulaire de contact et import des créations.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Author:            Flore & Chenilles
  * Text Domain:       flore-et-chenilles
  * Requires at least: 6.5
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'FCB_VERSION', '1.0.1' );
+define( 'FCB_VERSION', '1.0.2' );
 define( 'FCB_FILE', __FILE__ );
 define( 'FCB_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FCB_URL', plugin_dir_url( __FILE__ ) );

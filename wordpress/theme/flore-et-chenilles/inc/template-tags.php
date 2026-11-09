@@ -5,6 +5,32 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/** Page de contenu (fleurs, occasions, conseils…) : repère enregistré, ou mise en page reconnue dans le contenu. */
+function fc_is_seo_page( $id = 0 ) {
+	$id = $id ? $id : get_queried_object_id();
+	if ( ! $id || 'page' !== get_post_type( $id ) ) {
+		return false;
+	}
+	if ( get_post_meta( $id, '_fc_seo_page', true ) ) {
+		return true;
+	}
+	$content = (string) get_post_field( 'post_content', $id );
+	return false !== strpos( $content, 'class="pg-crumbs"' );
+}
+
+/** Titre et description d'une page de contenu (repères du site, ou ceux de Rank Math / Yoast). */
+function fc_page_seo_meta( $what, $id = 0 ) {
+	$id   = $id ? $id : get_queried_object_id();
+	$keys = 'title' === $what ? array( '_fc_title', 'rank_math_title', '_yoast_wpseo_title' ) : array( '_fc_desc', 'rank_math_description', '_yoast_wpseo_metadesc' );
+	foreach ( $keys as $k ) {
+		$v = trim( (string) get_post_meta( $id, $k, true ) );
+		if ( '' !== $v && false === strpos( $v, '%' ) ) {
+			return 'title' === $what ? trim( preg_replace( '/\s*\|\s*Flore & Chenilles$/', '', $v ) ) : $v;
+		}
+	}
+	return '';
+}
+
 /** Réglage de l'extension boutique (si elle est active). */
 function fc_setting( $key, $default = '' ) {
 	if ( function_exists( 'fcb_opt' ) ) {

@@ -330,3 +330,56 @@ function fcb_front_id( $product ) {
 function fcb_flush_payload() {
 	delete_transient( 'fcb_products_v1' );
 }
+
+/* Repères des pages de contenu, modifiables par l'API WordPress (assistant, MCP) pour les gérants. */
+add_action(
+	'init',
+	function () {
+		foreach ( array( '_fc_seo_page' => 'integer', '_fc_title' => 'string', '_fc_desc' => 'string' ) as $key => $type ) {
+			register_post_meta(
+				'page',
+				$key,
+				array(
+					'type'          => $type,
+					'single'        => true,
+					'show_in_rest'  => true,
+					'auth_callback' => function () {
+						return current_user_can( 'edit_pages' );
+					},
+				)
+			);
+		}
+	}
+);
+
+/* Plan du site (wp-sitemap.xml) : sans la liste des comptes (elle montre l'identifiant de connexion)
+   ni le support caché des bouquets composés. */
+add_filter(
+	'wp_sitemaps_add_provider',
+	function ( $provider, $name ) {
+		return 'users' === $name ? false : $provider;
+	},
+	10,
+	2
+);
+add_filter(
+	'wp_sitemaps_posts_query_args',
+	function ( $args, $post_type ) {
+		if ( 'product' === $post_type && fcb_bouquet_product_id() ) {
+			$args['post__not_in'] = array_merge( isset( $args['post__not_in'] ) ? (array) $args['post__not_in'] : array(), array( fcb_bouquet_product_id() ) );
+		}
+		return $args;
+	},
+	10,
+	2
+);
+/* Les pages d'auteur ne servent à rien sur une boutique : retour à l'accueil. */
+add_action(
+	'template_redirect',
+	function () {
+		if ( is_author() ) {
+			wp_safe_redirect( home_url( '/' ), 301 );
+			exit;
+		}
+	}
+);

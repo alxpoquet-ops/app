@@ -23,7 +23,7 @@ add_filter(
 		if ( is_front_page() ) {
 			return FC_HOME_TITLE;
 		}
-		$custom = is_page() ? get_post_meta( get_queried_object_id(), '_fc_title', true ) : '';
+		$custom = is_page() ? fc_page_seo_meta( 'title' ) : '';
 		return $custom ? $custom . ' | Flore & Chenilles' : $title;
 	}
 );
@@ -50,8 +50,8 @@ function fc_seo_description() {
 		$t = get_queried_object();
 		return $t && $t->description ? wp_html_excerpt( wp_strip_all_tags( $t->description ), 155, '…' ) : '';
 	}
-	if ( is_page() && get_post_meta( get_queried_object_id(), '_fc_desc', true ) ) {
-		return get_post_meta( get_queried_object_id(), '_fc_desc', true );
+	if ( is_page() && fc_page_seo_meta( 'desc' ) ) {
+		return fc_page_seo_meta( 'desc' );
 	}
 	if ( is_singular() ) {
 		$post = get_queried_object();

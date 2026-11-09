@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 
 /* Pages de contenu (fleurs, occasions, conseils…) : leur propre mise en page. */
-if ( get_post_meta( get_queried_object_id(), '_fc_seo_page', true ) ) {
+if ( fc_is_seo_page() ) {
 	echo '<main id="main" class="pg-wrap wp-seo">';
 	while ( have_posts() ) {
 		the_post();
