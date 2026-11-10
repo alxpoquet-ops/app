@@ -10,6 +10,11 @@ const site = {
   name: 'ALED08',
   legalName: 'ALED08 — Alexandre Poquet', // raison sociale / nom commercial
   owner: 'Alexandre Poquet',
+  // Années de métier (affichées sur le site : « 10 ans de métier »). À mettre à jour chaque année.
+  experienceYears: 10,
+  // Photo de vous (facultatif, vivement conseillé) : déposez un portrait carré dans
+  // src/assets/img/ (ex. portrait.jpg, 600 × 600 px) puis indiquez '/assets/img/portrait.jpg'.
+  portrait: '',
   tagline: 'Dépannage & Travaux Électriques dans les Ardennes',
 
   // ⚠️ À REMPLACER : numéro réel. Le numéro ci-dessous est un numéro fictif (plage réservée ARCEP).
@@ -52,10 +57,9 @@ const site = {
   // Pour Formspree ou autre service, mettre l'URL complète ici.
   formAction: '/envoi.php',
 
-  // Avis clients : tant que DEMO = true, un bandeau « avis d'exemple » s'affiche. Remplacez-les par
-  // de vrais avis (Google, etc.) dans src/content/avis.js puis passez demoReviews à false.
-  demoReviews: true,
-  googleReviewsUrl: '', // ⚠️ lien vers votre fiche Google Business Profile (bouton « Laisser un avis »)
+  // Avis clients : seuls de VRAIS avis sont affichés (src/content/avis.js). Tant que la liste est
+  // vide, la section « Avis » n'apparaît pas sur le site.
+  googleReviewsUrl: '', // ⚠️ lien vers votre fiche Google Business Profile (bouton « Voir / laisser un avis »)
 
   // Les tarifs affichés s'appliquent aussi en soirée et le week-end (pas de majoration).
   weekendSurcharge: false,
@@ -124,25 +128,25 @@ const communes = [
   { name: 'Novion-Porcien', km: 13, page: 'electricien-novion-porcien', main: true },
   { name: 'Remilly-les-Pothées', km: 14 },
   { name: 'Lucquy', km: 15 },
-  { name: 'Saulces-Monclin', km: 17 },
+  { name: 'Saulces-Monclin', km: 17, page: 'electricien-saulces-monclin' },
   { name: 'Chaumont-Porcien', km: 18, page: 'electricien-chaumont-porcien' },
   { name: 'Poix-Terron', km: 20, page: 'electricien-poix-terron', main: true },
   { name: 'Rumigny', km: 22, page: 'electricien-rumigny' },
   { name: 'Rethel', km: 24, page: 'electricien-rethel', main: true },
-  { name: 'Sault-lès-Rethel', km: 25 },
-  { name: 'Boulzicourt', km: 25 },
+  { name: 'Sault-lès-Rethel', km: 25, page: 'electricien-sault-les-rethel' },
+  { name: 'Boulzicourt', km: 25, page: 'electricien-boulzicourt' },
   { name: 'Maubert-Fontaine', km: 27, page: 'electricien-maubert-fontaine' },
   { name: 'Château-Porcien', km: 28, page: 'electricien-chateau-porcien', main: true },
   { name: 'Renwez', km: 29, page: 'electricien-renwez' },
   { name: 'Charleville-Mézières', km: 32, page: 'electricien-charleville-mezieres', main: true },
   { name: 'Signy-le-Petit', km: 32, page: 'electricien-signy-le-petit' },
-  { name: 'Rimogne', km: 33 },
+  { name: 'Rimogne', km: 33, page: 'electricien-rimogne' },
   { name: 'Attigny', km: 33, page: 'electricien-attigny' },
-  { name: 'Prix-lès-Mézières', km: 33 },
-  { name: 'Villers-Semeuse', km: 35 },
+  { name: 'Prix-lès-Mézières', km: 33, page: 'electricien-prix-les-mezieres' },
+  { name: 'Villers-Semeuse', km: 35, page: 'electricien-villers-semeuse' },
   { name: 'Rocroi', km: 38, page: 'electricien-rocroi', main: true },
-  { name: 'Nouzonville', km: 41 },
-  { name: 'Juniville', km: 42 },
+  { name: 'Nouzonville', km: 41, page: 'electricien-nouzonville' },
+  { name: 'Juniville', km: 42, page: 'electricien-juniville' },
   { name: 'Sedan', km: 45, page: 'electricien-sedan', main: true, note: 'Forfait dépannage : 99 €, ou supplément annoncé à l’avance selon l’adresse' },
   { name: 'Vouziers', km: 50 },
   { name: 'Revin', km: 55 },

@@ -82,9 +82,9 @@ function circuitBg(id = 'c') {
 function trustBar() {
   const items = [
     ['zap', 'Spécialiste dépannage', 'Recherche de panne méthodique'],
-    ['euro', 'Forfait dépannage 79 €', 'Déplacement et devis compris'],
-    ['moon', 'Soirs & week-ends', 'Sur rendez-vous'],
-    ['map-pin', 'Artisan local', 'Basé à Signy-l’Abbaye'],
+    ['euro', 'Forfait 79 € TTC', 'Déplacement et devis compris'],
+    ['moon', 'Soirs & week-ends', 'Sans majoration'],
+    ['user', `${site.experienceYears} ans de métier`, 'Un seul interlocuteur'],
   ];
   return `<section class="trustbar" aria-label="Nos engagements"><div class="container trustbar-in">${items
     .map(([i, t, s]) => `<div class="trust-item">${icon(i)}<div><strong>${t}</strong><span>${s}</span></div></div>`)
@@ -161,12 +161,22 @@ function pricingTable(ids) {
 
 function kmTable() {
   return `<div class="km-grid">${kmTiers
-    .map(
-      (t, i) => `<div class="km-tier km-${i}"><span class="km-range">${t.label}</span><strong>${t.text}</strong><small>${
-        t.supplement === 0 ? `Forfait dépannage : ${euro(forfait.price)}` : t.supplement ? `Forfait dépannage : ${euro(forfait.price + t.supplement)}` : 'Supplément annoncé à l’avance'
-      }</small></div>`
-    )
-    .join('')}</div><p class="small muted">Distance calculée par la route depuis Signy-l’Abbaye jusqu’à votre adresse. Le supplément vous est toujours confirmé au téléphone, avant le déplacement.</p>`;
+    .map((t, i) => {
+      const towns = communes.filter((c) => tierFor(c.km) === t && (c.main || c.page)).sort((x, y) => (y.main ? 1 : 0) - (x.main ? 1 : 0) || x.km - y.km).slice(0, 5);
+      const price = t.supplement == null ? 'Sur devis' : euro(forfait.price + t.supplement);
+      return `<div class="km-tier km-${i}"><span class="km-range">${t.label}</span><strong>${price}</strong><small>${
+        t.supplement === 0 ? 'Forfait dépannage, déplacement compris' : t.supplement ? `Forfait ${euro(forfait.price)} ${t.text} de déplacement` : 'Supplément annoncé à l’avance'
+      }</small>${towns.length ? `<span class="km-towns">${towns.map((c) => (c.page ? `<a href="/${c.page}/">${esc(c.name)}</a>` : esc(c.name))).join(', ')}…</span>` : ''}</div>`;
+    })
+    .join('')}</div><p class="small muted">Distance calculée par la route depuis Signy-l’Abbaye jusqu’à votre adresse. Le prix vous est toujours confirmé au téléphone, avant le déplacement.</p>`;
+}
+
+// Prix du forfait pour une commune (79 / 89 / 99 € ou null au-delà de 45 km)
+function forfaitFor(name) {
+  const c = communes.find((x) => x.name === name);
+  if (!c) return forfait.price;
+  const t = tierFor(c.km);
+  return t.supplement == null ? null : forfait.price + t.supplement;
 }
 
 // Badge distance pour une commune
@@ -182,6 +192,79 @@ function distanceBadge(name) {
     ? `Forfait dépannage : ${euro(forfait.price + t.supplement)} (79 € ${t.text})`
     : 'Supplément kilométrique sur devis';
   return `<div class="distance-badge">${icon('route')}<div><strong>${c.km === 0 ? 'Commune de base d’ALED08' : `≈ ${c.km} km de Signy-l’Abbaye`}</strong><span>${sup}</span></div></div>`;
+}
+
+// ---------------------------------------------------------------- mon passage, étape par étape
+const PASSAGE = [
+  { icon: 'phone', t: 'Avant de venir', d: 'Vous m’appelez ou m’écrivez. Je vous confirme le prix du forfait pour votre commune et nous fixons un créneau, le soir ou le week-end.' },
+  { icon: 'house', t: 'À mon arrivée', d: 'Vous me montrez la panne et le tableau électrique. Je vérifie d’abord qu’il n’y a pas de danger immédiat.' },
+  { icon: 'search', t: 'La recherche de panne', d: 'Je teste, j’isole les circuits et je mesure, jusqu’à trouver l’origine du problème.' },
+  { icon: 'lightbulb', t: 'L’explication', d: 'Je vous montre ce que j’ai trouvé et je vous présente les solutions possibles, simplement.' },
+  { icon: 'file-text', t: 'Le devis', d: 'Je vous remets un devis de réparation écrit. Vous l’acceptez, vous réfléchissez ou vous refusez : aucune obligation.' },
+  { icon: 'circle-check', t: 'La suite', d: 'Devis accepté ? Je répare, souvent dans la foulée. Sinon, vous ne réglez que le forfait.' },
+];
+function passage() {
+  return `<ol class="passage">${PASSAGE.map(
+    (s, i) => `<li class="passage-step reveal"><span class="passage-ico">${icon(s.icon)}</span><div><p class="passage-n">Étape ${i + 1}</p><h3>${s.t}</h3><p>${s.d}</p></div></li>`
+  ).join('')}</ol>`;
+}
+
+// ---------------------------------------------------------------- ce que vous payez / ne payez pas
+function payBlock() {
+  const yes = [
+    `<strong>Le forfait dépannage : ${euro(forfait.price)} TTC.</strong> Déplacement jusqu’à 15 km, recherche de panne, proposition de solution et devis de réparation.`,
+    '<strong>Le supplément kilométrique</strong>, seulement au-delà de 15 km : + 10 € (15 à 30 km) ou + 20 € (30 à 45 km).',
+    '<strong>La réparation</strong>, uniquement si vous acceptez le devis.',
+  ];
+  const no = [
+    'De majoration le soir, le samedi ou le dimanche.',
+    'D’heures « au compteur » pendant la recherche de panne.',
+    'De réparation que vous n’avez pas validée sur devis.',
+    'Le devis de vos travaux hors dépannage : il est gratuit.',
+  ];
+  return `<div class="pay reveal">
+  <div class="pay-col pay-yes"><h3>${icon('circle-check')}Ce que vous payez</h3><ul>${yes.map((x) => `<li>${x}</li>`).join('')}</ul></div>
+  <div class="pay-col pay-no"><h3>${icon('x')}Ce que vous ne payez jamais</h3><ul>${no.map((x) => `<li>${x}</li>`).join('')}</ul></div>
+</div>`;
+}
+
+// ---------------------------------------------------------------- repères de marché (sources publiques)
+function marketCompare() {
+  const rows = [
+    ['Déplacement', 'Souvent facturé à part : 20 à 50 € en province', 'Compris dans le forfait jusqu’à 15 km'],
+    ['Soir, week-end', 'Majoration fréquente de 50 à 100 %', 'Aucune majoration'],
+    ['Recherche de panne', 'Souvent au temps passé : 50 à 100 € de l’heure', 'Comprise dans le forfait'],
+    ['Prix', 'Rarement affiché avant l’appel', 'Publié ici, confirmé au téléphone'],
+    ['Interlocuteur', 'Parfois une plateforme ou un standard', `${site.owner}, du premier appel à la facture`],
+  ];
+  return `<div class="compare reveal" role="table" aria-label="Repères de prix du marché et pratique ALED08">
+  <div class="compare-row compare-head" role="row"><span role="columnheader"></span><span role="columnheader">Ce qui se pratique souvent</span><span role="columnheader">Chez ALED08</span></div>
+  ${rows.map((r) => `<div class="compare-row" role="row"><strong role="rowheader">${r[0]}</strong><span role="cell">${r[1]}</span><span role="cell" class="compare-me">${icon('check')}${r[2]}</span></div>`).join('')}
+</div>
+<p class="small muted">Repères issus de guides de prix nationaux consultés en novembre 2026 (notamment Quelle Énergie). Ils varient d’une entreprise à l’autre : demandez toujours le prix avant le déplacement.</p>`;
+}
+
+// ---------------------------------------------------------------- présentation de l'artisan
+function avatar(cls = '') {
+  const initials = site.owner.split(' ').map((w) => w[0]).join('').slice(0, 2);
+  return site.portrait
+    ? `<img class="avatar ${cls}" src="${site.portrait}" alt="${esc(site.owner)}, électricien à ${esc(site.address.city)}" width="160" height="160" loading="lazy" decoding="async">`
+    : `<span class="avatar avatar-mono ${cls}" aria-hidden="true">${initials}</span>`;
+}
+function artisanCard() {
+  return `<aside class="artisan reveal" aria-label="${esc(site.owner)}, électricien">
+  <div class="artisan-id">${avatar()}<div><strong>${site.owner}</strong><span>Électricien · ${site.experienceYears} ans de métier</span><span>${site.address.city} (${site.address.postalCode.slice(0, 2)})</span></div></div>
+  <ul class="artisan-facts">
+    <li>${icon('zap')}<span><strong>Spécialité</strong>Dépannage et recherche de panne</span></li>
+    <li>${icon('user')}<span><strong>Interlocuteur unique</strong>Je réponds, je me déplace, je répare</span></li>
+    <li>${icon('moon')}<span><strong>Créneaux</strong>Soirs de semaine et week-ends, sur rendez-vous</span></li>
+    <li>${icon('clipboard-check')}<span><strong>Référence</strong>Norme NF C 15-100</span></li>
+  </ul>
+  ${btnCall('btn-primary btn-block', 'Appeler ' + site.owner.split(' ')[0])}
+</aside>`;
+}
+function authorBox(id = 'lga') {
+  return `<div class="author-box">${site.portrait ? avatar('avatar-sm') : logoSvg(id)}<p><strong>${site.owner}</strong> — électricien depuis ${site.experienceYears} ans, installé à ${site.address.city} (ALED08). J’interviens en soirée et le week-end, sur rendez-vous, chez les particuliers des Ardennes. <a href="/qui-suis-je/">En savoir plus</a></p></div>`;
 }
 
 // ---------------------------------------------------------------- étapes
@@ -257,20 +340,20 @@ function relatedLinks(paths, title = 'Pages utiles') {
     .join('')}</ul></nav>`;
 }
 
-// ---------------------------------------------------------------- avis
+// ---------------------------------------------------------------- avis (réels uniquement)
 function reviewsBlock(reviews, limit = 6) {
-  const list = reviews.slice(0, limit);
+  const list = (reviews || []).slice(0, limit);
+  if (!list.length) return '';
   return `<section class="section section-alt" id="avis"><div class="container">
-  <div class="section-head"><p class="kicker">Avis clients</p><h2>Ils m’ont fait confiance</h2>
-  ${site.demoReviews ? '<p class="demo-flag">' + icon('info') + 'Avis d’exemple — en attente des premiers avis clients publiés.</p>' : ''}</div>
+  <div class="section-head"><p class="kicker">Avis clients</p><h2>Ce qu’en disent les clients</h2></div>
   <div class="grid grid-reviews">${list
     .map(
-      (r) => `<figure class="card review reveal"><div class="stars" aria-label="Note : ${r.rating} sur 5">${icon('star').repeat(r.rating)}</div>
+      (r) => `<figure class="card review reveal"><div class="stars" role="img" aria-label="Note : ${r.rating} sur 5">${icon('star').repeat(r.rating)}</div>
     <blockquote><p>${esc(r.text)}</p></blockquote>
-    <figcaption><strong>${esc(r.name)}</strong><span>${esc(r.city)} · ${esc(r.service)}</span></figcaption></figure>`
+    <figcaption><strong>${esc(r.name)}</strong><span>${esc(r.city)} · ${esc(r.service)}${r.source ? ' · Avis ' + esc(r.source) : ''}</span></figcaption></figure>`
     )
     .join('')}</div>
-  ${site.googleReviewsUrl ? `<p class="center"><a class="btn btn-ghost" href="${site.googleReviewsUrl}" target="_blank" rel="noopener">${icon('star')}<span>Voir les avis Google</span></a></p>` : ''}
+  ${site.googleReviewsUrl ? `<p class="center" style="margin-top:28px"><a class="btn btn-ghost" href="${site.googleReviewsUrl}" target="_blank" rel="noopener">${icon('star')}<span>Voir tous les avis Google</span></a></p>` : ''}
 </div></section>`;
 }
 
@@ -323,6 +406,6 @@ function communesList(opts = {}) {
 module.exports = {
   register, label, registry, tel, waUrl, devisUrl, euro, logoSvg,
   btnCall, btnDevis, btnWa, breadcrumbs, pageHero, circuitBg, trustBar, serviceCards, hoursTable, dispoCard,
-  forfaitBlock, pricingTable, kmTable, distanceBadge, steps, cases, faq, ctaBand, inlineCta, relatedLinks, reviewsBlock,
+  forfaitBlock, forfaitFor, pricingTable, kmTable, passage, payBlock, marketCompare, avatar, artisanCard, authorBox, distanceBadge, steps, cases, faq, ctaBand, inlineCta, relatedLinks, reviewsBlock,
   beforeAfter, mapEmbed, communesList,
 };

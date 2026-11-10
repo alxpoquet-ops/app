@@ -92,7 +92,7 @@ J'interviens dans toute la ville, du centre aux quartiers plus récents, ainsi q
     label: 'Électricien à Charleville-Mézières',
     teaser: 'Appartements, maisons de ville, pavillons : un électricien disponible après le travail.',
     title: 'Électricien à Charleville-Mézières – soir & week-end | ALED08',
-    description: 'Électricien à Charleville-Mézières : dépannage, tableau, prises, éclairage, mise en sécurité. Créneaux après 18 h et le week-end, tarifs affichés.',
+    description: 'Électricien à Charleville-Mézières : dépannage, tableau, prises, éclairage, mise en sécurité. Forfait dépannage 99 €, après 18 h et le week-end.',
     kicker: 'Électricien · Charleville-Mézières (08000)',
     h1: 'Électricien à Charleville-Mézières, après le travail et le week-end',
     lead: "À Charleville-Mézières, trouver un électricien disponible **le soir ou le samedi** relève souvent du parcours du combattant. C'est justement mon créneau : j'interviens dans la préfecture et son agglomération **de 18 h à 21 h 30 en semaine et tout le week-end**, avec des prix publiés à l'avance.",
@@ -773,6 +773,359 @@ Dans une cuisine réaménagée, l'éclairage est souvent sous-estimé. Un plafon
     cta: { title: 'Un logement à remettre en ordre à Attigny ?', text: 'Je fais le point sur votre installation et vous propose un plan clair, étape par étape.' },
     links: ['/prestations/mise-en-securite/', '/mise-aux-normes-electrique/', '/disjoncte-quand-il-pleut/', '/prestations/eclairage-interieur/', '/electricien-ardennes/'],
     nearby: ['/electricien-rethel/', '/electricien-novion-porcien/', '/electricien-poix-terron/'],
+  },
+
+  // ------------------------------------------------------------------ SAULCES-MONCLIN
+  {
+    slug: 'electricien-saulces-monclin', group: 'villes', city: 'Saulces-Monclin', prestation: 'depannage',
+    label: 'Électricien à Saulces-Monclin',
+    teaser: 'Pavillons récents, volets roulants, chauffe-eau : les pannes du quotidien.',
+    title: 'Électricien à Saulces-Monclin | ALED08',
+    description: "Électricien à Saulces-Monclin : dépannage au forfait 89 €, chauffe-eau qui ne chauffe plus, volets roulants sans courant, prises. Le soir et le week-end.",
+    kicker: 'Électricien · Saulces-Monclin (08270)',
+    h1: 'Électricien à Saulces-Monclin : les pannes du quotidien, réglées le soir',
+    lead: "Entre Rethel et Poix-Terron, à deux pas de l'A34, **Saulces-Monclin** compte beaucoup de pavillons récents. Les pannes y sont rarement spectaculaires, mais elles gâchent vite le quotidien : **plus d'eau chaude, un volet bloqué, une prise muette**. Je viens le soir ou le week-end.",
+    body: `## Les pannes typiques d'un pavillon récent
+
+Dans une maison de vingt ou trente ans, l'installation est saine dans l'ensemble. Ce sont les **équipements** qui commencent à fatiguer, souvent tous en même temps :
+
+- le **contacteur du chauffe-eau**, qui ne se déclenche plus en heures creuses ;
+- les **interrupteurs de volets roulants**, sollicités plusieurs fois par jour ;
+- la **VMC**, dont l'alimentation ou le moteur lâche après des années de fonctionnement continu ;
+- les **prises de la cuisine**, qui supportent chaque année un appareil de plus.
+
+## Plus d'eau chaude : pas toujours le chauffe-eau
+
+Quand l'eau reste froide un matin, on pense aussitôt à remplacer le ballon. Dans bien des cas, la panne est **électrique et en amont** : contacteur jour/nuit bloqué, disjoncteur fatigué, signal heures creuses qui n'arrive plus. Je contrôle l'alimentation avant de conclure, ce qui évite parfois un remplacement inutile.
+
+[[cta]]
+
+## Un volet roulant qui ne répond plus
+
+Avant d'incriminer le moteur, il faut vérifier que le courant arrive : protection au tableau, interrupteur, connexion dans le caisson. Je m'occupe de toute la partie électrique. Si le moteur lui-même est hors service, je vous le dis clairement pour que vous puissiez faire appel à un storiste en connaissance de cause.`,
+    cases: [
+      { tag: 'Eau chaude', icon: 'thermometer', title: 'Un ballon accusé à tort', text: "Plus d'eau chaude depuis trois jours dans une maison de 2004. Le devis d'un nouveau ballon était déjà demandé.", result: 'Contacteur heures creuses défaillant au tableau : remplacé sur devis, le ballon fonctionnait parfaitement.' },
+      { tag: 'Volet roulant', icon: 'toggle-right', title: 'Le volet de la baie ne remonte plus', text: "Le grand volet du séjour restait fermé. Le moteur semblait mort.", result: 'Interrupteur de commande usé : remplacé, le volet a retrouvé son fonctionnement sans changer le moteur.' },
+      { tag: 'VMC', icon: 'zap-off', title: 'Une VMC silencieuse depuis des semaines', text: "Des traces d'humidité dans la salle de bain ont alerté les occupants : la VMC ne tournait plus.", result: 'Protection déclenchée par un moteur en défaut, identifié à la mesure ; remplacement du groupe chiffré sur devis.' },
+    ],
+    faq: [
+      { q: 'Combien coûte un dépannage à Saulces-Monclin ?', a: "La commune est à environ 17 km de Signy-l'Abbaye : le forfait dépannage est de 89 € (79 € + 10 €), recherche de panne et devis de réparation compris." },
+      { q: 'Remplacez-vous les chauffe-eau ?', a: "Je m'occupe de l'alimentation électrique, du contacteur et des protections. Le remplacement du ballon lui-même relève du plombier ; je vous dis précisément ce qui est en cause." },
+      { q: 'Réparez-vous les moteurs de volets roulants ?', a: "J'interviens sur la partie électrique : alimentation, interrupteur, raccordement. Si le moteur est hors service, je vous l'indique pour que vous fassiez appel à un spécialiste." },
+    ],
+    cta: { title: 'Une panne du quotidien à Saulces-Monclin ?', text: 'Je trouve d’où elle vient avant de remplacer quoi que ce soit. Forfait 89 €, devis compris.' },
+    links: ['/chauffe-eau-electrique-ne-chauffe-plus/', '/prestations/depannage-electrique/', '/prise-qui-ne-fonctionne-plus/', '/electricien-cretes-preardennaises/', '/tarifs/'],
+    nearby: ['/electricien-novion-porcien/', '/electricien-poix-terron/', '/electricien-rethel/', '/electricien-launois-sur-vence/'],
+  },
+
+  // ------------------------------------------------------------------ SAULT-LÈS-RETHEL
+  {
+    slug: 'electricien-sault-les-rethel', group: 'villes', city: 'Sault-lès-Rethel', prestation: 'depannage',
+    label: 'Électricien à Sault-lès-Rethel',
+    teaser: 'Aux portes de Rethel : lotissements, cuisines équipées, radiateurs électriques.',
+    title: 'Électricien à Sault-lès-Rethel | ALED08',
+    description: "Électricien à Sault-lès-Rethel : dépannage 89 €, radiateurs électriques en panne, cuisine qui disjoncte, tableau à compléter. Créneaux le soir et le week-end.",
+    kicker: 'Électricien · Sault-lès-Rethel (08300)',
+    h1: 'Électricien à Sault-lès-Rethel, aux portes de Rethel',
+    lead: "Commune résidentielle collée à Rethel, **Sault-lès-Rethel** aligne des lotissements construits des années 70 à aujourd'hui. On m'y appelle surtout pour des **radiateurs électriques qui ne chauffent plus** et des **cuisines qui font sauter le courant**. Forfait dépannage : 89 €.",
+    body: `## Radiateur froid : thermostat, fil pilote ou alimentation ?
+
+Un radiateur électrique qui reste froid ne signifie pas forcément qu'il est mort. Trois pistes sont à vérifier dans l'ordre :
+
+1. **L'alimentation** : disjoncteur du circuit, connexion dans la boîte de sortie de câble.
+2. **Le fil pilote** : si un gestionnaire ou un programmateur le commande, un ordre « arrêt » ou « hors-gel » permanent bloque la chauffe.
+3. **Le thermostat ou la résistance** de l'appareil lui-même.
+
+Cette méthode évite de remplacer un radiateur alors qu'il suffisait de refaire une connexion ou de corriger une programmation.
+
+## La cuisine, première cause de coupures
+
+Dans les lotissements des années 70 et 80, la cuisine partageait souvent un seul circuit de prises. Avec un four, un micro-ondes, une bouilloire et un lave-vaisselle, ce circuit sature. La solution durable n'est pas un disjoncteur plus gros, mais **des circuits spécialisés** pour les gros appareils.
+
+[[cta]]
+
+## Compléter un tableau plutôt que le remplacer
+
+Beaucoup de tableaux du secteur sont encore en bon état, mais il leur manque des **différentiels 30 mA** ou de la place. Quand c'est possible, j'ajoute une rangée ou les protections manquantes : c'est moins coûteux qu'un remplacement complet, et la sécurité est au rendez-vous. Je vous présente toujours les deux options sur devis.`,
+    cases: [
+      { tag: 'Chauffage', icon: 'thermometer', title: 'Trois radiateurs froids d’un coup', text: "Au premier froid, les radiateurs de l'étage ne démarrent pas, alors que ceux du bas chauffent.", result: 'Programmateur fil pilote resté en mode hors-gel sur la zone étage : reprogrammé, sans aucune pièce à changer.' },
+      { tag: 'Cuisine', icon: 'plug-zap', title: 'Le four et la bouilloire ne s’entendent pas', text: "Chaque repas de famille se terminait par une coupure du circuit cuisine.", result: 'Devis accepté pour une ligne dédiée au four : plus de coupure depuis.' },
+      { tag: 'Tableau', icon: 'shield-check', title: 'Un tableau propre, mais sans 30 mA', text: "Un tableau des années 80 en bon état, protégé par un seul différentiel 500 mA.", result: 'Ajout de deux interrupteurs différentiels 30 mA dans le coffret existant, en une soirée.' },
+    ],
+    faq: [
+      { q: 'Quel est le prix d’un dépannage à Sault-lès-Rethel ?', a: "89 € : forfait de 79 € et 10 € de supplément kilométrique (environ 25 km). Il comprend la recherche de panne, la proposition de solution et le devis de réparation." },
+      { q: 'Remplacez-vous les radiateurs électriques ?', a: "Oui, sur devis, lorsque le radiateur est réellement hors service. Je vérifie d'abord l'alimentation et la commande, souvent en cause." },
+      { q: 'Faut-il changer tout le tableau pour ajouter un différentiel ?', a: "Pas toujours. Si le coffret est sain et dispose de place, l'ajout de différentiels 30 mA suffit. Sinon, je chiffre le remplacement." },
+    ],
+    cta: { title: 'Un radiateur froid ou une cuisine qui disjoncte ?', text: 'Je viens le soir ou le week-end à Sault-lès-Rethel. Forfait 89 €, devis de réparation compris.' },
+    links: ['/radiateur-electrique-ne-chauffe-plus/', '/prise-specialisee/', '/disjoncteur-qui-saute/', '/electricien-rethel/', '/depannage-electrique-rethel/'],
+    nearby: ['/electricien-rethel/', '/electricien-chateau-porcien/', '/electricien-juniville/', '/electricien-saulces-monclin/'],
+  },
+
+  // ------------------------------------------------------------------ BOULZICOURT
+  {
+    slug: 'electricien-boulzicourt', group: 'villes', city: 'Boulzicourt', prestation: 'depannage',
+    label: 'Électricien à Boulzicourt',
+    teaser: 'Vallée de la Vence : maisons ouvrières, sous-sols, pompes de relevage.',
+    title: 'Électricien à Boulzicourt | ALED08',
+    description: "Électricien à Boulzicourt, vallée de la Vence : dépannage 89 €, pompe de relevage, sous-sol humide, maisons mitoyennes à sécuriser. Soirs et week-ends.",
+    kicker: 'Électricien · Boulzicourt (08410)',
+    h1: 'Électricien à Boulzicourt, dans la vallée de la Vence',
+    lead: "Bourg de la vallée de la Vence, sur la route de Charleville, **Boulzicourt** mêle maisons ouvrières mitoyennes et pavillons à sous-sol. La proximité de la rivière y rend les **sous-sols humides** et les **pompes de relevage** fréquentes : deux sources classiques de pannes. Forfait dépannage : 89 €.",
+    body: `## La pompe de relevage, discrète jusqu'au jour où elle lâche
+
+Dans un sous-sol sujet aux remontées d'eau, la pompe de relevage tourne sans qu'on y pense. Quand elle fait disjoncter, ou qu'elle ne démarre plus, le risque est double : **plus de courant** dans une partie de la maison, et **un sous-sol qui se remplit**.
+
+Les causes les plus courantes :
+
+- un **câble ou une fiche** détériorés par l'humidité ;
+- un **flotteur** bloqué, qui laisse tourner la pompe à vide ;
+- un **moteur en fin de vie**, qui fuit à la terre.
+
+Je mesure l'isolement de la pompe et de sa ligne pour savoir laquelle est en cause, puis je vous propose une solution : prise étanche dédiée, protection séparée, ou remplacement de la pompe.
+
+[[cta]]
+
+## Maisons mitoyennes : des installations en enfilade
+
+Dans les maisons ouvrières de la vallée, l'électricité suit souvent le même schéma : une arrivée en façade, un tableau dans l'entrée, puis des circuits qui traversent la maison jusqu'à l'appentis. Les ajouts successifs, vers la cuisine arrière ou l'atelier du fond, sont rarement protégés comme il faudrait. Je remets ces lignes en ordre, sur devis.
+
+## Garder le reste de la maison alimenté
+
+Quand le sous-sol pose problème, le premier objectif est de **l'isoler électriquement** pour rétablir le courant dans les pièces de vie. La réparation de fond vient ensuite, sans urgence.`,
+    cases: [
+      { tag: 'Pompe de relevage', icon: 'droplets', title: 'Le sous-sol fait tout sauter', text: "Après de fortes pluies, le différentiel général déclenche toutes les heures. La pompe de relevage démarre au même moment.", result: 'Pompe en défaut d’isolement identifiée à la mesure ; circuit dédié et prise étanche posés sur devis.' },
+      { tag: 'Maison mitoyenne', icon: 'house', title: 'Un atelier au bout d’une rallonge fixe', text: "L'appentis du fond était alimenté par une rallonge agrafée le long du mur depuis la cuisine.", result: 'Ligne fixe sous conduit avec sa protection au tableau, réalisée un samedi matin.' },
+      { tag: 'Sous-sol', icon: 'lightbulb', title: 'Des douilles rouillées au plafond', text: "L'éclairage du sous-sol clignotait et grillait ses ampoules.", result: 'Douilles corrodées remplacées par deux hublots étanches.' },
+    ],
+    faq: [
+      { q: 'Combien coûte un dépannage à Boulzicourt ?', a: "Environ 25 km depuis Signy-l'Abbaye : forfait dépannage de 89 €, qui comprend le déplacement, la recherche de panne et le devis de réparation." },
+      { q: 'Remplacez-vous les pompes de relevage ?', a: "Je traite toute la partie électrique et je peux remplacer une pompe simple sur devis. Pour une installation de relevage complexe, je vous oriente vers un plombier." },
+      { q: 'Peut-on mettre la pompe sur un circuit à part ?', a: "Oui, et c'est recommandé : en cas de défaut, la maison reste alimentée et vous repérez immédiatement l'origine de la coupure." },
+    ],
+    cta: { title: 'Un sous-sol qui fait disjoncter à Boulzicourt ?', text: 'Je mesure, je trouve ce qui fuit et je vous propose une solution durable. Forfait 89 €.' },
+    links: ['/differentiel-qui-saute/', '/disjoncte-quand-il-pleut/', '/ajout-circuit-electrique/', '/electricien-poix-terron/', '/prestations/depannage-electrique/'],
+    nearby: ['/electricien-poix-terron/', '/electricien-villers-semeuse/', '/electricien-charleville-mezieres/', '/electricien-launois-sur-vence/'],
+  },
+
+  // ------------------------------------------------------------------ RIMOGNE
+  {
+    slug: 'electricien-rimogne', group: 'villes', city: 'Rimogne', prestation: 'depannage',
+    label: 'Électricien à Rimogne',
+    teaser: 'Ancienne cité ardoisière : petites maisons, combles aménagés, chauffage d’appoint.',
+    title: 'Électricien à Rimogne | ALED08',
+    description: "Électricien à Rimogne, ancienne cité ardoisière : dépannage 99 €, combles aménagés, chauffage d'appoint qui disjoncte, maisons anciennes. Soirs et week-ends.",
+    kicker: 'Électricien · Rimogne (08150)',
+    h1: 'Électricien à Rimogne, l’ancienne cité de l’ardoise',
+    lead: "Longtemps tournée vers ses ardoisières, **Rimogne** garde de nombreuses petites maisons d'ouvriers, agrandies au fil du temps par les combles ou une extension. Ces aménagements se sont souvent faits **sans nouveau circuit**, et l'installation finit par le montrer. Forfait dépannage : 99 €.",
+    body: `## Des maisons agrandies, une installation restée la même
+
+Le scénario est fréquent dans les anciennes maisons d'ardoisiers : deux pièces au rez-de-chaussée à l'origine, puis une cuisine à l'arrière, puis une ou deux chambres sous le toit. À chaque étape, on a **prolongé le circuit le plus proche**. Résultat :
+
+- un seul circuit de prises pour toute la maison ;
+- des chambres sous combles éclairées par un fil repiqué sur le palier ;
+- des boîtes de dérivation perdues sous l'isolant.
+
+Cela fonctionne… jusqu'à l'hiver où l'on ajoute un radiateur d'appoint.
+
+## Le radiateur d'appoint de trop
+
+Sur le plateau, les hivers sont longs. Un convecteur mobile de 2 000 W branché dans une chambre sous combles suffit à faire disjoncter un circuit déjà chargé, ou, pire, à faire chauffer une connexion ancienne sans rien faire sauter. Je mesure la charge réelle du circuit avant de proposer une solution : ligne dédiée, sortie de câble pour un radiateur fixe, ou simple répartition des usages.
+
+[[cta]]
+
+## Retrouver les boîtes sous l'isolant
+
+Quand une panne touche les combles, la difficulté est de localiser les raccordements enfouis. Je procède par mesures depuis le tableau et depuis les points accessibles, pour **ouvrir le moins possible**. Une fois la boîte fautive retrouvée, elle est remontée à un endroit accessible et repérée.`,
+    cases: [
+      { tag: 'Combles', icon: 'house', title: 'Deux chambres sans courant sous le toit', text: "Les prises et la lumière des combles se coupent, alors que rien n'a sauté au tableau.", result: 'Boîte de dérivation retrouvée sous la laine de verre, connexion carbonisée : refaite et déplacée dans un placard.' },
+      { tag: 'Chauffage d’appoint', icon: 'flame', title: 'Une prise qui brunit derrière le convecteur', text: "Le convecteur mobile de la chambre tournait toutes les nuits sur une prise ancienne.", result: 'Prise et conducteurs remplacés ; devis accepté pour une sortie de câble dédiée à un radiateur fixe.' },
+      { tag: 'Extension', icon: 'cable', title: 'Une cuisine arrière sur le circuit du salon', text: "La cuisine ajoutée dans les années 80 partageait le circuit de prises de la pièce principale.", result: 'Nouveau circuit cuisine tiré depuis le tableau, avec une ligne pour le four.' },
+    ],
+    faq: [
+      { q: 'Quel est le prix d’un dépannage à Rimogne ?', a: "Rimogne se trouve à environ 33 km de Signy-l'Abbaye : le forfait dépannage est de 99 € (79 € + 20 €), devis de réparation compris." },
+      { q: 'Faut-il ouvrir tout le plafond pour trouver une boîte ?', a: "Non. Les mesures permettent de cerner la zone. L'ouverture est limitée, et la boîte est ensuite rendue accessible." },
+      { q: 'Un radiateur d’appoint est-il dangereux ?', a: "Pas en lui-même, mais il révèle les faiblesses d'un circuit ancien ou surchargé. Branchez-le directement sur une prise murale en bon état, jamais sur une multiprise." },
+    ],
+    cta: { title: 'Une panne dans une maison agrandie ?', text: 'Je retrouve le raccordement fautif sans tout ouvrir. Forfait 99 € à Rimogne, devis compris.' },
+    links: ['/panne-courant-partielle/', '/prise-qui-chauffe/', '/ajout-circuit-electrique/', '/electricien-maison-ancienne/', '/electricien-rocroi/'],
+    nearby: ['/electricien-rocroi/', '/electricien-renwez/', '/electricien-maubert-fontaine/', '/electricien-charleville-mezieres/'],
+  },
+
+  // ------------------------------------------------------------------ PRIX-LÈS-MÉZIÈRES
+  {
+    slug: 'electricien-prix-les-mezieres', group: 'villes', city: 'Prix-lès-Mézières', prestation: 'depannage',
+    label: 'Électricien à Prix-lès-Mézières',
+    teaser: 'À l’entrée de Charleville : pavillons, garages, portes motorisées.',
+    title: 'Électricien à Prix-lès-Mézières | ALED08',
+    description: "Électricien à Prix-lès-Mézières : dépannage 99 €, porte de garage motorisée sans courant, éclairage extérieur, pavillons des années 70-90. Soirs et week-ends.",
+    kicker: 'Électricien · Prix-lès-Mézières (08000)',
+    h1: 'Électricien à Prix-lès-Mézières, à l’entrée de Charleville',
+    lead: "À la porte ouest de Charleville-Mézières, **Prix-lès-Mézières** est une commune pavillonnaire où l'on rentre du travail en voiture, directement au garage. Quand la **porte motorisée** ou l'**éclairage extérieur** tombe en panne, tout le quotidien se complique. Forfait dépannage : 99 €.",
+    body: `## La porte de garage qui ne s'ouvre plus
+
+Une porte motorisée immobile ne veut pas dire que le moteur est hors service. Avant d'appeler l'installateur, il faut s'assurer que le **courant arrive** :
+
+- la prise ou la sortie de câble du moteur est-elle alimentée ?
+- la protection au tableau a-t-elle déclenché ?
+- le garage partage-t-il son circuit avec un congélateur ou un outil en défaut ?
+
+Dans une bonne partie des cas, la panne se situe **côté alimentation**. Je la traite, et si le moteur ou sa carte sont en cause, vous le savez avant de faire venir le spécialiste.
+
+## Un garage, plusieurs usages
+
+Le garage d'un pavillon accueille aujourd'hui la voiture, le congélateur, l'établi, parfois la recharge d'un véhicule électrique. Tout cela sur l'unique prise prévue à la construction. Un **petit tableau divisionnaire** ou quelques circuits dédiés remettent de l'ordre et évitent qu'un défaut ne coupe tout.
+
+[[cta]]
+
+## L'éclairage extérieur vieillissant
+
+Les lanternes de façade et les bornes d'allée posées il y a trente ans arrivent en fin de vie : joints secs, corrosion, câbles enterrés fatigués. Ce sont elles qui font sauter le différentiel les soirs de pluie. Je remplace le matériel par des luminaires étanches et, si besoin, je sépare le circuit extérieur du reste de la maison.`,
+    cases: [
+      { tag: 'Porte de garage', icon: 'car-front', title: 'Bloqué dehors un soir de pluie', text: "La porte motorisée ne réagit plus à la télécommande. Le voyant du moteur est éteint.", result: 'Prise du moteur hors tension : connexion desserrée dans une boîte du garage, refaite dans la soirée.' },
+      { tag: 'Garage', icon: 'warehouse', title: 'Le congélateur coupe la porte', text: "À chaque dégivrage du congélateur, le circuit du garage sautait, porte motorisée comprise.", result: 'Devis accepté : deux circuits distincts, l’un pour le congélateur, l’autre pour la porte et l’éclairage.' },
+      { tag: 'Extérieur', icon: 'lamp-wall-up', title: 'Des bornes d’allée de 1992', text: "Trois bornes d'allée d'origine, dont deux pleines d'eau, faisaient déclencher le différentiel.", result: 'Bornes remplacées par des modèles LED étanches, raccordements refaits en boîtes gel.' },
+    ],
+    faq: [
+      { q: 'Combien coûte un dépannage à Prix-lès-Mézières ?', a: "99 € : la commune est à environ 33 km de Signy-l'Abbaye, ce qui ajoute 20 € au forfait de base. Mon passage complet est couvert, jusqu'à la remise du devis." },
+      { q: 'Réparez-vous les moteurs de porte de garage ?', a: "Je traite l'alimentation électrique et les protections. Pour la carte électronique ou la mécanique, je vous oriente vers l'installateur de la porte." },
+      { q: 'Peut-on ajouter des prises dans un garage facilement ?', a: "Oui, le garage se prête bien à une pose en apparent sous conduit, rapide et propre. Je vous remets un devis gratuit." },
+    ],
+    cta: { title: 'Une panne au garage ou dehors ?', text: 'Je viens après votre journée de travail, à Prix-lès-Mézières comme à Charleville. Forfait 99 €.' },
+    links: ['/ligne-electrique-garage-atelier/', '/disjoncte-quand-il-pleut/', '/eclairage-exterieur-detecteur/', '/electricien-charleville-mezieres/', '/depannage-electrique-charleville-mezieres/'],
+    nearby: ['/electricien-charleville-mezieres/', '/electricien-villers-semeuse/', '/electricien-thin-le-moutier/', '/electricien-renwez/'],
+  },
+
+  // ------------------------------------------------------------------ VILLERS-SEMEUSE
+  {
+    slug: 'electricien-villers-semeuse', group: 'villes', city: 'Villers-Semeuse', prestation: 'depannage',
+    label: 'Électricien à Villers-Semeuse',
+    teaser: 'Agglomération de Charleville : pavillons, spas, cuisines à l’induction.',
+    title: 'Électricien à Villers-Semeuse | ALED08',
+    description: "Électricien à Villers-Semeuse : dépannage 99 €, spa ou piscine qui disjoncte, passage à l'induction, tableau saturé. Créneaux après 18 h et le week-end.",
+    kicker: 'Électricien · Villers-Semeuse (08000)',
+    h1: 'Électricien à Villers-Semeuse, après votre journée de travail',
+    lead: "Commune résidentielle de l'agglomération de Charleville-Mézières, **Villers-Semeuse** compte de nombreux pavillons avec jardin. Les demandes y suivent les nouveaux équipements de la maison : **spa, piscine hors-sol, plaque à induction**… et les coupures qui vont avec. Forfait dépannage : 99 €.",
+    body: `## Le spa gonflable qui fait tout disjoncter
+
+C'est devenu l'une des pannes d'été les plus fréquentes. Un spa chauffe l'eau pendant des heures en consommant autant qu'un gros radiateur, souvent au bout d'une **rallonge** branchée sur une prise de terrasse ou de garage. Deux problèmes apparaissent :
+
+- le circuit, partagé, **dépasse sa capacité** et le disjoncteur saute ;
+- l'humidité autour du spa provoque une **fuite de courant** et c'est le différentiel qui déclenche.
+
+La bonne réponse est une **prise extérieure étanche sur un circuit dédié**, protégée par son propre différentiel 30 mA. Je vérifie d'abord ce qui déclenche, puis je vous chiffre l'installation.
+
+## Passer à l'induction sans mauvaise surprise
+
+Une plaque à induction demande une ligne en 6 mm² protégée en 32 A, sous un différentiel de type A. Dans beaucoup de pavillons, l'ancienne cuisinière mixte n'avait qu'une prise ordinaire. Avant l'achat de la plaque, un coup d'œil au tableau évite d'être livré sans pouvoir la brancher.
+
+[[cta]]
+
+## Quand le tableau est plein
+
+Spa, plaque, sèche-linge, recharge de voiture : chaque nouvel équipement réclame son circuit, et le tableau d'origine n'a plus un emplacement libre. Selon son état, j'ajoute une rangée ou je propose son remplacement. Dans les deux cas, vous recevez un devis détaillé avant toute décision.`,
+    cases: [
+      { tag: 'Spa', icon: 'droplets', title: 'Le spa coupe la maison chaque soir', text: "Dès que le spa chauffe, le différentiel du rez-de-chaussée saute. Il est branché sur une rallonge de 20 mètres.", result: 'Rallonge et prise en cause ; devis accepté pour une prise étanche dédiée avec son propre différentiel.' },
+      { tag: 'Induction', icon: 'plug-zap', title: 'Une plaque livrée, impossible à brancher', text: "La nouvelle plaque à induction attend dans son carton : la cuisine ne dispose que d'une prise 16 A.", result: 'Ligne 32 A tirée depuis le tableau le samedi suivant, plaque raccordée.' },
+      { tag: 'Tableau', icon: 'panel-top', title: 'Plus un seul emplacement libre', text: "Les propriétaires veulent ajouter un sèche-linge et une prise de recharge.", result: 'Rangée supplémentaire ajoutée au coffret existant, avec un différentiel de type A.' },
+    ],
+    faq: [
+      { q: 'Quel est le prix d’un dépannage à Villers-Semeuse ?', a: "Villers-Semeuse est à environ 35 km de Signy-l'Abbaye : forfait dépannage de 99 €, devis de réparation compris." },
+      { q: 'Un spa gonflable peut-il rester sur une rallonge ?', a: "C'est déconseillé : la consommation est élevée et continue, en milieu humide. Une prise étanche dédiée est la solution sûre." },
+      { q: 'Pouvez-vous venir avant l’achat d’une plaque à induction ?', a: "Oui. Envoyez-moi une photo du tableau et de l'emplacement : je vous dis ce qu'il faut prévoir et je vous remets un devis gratuit." },
+    ],
+    cta: { title: 'Un nouvel équipement qui fait sauter le courant ?', text: 'Je trouve ce qui déclenche et je vous propose la bonne alimentation. Forfait 99 € à Villers-Semeuse.' },
+    links: ['/prise-exterieure/', '/prise-specialisee/', '/differentiel-qui-saute/', '/linky-qui-disjoncte/', '/electricien-charleville-mezieres/'],
+    nearby: ['/electricien-charleville-mezieres/', '/electricien-boulzicourt/', '/electricien-prix-les-mezieres/', '/electricien-nouzonville/'],
+  },
+
+  // ------------------------------------------------------------------ NOUZONVILLE
+  {
+    slug: 'electricien-nouzonville', group: 'villes', city: 'Nouzonville', prestation: 'depannage',
+    label: 'Électricien à Nouzonville',
+    teaser: 'Vallée de la Meuse : cités ouvrières, maisons en bande, installations d’époque.',
+    title: 'Électricien à Nouzonville | ALED08',
+    description: "Électricien à Nouzonville, vallée de la Meuse : dépannage 99 €, maisons de cité, compteur en limite de propriété, installations anciennes. Soirs et week-ends.",
+    kicker: 'Électricien · Nouzonville (08700)',
+    h1: 'Électricien à Nouzonville, dans la vallée de la Meuse',
+    lead: "Ville de tradition métallurgique serrée entre la Meuse et la forêt, **Nouzonville** a hérité de ses usines un habitat très typé : **cités ouvrières et maisons en bande**, souvent sur trois niveaux étroits. C'est l'une des communes les plus éloignées de ma zone, à environ 41 km. Forfait dépannage : 99 €.",
+    body: `## L'électricité des maisons de cité
+
+Construites en série pour loger les ouvriers des forges, ces maisons partagent les mêmes caractéristiques, et les mêmes faiblesses électriques :
+
+- un **tableau minuscule** logé dans l'entrée ou la cage d'escalier ;
+- **une ou deux prises par pièce**, sans terre à l'étage ;
+- des circuits qui montent d'un niveau à l'autre par la **cage d'escalier** ;
+- une **cave** humide, proche du niveau de la Meuse.
+
+Elles ont presque toutes été modernisées par leurs occupants successifs, chacun à sa façon. Ma première tâche est donc de comprendre ce qui a été fait avant de chercher la panne.
+
+## Soyons clairs sur la distance
+
+Nouzonville est à la limite de mon secteur. Pour une coupure totale un soir d'hiver, un électricien de la vallée sera parfois chez vous avant moi, et je préfère vous le dire. En revanche, pour une **panne qui dure**, un tableau à reprendre ou une mise en sécurité, je planifie volontiers un passage le soir ou le samedi.
+
+[[cta]]
+
+## Les pannes qui reviennent dans la vallée
+
+- **Différentiel qui saute** lorsque la cave prend l'humidité, à la montée des eaux.
+- **Prises de l'étage** en panne après un faux contact dans la cage d'escalier.
+- **Disjoncteur général** qui coupe en hiver, sur un abonnement resté à la puissance d'origine.`,
+    cases: [
+      { tag: 'Maison de cité', icon: 'house', title: 'Trois niveaux sur un seul circuit', text: "Les prises des deux étages et de la cuisine dépendaient du même disjoncteur, qui sautait chaque soir.", result: 'Recherche de la surcharge, puis devis accepté pour séparer cuisine et étages sur trois circuits.' },
+      { tag: 'Cave', icon: 'droplets', title: 'Coupures à chaque montée de la Meuse', text: "Le différentiel déclenchait lors des épisodes de hautes eaux, sans que la cave soit inondée.", result: 'Prise de cave corrodée par l’humidité remplacée par un modèle étanche placé en hauteur.' },
+      { tag: 'Abonnement', icon: 'gauge', title: 'Tout s’éteint quand le chauffage démarre', text: "Le disjoncteur de branchement coupait dès que les radiateurs et le four fonctionnaient ensemble.", result: 'Installation contrôlée saine : puissance souscrite insuffisante, augmentation demandée par le client à son fournisseur.' },
+    ],
+    faq: [
+      { q: 'Combien coûte un dépannage à Nouzonville ?', a: "Nouzonville est à environ 41 km de Signy-l'Abbaye : forfait dépannage de 99 € (79 € + 20 €), recherche de panne et devis de réparation compris." },
+      { q: 'Pouvez-vous venir le jour même ?', a: "Rarement, compte tenu de la distance. Je propose plutôt un créneau dans la semaine, en soirée ou le samedi." },
+      { q: 'Faut-il refaire toute l’électricité d’une maison de cité ?', a: "Pas forcément. Un tableau avec différentiels 30 mA, une terre et la séparation des circuits surchargés apportent déjà l'essentiel. Le reste peut suivre par étapes, sur devis." },
+    ],
+    cta: { title: 'Une panne qui traîne à Nouzonville ?', text: 'Planifions un passage en soirée ou un samedi : forfait 99 €, devis de réparation sans obligation.' },
+    links: ['/disjoncteur-qui-saute/', '/linky-qui-disjoncte/', '/prestations/mise-en-securite/', '/electricien-maison-ancienne/', '/electricien-charleville-mezieres/'],
+    nearby: ['/electricien-charleville-mezieres/', '/electricien-villers-semeuse/', '/electricien-renwez/', '/electricien-prix-les-mezieres/'],
+  },
+
+  // ------------------------------------------------------------------ JUNIVILLE
+  {
+    slug: 'electricien-juniville', group: 'villes', city: 'Juniville', prestation: 'depannage',
+    label: 'Électricien à Juniville',
+    teaser: 'Sud du département : grandes maisons de village, hangars, lignes longues.',
+    title: 'Électricien à Juniville | ALED08',
+    description: "Électricien à Juniville, vallée de la Retourne : dépannage 99 €, grandes maisons de village, hangars et dépendances, éclairage de cour. Soirs et week-ends.",
+    kicker: 'Électricien · Juniville (08310)',
+    h1: 'Électricien à Juniville, dans la vallée de la Retourne',
+    lead: "Au sud de Rethel, dans la plaine crayeuse traversée par la Retourne, **Juniville** est un gros village de maisons spacieuses et de cours fermées, où Verlaine a vécu un temps. C'est la limite sud de mon secteur, à environ 42 km. Forfait dépannage : 99 €.",
+    body: `## De grandes maisons, de longs circuits
+
+Les maisons de village de la plaine sont vastes : longues façades, pièces en enfilade, étage complet, dépendances autour de la cour. Leurs circuits électriques sont **longs**, et c'est là que naissent leurs pannes particulières :
+
+- des **chutes de tension** au bout de la maison, où les lampes faiblissent ;
+- des **boîtes de dérivation nombreuses**, dont une finit toujours par lâcher ;
+- des circuits impossibles à suivre sans mesures, tant ils ont été prolongés.
+
+## Hangars et dépendances
+
+La cour dessert souvent un hangar, un cellier, un ancien pressoir ou une grange. Ces bâtiments sont alimentés depuis la maison par des lignes anciennes, parfois aériennes. Lorsqu'un défaut s'y produit, c'est **toute la maison** qui est coupée. Un départ protégé séparément pour chaque dépendance règle le problème et facilite les recherches futures.
+
+[[cta]]
+
+## Un déplacement qui se prépare
+
+À cette distance, je regroupe mes passages dans le sud du Rethélois. Pour que l'intervention soit efficace, envoyez-moi avant ma venue une **photo du tableau** et une description précise de la panne : j'arrive avec les bonnes hypothèses et le matériel adapté. Le prix reste celui annoncé : 99 €, devis de réparation compris.`,
+    cases: [
+      { tag: 'Grande maison', icon: 'house', title: 'La lumière faiblit au bout du couloir', text: "Dans l'aile la plus éloignée du tableau, les lampes baissent dès qu'un appareil démarre.", result: 'Connexion dégradée dans une boîte intermédiaire, refaite ; section du circuit vérifiée.' },
+      { tag: 'Hangar', icon: 'warehouse', title: 'Le hangar coupe la cuisine', text: "Chaque utilisation du nettoyeur haute pression dans le hangar faisait sauter le différentiel de la maison.", result: 'Devis accepté pour un départ dédié au hangar avec son propre différentiel.' },
+      { tag: 'Cour', icon: 'lamp-wall-up', title: 'Une cour fermée sans éclairage', text: "La cour intérieure, traversée chaque soir, n'était éclairée par aucun point lumineux.", result: 'Deux projecteurs LED à détection posés sur devis, commandés aussi depuis l’entrée.' },
+    ],
+    faq: [
+      { q: 'Quel est le prix d’un dépannage à Juniville ?', a: "Juniville se trouve à environ 42 km de Signy-l'Abbaye : forfait dépannage de 99 €, déplacement, recherche de panne et devis de réparation compris." },
+      { q: 'Intervenez-vous dans les villages voisins ?', a: "Oui, dans le sud du Rethélois : Tagnon, Perthes, Neuflize, Alincourt… Selon la distance, le forfait est de 99 € ou le déplacement est convenu à l'avance." },
+      { q: 'Combien de temps pour obtenir un rendez-vous ?', a: "Je regroupe mes passages dans le secteur : comptez généralement quelques jours, en soirée ou le week-end." },
+    ],
+    cta: { title: 'Une panne dans le sud du Rethélois ?', text: 'Envoyez-moi une photo du tableau : je prépare mon passage à Juniville. Forfait 99 €, devis compris.' },
+    links: ['/panne-courant-partielle/', '/ligne-electrique-garage-atelier/', '/lumiere-qui-clignote/', '/electricien-rethel/', '/zone-intervention/'],
+    nearby: ['/electricien-rethel/', '/electricien-sault-les-rethel/', '/electricien-attigny/', '/electricien-chateau-porcien/'],
   },
 
   // ================================================================== SECTEURS

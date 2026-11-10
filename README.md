@@ -1,6 +1,6 @@
 # ⚡ ALED08 — Site internet
 
-Site vitrine d'**ALED08** (Alexandre Poquet), électricien à Signy-l'Abbaye (Ardennes) : dépannage, recherche de panne et petits travaux électriques pour particuliers, **le soir et le week-end sur rendez-vous**.
+Site vitrine d'**ALED08** (Alexandre Poquet, électricien depuis 10 ans à Signy-l'Abbaye, Ardennes). Spécialité : **le dépannage électrique au forfait de 79 €** (déplacement, recherche de panne, proposition de solution et devis de réparation compris), **le soir et le week-end sur rendez-vous**. Travaux sur devis gratuit.
 
 Site **statique**, rapide, sans base de données ni CMS : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans le dossier `dist/`, prêtes à être envoyées sur n'importe quel hébergement.
 
@@ -12,15 +12,15 @@ Site **statique**, rapide, sans base de données ni CMS : un petit générateur 
 |---|---|---|
 | Pages principales | 13 | Accueil, Qui suis-je, Prestations, Tarifs, Zone, Réalisations, FAQ, Devis, Contact, Blog, plan du site, merci, 404 |
 | Pages prestations | 7 | Dépannage, Recherche de panne, Tableaux, Prises et interrupteurs, Éclairage intérieur/extérieur, Mise en sécurité |
-| **Pages SEO** | **62** | 18 communes, 3 secteurs, 7 pages « Ardennes », 5 pages service × ville, 8 symptômes, 14 prestations techniques, 7 situations |
+| **Pages SEO** | **74** | 26 communes, 3 secteurs, 7 pages « Ardennes », 5 pages service × ville, 12 pannes, 14 prestations techniques, 7 situations |
 | Articles de blog | 12 | Trouver une panne, remplacer un tableau, différentiel ou disjoncteur, prix d'un dépannage… |
 | Pages légales | 3 | Mentions légales, Confidentialité / cookies, Conditions générales |
 
 Chaque page SEO a un **contenu unique** : texte propre, 3 cas concrets, une FAQ dédiée, un appel à l'action, un bouton de devis et des liens internes. Le script `npm run check` vérifie l'absence de phrases dupliquées entre les pages.
 
-**SEO intégré :** balises title et description uniques, canonical, Open Graph et Twitter Card, données structurées schema.org (`Electrician`/LocalBusiness, `Service`, `FAQPage`, `BreadcrumbList`, `BlogPosting`), `sitemap.xml`, `robots.txt`, fil d'Ariane, maillage interne entre communes, prestations et articles.
+**SEO intégré :** balises title et description uniques (le prix du dépannage figure dans le titre de chaque page commune), canonical, Open Graph et Twitter Card, données structurées schema.org (`Electrician`/LocalBusiness avec offre à 79 € et zone de 45 km, `Service` avec prix par commune, `Person`, `FAQPage`, `BreadcrumbList`, `BlogPosting`), `sitemap.xml`, `robots.txt`, fil d'Ariane, maillage interne entre communes, pannes, prestations et articles. Audit Lighthouse : 100/100 en performance, accessibilité, bonnes pratiques et SEO sur les pages testées.
 
-**Fonctionnalités :** bouton d'appel et barre de contact fixe sur mobile, bouton WhatsApp, formulaires de contact et de devis (préremplis selon la page d'origine), estimateur du supplément kilométrique, galerie avant/après interactive, avis clients, carte Google Maps chargée seulement après consentement, bannière cookies conforme RGPD, indicateur de disponibilité (« créneaux ce soir dès 18 h »).
+**Fonctionnalités :** bouton d'appel et barre de contact fixe sur mobile, bouton WhatsApp, formulaires de contact et de devis (préremplis selon la page d'origine), prix du dépannage par commune, déroulement du passage étape par étape, galerie avant/après interactive, avis clients réels (section masquée tant qu'il n'y en a pas), carte Google Maps chargée seulement après consentement, bannière cookies conforme RGPD, indicateur de disponibilité (« créneaux ce soir dès 18 h »).
 
 ---
 
@@ -34,7 +34,8 @@ Tout se règle dans **`src/config.js`** :
 4. **Informations légales** (`legal`) : SIRET, immatriculation, assureur et numéro de contrat, **médiateur de la consommation** (obligatoire), hébergeur, mention TVA si vous êtes en franchise (`TVA non applicable, art. 293 B du CGI`).
 5. **Horaires** (`hours`), **forfait dépannage** (`forfait`), **grille** (`tarifs`) et **supplément kilométrique** (`kmTiers`) : vérifiez qu'ils correspondent exactement à votre pratique.
 6. **Distances** des communes (`communes`) : elles sont **indicatives**. Vérifiez-les, surtout celles proches d'une limite de tranche (Charleville-Mézières, Renwez, Sedan).
-7. **Avis clients** : les avis de `src/content/avis.js` sont des **exemples**. Remplacez-les par de vrais avis (Google…), puis passez `demoReviews: false`. Ne publiez jamais d'avis inventés.
+7. **Avis clients** : `src/content/avis.js` est vide et la section « Avis » est masquée. Ajoutez-y vos vrais avis au fur et à mesure (voir `docs/guide-referencement-local.md`). Ne publiez jamais d'avis inventés.
+7 bis. **Votre photo** : ajoutez un portrait (`portrait` dans `src/config.js`). À défaut, un monogramme « AP » est affiché. Mettez aussi à jour `experienceYears` chaque année.
 8. **Photos** : les visuels avant/après (`src/assets/img/realisations/`) sont des illustrations. Remplacez-les dès que possible par vos propres photos de chantier.
 9. **Numéro Enedis** cité dans certaines pages (`09 726 750 08`, dépannage des Ardennes) : vérifiez-le sur enedis.fr.
 10. Relisez les textes qui décrivent vos pratiques et ajustez-les si besoin : forfait dépannage 79 € (déplacement jusqu'à 15 km, recherche de panne, proposition de solution, devis de réparation sans obligation), supplément kilométrique au-delà de 15 km, aucun prix de pièce affiché, réparation sur devis, devis de travaux gratuit, pas de majoration le soir et le week-end.
@@ -43,7 +44,11 @@ Le build affiche un rappel tant que des éléments restent à compléter.
 
 ---
 
-Des captures de présentation du site sont disponibles dans `docs/captures/`.
+## Documents utiles
+
+- `docs/analyse-concurrence.md` : qui apparaît sur Google dans le secteur, à quels prix, et où ALED08 se démarque.
+- `docs/guide-referencement-local.md` : fiche Google Business Profile (texte prêt à copier), méthode pour obtenir de vrais avis, annuaires, Search Console.
+- `docs/captures/` : captures de présentation du site.
 
 ## Utilisation
 

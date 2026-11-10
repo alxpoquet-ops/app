@@ -1,5 +1,5 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, hours, tarifs, communes } = require('../config');
+const { site, hours, forfait, tarifs, communes } = require('../config');
 const { icon } = require('./icons');
 const { esc } = require('./md');
 const C = require('./components');
@@ -15,9 +15,9 @@ function businessSchema() {
     '@id': site.url + '/#entreprise',
     name: site.name,
     alternateName: 'ALED08 — Dépannage électrique dans les Ardennes',
-    slogan: 'Spécialiste du dépannage électrique, le soir et le week-end',
+    slogan: 'Dépannage électrique au forfait, le soir et le week-end',
     description:
-      "Électricien spécialiste du dépannage basé à Signy-l'Abbaye (Ardennes). Forfait dépannage 79 € : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Travaux sur devis : tableau, prises, éclairage, mise en sécurité. Le soir et le week-end sur rendez-vous.",
+      `Électricien spécialiste du dépannage basé à Signy-l'Abbaye (Ardennes), ${site.experienceYears} ans de métier. Forfait dépannage 79 € : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Travaux sur devis gratuit : tableau, prises, éclairage, mise en sécurité. Le soir et le week-end sur rendez-vous.`,
     url: site.url + '/',
     telephone: site.phoneIntl,
     email: site.email,
@@ -25,7 +25,16 @@ function businessSchema() {
     logo: site.url + '/assets/img/logo-512.png',
     priceRange: '€€',
     currenciesAccepted: 'EUR',
-    founder: { '@type': 'Person', name: site.owner, jobTitle: 'Électricien' },
+    founder: { '@type': 'Person', '@id': site.url + '/#dirigeant', name: site.owner, jobTitle: 'Électricien', description: `Électricien depuis ${site.experienceYears} ans, spécialiste du dépannage électrique.`, url: site.url + '/qui-suis-je/' },
+    makesOffer: {
+      '@type': 'Offer',
+      name: 'Forfait dépannage électrique',
+      price: forfait.price,
+      priceCurrency: 'EUR',
+      description: "Déplacement jusqu'à 15 km de Signy-l'Abbaye, recherche de panne, proposition de solution et devis de réparation sans obligation. Même prix le soir et le week-end.",
+      url: site.url + '/tarifs/',
+      itemOffered: { '@type': 'Service', name: 'Dépannage électrique à domicile', serviceType: 'Dépannage électrique' },
+    },
     address: {
       '@type': 'PostalAddress',
       ...(site.address.street ? { streetAddress: site.address.street } : {}),
@@ -36,6 +45,7 @@ function businessSchema() {
     },
     geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng },
     areaServed: [
+      { '@type': 'GeoCircle', geoMidpoint: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng }, geoRadius: 45000 },
       { '@type': 'AdministrativeArea', name: 'Ardennes (08)' },
       ...communes.filter((c) => c.page).map((c) => ({ '@type': 'City', name: c.name })),
     ],
@@ -145,7 +155,7 @@ function footer() {
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand brand-light" href="/">${C.logoSvg('lgf')}<span class="brand-text"><strong>ALED08</strong><small>Électricien · Ardennes</small></span></a>
-      <p><strong style="color:#fff">Spécialiste du dépannage électrique</strong> : forfait 79 € (déplacement, recherche de panne, solution et devis). Travaux sur devis pour les particuliers, par ${site.owner}, électricien à Signy-l’Abbaye.</p>
+      <p><strong style="color:#fff">Dépannage électrique au forfait : 79 €</strong>, déplacement, recherche de panne et devis compris. Travaux sur devis gratuit. Par ${site.owner}, électricien depuis ${site.experienceYears} ans à Signy-l’Abbaye.</p>
       <ul class="footer-contact">
         <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>
         <li><a href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}WhatsApp</a></li>

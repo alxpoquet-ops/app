@@ -362,4 +362,195 @@ Remplacer un luminaire par un modèle de même qualité ne fait que repousser la
     nearby: ['/electricien-chateau-porcien/', '/electricien-thierache-ardennaise/', '/electricien-rethel/'],
     nearbyTitle: 'Secteurs concernés',
   },
+  {
+    slug: 'linky-qui-disjoncte', group: 'symptomes', prestation: 'depannage',
+    label: 'Compteur Linky qui disjoncte',
+    title: 'Linky qui disjoncte : causes et solutions | ALED08 Ardennes',
+    description: "Votre compteur Linky coupe le courant ? Puissance dépassée, appareil en défaut ou abonnement trop juste : comment réarmer, et quand appeler un électricien.",
+    kicker: 'Panne · Compteur Linky',
+    h1: 'Compteur Linky qui disjoncte : dépassement de puissance ou vraie panne ?',
+    lead: "Tout s'éteint d'un coup, et l'écran du compteur affiche un message de **puissance dépassée** : c'est le Linky lui-même qui a coupé. Le plus souvent, il ne s'agit pas d'une panne, mais d'une **consommation supérieure à votre abonnement**. Encore faut-il s'en assurer.",
+    body: `## Pourquoi le Linky coupe
+
+Avec les anciens compteurs, c'était le disjoncteur de branchement qui limitait la puissance. Avec le Linky, **le compteur surveille lui-même** la puissance appelée. Si vous dépassez la puissance souscrite (6, 9 ou 12 kVA par exemple), il coupe l'alimentation.
+
+## Comment remettre le courant
+
+1. **Éteignez quelques appareils puissants** : four, plaques, radiateurs, lave-linge, sèche-linge.
+2. **Réarmez** : selon votre installation, appuyez environ deux secondes sur le bouton « + » du compteur, ou abaissez puis relevez la manette du disjoncteur de branchement.
+3. Rallumez vos appareils **progressivement**.
+
+Si le courant revient et tient, vous étiez simplement au-dessus de votre abonnement.
+
+## Quand ce n'est pas qu'une question d'abonnement
+
+Le dépassement peut aussi révéler un problème :
+
+- un **chauffe-eau qui chauffe en journée** à cause d'un contacteur bloqué, et s'ajoute au reste ;
+- un **appareil en défaut** qui consomme anormalement ;
+- un **chauffage électrique** dont le délestage ne fonctionne plus ;
+- un **disjoncteur de branchement** qui déclenche pour une fuite de courant, et non pour la puissance.
+
+[[cta]]
+
+## Les solutions durables
+
+- **Décaler les usages** : lave-linge et lave-vaisselle en heures creuses, pas en même temps que le four.
+- **Installer un délesteur**, qui coupe temporairement le chauffage quand la puissance approche de la limite.
+- **Augmenter la puissance souscrite** auprès de votre fournisseur : avec le Linky, le changement se fait à distance.
+
+Avant d'augmenter votre abonnement, et donc votre facture, il vaut la peine de vérifier que rien ne consomme anormalement. C'est ce que je contrôle avec une pince ampèremétrique, circuit par circuit.`,
+    cases: [
+      { tag: 'Chauffe-eau', icon: 'thermometer', title: 'Des coupures chaque soir à 19 h', text: "Depuis l'automne, le Linky coupe au moment du repas. Le foyer pensait devoir passer de 6 à 9 kVA.", result: 'Chauffe-eau en marche forcée permanente : contacteur remplacé sur devis, abonnement conservé.' },
+      { tag: 'Abonnement', icon: 'gauge', title: 'Une pompe à chaleur ajoutée sur un 6 kVA', text: "Après la pose d'une pompe à chaleur, les coupures surviennent à chaque dégivrage.", result: 'Mesures normales : puissance réellement insuffisante, passage à 9 kVA conseillé et demandé par le client.' },
+      { tag: 'Délestage', icon: 'zap', title: 'Un délesteur qui ne délestait plus', text: "Une maison tout électrique équipée d'un délesteur ancien, pourtant sujette aux coupures.", result: 'Délesteur hors service identifié, remplacement chiffré sur devis.' },
+    ],
+    faq: [
+      { q: 'Comment savoir si c’est le Linky qui a coupé ?', a: "L'écran du compteur affiche un message de dépassement de puissance, et les manettes de votre tableau sont restées en position haute." },
+      { q: 'Combien coûte une augmentation de puissance ?', a: "Elle se demande à votre fournisseur d'électricité, qui applique des frais de mise en service et un abonnement plus élevé. Vérifiez d'abord que l'installation ne consomme pas anormalement." },
+      { q: 'Un électricien peut-il intervenir sur le Linky ?', a: "Non : le compteur appartient au réseau, seul Enedis y intervient. En revanche, je contrôle tout ce qui se trouve en aval, c'est-à-dire votre installation." },
+    ],
+    cta: { title: 'Votre Linky coupe régulièrement ?', text: 'Avant de payer un abonnement plus élevé, faisons vérifier que rien ne consomme anormalement. Forfait dépannage 79 €.' },
+    links: ['/disjoncteur-qui-saute/', '/chauffe-eau-electrique-ne-chauffe-plus/', '/radiateur-electrique-ne-chauffe-plus/', '/prestations/recherche-de-panne/', '/blog/differentiel-ou-disjoncteur-difference/'],
+    nearby: ['/depannage-electrique-ardennes/', '/electricien-rocroi/', '/electricien-nouzonville/'],
+    nearbyTitle: 'Dépannage près de chez vous',
+  },
+  {
+    slug: 'chauffe-eau-electrique-ne-chauffe-plus', group: 'symptomes', prestation: 'depannage',
+    label: 'Chauffe-eau électrique qui ne chauffe plus',
+    title: 'Chauffe-eau électrique qui ne chauffe plus : que vérifier ? | ALED08',
+    description: "Plus d'eau chaude ? Disjoncteur, contacteur heures creuses, thermostat de sécurité, résistance : les vérifications à faire sur un chauffe-eau électrique en panne.",
+    kicker: 'Panne · Plus d’eau chaude',
+    h1: 'Chauffe-eau électrique qui ne chauffe plus : la panne est souvent en amont',
+    lead: "Une douche froide un matin, et l'on imagine déjà le ballon à remplacer. Pourtant, dans une bonne partie des cas, **le chauffe-eau n'y est pour rien** : c'est son alimentation ou sa commande qui est en défaut. Voici les vérifications à faire dans l'ordre.",
+    body: `## Ce que vous pouvez vérifier vous-même
+
+1. **Le disjoncteur du chauffe-eau**, au tableau : est-il enclenché ?
+2. **Le contacteur heures creuses** (ou jour/nuit), juste à côté. Il possède en général trois positions : arrêt, automatique et marche forcée. Il doit être sur **automatique**.
+3. **Le test en marche forcée** : basculez le contacteur sur marche forcée. Si l'eau est chaude quelques heures plus tard, le ballon fonctionne, et c'est la commande heures creuses qui ne se déclenche plus.
+
+N'ouvrez pas le capot du chauffe-eau : les bornes qu'il protège sont sous tension.
+
+## Les causes électriques les plus fréquentes
+
+- **Contacteur heures creuses défaillant** : il ne colle plus, ou reste bloqué.
+- **Signal heures creuses absent** depuis le compteur.
+- **Disjoncteur fatigué** ou connexion desserrée sur la ligne du ballon.
+- **Thermostat de sécurité déclenché** après une surchauffe : il se réarme, mais il faut comprendre pourquoi il a déclenché.
+- **Résistance entartrée ou percée**, qui ne chauffe plus ou fait sauter le différentiel.
+
+[[cta]]
+
+## Ce que je fais sur place
+
+Je contrôle la présence de tension à chaque étape, du tableau jusqu'aux bornes du ballon, puis je mesure la résistance et le thermostat. Vous savez alors précisément **quelle pièce est en cause**. Si la réparation relève de l'électricité, je vous la chiffre sur devis. Si le ballon doit être vidangé ou remplacé, je vous le dis pour que vous fassiez appel à un plombier en sachant quoi demander.`,
+    cases: [
+      { tag: 'Contacteur', icon: 'zap-off', title: 'De l’eau chaude un jour sur deux', text: "L'eau est chaude certains matins, froide d'autres. Le contacteur du tableau grésille légèrement.", result: 'Contacteur usé qui ne collait plus à chaque fois : remplacé sur devis, eau chaude tous les matins.' },
+      { tag: 'Thermostat', icon: 'thermometer', title: 'Une sécurité qui a déclenché', text: "Après une coupure de courant générale, le chauffe-eau ne redémarre pas.", result: 'Thermostat de sécurité déclenché, réarmé après contrôle ; fonctionnement vérifié sur un cycle.' },
+      { tag: 'Résistance', icon: 'droplets', title: 'Le différentiel saute la nuit', text: "Chaque nuit vers 23 h, le différentiel déclenche et l'eau reste tiède.", result: 'Résistance percée mesurée en défaut : remplacement orienté vers le plombier, avec le diagnostic écrit.' },
+    ],
+    faq: [
+      { q: 'Combien de temps faut-il pour retrouver de l’eau chaude ?', a: "Une fois l'alimentation rétablie, comptez quatre à six heures de chauffe pour un ballon de 200 litres." },
+      { q: 'Dois-je appeler un plombier ou un électricien ?', a: "Si le disjoncteur ou le contacteur est en cause, l'électricien. Si le ballon fuit ou si la résistance est entartrée, le plombier. En cas de doute, le diagnostic électrique permet de trancher." },
+      { q: 'Peut-on laisser le contacteur en marche forcée ?', a: "Provisoirement, oui, pour avoir de l'eau chaude. Mais le ballon chauffera en heures pleines : pensez à le remettre sur automatique une fois la panne réglée." },
+    ],
+    cta: { title: 'Plus d’eau chaude ?', text: 'Avant de changer le ballon, faisons vérifier son alimentation. Forfait dépannage 79 €, devis compris.' },
+    links: ['/linky-qui-disjoncte/', '/differentiel-qui-saute/', '/remplacement-disjoncteur/', '/prestations/depannage-electrique/', '/electricien-saulces-monclin/'],
+    nearby: ['/depannage-electrique-ardennes/', '/depannage-electrique-rethel/', '/depannage-electrique-charleville-mezieres/'],
+    nearbyTitle: 'Dépannage près de chez vous',
+  },
+  {
+    slug: 'radiateur-electrique-ne-chauffe-plus', group: 'symptomes', prestation: 'depannage',
+    label: 'Radiateur électrique qui ne chauffe plus',
+    title: 'Radiateur électrique qui ne chauffe plus : causes | ALED08 Ardennes',
+    description: "Un radiateur électrique reste froid ? Alimentation, fil pilote, thermostat, sécurité thermique : les causes possibles et les vérifications avant de le remplacer.",
+    kicker: 'Panne · Chauffage électrique',
+    h1: 'Radiateur électrique qui ne chauffe plus : faut-il vraiment le remplacer ?',
+    lead: "Au premier froid, un radiateur reste glacé alors que les autres chauffent. Avant d'en acheter un neuf, sachez qu'**un radiateur froid n'est pas forcément un radiateur en panne** : son alimentation ou sa commande sont souvent seules en cause.",
+    body: `## Un seul radiateur, ou plusieurs ?
+
+- **Tous les radiateurs d'une zone sont froids** : cherchez du côté du tableau (disjoncteur, délesteur) ou du programmateur qui les commande.
+- **Un seul radiateur est froid** : la cause se situe dans son raccordement ou dans l'appareil.
+
+## Les vérifications simples
+
+1. **Le disjoncteur** du circuit de chauffage est-il enclenché ?
+2. **Le thermostat** du radiateur est-il réglé au-dessus de la température de la pièce, et sur un mode « confort » ?
+3. **Le programmateur central**, s'il existe, n'envoie-t-il pas un ordre « éco », « hors-gel » ou « arrêt » ?
+4. **Le radiateur est-il dégagé** ? Un linge posé dessus ou un meuble collé devant déclenche sa sécurité thermique.
+
+## Le fil pilote, coupable discret
+
+Les radiateurs modernes obéissent à un **fil pilote**, qui leur transmet les ordres du programmateur. Si ce fil reçoit un ordre d'arrêt permanent, à cause d'un programmateur déréglé, d'un délesteur ou d'un raccordement défectueux, le radiateur reste froid alors qu'il est en parfait état.
+
+[[cta]]
+
+## Quand le radiateur est réellement en panne
+
+Thermostat électronique hors service, résistance coupée, carte de commande défaillante : cela arrive, surtout sur des appareils de plus de quinze ou vingt ans. Je mesure la résistance et la tension aux bornes pour le confirmer. Le remplacement, et un éventuel passage à un radiateur à inertie plus confortable, font alors l'objet d'un devis.`,
+    cases: [
+      { tag: 'Fil pilote', icon: 'cable', title: 'Une chambre froide tout l’hiver', text: "Le radiateur de la chambre ne chauffait plus depuis le remplacement du programmateur.", result: 'Fil pilote raccordé sur la mauvaise zone : corrigé, radiateur parfaitement fonctionnel.' },
+      { tag: 'Sécurité thermique', icon: 'flame', title: 'Un radiateur derrière le canapé', text: "Le convecteur du salon se coupait au bout de vingt minutes, puis repartait.", result: 'Sécurité thermique déclenchée par le canapé collé à l’appareil : meuble décalé, aucun remplacement.' },
+      { tag: 'Remplacement', icon: 'thermometer', title: 'Un convecteur de 1995 en fin de vie', text: "Un radiateur froid dont la résistance était coupée, sur un appareil de près de trente ans.", result: 'Remplacement par un radiateur à inertie sur devis, raccordé sur la sortie de câble existante.' },
+    ],
+    faq: [
+      { q: 'Mon radiateur est tiède mais ne chauffe pas la pièce : pourquoi ?', a: "Il peut recevoir un ordre « éco » par le fil pilote, être sous-dimensionné pour la pièce, ou avoir un thermostat déréglé. Une mesure permet de le savoir." },
+      { q: 'Peut-on remplacer un radiateur sans refaire le circuit ?', a: "Oui, si la puissance du nouvel appareil est comparable et que la ligne est en bon état. Je le vérifie avant de vous remettre le devis." },
+      { q: 'Plusieurs radiateurs se coupent quand le four fonctionne : est-ce normal ?', a: "C'est probablement un délesteur, qui coupe le chauffage pour éviter de dépasser la puissance de votre abonnement. S'il coupe trop souvent, l'abonnement ou le réglage sont à revoir." },
+    ],
+    cta: { title: 'Un radiateur froid en plein hiver ?', text: 'Je vérifie l’alimentation et la commande avant de parler de remplacement. Forfait dépannage 79 €.' },
+    links: ['/linky-qui-disjoncte/', '/disjoncteur-qui-saute/', '/ajout-circuit-electrique/', '/electricien-rocroi/', '/electricien-sault-les-rethel/'],
+    nearby: ['/depannage-electrique-ardennes/', '/electricien-rocroi/', '/electricien-rimogne/'],
+    nearbyTitle: 'Dépannage près de chez vous',
+  },
+  {
+    slug: 'tableau-electrique-qui-gresille', group: 'symptomes', prestation: 'depannage',
+    label: 'Tableau électrique qui grésille ou chauffe',
+    title: 'Tableau électrique qui grésille, bourdonne ou chauffe | ALED08',
+    description: "Votre tableau électrique grésille, bourdonne, chauffe ou sent le brûlé ? Les bruits normaux, les signes de danger et les gestes à faire tout de suite.",
+    kicker: 'Alerte · Tableau électrique',
+    h1: 'Tableau électrique qui grésille, bourdonne ou chauffe',
+    lead: "Un tableau électrique en bon état est **presque silencieux et froid**. S'il se met à grésiller, à crépiter, à chauffer ou à sentir le plastique chaud, une connexion est probablement en train de se dégrader. C'est un signal à prendre au sérieux.",
+    body: `!> Odeur de brûlé, traces noires, crépitement ou capot chaud : coupez le disjoncteur général et ne remettez pas le courant avant un contrôle. En cas de fumée ou de flammes, sortez et appelez le 18.
+
+## Les bruits qui sont normaux
+
+- Un **léger bourdonnement** du contacteur heures creuses lorsqu'il est enclenché.
+- Un **« clac » franc** quand un télérupteur ou un contacteur change d'état.
+- Le déclic d'une **horloge** ou d'un programmateur.
+
+Ces bruits sont réguliers, discrets et ne s'accompagnent d'aucune chaleur.
+
+## Les signes qui doivent alerter
+
+- Un **grésillement ou un crépitement** irrégulier, comme de petites étincelles.
+- Un bourdonnement qui **s'amplifie** quand un gros appareil fonctionne.
+- Un disjoncteur ou un capot **tiède ou chaud** au toucher.
+- Une **odeur** de plastique chaud ou de poisson, typique d'un isolant qui chauffe.
+- Des **traces brunes ou noires** autour d'une borne.
+
+## D'où vient le problème ?
+
+Presque toujours d'une **connexion desserrée**. Le courant passe mal, un petit arc se forme, la borne chauffe, le métal se dilate puis se rétracte, et le serrage se dégrade encore. Le phénomène s'entretient jusqu'à faire fondre l'isolant. Les autres causes sont un **disjoncteur en fin de vie**, un **contacteur usé** ou un **circuit surchargé**.
+
+[[cta]]
+
+## Mon intervention
+
+Tableau hors tension, je dépose les capots, je repère la borne ou l'appareil échauffé et je contrôle le serrage de l'ensemble des connexions. Je vous montre ce que j'ai trouvé, puis je vous remets un devis : remplacement d'un disjoncteur, d'un peigne ou d'un contacteur, ou remplacement du tableau s'il est trop dégradé.`,
+    cases: [
+      { tag: 'Grésillement', icon: 'zap', title: 'Un crépitement quand le four chauffe', text: "Un petit bruit d'étincelles se fait entendre au tableau à chaque utilisation du four.", result: 'Borne du disjoncteur four desserrée et noircie : disjoncteur et câble repris sur devis.' },
+      { tag: 'Bourdonnement', icon: 'info', title: 'Un contacteur de plus en plus bruyant', text: "Le bourdonnement nocturne du tableau, d'abord discret, s'entendait désormais depuis la chambre.", result: 'Contacteur heures creuses usé remplacé par un modèle silencieux.' },
+      { tag: 'Odeur', icon: 'flame', title: 'Une odeur de poisson dans l’entrée', text: "Une odeur étrange, sans origine apparente, près du placard du tableau.", result: 'Peigne d’alimentation en surchauffe sous le capot : rangée refaite après mise en sécurité immédiate.' },
+    ],
+    faq: [
+      { q: 'Un tableau qui bourdonne est-il dangereux ?', a: "Un léger bourdonnement régulier du contacteur est normal. Un bruit irrégulier, qui grésille ou s'accompagne de chaleur, ne l'est pas : faites contrôler sans attendre." },
+      { q: 'Puis-je resserrer les bornes moi-même ?', a: "Non. Même disjoncteur général coupé, certaines parties du tableau restent sous tension. C'est une intervention à confier à un électricien." },
+      { q: 'Faudra-t-il changer tout le tableau ?', a: "Pas forcément. Souvent, le remplacement de l'élément échauffé et un resserrage général suffisent. Si le tableau est ancien ou très abîmé, je vous chiffre aussi son remplacement." },
+    ],
+    cta: { title: 'Votre tableau fait du bruit ou chauffe ?', text: 'Coupez le courant en cas de doute et appelez-moi : je contrôle et je vous dis ce qu’il en est. Forfait 79 €.' },
+    links: ['/prise-qui-chauffe/', '/remplacement-disjoncteur/', '/prestations/tableau-electrique/', '/electricien-urgence-ardennes/', '/blog/pourquoi-remplacer-un-tableau-electrique/'],
+    nearby: ['/depannage-electrique-ardennes/', '/electricien-signy-l-abbaye/', '/electricien-rethel/'],
+    nearbyTitle: 'Dépannage près de chez vous',
+  },
 ];

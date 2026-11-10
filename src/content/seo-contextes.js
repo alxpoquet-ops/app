@@ -214,7 +214,7 @@ Parce que les petits travaux mal faits sont à l'origine de nombreuses pannes : 
     faq: [
       { q: 'Venez-vous pour une seule petite intervention ?', a: "Oui, bien sûr. Mais si vous avez d'autres petites choses à faire, profitez-en : le déplacement n'est facturé qu'une fois." },
       { q: 'Puis-je fournir mes luminaires ?', a: "Oui. Je vérifie simplement qu'ils conviennent à l'emplacement (pièce humide, poids, compatibilité LED) avant de les poser." },
-      { q: 'Comment connaître le prix à l’avance ?', a: "Envoyez votre liste et des photos : je vous réponds avec un prix global, établi à partir de ma grille tarifaire." },
+      { q: 'Comment connaître le prix à l’avance ?', a: "Envoyez votre liste et des photos : je vous réponds avec un devis global, gratuit et sans engagement." },
     ],
     cta: { title: 'Une liste de petits travaux qui traîne ?', text: 'Envoyez-la moi avec quelques photos : je vous donne un prix global et un créneau.' },
     links: ['/prestations/prises-et-interrupteurs/', '/prestations/eclairage-interieur/', '/prise-specialisee/', '/electricien-wasigny/', '/electricien-soiree-ardennes/'],

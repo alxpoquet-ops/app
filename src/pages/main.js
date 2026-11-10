@@ -33,14 +33,15 @@ function registerAll(register) {
 
 // ====================================================================== ACCUEIL
 function home({ posts }) {
+  const Y = site.experienceYears;
   const f = C.faq(
     [
-      { q: 'Combien coûte un dépannage ?', a: "Le forfait dépannage est de 79 € TTC. Il comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de la panne, la proposition de solution et le devis de réparation, sans obligation. Au-delà de 15 km, un supplément de 10 € ou 20 € s'applique selon la distance. Détails sur la page [Tarifs](/tarifs/)." },
+      { q: 'Combien coûte un dépannage ?', a: "Le forfait dépannage est de 79 € TTC. Il comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de la panne, la proposition de solution et le devis de réparation, sans obligation. Au-delà de 15 km, il passe à 89 € (15 à 30 km) ou 99 € (30 à 45 km). Détails sur la page [Tarifs](/tarifs/)." },
       { q: 'Et la réparation, combien coûte-t-elle ?', a: "Elle dépend de la panne trouvée et des pièces à remplacer. C'est pourquoi je ne publie pas de prix de pièces : à la fin du dépannage, je vous remets un devis précis. Vous êtes libre de l'accepter ou non." },
+      { q: 'Qui vient chez moi ?', a: `Moi, ${site.owner}, électricien depuis ${Y} ans. ALED08 n'a ni standard ni sous-traitant : vous avez le même interlocuteur du premier appel à la facture.` },
       { q: 'Intervenez-vous vraiment le soir et le week-end ?', a: "Oui, c'est le principe d'ALED08 : du lundi au vendredi de 18 h à 21 h 30, le samedi de 8 h à 19 h et le dimanche de 9 h à 18 h, toujours sur rendez-vous. Le forfait reste le même, sans majoration." },
       { q: 'Dans quelles communes intervenez-vous ?', a: "Principalement autour de Signy-l'Abbaye : Rethel, Charleville-Mézières, Sedan, Rocroi, Liart, Novion-Porcien, Thin-le-Moutier, Poix-Terron, Château-Porcien et les villages alentour. Consultez la [zone d'intervention](/zone-intervention/)." },
-      { q: 'Faites-vous aussi des travaux, en dehors des pannes ?', a: "Oui : tableau électrique, mise en sécurité, éclairage, prises, ajout de circuits. Pour ces travaux planifiés, le devis est gratuit et détaillé. Mais ma spécialité reste le dépannage." },
-      { q: 'Respectez-vous la norme NF C 15-100 ?', a: "Toujours. Chaque intervention est réalisée selon la norme NF C 15-100, avec du matériel de marque. Si je constate une anomalie dangereuse, je vous la signale, même si elle ne fait pas partie de la demande initiale." },
+      { q: 'Faites-vous aussi des travaux, en dehors des pannes ?', a: "Oui : tableau électrique, mise en sécurité, éclairage, prises, ajout de circuits. Pour ces travaux, le devis est gratuit et détaillé." },
     ],
     'Les questions qu’on me pose souvent',
     'faq-accueil'
@@ -60,9 +61,9 @@ function home({ posts }) {
         ${C.btnWa('btn-wa btn-lg')}
       </div>
       <ul class="hero-proofs">
-        <li>${icon('zap')}Forfait dépannage 79 € tout compris</li>
+        <li>${icon('zap')}Forfait dépannage 79 €, déplacement compris</li>
         <li>${icon('file-text')}Devis de réparation sans obligation</li>
-        <li>${icon('moon')}Même prix le soir et le week-end</li>
+        <li>${icon('user')}${site.owner}, électricien depuis ${Y} ans</li>
       </ul>
     </div>
     ${C.dispoCard()}
@@ -73,26 +74,33 @@ ${C.trustBar()}
 <section class="section" id="depannage"><div class="container">
   <div class="section-head"><p class="kicker">Ma spécialité</p><h2>Le dépannage électrique, à un prix connu d’avance</h2><p>Plus de courant, un disjoncteur qui saute, une prise ou une lumière en panne : je viens, je trouve la cause et je vous propose une solution. Un seul forfait, sans surprise.</p></div>
   ${C.forfaitBlock()}
-  <div class="section-head" style="margin:64px auto 32px"><h3 class="h2">Comment se passe un dépannage ?</h3></div>
-  ${C.steps([
-    { t: 'Vous appelez', d: 'Vous décrivez la panne. Une photo du tableau sur WhatsApp aide à préparer la visite. On fixe un créneau le soir ou le week-end.' },
-    { t: 'Je trouve la panne', d: 'Sur place, je recherche méthodiquement l’origine du problème, mesures à l’appui.' },
-    { t: 'Solution et devis', d: 'Je vous explique ce qui se passe et je vous remets un devis de réparation, sans obligation.' },
-    { t: 'Réparation si vous le souhaitez', d: 'Devis accepté ? Je répare, souvent dans la foulée. Sinon, vous ne payez que le forfait.' },
-  ])}
+  <div class="section-head" style="margin:56px auto 28px"><h3 class="h2">Le prix selon votre commune</h3><p>Le déplacement est compris jusqu’à 15 km. Au-delà, le forfait augmente de 10 € ou 20 €, pas plus.</p></div>
+  ${C.kmTable()}
+  <p class="center" style="margin-top:22px"><a class="btn btn-ghost" href="/tarifs/">${icon('calculator')}<span>Tout comprendre sur les tarifs</span></a></p>
+</div></section>
+
+<section class="section section-alt" id="passage"><div class="container">
+  <div class="section-head"><p class="kicker">Déroulement</p><h2>Mon passage chez vous, étape par étape</h2><p>Du premier appel à la remise du devis, voici exactement ce qui se passe, et ce que couvre le forfait.</p></div>
+  ${C.passage()}
   <div class="hero-ctas" style="justify-content:center;margin-top:36px">${C.btnCall('btn-primary btn-lg', 'Appeler pour un dépannage')}${C.btnWa('btn-wa btn-lg', 'Envoyer une photo de la panne', 'Bonjour, j’ai une panne électrique, voici une photo.')}</div>
 </div></section>
 
-<section class="section section-alt" id="prestations"><div class="container">
-  <div class="section-head"><p class="kicker">Prestations</p><h2>Le dépannage d’abord, et des travaux sur devis</h2><p>Une fois la panne réglée, ou pour un projet, je réalise aussi les travaux électriques des particuliers. Chaque chantier fait l’objet d’un devis gratuit et détaillé.</p></div>
-  ${C.serviceCards(mainServices, { featured: 'depannage' })}
-  <div class="center" style="margin-top:34px">
-    <p class="small muted" style="margin-bottom:12px">Et aussi :</p>
-    <ul class="link-cloud" style="justify-content:center">${allServices
-      .filter((s) => !mainServices.some((m) => m.path === s.path))
-      .map((s) => `<li><a href="${s.path}">${esc(s.name)}</a></li>`)
-      .join('')}<li><a href="/prestations/"><strong>Toutes les prestations →</strong></a></li></ul>
+<section class="section" id="qui"><div class="container grid grid-2" style="align-items:center">
+  <div class="reveal">
+    <p class="kicker">Qui vient chez vous ?</p>
+    <h2>${site.owner}, électricien depuis ${Y} ans</h2>
+    <p>ALED08, c’est une seule personne : moi. C’est moi qui décroche quand vous appelez, moi qui viens chez vous et moi qui réalise la réparation. Vous savez à qui vous avez affaire, du premier appel à la facture.</p>
+    <p>En ${Y} ans de métier, j’ai appris qu’une panne a toujours une cause, et que la trouver compte plus que de faire repartir le courant. C’est pour cela que le dépannage et la recherche de panne sont devenus ma spécialité.</p>
+    <p>Je ne vous promets pas d’être le moins cher sur tout. Je m’engage sur ce que je maîtrise :</p>
+    <ul class="list-check">
+      <li>un prix annoncé avant de venir, et tenu ;</li>
+      <li>une explication claire de ce que j’ai trouvé ;</li>
+      <li>un devis écrit avant toute réparation ;</li>
+      <li>un travail conforme à la norme NF C 15-100.</li>
+    </ul>
+    <p><a class="btn btn-ghost" href="/qui-suis-je/">${icon('user')}<span>Mon parcours et ma façon de travailler</span></a></p>
   </div>
+  ${C.artisanCard()}
 </div></section>
 
 <section class="section section-dark"><div class="container grid grid-2" style="align-items:center">
@@ -119,45 +127,19 @@ ${C.trustBar()}
   </div>
 </div></section>
 
-<section class="section"><div class="container">
-  <div class="section-head"><p class="kicker">Pourquoi ALED08</p><h2>Un artisan local, sérieux et transparent</h2><p>Ce que vous pouvez attendre de chaque intervention, qu’il s’agisse d’une panne d’un soir ou d’un tableau à remplacer.</p></div>
-  <div class="values">
-    ${[
-      ['zap', 'Spécialiste du dépannage', 'Trouver la vraie cause d’une panne, c’est mon métier au quotidien.'],
-      ['badge-check', 'Sérieux', 'Rendez-vous tenus, travail fini, chantier laissé propre. Ce qui est promis est fait.'],
-      ['handshake', 'Honnêteté', 'Si un remplacement n’est pas nécessaire, je vous le dis. Pas de travaux inventés.'],
-      ['euro', 'Transparence', 'Un forfait connu d’avance, un devis écrit pour la réparation, une facture détaillée.'],
-      ['timer', 'Réactivité', 'Réponse rapide, créneaux le soir même ou le week-end selon les disponibilités.'],
-      ['shield-check', 'Sécurité', 'Chaque intervention vise d’abord à protéger les personnes et le logement.'],
-      ['sparkles', 'Travail soigné', 'Matériel de marque, connexions serrées, finitions propres, circuits repérés.'],
-      ['clipboard-check', 'Norme NF C 15-100', 'Les règles de l’art appliquées à chaque prise, chaque circuit, chaque tableau.'],
-    ]
-      .map(([i, t, d]) => `<div class="feature reveal">${icon(i)}<div><h3>${t}</h3><p>${d}</p></div></div>`)
-      .join('')}
+<section class="section section-alt" id="prestations"><div class="container">
+  <div class="section-head"><p class="kicker">Travaux</p><h2>Et pour vos travaux : un devis gratuit</h2><p>Une fois la panne réglée, ou pour un projet, je réalise aussi les travaux électriques des particuliers. Vous recevez un devis gratuit et détaillé avant que je commence.</p></div>
+  ${C.serviceCards(mainServices, { featured: 'depannage' })}
+  <div class="center" style="margin-top:34px">
+    <p class="small muted" style="margin-bottom:12px">Et aussi :</p>
+    <ul class="link-cloud" style="justify-content:center">${allServices
+      .filter((s) => !mainServices.some((m) => m.path === s.path))
+      .map((s) => `<li><a href="${s.path}">${esc(s.name)}</a></li>`)
+      .join('')}<li><a href="/prestations/"><strong>Toutes les prestations →</strong></a></li></ul>
   </div>
 </div></section>
 
-<section class="section section-alt" id="tarifs"><div class="container grid grid-2">
-  <div class="reveal">
-    <p class="kicker">Tarifs</p>
-    <h2>Des prix clairs, annoncés avant de venir</h2>
-    <p>Vous ne devriez jamais découvrir le prix d’un dépannage au moment de payer. Le forfait couvre tout jusqu’au devis ; la réparation et les pièces sont chiffrées ensuite, au cas par cas, et vous décidez.</p>
-    <h3 style="margin-top:28px">Tarification kilométrique</h3>
-    ${C.kmTable()}
-    <p><a class="btn btn-ghost" href="/tarifs/">${icon('calculator')}<span>Détail des tarifs et exemples</span></a></p>
-  </div>
-  <div class="reveal">${C.pricingTable()}</div>
-</div></section>
-
-<section class="section section-alt"><div class="container">
-  <div class="section-head"><p class="kicker">Réalisations</p><h2>Avant / après : ce que change une intervention</h2><p>Faites glisser le curseur pour comparer.</p></div>
-  ${C.beforeAfter(gallery.slice(0, 2))}
-  <p class="center" style="margin-top:28px"><a class="btn btn-ghost" href="/realisations/">${icon('image')}<span>Voir toutes les réalisations</span></a></p>
-</div></section>
-
-${C.reviewsBlock(avis, 3).replace('section section-alt', 'section')}
-
-<section class="section section-alt" id="zone"><div class="container grid grid-2">
+<section class="section" id="zone"><div class="container grid grid-2">
   <div class="reveal">
     <p class="kicker">Zone d’intervention</p>
     <h2>Électricien à Signy-l’Abbaye et dans les Ardennes</h2>
@@ -167,6 +149,8 @@ ${C.reviewsBlock(avis, 3).replace('section section-alt', 'section')}
   </div>
   <div class="reveal">${C.mapEmbed()}</div>
 </div></section>
+
+${C.reviewsBlock(avis, 3)}
 
 ${f.html}
 
@@ -179,8 +163,8 @@ ${f.html}
 ${C.ctaBand({ title: 'Une panne, un projet, une question ?', text: 'Appelez, écrivez sur WhatsApp ou demandez un devis en ligne. Je vous réponds rapidement avec un créneau en soirée ou le week-end.' })}`;
   return {
     path: '/',
-    title: 'Électricien Ardennes – Dépannage soir & week-end | ALED08',
-    description: "ALED08, électricien à Signy-l'Abbaye : dépannage, recherche de panne, tableau, prises, éclairage et mise en sécurité dans les Ardennes. Soirs et week-ends sur RDV.",
+    title: 'Électricien Ardennes – Dépannage 79 € soir & week-end | ALED08',
+    description: `Dépannage électrique dans les Ardennes : forfait 79 €, déplacement et devis compris. ${site.owner}, électricien depuis ${Y} ans à Signy-l'Abbaye.`,
     crumbs: [HOME],
     body,
     schema: [f.schema],
@@ -191,64 +175,64 @@ ${C.ctaBand({ title: 'Une panne, un projet, une question ?', text: 'Appelez, éc
 
 // ====================================================================== QUI SUIS-JE
 function about() {
+  const Y = site.experienceYears;
   const crumbs = [HOME, { name: 'Qui suis-je ?', path: '/qui-suis-je/' }];
   const body = `${C.pageHero({
     kicker: 'Qui suis-je ?',
-    h1: `${site.owner}, l’électricien derrière ALED08`,
-    lead: "Électricien installé à **Signy-l'Abbaye**, j'ai créé ALED08 pour proposer aux particuliers des Ardennes ce qui manque souvent : **un artisan joignable le soir et le week-end**, qui prend le temps de trouver la vraie cause d'une panne et qui annonce ses prix avant d'intervenir.",
+    h1: `${site.owner}, électricien depuis ${Y} ans`,
+    lead: `Je suis électricien depuis ${Y} ans et je suis installé à **Signy-l'Abbaye**. ALED08, c'est moi, seul : **un artisan que vous avez directement au téléphone**, qui se déplace le soir et le week-end, et qui vous annonce son prix avant de venir.`,
     crumbs,
+    chips: [{ icon: 'user', text: `${Y} ans de métier` }, { icon: 'zap', text: 'Spécialiste du dépannage' }, { icon: 'map-pin', text: 'Signy-l’Abbaye (08)' }],
   })}
 <section class="section"><div class="container layout-aside">
   <div class="prose">
-    ${md(`## Un électricien d'ici, pour les gens d'ici
+    ${md(`## ${Y} ans de métier
 
-ALED08, c'est d'abord un ancrage : **08**, comme les Ardennes. Je connais les maisons de la région, leurs murs en pierre ou en brique, leurs installations refaites par morceaux au fil des générations, leurs dépendances alimentées par un câble tiré « provisoirement » il y a trente ans. Je connais aussi les distances : quand on habite un village du Porcien ou de la Thiérache, trouver un électricien disponible rapidement n'est pas toujours simple.
+Voilà ${Y} ans que je travaille dans l'électricité. On y apprend vite que deux installations ne se ressemblent jamais : la maison câblée au cordeau, la ferme équipée par étapes sur trois générations, l'appartement où chaque occupant a ajouté sa prise. C'est ce qui rend le métier intéressant, et c'est ce qui m'a conduit vers ce que je préfère : **la recherche de panne**.
+
+## Pourquoi le dépannage ?
+
+Parce que c'est là qu'un électricien est le plus utile. Quand le courant saute un soir d'hiver, vous n'avez pas besoin d'un discours : vous avez besoin de quelqu'un qui vient, qui trouve et qui explique. Faire repartir le courant est souvent facile. **Comprendre pourquoi il a sauté**, c'est le vrai travail, et c'est ce qui évite que la panne revienne.
+
+## Un seul interlocuteur
+
+ALED08 n'a ni standard, ni commercial, ni sous-traitant. Quand vous appelez, c'est moi qui décroche, ou qui vous rappelle si je suis en intervention. C'est moi qui viens, qui cherche la panne, qui rédige le devis et qui répare. Si quelque chose ne va pas ensuite, vous savez exactement qui rappeler.
 
 ## Pourquoi le soir et le week-end ?
 
-Parce que c'est à ces moments-là que vous êtes chez vous. La panne se découvre en rentrant du travail, le projet d'éclairage se discute le samedi, et poser une journée de congé pour attendre un artisan n'arrange personne. J'ai donc fait un choix clair : **mes créneaux d'intervention sont les soirs de semaine, de 18 h à 21 h 30, et les week-ends**, toujours sur rendez-vous. Et le tarif ne change pas selon le jour ou l'heure.
+Parce que c'est à ces moments-là que vous êtes chez vous. La panne se découvre en rentrant du travail, et poser une journée de congé pour attendre un artisan n'arrange personne. J'ai donc fait un choix clair : **mes créneaux sont les soirs de semaine, de 18 h à 21 h 30, et les week-ends**, toujours sur rendez-vous. Le prix ne change pas selon le jour ou l'heure.
 
 ## Ma façon de travailler
 
-- **Comprendre avant de remplacer.** Une panne a toujours une cause. Changer un disjoncteur qui saute sans chercher pourquoi, c'est repousser le problème.
+- **Comprendre avant de remplacer.** Changer un disjoncteur qui saute sans chercher pourquoi, c'est repousser le problème.
 - **Mesurer plutôt que supposer.** Isolement, continuité, terre, tests des différentiels : les mesures confirment le diagnostic.
-- **Expliquer simplement.** Vous repartez en sachant ce qui s'est passé et comment l'éviter, sans jargon.
-- **Annoncer le prix avant.** Le forfait dépannage est annoncé au téléphone ; toute réparation fait l'objet d'un devis écrit, sans obligation.
+- **Expliquer simplement.** Vous savez ce qui s'est passé et comment l'éviter, sans jargon.
+- **Annoncer le prix avant.** Le forfait dépannage est confirmé au téléphone ; toute réparation fait l'objet d'un devis écrit, sans obligation.
 - **Laisser un travail propre.** Matériel de marque, connexions soignées, circuits repérés, chantier nettoyé.
 
 [[cta]]
 
+## Ce que je ne vous promettrai pas
+
+Je ne vous dirai pas que je suis le meilleur électricien des Ardennes, ni le moins cher sur chaque ligne. Je n'interviens pas non plus en pleine nuit : mes créneaux sont les soirs et les week-ends, sur rendez-vous. En revanche, ce qui est écrit sur ce site est ce que vous aurez : un prix annoncé à l'avance, une explication claire et un devis avant toute réparation.
+
 ## La norme NF C 15-100, une évidence
 
-La norme NF C 15-100 fixe les règles des installations électriques des logements : sections de câbles, protections, nombre de prises par circuit, règles de la salle de bain, mise à la terre. Je l'applique à chaque intervention, même la plus petite. Et lorsque je constate une anomalie dangereuse qui ne fait pas partie de votre demande, je vous la signale clairement : vous décidez ensuite, sans pression.
+La norme NF C 15-100 fixe les règles des installations électriques des logements : sections de câbles, protections, nombre de prises par circuit, salle de bain, mise à la terre. Je l'applique à chaque intervention, même la plus petite. Et lorsque je constate une anomalie dangereuse qui ne fait pas partie de votre demande, je vous la signale : vous décidez ensuite, sans pression.
 
 ## Ce sur quoi je me concentre
 
-ALED08 est spécialisé dans **le dépannage, la recherche de panne et les petits et moyens travaux** chez les particuliers : tableaux, prises, interrupteurs, éclairage intérieur et extérieur, circuits supplémentaires, mise en sécurité. Pour une construction neuve complète ou un chantier professionnel d'envergure, je préfère vous le dire franchement et vous orienter vers une entreprise dimensionnée pour cela.`).replace('<p>[[cta]]</p>', C.inlineCta({ title: 'On en parle ?', text: 'Un appel suffit pour savoir si je peux vous aider, et à quel prix.' }))}
+ALED08 s'adresse aux **particuliers** : dépannage et recherche de panne d'abord, puis petits et moyens travaux (tableaux, prises, interrupteurs, éclairage, circuits supplémentaires, mise en sécurité). Pour une construction neuve complète ou un gros chantier professionnel, je préfère vous le dire franchement et vous orienter vers une entreprise dimensionnée pour cela.`).replace('<p>[[cta]]</p>', C.inlineCta({ title: 'On en parle ?', text: 'Un appel suffit pour savoir si je peux vous aider, et à quel prix.' }))}
   </div>
-  <aside class="aside-sticky">
-    <div class="aside-card aside-card-dark">
-      <h2>${icon('user')} En bref</h2>
-      <ul class="list-check" style="font-size:.95rem">
-        <li>${site.owner}, électricien</li>
-        <li>Spécialiste du dépannage</li>
-        <li>Basé à ${site.address.city} (${site.address.postalCode})</li>
-        <li>Particuliers des Ardennes</li>
-        <li>Soirs &amp; week-ends sur RDV</li>
-        <li>Norme NF C 15-100</li>
-      </ul>
-      ${C.btnCall('btn-primary btn-block', 'Appeler')}
-      ${C.btnWa('btn-wa btn-block')}
-    </div>
-  </aside>
+  <aside class="aside-sticky">${C.artisanCard()}${C.forfaitBlock({ compact: true })}</aside>
 </div></section>
 
 <section class="section section-alt"><div class="container">
   <div class="section-head"><p class="kicker">Engagements</p><h2>Mes engagements, noir sur blanc</h2></div>
   <div class="values">
     ${[
-      ['euro', 'Tarifs publiés', 'Ma grille tarifaire est en ligne. Pas de prix « à la tête du client ».'],
-      ['file-text', 'Devis gratuit', 'Détaillé ligne par ligne, sans engagement, avant tout travaux importants.'],
+      ['euro', 'Prix publiés', 'Le forfait dépannage et le supplément kilométrique sont en ligne. Pas de prix « à la tête du client ».'],
+      ['file-text', 'Devis avant travaux', 'Gratuit pour vos travaux, compris dans le forfait lors d’un dépannage. Toujours sans obligation.'],
       ['clock', 'Ponctualité', 'Un rendez-vous fixé est tenu. En cas d’imprévu, je préviens.'],
       ['handshake', 'Conseil honnête', 'Je propose ce qui est utile, pas ce qui rapporte le plus.'],
       ['sparkles', 'Chantier propre', 'Protection des sols, nettoyage, aucun déchet laissé chez vous.'],
@@ -259,16 +243,22 @@ ALED08 est spécialisé dans **le dépannage, la recherche de panne et les petit
   </div>
 </div></section>
 ${C.reviewsBlock(avis, 3).replace('section section-alt', 'section')}
-${C.ctaBand({ title: 'Faisons connaissance autour de votre projet', text: 'Une panne à régler ou des travaux à prévoir : appelez-moi, on fixe un créneau le soir ou le week-end.' })}`;
+${C.ctaBand({ title: 'Une panne ou un projet ? Appelez-moi directement', text: 'Vous m’aurez au bout du fil, ou je vous rappelle dans la journée. On fixe un créneau le soir ou le week-end.' })}`;
   return {
     path: '/qui-suis-je/',
-    title: "Qui suis-je ? Alexandre Poquet, électricien à Signy-l'Abbaye | ALED08",
-    description: "Alexandre Poquet, électricien indépendant à Signy-l'Abbaye : dépannage et petits travaux pour les particuliers des Ardennes, le soir et le week-end.",
+    title: `${site.owner}, électricien depuis ${Y} ans à Signy-l'Abbaye | ALED08`,
+    description: `${site.owner}, électricien depuis ${Y} ans, installé à Signy-l'Abbaye. Spécialiste du dépannage et de la recherche de panne, le soir et le week-end.`,
     crumbs,
     body,
-    schema: [{ '@type': 'Person', '@id': site.url + '/#dirigeant', name: site.owner, jobTitle: 'Électricien', worksFor: { '@id': site.url + '/#entreprise' }, address: { '@type': 'PostalAddress', addressLocality: site.address.city, postalCode: site.address.postalCode, addressCountry: 'FR' } }],
+    schema: [{
+      '@type': 'Person', '@id': site.url + '/#dirigeant', name: site.owner, jobTitle: 'Électricien',
+      description: `Électricien depuis ${Y} ans, spécialisé dans le dépannage et la recherche de panne électrique chez les particuliers des Ardennes.`,
+      knowsAbout: ['Dépannage électrique', 'Recherche de panne électrique', 'Norme NF C 15-100', 'Tableau électrique', 'Mise en sécurité électrique'],
+      worksFor: { '@id': site.url + '/#entreprise' }, url: site.url + '/qui-suis-je/',
+      address: { '@type': 'PostalAddress', addressLocality: site.address.city, postalCode: site.address.postalCode, addressCountry: 'FR' },
+    }],
     webpageType: 'AboutPage',
-    priority: 0.7,
+    priority: 0.8,
   };
 }
 
@@ -334,13 +324,13 @@ function servicePage(s) {
   ${T.aside({})}
 </div></section>
 <section class="section section-alt"><div class="container">
-  <div class="section-head"><p class="kicker">Déroulement</p><h2>Comment se passe l’intervention</h2></div>
-  ${C.steps(s.steps)}
+  <div class="section-head"><p class="kicker">Déroulement</p><h2>${s.key === 'depannage' ? 'Mon passage chez vous, étape par étape' : 'Comment se passe l’intervention'}</h2></div>
+  ${s.key === 'depannage' ? C.passage() : C.steps(s.steps)}
 </div></section>
 <section class="section"><div class="container container-narrow">
   <div class="section-head"><p class="kicker">Tarifs</p><h2>${s.key === 'depannage' || s.key === 'panne' ? 'Le forfait dépannage' : 'Comment est fixé le prix'}</h2><p>${s.key === 'depannage' || s.key === 'panne' ? 'Un prix unique, connu d’avance, le soir comme le week-end.' : 'Les travaux sont chiffrés sur devis gratuit. En cas de panne, le forfait dépannage s’applique.'}</p></div>
   ${s.key === 'depannage' || s.key === 'panne' ? C.forfaitBlock() : C.pricingTable()}
-  <p class="center" style="margin-top:20px"><a href="/tarifs/">Voir la grille tarifaire complète et la tarification kilométrique</a></p>
+  <p class="center" style="margin-top:20px"><a href="/tarifs/">Voir le détail des tarifs et le prix du dépannage dans votre commune</a></p>
 </div></section>
 ${C.cases(s.cases)}
 ${f.html}
@@ -369,80 +359,84 @@ function tarifsPage() {
     { q: 'Pouvez-vous réparer tout de suite si j’accepte le devis ?', a: "Dans la majorité des cas, oui : j'ai dans mon véhicule le matériel courant (prises, interrupteurs, disjoncteurs, connectique). Si une pièce particulière doit être commandée, on fixe un nouveau créneau." },
     { q: 'Le forfait est-il plus cher le soir ou le week-end ?', a: "Non. Le forfait dépannage est le même du lundi au dimanche, en soirée comme le week-end." },
     { q: 'Comment est calculé le supplément kilométrique ?', a: "Par la route, depuis Signy-l'Abbaye jusqu'à votre adresse : rien jusqu'à 15 km, 10 € de 15 à 30 km, 20 € de 30 à 45 km. Au-delà, il est convenu à l'avance. Je vous le confirme toujours au téléphone." },
+    { q: 'Le devis est-il gratuit pour des travaux ?', a: "Oui. Pour des travaux sans panne (tableau, éclairage, prises, mise en sécurité…), le devis est gratuit et sans engagement. Lors d'un dépannage, le devis de réparation est compris dans le forfait." },
   ], 'Questions sur les tarifs');
   const body = `${C.pageHero({
     kicker: 'Tarifs',
-    h1: 'Tarifs : un forfait dépannage à 79 €, tout compris jusqu’au devis',
+    h1: 'Tarif du dépannage électrique : 79 €, tout compris jusqu’au devis',
     lead: "Pas de prix cachés, pas de majoration le soir ou le week-end. **Un seul forfait pour le dépannage**, qui comprend le déplacement, la recherche de panne, la proposition de solution et le devis de réparation. La réparation est ensuite chiffrée sur devis : **vous décidez**.",
     crumbs,
     prestation: 'depannage',
-    chips: [{ icon: 'zap', text: 'Forfait dépannage 79 €' }, { icon: 'file-text', text: 'Devis de réparation sans obligation' }, { icon: 'moon', text: 'Sans majoration soir & week-end' }],
+    chips: [{ icon: 'zap', text: 'Forfait dépannage 79 € TTC' }, { icon: 'file-text', text: 'Devis de réparation sans obligation' }, { icon: 'moon', text: 'Sans majoration soir & week-end' }],
   })}
 <section class="section"><div class="container">
   <div class="section-head"><p class="kicker">Le forfait</p><h2>Ce que comprend le forfait dépannage</h2></div>
   ${C.forfaitBlock()}
 </div></section>
-<section class="section section-alt"><div class="container grid grid-2">
-  <div class="reveal prose">
-    ${md(`## Comment se compose le prix d'un dépannage ?
-
-1. **Le forfait dépannage : 79 €.** Déplacement, recherche de panne, proposition de solution et devis de réparation.
-2. **Le supplément kilométrique**, uniquement au-delà de 15 km : + 10 € ou + 20 €.
-3. **La réparation, si vous l'acceptez** : main-d'œuvre et pièces selon le devis remis sur place.
-
-## Pourquoi pas de prix de pièces ?
-
-Une même panne peut avoir des causes très différentes. Afficher un prix « à partir de » pour une prise ou un disjoncteur ne reflète jamais votre situation réelle. Je préfère **trouver la panne d'abord**, puis vous donner **un prix exact**, par écrit.
-
-## Et pour des travaux ?
-
-Remplacement de tableau, mise en sécurité, éclairage, ajout de prises ou de circuits : ces travaux planifiés font l'objet d'un **devis gratuit et détaillé**, établi après échange et, si besoin, visite.`)}
-  </div>
-  <div class="reveal">${C.pricingTable()}</div>
-</div></section>
-<section class="section"><div class="container">
-  <div class="section-head"><p class="kicker">Déplacement</p><h2>Tarification kilométrique</h2><p>Calculée depuis Signy-l’Abbaye, par la route. Jusqu’à 15 km, le déplacement est compris dans le forfait.</p></div>
+<section class="section section-alt" id="communes"><div class="container">
+  <div class="section-head"><p class="kicker">Selon votre commune</p><h2>Le prix du dépannage, là où vous habitez</h2><p>Le déplacement est compris jusqu’à 15 km de Signy-l’Abbaye. Au-delà, le forfait augmente de 10 € ou 20 € selon la distance par la route.</p></div>
   ${C.kmTable()}
   <div class="grid grid-2" style="margin-top:36px">
     <div class="estimator reveal" data-estimator>
-      <h3>${icon('route')} Quel forfait pour ma commune ?</h3>
+      <h3>${icon('route')} Quel prix pour ma commune ?</h3>
       <div class="field"><label for="est-commune">Votre commune</label>
       <select id="est-commune"><option value="">Choisir une commune…</option>${communes.map((c) => `<option>${esc(c.name)}</option>`).join('')}</select></div>
       <div class="estimator-out" aria-live="polite"></div>
-      <p class="small muted" style="margin:12px 0 0">Commune absente de la liste ? Indiquez-la dans votre <a href="/devis/">demande</a>.</p>
+      <p class="small muted" style="margin:12px 0 0">Commune absente de la liste ? Appelez-moi ou indiquez-la dans votre <a href="/devis/">demande</a>.</p>
     </div>
     <div class="reveal">
-      ${md(`### Exemples
+      ${md(`### Trois exemples
 
-- **Panne à Thin-le-Moutier (≈ 9 km)** : forfait dépannage **79 €**, tout compris jusqu'au devis.
-- **Panne à Rethel (≈ 24 km)** : 79 € + 10 € de supplément = **89 €**.
-- **Panne à Charleville-Mézières (≈ 32 km)** : 79 € + 20 € de supplément = **99 €**.
+- **Panne à Thin-le-Moutier (≈ 9 km)** : forfait dépannage **79 €**.
+- **Panne à Rethel (≈ 24 km)** : 79 € + 10 € = **89 €**.
+- **Panne à Charleville-Mézières (≈ 32 km)** : 79 € + 20 € = **99 €**.
 
-Dans les trois cas, la réparation éventuelle fait l'objet d'un devis remis sur place, que vous acceptez ou non.`)}
+Dans les trois cas, ce prix couvre tout mon passage jusqu'au devis. La réparation éventuelle fait l'objet de ce devis, que vous acceptez ou non.`)}
     </div>
   </div>
 </div></section>
-<section class="section section-alt"><div class="container container-narrow prose">
-  ${md(`## Mes engagements sur les prix
+<section class="section" id="passage"><div class="container">
+  <div class="section-head"><p class="kicker">Déroulement</p><h2>Mon passage chez vous, étape par étape</h2><p>Voici ce que vous achetez avec le forfait : mon déplacement et mon temps, jusqu’à ce que vous sachiez d’où vient la panne et combien coûterait la réparation.</p></div>
+  ${C.passage()}
+</div></section>
+<section class="section section-alt"><div class="container">
+  <div class="section-head"><p class="kicker">En clair</p><h2>Ce que vous payez, ce que vous ne payez jamais</h2></div>
+  ${C.payBlock()}
+</div></section>
+<section class="section"><div class="container grid grid-2">
+  <div class="reveal prose">
+    ${md(`## Pourquoi pas de prix de pièces ?
 
-- **Le forfait est annoncé au téléphone**, supplément kilométrique compris, avant que je prenne la route.
-- **Aucune réparation sans votre accord** sur un devis écrit.
-- **Le même prix tous les jours**, soirées et week-ends compris.
-- **Une facture détaillée** pour chaque intervention.
+Une même panne peut avoir des causes très différentes. Afficher un prix « à partir de » pour une prise ou un disjoncteur ne reflète jamais votre situation réelle. Je préfère **trouver la panne d'abord**, puis vous donner **un prix exact**, par écrit.
+
+## Et pour des travaux ? Le devis est gratuit
+
+Remplacement de tableau, mise en sécurité, éclairage, ajout de prises ou de circuits : pour ces travaux sans panne, je vous remets un **devis gratuit et détaillé**, après échange et, si besoin, une visite.
 
 > Si une découverte en cours de réparation change la donne, je m'arrête, je vous explique et je vous laisse décider avant de poursuivre.`)}
-  ${C.inlineCta({ title: 'Une panne en ce moment ?', text: 'Appelez : je vous confirme le prix du forfait pour votre commune et je vous propose un créneau.', prestation: 'depannage' })}
+    <p><a class="btn btn-primary" href="/devis/">${icon('file-text')}<span>Demander un devis gratuit</span></a></p>
+  </div>
+  <div class="reveal">${C.pricingTable()}</div>
+</div></section>
+<section class="section section-alt"><div class="container container-narrow">
+  <div class="section-head"><p class="kicker">Repères</p><h2>Comment se situe ce forfait ?</h2><p>Pour vous aider à comparer, voici ce qui se pratique couramment en dépannage électrique, et ce que je fais.</p></div>
+  ${C.marketCompare()}
 </div></section>
 ${f.html}
 ${C.ctaBand({ title: 'Un prix clair avant de commencer', text: 'Forfait dépannage à 79 €, devis de réparation sans obligation : appelez-moi pour un créneau ce soir ou ce week-end.', prestation: 'depannage' })}
 ${communesJs}`;
   return {
     path: '/tarifs/',
-    title: 'Tarifs : forfait dépannage électrique 79 € tout compris | ALED08',
-    description: "Forfait dépannage 79 € TTC : déplacement, recherche de panne, solution et devis de réparation sans obligation. Supplément kilométrique clair, sans majoration.",
+    title: 'Tarif dépannage électrique Ardennes : forfait 79 € | ALED08',
+    description: "Dépannage électrique dans les Ardennes : forfait 79 € TTC, déplacement, recherche de panne et devis compris. Prix par commune, sans majoration soir et week-end.",
     crumbs,
     body,
-    schema: [f.schema],
+    schema: [f.schema, {
+      '@type': 'Offer', '@id': site.url + '/tarifs/#forfait', name: 'Forfait dépannage électrique', price: 79, priceCurrency: 'EUR',
+      description: "Déplacement jusqu'à 15 km de Signy-l'Abbaye, recherche de panne, proposition de solution et devis de réparation sans obligation.",
+      seller: { '@id': site.url + '/#entreprise' }, areaServed: { '@type': 'AdministrativeArea', name: 'Ardennes (08)' },
+      itemOffered: { '@type': 'Service', name: 'Dépannage électrique à domicile', serviceType: 'Dépannage électrique' },
+    }],
     priority: 0.9,
   };
 }

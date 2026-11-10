@@ -45,21 +45,39 @@ function seoPage(p) {
   const crumbs = [{ name: 'Accueil', path: '/' }, parent, { name: p.label, path }];
   const f = C.faq(p.faq, p.faqTitle || 'Vos questions');
   const area = p.city ? { '@type': 'City', name: p.city } : { '@type': 'AdministrativeArea', name: 'Ardennes (08)' };
+  const Y = site.experienceYears;
+  const price = p.city ? C.forfaitFor(p.city) : 79;
+  const isPanne = ['villes', 'services-villes', 'secteurs', 'ardennes', 'symptomes'].includes(p.group) || p.prestation === 'depannage';
+  // Titre : les pages communes affichent le prix du dépannage sur place (meilleur taux de clic)
+  let title = p.title;
+  if (p.group === 'villes' && p.city && price) {
+    const long = `Électricien ${p.city} – dépannage ${price} € soir & week-end | ALED08`;
+    title = long.length <= 68 ? long : `Électricien ${p.city} – dépannage ${price} € | ALED08`;
+  }
+  const chips = p.chips || (p.city && price
+    ? [{ icon: 'zap', text: `Dépannage à ${p.city} : ${price} €` }, { icon: 'moon', text: 'Soirs & week-ends, sans majoration' }, { icon: 'file-text', text: 'Devis de réparation sans obligation' }]
+    : isPanne
+    ? [{ icon: 'zap', text: 'Forfait dépannage 79 €' }, { icon: 'moon', text: 'Soirs & week-ends' }, { icon: 'user', text: `${Y} ans de métier` }]
+    : [{ icon: 'file-text', text: 'Devis gratuit' }, { icon: 'moon', text: 'Soirs & week-ends' }, { icon: 'user', text: `${Y} ans de métier` }]);
   const service = {
     '@type': 'Service',
     '@id': site.url + path + '#service',
     name: p.serviceName || p.label,
-    serviceType: p.serviceType || 'Électricité — dépannage et travaux',
+    serviceType: p.serviceType || (isPanne ? 'Dépannage électrique' : 'Travaux électriques'),
     description: p.description,
     provider: { '@id': site.url + '/#entreprise' },
     areaServed: area,
     url: site.url + path,
+    ...(isPanne && price
+      ? { offers: { '@type': 'Offer', name: p.city ? `Forfait dépannage électrique à ${p.city}` : 'Forfait dépannage électrique', price, priceCurrency: 'EUR', description: 'Déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation.' } }
+      : {}),
   };
-  const html = `${C.pageHero({ kicker: p.kicker, h1: p.h1, lead: p.lead, crumbs, prestation: p.prestation, chips: p.chips || [] })}
+  const html = `${C.pageHero({ kicker: p.kicker, h1: p.h1, lead: p.lead, crumbs, prestation: p.prestation, chips })}
 <section class="section"><div class="container layout-aside">
   <div class="prose">
     ${p.city ? C.distanceBadge(p.city) : ''}
     ${body(p.body, p.cta)}
+    ${C.authorBox('lgs')}
     ${C.relatedLinks(p.links, p.linksTitle || 'Pour aller plus loin')}
   </div>
   ${aside(p)}
@@ -69,7 +87,7 @@ ${f.html}
 ${C.ctaBand({ ...(p.cta || {}), prestation: p.prestation })}`;
   return {
     path,
-    title: p.title,
+    title,
     description: p.description,
     crumbs,
     body: html,
@@ -103,7 +121,7 @@ function blogPost(a, all) {
     datePublished: a.date,
     dateModified: a.modified || a.date,
     inLanguage: 'fr-FR',
-    author: { '@type': 'Person', name: site.owner, url: site.url + '/qui-suis-je/' },
+    author: { '@type': 'Person', '@id': site.url + '/#dirigeant', name: site.owner, jobTitle: 'Électricien', url: site.url + '/qui-suis-je/' },
     publisher: { '@id': site.url + '/#entreprise' },
     mainEntityOfPage: site.url + path,
     image: site.url + '/assets/img/og-image.png',
@@ -117,13 +135,13 @@ function blogPost(a, all) {
     <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>${esc(a.category)}</p>
     <h1>${inline(a.h1)}</h1>
     <p class="lead">${inline(a.lead)}</p>
-    <div class="article-meta"><span>${icon('user')}${site.owner}, électricien</span><span>${icon('calendar-days')}<time datetime="${a.date}">${frDate(a.date)}</time></span><span>${icon('timer')}${readingTime(a.body)} min de lecture</span></div>
+    <div class="article-meta"><span>${icon('user')}${site.owner}, électricien depuis ${site.experienceYears} ans</span><span>${icon('calendar-days')}<time datetime="${a.date}">${frDate(a.date)}</time></span><span>${icon('timer')}${readingTime(a.body)} min de lecture</span></div>
   </div>
 </section>
 <section class="section"><div class="container layout-aside">
   <article class="prose">
     ${content.replace('<p>[[cta]]</p>', C.inlineCta(a.cta))}
-    <div class="author-box">${C.logoSvg('lga')}<p><strong>${site.owner}</strong> — électricien indépendant à Signy-l’Abbaye (ALED08). J’interviens en soirée et le week-end, sur rendez-vous, pour les particuliers des Ardennes. <a href="/qui-suis-je/">En savoir plus</a></p></div>
+    ${C.authorBox('lga')}
     ${C.relatedLinks(a.links, 'Prestations liées')}
   </article>
   <aside class="aside-sticky" aria-label="Sommaire et contact">

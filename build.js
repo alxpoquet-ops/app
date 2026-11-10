@@ -47,6 +47,17 @@ rmrf(OUT);
 fs.mkdirSync(OUT, { recursive: true });
 copyDir(path.join(ROOT, 'src/assets'), path.join(OUT, 'assets'));
 copyDir(path.join(ROOT, 'src/static'), OUT);
+// Minification du CSS (commentaires et espaces superflus)
+{
+  const cssFile = path.join(OUT, 'assets/css/style.css');
+  const min = fs.readFileSync(cssFile, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\s*\n\s*/g, '')
+    .replace(/\s*([{};,>])\s*/g, '$1')
+    .replace(/:\s+/g, ':')
+    .replace(/;}/g, '}');
+  fs.writeFileSync(cssFile, min);
+}
 setAssetVersion({ css: hash(path.join(ROOT, 'src/assets/css/style.css')), js: hash(path.join(ROOT, 'src/assets/js/main.js')) });
 
 // 1) registre des pages (libellés pour le maillage interne)
@@ -120,6 +131,7 @@ const warn = [];
 const cfg = JSON.stringify(site);
 if (cfg.includes('à compléter')) warn.push('Informations légales à compléter dans src/config.js (SIRET, assurance, médiateur, hébergeur).');
 if (site.phoneIntl === '+33639980000') warn.push('Numéro de téléphone fictif : remplacez-le dans src/config.js.');
-if (site.demoReviews) warn.push('Avis clients d’exemple affichés : remplacez-les par de vrais avis (src/content/avis.js) puis passez demoReviews à false.');
+if (!require('./src/content/avis').length) warn.push('Aucun avis client renseigné : la section « Avis » est masquée. Ajoutez vos vrais avis dans src/content/avis.js.');
+if (!site.portrait) warn.push('Pas de photo de vous : ajoutez un portrait (site.portrait dans src/config.js) pour renforcer la confiance.');
 console.log(`✔ ${rendered.length} pages générées dans dist/ (${seoPages.length} pages SEO, ${posts.length} articles, ${urls.length} URL dans le sitemap)`);
 if (warn.length) console.log('\n⚠ À faire avant la mise en ligne :\n  - ' + warn.join('\n  - '));

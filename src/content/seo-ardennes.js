@@ -328,7 +328,7 @@ Le dimanche, je reste disponible pour les **dépannages** et les travaux peu bru
 
 ## Mêmes prix que la semaine
 
-Intervenir le week-end est mon choix d'organisation, pas un service d'exception. **Aucune majoration** ne s'applique : la grille tarifaire est la même du lundi au dimanche, déplacement compris.
+Intervenir le week-end est mon choix d'organisation, pas un service d'exception. **Aucune majoration** ne s'applique : le forfait dépannage et les devis sont les mêmes du lundi au dimanche.
 
 ## Réserver son samedi
 
