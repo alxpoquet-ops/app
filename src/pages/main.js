@@ -622,7 +622,7 @@ function devis() {
         <span class="hint">Âge approximatif de l’installation, symptômes, pièces concernées : tout détail aide.</span></div>
       <div class="form-row">
         <div class="field"><label for="d-nom">Nom <span class="req">*</span></label><input id="d-nom" name="nom" type="text" autocomplete="name" required></div>
-        <div class="field"><label for="d-tel">Téléphone <span class="req">*</span></label><input id="d-tel" name="telephone" type="tel" autocomplete="tel" required pattern="[0-9 +().-]{10,20}"></div>
+        <div class="field"><label for="d-tel">Téléphone <span class="req">*</span></label><input id="d-tel" name="telephone" type="tel" autocomplete="tel" required pattern="[0-9 +\\(\\).\\-]{10,20}"></div>
       </div>
       <div class="form-row">
         <div class="field"><label for="d-email">E-mail</label><input id="d-email" name="email" type="email" autocomplete="email"></div>
@@ -685,7 +685,7 @@ function contact() {
       <p class="form-alert" data-form-error hidden>L’envoi n’a pas abouti. Vérifiez les champs obligatoires ou appelez le ${site.phoneDisplay}.</p>
       <div class="form-row">
         <div class="field"><label for="c-nom">Nom <span class="req">*</span></label><input id="c-nom" name="nom" type="text" autocomplete="name" required></div>
-        <div class="field"><label for="c-tel">Téléphone <span class="req">*</span></label><input id="c-tel" name="telephone" type="tel" autocomplete="tel" required pattern="[0-9 +().-]{10,20}"></div>
+        <div class="field"><label for="c-tel">Téléphone <span class="req">*</span></label><input id="c-tel" name="telephone" type="tel" autocomplete="tel" required pattern="[0-9 +\\(\\).\\-]{10,20}"></div>
       </div>
       <div class="field"><label for="c-email">E-mail</label><input id="c-email" name="email" type="email" autocomplete="email"></div>
       <div class="field"><label for="c-commune">Commune</label><input id="c-commune" name="commune" type="text" autocomplete="address-level2"></div>
