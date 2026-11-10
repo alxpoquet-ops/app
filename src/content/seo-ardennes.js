@@ -42,7 +42,7 @@ J'interviens dans un rayon d'environ 45 km autour de Signy-l'Abbaye : Rethel et 
     ],
     faq: [
       { q: 'Intervenez-vous dans tout le département des Ardennes ?', a: "Principalement dans un rayon de 45 km autour de Signy-l'Abbaye, ce qui couvre le centre et le sud du département. Au-delà, c'est possible sur devis." },
-      { q: 'Êtes-vous disponible en semaine dans la journée ?', a: "Non : mes créneaux d'intervention sont les soirs de semaine (18 h – 21 h 30) et les week-ends. C'est ce qui me permet d'être là quand vous êtes chez vous." },
+      { q: 'Êtes-vous disponible en semaine dans la journée ?', a: "Oui : j'interviens à tout moment, sur rendez-vous, en journée comme le soir ou le week-end. On choisit ensemble le créneau qui vous convient." },
       { q: 'Travaillez-vous seul ?', a: "Oui. C'est moi qui réponds au téléphone, qui viens chez vous et qui réalise les travaux. Vous avez un seul interlocuteur, du premier appel à la facture." },
     ],
     cta: { title: 'Un électricien dans les Ardennes, le soir ou le week-end', text: 'Appelez-moi ou décrivez votre besoin : je vous réponds avec un prix et un créneau.' },
@@ -88,7 +88,7 @@ Un dépannage commence toujours par le **forfait de 79 €**, qui couvre mon dé
       { tag: 'Soirée', icon: 'moon', title: 'La cuisine dans le noir un mardi soir', text: "Plus d'éclairage dans la cuisine et le séjour à 19 h, en plein repas. Le disjoncteur de l'éclairage saute à chaque réarmement.", result: 'Douille de suspension en court-circuit localisée et remplacée : lumière rétablie avant 21 h.' },
     ],
     faq: [
-      { q: 'Êtes-vous disponible 24 h/24 ?', a: "Non, et je préfère être clair : mes créneaux vont de 18 h à 21 h 30 en semaine, plus les samedis et dimanches, toujours sur rendez-vous. Les coupures du réseau public relèvent d'Enedis, joignable jour et nuit." },
+      { q: 'Quand êtes-vous disponible ?', a: "À tout moment, sur rendez-vous : appelez-moi, nous fixons ensemble le créneau le plus proche. Les coupures du réseau public relèvent d'Enedis, joignable jour et nuit." },
       { q: 'Que faire en attendant votre arrivée ?', a: "Laissez la protection qui a déclenché en position basse, débranchez les appareils de la zone et, en cas d'odeur de brûlé, coupez le disjoncteur général. Ne réarmez pas plusieurs fois de suite." },
       { q: 'Facturez-vous plus cher un dépannage le dimanche ?', a: "Non. Les tarifs sont identiques tous les jours de la semaine, soirées comprises." },
     ],
@@ -253,11 +253,11 @@ Vous pouvez valider un seul bloc, ou tout. Rien n'est imposé.`,
   {
     slug: 'electricien-soiree-ardennes', group: 'ardennes', prestation: 'depannage',
     label: 'Électricien le soir dans les Ardennes',
-    title: 'Électricien le soir dans les Ardennes – dès 18 h | ALED08',
-    description: 'Électricien le soir dans les Ardennes, du lundi au vendredi de 18 h à 21 h 30 : dépannage, prises, luminaires, diagnostic. Sans majoration, sur RDV.',
+    title: 'Électricien le soir dans les Ardennes – sur rendez-vous | ALED08',
+    description: 'Électricien le soir dans les Ardennes, après votre journée de travail : dépannage, prises, luminaires, diagnostic. Sans majoration, sur RDV.',
     kicker: 'Disponibilités · En soirée',
     h1: 'Un électricien le soir, après votre journée de travail',
-    lead: "Du lundi au vendredi, **de 18 h à 21 h 30**, je me déplace chez les particuliers des Ardennes pour les dépannages et les petits travaux. Vous n'avez pas à poser de congé : **j'interviens quand vous êtes rentré**, au même tarif qu'en journée.",
+    lead: "ALED08 intervient à tout moment, **y compris en soirée** : je me déplace chez les particuliers des Ardennes pour les dépannages et les petits travaux. Vous n'avez pas à poser de congé : **j'interviens quand vous êtes rentré**, au même tarif qu'en journée.",
     body: `## Ce qui se fait très bien en soirée
 
 Une soirée d'intervention dure en général d'une à trois heures. C'est le format idéal pour :
@@ -285,16 +285,16 @@ En hiver, il fait nuit dès 17 h. Je viens donc avec **mon propre éclairage de 
 
 Chez ALED08, la soirée est un **créneau normal de travail**, choisi dès le départ. Il n'y a donc aucune raison de vous le facturer plus cher.`,
     cases: [
-      { tag: '18 h 30', icon: 'clock', title: 'Trois prises et deux interrupteurs après le travail', text: "Un couple qui travaille à Charleville voulait remplacer l'appareillage abîmé du séjour sans perdre une journée.", result: 'Intervention de 18 h 30 à 20 h, tout est remplacé et testé avant le dîner.' },
-      { tag: '19 h 45', icon: 'search', title: 'Une panne découverte en rentrant', text: "En rentrant à 19 h, une famille constate que le circuit des chambres ne fonctionne plus.", result: 'Rendez-vous à 19 h 45, borne desserrée retrouvée dans une boîte de dérivation du couloir, réparée.' },
-      { tag: '20 h', icon: 'file-text', title: 'Une visite de devis sans poser de congé', text: "Des propriétaires souhaitaient faire chiffrer le remplacement de leur tableau, mais travaillent tous les deux en journée.", result: 'Visite à 20 h, devis envoyé le lendemain, travaux réalisés le samedi suivant.' },
+      { tag: 'Après le travail', icon: 'clock', title: 'Trois prises et deux interrupteurs après le travail', text: "Un couple qui travaille à Charleville voulait remplacer l'appareillage abîmé du séjour sans perdre une journée.", result: 'Intervention en début de soirée, tout est remplacé et testé avant le dîner.' },
+      { tag: 'Le soir même', icon: 'search', title: 'Une panne découverte en rentrant', text: "En rentrant du travail, une famille constate que le circuit des chambres ne fonctionne plus.", result: 'Rendez-vous le soir même, borne desserrée retrouvée dans une boîte de dérivation du couloir, réparée.' },
+      { tag: 'Visite de devis', icon: 'file-text', title: 'Une visite de devis sans poser de congé', text: "Des propriétaires souhaitaient faire chiffrer le remplacement de leur tableau, mais travaillent tous les deux en journée.", result: 'Visite en soirée, devis envoyé le lendemain, travaux réalisés le samedi suivant.' },
     ],
     faq: [
-      { q: 'Jusqu’à quelle heure intervenez-vous le soir ?', a: "Je programme les rendez-vous de façon à terminer vers 21 h 30. Pour un dépannage qui s'avère plus long, on convient ensemble de la suite." },
+      { q: 'Jusqu’à quelle heure intervenez-vous le soir ?', a: "Il n'y a pas d'heure limite affichée : on convient du créneau ensemble, au téléphone. Pour un dépannage qui s'avère plus long, on décide ensemble de la suite." },
       { q: 'Peut-on travailler sans lumière si le courant est coupé ?', a: "Oui : j'apporte un éclairage autonome. C'est d'ailleurs indispensable pour travailler hors tension en toute sécurité." },
-      { q: 'Le soir, est-ce plus cher ?', a: "Non, mes tarifs sont identiques à toute heure de mes créneaux d'intervention." },
+      { q: 'Le soir, est-ce plus cher ?', a: "Non, mes tarifs sont identiques à tout moment." },
     ],
-    cta: { title: 'Un rendez-vous ce soir ?', text: 'Appelez avant 18 h pour avoir le plus de chances d’obtenir un créneau dans la soirée.' },
+    cta: { title: 'Un rendez-vous ce soir ?', text: 'Appelez dès que possible : plus tôt vous appelez, plus j’ai de chances de vous proposer un créneau dans la soirée.' },
     links: ['/electricien-week-end-ardennes/', '/prestations/depannage-electrique/', '/prestations/prises-et-interrupteurs/', '/petits-travaux-electriques/', '/tarifs/'],
     nearby: ['/electricien-charleville-mezieres/', '/electricien-rethel/', '/electricien-poix-terron/', '/electricien-signy-l-abbaye/'],
     nearbyTitle: 'Principales communes',
@@ -308,7 +308,7 @@ Chez ALED08, la soirée est un **créneau normal de travail**, choisi dès le d�
     description: "Électricien le samedi et le dimanche dans les Ardennes : tableau, mise en sécurité, éclairage, dépannage. Mêmes tarifs qu'en semaine, sur rendez-vous.",
     kicker: 'Disponibilités · Week-end',
     h1: 'Électricien le week-end : samedi et dimanche sur rendez-vous',
-    lead: "Le **samedi de 8 h à 19 h** et le **dimanche de 9 h à 18 h**, j'interviens chez les particuliers des Ardennes. C'est le moment idéal pour les **chantiers qui demandent du temps** — tableau, mise en sécurité, éclairage extérieur — comme pour les pannes qui surviennent en fin de semaine.",
+    lead: "Le **samedi** comme le **dimanche**, sur rendez-vous, j'interviens chez les particuliers des Ardennes. C'est le moment idéal pour les **chantiers qui demandent du temps** — tableau, mise en sécurité, éclairage extérieur — comme pour les pannes qui surviennent en fin de semaine.",
     body: `## Le samedi, jour des chantiers
 
 Une journée complète permet de réaliser les travaux qui nécessitent une coupure prolongée ou plusieurs heures de pose :
@@ -334,7 +334,7 @@ Intervenir le week-end est mon choix d'organisation, pas un service d'exception.
 
 Les samedis se remplissent plus vite que les soirées, surtout au printemps et à l'automne. Pour un chantier planifié, **anticipez de quelques semaines** ; pour un dépannage, appelez simplement : je fais au mieux pour vous caser entre deux interventions.`,
     cases: [
-      { tag: 'Samedi', icon: 'panel-top', title: 'Un tableau remplacé pendant le week-end', text: "Une famille ne pouvait pas se libérer en semaine pour une coupure de courant d'une journée.", result: 'Tableau remplacé le samedi de 8 h à 15 h ; les enfants étaient chez les grands-parents, tout était prêt pour le dîner.' },
+      { tag: 'Samedi', icon: 'panel-top', title: 'Un tableau remplacé pendant le week-end', text: "Une famille ne pouvait pas se libérer en semaine pour une coupure de courant d'une journée.", result: 'Tableau remplacé dans la journée du samedi ; les enfants étaient chez les grands-parents, tout était prêt pour le dîner.' },
       { tag: 'Samedi', icon: 'lamp-wall-up', title: 'Une tranchée creusée en famille', text: "Les propriétaires voulaient éclairer leur allée et ont creusé eux-mêmes la tranchée le matin.", result: 'Pose de la gaine, du câble et des bornes l’après-midi : allée éclairée le soir même.' },
       { tag: 'Dimanche', icon: 'zap', title: 'Une panne un dimanche midi', text: "Le four et la plaque s'arrêtent en pleine préparation du repas de famille. Le disjoncteur de la plaque saute au réarmement.", result: 'Borne de raccordement de la plaque brûlée, refaite en début d’après-midi.' },
     ],
@@ -369,7 +369,7 @@ Dans les logements rethélois, beaucoup reconstruits dans les années 1950 ou r�
 
 ## Un trajet court, un créneau rapide
 
-Depuis Signy-l'Abbaye, je rejoins Rethel en une vingtaine de minutes. Pour un dépannage, appelez de préférence **avant 18 h** : je peux alors souvent vous proposer un passage dans la soirée. Le samedi et le dimanche, les créneaux sont plus souples.
+Depuis Signy-l'Abbaye, je rejoins Rethel en une vingtaine de minutes. Pour un dépannage, appelez dès que la panne se présente : je peux alors souvent vous proposer un passage le jour même. J'interviens à tout moment, sur rendez-vous.
 
 [[cta]]
 
@@ -377,9 +377,9 @@ Depuis Signy-l'Abbaye, je rejoins Rethel en une vingtaine de minutes. Pour un d�
 
 Repérez la protection en position basse dans votre tableau, débranchez les appareils de la zone concernée et n'insistez pas si elle redéclenche. Si une prise ou le tableau sent le brûlé, coupez le disjoncteur général. Ces précautions protègent votre installation… et me font gagner du temps sur place.`,
     cases: [
-      { tag: 'Mardi, 19 h', icon: 'plug-zap', title: 'La cuisine coupe à chaque petit-déjeuner', text: "Dans une maison du centre, le disjoncteur des prises de cuisine déclenche chaque matin, bouilloire et grille-pain en marche.", result: 'Circuit surchargé dédoublé, lave-vaisselle sur sa propre ligne : plus aucune coupure.' },
-      { tag: 'Samedi, 9 h', icon: 'droplets', title: 'Le différentiel du sous-sol ne tient plus', text: "Après une semaine de pluie, impossible de réarmer le différentiel qui protège le sous-sol et le garage.", result: 'Boîte de dérivation extérieure infiltrée, remplacée par une boîte étanche : courant rétabli.' },
-      { tag: 'Jeudi, 20 h', icon: 'lightbulb', title: 'Les lumières de l’étage vacillent', text: "Les ampoules de trois pièces faiblissent et clignotent par moments depuis quelques jours.", result: 'Neutre desserré dans une boîte du palier, connexions refaites et contrôlées.' },
+      { tag: 'Un mardi soir', icon: 'plug-zap', title: 'La cuisine coupe à chaque petit-déjeuner', text: "Dans une maison du centre, le disjoncteur des prises de cuisine déclenche chaque matin, bouilloire et grille-pain en marche.", result: 'Circuit surchargé dédoublé, lave-vaisselle sur sa propre ligne : plus aucune coupure.' },
+      { tag: 'Un samedi matin', icon: 'droplets', title: 'Le différentiel du sous-sol ne tient plus', text: "Après une semaine de pluie, impossible de réarmer le différentiel qui protège le sous-sol et le garage.", result: 'Boîte de dérivation extérieure infiltrée, remplacée par une boîte étanche : courant rétabli.' },
+      { tag: 'Un jeudi soir', icon: 'lightbulb', title: 'Les lumières de l’étage vacillent', text: "Les ampoules de trois pièces faiblissent et clignotent par moments depuis quelques jours.", result: 'Neutre desserré dans une boîte du palier, connexions refaites et contrôlées.' },
     ],
     faq: [
       { q: 'Quel est le prix d’un dépannage à Rethel ?', a: "89 € : le forfait de 79 € plus 10 € de supplément kilométrique. Il couvre le déplacement, la recherche de la panne et le devis de réparation, que vous acceptez ou non." },
@@ -394,10 +394,10 @@ Repérez la protection en position basse dans votre tableau, débranchez les app
     slug: 'depannage-electrique-charleville-mezieres', group: 'services-villes', city: 'Charleville-Mézières', prestation: 'depannage',
     label: 'Dépannage électrique à Charleville-Mézières',
     title: 'Dépannage électrique Charleville-Mézières – soir | ALED08',
-    description: "Dépannage électrique à Charleville-Mézières après 18 h et le week-end : appartement sans courant, disjoncteur d'abonné, prise en panne. Prix annoncé avant.",
+    description: "Dépannage électrique à Charleville-Mézières, à tout moment sur rendez-vous : appartement sans courant, disjoncteur d'abonné, prise en panne. Prix annoncé avant.",
     kicker: 'Dépannage · Charleville-Mézières',
     h1: 'Dépannage électrique à Charleville-Mézières, en appartement comme en maison',
-    lead: "À **Charleville-Mézières**, une grande partie des pannes que je dépanne se produisent en appartement. Elles ont leurs spécificités : disjoncteur de branchement sur le palier, tableau à l'étroit, parties communes à distinguer. J'interviens **après 18 h et le week-end**, prix annoncé avant.",
+    lead: "À **Charleville-Mézières**, une grande partie des pannes que je dépanne se produisent en appartement. Elles ont leurs spécificités : disjoncteur de branchement sur le palier, tableau à l'étroit, parties communes à distinguer. J'interviens **à tout moment, sur rendez-vous**, prix annoncé avant.",
     body: `## Appartement sans courant : par où commencer ?
 
 Quand tout est coupé dans un appartement, trois situations sont possibles :
@@ -430,7 +430,7 @@ Indiquez-moi le code d'accès, l'étage et la présence ou non d'un ascenseur : 
       { q: 'Je suis locataire : qui paie le dépannage ?', a: "Cela dépend de la cause : l'entretien courant revient en général au locataire, le remplacement d'équipements vétustes au propriétaire. La facture détaillée vous aide à en discuter avec lui." },
       { q: 'La panne vient peut-être des parties communes, que faire ?', a: "Si plusieurs logements sont touchés, prévenez le syndic. Je n'interviens pas sur les parties communes sans mandat du gestionnaire." },
     ],
-    cta: { title: 'Une panne à Charleville-Mézières ?', text: 'J’interviens après 18 h et le week-end. Appelez : forfait dépannage annoncé tout de suite, devis de réparation sans obligation.' },
+    cta: { title: 'Une panne à Charleville-Mézières ?', text: 'J’interviens à tout moment, sur rendez-vous. Appelez : forfait dépannage annoncé tout de suite, devis de réparation sans obligation.' },
     links: ['/electricien-charleville-mezieres/', '/remplacement-tableau-electrique-charleville-mezieres/', '/disjoncteur-qui-saute/', '/panne-courant-partielle/', '/electricien-proprietaire-bailleur/'],
     nearby: ['/electricien-charleville-mezieres/', '/electricien-renwez/', '/electricien-poix-terron/', '/electricien-thin-le-moutier/'],
   },

@@ -721,3 +721,4 @@ a.contact-card:hover { border-color: rgba(29, 107, 255, .35); transform: transla
   .hero, .page-hero { background: none; color: #000; }
   .hero h1, .page-hero h1 { color: #000; }
 }
+.avatar-mono .ico { width: 46%; height: 46%; }

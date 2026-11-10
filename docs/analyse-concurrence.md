@@ -44,8 +44,8 @@ Le forfait ALED08 (79 €, ou 89 € et 99 € selon la distance, sans majoratio
 **Déjà mieux que tout ce qui existe localement**
 - Un prix de dépannage affiché, commune par commune.
 - Un déroulement du passage expliqué étape par étape.
-- Un artisan nommé, avec 10 ans de métier, joignable directement.
-- Des créneaux le soir et le week-end sans majoration.
+- Un artisan identifié sous la marque ALED08, joignable directement.
+- Une disponibilité à tout moment, sur rendez-vous, sans majoration.
 - Une page par commune, avec un contenu propre (les annuaires n'ont que des listes).
 
 **À égaler dans les prochains mois**
@@ -65,7 +65,7 @@ Le forfait ALED08 (79 €, ou 89 € et 99 € selon la distance, sans majoratio
 - (Un tableau « ce qui se pratique souvent / chez ALED08 » avait été ajouté sur la page Tarifs : il a été retiré à votre demande, pour garder un ton de confiance plutôt que de comparaison.)
 - Bloc « Mon passage chez vous, étape par étape » et « ce que vous payez / ne payez jamais ».
 - Engagement « Panne non trouvée : remise sur le forfait » dans le bloc forfait, la page Tarifs, les FAQ et les conditions générales.
-- Mise en avant d'Alexandre Poquet, jeune artisan avec déjà 10 ans de métier, sur un ton chaleureux (accueil, page dédiée, signature des pages).
+- Mise en avant d'ALED08 comme jeune artisan à l'écoute, sur un ton chaleureux (accueil, page dédiée, signature des pages). À votre demande, le site ne cite ni votre nom (hors pages légales), ni vos années de métier, ni d'horaires : il annonce « à tout moment, sur rendez-vous ».
 - 8 nouvelles pages communes là où des concurrents sont installés ou listés : Nouzonville, Villers-Semeuse, Sault-lès-Rethel, Rimogne, Boulzicourt, Saulces-Monclin, Juniville, Prix-lès-Mézières.
 - 4 nouvelles pages de pannes très recherchées : Linky qui disjoncte, chauffe-eau qui ne chauffe plus, radiateur froid, tableau qui grésille.
 - Données structurées enrichies : offre à 79 €, prix par commune, zone de 45 km, fiche de l'artisan.

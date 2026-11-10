@@ -21,10 +21,10 @@ module.exports = [
     title: 'Disponibilités et rendez-vous',
     icon: 'calendar-days',
     items: [
-      { q: 'Quels sont vos horaires d’intervention ?', a: "Du lundi au vendredi de 18 h à 21 h 30, le samedi de 8 h à 19 h et le dimanche de 9 h à 18 h. Toujours sur rendez-vous." },
+      { q: 'Quand intervenez-vous ?', a: "À tout moment, sur rendez-vous : en journée, le soir ou le week-end. Un appel suffit pour convenir du créneau qui vous arrange." },
       { q: 'Pourquoi uniquement sur rendez-vous ?', a: "Pour vous donner une heure d'arrivée fiable et préparer le bon matériel. Un rendez-vous évite aussi de vous faire attendre une demi-journée derrière votre fenêtre." },
       { q: 'Pouvez-vous venir le soir même ?', a: "Quand le planning le permet, oui. Appelez en fin d'après-midi : selon les rendez-vous déjà pris et la distance, je peux souvent proposer un créneau le soir même ou le lendemain soir." },
-      { q: 'Combien de temps dure une intervention en soirée ?', a: "La plupart des dépannages et petits travaux tiennent en une à deux heures. Les chantiers plus longs, comme un remplacement de tableau, sont programmés le week-end." },
+      { q: 'Combien de temps dure une intervention en soirée ?', a: "La plupart des dépannages et petits travaux tiennent en une à deux heures. Les chantiers plus longs, comme un remplacement de tableau, sont programmés sur une journée." },
     ],
   },
   {
@@ -32,7 +32,7 @@ module.exports = [
     title: 'Interventions et travaux',
     icon: 'wrench',
     items: [
-      { q: 'Qui intervient chez moi ?', a: `Moi, ${site.owner}, jeune artisan électricien avec déjà ${site.experienceYears} ans de métier. C'est la même personne qui répond au téléphone, qui se déplace et qui répare.` },
+      { q: 'Qui intervient chez moi ?', a: `${site.name}, c'est un seul artisan : un jeune électricien installé à ${site.address.city}. C'est la même personne qui répond au téléphone, qui se déplace et qui répare.` },
       { q: 'Comment se déroule votre passage pour une panne ?', a: "Je confirme le prix au téléphone, puis je viens au créneau fixé. Sur place, je vérifie qu'il n'y a pas de danger, je recherche la panne, je vous explique ce que j'ai trouvé et je vous remets un devis de réparation. Vous décidez ensuite : le détail est sur la page [Tarifs](/tarifs/#passage)." },
       { q: 'Quels types de travaux réalisez-vous ?', a: "Dépannage, recherche de panne, remplacement de prises et d'interrupteurs, éclairage intérieur et extérieur, ajout de circuits, prises spécialisées, remplacement de disjoncteurs et de tableaux, mise en sécurité. La liste complète est sur la page [Prestations](/prestations/)." },
       { q: 'Faut-il que je sois présent ?', a: "Oui, ou une personne de confiance majeure. Je dois pouvoir accéder au tableau et vous expliquer ce qui a été fait à la fin." },

@@ -9,9 +9,9 @@ module.exports = [
     description: 'Plus de courant, disjoncteur qui saute, prise ou lumière en panne ? Dépannage électrique à domicile dans les Ardennes, le soir et le week-end.',
     kicker: 'Prestation · Dépannage électrique',
     h1: 'Dépannage électrique à domicile, en soirée et le week-end',
-    lead: "Le dépannage, c'est **ma spécialité**. Une panne ne prévient pas, et elle arrive rarement aux heures de bureau : depuis Signy-l'Abbaye, j'interviens chez les particuliers des Ardennes **le soir après 18 h et le week-end**, sur rendez-vous. **Forfait de 79 €** : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. **Panne non trouvée : remise sur le forfait.**",
+    lead: "Le dépannage, c'est **ma spécialité**. Une panne ne prévient pas, et elle arrive rarement aux heures de bureau : depuis Signy-l'Abbaye, j'interviens chez les particuliers des Ardennes **à tout moment, sur rendez-vous**, le soir et le week-end compris. **Forfait de 79 €** : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. **Panne non trouvée : remise sur le forfait.**",
     prestation: 'depannage',
-    chips: [{ icon: 'zap', text: 'Forfait 79 € tout compris' }, { icon: 'clock', text: 'Soirs dès 18 h' }, { icon: 'calendar-days', text: 'Samedi & dimanche' }],
+    chips: [{ icon: 'zap', text: 'Forfait 79 € tout compris' }, { icon: 'clock', text: 'À tout moment' }, { icon: 'calendar-days', text: 'Sur rendez-vous' }],
     intro: `## Les pannes que je dépanne le plus souvent
 
 Un dépannage électrique, ce n'est pas seulement « remettre le disjoncteur ». Si un appareil de protection a coupé, c'est qu'il a détecté quelque chose. Mon travail consiste à **trouver ce qui a provoqué la coupure**, à le corriger durablement, puis à vérifier que tout est de nouveau sûr.`,
@@ -39,7 +39,7 @@ Quelques vérifications simples permettent parfois de gagner du temps, et elles 
 
 ## Pourquoi un dépannage le soir ou le week-end ?
 
-Parce que c'est là que vous êtes chez vous. Quand la panne tombe un mardi soir ou un samedi matin, vous n'avez pas à attendre la semaine suivante ni à poser une demi-journée de congé : **mes créneaux sont justement les soirs de semaine et les week-ends**. Le forfait est le même tous les jours, sans majoration.
+Parce que c'est là que vous êtes chez vous. Quand la panne tombe un mardi soir ou un samedi matin, vous n'avez pas à attendre la semaine suivante ni à poser une demi-journée de congé : **j'interviens à tout moment, sur rendez-vous**. Le forfait est le même tous les jours, sans majoration.
 
 ## Un dépannage propre, pas un rafistolage
 
@@ -58,8 +58,8 @@ Un domino sous un isolant, un disjoncteur remplacé par un calibre supérieur «
     ],
     faq: [
       { q: 'Combien coûte un dépannage électrique ?', a: "Le forfait dépannage est de 79 € : il comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de la panne, la proposition de solution et le devis de réparation. Au-delà de 15 km, comptez 10 € ou 20 € de supplément. La réparation fait l'objet d'un devis, que vous acceptez ou non. Et si je ne trouve pas la panne, je vous fais une remise sur le forfait. Voir les [tarifs](/tarifs/)." },
-      { q: 'Intervenez-vous en urgence la nuit ?', a: "Non : j'interviens le soir jusqu'à 21 h 30 et le week-end, sur rendez-vous. Pour une coupure générale de la rue, contactez Enedis. Pour une situation dangereuse (fumée, odeur de brûlé), coupez le courant au disjoncteur général et, en cas de doute, appelez le 18." },
-      { q: 'Faites-vous les dépannages le dimanche ?', a: 'Oui, le dimanche de 9 h à 18 h, sur rendez-vous, avec le même forfait que les autres jours.' },
+      { q: 'Quand pouvez-vous intervenir ?', a: "À tout moment, sur rendez-vous : appelez, je vous propose le créneau le plus proche. Pour une coupure générale de la rue, contactez Enedis. Pour une situation dangereuse (fumée, odeur de brûlé), coupez le courant au disjoncteur général et, en cas de doute, appelez le 18." },
+      { q: 'Faites-vous les dépannages le dimanche ?', a: 'Oui, sur rendez-vous, avec le même forfait que les autres jours.' },
       { q: 'Et si la panne vient de mon compteur Linky ?', a: "Le compteur et le disjoncteur de branchement relèvent d'Enedis. Si mon diagnostic montre que la panne se situe avant votre tableau, je vous le dis et vous oriente vers Enedis : il n'y a alors pas de devis de réparation de ma part." },
     ],
     cta: { title: 'Panne de courant ? On s’en occupe ce soir ou ce week-end.', text: 'Forfait dépannage 79 €, devis de réparation sans obligation. Appelez ou envoyez une photo de votre tableau sur WhatsApp.' },

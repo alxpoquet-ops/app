@@ -83,8 +83,8 @@ function trustBar() {
   const items = [
     ['zap', 'Spécialiste dépannage', 'Recherche de panne méthodique'],
     ['euro', 'Forfait 79 € TTC', 'Remise si panne non trouvée'],
-    ['moon', 'Soirs & week-ends', 'Sans majoration'],
-    ['user', 'Jeune artisan motivé', `Déjà ${site.experienceYears} ans de métier`],
+    ['clock', 'À tout moment', 'Sur rendez-vous, sans majoration'],
+    ['user', 'Jeune artisan motivé', 'À votre écoute'],
   ];
   return `<section class="trustbar" aria-label="Nos engagements"><div class="container trustbar-in">${items
     .map(([i, t, s]) => `<div class="trust-item">${icon(i)}<div><strong>${t}</strong><span>${s}</span></div></div>`)
@@ -108,14 +108,14 @@ function serviceCards(list = mainServices, opts = {}) {
 
 // ---------------------------------------------------------------- disponibilités
 function hoursTable(cls = '') {
-  return `<table class="hours ${cls}"><caption class="sr-only">Horaires d’intervention, sur rendez-vous</caption><tbody>${hours
+  return `<table class="hours ${cls}"><caption class="sr-only">Disponibilités : à tout moment, sur rendez-vous</caption><tbody>${hours
     .map((h) => `<tr><th scope="row">${h.days}</th><td>${h.label}</td></tr>`)
     .join('')}</tbody></table>`;
 }
 
 function dispoCard() {
   return `<aside class="dispo-card reveal" aria-label="Disponibilités et tarifs clés">
-  <div class="dispo-head"><span class="dot" aria-hidden="true"></span><span data-dispo>Créneaux en soirée et le week-end</span></div>
+  <div class="dispo-head"><span class="dot" aria-hidden="true"></span><span>Disponible à tout moment</span></div>
   ${hoursTable('hours-dark')}
   <p class="dispo-note">${icon('calendar-days')} Uniquement sur rendez-vous — appelez ou envoyez un message.</p>
   <div class="dispo-forfait">
@@ -232,25 +232,24 @@ function payBlock() {
 
 // ---------------------------------------------------------------- présentation de l'artisan
 function avatar(cls = '') {
-  const initials = site.owner.split(' ').map((w) => w[0]).join('').slice(0, 2);
   return site.portrait
-    ? `<img class="avatar ${cls}" src="${site.portrait}" alt="${esc(site.owner)}, électricien à ${esc(site.address.city)}" width="160" height="160" loading="lazy" decoding="async">`
-    : `<span class="avatar avatar-mono ${cls}" aria-hidden="true">${initials}</span>`;
+    ? `<img class="avatar ${cls}" src="${site.portrait}" alt="${esc(site.name)}, électricien à ${esc(site.address.city)}" width="160" height="160" loading="lazy" decoding="async">`
+    : `<span class="avatar avatar-mono ${cls}" aria-hidden="true">${icon('zap')}</span>`;
 }
 function artisanCard() {
-  return `<aside class="artisan reveal" aria-label="${esc(site.owner)}, électricien">
-  <div class="artisan-id">${avatar()}<div><strong>${site.owner}</strong><span>Jeune artisan électricien</span><span>${site.address.city} (${site.address.postalCode.slice(0, 2)})</span></div></div>
+  return `<aside class="artisan reveal" aria-label="${esc(site.name)}, électricien">
+  <div class="artisan-id">${avatar()}<div><strong>${site.name}</strong><span>Jeune artisan électricien</span><span>${site.address.city} (${site.address.postalCode.slice(0, 2)})</span></div></div>
   <ul class="artisan-facts">
     <li>${icon('zap')}<span><strong>Spécialité</strong>Dépannage et recherche de panne</span></li>
-    <li>${icon('sparkles')}<span><strong>Parcours</strong>Déjà ${site.experienceYears} ans de métier</span></li>
+    <li>${icon('euro')}<span><strong>Prix</strong>Annoncé avant de venir</span></li>
     <li>${icon('user')}<span><strong>Votre interlocuteur</strong>Je réponds, je me déplace, je répare</span></li>
-    <li>${icon('moon')}<span><strong>Créneaux</strong>Soirs de semaine et week-ends, sur rendez-vous</span></li>
+    <li>${icon('clock')}<span><strong>Disponibilité</strong>À tout moment, sur rendez-vous</span></li>
   </ul>
-  ${btnCall('btn-primary btn-block', 'Appeler ' + site.owner.split(' ')[0])}
+  ${btnCall('btn-primary btn-block', 'Appeler ' + site.name)}
 </aside>`;
 }
 function authorBox(id = 'lga') {
-  return `<div class="author-box">${site.portrait ? avatar('avatar-sm') : logoSvg(id)}<p><strong>${site.owner}</strong> — jeune artisan électricien installé à ${site.address.city} (ALED08), déjà ${site.experienceYears} ans de métier. Je me déplace en soirée et le week-end, sur rendez-vous, chez les particuliers des Ardennes. <a href="/qui-suis-je/">Faisons connaissance</a></p></div>`;
+  return `<div class="author-box">${site.portrait ? avatar('avatar-sm') : logoSvg(id)}<p><strong>${site.name}</strong> — jeune artisan électricien installé à ${site.address.city}. Je me déplace à tout moment, sur rendez-vous, chez les particuliers des Ardennes. <a href="/qui-suis-je/">Faisons connaissance</a></p></div>`;
 }
 
 // ---------------------------------------------------------------- étapes

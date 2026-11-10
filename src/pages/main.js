@@ -33,14 +33,13 @@ function registerAll(register) {
 
 // ====================================================================== ACCUEIL
 function home({ posts }) {
-  const Y = site.experienceYears;
   const f = C.faq(
     [
       { q: 'Combien coûte un dépannage ?', a: "Le forfait dépannage est de 79 € TTC. Il comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de la panne, la proposition de solution et le devis de réparation, sans obligation. Au-delà de 15 km, il passe à 89 € (15 à 30 km) ou 99 € (30 à 45 km). Détails sur la page [Tarifs](/tarifs/)." },
       { q: 'Et si vous ne trouvez pas la panne ?', a: "Je vous fais une remise sur le forfait. Le forfait rémunère un résultat, c'est-à-dire savoir d'où vient la panne et combien coûterait la réparation : si je n'y parviens pas, vous ne payez pas le plein tarif." },
       { q: 'Et la réparation, combien coûte-t-elle ?', a: "Elle dépend de la panne trouvée et des pièces à remplacer. C'est pourquoi je ne publie pas de prix de pièces : à la fin du dépannage, je vous remets un devis précis. Vous êtes libre de l'accepter ou non." },
-      { q: 'Qui vient chez moi ?', a: `Moi, ${site.owner}. Je suis un jeune artisan électricien, avec déjà ${Y} ans de métier. Vous m'avez directement au téléphone, et c'est moi qui viens chez vous.` },
-      { q: 'Intervenez-vous vraiment le soir et le week-end ?', a: "Oui, c'est le principe d'ALED08 : du lundi au vendredi de 18 h à 21 h 30, le samedi de 8 h à 19 h et le dimanche de 9 h à 18 h, toujours sur rendez-vous. Le forfait reste le même, sans majoration." },
+      { q: 'Qui vient chez moi ?', a: "ALED08, c'est un seul artisan : un jeune électricien installé à Signy-l'Abbaye. Vous m'avez directement au téléphone, et c'est moi qui viens chez vous." },
+      { q: 'Quand pouvez-vous intervenir ?', a: "À tout moment, sur rendez-vous : en journée, le soir ou le week-end. Appelez-moi, nous convenons ensemble du créneau qui vous arrange. Le forfait reste le même, sans majoration." },
       { q: 'Dans quelles communes intervenez-vous ?', a: "Principalement autour de Signy-l'Abbaye : Rethel, Charleville-Mézières, Sedan, Rocroi, Liart, Novion-Porcien, Thin-le-Moutier, Poix-Terron, Château-Porcien et les villages alentour. Consultez la [zone d'intervention](/zone-intervention/)." },
       { q: 'Faites-vous aussi des travaux, en dehors des pannes ?', a: "Oui : tableau électrique, mise en sécurité, éclairage, prises, ajout de circuits. Pour ces travaux, le devis est gratuit et détaillé." },
     ],
@@ -54,7 +53,7 @@ function home({ posts }) {
     <div class="hero-copy">
       <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>Spécialiste du dépannage électrique · Signy-l’Abbaye (08)</p>
       <h1><span class="h1-brand">${icon('zap', 'bolt')}ALED08</span><span class="h1-main">Dépannage &amp; Travaux Électriques dans les Ardennes</span></h1>
-      <p class="hero-lead"><strong>Intervention en soirée et le week-end sur rendez-vous.</strong></p>
+      <p class="hero-lead"><strong>Intervention à tout moment, sur rendez-vous.</strong></p>
       <p class="hero-lead hero-sub">Recherche de panne, dépannage, tableaux électriques, éclairage, prises et mise en sécurité.</p>
       <div class="hero-ctas">
         ${C.btnCall('btn-primary btn-lg', 'Dépannage : ' + site.phoneDisplay)}
@@ -65,7 +64,7 @@ function home({ posts }) {
         <li>${icon('zap')}Forfait dépannage 79 €, déplacement compris</li>
         <li>${icon('shield-check')}Remise si la panne n’est pas trouvée</li>
         <li>${icon('file-text')}Devis de réparation sans obligation</li>
-        <li>${icon('user')}${site.owner}, jeune artisan à votre écoute</li>
+        <li>${icon('user')}Un jeune artisan à votre écoute</li>
       </ul>
     </div>
     ${C.dispoCard()}
@@ -90,9 +89,9 @@ ${C.trustBar()}
 <section class="section" id="qui"><div class="container grid grid-2" style="align-items:center">
   <div class="reveal">
     <p class="kicker">Qui vient chez vous ?</p>
-    <h2>Bonjour, moi c’est Alexandre</h2>
-    <p>Je suis un jeune artisan électricien, installé à Signy-l’Abbaye. ALED08, c’est moi : je décroche quand vous appelez, je viens chez vous et je réalise la réparation. Vous savez à qui vous avez affaire, du premier appel à la facture.</p>
-    <p>J’ai déjà ${Y} ans de métier, et toujours la même envie : comprendre d’où vient une panne et vous l’expliquer simplement. C’est comme ça que le dépannage est devenu ma spécialité.</p>
+    <h2>Bonjour et bienvenue chez ALED08</h2>
+    <p>ALED08, c’est un jeune artisan électricien installé à Signy-l’Abbaye. Je décroche quand vous appelez, je viens chez vous et je réalise la réparation. Vous savez à qui vous avez affaire, du premier appel à la facture.</p>
+    <p>J’ai toujours la même envie : comprendre d’où vient une panne et vous l’expliquer simplement. C’est comme ça que le dépannage est devenu ma spécialité.</p>
     <p>Ce que vous pouvez attendre de moi :</p>
     <ul class="list-check">
       <li>un prix annoncé avant de venir, et tenu ;</li>
@@ -108,22 +107,22 @@ ${C.trustBar()}
 <section class="section section-dark"><div class="container grid grid-2" style="align-items:center">
   <div class="reveal">
     <p class="kicker">Disponibilités</p>
-    <h2>Je viens quand vous êtes chez vous</h2>
-    <p>C’est le soir et le week-end que vous êtes à la maison, et souvent que vous découvrez la panne. J’ai donc organisé ALED08 autour de ces créneaux-là : vous n’avez pas à bouleverser votre journée.</p>
+    <h2>Je viens quand ça vous arrange</h2>
+    <p>Une panne ne choisit pas son moment. ALED08 intervient donc à tout moment, sur rendez-vous : on trouve ensemble le créneau qui vous convient, sans bouleverser votre journée.</p>
     <ul class="list-check">
-      <li><strong>En semaine, de 18 h à 21 h 30</strong> : pas besoin de poser une journée de congé.</li>
-      <li><strong>Le samedi et le dimanche</strong> : pour les pannes du week-end comme pour les travaux plus longs.</li>
-      <li><strong>Même forfait</strong> le soir et le week-end, sans majoration.</li>
+      <li><strong>En journée, le soir ou le week-end</strong> : pas besoin de poser un congé.</li>
+      <li><strong>Un appel suffit</strong> : je vous propose le créneau le plus proche.</li>
+      <li><strong>Même forfait</strong> à tout moment, sans majoration.</li>
       <li><strong>Sur rendez-vous</strong> : vous savez à quelle heure j’arrive.</li>
     </ul>
     <div class="hero-ctas">${C.btnCall('btn-primary')}${C.btnWa('btn-wa', 'Envoyer une photo')}</div>
   </div>
   <div class="split-media reveal">
-    <h3>${icon('clock')} Mes créneaux d’intervention</h3>
+    <h3>${icon('clock')} Disponible à tout moment</h3>
     ${C.hoursTable('hours-dark')}
     <div class="stat-row">
-      <div class="stat"><strong>18 h</strong><span>dès la fin de journée</span></div>
-      <div class="stat"><strong>7 j/7</strong><span>soirs et week-ends</span></div>
+      <div class="stat"><strong>7 j/7</strong><span>sur rendez-vous</span></div>
+      <div class="stat"><strong>79 €</strong><span>le forfait dépannage</span></div>
       <div class="stat"><strong>0 €</strong><span>de majoration</span></div>
     </div>
   </div>
@@ -162,11 +161,11 @@ ${f.html}
   <p class="center" style="margin-top:28px"><a class="btn btn-ghost" href="/blog/">${icon('book-open')}<span>Tous les articles</span></a></p>
 </div></section>
 
-${C.ctaBand({ title: 'Une panne, un projet, une question ?', text: 'Appelez, écrivez sur WhatsApp ou demandez un devis en ligne. Je vous réponds rapidement avec un créneau en soirée ou le week-end.' })}`;
+${C.ctaBand({ title: 'Une panne, un projet, une question ?', text: 'Appelez, écrivez sur WhatsApp ou demandez un devis en ligne. Je vous réponds rapidement et on fixe ensemble un créneau.' })}`;
   return {
     path: '/',
-    title: 'Électricien Ardennes – Dépannage 79 € soir & week-end | ALED08',
-    description: `Dépannage électrique dans les Ardennes : forfait 79 €, déplacement et devis compris. ${site.owner}, jeune artisan électricien à Signy-l'Abbaye.`,
+    title: 'Électricien Ardennes – Dépannage 79 € à tout moment | ALED08',
+    description: `Dépannage électrique dans les Ardennes : forfait 79 €, déplacement et devis compris. ALED08, jeune artisan électricien à Signy-l'Abbaye.`,
     crumbs: [HOME],
     body,
     schema: [f.schema],
@@ -177,20 +176,19 @@ ${C.ctaBand({ title: 'Une panne, un projet, une question ?', text: 'Appelez, éc
 
 // ====================================================================== QUI SUIS-JE
 function about() {
-  const Y = site.experienceYears;
   const crumbs = [HOME, { name: 'Qui suis-je ?', path: '/qui-suis-je/' }];
   const body = `${C.pageHero({
     kicker: 'Qui suis-je ?',
-    h1: `${site.owner}, votre électricien à Signy-l’Abbaye`,
-    lead: `Bonjour ! Je m'appelle Alexandre. Je suis un **jeune artisan électricien** installé à **Signy-l'Abbaye**, avec déjà ${Y} ans de métier. ALED08, c'est moi : vous m'avez directement au téléphone, je me déplace le soir et le week-end, et je vous annonce le prix avant de venir.`,
+    h1: 'ALED08, votre électricien à Signy-l’Abbaye',
+    lead: "Bonjour ! ALED08, c'est un **jeune artisan électricien** installé à **Signy-l'Abbaye**. Vous m'avez directement au téléphone, je me déplace à tout moment sur rendez-vous, et je vous annonce le prix avant de venir.",
     crumbs,
     chips: [{ icon: 'user', text: 'Jeune artisan motivé' }, { icon: 'zap', text: 'Spécialiste du dépannage' }, { icon: 'map-pin', text: 'Signy-l’Abbaye (08)' }],
   })}
 <section class="section"><div class="container layout-aside">
   <div class="prose">
-    ${md(`## Jeune artisan, déjà ${Y} ans de métier
+    ${md(`## Un jeune artisan, passionné par son métier
 
-J'ai commencé l'électricité il y a ${Y} ans, et le métier me plaît toujours autant. On y apprend vite que deux installations ne se ressemblent jamais : la maison câblée au cordeau, la ferme équipée par étapes sur trois générations, l'appartement où chaque occupant a ajouté sa prise. C'est ce qui m'a conduit vers ce que je préfère : **la recherche de panne**.
+L'électricité, c'est un métier qui me plaît chaque jour. On y apprend vite que deux installations ne se ressemblent jamais : la maison câblée au cordeau, la ferme équipée par étapes sur trois générations, l'appartement où chaque occupant a ajouté sa prise. C'est ce qui m'a conduit vers ce que je préfère : **la recherche de panne**.
 
 J'ai créé ALED08 avec une idée simple : rendre service aux gens d'ici, sérieusement et avec le sourire.
 
@@ -202,9 +200,9 @@ Parce que c'est là que je me sens le plus utile. Quand le courant saute un soir
 
 Quand vous appelez, c'est moi qui décroche, ou qui vous rappelle si je suis en intervention. C'est moi qui viens, qui cherche la panne, qui rédige le devis et qui répare. Et si vous avez une question après mon passage, vous savez qui rappeler.
 
-## Pourquoi le soir et le week-end ?
+## Disponible à tout moment
 
-Parce que c'est à ces moments-là que vous êtes chez vous. La panne se découvre en rentrant du travail, et poser une journée de congé pour attendre un artisan n'arrange personne. Mes créneaux sont donc **les soirs de semaine, de 18 h à 21 h 30, et les week-ends**, toujours sur rendez-vous. Le prix ne change pas selon le jour ou l'heure.
+Une panne se découvre souvent en rentrant du travail, ou un dimanche matin. Poser une journée de congé pour attendre un artisan n'arrange personne : j'interviens donc **à tout moment, sur rendez-vous**, en journée comme le soir ou le week-end. Le prix ne change pas selon le jour ou l'heure.
 
 ## Ma façon de travailler
 
@@ -220,8 +218,6 @@ Parce que c'est à ces moments-là que vous êtes chez vous. La panne se découv
 ## Ce à quoi je m'engage
 
 Je préfère les engagements simples aux grandes promesses : un prix annoncé à l'avance, une explication claire et un devis avant toute réparation. Et quand une réparation n'est pas nécessaire, je vous le dis.
-
-Une précision, pour être tout à fait clair : je n'interviens pas en pleine nuit. Mes créneaux sont les soirs et les week-ends, sur rendez-vous.
 
 ## La norme NF C 15-100, une évidence
 
@@ -250,20 +246,13 @@ ALED08 s'adresse aux **particuliers** : dépannage et recherche de panne d'abord
   </div>
 </div></section>
 ${C.reviewsBlock(avis, 3).replace('section section-alt', 'section')}
-${C.ctaBand({ title: 'Une panne ou un projet ? Parlons-en', text: 'Appelez-moi ou écrivez-moi : je vous réponds avec plaisir, et on fixe un créneau le soir ou le week-end.' })}`;
+${C.ctaBand({ title: 'Une panne ou un projet ? Parlons-en', text: 'Appelez-moi ou écrivez-moi : je vous réponds avec plaisir, et on fixe un créneau qui vous arrange.' })}`;
   return {
     path: '/qui-suis-je/',
-    title: `${site.owner}, artisan électricien à Signy-l'Abbaye | ALED08`,
-    description: `${site.owner}, jeune artisan électricien à Signy-l'Abbaye, ${Y} ans de métier. Dépannage et recherche de panne, le soir et le week-end, en toute confiance.`,
+    title: "Qui suis-je ? Un jeune artisan électricien à Signy-l'Abbaye | ALED08",
+    description: "ALED08 : un jeune artisan électricien à Signy-l'Abbaye. Dépannage et recherche de panne à tout moment, sur rendez-vous, en toute confiance.",
     crumbs,
     body,
-    schema: [{
-      '@type': 'Person', '@id': site.url + '/#dirigeant', name: site.owner, jobTitle: 'Électricien',
-      description: `Artisan électricien, ${Y} ans de métier, spécialisé dans le dépannage et la recherche de panne électrique chez les particuliers des Ardennes.`,
-      knowsAbout: ['Dépannage électrique', 'Recherche de panne électrique', 'Norme NF C 15-100', 'Tableau électrique', 'Mise en sécurité électrique'],
-      worksFor: { '@id': site.url + '/#entreprise' }, url: site.url + '/qui-suis-je/',
-      address: { '@type': 'PostalAddress', addressLocality: site.address.city, postalCode: site.address.postalCode, addressCountry: 'FR' },
-    }],
     webpageType: 'AboutPage',
     priority: 0.8,
   };
@@ -427,7 +416,7 @@ Remplacement de tableau, mise en sécurité, éclairage, ajout de prises ou de c
   <div class="reveal">${C.pricingTable()}</div>
 </div></section>
 ${f.html}
-${C.ctaBand({ title: 'Un prix clair avant de commencer', text: 'Forfait dépannage à 79 €, devis de réparation sans obligation : appelez-moi pour un créneau ce soir ou ce week-end.', prestation: 'depannage' })}
+${C.ctaBand({ title: 'Un prix clair avant de commencer', text: 'Forfait dépannage à 79 €, devis de réparation sans obligation : appelez-moi, on fixe un créneau ensemble.', prestation: 'depannage' })}
 ${communesJs}`;
   return {
     path: '/tarifs/',
@@ -565,7 +554,7 @@ function faqFull() {
     .join('')}
 </div></section>
 ${C.ctaBand({ title: 'Une autre question ?', text: 'Le plus simple reste de m’appeler ou de m’écrire sur WhatsApp : je réponds volontiers, même sans intervention à la clé.' })}`;
-  return { path: '/faq/', title: 'FAQ électricien : tarifs, délais, sécurité, devis | ALED08', description: "Toutes les réponses sur les interventions d'ALED08 dans les Ardennes : tarifs, déplacement, horaires du soir et du week-end, devis, paiement, sécurité électrique.", crumbs, body, schema: [schema], priority: 0.7 };
+  return { path: '/faq/', title: 'FAQ électricien : tarifs, délais, sécurité, devis | ALED08', description: "Toutes les réponses sur les interventions d'ALED08 dans les Ardennes : tarifs, déplacement, disponibilités, devis, paiement, sécurité électrique.", crumbs, body, schema: [schema], priority: 0.7 };
 }
 
 // ====================================================================== FORMULAIRES
@@ -638,7 +627,7 @@ function devis() {
       <ol class="list-num" style="font-size:.95rem">
         <li>Je lis votre demande et je vous rappelle, généralement dans la journée.</li>
         <li>On précise le besoin ; si nécessaire, je viens voir sur place.</li>
-        <li>Vous recevez un prix clair, et on fixe un créneau soir ou week-end.</li>
+        <li>Vous recevez un prix clair, et on fixe ensemble un créneau.</li>
       </ol>
     </div>
     <div class="aside-card aside-card-dark">
@@ -673,7 +662,7 @@ function contact() {
       <div class="contact-card">${icon('map-pin')}<div><strong>${site.address.postalCode} ${site.address.city}</strong><span>Interventions à domicile dans les Ardennes, sur rendez-vous</span></div></div>
     </div>
     <div class="aside-card" style="margin-top:22px">
-      <h2 class="h3">${icon('clock')} Horaires d’intervention</h2>
+      <h2 class="h3">${icon('clock')} Disponible à tout moment</h2>
       ${C.hoursTable()}
       <p class="small muted" style="margin:10px 0 0">Uniquement sur rendez-vous. Messages et appels consultés chaque jour.</p>
     </div>

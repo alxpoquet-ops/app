@@ -15,9 +15,9 @@ function businessSchema() {
     '@id': site.url + '/#entreprise',
     name: site.name,
     alternateName: 'ALED08 — Dépannage électrique dans les Ardennes',
-    slogan: 'Dépannage électrique au forfait, le soir et le week-end',
+    slogan: 'Dépannage électrique au forfait, à tout moment sur rendez-vous',
     description:
-      `Électricien spécialiste du dépannage basé à Signy-l'Abbaye (Ardennes), ${site.experienceYears} ans de métier. Forfait dépannage 79 € : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Travaux sur devis gratuit : tableau, prises, éclairage, mise en sécurité. Le soir et le week-end sur rendez-vous.`,
+      `Électricien spécialiste du dépannage basé à Signy-l'Abbaye (Ardennes). Forfait dépannage 79 € : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Travaux sur devis gratuit : tableau, prises, éclairage, mise en sécurité. À tout moment, sur rendez-vous.`,
     url: site.url + '/',
     telephone: site.phoneIntl,
     email: site.email,
@@ -25,7 +25,6 @@ function businessSchema() {
     logo: site.url + '/assets/img/logo-512.png',
     priceRange: '€€',
     currenciesAccepted: 'EUR',
-    founder: { '@type': 'Person', '@id': site.url + '/#dirigeant', name: site.owner, jobTitle: 'Électricien', description: `Électricien depuis ${site.experienceYears} ans, spécialiste du dépannage électrique.`, url: site.url + '/qui-suis-je/' },
     makesOffer: {
       '@type': 'Offer',
       name: 'Forfait dépannage électrique',
@@ -49,12 +48,6 @@ function businessSchema() {
       { '@type': 'AdministrativeArea', name: 'Ardennes (08)' },
       ...communes.filter((c) => c.page).map((c) => ({ '@type': 'City', name: c.name })),
     ],
-    openingHoursSpecification: hours.map((h) => ({
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: h.schemaDays,
-      opens: h.opens,
-      closes: h.closes,
-    })),
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: 'Prestations et tarifs électricité',
@@ -114,7 +107,7 @@ function header(currentPath) {
 <div class="topbar"><div class="container topbar-in">
   <span class="topbar-item hide-sm">${icon('zap')}Spécialiste du dépannage · forfait 79 €</span>
   <span class="topbar-item hide-lg">${icon('map-pin')}Signy-l’Abbaye · Ardennes (08)</span>
-  <span class="topbar-item" data-dispo-wrap>${icon('clock')}<span data-dispo>Créneaux en soirée dès 18 h</span></span>
+  <span class="topbar-item">${icon('clock')}<span>À tout moment, sur rendez-vous</span></span>
   <a class="topbar-phone" href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a>
 </div></div>
 <header class="site-header">
@@ -155,7 +148,7 @@ function footer() {
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand brand-light" href="/">${C.logoSvg('lgf')}<span class="brand-text"><strong>ALED08</strong><small>Électricien · Ardennes</small></span></a>
-      <p><strong style="color:#fff">Dépannage électrique au forfait : 79 €</strong>, déplacement, recherche de panne et devis compris. Travaux sur devis gratuit. Par ${site.owner}, artisan électricien à Signy-l’Abbaye.</p>
+      <p><strong style="color:#fff">Dépannage électrique au forfait : 79 €</strong>, déplacement, recherche de panne et devis compris. Travaux sur devis gratuit. Un jeune artisan électricien à Signy-l’Abbaye, à votre écoute.</p>
       <ul class="footer-contact">
         <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>
         <li><a href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}WhatsApp</a></li>
@@ -189,7 +182,7 @@ function footer() {
     </div>
   </div>
   <div class="footer-bottom"><div class="container footer-bottom-in">
-    <p>© ${new Date().getFullYear()} ${site.name} — ${site.owner}. Électricien à Signy-l’Abbaye, Ardennes (08).</p>
+    <p>© ${new Date().getFullYear()} ${site.name}. Électricien à Signy-l’Abbaye, Ardennes (08).</p>
     <ul>
       <li><a href="/mentions-legales/">Mentions légales</a></li>
       <li><a href="/politique-de-confidentialite/">Confidentialité</a></li>
@@ -242,7 +235,7 @@ function page(p) {
 <meta name="description" content="${esc(p.description)}">
 <link rel="canonical" href="${url}">
 <meta name="robots" content="${robots}">
-<meta name="author" content="${esc(site.owner)}">
+<meta name="author" content="${esc(site.name)}">
 <meta name="theme-color" content="#161A1F">
 <meta name="format-detection" content="telephone=no">
 <meta name="geo.region" content="FR-08">

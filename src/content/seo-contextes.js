@@ -243,7 +243,7 @@ En cas d'**odeur de brûlé** ou de **prise qui chauffe**, coupez le disjoncteur
 
 ## Ce que je peux vous proposer
 
-Je ne suis pas un service d'urgence 24 h/24 : je travaille **sur rendez-vous, le soir de 18 h à 21 h 30 et le week-end**. Mais dans ces créneaux, je donne **la priorité aux situations les plus pénalisantes** : logement entièrement sans courant, chauffage coupé en hiver, personne âgée ou fragile, congélateur plein.
+J'interviens **à tout moment, sur rendez-vous**, et je donne **la priorité aux situations les plus pénalisantes** : logement entièrement sans courant, chauffage coupé en hiver, personne âgée ou fragile, congélateur plein.
 
 Concrètement, si vous appelez en fin d'après-midi pour une panne totale à proximité de Signy-l'Abbaye, je peux souvent venir **le soir même**. Plus loin ou en période chargée, je vous propose le premier créneau disponible et je vous conseille pour patienter en sécurité.
 
@@ -251,12 +251,12 @@ Concrètement, si vous appelez en fin d'après-midi pour une panne totale à pro
 
 L'urgence ne change rien à ma façon de faire : le **forfait dépannage est annoncé au téléphone** avant que je prenne la route, et la réparation fait l'objet d'un devis, sans obligation. Vous gardez la main, même dans le stress d'une panne.`,
     cases: [
-      { tag: 'Vendredi 18 h', icon: 'zap-off', title: 'Une maison entièrement sans courant', text: "Une famille de Thin-le-Moutier rentre à 18 h : plus rien ne fonctionne, le disjoncteur général refuse de se réarmer.", result: 'Sur place à 18 h 40, câble de la pompe de relevage en court-circuit isolé, maison rétablie à 19 h 30.' },
+      { tag: 'Un vendredi soir', icon: 'zap-off', title: 'Une maison entièrement sans courant', text: "Une famille de Thin-le-Moutier rentre à 18 h : plus rien ne fonctionne, le disjoncteur général refuse de se réarmer.", result: 'Sur place à 18 h 40, câble de la pompe de relevage en court-circuit isolé, maison rétablie à 19 h 30.' },
       { tag: 'Samedi matin', icon: 'flame', title: 'Une odeur de brûlé dans l’entrée', text: "Une odeur de plastique chaud près du tableau, que la propriétaire a eu le bon réflexe de couper.", result: 'Borne de disjoncteur carbonisée, remplacée avec le peigne ; remise sous tension après contrôle.' },
       { tag: 'Dimanche', icon: 'thermometer', title: 'Plus de chauffage en février', text: "Le circuit de chauffage d'une maison de Liart ne se réarme plus par -5 °C.", result: 'Radiateur défectueux isolé, chauffage rétabli dans les autres pièces dans l’heure.' },
     ],
     faq: [
-      { q: 'Intervenez-vous la nuit ?', a: "Non. Mes interventions ont lieu jusqu'à 21 h 30 en semaine et en journée le week-end. Si toute la rue est privée de courant, c'est vers Enedis qu'il faut se tourner, y compris la nuit." },
+      { q: 'Quand pouvez-vous venir ?', a: "Dès que possible, sur rendez-vous : un appel, et nous fixons le passage ensemble. Si toute la rue est privée de courant, c'est vers Enedis qu'il faut se tourner, y compris la nuit." },
       { q: 'Le prix est-il plus élevé quand c’est urgent ?', a: "Non. Les tarifs sont les mêmes, que l'intervention soit planifiée ou rapide, en soirée ou le week-end." },
       { q: 'Que faire en attendant votre arrivée ?', a: "Laissez la protection déclenchée en position basse, débranchez les appareils de la zone concernée et, en cas d'odeur ou de chaleur anormale, coupez le disjoncteur général." },
     ],

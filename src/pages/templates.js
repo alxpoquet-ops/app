@@ -21,7 +21,7 @@ function body(src, cta) {
 function aside(p) {
   return `<aside class="aside-sticky" aria-label="Contact et tarifs">
   <div class="aside-card aside-card-dark">
-    <h2>${icon('moon')} Soirs &amp; week-ends</h2>
+    <h2>${icon('clock')} À tout moment</h2>
     ${C.hoursTable()}
     <p class="small" style="margin:12px 0 16px">Sur rendez-vous uniquement.</p>
     ${C.btnCall('btn-primary btn-block', 'Appeler')}
@@ -45,7 +45,6 @@ function seoPage(p) {
   const crumbs = [{ name: 'Accueil', path: '/' }, parent, { name: p.label, path }];
   const f = C.faq(p.faq, p.faqTitle || 'Vos questions');
   const area = p.city ? { '@type': 'City', name: p.city } : { '@type': 'AdministrativeArea', name: 'Ardennes (08)' };
-  const Y = site.experienceYears;
   const price = p.city ? C.forfaitFor(p.city) : 79;
   const isPanne = ['villes', 'services-villes', 'secteurs', 'ardennes', 'symptomes'].includes(p.group) || p.prestation === 'depannage';
   // Titre : les pages communes affichent le prix du dépannage sur place (meilleur taux de clic)
@@ -121,7 +120,7 @@ function blogPost(a, all) {
     datePublished: a.date,
     dateModified: a.modified || a.date,
     inLanguage: 'fr-FR',
-    author: { '@type': 'Person', '@id': site.url + '/#dirigeant', name: site.owner, jobTitle: 'Électricien', url: site.url + '/qui-suis-je/' },
+    author: { '@id': site.url + '/#entreprise' },
     publisher: { '@id': site.url + '/#entreprise' },
     mainEntityOfPage: site.url + path,
     image: site.url + '/assets/img/og-image.png',
@@ -135,7 +134,7 @@ function blogPost(a, all) {
     <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>${esc(a.category)}</p>
     <h1>${inline(a.h1)}</h1>
     <p class="lead">${inline(a.lead)}</p>
-    <div class="article-meta"><span>${icon('user')}${site.owner}, artisan électricien</span><span>${icon('calendar-days')}<time datetime="${a.date}">${frDate(a.date)}</time></span><span>${icon('timer')}${readingTime(a.body)} min de lecture</span></div>
+    <div class="article-meta"><span>${icon('user')}${site.name}, artisan électricien</span><span>${icon('calendar-days')}<time datetime="${a.date}">${frDate(a.date)}</time></span><span>${icon('timer')}${readingTime(a.body)} min de lecture</span></div>
   </div>
 </section>
 <section class="section"><div class="container layout-aside">

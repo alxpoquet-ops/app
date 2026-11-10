@@ -52,7 +52,7 @@ Travailler dans sa propre commune, c'est accepter d'être jugé tous les jours s
     description: 'Électricien à Rethel pour les particuliers : dépannage, recherche de panne, tableau, prises, éclairage. Forfait dépannage 89 €, le soir et le week-end.',
     kicker: 'Électricien · Rethel (08300)',
     h1: 'Électricien à Rethel, en soirée et le week-end',
-    lead: "À une vingtaine de minutes de Signy-l'Abbaye, **Rethel** fait partie de mes secteurs réguliers. J'y interviens chez les particuliers pour les pannes, les tableaux, les prises et l'éclairage, **après 18 h en semaine et le week-end**, avec un **forfait dépannage de 89 €** (79 € + 10 € de supplément kilométrique).",
+    lead: "À une vingtaine de minutes de Signy-l'Abbaye, **Rethel** fait partie de mes secteurs réguliers. J'y interviens chez les particuliers pour les pannes, les tableaux, les prises et l'éclairage, **à tout moment, sur rendez-vous**, avec un **forfait dépannage de 89 €** (79 € + 10 € de supplément kilométrique).",
     body: `## Des installations marquées par l'histoire de la ville
 
 Une grande partie du centre de Rethel a été reconstruite après la Seconde Guerre mondiale. Beaucoup de logements datent donc de la **Reconstruction des années 1950**, et certaines installations électriques en gardent la trace : circuits sans conducteur de terre, sections de câbles prévues pour une époque où l'on branchait une radio et un fer à repasser, tableaux modernisés à moitié.
@@ -92,10 +92,10 @@ J'interviens dans toute la ville, du centre aux quartiers plus récents, ainsi q
     label: 'Électricien à Charleville-Mézières',
     teaser: 'Appartements, maisons de ville, pavillons : un électricien disponible après le travail.',
     title: 'Électricien à Charleville-Mézières – soir & week-end | ALED08',
-    description: 'Électricien à Charleville-Mézières : dépannage, tableau, prises, éclairage, mise en sécurité. Forfait dépannage 99 €, après 18 h et le week-end.',
+    description: 'Électricien à Charleville-Mézières : dépannage, tableau, prises, éclairage, mise en sécurité. Forfait dépannage 99 €, à tout moment sur RDV.',
     kicker: 'Électricien · Charleville-Mézières (08000)',
     h1: 'Électricien à Charleville-Mézières, après le travail et le week-end',
-    lead: "À Charleville-Mézières, vous rentrez du travail et la panne vous attend ? **Le soir et le samedi**, c'est justement mon créneau : j'interviens dans la préfecture et son agglomération **de 18 h à 21 h 30 en semaine et tout le week-end**, avec des prix publiés à l'avance.",
+    lead: "À Charleville-Mézières, vous rentrez du travail et la panne vous attend ? Pas de souci : j'interviens dans la préfecture et son agglomération **à tout moment, sur rendez-vous**, le soir et le week-end compris, avec des prix publiés à l'avance.",
     body: `## Des logements très variés
 
 De la place Ducale aux quartiers de Mohon, d'Étion ou de Montcy-Notre-Dame, Charleville-Mézières offre une grande diversité de logements : immeubles anciens du centre, maisons de ville sur plusieurs niveaux, résidences des années 60 et 70, pavillons plus récents. Chacun a ses points faibles :
@@ -124,7 +124,7 @@ Parce que je suis disponible quand vous l'êtes. Charleville-Mézières se trouv
       { q: 'Faut-il prévoir une place de stationnement ?', a: "Si c'est possible, oui : dans le centre, une place proche facilite le transport du matériel. Sinon, ce n'est pas un problème, il suffit de me prévenir." },
       { q: 'Mon logement est en copropriété : qui appeler ?', a: "Pour tout ce qui se trouve après votre tableau (prises, éclairage, circuits), c'est à vous de faire appel à un électricien. Pour la colonne montante ou l'éclairage de la cage d'escalier, contactez votre syndic." },
     ],
-    cta: { title: 'À Charleville-Mézières, un électricien disponible après 18 h', text: 'Appelez-moi ou décrivez votre besoin en ligne : vous connaîtrez le prix et l’heure avant que je me déplace.' },
+    cta: { title: 'À Charleville-Mézières, un électricien disponible à tout moment', text: 'Appelez-moi ou décrivez votre besoin en ligne : vous connaîtrez le prix et l’heure avant que je me déplace.' },
     links: ['/depannage-electrique-charleville-mezieres/', '/remplacement-tableau-electrique-charleville-mezieres/', '/electricien-proprietaire-bailleur/', '/prestations/eclairage-interieur/', '/electricien-soiree-ardennes/', '/tarifs/'],
     nearby: ['/electricien-renwez/', '/electricien-poix-terron/', '/electricien-thin-le-moutier/', '/electricien-sedan/'],
   },
@@ -1002,7 +1002,7 @@ Les lanternes de façade et les bornes d'allée posées il y a trente ans arrive
     label: 'Électricien à Villers-Semeuse',
     teaser: 'Agglomération de Charleville : pavillons, spas, cuisines à l’induction.',
     title: 'Électricien à Villers-Semeuse | ALED08',
-    description: "Électricien à Villers-Semeuse : dépannage 99 €, spa ou piscine qui disjoncte, passage à l'induction, tableau saturé. Créneaux après 18 h et le week-end.",
+    description: "Électricien à Villers-Semeuse : dépannage 99 €, spa ou piscine qui disjoncte, passage à l'induction, tableau saturé. À tout moment, sur rendez-vous.",
     kicker: 'Électricien · Villers-Semeuse (08000)',
     h1: 'Électricien à Villers-Semeuse, après votre journée de travail',
     lead: "Commune résidentielle de l'agglomération de Charleville-Mézières, **Villers-Semeuse** compte de nombreux pavillons avec jardin. Les demandes y suivent les nouveaux équipements de la maison : **spa, piscine hors-sol, plaque à induction**… et les coupures qui vont avec. Forfait dépannage : 99 €.",

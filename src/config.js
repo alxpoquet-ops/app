@@ -10,8 +10,6 @@ const site = {
   name: 'ALED08',
   legalName: 'ALED08 — Alexandre Poquet', // raison sociale / nom commercial
   owner: 'Alexandre Poquet',
-  // Années de métier (affichées sur le site : « 10 ans de métier »). À mettre à jour chaque année.
-  experienceYears: 10,
   // Photo de vous (facultatif, vivement conseillé) : déposez un portrait carré dans
   // src/assets/img/ (ex. portrait.jpg, 600 × 600 px) puis indiquez '/assets/img/portrait.jpg'.
   portrait: '',
@@ -70,11 +68,11 @@ const site = {
   },
 };
 
-// Horaires (tous sur rendez-vous). Format 24 h. dayOfWeek au format schema.org.
+// Disponibilités : aucun horaire affiché, « à tout moment, sur rendez-vous ».
 const hours = [
-  { days: 'Lundi – Vendredi', short: 'Lun–Ven', schemaDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '18:00', closes: '21:30', label: '18 h 00 – 21 h 30' },
-  { days: 'Samedi', short: 'Sam', schemaDays: ['Saturday'], opens: '08:00', closes: '19:00', label: '8 h 00 – 19 h 00' },
-  { days: 'Dimanche', short: 'Dim', schemaDays: ['Sunday'], opens: '09:00', closes: '18:00', label: '9 h 00 – 18 h 00' },
+  { days: 'En journée', label: 'Sur rendez-vous' },
+  { days: 'Le soir', label: 'Sur rendez-vous' },
+  { days: 'Le week-end', label: 'Sur rendez-vous' },
 ];
 
 // Forfait dépannage : prix unique, tout compris jusqu'au devis de réparation.

@@ -49,22 +49,6 @@
     reveals.forEach(function (el) { el.classList.add('is-visible'); });
   }
 
-  /* ---------- disponibilité du moment (heure locale) ---------- */
-  (function () {
-    var now = new Date(), day = now.getDay(), h = now.getHours() + now.getMinutes() / 60, txt;
-    var weekend = day === 0 || day === 6;
-    if (weekend) {
-      var end = day === 6 ? 19 : 18, start = day === 6 ? 8 : 9;
-      if (h < start) txt = 'Créneaux aujourd’hui dès ' + start + ' h, sur RDV';
-      else if (h < end) txt = 'Disponible aujourd’hui, sur rendez-vous';
-      else txt = day === 6 ? 'Créneaux demain, dimanche, sur RDV' : 'Créneaux demain soir dès 18 h';
-    } else {
-      if (h < 18) txt = 'Créneaux ce soir dès 18 h, sur RDV';
-      else if (h < 21.5) txt = 'Joignable ce soir — appelez maintenant';
-      else txt = day === 5 ? 'Créneaux demain, samedi, sur RDV' : 'Créneaux demain soir dès 18 h';
-    }
-    $$('[data-dispo]').forEach(function (el) { el.textContent = txt; });
-  })();
 
   /* ---------- avant / après ---------- */
   $$('.ba-range').forEach(function (r) {

@@ -9,14 +9,14 @@ Rendez-vous sur google.com/business. Comptez une heure, puis quelques jours pour
 - **Nom** : `ALED08`. N'ajoutez pas de mots-clés dans le nom (« ALED08 électricien dépannage Rethel ») : Google peut suspendre la fiche.
 - **Catégorie principale** : Électricien.
 - **Type d'établissement** : vous vous déplacez chez les clients. Masquez votre adresse et déclarez une **zone desservie** : Signy-l'Abbaye, Rethel, Charleville-Mézières, Sedan, Rocroi, Liart, Novion-Porcien, Thin-le-Moutier, Poix-Terron, Château-Porcien.
-- **Horaires** : lundi à vendredi 18 h – 21 h 30, samedi 8 h – 19 h, dimanche 9 h – 18 h. Ils doivent être identiques à ceux du site.
+- **Horaires** : le site n'affiche aucun horaire (« à tout moment, sur rendez-vous »). Google en demande : indiquez les plages où vous répondez réellement au téléphone.
 - **Téléphone et site** : exactement les mêmes que sur le site.
 - **Services** : ajoutez-les un par un (dépannage électrique, recherche de panne, remplacement de tableau, prises et interrupteurs, éclairage, mise en sécurité), avec une phrase chacun. Indiquez le prix pour le dépannage : 79 €.
 - **Photos** : un portrait de vous, votre véhicule, votre outillage, puis des photos de chantier (avant / après). Ajoutez-en une ou deux par mois.
 
 **Description à copier-coller** (moins de 750 caractères) :
 
-> ALED08, c'est Alexandre Poquet, électricien depuis 10 ans, installé à Signy-l'Abbaye. Ma spécialité : le dépannage et la recherche de panne chez les particuliers des Ardennes. Forfait dépannage 79 € : déplacement (jusqu'à 15 km), recherche de panne, proposition de solution et devis de réparation sans obligation. Remise si la panne n'est pas trouvée. J'interviens le soir en semaine (18 h – 21 h 30) et le week-end, sur rendez-vous, sans majoration. Travaux sur devis gratuit : tableau électrique, prises, éclairage, mise en sécurité. Secteur : Signy-l'Abbaye, Rethel, Charleville-Mézières, Sedan, Rocroi et alentours.
+> ALED08, c'est un jeune artisan électricien installé à Signy-l'Abbaye. Ma spécialité : le dépannage et la recherche de panne chez les particuliers des Ardennes. Forfait dépannage 79 € : déplacement (jusqu'à 15 km), recherche de panne, proposition de solution et devis de réparation sans obligation. Remise si la panne n'est pas trouvée. J'interviens à tout moment, sur rendez-vous, sans majoration. Travaux sur devis gratuit : tableau électrique, prises, éclairage, mise en sécurité. Secteur : Signy-l'Abbaye, Rethel, Charleville-Mézières, Sedan, Rocroi et alentours.
 
 Une fois la fiche validée, copiez son lien dans `googleReviewsUrl` (fichier `src/config.js`).
 
@@ -31,7 +31,7 @@ Le concurrent local le mieux noté n'a que 5 avis. **Dix avis réels suffisent �
 
 **Message à envoyer par SMS ou WhatsApp :**
 
-> Bonjour, c'est Alexandre d'ALED08. Merci pour votre confiance. Si l'intervention vous a convenu, un avis Google m'aiderait beaucoup, cela prend une minute : [lien]. Bonne journée !
+> Bonjour, c'est ALED08. Merci pour votre confiance. Si l'intervention vous a convenu, un avis Google m'aiderait beaucoup, cela prend une minute : [lien]. Bonne journée !
 
 Quand un avis est publié, ajoutez-le dans `src/content/avis.js` : la section « Avis » réapparaît alors automatiquement sur le site.
 
@@ -67,7 +67,7 @@ Le nom, l'adresse et le téléphone doivent être **strictement identiques parto
 
 - **Une photo réelle par mois** dans la page Réalisations, avec une phrase sur la panne et la commune (avec l'accord du client).
 - **Un article de blog par trimestre**, tiré d'une vraie intervention : c'est ce que les annuaires ne pourront jamais copier.
-- **Mettez à jour** `experienceYears` chaque année et les horaires dès qu'ils changent, sur le site **et** sur la fiche Google.
+- **Mettez à jour** vos disponibilités dès qu'elles changent, sur le site **et** sur la fiche Google.
 
 ## À ne jamais faire
 
