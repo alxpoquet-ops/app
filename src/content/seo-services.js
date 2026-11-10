@@ -47,7 +47,7 @@ Dans la grande majorité des cas, les **câbles existants sont conservés** s'il
   {
     slug: 'remplacement-disjoncteur', group: 'services', prestation: 'disjoncteur', serviceType: 'Remplacement de disjoncteur',
     label: 'Remplacement de disjoncteur',
-    title: 'Remplacement de disjoncteur – Ardennes | ALED08',
+    title: 'Remplacement de disjoncteur, Ardennes | ALED08',
     description: 'Disjoncteur qui chauffe, ne se réarme plus ou mal calibré : remplacement dans les Ardennes, calibre adapté au câble, le soir et le week-end.',
     kicker: 'Prestation · Disjoncteur',
     h1: 'Remplacement de disjoncteur : le bon calibre, au bon endroit',
@@ -141,7 +141,7 @@ Quand un circuit atteint ses limites, l'ajout d'un point supplémentaire doit pa
   {
     slug: 'prise-specialisee', group: 'services', prestation: 'prise-specialisee', serviceType: 'Installation de prise spécialisée',
     label: 'Prise spécialisée (four, plaque, lave-linge)',
-    title: 'Prise spécialisée four, plaque, lave-linge – Ardennes | ALED08',
+    title: 'Prise spécialisée four, plaque, lave-linge, Ardennes | ALED08',
     description: 'Prises et circuits spécialisés pour four, plaque de cuisson 32 A, lave-linge, lave-vaisselle, sèche-linge, congélateur et chauffe-eau. Ardennes.',
     kicker: 'Prestation · Circuits spécialisés',
     h1: 'Prises spécialisées : un circuit pour chaque gros appareil',

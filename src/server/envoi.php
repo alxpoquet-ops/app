@@ -50,8 +50,8 @@ if (!preg_match('/^[0-9 +().-]{10,20}$/', $telephone)) { back($errorUrl); }
 if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) { back($errorUrl); }
 
 $sujet = $type === 'devis'
-    ? 'Demande de devis — ' . ($prestation ?: 'prestation') . ' — ' . ($commune ?: 'commune non précisée')
-    : 'Message de contact — ' . $nom;
+    ? 'Demande de devis : ' . ($prestation ?: 'prestation') . ', ' . ($commune ?: 'commune non précisée')
+    : 'Message de contact : ' . $nom;
 
 $corps = "Nouvelle demande reçue depuis le site " . SITE . "\n\n"
     . "Type        : " . ($type === 'devis' ? 'Demande de devis' : 'Contact') . "\n"
@@ -64,7 +64,7 @@ $corps = "Nouvelle demande reçue depuis le site " . SITE . "\n\n"
     . ($urgence ? "Urgence     : $urgence\n" : '')
     . ($creneaux ? "Créneaux    : $creneaux\n" : '')
     . "\nMessage :\n$message\n\n"
-    . "---\nConsentement RGPD : oui — " . date('d/m/Y H:i') . "\n";
+    . "---\nConsentement RGPD : oui, le " . date('d/m/Y H:i') . "\n";
 
 $host = preg_replace('/^www\./', '', parse_url(SITE, PHP_URL_HOST) ?: 'localhost');
 $headers = [

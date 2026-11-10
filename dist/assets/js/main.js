@@ -115,7 +115,7 @@
       if (!com || !out || !COMMUNES) return;
       var km = COMMUNES[com.value];
       if (km === undefined) { out.classList.remove('is-on'); return; }
-      out.textContent = com.value + ' : environ ' + km + ' km de Signy-l’Abbaye — ' + tierText(km) + '.';
+      out.textContent = com.value + ' : environ ' + km + ' km de Signy-l’Abbaye : ' + tierText(km) + '.';
       out.classList.add('is-on');
     };
     if (com) { com.addEventListener('change', upd); upd(); }
@@ -136,7 +136,7 @@
     s.addEventListener('change', function () {
       var km = COMMUNES[s.value];
       if (km === undefined) { o.classList.remove('is-on'); return; }
-      o.innerHTML = '<strong>' + s.value + '</strong> — environ ' + km + ' km : ' + tierText(km) + '.';
+      o.innerHTML = '<strong>' + s.value + '</strong> : environ ' + km + ' km : ' + tierText(km) + '.';
       o.classList.add('is-on');
     });
   }

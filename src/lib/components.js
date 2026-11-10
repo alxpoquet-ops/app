@@ -117,7 +117,7 @@ function dispoCard() {
   return `<aside class="dispo-card reveal" aria-label="Disponibilités et tarifs clés">
   <div class="dispo-head"><span class="dot" aria-hidden="true"></span><span>Disponible à tout moment</span></div>
   ${hoursTable('hours-dark')}
-  <p class="dispo-note">${icon('calendar-days')} Uniquement sur rendez-vous — appelez ou envoyez un message.</p>
+  <p class="dispo-note">${icon('calendar-days')} Uniquement sur rendez-vous : appelez ou envoyez un message.</p>
   <div class="dispo-forfait">
     <div class="dispo-forfait-head"><span>Forfait dépannage</span><strong>${euro(forfait.price)}</strong></div>
     <ul>${forfait.includes.map((i) => `<li>${icon('check')}${i.text}</li>`).join('')}</ul>
@@ -156,7 +156,7 @@ function pricingTable(ids) {
   </div>`
     )
     .join('')}
-  <p class="price-foot">Prix TTC${site.legal.tva ? ' — ' + esc(site.legal.tva) : ''}. Aucun prix de pièce n’est fixé à l’avance : chaque réparation est chiffrée sur devis, après le diagnostic. Tarifs identiques en soirée et le week-end.</p>
+  <p class="price-foot">Prix TTC${site.legal.tva ? ', ' + esc(site.legal.tva) : ''}. Aucun prix de pièce n’est fixé à l’avance : chaque réparation est chiffrée sur devis, après le diagnostic. Tarifs identiques en soirée et le week-end.</p>
 </div>`;
 }
 
@@ -249,7 +249,7 @@ function artisanCard() {
 </aside>`;
 }
 function authorBox(id = 'lga') {
-  return `<div class="author-box">${site.portrait ? avatar('avatar-sm') : logoSvg(id)}<p><strong>${site.name}</strong> — jeune artisan électricien installé à ${site.address.city}. Je me déplace à tout moment, sur rendez-vous, chez les particuliers des Ardennes. <a href="/qui-suis-je/">Faisons connaissance</a></p></div>`;
+  return `<div class="author-box">${site.portrait ? avatar('avatar-sm') : logoSvg(id)}<p><strong>${site.name}</strong>, jeune artisan électricien installé à ${site.address.city}. Je me déplace à tout moment, sur rendez-vous, chez les particuliers des Ardennes. <a href="/qui-suis-je/">Faisons connaissance</a></p></div>`;
 }
 
 // ---------------------------------------------------------------- étapes

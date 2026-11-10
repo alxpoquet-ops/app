@@ -50,8 +50,8 @@ function seoPage(p) {
   // Titre : les pages communes affichent le prix du dépannage sur place (meilleur taux de clic)
   let title = p.title;
   if (p.group === 'villes' && p.city && price) {
-    const long = `Électricien ${p.city} – dépannage ${price} € soir & week-end | ALED08`;
-    title = long.length <= 68 ? long : `Électricien ${p.city} – dépannage ${price} € | ALED08`;
+    const long = `Électricien ${p.city} : dépannage ${price} € soir & week-end | ALED08`;
+    title = long.length <= 68 ? long : `Électricien ${p.city} : dépannage ${price} € | ALED08`;
   }
   const chips = p.chips || (p.city && price
     ? [{ icon: 'zap', text: `Dépannage à ${p.city} : ${price} €` }, { icon: 'moon', text: 'Soirs & week-ends, sans majoration' }, { icon: 'file-text', text: 'Devis de réparation sans obligation' }]

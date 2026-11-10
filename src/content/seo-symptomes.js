@@ -38,7 +38,7 @@ Je commence par écouter : quand, avec quels appareils, depuis quand. Puis je me
       { q: 'Un disjoncteur peut-il être usé ?', a: "Oui, c'est possible après de nombreux déclenchements ou s'il a chauffé, mais c'est plus rare qu'on ne le croit. Je teste le disjoncteur avant de conclure qu'il doit être remplacé. Voir [remplacement de disjoncteur](/remplacement-disjoncteur/)." },
       { q: 'Comment augmenter la puissance de mon abonnement ?', a: "Auprès de votre fournisseur d'électricité. Le changement est télécommandé sur les compteurs Linky. Je vous indique la puissance adaptée après avoir vérifié vos usages et votre installation." },
     ],
-    cta: { title: 'Votre disjoncteur ne tient plus ?', text: 'Je trouve la cause — court-circuit, surcharge ou abonnement — et je vous propose la bonne solution, prix annoncé.' },
+    cta: { title: 'Votre disjoncteur ne tient plus ?', text: 'Je trouve la cause (court-circuit, surcharge ou abonnement) et je vous propose la bonne solution, prix annoncé.' },
     links: ['/differentiel-qui-saute/', '/remplacement-disjoncteur/', '/ajout-circuit-electrique/', '/prestations/depannage-electrique/', '/blog/differentiel-ou-disjoncteur-difference/', '/blog/pourquoi-une-prise-disjoncte/'],
     nearby: ['/depannage-electrique-ardennes/', '/depannage-electrique-rethel/', '/depannage-electrique-charleville-mezieres/'],
     nearbyTitle: 'Dépannage près de chez vous',

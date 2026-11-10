@@ -55,7 +55,7 @@ J'interviens dans un rayon d'environ 45 km autour de Signy-l'Abbaye : Rethel et 
   {
     slug: 'depannage-electrique-ardennes', group: 'ardennes', prestation: 'depannage',
     label: 'Dépannage électrique Ardennes',
-    title: 'Dépannage électrique Ardennes – soirs & week-ends | ALED08',
+    title: 'Dépannage électrique Ardennes, soirs & week-ends | ALED08',
     description: "Dépannage électrique dans les Ardennes le soir et le week-end : plus de courant, disjoncteur qui saute, panne partielle. Forfait 79 €, déplacement et devis compris.",
     kicker: 'Dépannage · Ardennes',
     h1: 'Dépannage électrique dans les Ardennes, le soir et le week-end',
@@ -102,7 +102,7 @@ Un dépannage commence toujours par le **forfait de 79 €**, qui couvre mon dé
   {
     slug: 'recherche-panne-electrique-ardennes', group: 'ardennes', prestation: 'recherche-panne',
     label: 'Recherche de panne électrique Ardennes',
-    title: 'Recherche de panne électrique Ardennes – mesures | ALED08',
+    title: 'Recherche de panne électrique Ardennes, mesures | ALED08',
     description: "Recherche de panne électrique dans les Ardennes avec de vrais appareils de mesure : isolement, terre, différentiels. Forfait dépannage 79 €, le soir et le week-end.",
     kicker: 'Recherche de panne · Ardennes',
     h1: 'Recherche de panne électrique dans les Ardennes : ce que disent les mesures',
@@ -201,7 +201,7 @@ J'utilise du matériel de grandes marques, disponible partout, pour que n'import
   {
     slug: 'mise-en-securite-electrique-ardennes', group: 'ardennes', prestation: 'mise-en-securite',
     label: 'Mise en sécurité électrique Ardennes',
-    title: 'Mise en sécurité électrique Ardennes – sur devis | ALED08',
+    title: 'Mise en sécurité électrique Ardennes, sur devis | ALED08',
     description: 'Mise en sécurité électrique dans les Ardennes : anomalies fréquentes, ordre des priorités, devis hiérarchisé et travaux le soir ou le week-end.',
     kicker: 'Mise en sécurité · Ardennes',
     h1: 'Mise en sécurité électrique dans les Ardennes : les bonnes priorités',
@@ -253,7 +253,7 @@ Vous pouvez valider un seul bloc, ou tout. Rien n'est imposé.`,
   {
     slug: 'electricien-soiree-ardennes', group: 'ardennes', prestation: 'depannage',
     label: 'Électricien le soir dans les Ardennes',
-    title: 'Électricien le soir dans les Ardennes – sur rendez-vous | ALED08',
+    title: 'Électricien le soir dans les Ardennes, sur rendez-vous | ALED08',
     description: 'Électricien le soir dans les Ardennes, après votre journée de travail : dépannage, prises, luminaires, diagnostic. Sans majoration, sur RDV.',
     kicker: 'Disponibilités · En soirée',
     h1: 'Un électricien le soir, après votre journée de travail',
@@ -304,11 +304,11 @@ Chez ALED08, la soirée est un **créneau normal de travail**, choisi dès le d�
   {
     slug: 'electricien-week-end-ardennes', group: 'ardennes', prestation: 'tableau',
     label: 'Électricien le week-end dans les Ardennes',
-    title: 'Électricien le week-end dans les Ardennes – samedi, dimanche | ALED08',
+    title: 'Électricien le week-end dans les Ardennes, samedi, dimanche | ALED08',
     description: "Électricien le samedi et le dimanche dans les Ardennes : tableau, mise en sécurité, éclairage, dépannage. Mêmes tarifs qu'en semaine, sur rendez-vous.",
     kicker: 'Disponibilités · Week-end',
     h1: 'Électricien le week-end : samedi et dimanche sur rendez-vous',
-    lead: "Le **samedi** comme le **dimanche**, sur rendez-vous, j'interviens chez les particuliers des Ardennes. C'est le moment idéal pour les **chantiers qui demandent du temps** — tableau, mise en sécurité, éclairage extérieur — comme pour les pannes qui surviennent en fin de semaine.",
+    lead: "Le **samedi** comme le **dimanche**, sur rendez-vous, j'interviens chez les particuliers des Ardennes. C'est le moment idéal pour les **chantiers qui demandent du temps** (tableau, mise en sécurité, éclairage extérieur), comme pour les pannes qui surviennent en fin de semaine.",
     body: `## Le samedi, jour des chantiers
 
 Une journée complète permet de réaliser les travaux qui nécessitent une coupure prolongée ou plusieurs heures de pose :
@@ -353,7 +353,7 @@ Les samedis se remplissent plus vite que les soirées, surtout au printemps et �
   {
     slug: 'depannage-electrique-rethel', group: 'services-villes', city: 'Rethel', prestation: 'depannage',
     label: 'Dépannage électrique à Rethel',
-    title: 'Dépannage électrique à Rethel – soir & week-end | ALED08',
+    title: 'Dépannage électrique à Rethel, soir & week-end | ALED08',
     description: 'Dépannage électrique à Rethel le soir et le week-end : coupure, disjoncteur qui saute, prise ou éclairage en panne. Forfait dépannage 89 €, devis compris.',
     kicker: 'Dépannage · Rethel',
     h1: 'Dépannage électrique à Rethel, le soir et le week-end',
@@ -393,7 +393,7 @@ Repérez la protection en position basse dans votre tableau, débranchez les app
   {
     slug: 'depannage-electrique-charleville-mezieres', group: 'services-villes', city: 'Charleville-Mézières', prestation: 'depannage',
     label: 'Dépannage électrique à Charleville-Mézières',
-    title: 'Dépannage électrique Charleville-Mézières – soir | ALED08',
+    title: 'Dépannage électrique Charleville-Mézières, soir | ALED08',
     description: "Dépannage électrique à Charleville-Mézières, à tout moment sur rendez-vous : appartement sans courant, disjoncteur d'abonné, prise en panne. Prix annoncé avant.",
     kicker: 'Dépannage · Charleville-Mézières',
     h1: 'Dépannage électrique à Charleville-Mézières, en appartement comme en maison',
@@ -437,11 +437,11 @@ Indiquez-moi le code d'accès, l'étage et la présence ou non d'un ascenseur : 
   {
     slug: 'depannage-electrique-sedan', group: 'services-villes', city: 'Sedan', prestation: 'recherche-panne',
     label: 'Dépannage électrique à Sedan',
-    title: 'Dépannage électrique à Sedan – planifié soir & week-end | ALED08',
+    title: 'Dépannage électrique à Sedan, planifié soir & week-end | ALED08',
     description: 'Dépannage électrique planifié à Sedan : pannes récurrentes, différentiel qui saute, lumière qui clignote. Le soir et le week-end, déplacement annoncé.',
     kicker: 'Dépannage · Sedan',
     h1: 'Dépannage électrique à Sedan : régler enfin les pannes récurrentes',
-    lead: "Sedan est à la limite de ma zone, à environ 45 km. Pour une coupure totale en urgence, un électricien local sera souvent plus rapide. En revanche, pour **les pannes récurrentes** — différentiel qui saute régulièrement, lumière qui clignote, prise capricieuse — un **dépannage planifié** le soir ou le week-end est la bonne solution.",
+    lead: "Sedan est à la limite de ma zone, à environ 45 km. Pour une coupure totale en urgence, un électricien local sera souvent plus rapide. En revanche, pour **les pannes récurrentes** (différentiel qui saute régulièrement, lumière qui clignote, prise capricieuse), un **dépannage planifié** le soir ou le week-end est la bonne solution.",
     body: `## Les pannes qu'on finit par « supporter »
 
 Beaucoup de foyers vivent avec une panne chronique : on réarme le différentiel une fois par semaine, on évite d'allumer le four et le lave-linge en même temps, on secoue l'interrupteur de la salle de bain. Ce n'est pas une fatalité, et ce n'est **pas sans risque** : un défaut qui revient est un défaut qui évolue.

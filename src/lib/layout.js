@@ -14,7 +14,7 @@ function businessSchema() {
     '@type': 'Electrician',
     '@id': site.url + '/#entreprise',
     name: site.name,
-    alternateName: 'ALED08 — Dépannage électrique dans les Ardennes',
+    alternateName: 'ALED08, dépannage électrique dans les Ardennes',
     slogan: 'Dépannage électrique au forfait, à tout moment sur rendez-vous',
     description:
       `Électricien spécialiste du dépannage basé à Signy-l'Abbaye (Ardennes). Forfait dépannage 79 € : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Travaux sur devis gratuit : tableau, prises, éclairage, mise en sécurité. À tout moment, sur rendez-vous.`,
@@ -112,7 +112,7 @@ function header(currentPath) {
 </div></div>
 <header class="site-header">
   <div class="container header-in">
-    <a class="brand" href="/" aria-label="ALED08, électricien dans les Ardennes — accueil">${C.logoSvg('lgh')}<span class="brand-text"><strong>ALED08</strong><small>Électricien · Ardennes</small></span></a>
+    <a class="brand" href="/" aria-label="ALED08, électricien dans les Ardennes, accueil">${C.logoSvg('lgh')}<span class="brand-text"><strong>ALED08</strong><small>Électricien · Ardennes</small></span></a>
     <nav class="nav" id="nav" aria-label="Navigation principale">
       <ul class="nav-list">
         <li><a class="nav-link nav-link--hl" href="/prestations/depannage-electrique/"${currentPath === '/prestations/depannage-electrique/' ? ' aria-current="page"' : ''}>${icon('zap')}Dépannage</a></li>
@@ -251,7 +251,7 @@ function page(p) {
 <meta property="og:image" content="${ogImage}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="ALED08 — Dépannage et travaux électriques dans les Ardennes">
+<meta property="og:image:alt" content="ALED08, dépannage et travaux électriques dans les Ardennes">
 ${p.ogType === 'article' && p.published ? `<meta property="article:published_time" content="${p.published}">\n<meta property="article:modified_time" content="${p.modified || p.published}">` : ''}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(p.ogTitle || p.title)}">

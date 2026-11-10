@@ -64,7 +64,7 @@ Le traitement des données transmises via les formulaires est décrit dans la [p
     updated: '2026-11-09',
     body: `## Responsable du traitement
 
-${site.owner}, ${site.name}, ${addr}. Contact : ${site.email} — ${site.phoneDisplay}.
+${site.owner}, ${site.name}, ${addr}. Contact : ${site.email}, ${site.phoneDisplay}.
 
 ## Données collectées
 

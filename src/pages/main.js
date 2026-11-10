@@ -164,7 +164,7 @@ ${f.html}
 ${C.ctaBand({ title: 'Une panne, un projet, une question ?', text: 'Appelez, écrivez sur WhatsApp ou demandez un devis en ligne. Je vous réponds rapidement et on fixe ensemble un créneau.' })}`;
   return {
     path: '/',
-    title: 'Électricien Ardennes – Dépannage 79 € à tout moment | ALED08',
+    title: 'Électricien Ardennes : dépannage 79 € à tout moment | ALED08',
     description: `Dépannage électrique dans les Ardennes : forfait 79 €, déplacement et devis compris. ALED08, jeune artisan électricien à Signy-l'Abbaye.`,
     crumbs: [HOME],
     body,
@@ -641,7 +641,7 @@ function devis() {
 </div></section>
 ${f.html}
 ${communesJs}`;
-  return { path: '/devis/', title: 'Demande de dépannage ou de devis – Ardennes | ALED08', description: "Panne électrique : forfait dépannage 79 €, devis de réparation sans obligation. Travaux : devis gratuit. Réponse rapide, créneaux le soir et le week-end.", crumbs, body, schema: [f.schema], priority: 0.9 };
+  return { path: '/devis/', title: 'Demande de dépannage ou de devis, Ardennes | ALED08', description: "Panne électrique : forfait dépannage 79 €, devis de réparation sans obligation. Travaux : devis gratuit. Réponse rapide, créneaux le soir et le week-end.", crumbs, body, schema: [f.schema], priority: 0.9 };
 }
 
 function contact() {
@@ -656,7 +656,7 @@ function contact() {
 <section class="section"><div class="container grid grid-2">
   <div>
     <div class="contact-cards">
-      <a class="contact-card" href="${C.tel}" data-track="call">${icon('phone-call')}<div><strong>${site.phoneDisplay}</strong><span>Appel ou SMS — le plus rapide pour un dépannage</span></div></a>
+      <a class="contact-card" href="${C.tel}" data-track="call">${icon('phone-call')}<div><strong>${site.phoneDisplay}</strong><span>Appel ou SMS, le plus rapide pour un dépannage</span></div></a>
       <a class="contact-card wa" href="${C.waUrl()}" target="_blank" rel="noopener" data-track="whatsapp">${icon('whatsapp')}<div><strong>WhatsApp</strong><span>Idéal pour envoyer des photos de la panne ou du tableau</span></div></a>
       <a class="contact-card" href="mailto:${site.email}">${icon('mail')}<div><strong>${site.email}</strong><span>Pour une question ou un projet sans urgence</span></div></a>
       <div class="contact-card">${icon('map-pin')}<div><strong>${site.address.postalCode} ${site.address.city}</strong><span>Interventions à domicile dans les Ardennes, sur rendez-vous</span></div></div>
@@ -689,7 +689,7 @@ function contact() {
   <div class="section-head"><p class="kicker">Localisation</p><h2>Basé à Signy-l’Abbaye, au cœur des Ardennes</h2></div>
   ${C.mapEmbed()}
 </div></section>`;
-  return { path: '/contact/', title: "Contact électricien à Signy-l'Abbaye – téléphone, WhatsApp | ALED08", description: "Contactez ALED08, électricien à Signy-l'Abbaye : téléphone, WhatsApp, e-mail ou formulaire. Interventions en soirée et le week-end dans les Ardennes.", crumbs, body, webpageType: 'ContactPage', priority: 0.8 };
+  return { path: '/contact/', title: "Contact électricien à Signy-l'Abbaye, téléphone, WhatsApp | ALED08", description: "Contactez ALED08, électricien à Signy-l'Abbaye : téléphone, WhatsApp, e-mail ou formulaire. Interventions en soirée et le week-end dans les Ardennes.", crumbs, body, webpageType: 'ContactPage', priority: 0.8 };
 }
 
 // ====================================================================== BLOG
@@ -698,7 +698,7 @@ function blogIndex({ posts }) {
   const body = `${C.pageHero({
     kicker: 'Blog',
     h1: 'Le blog électricité d’ALED08',
-    lead: "Des conseils concrets d'électricien pour **comprendre vos pannes, sécuriser votre logement et préparer vos travaux** — sans jargon et sans chercher à vous faire peur.",
+    lead: "Des conseils concrets d'électricien pour **comprendre vos pannes, sécuriser votre logement et préparer vos travaux**, sans jargon et sans chercher à vous faire peur.",
     crumbs,
     compact: true,
   })}

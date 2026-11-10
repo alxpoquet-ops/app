@@ -8,7 +8,7 @@ const site = {
   // Domaine définitif (sans slash final). Sert aux balises canonical, au sitemap, à l'Open Graph.
   url: 'https://www.aled08.fr',
   name: 'ALED08',
-  legalName: 'ALED08 — Alexandre Poquet', // raison sociale / nom commercial
+  legalName: 'ALED08, Alexandre Poquet', // raison sociale / nom commercial
   owner: 'Alexandre Poquet',
   // Photo de vous (facultatif, vivement conseillé) : déposez un portrait carré dans
   // src/assets/img/ (ex. portrait.jpg, 600 × 600 px) puis indiquez '/assets/img/portrait.jpg'.
@@ -39,15 +39,15 @@ const site = {
   legal: {
     status: 'Entreprise individuelle', // ex. : Entreprise individuelle (micro-entreprise)
     siret: '[SIRET à compléter]',
-    rm: '[Immatriculation au Registre national des entreprises — à compléter]',
+    rm: '[Immatriculation au Registre national des entreprises, à compléter]',
     tva: '', // ex. : 'TVA non applicable, art. 293 B du CGI' si vous êtes en franchise de TVA
-    insurer: '[Nom de l’assureur — à compléter]',
-    insuranceContract: '[N° de contrat — à compléter]',
+    insurer: '[Nom de l’assureur, à compléter]',
+    insuranceContract: '[N° de contrat, à compléter]',
     insuranceScope: 'Responsabilité civile professionnelle (et garantie décennale le cas échéant)',
     insuranceArea: 'France métropolitaine',
-    mediator: '[Nom et coordonnées du médiateur de la consommation — à compléter]',
+    mediator: '[Nom et coordonnées du médiateur de la consommation, à compléter]',
     mediatorUrl: '',
-    host: '[Nom, adresse et téléphone de l’hébergeur — à compléter, ex. OVH SAS, 2 rue Kellermann, 59100 Roubaix]',
+    host: '[Nom, adresse et téléphone de l’hébergeur, à compléter, ex. OVH SAS, 2 rue Kellermann, 59100 Roubaix]',
     publicationDirector: 'Alexandre Poquet',
   },
 

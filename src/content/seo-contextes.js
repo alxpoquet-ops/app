@@ -266,7 +266,7 @@ L'urgence ne change rien à ma façon de faire : le **forfait dépannage est ann
   {
     slug: 'diagnostic-electrique-ardennes', group: 'contextes', prestation: 'diagnostic',
     label: 'Diagnostic électrique de votre logement',
-    title: 'Diagnostic électrique de votre logement – Ardennes | ALED08',
+    title: 'Diagnostic électrique de votre logement, Ardennes | ALED08',
     description: "Faites le point sur votre installation électrique : tableau, terre, différentiels et pièces d'eau contrôlés, rapport clair et priorités.",
     kicker: 'Situation · Bilan de l’installation',
     h1: 'Diagnostic électrique : faire le point sur votre installation',
