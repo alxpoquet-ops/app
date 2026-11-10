@@ -107,10 +107,10 @@ src/config.js            configuration de l'entreprise
 src/lib/                 gabarit, composants, icônes, mini-markdown
 src/pages/               pages principales et gabarits (pages SEO, articles)
 src/content/             tous les textes
-src/assets/              CSS, JS, polices (Inter, Sora — OFL), images
+src/assets/              CSS, JS, police Nunito (OFL), images
 src/static/              fichiers copiés tels quels (.htaccess, favicon…)
 src/server/envoi.php     traitement des formulaires
 dist/                    SITE GÉNÉRÉ, à mettre en ligne
 ```
 
-Crédits : polices Inter et Sora (SIL Open Font License), icônes Lucide (ISC), pictogramme WhatsApp (Simple Icons, CC0).
+Crédits : police Nunito (SIL Open Font License), icônes Lucide (ISC), pictogramme WhatsApp (Simple Icons, CC0).

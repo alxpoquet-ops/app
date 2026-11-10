@@ -110,8 +110,8 @@ write(
       short_name: 'ALED08',
       start_url: '/',
       display: 'standalone',
-      background_color: '#161A1F',
-      theme_color: '#1D6BFF',
+      background_color: '#FFFBF5',
+      theme_color: '#24304A',
       icons: [
         { src: '/assets/img/logo-192.png', sizes: '192x192', type: 'image/png' },
         { src: '/assets/img/logo-512.png', sizes: '512x512', type: 'image/png' },

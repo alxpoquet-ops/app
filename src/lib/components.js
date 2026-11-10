@@ -29,7 +29,7 @@ const devisUrl = (prestation, commune) => {
 const euro = (n) => `${n} €`;
 
 // ---------------------------------------------------------------- logo
-const logoSvg = (id = 'lg') => `<svg class="logo" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3CC8FF"/><stop offset=".55" stop-color="#1D6BFF"/><stop offset="1" stop-color="#1446B8"/></linearGradient></defs><rect width="48" height="48" rx="12" fill="url(#${id})"/><path d="M27.5 7 13 27h9.2l-2.7 14L35 20.5h-9.4L27.5 7Z" fill="#fff"/></svg>`;
+const logoSvg = (id = 'lg') => `<svg class="logo" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD27A"/><stop offset="1" stop-color="#F39B00"/></linearGradient></defs><rect width="48" height="48" rx="15" fill="url(#${id})"/><path d="M27.5 7 13 27h9.2l-2.7 14L35 20.5h-9.4L27.5 7Z" fill="#24304A"/></svg>`;
 
 // ---------------------------------------------------------------- boutons
 function btnCall(cls = 'btn-primary', text) {
@@ -69,13 +69,8 @@ function pageHero({ kicker, h1, lead, crumbs, prestation, chips = [], compact = 
 }
 
 // Fond « circuit » lumineux (décoratif)
-function circuitBg(id = 'c') {
-  return `<div class="circuit" aria-hidden="true"><svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="${id}g" x1="0" x2="1"><stop offset="0" stop-color="#3CC8FF" stop-opacity="0"/><stop offset=".5" stop-color="#3CC8FF"/><stop offset="1" stop-color="#1D6BFF" stop-opacity="0"/></linearGradient></defs>
-<g class="traces" fill="none" stroke="currentColor" stroke-width="1.2">
-<path d="M0 120h220l40 40h260l30-30h170"/><path d="M1200 90H960l-40 40H760"/><path d="M0 470h140l50-50h210l40 40h180"/><path d="M1200 420h-180l-60 60H780l-30-30H640"/><path d="M700 0v70l40 40v90"/><path d="M380 600v-80l-40-40v-70"/><path d="M1040 600v-90l40-40v-60"/></g>
-<g class="nodes" fill="currentColor"><circle cx="720" cy="130" r="4"/><circle cx="760" cy="130" r="4"/><circle cx="640" cy="450" r="4"/><circle cx="740" cy="200" r="4"/><circle cx="340" cy="410" r="4"/><circle cx="1080" cy="410" r="4"/><circle cx="580" cy="460" r="4"/></g>
-<g class="flow" fill="none" stroke="url(#${id}g)" stroke-width="2.4" stroke-linecap="round"><path d="M0 120h220l40 40h260l30-30h170"/><path d="M1200 420h-180l-60 60H780l-30-30H640"/><path d="M0 470h140l50-50h210l40 40h180"/></g>
-</svg></div>`;
+function circuitBg() {
+  return '';
 }
 
 // ---------------------------------------------------------------- bandeau de confiance

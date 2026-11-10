@@ -236,7 +236,7 @@ function page(p) {
 <link rel="canonical" href="${url}">
 <meta name="robots" content="${robots}">
 <meta name="author" content="${esc(site.name)}">
-<meta name="theme-color" content="#161A1F">
+<meta name="theme-color" content="#24304A">
 <meta name="format-detection" content="telephone=no">
 <meta name="geo.region" content="FR-08">
 <meta name="geo.placename" content="${esc(p.geoPlace || "Signy-l'Abbaye")}">
@@ -257,8 +257,7 @@ ${p.ogType === 'article' && p.published ? `<meta property="article:published_tim
 <meta name="twitter:title" content="${esc(p.ogTitle || p.title)}">
 <meta name="twitter:description" content="${esc(p.description)}">
 <meta name="twitter:image" content="${ogImage}">
-<link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/sora-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/nunito-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/style.css?v=${assetsVersion.css}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
