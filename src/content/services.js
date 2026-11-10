@@ -39,7 +39,7 @@ Quelques vérifications simples permettent parfois de gagner du temps, et elles 
 
 ## Pourquoi un dépannage le soir ou le week-end ?
 
-La plupart des entreprises d'électricité travaillent en journée, du lundi au vendredi. Résultat : quand la panne tombe un mardi soir ou un samedi matin, il faut souvent attendre plusieurs jours, ou poser une demi-journée de congé. J'ai fait le choix inverse : **mes créneaux sont justement les soirs de semaine et les week-ends**, quand vous êtes chez vous. Le forfait est le même tous les jours, sans majoration.
+Parce que c'est là que vous êtes chez vous. Quand la panne tombe un mardi soir ou un samedi matin, vous n'avez pas à attendre la semaine suivante ni à poser une demi-journée de congé : **mes créneaux sont justement les soirs de semaine et les week-ends**. Le forfait est le même tous les jours, sans majoration.
 
 ## Un dépannage propre, pas un rafistolage
 

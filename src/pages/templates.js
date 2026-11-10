@@ -57,8 +57,8 @@ function seoPage(p) {
   const chips = p.chips || (p.city && price
     ? [{ icon: 'zap', text: `Dépannage à ${p.city} : ${price} €` }, { icon: 'moon', text: 'Soirs & week-ends, sans majoration' }, { icon: 'file-text', text: 'Devis de réparation sans obligation' }]
     : isPanne
-    ? [{ icon: 'zap', text: 'Forfait dépannage 79 €' }, { icon: 'moon', text: 'Soirs & week-ends' }, { icon: 'user', text: `${Y} ans de métier` }]
-    : [{ icon: 'file-text', text: 'Devis gratuit' }, { icon: 'moon', text: 'Soirs & week-ends' }, { icon: 'user', text: `${Y} ans de métier` }]);
+    ? [{ icon: 'zap', text: 'Forfait dépannage 79 €' }, { icon: 'moon', text: 'Soirs & week-ends' }, { icon: 'user', text: 'Artisan local à votre écoute' }]
+    : [{ icon: 'file-text', text: 'Devis gratuit' }, { icon: 'moon', text: 'Soirs & week-ends' }, { icon: 'user', text: 'Artisan local à votre écoute' }]);
   const service = {
     '@type': 'Service',
     '@id': site.url + path + '#service',
@@ -135,7 +135,7 @@ function blogPost(a, all) {
     <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>${esc(a.category)}</p>
     <h1>${inline(a.h1)}</h1>
     <p class="lead">${inline(a.lead)}</p>
-    <div class="article-meta"><span>${icon('user')}${site.owner}, électricien depuis ${site.experienceYears} ans</span><span>${icon('calendar-days')}<time datetime="${a.date}">${frDate(a.date)}</time></span><span>${icon('timer')}${readingTime(a.body)} min de lecture</span></div>
+    <div class="article-meta"><span>${icon('user')}${site.owner}, artisan électricien</span><span>${icon('calendar-days')}<time datetime="${a.date}">${frDate(a.date)}</time></span><span>${icon('timer')}${readingTime(a.body)} min de lecture</span></div>
   </div>
 </section>
 <section class="section"><div class="container layout-aside">

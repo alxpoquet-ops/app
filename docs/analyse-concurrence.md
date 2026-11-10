@@ -62,10 +62,10 @@ Le forfait ALED08 (79 €, ou 89 € et 99 € selon la distance, sans majoratio
 ## 5. Ce qui a été fait sur le site à la suite de cette analyse
 
 - Prix du dépannage dans le titre Google de chaque page commune (« Électricien Rethel – dépannage 89 € »).
-- Tableau « ce qui se pratique souvent / chez ALED08 » sur la page Tarifs, avec la source citée.
+- (Un tableau « ce qui se pratique souvent / chez ALED08 » avait été ajouté sur la page Tarifs : il a été retiré à votre demande, pour garder un ton de confiance plutôt que de comparaison.)
 - Bloc « Mon passage chez vous, étape par étape » et « ce que vous payez / ne payez jamais ».
 - Engagement « Panne non trouvée : remise sur le forfait » dans le bloc forfait, la page Tarifs, les FAQ et les conditions générales.
-- Mise en avant d'Alexandre Poquet et de ses 10 ans de métier (accueil, page dédiée, signature des pages).
+- Mise en avant d'Alexandre Poquet, jeune artisan avec déjà 10 ans de métier, sur un ton chaleureux (accueil, page dédiée, signature des pages).
 - 8 nouvelles pages communes là où des concurrents sont installés ou listés : Nouzonville, Villers-Semeuse, Sault-lès-Rethel, Rimogne, Boulzicourt, Saulces-Monclin, Juniville, Prix-lès-Mézières.
 - 4 nouvelles pages de pannes très recherchées : Linky qui disjoncte, chauffe-eau qui ne chauffe plus, radiateur froid, tableau qui grésille.
 - Données structurées enrichies : offre à 79 €, prix par commune, zone de 45 km, fiche de l'artisan.

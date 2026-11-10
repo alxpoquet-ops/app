@@ -32,7 +32,7 @@ module.exports = [
     title: 'Interventions et travaux',
     icon: 'wrench',
     items: [
-      { q: 'Qui intervient chez moi ?', a: `Moi, ${site.owner}, électricien depuis ${site.experienceYears} ans. ALED08 n'a ni standard ni sous-traitant : c'est la même personne qui répond au téléphone, qui se déplace et qui répare.` },
+      { q: 'Qui intervient chez moi ?', a: `Moi, ${site.owner}, jeune artisan électricien avec déjà ${site.experienceYears} ans de métier. C'est la même personne qui répond au téléphone, qui se déplace et qui répare.` },
       { q: 'Comment se déroule votre passage pour une panne ?', a: "Je confirme le prix au téléphone, puis je viens au créneau fixé. Sur place, je vérifie qu'il n'y a pas de danger, je recherche la panne, je vous explique ce que j'ai trouvé et je vous remets un devis de réparation. Vous décidez ensuite : le détail est sur la page [Tarifs](/tarifs/#passage)." },
       { q: 'Quels types de travaux réalisez-vous ?', a: "Dépannage, recherche de panne, remplacement de prises et d'interrupteurs, éclairage intérieur et extérieur, ajout de circuits, prises spécialisées, remplacement de disjoncteurs et de tableaux, mise en sécurité. La liste complète est sur la page [Prestations](/prestations/)." },
       { q: 'Faut-il que je sois présent ?', a: "Oui, ou une personne de confiance majeure. Je dois pouvoir accéder au tableau et vous expliquer ce qui a été fait à la fin." },

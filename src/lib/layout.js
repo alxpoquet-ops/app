@@ -155,7 +155,7 @@ function footer() {
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand brand-light" href="/">${C.logoSvg('lgf')}<span class="brand-text"><strong>ALED08</strong><small>Électricien · Ardennes</small></span></a>
-      <p><strong style="color:#fff">Dépannage électrique au forfait : 79 €</strong>, déplacement, recherche de panne et devis compris. Travaux sur devis gratuit. Par ${site.owner}, électricien depuis ${site.experienceYears} ans à Signy-l’Abbaye.</p>
+      <p><strong style="color:#fff">Dépannage électrique au forfait : 79 €</strong>, déplacement, recherche de panne et devis compris. Travaux sur devis gratuit. Par ${site.owner}, artisan électricien à Signy-l’Abbaye.</p>
       <ul class="footer-contact">
         <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>
         <li><a href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}WhatsApp</a></li>

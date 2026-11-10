@@ -84,7 +84,7 @@ function trustBar() {
     ['zap', 'Spécialiste dépannage', 'Recherche de panne méthodique'],
     ['euro', 'Forfait 79 € TTC', 'Remise si panne non trouvée'],
     ['moon', 'Soirs & week-ends', 'Sans majoration'],
-    ['user', `${site.experienceYears} ans de métier`, 'Un seul interlocuteur'],
+    ['user', 'Jeune artisan motivé', `Déjà ${site.experienceYears} ans de métier`],
   ];
   return `<section class="trustbar" aria-label="Nos engagements"><div class="container trustbar-in">${items
     .map(([i, t, s]) => `<div class="trust-item">${icon(i)}<div><strong>${t}</strong><span>${s}</span></div></div>`)
@@ -230,23 +230,6 @@ function payBlock() {
 </div>`;
 }
 
-// ---------------------------------------------------------------- repères de marché (sources publiques)
-function marketCompare() {
-  const rows = [
-    ['Déplacement', 'Souvent facturé à part : 20 à 50 € en province', 'Compris dans le forfait jusqu’à 15 km'],
-    ['Soir, week-end', 'Majoration fréquente de 50 à 100 %', 'Aucune majoration'],
-    ['Recherche de panne', 'Souvent au temps passé : 50 à 100 € de l’heure', 'Comprise dans le forfait'],
-    ['Panne non trouvée', 'Variable selon les entreprises', 'Remise sur le forfait'],
-    ['Prix', 'Rarement affiché avant l’appel', 'Publié ici, confirmé au téléphone'],
-    ['Interlocuteur', 'Parfois une plateforme ou un standard', `${site.owner}, du premier appel à la facture`],
-  ];
-  return `<div class="compare reveal" role="table" aria-label="Repères de prix du marché et pratique ALED08">
-  <div class="compare-row compare-head" role="row"><span role="columnheader"></span><span role="columnheader">Ce qui se pratique souvent</span><span role="columnheader">Chez ALED08</span></div>
-  ${rows.map((r) => `<div class="compare-row" role="row"><strong role="rowheader">${r[0]}</strong><span role="cell">${r[1]}</span><span role="cell" class="compare-me">${icon('check')}${r[2]}</span></div>`).join('')}
-</div>
-<p class="small muted">Repères issus de guides de prix nationaux consultés en novembre 2026 (notamment Quelle Énergie). Ils varient d’une entreprise à l’autre : demandez toujours le prix avant le déplacement.</p>`;
-}
-
 // ---------------------------------------------------------------- présentation de l'artisan
 function avatar(cls = '') {
   const initials = site.owner.split(' ').map((w) => w[0]).join('').slice(0, 2);
@@ -256,18 +239,18 @@ function avatar(cls = '') {
 }
 function artisanCard() {
   return `<aside class="artisan reveal" aria-label="${esc(site.owner)}, électricien">
-  <div class="artisan-id">${avatar()}<div><strong>${site.owner}</strong><span>Électricien · ${site.experienceYears} ans de métier</span><span>${site.address.city} (${site.address.postalCode.slice(0, 2)})</span></div></div>
+  <div class="artisan-id">${avatar()}<div><strong>${site.owner}</strong><span>Jeune artisan électricien</span><span>${site.address.city} (${site.address.postalCode.slice(0, 2)})</span></div></div>
   <ul class="artisan-facts">
     <li>${icon('zap')}<span><strong>Spécialité</strong>Dépannage et recherche de panne</span></li>
-    <li>${icon('user')}<span><strong>Interlocuteur unique</strong>Je réponds, je me déplace, je répare</span></li>
+    <li>${icon('sparkles')}<span><strong>Parcours</strong>Déjà ${site.experienceYears} ans de métier</span></li>
+    <li>${icon('user')}<span><strong>Votre interlocuteur</strong>Je réponds, je me déplace, je répare</span></li>
     <li>${icon('moon')}<span><strong>Créneaux</strong>Soirs de semaine et week-ends, sur rendez-vous</span></li>
-    <li>${icon('clipboard-check')}<span><strong>Référence</strong>Norme NF C 15-100</span></li>
   </ul>
   ${btnCall('btn-primary btn-block', 'Appeler ' + site.owner.split(' ')[0])}
 </aside>`;
 }
 function authorBox(id = 'lga') {
-  return `<div class="author-box">${site.portrait ? avatar('avatar-sm') : logoSvg(id)}<p><strong>${site.owner}</strong> — électricien depuis ${site.experienceYears} ans, installé à ${site.address.city} (ALED08). J’interviens en soirée et le week-end, sur rendez-vous, chez les particuliers des Ardennes. <a href="/qui-suis-je/">En savoir plus</a></p></div>`;
+  return `<div class="author-box">${site.portrait ? avatar('avatar-sm') : logoSvg(id)}<p><strong>${site.owner}</strong> — jeune artisan électricien installé à ${site.address.city} (ALED08), déjà ${site.experienceYears} ans de métier. Je me déplace en soirée et le week-end, sur rendez-vous, chez les particuliers des Ardennes. <a href="/qui-suis-je/">Faisons connaissance</a></p></div>`;
 }
 
 // ---------------------------------------------------------------- étapes
@@ -409,6 +392,6 @@ function communesList(opts = {}) {
 module.exports = {
   register, label, registry, tel, waUrl, devisUrl, euro, logoSvg,
   btnCall, btnDevis, btnWa, breadcrumbs, pageHero, circuitBg, trustBar, serviceCards, hoursTable, dispoCard,
-  forfaitBlock, forfaitFor, pricingTable, kmTable, passage, payBlock, marketCompare, avatar, artisanCard, authorBox, distanceBadge, steps, cases, faq, ctaBand, inlineCta, relatedLinks, reviewsBlock,
+  forfaitBlock, forfaitFor, pricingTable, kmTable, passage, payBlock, avatar, artisanCard, authorBox, distanceBadge, steps, cases, faq, ctaBand, inlineCta, relatedLinks, reviewsBlock,
   beforeAfter, mapEmbed, communesList,
 };

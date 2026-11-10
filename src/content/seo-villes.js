@@ -95,7 +95,7 @@ J'interviens dans toute la ville, du centre aux quartiers plus récents, ainsi q
     description: 'Électricien à Charleville-Mézières : dépannage, tableau, prises, éclairage, mise en sécurité. Forfait dépannage 99 €, après 18 h et le week-end.',
     kicker: 'Électricien · Charleville-Mézières (08000)',
     h1: 'Électricien à Charleville-Mézières, après le travail et le week-end',
-    lead: "À Charleville-Mézières, trouver un électricien disponible **le soir ou le samedi** relève souvent du parcours du combattant. C'est justement mon créneau : j'interviens dans la préfecture et son agglomération **de 18 h à 21 h 30 en semaine et tout le week-end**, avec des prix publiés à l'avance.",
+    lead: "À Charleville-Mézières, vous rentrez du travail et la panne vous attend ? **Le soir et le samedi**, c'est justement mon créneau : j'interviens dans la préfecture et son agglomération **de 18 h à 21 h 30 en semaine et tout le week-end**, avec des prix publiés à l'avance.",
     body: `## Des logements très variés
 
 De la place Ducale aux quartiers de Mohon, d'Étion ou de Montcy-Notre-Dame, Charleville-Mézières offre une grande diversité de logements : immeubles anciens du centre, maisons de ville sur plusieurs niveaux, résidences des années 60 et 70, pavillons plus récents. Chacun a ses points faibles :

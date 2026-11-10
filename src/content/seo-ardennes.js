@@ -22,7 +22,7 @@ Rien de tout cela n'impose de tout refaire. Mais cela demande un électricien qu
 
 ## Comment bien choisir son électricien
 
-Quelques repères simples, que je vous invite à appliquer à moi comme aux autres :
+Quelques repères simples, que je m'applique à moi-même :
 
 1. Il annonce le **prix de son intervention** (déplacement, recherche de panne) avant de venir.
 2. Il remet un **devis écrit** pour tous travaux importants, détaillé ligne par ligne.
@@ -42,7 +42,7 @@ J'interviens dans un rayon d'environ 45 km autour de Signy-l'Abbaye : Rethel et 
     ],
     faq: [
       { q: 'Intervenez-vous dans tout le département des Ardennes ?', a: "Principalement dans un rayon de 45 km autour de Signy-l'Abbaye, ce qui couvre le centre et le sud du département. Au-delà, c'est possible sur devis." },
-      { q: 'Êtes-vous disponible en semaine dans la journée ?', a: "Non : mes créneaux d'intervention sont les soirs de semaine (18 h – 21 h 30) et les week-ends. C'est ce qui me permet d'être disponible quand la plupart des entreprises sont fermées." },
+      { q: 'Êtes-vous disponible en semaine dans la journée ?', a: "Non : mes créneaux d'intervention sont les soirs de semaine (18 h – 21 h 30) et les week-ends. C'est ce qui me permet d'être là quand vous êtes chez vous." },
       { q: 'Travaillez-vous seul ?', a: "Oui. C'est moi qui réponds au téléphone, qui viens chez vous et qui réalise les travaux. Vous avez un seul interlocuteur, du premier appel à la facture." },
     ],
     cta: { title: 'Un électricien dans les Ardennes, le soir ou le week-end', text: 'Appelez-moi ou décrivez votre besoin : je vous réponds avec un prix et un créneau.' },
@@ -59,10 +59,10 @@ J'interviens dans un rayon d'environ 45 km autour de Signy-l'Abbaye : Rethel et 
     description: "Dépannage électrique dans les Ardennes le soir et le week-end : plus de courant, disjoncteur qui saute, panne partielle. Forfait 79 €, déplacement et devis compris.",
     kicker: 'Dépannage · Ardennes',
     h1: 'Dépannage électrique dans les Ardennes, le soir et le week-end',
-    lead: "Vous rentrez du travail et une partie de la maison est dans le noir ? Le disjoncteur refuse de se réarmer un samedi matin ? Dans les Ardennes, j'assure le **dépannage électrique des particuliers** sur les créneaux où les autres sont fermés, avec **un prix annoncé avant de venir**.",
+    lead: "Vous rentrez du travail et une partie de la maison est dans le noir ? Le disjoncteur refuse de se réarmer un samedi matin ? Dans les Ardennes, j'assure le **dépannage électrique des particuliers** sur les créneaux où vous êtes chez vous, avec **un prix annoncé avant de venir**.",
     body: `## Comment j'organise les dépannages
 
-Je n'ai pas de standard ni de plateforme : c'est moi qui décroche. Quand vous appelez, je vous pose quelques questions pour **évaluer l'urgence** et préparer l'intervention :
+Quand vous appelez, c'est moi qui décroche. Je vous pose quelques questions pour **évaluer l'urgence** et préparer l'intervention :
 
 - Avez-vous encore du courant dans une partie du logement ?
 - Quelle protection a déclenché, et se réarme-t-elle ?
@@ -283,7 +283,7 @@ En hiver, il fait nuit dès 17 h. Je viens donc avec **mon propre éclairage de 
 
 ## Pourquoi pas de majoration ?
 
-Beaucoup d'entreprises appliquent un supplément après 18 h, parce que leurs équipes font des heures supplémentaires. Chez ALED08, la soirée est un **créneau normal de travail**, choisi dès le départ. Il n'y a donc aucune raison de vous le facturer plus cher.`,
+Chez ALED08, la soirée est un **créneau normal de travail**, choisi dès le départ. Il n'y a donc aucune raison de vous le facturer plus cher.`,
     cases: [
       { tag: '18 h 30', icon: 'clock', title: 'Trois prises et deux interrupteurs après le travail', text: "Un couple qui travaille à Charleville voulait remplacer l'appareillage abîmé du séjour sans perdre une journée.", result: 'Intervention de 18 h 30 à 20 h, tout est remplacé et testé avant le dîner.' },
       { tag: '19 h 45', icon: 'search', title: 'Une panne découverte en rentrant', text: "En rentrant à 19 h, une famille constate que le circuit des chambres ne fonctionne plus.", result: 'Rendez-vous à 19 h 45, borne desserrée retrouvée dans une boîte de dérivation du couloir, réparée.' },

@@ -84,7 +84,7 @@ Avant de partir plusieurs semaines, débranchez les appareils non indispensables
     title: 'Quel est le prix d’un dépannage électrique ? Détail et exemples',
     description: "Déplacement, diagnostic, main-d'œuvre, matériel : comment se calcule le prix d'un dépannage électrique, exemples chiffrés et pièges à éviter.",
     h1: 'Quel est le prix d’un dépannage électrique ?',
-    lead: "C'est souvent la première question, et elle est légitime. Le prix d'un dépannage électrique dépend de **plusieurs éléments** que beaucoup d'entreprises ne détaillent pas. Voici comment il se construit, avec des **exemples chiffrés**, et les règles qui vous protègent contre les abus.",
+    lead: "C'est souvent la première question, et elle est légitime. Le prix d'un dépannage électrique dépend de **plusieurs éléments** qu'il vaut mieux connaître avant d'appeler. Voici comment il se construit, avec des **exemples chiffrés**, et les règles qui vous protègent contre les abus.",
     category: 'Tarifs', icon: 'euro', date: '2026-09-16', prestation: 'depannage',
     body: `## Les composantes d'une facture de dépannage
 
@@ -96,7 +96,7 @@ Une facture de dépannage se compose généralement de :
 4. **Le matériel** : prise, disjoncteur, boîte, câble…
 5. **D'éventuelles majorations** : soirée, week-end, jour férié, urgence.
 
-Chez beaucoup d'entreprises, les majorations de soirée et de week-end peuvent représenter une part importante de la facture. C'est un point à toujours demander avant de confirmer l'intervention.
+Les majorations de soirée et de week-end, lorsqu'il y en a, peuvent peser sur la facture : pensez à poser la question avant de confirmer l'intervention.
 
 ## Ce que dit la réglementation
 
@@ -131,11 +131,11 @@ Le disjoncteur du lave-linge chauffe et a noirci. Forfait dépannage : **89 €*
 
 Le différentiel déclenche plusieurs fois par semaine. Recherche par mesure d'isolement, défaut trouvé sur une prise extérieure. Forfait dépannage : **99 €** (79 € + 20 €). La prise étanche de remplacement fait l'objet d'un devis, accepté et posé le samedi suivant.
 
-## Comment éviter les arnaques au dépannage
+## Les bons réflexes avant de faire venir un dépanneur
 
-Les dépannages « d'urgence » font l'objet de pratiques abusives régulièrement signalées : prospectus imitant des documents officiels, numéros surtaxés, artisans sans adresse locale, factures exorbitantes. Quelques réflexes :
+Dans le stress d'une panne, on a tendance à appeler le premier numéro venu. Quelques réflexes simples permettent de choisir sereinement :
 
-- **Méfiez-vous des numéros trouvés sur un aimant ou un prospectus** déposé dans votre boîte aux lettres sans nom d'entreprise clair.
+- **Privilégiez un numéro rattaché à une entreprise identifiée** : un nom, une adresse, une personne.
 - **Demandez ce que comprend le prix annoncé** au téléphone, avant toute venue : déplacement, recherche, devis.
 - **Vérifiez l'existence de l'entreprise** : nom, adresse, numéro SIRET.
 - **Exigez un devis** pour toute réparation importante, et ne signez rien dans la précipitation.
@@ -146,7 +146,7 @@ Les dépannages « d'urgence » font l'objet de pratiques abusives régulièreme
 Au final, le prix d'un dépannage dépend surtout de **la difficulté à trouver la panne**. Une panne franche se règle vite ; une panne intermittente demande plus de temps de recherche. C'est pourquoi je pratique un forfait dépannage : vous connaissez le prix de la recherche à l'avance, quel que soit le temps qu'elle prend, et la réparation vous est proposée sur devis.`,
     faq: [
       { q: 'Le forfait est-il dû si je refuse le devis de réparation ?', a: "Oui, dès lors que la panne a été trouvée : il rémunère le déplacement, la recherche et l'établissement du devis. La réparation n'est jamais faite sans votre accord. En revanche, si l'origine de la panne n'est pas identifiée, une remise est appliquée sur le forfait." },
-      { q: 'Un dépannage le dimanche coûte-t-il plus cher ?', a: "Chez de nombreuses entreprises, oui. Chez ALED08, non : les tarifs sont identiques tous les jours." },
+      { q: 'Un dépannage le dimanche coûte-t-il plus cher ?', a: "Chez ALED08, non : le forfait est le même tous les jours, dimanche compris." },
     ],
     cta: { title: 'Combien pour votre dépannage ?', text: 'Appelez-moi : je vous annonce le forfait dépannage pour votre commune avant de venir.' },
     links: ['/tarifs/', '/prestations/depannage-electrique/', '/depannage-electrique-ardennes/', '/electricien-urgence-ardennes/'],
@@ -158,11 +158,11 @@ Au final, le prix d'un dépannage dépend surtout de **la difficulté à trouver
     slug: 'pourquoi-faire-appel-a-un-electricien-local',
     short: 'Pourquoi un électricien local',
     title: 'Pourquoi faire appel à un électricien local ? 6 avantages',
-    description: 'Déplacements moins chers, disponibilité, connaissance du bâti, suivi : pourquoi choisir un électricien local dans les Ardennes, et comment le choisir.',
+    description: 'Déplacements plus courts, disponibilité, connaissance du bâti, suivi : pourquoi choisir un électricien local dans les Ardennes, et comment le choisir.',
     h1: 'Pourquoi faire appel à un électricien local ?',
-    lead: "Plateformes de mise en relation, numéros nationaux, entreprises lointaines : il n'a jamais été aussi facile de trouver « un électricien ». Mais pour un dépannage ou des travaux chez soi, **un artisan installé près de chez vous** reste souvent le meilleur choix. Voici pourquoi.",
+    lead: "Pour un dépannage ou des travaux chez soi, **un artisan installé près de chez vous** a de vrais atouts : il est proche, il connaît les maisons du coin et vous savez à qui vous avez affaire. Les voici, simplement.",
     category: 'Conseils', icon: 'map-pin', date: '2026-09-09', prestation: 'depannage',
-    body: `## 1. Des déplacements moins chers
+    body: `## 1. Des déplacements plus courts
 
 C'est le plus évident : un électricien installé à quelques kilomètres facture un déplacement modeste. Pour un petit dépannage, le déplacement peut représenter une part importante de la facture lorsque l'artisan vient de loin. Dans les zones rurales comme le sud des Ardennes, la différence se ressent vite.
 
@@ -198,9 +198,9 @@ Faire travailler un artisan du territoire, c'est aussi faire vivre l'économie l
 - **Les avis** : ceux de vos voisins, de vos proches, et les avis en ligne vérifiés.
 - **L'écoute** : un bon artisan pose des questions avant de proposer une solution, et vous explique ce qu'il fait.
 
-## Le cas des plateformes et numéros nationaux
+## Et si vous passez par une plateforme ?
 
-Certaines plateformes mettent en relation avec des artisans sérieux. D'autres revendent simplement votre demande au plus offrant, ou masquent des entreprises sans implantation locale. Avant de confirmer, demandez **qui va venir**, **d'où il vient** et **combien coûtera le déplacement**. Si les réponses sont floues, passez votre chemin.`,
+Certaines plateformes mettent en relation avec des artisans sérieux. Dans tous les cas, avant de confirmer, demandez **qui va venir**, **d'où il vient** et **combien coûtera le déplacement** : ce sont de bonnes questions à poser à n'importe quel professionnel.`,
     faq: [
       { q: 'Un électricien local est-il forcément moins cher ?', a: "Pas forcément sur le taux horaire, mais presque toujours sur le déplacement, et souvent sur le délai. Le plus important reste la transparence des prix annoncés." },
       { q: 'Comment vérifier qu’un électricien est bien assuré ?', a: "Demandez son attestation d'assurance : elle mentionne l'assureur, le numéro de contrat et les activités couvertes. Ces informations doivent aussi figurer sur ses devis." },

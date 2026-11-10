@@ -373,16 +373,6 @@ strong { font-weight: 650; color: inherit; }
 .pay-no h3 .ico { color: #c2410c; }
 .pay-no li::before { background: #c2410c; }
 
-/* repères de marché */
-.compare { border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); margin-bottom: 14px; }
-.compare-row { display: grid; grid-template-columns: 170px 1fr 1fr; gap: 16px; padding: 15px 22px; border-top: 1px solid var(--line); align-items: center; font-size: .95rem; }
-.compare-row > span { color: var(--muted); }
-.compare-head { border-top: 0; background: var(--ink); font-size: .78rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
-.compare-head > span { color: #c9d2de; }
-.compare-head > span:last-child { color: #fff; }
-.compare-row .compare-me { display: flex; gap: 8px; align-items: flex-start; color: var(--ink); font-weight: 600; }
-.compare-me .ico { color: var(--ok); margin-top: 3px; }
-
 /* l'artisan */
 .avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; flex: none; border: 2px solid rgba(60, 200, 255, .5); box-shadow: 0 0 22px -4px rgba(29, 107, 255, .7); }
 .avatar-mono { display: grid; place-items: center; background: linear-gradient(140deg, #3cc8ff, var(--blue) 55%, var(--blue-700)); color: #fff; font: 800 1.5rem var(--font-head); letter-spacing: .02em; }
@@ -696,9 +686,6 @@ a.contact-card:hover { border-color: rgba(29, 107, 255, .35); transform: transla
   .passage-step { padding: 20px; }
   .pay { grid-template-columns: 1fr; }
   .pay-col { padding: 22px; }
-  .compare-row { grid-template-columns: 1fr; gap: 4px; padding: 14px 18px; }
-  .compare-head { display: none; }
-  .compare-row > span:not(.compare-me)::before { content: "Souvent : "; font-weight: 600; }
   .forfait-list { grid-template-columns: 1fr; padding: 22px 20px 6px; }
   .forfait-foot { padding: 12px 20px 22px; }
   .forfait-guarantee { margin: 6px 20px 0; align-items: flex-start; }

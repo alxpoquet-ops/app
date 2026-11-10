@@ -247,9 +247,9 @@ Je ne suis pas un service d'urgence 24 h/24 : je travaille **sur rendez-vous, le
 
 Concrètement, si vous appelez en fin d'après-midi pour une panne totale à proximité de Signy-l'Abbaye, je peux souvent venir **le soir même**. Plus loin ou en période chargée, je vous propose le premier créneau disponible et je vous conseille pour patienter en sécurité.
 
-## Mieux vaut un prix clair qu'une facture surprise
+## Un prix clair, même quand ça presse
 
-Méfiez-vous des numéros de « dépannage d'urgence » trouvés en tête des moteurs de recherche, parfois sans entreprise locale derrière. Chez moi, le **forfait dépannage est annoncé au téléphone** avant que je prenne la route, et la réparation fait l'objet d'un devis, sans obligation.`,
+L'urgence ne change rien à ma façon de faire : le **forfait dépannage est annoncé au téléphone** avant que je prenne la route, et la réparation fait l'objet d'un devis, sans obligation. Vous gardez la main, même dans le stress d'une panne.`,
     cases: [
       { tag: 'Vendredi 18 h', icon: 'zap-off', title: 'Une maison entièrement sans courant', text: "Une famille de Thin-le-Moutier rentre à 18 h : plus rien ne fonctionne, le disjoncteur général refuse de se réarmer.", result: 'Sur place à 18 h 40, câble de la pompe de relevage en court-circuit isolé, maison rétablie à 19 h 30.' },
       { tag: 'Samedi matin', icon: 'flame', title: 'Une odeur de brûlé dans l’entrée', text: "Une odeur de plastique chaud près du tableau, que la propriétaire a eu le bon réflexe de couper.", result: 'Borne de disjoncteur carbonisée, remplacée avec le peigne ; remise sous tension après contrôle.' },
