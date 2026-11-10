@@ -9,6 +9,7 @@ module.exports = [
     items: [
       { q: 'Où puis-je consulter vos prix ?', a: "Sur la page [Tarifs](/tarifs/). Le dépannage est au forfait de 79 € : déplacement jusqu'à 15 km, recherche de panne, proposition de solution et devis de réparation sans obligation. La réparation, les pièces et les travaux sont chiffrés sur devis." },
       { q: 'Pourquoi n’affichez-vous pas de prix de pièces ?', a: "Parce que le prix d'une réparation dépend de la panne réelle. Je préfère la trouver d'abord, puis vous remettre un devis exact, plutôt qu'afficher des prix d'appel." },
+      { q: 'Dois-je payer si vous ne trouvez pas la panne ?', a: "Non. Si je ne parviens pas à identifier l'origine de la panne, je ne facture ni le forfait ni le déplacement." },
       { q: 'Y a-t-il une majoration le soir, le samedi ou le dimanche ?', a: "Aucune. J'ai choisi de travailler sur ces créneaux ; ce n'est pas à vous d'en payer le prix." },
       { q: 'Comment le supplément kilométrique est-il calculé ?', a: "Selon la distance par la route entre Signy-l'Abbaye et votre domicile : rien jusqu'à 15 km, 10 € de 15 à 30 km, 20 € de 30 à 45 km. Au-delà, le déplacement est convenu à l'avance." },
       { q: 'Quand dois-je payer ?', a: "Pour un dépannage, à la fin de l'intervention, sur présentation de la facture. Pour des travaux sur devis, selon l'échéancier indiqué sur le devis, avec éventuellement un acompte à la commande." },

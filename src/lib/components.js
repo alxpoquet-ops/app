@@ -82,7 +82,7 @@ function circuitBg(id = 'c') {
 function trustBar() {
   const items = [
     ['zap', 'Spécialiste dépannage', 'Recherche de panne méthodique'],
-    ['euro', 'Forfait 79 € TTC', 'Déplacement et devis compris'],
+    ['euro', 'Forfait 79 € TTC', 'Panne non trouvée : rien à payer'],
     ['moon', 'Soirs & week-ends', 'Sans majoration'],
     ['user', `${site.experienceYears} ans de métier`, 'Un seul interlocuteur'],
   ];
@@ -121,7 +121,7 @@ function dispoCard() {
   <div class="dispo-forfait">
     <div class="dispo-forfait-head"><span>Forfait dépannage</span><strong>${euro(forfait.price)}</strong></div>
     <ul>${forfait.includes.map((i) => `<li>${icon('check')}${i.text}</li>`).join('')}</ul>
-    <p>Réparation sur devis, sans obligation.</p>
+    <p>Réparation sur devis, sans obligation.${forfait.notFoundFree ? ' <strong>Panne non trouvée : rien à payer.</strong>' : ''}</p>
   </div>
   ${btnCall('btn-primary btn-block', 'Appeler maintenant')}
   ${btnWa('btn-wa btn-block', 'Écrire sur WhatsApp')}
@@ -139,6 +139,7 @@ function forfaitBlock(opts = {}) {
   <ul class="forfait-list">${forfait.includes
     .map((i) => `<li>${icon(i.icon)}<div><strong>${i.text}</strong><span>${i.detail}</span></div></li>`)
     .join('')}</ul>
+  ${forfait.notFoundFree ? `<p class="forfait-guarantee">${icon('shield-check')}<span><strong>Panne non trouvée ? Vous ne payez rien.</strong> Ni le forfait, ni le déplacement.</span></p>` : ''}
   <p class="forfait-foot">${icon('info')}<span>La réparation et les pièces font l’objet d’un <strong>devis remis à la fin du dépannage</strong> : vous l’acceptez ou non, sans obligation. Au-delà de 15 km : + 10 € (15 à 30 km) ou + 20 € (30 à 45 km). Même prix le soir et le week-end.</span></p>
 </div>`;
 }
@@ -198,7 +199,7 @@ function distanceBadge(name) {
 const PASSAGE = [
   { icon: 'phone', t: 'Avant de venir', d: 'Vous m’appelez ou m’écrivez. Je vous confirme le prix du forfait pour votre commune et nous fixons un créneau, le soir ou le week-end.' },
   { icon: 'house', t: 'À mon arrivée', d: 'Vous me montrez la panne et le tableau électrique. Je vérifie d’abord qu’il n’y a pas de danger immédiat.' },
-  { icon: 'search', t: 'La recherche de panne', d: 'Je teste, j’isole les circuits et je mesure, jusqu’à trouver l’origine du problème.' },
+  { icon: 'search', t: 'La recherche de panne', d: 'Je teste, j’isole les circuits et je mesure, jusqu’à trouver l’origine du problème. Si je ne la trouve pas, vous ne payez rien.' },
   { icon: 'lightbulb', t: 'L’explication', d: 'Je vous montre ce que j’ai trouvé et je vous présente les solutions possibles, simplement.' },
   { icon: 'file-text', t: 'Le devis', d: 'Je vous remets un devis de réparation écrit. Vous l’acceptez, vous réfléchissez ou vous refusez : aucune obligation.' },
   { icon: 'circle-check', t: 'La suite', d: 'Devis accepté ? Je répare, souvent dans la foulée. Sinon, vous ne réglez que le forfait.' },
@@ -219,6 +220,7 @@ function payBlock() {
   const no = [
     'De majoration le soir, le samedi ou le dimanche.',
     'D’heures « au compteur » pendant la recherche de panne.',
+    'Le forfait, si je ne trouve pas l’origine de la panne.',
     'De réparation que vous n’avez pas validée sur devis.',
     'Le devis de vos travaux hors dépannage : il est gratuit.',
   ];
@@ -234,6 +236,7 @@ function marketCompare() {
     ['Déplacement', 'Souvent facturé à part : 20 à 50 € en province', 'Compris dans le forfait jusqu’à 15 km'],
     ['Soir, week-end', 'Majoration fréquente de 50 à 100 %', 'Aucune majoration'],
     ['Recherche de panne', 'Souvent au temps passé : 50 à 100 € de l’heure', 'Comprise dans le forfait'],
+    ['Panne non trouvée', 'Variable selon les entreprises', 'Vous ne payez rien'],
     ['Prix', 'Rarement affiché avant l’appel', 'Publié ici, confirmé au téléphone'],
     ['Interlocuteur', 'Parfois une plateforme ou un standard', `${site.owner}, du premier appel à la facture`],
   ];

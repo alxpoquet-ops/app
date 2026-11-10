@@ -133,6 +133,8 @@ Le devis de travaux est gratuit ; le devis de réparation établi lors d'un dép
 
 Le montant du forfait dépannage, supplément kilométrique éventuel compris, est annoncé au client avant le déplacement. À l'issue de la recherche de panne, un devis de réparation lui est remis ; il reste libre de l'accepter ou de le refuser, sans obligation. En cas de refus, seul le forfait dépannage est dû.
 
+Si, à l'issue de la recherche, l'origine de la panne n'a pas pu être identifiée, aucune somme n'est due par le client : ni le forfait dépannage, ni le supplément kilométrique.
+
 ## 6. Droit de rétractation
 
 Lorsque le contrat est conclu à distance ou hors établissement, le client dispose d'un délai de **14 jours** pour se rétracter, sans avoir à se justifier (articles L221-18 et suivants du Code de la consommation). Un formulaire de rétractation est joint au devis.

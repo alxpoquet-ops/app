@@ -308,7 +308,7 @@ strong { font-weight: 650; color: inherit; }
 
 /* forfait dépannage */
 .forfait { position: relative; display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 0; border-radius: var(--radius-lg); overflow: hidden; background: #fff; border: 1px solid rgba(29, 107, 255, .25); box-shadow: 0 0 0 1px rgba(29, 107, 255, .06), 0 30px 60px -30px rgba(29, 107, 255, .45); }
-.forfait-price { grid-row: span 2; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 32px 28px; color: #fff; background: radial-gradient(260px 180px at 80% 0%, rgba(60, 200, 255, .55), transparent 70%), linear-gradient(150deg, #1d6bff, #1446b8); }
+.forfait-price { grid-row: span 3; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 32px 28px; color: #fff; background: radial-gradient(260px 180px at 80% 0%, rgba(60, 200, 255, .55), transparent 70%), linear-gradient(150deg, #1d6bff, #1446b8); }
 .forfait-label { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; color: #dbe9ff; }
 .forfait-label .ico { color: #fff; filter: drop-shadow(0 0 8px rgba(255, 255, 255, .7)); }
 .forfait-price strong { font: 800 4rem/1 var(--font-head); letter-spacing: -.03em; text-shadow: 0 0 30px rgba(60, 200, 255, .6); }
@@ -319,12 +319,16 @@ strong { font-weight: 650; color: inherit; }
 .forfait-list .ico { flex: none; width: 40px; height: 40px; padding: 9px; border-radius: 11px; background: var(--blue-50); color: var(--blue); }
 .forfait-list strong { display: block; color: var(--ink); font-size: 1rem; }
 .forfait-list span { font-size: .88rem; color: var(--muted); }
+.forfait-guarantee { grid-column: 2; display: flex; gap: 10px; align-items: center; margin: 6px 30px 0; padding: 12px 16px; border-radius: 12px; background: #f0fbf6; border: 1px solid rgba(21, 163, 106, .3); color: var(--ink-3); font-size: .95rem; }
+.forfait-guarantee .ico { flex: none; color: var(--ok); width: 22px; height: 22px; }
+.forfait-guarantee strong { color: #0c6b45; }
 .forfait-foot { grid-column: 2; display: flex; gap: 10px; margin: 0; padding: 14px 30px 26px; font-size: .88rem; color: var(--muted); }
 .forfait-foot .ico { flex: none; color: var(--blue); margin-top: 3px; }
 .forfait-foot strong { color: var(--ink-3); }
 .forfait--compact { grid-template-columns: 1fr; }
 .forfait--compact .forfait-list { grid-template-columns: 1fr; padding: 22px 22px 6px; }
 .forfait--compact .forfait-foot { grid-column: 1; padding: 12px 22px 22px; }
+.forfait--compact .forfait-guarantee { grid-column: 1; margin: 6px 22px 0; align-items: flex-start; }
 .forfait--compact .forfait-price { padding: 24px 22px; grid-row: auto; }
 .forfait--compact .forfait-price strong { font-size: 3.2rem; }
 .dispo-forfait { margin: 0 0 16px; padding: 16px 18px; border-radius: 14px; background: linear-gradient(150deg, rgba(29, 107, 255, .3), rgba(29, 107, 255, .08)); border: 1px solid rgba(60, 200, 255, .3); }
@@ -334,6 +338,7 @@ strong { font-weight: 650; color: inherit; }
 .dispo-forfait li { display: flex; gap: 8px; align-items: center; }
 .dispo-forfait li .ico { color: var(--cyan); width: 16px; height: 16px; }
 .dispo-forfait p { margin: 0; font-size: .82rem; color: #a9b5c4; }
+.dispo-forfait p strong { display: block; color: #7ee2b8; margin-top: 3px; }
 .price-row--hl { background: linear-gradient(90deg, var(--blue-50), #fff); }
 .price-row--hl .price-value b { color: var(--blue-600); font-size: 1.7rem; }
 .price-value .price-text { font-size: 1.05rem; white-space: nowrap; }
@@ -665,6 +670,7 @@ a.contact-card:hover { border-color: rgba(29, 107, 255, .35); transform: transla
   .passage { grid-template-columns: 1fr 1fr; }
   .forfait-price { grid-row: auto; }
   .forfait-foot { grid-column: 1; }
+  .forfait-guarantee { grid-column: 1; }
 }
 @media (max-width: 720px) {
   body { font-size: 16px; padding-bottom: 68px; }
@@ -695,6 +701,7 @@ a.contact-card:hover { border-color: rgba(29, 107, 255, .35); transform: transla
   .compare-row > span:not(.compare-me)::before { content: "Souvent : "; font-weight: 600; }
   .forfait-list { grid-template-columns: 1fr; padding: 22px 20px 6px; }
   .forfait-foot { padding: 12px 20px 22px; }
+  .forfait-guarantee { margin: 6px 20px 0; align-items: flex-start; }
   .forfait-price strong { font-size: 3.2rem; }
   .grid-3 { grid-template-columns: 1fr; }
   .grid-ba { grid-template-columns: 1fr; }

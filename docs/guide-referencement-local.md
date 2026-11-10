@@ -16,7 +16,7 @@ Rendez-vous sur google.com/business. Comptez une heure, puis quelques jours pour
 
 **Description à copier-coller** (moins de 750 caractères) :
 
-> ALED08, c'est Alexandre Poquet, électricien depuis 10 ans, installé à Signy-l'Abbaye. Ma spécialité : le dépannage et la recherche de panne chez les particuliers des Ardennes. Forfait dépannage 79 € : déplacement (jusqu'à 15 km), recherche de panne, proposition de solution et devis de réparation sans obligation. J'interviens le soir en semaine (18 h – 21 h 30) et le week-end, sur rendez-vous, sans majoration. Travaux sur devis gratuit : tableau électrique, prises, éclairage, mise en sécurité. Secteur : Signy-l'Abbaye, Rethel, Charleville-Mézières, Sedan, Rocroi et alentours.
+> ALED08, c'est Alexandre Poquet, électricien depuis 10 ans, installé à Signy-l'Abbaye. Ma spécialité : le dépannage et la recherche de panne chez les particuliers des Ardennes. Forfait dépannage 79 € : déplacement (jusqu'à 15 km), recherche de panne, proposition de solution et devis de réparation sans obligation. Panne non trouvée : rien à payer. J'interviens le soir en semaine (18 h – 21 h 30) et le week-end, sur rendez-vous, sans majoration. Travaux sur devis gratuit : tableau électrique, prises, éclairage, mise en sécurité. Secteur : Signy-l'Abbaye, Rethel, Charleville-Mézières, Sedan, Rocroi et alentours.
 
 Une fois la fiche validée, copiez son lien dans `googleReviewsUrl` (fichier `src/config.js`).
 

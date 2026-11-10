@@ -37,6 +37,7 @@ function home({ posts }) {
   const f = C.faq(
     [
       { q: 'Combien coûte un dépannage ?', a: "Le forfait dépannage est de 79 € TTC. Il comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de la panne, la proposition de solution et le devis de réparation, sans obligation. Au-delà de 15 km, il passe à 89 € (15 à 30 km) ou 99 € (30 à 45 km). Détails sur la page [Tarifs](/tarifs/)." },
+      { q: 'Et si vous ne trouvez pas la panne ?', a: "Vous ne payez rien : ni le forfait, ni le déplacement. Le forfait rémunère un résultat, c'est-à-dire savoir d'où vient la panne et combien coûterait la réparation." },
       { q: 'Et la réparation, combien coûte-t-elle ?', a: "Elle dépend de la panne trouvée et des pièces à remplacer. C'est pourquoi je ne publie pas de prix de pièces : à la fin du dépannage, je vous remets un devis précis. Vous êtes libre de l'accepter ou non." },
       { q: 'Qui vient chez moi ?', a: `Moi, ${site.owner}, électricien depuis ${Y} ans. ALED08 n'a ni standard ni sous-traitant : vous avez le même interlocuteur du premier appel à la facture.` },
       { q: 'Intervenez-vous vraiment le soir et le week-end ?', a: "Oui, c'est le principe d'ALED08 : du lundi au vendredi de 18 h à 21 h 30, le samedi de 8 h à 19 h et le dimanche de 9 h à 18 h, toujours sur rendez-vous. Le forfait reste le même, sans majoration." },
@@ -62,6 +63,7 @@ function home({ posts }) {
       </div>
       <ul class="hero-proofs">
         <li>${icon('zap')}Forfait dépannage 79 €, déplacement compris</li>
+        <li>${icon('shield-check')}Panne non trouvée : rien à payer</li>
         <li>${icon('file-text')}Devis de réparation sans obligation</li>
         <li>${icon('user')}${site.owner}, électricien depuis ${Y} ans</li>
       </ul>
@@ -355,6 +357,7 @@ function tarifsPage() {
   const f = C.faq([
     { q: 'Que comprend exactement le forfait dépannage à 79 € ?', a: "Le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de la panne, la proposition de solution et le devis de réparation. Vous ne payez rien de plus tant que vous n'avez pas accepté le devis." },
     { q: 'Pourquoi n’affichez-vous pas le prix des pièces ?', a: "Parce qu'il dépend de ce que l'on trouve : une borne desserrée ne se répare pas comme un disjoncteur fondu ou un câble abîmé. Plutôt que d'afficher des prix « à partir de » qui ne correspondent jamais à la réalité, je vous remets un devis précis à la fin du dépannage." },
+    { q: 'Que se passe-t-il si vous ne trouvez pas la panne ?', a: "Vous ne payez rien, ni le forfait ni le déplacement. C'est un engagement simple : si je repars sans avoir identifié l'origine du problème, mon passage ne vous est pas facturé." },
     { q: 'Suis-je obligé d’accepter le devis de réparation ?', a: "Non. Le devis est sans obligation. Si vous le refusez, ou si vous souhaitez réfléchir, vous ne réglez que le forfait dépannage." },
     { q: 'Pouvez-vous réparer tout de suite si j’accepte le devis ?', a: "Dans la majorité des cas, oui : j'ai dans mon véhicule le matériel courant (prises, interrupteurs, disjoncteurs, connectique). Si une pièce particulière doit être commandée, on fixe un nouveau créneau." },
     { q: 'Le forfait est-il plus cher le soir ou le week-end ?', a: "Non. Le forfait dépannage est le même du lundi au dimanche, en soirée comme le week-end." },
@@ -364,10 +367,10 @@ function tarifsPage() {
   const body = `${C.pageHero({
     kicker: 'Tarifs',
     h1: 'Tarif du dépannage électrique : 79 €, tout compris jusqu’au devis',
-    lead: "Pas de prix cachés, pas de majoration le soir ou le week-end. **Un seul forfait pour le dépannage**, qui comprend le déplacement, la recherche de panne, la proposition de solution et le devis de réparation. La réparation est ensuite chiffrée sur devis : **vous décidez**.",
+    lead: "Pas de prix cachés, pas de majoration le soir ou le week-end. **Un seul forfait pour le dépannage**, qui comprend le déplacement, la recherche de panne, la proposition de solution et le devis de réparation. **Si je ne trouve pas la panne, vous ne payez rien.** La réparation est ensuite chiffrée sur devis : vous décidez.",
     crumbs,
     prestation: 'depannage',
-    chips: [{ icon: 'zap', text: 'Forfait dépannage 79 € TTC' }, { icon: 'file-text', text: 'Devis de réparation sans obligation' }, { icon: 'moon', text: 'Sans majoration soir & week-end' }],
+    chips: [{ icon: 'zap', text: 'Forfait dépannage 79 € TTC' }, { icon: 'shield-check', text: 'Panne non trouvée : rien à payer' }, { icon: 'file-text', text: 'Devis de réparation sans obligation' }, { icon: 'moon', text: 'Sans majoration soir & week-end' }],
   })}
 <section class="section"><div class="container">
   <div class="section-head"><p class="kicker">Le forfait</p><h2>Ce que comprend le forfait dépannage</h2></div>
@@ -433,7 +436,7 @@ ${communesJs}`;
     body,
     schema: [f.schema, {
       '@type': 'Offer', '@id': site.url + '/tarifs/#forfait', name: 'Forfait dépannage électrique', price: 79, priceCurrency: 'EUR',
-      description: "Déplacement jusqu'à 15 km de Signy-l'Abbaye, recherche de panne, proposition de solution et devis de réparation sans obligation.",
+      description: "Déplacement jusqu'à 15 km de Signy-l'Abbaye, recherche de panne, proposition de solution et devis de réparation sans obligation. Non facturé si l'origine de la panne n'est pas trouvée.",
       seller: { '@id': site.url + '/#entreprise' }, areaServed: { '@type': 'AdministrativeArea', name: 'Ardennes (08)' },
       itemOffered: { '@type': 'Service', name: 'Dépannage électrique à domicile', serviceType: 'Dépannage électrique' },
     }],
@@ -578,7 +581,7 @@ function devis() {
     { q: 'Sous quel délai recevrai-je une réponse ?', a: "Je réponds en général dans la journée, le plus souvent en fin d'après-midi ou en soirée. Pour une panne, un appel reste le moyen le plus rapide." },
     { q: 'Puis-je envoyer des photos ?', a: "Oui, et c'est vivement conseillé : envoyez-les sur [WhatsApp](" + C.waUrl('Bonjour, voici des photos pour ma demande de devis.') + ") en précisant votre nom. Une photo du tableau électrique ouvert est souvent très parlante." },
     { q: 'Le devis m’engage-t-il ?', a: "Non. Le devis de travaux est gratuit et sans engagement. Vous êtes libre de l'accepter, de le comparer ou de le refuser." },
-    { q: 'Et pour une panne ?', a: "Pour une panne, je me déplace au forfait dépannage de 79 € : recherche de la panne, proposition de solution et devis de réparation sans obligation, déplacement compris jusqu'à 15 km. Le plus rapide reste de m'appeler." },
+    { q: 'Et pour une panne ?', a: "Pour une panne, je me déplace au forfait dépannage de 79 € : recherche de la panne, proposition de solution et devis de réparation sans obligation, déplacement compris jusqu'à 15 km. Si je ne trouve pas la panne, vous ne payez rien. Le plus rapide reste de m'appeler." },
   ], 'Questions sur le devis');
   const body = `${C.pageHero({
     kicker: 'Dépannage & devis',

@@ -31,7 +31,7 @@ function businessSchema() {
       name: 'Forfait dépannage électrique',
       price: forfait.price,
       priceCurrency: 'EUR',
-      description: "Déplacement jusqu'à 15 km de Signy-l'Abbaye, recherche de panne, proposition de solution et devis de réparation sans obligation. Même prix le soir et le week-end.",
+      description: "Déplacement jusqu'à 15 km de Signy-l'Abbaye, recherche de panne, proposition de solution et devis de réparation sans obligation. Non facturé si l'origine de la panne n'est pas trouvée. Même prix le soir et le week-end.",
       url: site.url + '/tarifs/',
       itemOffered: { '@type': 'Service', name: 'Dépannage électrique à domicile', serviceType: 'Dépannage électrique' },
     },

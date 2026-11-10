@@ -38,7 +38,7 @@ Tout se règle dans **`src/config.js`** :
 7 bis. **Votre photo** : ajoutez un portrait (`portrait` dans `src/config.js`). À défaut, un monogramme « AP » est affiché. Mettez aussi à jour `experienceYears` chaque année.
 8. **Photos** : les visuels avant/après (`src/assets/img/realisations/`) sont des illustrations. Remplacez-les dès que possible par vos propres photos de chantier.
 9. **Numéro Enedis** cité dans certaines pages (`09 726 750 08`, dépannage des Ardennes) : vérifiez-le sur enedis.fr.
-10. Relisez les textes qui décrivent vos pratiques et ajustez-les si besoin : forfait dépannage 79 € (déplacement jusqu'à 15 km, recherche de panne, proposition de solution, devis de réparation sans obligation), supplément kilométrique au-delà de 15 km, aucun prix de pièce affiché, réparation sur devis, devis de travaux gratuit, pas de majoration le soir et le week-end.
+10. Relisez les textes qui décrivent vos pratiques et ajustez-les si besoin : forfait dépannage 79 € (déplacement jusqu'à 15 km, recherche de panne, proposition de solution, devis de réparation sans obligation), supplément kilométrique au-delà de 15 km, **panne non trouvée = rien à payer** (`notFoundFree` dans `forfait`), aucun prix de pièce affiché, réparation sur devis, devis de travaux gratuit, pas de majoration le soir et le week-end.
 
 Le build affiche un rappel tant que des éléments restent à compléter.
 
