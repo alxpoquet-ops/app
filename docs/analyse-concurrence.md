@@ -37,7 +37,7 @@ Liste Obat des Ardennes : environ 40 fiches pour un « Top 20 », dont plusieurs
 | MesDépanneurs (plateforme) | Recherche de panne : **100 à 120 € TTC**, déplacement inclus. Pas de majoration soir, week-end et fériés. « Non facturé si la panne n'est pas trouvée ». Rappel « sous 20 minutes ». Main-d'œuvre garantie un an. |
 | Quelle Énergie (guide) | Tarif horaire : **50 à 100 €/h**. Déplacement : **20 à 50 €** en province. Recherche de panne simple avec réparation : 150 à 250 €. **Majoration de 50 à 100 %** la nuit, le week-end et les jours fériés. |
 
-Le forfait ALED08 (79 €, ou 89 € et 99 € selon la distance, sans majoration) est donc **en dessous de la référence nationale la plus visible**, avec un artisan identifié en plus.
+Mise à jour : le forfait ALED08 est désormais **sur devis, annoncé au téléphone avant de venir**, sans majoration le soir et le week-end. Les montants ci-dessus restent un repère utile au moment de fixer vos prix.
 
 ## 4. Où ALED08 fait mieux, où il faut encore progresser
 
@@ -61,14 +61,15 @@ Le forfait ALED08 (79 €, ou 89 € et 99 € selon la distance, sans majoratio
 
 ## 5. Ce qui a été fait sur le site à la suite de cette analyse
 
-- Prix du dépannage dans le titre Google de chaque page commune (« Électricien Rethel – dépannage 89 € »).
+- Titre Google de chaque page commune centré sur « Dépannage électrique + commune ».
 - (Un tableau « ce qui se pratique souvent / chez ALED08 » avait été ajouté sur la page Tarifs : il a été retiré à votre demande, pour garder un ton de confiance plutôt que de comparaison.)
 - Bloc « Mon passage chez vous, étape par étape » et « ce que vous payez / ne payez jamais ».
 - Engagement « Panne non trouvée : remise sur le forfait » dans le bloc forfait, la page Tarifs, les FAQ et les conditions générales.
 - Mise en avant d'ALED08 comme jeune artisan à l'écoute, sur un ton chaleureux (accueil, page dédiée, signature des pages). À votre demande, le site ne cite ni votre nom (hors pages légales), ni vos années de métier, ni d'horaires : il annonce « à tout moment, sur rendez-vous ».
 - 8 nouvelles pages communes là où des concurrents sont installés ou listés : Nouzonville, Villers-Semeuse, Sault-lès-Rethel, Rimogne, Boulzicourt, Saulces-Monclin, Juniville, Prix-lès-Mézières.
 - 4 nouvelles pages de pannes très recherchées : Linky qui disjoncte, chauffe-eau qui ne chauffe plus, radiateur froid, tableau qui grésille.
-- Données structurées enrichies : offre à 79 €, prix par commune, zone de 45 km, fiche de l'artisan.
+- Données structurées : offre de dépannage (prix sur devis), zone desservie = département des Ardennes.
+- Mise à jour : forfait sur devis (plus de prix affiché) et ciblage « dépannage électrique Ardennes » sur tout le département plutôt que Signy-l'Abbaye.
 
 ## Sources lues
 

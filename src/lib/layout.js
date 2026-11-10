@@ -17,7 +17,7 @@ function businessSchema() {
     alternateName: 'ALED08, dépannage électrique dans les Ardennes',
     slogan: 'Dépannage électrique au forfait, à tout moment sur rendez-vous',
     description:
-      `Électricien spécialiste du dépannage basé à Signy-l'Abbaye (Ardennes). Forfait dépannage 79 € : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Travaux sur devis gratuit : tableau, prises, éclairage, mise en sécurité. À tout moment, sur rendez-vous.`,
+      `Électricien spécialiste du dépannage électrique dans toutes les Ardennes (08). Forfait dépannage sur devis, prix annoncé avant de venir : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Travaux sur devis gratuit : tableau, prises, éclairage, mise en sécurité. À tout moment, sur rendez-vous.`,
     url: site.url + '/',
     telephone: site.phoneIntl,
     email: site.email,
@@ -28,9 +28,7 @@ function businessSchema() {
     makesOffer: {
       '@type': 'Offer',
       name: 'Forfait dépannage électrique',
-      price: forfait.price,
-      priceCurrency: 'EUR',
-      description: "Déplacement jusqu'à 15 km de Signy-l'Abbaye, recherche de panne, proposition de solution et devis de réparation sans obligation. Remise accordée si l'origine de la panne n'est pas trouvée. Même prix le soir et le week-end.",
+      description: "Forfait sur devis, prix annoncé avant le déplacement. Comprend le déplacement, la recherche de panne, proposition de solution et devis de réparation sans obligation. Remise accordée si l'origine de la panne n'est pas trouvée. Même prix le soir et le week-end.",
       url: site.url + '/tarifs/',
       itemOffered: { '@type': 'Service', name: 'Dépannage électrique à domicile', serviceType: 'Dépannage électrique' },
     },
@@ -44,7 +42,6 @@ function businessSchema() {
     },
     geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng },
     areaServed: [
-      { '@type': 'GeoCircle', geoMidpoint: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng }, geoRadius: 45000 },
       { '@type': 'AdministrativeArea', name: 'Ardennes (08)' },
       ...communes.filter((c) => c.page).map((c) => ({ '@type': 'City', name: c.name })),
     ],
@@ -105,8 +102,8 @@ function header(currentPath) {
   ];
   return `<a class="skip" href="#contenu">Aller au contenu</a>
 <div class="topbar"><div class="container topbar-in">
-  <span class="topbar-item hide-sm">${icon('zap')}Spécialiste du dépannage · forfait 79 €</span>
-  <span class="topbar-item hide-lg">${icon('map-pin')}Signy-l’Abbaye · Ardennes (08)</span>
+  <span class="topbar-item hide-sm">${icon('zap')}Dépannage électrique · forfait sur devis</span>
+  <span class="topbar-item hide-lg">${icon('map-pin')}Toutes les Ardennes (08)</span>
   <span class="topbar-item">${icon('clock')}<span>À tout moment, sur rendez-vous</span></span>
   <a class="topbar-phone" href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a>
 </div></div>
@@ -148,7 +145,7 @@ function footer() {
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand brand-light" href="/">${C.logoSvg('lgf')}<span class="brand-text"><strong>ALED08</strong><small>Électricien · Ardennes</small></span></a>
-      <p><strong style="color:#fff">Dépannage électrique au forfait : 79 €</strong>, déplacement, recherche de panne et devis compris. Travaux sur devis gratuit. Un jeune artisan électricien à Signy-l’Abbaye, à votre écoute.</p>
+      <p><strong style="color:#fff">Dépannage électrique dans les Ardennes</strong>, au forfait sur devis : déplacement, recherche de panne et devis de réparation compris. Travaux sur devis gratuit. Un jeune artisan électricien à votre écoute.</p>
       <ul class="footer-contact">
         <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>
         <li><a href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}WhatsApp</a></li>
@@ -182,7 +179,7 @@ function footer() {
     </div>
   </div>
   <div class="footer-bottom"><div class="container footer-bottom-in">
-    <p>© ${new Date().getFullYear()} ${site.name}. Électricien à Signy-l’Abbaye, Ardennes (08).</p>
+    <p>© ${new Date().getFullYear()} ${site.name}. Dépannage électrique dans les Ardennes (08).</p>
     <ul>
       <li><a href="/mentions-legales/">Mentions légales</a></li>
       <li><a href="/politique-de-confidentialite/">Confidentialité</a></li>
@@ -239,7 +236,7 @@ function page(p) {
 <meta name="theme-color" content="#24304A">
 <meta name="format-detection" content="telephone=no">
 <meta name="geo.region" content="FR-08">
-<meta name="geo.placename" content="${esc(p.geoPlace || "Signy-l'Abbaye")}">
+<meta name="geo.placename" content="${esc(p.geoPlace || 'Ardennes')}">
 <meta name="geo.position" content="${site.geo.lat};${site.geo.lng}">
 <meta name="ICBM" content="${site.geo.lat}, ${site.geo.lng}">
 <meta property="og:locale" content="fr_FR">

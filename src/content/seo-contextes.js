@@ -245,7 +245,7 @@ En cas d'**odeur de brûlé** ou de **prise qui chauffe**, coupez le disjoncteur
 
 J'interviens **à tout moment, sur rendez-vous**, et je donne **la priorité aux situations les plus pénalisantes** : logement entièrement sans courant, chauffage coupé en hiver, personne âgée ou fragile, congélateur plein.
 
-Concrètement, si vous appelez en fin d'après-midi pour une panne totale à proximité de Signy-l'Abbaye, je peux souvent venir **le soir même**. Plus loin ou en période chargée, je vous propose le premier créneau disponible et je vous conseille pour patienter en sécurité.
+Concrètement, si vous appelez en fin d'après-midi pour une panne totale dans mon secteur du moment, je peux souvent venir **le soir même**. Plus loin ou en période chargée, je vous propose le premier créneau disponible et je vous conseille pour patienter en sécurité.
 
 ## Un prix clair, même quand ça presse
 
@@ -305,7 +305,7 @@ Le prix du diagnostic est **annoncé à l'avance**, selon la taille du logement 
     ],
     faq: [
       { q: 'Combien de temps dure un diagnostic ?', a: "Environ une à deux heures pour une maison, selon sa taille et la complexité de l'installation." },
-      { q: 'Quel est le prix du diagnostic ?', a: "Il est fixé à l'avance selon la taille du logement et la distance. Pour une panne précise, c'est le forfait dépannage de 79 € qui s'applique." },
+      { q: 'Quel est le prix du diagnostic ?', a: "Il est fixé à l'avance selon la taille du logement et la commune. Pour une panne précise, c'est le forfait dépannage qui s'applique, lui aussi annoncé avant." },
       { q: 'Faut-il couper le courant pendant le diagnostic ?', a: "Quelques coupures courtes sont nécessaires pour les mesures d'isolement et de terre. Je vous préviens avant chacune." },
     ],
     cta: { title: 'Envie d’y voir clair sur votre installation ?', text: 'Un diagnostic, des mesures et une liste de priorités : vous savez par où commencer.' },

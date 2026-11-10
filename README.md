@@ -1,6 +1,6 @@
 # ⚡ ALED08 — Site internet
 
-Site vitrine d'**ALED08** (artisan électricien à Signy-l'Abbaye, Ardennes). Spécialité : **le dépannage électrique au forfait de 79 €** (déplacement, recherche de panne, proposition de solution et devis de réparation compris), **le soir et le week-end sur rendez-vous**. Travaux sur devis gratuit.
+Site vitrine d'**ALED08** (artisan électricien, dépannage dans toutes les Ardennes). Spécialité : **le dépannage électrique au forfait, sur devis annoncé avant de venir** (déplacement, recherche de panne, proposition de solution et devis de réparation compris), **à tout moment sur rendez-vous**. Travaux sur devis gratuit.
 
 Site **statique**, rapide, sans base de données ni CMS : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans le dossier `dist/`, prêtes à être envoyées sur n'importe quel hébergement.
 
@@ -18,7 +18,7 @@ Site **statique**, rapide, sans base de données ni CMS : un petit générateur 
 
 Chaque page SEO a un **contenu unique** : texte propre, 3 cas concrets, une FAQ dédiée, un appel à l'action, un bouton de devis et des liens internes. Le script `npm run check` vérifie l'absence de phrases dupliquées entre les pages.
 
-**SEO intégré :** balises title et description uniques (le prix du dépannage figure dans le titre de chaque page commune), canonical, Open Graph et Twitter Card, données structurées schema.org (`Electrician`/LocalBusiness avec offre à 79 € et zone de 45 km, `Service` avec prix par commune, `Person`, `FAQPage`, `BreadcrumbList`, `BlogPosting`), `sitemap.xml`, `robots.txt`, fil d'Ariane, maillage interne entre communes, pannes, prestations et articles. Audit Lighthouse : 100/100 en performance, accessibilité, bonnes pratiques et SEO sur les pages testées.
+**SEO intégré :** balises title et description uniques (« dépannage électrique + commune » dans le titre de chaque page commune), canonical, Open Graph et Twitter Card, données structurées schema.org (`Electrician`/LocalBusiness avec offre à 79 € et zone de 45 km, `Service` avec prix par commune, `Person`, `FAQPage`, `BreadcrumbList`, `BlogPosting`), `sitemap.xml`, `robots.txt`, fil d'Ariane, maillage interne entre communes, pannes, prestations et articles. Audit Lighthouse : 100/100 en performance, accessibilité, bonnes pratiques et SEO sur les pages testées.
 
 **Fonctionnalités :** bouton d'appel et barre de contact fixe sur mobile, bouton WhatsApp, formulaires de contact et de devis (préremplis selon la page d'origine), prix du dépannage par commune, déroulement du passage étape par étape, galerie avant/après interactive, avis clients réels (section masquée tant qu'il n'y en a pas), carte Google Maps chargée seulement après consentement, bannière cookies conforme RGPD.
 
@@ -32,13 +32,13 @@ Tout se règle dans **`src/config.js`** :
 2. **E-mail** de réception des demandes (`email`).
 3. **Domaine** définitif (`url`). Par défaut : `https://www.aled08.fr`.
 4. **Informations légales** (`legal`) : SIRET, immatriculation, assureur et numéro de contrat, **médiateur de la consommation** (obligatoire), hébergeur, mention TVA si vous êtes en franchise (`TVA non applicable, art. 293 B du CGI`).
-5. **Disponibilités** (`hours` : aucun horaire affiché, « à tout moment, sur rendez-vous »), **forfait dépannage** (`forfait`), **grille** (`tarifs`) et **supplément kilométrique** (`kmTiers`) : vérifiez qu'ils correspondent exactement à votre pratique.
+5. **Disponibilités** (`hours` : aucun horaire affiché, « à tout moment, sur rendez-vous »), **forfait dépannage** (`forfait`), **grille** (`tarifs`) et **secteurs** (`secteurs`) : vérifiez qu'ils correspondent exactement à votre pratique.
 6. **Distances** des communes (`communes`) : elles sont **indicatives**. Vérifiez-les, surtout celles proches d'une limite de tranche (Charleville-Mézières, Renwez, Sedan).
 7. **Avis clients** : `src/content/avis.js` est vide et la section « Avis » est masquée. Ajoutez-y vos vrais avis au fur et à mesure (voir `docs/guide-referencement-local.md`). Ne publiez jamais d'avis inventés.
 7 bis. **Votre photo** : ajoutez un portrait (`portrait` dans `src/config.js`). À défaut, un pictogramme est affiché.
 8. **Photos** : les visuels avant/après (`src/assets/img/realisations/`) sont des illustrations. Remplacez-les dès que possible par vos propres photos de chantier.
 9. **Numéro Enedis** cité dans certaines pages (`09 726 750 08`, dépannage des Ardennes) : vérifiez-le sur enedis.fr.
-10. Relisez les textes qui décrivent vos pratiques et ajustez-les si besoin : forfait dépannage 79 € (déplacement jusqu'à 15 km, recherche de panne, proposition de solution, devis de réparation sans obligation), supplément kilométrique au-delà de 15 km, **panne non trouvée = remise sur le forfait, montant non affiché** (`notFoundDiscount` dans `forfait`), aucun prix de pièce affiché, réparation sur devis, devis de travaux gratuit, pas de majoration le soir et le week-end.
+10. Relisez les textes qui décrivent vos pratiques et ajustez-les si besoin : forfait dépannage sur devis, annoncé au téléphone avant de venir (déplacement, recherche de panne, proposition de solution, devis de réparation sans obligation), **panne non trouvée = remise sur le forfait, montant non affiché** (`notFoundDiscount` dans `forfait`), aucun prix de pièce affiché, réparation sur devis, devis de travaux gratuit, pas de majoration le soir et le week-end.
 
 Le build affiche un rappel tant que des éléments restent à compléter.
 

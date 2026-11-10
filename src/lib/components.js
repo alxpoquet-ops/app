@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { site, hours, forfait, tarifs, kmTiers, communes, tierFor } = require('../config');
+const { site, hours, forfait, tarifs, kmTiers, communes, secteurs, tierFor } = require('../config');
 const { icon } = require('./icons');
 const { md, inline, esc, plain } = require('./md');
 const { mainServices } = require('../content/services-list');
@@ -76,8 +76,8 @@ function circuitBg() {
 // ---------------------------------------------------------------- bandeau de confiance
 function trustBar() {
   const items = [
-    ['zap', 'Spécialiste dépannage', 'Recherche de panne méthodique'],
-    ['euro', 'Forfait 79 € TTC', 'Remise si panne non trouvée'],
+    ['zap', 'Dépannage électrique', 'Partout dans les Ardennes'],
+    ['euro', 'Forfait sur devis', 'Prix annoncé avant de venir'],
     ['clock', 'À tout moment', 'Sur rendez-vous, sans majoration'],
     ['user', 'Jeune artisan motivé', 'À votre écoute'],
   ];
@@ -114,9 +114,9 @@ function dispoCard() {
   ${hoursTable('hours-dark')}
   <p class="dispo-note">${icon('calendar-days')} Uniquement sur rendez-vous : appelez ou envoyez un message.</p>
   <div class="dispo-forfait">
-    <div class="dispo-forfait-head"><span>Forfait dépannage</span><strong>${euro(forfait.price)}</strong></div>
+    <div class="dispo-forfait-head"><span>Forfait dépannage</span><strong class="is-text">${forfait.priceText}</strong></div>
     <ul>${forfait.includes.map((i) => `<li>${icon('check')}${i.text}</li>`).join('')}</ul>
-    <p>Réparation sur devis, sans obligation.${forfait.notFoundDiscount ? ' <strong>Panne non trouvée : remise sur le forfait.</strong>' : ''}</p>
+    <p>Prix annoncé au téléphone, avant de venir. Réparation sur devis, sans obligation.${forfait.notFoundDiscount ? ' <strong>Panne non trouvée : remise sur le forfait.</strong>' : ''}</p>
   </div>
   ${btnCall('btn-primary btn-block', 'Appeler maintenant')}
   ${btnWa('btn-wa btn-block', 'Écrire sur WhatsApp')}
@@ -128,14 +128,14 @@ function forfaitBlock(opts = {}) {
   return `<div class="forfait reveal${opts.compact ? ' forfait--compact' : ''}">
   <div class="forfait-price">
     <span class="forfait-label">${icon('zap')}Forfait dépannage</span>
-    <strong>${euro(forfait.price)}<small>TTC</small></strong>
-    <span class="forfait-sub">tout compris jusqu’au devis</span>
+    <strong class="is-text">${forfait.priceText}</strong>
+    <span class="forfait-sub">prix annoncé avant de venir, tout compris jusqu’au devis de réparation</span>
   </div>
   <ul class="forfait-list">${forfait.includes
     .map((i) => `<li>${icon(i.icon)}<div><strong>${i.text}</strong><span>${i.detail}</span></div></li>`)
     .join('')}</ul>
   ${forfait.notFoundDiscount ? `<p class="forfait-guarantee">${icon('shield-check')}<span><strong>Panne non trouvée ? Je vous fais une remise.</strong> Vous ne payez pas le forfait plein tarif.</span></p>` : ''}
-  <p class="forfait-foot">${icon('info')}<span>La réparation et les pièces font l’objet d’un <strong>devis remis à la fin du dépannage</strong> : vous l’acceptez ou non, sans obligation. Au-delà de 15 km : + 10 € (15 à 30 km) ou + 20 € (30 à 45 km). Même prix le soir et le week-end.</span></p>
+  <p class="forfait-foot">${icon('info')}<span>La réparation et les pièces font l’objet d’un <strong>devis remis à la fin du dépannage</strong> : vous l’acceptez ou non, sans obligation. Le prix du forfait dépend de votre commune et de la panne décrite : je vous l’annonce au téléphone, avant de me déplacer. Même prix le soir et le week-end.</span></p>
 </div>`;
 }
 
@@ -151,48 +151,35 @@ function pricingTable(ids) {
   </div>`
     )
     .join('')}
-  <p class="price-foot">Prix TTC${site.legal.tva ? ', ' + esc(site.legal.tva) : ''}. Aucun prix de pièce n’est fixé à l’avance : chaque réparation est chiffrée sur devis, après le diagnostic. Tarifs identiques en soirée et le week-end.</p>
+  <p class="price-foot">Prix annoncés TTC${site.legal.tva ? ', ' + esc(site.legal.tva) : ''}. Aucun prix de pièce n’est fixé à l’avance : chaque réparation est chiffrée sur devis, après le diagnostic. Tarifs identiques en soirée et le week-end.</p>
 </div>`;
 }
 
+// Secteurs desservis (remplace l'ancienne grille kilométrique)
 function kmTable() {
-  return `<div class="km-grid">${kmTiers
-    .map((t, i) => {
-      const towns = communes.filter((c) => tierFor(c.km) === t && (c.main || c.page)).sort((x, y) => (y.main ? 1 : 0) - (x.main ? 1 : 0) || x.km - y.km).slice(0, 5);
-      const price = t.supplement == null ? 'Sur devis' : euro(forfait.price + t.supplement);
-      return `<div class="km-tier km-${i}"><span class="km-range">${t.label}</span><strong>${price}</strong><small>${
-        t.supplement === 0 ? 'Forfait dépannage, déplacement compris' : t.supplement ? `Forfait ${euro(forfait.price)} ${t.text} de déplacement` : 'Supplément annoncé à l’avance'
-      }</small>${towns.length ? `<span class="km-towns">${towns.map((c) => (c.page ? `<a href="/${c.page}/">${esc(c.name)}</a>` : esc(c.name))).join(', ')}…</span>` : ''}</div>`;
+  return `<div class="km-grid">${secteurs
+    .map((s, i) => {
+      const towns = s.towns.map((n) => communes.find((c) => c.name === n)).filter((c) => c && c.page).slice(0, 6);
+      return `<div class="km-tier km-s${i}"><span class="km-range">Secteur</span><strong class="km-name">${esc(s.name)}</strong>${towns.length ? `<span class="km-towns">${towns.map((c) => `<a href="/${c.page}/">${esc(c.name)}</a>`).join(', ')}…</span>` : ''}</div>`;
     })
-    .join('')}</div><p class="small muted">Distance calculée par la route depuis Signy-l’Abbaye jusqu’à votre adresse. Le prix vous est toujours confirmé au téléphone, avant le déplacement.</p>`;
+    .join('')}</div><p class="small muted">J’interviens dans tout le département. Le prix du forfait vous est toujours annoncé au téléphone, avant le déplacement.</p>`;
 }
 
-// Prix du forfait pour une commune (79 / 89 / 99 € ou null au-delà de 45 km)
-function forfaitFor(name) {
-  const c = communes.find((x) => x.name === name);
-  if (!c) return forfait.price;
-  const t = tierFor(c.km);
-  return t.supplement == null ? null : forfait.price + t.supplement;
+// Le forfait est sur devis : plus de prix par commune.
+function forfaitFor() {
+  return null;
 }
 
-// Badge distance pour une commune
+// Badge « intervention dans votre commune »
 function distanceBadge(name) {
   const c = communes.find((x) => x.name === name);
   if (!c) return '';
-  const t = tierFor(c.km);
-  const sup = c.note
-    ? c.note
-    : t.supplement === 0
-    ? `Forfait dépannage : ${euro(forfait.price)}, sans supplément kilométrique`
-    : t.supplement
-    ? `Forfait dépannage : ${euro(forfait.price + t.supplement)} (79 € ${t.text})`
-    : 'Supplément kilométrique sur devis';
-  return `<div class="distance-badge">${icon('route')}<div><strong>${c.km === 0 ? 'Commune de base d’ALED08' : `≈ ${c.km} km de Signy-l’Abbaye`}</strong><span>${sup}</span></div></div>`;
+  return `<div class="distance-badge">${icon('map-pin')}<div><strong>J’interviens à ${esc(c.name)}</strong><span>Forfait dépannage sur devis : prix annoncé au téléphone, avant de venir.</span></div></div>`;
 }
 
 // ---------------------------------------------------------------- mon passage, étape par étape
 const PASSAGE = [
-  { icon: 'phone', t: 'Avant de venir', d: 'Vous m’appelez ou m’écrivez. Je vous confirme le prix du forfait pour votre commune et nous fixons un créneau, le soir ou le week-end.' },
+  { icon: 'phone', t: 'Avant de venir', d: 'Vous m’appelez ou m’écrivez. Je vous annonce le prix du forfait pour votre commune et votre panne, et nous fixons un créneau.' },
   { icon: 'house', t: 'À mon arrivée', d: 'Vous me montrez la panne et le tableau électrique. Je vérifie d’abord qu’il n’y a pas de danger immédiat.' },
   { icon: 'search', t: 'La recherche de panne', d: 'Je teste, j’isole les circuits et je mesure, jusqu’à trouver l’origine du problème. Si je ne la trouve pas, je vous fais une remise sur le forfait.' },
   { icon: 'lightbulb', t: 'L’explication', d: 'Je vous montre ce que j’ai trouvé et je vous présente les solutions possibles, simplement.' },
@@ -208,8 +195,7 @@ function passage() {
 // ---------------------------------------------------------------- ce que vous payez / ne payez pas
 function payBlock() {
   const yes = [
-    `<strong>Le forfait dépannage : ${euro(forfait.price)} TTC.</strong> Déplacement jusqu’à 15 km, recherche de panne, proposition de solution et devis de réparation.`,
-    '<strong>Le supplément kilométrique</strong>, seulement au-delà de 15 km : + 10 € (15 à 30 km) ou + 20 € (30 à 45 km).',
+    '<strong>Le forfait dépannage, au prix annoncé avant de venir.</strong> Il comprend le déplacement, la recherche de panne, la proposition de solution et le devis de réparation.',
     '<strong>La réparation</strong>, uniquement si vous acceptez le devis.',
   ];
   const no = [
@@ -233,10 +219,11 @@ function avatar(cls = '') {
 }
 function artisanCard() {
   return `<aside class="artisan reveal" aria-label="${esc(site.name)}, électricien">
-  <div class="artisan-id">${avatar()}<div><strong>${site.name}</strong><span>Jeune artisan électricien</span><span>${site.address.city} (${site.address.postalCode.slice(0, 2)})</span></div></div>
+  <div class="artisan-id">${avatar()}<div><strong>${site.name}</strong><span>Jeune artisan électricien</span><span>Ardennes (08)</span></div></div>
   <ul class="artisan-facts">
     <li>${icon('zap')}<span><strong>Spécialité</strong>Dépannage et recherche de panne</span></li>
     <li>${icon('euro')}<span><strong>Prix</strong>Annoncé avant de venir</span></li>
+    <li>${icon('map-pin')}<span><strong>Secteur</strong>Toutes les Ardennes (08)</span></li>
     <li>${icon('user')}<span><strong>Votre interlocuteur</strong>Je réponds, je me déplace, je répare</span></li>
     <li>${icon('clock')}<span><strong>Disponibilité</strong>À tout moment, sur rendez-vous</span></li>
   </ul>
@@ -244,7 +231,7 @@ function artisanCard() {
 </aside>`;
 }
 function authorBox(id = 'lga') {
-  return `<div class="author-box">${site.portrait ? avatar('avatar-sm') : logoSvg(id)}<p><strong>${site.name}</strong>, jeune artisan électricien installé à ${site.address.city}. Je me déplace à tout moment, sur rendez-vous, chez les particuliers des Ardennes. <a href="/qui-suis-je/">Faisons connaissance</a></p></div>`;
+  return `<div class="author-box">${site.portrait ? avatar('avatar-sm') : logoSvg(id)}<p><strong>${site.name}</strong>, jeune artisan électricien. Je me déplace à tout moment, sur rendez-vous, chez les particuliers de toutes les Ardennes. <a href="/qui-suis-je/">Faisons connaissance</a></p></div>`;
 }
 
 // ---------------------------------------------------------------- étapes
@@ -356,8 +343,8 @@ function beforeAfter(items) {
 }
 
 // ---------------------------------------------------------------- carte Google Maps (après consentement)
-function mapEmbed(query = "Signy-l'Abbaye 08460", titleText = 'Carte de la zone d’intervention autour de Signy-l’Abbaye') {
-  const src = `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=10&output=embed`;
+function mapEmbed(query = 'Ardennes, France', titleText = 'Carte de la zone d’intervention : les Ardennes') {
+  const src = `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=9&output=embed`;
   return `<div class="map" data-map-src="${esc(src)}" data-map-title="${esc(titleText)}">
   <div class="map-placeholder">
     ${icon('map-pin')}
@@ -369,15 +356,12 @@ function mapEmbed(query = "Signy-l'Abbaye 08460", titleText = 'Carte de la zone 
 }
 
 // ---------------------------------------------------------------- liste des communes
-function communesList(opts = {}) {
-  const groups = kmTiers.map((t, i) => ({
-    tier: t,
-    items: communes.filter((c) => tierFor(c.km) === t),
-  }));
-  return `<div class="communes">${groups
+function communesList() {
+  return `<div class="communes">${secteurs
     .map(
-      (g) => `<div class="communes-group"><h3><span>${g.tier.label}</span><em>${g.tier.text}</em></h3><ul>${g.items
-        .map((c) => `<li>${c.page ? `<a href="/${c.page}/">${esc(c.name)}</a>` : esc(c.name)}<small>${c.km} km</small></li>`)
+      (s) => `<div class="communes-group"><h3><span>${esc(s.name)}</span></h3><ul>${s.towns
+        .map((n) => communes.find((c) => c.name === n) || { name: n })
+        .map((c) => `<li>${c.page ? `<a href="/${c.page}/">${esc(c.name)}</a>` : esc(c.name)}</li>`)
         .join('')}</ul></div>`
     )
     .join('')}</div>`;

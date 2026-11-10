@@ -8,7 +8,7 @@ module.exports = [
     description: 'Électricien indépendant dans les Ardennes : dépannage, recherche de panne, tableau, prises, éclairage, mise en sécurité. Soirs et week-ends, tarifs publiés.',
     kicker: 'Électricien · Ardennes (08)',
     h1: 'Électricien dans les Ardennes, pour les particuliers',
-    lead: "Installé à Signy-l'Abbaye, au centre du département, ALED08 intervient chez les particuliers des Ardennes pour **le dépannage, la recherche de panne et les petits et moyens travaux électriques**. Avec une particularité : **je travaille le soir et le week-end**, quand vous êtes chez vous.",
+    lead: "ALED08 intervient chez les particuliers de tout le département des Ardennes pour **le dépannage, la recherche de panne et les petits et moyens travaux électriques**. Avec une particularité : **je travaille le soir et le week-end**, quand vous êtes chez vous.",
     body: `## Un parc de logements qui a vieilli
 
 Les Ardennes comptent une proportion importante de logements anciens : maisons de bourg, fermes, maisons de la Reconstruction, pavillons des années 60 et 70. Beaucoup ont connu plusieurs rénovations partielles, rarement une réfection électrique complète. On y retrouve donc très souvent :
@@ -34,14 +34,14 @@ Quelques repères simples, que je m'applique à moi-même :
 
 ## Ma zone dans le département
 
-J'interviens dans un rayon d'environ 45 km autour de Signy-l'Abbaye : Rethel et le Rethélois, Charleville-Mézières et son agglomération, Sedan, Rocroi et son plateau, le Porcien, la Thiérache ardennaise et les Crêtes préardennaises. Le nord du département (pointe de Givet, vallée de la Meuse vers Revin et Fumay) est en dehors de mon secteur habituel : c'est possible sur devis, pour des travaux planifiés.`,
+J'interviens dans tout le département : Charleville-Mézières et son agglomération, Sedan, Rethel et le Rethélois, Rocroi et son plateau, la vallée de la Meuse jusqu'à Revin, Fumay et Givet, Vouziers et l'Argonne, le Porcien, la Thiérache ardennaise et les Crêtes préardennaises.`,
     cases: [
       { tag: 'Rethélois', icon: 'house', title: 'Une maison des années 60 restée d’origine', text: "Tableau à fusibles, deux prises par pièce, aucune terre à l'étage. Les propriétaires pensaient devoir tout refaire.", result: 'Tableau neuf et terre créée en priorité ; les pièces seront reprises au fil de la rénovation.' },
       { tag: 'Agglomération de Charleville', icon: 'plug-zap', title: 'Un appartement aux multiprises en cascade', text: "Un T2 avec une seule prise dans le séjour, prolongée par trois multiprises pour la télévision, la box et l'ordinateur.", result: 'Trois prises supplémentaires sur un circuit existant qui le permettait, multiprises supprimées.' },
       { tag: 'Thiérache', icon: 'warehouse', title: 'Une grange alimentée « provisoirement » depuis 1985', text: "Un câble souple courant au sol entre la maison et la grange, branché sur une prise de la buanderie.", result: 'Ligne enterrée conforme, tableau secondaire et éclairage étanche dans la grange.' },
     ],
     faq: [
-      { q: 'Intervenez-vous dans tout le département des Ardennes ?', a: "Principalement dans un rayon de 45 km autour de Signy-l'Abbaye, ce qui couvre le centre et le sud du département. Au-delà, c'est possible sur devis." },
+      { q: 'Intervenez-vous dans tout le département des Ardennes ?', a: "Oui, dans toutes les communes des Ardennes. Le prix du forfait dépannage vous est annoncé au téléphone, avant que je me déplace." },
       { q: 'Êtes-vous disponible en semaine dans la journée ?', a: "Oui : j'interviens à tout moment, sur rendez-vous, en journée comme le soir ou le week-end. On choisit ensemble le créneau qui vous convient." },
       { q: 'Travaillez-vous seul ?', a: "Oui. C'est moi qui réponds au téléphone, qui viens chez vous et qui réalise les travaux. Vous avez un seul interlocuteur, du premier appel à la facture." },
     ],
@@ -56,7 +56,7 @@ J'interviens dans un rayon d'environ 45 km autour de Signy-l'Abbaye : Rethel et 
     slug: 'depannage-electrique-ardennes', group: 'ardennes', prestation: 'depannage',
     label: 'Dépannage électrique Ardennes',
     title: 'Dépannage électrique Ardennes, soirs & week-ends | ALED08',
-    description: "Dépannage électrique dans les Ardennes le soir et le week-end : plus de courant, disjoncteur qui saute, panne partielle. Forfait 79 €, déplacement et devis compris.",
+    description: "Dépannage électrique dans les Ardennes le soir et le week-end : plus de courant, disjoncteur qui saute, panne partielle. Forfait sur devis, annoncé avant de venir.",
     kicker: 'Dépannage · Ardennes',
     h1: 'Dépannage électrique dans les Ardennes, le soir et le week-end',
     lead: "Vous rentrez du travail et une partie de la maison est dans le noir ? Le disjoncteur refuse de se réarmer un samedi matin ? Dans les Ardennes, j'assure le **dépannage électrique des particuliers** sur les créneaux où vous êtes chez vous, avec **un prix annoncé avant de venir**.",
@@ -81,7 +81,7 @@ Si votre compteur est allumé et que vos voisins ont du courant, la panne se sit
 
 ## Ce que coûte un dépannage
 
-Un dépannage commence toujours par le **forfait de 79 €**, qui couvre mon déplacement (jusqu'à 15 km), la recherche de la panne, la solution proposée et un **devis de réparation que vous êtes libre de refuser**. Au-delà de 15 km, un supplément de 10 € ou 20 € s'ajoute selon la distance. La **réparation** et les pièces ne sont réalisées qu'après acceptation de ce devis : vous gardez la main sur la dépense. Pour le détail, lire [quel est le prix d'un dépannage électrique](/blog/prix-depannage-electrique/).`,
+Un dépannage commence toujours par le **forfait dépannage**, dont je vous annonce le prix au téléphone avant de venir. Il couvre mon déplacement, la recherche de la panne, la solution proposée et un **devis de réparation que vous êtes libre de refuser**. La **réparation** et les pièces ne sont réalisées qu'après acceptation de ce devis : vous gardez la main sur la dépense. Pour le détail, lire [quel est le prix d'un dépannage électrique](/blog/prix-depannage-electrique/).`,
     cases: [
       { tag: 'Priorité hiver', icon: 'thermometer', title: 'Plus de chauffage chez une personne âgée', text: "Un dimanche de janvier, le circuit des radiateurs d'une habitante de 79 ans ne se réarme plus. Sa fille appelle à 10 h.", result: 'Intervention avant midi : un radiateur en court-circuit isolé, chauffage rétabli dans les autres pièces.' },
       { tag: 'Congélateur', icon: 'zap-off', title: 'Un congélateur plein à sauver', text: "Retour de week-end : le différentiel du sous-sol a déclenché depuis la veille et ne se réarme pas. Le congélateur est plein.", result: 'Le congélateur est rebranché sur un circuit sain en attendant, puis le défaut (prise du sous-sol) est réparé.' },
@@ -103,7 +103,7 @@ Un dépannage commence toujours par le **forfait de 79 €**, qui couvre mon dé
     slug: 'recherche-panne-electrique-ardennes', group: 'ardennes', prestation: 'recherche-panne',
     label: 'Recherche de panne électrique Ardennes',
     title: 'Recherche de panne électrique Ardennes, mesures | ALED08',
-    description: "Recherche de panne électrique dans les Ardennes avec de vrais appareils de mesure : isolement, terre, différentiels. Forfait dépannage 79 €, le soir et le week-end.",
+    description: "Recherche de panne électrique dans les Ardennes avec de vrais appareils de mesure : isolement, terre, différentiels. Prix annoncé avant de venir.",
     kicker: 'Recherche de panne · Ardennes',
     h1: 'Recherche de panne électrique dans les Ardennes : ce que disent les mesures',
     lead: "Une panne électrique se trouve rarement « au feeling ». Elle se trouve avec **des mesures**, et un peu de méthode. Voici comment je travaille quand on m'appelle dans les Ardennes pour une panne que personne n'a réussi à localiser.",
@@ -134,7 +134,7 @@ Le climat humide et frais du département favorise certaines pannes : condensati
       { tag: 'Terre', icon: 'shield-check', title: 'Des picotements en touchant l’évier', text: "Une légère sensation de picotement en touchant l'évier métallique et le robinet.", result: 'Prise de terre déconnectée retrouvée sous un regard de jardin, refaite et mesurée.' },
     ],
     faq: [
-      { q: 'La recherche de panne est-elle toujours facturée 79 € ?', a: "Oui : elle fait partie du forfait dépannage, qui inclut aussi le déplacement jusqu'à 15 km et le devis de réparation. La réparation n'est faite que si vous acceptez ce devis." },
+      { q: 'La recherche de panne est-elle comprise dans le forfait ?', a: "Oui : elle fait partie du forfait dépannage, annoncé avant de venir, qui inclut aussi le déplacement et le devis de réparation. La réparation n'est faite que si vous acceptez ce devis." },
       { q: 'Et si la panne vient d’un appareil électroménager ?', a: "Je vous le dis clairement, mesures à l'appui. Je ne répare pas l'électroménager, mais vous savez exactement où agir : réparateur, garantie ou remplacement." },
       { q: 'Faut-il que la panne soit présente au moment de votre venue ?', a: "C'est préférable, mais pas indispensable : la mesure d'isolement révèle souvent un défaut même quand il ne fait pas déclencher à ce moment-là." },
     ],
@@ -354,10 +354,10 @@ Les samedis se remplissent plus vite que les soirées, surtout au printemps et �
     slug: 'depannage-electrique-rethel', group: 'services-villes', city: 'Rethel', prestation: 'depannage',
     label: 'Dépannage électrique à Rethel',
     title: 'Dépannage électrique à Rethel, soir & week-end | ALED08',
-    description: 'Dépannage électrique à Rethel le soir et le week-end : coupure, disjoncteur qui saute, prise ou éclairage en panne. Forfait dépannage 89 €, devis compris.',
+    description: 'Dépannage électrique à Rethel le soir et le week-end : coupure, disjoncteur qui saute, prise ou éclairage en panne. Prix annoncé avant de venir, devis compris.',
     kicker: 'Dépannage · Rethel',
     h1: 'Dépannage électrique à Rethel, le soir et le week-end',
-    lead: "Une panne à **Rethel** après votre journée de travail ou un samedi matin ? Je suis à une vingtaine de minutes, et je me déplace **le soir même quand le planning le permet**. Forfait dépannage de **89 €** (79 € + 10 € de supplément) : déplacement, recherche de panne, solution et devis de réparation sans obligation.",
+    lead: "Une panne à **Rethel** après votre journée de travail ou un samedi matin ? Je me déplace **le soir même quand le planning le permet**. Le forfait dépannage, annoncé au téléphone, comprend le déplacement, recherche de panne, solution et devis de réparation sans obligation.",
     body: `## Les pannes que je rencontre à Rethel
 
 Dans les logements rethélois, beaucoup reconstruits dans les années 1950 ou rénovés par étapes, certaines pannes reviennent régulièrement :
@@ -369,7 +369,7 @@ Dans les logements rethélois, beaucoup reconstruits dans les années 1950 ou r�
 
 ## Un trajet court, un créneau rapide
 
-Depuis Signy-l'Abbaye, je rejoins Rethel en une vingtaine de minutes. Pour un dépannage, appelez dès que la panne se présente : je peux alors souvent vous proposer un passage le jour même. J'interviens à tout moment, sur rendez-vous.
+Rethel fait partie de mes secteurs réguliers. Pour un dépannage, appelez dès que la panne se présente : je peux alors souvent vous proposer un passage le jour même. J'interviens à tout moment, sur rendez-vous.
 
 [[cta]]
 
@@ -382,7 +382,7 @@ Repérez la protection en position basse dans votre tableau, débranchez les app
       { tag: 'Un jeudi soir', icon: 'lightbulb', title: 'Les lumières de l’étage vacillent', text: "Les ampoules de trois pièces faiblissent et clignotent par moments depuis quelques jours.", result: 'Neutre desserré dans une boîte du palier, connexions refaites et contrôlées.' },
     ],
     faq: [
-      { q: 'Quel est le prix d’un dépannage à Rethel ?', a: "89 € : le forfait de 79 € plus 10 € de supplément kilométrique. Il couvre le déplacement, la recherche de la panne et le devis de réparation, que vous acceptez ou non." },
+      { q: 'Quel est le prix d’un dépannage à Rethel ?', a: "Le forfait dépannage à Rethel est sur devis, annoncé au téléphone avant de venir. Il couvre le déplacement, la recherche de la panne et le devis de réparation, que vous acceptez ou non." },
       { q: 'Pouvez-vous venir dans l’heure ?', a: "Cela dépend des rendez-vous déjà prévus. Le plus souvent, je propose un créneau le soir même ou le lendemain soir." },
       { q: 'Intervenez-vous à Sault-lès-Rethel ou Acy-Romance ?', a: "Oui, aux mêmes conditions que Rethel, sous réserve que l'adresse reste dans la tranche des 30 km." },
     ],
@@ -426,7 +426,7 @@ Indiquez-moi le code d'accès, l'étage et la présence ou non d'un ascenseur : 
       { tag: 'Maison de ville', icon: 'plug', title: 'Toutes les prises d’un étage hors service', text: "Dans une maison de ville de Mohon, l'étage n'a plus de prises alors que l'éclairage fonctionne.", result: 'Borne de raccordement fondue dans une boîte du palier, conducteurs recoupés, connexion refaite.' },
     ],
     faq: [
-      { q: 'Quel est le prix d’un dépannage à Charleville-Mézières ?', a: "99 €, soit le forfait de 79 € et 20 € de supplément kilométrique. La réparation fait ensuite l'objet d'un devis sur place, sans obligation." },
+      { q: 'Quel est le prix d’un dépannage à Charleville-Mézières ?', a: "Le forfait est sur devis : je vous annonce son prix pour votre quartier de Charleville-Mézières avant de venir. La réparation fait ensuite l'objet d'un devis sur place, sans obligation." },
       { q: 'Je suis locataire : qui paie le dépannage ?', a: "Cela dépend de la cause : l'entretien courant revient en général au locataire, le remplacement d'équipements vétustes au propriétaire. La facture détaillée vous aide à en discuter avec lui." },
       { q: 'La panne vient peut-être des parties communes, que faire ?', a: "Si plusieurs logements sont touchés, prévenez le syndic. Je n'interviens pas sur les parties communes sans mandat du gestionnaire." },
     ],
@@ -441,7 +441,7 @@ Indiquez-moi le code d'accès, l'étage et la présence ou non d'un ascenseur : 
     description: 'Dépannage électrique planifié à Sedan : pannes récurrentes, différentiel qui saute, lumière qui clignote. Le soir et le week-end, déplacement annoncé.',
     kicker: 'Dépannage · Sedan',
     h1: 'Dépannage électrique à Sedan : régler enfin les pannes récurrentes',
-    lead: "Sedan est à la limite de ma zone, à environ 45 km. Pour une coupure totale en urgence, un électricien local sera souvent plus rapide. En revanche, pour **les pannes récurrentes** (différentiel qui saute régulièrement, lumière qui clignote, prise capricieuse), un **dépannage planifié** le soir ou le week-end est la bonne solution.",
+    lead: "À Sedan, pour une coupure totale en urgence, appelez-moi : je vous dis tout de suite quand je peux venir. Et pour **les pannes récurrentes** (différentiel qui saute régulièrement, lumière qui clignote, prise capricieuse), un **dépannage planifié** le soir ou le week-end est la bonne solution.",
     body: `## Les pannes qu'on finit par « supporter »
 
 Beaucoup de foyers vivent avec une panne chronique : on réarme le différentiel une fois par semaine, on évite d'allumer le four et le lave-linge en même temps, on secoue l'interrupteur de la salle de bain. Ce n'est pas une fatalité, et ce n'est **pas sans risque** : un défaut qui revient est un défaut qui évolue.
@@ -461,14 +461,14 @@ Avant ma venue, notez pendant quelques jours **quand la panne se produit** : heu
 
 ## Le déplacement jusqu'à Sedan
 
-Selon votre adresse, le forfait dépannage est de **99 €** (79 € + 20 € de supplément) ou le supplément est **fixé à l'avance**. Profitez du passage pour me signaler les autres petits soucis de la maison : je les intègre au même devis.`,
+Le **prix du forfait dépannage est fixé à l'avance**, au téléphone, selon votre adresse à Sedan. Profitez du passage pour me signaler les autres petits soucis de la maison : je les intègre au même devis.`,
     cases: [
       { tag: 'Récurrent', icon: 'search', title: 'Un différentiel réarmé chaque semaine depuis un an', text: "Dans une maison du Fond de Givonne, le différentiel saute environ une fois par semaine, sans logique apparente.", result: 'Après relevé des déclenchements par la cliente, défaut trouvé sur le circuit du cellier : prise du congélateur oxydée.' },
       { tag: 'Clignotement', icon: 'lightbulb', title: 'Des spots qui clignotent à faible intensité', text: "Les spots LED du séjour clignotent dès qu'on baisse le variateur, depuis le remplacement des ampoules.", result: 'Variateur remplacé par un modèle compatible LED : éclairage stable sur toute la plage.' },
       { tag: 'Intermittent', icon: 'plug', title: 'La prise du bureau marche un jour sur deux', text: "L'ordinateur s'éteint parfois sans raison, branché sur une prise murale de la chambre-bureau.", result: 'Borne desserrée avec début de chauffe, prise et conducteurs refaits.' },
     ],
     faq: [
-      { q: 'Combien coûte un dépannage planifié à Sedan ?', a: "Le forfait dépannage, soit 99 € avec le supplément kilométrique ou un montant annoncé selon l'adresse. La réparation fait l'objet d'un devis. Tout est connu avant que je prenne la route." },
+      { q: 'Combien coûte un dépannage planifié à Sedan ?', a: "Le forfait dépannage, au montant annoncé selon votre adresse à Sedan. La réparation fait l'objet d'un devis. Tout est connu avant que je prenne la route." },
       { q: 'Pouvez-vous venir le jour même à Sedan ?', a: "Rarement le jour même, compte tenu de la distance. Je propose généralement un créneau dans la semaine, en soirée ou le week-end." },
       { q: 'Une panne récurrente est-elle dangereuse ?', a: "Elle peut l'être : un échauffement ou un défaut d'isolement qui revient tend à s'aggraver. Mieux vaut la traiter avant qu'elle ne devienne une vraie panne." },
     ],

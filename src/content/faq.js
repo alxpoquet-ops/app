@@ -7,11 +7,11 @@ module.exports = [
     title: 'Tarifs et paiement',
     icon: 'euro',
     items: [
-      { q: 'Où puis-je consulter vos prix ?', a: "Sur la page [Tarifs](/tarifs/). Le dépannage est au forfait de 79 € : déplacement jusqu'à 15 km, recherche de panne, proposition de solution et devis de réparation sans obligation. La réparation, les pièces et les travaux sont chiffrés sur devis." },
+      { q: 'Où puis-je consulter vos prix ?', a: "Sur la page [Tarifs](/tarifs/). Le dépannage est au forfait, sur devis : je vous annonce son prix au téléphone avant de venir. Il comprend le déplacement, la recherche de panne, proposition de solution et devis de réparation sans obligation. La réparation, les pièces et les travaux sont chiffrés sur devis." },
       { q: 'Pourquoi n’affichez-vous pas de prix de pièces ?', a: "Parce que le prix d'une réparation dépend de la panne réelle. Je préfère la trouver d'abord, puis vous remettre un devis exact, plutôt qu'afficher des prix d'appel." },
       { q: 'Dois-je payer le forfait si vous ne trouvez pas la panne ?', a: "Pas en totalité. Si je ne parviens pas à identifier l'origine de la panne, je vous fais une remise sur le forfait. Son montant vous est indiqué sur place." },
       { q: 'Y a-t-il une majoration le soir, le samedi ou le dimanche ?', a: "Aucune. J'ai choisi de travailler sur ces créneaux ; ce n'est pas à vous d'en payer le prix." },
-      { q: 'Comment le supplément kilométrique est-il calculé ?', a: "Selon la distance par la route entre Signy-l'Abbaye et votre domicile : rien jusqu'à 15 km, 10 € de 15 à 30 km, 20 € de 30 à 45 km. Au-delà, le déplacement est convenu à l'avance." },
+      { q: 'Comment le prix du forfait est-il fixé ?', a: "Selon votre commune et la panne que vous me décrivez. Je vous l'annonce au téléphone, avant de me déplacer : c'est ce prix qui s'applique, partout dans les Ardennes." },
       { q: 'Quand dois-je payer ?', a: "Pour un dépannage, à la fin de l'intervention, sur présentation de la facture. Pour des travaux sur devis, selon l'échéancier indiqué sur le devis, avec éventuellement un acompte à la commande." },
       { q: 'Recevrai-je une facture ?', a: "Toujours. Elle détaille le déplacement, le diagnostic éventuel, le matériel posé et la main-d'œuvre. Conservez-la : elle peut être utile pour votre assurance ou lors de la vente du logement." },
     ],

@@ -110,8 +110,7 @@ Ces règles existent justement pour éviter les mauvaises surprises : n'hésitez
 
 Chez moi, le principe est simple, et identique du lundi au dimanche, soirées comprises :
 
-- **Forfait dépannage : 79 €.** Il comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de panne, la proposition de solution et le devis de réparation.
-- **Supplément kilométrique** : + 10 € de 15 à 30 km, + 20 € de 30 à 45 km.
+- **Forfait dépannage, sur devis.** Avant de me déplacer, je vous donne son montant au téléphone, en fonction de votre adresse et de ce que vous me décrivez. Déplacement, recherche, solution et devis de réparation y sont inclus.
 - **Panne non trouvée** : une remise est appliquée sur le forfait.
 - **Réparation et pièces** : sur devis, remis à la fin du dépannage, **sans obligation**.
 
@@ -119,17 +118,17 @@ Je ne publie volontairement aucun prix de pièce : il dépend de ce que l'on tro
 
 ## Trois exemples concrets
 
-### Une prise morte à Wasigny (≈ 9 km)
+### Une prise morte à Wasigny
 
-La prise du séjour ne fonctionne plus. La recherche montre une borne desserrée sur la prise précédente. Forfait dépannage : **79 €**. Le devis de remise en état est remis sur place ; le client l'accepte et la réparation est faite dans la foulée.
+La prise du séjour ne fonctionne plus. La recherche montre une borne desserrée sur la prise précédente. Le forfait annoncé au téléphone est appliqué tel quel. Le devis de remise en état est remis sur place ; le client l'accepte et la réparation est faite dans la foulée.
 
-### Un disjoncteur abîmé à Rethel (≈ 24 km)
+### Un disjoncteur abîmé à Rethel
 
-Le disjoncteur du lave-linge chauffe et a noirci. Forfait dépannage : **89 €** (79 € + 10 € de supplément). Le devis de remplacement du disjoncteur est remis immédiatement ; la cliente préfère réfléchir et ne règle que le forfait.
+Le disjoncteur du lave-linge chauffe et a noirci. Le devis de remplacement du disjoncteur est remis immédiatement ; la cliente préfère réfléchir et ne règle que le forfait.
 
-### Un différentiel qui saute à Charleville-Mézières (≈ 32 km)
+### Un différentiel qui saute à Charleville-Mézières
 
-Le différentiel déclenche plusieurs fois par semaine. Recherche par mesure d'isolement, défaut trouvé sur une prise extérieure. Forfait dépannage : **99 €** (79 € + 20 €). La prise étanche de remplacement fait l'objet d'un devis, accepté et posé le samedi suivant.
+Le différentiel déclenche plusieurs fois par semaine. Recherche par mesure d'isolement, défaut trouvé sur une prise extérieure. La prise étanche de remplacement fait l'objet d'un devis, accepté et posé le samedi suivant.
 
 ## Les bons réflexes avant de faire venir un dépanneur
 
@@ -205,7 +204,7 @@ Certaines plateformes mettent en relation avec des artisans sérieux. Dans tous 
       { q: 'Un électricien local est-il forcément moins cher ?', a: "Pas forcément sur le taux horaire, mais presque toujours sur le déplacement, et souvent sur le délai. Le plus important reste la transparence des prix annoncés." },
       { q: 'Comment vérifier qu’un électricien est bien assuré ?', a: "Demandez son attestation d'assurance : elle mentionne l'assureur, le numéro de contrat et les activités couvertes. Ces informations doivent aussi figurer sur ses devis." },
     ],
-    cta: { title: 'Un électricien à Signy-l’Abbaye, pour tout le secteur', text: 'Basé au centre des Ardennes, je me déplace le soir et le week-end avec des prix annoncés à l’avance.' },
+    cta: { title: 'Un électricien pour toutes les Ardennes', text: 'Je me déplace dans tout le département, le soir et le week-end avec des prix annoncés à l’avance.' },
     links: ['/electricien-ardennes/', '/electricien-signy-l-abbaye/', '/zone-intervention/', '/qui-suis-je/'],
     related: ['prix-depannage-electrique', 'que-verifier-avant-acheter-une-maison', 'comment-securiser-son-logement-electricite'],
   },

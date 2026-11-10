@@ -77,13 +77,15 @@ const hours = [
 
 // Forfait dépannage : prix unique, tout compris jusqu'au devis de réparation.
 const forfait = {
-  price: 79,
+  // Prix du forfait : sur devis, annoncé au téléphone avant le déplacement (non affiché sur le site).
+  price: null,
+  priceText: 'Sur devis',
   // Engagement : si l'origine de la panne n'est pas trouvée, une remise est accordée sur le forfait.
   // Le montant de la remise n'est volontairement pas affiché sur le site.
   notFoundDiscount: true,
   label: 'Forfait dépannage',
   includes: [
-    { icon: 'car-front', text: 'Le déplacement à domicile', detail: 'jusqu’à 15 km de Signy-l’Abbaye' },
+    { icon: 'car-front', text: 'Le déplacement à domicile', detail: 'partout dans les Ardennes' },
     { icon: 'search', text: 'La recherche de panne', detail: 'méthodique, mesures à l’appui' },
     { icon: 'lightbulb', text: 'La proposition de solution', detail: 'expliquée clairement, sans jargon' },
     { icon: 'file-text', text: 'Le devis de réparation', detail: 'sans aucune obligation' },
@@ -93,13 +95,12 @@ const forfait = {
 // Grille tarifaire (prix TTC). Aucun prix de pièce n'est affiché : toute réparation fait l'objet
 // d'un devis remis à la fin du dépannage.
 const tarifs = [
-  { id: 'depannage', label: 'Forfait dépannage', price: 79, icon: 'zap', highlight: true, note: 'Déplacement jusqu’à 15 km, recherche de panne, proposition de solution et devis de réparation sans obligation.' },
-  { id: 'km', label: 'Supplément kilométrique', price: null, priceText: '+ 10 € / + 20 €', icon: 'route', note: '15 à 30 km : + 10 € · 30 à 45 km : + 20 € · au-delà de 45 km : sur devis.' },
+  { id: 'depannage', label: 'Forfait dépannage', price: null, priceText: 'Sur devis', icon: 'zap', highlight: true, note: 'Déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Prix annoncé au téléphone, avant de venir.' },
   { id: 'reparation', label: 'Réparation et pièces', price: null, priceText: 'Sur devis', icon: 'wrench', note: 'Chiffrée à la fin du dépannage. Vous acceptez ou non, sans obligation.' },
   { id: 'travaux', label: 'Travaux et installations', price: null, priceText: 'Sur devis', icon: 'clipboard-check', note: 'Tableau, mise en sécurité, éclairage, prises, circuits : devis gratuit et détaillé.' },
 ];
 
-// Tarification kilométrique depuis Signy-l'Abbaye (distance par la route).
+// Ancienne tarification kilométrique (plus affichée sur le site : le forfait est sur devis).
 const kmTiers = [
   { max: 15, label: '0 à 15 km', supplement: 0, text: 'Sans supplément' },
   { max: 30, label: '15 à 30 km', supplement: 10, text: '+ 10 €' },
@@ -148,13 +149,28 @@ const communes = [
   { name: 'Rocroi', km: 38, page: 'electricien-rocroi', main: true },
   { name: 'Nouzonville', km: 41, page: 'electricien-nouzonville' },
   { name: 'Juniville', km: 42, page: 'electricien-juniville' },
-  { name: 'Sedan', km: 45, page: 'electricien-sedan', main: true, note: 'Forfait dépannage : 99 €, ou supplément annoncé à l’avance selon l’adresse' },
+  { name: 'Sedan', km: 45, page: 'electricien-sedan', main: true },
   { name: 'Vouziers', km: 50 },
   { name: 'Revin', km: 55 },
+  { name: 'Givet', km: 85 },
+  { name: 'Fumay', km: 70 },
+  { name: 'Bogny-sur-Meuse', km: 50 },
+  { name: 'Carignan', km: 60 },
+  { name: 'Mouzon', km: 60 },
+  { name: 'Le Chesne', km: 35 },
+  { name: 'Grandpré', km: 65 },
+];
+
+// Secteurs des Ardennes (pour la page zone d'intervention).
+const secteurs = [
+  { name: 'Crêtes préardennaises et Porcien', towns: ["Signy-l'Abbaye", 'Wasigny', 'Thin-le-Moutier', 'Launois-sur-Vence', 'Liart', 'Novion-Porcien', 'Saulces-Monclin', 'Chaumont-Porcien', 'Poix-Terron', 'Château-Porcien', 'Dommery', 'Lalobbe', 'Neuvizy', 'Mesmont', 'Saint-Jean-aux-Bois', 'Jandun', 'Le Fréty', 'Viel-Saint-Remy', 'Draize', 'Wagnon', 'Faissault', 'Remilly-les-Pothées', 'Lucquy'] },
+  { name: 'Charleville-Mézières, Sedan et la Meuse', towns: ['Charleville-Mézières', 'Sedan', 'Villers-Semeuse', 'Prix-lès-Mézières', 'Nouzonville', 'Boulzicourt', 'Bogny-sur-Meuse', 'Revin', 'Fumay', 'Givet', 'Mouzon', 'Carignan'] },
+  { name: 'Rethélois, Aisne et Argonne', towns: ['Rethel', 'Sault-lès-Rethel', 'Attigny', 'Juniville', 'Vouziers', 'Le Chesne', 'Grandpré'] },
+  { name: 'Thiérache et plateau de Rocroi', towns: ['Rocroi', 'Rumigny', 'Maubert-Fontaine', 'Renwez', 'Signy-le-Petit', 'Rimogne'] },
 ];
 
 function tierFor(km) {
   return kmTiers.find((t) => km <= t.max);
 }
 
-module.exports = { site, hours, forfait, tarifs, kmTiers, communes, tierFor };
+module.exports = { site, hours, forfait, tarifs, kmTiers, communes, secteurs, tierFor };

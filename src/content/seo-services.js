@@ -51,7 +51,7 @@ Dans la grande majorité des cas, les **câbles existants sont conservés** s'il
     description: 'Disjoncteur qui chauffe, ne se réarme plus ou mal calibré : remplacement dans les Ardennes, calibre adapté au câble, le soir et le week-end.',
     kicker: 'Prestation · Disjoncteur',
     h1: 'Remplacement de disjoncteur : le bon calibre, au bon endroit',
-    lead: "Un disjoncteur abîmé, qui chauffe ou qui ne se réarme plus doit être remplacé. Mais **remplacer, ce n'est pas copier** : je vérifie que le calibre correspond bien au câble qu'il protège, ce qui n'est pas toujours le cas dans les installations modifiées. **Forfait dépannage 79 €, remplacement sur devis.**",
+    lead: "Un disjoncteur abîmé, qui chauffe ou qui ne se réarme plus doit être remplacé. Mais **remplacer, ce n'est pas copier** : je vérifie que le calibre correspond bien au câble qu'il protège, ce qui n'est pas toujours le cas dans les installations modifiées. **Forfait dépannage annoncé avant de venir, remplacement sur devis.**",
     body: `## Quand faut-il remplacer un disjoncteur ?
 
 - Il **ne se réarme plus**, ou retombe aussitôt alors qu'aucun défaut n'est présent sur le circuit.
@@ -83,7 +83,7 @@ Je remplace les **disjoncteurs divisionnaires** de votre tableau. Le **disjoncte
       { tag: 'Obsolète', icon: 'wrench', title: 'Un modèle introuvable', text: "Un disjoncteur défectueux d'une marque qui n'existe plus, impossible à remplacer à l'identique.", result: 'Adaptation sur rail avec un modèle actuel, raccordement soigné sans modifier le reste du tableau.' },
     ],
     faq: [
-      { q: 'Combien coûte le remplacement d’un disjoncteur ?', a: "Le forfait dépannage de 79 € couvre la recherche de la cause et le devis. Le remplacement est ensuite chiffré selon le modèle et le calibre nécessaires, sans obligation." },
+      { q: 'Combien coûte le remplacement d’un disjoncteur ?', a: "Le forfait dépannage, annoncé au téléphone, couvre la recherche de la cause et le devis. Le remplacement est ensuite chiffré selon le modèle et le calibre nécessaires, sans obligation." },
       { q: 'Puis-je remplacer un disjoncteur moi-même ?', a: "Le travail s'effectue dans le tableau, à proximité de parties sous tension même disjoncteur général coupé. C'est une intervention à confier à un professionnel." },
       { q: 'Mon disjoncteur saute souvent : faut-il le changer ?', a: "Pas forcément : le plus souvent, il signale une surcharge ou un défaut. Voir [disjoncteur qui saute](/disjoncteur-qui-saute/) avant d'envisager un remplacement." },
     ],

@@ -732,3 +732,12 @@ a.contact-card:hover { border-color: var(--blue-100); transform: translateY(-2px
 .trustbar + .section { padding-top: 72px; }
 @media (max-width: 1080px) { .trustbar { margin-top: -24px; } }
 @media (max-width: 720px) { .trustbar { margin-top: 0; } .trustbar-in { border-radius: 0; border-left: 0; border-right: 0; } .site-footer { border-radius: 28px 28px 0 0; } }
+
+/* forfait sur devis : prix en texte */
+.forfait-price strong.is-text { font-size: 2.8rem; line-height: 1.05; }
+.forfait--compact .forfait-price strong.is-text { font-size: 2.3rem; }
+.dispo-forfait-head strong.is-text { font-size: 1.3rem; }
+.km-tier strong.km-name { font-size: 1.25rem; line-height: 1.3; margin: 6px 0 4px; }
+.km-0 { border-color: var(--line); background: #fff; }
+.km-0 strong { color: var(--ink); }
+@media (max-width: 720px) { .forfait-price strong.is-text { font-size: 2.3rem; } }

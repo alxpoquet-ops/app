@@ -96,29 +96,14 @@
   $$('[data-map-load]').forEach(function (b) { b.addEventListener('click', function () { decide(true); }); });
 
   /* ---------- formulaires ---------- */
-  var COMMUNES = window.ALED_COMMUNES || null;
-  var tierText = function (km) {
-    if (km <= 15) return 'dépannage à 79 €, déplacement compris';
-    if (km <= 30) return 'dépannage à 89 € (forfait 79 € + 10 € de déplacement)';
-    if (km <= 45) return 'dépannage à 99 € (forfait 79 € + 20 € de déplacement)';
-    return 'prix du déplacement convenu à l’avance, par téléphone';
-  };
   $$('form[data-form]').forEach(function (f) {
     var t = f.querySelector('input[name="_t"]'); if (t) t.value = Date.now();
     var p = new URLSearchParams(location.search);
     var pre = p.get('prestation'), sel = f.querySelector('select[name="prestation"]');
     if (pre && sel) { $$('option', sel).forEach(function (o) { if (o.value === pre) sel.value = pre; }); }
-    var com = f.querySelector('select[name="commune"]'), out = f.querySelector('.form-km');
+    var com = f.querySelector('select[name="commune"]');
     var preC = p.get('commune');
     if (com && preC) { $$('option', com).forEach(function (o) { if (o.value === preC) com.value = preC; }); }
-    var upd = function () {
-      if (!com || !out || !COMMUNES) return;
-      var km = COMMUNES[com.value];
-      if (km === undefined) { out.classList.remove('is-on'); return; }
-      out.textContent = com.value + ' : environ ' + km + ' km de Signy-l’Abbaye : ' + tierText(km) + '.';
-      out.classList.add('is-on');
-    };
-    if (com) { com.addEventListener('change', upd); upd(); }
     f.addEventListener('submit', function (e) {
       if (!f.checkValidity()) { e.preventDefault(); f.reportValidity(); return; }
       var btn = f.querySelector('button[type="submit"]');
@@ -129,15 +114,4 @@
     $$('[data-form-error]').forEach(function (el) { el.hidden = false; });
   }
 
-  /* ---------- estimateur de déplacement ---------- */
-  var est = $('[data-estimator]');
-  if (est && COMMUNES) {
-    var s = est.querySelector('select'), o = est.querySelector('.estimator-out');
-    s.addEventListener('change', function () {
-      var km = COMMUNES[s.value];
-      if (km === undefined) { o.classList.remove('is-on'); return; }
-      o.innerHTML = '<strong>' + s.value + '</strong> : environ ' + km + ' km : ' + tierText(km) + '.';
-      o.classList.add('is-on');
-    });
-  }
 })();

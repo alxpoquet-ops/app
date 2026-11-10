@@ -9,7 +9,7 @@ module.exports = [
     path: '/mentions-legales/',
     name: 'Mentions légales',
     title: 'Mentions légales | ALED08',
-    description: "Mentions légales du site ALED08, électricien à Signy-l'Abbaye (Ardennes) : éditeur, hébergeur, propriété intellectuelle.",
+    description: "Mentions légales du site ALED08, électricien dans les Ardennes : éditeur, hébergeur, propriété intellectuelle.",
     lead: 'Informations relatives à l’éditeur et à l’hébergeur du site, conformément à la loi pour la confiance dans l’économie numérique (LCEN).',
     updated: '2026-11-09',
     body: `## Éditeur du site
@@ -123,7 +123,7 @@ Les prix sont exprimés en euros TTC${L.tva ? ` (${L.tva})` : ''}. Le dépannage
 
 ## 3. Forfait dépannage et déplacement
 
-Le forfait dépannage, d'un montant de 79 € TTC, comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de panne, la proposition de solution et l'établissement d'un devis de réparation. Il est majoré de 10 € entre 15 et 30 km et de 20 € entre 30 et 45 km. Au-delà de 45 km, le supplément est fixé à l'avance avec le client. La distance est calculée par la route.
+Le forfait dépannage comprend le déplacement au domicile du client, la recherche de panne, la proposition de solution et l'établissement d'un devis de réparation. Son montant TTC est établi sur devis, selon la commune d'intervention et la nature de la panne décrite, et communiqué au client avant le déplacement.
 
 ## 4. Devis
 
@@ -131,7 +131,7 @@ Le devis de travaux est gratuit ; le devis de réparation établi lors d'un dép
 
 ## 5. Déroulement d'un dépannage
 
-Le montant du forfait dépannage, supplément kilométrique éventuel compris, est annoncé au client avant le déplacement. À l'issue de la recherche de panne, un devis de réparation lui est remis ; il reste libre de l'accepter ou de le refuser, sans obligation. En cas de refus, seul le forfait dépannage est dû.
+Le montant du forfait dépannage est annoncé au client avant le déplacement ; aucun frais supplémentaire de déplacement ne s'y ajoute. À l'issue de la recherche de panne, un devis de réparation lui est remis ; il reste libre de l'accepter ou de le refuser, sans obligation. En cas de refus, seul le forfait dépannage est dû.
 
 Si, à l'issue de la recherche, l'origine de la panne n'a pas pu être identifiée, une remise est consentie au client sur le forfait dépannage. Son montant lui est communiqué sur place, avant le règlement, et figure sur la facture.
 

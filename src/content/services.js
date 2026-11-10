@@ -9,9 +9,9 @@ module.exports = [
     description: 'Plus de courant, disjoncteur qui saute, prise ou lumière en panne ? Dépannage électrique à domicile dans les Ardennes, le soir et le week-end.',
     kicker: 'Prestation · Dépannage électrique',
     h1: 'Dépannage électrique à domicile, en soirée et le week-end',
-    lead: "Le dépannage, c'est **ma spécialité**. Une panne ne prévient pas, et elle arrive rarement aux heures de bureau : depuis Signy-l'Abbaye, j'interviens chez les particuliers des Ardennes **à tout moment, sur rendez-vous**, le soir et le week-end compris. **Forfait de 79 €** : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. **Panne non trouvée : remise sur le forfait.**",
+    lead: "Le dépannage, c'est **ma spécialité**. Une panne ne prévient pas, et elle arrive rarement aux heures de bureau : j'interviens chez les particuliers de toutes les Ardennes **à tout moment, sur rendez-vous**, le soir et le week-end compris. **Forfait sur devis, annoncé avant de venir** : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. **Panne non trouvée : remise sur le forfait.**",
     prestation: 'depannage',
-    chips: [{ icon: 'zap', text: 'Forfait 79 € tout compris' }, { icon: 'clock', text: 'À tout moment' }, { icon: 'calendar-days', text: 'Sur rendez-vous' }],
+    chips: [{ icon: 'zap', text: 'Forfait annoncé avant de venir' }, { icon: 'clock', text: 'À tout moment' }, { icon: 'calendar-days', text: 'Sur rendez-vous' }],
     intro: `## Les pannes que je dépanne le plus souvent
 
 Un dépannage électrique, ce n'est pas seulement « remettre le disjoncteur ». Si un appareil de protection a coupé, c'est qu'il a détecté quelque chose. Mon travail consiste à **trouver ce qui a provoqué la coupure**, à le corriger durablement, puis à vérifier que tout est de nouveau sûr.`,
@@ -57,12 +57,12 @@ Un domino sous un isolant, un disjoncteur remplacé par un calibre supérieur «
       { tag: 'Dimanche', icon: 'zap', title: 'Plus de lumière à l’étage après un orage', text: "Après une nuit orageuse, le circuit d'éclairage de l'étage reste coupé. Un interrupteur va-et-vient a été endommagé et met le circuit en court-circuit.", result: 'Interrupteur remplacé, test des autres commandes, conseil sur l’intérêt d’un parafoudre.' },
     ],
     faq: [
-      { q: 'Combien coûte un dépannage électrique ?', a: "Le forfait dépannage est de 79 € : il comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de la panne, la proposition de solution et le devis de réparation. Au-delà de 15 km, comptez 10 € ou 20 € de supplément. La réparation fait l'objet d'un devis, que vous acceptez ou non. Et si je ne trouve pas la panne, je vous fais une remise sur le forfait. Voir les [tarifs](/tarifs/)." },
+      { q: 'Combien coûte un dépannage électrique ?', a: "Le dépannage est au forfait, sur devis : je vous annonce son prix au téléphone, selon votre commune et la panne. Il comprend le déplacement, la recherche de la panne, la proposition de solution et le devis de réparation. La réparation fait l'objet d'un devis, que vous acceptez ou non. Et si je ne trouve pas la panne, je vous fais une remise sur le forfait. Voir les [tarifs](/tarifs/)." },
       { q: 'Quand pouvez-vous intervenir ?', a: "À tout moment, sur rendez-vous : appelez, je vous propose le créneau le plus proche. Pour une coupure générale de la rue, contactez Enedis. Pour une situation dangereuse (fumée, odeur de brûlé), coupez le courant au disjoncteur général et, en cas de doute, appelez le 18." },
       { q: 'Faites-vous les dépannages le dimanche ?', a: 'Oui, sur rendez-vous, avec le même forfait que les autres jours.' },
       { q: 'Et si la panne vient de mon compteur Linky ?', a: "Le compteur et le disjoncteur de branchement relèvent d'Enedis. Si mon diagnostic montre que la panne se situe avant votre tableau, je vous le dis et vous oriente vers Enedis : il n'y a alors pas de devis de réparation de ma part." },
     ],
-    cta: { title: 'Panne de courant ? On s’en occupe ce soir ou ce week-end.', text: 'Forfait dépannage 79 €, devis de réparation sans obligation. Appelez ou envoyez une photo de votre tableau sur WhatsApp.' },
+    cta: { title: 'Panne de courant ? On s’en occupe ce soir ou ce week-end.', text: 'Prix annoncé avant de venir, devis de réparation sans obligation. Appelez ou envoyez une photo de votre tableau sur WhatsApp.' },
     links: ['/depannage-electrique-ardennes/', '/disjoncteur-qui-saute/', '/differentiel-qui-saute/', '/panne-courant-partielle/', '/prise-qui-chauffe/', '/electricien-urgence-ardennes/', '/blog/prix-depannage-electrique/', '/blog/pourquoi-une-prise-disjoncte/'],
   },
 
@@ -71,13 +71,13 @@ Un domino sous un isolant, un disjoncteur remplacé par un calibre supérieur «
     key: 'panne',
     path: '/prestations/recherche-de-panne/',
     label: 'Recherche de panne électrique',
-    title: 'Recherche de panne électrique, forfait 79 € | ALED08 Ardennes',
-    description: 'Panne intermittente, différentiel qui saute sans raison, circuit mort ? Recherche méthodique avec mesures dans les Ardennes. Forfait 79 €.',
+    title: 'Recherche de panne électrique dans les Ardennes | ALED08',
+    description: 'Panne intermittente, différentiel qui saute sans raison, circuit mort ? Recherche méthodique avec mesures, partout dans les Ardennes.',
     kicker: 'Prestation · Recherche de panne',
     h1: 'Recherche de panne électrique : trouver la vraie cause',
     lead: "Certaines pannes sont évidentes. D'autres se cachent : un différentiel qui saute une fois par semaine, un circuit qui coupe seulement quand il pleut, une lumière qui grésille. **La recherche de panne, c'est mon cœur de métier** : une méthode, des appareils de mesure, et une explication claire à la fin.",
     prestation: 'recherche-panne',
-    chips: [{ icon: 'search', text: 'Inclus dans le forfait 79 €' }, { icon: 'gauge', text: 'Mesures d’isolement' }, { icon: 'clipboard-check', text: 'Explication claire' }],
+    chips: [{ icon: 'search', text: 'Incluse dans le forfait' }, { icon: 'gauge', text: 'Mesures d’isolement' }, { icon: 'clipboard-check', text: 'Explication claire' }],
     intro: `## Une méthode plutôt que des suppositions
 
 Changer des pièces au hasard coûte cher et ne règle souvent rien. Ma démarche est toujours la même : **écouter, isoler, mesurer, confirmer**. Votre description compte beaucoup (quand la panne arrive-t-elle ? depuis quand ? après quel événement ?), car elle oriente les premières vérifications.`,
@@ -110,7 +110,7 @@ Une borne mal serrée provoque des lumières qui vacillent, des prises qui chauf
 
 Une recherche de panne se termine toujours par une explication concrète : **où était le défaut, pourquoi il s'est produit et comment l'éviter**. Je vous remets ensuite un **devis de réparation**, sans obligation. Si vous l'acceptez et que la réparation est simple, je la réalise dans la foulée ; si elle demande du matériel spécifique, on fixe un nouveau créneau.
 
-> La recherche de panne est comprise dans le forfait dépannage de 79 €, avec le déplacement (jusqu'à 15 km), la proposition de solution et le devis. Ce prix est fixe et annoncé au téléphone : pas de compteur horaire qui tourne pendant que je cherche. Et si je ne trouve pas l'origine de la panne, je vous fais une remise sur le forfait.`,
+> La recherche de panne est comprise dans le forfait dépannage, avec le déplacement, la proposition de solution et le devis. Ce prix est annoncé au téléphone, avant de venir : pas de compteur horaire qui tourne pendant que je cherche. Et si je ne trouve pas l'origine de la panne, je vous fais une remise sur le forfait.`,
     steps: [
       { t: 'Description de la panne', d: 'Au téléphone ou par message : symptômes, fréquence, travaux ou événements récents.' },
       { t: 'Isolement', d: 'Je sépare les circuits et les appareils pour localiser la zone en défaut.' },
@@ -124,7 +124,7 @@ Une recherche de panne se termine toujours par une explication concrète : **où
       { tag: 'Faux contact', icon: 'lightbulb', title: 'Lumières qui baissent quand le four chauffe', text: "Les ampoules du salon faiblissent dès que le four se met en route. Le neutre commun, mal serré dans le tableau, chauffait et créait une chute de tension.", result: 'Borne remplacée, toutes les connexions du tableau contrôlées et resserrées au couple.' },
     ],
     faq: [
-      { q: 'Que comprend le forfait à 79 € ?', a: "Le déplacement jusqu'à 15 km, la recherche méthodique de l'origine de la panne (contrôles, isolement des circuits, mesures), l'explication de la solution et le devis de réparation. La réparation n'est réalisée que si vous acceptez ce devis." },
+      { q: 'Que comprend le forfait dépannage ?', a: "Le déplacement à domicile, la recherche méthodique de l'origine de la panne (contrôles, isolement des circuits, mesures), l'explication de la solution et le devis de réparation. La réparation n'est réalisée que si vous acceptez ce devis." },
       { q: 'Et si vous ne trouvez pas la panne ?', a: "Je vous fais une remise sur le forfait. Cela peut arriver sur une panne intermittente qui ne se manifeste pas pendant ma visite : je vous explique alors ce qui a été écarté et je vous propose une méthode pour le prochain déclenchement (relevé des heures, appareils en marche), afin de cibler la suite." },
       { q: 'Pouvez-vous réparer le jour même ?', a: "Dans la majorité des cas, oui, une fois le devis accepté : prises, interrupteurs, disjoncteurs, connexions, luminaires. J'ai dans mon véhicule le matériel courant ; une pièce particulière peut nécessiter un second passage." },
       { q: 'Le diagnostic remplace-t-il un diagnostic immobilier ?', a: "Non. Pour une vente ou une location, le diagnostic électrique réglementaire doit être réalisé par un diagnostiqueur certifié. Ma recherche de panne vise à réparer. Voir aussi le [bilan avant achat](/bilan-electrique-avant-achat/)." },
@@ -252,7 +252,7 @@ Les gros appareils doivent disposer de leur **propre circuit**, avec une protect
       { tag: 'Électroménager', icon: 'plug-zap', title: 'Le lave-vaisselle fait disjoncter la cuisine', text: "Le lave-vaisselle était branché sur une prise du plan de travail, en même temps que la bouilloire et le grille-pain.", result: 'Création d’une ligne spécialisée 20 A depuis le tableau : fini les coupures pendant le petit-déjeuner.' },
     ],
     faq: [
-      { q: 'Combien coûte le remplacement d’une prise ?', a: "Je ne fixe pas de prix à l'avance : tout dépend de l'état des conducteurs, de la boîte et du modèle choisi. Si la prise est en panne, le forfait dépannage (79 €) couvre la recherche et le devis ; pour une liste de travaux, je vous remets un devis gratuit." },
+      { q: 'Combien coûte le remplacement d’une prise ?', a: "Je ne fixe pas de prix à l'avance : tout dépend de l'état des conducteurs, de la boîte et du modèle choisi. Si la prise est en panne, le forfait dépannage couvre la recherche et le devis ; pour une liste de travaux, je vous remets un devis gratuit." },
       { q: 'Pouvez-vous ajouter une prise là où il n’y en a pas ?', a: "Oui, en repiquant sur un circuit existant si la norme le permet, ou en créant un nouveau circuit. Selon les murs, la pose se fait en encastré ou en apparent sous moulure. Je vous présente les deux options et leur prix." },
       { q: 'Mes prises n’ont pas de terre, est-ce grave ?', a: "Sans terre, une fuite de courant sur un appareil métallique peut passer par vous. Le différentiel 30 mA limite ce risque, mais la terre reste indispensable pour les appareils de classe I (lave-linge, four, réfrigérateur…). Voir [mise à la terre](/mise-a-la-terre/)." },
     ],

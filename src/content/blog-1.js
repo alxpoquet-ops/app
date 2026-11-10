@@ -76,7 +76,7 @@ Là où vos observations s'arrêtent, l'électricien mesure. Avec un **contrôle
       { q: 'Peut-on chercher une panne électrique soi-même ?', a: "Les étapes d'observation, de lecture du tableau et de débranchement des appareils sont sans risque. L'ouverture de boîtes, de prises ou du tableau demande en revanche des compétences et du matériel de vérification." },
       { q: 'Pourquoi la panne disparaît-elle quand l’électricien arrive ?', a: "C'est fréquent avec les défauts liés à l'humidité ou à la température. Les mesures d'isolement permettent souvent de détecter le défaut même lorsqu'il ne se manifeste pas." },
     ],
-    cta: { title: 'La panne résiste à votre enquête ?', text: 'Transmettez-moi vos observations : je viens mesurer le soir ou le week-end. Forfait dépannage 79 €.' },
+    cta: { title: 'La panne résiste à votre enquête ?', text: 'Transmettez-moi vos observations : je viens mesurer le soir ou le week-end, au prix annoncé avant.' },
     links: ['/prestations/recherche-de-panne/', '/disjoncteur-qui-saute/', '/differentiel-qui-saute/', '/panne-courant-partielle/', '/recherche-panne-electrique-ardennes/'],
     related: ['pourquoi-une-prise-disjoncte', 'differentiel-ou-disjoncteur-difference', 'prix-depannage-electrique'],
   },

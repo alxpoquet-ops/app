@@ -11,8 +11,8 @@ const og = `${base}<div style="width:1200px;height:630px;position:relative;overf
 <div style="position:absolute;left:80px;top:78px;display:flex;align-items:center;gap:22px"><div style="width:96px;height:96px;filter:drop-shadow(0 10px 24px rgba(214,128,0,.4))">${logo}</div><div style="font-family:Nunito;font-weight:900;font-size:64px;color:#2b2420;letter-spacing:-1px">ALED08</div></div>
 <div style="position:absolute;left:80px;top:230px;width:1000px;font-family:Nunito;font-weight:900;font-size:64px;line-height:1.08;letter-spacing:-1px;color:#2b2420">Dépannage &amp; Travaux Électriques dans les Ardennes</div>
 <div style="position:absolute;left:80px;top:410px;font-size:30px;color:#b4500b;font-weight:800">Spécialiste du dépannage · à tout moment, sur rendez-vous</div>
-<div style="position:absolute;left:80px;bottom:70px;display:flex;gap:16px;font-size:24px;font-weight:600">${['Forfait dépannage 79 €','Remise si panne non trouvée','Devis sans obligation'].map(t=>`<span style="padding:10px 20px;border-radius:999px;background:#fff;border:1px solid #eee2d3;color:#2b2420;font-weight:800">${t}</span>`).join('')}</div>
-<div style="position:absolute;right:80px;top:112px;font-size:24px;color:#6f6259;font-weight:700">Signy-l’Abbaye · Ardennes (08)</div></div>`;
+<div style="position:absolute;left:80px;bottom:70px;display:flex;gap:16px;font-size:24px;font-weight:600">${['Prix annoncé avant de venir','Remise si panne non trouvée','Devis sans obligation'].map(t=>`<span style="padding:10px 20px;border-radius:999px;background:#fff;border:1px solid #eee2d3;color:#2b2420;font-weight:800">${t}</span>`).join('')}</div>
+<div style="position:absolute;right:80px;top:112px;font-size:24px;color:#6f6259;font-weight:700">Toutes les Ardennes (08)</div></div>`;
 const icon = (s, pad = 0, bg = 'transparent') => `${base}<div style="width:${s}px;height:${s}px;padding:${pad}px;background:${bg}">${logo}</div>`;
 (async () => {
   const b = await chromium.launch();

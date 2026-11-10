@@ -45,19 +45,18 @@ function seoPage(p) {
   const crumbs = [{ name: 'Accueil', path: '/' }, parent, { name: p.label, path }];
   const f = C.faq(p.faq, p.faqTitle || 'Vos questions');
   const area = p.city ? { '@type': 'City', name: p.city } : { '@type': 'AdministrativeArea', name: 'Ardennes (08)' };
-  const price = p.city ? C.forfaitFor(p.city) : 79;
   const isPanne = ['villes', 'services-villes', 'secteurs', 'ardennes', 'symptomes'].includes(p.group) || p.prestation === 'depannage';
-  // Titre : les pages communes affichent le prix du dépannage sur place (meilleur taux de clic)
+  // Titre : les pages communes visent « dépannage électrique + commune »
   let title = p.title;
-  if (p.group === 'villes' && p.city && price) {
-    const long = `Électricien ${p.city} : dépannage ${price} € soir & week-end | ALED08`;
-    title = long.length <= 68 ? long : `Électricien ${p.city} : dépannage ${price} € | ALED08`;
+  if (p.group === 'villes' && p.city) {
+    const long = `Dépannage électrique ${p.city} : électricien à tout moment | ALED08`;
+    title = long.length <= 68 ? long : `Dépannage électrique ${p.city}, électricien | ALED08`;
   }
-  const chips = p.chips || (p.city && price
-    ? [{ icon: 'zap', text: `Dépannage à ${p.city} : ${price} €` }, { icon: 'moon', text: 'Soirs & week-ends, sans majoration' }, { icon: 'file-text', text: 'Devis de réparation sans obligation' }]
+  const chips = p.chips || (p.city
+    ? [{ icon: 'zap', text: `Dépannage électrique à ${p.city}` }, { icon: 'clock', text: 'À tout moment, sur rendez-vous' }, { icon: 'file-text', text: 'Forfait sur devis, prix annoncé avant' }]
     : isPanne
-    ? [{ icon: 'zap', text: 'Forfait dépannage 79 €' }, { icon: 'moon', text: 'Soirs & week-ends' }, { icon: 'user', text: 'Artisan local à votre écoute' }]
-    : [{ icon: 'file-text', text: 'Devis gratuit' }, { icon: 'moon', text: 'Soirs & week-ends' }, { icon: 'user', text: 'Artisan local à votre écoute' }]);
+    ? [{ icon: 'zap', text: 'Dépannage dans toutes les Ardennes' }, { icon: 'clock', text: 'À tout moment, sur rendez-vous' }, { icon: 'user', text: 'Artisan à votre écoute' }]
+    : [{ icon: 'file-text', text: 'Devis gratuit' }, { icon: 'clock', text: 'À tout moment, sur rendez-vous' }, { icon: 'user', text: 'Artisan à votre écoute' }]);
   const service = {
     '@type': 'Service',
     '@id': site.url + path + '#service',
@@ -67,9 +66,6 @@ function seoPage(p) {
     provider: { '@id': site.url + '/#entreprise' },
     areaServed: area,
     url: site.url + path,
-    ...(isPanne && price
-      ? { offers: { '@type': 'Offer', name: p.city ? `Forfait dépannage électrique à ${p.city}` : 'Forfait dépannage électrique', price, priceCurrency: 'EUR', description: 'Déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation.' } }
-      : {}),
   };
   const html = `${C.pageHero({ kicker: p.kicker, h1: p.h1, lead: p.lead, crumbs, prestation: p.prestation, chips })}
 <section class="section"><div class="container layout-aside">
@@ -91,7 +87,7 @@ ${C.ctaBand({ ...(p.cta || {}), prestation: p.prestation })}`;
     crumbs,
     body: html,
     schema: [service, f.schema],
-    geoPlace: p.city || "Signy-l'Abbaye",
+    geoPlace: p.city || 'Ardennes',
     priority: p.group === 'villes' ? 0.7 : 0.6,
   };
 }
@@ -147,7 +143,7 @@ function blogPost(a, all) {
     ${toc.length > 2 ? `<nav class="toc" aria-label="Sommaire"><p class="h3" style="margin-bottom:.6em"><strong>Sommaire</strong></p><ol>${toc.map((t) => `<li><a href="#${t.id}">${esc(plain(t.title))}</a></li>`).join('')}</ol></nav>` : ''}
     <div class="aside-card aside-card-dark">
       <h2>${icon('zap')} Un souci chez vous ?</h2>
-      <p class="small">Forfait dépannage 79 € : déplacement, recherche de panne, solution et devis de réparation compris. Le soir et le week-end.</p>
+      <p class="small">Forfait dépannage sur devis, prix annoncé avant de venir : déplacement, recherche de panne, solution et devis de réparation compris.</p>
       ${C.btnCall('btn-primary btn-block', 'Appeler')}
       ${C.btnDevis('btn-light btn-block', a.prestation)}
     </div>
