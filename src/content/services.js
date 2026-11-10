@@ -9,7 +9,7 @@ module.exports = [
     description: 'Plus de courant, disjoncteur qui saute, prise ou lumière en panne ? Dépannage électrique à domicile dans les Ardennes, le soir et le week-end.',
     kicker: 'Prestation · Dépannage électrique',
     h1: 'Dépannage électrique à domicile, en soirée et le week-end',
-    lead: "Le dépannage, c'est **ma spécialité**. Une panne ne prévient pas, et elle arrive rarement aux heures de bureau : depuis Signy-l'Abbaye, j'interviens chez les particuliers des Ardennes **le soir après 18 h et le week-end**, sur rendez-vous. **Forfait de 79 €** : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. **Panne non trouvée : rien à payer.**",
+    lead: "Le dépannage, c'est **ma spécialité**. Une panne ne prévient pas, et elle arrive rarement aux heures de bureau : depuis Signy-l'Abbaye, j'interviens chez les particuliers des Ardennes **le soir après 18 h et le week-end**, sur rendez-vous. **Forfait de 79 €** : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. **Panne non trouvée : remise sur le forfait.**",
     prestation: 'depannage',
     chips: [{ icon: 'zap', text: 'Forfait 79 € tout compris' }, { icon: 'clock', text: 'Soirs dès 18 h' }, { icon: 'calendar-days', text: 'Samedi & dimanche' }],
     intro: `## Les pannes que je dépanne le plus souvent
@@ -57,7 +57,7 @@ Un domino sous un isolant, un disjoncteur remplacé par un calibre supérieur «
       { tag: 'Dimanche', icon: 'zap', title: 'Plus de lumière à l’étage après un orage', text: "Après une nuit orageuse, le circuit d'éclairage de l'étage reste coupé. Un interrupteur va-et-vient a été endommagé et met le circuit en court-circuit.", result: 'Interrupteur remplacé, test des autres commandes, conseil sur l’intérêt d’un parafoudre.' },
     ],
     faq: [
-      { q: 'Combien coûte un dépannage électrique ?', a: "Le forfait dépannage est de 79 € : il comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de la panne, la proposition de solution et le devis de réparation. Au-delà de 15 km, comptez 10 € ou 20 € de supplément. La réparation fait l'objet d'un devis, que vous acceptez ou non. Et si je ne trouve pas la panne, je ne vous facture rien. Voir les [tarifs](/tarifs/)." },
+      { q: 'Combien coûte un dépannage électrique ?', a: "Le forfait dépannage est de 79 € : il comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de la panne, la proposition de solution et le devis de réparation. Au-delà de 15 km, comptez 10 € ou 20 € de supplément. La réparation fait l'objet d'un devis, que vous acceptez ou non. Et si je ne trouve pas la panne, je vous fais une remise sur le forfait. Voir les [tarifs](/tarifs/)." },
       { q: 'Intervenez-vous en urgence la nuit ?', a: "Non : j'interviens le soir jusqu'à 21 h 30 et le week-end, sur rendez-vous. Pour une coupure générale de la rue, contactez Enedis. Pour une situation dangereuse (fumée, odeur de brûlé), coupez le courant au disjoncteur général et, en cas de doute, appelez le 18." },
       { q: 'Faites-vous les dépannages le dimanche ?', a: 'Oui, le dimanche de 9 h à 18 h, sur rendez-vous, avec le même forfait que les autres jours.' },
       { q: 'Et si la panne vient de mon compteur Linky ?', a: "Le compteur et le disjoncteur de branchement relèvent d'Enedis. Si mon diagnostic montre que la panne se situe avant votre tableau, je vous le dis et vous oriente vers Enedis : il n'y a alors pas de devis de réparation de ma part." },
@@ -110,7 +110,7 @@ Une borne mal serrée provoque des lumières qui vacillent, des prises qui chauf
 
 Une recherche de panne se termine toujours par une explication concrète : **où était le défaut, pourquoi il s'est produit et comment l'éviter**. Je vous remets ensuite un **devis de réparation**, sans obligation. Si vous l'acceptez et que la réparation est simple, je la réalise dans la foulée ; si elle demande du matériel spécifique, on fixe un nouveau créneau.
 
-> La recherche de panne est comprise dans le forfait dépannage de 79 €, avec le déplacement (jusqu'à 15 km), la proposition de solution et le devis. Ce prix est fixe et annoncé au téléphone : pas de compteur horaire qui tourne pendant que je cherche. Et si je ne trouve pas l'origine de la panne, vous ne payez rien.`,
+> La recherche de panne est comprise dans le forfait dépannage de 79 €, avec le déplacement (jusqu'à 15 km), la proposition de solution et le devis. Ce prix est fixe et annoncé au téléphone : pas de compteur horaire qui tourne pendant que je cherche. Et si je ne trouve pas l'origine de la panne, je vous fais une remise sur le forfait.`,
     steps: [
       { t: 'Description de la panne', d: 'Au téléphone ou par message : symptômes, fréquence, travaux ou événements récents.' },
       { t: 'Isolement', d: 'Je sépare les circuits et les appareils pour localiser la zone en défaut.' },
@@ -125,7 +125,7 @@ Une recherche de panne se termine toujours par une explication concrète : **où
     ],
     faq: [
       { q: 'Que comprend le forfait à 79 € ?', a: "Le déplacement jusqu'à 15 km, la recherche méthodique de l'origine de la panne (contrôles, isolement des circuits, mesures), l'explication de la solution et le devis de réparation. La réparation n'est réalisée que si vous acceptez ce devis." },
-      { q: 'Et si vous ne trouvez pas la panne ?', a: "Vous ne payez rien, ni le forfait ni le déplacement. Cela peut arriver sur une panne intermittente qui ne se manifeste pas pendant ma visite : je vous explique alors ce qui a été écarté et je vous propose une méthode pour le prochain déclenchement (relevé des heures, appareils en marche), afin de cibler la suite." },
+      { q: 'Et si vous ne trouvez pas la panne ?', a: "Je vous fais une remise sur le forfait. Cela peut arriver sur une panne intermittente qui ne se manifeste pas pendant ma visite : je vous explique alors ce qui a été écarté et je vous propose une méthode pour le prochain déclenchement (relevé des heures, appareils en marche), afin de cibler la suite." },
       { q: 'Pouvez-vous réparer le jour même ?', a: "Dans la majorité des cas, oui, une fois le devis accepté : prises, interrupteurs, disjoncteurs, connexions, luminaires. J'ai dans mon véhicule le matériel courant ; une pièce particulière peut nécessiter un second passage." },
       { q: 'Le diagnostic remplace-t-il un diagnostic immobilier ?', a: "Non. Pour une vente ou une location, le diagnostic électrique réglementaire doit être réalisé par un diagnostiqueur certifié. Ma recherche de panne vise à réparer. Voir aussi le [bilan avant achat](/bilan-electrique-avant-achat/)." },
     ],

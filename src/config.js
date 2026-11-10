@@ -80,8 +80,9 @@ const hours = [
 // Forfait dépannage : prix unique, tout compris jusqu'au devis de réparation.
 const forfait = {
   price: 79,
-  // Engagement : si l'origine de la panne n'est pas trouvée, rien n'est facturé (ni forfait, ni déplacement).
-  notFoundFree: true,
+  // Engagement : si l'origine de la panne n'est pas trouvée, une remise est accordée sur le forfait.
+  // Le montant de la remise n'est volontairement pas affiché sur le site.
+  notFoundDiscount: true,
   label: 'Forfait dépannage',
   includes: [
     { icon: 'car-front', text: 'Le déplacement à domicile', detail: 'jusqu’à 15 km de Signy-l’Abbaye' },

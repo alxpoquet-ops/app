@@ -112,7 +112,7 @@ Chez moi, le principe est simple, et identique du lundi au dimanche, soirées co
 
 - **Forfait dépannage : 79 €.** Il comprend le déplacement jusqu'à 15 km de Signy-l'Abbaye, la recherche de panne, la proposition de solution et le devis de réparation.
 - **Supplément kilométrique** : + 10 € de 15 à 30 km, + 20 € de 30 à 45 km.
-- **Panne non trouvée** : rien à payer, ni forfait ni déplacement.
+- **Panne non trouvée** : une remise est appliquée sur le forfait.
 - **Réparation et pièces** : sur devis, remis à la fin du dépannage, **sans obligation**.
 
 Je ne publie volontairement aucun prix de pièce : il dépend de ce que l'on trouve, et un prix « à partir de » ne correspond jamais à votre situation réelle.
@@ -145,7 +145,7 @@ Les dépannages « d'urgence » font l'objet de pratiques abusives régulièreme
 
 Au final, le prix d'un dépannage dépend surtout de **la difficulté à trouver la panne**. Une panne franche se règle vite ; une panne intermittente demande plus de temps de recherche. C'est pourquoi je pratique un forfait dépannage : vous connaissez le prix de la recherche à l'avance, quel que soit le temps qu'elle prend, et la réparation vous est proposée sur devis.`,
     faq: [
-      { q: 'Le forfait est-il dû si je refuse le devis de réparation ?', a: "Oui, dès lors que la panne a été trouvée : il rémunère le déplacement, la recherche et l'établissement du devis. La réparation n'est jamais faite sans votre accord. En revanche, si l'origine de la panne n'est pas identifiée, le forfait n'est pas facturé." },
+      { q: 'Le forfait est-il dû si je refuse le devis de réparation ?', a: "Oui, dès lors que la panne a été trouvée : il rémunère le déplacement, la recherche et l'établissement du devis. La réparation n'est jamais faite sans votre accord. En revanche, si l'origine de la panne n'est pas identifiée, une remise est appliquée sur le forfait." },
       { q: 'Un dépannage le dimanche coûte-t-il plus cher ?', a: "Chez de nombreuses entreprises, oui. Chez ALED08, non : les tarifs sont identiques tous les jours." },
     ],
     cta: { title: 'Combien pour votre dépannage ?', text: 'Appelez-moi : je vous annonce le forfait dépannage pour votre commune avant de venir.' },

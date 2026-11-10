@@ -12,7 +12,7 @@ const og = `${base}<div style="width:1200px;height:630px;position:relative;overf
 <div style="position:absolute;left:80px;top:78px;display:flex;align-items:center;gap:22px"><div style="width:96px;height:96px;filter:drop-shadow(0 10px 30px rgba(29,107,255,.6))">${logo}</div><div style="font-family:Sora;font-weight:800;font-size:64px;color:#fff;letter-spacing:-1px">ALED08</div></div>
 <div style="position:absolute;left:80px;top:230px;width:1000px;font-family:Sora;font-weight:700;font-size:62px;line-height:1.08;letter-spacing:-1.5px;color:#fff">Dépannage &amp; Travaux Électriques dans les Ardennes</div>
 <div style="position:absolute;left:80px;top:410px;font-size:30px;color:#a9dcff;font-weight:600">Spécialiste du dépannage · le soir et le week-end, sur RDV</div>
-<div style="position:absolute;left:80px;bottom:70px;display:flex;gap:16px;font-size:24px;font-weight:600">${['Forfait dépannage 79 €','Panne non trouvée : 0 €','Devis sans obligation'].map(t=>`<span style="padding:10px 20px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)">${t}</span>`).join('')}</div>
+<div style="position:absolute;left:80px;bottom:70px;display:flex;gap:16px;font-size:24px;font-weight:600">${['Forfait dépannage 79 €','Remise si panne non trouvée','Devis sans obligation'].map(t=>`<span style="padding:10px 20px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)">${t}</span>`).join('')}</div>
 <div style="position:absolute;right:80px;top:112px;font-size:24px;color:#95a2b3;font-weight:500">Signy-l’Abbaye · Ardennes (08)</div></div>`;
 const icon = (s, pad = 0, bg = 'transparent') => `${base}<div style="width:${s}px;height:${s}px;padding:${pad}px;background:${bg}">${logo}</div>`;
 (async () => {

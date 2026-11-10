@@ -54,7 +54,7 @@ Le forfait ALED08 (79 €, ou 89 € et 99 € selon la distance, sans majoratio
 3. **La fiche Google Business Profile.** C'est elle qui apparaît sur la carte Google, avant tous les sites.
 
 **Décisions qui vous reviennent (arguments forts chez les plateformes)**
-- *Panne non trouvée* : **décidé — ce n'est pas facturé** (ni forfait, ni déplacement). L'engagement est affiché sur le site, à égalité avec la plateforme nationale.
+- *Panne non trouvée* : **décidé — une remise est accordée sur le forfait**, sans montant affiché. La plateforme nationale, elle, ne facture rien dans ce cas : c'est le seul point où elle reste mieux-disante.
 - *Garantie* : annoncer une durée de garantie sur la main-d'œuvre.
 - *Qualifications* : si vous en avez une (habilitation, Qualifelec…), l'afficher. Aucune fiche locale ne le fait.
 - *Délai de rappel* : le site dit « généralement dans la journée ». Un engagement plus précis serait un plus si vous pouvez le tenir.
@@ -64,7 +64,7 @@ Le forfait ALED08 (79 €, ou 89 € et 99 € selon la distance, sans majoratio
 - Prix du dépannage dans le titre Google de chaque page commune (« Électricien Rethel – dépannage 89 € »).
 - Tableau « ce qui se pratique souvent / chez ALED08 » sur la page Tarifs, avec la source citée.
 - Bloc « Mon passage chez vous, étape par étape » et « ce que vous payez / ne payez jamais ».
-- Engagement « Panne non trouvée : vous ne payez rien » dans le bloc forfait, la page Tarifs, les FAQ et les conditions générales.
+- Engagement « Panne non trouvée : remise sur le forfait » dans le bloc forfait, la page Tarifs, les FAQ et les conditions générales.
 - Mise en avant d'Alexandre Poquet et de ses 10 ans de métier (accueil, page dédiée, signature des pages).
 - 8 nouvelles pages communes là où des concurrents sont installés ou listés : Nouzonville, Villers-Semeuse, Sault-lès-Rethel, Rimogne, Boulzicourt, Saulces-Monclin, Juniville, Prix-lès-Mézières.
 - 4 nouvelles pages de pannes très recherchées : Linky qui disjoncte, chauffe-eau qui ne chauffe plus, radiateur froid, tableau qui grésille.
