@@ -12,10 +12,53 @@ $fc_mail = fc_setting( 'contact_email' );
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-	<meta name="robots" content="noindex, follow">
+	<?php
+	/* Seule l'adresse d'accueil est proposée à Google : les autres adresses affichent la même page d'attente. */
+	$fc_home_url = home_url( '/' );
+	$fc_is_home  = is_front_page() || is_home();
+	$fc_title    = 'Flore & Chenilles | Fleurs éternelles en fil chenille, Signy-l’Abbaye (Ardennes)';
+	$fc_desc     = 'Fleurs éternelles et bouquets en fil chenille faits main à Signy-l’Abbaye, dans les Ardennes. Boutique en ligne bientôt ouverte : créations à découvrir sur Instagram.';
+	?>
+	<meta name="robots" content="<?php echo $fc_is_home ? 'index, follow, max-image-preview:large' : 'noindex, follow'; ?>">
 	<meta name="theme-color" content="#FBF7F2">
-	<title>Flore &amp; Chenilles | Bientôt en ligne</title>
-	<meta name="description" content="La boutique de fleurs éternelles en fil chenille de Flore &amp; Chenilles, faites main à Signy-l’Abbaye (Ardennes), ouvre très bientôt.">
+	<title><?php echo esc_html( $fc_title ); ?></title>
+	<meta name="description" content="<?php echo esc_attr( $fc_desc ); ?>">
+	<?php if ( $fc_is_home ) : ?>
+	<link rel="canonical" href="<?php echo esc_url( $fc_home_url ); ?>">
+	<meta property="og:type" content="website">
+	<meta property="og:locale" content="fr_FR">
+	<meta property="og:site_name" content="Flore &amp; Chenilles">
+	<meta property="og:title" content="<?php echo esc_attr( $fc_title ); ?>">
+	<meta property="og:description" content="<?php echo esc_attr( $fc_desc ); ?>">
+	<meta property="og:url" content="<?php echo esc_url( $fc_home_url ); ?>">
+	<meta property="og:image" content="<?php echo esc_url( FC_ASSETS . 'assets/img/og-image.png' ); ?>">
+	<meta name="twitter:card" content="summary_large_image">
+	<script type="application/ld+json"><?php
+	echo wp_json_encode(
+		array(
+			'@context'    => 'https://schema.org',
+			'@type'       => 'Florist',
+			'@id'         => $fc_home_url . '#atelier',
+			'name'        => 'Flore & Chenilles',
+			'description' => 'Bouquets et fleurs éternelles en fil chenille, faits main dans un atelier de Signy-l’Abbaye, dans les Ardennes.',
+			'url'         => $fc_home_url,
+			'logo'        => FC_ASSETS . 'assets/photos/logo.jpg',
+			'image'       => FC_ASSETS . 'assets/img/og-image.png',
+			'email'       => $fc_mail ? $fc_mail : null,
+			'address'     => array(
+				'@type'           => 'PostalAddress',
+				'addressLocality' => 'Signy-l’Abbaye',
+				'postalCode'      => '08460',
+				'addressRegion'   => 'Ardennes',
+				'addressCountry'  => 'FR',
+			),
+			'areaServed'  => 'Ardennes',
+			'sameAs'      => array_values( array_filter( array( $fc_ig ) ) ),
+		),
+		JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+	);
+	?></script>
+	<?php endif; ?>
 	<link rel="icon" href="<?php echo esc_url( FC_ASSETS . 'assets/img/favicon.png' ); ?>" type="image/png">
 	<link rel="preload" href="<?php echo esc_url( FC_ASSETS . 'assets/fonts/fraunces-latin-full-normal.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
 	<link rel="preload" href="<?php echo esc_url( FC_ASSETS . 'assets/fonts/jost-latin-wght-normal.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
