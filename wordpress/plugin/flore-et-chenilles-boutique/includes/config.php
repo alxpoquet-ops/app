@@ -377,19 +377,23 @@ add_filter(
 add_filter(
 	'rank_math/sitemap/posts_to_exclude',
 	function ( $ids ) {
-		$id = fcb_bouquet_product_id();
-		if ( $id ) {
-			$ids   = (array) $ids;
-			$ids[] = $id;
+		$ids = (array) $ids;
+		foreach ( array( fcb_bouquet_product_id(), get_option( 'woocommerce_cart_page_id' ), get_option( 'woocommerce_checkout_page_id' ), get_option( 'woocommerce_myaccount_page_id' ) ) as $id ) {
+			if ( (int) $id ) {
+				$ids[] = (int) $id;
+			}
 		}
 		return $ids;
 	}
 );
+/* Petit site : le plan est recalculé à chaque visite de Google, il n'est jamais en retard. */
+add_filter( 'rank_math/sitemap/enable_caching', '__return_false' );
 add_filter(
 	'rank_math/frontend/robots',
 	function ( $robots ) {
 		$id = fcb_bouquet_product_id();
-		if ( $id && is_singular( 'product' ) && get_queried_object_id() === $id ) {
+		$private = function_exists( 'is_cart' ) && ( is_cart() || is_checkout() || is_account_page() );
+		if ( $private || ( $id && is_singular( 'product' ) && get_queried_object_id() === $id ) ) {
 			$robots['index']  = 'noindex';
 			$robots['follow'] = 'nofollow';
 		}
