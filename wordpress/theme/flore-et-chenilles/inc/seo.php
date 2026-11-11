@@ -137,7 +137,7 @@ add_action(
 						'logo'                => FC_ASSETS . 'assets/photos/logo.jpg',
 						'image'               => FC_ASSETS . 'assets/img/og-image.png',
 						'email'               => $mail,
-						'priceRange'          => '8 € – 88 €',
+						'priceRange'          => '8 € à 88 €',
 						'currenciesAccepted'  => 'EUR',
 						'paymentAccepted'     => 'Carte bancaire',
 						'address'             => array(

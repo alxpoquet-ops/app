@@ -373,6 +373,29 @@ add_filter(
 	10,
 	2
 );
+/* Même chose avec Rank Math : le support caché des bouquets reste hors du plan du site et hors de Google. */
+add_filter(
+	'rank_math/sitemap/posts_to_exclude',
+	function ( $ids ) {
+		$id = fcb_bouquet_product_id();
+		if ( $id ) {
+			$ids   = (array) $ids;
+			$ids[] = $id;
+		}
+		return $ids;
+	}
+);
+add_filter(
+	'rank_math/frontend/robots',
+	function ( $robots ) {
+		$id = fcb_bouquet_product_id();
+		if ( $id && is_singular( 'product' ) && get_queried_object_id() === $id ) {
+			$robots['index']  = 'noindex';
+			$robots['follow'] = 'nofollow';
+		}
+		return $robots;
+	}
+);
 /* Les pages d'auteur ne servent à rien sur une boutique : retour à l'accueil. */
 add_action(
 	'template_redirect',
