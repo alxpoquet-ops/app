@@ -529,7 +529,8 @@ func _overlay(bg_color: Color) -> Control:
 
 
 func _blink(node: CanvasItem) -> void:
-	var tw := create_tween().set_loops()
+	# Le tween appartient au nœud : il disparaît avec lui (sinon boucle infinie à vide qui fige le jeu).
+	var tw := node.create_tween().set_loops()
 	tw.tween_property(node, "modulate:a", 0.25, 0.9)
 	tw.tween_property(node, "modulate:a", 1.0, 0.9)
 

@@ -68,6 +68,13 @@ Tout est dans `story/dialogues.json`, une réplique par ligne :
 
 Variantes automatiques : `bed_c3` est utilisé à la boucle 3 au lieu de `bed`, et `carton_after` une fois le souvenir trouvé.
 
+## Version navigateur
+
+`export_presets.cfg` contient un préréglage **Web** (sans threads, compatible avec n'importe quel hébergement).
+Dans Godot : **Projet → Exporter… → Web → Exporter le projet**. Les modèles d'export (« export templates »)
+s'installent depuis ce même menu la première fois. Sur navigateur, l'image s'agrandit pour remplir l'écran ;
+sur PC, elle s'agrandit par multiples entiers pour garder des pixels nets.
+
 ## Outils de test
 
 Lancer directement une boucle, une pièce, un dialogue (pratique pour travailler une scène) :

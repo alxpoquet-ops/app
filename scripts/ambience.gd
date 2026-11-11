@@ -32,6 +32,8 @@ func _ready() -> void:
 	gen.mix_rate = RATE
 	gen.buffer_length = 0.25
 	stream = gen
+	# Sur le web, Godot joue par défaut des « échantillons » : un flux généré doit passer en mode flux.
+	playback_type = AudioServer.PLAYBACK_TYPE_STREAM
 	volume_db = -3.0
 	play()
 	pb = get_stream_playback() as AudioStreamGeneratorPlayback
