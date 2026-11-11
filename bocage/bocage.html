@@ -1,0 +1,1991 @@
+<title>Bocage</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+  /* Layout : un plateau en bois. En haut la journée et le marché, à gauche la ferme (canvas pixel art)
+     et la main de cartes, à droite le comptoir du soir (marché, boutique, foire, village, export, échoppes).
+     Un seul thème, volontairement : le pastel ensoleillé d'un jeu de ferme sur console portable. */
+  :root {
+    --sky: #bfe6ff;
+    --grass: #7ec850;
+    --wood: #c58b4f;
+    --wood-dark: #7a4a24;
+    --ink: #3b2414;
+    --paper: #fff6dc;
+    --paper-2: #f6e5bd;
+    --gold: #f2b632;
+    --leaf: #4f9a32;
+    --berry: #d9483b;
+    --water: #3a8bd0;
+    --muted: #8a6a4a;
+    --night: #2f2340;
+    --pixel: "Pixelify Sans", "Trebuchet MS", system-ui, sans-serif;
+    --text: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: light;
+  }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--grass);
+    background-image:
+      radial-gradient(circle at 12px 12px, rgba(255,255,255,.18) 2px, transparent 3px),
+      radial-gradient(circle at 36px 30px, rgba(40,90,20,.18) 2px, transparent 3px);
+    background-size: 48px 48px;
+    color: var(--ink);
+    font-family: var(--text);
+    font-size: 14px;
+  }
+  button { font-family: var(--pixel); }
+  .wrap {
+    max-width: 1320px; margin: 0 auto;
+    padding-block: 12px 24px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  /* --- cadres en bois --- */
+  .panel {
+    background: var(--paper);
+    border: 3px solid var(--wood-dark);
+    border-radius: 6px;
+    box-shadow: 0 0 0 3px var(--wood), 0 6px 0 3px rgba(60,30,10,.35);
+  }
+  .btn {
+    font-family: var(--pixel); font-size: 16px; font-weight: 600;
+    background: var(--gold); color: var(--ink);
+    border: 3px solid var(--wood-dark); border-radius: 4px;
+    padding: 6px 14px; cursor: pointer;
+    box-shadow: 0 3px 0 var(--wood-dark);
+    transition: transform 80ms ease, box-shadow 80ms ease;
+  }
+  .btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 0 var(--wood-dark); }
+  .btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--wood-dark); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn:focus-visible, .card:focus-visible, .tab:focus-visible { outline: 3px solid var(--water); outline-offset: 2px; }
+  .btn.green { background: #9be06b; }
+  .btn.blue { background: #8cc8f2; }
+  .btn.red { background: #f39a8c; }
+  .btn.small { font-size: 13px; padding: 3px 8px; border-width: 2px; box-shadow: 0 2px 0 var(--wood-dark); }
+  h1, h2, h3 { font-family: var(--pixel); margin: 0; text-wrap: balance; }
+  .px { image-rendering: pixelated; }
+  .num { font-family: var(--pixel); font-variant-numeric: tabular-nums; }
+
+  /* --- accueil --- */
+  #home { display: grid; gap: 18px; max-width: 980px; margin: 0 auto; }
+  .hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; align-items: stretch; }
+  .hero .scene { padding: 10px; display: grid; place-items: center; background: var(--sky); }
+  .hero canvas { width: 100%; height: auto; display: block; }
+  .hero .pitch { padding: 18px 20px; display: grid; gap: 10px; align-content: start; }
+  .logo { font-family: var(--pixel); font-size: 56px; line-height: .9; color: var(--leaf); text-shadow: 3px 3px 0 var(--wood-dark); letter-spacing: 1px; }
+  .pitch p { margin: 0; line-height: 1.5; }
+  .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+  .box { padding: 16px; display: grid; gap: 10px; align-content: start; }
+  .box h2 { font-size: 22px; }
+  .muted { color: var(--muted); }
+  .field { display: grid; gap: 4px; }
+  .field label { font-family: var(--pixel); font-size: 14px; }
+  .field input, .field select {
+    font: inherit; font-size: 15px; padding: 7px 9px; border: 2px solid var(--wood-dark); border-radius: 4px; background: #fffdf4; color: var(--ink); min-width: 0;
+  }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .game-list { display: grid; gap: 6px; }
+  .game-item { display: flex; gap: 8px; align-items: center; justify-content: space-between; padding: 7px 9px; background: var(--paper-2); border: 2px solid var(--wood); border-radius: 4px; }
+  .game-item .meta { min-width: 0; }
+  .game-item b { font-family: var(--pixel); }
+  .rules { padding: 16px 20px; line-height: 1.55; }
+  .rules ol { margin: 6px 0 0; padding-left: 20px; display: grid; gap: 4px; }
+  .rules details summary { font-family: var(--pixel); font-size: 18px; cursor: pointer; }
+
+  /* --- salon --- */
+  #lobby { max-width: 760px; margin: 0 auto; }
+  .seats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+  .seat { padding: 10px; background: var(--paper-2); border: 2px solid var(--wood); border-radius: 4px; display: grid; gap: 6px; justify-items: start; min-width: 0; }
+  .seat.me { border-color: var(--leaf); box-shadow: inset 0 0 0 2px #b8e59a; }
+  .patrons { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
+  .patron { text-align: left; display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: start; padding: 8px; background: #fffdf4; border: 2px solid var(--wood); border-radius: 4px; cursor: pointer; font-family: var(--text); color: var(--ink); }
+  .patron.sel { border-color: var(--leaf); background: #eaf8dc; }
+  .patron.taken { opacity: .45; cursor: not-allowed; }
+  .patron img { width: 40px; height: 40px; }
+  .patron b { font-family: var(--pixel); font-size: 15px; display: block; }
+  .patron small { display: block; line-height: 1.35; }
+
+  /* --- jeu --- */
+  #game { display: grid; gap: 14px; }
+  .topbar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 8px 12px; }
+  .daybox { display: flex; gap: 10px; align-items: center; }
+  .daybox img { width: 40px; height: 40px; }
+  .daybox .t { font-family: var(--pixel); font-size: 18px; line-height: 1.1; }
+  .daybox .s { font-size: 12px; color: var(--muted); }
+  .ticker { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .tick { display: flex; align-items: center; gap: 3px; padding: 2px 6px; background: var(--paper-2); border-radius: 3px; border: 2px solid transparent; }
+  .tick img { width: 20px; height: 20px; }
+  .tick .up { color: var(--leaf); } .tick .down { color: var(--berry); }
+  .players { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .pchip { display: grid; grid-template-columns: 28px auto; gap: 0 6px; align-items: center; padding: 3px 8px 3px 4px; background: var(--paper-2); border: 2px solid var(--wood); border-radius: 4px; cursor: pointer; font-family: var(--text); color: var(--ink); text-align: left; }
+  .pchip img { width: 28px; height: 28px; grid-row: span 2; }
+  .pchip b { font-family: var(--pixel); font-size: 13px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pchip span { font-size: 12px; }
+  .pchip.active { border-color: var(--gold); background: #fff0bf; box-shadow: 0 0 0 2px var(--gold); }
+  .pchip.viewing { outline: 2px dashed var(--water); outline-offset: 2px; }
+
+  .board { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 14px; align-items: start; }
+  .farmcol { display: grid; gap: 14px; min-width: 0; }
+  .farm { padding: 8px; position: relative; background: var(--sky); }
+  .farm canvas { display: block; margin: 0 auto; max-width: 100%; cursor: pointer; }
+  .farmhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 2px 4px 8px; flex-wrap: wrap; }
+  .farmhead h2 { font-size: 20px; }
+  .stats { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .stat { display: flex; gap: 4px; align-items: center; font-family: var(--pixel); font-size: 16px; }
+  .stat img { width: 20px; height: 20px; }
+  .silo { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; padding: 6px 4px 0; }
+  .good { display: inline-flex; align-items: center; gap: 2px; padding: 1px 5px 1px 2px; background: var(--paper); border: 2px solid var(--wood); border-radius: 3px; font-family: var(--pixel); }
+  .good img { width: 18px; height: 18px; }
+  .targetbar { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); padding: 6px 10px; display: flex; gap: 8px; align-items: center; z-index: 3; white-space: nowrap; font-family: var(--pixel); }
+
+  .handbox { padding: 10px; display: grid; gap: 8px; }
+  .handhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .energy { display: flex; gap: 3px; align-items: center; }
+  .energy i { width: 18px; height: 18px; background: #e8d9b0; border: 2px solid var(--wood-dark); border-radius: 3px; display: inline-block; }
+  .energy i.on { background: #ffd84a; box-shadow: inset 0 -3px 0 #e0a51c; }
+  .hand { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 8px; min-height: 172px; }
+  .card {
+    flex: 0 0 128px; min-height: 160px; display: grid; grid-template-rows: auto auto 1fr; gap: 3px;
+    background: #fffdf4; border: 3px solid var(--wood-dark); border-radius: 6px; padding: 5px;
+    text-align: left; cursor: pointer; color: var(--ink); font-family: var(--text); position: relative;
+    box-shadow: 0 3px 0 var(--wood-dark);
+    transition: transform 100ms ease;
+  }
+  .card:hover:not(.off) { transform: translateY(-4px); }
+  .card.off { opacity: .55; cursor: default; }
+  .card .ch { display: flex; justify-content: space-between; align-items: center; gap: 4px; font-family: var(--pixel); font-size: 13px; font-weight: 700; padding: 2px 5px; border-radius: 3px; color: #fff; text-shadow: 1px 1px 0 rgba(0,0,0,.35); }
+  .card .art { height: 44px; display: grid; place-items: center; background: var(--paper-2); border-radius: 3px; }
+  .card .art img { width: 40px; height: 40px; }
+  .card .ct { font-size: 12px; line-height: 1.3; }
+  .card .en { font-family: var(--pixel); background: #ffd84a; color: var(--ink); border: 2px solid var(--wood-dark); border-radius: 50%; width: 22px; height: 22px; display: grid; place-items: center; font-size: 13px; text-shadow: none; flex: 0 0 auto; }
+  .card .price { position: absolute; bottom: 5px; right: 6px; font-family: var(--pixel); display: flex; align-items: center; gap: 2px; }
+  .card .price img { width: 16px; height: 16px; }
+  .t-graine .ch { background: #4f9a32; }
+  .t-outil .ch { background: #3a8bd0; }
+  .t-marche .ch { background: #c98a12; }
+  .t-attaque .ch { background: #c9402f; }
+  .t-malus .ch { background: #7d7d86; }
+  .deckinfo { display: flex; gap: 12px; font-size: 12px; color: var(--muted); }
+
+  .side { display: grid; gap: 10px; min-width: 0; position: sticky; top: calc(10px + env(safe-area-inset-top, 0px)); }
+  .actions { padding: 10px; display: grid; gap: 8px; }
+  .phase { font-family: var(--pixel); font-size: 18px; display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .phase .badge { padding: 2px 8px; border-radius: 3px; background: var(--sky); border: 2px solid var(--water); font-size: 14px; }
+  .phase .badge.soir { background: #ffd2a6; border-color: #d9762b; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 8px 0; }
+  .tab { font-family: var(--pixel); font-size: 14px; padding: 4px 8px; background: var(--paper-2); border: 2px solid var(--wood); border-bottom: 0; border-radius: 4px 4px 0 0; cursor: pointer; color: var(--ink); }
+  .tab.on { background: var(--paper); border-color: var(--wood-dark); }
+  .tabbody { padding: 10px; border-top: 2px solid var(--wood-dark); display: grid; gap: 8px; max-height: 62vh; overflow-y: auto; }
+  .hint { font-size: 12px; color: var(--muted); padding: 6px 8px; background: var(--paper-2); border-radius: 3px; }
+  .line { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 5px 6px; background: #fffdf4; border: 2px solid var(--paper-2); border-radius: 4px; }
+  .line img { width: 24px; height: 24px; }
+  .line .nm { font-family: var(--pixel); font-size: 15px; }
+  .line .sub { font-size: 12px; color: var(--muted); line-height: 1.3; }
+  .qty { display: inline-flex; align-items: center; gap: 4px; }
+  .qty input { width: 42px; font: inherit; font-family: var(--pixel); text-align: center; border: 2px solid var(--wood-dark); border-radius: 3px; padding: 2px; }
+  .mini-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+  .mini-cards .card { flex: none; min-height: 150px; }
+  .contract { padding: 8px; background: #fffdf4; border: 2px dashed var(--wood); border-radius: 4px; display: grid; gap: 6px; }
+  .contract b { font-family: var(--pixel); font-size: 15px; }
+  .reqs { display: flex; gap: 4px; flex-wrap: wrap; }
+  .log { font-size: 12px; line-height: 1.4; display: grid; gap: 3px; }
+  .log div { padding: 3px 6px; background: #fffdf4; border-radius: 3px; }
+  .log .hit { background: #ffe0da; }
+
+  /* --- surcouches --- */
+  .overlay.solid { background: rgba(47,35,64,.97); }
+  .overlay { position: fixed; inset: 0; background: rgba(47,35,64,.55); display: grid; place-items: center; z-index: 50; padding: 16px; }
+  .modal { padding: 18px 20px; max-width: 520px; width: 100%; display: grid; gap: 12px; max-height: calc(100% - 32px); overflow-y: auto; }
+  .modal h2 { font-size: 26px; }
+  .dice { display: flex; gap: 14px; justify-content: center; }
+  .die { width: 56px; height: 56px; background: #fffdf4; border: 3px solid var(--wood-dark); border-radius: 8px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); padding: 6px; box-shadow: 0 4px 0 var(--wood-dark); }
+  .die i { width: 10px; height: 10px; border-radius: 50%; background: var(--ink); place-self: center; visibility: hidden; }
+  .die i.on { visibility: visible; }
+  .die.weather { background: #dff1ff; }
+  .die.roll { animation: roll .5s steps(6) 2; }
+  @keyframes roll { 0% { transform: rotate(0); } 50% { transform: rotate(18deg) translateY(-8px); } 100% { transform: rotate(0); } }
+  .dicecap { font-family: var(--pixel); font-size: 12px; text-align: center; margin-top: 4px; }
+  .report { display: grid; gap: 5px; }
+  .report div { padding: 5px 8px; background: var(--paper-2); border-radius: 3px; }
+  .toasts { position: fixed; right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 6px; z-index: 60; max-width: min(340px, calc(100% - 28px)); }
+  .toast { padding: 8px 12px; background: var(--paper); border: 3px solid var(--wood-dark); border-radius: 4px; box-shadow: 0 4px 0 rgba(60,30,10,.35); font-size: 13px; }
+  .toast.bad { background: #ffe0da; }
+  .ranking { display: grid; gap: 6px; }
+  .rank { display: grid; grid-template-columns: 32px 32px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 6px 8px; background: var(--paper-2); border-radius: 4px; }
+  .rank img { width: 32px; height: 32px; }
+  .rank .big { font-family: var(--pixel); font-size: 22px; }
+
+  @media (max-width: 980px) {
+    .board { grid-template-columns: minmax(0, 1fr); }
+    .side { position: static; }
+    .topbar { grid-template-columns: minmax(0, 1fr); }
+    .players { justify-content: flex-start; }
+    .hero { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .die.roll { animation: none; }
+    .card, .btn { transition: none; }
+  }
+</style>
+
+<div class="wrap">
+  <!-- ACCUEIL -->
+  <section id="home">
+    <div class="hero">
+      <div class="panel scene"><canvas id="heroCanvas" class="px" width="640" height="400" aria-label="Une petite ferme en pixel art"></canvas></div>
+      <div class="panel pitch">
+        <div class="logo">Bocage</div>
+        <p><b>Un deck-builder de ferme, de 1 à 4 joueurs.</b> Douze journées, trois saisons. Chaque matin, les dés fixent la météo et les prix. Le jour, tu joues tes cartes pour semer, arroser et embêter tes voisins. Le soir, tu vends au marché, ou tu gardes ta récolte en attendant un meilleur prix.</p>
+        <p class="muted">Achète des bêtes, échange avec les autres fermes, remplis des contrats d'export et bâtis ton village. Chaque joueur incarne l'esprit protecteur de sa ferme. À la fin de l'automne, la ferme la plus renommée gagne.</p>
+      </div>
+    </div>
+
+    <div class="home-grid">
+      <div class="panel box" id="onlineBox">
+        <h2>Jouer en ligne</h2>
+        <p class="muted" id="netStatus">Connexion au carnet des parties…</p>
+        <div class="field" id="createField" hidden>
+          <label for="farmName">Nom de ta ferme</label>
+          <input id="farmName" maxlength="24" placeholder="La ferme des Lilas" autocomplete="off">
+        </div>
+        <div class="row" id="createRow" hidden><button class="btn green" id="createBtn" type="button">Créer une partie</button></div>
+        <div class="game-list" id="gameList"></div>
+      </div>
+      <div class="panel box">
+        <h2>Jouer sur le même écran</h2>
+        <p class="muted">Pour essayer seul, ou à plusieurs autour d'un ordinateur. Chacun joue son tour, puis passe la main.</p>
+        <div class="field">
+          <label for="localCount">Nombre de fermes</label>
+          <select id="localCount"><option value="1">1 ferme (découverte)</option><option value="2" selected>2 fermes</option><option value="3">3 fermes</option><option value="4">4 fermes</option></select>
+        </div>
+        <div class="row"><button class="btn blue" id="localBtn" type="button">Lancer une partie locale</button></div>
+      </div>
+    </div>
+
+    <div class="panel rules">
+      <details>
+        <summary>Comment se joue une journée</summary>
+        <ol>
+          <li><b>L'aube</b> : on lance le dé météo et les deux dés du marché. Les cultures poussent, les bêtes produisent, les prix bougent.</li>
+          <li><b>Le jour</b> (chacun son tour) : 3 énergies pour jouer tes cartes. Semer, arroser, pousser les prix, lâcher des corbeaux chez le voisin. Clique une culture mûre pour la récolter dans ton silo.</li>
+          <li><b>Le soir</b> : vends au prix du marché (chaque lot vendu fait baisser le prix pour les suivants), ou garde ta récolte. Tu as 2 achats : une carte, une bête, un bâtiment du village. Tu peux aussi remplir un contrat d'export ou mettre des lots dans ton échoppe pour les autres joueurs.</li>
+          <li><b>Fin de partie</b> après 12 jours : renommée des bâtiments et contrats, plus 1 étoile pour 6 pièces et pour 2 bêtes.</li>
+        </ol>
+      </details>
+    </div>
+  </section>
+
+  <!-- SALON -->
+  <section id="lobby" hidden>
+    <div class="panel box">
+      <div class="row" style="justify-content: space-between;">
+        <h2 id="lobbyTitle">Salon</h2>
+        <button class="btn small" id="lobbyBack" type="button">Retour</button>
+      </div>
+      <p class="muted" id="lobbyHint"></p>
+      <div class="seats" id="seats"></div>
+      <h3>Choisis l'esprit qui veille sur ta ferme</h3>
+      <div class="patrons" id="patronPick"></div>
+      <div class="row">
+        <button class="btn green" id="startBtn" type="button">Lancer la partie</button>
+        <span class="muted" id="startHint"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- JEU -->
+  <section id="game" hidden>
+    <div class="panel topbar">
+      <div class="daybox"><img id="weatherIcon" class="px" alt=""><div><div class="t" id="dayTitle"></div><div class="s" id="daySub"></div></div></div>
+      <div class="ticker" id="ticker"></div>
+      <div class="players" id="players"></div>
+    </div>
+    <div class="board">
+      <div class="farmcol">
+        <div class="panel farm">
+          <div class="farmhead">
+            <h2 id="farmTitle"></h2>
+            <div class="stats" id="farmStats"></div>
+          </div>
+          <div class="panel targetbar" id="targetBar" hidden><span id="targetText"></span><button class="btn small green" id="targetOk" type="button">Valider</button><button class="btn small" id="targetCancel" type="button">Annuler</button></div>
+          <canvas id="farmCanvas" class="px" width="320" height="200"></canvas>
+          <div class="silo" id="siloLine"></div>
+        </div>
+        <div class="panel handbox">
+          <div class="handhead">
+            <h3 id="handTitle">Ta main</h3>
+            <div class="energy" id="energy"></div>
+            <div class="deckinfo" id="deckInfo"></div>
+          </div>
+          <div class="hand" id="hand"></div>
+        </div>
+      </div>
+      <div class="side">
+        <div class="panel actions">
+          <div class="phase"><span id="turnText"></span><span class="badge" id="phaseBadge"></span></div>
+          <div class="row">
+            <button class="btn blue" id="eveningBtn" type="button">Passer au soir</button>
+            <button class="btn green" id="endBtn" type="button">Finir la journée</button>
+            <button class="btn small" id="powerBtn" type="button"></button>
+          </div>
+          <div class="row"><button class="btn small" id="quitBtn" type="button">Quitter</button><span class="muted" id="syncText"></span></div>
+        </div>
+        <div class="panel">
+          <div class="tabs" id="tabs"></div>
+          <div class="tabbody" id="tabBody"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="overlay" id="overlay" hidden><div class="panel modal" id="modal"></div></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+(() => {
+"use strict";
+
+/* =====================================================================
+   DONNÉES DU JEU
+   ===================================================================== */
+
+const CROPS = {
+  navet:      { name: "Navet",      days: 1, base: 3 },
+  ble:        { name: "Blé",        days: 2, base: 5 },
+  carotte:    { name: "Carotte",    days: 2, base: 6 },
+  tomate:     { name: "Tomate",     days: 3, base: 9 },
+  citrouille: { name: "Citrouille", days: 4, base: 15 },
+};
+const PRODUCTS = {
+  oeuf:  { name: "Œuf",   base: 3 },
+  lait:  { name: "Lait",  base: 5 },
+  laine: { name: "Laine", base: 8 },
+};
+const GOODS = Object.assign({}, CROPS, PRODUCTS);
+const GOOD_KEYS = Object.keys(GOODS);
+const DIE_GOODS = { 1: ["navet"], 2: ["ble"], 3: ["carotte"], 4: ["tomate"], 5: ["citrouille"], 6: ["oeuf", "lait", "laine"] };
+
+const ANIMALS = {
+  poule:  { name: "Poule",  price: 4, makes: "oeuf",  every: 1 },
+  mouton: { name: "Mouton", price: 7, makes: "laine", every: 2 },
+  vache:  { name: "Vache",  price: 9, makes: "lait",  every: 1 },
+};
+
+const SEASONS = ["Printemps", "Été", "Automne"];
+const SEASON_WEATHER = [
+  ["pluie", "pluie", "soleil", "soleil", "brouillard", "arc"],
+  ["orage", "secheresse", "soleil", "soleil", "pluie", "secheresse"],
+  ["gel", "orage", "pluie", "soleil", "brouillard", "arc"],
+];
+const WEATHER = {
+  soleil:     { name: "Soleil",       grow: 1, bad: false, text: "Tout pousse d'un cran." },
+  pluie:      { name: "Pluie",        grow: 2, bad: false, text: "Tout pousse de deux crans." },
+  secheresse: { name: "Sécheresse",   grow: 0, bad: true,  text: "Rien ne pousse, sauf avec un Puits." },
+  orage:      { name: "Orage",        grow: 1, bad: true,  text: "Chaque ferme perd une culture mûre, sauf avec un Clocher." },
+  gel:        { name: "Gel",          grow: 0, bad: true,  text: "Rien ne pousse et une jeune pousse gèle, sauf avec une Serre." },
+  arc:        { name: "Arc-en-ciel",  grow: 1, bad: false, text: "Tout pousse d'un cran et chaque ferme gagne 2 pièces." },
+  brouillard: { name: "Brouillard",   grow: 1, bad: false, text: "Tout pousse d'un cran. La boutique est renouvelée." },
+};
+
+const CARDS = {
+  s_navet:     { name: "Graines de navet",    type: "graine", cost: 1, en: 1, crop: "navet",      plant: 2, text: "Sème jusqu'à 2 navets. Mûrs en 1 jour." },
+  s_ble:       { name: "Graines de blé",      type: "graine", cost: 2, en: 1, crop: "ble",        plant: 2, text: "Sème jusqu'à 2 blés. Mûrs en 2 jours." },
+  s_carotte:   { name: "Graines de carotte",  type: "graine", cost: 3, en: 1, crop: "carotte",    plant: 2, text: "Sème jusqu'à 2 carottes. Mûres en 2 jours." },
+  s_tomate:    { name: "Plants de tomate",    type: "graine", cost: 6, en: 1, crop: "tomate",     plant: 2, text: "Plante jusqu'à 2 tomates. Mûres en 3 jours." },
+  s_citrouille:{ name: "Graines de citrouille",type: "graine", cost: 6, en: 1, crop: "citrouille", plant: 1, text: "Sème 1 citrouille. Mûre en 4 jours, se vend cher." },
+  bourse:      { name: "Petite bourse",       type: "marche", cost: 2, en: 0, text: "+2 pièces." },
+  arrosoir:    { name: "Arrosoir",            type: "outil",  cost: 2, en: 1, text: "+1 croissance à 2 de tes cultures.", target: { kind: "growing", n: 2 } },
+  engrais:     { name: "Engrais",             type: "outil",  cost: 4, en: 1, text: "Une de tes cultures devient mûre.", target: { kind: "growing", n: 1 } },
+  cafe:        { name: "Café serré",          type: "outil",  cost: 3, en: 0, text: "+2 énergie." },
+  charrette:   { name: "Charrette",           type: "outil",  cost: 3, en: 1, text: "Pioche 2 cartes." },
+  basdelaine:  { name: "Bas de laine",        type: "marche", cost: 5, en: 0, text: "+4 pièces." },
+  compost:     { name: "Compost",             type: "outil",  cost: 2, en: 0, text: "Écarte définitivement une carte de ta main. Allège ton paquet.", target: { kind: "hand", n: 1 } },
+  bache:       { name: "Bâche",               type: "outil",  cost: 3, en: 0, text: "Ta ferme ignore la prochaine mauvaise météo." },
+  chance:      { name: "Dé de la chance",     type: "marche", cost: 2, en: 0, text: "Lance un dé. 1-2 : rien. 3-4 : +2 pièces. 5 : +1 énergie et pioche 1. 6 : +5 pièces." },
+  moisson:     { name: "Grande moisson",      type: "outil",  cost: 6, en: 1, text: "Récolte toutes tes cultures mûres, puis +1 croissance aux autres." },
+  foire:       { name: "Foire aux bestiaux",  type: "marche", cost: 5, en: 1, text: "Une poule gratuite, s'il reste de la place dans l'enclos." },
+  speculation: { name: "Spéculation",         type: "marche", cost: 4, en: 1, text: "+3 au prix d'une denrée, pour tout le monde.", target: { kind: "good" } },
+  marchenoir:  { name: "Marché noir",         type: "marche", cost: 5, en: 1, text: "Ce soir, ta prochaine vente rapporte le double." },
+  rumeur:      { name: "Rumeur au marché",    type: "attaque",cost: 3, en: 1, text: "-3 au prix d'une denrée. Idéal avant que ton voisin vende.", target: { kind: "good" } },
+  corbeaux:    { name: "Nuée de corbeaux",    type: "attaque",cost: 3, en: 1, text: "Chaque adversaire perd sa jeune pousse la plus avancée (sauf Épouvantail)." },
+  zizanie:     { name: "Mauvaises herbes",    type: "attaque",cost: 4, en: 1, text: "Chaque adversaire reçoit un Chiendent dans sa défausse." },
+  renard:      { name: "Renard rusé",         type: "attaque",cost: 4, en: 1, text: "Vole un œuf, un lait ou une laine à un adversaire (sauf Chien).", target: { kind: "opponent" } },
+  percepteur:  { name: "Percepteur",          type: "attaque",cost: 6, en: 1, text: "Chaque adversaire te donne 2 pièces." },
+  chiendent:   { name: "Chiendent",           type: "malus",  cost: 0, en: 0, text: "Ne fait rien. Encombre ta main. Le Compost t'en débarrasse.", unplayable: true },
+};
+const TYPE_LABEL = { graine: "Graine", outil: "Outil", marche: "Marché", attaque: "Attaque", malus: "Malus" };
+const SEED_SHOP = ["s_navet", "s_ble", "s_carotte", "s_tomate", "s_citrouille"];
+const SHOP_POOL = ["arrosoir", "engrais", "cafe", "charrette", "basdelaine", "compost", "bache", "chance", "moisson",
+  "foire", "speculation", "marchenoir", "rumeur", "corbeaux", "zizanie", "renard", "percepteur"];
+const START_DECK = ["s_navet", "s_navet", "s_navet", "s_navet", "s_ble", "s_ble", "bourse", "bourse", "arrosoir", "cafe"];
+
+const BUILDINGS = {
+  champ:      { name: "Nouveau champ",      cost: 5,  stars: 0, max: 2, text: "+3 parcelles." },
+  epouvantail:{ name: "Épouvantail",        cost: 3,  stars: 0, max: 1, text: "Les corbeaux ne t'atteignent plus." },
+  chien:      { name: "Niche et chien",     cost: 4,  stars: 0, max: 1, text: "Le renard ne t'atteint plus." },
+  puits:      { name: "Puits",              cost: 6,  stars: 1, max: 1, text: "La sécheresse ne bloque plus tes cultures." },
+  etable:     { name: "Étable",             cost: 6,  stars: 1, max: 1, text: "Enclos de 2 à 6 bêtes." },
+  grenier:    { name: "Grenier",            cost: 7,  stars: 1, max: 1, text: "Silo de 6 à 14 denrées." },
+  clocher:    { name: "Clocher",            cost: 8,  stars: 2, max: 1, text: "L'orage ne te prend plus rien." },
+  moulin:     { name: "Moulin",             cost: 9,  stars: 2, max: 1, text: "Ton blé se vend 2 pièces de plus." },
+  laiterie:   { name: "Laiterie",           cost: 9,  stars: 2, max: 1, text: "Ton lait se vend 3 pièces de plus." },
+  serre:      { name: "Serre",              cost: 10, stars: 2, max: 1, text: "Le gel t'épargne, et tes semis démarrent avec 1 croissance." },
+  comptoir:   { name: "Comptoir d'export",  cost: 10, stars: 2, max: 1, text: "Chaque contrat d'export te rapporte 1 étoile de plus." },
+  halle:      { name: "Halle du marché",    cost: 12, stars: 3, max: 1, text: "+2 pièces à chaque aube." },
+  mairie:     { name: "Mairie",             cost: 20, stars: 6, max: 1, text: "Le cœur du village. Beaucoup de renommée." },
+};
+
+const PATRONS = {
+  ondine: { name: "Ondine",  title: "esprit de la pluie",  passive: "Ta ferme ignore la sécheresse.", power: "Ondée : +2 croissance à toutes tes cultures.", color: "#3a8bd0" },
+  pecune: { name: "Pécune",  title: "esprit du marché",    passive: "+1 pièce par vente au marché.", power: "Coup de bourse : +3 ou -3 au prix d'une denrée.", color: "#d79b16" },
+  faune:  { name: "Faune",   title: "esprit des bêtes",    passive: "Tu commences avec une poule. Les bêtes te coûtent 1 pièce de moins.", power: "Abondance : chaque bête produit une fois de plus.", color: "#b0612d" },
+  tellur: { name: "Tellur",  title: "esprit de la terre",  passive: "Tu commences avec 9 parcelles au lieu de 6.", power: "Germination : une culture devient mûre.", color: "#6b8f2a" },
+  zephyr: { name: "Zéphyr",  title: "esprit du vent",      passive: "Les corbeaux ne t'atteignent pas. Un Café serré en plus au départ.", power: "Girouette : tu choisis la météo de la prochaine aube.", color: "#7b6bc4" },
+};
+const PATRON_KEYS = Object.keys(PATRONS);
+
+const CONTRACTS = [
+  { id: "auberge",   name: "Auberge du Col",           req: { navet: 3, oeuf: 2 },              gold: 12, stars: 1 },
+  { id: "boulange",  name: "Boulangerie de Port-Sable", req: { ble: 4 },                       gold: 14, stars: 1 },
+  { id: "cantine",   name: "Cantine de l'école",       req: { carotte: 2, navet: 2, lait: 1 },  gold: 16, stars: 2 },
+  { id: "navire",    name: "Navire pour Brumehavre",   req: { laine: 2, citrouille: 2 },       gold: 32, stars: 3 },
+  { id: "fete",      name: "Fête des courges",         req: { citrouille: 3 },                 gold: 30, stars: 3 },
+  { id: "fromager",  name: "Fromager du Val",          req: { lait: 3 },                       gold: 17, stars: 2 },
+  { id: "sud",       name: "Marchand du Sud",          req: { tomate: 3, carotte: 2 },         gold: 28, stars: 2 },
+  { id: "tisse",     name: "Tisserande des Monts",     req: { laine: 3 },                      gold: 24, stars: 2 },
+  { id: "patisse",   name: "Pâtissier royal",          req: { oeuf: 3, ble: 2, lait: 1 },      gold: 22, stars: 2 },
+  { id: "soupe",     name: "Soupe du village",         req: { navet: 2, carotte: 2, citrouille: 1 }, gold: 20, stars: 2 },
+  { id: "caravane",  name: "Caravane des sables",      req: { tomate: 2, ble: 2, oeuf: 2 },   gold: 24, stars: 2 },
+  { id: "brasserie", name: "Brasserie du Pont",        req: { ble: 5 },                        gold: 19, stars: 2 },
+];
+
+const DAYS = 12;
+const HAND = 5;
+const ENERGY = 3;
+const BUYS = 2;
+
+/* =====================================================================
+   HASARD (déterministe, rangé dans l'état partagé)
+   ===================================================================== */
+function rand(S) {
+  S.seed = (S.seed + 0x6D2B79F5) | 0;
+  let t = S.seed;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+}
+const d6 = (S) => 1 + Math.floor(rand(S) * 6);
+function shuffle(S, a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand(S) * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+/* =====================================================================
+   MOTEUR DE RÈGLES (agit sur l'état S, partagé par tous les joueurs)
+   ===================================================================== */
+const season = (S) => Math.min(2, Math.floor((S.day - 1) / 4));
+const cur = (S) => S.order[S.turnPos];
+const P = (S, i) => S.players[i];
+const has = (p, b) => (p.buildings[b] || 0) > 0;
+const siloCap = (p) => has(p, "grenier") ? 14 : 6;
+const siloCount = (p) => GOOD_KEYS.reduce((n, g) => n + (p.silo[g] || 0), 0);
+const penCap = (p) => has(p, "etable") ? 6 : 2;
+const animalCount = (p) => Object.keys(ANIMALS).reduce((n, a) => n + (p.animals[a] || 0), 0);
+const farmName = (p) => p.farm || "Ferme sans nom";
+
+function log(S, txt, target = -1) {
+  S.logSeq = (S.logSeq || 0) + 1;
+  S.log.push({ id: S.logSeq, txt, tgt: target, day: S.day });
+  if (S.log.length > 60) S.log.splice(0, S.log.length - 60);
+}
+
+function addGood(p, g, n = 1) {
+  const room = siloCap(p) - siloCount(p);
+  const k = Math.max(0, Math.min(room, n));
+  p.silo[g] = (p.silo[g] || 0) + k;
+  return k;
+}
+
+function draw(S, p, n) {
+  for (let i = 0; i < n; i++) {
+    if (!p.deck.length) {
+      if (!p.discard.length) return;
+      p.deck = shuffle(S, p.discard);
+      p.discard = [];
+    }
+    p.hand.push(p.deck.pop());
+  }
+}
+
+function newGame(seats, seed) {
+  const S = {
+    v: 1, status: "playing", seed: seed | 0, day: 1, startPlayer: 0, turnPos: 0, order: [],
+    phase: "jour", energy: ENERGY, buys: BUYS, players: [], market: {}, marketPrev: {}, soldToday: {},
+    shopPile: [], shop: [], contractsPile: [], contracts: [], log: [], logSeq: 0, nextWeather: null, dawn: null, rev: 1,
+  };
+  GOOD_KEYS.forEach((g) => { S.market[g] = GOODS[g].base; S.marketPrev[g] = GOODS[g].base; S.soldToday[g] = 0; });
+  S.shopPile = shuffle(S, SHOP_POOL.concat(SHOP_POOL));
+  S.shop = S.shopPile.splice(0, 5);
+  S.contractsPile = shuffle(S, CONTRACTS.map((c) => c.id));
+  S.contracts = S.contractsPile.splice(0, 3);
+  seats.forEach((seat, i) => {
+    const deck = START_DECK.slice();
+    if (seat.patron === "zephyr") deck.push("cafe");
+    const p = {
+      uid: seat.uid, farm: seat.farm, patron: seat.patron || PATRON_KEYS[i % PATRON_KEYS.length],
+      gold: 5, stars: 0, deck: shuffle(S, deck), hand: [], discard: [], played: [], trashed: 0,
+      plots: [], silo: {}, animals: { poule: 0, mouton: 0, vache: 0 }, buildings: {}, stall: [],
+      contractStars: 0, shield: false, marcheNoir: false, powerUsed: false,
+    };
+    const nPlots = p.patron === "tellur" ? 9 : 6;
+    for (let k = 0; k < nPlots; k++) p.plots.push({ crop: null, g: 0 });
+    GOOD_KEYS.forEach((g) => (p.silo[g] = 0));
+    if (p.patron === "faune") p.animals.poule = 1;
+    draw(S, p, HAND);
+    S.players.push(p);
+  });
+  S.order = S.players.map((_, i) => i);
+  log(S, "La partie commence. Bonne saison !");
+  dawn(S, true);
+  return S;
+}
+
+function pricedGoods(d) { return DIE_GOODS[d]; }
+function clampPrice(g, v) { return Math.max(1, Math.min(GOODS[g].base * 2 + 4, v)); }
+
+/** L'aube : météo, pousse, bêtes, prix. Appelée au début de chaque journée. */
+function dawn(S, first = false) {
+  const s = season(S);
+  const rep = { day: S.day, season: s, msg: [], per: {} };
+  // météo
+  let wd = d6(S);
+  let w = SEASON_WEATHER[s][wd - 1];
+  if (S.nextWeather && SEASON_WEATHER[s].includes(S.nextWeather)) { w = S.nextWeather; rep.msg.push("Zéphyr a choisi le temps du jour."); }
+  else if (S.nextWeather) { rep.msg.push("La girouette de Zéphyr n'a pas tenu face à la nouvelle saison."); }
+  S.nextWeather = null;
+  if (first && WEATHER[w].bad) { w = "soleil"; wd = 3; }
+  S.weather = w;
+  rep.weather = w; rep.wd = wd;
+  if (w === "brouillard") { S.shopPile = shuffle(S, S.shopPile.concat(S.shop)); S.shop = S.shopPile.splice(0, 5); }
+
+  // prix : retour vers la normale, puis les deux dés
+  GOOD_KEYS.forEach((g) => { S.marketPrev[g] = S.market[g]; S.soldToday[g] = 0; });
+  let base = (g) => GOODS[g].base + (s === 2 && g === "citrouille" ? 4 : 0) + (s === 0 && g === "navet" ? 1 : 0);
+  GOOD_KEYS.forEach((g) => { const b = base(g); if (S.market[g] > b) S.market[g]--; else if (S.market[g] < b) S.market[g]++; });
+  const dA = d6(S), dB = d6(S);
+  rep.dA = dA; rep.dB = dB;
+  if (dA === dB) {
+    GOOD_KEYS.forEach((g) => (S.market[g] = clampPrice(g, S.market[g] + 2)));
+    rep.msg.push("Double ! Jour de foire : tous les prix montent de 2.");
+  } else {
+    pricedGoods(dA).forEach((g) => (S.market[g] = clampPrice(g, S.market[g] + 3)));
+    pricedGoods(dB).forEach((g) => (S.market[g] = clampPrice(g, S.market[g] - 2)));
+    rep.msg.push("Forte demande : " + pricedGoods(dA).map((g) => GOODS[g].name).join(", ") + " (+3).");
+    rep.msg.push("Surplus : " + pricedGoods(dB).map((g) => GOODS[g].name).join(", ") + " (-2).");
+  }
+
+  // fermes
+  if (!first) {
+    const seasonStart = (S.day - 1) % 4 === 0;
+    S.players.forEach((p, i) => {
+      const out = [];
+      if (seasonStart) p.powerUsed = false;
+      let grow = WEATHER[w].grow;
+      const shielded = p.shield && WEATHER[w].bad;
+      if (shielded) { grow = 1; out.push("Ta bâche t'a protégé du mauvais temps."); p.shield = false; }
+      if (!shielded && w === "secheresse" && (has(p, "puits") || p.patron === "ondine")) { grow = 1; out.push("Ton puits a sauvé tes cultures de la sécheresse."); }
+      if (!shielded && w === "gel" && has(p, "serre")) { grow = 1; out.push("Ta serre a gardé tes cultures au chaud."); }
+      if (!shielded && w === "gel" && !has(p, "serre")) {
+        const young = p.plots.map((pl, k) => [pl, k]).filter(([pl]) => pl.crop && pl.g < CROPS[pl.crop].days);
+        if (young.length) { const [pl] = young[Math.floor(rand(S) * young.length)]; out.push("Le gel a tué une jeune pousse de " + CROPS[pl.crop].name.toLowerCase() + "."); pl.crop = null; pl.g = 0; }
+      }
+      if (!shielded && w === "orage" && !has(p, "clocher")) {
+        const ripe = p.plots.filter((pl) => pl.crop && pl.g >= CROPS[pl.crop].days);
+        if (ripe.length) { const pl = ripe[Math.floor(rand(S) * ripe.length)]; out.push("L'orage a couché ta " + CROPS[pl.crop].name.toLowerCase() + " mûre."); pl.crop = null; pl.g = 0; }
+      }
+      p.plots.forEach((pl) => { if (pl.crop) pl.g = Math.min(CROPS[pl.crop].days, pl.g + grow); });
+      if (w === "arc") { p.gold += 2; out.push("+2 pièces grâce à l'arc-en-ciel."); }
+      if (has(p, "halle")) { p.gold += 2; out.push("La halle te rapporte 2 pièces."); }
+      // bêtes
+      let made = {};
+      Object.keys(ANIMALS).forEach((a) => {
+        const n = p.animals[a] || 0;
+        if (!n || S.day % ANIMALS[a].every !== 0) return;
+        const k = addGood(p, ANIMALS[a].makes, n);
+        if (k) made[ANIMALS[a].makes] = k;
+        if (k < n) out.push("Ton silo est plein : une partie de la production est perdue.");
+      });
+      const mk = Object.keys(made);
+      if (mk.length) out.push("Tes bêtes ont produit : " + mk.map((g) => made[g] + " " + GOODS[g].name.toLowerCase()).join(", ") + ".");
+      rep.per[i] = out;
+    });
+  }
+  S.dawn = rep;
+  log(S, "Aube du jour " + S.day + " : " + WEATHER[w].name + ".");
+}
+
+function startTurn(S) {
+  S.phase = "jour";
+  S.energy = ENERGY;
+  S.buys = BUYS;
+}
+
+function endTurn(S) {
+  const pi = cur(S), p = P(S, pi);
+  p.discard.push(...p.hand, ...p.played);
+  p.hand = []; p.played = [];
+  p.marcheNoir = false;
+  draw(S, p, HAND);
+  S.turnPos++;
+  if (S.turnPos >= S.order.length) {
+    if (S.day >= DAYS) { S.status = "ended"; log(S, "L'hiver arrive. Fin de la partie."); return; }
+    S.day++;
+    S.startPlayer = (S.startPlayer + 1) % S.players.length;
+    S.order = S.players.map((_, i) => (S.startPlayer + i) % S.players.length);
+    S.turnPos = 0;
+    dawn(S);
+  }
+  startTurn(S);
+}
+
+/* --- actions du jour --- */
+function harvest(S, pi, k) {
+  const p = P(S, pi), pl = p.plots[k];
+  if (!pl || !pl.crop) return "Rien à récolter ici.";
+  if (pl.g < CROPS[pl.crop].days) return "Cette culture n'est pas encore mûre.";
+  if (siloCount(p) >= siloCap(p)) return "Ton silo est plein. Vends ce soir, ou construis un grenier.";
+  addGood(p, pl.crop, 1);
+  pl.crop = null; pl.g = 0;
+  return null;
+}
+
+function canPlay(S, pi, idx) {
+  const p = P(S, pi), id = p.hand[idx], c = CARDS[id];
+  if (!c) return "Carte inconnue.";
+  if (c.unplayable) return "Le chiendent ne se joue pas. Le Compost peut l'écarter.";
+  if (S.phase !== "jour") return "Les cartes se jouent pendant le jour.";
+  if (S.energy < c.en) return "Pas assez d'énergie.";
+  if (c.type === "graine" && !p.plots.some((pl) => !pl.crop)) return "Aucune parcelle libre.";
+  if (c.target && c.target.kind === "growing" && !p.plots.some((pl) => pl.crop && pl.g < CROPS[pl.crop].days)) return "Aucune culture en train de pousser.";
+  if (c.target && c.target.kind === "hand" && p.hand.length < 2) return "Rien d'autre à écarter dans ta main.";
+  if (id === "foire" && animalCount(p) >= penCap(p)) return "Ton enclos est plein.";
+  return null;
+}
+
+/** Joue la carte n° idx de la main. `t` = cibles choisies (parcelles, carte, denrée, adversaire). */
+function playCard(S, pi, idx, t = {}) {
+  const err = canPlay(S, pi, idx);
+  if (err) return err;
+  const p = P(S, pi), id = p.hand[idx], c = CARDS[id];
+  const opp = S.players.map((_, i) => i).filter((i) => i !== pi);
+  let msg = null;
+  switch (id) {
+    case "bourse": p.gold += 2; break;
+    case "basdelaine": p.gold += 4; break;
+    case "cafe": S.energy += 2; break;
+    case "bache": p.shield = true; break;
+    case "marchenoir": p.marcheNoir = true; break;
+    case "charrette": break; // pioche après avoir posé la carte
+    case "chance": {
+      const r = d6(S);
+      if (r >= 3 && r <= 4) p.gold += 2;
+      if (r === 6) p.gold += 5;
+      msg = "Dé de la chance : " + r + (r <= 2 ? ". Rien cette fois." : r <= 4 ? ". +2 pièces." : r === 5 ? ". +1 énergie et une carte." : ". Jackpot, +5 pièces !");
+      if (r === 5) S.energy += 1;
+      t.drawAfter = r === 5 ? 1 : 0;
+      break;
+    }
+    case "foire": p.animals.poule++; break;
+    case "moisson": {
+      let n = 0;
+      p.plots.forEach((pl) => { if (pl.crop && pl.g >= CROPS[pl.crop].days && siloCount(p) < siloCap(p)) { addGood(p, pl.crop, 1); pl.crop = null; pl.g = 0; n++; } });
+      p.plots.forEach((pl) => { if (pl.crop) pl.g = Math.min(CROPS[pl.crop].days, pl.g + 1); });
+      msg = "Grande moisson : " + n + " récolte" + (n > 1 ? "s" : "") + ".";
+      break;
+    }
+    case "arrosoir": case "engrais": {
+      const plots = (t.plots || []).filter((k) => p.plots[k] && p.plots[k].crop && p.plots[k].g < CROPS[p.plots[k].crop].days);
+      if (!plots.length) return "Choisis une culture qui pousse.";
+      plots.slice(0, c.target.n).forEach((k) => { const pl = p.plots[k]; pl.g = id === "engrais" ? CROPS[pl.crop].days : Math.min(CROPS[pl.crop].days, pl.g + 1); });
+      break;
+    }
+    case "compost": {
+      const h = t.hand;
+      if (h === undefined || h === idx || !p.hand[h]) return "Choisis la carte à écarter.";
+      const gone = p.hand[h];
+      p.trashed++;
+      msg = CARDS[gone].name + " part au compost.";
+      p.hand.splice(h, 1);
+      if (h < idx) idx--;
+      break;
+    }
+    case "speculation": case "rumeur": {
+      if (!GOODS[t.good]) return "Choisis une denrée.";
+      S.market[t.good] = clampPrice(t.good, S.market[t.good] + (id === "speculation" ? 3 : -3));
+      log(S, farmName(p) + (id === "speculation" ? " fait grimper " : " fait chuter ") + "le prix : " + GOODS[t.good].name + " à " + S.market[t.good] + ".");
+      break;
+    }
+    case "corbeaux": {
+      opp.forEach((o) => {
+        const q = P(S, o);
+        if (has(q, "epouvantail") || q.patron === "zephyr") { log(S, "Les corbeaux de " + farmName(p) + " fuient devant " + farmName(q) + ".", o); return; }
+        const young = q.plots.filter((pl) => pl.crop && pl.g < CROPS[pl.crop].days).sort((a, b) => b.g - a.g);
+        if (young.length) { const pl = young[0]; log(S, "Les corbeaux de " + farmName(p) + " ont mangé une jeune pousse de " + CROPS[pl.crop].name.toLowerCase() + " chez " + farmName(q) + ".", o); pl.crop = null; pl.g = 0; }
+      });
+      break;
+    }
+    case "zizanie": opp.forEach((o) => { P(S, o).discard.push("chiendent"); log(S, farmName(p) + " sème du chiendent chez " + farmName(P(S, o)) + ".", o); }); break;
+    case "percepteur": opp.forEach((o) => { const q = P(S, o), k = Math.min(2, q.gold); q.gold -= k; p.gold += k; log(S, "Le percepteur de " + farmName(p) + " prend " + k + " pièce" + (k > 1 ? "s" : "") + " à " + farmName(q) + ".", o); }); break;
+    case "renard": {
+      const o = t.opponent, q = P(S, o);
+      if (!q || o === pi) return "Choisis une ferme.";
+      if (has(q, "chien")) { log(S, "Le chien de " + farmName(q) + " a chassé le renard de " + farmName(p) + ".", o); break; }
+      const loot = ["lait", "laine", "oeuf"].find((g) => q.silo[g] > 0);
+      if (!loot) { log(S, "Le renard de " + farmName(p) + " repart bredouille de chez " + farmName(q) + ".", o); break; }
+      q.silo[loot]--; addGood(p, loot, 1);
+      log(S, "Le renard de " + farmName(p) + " a volé un " + GOODS[loot].name.toLowerCase() + " à " + farmName(q) + ".", o);
+      break;
+    }
+    default: {
+      if (c.type === "graine") {
+        const free = (t.plots || []).filter((k) => p.plots[k] && !p.plots[k].crop);
+        if (!free.length) return "Choisis une parcelle libre.";
+        free.slice(0, c.plant).forEach((k) => { p.plots[k].crop = c.crop; p.plots[k].g = has(p, "serre") ? 1 : 0; });
+      }
+    }
+  }
+  S.energy -= c.en;
+  p.hand.splice(idx, 1);
+  p.played.push(id);
+  if (id === "charrette") draw(S, p, 2);
+  if (t.drawAfter) draw(S, p, t.drawAfter);
+  return msg ? { msg } : null;
+}
+
+function usePower(S, pi, arg = {}) {
+  const p = P(S, pi);
+  if (p.powerUsed) return "Pouvoir déjà utilisé cette saison.";
+  if (S.phase !== "jour") return "Les pouvoirs s'utilisent pendant le jour.";
+  switch (p.patron) {
+    case "ondine": p.plots.forEach((pl) => { if (pl.crop) pl.g = Math.min(CROPS[pl.crop].days, pl.g + 2); }); log(S, "Ondine fait pleuvoir sur " + farmName(p) + "."); break;
+    case "pecune":
+      if (!GOODS[arg.good]) return "Choisis une denrée.";
+      S.market[arg.good] = clampPrice(arg.good, S.market[arg.good] + (arg.up ? 3 : -3));
+      log(S, "Pécune manipule le marché : " + GOODS[arg.good].name + " à " + S.market[arg.good] + ".");
+      break;
+    case "faune": {
+      Object.keys(ANIMALS).forEach((a) => addGood(p, ANIMALS[a].makes, p.animals[a] || 0));
+      log(S, "Faune bénit les bêtes de " + farmName(p) + ".");
+      break;
+    }
+    case "tellur": {
+      const k = arg.plot, pl = p.plots[k];
+      if (!pl || !pl.crop || pl.g >= CROPS[pl.crop].days) return "Choisis une culture qui pousse.";
+      pl.g = CROPS[pl.crop].days;
+      log(S, "Tellur fait mûrir une culture chez " + farmName(p) + ".");
+      break;
+    }
+    case "zephyr": {
+      const s = Math.min(2, Math.floor(S.day / 4));
+      if (!WEATHER[arg.weather]) return "Choisis un temps.";
+      S.nextWeather = arg.weather;
+      log(S, "Zéphyr tourne la girouette : demain, " + WEATHER[arg.weather].name.toLowerCase() + ".");
+      break;
+    }
+  }
+  p.powerUsed = true;
+  return null;
+}
+
+/* --- actions du soir --- */
+function eveningOnly(S) { return S.phase === "soir" ? null : "Le marché ouvre le soir. Clique sur « Passer au soir »."; }
+
+function salePrice(S, p, g) {
+  let price = S.market[g];
+  if (g === "ble" && has(p, "moulin")) price += 2;
+  if (g === "lait" && has(p, "laiterie")) price += 3;
+  return price;
+}
+
+function sell(S, pi, g, n) {
+  const e = eveningOnly(S); if (e) return e;
+  const p = P(S, pi);
+  n = Math.floor(n);
+  if (!(n > 0) || (p.silo[g] || 0) < n) return "Tu n'as pas assez de " + GOODS[g].name.toLowerCase() + ".";
+  let gain = n * salePrice(S, p, g);
+  if (p.marcheNoir) { gain *= 2; p.marcheNoir = false; }
+  if (p.patron === "pecune") gain += 1;
+  p.silo[g] -= n;
+  p.gold += gain;
+  const before = S.soldToday[g];
+  S.soldToday[g] += n;
+  const drop = Math.floor(S.soldToday[g] / 2) - Math.floor(before / 2);
+  S.market[g] = clampPrice(g, S.market[g] - drop);
+  log(S, farmName(p) + " vend " + n + " " + GOODS[g].name.toLowerCase() + " pour " + gain + " pièces.");
+  return null;
+}
+
+function buyCard(S, pi, src, idx) {
+  const e = eveningOnly(S); if (e) return e;
+  if (S.buys <= 0) return "Plus d'achat ce soir.";
+  const p = P(S, pi);
+  const id = src === "seed" ? SEED_SHOP[idx] : S.shop[idx];
+  if (!id) return "Carte introuvable.";
+  const c = CARDS[id];
+  if (p.gold < c.cost) return "Pas assez de pièces.";
+  p.gold -= c.cost;
+  p.discard.push(id);
+  S.buys--;
+  if (src === "shop") { S.shop.splice(idx, 1); if (S.shopPile.length) S.shop.push(S.shopPile.shift()); }
+  log(S, farmName(p) + " achète « " + c.name + " ».");
+  return null;
+}
+
+function animalPrice(p, a) { return Math.max(1, ANIMALS[a].price - (p.patron === "faune" ? 1 : 0)); }
+
+function buyAnimal(S, pi, a) {
+  const e = eveningOnly(S); if (e) return e;
+  if (S.buys <= 0) return "Plus d'achat ce soir.";
+  const p = P(S, pi), cost = animalPrice(p, a);
+  if (animalCount(p) >= penCap(p)) return "Ton enclos est plein. Construis une étable.";
+  if (p.gold < cost) return "Pas assez de pièces.";
+  p.gold -= cost; p.animals[a]++; S.buys--;
+  log(S, farmName(p) + " ramène un" + (a === "poule" || a === "vache" ? "e " : " ") + ANIMALS[a].name.toLowerCase() + " de la foire.");
+  return null;
+}
+
+function sellAnimal(S, pi, a) {
+  const e = eveningOnly(S); if (e) return e;
+  const p = P(S, pi);
+  if (!p.animals[a]) return "Tu n'en as pas.";
+  const gain = Math.floor(ANIMALS[a].price / 2);
+  p.animals[a]--; p.gold += gain;
+  log(S, farmName(p) + " vend un" + (a === "poule" || a === "vache" ? "e " : " ") + ANIMALS[a].name.toLowerCase() + " à la foire pour " + gain + " pièces.");
+  return null;
+}
+
+function buyBuilding(S, pi, b) {
+  const e = eveningOnly(S); if (e) return e;
+  if (S.buys <= 0) return "Plus d'achat ce soir.";
+  const p = P(S, pi), B = BUILDINGS[b];
+  if ((p.buildings[b] || 0) >= B.max) return "Déjà construit.";
+  if (p.gold < B.cost) return "Pas assez de pièces.";
+  p.gold -= B.cost; p.buildings[b] = (p.buildings[b] || 0) + 1; S.buys--;
+  if (b === "champ") for (let k = 0; k < 3; k++) p.plots.push({ crop: null, g: 0 });
+  log(S, farmName(p) + " construit : " + B.name + ".");
+  return null;
+}
+
+function fulfill(S, pi, cid) {
+  const e = eveningOnly(S); if (e) return e;
+  const p = P(S, pi), c = CONTRACTS.find((x) => x.id === cid);
+  if (!c || !S.contracts.includes(cid)) return "Contrat introuvable.";
+  for (const g in c.req) if ((p.silo[g] || 0) < c.req[g]) return "Il te manque des denrées pour ce contrat.";
+  for (const g in c.req) p.silo[g] -= c.req[g];
+  const st = c.stars + (has(p, "comptoir") ? 1 : 0);
+  p.gold += c.gold; p.contractStars += st;
+  S.contracts = S.contracts.filter((x) => x !== cid);
+  if (S.contractsPile.length) S.contracts.push(S.contractsPile.shift());
+  log(S, farmName(p) + " honore le contrat « " + c.name + " » : +" + c.gold + " pièces, +" + st + " étoile" + (st > 1 ? "s" : "") + ".");
+  return null;
+}
+
+function stallAdd(S, pi, kind, key, qty, price) {
+  const e = eveningOnly(S); if (e) return e;
+  const p = P(S, pi);
+  qty = Math.floor(qty); price = Math.floor(price);
+  if (p.stall.length >= 3) return "Ton échoppe est pleine (3 lots).";
+  if (!(qty > 0) || !(price > 0)) return "Quantité et prix doivent être positifs.";
+  if (kind === "good") { if ((p.silo[key] || 0) < qty) return "Pas assez en stock."; p.silo[key] -= qty; }
+  else { if ((p.animals[key] || 0) < qty) return "Pas assez de bêtes."; p.animals[key] -= qty; }
+  S.lotSeq = (S.lotSeq || 0) + 1;
+  p.stall.push({ id: S.lotSeq, kind, key, qty, price });
+  log(S, farmName(p) + " met en vente " + qty + " " + (kind === "good" ? GOODS[key].name.toLowerCase() : ANIMALS[key].name.toLowerCase()) + " à " + price + " pièces l'unité.");
+  return null;
+}
+
+function stallRemove(S, pi, lotId) {
+  const p = P(S, pi), i = p.stall.findIndex((l) => l.id === lotId);
+  if (i < 0) return "Lot introuvable.";
+  const l = p.stall[i];
+  if (l.kind === "good") { if (siloCount(p) + l.qty > siloCap(p)) return "Pas la place dans ton silo pour reprendre ce lot."; p.silo[l.key] += l.qty; }
+  else { if (animalCount(p) + l.qty > penCap(p)) return "Pas la place dans ton enclos."; p.animals[l.key] += l.qty; }
+  p.stall.splice(i, 1);
+  return null;
+}
+
+function stallBuy(S, pi, oi, lotId) {
+  const p = P(S, pi), q = P(S, oi);
+  if (!q || oi === pi) return "Échoppe introuvable.";
+  const i = q.stall.findIndex((l) => l.id === lotId);
+  if (i < 0) return "Ce lot vient d'être vendu.";
+  const l = q.stall[i], cost = l.qty * l.price;
+  if (p.gold < cost) return "Pas assez de pièces.";
+  if (l.kind === "good" && siloCount(p) + l.qty > siloCap(p)) return "Pas la place dans ton silo.";
+  if (l.kind === "animal" && animalCount(p) + l.qty > penCap(p)) return "Pas la place dans ton enclos.";
+  p.gold -= cost; q.gold += cost;
+  if (l.kind === "good") p.silo[l.key] += l.qty; else p.animals[l.key] += l.qty;
+  q.stall.splice(i, 1);
+  log(S, farmName(p) + " achète " + l.qty + " " + (l.kind === "good" ? GOODS[l.key].name.toLowerCase() : ANIMALS[l.key].name.toLowerCase()) + " à l'échoppe de " + farmName(q) + " (" + cost + " pièces).", oi);
+  return null;
+}
+
+function score(p) {
+  const build = Object.keys(p.buildings).reduce((n, b) => n + BUILDINGS[b].stars * p.buildings[b], 0);
+  const goldStars = Math.floor(p.gold / 6);
+  const beasts = Math.floor(animalCount(p) / 2);
+  return { build, contracts: p.contractStars, gold: goldStars, beasts, total: build + p.contractStars + goldStars + beasts };
+}
+
+/* =====================================================================
+   PIXEL ART (sprites écrits en texte, un caractère = un pixel)
+   ===================================================================== */
+const PAL = {
+  k: "#2b1d14", g: "#5aa83c", G: "#3d7a2a", l: "#8fd45a", y: "#f2c94c", Y: "#c9962a",
+  o: "#f08a2c", O: "#c25e14", r: "#e04b3a", R: "#a8302a", w: "#fbf6ea", W: "#d6cdb8",
+  p: "#9b59b6", P: "#6e3b8a", b: "#8b5a2b", B: "#5e3a1a", n: "#b07a42", c: "#6fb7e8", C: "#3a7cc0",
+  x: "#4a4a55", s: "#9aa0a8", m: "#f5a3b5", e: "#1b1b22", t: "#d9a066", u: "#ffffff", v: "#e7d26a",
+};
+const SPR = {
+  seed: ["............", "............", "............", "............", "............", "............", "....B..B....", "...BnB.Bn...", "............", "............", "............", "............"],
+  sprout: ["............", "............", "............", "............", "............", ".....l.l....", "......g.....", "......g.....", "......G.....", "............", "............", "............"],
+  grow: ["............", "............", "............", "....l...l...", "....gl.lg...", ".....ggg....", "...lg.g.gl..", "....g.g.g...", "......G.....", "......G.....", "............", "............"],
+  navet: ["....g..g....", ".....gg.....", "....lggl....", ".....gg.....", "....wwww....", "...wwwwww...", "...wpppww...", "...ppppww...", "....pppw....", ".....pw.....", "......w.....", "............"],
+  ble: ["..y...y...y.", ".yYy.yYy.yYy", "..y...y...y.", ".yYy.yYy.yYy", "..y...y...y.", "..Y...Y...Y.", "..g...g...g.", "..g...g...g.", "..G...G...G.", "............", "............", "............"],
+  carotte: ["...g.g.g....", "....ggg.....", "...lgggl....", "....ggg.....", "...ooooo....", "...oOooo....", "....oooO....", "....ooo.....", ".....oO.....", ".....o......", "............", "............"],
+  tomate: [".....g......", "....ggg.....", "..rrgggrr...", ".rRrrggrRr..", ".rrrrgg.rr..", "...gggggg...", "..rrgg.gg...", ".rRrr.g.....", ".rrr..g.....", "......g.....", "............", "............"],
+  citrouille: [".....Gg.....", "......G.....", "...oooooo...", "..ooOooOoo..", ".oooOooOooo.", ".oooOooOooo.", ".oooOooOooo.", "..ooOooOoo..", "...oooooo...", "............", "............", "............"],
+  oeuf: ["............", "....ww......", "...wwww.....", "..wwwwww....", "..wwwwwW....", "..wwwwwW....", "...wwWW.....", "............"],
+  lait: ["...ss...", "...ww...", "..wwww..", "..wccw..", "..wccw..", "..wwww..", "..WWWW..", "........"],
+  laine: ["..wwww..", ".wWwwWw.", "wwwWwwww", "wWwwwWww", "wwwwWwwW", ".wWwwww.", "..wwww..", "........"],
+  coin: ["..yyyy..", ".yvvvvy.", "yvyYYyvy", "yvYyyYvy", "yvYyyYvy", "yvyYYyvy", ".yvvvvy.", "..yyyy.."],
+  star: ["....y....", "....y....", "...yvy...", "yyyvvvyyy", ".yvvvvvy.", "..yvvvy..", ".yvy.yvy.", ".yy...yy.", "........."],
+  bolt: ["....yy", "...yy.", "..yy..", ".yyyy.", "...yy.", "..yy..", ".yy...", "yy...."],
+  poule: ["....r.....", "...rww....", "...wwky...", "...wwwyy..", ".wwwwww...", "wwwwwwww..", ".wwwwWww..", "..wWWWw...", "...y..y..."],
+  vache: ["..........ww..", "..........wkw.", ".wwkkwwwwwwwwm", "wwwkkwwwwkkww.", "wwwwwwwwkkkww.", ".wwwwwwwwwww..", ".w.w.....w.w..", ".k.k.....k.k.."],
+  mouton: ["..........kk.", ".wwwwwwww.kek", "wwwwwwwwwwkk.", "wWwwwWwwwwk..", "wwwwwwwwww...", ".wwwWwwww....", "..k.k..k.k..."],
+  sun: ["............", ".....y......", "..y..y..y...", "...yyyyy....", "..yyvvvyy...", "yyyvvvvvyyy.", "..yyvvvyy...", "...yyyyy....", "..y..y..y...", ".....y......", "............"],
+  rain: ["....WWW.....", "..WWuuuWW...", ".WuuuuuuuW..", "WWWWWWWWWWW.", "............", ".c..c..c....", "..c..c..c...", ".c..c..c....", "..c..c..c...", "............"],
+  storm: ["....xxx.....", "..xxsssxx...", ".xsssssssx..", "xxxxxxxxxxx.", ".....yy.....", "....yy......", "...yyyy.....", ".....yy.....", "....yy......", "...yy......."],
+  drought: ["............", ".....o......", "..o..o..o...", "...ooooo....", "..ooyyyoo...", "oooyyyyyooo.", "..ooyyyoo...", "...ooooo....", "..o..o..o...", "..b.bb.b.b..", ".bbbbbbbbbb."],
+  frost: [".....c......", "..c..c..c...", "...c.c.c....", "....ccc.....", "cccccucccc..", "....ccc.....", "...c.c.c....", "..c..c..c...", ".....c......", "............"],
+  rainbow: ["............", "...rrrrr....", "..roooooor..", ".royyyyyor..", "royglllgyor.", "roglCCClgor.", "rogC...Cgor.", "roC.....Cor.", "............"],
+  fog: ["............", ".WWWWWW.....", "............", "...WWWWWWWW.", "............", ".WWWWWWWW...", "............", "....WWWWWW..", "............"],
+  card: ["kkkkkkkk", "kwwwwwwk", "kwrrwwwk", "kwwwwwwk", "kwbbbbwk", "kwwwwwwk", "kwbbbwwk", "kkkkkkkk"],
+  // esprits protecteurs
+  ondine: ["....cc....", "...cCCc...", "..cCuuCc..", ".cCuuCCCc.", ".cCuCCCCc.", "cCCCCCCCCc", "cCCCCCCCCc", ".cCCCCCCc.", "..cCCCCc..", "...cccc..."],
+  pecune: ["..yyyyyy..", ".yvvvvvvy.", "yvyYYYYyvy", "yvYyyyyYvy", "yvyYYYyyvy", "yvyyyyYyvy", "yvYYYYyyvy", "yvyyYYyyvy", ".yvvvvvvy.", "..yyyyyy.."],
+  faune: ["..b....b..", ".bb....bb.", ".bnb..bnb.", "..bnnnnb..", ".bnnnnnnb.", ".bnknnknb.", ".bnnnnnnb.", "..bnmmnb..", "...bnnb...", "....bb...."],
+  tellur: ["....l.....", "...lgl....", "..lgGgl...", "....G.....", "...bbbb...", "..bnnnnb..", ".bnnbnnnb.", "bnnnnnbnnb", "bnbnnnnnnb", "bbbbbbbbbb"],
+  zephyr: ["..........", ".WWWWW....", "W.....W...", "......W...", "..WWWW....", ".W........", "W....WWWW.", "W...W....W", ".WWW.....W", "......WWW."],
+};
+const SPRITE_CACHE = {};
+function sprite(name) {
+  if (SPRITE_CACHE[name]) return SPRITE_CACHE[name];
+  const rows = SPR[name];
+  const h = rows.length, w = Math.max(...rows.map((r) => r.length));
+  const cv = document.createElement("canvas");
+  cv.width = w; cv.height = h;
+  const cx = cv.getContext("2d");
+  rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) { const ch = row[x]; if (ch !== "." && PAL[ch]) { cx.fillStyle = PAL[ch]; cx.fillRect(x, y, 1, 1); } } });
+  SPRITE_CACHE[name] = cv;
+  return cv;
+}
+const URL_CACHE = {};
+function spriteURL(name, scale = 4) {
+  const key = name + "@" + scale;
+  if (URL_CACHE[key]) return URL_CACHE[key];
+  const s = sprite(name);
+  const cv = document.createElement("canvas");
+  cv.width = s.width * scale; cv.height = s.height * scale;
+  const cx = cv.getContext("2d");
+  cx.imageSmoothingEnabled = false;
+  cx.drawImage(s, 0, 0, cv.width, cv.height);
+  URL_CACHE[key] = cv.toDataURL();
+  return URL_CACHE[key];
+}
+const WEATHER_SPRITE = { soleil: "sun", pluie: "rain", secheresse: "drought", orage: "storm", gel: "frost", arc: "rainbow", brouillard: "fog" };
+function cardArt(id) {
+  const c = CARDS[id];
+  if (c.crop) return c.crop;
+  return ({ bourse: "coin", basdelaine: "coin", chance: "coin", cafe: "bolt", arrosoir: "rain", engrais: "grow", charrette: "card", compost: "seed",
+    bache: "fog", moisson: "ble", foire: "poule", speculation: "star", marchenoir: "coin", rumeur: "storm", corbeaux: "storm", zizanie: "grow",
+    renard: "faune", percepteur: "pecune", chiendent: "grow" })[id] || "card";
+}
+
+/* --- dessin de la ferme ---------------------------------------------- */
+const FW = 320, FH = 200;
+function rect(cx, x, y, w, h, c) { cx.fillStyle = c; cx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h)); }
+function grass(cx, w, h, seed = 7) {
+  rect(cx, 0, 0, w, h, "#7ec850");
+  let s = seed;
+  const r = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  for (let i = 0; i < 260; i++) { const x = r() * w, y = r() * h; rect(cx, x, y, 2, 1, r() < .5 ? "#6cb444" : "#93d564"); }
+  for (let i = 0; i < 22; i++) { const x = r() * w, y = r() * h; rect(cx, x, y, 1, 1, ["#fff", "#ffd1dc", "#ffe66b"][Math.floor(r() * 3)]); }
+}
+function house(cx, x, y, w, h, wall, roof, opts = {}) {
+  rect(cx, x + 2, y + h, w - 2, 2, "rgba(0,0,0,.18)");
+  rect(cx, x, y + h * 0.4, w, h * 0.6, wall);
+  rect(cx, x, y + h * 0.4, w, 1, "rgba(0,0,0,.18)");
+  for (let i = 0; i < h * 0.45; i++) rect(cx, x - 1 + i * 0.6, y + h * 0.4 - i, w + 2 - i * 1.2, 1, roof);
+  if (opts.door !== false) rect(cx, x + w / 2 - 2, y + h - 6, 4, 6, "#5e3a1a");
+  if (opts.window) { rect(cx, x + 2, y + h * 0.55, 3, 3, "#bfe6ff"); rect(cx, x + w - 5, y + h * 0.55, 3, 3, "#bfe6ff"); }
+}
+function drawBuilding(cx, b, x, y, t) {
+  switch (b) {
+    case "puits": rect(cx, x + 4, y + 10, 12, 8, "#9aa0a8"); rect(cx, x + 5, y + 10, 10, 2, "#3a7cc0"); rect(cx, x + 4, y + 2, 2, 9, "#7a4a24"); rect(cx, x + 14, y + 2, 2, 9, "#7a4a24"); rect(cx, x + 2, y, 16, 3, "#a8302a"); break;
+    case "epouvantail": rect(cx, x + 9, y + 4, 2, 16, "#7a4a24"); rect(cx, x + 3, y + 8, 14, 2, "#7a4a24"); rect(cx, x + 7, y, 6, 5, "#f2c94c"); rect(cx, x + 5, y + 2, 10, 1, "#c9962a"); rect(cx, x + 6, y + 8, 8, 6, "#3a7cc0"); break;
+    case "chien": house(cx, x + 1, y + 4, 12, 14, "#b07a42", "#a8302a", { door: false }); rect(cx, x + 5, y + 13, 4, 5, "#2b1d14"); rect(cx, x + 13, y + 14, 6, 4, "#d9a066"); rect(cx, x + 16, y + 12, 3, 3, "#d9a066"); rect(cx, x + 17, y + 13, 1, 1, "#1b1b22"); break;
+    case "etable": house(cx, x, y, 20, 20, "#c0503a", "#7a3326", { window: true }); rect(cx, x + 8, y + 13, 4, 7, "#fbf6ea"); break;
+    case "grenier": house(cx, x, y - 2, 20, 22, "#d9a066", "#8b5a2b"); rect(cx, x + 8, y + 6, 4, 3, "#5e3a1a"); break;
+    case "clocher": rect(cx, x + 6, y - 6, 8, 26, "#e8dcc4"); for (let i = 0; i < 6; i++) rect(cx, x + 6 + i * 0.7, y - 6 - i, 8 - i * 1.4, 1, "#3a7cc0"); rect(cx, x + 8, y + 1, 4, 4, "#f2c94c"); rect(cx, x + 8, y + 14, 4, 6, "#5e3a1a"); break;
+    case "moulin": {
+      house(cx, x + 3, y + 2, 14, 18, "#e8dcc4", "#8b5a2b", { door: true });
+      const a = t * 1.2, ox = x + 10, oy = y + 6;
+      for (let k = 0; k < 4; k++) { const ang = a + k * Math.PI / 2; for (let r = 2; r < 10; r++) rect(cx, ox + Math.cos(ang) * r, oy + Math.sin(ang) * r, 2, 2, "#fbf6ea"); }
+      rect(cx, ox - 1, oy - 1, 2, 2, "#5e3a1a");
+      break;
+    }
+    case "laiterie": house(cx, x, y, 20, 20, "#fbf6ea", "#3a7cc0", { window: true }); rect(cx, x + 3, y + 15, 3, 4, "#6fb7e8"); break;
+    case "serre": rect(cx, x, y + 6, 20, 14, "rgba(190,235,255,.85)"); for (let i = 0; i < 5; i++) rect(cx, x + i * 5, y + 6, 1, 14, "#e8f6ff"); rect(cx, x, y + 6, 20, 1, "#e8f6ff"); rect(cx, x + 3, y + 14, 3, 4, "#5aa83c"); rect(cx, x + 12, y + 13, 3, 5, "#5aa83c"); break;
+    case "comptoir": house(cx, x, y, 20, 20, "#d9a066", "#3d7a2a", { window: true }); rect(cx, x + 15, y - 4, 1, 10, "#5e3a1a"); rect(cx, x + 16, y - 4, 5, 3, "#e04b3a"); break;
+    case "halle": rect(cx, x - 2, y + 6, 24, 3, "#a8302a"); rect(cx, x - 2, y + 9, 24, 2, "#fbf6ea"); for (let i = 0; i < 4; i++) rect(cx, x + i * 7, y + 11, 2, 9, "#7a4a24"); rect(cx, x + 2, y + 15, 5, 3, "#f08a2c"); rect(cx, x + 11, y + 15, 5, 3, "#e04b3a"); break;
+    case "mairie": house(cx, x - 2, y - 4, 24, 24, "#efe2cc", "#4a4a55", { window: true }); rect(cx, x + 8, y - 2, 4, 4, "#fbf6ea"); rect(cx, x + 9, y - 1, 2, 2, "#2b1d14"); rect(cx, x + 9, y - 12, 1, 8, "#5e3a1a"); rect(cx, x + 10, y - 12, 4, 2, "#3a7cc0"); rect(cx, x + 10, y - 10, 4, 1, "#fbf6ea"); rect(cx, x + 10, y - 9, 4, 1, "#e04b3a"); break;
+    case "champ": break;
+  }
+}
+
+/** Dessine la ferme du joueur p. `view` porte l'état d'affichage (survol, cibles). */
+function drawFarm(cx, S, p, view, t) {
+  grass(cx, FW, FH, 11 + (S ? S.players.indexOf(p) * 31 : 0));
+  // chemin
+  rect(cx, 0, 104, FW, 10, "#d9b77a");
+  rect(cx, 0, 104, FW, 1, "#c9a468");
+  rect(cx, 0, 113, FW, 1, "#e8cc95");
+  // champ clôturé
+  const plots = p ? p.plots : [];
+  const cols = plots.length > 12 ? 4 : 3, rows = Math.max(2, Math.ceil(plots.length / cols));
+  const T = 20, fx = 14, fy = 16;
+  const fw = cols * T + 8, fh = rows * T + 8;
+  rect(cx, fx - 2, fy - 2, fw + 4, fh + 4, "#a87a4a");
+  rect(cx, fx, fy, fw, fh, "#8b5a2b");
+  view.plotRects = [];
+  plots.forEach((pl, k) => {
+    const c = k % cols, r = Math.floor(k / cols);
+    const x = fx + 4 + c * T, y = fy + 4 + r * T;
+    rect(cx, x, y, T - 2, T - 2, "#7a4a24");
+    rect(cx, x + 1, y + 1, T - 4, T - 4, "#9c6634");
+    for (let i = 0; i < 3; i++) rect(cx, x + 2, y + 4 + i * 5, T - 6, 1, "#7a4a24");
+    view.plotRects.push({ k, x, y, w: T - 2, h: T - 2 });
+    if (pl.crop) {
+      const days = CROPS[pl.crop].days;
+      const ripe = pl.g >= days;
+      const name = ripe ? pl.crop : pl.g === 0 ? "seed" : pl.g / days < 0.5 ? "sprout" : "grow";
+      const bob = ripe ? Math.round(Math.sin(t * 3 + k) * 0.6) : 0;
+      cx.drawImage(sprite(name), x + 3, y + 2 + bob);
+      if (ripe) { if (Math.floor(t * 2 + k) % 3 === 0) rect(cx, x + T - 6, y + 1, 2, 2, "#fff6b0"); }
+      else { for (let i = 0; i < days; i++) rect(cx, x + 2 + i * 4, y + T - 5, 3, 2, i < pl.g ? "#8fd45a" : "#5e3a1a"); }
+    }
+    const hl = view.highlight && view.highlight(k, pl);
+    if (hl) { cx.strokeStyle = hl; cx.lineWidth = 1; cx.strokeRect(x - 0.5, y - 0.5, T - 1, T - 1); }
+    if (view.hover === k) { cx.strokeStyle = "#fff6b0"; cx.lineWidth = 1; cx.strokeRect(x + 0.5, y + 0.5, T - 3, T - 3); }
+  });
+  // épouvantail dans le champ
+  if (p && has(p, "epouvantail")) drawBuilding(cx, "epouvantail", fx + fw - 4, fy - 14, t);
+
+  // grange et silo
+  const bx = 134, by = 20;
+  house(cx, bx, by, 44, 44, "#c0503a", "#7a3326", { door: false });
+  rect(cx, bx + 14, by + 26, 16, 18, "#fbf6ea");
+  rect(cx, bx + 15, by + 27, 14, 17, "#7a3326");
+  rect(cx, bx + 15, by + 27, 14, 1, "#fbf6ea");
+  for (let i = 0; i < 14; i++) rect(cx, bx + 15 + i, by + 27 + i * 17 / 14, 1, 1, "#fbf6ea");
+  rect(cx, bx + 48, by + 6, 14, 38, "#d6cdb8");
+  rect(cx, bx + 48, by + 2, 14, 5, "#9aa0a8");
+  if (p) {
+    const fill = Math.min(1, siloCount(p) / siloCap(p));
+    rect(cx, bx + 50, by + 42 - 34 * fill, 10, 34 * fill, "#f2c94c");
+    for (let i = 0; i < 5; i++) rect(cx, bx + 48, by + 12 + i * 7, 14, 1, "#b8b0a0");
+  }
+  // enclos
+  const ex = 214, ey = 18, ew = 96, eh = 70;
+  rect(cx, ex, ey, ew, eh, "#8fd45a");
+  for (let i = 0; i <= ew; i += 6) rect(cx, ex + i, ey - 2, 2, 5, "#a87a4a");
+  for (let i = 0; i <= ew; i += 6) rect(cx, ex + i, ey + eh - 2, 2, 5, "#a87a4a");
+  for (let i = 0; i <= eh; i += 6) { rect(cx, ex - 1, ey + i, 2, 4, "#a87a4a"); rect(cx, ex + ew - 1, ey + i, 2, 4, "#a87a4a"); }
+  rect(cx, ex, ey, ew, 1, "#c99a66"); rect(cx, ex, ey + eh, ew, 1, "#c99a66");
+  if (p) {
+    let n = 0;
+    ["vache", "mouton", "poule"].forEach((a) => {
+      for (let i = 0; i < (p.animals[a] || 0); i++) {
+        const seed = n * 37 + a.length * 11;
+        const ax = ex + 8 + ((seed * 13) % (ew - 26)) + Math.sin(t * 0.6 + seed) * 4;
+        const ay = ey + 8 + ((seed * 7) % (eh - 22)) + Math.cos(t * 0.5 + seed) * 2;
+        cx.drawImage(sprite(a), Math.round(ax), Math.round(ay));
+        n++;
+      }
+    });
+  }
+  // sanctuaire de l'esprit protecteur
+  if (p) {
+    const sx = 186, sy = 72;
+    rect(cx, sx, sy + 18, 20, 4, "#9aa0a8");
+    rect(cx, sx + 3, sy + 14, 14, 5, "#b8b0a0");
+    const pc = sprite(p.patron);
+    cx.globalAlpha = 0.85 + Math.sin(t * 2) * 0.15;
+    cx.drawImage(pc, sx + 5, sy + 2 + Math.round(Math.sin(t * 1.5)));
+    cx.globalAlpha = 1;
+  }
+  // village
+  const vy = 132;
+  rect(cx, 0, vy + 34, FW, 1, "rgba(0,0,0,.08)");
+  let vx = 8;
+  const order = ["mairie", "halle", "moulin", "laiterie", "comptoir", "clocher", "grenier", "etable", "serre", "puits", "chien"];
+  if (p) order.forEach((b) => { if (has(p, b)) { drawBuilding(cx, b, vx, vy + 8, t); vx += 28; } });
+  if (p && vx === 8) { cx.fillStyle = "rgba(43,29,20,.55)"; cx.font = "10px 'Pixelify Sans', monospace"; cx.fillText("Ton village se construira ici.", 10, vy + 24); }
+
+  // météo
+  const w = S ? S.weather : "soleil";
+  if (w === "pluie" || w === "orage") {
+    for (let i = 0; i < 70; i++) { const x = (i * 47 + t * 160) % FW, y = (i * 29 + t * 240) % FH; rect(cx, x, y, 1, 4, "rgba(170,210,255,.7)"); }
+    if (w === "orage" && Math.floor(t * 3) % 9 === 0) rect(cx, 0, 0, FW, FH, "rgba(255,255,255,.25)");
+    rect(cx, 0, 0, FW, FH, "rgba(40,60,90,.12)");
+  } else if (w === "gel") {
+    rect(cx, 0, 0, FW, FH, "rgba(200,230,255,.22)");
+    for (let i = 0; i < 40; i++) { const x = (i * 53 + t * 12) % FW, y = (i * 31 + t * 18) % FH; rect(cx, x, y, 1, 1, "#fff"); }
+  } else if (w === "secheresse") {
+    rect(cx, 0, 0, FW, FH, "rgba(255,170,60,.14)");
+  } else if (w === "brouillard") {
+    for (let i = 0; i < 5; i++) rect(cx, ((t * 10 + i * 90) % (FW + 120)) - 120, 20 + i * 36, 120, 10, "rgba(255,255,255,.35)");
+  } else if (w === "arc") {
+    for (let i = 0; i < 6; i++) { cx.strokeStyle = ["#e04b3a", "#f08a2c", "#f2c94c", "#5aa83c", "#3a7cc0", "#9b59b6"][i]; cx.globalAlpha = .35; cx.beginPath(); cx.arc(FW * .75, FH + 10, 120 - i * 3, Math.PI, 2 * Math.PI); cx.stroke(); }
+    cx.globalAlpha = 1;
+  }
+  if (S && S.phase === "soir") rect(cx, 0, 0, FW, FH, "rgba(255,120,40,.13)");
+}
+
+/* =====================================================================
+   RÉSEAU (base partagée de l'artefact) ET ÉTAT LOCAL
+   ===================================================================== */
+const NET = { db: null, user: null, me: null, ready: false, gid: null, unsub: null, listUnsub: null, writing: false, again: false, profiles: {} };
+let S = null;          // état de la partie en cours
+let MODE = null;       // "online" | "local"
+let LOBBY = null;      // document du salon
+const UI = { tab: "marche", view: null, target: null, hover: -1, lastLog: 0, lastDawn: 0, handoffFor: -1, sellQty: {} };
+const $ = (id) => document.getElementById(id);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+function toast(txt, bad = false) {
+  const d = document.createElement("div");
+  d.className = "toast" + (bad ? " bad" : "");
+  d.textContent = txt;
+  $("toasts").appendChild(d);
+  setTimeout(() => d.remove(), 4200);
+}
+
+async function initNet() {
+  if (!(window.claude && window.claude.use)) { netOff("Le jeu en ligne fonctionne quand la page est ouverte sur claude.ai. Le mode même écran marche partout."); return; }
+  try {
+    const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    NET.db = db; NET.user = user;
+    NET.me = user ? await user.id() : null;
+  } catch (e) { /* reste hors ligne */ }
+  if (!NET.db || !NET.me) { netOff("Connecte-toi à claude.ai pour jouer en ligne. Le mode même écran marche quand même."); return; }
+  NET.ready = true;
+  $("netStatus").textContent = "Crée une partie, puis demande à ton ou ta partenaire d'ouvrir ce même lien : la partie apparaîtra ici.";
+  $("createField").hidden = false; $("createRow").hidden = false;
+  try { const saved = localStorage.getItem("bocage-farm"); if (saved) $("farmName").value = saved; } catch (e) {}
+  const t = setTimeout(() => { if (!$("gameList").children.length) $("gameList").innerHTML = '<p class="muted">Le carnet des parties ne répond pas encore. Réessaie dans un instant.</p>'; }, 10000);
+  NET.listUnsub = NET.db.collection("games").orderBy("updatedAt", "desc").limit(20).onSnapshot((snap) => {
+    clearTimeout(t);
+    renderGameList(snap.docs.map((d) => Object.assign({ gid: d.id }, d.data())));
+  }, () => { clearTimeout(t); $("gameList").innerHTML = '<p class="muted">Impossible de lire les parties pour le moment.</p>'; });
+}
+function netOff(msg) { $("netStatus").textContent = msg; }
+
+async function names(uids) {
+  if (!NET.user || !uids.length) return {};
+  try { const ps = await NET.user.profiles(uids); Object.assign(NET.profiles, ps); return ps; } catch (e) { return {}; }
+}
+const personName = (uid) => (NET.profiles[uid] && NET.profiles[uid].name) || "";
+
+function renderGameList(games) {
+  const box = $("gameList");
+  box.textContent = "";
+  const mine = games.filter((g) => (g.status === "lobby") || (g.players || []).some((p) => p.uid === NET.me));
+  if (!mine.length) { const p = document.createElement("p"); p.className = "muted"; p.textContent = "Aucune partie ouverte pour l'instant."; box.appendChild(p); return; }
+  names([...new Set(mine.flatMap((g) => (g.players || []).map((p) => p.uid)))]).then(() => {});
+  mine.forEach((g) => {
+    const row = document.createElement("div"); row.className = "game-item";
+    const meta = document.createElement("div"); meta.className = "meta";
+    const b = document.createElement("b"); b.textContent = (g.players || []).map((p) => p.farm || "Ferme").join(" · ");
+    const s = document.createElement("div"); s.className = "muted";
+    const inIt = (g.players || []).some((p) => p.uid === NET.me);
+    s.textContent = g.status === "lobby" ? "Salon ouvert · " + (g.players || []).length + "/4" : g.status === "ended" ? "Partie terminée" : "En cours · jour " + (g.day || 1) + "/12";
+    meta.append(b, s);
+    const btn = document.createElement("button"); btn.className = "btn small" + (g.status === "lobby" && !inIt ? " green" : ""); btn.type = "button";
+    btn.textContent = g.status === "lobby" ? (inIt ? "Entrer" : "Rejoindre") : (inIt ? "Reprendre" : "Regarder");
+    btn.addEventListener("click", () => (g.status === "lobby" ? joinLobby(g.gid) : openOnline(g.gid)));
+    row.append(meta, btn);
+    box.appendChild(row);
+  });
+}
+
+/** Écriture sûre d'un document partagé : verrou court, lecture, modification, écriture. */
+async function lockedUpdate(gid, fn) {
+  const ref = NET.db.doc("games/" + gid);
+  for (let i = 0; i < 20; i++) {
+    const r = await ref.acquire({ holder: NET.me, ttlMs: 4000 });
+    if (r.acquired) {
+      const snap = await ref.get();
+      const d = snap.exists ? JSON.parse(JSON.stringify(snap.data())) : null;
+      const out = fn(d);
+      if (!out) return false;
+      out.updatedAt = Date.now(); out.rev = (out.rev || 0) + 1;
+      await ref.set(out);
+      return true;
+    }
+    await sleep(200 + Math.random() * 300);
+  }
+  throw new Error("La partie est occupée, réessaie.");
+}
+
+function farmInput() {
+  const v = $("farmName").value.trim().slice(0, 24) || "Ferme des Lilas";
+  try { localStorage.setItem("bocage-farm", v); } catch (e) {}
+  return v;
+}
+
+async function createOnline() {
+  const gid = Math.random().toString(36).slice(2, 8).toUpperCase();
+  const doc = { status: "lobby", host: NET.me, players: [{ uid: NET.me, farm: farmInput(), patron: null }], createdAt: Date.now(), updatedAt: Date.now(), rev: 1, day: 0 };
+  try { await NET.db.doc("games/" + gid).set(doc); } catch (e) { toast("Impossible de créer la partie : " + (e.code === "invalid_argument" ? "tu n'as pas le droit d'écrire sur cette page (demande un accès Éditeur)." : (e.message || e.code)), true); return; }
+  joinLobby(gid);
+}
+
+async function joinLobby(gid) {
+  try {
+    await lockedUpdate(gid, (d) => {
+      if (!d || d.status !== "lobby") return null;
+      if (d.players.some((p) => p.uid === NET.me)) return d;
+      if (d.players.length >= 4) { toast("Ce salon est complet.", true); return null; }
+      d.players.push({ uid: NET.me, farm: farmInput(), patron: null });
+      return d;
+    });
+  } catch (e) { toast(e.code === "invalid_argument" ? "Tu n'as pas le droit d'écrire ici : le propriétaire doit te donner l'accès Éditeur." : (e.message || "Erreur réseau."), true); }
+  openOnline(gid);
+}
+
+function openOnline(gid) {
+  MODE = "online"; NET.gid = gid;
+  if (NET.unsub) NET.unsub();
+  S = null; LOBBY = null;
+  NET.unsub = NET.db.doc("games/" + gid).onSnapshot((snap) => {
+    if (!snap.exists) { toast("Cette partie n'existe plus.", true); goHome(); return; }
+    const d = snap.data();
+    if (d.status === "lobby") { LOBBY = d; showLobby(); return; }
+    if (S && (d.rev || 0) < (S.rev || 0)) return; // notre propre écriture plus récente est en route
+    const fresh = JSON.parse(JSON.stringify(d));
+    S = fresh;
+    names(S.players.map((p) => p.uid));
+    showGame();
+  }, (e) => { toast("Connexion à la partie perdue (" + e.code + ").", true); });
+}
+
+/** Envoie l'état (un seul envoi à la fois ; le dernier état gagne). */
+async function push() {
+  if (MODE !== "online") { saveLocal(); return; }
+  if (NET.writing) { NET.again = true; return; }
+  NET.writing = true;
+  $("syncText").textContent = "Envoi…";
+  try {
+    do {
+      NET.again = false;
+      const body = JSON.parse(JSON.stringify(S));
+      await NET.db.doc("games/" + NET.gid).set(body);
+    } while (NET.again);
+    $("syncText").textContent = "";
+  } catch (e) {
+    $("syncText").textContent = "";
+    toast("Le coup n'a pas pu être envoyé (" + (e.code === "invalid_argument" ? "accès en écriture refusé" : e.code || "erreur") + "). On recharge la partie.", true);
+    try { const snap = await NET.db.doc("games/" + NET.gid).get(); if (snap.exists) { S = JSON.parse(JSON.stringify(snap.data())); render(); } } catch (e2) {}
+  }
+  NET.writing = false;
+}
+
+function saveLocal() { try { localStorage.setItem("bocage-local", JSON.stringify(S)); } catch (e) {} }
+
+/* =====================================================================
+   INTERFACE
+   ===================================================================== */
+function show(section) { ["home", "lobby", "game"].forEach((s) => ($(s).hidden = s !== section)); }
+function goHome() {
+  if (NET.unsub) { NET.unsub(); NET.unsub = null; }
+  MODE = null; S = null; LOBBY = null; NET.gid = null;
+  UI.endShown = false; UI.view = null; UI.viewPinned = false; UI.lastDawn = 0; UI.target = null; UI.handoffFor = -1;
+  closeModal();
+  show("home");
+}
+
+function myIndex() {
+  if (!S) return -1;
+  if (MODE === "local") return cur(S);
+  return S.players.findIndex((p) => p.uid === NET.me);
+}
+function myTurn() { return S && S.status === "playing" && (MODE === "local" || P(S, cur(S)).uid === NET.me); }
+
+/** Toute action de jeu passe ici : vérifie le tour, applique la règle, envoie, redessine. */
+function act(fn, okMsg) {
+  if (!myTurn()) { toast("Ce n'est pas ton tour.", true); return false; }
+  const res = fn();
+  if (typeof res === "string") { toast(res, true); return false; }
+  if (res && res.msg) toast(res.msg);
+  else if (okMsg) toast(okMsg);
+  S.rev = (S.rev || 0) + 1; S.updatedAt = Date.now();
+  push();
+  render();
+  return true;
+}
+
+/* --- salon --- */
+function showLobby() {
+  show("lobby");
+  const d = LOBBY;
+  const isHost = d.host === NET.me;
+  const meIn = d.players.some((p) => p.uid === NET.me);
+  $("lobbyTitle").textContent = "Salon · " + NET.gid;
+  $("lobbyHint").textContent = meIn
+    ? "Les autres joueurs ouvrent ce même lien, puis cliquent « Rejoindre ». Jusqu'à 4 fermes."
+    : "Tu regardes ce salon. Clique « Rejoindre » depuis l'accueil pour y prendre une place.";
+  names(d.players.map((p) => p.uid)).then(() => renderSeats(d));
+  renderSeats(d);
+  const box = $("patronPick");
+  box.textContent = "";
+  const mine = d.players.find((p) => p.uid === NET.me);
+  PATRON_KEYS.forEach((k) => {
+    const taken = d.players.some((p) => p.patron === k && p.uid !== NET.me);
+    const b = patronButton(k, mine && mine.patron === k, taken);
+    b.disabled = !meIn || taken;
+    b.addEventListener("click", () => lockedUpdate(NET.gid, (doc) => {
+      if (!doc || doc.status !== "lobby") return null;
+      if (doc.players.some((p) => p.patron === k && p.uid !== NET.me)) { toast("Cet esprit est déjà pris.", true); return null; }
+      const me = doc.players.find((p) => p.uid === NET.me); if (!me) return null;
+      me.patron = k; return doc;
+    }).catch((e) => toast(e.message, true)));
+    box.appendChild(b);
+  });
+  const ready = d.players.every((p) => p.patron);
+  $("startBtn").hidden = !isHost;
+  $("startBtn").disabled = !ready;
+  $("startHint").textContent = isHost ? (ready ? "Tout le monde est prêt." : "Chaque joueur choisit un esprit.") : "L'hôte lance la partie quand tout le monde est prêt.";
+}
+function renderSeats(d) {
+  const seats = $("seats");
+  seats.textContent = "";
+  d.players.forEach((p) => {
+    const s = document.createElement("div"); s.className = "seat" + (p.uid === NET.me ? " me" : "");
+    const b = document.createElement("b"); b.className = "num"; b.textContent = p.farm;
+    const who = document.createElement("span"); who.className = "muted"; who.textContent = (personName(p.uid) || "Joueur") + (p.uid === d.host ? " · hôte" : "") + (p.uid === NET.me ? " · toi" : "");
+    const pat = document.createElement("span"); pat.textContent = p.patron ? PATRONS[p.patron].name + ", " + PATRONS[p.patron].title : "Choisit son esprit…";
+    s.append(b, who, pat);
+    seats.appendChild(s);
+  });
+  for (let i = d.players.length; i < 4; i++) { const s = document.createElement("div"); s.className = "seat"; s.innerHTML = '<span class="muted">Place libre</span>'; seats.appendChild(s); }
+}
+function patronButton(k, sel, taken) {
+  const P0 = PATRONS[k];
+  const b = document.createElement("button"); b.type = "button"; b.className = "patron" + (sel ? " sel" : "") + (taken ? " taken" : "");
+  const img = document.createElement("img"); img.className = "px"; img.alt = ""; img.src = spriteURL(k, 4);
+  const txt = document.createElement("div");
+  const name = document.createElement("b"); name.textContent = P0.name + ", " + P0.title;
+  const a = document.createElement("small"); a.textContent = P0.passive;
+  const c = document.createElement("small"); c.className = "muted"; c.textContent = "1× par saison : " + P0.power;
+  txt.append(name, a, c);
+  b.append(img, txt);
+  return b;
+}
+async function startOnline() {
+  try {
+    await lockedUpdate(NET.gid, (d) => {
+      if (!d || d.status !== "lobby" || d.host !== NET.me) return null;
+      const g = newGame(d.players, Math.floor(Math.random() * 2147483647));
+      g.host = d.host; g.createdAt = d.createdAt; g.rev = (d.rev || 1) + 1;
+      return g;
+    });
+  } catch (e) { toast(e.message, true); }
+}
+
+/* --- partie locale --- */
+function startLocal(n) {
+  const farms = ["Ferme des Lilas", "Ferme du Moulin", "Ferme des Saules", "Ferme du Coteau"];
+  const seats = [];
+  for (let i = 0; i < n; i++) seats.push({ uid: "local" + i, farm: farms[i], patron: PATRON_KEYS[i] });
+  MODE = "local";
+  pickLocalPatrons(seats, () => {
+    S = newGame(seats, Math.floor(Math.random() * 2147483647));
+    saveLocal();
+    UI.lastDawn = 0; UI.lastLog = S.logSeq; UI.handoffFor = -1;
+    showGame();
+  });
+}
+function pickLocalPatrons(seats, done) {
+  let i = 0;
+  const step = () => {
+    if (i >= seats.length) { closeModal(); done(); return; }
+    const m = openModal();
+    const h = document.createElement("h2"); h.textContent = seats[i].farm;
+    const p = document.createElement("p"); p.textContent = "Quel esprit veille sur cette ferme ?";
+    const name = document.createElement("input"); name.value = seats[i].farm; name.maxLength = 24; name.id = "localFarm" + i;
+    const nameF = document.createElement("div"); nameF.className = "field";
+    const lab = document.createElement("label"); lab.htmlFor = name.id; lab.textContent = "Nom de la ferme";
+    nameF.append(lab, name);
+    const grid = document.createElement("div"); grid.className = "patrons";
+    PATRON_KEYS.forEach((k) => {
+      const taken = seats.slice(0, i).some((s) => s.patron === k);
+      const b = patronButton(k, false, taken);
+      b.disabled = taken;
+      b.addEventListener("click", () => { seats[i].patron = k; seats[i].farm = name.value.trim() || seats[i].farm; i++; step(); });
+      grid.appendChild(b);
+    });
+    m.append(h, nameF, p, grid);
+  };
+  step();
+}
+
+/* --- jeu : rendu --- */
+let farmCtx = null, farmScale = 2;
+function showGame() {
+  show("game");
+  if (UI.view === null || UI.view >= S.players.length) UI.view = Math.max(0, myIndex());
+  if (MODE === "online") { const mi = myIndex(); if (mi >= 0 && UI.view !== mi && !UI.viewPinned) UI.view = mi; }
+  // nouvelle aube : on montre les dés
+  if (S.dawn && S.dawn.day !== UI.lastDawn) {
+    const first = UI.lastDawn === 0 && MODE === "online" ? false : true;
+    UI.lastDawn = S.dawn.day;
+    if (S.status === "playing" && first) showDawn();
+  }
+  // nouvelles lignes du journal qui me concernent
+  const mi = myIndex();
+  (S.log || []).forEach((l) => { if (l.id > UI.lastLog) { if (MODE === "online" && l.tgt === mi && mi >= 0) toast(l.txt, true); } });
+  UI.lastLog = S.logSeq || 0;
+  if (S.status === "ended") showEnd();
+  render();
+}
+
+function render() {
+  if (!S) return;
+  const me = myIndex();
+  const turnIdx = cur(S);
+  const view = UI.view;
+  const p = P(S, view);
+  // en mode local, on suit le joueur actif
+  if (MODE === "local" && UI.handoffFor !== turnIdx && S.status === "playing") {
+    UI.handoffFor = turnIdx; UI.view = turnIdx;
+    if (S.players.length > 1) handoff();
+    return render();
+  }
+  // en-tête
+  const s = season(S);
+  $("dayTitle").textContent = SEASONS[s] + " · jour " + (((S.day - 1) % 4) + 1) + "/4";
+  $("daySub").textContent = "Jour " + S.day + " sur " + DAYS + " · " + WEATHER[S.weather].name + " : " + WEATHER[S.weather].text;
+  $("weatherIcon").src = spriteURL(WEATHER_SPRITE[S.weather], 4);
+  const tk = $("ticker"); tk.textContent = "";
+  GOOD_KEYS.forEach((g) => {
+    const d = document.createElement("div"); d.className = "tick"; d.title = GOODS[g].name + " : " + S.market[g] + " pièces";
+    const img = document.createElement("img"); img.className = "px"; img.alt = GOODS[g].name; img.src = spriteURL(g, 3);
+    const v = document.createElement("span"); v.className = "num"; v.textContent = S.market[g];
+    const diff = S.market[g] - S.marketPrev[g];
+    const a = document.createElement("span"); a.className = "num " + (diff > 0 ? "up" : diff < 0 ? "down" : "");
+    a.textContent = diff > 0 ? "▲" : diff < 0 ? "▼" : "";
+    d.append(img, v, a); tk.appendChild(d);
+  });
+  const pl = $("players"); pl.textContent = "";
+  S.players.forEach((q, i) => {
+    const b = document.createElement("button"); b.type = "button";
+    b.className = "pchip" + (i === turnIdx && S.status === "playing" ? " active" : "") + (i === view ? " viewing" : "");
+    const img = document.createElement("img"); img.className = "px"; img.alt = ""; img.src = spriteURL(q.patron, 3);
+    const nm = document.createElement("b"); nm.textContent = farmName(q) + (i === me && MODE === "online" ? " (toi)" : "");
+    const st = document.createElement("span"); st.className = "num"; st.textContent = q.gold + " pièces · " + score(q).total + " étoiles";
+    b.append(img, nm, st);
+    b.title = "Voir " + farmName(q);
+    b.addEventListener("click", () => { UI.view = i; UI.viewPinned = i !== me; render(); });
+    pl.appendChild(b);
+  });
+  // ferme
+  const mine = view === me || MODE === "local";
+  $("farmTitle").textContent = farmName(p) + (personName(p.uid) ? " · " + personName(p.uid) : "") ;
+  const fs = $("farmStats"); fs.textContent = "";
+  const stat = (spr, txt, title) => { const d = document.createElement("span"); d.className = "stat"; d.title = title; const i = document.createElement("img"); i.className = "px"; i.alt = ""; i.src = spriteURL(spr, 3); const t = document.createElement("span"); t.textContent = txt; d.append(i, t); fs.appendChild(d); };
+  stat("coin", p.gold, "Pièces");
+  stat("star", score(p).total, "Étoiles de renommée (si la partie finissait maintenant)");
+  stat(p.patron, PATRONS[p.patron].name + (p.powerUsed ? " (pouvoir utilisé)" : ""), PATRONS[p.patron].passive);
+  const sl = $("siloLine"); sl.textContent = "";
+  const lab = document.createElement("span"); lab.className = "muted"; lab.textContent = "Silo " + siloCount(p) + "/" + siloCap(p) + " · Enclos " + animalCount(p) + "/" + penCap(p) + " :";
+  sl.appendChild(lab);
+  GOOD_KEYS.forEach((g) => { if (p.silo[g] > 0) sl.appendChild(goodChip(g, p.silo[g])); });
+  if (p.shield) { const sh = document.createElement("span"); sh.className = "good"; sh.textContent = "Bâche posée"; sl.appendChild(sh); }
+  resizeFarm();
+  // main
+  const myP = me >= 0 ? P(S, me) : null;
+  const handP = MODE === "local" ? P(S, turnIdx) : myP;
+  const hand = $("hand"); hand.textContent = "";
+  $("handTitle").textContent = MODE === "local" ? "Main de " + farmName(handP) : "Ta main";
+  if (handP) {
+    handP.hand.forEach((id, idx) => {
+      const err = myTurn() && handP === P(S, turnIdx) ? canPlay(S, turnIdx, idx) : "Ce n'est pas ton tour.";
+      const c = cardEl(id, { off: !!err, title: err || "" });
+      c.addEventListener("click", () => onCardClick(idx));
+      hand.appendChild(c);
+    });
+    if (!handP.hand.length) { const e = document.createElement("p"); e.className = "muted"; e.textContent = "Plus de cartes en main."; hand.appendChild(e); }
+    $("deckInfo").textContent = "Pioche " + handP.deck.length + " · Défausse " + handP.discard.length + " · Jouées " + handP.played.length;
+  }
+  const en = $("energy"); en.textContent = "";
+  if (myTurn()) { for (let i = 0; i < Math.max(ENERGY, S.energy); i++) { const k = document.createElement("i"); if (i < S.energy) k.className = "on"; k.title = "Énergie"; en.appendChild(k); } }
+  // actions
+  const tp = P(S, turnIdx);
+  $("turnText").textContent = S.status === "ended" ? "Partie terminée" : myTurn() ? (MODE === "local" ? "Au tour de " + farmName(tp) : "À toi de jouer") : "Au tour de " + farmName(tp);
+  const badge = $("phaseBadge");
+  badge.textContent = S.phase === "jour" ? "Jour" : "Soir · " + S.buys + " achat" + (S.buys > 1 ? "s" : "");
+  badge.className = "badge" + (S.phase === "soir" ? " soir" : "");
+  $("eveningBtn").hidden = !(myTurn() && S.phase === "jour");
+  $("endBtn").hidden = !myTurn();
+  const pw = $("powerBtn");
+  const pp = myTurn() ? tp : null;
+  pw.hidden = !pp || pp.powerUsed || S.phase !== "jour";
+  if (pp) { pw.textContent = "Pouvoir : " + PATRONS[pp.patron].power.split(" :")[0]; pw.title = PATRONS[pp.patron].power; }
+  renderTabs();
+  renderTargetBar();
+}
+
+function goodChip(g, n) {
+  const d = document.createElement("span"); d.className = "good";
+  const i = document.createElement("img"); i.className = "px"; i.alt = GOODS[g].name; i.src = spriteURL(g, 3);
+  const t = document.createElement("span"); t.textContent = n; d.title = GOODS[g].name;
+  d.append(i, t); return d;
+}
+
+function cardEl(id, opts = {}) {
+  const c = CARDS[id];
+  const b = document.createElement("button"); b.type = "button";
+  b.className = "card t-" + c.type + (opts.off ? " off" : "");
+  if (opts.title) b.title = opts.title;
+  const h = document.createElement("div"); h.className = "ch";
+  const nm = document.createElement("span"); nm.textContent = c.name;
+  const en = document.createElement("span"); en.className = "en"; en.textContent = c.en; en.title = "Coût en énergie";
+  h.append(nm, en);
+  const art = document.createElement("div"); art.className = "art";
+  const im = document.createElement("img"); im.className = "px"; im.alt = ""; im.src = spriteURL(cardArt(id), 4); art.appendChild(im);
+  const tx = document.createElement("div"); tx.className = "ct"; tx.textContent = TYPE_LABEL[c.type] + ". " + c.text;
+  b.append(h, art, tx);
+  if (opts.price !== undefined) {
+    const pr = document.createElement("span"); pr.className = "price";
+    const ci = document.createElement("img"); ci.className = "px"; ci.alt = "pièces"; ci.src = spriteURL("coin", 2);
+    const v = document.createElement("span"); v.textContent = opts.price;
+    pr.append(ci, v); b.appendChild(pr);
+    tx.style.paddingBottom = "16px";
+  }
+  return b;
+}
+
+/* --- canvas de la ferme --- */
+function resizeFarm() {
+  const cv = $("farmCanvas");
+  const avail = Math.max(320, cv.parentElement.clientWidth - 16);
+  const k = Math.max(1, Math.min(4, Math.floor(avail / FW)));
+  if (k !== farmScale || cv.width !== FW * k) {
+    farmScale = k;
+    cv.width = FW * k; cv.height = FH * k;
+    cv.style.width = FW * k + "px";
+    farmCtx = cv.getContext("2d");
+    farmCtx.imageSmoothingEnabled = false;
+  }
+  if (!farmCtx) { farmCtx = cv.getContext("2d"); farmCtx.imageSmoothingEnabled = false; }
+}
+const FARMVIEW = { plotRects: [], hover: -1, highlight: null };
+function frame(ts) {
+  const t = ts / 1000;
+  if (S && !$("game").hidden && farmCtx) {
+    const p = P(S, UI.view);
+    FARMVIEW.hover = UI.hover;
+    FARMVIEW.highlight = UI.target && UI.target.kind !== "hand" ? (k, pl) => (UI.target.picked.includes(k) ? "#fff6b0" : targetOk(k, pl) ? "#ffffff" : null) : null;
+    farmCtx.setTransform(farmScale, 0, 0, farmScale, 0, 0);
+    drawFarm(farmCtx, S, p, FARMVIEW, t);
+  }
+  if (!$("home").hidden && heroCtx) { heroCtx.setTransform(2, 0, 0, 2, 0, 0); drawFarm(heroCtx, HERO_S, HERO_S.players[0], { plotRects: [] }, t); }
+  requestAnimationFrame(frame);
+}
+function farmHit(ev) {
+  const cv = $("farmCanvas"), r = cv.getBoundingClientRect();
+  const x = (ev.clientX - r.left) * (FW / r.width), y = (ev.clientY - r.top) * (FH / r.height);
+  const hit = FARMVIEW.plotRects.find((q) => x >= q.x && x < q.x + q.w && y >= q.y && y < q.y + q.h);
+  return hit ? hit.k : -1;
+}
+
+/* --- cartes et cibles --- */
+function targetOk(k, pl) {
+  const t = UI.target; if (!t) return false;
+  if (t.kind === "empty") return !pl.crop;
+  if (t.kind === "growing") return pl.crop && pl.g < CROPS[pl.crop].days;
+  return false;
+}
+function onCardClick(idx) {
+  if (!myTurn()) { toast("Ce n'est pas ton tour.", true); return; }
+  const pi = cur(S), p = P(S, pi), id = p.hand[idx], c = CARDS[id];
+  const err = canPlay(S, pi, idx);
+  if (err) { toast(err, true); return; }
+  UI.view = pi;
+  if (c.type === "graine") { UI.target = { idx, kind: "empty", n: c.plant, picked: [], label: "Clique " + (c.plant > 1 ? "jusqu'à " + c.plant + " parcelles libres" : "une parcelle libre") + " pour semer." }; render(); return; }
+  if (c.target && c.target.kind === "growing") { UI.target = { idx, kind: "growing", n: c.target.n, picked: [], label: "Clique " + (c.target.n > 1 ? "jusqu'à " + c.target.n + " cultures" : "une culture") + " qui pousse." }; render(); return; }
+  if (c.target && c.target.kind === "hand") { chooseHandCard(idx); return; }
+  if (c.target && c.target.kind === "good") { chooseGood(c.name, (g) => act(() => playCard(S, pi, idx, { good: g }))); return; }
+  if (c.target && c.target.kind === "opponent") { chooseOpponent(c.name, (o) => act(() => playCard(S, pi, idx, { opponent: o }))); return; }
+  act(() => playCard(S, pi, idx), "« " + c.name + " » jouée.");
+}
+function renderTargetBar() {
+  const bar = $("targetBar");
+  if (!UI.target || !myTurn()) { bar.hidden = true; UI.target = null; return; }
+  bar.hidden = false;
+  $("targetText").textContent = UI.target.label + " (" + UI.target.picked.length + "/" + UI.target.n + ")";
+  $("targetOk").disabled = !UI.target.picked.length;
+}
+function confirmTarget() {
+  const t = UI.target; if (!t) return;
+  UI.target = null;
+  if (t.power) { act(() => usePower(S, cur(S), { plot: t.picked[0] })); return; }
+  act(() => playCard(S, cur(S), t.idx, { plots: t.picked }));
+}
+function onFarmClick(ev) {
+  if (!S) return;
+  const k = farmHit(ev);
+  if (k < 0) return;
+  const p = P(S, UI.view);
+  if (UI.target) {
+    if (UI.view !== cur(S)) return;
+    const pl = p.plots[k];
+    if (UI.target.picked.includes(k)) UI.target.picked = UI.target.picked.filter((x) => x !== k);
+    else if (targetOk(k, pl) && UI.target.picked.length < UI.target.n) UI.target.picked.push(k);
+    if (UI.target.picked.length >= UI.target.n) { confirmTarget(); return; }
+    render(); return;
+  }
+  if (myTurn() && UI.view === cur(S)) {
+    const pl = p.plots[k];
+    if (pl.crop && pl.g >= CROPS[pl.crop].days) act(() => harvest(S, cur(S), k), CROPS[pl.crop].name + " récolté" + (pl.crop === "carotte" || pl.crop === "tomate" || pl.crop === "citrouille" ? "e" : "") + ".");
+    else if (pl.crop) toast(CROPS[pl.crop].name + " : " + pl.g + "/" + CROPS[pl.crop].days + " jours de pousse.");
+    else toast("Parcelle libre. Joue une carte de graines pour semer.");
+  } else if (p.plots[k].crop) {
+    const pl = p.plots[k]; toast(CROPS[pl.crop].name + " : " + Math.min(pl.g, CROPS[pl.crop].days) + "/" + CROPS[pl.crop].days + " jours de pousse.");
+  }
+}
+
+/* --- fenêtres de choix --- */
+function openModal(solid = false) { const m = $("modal"); m.textContent = ""; m.dataset.kind = ""; $("overlay").classList.toggle("solid", solid); $("overlay").hidden = false; return m; }
+function closeModal() { $("overlay").hidden = true; $("modal").textContent = ""; $("modal").dataset.kind = ""; }
+function modalButtons(m, items) { const row = document.createElement("div"); row.className = "row"; items.forEach((b) => row.appendChild(b)); m.appendChild(row); }
+function mkBtn(txt, cls, fn) { const b = document.createElement("button"); b.type = "button"; b.className = "btn " + (cls || ""); b.textContent = txt; b.addEventListener("click", fn); return b; }
+function chooseGood(title, cb) {
+  const m = openModal();
+  const h = document.createElement("h2"); h.textContent = title;
+  const p = document.createElement("p"); p.textContent = "Quelle denrée ?";
+  const grid = document.createElement("div"); grid.className = "mini-cards";
+  GOOD_KEYS.forEach((g) => {
+    const b = mkBtn("", "", () => { closeModal(); cb(g); });
+    b.style.display = "flex"; b.style.gap = "6px"; b.style.alignItems = "center";
+    const im = document.createElement("img"); im.className = "px"; im.src = spriteURL(g, 3); im.alt = ""; im.width = 24; im.height = 24;
+    const t = document.createElement("span"); t.textContent = GOODS[g].name + " · " + S.market[g];
+    b.append(im, t); grid.appendChild(b);
+  });
+  m.append(h, p, grid);
+  modalButtons(m, [mkBtn("Annuler", "small", closeModal)]);
+}
+function chooseOpponent(title, cb) {
+  const m = openModal();
+  const h = document.createElement("h2"); h.textContent = title;
+  const p = document.createElement("p"); p.textContent = "Quelle ferme vises-tu ?";
+  m.append(h, p);
+  const row = [];
+  S.players.forEach((q, i) => { if (i !== cur(S)) row.push(mkBtn(farmName(q), "red", () => { closeModal(); cb(i); })); });
+  row.push(mkBtn("Annuler", "small", closeModal));
+  modalButtons(m, row);
+}
+function chooseHandCard(idx) {
+  const pi = cur(S), p = P(S, pi);
+  const m = openModal();
+  const h = document.createElement("h2"); h.textContent = "Compost";
+  const t = document.createElement("p"); t.textContent = "Quelle carte écartes-tu pour de bon ?";
+  const grid = document.createElement("div"); grid.className = "mini-cards";
+  p.hand.forEach((id, h2) => { if (h2 === idx) return; const c = cardEl(id); c.addEventListener("click", () => { closeModal(); act(() => playCard(S, pi, idx, { hand: h2 })); }); grid.appendChild(c); });
+  m.append(h, t, grid);
+  modalButtons(m, [mkBtn("Annuler", "small", closeModal)]);
+}
+function onPower() {
+  if (!myTurn()) return;
+  const pi = cur(S), p = P(S, pi);
+  switch (p.patron) {
+    case "ondine": case "faune": act(() => usePower(S, pi)); break;
+    case "tellur": UI.view = pi; UI.target = { power: true, kind: "growing", n: 1, picked: [], label: "Germination : clique une culture qui pousse." }; render(); break;
+    case "pecune": chooseGood("Coup de bourse", (g) => {
+      const m = openModal();
+      const h = document.createElement("h2"); h.textContent = GOODS[g].name + " · " + S.market[g] + " pièces";
+      m.appendChild(h);
+      modalButtons(m, [mkBtn("Faire monter (+3)", "green", () => { closeModal(); act(() => usePower(S, pi, { good: g, up: true })); }), mkBtn("Faire chuter (-3)", "red", () => { closeModal(); act(() => usePower(S, pi, { good: g, up: false })); }), mkBtn("Annuler", "small", closeModal)]);
+    }); break;
+    case "zephyr": {
+      const nextSeason = Math.min(2, Math.floor(S.day / 4));
+      const m = openModal();
+      const h = document.createElement("h2"); h.textContent = "Girouette";
+      const t = document.createElement("p"); t.textContent = "Quel temps fera-t-il à la prochaine aube (" + SEASONS[nextSeason].toLowerCase() + ") ?";
+      m.append(h, t);
+      modalButtons(m, [...new Set(SEASON_WEATHER[nextSeason])].map((w) => mkBtn(WEATHER[w].name, "blue", () => { closeModal(); act(() => usePower(S, pi, { weather: w })); })).concat([mkBtn("Annuler", "small", closeModal)]));
+      break;
+    }
+  }
+}
+
+/* --- aube, relais, fin --- */
+function dieEl(v, weather) {
+  const d = document.createElement("div"); d.className = "die roll" + (weather ? " weather" : "");
+  const on = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] }[v];
+  for (let i = 0; i < 9; i++) { const k = document.createElement("i"); if (on.includes(i)) k.className = "on"; d.appendChild(k); }
+  return d;
+}
+function showDawn(after) {
+  const D = S.dawn; if (!D) return;
+  const m = openModal();
+  const h = document.createElement("h2"); h.textContent = "Aube · " + SEASONS[D.season] + ", jour " + D.day;
+  const dice = document.createElement("div"); dice.className = "dice";
+  const wrap = (el, cap) => { const w = document.createElement("div"); const c = document.createElement("div"); c.className = "dicecap"; c.textContent = cap; w.append(el, c); return w; };
+  dice.append(wrap(dieEl(D.wd, true), "Météo"), wrap(dieEl(D.dA), "Demande"), wrap(dieEl(D.dB), "Surplus"));
+  const w = document.createElement("div"); w.className = "row";
+  const wi = document.createElement("img"); wi.className = "px"; wi.src = spriteURL(WEATHER_SPRITE[D.weather], 4); wi.alt = ""; wi.width = 48; wi.height = 44;
+  const wt = document.createElement("div"); wt.innerHTML = ""; const wb = document.createElement("b"); wb.className = "num"; wb.textContent = WEATHER[D.weather].name; const wx = document.createElement("div"); wx.textContent = WEATHER[D.weather].text; wt.append(wb, wx);
+  w.append(wi, wt);
+  const rep = document.createElement("div"); rep.className = "report";
+  D.msg.forEach((t) => { const d = document.createElement("div"); d.textContent = t; rep.appendChild(d); });
+  const mi = myIndex();
+  const mine = MODE === "local" ? S.players.flatMap((q, i) => (D.per[i] || []).map((t) => farmName(q) + " : " + t)) : (D.per[mi] || []);
+  mine.forEach((t) => { const d = document.createElement("div"); d.textContent = t; d.style.background = "#eaf8dc"; rep.appendChild(d); });
+  m.append(h, dice, w, rep);
+  modalButtons(m, [mkBtn("Au travail !", "green", () => { closeModal(); if (after) after(); })]);
+}
+function handoff() {
+  if (!$("overlay").hidden && $("modal").dataset.kind !== "handoff") { setTimeout(handoff, 400); return; }
+  const tp = P(S, cur(S));
+  const m = openModal(true); m.dataset.kind = "handoff";
+  const h = document.createElement("h2"); h.textContent = "Au tour de " + farmName(tp);
+  const p = document.createElement("p"); p.textContent = "Passe l'écran à la personne qui joue " + farmName(tp) + ".";
+  m.append(h, p);
+  modalButtons(m, [mkBtn("C'est moi, je joue", "green", closeModal)]);
+}
+function showEnd() {
+  if (UI.endShown) return; UI.endShown = true;
+  const m = openModal();
+  const h = document.createElement("h2"); h.textContent = "L'hiver est là";
+  const p = document.createElement("p"); p.textContent = "Les champs se reposent. Voici la renommée de chaque ferme.";
+  const list = document.createElement("div"); list.className = "ranking";
+  const ranked = S.players.map((q, i) => ({ q, i, s: score(q) })).sort((a, b) => b.s.total - a.s.total || b.q.gold - a.q.gold);
+  ranked.forEach((r, n) => {
+    const row = document.createElement("div"); row.className = "rank";
+    const pos = document.createElement("span"); pos.className = "big"; pos.textContent = n + 1;
+    const im = document.createElement("img"); im.className = "px"; im.src = spriteURL(r.q.patron, 4); im.alt = "";
+    const nm = document.createElement("div"); const b = document.createElement("b"); b.textContent = farmName(r.q);
+    const sub = document.createElement("div"); sub.className = "muted"; sub.textContent = "Village " + r.s.build + " · contrats " + r.s.contracts + " · pièces " + r.s.gold + " · bêtes " + r.s.beasts;
+    nm.append(b, sub);
+    const tot = document.createElement("span"); tot.className = "big"; tot.textContent = r.s.total;
+    row.append(pos, im, nm, tot); list.appendChild(row);
+  });
+  m.append(h, p, list);
+  modalButtons(m, [mkBtn("Revoir la ferme", "", closeModal), mkBtn("Retour à l'accueil", "green", goHome)]);
+}
+
+/* --- onglets du soir --- */
+const TABS = [["marche", "Marché"], ["boutique", "Boutique"], ["foire", "Foire"], ["village", "Village"], ["export", "Export"], ["echoppes", "Échoppes"], ["journal", "Journal"]];
+function renderTabs() {
+  const tabs = $("tabs"); tabs.textContent = "";
+  TABS.forEach(([k, label]) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "tab" + (UI.tab === k ? " on" : ""); b.textContent = label;
+    b.addEventListener("click", () => { UI.tab = k; renderTabs(); });
+    tabs.appendChild(b);
+  });
+  const body = $("tabBody"); body.textContent = "";
+  const pi = cur(S), p = P(S, pi);
+  const canAct = myTurn();
+  const evening = S.phase === "soir";
+  const hint = (t) => { const d = document.createElement("div"); d.className = "hint"; d.textContent = t; body.appendChild(d); };
+  if (!canAct && UI.tab !== "journal" && S.status === "playing") hint("Tu pourras acheter et vendre pendant ton propre tour, le soir.");
+  else if (canAct && !evening && !["journal", "echoppes"].includes(UI.tab)) hint("Le marché ouvre le soir : joue d'abord tes cartes, puis clique « Passer au soir ».");
+  const dis = !canAct || !evening;
+  const line = (spr, name, sub, right) => { const l = document.createElement("div"); l.className = "line"; const i = document.createElement("img"); i.className = "px"; i.alt = ""; i.src = spriteURL(spr, 3); const m = document.createElement("div"); const n = document.createElement("div"); n.className = "nm"; n.textContent = name; const s = document.createElement("div"); s.className = "sub"; s.textContent = sub; m.append(n, s); l.append(i, m, right); body.appendChild(l); return l; };
+  switch (UI.tab) {
+    case "marche": {
+      GOOD_KEYS.forEach((g) => {
+        const stock = p.silo[g] || 0;
+        const right = document.createElement("div"); right.className = "qty";
+        const inp = document.createElement("input"); inp.type = "number"; inp.min = 1; inp.max = Math.max(1, stock); inp.id = "sell-" + g; inp.value = Math.min(UI.sellQty[g] || stock || 1, Math.max(1, stock)); inp.setAttribute("aria-label", "Quantité de " + GOODS[g].name);
+        inp.addEventListener("change", () => (UI.sellQty[g] = +inp.value));
+        const b = mkBtn("Vendre", "small green", () => act(() => sell(S, pi, g, +inp.value)));
+        b.disabled = dis || !stock; inp.disabled = dis || !stock;
+        right.append(inp, b);
+        const bonus = salePrice(S, p, g) - S.market[g];
+        line(g, GOODS[g].name + " · " + S.market[g] + (bonus ? " (+" + bonus + ")" : "") + " pièces", "En stock : " + stock + ". Déjà vendus aujourd'hui : " + S.soldToday[g] + ". Chaque paire vendue fait baisser le prix de 1.", right);
+      });
+      if (p.marcheNoir) hint("Marché noir actif : ta prochaine vente rapporte le double.");
+      break;
+    }
+    case "boutique": {
+      const t1 = document.createElement("h3"); t1.textContent = "Grainetier (toujours en stock)"; body.appendChild(t1);
+      const g1 = document.createElement("div"); g1.className = "mini-cards"; body.appendChild(g1);
+      SEED_SHOP.forEach((id, i) => { const c = cardEl(id, { price: CARDS[id].cost, off: dis || p.gold < CARDS[id].cost || S.buys <= 0 }); c.addEventListener("click", () => act(() => buyCard(S, pi, "seed", i))); g1.appendChild(c); });
+      const t2 = document.createElement("h3"); t2.textContent = "Boutique de la vallée (" + S.shopPile.length + " en réserve)"; body.appendChild(t2);
+      const g2 = document.createElement("div"); g2.className = "mini-cards"; body.appendChild(g2);
+      S.shop.forEach((id, i) => { const c = cardEl(id, { price: CARDS[id].cost, off: dis || p.gold < CARDS[id].cost || S.buys <= 0 }); c.addEventListener("click", () => act(() => buyCard(S, pi, "shop", i))); g2.appendChild(c); });
+      hint("Une carte achetée va dans ta défausse. Tu la piocheras plus tard.");
+      break;
+    }
+    case "foire": {
+      Object.keys(ANIMALS).forEach((a) => {
+        const A = ANIMALS[a], price = animalPrice(p, a);
+        const right = document.createElement("div"); right.className = "row";
+        const b = mkBtn("Acheter " + price, "small green", () => act(() => buyAnimal(S, pi, a)));
+        b.disabled = dis || p.gold < price || S.buys <= 0 || animalCount(p) >= penCap(p);
+        const s = mkBtn("Vendre " + Math.floor(A.price / 2), "small", () => act(() => sellAnimal(S, pi, a)));
+        s.disabled = dis || !p.animals[a];
+        right.append(b, s);
+        line(a, A.name + " (tu en as " + (p.animals[a] || 0) + ")", "Donne 1 " + GOODS[A.makes].name.toLowerCase() + (A.every > 1 ? " tous les " + A.every + " jours" : " chaque jour") + ".", right);
+      });
+      hint("Enclos : " + animalCount(p) + "/" + penCap(p) + ". Une étable l'agrandit. Revendre une bête ne coûte pas d'achat.");
+      break;
+    }
+    case "village": {
+      Object.keys(BUILDINGS).forEach((b) => {
+        const B = BUILDINGS[b], n = p.buildings[b] || 0;
+        const right = mkBtn(n >= B.max ? "Construit" : B.cost + " pièces", "small green", () => act(() => buyBuilding(S, pi, b)));
+        right.disabled = dis || n >= B.max || p.gold < B.cost || S.buys <= 0;
+        line(b === "champ" ? "grow" : b === "epouvantail" ? "seed" : "star", B.name + (B.stars ? " · " + B.stars + " étoile" + (B.stars > 1 ? "s" : "") : ""), B.text + (B.max > 1 ? " (" + n + "/" + B.max + ")" : ""), right);
+      });
+      break;
+    }
+    case "export": {
+      S.contracts.forEach((cid) => {
+        const c = CONTRACTS.find((x) => x.id === cid);
+        const box = document.createElement("div"); box.className = "contract";
+        const b = document.createElement("b"); b.textContent = c.name;
+        const reqs = document.createElement("div"); reqs.className = "reqs";
+        let ok = true;
+        Object.keys(c.req).forEach((g) => { const chip = goodChip(g, (p.silo[g] || 0) + "/" + c.req[g]); if ((p.silo[g] || 0) < c.req[g]) { ok = false; chip.style.opacity = ".6"; } reqs.appendChild(chip); });
+        const rew = document.createElement("div"); rew.textContent = "Récompense : " + c.gold + " pièces et " + (c.stars + (has(p, "comptoir") ? 1 : 0)) + " étoile(s).";
+        const btn = mkBtn("Livrer", "small green", () => act(() => fulfill(S, pi, cid)));
+        btn.disabled = dis || !ok;
+        box.append(b, reqs, rew, btn);
+        body.appendChild(box);
+      });
+      hint("Le premier qui livre emporte le contrat. Un nouveau prend sa place. Livrer ne coûte pas d'achat.");
+      break;
+    }
+    case "echoppes": {
+      const t1 = document.createElement("h3"); t1.textContent = "Ton échoppe"; body.appendChild(t1);
+      if (canAct) {
+        p.stall.forEach((l) => {
+          const right = mkBtn("Retirer", "small", () => act(() => stallRemove(S, pi, l.id)));
+          line(l.kind === "good" ? l.key : l.key, l.qty + " × " + (l.kind === "good" ? GOODS[l.key].name : ANIMALS[l.key].name), l.price + " pièces l'unité", right);
+        });
+        if (p.stall.length < 3) {
+          const f = document.createElement("div"); f.className = "contract";
+          const sel = document.createElement("select"); sel.id = "stallWhat"; sel.setAttribute("aria-label", "Quoi vendre");
+          GOOD_KEYS.forEach((g) => { if (p.silo[g] > 0) { const o = document.createElement("option"); o.value = "good:" + g; o.textContent = GOODS[g].name + " (" + p.silo[g] + ")"; sel.appendChild(o); } });
+          Object.keys(ANIMALS).forEach((a) => { if (p.animals[a] > 0) { const o = document.createElement("option"); o.value = "animal:" + a; o.textContent = ANIMALS[a].name + " (" + p.animals[a] + ")"; sel.appendChild(o); } });
+          const q = document.createElement("input"); q.type = "number"; q.min = 1; q.value = 1; q.id = "stallQty"; q.setAttribute("aria-label", "Quantité");
+          const pr = document.createElement("input"); pr.type = "number"; pr.min = 1; pr.value = 5; pr.id = "stallPrice"; pr.setAttribute("aria-label", "Prix à l'unité");
+          const row = document.createElement("div"); row.className = "row qty";
+          const lq = document.createElement("span"); lq.textContent = "Qté"; const lp = document.createElement("span"); lp.textContent = "Prix";
+          row.append(sel, lq, q, lp, pr);
+          const b = mkBtn("Mettre en vente", "small green", () => { const [kind, key] = sel.value.split(":"); act(() => stallAdd(S, pi, kind, key, +q.value, +pr.value)); });
+          b.disabled = dis || !sel.options.length;
+          const exp = document.createElement("div"); exp.className = "sub muted"; exp.textContent = "Les autres fermes peuvent acheter tes lots pendant leur tour. L'argent arrive directement chez toi.";
+          f.append(row, b, exp);
+          body.appendChild(f);
+        }
+      } else hint("Ton échoppe se gère pendant ton tour, le soir.");
+      const t2 = document.createElement("h3"); t2.textContent = "Échoppes des voisins"; body.appendChild(t2);
+      let any = false;
+      S.players.forEach((q, oi) => {
+        if (oi === pi && canAct) return;
+        q.stall.forEach((l) => {
+          any = true;
+          const right = mkBtn("Acheter " + l.qty * l.price, "small green", () => act(() => stallBuy(S, pi, oi, l.id)));
+          right.disabled = !canAct || oi === pi;
+          line(l.key, l.qty + " × " + (l.kind === "good" ? GOODS[l.key].name : ANIMALS[l.key].name) + " · " + farmName(q), l.price + " pièces l'unité. Achetable à tout moment de ton tour.", right);
+        });
+      });
+      if (!any) hint("Aucun lot en vente chez les voisins.");
+      break;
+    }
+    case "journal": {
+      const lg = document.createElement("div"); lg.className = "log";
+      const mi = myIndex();
+      S.log.slice().reverse().forEach((l) => { const d = document.createElement("div"); if (l.tgt === mi && MODE === "online") d.className = "hit"; d.textContent = "J" + l.day + " · " + l.txt; lg.appendChild(d); });
+      body.appendChild(lg);
+      break;
+    }
+  }
+}
+
+/* =====================================================================
+   DÉMARRAGE
+   ===================================================================== */
+let heroCtx = null;
+const HERO_S = (() => {
+  const h = newGame([{ uid: "hero", farm: "Bocage", patron: "faune" }], 42);
+  const p = h.players[0];
+  p.plots = [{ crop: "ble", g: 2 }, { crop: "carotte", g: 1 }, { crop: "tomate", g: 3 }, { crop: "navet", g: 1 }, { crop: "citrouille", g: 2 }, { crop: "citrouille", g: 4 }, { crop: "ble", g: 0 }, { crop: null, g: 0 }, { crop: "tomate", g: 1 }];
+  p.animals = { poule: 3, mouton: 1, vache: 1 };
+  p.buildings = { moulin: 1, puits: 1, grenier: 1, epouvantail: 1, halle: 1 };
+  p.silo.ble = 3; p.silo.oeuf = 2;
+  h.weather = "soleil";
+  return h;
+})();
+
+function bind() {
+  heroCtx = $("heroCanvas").getContext("2d");
+  heroCtx.imageSmoothingEnabled = false;
+  $("createBtn").addEventListener("click", createOnline);
+  $("localBtn").addEventListener("click", () => startLocal(+$("localCount").value));
+  $("lobbyBack").addEventListener("click", goHome);
+  $("startBtn").addEventListener("click", startOnline);
+  $("quitBtn").addEventListener("click", goHome);
+  $("eveningBtn").addEventListener("click", () => { UI.target = null; act(() => { S.phase = "soir"; return null; }); UI.tab = UI.tab === "journal" ? "marche" : UI.tab; render(); });
+  $("endBtn").addEventListener("click", () => {
+    UI.target = null;
+    const before = S.day;
+    act(() => { endTurn(S); return null; });
+    if (S.status === "ended") showEnd();
+    else if (S.day !== before && MODE === "local") { UI.lastDawn = S.dawn.day; showDawn(S.players.length > 1 ? handoff : null); }
+  });
+  $("powerBtn").addEventListener("click", onPower);
+  $("targetOk").addEventListener("click", confirmTarget);
+  $("targetCancel").addEventListener("click", () => { UI.target = null; render(); });
+  const cv = $("farmCanvas");
+  cv.addEventListener("click", onFarmClick);
+  cv.addEventListener("mousemove", (e) => { UI.hover = farmHit(e); });
+  cv.addEventListener("mouseleave", () => (UI.hover = -1));
+  window.addEventListener("resize", () => { if (S) resizeFarm(); });
+  $("overlay").addEventListener("click", (e) => { if (e.target === $("overlay") && $("modal").dataset.kind !== "handoff") closeModal(); });
+  try {
+    const saved = JSON.parse(localStorage.getItem("bocage-local") || "null");
+    if (saved && saved.status === "playing") {
+      const b = mkBtn("Reprendre la partie locale (jour " + saved.day + ")", "small", () => { MODE = "local"; S = saved; UI.lastDawn = S.dawn ? S.dawn.day : 0; UI.lastLog = S.logSeq; UI.handoffFor = -1; showGame(); });
+      $("localBtn").parentElement.appendChild(b);
+    }
+  } catch (e) {}
+  requestAnimationFrame(frame);
+  initNet();
+}
+
+// Outils de test (inoffensifs) : exposent le moteur.
+window.__bocage = { newGame, playCard, harvest, endTurn, sell, buyCard, buyAnimal, buyBuilding, fulfill, stallAdd, stallBuy, usePower, canPlay, score, cur, get S() { return S; }, set S(v) { S = v; } };
+
+bind();
+})();
+</script>
