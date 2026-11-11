@@ -9,7 +9,7 @@ module.exports = [
     description: "Électricien installé à Signy-l'Abbaye : dépannage, recherche de panne, tableau, prises, éclairage. Prix annoncé avant de venir, 7 j/7 sur RDV.",
     kicker: "Électricien · Signy-l'Abbaye (08460)",
     h1: "Électricien à Signy-l'Abbaye : l'artisan de la commune",
-    lead: "ALED08 est installé à **Signy-l'Abbaye**. Pour les habitants du bourg et des hameaux, cela veut dire un électricien **à quelques minutes de chez eux**, un prix annoncé avant de venir, et souvent un créneau dès le soir même.",
+    lead: "ALED08 est installé à Signy-l'Abbaye. Pour les habitants du bourg et des hameaux, cela veut dire un électricien à quelques minutes de chez eux, un prix annoncé avant de venir, et souvent un créneau dès le soir même.",
     body: `## Le trajet le plus court de ma tournée
 
 Quand on habite Signy-l'Abbaye, faire venir un électricien de Charleville ou de Reims coûte du temps et des frais de route. Ici, je suis votre voisin, comme pour Dommery, Lalobbe, Neuvizy, Mesmont ou Saint-Jean-aux-Bois. Et parce que je n'ai que quelques minutes de route, je peux plus facilement caler un passage en fin de journée, même pour une petite intervention.
@@ -52,7 +52,7 @@ Travailler dans sa propre commune, c'est accepter d'être jugé tous les jours s
     description: 'Électricien à Rethel pour les particuliers : dépannage, recherche de panne, tableau, prises, éclairage. Prix annoncé avant de venir, 7 j/7 sur RDV.',
     kicker: 'Électricien · Rethel (08300)',
     h1: 'Électricien à Rethel, en soirée et le week-end',
-    lead: "**Rethel** fait partie de mes secteurs réguliers dans les Ardennes. J'y interviens chez les particuliers pour les pannes, les tableaux, les prises et l'éclairage, **toute la semaine et le week-end, sur rendez-vous**, avec un **forfait dépannage annoncé avant de venir**.",
+    lead: "Rethel fait partie de mes secteurs réguliers dans les Ardennes. J'y interviens chez les particuliers pour les pannes, les tableaux, les prises et l'éclairage, toute la semaine et le week-end, sur rendez-vous, avec un forfait dépannage annoncé avant de venir.",
     body: `## Des installations marquées par l'histoire de la ville
 
 Une grande partie du centre de Rethel a été reconstruite après la Seconde Guerre mondiale. Beaucoup de logements datent donc de la **Reconstruction des années 1950**, et certaines installations électriques en gardent la trace : circuits sans conducteur de terre, sections de câbles prévues pour une époque où l'on branchait une radio et un fer à repasser, tableaux modernisés à moitié.
@@ -95,7 +95,7 @@ J'interviens dans toute la ville, du centre aux quartiers plus récents, ainsi q
     description: 'Électricien à Charleville-Mézières : dépannage, tableau, prises, éclairage, mise en sécurité. Prix annoncé avant, 7 j/7 sur RDV.',
     kicker: 'Électricien · Charleville-Mézières (08000)',
     h1: 'Électricien à Charleville-Mézières, après le travail et le week-end',
-    lead: "À Charleville-Mézières, vous rentrez du travail et la panne vous attend ? Pas de souci : j'interviens dans la préfecture et son agglomération **toute la semaine et le week-end, sur rendez-vous**, le soir et le week-end compris, avec des prix publiés à l'avance.",
+    lead: "À Charleville-Mézières, vous rentrez du travail et la panne vous attend ? Pas de souci : j'interviens dans la préfecture et son agglomération toute la semaine et le week-end, sur rendez-vous, le soir et le week-end compris, avec des prix publiés à l'avance.",
     body: `## Des logements très variés
 
 De la place Ducale aux quartiers de Mohon, d'Étion ou de Montcy-Notre-Dame, Charleville-Mézières offre une grande diversité de logements : immeubles anciens du centre, maisons de ville sur plusieurs niveaux, résidences des années 60 et 70, pavillons plus récents. Chacun a ses points faibles :
@@ -138,7 +138,7 @@ Parce que je suis disponible quand vous l'êtes. Le prix du forfait vous est ann
     description: "Électricien à Sedan : remplacement de tableau, mise en sécurité, éclairage, dépannage planifié le soir ou le week-end. Déplacement annoncé à l'avance.",
     kicker: 'Électricien · Sedan (08200)',
     h1: 'Électricien à Sedan : des travaux soignés, planifiés le soir ou le week-end',
-    lead: "À **Sedan** et dans son agglomération, j'interviens volontiers, en particulier pour les **travaux planifiés** (tableau, mise en sécurité, éclairage) et pour les dépannages que l'on peut programmer **le soir ou le week-end**.",
+    lead: "À Sedan et dans son agglomération, j'interviens volontiers, en particulier pour les travaux planifiés (tableau, mise en sécurité, éclairage) et pour les dépannages que l'on peut programmer le soir ou le week-end.",
     body: `## Soyons francs sur la distance
 
 Pour une panne qui vous laisse sans courant en plein hiver, un électricien installé à Sedan même pourra parfois venir plus vite que moi. Je préfère vous le dire. En revanche, si vous cherchez un artisan **disponible en soirée ou le samedi**, qui annonce ses prix à l'avance et prend le temps d'expliquer, je peux organiser mon planning pour venir, en regroupant si possible plusieurs interventions dans le secteur.
@@ -185,7 +185,7 @@ La ville ancienne, au pied du château fort, compte de nombreuses **maisons haut
     description: "Électricien à Rocroi et sur le plateau : chauffage électrique qui disjoncte l'hiver, remise en service de gîtes, travaux dans les maisons en pierre.",
     kicker: 'Électricien · Rocroi (08230)',
     h1: 'Électricien à Rocroi et sur le plateau rocroyen',
-    lead: "Ville fortifiée en étoile perchée sur son plateau, **Rocroi** a un climat qui met les installations électriques à rude épreuve. J'y interviens le soir et le week-end pour les **pannes liées au chauffage**, les disjoncteurs qui sautent en plein hiver et les travaux dans les maisons anciennes.",
+    lead: "Ville fortifiée en étoile perchée sur son plateau, Rocroi a un climat qui met les installations électriques à rude épreuve. J'y interviens le soir et le week-end pour les pannes liées au chauffage, les disjoncteurs qui sautent en plein hiver et les travaux dans les maisons anciennes.",
     body: `## Quand l'hiver fait sauter les disjoncteurs
 
 Le plateau de Rocroi est réputé pour ses hivers longs et froids. Dans les logements chauffés à l'électricité, les radiateurs tournent à plein régime pendant des semaines, et c'est souvent à ce moment-là que les faiblesses apparaissent :
@@ -229,7 +229,7 @@ Le secteur compte de nombreux gîtes et maisons occupées une partie de l'année
     description: "Électricien à Liart et alentours : éclairage de cour, dépannage, prises, mise en sécurité des maisons de brique et corps de ferme. Prix annoncé avant de venir.",
     kicker: 'Électricien · Liart (08290)',
     h1: 'Électricien à Liart : maisons de brique, fermes et cours de Thiérache',
-    lead: "**Liart** marque l'entrée de la Thiérache ardennaise. J'y interviens le soir et le week-end, pour le dépannage, l'éclairage et la mise en sécurité des maisons et des corps de ferme.",
+    lead: "Liart marque l'entrée de la Thiérache ardennaise. J'y interviens le soir et le week-end, pour le dépannage, l'éclairage et la mise en sécurité des maisons et des corps de ferme.",
     body: `## Le bâti de la Thiérache
 
 Autour de Liart, l'habitat traditionnel associe **maisons de brique**, longères et anciens corps de ferme organisés autour d'une cour. Ces bâtiments ont souvent été équipés en électricité par étapes : d'abord la maison, puis l'étable ou la grange, puis un atelier. Le résultat est fréquemment une installation éclatée, avec des lignes extérieures anciennes et des protections qui ne suivent plus.
@@ -270,7 +270,7 @@ Beaucoup d'habitants du secteur vivent depuis longtemps dans leur maison et souh
     description: 'Électricien à Novion-Porcien : dépannage après orage, parafoudre, mise en sécurité de maisons anciennes, ateliers. Prix annoncé avant, soirs et week-ends.',
     kicker: 'Électricien · Novion-Porcien (08270)',
     h1: 'Électricien à Novion-Porcien, au cœur du Porcien',
-    lead: "Au milieu du plateau agricole du Porcien, **Novion-Porcien** et ses écarts comptent de nombreuses maisons isolées, souvent alimentées par des lignes aériennes. Résultat : des installations plus exposées aux **orages et aux surtensions**. J'y interviens 7 j/7, sur rendez-vous.",
+    lead: "Au milieu du plateau agricole du Porcien, Novion-Porcien et ses écarts comptent de nombreuses maisons isolées, souvent alimentées par des lignes aériennes. Résultat : des installations plus exposées aux orages et aux surtensions. J'y interviens 7 j/7, sur rendez-vous.",
     body: `## Les maisons isolées face aux orages
 
 Sur un plateau ouvert, les lignes électriques aériennes qui desservent les fermes et les maisons écartées sont plus exposées à la foudre. Un coup de foudre, même tombé à distance, peut provoquer une **surtension** qui remonte le réseau et grille box internet, télévision, carte électronique de chaudière ou de portail.
@@ -310,7 +310,7 @@ Compresseur, poste à souder, scie sur table : les outils d'atelier demandent de
     description: 'Électricien à Thin-le-Moutier : mise à niveau des tableaux des années 70-80, différentiels 30 mA, salle de bain, prises extérieures. Prix annoncé avant.',
     kicker: 'Électricien · Thin-le-Moutier (08460)',
     h1: 'Électricien à Thin-le-Moutier : moderniser sans tout refaire',
-    lead: "Entre la forêt de Signy et la route de Charleville, **Thin-le-Moutier** compte de nombreux pavillons construits dans les années 70 et 80. Leurs installations sont souvent saines, mais **leurs protections ont vieilli**. J'interviens régulièrement pour les mettre à niveau.",
+    lead: "Entre la forêt de Signy et la route de Charleville, Thin-le-Moutier compte de nombreux pavillons construits dans les années 70 et 80. Leurs installations sont souvent saines, mais leurs protections ont vieilli. J'interviens régulièrement pour les mettre à niveau.",
     body: `## Le cas typique du pavillon des années 70-80
 
 Ces maisons ont été construites avec des installations plutôt correctes pour l'époque : des circuits séparés, une prise de terre, des disjoncteurs. Leur point faible est souvent le même : **une seule protection différentielle de 500 mA**, placée en tête de l'installation.
@@ -352,7 +352,7 @@ Les grands jardins du secteur appellent une **prise extérieure** pour les outil
     description: 'Électricien à Poix-Terron : ajout de circuits, bureau en télétravail, extension, prise pour voiture électrique, éclairage extérieur. Soirs et week-ends.',
     kicker: 'Électricien · Poix-Terron (08430)',
     h1: 'Électricien à Poix-Terron : faire évoluer votre installation',
-    lead: "Dans la vallée de la Vence, avec son accès direct à l'A34, **Poix-Terron** attire de nombreux actifs qui travaillent à Charleville ou à Reims. Des maisons souvent récentes, dont l'électricité doit **évoluer avec les usages** : télétravail, extension, voiture électrique. Je m'en occupe le soir et le week-end, quand vous êtes là.",
+    lead: "Dans la vallée de la Vence, avec son accès direct à l'A34, Poix-Terron attire de nombreux actifs qui travaillent à Charleville ou à Reims. Des maisons souvent récentes, dont l'électricité doit évoluer avec les usages : télétravail, extension, voiture électrique. Je m'en occupe le soir et le week-end, quand vous êtes là.",
     body: `## Des installations récentes… mais déjà à l'étroit
 
 Une maison construite il y a quinze ou vingt ans dispose d'une installation saine, mais pensée pour les besoins de l'époque. Aujourd'hui, les demandes que je reçois dans le secteur sont très différentes de celles des maisons anciennes :
@@ -395,7 +395,7 @@ Pour une recharge lente la nuit, une **prise renforcée** sur un circuit dédié
     description: 'Électricien à Château-Porcien : remise en service après inondation, caves humides, mise en sécurité de maisons anciennes. Le soir et le week-end.',
     kicker: 'Électricien · Château-Porcien (08360)',
     h1: "Électricien à Château-Porcien, sur les bords de l'Aisne",
-    lead: "Ancienne capitale du Porcien bâtie sur les rives de l'Aisne, **Château-Porcien** a des maisons anciennes pleines de charme… et parfois des installations électriques **éprouvées par l'humidité et les crues**. J'y interviens le soir et le week-end.",
+    lead: "Ancienne capitale du Porcien bâtie sur les rives de l'Aisne, Château-Porcien a des maisons anciennes pleines de charme… et parfois des installations électriques éprouvées par l'humidité et les crues. J'y interviens le soir et le week-end.",
     body: `## Après une crue : ne rien remettre sous tension trop vite
 
 Lorsqu'un sous-sol, une cave ou un rez-de-chaussée a été inondé, l'eau a pu pénétrer dans les boîtes de dérivation, les prises, les gaines et parfois le tableau. Même une fois l'eau retirée, **remettre le courant sans contrôle est dangereux** : les dépôts de boue et l'humidité résiduelle créent des fuites de courant et des risques d'échauffement.
@@ -437,7 +437,7 @@ Même sans crue, l'humidité de la vallée vieillit prématurément le matériel
     description: 'Électricien à Launois-sur-Vence : remplacement de tableaux mixtes, mise en sécurité des maisons de village, éclairage de cour. Devis gratuit.',
     kicker: 'Électricien · Launois-sur-Vence (08430)',
     h1: 'Électricien à Launois-sur-Vence : remettre de l’ordre dans le tableau',
-    lead: "Village-étape de la vallée de la Vence, connu pour son ancien **relais de poste**, Launois-sur-Vence est sur l'axe Rethel-Charleville. J'y interviens souvent pour des tableaux « hybrides » qui mélangent fusibles anciens et disjoncteurs plus récents.",
+    lead: "Village-étape de la vallée de la Vence, connu pour son ancien relais de poste, Launois-sur-Vence est sur l'axe Rethel-Charleville. J'y interviens souvent pour des tableaux « hybrides » qui mélangent fusibles anciens et disjoncteurs plus récents.",
     body: `## Le tableau « à moitié modernisé »
 
 C'est une situation que je rencontre très souvent dans les maisons de village du secteur : au fil des années, quelques disjoncteurs ont été ajoutés à côté des anciens porte-fusibles, parfois sur une planche, parfois dans un petit coffret voisin. Le résultat fonctionne, mais :
@@ -481,7 +481,7 @@ Beaucoup de maisons donnent sur une cour ou un porche. Un éclairage à détecti
     description: 'Électricien à Wasigny : rénovation électrique progressive, cuisine, dépannage, éclairage de cave. À tout moment, sur rendez-vous.',
     kicker: 'Électricien · Wasigny (08270)',
     h1: 'Électricien à Wasigny : accompagner votre rénovation pièce par pièce',
-    lead: "Petit village de la vallée de la Vaux dominé par son château, **Wasigny** est au cœur du Porcien. Beaucoup de familles y rénovent une maison ancienne **pièce après pièce** : je les accompagne pour que l'électricité suive, étape par étape.",
+    lead: "Petit village de la vallée de la Vaux dominé par son château, Wasigny est au cœur du Porcien. Beaucoup de familles y rénovent une maison ancienne pièce après pièce : je les accompagne pour que l'électricité suive, étape par étape.",
     body: `## Rénover pièce par pièce sans se tromper d'ordre
 
 Quand on rénove soi-même une maison, l'électricité arrive souvent au mauvais moment : après le placo, après la peinture, quand il faut tout rouvrir. Mon conseil est simple : **faire intervenir l'électricien avant de fermer les murs**. Je passe les gaines et les boîtes là où elles devront être, vous faites vos doublages, puis je reviens pour l'appareillage et les raccordements.
@@ -525,7 +525,7 @@ Comme dans tout le fond de vallée, les caves sont fraîches et humides. Un inte
     description: 'Électricien à Chaumont-Porcien : dépannage après orage, protection contre les surtensions, portail motorisé, corps de ferme. Prix annoncé avant de venir.',
     kicker: 'Électricien · Chaumont-Porcien (08220)',
     h1: 'Électricien à Chaumont-Porcien : protéger une maison exposée',
-    lead: "Perché sur les hauteurs du Porcien, **Chaumont-Porcien** offre de beaux panoramas… et une exposition marquée aux vents et aux orages. J'y interviens pour les **dépannages après orage**, la protection des équipements sensibles et les travaux dans les corps de ferme.",
+    lead: "Perché sur les hauteurs du Porcien, Chaumont-Porcien offre de beaux panoramas… et une exposition marquée aux vents et aux orages. J'y interviens pour les dépannages après orage, la protection des équipements sensibles et les travaux dans les corps de ferme.",
     body: `## Les équipements électroniques, premières victimes
 
 Il y a vingt ans, un orage grillait surtout la télévision. Aujourd'hui, une maison compte des dizaines d'appareils électroniques sensibles : **box internet, motorisation de portail et de porte de garage, chaudière à régulation électronique, pompe à chaleur, alarme**. Sur un site exposé, une surtension peut en mettre plusieurs hors service d'un coup.
@@ -569,7 +569,7 @@ Dans les anciennes fermes du village, la grange ou l'ancienne écurie est souven
     description: 'Électricien à Rumigny : installations en apparent à moderniser, prise pour poêle à granulés, éclairage de chemin, dépannage. Soirs et week-ends.',
     kicker: 'Électricien · Rumigny (08290)',
     h1: 'Électricien à Rumigny, en Thiérache ardennaise',
-    lead: "Connue pour son château de la Cour des Prés, **Rumigny** et ses environs comptent de nombreuses longères et maisons de brique au milieu du bocage. J'y interviens le soir et le week-end (forfait dépannage électrique, travaux sur devis) pour moderniser ces installations souvent posées **en apparent**.",
+    lead: "Connue pour son château de la Cour des Prés, Rumigny et ses environs comptent de nombreuses longères et maisons de brique au milieu du bocage. J'y interviens le soir et le week-end (forfait dépannage électrique, travaux sur devis) pour moderniser ces installations souvent posées en apparent.",
     body: `## Les installations en apparent, à moderniser avec goût
 
 Dans les longères aux murs épais, l'électricité a souvent été posée en surface : fils sous baguettes en bois, câbles agrafés le long des poutres, boîtes de dérivation vissées au plafond. Avec le temps, ces installations deviennent fragiles et peu esthétiques.
@@ -609,7 +609,7 @@ Dans le bocage, les maisons sont parfois éloignées de la route. Un éclairage 
     description: "Électricien à Maubert-Fontaine : congélateur qui disjoncte, éclairage de garage LED, ajout de prises dans une maison récente, dépannage le soir et le week-end.",
     kicker: 'Électricien · Maubert-Fontaine (08260)',
     h1: 'Électricien à Maubert-Fontaine : fiabiliser le quotidien',
-    lead: "Au carrefour des routes du plateau, près de Rocroi, **Maubert-Fontaine** combine maisons anciennes et constructions récentes. On m'y appelle surtout pour des **problèmes du quotidien** : garage mal éclairé, congélateur qui fait disjoncter, prises manquantes. Prix du dépannage annoncé avant de venir.",
+    lead: "Au carrefour des routes du plateau, près de Rocroi, Maubert-Fontaine combine maisons anciennes et constructions récentes. On m'y appelle surtout pour des problèmes du quotidien : garage mal éclairé, congélateur qui fait disjoncter, prises manquantes. Prix du dépannage annoncé avant de venir.",
     body: `## Le garage, pièce souvent négligée
 
 Le garage concentre souvent les installations les plus bricolées de la maison : réglettes néon qui clignotent l'hiver, prise unique sur laquelle sont branchés congélateur, recharge d'outils et éclairage d'appoint, rallonges posées au sol dans l'humidité.
@@ -653,7 +653,7 @@ Dans les constructions récentes, les besoins portent plutôt sur l'**ajout** : 
     description: 'Électricien à Renwez et près du lac des Vieilles-Forges : remise en service de résidences secondaires, terrasse, plaque à induction. Soirs et week-ends.',
     kicker: 'Électricien · Renwez (08150)',
     h1: 'Électricien à Renwez et autour du lac des Vieilles-Forges',
-    lead: "Entre son musée de la Forêt et la proximité du **lac des Vieilles-Forges**, Renwez accueille aussi bien des résidents à l'année que des propriétaires de **résidences secondaires**. J'interviens pour les deux, le soir et le week-end.",
+    lead: "Entre son musée de la Forêt et la proximité du lac des Vieilles-Forges, Renwez accueille aussi bien des résidents à l'année que des propriétaires de résidences secondaires. J'interviens pour les deux, le soir et le week-end.",
     body: `## Résidences secondaires : la remise en service
 
 Une maison fermée plusieurs mois en forêt subit l'humidité, les variations de température et parfois la visite de rongeurs. À la réouverture, les problèmes électriques sont fréquents : différentiel qui saute, prise oxydée, luminaire extérieur infiltré.
@@ -700,7 +700,7 @@ Pour les habitants à l'année, les demandes ressemblent à celles de toute l'ag
     description: 'Électricien à Signy-le-Petit : chute de tension sur longues lignes, atelier bois, prise pour camping-car, dépannage. Le soir et le week-end.',
     kicker: 'Électricien · Signy-le-Petit (08380)',
     h1: 'Électricien à Signy-le-Petit, aux confins de la Thiérache',
-    lead: "À ne pas confondre avec Signy-l'Abbaye : **Signy-le-Petit** se trouve près de la frontière belge et de l'étang de la Motte. J'y interviens le soir et le week-end, notamment pour les maisons isolées et leurs dépendances.",
+    lead: "À ne pas confondre avec Signy-l'Abbaye : Signy-le-Petit se trouve près de la frontière belge et de l'étang de la Motte. J'y interviens le soir et le week-end, notamment pour les maisons isolées et leurs dépendances.",
     body: `## Les longues lignes et la chute de tension
 
 En lisière de forêt, certaines maisons et dépendances sont alimentées par des câbles de plusieurs dizaines de mètres. Sur une telle longueur, si la section du câble est insuffisante, **la tension baisse** à l'arrivée : moteurs qui peinent, lampes qui faiblissent, appareils qui se mettent en défaut, et câble qui chauffe.
@@ -740,7 +740,7 @@ Pour un camping-car stationné sur la propriété, ou pour recevoir de la famill
     description: "Électricien à Attigny : mise en sécurité d'anciens commerces devenus logements, humidité près du canal, éclairage, dépannage. Soirs et week-ends.",
     kicker: 'Électricien · Attigny (08130)',
     h1: "Électricien à Attigny, entre l'Aisne et le canal des Ardennes",
-    lead: "Ancienne résidence des rois carolingiens, **Attigny** est aujourd'hui un bourg paisible de la vallée de l'Aisne. J'y interviens le soir et le week-end, pour les maisons du bourg et les **anciens commerces devenus logements**.",
+    lead: "Ancienne résidence des rois carolingiens, Attigny est aujourd'hui un bourg paisible de la vallée de l'Aisne. J'y interviens le soir et le week-end, pour les maisons du bourg et les anciens commerces devenus logements.",
     body: `## Quand une boutique devient un logement
 
 Comme dans beaucoup de bourgs, plusieurs anciens commerces d'Attigny ont été transformés en habitations. Leur installation électrique en garde souvent la trace : **circuits prévus pour une vitrine et un comptoir**, tableau commun entre l'ancienne boutique et le logement de l'étage, éclairages au néon, prises en nombre insuffisant dans les nouvelles pièces de vie.
@@ -784,7 +784,7 @@ Dans une cuisine réaménagée, l'éclairage est souvent sous-estimé. Un plafon
     description: "Électricien à Saulces-Monclin : dépannage électrique, chauffe-eau qui ne chauffe plus, volets roulants sans courant, prises. Le soir et le week-end.",
     kicker: 'Électricien · Saulces-Monclin (08270)',
     h1: 'Électricien à Saulces-Monclin : les pannes du quotidien, réglées le soir',
-    lead: "Entre Rethel et Poix-Terron, à deux pas de l'A34, **Saulces-Monclin** compte beaucoup de pavillons récents. Les pannes y sont rarement spectaculaires, mais elles gâchent vite le quotidien : **plus d'eau chaude, un volet bloqué, une prise muette**. Je viens le soir ou le week-end.",
+    lead: "Entre Rethel et Poix-Terron, à deux pas de l'A34, Saulces-Monclin compte beaucoup de pavillons récents. Les pannes y sont rarement spectaculaires, mais elles gâchent vite le quotidien : plus d'eau chaude, un volet bloqué, une prise muette. Je viens le soir ou le week-end.",
     body: `## Les pannes typiques d'un pavillon récent
 
 Dans une maison de vingt ou trente ans, l'installation est saine dans l'ensemble. Ce sont les **équipements** qui commencent à fatiguer, souvent tous en même temps :
@@ -827,7 +827,7 @@ Avant d'incriminer le moteur, il faut vérifier que le courant arrive : protecti
     description: "Électricien à Sault-lès-Rethel : dépannage électrique, radiateurs électriques en panne, cuisine qui disjoncte, tableau à compléter. Créneaux le soir et le week-end.",
     kicker: 'Électricien · Sault-lès-Rethel (08300)',
     h1: 'Électricien à Sault-lès-Rethel, aux portes de Rethel',
-    lead: "Commune résidentielle collée à Rethel, **Sault-lès-Rethel** aligne des lotissements construits des années 70 à aujourd'hui. On m'y appelle surtout pour des **radiateurs électriques qui ne chauffent plus** et des **cuisines qui font sauter le courant**. Prix du dépannage annoncé avant de venir.",
+    lead: "Commune résidentielle collée à Rethel, Sault-lès-Rethel aligne des lotissements construits des années 70 à aujourd'hui. On m'y appelle surtout pour des radiateurs électriques qui ne chauffent plus et des cuisines qui font sauter le courant. Prix du dépannage annoncé avant de venir.",
     body: `## Radiateur froid : thermostat, fil pilote ou alimentation ?
 
 Un radiateur électrique qui reste froid ne signifie pas forcément qu'il est mort. Trois pistes sont à vérifier dans l'ordre :
@@ -871,7 +871,7 @@ Beaucoup de tableaux du secteur sont encore en bon état, mais il leur manque de
     description: "Électricien à Boulzicourt, vallée de la Vence : dépannage électrique, pompe de relevage, sous-sol humide, maisons mitoyennes à sécuriser. Soirs et week-ends.",
     kicker: 'Électricien · Boulzicourt (08410)',
     h1: 'Électricien à Boulzicourt, dans la vallée de la Vence',
-    lead: "Bourg de la vallée de la Vence, sur la route de Charleville, **Boulzicourt** mêle maisons ouvrières mitoyennes et pavillons à sous-sol. La proximité de la rivière y rend les **sous-sols humides** et les **pompes de relevage** fréquentes : deux sources classiques de pannes. Prix du dépannage annoncé avant de venir.",
+    lead: "Bourg de la vallée de la Vence, sur la route de Charleville, Boulzicourt mêle maisons ouvrières mitoyennes et pavillons à sous-sol. La proximité de la rivière y rend les sous-sols humides et les pompes de relevage fréquentes : deux sources classiques de pannes. Prix du dépannage annoncé avant de venir.",
     body: `## La pompe de relevage, discrète jusqu'au jour où elle lâche
 
 Dans un sous-sol sujet aux remontées d'eau, la pompe de relevage tourne sans qu'on y pense. Quand elle fait disjoncter, ou qu'elle ne démarre plus, le risque est double : **plus de courant** dans une partie de la maison, et **un sous-sol qui se remplit**.
@@ -917,7 +917,7 @@ Quand le sous-sol pose problème, le premier objectif est de **l'isoler électri
     description: "Électricien à Rimogne, ancienne cité ardoisière : dépannage électrique, combles aménagés, chauffage d'appoint qui disjoncte, maisons anciennes. Soirs et week-ends.",
     kicker: 'Électricien · Rimogne (08150)',
     h1: 'Électricien à Rimogne, l’ancienne cité de l’ardoise',
-    lead: "Longtemps tournée vers ses ardoisières, **Rimogne** garde de nombreuses petites maisons d'ouvriers, agrandies au fil du temps par les combles ou une extension. Ces aménagements se sont souvent faits **sans nouveau circuit**, et l'installation finit par le montrer. Prix du dépannage annoncé avant de venir.",
+    lead: "Longtemps tournée vers ses ardoisières, Rimogne garde de nombreuses petites maisons d'ouvriers, agrandies au fil du temps par les combles ou une extension. Ces aménagements se sont souvent faits sans nouveau circuit, et l'installation finit par le montrer. Prix du dépannage annoncé avant de venir.",
     body: `## Des maisons agrandies, une installation restée la même
 
 Le scénario est fréquent dans les anciennes maisons d'ardoisiers : deux pièces au rez-de-chaussée à l'origine, puis une cuisine à l'arrière, puis une ou deux chambres sous le toit. À chaque étape, on a **prolongé le circuit le plus proche**. Résultat :
@@ -961,7 +961,7 @@ Quand une panne touche les combles, la difficulté est de localiser les raccorde
     description: "Électricien à Prix-lès-Mézières : dépannage électrique, porte de garage motorisée sans courant, éclairage extérieur, pavillons des années 70-90. Soirs et week-ends.",
     kicker: 'Électricien · Prix-lès-Mézières (08000)',
     h1: 'Électricien à Prix-lès-Mézières, à l’entrée de Charleville',
-    lead: "À la porte ouest de Charleville-Mézières, **Prix-lès-Mézières** est une commune pavillonnaire où l'on rentre du travail en voiture, directement au garage. Quand la **porte motorisée** ou l'**éclairage extérieur** tombe en panne, tout le quotidien se complique. Prix du dépannage annoncé avant de venir.",
+    lead: "À la porte ouest de Charleville-Mézières, Prix-lès-Mézières est une commune pavillonnaire où l'on rentre du travail en voiture, directement au garage. Quand la porte motorisée ou l'éclairage extérieur tombe en panne, tout le quotidien se complique. Prix du dépannage annoncé avant de venir.",
     body: `## La porte de garage qui ne s'ouvre plus
 
 Une porte motorisée immobile ne veut pas dire que le moteur est hors service. Avant d'appeler l'installateur, il faut s'assurer que le **courant arrive** :
@@ -1005,7 +1005,7 @@ Les lanternes de façade et les bornes d'allée posées il y a trente ans arrive
     description: "Électricien à Villers-Semeuse : dépannage électrique, spa ou piscine qui disjoncte, passage à l'induction, tableau saturé. À tout moment, sur rendez-vous.",
     kicker: 'Électricien · Villers-Semeuse (08000)',
     h1: 'Électricien à Villers-Semeuse, après votre journée de travail',
-    lead: "Commune résidentielle de l'agglomération de Charleville-Mézières, **Villers-Semeuse** compte de nombreux pavillons avec jardin. Les demandes y suivent les nouveaux équipements de la maison : **spa, piscine hors-sol, plaque à induction**… et les coupures qui vont avec. Prix du dépannage annoncé avant de venir.",
+    lead: "Commune résidentielle de l'agglomération de Charleville-Mézières, Villers-Semeuse compte de nombreux pavillons avec jardin. Les demandes y suivent les nouveaux équipements de la maison : spa, piscine hors-sol, plaque à induction… et les coupures qui vont avec. Prix du dépannage annoncé avant de venir.",
     body: `## Le spa gonflable qui fait tout disjoncter
 
 C'est devenu l'une des pannes d'été les plus fréquentes. Un spa chauffe l'eau pendant des heures en consommant autant qu'un gros radiateur, souvent au bout d'une **rallonge** branchée sur une prise de terrasse ou de garage. Deux problèmes apparaissent :
@@ -1048,7 +1048,7 @@ Spa, plaque, sèche-linge, recharge de voiture : chaque nouvel équipement récl
     description: "Électricien à Nouzonville, vallée de la Meuse : dépannage électrique, maisons de cité, compteur en limite de propriété, installations anciennes. Soirs et week-ends.",
     kicker: 'Électricien · Nouzonville (08700)',
     h1: 'Électricien à Nouzonville, dans la vallée de la Meuse',
-    lead: "Ville de tradition métallurgique serrée entre la Meuse et la forêt, **Nouzonville** a hérité de ses usines un habitat très typé : **cités ouvrières et maisons en bande**, souvent sur trois niveaux étroits. J'y interviens régulièrement, comme dans toute la vallée de la Meuse. Prix du dépannage annoncé avant de venir.",
+    lead: "Ville de tradition métallurgique serrée entre la Meuse et la forêt, Nouzonville a hérité de ses usines un habitat très typé : cités ouvrières et maisons en bande, souvent sur trois niveaux étroits. J'y interviens régulièrement, comme dans toute la vallée de la Meuse. Prix du dépannage annoncé avant de venir.",
     body: `## L'électricité des maisons de cité
 
 Construites en série pour loger les ouvriers des forges, ces maisons partagent les mêmes caractéristiques, et les mêmes faiblesses électriques :
@@ -1095,7 +1095,7 @@ Nouzonville est à la limite de mon secteur. Pour une coupure totale un soir d'h
     description: "Électricien à Juniville, vallée de la Retourne : dépannage électrique, grandes maisons de village, hangars et dépendances, éclairage de cour. Soirs et week-ends.",
     kicker: 'Électricien · Juniville (08310)',
     h1: 'Électricien à Juniville, dans la vallée de la Retourne',
-    lead: "Au sud de Rethel, dans la plaine crayeuse traversée par la Retourne, **Juniville** est un gros village de maisons spacieuses et de cours fermées, où Verlaine a vécu un temps. J'y interviens comme dans tout le sud du Rethélois. Prix du dépannage annoncé avant de venir.",
+    lead: "Au sud de Rethel, dans la plaine crayeuse traversée par la Retourne, Juniville est un gros village de maisons spacieuses et de cours fermées, où Verlaine a vécu un temps. J'y interviens comme dans tout le sud du Rethélois. Prix du dépannage annoncé avant de venir.",
     body: `## De grandes maisons, de longs circuits
 
 Les maisons de village de la plaine sont vastes : longues façades, pièces en enfilade, étage complet, dépendances autour de la cour. Leurs circuits électriques sont **longs**, et c'est là que naissent leurs pannes particulières :
@@ -1136,7 +1136,7 @@ La cour dessert souvent un hangar, un cellier, un ancien pressoir ou une grange.
     description: "Électricien basé au cœur des Crêtes préardennaises : dépannage, tableaux, éclairage et mise en sécurité dans les villages entre Porcien et vallée de la Vence.",
     kicker: 'Secteur · Crêtes préardennaises',
     h1: 'Électricien dans les Crêtes préardennaises',
-    lead: "Entre le Porcien et la vallée de la Vence, les **Crêtes préardennaises** forment un territoire rural de villages dispersés. Je connais bien ce secteur et j'y interviens **très régulièrement**, dans chaque village.",
+    lead: "Entre le Porcien et la vallée de la Vence, les Crêtes préardennaises forment un territoire rural de villages dispersés. Je connais bien ce secteur et j'y interviens très régulièrement, dans chaque village.",
     body: `## Un territoire rural, des besoins spécifiques
 
 Dans les Crêtes préardennaises, l'habitat est fait de villages de quelques centaines d'habitants, de fermes et de maisons isolées. Les installations électriques y présentent des points communs :
@@ -1176,7 +1176,7 @@ Signy-l'Abbaye, Wasigny, Thin-le-Moutier, Launois-sur-Vence, Novion-Porcien, Lia
     description: 'Électricien dans le Porcien : Château-Porcien, Novion-Porcien, Chaumont-Porcien et villages du plateau. Dépannage, maisons anciennes, orages.',
     kicker: 'Secteur · Porcien',
     h1: 'Électricien dans le Porcien',
-    lead: "Ancien comté dont Château-Porcien fut la capitale, le **Porcien** s'étend sur un plateau agricole entre la vallée de l'Aisne et la Thiérache. Je le parcours chaque semaine pour des dépannages et des travaux chez les particuliers, **le soir et le week-end**.",
+    lead: "Ancien comté dont Château-Porcien fut la capitale, le Porcien s'étend sur un plateau agricole entre la vallée de l'Aisne et la Thiérache. Je le parcours chaque semaine pour des dépannages et des travaux chez les particuliers, le soir et le week-end.",
     body: `## Un plateau, une vallée
 
 Le Porcien présente deux visages, et les installations électriques suivent :
@@ -1216,7 +1216,7 @@ J'interviens à Novion-Porcien, Chaumont-Porcien, Château-Porcien et dans tous 
     description: 'Électricien en Thiérache ardennaise : Liart, Rumigny, Signy-le-Petit, Maubert-Fontaine. Maisons de brique, dépendances, dépannage soir et week-end.',
     kicker: 'Secteur · Thiérache ardennaise',
     h1: 'Électricien en Thiérache ardennaise',
-    lead: "Bocage, maisons de brique, prairies et forêts : la **Thiérache ardennaise** s'étend au nord-ouest du département, de Liart à Signy-le-Petit. J'y interviens chez les particuliers pour le dépannage, l'éclairage et la mise en sécurité, **le soir et le week-end**.",
+    lead: "Bocage, maisons de brique, prairies et forêts : la Thiérache ardennaise s'étend au nord-ouest du département, de Liart à Signy-le-Petit. J'y interviens chez les particuliers pour le dépannage, l'éclairage et la mise en sécurité, le soir et le week-end.",
     body: `## L'électricité dans le bâti thiérachien
 
 La brique domine l'architecture de la Thiérache : maisons de bourg, longères, fermes à cour. Ces bâtiments solides ont traversé les décennies, mais leurs installations électriques présentent souvent les mêmes faiblesses :

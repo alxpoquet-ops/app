@@ -7,7 +7,7 @@ module.exports = [
     title: 'Comment trouver une panne électrique ? La méthode pas à pas',
     description: "Plus de courant, disjoncteur qui saute, prise morte : la méthode d'un électricien pour localiser une panne chez soi, en sécurité, étape par étape.",
     h1: 'Comment trouver une panne électrique ? La méthode pas à pas',
-    lead: "Face à une panne, on a tendance à tout essayer au hasard. Pourtant, quelques étapes dans le bon ordre suffisent souvent à **localiser le problème**, voire à le régler sans aide. Voici la méthode que j'applique moi-même, adaptée à ce que vous pouvez faire **en toute sécurité**.",
+    lead: "Face à une panne, on a tendance à tout essayer au hasard. Pourtant, quelques étapes dans le bon ordre suffisent souvent à localiser le problème, voire à le régler sans aide. Voici la méthode que j'applique moi-même, adaptée à ce que vous pouvez faire en toute sécurité.",
     category: 'Pannes', icon: 'search', date: '2026-11-04', prestation: 'recherche-panne',
     body: `## Étape 1 : la panne vient-elle de chez vous ?
 
@@ -88,7 +88,7 @@ Là où vos observations s'arrêtent, l'électricien mesure. Avec un **contrôle
     title: 'Pourquoi remplacer un tableau électrique ? 7 bonnes raisons',
     description: "Sécurité des personnes, incendie, confort, nouveaux usages, vente : les vraies raisons de remplacer un tableau électrique et les signes d'alerte.",
     h1: 'Pourquoi remplacer un tableau électrique ? Les 7 bonnes raisons',
-    lead: "On ne regarde son tableau électrique que lorsqu'il y a une panne. Pourtant, c'est l'élément qui conditionne **toute la sécurité de la maison**. Voici pourquoi, dans bien des logements, son remplacement est l'investissement le plus utile qui soit en électricité.",
+    lead: "On ne regarde son tableau électrique que lorsqu'il y a une panne. Pourtant, c'est l'élément qui conditionne toute la sécurité de la maison. Voici pourquoi, dans bien des logements, son remplacement est l'investissement le plus utile qui soit en électricité.",
     category: 'Tableau électrique', icon: 'panel-top', date: '2026-10-28', prestation: 'tableau',
     body: `## 1. Protéger les personnes contre l'électrocution
 
@@ -148,7 +148,7 @@ Le remplacement d'un tableau démarre généralement autour de quelques centaine
     title: 'Quand refaire son installation électrique ? Signes et bons moments',
     description: "Âge, signes d'usure, achat, rénovation, nouveaux besoins : comment savoir s'il faut refaire son électricité, en totalité ou en partie, et quand.",
     h1: 'Quand faut-il refaire son installation électrique ?',
-    lead: "Refaire toute l'électricité d'une maison est un chantier important. Le faire trop tôt, c'est dépenser inutilement ; trop tard, c'est prendre des risques. Voici les **critères concrets** qui permettent de décider, et les **moments les plus opportuns** pour se lancer.",
+    lead: "Refaire toute l'électricité d'une maison est un chantier important. Le faire trop tôt, c'est dépenser inutilement ; trop tard, c'est prendre des risques. Voici les critères concrets qui permettent de décider, et les moments les plus opportuns pour se lancer.",
     category: 'Rénovation', icon: 'hammer', date: '2026-10-21', prestation: 'mise-en-securite',
     body: `## L'âge, un indicateur parmi d'autres
 
@@ -221,7 +221,7 @@ Une installation ancienne n'est pas forcément à refaire, mais elle doit être 
     title: 'Pourquoi une prise disjoncte ? Causes et solutions',
     description: "Quand vous branchez un appareil, tout disjoncte ? Appareil défectueux, prise abîmée, circuit surchargé, humidité : comment identifier la cause et y remédier.",
     h1: 'Pourquoi une prise disjoncte-t-elle quand on branche un appareil ?',
-    lead: "Vous branchez l'aspirateur, la bouilloire ou le radiateur… et clac, le courant saute. Est-ce la prise, l'appareil ou l'installation ? **Quelques tests simples** permettent de répondre, et d'éviter de remplacer ce qui fonctionne très bien.",
+    lead: "Vous branchez l'aspirateur, la bouilloire ou le radiateur… et clac, le courant saute. Est-ce la prise, l'appareil ou l'installation ? Quelques tests simples permettent de répondre, et d'éviter de remplacer ce qui fonctionne très bien.",
     category: 'Pannes', icon: 'plug-zap', date: '2026-10-14', prestation: 'prises',
     body: `## Trois coupables possibles
 
@@ -296,7 +296,7 @@ Testez l'appareil ailleurs, testez la prise avec un autre appareil, regardez que
     title: 'Les risques d’une installation électrique ancienne',
     description: "Électrocution, incendie, pannes à répétition, appareils endommagés : les risques d'une installation électrique ancienne et comment les réduire.",
     h1: 'Les risques d’une installation électrique ancienne',
-    lead: "Une installation électrique ne prévient pas quand elle devient dangereuse. Elle continue de fonctionner, jusqu'au jour où un défaut se produit. Comprendre **les risques réels d'une installation ancienne** permet de les traiter avant, sans céder à la panique ni à la négligence.",
+    lead: "Une installation électrique ne prévient pas quand elle devient dangereuse. Elle continue de fonctionner, jusqu'au jour où un défaut se produit. Comprendre les risques réels d'une installation ancienne permet de les traiter avant, sans céder à la panique ni à la négligence.",
     category: 'Sécurité', icon: 'triangle-alert', date: '2026-10-07', prestation: 'mise-en-securite',
     body: `## Risque n° 1 : l'électrocution
 
@@ -367,7 +367,7 @@ C'est tout l'objet d'une mise en sécurité : traiter d'abord ce qui protège le
     title: 'Différentiel ou disjoncteur : quelle différence ?',
     description: 'Interrupteur différentiel, disjoncteur divisionnaire ou de branchement : à quoi sert chaque appareil de votre tableau électrique, expliqué simplement.',
     h1: 'Différentiel ou disjoncteur : quelle différence ?',
-    lead: "Dans un tableau électrique, tout se ressemble : des modules blancs avec une manette. Pourtant, **interrupteur différentiel** et **disjoncteur** ont des rôles très différents. Les distinguer aide à comprendre une panne… et à ne pas faire d'erreur dangereuse.",
+    lead: "Dans un tableau électrique, tout se ressemble : des modules blancs avec une manette. Pourtant, interrupteur différentiel et disjoncteur ont des rôles très différents. Les distinguer aide à comprendre une panne… et à ne pas faire d'erreur dangereuse.",
     category: 'Comprendre', icon: 'zap', date: '2026-09-30', prestation: 'tableau',
     body: `## Le disjoncteur protège les câbles
 

@@ -21,10 +21,9 @@ function body(src, cta) {
 function aside(p) {
   return `<aside class="aside-sticky" aria-label="Contact et tarifs">
   <div class="aside-card aside-card-dark">
-    <h2>${icon('calendar-days')} 7 j/7 sur rendez-vous</h2>
-    ${C.hoursTable()}
-    <p class="small" style="margin:12px 0 16px">Sur rendez-vous uniquement.</p>
-    ${C.btnCall('btn-primary btn-block', 'RDV par SMS')}
+    <h2>${icon('message-circle')} Prendre rendez-vous</h2>
+    <p class="small" style="margin:0 0 16px">Par SMS ou WhatsApp au ${site.phoneDisplay}, la semaine comme le week-end.</p>
+    ${C.btnCall('btn-primary btn-block')}
     ${C.btnWa('btn-wa btn-block', 'WhatsApp')}
   </div>
   ${C.forfaitBlock({ compact: true })}

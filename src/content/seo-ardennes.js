@@ -8,7 +8,7 @@ module.exports = [
     description: 'Électricien indépendant dans les Ardennes : dépannage, recherche de panne, tableau, prises, éclairage, mise en sécurité. Soirs et week-ends, tarifs publiés.',
     kicker: 'Électricien · Ardennes (08)',
     h1: 'Électricien dans les Ardennes, pour les particuliers',
-    lead: "ALED08 intervient chez les particuliers de tout le département des Ardennes pour **le dépannage, la recherche de panne et les petits et moyens travaux électriques**. Avec une particularité : **je travaille le soir et le week-end**, quand vous êtes chez vous.",
+    lead: "ALED08 intervient chez les particuliers de tout le département des Ardennes pour le dépannage, la recherche de panne et les petits et moyens travaux électriques. Avec une particularité : je travaille le soir et le week-end, quand vous êtes chez vous.",
     body: `## Un parc de logements qui a vieilli
 
 Les Ardennes comptent une proportion importante de logements anciens : maisons de bourg, fermes, maisons de la Reconstruction, pavillons des années 60 et 70. Beaucoup ont connu plusieurs rénovations partielles, rarement une réfection électrique complète. On y retrouve donc très souvent :
@@ -59,7 +59,7 @@ J'interviens dans tout le département : Charleville-Mézières et son agglomér
     description: "Dépannage électrique dans les Ardennes le soir et le week-end : plus de courant, disjoncteur qui saute, panne partielle. Forfait sur devis, annoncé avant de venir.",
     kicker: 'Dépannage · Ardennes',
     h1: 'Dépannage électrique dans les Ardennes, le soir et le week-end',
-    lead: "Vous rentrez du travail et une partie de la maison est dans le noir ? Le disjoncteur refuse de se réarmer un samedi matin ? Dans les Ardennes, j'assure le **dépannage électrique des particuliers** sur les créneaux où vous êtes chez vous, avec **un prix annoncé avant de venir**.",
+    lead: "Vous rentrez du travail et une partie de la maison est dans le noir ? Le disjoncteur refuse de se réarmer un samedi matin ? Dans les Ardennes, j'assure le dépannage électrique des particuliers sur les créneaux où vous êtes chez vous, avec un prix annoncé avant de venir.",
     body: `## Comment j'organise les dépannages
 
 Quand vous m'écrivez ou m'appelez, c'est moi qui réponds. Je vous pose quelques questions pour **évaluer l'urgence** et préparer l'intervention :
@@ -106,7 +106,7 @@ Un dépannage commence toujours par le **forfait dépannage**, dont je vous anno
     description: "Recherche de panne électrique dans les Ardennes avec de vrais appareils de mesure : isolement, terre, différentiels. Prix annoncé avant de venir.",
     kicker: 'Recherche de panne · Ardennes',
     h1: 'Recherche de panne électrique dans les Ardennes : ce que disent les mesures',
-    lead: "Une panne électrique se trouve rarement « au feeling ». Elle se trouve avec **des mesures**, et un peu de méthode. Voici comment je travaille quand on m'appelle dans les Ardennes pour une panne que personne n'a réussi à localiser.",
+    lead: "Une panne électrique se trouve rarement « au feeling ». Elle se trouve avec des mesures, et un peu de méthode. Voici comment je travaille quand on m'appelle dans les Ardennes pour une panne que personne n'a réussi à localiser.",
     body: `## Les outils de la recherche de panne
 
 Chaque appareil répond à une question précise :
@@ -152,7 +152,7 @@ Le climat humide et frais du département favorise certaines pannes : condensati
     description: "Remplacement de tableau électrique dans les Ardennes : composition selon la surface, différentiels 30 mA, repérage, 20 % de réserve. Devis gratuit, pose le samedi.",
     kicker: 'Tableau électrique · Ardennes',
     h1: 'Tableau électrique dans les Ardennes : bien le dimensionner',
-    lead: "Un tableau électrique ne se choisit pas sur catalogue. Sa composition dépend de **la surface du logement, du nombre de circuits, du mode de chauffage et des appareils** que vous utilisez. Voici comment je conçois un tableau neuf pour les maisons et appartements des Ardennes.",
+    lead: "Un tableau électrique ne se choisit pas sur catalogue. Sa composition dépend de la surface du logement, du nombre de circuits, du mode de chauffage et des appareils que vous utilisez. Voici comment je conçois un tableau neuf pour les maisons et appartements des Ardennes.",
     body: `## Les règles qui guident la composition
 
 La norme NF C 15-100 encadre précisément la composition d'un tableau. Les principes essentiels :
@@ -205,7 +205,7 @@ J'utilise du matériel de grandes marques, disponible partout, pour que n'import
     description: 'Mise en sécurité électrique dans les Ardennes : anomalies fréquentes, ordre des priorités, devis hiérarchisé et travaux le soir ou le week-end.',
     kicker: 'Mise en sécurité · Ardennes',
     h1: 'Mise en sécurité électrique dans les Ardennes : les bonnes priorités',
-    lead: "Une mise en sécurité réussie, c'est d'abord **un bon ordre de priorité**. Après des visites dans de nombreuses maisons ardennaises, voici les anomalies que je rencontre le plus souvent, et l'ordre dans lequel je recommande de les traiter.",
+    lead: "Une mise en sécurité réussie, c'est d'abord un bon ordre de priorité. Après des visites dans de nombreuses maisons ardennaises, voici les anomalies que je rencontre le plus souvent, et l'ordre dans lequel je recommande de les traiter.",
     body: `## Les anomalies les plus fréquentes
 
 Classées de la plus urgente à la moins urgente :
@@ -257,7 +257,7 @@ Vous pouvez valider un seul bloc, ou tout. Rien n'est imposé.`,
     description: 'Électricien le soir dans les Ardennes, après votre journée de travail : dépannage, prises, luminaires, diagnostic. Sans majoration, sur RDV.',
     kicker: 'Disponibilités · En soirée',
     h1: 'Un électricien le soir, après votre journée de travail',
-    lead: "ALED08 intervient toute la semaine, **y compris en soirée** : je me déplace chez les particuliers des Ardennes pour les dépannages et les petits travaux. Vous n'avez pas à poser de congé : **j'interviens quand vous êtes rentré**, au même tarif qu'en journée.",
+    lead: "ALED08 intervient toute la semaine, y compris en soirée : je me déplace chez les particuliers des Ardennes pour les dépannages et les petits travaux. Vous n'avez pas à poser de congé : j'interviens quand vous êtes rentré, au même tarif qu'en journée.",
     body: `## Ce qui se fait très bien en soirée
 
 Une soirée d'intervention dure en général d'une à trois heures. C'est le format idéal pour :
@@ -308,7 +308,7 @@ Chez ALED08, la soirée est un **créneau normal de travail**, choisi dès le d�
     description: "Électricien le samedi et le dimanche dans les Ardennes : tableau, mise en sécurité, éclairage, dépannage. Mêmes tarifs qu'en semaine, sur rendez-vous.",
     kicker: 'Disponibilités · Week-end',
     h1: 'Électricien le week-end : samedi et dimanche sur rendez-vous',
-    lead: "Le **samedi** comme le **dimanche**, sur rendez-vous, j'interviens chez les particuliers des Ardennes. C'est le moment idéal pour les **chantiers qui demandent du temps** (tableau, mise en sécurité, éclairage extérieur), comme pour les pannes qui surviennent en fin de semaine.",
+    lead: "Le samedi comme le dimanche, sur rendez-vous, j'interviens chez les particuliers des Ardennes. C'est le moment idéal pour les chantiers qui demandent du temps (tableau, mise en sécurité, éclairage extérieur), comme pour les pannes qui surviennent en fin de semaine.",
     body: `## Le samedi, jour des chantiers
 
 Une journée complète permet de réaliser les travaux qui nécessitent une coupure prolongée ou plusieurs heures de pose :
@@ -357,7 +357,7 @@ Les samedis se remplissent plus vite que les soirées, surtout au printemps et �
     description: 'Dépannage électrique à Rethel le soir et le week-end : coupure, disjoncteur qui saute, prise ou éclairage en panne. Prix annoncé avant de venir, devis compris.',
     kicker: 'Dépannage · Rethel',
     h1: 'Dépannage électrique à Rethel, le soir et le week-end',
-    lead: "Une panne à **Rethel** après votre journée de travail ou un samedi matin ? Je me déplace **le soir même quand le planning le permet**. Le forfait dépannage, annoncé au téléphone, comprend le déplacement, recherche de panne, solution et devis de réparation sans obligation.",
+    lead: "Une panne à Rethel après votre journée de travail ou un samedi matin ? Je me déplace le soir même quand le planning le permet. Le forfait dépannage, annoncé au téléphone, comprend le déplacement, recherche de panne, solution et devis de réparation sans obligation.",
     body: `## Les pannes que je rencontre à Rethel
 
 Dans les logements rethélois, beaucoup reconstruits dans les années 1950 ou rénovés par étapes, certaines pannes reviennent régulièrement :
@@ -397,7 +397,7 @@ Repérez la protection en position basse dans votre tableau, débranchez les app
     description: "Dépannage électrique à Charleville-Mézières, 7 j/7 sur rendez-vous : appartement sans courant, disjoncteur d'abonné, prise en panne. Prix annoncé avant.",
     kicker: 'Dépannage · Charleville-Mézières',
     h1: 'Dépannage électrique à Charleville-Mézières, en appartement comme en maison',
-    lead: "À **Charleville-Mézières**, une grande partie des pannes que je dépanne se produisent en appartement. Elles ont leurs spécificités : disjoncteur de branchement sur le palier, tableau à l'étroit, parties communes à distinguer. J'interviens **toute la semaine et le week-end, sur rendez-vous**, prix annoncé avant.",
+    lead: "À Charleville-Mézières, une grande partie des pannes que je dépanne se produisent en appartement. Elles ont leurs spécificités : disjoncteur de branchement sur le palier, tableau à l'étroit, parties communes à distinguer. J'interviens toute la semaine et le week-end, sur rendez-vous, prix annoncé avant.",
     body: `## Appartement sans courant : par où commencer ?
 
 Quand tout est coupé dans un appartement, trois situations sont possibles :
@@ -441,7 +441,7 @@ Indiquez-moi le code d'accès, l'étage et la présence ou non d'un ascenseur : 
     description: 'Dépannage électrique planifié à Sedan : pannes récurrentes, différentiel qui saute, lumière qui clignote. Le soir et le week-end, déplacement annoncé.',
     kicker: 'Dépannage · Sedan',
     h1: 'Dépannage électrique à Sedan : régler enfin les pannes récurrentes',
-    lead: "À Sedan, pour une coupure totale en urgence, écrivez-moi : je vous dis tout de suite quand je peux venir. Et pour **les pannes récurrentes** (différentiel qui saute régulièrement, lumière qui clignote, prise capricieuse), un **dépannage planifié** le soir ou le week-end est la bonne solution.",
+    lead: "À Sedan, pour une coupure totale en urgence, écrivez-moi : je vous dis tout de suite quand je peux venir. Et pour les pannes récurrentes (différentiel qui saute régulièrement, lumière qui clignote, prise capricieuse), un dépannage planifié le soir ou le week-end est la bonne solution.",
     body: `## Les pannes qu'on finit par « supporter »
 
 Beaucoup de foyers vivent avec une panne chronique : on réarme le différentiel une fois par semaine, on évite d'allumer le four et le lave-linge en même temps, on secoue l'interrupteur de la salle de bain. Ce n'est pas une fatalité, et ce n'est **pas sans risque** : un défaut qui revient est un défaut qui évolue.
@@ -483,7 +483,7 @@ Le **prix du forfait dépannage est fixé à l'avance**, au téléphone, selon v
     description: 'Remplacement de tableau électrique à Rethel : maisons de la Reconstruction, tableaux à fusibles, différentiels 30 mA. Devis gratuit, pose le samedi.',
     kicker: 'Tableau électrique · Rethel',
     h1: 'Remplacement de tableau électrique à Rethel',
-    lead: "Les logements rethélois issus de la **Reconstruction** conservent souvent un tableau d'origine ou modernisé à moitié. Je remplace ces tableaux par un équipement neuf, **conforme NF C 15-100**, sur **devis gratuit et détaillé**, en une journée, de préférence un samedi.",
+    lead: "Les logements rethélois issus de la Reconstruction conservent souvent un tableau d'origine ou modernisé à moitié. Je remplace ces tableaux par un équipement neuf, conforme NF C 15-100, sur devis gratuit et détaillé, en une journée, de préférence un samedi.",
     body: `## Les tableaux que je remplace à Rethel
 
 Trois profils reviennent régulièrement :
@@ -524,7 +524,7 @@ Arrivée le matin, coupure générale, repérage de chaque circuit avec vous, d�
     description: 'Remplacement de tableau électrique à Charleville-Mézières, appartement ou maison de ville : coffret compact, différentiels 30 mA. Devis gratuit.',
     kicker: 'Tableau électrique · Charleville-Mézières',
     h1: 'Remplacement de tableau électrique à Charleville-Mézières',
-    lead: "En appartement comme en maison de ville, **Charleville-Mézières** compte de nombreux tableaux électriques d'un autre âge. Je les remplace **le samedi**, sans gêner le voisinage, par un tableau compact, clair et conforme, **sur devis gratuit**.",
+    lead: "En appartement comme en maison de ville, Charleville-Mézières compte de nombreux tableaux électriques d'un autre âge. Je les remplace le samedi, sans gêner le voisinage, par un tableau compact, clair et conforme, sur devis gratuit.",
     body: `## Remplacer un tableau en appartement
 
 L'appartement pose des contraintes particulières, que je prends en compte dès la visite :

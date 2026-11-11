@@ -145,7 +145,7 @@ function footer() {
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand brand-light" href="/">${C.logoSvg('lgf')}<span class="brand-text"><strong>ALED08</strong><small>Électricien · Ardennes</small></span></a>
-      <p><strong style="color:#fff">Dépannage et installation électrique dans les Ardennes</strong>, de la prise au tableau. Dépannage au forfait sur devis, travaux sur devis gratuit. Rendez-vous par message, toute la semaine et le week-end. Un jeune artisan électricien à votre écoute.</p>
+      <p><strong style="color:#fff">Dépannage et installation électrique dans les Ardennes</strong>, de la prise au tableau. Un jeune artisan, joignable par SMS ou WhatsApp.</p>
       <ul class="footer-contact">
         <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>
         <li><a href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}WhatsApp</a></li>
@@ -171,10 +171,9 @@ function footer() {
     </div>
     <div>
       <h2 class="footer-title">Disponibilités</h2>
-      ${C.hoursTable('hours-footer')}
-      <p class="footer-note">Interventions uniquement sur rendez-vous.</p>
+      <p class="footer-note">Toute la semaine et le week-end, sur rendez-vous par SMS ou WhatsApp.</p>
       <ul class="footer-links footer-links-inline">
-        <li><a href="/tarifs/">Tarifs</a></li><li><a href="/realisations/">Réalisations</a></li><li><a href="/faq/">FAQ</a></li><li><a href="/blog/">Blog</a></li><li><a href="/qui-suis-je/">Qui suis-je ?</a></li><li><a href="/contact/">Contact</a></li>
+        <li><a href="/tarifs/">Tarifs</a></li><li><a href="/faq/">FAQ</a></li><li><a href="/blog/">Blog</a></li><li><a href="/qui-suis-je/">Qui suis-je ?</a></li><li><a href="/contact/">Contact</a></li>
       </ul>
     </div>
   </div>

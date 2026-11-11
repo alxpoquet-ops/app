@@ -9,7 +9,7 @@ module.exports = [
     description: "Électricien à Vouziers et en Argonne ardennaise : dépannage électrique, recherche de panne, tableau, mise en sécurité. Prix annoncé avant de venir.",
     kicker: 'Électricien · Vouziers (08400)',
     h1: 'Électricien à Vouziers et dans l’Argonne ardennaise',
-    lead: "Sous-préfecture du sud des Ardennes, **Vouziers** rayonne sur un vaste territoire rural, de la vallée de l'Aisne aux villages de l'Argonne. J'y interviens pour les **pannes**, la **recherche de panne** et la **mise en sécurité** des maisons, 7 j/7 sur rendez-vous.",
+    lead: "Sous-préfecture du sud des Ardennes, Vouziers rayonne sur un vaste territoire rural, de la vallée de l'Aisne aux villages de l'Argonne. J'y interviens pour les pannes, la recherche de panne et la mise en sécurité des maisons, 7 j/7 sur rendez-vous.",
     body: `## Des installations très variées
 
 Entre les maisons de ville du centre, les pavillons des années 70 et les corps de ferme des villages voisins, on trouve à Vouziers à peu près toutes les générations d'installations. C'est justement ce qui rend le **diagnostic** important : une même coupure n'a pas la même cause dans un logement récent et dans une ancienne ferme alimentée par une longue ligne.
@@ -47,7 +47,7 @@ Granges transformées, ateliers, hangars : ces bâtiments ont souvent été racc
     description: "Électricien à Revin, vallée de la Meuse : dépannage, disjoncteur qui saute, caves humides, tableaux anciens à sécuriser. Prix annoncé avant de venir.",
     kicker: 'Électricien · Revin (08500)',
     h1: 'Électricien à Revin, dans les méandres de la Meuse',
-    lead: "Lovée dans un méandre de la Meuse, **Revin** compte beaucoup de maisons construites à flanc de coteau, avec des **sous-sols et des caves** où l'humidité ne pardonne pas aux installations électriques. J'y interviens pour les dépannages et les mises en sécurité, 7 j/7 sur rendez-vous.",
+    lead: "Lovée dans un méandre de la Meuse, Revin compte beaucoup de maisons construites à flanc de coteau, avec des sous-sols et des caves où l'humidité ne pardonne pas aux installations électriques. J'y interviens pour les dépannages et les mises en sécurité, 7 j/7 sur rendez-vous.",
     body: `## L'humidité, ennemie numéro un
 
 Dans une maison adossée à la pente, le niveau bas est souvent semi-enterré. Prises, boîtes de dérivation et luminaires y vieillissent plus vite : l'eau s'infiltre, les bornes s'oxydent, et le **différentiel finit par sauter**, parfois seulement par temps de pluie. La recherche se fait au mégohmmètre, circuit par circuit, jusqu'à trouver le point faible.
@@ -85,7 +85,7 @@ Revin est dans le nord de mon secteur : pour un dépannage, je vous demande une 
     description: "Électricien à Givet et dans la pointe des Ardennes : dépannage planifié, tableaux électriques, mise en sécurité, éclairage. Prix annoncé avant de venir.",
     kicker: 'Électricien · Givet (08600)',
     h1: 'Électricien à Givet, au bout de la pointe des Ardennes',
-    lead: "Tout au nord du département, entre la Meuse et la frontière belge, **Givet** est loin des grandes villes ardennaises. J'y interviens sur rendez-vous, en organisant mes passages pour **regrouper les interventions** du secteur et vous proposer un prix clair, annoncé avant de venir.",
+    lead: "Tout au nord du département, entre la Meuse et la frontière belge, Givet est loin des grandes villes ardennaises. J'y interviens sur rendez-vous, en organisant mes passages pour regrouper les interventions du secteur et vous proposer un prix clair, annoncé avant de venir.",
     body: `## Des passages organisés dans la pointe
 
 La pointe de Givet demande de la route. Pour que ce soit intéressant pour vous, je regroupe les interventions de Givet, Vireux, Fumay et des villages voisins sur les mêmes journées. Résultat : **un délai raisonnable**, et un prix du forfait dépannage annoncé au téléphone, sans surprise sur la facture.
@@ -125,7 +125,7 @@ Envoyez-moi un message : je vous réponds rapidement avec un créneau. En attend
     description: "Électricien à Fumay : dépannage électrique, maisons anciennes à mettre en sécurité, éclairage, prises et tableaux. Prix annoncé avant de venir, sur rendez-vous.",
     kicker: 'Électricien · Fumay (08170)',
     h1: 'Électricien à Fumay, cité des ardoisiers',
-    lead: "Accrochée à un méandre de la Meuse, **Fumay** a gardé de son passé ardoisier des **maisons hautes et étroites**, souvent rénovées étage par étage. J'y interviens pour remettre de l'ordre dans ces installations et pour les dépannages du quotidien.",
+    lead: "Accrochée à un méandre de la Meuse, Fumay a gardé de son passé ardoisier des maisons hautes et étroites, souvent rénovées étage par étage. J'y interviens pour remettre de l'ordre dans ces installations et pour les dépannages du quotidien.",
     body: `## Une maison, plusieurs époques
 
 Quand une maison a été rénovée par morceaux, l'installation électrique raconte son histoire : un étage refait aux normes, un autre resté d'origine, des câbles ajoutés en apparent. Mon premier travail est de **comprendre ce qui alimente quoi**, puis de repérer les points dangereux : absence de terre, conducteurs trop fins, protections inadaptées.
@@ -169,7 +169,7 @@ Pour une panne, je vous annonce le prix du forfait au téléphone et je viens au
     description: "Électricien à Bogny-sur-Meuse : dépannage électrique, maisons ouvrières à sécuriser, garages et ateliers, tableaux anciens. Prix annoncé avant de venir.",
     kicker: 'Électricien · Bogny-sur-Meuse (08120)',
     h1: 'Électricien à Bogny-sur-Meuse, au pied des Quatre Fils Aymon',
-    lead: "Ville de tradition industrielle étirée le long de la Meuse, **Bogny-sur-Meuse** compte de nombreuses **maisons ouvrières**, souvent avec garage ou petit atelier. J'y interviens pour les pannes, les tableaux à remplacer et les lignes à créer pour l'atelier ou le garage.",
+    lead: "Ville de tradition industrielle étirée le long de la Meuse, Bogny-sur-Meuse compte de nombreuses maisons ouvrières, souvent avec garage ou petit atelier. J'y interviens pour les pannes, les tableaux à remplacer et les lignes à créer pour l'atelier ou le garage.",
     body: `## Les maisons ouvrières, solides mais souvent sous-équipées
 
 Ces maisons ont été bâties à une époque où un logement comptait quelques points lumineux et deux ou trois prises par pièce. Aujourd'hui, avec l'électroménager, les écrans et le chauffage d'appoint, les circuits sont **surchargés** et les multiprises s'accumulent. La solution passe par des **circuits supplémentaires**, plutôt que par un disjoncteur plus gros.
@@ -207,7 +207,7 @@ Quand le courant saute, je vous aide d'abord au téléphone à identifier le cir
     description: "Électricien à Monthermé, entre Meuse et Semoy : gîtes et résidences secondaires, remise en service, dépannage, éclairage extérieur. Prix annoncé avant.",
     kicker: 'Électricien · Monthermé (08800)',
     h1: 'Électricien à Monthermé, entre Meuse et Semoy',
-    lead: "Au confluent de la Meuse et de la Semoy, **Monthermé** attire randonneurs et vacanciers. Beaucoup de maisons y sont des **gîtes** ou des **résidences secondaires**, avec des besoins bien à elles : remise en service après l'hiver, sécurité des locataires, éclairage extérieur.",
+    lead: "Au confluent de la Meuse et de la Semoy, Monthermé attire randonneurs et vacanciers. Beaucoup de maisons y sont des gîtes ou des résidences secondaires, avec des besoins bien à elles : remise en service après l'hiver, sécurité des locataires, éclairage extérieur.",
     body: `## Remettre une maison en service après l'hiver
 
 Une maison fermée plusieurs mois souffre de l'humidité. À la remise sous tension, il n'est pas rare que le **différentiel saute** aussitôt. Plutôt que de forcer, je contrôle l'isolement des circuits un par un, je trouve celui qui pose problème et je le remets en état avant votre arrivée ou celle de vos locataires.
@@ -245,7 +245,7 @@ Allées en pente, escaliers en pierre, terrasses au bord de l'eau : un éclairag
     description: "Électricien à Carignan, vallée de la Chiers : dépannage électrique, tableaux, mise en sécurité de maisons anciennes et de fermes. Prix annoncé avant de venir.",
     kicker: 'Électricien · Carignan (08110)',
     h1: 'Électricien à Carignan, dans la vallée de la Chiers',
-    lead: "À l'est de Sedan, **Carignan** et les villages de la vallée de la Chiers mêlent maisons de bourg, fermes et pavillons. J'y interviens pour les **dépannages**, les **tableaux électriques** et la **mise en sécurité** des maisons anciennes, sur rendez-vous.",
+    lead: "À l'est de Sedan, Carignan et les villages de la vallée de la Chiers mêlent maisons de bourg, fermes et pavillons. J'y interviens pour les dépannages, les tableaux électriques et la mise en sécurité des maisons anciennes, sur rendez-vous.",
     body: `## Fermes et maisons de bourg
 
 Beaucoup de maisons du secteur ont été agrandies ou transformées : une grange devenue garage, un grenier aménagé, une extension pour la cuisine. Chaque étape a ajouté des circuits, pas toujours bien protégés. Je contrôle l'ensemble et je vous dis clairement **ce qui est urgent** et ce qui peut attendre.
@@ -283,7 +283,7 @@ Vous m'écrivez, vous me décrivez la panne, et je vous annonce le prix du forfa
     description: "Électricien à Mouzon : dépannage électrique, maisons anciennes du centre, éclairage intérieur et extérieur, mise en sécurité. Prix annoncé avant de venir.",
     kicker: 'Électricien · Mouzon (08210)',
     h1: 'Électricien à Mouzon, au bord de la Meuse',
-    lead: "Petite cité au patrimoine remarquable, dominée par son abbatiale, **Mouzon** possède un centre ancien aux maisons de caractère. J'y interviens pour **sécuriser ces installations** sans dénaturer les intérieurs, et pour les dépannages du quotidien.",
+    lead: "Petite cité au patrimoine remarquable, dominée par son abbatiale, Mouzon possède un centre ancien aux maisons de caractère. J'y interviens pour sécuriser ces installations sans dénaturer les intérieurs, et pour les dépannages du quotidien.",
     body: `## Rénover sans abîmer
 
 Dans une maison ancienne, chaque saignée dans un mur en pierre ou un plafond à la française se réfléchit. Selon les pièces, je propose de **passer les câbles dans les planchers**, de longer les plinthes ou de poser des **moulures discrètes**. L'objectif : une installation sûre, qui respecte le caractère de la maison.
@@ -321,7 +321,7 @@ Pour une panne, je vous annonce le prix du forfait au téléphone, je viens au c
     description: "Électricien à Bazeilles, près de Sedan : dépannage électrique, pavillons, prise de recharge pour voiture, éclairage extérieur. Prix annoncé avant de venir.",
     kicker: 'Électricien · Bazeilles (08140)',
     h1: 'Électricien à Bazeilles, aux portes de Sedan',
-    lead: "Commune résidentielle voisine de Sedan, **Bazeilles** compte beaucoup de **pavillons avec garage et jardin**. Les demandes y suivent l'évolution des maisons : voiture électrique à recharger, éclairage du jardin, tableau à compléter, sans oublier les dépannages.",
+    lead: "Commune résidentielle voisine de Sedan, Bazeilles compte beaucoup de pavillons avec garage et jardin. Les demandes y suivent l'évolution des maisons : voiture électrique à recharger, éclairage du jardin, tableau à compléter, sans oublier les dépannages.",
     body: `## Recharger sa voiture électrique à la maison
 
 Pour une voiture qui roule quelques dizaines de kilomètres par jour, une **prise renforcée** sur un circuit dédié suffit souvent : elle recharge la batterie pendant la nuit, en toute sécurité. Je vérifie d'abord que votre tableau et votre abonnement le permettent. Pour une borne plus puissante, je vous oriente vers un installateur qualifié IRVE.
@@ -359,7 +359,7 @@ Bazeilles est à quelques minutes de Sedan : je peux souvent regrouper un dépan
     description: "Électricien au Chesne et autour du lac de Bairon : dépannage électrique, maisons rurales, gîtes, éclairage et mise en sécurité. Prix annoncé avant de venir.",
     kicker: 'Électricien · Le Chesne (08390)',
     h1: 'Électricien au Chesne, entre canal et lac de Bairon',
-    lead: "Bourg traversé par le **canal des Ardennes**, à deux pas du **lac de Bairon**, Le Chesne est entouré de villages agricoles et de maisons de vacances. J'y interviens pour les pannes, la mise en sécurité des maisons rurales et l'équipement des gîtes.",
+    lead: "Bourg traversé par le canal des Ardennes, à deux pas du lac de Bairon, Le Chesne est entouré de villages agricoles et de maisons de vacances. J'y interviens pour les pannes, la mise en sécurité des maisons rurales et l'équipement des gîtes.",
     body: `## Maisons rurales : de longues lignes et des dépendances
 
 À la campagne, une maison est souvent accompagnée d'une grange, d'un hangar ou d'un ancien atelier. Ces bâtiments sont reliés par des lignes parfois anciennes, enterrées ou aériennes. Quand le différentiel saute sans raison apparente, je pense d'abord à elles et je **mesure leur isolement**.

@@ -35,7 +35,7 @@ const logoSvg = (id = 'lg') => `<svg class="logo" viewBox="0 0 48 48" aria-hidde
 // Prise de rendez-vous par message (SMS) : c'est le canal à privilégier.
 const smsUrl = (body = 'Bonjour, je souhaite prendre rendez-vous pour une intervention électrique.') => `sms:${site.phoneIntl}?body=${encodeURIComponent(body)}`;
 function btnCall(cls = 'btn-primary', text) {
-  return `<a class="btn ${cls}" href="${smsUrl()}" data-track="sms">${icon('message-circle')}<span>${text || 'Prendre RDV par message'}</span></a>`;
+  return `<a class="btn ${cls}" href="${smsUrl()}" data-track="sms">${icon('message-circle')}<span>${text || 'Envoyer un SMS'}</span></a>`;
 }
 function btnDevis(cls = 'btn-light', prestation, text = 'Demander un devis') {
   return `<a class="btn ${cls}" href="${devisUrl(prestation)}">${icon('file-text')}<span>${text}</span></a>`;
@@ -61,11 +61,9 @@ function pageHero({ kicker, h1, lead, crumbs, prestation, chips = [], compact = 
   ${circuitBg('ph')}
   <div class="container page-hero-in">
     ${crumbs ? breadcrumbs(crumbs) : ''}
-    ${kicker ? `<p class="eyebrow"><span class="pulse" aria-hidden="true"></span>${esc(kicker)}</p>` : ''}
     <h1>${inline(h1)}</h1>
     ${lead ? `<p class="lead">${inline(lead)}</p>` : ''}
-    ${chips.length ? `<ul class="chips">${chips.map((c) => `<li>${icon(c.icon || 'check')}${inline(c.text)}</li>`).join('')}</ul>` : ''}
-    ${compact ? '' : `<div class="hero-ctas">${btnCall('btn-primary btn-lg')}${btnDevis('btn-light btn-lg', prestation)}</div>`}
+    ${compact ? '' : `<div class="hero-ctas">${btnCall('btn-primary btn-lg')}${btnWa('btn-wa btn-lg')}${btnDevis('btn-light btn-lg', prestation, 'Devis gratuit')}</div>`}
   </div>
 </section>`;
 }
@@ -78,10 +76,10 @@ function circuitBg() {
 // ---------------------------------------------------------------- bandeau de confiance
 function trustBar() {
   const items = [
-    ['zap', 'Dépannage & installation', 'De la prise au tableau'],
-    ['euro', 'Forfait sur devis', 'Prix annoncé avant de venir'],
-    ['calendar-days', 'Semaine et week-end', 'Sur rendez-vous, par message'],
-    ['user', 'Jeune artisan motivé', 'À votre écoute'],
+    ['zap', 'Dépannage', 'En priorité'],
+    ['plug', 'Installation', 'De la prise au tableau'],
+    ['calendar-days', '7 jours sur 7', 'Sur rendez-vous'],
+    ['map-pin', 'Toutes les Ardennes', 'Du nord au sud'],
   ];
   return `<section class="trustbar" aria-label="Nos engagements"><div class="container trustbar-in">${items
     .map(([i, t, s]) => `<div class="trust-item">${icon(i)}<div><strong>${t}</strong><span>${s}</span></div></div>`)
@@ -130,14 +128,14 @@ function forfaitBlock(opts = {}) {
   return `<div class="forfait reveal${opts.compact ? ' forfait--compact' : ''}">
   <div class="forfait-price">
     <span class="forfait-label">${icon('zap')}Forfait dépannage</span>
-    <strong class="is-text">${forfait.priceText}</strong>
-    <span class="forfait-sub">prix annoncé avant de venir, tout compris jusqu’au devis de réparation</span>
+    <strong class="is-text">Prix annoncé avant de venir</strong>
+    <span class="forfait-sub">tout compris jusqu’au devis de réparation</span>
   </div>
   <ul class="forfait-list">${forfait.includes
     .map((i) => `<li>${icon(i.icon)}<div><strong>${i.text}</strong><span>${i.detail}</span></div></li>`)
     .join('')}</ul>
-  ${forfait.notFoundDiscount ? `<p class="forfait-guarantee">${icon('shield-check')}<span><strong>Panne non trouvée ? Je vous fais une remise.</strong> Vous ne payez pas le forfait plein tarif.</span></p>` : ''}
-  <p class="forfait-foot">${icon('info')}<span>La réparation et les pièces font l’objet d’un <strong>devis remis à la fin du dépannage</strong> : vous l’acceptez ou non, sans obligation. Le prix du forfait dépend de votre commune et de la panne décrite : je vous l’annonce par message ou au téléphone, avant de me déplacer. Même prix le soir et le week-end.</span></p>
+  ${forfait.notFoundDiscount ? `<p class="forfait-guarantee">${icon('shield-check')}<span><strong>Panne non trouvée ?</strong> Je vous fais une remise sur le forfait.</span></p>` : ''}
+  <p class="forfait-foot">${icon('info')}<span>Le prix dépend de votre commune et de la panne. La réparation fait l’objet d’un devis à la fin de mon passage : vous l’acceptez ou non. Même prix le soir et le week-end.</span></p>
 </div>`;
 }
 

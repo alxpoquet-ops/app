@@ -9,7 +9,7 @@ module.exports = [
     chips: [{ icon: 'zap-off', text: 'Coupure totale' }, { icon: 'search', text: 'Les 3 vérifications à faire' }, { icon: 'message-circle', text: 'Dépannage sur RDV, 7 j/7' }],
     kicker: 'Panne · Coupure totale',
     h1: 'Plus de courant dans toute la maison : les bons réflexes',
-    lead: "Tout s'éteint d'un coup : lumières, frigo, box. Avant de paniquer, quelques vérifications simples permettent de savoir si la panne vient **du réseau**, de **votre disjoncteur général** ou d'**un appareil de la maison**. Voici l'ordre à suivre.",
+    lead: "Tout s'éteint d'un coup : lumières, frigo, box. Avant de paniquer, quelques vérifications simples permettent de savoir si la panne vient du réseau, de votre disjoncteur général ou d'un appareil de la maison. Voici l'ordre à suivre.",
     body: `## 1. Regardez autour de vous
 
 Les voisins ont-ils de la lumière ? L'éclairage public fonctionne-t-il ? Si tout le quartier est dans le noir, la panne vient du **réseau public** : c'est Enedis qu'il faut appeler, au numéro de dépannage indiqué sur votre facture. Un électricien ne peut rien faire dans ce cas.
@@ -51,7 +51,7 @@ Si le disjoncteur général est enclenché mais que tout reste éteint, regardez
     description: "Volet roulant électrique bloqué ou qui ne répond plus ? Alimentation, inverseur, moteur ou fin de course : comment trouver la panne, dans les Ardennes.",
     kicker: 'Panne · Volet roulant',
     h1: 'Volet roulant électrique en panne : alimentation, commande ou moteur ?',
-    lead: "Un volet qui reste bloqué en bas, c'est une pièce dans le noir, ou une maison qui ne ferme plus. Avant de changer le moteur, il faut savoir **où se situe la panne** : l'alimentation, l'interrupteur de commande ou le moteur lui-même.",
+    lead: "Un volet qui reste bloqué en bas, c'est une pièce dans le noir, ou une maison qui ne ferme plus. Avant de changer le moteur, il faut savoir où se situe la panne : l'alimentation, l'interrupteur de commande ou le moteur lui-même.",
     body: `## Les trois causes principales
 
 1. **Pas de courant au volet** : disjoncteur des volets baissé, connexion desserrée dans une boîte de dérivation.
@@ -91,7 +91,7 @@ Je mesure la tension à chaque étape : au tableau, à l'interrupteur, puis à l
     description: "Votre VMC s'est arrêtée ou fait disjoncter ? Disjoncteur dédié, commande deux vitesses, moteur : les vérifications électriques à faire.",
     kicker: 'Panne · Ventilation',
     h1: 'VMC qui ne fonctionne plus : la panne est-elle électrique ?',
-    lead: "Une VMC à l'arrêt, c'est de la condensation sur les vitres et des moisissures qui arrivent vite, surtout dans les maisons ardennaises. Avant de remplacer le caisson, il faut vérifier **son alimentation électrique**, qui est souvent la vraie cause.",
+    lead: "Une VMC à l'arrêt, c'est de la condensation sur les vitres et des moisissures qui arrivent vite, surtout dans les maisons ardennaises. Avant de remplacer le caisson, il faut vérifier son alimentation électrique, qui est souvent la vraie cause.",
     body: `## Ce qu'il faut savoir sur la VMC
 
 La VMC doit fonctionner **en permanence**. Elle est normalement alimentée par un **circuit dédié** avec son propre disjoncteur, et souvent commandée par un interrupteur deux vitesses dans la cuisine. Si quelqu'un a coupé ce disjoncteur par erreur, ou si l'interrupteur est défaillant, la ventilation s'arrête sans bruit.
@@ -131,7 +131,7 @@ Je contrôle l'alimentation jusqu'au caisson, la commande deux vitesses et l'ét
     description: "Votre plaque à induction fait sauter le disjoncteur ? Ligne trop faible, protection inadaptée, abonnement ou appareil : comment trouver la cause dans les Ardennes.",
     kicker: 'Panne · Plaque de cuisson',
     h1: 'Plaque à induction qui fait disjoncter : ligne, protection ou abonnement ?',
-    lead: "Vous venez de passer à l'induction, et le courant coupe dès que plusieurs foyers chauffent ? La plaque n'est pas forcément en cause : c'est souvent **la ligne qui l'alimente** qui n'est pas adaptée à sa puissance.",
+    lead: "Vous venez de passer à l'induction, et le courant coupe dès que plusieurs foyers chauffent ? La plaque n'est pas forcément en cause : c'est souvent la ligne qui l'alimente qui n'est pas adaptée à sa puissance.",
     body: `## Une plaque, une ligne dédiée
 
 Une plaque à induction demande jusqu'à **7 kW**. Elle doit être alimentée par un **circuit dédié**, en câble de 6 mm² protégé par un disjoncteur 32 A, et raccordée par une sortie de câble, pas par une prise ordinaire. Dans les cuisines anciennes, on la trouve parfois sur une ligne prévue pour une simple cuisinière, ou pire, sur le circuit des prises.
@@ -171,7 +171,7 @@ Je vérifie la section du câble, la protection, le raccordement de la plaque et
     description: "Votre lave-linge fait sauter le différentiel ou le disjoncteur ? Résistance, prise, circuit partagé : la machine ou l'installation, comment savoir.",
     kicker: 'Panne · Électroménager',
     h1: 'Lave-linge qui fait disjoncter : la machine ou l’installation ?',
-    lead: "Le courant coupe au milieu du cycle, souvent au moment où l'eau chauffe. Le réflexe est d'accuser la machine, et c'est parfois justifié. Mais **la prise, le circuit ou le différentiel** peuvent aussi être en cause. Voici comment faire la différence.",
+    lead: "Le courant coupe au milieu du cycle, souvent au moment où l'eau chauffe. Le réflexe est d'accuser la machine, et c'est parfois justifié. Mais la prise, le circuit ou le différentiel peuvent aussi être en cause. Voici comment faire la différence.",
     body: `## Différentiel ou disjoncteur ?
 
 - **Le différentiel saute** : il y a une fuite de courant. Sur un lave-linge, c'est souvent la **résistance** de chauffe, entartrée ou fissurée, mais une prise humide ou un câble abîmé peuvent produire le même effet.
@@ -210,7 +210,7 @@ Je mesure l'isolement de la machine et du circuit séparément. Vous savez ainsi
     description: "Un interrupteur qui ne commande plus la lumière, qui grésille ou qui chauffe ? Ampoule, connexion, va-et-vient : les causes et la réparation par un électricien.",
     kicker: 'Panne · Interrupteur',
     h1: 'Interrupteur qui ne fonctionne plus : ampoule, connexion ou va-et-vient ?',
-    lead: "Vous appuyez, rien ne s'allume. Avant d'accuser l'interrupteur, vérifiez **l'ampoule** et le **disjoncteur de l'éclairage**. Si tout est en ordre, la panne vient de l'interrupteur, de ses connexions ou du câblage entre deux interrupteurs.",
+    lead: "Vous appuyez, rien ne s'allume. Avant d'accuser l'interrupteur, vérifiez l'ampoule et le disjoncteur de l'éclairage. Si tout est en ordre, la panne vient de l'interrupteur, de ses connexions ou du câblage entre deux interrupteurs.",
     body: `## Les vérifications de base
 
 1. **Changez l'ampoule**, en essayant une ampoule qui fonctionne ailleurs.

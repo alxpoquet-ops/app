@@ -7,7 +7,7 @@ module.exports = [
     title: 'Comment sécuriser son logement côté électricité ? 12 gestes',
     description: 'Tester ses différentiels, bannir les multiprises en cascade, protéger les enfants, sécuriser la salle de bain : 12 gestes pour un logement sûr.',
     h1: 'Comment sécuriser son logement côté électricité : 12 gestes concrets',
-    lead: "La sécurité électrique d'un logement ne repose pas uniquement sur de gros travaux. Une bonne part se joue dans **les habitudes du quotidien** et quelques vérifications simples. Voici douze gestes, du plus facile au plus technique.",
+    lead: "La sécurité électrique d'un logement ne repose pas uniquement sur de gros travaux. Une bonne part se joue dans les habitudes du quotidien et quelques vérifications simples. Voici douze gestes, du plus facile au plus technique.",
     category: 'Sécurité', icon: 'shield-check', date: '2026-09-23', prestation: 'mise-en-securite',
     body: `## Les gestes que vous pouvez faire dès aujourd'hui
 
@@ -84,7 +84,7 @@ Avant de partir plusieurs semaines, débranchez les appareils non indispensables
     title: 'Quel est le prix d’un dépannage électrique ? Détail et exemples',
     description: "Déplacement, diagnostic, main-d'œuvre, matériel : comment se calcule le prix d'un dépannage électrique, exemples chiffrés et pièges à éviter.",
     h1: 'Quel est le prix d’un dépannage électrique ?',
-    lead: "C'est souvent la première question, et elle est légitime. Le prix d'un dépannage électrique dépend de **plusieurs éléments** qu'il vaut mieux connaître avant d'appeler. Voici comment il se construit, avec des **exemples chiffrés**, et les règles qui vous protègent contre les abus.",
+    lead: "C'est souvent la première question, et elle est légitime. Le prix d'un dépannage électrique dépend de plusieurs éléments qu'il vaut mieux connaître avant d'appeler. Voici comment il se construit, avec des exemples chiffrés, et les règles qui vous protègent contre les abus.",
     category: 'Tarifs', icon: 'euro', date: '2026-09-16', prestation: 'depannage',
     body: `## Les composantes d'une facture de dépannage
 
@@ -159,7 +159,7 @@ Au final, le prix d'un dépannage dépend surtout de **la difficulté à trouver
     title: 'Pourquoi faire appel à un électricien local ? 6 avantages',
     description: 'Déplacements plus courts, disponibilité, connaissance du bâti, suivi : pourquoi choisir un électricien local dans les Ardennes, et comment le choisir.',
     h1: 'Pourquoi faire appel à un électricien local ?',
-    lead: "Pour un dépannage ou des travaux chez soi, **un artisan installé près de chez vous** a de vrais atouts : il est proche, il connaît les maisons du coin et vous savez à qui vous avez affaire. Les voici, simplement.",
+    lead: "Pour un dépannage ou des travaux chez soi, un artisan installé près de chez vous a de vrais atouts : il est proche, il connaît les maisons du coin et vous savez à qui vous avez affaire. Les voici, simplement.",
     category: 'Conseils', icon: 'map-pin', date: '2026-09-09', prestation: 'depannage',
     body: `## 1. Des déplacements plus courts
 
@@ -216,7 +216,7 @@ Certaines plateformes mettent en relation avec des artisans sérieux. Dans tous 
     title: 'Que vérifier avant d’acheter une maison ? La check-list électricité',
     description: "Tableau, terre, prises, salle de bain, dépendances, diagnostic : la check-list électricité à suivre pendant la visite d'une maison avant d'acheter.",
     h1: 'Que vérifier avant d’acheter une maison ? La check-list électricité',
-    lead: "Lors d'une visite, on regarde la toiture, les fenêtres, le chauffage… et on oublie souvent l'électricité. Or une installation à reprendre peut peser lourd dans le budget. Voici **la check-list à suivre pendant la visite**, sans outil et sans rien démonter.",
+    lead: "Lors d'une visite, on regarde la toiture, les fenêtres, le chauffage… et on oublie souvent l'électricité. Or une installation à reprendre peut peser lourd dans le budget. Voici la check-list à suivre pendant la visite, sans outil et sans rien démonter.",
     category: 'Achat immobilier', icon: 'house', date: '2026-09-02', prestation: 'diagnostic',
     body: `## Avant la visite : lire le diagnostic
 
@@ -292,7 +292,7 @@ Si plusieurs points vous inquiètent, faites estimer les travaux avant de vous e
     title: 'Norme NF C 15-100 : l’essentiel à savoir pour les particuliers',
     description: "Ce que la norme NF C 15-100 impose dans un logement : protections, prises par pièce, circuits spécialisés, salle de bain, terre. L'essentiel simplement.",
     h1: 'Norme NF C 15-100 : l’essentiel à savoir pour les particuliers',
-    lead: "La norme NF C 15-100 est la référence de toutes les installations électriques des logements en France. Elle est longue et technique, mais **ses principes se comprennent facilement**. Voici ce qu'elle impose concrètement chez vous.",
+    lead: "La norme NF C 15-100 est la référence de toutes les installations électriques des logements en France. Elle est longue et technique, mais ses principes se comprennent facilement. Voici ce qu'elle impose concrètement chez vous.",
     category: 'Normes', icon: 'book-open', date: '2026-08-26', prestation: 'mise-en-securite',
     body: `## À quoi sert cette norme ?
 
@@ -361,7 +361,7 @@ La norme ne s'applique pas rétroactivement à une installation existante que vo
     title: 'Bien choisir son éclairage LED : lumens, kelvins, IRC',
     description: "Lumens, température de couleur, IRC, angle, variateur, culot : comment choisir ses ampoules et luminaires LED pièce par pièce, sans se tromper ni s'éblouir.",
     h1: 'Bien choisir son éclairage LED : le guide pièce par pièce',
-    lead: "Avec les LED, choisir une ampoule n'est plus une question de watts. Lumens, kelvins, IRC, angle de diffusion : ces chiffres font peur, mais ils sont simples à comprendre. Voici **comment bien choisir, pièce par pièce**, pour une lumière confortable et économe.",
+    lead: "Avec les LED, choisir une ampoule n'est plus une question de watts. Lumens, kelvins, IRC, angle de diffusion : ces chiffres font peur, mais ils sont simples à comprendre. Voici comment bien choisir, pièce par pièce, pour une lumière confortable et économe.",
     category: 'Éclairage', icon: 'lightbulb', date: '2026-08-19', prestation: 'eclairage-interieur',
     body: `## Les lumens : la quantité de lumière
 

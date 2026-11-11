@@ -94,9 +94,9 @@ const forfait = {
 // Grille tarifaire (prix TTC). Aucun prix de pièce n'est affiché : toute réparation fait l'objet
 // d'un devis remis à la fin du dépannage.
 const tarifs = [
-  { id: 'depannage', label: 'Forfait dépannage', price: null, priceText: 'Sur devis', icon: 'zap', highlight: true, note: 'Déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Prix annoncé au téléphone, avant de venir.' },
+  { id: 'depannage', label: 'Forfait dépannage', price: null, priceText: 'Annoncé avant', icon: 'zap', highlight: true, note: 'Déplacement, recherche de panne, solution proposée et devis de réparation. Le prix vous est donné avant que je vienne.' },
   { id: 'reparation', label: 'Réparation et pièces', price: null, priceText: 'Sur devis', icon: 'wrench', note: 'Chiffrée à la fin du dépannage. Vous acceptez ou non, sans obligation.' },
-  { id: 'travaux', label: 'Travaux et installations', price: null, priceText: 'Sur devis', icon: 'clipboard-check', note: 'Tableau, mise en sécurité, éclairage, prises, circuits : devis gratuit et détaillé.' },
+  { id: 'travaux', label: 'Travaux et installations', price: null, priceText: 'Devis gratuit', icon: 'clipboard-check', note: 'Tableau, mise en sécurité, éclairage, prises, circuits : je passe voir et je fais le devis sur place, gratuitement.' },
 ];
 
 // Ancienne tarification kilométrique (plus affichée sur le site : le forfait est sur devis).

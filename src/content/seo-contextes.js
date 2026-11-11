@@ -7,7 +7,7 @@ module.exports = [
     description: "Fils en tissu, prises sans terre, tableau à fusibles, apparent : moderniser l'électricité d'une maison ancienne des Ardennes sans tout casser.",
     kicker: 'Situation · Maison ancienne',
     h1: 'L’électricité d’une maison ancienne : moderniser sans tout casser',
-    lead: "Murs en pierre, poutres apparentes, planchers anciens : les maisons de caractère des Ardennes demandent une approche particulière. L'objectif est de **rendre l'installation sûre et adaptée à la vie d'aujourd'hui**, sans abîmer ce qui fait le charme de la maison.",
+    lead: "Murs en pierre, poutres apparentes, planchers anciens : les maisons de caractère des Ardennes demandent une approche particulière. L'objectif est de rendre l'installation sûre et adaptée à la vie d'aujourd'hui, sans abîmer ce qui fait le charme de la maison.",
     body: `## Reconnaître une installation d'origine
 
 Certains signes trahissent une électricité qui n'a pas été reprise depuis longtemps :
@@ -53,7 +53,7 @@ Dans une maison ancienne, une installation en apparent bien réalisée peut êtr
     description: "Achat d'une maison dans les Ardennes : visite avec un électricien pour lire le diagnostic, évaluer l'installation et chiffrer les travaux.",
     kicker: 'Situation · Achat immobilier',
     h1: 'Bilan électrique avant achat : savoir ce que l’on achète',
-    lead: "Le diagnostic électrique obligatoire liste les anomalies, mais il ne dit pas **combien coûtera leur correction**. Avant de faire une offre, une visite avec un électricien vous permet de comprendre l'état réel de l'installation et d'**estimer le budget des travaux**, un argument précieux pour négocier.",
+    lead: "Le diagnostic électrique obligatoire liste les anomalies, mais il ne dit pas combien coûtera leur correction. Avant de faire une offre, une visite avec un électricien vous permet de comprendre l'état réel de l'installation et d'estimer le budget des travaux, un argument précieux pour négocier.",
     body: `## Ce que le diagnostic dit… et ce qu'il ne dit pas
 
 Le diagnostic électrique remis par le vendeur est réalisé par un **diagnostiqueur certifié**, selon une méthode normalisée. Il signale les anomalies par grands domaines (appareil de commande, protection différentielle, terre, salle de bain, matériel vétuste…). Mais :
@@ -98,7 +98,7 @@ Le diagnostic électrique remis par le vendeur est réalisé par un **diagnostiq
     description: 'Propriétaire bailleur : mise en sécurité électrique avant location, anomalies du diagnostic, dépannage de vos locataires le soir et le week-end.',
     kicker: 'Situation · Location',
     h1: 'Propriétaire bailleur : une installation électrique sûre pour vos locataires',
-    lead: "En tant que bailleur, vous devez louer un logement **décent**, qui ne présente pas de risque pour la sécurité des occupants. L'électricité est l'un des premiers points concernés. J'interviens pour **mettre en sécurité vos logements** entre deux locations, corriger les anomalies d'un diagnostic, ou dépanner vos locataires.",
+    lead: "En tant que bailleur, vous devez louer un logement décent, qui ne présente pas de risque pour la sécurité des occupants. L'électricité est l'un des premiers points concernés. J'interviens pour mettre en sécurité vos logements entre deux locations, corriger les anomalies d'un diagnostic, ou dépanner vos locataires.",
     body: `## Vos obligations en quelques mots
 
 - Le logement loué doit disposer d'une installation électrique **en bon état d'usage et de fonctionnement**, qui ne met pas en danger la sécurité des occupants.
@@ -138,7 +138,7 @@ En règle générale, l'**entretien courant** et les menues réparations (rempla
     description: "Mise aux normes NF C 15-100 ou mise en sécurité : quelle différence, ce qui est obligatoire, ce qui ne l'est pas, et comment choisir.",
     kicker: 'Situation · Mise aux normes',
     h1: 'Mise aux normes électriques : ce que cela veut vraiment dire',
-    lead: "« Il faut tout remettre aux normes » : la phrase fait peur, et elle est souvent mal comprise. En réalité, **aucune loi n'oblige un propriétaire occupant à mettre son installation existante à la norme actuelle**. Ce qui compte, c'est qu'elle soit **sûre**. Explications.",
+    lead: "« Il faut tout remettre aux normes » : la phrase fait peur, et elle est souvent mal comprise. En réalité, aucune loi n'oblige un propriétaire occupant à mettre son installation existante à la norme actuelle. Ce qui compte, c'est qu'elle soit sûre. Explications.",
     body: `## Deux démarches différentes
 
 ### La mise aux normes NF C 15-100
@@ -180,7 +180,7 @@ Si vous n'avez pas de projet de rénovation lourde, commencez par une **mise en 
     description: 'Déplacer une prise, ajouter un interrupteur, poser un luminaire, raccorder une hotte : vos petits travaux électriques regroupés en une visite.',
     kicker: 'Situation · Petits travaux',
     h1: 'Petits travaux électriques : regroupez-les en une seule visite',
-    lead: "Une prise à déplacer, un luminaire à poser, un interrupteur à ajouter… Pris un par un, ces petits travaux ne justifient pas toujours un déplacement. **Regroupés sur une liste**, ils se règlent en une soirée, avec un seul déplacement à payer.",
+    lead: "Une prise à déplacer, un luminaire à poser, un interrupteur à ajouter… Pris un par un, ces petits travaux ne justifient pas toujours un déplacement. Regroupés sur une liste, ils se règlent en une soirée, avec un seul déplacement à payer.",
     body: `## Exemples de petits travaux
 
 - Poser un **plafonnier, une suspension ou une applique** fournis par vous.
@@ -226,7 +226,7 @@ Parce que les petits travaux mal faits sont à l'origine de nombreuses pannes : 
     description: "Besoin d'un électricien rapidement dans les Ardennes ? Les bons réflexes en cas de panne ou de danger, qui appeler, et nos créneaux soir et week-end.",
     kicker: 'Situation · Besoin rapide',
     h1: 'Besoin d’un électricien rapidement dans les Ardennes ?',
-    lead: "Une panne qui vous prive de courant, une odeur de brûlé, un disjoncteur qui refuse de tenir : vous avez besoin d'aide vite. Voici **les bons réflexes**, **qui appeler selon la situation**, et comment j'organise les interventions rapides **le soir et le week-end**.",
+    lead: "Une panne qui vous prive de courant, une odeur de brûlé, un disjoncteur qui refuse de tenir : vous avez besoin d'aide vite. Voici les bons réflexes, qui appeler selon la situation, et comment j'organise les interventions rapides le soir et le week-end.",
     body: `## Danger immédiat : les gestes qui comptent
 
 !> Fumée, flammes, étincelles ou personne électrisée : coupez le disjoncteur général si vous pouvez le faire sans risque, ne touchez pas une personne encore en contact avec une partie sous tension, et appelez le 18 ou le 112.
@@ -270,7 +270,7 @@ L'urgence ne change rien à ma façon de faire : le **forfait dépannage est ann
     description: "Faites le point sur votre installation électrique : tableau, terre, différentiels et pièces d'eau contrôlés, rapport clair et priorités.",
     kicker: 'Situation · Bilan de l’installation',
     h1: 'Diagnostic électrique : faire le point sur votre installation',
-    lead: "Vous habitez une maison depuis des années, vous venez d'emménager ou vous avez un doute ? Un **diagnostic électrique** permet de savoir où en est votre installation, **ce qui est sûr, ce qui ne l'est pas, et par quoi commencer**. Sans engagement de travaux.",
+    lead: "Vous habitez une maison depuis des années, vous venez d'emménager ou vous avez un doute ? Un diagnostic électrique permet de savoir où en est votre installation, ce qui est sûr, ce qui ne l'est pas, et par quoi commencer. Sans engagement de travaux.",
     body: `## Ce que je contrôle
 
 - **Le tableau** : état, protections, calibres, différentiels 30 mA, serrage des connexions, traces d'échauffement.

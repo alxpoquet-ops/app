@@ -7,7 +7,7 @@ module.exports = [
     description: 'Tableau à fusibles porcelaine ou à cartouches ? Pourquoi et comment le remplacer par un tableau à disjoncteurs et différentiels 30 mA. Devis gratuit.',
     kicker: 'Prestation · Tableau à fusibles',
     h1: 'Remplacer un tableau à fusibles par un tableau moderne',
-    lead: "Les tableaux à fusibles équipent encore de nombreuses maisons ardennaises. Ils ont rendu de bons services, mais **ils ne protègent pas les personnes** contre l'électrocution et se prêtent à des réparations dangereuses. Leur remplacement est l'une des interventions les plus utiles pour la sécurité d'un logement.",
+    lead: "Les tableaux à fusibles équipent encore de nombreuses maisons ardennaises. Ils ont rendu de bons services, mais ils ne protègent pas les personnes contre l'électrocution et se prêtent à des réparations dangereuses. Leur remplacement est l'une des interventions les plus utiles pour la sécurité d'un logement.",
     body: `## Reconnaître un tableau à fusibles
 
 Plusieurs générations coexistent dans les maisons :
@@ -51,7 +51,7 @@ Dans la grande majorité des cas, les **câbles existants sont conservés** s'il
     description: 'Disjoncteur qui chauffe, ne se réarme plus ou mal calibré : remplacement dans les Ardennes, calibre adapté au câble, le soir et le week-end.',
     kicker: 'Prestation · Disjoncteur',
     h1: 'Remplacement de disjoncteur : le bon calibre, au bon endroit',
-    lead: "Un disjoncteur abîmé, qui chauffe ou qui ne se réarme plus doit être remplacé. Mais **remplacer, ce n'est pas copier** : je vérifie que le calibre correspond bien au câble qu'il protège, ce qui n'est pas toujours le cas dans les installations modifiées. **Forfait dépannage annoncé avant de venir, remplacement sur devis.**",
+    lead: "Un disjoncteur abîmé, qui chauffe ou qui ne se réarme plus doit être remplacé. Mais remplacer, ce n'est pas copier : je vérifie que le calibre correspond bien au câble qu'il protège, ce qui n'est pas toujours le cas dans les installations modifiées. Forfait dépannage annoncé avant de venir, remplacement sur devis.",
     body: `## Quand faut-il remplacer un disjoncteur ?
 
 - Il **ne se réarme plus**, ou retombe aussitôt alors qu'aucun défaut n'est présent sur le circuit.
@@ -97,7 +97,7 @@ Je remplace les **disjoncteurs divisionnaires** de votre tableau. Le **disjoncte
     description: 'Créer un nouveau circuit électrique : prises supplémentaires, plaque, chauffage, extension, garage. Règles NF C 15-100, sections et protections.',
     kicker: 'Prestation · Ajout de circuit',
     h1: 'Ajouter un circuit électrique plutôt que surcharger l’existant',
-    lead: "Trop de prises sur un même circuit, des multiprises partout, un disjoncteur qui saute dès qu'on branche un appareil de plus : la solution n'est pas de « repiquer » encore. **C'est de créer un nouveau circuit**, depuis le tableau, avec sa propre protection.",
+    lead: "Trop de prises sur un même circuit, des multiprises partout, un disjoncteur qui saute dès qu'on branche un appareil de plus : la solution n'est pas de « repiquer » encore. C'est de créer un nouveau circuit, depuis le tableau, avec sa propre protection.",
     body: `## Les limites d'un circuit
 
 La norme NF C 15-100 fixe des limites claires :
@@ -145,7 +145,7 @@ Quand un circuit atteint ses limites, l'ajout d'un point supplémentaire doit pa
     description: 'Prises et circuits spécialisés pour four, plaque de cuisson 32 A, lave-linge, lave-vaisselle, sèche-linge, congélateur et chauffe-eau. Ardennes.',
     kicker: 'Prestation · Circuits spécialisés',
     h1: 'Prises spécialisées : un circuit pour chaque gros appareil',
-    lead: "Four, plaque de cuisson, lave-linge, lave-vaisselle : ces appareils consomment beaucoup, longtemps. Branchés sur des prises partagées, ils provoquent coupures et échauffements. La norme prévoit pour eux **un circuit dédié chacun**. Je les installe dans les règles.",
+    lead: "Four, plaque de cuisson, lave-linge, lave-vaisselle : ces appareils consomment beaucoup, longtemps. Branchés sur des prises partagées, ils provoquent coupures et échauffements. La norme prévoit pour eux un circuit dédié chacun. Je les installe dans les règles.",
     body: `## Les appareils qui doivent avoir leur circuit
 
 - **Plaque de cuisson ou cuisinière** : circuit 32 A en 6 mm² (monophasé), avec une sortie de câble ou une prise 32 A.
@@ -185,7 +185,7 @@ Pour une plaque de cuisson, on peut installer une **prise 32 A** ou une **sortie
     description: 'Recharger sa voiture électrique à la maison : prise renforcée sur circuit dédié, différentiel adapté, et quand une borne IRVE devient nécessaire.',
     kicker: 'Prestation · Recharge de véhicule',
     h1: 'Recharger sa voiture électrique à la maison avec une prise renforcée',
-    lead: "Pour une voiture électrique qui roule quelques dizaines de kilomètres par jour, **une prise renforcée sur un circuit dédié** suffit souvent largement : la voiture se recharge la nuit, sans travaux lourds. Voici ce qu'il faut savoir, et quand une borne devient préférable.",
+    lead: "Pour une voiture électrique qui roule quelques dizaines de kilomètres par jour, une prise renforcée sur un circuit dédié suffit souvent largement : la voiture se recharge la nuit, sans travaux lourds. Voici ce qu'il faut savoir, et quand une borne devient préférable.",
     body: `## Pourquoi ne pas utiliser une prise ordinaire ?
 
 Une recharge, c'est un courant important **pendant de longues heures**. Une prise ordinaire de garage, souvent ancienne et partagée avec d'autres usages, n'est pas faite pour cela : contacts qui chauffent, circuit sous-dimensionné, différentiel inadapté. C'est d'ailleurs pourquoi les câbles fournis avec les voitures limitent le courant sur prise domestique.
@@ -225,7 +225,7 @@ Je vérifie la **puissance de votre abonnement** (une recharge nocturne et le ch
     description: 'Pose de spots LED encastrés dans les Ardennes : implantation, espacement, capots sous isolant, température de couleur, variateur compatible.',
     kicker: 'Prestation · Spots LED',
     h1: 'Installation de spots LED encastrés : réussir son plafond',
-    lead: "Bien posés, les spots LED donnent un éclairage moderne, uniforme et économe. Mal implantés, ils créent des zones d'ombre, éblouissent ou chauffent sous l'isolant. **Leur réussite tient à l'implantation et au choix du matériel**, bien plus qu'au nombre de spots.",
+    lead: "Bien posés, les spots LED donnent un éclairage moderne, uniforme et économe. Mal implantés, ils créent des zones d'ombre, éblouissent ou chauffent sous l'isolant. Leur réussite tient à l'implantation et au choix du matériel, bien plus qu'au nombre de spots.",
     body: `## Combien de spots, et où ?
 
 Quelques repères pour un plafond de hauteur standard :
@@ -272,7 +272,7 @@ Si vous souhaitez faire varier l'intensité, il faut des spots **dimmables** et 
     description: 'Remplacer néons, halogènes, plafonniers vétustes et transformateurs par des luminaires LED fiables : économies et confort, dans les Ardennes.',
     kicker: 'Prestation · Remplacement d’éclairage',
     h1: 'Remplacer son ancien éclairage par des LED : néons, halogènes, plafonniers',
-    lead: "Tubes néon qui clignotent au démarrage, halogènes qui chauffent et grillent, plafonniers jaunis aux douilles fatiguées : **remplacer l'éclairage existant** est l'un des travaux les plus rentables qui soient. Moins de consommation, plus de confort, moins de pannes.",
+    lead: "Tubes néon qui clignotent au démarrage, halogènes qui chauffent et grillent, plafonniers jaunis aux douilles fatiguées : remplacer l'éclairage existant est l'un des travaux les plus rentables qui soient. Moins de consommation, plus de confort, moins de pannes.",
     body: `## Les éclairages qui méritent d'être remplacés
 
 - **Les tubes néon (fluorescents)** des garages, caves, cuisines et ateliers : démarrage lent par temps froid, scintillement, ballast bruyant. Une **réglette LED étanche** s'allume instantanément, même à 0 °C.
@@ -315,7 +315,7 @@ Je vous conseille au cas par cas, pour ne remplacer que ce qui doit l'être.`,
     description: 'Éclairage extérieur à détecteur de présence : choix, placement, réglages et fin des déclenchements intempestifs. Projecteurs et appliques LED.',
     kicker: 'Prestation · Détecteur de présence',
     h1: 'Éclairage extérieur à détecteur : bien placer, bien régler',
-    lead: "Un éclairage à détecteur s'allume quand vous arrivez et s'éteint tout seul. Simple en apparence, il est pourtant souvent mal installé : il s'allume au passage d'un chat, ne voit pas la voiture arriver ou reste allumé toute la nuit. **Le secret est dans le placement et les réglages.**",
+    lead: "Un éclairage à détecteur s'allume quand vous arrivez et s'éteint tout seul. Simple en apparence, il est pourtant souvent mal installé : il s'allume au passage d'un chat, ne voit pas la voiture arriver ou reste allumé toute la nuit. Le secret est dans le placement et les réglages.",
     body: `## Les trois réglages d'un détecteur
 
 - **La temporisation** : durée d'allumage après le dernier mouvement détecté, de quelques secondes à plusieurs minutes. Pour une entrée, 1 à 3 minutes suffisent.
@@ -356,7 +356,7 @@ Je vous conseille au cas par cas, pour ne remplacer que ce qui doit l'être.`,
     description: "Prise électrique extérieure étanche pour terrasse, jardin ou garage : indice IP, hauteur, circuit dédié, prise commandée de l'intérieur. Ardennes.",
     kicker: 'Prestation · Prise extérieure',
     h1: 'Installer une prise extérieure : étanche, protégée et pratique',
-    lead: "Tondeuse, taille-haie, nettoyeur haute pression, plancha, guirlandes : une **prise extérieure** évite les rallonges tirées par une fenêtre entrouverte. Encore faut-il qu'elle résiste aux intempéries et qu'elle soit correctement protégée.",
+    lead: "Tondeuse, taille-haie, nettoyeur haute pression, plancha, guirlandes : une prise extérieure évite les rallonges tirées par une fenêtre entrouverte. Encore faut-il qu'elle résiste aux intempéries et qu'elle soit correctement protégée.",
     body: `## Les règles d'une prise extérieure
 
 - **Indice de protection** : IP44 au minimum, avec clapet. Sur une façade exposée à la pluie battante, je recommande un modèle **IP55**.
@@ -396,7 +396,7 @@ Une prise extérieure accessible depuis la rue ou le jardin peut être utilisée
     description: 'Prises à deux trous ou sans fil de terre : quels risques, pourquoi ne jamais relier la terre au neutre, et comment raccorder vos prises à la terre.',
     kicker: 'Prestation · Prises sans terre',
     h1: 'Prises sans terre : les risques et les vraies solutions',
-    lead: "Dans beaucoup de maisons anciennes, certaines pièces n'ont que des **prises à deux trous**, ou des prises à broche de terre… sans fil de terre derrière. C'est un risque réel pour les appareils à carcasse métallique. Heureusement, il existe des solutions, et quelques pièges à éviter absolument.",
+    lead: "Dans beaucoup de maisons anciennes, certaines pièces n'ont que des prises à deux trous, ou des prises à broche de terre… sans fil de terre derrière. C'est un risque réel pour les appareils à carcasse métallique. Heureusement, il existe des solutions, et quelques pièges à éviter absolument.",
     body: `## À quoi sert la terre ?
 
 Si un fil se dénude à l'intérieur d'un appareil à carcasse métallique (lave-linge, four, réfrigérateur, radiateur), la carcasse peut se retrouver sous tension. Avec une terre, ce courant de fuite s'écoule vers le sol et **le différentiel coupe aussitôt**. Sans terre, la carcasse reste sous tension… jusqu'à ce que quelqu'un la touche.
@@ -435,7 +435,7 @@ Si un fil se dénude à l'intérieur d'un appareil à carcasse métallique (lave
     description: 'Création ou amélioration de la prise de terre : piquet, conducteur, barrette de mesure, liaison équipotentielle et mesure de la valeur de terre.',
     kicker: 'Prestation · Mise à la terre',
     h1: 'Mise à la terre : la base de la sécurité électrique',
-    lead: "La prise de terre est le complément indispensable des différentiels : c'est par elle que s'écoulent les courants de fuite. **Sans terre efficace, la protection des personnes est incomplète.** Je crée, je complète et je mesure les installations de terre des maisons ardennaises.",
+    lead: "La prise de terre est le complément indispensable des différentiels : c'est par elle que s'écoulent les courants de fuite. Sans terre efficace, la protection des personnes est incomplète. Je crée, je complète et je mesure les installations de terre des maisons ardennaises.",
     body: `## Les éléments d'une installation de terre
 
 - **La prise de terre** elle-même : un ou plusieurs piquets enfoncés dans le sol, ou une boucle en fond de fouille dans les constructions récentes.
@@ -478,7 +478,7 @@ Chaque intervention se termine par une **mesure**, dont je vous communique la va
     description: "Faut-il un parafoudre dans votre tableau ? Ce qu'il protège, ce qu'il ne protège pas et les cas où il est vraiment pertinent dans les Ardennes.",
     kicker: 'Prestation · Parafoudre',
     h1: 'Installer un parafoudre : dans quels cas est-ce vraiment utile ?',
-    lead: "Le parafoudre protège vos appareils contre les **surtensions** provoquées par la foudre sur le réseau. Il n'est pas indispensable partout, mais dans certaines situations il évite des centaines d'euros de matériel grillé. Voici comment savoir s'il vous concerne.",
+    lead: "Le parafoudre protège vos appareils contre les surtensions provoquées par la foudre sur le réseau. Il n'est pas indispensable partout, mais dans certaines situations il évite des centaines d'euros de matériel grillé. Voici comment savoir s'il vous concerne.",
     body: `## Ce que fait un parafoudre
 
 Quand la foudre tombe sur ou près d'une ligne électrique, une **onde de surtension** se propage dans le réseau et entre dans les maisons. Le parafoudre, installé dans le tableau, détourne cette surtension vers la terre avant qu'elle n'atteigne vos appareils.
@@ -526,7 +526,7 @@ Un parafoudre s'use en absorbant les surtensions. La plupart des modèles ont un
     description: 'Volumes de sécurité, indice IP, prises, spots, sèche-serviettes et liaison équipotentielle : les règles électriques de la salle de bain expliquées.',
     kicker: 'Prestation · Salle de bain',
     h1: 'Électricité dans la salle de bain : les volumes à respecter',
-    lead: "L'eau et l'électricité ne font pas bon ménage. Dans la salle de bain, la norme définit des **volumes de sécurité** autour de la baignoire et de la douche, avec du matériel autorisé ou interdit dans chacun. C'est l'une des pièces que je contrôle en priorité lors d'une mise en sécurité.",
+    lead: "L'eau et l'électricité ne font pas bon ménage. Dans la salle de bain, la norme définit des volumes de sécurité autour de la baignoire et de la douche, avec du matériel autorisé ou interdit dans chacun. C'est l'une des pièces que je contrôle en priorité lors d'une mise en sécurité.",
     body: `## Les volumes en résumé
 
 - **Volume 0** : l'intérieur de la baignoire ou du receveur de douche. Seul du matériel très basse tension de sécurité, spécialement prévu, y est admis.
@@ -573,7 +573,7 @@ Pour une douche à l'italienne sans receveur, les volumes se calculent différem
     description: 'Alimenter un garage séparé, un atelier, une grange ou un abri de jardin : câble enterré, section, tableau secondaire et protections adaptées.',
     kicker: 'Prestation · Dépendances',
     h1: 'Alimenter un garage, un atelier ou un abri de jardin',
-    lead: "Garage séparé, atelier au fond du terrain, grange, abri de jardin, chalet : alimenter une dépendance demande plus qu'une rallonge enterrée. **Section du câble, profondeur, protections, tableau secondaire** : voici comment je réalise ces lignes, très fréquentes dans les maisons ardennaises.",
+    lead: "Garage séparé, atelier au fond du terrain, grange, abri de jardin, chalet : alimenter une dépendance demande plus qu'une rallonge enterrée. Section du câble, profondeur, protections, tableau secondaire : voici comment je réalise ces lignes, très fréquentes dans les maisons ardennaises.",
     body: `## La ligne enterrée dans les règles
 
 - **Câble adapté** à l'enterrement, posé dans une **gaine rouge** annelée.

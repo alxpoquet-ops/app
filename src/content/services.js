@@ -9,7 +9,7 @@ module.exports = [
     description: 'Plus de courant, disjoncteur qui saute, prise ou lumière en panne ? Dépannage électrique à domicile dans les Ardennes, le soir et le week-end.',
     kicker: 'Prestation · Dépannage électrique',
     h1: 'Dépannage électrique à domicile, en soirée et le week-end',
-    lead: "Le dépannage, c'est **ma priorité**. Une panne ne prévient pas, et elle arrive rarement aux heures de bureau : j'interviens chez les particuliers de toutes les Ardennes **toute la semaine et le week-end, sur rendez-vous**, pris par message. **Forfait sur devis, annoncé avant de venir** : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. **Panne non trouvée : remise sur le forfait.**",
+    lead: "Le dépannage, c'est ma priorité. Une panne ne prévient pas, et elle arrive rarement aux heures de bureau : j'interviens chez les particuliers de toutes les Ardennes toute la semaine et le week-end, sur rendez-vous, pris par message. Forfait sur devis, annoncé avant de venir : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Panne non trouvée : remise sur le forfait.",
     prestation: 'depannage',
     chips: [{ icon: 'zap', text: 'Forfait annoncé avant de venir' }, { icon: 'clock', text: 'À tout moment' }, { icon: 'calendar-days', text: 'Sur rendez-vous' }],
     intro: `## Les pannes que je dépanne le plus souvent
@@ -75,7 +75,7 @@ Un domino sous un isolant, un disjoncteur remplacé par un calibre supérieur «
     description: 'Panne intermittente, différentiel qui saute sans raison, circuit mort ? Recherche méthodique avec mesures, partout dans les Ardennes.',
     kicker: 'Prestation · Recherche de panne',
     h1: 'Recherche de panne électrique : trouver la vraie cause',
-    lead: "Certaines pannes sont évidentes. D'autres se cachent : un différentiel qui saute une fois par semaine, un circuit qui coupe seulement quand il pleut, une lumière qui grésille. **La recherche de panne, c'est mon cœur de métier** : une méthode, des appareils de mesure, et une explication claire à la fin.",
+    lead: "Certaines pannes sont évidentes. D'autres se cachent : un différentiel qui saute une fois par semaine, un circuit qui coupe seulement quand il pleut, une lumière qui grésille. La recherche de panne, c'est mon cœur de métier : une méthode, des appareils de mesure, et une explication claire à la fin.",
     prestation: 'recherche-panne',
     chips: [{ icon: 'search', text: 'Incluse dans le forfait' }, { icon: 'gauge', text: 'Mesures d’isolement' }, { icon: 'clipboard-check', text: 'Explication claire' }],
     intro: `## Une méthode plutôt que des suppositions
@@ -142,7 +142,7 @@ Une recherche de panne se termine toujours par une explication concrète : **où
     description: 'Tableau à fusibles, sans différentiel 30 mA ou qui chauffe ? Remplacement de tableau aux normes NF C 15-100 dans les Ardennes, devis gratuit.',
     kicker: 'Prestation · Tableau électrique',
     h1: 'Remplacement de tableau électrique aux normes NF C 15-100',
-    lead: "Le tableau est le cœur de votre installation : c'est lui qui protège les personnes contre l'électrocution et les câbles contre la surchauffe. Un tableau à fusibles, sans différentiel 30 mA ou bricolé au fil des années **ne joue plus ce rôle**. Je le remplace par un tableau neuf, clair et repéré, **sur devis gratuit et détaillé**.",
+    lead: "Le tableau est le cœur de votre installation : c'est lui qui protège les personnes contre l'électrocution et les câbles contre la surchauffe. Un tableau à fusibles, sans différentiel 30 mA ou bricolé au fil des années ne joue plus ce rôle. Je le remplace par un tableau neuf, clair et repéré, sur devis gratuit et détaillé.",
     prestation: 'tableau',
     chips: [{ icon: 'file-text', text: 'Devis gratuit' }, { icon: 'shield-check', text: 'Différentiels 30 mA' }, { icon: 'calendar-days', text: 'Pose le samedi' }],
     intro: `## Faut-il changer votre tableau ?
@@ -209,7 +209,7 @@ Aucun tableau ne ressemble à un autre. Le montant dépend du **nombre de circui
     description: 'Prise cassée, qui chauffe ou sans terre, interrupteur hors service, ajout de prise ou va-et-vient : pose soignée sur devis, le soir et le week-end.',
     kicker: 'Prestation · Prises et interrupteurs',
     h1: 'Prises et interrupteurs : remplacement, ajout et prises spécialisées',
-    lead: "Une prise qui bouge dans le mur, un interrupteur qui craque, des multiprises en cascade derrière la télévision : ce sont de petits travaux, mais **ils touchent directement à votre sécurité au quotidien**. Je remplace ou j'ajoute prises et interrupteurs avec du matériel de marque, **sur devis**.",
+    lead: "Une prise qui bouge dans le mur, un interrupteur qui craque, des multiprises en cascade derrière la télévision : ce sont de petits travaux, mais ils touchent directement à votre sécurité au quotidien. Je remplace ou j'ajoute prises et interrupteurs avec du matériel de marque, sur devis.",
     prestation: 'prises',
     chips: [{ icon: 'plug', text: 'Prises' }, { icon: 'toggle-right', text: 'Interrupteurs et va-et-vient' }, { icon: 'plug-zap', text: 'Prises spécialisées' }],
     intro: `## Les interventions courantes
@@ -269,7 +269,7 @@ Les gros appareils doivent disposer de leur **propre circuit**, avec une protect
     description: "Ajout de point lumineux, spots LED, plafonniers, appliques, variateurs, remplacement d'éclairage existant : électricien dans les Ardennes, sur devis.",
     kicker: 'Prestation · Éclairage intérieur',
     h1: 'Éclairage intérieur : la bonne lumière, au bon endroit',
-    lead: "Un plafonnier unique au milieu de la pièce, une cuisine où l'on travaille dans son ombre, un escalier mal éclairé : **l'éclairage change complètement le confort d'une maison**. J'installe et je remplace vos luminaires, spots et commandes, et je vous conseille sur la lumière adaptée à chaque pièce, **sur devis gratuit**.",
+    lead: "Un plafonnier unique au milieu de la pièce, une cuisine où l'on travaille dans son ombre, un escalier mal éclairé : l'éclairage change complètement le confort d'une maison. J'installe et je remplace vos luminaires, spots et commandes, et je vous conseille sur la lumière adaptée à chaque pièce, sur devis gratuit.",
     prestation: 'eclairage-interieur',
     chips: [{ icon: 'lightbulb', text: 'Points lumineux' }, { icon: 'sparkles', text: 'Spots LED' }, { icon: 'sun-moon', text: 'Variateurs' }],
     intro: `## Ce que je peux installer chez vous
@@ -331,7 +331,7 @@ Une LED « dimmable » branchée sur un ancien variateur prévu pour halogène g
     description: "Éclairage de façade, d’allée, de terrasse ou de cour avec détecteur de présence, prises extérieures étanches et lignes enterrées. Électricien dans les Ardennes.",
     kicker: 'Prestation · Éclairage extérieur',
     h1: 'Éclairage extérieur : façade, allée, terrasse et jardin',
-    lead: "Rentrer le soir dans une cour plongée dans le noir, chercher ses clés sur le pas de la porte, ne pas profiter de sa terrasse dès que le soleil se couche… Un éclairage extérieur bien pensé, c'est du confort, de la sécurité et un effet dissuasif. **Je l'installe avec du matériel étanche, adapté au climat ardennais.**",
+    lead: "Rentrer le soir dans une cour plongée dans le noir, chercher ses clés sur le pas de la porte, ne pas profiter de sa terrasse dès que le soleil se couche… Un éclairage extérieur bien pensé, c'est du confort, de la sécurité et un effet dissuasif. Je l'installe avec du matériel étanche, adapté au climat ardennais.",
     prestation: 'eclairage-exterieur',
     chips: [{ icon: 'lamp-wall-up', text: 'Appliques étanches' }, { icon: 'eye', text: 'Détecteurs de présence' }, { icon: 'droplets', text: 'IP44 à IP67' }],
     intro: `## Mes installations extérieures
@@ -391,7 +391,7 @@ Pour alimenter un portail, un abri de jardin ou des bornes, le câble doit être
     description: 'Installation ancienne, sans terre ou sans différentiel 30 mA ? Mise en sécurité électrique sur devis dans les Ardennes, à budget maîtrisé.',
     kicker: 'Prestation · Mise en sécurité',
     h1: 'Mise en sécurité électrique : supprimer les dangers en priorité',
-    lead: "Refaire toute l'électricité d'une maison coûte cher et n'est pas toujours nécessaire. **La mise en sécurité vise l'essentiel** : protéger les personnes contre l'électrocution et le logement contre l'incendie, en traitant les points dangereux en priorité. C'est souvent la solution la plus raisonnable pour une maison ancienne.",
+    lead: "Refaire toute l'électricité d'une maison coûte cher et n'est pas toujours nécessaire. La mise en sécurité vise l'essentiel : protéger les personnes contre l'électrocution et le logement contre l'incendie, en traitant les points dangereux en priorité. C'est souvent la solution la plus raisonnable pour une maison ancienne.",
     prestation: 'mise-en-securite',
     chips: [{ icon: 'shield-check', text: 'Sur devis' }, { icon: 'list-checks', text: '6 points essentiels' }, { icon: 'euro', text: 'Budget maîtrisé' }],
     intro: `## Les six points de sécurité essentiels

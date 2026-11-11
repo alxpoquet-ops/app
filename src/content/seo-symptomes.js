@@ -7,7 +7,7 @@ module.exports = [
     description: 'Votre disjoncteur saute ? Surcharge, court-circuit ou abonnement trop juste : comment faire la différence, que faire et quand appeler un électricien.',
     kicker: 'Panne · Disjoncteur qui saute',
     h1: 'Disjoncteur qui saute : surcharge, court-circuit ou abonnement ?',
-    lead: "Un disjoncteur qui saute fait son travail : il protège un câble contre la surchauffe ou un court-circuit. La vraie question est **pourquoi il saute**. Et selon le disjoncteur concerné, la réponse n'est pas du tout la même.",
+    lead: "Un disjoncteur qui saute fait son travail : il protège un câble contre la surchauffe ou un court-circuit. La vraie question est pourquoi il saute. Et selon le disjoncteur concerné, la réponse n'est pas du tout la même.",
     body: `## Quel disjoncteur a sauté ?
 
 Avant tout, identifiez l'appareil qui a déclenché :
@@ -50,7 +50,7 @@ Je commence par écouter : quand, avec quels appareils, depuis quand. Puis je me
     description: 'Votre interrupteur différentiel déclenche ? Fuite de courant, humidité, appareil défectueux : la méthode pour trouver le coupable et y remédier.',
     kicker: 'Panne · Différentiel qui saute',
     h1: 'Interrupteur différentiel qui saute : trouver la fuite de courant',
-    lead: "Un interrupteur différentiel ne réagit pas à la surcharge : il détecte une **fuite de courant vers la terre**, celle qui pourrait passer par votre corps. Quand il déclenche, il y a donc une fuite quelque part. Toute la difficulté est de la trouver.",
+    lead: "Un interrupteur différentiel ne réagit pas à la surcharge : il détecte une fuite de courant vers la terre, celle qui pourrait passer par votre corps. Quand il déclenche, il y a donc une fuite quelque part. Toute la difficulté est de la trouver.",
     body: `## La méthode pour identifier l'appareil en cause
 
 Dans de nombreux cas, le coupable est un appareil. Ce test simple permet souvent de le démasquer :
@@ -96,7 +96,7 @@ Chaque interrupteur différentiel possède un bouton marqué **T** ou **Test**. 
     description: 'Une partie de la maison sans électricité, le reste fonctionne ? Disjoncteur, différentiel, connexion, phase manquante : causes et bons réflexes.',
     kicker: 'Panne · Coupure partielle',
     h1: 'Plus de courant dans une partie de la maison',
-    lead: "La cuisine fonctionne, mais plus rien dans les chambres. Ou l'éclairage marche, mais aucune prise du séjour. Une panne partielle est souvent **plus simple à localiser qu'une coupure totale**, à condition de suivre un ordre logique.",
+    lead: "La cuisine fonctionne, mais plus rien dans les chambres. Ou l'éclairage marche, mais aucune prise du séjour. Une panne partielle est souvent plus simple à localiser qu'une coupure totale, à condition de suivre un ordre logique.",
     body: `## Les vérifications dans l'ordre
 
 1. **Le tableau** : un disjoncteur est-il en position basse ? Un interrupteur différentiel a-t-il coupé toute une rangée ? Réarmez une fois après avoir débranché les appareils concernés.
@@ -138,7 +138,7 @@ Dans une maison alimentée en **triphasé**, si environ un tiers de l'installati
     description: 'Prise chaude, jaunie, noircie ou qui sent le brûlé : un échauffement dangereux. Causes, gestes immédiats et réparation par un électricien ardennais.',
     kicker: 'Alerte · Prise qui chauffe',
     h1: 'Prise qui chauffe, noircie ou qui sent le brûlé',
-    lead: "Une prise électrique ne doit **jamais** être chaude. Si elle est tiède au toucher, jaunie, noircie, déformée ou si elle dégage une odeur de plastique chaud, il y a un **échauffement anormal**. C'est l'une des premières causes d'incendie d'origine électrique dans les logements.",
+    lead: "Une prise électrique ne doit jamais être chaude. Si elle est tiède au toucher, jaunie, noircie, déformée ou si elle dégage une odeur de plastique chaud, il y a un échauffement anormal. C'est l'une des premières causes d'incendie d'origine électrique dans les logements.",
     body: `!> Coupez le disjoncteur du circuit concerné (ou le disjoncteur général si vous ne savez pas lequel), débranchez l'appareil sans toucher aux parties noircies et n'utilisez plus la prise avant réparation.
 
 ## D'où vient l'échauffement ?
@@ -183,7 +183,7 @@ Quand une prise a chauffé, l'isolant des fils a souvent souffert sur quelques c
     description: 'LED qui clignote, grésille ou luit éteinte, lumières qui baissent : variateur, interrupteur lumineux, faux contact ou neutre desserré. Explications.',
     kicker: 'Panne · Éclairage qui clignote',
     h1: 'Lumière qui clignote, grésille ou reste faiblement allumée',
-    lead: "Les LED ont transformé l'éclairage… et fait apparaître de nouvelles pannes. Une ampoule qui scintille, qui grésille ou qui **luit faiblement même éteinte** n'a souvent rien de grave. Mais quand **toutes les lumières baissent en même temps**, c'est un signal à prendre au sérieux.",
+    lead: "Les LED ont transformé l'éclairage… et fait apparaître de nouvelles pannes. Une ampoule qui scintille, qui grésille ou qui luit faiblement même éteinte n'a souvent rien de grave. Mais quand toutes les lumières baissent en même temps, c'est un signal à prendre au sérieux.",
     body: `## Une seule lampe concernée
 
 ### L'ampoule LED et le variateur
@@ -230,7 +230,7 @@ Si plusieurs pièces voient leur éclairage **baisser quand un gros appareil dé
     description: 'Une ou plusieurs prises ne fonctionnent plus ? Disjoncteur, prise commandée, raccordement en chaîne, borne desserrée : vérifications et réparation.',
     kicker: 'Panne · Prise morte',
     h1: 'Une prise ne fonctionne plus : les vérifications à faire',
-    lead: "Vous branchez un appareil, rien ne se passe. Avant d'accuser la prise, **quelques vérifications simples** permettent souvent de comprendre. Et si la panne persiste, la réparation est généralement rapide.",
+    lead: "Vous branchez un appareil, rien ne se passe. Avant d'accuser la prise, quelques vérifications simples permettent souvent de comprendre. Et si la panne persiste, la réparation est généralement rapide.",
     body: `## Avant d'appeler
 
 1. **Testez avec un autre appareil** dont vous êtes sûr, comme une lampe ou un chargeur. L'appareil lui-même est parfois en cause.
@@ -275,7 +275,7 @@ C'est pourquoi la prise réellement en défaut n'est pas toujours celle qui ne m
     description: "Plus de courant ou appareils grillés après un orage ? Les vérifications, la déclaration à l'assurance, l'attestation d'électricien et la protection.",
     kicker: 'Panne · Après un orage',
     h1: 'Panne électrique après un orage : les bons réflexes',
-    lead: "Un orage est passé, et depuis plus rien ne fonctionne, ou seulement une partie de la maison. Parfois, des appareils sont définitivement hors service. Voici **dans quel ordre agir**, comment préparer votre **déclaration à l'assurance**, et comment mieux vous protéger ensuite.",
+    lead: "Un orage est passé, et depuis plus rien ne fonctionne, ou seulement une partie de la maison. Parfois, des appareils sont définitivement hors service. Voici dans quel ordre agir, comment préparer votre déclaration à l'assurance, et comment mieux vous protéger ensuite.",
     body: `## 1. Identifier le type de panne
 
 - **Plus de courant chez vous ni chez vos voisins** : le réseau est touché. Attendez le rétablissement par Enedis, ou signalez la panne au 09 726 750 08 pour les Ardennes.
@@ -321,7 +321,7 @@ Le **parafoudre** limite les surtensions qui arrivent par le réseau électrique
     description: 'Votre différentiel saute à chaque pluie ? Luminaires extérieurs, prises de jardin, câbles enterrés, boîtes humides : localiser et réparer la fuite.',
     kicker: 'Panne · Coupures par temps de pluie',
     h1: 'Ça disjoncte quand il pleut : où l’eau s’infiltre-t-elle ?',
-    lead: "Le différentiel tient tout l'été, puis saute à chaque averse dès l'automne. Ce scénario, très courant dans les Ardennes, a presque toujours la même cause : **de l'eau entre en contact avec une partie sous tension**. Il reste à trouver où.",
+    lead: "Le différentiel tient tout l'été, puis saute à chaque averse dès l'automne. Ce scénario, très courant dans les Ardennes, a presque toujours la même cause : de l'eau entre en contact avec une partie sous tension. Il reste à trouver où.",
     body: `## Les suspects habituels
 
 Par ordre de fréquence, voici ce que je trouve le plus souvent :
@@ -369,7 +369,7 @@ Remplacer un luminaire par un modèle de même qualité ne fait que repousser la
     description: "Votre compteur Linky coupe le courant ? Puissance dépassée, appareil en défaut ou abonnement trop juste : comment réarmer, et quand appeler un électricien.",
     kicker: 'Panne · Compteur Linky',
     h1: 'Compteur Linky qui disjoncte : dépassement de puissance ou vraie panne ?',
-    lead: "Tout s'éteint d'un coup, et l'écran du compteur affiche un message de **puissance dépassée** : c'est le Linky lui-même qui a coupé. Le plus souvent, il ne s'agit pas d'une panne, mais d'une **consommation supérieure à votre abonnement**. Encore faut-il s'en assurer.",
+    lead: "Tout s'éteint d'un coup, et l'écran du compteur affiche un message de puissance dépassée : c'est le Linky lui-même qui a coupé. Le plus souvent, il ne s'agit pas d'une panne, mais d'une consommation supérieure à votre abonnement. Encore faut-il s'en assurer.",
     body: `## Pourquoi le Linky coupe
 
 Avec les anciens compteurs, c'était le disjoncteur de branchement qui limitait la puissance. Avec le Linky, **le compteur surveille lui-même** la puissance appelée. Si vous dépassez la puissance souscrite (6, 9 ou 12 kVA par exemple), il coupe l'alimentation.
@@ -422,7 +422,7 @@ Avant d'augmenter votre abonnement, et donc votre facture, il vaut la peine de v
     description: "Plus d'eau chaude ? Disjoncteur, contacteur heures creuses, thermostat de sécurité, résistance : les vérifications à faire sur un chauffe-eau électrique en panne.",
     kicker: 'Panne · Plus d’eau chaude',
     h1: 'Chauffe-eau électrique qui ne chauffe plus : la panne est souvent en amont',
-    lead: "Une douche froide un matin, et l'on imagine déjà le ballon à remplacer. Pourtant, dans une bonne partie des cas, **le chauffe-eau n'y est pour rien** : c'est son alimentation ou sa commande qui est en défaut. Voici les vérifications à faire dans l'ordre.",
+    lead: "Une douche froide un matin, et l'on imagine déjà le ballon à remplacer. Pourtant, dans une bonne partie des cas, le chauffe-eau n'y est pour rien : c'est son alimentation ou sa commande qui est en défaut. Voici les vérifications à faire dans l'ordre.",
     body: `## Ce que vous pouvez vérifier vous-même
 
 1. **Le disjoncteur du chauffe-eau**, au tableau : est-il enclenché ?
@@ -466,7 +466,7 @@ Je contrôle la présence de tension à chaque étape, du tableau jusqu'aux born
     description: "Un radiateur électrique reste froid ? Alimentation, fil pilote, thermostat, sécurité thermique : les causes possibles et les vérifications avant de le remplacer.",
     kicker: 'Panne · Chauffage électrique',
     h1: 'Radiateur électrique qui ne chauffe plus : faut-il vraiment le remplacer ?',
-    lead: "Au premier froid, un radiateur reste glacé alors que les autres chauffent. Avant d'en acheter un neuf, sachez qu'**un radiateur froid n'est pas forcément un radiateur en panne** : son alimentation ou sa commande sont souvent seules en cause.",
+    lead: "Au premier froid, un radiateur reste glacé alors que les autres chauffent. Avant d'en acheter un neuf, sachez qu'un radiateur froid n'est pas forcément un radiateur en panne : son alimentation ou sa commande sont souvent seules en cause.",
     body: `## Un seul radiateur, ou plusieurs ?
 
 - **Tous les radiateurs d'une zone sont froids** : cherchez du côté du tableau (disjoncteur, délesteur) ou du programmateur qui les commande.
@@ -510,7 +510,7 @@ Thermostat électronique hors service, résistance coupée, carte de commande d�
     description: "Votre tableau électrique grésille, bourdonne, chauffe ou sent le brûlé ? Les bruits normaux, les signes de danger et les gestes à faire tout de suite.",
     kicker: 'Alerte · Tableau électrique',
     h1: 'Tableau électrique qui grésille, bourdonne ou chauffe',
-    lead: "Un tableau électrique en bon état est **presque silencieux et froid**. S'il se met à grésiller, à crépiter, à chauffer ou à sentir le plastique chaud, une connexion est probablement en train de se dégrader. C'est un signal à prendre au sérieux.",
+    lead: "Un tableau électrique en bon état est presque silencieux et froid. S'il se met à grésiller, à crépiter, à chauffer ou à sentir le plastique chaud, une connexion est probablement en train de se dégrader. C'est un signal à prendre au sérieux.",
     body: `!> Odeur de brûlé, traces noires, crépitement ou capot chaud : coupez le disjoncteur général et ne remettez pas le courant avant un contrôle. En cas de fumée ou de flammes, sortez et appelez le 18.
 
 ## Les bruits qui sont normaux
