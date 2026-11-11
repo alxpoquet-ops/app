@@ -15,15 +15,14 @@ const site = {
   portrait: '',
   tagline: 'Dépannage & Travaux Électriques dans les Ardennes',
 
-  // ⚠️ À REMPLACER : numéro réel. Le numéro ci-dessous est un numéro fictif (plage réservée ARCEP).
-  phoneDisplay: '06 39 98 00 00',
-  phoneIntl: '+33639980000',
+  phoneDisplay: '06 02 46 12 58',
+  phoneIntl: '+33602461258',
   // WhatsApp : même numéro au format international sans le « + ».
-  whatsapp: '33639980000',
+  whatsapp: '33602461258',
   whatsappMessage: "Bonjour, je souhaite un renseignement pour une intervention électrique.",
 
-  // ⚠️ À REMPLACER si besoin : adresse e-mail de réception des demandes.
-  email: 'contact@aled08.fr',
+  // Adresse e-mail affichée et de réception des demandes.
+  email: 'alx.poquet@gmail.com',
 
   address: {
     street: '', // ⚠️ Optionnel : rue (laisser vide pour n'afficher que la commune)

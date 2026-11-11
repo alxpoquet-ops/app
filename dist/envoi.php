@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-const DEST = 'contact@aled08.fr';
+const DEST = 'alx.poquet@gmail.com';
 const SITE = 'https://www.aled08.fr';
 
 function back(string $path): void {

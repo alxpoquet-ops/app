@@ -28,7 +28,7 @@ Chaque page SEO a un **contenu unique** : texte propre, 3 cas concrets, une FAQ 
 
 Tout se règle dans **`src/config.js`** :
 
-1. **Téléphone** : `phoneDisplay`, `phoneIntl`, `whatsapp`. Le numéro actuel (06 39 98 00 00) est **fictif**.
+1. **Téléphone** : `phoneDisplay`, `phoneIntl`, `whatsapp`. Numéro actuel : 06 02 46 12 58.
 2. **E-mail** de réception des demandes (`email`).
 3. **Domaine** définitif (`url`). Par défaut : `https://www.aled08.fr`.
 4. **Informations légales** (`legal`) : SIRET, immatriculation, assureur et numéro de contrat, **médiateur de la consommation** (obligatoire), hébergeur, mention TVA si vous êtes en franchise (`TVA non applicable, art. 293 B du CGI`).
@@ -63,7 +63,17 @@ npm run images    # régénère l'image Open Graph et les icônes PNG (nécessit
 
 ## Mise en ligne
 
-### Hébergement mutualisé (OVH, o2switch, IONOS…), recommandé
+### WordPress (site actuel : www.aled08.fr)
+Le site en ligne tourne sous WordPress, avec un thème sur mesure « ALED08 ».
+1. `node build.js && python3 scripts/wp-export.py` crée dans `wp-export/` :
+   - `aled08.zip` : le thème (styles, scripts, en-tête, pied de page, formulaires envoyés par `wp_mail`) ;
+   - `aled08-import.zip` : une extension à usage unique qui crée ou met à jour toutes les pages et les articles, puis règle WordPress (page d'accueil, page du blog, liens en `/blog/%postname%/`).
+2. Installez le thème (Apparence › Thèmes › Ajouter › Téléverser), puis l'extension d'import (Extensions › Ajouter › Téléverser) ; activez-la, puis désactivez-la et supprimez-la.
+3. Après une modification du seul design (CSS ou JS), il suffit de réinstaller `aled08.zip` en remplaçant l'ancien thème.
+
+Les pages restent modifiables dans WordPress : chaque section est un bloc « HTML personnalisé ». Les nouvelles pages et les nouveaux articles créés dans WordPress prennent automatiquement la mise en page du site, et les articles apparaissent sur la page Blog.
+
+### Hébergement mutualisé sans WordPress (OVH, o2switch, IONOS…), recommandé
 1. `npm run build`
 2. Envoyez **tout le contenu** du dossier `dist/` (y compris `.htaccess` et `envoi.php`) à la racine du site (`www/`) par FTP, avec FileZilla par exemple.
 3. Le formulaire fonctionne grâce à `envoi.php` (fonction `mail()` de PHP). Faites un test d'envoi après la mise en ligne.
