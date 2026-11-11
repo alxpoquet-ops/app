@@ -1,4 +1,4 @@
-// Avis clients — uniquement de VRAIS avis, laissés par des clients après une intervention.
+// Avis clients : uniquement de VRAIS avis, laissés par des clients après une intervention.
 // Tant que cette liste est vide, la section « Avis » n'est pas affichée sur le site.
 // Publier des avis inventés est une pratique commerciale trompeuse (art. L121-4 du Code de la consommation).
 //

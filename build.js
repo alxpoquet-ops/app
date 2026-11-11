@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ============================================================================
-//  ALED08 — générateur de site statique (Node.js ≥ 18, aucune dépendance)
+//  ALED08 : générateur de site statique (Node.js ≥ 18, aucune dépendance)
 //  Usage : node build.js   →   génère le site complet dans ./dist
 // ============================================================================
 const fs = require('fs');
@@ -106,7 +106,7 @@ write(
   'site.webmanifest',
   JSON.stringify(
     {
-      name: 'ALED08 — Électricien Ardennes',
+      name: 'ALED08, électricien Ardennes',
       short_name: 'ALED08',
       start_url: '/',
       display: 'standalone',
@@ -122,7 +122,7 @@ write(
   )
 );
 
-// 5) script d'envoi des formulaires (PHP) — injection de l'adresse e-mail
+// 5) script d'envoi des formulaires (PHP) : injection de l'adresse e-mail
 const php = fs.readFileSync(path.join(ROOT, 'src/server/envoi.php'), 'utf8').replace('__EMAIL__', site.email).replace('__SITE__', site.url);
 write('envoi.php', php);
 

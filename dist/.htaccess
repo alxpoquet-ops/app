@@ -1,4 +1,4 @@
-# ALED08 — configuration Apache (hébergements mutualisés type OVH, o2switch, IONOS)
+# ALED08 : configuration Apache (hébergements mutualisés type OVH, o2switch, IONOS)
 
 # Pages d'erreur
 ErrorDocument 404 /404.html

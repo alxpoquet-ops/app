@@ -1,6 +1,6 @@
 <?php
 /**
- * ALED08 — traitement des formulaires de contact et de devis.
+ * ALED08 : traitement des formulaires de contact et de devis.
  * Compatible hébergements mutualisés (OVH, o2switch, IONOS…) disposant de la fonction mail().
  * L'adresse de destination est injectée au build depuis src/config.js.
  */
@@ -57,8 +57,8 @@ $corps = "Nouvelle demande reçue depuis le site " . SITE . "\n\n"
     . "Type        : " . ($type === 'devis' ? 'Demande de devis' : 'Contact') . "\n"
     . "Nom         : $nom\n"
     . "Téléphone   : $telephone\n"
-    . "E-mail      : " . ($email ?: '—') . "\n"
-    . "Commune     : " . ($commune ?: '—') . "\n"
+    . "E-mail      : " . ($email ?: 'non renseigné') . "\n"
+    . "Commune     : " . ($commune ?: 'non renseignée') . "\n"
     . ($adresse ? "Adresse     : $adresse\n" : '')
     . ($prestation ? "Prestation  : $prestation\n" : '')
     . ($urgence ? "Urgence     : $urgence\n" : '')

@@ -1,4 +1,4 @@
-/* ALED08 — scripts (léger, sans dépendance) */
+/* ALED08 : scripts (léger, sans dépendance) */
 (function () {
   'use strict';
   var d = document;

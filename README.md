@@ -1,4 +1,4 @@
-# ⚡ ALED08 — Site internet
+# ⚡ ALED08 : site internet
 
 Site vitrine d'**ALED08** (artisan électricien, dépannage dans toutes les Ardennes). Spécialité : **le dépannage électrique au forfait, sur devis annoncé avant de venir** (déplacement, recherche de panne, proposition de solution et devis de réparation compris), **à tout moment sur rendez-vous**. Travaux sur devis gratuit.
 
@@ -63,7 +63,7 @@ npm run images    # régénère l'image Open Graph et les icônes PNG (nécessit
 
 ## Mise en ligne
 
-### Hébergement mutualisé (OVH, o2switch, IONOS…) — recommandé
+### Hébergement mutualisé (OVH, o2switch, IONOS…), recommandé
 1. `npm run build`
 2. Envoyez **tout le contenu** du dossier `dist/` (y compris `.htaccess` et `envoi.php`) à la racine du site (`www/`) par FTP, avec FileZilla par exemple.
 3. Le formulaire fonctionne grâce à `envoi.php` (fonction `mail()` de PHP). Faites un test d'envoi après la mise en ligne.

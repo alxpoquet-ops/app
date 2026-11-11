@@ -1,4 +1,4 @@
-# Guide de référencement local — passer devant la concurrence
+# Guide de référencement local : passer devant la concurrence
 
 Le site est prêt techniquement. Mais sur une recherche comme « électricien Rethel », Google affiche **d'abord la carte avec trois fiches d'entreprises**, puis les sites. Votre place sur cette carte dépend de votre **fiche Google Business Profile** et de vos **avis**, pas du site. Ce guide liste, dans l'ordre, ce qu'il reste à faire de votre côté.
 

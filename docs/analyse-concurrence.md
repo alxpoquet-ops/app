@@ -1,4 +1,4 @@
-# Analyse de la concurrence — dépannage électrique, sud et centre des Ardennes
+# Analyse de la concurrence : dépannage électrique, sud et centre des Ardennes
 
 *Réalisée en novembre 2026 à partir de recherches Google et de la lecture des pages citées en bas de document. Deux annuaires (villepratique.fr et travaux.com) ont refusé la lecture automatique : ils ne sont connus ici que par leurs extraits dans Google.*
 
@@ -12,7 +12,7 @@ Recherches testées : « électricien Signy-l'Abbaye », « électricien Rethel 
 | Centres d'appels de mise en relation | pages villepratique (numéro opéré par Depanneo) | Un numéro unique, pas l'artisan. Le client ne sait pas qui viendra ni à quel prix. |
 | Comparateurs d'énergie | Selectra, Hello Watt, fournisseur-energie.com | Des pages sur Enedis et EDF, sans rapport avec un dépannage chez soi. |
 | Plateformes nationales de dépannage | MesDépanneurs | Des fourchettes de prix nationales. Aucune ville des Ardennes citée. |
-| Sites d'artisans locaux | — | **Aucun site d'électricien local n'est ressorti dans ces recherches.** |
+| Sites d'artisans locaux | Aucun | **Aucun site d'électricien local n'est ressorti dans ces recherches.** |
 
 **Constat principal : la place est libre.** Personne ne se positionne sur Signy-l'Abbaye, et aucun artisan local n'a de site qui réponde vraiment à « dépannage électrique + commune ».
 
@@ -22,7 +22,7 @@ Liste Obat des Ardennes : environ 40 fiches pour un « Top 20 », dont plusieurs
 
 - **Presque toutes les fiches affichent « Aucun avis »** et « Disponibilité inconnue ».
 - **MB Electricité (Poix-Terron)** : la seule fiche vraiment travaillée, 5/5 sur 5 avis. C'est le concurrent local le plus crédible en ligne.
-- **SARL EDR Solutions (Villers-sur-Bar)** : horaires très larges (6 h – 23 h du lundi au samedi, dimanche matin), 9 photos, 37 prestations listées. Mais aucun prix, aucun avis, pas de site propre.
+- **SARL EDR Solutions (Villers-sur-Bar)** : horaires très larges (6 h à 23 h du lundi au samedi, dimanche matin), 9 photos, 37 prestations listées. Mais aucun prix, aucun avis, pas de site propre.
 - **Secteur de Rethel** : Rom1elec (Bergnicourt), Decarreaux Gagneux, Domotic Elec (L'Écaille), André Rousseaux. Présents dans les annuaires uniquement.
 - **Charleville / vallée de la Meuse** : Florian Blandin, Elec Master, Société Nouvelle Louis (Nouzonville), Barre Bouquignaud (La Francheville).
 - **Sedan** : JBH Elec, Atevas, SCB Elec.
@@ -54,7 +54,7 @@ Mise à jour : le forfait ALED08 est désormais **sur devis, annoncé au télép
 3. **La fiche Google Business Profile.** C'est elle qui apparaît sur la carte Google, avant tous les sites.
 
 **Décisions qui vous reviennent (arguments forts chez les plateformes)**
-- *Panne non trouvée* : **décidé — une remise est accordée sur le forfait**, sans montant affiché. La plateforme nationale, elle, ne facture rien dans ce cas : c'est le seul point où elle reste mieux-disante.
+- *Panne non trouvée* : **décidé : une remise est accordée sur le forfait**, sans montant affiché. La plateforme nationale, elle, ne facture rien dans ce cas : c'est le seul point où elle reste mieux-disante.
 - *Garantie* : annoncer une durée de garantie sur la main-d'œuvre.
 - *Qualifications* : si vous en avez une (habilitation, Qualifelec…), l'afficher. Aucune fiche locale ne le fait.
 - *Délai de rappel* : le site dit « généralement dans la journée ». Un engagement plus précis serait un plus si vous pouvez le tenir.

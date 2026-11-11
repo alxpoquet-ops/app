@@ -1,5 +1,5 @@
 // ============================================================================
-//  ALED08 — Configuration centrale du site
+//  ALED08 : configuration centrale du site
 //  ⚠️  Les valeurs marquées « À REMPLACER » doivent être complétées avant la
 //      mise en ligne (le build affiche un avertissement tant qu'elles restent).
 // ============================================================================
@@ -35,7 +35,7 @@ const site = {
   },
   geo: { lat: 49.6996, lng: 4.4183 },
 
-  // Informations légales — ⚠️ À REMPLACER
+  // Informations légales : ⚠️ À REMPLACER
   legal: {
     status: 'Entreprise individuelle', // ex. : Entreprise individuelle (micro-entreprise)
     siret: '[SIRET à compléter]',
@@ -108,7 +108,7 @@ const kmTiers = [
   { max: Infinity, label: 'Au-delà de 45 km', supplement: null, text: 'Sur devis' },
 ];
 
-// Communes desservies — distances indicatives par la route depuis Signy-l'Abbaye.
+// Communes desservies : distances indicatives par la route depuis Signy-l'Abbaye.
 // page: slug de la page locale dédiée (si elle existe).
 const communes = [
   { name: "Signy-l'Abbaye", km: 0, page: 'electricien-signy-l-abbaye', main: true },
