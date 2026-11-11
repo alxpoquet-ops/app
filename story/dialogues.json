@@ -1,0 +1,490 @@
+{
+	"_lisez_moi": [
+		{"w": "d", "t": "w = qui parle : d (description), noe (Noé), narr (la voix douce), voice (téléphone), echo (la petite voix). choice = un choix, fx = effet, wait = pause en secondes."}
+	],
+	"intro": [
+		{"wait": 1.0},
+		{"w": "narr", "t": "Chut. Ne bouge pas tout de suite."},
+		{"w": "narr", "t": "Respire. Tu es là. C'est déjà beaucoup."},
+		{"w": "d", "t": "Il fait noir. Le matelas est froid sous ta main."},
+		{"w": "noe", "t": "...Où est-ce que je suis ?"},
+		{"w": "narr", "t": "Il y a une lumière, tout près de toi. Prends-la."}
+	],
+	"too_dark": [
+		{"w": "d", "t": "Il fait trop noir. Tu ne distingues que des formes."}
+	],
+	"nothing": [
+		{"w": "d", "t": "Rien de particulier."}
+	],
+	"lantern": [
+		{"w": "d", "t": "Une vieille lanterne-tempête. La flamme tremble, mais elle tient."},
+		{"w": "noe", "t": "Je ne me souviens pas de l'avoir allumée."},
+		{"w": "narr", "t": "Garde-la près de toi. Elle t'aidera à chercher."}
+	],
+	"closed_door": [
+		{"w": "d", "t": "La poignée est glacée. Tu n'as pas envie d'y aller."},
+		{"w": "noe", "t": "Pas maintenant."}
+	],
+	"bed": [
+		{"w": "d", "t": "Ton lit. Les draps gardent la forme de ton corps. Tu y as passé beaucoup de temps, ces derniers mois."}
+	],
+	"bed_c2": [
+		{"w": "d", "t": "Le lit. Tu as envie de t'y recoucher. Juste cinq minutes. Juste une heure. Juste la journée."}
+	],
+	"bed_c3": [
+		{"w": "d", "t": "Sous le lit, il y a quelque chose. Tu le sais. Tu ne regardes pas."},
+		{"w": "noe", "t": "Pas encore."}
+	],
+	"bed_after": [
+		{"w": "d", "t": "Le lit. Tu repenses à Papi Jo, au hangar, au ciré jaune."}
+	],
+	"desk": [
+		{"w": "d", "t": "Un ordinateur portable fermé. Sur le couvercle, un post-it : « Répondre à Malik »."},
+		{"w": "noe", "t": "Malik. Mon meilleur ami. Je devais l'appeler « dès que je serais installé »."},
+		{"w": "d", "t": "Le post-it a jauni."}
+	],
+	"boxes": [
+		{"w": "d", "t": "Des cartons jamais déballés. Sur l'un d'eux, ta propre écriture : « DIVERS — PLUS TARD »."}
+	],
+	"boxes_c3": [
+		{"w": "d", "t": "Les cartons. Tu jurerais qu'il y en a un de plus que tout à l'heure."}
+	],
+	"clock": [
+		{"w": "d", "t": "Une horloge. 3h12. La trotteuse tressaute, sans jamais avancer."}
+	],
+	"clock_c3": [
+		{"w": "d", "t": "3h12."},
+		{"w": "d", "t": "Tu l'entends, maintenant. Tic. Tic. Tic. Elle n'avance toujours pas."}
+	],
+	"clock_late": [
+		{"w": "d", "t": "3h12."},
+		{"w": "d", "t": "Tu te souviens, maintenant. C'est l'heure à laquelle tu es arrivé ici, la première nuit."},
+		{"w": "d", "t": "Tu t'es assis sur un carton, au milieu de la chambre vide, et tu as pensé : qu'est-ce que je fais là ?"},
+		{"w": "noe", "t": "Une partie de moi est toujours assise sur ce carton."}
+	],
+	"clock_c6": [
+		{"w": "d", "t": "L'horloge tourne. Elle a rattrapé le temps perdu, ou presque."}
+	],
+	"window": [
+		{"w": "d", "t": "La fenêtre est couverte de carton, scotché sur tous les bords."},
+		{"w": "noe", "t": "C'est moi qui ai fait ça ? ...Pour ne plus voir le jour, je crois."}
+	],
+	"window_c2": [
+		{"w": "d", "t": "Le carton sur la fenêtre. Derrière, très loin, une rumeur de ville."}
+	],
+	"window_c3": [
+		{"w": "d", "t": "Quelqu'un a écrit sur le carton, au marqueur : « PAS AUJOURD'HUI »."},
+		{"w": "noe", "t": "C'est mon écriture."}
+	],
+	"window_c4": [
+		{"w": "d", "t": "Le carton s'est déchiré dans un coin. Un trait de lumière pâle passe à travers."},
+		{"choice": ["Arracher le carton", "Laisser comme ça"]}
+	],
+	"window_rip": [
+		{"w": "d", "t": "Tu tires. Le scotch résiste, puis cède d'un coup."},
+		{"w": "d", "t": "Dehors, il fait gris. Des toits, des antennes, une ville que tu ne connais toujours pas."},
+		{"w": "narr", "t": "Ce n'est pas encore beau. Mais c'est vrai. C'est déjà ça."}
+	],
+	"window_leave": [
+		{"w": "noe", "t": "Pas encore. Je ne suis pas prêt à voir dehors."},
+		{"w": "narr", "t": "Ce n'est pas grave. La lumière passe quand même, un peu."}
+	],
+	"window_open": [
+		{"w": "d", "t": "Une ville grise. Quelque part, quelqu'un étend du linge à sa fenêtre."}
+	],
+	"window_c6": [
+		{"w": "d", "t": "Le jour entre par la fenêtre. La ville est grise, et vivante."}
+	],
+	"carton": [
+		{"w": "d", "t": "Un carton, plus lourd que les autres. Sur le côté, au marqueur : « FRAGILE — CUISINE. Mange bien, mon grand. — Maman »."},
+		{"w": "noe", "t": "L'écriture de maman."},
+		{"choice": ["Ouvrir le carton", "Le laisser fermé"]}
+	],
+	"carton_open": [
+		{"w": "d", "t": "Sous trois couches de papier journal : un bol. Celui des petits déjeuners, avec l'ébréchure sur le bord."},
+		{"w": "noe", "t": "Elle me l'a glissé en cachette."},
+		{"w": "d", "t": "Le papier journal vient de chez toi. Le journal de Port-Lénan. En première page, la plage, la digue, le phare."},
+		{"w": "noe", "t": "Port-Lénan. La mer. ...Je suis parti. J'ai déménagé ici, à six cents kilomètres. Pour le travail."}
+	],
+	"carton_closed": [
+		{"w": "noe", "t": "Pas besoin de l'ouvrir. Je sais ce qu'il y a dedans."},
+		{"w": "d", "t": "Tu poses la main sur le scotch. Maman en a mis trois couches, comme toujours, « au cas où »."},
+		{"w": "noe", "t": "Elle a fait mes cartons pendant que je ne savais plus quoi faire de mes mains."},
+		{"w": "noe", "t": "Port-Lénan, la mer... et ici. Six cents kilomètres plus loin. Pour le travail."}
+	],
+	"carton_end": [
+		{"w": "narr", "t": "Tu commences à te souvenir. Doucement. Il n'y a pas d'urgence."}
+	],
+	"carton_after": [
+		{"w": "d", "t": "Le carton de maman. « Mange bien, mon grand. »"}
+	],
+	"mail": [
+		{"w": "d", "t": "Des lettres, des prospectus glissés sous la porte. Une petite pile que tu enjambes sans regarder."}
+	],
+	"mail_c6": [
+		{"w": "d", "t": "Le mot d'Adjoa. « Je fais toujours trop de thé. »"},
+		{"w": "noe", "t": "Je descendrai. Pas aujourd'hui. Mais je descendrai."}
+	],
+	"shoes": [
+		{"w": "d", "t": "Un meuble à chaussures. Une seule paire. Les semelles sont propres : elles ne sont pas sorties depuis longtemps."}
+	],
+	"front": [
+		{"w": "d", "t": "La porte d'entrée. Un panneau pend à la poignée : VERROUILLÉ."},
+		{"choice": ["Examiner le panneau", "Tourner le verrou", "Laisser"]}
+	],
+	"sign": [
+		{"w": "d", "t": "Un morceau de carton, pendu à une ficelle. VERROUILLÉ, en lettres capitales."},
+		{"w": "d", "t": "Tu ne te souviens pas de l'avoir vu arriver là."}
+	],
+	"sign_c3": [
+		{"w": "d", "t": "VERROUILLÉ."},
+		{"w": "d", "t": "Cette écriture... les R, surtout. On dirait la tienne."}
+	],
+	"sign_c4": [
+		{"w": "d", "t": "VERROUILLÉ. C'est ton écriture. Tu en es sûr, maintenant."},
+		{"w": "noe", "t": "Pourquoi j'aurais écrit ça ?"}
+	],
+	"sign_c5": [
+		{"w": "d", "t": "VERROUILLÉ."},
+		{"w": "d", "t": "Tu ne veux plus le lire."}
+	],
+	"lock_fail": [
+		{"w": "d", "t": "Le verrou refuse de tourner."},
+		{"w": "echo", "t": "Il te manque quelque chose."}
+	],
+	"hint_c1": [
+		{"w": "narr", "t": "Regarde autour de toi. Commence par ce qui est fragile."}
+	],
+	"hint_c2": [
+		{"w": "narr", "t": "Quelqu'un essaie de te joindre. Écoute : ça vibre, quelque part."}
+	],
+	"hint_c3": [
+		{"w": "narr", "t": "Tu évites un regard. Le tien."}
+	],
+	"hint_c4": [
+		{"w": "narr", "t": "Certaines choses attendent sous le lit depuis longtemps."}
+	],
+	"leave_c1": [
+		{"w": "noe", "t": "Le carton. Maman. La mer..."},
+		{"w": "d", "t": "Tu poses la main sur le verrou. Cette fois, il tourne. Clac."},
+		{"w": "d", "t": "La porte s'ouvre sur une lumière blanche."}
+	],
+	"arrive_c2": [
+		{"w": "d", "t": "...La chambre."},
+		{"w": "noe", "t": "Quoi ? Non. Je viens de sortir. Je viens de passer la porte !"},
+		{"w": "narr", "t": "Tu es revenu. Ce n'est pas un échec."},
+		{"w": "narr", "t": "On revient souvent aux mêmes endroits avant de pouvoir les quitter."},
+		{"w": "d", "t": "Quelque chose a changé, pourtant. Dans l'entrée, une porte n'est plus aussi froide."}
+	],
+	"counter": [
+		{"w": "d", "t": "L'évier déborde d'assiettes. Tu manges debout, quand tu manges."},
+		{"w": "d", "t": "Sur le micro-ondes, l'heure clignote : 03:12. 03:12. 03:12."}
+	],
+	"counter_c6": [
+		{"w": "d", "t": "L'évier est vide. Le micro-ondes affiche enfin la bonne heure."}
+	],
+	"fridge": [
+		{"w": "d", "t": "Sur le frigo, un dessin aimanté. Un bonhomme à lunettes devant une maison au bord de la mer."},
+		{"w": "d", "t": "En bas, en lettres de couleur : « REVIENS QUAND TU VEUX. LOU, 9 ANS ». Le N est à l'envers."},
+		{"w": "noe", "t": "Ma petite sœur. Elle a pleuré à la gare. Moi, non."}
+	],
+	"chair": [
+		{"w": "d", "t": "Une seule chaise. Tu n'en as acheté qu'une."}
+	],
+	"calendar": [
+		{"w": "d", "t": "Un calendrier offert par la boulangerie du coin. Il est resté sur avril."}
+	],
+	"phone": [
+		{"w": "d", "t": "Ton téléphone, posé face contre la table. Il vibre. Il s'arrête. Il recommence."},
+		{"w": "d", "t": "Sur l'écran : 17 messages vocaux. Maman. Lou. Maman. Malik. Maman."},
+		{"choice": ["Écouter le dernier message", "Retourner l'écran contre la table"]}
+	],
+	"phone_listen": [
+		{"fx": "static"},
+		{"w": "voice", "t": "« Noé ? C'est maman... »"},
+		{"fx": "static"},
+		{"w": "voice", "t": "« ...ça fait trois semaines que... pas besoin de rappeler si tu n'as pas la force... »"},
+		{"w": "voice", "t": "« ...on t'aime, tu sais. Même de loin. Surtout de loin. »"},
+		{"w": "d", "t": "Le message se coupe."},
+		{"w": "noe", "t": "Je ne rappelle pas. Si je rappelle, il faudra dire que ça va."},
+		{"w": "noe", "t": "Et je ne sais plus le dire sans que ma voix casse."}
+	],
+	"phone_hide": [
+		{"w": "d", "t": "Tu retournes le téléphone. L'écran s'éteint."},
+		{"w": "d", "t": "Il continue de vibrer contre le bois. Doucement. Régulièrement. Comme un cœur."},
+		{"w": "noe", "t": "Ils appellent tous les jours. Maman, Lou, Malik. Et je ne décroche pas."},
+		{"w": "noe", "t": "Si je décroche, il faudra dire que ça va. Et je ne sais plus le dire sans que ma voix casse."}
+	],
+	"phone_end": [
+		{"w": "narr", "t": "Ceux qui t'aiment ne te demandent pas d'aller bien. Juste de savoir où tu es."}
+	],
+	"phone_after": [
+		{"w": "d", "t": "Le téléphone, immobile. 17 messages. Tu les écouteras. Bientôt."}
+	],
+	"shadow_gone_c2": [
+		{"w": "d", "t": "Il y avait quelqu'un. Là, dans le coin. Tu en es sûr."},
+		{"w": "noe", "t": "...Je deviens fou."}
+	],
+	"leave_c2": [
+		{"w": "noe", "t": "Ils m'appellent. Ils m'attendent. Il faut que je sorte d'ici."},
+		{"w": "d", "t": "Le verrou tourne. Clac. Lumière blanche."}
+	],
+	"arrive_c3": [
+		{"w": "d", "t": "La chambre. Encore."},
+		{"w": "noe", "t": "J'en ai marre. J'en ai MARRE !"},
+		{"fx": "shake"},
+		{"w": "d", "t": "Ta voix ne fait aucun écho. Les murs l'avalent."},
+		{"w": "narr", "t": "Tu as le droit d'être en colère. La colère aussi, c'est de la vie qui revient."}
+	],
+	"shadow_gone_c3": [
+		{"w": "d", "t": "Encore lui. Plus près, cette fois."},
+		{"w": "d", "t": "Quand tu tends la lanterne, il n'y a plus personne."}
+	],
+	"tally": [
+		{"w": "d", "t": "Des traits gravés dans le plâtre, par paquets de cinq. Des dizaines."},
+		{"w": "d", "t": "Tu les comptes. Cent vingt-quatre."},
+		{"w": "noe", "t": "Cent vingt-quatre jours. Depuis que je suis arrivé."}
+	],
+	"knock": [
+		{"fx": "knock"},
+		{"w": "d", "t": "TOC. TOC. TOC."},
+		{"w": "d", "t": "Quelqu'un frappe à la porte d'entrée."},
+		{"choice": ["Répondre", "Ne pas bouger"]}
+	],
+	"knock_answer": [
+		{"w": "noe", "t": "Qui... qui est là ?"},
+		{"w": "d", "t": "Ta voix n'est qu'un souffle. Personne ne l'entend de l'autre côté."}
+	],
+	"knock_still": [
+		{"w": "d", "t": "Tu retiens ta respiration. Ton cœur cogne plus fort que la porte."}
+	],
+	"knock_end": [
+		{"w": "d", "t": "Les coups s'arrêtent. Des pas s'éloignent dans l'escalier, lentement."},
+		{"w": "echo", "t": "Personne ne viendra."}
+	],
+	"mirror": [
+		{"w": "d", "t": "Le miroir est couvert de buée. Quelqu'un a écrit dedans avec le doigt, encore et encore :"},
+		{"w": "d", "t": "ÇA VA. ÇA VA. ÇA VA. ÇA VA. ÇA VA. ÇA VA."},
+		{"w": "noe", "t": "C'est ce que je réponds. Au travail. Au téléphone, les rares fois où je décroche. À la boulangère."},
+		{"choice": ["Essuyer le miroir", "Laisser la buée"]}
+	],
+	"mirror_wipe": [
+		{"w": "d", "t": "Tu passes ta manche sur la vitre. Les mots disparaissent."},
+		{"w": "d", "t": "Dans le reflet : un garçon aux yeux cernés, derrière des lunettes sales. Tu ne l'avais pas regardé depuis longtemps."},
+		{"w": "noe", "t": "Ça va pas. ...Ça va pas du tout, en fait."},
+		{"w": "d", "t": "C'est la première fois que tu le dis. Même tout bas, même à personne, ça fait trembler quelque chose."}
+	],
+	"mirror_keep": [
+		{"w": "d", "t": "Tu laisses la buée. Les mots restent, dégoulinants."},
+		{"w": "noe", "t": "Si j'efface, il va falloir regarder ce qu'il y a derrière."},
+		{"w": "noe", "t": "Et derrière, il y a un type qui ne va pas bien du tout."},
+		{"w": "d", "t": "Même sans essuyer, tu le sais. Le savoir, c'est déjà moins se mentir."}
+	],
+	"mirror_end": [
+		{"w": "narr", "t": "« Ça va », c'est une porte qu'on ferme poliment. Tu as le droit de la laisser entrouverte."}
+	],
+	"mirror_after": [
+		{"w": "d", "t": "Ton reflet. Fatigué, mais là."}
+	],
+	"bath": [
+		{"w": "d", "t": "La baignoire est sèche. Une araignée a tendu sa toile dans un coin."},
+		{"w": "noe", "t": "Je prends des douches de deux minutes. Dans le noir."}
+	],
+	"laundry": [
+		{"w": "d", "t": "Un panier de linge sale. Toujours le même sweat : celui que tu portes."}
+	],
+	"sdb_loop": [
+		{"w": "d", "t": "Tu passes la porte..."},
+		{"w": "d", "t": "...et tu es dans la salle de bain."},
+		{"fx": "shake"},
+		{"w": "noe", "t": "J'étais déjà là. J'étais DÉJÀ là."}
+	],
+	"leave_c3": [
+		{"w": "noe", "t": "« Ça va. » Je ne veux plus l'écrire nulle part."},
+		{"w": "d", "t": "Le verrou tourne. Clac. Lumière blanche."}
+	],
+	"arrive_c4": [
+		{"w": "d", "t": "La chambre."},
+		{"w": "d", "t": "Mais pour la première fois, l'air est un peu moins froid. Une odeur de poussière et de vieux café. Une odeur de chez quelqu'un."},
+		{"w": "narr", "t": "Tu vois ? Quelque chose bouge. Même quand tu ne le sens pas."}
+	],
+	"bed_c4": [
+		{"w": "d", "t": "Tu te penches. Sous le lit, un cadre posé face contre le sol, couvert de poussière."},
+		{"choice": ["Retourner la photo", "La laisser face contre le sol"]}
+	],
+	"photo_look": [
+		{"w": "d", "t": "Un vieil homme en ciré jaune, devant un hangar à bateaux. Sur ses épaules, un petit garçon à lunettes qui rit."},
+		{"w": "noe", "t": "Papi Jo."},
+		{"w": "d", "t": "Il est mort en mars. Tu as déménagé en avril, le lendemain de l'enterrement."},
+		{"w": "noe", "t": "Je n'ai pas pleuré. J'ai fait des cartons. Je me suis dit que je pleurerais une fois installé."},
+		{"w": "noe", "t": "Je ne me suis jamais installé."},
+		{"w": "d", "t": "Au dos, de son écriture penchée : « Chez nous, on ne ferme pas à clé. Quand on frappe, on ouvre. »"}
+	],
+	"photo_leave": [
+		{"w": "noe", "t": "Je sais qui c'est. Je n'ai pas besoin de regarder."},
+		{"w": "noe", "t": "Papi Jo. Le hangar, le ciré jaune, l'odeur de gasoil et de sel."},
+		{"w": "noe", "t": "Il est mort en mars. Je suis parti en avril, le lendemain de l'enterrement. Je n'ai pas pleuré."},
+		{"w": "d", "t": "Du bout des doigts, tu sens des mots écrits au dos du cadre. Tu connais la phrase par cœur."},
+		{"w": "noe", "t": "« Chez nous, on ne ferme pas à clé. Quand on frappe, on ouvre. »"}
+	],
+	"bed_c4_end": [
+		{"w": "narr", "t": "Le chagrin qu'on range dans un carton ne disparaît pas. Il attend qu'on revienne le chercher."}
+	],
+	"shadow_c4": [
+		{"w": "d", "t": "Il est là. Devant la porte. Cette fois, il ne disparaît pas."},
+		{"w": "d", "t": "Même taille que toi. Mêmes cheveux. Même sweat. La lanterne fait briller ses lunettes."},
+		{"choice": ["Lui parler", "Essayer de passer"]}
+	],
+	"shadow_talk": [
+		{"w": "noe", "t": "Qui es-tu ?"},
+		{"w": "d", "t": "Il ouvre la bouche en même temps que toi. Aucun son ne sort."}
+	],
+	"shadow_pass": [
+		{"w": "d", "t": "Tu fais un pas de côté. Il fait le même. Exactement le même, au même instant."}
+	],
+	"shadow_end": [
+		{"w": "d", "t": "Tu comprends. C'est toi. Le toi qui garde la porte. Celui qui répond « ça va » et qui scotche les fenêtres."},
+		{"w": "d", "t": "Il te regarde encore un moment. Puis il s'efface, comme de la buée sur un miroir."}
+	],
+	"leave_c4": [
+		{"w": "narr", "t": "Tu as tout, maintenant."},
+		{"w": "narr", "t": "Le départ. Les appels sans réponse. Les « ça va ». Papi Jo."},
+		{"w": "narr", "t": "Tu sais qui tu es. Tu sais pourquoi tu es là."},
+		{"w": "d", "t": "Le verrou tourne. La porte s'ouvre sur une lumière immense."},
+		{"w": "noe", "t": "Enfin."}
+	],
+	"dark_arrive": [
+		{"w": "d", "t": "..."},
+		{"w": "d", "t": "La chambre."},
+		{"w": "noe", "t": "Non."},
+		{"w": "noe", "t": "Non, non, non. J'avais tout trouvé. J'avais TOUT trouvé !"},
+		{"fx": "shake"},
+		{"w": "d", "t": "Les cartons sont refermés. Le carton est revenu sur la fenêtre. La photo est retournée sous le lit."},
+		{"w": "d", "t": "La voix douce ne dit plus rien."}
+	],
+	"dark_generic": [
+		{"w": "noe", "t": "J'ai déjà vu tout ça. Ça ne sert à rien."}
+	],
+	"dark_carton": [
+		{"w": "d", "t": "Le carton est refermé. Trois couches de scotch. Comme si tu ne l'avais jamais ouvert."}
+	],
+	"dark_bed": [
+		{"w": "d", "t": "La photo est de nouveau face contre le sol."}
+	],
+	"dark_window": [
+		{"w": "d", "t": "Le carton est revenu sur la vitre. Intact."}
+	],
+	"dark_clock": [
+		{"w": "d", "t": "3h12."}
+	],
+	"dark_mirror": [
+		{"w": "d", "t": "ÇA VA. ÇA VA. ÇA VA. La buée est revenue."}
+	],
+	"dark_phone": [
+		{"w": "d", "t": "Le téléphone ne vibre plus."}
+	],
+	"dark_fridge": [
+		{"w": "d", "t": "Le dessin de Lou a disparu. Il ne reste que l'aimant."}
+	],
+	"lock_dark": [
+		{"w": "d", "t": "Le verrou refuse de tourner."},
+		{"w": "echo", "t": "Il ne te manque rien."},
+		{"wait": 0.8},
+		{"w": "echo", "t": "Il ne t'a jamais rien manqué."}
+	],
+	"lantern_flicker": [
+		{"w": "d", "t": "La flamme de la lanterne se couche."},
+		{"w": "d", "t": "Elle vacille."}
+	],
+	"lantern_dead": [
+		{"w": "d", "t": "Elle s'éteint."},
+		{"w": "d", "t": "Noir complet. Plus de lanterne. Plus de murs. Plus rien."},
+		{"w": "noe", "t": "Je ne vois plus rien. Je ne vois plus rien du tout..."}
+	],
+	"light_under_door": [
+		{"w": "d", "t": "Et pourtant."},
+		{"w": "d", "t": "En bas de la porte, un fil de lumière. Mince, chaud, tranquille."},
+		{"w": "noe", "t": "Elle était là depuis le début ?"},
+		{"w": "narr", "t": "Depuis le début. Tu regardais ta lanterne de trop près pour la voir."}
+	],
+	"front_light": [
+		{"w": "d", "t": "Tu ne peux plus lire le panneau. Tu ne vois que le fil de lumière et, juste au-dessus, la forme de la poignée."},
+		{"choice": ["Appuyer sur la poignée"]}
+	],
+	"handle": [
+		{"w": "d", "t": "Tu poses la main sur la poignée. Pour la première fois."},
+		{"w": "d", "t": "Elle descend. Sans un bruit. Sans résistance."},
+		{"w": "d", "t": "La porte n'était pas verrouillée."},
+		{"w": "d", "t": "Elle ne l'a jamais été."}
+	],
+	"door_open": [
+		{"w": "d", "t": "Le panneau glisse de la poignée et tombe à tes pieds. Au dos, de ton écriture, daté du premier soir :"},
+		{"w": "d", "t": "« Juste pour ce soir. »"},
+		{"w": "noe", "t": "Juste pour ce soir... C'était il y a cent vingt-quatre jours."}
+	],
+	"note": [
+		{"w": "d", "t": "Parmi les prospectus, une feuille pliée en quatre. Glissée sous la porte il y a des semaines. Tu ne l'avais jamais vue."},
+		{"w": "d", "t": "« Bonjour. Je suis votre voisine du troisième. Je ne veux pas déranger. »"},
+		{"w": "d", "t": "« Les murs sont fins. Certaines nuits, je vous entends. J'ai frappé une fois, mais je n'ai pas osé insister. »"},
+		{"w": "d", "t": "« Si un jour vous avez besoin de sucre, de parler, ou de rien du tout : 3e étage, porte de gauche. Je fais toujours trop de thé. — Adjoa »"},
+		{"w": "noe", "t": "Quelqu'un a frappé. Et je n'ai pas ouvert."},
+		{"w": "noe", "t": "...Je n'étais pas aussi seul que je le croyais."}
+	],
+	"palier_arrive": [
+		{"w": "d", "t": "Le palier. Une odeur de cire et de café. Quelque part en dessous, une radio joue doucement."},
+		{"w": "d", "t": "Par la grande fenêtre, le ciel devient rose."},
+		{"w": "noe", "t": "C'est le matin. Je n'avais pas vu le matin depuis..."},
+		{"w": "noe", "t": "Depuis longtemps."}
+	],
+	"palier_back": [
+		{"w": "noe", "t": "Pas tout de suite. D'abord, respirer un peu."}
+	],
+	"plant": [
+		{"w": "d", "t": "Une plante sur le palier. Quelqu'un l'arrose : la terre est encore humide."}
+	],
+	"stairs": [
+		{"w": "d", "t": "L'escalier descend vers la rue. Pas aujourd'hui, peut-être. Mais il est là."}
+	],
+	"phone_final": [
+		{"w": "d", "t": "Tu t'approches de la fenêtre. Dans ta poche, le téléphone vibre."},
+		{"fx": "buzz"},
+		{"w": "d", "t": "Maman."},
+		{"choice": ["Décrocher", "Décrocher, même si ta voix tremble"]}
+	],
+	"call": [
+		{"w": "voice", "t": "« Noé ? ...Noé, c'est toi ? »"},
+		{"w": "noe", "t": "Oui. C'est moi, maman."},
+		{"w": "voice", "t": "« Oh, mon grand... Je ne savais pas si tu écoutais mes messages. Je t'en laissais quand même, tous les soirs. »"},
+		{"w": "voice", "t": "« Je te disais de respirer. De prendre la lumière. Que revenir aux mêmes endroits, ce n'est pas un échec. »"},
+		{"w": "d", "t": "Tu reconnais chaque mot."},
+		{"w": "d", "t": "La voix douce qui t'a accompagné dans le noir, depuis le début... c'était la sienne."},
+		{"w": "noe", "t": "Maman... ça va pas."},
+		{"w": "d", "t": "Ta voix casse. Cette fois, tu la laisses casser."},
+		{"w": "voice", "t": "« Je sais, mon grand. Merci de me le dire. C'est tout ce que je voulais : que tu me le dises. »"}
+	],
+	"openness_high": [
+		{"w": "voice", "t": "« Tu as été courageux, tu sais. Plus que tu ne le crois. »"}
+	],
+	"openness_low": [
+		{"w": "voice", "t": "« Et ce que tu n'as pas encore ouvert, ça attendra. On ouvre à son rythme. »"}
+	],
+	"call_end": [
+		{"w": "voice", "t": "« On va faire ça ensemble. Toi là-bas, nous ici, et les gens qui frapperont à ta porte. D'accord ? »"},
+		{"w": "noe", "t": "D'accord."},
+		{"w": "d", "t": "Tu t'assieds sur la marche, le téléphone contre l'oreille, et tu pleures."},
+		{"w": "d", "t": "Pour la mer. Pour Papi Jo. Pour les cent vingt-quatre jours. Ça fait mal et ça fait du bien en même temps."},
+		{"w": "d", "t": "Derrière toi, dans l'appartement, l'horloge s'est remise à tourner."}
+	],
+	"epilogue": [
+		{"w": "narr", "t": "On croit souvent être enfermé."},
+		{"w": "narr", "t": "Alors on cherche, seul, avec sa petite lumière. On veut tout comprendre avant de s'autoriser à sortir."},
+		{"w": "narr", "t": "Mais on ne sort pas en ayant tout compris."},
+		{"w": "narr", "t": "On sort en laissant quelqu'un entrer."},
+		{"w": "narr", "t": "La porte n'est presque jamais aussi fermée qu'on le croit."}
+	],
+	"whispers": ["reste", "c'est plus simple ici", "tu déranges", "ça va", "ça va", "demain, peut-être", "il te manque quelque chose", "tu es fatigué", "pas maintenant"],
+	"title": {"name": "3h12", "subtitle": "Un jeu court sur le déménagement, la solitude, et ce qu'on n'ose pas dire.", "warning": "Ce jeu aborde la dépression, le deuil et la solitude. Joue à ton rythme, et prends soin de toi.", "press": "Appuie sur une touche"},
+	"fake_credits": ["3h12", "", "", "Noé", "lui-même", "", "Maman", "Lou", "Malik", "", "Papi Jo", "en mémoire", "", "La voix", "?", "", "", "Merci d'avoir joué."],
+	"fake_glitch": "Il te manque quelque chose.",
+	"end_screen": {"title": "3h13", "lines": ["Si toi aussi tu te sens enfermé·e, tu n'es pas seul·e.", "Parles-en : un proche, un médecin, un voisin.", "", "Idées noires, moment difficile ? En France,", "le 3114 répond 24h/24, 7j/7, gratuitement."], "thanks": "Merci d'avoir joué.", "press": "Appuie pour recommencer"}
+}
