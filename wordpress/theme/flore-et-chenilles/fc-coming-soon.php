@@ -31,7 +31,7 @@ $fc_mail = fc_setting( 'contact_email' );
 		.soon-logo { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 26px; text-decoration: none; }
 		.soon-logo img { width: 58px; height: 58px; border-radius: 50%; box-shadow: var(--shadow-sm); }
 		.soon-logo span { font-family: var(--serif); font-size: 1.5rem; color: var(--plum); }
-		.soon-logo em { font-style: italic; color: var(--rose-ink); }
+		.soon-logo em { font-style: normal; font-weight: 400; font-variation-settings: 'SOFT' 0, 'WONK' 0; padding: 0 0.06em; color: var(--rose-ink); }
 		.soon-copy h1 { font-size: clamp(2.4rem, 1.4rem + 4vw, 4.2rem); margin-bottom: 0.4em; }
 		.soon-copy p { max-width: 34em; font-size: 1.08rem; color: var(--plum-2); }
 		.soon-points { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 28px; padding: 0; list-style: none; }

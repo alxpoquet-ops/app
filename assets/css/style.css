@@ -341,7 +341,8 @@ h3 { font-size: 1.3rem; }
   letter-spacing: -0.01em;
   white-space: nowrap;
 }
-.logo-word em { padding: 0 0.04em; }
+.logo-word em, .footer-big em { font-style: normal; font-weight: 400; font-variation-settings: 'SOFT' 0, 'WONK' 0; }
+.logo-word em { padding: 0 0.06em; }
 
 .nav { display: none; gap: 2px; }
 .nav a {
