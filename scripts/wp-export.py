@@ -246,12 +246,42 @@ function aled08_seo_head() {
     if ($desc) echo '<meta name="description" content="' . esc_attr(wp_strip_all_tags($desc)) . "\">\n";
     if ($id) echo '<link rel="canonical" href="' . esc_url(get_permalink($id)) . "\">\n";
     if (is_404() || is_search()) echo "<meta name=\"robots\" content=\"noindex, follow\">\n";
+    if ($id) {
+        $img = get_the_post_thumbnail_url($id, 'large') ?: get_template_directory_uri() . '/assets/img/og-image.png';
+        echo '<meta property="og:locale" content="fr_FR">' . "\n";
+        echo '<meta property="og:type" content="' . (is_singular('post') ? 'article' : 'website') . "\">\n";
+        echo '<meta property="og:site_name" content="ALED08">' . "\n";
+        echo '<meta property="og:title" content="' . esc_attr($title) . "\">\n";
+        if ($desc) echo '<meta property="og:description" content="' . esc_attr(wp_strip_all_tags($desc)) . "\">\n";
+        echo '<meta property="og:url" content="' . esc_url(get_permalink($id)) . "\">\n";
+        echo '<meta property="og:image" content="' . esc_url($img) . "\">\n";
+        echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+    }
 }
 add_action('wp_head', function () {
     if (aled08_page_id() && get_post_meta(aled08_page_id(), '_aled08_head', true)) {
         remove_action('wp_head', 'rel_canonical');
+        remove_action('wp_head', 'wp_robots', 1);
     }
 }, 0);
+remove_action('wp_head', 'rest_output_link_wp_head');
+remove_action('wp_head', 'wp_oembed_add_discovery_links');
+
+/* Ancienne adresse du plan du site */
+add_action('template_redirect', function () {
+    if (!is_404()) return;
+    $path = wp_parse_url(isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '', PHP_URL_PATH);
+    if ($path === '/sitemap.xml') { wp_safe_redirect(home_url('/wp-sitemap.xml'), 301); exit; }
+}, 1);
+
+/* Pages à ne pas proposer à Google (remerciement après envoi d'un formulaire) */
+add_filter('wp_sitemaps_posts_query_args', function ($args, $post_type) {
+    if ($post_type === 'page') {
+        $merci = get_page_by_path('merci');
+        if ($merci) $args['post__not_in'] = array_merge($args['post__not_in'] ?? [], [$merci->ID]);
+    }
+    return $args;
+}, 10, 2);
 add_action('wp_head', 'aled08_seo_head', 1);
 
 add_filter('document_title_separator', function () { return '|'; });

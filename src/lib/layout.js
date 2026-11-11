@@ -15,9 +15,9 @@ function businessSchema() {
     '@id': site.url + '/#entreprise',
     name: site.name,
     alternateName: 'ALED08, dépannage électrique dans les Ardennes',
-    slogan: 'Dépannage électrique au forfait, à tout moment sur rendez-vous',
+    slogan: 'Dépannage et installation électrique, de la prise au tableau',
     description:
-      `Électricien spécialiste du dépannage électrique dans toutes les Ardennes (08). Forfait dépannage sur devis, prix annoncé avant de venir : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Travaux sur devis gratuit : tableau, prises, éclairage, mise en sécurité. À tout moment, sur rendez-vous.`,
+      `Électricien pour le dépannage et l'installation électrique dans toutes les Ardennes (08), de la prise au tableau. Forfait dépannage sur devis, prix annoncé avant de venir : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Travaux sur devis gratuit : tableau, prises, éclairage, mise en sécurité. À tout moment, sur rendez-vous.`,
     url: site.url + '/',
     telephone: site.phoneIntl,
     email: site.email,
@@ -102,9 +102,9 @@ function header(currentPath) {
   ];
   return `<a class="skip" href="#contenu">Aller au contenu</a>
 <div class="topbar"><div class="container topbar-in">
-  <span class="topbar-item hide-sm">${icon('zap')}Dépannage électrique · forfait sur devis</span>
+  <span class="topbar-item hide-sm">${icon('zap')}Dépannage & installation · de la prise au tableau</span>
   <span class="topbar-item hide-lg">${icon('map-pin')}Toutes les Ardennes (08)</span>
-  <span class="topbar-item">${icon('clock')}<span>À tout moment, sur rendez-vous</span></span>
+  <span class="topbar-item">${icon('message-circle')}<span>Semaine et week-end · RDV par message</span></span>
   <a class="topbar-phone" href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a>
 </div></div>
 <header class="site-header">
@@ -145,7 +145,7 @@ function footer() {
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand brand-light" href="/">${C.logoSvg('lgf')}<span class="brand-text"><strong>ALED08</strong><small>Électricien · Ardennes</small></span></a>
-      <p><strong style="color:#fff">Dépannage électrique dans les Ardennes</strong>, au forfait sur devis : déplacement, recherche de panne et devis de réparation compris. Travaux sur devis gratuit. Un jeune artisan électricien à votre écoute.</p>
+      <p><strong style="color:#fff">Dépannage et installation électrique dans les Ardennes</strong>, de la prise au tableau. Dépannage au forfait sur devis, travaux sur devis gratuit. Rendez-vous par message, toute la semaine et le week-end. Un jeune artisan électricien à votre écoute.</p>
       <ul class="footer-contact">
         <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>
         <li><a href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}WhatsApp</a></li>
@@ -190,7 +190,7 @@ function footer() {
   </div></div>
 </footer>
 <nav class="mobile-bar" aria-label="Contact rapide">
-  <a href="${C.tel}" class="mb-call" data-track="call">${icon('phone')}<span>Appeler</span></a>
+  <a href="${C.smsUrl()}" class="mb-call" data-track="sms">${icon('message-circle')}<span>SMS</span></a>
   <a href="${C.waUrl()}" class="mb-wa" target="_blank" rel="noopener" data-track="whatsapp">${icon('whatsapp')}<span>WhatsApp</span></a>
   <a href="/devis/" class="mb-devis">${icon('file-text')}<span>Devis</span></a>
 </nav>

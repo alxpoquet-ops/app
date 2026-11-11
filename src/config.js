@@ -67,11 +67,11 @@ const site = {
   },
 };
 
-// Disponibilités : aucun horaire affiché, « à tout moment, sur rendez-vous ».
+// Disponibilités : toute la semaine et le week-end, sur rendez-vous (pris par message).
 const hours = [
-  { days: 'En journée', label: 'Sur rendez-vous' },
-  { days: 'Le soir', label: 'Sur rendez-vous' },
-  { days: 'Le week-end', label: 'Sur rendez-vous' },
+  { days: 'Lundi au vendredi', label: 'Sur rendez-vous' },
+  { days: 'Samedi et dimanche', label: 'Sur rendez-vous' },
+  { days: 'Prise de rendez-vous', label: 'Par message' },
 ];
 
 // Forfait dépannage : prix unique, tout compris jusqu'au devis de réparation.
@@ -149,22 +149,24 @@ const communes = [
   { name: 'Nouzonville', km: 41, page: 'electricien-nouzonville' },
   { name: 'Juniville', km: 42, page: 'electricien-juniville' },
   { name: 'Sedan', km: 45, page: 'electricien-sedan', main: true },
-  { name: 'Vouziers', km: 50 },
-  { name: 'Revin', km: 55 },
-  { name: 'Givet', km: 85 },
-  { name: 'Fumay', km: 70 },
-  { name: 'Bogny-sur-Meuse', km: 50 },
-  { name: 'Carignan', km: 60 },
-  { name: 'Mouzon', km: 60 },
-  { name: 'Le Chesne', km: 35 },
+  { name: 'Vouziers', km: 50, page: 'electricien-vouziers', main: true },
+  { name: 'Revin', km: 55, page: 'electricien-revin', main: true },
+  { name: 'Givet', km: 85, page: 'electricien-givet', main: true },
+  { name: 'Fumay', km: 70, page: 'electricien-fumay' },
+  { name: 'Bogny-sur-Meuse', km: 50, page: 'electricien-bogny-sur-meuse' },
+  { name: 'Carignan', km: 60, page: 'electricien-carignan' },
+  { name: 'Mouzon', km: 60, page: 'electricien-mouzon' },
+  { name: 'Le Chesne', km: 35, page: 'electricien-le-chesne' },
   { name: 'Grandpré', km: 65 },
+  { name: 'Monthermé', km: 48, page: 'electricien-montherme' },
+  { name: 'Bazeilles', km: 48, page: 'electricien-bazeilles' },
 ];
 
 // Secteurs des Ardennes (pour la page zone d'intervention).
 const secteurs = [
   { name: 'Crêtes préardennaises et Porcien', towns: ["Signy-l'Abbaye", 'Wasigny', 'Thin-le-Moutier', 'Launois-sur-Vence', 'Liart', 'Novion-Porcien', 'Saulces-Monclin', 'Chaumont-Porcien', 'Poix-Terron', 'Château-Porcien', 'Dommery', 'Lalobbe', 'Neuvizy', 'Mesmont', 'Saint-Jean-aux-Bois', 'Jandun', 'Le Fréty', 'Viel-Saint-Remy', 'Draize', 'Wagnon', 'Faissault', 'Remilly-les-Pothées', 'Lucquy'] },
-  { name: 'Charleville-Mézières, Sedan et la Meuse', towns: ['Charleville-Mézières', 'Sedan', 'Villers-Semeuse', 'Prix-lès-Mézières', 'Nouzonville', 'Boulzicourt', 'Bogny-sur-Meuse', 'Revin', 'Fumay', 'Givet', 'Mouzon', 'Carignan'] },
-  { name: 'Rethélois, Aisne et Argonne', towns: ['Rethel', 'Sault-lès-Rethel', 'Attigny', 'Juniville', 'Vouziers', 'Le Chesne', 'Grandpré'] },
+  { name: 'Charleville-Mézières, Sedan et la Meuse', towns: ['Charleville-Mézières', 'Sedan', 'Revin', 'Givet', 'Villers-Semeuse', 'Prix-lès-Mézières', 'Nouzonville', 'Boulzicourt', 'Bogny-sur-Meuse', 'Monthermé', 'Fumay', 'Bazeilles', 'Mouzon', 'Carignan'] },
+  { name: 'Rethélois, Aisne et Argonne', towns: ['Rethel', 'Vouziers', 'Le Chesne', 'Sault-lès-Rethel', 'Attigny', 'Juniville', 'Grandpré'] },
   { name: 'Thiérache et plateau de Rocroi', towns: ['Rocroi', 'Rumigny', 'Maubert-Fontaine', 'Renwez', 'Signy-le-Petit', 'Rimogne'] },
 ];
 

@@ -32,8 +32,10 @@ const euro = (n) => `${n} €`;
 const logoSvg = (id = 'lg') => `<svg class="logo" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD27A"/><stop offset="1" stop-color="#F39B00"/></linearGradient></defs><rect width="48" height="48" rx="15" fill="url(#${id})"/><path d="M27.5 7 13 27h9.2l-2.7 14L35 20.5h-9.4L27.5 7Z" fill="#24304A"/></svg>`;
 
 // ---------------------------------------------------------------- boutons
+// Prise de rendez-vous par message (SMS) : c'est le canal à privilégier.
+const smsUrl = (body = 'Bonjour, je souhaite prendre rendez-vous pour une intervention électrique.') => `sms:${site.phoneIntl}?body=${encodeURIComponent(body)}`;
 function btnCall(cls = 'btn-primary', text) {
-  return `<a class="btn ${cls}" href="${tel}" data-track="call">${icon('phone')}<span>${text || 'Appeler le ' + site.phoneDisplay}</span></a>`;
+  return `<a class="btn ${cls}" href="${smsUrl()}" data-track="sms">${icon('message-circle')}<span>${text || 'Prendre RDV par message'}</span></a>`;
 }
 function btnDevis(cls = 'btn-light', prestation, text = 'Demander un devis') {
   return `<a class="btn ${cls}" href="${devisUrl(prestation)}">${icon('file-text')}<span>${text}</span></a>`;
@@ -76,9 +78,9 @@ function circuitBg() {
 // ---------------------------------------------------------------- bandeau de confiance
 function trustBar() {
   const items = [
-    ['zap', 'Dépannage électrique', 'Partout dans les Ardennes'],
+    ['zap', 'Dépannage & installation', 'De la prise au tableau'],
     ['euro', 'Forfait sur devis', 'Prix annoncé avant de venir'],
-    ['clock', 'À tout moment', 'Sur rendez-vous, sans majoration'],
+    ['calendar-days', 'Semaine et week-end', 'Sur rendez-vous, par message'],
     ['user', 'Jeune artisan motivé', 'À votre écoute'],
   ];
   return `<section class="trustbar" aria-label="Nos engagements"><div class="container trustbar-in">${items
@@ -91,7 +93,7 @@ function serviceCards(list = mainServices, opts = {}) {
   return `<div class="grid grid-cards${opts.cols === 4 ? ' grid-4' : ''}">${list
     .map(
       (s) => `<a class="card card-service reveal${opts.featured === s.key ? ' card-featured' : ''}" href="${s.path}">
-  ${opts.featured === s.key ? `<span class="specialty">${icon('zap')}Ma spécialité</span>` : ''}
+  ${opts.featured === s.key ? `<span class="specialty">${icon('zap')}En priorité</span>` : ''}
   <span class="icon-tile">${icon(s.icon)}</span>
   <h3>${esc(s.name)}</h3>
   ${s.short ? `<p>${esc(s.short)}</p>` : ''}
@@ -103,22 +105,22 @@ function serviceCards(list = mainServices, opts = {}) {
 
 // ---------------------------------------------------------------- disponibilités
 function hoursTable(cls = '') {
-  return `<table class="hours ${cls}"><caption class="sr-only">Disponibilités : à tout moment, sur rendez-vous</caption><tbody>${hours
+  return `<table class="hours ${cls}"><caption class="sr-only">Disponibilités : toute la semaine et le week-end, sur rendez-vous</caption><tbody>${hours
     .map((h) => `<tr><th scope="row">${h.days}</th><td>${h.label}</td></tr>`)
     .join('')}</tbody></table>`;
 }
 
 function dispoCard() {
   return `<aside class="dispo-card reveal" aria-label="Disponibilités et tarifs clés">
-  <div class="dispo-head"><span class="dot" aria-hidden="true"></span><span>Disponible à tout moment</span></div>
+  <div class="dispo-head"><span class="dot" aria-hidden="true"></span><span>Disponible 7 j/7 sur rendez-vous</span></div>
   ${hoursTable('hours-dark')}
-  <p class="dispo-note">${icon('calendar-days')} Uniquement sur rendez-vous : appelez ou envoyez un message.</p>
+  <p class="dispo-note">${icon('calendar-days')} Rendez-vous par message : SMS ou WhatsApp, je vous réponds vite.</p>
   <div class="dispo-forfait">
     <div class="dispo-forfait-head"><span>Forfait dépannage</span><strong class="is-text">${forfait.priceText}</strong></div>
     <ul>${forfait.includes.map((i) => `<li>${icon('check')}${i.text}</li>`).join('')}</ul>
-    <p>Prix annoncé au téléphone, avant de venir. Réparation sur devis, sans obligation.${forfait.notFoundDiscount ? ' <strong>Panne non trouvée : remise sur le forfait.</strong>' : ''}</p>
+    <p>Prix annoncé par message ou au téléphone, avant de venir. Réparation sur devis, sans obligation.${forfait.notFoundDiscount ? ' <strong>Panne non trouvée : remise sur le forfait.</strong>' : ''}</p>
   </div>
-  ${btnCall('btn-primary btn-block', 'Appeler maintenant')}
+  ${btnCall('btn-primary btn-block', 'Prendre RDV par SMS')}
   ${btnWa('btn-wa btn-block', 'Écrire sur WhatsApp')}
 </aside>`;
 }
@@ -135,7 +137,7 @@ function forfaitBlock(opts = {}) {
     .map((i) => `<li>${icon(i.icon)}<div><strong>${i.text}</strong><span>${i.detail}</span></div></li>`)
     .join('')}</ul>
   ${forfait.notFoundDiscount ? `<p class="forfait-guarantee">${icon('shield-check')}<span><strong>Panne non trouvée ? Je vous fais une remise.</strong> Vous ne payez pas le forfait plein tarif.</span></p>` : ''}
-  <p class="forfait-foot">${icon('info')}<span>La réparation et les pièces font l’objet d’un <strong>devis remis à la fin du dépannage</strong> : vous l’acceptez ou non, sans obligation. Le prix du forfait dépend de votre commune et de la panne décrite : je vous l’annonce au téléphone, avant de me déplacer. Même prix le soir et le week-end.</span></p>
+  <p class="forfait-foot">${icon('info')}<span>La réparation et les pièces font l’objet d’un <strong>devis remis à la fin du dépannage</strong> : vous l’acceptez ou non, sans obligation. Le prix du forfait dépend de votre commune et de la panne décrite : je vous l’annonce par message ou au téléphone, avant de me déplacer. Même prix le soir et le week-end.</span></p>
 </div>`;
 }
 
@@ -162,7 +164,7 @@ function kmTable() {
       const towns = s.towns.map((n) => communes.find((c) => c.name === n)).filter((c) => c && c.page).slice(0, 6);
       return `<div class="km-tier km-s${i}"><span class="km-range">Secteur</span><strong class="km-name">${esc(s.name)}</strong>${towns.length ? `<span class="km-towns">${towns.map((c) => `<a href="/${c.page}/">${esc(c.name)}</a>`).join(', ')}…</span>` : ''}</div>`;
     })
-    .join('')}</div><p class="small muted">J’interviens dans tout le département. Le prix du forfait vous est toujours annoncé au téléphone, avant le déplacement.</p>`;
+    .join('')}</div><p class="small muted">J’interviens dans tout le département. Le prix du forfait vous est toujours annoncé avant le déplacement. Rendez-vous par message, 7 j/7.</p>`;
 }
 
 // Le forfait est sur devis : plus de prix par commune.
@@ -179,7 +181,7 @@ function distanceBadge(name) {
 
 // ---------------------------------------------------------------- mon passage, étape par étape
 const PASSAGE = [
-  { icon: 'phone', t: 'Avant de venir', d: 'Vous m’appelez ou m’écrivez. Je vous annonce le prix du forfait pour votre commune et votre panne, et nous fixons un créneau.' },
+  { icon: 'message-circle', t: 'Avant de venir', d: 'Vous m’envoyez un message (SMS ou WhatsApp) ou vous m’appelez. Je vous annonce le prix du forfait pour votre commune et votre panne, et nous fixons un créneau.' },
   { icon: 'house', t: 'À mon arrivée', d: 'Vous me montrez la panne et le tableau électrique. Je vérifie d’abord qu’il n’y a pas de danger immédiat.' },
   { icon: 'search', t: 'La recherche de panne', d: 'Je teste, j’isole les circuits et je mesure, jusqu’à trouver l’origine du problème. Si je ne la trouve pas, je vous fais une remise sur le forfait.' },
   { icon: 'lightbulb', t: 'L’explication', d: 'Je vous montre ce que j’ai trouvé et je vous présente les solutions possibles, simplement.' },
@@ -221,17 +223,17 @@ function artisanCard() {
   return `<aside class="artisan reveal" aria-label="${esc(site.name)}, électricien">
   <div class="artisan-id">${avatar()}<div><strong>${site.name}</strong><span>Jeune artisan électricien</span><span>Ardennes (08)</span></div></div>
   <ul class="artisan-facts">
-    <li>${icon('zap')}<span><strong>Spécialité</strong>Dépannage et recherche de panne</span></li>
+    <li>${icon('zap')}<span><strong>Métier</strong>Dépannage et installation, de la prise au tableau</span></li>
     <li>${icon('euro')}<span><strong>Prix</strong>Annoncé avant de venir</span></li>
     <li>${icon('map-pin')}<span><strong>Secteur</strong>Toutes les Ardennes (08)</span></li>
     <li>${icon('user')}<span><strong>Votre interlocuteur</strong>Je réponds, je me déplace, je répare</span></li>
-    <li>${icon('clock')}<span><strong>Disponibilité</strong>À tout moment, sur rendez-vous</span></li>
+    <li>${icon('clock')}<span><strong>Disponibilité</strong>Semaine et week-end, RDV par message</span></li>
   </ul>
-  ${btnCall('btn-primary btn-block', 'Appeler ' + site.name)}
+  ${btnCall('btn-primary btn-block', 'Envoyer un message')}
 </aside>`;
 }
 function authorBox(id = 'lga') {
-  return `<div class="author-box">${site.portrait ? avatar('avatar-sm') : logoSvg(id)}<p><strong>${site.name}</strong>, jeune artisan électricien. Je me déplace à tout moment, sur rendez-vous, chez les particuliers de toutes les Ardennes. <a href="/qui-suis-je/">Faisons connaissance</a></p></div>`;
+  return `<div class="author-box">${site.portrait ? avatar('avatar-sm') : logoSvg(id)}<p><strong>${site.name}</strong>, jeune artisan électricien : dépannage et installation électrique, de la prise au tableau. Je me déplace toute la semaine et le week-end, sur rendez-vous, chez les particuliers de toutes les Ardennes. <a href="/qui-suis-je/">Faisons connaissance</a></p></div>`;
 }
 
 // ---------------------------------------------------------------- étapes
@@ -280,7 +282,7 @@ function ctaBand({ title, text, prestation } = {}) {
     ${circuitBg('cta')}
     <div class="cta-copy">
       <h2>${inline(title || 'Un souci électrique ? Parlons-en ce soir.')}</h2>
-      <p>${inline(text || 'Appelez ou envoyez un message : je vous rappelle pour fixer un créneau en soirée ou le week-end, avec le prix annoncé à l’avance.')}</p>
+      <p>${inline(text || 'Envoyez-moi un message : je vous rappelle pour fixer un créneau en soirée ou le week-end, avec le prix annoncé à l’avance.')}</p>
     </div>
     <div class="cta-actions">
       ${btnCall('btn-primary btn-lg')}
@@ -295,7 +297,7 @@ function ctaBand({ title, text, prestation } = {}) {
 function inlineCta({ title, text, prestation } = {}) {
   return `<aside class="inline-cta reveal">
   <div><strong>${inline(title || 'Besoin d’un électricien ?')}</strong><p>${inline(text || 'Devis gratuit, tarifs annoncés à l’avance, interventions en soirée et le week-end.')}</p></div>
-  <div class="inline-cta-actions">${btnDevis('btn-primary', prestation, 'Demander un devis')}${btnCall('btn-ghost', site.phoneDisplay)}</div>
+  <div class="inline-cta-actions">${btnDevis('btn-primary', prestation, 'Demander un devis')}${btnCall('btn-ghost', 'SMS : ' + site.phoneDisplay)}</div>
 </aside>`;
 }
 
@@ -368,7 +370,7 @@ function communesList() {
 }
 
 module.exports = {
-  register, label, registry, tel, waUrl, devisUrl, euro, logoSvg,
+  register, label, registry, tel, smsUrl, waUrl, devisUrl, euro, logoSvg,
   btnCall, btnDevis, btnWa, breadcrumbs, pageHero, circuitBg, trustBar, serviceCards, hoursTable, dispoCard,
   forfaitBlock, forfaitFor, pricingTable, kmTable, passage, payBlock, avatar, artisanCard, authorBox, distanceBadge, steps, cases, faq, ctaBand, inlineCta, relatedLinks, reviewsBlock,
   beforeAfter, mapEmbed, communesList,

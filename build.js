@@ -17,8 +17,10 @@ const T = require('./src/pages/templates');
 // ---------------------------------------------------------------- contenus
 const seoPages = [
   ...require('./src/content/seo-villes'),
+  ...require('./src/content/seo-villes-2'),
   ...require('./src/content/seo-ardennes'),
   ...require('./src/content/seo-symptomes'),
+  ...require('./src/content/seo-symptomes-2'),
   ...require('./src/content/seo-services'),
   ...require('./src/content/seo-contextes'),
 ];

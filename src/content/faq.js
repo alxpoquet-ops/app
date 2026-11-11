@@ -23,7 +23,7 @@ module.exports = [
     items: [
       { q: 'Quand intervenez-vous ?', a: "À tout moment, sur rendez-vous : en journée, le soir ou le week-end. Un appel suffit pour convenir du créneau qui vous arrange." },
       { q: 'Pourquoi uniquement sur rendez-vous ?', a: "Pour vous donner une heure d'arrivée fiable et préparer le bon matériel. Un rendez-vous évite aussi de vous faire attendre une demi-journée derrière votre fenêtre." },
-      { q: 'Pouvez-vous venir le soir même ?', a: "Quand le planning le permet, oui. Appelez en fin d'après-midi : selon les rendez-vous déjà pris et la distance, je peux souvent proposer un créneau le soir même ou le lendemain soir." },
+      { q: 'Pouvez-vous venir le soir même ?', a: "Quand le planning le permet, oui. Écrivez-moi en fin d'après-midi : selon les rendez-vous déjà pris et la distance, je peux souvent proposer un créneau le soir même ou le lendemain soir." },
       { q: 'Combien de temps dure une intervention en soirée ?', a: "La plupart des dépannages et petits travaux tiennent en une à deux heures. Les chantiers plus longs, comme un remplacement de tableau, sont programmés sur une journée." },
     ],
   },

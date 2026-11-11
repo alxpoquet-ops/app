@@ -6,7 +6,7 @@ module.exports = [
     label: "Électricien à Signy-l'Abbaye",
     teaser: 'Créneaux souvent dès le soir même, prix annoncé avant de venir.',
     title: "Électricien à Signy-l'Abbaye (08460), soir & week-end | ALED08",
-    description: "Électricien installé à Signy-l'Abbaye : dépannage, recherche de panne, tableau, prises, éclairage. Prix annoncé avant de venir, à tout moment.",
+    description: "Électricien installé à Signy-l'Abbaye : dépannage, recherche de panne, tableau, prises, éclairage. Prix annoncé avant de venir, 7 j/7 sur RDV.",
     kicker: "Électricien · Signy-l'Abbaye (08460)",
     h1: "Électricien à Signy-l'Abbaye : l'artisan de la commune",
     lead: "ALED08 est installé à **Signy-l'Abbaye**. Pour les habitants du bourg et des hameaux, cela veut dire un électricien **à quelques minutes de chez eux**, un prix annoncé avant de venir, et souvent un créneau dès le soir même.",
@@ -34,11 +34,11 @@ Travailler dans sa propre commune, c'est accepter d'être jugé tous les jours s
     ],
     faq: [
       { q: "Le déplacement est-il facturé à Signy-l'Abbaye ?", a: "Il n'y a pas de supplément caché : le prix du forfait que je vous annonce au téléphone pour Signy-l'Abbaye comprend déjà le déplacement." },
-      { q: 'Pouvez-vous passer le soir même ?', a: "Souvent, oui, puisque je suis sur place. Appelez en fin d'après-midi : s'il me reste un créneau dans la soirée, il est pour vous." },
+      { q: 'Pouvez-vous passer le soir même ?', a: "Souvent, oui, puisque je suis sur place. Écrivez-moi en fin d'après-midi : s'il me reste un créneau dans la soirée, il est pour vous." },
       { q: 'Intervenez-vous dans les fermes et les hameaux isolés ?', a: "Bien sûr. Les maisons isolées ont souvent des besoins particuliers (lignes longues, dépendances, éclairage de cour) que je connais bien." },
       { q: 'Pouvez-vous refaire l’électricité d’une grange ou d’un atelier ?', a: "Oui : ligne d'alimentation, petit tableau secondaire, éclairage étanche et prises adaptées. Voir la page [ligne pour garage ou atelier](/ligne-electrique-garage-atelier/)." },
     ],
-    cta: { title: "Un souci électrique à Signy-l'Abbaye ?", text: 'Je suis à quelques minutes : appelez-moi, on trouve un créneau dans la soirée ou le week-end.' },
+    cta: { title: "Un souci électrique à Signy-l'Abbaye ?", text: 'Je suis à quelques minutes : écrivez-moi, on trouve un créneau dans la soirée ou le week-end.' },
     links: ['/prestations/depannage-electrique/', '/ligne-electrique-garage-atelier/', '/ajout-circuit-electrique/', '/electricien-maison-ancienne/', '/electricien-cretes-preardennaises/', '/blog/pourquoi-faire-appel-a-un-electricien-local/'],
     nearby: ['/electricien-wasigny/', '/electricien-thin-le-moutier/', '/electricien-launois-sur-vence/', '/electricien-liart/', '/electricien-novion-porcien/'],
   },
@@ -49,10 +49,10 @@ Travailler dans sa propre commune, c'est accepter d'être jugé tous les jours s
     label: 'Électricien à Rethel',
     teaser: 'Maisons de la Reconstruction, appartements du centre : dépannage et travaux le soir et le week-end.',
     title: 'Électricien à Rethel (08300), dépannage & travaux | ALED08',
-    description: 'Électricien à Rethel pour les particuliers : dépannage, recherche de panne, tableau, prises, éclairage. Prix annoncé avant de venir, à tout moment.',
+    description: 'Électricien à Rethel pour les particuliers : dépannage, recherche de panne, tableau, prises, éclairage. Prix annoncé avant de venir, 7 j/7 sur RDV.',
     kicker: 'Électricien · Rethel (08300)',
     h1: 'Électricien à Rethel, en soirée et le week-end',
-    lead: "**Rethel** fait partie de mes secteurs réguliers dans les Ardennes. J'y interviens chez les particuliers pour les pannes, les tableaux, les prises et l'éclairage, **à tout moment, sur rendez-vous**, avec un **forfait dépannage annoncé avant de venir**.",
+    lead: "**Rethel** fait partie de mes secteurs réguliers dans les Ardennes. J'y interviens chez les particuliers pour les pannes, les tableaux, les prises et l'éclairage, **toute la semaine et le week-end, sur rendez-vous**, avec un **forfait dépannage annoncé avant de venir**.",
     body: `## Des installations marquées par l'histoire de la ville
 
 Une grande partie du centre de Rethel a été reconstruite après la Seconde Guerre mondiale. Beaucoup de logements datent donc de la **Reconstruction des années 1950**, et certaines installations électriques en gardent la trace : circuits sans conducteur de terre, sections de câbles prévues pour une époque où l'on branchait une radio et un fer à repasser, tableaux modernisés à moitié.
@@ -81,7 +81,7 @@ J'interviens dans toute la ville, du centre aux quartiers plus récents, ainsi q
       { q: 'Combien de temps pour obtenir un rendez-vous à Rethel ?', a: "Selon le planning, un créneau peut souvent être proposé dans la semaine, parfois le soir même pour une panne. Le samedi est idéal pour les travaux plus longs." },
       { q: 'Intervenez-vous dans les appartements ?', a: "Oui, sur toute la partie privative : tableau d'abonné, prises, éclairage, circuits. Les parties communes de l'immeuble relèvent du syndic." },
     ],
-    cta: { title: 'Électricien à Rethel ce soir ou ce week-end ?', text: 'Appelez ou envoyez un message : je vous propose un créneau et vous annonce le prix avant de venir.' },
+    cta: { title: 'Électricien à Rethel ce soir ou ce week-end ?', text: 'Envoyez-moi un message : je vous propose un créneau et vous annonce le prix avant de venir.' },
     links: ['/depannage-electrique-rethel/', '/remplacement-tableau-electrique-rethel/', '/prestations/recherche-de-panne/', '/prise-specialisee/', '/electricien-week-end-ardennes/', '/tarifs/'],
     nearby: ['/electricien-chateau-porcien/', '/electricien-novion-porcien/', '/electricien-attigny/', '/electricien-signy-l-abbaye/'],
   },
@@ -92,10 +92,10 @@ J'interviens dans toute la ville, du centre aux quartiers plus récents, ainsi q
     label: 'Électricien à Charleville-Mézières',
     teaser: 'Appartements, maisons de ville, pavillons : un électricien disponible après le travail.',
     title: 'Électricien à Charleville-Mézières, soir & week-end | ALED08',
-    description: 'Électricien à Charleville-Mézières : dépannage, tableau, prises, éclairage, mise en sécurité. Prix annoncé avant, à tout moment sur RDV.',
+    description: 'Électricien à Charleville-Mézières : dépannage, tableau, prises, éclairage, mise en sécurité. Prix annoncé avant, 7 j/7 sur RDV.',
     kicker: 'Électricien · Charleville-Mézières (08000)',
     h1: 'Électricien à Charleville-Mézières, après le travail et le week-end',
-    lead: "À Charleville-Mézières, vous rentrez du travail et la panne vous attend ? Pas de souci : j'interviens dans la préfecture et son agglomération **à tout moment, sur rendez-vous**, le soir et le week-end compris, avec des prix publiés à l'avance.",
+    lead: "À Charleville-Mézières, vous rentrez du travail et la panne vous attend ? Pas de souci : j'interviens dans la préfecture et son agglomération **toute la semaine et le week-end, sur rendez-vous**, le soir et le week-end compris, avec des prix publiés à l'avance.",
     body: `## Des logements très variés
 
 De la place Ducale aux quartiers de Mohon, d'Étion ou de Montcy-Notre-Dame, Charleville-Mézières offre une grande diversité de logements : immeubles anciens du centre, maisons de ville sur plusieurs niveaux, résidences des années 60 et 70, pavillons plus récents. Chacun a ses points faibles :
@@ -124,7 +124,7 @@ Parce que je suis disponible quand vous l'êtes. Le prix du forfait vous est ann
       { q: 'Faut-il prévoir une place de stationnement ?', a: "Si c'est possible, oui : dans le centre, une place proche facilite le transport du matériel. Sinon, ce n'est pas un problème, il suffit de me prévenir." },
       { q: 'Mon logement est en copropriété : qui appeler ?', a: "Pour tout ce qui se trouve après votre tableau (prises, éclairage, circuits), c'est à vous de faire appel à un électricien. Pour la colonne montante ou l'éclairage de la cage d'escalier, contactez votre syndic." },
     ],
-    cta: { title: 'À Charleville-Mézières, un électricien disponible à tout moment', text: 'Appelez-moi ou décrivez votre besoin en ligne : vous connaîtrez le prix et l’heure avant que je me déplace.' },
+    cta: { title: 'À Charleville-Mézières, un électricien disponible 7 j/7', text: 'Envoyez-moi un message ou décrivez votre besoin en ligne : vous connaîtrez le prix et l’heure avant que je me déplace.' },
     links: ['/depannage-electrique-charleville-mezieres/', '/remplacement-tableau-electrique-charleville-mezieres/', '/electricien-proprietaire-bailleur/', '/prestations/eclairage-interieur/', '/electricien-soiree-ardennes/', '/tarifs/'],
     nearby: ['/electricien-renwez/', '/electricien-poix-terron/', '/electricien-thin-le-moutier/', '/electricien-sedan/'],
   },
@@ -253,10 +253,10 @@ Beaucoup d'habitants du secteur vivent depuis longtemps dans leur maison et souh
     ],
     faq: [
       { q: 'Y a-t-il un supplément de déplacement à Liart ?', a: "Il n'y a pas de supplément caché : le prix du forfait que je vous annonce au téléphone pour Liart comprend déjà le déplacement." },
-      { q: 'Pouvez-vous intervenir sur une grange ou une étable ?', a: "Oui, pour l'éclairage, les prises et l'alimentation des dépendances d'une habitation. Pour une exploitation agricole en activité, appelez-moi pour en discuter." },
+      { q: 'Pouvez-vous intervenir sur une grange ou une étable ?', a: "Oui, pour l'éclairage, les prises et l'alimentation des dépendances d'une habitation. Pour une exploitation agricole en activité, écrivez-moi pour en discuter." },
       { q: 'Quels aménagements pour une personne âgée ?', a: "Éclairage automatique des circulations, interrupteurs lumineux, prises surélevées, éclairage extérieur de l'entrée. Je vous conseille selon la maison et les habitudes de la personne." },
     ],
-    cta: { title: 'Une intervention à Liart ?', text: 'Appelez-moi : je vous annonce le prix et on fixe un créneau le soir ou le week-end.' },
+    cta: { title: 'Une intervention à Liart ?', text: 'Écrivez-moi : je vous annonce le prix et on fixe un créneau le soir ou le week-end.' },
     links: ['/prestations/eclairage-exterieur/', '/eclairage-exterieur-detecteur/', '/ligne-electrique-garage-atelier/', '/petits-travaux-electriques/', '/electricien-thierache-ardennaise/'],
     nearby: ['/electricien-rumigny/', '/electricien-signy-l-abbaye/', '/electricien-maubert-fontaine/', '/electricien-signy-le-petit/'],
   },
@@ -270,7 +270,7 @@ Beaucoup d'habitants du secteur vivent depuis longtemps dans leur maison et souh
     description: 'Électricien à Novion-Porcien : dépannage après orage, parafoudre, mise en sécurité de maisons anciennes, ateliers. Prix annoncé avant, soirs et week-ends.',
     kicker: 'Électricien · Novion-Porcien (08270)',
     h1: 'Électricien à Novion-Porcien, au cœur du Porcien',
-    lead: "Au milieu du plateau agricole du Porcien, **Novion-Porcien** et ses écarts comptent de nombreuses maisons isolées, souvent alimentées par des lignes aériennes. Résultat : des installations plus exposées aux **orages et aux surtensions**. J'y interviens à tout moment, sur rendez-vous.",
+    lead: "Au milieu du plateau agricole du Porcien, **Novion-Porcien** et ses écarts comptent de nombreuses maisons isolées, souvent alimentées par des lignes aériennes. Résultat : des installations plus exposées aux **orages et aux surtensions**. J'y interviens 7 j/7, sur rendez-vous.",
     body: `## Les maisons isolées face aux orages
 
 Sur un plateau ouvert, les lignes électriques aériennes qui desservent les fermes et les maisons écartées sont plus exposées à la foudre. Un coup de foudre, même tombé à distance, peut provoquer une **surtension** qui remonte le réseau et grille box internet, télévision, carte électronique de chaudière ou de portail.
@@ -296,7 +296,7 @@ Compresseur, poste à souder, scie sur table : les outils d'atelier demandent de
       { q: 'Mon assureur demande une attestation après un orage : pouvez-vous la faire ?', a: "Oui. Après contrôle, je vous remets une attestation décrivant les dégâts constatés sur l'installation et les travaux réalisés, utile pour votre déclaration de sinistre." },
       { q: 'Peut-on étaler une mise en sécurité sur plusieurs années ?', a: "Oui, à condition de commencer par ce qui protège les personnes : tableau avec différentiels 30 mA et terre. Le reste peut suivre au rythme de vos travaux." },
     ],
-    cta: { title: 'Une intervention dans le Porcien ?', text: 'J’interviens à Novion-Porcien et dans ses écarts. Appelez-moi pour un créneau en soirée ou le week-end.' },
+    cta: { title: 'Une intervention dans le Porcien ?', text: 'J’interviens à Novion-Porcien et dans ses écarts. Écrivez-moi pour un créneau en soirée ou le week-end.' },
     links: ['/installation-parafoudre/', '/panne-electrique-apres-orage/', '/prestations/mise-en-securite/', '/ligne-electrique-garage-atelier/', '/electricien-porcien/'],
     nearby: ['/electricien-chateau-porcien/', '/electricien-chaumont-porcien/', '/electricien-wasigny/', '/electricien-rethel/'],
   },
@@ -511,7 +511,7 @@ Comme dans tout le fond de vallée, les caves sont fraîches et humides. Un inte
       { q: 'Pouvez-vous intervenir en plusieurs fois sur un chantier de rénovation ?', a: "Oui, c'est même recommandé : une première intervention avant la fermeture des murs, puis une seconde pour la finition. Chaque passage est prévu au devis." },
       { q: 'Je fais mes travaux moi-même : pouvez-vous vérifier mon installation ?', a: "Je peux contrôler une partie réalisée par vous et vous indiquer ce qui doit être corrigé. En revanche, je ne peux pas engager ma responsabilité sur un travail que je n'ai pas réalisé." },
     ],
-    cta: { title: 'Une rénovation en cours à Wasigny ?', text: 'Appelez-moi avant de fermer les murs : on organise l’électricité au bon moment.' },
+    cta: { title: 'Une rénovation en cours à Wasigny ?', text: 'Écrivez-moi avant de fermer les murs : on organise l’électricité au bon moment.' },
     links: ['/petits-travaux-electriques/', '/prise-specialisee/', '/ajout-circuit-electrique/', '/electricien-maison-ancienne/', '/blog/quand-refaire-son-installation-electrique/'],
     nearby: ['/electricien-signy-l-abbaye/', '/electricien-novion-porcien/', '/electricien-chaumont-porcien/', '/electricien-liart/'],
   },
@@ -1163,9 +1163,9 @@ Signy-l'Abbaye, Wasigny, Thin-le-Moutier, Launois-sur-Vence, Novion-Porcien, Lia
     faq: [
       { q: 'Combien coûte un dépannage dans les Crêtes ?', a: "Le forfait est sur devis : je vous annonce son prix au téléphone pour votre village, avant de venir. Voir la page [zone d'intervention](/zone-intervention/)." },
       { q: 'Venez-vous pour une seule petite intervention ?', a: "Oui. Dans le secteur proche, le déplacement reste modéré, même pour remplacer une prise ou un interrupteur." },
-      { q: 'Travaillez-vous pour les agriculteurs ?', a: "Mon activité est tournée vers les particuliers : maison d'habitation et dépendances. Pour des bâtiments d'exploitation, appelez-moi pour voir si votre besoin entre dans mon champ." },
+      { q: 'Travaillez-vous pour les agriculteurs ?', a: "Mon activité est tournée vers les particuliers : maison d'habitation et dépendances. Pour des bâtiments d'exploitation, écrivez-moi pour voir si votre besoin entre dans mon champ." },
     ],
-    cta: { title: 'Vous habitez les Crêtes préardennaises ?', text: 'J’interviens dans chaque village du secteur : appelez-moi pour un créneau ce soir ou ce week-end.' },
+    cta: { title: 'Vous habitez les Crêtes préardennaises ?', text: 'J’interviens dans chaque village du secteur : écrivez-moi pour un créneau ce soir ou ce week-end.' },
     links: ['/electricien-signy-l-abbaye/', '/electricien-porcien/', '/ligne-electrique-garage-atelier/', '/installation-parafoudre/', '/blog/pourquoi-faire-appel-a-un-electricien-local/'],
     nearby: ['/electricien-signy-l-abbaye/', '/electricien-launois-sur-vence/', '/electricien-poix-terron/', '/electricien-wasigny/', '/electricien-novion-porcien/'],
   },
@@ -1243,7 +1243,7 @@ J'interviens à Liart, Rumigny, Maubert-Fontaine, Signy-le-Petit et jusqu'à la 
     faq: [
       { q: 'Quelles communes de Thiérache desservez-vous ?', a: "Liart, Rumigny, Aouste, Marlemont, Signy-le-Petit, Maubert-Fontaine et les villages voisins, avec un prix annoncé avant de venir." },
       { q: 'Quel indice de protection choisir pour une applique extérieure ?', a: "IP44 sous un avant-toit abrité, IP65 sur une façade exposée à la pluie battante, IP67 pour un spot encastré au sol." },
-      { q: 'Intervenez-vous dans l’Aisne voisine ?', a: "Ma zone couvre principalement les Ardennes. Pour une commune de l'Aisne proche de la limite, appelez-moi : c'est possible sur devis." },
+      { q: 'Intervenez-vous dans l’Aisne voisine ?', a: "Ma zone couvre principalement les Ardennes. Pour une commune de l'Aisne proche de la limite, écrivez-moi : c'est possible sur devis." },
     ],
     cta: { title: 'En Thiérache, un électricien qui connaît le bâti', text: 'Maison de brique, longère ou ferme : je viens le soir ou le week-end, avec un prix clair.' },
     links: ['/electricien-liart/', '/electricien-rumigny/', '/electricien-signy-le-petit/', '/electricien-maubert-fontaine/', '/prise-sans-terre/', '/eclairage-exterieur-detecteur/'],

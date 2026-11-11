@@ -9,7 +9,7 @@ module.exports = [
     description: 'Plus de courant, disjoncteur qui saute, prise ou lumière en panne ? Dépannage électrique à domicile dans les Ardennes, le soir et le week-end.',
     kicker: 'Prestation · Dépannage électrique',
     h1: 'Dépannage électrique à domicile, en soirée et le week-end',
-    lead: "Le dépannage, c'est **ma spécialité**. Une panne ne prévient pas, et elle arrive rarement aux heures de bureau : j'interviens chez les particuliers de toutes les Ardennes **à tout moment, sur rendez-vous**, le soir et le week-end compris. **Forfait sur devis, annoncé avant de venir** : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. **Panne non trouvée : remise sur le forfait.**",
+    lead: "Le dépannage, c'est **ma priorité**. Une panne ne prévient pas, et elle arrive rarement aux heures de bureau : j'interviens chez les particuliers de toutes les Ardennes **toute la semaine et le week-end, sur rendez-vous**, pris par message. **Forfait sur devis, annoncé avant de venir** : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. **Panne non trouvée : remise sur le forfait.**",
     prestation: 'depannage',
     chips: [{ icon: 'zap', text: 'Forfait annoncé avant de venir' }, { icon: 'clock', text: 'À tout moment' }, { icon: 'calendar-days', text: 'Sur rendez-vous' }],
     intro: `## Les pannes que je dépanne le plus souvent
@@ -31,7 +31,7 @@ Quelques vérifications simples permettent parfois de gagner du temps, et elles 
 1. Regardez si vos voisins ont du courant. Si toute la rue est dans le noir, la panne vient du réseau : c'est Enedis qu'il faut contacter (dépannage Enedis Ardennes : 09 726 750 08).
 2. Ouvrez votre tableau électrique et repérez la manette en position basse : disjoncteur général, interrupteur différentiel ou disjoncteur d'un circuit.
 3. Débranchez les appareils de la zone concernée, puis tentez **une seule fois** de réarmer.
-4. Si la protection redéclenche aussitôt, n'insistez pas : laissez-la en bas et appelez-moi.
+4. Si la protection redéclenche aussitôt, n'insistez pas : laissez-la en bas et écrivez-moi.
 
 !> Odeur de brûlé, prise noircie, crépitement ou tableau chaud au toucher : coupez le disjoncteur général et ne remettez pas sous tension. Ce sont des signes d'échauffement à traiter avant toute remise en service.
 
@@ -39,7 +39,7 @@ Quelques vérifications simples permettent parfois de gagner du temps, et elles 
 
 ## Pourquoi un dépannage le soir ou le week-end ?
 
-Parce que c'est là que vous êtes chez vous. Quand la panne tombe un mardi soir ou un samedi matin, vous n'avez pas à attendre la semaine suivante ni à poser une demi-journée de congé : **j'interviens à tout moment, sur rendez-vous**. Le forfait est le même tous les jours, sans majoration.
+Parce que c'est là que vous êtes chez vous. Quand la panne tombe un mardi soir ou un samedi matin, vous n'avez pas à attendre la semaine suivante ni à poser une demi-journée de congé : **j'interviens toute la semaine et le week-end, sur rendez-vous**. Le forfait est le même tous les jours, sans majoration.
 
 ## Un dépannage propre, pas un rafistolage
 
@@ -58,11 +58,11 @@ Un domino sous un isolant, un disjoncteur remplacé par un calibre supérieur «
     ],
     faq: [
       { q: 'Combien coûte un dépannage électrique ?', a: "Le dépannage est au forfait, sur devis : je vous annonce son prix au téléphone, selon votre commune et la panne. Il comprend le déplacement, la recherche de la panne, la proposition de solution et le devis de réparation. La réparation fait l'objet d'un devis, que vous acceptez ou non. Et si je ne trouve pas la panne, je vous fais une remise sur le forfait. Voir les [tarifs](/tarifs/)." },
-      { q: 'Quand pouvez-vous intervenir ?', a: "À tout moment, sur rendez-vous : appelez, je vous propose le créneau le plus proche. Pour une coupure générale de la rue, contactez Enedis. Pour une situation dangereuse (fumée, odeur de brûlé), coupez le courant au disjoncteur général et, en cas de doute, appelez le 18." },
+      { q: 'Quand pouvez-vous intervenir ?', a: "À tout moment, sur rendez-vous : écrivez-moi, je vous propose le créneau le plus proche. Pour une coupure générale de la rue, contactez Enedis. Pour une situation dangereuse (fumée, odeur de brûlé), coupez le courant au disjoncteur général et, en cas de doute, appelez le 18." },
       { q: 'Faites-vous les dépannages le dimanche ?', a: 'Oui, sur rendez-vous, avec le même forfait que les autres jours.' },
       { q: 'Et si la panne vient de mon compteur Linky ?', a: "Le compteur et le disjoncteur de branchement relèvent d'Enedis. Si mon diagnostic montre que la panne se situe avant votre tableau, je vous le dis et vous oriente vers Enedis : il n'y a alors pas de devis de réparation de ma part." },
     ],
-    cta: { title: 'Panne de courant ? On s’en occupe ce soir ou ce week-end.', text: 'Prix annoncé avant de venir, devis de réparation sans obligation. Appelez ou envoyez une photo de votre tableau sur WhatsApp.' },
+    cta: { title: 'Panne de courant ? On s’en occupe ce soir ou ce week-end.', text: 'Prix annoncé avant de venir, devis de réparation sans obligation. Envoyez-moi un message ou une photo de votre tableau sur WhatsApp.' },
     links: ['/depannage-electrique-ardennes/', '/disjoncteur-qui-saute/', '/differentiel-qui-saute/', '/panne-courant-partielle/', '/prise-qui-chauffe/', '/electricien-urgence-ardennes/', '/blog/prix-depannage-electrique/', '/blog/pourquoi-une-prise-disjoncte/'],
   },
 

@@ -42,10 +42,10 @@ J'interviens dans tout le département : Charleville-Mézières et son agglomér
     ],
     faq: [
       { q: 'Intervenez-vous dans tout le département des Ardennes ?', a: "Oui, dans toutes les communes des Ardennes. Le prix du forfait dépannage vous est annoncé au téléphone, avant que je me déplace." },
-      { q: 'Êtes-vous disponible en semaine dans la journée ?', a: "Oui : j'interviens à tout moment, sur rendez-vous, en journée comme le soir ou le week-end. On choisit ensemble le créneau qui vous convient." },
+      { q: 'Êtes-vous disponible en semaine dans la journée ?', a: "Oui : j'interviens 7 j/7, sur rendez-vous, en journée comme le soir ou le week-end. On choisit ensemble le créneau qui vous convient." },
       { q: 'Travaillez-vous seul ?', a: "Oui. C'est moi qui réponds au téléphone, qui viens chez vous et qui réalise les travaux. Vous avez un seul interlocuteur, du premier appel à la facture." },
     ],
-    cta: { title: 'Un électricien dans les Ardennes, le soir ou le week-end', text: 'Appelez-moi ou décrivez votre besoin : je vous réponds avec un prix et un créneau.' },
+    cta: { title: 'Un électricien dans les Ardennes, le soir ou le week-end', text: 'Envoyez-moi un message ou décrivez votre besoin : je vous réponds avec un prix et un créneau.' },
     links: ['/zone-intervention/', '/prestations/', '/tarifs/', '/electricien-signy-l-abbaye/', '/electricien-charleville-mezieres/', '/electricien-rethel/', '/blog/pourquoi-faire-appel-a-un-electricien-local/'],
     nearby: ['/electricien-rethel/', '/electricien-charleville-mezieres/', '/electricien-sedan/', '/electricien-rocroi/', '/electricien-signy-l-abbaye/'],
     nearbyTitle: 'Principales communes',
@@ -62,7 +62,7 @@ J'interviens dans tout le département : Charleville-Mézières et son agglomér
     lead: "Vous rentrez du travail et une partie de la maison est dans le noir ? Le disjoncteur refuse de se réarmer un samedi matin ? Dans les Ardennes, j'assure le **dépannage électrique des particuliers** sur les créneaux où vous êtes chez vous, avec **un prix annoncé avant de venir**.",
     body: `## Comment j'organise les dépannages
 
-Quand vous appelez, c'est moi qui décroche. Je vous pose quelques questions pour **évaluer l'urgence** et préparer l'intervention :
+Quand vous m'écrivez ou m'appelez, c'est moi qui réponds. Je vous pose quelques questions pour **évaluer l'urgence** et préparer l'intervention :
 
 - Avez-vous encore du courant dans une partie du logement ?
 - Quelle protection a déclenché, et se réarme-t-elle ?
@@ -88,11 +88,11 @@ Un dépannage commence toujours par le **forfait dépannage**, dont je vous anno
       { tag: 'Soirée', icon: 'moon', title: 'La cuisine dans le noir un mardi soir', text: "Plus d'éclairage dans la cuisine et le séjour à 19 h, en plein repas. Le disjoncteur de l'éclairage saute à chaque réarmement.", result: 'Douille de suspension en court-circuit localisée et remplacée : lumière rétablie avant 21 h.' },
     ],
     faq: [
-      { q: 'Quand êtes-vous disponible ?', a: "À tout moment, sur rendez-vous : appelez-moi, nous fixons ensemble le créneau le plus proche. Les coupures du réseau public relèvent d'Enedis, joignable jour et nuit." },
+      { q: 'Quand êtes-vous disponible ?', a: "À tout moment, sur rendez-vous : écrivez-moi, nous fixons ensemble le créneau le plus proche. Les coupures du réseau public relèvent d'Enedis, joignable jour et nuit." },
       { q: 'Que faire en attendant votre arrivée ?', a: "Laissez la protection qui a déclenché en position basse, débranchez les appareils de la zone et, en cas d'odeur de brûlé, coupez le disjoncteur général. Ne réarmez pas plusieurs fois de suite." },
       { q: 'Facturez-vous plus cher un dépannage le dimanche ?', a: "Non. Les tarifs sont identiques tous les jours de la semaine, soirées comprises." },
     ],
-    cta: { title: 'Une panne en cours ?', text: 'Appelez directement : c’est le moyen le plus rapide pour obtenir un créneau ce soir ou ce week-end.' },
+    cta: { title: 'Une panne en cours ?', text: 'Écrivez-moi directement : c’est le moyen le plus rapide pour obtenir un créneau ce soir ou ce week-end.' },
     links: ['/prestations/depannage-electrique/', '/electricien-urgence-ardennes/', '/disjoncteur-qui-saute/', '/differentiel-qui-saute/', '/panne-courant-partielle/', '/depannage-electrique-rethel/', '/depannage-electrique-charleville-mezieres/'],
     nearby: ['/depannage-electrique-rethel/', '/depannage-electrique-charleville-mezieres/', '/depannage-electrique-sedan/', '/electricien-signy-l-abbaye/'],
     nearbyTitle: 'Dépannage par ville',
@@ -257,7 +257,7 @@ Vous pouvez valider un seul bloc, ou tout. Rien n'est imposé.`,
     description: 'Électricien le soir dans les Ardennes, après votre journée de travail : dépannage, prises, luminaires, diagnostic. Sans majoration, sur RDV.',
     kicker: 'Disponibilités · En soirée',
     h1: 'Un électricien le soir, après votre journée de travail',
-    lead: "ALED08 intervient à tout moment, **y compris en soirée** : je me déplace chez les particuliers des Ardennes pour les dépannages et les petits travaux. Vous n'avez pas à poser de congé : **j'interviens quand vous êtes rentré**, au même tarif qu'en journée.",
+    lead: "ALED08 intervient toute la semaine, **y compris en soirée** : je me déplace chez les particuliers des Ardennes pour les dépannages et les petits travaux. Vous n'avez pas à poser de congé : **j'interviens quand vous êtes rentré**, au même tarif qu'en journée.",
     body: `## Ce qui se fait très bien en soirée
 
 Une soirée d'intervention dure en général d'une à trois heures. C'est le format idéal pour :
@@ -292,9 +292,9 @@ Chez ALED08, la soirée est un **créneau normal de travail**, choisi dès le d�
     faq: [
       { q: 'Jusqu’à quelle heure intervenez-vous le soir ?', a: "Il n'y a pas d'heure limite affichée : on convient du créneau ensemble, au téléphone. Pour un dépannage qui s'avère plus long, on décide ensemble de la suite." },
       { q: 'Peut-on travailler sans lumière si le courant est coupé ?', a: "Oui : j'apporte un éclairage autonome. C'est d'ailleurs indispensable pour travailler hors tension en toute sécurité." },
-      { q: 'Le soir, est-ce plus cher ?', a: "Non, mes tarifs sont identiques à tout moment." },
+      { q: 'Le soir, est-ce plus cher ?', a: "Non, mes tarifs sont identiques tous les jours." },
     ],
-    cta: { title: 'Un rendez-vous ce soir ?', text: 'Appelez dès que possible : plus tôt vous appelez, plus j’ai de chances de vous proposer un créneau dans la soirée.' },
+    cta: { title: 'Un rendez-vous ce soir ?', text: 'Écrivez-moi dès que possible : plus tôt vous me contactez, plus j’ai de chances de vous proposer un créneau dans la soirée.' },
     links: ['/electricien-week-end-ardennes/', '/prestations/depannage-electrique/', '/prestations/prises-et-interrupteurs/', '/petits-travaux-electriques/', '/tarifs/'],
     nearby: ['/electricien-charleville-mezieres/', '/electricien-rethel/', '/electricien-poix-terron/', '/electricien-signy-l-abbaye/'],
     nearbyTitle: 'Principales communes',
@@ -332,7 +332,7 @@ Intervenir le week-end est mon choix d'organisation, pas un service d'exception.
 
 ## Réserver son samedi
 
-Les samedis se remplissent plus vite que les soirées, surtout au printemps et à l'automne. Pour un chantier planifié, **anticipez de quelques semaines** ; pour un dépannage, appelez simplement : je fais au mieux pour vous caser entre deux interventions.`,
+Les samedis se remplissent plus vite que les soirées, surtout au printemps et à l'automne. Pour un chantier planifié, **anticipez de quelques semaines** ; pour un dépannage, envoyez simplement un message : je fais au mieux pour vous caser entre deux interventions.`,
     cases: [
       { tag: 'Samedi', icon: 'panel-top', title: 'Un tableau remplacé pendant le week-end', text: "Une famille ne pouvait pas se libérer en semaine pour une coupure de courant d'une journée.", result: 'Tableau remplacé dans la journée du samedi ; les enfants étaient chez les grands-parents, tout était prêt pour le dîner.' },
       { tag: 'Samedi', icon: 'lamp-wall-up', title: 'Une tranchée creusée en famille', text: "Les propriétaires voulaient éclairer leur allée et ont creusé eux-mêmes la tranchée le matin.", result: 'Pose de la gaine, du câble et des bornes l’après-midi : allée éclairée le soir même.' },
@@ -369,7 +369,7 @@ Dans les logements rethélois, beaucoup reconstruits dans les années 1950 ou r�
 
 ## Un trajet court, un créneau rapide
 
-Rethel fait partie de mes secteurs réguliers. Pour un dépannage, appelez dès que la panne se présente : je peux alors souvent vous proposer un passage le jour même. J'interviens à tout moment, sur rendez-vous.
+Rethel fait partie de mes secteurs réguliers. Pour un dépannage, écrivez-moi dès que la panne se présente : je peux alors souvent vous proposer un passage le jour même. J'interviens 7 j/7, sur rendez-vous.
 
 [[cta]]
 
@@ -386,7 +386,7 @@ Repérez la protection en position basse dans votre tableau, débranchez les app
       { q: 'Pouvez-vous venir dans l’heure ?', a: "Cela dépend des rendez-vous déjà prévus. Le plus souvent, je propose un créneau le soir même ou le lendemain soir." },
       { q: 'Intervenez-vous à Sault-lès-Rethel ou Acy-Romance ?', a: "Oui, aux mêmes conditions que Rethel, sous réserve que l'adresse reste dans la tranche des 30 km." },
     ],
-    cta: { title: 'Une panne à Rethel ?', text: 'Appelez maintenant : je vous propose un créneau ce soir ou ce week-end, prix annoncé.' },
+    cta: { title: 'Une panne à Rethel ?', text: 'Écrivez-moi maintenant : je vous propose un créneau ce soir ou ce week-end, prix annoncé.' },
     links: ['/electricien-rethel/', '/remplacement-tableau-electrique-rethel/', '/prestations/depannage-electrique/', '/disjoncteur-qui-saute/', '/lumiere-qui-clignote/'],
     nearby: ['/electricien-rethel/', '/electricien-chateau-porcien/', '/electricien-novion-porcien/', '/electricien-attigny/'],
   },
@@ -394,10 +394,10 @@ Repérez la protection en position basse dans votre tableau, débranchez les app
     slug: 'depannage-electrique-charleville-mezieres', group: 'services-villes', city: 'Charleville-Mézières', prestation: 'depannage',
     label: 'Dépannage électrique à Charleville-Mézières',
     title: 'Dépannage électrique Charleville-Mézières, soir | ALED08',
-    description: "Dépannage électrique à Charleville-Mézières, à tout moment sur rendez-vous : appartement sans courant, disjoncteur d'abonné, prise en panne. Prix annoncé avant.",
+    description: "Dépannage électrique à Charleville-Mézières, 7 j/7 sur rendez-vous : appartement sans courant, disjoncteur d'abonné, prise en panne. Prix annoncé avant.",
     kicker: 'Dépannage · Charleville-Mézières',
     h1: 'Dépannage électrique à Charleville-Mézières, en appartement comme en maison',
-    lead: "À **Charleville-Mézières**, une grande partie des pannes que je dépanne se produisent en appartement. Elles ont leurs spécificités : disjoncteur de branchement sur le palier, tableau à l'étroit, parties communes à distinguer. J'interviens **à tout moment, sur rendez-vous**, prix annoncé avant.",
+    lead: "À **Charleville-Mézières**, une grande partie des pannes que je dépanne se produisent en appartement. Elles ont leurs spécificités : disjoncteur de branchement sur le palier, tableau à l'étroit, parties communes à distinguer. J'interviens **toute la semaine et le week-end, sur rendez-vous**, prix annoncé avant.",
     body: `## Appartement sans courant : par où commencer ?
 
 Quand tout est coupé dans un appartement, trois situations sont possibles :
@@ -430,7 +430,7 @@ Indiquez-moi le code d'accès, l'étage et la présence ou non d'un ascenseur : 
       { q: 'Je suis locataire : qui paie le dépannage ?', a: "Cela dépend de la cause : l'entretien courant revient en général au locataire, le remplacement d'équipements vétustes au propriétaire. La facture détaillée vous aide à en discuter avec lui." },
       { q: 'La panne vient peut-être des parties communes, que faire ?', a: "Si plusieurs logements sont touchés, prévenez le syndic. Je n'interviens pas sur les parties communes sans mandat du gestionnaire." },
     ],
-    cta: { title: 'Une panne à Charleville-Mézières ?', text: 'J’interviens à tout moment, sur rendez-vous. Appelez : forfait dépannage annoncé tout de suite, devis de réparation sans obligation.' },
+    cta: { title: 'Une panne à Charleville-Mézières ?', text: 'J’interviens 7 j/7, sur rendez-vous. Écrivez-moi : forfait dépannage annoncé tout de suite, devis de réparation sans obligation.' },
     links: ['/electricien-charleville-mezieres/', '/remplacement-tableau-electrique-charleville-mezieres/', '/disjoncteur-qui-saute/', '/panne-courant-partielle/', '/electricien-proprietaire-bailleur/'],
     nearby: ['/electricien-charleville-mezieres/', '/electricien-renwez/', '/electricien-poix-terron/', '/electricien-thin-le-moutier/'],
   },
@@ -441,7 +441,7 @@ Indiquez-moi le code d'accès, l'étage et la présence ou non d'un ascenseur : 
     description: 'Dépannage électrique planifié à Sedan : pannes récurrentes, différentiel qui saute, lumière qui clignote. Le soir et le week-end, déplacement annoncé.',
     kicker: 'Dépannage · Sedan',
     h1: 'Dépannage électrique à Sedan : régler enfin les pannes récurrentes',
-    lead: "À Sedan, pour une coupure totale en urgence, appelez-moi : je vous dis tout de suite quand je peux venir. Et pour **les pannes récurrentes** (différentiel qui saute régulièrement, lumière qui clignote, prise capricieuse), un **dépannage planifié** le soir ou le week-end est la bonne solution.",
+    lead: "À Sedan, pour une coupure totale en urgence, écrivez-moi : je vous dis tout de suite quand je peux venir. Et pour **les pannes récurrentes** (différentiel qui saute régulièrement, lumière qui clignote, prise capricieuse), un **dépannage planifié** le soir ou le week-end est la bonne solution.",
     body: `## Les pannes qu'on finit par « supporter »
 
 Beaucoup de foyers vivent avec une panne chronique : on réarme le différentiel une fois par semaine, on évite d'allumer le four et le lave-linge en même temps, on secoue l'interrupteur de la salle de bain. Ce n'est pas une fatalité, et ce n'est **pas sans risque** : un défaut qui revient est un défaut qui évolue.

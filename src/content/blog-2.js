@@ -147,7 +147,7 @@ Au final, le prix d'un dépannage dépend surtout de **la difficulté à trouver
       { q: 'Le forfait est-il dû si je refuse le devis de réparation ?', a: "Oui, dès lors que la panne a été trouvée : il rémunère le déplacement, la recherche et l'établissement du devis. La réparation n'est jamais faite sans votre accord. En revanche, si l'origine de la panne n'est pas identifiée, une remise est appliquée sur le forfait." },
       { q: 'Un dépannage le dimanche coûte-t-il plus cher ?', a: "Chez ALED08, non : le forfait est le même tous les jours, dimanche compris." },
     ],
-    cta: { title: 'Combien pour votre dépannage ?', text: 'Appelez-moi : je vous annonce le forfait dépannage pour votre commune avant de venir.' },
+    cta: { title: 'Combien pour votre dépannage ?', text: 'Écrivez-moi : je vous annonce le forfait dépannage pour votre commune avant de venir.' },
     links: ['/tarifs/', '/prestations/depannage-electrique/', '/depannage-electrique-ardennes/', '/electricien-urgence-ardennes/'],
     related: ['pourquoi-faire-appel-a-un-electricien-local', 'comment-trouver-une-panne-electrique', 'pourquoi-une-prise-disjoncte'],
   },

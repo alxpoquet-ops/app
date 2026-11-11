@@ -21,10 +21,10 @@ function body(src, cta) {
 function aside(p) {
   return `<aside class="aside-sticky" aria-label="Contact et tarifs">
   <div class="aside-card aside-card-dark">
-    <h2>${icon('clock')} À tout moment</h2>
+    <h2>${icon('calendar-days')} 7 j/7 sur rendez-vous</h2>
     ${C.hoursTable()}
     <p class="small" style="margin:12px 0 16px">Sur rendez-vous uniquement.</p>
-    ${C.btnCall('btn-primary btn-block', 'Appeler')}
+    ${C.btnCall('btn-primary btn-block', 'RDV par SMS')}
     ${C.btnWa('btn-wa btn-block', 'WhatsApp')}
   </div>
   ${C.forfaitBlock({ compact: true })}
@@ -49,14 +49,14 @@ function seoPage(p) {
   // Titre : les pages communes visent « dépannage électrique + commune »
   let title = p.title;
   if (p.group === 'villes' && p.city) {
-    const long = `Dépannage électrique ${p.city} : électricien à tout moment | ALED08`;
-    title = long.length <= 68 ? long : `Dépannage électrique ${p.city}, électricien | ALED08`;
+    const long = `Électricien ${p.city} : dépannage et installation | ALED08`;
+    title = long.length <= 68 ? long : `Électricien ${p.city}, dépannage | ALED08`;
   }
   const chips = p.chips || (p.city
-    ? [{ icon: 'zap', text: `Dépannage électrique à ${p.city}` }, { icon: 'clock', text: 'À tout moment, sur rendez-vous' }, { icon: 'file-text', text: 'Forfait sur devis, prix annoncé avant' }]
+    ? [{ icon: 'zap', text: `Dépannage électrique à ${p.city}` }, { icon: 'plug', text: 'Installation, de la prise au tableau' }, { icon: 'message-circle', text: 'RDV par message, 7 j/7' }]
     : isPanne
-    ? [{ icon: 'zap', text: 'Dépannage dans toutes les Ardennes' }, { icon: 'clock', text: 'À tout moment, sur rendez-vous' }, { icon: 'user', text: 'Artisan à votre écoute' }]
-    : [{ icon: 'file-text', text: 'Devis gratuit' }, { icon: 'clock', text: 'À tout moment, sur rendez-vous' }, { icon: 'user', text: 'Artisan à votre écoute' }]);
+    ? [{ icon: 'zap', text: 'Dépannage dans toutes les Ardennes' }, { icon: 'message-circle', text: 'RDV par message, 7 j/7' }, { icon: 'user', text: 'Artisan à votre écoute' }]
+    : [{ icon: 'file-text', text: 'Devis gratuit' }, { icon: 'message-circle', text: 'RDV par message, 7 j/7' }, { icon: 'user', text: 'Artisan à votre écoute' }]);
   const service = {
     '@type': 'Service',
     '@id': site.url + path + '#service',
@@ -144,7 +144,7 @@ function blogPost(a, all) {
     <div class="aside-card aside-card-dark">
       <h2>${icon('zap')} Un souci chez vous ?</h2>
       <p class="small">Forfait dépannage sur devis, prix annoncé avant de venir : déplacement, recherche de panne, solution et devis de réparation compris.</p>
-      ${C.btnCall('btn-primary btn-block', 'Appeler')}
+      ${C.btnCall('btn-primary btn-block', 'RDV par SMS')}
       ${C.btnDevis('btn-light btn-block', a.prestation)}
     </div>
     ${

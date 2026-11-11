@@ -38,7 +38,7 @@ function home({ posts }) {
       { q: 'Et si vous ne trouvez pas la panne ?', a: "Je vous fais une remise sur le forfait. Le forfait rémunère un résultat, c'est-à-dire savoir d'où vient la panne et combien coûterait la réparation : si je n'y parviens pas, vous ne payez pas le plein tarif." },
       { q: 'Et la réparation, combien coûte-t-elle ?', a: "Elle dépend de la panne trouvée et des pièces à remplacer. C'est pourquoi je ne publie pas de prix de pièces : à la fin du dépannage, je vous remets un devis précis. Vous êtes libre de l'accepter ou non." },
       { q: 'Qui vient chez moi ?', a: "ALED08, c'est un seul artisan : un jeune électricien des Ardennes. Vous m'avez directement au téléphone, et c'est moi qui viens chez vous." },
-      { q: 'Quand pouvez-vous intervenir ?', a: "À tout moment, sur rendez-vous : en journée, le soir ou le week-end. Appelez-moi, nous convenons ensemble du créneau qui vous arrange. Le forfait reste le même, sans majoration." },
+      { q: 'Quand pouvez-vous intervenir ?', a: "À tout moment, sur rendez-vous : en journée, le soir ou le week-end. Écrivez-moi, nous convenons ensemble du créneau qui vous arrange. Le forfait reste le même, sans majoration." },
       { q: 'Dans quelles communes intervenez-vous ?', a: "Dans toutes les Ardennes : Charleville-Mézières, Sedan, Rethel, Rocroi, Vouziers, la vallée de la Meuse, le Porcien, la Thiérache et les villages entre elles. Consultez la [zone d'intervention](/zone-intervention/)." },
       { q: 'Faites-vous aussi des travaux, en dehors des pannes ?', a: "Oui : tableau électrique, mise en sécurité, éclairage, prises, ajout de circuits. Pour ces travaux, le devis est gratuit et détaillé." },
     ],
@@ -50,12 +50,12 @@ function home({ posts }) {
   ${C.circuitBg('hh')}
   <div class="container hero-in">
     <div class="hero-copy">
-      <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>Spécialiste du dépannage électrique · Ardennes (08)</p>
+      <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>Dépannage & installation électrique · Ardennes (08)</p>
       <h1><span class="h1-brand">${icon('zap', 'bolt')}ALED08</span><span class="h1-main">Dépannage &amp; Travaux Électriques dans les Ardennes</span></h1>
-      <p class="hero-lead"><strong>Intervention à tout moment, sur rendez-vous.</strong></p>
+      <p class="hero-lead"><strong>Disponible toute la semaine et le week-end, sur rendez-vous pris par message.</strong></p>
       <p class="hero-lead hero-sub">Recherche de panne, dépannage, tableaux électriques, éclairage, prises et mise en sécurité.</p>
       <div class="hero-ctas">
-        ${C.btnCall('btn-primary btn-lg', 'Dépannage : ' + site.phoneDisplay)}
+        ${C.btnCall('btn-primary btn-lg', 'RDV par SMS : ' + site.phoneDisplay)}
         ${C.btnDevis('btn-light btn-lg', null, 'Devis gratuit')}
         ${C.btnWa('btn-wa btn-lg')}
       </div>
@@ -72,7 +72,7 @@ function home({ posts }) {
 ${C.trustBar()}
 
 <section class="section" id="depannage"><div class="container">
-  <div class="section-head"><p class="kicker">Ma spécialité</p><h2>Le dépannage électrique, à un prix connu d’avance</h2><p>Plus de courant, un disjoncteur qui saute, une prise ou une lumière en panne : je viens, je trouve la cause et je vous propose une solution. Un seul forfait, sans surprise.</p></div>
+  <div class="section-head"><p class="kicker">Ma priorité</p><h2>Le dépannage électrique, à un prix connu d’avance</h2><p>Plus de courant, un disjoncteur qui saute, une prise ou une lumière en panne : je viens, je trouve la cause et je vous propose une solution. Un seul forfait, sans surprise.</p></div>
   ${C.forfaitBlock()}
   <div class="section-head" style="margin:56px auto 28px"><h3 class="h2">Partout dans les Ardennes</h3><p>Du nord au sud du département, je me déplace chez vous. Le prix du forfait vous est annoncé au téléphone, avant que je vienne.</p></div>
   ${C.kmTable()}
@@ -82,15 +82,15 @@ ${C.trustBar()}
 <section class="section section-alt" id="passage"><div class="container">
   <div class="section-head"><p class="kicker">Déroulement</p><h2>Mon passage chez vous, étape par étape</h2><p>Du premier appel à la remise du devis, voici exactement ce qui se passe, et ce que couvre le forfait.</p></div>
   ${C.passage()}
-  <div class="hero-ctas" style="justify-content:center;margin-top:36px">${C.btnCall('btn-primary btn-lg', 'Appeler pour un dépannage')}${C.btnWa('btn-wa btn-lg', 'Envoyer une photo de la panne', 'Bonjour, j’ai une panne électrique, voici une photo.')}</div>
+  <div class="hero-ctas" style="justify-content:center;margin-top:36px">${C.btnCall('btn-primary btn-lg', 'Demander un dépannage par SMS')}${C.btnWa('btn-wa btn-lg', 'Envoyer une photo de la panne', 'Bonjour, j’ai une panne électrique, voici une photo.')}</div>
 </div></section>
 
 <section class="section" id="qui"><div class="container grid grid-2" style="align-items:center">
   <div class="reveal">
     <p class="kicker">Qui vient chez vous ?</p>
     <h2>Bonjour et bienvenue chez ALED08</h2>
-    <p>ALED08, c’est un jeune artisan électricien des Ardennes. Je décroche quand vous appelez, je viens chez vous et je réalise la réparation. Vous savez à qui vous avez affaire, du premier appel à la facture.</p>
-    <p>J’ai toujours la même envie : comprendre d’où vient une panne et vous l’expliquer simplement. C’est comme ça que le dépannage est devenu ma spécialité.</p>
+    <p>ALED08, c’est un jeune artisan électricien des Ardennes. Je réponds quand vous m'écrivez, je viens chez vous et je réalise la réparation. Vous savez à qui vous avez affaire, du premier appel à la facture.</p>
+    <p>J’ai toujours la même envie : comprendre d’où vient une panne et vous l’expliquer simplement. C’est pour ça que le dépannage passe en premier, avant l’installation.</p>
     <p>Ce que vous pouvez attendre de moi :</p>
     <ul class="list-check">
       <li>un prix annoncé avant de venir, et tenu ;</li>
@@ -107,17 +107,17 @@ ${C.trustBar()}
   <div class="reveal">
     <p class="kicker">Disponibilités</p>
     <h2>Je viens quand ça vous arrange</h2>
-    <p>Une panne ne choisit pas son moment. ALED08 intervient donc à tout moment, sur rendez-vous : on trouve ensemble le créneau qui vous convient, sans bouleverser votre journée.</p>
+    <p>Une panne ne choisit pas son moment. ALED08 intervient donc toute la semaine et le week-end, sur rendez-vous : envoyez-moi un message, et on trouve ensemble le créneau qui vous convient.</p>
     <ul class="list-check">
       <li><strong>En journée, le soir ou le week-end</strong> : pas besoin de poser un congé.</li>
       <li><strong>Un appel suffit</strong> : je vous propose le créneau le plus proche.</li>
-      <li><strong>Même forfait</strong> à tout moment, sans majoration.</li>
+      <li><strong>Même forfait</strong> la semaine et le week-end, sans majoration.</li>
       <li><strong>Sur rendez-vous</strong> : vous savez à quelle heure j’arrive.</li>
     </ul>
     <div class="hero-ctas">${C.btnCall('btn-primary')}${C.btnWa('btn-wa', 'Envoyer une photo')}</div>
   </div>
   <div class="split-media reveal">
-    <h3>${icon('clock')} Disponible à tout moment</h3>
+    <h3>${icon('calendar-days')} Disponible 7 j/7 sur rendez-vous</h3>
     ${C.hoursTable('hours-dark')}
     <div class="stat-row">
       <div class="stat"><strong>7 j/7</strong><span>sur rendez-vous</span></div>
@@ -160,10 +160,10 @@ ${f.html}
   <p class="center" style="margin-top:28px"><a class="btn btn-ghost" href="/blog/">${icon('book-open')}<span>Tous les articles</span></a></p>
 </div></section>
 
-${C.ctaBand({ title: 'Une panne, un projet, une question ?', text: 'Appelez, écrivez sur WhatsApp ou demandez un devis en ligne. Je vous réponds rapidement et on fixe ensemble un créneau.' })}`;
+${C.ctaBand({ title: 'Une panne, un projet, une question ?', text: 'Envoyez un SMS, écrivez sur WhatsApp ou demandez un devis en ligne. Je vous réponds rapidement et on fixe ensemble un créneau.' })}`;
   return {
     path: '/',
-    title: 'Dépannage électrique Ardennes : électricien à tout moment | ALED08',
+    title: 'Électricien Ardennes : dépannage et installation électrique | ALED08',
     description: `Dépannage électrique dans toutes les Ardennes : forfait sur devis, prix annoncé avant de venir, devis de réparation compris. ALED08, jeune artisan électricien.`,
     crumbs: [HOME],
     body,
@@ -179,9 +179,9 @@ function about() {
   const body = `${C.pageHero({
     kicker: 'Qui suis-je ?',
     h1: 'ALED08, votre électricien dans les Ardennes',
-    lead: "Bonjour ! ALED08, c'est un **jeune artisan électricien** qui intervient dans **toutes les Ardennes**. Vous m'avez directement au téléphone, je me déplace à tout moment sur rendez-vous, et je vous annonce le prix avant de venir.",
+    lead: "Bonjour ! ALED08, c'est un **jeune artisan électricien** qui intervient dans **toutes les Ardennes**. Vous m'avez directement au téléphone, je me déplace toute la semaine et le week-end sur rendez-vous, et je vous annonce le prix avant de venir.",
     crumbs,
-    chips: [{ icon: 'user', text: 'Jeune artisan motivé' }, { icon: 'zap', text: 'Spécialiste du dépannage' }, { icon: 'map-pin', text: 'Toutes les Ardennes (08)' }],
+    chips: [{ icon: 'user', text: 'Jeune artisan motivé' }, { icon: 'zap', text: 'Dépannage & installation' }, { icon: 'map-pin', text: 'Toutes les Ardennes (08)' }],
   })}
 <section class="section"><div class="container layout-aside">
   <div class="prose">
@@ -197,11 +197,11 @@ Parce que c'est là que je me sens le plus utile. Quand le courant saute un soir
 
 ## Vous m'avez directement
 
-Quand vous appelez, c'est moi qui décroche, ou qui vous rappelle si je suis en intervention. C'est moi qui viens, qui cherche la panne, qui rédige le devis et qui répare. Et si vous avez une question après mon passage, vous savez qui rappeler.
+Quand vous m'écrivez ou m'appelez, c'est moi qui réponds, ou qui vous rappelle si je suis en intervention. C'est moi qui viens, qui cherche la panne, qui rédige le devis et qui répare. Et si vous avez une question après mon passage, vous savez qui rappeler.
 
-## Disponible à tout moment
+## Disponible toute la semaine et le week-end
 
-Une panne se découvre souvent en rentrant du travail, ou un dimanche matin. Poser une journée de congé pour attendre un artisan n'arrange personne : j'interviens donc **à tout moment, sur rendez-vous**, en journée comme le soir ou le week-end. Le prix ne change pas selon le jour ou l'heure.
+Une panne se découvre souvent en rentrant du travail, ou un dimanche matin. Poser une journée de congé pour attendre un artisan n'arrange personne : j'interviens donc **toute la semaine et le week-end, sur rendez-vous** pris par message, en journée comme le soir ou le week-end. Le prix ne change pas selon le jour ou l'heure.
 
 ## Ma façon de travailler
 
@@ -245,11 +245,11 @@ ALED08 s'adresse aux **particuliers** : dépannage et recherche de panne d'abord
   </div>
 </div></section>
 ${C.reviewsBlock(avis, 3).replace('section section-alt', 'section')}
-${C.ctaBand({ title: 'Une panne ou un projet ? Parlons-en', text: 'Appelez-moi ou écrivez-moi : je vous réponds avec plaisir, et on fixe un créneau qui vous arrange.' })}`;
+${C.ctaBand({ title: 'Une panne ou un projet ? Parlons-en', text: 'Écrivez-moi ou écrivez-moi : je vous réponds avec plaisir, et on fixe un créneau qui vous arrange.' })}`;
   return {
     path: '/qui-suis-je/',
     title: "Qui suis-je ? Un jeune artisan électricien des Ardennes | ALED08",
-    description: "ALED08 : un jeune artisan électricien des Ardennes. Dépannage et recherche de panne à tout moment, sur rendez-vous, en toute confiance.",
+    description: "ALED08 : un jeune artisan électricien des Ardennes. Dépannage et installation électrique, 7 j/7 sur rendez-vous, en toute confiance.",
     crumbs,
     body,
     webpageType: 'AboutPage',
@@ -264,7 +264,7 @@ function prestations({ seoPages }) {
   const body = `${C.pageHero({
     kicker: 'Prestations',
     h1: 'Prestations électriques pour les particuliers des Ardennes',
-    lead: "**Ma spécialité, c'est le dépannage**, dans toutes les Ardennes : un forfait sur devis, annoncé avant de venir, comprenant le déplacement, la recherche de panne, la proposition de solution et le devis de réparation. Je réalise aussi les travaux électriques des particuliers, sur devis. **Quatorze prestations**, un même niveau d'exigence : sécurité et norme NF C 15-100.",
+    lead: "**Le dépannage passe en priorité**, dans toutes les Ardennes, et j'assure aussi l'**installation électrique, de la prise au tableau**. Pour les pannes, un forfait sur devis, annoncé avant de venir, comprenant le déplacement, la recherche de panne, la proposition de solution et le devis de réparation. Je réalise aussi les travaux électriques des particuliers, sur devis. **Quatorze prestations**, un même niveau d'exigence : sécurité et norme NF C 15-100.",
     crumbs,
   })}
 <section class="section"><div class="container">
@@ -403,7 +403,7 @@ Remplacement de tableau, mise en sécurité, éclairage, ajout de prises ou de c
   <div class="reveal">${C.pricingTable()}</div>
 </div></section>
 ${f.html}
-${C.ctaBand({ title: 'Un prix clair avant de commencer', text: 'Forfait dépannage annoncé au téléphone, devis de réparation sans obligation : appelez-moi, on fixe un créneau ensemble.', prestation: 'depannage' })}
+${C.ctaBand({ title: 'Un prix clair avant de commencer', text: 'Forfait dépannage annoncé au téléphone, devis de réparation sans obligation : écrivez-moi, on fixe un créneau ensemble.', prestation: 'depannage' })}
 `;
   return {
     path: '/tarifs/',
@@ -426,7 +426,7 @@ function zone({ seoPages }) {
   const crumbs = [HOME, { name: 'Zone d’intervention', path: '/zone-intervention/' }];
   const villes = seoPages.filter((p) => p.group === 'villes');
   const f = C.faq([
-    { q: 'Intervenez-vous en dehors de cette liste de communes ?', a: "Oui. J'interviens dans toutes les communes des Ardennes, même celles qui ne figurent pas ici. Appelez-moi : je vous annonce le prix du forfait pour votre adresse." },
+    { q: 'Intervenez-vous en dehors de cette liste de communes ?', a: "Oui. J'interviens dans toutes les communes des Ardennes, même celles qui ne figurent pas ici. Écrivez-moi : je vous annonce le prix du forfait pour votre adresse." },
     { q: 'Le délai est-il plus long pour les communes éloignées ?', a: "Pas forcément. J'organise mes tournées du soir et du week-end par secteur : une intervention à Givet, Sedan ou Rocroi peut être regroupée avec une autre dans le même secteur." },
     { q: 'Le prix est-il le même partout ?', a: "Le forfait dépend de votre commune et de la panne. C'est pourquoi il est sur devis : je vous annonce le montant au téléphone, avant de me déplacer, et c'est ce prix qui s'applique." },
   ], 'Questions sur la zone d’intervention');
@@ -444,7 +444,7 @@ Des villages du Porcien aux villes de la vallée de la Meuse, de la Thiérache �
 
 ## Un prix annoncé avant de venir
 
-Le forfait dépannage est **sur devis** : il dépend de votre commune et de la panne. Vous m'appelez, vous me décrivez le problème, et **je vous annonce le prix avant de me déplacer**. C'est ce prix qui s'applique, sans surprise une fois sur place.`)}
+Le forfait dépannage est **sur devis** : il dépend de votre commune et de la panne. Vous m'écrivez, vous me décrivez le problème, et **je vous annonce le prix avant de me déplacer**. C'est ce prix qui s'applique, sans surprise une fois sur place.`)}
   </div>
   <div class="reveal">${C.mapEmbed()}</div>
 </div></section>
@@ -464,7 +464,7 @@ Le forfait dépannage est **sur devis** : il dépend de votre commune et de la p
     .join('')}</ul>
 </div></section>
 ${f.html}
-${C.ctaBand({ title: 'Vous êtes dans le secteur ?', text: 'Appelez-moi : je vous annonce le forfait dépannage pour votre adresse et je vous propose un créneau.' })}
+${C.ctaBand({ title: 'Vous êtes dans le secteur ?', text: 'Écrivez-moi : je vous annonce le forfait dépannage pour votre adresse et je vous propose un créneau.' })}
 `;
   return {
     path: '/zone-intervention/',
@@ -515,7 +515,7 @@ function faqFull() {
   const body = `${C.pageHero({
     kicker: 'FAQ',
     h1: 'Questions fréquentes sur ALED08 et vos travaux électriques',
-    lead: "Tarifs, disponibilités, déroulement d'une intervention, sécurité : **les réponses aux questions qu'on me pose le plus souvent**. Vous ne trouvez pas la vôtre ? Appelez-moi.",
+    lead: "Tarifs, disponibilités, déroulement d'une intervention, sécurité : **les réponses aux questions qu'on me pose le plus souvent**. Vous ne trouvez pas la vôtre ? Écrivez-moi.",
     crumbs,
     compact: true,
   })}
@@ -547,7 +547,7 @@ function devis() {
     { q: 'Sous quel délai recevrai-je une réponse ?', a: "Je réponds en général dans la journée, le plus souvent en fin d'après-midi ou en soirée. Pour une panne, un appel reste le moyen le plus rapide." },
     { q: 'Puis-je envoyer des photos ?', a: "Oui, et c'est vivement conseillé : envoyez-les sur [WhatsApp](" + C.waUrl('Bonjour, voici des photos pour ma demande de devis.') + ") en précisant votre nom. Une photo du tableau électrique ouvert est souvent très parlante." },
     { q: 'Le devis m’engage-t-il ?', a: "Non. Le devis de travaux est gratuit et sans engagement. Vous êtes libre de l'accepter, de le comparer ou de le refuser." },
-    { q: 'Et pour une panne ?', a: "Pour une panne, je me déplace au forfait dépannage, dont je vous annonce le prix avant de venir : déplacement, recherche de la panne, proposition de solution et devis de réparation sans obligation. Si je ne trouve pas la panne, je vous fais une remise sur le forfait. Le plus rapide reste de m'appeler." },
+    { q: 'Et pour une panne ?', a: "Pour une panne, je me déplace au forfait dépannage, dont je vous annonce le prix avant de venir : déplacement, recherche de la panne, proposition de solution et devis de réparation sans obligation. Si je ne trouve pas la panne, je vous fais une remise sur le forfait. Le plus rapide reste de m'envoyer un message." },
   ], 'Questions sur le devis');
   const body = `${C.pageHero({
     kicker: 'Dépannage & devis',
@@ -562,7 +562,7 @@ function devis() {
     <h2 class="h3">Votre demande</h2>
     <form class="form" method="post" action="${site.formAction}" data-form novalidate>
       ${formHidden('devis')}
-      <p class="form-alert" data-form-error hidden>L’envoi n’a pas abouti. Vérifiez les champs obligatoires ou appelez directement le ${site.phoneDisplay}.</p>
+      <p class="form-alert" data-form-error hidden>L’envoi n’a pas abouti. Vérifiez les champs obligatoires ou écrivez-moi directement au ${site.phoneDisplay}.</p>
       <div class="form-row">
         <div class="field"><label for="d-prestation">Prestation souhaitée <span class="req">*</span></label>
           <select id="d-prestation" name="prestation" required><option value="">Choisir…</option>${allServices.map((s) => `<option value="${s.value}">${esc(s.name)}</option>`).join('')}<option value="autre">Autre demande</option></select></div>
@@ -608,7 +608,7 @@ function devis() {
     <div class="aside-card aside-card-dark">
       <h2>${icon('zap')} Une panne en cours ?</h2>
       <p class="small">Pour un dépannage, l’appel est le plus rapide.</p>
-      ${C.btnCall('btn-primary btn-block', 'Appeler')}
+      ${C.btnCall('btn-primary btn-block', 'Envoyer un SMS')}
       ${C.btnWa('btn-wa btn-block', 'Envoyer des photos', 'Bonjour, voici des photos pour ma demande de devis.')}
     </div>
     ${C.forfaitBlock({ compact: true })}
@@ -637,7 +637,7 @@ function contact() {
       <div class="contact-card">${icon('map-pin')}<div><strong>${site.address.postalCode} ${site.address.city}</strong><span>Interventions à domicile dans les Ardennes, sur rendez-vous</span></div></div>
     </div>
     <div class="aside-card" style="margin-top:22px">
-      <h2 class="h3">${icon('clock')} Disponible à tout moment</h2>
+      <h2 class="h3">${icon('calendar-days')} Disponible 7 j/7 sur rendez-vous</h2>
       ${C.hoursTable()}
       <p class="small muted" style="margin:10px 0 0">Uniquement sur rendez-vous. Messages et appels consultés chaque jour.</p>
     </div>
@@ -646,7 +646,7 @@ function contact() {
     <h2 class="h3">Écrire un message</h2>
     <form class="form" method="post" action="${site.formAction}" data-form novalidate>
       ${formHidden('contact')}
-      <p class="form-alert" data-form-error hidden>L’envoi n’a pas abouti. Vérifiez les champs obligatoires ou appelez le ${site.phoneDisplay}.</p>
+      <p class="form-alert" data-form-error hidden>L’envoi n’a pas abouti. Vérifiez les champs obligatoires ou écrivez-moi au ${site.phoneDisplay}.</p>
       <div class="form-row">
         <div class="field"><label for="c-nom">Nom <span class="req">*</span></label><input id="c-nom" name="nom" type="text" autocomplete="name" required></div>
         <div class="field"><label for="c-tel">Téléphone <span class="req">*</span></label><input id="c-tel" name="telephone" type="tel" autocomplete="tel" required pattern="[0-9 +\\(\\).\\-]{10,20}"></div>
@@ -664,7 +664,7 @@ function contact() {
   <div class="section-head"><p class="kicker">Localisation</p><h2>J’interviens dans toutes les Ardennes</h2></div>
   ${C.mapEmbed()}
 </div></section>`;
-  return { path: '/contact/', title: "Contact électricien Ardennes : téléphone, WhatsApp | ALED08", description: "Contactez ALED08, électricien dans les Ardennes : téléphone, WhatsApp, e-mail ou formulaire. Dépannage à tout moment, sur rendez-vous, dans tout le département.", crumbs, body, webpageType: 'ContactPage', priority: 0.8 };
+  return { path: '/contact/', title: "Contact électricien Ardennes : téléphone, WhatsApp | ALED08", description: "Contactez ALED08, électricien dans les Ardennes : SMS, WhatsApp, e-mail ou formulaire. Dépannage et installation, 7 j/7 sur rendez-vous.", crumbs, body, webpageType: 'ContactPage', priority: 0.8 };
 }
 
 // ====================================================================== BLOG
@@ -680,7 +680,7 @@ function blogIndex({ posts }) {
 <section class="section"><div class="container">
   <div class="grid grid-posts">${posts.map(T.postCard).join('')}</div>
 </div></section>
-${C.ctaBand({ title: 'Une question après votre lecture ?', text: 'Si un article vous a fait penser à votre propre installation, appelez-moi : je vous dirai honnêtement s’il faut intervenir.' })}`;
+${C.ctaBand({ title: 'Une question après votre lecture ?', text: 'Si un article vous a fait penser à votre propre installation, écrivez-moi : je vous dirai honnêtement s’il faut intervenir.' })}`;
   return {
     path: '/blog/',
     title: 'Blog électricité : pannes, tableaux, sécurité, conseils | ALED08',
@@ -730,7 +730,7 @@ function planDuSite({ seoPages, posts }) {
 
 function merci() {
   const crumbs = [HOME, { name: 'Message envoyé', path: '/merci/' }];
-  const body = `${C.pageHero({ kicker: 'Message envoyé', h1: 'Merci, votre demande est bien partie !', lead: "Je vous recontacte rapidement, en général dans la journée. **Pour une panne en cours, n'hésitez pas à appeler directement.**", crumbs, compact: true })}
+  const body = `${C.pageHero({ kicker: 'Message envoyé', h1: 'Merci, votre demande est bien partie !', lead: "Je vous recontacte rapidement, en général dans la journée. **Pour une panne en cours, n'hésitez pas à m'écrire directement par SMS.**", crumbs, compact: true })}
 <section class="section"><div class="container container-narrow center">
   <div class="hero-ctas" style="justify-content:center">${C.btnCall('btn-primary btn-lg')}${C.btnWa('btn-wa btn-lg', 'Envoyer des photos', 'Bonjour, je viens d’envoyer une demande sur le site, voici des photos.')}</div>
   <p style="margin-top:32px">En attendant, vous pouvez consulter <a href="/tarifs/">mes tarifs</a> ou <a href="/blog/">les conseils du blog</a>.</p>

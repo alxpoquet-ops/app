@@ -85,7 +85,7 @@ Le diagnostic électrique remis par le vendeur est réalisé par un **diagnostiq
     ],
     faq: [
       { q: 'Votre visite remplace-t-elle le diagnostic obligatoire ?', a: "Non. Le diagnostic électrique de vente doit être réalisé par un diagnostiqueur certifié. Ma visite complète ce document par un regard d'artisan sur les travaux à prévoir." },
-      { q: 'Combien coûte une visite avant achat ?', a: "Elle est chiffrée à l'avance selon la taille du bien et la distance. Appelez-moi pour un prix précis." },
+      { q: 'Combien coûte une visite avant achat ?', a: "Elle est chiffrée à l'avance selon la taille du bien et la distance. Écrivez-moi pour un prix précis." },
       { q: 'Le vendeur doit-il être d’accord ?', a: "Oui, la visite se fait avec l'accord du vendeur ou de l'agence, généralement lors d'une seconde visite du bien." },
     ],
     cta: { title: 'Un achat en vue ?', text: 'Faisons le point sur l’électricité avant votre offre : vous saurez à quoi vous attendre.' },
@@ -243,7 +243,7 @@ En cas d'**odeur de brûlé** ou de **prise qui chauffe**, coupez le disjoncteur
 
 ## Ce que je peux vous proposer
 
-J'interviens **à tout moment, sur rendez-vous**, et je donne **la priorité aux situations les plus pénalisantes** : logement entièrement sans courant, chauffage coupé en hiver, personne âgée ou fragile, congélateur plein.
+J'interviens **toute la semaine et le week-end, sur rendez-vous**, et je donne **la priorité aux situations les plus pénalisantes** : logement entièrement sans courant, chauffage coupé en hiver, personne âgée ou fragile, congélateur plein.
 
 Concrètement, si vous appelez en fin d'après-midi pour une panne totale dans mon secteur du moment, je peux souvent venir **le soir même**. Plus loin ou en période chargée, je vous propose le premier créneau disponible et je vous conseille pour patienter en sécurité.
 
@@ -260,7 +260,7 @@ L'urgence ne change rien à ma façon de faire : le **forfait dépannage est ann
       { q: 'Le prix est-il plus élevé quand c’est urgent ?', a: "Non. Les tarifs sont les mêmes, que l'intervention soit planifiée ou rapide, en soirée ou le week-end." },
       { q: 'Que faire en attendant votre arrivée ?', a: "Laissez la protection déclenchée en position basse, débranchez les appareils de la zone concernée et, en cas d'odeur ou de chaleur anormale, coupez le disjoncteur général." },
     ],
-    cta: { title: 'Une panne qui ne peut pas attendre ?', text: 'Appelez directement : je vous dis tout de suite quand je peux venir et à quel prix.' },
+    cta: { title: 'Une panne qui ne peut pas attendre ?', text: 'Écrivez-moi directement : je vous dis tout de suite quand je peux venir et à quel prix.' },
     links: ['/prestations/depannage-electrique/', '/depannage-electrique-ardennes/', '/prise-qui-chauffe/', '/panne-courant-partielle/', '/blog/prix-depannage-electrique/'],
   },
   {
