@@ -661,7 +661,8 @@ a.contact-card:hover { border-color: var(--blue-100); transform: translateY(-2px
   .trust-item:nth-child(3) { border-left: 0; }
   .trust-item:nth-child(n+3) { border-top: 1px dashed var(--line); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
-  .cta-box { padding: 32px 22px; border-radius: 28px; }
+  .cta-box { grid-template-columns: 1fr; padding: 40px 32px; border-radius: 30px; }
+  .cta-actions { min-width: 0; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
   .communes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid-2 { grid-template-columns: 1fr; gap: 36px; }
   .grid-3 { grid-template-columns: 1fr 1fr; }
@@ -708,7 +709,9 @@ a.contact-card:hover { border-color: var(--blue-100); transform: translateY(-2px
   .footer-bottom { padding-bottom: 20px; }
   .cta-band { padding-bottom: 60px; }
   .section + .cta-band, .section-alt + .cta-band { padding-top: 60px; }
-  .cta-box { padding: 32px 22px; border-radius: 28px; }
+  .cta-box { grid-template-columns: 1fr; gap: 22px; padding: 30px 20px; border-radius: 26px; }
+  .cta-box h2 { font-size: 1.5rem; }
+  .cta-actions { grid-template-columns: 1fr; }
   .cta-actions { min-width: 0; }
   .cta-actions .btn { white-space: normal; text-align: center; }
   .stat-row { grid-template-columns: 1fr; }

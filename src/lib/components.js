@@ -284,8 +284,8 @@ function ctaBand({ title, text, prestation } = {}) {
     </div>
     <div class="cta-actions">
       ${btnCall('btn-primary btn-lg')}
-      ${btnDevis('btn-light btn-lg', prestation, 'Demande de devis gratuit')}
       ${btnWa('btn-wa btn-lg')}
+      ${btnDevis('btn-light btn-lg', prestation, 'Devis gratuit')}
     </div>
   </div>
 </div></section>`;
