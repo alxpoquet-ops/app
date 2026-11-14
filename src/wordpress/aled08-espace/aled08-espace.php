@@ -82,6 +82,8 @@ require_once __DIR__ . '/includes/comptes.php';
 require_once __DIR__ . '/includes/commandes.php';
 require_once __DIR__ . '/includes/stripe.php';
 require_once __DIR__ . '/includes/admin.php';
+require_once __DIR__ . '/includes/ovh.php';
+require_once __DIR__ . '/includes/provision.php';
 
 /* =========================================================================
  *  Rôle « Client ALED08 » et type de contenu « Demande »
@@ -95,6 +97,7 @@ register_activation_hook(__FILE__, function () {
 });
 register_deactivation_hook(__FILE__, function () {
     wp_clear_scheduled_hook('aled08_quotidien');
+    wp_clear_scheduled_hook('aled08_provision');
 });
 
 add_action('init', function () {
@@ -524,7 +527,11 @@ function aled08e_tab($id, $ic, $label, $on = false) {
 
 /* Libellés de la commande pour le client */
 function aled08e_cmd_libelle_client($statut) {
-    $l = ['attente_paiement' => 'En attente de paiement', 'payee' => 'Payée, création en cours', 'en_creation' => 'Payée, création en cours', 'en_ligne' => 'En ligne', 'annulee' => 'Annulée'];
+    $l = [
+        'attente_paiement' => 'En attente de paiement', 'payee' => 'Payée, merci !', 'domaine_commande' => 'Nom de domaine en cours d’attribution',
+        'domaine_attribue' => 'Nom de domaine attribué', 'hebergement' => 'Hébergement en préparation', 'ssl' => 'Certificat de sécurité en cours',
+        'pret' => 'Tout est prêt : je crée votre site', 'en_creation' => 'Je crée votre site', 'en_ligne' => 'En ligne', 'annulee' => 'Annulée',
+    ];
     return $l[$statut] ?? $statut;
 }
 function aled08e_cmd_domaine_libelle_client($cmd) {
@@ -532,6 +539,7 @@ function aled08e_cmd_domaine_libelle_client($cmd) {
     if ($cmd['domaine_mien']) return 'Votre nom de domaine actuel, on le garde';
     $l = ['a_reserver' => 'Je le réserve à votre nom dès le paiement', 'reserve' => 'Réservé à votre nom', 'en_ligne' => 'En ligne', 'client' => 'Votre nom de domaine'];
     if ($cmd['statut'] === 'attente_paiement') return 'Je le réserve à votre nom dès le paiement';
+    if ($cmd['statut'] === 'payee' || $cmd['statut'] === 'domaine_commande') return 'Réservation en cours, à votre nom';
     return $l[$cmd['domaine_statut']] ?? 'À réserver';
 }
 
@@ -543,17 +551,8 @@ function aled08e_panel_commande($cmd, $u, $D) {
     $annuel = $cmd['periode'] === 'annee';
     $per = $annuel ? 'par an' : 'par mois';
     $s = $cmd['statut'];
-    // étape en cours : 2 = paiement attendu, 3 = création, 5 = tout est fait
-    $rank = ['attente_paiement' => 2, 'payee' => 3, 'en_creation' => 3, 'en_ligne' => 5, 'annulee' => 2][$s] ?? 2;
-    $steps = [['Commande reçue', 'clipboard-check'], ['Paiement', 'credit-card'], ['Création', 'wand-sparkles'], ['En ligne', 'rocket']];
-    $frise = '<ol class="esp-steps' . ($s === 'annulee' ? ' is-off' : '') . '">';
-    foreach ($steps as $i => [$lab, $ic]) {
-        $n = $i + 1;
-        $cls = $n < $rank ? 'is-done' : ($n === $rank ? 'is-now' : '');
-        if ($s === 'annulee') $cls = $n === 1 ? 'is-done' : '';
-        $frise .= '<li class="' . $cls . '"><span class="esp-step-ico">' . aled08e_icon($cls === 'is-done' ? 'check' : $ic) . '</span><span>' . esc_html($lab) . '</span></li>';
-    }
-    $frise .= '</ol>';
+    $enCours = in_array($s, aled08e_prov_etapes_auto(), true);
+    $frise = '<div class="esp-etat" data-commande-etat data-cid="' . (int) $cmd['id'] . '" data-url="' . esc_attr(rest_url('aled08/v1/commande/etat')) . '" data-nonce="' . esc_attr(wp_create_nonce('wp_rest')) . '"' . ($enCours ? ' data-poll="60"' : '') . '>' . aled08e_prov_frise_html($cmd) . '</div>';
 
     $opts = [];
     foreach ((array) $cmd['options'] as $oid) {
@@ -561,7 +560,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
         if ($o) $opts[] = $o['name'] . ' (' . ($o['once'] ? aled08e_euro_txt($o['once']) . ' une fois' : aled08e_euro_txt($annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month']) . ' ' . $per) . ')';
     }
     $solde = (float) ($m['solde'] ?? 0);
-    $soldeDu = !$cmd['lissage'] && $solde > 0 && !$cmd['solde_paye'] && in_array($s, ['payee', 'en_creation', 'en_ligne'], true);
+    $soldeDu = !$cmd['lissage'] && $solde > 0 && !$cmd['solde_paye'] && in_array($s, aled08e_cmd_statuts_payes(), true);
     $flash = '';
     if (isset($_GET['solde']) && $_GET['solde'] === 'ok') $flash = '<p class="esp-empty" role="status">Merci ! Votre paiement du solde est en cours de confirmation. Il apparaîtra ici dans quelques minutes.</p>';
     if (isset($_GET['m']) && sanitize_key(wp_unslash($_GET['m'])) === 'paiement_erreur') $flash = '<p class="esp-warn" role="status">Le paiement en ligne n’a pas pu démarrer. Réessayez dans un instant, ou écrivez-moi : je vous envoie un lien de paiement.</p>';
@@ -586,8 +585,8 @@ function aled08e_panel_commande($cmd, $u, $D) {
               <?php else : ?>
               <p class="esp-warn">Je vous envoie le lien de paiement par e-mail sous 24 heures. Dès le paiement, je réserve votre nom de domaine et je commence.</p>
               <?php endif; ?>
-            <?php elseif ($s === 'payee' || $s === 'en_creation') : ?>
-              <p class="esp-empty">Votre paiement est bien reçu. Je m’occupe de votre nom de domaine et de la création<?php echo $type ? ' (' . esc_html($type['delai']) . ' en général)' : ''; ?>. Je vous écris dès que j’ai besoin de vous.</p>
+            <?php elseif ($s === 'pret' || $s === 'en_creation') : ?>
+              <p class="esp-empty">Votre nom de domaine, votre hébergement et votre certificat sont prêts. Je crée votre site<?php echo $type ? ' (' . esc_html($type['delai']) . ' en général)' : ''; ?> et je vous écris dès que j’ai besoin de vous.</p>
             <?php elseif ($s === 'en_ligne') : ?>
               <p class="esp-empty">Votre site est en ligne. Pour le faire évoluer, envoyez vos demandes depuis « Mes demandes ».</p>
             <?php elseif ($s === 'annulee') : ?>
@@ -608,7 +607,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
             <?php if ($cmd['lissage']) : ?>
             <li><span>Création du site, lissée</span><b><?php echo aled08e_euro($m['lissage_mensualite']) . ' ' . esc_html($per); // phpcs:ignore ?></b><small><?php echo (int) $cmd['lissage_paye']; ?> / <?php echo (int) $m['lissage_total_echeances']; ?> échéances payées, puis plus rien à payer</small></li>
             <?php else : ?>
-            <li><span>Acompte de <?php echo (int) $D['acompte']; ?> %</span><b><?php echo aled08e_euro($m['acompte']); // phpcs:ignore ?></b><small><?php echo in_array($s, ['payee', 'en_creation', 'en_ligne'], true) ? 'payé' : 'à payer à la commande'; ?></small></li>
+            <li><span>Acompte de <?php echo (int) $D['acompte']; ?> %</span><b><?php echo aled08e_euro($m['acompte']); // phpcs:ignore ?></b><small><?php echo in_array($s, aled08e_cmd_statuts_payes(), true) ? 'payé' : 'à payer à la commande'; ?></small></li>
             <li><span>Solde à la mise en ligne</span><b><?php echo aled08e_euro($solde); // phpcs:ignore ?></b><small><?php echo $cmd['solde_paye'] ? 'payé, merci !' : 'demandé quand le site est en ligne'; ?></small></li>
             <?php endif; ?>
             <li><span>Forfait <?php echo esc_html($f['name']); ?><?php echo $m['mensuel_options'] > 0 ? ' et options' : ''; ?></span><b><?php echo aled08e_euro($m['mensuel_forfait'] + $m['mensuel_options']) . ' ' . esc_html($per); // phpcs:ignore ?></b><small>démarre à la commande</small></li>
@@ -662,7 +661,7 @@ function aled08e_dashboard() {
     if ($cmd && !$host && $cmd['domaine'] && !$cmd['domaine_mien']) $host = $cmd['domaine'];
     $siteEtat = $host ? 'En ligne' : 'Bientôt en ligne';
     $siteOk = (bool) $host;
-    if ($cmd && $cmd['statut'] !== 'en_ligne') { $siteEtat = $cmd['statut'] === 'attente_paiement' ? 'En attente de paiement' : ($cmd['statut'] === 'annulee' ? 'Commande annulée' : 'En création'); $siteOk = false; }
+    if ($cmd && $cmd['statut'] !== 'en_ligne') { $siteEtat = $cmd['statut'] === 'attente_paiement' ? 'En attente de paiement' : ($cmd['statut'] === 'annulee' ? 'Commande annulée' : (in_array($cmd['statut'], aled08e_prov_etapes_auto(), true) ? 'Mise en ligne en cours' : 'En création')); $siteOk = false; }
 
     $reqs = get_posts(['post_type' => ALED08E_CPT, 'author' => $uid, 'post_status' => ['private', 'publish'], 'numberposts' => 30, 'orderby' => 'date', 'order' => 'DESC']);
     $st = aled08e_statuts();

@@ -564,6 +564,25 @@
     });
     var flash = $('[data-flash]', app);
     if (flash && flash.textContent.trim()) toast(flash.textContent.trim());
+    /* mise en ligne en cours : l'état se rafraîchit tout seul, sans recharger la page */
+    var etat = $('[data-commande-etat][data-poll]', app);
+    if (etat && window.fetch) {
+      var every = Math.max(20, +etat.getAttribute('data-poll') || 60) * 1000, lastStatut = '';
+      var refresh = function () {
+        if (d.hidden) return;
+        fetch(etat.getAttribute('data-url') + '?cid=' + encodeURIComponent(etat.getAttribute('data-cid')), { credentials: 'same-origin', headers: { 'X-WP-Nonce': etat.getAttribute('data-nonce') } })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (j) {
+            if (!j || !j.html) return;
+            etat.innerHTML = j.html;
+            if (lastStatut && j.statut !== lastStatut) toast(j.libelle || 'Nouvelle étape');
+            lastStatut = j.statut;
+            if (!j.auto) { clearInterval(timer); setTimeout(function () { location.reload(); }, 1500); }
+          })
+          .catch(function () {});
+      };
+      var timer = setInterval(refresh, every);
+    }
     /* QR code dessiné dans la page (bibliothèque qrcode-generator, MIT) */
     var qrBox = $('[data-qr]', app);
     var drawQr = function () {

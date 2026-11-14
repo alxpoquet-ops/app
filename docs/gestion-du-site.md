@@ -60,19 +60,28 @@ Vous pouvez aussi écrire une **note pour vous** dans la fiche : le client ne la
 
 Dans son espace, onglet « Ma commande » : une frise (Commande reçue, Paiement, Création, En ligne), son nom de domaine et son état, ses montants, et selon le cas le bouton « Payer maintenant » (commande en attente) ou « Payer le solde de X € » (site en ligne, solde dû). Dans « Forfait et factures » : son forfait, ses factures Stripe (ajoutées toutes seules) et celles que vous saisissez à la main, et le bouton « Gérer mon paiement et mes factures » s'il est client Stripe.
 
-## 4. Réserver un nom de domaine chez o2switch
+## 4. La mise en ligne automatique (nom de domaine, hébergement, SSL)
 
-o2switch n'a pas d'interface automatique pour acheter un nom de domaine : c'est vous qui le commandez, au nom du client (il en est le titulaire, c'est écrit dans les CGV).
+Dès que la commande est payée, l'automate enchaîne tout seul, une étape toutes les cinq minutes au plus :
 
-1. Dès qu'une commande est payée, vous recevez un e-mail avec le nom de domaine et les coordonnées du titulaire (prénom, nom, adresse, e-mail, téléphone). Le tableau de bord les affiche aussi, dans « Noms de domaine à réserver ». Un rappel part chaque jour tant que ce n'est pas fait.
-2. Ouvrez https://clients.o2switch.fr, puis « Commander un domaine ».
-3. Saisissez le nom de domaine, puis les coordonnées du titulaire telles qu'elles sont dans la commande.
-4. Rattachez le domaine à votre hébergement (dans le cPanel : Domaines, « Créer un nouveau domaine »), ou utilisez le bouton « Brancher sur l'hébergement » si vous avez configuré le cPanel (partie 11).
-5. Dans la fiche de la commande, cliquez **Domaine réservé**.
+1. **Nom de domaine** : acheté chez OVH au nom du client (vous êtes contact technique). Tant que la case « Essai à blanc » est cochée dans les réglages, vous recevez un e-mail avec le prix et vous cliquez « Confirmer l'achat OVH » dans la fiche. Décochez la case quand vous avez confiance.
+2. **Hébergement** : le domaine est rattaché à votre hébergement OVH (dossier `sites/le-domaine.fr`, www compris), ou ajouté dans cPanel si vous avez un jeton, ou à la main (vous recevez un e-mail et vous cliquez « Domaine ajouté sur l'hébergement »).
+3. **DNS et e-mail pro** : l'automate attend que le domaine pointe vers l'hébergement, puis crée la boîte contact@ si l'option est commandée (le client reçoit ses identifiants par e-mail).
+4. **Certificat SSL** : dès que le site répond en HTTPS, le client reçoit « Tout est prêt, je crée votre site » et la commande passe à « Prêt ». Vous recevez le même signal.
+5. **Création** : c'est vous. Quand le site est terminé, cliquez « Site en ligne ».
 
-Si le client a coché « J'ai déjà un nom de domaine », il n'y a rien à acheter : il faudra faire pointer ses DNS vers l'hébergement (demandez-lui l'accès à son registrar, ou donnez-lui les enregistrements à saisir).
+Le client voit chaque étape dans son espace, onglet « Ma commande », avec Lia qui avance sur la frise. Le texte dit « en général une heure environ, jusqu'à 24 heures pour certains noms de domaine ». La page se met à jour toute seule.
 
-Si la vérification de disponibilité est impossible au moment de la commande (service RDAP injoignable), la commande passe quand même : vérifiez le nom avant de l'acheter.
+Si une étape échoue trois fois ou dure trop longtemps, vous recevez un e-mail « Intervention nécessaire » avec l'erreur exacte. Le client voit seulement « je m'en occupe personnellement ». Dans la fiche : « Réessayer maintenant », « Passer l'étape » (si vous l'avez faite à la main) ou « Tout est prêt (forcer) ».
+
+### Régler OVH, pas à pas
+
+1. Ouvrez un compte sur ovhcloud.com et enregistrez un moyen de paiement par défaut (carte ou prélèvement). Commandez l'hébergement web « Pro » (ou plus, voir le point 11).
+2. Créez les clés d'API sur https://eu.api.ovh.com/createToken/ avec ces droits : `GET /auth/time`, `GET /me`, `POST /me/contact`, `GET /me/contact/*`, `GET /me/order/*`, `POST /me/order/*/payWithRegisteredPaymentMean`, `GET /order/cart`, `POST /order/cart`, `GET /order/cart/*`, `POST /order/cart/*`, `GET /domain/*`, `PUT /domain/*`, `POST /domain/*/nameServers/update`, `GET /hosting/web/*`, `POST /hosting/web/*`, `GET /email/domain/*`, `POST /email/domain/*`. Validité : illimitée.
+3. Dans WordPress, menu ALED08, Réglages, section « Mise en ligne automatique » : collez les trois clés, le nom de l'hébergement (Web Cloud, Hébergements, « nom du service », par exemple `xxxxx.cluster0yy.hosting.ovh.net`), laissez « Essai à blanc » coché, enregistrez, puis « Tester OVH ». Le test affiche votre identifiant OVH et l'état de l'hébergement.
+4. Faites une vraie commande de test avec un domaine à 4,99 € HT (un .fr jamais utilisé), suivez-la dans la fiche, et mesurez les délais réels.
+
+Prix OVH relevés le 14 novembre 2026 : .fr 4,99 € HT la première année puis 7,79 € HT par an ; .com 8,49 € HT puis 14,29 € HT. Le renouvellement automatique est activé par l'automate.
 
 ## 5. Activer Stripe, pas à pas
 
@@ -176,16 +185,31 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 - Le code suit le visiteur jusqu'à la commande (champ « Code de parrainage » de `/commander/`, prérempli). Vous le voyez dans l'e-mail de commande et dans la fiche.
 - Quand vous cliquez « Site en ligne », le parrain reçoit un e-mail et un mois offert est noté chez le parrain et chez le filleul (« Mois offerts à utiliser » dans leurs fiches). Pour l'appliquer, ajoutez un coupon ou un crédit dans Stripe sur l'abonnement concerné, puis remettez le compteur à zéro dans la fiche.
 
-## 11. Le cPanel (optionnel)
+## 11. Hébergement : OVH ou o2switch, et la migration
 
-Par défaut, les domaines se branchent à la main dans le cPanel d'o2switch. Pour avoir le bouton « Brancher sur l'hébergement » dans les fiches, ajoutez dans `wp-config.php` :
-```php
-define('ALED08_CPANEL_HOST', 'xxxx.o2switch.net');   // l'hôte de votre cPanel
-define('ALED08_CPANEL_USER', 'votre-identifiant');
-define('ALED08_CPANEL_TOKEN', 'le-jeton-API');         // cPanel › Sécurité › Gérer les jetons API
-define('ALED08_CPANEL_MAIN_DOMAIN', 'aled08.fr');
-```
-Le bouton crée le domaine additionnel (dossier `public_html/nom-du-domaine`) et, si l'option e-mail pro est prise, la boîte `contact@nom-du-domaine` avec le mot de passe que vous saisissez à ce moment-là (il n'est enregistré nulle part : transmettez-le au client). La réponse du cPanel est affichée telle quelle. **À tester une première fois sur un domaine de test.** Le jeton reste dans `wp-config.php`, jamais en base de données. Le réglage « Hébergement » montre seulement si les constantes sont présentes.
+Comparaison relevée le 14 novembre 2026 (prix HT) :
+
+| | o2switch (offre Cloud) | OVH (offre Pro) |
+|---|---|---|
+| Prix | 16 € par mois (192 € par an) | 1,99 € par mois la première année, puis 9,99 € par mois (12 mois payés d'avance) |
+| Sites | illimités, un seul compte cPanel | 100 sites, 10 bases de données de 2 Go (3 WordPress par base possibles), 100 boîtes e-mail |
+| Domaine | 1 offert tant que l'hébergement est actif ; .fr environ 10,75 € HT par an | 1 offert la première année ; .fr 4,99 € HT puis 7,79 € HT |
+| Automatisation | pas d'API pour acheter un domaine ; jetons cPanel désactivés en novembre 2026 | tout par API : domaine, rattachement, SSL, base, WordPress, e-mail |
+| Serveur | LiteSpeed, support réputé | Apache, support en heures ouvrées |
+| Pour 10 sites | environ 22 € par mois | environ 16,50 € par mois |
+| Pour 30 sites | environ 35 € par mois | environ 29,50 € par mois sur Pro (bases partagées), 39,50 € sur Performance |
+
+Décision prise : tout chez OVH, en douceur.
+
+1. Commandez l'hébergement Pro, créez les clés (point 4), testez l'automate sur un domaine d'essai.
+2. Les nouveaux clients partent chez OVH dès que l'automate tourne.
+3. Les sites existants restent chez o2switch jusqu'à la fin du contrat annuel (pas de remboursement au prorata), puis sont migrés par lots de 5 : sauvegarde JetBackup (fichiers, base, e-mails), envoi par FTP dans le bon dossier, import de la base, wp-config.php, retrait de LiteSpeed Cache, permaliens, test, puis bascule des DNS en heure creuse et certificat SSL. Comptez 30 minutes à 2 heures par site.
+4. Les noms de domaine se transfèrent en dernier (.fr 4,59 € HT, 8 jours minimum ; .com 8,49 € HT), une fois le site et les e-mails vérifiés chez OVH.
+5. Ne renouvelez pas o2switch ; ses données sont supprimées 30 jours après l'échéance.
+
+### cPanel o2switch (secours)
+
+Si o2switch rétablit les jetons d'API, l'automate peut ajouter le domaine et la boîte e-mail dans cPanel : ajoutez dans wp-config.php `ALED08_CPANEL_HOST` (le nom du nœud, par exemple `chabot.o2switch.net`), `ALED08_CPANEL_USER`, `ALED08_CPANEL_TOKEN` et `ALED08_CPANEL_MAIN_DOMAIN`, puis choisissez « o2switch cPanel » comme hébergeur dans les réglages et testez. Le jeton donne tous les droits du compte : gardez-le hors de la base de données.
 
 ## 12. Mettre à jour le site, le thème et l'extension
 

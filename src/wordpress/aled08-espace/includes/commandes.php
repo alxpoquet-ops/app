@@ -13,11 +13,24 @@ function aled08e_cmd_statuts() {
     return [
         'attente_paiement' => ['En attente de paiement', 'st-new'],
         'payee' => ['Payée', 'st-doing'],
+        'domaine_commande' => ['Nom de domaine en cours d’attribution', 'st-doing'],
+        'domaine_attribue' => ['Nom de domaine attribué', 'st-doing'],
+        'hebergement' => ['Hébergement en préparation', 'st-doing'],
+        'ssl' => ['Certificat SSL en cours', 'st-doing'],
+        'pret' => ['Prêt : création du site', 'st-doing'],
         'en_creation' => ['En création', 'st-doing'],
         'en_ligne' => ['En ligne', 'st-done'],
         'annulee' => ['Annulée', 'esp-st-off'],
     ];
 }
+/* Statuts d'une commande payée et vivante (tout sauf attente de paiement et annulée) */
+function aled08e_cmd_statuts_payes($avec_en_ligne = true) {
+    $l = ['payee', 'domaine_commande', 'domaine_attribue', 'hebergement', 'ssl', 'pret', 'en_creation'];
+    if ($avec_en_ligne) $l[] = 'en_ligne';
+    return $l;
+}
+/* Statuts « en cours de mise en ligne ou de création » (après paiement, avant la mise en ligne) */
+function aled08e_cmd_statuts_en_cours() { return aled08e_cmd_statuts_payes(false); }
 function aled08e_cmd_domaine_statuts() {
     return ['a_reserver' => 'À réserver', 'reserve' => 'Réservé', 'en_ligne' => 'En ligne', 'client' => 'Au client (il l’a déjà)'];
 }
@@ -416,6 +429,7 @@ function aled08e_cmd_set_statut($id, $statut, $note = '') {
     update_post_meta($id, '_aled08_statut', $statut);
     aled08e_cmd_journal($id, 'Statut : ' . aled08e_cmd_statuts()[$statut][0] . ($note ? ' (' . $note . ')' : '') . '.');
     $cmd['statut'] = $statut;
+    do_action('aled08e_statut_change', $id, $statut, $old);
     if ($statut === 'payee' && $old === 'attente_paiement') {
         aled08e_compte_metas_commande($cmd); // le compte reprend les choix de la commande, maintenant qu'elle est payée
         aled08e_cmd_mail_client_payee($cmd);
@@ -504,7 +518,9 @@ function aled08e_cmd_mail_owner_payee($c) {
     $corps = 'La commande ' . $c['ref'] . ' de ' . aled08e_cmd_nom($c) . " est payée.\n\n"
         . aled08e_cmd_recap_txt($c) . "\n"
         . ($dom
-            ? "Nom de domaine à réserver : " . $c['domaine'] . "\nTitulaire (le client) :\n" . aled08e_cmd_titulaire_txt($c) . "\n\nCommander le domaine chez o2switch : https://clients.o2switch.fr\nPuis cliquez « Domaine réservé » dans la fiche commande.\n\n"
+            ? (function_exists('aled08e_registrar') && aled08e_registrar() === 'ovh'
+                ? "Nom de domaine : " . $c['domaine'] . " (achat automatique chez OVH" . (function_exists('aled08e_ovh_essai') && aled08e_ovh_essai() ? ', avec votre validation par e-mail' : '') . ")\n\n"
+                : "Nom de domaine à réserver : " . $c['domaine'] . "\nTitulaire (le client) :\n" . aled08e_cmd_titulaire_txt($c) . "\n\nCommandez le domaine chez votre registrar, puis cliquez « Domaine réservé » dans la fiche commande.\n\n")
             : "Le client garde son nom de domaine : il faudra pointer ses DNS vers l’hébergement.\n\n")
         . 'Fiche commande : ' . aled08e_cmd_admin_url($c['id']) . "\n";
     wp_mail(aled08e_to(), $sujet, $corps, aled08e_mail_headers());
@@ -530,11 +546,12 @@ function aled08e_cmd_mail_client_en_ligne($c) {
 /* Rappel quotidien : noms de domaine à réserver (commandes payées) */
 function aled08e_cmd_rappel_domaines() {
     $list = [];
+    if (function_exists('aled08e_registrar') && aled08e_registrar() === 'ovh') return; // l'automate achète les domaines chez OVH
     foreach (aled08e_cmd_par_statut(['payee', 'en_creation']) as $c) {
         if ($c['domaine'] && !$c['domaine_mien'] && $c['domaine_statut'] === 'a_reserver') $list[] = $c;
     }
     if (!$list) return;
-    $corps = count($list) . ' nom(s) de domaine à réserver chez o2switch (https://clients.o2switch.fr) :' . "\n\n";
+    $corps = count($list) . ' nom(s) de domaine à réserver chez votre registrar (par exemple https://www.ovh.com/manager/ ou https://clients.o2switch.fr) :' . "\n\n";
     foreach ($list as $c) {
         $corps .= $c['domaine'] . ' (commande ' . $c['ref'] . ")\nTitulaire :\n" . aled08e_cmd_titulaire_txt($c) . "\nFiche : " . aled08e_cmd_admin_url($c['id']) . "\n\n";
     }

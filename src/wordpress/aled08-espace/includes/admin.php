@@ -3,7 +3,7 @@
  * ALED08 Espace client : l'administration.
  *  - menu « ALED08 » : Tableau de bord, Commandes, Demandes clients, Réglages (pastille des commandes à traiter)
  *  - liste des commandes (colonnes), fiche commande (détails, actions par boutons, journal)
- *  - réglages : Stripe (clés, secret du webhook, pied de page des factures, test), e-mail de réception, état du cPanel
+ *  - réglages : Stripe (clés, secret du webhook, pied de page des factures, test), e-mail de réception, mise en ligne automatique (OVH, cPanel)
  */
 defined('ABSPATH') || exit;
 
@@ -21,8 +21,12 @@ add_action('admin_menu', function () {
 /* Commandes qui demandent une action : à encaisser, payées (domaine à réserver, création à lancer) */
 function aled08e_admin_a_traiter() {
     $out = [];
-    foreach (aled08e_cmd_par_statut(['attente_paiement', 'payee', 'en_creation']) as $c) {
-        if ($c['statut'] !== 'en_creation' || ($c['domaine'] && !$c['domaine_mien'] && $c['domaine_statut'] === 'a_reserver')) $out[] = $c;
+    foreach (aled08e_cmd_par_statut(['attente_paiement', 'payee', 'domaine_commande', 'domaine_attribue', 'hebergement', 'ssl', 'pret', 'en_creation']) as $c) {
+        $auto = in_array($c['statut'], aled08e_prov_etapes_auto(), true);
+        if ($c['statut'] === 'attente_paiement' || $c['statut'] === 'pret') $out[] = $c; // à encaisser, ou à créer
+        elseif ($auto && (get_post_meta($c['id'], '_aled08_intervention', true) || get_post_meta($c['id'], '_aled08_ovh_devis_mail', true) && !get_post_meta($c['id'], '_aled08_ovh_valide', true))) $out[] = $c; // bloquée
+        elseif ($auto && aled08e_hebergeur() === 'manuel' && in_array($c['statut'], ['domaine_attribue'], true)) $out[] = $c; // à ajouter à la main
+        elseif ($auto && aled08e_registrar() !== 'ovh' && $c['statut'] === 'payee' && $c['domaine'] && !$c['domaine_mien']) $out[] = $c; // domaine à réserver à la main
     }
     return $out;
 }
@@ -61,7 +65,8 @@ add_action('admin_head', function () {
 .aled08-card .help{color:#646970;font-size:12px;margin:6px 0 0}
 .aled08-pre{white-space:pre-wrap;background:#f6f7f7;border-radius:6px;padding:8px 10px;font-size:12px;margin:0}
 .aled08-st{display:inline-block;padding:2px 9px;border-radius:999px;font-weight:600;font-size:12px}
-.aled08-st-attente_paiement{background:#DDEEFF;color:#2C67AE}.aled08-st-payee,.aled08-st-en_creation{background:#FFF1C2;color:#7A5600}.aled08-st-en_ligne{background:#D5F5E8;color:#176A4C}.aled08-st-annulee{background:#eee;color:#555}
+.aled08-st-attente_paiement{background:#DDEEFF;color:#2C67AE}.aled08-st-payee,.aled08-st-en_creation,.aled08-st-domaine_commande,.aled08-st-domaine_attribue,.aled08-st-hebergement,.aled08-st-ssl,.aled08-st-pret{background:#FFF1C2;color:#7A5600}.aled08-st-en_ligne{background:#D5F5E8;color:#176A4C}.aled08-st-annulee{background:#eee;color:#555}
+.aled08-prov{margin:0 0 10px;padding:10px 12px;border-radius:8px;background:#f6f7f7}.aled08-prov.is-hold{background:#fcf0f1}.aled08-prov ol{margin:6px 0 0 18px}.aled08-prov li.is-done{color:#1f7a55}.aled08-prov li.is-now{font-weight:600}
 .aled08-actions form{margin:0 0 8px}.aled08-actions .button{width:100%;text-align:center}
 .aled08-detail dl{display:grid;grid-template-columns:170px 1fr;gap:6px 12px;margin:0}.aled08-detail dt{color:#646970}.aled08-detail dd{margin:0}
 .aled08-journal{margin:0}.aled08-journal li{margin:0 0 6px;padding:0 0 6px;border-bottom:1px solid #f0f0f1;font-size:13px}.aled08-journal small{color:#646970}
@@ -79,12 +84,15 @@ function aled08e_admin_tableau() {
     if (!current_user_can('manage_options')) return;
     $aTraiter = aled08e_admin_a_traiter();
     $domaines = [];
-    foreach (aled08e_cmd_par_statut(['payee', 'en_creation']) as $c) if ($c['domaine'] && !$c['domaine_mien'] && $c['domaine_statut'] === 'a_reserver') $domaines[] = $c;
+    if (aled08e_registrar() !== 'ovh') foreach (aled08e_cmd_par_statut(['payee', 'en_creation']) as $c) if ($c['domaine'] && !$c['domaine_mien'] && $c['domaine_statut'] === 'a_reserver') $domaines[] = $c;
+    $misesEnLigne = aled08e_prov_en_cours();
+    $interventions = [];
+    foreach ($misesEnLigne as $c) if (get_post_meta($c['id'], '_aled08_intervention', true) || (get_post_meta($c['id'], '_aled08_ovh_devis_mail', true) && !get_post_meta($c['id'], '_aled08_ovh_valide', true))) $interventions[] = $c;
     $demandes = get_posts(['post_type' => ALED08E_CPT, 'post_status' => 'private', 'numberposts' => 20, 'meta_key' => '_aled08_statut', 'meta_value' => 'recue']);
     $retards = get_users(['role' => ALED08E_ROLE, 'meta_key' => 'aled08_abonnement', 'meta_value' => 'past_due', 'number' => 50]);
     $suppr = aled08e_comptes_a_supprimer(30);
     $lissages = [];
-    foreach (aled08e_cmd_liste(['meta_key' => '_aled08_lissage', 'meta_value' => 1]) as $c) if ($c['statut'] !== 'annulee' && !get_post_meta($c['id'], '_aled08_lissage_fini', true) && in_array($c['statut'], ['payee', 'en_creation', 'en_ligne'], true)) $lissages[] = $c;
+    foreach (aled08e_cmd_liste(['meta_key' => '_aled08_lissage', 'meta_value' => 1]) as $c) if ($c['statut'] !== 'annulee' && !get_post_meta($c['id'], '_aled08_lissage_fini', true) && in_array($c['statut'], aled08e_cmd_statuts_payes(), true)) $lissages[] = $c;
     $stripe = aled08e_stripe_ready();
     $libSt = aled08e_cmd_statuts();
     echo '<div class="wrap"><h1>ALED08 : tableau de bord</h1>';
@@ -97,16 +105,34 @@ function aled08e_admin_tableau() {
     if ($aTraiter) {
         echo '<ul>';
         foreach ($aTraiter as $c) {
-            $aide = $c['statut'] === 'attente_paiement' ? ($stripe ? 'Le client n’a pas fini son paiement. Relancez-le, ou marquez « Payée » s’il a payé autrement.' : 'Envoyez le lien de paiement, puis marquez « Payée ».') : ($c['domaine_statut'] === 'a_reserver' && $c['domaine'] && !$c['domaine_mien'] ? 'Réservez le nom de domaine, puis lancez la création.' : 'Lancez la création.');
+            if ($c['statut'] === 'attente_paiement') $aide = $stripe ? 'Le client n’a pas fini son paiement. Relancez-le, ou marquez « Payée » s’il a payé autrement.' : 'Envoyez le lien de paiement, puis marquez « Payée ».';
+            elseif ($c['statut'] === 'pret') $aide = 'Tout est prêt : créez le site, puis cliquez « Site en ligne ».';
+            elseif (get_post_meta($c['id'], '_aled08_intervention', true)) $aide = 'Intervention nécessaire : ' . (string) get_post_meta($c['id'], '_aled08_intervention_msg', true);
+            elseif (get_post_meta($c['id'], '_aled08_ovh_devis_mail', true) && !get_post_meta($c['id'], '_aled08_ovh_valide', true)) $aide = 'Achat du domaine à confirmer (essai à blanc OVH) : ' . (string) get_post_meta($c['id'], '_aled08_ovh_devis', true) . ' € TTC.';
+            elseif ($c['statut'] === 'domaine_attribue') $aide = 'Ajoutez le domaine sur l’hébergement à la main, puis cliquez « Domaine ajouté ».';
+            else $aide = 'Réservez le nom de domaine, puis cliquez « Domaine réservé ».';
             echo '<li>' . aled08e_admin_lien_cmd($c) . ' <span class="aled08-st aled08-st-' . esc_attr($c['statut']) . '">' . esc_html($libSt[$c['statut']][0]) . '</span><small>' . esc_html($aide) . '</small></li>';
         }
         echo '</ul>';
     } else echo '<p>Rien à faire pour le moment.</p>';
     echo '<p class="help"><a href="' . esc_url(admin_url('edit.php?post_type=' . ALED08E_CPT_CMD)) . '">Toutes les commandes</a></p></div>';
 
-    echo '<div class="aled08-card"><h2>Noms de domaine à réserver <span class="count' . ($domaines ? '' : ' ok') . '">' . count($domaines) . '</span></h2>';
+    echo '<div class="aled08-card"><h2>Mises en ligne en cours <span class="count' . ($interventions ? '' : ' ok') . '">' . count($misesEnLigne) . '</span></h2>';
+    echo '<p class="help">Après paiement, l’automate enchaîne : nom de domaine (' . esc_html(aled08e_registrar() === 'ovh' ? 'achat OVH' : 'à réserver à la main') . '), hébergement (' . esc_html(aled08e_hebergeur_libelle()) . '), DNS, certificat SSL. Une étape bloquée vous est signalée par e-mail. Prochain passage de l’automate : ' . (($n2 = wp_next_scheduled('aled08_provision')) ? esc_html(wp_date('H:i', $n2)) : 'non planifié') . '.</p>';
+    if ($misesEnLigne) {
+        echo '<ul>';
+        foreach ($misesEnLigne as $c) {
+            $dep = (int) get_post_meta($c['id'], '_aled08_etape_depuis', true);
+            $inter = get_post_meta($c['id'], '_aled08_intervention', true);
+            echo '<li>' . aled08e_admin_lien_cmd($c) . ' <span class="aled08-st aled08-st-' . esc_attr($c['statut']) . '">' . esc_html($libSt[$c['statut']][0]) . '</span><small>' . esc_html(($c['domaine'] ?: 'sans domaine') . ($dep ? ', depuis ' . human_time_diff($dep) : '') . ($inter ? '. INTERVENTION : ' . (string) get_post_meta($c['id'], '_aled08_intervention_msg', true) : '')) . '</small></li>';
+        }
+        echo '</ul>';
+    } else echo '<p>Aucune mise en ligne en cours.</p>';
+    echo '</div>';
+
+    echo '<div class="aled08-card"><h2>Noms de domaine à réserver à la main <span class="count' . ($domaines ? '' : ' ok') . '">' . count($domaines) . '</span></h2>';
     if ($domaines) {
-        echo '<p class="help">Chez o2switch : <a href="https://clients.o2switch.fr" target="_blank" rel="noopener">clients.o2switch.fr</a>, « Commander un domaine ». Le titulaire est le client. Quand c’est fait, cliquez « Domaine réservé » dans la fiche.</p><ul>';
+        echo '<p class="help">OVH n’est pas configuré : commandez le domaine chez votre registrar (le titulaire est le client), puis cliquez « Domaine réservé » dans la fiche. Pour l’achat automatique, renseignez vos clés OVH dans les réglages.</p><ul>';
         foreach ($domaines as $c) echo '<li><strong>' . esc_html($c['domaine']) . '</strong> (' . aled08e_admin_lien_cmd($c) . ')<small>Titulaire : ' . esc_html(str_replace("\n", ', ', aled08e_cmd_titulaire_txt($c))) . '</small></li>';
         echo '</ul>';
     } else echo '<p>Aucun nom de domaine en attente.</p>';
@@ -155,6 +181,15 @@ function aled08e_admin_tableau() {
     } else echo '<p>Aucun événement reçu pour le moment.' . ($stripe ? ' Vérifiez que le webhook est bien créé dans Stripe (voir Réglages).' : '') . '</p>';
     $refus = aled08e_stripe_refus();
     if ($refus) echo '<p class="help">' . (int) $refus['n'] . ' requête(s) sans signature valable refusée(s) sur le webhook, la dernière le ' . esc_html(wp_date('d/m/Y à H:i', strtotime(get_gmt_from_date($refus['dernier']) . ' UTC'))) . '. Si le chiffre grimpe alors que Stripe n’enregistre aucun événement, vérifiez le secret du webhook dans les réglages.</p>';
+    echo '</div>';
+
+    echo '<div class="aled08-card"><h2>Derniers appels OVH</h2>';
+    $j = array_slice(aled08e_ovh_journal(), 0, 12);
+    if ($j) {
+        echo '<ul class="aled08-journal">';
+        foreach ($j as $e) echo '<li><small>' . esc_html(wp_date('d/m H:i', strtotime(get_gmt_from_date($e['date']) . ' UTC'))) . '</small> <strong>' . esc_html($e['type']) . '</strong> : ' . esc_html($e['resultat']) . '</li>';
+        echo '</ul>';
+    } else echo '<p>' . (aled08e_ovh_ready() ? 'Aucun appel pour le moment.' : 'OVH n’est pas configuré (réglages).') . '</p>';
     echo '</div>';
 
     echo '<div class="aled08-card"><h2>Journal des comptes</h2>';
@@ -245,20 +280,40 @@ function aled08e_cmd_box_actions($post) {
         echo aled08e_cmd_bouton($post->ID, 'payee', 'Marquer payée (hors Stripe)', 'button button-primary', 'Le client a payé autrement (virement, espèces) ? La commande passe à « Payée » et le client reçoit un e-mail.');
         echo '<p class="description">' . ($stripe ? 'Le client peut aussi reprendre son paiement en ligne depuis son espace.' : 'Envoyez-lui votre lien de paiement ou votre RIB, puis cliquez ici.') . '</p>';
     }
-    if (in_array($s, ['payee', 'en_creation'], true) && $c['domaine'] && !$c['domaine_mien'] && $c['domaine_statut'] === 'a_reserver') {
-        echo aled08e_cmd_bouton($post->ID, 'domaine_reserve', 'Domaine réservé', 'button button-primary');
-        echo '<p class="description">À cliquer quand le nom de domaine est commandé chez <a href="https://clients.o2switch.fr" target="_blank" rel="noopener">o2switch</a>. Le rappel quotidien s’arrête.</p>';
+    $auto = in_array($s, aled08e_prov_etapes_auto(), true);
+    if ($auto) {
+        $inter = get_post_meta($post->ID, '_aled08_intervention', true);
+        $devis = get_post_meta($post->ID, '_aled08_ovh_devis_mail', true) && !get_post_meta($post->ID, '_aled08_ovh_valide', true) && $s === 'payee';
+        $dep = (int) get_post_meta($post->ID, '_aled08_etape_depuis', true);
+        echo '<div class="aled08-prov' . ($inter ? ' is-hold' : '') . '"><strong>Mise en ligne automatique</strong> (' . esc_html(aled08e_hebergeur_libelle()) . ', domaine ' . esc_html(aled08e_registrar() === 'ovh' ? 'OVH' : 'à la main') . ')<br>'
+            . 'Étape : ' . esc_html(aled08e_cmd_statuts()[$s][0]) . ($dep ? ', depuis ' . esc_html(human_time_diff($dep)) : '') . ', essais : ' . (int) get_post_meta($post->ID, '_aled08_etape_tentatives', true)
+            . ($inter ? '<br><strong>Intervention nécessaire :</strong> ' . esc_html((string) get_post_meta($post->ID, '_aled08_intervention_msg', true)) : '')
+            . ($devis ? '<br><strong>Achat du domaine à confirmer :</strong> ' . esc_html($c['domaine']) . ' pour ' . esc_html((string) get_post_meta($post->ID, '_aled08_ovh_devis', true)) . ' € TTC (essai à blanc OVH).' : '')
+            . (get_post_meta($post->ID, '_aled08_ovh_order', true) ? '<br>Commande OVH n° ' . esc_html((string) get_post_meta($post->ID, '_aled08_ovh_order', true)) . (get_post_meta($post->ID, '_aled08_ovh_prix', true) !== '' ? ' (' . esc_html((string) get_post_meta($post->ID, '_aled08_ovh_prix', true)) . ' € TTC)' : '') : '')
+            . '</div>';
+        if ($devis) echo aled08e_cmd_bouton($post->ID, 'ovh_confirmer', 'Confirmer l’achat OVH (' . (string) get_post_meta($post->ID, '_aled08_ovh_devis', true) . ' € TTC)', 'button button-primary', 'Acheter ' . $c['domaine'] . ' chez OVH, au nom du client, avec votre moyen de paiement OVH ?');
+        if ($s === 'payee' && $c['domaine'] && !$c['domaine_mien'] && $c['domaine_statut'] === 'a_reserver' && aled08e_registrar() !== 'ovh') {
+            echo aled08e_cmd_bouton($post->ID, 'domaine_reserve', 'Domaine réservé', 'button button-primary');
+            echo '<p class="description">À cliquer quand le nom de domaine est commandé chez votre registrar. L’automate continue (hébergement, DNS, SSL).</p>';
+        }
+        if ($s === 'domaine_attribue' && aled08e_hebergeur() === 'manuel') {
+            echo aled08e_cmd_bouton($post->ID, 'hebergement_ok', 'Domaine ajouté sur l’hébergement', 'button button-primary');
+            echo '<p class="description">À cliquer quand le domaine est ajouté dans cPanel (dossier public_html/' . esc_html($c['domaine']) . '). L’automate attend ensuite le certificat HTTPS.</p>';
+        }
+        echo aled08e_cmd_bouton($post->ID, 'avancer', $inter ? 'Réessayer maintenant' : 'Avancer maintenant');
+        echo aled08e_cmd_bouton($post->ID, 'passer', 'Passer l’étape (faite à la main)', 'button', 'Passer à l’étape suivante sans vérification ? À faire seulement si vous avez fait cette étape vous-même.');
+        if ($s !== 'payee' || !$c['domaine'] || $c['domaine_mien']) echo aled08e_cmd_bouton($post->ID, 'pret', 'Tout est prêt (forcer)', 'button', 'Marquer l’hébergement comme prêt ? Le client reçoit « Tout est prêt, je crée votre site ».');
     }
-    if ($s === 'payee') echo aled08e_cmd_bouton($post->ID, 'en_creation', 'Création en cours');
-    if (in_array($s, ['payee', 'en_creation'], true)) {
+    if ($s === 'payee' && !$auto) echo aled08e_cmd_bouton($post->ID, 'en_creation', 'Création en cours');
+    if (in_array($s, aled08e_cmd_statuts_en_cours(), true)) {
         echo aled08e_cmd_bouton($post->ID, 'en_ligne', 'Site en ligne', 'button button-primary', 'Le client reçoit l’e-mail « Votre site est en ligne »' . ($soldeDu ? ', avec le solde de ' . aled08e_euro_txt($c['montants']['solde']) . ' à régler' : '') . '. Continuer ?');
     }
-    if ($soldeDu && in_array($s, ['payee', 'en_creation', 'en_ligne'], true)) {
+    if ($soldeDu && in_array($s, aled08e_cmd_statuts_payes(), true)) {
         echo aled08e_cmd_bouton($post->ID, 'solde_paye', 'Solde payé (hors Stripe)', 'button', 'Le solde de ' . aled08e_euro_txt($c['montants']['solde']) . ' a été payé autrement ?');
         if ($stripe) echo aled08e_cmd_bouton($post->ID, 'lien_solde', 'Copier un lien de paiement du solde');
     }
     if ($c['user']) echo aled08e_cmd_bouton($post->ID, 'renvoyer_acces', 'Renvoyer l’e-mail d’accès à l’espace');
-    if (aled08e_cpanel_ok() && $c['domaine'] && in_array($s, ['payee', 'en_creation'], true)) {
+    if (aled08e_cpanel_ok() && $c['domaine'] && in_array($s, aled08e_cmd_statuts_en_cours(), true) && aled08e_hebergeur() !== 'cpanel') {
         $mdp = in_array('mail', $c['options'], true) ? '<p><label>Mot de passe de la boîte contact@' . esc_html($c['domaine']) . ' (à transmettre au client)<br><input type="password" name="mdp_mail" class="regular-text" autocomplete="new-password" style="width:100%"></label></p>' : '';
         echo aled08e_cmd_bouton($post->ID, 'cpanel', 'Brancher sur l’hébergement', 'button', 'Créer le domaine additionnel' . ($mdp ? ' et la boîte e-mail' : '') . ' sur le cPanel ? À tester d’abord sur un domaine de test.', $mdp);
     }
@@ -328,7 +383,31 @@ add_action('admin_post_aled08e_cmd', function () {
     };
     switch ($faire) {
         case 'payee': aled08e_cmd_set_statut($cid, 'payee', 'marquée à la main'); $manuel(); break;
-        case 'domaine_reserve': aled08e_cmd_set_domaine($cid, 'reserve'); break;
+        case 'domaine_reserve':
+            aled08e_cmd_set_domaine($cid, 'reserve');
+            if (in_array($c['statut'], ['payee', 'domaine_commande'], true)) { aled08e_prov_set($cid, 'domaine_attribue', 'réservé à la main'); aled08e_prov_avancer($cid, true); }
+            break;
+        case 'hebergement_ok':
+            if ($c['statut'] === 'domaine_attribue') { aled08e_prov_set($cid, 'hebergement', 'domaine ajouté à la main'); aled08e_prov_avancer($cid, true); }
+            break;
+        case 'avancer':
+            delete_post_meta($cid, '_aled08_intervention'); delete_post_meta($cid, '_aled08_intervention_msg'); delete_post_meta($cid, '_aled08_etape_tentatives');
+            $r = aled08e_prov_avancer($cid, true);
+            set_transient('aled08e_msg_' . get_current_user_id(), 'Résultat : ' . $r . '. ' . (($c2 = aled08e_cmd_get($cid)) ? 'Statut : ' . aled08e_cmd_statuts()[$c2['statut']][0] : ''), 300);
+            break;
+        case 'passer':
+            $ordre = aled08e_prov_etapes_auto(); $ordre[] = 'pret';
+            $i = array_search($c['statut'], $ordre, true);
+            if ($i !== false && isset($ordre[$i + 1])) { if ($c['statut'] === 'payee' || $c['statut'] === 'domaine_commande') aled08e_cmd_set_domaine($cid, 'reserve'); aled08e_prov_set($cid, $ordre[$i + 1], 'étape passée à la main'); aled08e_prov_avancer($cid, true); }
+            break;
+        case 'pret':
+            if (in_array($c['statut'], aled08e_prov_etapes_auto(), true)) { aled08e_prov_set($cid, 'pret', 'forcé depuis l’administration'); aled08e_prov_mail_client_pret($c); }
+            break;
+        case 'ovh_confirmer':
+            update_post_meta($cid, '_aled08_ovh_valide', 1);
+            $r = aled08e_prov_avancer($cid, true);
+            set_transient('aled08e_msg_' . get_current_user_id(), 'Achat lancé : ' . $r . '.', 300);
+            break;
         case 'en_creation': aled08e_cmd_set_statut($cid, 'en_creation'); break;
         case 'en_ligne': aled08e_cmd_set_statut($cid, 'en_ligne'); break;
         case 'solde_paye': update_post_meta($cid, '_aled08_solde_paye', 1); aled08e_cmd_journal($cid, 'Solde marqué payé à la main (' . aled08e_euro_txt($c['montants']['solde']) . ').'); $manuel(); break;
@@ -344,6 +423,7 @@ add_action('admin_post_aled08e_cmd', function () {
             break;
         case 'cpanel':
             $res = aled08e_cpanel_brancher($cid, (string) wp_unslash($_POST['mdp_mail'] ?? ''));
+            $msg = 'cpanel';
             set_transient('aled08e_msg_' . get_current_user_id(), is_wp_error($res) ? 'cPanel : ' . $res->get_error_message() : $res, 300);
             if (is_wp_error($res)) $msg = 'erreur';
             break;
@@ -359,7 +439,8 @@ add_action('admin_notices', function () {
     if (!isset($_GET['aled08e_msg']) || !current_user_can('manage_options')) return;
     $m = sanitize_key(wp_unslash($_GET['aled08e_msg']));
     $lib = [
-        'payee' => 'Commande marquée payée. Le client a reçu un e-mail. S’il paie hors Stripe, son compte est noté « abonnement actif hors Stripe » (fiche client).', 'domaine_reserve' => 'Nom de domaine noté comme réservé.', 'en_creation' => 'Création en cours.',
+        'payee' => 'Commande marquée payée. Le client a reçu un e-mail. S’il paie hors Stripe, son compte est noté « abonnement actif hors Stripe » (fiche client).', 'domaine_reserve' => 'Nom de domaine noté comme réservé : l’automate continue.', 'en_creation' => 'Création en cours.',
+        'hebergement_ok' => 'Domaine noté comme ajouté sur l’hébergement : l’automate attend le certificat HTTPS.', 'avancer' => 'Automate relancé.', 'passer' => 'Étape passée.', 'pret' => 'Hébergement marqué prêt : le client a reçu l’e-mail.', 'ovh_confirmer' => 'Achat OVH confirmé.', 'test_ovh' => 'Test OVH :', 'test_cpanel' => 'Test cPanel :',
         'en_ligne' => 'Site en ligne : le client a reçu l’e-mail.', 'solde_paye' => 'Solde noté comme payé.', 'annuler' => 'Commande annulée.', 'renvoyer_acces' => 'E-mail d’accès renvoyé au client.',
         'lien_solde' => 'Lien de paiement créé (valable 24 heures). Copiez-le et envoyez-le au client :', 'cpanel' => 'Réponse du cPanel (à tester une fois sur un domaine de test) :', 'note' => 'Note enregistrée.',
         'reglages' => 'Réglages enregistrés.', 'test' => 'Test de connexion Stripe :', 'erreur' => 'L’action n’a pas abouti.',
@@ -369,7 +450,7 @@ add_action('admin_notices', function () {
     $lien = get_transient('aled08e_lien_' . get_current_user_id());
     delete_transient('aled08e_msg_' . get_current_user_id());
     delete_transient('aled08e_lien_' . get_current_user_id());
-    $ok = $m !== 'erreur' && !($m === 'test' && is_string($detail) && strpos($detail, 'OK') !== 0);
+    $ok = $m !== 'erreur' && !(in_array($m, ['test', 'test_ovh', 'test_cpanel'], true) && is_string($detail) && strpos($detail, 'OK') !== 0);
     echo '<div class="notice ' . ($ok ? 'notice-success' : 'notice-error') . ' is-dismissible"><p>' . esc_html($lib[$m]) . ($detail ? ' <strong>' . esc_html($detail) . '</strong>' : '') . '</p>';
     if ($lien) echo '<p><input type="text" class="aled08-copy" readonly value="' . esc_attr($lien) . '" onclick="this.select()"></p>';
     echo '</div>';
@@ -385,20 +466,17 @@ function aled08e_cpanel_brancher($cid, $mdp = '') {
     if (!aled08e_cpanel_ok()) return new WP_Error('aled08_cpanel', 'cPanel non configuré.');
     $c = aled08e_cmd_get($cid);
     if (!$c || !$c['domaine']) return new WP_Error('aled08_cpanel', 'Pas de nom de domaine sur cette commande.');
-    $base = 'https://' . ALED08_CPANEL_HOST . ':2083';
-    $headers = ['Authorization' => 'cpanel ' . ALED08_CPANEL_USER . ':' . ALED08_CPANEL_TOKEN];
-    $sub = preg_replace('/[^a-z0-9-]/', '', strtok($c['domaine'], '.'));
-    $q = ['cpanel_jsonapi_user' => ALED08_CPANEL_USER, 'cpanel_jsonapi_apiversion' => 2, 'cpanel_jsonapi_module' => 'AddonDomain', 'cpanel_jsonapi_func' => 'addaddondomain', 'newdomain' => $c['domaine'], 'subdomain' => $sub, 'dir' => 'public_html/' . $c['domaine']];
-    $r = wp_remote_get($base . '/json-api/cpanel?' . http_build_query($q, '', '&'), ['timeout' => 30, 'headers' => $headers]);
-    if (is_wp_error($r)) return new WP_Error('aled08_cpanel', 'cPanel injoignable : ' . $r->get_error_message());
-    $out = 'Domaine additionnel : ' . mb_substr(trim((string) wp_remote_retrieve_body($r)), 0, 600);
+    $r = aled08e_hb_cpanel_attacher($c['domaine']);
+    if (is_wp_error($r)) return $r;
+    $out = $r;
     if (in_array('mail', $c['options'], true) && $mdp !== '') {
-        $r2 = wp_remote_post($base . '/execute/Email/add_pop', ['timeout' => 30, 'headers' => $headers, 'body' => ['email' => 'contact', 'domain' => $c['domaine'], 'password' => $mdp, 'quota' => 1024]]);
-        $out .= ' | Boîte contact@ : ' . (is_wp_error($r2) ? $r2->get_error_message() : mb_substr(trim((string) wp_remote_retrieve_body($r2)), 0, 600));
+        $r2 = aled08e_hb_cpanel_email($c['domaine'], 'contact', $mdp);
+        $out .= ' | Boîte contact@ : ' . (is_wp_error($r2) ? $r2->get_error_message() : (!empty($r2['deja']) ? 'déjà existante' : 'créée'));
     } elseif (in_array('mail', $c['options'], true)) {
         $out .= ' | Boîte e-mail non créée : aucun mot de passe saisi.';
     }
-    aled08e_cmd_journal($cid, 'Branchement cPanel tenté : ' . mb_substr($out, 0, 300));
+    aled08e_hb_cpanel_autossl();
+    aled08e_cmd_journal($cid, 'Branchement cPanel : ' . mb_substr($out, 0, 300));
     return $out;
 }
 
@@ -434,9 +512,33 @@ function aled08e_admin_reglages() {
     echo '<tr><th><label for="aled08e-to">Adresse de réception</label></th><td><input type="email" id="aled08e-to" name="form_to" class="regular-text" value="' . esc_attr(get_option('aled08_form_to', '')) . '" placeholder="' . esc_attr(defined('ALED08_FORM_TO') ? ALED08_FORM_TO : get_option('admin_email')) . '"><p class="description">Reçoit les commandes, les demandes de modification, les messages du formulaire de contact et les alertes Stripe. Vide : l’adresse du thème, sinon celle de WordPress.</p></td></tr>';
     echo '</table>';
 
-    echo '<h2>Hébergement (cPanel, optionnel)</h2>';
-    if (aled08e_cpanel_ok()) echo '<p>Configuré dans wp-config.php : hôte <code>' . esc_html(ALED08_CPANEL_HOST) . '</code>, utilisateur <code>' . esc_html(ALED08_CPANEL_USER) . '</code>, domaine principal <code>' . esc_html(ALED08_CPANEL_MAIN_DOMAIN) . '</code>. Le bouton « Brancher sur l’hébergement » apparaît dans les fiches de commande. Le jeton n’est jamais enregistré en base de données.</p>';
-    else echo '<p>Non configuré : les domaines se branchent à la main dans le cPanel d’o2switch. Pour activer le bouton, ajoutez dans wp-config.php les constantes <code>ALED08_CPANEL_HOST</code>, <code>ALED08_CPANEL_USER</code>, <code>ALED08_CPANEL_TOKEN</code> et <code>ALED08_CPANEL_MAIN_DOMAIN</code> (voir le guide).</p>';
+    echo '<h2>Mise en ligne automatique</h2>';
+    echo '<p>Après le paiement, l’automate achète le nom de domaine au nom du client (OVH), le rattache à l’hébergement, attend le certificat HTTPS et crée la boîte e-mail pro si elle est commandée. Hébergeur en service : <strong>' . esc_html(aled08e_hebergeur_libelle()) . '</strong>. Achat des domaines : <strong>' . esc_html(aled08e_registrar() === 'ovh' ? 'OVH (automatique)' : 'à la main') . '</strong>.</p>';
+    echo '<table class="form-table" role="presentation">';
+    foreach (['ak' => 'Application key', 'as' => 'Application secret', 'ck' => 'Consumer key'] as $k => $lab) {
+        $const = 'ALED08_OVH_' . strtoupper($k);
+        echo '<tr><th><label for="aled08e-ovh-' . $k . '">OVH : ' . esc_html($lab) . '</label></th><td>';
+        if (defined($const) && constant($const)) echo '<p>Définie dans wp-config.php : ' . esc_html(aled08e_ovh_masque(constant($const))) . '.</p>';
+        else echo '<input type="password" id="aled08e-ovh-' . $k . '" name="ovh_' . $k . '" class="regular-text" autocomplete="off"><p class="description">' . esc_html(aled08e_ovh_masque(get_option('aled08_ovh_' . $k, ''))) . '. Laissez vide pour ne rien changer. Clés à créer sur https://eu.api.ovh.com/createToken/ (droits listés dans le guide).</p>';
+        echo '</td></tr>';
+    }
+    echo '<tr><th><label for="aled08e-ovh-hosting">OVH : nom de l’hébergement web</label></th><td>';
+    if (defined('ALED08_OVH_HOSTING') && ALED08_OVH_HOSTING) echo '<p>Défini dans wp-config.php : <code>' . esc_html(ALED08_OVH_HOSTING) . '</code>.</p>';
+    else echo '<input type="text" id="aled08e-ovh-hosting" name="ovh_hosting" class="regular-text" value="' . esc_attr(get_option('aled08_ovh_hosting', '')) . '" placeholder="xxxxx.cluster0yy.hosting.ovh.net"><p class="description">Le « nom du service » de votre hébergement, visible dans l’espace client OVH (Web Cloud, Hébergements). Vide : les domaines ne sont pas rattachés automatiquement.</p>';
+    echo '</td></tr>';
+    echo '<tr><th>Hébergeur</th><td><select name="hebergeur">';
+    foreach (['auto' => 'Automatique (OVH si configuré, sinon cPanel, sinon manuel)', 'ovh' => 'OVH', 'cpanel' => 'o2switch cPanel (jeton)', 'manuel' => 'Manuel (vous ajoutez le domaine à la main)'] as $k => $lab) echo '<option value="' . esc_attr($k) . '"' . selected(get_option('aled08_hebergeur', 'auto'), $k, false) . '>' . esc_html($lab) . '</option>';
+    echo '</select></td></tr>';
+    echo '<tr><th>Sécurité</th><td><label><input type="checkbox" name="ovh_essai" value="1"' . checked(aled08e_ovh_essai(), true, false) . '> Essai à blanc OVH : chaque achat de domaine attend votre validation (un e-mail, un clic). Conseillé pour les premières commandes.</label><br>'
+        . '<label><input type="checkbox" name="ovh_wp" value="1"' . checked(aled08e_ovh_wp_auto(), true, false) . '> Installer WordPress automatiquement sur l’hébergement OVH (expérimental : base de données et module OVH ; les identifiants vont dans la note interne de la commande).</label></td></tr>';
+    if (!defined('ALED08_OVH_AK')) echo '<tr><th>Effacer</th><td><label><input type="checkbox" name="effacer_ovh" value="1"> Effacer les clés OVH enregistrées</label></td></tr>';
+    echo '<tr><th>Tests</th><td><button type="submit" name="tester_ovh" value="1" class="button">Tester OVH (compte et hébergement)</button> ';
+    if (aled08e_cpanel_ok()) echo '<button type="submit" name="tester_cpanel" value="1" class="button">Tester cPanel</button>';
+    echo '<p class="description">Enregistrez d’abord les clés, puis testez.</p></td></tr>';
+    echo '</table>';
+    echo '<h3>cPanel o2switch (secours)</h3>';
+    if (aled08e_cpanel_ok()) echo '<p>Configuré dans wp-config.php : hôte <code>' . esc_html(ALED08_CPANEL_HOST) . '</code>, utilisateur <code>' . esc_html(ALED08_CPANEL_USER) . '</code>, domaine principal <code>' . esc_html(ALED08_CPANEL_MAIN_DOMAIN) . '</code>. Le jeton n’est jamais enregistré en base de données.</p>';
+    else echo '<p>Non configuré. Pour l’utiliser, ajoutez dans wp-config.php les constantes <code>ALED08_CPANEL_HOST</code>, <code>ALED08_CPANEL_USER</code>, <code>ALED08_CPANEL_TOKEN</code> et <code>ALED08_CPANEL_MAIN_DOMAIN</code> (voir le guide). Note : o2switch a désactivé temporairement la création de jetons (novembre 2026).</p>';
 
     echo '<p class="submit"><button type="submit" class="button button-primary">Enregistrer</button></p></form></div>';
 }
@@ -457,7 +559,27 @@ add_action('admin_post_aled08e_reglages', function () {
     aled08e_option_set('aled08_stripe_footer', sanitize_text_field((string) ($P['stripe_footer'] ?? '')));
     $to = sanitize_email((string) ($P['form_to'] ?? ''));
     if ($to === '' || is_email($to)) update_option('aled08_form_to', $to);
+    if (!empty($P['effacer_ovh'])) { foreach (['ak', 'as', 'ck'] as $k) delete_option('aled08_ovh_' . $k); delete_transient('aled08_ovh_delta'); }
+    foreach (['ak', 'as', 'ck'] as $k) {
+        $v = trim((string) ($P['ovh_' . $k] ?? ''));
+        if ($v !== '' && preg_match('/^[A-Za-z0-9_-]{8,128}$/', $v)) aled08e_option_set('aled08_ovh_' . $k, $v);
+    }
+    if (isset($P['ovh_hosting'])) aled08e_option_set('aled08_ovh_hosting', sanitize_text_field((string) $P['ovh_hosting']));
+    $heb = sanitize_key((string) ($P['hebergeur'] ?? 'auto'));
+    update_option('aled08_hebergeur', in_array($heb, ['auto', 'ovh', 'cpanel', 'manuel'], true) ? $heb : 'auto', false);
+    update_option('aled08_ovh_essai', !empty($P['ovh_essai']) ? '1' : '0', false);
+    update_option('aled08_ovh_wp', !empty($P['ovh_wp']) ? '1' : '0', false);
     $msg = 'reglages';
+    if (!empty($P['tester_ovh'])) {
+        $t = aled08e_ovh_test();
+        set_transient('aled08e_msg_' . get_current_user_id(), is_wp_error($t) ? 'Erreur : ' . $t->get_error_message() : $t, 300);
+        $msg = 'test_ovh';
+    }
+    if (!empty($P['tester_cpanel'])) {
+        $t = aled08e_hb_cpanel_test();
+        set_transient('aled08e_msg_' . get_current_user_id(), is_wp_error($t) ? 'Erreur : ' . $t->get_error_message() : $t, 300);
+        $msg = 'test_cpanel';
+    }
     if (!empty($P['tester'])) {
         $t = aled08e_stripe_test();
         set_transient('aled08e_msg_' . get_current_user_id(), is_wp_error($t) ? 'Erreur : ' . $t->get_error_message() : $t, 300);
