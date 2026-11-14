@@ -16,6 +16,16 @@
     return base + (qs ? '?' + qs : '') + hash;
   };
 
+  /* ---------- parrainage : le code d'un lien ?parrain=… est gardé 60 jours ---------- */
+  var cleanCode = function (v) { return (v || '').toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 20); };
+  var parrain = cleanCode(new URLSearchParams(location.search).get('parrain'));
+  if (parrain.length < 3) parrain = '';
+  try {
+    if (parrain) localStorage.setItem('aled08_parrain', JSON.stringify({ c: parrain, t: Date.now() }));
+    var saved = JSON.parse(localStorage.getItem('aled08_parrain') || 'null');
+    if (!parrain && saved && Date.now() - saved.t < 60 * 864e5) parrain = cleanCode(saved.c);
+  } catch (e) { /* stockage indisponible : le code de l'adresse suffit */ }
+
   /* ---------- menu mobile ---------- */
   var burger = $('.burger'), nav = $('#nav');
   if (burger && nav) {
@@ -212,9 +222,11 @@
       setText('recur-label', annual ? 'Puis chaque année' : 'Puis chaque mois');
       setText('recur', euro((month + optMonth) * mult));
       setText('recur-short', euro((month + optMonth) * mult) + per);
-      var q = { type: t.label, forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? 'oui' : '', domaine: domText, options: chosen.join(', ') };
+      var q = { type: t.label, forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? 'oui' : '', domaine: domText, options: chosen.join(', '), parrain: parrain };
       $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
     }
+    var pLine = $('[data-sum-parrain]', box);
+    if (pLine && parrain) pLine.hidden = false;
     box.addEventListener('change', update);
     box.addEventListener('billing', update);
     update();
@@ -228,20 +240,22 @@
     }
   }
 
-  /* ---------- démo de l'espace client ---------- */
+  /* ---------- espace client (démo et vrai espace) ---------- */
   var appEl = $('[data-app]');
   if (appEl) initApp(appEl);
+  var espaceEl = $('[data-espace]');
+  if (espaceEl) initEspace(espaceEl);
 
-  function initApp(app) {
-    var tpl = $('template[data-icons]', app), mtpl = $('template[data-monsters]', app);
-    var ico = function (n) { var el = tpl && tpl.content.querySelector('[data-i="' + n + '"]'); return el ? el.innerHTML : ''; };
+  function makeToast(app) {
     var toastEl = $('[data-toast]', app), toastTimer;
-    var toast = function (msg) {
+    return function (msg) {
+      if (!toastEl) return;
       toastEl.textContent = msg; toastEl.hidden = false;
       clearTimeout(toastTimer); toastTimer = setTimeout(function () { toastEl.hidden = true; }, 2800);
     };
+  }
 
-    /* onglets */
+  function initTabs(app) {
     var tabs = $$('[role="tab"]', app);
     var show = function (id, focus) {
       tabs.forEach(function (t) {
@@ -266,8 +280,72 @@
       });
     });
     $$('[data-go]', app).forEach(function (b) { b.addEventListener('click', function () { show(b.getAttribute('data-go')); }); });
-    var startTab = (new URLSearchParams(location.search).get('outil') || '').replace(/[^a-z]/g, '');
+    var startTab = (new URLSearchParams(location.search).get('outil') || location.hash.slice(1) || '').replace(/[^a-z]/g, '');
     if (startTab && $('[data-tab="' + startTab + '"]', app)) show(startTab);
+  }
+
+  function copyButtons(app, toast) {
+    $$('[data-copy]', app).forEach(function (btn) {
+      var src = d.getElementById(btn.getAttribute('data-copy')) || $('[data-copy-src]', app);
+      if (!src) return;
+      btn.addEventListener('click', function () {
+        var done = function () { toast(btn.getAttribute('data-copy-msg') || 'Lien copié, prêt à envoyer'); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(src.value).then(done, function () { src.select(); done(); });
+        else { src.select(); done(); }
+      });
+    });
+  }
+
+  /* vrai espace client (WordPress) */
+  function initEspace(app) {
+    var toast = makeToast(app);
+    initTabs(app);
+    copyButtons(app, toast);
+    var file = $('[data-req-file]', app), fileName = $('[data-req-file-name]', app);
+    if (file && fileName) file.addEventListener('change', function () { if (file.files && file.files[0]) fileName.textContent = file.files[0].name; });
+    var reqForm = $('form[data-req-real]', app);
+    if (reqForm) reqForm.addEventListener('submit', function (e) {
+      var ta = reqForm.querySelector('textarea');
+      if (ta && !ta.value.trim()) { e.preventDefault(); toast('Écrivez votre demande en quelques mots'); ta.focus(); return; }
+      if (file && file.files && file.files[0] && file.files[0].size > 8 * 1024 * 1024) { e.preventDefault(); toast('La photo dépasse 8 Mo : choisissez-en une plus légère'); return; }
+      var b = reqForm.querySelector('button[type="submit"]');
+      if (b) { b.disabled = true; b.querySelector('span').textContent = 'Envoi en cours…'; }
+    });
+    var flash = $('[data-flash]', app);
+    if (flash && flash.textContent.trim()) toast(flash.textContent.trim());
+    /* QR code dessiné dans la page (bibliothèque qrcode-generator, MIT) */
+    var qrBox = $('[data-qr]', app);
+    var drawQr = function () {
+      if (!qrBox || typeof window.qrcode !== 'function') return;
+      var qr = window.qrcode(0, 'M');
+      qr.addData(qrBox.getAttribute('data-qr'));
+      qr.make();
+      var n = qr.getModuleCount(), m = 2, path = '';
+      for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (qr.isDark(r, c)) path += 'M' + (c + m) + ',' + (r + m) + 'h1v1h-1z';
+      var size = n + m * 2;
+      qrBox.innerHTML = '<svg class="qr" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + size + ' ' + size + '" role="img" aria-label="QR code vers votre site" shape-rendering="crispEdges"><rect width="' + size + '" height="' + size + '" fill="#fff"/><path fill="#2E2A47" d="' + path + '"/></svg>';
+      var dl = $('[data-qr-dl]', app);
+      if (dl) dl.addEventListener('click', function () {
+        var svg = qrBox.querySelector('svg').outerHTML;
+        var img = new Image();
+        img.onload = function () {
+          var cv = d.createElement('canvas'); cv.width = cv.height = 1200;
+          var cx = cv.getContext('2d'); cx.imageSmoothingEnabled = false; cx.drawImage(img, 0, 0, 1200, 1200);
+          var a = d.createElement('a'); a.download = 'qr-code.png'; a.href = cv.toDataURL('image/png'); d.body.appendChild(a); a.click(); a.remove();
+          toast('QR code téléchargé');
+        };
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      });
+    };
+    if (d.readyState === 'complete') drawQr(); else window.addEventListener('load', drawQr);
+  }
+
+  /* démo de l'espace client */
+  function initApp(app) {
+    var tpl = $('template[data-icons]', app), mtpl = $('template[data-monsters]', app);
+    var ico = function (n) { var el = tpl && tpl.content.querySelector('[data-i="' + n + '"]'); return el ? el.innerHTML : ''; };
+    var toast = makeToast(app);
+    initTabs(app);
     $$('[data-toast-msg]', app).forEach(function (b) { b.addEventListener('click', function () { toast(b.getAttribute('data-toast-msg')); }); });
 
     var log = $('[data-log]', app);
@@ -314,12 +392,7 @@
     });
 
     /* lien d'avis */
-    var copyBtn = $('[data-copy]', app), copySrc = $('[data-copy-src]', app);
-    copyBtn.addEventListener('click', function () {
-      var done = function () { toast('Lien copié, prêt à envoyer'); };
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(copySrc.value).then(done, function () { copySrc.select(); done(); });
-      else { copySrc.select(); done(); }
-    });
+    copyButtons(app, toast);
 
     /* forfait et options */
     var total = $('[data-app-total]', app);
@@ -360,6 +433,8 @@
     pick(f.querySelector('select[name="forfait"]'), p.get('forfait'));
     var pay = p.get('paiement');
     if (pay) $$('input[name="paiement"]', f).forEach(function (r) { if (r.value === pay) r.checked = true; });
+    var pInput = f.querySelector('input[name="parrain"]');
+    if (pInput && !pInput.value) pInput.value = cleanCode(p.get('parrain')) || parrain;
     var dom = p.get('domaine'), domInput = f.querySelector('input[name="domaine"]');
     if (dom && domInput) domInput.value = dom;
     var opts = p.get('options'), msg = f.querySelector('textarea[name="message"]');
@@ -373,6 +448,9 @@
       if (btn) { btn.disabled = true; btn.querySelector('span').textContent = 'Envoi en cours…'; }
     });
   });
+  if (/[?&]connexion=erreur/.test(location.search)) {
+    $$('[data-login-error]').forEach(function (el) { el.hidden = false; });
+  }
   if (/[?&]erreur=1/.test(location.search)) {
     $$('[data-form-error]').forEach(function (el) { el.hidden = false; });
   }

@@ -2,8 +2,9 @@
 """
 Exporte le site généré (dist/) vers WordPress :
   - wp-export/aled08/          : thème WordPress « ALED08 » (styles, scripts, en-tête, pied de page, formulaires)
-  - wp-export/aled08-import/   : extension d'import à usage unique (crée pages et articles, règle WordPress)
-  - wp-export/*.zip            : les deux archives prêtes à installer
+  - wp-export/aled08-import/   : extension d'import à usage unique (crée les pages, retire l'ancien site, règle WordPress)
+  - wp-export/aled08-espace/   : extension « ALED08 Espace client » (src/wordpress/aled08-espace + données)
+  - wp-export/*.zip            : les archives prêtes à installer
 
 Usage : node build.js && python3 scripts/wp-export.py
 """
@@ -12,6 +13,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import zipfile
 from html.parser import HTMLParser
 
@@ -22,6 +24,9 @@ THEME = 'aled08'
 THEME_URI = '/wp-content/themes/' + THEME
 SITE = 'https://www.aled08.fr'
 FORM_RECIPIENT = 'alx.poquet@gmail.com'
+# Anciennes adresses (ancien site d'électricien) : redirigées vers l'accueil, sauf cas particuliers.
+OLD_PATHS_FILE = os.path.join(ROOT, 'scripts', 'wp-old-paths.txt')
+OLD_TARGETS = {'/devis/': '/contact/', '/prestations/': '/creer-mon-site/', '/blog/': '/'}
 
 
 def read(p):
@@ -97,8 +102,9 @@ def to_blocks(fragment):
         chunk = fragment[a:b].strip()
         if not chunk:
             continue
-        if 'class="grid grid-posts"' in chunk and 'data-aled-posts' in chunk:
-            blocks.append('<!-- wp:shortcode -->\n[aled08_articles]\n<!-- /wp:shortcode -->')
+        if 'data-aled-espace' in chunk.split('>', 1)[0]:
+            # le vrai espace client : connexion si déconnecté, tableau de bord sinon (extension ALED08 Espace client)
+            blocks.append('<!-- wp:html -->\n[aled08_espace]' + chunk + '[/aled08_espace]\n<!-- /wp:html -->')
         else:
             blocks.append('<!-- wp:html -->\n' + chunk + '\n<!-- /wp:html -->')
     return '\n\n'.join(blocks)
@@ -125,11 +131,6 @@ def main_of(page):
 
 def collect():
     items = []
-    cards = {}
-    blog_index = read(os.path.join(DIST, 'blog', 'index.html'))
-    for m in re.finditer(r'<a class="card post-card reveal" href="(/blog/[^"]+/)">\s*<div class="post-visual" aria-hidden="true">(.*?)</div>\s*<div class="post-body"><p class="post-meta">(.*?)</p>', blog_index, re.S):
-        cards[m.group(1)] = {'icon': m.group(2), 'meta': html.unescape(m.group(3))}
-
     for d, _, files in os.walk(DIST):
         if 'index.html' not in files:
             continue
@@ -142,29 +143,29 @@ def collect():
         h1 = re.search(r'<h1[^>]*>(.*?)</h1>', main, re.S)
         title = text_of(h1.group(1)) if h1 else path.strip('/')
         segs = [s for s in path.strip('/').split('/') if s]
-        item = {'path': path, 'head': head_of(page)}
+        body = re.search(r'<body class="([^"]*)"', page)
+        item = {'path': path, 'head': head_of(page), 'body_class': body.group(1) if body else '', 'nobar': 'class="mobile-bar"' not in page}
         if path == '/':
             item.update(kind='front', slug='accueil', parent='', title='Accueil')
-        elif path == '/blog/':
-            item.update(kind='blog', slug='blog', parent='', title='Blog')
-            main = re.sub(r'<div class="grid grid-posts">', '<div class="grid grid-posts" data-aled-posts>', main, count=1)
-        elif segs[0] == 'blog':
-            item.update(kind='post', slug=segs[-1], parent='', title=title)
-            m = re.search(r'"datePublished":"([^"]+)"', page)
-            item['date'] = (m.group(1)[:10] + ' 09:00:00') if m else ''
-            desc = re.search(r'<meta name="description" content="([^"]*)"', page)
-            item['excerpt'] = html.unescape(desc.group(1)) if desc else ''
-            c = cards.get(path, {})
-            item['card_meta'] = c.get('meta', '')
-            item['icon'] = c.get('icon', '')
         else:
             item.update(kind='page', slug=segs[-1], parent='/'.join(segs[:-1]), title=title)
         item['content'] = to_blocks(fix_urls(main))
         items.append(item)
 
-    order = {'front': 0, 'blog': 1, 'page': 2, 'post': 3}
+    order = {'front': 0, 'page': 1}
     items.sort(key=lambda x: (order[x['kind']], x['path'].count('/'), x['path']))
     return items
+
+
+def redirects(items):
+    have = {it['path'] for it in items}
+    out = {}
+    if os.path.exists(OLD_PATHS_FILE):
+        for line in read(OLD_PATHS_FILE).split():
+            p = line.strip()
+            if p and p not in have:
+                out[p] = OLD_TARGETS.get(p, '/')
+    return out
 
 
 def chrome():
@@ -174,8 +175,12 @@ def chrome():
     top = body[:body.index('<main id="contenu">')]
     bottom = body[body.index('</main>') + len('</main>'):body.index('</body>')]
     bottom = re.sub(r'<script src="/assets/js/main\.js[^"]*" defer></script>\s*', '', bottom)
+    m = re.search(r'<nav class="mobile-bar".*?</nav>', bottom, re.S)
+    bar = m.group(0) if m else ''
+    if m:
+        bottom = bottom.replace(bar, '')
     nf = read(os.path.join(DIST, '404.html'))
-    return fix_urls(top.strip()), fix_urls(bottom.strip()), fix_urls(main_of(nf).strip())
+    return fix_urls(top.strip()), fix_urls(bottom.strip()), fix_urls(bar.strip()), fix_urls(main_of(nf).strip())
 
 
 # ------------------------------------------------------------------ fichiers PHP du thème
@@ -183,8 +188,8 @@ STYLE_CSS = """/*
 Theme Name: ALED08
 Theme URI: https://www.aled08.fr
 Author: ALED08
-Description: Thème sur mesure d'ALED08, dépannage électrique dans les Ardennes. Styles, en-tête, pied de page, formulaires de contact et de devis.
-Version: 1.0.0
+Description: Thème sur mesure d'ALED08, sites internet et SEO. Styles, en-tête, pied de page, formulaire de contact.
+Version: 2.0.0
 Requires at least: 6.0
 Requires PHP: 7.4
 Text Domain: aled08
@@ -199,7 +204,7 @@ FUNCTIONS_PHP = r"""<?php
  */
 defined('ABSPATH') || exit;
 
-define('ALED08_VERSION', '1.0.0');
+define('ALED08_VERSION', '2.0.0');
 define('ALED08_FORM_TO', '__RECIPIENT__');
 
 add_action('after_setup_theme', function () {
@@ -267,11 +272,15 @@ add_action('wp_head', function () {
 remove_action('wp_head', 'rest_output_link_wp_head');
 remove_action('wp_head', 'wp_oembed_add_discovery_links');
 
-/* Ancienne adresse du plan du site */
+/* Anciennes adresses : plan du site, et pages de l'ancien site d'électricien */
 add_action('template_redirect', function () {
     if (!is_404()) return;
     $path = wp_parse_url(isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '', PHP_URL_PATH);
     if ($path === '/sitemap.xml') { wp_safe_redirect(home_url('/wp-sitemap.xml'), 301); exit; }
+    $old = json_decode(@file_get_contents(get_template_directory() . '/parts/redirects.json'), true) ?: [];
+    $key = '/' . trim((string) $path, '/') . '/';
+    if (isset($old[$key])) { wp_safe_redirect(home_url($old[$key]), 301); exit; }
+    if (strpos($key, '/blog/') === 0 || strpos($key, '/prestations/') === 0) { wp_safe_redirect(home_url('/'), 301); exit; }
 }, 1);
 
 /* Pages à ne pas proposer à Google (remerciement après envoi d'un formulaire) */
@@ -295,36 +304,6 @@ add_filter('wp_sitemaps_add_provider', function ($provider, $name) {
 add_filter('comments_open', '__return_false', 20);
 add_filter('pings_open', '__return_false', 20);
 
-/* ---------- liste des articles du blog : [aled08_articles] ---------- */
-function aled08_icon_default() {
-    return '<svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>';
-}
-function aled08_arrow() {
-    return '<svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>';
-}
-add_shortcode('aled08_articles', function () {
-    $q = new WP_Query(['post_type' => 'post', 'post_status' => 'publish', 'posts_per_page' => 60, 'ignore_sticky_posts' => true]);
-    if (!$q->have_posts()) return '<section class="section"><div class="container"><p>Les articles arrivent bientôt.</p></div></section>';
-    $out = '<section class="section"><div class="container"><div class="grid grid-posts">';
-    while ($q->have_posts()) {
-        $q->the_post();
-        $id = get_the_ID();
-        $icon = get_post_meta($id, '_aled08_icon', true) ?: aled08_icon_default();
-        $meta = get_post_meta($id, '_aled08_card_meta', true);
-        if (!$meta) {
-            $words = str_word_count(wp_strip_all_tags(get_post_field('post_content', $id)));
-            $meta = 'Article · ' . max(1, (int) round($words / 220)) . ' min';
-        }
-        $out .= '<a class="card post-card reveal" href="' . esc_url(get_permalink()) . '">'
-            . '<div class="post-visual" aria-hidden="true">' . $icon . '</div>'
-            . '<div class="post-body"><p class="post-meta">' . esc_html($meta) . '</p><h3>' . esc_html(get_the_title()) . '</h3>'
-            . '<p>' . esc_html(wp_strip_all_tags(get_the_excerpt())) . '</p>'
-            . '<span class="card-more">Lire l’article ' . aled08_arrow() . '</span></div></a>';
-    }
-    wp_reset_postdata();
-    return $out . '</div></div></section>';
-});
-
 /* ---------- formulaires de contact et de devis ---------- */
 function aled08_field($name, $max = 500) {
     $v = isset($_POST[$name]) ? wp_unslash($_POST[$name]) : '';
@@ -339,8 +318,7 @@ function aled08_line($v) {
 add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08_form'])) return;
 
-    $type = aled08_field('type', 20) === 'devis' ? 'devis' : 'contact';
-    $error = home_url('/' . $type . '/?erreur=1');
+    $error = home_url('/contact/?erreur=1#devis');
     $merci = home_url('/merci/');
 
     // anti-spam : champ piège rempli ou envoi trop rapide
@@ -349,36 +327,33 @@ add_action('template_redirect', function () {
     if ($t > 0 && (microtime(true) * 1000 - $t) < 3000) { wp_safe_redirect($merci, 303); exit; }
 
     $nom = aled08_line(aled08_field('nom', 120));
-    $tel = aled08_line(aled08_field('telephone', 30));
     $email = aled08_line(aled08_field('email', 150));
-    $commune = aled08_line(aled08_field('commune', 120));
-    $adresse = aled08_line(aled08_field('adresse', 200));
+    $tel = aled08_line(aled08_field('telephone', 30));
+    $type = aled08_line(aled08_field('type', 80));
+    $forfait = aled08_line(aled08_field('forfait', 40));
+    $paiement = aled08_line(aled08_field('paiement', 40));
+    $domaine = aled08_line(aled08_field('domaine', 120));
+    $parrain = strtoupper(preg_replace('/[^A-Za-z0-9-]/', '', aled08_field('parrain', 20)));
     $message = aled08_field('message', 5000);
-    $prestation = aled08_line(aled08_field('prestation', 80));
-    $urgence = aled08_line(aled08_field('urgence', 40));
-    $creneaux = aled08_line(aled08_field('creneaux', 120));
     $consent = aled08_field('consentement', 5);
 
-    if ($nom === '' || $message === '' || $consent !== 'oui') { wp_safe_redirect($error, 303); exit; }
-    if (!preg_match('/^[0-9 +().-]{10,20}$/', $tel)) { wp_safe_redirect($error, 303); exit; }
-    if ($email !== '' && !is_email($email)) { wp_safe_redirect($error, 303); exit; }
+    if ($nom === '' || $message === '' || $type === '' || $consent !== 'oui') { wp_safe_redirect($error, 303); exit; }
+    if (!is_email($email)) { wp_safe_redirect($error, 303); exit; }
+    if ($tel !== '' && !preg_match('/^[0-9 +().-]{6,20}$/', $tel)) $tel = 'invalide : ' . $tel;
 
-    $sujet = $type === 'devis'
-        ? 'Demande de devis : ' . ($prestation ?: 'prestation') . ', ' . ($commune ?: 'commune non précisée')
-        : 'Message de contact : ' . $nom;
+    $parrainInfo = $parrain ? apply_filters('aled08_parrain_info', '', $parrain, $nom) : '';
+    $sujet = 'Demande : ' . $type . ($forfait && $forfait !== 'Je ne sais pas encore' ? ', forfait ' . $forfait : '') . ' (' . $nom . ')';
     $corps = "Nouvelle demande reçue depuis le site " . home_url('/') . "\n\n"
-        . 'Type        : ' . ($type === 'devis' ? 'Demande de devis' : 'Contact') . "\n"
         . "Nom         : $nom\n"
-        . "Téléphone   : $tel\n"
-        . 'E-mail      : ' . ($email ?: 'non renseigné') . "\n"
-        . 'Commune     : ' . ($commune ?: 'non renseignée') . "\n"
-        . ($adresse ? "Adresse     : $adresse\n" : '')
-        . ($prestation ? "Prestation  : $prestation\n" : '')
-        . ($urgence ? "Urgence     : $urgence\n" : '')
-        . ($creneaux ? "Créneaux    : $creneaux\n" : '')
+        . "E-mail      : $email\n"
+        . 'Téléphone   : ' . ($tel ?: 'non renseigné') . "\n"
+        . "Site        : $type\n"
+        . 'Forfait     : ' . ($forfait ?: 'non précisé') . "\n"
+        . 'Paiement    : ' . ($paiement ?: 'non précisé') . "\n"
+        . 'Domaine     : ' . ($domaine ?: 'non précisé') . "\n"
+        . ($parrain ? "Parrainage  : $parrain" . ($parrainInfo ? " ($parrainInfo)" : '') . "\n" : '')
         . "\nMessage :\n$message\n\n---\nConsentement RGPD : oui, le " . wp_date('d/m/Y H:i') . "\n";
-    $headers = ['Content-Type: text/plain; charset=UTF-8'];
-    if ($email !== '') $headers[] = 'Reply-To: ' . $nom . ' <' . $email . '>';
+    $headers = ['Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $nom . ' <' . $email . '>'];
 
     $to = get_option('aled08_form_to') ?: ALED08_FORM_TO;
     $ok = wp_mail($to, $sujet, $corps, $headers);
@@ -391,9 +366,25 @@ function aled08_chrome_top() {
     $top = file_get_contents(get_template_directory() . '/parts/top.html');
     $path = wp_parse_url(isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '/', PHP_URL_PATH) ?: '/';
     if ($path !== '/') {
-        $top = str_replace('class="nav-link" href="' . $path . '">', 'class="nav-link" href="' . $path . '" aria-current="page">', $top);
+        $top = preg_replace_callback('#(class="nav-link[^"]*" href="([^"]+)")#', function ($m) use ($path) {
+            return ($m[2] !== '/' && strpos($path, $m[2]) === 0) ? $m[1] . ' aria-current="page"' : $m[1];
+        }, $top);
+        if (strpos($path, '/mon-espace/') === 0) $top = str_replace('class="btn-espace" href="/mon-espace/"', 'class="btn-espace" href="/mon-espace/" aria-current="page"', $top);
     }
     return $top;
+}
+
+/* Couleur de la rubrique (classe du body) et barre d'accès rapide (téléphone) */
+add_filter('body_class', function ($classes) {
+    $id = aled08_page_id();
+    $c = $id ? get_post_meta($id, '_aled08_body_class', true) : '';
+    $classes[] = $c ?: 'c-mint';
+    return $classes;
+});
+function aled08_mobile_bar() {
+    $id = aled08_page_id();
+    if ($id && get_post_meta($id, '_aled08_nobar', true)) return '';
+    return file_get_contents(get_template_directory() . '/parts/mobilebar.html');
 }
 
 /* Contenu d'une page créée plus tard dans WordPress (sans mise en page ALED08) */
@@ -413,7 +404,7 @@ HEADER_PHP = r"""<?php defined('ABSPATH') || exit; $u = get_template_directory_u
 <head>
 <meta charset="<?php bloginfo('charset'); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#121722">
+<meta name="theme-color" content="#FFF8F2">
 <meta name="format-detection" content="telephone=no">
 <link rel="preload" href="<?php echo esc_url($u); ?>/assets/fonts/nunito-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="<?php echo esc_url($u); ?>/assets/favicon.svg" type="image/svg+xml">
@@ -431,6 +422,7 @@ HEADER_PHP = r"""<?php defined('ABSPATH') || exit; $u = get_template_directory_u
 FOOTER_PHP = r"""<?php defined('ABSPATH') || exit; ?>
 </main>
 <?php echo file_get_contents(get_template_directory() . '/parts/bottom.html'); // phpcs:ignore ?>
+<?php echo aled08_mobile_bar(); // phpcs:ignore ?>
 <?php wp_footer(); ?>
 </body>
 </html>
@@ -450,27 +442,13 @@ while (have_posts()) {
 get_footer();
 """
 
-HOME_PHP = r"""<?php
-defined('ABSPATH') || exit;
-get_header();
-$blog = (int) get_option('page_for_posts');
-if ($blog && get_post_meta($blog, '_aled08_full', true)) {
-    echo apply_filters('the_content', get_post_field('post_content', $blog)); // phpcs:ignore
-} else {
-    echo '<section class="page-hero page-hero--compact"><div class="container page-hero-in"><h1>Blog</h1></div></section>';
-    echo do_shortcode('[aled08_articles]'); // phpcs:ignore
-}
-get_footer();
-"""
-
 INDEX_PHP = r"""<?php
 defined('ABSPATH') || exit;
 get_header();
 if (is_singular()) {
     while (have_posts()) { the_post(); aled08_simple_page(); }
 } else {
-    echo '<section class="page-hero page-hero--compact"><div class="container page-hero-in"><h1>' . esc_html(wp_strip_all_tags(get_the_archive_title() ?: 'Articles')) . '</h1></div></section>';
-    echo do_shortcode('[aled08_articles]'); // phpcs:ignore
+    echo file_get_contents(get_template_directory() . '/parts/404.html'); // phpcs:ignore
 }
 get_footer();
 """
@@ -485,8 +463,8 @@ get_footer();
 IMPORT_PHP = r"""<?php
 /**
  * Plugin Name: ALED08 : import du site
- * Description: Crée en une fois les pages et articles du site ALED08 et règle WordPress (page d'accueil, blog, liens). À désactiver et supprimer après usage.
- * Version: 1.0.0
+ * Description: Crée en une fois les pages du site ALED08, retire les pages de l'ancien site et règle WordPress. À désactiver et supprimer après usage.
+ * Version: 2.0.0
  * Requires PHP: 7.4
  */
 defined('ABSPATH') || exit;
@@ -502,7 +480,7 @@ function aled08_import_run() {
     $log = [];
 
     foreach ($data as $it) {
-        $type = $it['kind'] === 'post' ? 'post' : 'page';
+        $type = 'page';
         $parent = 0;
         if (!empty($it['parent'])) {
             $p = get_page_by_path($it['parent'], OBJECT, 'page');
@@ -528,13 +506,22 @@ function aled08_import_run() {
         if (is_wp_error($id)) { $log[] = $it['path'] . ' : ' . $id->get_error_message(); continue; }
         update_post_meta($id, '_aled08_head', wp_slash($it['head']));
         update_post_meta($id, '_aled08_full', 1);
-        if (!empty($it['card_meta'])) update_post_meta($id, '_aled08_card_meta', $it['card_meta']);
-        if (!empty($it['icon'])) update_post_meta($id, '_aled08_icon', wp_slash($it['icon']));
+        update_post_meta($id, '_aled08_body_class', $it['body_class']);
+        if (!empty($it['nobar'])) update_post_meta($id, '_aled08_nobar', 1); else delete_post_meta($id, '_aled08_nobar');
         $ids[$it['path']] = $id;
     }
 
+    // ancien site : pages et articles créés par l'import précédent, absents du nouveau site
+    $removed = 0;
+    $old = get_posts(['post_type' => ['page', 'post'], 'post_status' => 'any', 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => '_aled08_full']);
+    foreach ($old as $oid) {
+        if (in_array($oid, $ids, true)) continue;
+        wp_delete_post($oid, true);
+        $removed++;
+    }
+
     if (isset($ids['/'])) { update_option('show_on_front', 'page'); update_option('page_on_front', $ids['/']); }
-    if (isset($ids['/blog/'])) update_option('page_for_posts', $ids['/blog/']);
+    update_option('page_for_posts', 0);
     if (isset($ids['/politique-de-confidentialite/'])) update_option('wp_page_for_privacy_policy', $ids['/politique-de-confidentialite/']);
 
     // contenus d'exemple de WordPress
@@ -544,17 +531,17 @@ function aled08_import_run() {
     }
 
     update_option('blogname', 'ALED08');
-    update_option('blogdescription', 'Dépannage électrique dans les Ardennes');
+    update_option('blogdescription', 'Sites internet & SEO');
     update_option('timezone_string', 'Europe/Paris');
     update_option('date_format', 'j F Y');
     update_option('time_format', 'H:i');
     update_option('start_of_week', 1);
     update_option('default_comment_status', 'closed');
     update_option('default_ping_status', 'closed');
-    update_option('permalink_structure', '/blog/%postname%/');
+    update_option('permalink_structure', '/%postname%/');
     flush_rewrite_rules(false);
 
-    update_option('aled08_import_report', ['done' => current_time('mysql'), 'count' => count($ids), 'errors' => $log], false);
+    update_option('aled08_import_report', ['done' => current_time('mysql'), 'count' => count($ids), 'removed' => $removed, 'errors' => $log], false);
 }
 """
 
@@ -570,9 +557,10 @@ def main():
     for f in ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png']:
         shutil.copy(os.path.join(DIST, f), os.path.join(tdir, 'assets', f))
     shutil.copy(os.path.join(DIST, 'assets', 'img', 'og-image.png'), os.path.join(tdir, 'screenshot.png'))
-    top, bottom, notfound = chrome()
+    top, bottom, bar, notfound = chrome()
     write(os.path.join(tdir, 'parts', 'top.html'), top)
     write(os.path.join(tdir, 'parts', 'bottom.html'), bottom)
+    write(os.path.join(tdir, 'parts', 'mobilebar.html'), bar)
     write(os.path.join(tdir, 'parts', '404.html'), notfound)
     write(os.path.join(tdir, 'style.css'), STYLE_CSS)
     write(os.path.join(tdir, 'functions.php'), FUNCTIONS_PHP.replace('__RECIPIENT__', FORM_RECIPIENT))
@@ -581,16 +569,23 @@ def main():
     write(os.path.join(tdir, 'page.php'), PAGE_PHP)
     write(os.path.join(tdir, 'single.php'), PAGE_PHP)
     write(os.path.join(tdir, 'front-page.php'), PAGE_PHP)
-    write(os.path.join(tdir, 'home.php'), HOME_PHP)
     write(os.path.join(tdir, 'index.php'), INDEX_PHP)
     write(os.path.join(tdir, '404.php'), NOTFOUND_PHP)
 
     # extension d'import
     items = collect()
+    write(os.path.join(tdir, 'parts', 'redirects.json'), json.dumps(redirects(items), ensure_ascii=False))
     write(os.path.join(idir, 'aled08-import.php'), IMPORT_PHP)
     write(os.path.join(idir, 'data.json'), json.dumps(items, ensure_ascii=False))
 
-    for name in [THEME, 'aled08-import']:
+    # extension « ALED08 Espace client »
+    edir = os.path.join(OUT, 'aled08-espace')
+    shutil.copytree(os.path.join(ROOT, 'src', 'wordpress', 'aled08-espace'), edir)
+    shutil.copy(os.path.join(ROOT, 'src', 'assets', 'js', 'qrcode.js'), os.path.join(edir, 'qrcode.js'))
+    data = subprocess.run(['node', os.path.join(ROOT, 'scripts', 'wp-espace-data.js')], check=True, capture_output=True, text=True).stdout
+    write(os.path.join(edir, 'data.json'), data)
+
+    for name in [THEME, 'aled08-import', 'aled08-espace']:
         zp = os.path.join(OUT, name + '.zip')
         with zipfile.ZipFile(zp, 'w', zipfile.ZIP_DEFLATED) as z:
             base = os.path.join(OUT, name)

@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { site, sections, types, pageEnPlus, forfaits, annuel, lissage, options, paiement, shopify, stripe } = require('../config');
+const { site, sections, types, pageEnPlus, forfaits, annuel, lissage, options, fidelite, paiement, shopify, stripe } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
 const { inline, esc, plain } = require('./md');
@@ -240,6 +240,7 @@ function configurator() {
     <div class="b-total">
       <p><span data-sum="once-label">Création, une fois</span><b data-sum="once">250 €</b></p>
       <p data-sum-lisse hidden><span>Site lissé, pendant 2 ans</span><b data-sum="lisse">0 €</b></p>
+      <p data-sum-parrain hidden><span>Parrainage</span><b>${fidelite.parrainageMois} mois offert</b></p>
       <p><span data-sum="recur-label">Puis chaque mois</span><b data-sum="recur">20 €</b></p>
     </div>
     <p class="b-shopify" data-sum-shopify hidden>${icon('store')}<span>Chez Shopify, le forfait Basic seul coûte ${euro(shopify.basicMensuel)} par mois, sans création ni suivi. <a href="/comparatif-shopify/">Voir le comparatif</a></span></p>

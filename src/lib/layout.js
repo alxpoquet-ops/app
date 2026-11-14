@@ -142,7 +142,7 @@ function footer(p) {
       <h2 class="footer-title">Bon à savoir</h2>
       <ul class="footer-links">
         <li><a href="/nos-outils/">Nos outils</a></li>
-        <li><a href="/mon-espace/">Essayer la démo</a></li>
+        <li><a href="/mon-espace/demo/">Essayer la démo</a></li>
         <li><a href="/referencement-seo/">Référencement SEO</a></li>
         <li><a href="/comparatif-shopify/">Comparatif Shopify</a></li>
         <li><a href="/fidelite/">Fidélité et parrainage</a></li>

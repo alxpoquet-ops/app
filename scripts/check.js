@@ -36,7 +36,7 @@ for (const f of files) {
 
   // liens internes
   for (const m of html.matchAll(/(?:href|src)="(\/[^"]*)"/g)) {
-    if (!exists(m[1])) errors.push(`${rel} → lien cassé ${m[1]}`);
+    if (!m[1].startsWith("/wp-login.php") && !exists(m[1])) errors.push(`${rel} → lien cassé ${m[1]}`);
   }
   // h1
   const h1 = (html.match(/<h1[\s>]/g) || []).length;

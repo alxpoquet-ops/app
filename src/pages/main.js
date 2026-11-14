@@ -10,6 +10,7 @@ const legal = require('../content/legal');
 const OUTILS = require('../content/outils');
 
 const HOME = { name: 'Accueil', path: '/' };
+const DEMO_CRUMBS = [HOME, { name: 'Mon espace', path: '/mon-espace/' }, { name: 'Démo', path: '/mon-espace/demo/' }];
 const crumb = (k) => [HOME, { name: sections[k].label, path: sections[k].path }];
 const euro = C.euro;
 const F = (id) => forfaits.find((f) => f.id === id);
@@ -72,7 +73,7 @@ function home() {
     <p class="kicker c-sky">${icon('toolbox')}Nos outils</p>
     <h2>Vous demandez, je m’en occupe</h2>
     <p>Une modification ? Envoyez votre demande depuis votre espace client, avec une photo si besoin. Je la fais de mon côté et je vous préviens quand c’est en ligne. Vous n’avez rien de technique à gérer.</p>
-    <div class="hero-ctas">${C.btn('/nos-outils/', 'btn-primary', 'toolbox', 'Découvrir nos outils')}${C.btn('/mon-espace/', 'btn-light', 'circle-user', 'Essayer la démo')}</div>
+    <div class="hero-ctas">${C.btn('/nos-outils/', 'btn-primary', 'toolbox', 'Découvrir nos outils')}${C.btn(site.espaceClient.demo, 'btn-light', 'circle-user', 'Essayer la démo')}</div>
   </div>
   ${C.phoneEdit()}
 </div></section>
@@ -93,8 +94,8 @@ function home() {
 ${C.ctaBand()}`;
   return {
     path: '/',
-    title: 'Création de site internet à partir de 100 €, tout compris | ALED08',
-    description: 'Votre site internet à prix fixe dès 100 €, entretenu pour 10 € par mois. Je gère vos modifications et votre SEO, et nos outils vous laissent la main.',
+    title: 'Création de site internet à partir de 150 €, tout compris | ALED08',
+    description: 'Votre site internet à prix fixe dès 150 €, puis 5 € par mois pour l’hébergement, le nom de domaine et une modification par mois. Je m’occupe de tout.',
     crumbs: [HOME],
     body,
     priority: 1,
@@ -216,7 +217,7 @@ function outilsPage() {
     crumbs,
   })}
 ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez-moi vos demandes par message ou par WhatsApp : je m’en occupe de la même façon.</span></p></div>`}
-<div class="container center demo-cta">${C.btn('/mon-espace/', 'btn-primary btn-lg', 'circle-user', 'Essayer la démo')}</div>
+<div class="container center demo-cta">${C.btn(site.espaceClient.demo, 'btn-primary btn-lg', 'circle-user', 'Essayer la démo')}</div>
 
 <section class="section"><div class="container split">
   <div class="reveal">
@@ -236,7 +237,7 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
   <h2 class="section-title">Dans votre espace client</h2>
   <p class="section-sub">Gratuit pour les sites hébergés chez moi.</p>
   <div class="tools">${OUTILS.map(
-    (t) => `<a class="tool c-${t.color} reveal" href="/mon-espace/?outil=${t.demo}"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${t.name}</strong><span>${t.desc}</span></span><span class="tool-tag c-mint">Gratuit</span></a>`
+    (t) => `<a class="tool c-${t.color} reveal" href="${site.espaceClient.demo}?outil=${t.demo}"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${t.name}</strong><span>${t.desc}</span></span><span class="tool-tag c-mint">Gratuit</span></a>`
   ).join('')}</div>
 </div></section>
 
@@ -413,9 +414,9 @@ function fidelitePage() {
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Le parrainage, en pratique</h2>
   ${C.steps([
-    { t: 'Parlez de moi', d: 'Donnez mon contact ou le lien du site à quelqu’un qui a un projet.' },
-    { t: 'Il donne votre nom', d: 'Votre filleul indique votre nom dans sa demande.' },
-    { t: 'Un mois offert chacun', d: 'Dès que son site est en ligne, vous recevez tous les deux un mois de forfait.' },
+    { t: 'Partagez votre lien', d: 'Votre lien et votre code de parrainage sont dans votre espace client, onglet Parrainage.' },
+    { t: 'Il crée son site', d: 'Votre filleul passe par votre lien, ou donne votre code dans sa demande.' },
+    { t: 'Un mois offert chacun', d: 'Dès que son site est en ligne, vous recevez tous les deux un mois de forfait. Vous suivez vos filleuls dans votre espace.' },
   ])}
 </div></section>
 
@@ -525,7 +526,7 @@ function monEspacePage() {
     section: 'monespace',
     h1: 'Mon espace : la démo',
     lead: 'Voici l’espace de « Pâtisserie Lila », une cliente imaginaire. Essayez : envoyez une demande de modification, suivez-la, créez un QR code, changez de forfait. Rien n’est envoyé.',
-    crumbs: [HOME, { name: 'Nos outils', path: '/nos-outils/' }, { name: 'Démo', path: '/mon-espace/' }],
+    crumbs: DEMO_CRUMBS,
   })}
 <section class="section section-app"><div class="container">
   <div class="app" data-app>
@@ -646,13 +647,59 @@ function monEspacePage() {
 
 ${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : vous m’envoyez vos demandes, je m’occupe du reste.' })}`;
   return {
-    path: '/mon-espace/',
+    path: '/mon-espace/demo/',
     section: 'monespace',
     noindex: true,
     noMobileBar: true,
     title: 'Mon espace, la démo | ALED08',
     description: 'Essayez l’espace client ALED08 : demandes de modification et leur suivi, tableau de bord, QR code, lien d’avis, forfait et factures. Démonstration.',
-    crumbs: [HOME, { name: 'Nos outils', path: '/nos-outils/' }, { name: 'Démo', path: '/mon-espace/' }],
+    crumbs: DEMO_CRUMBS,
+    body,
+  };
+}
+
+// ====================================================================== MON ESPACE (connexion)
+// Sous WordPress, le bloc [data-aled-espace] devient le vrai espace client (extension « ALED08 Espace client ») :
+// formulaire de connexion si on n'est pas connecté, tableau de bord sinon.
+function espacePage() {
+  const crumbs = [HOME, { name: 'Mon espace', path: '/mon-espace/' }];
+  const body = `${C.pageHero({
+    section: 'monespace',
+    h1: 'Mon espace client',
+    lead: 'Vos demandes de modification et leur suivi, votre tableau de bord, votre QR code, votre lien d’avis et votre parrainage, au même endroit.',
+    crumbs,
+  })}
+<section class="section section-app" data-aled-espace><div class="container">
+  <div class="login-wrap">
+    <div class="form-card login-card">
+      <h2 class="h3">${icon('circle-user')}Connexion</h2>
+      <p class="form-alert" data-login-error hidden>Identifiant ou mot de passe incorrect. Réessayez, ou demandez un nouveau mot de passe.</p>
+      <form class="form" method="post" action="/mon-espace/">
+        <input type="hidden" name="aled08_login" value="1">
+        <input type="hidden" name="redirect_to" value="/mon-espace/">
+        <div class="field"><label for="l-user">E-mail ou identifiant</label><input id="l-user" name="log" type="text" autocomplete="username" required></div>
+        <div class="field"><label for="l-pass">Mot de passe</label><input id="l-pass" name="pwd" type="password" autocomplete="current-password" required></div>
+        <label class="check"><input type="checkbox" name="rememberme" value="forever"><span>Rester connecté sur cet appareil</span></label>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">${icon('arrow-right')}<span>Me connecter</span></button>
+      </form>
+      <p class="login-links"><a href="/wp-login.php?action=lostpassword">Mot de passe oublié ?</a></p>
+    </div>
+    <aside class="login-side">
+      <span class="login-art">${monster('mascotte')}</span>
+      <h2 class="h3">Pas encore client ?</h2>
+      <p>Je crée votre compte quand votre site est en ligne. Vous recevez alors un e-mail pour choisir votre mot de passe.</p>
+      <div class="login-ctas">${C.btn(site.espaceClient.demo, 'btn-light', 'circle-user', 'Essayer la démo')}${C.btnCreer('btn-primary')}</div>
+    </aside>
+  </div>
+</div></section>`;
+  return {
+    path: '/mon-espace/',
+    section: 'monespace',
+    noindex: true,
+    noMobileBar: true,
+    title: 'Mon espace client | ALED08',
+    description: 'Connectez-vous à votre espace client ALED08 : demandes de modification et leur suivi, tableau de bord, QR code, lien d’avis et parrainage.',
+    crumbs,
     body,
   };
 }
@@ -690,6 +737,7 @@ function contactPage() {
           <select id="c-forfait" name="forfait">${forfaits.map((x) => opt(x.name)).join('')}<option value="Je ne sais pas encore" selected>Je ne sais pas encore</option></select></div>
         <div class="field"><label for="c-domaine">Nom de domaine <span class="opt">(facultatif)</span></label><input id="c-domaine" name="domaine" type="text" autocomplete="off" placeholder="mon-entreprise.fr"></div>
       </div>
+      <div class="field"><label for="c-parrain">Code de parrainage <span class="opt">(facultatif)</span></label><input id="c-parrain" name="parrain" type="text" autocomplete="off" maxlength="20" placeholder="Ex. : LILA-7K2"></div>
       <div class="field"><span class="label">Paiement du forfait</span>
         <div class="radio-group">
           <label><input type="radio" name="paiement" value="Au mois"> Au mois</label>
@@ -761,7 +809,7 @@ ${C.ctaBand({ title: 'Vous êtes dans les Ardennes ?', text: 'Écrivez-moi : on 
   return {
     path: '/creation-site-internet-ardennes/',
     title: 'Création de site internet dans les Ardennes | ALED08',
-    description: 'Création de site internet pour les artisans, commerces et associations des Ardennes : prix fixe dès 100 €, rencontre possible, référencement local soigné.',
+    description: 'Création de site internet pour les artisans, commerces et associations des Ardennes : prix fixe dès 150 €, rencontre possible, référencement local soigné.',
     crumbs,
     body,
     schema: [f.schema],
@@ -868,7 +916,7 @@ function notFound() {
 
 function build() {
   return [
-    home(), creerPage(), forfaitsPage(), outilsPage(), monEspacePage(), seoPage(), shopifyPage(), fidelitePage(), methodePage(), contactPage(), ardennesPage(), faqPage(),
+    home(), creerPage(), forfaitsPage(), outilsPage(), espacePage(), monEspacePage(), seoPage(), shopifyPage(), fidelitePage(), methodePage(), contactPage(), ardennesPage(), faqPage(),
     ...legal.map(legalPage), planDuSite(), merci(), notFound(),
   ];
 }

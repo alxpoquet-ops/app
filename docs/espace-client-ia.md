@@ -7,17 +7,38 @@
 - **Power, 20 € par mois** : tout Chico, plus le SEO, un rapport mensuel (visiteurs, ventes, positions) et une modification par semaine.
 - **À l'année** : 2 mois offerts.
 - **Options** : adresse e-mail pro (3 € par mois), traduction en anglais (50 €).
+- **Parrainage** : un mois de forfait offert au parrain et au filleul quand le site du filleul est en ligne.
 
-## Comment ça marche
+## Où est l'espace client ?
 
-- Le client envoie ses **demandes de modification** depuis son espace client (ou par WhatsApp). C'est vous qui les faites, avec vos propres outils et l'IA si vous voulez. Le client n'a pas accès à l'IA.
-- L'espace client lui donne aussi, **gratuitement** s'il est hébergé chez vous : le suivi de ses demandes, un tableau de bord (visites, appels, recherches Google), son QR code, son lien d'avis Google et ses factures.
+- `https://www.aled08.fr/mon-espace/` : la vraie page. Formulaire de connexion si on n'est pas connecté, tableau de bord sinon.
+- `https://www.aled08.fr/mon-espace/demo/` : la démonstration, pour les prospects.
+- Le code est l'extension WordPress **ALED08 Espace client** (`src/wordpress/aled08-espace/`), empaquetée par `scripts/wp-export.py`.
 
-## Pour démarrer simplement
+## Créer un compte client
 
-1. **Paiements** : Stripe. Un abonnement par forfait (au mois et à l'année), un paiement lissé sur 24 mois pour la création, et le portail client Stripe pour les factures et la carte bancaire.
-2. **Demandes** : au début, WhatsApp ou un formulaire qui vous envoie un e-mail. Notez le compteur de modifications du mois de chaque client dans un tableau.
-3. **Espace client** : ensuite, sur votre WordPress, une page protégée par connexion avec le formulaire de demande, le suivi (reçue, en cours, faite) et les factures. La démo `/mon-espace/` du site montre exactement ce qu'il verra.
-4. **Tableau de bord** : les chiffres viennent de Google Search Console et de l'outil de statistiques du site ; le rapport mensuel de Power peut partir automatiquement par e-mail.
+1. WordPress › Comptes › Ajouter : identifiant, e-mail, prénom.
+2. Rôle : **Client ALED08**.
+3. Cochez « Envoyer une notification » : le client reçoit un e-mail en français avec le lien pour choisir son mot de passe et l'adresse de son espace.
+4. Plus bas, la partie **Espace client ALED08** : forfait, adresse du site, lien d'avis Google, « Parrainé par (code) » si quelqu'un l'a recommandé.
 
-Quand l'espace client ouvre, passez `espaceClient.ouvert` à `true` dans `src/config.js` : le bandeau « ouvre bientôt » disparaît.
+Tout se modifie ensuite dans la fiche du compte (Comptes › le client) : chiffres du tableau de bord, recherches Google, lien du rapport mensuel, factures (une par ligne : `date ; libellé ; montant ; lien`), mois offerts.
+
+## Les demandes de modification
+
+- Le client écrit sa demande (avec une photo s'il veut) dans « Mes demandes ».
+- Vous recevez un e-mail avec un lien direct vers la demande, dans le menu **Demandes clients** de WordPress.
+- Vous changez le statut : Reçue, En cours, Faite. Un message facultatif s'affiche chez le client.
+- Quand vous passez à « Faite », le client reçoit un e-mail.
+- Le compteur du mois suit le forfait : Chico 1, Power 4. Au-delà, la demande est quand même envoyée et marquée « hors forfait ».
+
+## Le parrainage
+
+- Chaque client a un code (ex. `LILA-7K2`) et un lien `https://www.aled08.fr/creer-mon-site/?parrain=LILA-7K2`, dans l'onglet Parrainage, avec un bouton WhatsApp.
+- Le lien garde le code 60 jours dans le navigateur du visiteur ; le code remplit tout seul le champ « Code de parrainage » du formulaire de contact.
+- Vous voyez le code (et le nom du parrain) dans l'e-mail de demande. Le parrain voit le nombre de demandes reçues avec son code.
+- Quand le site du filleul est en ligne, créez son compte avec « Parrainé par » = le code : le parrain reçoit un e-mail et son compteur « sites en ligne » augmente. Notez le mois offert dans « Mois offerts à utiliser ».
+
+## Paiements
+
+Stripe, pour commencer simplement : un abonnement par forfait (au mois et à l'année), un paiement lissé sur 24 mois pour la création. Ajoutez le lien de chaque facture dans la fiche du client.

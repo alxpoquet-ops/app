@@ -36,7 +36,7 @@ module.exports = {
     { q: 'Les frais de paiement sont-ils différents ?', a: 'Presque pas : environ 1,5 % + 0,25 € par paiement par carte européenne dans les deux cas. La vraie différence se joue sur l’abonnement, les applications et le temps que vous y passez.' },
   ],
   fidelite: [
-    { q: 'Comment mon filleul profite-t-il du parrainage ?', a: `Il indique votre nom dans sa demande. Quand son site est en ligne, vous recevez chacun ${fidelite.parrainageMois} mois de forfait offert.` },
+    { q: 'Comment mon filleul profite-t-il du parrainage ?', a: `Il passe par votre lien de parrainage, ou donne votre code dans sa demande. Les deux sont dans votre espace client. Quand son site est en ligne, vous recevez chacun ${fidelite.parrainageMois} mois de forfait offert.` },
     { q: 'Les avantages se cumulent-ils ?', a: 'Oui : vous pouvez parrainer plusieurs personnes. Les avantages ne sont pas convertibles en argent.' },
   ],
 };

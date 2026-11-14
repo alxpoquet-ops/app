@@ -46,9 +46,9 @@ const site = {
   // Endpoint du formulaire. Par défaut : script PHP fourni (/envoi.php). Sous WordPress, le thème s'en charge.
   formAction: '/envoi.php',
 
-  // Espace client : tant qu'il n'est pas ouvert, la page le présente et les demandes passent par message.
-  // La page /mon-espace/ est une démonstration interactive tant que l'espace n'est pas ouvert.
-  espaceClient: { ouvert: false, url: '/mon-espace/' },
+  // Espace client : /mon-espace/ (connexion, sous WordPress) et sa démonstration /mon-espace/demo/.
+  // ouvert: false affiche « ouvre bientôt » sur la page Nos outils.
+  espaceClient: { ouvert: true, url: '/mon-espace/', demo: '/mon-espace/demo/' },
 
   social: {
     facebook: '',
