@@ -19,7 +19,7 @@ Site **statique**, rapide, sans base de données : un petit générateur Node.js
 | Accueil | `/` | Promesse, types de site, forfaits, espace client, SEO, comparaison avec Shopify |
 | Créer mon site | `/creer-mon-site/` | **Configurateur** : type de site, nom de domaine vérifié en direct, forfait, au mois ou à l'année, options, récapitulatif |
 | Forfaits | `/forfaits/` | Entretien, Chico, Power, Titan (au mois ou à l'année), jetons IA, prix de création, options |
-| Espace client | `/espace-client/` | Modifier son site en écrivant à l'IA, publier sur les réseaux, suivre sa visibilité |
+| Nos outils | `/nos-outils/` | Je gère les modifications ; les clients peuvent garder la main avec 14 outils (modification rapide, studio publication, avis, QR code…) |
 | Mon espace (démo) | `/mon-espace/` | Démo interactive : jetons, modification par l'IA, outil de publication, forfait et options |
 | Se faire connaître | `/se-faire-connaitre/` | La boîte à outils : Google, réseaux, site, près de chez vous |
 | SEO | `/referencement-seo/` | Ce que je fais, le SEO dans chaque forfait, ce que je ne promets pas |

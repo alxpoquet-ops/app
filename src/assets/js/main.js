@@ -262,6 +262,8 @@
       });
     });
     $$('[data-go]', app).forEach(function (b) { b.addEventListener('click', function () { show(b.getAttribute('data-go')); }); });
+    var startTab = new URLSearchParams(location.search).get('outil');
+    if (startTab && $('[data-tab="' + startTab.replace(/[^a-z]/g, '') + '"]', app)) show(startTab.replace(/[^a-z]/g, ''));
     $$('[data-toast-msg]', app).forEach(function (b) { b.addEventListener('click', function () { toast(b.getAttribute('data-toast-msg')); }); });
 
     /* journal */

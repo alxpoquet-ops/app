@@ -956,3 +956,15 @@ button.app-card:hover { transform: translateY(-2px); }
   .b-plans { grid-template-columns: 1fr 1fr; }
   .jetons-box { padding: 20px 18px; }
 }
+
+/* Démo : tous les outils, « me confier » */
+.app-tools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.app-tool { display: grid; justify-items: start; gap: 4px; padding: 14px; border: 0; border-radius: 20px; background: #fff; box-shadow: 0 0 0 2px var(--line) inset; text-align: left; font: inherit; color: var(--text); cursor: pointer; transition: box-shadow .2s, transform .2s; }
+.app-tool:hover { box-shadow: 0 0 0 2px var(--c-d) inset; transform: translateY(-2px); }
+.app-tool .tool-ico { width: 40px; height: 40px; border-radius: 14px; }
+.app-tool strong { font-size: .92rem; line-height: 1.25; }
+.app-tool small { color: var(--muted); font-weight: 800; font-size: .78rem; }
+.app-confier { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 0 0 14px; padding: 10px 14px; border-radius: 16px; background: var(--mint); color: var(--mint-dd); font-weight: 800; font-size: .92rem; }
+.app-confier .link-btn { color: var(--mint-dd); }
+@media (max-width: 1100px) { .app-tools { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .app-tools { grid-template-columns: 1fr 1fr; } }

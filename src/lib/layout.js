@@ -149,7 +149,7 @@ function footer(p) {
     <div>
       <h2 class="footer-title">Bon à savoir</h2>
       <ul class="footer-links">
-        <li><a href="/espace-client/">Espace client et IA</a></li>
+        <li><a href="/nos-outils/">Nos outils</a></li>
         <li><a href="/mon-espace/">Essayer la démo</a></li>
         <li><a href="/referencement-seo/">Référencement SEO</a></li>
         <li><a href="/se-faire-connaitre/">Se faire connaître</a></li>

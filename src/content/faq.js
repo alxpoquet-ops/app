@@ -17,15 +17,15 @@ module.exports = {
     { q: 'Y a-t-il des frais cachés ?', a: 'Non. Le récapitulatif indique tout : la création, l’entretien, le forfait et les options choisies. Rien d’autre.' },
   ],
   jetons: [
-    { q: 'C’est quoi, un jeton IA ?', a: 'C’est votre crédit pour nos outils IA. Une petite modification de votre site ou une publication sur vos réseaux utilise un jeton.' },
+    { q: 'C’est quoi, un jeton ?', a: 'C’est votre crédit de modifications. Une petite modification de votre site ou une publication sur vos réseaux utilise un jeton, que je la fasse pour vous ou que vous passiez par nos outils.' },
     { q: 'Combien de jetons dans chaque forfait ?', a: `${forfaits.map((f) => `${f.name} : ${f.jetons} par mois`).join(', ')}. ${forfaits[0].name} offre en plus une publication chaque mois.` },
     { q: 'Et si je n’ai plus de jetons ?', a: `Vous rechargez en un clic depuis votre espace : ${jetons.recharge.price} € les ${jetons.recharge.qty} jetons. Ou vous passez au forfait du dessus.` },
   ],
   espace: [
-    { q: 'Faut-il savoir se servir d’un ordinateur ?', a: 'Non. Si vous savez envoyer un message, vous savez modifier votre site. Tout se fait depuis votre téléphone.' },
-    { q: 'Et si l’IA se trompe ?', a: 'Vous voyez l’aperçu avant de publier, et vous revenez à la version précédente en un clic. Je garde aussi un œil sur les changements.' },
-    { q: 'Que puis-je modifier avec l’IA ?', a: 'Les textes, les photos, les horaires, les prix, une nouvelle section. Chaque modification publiée utilise un jeton. Une refonte complète, c’est un autre projet.' },
-    { q: 'Sur quels réseaux puis-je publier ?', a: 'Instagram, Facebook et votre fiche Google, avec tous les forfaits. Vos comptes restent les vôtres, vous pouvez couper l’accès à tout moment.' },
+    { q: 'Dois-je faire les modifications moi-même ?', a: 'Non. Je m’occupe de vos modifications : un message suffit. Nos outils sont là si vous voulez la main, par exemple pour annoncer une fermeture un dimanche soir.' },
+    { q: 'Faut-il être à l’aise avec l’informatique ?', a: 'Non. Si vous savez envoyer un message, vous savez utiliser nos outils. Tout se fait depuis votre téléphone.' },
+    { q: 'Et si un outil se trompe ?', a: 'Vous voyez l’aperçu avant de publier, et vous revenez à la version précédente en un clic. Je vérifie aussi les changements derrière vous.' },
+    { q: 'Sur quels réseaux peut-on publier ?', a: 'Instagram, Facebook et votre fiche Google, avec tous les forfaits. Vos comptes restent les vôtres, vous pouvez couper l’accès à tout moment.' },
   ],
   seo: [
     { q: 'En combien de temps serai-je sur Google ?', a: 'Votre site est déclaré à Google dès la mise en ligne. On le trouve vite sur votre nom. Pour des recherches plus disputées, comptez quelques semaines à quelques mois.' },

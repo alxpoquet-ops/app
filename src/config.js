@@ -61,7 +61,7 @@ const site = {
 const sections = {
   creer: { path: '/creer-mon-site/', label: 'Créer mon site', color: 'mint', icon: 'wand-sparkles' },
   forfaits: { path: '/forfaits/', label: 'Forfaits', color: 'lilac', icon: 'heart' },
-  espace: { path: '/espace-client/', label: 'Espace client', color: 'sky', icon: 'smartphone' },
+  espace: { path: '/nos-outils/', label: 'Nos outils', color: 'sky', icon: 'toolbox' },
   seo: { path: '/referencement-seo/', label: 'SEO', color: 'butter', icon: 'search-check' },
   contact: { path: '/contact/', label: 'Contact', color: 'peach', icon: 'message-circle' },
   // Hors du menu principal
@@ -120,7 +120,7 @@ const entretien = {
     'Hébergement rapide et sécurisé',
     'Nom de domaine inclus (.fr, .com, .net ou .org)',
     'Sauvegardes et mises à jour des extensions',
-    'Votre espace client, avec l’accès à tous nos outils IA',
+    'Votre espace client, avec l’accès à tous nos outils',
   ],
 };
 
@@ -138,7 +138,7 @@ const forfaits = [
     plus: 5,
     jetons: 3,
     tagline: 'Pour bien démarrer',
-    pitch: 'Tous nos outils IA, avec de quoi faire 2 ou 3 changements par mois.',
+    pitch: 'Je fais 2 ou 3 changements par mois pour vous, ou vous les faites avec nos outils.',
     features: ['De quoi faire 2 à 3 petites modifications par mois', '1 publication offerte chaque mois', 'SEO de base : Google Search Console et suivi'],
   },
   {
@@ -148,7 +148,7 @@ const forfaits = [
     plus: 10,
     jetons: 10,
     conseil: true,
-    tagline: 'Vous modifiez tout avec l’IA',
+    tagline: 'Votre site toujours à jour',
     pitch: 'Une dizaine de modifications par mois, un SEO suivi et un support prioritaire.',
     features: ['Une dizaine de modifications par mois', 'SEO suivi chaque mois, avec un rapport', 'Support prioritaire'],
   },
@@ -159,8 +159,8 @@ const forfaits = [
     plus: 15,
     jetons: 30,
     tagline: 'Pour vous faire connaître',
-    pitch: 'De quoi publier souvent : l’IA écrit vos textes, prépare vos images et choisit vos hashtags.',
-    features: ['Une trentaine de modifications ou publications par mois', 'Publication automatique : texte, image et hashtags par l’IA', 'SEO suivi chaque mois, avec un rapport', 'Support prioritaire'],
+    pitch: 'De quoi publier souvent sur vos réseaux : je m’en occupe, ou vous utilisez notre studio publication.',
+    features: ['Une trentaine de modifications ou publications par mois', 'Studio publication : texte, image et hashtags préparés pour vous', 'SEO suivi chaque mois, avec un rapport', 'Support prioritaire'],
   },
 ];
 forfaits.forEach((f) => { f.month = entretien.month + f.plus; });

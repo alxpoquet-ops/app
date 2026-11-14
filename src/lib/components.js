@@ -121,7 +121,7 @@ function entretienBox() {
 function jetonsBox() {
   return `<div class="jetons-box reveal">
   <h3>${icon('coins')}Comment marchent les jetons IA ?</h3>
-  <p>Tous les forfaits donnent accès à tous nos outils IA : modifier votre site en écrivant, publier sur vos réseaux. Chaque utilisation consomme un jeton : <strong>un jeton, c’est une petite modification ou une publication</strong>. Votre forfait vous donne des jetons chaque mois.</p>
+  <p>Chaque mois, votre forfait vous donne des jetons. <strong>Un jeton, c’est une petite modification ou une publication</strong>, que je la fasse pour vous ou que vous passiez par <a href="/nos-outils/">nos outils</a>. Tous les forfaits ont accès à tous les outils.</p>
   <p class="jetons-recharge">${icon('plus')}<span>Besoin de plus ? Rechargez quand vous voulez : <strong>${euro(jetons.recharge.price)} les ${jetons.recharge.qty} jetons</strong>.</span></p>
 </div>`;
 }
@@ -243,7 +243,7 @@ function configurator() {
   <form class="b-steps" data-builder-form>
     ${step(1, 'Votre site', 'Le prix de création est fixe. Il comprend la maquette, le site complet et la mise en ligne.', typeChoices)}
     ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est incluse dans l’entretien et elle reste à votre nom.', domain)}
-    ${step(3, 'Votre forfait', 'L’entretien est toujours compris. Les forfaits ajoutent des jetons IA, le SEO et le support prioritaire.', forfaitChoices)}
+    ${step(3, 'Votre forfait', 'L’entretien est toujours compris. Les forfaits ajoutent des modifications chaque mois (jetons), le SEO et le support prioritaire.', forfaitChoices)}
     ${step(4, 'Paiement mensuel ou annuel', 'À l’année : engagement d’un an, payé en une fois, avec deux mois offerts.', billingSwitch())}
     ${step(5, 'Options', 'Rien n’est obligatoire : vous pourrez aussi les ajouter plus tard depuis votre espace client.', optionList, ' b-step-last')}
   </form>
@@ -321,7 +321,7 @@ function shopifyTable() {
     ['Nom de domaine', 'En plus', 'Inclus'],
     ['Mises à jour, sécurité, sauvegardes', 'À surveiller vous-même', 'Incluses'],
     ['Référencement (SEO)', 'À faire vous-même, souvent avec des applications', 'Bases faites par moi, suivi dans les forfaits'],
-    ['Modifications', 'Vous-même, dans l’interface Shopify', 'En écrivant à l’IA, avec les jetons de votre forfait'],
+    ['Modifications', 'Vous-même, dans l’interface Shopify', 'Je m’en occupe, ou vous passez par nos outils'],
     ['Fonctions en plus (avis, réservation…)', 'Applications, souvent payantes chaque mois', 'Options à prix fixe'],
     ['Frais par paiement par carte', `${shopify.fraisCarte} (Shopify Payments)`, `${stripe.fraisCarte} (Stripe)`],
   ];
