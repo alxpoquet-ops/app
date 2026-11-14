@@ -693,7 +693,7 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
   .type-card { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; row-gap: 2px; padding: 20px; }
   .type-card .type-ico { grid-row: 1 / span 2; }
   .type-name { margin-top: 0; }
-  .type-pitch, .type-go { grid-column: 1 / -1; }
+  .type-pitch, .type-qui, .type-go { grid-column: 1 / -1; }
   .type-pitch { margin-top: 8px; }
   .feats, .feats-4, .compare, .form-row, .sitemap-list, .years, .duo, .go-links { grid-template-columns: 1fr; }
   .promo { grid-template-columns: auto minmax(0, 1fr); padding: 18px; gap: 14px; }
@@ -1204,3 +1204,23 @@ button.app-card:hover { transform: translateY(-2px); }
 .create-qui { margin: 6px 0 10px; font-size: .92rem; color: var(--muted); font-weight: 600; text-align: left; }
 .b-note-types { display: flex; gap: 8px; align-items: flex-start; }
 .b-note-types ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+
+/* ---------- boutons : contour en tache de peinture (une pilule avec des gouttes qui dépassent) ---------- */
+/* ::before dessine la tache autour, ::after recouvre l'intérieur avec la couleur du bouton */
+.btn { position: relative; isolation: isolate; }
+.btn::before, .btn::after { content: ""; position: absolute; pointer-events: none; }
+.btn::before {
+  inset: -18px -12px; z-index: -2; background: var(--wave, var(--primary-shadow));
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 96' preserveAspectRatio='none'%3E%3Crect x='9' y='13' width='282' height='70' rx='35.0'/%3E%3Ccircle cx='30' cy='15' r='7'/%3E%3Ccircle cx='66' cy='14' r='8'/%3E%3Ccircle cx='118' cy='15' r='7'/%3E%3Ccircle cx='160' cy='13' r='8'/%3E%3Ccircle cx='214' cy='15' r='7'/%3E%3Ccircle cx='250' cy='14' r='8'/%3E%3Ccircle cx='280' cy='20' r='7'/%3E%3Ccircle cx='44' cy='81' r='8'/%3E%3Ccircle cx='98' cy='82' r='7'/%3E%3Ccircle cx='142' cy='81' r='8'/%3E%3Ccircle cx='196' cy='83' r='7'/%3E%3Ccircle cx='232' cy='81' r='8'/%3E%3Ccircle cx='272' cy='80' r='7'/%3E%3Ccircle cx='20' cy='76' r='7'/%3E%3Ccircle cx='10' cy='48' r='9'/%3E%3Ccircle cx='290' cy='46' r='9'/%3E%3Cpath d='M38.6 16 Q44.6 14 44.6 6.4 A3.4 3.4 0 1 1 51.4 6.4 Q51.4 14 57.4 16 Z'/%3E%3Cpath d='M78.2 16 Q84.2 14 84.2 4.3 A3.8 3.8 0 1 1 91.8 4.3 Q91.8 14 97.8 16 Z'/%3E%3Cpath d='M176.8 16 Q182.8 14 182.8 5.2 A3.2 3.2 0 1 1 189.2 5.2 Q189.2 14 195.2 16 Z'/%3E%3Cpath d='M222 16 Q228 14 228 4 A4 4 0 1 1 236 4 Q236 14 242 16 Z'/%3E%3Cpath d='M60 80 Q66 82 66 91 A4 4 0 1 0 74 91 Q74 82 80 80 Z'/%3E%3Cpath d='M114.8 80 Q120.8 82 120.8 86.8 A3.2 3.2 0 1 0 127.2 86.8 Q127.2 82 133.2 80 Z'/%3E%3Cpath d='M204.2 80 Q210.2 82 210.2 91.7 A3.8 3.8 0 1 0 217.8 91.7 Q217.8 82 223.8 80 Z'/%3E%3Cpath d='M248.6 80 Q254.6 82 254.6 87.6 A3.4 3.4 0 1 0 261.4 87.6 Q261.4 82 267.4 80 Z'/%3E%3Ccircle cx='134' cy='4' r='2.6'/%3E%3Ccircle cx='270' cy='6' r='2.2'/%3E%3Ccircle cx='16' cy='10' r='2.4'/%3E%3Ccircle cx='160' cy='92' r='2.4'/%3E%3Ccircle cx='290' cy='86' r='2.6'/%3E%3Ccircle cx='4' cy='70' r='2.2'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 96' preserveAspectRatio='none'%3E%3Crect x='9' y='13' width='282' height='70' rx='35.0'/%3E%3Ccircle cx='30' cy='15' r='7'/%3E%3Ccircle cx='66' cy='14' r='8'/%3E%3Ccircle cx='118' cy='15' r='7'/%3E%3Ccircle cx='160' cy='13' r='8'/%3E%3Ccircle cx='214' cy='15' r='7'/%3E%3Ccircle cx='250' cy='14' r='8'/%3E%3Ccircle cx='280' cy='20' r='7'/%3E%3Ccircle cx='44' cy='81' r='8'/%3E%3Ccircle cx='98' cy='82' r='7'/%3E%3Ccircle cx='142' cy='81' r='8'/%3E%3Ccircle cx='196' cy='83' r='7'/%3E%3Ccircle cx='232' cy='81' r='8'/%3E%3Ccircle cx='272' cy='80' r='7'/%3E%3Ccircle cx='20' cy='76' r='7'/%3E%3Ccircle cx='10' cy='48' r='9'/%3E%3Ccircle cx='290' cy='46' r='9'/%3E%3Cpath d='M38.6 16 Q44.6 14 44.6 6.4 A3.4 3.4 0 1 1 51.4 6.4 Q51.4 14 57.4 16 Z'/%3E%3Cpath d='M78.2 16 Q84.2 14 84.2 4.3 A3.8 3.8 0 1 1 91.8 4.3 Q91.8 14 97.8 16 Z'/%3E%3Cpath d='M176.8 16 Q182.8 14 182.8 5.2 A3.2 3.2 0 1 1 189.2 5.2 Q189.2 14 195.2 16 Z'/%3E%3Cpath d='M222 16 Q228 14 228 4 A4 4 0 1 1 236 4 Q236 14 242 16 Z'/%3E%3Cpath d='M60 80 Q66 82 66 91 A4 4 0 1 0 74 91 Q74 82 80 80 Z'/%3E%3Cpath d='M114.8 80 Q120.8 82 120.8 86.8 A3.2 3.2 0 1 0 127.2 86.8 Q127.2 82 133.2 80 Z'/%3E%3Cpath d='M204.2 80 Q210.2 82 210.2 91.7 A3.8 3.8 0 1 0 217.8 91.7 Q217.8 82 223.8 80 Z'/%3E%3Cpath d='M248.6 80 Q254.6 82 254.6 87.6 A3.4 3.4 0 1 0 261.4 87.6 Q261.4 82 267.4 80 Z'/%3E%3Ccircle cx='134' cy='4' r='2.6'/%3E%3Ccircle cx='270' cy='6' r='2.2'/%3E%3Ccircle cx='16' cy='10' r='2.4'/%3E%3Ccircle cx='160' cy='92' r='2.4'/%3E%3Ccircle cx='290' cy='86' r='2.6'/%3E%3Ccircle cx='4' cy='70' r='2.2'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  transition: transform .25s;
+}
+.btn::after { inset: 0; z-index: -1; border-radius: 999px; background: inherit; }
+.btn:hover::before { transform: scale(1.03, 1.08) rotate(-0.6deg); }
+/* boutons empilés : un peu d'air pour les gouttes */
+.hero-ctas, .login-ctas, .esp-actions, .cta-actions, .nav-mobile-cta { gap: 26px !important; }
+.btn-light { --wave: var(--lilac); }
+:root[data-theme="dark"] .btn-light { --wave: var(--lilac-d); }
+.btn-wa { --wave: #A9E6CB; }
+.btn[aria-current] { --wave: #2E9C70; }
+@media (prefers-reduced-motion: reduce) { .btn::before { transition: none; } }
