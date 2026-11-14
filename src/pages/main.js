@@ -34,7 +34,7 @@ function home() {
     <div class="hero-text">
       <p class="kicker">${icon('sparkles')}L’IA pour tout le monde</p>
       <h1>Votre site internet à partir de ${euro(T('une-page').price)}, <mark>tout compris</mark></h1>
-      <p class="hero-lead">Je crée votre site à prix fixe, puis on s’en occupe pour ${euro(base.month)} par mois : Lia, l’IA, modifie et met à jour votre site, et moi, Alex, je vérifie et je règle tout. Le site peut aussi se payer en ${C.lissageTxt} fois sans frais.</p>
+      <p class="hero-lead">Je crée votre site à prix fixe, puis on s’en occupe pour ${euro(base.month)} par mois : Lia, l’IA, modifie et met à jour votre site, et moi, Alex, je vérifie et je règle tout. Vous payez ${paiement.acompte} % à la commande, le reste à la réception, en une fois ou en ${C.lissageTxt} fois sans frais.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}${C.btn('/forfaits/', 'btn-light btn-lg', 'heart', 'Voir les forfaits')}</div>
       <ul class="hero-points">
         <li>${icon('check')}Prix de création fixe</li>
@@ -59,7 +59,7 @@ function home() {
   <h2 class="section-title">Comment ça marche</h2>
   <p class="section-sub">Trois étapes, et rien de technique pour vous.</p>
   ${C.steps([
-    { t: 'Vous commandez en ligne', d: `Vous choisissez votre site et votre forfait. Vous réglez le site en une fois, ou la première mensualité si vous payez en plusieurs fois.` },
+    { t: 'Vous commandez en ligne', d: `Vous choisissez votre site et votre forfait. Vous réglez ${paiement.acompte} % du site, rien de plus.` },
     { t: 'Je crée votre site', d: 'Je réserve votre nom de domaine et je vous écris sous 24 heures. Vous voyez l’aperçu, vous me dites ce qui change.' },
     { t: 'Vous demandez, on s’en occupe', d: 'Un horaire, un prix, une photo : demandez-le depuis votre espace client. Lia le prépare tout de suite, ou Alex s’en charge, au choix.' },
   ])}
@@ -135,7 +135,7 @@ function creerPage() {
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Et ensuite ?</h2>
   ${C.steps([
-    { t: 'Vous commandez', d: `Vous réglez la création, ou la première mensualité si le site est lissé, et la première échéance de votre forfait.` },
+    { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % de la création. Le reste et le forfait viennent à la réception du site.` },
     { t: 'Je réserve votre nom de domaine', d: 'Il est à votre nom. Je vous écris sous 24 heures avec les questions utiles pour démarrer.' },
     { t: 'Je crée votre site', d: 'Vous recevez un aperçu. Vous me dites ce qui change, je corrige.' },
     { t: 'C’est en ligne', d: 'Vous réglez le solde (sauf si le site est lissé). Vos modifications passent ensuite par votre espace client.' },
@@ -176,7 +176,7 @@ function forfaitsPage() {
 
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">La création, à prix fixe</h2>
-  <p class="section-sub">En une fois à la commande, ou en ${C.lissageTxt} fois sans frais.</p>
+  <p class="section-sub">${paiement.acompte} % à la commande. À la réception : le reste en une fois, ou en ${C.lissageTxt} fois sans frais, et le forfait démarre.</p>
   <div class="create-prices">${types
     .map(
       (t) => `<a class="create-price c-${t.color} reveal" href="${C.creerUrl({ type: t.id })}">
@@ -448,7 +448,7 @@ const ORDER_ERRORS = {
   domaine: 'Indiquez le nom de domaine souhaité, ou cochez « J’ai déjà un nom de domaine ».',
   cgv: 'Pour commander, il faut accepter les conditions générales de vente.',
   demarrage: 'Pour commander, il faut accepter que la création commence tout de suite.',
-  engagement: 'Pour payer le site en plusieurs fois, il faut accepter l’engagement le temps du paiement.',
+  engagement: 'Pour payer le reste en plusieurs fois, il faut accepter l’engagement le temps du paiement.',
   paiement: 'Le paiement n’a pas abouti. Votre commande est gardée : vous pouvez réessayer, ou m’écrire.',
   robot: 'L’envoi a été bloqué par la protection contre les robots. Attendez quelques secondes et réessayez.',
   annule: 'Le paiement a été annulé. Rien n’a été débité : vous pouvez reprendre quand vous voulez.',
@@ -459,7 +459,7 @@ function commanderPage() {
   const crumbs = [HOME, { name: sections.creer.label, path: sections.creer.path }, { name: S.label, path: S.path }];
   const t0 = T('vitrine'), f0 = F('power');
   const acompte0 = round2((t0.price * paiement.acompte) / 100);
-  const today0 = round2(acompte0 + f0.month);
+  const today0 = acompte0;
   const field = (name, label, attrs, { req = true, hint = '' } = {}) =>
     `<div class="field"><label for="o-${name}">${label} ${req ? '<span class="req">*</span>' : '<span class="opt">(facultatif)</span>'}</label><input id="o-${name}" name="${name}" ${attrs}${req ? ' required' : ''}>${hint ? `<small class="field-hint">${hint}</small>` : ''}</div>`;
   const nextSteps = [
@@ -549,16 +549,15 @@ function commanderPage() {
         <div class="o-in">
         <label class="check"><input type="checkbox" name="cgv" value="oui" required><span>J’accepte les <a href="/conditions-generales/" target="_blank" rel="noopener">conditions générales de vente</a>. <span class="req">*</span></span></label>
         <label class="check"><input type="checkbox" name="demarrage" value="oui" required><span>Je demande que la création commence tout de suite. Si je me rétracte dans les 14 jours, je paie le travail déjà fait. <span class="req">*</span></span></label>
-        <label class="check" data-order-engagement hidden><input type="checkbox" name="engagement" value="oui"><span>Je m’engage pour <span data-order="eng-n">${C.LMAX}</span> mois, le temps de payer mon site. <span class="req">*</span></span></label>
+        <label class="check" data-order-engagement hidden><input type="checkbox" name="engagement" value="oui"><span>Je m’engage pour <span data-order="eng-n">${C.LMAX}</span> mois à partir de la réception, le temps de payer mon site. <span class="req">*</span></span></label>
         <div class="o-pay">
           <p class="o-pay-today"><span>Aujourd’hui vous payez</span><b data-order="today">${euro(today0)}</b></p>
           <ul class="o-pay-lines" data-order-lines>
-            <li><span>Création du site (${t0.label.toLowerCase()})</span><b>${euro(acompte0)}</b></li>
-            <li><span>Forfait ${f0.name}, premier mois</span><b>${euro(f0.month)}</b></li>
+            <li><span>Acompte de ${paiement.acompte} % sur la création (${t0.label.toLowerCase()})</span><b>${euro(acompte0)}</b></li>
           </ul>
-          <p class="o-pay-next"><span data-order="next-label">Ensuite, chaque mois</span><b data-order="next">${euro(f0.month)}</b></p>
-          <p class="o-pay-note" data-order-solde>Le site est payé en une fois : rien d’autre à régler pour la création.</p>
-          <p class="o-pay-note" data-order-lisse-note hidden>Le site est payé en <span data-order="lisse-n">${C.LMAX}</span> fois sans frais : <b data-order="lisse">${euro(C.lisse(t0.price))}</b> par mois. Ensuite, il ne reste que le forfait, sans engagement.</p>
+          <p class="o-pay-next"><span data-order="next-label">À la réception : le reste, et le forfait</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month)}/mois</b></p>
+          <p class="o-pay-note" data-order-solde>À la réception de votre site, vous réglez le reste, <b data-order="solde">${euro(t0.price - acompte0)}</b>, et votre forfait démarre. Vous pourrez encore choisir de payer le reste en ${C.lissageTxt} fois.</p>
+          <p class="o-pay-note" data-order-lisse-note hidden>À la réception, le reste se paie en <span data-order="lisse-n">${C.LMAX}</span> fois sans frais : <b data-order="lisse">${euro(C.lisse(t0.price))}</b> par mois, avec le forfait. Ensuite, il ne reste que le forfait, sans engagement.</p>
         </div>
         <button class="btn btn-primary btn-lg btn-block" type="submit">${icon('lock')}<span>Commander et payer <b data-order="btn">${euro(today0)}</b></span></button>
         <p class="o-trust">${icon('shield-check')}<span>Paiement sécurisé par Stripe. Vous recevez vos factures par e-mail.</span></p>

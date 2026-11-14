@@ -155,8 +155,9 @@ Les forfaits sont mensuels : ${listeForfaits}. À l’année, le client paie dix
 
 Le client choisit l’une des deux formules au moment de la commande.
 
-- **En une fois** : le prix de la création est réglé en totalité à la commande.
-- **En ${lissage.durees.join(' ou ')} fois sans frais** : le prix du site est divisé en ${lissage.durees.join(' ou ')} mensualités, au choix du client, ajoutées au forfait. Le forfait est alors payé au mois. Chaque échéance est arrondie au centime inférieur : le total ne dépasse jamais le prix du site. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
+- **À la commande** : un acompte de ${paiement.acompte} % du prix de la création.
+- **À la réception du site** : le reste, en une fois. Le forfait démarre à ce moment-là.
+- **Ou, à la réception, en ${lissage.durees.join(' ou ')} fois sans frais** : le reste du prix du site est divisé en ${lissage.durees.join(' ou ')} mensualités, au choix du client, ajoutées au forfait. Le forfait est alors payé au mois. Chaque échéance est arrondie au centime inférieur : le total ne dépasse jamais le prix du site. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
 
 ## 5. Paiement du forfait et factures
 
@@ -168,8 +169,8 @@ En cas d’échec de paiement, le client est prévenu par e-mail. Si rien n’es
 
 ## 6. Engagement et résiliation
 
-- **Site payé en une fois** : le forfait est sans engagement. Le client peut l’arrêter à tout moment par e-mail ou par message : le bouton est dans son espace client. L’arrêt prend effet à la fin de la période déjà payée.
-- **Site payé en plusieurs fois** : le client s’engage le temps du paiement, soit ${lissage.durees.join(' ou ')} mois. S’il arrête avant, le reste du prix de création devient exigible en une fois. Ensuite, le forfait est sans engagement.
+- **Reste payé en une fois** : le forfait est sans engagement. Le client peut l’arrêter à tout moment par e-mail ou par message : le bouton est dans son espace client. L’arrêt prend effet à la fin de la période déjà payée.
+- **Reste payé en plusieurs fois** : le client s’engage le temps du paiement, à partir de la réception du site, soit ${lissage.durees.join(' ou ')} mois. S’il arrête avant, le reste du prix de création devient exigible en une fois. Ensuite, le forfait est sans engagement.
 
 Le client peut changer de forfait à tout moment. Le nouveau prix s’applique à la période suivante.
 

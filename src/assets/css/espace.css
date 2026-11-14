@@ -143,3 +143,19 @@ a.app-card { text-decoration: none; color: inherit; }
 .lia-confirm-form .btn { justify-self: start; }
 .lia-confirm details summary { cursor: pointer; font-weight: 800; color: var(--mint-dd); min-height: 44px; display: flex; align-items: center; }
 @media (max-width: 720px) { .lia-confirm-form .btn { justify-self: stretch; } }
+/* Paiement à la réception : choisir comment régler le reste */
+.esp-reception { display: grid; gap: 10px; }
+.esp-reste { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 16px; background: var(--card); box-shadow: 0 0 0 2px var(--edge) inset; cursor: pointer; }
+.esp-reste input { margin-top: 4px; accent-color: var(--mint-d); }
+.esp-reste span { display: grid; gap: 2px; }
+.esp-reste small { color: var(--muted); }
+.esp-reste:has(input:checked) { box-shadow: 0 0 0 2px var(--mint-d) inset; }
+/* Changer de forfait ou d'options */
+.esp-changer { margin: 14px 0; border-radius: 18px; background: var(--soft); }
+.esp-changer summary { display: flex; gap: 10px; align-items: center; min-height: 48px; padding: 10px 16px; cursor: pointer; font-weight: 800; color: var(--ink); list-style: none; }
+.esp-changer summary::-webkit-details-marker { display: none; }
+.esp-changer summary .ico { width: 1.2em; height: 1.2em; color: var(--mint-d); }
+.esp-changer form { display: grid; gap: 10px; padding: 0 16px 16px; }
+.esp-changer-list { display: grid; gap: 8px; }
+.esp-changer .btn { justify-self: start; }
+@media (max-width: 720px) { .esp-changer .btn { justify-self: stretch; } }

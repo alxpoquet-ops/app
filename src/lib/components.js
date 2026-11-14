@@ -6,7 +6,7 @@ const { inline, esc, plain } = require('./md');
 
 // ---------------------------------------------------------------- liens et prix
 const contactUrl = site.contactPath || '/contact/';
-const euro = (n) => `${String(n).replace('.', ',')} €`;
+const euro = (n) => `${(Math.round(n * 100) / 100 % 1 ? (Math.round(n * 100) / 100).toFixed(2) : String(Math.round(n * 100) / 100)).replace('.', ',')} €`;
 const withQuery = (path, params = {}) => {
   const q = Object.entries(params).filter(([, v]) => v).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
   return path + (q ? '?' + q : '');
@@ -112,7 +112,9 @@ function typeCards() {
 
 // ---------------------------------------------------------------- prix du site lissé (arrondi au centime inférieur)
 // Mensualité du site payé en n fois (12 par défaut), arrondie au centime inférieur : jamais plus que le prix.
-const lisse = (price, n = lissage.durees[lissage.durees.length - 1]) => Math.floor((price / n) * 100) / 100;
+// Mensualité du reste (après l'acompte) payé en n fois à la réception du site
+const acompteDe = (price) => Math.round(price * paiement.acompte) / 100;
+const lisse = (price, n = lissage.durees[lissage.durees.length - 1]) => Math.floor(((price - acompteDe(price)) / n) * 100) / 100;
 const LMAX = lissage.durees[lissage.durees.length - 1];
 const lissageTxt = lissage.durees.join(' ou ');
 // « un site une page », « un site vitrine », « une boutique en ligne »
@@ -122,8 +124,9 @@ function payBox() {
   return `<div class="jetons-box reveal">
   <h3>${icon('calendar-check')}Comment payer ?</h3>
   <ul class="list-check">
-    <li><strong>Le site</strong> : en une fois à la commande, ou en ${lissageTxt} fois sans frais, avec un engagement seulement le temps de payer le site. Par exemple ${types.map((t) => `${euro(lisse(t.price))} par mois pour ${unType(t)}`).join(', ')}.</li>
-    <li><strong>Le forfait</strong> : au mois, ou à l’année avec ${annuel.moisOfferts} mois offerts.</li>
+    <li><strong>À la commande</strong> : ${paiement.acompte} % du site. Par exemple ${types.map((t) => `${euro(acompteDe(t.price))} pour ${unType(t)}`).join(', ')}.</li>
+    <li><strong>À la réception du site</strong> : le reste en une fois, ou en ${lissageTxt} fois sans frais (engagement le temps de payer), et votre forfait démarre. Par exemple, pour ${unType(types[0])} : ${euro(types[0].price - acompteDe(types[0].price))} en une fois, ou ${euro(lisse(types[0].price))} par mois pendant ${LMAX} mois.</li>
+    <li><strong>Le forfait</strong> : au mois, ou à l’année avec ${annuel.moisOfferts} mois offerts. Forfait et options se changent quand vous voulez.</li>
   </ul>
 </div>`;
 }
@@ -264,7 +267,7 @@ function configurator() {
     ${step(1, 'Votre site', 'Le prix de création est fixe. Il comprend la maquette, le site complet et la mise en ligne.', typeBody)}
     ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est comprise dans les forfaits et elle reste à votre nom.', domainBox())}
     ${step(3, 'Votre forfait', 'Votre site reste en ligne et à jour chaque mois. Les modifications, c’est Lia ou Alex, au choix.', forfaitBody)}
-    ${step(4, 'Paiement', `Le site en une fois à la commande, ou en ${lissageTxt} fois sans frais. Le forfait au mois, ou à l’année avec deux mois offerts. Aucun engagement, sauf le temps de payer le site en plusieurs fois.`, payChoices)}
+    ${step(4, 'Paiement', `${paiement.acompte} % du site à la commande. À la réception : le reste en une fois, ou en ${lissageTxt} fois sans frais, et le forfait démarre (au mois, ou à l’année avec deux mois offerts). Aucun engagement, sauf le temps de payer le reste en plusieurs fois.`, payChoices)}
     ${step(5, 'Options', 'E-mail pro ou traduction : rien n’est obligatoire, vous pourrez les ajouter plus tard.', optionList, ' b-step-last')}
   </form>
   <aside class="b-sum" aria-live="polite">
@@ -279,13 +282,13 @@ function configurator() {
       <p><span data-sum="once-label">Création, une fois</span><b data-sum="once">250 €</b></p>
       <p data-sum-lisse hidden><span data-sum="lisse-label">Site en ${LMAX} fois</span><b data-sum="lisse">0 €</b></p>
       <p data-sum-parrain hidden><span>Parrainage</span><b>${fidelite.parrainageMois} mois offert</b></p>
-      <p><span data-sum="recur-label">Puis chaque mois</span><b data-sum="recur">20 €</b></p>
+      <p><span data-sum="recur-label">Forfait, dès la réception, par mois</span><b data-sum="recur">20 €</b></p>
     </div>
     <div class="b-sum-actions">
       <a class="btn btn-primary btn-block btn-lg" href="${sections.commander.path}" data-sum-order>${icon('shopping-bag')}<span>Commander</span></a>
       <a class="btn btn-light btn-block" href="/contact/#devis" data-sum-go>${icon('message-circle')}<span>Poser une question</span></a>
     </div>
-    <p class="b-sum-note">${icon('shield-check')}Paiement sécurisé par Stripe. Aujourd’hui, vous réglez le site (ou sa première mensualité) et la première échéance de votre forfait.</p>
+    <p class="b-sum-note">${icon('shield-check')}Paiement sécurisé par Stripe. Aujourd’hui, vous réglez seulement ${paiement.acompte} % du site. Le reste et le forfait, à la réception.</p>
   </aside>
   <div class="b-bar" data-sum-bar>
     <p data-sum="bar"><b>250 €</b> puis <b>20 €/mois</b></p>
@@ -350,7 +353,7 @@ function comparatifTable() {
     ['Modifications', 'Rapides et comprises : par Lia ou par Alex, au choix', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
     ['SEO', 'Bases comprises sur chaque site. Avec Power, je fais remonter votre site chaque mois', 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
-    ['Engagement', `Aucun. Seulement le temps du paiement si le site est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
+    ['Engagement', `Aucun. Seulement le temps du paiement si le reste est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
   return `<div class="cmp cmp-4 reveal" role="table" aria-label="Alex & Lia comparé à une agence web, un freelance et une plateforme à faire soi-même">
@@ -363,7 +366,7 @@ module.exports = {
   LMAX,
   lissageTxt,
   unType,
-  contactUrl, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
+  contactUrl, acompteDe, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, optPrice, optionsCompact, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
 };

@@ -119,16 +119,16 @@ function aled08e_cmd_montants($cfg) {
         $mensuelOptions += (float) $o['month'] * $mult;
         $ponctuel += (float) $o['once'];
     }
-    $nb = (int) ($cfg['lissage'] ?? 0); // site en 6 ou 12 fois sans frais (forfait alors au mois)
+    // À la commande : l'acompte (25 %) et les options ponctuelles. À la réception du site : le reste,
+    // en une fois ou en 6 / 12 fois sans frais (engagement le temps de payer), et le forfait démarre.
+    $nb = (int) ($cfg['lissage'] ?? 0);
     $lissage = $nb > 0;
-    $mensualite = $lissage ? floor($creation / $nb * 100) / 100 : 0.0; // arrondi au centime inférieur : jamais plus que le prix
-    $totalJour = $lissage
-        ? $mensuelForfait + $mensualite + $ponctuel + $mensuelOptions
-        : $acompte + $ponctuel + $mensuelForfait + $mensuelOptions;
+    $mensualite = $lissage ? floor($solde / $nb * 100) / 100 : 0.0; // arrondi au centime inférieur : jamais plus que le reste dû
+    $totalJour = $acompte + $ponctuel;
     return [
         'creation' => $creation,
-        'acompte' => $lissage ? 0.0 : $acompte,
-        'solde' => $lissage ? 0.0 : $solde,
+        'acompte' => $acompte,
+        'solde' => $solde,
         'mensuel_forfait' => $mensuelForfait,
         'mensuel_options' => $mensuelOptions,
         'options_ponctuel' => $ponctuel,
@@ -159,7 +159,7 @@ function aled08e_cmd_get($id) {
         'message' => (string) $g('message'), 'parrain' => (string) $g('parrain'), 'user' => (int) $g('user', $p->post_author),
         'stripe_session' => (string) $g('stripe_session'), 'stripe_customer' => (string) $g('stripe_customer'), 'stripe_subscription' => (string) $g('stripe_subscription'),
         'stripe_lissage_item' => (string) $g('stripe_lissage_item'), 'lissage_paye' => (int) $g('lissage_paye', 0), 'solde_paye' => (int) $g('solde_paye', 0), 'solde_session' => (string) $g('solde_session'),
-        'paiement_en_cours' => (int) $g('paiement_en_cours', 0),
+        'paiement_en_cours' => (int) $g('paiement_en_cours', 0), 'reception_payee' => (int) $g('reception_payee', 0),
         'journal' => array_values((array) $g('journal', [])),
     ];
     foreach (['prenom', 'nom', 'entreprise', 'adresse', 'code_postal', 'ville', 'telephone', 'email'] as $k) $out[$k] = (string) $g($k);
@@ -223,9 +223,8 @@ function aled08e_cmd_recap_txt($c) {
     if (!$c['domaine']) $dom = 'à choisir ensemble';
     elseif ($c['domaine_mien']) $dom = $c['domaine'] . ' (le client l’a déjà)';
     else $dom = $c['domaine'] . ' (à réserver au nom du client)';
-    $pay = $c['lissage']
-        ? 'en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais, ' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois, engagement de ' . (int) $m['lissage_total_echeances'] . ' mois'
-        : ($m['solde'] > 0 ? 'acompte de ' . aled08e_euro_txt($m['acompte']) . ' à la commande, solde de ' . aled08e_euro_txt($m['solde']) . ' à la mise en ligne' : 'en une fois à la commande, ' . aled08e_euro_txt($m['acompte']));
+    $pay = 'acompte de ' . aled08e_euro_txt($m['acompte']) . ' à la commande, puis à la réception du site : '
+        . ($c['lissage'] ? 'le reste en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais, ' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois (engagement de ' . (int) $m['lissage_total_echeances'] . ' mois), avec le forfait' : 'le reste en une fois, ' . aled08e_euro_txt($m['solde']) . ', et le forfait démarre');
     return 'Référence : ' . $c['ref'] . "\n"
         . 'Site : ' . ($type ? $type['label'] : $c['type']) . ', création ' . aled08e_euro_txt($m['creation']) . ($type ? ' (délai habituel : ' . $type['delai'] . ')' : '') . "\n"
         . 'Nom de domaine : ' . $dom . "\n"
@@ -512,14 +511,15 @@ function aled08e_cmd_mail_client_nouvelle($c, $compte, $stripe) {
 function aled08e_cmd_mail_client_payee($c) {
     $delai = aled08e_cmd_delai_type($c);
     $corps = 'Bonjour ' . $c['prenom'] . ",\n\n"
-        . "Votre paiement est bien reçu, merci !\n"
+        . "Votre acompte est bien reçu, merci !\n"
+        . "Le reste se règle à la réception de votre site (en une fois, ou en plusieurs fois sans frais), et votre forfait démarre à ce moment-là.\n"
         . 'Référence de la commande : ' . $c['ref'] . "\n\n"
         . "Ce qui se passe maintenant :\n"
         . ($c['domaine'] && !$c['domaine_mien'] ? '1. Je réserve le nom de domaine ' . $c['domaine'] . " à votre nom.\n" : "1. Je prépare l’hébergement de votre site.\n")
         . '2. Je vous écris sous 24 heures pour commencer la création' . ($delai ? ' (délai habituel : ' . $delai . ')' : '') . ".\n"
         . "3. Vous suivez l’avancement dans votre espace client : " . aled08e_url() . "#commande\n\n"
         . "À bientôt,\nAlex, et Lia\n";
-    wp_mail($c['email'], 'Votre commande ' . $c['ref'] . ' est payée', $corps, aled08e_mail_headers('Alex & Lia <' . aled08e_to() . '>'));
+    wp_mail($c['email'], 'Votre acompte pour la commande ' . $c['ref'] . ' est reçu', $corps, aled08e_mail_headers('Alex & Lia <' . aled08e_to() . '>'));
 }
 function aled08e_cmd_mail_owner_payee($c) {
     $dom = $c['domaine'] && !$c['domaine_mien'];
@@ -537,13 +537,13 @@ function aled08e_cmd_mail_owner_payee($c) {
 function aled08e_cmd_mail_client_en_ligne($c) {
     $site = $c['domaine'] ? 'https://' . $c['domaine'] : aled08e_meta($c['user'], 'site');
     $solde = (float) $c['montants']['solde'];
-    $soldeDu = !$c['lissage'] && $solde > 0 && !$c['solde_paye'];
+    $soldeDu = aled08e_cmd_reception_due(array_merge($c, ['statut' => 'en_ligne']));
     $corps = 'Bonjour ' . $c['prenom'] . ",\n\n"
         . "Bonne nouvelle : votre site est en ligne !\n" . ($site ? 'Adresse : ' . $site . "\n" : '') . "\n"
         . ($soldeDu
-            ? 'Il reste le solde de la création : ' . aled08e_euro_txt($solde) . ".\n"
+            ? 'À la réception, il reste ' . aled08e_euro_txt($solde) . ' pour la création. Vous choisissez : en une fois, ou en ' . implode(' ou ', (array) aled08e_data()['lissageDurees']) . " fois sans frais. Votre forfait démarre en même temps.\n"
                 . (aled08e_stripe_ready()
-                    ? "Pour le régler, connectez-vous à votre espace client et cliquez sur « Payer le solde » :\n" . aled08e_url() . "#commande\n\n"
+                    ? "Tout se fait dans votre espace client, onglet « Ma commande » :\n" . aled08e_url() . "#commande\n\n"
                     : "Je vous envoie le lien de paiement dans un e-mail séparé.\n\n")
             : '')
         . "Pour faire évoluer votre site, envoyez vos demandes depuis votre espace client, onglet « Mes demandes » :\n" . aled08e_url() . "\n"
@@ -567,3 +567,13 @@ function aled08e_cmd_rappel_domaines() {
     wp_mail(aled08e_to(), 'Rappel : ' . count($list) . ' nom(s) de domaine à réserver', $corps, aled08e_mail_headers());
 }
 add_action('aled08_quotidien', 'aled08e_cmd_rappel_domaines', 20);
+
+/* À la réception : le reste de la création (et le démarrage du forfait) est-il encore à régler ? */
+function aled08e_cmd_reception_due($c) {
+    return $c['statut'] === 'en_ligne' && empty($c['reception_payee']) && empty($c['solde_paye']) && (float) $c['montants']['solde'] > 0;
+}
+/* Montants recalculés pour le choix fait à la réception (n = 0 : en une fois ; 6 ou 12 : en plusieurs fois, forfait au mois) */
+function aled08e_cmd_montants_reception($c, $n) {
+    $cfg = ['type' => $c['type'], 'forfait' => $c['forfait'], 'periode' => $n ? 'mois' : $c['periode'], 'lissage' => $n, 'options' => $c['options']];
+    return aled08e_cmd_montants($cfg);
+}

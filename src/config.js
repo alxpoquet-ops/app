@@ -192,7 +192,7 @@ const options = [
 
 // ---------------------------------------------------------------- fidélité et paiement
 const fidelite = { parrainageMois: 1, remiseSecondSite: 10 };
-const paiement = { acompte: 100 }; // création payée en une fois à la commande (ou en 6 / 12 fois sans frais)
+const paiement = { acompte: 25 }; // 25 % à la commande ; à la réception : le reste (en une fois, ou en 6 / 12 fois sans frais) et le forfait démarre
 
 // Boost : une modification en plus du forfait, à l'unité, ajoutée à la prochaine facture.
 const boost = { prix: 1 };

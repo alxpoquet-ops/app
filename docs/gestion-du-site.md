@@ -29,6 +29,11 @@ Une pastille rouge sur le menu ALED08 indique le nombre de commandes à traiter.
 
 ## 3. Une commande, de A à Z
 
+Le paiement en deux temps : le client paie 25 % de la création à la commande (plus les options payées une fois). À la réception du site (statut « En ligne »), il choisit dans son espace, onglet « Ma commande » : le reste en une fois, ou en 6 ou 12 fois sans frais (engagement le temps de payer). Le même paiement Stripe démarre son forfait et ses options. Sans Stripe, ou s'il paie autrement, bouton « Reste payé (hors Stripe) » dans la fiche ; « Copier un lien de paiement du reste » donne un lien valable 24 heures.
+
+Le client change de forfait et d'options quand il veut (onglet « Forfait et factures ») : l'abonnement Stripe est mis à jour, le nouveau prix s'applique à l'échéance suivante, et vous recevez un e-mail.
+
+
 ### Ce qui se passe tout seul
 
 1. Le client configure son site, clique « Commander », remplit `/commander/` et accepte les conditions.

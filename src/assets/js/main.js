@@ -6,7 +6,7 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || d).querySelectorAll(s)); };
   var round2 = function (n) { return Math.round(n * 100) / 100; };
   var floor2 = function (n) { return Math.floor(n * 100 + 1e-6) / 100; };
-  var euro = function (n) { return round2(n).toString().replace('.', ',') + ' €'; };
+  var euro = function (n) { var v = round2(n); return (v % 1 ? v.toFixed(2) : String(v)).replace('.', ',') + ' €'; };
   var slug = function (v) { return (v || '').replace(/[^a-z0-9-]/g, ''); };
 
   // Mode sombre : bouton lune / soleil en haut, choix gardé sur l'appareil
@@ -282,26 +282,27 @@
       else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? ' (disponible)' : dom.status === 'pris' ? ' (déjà pris)' : '');
       setText('domain', domText || 'Nom de domaine à choisir');
       var lisse = lisseN > 0;
-      var lisseAmt = lisse ? floor2(t.price / lisseN) : 0;
+      var acompte = round2(t.price * data.acompte / 100);
+      var reste = round2(t.price - acompte);
+      var lisseAmt = lisse ? floor2(reste / lisseN) : 0;
       var lisseLine = $('[data-sum-lisse]', box);
       if (lisseLine) lisseLine.hidden = !lisse;
-      setText('lisse-label', 'Site en ' + lisseN + ' fois sans frais');
+      setText('lisse-label', 'Le reste en ' + lisseN + ' fois sans frais');
       setText('lisse', euro(lisseAmt) + per);
       var onceLine = $('[data-sum="once"]', box) && $('[data-sum="once"]', box).parentNode;
-      if (onceLine) onceLine.hidden = lisse && !optOnce;
-      setText('once-label', lisse ? 'Options, une fois' : 'Création, une fois');
-      setText('once', euro((lisse ? 0 : t.price) + optOnce));
+      if (onceLine) onceLine.hidden = false;
+      setText('once-label', 'Création, une fois');
+      setText('once', euro(t.price + optOnce));
       var recur = (month + optMonth) * mult;
-      setText('recur-label', (lisse ? 'Forfait, chaque ' : 'Puis chaque ') + (annual ? 'année' : 'mois'));
+      setText('recur-label', 'Forfait, dès la réception, par ' + (annual ? 'an' : 'mois'));
       setText('recur', euro(recur));
-      // montant du jour, le même que sur /commander/ : acompte (ou première échéance du site lissé) + première échéance du forfait et des options
-      var acompte = round2(t.price * data.acompte / 100);
-      var today = round2((lisse ? lisseAmt : acompte) + recur + optOnce);
+      // montant du jour, le même que sur /commander/ : l'acompte et les options payées une fois.
+      // À la réception : le reste (en une fois ou lissé) et le forfait démarre.
+      var today = round2(acompte + optOnce);
       setText('today', euro(today));
       var bar = $('[data-sum="bar"]', box);
       if (bar) {
-        bar.innerHTML = 'Aujourd’hui <b>' + euro(today) + '</b>, puis <b>' + euro(lisse ? recur + lisseAmt : recur) + per + '</b>'
-          + (lisse ? ' pendant ' + lisseN + ' mois' : '');
+        bar.innerHTML = 'Aujourd’hui <b>' + euro(today) + '</b>, à la réception <b>' + (lisse ? euro(lisseAmt) + '/mois × ' + lisseN : euro(reste)) + '</b> + forfait';
       }
       // Lien « Poser une question » (formulaire de contact, en clair)
       var q = { type: t.label, forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: domText, options: chosen.join(', '), parrain: parrain };
@@ -426,24 +427,20 @@
       });
       var acompte = round2(t.price * data.acompte / 100);
       var solde = round2(t.price - acompte);
-      var lisseAmt = lisse ? floor2(t.price / lisseN) : 0;
+      var lisseAmt = lisse ? floor2(solde / lisseN) : 0;
       var forfaitFirst = f.month * mult;
-      var first = annual ? 'première année' : 'premier mois';
-      if (lisse) lines.push([t.label + ', 1re mensualité sur ' + lisseN, lisseAmt]);
-      else lines.push([data.acompte >= 100 ? 'Création du site (' + t.label.toLowerCase() + ')' : 'Acompte de ' + data.acompte + ' % sur la création (' + t.label.toLowerCase() + ')', acompte]);
-      lines.push(['Forfait ' + f.name + ', ' + first, forfaitFirst]);
+      // aujourd'hui : l'acompte et les options payées une fois ; le forfait démarre à la réception du site
+      lines.push(['Acompte de ' + data.acompte + ' % sur la création (' + t.label.toLowerCase() + ')', acompte]);
       $$('.b-opt input:checked', form).forEach(function (i) {
         var o = find(data.options, i.value);
-        if (!o) return;
-        if (o.once) lines.push([o.name, o.once]);
-        if (o.month) lines.push([o.name + ', ' + first, o.month * mult]);
+        if (o && o.once) lines.push([o.name, o.once]);
       });
       var today = round2(lines.reduce(function (s, l) { return s + l[1]; }, 0));
-      var next = round2(forfaitFirst + optRec + (lisse ? lisseAmt : 0));
+      var next = round2(forfaitFirst + optRec);
       setText('today', euro(today));
       setText('btn', euro(today));
-      setText('next', euro(next));
-      setText('next-label', 'Ensuite, chaque ' + perWord);
+      setText('next', lisse ? euro(lisseAmt) + ' × ' + lisseN + ' + ' + euro(next) + per : euro(solde) + ' + ' + euro(next) + per);
+      setText('next-label', lisse ? 'À la réception : le reste en ' + lisseN + ' fois, et le forfait' : 'À la réception : le reste, et le forfait');
       if ($('[data-order="solde"]', root)) setText('solde', euro(solde));
       setText('lisse', euro(lisseAmt));
       setText('lisse-per', perUnit);

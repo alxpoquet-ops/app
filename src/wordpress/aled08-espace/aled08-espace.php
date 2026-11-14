@@ -26,7 +26,7 @@ function aled08e_data() {
         $d += [
             'name' => 'Alex & Lia', 'whatsapp' => '', 'email' => '',
             'forfaits' => [], 'types' => [], 'options' => [], 'icons' => [], 'monsters' => [],
-            'moisOfferts' => 2, 'boost' => 1, 'lissageDurees' => [6, 12], 'acompte' => 100, 'parrainageMois' => 1, 'remiseSecondSite' => 10,
+            'moisOfferts' => 2, 'boost' => 1, 'lissageDurees' => [6, 12], 'acompte' => 25, 'parrainageMois' => 1, 'remiseSecondSite' => 10,
             'delais' => ['reponse' => '48 heures', 'titan' => '24 heures'],
         ];
     }
@@ -89,6 +89,7 @@ require_once __DIR__ . '/includes/provision.php';
 require_once __DIR__ . '/includes/lia.php';
 require_once __DIR__ . '/includes/compte.php';
 require_once __DIR__ . '/includes/inscription.php';
+require_once __DIR__ . '/includes/changer.php';
 
 /* =========================================================================
  *  Rôle « Client Alex & Lia » et type de contenu « Demande »
@@ -590,9 +591,9 @@ function aled08e_panel_commande($cmd, $u, $D) {
         if ($o) $opts[] = $o['name'] . ' (' . ($o['once'] ? aled08e_euro_txt($o['once']) . ' une fois' : aled08e_euro_txt($annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month']) . ' ' . $per) . ')';
     }
     $solde = (float) ($m['solde'] ?? 0);
-    $soldeDu = !$cmd['lissage'] && $solde > 0 && !$cmd['solde_paye'] && in_array($s, aled08e_cmd_statuts_payes(), true);
+    $soldeDu = aled08e_cmd_reception_due($cmd);
     $flash = '';
-    if (isset($_GET['solde']) && $_GET['solde'] === 'ok') $flash = '<p class="esp-empty" role="status">Merci ! Votre paiement du solde est en cours de confirmation. Il apparaîtra ici dans quelques minutes.</p>';
+    if (isset($_GET['solde']) && $_GET['solde'] === 'ok') $flash = '<p class="esp-empty" role="status">Merci ! Votre paiement est en cours de confirmation. Il apparaîtra ici dans quelques minutes, et votre forfait démarre.</p>';
     if (isset($_GET['m']) && sanitize_key(wp_unslash($_GET['m'])) === 'paiement_erreur') $flash = '<p class="esp-warn" role="status">Le paiement en ligne n’a pas pu démarrer. Réessayez dans un instant, ou écrivez-moi : je vous envoie un lien de paiement.</p>';
 
     ob_start();
@@ -610,7 +611,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
                 <input type="hidden" name="aled08e_payer" value="1"><input type="hidden" name="cid" value="<?php echo (int) $cmd['id']; ?>">
                 <?php wp_nonce_field('aled08e_payer_' . $cmd['id'], '_aled08e_payer'); ?>
                 <p>Votre commande attend son paiement. Dès qu’il est fait, je réserve votre nom de domaine et je commence.</p>
-                <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('credit-card'); // phpcs:ignore ?><span>Payer <?php echo aled08e_euro($m['total_jour']); // phpcs:ignore ?> maintenant</span></button>
+                <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('credit-card'); // phpcs:ignore ?><span>Payer l’acompte de <?php echo aled08e_euro($m['total_jour']); // phpcs:ignore ?></span></button>
               </form>
               <?php else : ?>
               <p class="esp-warn">Je vous envoie le lien de paiement par e-mail sous 24 heures. Dès le paiement, je réserve votre nom de domaine et je commence.</p>
@@ -634,25 +635,30 @@ function aled08e_panel_commande($cmd, $u, $D) {
 
           <p class="app-sub">Paiement</p>
           <ul class="esp-amounts">
-            <?php if ($cmd['lissage']) : ?>
-            <li><span>Création du site, en <?php echo (int) $m['lissage_total_echeances']; ?> fois sans frais</span><b><?php echo aled08e_euro($m['lissage_mensualite']) . ' ' . esc_html($per); // phpcs:ignore ?></b><small><?php echo (int) $cmd['lissage_paye']; ?> / <?php echo (int) $m['lissage_total_echeances']; ?> échéances payées, puis plus rien à payer</small></li>
+            <li><span>Acompte de <?php echo (int) $D['acompte']; ?> % à la commande</span><b><?php echo aled08e_euro($m['acompte']); // phpcs:ignore ?></b><small><?php echo in_array($s, aled08e_cmd_statuts_payes(), true) ? 'payé' : 'à payer à la commande'; ?></small></li>
+            <?php if ($m['options_ponctuel'] > 0) : ?><li><span>Options payées une fois</span><b><?php echo aled08e_euro($m['options_ponctuel']); // phpcs:ignore ?></b><small>à la commande</small></li><?php endif; ?>
+            <?php if ($cmd['reception_payee'] && $cmd['lissage']) : ?>
+            <li><span>Le reste, en <?php echo (int) $m['lissage_total_echeances']; ?> fois sans frais</span><b><?php echo aled08e_euro($m['lissage_mensualite']) . ' par mois'; // phpcs:ignore ?></b><small><?php echo (int) $cmd['lissage_paye']; ?> / <?php echo (int) $m['lissage_total_echeances']; ?> échéances payées, puis plus rien à payer</small></li>
             <?php else : ?>
-            <li><span><?php echo $solde > 0 ? 'Acompte sur la création' : 'Création du site, en une fois'; ?></span><b><?php echo aled08e_euro($m['acompte']); // phpcs:ignore ?></b><small><?php echo in_array($s, aled08e_cmd_statuts_payes(), true) ? 'payé' : 'à payer à la commande'; ?></small></li>
-            <?php if ($solde > 0) : ?><li><span>Solde à la mise en ligne</span><b><?php echo aled08e_euro($solde); // phpcs:ignore ?></b><small><?php echo $cmd['solde_paye'] ? 'payé, merci !' : 'demandé quand le site est en ligne'; ?></small></li><?php endif; ?>
+            <li><span>Le reste, à la réception du site</span><b><?php echo aled08e_euro($solde); // phpcs:ignore ?></b><small><?php echo ($cmd['solde_paye'] || $cmd['reception_payee']) ? 'payé, merci !' : 'en une fois, ou en ' . esc_html(implode(' ou ', (array) $D['lissageDurees'])) . ' fois sans frais'; ?></small></li>
             <?php endif; ?>
-            <li><span>Forfait <?php echo esc_html($f['name']); ?><?php echo $m['mensuel_options'] > 0 ? ' et options' : ''; ?></span><b><?php echo aled08e_euro($m['mensuel_forfait'] + $m['mensuel_options']) . ' ' . esc_html($per); // phpcs:ignore ?></b><small>démarre à la commande</small></li>
-            <li class="esp-amount-total"><span><?php echo $s === 'attente_paiement' ? 'À payer aujourd’hui' : 'Payé le jour de la commande'; ?></span><b><?php echo aled08e_euro($m['total_jour']); // phpcs:ignore ?></b></li>
+            <li><span>Forfait <?php echo esc_html($f['name']); ?><?php echo $m['mensuel_options'] > 0 ? ' et options' : ''; ?></span><b><?php echo aled08e_euro($m['mensuel_forfait'] + $m['mensuel_options']) . ' ' . esc_html($per); // phpcs:ignore ?></b><small><?php echo $cmd['reception_payee'] ? 'en cours' : 'démarre à la réception du site'; ?></small></li>
           </ul>
-          <?php if ($soldeDu && $s === 'en_ligne') : ?>
-            <?php if (aled08e_stripe_ready()) : ?>
-            <form method="post" action="<?php echo esc_url(aled08e_url()); ?>" class="esp-pay">
+          <?php if ($soldeDu) : ?>
+            <?php if (aled08e_stripe_ready()) :
+                $mf = aled08e_cmd_montants_reception($cmd, 0); ?>
+            <form method="post" action="<?php echo esc_url(aled08e_url()); ?>" class="esp-pay esp-reception">
               <input type="hidden" name="aled08e_solde" value="1"><input type="hidden" name="cid" value="<?php echo (int) $cmd['id']; ?>">
               <?php wp_nonce_field('aled08e_solde_' . $cmd['id'], '_aled08e_solde'); ?>
-              <p>Votre site est en ligne : il reste le solde de la création à régler.</p>
-              <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('credit-card'); // phpcs:ignore ?><span>Payer le solde de <?php echo aled08e_euro($solde); // phpcs:ignore ?></span></button>
+              <p><strong>Votre site est en ligne !</strong> Il reste <?php echo aled08e_euro($solde); // phpcs:ignore ?> pour la création. Choisissez comment payer : votre forfait démarre en même temps.</p>
+              <label class="esp-reste"><input type="radio" name="reste" value="0"<?php checked(!$cmd['lissage']); ?>><span><strong>En une fois</strong><small><?php echo aled08e_euro($mf['solde']); // phpcs:ignore ?>, puis le forfait : <?php echo aled08e_euro($mf['mensuel_forfait'] + $mf['mensuel_options']) . ' ' . esc_html($per); // phpcs:ignore ?></small></span></label>
+              <?php foreach ((array) $D['lissageDurees'] as $n) : $mn = aled08e_cmd_montants_reception($cmd, (int) $n); ?>
+              <label class="esp-reste"><input type="radio" name="reste" value="<?php echo (int) $n; ?>"<?php checked((int) $cmd['lissage'], (int) $n); ?>><span><strong>En <?php echo (int) $n; ?> fois sans frais</strong><small><?php echo aled08e_euro($mn['lissage_mensualite'] + $mn['mensuel_forfait'] + $mn['mensuel_options']); // phpcs:ignore ?> par mois pendant <?php echo (int) $n; ?> mois (<?php echo aled08e_euro($mn['lissage_mensualite']); // phpcs:ignore ?> pour le site + le forfait), engagement le temps de payer</small></span></label>
+              <?php endforeach; ?>
+              <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('credit-card'); // phpcs:ignore ?><span>Payer et démarrer mon forfait</span></button>
             </form>
             <?php else : ?>
-            <p class="esp-warn">Votre site est en ligne : il reste le solde de <?php echo aled08e_euro($solde); // phpcs:ignore ?>. Je vous envoie le lien de paiement par e-mail.</p>
+            <p class="esp-warn">Votre site est en ligne : il reste <?php echo aled08e_euro($solde); // phpcs:ignore ?> pour la création, en une fois ou en <?php echo esc_html(implode(' ou ', (array) $D['lissageDurees'])); ?> fois sans frais. Je vous envoie le lien de paiement par e-mail.</p>
             <?php endif; ?>
           <?php endif; ?>
           <p class="app-note">Une question sur votre commande ? Répondez à l’e-mail de confirmation, ou passez par le <a href="<?php echo esc_url(home_url('/contact/')); ?>">formulaire de contact</a>.</p>
@@ -723,6 +729,9 @@ function aled08e_dashboard() {
     $m = isset($_GET['m']) ? sanitize_key(wp_unslash($_GET['m'])) : '';
     $msgs = [
         'ok' => ['esp-empty', 'Demande envoyée, merci ! Je m’en occupe et je vous préviens quand c’est en ligne.'],
+        'changer_ok' => ['esp-empty', 'C’est enregistré : votre nouveau forfait et vos options s’appliquent à votre prochaine échéance.'],
+        'changer_rien' => ['esp-empty', 'Rien n’a changé : c’est déjà votre forfait.'],
+        'changer_erreur' => ['esp-warn', 'Le changement n’a pas pu se faire tout seul : Alex est prévenu et s’en occupe.'],
         'boost' => ['esp-empty', 'Demande envoyée, en Boost : 1 € en plus, ajouté à votre prochaine facture.'],
         'boost_accord' => ['esp-warn', 'Vos modifications du mois sont utilisées. Cochez « Boost à 1 € » pour envoyer cette demande en plus.'],
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
@@ -735,6 +744,7 @@ function aled08e_dashboard() {
     ];
     if (isset($msgs[$m])) $flash = '<p class="' . $msgs[$m][0] . '" role="status">' . esc_html($msgs[$m][1]) . '</p>';
     $flashForfait = '';
+    if (in_array($m, ['changer_ok', 'changer_rien', 'changer_erreur'], true)) { $flashForfait = $flash; $flash = ''; }
     if ($m === 'portail_erreur') $flashForfait = '<p class="esp-warn" role="status">La page de gestion du paiement n’a pas pu s’ouvrir. Réessayez dans un instant, ou écrivez-moi.</p>';
 
     $price = $annuel ? ($f['month'] * (12 - (int) $D['moisOfferts'])) : $f['month'];
@@ -815,8 +825,8 @@ function aled08e_dashboard() {
           </div>
           <?php if ($cmd && $cmd['statut'] === 'attente_paiement') : ?>
           <p class="esp-warn">Votre commande <?php echo esc_html($cmd['ref']); ?> attend son paiement. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
-          <?php elseif ($cmd && $cmd['statut'] === 'en_ligne' && !$cmd['lissage'] && !$cmd['solde_paye'] && (float) $cmd['montants']['solde'] > 0) : ?>
-          <p class="esp-warn">Votre site est en ligne : il reste le solde de <?php echo aled08e_euro($cmd['montants']['solde']); // phpcs:ignore ?> à régler. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
+          <?php elseif ($cmd && aled08e_cmd_reception_due($cmd)) : ?>
+          <p class="esp-warn">Votre site est en ligne : il reste <?php echo aled08e_euro($cmd['montants']['solde']); // phpcs:ignore ?> pour la création, en une fois ou en plusieurs fois, et votre forfait démarre. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
           <?php endif; ?>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
@@ -946,8 +956,9 @@ function aled08e_dashboard() {
               <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('credit-card'); // phpcs:ignore ?><span>Gérer mon paiement et mes factures</span></button>
             </form>
             <?php endif; ?>
-            <?php if ($wa) : ?><a class="btn btn-light" href="<?php echo esc_url($wa); ?>"><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Changer de forfait ou d’option</span></a><?php endif; ?>
+
           </div>
+          <?php echo aled08e_changer_html($uid); // phpcs:ignore ?>
           <p class="app-sub">Factures</p>
           <?php if ($factures) : ?><ul class="invoices"><?php echo implode('', $factures); // phpcs:ignore ?></ul><?php else : ?><p class="esp-empty">Vos factures apparaîtront ici après chaque paiement.</p><?php endif; ?>
           <?php if (aled08e_meta($uid, 'domaine_info') || $host) : ?>

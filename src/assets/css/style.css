@@ -1198,3 +1198,5 @@ button.app-card:hover { transform: translateY(-2px); }
 .boost-box h3 { margin: 0 0 6px; color: var(--butter-dd); }
 .boost-box p { margin: 0; }
 .boost-box .opt-ico { flex: none; }
+.o-pay-next { flex-wrap: wrap; row-gap: 4px; }
+.o-pay-next > span { flex: 1 1 100%; }

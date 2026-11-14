@@ -147,8 +147,51 @@ function aled08e_stripe_checkout($cid) {
     $D = aled08e_data();
     $m = $c['montants'];
     $type = aled08e_type($c['type']);
+    $once = function ($name, $euros, $tag) {
+        return ['quantity' => 1, 'price_data' => ['currency' => 'eur', 'unit_amount' => aled08e_stripe_cents($euros), 'product_data' => ['name' => $name, 'metadata' => ['aled08' => $tag]]]];
+    };
+    // À la commande : l'acompte et les options ponctuelles. Le forfait démarre à la réception du site.
+    $items = [$once('Acompte de ' . (int) $D['acompte'] . ' % sur la création (' . ($type ? mb_strtolower($type['label'], 'UTF-8') : 'site') . ')', $m['acompte'], 'acompte')];
+    foreach ($c['options'] as $oid) {
+        $o = aled08e_option($oid);
+        if ($o && $o['once'] > 0) $items[] = $once('Option : ' . $o['name'], $o['once'], 'option');
+    }
+    $cfg = ['type' => $c['type'], 'forfait' => $c['forfait'], 'periode' => $c['periode'], 'lissage' => $c['lissage'], 'options' => $c['options'], 'domaine' => $c['domaine'], 'domaine_mien' => $c['domaine_mien'], 'parrain' => $c['parrain']];
+    $params = [
+        'mode' => 'payment',
+        'locale' => 'fr',
+        'client_reference_id' => (string) $cid,
+        'metadata' => ['commande' => (string) $cid, 'ref' => $c['ref'], 'user' => (string) $c['user']],
+        'line_items' => $items,
+        'invoice_creation' => ['enabled' => 'true', 'invoice_data' => ['footer' => aled08e_stripe_footer(), 'metadata' => ['commande' => (string) $cid]]],
+        'success_url' => home_url('/commande-confirmee/?ref=' . rawurlencode($c['ref']) . '&session={CHECKOUT_SESSION_ID}'),
+        'cancel_url' => aled08e_cmd_url_commander($cfg, ['annule' => '1']),
+    ];
+    // un client déjà connu de Stripe (autre commande) est réutilisé : un seul client Stripe par compte
+    $cus = $c['stripe_customer'] ?: ($c['user'] ? aled08e_meta($c['user'], 'stripe_customer') : '');
+    if ($cus) $params['customer'] = $cus;
+    else { $params['customer_email'] = $c['email']; $params['customer_creation'] = 'always'; }
+    aled08e_stripe_expirer_session($c['stripe_session']);
+    $r = aled08e_stripe_request('POST', '/v1/checkout/sessions', $params, 'checkout-' . $cid . '-' . wp_generate_password(10, false));
+    if (is_wp_error($r)) return $r;
+    if (empty($r['url'])) return new WP_Error('aled08_stripe', 'Stripe n’a pas renvoyé d’adresse de paiement.');
+    update_post_meta($cid, '_aled08_stripe_session', $r['id'] ?? '');
+    aled08e_cmd_journal($cid, 'Page de paiement Stripe ouverte (acompte : ' . aled08e_euro_txt($m['total_jour']) . ').');
+    return $r['url'];
+}
+
+/* À la réception du site : le reste de la création (en une fois, ou en $n fois sans frais) et le forfait avec ses options,
+ * dans un seul abonnement Stripe. Créé au clic ; $expire : validité en secondes (24 h pour un lien copié depuis l'admin). */
+function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
+    $c = aled08e_cmd_get($cid);
+    if (!$c) return new WP_Error('aled08_stripe', 'Commande inconnue.');
+    if (!aled08e_cmd_reception_due($c)) return new WP_Error('aled08_stripe', 'Rien à régler pour cette commande.');
+    $n = aled08e_cmd_lissage_n((string) $n);
+    $D = aled08e_data();
+    $m = aled08e_cmd_montants_reception($c, $n);
+    $type = aled08e_type($c['type']);
     $f = aled08e_forfait($c['forfait']);
-    $annee = $c['periode'] === 'annee';
+    $annee = !$n && $c['periode'] === 'annee';
     $interval = $annee ? 'year' : 'month';
     $recurring = function ($name, $euros, $tag) use ($interval) {
         return ['quantity' => 1, 'price_data' => ['currency' => 'eur', 'unit_amount' => aled08e_stripe_cents($euros), 'recurring' => ['interval' => $interval], 'product_data' => ['name' => $name, 'metadata' => ['aled08' => $tag]]]];
@@ -157,87 +200,45 @@ function aled08e_stripe_checkout($cid) {
         return ['quantity' => 1, 'price_data' => ['currency' => 'eur', 'unit_amount' => aled08e_stripe_cents($euros), 'product_data' => ['name' => $name, 'metadata' => ['aled08' => $tag]]]];
     };
     $items = [];
-    $items[] = $recurring('Forfait ' . $f['name'] . ($annee ? ' (à l’année, ' . (int) $D['moisOfferts'] . ' mois offerts)' : ' (au mois)'), $m['mensuel_forfait'], 'forfait');
-    foreach ($c['options'] as $oid) {
-        $o = aled08e_option($oid);
-        if (!$o) continue;
-        if ($o['month'] > 0) $items[] = $recurring('Option : ' . $o['name'], $annee ? $o['month'] * max(1, 12 - (int) $D['moisOfferts']) : $o['month'], 'option');
-        if ($o['once'] > 0) $items[] = $once('Option : ' . $o['name'], $o['once'], 'option');
+    $offert = $c['user'] && aled08e_meta($c['user'], 'offert') === '1';
+    if (!$offert) {
+        $items[] = $recurring('Forfait ' . $f['name'] . ($annee ? ' (à l’année, ' . (int) $D['moisOfferts'] . ' mois offerts)' : ' (au mois)'), $m['mensuel_forfait'], 'forfait');
+        foreach ($c['options'] as $oid) {
+            $o = aled08e_option($oid);
+            if ($o && $o['month'] > 0) $items[] = $recurring('Option : ' . $o['name'], $annee ? $o['month'] * max(1, 12 - (int) $D['moisOfferts']) : $o['month'], 'option');
+        }
     }
-    if ($c['lissage']) {
-        $items[] = $recurring('Création du site, en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais', $m['lissage_mensualite'], 'lissage');
-    } else {
-        $items[] = $once(((int) $D['acompte'] >= 100 ? 'Création du site' : 'Acompte de ' . (int) $D['acompte'] . ' % sur la création') . ' (' . ($type ? mb_strtolower($type['label'], 'UTF-8') : 'site') . ')', $m['acompte'], 'acompte');
-    }
-    $cfg = ['type' => $c['type'], 'forfait' => $c['forfait'], 'periode' => $c['periode'], 'lissage' => $c['lissage'], 'options' => $c['options'], 'domaine' => $c['domaine'], 'domaine_mien' => $c['domaine_mien'], 'parrain' => $c['parrain']];
+    $lib = ($type ? $type['label'] : 'site') . ', commande ' . $c['ref'];
+    if ($n) $items[] = $recurring('Reste de la création en ' . $n . ' fois sans frais (' . $lib . ')', $m['lissage_mensualite'], 'lissage');
+    else $items[] = $once('Reste de la création (' . (100 - (int) $D['acompte']) . ' %) : ' . $lib, $m['solde'], 'solde');
+    $meta = ['reception' => (string) $cid, 'ref' => $c['ref'], 'lissage' => (string) $n];
+    $sansAbo = $offert && !$n; // forfait offert et reste en une fois : simple paiement
     $params = [
-        'mode' => 'subscription',
+        'mode' => $sansAbo ? 'payment' : 'subscription',
         'locale' => 'fr',
         'client_reference_id' => (string) $cid,
-        'metadata' => ['commande' => (string) $cid, 'ref' => $c['ref'], 'user' => (string) $c['user']],
-        'subscription_data' => [
-            'metadata' => ['commande' => (string) $cid, 'ref' => $c['ref']],
-            'invoice_settings' => ['footer' => aled08e_stripe_footer()],
-        ],
+        'metadata' => $meta,
         'line_items' => $items,
-        'success_url' => home_url('/commande-confirmee/?ref=' . rawurlencode($c['ref']) . '&session={CHECKOUT_SESSION_ID}'),
-        'cancel_url' => aled08e_cmd_url_commander($cfg, ['annule' => '1']),
-    ];
-    // un client déjà connu de Stripe (autre commande) est réutilisé : un seul client Stripe par compte
-    $cus = $c['stripe_customer'] ?: ($c['user'] ? aled08e_meta($c['user'], 'stripe_customer') : '');
-    if ($cus) $params['customer'] = $cus;
-    else $params['customer_email'] = $c['email'];
-    aled08e_stripe_expirer_session($c['stripe_session']);
-    $r = aled08e_stripe_request('POST', '/v1/checkout/sessions', $params, 'checkout-' . $cid . '-' . wp_generate_password(10, false));
-    // si cette version de l'API refuse le pied de page à cet endroit, on recommence sans (il est remis sur le client ensuite)
-    $errData = is_wp_error($r) ? $r->get_error_data() : null;
-    if (is_wp_error($r) && is_array($errData) && strpos((string) ($errData['param'] ?? ''), 'invoice_settings') !== false) {
-        unset($params['subscription_data']['invoice_settings']);
-        $r = aled08e_stripe_request('POST', '/v1/checkout/sessions', $params, 'checkout-' . $cid . '-' . wp_generate_password(10, false));
-    }
-    if (is_wp_error($r)) return $r;
-    if (empty($r['url'])) return new WP_Error('aled08_stripe', 'Stripe n’a pas renvoyé d’adresse de paiement.');
-    update_post_meta($cid, '_aled08_stripe_session', $r['id'] ?? '');
-    aled08e_cmd_journal($cid, 'Page de paiement Stripe ouverte (' . aled08e_euro_txt($m['total_jour']) . ' aujourd’hui).');
-    return $r['url'];
-}
-
-/* Solde de la création (commande sans lissage, site en ligne) : Checkout en mode paiement, créé au clic.
- * $expire : durée de validité en secondes (24 h pour le lien copié depuis l'admin). */
-function aled08e_stripe_solde_session($cid, $expire = 0) {
-    $c = aled08e_cmd_get($cid);
-    if (!$c) return new WP_Error('aled08_stripe', 'Commande inconnue.');
-    $solde = (float) $c['montants']['solde'];
-    if ($c['lissage'] || $solde <= 0) return new WP_Error('aled08_stripe', 'Cette commande n’a pas de solde à payer.');
-    if ($c['solde_paye']) return new WP_Error('aled08_stripe', 'Le solde est déjà payé.');
-    $D = aled08e_data();
-    $type = aled08e_type($c['type']);
-    $params = [
-        'mode' => 'payment',
-        'locale' => 'fr',
-        'client_reference_id' => (string) $cid,
-        'metadata' => ['solde' => (string) $cid, 'ref' => $c['ref']],
-        'line_items' => [[
-            'quantity' => 1,
-            'price_data' => ['currency' => 'eur', 'unit_amount' => aled08e_stripe_cents($solde), 'product_data' => ['name' => 'Solde de la création (' . (100 - (int) $D['acompte']) . ' %) : ' . ($type ? $type['label'] : 'site') . ', commande ' . $c['ref'], 'metadata' => ['aled08' => 'solde']]],
-        ]],
-        'invoice_creation' => ['enabled' => 'true', 'invoice_data' => ['footer' => aled08e_stripe_footer(), 'metadata' => ['commande' => (string) $cid]]],
         'success_url' => aled08e_url(['solde' => 'ok']) . '#commande',
         'cancel_url' => aled08e_url() . '#commande',
     ];
+    if ($sansAbo) $params['invoice_creation'] = ['enabled' => 'true', 'invoice_data' => ['footer' => aled08e_stripe_footer(), 'metadata' => ['commande' => (string) $cid]]];
+    else $params['subscription_data'] = ['metadata' => ['commande' => (string) $cid, 'ref' => $c['ref']]];
     $cus = $c['stripe_customer'] ?: ($c['user'] ? aled08e_meta($c['user'], 'stripe_customer') : '');
     if ($cus) $params['customer'] = $cus;
     else $params['customer_email'] = $c['email'];
     // Stripe accepte au plus 24 h : on garde 5 minutes de marge pour la dérive d'horloge entre les serveurs
     if ($expire > 0) $params['expires_at'] = time() + min(max($expire, 1800), DAY_IN_SECONDS - 5 * MINUTE_IN_SECONDS);
     aled08e_stripe_expirer_session($c['solde_session']);
-    $r = aled08e_stripe_request('POST', '/v1/checkout/sessions', $params, 'solde-' . $cid . '-' . wp_generate_password(10, false));
+    $r = aled08e_stripe_request('POST', '/v1/checkout/sessions', $params, 'reception-' . $cid . '-' . wp_generate_password(10, false));
     if (is_wp_error($r)) return $r;
     if (empty($r['url'])) return new WP_Error('aled08_stripe', 'Stripe n’a pas renvoyé d’adresse de paiement.');
     update_post_meta($cid, '_aled08_solde_session', $r['id'] ?? '');
-    aled08e_cmd_journal($cid, 'Lien de paiement du solde créé (' . aled08e_euro_txt($solde) . ')' . ($expire ? ', valable 24 heures' : '') . '.');
+    aled08e_cmd_journal($cid, 'Paiement de réception ouvert : ' . ($n ? 'reste en ' . $n . ' fois (' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois)' : 'reste en une fois (' . aled08e_euro_txt($m['solde']) . ')') . ($expire ? ', lien valable 24 heures' : '') . '.');
     return $r['url'];
 }
+/* Ancien nom (lien copié depuis l'administration) : le reste en une fois */
+function aled08e_stripe_solde_session($cid, $expire = 0) { return aled08e_stripe_reception_session($cid, 0, $expire); }
 
 /* Portail client Stripe (moyen de paiement, factures) : créé au clic, le lien expire en 5 minutes */
 function aled08e_stripe_portail($uid) {
@@ -270,8 +271,8 @@ add_action('template_redirect', function () {
     $back = function () { wp_safe_redirect(aled08e_url(['m' => 'paiement_erreur']) . '#commande', 303); exit; };
     if (!$c || $c['user'] !== $uid) $back();
     if ($solde) {
-        if (!$nonce('_aled08e_solde', 'aled08e_solde_' . $cid) || $c['statut'] !== 'en_ligne') $back();
-        $url = aled08e_stripe_solde_session($cid);
+        if (!$nonce('_aled08e_solde', 'aled08e_solde_' . $cid) || !aled08e_cmd_reception_due($c)) $back();
+        $url = aled08e_stripe_reception_session($cid, (int) ($_POST['reste'] ?? 0));
     } else {
         if (!$nonce('_aled08e_payer', 'aled08e_payer_' . $cid) || $c['statut'] !== 'attente_paiement' || $c['paiement_en_cours']) $back();
         $url = aled08e_stripe_checkout($cid);
@@ -346,7 +347,8 @@ function aled08e_stripe_traiter_event($event) {
 
 /* Session de paiement terminée : commande payée (abonnement) ou solde payé (paiement) */
 function aled08e_stripe_on_checkout($s) {
-    if (($s['mode'] ?? '') === 'payment') {
+    if (!empty($s['metadata']['reception'])) return aled08e_stripe_on_reception($s);
+    if (($s['mode'] ?? '') === 'payment' && !empty($s['metadata']['solde'])) {
         $cid = (int) ($s['metadata']['solde'] ?? 0);
         $c = $cid ? aled08e_cmd_get($cid) : null;
         if (!$c) return 'paiement : commande inconnue';
@@ -400,7 +402,7 @@ function aled08e_stripe_on_checkout($s) {
         return $c['ref'] . ' : paiement en cours de confirmation';
     }
     delete_post_meta($cid, '_aled08_paiement_en_cours');
-    aled08e_stripe_maj_abonnement($c['user'], $cid, 'active');
+    if ($sub) aled08e_stripe_maj_abonnement($c['user'], $cid, 'active');
     if ($cus) aled08e_stripe_request('POST', '/v1/customers/' . rawurlencode($cus), ['invoice_settings' => ['footer' => aled08e_stripe_footer()]]);
     if ($sub && $c['lissage']) aled08e_stripe_trouver_lissage($cid, $sub);
     aled08e_cmd_set_statut($cid, 'payee', 'Stripe');
@@ -541,7 +543,7 @@ function aled08e_stripe_on_subscription($sub, $deleted) {
  * ========================================================================= */
 function aled08e_stripe_reconciliation() {
     if (!aled08e_stripe_ready()) return;
-    foreach (aled08e_cmd_liste(['meta_key' => '_aled08_lissage', 'meta_value' => 1]) as $c) {
+    foreach (aled08e_cmd_liste(['meta_key' => '_aled08_lissage', 'meta_value' => 0, 'meta_compare' => '>', 'meta_type' => 'NUMERIC']) as $c) {
         if (!$c['stripe_subscription'] || $c['statut'] === 'annulee' || get_post_meta($c['id'], '_aled08_lissage_fini', true)) continue;
         if ($c['stripe_lissage_item'] === '') { aled08e_stripe_trouver_lissage($c['id'], $c['stripe_subscription']); $c = aled08e_cmd_get($c['id']); }
         if ($c['stripe_lissage_item'] === '') continue;
@@ -557,3 +559,37 @@ function aled08e_stripe_reconciliation() {
     }
 }
 add_action('aled08_quotidien', 'aled08e_stripe_reconciliation', 30);
+
+/* Paiement de réception terminé : le reste est réglé (ou lissé) et l'abonnement démarre */
+function aled08e_stripe_on_reception($s) {
+    $cid = (int) $s['metadata']['reception'];
+    $c = aled08e_cmd_get($cid);
+    if (!$c) return 'réception : commande inconnue';
+    $n = aled08e_cmd_lissage_n((string) ($s['metadata']['lissage'] ?? '0'));
+    $cus = aled08e_stripe_id($s['customer'] ?? '');
+    $sub = aled08e_stripe_id($s['subscription'] ?? '');
+    if ($c['reception_payee']) return $c['ref'] . ' : réception déjà notée';
+    if (($s['payment_status'] ?? '') !== 'paid') {
+        aled08e_cmd_journal($cid, 'Paiement de réception en cours de confirmation (prélèvement).');
+        return $c['ref'] . ' : réception en cours de confirmation';
+    }
+    // le choix du client (en une fois ou en n fois) devient celui de la commande
+    $m = aled08e_cmd_montants_reception($c, $n);
+    update_post_meta($cid, '_aled08_montants', array_merge($c['montants'], ['solde' => $m['solde'], 'lissage_mensualite' => $m['lissage_mensualite'], 'lissage_total_echeances' => $m['lissage_total_echeances'], 'mensuel_forfait' => $m['mensuel_forfait'], 'mensuel_options' => $m['mensuel_options']]));
+    update_post_meta($cid, '_aled08_lissage', $n);
+    if ($n) update_post_meta($cid, '_aled08_periode', 'mois');
+    else update_post_meta($cid, '_aled08_solde_paye', 1);
+    update_post_meta($cid, '_aled08_reception_payee', 1);
+    if ($cus) { update_post_meta($cid, '_aled08_stripe_customer', $cus); aled08e_stripe_noter_customer($c['user'], $cus); }
+    if ($sub) {
+        update_post_meta($cid, '_aled08_stripe_subscription', $sub);
+        if ($c['user']) update_user_meta($c['user'], 'aled08_stripe_subscription', $sub);
+        aled08e_stripe_maj_abonnement($c['user'], $cid, 'active');
+        if ($n) aled08e_stripe_trouver_lissage($cid, $sub);
+    }
+    if ($c['user']) { update_user_meta($c['user'], 'aled08_paiement', $n ? 'mois' : ($c['periode'] === 'annee' ? 'annee' : 'mois')); }
+    $quoi = $n ? 'reste en ' . $n . ' fois (' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois)' : 'reste payé en une fois (' . aled08e_euro_txt($m['solde']) . ')';
+    aled08e_cmd_journal($cid, 'Réception réglée par Stripe : ' . $quoi . ', abonnement démarré.');
+    aled08e_stripe_mail_owner('Réception réglée : commande ' . $c['ref'], 'Commande ' . $c['ref'] . ' (' . aled08e_cmd_nom($c) . ') : ' . $quoi . ". Le forfait a démarré.\n\nFiche : " . aled08e_cmd_admin_url($cid) . "\n");
+    return $c['ref'] . ' : réception réglée (' . $quoi . ')';
+}

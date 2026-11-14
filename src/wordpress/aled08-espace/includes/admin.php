@@ -92,7 +92,7 @@ function aled08e_admin_tableau() {
     $retards = get_users(['role' => ALED08E_ROLE, 'meta_key' => 'aled08_abonnement', 'meta_value' => 'past_due', 'number' => 50]);
     $suppr = aled08e_comptes_a_supprimer(30);
     $lissages = [];
-    foreach (aled08e_cmd_liste(['meta_key' => '_aled08_lissage', 'meta_value' => 1]) as $c) if ($c['statut'] !== 'annulee' && !get_post_meta($c['id'], '_aled08_lissage_fini', true) && in_array($c['statut'], aled08e_cmd_statuts_payes(), true)) $lissages[] = $c;
+    foreach (aled08e_cmd_liste(['meta_key' => '_aled08_lissage', 'meta_value' => 0, 'meta_compare' => '>', 'meta_type' => 'NUMERIC']) as $c) if ($c['statut'] !== 'annulee' && !get_post_meta($c['id'], '_aled08_lissage_fini', true) && in_array($c['statut'], aled08e_cmd_statuts_payes(), true)) $lissages[] = $c;
     $stripe = aled08e_stripe_ready();
     $libSt = aled08e_cmd_statuts();
     echo '<div class="wrap"><h1>Alex & Lia : tableau de bord</h1>';
@@ -230,7 +230,7 @@ add_action('manage_' . ALED08E_CPT_CMD . '_posts_custom_column', function ($col,
             break;
         case 'aled08_jour':
             echo '<strong>' . aled08e_euro($c['montants']['total_jour']) . '</strong>';
-            if (!$c['lissage'] && $c['montants']['solde'] > 0) echo '<br><small>solde ' . aled08e_euro($c['montants']['solde']) . ($c['solde_paye'] ? ' payé' : ' dû') . '</small>';
+            if ($c['montants']['solde'] > 0) echo '<br><small>reste ' . aled08e_euro($c['montants']['solde']) . (($c['solde_paye'] || $c['reception_payee']) ? ' réglé' : ' à la réception') . '</small>';
             break;
         case 'aled08_statut':
             echo '<span class="aled08-st aled08-st-' . esc_attr($c['statut']) . '">' . esc_html(aled08e_cmd_statuts()[$c['statut']][0] ?? $c['statut']) . '</span>';
@@ -273,7 +273,7 @@ function aled08e_cmd_box_actions($post) {
     if (!$c) return;
     $s = $c['statut'];
     $stripe = aled08e_stripe_ready();
-    $soldeDu = !$c['lissage'] && $c['montants']['solde'] > 0 && !$c['solde_paye'];
+    $soldeDu = !$c['reception_payee'] && $c['montants']['solde'] > 0 && !$c['solde_paye'];
     echo '<div class="aled08-actions">';
     echo '<p>Statut : <span class="aled08-st aled08-st-' . esc_attr($s) . '">' . esc_html(aled08e_cmd_statuts()[$s][0]) . '</span></p>';
     if ($s === 'attente_paiement') {
@@ -309,8 +309,8 @@ function aled08e_cmd_box_actions($post) {
         echo aled08e_cmd_bouton($post->ID, 'en_ligne', 'Site en ligne', 'button button-primary', 'Le client reçoit l’e-mail « Votre site est en ligne »' . ($soldeDu ? ', avec le solde de ' . aled08e_euro_txt($c['montants']['solde']) . ' à régler' : '') . '. Continuer ?');
     }
     if ($soldeDu && in_array($s, aled08e_cmd_statuts_payes(), true)) {
-        echo aled08e_cmd_bouton($post->ID, 'solde_paye', 'Solde payé (hors Stripe)', 'button', 'Le solde de ' . aled08e_euro_txt($c['montants']['solde']) . ' a été payé autrement ?');
-        if ($stripe) echo aled08e_cmd_bouton($post->ID, 'lien_solde', 'Copier un lien de paiement du solde');
+        echo aled08e_cmd_bouton($post->ID, 'solde_paye', 'Reste payé (hors Stripe)', 'button', 'Le solde de ' . aled08e_euro_txt($c['montants']['solde']) . ' a été payé autrement ?');
+        if ($stripe) echo aled08e_cmd_bouton($post->ID, 'lien_solde', 'Copier un lien de paiement du reste (en une fois, avec le forfait)');
     }
     if ($c['user']) echo aled08e_cmd_bouton($post->ID, 'renvoyer_acces', 'Renvoyer l’e-mail d’accès à l’espace');
     if (aled08e_cpanel_ok() && $c['domaine'] && in_array($s, aled08e_cmd_statuts_en_cours(), true) && aled08e_hebergeur() !== 'cpanel') {
@@ -341,9 +341,10 @@ function aled08e_cmd_box_detail($post) {
     $row('Nom de domaine', $c['domaine'] ? '<strong>' . esc_html($c['domaine']) . '</strong> : ' . esc_html(aled08e_cmd_domaine_statuts()[$c['domaine_statut']] ?? $c['domaine_statut']) . ($c['domaine_mien'] ? ' (le client l’a déjà, il faudra pointer ses DNS)' : '') : '<em>à choisir avec le client</em>');
     $row('Forfait', esc_html($f['name']) . ', ' . aled08e_euro($m['mensuel_forfait']) . ' ' . esc_html($per) . ($c['periode'] === 'annee' ? ' (' . (int) $D['moisOfferts'] . ' mois offerts)' : ''));
     $row('Options', $opts ? esc_html(implode(', ', $opts)) . ($m['mensuel_options'] > 0 ? ', ' . aled08e_euro($m['mensuel_options']) . ' ' . esc_html($per) : '') . ($m['options_ponctuel'] > 0 ? ', ' . aled08e_euro($m['options_ponctuel']) . ' une fois' : '') : 'aucune');
-    $row('Création', $c['lissage']
-        ? 'lissée : ' . aled08e_euro($m['lissage_mensualite']) . ' ' . esc_html($per) . ' pendant ' . (int) $m['lissage_total_echeances'] . ' échéances. <strong>Lissage : ' . (int) $c['lissage_paye'] . ' / ' . (int) $m['lissage_total_echeances'] . ' payées</strong>' . (get_post_meta($c['id'], '_aled08_lissage_fini', true) ? ' (terminé)' : '')
-        : ($m['solde'] > 0 ? 'acompte ' . aled08e_euro($m['acompte']) . ' à la commande, solde ' . aled08e_euro($m['solde']) . ' à la mise en ligne' . ($c['solde_paye'] ? ' <strong>(solde payé)</strong>' : ' <strong>(solde dû)</strong>') : 'payée en une fois à la commande : ' . aled08e_euro($m['acompte'])));
+    $row('Création', 'acompte ' . aled08e_euro($m['acompte']) . ' à la commande, puis à la réception : '
+        . ($c['reception_payee']
+            ? ($c['lissage'] ? 'reste en ' . (int) $m['lissage_total_echeances'] . ' fois, ' . aled08e_euro($m['lissage_mensualite']) . ' par mois. <strong>' . (int) $c['lissage_paye'] . ' / ' . (int) $m['lissage_total_echeances'] . ' payées</strong>' . (get_post_meta($c['id'], '_aled08_lissage_fini', true) ? ' (terminé)' : '') : 'reste payé en une fois, ' . aled08e_euro($m['solde']) . ' <strong>(payé)</strong>')
+            : 'reste ' . aled08e_euro($m['solde']) . ($c['solde_paye'] ? ' <strong>(payé à la main)</strong>' : ' <strong>(à régler, ' . ($c['lissage'] ? 'le client pensait payer en ' . (int) $c['lissage'] . ' fois' : 'en une fois prévu') . ')</strong>')));
     $row('Montant du jour de la commande', '<strong>' . aled08e_euro($m['total_jour']) . '</strong>');
     if ($c['parrain']) { $p = aled08e_user_by_code($c['parrain']); $row('Parrainage', esc_html($c['parrain']) . ' (' . ($p ? '<a href="' . esc_url(get_edit_user_link($p->ID)) . '">' . esc_html($p->display_name) . '</a>' : 'code inconnu') . ')'); }
     if ($c['message']) $row('Message du client', '<div class="aled08-pre">' . esc_html($c['message']) . '</div>');

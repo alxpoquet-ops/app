@@ -7,7 +7,7 @@ const { monster } = require('../src/lib/monsters');
 
 const { site, forfaits, types, annuel, options, fidelite } = cfg;
 const boost = cfg.boost || { prix: 1 };
-const paiement = cfg.paiement || { acompte: 100 };
+const paiement = cfg.paiement || { acompte: 25 };
 const lissage = cfg.lissage || { mois: 24 };
 const delais = cfg.delais || { reponse: '72 heures', titan: '24 heures' };
 // Quotas de modifications par mois : lus dans config.js (f.quota) ; valeurs de repli si absents.
@@ -31,7 +31,7 @@ process.stdout.write(
     moisOfferts: annuel.moisOfferts,
     boost: boost.prix,
     lissageDurees: lissage.durees || [6, 12],
-    acompte: paiement.acompte || 100,
+    acompte: paiement.acompte || 25,
     delais: { reponse: delais.reponse || '72 heures', titan: delais.titan || '24 heures' },
     parrainageMois: fidelite.parrainageMois,
     remiseSecondSite: fidelite.remiseSecondSite || 0,
