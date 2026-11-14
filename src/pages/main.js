@@ -1,5 +1,5 @@
 // Pages du site
-const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, shopify, pageEnPlus } = require('../config');
+const { site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, pageEnPlus } = require('../config');
 const base = forfaits[0];
 const { icon } = require('../lib/icons');
 const { monster } = require('../lib/monsters');
@@ -15,6 +15,11 @@ const crumb = (k) => [HOME, { name: sections[k].label, path: sections[k].path }]
 const euro = C.euro;
 const F = (id) => forfaits.find((f) => f.id === id);
 const T = (id) => types.find((t) => t.id === id);
+const round2 = (n) => Math.round(n * 100) / 100;
+// Champs cachés communs aux formulaires : horodatage anti-robot et champ piège.
+function formHidden() {
+  return `<input type="hidden" name="_t" value=""><div class="hp" aria-hidden="true"><label>Site web <input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>`;
+}
 
 // ====================================================================== ACCUEIL
 function home() {
@@ -29,12 +34,12 @@ function home() {
     <div class="hero-text">
       <p class="kicker">${icon('sparkles')}Sites internet, SEO et IA</p>
       <h1>Votre site internet à partir de ${euro(T('une-page').price)}, <mark>tout compris</mark></h1>
-      <p class="hero-lead">Je crée votre site à prix fixe, puis je m’en occupe pour ${euro(base.month)} par mois : hébergement, nom de domaine, sauvegardes, mises à jour et une modification par mois. Le prix du site peut aussi être lissé sur 2 ans.</p>
+      <p class="hero-lead">Je crée votre site à prix fixe, puis je m’en occupe pour ${euro(base.month)} par mois : hébergement, nom de domaine, sauvegardes, mises à jour et une modification par mois. Le prix du site peut aussi être lissé sur ${lissage.mois} mois.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}${C.btn('/forfaits/', 'btn-light btn-lg', 'heart', 'Voir les forfaits')}</div>
       <ul class="hero-points">
         <li>${icon('check')}Prix de création fixe</li>
         <li>${icon('check')}Dès ${euro(base.month)} par mois</li>
-        <li>${icon('check')}Sans engagement</li>
+        <li>${icon('check')}Forfait sans engagement</li>
       </ul>
     </div>
     <div class="hero-art">
@@ -50,6 +55,16 @@ function home() {
   ${C.typeCards()}
 </div></section>
 
+<section class="section"><div class="container">
+  <h2 class="section-title">Comment ça marche</h2>
+  <p class="section-sub">Trois étapes, et rien de technique pour vous.</p>
+  ${C.steps([
+    { t: 'Vous commandez en ligne', d: `Vous choisissez votre site et votre forfait. Vous réglez ${paiement.acompte} % du site, ou la première mensualité si vous le lissez.` },
+    { t: 'Je crée votre site', d: 'Je réserve votre nom de domaine et je vous écris sous 24 heures. Vous voyez l’aperçu, vous me dites ce qui change.' },
+    { t: 'Vous demandez, je m’en occupe', d: 'Un horaire, un prix, une photo : vous m’écrivez depuis votre espace client. Je fais la modification et je vous préviens.' },
+  ])}
+</div></section>
+
 <section class="section section-soft c-mint"><div class="container split split-rev">
   ${C.statsCard()}
   <div class="reveal">
@@ -63,7 +78,7 @@ function home() {
 
 <section class="section"><div class="container">
   <h2 class="section-title">Choisissez votre petit monstre</h2>
-  <p class="section-sub">Deux forfaits simples, au mois ou à l’année avec deux mois offerts.</p>
+  <p class="section-sub">Trois forfaits simples, au mois ou à l’année avec deux mois offerts.</p>
   ${C.forfaitMinis()}
   <p class="center more">${C.btn('/forfaits/', 'btn-light', 'arrow-right', 'Comparer les forfaits')}</p>
 </div></section>
@@ -84,9 +99,9 @@ function home() {
     <span class="promo-text"><strong>Un mois offert en parrainant</strong><span>Pour vous et pour la personne que vous recommandez.</span></span>
     <span class="promo-go">${icon('arrow-right')}</span>
   </a>
-  <a class="promo c-butter reveal" href="/comparatif-shopify/">
-    <span class="promo-ico">${icon('store')}</span>
-    <span class="promo-text"><strong>Moins cher que Shopify chaque mois</strong><span>Une boutique entretenue pour ${euro(base.month)} par mois, contre ${euro(shopify.basicMensuel)} pour Shopify Basic seul.</span></span>
+  <a class="promo c-butter reveal" href="${sections.comparatif.path}">
+    <span class="promo-ico">${icon('scale')}</span>
+    <span class="promo-text"><strong>ALED08 et les autres solutions</strong><span>Agence, freelance, plateforme à faire soi-même : qui fait quoi, et à quel prix.</span></span>
     <span class="promo-go">${icon('arrow-right')}</span>
   </a>
 </div></section>
@@ -110,7 +125,7 @@ function creerPage() {
   const body = `${C.pageHero({
     section: 'creer',
     h1: 'Créez votre site en deux minutes',
-    lead: 'Choisissez votre site, votre nom de domaine et votre forfait. Rien à payer maintenant : je vous réponds avec un récapitulatif à valider.',
+    lead: 'Choisissez votre site, votre nom de domaine et votre forfait. Vous voyez le prix tout de suite, et vous commandez en ligne quand vous êtes prêt.',
     crumbs,
   })}
 <section class="section section-builder"><div class="container">${C.configurator()}</div></section>
@@ -118,10 +133,10 @@ function creerPage() {
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Et ensuite ?</h2>
   ${C.steps([
-    { t: 'Je vous réponds', d: 'Rapidement, en général dans la journée, avec le récapitulatif et les questions utiles pour démarrer.' },
-    { t: 'Vous validez', d: `Vous réglez ${paiement.acompte} % de la création et je réserve votre nom de domaine.` },
-    { t: 'Je crée votre site', d: 'Vous voyez l’aperçu et vous demandez les changements.' },
-    { t: 'C’est en ligne', d: 'Vous réglez le reste de la création et votre forfait démarre.' },
+    { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % de la création, ou la première mensualité si le site est lissé, et le premier mois de forfait.` },
+    { t: 'Je réserve votre nom de domaine', d: 'Il est à votre nom. Je vous écris sous 24 heures avec les questions utiles pour démarrer.' },
+    { t: 'Je crée votre site', d: 'Vous recevez un aperçu. Vous me dites ce qui change, je corrige.' },
+    { t: 'C’est en ligne', d: 'Vous réglez le solde (sauf si le site est lissé). Vos modifications passent ensuite par votre espace client.' },
   ])}
 </div></section>
 
@@ -132,7 +147,7 @@ ${f.html}`;
     bodyClass: 'page-creer',
     noMobileBar: true,
     title: 'Créer mon site : prix, nom de domaine et forfait | ALED08',
-    description: 'Choisissez votre type de site, vérifiez votre nom de domaine, prenez le forfait Chico ou Power et vos options. Récapitulatif gratuit, sans engagement.',
+    description: 'Choisissez votre type de site, vérifiez votre nom de domaine, prenez le forfait Chico, Power ou Titan et vos options. Le prix s’affiche tout de suite.',
     crumbs,
     body,
     schema: [f.schema],
@@ -147,7 +162,7 @@ function forfaitsPage() {
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: 'Les forfaits : choisissez votre monstre',
-    lead: 'Deux forfaits, pas plus. Chico garde votre site en ligne et à jour. Power ajoute le SEO, un rapport chaque mois et une modification par semaine.',
+    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power ajoute le SEO et un rapport chaque mois. Titan, pour les boutiques, ajoute une modification par jour ouvré et un article de blog par mois.',
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
@@ -158,7 +173,7 @@ function forfaitsPage() {
 
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">La création, à prix fixe</h2>
-  <p class="section-sub">En une fois, avec un acompte de ${paiement.acompte} % au départ, ou lissée sur 2 ans.</p>
+  <p class="section-sub">En une fois, avec un acompte de ${paiement.acompte} % au départ, ou lissée sur ${lissage.mois} mois.</p>
   <div class="create-prices">${types
     .map(
       (t) => `<a class="create-price c-${t.color} reveal" href="${C.creerUrl({ type: t.id })}">
@@ -180,9 +195,9 @@ function forfaitsPage() {
 </div></section>
 
 <section class="section section-soft"><div class="container duo">
-  <a class="promo c-butter reveal" href="/comparatif-shopify/">
-    <span class="promo-ico">${icon('store')}</span>
-    <span class="promo-text"><strong>Et par rapport à Shopify ?</strong><span>Le détail des prix, ligne par ligne.</span></span>
+  <a class="promo c-butter reveal" href="${sections.comparatif.path}">
+    <span class="promo-ico">${icon('scale')}</span>
+    <span class="promo-text"><strong>Et par rapport aux autres solutions ?</strong><span>Agence, freelance, plateforme : la comparaison, ligne par ligne.</span></span>
     <span class="promo-go">${icon('arrow-right')}</span>
   </a>
   <a class="promo c-pink reveal" href="/fidelite/">
@@ -193,12 +208,12 @@ function forfaitsPage() {
 </div></section>
 
 ${f.html}
-${C.ctaBand({ title: 'Votre monstre est choisi ?', text: 'Composez votre site en deux minutes. Rien à payer maintenant.' })}`;
+${C.ctaBand({ title: 'Votre monstre est choisi ?', text: 'Composez votre site en deux minutes et commandez en ligne.' })}`;
   return {
     path: '/forfaits/',
     section: 'forfaits',
-    title: 'Forfaits site internet Chico et Power, dès 5 € par mois | ALED08',
-    description: 'Chico à 5 € par mois : hébergement, domaine, sauvegardes, une modification. Power à 20 € : SEO, rapport mensuel, une modification par semaine.',
+    title: 'Forfaits Chico, Power et Titan, dès 5 € par mois | ALED08',
+    description: 'Chico à 5 € par mois : hébergement, domaine, sauvegardes, une modification. Power à 20 € : SEO et rapport mensuel. Titan à 40 € : une modification par jour ouvré.',
     crumbs,
     body,
     schema: [f.schema],
@@ -226,8 +241,8 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
     <p>Un horaire, un prix, une photo, une nouvelle page ? Écrivez-le dans votre espace, avec une photo si besoin. Je fais la modification, je vérifie que tout s’affiche bien, et je vous préviens quand c’est en ligne.</p>
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
-      <li>Chaque version du site est gardée</li>
-      <li>Chico : une modification par mois. Power : une par semaine.</li>
+      <li>Réponse sous ${delais.reponse}, ou ${delais.titan} avec Titan</li>
+      <li>Chico : une modification par mois. Power : une par semaine. Titan : une par jour ouvré.</li>
     </ul>
   </div>
   ${C.phoneEdit(true)}
@@ -262,6 +277,7 @@ function seoPage() {
   const levels = [
     ['chico', 'Les bases', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Google Search Console et suivi']],
     ['power', 'Le suivi', ['Tout Chico', 'SEO suivi chaque mois', 'Un rapport de visibilité mensuel']],
+    ['titan', 'Le contenu', ['Tout Power', 'Un article de blog par mois, écrit pour votre SEO', `Réponse sous ${delais.titan}`]],
   ];
   const body = `${C.pageHero({
     section: 'seo',
@@ -330,63 +346,254 @@ ${C.ctaBand({ title: 'Être trouvé, ça commence ici', text: 'Créez votre site
   };
 }
 
-// ====================================================================== COMPARATIF SHOPIFY
-function shopifyPage() {
-  const crumbs = crumb('shopify');
-  const f = C.faq(FAQ.shopify, 'Vos questions', 'faq-shopify');
-  const b = T('boutique');
-  const shopYear = shopify.basicAnnuel * 12;
-  const meYear = C.year(base.month);
+// ====================================================================== COMPARATIF : ALED08 ET LES AUTRES SOLUTIONS
+function comparatifPage() {
+  const crumbs = crumb('comparatif');
+  const f = C.faq(FAQ.comparatif || [], 'Vos questions sur le comparatif', 'faq-comparatif');
+  const who = [
+    ['butter', 'building-2', 'L’agence web', 'Une équipe complète : chef de projet, graphiste, développeur. Idéale pour un gros projet avec un budget à la hauteur. Le prix et le délai dépendent du devis.'],
+    ['sky', 'user', 'Le freelance', 'Une personne qui fait tout. La qualité dépend beaucoup de qui vous choisissez. Les modifications et le suivi se font souvent au devis, quand le freelance est disponible.'],
+    ['lilac', 'mouse-pointer-click', 'La plateforme à faire soi-même', 'Vous construisez votre site à partir de modèles, pour un abonnement mensuel. C’est vous qui faites le travail, les mises à jour et le référencement.'],
+    ['mint', 'sparkles', 'ALED08', 'Je crée votre site à prix fixe, puis je m’en occupe chaque mois pour un petit forfait. Vous me demandez, je fais. Pour les très gros projets, je vous oriente vers une agence.'],
+  ];
   const body = `${C.pageHero({
-    section: 'shopify',
-    h1: 'Shopify ou ALED08 : le vrai prix d’une petite boutique',
-    lead: 'Shopify est un très bon outil, si vous avez le temps de construire et de gérer votre boutique vous-même. Voici la différence, chiffres à l’appui.',
+    section: 'comparatif',
+    h1: 'ALED08 et les autres solutions',
+    lead: 'Agence web, freelance ou plateforme à faire soi-même : chaque solution a sa place. Voici ce qui change, sans dénigrer personne.',
     crumbs,
   })}
 <section class="section"><div class="container">
-  ${C.shopifyTable()}
-  <p class="source">Prix publics de Shopify pour la France relevés en ${shopify.releve}, forfait Basic. Les prix peuvent changer : vérifiez-les sur <a href="${shopify.source}" rel="noopener" target="_blank">la page tarifs de Shopify</a>.</p>
+  ${C.comparatifTable()}
+  <p class="source">Les prix des autres solutions dépendent du prestataire et du projet : je ne les chiffre pas ici. Les prix ALED08 sont ceux de la page <a href="/forfaits/">forfaits</a>.</p>
 </div></section>
 
 <section class="section section-soft"><div class="container">
-  <h2 class="section-title">Sur un an, pour une boutique de 20 produits</h2>
-  <div class="years">
-    <div class="year-card reveal">
-      <p class="year-who">Shopify Basic, payé à l’année</p>
-      <p class="year-big">${euro(shopYear)}</p>
-      <ul class="list-dot"><li>Abonnement : ${euro(shopify.basicAnnuel)} × 12 mois</li><li>Nom de domaine en plus</li><li>Applications payantes selon vos besoins</li><li>Et le temps de tout construire vous-même</li></ul>
-    </div>
-    <div class="year-card is-me reveal">
-      <p class="year-who">${monster('chico')}ALED08, forfait Chico à l’année</p>
-      <p class="year-big">${euro(b.price + meYear)}<small>la première année</small></p>
-      <ul class="list-check"><li>Création : ${euro(b.price)}, une fois</li><li>Forfait Chico : ${euro(meYear)} (${annuel.moisOfferts} mois offerts)</li><li>Nom de domaine, mises à jour et bases du SEO compris</li></ul>
-      <p class="year-after">Puis ${euro(meYear)} par an.</p>
-    </div>
-  </div>
-  <p class="center years-note">La première année, vous payez la création. Ensuite, ${euro(meYear)} par an au lieu de ${euro(shopYear)}, et c’est moi qui m’occupe de tout. Power reste en option.</p>
+  <h2 class="section-title">Pour qui, chaque solution ?</h2>
+  <div class="feats">${who
+    .map(([c, ic, t, d]) => `<div class="feat who c-${c} reveal">${icon(ic)}<h3>${t}</h3><p>${d}</p></div>`)
+    .join('')}</div>
 </div></section>
 
 <section class="section"><div class="container container-narrow prose reveal">
-  ${md(`## Quand choisir Shopify ?
+  ${md(`## Pourquoi mes prix sont plus bas
 
-Si vous avez des centaines de produits, vendez dans plusieurs pays ou voulez tout gérer vous-même, Shopify est un excellent choix. Je vous le dirai franchement.
+J’utilise l’IA pour coder plus vite. Elle ne remplace pas un vrai développeur, mais pour un site vitrine ou une petite boutique, elle me fait gagner beaucoup d’heures. Ces heures en moins, c’est un prix en moins pour vous. Le détail est sur la page [ma méthode](/methode/).
 
-## Quand choisir ALED08 ?
+## Ce que vous ne faites pas vous-même
 
-Si vous voulez une boutique simple et jolie, trouvée sur Google, avec quelqu’un qui s’en occupe pour vous et un prix fixe chaque mois.`)}
+Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, faire les mises à jour, écrire pour Google. Avec ALED08, vous me dites ce que vous voulez, et je le fais. Vous gardez votre temps pour votre activité.
+
+## Quand je vous dirai d’aller ailleurs
+
+Une application sur mesure, un logiciel métier, un catalogue de milliers de produits : ces projets demandent une agence ou un développeur expérimenté. Je vous le dis dès le premier échange.`)}
 </div></section>
 
 ${f.html}
-${C.ctaBand({ title: 'On regarde votre projet ?', text: 'Composez votre boutique en deux minutes, ou posez-moi vos questions sur WhatsApp.' })}`;
+${C.ctaBand({ title: 'On regarde votre projet ?', text: 'Composez votre site en deux minutes, ou posez-moi vos questions sur WhatsApp.' })}`;
   return {
-    path: '/comparatif-shopify/',
-    section: 'shopify',
-    title: 'Shopify ou boutique sur mesure : le vrai prix | ALED08',
-    description: 'Shopify Basic comparé à une boutique ALED08 : abonnement, création, nom de domaine, SEO et frais de paiement. Les chiffres sur un an, expliqués simplement.',
+    path: sections.comparatif.path,
+    section: 'comparatif',
+    title: 'Comparatif : ALED08, agence web, freelance, plateforme | ALED08',
+    description: 'Agence web, freelance ou plateforme à faire soi-même : qui fait le travail, les prix, les délais, les modifications et le SEO, comparés simplement et honnêtement.',
     crumbs,
     body,
     schema: [f.schema],
     priority: 0.7,
+  };
+}
+
+// ====================================================================== COMMANDER
+// Le formulaire est posté sur /commander/ : sous WordPress, l'extension remplace l'action et traite la commande.
+// Le JS préremplit depuis l'URL et calcule les montants ; le serveur recalcule tout.
+const ORDER_ERRORS = {
+  champs: 'Il manque une information obligatoire. Vérifiez les champs marqués d’une étoile.',
+  email: 'Cette adresse e-mail ne semble pas valide. Vérifiez-la, s’il vous plaît.',
+  domaine: 'Indiquez le nom de domaine souhaité, ou cochez « J’ai déjà un nom de domaine ».',
+  cgv: 'Pour commander, il faut accepter les conditions générales de vente.',
+  demarrage: 'Pour commander, il faut accepter que la création commence tout de suite.',
+  engagement: `Avec le site lissé sur ${lissage.mois} mois, il faut accepter l’engagement de ${lissage.mois} mois.`,
+  paiement: 'Le paiement n’a pas abouti. Votre commande est gardée : vous pouvez réessayer, ou m’écrire.',
+  robot: 'L’envoi a été bloqué par la protection contre les robots. Attendez quelques secondes et réessayez.',
+  annule: 'Le paiement a été annulé. Rien n’a été débité : vous pouvez reprendre quand vous voulez.',
+  inconnu: 'Quelque chose n’a pas fonctionné. Réessayez, ou écrivez-moi sur WhatsApp : je finalise la commande avec vous.',
+};
+function commanderPage() {
+  const S = sections.commander;
+  const crumbs = [HOME, { name: sections.creer.label, path: sections.creer.path }, { name: S.label, path: S.path }];
+  const t0 = T('vitrine'), f0 = F('power');
+  const acompte0 = round2((t0.price * paiement.acompte) / 100);
+  const today0 = round2(acompte0 + f0.month);
+  const field = (name, label, attrs, { req = true, hint = '' } = {}) =>
+    `<div class="field"><label for="o-${name}">${label} ${req ? '<span class="req">*</span>' : '<span class="opt">(facultatif)</span>'}</label><input id="o-${name}" name="${name}" ${attrs}${req ? ' required' : ''}>${hint ? `<small class="field-hint">${hint}</small>` : ''}</div>`;
+  const nextSteps = [
+    ['globe', 'Je réserve votre nom de domaine', 'Il est à votre nom. Je m’occupe de tout.'],
+    ['mail-check', 'Je vous écris sous 24 heures', 'Avec les questions utiles pour démarrer votre site.'],
+    ['circle-user', 'Votre espace client arrive par e-mail', 'Vous y suivez votre commande et vos demandes.'],
+    ['rocket', 'Votre site est en ligne', `Sous <span data-order="delai">${esc(t0.delai)}</span> pour le type choisi.`],
+  ];
+  const body = `${C.pageHero({
+    section: 'commander',
+    h1: 'Votre commande',
+    lead: 'Vérifiez votre choix, donnez vos coordonnées et payez en ligne. C’est tout.',
+    crumbs,
+    compact: true,
+  })}
+<section class="section section-order"><div class="container">
+  <ol class="o-steps" aria-label="Les trois étapes de la commande">
+    <li class="c-mint"><span>1</span>Votre site</li>
+    <li class="c-lilac"><span>2</span>Vos coordonnées</li>
+    <li class="c-peach"><span>3</span>Paiement sécurisé</li>
+  </ol>
+  <div class="order" data-aled-order data-order-data="${C.priceData()}" data-billing-scope>
+    <form class="o-form" id="o-form" method="post" action="${S.path}" data-order-form novalidate>
+      <input type="hidden" name="aled08_order" value="1">
+      ${formHidden()}
+      <input type="hidden" name="domaine" value="" data-order-domaine>
+      <div class="form-alert o-alert" data-order-error hidden role="alert" tabindex="-1"></div>
+      <template data-order-errors>${Object.entries(ORDER_ERRORS).map(([k, v]) => `<p data-code="${k}">${v}</p>`).join('')}</template>
+
+      <fieldset class="o-card">
+        <legend><span class="b-n">1</span><span class="b-t">Votre site</span></legend>
+        <div class="o-in">
+        <p class="b-hint">Vous pouvez encore changer d’avis : les prix se mettent à jour.</p>
+        <p class="b-label">Le type de site</p>
+        ${C.typeChoices({ name: 'type' })}
+        <p class="b-label">Le forfait</p>
+        ${C.forfaitChoices({ name: 'forfait' })}
+        <p class="b-label">Le forfait est payé</p>
+        <div class="b-seg" role="radiogroup" aria-label="Période du forfait">
+          <label><input type="radio" name="periode" value="mois" checked><span>Au mois</span></label>
+          <label><input type="radio" name="periode" value="annee"><span>À l’année <em>${annuel.moisOfferts} mois offerts</em></span></label>
+        </div>
+        <label class="b-tick o-lisse"><input type="checkbox" name="lissage" value="oui" data-order-lissage><span><strong>Payer mon site en ${lissage.mois} fois</strong><small>Engagement de ${lissage.mois} mois, le temps de payer le site. À l’année : 2 annuités.</small></span></label>
+        <p class="b-label">Les options <span class="opt">(facultatif)</span></p>
+        ${C.optionChoices({ name: 'options[]' })}
+        </div>
+      </fieldset>
+
+      <fieldset class="o-card">
+        <legend><span class="b-n">${icon('globe')}</span><span class="b-t">Votre nom de domaine</span></legend>
+        <div class="o-in">
+        <p class="b-hint">L’adresse de votre site. Elle est comprise dans le forfait et reste à votre nom. Disponible à l’instant : je la réserve à la commande.</p>
+        ${C.domainBox({ prefix: 'o', ownName: 'domaine_mien' })}
+        </div>
+      </fieldset>
+
+      <fieldset class="o-card">
+        <legend><span class="b-n">2</span><span class="b-t">Vos coordonnées</span></legend>
+        <div class="o-in">
+        <p class="b-hint">Elles servent à la facture et au nom de domaine, qui est à votre nom.</p>
+        <div class="form-row">
+          ${field('prenom', 'Prénom', 'type="text" autocomplete="given-name" maxlength="80"')}
+          ${field('nom', 'Nom', 'type="text" autocomplete="family-name" maxlength="80"')}
+        </div>
+        <div class="form-row">
+          ${field('email', 'E-mail', 'type="email" autocomplete="email" maxlength="150" inputmode="email"')}
+          ${field('telephone', 'Téléphone', 'type="tel" autocomplete="tel" maxlength="30" inputmode="tel"')}
+        </div>
+        ${field('entreprise', 'Nom de votre activité', 'type="text" autocomplete="organization" maxlength="120" placeholder="Ex. : Pâtisserie Lila"', { req: false })}
+        ${field('adresse', 'Adresse', 'type="text" autocomplete="street-address" maxlength="200"')}
+        <div class="form-row">
+          ${field('code_postal', 'Code postal', 'type="text" autocomplete="postal-code" inputmode="numeric" maxlength="10"')}
+          ${field('ville', 'Ville', 'type="text" autocomplete="address-level2" maxlength="100"')}
+        </div>
+        <div class="field"><label for="o-message">Votre projet <span class="opt">(facultatif)</span></label><textarea id="o-message" name="message" maxlength="5000" placeholder="Votre activité, vos idées, un site que vous aimez…"></textarea></div>
+        ${field('parrain', 'Code de parrainage', 'type="text" autocomplete="off" maxlength="20" placeholder="Ex. : LILA-7K2"', { req: false })}
+        </div>
+      </fieldset>
+
+      <fieldset class="o-card">
+        <legend><span class="b-n">3</span><span class="b-t">Paiement sécurisé</span></legend>
+        <div class="o-in">
+        <label class="check"><input type="checkbox" name="cgv" value="oui" required><span>J’accepte les <a href="/conditions-generales/" target="_blank" rel="noopener">conditions générales de vente</a>. <span class="req">*</span></span></label>
+        <label class="check"><input type="checkbox" name="demarrage" value="oui" required><span>Je demande que la création commence tout de suite. Si je me rétracte dans les 14 jours, je paie le travail déjà fait. <span class="req">*</span></span></label>
+        <label class="check" data-order-engagement hidden><input type="checkbox" name="engagement" value="oui"><span>Je m’engage pour ${lissage.mois} mois, le temps de payer mon site. <span class="req">*</span></span></label>
+        <div class="o-pay">
+          <p class="o-pay-today"><span>Aujourd’hui vous payez</span><b data-order="today">${euro(today0)}</b></p>
+          <ul class="o-pay-lines" data-order-lines>
+            <li><span>Acompte de ${paiement.acompte} % sur le site</span><b>${euro(acompte0)}</b></li>
+            <li><span>Forfait ${f0.name}, premier mois</span><b>${euro(f0.month)}</b></li>
+          </ul>
+          <p class="o-pay-next"><span data-order="next-label">Ensuite, chaque mois</span><b data-order="next">${euro(f0.month)}</b></p>
+          <p class="o-pay-note" data-order-solde>Le solde du site, <b data-order="solde">${euro(t0.price - acompte0)}</b> (${100 - paiement.acompte} %), est à régler à la mise en ligne. Je vous envoie le lien de paiement.</p>
+          <p class="o-pay-note" data-order-lisse-note hidden>Le site est lissé : <b data-order="lisse">${euro(C.lisse(t0.price))}</b> par <span data-order="lisse-per">mois</span>, pendant <span data-order="lisse-n">${lissage.mois} mois</span>. Ensuite, il ne reste que le forfait.</p>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">${icon('lock')}<span>Commander et payer <b data-order="btn">${euro(today0)}</b></span></button>
+        <p class="o-trust">${icon('shield-check')}<span>Paiement sécurisé par Stripe. Vous recevez vos factures par e-mail.</span></p>
+        </div>
+      </fieldset>
+    </form>
+
+    <aside class="o-side">
+      <div class="b-sum o-sum" aria-live="polite">
+        <p class="b-sum-title">Votre récapitulatif</p>
+        <ul class="b-lines">
+          <li><span data-order="type">${esc(t0.label)}</span><b data-order="type-price">${euro(t0.price)}</b></li>
+          <li><span data-order="domain">Nom de domaine à choisir</span><b>inclus</b></li>
+          <li><span data-order="forfait">Forfait ${f0.name}</span><b data-order="forfait-price">${euro(f0.month)}/mois</b></li>
+          <li data-order-opts hidden><span data-order="opts-label">Options</span><b data-order="opts">0 €</b></li>
+        </ul>
+        <div class="b-total">
+          <p><span>Aujourd’hui</span><b data-order="today">${euro(today0)}</b></p>
+          <p><span data-order="next-label">Ensuite, chaque mois</span><b data-order="next">${euro(f0.month)}</b></p>
+          <p data-order-parrain hidden><span>Parrainage</span><b>${fidelite.parrainageMois} mois offert</b></p>
+        </div>
+        <p class="b-sum-note">${icon('check')}Le forfait démarre à la commande : il couvre la réservation du nom de domaine et l’hébergement.</p>
+      </div>
+      <div class="o-next reveal">
+        <h2 class="h3">${icon('list-checks')}Ce qui se passe ensuite</h2>
+        <ol>${nextSteps.map(([ic, t, d]) => `<li>${icon(ic)}<span><strong>${t}</strong><small>${d}</small></span></li>`).join('')}</ol>
+        <p class="o-help">Une question avant de commander ? ${C.btnWa('btn-wa btn-sm', 'Écrivez-moi sur WhatsApp')}</p>
+      </div>
+    </aside>
+  </div>
+</div></section>`;
+  return {
+    path: S.path,
+    section: 'commander',
+    bodyClass: 'page-commander',
+    noindex: true,
+    noMobileBar: true,
+    title: 'Votre commande | ALED08',
+    description: 'Vérifiez votre site, votre forfait et vos options, donnez vos coordonnées et payez en ligne en toute sécurité. Je réserve votre nom de domaine et je vous écris sous 24 heures.',
+    crumbs,
+    body,
+  };
+}
+
+// ====================================================================== COMMANDE CONFIRMÉE
+function confirmationPage() {
+  const S = sections.confirmation;
+  const delaiList = types.map((t) => `${t.delai} pour ${t.label.toLowerCase()}`).join(', ');
+  const body = `${C.pageHero({
+    section: 'confirmation',
+    h1: 'Merci, votre commande est bien reçue !',
+    lead: 'Je m’en occupe dès maintenant. Voici ce qui se passe ensuite.',
+    mascot: 'mascotte',
+  })}
+<section class="section"><div class="container container-narrow">
+  <div class="confirm reveal">
+    <p class="confirm-ref" data-ref-box hidden>${icon('receipt')}<span>Référence de votre commande : <b data-ref></b></span></p>
+    <p class="confirm-msg" data-confirm-paid>${icon('circle-check')}<span>Votre paiement est enregistré. La facture arrive par e-mail, et vous la retrouvez dans votre espace client.</span></p>
+    <p class="confirm-msg is-wait" data-confirm-wait hidden>${icon('hourglass')}<span>Je vous envoie le lien de paiement sous 24 heures. Votre commande est gardée : rien à faire de votre côté pour l’instant.</span></p>
+    <h2 class="h3">Les prochaines étapes</h2>
+    ${C.steps([
+      { t: 'Je réserve votre nom de domaine', d: 'Il est à votre nom, et compris dans le forfait.' },
+      { t: 'Je vous écris sous 24 heures', d: 'Pour poser les questions utiles et démarrer votre site.' },
+      { t: 'Votre espace client arrive par e-mail', d: 'Vous y suivez votre commande et, ensuite, vos demandes de modification.' },
+      { t: 'Votre site est en ligne', d: `Dans le délai de votre type de site : ${delaiList}.` },
+    ])}
+    <div class="hero-ctas centered">${C.btn(sections.monespace.path, 'btn-primary btn-lg', 'circle-user', 'Accéder à mon espace')}${C.btnWa('btn-wa btn-lg', 'WhatsApp', 'Bonjour, je viens de passer commande sur ALED08.')}</div>
+  </div>
+</div></section>`;
+  return {
+    path: S.path,
+    section: 'confirmation',
+    noindex: true,
+    noMobileBar: true,
+    title: 'Commande confirmée | ALED08',
+    description: 'Merci pour votre commande. Je réserve votre nom de domaine, je vous écris sous 24 heures et votre espace client arrive par e-mail.',
+    body,
   };
 }
 
@@ -415,7 +622,7 @@ function fidelitePage() {
   <h2 class="section-title">Le parrainage, en pratique</h2>
   ${C.steps([
     { t: 'Partagez votre lien', d: 'Votre lien et votre code de parrainage sont dans votre espace client, onglet Parrainage.' },
-    { t: 'Il crée son site', d: 'Votre filleul passe par votre lien, ou donne votre code dans sa demande.' },
+    { t: 'Il crée son site', d: 'Votre filleul passe par votre lien, ou donne votre code dans sa commande.' },
     { t: 'Un mois offert chacun', d: 'Dès que son site est en ligne, vous recevez tous les deux un mois de forfait. Vous suivez vos filleuls dans votre espace.' },
   ])}
 </div></section>
@@ -519,10 +726,10 @@ const DEMO_QR = (() => {
 })();
 
 function monEspacePage() {
-  const P = forfaits[1];
+  const P = F('power');
   const mail = options.find((o) => o.id === 'mail');
   const tab = (id, ic, label, on) => `<button type="button" role="tab" id="tab-${id}" aria-controls="t-${id}" aria-selected="${on ? 'true' : 'false'}"${on ? '' : ' tabindex="-1"'} data-tab="${id}">${icon(ic)}<span>${label}</span></button>`;
-  const plans = forfaits.map((x) => ({ ...x, quota: x.id === 'power' ? 4 : 1 }));
+  const plans = forfaits;
   const total = P.month + mail.price.month;
   const body = `${C.pageHero({
     section: 'monespace',
@@ -536,7 +743,7 @@ function monEspacePage() {
       <aside class="app-side">
         <div class="app-user">${monster('mascotte')}<div><strong>Pâtisserie Lila</strong><small>patisserie-lila.fr</small></div></div>
         <div class="jauge" data-jauge>
-          <p class="jauge-head">${icon('pencil')}<span>Modifications du mois</span><b><span data-jetons>3</span> / <span data-jetons-max>4</span></b></p>
+          <p class="jauge-head">${icon('pencil')}<span>Modifications du mois</span><b><span data-jetons>3</span> / <span data-jetons-max>${P.quota}</span></b></p>
           <span class="jauge-bar"><i data-jauge-fill style="width:75%"></i></span>
         </div>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
@@ -689,7 +896,7 @@ function espacePage() {
     <aside class="login-side">
       <span class="login-art">${monster('mascotte')}</span>
       <h2 class="h3">Pas encore client ?</h2>
-      <p>Je crée votre compte quand votre site est en ligne. Vous recevez alors un e-mail pour choisir votre mot de passe.</p>
+      <p>Votre compte est créé dès votre commande. Vous recevez alors un e-mail pour choisir votre mot de passe.</p>
       <div class="login-ctas">${C.btn(site.espaceClient.demo, 'btn-light', 'circle-user', 'Essayer la démo')}${C.btnCreer('btn-primary')}</div>
     </aside>
   </div>
@@ -707,9 +914,6 @@ function espacePage() {
 }
 
 // ====================================================================== CONTACT
-function formHidden() {
-  return `<input type="hidden" name="_t" value=""><div class="hp" aria-hidden="true"><label>Site web <input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>`;
-}
 function contactPage() {
   const crumbs = crumb('contact');
   const opt = (v) => `<option value="${esc(v)}">${esc(v)}</option>`;
@@ -800,7 +1004,7 @@ Je suis installé à ${site.address.city}. Que vous soyez à Charleville-Méziè
 - **Site vitrine** : ${euro(T('vitrine').price)} de création, jusqu’à 5 pages.
 - **Boutique en ligne** : ${euro(T('boutique').price)} de création.
 
-Puis ${euro(base.month)} par mois pour l’hébergement, le nom de domaine et une modification par mois, ou ${euro(forfaits[1].month)} avec le SEO suivi. Le détail est sur la page [forfaits](/forfaits/).
+Puis ${euro(base.month)} par mois pour l’hébergement, le nom de domaine et une modification par mois (Chico), ${euro(F('power').month)} avec le SEO suivi (Power), ou ${euro(F('titan').month)} pour les boutiques qui bougent, avec une modification par jour ouvré (Titan). Le détail est sur la page [forfaits](/forfaits/).
 
 ## Être trouvé par les Ardennais
 
@@ -824,13 +1028,14 @@ function faqPage() {
   const crumbs = [HOME, { name: 'Questions fréquentes', path: '/faq/' }];
   const groups = [
     ['La création', FAQ.creation, 'creer'],
+    ['La commande', FAQ.commande || [], 'commander'],
     ['Les forfaits', FAQ.forfaits, 'forfaits'],
     ['Nos outils', FAQ.espace, 'espace'],
     ['Le référencement', FAQ.seo, 'seo'],
     ['Ma méthode', FAQ.methode, 'methode'],
-    ['Shopify', FAQ.shopify, 'shopify'],
+    ['Le comparatif', FAQ.comparatif || [], 'comparatif'],
     ['La fidélité', FAQ.fidelite, 'fidelite'],
-  ];
+  ].filter((g) => g[1] && g[1].length);
   const all = groups.flatMap((g) => g[1]);
   const body = `${C.pageHero({ h1: 'Questions fréquentes', lead: 'Les réponses aux questions qu’on me pose le plus souvent. Il en manque une ? Écrivez-moi.', crumbs })}
 <section class="section"><div class="container container-narrow">
@@ -842,7 +1047,7 @@ ${C.ctaBand()}`;
   return {
     path: '/faq/',
     title: 'Questions fréquentes : création, forfaits, IA, SEO | ALED08',
-    description: 'Toutes les réponses sur la création de votre site, les forfaits Chico et Power, nos outils, le référencement et le parrainage.',
+    description: 'Toutes les réponses sur la création de votre site, la commande en ligne, les forfaits Chico, Power et Titan, nos outils, le référencement et le parrainage.',
     crumbs,
     body,
     schema: [C.faqSchema(all)],
@@ -873,9 +1078,11 @@ function legalPage(l) {
 
 function planDuSite() {
   const crumbs = [HOME, { name: 'Plan du site', path: '/plan-du-site/' }];
+  // Les pages du parcours de commande (noindex) ne figurent pas dans le plan.
+  const hidden = ['commander', 'confirmation'];
   const links = [
     ['/', 'Accueil'],
-    ...Object.values(sections).map((s) => [s.path, s.label]),
+    ...Object.entries(sections).filter(([k]) => !hidden.includes(k)).map(([, s]) => [s.path, s.label]),
     ['/creation-site-internet-ardennes/', 'Création de site dans les Ardennes'],
     ['/faq/', 'Questions fréquentes'],
     ...legal.map((l) => [l.path, l.name]),
@@ -883,7 +1090,7 @@ function planDuSite() {
   return {
     path: '/plan-du-site/',
     title: 'Plan du site | ALED08 sites internet et SEO',
-    description: 'Toutes les pages du site ALED08 : créer mon site, forfaits, espace client, SEO, comparatif Shopify, fidélité, contact, questions fréquentes et pages légales.',
+    description: 'Toutes les pages du site ALED08 : créer mon site, forfaits, espace client, SEO, comparatif des solutions, fidélité, contact, questions fréquentes et pages légales.',
     crumbs,
     body: `${C.pageHero({ h1: 'Plan du site', lead: 'Toutes les pages du site, au même endroit.', crumbs })}
 <section class="section"><div class="container container-narrow"><ul class="sitemap-list">${links.map(([p, l]) => `<li><a href="${p}">${esc(l)}</a></li>`).join('')}</ul></div></section>`,
@@ -918,7 +1125,7 @@ function notFound() {
 
 function build() {
   return [
-    home(), creerPage(), forfaitsPage(), outilsPage(), espacePage(), monEspacePage(), seoPage(), shopifyPage(), fidelitePage(), methodePage(), contactPage(), ardennesPage(), faqPage(),
+    home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), outilsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), methodePage(), contactPage(), ardennesPage(), faqPage(),
     ...legal.map(legalPage), planDuSite(), merci(), notFound(),
   ];
 }

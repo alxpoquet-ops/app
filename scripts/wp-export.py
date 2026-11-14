@@ -24,9 +24,10 @@ THEME = 'aled08'
 THEME_URI = '/wp-content/themes/' + THEME
 SITE = 'https://www.aled08.fr'
 FORM_RECIPIENT = 'alx.poquet@gmail.com'
-# Anciennes adresses (ancien site d'électricien) : redirigées vers l'accueil, sauf cas particuliers.
+# Anciennes adresses (ancien site d'électricien, anciennes pages du site ALED08) : redirigées vers l'accueil,
+# sauf cas particuliers. Les clés de OLD_TARGETS sont toujours redirigées, même absentes de wp-old-paths.txt.
 OLD_PATHS_FILE = os.path.join(ROOT, 'scripts', 'wp-old-paths.txt')
-OLD_TARGETS = {'/devis/': '/contact/', '/prestations/': '/creer-mon-site/', '/blog/': '/'}
+OLD_TARGETS = {'/devis/': '/contact/', '/prestations/': '/creer-mon-site/', '/blog/': '/', '/comparatif-shopify/': '/comparatif/'}
 
 
 def read(p):
@@ -165,6 +166,9 @@ def redirects(items):
             p = line.strip()
             if p and p not in have:
                 out[p] = OLD_TARGETS.get(p, '/')
+    for p, target in OLD_TARGETS.items():
+        if p not in have:
+            out[p] = target
     return out
 
 
@@ -582,6 +586,8 @@ def main():
     edir = os.path.join(OUT, 'aled08-espace')
     shutil.copytree(os.path.join(ROOT, 'src', 'wordpress', 'aled08-espace'), edir)
     shutil.copy(os.path.join(ROOT, 'src', 'assets', 'js', 'qrcode.js'), os.path.join(edir, 'qrcode.js'))
+    # styles de l'espace client : servis par le thème (assets/css/espace.css) ; copie de secours dans l'extension
+    shutil.copy(os.path.join(DIST, 'assets', 'css', 'espace.css'), os.path.join(edir, 'espace.css'))
     data = subprocess.run(['node', os.path.join(ROOT, 'scripts', 'wp-espace-data.js')], check=True, capture_output=True, text=True).stdout
     write(os.path.join(edir, 'data.json'), data)
 

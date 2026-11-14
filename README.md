@@ -29,7 +29,7 @@ Chaque rubrique a sa couleur pastel (menu, pastille en haut de page) pour qu'on 
 
 Tout est dans **`src/config.js`** : `types` (prix de création), `entretien`, `forfaits` (supplément et jetons), `jetons` (recharge), `annuel` (mois offerts), `options`, `fidelite`, `paiement`, `shopify` (prix relevés pour le comparatif, avec la date). Le site, le configurateur et les données structurées se mettent à jour au prochain `npm run build`.
 
-L'espace client n'est pas encore ouvert : `site.espaceClient.ouvert` vaut `false`, et la page l'annonce. Le plan pour le construire est dans `docs/espace-client-ia.md`.
+L'espace client est ouvert sur `/mon-espace/` (WordPress, extension « ALED08 Espace client »). Le mode d'emploi complet du propriétaire (commandes, Stripe, noms de domaine, comptes automatiques) est dans `docs/gestion-du-site.md`.
 
 ## À faire avant la mise en ligne
 
@@ -58,7 +58,12 @@ npm run images    # régénère l'image de partage et les icônes (nécessite Pl
 3. Le formulaire passe par `envoi.php` (fonction `mail()` de PHP) : faites un envoi de test.
 
 ### WordPress (www.aled08.fr)
-`scripts/wp-export.py` produit un thème et une extension d'import à partir de `dist/`. Il date de l'ancien site d'électricien et doit être adapté avant de s'en servir (formulaire, nouvelles pages, redirection des anciennes adresses).
+`node build.js && python3 scripts/wp-export.py` produit trois archives dans `wp-export/` :
+- `aled08.zip` : le thème (styles, en-tête, pied de page, formulaire de contact, redirections des anciennes adresses) ;
+- `aled08-import.zip` : extension d'import à usage unique (crée les pages à partir de `dist/`, à désactiver et supprimer après usage) ;
+- `aled08-espace.zip` : l'extension **ALED08 Espace client** (`src/wordpress/aled08-espace/`) : commandes passées sur `/commander/` (CPT `aled08_commande`), paiement Stripe sans SDK (`includes/stripe.php`, webhook `aled08/v1/stripe`), comptes clients automatiques et suppression après 12 mois (`includes/comptes.php`), menu d'administration « ALED08 » (`includes/admin.php`), espace client sur `/mon-espace/`. Ses données (prix, quotas, icônes, monstres) viennent de `data.json`, généré par `scripts/wp-espace-data.js` depuis `src/config.js`. Les styles propres à l'espace sont dans `src/assets/css/espace.css`.
+
+Le guide du propriétaire : `docs/gestion-du-site.md`.
 
 ## Modifier le contenu
 
@@ -88,7 +93,9 @@ src/assets/              CSS, JS, police Nunito (OFL), images
 src/static/              fichiers copiés tels quels (.htaccess, favicon…)
 src/server/envoi.php     traitement du formulaire de devis
 dist/                    SITE GÉNÉRÉ, à mettre en ligne
-docs/espace-client-ia.md mode d'emploi : jetons, paiements, outil de publication (Make), IA
+src/wordpress/aled08-espace/  extension WordPress « ALED08 Espace client » (commandes, Stripe, comptes, admin, espace)
+scripts/wp-export.py     export WordPress : thème, import des pages, extension (avec data.json)
+docs/gestion-du-site.md  guide du propriétaire : commandes, Stripe, noms de domaine, comptes, vérifications
 docs/                    (autres fichiers : archives de l'ancienne activité d'électricien)
 ```
 

@@ -4,7 +4,10 @@
   var d = document;
   var $ = function (s, c) { return (c || d).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || d).querySelectorAll(s)); };
-  var euro = function (n) { return (Math.round(n * 100) / 100).toString().replace('.', ',') + '\u00a0\u20ac'; };
+  var round2 = function (n) { return Math.round(n * 100) / 100; };
+  var floor2 = function (n) { return Math.floor(n * 100 + 1e-6) / 100; };
+  var euro = function (n) { return round2(n).toString().replace('.', ',') + ' €'; };
+  var slug = function (v) { return (v || '').replace(/[^a-z0-9-]/g, ''); };
   // Change des paramètres d'un lien sans toucher au chemin (qui peut être relatif)
   var withParams = function (href, params) {
     var hash = '', i = href.indexOf('#');
@@ -68,7 +71,7 @@
       });
       scope.setAttribute('data-billing', mode);
       $$('.plan a.btn', scope).forEach(function (a) {
-        a.setAttribute('href', withParams(a.getAttribute('href'), { periode: mode === 'annuel' ? 'annuel' : '' }));
+        a.setAttribute('href', withParams(a.getAttribute('href'), { periode: mode === 'annuel' ? 'annee' : '' }));
       });
       scope.dispatchEvent(new CustomEvent('billing', { detail: mode }));
     };
@@ -78,45 +81,27 @@
     sw._set = set;
   });
 
-  /* ---------- configurateur « Créer mon site » ---------- */
-  var builder = $('[data-builder]');
-  if (builder) {
-    var data;
-    try { data = JSON.parse(builder.getAttribute('data-builder')); } catch (e) { data = null; }
-    if (data) initBuilder(builder, data);
-  }
-
-  function initBuilder(box, data) {
-    var find = function (list, id) { return list.filter(function (x) { return x.id === id; })[0]; };
-    var val = function (name) { var r = $('input[name="' + name + '"]:checked', box); return r ? r.value : ''; };
-    var setText = function (key, text) { $$('[data-sum="' + key + '"]', box).forEach(function (el) { el.textContent = text; }); };
-    var params = new URLSearchParams(location.search);
-    ['type', 'forfait'].forEach(function (k) {
-      var v = params.get(k);
-      var r = v && $('input[name="b-' + k + '"][value="' + v.replace(/[^a-z0-9-]/g, '') + '"]', box);
-      if (r) r.checked = true;
-    });
-    var sw = $('[data-billing-switch]', box);
-    if (params.get('periode') === 'annuel' && sw && sw._set) sw._set('annuel');
-
-    /* nom de domaine */
+  /* ---------- nom de domaine : saisie et vérification RDAP (configurateur et commande) ---------- */
+  var RDAP = {
+    '.fr': 'https://rdap.nic.fr/domain/',
+    '.com': 'https://rdap.verisign.com/com/v1/domain/',
+    '.net': 'https://rdap.verisign.com/net/v1/domain/',
+    '.org': 'https://rdap.publicinterestregistry.org/rdap/domain/'
+  };
+  var ICO = {
+    ok: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
+    no: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+    wait: '<svg class="ico d-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.2-8.6"/></svg>'
+  };
+  // Renvoie { get, full, statut, set, check, own }. onChange est appelé à chaque changement.
+  function initDomain(root, onChange) {
+    var input = $('[data-domain-name]', root), tld = $('[data-domain-tld]', root), out = $('[data-domain-result]', root);
+    var checkBtn = $('[data-domain-check]', root), own = $('[data-domain-own]', root);
     var dom = { name: '', tld: '.fr', status: '' };
-    var input = $('#b-domain', box), tld = $('#b-tld', box), out = $('[data-domain-result]', box);
-    var checkBtn = $('[data-domain-check]', box), own = $('[data-domain-own]', box);
-    var RDAP = {
-      '.fr': 'https://rdap.nic.fr/domain/',
-      '.com': 'https://rdap.verisign.com/com/v1/domain/',
-      '.net': 'https://rdap.verisign.com/net/v1/domain/',
-      '.org': 'https://rdap.publicinterestregistry.org/rdap/domain/'
-    };
-    var ICO = {
-      ok: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
-      no: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>',
-      wait: '<svg class="ico d-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.2-8.6"/></svg>'
-    };
+    var notify = function () { if (onChange) onChange(dom); };
     var clean = function (v) {
       v = (v || '').toLowerCase().trim();
-      if (v.normalize) v = v.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (v.normalize) v = v.normalize('NFD').replace(/[̀-ͯ]/g, '');
       v = v.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/.*$/, '');
       var m = v.match(/\.(fr|com|net|org)$/);
       if (m) { tld.value = '.' + m[1]; v = v.slice(0, -m[0].length); }
@@ -143,7 +128,7 @@
       var name = clean(input.value);
       input.value = name;
       dom.name = name; dom.tld = tld.value; dom.status = '';
-      if (name.length < 2) { show('d-err', 'Écrivez au moins deux lettres, par exemple le nom de votre entreprise.'); update(); return; }
+      if (name.length < 2) { show('d-err', 'Écrivez au moins deux lettres, par exemple le nom de votre entreprise.'); notify(); return; }
       var full = name + tld.value;
       busy = true; checkBtn.disabled = true;
       show('d-wait', ICO.wait + 'Je regarde si ' + full + ' est libre…');
@@ -153,7 +138,7 @@
         .then(function (res) {
           if (res.status === 404) {
             dom.status = 'libre';
-            show('d-ok', ICO.ok + full + ' est libre ! Je le réserverai à votre nom.');
+            show('d-ok', ICO.ok + full + ' est disponible à l’instant. Je le réserve à la commande, à votre nom.');
           } else if (res.ok) {
             dom.status = 'pris';
             show('d-taken', ICO.no + full + ' est déjà pris. Une idée :');
@@ -166,20 +151,65 @@
           dom.status = 'inconnu';
           show('d-err', 'Je n’arrive pas à vérifier pour l’instant. Pas de souci : je le ferai pour vous.');
         })
-        .then(function () { clearTimeout(timer); busy = false; checkBtn.disabled = false; update(); });
+        .then(function () { clearTimeout(timer); busy = false; checkBtn.disabled = false; notify(); });
     }
-    checkBtn.addEventListener('click', check);
-    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); check(); } });
-    input.addEventListener('input', function () { if (dom.status) { dom.status = ''; out.innerHTML = ''; update(); } });
-    tld.addEventListener('change', function () { if (input.value) check(); });
-    own.addEventListener('change', function () {
+    var applyOwn = function () {
       [input, tld, checkBtn].forEach(function (el) { el.disabled = own.checked; });
       if (own.checked) { dom.status = 'mien'; show('d-ok', ICO.ok + 'Parfait, on gardera votre nom de domaine actuel.'); }
       else { dom.status = ''; out.innerHTML = ''; }
-      update();
+    };
+    checkBtn.addEventListener('click', check);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); check(); } });
+    input.addEventListener('input', function () { dom.name = clean(input.value); dom.tld = tld.value; if (dom.status) { dom.status = ''; out.innerHTML = ''; } notify(); });
+    tld.addEventListener('change', function () { dom.tld = tld.value; if (input.value) check(); else notify(); });
+    own.addEventListener('change', function () { applyOwn(); notify(); });
+    return {
+      get: function () { return dom; },
+      own: function () { return own.checked; },
+      // Nom complet (ma-boite.fr), vide si l'on garde son propre nom de domaine
+      full: function () { return own.checked || !dom.name ? '' : dom.name + dom.tld; },
+      // Statut pour l'adresse : libre | pris | mien | vide
+      statut: function () { return own.checked ? 'mien' : (dom.status === 'libre' || dom.status === 'pris') ? dom.status : ''; },
+      // Préremplissage depuis l'adresse (?domaine=ma-boite.fr&domaine_statut=libre)
+      set: function (full, statut) {
+        if (statut === 'mien') { own.checked = true; applyOwn(); notify(); return; }
+        var name = clean(full || '');
+        if (!name) { notify(); return; }
+        input.value = name; dom.name = name; dom.tld = tld.value;
+        check();
+      },
+      focus: function () { (own.checked ? own : input).focus(); }
+    };
+  }
+
+  /* ---------- configurateur « Créer mon site » ---------- */
+  var builder = $('[data-builder]');
+  if (builder) {
+    var bData;
+    try { bData = JSON.parse(builder.getAttribute('data-builder')); } catch (e) { bData = null; }
+    if (bData) initBuilder(builder, bData);
+  }
+
+  function initBuilder(box, data) {
+    var find = function (list, id) { return list.filter(function (x) { return x.id === id; })[0]; };
+    var val = function (name) { var r = $('input[name="' + name + '"]:checked', box); return r ? r.value : ''; };
+    var setText = function (key, text) { $$('[data-sum="' + key + '"]', box).forEach(function (el) { el.textContent = text; }); };
+    var params = new URLSearchParams(location.search);
+    ['type', 'forfait'].forEach(function (k) {
+      var v = params.get(k);
+      var r = v && $('input[name="b-' + k + '"][value="' + slug(v) + '"]', box);
+      if (r) r.checked = true;
+    });
+    var sw = $('[data-billing-switch]', box);
+    if (/^ann/.test(params.get('periode') || '') && sw && sw._set) sw._set('annuel');
+    if (params.get('lissage') === 'oui') { var l = $('input[name="b-lisse"][value="oui"]', box); if (l) l.checked = true; }
+    (params.get('options') || '').split(',').forEach(function (id) {
+      var c = id && $('.b-opt input[value="' + slug(id) + '"]', box);
+      if (c) c.checked = true;
     });
     var form = $('[data-builder-form]', box);
     if (form) form.addEventListener('submit', function (e) { e.preventDefault(); });
+    var domain = initDomain(box, update);
 
     /* récapitulatif */
     function update() {
@@ -189,16 +219,15 @@
       var mult = annual ? 12 - data.free : 1;
       var per = annual ? '/an' : '/mois';
       var month = f.month;
-      var optOnce = 0, optMonth = 0, chosen = [];
+      var optOnce = 0, optMonth = 0, chosen = [], ids = [];
       $$('.b-opt input:checked', box).forEach(function (i) {
         var o = find(data.options, i.value);
         if (!o) return;
-        chosen.push(o.name); optOnce += o.once; optMonth += o.month;
+        chosen.push(o.name); ids.push(o.id); optOnce += o.once; optMonth += o.month;
       });
       setText('type', t.label);
       setText('type-price', euro(t.price));
       setText('forfait', 'Forfait ' + f.name);
-      $$('[data-sum-shopify]', box).forEach(function (el) { el.hidden = t.id !== 'boutique'; });
       setText('forfait-price', euro(month * mult) + per);
       var optLine = $('[data-sum-opts]', box);
       if (optLine) {
@@ -209,27 +238,45 @@
         optLine.querySelector('span').textContent = chosen.length > 1 ? chosen.length + ' options' : (chosen[0] || 'Options');
         setText('opts', parts.join(' + '));
       }
-      var domText = '';
-      if (dom.status === 'mien') domText = 'Mon nom de domaine actuel';
-      else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? ' (libre)' : dom.status === 'pris' ? ' (déjà pris)' : '');
+      var dom = domain.get(), domText = '';
+      if (domain.own()) domText = 'Mon nom de domaine actuel';
+      else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? ' (disponible)' : dom.status === 'pris' ? ' (déjà pris)' : '');
       setText('domain', domText || 'Nom de domaine à choisir');
       var lisse = val('b-lisse') === 'oui';
+      var lisseAmt = annual ? round2(t.price / 2) : floor2(t.price / data.lissage);
       var lisseLine = $('[data-sum-lisse]', box);
       if (lisseLine) lisseLine.hidden = !lisse;
-      setText('lisse', euro(Math.round(t.price / data.lissage * 100) / 100) + '/mois');
-      setText('once-label', lisse ? 'À la commande' : 'Création, une fois');
+      setText('lisse-label', annual ? 'Site lissé, 2 annuités' : 'Site lissé, pendant ' + data.lissage + ' mois');
+      setText('lisse', euro(lisseAmt) + per);
+      var onceLine = $('[data-sum="once"]', box) && $('[data-sum="once"]', box).parentNode;
+      if (onceLine) onceLine.hidden = lisse && !optOnce;
+      setText('once-label', lisse ? 'Options, une fois' : 'Création, une fois');
       setText('once', euro((lisse ? 0 : t.price) + optOnce));
-      setText('recur-label', annual ? 'Puis chaque année' : 'Puis chaque mois');
-      setText('recur', euro((month + optMonth) * mult));
-      setText('recur-short', euro((month + optMonth) * mult) + per);
+      var recur = (month + optMonth) * mult;
+      setText('recur-label', (lisse ? 'Forfait, chaque ' : 'Puis chaque ') + (annual ? 'année' : 'mois'));
+      setText('recur', euro(recur));
+      // montant du jour, le même que sur /commander/ : acompte (ou première échéance du site lissé) + première échéance du forfait et des options
+      var acompte = round2(t.price * data.acompte / 100);
+      var today = round2((lisse ? lisseAmt : acompte) + recur + optOnce);
+      setText('today', euro(today));
+      var bar = $('[data-sum="bar"]', box);
+      if (bar) {
+        bar.innerHTML = 'Aujourd’hui <b>' + euro(today) + '</b>, puis <b>' + euro(lisse ? recur + lisseAmt : recur) + per + '</b>'
+          + (lisse ? ' pendant ' + (annual ? '2 ans' : data.lissage + ' mois') : '');
+      }
+      // Lien « Poser une question » (formulaire de contact, en clair)
       var q = { type: t.label, forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? 'oui' : '', domaine: domText, options: chosen.join(', '), parrain: parrain };
       $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
+      // Lien « Commander » : paramètres exacts attendus par /commander/
+      var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? 'oui' : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), parrain: parrain };
+      $$('[data-sum-order]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href').split('?')[0], o)); });
     }
     var pLine = $('[data-sum-parrain]', box);
     if (pLine && parrain) pLine.hidden = false;
     box.addEventListener('change', update);
     box.addEventListener('billing', update);
     update();
+    if (params.get('domaine') || params.get('domaine_statut') === 'mien') domain.set(params.get('domaine'), params.get('domaine_statut'));
 
     /* barre du bas (téléphone) : cachée quand le récapitulatif complet est visible */
     var bar = $('[data-sum-bar]', box), sum = $('.b-sum', box);
@@ -237,6 +284,210 @@
       new IntersectionObserver(function (entries) {
         entries.forEach(function (en) { bar.classList.toggle('is-hidden', en.isIntersecting); });
       }, { threshold: 0.2 }).observe(sum);
+    }
+  }
+
+  /* ---------- page Commander ---------- */
+  var orderEl = $('[data-aled-order]');
+  if (orderEl && orderEl.getAttribute('data-order-data')) {
+    var oData;
+    try { oData = JSON.parse(orderEl.getAttribute('data-order-data')); } catch (e) { oData = null; }
+    if (oData) initOrder(orderEl, oData);
+  }
+
+  function initOrder(root, data) {
+    var form = $('[data-order-form]', root);
+    if (!form) return;
+    var find = function (list, id) { return list.filter(function (x) { return x.id === id; })[0]; };
+    var val = function (name) { var r = $('input[name="' + name + '"]:checked', form); return r ? r.value : ''; };
+    var setText = function (key, text) { $$('[data-order="' + key + '"]', root).forEach(function (el) { el.textContent = text; }); };
+    var params = new URLSearchParams(location.search);
+    var t0 = form.querySelector('input[name="_t"]'); if (t0) t0.value = Date.now();
+
+    /* messages d'erreur (?erreur=CODE, ?annule=1, ou vérification avant envoi) */
+    var alertBox = $('[data-order-error]', root), tpl = $('template[data-order-errors]', root);
+    var message = function (code) {
+      var p = tpl && tpl.content.querySelector('[data-code="' + code + '"]');
+      if (!p) p = tpl && tpl.content.querySelector('[data-code="inconnu"]');
+      return p ? p.textContent : '';
+    };
+    var fieldError = null;
+    var hideFieldError = function () { if (fieldError && fieldError.parentNode) fieldError.parentNode.removeChild(fieldError); fieldError = null; };
+    /* Erreur renvoyée par le serveur (?erreur=…) : on montre l'alerte en tête du formulaire.
+       Erreur de saisie repérée avant l'envoi : on va au champ fautif, avec le message juste à côté. */
+    var showError = function (code, focusEl) {
+      if (!alertBox) return;
+      var msg = message(code);
+      alertBox.textContent = msg;
+      alertBox.hidden = false;
+      hideFieldError();
+      if (!focusEl) { alertBox.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+      var wrap = focusEl.closest('.field, .check, .domain, .o-lisse') || focusEl.parentNode;
+      fieldError = d.createElement('p');
+      fieldError.className = 'field-error';
+      fieldError.textContent = msg;
+      if (wrap.classList.contains('field')) wrap.appendChild(fieldError);
+      else wrap.parentNode.insertBefore(fieldError, wrap.nextSibling);
+      wrap.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      setTimeout(function () { focusEl.focus({ preventScroll: true }); }, 350);
+    };
+    var hideError = function () { if (alertBox) alertBox.hidden = true; hideFieldError(); };
+    var code = (params.get('erreur') || '').replace(/[^a-z]/g, '');
+    if (code) showError(code);
+    else if (params.get('annule') === '1') showError('annule');
+
+    /* préremplissage depuis l'adresse */
+    ['type', 'forfait', 'periode'].forEach(function (k) {
+      var v = slug(params.get(k) || '');
+      if (k === 'periode' && v === 'annuel') v = 'annee';
+      var r = v && $('input[name="' + k + '"][value="' + v + '"]', form);
+      if (r) r.checked = true;
+    });
+    var lisseBox = $('[data-order-lissage]', form);
+    if (lisseBox && params.get('lissage') === 'oui') lisseBox.checked = true;
+    (params.get('options') || '').split(',').forEach(function (id) {
+      var c = id && $('.b-opt input[value="' + slug(id) + '"]', form);
+      if (c) c.checked = true;
+    });
+    var pInput = form.querySelector('input[name="parrain"]');
+    if (pInput && !pInput.value) pInput.value = cleanCode(params.get('parrain')) || parrain;
+    var pLine = $('[data-order-parrain]', root);
+    var domain = initDomain(root, function () { update(true); });
+    var hiddenDomain = $('[data-order-domaine]', form);
+    var engRow = $('[data-order-engagement]', form), engBox = engRow && engRow.querySelector('input');
+
+    function update(fromUser) {
+      var t = find(data.types, val('type')) || data.types[0];
+      var f = find(data.forfaits, val('forfait')) || data.forfaits[0];
+      var annual = val('periode') === 'annee';
+      root.setAttribute('data-billing', annual ? 'annuel' : 'mensuel');
+      var mult = annual ? 12 - data.free : 1;
+      var per = annual ? '/an' : '/mois';
+      var perWord = annual ? 'année' : 'mois';
+      var perUnit = annual ? 'an' : 'mois';
+      var lisse = !!(lisseBox && lisseBox.checked);
+      if (engRow) { engRow.hidden = !lisse; }
+      if (engBox) { engBox.required = lisse; if (!lisse) engBox.checked = false; }
+      var optOnce = 0, optRec = 0, names = [], ids = [], lines = [];
+      $$('.b-opt input:checked', form).forEach(function (i) {
+        var o = find(data.options, i.value);
+        if (!o) return;
+        names.push(o.name); ids.push(o.id); optOnce += o.once; optRec += o.month * mult;
+      });
+      var acompte = round2(t.price * data.acompte / 100);
+      var solde = round2(t.price - acompte);
+      var lisseAmt = annual ? round2(t.price / 2) : floor2(t.price / data.lissage);
+      var lisseN = annual ? 2 : data.lissage;
+      var forfaitFirst = f.month * mult;
+      var first = annual ? 'première année' : 'premier mois';
+      if (lisse) lines.push([t.label + ', lissé : 1 échéance sur ' + lisseN, lisseAmt]);
+      else lines.push(['Acompte de ' + data.acompte + ' % sur la création (' + t.label.toLowerCase() + ')', acompte]);
+      lines.push(['Forfait ' + f.name + ', ' + first, forfaitFirst]);
+      $$('.b-opt input:checked', form).forEach(function (i) {
+        var o = find(data.options, i.value);
+        if (!o) return;
+        if (o.once) lines.push([o.name, o.once]);
+        if (o.month) lines.push([o.name + ', ' + first, o.month * mult]);
+      });
+      var today = round2(lines.reduce(function (s, l) { return s + l[1]; }, 0));
+      var next = round2(forfaitFirst + optRec + (lisse ? lisseAmt : 0));
+      setText('today', euro(today));
+      setText('btn', euro(today));
+      setText('next', euro(next));
+      setText('next-label', 'Ensuite, chaque ' + perWord);
+      setText('solde', euro(solde));
+      setText('lisse', euro(lisseAmt));
+      setText('lisse-per', perUnit);
+      setText('lisse-n', lisseN + ' ' + (annual ? 'ans' : 'mois'));
+      var soldeNote = $('[data-order-solde]', root), lisseNote = $('[data-order-lisse-note]', root);
+      if (soldeNote) soldeNote.hidden = lisse;
+      if (lisseNote) lisseNote.hidden = !lisse;
+      var ul = $('[data-order-lines]', root);
+      if (ul) {
+        ul.innerHTML = '';
+        lines.forEach(function (l) {
+          var li = d.createElement('li');
+          li.innerHTML = '<span></span><b></b>';
+          li.firstChild.textContent = l[0];
+          li.lastChild.textContent = euro(l[1]);
+          ul.appendChild(li);
+        });
+      }
+      /* récapitulatif latéral */
+      setText('type', t.label);
+      setText('type-price', euro(t.price));
+      setText('forfait', 'Forfait ' + f.name);
+      setText('forfait-price', euro(forfaitFirst) + per);
+      setText('delai', t.delai);
+      var optLine = $('[data-order-opts]', root);
+      if (optLine) {
+        optLine.hidden = !names.length;
+        setText('opts-label', names.length > 1 ? names.length + ' options' : (names[0] || 'Options'));
+        var parts = [];
+        if (optOnce) parts.push(euro(optOnce));
+        if (optRec) parts.push(euro(optRec) + per);
+        setText('opts', parts.join(' + '));
+      }
+      var dom = domain.get(), domText = '';
+      if (domain.own()) domText = 'Mon nom de domaine actuel';
+      else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? ' (disponible)' : dom.status === 'pris' ? ' (déjà pris)' : '');
+      setText('domain', domText || 'Nom de domaine à choisir');
+      if (hiddenDomain) hiddenDomain.value = domain.full();
+      var pCode = pInput ? cleanCode(pInput.value) : parrain;
+      if (pLine) pLine.hidden = !pCode;
+      /* la configuration reste dans l'adresse (retour arrière, partage, erreur serveur) */
+      if (fromUser && window.history && history.replaceState) {
+        var q = new URLSearchParams(location.search);
+        var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? 'oui' : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), parrain: pCode };
+        Object.keys(o).forEach(function (k) { if (o[k]) q.set(k, o[k]); else q.delete(k); });
+        q.delete('erreur'); q.delete('annule');
+        var qs = q.toString();
+        history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
+      }
+    }
+    form.addEventListener('change', function () { update(true); });
+    if (pInput) pInput.addEventListener('input', function () { update(true); });
+    update(false);
+    if (params.get('domaine') || params.get('domaine_statut') === 'mien') domain.set(params.get('domaine'), params.get('domaine_statut'));
+
+    /* vérification avant envoi (le serveur revérifie tout) */
+    form.addEventListener('submit', function (e) {
+      hideError();
+      update(false);
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        var bad = $$('input, textarea, select', form).filter(function (el) { return !el.disabled && !el.checkValidity(); })[0];
+        var code = 'champs';
+        if (bad) {
+          if (bad.type === 'email' && bad.value) code = 'email';
+          else if (bad.name === 'cgv' || bad.name === 'demarrage' || bad.name === 'engagement') code = bad.name;
+        }
+        showError(code, bad);
+        return;
+      }
+      if (!domain.own() && domain.get().name.length < 2) {
+        e.preventDefault();
+        showError('domaine', $('[data-domain-name]', root));
+        return;
+      }
+      var t = form.querySelector('input[name="_t"]'); if (t && !t.value) t.value = Date.now();
+      var btn = form.querySelector('button[type="submit"]');
+      if (btn) { btn.disabled = true; btn.querySelector('span').textContent = 'Un instant, je prépare le paiement…'; }
+    });
+  }
+
+  /* ---------- page Commande confirmée ---------- */
+  var refEl = $('[data-ref]');
+  if (refEl) {
+    var cp = new URLSearchParams(location.search);
+    var ref = (cp.get('ref') || '').replace(/[^A-Za-z0-9-]/g, '').slice(0, 40);
+    if (ref) {
+      refEl.textContent = ref;
+      $$('[data-ref-box]').forEach(function (el) { el.hidden = false; });
+    }
+    if (cp.get('attente') === '1') {
+      $$('[data-confirm-paid]').forEach(function (el) { el.hidden = true; });
+      $$('[data-confirm-wait]').forEach(function (el) { el.hidden = false; });
     }
   }
 
@@ -356,8 +607,10 @@
       log.insertBefore(li, log.firstChild);
     };
 
-    /* modifications du mois */
-    var left = 3, max = 4;
+    /* modifications restantes ce mois : le quota vient du forfait coché (data-jetons), deux demandes sont déjà faites dans la démo */
+    var startPlan = $('input[name="app-plan"]:checked', app);
+    var used = 2;
+    var max = startPlan ? +startPlan.getAttribute('data-jetons') : 4, left = Math.max(0, max - used);
     var drawJauge = function () {
       $('[data-jetons]', app).textContent = left;
       $('[data-jetons-max]', app).textContent = max;
@@ -375,7 +628,7 @@
       var text = txt.value.trim();
       if (!text) { toast('Écrivez votre demande en quelques mots'); txt.focus(); return; }
       if (left <= 0) { toast('Vos modifications du mois sont utilisées : je vous recontacte pour en parler (démo)'); return; }
-      left--; drawJauge();
+      used++; left = Math.max(0, max - used); drawJauge();
       var li = d.createElement('li');
       li.innerHTML = '<span><strong></strong><small>envoyée à l’instant</small></span><em class="st st-new">Reçue</em>';
       li.querySelector('strong').textContent = text.length > 60 ? text.slice(0, 57) + '…' : text;
@@ -410,7 +663,7 @@
     };
     $$('input[name="app-plan"]', app).forEach(function (r) {
       r.addEventListener('change', function () {
-        max = +r.getAttribute('data-jetons'); left = Math.min(left, max);
+        max = +r.getAttribute('data-jetons'); left = Math.max(0, max - used);
         drawJauge(); recompute();
         toast('Forfait ' + r.getAttribute('data-name') + ' choisi, à partir du mois prochain (démo)');
       });
@@ -439,7 +692,7 @@
     if (dom && domInput) domInput.value = dom;
     var opts = p.get('options'), msg = f.querySelector('textarea[name="message"]');
     var intro = [];
-    if (p.get('lissage') === 'oui') intro.push('Je souhaite lisser le prix du site sur 2 ans.');
+    if (p.get('lissage') === 'oui') intro.push('Je souhaite lisser le prix du site sur 24 mois.');
     if (opts) intro.push('Options choisies : ' + opts + '.');
     if (intro.length && msg && !msg.value) msg.value = intro.join('\n') + '\n\n';
     f.addEventListener('submit', function (e) {
@@ -451,7 +704,7 @@
   if (/[?&]connexion=erreur/.test(location.search)) {
     $$('[data-login-error]').forEach(function (el) { el.hidden = false; });
   }
-  if (/[?&]erreur=1/.test(location.search)) {
+  if (/[?&]erreur=1(&|$)/.test(location.search)) {
     $$('[data-form-error]').forEach(function (el) { el.hidden = false; });
   }
 })();

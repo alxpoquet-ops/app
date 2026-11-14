@@ -4,6 +4,8 @@
 //  - un seul <h1> par page, title/description présents, longueurs, unicité
 //  - JSON-LD valide
 //  - phrases dupliquées entre pages (contenu éditorial uniquement)
+//  - texte visible : aucune mention de Shopify, aucun tiret long ni demi-cadratin
+//  - /commander/ et /commande-confirmee/ sont bien en noindex
 const fs = require('fs');
 const path = require('path');
 const DIST = path.join(__dirname, '..', 'dist');
@@ -24,15 +26,25 @@ const exists = (href) => {
   if (clean.endsWith('/')) return fs.existsSync(path.join(p, 'index.html'));
   return fs.existsSync(p);
 };
+// Texte visible d'une page : sans les scripts, les styles, les gabarits <template> et les balises (donc sans les attributs).
+const visibleText = (html) =>
+  html
+    .replace(/<script[\s\S]*?<\/script>/g, ' ')
+    .replace(/<style[\s\S]*?<\/style>/g, ' ')
+    .replace(/<[^>]+>/g, ' ');
+const MUST_NOINDEX = ['/commander/', '/commande-confirmee/'];
 
 const errors = [], warns = [];
 const titles = new Map(), descs = new Map();
 const sentences = new Map(); // phrase -> Set(pages)
+const seen = new Set();
 
 for (const f of files) {
   const rel = '/' + path.relative(DIST, f).replace(/index\.html$/, '');
+  seen.add(rel);
   const html = fs.readFileSync(f, 'utf8');
   const noindex = /noindex/.test(html.match(/<meta name="robots" content="([^"]+)"/)?.[1] || '');
+  if (MUST_NOINDEX.includes(rel) && !noindex) errors.push(`${rel} : doit être en noindex`);
 
   // liens internes
   for (const m of html.matchAll(/(?:href|src)="(\/[^"]*)"/g)) {
@@ -59,6 +71,13 @@ for (const f of files) {
   // images sans alt
   for (const m of html.matchAll(/<img\b[^>]*>/g)) if (!/\balt="/.test(m[0])) errors.push(`${rel} : image sans alt`);
 
+  // texte visible (toutes les pages, y compris noindex) : pas de marque concurrente, pas de tiret long ni demi-cadratin
+  const visible = visibleText(html);
+  if (/shopify/i.test(visible)) errors.push(`${rel} : « Shopify » dans le texte visible`);
+  const dashCtx = visible.match(/.{0,30}[—–].{0,30}/);
+  if (dashCtx) errors.push(`${rel} : tiret long ou demi-cadratin dans le texte visible (« ${dashCtx[0].replace(/\s+/g, ' ').trim()} »)`);
+  if (/shopify/i.test(title + desc)) errors.push(`${rel} : « Shopify » dans le title ou la description`);
+
   // contenu éditorial : <main> sans les composants communs
   if (noindex) continue;
   let main = html.match(/<main[^>]*>([\s\S]*)<\/main>/)?.[1] || '';
@@ -71,7 +90,7 @@ for (const f of files) {
     .replace(/<div class="distance-badge">[\s\S]*?<\/div><\/div>/g, '')
     .replace(/<p class="small muted center">[\s\S]*?<\/p>/g, '')
     .replace(/<div class="author-box">[\s\S]*?<\/div>/g, '');
-  const text = main.replace(/<[^>]+>/g, ' ').replace(/&nbsp;| | /g, ' ').replace(/&[a-z#0-9]+;/g, ' ').replace(/\s+/g, ' ');
+  const text = main.replace(/<[^>]+>/g, ' ').replace(/&nbsp;| | /g, ' ').replace(/&[a-z#0-9]+;/g, ' ').replace(/\s+/g, ' ');
   for (const s of text.split(/(?<=[.!?:])\s+/)) {
     const norm = s.toLowerCase().replace(/[^a-zà-ÿœ0-9 ]/g, '').trim();
     if (norm.split(' ').length < 9) continue;
@@ -79,6 +98,7 @@ for (const f of files) {
     sentences.get(norm).add(rel);
   }
 }
+for (const p of MUST_NOINDEX) if (!seen.has(p)) errors.push(`${p} : page manquante`);
 
 const dups = [...sentences.entries()].filter(([, set]) => set.size > 1);
 // La page /faq/ reprend volontairement les questions de chaque rubrique : tolérance

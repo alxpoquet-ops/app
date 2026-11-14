@@ -1,0 +1,80 @@
+/* ==========================================================================
+   ALED08 : styles propres à l'espace client WordPress (onglet « Ma commande »,
+   boutons de paiement, factures). Chargé par l'extension « ALED08 Espace client »
+   après style.css ; réutilise ses variables (--soft, --mint, --c…) et ses classes
+   (app-card, reqs, st, kpis, tool-card, btn). Toutes les classes nouvelles
+   commencent par esp-.
+   ========================================================================== */
+
+/* ---------- carte de la commande ---------- */
+.esp-order { padding: 18px; border-radius: 22px; background: var(--soft); margin-bottom: 6px; }
+.esp-order-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 0 0 14px; color: var(--muted); font-weight: 700; }
+.esp-order-head b { color: var(--ink); font-weight: 900; letter-spacing: .02em; }
+.esp-order > p:last-child { margin-bottom: 0; }
+.esp-order .esp-empty, .esp-order .esp-warn { background: #fff; }
+
+/* statut « annulée » (les autres statuts réutilisent st-new, st-doing, st-done) */
+.st.esp-st-off { background: #EEEAF5; color: var(--muted); }
+
+/* ---------- frise d'état : Commande reçue → Paiement → Création → En ligne ---------- */
+.esp-steps { list-style: none; padding: 0; margin: 0 0 14px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; counter-reset: esp; }
+.esp-steps li { position: relative; display: grid; justify-items: center; gap: 6px; padding: 10px 4px 6px; text-align: center; font-weight: 800; font-size: .82rem; color: var(--muted); }
+.esp-steps li::before { content: ""; position: absolute; top: 27px; left: -3px; right: -3px; height: 4px; border-radius: 999px; background: #E3DBF2; z-index: 0; }
+.esp-steps li:first-child::before { left: 50%; }
+.esp-steps li:last-child::before { right: 50%; }
+.esp-steps li.is-done::before { background: var(--mint-d); }
+.esp-steps li.is-now::before { background: linear-gradient(90deg, var(--mint-d) 50%, #E3DBF2 50%); }
+.esp-step-ico { position: relative; z-index: 1; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: #fff; color: #B3A9CF; box-shadow: 0 0 0 3px #E3DBF2; }
+.esp-step-ico .ico { width: 20px; height: 20px; }
+.esp-steps li.is-done .esp-step-ico { background: var(--mint-d); color: #fff; box-shadow: 0 0 0 3px var(--mint); }
+.esp-steps li.is-done { color: var(--mint-dd); }
+.esp-steps li.is-now .esp-step-ico { background: #fff; color: var(--lilac-dd); box-shadow: 0 0 0 3px var(--lilac-d); animation: esp-pulse 2.2s ease-in-out infinite; }
+.esp-steps li.is-now { color: var(--ink); }
+.esp-steps.is-off li.is-done .esp-step-ico { background: #B3A9CF; box-shadow: 0 0 0 3px #E3DBF2; }
+.esp-steps.is-off li { color: var(--muted); }
+@keyframes esp-pulse { 0%, 100% { box-shadow: 0 0 0 3px var(--lilac-d); } 50% { box-shadow: 0 0 0 7px var(--lilac); } }
+@media (prefers-reduced-motion: reduce) { .esp-steps li.is-now .esp-step-ico { animation: none; } }
+
+/* ---------- fiche du site : type, nom de domaine, forfait, options ---------- */
+.esp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
+.esp-grid > div { padding: 12px 14px; border-radius: 16px; background: var(--soft); min-width: 0; }
+.esp-grid dt { font-size: .8rem; font-weight: 900; color: var(--muted); margin: 0 0 2px; }
+.esp-grid dd { margin: 0; color: var(--ink); font-weight: 800; overflow-wrap: anywhere; }
+.esp-grid dd small { display: block; color: var(--muted); font-weight: 700; font-size: .85rem; }
+
+/* ---------- montants ---------- */
+.esp-amounts { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.esp-amounts li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 12px 14px; border-radius: 16px; background: var(--soft); font-size: .95rem; color: var(--text); }
+.esp-amounts li > span { font-weight: 800; color: var(--ink); min-width: 0; }
+.esp-amounts li > b { color: var(--ink); font-weight: 900; white-space: nowrap; }
+.esp-amounts li > small { grid-column: 1 / -1; color: var(--muted); font-weight: 700; font-size: .82rem; }
+.esp-amounts .esp-amount-total { background: var(--lilac); color: var(--lilac-dd); }
+.esp-amounts .esp-amount-total > span { color: var(--lilac-dd); }
+.esp-amounts .esp-amount-total > b { font-size: 1.25rem; }
+
+/* ---------- paiement : solde, reprise d'un paiement ---------- */
+.esp-pay { display: grid; gap: 10px; justify-items: start; margin: 14px 0 0; padding: 16px 18px; border-radius: 18px; background: var(--mint); color: var(--mint-dd); }
+.esp-pay p { margin: 0; font-weight: 800; }
+.esp-order .esp-pay { background: #fff; }
+
+/* ---------- forfait : boutons côte à côte ---------- */
+.esp-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.esp-actions form { margin: 0; }
+
+/* lien discret dans un message (« Voir ma commande ») */
+.esp-warn .link-btn { color: inherit; padding: 0; }
+
+/* ---------- téléphone ---------- */
+@media (max-width: 720px) {
+  .esp-grid { grid-template-columns: minmax(0, 1fr); }
+  .esp-steps { gap: 2px; }
+  .esp-steps li { font-size: .72rem; padding-left: 0; padding-right: 0; }
+  .esp-step-ico { width: 32px; height: 32px; }
+  .esp-step-ico .ico { width: 17px; height: 17px; }
+  .esp-steps li::before { top: 24px; }
+  .esp-pay { justify-items: stretch; }
+  .esp-pay .btn, .esp-actions .btn, .esp-actions form { width: 100%; }
+}
+@media (max-width: 380px) {
+  .esp-steps li { font-size: .66rem; }
+}

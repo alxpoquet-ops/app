@@ -1,6 +1,9 @@
 // ============================================================================
-//  ALED08 : configuration centrale du site (identité, types de site, formules,
-//  options, comparatif). Tous les prix du site viennent d'ici.
+//  ALED08 : configuration centrale du site (identité, rubriques, types de site,
+//  forfaits Chico / Power / Titan et leurs quotas, options, délais, fidélité,
+//  paiement). Tous les prix du site viennent d'ici : le configurateur, la page
+//  /commander/, les données structurées et l'extension WordPress (data.json)
+//  se mettent à jour au prochain build.
 //  ⚠️  Les valeurs marquées « À REMPLACER » doivent être complétées avant la
 //      mise en ligne (le build affiche un avertissement tant qu'elles restent).
 // ============================================================================
@@ -65,10 +68,13 @@ const sections = {
   seo: { path: '/referencement-seo/', label: 'SEO', color: 'butter', icon: 'search-check' },
   contact: { path: '/contact/', label: 'Contact', color: 'peach', icon: 'message-circle' },
   // Hors du menu principal
-  shopify: { path: '/comparatif-shopify/', label: 'Comparatif Shopify', color: 'butter', icon: 'store' },
+  comparatif: { path: '/comparatif/', label: 'Comparatif', color: 'butter', icon: 'scale' },
   fidelite: { path: '/fidelite/', label: 'Fidélité', color: 'pink', icon: 'gift' },
   methode: { path: '/methode/', label: 'Ma méthode', color: 'lilac', icon: 'sparkles' },
   monespace: { path: '/mon-espace/', label: 'Mon espace', color: 'sky', icon: 'circle-user' },
+  // Parcours de commande (pages noindex, hors menu et hors plan du site)
+  commander: { path: '/commander/', label: 'Commander', color: 'mint', icon: 'shopping-bag' },
+  confirmation: { path: '/commande-confirmee/', label: 'Commande confirmée', color: 'mint', icon: 'party-popper' },
 };
 
 // ---------------------------------------------------------------- types de site (création, prix fixe)
@@ -112,14 +118,16 @@ const types = [
 ];
 const pageEnPlus = 40; // € par page au-delà de ce que prévoit le type de site
 
-// ---------------------------------------------------------------- formules mensuelles (un petit monstre chacune)
-// En paiement annuel : 2 mois offerts sur l'abonnement.
+// ---------------------------------------------------------------- forfaits mensuels (un petit monstre chacun)
+// En paiement annuel : 2 mois offerts sur le forfait.
+// quota : nombre de demandes de modification par mois dans l'espace client.
 const forfaits = [
   {
     id: 'chico',
     name: 'Chico',
     color: 'pink',
     month: 5,
+    quota: 1,
     modifs: 'Une modification par mois',
     tagline: 'L’essentiel',
     pitch: 'Votre site en ligne, protégé et à jour. Une modification par mois, faite par moi.',
@@ -130,38 +138,41 @@ const forfaits = [
     name: 'Power',
     color: 'lilac',
     month: 20,
+    quota: 4,
     modifs: 'Une modification par semaine',
     conseil: true,
     tagline: 'Pour être trouvé',
     pitch: 'Tout Chico, plus le SEO de votre site et un rapport clair chaque mois.',
     features: ['Tout ce que comprend Chico', 'SEO de votre site, suivi chaque mois', 'Rapport mensuel : visiteurs, ventes, positions sur Google', 'Une modification par semaine'],
   },
+  {
+    id: 'titan',
+    name: 'Titan',
+    color: 'peach',
+    month: 40,
+    quota: 20,
+    modifs: 'Une modification par jour ouvré',
+    conseil: false,
+    tagline: 'Pour les boutiques',
+    pitch: 'Tout Power, plus une modification par jour ouvré, un article de blog par mois et une réponse sous 24 heures.',
+    features: ['Tout ce que comprend Power', 'Une modification par jour ouvré (produits compris)', 'Un article de blog par mois pour votre SEO', 'Réponse sous 24 heures'],
+  },
 ];
 const annuel = { moisOfferts: 2 };
-// Prix du site lissé sur 24 mois, au besoin (engagement de 2 ans).
+// Prix du site lissé sur 24 mois, au besoin (engagement de 24 mois, le temps de payer le site).
 const lissage = { mois: 24 };
+// Délai de réponse aux demandes de modification.
+const delais = { reponse: '48 heures', titan: '24 heures' };
 
 // ---------------------------------------------------------------- options (activables plus tard)
 // price : { once } pour un paiement unique, { month } pour un paiement mensuel.
 const options = [
   { id: 'mail', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
   { id: 'en', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 50 }, desc: 'Votre site traduit en anglais et relu, pour les touristes et les clients venus d’ailleurs.' },
-]
+];
 
 // ---------------------------------------------------------------- fidélité et paiement
 const fidelite = { parrainageMois: 1, remiseSecondSite: 10 };
 const paiement = { acompte: 30 }; // création : 30 % à la commande, le reste à la mise en ligne
 
-// ---------------------------------------------------------------- comparatif Shopify
-// Prix publics relevés pour la France. À revérifier sur la source avant chaque mise à jour du site.
-const shopify = {
-  releve: 'novembre 2026',
-  source: 'https://www.shopify.com/fr/tarifs',
-  basicMensuel: 36, // € par mois, facturation mensuelle
-  basicAnnuel: 27, // € par mois, facturation annuelle
-  fraisCarte: '1,5 % + 0,25 €', // Shopify Payments, carte européenne standard, forfait Basic
-  fraisTiers: '2 %', // en plus, si on n'utilise pas Shopify Payments (forfait Basic)
-};
-const stripe = { fraisCarte: '1,5 % + 0,25 €' }; // carte européenne standard
-
-module.exports = { site, sections, types, pageEnPlus, forfaits, annuel, lissage, options, fidelite, paiement, shopify, stripe };
+module.exports = { site, sections, types, pageEnPlus, forfaits, annuel, lissage, delais, options, fidelite, paiement };

@@ -1,18 +1,35 @@
-// Mentions légales, politique de confidentialité, conditions générales
-// ⚠️ Les éléments entre crochets proviennent de src/config.js et doivent y être complétés.
+// Mentions légales, politique de confidentialité, conditions générales de vente
+// ⚠️ Les éléments entre accolades proviennent de src/config.js et doivent y être complétés.
 // ⚠️ Modèle à faire relire : il ne remplace pas l'avis d'un professionnel du droit.
-const { site, annuel, paiement, fidelite, forfaits, lissage } = require('../config');
+// Règles : aucun tiret long, phrases courtes, rien d'invérifiable. Le nom de marque vient de site.name.
+const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, pageEnPlus, delais = { reponse: '48 heures', titan: '24 heures' } } = require('../config');
 const L = site.legal;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
+const UPDATED = '2026-11-14';
+
+// Le forfait Titan peut ne pas encore exister : chaque phrase qui le cite est conditionnelle.
+const F = (id) => forfaits.find((f) => f.id === id);
+const chico = F('chico') || forfaits[0];
+const power = F('power') || forfaits[1] || chico;
+const titan = F('titan');
+const solde = 100 - paiement.acompte;
+const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
+const listeForfaits = forfaits.map((f) => `${f.name} ${eur(f.month)} € par mois`).join(', ');
+const listeTypes = types.map((t) => `${t.label.toLowerCase()} ${eur(t.price)} €`).join(', ');
+const listeDelais = types.map((t) => `${t.label.toLowerCase()} : ${t.delai}`).join(' ; ');
+const listeOptions = options
+  .map((o) => `${o.name.toLowerCase()} ${o.price.month ? `${eur(o.price.month)} € par mois` : `${eur(o.price.once)} € une fois`}`)
+  .join(', ');
+const tvaMention = L.tva || 'TVA non applicable, art. 293 B du CGI';
 
 module.exports = [
   {
     path: '/mentions-legales/',
     name: 'Mentions légales',
-    title: 'Mentions légales | ALED08',
-    description: 'Mentions légales du site ALED08, création de sites internet et référencement SEO : éditeur, hébergeur, propriété intellectuelle et responsabilité.',
+    title: `Mentions légales | ${site.name}`,
+    description: `Mentions légales du site ${site.name} : éditeur, hébergeur, prestataire de paiement, propriété intellectuelle, responsabilité et médiation.`,
     lead: 'Informations sur l’éditeur et l’hébergeur du site, conformément à la loi pour la confiance dans l’économie numérique.',
-    updated: '2026-11-14',
+    updated: UPDATED,
     body: `## Éditeur du site
 
 - **Nom commercial** : ${site.name}
@@ -22,7 +39,7 @@ module.exports = [
 - **Téléphone** : ${site.phoneDisplay}
 - **E-mail** : ${site.email}
 - **SIRET** : ${L.siret}
-${L.tva ? `- **TVA** : ${L.tva}` : ''}
+- **TVA** : ${tvaMention}
 
 ## Directeur de la publication
 
@@ -32,112 +49,194 @@ ${L.publicationDirector}.
 
 ${L.host}.
 
+## Paiement en ligne
+
+Les paiements sur ce site sont traités par Stripe (Stripe Payments Europe Ltd, Dublin, Irlande). Les données bancaires sont saisies sur les pages sécurisées de Stripe et ne transitent pas par ce site.
+
 ## Propriété intellectuelle
 
 Les textes, la mise en page, le logo, les personnages et les éléments graphiques de ce site appartiennent à ${site.name}, sauf mention contraire. Toute reproduction sans accord écrit est interdite.
 
 ## Responsabilité
 
-Les informations du site sont données à titre indicatif et peuvent évoluer. Seul le récapitulatif accepté engage les deux parties. Les prix de Shopify cités dans le comparatif sont des prix publics relevés à la date indiquée sur la page.`,
+Les informations du site sont données à titre indicatif et peuvent évoluer. Seul le récapitulatif de commande accepté engage les deux parties. Le comparatif avec les autres solutions ne cite aucun prix de concurrent : il décrit des façons de travailler.
+
+## Médiation
+
+Pour un litige avec un consommateur, un médiateur de la consommation peut être saisi gratuitement. Ses coordonnées figurent dans les [conditions générales de vente](/conditions-generales/#19-mediation-et-litiges).`,
   },
   {
     path: '/politique-de-confidentialite/',
     name: 'Politique de confidentialité',
-    title: 'Politique de confidentialité | ALED08',
-    description: 'Comment ALED08 traite vos données : demande de devis, vérification de nom de domaine, espace client et IA. Aucun cookie publicitaire sur le site.',
-    lead: 'Ce que deviennent les informations que vous m’envoyez, et vos droits.',
-    updated: '2026-11-14',
-    body: `## Responsable du traitement
+    title: `Politique de confidentialité | ${site.name}`,
+    description: `Comment ${site.name} traite vos données : demande de devis, commande en ligne, paiement par Stripe, nom de domaine, espace client et IA. Aucun traceur publicitaire.`,
+    lead: 'Ce que deviennent les informations que vous m’envoyez, combien de temps je les garde, et vos droits.',
+    updated: UPDATED,
+    body: `## 1. Responsable du traitement
 
 ${site.owner}, ${site.name}, ${addr}. Contact : ${site.email}.
 
-## Données collectées
+## 2. Les données que je collecte
 
-Quand vous envoyez une demande, je reçois votre nom, votre adresse e-mail, votre téléphone si vous le donnez, vos choix (type de site, forfait, options, nom de domaine) et votre message. Ces informations servent uniquement à vous répondre et à préparer votre récapitulatif.
+- **Demande de contact ou de devis** : votre nom, votre e-mail, votre téléphone si vous le donnez, vos choix dans le configurateur (type de site, forfait, options, nom de domaine) et votre message.
+- **Commande en ligne** : prénom, nom, e-mail, téléphone, adresse postale, nom de votre activité, vos choix, le nom de domaine souhaité, votre message et un éventuel code de parrainage. L’adresse postale sert à la facture et à la réservation du nom de domaine.
+- **Espace client** : vos identifiants, vos demandes de modification (texte et photos) et la date de votre dernière connexion.
+- **Paiement** : je ne reçois jamais votre numéro de carte ni votre IBAN (voir le point 4).
 
-## Vérification d’un nom de domaine
+## 3. Pourquoi je les utilise
 
-Quand vous vérifiez un nom de domaine, votre navigateur interroge directement le registre officiel de l’extension : l’AFNIC pour .fr, Verisign pour .com et .net, PIR pour .org. Seul le nom recherché leur est transmis. Je ne le reçois pas tant que vous n’envoyez pas votre demande.
+Pour vous répondre et préparer votre récapitulatif. Pour exécuter votre commande : créer le site, réserver le nom de domaine, gérer le forfait et les demandes. Pour établir les factures et les garder le temps prévu par la loi. Rien d’autre : pas de publicité, pas de revente, pas de profilage.
 
-## Espace client
+## 4. Paiement par Stripe
 
-Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée. Pour aller plus vite, je peux m’aider d’outils d’intelligence artificielle ; je vérifie tout avant la mise en ligne.
+Les paiements sont confiés à Stripe, prestataire de paiement. Au moment de payer, vous saisissez vos données bancaires sur une page sécurisée de Stripe. Elles ne passent pas par mon site et ${site.name} ne les stocke jamais. Je reçois seulement l’état du paiement (réussi, en attente, refusé) et la facture correspondante. Stripe traite ces données selon sa propre politique de confidentialité, consultable sur [stripe.com/fr/privacy](https://stripe.com/fr/privacy).
 
-## Durée de conservation
+## 5. Nom de domaine
+
+Quand vous vérifiez un nom de domaine, le nom saisi est envoyé au registre officiel de l’extension par le protocole RDAP : l’AFNIC pour les .fr, Verisign pour les .com et les .net, PIR pour les .org. Cette vérification part de votre navigateur pendant que vous tapez, puis de mon serveur au moment de la commande, pour confirmer la disponibilité. Seul le nom recherché est transmis.
+
+Pour réserver le nom de domaine, je transmets vos coordonnées de titulaire (prénom, nom, adresse, e-mail, téléphone) au bureau d’enregistrement et au registre de l’extension. C’est obligatoire pour que le nom soit à votre nom. En règle générale, les coordonnées d’un particulier ne sont pas publiées dans l’annuaire public du registre.
+
+## 6. Espace client et comptes
+
+Votre compte est créé automatiquement à la commande, avec votre adresse e-mail. Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée. Pour aller plus vite, je peux m’aider d’outils d’intelligence artificielle ; je vérifie tout avant la mise en ligne.
+
+Un compte sans aucune connexion depuis 12 mois et sans forfait actif est supprimé automatiquement, avec les demandes et les photos qu’il contient. Un e-mail vous prévient 30 jours avant. Il suffit de vous connecter pour le conserver.
+
+## 7. Durée de conservation
 
 - Demandes sans suite : 3 ans après le dernier échange.
-- Clients : le temps de la relation, puis les durées prévues par la loi pour les factures (10 ans).
+- Commandes et comptes clients : toute la durée de la relation, puis 5 ans pour les pièces du contrat et 10 ans pour les factures, comme la loi l’impose.
+- Comptes inactifs : supprimés après 12 mois sans connexion ni forfait actif (point 6).
 
-## Destinataires
+## 8. Destinataires
 
-Les données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site, par la messagerie utilisée pour recevoir les demandes et, pour l’espace client, par les services nécessaires à son fonctionnement (paiement). Elles ne sont jamais vendues.
+Vos données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site (${L.host}), par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Elles ne sont jamais vendues ni cédées.
 
-## Cookies
+## 9. Cookies et stockage local
 
-Ce site n’utilise aucun cookie publicitaire ni outil de mesure d’audience.
+Ce site n’utilise aucun traceur publicitaire ni outil de mesure d’audience. Il ne pose aucun cookie tant que vous n’êtes pas connecté à votre espace client.
 
-## Vos droits
+- Si vous arrivez par un lien de parrainage, le code du parrain est gardé 60 jours dans le stockage local de votre navigateur, pour le préremplir dans le formulaire de commande. Il n’est envoyé qu’avec votre commande.
+- Quand vous vous connectez à l’espace client, un cookie de connexion est posé. Il est nécessaire au service et sert uniquement à vous garder connecté.
 
-Vous pouvez demander l’accès, la correction ou la suppression de vos données en écrivant à ${site.email}. Vous pouvez aussi saisir la CNIL (www.cnil.fr).`,
+## 10. Vos droits
+
+Vous pouvez demander l’accès à vos données, leur correction, leur suppression ou une copie, et vous opposer à un traitement, en écrivant à ${site.email}. Je réponds sous un mois. Vous pouvez aussi saisir la CNIL (www.cnil.fr).`,
   },
   {
     path: '/conditions-generales/',
     name: 'Conditions générales',
-    title: 'Conditions générales de vente | ALED08',
-    description: 'Conditions générales de vente d’ALED08 : création à prix fixe ou lissée sur 2 ans, forfaits au mois ou à l’année, outils, espace client et rétractation.',
-    lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif accepté.',
-    updated: '2026-11-14',
-    body: `## 1. Commande
+    title: `Conditions générales de vente | ${site.name}`,
+    description: `Conditions générales de vente de ${site.name} : commande en ligne, création à prix fixe ou lissée, forfaits, engagement, nom de domaine, rétractation, médiation.`,
+    lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif de commande.',
+    updated: UPDATED,
+    body: `## 1. Objet
 
-Chaque projet fait l’objet d’un récapitulatif gratuit : type de site, forfait, options et prix. La commande est ferme quand le récapitulatif est accepté par écrit (e-mail ou message) et l’acompte réglé.
+Ces conditions s’appliquent à toute commande passée auprès de ${site.name} : création d’un site internet, forfait mensuel ou annuel, options et services liés. Elles complètent le récapitulatif de commande, qui précise le type de site, le forfait, les options et les prix.
 
-## 2. Création du site
+## 2. Commande en ligne
 
-Le prix de création est fixe pour le type de site choisi. Il se paie en une fois (${paiement.acompte} % à la commande, le reste à la mise en ligne) ou, au choix du client, lissé sur ${lissage.mois} mois. Dans ce dernier cas, le client s’engage pour 2 ans.
+La commande se passe sur le site, en trois étapes : le choix du site et du forfait, les coordonnées, puis le paiement sécurisé. Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants.
 
-## 3. Forfaits
+En cliquant sur « Commander et payer », le client accepte ces conditions et passe une commande ferme. Il reçoit aussitôt un e-mail de confirmation avec une référence de commande, à rappeler dans les échanges.
 
-Le forfait Chico (${forfaits[0].month} € par mois) comprend l’hébergement, le nom de domaine, les sauvegardes, les mises à jour et une modification par mois. Le forfait Power (${forfaits[1].month} € par mois) ajoute le référencement, un rapport mensuel et une modification par semaine. Les modifications non utilisées ne sont pas reportées. Le forfait démarre à la mise en ligne.
+Une commande peut aussi être passée par e-mail ou par message. Elle est alors ferme quand le client accepte le récapitulatif par écrit et règle le premier paiement.
 
-- **Au mois** : sans engagement, résiliable à tout moment avec un mois de préavis, sauf site lissé sur 2 ans.
-- **À l’année** : douze mois payés en une fois, avec ${annuel.moisOfferts} mois offerts.
+## 3. Prix
 
-Le client peut changer de forfait ou ajouter une option à tout moment. Le nouveau prix s’applique à la période suivante.
+Les prix sont en euros. La TVA n’est pas applicable (article 293 B du Code général des impôts) tant que l’entreprise bénéficie de la franchise de TVA. Si cette situation change, les prix affichés sont mis à jour ; les commandes déjà passées gardent leur prix.
 
-## 4. Espace client et modifications
+La création du site est à prix fixe pour le type choisi : ${listeTypes}. Une page en plus coûte ${eur(pageEnPlus)} €. Les options sont au tarif indiqué à la commande : ${listeOptions}.
 
-Le client envoie ses demandes de modification depuis son espace client ou par message. Elles sont réalisées par ${site.name}, dans la limite prévue par le forfait. Les outils de l’espace client (tableau de bord, QR code, lien d’avis, factures) sont gratuits pour les sites hébergés par ${site.name}.
+Les forfaits sont mensuels : ${listeForfaits}. À l’année, le client paie dix mois pour douze, soit ${annuel.moisOfferts} mois offerts.
 
-## 5. Nom de domaine et fin du forfait
+## 4. Paiement de la création
 
-Le nom de domaine est enregistré au nom du client. À la fin du forfait, le client garde son nom de domaine et reçoit une copie de son site (contenus, images et fichiers).
+Le client choisit l’une des deux formules au moment de la commande.
 
-## 6. Versions et contenus publiés
+- **En une fois** : un acompte de ${paiement.acompte} % est réglé à la commande. Le solde de ${solde} % est demandé quand le site est mis en ligne, par un lien de paiement envoyé par e-mail et visible dans l’espace client.
+- **Lissé sur ${lissage.mois} mois** : le prix du site est divisé en ${lissage.mois} mensualités ajoutées au forfait. Si le forfait est payé à l’année, il est divisé en 2 annuités. Chaque échéance est arrondie au centime inférieur. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
 
-Chaque version du site est conservée et peut être restaurée sur demande. ${site.name} peut s’aider d’outils d’intelligence artificielle pour réaliser les modifications ; tout est vérifié avant la mise en ligne.
+## 5. Paiement du forfait et factures
 
-## 7. Référencement
+Le forfait démarre le jour de la commande : il couvre dès ce jour la réservation du nom de domaine et la préparation de l’hébergement. Il est prélevé d’avance, chaque mois ou chaque année selon la période choisie.
 
-Le référencement est une obligation de moyens : ${site.name} s’engage à appliquer les bonnes pratiques et à suivre les résultats, sans pouvoir garantir une position précise sur Google.
+Les paiements sont confiés à Stripe, par carte bancaire ou prélèvement SEPA. ${site.name} ne voit pas et ne conserve pas les données bancaires. Chaque facture est envoyée par e-mail et reste disponible dans l’espace client.
 
-## 8. Délais
+En cas d’échec de paiement, le client est prévenu par e-mail. Si rien n’est régularisé sous 30 jours, le site peut être mis en pause jusqu’au règlement.
 
-Les délais sont donnés à titre indicatif. Ils courent à partir de la réception des éléments nécessaires (textes, photos, accès).
+## 6. Engagement et résiliation
 
-## 9. Contenus fournis par le client
+- **Sans lissage** : le forfait est sans engagement. Le client peut l’arrêter à tout moment depuis son espace client ou par e-mail. L’arrêt prend effet à la fin de la période déjà payée.
+- **Avec lissage** : le client s’engage pour ${lissage.mois} mois, le temps de régler son site. S’il arrête avant, le reste du prix de création devient exigible en une fois. Le forfait s’arrête ensuite à la fin de la période payée.
 
-Le client garantit qu’il a le droit d’utiliser les textes, images et logos qu’il fournit.
+Le client peut changer de forfait à tout moment. Le nouveau prix s’applique à la période suivante.
 
-## 10. Fidélité
+## 7. Fin du forfait
 
-Le parrainage donne ${fidelite.parrainageMois} mois de forfait offert au parrain et au filleul, quand le site du filleul est en ligne. Les avantages ne sont pas convertibles en argent.
+À la fin du forfait, le client reçoit son site sous forme de fichiers (textes, images, pages), pour le faire héberger où il veut. Le nom de domaine lui appartient : il peut le transférer vers le prestataire de son choix. L’hébergement par ${site.name} s’arrête 30 jours après la fin du forfait.
 
-## 11. Droit de rétractation
+## 8. Droit de rétractation
 
-Le client particulier dispose de 14 jours après la commande pour se rétracter. S’il demande que le travail commence avant la fin de ce délai, il paie la part déjà réalisée en cas de rétractation.
+Le client qui commande à distance dispose de 14 jours pour se rétracter, sans avoir à se justifier. Un e-mail à ${site.email} suffit.
 
-## 12. Médiation
+En commandant, le client demande expressément, en cochant la case prévue, que la création commence tout de suite. S’il se rétracte pendant ces 14 jours, il paie le travail déjà réalisé, au prorata du prix de création. Le nom de domaine déjà réservé reste à sa charge, car il est enregistré à son nom et pour un an.
 
-En cas de litige, le client peut recourir gratuitement au médiateur de la consommation : ${L.mediator}.`,
+## 9. Nom de domaine
+
+Le client est le titulaire de son nom de domaine. ${site.name} y figure comme contact technique, pour pouvoir le gérer. Le nom est réservé après le premier paiement, s’il est encore disponible à ce moment-là.
+
+Le prix d’un nom de domaine standard en .fr ou en .com est compris dans le forfait. Les autres extensions et les noms dits « premium », vendus plus cher par les registres, font l’objet d’un devis.
+
+Si le client possède déjà un nom de domaine, il peut le transférer vers ${site.name} ou le garder chez son prestataire et le faire pointer vers le site. ${site.name} lui envoie les réglages à faire.
+
+## 10. Création du site et délais
+
+Le client fournit ses textes, photos et informations, ou les prépare avec ${site.name} à partir de ses explications. Les délais annoncés (${listeDelais}) sont indicatifs. Ils courent à partir de la réception de ces éléments. Le client voit son site avant la mise en ligne et peut demander des ajustements sur ce qui a été commandé.
+
+## 11. Modifications comprises
+
+Le client envoie ses demandes de modification depuis son espace client ou par message. Elles sont réalisées par ${site.name}. Chaque forfait comprend un nombre de modifications :
+
+- ${chico.name} : une par mois.
+- ${power.name} : une par semaine.
+${titan ? `- ${titan.name} : une par jour ouvré, ajout et mise à jour de produits compris.` : ''}
+
+Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications non utilisées ne se reportent pas. Au-delà du nombre compris, la demande est reportée à la période suivante ou fait l’objet d’un devis, au choix du client. Une page en plus est facturée ${eur(pageEnPlus)} €.
+
+## 12. Délais de réponse
+
+${site.name} répond à chaque demande sous ${delais.reponse}, en jours ouvrés${titan ? `, et sous ${delais.titan} pour le forfait ${titan.name}` : ''}. Répondre, c’est prendre en charge la demande et donner une date. Les petites modifications sont en général faites dans ce délai.
+
+## 13. Espace client et compte
+
+Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. Il y suit sa commande, ses demandes, son forfait et ses factures. Il garde ses identifiants pour lui et prévient ${site.name} en cas de doute sur leur usage.
+
+Un compte sans connexion depuis 12 mois et sans forfait actif est supprimé automatiquement, avec ses demandes et ses photos. Le client est prévenu par e-mail 30 jours avant. Une connexion suffit pour annuler la suppression. Les factures sont conservées en dehors du compte, le temps prévu par la loi.
+
+## 14. Contenus fournis par le client
+
+Le client garantit qu’il a le droit d’utiliser les textes, images, logos et produits qu’il fournit. Il reste responsable des informations légales propres à son activité : mentions obligatoires, conditions de vente de sa boutique, prix affichés.
+
+## 15. Versions et intelligence artificielle
+
+Chaque version du site est conservée et peut être restaurée sur demande. ${site.name} s’aide d’outils d’intelligence artificielle pour travailler plus vite ; chaque modification est relue et testée avant la mise en ligne.
+
+## 16. Référencement
+
+Le référencement est une obligation de moyens. ${site.name} applique les bonnes pratiques et suit les résultats, sans garantir une position donnée sur Google.
+
+## 17. Parrainage et fidélité
+
+Chaque client dispose d’un lien et d’un code de parrainage dans son espace client. Quand le site d’un filleul est en ligne, le parrain et le filleul reçoivent chacun ${fidelite.parrainageMois} mois de forfait offert, crédité sur la facture suivante. Un deuxième site commandé par le même client bénéficie de ${fidelite.remiseSecondSite} % sur la création. Ces avantages ne sont pas convertibles en argent.
+
+## 18. Responsabilité
+
+${site.name} met tout en œuvre pour que le site reste disponible et sauvegardé. Il ne peut pas être tenu responsable d’une panne de l’hébergeur, d’un registre ou du service de paiement, ni des contenus fournis par le client. Un éventuel dédommagement ne peut pas dépasser les sommes versées au titre du forfait au cours des 12 derniers mois, sauf si la loi en dispose autrement.
+
+## 19. Médiation et litiges
+
+En cas de désaccord, le client écrit d’abord à ${site.email} : la plupart des questions se règlent en quelques échanges. Si la réponse ne lui convient pas, le client consommateur peut saisir gratuitement un médiateur de la consommation : ${L.mediator}. Le droit français s’applique.`,
   },
 ];
