@@ -100,9 +100,6 @@ function header(currentPath) {
           return `<li><a class="nav-link c-${s.color}" href="${s.path}"${on ? ' aria-current="page"' : ''}>${icon(s.icon)}${s.label}</a></li>`;
         }).join('')}
       </ul>
-      <div class="nav-mobile-cta">
-        ${C.btnWa('btn-light btn-block', 'Nous écrire')}
-      </div>
     </nav>
     <div class="header-actions">
       <a class="btn-espace" href="${sections.monespace.path}"${currentPath.startsWith(sections.monespace.path) ? ' aria-current="page"' : ''}>${icon('circle-user')}<span>Mon espace</span></a>

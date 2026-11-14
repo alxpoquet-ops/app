@@ -158,7 +158,6 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 .burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
 .burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
 .burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
-.nav-mobile-cta { display: none; }
 
 /* ---------- accueil : héros ---------- */
 .hero { position: relative; overflow: hidden; background: radial-gradient(520px 380px at 82% 22%, #DDF7EC, transparent 70%), radial-gradient(460px 340px at 8% 90%, #FFE8F1, transparent 70%), radial-gradient(420px 300px at 45% 0%, #EEE7FF, transparent 70%), var(--bg); }
@@ -644,8 +643,9 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
   .nav-link { padding: 14px 16px; font-size: 1.12rem; background: var(--card); border-radius: 22px; box-shadow: var(--shadow-sm); }
   .nav-link .ico { width: 36px; height: 36px; padding: 8px; border-radius: 12px; background: var(--c); color: var(--c-dd); }
   .nav-link[aria-current] { box-shadow: 0 0 0 3px var(--c-d), var(--shadow-sm); background: var(--card); color: var(--ink); }
-  .nav-mobile-cta { display: grid; gap: 10px; margin-top: 20px; }
   body.nav-open { overflow: hidden; }
+  /* menu ouvert : la barre du bas ferait doublon avec les onglets */
+  body.nav-open .mobile-bar { display: none; }
   .header-actions { margin-left: auto; }
   .hero-in { grid-template-columns: 1fr; gap: 22px; padding: 26px 24px 60px; }
   .hero-art { order: -1; width: 190px; justify-self: center; margin-bottom: 14px; }
