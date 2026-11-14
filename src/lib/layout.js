@@ -1,9 +1,8 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, hours, forfait, tarifs, communes } = require('../config');
+const { site, sections, formules } = require('../config');
 const { icon } = require('./icons');
-const { esc } = require('./md');
+const { esc, typo } = require('./md');
 const C = require('./components');
-const { mainServices } = require('../content/services-list');
 
 const assetsVersion = { css: '1', js: '1' };
 function setAssetVersion(v) { Object.assign(assetsVersion, v); }
@@ -11,27 +10,19 @@ function setAssetVersion(v) { Object.assign(assetsVersion, v); }
 // ---------------------------------------------------------------- schema.org
 function businessSchema() {
   const b = {
-    '@type': 'Electrician',
+    '@type': 'ProfessionalService',
     '@id': site.url + '/#entreprise',
     name: site.name,
-    alternateName: 'ALED08, dépannage électrique dans les Ardennes',
-    slogan: 'Dépannage et installation électrique, de la prise au tableau',
+    slogan: 'Des sites internet et des outils créés avec l’IA, vérifiés par un humain',
     description:
-      `Électricien pour le dépannage et l'installation électrique dans toutes les Ardennes (08), de la prise au tableau. Forfait dépannage sur devis, prix annoncé avant de venir : déplacement, recherche de panne, proposition de solution et devis de réparation sans obligation. Travaux sur devis gratuit : tableau, prises, éclairage, mise en sécurité. À tout moment, sur rendez-vous.`,
+      'Création de sites internet à petit prix (une page, avec onglets, boutique en ligne), en paiement unique ou en abonnement, mini-jeux 2D et automatisations. Basé dans les Ardennes, pour des clients partout en France.',
     url: site.url + '/',
     telephone: site.phoneIntl,
     email: site.email,
     image: site.url + '/assets/img/og-image.png',
     logo: site.url + '/assets/img/logo-512.png',
-    priceRange: '€€',
+    priceRange: '€',
     currenciesAccepted: 'EUR',
-    makesOffer: {
-      '@type': 'Offer',
-      name: 'Forfait dépannage électrique',
-      description: "Forfait sur devis, prix annoncé avant le déplacement. Comprend le déplacement, la recherche de panne, proposition de solution et devis de réparation sans obligation. Remise accordée si l'origine de la panne n'est pas trouvée. Même prix le soir et le week-end.",
-      url: site.url + '/tarifs/',
-      itemOffered: { '@type': 'Service', name: 'Dépannage électrique à domicile', serviceType: 'Dépannage électrique' },
-    },
     address: {
       '@type': 'PostalAddress',
       ...(site.address.street ? { streetAddress: site.address.street } : {}),
@@ -40,23 +31,20 @@ function businessSchema() {
       addressRegion: site.address.region,
       addressCountry: site.address.country,
     },
-    geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng },
-    areaServed: [
-      { '@type': 'AdministrativeArea', name: 'Ardennes (08)' },
-      ...communes.filter((c) => c.page).map((c) => ({ '@type': 'City', name: c.name })),
-    ],
+    areaServed: [{ '@type': 'Country', name: 'France' }, { '@type': 'AdministrativeArea', name: 'Ardennes (08)' }],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: 'Prestations et tarifs électricité',
-      itemListElement: tarifs.map((t) => ({
+      name: 'Formules de sites internet',
+      itemListElement: formules.map((f) => ({
         '@type': 'Offer',
-        itemOffered: { '@type': 'Service', name: t.label },
-        ...(t.price != null
-          ? { price: t.price, priceCurrency: 'EUR', description: t.note }
-          : {}),
+        name: 'Site internet ' + f.name,
+        price: f.unique,
+        priceCurrency: 'EUR',
+        description: f.pitch.replace(/’/g, "'"),
+        url: site.url + '/tarifs/#' + f.id,
       })),
     },
-    knowsAbout: ['Dépannage électrique', 'Recherche de panne', 'Recherche de panne électrique', 'Tableau électrique', 'Norme NF C 15-100', 'Mise en sécurité électrique', 'Éclairage LED'],
+    knowsAbout: ['Création de site internet', 'Site vitrine', 'Boutique en ligne', 'Référencement naturel', 'Intelligence artificielle', 'Automatisation', 'Jeux 2D'],
   };
   const sameAs = Object.values(site.social).filter(Boolean);
   if (sameAs.length) b.sameAs = sameAs;
@@ -68,7 +56,7 @@ function graph(p) {
   const g = [businessSchema()];
   g.push({ '@type': 'WebSite', '@id': site.url + '/#site', url: site.url + '/', name: site.name, inLanguage: 'fr-FR', publisher: { '@id': site.url + '/#entreprise' } });
   const webpage = {
-    '@type': p.webpageType || 'WebPage',
+    '@type': 'WebPage',
     '@id': url + '#page',
     url,
     name: p.title,
@@ -91,47 +79,28 @@ function graph(p) {
 }
 
 // ---------------------------------------------------------------- en-tête
+const NAV = ['sites', 'tarifs', 'jeux', 'auto', 'methode', 'fidelite', 'contact'];
+
 function header(currentPath) {
-  const isActive = (p) => (currentPath === p || (p !== '/' && currentPath.startsWith(p)) ? ' aria-current="page"' : '');
-  const links = [
-    ['/tarifs/', 'Tarifs'],
-    ['/zone-intervention/', 'Zone d’intervention'],
-    ['/qui-suis-je/', 'Qui suis-je ?'],
-    ['/blog/', 'Blog'],
-    ['/contact/', 'Contact'],
-  ];
   return `<a class="skip" href="#contenu">Aller au contenu</a>
-<div class="topbar"><div class="container topbar-in">
-  <span class="topbar-item hide-sm">${icon('zap')}Dépannage & installation · de la prise au tableau</span>
-  <span class="topbar-item hide-lg">${icon('map-pin')}Toutes les Ardennes (08)</span>
-  <span class="topbar-item">${icon('message-circle')}<span>Semaine et week-end · RDV par message</span></span>
-  <a class="topbar-phone" href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a>
-</div></div>
 <header class="site-header">
   <div class="container header-in">
-    <a class="brand" href="/" aria-label="ALED08, électricien dans les Ardennes, accueil">${C.logoSvg('lgh')}<span class="brand-text"><strong>ALED08</strong><small>Électricien · Ardennes</small></span></a>
+    <a class="brand" href="/" aria-label="${site.name}, accueil">${C.logoSvg('lgh')}<span class="brand-text"><strong>${site.name}</strong><small>${site.baseline}</small></span></a>
     <nav class="nav" id="nav" aria-label="Navigation principale">
       <ul class="nav-list">
-        <li><a class="nav-link nav-link--hl" href="/prestations/depannage-electrique/"${currentPath === '/prestations/depannage-electrique/' ? ' aria-current="page"' : ''}>${icon('zap')}Dépannage</a></li>
-        <li class="has-sub">
-          <a class="nav-link" href="/prestations/"${currentPath !== '/prestations/depannage-electrique/' ? isActive('/prestations/') : ''}>Prestations</a>
-          <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="sub-prestations" aria-label="Afficher les prestations">${icon('chevron-down')}</button>
-          <div class="sub" id="sub-prestations"><ul>
-            ${mainServices.map((s) => `<li><a href="${s.path}">${icon(s.icon)}<span><strong>${s.name}</strong></span></a></li>`).join('')}
-            <li class="sub-all"><a href="/prestations/">${icon('list-checks')}<span><strong>Toutes les prestations</strong></span></a></li>
-          </ul></div>
-        </li>
-        ${links.map(([p, t]) => `<li><a class="nav-link" href="${p}"${isActive(p)}>${t}</a></li>`).join('')}
+        ${NAV.map((k) => {
+          const s = sections[k];
+          const on = currentPath === s.path || currentPath.startsWith(s.path);
+          return `<li><a class="nav-link acc-${s.accent}" href="${s.path}"${on ? ' aria-current="page"' : ''}><span class="nav-dot" aria-hidden="true"></span>${s.label}</a></li>`;
+        }).join('')}
       </ul>
       <div class="nav-mobile-cta">
-        ${C.btnCall('btn-primary btn-block')}
-        ${C.btnDevis('btn-light btn-block')}
+        ${C.btnDevis('btn-primary btn-block')}
         ${C.btnWa('btn-wa btn-block', 'Écrire sur WhatsApp')}
       </div>
     </nav>
     <div class="header-actions">
-      <a class="btn btn-ghost btn-phone" href="${C.tel}" data-track="call">${icon('phone')}<span>${site.phoneDisplay}</span></a>
-      <a class="btn btn-primary btn-devis" href="/devis/">${icon('file-text')}<span>Devis gratuit</span></a>
+      ${C.btnDevis('btn-primary btn-devis')}
       <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -140,88 +109,74 @@ function header(currentPath) {
 
 // ---------------------------------------------------------------- pied de page
 function footer() {
-  const zone = communes.filter((c) => c.page && c.main);
   return `<footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <a class="brand brand-light" href="/">${C.logoSvg('lgf')}<span class="brand-text"><strong>ALED08</strong><small>Électricien · Ardennes</small></span></a>
-      <p><strong style="color:#fff">Dépannage et installation électrique dans les Ardennes</strong>, de la prise au tableau. Un jeune artisan, joignable par SMS ou WhatsApp.</p>
+      <a class="brand brand-light" href="/">${C.logoSvg('lgf')}<span class="brand-text"><strong>${site.name}</strong><small>${site.baseline}</small></span></a>
+      <p>Des sites internet et des outils créés avec l’IA, vérifiés par un humain. Basé dans les Ardennes, je travaille avec des clients partout en France.</p>
       <ul class="footer-contact">
-        <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>
         <li><a href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}WhatsApp</a></li>
+        <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>
         <li><a href="mailto:${site.email}">${icon('mail')}${site.email}</a></li>
-        <li>${icon('map-pin')}${site.address.postalCode} ${site.address.city}</li>
       </ul>
     </div>
     <div>
-      <h2 class="footer-title">Prestations</h2>
+      <h2 class="footer-title">Sites internet</h2>
       <ul class="footer-links">
-        ${mainServices.map((s) => `<li><a href="${s.path}">${s.name}</a></li>`).join('')}
-        <li><a href="/diagnostic-electrique-ardennes/">Diagnostic électrique</a></li>
-        <li><a href="/petits-travaux-electriques/">Petits travaux électriques</a></li>
+        ${formules.map((f) => `<li><a href="/tarifs/#${f.id}">${C.projetLabel(f)}</a></li>`).join('')}
+        <li><a href="/tarifs/#options">Options</a></li>
+        <li><a href="/creation-site-internet-ardennes/">Création de site dans les Ardennes</a></li>
       </ul>
     </div>
     <div>
-      <h2 class="footer-title">Zone d’intervention</h2>
+      <h2 class="footer-title">Autres services</h2>
       <ul class="footer-links">
-        ${zone.map((c) => `<li><a href="/${c.page}/">Électricien ${c.name}</a></li>`).join('')}
-        <li><a href="/electricien-ardennes/">Électricien Ardennes</a></li>
-        <li><a href="/zone-intervention/"><strong>Toutes les communes</strong></a></li>
+        <li><a href="/jeux-2d/">Jeux 2D</a></li>
+        <li><a href="/automatisations/">Automatisations</a></li>
+        <li><a href="/automatisations/#initiation">Initiation à l’IA</a></li>
+        <li><a href="/fidelite/">Fidélité et parrainage</a></li>
       </ul>
     </div>
     <div>
-      <h2 class="footer-title">Disponibilités</h2>
-      <p class="footer-note">Toute la semaine et le week-end, sur rendez-vous par SMS ou WhatsApp.</p>
-      <ul class="footer-links footer-links-inline">
-        <li><a href="/tarifs/">Tarifs</a></li><li><a href="/faq/">FAQ</a></li><li><a href="/blog/">Blog</a></li><li><a href="/qui-suis-je/">Qui suis-je ?</a></li><li><a href="/contact/">Contact</a></li>
+      <h2 class="footer-title">Infos</h2>
+      <ul class="footer-links">
+        <li><a href="/methode/">Ma méthode avec l’IA</a></li>
+        <li><a href="/faq/">Questions fréquentes</a></li>
+        <li><a href="/contact/">Contact et devis</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom"><div class="container footer-bottom-in">
-    <p>© ${new Date().getFullYear()} ${site.name}. Dépannage électrique dans les Ardennes (08).</p>
+    <p>© ${new Date().getFullYear()} ${site.name}. Sites internet et IA.</p>
     <ul>
       <li><a href="/mentions-legales/">Mentions légales</a></li>
       <li><a href="/politique-de-confidentialite/">Confidentialité</a></li>
       <li><a href="/conditions-generales/">Conditions générales</a></li>
       <li><a href="/plan-du-site/">Plan du site</a></li>
-      <li><button type="button" class="link-btn" data-cookie-settings>Gestion des cookies</button></li>
     </ul>
   </div></div>
 </footer>
 <nav class="mobile-bar" aria-label="Contact rapide">
-  <a href="${C.smsUrl()}" class="mb-call" data-track="sms">${icon('message-circle')}<span>SMS</span></a>
-  <a href="${C.waUrl()}" class="mb-wa" target="_blank" rel="noopener" data-track="whatsapp">${icon('whatsapp')}<span>WhatsApp</span></a>
-  <a href="/devis/" class="mb-devis">${icon('file-text')}<span>Devis</span></a>
+  <a href="${C.waUrl()}" class="mb-wa" target="_blank" rel="noopener">${icon('whatsapp')}<span>WhatsApp</span></a>
+  <a href="${C.devisUrl()}" class="mb-devis">${icon('file-text')}<span>Devis gratuit</span></a>
 </nav>
-<a class="wa-float" href="${C.waUrl()}" target="_blank" rel="noopener" aria-label="Contacter ALED08 sur WhatsApp" data-track="whatsapp">${icon('whatsapp')}</a>
-<div class="cookie" id="cookie" role="dialog" aria-modal="false" aria-labelledby="cookie-title" hidden>
-  <div class="cookie-in">
-    <div class="cookie-text">
-      <p id="cookie-title"><strong>${icon('cookie')}Vos choix en matière de cookies</strong></p>
-      <p>Ce site n’utilise aucun cookie publicitaire ni de mesure d’audience. Seule la carte Google Maps, si vous l’affichez, peut déposer des cookies de Google. <a href="/politique-de-confidentialite/#cookies">En savoir plus</a></p>
-      <label class="switch"><input type="checkbox" id="consent-maps"><span class="switch-ui" aria-hidden="true"></span><span>Autoriser la carte Google Maps</span></label>
-    </div>
-    <div class="cookie-actions">
-      <button type="button" class="btn btn-ghost" data-consent="refuse">Tout refuser</button>
-      <button type="button" class="btn btn-ghost" data-consent="save">Enregistrer</button>
-      <button type="button" class="btn btn-primary" data-consent="accept">Tout accepter</button>
-    </div>
-  </div>
-</div>`;
+<a class="wa-float" href="${C.waUrl()}" target="_blank" rel="noopener" aria-label="Écrire à ${site.name} sur WhatsApp">${icon('whatsapp')}</a>`;
 }
 
-// Apostrophes typographiques dans le texte visible (hors balises, scripts et styles)
+// Typographie dans le texte visible (hors balises, scripts et styles) :
+// apostrophes typographiques et espaces insécables (« 30 € », « faire ? »).
 function smartQuotes(html) {
   return html.replace(/(<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<[^>]+>)|([^<]+)/g, (m, tag, text) =>
-    tag ? tag : text.replace(/([A-Za-zÀ-ÿœŒ])'(?=[A-Za-zÀ-ÿœŒ0-9])/g, '$1\u2019')
+    tag ? tag : typo(text.replace(/([A-Za-zÀ-ÿœŒ])'(?=[A-Za-zÀ-ÿœŒ0-9])/g, '$1’'))
   );
 }
 
 // ---------------------------------------------------------------- page complète
 function page(p) {
   const url = site.url + p.path;
-  const ogImage = site.url + (p.ogImage || '/assets/img/og-image.png');
+  const ogImage = site.url + '/assets/img/og-image.png';
   const robots = p.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1';
+  const accent = p.section ? sections[p.section].accent : 'amber';
   return `<!doctype html>
 <html lang="fr">
 <head>
@@ -232,25 +187,20 @@ function page(p) {
 <link rel="canonical" href="${url}">
 <meta name="robots" content="${robots}">
 <meta name="author" content="${esc(site.name)}">
-<meta name="theme-color" content="#24304A">
+<meta name="theme-color" content="#15254a">
 <meta name="format-detection" content="telephone=no">
-<meta name="geo.region" content="FR-08">
-<meta name="geo.placename" content="${esc(p.geoPlace || 'Ardennes')}">
-<meta name="geo.position" content="${site.geo.lat};${site.geo.lng}">
-<meta name="ICBM" content="${site.geo.lat}, ${site.geo.lng}">
 <meta property="og:locale" content="fr_FR">
-<meta property="og:type" content="${p.ogType || 'website'}">
+<meta property="og:type" content="website">
 <meta property="og:site_name" content="${site.name}">
-<meta property="og:title" content="${esc(p.ogTitle || p.title)}">
+<meta property="og:title" content="${esc(p.title)}">
 <meta property="og:description" content="${esc(p.description)}">
 <meta property="og:url" content="${url}">
 <meta property="og:image" content="${ogImage}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="ALED08, dépannage et travaux électriques dans les Ardennes">
-${p.ogType === 'article' && p.published ? `<meta property="article:published_time" content="${p.published}">\n<meta property="article:modified_time" content="${p.modified || p.published}">` : ''}
+<meta property="og:image:alt" content="ALED08, sites internet et IA à petit prix">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${esc(p.ogTitle || p.title)}">
+<meta name="twitter:title" content="${esc(p.title)}">
 <meta name="twitter:description" content="${esc(p.description)}">
 <meta name="twitter:image" content="${ogImage}">
 <link rel="preload" href="/assets/fonts/nunito-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -262,7 +212,7 @@ ${p.ogType === 'article' && p.published ? `<meta property="article:published_tim
 <script type="application/ld+json">${graph(p)}</script>
 <script>document.documentElement.classList.add('js')</script>
 </head>
-<body class="${p.bodyClass || ''}">
+<body class="acc-${accent}${p.bodyClass ? ' ' + p.bodyClass : ''}">
 ${smartQuotes(`${header(p.path)}
 <main id="contenu">
 ${p.body}

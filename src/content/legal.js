@@ -1,6 +1,7 @@
 // Mentions légales, politique de confidentialité, conditions générales
 // ⚠️ Les éléments entre crochets proviennent de src/config.js et doivent y être complétés.
-const { site } = require('../config');
+// ⚠️ Modèle à faire relire : il ne remplace pas l'avis d'un professionnel du droit.
+const { site, abonnement, paiement } = require('../config');
 const L = site.legal;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 
@@ -9,9 +10,9 @@ module.exports = [
     path: '/mentions-legales/',
     name: 'Mentions légales',
     title: 'Mentions légales | ALED08',
-    description: "Mentions légales du site ALED08, électricien dans les Ardennes : éditeur, hébergeur, propriété intellectuelle.",
-    lead: 'Informations relatives à l’éditeur et à l’hébergeur du site, conformément à la loi pour la confiance dans l’économie numérique (LCEN).',
-    updated: '2026-11-09',
+    description: 'Mentions légales du site ALED08, création de sites internet et services autour de l’IA : éditeur, hébergeur, propriété intellectuelle.',
+    lead: 'Informations sur l’éditeur et l’hébergeur du site, conformément à la loi pour la confiance dans l’économie numérique.',
+    updated: '2026-11-14',
     body: `## Éditeur du site
 
 - **Nom commercial** : ${site.name}
@@ -21,150 +22,97 @@ module.exports = [
 - **Téléphone** : ${site.phoneDisplay}
 - **E-mail** : ${site.email}
 - **SIRET** : ${L.siret}
-- **Immatriculation** : ${L.rm}
 ${L.tva ? `- **TVA** : ${L.tva}` : ''}
 
 ## Directeur de la publication
 
 ${L.publicationDirector}.
 
-## Hébergement
+## Hébergeur
 
-${L.host}
-
-## Assurance professionnelle
-
-- **Assureur** : ${L.insurer}
-- **Contrat** : ${L.insuranceContract}
-- **Garanties** : ${L.insuranceScope}
-- **Couverture géographique** : ${L.insuranceArea}
+${L.host}.
 
 ## Propriété intellectuelle
 
-L'ensemble des contenus de ce site (textes, illustrations, logo, mise en page) est la propriété de ${site.name}, sauf mention contraire. Toute reproduction, totale ou partielle, sans autorisation écrite préalable est interdite. Les polices de caractères Inter et Sora sont distribuées sous licence SIL Open Font License ; les icônes proviennent du projet Lucide (licence ISC).
+Les textes, la mise en page, le logo et les éléments graphiques de ce site appartiennent à ${site.name}, sauf mention contraire. Toute reproduction sans accord écrit est interdite.
 
 ## Responsabilité
 
-Les informations publiées sur ce site, notamment les articles du blog, sont fournies à titre général et ne remplacent pas un diagnostic sur place. Les interventions sur une installation électrique présentent des risques : en cas de doute, coupez le courant au disjoncteur général et faites appel à un professionnel.
-
-## Liens externes
-
-Le site peut contenir des liens vers d'autres sites (Google Maps, WhatsApp). ${site.name} n'exerce aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu.
-
-## Données personnelles
-
-Le traitement des données transmises via les formulaires est décrit dans la [politique de confidentialité](/politique-de-confidentialite/).`,
+Les informations du site sont données à titre indicatif et peuvent évoluer. Les prix affichés sont des prix de départ : seul le devis accepté engage les deux parties.`,
   },
   {
     path: '/politique-de-confidentialite/',
     name: 'Politique de confidentialité',
-    title: 'Politique de confidentialité et cookies | ALED08',
-    description: "Comment ALED08 traite vos données personnelles (formulaires de contact et de devis) et utilise les cookies, conformément au RGPD.",
-    lead: 'Vos données servent uniquement à répondre à vos demandes. Voici, en toute transparence, ce qui est collecté, pourquoi et pendant combien de temps.',
-    updated: '2026-11-09',
+    title: 'Politique de confidentialité | ALED08',
+    description: 'Comment ALED08 traite les données envoyées par le formulaire de contact : finalité, durée de conservation, vos droits. Aucun cookie publicitaire sur le site.',
+    lead: 'Ce que deviennent les informations que vous m’envoyez, et vos droits.',
+    updated: '2026-11-14',
     body: `## Responsable du traitement
 
-${site.owner}, ${site.name}, ${addr}. Contact : ${site.email}, ${site.phoneDisplay}.
+${site.owner}, ${site.name}, ${addr}. Contact : ${site.email}.
 
 ## Données collectées
 
-Lorsque vous utilisez le formulaire de contact ou de demande de devis, les données suivantes sont collectées : nom, numéro de téléphone, adresse e-mail (facultative), commune et adresse d'intervention (facultative), description de votre besoin et créneaux souhaités.
-
-Lorsque vous me contactez par téléphone, SMS ou WhatsApp, votre numéro et le contenu de vos messages sont conservés dans mon téléphone professionnel aussi longtemps que nécessaire au suivi de votre demande.
-
-## Finalités et base légale
-
-- **Répondre à votre demande** et établir un devis : mesures précontractuelles prises à votre demande (article 6.1.b du RGPD).
-- **Réaliser l'intervention et la facturer** : exécution du contrat et obligations légales comptables (articles 6.1.b et 6.1.c).
-
-Vos données ne sont **jamais vendues, louées ni utilisées à des fins publicitaires**.
+Quand vous remplissez le formulaire, je reçois votre nom, votre adresse e-mail, votre téléphone si vous le donnez, le type de projet et votre message. Ces informations servent uniquement à vous répondre et à préparer un devis.
 
 ## Durée de conservation
 
-- Demandes n'ayant pas donné lieu à une intervention : 3 ans à compter du dernier contact.
-- Données clients liées à une intervention : durée de la relation commerciale, puis archivage le temps des garanties applicables.
-- Factures : 10 ans, conformément aux obligations comptables.
+- Demandes sans suite : 3 ans après le dernier échange.
+- Clients : le temps de la relation, puis les durées prévues par la loi pour les factures (10 ans).
 
 ## Destinataires
 
-Les données sont destinées exclusivement à ${site.owner}. Elles transitent par l'hébergeur du site et le service de messagerie électronique utilisés pour la réception des formulaires. WhatsApp, si vous choisissez ce canal, est un service de Meta Platforms soumis à ses propres conditions.
+Les données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site et par la messagerie utilisée pour recevoir les demandes. Elles ne sont jamais vendues.
+
+## Cookies
+
+Ce site n’utilise aucun cookie publicitaire ni outil de mesure d’audience. Le jeu de démonstration peut garder votre meilleur score dans votre navigateur : cette information reste sur votre appareil.
 
 ## Vos droits
 
-Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité de vos données. Pour les exercer, écrivez à ${site.email}. Vous pouvez également introduire une réclamation auprès de la CNIL ([cnil.fr](https://www.cnil.fr)).
-
-## Cookies et traceurs
-
-Ce site **n'utilise aucun cookie publicitaire et aucun outil de mesure d'audience**. Les seuls éléments stockés sur votre appareil sont :
-
-- votre **choix concernant les cookies**, enregistré dans le stockage local de votre navigateur pendant 6 mois au maximum, afin de ne pas vous reposer la question à chaque page ;
-- les **cookies de Google**, uniquement si vous choisissez d'afficher la carte Google Maps. Sans votre accord, la carte ne se charge pas et aucune donnée n'est transmise à Google.
-
-Vous pouvez modifier votre choix à tout moment grâce au lien « Gestion des cookies » en bas de chaque page.
-
-## Sécurité
-
-Le site est servi en HTTPS. Les formulaires sont protégés contre les envois automatisés et les données ne sont pas stockées dans une base de données sur le serveur : elles sont transmises par e-mail au responsable du traitement.`,
+Vous pouvez demander l’accès, la correction ou la suppression de vos données en écrivant à ${site.email}. Vous pouvez aussi saisir la CNIL (www.cnil.fr).`,
   },
   {
     path: '/conditions-generales/',
-    name: 'Conditions générales de prestation',
-    title: 'Conditions générales de prestation | ALED08',
-    description: "Conditions générales de prestation d'ALED08 pour les particuliers : devis, prix, déplacement, paiement, droit de rétractation, garanties et médiation.",
-    lead: 'Les règles qui s’appliquent à nos interventions chez les particuliers : simples, claires et conformes au Code de la consommation.',
-    updated: '2026-11-09',
-    body: `## 1. Objet
+    name: 'Conditions générales',
+    title: 'Conditions générales de vente | ALED08',
+    description: 'Conditions générales de vente d’ALED08 : devis, paiement unique ou abonnement, délais, propriété du site, résiliation, droit de rétractation.',
+    lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le devis accepté.',
+    updated: '2026-11-14',
+    body: `## 1. Devis et commande
 
-Les présentes conditions s'appliquent à toutes les prestations d'électricité réalisées par ${site.name} (${site.owner}) au domicile de clients particuliers : dépannage, recherche de panne, petits travaux, remplacement de matériel, mise en sécurité.
+Chaque prestation fait l’objet d’un devis gratuit. La commande est ferme quand le devis est accepté par écrit (e-mail ou message) et, pour un paiement unique, quand l’acompte est réglé.
 
 ## 2. Prix
 
-Les prix sont exprimés en euros TTC${L.tva ? ` (${L.tva})` : ''}. Le dépannage est facturé au forfait publié sur la page [Tarifs](/tarifs/). Les réparations, les pièces et les travaux font l'objet d'un devis préalable. Les tarifs sont identiques en semaine, en soirée et le week-end.
+Les prix du site sont des prix de départ. Le prix applicable est celui du devis accepté.${L.tva ? ` ${L.tva}.` : ''}
 
-## 3. Forfait dépannage et déplacement
+## 3. Paiement unique
 
-Le forfait dépannage comprend le déplacement au domicile du client, la recherche de panne, la proposition de solution et l'établissement d'un devis de réparation. Son montant TTC est établi sur devis, selon la commune d'intervention et la nature de la panne décrite, et communiqué au client avant le déplacement.
+Un acompte de ${paiement.acompte} % est demandé à la commande, le solde à la mise en ligne. Une fois le paiement complet, le site et ses fichiers appartiennent au client. L’hébergement et le nom de domaine ne sont pas compris, sauf option choisie.
 
-## 4. Devis
+## 4. Abonnement
 
-Le devis de travaux est gratuit ; le devis de réparation établi lors d'un dépannage est compris dans le forfait. Il est obligatoire, et remis avant toute exécution, pour les travaux dont le montant dépasse 150 € TTC, ainsi qu'à la demande du client pour tout montant. Il précise la nature des travaux, le matériel, le prix et sa durée de validité (un mois sauf mention contraire). Les travaux commencent après acceptation écrite et signée du devis.
+L’abonnement comprend la création du site, l’hébergement, le nom de domaine, la maintenance et les petites modifications décrites sur la page Tarifs. Il est conclu pour ${abonnement.engagement} mois, puis se poursuit de mois en mois et peut être arrêté à tout moment avec un mois de préavis. À l’arrêt, le client récupère les fichiers de son site et son nom de domaine.
 
-## 5. Déroulement d'un dépannage
+## 5. Délais
 
-Le montant du forfait dépannage est annoncé au client avant le déplacement ; aucun frais supplémentaire de déplacement ne s'y ajoute. À l'issue de la recherche de panne, un devis de réparation lui est remis ; il reste libre de l'accepter ou de le refuser, sans obligation. En cas de refus, seul le forfait dépannage est dû.
+Les délais sont donnés à titre indicatif. Ils courent à partir de la réception des éléments nécessaires (textes, photos, accès).
 
-Si, à l'issue de la recherche, l'origine de la panne n'a pas pu être identifiée, une remise est consentie au client sur le forfait dépannage. Son montant lui est communiqué sur place, avant le règlement, et figure sur la facture.
+## 6. Contenus fournis par le client
 
-## 6. Droit de rétractation
+Le client garantit qu’il a le droit d’utiliser les textes, images et logos qu’il fournit.
 
-Lorsque le contrat est conclu à distance ou hors établissement, le client dispose d'un délai de **14 jours** pour se rétracter, sans avoir à se justifier (articles L221-18 et suivants du Code de la consommation). Un formulaire de rétractation est joint au devis.
+## 7. Utilisation de l’IA
 
-Si le client demande expressément que les travaux commencent avant la fin de ce délai, il en fait la demande écrite ; en cas de rétractation, il devra le montant correspondant au service fourni jusqu'à la communication de sa décision.
+${site.name} utilise des outils d’intelligence artificielle pour concevoir plus vite. Tout ce qui est livré est relu, testé et corrigé avant la mise en ligne.
 
-Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation ne s'applique pas aux **travaux d'entretien ou de réparation à réaliser en urgence** au domicile du client et expressément sollicités par lui, dans la limite des pièces de rechange et travaux strictement nécessaires pour répondre à l'urgence.
+## 8. Droit de rétractation
 
-## 7. Paiement
+Le client particulier dispose de 14 jours après la commande pour se rétracter. S’il demande que le travail commence avant la fin de ce délai, il paie la part déjà réalisée en cas de rétractation.
 
-Le paiement est dû à la fin de l'intervention pour les dépannages, et selon l'échéancier prévu au devis pour les travaux (un acompte peut être demandé à la commande). Les moyens de paiement acceptés sont indiqués sur le devis. Une facture détaillée est remise pour chaque intervention.
+## 9. Médiation
 
-## 8. Obligations du client
-
-Le client garantit l'accès au logement et au tableau électrique au créneau convenu. Il informe ${site.name} de toute particularité connue de l'installation (travaux antérieurs, sinistre, présence d'amiante dans les zones de travail).
-
-## 9. Matériel
-
-Le matériel fourni est neuf, de marque et conforme aux normes en vigueur. Il reste la propriété de ${site.name} jusqu'au paiement complet. Lorsque le client fournit lui-même du matériel, ${site.name} ne peut être tenu responsable de sa conformité ni de ses défauts.
-
-## 10. Garanties
-
-Les travaux bénéficient des garanties légales applicables. ${site.name} est assuré en ${L.insuranceScope.toLowerCase()} auprès de ${L.insurer} (contrat ${L.insuranceContract}), couverture : ${L.insuranceArea}. Le matériel bénéficie en outre de la garantie du fabricant.
-
-## 11. Réclamations et médiation
-
-Toute réclamation peut être adressée à ${site.email} ou par courrier. En cas de litige non résolu, le client peut recourir gratuitement au médiateur de la consommation : ${L.mediator}${L.mediatorUrl ? ` ([${L.mediatorUrl}](${L.mediatorUrl}))` : ''}.
-
-## 12. Droit applicable
-
-Les présentes conditions sont soumises au droit français.`,
+En cas de litige, le client peut recourir gratuitement au médiateur de la consommation : ${L.mediator}.`,
   },
 ];

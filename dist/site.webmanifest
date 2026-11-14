@@ -1,10 +1,10 @@
 {
-  "name": "ALED08, électricien Ardennes",
+  "name": "ALED08, sites internet et IA",
   "short_name": "ALED08",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FFFBF5",
-  "theme_color": "#24304A",
+  "background_color": "#15254A",
+  "theme_color": "#15254A",
   "icons": [
     {
       "src": "/assets/img/logo-192.png",

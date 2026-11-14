@@ -1,54 +1,43 @@
-# ⚡ ALED08 : site internet
+# ALED08 : site internet
 
-Site vitrine d'**ALED08** (artisan électricien, dépannage dans toutes les Ardennes). Spécialité : **le dépannage électrique au forfait, sur devis annoncé avant de venir** (déplacement, recherche de panne, proposition de solution et devis de réparation compris), **à tout moment sur rendez-vous**. Travaux sur devis gratuit.
+Site d'**ALED08**, sites internet et services autour de l'IA, à petit prix et accessibles à tous :
 
-Site **statique**, rapide, sans base de données ni CMS : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans le dossier `dist/`, prêtes à être envoyées sur n'importe quel hébergement.
+- **sites internet** en trois formats (une page, avec onglets, boutique en ligne), en **paiement unique** ou en **abonnement mensuel** tout compris, avec des options (hébergement et nom de domaine, maintenance, référencement local, logo, rédaction…) ;
+- **petits jeux 2D** jouables dans le navigateur (la page Jeux contient une démo jouable) ;
+- **automatisations** (tri des mails, rappels, relances, résumés) et **initiation à l'IA** en visio ;
+- un programme de **fidélité et parrainage**.
+
+Site **statique**, rapide, sans base de données : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans `dist/`.
 
 ---
 
-## Contenu du site
+## Pages
 
-| Type | Nombre | Exemples |
+| Rubrique | Adresse | Contenu |
 |---|---|---|
-| Pages principales | 13 | Accueil, Qui suis-je, Prestations, Tarifs, Zone, Réalisations, FAQ, Devis, Contact, Blog, plan du site, merci, 404 |
-| Pages prestations | 7 | Dépannage, Recherche de panne, Tableaux, Prises et interrupteurs, Éclairage intérieur/extérieur, Mise en sécurité |
-| **Pages SEO** | **74** | 26 communes, 3 secteurs, 7 pages « Ardennes », 5 pages service × ville, 12 pannes, 14 prestations techniques, 7 situations |
-| Articles de blog | 12 | Trouver une panne, remplacer un tableau, différentiel ou disjoncteur, prix d'un dépannage… |
-| Pages légales | 3 | Mentions légales, Confidentialité / cookies, Conditions générales |
+| Accueil | `/` | Promesse, « Que voulez-vous faire ? », étapes, les trois formules, l'IA expliquée franchement |
+| Sites internet | `/sites-internet/` | Les trois formats avec schéma, ce que comprend chaque site, paiement unique ou abonnement |
+| Tarifs | `/tarifs/` | Formules (sélecteur une fois / au mois), options, **simulateur de prix**, autres services |
+| Jeux 2D | `/jeux-2d/` | Démo jouable « Attrape-éclairs », idées, prix |
+| Automatisations | `/automatisations/` | Exemple animé de tri des mails, exemples, prix, initiation à l'IA |
+| Ma méthode | `/methode/` | Ce que fait l'IA, ce que je fais moi-même, mes limites |
+| Fidélité | `/fidelite/` | Parrainage, remise client fidèle, avantage abonnés |
+| Contact | `/contact/` | Formulaire de devis (prérempli depuis les boutons et le simulateur) |
+| Autres | | Page locale Ardennes, FAQ complète, pages légales, plan du site, merci, 404 |
 
-Chaque page SEO a un **contenu unique** : texte propre, 3 cas concrets, une FAQ dédiée, un appel à l'action, un bouton de devis et des liens internes. Le script `npm run check` vérifie l'absence de phrases dupliquées entre les pages.
+Chaque rubrique a sa couleur (menu, pastille en haut de page, liseré) pour qu'on sache toujours où l'on est.
 
-**SEO intégré :** balises title et description uniques (« dépannage électrique + commune » dans le titre de chaque page commune), canonical, Open Graph et Twitter Card, données structurées schema.org (`Electrician`/LocalBusiness avec offre à 79 € et zone de 45 km, `Service` avec prix par commune, `Person`, `FAQPage`, `BreadcrumbList`, `BlogPosting`), `sitemap.xml`, `robots.txt`, fil d'Ariane, maillage interne entre communes, pannes, prestations et articles. Audit Lighthouse : 100/100 en performance, accessibilité, bonnes pratiques et SEO sur les pages testées.
+## Où changer les prix
 
-**Fonctionnalités :** bouton d'appel et barre de contact fixe sur mobile, bouton WhatsApp, formulaires de contact et de devis (préremplis selon la page d'origine), prix du dépannage par commune, déroulement du passage étape par étape, galerie avant/après interactive, avis clients réels (section masquée tant qu'il n'y en a pas), carte Google Maps chargée seulement après consentement, bannière cookies conforme RGPD.
+Tout est dans **`src/config.js`** : `formules` (prix unique, prix mensuel, délais, contenu), `abonnement`, `options` (prix selon la façon de payer), `modification`, `jeux`, `automatisations`, `initiation`, `fidelite`, `paiement`. Le site, le simulateur et les données structurées se mettent à jour au prochain `npm run build`.
 
----
+## À faire avant la mise en ligne
 
-## ⚠️ À faire AVANT la mise en ligne
-
-Tout se règle dans **`src/config.js`** :
-
-1. **Téléphone** : `phoneDisplay`, `phoneIntl`, `whatsapp`. Numéro actuel : 06 02 46 12 58.
-2. **E-mail** de réception des demandes (`email`).
-3. **Domaine** définitif (`url`). Par défaut : `https://www.aled08.fr`.
-4. **Informations légales** (`legal`) : SIRET, immatriculation, assureur et numéro de contrat, **médiateur de la consommation** (obligatoire), hébergeur, mention TVA si vous êtes en franchise (`TVA non applicable, art. 293 B du CGI`).
-5. **Disponibilités** (`hours` : aucun horaire affiché, « à tout moment, sur rendez-vous »), **forfait dépannage** (`forfait`), **grille** (`tarifs`) et **secteurs** (`secteurs`) : vérifiez qu'ils correspondent exactement à votre pratique.
-6. **Distances** des communes (`communes`) : elles sont **indicatives**. Vérifiez-les, surtout celles proches d'une limite de tranche (Charleville-Mézières, Renwez, Sedan).
-7. **Avis clients** : `src/content/avis.js` est vide et la section « Avis » est masquée. Ajoutez-y vos vrais avis au fur et à mesure (voir `docs/guide-referencement-local.md`). Ne publiez jamais d'avis inventés.
-7 bis. **Votre photo** : ajoutez un portrait (`portrait` dans `src/config.js`). À défaut, un pictogramme est affiché.
-8. **Photos** : les visuels avant/après (`src/assets/img/realisations/`) sont des illustrations. Remplacez-les dès que possible par vos propres photos de chantier.
-9. **Numéro Enedis** cité dans certaines pages (`09 726 750 08`, dépannage des Ardennes) : vérifiez-le sur enedis.fr.
-10. Relisez les textes qui décrivent vos pratiques et ajustez-les si besoin : forfait dépannage sur devis, annoncé au téléphone avant de venir (déplacement, recherche de panne, proposition de solution, devis de réparation sans obligation), **panne non trouvée = remise sur le forfait, montant non affiché** (`notFoundDiscount` dans `forfait`), aucun prix de pièce affiché, réparation sur devis, devis de travaux gratuit, pas de majoration le soir et le week-end.
+1. **Informations légales** dans `src/config.js` (`legal`) : SIRET, mention TVA (par exemple « TVA non applicable, art. 293 B du CGI » en micro-entreprise), **médiateur de la consommation** (obligatoire pour vendre aux particuliers).
+2. Faire relire les **conditions générales** (`src/content/legal.js`) : c'est un modèle.
+3. Vérifier les prix, l'engagement de l'abonnement (12 mois) et les conditions de parrainage.
 
 Le build affiche un rappel tant que des éléments restent à compléter.
-
----
-
-## Documents utiles
-
-- `docs/analyse-concurrence.md` : qui apparaît sur Google dans le secteur, à quels prix, et où ALED08 se démarque.
-- `docs/guide-referencement-local.md` : fiche Google Business Profile (texte prêt à copier), méthode pour obtenir de vrais avis, annuaires, Search Console.
-- `docs/captures/` : captures de présentation du site.
 
 ## Utilisation
 
@@ -56,71 +45,49 @@ Prérequis : **Node.js 18 ou plus** (aucun `npm install` nécessaire).
 
 ```bash
 npm run build     # génère le site dans dist/
-npm run check     # contrôle : liens cassés, H1, meta, JSON-LD, contenus dupliqués
+npm run check     # contrôle : liens cassés, H1, meta, JSON-LD, phrases en double
 npm run serve     # aperçu local sur http://localhost:8080
-npm run images    # régénère l'image Open Graph et les icônes PNG (nécessite Playwright)
+npm run images    # régénère l'image de partage et les icônes (nécessite Playwright)
 ```
 
 ## Mise en ligne
 
-### WordPress (site actuel : www.aled08.fr)
-Le site en ligne tourne sous WordPress, avec un thème sur mesure « ALED08 ».
-1. `node build.js && python3 scripts/wp-export.py` crée dans `wp-export/` :
-   - `aled08.zip` : le thème (styles, scripts, en-tête, pied de page, formulaires envoyés par `wp_mail`) ;
-   - `aled08-import.zip` : une extension à usage unique qui crée ou met à jour toutes les pages et les articles, puis règle WordPress (page d'accueil, page du blog, liens en `/blog/%postname%/`).
-2. Installez le thème (Apparence › Thèmes › Ajouter › Téléverser), puis l'extension d'import (Extensions › Ajouter › Téléverser) ; activez-la, puis désactivez-la et supprimez-la.
-3. Après une modification du seul design (CSS ou JS), il suffit de réinstaller `aled08.zip` en remplaçant l'ancien thème.
-
-Les pages restent modifiables dans WordPress : chaque section est un bloc « HTML personnalisé ». Les nouvelles pages et les nouveaux articles créés dans WordPress prennent automatiquement la mise en page du site, et les articles apparaissent sur la page Blog.
-
-### Hébergement mutualisé sans WordPress (OVH, o2switch, IONOS…), recommandé
+### Hébergement mutualisé (o2switch, OVH, IONOS…)
 1. `npm run build`
-2. Envoyez **tout le contenu** du dossier `dist/` (y compris `.htaccess` et `envoi.php`) à la racine du site (`www/`) par FTP, avec FileZilla par exemple.
-3. Le formulaire fonctionne grâce à `envoi.php` (fonction `mail()` de PHP). Faites un test d'envoi après la mise en ligne.
-4. Activez le certificat HTTPS (Let's Encrypt, gratuit chez la plupart des hébergeurs).
+2. Envoyez tout le contenu de `dist/` (y compris `.htaccess` et `envoi.php`) à la racine du site.
+3. Le formulaire passe par `envoi.php` (fonction `mail()` de PHP) : faites un envoi de test.
 
-### Netlify, Cloudflare Pages ou autre hébergement statique
-Commande de build `node build.js`, dossier publié `dist`. PHP n'y étant pas disponible, indiquez dans `formAction` l'URL d'un service de formulaires (Formspree, Netlify Forms…).
-
-### Après la mise en ligne
-- Créez ou complétez votre **fiche Google Business Profile** (catégorie « Électricien », horaires, zone desservie, lien vers le site). C'est le levier n°1 du référencement local.
-- Déclarez le site dans **Google Search Console** et soumettez `https://www.aled08.fr/sitemap.xml`.
-- Demandez à vos clients satisfaits un avis Google, puis renseignez `googleReviewsUrl`.
-
----
+### WordPress (www.aled08.fr)
+`scripts/wp-export.py` produit un thème et une extension d'import à partir de `dist/`. Il date de l'ancien site d'électricien et doit être adapté au nouveau site avant de s'en servir (formulaire, nouvelles pages, redirection des anciennes adresses).
 
 ## Modifier le contenu
 
 | Fichier | Contenu |
 |---|---|
-| `src/config.js` | Coordonnées, disponibilités, tarifs, communes et distances, informations légales |
-| `src/pages/main.js` | Accueil, Qui suis-je, Tarifs, Zone, Devis, Contact… |
-| `src/content/services.js` | Les 7 pages prestations principales |
-| `src/content/seo-*.js` | Les 62 pages SEO (communes, Ardennes, symptômes, services, situations) |
-| `src/content/blog-1.js`, `blog-2.js` | Les articles de blog |
-| `src/content/faq.js` | La FAQ complète |
-| `src/content/avis.js` | Les avis clients |
+| `src/config.js` | Coordonnées, rubriques, formules, options, prix, informations légales |
+| `src/pages/main.js` | Toutes les pages |
+| `src/content/faq.js` | Questions fréquentes par rubrique (reprises sur `/faq/`) |
 | `src/content/legal.js` | Mentions légales, confidentialité, conditions générales |
-| `src/assets/css/style.css` | Le design (couleurs dans `:root`) |
-
-Les textes s'écrivent dans un format simple : paragraphes séparés par une ligne vide, `- ` pour les listes, `## ` pour les titres, `**gras**`, `[lien](/page/)`, `> ` pour un encadré conseil, `!> ` pour un encadré attention, et `[[cta]]` pour insérer un bloc « demande de devis ».
-
-**Ajouter une page locale** : copiez un bloc dans `src/content/seo-villes.js`, changez `slug`, `city`, les textes, la FAQ et les cas concrets, puis ajoutez la commune dans `communes` (`src/config.js`) avec `page: 'electricien-...'`. Lancez `npm run build` puis `npm run check`.
+| `src/lib/components.js` | Cartes de formules, tableau des options, simulateur, bandeaux |
+| `src/assets/css/style.css` | Le design (couleurs dans `:root`, une couleur par rubrique) |
+| `src/assets/js/main.js` | Menu, sélecteur de paiement, simulateur, jeu, petites étoiles |
 
 ## Structure
 
 ```
-build.js                 générateur (pages, sitemap, robots, manifest)
+build.js                 générateur (pages, sitemap, robots, manifest, envoi.php)
 scripts/check.js         contrôle qualité SEO et anti-duplication
-scripts/generate-images.js  image Open Graph et icônes
-src/config.js            configuration de l'entreprise
+scripts/generate-images.js  image de partage et icônes
+scripts/add-icons.js     ajoute des icônes Lucide à src/lib/icons.js
+src/config.js            configuration et prix
 src/lib/                 gabarit, composants, icônes, mini-markdown
-src/pages/               pages principales et gabarits (pages SEO, articles)
-src/content/             tous les textes
+src/pages/main.js        les pages
+src/content/             FAQ et pages légales
 src/assets/              CSS, JS, police Nunito (OFL), images
 src/static/              fichiers copiés tels quels (.htaccess, favicon…)
-src/server/envoi.php     traitement des formulaires
+src/server/envoi.php     traitement du formulaire de devis
 dist/                    SITE GÉNÉRÉ, à mettre en ligne
+docs/                    documents de l'ancienne activité d'électricien (archives)
 ```
 
 Crédits : police Nunito (SIL Open Font License), icônes Lucide (ISC), pictogramme WhatsApp (Simple Icons, CC0).

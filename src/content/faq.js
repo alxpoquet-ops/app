@@ -1,65 +1,39 @@
-// FAQ complète (page /faq/)
-const { site } = require('../config');
+// Questions fréquentes, par rubrique. La page /faq/ les reprend toutes.
+const { abonnement, modification, options, paiement } = require('../config');
+const prix = (id, mode) => options.find((o) => o.id === id)[mode];
 
-module.exports = [
-  {
-    id: 'tarifs-paiement',
-    title: 'Tarifs et paiement',
-    icon: 'euro',
-    items: [
-      { q: 'Où puis-je consulter vos prix ?', a: "Sur la page [Tarifs](/tarifs/). Le dépannage est au forfait, sur devis : je vous annonce son prix au téléphone avant de venir. Il comprend le déplacement, la recherche de panne, proposition de solution et devis de réparation sans obligation. La réparation, les pièces et les travaux sont chiffrés sur devis." },
-      { q: 'Pourquoi n’affichez-vous pas de prix de pièces ?', a: "Parce que le prix d'une réparation dépend de la panne réelle. Je préfère la trouver d'abord, puis vous remettre un devis exact, plutôt qu'afficher des prix d'appel." },
-      { q: 'Dois-je payer le forfait si vous ne trouvez pas la panne ?', a: "Pas en totalité. Si je ne parviens pas à identifier l'origine de la panne, je vous fais une remise sur le forfait. Son montant vous est indiqué sur place." },
-      { q: 'Y a-t-il une majoration le soir, le samedi ou le dimanche ?', a: "Aucune. J'ai choisi de travailler sur ces créneaux ; ce n'est pas à vous d'en payer le prix." },
-      { q: 'Comment le prix du forfait est-il fixé ?', a: "Selon votre commune et la panne que vous me décrivez. Je vous l'annonce au téléphone, avant de me déplacer : c'est ce prix qui s'applique, partout dans les Ardennes." },
-      { q: 'Quand dois-je payer ?', a: "Pour un dépannage, à la fin de l'intervention, sur présentation de la facture. Pour des travaux sur devis, selon l'échéancier indiqué sur le devis, avec éventuellement un acompte à la commande." },
-      { q: 'Recevrai-je une facture ?', a: "Toujours. Elle détaille le déplacement, le diagnostic éventuel, le matériel posé et la main-d'œuvre. Conservez-la : elle peut être utile pour votre assurance ou lors de la vente du logement." },
-    ],
-  },
-  {
-    id: 'disponibilites',
-    title: 'Disponibilités et rendez-vous',
-    icon: 'calendar-days',
-    items: [
-      { q: 'Quand intervenez-vous ?', a: "À tout moment, sur rendez-vous : en journée, le soir ou le week-end. Un appel suffit pour convenir du créneau qui vous arrange." },
-      { q: 'Pourquoi uniquement sur rendez-vous ?', a: "Pour vous donner une heure d'arrivée fiable et préparer le bon matériel. Un rendez-vous évite aussi de vous faire attendre une demi-journée derrière votre fenêtre." },
-      { q: 'Pouvez-vous venir le soir même ?', a: "Quand le planning le permet, oui. Écrivez-moi en fin d'après-midi : selon les rendez-vous déjà pris et la distance, je peux souvent proposer un créneau le soir même ou le lendemain soir." },
-      { q: 'Combien de temps dure une intervention en soirée ?', a: "La plupart des dépannages et petits travaux tiennent en une à deux heures. Les chantiers plus longs, comme un remplacement de tableau, sont programmés sur une journée." },
-    ],
-  },
-  {
-    id: 'interventions',
-    title: 'Interventions et travaux',
-    icon: 'wrench',
-    items: [
-      { q: 'Qui intervient chez moi ?', a: `${site.name}, c'est un seul artisan : un jeune électricien installé à ${site.address.city}. C'est la même personne qui répond au téléphone, qui se déplace et qui répare.` },
-      { q: 'Comment se déroule votre passage pour une panne ?', a: "Je confirme le prix au téléphone, puis je viens au créneau fixé. Sur place, je vérifie qu'il n'y a pas de danger, je recherche la panne, je vous explique ce que j'ai trouvé et je vous remets un devis de réparation. Vous décidez ensuite : le détail est sur la page [Tarifs](/tarifs/#passage)." },
-      { q: 'Quels types de travaux réalisez-vous ?', a: "Dépannage, recherche de panne, remplacement de prises et d'interrupteurs, éclairage intérieur et extérieur, ajout de circuits, prises spécialisées, remplacement de disjoncteurs et de tableaux, mise en sécurité. La liste complète est sur la page [Prestations](/prestations/)." },
-      { q: 'Faut-il que je sois présent ?', a: "Oui, ou une personne de confiance majeure. Je dois pouvoir accéder au tableau et vous expliquer ce qui a été fait à la fin." },
-      { q: 'Fournissez-vous le matériel ?', a: "Oui, du matériel de marque, neuf et conforme. Vous pouvez aussi fournir vos luminaires ou appareillages décoratifs : je vérifie alors qu'ils conviennent à l'emplacement prévu." },
-      { q: 'Faites-vous des saignées dans les murs ?', a: "Oui, lorsque c'est nécessaire, avec rebouchage propre au plâtre. Les finitions décoratives (peinture, papier peint) restent à votre charge. Sur un mur fragile, la pose en apparent sous moulure est souvent une meilleure option." },
-      { q: 'Posez-vous des bornes de recharge pour voiture électrique ?', a: "Je pose des prises renforcées adaptées à la recharge lente. Pour une borne de plus de 3,7 kW, la réglementation impose un installateur qualifié IRVE : voir la page [recharge de véhicule électrique](/prise-renforcee-voiture-electrique/)." },
-    ],
-  },
-  {
-    id: 'securite',
-    title: 'Sécurité et normes',
-    icon: 'shield-check',
-    items: [
-      { q: 'Qu’est-ce que la norme NF C 15-100 ?', a: "C'est la norme française qui fixe les règles des installations électriques basse tension dans les logements : protections, sections de câbles, nombre de prises, salle de bain, terre. Elle s'applique aux installations neuves et aux parties rénovées. Lire [l'essentiel de la norme](/blog/norme-nf-c-15-100-essentiel/)." },
-      { q: 'Mon installation est ancienne : est-elle dangereuse ?', a: "Pas forcément, mais certains signes doivent alerter : fusibles, absence de différentiel 30 mA, prises sans terre, fils en tissu, traces de chauffe. Un [diagnostic](/diagnostic-electrique-ardennes/) permet de faire le point." },
-      { q: 'Que faire si je sens une odeur de brûlé ?', a: "Coupez immédiatement le disjoncteur général, n'essayez pas de remettre le courant et éloignez-vous de la zone. S'il y a de la fumée ou des flammes, appelez le 18 ou le 112. Ensuite seulement, faites contrôler l'installation." },
-      { q: 'Délivrez-vous le diagnostic électrique obligatoire pour une vente ?', a: "Non : ce diagnostic réglementaire est réservé aux diagnostiqueurs certifiés. En revanche, je réalise les travaux qui corrigent les anomalies qu'il a relevées, et je peux vous accompagner lors d'une [visite avant achat](/bilan-electrique-avant-achat/)." },
-    ],
-  },
-  {
-    id: 'devis',
-    title: 'Devis et contact',
-    icon: 'file-text',
-    items: [
-      { q: 'Comment obtenir un devis ?', a: "Par téléphone, sur WhatsApp ou via le [formulaire de devis](/devis/). Pour les travaux simples, un échange et quelques photos suffisent. Pour un tableau ou une mise en sécurité, je passe voir l'installation." },
-      { q: 'Le devis est-il payant ?', a: "Non, il est gratuit et sans engagement." },
-      { q: 'Quel est le moyen le plus rapide pour vous joindre ?', a: "Le téléphone, ou un message WhatsApp avec une photo. Je consulte mes messages tous les jours et je rappelle en priorité les pannes en cours." },
-    ],
-  },
-];
+module.exports = {
+  sites: [
+    { q: 'Je n’ai ni textes ni photos, c’est un problème ?', a: `Non. Je peux écrire les textes avec vous (option à ${prix('textes', 'u').once} €) et choisir des photos libres de droits adaptées à votre activité. Vous les remplacerez par les vôtres quand vous voudrez.` },
+    { q: 'Pourrai-je modifier mon site moi-même ?', a: 'Oui, si vous le souhaitez. Je peux construire votre site sur WordPress et vous montrer comment changer un texte ou une photo. Sinon, vous m’envoyez un message et je m’en occupe.' },
+    { q: 'Mon site sera-t-il visible sur Google ?', a: 'Chaque site est préparé pour Google : titres, descriptions, vitesse, version mobile. Pour sortir sur des recherches près de chez vous, l’option référencement local aide beaucoup. Personne ne peut garantir la première place, donc je ne vous la promettrai pas.' },
+    { q: 'Quelle différence avec un site fait par un développeur ?', a: 'Pour un site vitrine ou une petite boutique, le résultat est comparable : moderne, rapide, soigné. La différence se joue sur le temps passé, donc sur le prix. Pour un projet complexe, comme une application sur mesure ou un catalogue de milliers de produits, l’expertise d’un développeur reste irremplaçable, et je vous le dirai.' },
+  ],
+  tarifs: [
+    { q: 'Pourquoi des prix « à partir de » ?', a: 'Parce que chaque projet est différent. Le prix de départ correspond au site décrit dans la formule. Si votre projet demande plus, c’est écrit dans le devis, avant de commencer.' },
+    { q: 'Que se passe-t-il si j’arrête l’abonnement ?', a: `Après les ${abonnement.engagement} premiers mois, vous arrêtez quand vous voulez. Je vous remets votre site et votre nom de domaine, pour que vous puissiez le garder ailleurs.` },
+    { q: 'Le nom de domaine est-il à mon nom ?', a: 'Oui. Il est enregistré à votre nom : c’est votre adresse sur internet, elle vous appartient.' },
+    { q: 'Comment se passe le paiement ?', a: `Avec le paiement unique : ${paiement.acompte} % à la commande, le reste à la mise en ligne. Avec l’abonnement : un paiement chaque mois, à partir de la mise en ligne.` },
+    { q: 'Et si je veux une modification plus tard ?', a: `Avec l’abonnement, les petites modifications sont comprises. Sans abonnement, une petite modification coûte ${modification} €, ou elles sont comprises dans l’option maintenance.` },
+    { q: 'Y a-t-il des frais cachés ?', a: 'Non. Le devis indique tout : la création, les options, et ce qui se paie chaque mois ou chaque année.' },
+  ],
+  jeux: [
+    { q: 'Sur quels appareils mon jeu fonctionnera-t-il ?', a: 'Dans un navigateur récent, sur ordinateur, tablette et téléphone. Il n’y a rien à installer : un lien suffit pour jouer.' },
+    { q: 'Peut-on le publier sur l’App Store ou Google Play ?', a: 'C’est possible pour certains projets, mais c’est plus long et plus cher : comptes développeur, validation des boutiques. On en parle au moment du devis.' },
+    { q: 'D’où viennent les graphismes ?', a: 'Formes simples et couleurs à votre image, vos propres dessins, ou des illustrations créées avec l’IA dont on a le droit de se servir.' },
+    { q: 'Pouvez-vous refaire un jeu connu ?', a: 'Non. Je crée des jeux originaux. On peut partir d’un genre que vous aimez, comme l’adresse, la réflexion ou la plateforme, mais pas copier un jeu existant.' },
+  ],
+  auto: [
+    { q: 'Faut-il acheter un logiciel ?', a: 'Le plus souvent, non : beaucoup de routines se font avec Gmail, Outlook ou les outils Google que vous avez déjà. Si un outil payant est vraiment utile, je vous le dis avant, avec son prix.' },
+    { q: 'Et si une routine s’arrête de fonctionner ?', a: `Avec le suivi à 9 € par mois, je surveille et je corrige. Sans suivi, une correction coûte le prix d’une petite modification, soit ${modification} €.` },
+    { q: 'C’est pour les entreprises ou les particuliers ?', a: 'Les deux. Un artisan qui croule sous les mails et une famille qui veut ranger ses papiers ont souvent le même besoin : moins de tâches répétitives.' },
+  ],
+  methode: [
+    { q: 'Est-ce que mes clients verront que le site est fait avec l’IA ?', a: 'Non, rien ne le signale sur votre site. Ce qu’ils voient, c’est un site propre et rapide. De mon côté, je préfère vous dire comment je travaille : vous savez ce que vous achetez.' },
+    { q: 'L’IA peut-elle faire des erreurs ?', a: 'Oui, et c’est pour ça que je relis, teste et corrige tout avant la mise en ligne. L’IA va vite, mais c’est moi qui valide.' },
+  ],
+  fidelite: [
+    { q: 'Comment mon filleul profite-t-il du parrainage ?', a: 'Il indique votre nom dans sa demande de devis. Dès qu’il a passé commande, la réduction s’applique sur sa facture et sur votre prochaine facture.' },
+    { q: 'Les avantages se cumulent-ils ?', a: 'Oui, dans la limite de la moitié du prix d’un projet. Ils ne sont pas convertibles en argent.' },
+  ],
+};

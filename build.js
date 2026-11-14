@@ -9,22 +9,8 @@ const crypto = require('crypto');
 
 const ROOT = __dirname;
 const OUT = path.join(ROOT, 'dist');
-const { site, communes } = require('./src/config');
+const { site } = require('./src/config');
 const { page, setAssetVersion } = require('./src/lib/layout');
-const C = require('./src/lib/components');
-const T = require('./src/pages/templates');
-
-// ---------------------------------------------------------------- contenus
-const seoPages = [
-  ...require('./src/content/seo-villes'),
-  ...require('./src/content/seo-villes-2'),
-  ...require('./src/content/seo-ardennes'),
-  ...require('./src/content/seo-symptomes'),
-  ...require('./src/content/seo-symptomes-2'),
-  ...require('./src/content/seo-services'),
-  ...require('./src/content/seo-contextes'),
-];
-const posts = [...require('./src/content/blog-1'), ...require('./src/content/blog-2')].sort((a, b) => (a.date < b.date ? 1 : -1));
 const mainPages = require('./src/pages/main');
 
 // ---------------------------------------------------------------- utilitaires
@@ -62,23 +48,8 @@ copyDir(path.join(ROOT, 'src/static'), OUT);
 }
 setAssetVersion({ css: hash(path.join(ROOT, 'src/assets/css/style.css')), js: hash(path.join(ROOT, 'src/assets/js/main.js')) });
 
-// 1) registre des pages (libellés pour le maillage interne)
-const seen = new Set();
-for (const p of seoPages) {
-  if (seen.has(p.slug)) throw new Error('Slug en double : ' + p.slug);
-  seen.add(p.slug);
-  C.register(`/${p.slug}/`, { label: p.label, group: p.group });
-}
-for (const a of posts) C.register(`/blog/${a.slug}/`, { label: a.short || a.h1, group: 'blog' });
-mainPages.registerAll(C.register);
-
-// 2) rendu
-const rendered = [];
-const ctx = { seoPages, posts };
-for (const p of mainPages.build(ctx)) rendered.push(p);
-for (const p of seoPages) rendered.push({ ...T.seoPage(p), _seo: p });
-for (const a of posts) rendered.push(T.blogPost(a, posts));
-
+// 1) rendu
+const rendered = mainPages.build();
 const titles = new Map();
 for (const p of rendered) {
   if (!p.noindex) {
@@ -89,31 +60,28 @@ for (const p of rendered) {
   write(file, page(p));
 }
 
-// 3) sitemap.xml & robots.txt
+// 2) sitemap.xml & robots.txt
 const today = new Date().toISOString().slice(0, 10);
 const urls = rendered.filter((p) => !p.noindex && !p.file);
 write(
   'sitemap.xml',
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
-    .map(
-      (p) =>
-        `  <url><loc>${site.url}${p.path}</loc><lastmod>${p.modified || p.published || today}</lastmod><changefreq>${p.changefreq || 'monthly'}</changefreq><priority>${(p.priority ?? 0.6).toFixed(1)}</priority></url>`
-    )
+    .map((p) => `  <url><loc>${site.url}${p.path}</loc><lastmod>${today}</lastmod><changefreq>${p.changefreq || 'monthly'}</changefreq><priority>${(p.priority ?? 0.6).toFixed(1)}</priority></url>`)
     .join('\n')}\n</urlset>\n`
 );
 write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /merci/\nDisallow: /envoi.php\n\nSitemap: ${site.url}/sitemap.xml\n`);
 
-// 4) manifest
+// 3) manifest
 write(
   'site.webmanifest',
   JSON.stringify(
     {
-      name: 'ALED08, électricien Ardennes',
+      name: 'ALED08, sites internet et IA',
       short_name: 'ALED08',
       start_url: '/',
       display: 'standalone',
-      background_color: '#FFFBF5',
-      theme_color: '#24304A',
+      background_color: '#15254A',
+      theme_color: '#15254A',
       icons: [
         { src: '/assets/img/logo-192.png', sizes: '192x192', type: 'image/png' },
         { src: '/assets/img/logo-512.png', sizes: '512x512', type: 'image/png' },
@@ -124,16 +92,12 @@ write(
   )
 );
 
-// 5) script d'envoi des formulaires (PHP) : injection de l'adresse e-mail
+// 4) script d'envoi des formulaires (PHP) : injection de l'adresse e-mail
 const php = fs.readFileSync(path.join(ROOT, 'src/server/envoi.php'), 'utf8').replace('__EMAIL__', site.email).replace('__SITE__', site.url);
 write('envoi.php', php);
 
 // ---------------------------------------------------------------- rapport
 const warn = [];
-const cfg = JSON.stringify(site);
-if (cfg.includes('à compléter')) warn.push('Informations légales à compléter dans src/config.js (SIRET, assurance, médiateur, hébergeur).');
-if (site.phoneIntl === '+33639980000') warn.push('Numéro de téléphone fictif : remplacez-le dans src/config.js.');
-if (!require('./src/content/avis').length) warn.push('Aucun avis client renseigné : la section « Avis » est masquée. Ajoutez vos vrais avis dans src/content/avis.js.');
-if (!site.portrait) warn.push('Pas de photo de vous : ajoutez un portrait (site.portrait dans src/config.js) pour renforcer la confiance.');
-console.log(`✔ ${rendered.length} pages générées dans dist/ (${seoPages.length} pages SEO, ${posts.length} articles, ${urls.length} URL dans le sitemap)`);
+if (JSON.stringify(site).includes('à compléter')) warn.push('Informations légales à compléter dans src/config.js (SIRET, médiateur).');
+console.log(`✔ ${rendered.length} pages générées dans dist/ (${urls.length} URL dans le sitemap)`);
 if (warn.length) console.log('\n⚠ À faire avant la mise en ligne :\n  - ' + warn.join('\n  - '));

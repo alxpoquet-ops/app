@@ -81,8 +81,8 @@ for (const f of files) {
 }
 
 const dups = [...sentences.entries()].filter(([, set]) => set.size > 1);
-// Pages « gabarit » partageant volontairement des blocs (accueil, prestations, réalisations, tarifs) : tolérance
-const sharedOk = (set) => [...set].every((p) => ['/', '/prestations/', '/realisations/', '/qui-suis-je/', '/tarifs/', '/zone-intervention/', '/404.html', '/blog/', '/faq/', '/contact/', '/devis/'].includes(p) || p.startsWith('/prestations/'));
+// La page /faq/ reprend volontairement les questions de chaque rubrique : tolérance
+const sharedOk = (set) => set.has('/faq/') && set.size === 2;
 const realDups = dups.filter(([, set]) => !sharedOk(set));
 
 console.log(`Pages analysées : ${files.length}`);

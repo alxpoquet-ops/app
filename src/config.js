@@ -1,5 +1,6 @@
 // ============================================================================
-//  ALED08 : configuration centrale du site
+//  ALED08 : configuration centrale du site (identité, formules, options, tarifs)
+//  Tous les prix du site viennent de ce fichier : on les change ici, une seule fois.
 //  ⚠️  Les valeurs marquées « À REMPLACER » doivent être complétées avant la
 //      mise en ligne (le build affiche un avertissement tant qu'elles restent).
 // ============================================================================
@@ -8,24 +9,21 @@ const site = {
   // Domaine définitif (sans slash final). Sert aux balises canonical, au sitemap, à l'Open Graph.
   url: 'https://www.aled08.fr',
   name: 'ALED08',
+  baseline: 'Sites internet & IA',
   legalName: 'ALED08, Alexandre Poquet', // raison sociale / nom commercial
   owner: 'Alexandre Poquet',
-  // Photo de vous (facultatif, vivement conseillé) : déposez un portrait carré dans
-  // src/assets/img/ (ex. portrait.jpg, 600 × 600 px) puis indiquez '/assets/img/portrait.jpg'.
-  portrait: '',
-  tagline: 'Dépannage & Travaux Électriques dans les Ardennes',
 
   phoneDisplay: '06 02 46 12 58',
   phoneIntl: '+33602461258',
   // WhatsApp : même numéro au format international sans le « + ».
   whatsapp: '33602461258',
-  whatsappMessage: "Bonjour, je souhaite un renseignement pour une intervention électrique.",
+  whatsappMessage: 'Bonjour, je voudrais un renseignement pour un projet.',
 
   // Adresse e-mail affichée et de réception des demandes.
   email: 'alx.poquet@gmail.com',
 
   address: {
-    street: '', // ⚠️ Optionnel : rue (laisser vide pour n'afficher que la commune)
+    street: '', // Optionnel : rue (laisser vide pour n'afficher que la commune)
     postalCode: '08460',
     city: "Signy-l'Abbaye",
     region: 'Grand Est',
@@ -38,140 +36,130 @@ const site = {
   legal: {
     status: 'Entreprise individuelle', // ex. : Entreprise individuelle (micro-entreprise)
     siret: '[SIRET à compléter]',
-    rm: '[Immatriculation au Registre national des entreprises, à compléter]',
     tva: '', // ex. : 'TVA non applicable, art. 293 B du CGI' si vous êtes en franchise de TVA
-    insurer: '[Nom de l’assureur, à compléter]',
-    insuranceContract: '[N° de contrat, à compléter]',
-    insuranceScope: 'Responsabilité civile professionnelle (et garantie décennale le cas échéant)',
-    insuranceArea: 'France métropolitaine',
     mediator: '[Nom et coordonnées du médiateur de la consommation, à compléter]',
     mediatorUrl: '',
-    host: '[Nom, adresse et téléphone de l’hébergeur, à compléter, ex. OVH SAS, 2 rue Kellermann, 59100 Roubaix]',
+    host: 'o2switch, Clermont-Ferrand (France), www.o2switch.fr',
     publicationDirector: 'Alexandre Poquet',
   },
 
-  // Endpoint du formulaire. Par défaut : script PHP fourni (/envoi.php), compatible hébergements mutualisés.
-  // Pour Formspree ou autre service, mettre l'URL complète ici.
+  // Endpoint du formulaire. Par défaut : script PHP fourni (/envoi.php). Sous WordPress, le thème s'en charge.
   formAction: '/envoi.php',
-
-  // Avis clients : seuls de VRAIS avis sont affichés (src/content/avis.js). Tant que la liste est
-  // vide, la section « Avis » n'apparaît pas sur le site.
-  googleReviewsUrl: '', // ⚠️ lien vers votre fiche Google Business Profile (bouton « Voir / laisser un avis »)
-
-  // Les tarifs affichés s'appliquent aussi en soirée et le week-end (pas de majoration).
-  weekendSurcharge: false,
 
   social: {
     facebook: '',
-    google: '',
+    instagram: '',
   },
 };
 
-// Disponibilités : toute la semaine et le week-end, sur rendez-vous (pris par message).
-const hours = [
-  { days: 'Lundi au vendredi', label: 'Sur rendez-vous' },
-  { days: 'Samedi et dimanche', label: 'Sur rendez-vous' },
-  { days: 'Prise de rendez-vous', label: 'Par message' },
-];
-
-// Forfait dépannage : prix unique, tout compris jusqu'au devis de réparation.
-const forfait = {
-  // Prix du forfait : sur devis, annoncé au téléphone avant le déplacement (non affiché sur le site).
-  price: null,
-  priceText: 'Sur devis',
-  // Engagement : si l'origine de la panne n'est pas trouvée, une remise est accordée sur le forfait.
-  // Le montant de la remise n'est volontairement pas affiché sur le site.
-  notFoundDiscount: true,
-  label: 'Forfait dépannage',
-  includes: [
-    { icon: 'car-front', text: 'Le déplacement à domicile', detail: 'partout dans les Ardennes' },
-    { icon: 'search', text: 'La recherche de panne', detail: 'méthodique, mesures à l’appui' },
-    { icon: 'lightbulb', text: 'La proposition de solution', detail: 'expliquée clairement, sans jargon' },
-    { icon: 'file-text', text: 'Le devis de réparation', detail: 'sans aucune obligation' },
-  ],
+// ---------------------------------------------------------------- couleurs des rubriques
+// Chaque rubrique a sa couleur : on la retrouve dans le menu, l'en-tête de page et les cartes.
+const sections = {
+  sites: { path: '/sites-internet/', label: 'Sites internet', accent: 'amber', icon: 'monitor' },
+  tarifs: { path: '/tarifs/', label: 'Tarifs', accent: 'coral', icon: 'coins' },
+  jeux: { path: '/jeux-2d/', label: 'Jeux 2D', accent: 'teal', icon: 'gamepad-2' },
+  auto: { path: '/automatisations/', label: 'Automatisations', accent: 'sky', icon: 'workflow' },
+  methode: { path: '/methode/', label: 'Ma méthode', accent: 'lavender', icon: 'sparkles' },
+  fidelite: { path: '/fidelite/', label: 'Fidélité', accent: 'pink', icon: 'gift' },
+  contact: { path: '/contact/', label: 'Contact', accent: 'green', icon: 'message-circle' },
 };
 
-// Grille tarifaire (prix TTC). Aucun prix de pièce n'est affiché : toute réparation fait l'objet
-// d'un devis remis à la fin du dépannage.
-const tarifs = [
-  { id: 'depannage', label: 'Forfait dépannage', price: null, priceText: 'Annoncé avant', icon: 'zap', highlight: true, note: 'Déplacement, recherche de panne, solution proposée et devis de réparation. Le prix vous est donné avant que je vienne.' },
-  { id: 'reparation', label: 'Réparation et pièces', price: null, priceText: 'Sur devis', icon: 'wrench', note: 'Chiffrée à la fin du dépannage. Vous acceptez ou non, sans obligation.' },
-  { id: 'travaux', label: 'Travaux et installations', price: null, priceText: 'Devis gratuit', icon: 'clipboard-check', note: 'Tableau, mise en sécurité, éclairage, prises, circuits : je passe voir et je fais le devis sur place, gratuitement.' },
+// ---------------------------------------------------------------- formules de sites
+// unique : prix « à partir de », paiement en une fois (le site vous appartient)
+// mensuel : abonnement tout compris (hébergement, nom de domaine, maintenance, petites modifications)
+const formules = [
+  {
+    id: 'une-page',
+    name: 'Une page',
+    icon: 'layout-template',
+    accent: 'amber',
+    pitch: 'Tout tient sur une seule page qu’on fait défiler. Parfait pour présenter une activité, un projet ou un événement.',
+    detail: 'Vos visiteurs font défiler une seule page : qui vous êtes, ce que vous proposez, vos prix et comment vous joindre. C’est simple, vite prêt, et souvent suffisant pour démarrer.',
+    pourQui: 'Indépendants, artisans, associations, événements.',
+    unique: 100,
+    mensuel: 15,
+    delai: '3 à 5 jours',
+    inclus: ['Une page avec plusieurs sections', 'Design adapté au téléphone', 'Formulaire de contact', 'Bases du référencement Google', 'Mise en ligne'],
+  },
+  {
+    id: 'onglets',
+    name: 'Avec onglets',
+    icon: 'layout-grid',
+    accent: 'sky',
+    popular: true,
+    pitch: 'Un menu en haut et plusieurs pages : accueil, services, tarifs, contact. Le format classique d’une entreprise.',
+    detail: 'Chaque sujet a sa page, accessible depuis le menu. Vos visiteurs trouvent tout de suite ce qu’ils cherchent, et Google peut mettre en avant chacune de vos pages.',
+    pourQui: 'Entreprises, commerces, professions libérales.',
+    unique: 290,
+    mensuel: 29,
+    delai: '1 à 2 semaines',
+    inclus: ['Jusqu’à 5 pages', 'Menu clair sur ordinateur et téléphone', 'Formulaire de contact', 'Référencement de chaque page', 'Mise en ligne'],
+  },
+  {
+    id: 'boutique',
+    name: 'Boutique en ligne',
+    icon: 'shopping-bag',
+    accent: 'coral',
+    pitch: 'Vendez sur internet : catalogue, panier, paiement par carte et suivi des commandes.',
+    detail: 'Vos produits en ligne avec leurs photos et leurs prix. Vos clients commandent et paient par carte quand ils veulent, et chaque commande vous arrive par e-mail.',
+    pourQui: 'Créateurs, commerçants, producteurs.',
+    unique: 590,
+    mensuel: 49,
+    delai: '2 à 3 semaines',
+    inclus: ['Jusqu’à 20 produits mis en ligne par moi', 'Paiement par carte sécurisé', 'Gestion des commandes et des stocks', 'Conditions de vente à compléter', 'Prise en main expliquée'],
+  },
 ];
 
-// Ancienne tarification kilométrique (plus affichée sur le site : le forfait est sur devis).
-const kmTiers = [
-  { max: 15, label: '0 à 15 km', supplement: 0, text: 'Sans supplément' },
-  { max: 30, label: '15 à 30 km', supplement: 10, text: '+ 10 €' },
-  { max: 45, label: '30 à 45 km', supplement: 20, text: '+ 20 €' },
-  { max: Infinity, label: 'Au-delà de 45 km', supplement: null, text: 'Sur devis' },
+// Ce que comprend l'abonnement, en plus du site
+const abonnement = {
+  engagement: 12, // mois
+  inclus: ['La création du site', 'L’hébergement', 'Le nom de domaine (.fr ou .com)', 'La sécurité (https) et les sauvegardes', 'Les mises à jour', 'Les petites modifications chaque mois', 'Une réponse rapide par message'],
+};
+
+// ---------------------------------------------------------------- options
+// u = avec paiement unique, a = avec abonnement. 'inclus' ou { once, month, year } en euros.
+const options = [
+  { id: 'heberg', name: 'Hébergement + nom de domaine', icon: 'globe', desc: 'Votre adresse en .fr ou .com et votre site en ligne toute l’année.', u: { year: 59 }, a: 'inclus' },
+  { id: 'maint', name: 'Maintenance et sauvegardes', icon: 'shield-check', desc: 'Mises à jour, sécurité, sauvegardes et une petite modification par mois.', u: { month: 9 }, a: 'inclus' },
+  { id: 'mail', name: 'Adresse e-mail pro', icon: 'at-sign', desc: 'Une adresse comme contact@votresite.fr, sur votre téléphone et votre ordinateur.', u: { month: 3 }, a: { month: 3 } },
+  { id: 'textes', name: 'Rédaction des textes', icon: 'pen-tool', desc: 'Vous me parlez de votre activité, j’écris les textes du site avec vous.', u: { once: 50 }, a: { once: 50 } },
+  { id: 'logo', name: 'Logo simple', icon: 'palette', desc: 'Un logo net et lisible, livré en plusieurs formats.', u: { once: 49 }, a: { once: 49 } },
+  { id: 'seo', name: 'Référencement local', icon: 'map', desc: 'Votre fiche Google, des pages pour vos villes, et le site déclaré à Google.', u: { once: 90 }, a: { once: 90 } },
+  { id: 'suivi', name: 'Suivi Google mensuel', icon: 'chart-line', desc: 'Chaque mois, vos positions sur Google et des améliorations concrètes.', u: { month: 29 }, a: { month: 19 } },
+  { id: 'page', name: 'Page en plus', icon: 'layers', desc: 'Une page de plus dans votre site, au-delà de ce que prévoit la formule.', u: { once: 40 }, a: { month: 4 } },
+  { id: 'rdv', name: 'Réservation en ligne', icon: 'calendar-check', desc: 'Vos clients choisissent un créneau directement sur le site.', u: { once: 60 }, a: { month: 5 } },
+  { id: 'en', name: 'Version anglaise', icon: 'languages', desc: 'Votre site traduit en anglais, relu avant la mise en ligne.', u: { once: 60 }, a: { month: 5 } },
+  { id: 'assistant', name: 'Assistant IA sur le site', icon: 'bot', desc: 'Un assistant qui répond aux questions fréquentes de vos visiteurs, même la nuit.', u: { once: 99, month: 9 }, a: { once: 99, month: 9 } },
 ];
 
-// Communes desservies : distances indicatives par la route depuis Signy-l'Abbaye.
-// page: slug de la page locale dédiée (si elle existe).
-const communes = [
-  { name: "Signy-l'Abbaye", km: 0, page: 'electricien-signy-l-abbaye', main: true },
-  { name: 'Dommery', km: 5 },
-  { name: 'Lalobbe', km: 6 },
-  { name: 'Neuvizy', km: 7 },
-  { name: 'Mesmont', km: 8 },
-  { name: 'Saint-Jean-aux-Bois', km: 8 },
-  { name: 'Wasigny', km: 9, page: 'electricien-wasigny' },
-  { name: 'Thin-le-Moutier', km: 9, page: 'electricien-thin-le-moutier', main: true },
-  { name: 'Jandun', km: 9 },
-  { name: 'Le Fréty', km: 9 },
-  { name: 'Viel-Saint-Remy', km: 10 },
-  { name: 'Draize', km: 10 },
-  { name: 'Wagnon', km: 11 },
-  { name: 'Launois-sur-Vence', km: 11, page: 'electricien-launois-sur-vence' },
-  { name: 'Faissault', km: 12 },
-  { name: 'Liart', km: 13, page: 'electricien-liart', main: true },
-  { name: 'Novion-Porcien', km: 13, page: 'electricien-novion-porcien', main: true },
-  { name: 'Remilly-les-Pothées', km: 14 },
-  { name: 'Lucquy', km: 15 },
-  { name: 'Saulces-Monclin', km: 17, page: 'electricien-saulces-monclin' },
-  { name: 'Chaumont-Porcien', km: 18, page: 'electricien-chaumont-porcien' },
-  { name: 'Poix-Terron', km: 20, page: 'electricien-poix-terron', main: true },
-  { name: 'Rumigny', km: 22, page: 'electricien-rumigny' },
-  { name: 'Rethel', km: 24, page: 'electricien-rethel', main: true },
-  { name: 'Sault-lès-Rethel', km: 25, page: 'electricien-sault-les-rethel' },
-  { name: 'Boulzicourt', km: 25, page: 'electricien-boulzicourt' },
-  { name: 'Maubert-Fontaine', km: 27, page: 'electricien-maubert-fontaine' },
-  { name: 'Château-Porcien', km: 28, page: 'electricien-chateau-porcien', main: true },
-  { name: 'Renwez', km: 29, page: 'electricien-renwez' },
-  { name: 'Charleville-Mézières', km: 32, page: 'electricien-charleville-mezieres', main: true },
-  { name: 'Signy-le-Petit', km: 32, page: 'electricien-signy-le-petit' },
-  { name: 'Rimogne', km: 33, page: 'electricien-rimogne' },
-  { name: 'Attigny', km: 33, page: 'electricien-attigny' },
-  { name: 'Prix-lès-Mézières', km: 33, page: 'electricien-prix-les-mezieres' },
-  { name: 'Villers-Semeuse', km: 35, page: 'electricien-villers-semeuse' },
-  { name: 'Rocroi', km: 38, page: 'electricien-rocroi', main: true },
-  { name: 'Nouzonville', km: 41, page: 'electricien-nouzonville' },
-  { name: 'Juniville', km: 42, page: 'electricien-juniville' },
-  { name: 'Sedan', km: 45, page: 'electricien-sedan', main: true },
-  { name: 'Vouziers', km: 50, page: 'electricien-vouziers', main: true },
-  { name: 'Revin', km: 55, page: 'electricien-revin', main: true },
-  { name: 'Givet', km: 85, page: 'electricien-givet', main: true },
-  { name: 'Fumay', km: 70, page: 'electricien-fumay' },
-  { name: 'Bogny-sur-Meuse', km: 50, page: 'electricien-bogny-sur-meuse' },
-  { name: 'Carignan', km: 60, page: 'electricien-carignan' },
-  { name: 'Mouzon', km: 60, page: 'electricien-mouzon' },
-  { name: 'Le Chesne', km: 35, page: 'electricien-le-chesne' },
-  { name: 'Grandpré', km: 65 },
-  { name: 'Monthermé', km: 48, page: 'electricien-montherme' },
-  { name: 'Bazeilles', km: 48, page: 'electricien-bazeilles' },
+// Petites modifications hors abonnement
+const modification = 25;
+
+// ---------------------------------------------------------------- autres services
+const jeux = [
+  { name: 'Mini-jeu', icon: 'gamepad-2', price: 'dès 150 €', desc: 'Un jeu simple qui se joue dans le navigateur, sur ordinateur et téléphone. Pour votre site, une animation ou un cadeau.' },
+  { name: 'Jeu à niveaux', icon: 'trophy', price: 'dès 400 €', desc: 'Plusieurs niveaux, un score, des graphismes à vos couleurs. Pour une marque, une école ou un événement.' },
+  { name: 'Projet sur mesure', icon: 'puzzle', price: 'sur devis', desc: 'Une idée précise en tête ? On en parle, et je vous dis franchement ce qui est faisable.' },
 ];
 
-// Secteurs des Ardennes (pour la page zone d'intervention).
-const secteurs = [
-  { name: 'Crêtes préardennaises et Porcien', towns: ["Signy-l'Abbaye", 'Wasigny', 'Thin-le-Moutier', 'Launois-sur-Vence', 'Liart', 'Novion-Porcien', 'Saulces-Monclin', 'Chaumont-Porcien', 'Poix-Terron', 'Château-Porcien', 'Dommery', 'Lalobbe', 'Neuvizy', 'Mesmont', 'Saint-Jean-aux-Bois', 'Jandun', 'Le Fréty', 'Viel-Saint-Remy', 'Draize', 'Wagnon', 'Faissault', 'Remilly-les-Pothées', 'Lucquy'] },
-  { name: 'Charleville-Mézières, Sedan et la Meuse', towns: ['Charleville-Mézières', 'Sedan', 'Revin', 'Givet', 'Villers-Semeuse', 'Prix-lès-Mézières', 'Nouzonville', 'Boulzicourt', 'Bogny-sur-Meuse', 'Monthermé', 'Fumay', 'Bazeilles', 'Mouzon', 'Carignan'] },
-  { name: 'Rethélois, Aisne et Argonne', towns: ['Rethel', 'Vouziers', 'Le Chesne', 'Sault-lès-Rethel', 'Attigny', 'Juniville', 'Grandpré'] },
-  { name: 'Thiérache et plateau de Rocroi', towns: ['Rocroi', 'Rumigny', 'Maubert-Fontaine', 'Renwez', 'Signy-le-Petit', 'Rimogne'] },
+const automatisations = [
+  { name: 'Une routine', icon: 'repeat', price: 'dès 49 €', desc: 'Une tâche répétitive qui se fait toute seule : trier des mails, ranger des factures, envoyer un rappel.' },
+  { name: 'Pack de 3 routines', icon: 'workflow', price: 'dès 129 €', desc: 'Trois routines qui travaillent ensemble, pensées pour votre façon de faire.' },
+  { name: 'Suivi', icon: 'refresh-cw', price: '9 €/mois', desc: 'Je vérifie que tout tourne, j’ajuste quand vos besoins changent.' },
 ];
 
-function tierFor(km) {
-  return kmTiers.find((t) => km <= t.max);
-}
+const initiation = { name: 'Initiation à l’IA', icon: 'brain', price: '35 € l’heure', desc: 'Une heure en visio pour apprendre à vous servir de l’IA au quotidien : écrire, résumer, chercher, organiser.' };
 
-module.exports = { site, hours, forfait, tarifs, kmTiers, communes, secteurs, tierFor };
+// ---------------------------------------------------------------- fidélité
+const fidelite = {
+  parrainage: 30, // euros offerts au parrain et au filleul
+  parrainageAbo: 2, // mois offerts si le parrain est abonné
+  remise: 10, // % sur les projets suivants
+};
+
+// Paiement
+const paiement = {
+  acompte: 30, // % à la commande (paiement unique)
+};
+
+module.exports = { site, sections, formules, abonnement, options, modification, jeux, automatisations, initiation, fidelite, paiement };
