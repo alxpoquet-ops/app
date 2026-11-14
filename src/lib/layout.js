@@ -2,8 +2,7 @@
 const { site, sections, types, forfaits, annuel } = require('../config');
 const { icon } = require('./icons');
 const { logoMark } = require('./monsters');
-// « Alex & Lia » avec une éclaboussure rose derrière « Lia »
-const brandName = 'Alex &amp; <span class="brand-lia">Lia</span>';
+const brandName = 'Alex &amp; Lia';
 const { esc, typo } = require('./md');
 const C = require('./components');
 

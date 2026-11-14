@@ -1226,11 +1226,16 @@ button.app-card:hover { transform: translateY(-2px); }
 @media (min-width: 721px) { .btn-flaque:not(.btn-block) { margin-inline: 14px; } }
 @media (max-width: 720px) { .btn-flaque::before { inset: -13px -9px; } }
 
-/* le nom du site : une éclaboussure rose derrière « Lia » */
-.brand-lia { position: relative; display: inline-block; isolation: isolate; padding: 0 .08em; }
-.brand-lia::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 52%; width: 2.5em; height: 2.5em; transform: translate(-50%, -50%) rotate(-14deg); background: #E2589A;
-  -webkit-mask: var(--tache-2) center / contain no-repeat; mask: var(--tache-2) center / contain no-repeat; opacity: .85; transition: transform .4s; }
-.brand:hover .brand-lia::before { transform: translate(-50%, -50%) rotate(20deg) scale(1.08); }
+/* le nom du site : la peinture du pot coule au sol et souligne « Alex & Lia » d'une traînée multicolore */
+.brand { position: relative; isolation: isolate; }
+.brand::after { content: ""; position: absolute; z-index: -1; left: 30px; right: -12px; bottom: -2px; height: 12px; pointer-events: none;
+  background: linear-gradient(90deg, #FF6FAE 0, #9B7BFF 16px, #5AA2F0 34%, #7EDDB5 54%, #FFD45E 72%, #FF9E6E 88%, #FF6FAE);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5C18 2 40 3.4 62 4.2S104 1.6 132 3.6S176 2 190 4.8C198 6.4 197.5 10 189 10.6C166 12.6 140 10.2 110 11.6S52 12.8 30 11.2S2 11.4 0 9Z'/%3E%3Cellipse cx='197' cy='3' rx='1.6' ry='2.2'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5C18 2 40 3.4 62 4.2S104 1.6 132 3.6S176 2 190 4.8C198 6.4 197.5 10 189 10.6C166 12.6 140 10.2 110 11.6S52 12.8 30 11.2S2 11.4 0 9Z'/%3E%3Cellipse cx='197' cy='3' rx='1.6' ry='2.2'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  transform-origin: 0 50%; transition: transform .35s; }
+.brand:hover::after { transform: scaleX(1.05); }
+/* le nom se pose juste au-dessus de la coulée ; le slogan passe au-dessus du nom */
+.brand-text { flex-direction: column-reverse; padding-bottom: 9px; }
+.brand-text small { margin: 0 0 2px; }
 
 /* la barre de défilement d'origine est cachée : la goutte de peinture la remplace (la page défile toujours pareil) */
 html.js { scrollbar-width: none; -ms-overflow-style: none; }
