@@ -168,7 +168,7 @@ add_action('init', function () {
 function aled08e_compte_abonnement_actif($uid) {
     $abo = aled08e_meta($uid, 'abonnement');
     if (in_array($abo, ['active', 'past_due'], true)) return true;
-    if (aled08e_meta($uid, 'abonnement_manuel') === '1') return true;
+    if (aled08e_meta($uid, 'abonnement_manuel') === '1' || aled08e_meta($uid, 'offert') === '1') return true;
     foreach (aled08e_cmd_user_commandes($uid) as $c) {
         if ($c['statut'] !== 'annulee' && strtotime($c['date']) > strtotime('-12 months')) return true;
     }

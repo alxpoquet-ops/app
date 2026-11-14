@@ -411,6 +411,7 @@ function aled08e_fields() {
         'parrain' => ['Parrainé par (code)', 'text', 'Ex. : LILA-7K2'],
         'code' => ['Son code de parrainage', 'text', 'Créé automatiquement'],
         'mois_offerts' => ['Mois offerts à utiliser', 'text', '0'],
+        'offert' => ['Forfait offert à vie', 'check', 'Oui : le forfait et ses options sont gratuits pour ce client, pour toujours. Son compte n’est jamais supprimé automatiquement.'],
         'abonnement_manuel' => ['Abonnement actif hors Stripe', 'check', 'Oui : ce client paie autrement (virement, espèces). Son compte n’est jamais supprimé automatiquement.'],
         'stats_mois' => ['Tableau de bord : mois', 'text', 'Novembre 2026'],
         'stats_visites' => ['Visites', 'text', '1240'],
@@ -724,8 +725,10 @@ function aled08e_dashboard() {
 
     $price = $annuel ? ($f['month'] * (12 - (int) $D['moisOfferts'])) : $f['month'];
     $per = $annuel ? 'par an' : 'par mois';
+    $offert = aled08e_meta($uid, 'offert') === '1';
+    if ($offert) $price = 0;
     $total = $price;
-    foreach ($optsMois as $o) $total += $annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month'];
+    if (!$offert) foreach ($optsMois as $o) $total += $annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month'];
     $wa = $D['whatsapp'] ? 'https://wa.me/' . rawurlencode($D['whatsapp']) . '?text=' . rawurlencode('Bonjour, je voudrais changer mon forfait ou mes options (' . $u->display_name . ').') : '';
     $share = 'https://wa.me/?text=' . rawurlencode('Je te recommande Alex & Lia pour ton site internet. Avec mon lien, on a chacun un mois de forfait offert : ' . $plink);
 
@@ -791,7 +794,7 @@ function aled08e_dashboard() {
         <div class="app-panel" role="tabpanel" id="t-accueil" aria-labelledby="tab-accueil">
           <h2 class="app-h">Bonjour <?php echo esc_html($prenom); ?> !</h2>
           <div class="app-cards">
-            <button type="button" class="app-card c-<?php echo esc_attr($f['color']); ?>" data-go="forfait"><span class="app-card-art"><?php echo aled08e_monster($f['id']); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($f['name']); ?></strong><span><?php echo aled08e_euro($price) . ' ' . esc_html($per); // phpcs:ignore ?></span></span></button>
+            <button type="button" class="app-card c-<?php echo esc_attr($f['color']); ?>" data-go="forfait"><span class="app-card-art"><?php echo aled08e_monster($f['id']); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($f['name']); ?></strong><span><?php echo $offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per); // phpcs:ignore ?></span></span></button>
             <?php if ($cmd) : ?>
             <button type="button" class="app-card c-mint" data-go="commande"><span class="app-card-ico"><?php echo aled08e_icon('globe'); // phpcs:ignore ?></span><span><small>Votre site</small><strong><?php echo esc_html($host ?: 'En préparation'); ?></strong><span class="<?php echo $siteOk ? 'dot-ok' : ''; ?>"><?php echo esc_html($siteEtat); ?></span></span></button>
             <?php else : ?>
@@ -911,7 +914,8 @@ function aled08e_dashboard() {
         <div class="app-panel" role="tabpanel" id="t-forfait" aria-labelledby="tab-forfait" hidden>
           <h2 class="app-h">Forfait et factures</h2>
           <?php echo $flashForfait; // phpcs:ignore ?>
-          <div class="app-card c-<?php echo esc_attr($f['color']); ?>"><span class="app-card-art"><?php echo aled08e_monster($f['id']); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($f['name']); ?></strong><span><?php echo aled08e_euro($price) . ' ' . esc_html($per) . ' · ' . esc_html($f['modifs']); // phpcs:ignore ?></span></span></div>
+          <div class="app-card c-<?php echo esc_attr($f['color']); ?>"><span class="app-card-art"><?php echo aled08e_monster($f['id']); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($f['name']); ?></strong><span><?php echo ($offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . esc_html($f['modifs']); // phpcs:ignore ?></span></span></div>
+          <?php if ($offert) : ?><p class="app-note">Votre forfait <?php echo esc_html($f['name']); ?> est offert, à vie. Merci de votre confiance !</p><?php endif; ?>
           <?php if ($f['id'] === 'titan') : ?><p class="app-note">Titan : <?php echo (int) $quota; ?> modifications par mois, ajout et mise à jour de produits compris, un article de blog par mois pour votre SEO, réponse sous <?php echo esc_html($D['delais']['titan']); ?>.</p><?php endif; ?>
           <?php if ($optsMois) : ?>
           <p class="app-sub">Options</p>
