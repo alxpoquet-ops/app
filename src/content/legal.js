@@ -59,9 +59,9 @@ Quand vous envoyez une demande, je reçois votre nom, votre adresse e-mail, votr
 
 Quand vous vérifiez un nom de domaine, votre navigateur interroge directement le registre officiel de l’extension : l’AFNIC pour .fr, Verisign pour .com et .net, PIR pour .org. Seul le nom recherché leur est transmis. Je ne le reçois pas tant que vous n’envoyez pas votre demande.
 
-## Espace client et IA
+## Espace client
 
-Les demandes écrites dans l’espace client (modification du site, publication sur les réseaux) sont traitées par un fournisseur d’intelligence artificielle pour préparer la modification ou le texte. Elles ne servent qu’à cela. Les accès à vos réseaux sociaux restent les vôtres et peuvent être retirés à tout moment.
+Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée. Pour aller plus vite, je peux m’aider d’outils d’intelligence artificielle ; je vérifie tout avant la mise en ligne.
 
 ## Durée de conservation
 
@@ -70,7 +70,7 @@ Les demandes écrites dans l’espace client (modification du site, publication 
 
 ## Destinataires
 
-Les données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site, par la messagerie utilisée pour recevoir les demandes et, pour l’espace client, par les services nécessaires à son fonctionnement (paiement, IA). Elles ne sont jamais vendues.
+Les données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site, par la messagerie utilisée pour recevoir les demandes et, pour l’espace client, par les services nécessaires à son fonctionnement (paiement). Elles ne sont jamais vendues.
 
 ## Cookies
 
@@ -104,17 +104,17 @@ Le forfait Chico (${forfaits[0].month} € par mois) comprend l’hébergement, 
 
 Le client peut changer de forfait ou ajouter une option à tout moment. Le nouveau prix s’applique à la période suivante.
 
-## 4. Outils de l’espace client
+## 4. Espace client et modifications
 
-Les modifications sont réalisées par ${site.name}. Le client peut aussi utiliser les outils de son espace (modification rapide, publication sur les réseaux) ; une modification qu’il publie lui-même compte dans ses modifications du mois.
+Le client envoie ses demandes de modification depuis son espace client ou par message. Elles sont réalisées par ${site.name}, dans la limite prévue par le forfait. Les outils de l’espace client (tableau de bord, QR code, lien d’avis, factures) sont gratuits pour les sites hébergés par ${site.name}.
 
 ## 5. Nom de domaine et fin du forfait
 
 Le nom de domaine est enregistré au nom du client. À la fin du forfait, le client garde son nom de domaine et reçoit une copie de son site (contenus, images et fichiers).
 
-## 6. Espace client et IA
+## 6. Versions et contenus publiés
 
-Les modifications demandées dans l’espace client sont préparées par une intelligence artificielle. Le client voit l’aperçu et valide avant la publication. Chaque version est conservée et peut être restaurée. Le client reste responsable des contenus qu’il publie, sur son site comme sur ses réseaux sociaux.
+Chaque version du site est conservée et peut être restaurée sur demande. ${site.name} peut s’aider d’outils d’intelligence artificielle pour réaliser les modifications ; tout est vérifié avant la mise en ligne.
 
 ## 7. Référencement
 

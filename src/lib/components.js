@@ -159,18 +159,9 @@ const optPrice = (p) => (p.once ? euro(p.once) : `${euro(p.month)}/mois`);
 
 // Liste compacte des options (page forfaits)
 function optionsCompact() {
-  const groups = [
-    ['connaitre', 'Pour vous faire connaître', 'megaphone'],
-    ['site', 'Pour votre site', 'layout-template'],
-  ];
-  return `<div class="opt-groups">${groups
-    .map(
-      ([g, t, ic]) => `<div class="opt-group reveal"><h3>${icon(ic)}${t}</h3><ul>${options
-        .filter((o) => o.group === g)
-        .map((o) => `<li><span class="opt-ico">${icon(o.icon)}</span><span class="opt-txt"><strong>${esc(o.name)}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${optPrice(o.price)}</span></li>`)
-        .join('')}</ul></div>`
-    )
-    .join('')}</div>`;
+  return `<div class="opt-groups opt-single"><div class="opt-group reveal"><ul>${options
+    .map((o) => `<li><span class="opt-ico">${icon(o.icon)}</span><span class="opt-txt"><strong>${esc(o.name)}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${optPrice(o.price)}</span></li>`)
+    .join('')}</ul></div></div>`;
 }
 
 // ---------------------------------------------------------------- configurateur « Créer mon site »
@@ -223,19 +214,11 @@ function configurator() {
       ${billingSwitch()}`;
   const optionList = `<details class="b-options">
         <summary>${icon('plus')}<span>Ajouter des options <small>(facultatif, activables plus tard)</small></span>${icon('chevron-down')}</summary>
-        ${[
-          ['connaitre', 'Pour vous faire connaître'],
-          ['site', 'Pour votre site'],
-        ]
+        <div class="b-opts">${options
           .map(
-            ([g, t]) => `<p class="b-group">${t}</p><div class="b-opts">${options
-              .filter((o) => o.group === g)
-              .map(
-                (o) => `<label class="b-opt"><input type="checkbox" value="${o.id}"><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${esc(o.name)}</strong></span><em class="p-opt">${o.price.once ? euro(o.price.once) : `<span class="p-month">${euro(o.price.month)}/mois</span><span class="p-year">${euro(year(o.price.month))}/an</span>`}</em></label>`
-              )
-              .join('')}</div>`
+            (o) => `<label class="b-opt"><input type="checkbox" value="${o.id}"><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${esc(o.name)}</strong></span><em class="p-opt">${o.price.once ? euro(o.price.once) : `<span class="p-month">${euro(o.price.month)}/mois</span><span class="p-year">${euro(year(o.price.month))}/an</span>`}</em></label>`
           )
-          .join('')}
+          .join('')}</div>
         <p class="b-more"><a href="/forfaits/#options">Le détail de chaque option</a></p>
       </details>`;
   return `<div class="builder" data-builder="${data}" data-billing-scope>
@@ -244,7 +227,7 @@ function configurator() {
     ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est comprise dans les forfaits et elle reste à votre nom.', domain)}
     ${step(3, 'Votre forfait', 'Je m’occupe de votre site chaque mois. Les modifications, c’est moi qui les fais.', forfaitChoices)}
     ${step(4, 'Paiement', 'Le site en une fois, ou lissé sur 2 ans (engagement de 2 ans). Le forfait au mois, ou à l’année avec deux mois offerts.', payChoices)}
-    ${step(5, 'Options', 'Rien n’est obligatoire : vous pourrez aussi les ajouter plus tard depuis votre espace client.', optionList, ' b-step-last')}
+    ${step(5, 'Options', 'E-mail pro ou traduction : rien n’est obligatoire, vous pourrez les ajouter plus tard.', optionList, ' b-step-last')}
   </form>
   <aside class="b-sum" aria-live="polite">
     <p class="b-sum-title">Votre récapitulatif</p>
@@ -271,14 +254,14 @@ function configurator() {
 }
 
 // ---------------------------------------------------------------- maquettes de l'espace client (illustrations)
-function phoneEdit() {
+function phoneEdit(alt) {
   return `<div class="phone reveal" aria-hidden="true">
   <div class="phone-top">${monster('mascotte')}<span>Mon espace</span><em>Exemple</em></div>
   <div class="phone-body chat">
-    <p class="bubble me">Ajoute qu’on est fermés le lundi, et mets la photo de notre nouvelle vitrine en haut.</p>
-    <div class="bubble ai"><p>C’est prêt ! Voici l’aperçu :</p>
-      <div class="mini-site"><i class="ms-photo"></i><i class="ms-line"></i><i class="ms-line short"></i><span class="ms-hl">Fermé le lundi</span></div>
-      <div class="bubble-actions"><span class="pill pill-go">${icon('check')}Publier</span><span class="pill">${icon('undo-2')}Annuler</span></div>
+    <p class="bubble me">${alt ? 'Pouvez-vous ajouter la tarte aux fraises à 4,50 € sur la carte ?' : 'Bonjour, on est fermés le lundi maintenant. Et voici la photo de notre nouvelle vitrine pour l’accueil.'}</p>
+    <div class="bubble ai"><p>C’est fait, votre site est à jour :</p>
+      <div class="mini-site"><i class="ms-photo"></i><i class="ms-line"></i><i class="ms-line short"></i><span class="ms-hl">${alt ? 'Tarte aux fraises : 4,50 €' : 'Fermé le lundi'}</span></div>
+      <div class="bubble-actions"><span class="pill pill-go">${icon('check')}Demande terminée</span></div>
     </div>
   </div>
 </div>`;
@@ -321,8 +304,8 @@ function shopifyTable() {
     ['Nom de domaine', 'En plus', 'Inclus'],
     ['Mises à jour, sécurité, sauvegardes', 'À surveiller vous-même', 'Incluses'],
     ['Référencement (SEO)', 'À faire vous-même, souvent avec des applications', 'Bases faites par moi, suivi dans les forfaits'],
-    ['Modifications', 'Vous-même, dans l’interface Shopify', 'Je m’en occupe, ou vous passez par nos outils'],
-    ['Fonctions en plus (avis, réservation…)', 'Applications, souvent payantes chaque mois', 'Options à prix fixe'],
+    ['Modifications', 'Vous-même, dans l’interface Shopify', 'Sur simple demande, je m’en occupe'],
+    ['Fonctions en plus', 'Applications, souvent payantes chaque mois', 'Outils de l’espace client gratuits'],
     ['Frais par paiement par carte', `${shopify.fraisCarte} (Shopify Payments)`, `${stripe.fraisCarte} (Stripe)`],
   ];
   return `<div class="cmp reveal" role="table" aria-label="Shopify Basic comparé à une boutique ALED08">

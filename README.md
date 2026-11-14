@@ -2,11 +2,9 @@
 
 Site d'**ALED08** : des sites internet à petit prix, pensés pour Google, avec un espace client pour les modifier grâce à l'IA.
 
-- **Création à prix fixe** : site une page (100 €), site vitrine (150 €), boutique en ligne (250 €).
-- **Entretien** : 10 € par mois, toujours compris (hébergement, nom de domaine, sauvegardes, mises à jour, espace client).
-- **Forfaits IA**, chacun avec son petit monstre : **Chico** (+5 €, 3 jetons), **Power** (+10 €, 10 jetons, SEO suivi, support prioritaire), **Titan** (+15 €, 30 jetons, pour se faire connaître). Un jeton = une modification ou une publication ; recharge à 5 € les 10.
-- **À l'année** : engagement d'un an payé en une fois, 2 mois offerts.
-- **Options activables plus tard** : fiche Google, avis clients, annuaires, kit QR code, lettre d'info, carte de fidélité, e-mail pro, réservation, assistant IA, version anglaise, logo, textes.
+- **Création** : une page 150 €, vitrine 250 €, boutique 450 €, en une fois ou lissée sur 2 ans.
+- **Forfaits** : Chico 5 €/mois (hébergement, domaine, sauvegardes, mises à jour, 1 modification par mois), Power 20 €/mois (+ SEO, rapport mensuel, 1 modification par semaine). À l'année : 2 mois offerts.
+- **Options** : e-mail pro, traduction. Les modifications sont faites par moi, sur demande depuis l'espace client.
 
 Site **statique**, rapide, sans base de données : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans `dist/`.
 
@@ -19,9 +17,8 @@ Site **statique**, rapide, sans base de données : un petit générateur Node.js
 | Accueil | `/` | Promesse, types de site, forfaits, espace client, SEO, comparaison avec Shopify |
 | Créer mon site | `/creer-mon-site/` | **Configurateur** : type de site, nom de domaine vérifié en direct, forfait, au mois ou à l'année, options, récapitulatif |
 | Forfaits | `/forfaits/` | Entretien, Chico, Power, Titan (au mois ou à l'année), jetons IA, prix de création, options |
-| Nos outils | `/nos-outils/` | Je gère les modifications ; les clients peuvent garder la main avec 14 outils (modification rapide, studio publication, avis, QR code…) |
-| Mon espace (démo) | `/mon-espace/` | Démo interactive : jetons, modification par l'IA, outil de publication, forfait et options |
-| Se faire connaître | `/se-faire-connaitre/` | La boîte à outils : Google, réseaux, site, près de chez vous |
+| Nos outils | `/nos-outils/` | Demandes de modification gérées par moi ; outils gratuits (tableau de bord, QR code, lien d'avis, factures) |
+| Mon espace (démo) | `/mon-espace/` | Démo : demandes et suivi, tableau de bord, QR code, lien d'avis, forfait et factures |
 | SEO | `/referencement-seo/` | Ce que je fais, le SEO dans chaque forfait, ce que je ne promets pas |
 | Comparatif Shopify | `/comparatif-shopify/` | Shopify Basic ligne par ligne, et le coût sur un an |
 | Autres | | Fidélité, Ma méthode, Contact, page Ardennes, FAQ, pages légales, plan du site, merci, 404 |

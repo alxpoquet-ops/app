@@ -70,17 +70,17 @@ function home() {
 <section class="section section-soft c-sky"><div class="container split">
   <div class="reveal">
     <p class="kicker c-sky">${icon('toolbox')}Nos outils</p>
-    <h2>Je m’occupe de tout, vous gardez la main</h2>
-    <p>Une modification ? Envoyez-moi un message, je m’en charge. Vous préférez le faire vous-même ? Nos outils vous permettent de changer un texte ou une photo en deux minutes, et de publier sur vos réseaux avec un texte, une image et des hashtags préparés pour vous.</p>
+    <h2>Vous demandez, je m’en occupe</h2>
+    <p>Une modification ? Envoyez votre demande depuis votre espace client, avec une photo si besoin. Je la fais de mon côté et je vous préviens quand c’est en ligne. Vous n’avez rien de technique à gérer.</p>
     <div class="hero-ctas">${C.btn('/nos-outils/', 'btn-primary', 'toolbox', 'Découvrir nos outils')}${C.btn('/mon-espace/', 'btn-light', 'circle-user', 'Essayer la démo')}</div>
   </div>
   ${C.phoneEdit()}
 </div></section>
 
 <section class="section"><div class="container duo">
-  <a class="promo c-peach reveal" href="/se-faire-connaitre/">
-    <span class="promo-ico">${icon('megaphone')}</span>
-    <span class="promo-text"><strong>Se faire connaître</strong><span>Fiche Google, avis, réseaux, QR code : tous les outils pour que les clients viennent.</span></span>
+  <a class="promo c-pink reveal" href="/fidelite/">
+    <span class="promo-ico">${icon('gift')}</span>
+    <span class="promo-text"><strong>Un mois offert en parrainant</strong><span>Pour vous et pour la personne que vous recommandez.</span></span>
     <span class="promo-go">${icon('arrow-right')}</span>
   </a>
   <a class="promo c-butter reveal" href="/comparatif-shopify/">
@@ -206,80 +206,47 @@ ${C.ctaBand({ title: 'Votre monstre est choisi ?', text: 'Composez votre site en
 }
 
 // ====================================================================== NOS OUTILS
-const outilTag = () => '<span class="tool-tag c-mint">Compris</span>';
-
 function outilsPage() {
   const crumbs = crumb('espace');
-  const f = C.faq(FAQ.espace, 'Vos questions sur nos outils', 'faq-outils');
+  const f = C.faq(FAQ.espace, 'Vos questions sur l’espace client', 'faq-outils');
   const body = `${C.pageHero({
     section: 'espace',
-    h1: 'Nos outils : je m’occupe de tout, vous gardez la main',
-    lead: 'Vos modifications, c’est moi qui les fais : un message suffit. Et si vous voulez agir vous-même, un dimanche soir ou en deux minutes entre deux clients, nos outils sont là, dans votre espace client.',
+    h1: 'Nos outils : vous demandez, je m’en occupe',
+    lead: 'Depuis votre espace client, vous m’envoyez vos demandes de modification. Je les fais de mon côté, vous n’avez rien de technique à gérer. Et les outils de l’espace sont gratuits pour les sites hébergés chez moi.',
     crumbs,
   })}
-${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>Les outils arrivent avec l’espace client, qui ouvre bientôt. D’ici là, envoyez-moi vos demandes par message : je m’en occupe, au même prix.</span></p></div>`}
+${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez-moi vos demandes par message ou par WhatsApp : je m’en occupe de la même façon.</span></p></div>`}
 <div class="container center demo-cta">${C.btn('/mon-espace/', 'btn-primary btn-lg', 'circle-user', 'Essayer la démo')}</div>
 
-<section class="section"><div class="container features">
-  <div class="feature">
-    <div class="feature-text reveal">
-      <p class="tags"><span class="tag c-mint">Modification rapide</span></p>
-      <h2>Un changement en deux minutes</h2>
-      <p>Un horaire, un prix, une photo à changer ? Écrivez-le simplement : l’outil prépare le changement et vous montre l’aperçu. Vous préférez ne pas y toucher ? Envoyez-moi un message, je m’en charge.</p>
-      <ul class="list-check">
-        <li>Rien n’est publié sans votre accord</li>
-        <li>Chaque version est gardée : un clic pour revenir en arrière</li>
-        <li>Je vérifie les changements derrière vous</li>
-      </ul>
-    </div>
-    ${C.phoneEdit()}
-  </div>
-  <div class="feature feature-rev">
-    <div class="feature-text reveal">
-      <p class="tags"><span class="tag c-peach">Studio publication</span></p>
-      <h2>Publier sur vos réseaux</h2>
-      <p>Ajoutez une photo et quelques mots. L’outil écrit un texte adapté à chaque réseau, recadre l’image au bon format, ajoute des hashtags et publie sur Instagram, Facebook et votre fiche Google.</p>
-      <ul class="list-check">
-        <li>Vous relisez avant, ou vous laissez faire</li>
-        <li>Publication tout de suite ou programmée</li>
-        <li>Vos comptes restent les vôtres</li>
-      </ul>
-    </div>
-    ${C.phoneSocial()}
-  </div>
-</div></section>
-
-${OUTILS.map(
-  (g, i) => `<section class="section${i % 2 ? '' : ' section-soft'}"><div class="container">
-  <h2 class="tool-title c-${g.color}">${icon(g.icon)}${g.title}</h2>
-  <div class="tools">${g.tools
-    .map((t) => {
-      const inner = `<span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${t.name}</strong><span>${t.desc}</span></span>${outilTag(t)}`;
-      return t.demo ? `<a class="tool c-${g.color} reveal" href="/mon-espace/?outil=${t.demo}">${inner}</a>` : `<div class="tool c-${g.color} reveal">${inner}</div>`;
-    })
-    .join('')}</div>
-</div></section>`
-).join('\n')}
-
-<section class="section"><div class="container container-narrow">
-  <div class="trust reveal">
-    <h2>${icon('lock')}Et la sécurité ?</h2>
+<section class="section"><div class="container split">
+  <div class="reveal">
+    <p class="kicker c-mint">${icon('message-circle')}Demande de modification</p>
+    <h2>Une demande, et c’est fait</h2>
+    <p>Un horaire, un prix, une photo, une nouvelle page ? Écrivez-le dans votre espace, avec une photo si besoin. Je fais la modification, je vérifie que tout s’affiche bien, et je vous préviens quand c’est en ligne.</p>
     <ul class="list-check">
-      <li>Les outils ne touchent qu’au contenu de votre site : textes, images, horaires. Jamais au reste.</li>
-      <li>Rien n’est publié sans votre accord.</li>
-      <li>Chaque version est sauvegardée.</li>
-      <li>Vous retirez l’accès à vos réseaux quand vous voulez.</li>
+      <li>Vous suivez chaque demande : reçue, en cours, faite</li>
+      <li>Chaque version du site est gardée</li>
+      <li>Chico : une modification par mois. Power : une par semaine.</li>
     </ul>
   </div>
+  ${C.phoneEdit(true)}
+</div></section>
+
+<section class="section section-soft"><div class="container">
+  <h2 class="section-title">Dans votre espace client</h2>
+  <p class="section-sub">Gratuit pour les sites hébergés chez moi.</p>
+  <div class="tools">${OUTILS.map(
+    (t) => `<a class="tool c-${t.color} reveal" href="/mon-espace/?outil=${t.demo}"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${t.name}</strong><span>${t.desc}</span></span><span class="tool-tag c-mint">Gratuit</span></a>`
+  ).join('')}</div>
 </div></section>
 
 ${f.html}
-${C.ctaBand({ title: 'Une idée d’outil qui vous manque ?', text: 'Dites-moi ce qui vous ferait gagner du temps. Les outils grandissent avec mes clients.' })}`;
+${C.ctaBand({ title: 'Prêt à vous libérer du technique ?', text: 'Créez votre site : vous m’envoyez vos demandes, je m’occupe du reste.' })}`;
   return {
     path: '/nos-outils/',
     section: 'espace',
-    title: 'Nos outils : modification rapide, publication, avis | ALED08',
-    description: 'Je gère vos modifications, et nos outils vous laissent la main : modification rapide du site, studio publication, réponses aux avis, QR code, affiches.',
+    title: 'Nos outils : vos demandes de modification, gérées par moi | ALED08',
+    description: 'Envoyez vos demandes de modification depuis votre espace client, je m’en occupe. Tableau de bord, QR code et lien d’avis gratuits pour les sites hébergés chez moi.',
     crumbs,
     body,
     schema: [f.schema],
@@ -534,91 +501,30 @@ ${C.ctaBand({ title: 'Envie d’essayer ?', text: 'Parlez-moi de votre projet. V
   };
 }
 
-// ====================================================================== SE FAIRE CONNAÎTRE
-function visibilitePage() {
-  const crumbs = crumb('visibilite');
-  const f = C.faq(FAQ.visibilite, 'Vos questions', 'faq-visibilite');
-  const O = (id) => options.find((o) => o.id === id);
-  const price = (id) => `<span class="tool-tag">${C.optPrice(O(id).price)}</span>`;
-  const inc = '<span class="tool-tag c-mint">Inclus</span>';
-  const groups = [
-    ['search-check', 'Sur Google', 'mint', [
-      ['search-check', 'Le SEO de votre site', 'Pour sortir quand on cherche votre métier près de chez vous.', `${inc}`, '/referencement-seo/'],
-      ['map-pin', 'Votre fiche Google', 'La carte, les horaires, les photos, le bouton « Appeler » : souvent le premier contact avec un client.', price('google')],
-      ['star', 'Des avis, régulièrement', 'Un QR code au comptoir et un message après chaque vente. Les avis rassurent et font monter sur Google.', price('avis')],
-      ['list-checks', 'Les annuaires', 'Apple Plans, Bing, Pages Jaunes : les mêmes infos partout, Google adore ça.', price('annuaires')],
-      ['map', 'Des pages pour vos villes', 'Une page utile par ville où vous travaillez, pour les recherches locales.', '<span class="tool-tag">Sur devis</span>'],
-    ]],
-    ['camera', 'Sur les réseaux', 'peach', [
-      ['send', 'Publication en un geste', 'Une photo et quelques mots : l’IA prépare et publie sur Instagram, Facebook et Google.', `<span class="tool-tag c-mint">Avec nos outils</span>`, '/mon-espace/'],
-      ['image', 'Images et hashtags automatiques', 'L’IA recadre votre photo pour chaque réseau et choisit des hashtags qui vous font trouver.', `<span class="tool-tag c-mint">Avec nos outils</span>`],
-      ['link', 'Une page « liens »', 'Le lien à mettre dans votre bio Instagram ou TikTok, à vos couleurs.', inc],
-    ]],
-    ['monitor', 'Sur votre site', 'lilac', [
-      ['bot', 'Un assistant qui répond', 'Horaires, prix, accès : l’assistant répond à vos visiteurs, même la nuit.', price('chat')],
-      ['calendar-check', 'La réservation en ligne', 'Moins d’appels à prendre, des créneaux remplis automatiquement.', price('rdv')],
-      ['mail-open', 'Une lettre d’info', 'Gardez le contact avec vos clients et faites-les revenir.', price('lettre')],
-      ['languages', 'Une version anglaise', 'Pour les touristes et les clients venus d’ailleurs.', price('en')],
-    ]],
-    ['store', 'Près de chez vous', 'butter', [
-      ['qr-code', 'QR code et cartes de visite', 'Sur votre vitrine, vos cartes et vos flyers, un QR code mène droit à votre site.', price('kit')],
-      ['ticket', 'Une carte de fidélité', 'Des tampons sur le téléphone de vos clients, sans application à installer.', price('carte')],
-    ]],
-  ];
-  const body = `${C.pageHero({
-    section: 'visibilite',
-    h1: 'Se faire connaître : la boîte à outils',
-    lead: 'Un site, c’est le début. Pour que les clients viennent, il faut être visible là où ils cherchent : sur Google, sur les réseaux, et jusque dans la rue. Voici tout ce que je peux mettre en place pour vous.',
-    crumbs,
-  })}
-${groups
-  .map(
-    ([ic, t, c, tools], i) => `<section class="section${i % 2 ? ' section-soft' : ''}"><div class="container">
-  <h2 class="tool-title c-${c}">${icon(ic)}${t}</h2>
-  <div class="tools">${tools
-    .map(([tic, tt, td, tag, href]) => {
-      const inner = `<span class="tool-ico">${icon(tic)}</span><span class="tool-body"><strong>${tt}</strong><span>${td}</span></span>${tag}`;
-      return href ? `<a class="tool c-${c} reveal" href="${href}">${inner}</a>` : `<div class="tool c-${c} reveal">${inner}</div>`;
-    })
-    .join('')}</div>
-</div></section>`
-  )
-  .join('\n')}
-
-${f.html}
-${C.ctaBand({ title: 'Par où commencer ?', text: 'Dites-moi votre activité et votre ville : je vous conseille les deux ou trois outils qui comptent vraiment pour vous.' })}`;
-  return {
-    path: '/se-faire-connaitre/',
-    section: 'visibilite',
-    title: 'Se faire connaître : Google, réseaux, avis, QR code | ALED08',
-    description: 'Fiche Google, avis clients, annuaires, publication sur les réseaux, assistant IA, réservation, QR code et carte de fidélité : les outils pour attirer des clients.',
-    crumbs,
-    body,
-    schema: [f.schema],
-    priority: 0.8,
-  };
-}
-
 // ====================================================================== MON ESPACE (démonstration)
-// Image d'exemple pour l'outil de publication : un petit gâteau dessiné (SVG).
-const DEMO_IMG = 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE3EE"/><stop offset="1" stop-color="#E8E0FF"/></linearGradient></defs><rect width="800" height="600" fill="url(#b)"/><circle cx="130" cy="110" r="70" fill="#fff" opacity=".5"/><circle cx="690" cy="470" r="110" fill="#fff" opacity=".4"/><ellipse cx="400" cy="500" rx="230" ry="34" fill="#2E2A47" opacity=".08"/><path d="M250 330h300l-34 160H284Z" fill="#C9B8FF" stroke="#6A4ED6" stroke-width="8" stroke-linejoin="round"/><path d="M300 340l14 140M350 340l6 140M400 340v140M450 340l-6 140M500 340l-14 140" stroke="#6A4ED6" stroke-width="6" opacity=".35"/><path d="M232 330c-20-60 40-90 70-70 0-60 70-90 100-50 30-40 100-10 98 46 34-18 88 14 68 74Z" fill="#FFB8D2" stroke="#C94A7C" stroke-width="8" stroke-linejoin="round"/><path d="M300 290c30 10 60 8 90-6M420 280c30 12 60 10 86-4" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".7"/><circle cx="400" cy="200" r="34" fill="#FF6F91" stroke="#C94A7C" stroke-width="7"/><path d="M402 168c4-22 20-34 38-36" stroke="#2E8F6A" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="388" cy="190" r="7" fill="#fff" opacity=".8"/></svg>`);
+// Un faux QR code dessiné (illustration de l'outil).
+const DEMO_QR = (() => {
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
+  const cells = [];
+  for (let y = 0; y < 25; y++) for (let x = 0; x < 25; x++) {
+    const finder = (x < 7 && y < 7) || (x > 17 && y < 7) || (x < 7 && y > 17);
+    if (!finder && rnd() > 0.52) cells.push(`<rect x="${x}" y="${y}" width="1" height="1"/>`);
+  }
+  const eye = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7" rx="1.5"/><rect x="${x + 1}" y="${y + 1}" width="5" height="5" rx="1" fill="#fff"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3" rx=".6"/>`;
+  return `<svg viewBox="-2 -2 29 29" class="qr" aria-hidden="true"><rect x="-2" y="-2" width="29" height="29" rx="3" fill="#fff"/><g fill="#2E2A47">${cells.join('')}${eye(0, 0)}${eye(18, 0)}${eye(0, 18)}</g></svg>`;
+})();
 
 function monEspacePage() {
-  const P = F('power');
+  const P = forfaits[1];
   const mail = options.find((o) => o.id === 'mail');
   const tab = (id, ic, label, on) => `<button type="button" role="tab" id="tab-${id}" aria-controls="t-${id}" aria-selected="${on ? 'true' : 'false'}"${on ? '' : ' tabindex="-1"'} data-tab="${id}">${icon(ic)}<span>${label}</span></button>`;
-  const appOptions = options
-    .filter((o) => o.price.month)
-    .map(
-      (o) => `<label class="app-opt"><span class="app-opt-ico">${icon(o.icon)}</span><span class="app-opt-txt"><strong>${esc(o.name)}</strong><small>${euro(o.price.month)} par mois</small></span><input type="checkbox" role="switch" value="${o.id}" data-month="${o.price.month}"${o.id === 'mail' ? ' checked' : ''}><span class="switch" aria-hidden="true"></span></label>`
-    )
-    .join('');
-  const plans = forfaits.map((x) => ({ ...x, monster: x.id, quota: x.id === 'power' ? 4 : 1 }));
+  const plans = forfaits.map((x) => ({ ...x, quota: x.id === 'power' ? 4 : 1 }));
   const total = P.month + mail.price.month;
   const body = `${C.pageHero({
     section: 'monespace',
     h1: 'Mon espace : la démo',
-    lead: 'Voici l’espace de « Pâtisserie Lila », une cliente imaginaire. Essayez : modifiez son site, publiez une photo, changez de forfait. Rien n’est enregistré ni publié.',
+    lead: 'Voici l’espace de « Pâtisserie Lila », une cliente imaginaire. Essayez : envoyez une demande de modification, suivez-la, créez un QR code, changez de forfait. Rien n’est envoyé.',
     crumbs: [HOME, { name: 'Nos outils', path: '/nos-outils/' }, { name: 'Démo', path: '/mon-espace/' }],
   })}
 <section class="section section-app"><div class="container">
@@ -629,15 +535,13 @@ function monEspacePage() {
         <div class="jauge" data-jauge>
           <p class="jauge-head">${icon('pencil')}<span>Modifications du mois</span><b><span data-jetons>3</span> / <span data-jetons-max>4</span></b></p>
           <span class="jauge-bar"><i data-jauge-fill style="width:75%"></i></span>
-          <button type="button" class="link-btn" data-recharger>Besoin de plus ? Écrivez-moi</button>
         </div>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           ${tab('accueil', 'house', 'Accueil', true)}
-          ${tab('modifier', 'zap', 'Modification rapide')}
-          ${tab('publier', 'send', 'Publier')}
-          ${tab('visibilite', 'chart-line', 'Visibilité')}
-          ${tab('outils', 'toolbox', 'Tous les outils')}
-          ${tab('forfait', 'heart', 'Forfait et options')}
+          ${tab('demandes', 'message-circle', 'Mes demandes')}
+          ${tab('visibilite', 'chart-line', 'Tableau de bord')}
+          ${tab('outils', 'qr-code', 'QR code et avis')}
+          ${tab('forfait', 'heart', 'Forfait et factures')}
         </div>
       </aside>
       <div class="app-main">
@@ -651,74 +555,34 @@ function monEspacePage() {
           </div>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
-            <button type="button" data-toast-msg="Demande envoyée : je m’en occupe (démo)">${icon('message-circle')}<strong>Me demander une modification</strong><small>Je m’en charge</small></button>
-            <button type="button" data-go="modifier">${icon('zap')}<strong>Modification rapide</strong><small>Vous le faites vous-même</small></button>
-            <button type="button" data-go="publier">${icon('send')}<strong>Publier sur mes réseaux</strong><small>Texte, image et hashtags</small></button>
-            <button type="button" data-go="outils">${icon('toolbox')}<strong>Tous les outils</strong><small>Annonce, avis, QR code…</small></button>
+            <button type="button" data-go="demandes">${icon('message-circle')}<strong>Demander une modification</strong><small>Je m’en occupe</small></button>
+            <button type="button" data-go="outils">${icon('qr-code')}<strong>QR code et lien d’avis</strong><small>Prêts à partager</small></button>
+            <button type="button" data-go="forfait">${icon('receipt')}<strong>Forfait et factures</strong><small>Tout au même endroit</small></button>
           </div>
           <p class="app-sub">Dernières activités</p>
           <ul class="app-log" data-log>
             <li>${icon('check')}<span>Horaires d’été mis à jour</span><small>il y a 2 jours</small></li>
-            <li>${icon('send')}<span>« Tarte du week-end » publiée sur 3 réseaux</span><small>il y a 5 jours</small></li>
             <li>${icon('file-text')}<span>Rapport de visibilité d’octobre</span><small>1er novembre</small></li>
           </ul>
         </div>
 
-        <div class="app-panel" role="tabpanel" id="t-modifier" aria-labelledby="tab-modifier" hidden>
-          <h2 class="app-h">Modification rapide</h2>
-          <p class="app-p">Écrivez ce que vous voulez changer : l’outil prépare la modification et vous montre l’aperçu. Elle compte dans vos modifications du mois seulement si vous publiez.</p>
-          <p class="app-confier">${icon('message-circle')}<span>Vous préférez me laisser faire ?</span><button type="button" class="link-btn" data-toast-msg="Demande envoyée : je m’en occupe (démo)">Me confier la modification</button></p>
-          <div class="chat">
-            <div class="chat-log" data-chat-log aria-live="polite">
-              <p class="bubble ai">Bonjour ! Que voulez-vous changer sur votre site aujourd’hui ?</p>
-            </div>
-            <div class="chat-sugg">
-              <button type="button" data-say="Nous serons fermés le lundi 24 novembre.">Une fermeture</button>
-              <button type="button" data-say="Ajoute la tarte aux fraises à 4,50 € dans la carte.">Un nouveau produit</button>
-              <button type="button" data-say="Mets la photo de notre nouvelle vitrine en haut de l’accueil.">Une nouvelle photo</button>
-            </div>
-            <form class="chat-form" data-chat-form>
-              <label class="sr-only" for="chat-in">Votre demande</label>
-              <input id="chat-in" type="text" autocomplete="off" placeholder="Ex. : ajoute nos horaires d’été">
-              <button class="btn btn-primary" type="submit" aria-label="Envoyer">${icon('send')}</button>
-            </form>
-          </div>
-          <p class="app-sub">Versions de votre site</p>
-          <ul class="versions" data-versions>
-            <li><span>${icon('circle-check')}Version actuelle</span><small>aujourd’hui</small></li>
-            <li><span>${icon('history')}Version du 12 novembre</span><button type="button" class="link-btn" data-restore>Restaurer</button></li>
+        <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
+          <h2 class="app-h">Mes demandes</h2>
+          <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. Je m’en occupe et vous suivez l’avancement ici.</p>
+          <form class="req-form" data-req>
+            <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" rows="3" placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
+            <label class="req-photo"><input type="file" accept="image/*" class="sr-only" data-req-file>${icon('image-plus')}<span data-req-file-name>Ajouter une photo (facultatif)</span></label>
+            <button class="btn btn-primary" type="submit">${icon('send')}<span>Envoyer ma demande</span></button>
+          </form>
+          <p class="app-sub">Suivi</p>
+          <ul class="reqs" data-reqs>
+            <li><span><strong>Horaires d’été</strong><small>envoyée le 10 novembre</small></span><em class="st st-done">Faite</em></li>
+            <li><span><strong>Nouvelle photo de l’accueil</strong><small>envoyée le 3 novembre</small></span><em class="st st-done">Faite</em></li>
           </ul>
         </div>
 
-        <div class="app-panel" role="tabpanel" id="t-publier" aria-labelledby="tab-publier" hidden>
-          <h2 class="app-h">Publier sur mes réseaux</h2>
-          <p class="app-p">Une photo et quelques mots : l’IA écrit un texte adapté à chaque réseau, recadre l’image au bon format et ajoute des hashtags.</p>
-          <form class="pub" data-pub>
-            <label class="drop">
-              <input type="file" accept="image/*" class="sr-only" data-pub-file>
-              <img src="${DEMO_IMG}" alt="Photo à publier" data-pub-img>
-              <span class="drop-btn">${icon('image-plus')}Choisir une photo</span>
-            </label>
-            <div class="pub-fields">
-              <div class="field"><label for="pub-desc">Quelques mots</label><textarea id="pub-desc" rows="3" data-pub-desc>Nouvelle tarte aux fraises ce week-end</textarea></div>
-              <fieldset class="pub-nets"><legend>Où publier ?</legend>
-                <label><input type="checkbox" value="instagram" checked><span>${icon('camera')}Instagram</span></label>
-                <label><input type="checkbox" value="facebook" checked><span>${icon('thumbs-up')}Facebook</span></label>
-                <label><input type="checkbox" value="google" checked><span>${icon('map-pin')}Fiche Google</span></label>
-              </fieldset>
-              <button class="btn btn-primary btn-block" type="submit">${icon('wand-sparkles')}<span>Préparer mes publications</span></button>
-            </div>
-          </form>
-          <div class="pub-out" data-pub-out hidden>
-            <p class="app-sub">Vos publications, prêtes à partir</p>
-            <div class="posts" data-posts></div>
-            <div class="hero-ctas"><button type="button" class="btn btn-primary" data-pub-send>${icon('send')}<span>Publier partout</span></button><button type="button" class="btn btn-light" data-pub-plan>${icon('clock')}<span>Programmer</span></button></div>
-            <p class="app-note">Vous pouvez retoucher chaque texte avant de publier. Dans votre espace, c’est l’IA qui les écrit à partir de votre photo et de vos mots ; ici, la démo utilise un modèle simple.</p>
-          </div>
-        </div>
-
         <div class="app-panel" role="tabpanel" id="t-visibilite" aria-labelledby="tab-visibilite" hidden>
-          <h2 class="app-h">Ma visibilité</h2>
+          <h2 class="app-h">Tableau de bord</h2>
           <div class="kpis">
             <div><b>1 240</b><small>visites ce mois-ci</small></div>
             <div><b>3 420</b><small>apparitions sur Google</small></div>
@@ -736,26 +600,33 @@ function monEspacePage() {
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
-          <h2 class="app-h">Tous les outils</h2>
-          <p class="app-p">Tous les outils sont compris dans votre forfait.</p>
-          ${OUTILS.map(
-            (g) => `<p class="app-sub">${g.title}</p><div class="app-tools">${g.tools
-              .map((t) => `<button type="button" class="app-tool c-${g.color}" ${t.demo ? `data-go="${t.demo}"` : `data-toast-msg="${t.name} : disponible à l’ouverture de l’espace (démo)"`}><span class="tool-ico">${icon(t.icon)}</span><strong>${t.name}</strong><small>Compris</small></button>`)
-              .join('')}</div>`
-          ).join('')}
+          <h2 class="app-h">QR code et lien d’avis</h2>
+          <div class="tool-duo">
+            <div class="tool-card">
+              <p class="app-sub">${icon('qr-code')}Votre QR code</p>
+              ${DEMO_QR}
+              <p class="app-note">Il mène à patisserie-lila.fr. À imprimer sur vos cartes, votre vitrine ou vos sacs.</p>
+              <button type="button" class="btn btn-light btn-block" data-toast-msg="QR code téléchargé (démo)">${icon('download')}<span>Télécharger</span></button>
+            </div>
+            <div class="tool-card">
+              <p class="app-sub">${icon('star')}Votre lien d’avis Google</p>
+              <p class="app-note">Envoyez-le à vos clients contents : il ouvre directement la page pour laisser un avis.</p>
+              <input class="copy-in" type="text" readonly value="https://g.page/r/patisserie-lila/review" aria-label="Lien d’avis Google" data-copy-src>
+              <button type="button" class="btn btn-primary btn-block" data-copy>${icon('check')}<span>Copier le lien</span></button>
+            </div>
+          </div>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-forfait" aria-labelledby="tab-forfait" hidden>
-          <h2 class="app-h">Mon forfait et mes options</h2>
+          <h2 class="app-h">Forfait et factures</h2>
           <div class="app-plans">${plans
             .map(
-              (x) => `<label class="app-plan c-${x.color}"><input type="radio" name="app-plan" value="${x.id}" data-month="${x.month}" data-name="${x.name}" data-jetons="${x.quota}"${x.id === 'power' ? ' checked' : ''}><span class="app-plan-card"><span class="app-plan-art">${monster(x.monster)}</span><strong>${x.name}</strong><small>${euro(x.month)}/mois</small><small>${x.modifs}</small></span></label>`
+              (x) => `<label class="app-plan c-${x.color}"><input type="radio" name="app-plan" value="${x.id}" data-month="${x.month}" data-name="${x.name}" data-jetons="${x.quota}"${x.id === 'power' ? ' checked' : ''}><span class="app-plan-card"><span class="app-plan-art">${monster(x.id)}</span><strong>${x.name}</strong><small>${euro(x.month)}/mois</small><small>${x.modifs}</small></span></label>`
             )
             .join('')}</div>
           <p class="app-sub">Options</p>
-          <div class="app-opts">${appOptions}</div>
+          <div class="app-opts"><label class="app-opt"><span class="app-opt-ico">${icon(mail.icon)}</span><span class="app-opt-txt"><strong>${esc(mail.name)}</strong><small>${euro(mail.price.month)} par mois</small></span><input type="checkbox" role="switch" value="mail" data-month="${mail.price.month}" checked><span class="switch" aria-hidden="true"></span></label></div>
           <p class="app-total"><span>Total chaque mois</span><b data-app-total>${euro(total)}</b></p>
-          <p class="app-note">Un changement de forfait s’applique au mois suivant. Les options ponctuelles (fiche Google, logo, kit QR code) se commandent par message.</p>
           <p class="app-sub">Factures</p>
           <ul class="invoices">
             <li><span>Novembre 2026</span><b>${euro(total)}</b><button type="button" class="link-btn" data-toast-msg="Facture téléchargée (démo)">PDF</button></li>
@@ -768,19 +639,19 @@ function monEspacePage() {
       </div>
     </div>
     <p class="app-toast" data-toast role="status" hidden></p>
-    <template data-icons>${['check', 'undo-2', 'send', 'camera', 'thumbs-up', 'map-pin', 'history', 'circle-check', 'coins'].map((n) => `<span data-i="${n}">${icon(n)}</span>`).join('')}</template>
-    <template data-monsters>${plans.map((x) => `<span data-m="${x.id}">${monster(x.monster)}</span>`).join('')}</template>
+    <template data-icons>${['check', 'message-circle', 'history'].map((n) => `<span data-i="${n}">${icon(n)}</span>`).join('')}</template>
+    <template data-monsters>${plans.map((x) => `<span data-m="${x.id}">${monster(x.id)}</span>`).join('')}</template>
   </div>
 </div></section>
 
-${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site, choisissez votre forfait, et retrouvez tout ça sur votre téléphone.' })}`;
+${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : vous m’envoyez vos demandes, je m’occupe du reste.' })}`;
   return {
     path: '/mon-espace/',
     section: 'monespace',
     noindex: true,
     noMobileBar: true,
     title: 'Mon espace, la démo | ALED08',
-    description: 'Essayez les outils de l’espace client ALED08 : modification rapide, studio publication, forfait et options. Démonstration, rien n’est publié.',
+    description: 'Essayez l’espace client ALED08 : demandes de modification et leur suivi, tableau de bord, QR code, lien d’avis, forfait et factures. Démonstration.',
     crumbs: [HOME, { name: 'Nos outils', path: '/nos-outils/' }, { name: 'Démo', path: '/mon-espace/' }],
     body,
   };
@@ -906,7 +777,6 @@ function faqPage() {
     ['Les forfaits', FAQ.forfaits, 'forfaits'],
     ['Nos outils', FAQ.espace, 'espace'],
     ['Le référencement', FAQ.seo, 'seo'],
-    ['Se faire connaître', FAQ.visibilite, 'visibilite'],
     ['Ma méthode', FAQ.methode, 'methode'],
     ['Shopify', FAQ.shopify, 'shopify'],
     ['La fidélité', FAQ.fidelite, 'fidelite'],
@@ -998,7 +868,7 @@ function notFound() {
 
 function build() {
   return [
-    home(), creerPage(), forfaitsPage(), outilsPage(), monEspacePage(), seoPage(), visibilitePage(), shopifyPage(), fidelitePage(), methodePage(), contactPage(), ardennesPage(), faqPage(),
+    home(), creerPage(), forfaitsPage(), outilsPage(), monEspacePage(), seoPage(), shopifyPage(), fidelitePage(), methodePage(), contactPage(), ardennesPage(), faqPage(),
     ...legal.map(legalPage), planDuSite(), merci(), notFound(),
   ];
 }

@@ -66,7 +66,6 @@ const sections = {
   contact: { path: '/contact/', label: 'Contact', color: 'peach', icon: 'message-circle' },
   // Hors du menu principal
   shopify: { path: '/comparatif-shopify/', label: 'Comparatif Shopify', color: 'butter', icon: 'store' },
-  visibilite: { path: '/se-faire-connaitre/', label: 'Se faire connaître', color: 'pink', icon: 'megaphone' },
   fidelite: { path: '/fidelite/', label: 'Fidélité', color: 'pink', icon: 'gift' },
   methode: { path: '/methode/', label: 'Ma méthode', color: 'lilac', icon: 'sparkles' },
   monespace: { path: '/mon-espace/', label: 'Mon espace', color: 'sky', icon: 'circle-user' },
@@ -124,7 +123,7 @@ const forfaits = [
     modifs: 'Une modification par mois',
     tagline: 'L’essentiel',
     pitch: 'Votre site en ligne, protégé et à jour. Une modification par mois, faite par moi.',
-    features: ['Hébergement et nom de domaine', 'Sauvegardes et mises à jour', 'Une modification par mois', 'Accès à nos outils'],
+    features: ['Hébergement et nom de domaine', 'Sauvegardes et mises à jour', 'Une modification par mois, sur simple demande', 'Votre espace client et nos outils, gratuits'],
   },
   {
     id: 'power',
@@ -145,19 +144,9 @@ const lissage = { mois: 24 };
 // ---------------------------------------------------------------- options (activables plus tard)
 // price : { once } pour un paiement unique, { month } pour un paiement mensuel.
 const options = [
-  { id: 'google', group: 'connaitre', name: 'Fiche Google', icon: 'map-pin', price: { once: 49 }, desc: 'Je crée ou j’améliore votre fiche Google, pour apparaître sur la carte quand on cherche près de chez vous.' },
-  { id: 'avis', group: 'connaitre', name: 'Avis clients', icon: 'star', price: { month: 5 }, desc: 'Un QR code et un message envoyé après chaque vente pour demander un avis Google.' },
-  { id: 'annuaires', group: 'connaitre', name: 'Inscription dans les annuaires', icon: 'list-checks', price: { once: 39 }, desc: 'Votre entreprise ajoutée sur Apple Plans, Bing, les Pages Jaunes et les annuaires locaux, avec les mêmes informations partout.' },
-  { id: 'kit', group: 'connaitre', name: 'Kit QR code et cartes de visite', icon: 'qr-code', price: { once: 29 }, desc: 'Cartes de visite et affichette avec un QR code vers votre site, prêtes à imprimer.' },
-  { id: 'lettre', group: 'connaitre', name: 'Lettre d’info', icon: 'mail-open', price: { month: 5 }, desc: 'Vos nouveautés envoyées par e-mail à vos clients, avec un formulaire d’inscription sur le site.' },
-  { id: 'carte', group: 'connaitre', name: 'Carte de fidélité numérique', icon: 'ticket', price: { month: 5 }, desc: 'Vos clients cumulent des tampons sur leur téléphone, sans application à installer.' },
-  { id: 'mail', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, desc: 'Une adresse comme contact@votresite.fr, sur votre téléphone et votre ordinateur.' },
-  { id: 'rdv', group: 'site', name: 'Réservation en ligne', icon: 'calendar-check', price: { month: 5 }, desc: 'Vos clients choisissent un créneau directement sur le site.' },
-  { id: 'chat', group: 'site', name: 'Assistant IA pour vos visiteurs', icon: 'bot', price: { month: 9 }, desc: 'Une bulle de discussion qui répond aux questions fréquentes, même la nuit.' },
-  { id: 'en', group: 'site', name: 'Version anglaise', icon: 'languages', price: { month: 5 }, desc: 'Votre site traduit en anglais et relu avant la mise en ligne.' },
-  { id: 'logo', group: 'site', name: 'Logo simple', icon: 'palette', price: { once: 49 }, desc: 'Un logo net et lisible, livré dans tous les formats utiles.' },
-  { id: 'textes', group: 'site', name: 'Rédaction des textes', icon: 'pen-tool', price: { once: 50 }, desc: 'Vous me parlez de votre activité, j’écris les textes du site avec vous.' },
-];
+  { id: 'mail', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
+  { id: 'en', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 50 }, desc: 'Votre site traduit en anglais et relu, pour les touristes et les clients venus d’ailleurs.' },
+]
 
 // ---------------------------------------------------------------- fidélité et paiement
 const fidelite = { parrainageMois: 1, remiseSecondSite: 10 };

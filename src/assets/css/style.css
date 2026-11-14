@@ -982,3 +982,27 @@ button.app-card:hover { transform: translateY(-2px); }
 .plans { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 820px; margin-left: auto; margin-right: auto; }
 .b-plans, .app-plans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 720px) { .plans { grid-template-columns: 1fr; max-width: 460px; } }
+.opt-single { grid-template-columns: 1fr; max-width: 640px; margin: 0 auto; }
+
+/* Démo : demandes, QR code, lien d'avis */
+.req-form { display: grid; gap: 12px; padding: 16px; border-radius: 22px; background: var(--soft); }
+.req-form .btn { justify-self: start; }
+.req-photo { display: inline-flex; align-items: center; gap: 8px; justify-self: start; padding: 9px 14px; border-radius: 999px; background: #fff; box-shadow: 0 0 0 2px var(--line) inset; font-weight: 800; font-size: .9rem; cursor: pointer; }
+.req-photo .ico { color: var(--mint-d); }
+.req-photo:focus-within { outline: 3px solid var(--lilac-d); outline-offset: 2px; }
+.reqs { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.reqs li { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: var(--soft); }
+.reqs li > span { flex: 1; min-width: 0; }
+.reqs strong { display: block; font-size: .95rem; overflow-wrap: anywhere; }
+.reqs small { color: var(--muted); font-weight: 700; font-size: .82rem; }
+.st { flex: none; font-style: normal; font-weight: 900; font-size: .8rem; padding: 4px 10px; border-radius: 999px; }
+.st-new { background: var(--sky); color: var(--sky-dd); }
+.st-doing { background: var(--butter); color: var(--butter-dd); }
+.st-done { background: var(--mint); color: var(--mint-dd); }
+.tool-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tool-card { display: grid; gap: 10px; align-content: start; padding: 18px; border-radius: 22px; background: var(--soft); }
+.tool-card .app-sub { display: flex; align-items: center; gap: 8px; margin: 0; }
+.tool-card .app-note { margin: 0; }
+.qr { width: 160px; justify-self: center; border-radius: 12px; box-shadow: var(--shadow-sm); }
+.copy-in { width: 100%; font: 700 .9rem var(--font); color: var(--ink); background: #fff; border: 0; box-shadow: 0 0 0 2px var(--line) inset; border-radius: 14px; padding: 12px 14px; }
+@media (max-width: 720px) { .tool-duo { grid-template-columns: 1fr; } .req-form .btn { justify-self: stretch; } }

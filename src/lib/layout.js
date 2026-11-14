@@ -144,7 +144,6 @@ function footer(p) {
         <li><a href="/nos-outils/">Nos outils</a></li>
         <li><a href="/mon-espace/">Essayer la démo</a></li>
         <li><a href="/referencement-seo/">Référencement SEO</a></li>
-        <li><a href="/se-faire-connaitre/">Se faire connaître</a></li>
         <li><a href="/comparatif-shopify/">Comparatif Shopify</a></li>
         <li><a href="/fidelite/">Fidélité et parrainage</a></li>
       </ul>
