@@ -980,7 +980,7 @@ button.app-card:hover { transform: translateY(-2px); }
 .b-seg input:checked + span { background: var(--mint); color: var(--mint-dd); }
 .b-seg input:focus-visible + span { outline: 3px solid var(--lilac-d); outline-offset: 2px; }
 .b-step .billing-switch { margin: 0; }
-@media (max-width: 720px) { .b-seg { width: 100%; } .b-seg label { flex: 1; } .b-seg span { width: 100%; justify-content: center; flex-wrap: wrap; gap: 4px; padding: 10px 8px; } .b-seg em { margin-left: 0; white-space: nowrap; } }
+@media (max-width: 720px) { .b-seg { width: 100%; align-items: stretch; } .b-seg label { flex: 1; display: flex; } .b-seg span { width: 100%; justify-content: center; align-items: center; align-content: center; flex-wrap: wrap; gap: 4px; padding: 10px 8px; } .b-seg em { margin-left: 0; white-space: nowrap; } }
 .plans { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .b-plans, .app-plans { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 720px) { .plans { grid-template-columns: 1fr; max-width: 460px; } }
