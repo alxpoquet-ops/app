@@ -5,14 +5,19 @@ const fs = require('fs');
 const { chromium } = require('playwright');
 const ROOT = path.join(__dirname, '..');
 const font = (f) => 'data:font/woff2;base64,' + fs.readFileSync(path.join(ROOT, 'src/assets/fonts', f)).toString('base64');
-const logo = `<svg viewBox="0 0 48 48" width="100%" height="100%"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD27A"/><stop offset="1" stop-color="#F39B00"/></linearGradient></defs><rect width="48" height="48" rx="15" fill="url(#g)"/><path d="M27.5 7 13 27h9.2l-2.7 14L35 20.5h-9.4L27.5 7Z" fill="#24304A"/></svg>`;
-const base = `<style>@font-face{font-family:Nunito;src:url(${font('nunito-var.woff2')});font-weight:200 1000}*{margin:0;box-sizing:border-box}body{background:transparent}</style>`;
-const og = `${base}<div style="width:1200px;height:630px;position:relative;overflow:hidden;font-family:Nunito;color:#e6ebf5;background:radial-gradient(700px 440px at 92% 0%,rgba(255,182,39,.32),transparent 65%),radial-gradient(620px 380px at 0% 100%,rgba(47,211,192,.24),transparent 65%),radial-gradient(520px 320px at 60% 120%,rgba(255,122,92,.16),transparent 65%),linear-gradient(160deg,#1b2f63,#15254a 70%)">
-<div style="position:absolute;left:80px;top:72px;display:flex;align-items:center;gap:22px"><div style="width:92px;height:92px;filter:drop-shadow(0 10px 24px rgba(255,182,39,.45))">${logo}</div><div><div style="font-weight:900;font-size:60px;line-height:1;color:#fff;letter-spacing:-1px">ALED08</div><div style="font-size:24px;font-weight:800;color:#aab6d0;margin-top:6px">Sites internet &amp; IA</div></div></div>
-<div style="position:absolute;left:80px;top:222px;width:1040px;font-weight:900;font-size:70px;line-height:1.06;letter-spacing:-1.5px;color:#fff">Votre site internet dès 100&nbsp;€, prêt en quelques jours</div>
-<div style="position:absolute;left:80px;top:402px;width:1000px;font-size:28px;line-height:1.35;color:#e6ebf5;font-weight:700">Créé avec l’IA, vérifié par un humain. En une fois ou au mois.</div>
-<div style="position:absolute;left:80px;bottom:64px;display:flex;gap:14px;font-size:24px">${[['Une page','100','#ffb627'],['Avec onglets','290','#6cb6ff'],['Boutique en ligne','590','#ff7a5c']].map(([t,p,c])=>`<span style="display:flex;align-items:center;gap:12px;padding:12px 22px;border-radius:999px;background:#20356a;border:2px solid ${c};color:#fff;font-weight:800"><i style="width:12px;height:12px;border-radius:50%;background:${c}"></i>${t}<b style="color:${c};font-weight:900">dès ${p}&nbsp;€</b></span>`).join('')}</div>
-<div style="position:absolute;right:80px;top:100px;display:flex;align-items:center;gap:10px;font-size:22px;color:#e6ebf5;font-weight:800;padding:10px 20px;border-radius:999px;background:rgba(32,53,106,.8);border:1px solid rgba(170,195,255,.28)"><i style="width:10px;height:10px;border-radius:50%;background:#2fd3c0"></i>Devis gratuit</div></div>`;
+const { logoMark, monster } = require('../src/lib/monsters');
+const logo = logoMark({ id: 'g' }).replace('class="logo"', 'width="100%" height="100%"');
+const base = `<style>@font-face{font-family:Nunito;src:url(${font('nunito-var.woff2')});font-weight:200 1000}*{margin:0;box-sizing:border-box}body{background:transparent}.monster{display:block;width:100%;height:auto;overflow:visible}</style>`;
+const og = `${base}<div style="width:1200px;height:630px;position:relative;overflow:hidden;font-family:Nunito;color:#4B4668;background:radial-gradient(520px 380px at 88% 18%,#FFE0EC,transparent 70%),radial-gradient(480px 340px at 0% 100%,#DDF5EA,transparent 70%),radial-gradient(420px 300px at 50% 0%,#EEE7FF,transparent 70%),#FFF8F2">
+<div style="position:absolute;left:72px;top:62px;display:flex;align-items:center;gap:18px"><div style="width:84px;height:84px">${logo}</div><div><div style="font-weight:900;font-size:56px;line-height:1;color:#2E2A47">ALED08</div><div style="font-size:24px;font-weight:800;color:#6B6789;margin-top:6px">Sites internet &amp; SEO</div></div></div>
+<div style="position:absolute;left:72px;top:212px;width:700px;font-weight:900;font-size:66px;line-height:1.06;letter-spacing:-1px;color:#2E2A47">Votre site internet dès 100&nbsp;€, <span style="background:linear-gradient(transparent 58%,#FFD9E7 58% 94%,transparent 94%)">pensé pour Google</span></div>
+<div style="position:absolute;left:72px;top:440px;width:660px;font-size:27px;line-height:1.35;font-weight:700">Un forfait dès 15&nbsp;€ par mois, et vous modifiez votre site en écrivant à l’IA.</div>
+<div style="position:absolute;left:72px;bottom:52px;display:flex;gap:12px;font-size:22px">${[['Chico','15','#D5F5E8','#176A4C'],['Power','29','#E8E0FF','#5B3FC4'],['Titan','59','#FFE4D6','#9C4220']].map(([n,p,bg,fg])=>`<span style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;background:${bg};color:${fg};font-weight:900">${n} <b style="font-weight:900;color:#2E2A47">${p}&nbsp;€/mois</b></span>`).join('')}</div>
+<div style="position:absolute;right:262px;top:118px;width:140px">${monster("chico")}</div>
+<div style="position:absolute;right:56px;top:96px;width:250px">${monster('mascotte')}</div>
+<div style="position:absolute;right:250px;bottom:46px;width:150px">${monster('power')}</div>
+<div style="position:absolute;right:70px;bottom:40px;width:170px">${monster('titan')}</div>
+</div>`;
 const icon = (s, pad = 0, bg = 'transparent') => `${base}<div style="width:${s}px;height:${s}px;padding:${pad}px;background:${bg}">${logo}</div>`;
 (async () => {
   const b = await chromium.launch();
@@ -21,7 +26,7 @@ const icon = (s, pad = 0, bg = 'transparent') => `${base}<div style="width:${s}p
     [og, 1200, 630, 'src/assets/img/og-image.png'],
     [icon(512), 512, 512, 'src/assets/img/logo-512.png'],
     [icon(192), 192, 192, 'src/assets/img/logo-192.png'],
-    [icon(180, 0, '#F6A91F'), 180, 180, 'src/static/apple-touch-icon.png'],
+    [icon(180, 18, '#FFE3EE'), 180, 180, 'src/static/apple-touch-icon.png'],
     [icon(32), 32, 32, 'src/static/favicon-32.png'],
   ];
   for (const [html, w, h, out] of shots) {

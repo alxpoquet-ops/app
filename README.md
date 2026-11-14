@@ -1,11 +1,10 @@
 # ALED08 : site internet
 
-Site d'**ALED08**, sites internet et services autour de l'IA, à petit prix et accessibles à tous :
+Site d'**ALED08** : des sites internet à petit prix, pensés pour Google, avec un espace client pour les modifier grâce à l'IA.
 
-- **sites internet** en trois formats (une page, avec onglets, boutique en ligne), en **paiement unique** ou en **abonnement mensuel** tout compris, avec des options (hébergement et nom de domaine, maintenance, référencement local, logo, rédaction…) ;
-- **petits jeux 2D** jouables dans le navigateur (la page Jeux contient une démo jouable) ;
-- **automatisations** (tri des mails, rappels, relances, résumés) et **initiation à l'IA** en visio ;
-- un programme de **fidélité et parrainage**.
+- **Création à prix fixe** : site une page, site vitrine, boutique en ligne.
+- **Forfaits mensuels ou annuels**, chacun avec son petit monstre : **Chico** (l'essentiel), **Power** (modifications par l'IA), **Titan** (publication sur les réseaux et SEO renforcé).
+- **Options activables plus tard** : fiche Google, avis clients, kit QR code, lettre d'info, e-mail pro, réservation, assistant IA, version anglaise, logo, textes.
 
 Site **statique**, rapide, sans base de données : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans `dist/`.
 
@@ -15,27 +14,27 @@ Site **statique**, rapide, sans base de données : un petit générateur Node.js
 
 | Rubrique | Adresse | Contenu |
 |---|---|---|
-| Accueil | `/` | Promesse, « Que voulez-vous faire ? », étapes, les trois formules, l'IA expliquée franchement |
-| Sites internet | `/sites-internet/` | Les trois formats avec schéma, ce que comprend chaque site, paiement unique ou abonnement |
-| Tarifs | `/tarifs/` | Formules (sélecteur une fois / au mois), options, **simulateur de prix**, autres services |
-| Jeux 2D | `/jeux-2d/` | Démo jouable « Attrape-éclairs », idées, prix |
-| Automatisations | `/automatisations/` | Exemple animé de tri des mails, exemples, prix, initiation à l'IA |
-| Ma méthode | `/methode/` | Ce que fait l'IA, ce que je fais moi-même, mes limites |
-| Fidélité | `/fidelite/` | Parrainage, remise client fidèle, avantage abonnés |
-| Contact | `/contact/` | Formulaire de devis (prérempli depuis les boutons et le simulateur) |
-| Autres | | Page locale Ardennes, FAQ complète, pages légales, plan du site, merci, 404 |
+| Accueil | `/` | Promesse, types de site, forfaits, espace client, SEO, comparaison avec Shopify |
+| Créer mon site | `/creer-mon-site/` | **Configurateur** : type de site, nom de domaine vérifié en direct, forfait, au mois ou à l'année, options, récapitulatif |
+| Forfaits | `/forfaits/` | Chico, Power, Titan (au mois ou à l'année), prix de création, options |
+| Espace client | `/espace-client/` | Modifier son site en écrivant à l'IA, publier sur les réseaux, suivre sa visibilité |
+| SEO | `/referencement-seo/` | Ce que je fais, le SEO dans chaque forfait, ce que je ne promets pas |
+| Comparatif Shopify | `/comparatif-shopify/` | Shopify Basic ligne par ligne, et le coût sur un an |
+| Autres | | Fidélité, Ma méthode, Contact, page Ardennes, FAQ, pages légales, plan du site, merci, 404 |
 
-Chaque rubrique a sa couleur (menu, pastille en haut de page, liseré) pour qu'on sache toujours où l'on est.
+Chaque rubrique a sa couleur pastel (menu, pastille en haut de page) pour qu'on sache toujours où l'on est.
 
 ## Où changer les prix
 
-Tout est dans **`src/config.js`** : `formules` (prix unique, prix mensuel, délais, contenu), `abonnement`, `options` (prix selon la façon de payer), `modification`, `jeux`, `automatisations`, `initiation`, `fidelite`, `paiement`. Le site, le simulateur et les données structurées se mettent à jour au prochain `npm run build`.
+Tout est dans **`src/config.js`** : `types` (prix de création), `forfaits` (prix mensuels), `annuel` (mois offerts), `options`, `fidelite`, `paiement`, `shopify` (prix relevés pour le comparatif, avec la date). Le site, le configurateur et les données structurées se mettent à jour au prochain `npm run build`.
+
+L'espace client n'est pas encore ouvert : `site.espaceClient.ouvert` vaut `false`, et la page l'annonce. Le plan pour le construire est dans `docs/espace-client-ia.md`.
 
 ## À faire avant la mise en ligne
 
-1. **Informations légales** dans `src/config.js` (`legal`) : SIRET, mention TVA (par exemple « TVA non applicable, art. 293 B du CGI » en micro-entreprise), **médiateur de la consommation** (obligatoire pour vendre aux particuliers).
-2. Faire relire les **conditions générales** (`src/content/legal.js`) : c'est un modèle.
-3. Vérifier les prix, l'engagement de l'abonnement (12 mois) et les conditions de parrainage.
+1. **Informations légales** dans `src/config.js` (`legal`) : SIRET, mention TVA (par exemple « TVA non applicable, art. 293 B du CGI » en micro-entreprise), **médiateur de la consommation**.
+2. Faire relire les **conditions générales** et la **politique de confidentialité** (`src/content/legal.js`) : ce sont des modèles.
+3. Revérifier les **prix de Shopify** sur shopify.com/fr/tarifs et mettre à jour `shopify` dans `src/config.js`.
 
 Le build affiche un rappel tant que des éléments restent à compléter.
 
@@ -58,19 +57,20 @@ npm run images    # régénère l'image de partage et les icônes (nécessite Pl
 3. Le formulaire passe par `envoi.php` (fonction `mail()` de PHP) : faites un envoi de test.
 
 ### WordPress (www.aled08.fr)
-`scripts/wp-export.py` produit un thème et une extension d'import à partir de `dist/`. Il date de l'ancien site d'électricien et doit être adapté au nouveau site avant de s'en servir (formulaire, nouvelles pages, redirection des anciennes adresses).
+`scripts/wp-export.py` produit un thème et une extension d'import à partir de `dist/`. Il date de l'ancien site d'électricien et doit être adapté avant de s'en servir (formulaire, nouvelles pages, redirection des anciennes adresses).
 
 ## Modifier le contenu
 
 | Fichier | Contenu |
 |---|---|
-| `src/config.js` | Coordonnées, rubriques, formules, options, prix, informations légales |
+| `src/config.js` | Coordonnées, rubriques, types de site, forfaits, options, prix, informations légales |
 | `src/pages/main.js` | Toutes les pages |
 | `src/content/faq.js` | Questions fréquentes par rubrique (reprises sur `/faq/`) |
 | `src/content/legal.js` | Mentions légales, confidentialité, conditions générales |
-| `src/lib/components.js` | Cartes de formules, tableau des options, simulateur, bandeaux |
-| `src/assets/css/style.css` | Le design (couleurs dans `:root`, une couleur par rubrique) |
-| `src/assets/js/main.js` | Menu, sélecteur de paiement, simulateur, jeu, petites étoiles |
+| `src/lib/components.js` | Cartes des forfaits, configurateur, maquettes de l'espace client, comparatif |
+| `src/lib/monsters.js` | Les petits monstres (SVG dessinés à la main) et le logo |
+| `src/assets/css/style.css` | Le design (couleurs pastel dans `:root`) |
+| `src/assets/js/main.js` | Menu, au mois ou à l'année, configurateur, vérification du nom de domaine, formulaire |
 
 ## Structure
 
@@ -80,14 +80,15 @@ scripts/check.js         contrôle qualité SEO et anti-duplication
 scripts/generate-images.js  image de partage et icônes
 scripts/add-icons.js     ajoute des icônes Lucide à src/lib/icons.js
 src/config.js            configuration et prix
-src/lib/                 gabarit, composants, icônes, mini-markdown
+src/lib/                 gabarit, composants, monstres, icônes, mini-markdown
 src/pages/main.js        les pages
 src/content/             FAQ et pages légales
 src/assets/              CSS, JS, police Nunito (OFL), images
 src/static/              fichiers copiés tels quels (.htaccess, favicon…)
 src/server/envoi.php     traitement du formulaire de devis
 dist/                    SITE GÉNÉRÉ, à mettre en ligne
-docs/                    documents de l'ancienne activité d'électricien (archives)
+docs/espace-client-ia.md plan pour l'espace client, les paiements et l'IA
+docs/                    (autres fichiers : archives de l'ancienne activité d'électricien)
 ```
 
-Crédits : police Nunito (SIL Open Font License), icônes Lucide (ISC), pictogramme WhatsApp (Simple Icons, CC0).
+Crédits : police Nunito (SIL Open Font License), icônes Lucide (ISC), pictogramme WhatsApp (Simple Icons, CC0). Les monstres sont des dessins originaux.

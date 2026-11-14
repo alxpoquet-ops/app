@@ -5,7 +5,7 @@
   var $ = function (s, c) { return (c || d).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || d).querySelectorAll(s)); };
   var euro = function (n) { return (Math.round(n * 100) / 100).toString().replace('.', ',') + '\u00a0\u20ac'; };
-  // Change un paramètre d'un lien sans toucher au chemin (qui peut être relatif)
+  // Change des paramètres d'un lien sans toucher au chemin (qui peut être relatif)
   var withParams = function (href, params) {
     var hash = '', i = href.indexOf('#');
     if (i >= 0) { hash = href.slice(i); href = href.slice(0, i); }
@@ -46,101 +46,195 @@
     reveals.forEach(function (el) { el.classList.add('is-visible'); });
   }
 
-  /* ---------- paiement unique / abonnement ---------- */
-  var setMode = null;
-  $$('[data-mode-switch]').forEach(function (sw) {
-    var scope = sw.closest('.section') || d;
-    var buttons = $$('button[data-mode]', sw);
-    setMode = function (mode, fromEstimator) {
+  /* ---------- forfait au mois ou à l'année ---------- */
+  $$('[data-billing-switch]').forEach(function (sw) {
+    var scope = sw.closest('[data-billing-scope]') || d.body;
+    var buttons = $$('button[data-billing]', sw);
+    var set = function (mode) {
       buttons.forEach(function (b) {
-        var on = b.getAttribute('data-mode') === mode;
+        var on = b.getAttribute('data-billing') === mode;
         b.classList.toggle('is-on', on);
         b.setAttribute('aria-pressed', on);
       });
-      $$('.formules, .pay-notes', scope).forEach(function (el) { el.setAttribute('data-mode', mode); });
-      // Le bouton « Choisir cette formule » transmet aussi la façon de payer
-      $$('.formule a.btn', scope).forEach(function (a) {
-        a.setAttribute('href', withParams(a.getAttribute('href'), { paiement: mode === 'mensuel' ? 'Abonnement' : 'Paiement unique' }));
+      scope.setAttribute('data-billing', mode);
+      $$('.plan a.btn', scope).forEach(function (a) {
+        a.setAttribute('href', withParams(a.getAttribute('href'), { periode: mode === 'annuel' ? 'annuel' : '' }));
       });
-      if (!fromEstimator) {
-        var r = $('.estimator input[name="est-m"][value="' + mode + '"]');
-        if (r && !r.checked) { r.checked = true; r.dispatchEvent(new Event('change', { bubbles: true })); }
-      }
+      scope.dispatchEvent(new CustomEvent('billing', { detail: mode }));
     };
     buttons.forEach(function (b) {
-      b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); });
+      b.addEventListener('click', function () { set(b.getAttribute('data-billing')); });
     });
+    sw._set = set;
   });
 
-  /* ---------- simulateur de prix ---------- */
-  $$('[data-estimator]').forEach(function (box) {
+  /* ---------- configurateur « Créer mon site » ---------- */
+  var builder = $('[data-builder]');
+  if (builder) {
     var data;
-    try { data = JSON.parse(box.getAttribute('data-estimator')); } catch (e) { return; }
-    var out = {
-      once: $('[data-est="once"]', box),
-      month: $('[data-est="month"]', box),
-      year: $('[data-est="year"]', box)
-    };
-    var link = $('.est-total a.btn', box);
-    var label = function (p, mode) {
-      if (p === 'inclus') return 'Inclus';
-      var parts = [];
-      if (p.once) parts.push(euro(p.once));
-      if (p.month) parts.push(euro(p.month) + '/mois');
-      if (p.year) parts.push(euro(p.year) + '/an');
-      return '+' + parts.join(' + ');
-    };
-    function update() {
-      var fId = ($('input[name="est-f"]:checked', box) || {}).value;
-      var mode = ($('input[name="est-m"]:checked', box) || {}).value || 'unique';
-      var f = data.formules.filter(function (x) { return x.id === fId; })[0] || data.formules[0];
-      var key = mode === 'mensuel' ? 'a' : 'u';
-      var t = { once: mode === 'mensuel' ? 0 : f.u, month: mode === 'mensuel' ? f.m : 0, year: 0 };
-      var chosen = [];
-      data.options.forEach(function (o) {
-        var row = $('[data-opt="' + o.id + '"]', box);
-        if (!row) return;
-        var input = $('input', row), p = o[key];
-        var included = p === 'inclus';
-        row.classList.toggle('is-included', included);
-        if (included) { input.checked = true; input.disabled = true; }
-        else if (input.disabled) { input.disabled = false; input.checked = false; }
-        $('[data-opt-price]', row).textContent = label(p, mode);
-        if (input.checked && !included) {
-          chosen.push(o.name);
-          t.once += p.once || 0; t.month += p.month || 0; t.year += p.year || 0;
-        }
-      });
-      out.once.textContent = euro(t.once);
-      out.month.textContent = euro(t.month);
-      out.year.textContent = euro(t.year);
-      out.year.parentNode.hidden = !t.year;
-      if (link) {
-        link.setAttribute('href', withParams(link.getAttribute('href'), {
-          projet: f.label,
-          paiement: mode === 'mensuel' ? 'Abonnement' : 'Paiement unique',
-          options: chosen.join(', ')
-        }));
-      }
-      return mode;
-    }
-    box.addEventListener('change', function (e) {
-      var mode = update();
-      if (e.target && e.target.name === 'est-m' && setMode) setMode(mode, true);
-    });
-    update();
-  });
+    try { data = JSON.parse(builder.getAttribute('data-builder')); } catch (e) { data = null; }
+    if (data) initBuilder(builder, data);
+  }
 
-  /* ---------- formulaire de devis ---------- */
+  function initBuilder(box, data) {
+    var find = function (list, id) { return list.filter(function (x) { return x.id === id; })[0]; };
+    var val = function (name) { var r = $('input[name="' + name + '"]:checked', box); return r ? r.value : ''; };
+    var setText = function (key, text) { $$('[data-sum="' + key + '"]', box).forEach(function (el) { el.textContent = text; }); };
+    var params = new URLSearchParams(location.search);
+    ['type', 'forfait'].forEach(function (k) {
+      var v = params.get(k);
+      var r = v && $('input[name="b-' + k + '"][value="' + v.replace(/[^a-z0-9-]/g, '') + '"]', box);
+      if (r) r.checked = true;
+    });
+    var sw = $('[data-billing-switch]', box);
+    if (params.get('periode') === 'annuel' && sw && sw._set) sw._set('annuel');
+
+    /* nom de domaine */
+    var dom = { name: '', tld: '.fr', status: '' };
+    var input = $('#b-domain', box), tld = $('#b-tld', box), out = $('[data-domain-result]', box);
+    var checkBtn = $('[data-domain-check]', box), own = $('[data-domain-own]', box);
+    var RDAP = {
+      '.fr': 'https://rdap.nic.fr/domain/',
+      '.com': 'https://rdap.verisign.com/com/v1/domain/',
+      '.net': 'https://rdap.verisign.com/net/v1/domain/',
+      '.org': 'https://rdap.publicinterestregistry.org/rdap/domain/'
+    };
+    var ICO = {
+      ok: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
+      no: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+      wait: '<svg class="ico d-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.2-8.6"/></svg>'
+    };
+    var clean = function (v) {
+      v = (v || '').toLowerCase().trim();
+      if (v.normalize) v = v.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      v = v.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/.*$/, '');
+      var m = v.match(/\.(fr|com|net|org)$/);
+      if (m) { tld.value = '.' + m[1]; v = v.slice(0, -m[0].length); }
+      return v.replace(/[^a-z0-9-]+/g, '-').replace(/-{2,}/g, '-').replace(/^-+|-+$/g, '').slice(0, 63);
+    };
+    var show = function (cls, html) { out.innerHTML = '<span class="d-pill ' + cls + '">' + html + '</span>'; };
+    var suggest = function (name, ext) {
+      var other = ext === '.fr' ? '.com' : '.fr';
+      var list = [[name + '-08', ext], ['mon-' + name, ext], [name, other]];
+      var wrap = d.createElement('div');
+      wrap.className = 'd-sugg';
+      list.forEach(function (s) {
+        var b = d.createElement('button');
+        b.type = 'button';
+        b.textContent = s[0] + s[1];
+        b.addEventListener('click', function () { input.value = s[0]; tld.value = s[1]; check(); });
+        wrap.appendChild(b);
+      });
+      out.appendChild(wrap);
+    };
+    var busy = false;
+    function check() {
+      if (busy || own.checked) return;
+      var name = clean(input.value);
+      input.value = name;
+      dom.name = name; dom.tld = tld.value; dom.status = '';
+      if (name.length < 2) { show('d-err', 'Écrivez au moins deux lettres, par exemple le nom de votre entreprise.'); update(); return; }
+      var full = name + tld.value;
+      busy = true; checkBtn.disabled = true;
+      show('d-wait', ICO.wait + 'Je regarde si ' + full + ' est libre…');
+      var ctrl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 8000);
+      fetch(RDAP[tld.value] + encodeURIComponent(full), { headers: { Accept: 'application/rdap+json' }, signal: ctrl ? ctrl.signal : undefined })
+        .then(function (res) {
+          if (res.status === 404) {
+            dom.status = 'libre';
+            show('d-ok', ICO.ok + full + ' est libre ! Je le réserverai à votre nom.');
+          } else if (res.ok) {
+            dom.status = 'pris';
+            show('d-taken', ICO.no + full + ' est déjà pris. Une idée :');
+            suggest(name, tld.value);
+          } else {
+            throw new Error('rdap ' + res.status);
+          }
+        })
+        .catch(function () {
+          dom.status = 'inconnu';
+          show('d-err', 'Je n’arrive pas à vérifier pour l’instant. Pas de souci : je le ferai pour vous.');
+        })
+        .then(function () { clearTimeout(timer); busy = false; checkBtn.disabled = false; update(); });
+    }
+    checkBtn.addEventListener('click', check);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); check(); } });
+    input.addEventListener('input', function () { if (dom.status) { dom.status = ''; out.innerHTML = ''; update(); } });
+    tld.addEventListener('change', function () { if (input.value) check(); });
+    own.addEventListener('change', function () {
+      [input, tld, checkBtn].forEach(function (el) { el.disabled = own.checked; });
+      if (own.checked) { dom.status = 'mien'; show('d-ok', ICO.ok + 'Parfait, on gardera votre nom de domaine actuel.'); }
+      else { dom.status = ''; out.innerHTML = ''; }
+      update();
+    });
+    var form = $('[data-builder-form]', box);
+    if (form) form.addEventListener('submit', function (e) { e.preventDefault(); });
+
+    /* récapitulatif */
+    function update() {
+      var t = find(data.types, val('b-type')) || data.types[0];
+      var f = find(data.forfaits, val('b-forfait')) || data.forfaits[0];
+      var annual = box.getAttribute('data-billing') === 'annuel';
+      var mult = annual ? 12 - data.free : 1;
+      var per = annual ? '/an' : '/mois';
+      var month = f.month + t.sup;
+      var optOnce = 0, optMonth = 0, chosen = [];
+      $$('.b-opt input:checked', box).forEach(function (i) {
+        var o = find(data.options, i.value);
+        if (!o) return;
+        chosen.push(o.name); optOnce += o.once; optMonth += o.month;
+      });
+      setText('type', t.label);
+      setText('type-price', euro(t.price));
+      setText('forfait', 'Forfait ' + f.name + (t.sup ? ' (boutique)' : ''));
+      setText('forfait-price', euro(month * mult) + per);
+      var optLine = $('[data-sum-opts]', box);
+      if (optLine) {
+        optLine.hidden = !chosen.length;
+        var parts = [];
+        if (optOnce) parts.push(euro(optOnce));
+        if (optMonth) parts.push(euro(optMonth * mult) + per);
+        optLine.querySelector('span').textContent = chosen.length > 1 ? chosen.length + ' options' : (chosen[0] || 'Options');
+        setText('opts', parts.join(' + '));
+      }
+      var domText = '';
+      if (dom.status === 'mien') domText = 'Mon nom de domaine actuel';
+      else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? ' (libre)' : dom.status === 'pris' ? ' (déjà pris)' : '');
+      setText('domain', domText || 'Nom de domaine à choisir');
+      setText('once', euro(t.price + optOnce));
+      setText('recur-label', annual ? 'Puis chaque année' : 'Puis chaque mois');
+      setText('recur', euro((month + optMonth) * mult));
+      setText('recur-short', euro((month + optMonth) * mult) + per);
+      var q = { type: t.label, forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', domaine: domText, options: chosen.join(', ') };
+      $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
+    }
+    box.addEventListener('change', update);
+    box.addEventListener('billing', update);
+    update();
+
+    /* barre du bas (téléphone) : cachée quand le récapitulatif complet est visible */
+    var bar = $('[data-sum-bar]', box), sum = $('.b-sum', box);
+    if (bar && sum && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { bar.classList.toggle('is-hidden', en.isIntersecting); });
+      }, { threshold: 0.2 }).observe(sum);
+    }
+  }
+
+  /* ---------- formulaire de contact ---------- */
   $$('form[data-form]').forEach(function (f) {
     var t = f.querySelector('input[name="_t"]'); if (t) t.value = Date.now();
     var p = new URLSearchParams(location.search);
-    var projet = p.get('projet'), sel = f.querySelector('select[name="projet"]');
-    if (projet && sel) { $$('option', sel).forEach(function (o) { if (o.value === projet) sel.value = projet; }); }
+    var pick = function (sel, v) { if (!sel || !v) return; $$('option', sel).forEach(function (o) { if (o.value === v) sel.value = v; }); };
+    pick(f.querySelector('select[name="type"]'), p.get('type'));
+    pick(f.querySelector('select[name="forfait"]'), p.get('forfait'));
     var pay = p.get('paiement');
-    if (pay) { $$('input[name="paiement"]', f).forEach(function (r) { if (r.value === pay) r.checked = true; }); }
+    if (pay) $$('input[name="paiement"]', f).forEach(function (r) { if (r.value === pay) r.checked = true; });
+    var dom = p.get('domaine'), domInput = f.querySelector('input[name="domaine"]');
+    if (dom && domInput) domInput.value = dom;
     var opts = p.get('options'), msg = f.querySelector('textarea[name="message"]');
-    if (opts && msg && !msg.value) msg.value = 'Options qui m’intéressent : ' + opts + '.\n\n';
+    if (opts && msg && !msg.value) msg.value = 'Options choisies : ' + opts + '.\n\n';
     f.addEventListener('submit', function (e) {
       if (!f.checkValidity()) { e.preventDefault(); f.reportValidity(); return; }
       var btn = f.querySelector('button[type="submit"]');
@@ -150,229 +244,4 @@
   if (/[?&]erreur=1/.test(location.search)) {
     $$('[data-form-error]').forEach(function (el) { el.hidden = false; });
   }
-})();
-
-/* ---------- jeu de démonstration : Attrape-éclairs ---------- */
-(function () {
-  'use strict';
-  var box = document.querySelector('[data-game]');
-  if (!box) return;
-  var cv = box.querySelector('canvas'), ctx = cv.getContext && cv.getContext('2d');
-  if (!ctx) return;
-  var W = 720, H = 420, R = Math.min(window.devicePixelRatio || 1, 2);
-  cv.width = W * R; cv.height = H * R;
-  ctx.setTransform(R, 0, 0, R, 0, 0);
-  var ui = {
-    score: box.querySelector('[data-score]'),
-    lives: box.querySelector('[data-lives]'),
-    best: box.querySelector('[data-best]'),
-    start: box.querySelector('[data-start]'),
-    play: box.querySelector('[data-play]')
-  };
-  var KEY = 'aled08-jeu-record';
-  var best = 0;
-  try { best = parseInt(localStorage.getItem(KEY), 10) || 0; } catch (e) {}
-  ui.best.textContent = best;
-
-  var paddle = { x: W / 2, w: 104, h: 18, y: H - 34 }, target = W / 2;
-  var items = [], bits = [], score = 0, lives = 3, playing = false, last = 0, spawnIn = 0, elapsed = 0, keys = {};
-  var stars = [];
-  for (var i = 0; i < 40; i++) stars.push([Math.random() * W, Math.random() * H, Math.random() * 1.4 + 0.3]);
-
-  function bolt(x, y, s) {
-    ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
-    ctx.beginPath();
-    ctx.moveTo(3, -17); ctx.lineTo(-10, 2); ctx.lineTo(-1, 2); ctx.lineTo(-4, 17); ctx.lineTo(10, -3); ctx.lineTo(1, -3); ctx.closePath();
-    ctx.fillStyle = '#ffb627'; ctx.shadowColor = 'rgba(255, 182, 39, .8)'; ctx.shadowBlur = 14; ctx.fill();
-    ctx.restore();
-  }
-  function bug(x, y, s, t) {
-    ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
-    ctx.strokeStyle = '#ff7a5c'; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
-    var wig = Math.sin(t / 90) * 2;
-    for (var k = -1; k <= 1; k++) {
-      ctx.beginPath(); ctx.moveTo(-8, k * 6); ctx.lineTo(-15, k * 7 + wig); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(8, k * 6); ctx.lineTo(15, k * 7 - wig); ctx.stroke();
-    }
-    ctx.beginPath(); ctx.moveTo(-4, -11); ctx.lineTo(-8, -17); ctx.moveTo(4, -11); ctx.lineTo(8, -17); ctx.stroke();
-    ctx.fillStyle = '#ff7a5c';
-    ctx.beginPath(); ctx.ellipse(0, 1, 9, 12, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#0d1830';
-    ctx.beginPath(); ctx.arc(-3.5, -5, 2, 0, Math.PI * 2); ctx.arc(3.5, -5, 2, 0, Math.PI * 2); ctx.fill();
-    ctx.restore();
-  }
-  function roundRect(x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-    ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-    ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-    ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
-  }
-  function burst(x, y, color) {
-    for (var k = 0; k < 10; k++) {
-      var a = Math.random() * Math.PI * 2, v = 60 + Math.random() * 120;
-      bits.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 60, life: 0.5, age: 0, c: color });
-    }
-  }
-  function draw(t) {
-    ctx.clearRect(0, 0, W, H);
-    var g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, '#13234a'); g.addColorStop(1, '#0d1830');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = 'rgba(255, 255, 255, .5)';
-    stars.forEach(function (s) { ctx.globalAlpha = 0.3 + 0.3 * Math.sin(t / 700 + s[0]); ctx.fillRect(s[0], s[1], s[2], s[2]); });
-    ctx.globalAlpha = 1;
-    items.forEach(function (it) { if (it.good) bolt(it.x, it.y, 1.15); else bug(it.x, it.y, 1, t); });
-    bits.forEach(function (b) {
-      ctx.globalAlpha = Math.max(0, 1 - b.age / b.life);
-      ctx.fillStyle = b.c; ctx.fillRect(b.x - 2, b.y - 2, 4, 4);
-    });
-    ctx.globalAlpha = 1;
-    var px = paddle.x - paddle.w / 2;
-    roundRect(px, paddle.y, paddle.w, paddle.h, 9);
-    var pg = ctx.createLinearGradient(px, 0, px + paddle.w, 0);
-    pg.addColorStop(0, '#2fd3c0'); pg.addColorStop(1, '#6cb6ff');
-    ctx.fillStyle = pg; ctx.fill();
-    ctx.fillStyle = 'rgba(255, 255, 255, .35)'; roundRect(px + 10, paddle.y + 4, paddle.w - 20, 4, 2); ctx.fill();
-  }
-  function step(t) {
-    if (!playing) return;
-    var dt = Math.min(0.05, (t - last) / 1000 || 0); last = t; elapsed += dt;
-    var level = Math.min(1, elapsed / 60);
-    if (keys.left) target -= 520 * dt;
-    if (keys.right) target += 520 * dt;
-    target = Math.max(paddle.w / 2, Math.min(W - paddle.w / 2, target));
-    paddle.x += (target - paddle.x) * Math.min(1, dt * 18);
-    spawnIn -= dt;
-    if (spawnIn <= 0) {
-      var good = Math.random() > 0.24 + level * 0.12;
-      items.push({ x: 30 + Math.random() * (W - 60), y: -20, v: 140 + level * 210 + Math.random() * 50, good: good });
-      spawnIn = 0.95 - level * 0.55;
-    }
-    for (var k = items.length - 1; k >= 0; k--) {
-      var it = items[k];
-      it.y += it.v * dt;
-      var hit = it.y > paddle.y - 14 && it.y < paddle.y + paddle.h && Math.abs(it.x - paddle.x) < paddle.w / 2 + 10;
-      if (hit) {
-        items.splice(k, 1);
-        if (it.good) { score++; burst(it.x, paddle.y, '#ffd27a'); }
-        else { lives--; burst(it.x, paddle.y, '#ff7a5c'); }
-        ui.score.textContent = score; ui.lives.textContent = Math.max(0, lives);
-        if (lives <= 0) return over();
-      } else if (it.y > H + 20) {
-        items.splice(k, 1);
-        // Un éclair manqué coûte une vie, un bug évité ne coûte rien
-        if (it.good) {
-          lives--; ui.lives.textContent = Math.max(0, lives);
-          if (lives <= 0) return over();
-        }
-      }
-    }
-    for (var j = bits.length - 1; j >= 0; j--) {
-      var b = bits[j]; b.age += dt; b.x += b.vx * dt; b.y += b.vy * dt; b.vy += 300 * dt;
-      if (b.age > b.life) bits.splice(j, 1);
-    }
-    draw(t);
-    requestAnimationFrame(step);
-  }
-  function start() {
-    items = []; bits = []; score = 0; lives = 3; elapsed = 0; spawnIn = 0.4;
-    ui.score.textContent = 0; ui.lives.textContent = 3;
-    ui.start.hidden = true; box.classList.add('is-playing');
-    playing = true; last = performance.now();
-    requestAnimationFrame(step);
-  }
-  function over() {
-    playing = false; box.classList.remove('is-playing');
-    if (score > best) { best = score; try { localStorage.setItem(KEY, String(best)); } catch (e) {} }
-    ui.best.textContent = best;
-    draw(performance.now());
-    ui.start.querySelector('.game-title').textContent = 'Partie terminée';
-    ui.start.querySelector('p:not(.game-title)').textContent = score + (score > 1 ? ' éclairs attrapés.' : ' éclair attrapé.') + ' Record : ' + best + '.';
-    ui.play.querySelector('span').textContent = 'Rejouer';
-    ui.start.hidden = false;
-    ui.play.focus({ preventScroll: true });
-  }
-  function moveTo(clientX) {
-    var r = cv.getBoundingClientRect();
-    target = (clientX - r.left) / r.width * W;
-  }
-  cv.addEventListener('pointermove', function (e) { if (playing) moveTo(e.clientX); });
-  cv.addEventListener('pointerdown', function (e) { if (playing) moveTo(e.clientX); });
-  document.addEventListener('keydown', function (e) {
-    if (!playing) return;
-    if (e.key === 'ArrowLeft') { keys.left = true; e.preventDefault(); }
-    if (e.key === 'ArrowRight') { keys.right = true; e.preventDefault(); }
-  });
-  document.addEventListener('keyup', function (e) {
-    if (e.key === 'ArrowLeft') keys.left = false;
-    if (e.key === 'ArrowRight') keys.right = false;
-  });
-  document.addEventListener('visibilitychange', function () { if (document.hidden && playing) { playing = false; over(); } });
-  ui.play.addEventListener('click', start);
-  draw(0);
-  // Un éclair et un bug posés sur l'écran d'accueil, pour montrer le principe
-  items = [{ x: W * 0.3, y: H * 0.42, good: true }, { x: W * 0.7, y: H * 0.5, good: false }];
-  draw(0);
-  items = [];
-})();
-
-/* ---------- petites étoiles (décor, discret) ---------- */
-(function () {
-  'use strict';
-  if (!window.requestAnimationFrame || !document.createElement('canvas').getContext) return;
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var cv = document.createElement('canvas');
-  cv.className = 'sparks';
-  cv.setAttribute('aria-hidden', 'true');
-  document.body.appendChild(cv);
-  var ctx = cv.getContext('2d'), W = 0, H = 0, R = Math.min(window.devicePixelRatio || 1, 1.5);
-  var COLORS = ['255, 182, 39', '47, 211, 192', '255, 143, 192', '185, 164, 255', '108, 182, 255'];
-  var list = [], running = true, next = 1.2, last = 0;
-  var rnd = function (a, b) { return a + Math.random() * (b - a); };
-  function size() {
-    W = window.innerWidth; H = window.innerHeight;
-    cv.width = W * R; cv.height = H * R;
-    ctx.setTransform(R, 0, 0, R, 0, 0);
-  }
-  // Les étoiles sont placées dans la page, pas dans l'écran : elles défilent avec le contenu.
-  function spawn() {
-    var side = Math.random() < 0.5;
-    var x = side ? rnd(0.02, 0.16) * W : rnd(0.84, 0.98) * W;
-    list.push({ x: x, y: (window.pageYOffset || 0) + rnd(0.12, 0.88) * H, r: rnd(5, 9), life: rnd(1, 1.5), age: 0, c: COLORS[(Math.random() * COLORS.length) | 0], rot: rnd(0, 0.6) });
-  }
-  function star(x, y, r, a) {
-    ctx.save(); ctx.translate(x, y); ctx.rotate(a);
-    ctx.beginPath();
-    ctx.moveTo(0, -r); ctx.quadraticCurveTo(0, 0, r, 0); ctx.quadraticCurveTo(0, 0, 0, r);
-    ctx.quadraticCurveTo(0, 0, -r, 0); ctx.quadraticCurveTo(0, 0, 0, -r);
-    ctx.fill(); ctx.restore();
-  }
-  function frame(t) {
-    if (!running) return;
-    var dt = Math.min(0.05, (t - last) / 1000 || 0); last = t;
-    var sy = window.pageYOffset || 0;
-    ctx.clearRect(0, 0, W, H);
-    next -= dt;
-    if (next <= 0) {
-      if (list.length < (W < 720 ? 1 : 2)) spawn();
-      next = rnd(2.2, 4.2);
-    }
-    for (var i = list.length - 1; i >= 0; i--) {
-      var s = list[i]; s.age += dt;
-      if (s.age > s.life) { list.splice(i, 1); continue; }
-      var k = s.age / s.life, grow = Math.sin(k * Math.PI);
-      ctx.fillStyle = 'rgba(' + s.c + ',' + (0.85 * grow) + ')';
-      ctx.shadowColor = 'rgba(' + s.c + ', .8)'; ctx.shadowBlur = 10;
-      star(s.x, s.y - sy - k * 10, s.r * (0.4 + 0.6 * grow), s.rot + k * 0.8);
-    }
-    requestAnimationFrame(frame);
-  }
-  size();
-  window.addEventListener('resize', size);
-  document.addEventListener('visibilitychange', function () {
-    var was = running; running = !document.hidden;
-    if (running && !was) { last = performance.now(); requestAnimationFrame(frame); }
-  });
-  requestAnimationFrame(frame);
 })();

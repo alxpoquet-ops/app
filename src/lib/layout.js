@@ -1,6 +1,7 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, sections, formules } = require('../config');
+const { site, sections, types, forfaits, annuel } = require('../config');
 const { icon } = require('./icons');
+const { logoMark } = require('./monsters');
 const { esc, typo } = require('./md');
 const C = require('./components');
 
@@ -9,13 +10,31 @@ function setAssetVersion(v) { Object.assign(assetsVersion, v); }
 
 // ---------------------------------------------------------------- schema.org
 function businessSchema() {
+  const offers = [
+    ...types.map((t) => ({
+      '@type': 'Offer',
+      name: 'Création : ' + t.label,
+      price: t.price,
+      priceCurrency: 'EUR',
+      description: t.pitch.replace(/’/g, "'"),
+      url: site.url + C.creerUrl({ type: t.id }),
+    })),
+    ...forfaits.map((f) => ({
+      '@type': 'Offer',
+      name: 'Forfait ' + f.name,
+      priceCurrency: 'EUR',
+      priceSpecification: { '@type': 'UnitPriceSpecification', price: f.month, priceCurrency: 'EUR', unitCode: 'MON', referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: 'MON' } },
+      description: f.pitch.replace(/’/g, "'"),
+      url: site.url + '/forfaits/#' + f.id,
+    })),
+  ];
   const b = {
     '@type': 'ProfessionalService',
     '@id': site.url + '/#entreprise',
     name: site.name,
-    slogan: 'Des sites internet et des outils créés avec l’IA, vérifiés par un humain',
+    slogan: 'Votre site internet dès 100 €, pensé pour Google',
     description:
-      'Création de sites internet à petit prix (une page, avec onglets, boutique en ligne), en paiement unique ou en abonnement, mini-jeux 2D et automatisations. Basé dans les Ardennes, pour des clients partout en France.',
+      'Création de sites internet à prix fixe (une page, site vitrine, boutique en ligne), forfaits mensuels avec hébergement, mises à jour et référencement SEO, espace client avec modification du site par IA. Basé dans les Ardennes, pour des clients partout en France.',
     url: site.url + '/',
     telephone: site.phoneIntl,
     email: site.email,
@@ -32,19 +51,8 @@ function businessSchema() {
       addressCountry: site.address.country,
     },
     areaServed: [{ '@type': 'Country', name: 'France' }, { '@type': 'AdministrativeArea', name: 'Ardennes (08)' }],
-    hasOfferCatalog: {
-      '@type': 'OfferCatalog',
-      name: 'Formules de sites internet',
-      itemListElement: formules.map((f) => ({
-        '@type': 'Offer',
-        name: 'Site internet ' + f.name,
-        price: f.unique,
-        priceCurrency: 'EUR',
-        description: f.pitch.replace(/’/g, "'"),
-        url: site.url + '/tarifs/#' + f.id,
-      })),
-    },
-    knowsAbout: ['Création de site internet', 'Site vitrine', 'Boutique en ligne', 'Référencement naturel', 'Intelligence artificielle', 'Automatisation', 'Jeux 2D'],
+    hasOfferCatalog: { '@type': 'OfferCatalog', name: 'Sites internet et forfaits', itemListElement: offers },
+    knowsAbout: ['Création de site internet', 'Site vitrine', 'Boutique en ligne', 'Référencement naturel (SEO)', 'Référencement local', 'Intelligence artificielle'],
   };
   const sameAs = Object.values(site.social).filter(Boolean);
   if (sameAs.length) b.sameAs = sameAs;
@@ -79,28 +87,29 @@ function graph(p) {
 }
 
 // ---------------------------------------------------------------- en-tête
-const NAV = ['sites', 'tarifs', 'jeux', 'auto', 'methode', 'fidelite', 'contact'];
+const NAV = ['forfaits', 'espace', 'seo', 'contact'];
 
 function header(currentPath) {
+  const onCreer = currentPath.startsWith(sections.creer.path);
   return `<a class="skip" href="#contenu">Aller au contenu</a>
 <header class="site-header">
   <div class="container header-in">
-    <a class="brand" href="/" aria-label="${site.name}, accueil">${C.logoSvg('lgh')}<span class="brand-text"><strong>${site.name}</strong><small>${site.baseline}</small></span></a>
+    <a class="brand" href="/" aria-label="${site.name}, accueil">${logoMark({ id: 'lgh' })}<span class="brand-text"><strong>${site.name}</strong><small>${site.baseline}</small></span></a>
     <nav class="nav" id="nav" aria-label="Navigation principale">
       <ul class="nav-list">
+        <li class="nav-creer"><a class="nav-link c-${sections.creer.color}" href="${sections.creer.path}"${onCreer ? ' aria-current="page"' : ''}>${icon(sections.creer.icon)}${sections.creer.label}</a></li>
         ${NAV.map((k) => {
           const s = sections[k];
-          const on = currentPath === s.path || currentPath.startsWith(s.path);
-          return `<li><a class="nav-link acc-${s.accent}" href="${s.path}"${on ? ' aria-current="page"' : ''}><span class="nav-dot" aria-hidden="true"></span>${s.label}</a></li>`;
+          const on = currentPath.startsWith(s.path);
+          return `<li><a class="nav-link c-${s.color}" href="${s.path}"${on ? ' aria-current="page"' : ''}>${icon(s.icon)}${s.label}</a></li>`;
         }).join('')}
       </ul>
       <div class="nav-mobile-cta">
-        ${C.btnDevis('btn-primary btn-block')}
         ${C.btnWa('btn-wa btn-block', 'Écrire sur WhatsApp')}
       </div>
     </nav>
     <div class="header-actions">
-      ${C.btnDevis('btn-primary btn-devis')}
+      ${C.btn(sections.creer.path, 'btn-primary btn-sm btn-creer', 'wand-sparkles', 'Créer mon site', onCreer ? ' aria-current="page"' : '')}
       <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -108,12 +117,12 @@ function header(currentPath) {
 }
 
 // ---------------------------------------------------------------- pied de page
-function footer() {
+function footer(p) {
   return `<footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <a class="brand brand-light" href="/">${C.logoSvg('lgf')}<span class="brand-text"><strong>${site.name}</strong><small>${site.baseline}</small></span></a>
-      <p>Des sites internet et des outils créés avec l’IA, vérifiés par un humain. Basé dans les Ardennes, je travaille avec des clients partout en France.</p>
+      <a class="brand" href="/">${logoMark({ id: 'lgf' })}<span class="brand-text"><strong>${site.name}</strong><small>${site.baseline}</small></span></a>
+      <p>Des sites internet simples, rapides et pensés pour Google, créés avec l’IA et vérifiés par moi. Basé dans les Ardennes, pour des clients partout en France.</p>
       <ul class="footer-contact">
         <li><a href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}WhatsApp</a></li>
         <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>
@@ -121,19 +130,19 @@ function footer() {
       </ul>
     </div>
     <div>
-      <h2 class="footer-title">Sites internet</h2>
+      <h2 class="footer-title">Votre site</h2>
       <ul class="footer-links">
-        ${formules.map((f) => `<li><a href="/tarifs/#${f.id}">${C.projetLabel(f)}</a></li>`).join('')}
-        <li><a href="/tarifs/#options">Options</a></li>
-        <li><a href="/creation-site-internet-ardennes/">Création de site dans les Ardennes</a></li>
+        <li><a href="/creer-mon-site/">Créer mon site</a></li>
+        ${types.map((t) => `<li><a href="${C.creerUrl({ type: t.id })}">${t.label}</a></li>`).join('')}
+        <li><a href="/forfaits/">Forfaits ${forfaits.map((f) => f.name).join(', ')}</a></li>
       </ul>
     </div>
     <div>
-      <h2 class="footer-title">Autres services</h2>
+      <h2 class="footer-title">Bon à savoir</h2>
       <ul class="footer-links">
-        <li><a href="/jeux-2d/">Jeux 2D</a></li>
-        <li><a href="/automatisations/">Automatisations</a></li>
-        <li><a href="/automatisations/#initiation">Initiation à l’IA</a></li>
+        <li><a href="/espace-client/">Espace client et IA</a></li>
+        <li><a href="/referencement-seo/">Référencement SEO</a></li>
+        <li><a href="/comparatif-shopify/">Comparatif Shopify</a></li>
         <li><a href="/fidelite/">Fidélité et parrainage</a></li>
       </ul>
     </div>
@@ -142,12 +151,13 @@ function footer() {
       <ul class="footer-links">
         <li><a href="/methode/">Ma méthode avec l’IA</a></li>
         <li><a href="/faq/">Questions fréquentes</a></li>
-        <li><a href="/contact/">Contact et devis</a></li>
+        <li><a href="/creation-site-internet-ardennes/">Création de site dans les Ardennes</a></li>
+        <li><a href="/contact/">Contact</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom"><div class="container footer-bottom-in">
-    <p>© ${new Date().getFullYear()} ${site.name}. Sites internet et IA.</p>
+    <p>© ${new Date().getFullYear()} ${site.name}. Sites internet et SEO.</p>
     <ul>
       <li><a href="/mentions-legales/">Mentions légales</a></li>
       <li><a href="/politique-de-confidentialite/">Confidentialité</a></li>
@@ -156,11 +166,10 @@ function footer() {
     </ul>
   </div></div>
 </footer>
-<nav class="mobile-bar" aria-label="Contact rapide">
+${p.noMobileBar ? '' : `<nav class="mobile-bar" aria-label="Accès rapide">
   <a href="${C.waUrl()}" class="mb-wa" target="_blank" rel="noopener">${icon('whatsapp')}<span>WhatsApp</span></a>
-  <a href="${C.devisUrl()}" class="mb-devis">${icon('file-text')}<span>Devis gratuit</span></a>
-</nav>
-<a class="wa-float" href="${C.waUrl()}" target="_blank" rel="noopener" aria-label="Écrire à ${site.name} sur WhatsApp">${icon('whatsapp')}</a>`;
+  <a href="${sections.creer.path}" class="mb-creer">${icon('wand-sparkles')}<span>Créer mon site</span></a>
+</nav>`}`;
 }
 
 // Typographie dans le texte visible (hors balises, scripts et styles) :
@@ -176,7 +185,7 @@ function page(p) {
   const url = site.url + p.path;
   const ogImage = site.url + '/assets/img/og-image.png';
   const robots = p.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1';
-  const accent = p.section ? sections[p.section].accent : 'amber';
+  const color = p.section ? sections[p.section].color : 'pink';
   return `<!doctype html>
 <html lang="fr">
 <head>
@@ -187,7 +196,7 @@ function page(p) {
 <link rel="canonical" href="${url}">
 <meta name="robots" content="${robots}">
 <meta name="author" content="${esc(site.name)}">
-<meta name="theme-color" content="#15254a">
+<meta name="theme-color" content="#FFF8F2">
 <meta name="format-detection" content="telephone=no">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:type" content="website">
@@ -198,7 +207,7 @@ function page(p) {
 <meta property="og:image" content="${ogImage}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="ALED08, sites internet et IA à petit prix">
+<meta property="og:image:alt" content="ALED08, votre site internet dès 100 €, pensé pour Google">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(p.title)}">
 <meta name="twitter:description" content="${esc(p.description)}">
@@ -212,12 +221,12 @@ function page(p) {
 <script type="application/ld+json">${graph(p)}</script>
 <script>document.documentElement.classList.add('js')</script>
 </head>
-<body class="acc-${accent}${p.bodyClass ? ' ' + p.bodyClass : ''}">
+<body class="c-${color}${p.bodyClass ? ' ' + p.bodyClass : ''}">
 ${smartQuotes(`${header(p.path)}
 <main id="contenu">
 ${p.body}
 </main>
-${footer()}`)}
+${footer(p)}`)}
 <script src="/assets/js/main.js?v=${assetsVersion.js}" defer></script>
 </body>
 </html>

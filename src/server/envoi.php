@@ -36,23 +36,27 @@ if ($t > 0 && (microtime(true) * 1000 - $t) < 3000) { back('/merci/'); }
 $nom       = oneLine(field('nom', 120));
 $email     = oneLine(field('email', 150));
 $telephone = oneLine(field('telephone', 30));
-$projet    = oneLine(field('projet', 80));
+$type      = oneLine(field('type', 80));
+$forfait   = oneLine(field('forfait', 40));
 $paiement  = oneLine(field('paiement', 40));
+$domaine   = oneLine(field('domaine', 120));
 $message   = field('message', 5000);
 $consent   = field('consentement', 5);
 
-if ($nom === '' || $message === '' || $projet === '' || $consent !== 'oui') { back($errorUrl); }
+if ($nom === '' || $message === '' || $type === '' || $consent !== 'oui') { back($errorUrl); }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) { back($errorUrl); }
 if ($telephone !== '' && !preg_match('/^[0-9 +().-]{6,20}$/', $telephone)) { $telephone = 'invalide : ' . $telephone; }
 
-$sujet = 'Demande de devis : ' . $projet . ' (' . $nom . ')';
+$sujet = 'Demande : ' . $type . ($forfait && $forfait !== 'Je ne sais pas encore' ? ', forfait ' . $forfait : '') . ' (' . $nom . ')';
 
 $corps = "Nouvelle demande reçue depuis le site " . SITE . "\n\n"
     . "Nom         : $nom\n"
     . "E-mail      : $email\n"
     . "Téléphone   : " . ($telephone ?: 'non renseigné') . "\n"
-    . "Projet      : $projet\n"
+    . "Site        : $type\n"
+    . "Forfait     : " . ($forfait ?: 'non précisé') . "\n"
     . "Paiement    : " . ($paiement ?: 'non précisé') . "\n"
+    . "Domaine     : " . ($domaine ?: 'non précisé') . "\n"
     . "\nMessage :\n$message\n\n"
     . "---\nConsentement RGPD : oui, le " . date('d/m/Y H:i') . "\n";
 

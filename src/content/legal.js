@@ -1,7 +1,7 @@
 // Mentions légales, politique de confidentialité, conditions générales
 // ⚠️ Les éléments entre crochets proviennent de src/config.js et doivent y être complétés.
 // ⚠️ Modèle à faire relire : il ne remplace pas l'avis d'un professionnel du droit.
-const { site, abonnement, paiement } = require('../config');
+const { site, annuel, paiement, fidelite } = require('../config');
 const L = site.legal;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 
@@ -10,7 +10,7 @@ module.exports = [
     path: '/mentions-legales/',
     name: 'Mentions légales',
     title: 'Mentions légales | ALED08',
-    description: 'Mentions légales du site ALED08, création de sites internet et services autour de l’IA : éditeur, hébergeur, propriété intellectuelle.',
+    description: 'Mentions légales du site ALED08, création de sites internet et référencement SEO : éditeur, hébergeur, propriété intellectuelle et responsabilité.',
     lead: 'Informations sur l’éditeur et l’hébergeur du site, conformément à la loi pour la confiance dans l’économie numérique.',
     updated: '2026-11-14',
     body: `## Éditeur du site
@@ -34,17 +34,17 @@ ${L.host}.
 
 ## Propriété intellectuelle
 
-Les textes, la mise en page, le logo et les éléments graphiques de ce site appartiennent à ${site.name}, sauf mention contraire. Toute reproduction sans accord écrit est interdite.
+Les textes, la mise en page, le logo, les personnages et les éléments graphiques de ce site appartiennent à ${site.name}, sauf mention contraire. Toute reproduction sans accord écrit est interdite.
 
 ## Responsabilité
 
-Les informations du site sont données à titre indicatif et peuvent évoluer. Les prix affichés sont des prix de départ : seul le devis accepté engage les deux parties.`,
+Les informations du site sont données à titre indicatif et peuvent évoluer. Seul le récapitulatif accepté engage les deux parties. Les prix de Shopify cités dans le comparatif sont des prix publics relevés à la date indiquée sur la page.`,
   },
   {
     path: '/politique-de-confidentialite/',
     name: 'Politique de confidentialité',
     title: 'Politique de confidentialité | ALED08',
-    description: 'Comment ALED08 traite les données envoyées par le formulaire de contact : finalité, durée de conservation, vos droits. Aucun cookie publicitaire sur le site.',
+    description: 'Comment ALED08 traite vos données : demande de devis, vérification de nom de domaine, espace client et IA. Aucun cookie publicitaire sur le site.',
     lead: 'Ce que deviennent les informations que vous m’envoyez, et vos droits.',
     updated: '2026-11-14',
     body: `## Responsable du traitement
@@ -53,7 +53,15 @@ ${site.owner}, ${site.name}, ${addr}. Contact : ${site.email}.
 
 ## Données collectées
 
-Quand vous remplissez le formulaire, je reçois votre nom, votre adresse e-mail, votre téléphone si vous le donnez, le type de projet et votre message. Ces informations servent uniquement à vous répondre et à préparer un devis.
+Quand vous envoyez une demande, je reçois votre nom, votre adresse e-mail, votre téléphone si vous le donnez, vos choix (type de site, forfait, options, nom de domaine) et votre message. Ces informations servent uniquement à vous répondre et à préparer votre récapitulatif.
+
+## Vérification d’un nom de domaine
+
+Quand vous vérifiez un nom de domaine, votre navigateur interroge directement le registre officiel de l’extension : l’AFNIC pour .fr, Verisign pour .com et .net, PIR pour .org. Seul le nom recherché leur est transmis. Je ne le reçois pas tant que vous n’envoyez pas votre demande.
+
+## Espace client et IA
+
+Les demandes écrites dans l’espace client (modification du site, publication sur les réseaux) sont traitées par un fournisseur d’intelligence artificielle pour préparer la modification ou le texte. Elles ne servent qu’à cela. Les accès à vos réseaux sociaux restent les vôtres et peuvent être retirés à tout moment.
 
 ## Durée de conservation
 
@@ -62,11 +70,11 @@ Quand vous remplissez le formulaire, je reçois votre nom, votre adresse e-mail,
 
 ## Destinataires
 
-Les données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site et par la messagerie utilisée pour recevoir les demandes. Elles ne sont jamais vendues.
+Les données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site, par la messagerie utilisée pour recevoir les demandes et, pour l’espace client, par les services nécessaires à son fonctionnement (paiement, IA). Elles ne sont jamais vendues.
 
 ## Cookies
 
-Ce site n’utilise aucun cookie publicitaire ni outil de mesure d’audience. Le jeu de démonstration peut garder votre meilleur score dans votre navigateur : cette information reste sur votre appareil.
+Ce site n’utilise aucun cookie publicitaire ni outil de mesure d’audience.
 
 ## Vos droits
 
@@ -76,42 +84,55 @@ Vous pouvez demander l’accès, la correction ou la suppression de vos données
     path: '/conditions-generales/',
     name: 'Conditions générales',
     title: 'Conditions générales de vente | ALED08',
-    description: 'Conditions générales de vente d’ALED08 : devis, paiement unique ou abonnement, délais, propriété du site, résiliation, droit de rétractation.',
-    lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le devis accepté.',
+    description: 'Conditions générales de vente d’ALED08 : création à prix fixe, forfaits au mois ou à l’année, options, espace client, résiliation et droit de rétractation.',
+    lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif accepté.',
     updated: '2026-11-14',
-    body: `## 1. Devis et commande
+    body: `## 1. Commande
 
-Chaque prestation fait l’objet d’un devis gratuit. La commande est ferme quand le devis est accepté par écrit (e-mail ou message) et, pour un paiement unique, quand l’acompte est réglé.
+Chaque projet fait l’objet d’un récapitulatif gratuit : type de site, forfait, options et prix. La commande est ferme quand le récapitulatif est accepté par écrit (e-mail ou message) et l’acompte réglé.
 
-## 2. Prix
+## 2. Création du site
 
-Les prix du site sont des prix de départ. Le prix applicable est celui du devis accepté.${L.tva ? ` ${L.tva}.` : ''}
+Le prix de création est fixe pour le type de site choisi. ${paiement.acompte} % sont payés à la commande, le reste à la mise en ligne. Les pages ou produits en plus sont indiqués dans le récapitulatif.
 
-## 3. Paiement unique
+## 3. Forfaits
 
-Un acompte de ${paiement.acompte} % est demandé à la commande, le solde à la mise en ligne. Une fois le paiement complet, le site et ses fichiers appartiennent au client. L’hébergement et le nom de domaine ne sont pas compris, sauf option choisie.
+Le forfait comprend l’hébergement, le nom de domaine, les mises à jour, les sauvegardes et le référencement décrits sur la page Forfaits. Il démarre à la mise en ligne.
 
-## 4. Abonnement
+- **Au mois** : sans engagement, résiliable à tout moment avec un mois de préavis.
+- **À l’année** : payé d’avance pour douze mois, avec ${annuel.moisOfferts} mois offerts.
 
-L’abonnement comprend la création du site, l’hébergement, le nom de domaine, la maintenance et les petites modifications décrites sur la page Tarifs. Il est conclu pour ${abonnement.engagement} mois, puis se poursuit de mois en mois et peut être arrêté à tout moment avec un mois de préavis. À l’arrêt, le client récupère les fichiers de son site et son nom de domaine.
+Le client peut changer de forfait ou ajouter une option à tout moment. Le nouveau prix s’applique à la période suivante.
 
-## 5. Délais
+## 4. Nom de domaine et fin du forfait
+
+Le nom de domaine est enregistré au nom du client. À la fin du forfait, le client garde son nom de domaine et reçoit une copie de son site (contenus, images et fichiers).
+
+## 5. Espace client et IA
+
+Les modifications demandées dans l’espace client sont préparées par une intelligence artificielle. Le client voit l’aperçu et valide avant la publication. Chaque version est conservée et peut être restaurée. Le client reste responsable des contenus qu’il publie, sur son site comme sur ses réseaux sociaux.
+
+## 6. Référencement
+
+Le référencement est une obligation de moyens : ${site.name} s’engage à appliquer les bonnes pratiques et à suivre les résultats, sans pouvoir garantir une position précise sur Google.
+
+## 7. Délais
 
 Les délais sont donnés à titre indicatif. Ils courent à partir de la réception des éléments nécessaires (textes, photos, accès).
 
-## 6. Contenus fournis par le client
+## 8. Contenus fournis par le client
 
 Le client garantit qu’il a le droit d’utiliser les textes, images et logos qu’il fournit.
 
-## 7. Utilisation de l’IA
+## 9. Fidélité
 
-${site.name} utilise des outils d’intelligence artificielle pour concevoir plus vite. Tout ce qui est livré est relu, testé et corrigé avant la mise en ligne.
+Le parrainage donne ${fidelite.parrainageMois} mois de forfait offert au parrain et au filleul, quand le site du filleul est en ligne. Les avantages ne sont pas convertibles en argent.
 
-## 8. Droit de rétractation
+## 10. Droit de rétractation
 
 Le client particulier dispose de 14 jours après la commande pour se rétracter. S’il demande que le travail commence avant la fin de ce délai, il paie la part déjà réalisée en cas de rétractation.
 
-## 9. Médiation
+## 11. Médiation
 
 En cas de litige, le client peut recourir gratuitement au médiateur de la consommation : ${L.mediator}.`,
   },
