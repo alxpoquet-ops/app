@@ -477,9 +477,11 @@ Le résultat, lui, reste du travail soigné : un site rapide, adapté au télép
 </div></section>
 
 <section class="section"><div class="container container-narrow prose reveal">
-  ${md(`## Mes limites, honnêtement
+  ${md(`## L’IA m’aide à coder, elle ne remplace pas un vrai développeur
 
-Pour un site vitrine ou une petite boutique, je suis rapide et efficace. En revanche, je ne remplace pas un développeur expérimenté sur un projet complexe : une application sur mesure, un logiciel métier, un site avec des milliers de produits, un service qui demande une sécurité renforcée.
+J’utilise l’IA tous les jours : elle m’aide à écrire le code plus vite. Mais elle ne remplace pas un vrai développeur, et je ne prétends pas en être un sur les gros projets.
+
+Pour un site vitrine ou une petite boutique, je suis rapide et efficace. Pour un projet complexe, il faut un développeur expérimenté : une application sur mesure, un logiciel métier, un site avec des milliers de produits, un service qui demande une sécurité renforcée.
 
 Dans ces cas-là, je vous le dis dès le premier échange, et je peux vous orienter vers les bonnes personnes.
 

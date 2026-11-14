@@ -35,9 +35,9 @@ const site = {
   // Informations légales : ⚠️ À REMPLACER
   legal: {
     status: 'Entreprise individuelle', // ex. : Entreprise individuelle (micro-entreprise)
-    siret: '[SIRET à compléter]',
+    siret: 'en cours d’attribution', // ⚠️ À REMPLACER par le numéro dès réception
     tva: '', // ex. : 'TVA non applicable, art. 293 B du CGI' si vous êtes en franchise de TVA
-    mediator: '[Nom et coordonnées du médiateur de la consommation, à compléter]',
+    mediator: 'en cours de désignation, ses coordonnées seront indiquées ici', // ⚠️ À REMPLACER
     mediatorUrl: '',
     host: 'o2switch, Clermont-Ferrand (France), www.o2switch.fr',
     publicationDirector: 'Alexandre Poquet',

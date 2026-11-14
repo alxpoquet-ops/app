@@ -98,6 +98,6 @@ write('envoi.php', php);
 
 // ---------------------------------------------------------------- rapport
 const warn = [];
-if (JSON.stringify(site).includes('à compléter')) warn.push('Informations légales à compléter dans src/config.js (SIRET, médiateur).');
+if (/en cours/.test(site.legal.siret + site.legal.mediator)) warn.push('Informations légales en attente dans src/config.js (SIRET, médiateur).');
 console.log(`✔ ${rendered.length} pages générées dans dist/ (${urls.length} URL dans le sitemap)`);
 if (warn.length) console.log('\n⚠ À faire avant la mise en ligne :\n  - ' + warn.join('\n  - '));
