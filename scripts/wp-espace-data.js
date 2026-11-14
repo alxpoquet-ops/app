@@ -16,7 +16,7 @@ const ICONS = [
   'house', 'message-circle', 'chart-line', 'qr-code', 'heart', 'gift', 'users', 'receipt', 'check', 'send', 'image-plus', 'download',
   'star', 'globe', 'log-out', 'whatsapp', 'pencil', 'circle-user', 'history', 'file-text', 'arrow-right', 'link', 'hourglass', 'sparkles',
   'package', 'credit-card', 'clipboard-check', 'rocket', 'circle-check', 'clock', 'shield-check', 'mail', 'triangle-alert', 'badge-euro',
-  'calendar-check', 'wand-sparkles', 'refresh-cw', 'info',
+  'calendar-check', 'wand-sparkles', 'refresh-cw', 'info', 'user',
 ];
 
 process.stdout.write(
@@ -24,7 +24,7 @@ process.stdout.write(
     name: site.name,
     whatsapp: site.whatsapp,
     email: site.email,
-    forfaits: forfaits.map((f) => ({ id: f.id, name: f.name, month: f.month, quota: f.quota || QUOTA[f.id] || 1, modifs: f.modifs, color: f.color, tagline: f.tagline })),
+    forfaits: forfaits.map((f) => ({ id: f.id, name: f.name, month: f.month, quota: f.quota || QUOTA[f.id] || 1, jetons: f.jetons === undefined ? 1 : f.jetons, modifs: f.modifs, color: f.color, tagline: f.tagline })),
     types: types.map((t) => ({ id: t.id, name: t.name, label: t.label, price: t.price, delai: t.delai })),
     options: options.map((o) => ({ id: o.id, name: o.name, month: o.price.month || 0, once: o.price.once || 0, types: o.types || [] })),
     moisOfferts: annuel.moisOfferts,

@@ -1,7 +1,7 @@
 <?php
 /**
- * ALED08 Espace client : l'administration.
- *  - menu « ALED08 » : Tableau de bord, Commandes, Demandes clients, Réglages (pastille des commandes à traiter)
+ * Alex & Lia Espace client : l'administration.
+ *  - menu « Alex & Lia » : Tableau de bord, Commandes, Demandes clients, Réglages (pastille des commandes à traiter)
  *  - liste des commandes (colonnes), fiche commande (détails, actions par boutons, journal)
  *  - réglages : Stripe (clés, secret du webhook, pied de page des factures, test), e-mail de réception, mise en ligne automatique (OVH, cPanel)
  */
@@ -11,11 +11,11 @@ defined('ABSPATH') || exit;
  *  Menu
  * ========================================================================= */
 add_action('admin_menu', function () {
-    add_menu_page('ALED08', 'ALED08', 'manage_options', 'aled08', 'aled08e_admin_tableau', 'dashicons-smiley', 3);
-    add_submenu_page('aled08', 'Tableau de bord ALED08', 'Tableau de bord', 'manage_options', 'aled08', 'aled08e_admin_tableau');
+    add_menu_page('Alex & Lia', 'Alex & Lia', 'manage_options', 'aled08', 'aled08e_admin_tableau', 'dashicons-smiley', 3);
+    add_submenu_page('aled08', 'Tableau de bord Alex & Lia', 'Tableau de bord', 'manage_options', 'aled08', 'aled08e_admin_tableau');
 }, 9);
 add_action('admin_menu', function () {
-    add_submenu_page('aled08', 'Réglages ALED08', 'Réglages', 'manage_options', 'aled08-reglages', 'aled08e_admin_reglages');
+    add_submenu_page('aled08', 'Réglages Alex & Lia', 'Réglages', 'manage_options', 'aled08-reglages', 'aled08e_admin_reglages');
 }, 11);
 
 /* Commandes qui demandent une action : à encaisser, payées (domaine à réserver, création à lancer) */
@@ -95,7 +95,7 @@ function aled08e_admin_tableau() {
     foreach (aled08e_cmd_liste(['meta_key' => '_aled08_lissage', 'meta_value' => 1]) as $c) if ($c['statut'] !== 'annulee' && !get_post_meta($c['id'], '_aled08_lissage_fini', true) && in_array($c['statut'], aled08e_cmd_statuts_payes(), true)) $lissages[] = $c;
     $stripe = aled08e_stripe_ready();
     $libSt = aled08e_cmd_statuts();
-    echo '<div class="wrap"><h1>ALED08 : tableau de bord</h1>';
+    echo '<div class="wrap"><h1>Alex & Lia : tableau de bord</h1>';
     echo '<p>Tout ce qui demande une action est ici. Les commandes arrivent depuis la page <a href="' . esc_url(home_url('/commander/')) . '" target="_blank">/commander/</a>, les demandes depuis l’espace client.</p>';
     if (!$stripe) echo '<div class="notice notice-warning inline"><p>Le paiement en ligne n’est pas activé : les commandes sont enregistrées « en attente de paiement » et vous envoyez le lien de paiement vous-même. <a href="' . esc_url(admin_url('admin.php?page=aled08-reglages')) . '">Activer Stripe</a>.</p></div>';
     elseif (aled08e_stripe_mode_test()) echo '<div class="notice notice-info inline"><p>Stripe est en <strong>mode test</strong> : aucun vrai paiement n’est encaissé. Remplacez la clé par la clé réelle (sk_live_…) dans les réglages quand tout est vérifié.</p></div>';
@@ -488,7 +488,7 @@ function aled08e_admin_reglages() {
     $constSecret = defined('ALED08_STRIPE_SECRET') && ALED08_STRIPE_SECRET;
     $constWh = defined('ALED08_STRIPE_WEBHOOK_SECRET') && ALED08_STRIPE_WEBHOOK_SECRET;
     $wh = home_url('/wp-json/aled08/v1/stripe');
-    echo '<div class="wrap"><h1>ALED08 : réglages</h1>';
+    echo '<div class="wrap"><h1>Alex & Lia : réglages</h1>';
     echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '"><input type="hidden" name="action" value="aled08e_reglages">' . wp_nonce_field('aled08e_reglages', '_aled08e_reglages', true, false);
 
     echo '<h2>Paiement en ligne (Stripe)</h2>';

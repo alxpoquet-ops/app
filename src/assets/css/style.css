@@ -1134,3 +1134,6 @@ button.app-card:hover { transform: translateY(-2px); }
   .confirm .steps { grid-template-columns: 1fr; }
 }
 .opt-only { font-style: normal; font-size: .72rem; font-weight: 900; padding: 2px 8px; border-radius: 999px; background: var(--pink); color: var(--pink-dd); margin-left: 6px; vertical-align: middle; }
+.jauge + .jauge { margin-top: 8px; }
+.jauge-lia .ico { color: var(--mint-d); }
+.compare-col h3 .monster { width: 48px; height: 48px; flex: none; }

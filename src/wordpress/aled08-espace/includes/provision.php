@@ -1,16 +1,16 @@
 <?php
 /**
- * ALED08 Espace client : la mise en ligne automatique après paiement.
+ * Alex & Lia Espace client : la mise en ligne automatique après paiement.
  *  États d'une commande (dans l'ordre) : attente_paiement → payee → domaine_commande → domaine_attribue → hebergement → ssl → pret → en_ligne
  *  Chaque étape est faite par la tâche « aled08_provision » (toutes les 5 minutes), ou par les boutons de l'admin.
  *  Hébergeur : OVH (API, en principal), cPanel (jeton, en secours) ou manuel (e-mail et boutons).
  *  Registrar : OVH (achat au nom du client), sinon manuel (e-mail de rappel et bouton « Domaine réservé »).
- *  Une étape qui échoue trois fois, ou qui dure trop, passe la commande en « intervention » : ALED08 reçoit l'erreur
+ *  Une étape qui échoue trois fois, ou qui dure trop, passe la commande en « intervention » : Alex & Lia reçoit l'erreur
  *  exacte, le client voit une phrase rassurante. Rien n'est acheté avant le statut « payee ».
  */
 defined('ABSPATH') || exit;
 
-/* Durées d'attente avant de prévenir ALED08 (secondes) */
+/* Durées d'attente avant de prévenir Alex & Lia (secondes) */
 function aled08e_prov_limites() {
     return ['payee' => 2 * HOUR_IN_SECONDS, 'domaine_commande' => DAY_IN_SECONDS, 'domaine_attribue' => 6 * HOUR_IN_SECONDS, 'hebergement' => 6 * HOUR_IN_SECONDS, 'ssl' => DAY_IN_SECONDS];
 }
@@ -36,7 +36,7 @@ function aled08e_hebergeur_libelle($h = null) {
  *  Tâche toutes les 5 minutes
  * ========================================================================= */
 add_filter('cron_schedules', function ($s) {
-    if (!isset($s['aled08_5min'])) $s['aled08_5min'] = ['interval' => 5 * MINUTE_IN_SECONDS, 'display' => 'Toutes les 5 minutes (ALED08)'];
+    if (!isset($s['aled08_5min'])) $s['aled08_5min'] = ['interval' => 5 * MINUTE_IN_SECONDS, 'display' => 'Toutes les 5 minutes (Alex & Lia)'];
     return $s;
 });
 function aled08e_prov_planifier() {
@@ -131,7 +131,7 @@ function aled08e_prov_mdp() { return wp_generate_password(16, false); }
 function aled08e_prov_etape_domaine($c) {
     $cid = $c['id'];
     if (!$c['domaine']) {
-        // pas de nom choisi : ALED08 le choisit avec le client, l'automate attend le bouton « Domaine réservé »
+        // pas de nom choisi : Alex & Lia le choisit avec le client, l'automate attend le bouton « Domaine réservé »
         if (!get_post_meta($cid, '_aled08_prov_mail_domaine', true)) {
             update_post_meta($cid, '_aled08_prov_mail_domaine', 1);
             aled08e_prov_mail_owner($c, 'Commande ' . $c['ref'] . ' : nom de domaine à choisir', 'Le client n’a pas choisi de nom de domaine. Choisissez-le avec lui, renseignez-le dans la fiche, puis cliquez « Domaine réservé » quand il est acheté : ' . aled08e_cmd_admin_url($cid));

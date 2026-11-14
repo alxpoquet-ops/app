@@ -32,9 +32,9 @@ function home() {
   const body = `<section class="hero">
   <div class="container hero-in">
     <div class="hero-text">
-      <p class="kicker">${icon('sparkles')}Sites internet, SEO et IA</p>
+      <p class="kicker">${icon('sparkles')}L’IA pour tout le monde</p>
       <h1>Votre site internet à partir de ${euro(T('une-page').price)}, <mark>tout compris</mark></h1>
-      <p class="hero-lead">Je crée votre site à prix fixe, puis je m’en occupe pour ${euro(base.month)} par mois : hébergement, nom de domaine, sauvegardes, mises à jour et une modification par mois. Le site peut aussi se payer en ${C.lissageTxt} fois sans frais.</p>
+      <p class="hero-lead">Je crée votre site à prix fixe, puis on s’en occupe pour ${euro(base.month)} par mois : Lia, l’IA, fait l’automatique, et moi, Alex, je vérifie et je règle tout. Le site peut aussi se payer en ${C.lissageTxt} fois sans frais.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}${C.btn('/forfaits/', 'btn-light btn-lg', 'heart', 'Voir les forfaits')}</div>
       <ul class="hero-points">
         <li>${icon('check')}Prix de création fixe</li>
@@ -44,7 +44,7 @@ function home() {
     </div>
     <div class="hero-art">
       ${monster('mascotte', { cls: 'hero-mascotte' })}
-      <p class="hero-tag">${icon('sparkles')}Créé avec l’IA, vérifié par moi</p>
+      <p class="hero-tag">${icon('sparkles')}Créé avec Lia, vérifié par Alex</p>
     </div>
   </div>
 </section>
@@ -59,9 +59,9 @@ function home() {
   <h2 class="section-title">Comment ça marche</h2>
   <p class="section-sub">Trois étapes, et rien de technique pour vous.</p>
   ${C.steps([
-    { t: 'Vous commandez en ligne', d: `Vous choisissez votre site et votre forfait. Vous réglez ${paiement.acompte} % du site, ou la première mensualité si vous le lissez.` },
+    { t: 'Vous commandez en ligne', d: `Vous choisissez votre site et votre forfait. Vous réglez ${paiement.acompte} % du site, ou la première mensualité si vous payez en plusieurs fois.` },
     { t: 'Je crée votre site', d: 'Je réserve votre nom de domaine et je vous écris sous 24 heures. Vous voyez l’aperçu, vous me dites ce qui change.' },
-    { t: 'Vous demandez, je m’en occupe', d: 'Un horaire, un prix, une photo : vous m’écrivez depuis votre espace client. Je fais la modification et je vous préviens.' },
+    { t: 'Vous demandez, on s’en occupe', d: 'Un horaire, un prix, une photo : demandez-le depuis votre espace client. Lia le fait tout de suite avec un jeton, ou Alex s’en charge.' },
   ])}
 </div></section>
 
@@ -101,7 +101,7 @@ function home() {
   </a>
   <a class="promo c-butter reveal" href="${sections.comparatif.path}">
     <span class="promo-ico">${icon('scale')}</span>
-    <span class="promo-text"><strong>ALED08 et les autres solutions</strong><span>Agence, freelance, plateforme à faire soi-même : qui fait quoi, et à quel prix.</span></span>
+    <span class="promo-text"><strong>Alex & Lia et les autres solutions</strong><span>Agence, freelance, plateforme à faire soi-même : qui fait quoi, et à quel prix.</span></span>
     <span class="promo-go">${icon('arrow-right')}</span>
   </a>
 </div></section>
@@ -109,8 +109,8 @@ function home() {
 ${C.ctaBand()}`;
   return {
     path: '/',
-    title: 'Création de site internet à partir de 150 €, tout compris | ALED08',
-    description: 'Votre site internet à prix fixe dès 150 €, puis 5 € par mois pour l’hébergement, le nom de domaine et une modification par mois. Je m’occupe de tout.',
+    title: `Création de site internet à partir de ${T('une-page').price} €, tout compris | Alex & Lia`,
+    description: `Votre site internet à prix fixe dès ${T('une-page').price} €, puis ${base.month} € par mois : hébergement, nom de domaine, mises à jour. Lia automatise, Alex vérifie.`,
     crumbs: [HOME],
     body,
     priority: 1,
@@ -146,7 +146,7 @@ ${f.html}`;
     section: 'creer',
     bodyClass: 'page-creer',
     noMobileBar: true,
-    title: 'Créer mon site : prix, nom de domaine et forfait | ALED08',
+    title: 'Créer mon site : prix, nom de domaine et forfait | Alex & Lia',
     description: 'Choisissez votre type de site, vérifiez votre nom de domaine, prenez le forfait Chico, Power ou Titan et vos options. Le prix s’affiche tout de suite.',
     crumbs,
     body,
@@ -162,7 +162,7 @@ function forfaitsPage() {
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: 'Les forfaits : choisissez votre monstre',
-    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power ajoute le SEO et un rapport chaque mois. Titan, pour les boutiques, ajoute une modification par jour ouvré et un article de blog par mois.',
+    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power le met sur un serveur plus rapide, avec des modifications rapides. Titan ajoute le retour de vos ventes et nos outils en illimité.',
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
@@ -213,8 +213,8 @@ ${C.ctaBand({ title: 'Votre monstre est choisi ?', text: 'Composez votre site en
   return {
     path: '/forfaits/',
     section: 'forfaits',
-    title: 'Forfaits Chico, Power et Titan, dès 5 € par mois | ALED08',
-    description: 'Chico à 5 € par mois : hébergement, nom de domaine, sauvegardes, une modification. Power à 20 € : SEO et rapport mensuel. Titan à 40 € : une modification par jour.',
+    title: 'Forfaits Chico, Power et Titan, dès 5 € par mois | Alex & Lia',
+    description: `Chico à ${F('chico').month} € par mois : hébergement, nom de domaine, mises à jour. Power à ${F('power').month} € : serveur rapide. Titan à ${F('titan').month} € : chiffres et outils illimités.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -243,7 +243,7 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
       <li>Réponse sous ${delais.reponse}, ou ${delais.titan} avec Titan</li>
-      <li>Chico : une modification par mois. Power : une par semaine. Titan : une par jour ouvré.</li>
+      <li>Chico : une modification et un jeton Lia par mois. Power : quatre de chaque. Titan : une modification par jour ouvré et des jetons illimités.</li>
     </ul>
   </div>
   ${C.phoneEdit(true)}
@@ -262,7 +262,7 @@ ${C.ctaBand({ title: 'Prêt à vous libérer du technique ?', text: 'Créez votr
   return {
     path: '/nos-outils/',
     section: 'espace',
-    title: 'Nos outils : vos demandes de modification, gérées par moi | ALED08',
+    title: 'Nos outils : vos demandes de modification, gérées par moi | Alex & Lia',
     description: 'Envoyez vos demandes de modification depuis votre espace client, je m’en occupe. Tableau de bord, QR code et lien d’avis gratuits pour les sites hébergés chez moi.',
     crumbs,
     body,
@@ -277,8 +277,8 @@ function seoPage() {
   const f = C.faq(FAQ.seo, 'Vos questions sur le SEO', 'faq-seo');
   const levels = [
     ['chico', 'Les bases', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Site déclaré dans Google Search Console']],
-    ['power', 'Le suivi', ['Tout Chico', 'SEO suivi chaque mois', 'Un rapport de visibilité mensuel']],
-    ['titan', 'Le contenu', ['Tout Power', 'Un article de blog par mois, écrit pour votre SEO', `Réponse sous ${delais.titan}`]],
+    ['power', 'La vitesse', ['Tout Chico', 'Serveur plus rapide : Google aime les sites rapides', 'Modifications rapides pour garder le site à jour']],
+    ['titan', 'Les chiffres', ['Tout Power', 'Le retour de vos ventes et de vos chiffres chaque mois', 'Nos outils en illimité']],
   ];
   const body = `${C.pageHero({
     section: 'seo',
@@ -338,7 +338,7 @@ ${C.ctaBand({ title: 'Être trouvé, ça commence ici', text: 'Créez votre site
   return {
     path: '/referencement-seo/',
     section: 'seo',
-    title: 'Référencement SEO : être trouvé sur Google | ALED08',
+    title: 'Référencement SEO : être trouvé sur Google | Alex & Lia',
     description: 'Bases techniques, référencement local, contenus utiles et suivi chaque mois : comment je rends votre site visible sur Google, sans fausses promesses.',
     crumbs,
     body,
@@ -347,7 +347,7 @@ ${C.ctaBand({ title: 'Être trouvé, ça commence ici', text: 'Créez votre site
   };
 }
 
-// ====================================================================== COMPARATIF : ALED08 ET LES AUTRES SOLUTIONS
+// ====================================================================== COMPARATIF : Alex & Lia ET LES AUTRES SOLUTIONS
 function comparatifPage() {
   const crumbs = crumb('comparatif');
   const f = C.faq(FAQ.comparatif || [], 'Vos questions sur le comparatif', 'faq-comparatif');
@@ -355,17 +355,17 @@ function comparatifPage() {
     ['butter', 'building-2', 'L’agence web', 'Une équipe complète : chef de projet, graphiste, développeur. Idéale pour un gros projet avec un budget à la hauteur. Le prix et le délai dépendent du devis.'],
     ['sky', 'user', 'Le freelance', 'Une personne qui fait tout. La qualité dépend beaucoup de qui vous choisissez. Les modifications et le suivi se font souvent au devis, quand le freelance est disponible.'],
     ['lilac', 'mouse-pointer-click', 'La plateforme à faire soi-même', 'Vous construisez votre site à partir de modèles, pour un abonnement mensuel. C’est vous qui faites le travail, les mises à jour et le référencement.'],
-    ['mint', 'sparkles', 'ALED08', 'Je crée votre site à prix fixe, puis je m’en occupe chaque mois pour un petit forfait. Vous me demandez, je fais. Pour les très gros projets, je vous oriente vers une agence.'],
+    ['mint', 'sparkles', 'Alex & Lia', 'Un prix juste et fixe, des modifications rapides. Lia, l’IA, fait l’automatique avec nos outils. Alex vérifie et règle tout. Pour les très gros projets, je vous oriente vers une agence.'],
   ];
   const body = `${C.pageHero({
     section: 'comparatif',
-    h1: 'ALED08 et les autres solutions',
-    lead: 'Agence web, freelance ou plateforme à faire soi-même : chaque solution a sa place. Voici ce qui change, sans dénigrer personne.',
+    h1: 'Alex & Lia et les autres solutions',
+    lead: 'Agence web, freelance ou plateforme à faire soi-même : chaque solution a sa place. Chez Alex & Lia, deux choses comptent : des modifications rapides et un prix juste.',
     crumbs,
   })}
 <section class="section"><div class="container">
   ${C.comparatifTable()}
-  <p class="source">Les prix des autres solutions dépendent du prestataire et du projet : je ne les chiffre pas ici. Les prix ALED08 sont ceux de la page <a href="/forfaits/">forfaits</a>.</p>
+  <p class="source">Les prix des autres solutions dépendent du prestataire et du projet : je ne les chiffre pas ici. Les prix Alex & Lia sont ceux de la page <a href="/forfaits/">forfaits</a>.</p>
 </div></section>
 
 <section class="section section-soft"><div class="container">
@@ -376,13 +376,17 @@ function comparatifPage() {
 </div></section>
 
 <section class="section"><div class="container container-narrow prose reveal">
-  ${md(`## Pourquoi mes prix sont plus bas
+  ${md(`## Des modifications rapides
+
+Un horaire, un prix, une actualité : Lia, l’IA, le change avec nos outils en quelques minutes, en utilisant un jeton Lia. Pour ce qui demande un regard humain, c’est Alex. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
+
+## Pourquoi mes prix sont plus bas
 
 J’utilise l’IA pour coder plus vite. Elle ne remplace pas un vrai développeur, mais pour un site vitrine ou une petite boutique, elle me fait gagner beaucoup d’heures. Ces heures en moins, c’est un prix en moins pour vous. Le détail est sur la page [ma méthode](/methode/).
 
 ## Ce que vous ne faites pas vous-même
 
-Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, faire les mises à jour, écrire pour Google. Avec ALED08, vous me dites ce que vous voulez, et je le fais. Vous gardez votre temps pour votre activité.
+Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, faire les mises à jour, écrire pour Google. Avec Alex & Lia, vous dites ce que vous voulez : Lia s’occupe de l’automatique, Alex du reste. Vous gardez votre temps pour votre activité.
 
 ## Quand je vous dirai d’aller ailleurs
 
@@ -394,7 +398,7 @@ ${C.ctaBand({ title: 'On regarde votre projet ?', text: 'Composez votre site en 
   return {
     path: sections.comparatif.path,
     section: 'comparatif',
-    title: 'Comparatif : ALED08, agence web, freelance, plateforme | ALED08',
+    title: 'Comparatif : agence web, freelance, plateforme | Alex & Lia',
     description: 'Agence web, freelance ou plateforme à faire soi-même : qui fait le travail, les prix, les délais, les modifications et le SEO, comparés simplement et honnêtement.',
     crumbs,
     body,
@@ -560,7 +564,7 @@ function commanderPage() {
     bodyClass: 'page-commander',
     noindex: true,
     noMobileBar: true,
-    title: 'Votre commande | ALED08',
+    title: 'Votre commande | Alex & Lia',
     description: 'Vérifiez votre site, votre forfait et vos options, donnez vos coordonnées et payez en ligne en toute sécurité. Je réserve votre nom de domaine et je vous écris sous 24 heures.',
     crumbs,
     body,
@@ -589,7 +593,7 @@ function confirmationPage() {
       { t: 'Votre espace client arrive par e-mail', d: 'Vous y suivez votre commande et, ensuite, vos demandes de modification.' },
       { t: 'Votre site est en ligne', d: `Dans le délai de votre type de site : ${delaiList}.` },
     ])}
-    <div class="hero-ctas centered">${C.btn(sections.monespace.path, 'btn-primary btn-lg', 'circle-user', 'Accéder à mon espace')}${C.btnWa('btn-wa btn-lg', 'WhatsApp', 'Bonjour, je viens de passer commande sur ALED08.')}</div>
+    <div class="hero-ctas centered">${C.btn(sections.monespace.path, 'btn-primary btn-lg', 'circle-user', 'Accéder à mon espace')}${C.btnWa('btn-wa btn-lg', 'WhatsApp', 'Bonjour, je viens de passer commande sur Alex & Lia.')}</div>
   </div>
 </div></section>`;
   return {
@@ -597,7 +601,7 @@ function confirmationPage() {
     section: 'confirmation',
     noindex: true,
     noMobileBar: true,
-    title: 'Commande confirmée | ALED08',
+    title: 'Commande confirmée | Alex & Lia',
     description: 'Merci pour votre commande. Je réserve votre nom de domaine, je vous écris sous 24 heures et votre espace client arrive par e-mail.',
     body,
   };
@@ -638,7 +642,7 @@ ${C.ctaBand({ title: 'Quelqu’un a un projet autour de vous ?', text: 'Envoyez-
   return {
     path: '/fidelite/',
     section: 'fidelite',
-    title: 'Fidélité et parrainage : un mois de forfait offert | ALED08',
+    title: 'Fidélité et parrainage : un mois de forfait offert | Alex & Lia',
     description: 'Parrainez un proche : vous recevez chacun un mois de forfait offert. 10 % de remise sur la création d’un deuxième site, et 2 mois offerts à l’année.',
     crumbs,
     body,
@@ -653,8 +657,8 @@ function methodePage() {
   const f = C.faq(FAQ.methode, 'Vos questions sur l’IA', 'faq-ia');
   const body = `${C.pageHero({
     section: 'methode',
-    h1: 'Ma méthode : l’IA pour aller vite, moi pour vérifier',
-    lead: 'Je suis passionné d’intelligence artificielle. Je teste les nouveaux outils dès leur sortie et je m’en sers pour créer plus vite. Voici comment je travaille, sans rien cacher.',
+    h1: 'Ma méthode : Lia automatise, Alex vérifie',
+    lead: 'Alex, c’est moi : je suis passionné d’intelligence artificielle. Lia, c’est notre IA : elle gère les outils et tout ce qui est automatique. Voici qui fait quoi, sans rien cacher.',
     crumbs,
   })}
 <section class="section"><div class="container container-narrow prose reveal">
@@ -669,21 +673,22 @@ Le résultat, lui, reste du travail soigné : un site rapide, adapté au télép
   <h2 class="section-title">Qui fait quoi ?</h2>
   <div class="compare">
     <div class="compare-col reveal">
-      <h3>${icon('bot')}L’IA m’aide à…</h3>
+      <h3>${monster('mascotte')}Lia, l’IA, s’occupe de…</h3>
       <ul class="list-check">
-        <li>écrire le code du site ;</li>
-        <li>proposer des mises en page ;</li>
-        <li>rédiger une première version des textes ;</li>
+        <li>l’automatique : vos changements simples, avec nos outils (un jeton Lia par action) ;</li>
+        <li>écrire le code du site, plus vite ;</li>
+        <li>proposer des mises en page et des premiers textes ;</li>
         <li>repérer des erreurs.</li>
       </ul>
     </div>
     <div class="compare-col is-me reveal">
-      <h3>${icon('user')}Moi, je…</h3>
+      <h3>${icon('user')}Alex, l’humain, …</h3>
       <ul class="list-check">
-        <li>vous écoute et je fais les choix ;</li>
-        <li>relis, corrige et améliore ce qu’elle propose ;</li>
+        <li>vous écoute et fait les choix ;</li>
+        <li>vérifie et paramètre tout ce que fait Lia ;</li>
+        <li>fait les modifications qui demandent un regard humain ;</li>
         <li>teste le site sur plusieurs appareils ;</li>
-        <li>mets en ligne et je reste là après.</li>
+        <li>met en ligne et reste là après.</li>
       </ul>
     </div>
   </div>
@@ -708,7 +713,7 @@ ${C.ctaBand({ title: 'Envie d’essayer ?', text: 'Parlez-moi de votre projet. V
   return {
     path: '/methode/',
     section: 'methode',
-    title: 'Ma méthode : sites créés avec l’IA, vérifiés par moi | ALED08',
+    title: 'Ma méthode : sites créés avec l’IA, vérifiés par moi | Alex & Lia',
     description: 'Comment je crée des sites avec l’IA : ce que fait l’IA, ce que je fais moi-même, pourquoi c’est moins cher, et mes limites, dites honnêtement.',
     crumbs,
     body,
@@ -749,8 +754,12 @@ function monEspacePage() {
       <aside class="app-side">
         <div class="app-user">${monster('mascotte')}<div><strong>Pâtisserie Lila</strong><small>patisserie-lila.fr</small></div></div>
         <div class="jauge" data-jauge>
-          <p class="jauge-head">${icon('pencil')}<span>Modifications restantes ce mois</span><b><span data-jetons>3</span> / <span data-jetons-max>${P.quota}</span></b></p>
+          <p class="jauge-head">${icon('pencil')}<span>Modifications par Alex</span><b><span data-jetons>3</span> / <span data-jetons-max>${P.quota}</span></b></p>
           <span class="jauge-bar"><i data-jauge-fill style="width:75%"></i></span>
+        </div>
+        <div class="jauge jauge-lia">
+          <p class="jauge-head">${icon('sparkles')}<span>Jetons Lia</span><b>${P.jetons === null ? 'illimités' : `${P.jetons} / ${P.jetons}`}</b></p>
+          <span class="jauge-bar"><i style="width:100%"></i></span>
         </div>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           ${tab('accueil', 'house', 'Accueil', true)}
@@ -778,7 +787,7 @@ function monEspacePage() {
           <p class="app-sub">Dernières activités</p>
           <ul class="app-log" data-log>
             <li>${icon('check')}<span>Horaires d’été mis à jour</span><small>il y a 2 jours</small></li>
-            <li>${icon('file-text')}<span>Rapport de visibilité d’octobre</span><small>1er novembre</small></li>
+            <li>${icon('file-text')}<span>Horaires d’hiver changés par Lia</span><small>1er novembre</small></li>
           </ul>
         </div>
 
@@ -866,15 +875,15 @@ ${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : vous m’en
     section: 'monespace',
     noindex: true,
     noMobileBar: true,
-    title: 'Mon espace, la démo | ALED08',
-    description: 'Essayez l’espace client ALED08 : demandes de modification et leur suivi, tableau de bord, QR code, lien d’avis, forfait et factures. Démonstration.',
+    title: 'Mon espace, la démo | Alex & Lia',
+    description: 'Essayez l’espace client Alex & Lia : demandes de modification et leur suivi, tableau de bord, QR code, lien d’avis, forfait et factures. Démonstration.',
     crumbs: DEMO_CRUMBS,
     body,
   };
 }
 
 // ====================================================================== MON ESPACE (connexion)
-// Sous WordPress, le bloc [data-aled-espace] devient le vrai espace client (extension « ALED08 Espace client ») :
+// Sous WordPress, le bloc [data-aled-espace] devient le vrai espace client (extension « Alex & Lia Espace client ») :
 // formulaire de connexion si on n'est pas connecté, tableau de bord sinon.
 function espacePage() {
   const crumbs = [HOME, { name: 'Mon espace', path: '/mon-espace/' }];
@@ -912,8 +921,8 @@ function espacePage() {
     section: 'monespace',
     noindex: true,
     noMobileBar: true,
-    title: 'Mon espace client | ALED08',
-    description: 'Connectez-vous à votre espace client ALED08 : demandes de modification et leur suivi, tableau de bord, QR code, lien d’avis et parrainage.',
+    title: 'Mon espace client | Alex & Lia',
+    description: 'Connectez-vous à votre espace client Alex & Lia : demandes de modification et leur suivi, tableau de bord, QR code, lien d’avis et parrainage.',
     crumbs,
     body,
   };
@@ -973,7 +982,7 @@ function contactPage() {
   return {
     path: '/contact/',
     section: 'contact',
-    title: 'Contact et devis gratuit pour votre site internet | ALED08',
+    title: 'Contact et devis gratuit pour votre site internet | Alex & Lia',
     description: 'Une question, un projet de site, de boutique ou de référencement ? Écrivez-moi par le formulaire, WhatsApp ou e-mail. Réponse rapide, en général dans la journée.',
     crumbs,
     body,
@@ -1010,7 +1019,7 @@ Je suis installé à ${site.address.city}. Que vous soyez à Charleville-Méziè
 - **Site vitrine** : ${euro(T('vitrine').price)} de création, jusqu’à 5 pages.
 - **Boutique en ligne** : ${euro(T('boutique').price)} de création.
 
-Puis ${euro(base.month)} par mois pour l’hébergement, le nom de domaine et une modification par mois (Chico), ${euro(F('power').month)} avec le SEO suivi (Power), ou ${euro(F('titan').month)} pour les boutiques qui bougent, avec une modification par jour ouvré (Titan). Le détail est sur la page [forfaits](/forfaits/).
+Puis ${euro(base.month)} par mois pour l’hébergement, le nom de domaine et les mises à jour (Chico), ${euro(F('power').month)} pour un serveur plus rapide et des modifications rapides (Power), ou ${euro(F('titan').month)} avec le retour de vos ventes et nos outils en illimité (Titan). Le détail est sur la page [forfaits](/forfaits/).
 
 ## Être trouvé par les Ardennais
 
@@ -1020,8 +1029,8 @@ ${f.html}
 ${C.ctaBand({ title: 'Vous êtes dans les Ardennes ?', text: 'Écrivez-moi : on peut se voir pour parler de votre site.' })}`;
   return {
     path: '/creation-site-internet-ardennes/',
-    title: 'Création de site internet dans les Ardennes | ALED08',
-    description: 'Création de site internet pour les artisans, commerces et associations des Ardennes : prix fixe dès 150 €, rencontre possible, référencement local soigné.',
+    title: 'Création de site internet dans les Ardennes | Alex & Lia',
+    description: 'Création de site internet pour les artisans, commerces et associations des Ardennes : prix fixe dès 250 €, rencontre possible, référencement local soigné.',
     crumbs,
     body,
     schema: [f.schema],
@@ -1052,7 +1061,7 @@ function faqPage() {
 ${C.ctaBand()}`;
   return {
     path: '/faq/',
-    title: 'Questions fréquentes : création, forfaits, IA, SEO | ALED08',
+    title: 'Questions fréquentes : création, forfaits, IA, SEO | Alex & Lia',
     description: 'Toutes les réponses sur la création de votre site, la commande en ligne, les forfaits Chico, Power et Titan, nos outils, le référencement et le parrainage.',
     crumbs,
     body,
@@ -1095,8 +1104,8 @@ function planDuSite() {
   ];
   return {
     path: '/plan-du-site/',
-    title: 'Plan du site | ALED08 sites internet et SEO',
-    description: 'Toutes les pages du site ALED08 : créer mon site, forfaits, espace client, SEO, comparatif des solutions, fidélité, contact, questions fréquentes et pages légales.',
+    title: 'Plan du site | Alex & Lia, l’IA pour tout le monde',
+    description: 'Toutes les pages du site Alex & Lia : créer mon site, forfaits, espace client, SEO, comparatif, fidélité, contact, FAQ et pages légales.',
     crumbs,
     body: `${C.pageHero({ h1: 'Plan du site', lead: 'Toutes les pages du site, au même endroit.', crumbs })}
 <section class="section"><div class="container container-narrow"><ul class="sitemap-list">${links.map(([p, l]) => `<li><a href="${p}">${esc(l)}</a></li>`).join('')}</ul></div></section>`,
@@ -1108,8 +1117,8 @@ function merci() {
   return {
     path: '/merci/',
     noindex: true,
-    title: 'Demande envoyée | ALED08',
-    description: 'Votre demande a bien été envoyée à ALED08. Je vous réponds rapidement, en général dans la journée, avec un récapitulatif clair.',
+    title: 'Demande envoyée | Alex & Lia',
+    description: 'Votre demande a bien été envoyée à Alex & Lia. Je vous réponds rapidement, en général dans la journée, avec un récapitulatif clair.',
     body: `${C.pageHero({ h1: 'Merci, votre demande est bien partie !', lead: 'Je vous réponds rapidement, en général dans la journée. Si c’est pressé, écrivez-moi aussi sur WhatsApp.', mascot: 'mascotte' })}
 <section class="section"><div class="container center"><div class="hero-ctas centered">${C.btnWa('btn-wa btn-lg')}${C.btn('/', 'btn-light btn-lg', 'arrow-right', 'Retour à l’accueil')}</div></div></section>`,
   };
@@ -1120,7 +1129,7 @@ function notFound() {
     path: '/404/',
     file: '404.html',
     noindex: true,
-    title: 'Page introuvable | ALED08',
+    title: 'Page introuvable | Alex & Lia',
     description: 'Cette page n’existe pas ou a été déplacée. Retrouvez la création de site, les forfaits, l’espace client et le référencement depuis l’accueil.',
     body: `${C.pageHero({ h1: 'Oups, cette page s’est perdue', lead: 'Elle a peut-être été déplacée. Voici où aller :', mascot: 'triste' })}
 <section class="section"><div class="container"><div class="go-links">${['creer', 'forfaits', 'espace', 'seo']

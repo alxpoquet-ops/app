@@ -1,4 +1,4 @@
-// Petits monstres (SVG dessinés à la main, originaux) : la mascotte d'ALED08
+// Petits monstres (SVG dessinés à la main, originaux) : la mascotte d'Alex & Lia
 // et un monstre par forfait. Chaque fonction renvoie un <svg> autonome.
 //   monster('chico' | 'power' | 'titan' | 'mascotte' | 'triste', { size, cls, title })
 

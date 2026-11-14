@@ -197,11 +197,16 @@ Le client fournit ses textes, photos et informations, ou les prépare avec ${sit
 
 ## 11. Modifications comprises
 
-Le client envoie ses demandes de modification depuis son espace client ou par message. Elles sont réalisées par ${site.name}. Chaque forfait comprend un nombre de modifications :
+Le client envoie ses demandes de modification depuis son espace client ou par message. Il y a deux sortes de modifications :
 
-- ${chico.name} : une par mois.
-- ${power.name} : une par semaine.
-${titan ? `- ${titan.name} : une par jour ouvré, ajout et mise à jour de produits compris.` : ''}
+- **Par Lia** : une automatisation faite avec les outils d’${site.name} (l’IA), qui utilise un jeton Lia.
+- **Par Alex** : une modification faite à la main, vérifiée et paramétrée par Alexandre Poquet.
+
+Chaque forfait comprend, par mois :
+
+- ${chico.name} : une modification par Alex et un jeton Lia.
+- ${power.name} : quatre modifications par Alex et quatre jetons Lia.
+${titan ? `- ${titan.name} : une modification par Alex chaque jour ouvré et des jetons Lia illimités.` : ''}
 
 Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications non utilisées ne se reportent pas. Au-delà du nombre compris, la demande est reportée à la période suivante ou fait l’objet d’un devis, au choix du client. Une page en plus est facturée ${eur(pageEnPlus)} €.
 

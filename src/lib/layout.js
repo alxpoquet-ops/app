@@ -32,7 +32,7 @@ function businessSchema() {
     '@type': 'ProfessionalService',
     '@id': site.url + '/#entreprise',
     name: site.name,
-    slogan: 'Votre site internet à partir de 150 €, tout compris',
+    slogan: `Votre site internet à partir de ${types[0].price} €, tout compris`,
     description:
       'Création de sites internet à prix fixe (une page, site vitrine, boutique en ligne), forfaits mensuels avec hébergement, mises à jour, modifications et référencement SEO. Basé dans les Ardennes, pour des clients partout en France.',
     url: site.url + '/',
@@ -144,7 +144,7 @@ function footer(p) {
         <li><a href="/nos-outils/">Nos outils</a></li>
         <li><a href="/mon-espace/demo/">Essayer la démo</a></li>
         <li><a href="/referencement-seo/">Référencement SEO</a></li>
-        <li><a href="${sections.comparatif.path}">ALED08 et les autres solutions</a></li>
+        <li><a href="${sections.comparatif.path}">Alex & Lia et les autres solutions</a></li>
         <li><a href="/fidelite/">Fidélité et parrainage</a></li>
       </ul>
     </div>
@@ -209,7 +209,7 @@ function page(p) {
 <meta property="og:image" content="${ogImage}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="ALED08, votre site internet à partir de 150 €, tout compris">
+<meta property="og:image:alt" content="Alex & Lia, votre site internet à partir de 250 €, tout compris">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(p.title)}">
 <meta name="twitter:description" content="${esc(p.description)}">

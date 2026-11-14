@@ -1,10 +1,10 @@
 <?php
 /**
- * Plugin Name: ALED08 Espace client
- * Description: L'espace client ALED08 sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
+ * Plugin Name: Alex & Lia Espace client
+ * Description: L'espace client Alex & Lia sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
  * Version: 2.0.0
  * Requires PHP: 7.4
- * Author: ALED08
+ * Author: Alex & Lia
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
@@ -24,7 +24,7 @@ function aled08e_data() {
         $raw = @file_get_contents(__DIR__ . '/data.json');
         $d = $raw ? (json_decode($raw, true) ?: []) : [];
         $d += [
-            'name' => 'ALED08', 'whatsapp' => '', 'email' => '',
+            'name' => 'Alex & Lia', 'whatsapp' => '', 'email' => '',
             'forfaits' => [], 'types' => [], 'options' => [], 'icons' => [], 'monsters' => [],
             'moisOfferts' => 2, 'lissageDurees' => [6, 12], 'acompte' => 30, 'parrainageMois' => 1, 'remiseSecondSite' => 10,
             'delais' => ['reponse' => '48 heures', 'titan' => '24 heures'],
@@ -64,6 +64,8 @@ function aled08e_url($q = []) { return add_query_arg($q, home_url('/mon-espace/'
 function aled08e_meta($uid, $k) { return (string) get_user_meta($uid, 'aled08_' . $k, true); }
 function aled08e_mail_headers($reply = '') {
     $h = ['Content-Type: text/plain; charset=UTF-8'];
+    // « Alex & Lia <x@y> » : le nom affiché contient un caractère spécial, on le met entre guillemets
+    if ($reply && preg_match('/^\s*([^<"]+?)\s*<([^>]+)>\s*$/', $reply, $mm)) $reply = '"' . str_replace('"', '', $mm[1]) . '" <' . $mm[2] . '>';
     if ($reply) $h[] = 'Reply-To: ' . $reply;
     return $h;
 }
@@ -86,10 +88,10 @@ require_once __DIR__ . '/includes/ovh.php';
 require_once __DIR__ . '/includes/provision.php';
 
 /* =========================================================================
- *  Rôle « Client ALED08 » et type de contenu « Demande »
+ *  Rôle « Client Alex & Lia » et type de contenu « Demande »
  * ========================================================================= */
 function aled08e_add_role() {
-    if (!get_role(ALED08E_ROLE)) add_role(ALED08E_ROLE, 'Client ALED08', ['read' => true]);
+    if (!get_role(ALED08E_ROLE)) add_role(ALED08E_ROLE, 'Client Alex & Lia', ['read' => true]);
 }
 register_activation_hook(__FILE__, function () {
     aled08e_add_role();
@@ -167,15 +169,15 @@ add_filter('wp_new_user_notification_email', function ($email, $user) {
     if (preg_match('#(https?://\S*action=rp\S*)#', $email['message'], $m)) $link = rtrim($m[1], '>');
     if (!$link) return $email;
     $ctx = aled08e_compte_contexte();
-    $email['subject'] = 'Votre espace client ALED08';
+    $email['subject'] = 'Votre espace client Alex & Lia';
     $email['message'] = 'Bonjour ' . aled08e_prenom($user) . ",\n\n"
         . ($ctx && !empty($ctx['ref'])
-            ? 'Votre commande ' . $ctx['ref'] . ' est bien enregistrée. Votre espace client ALED08 est prêt : vous y suivez votre commande, puis vous y envoyez vos demandes de modification. Vous y retrouvez aussi votre QR code, votre lien d’avis, votre parrainage et vos factures.' . "\n\n"
-            : 'Votre espace client ALED08 est prêt. Vous y envoyez vos demandes de modification, vous suivez leur avancement, et vous retrouvez votre QR code, votre lien d’avis, votre parrainage et vos factures.' . "\n\n")
+            ? 'Votre commande ' . $ctx['ref'] . ' est bien enregistrée. Votre espace client Alex & Lia est prêt : vous y suivez votre commande, puis vous y envoyez vos demandes de modification. Vous y retrouvez aussi votre QR code, votre lien d’avis, votre parrainage et vos factures.' . "\n\n"
+            : 'Votre espace client Alex & Lia est prêt. Vous y envoyez vos demandes de modification, vous suivez leur avancement, et vous retrouvez votre QR code, votre lien d’avis, votre parrainage et vos factures.' . "\n\n")
         . "Pour choisir votre mot de passe, ouvrez ce lien :\n" . $link . "\n\n"
         . "Ensuite, connectez-vous ici :\n" . aled08e_url() . "\n"
         . 'Votre identifiant : ' . $user->user_login . " (ou votre adresse e-mail)\n\n"
-        . "À bientôt,\nALED08\n";
+        . "À bientôt,\nAlex, et Lia\n";
     $email['headers'] = 'Content-Type: text/plain; charset=UTF-8';
     return $email;
 }, 10, 2);
@@ -184,7 +186,7 @@ add_filter('wp_new_user_notification_email', function ($email, $user) {
 add_action('template_redirect', function () {
     if (!is_page('mon-espace') && !is_page('commande-confirmee')) return;
     nocache_headers();
-    do_action('litespeed_control_set_nocache', 'espace client ALED08');
+    do_action('litespeed_control_set_nocache', 'espace client Alex & Lia');
     if (!defined('DONOTCACHEPAGE')) define('DONOTCACHEPAGE', true);
 }, 0);
 
@@ -234,14 +236,20 @@ add_filter('aled08_parrain_info', function ($info, $code, $nom) {
 /* =========================================================================
  *  Demandes de modification : envoi depuis l'espace
  * ========================================================================= */
-function aled08e_count_month($uid) {
-    $q = new WP_Query([
+/* Demandes du mois : $par = 'alex' (modifications à la main), 'lia' (jetons Lia, automatisations) ou '' (toutes) */
+function aled08e_count_month($uid, $par = 'alex') {
+    $args = [
         'post_type' => ALED08E_CPT, 'author' => $uid, 'post_status' => ['private', 'publish'], 'fields' => 'ids',
-        'posts_per_page' => 50, 'no_found_rows' => true,
+        'posts_per_page' => 200, 'no_found_rows' => true,
         'date_query' => [['year' => (int) wp_date('Y'), 'month' => (int) wp_date('n')]],
-    ]);
+    ];
+    if ($par === 'lia') $args['meta_query'] = [['key' => '_aled08_par', 'value' => 'lia']];
+    if ($par === 'alex') $args['meta_query'] = ['relation' => 'OR', ['key' => '_aled08_par', 'value' => 'alex'], ['key' => '_aled08_par', 'compare' => 'NOT EXISTS']];
+    $q = new WP_Query($args);
     return count($q->posts);
 }
+/* Jetons Lia du forfait (null = illimité) */
+function aled08e_jetons($f) { return array_key_exists('jetons', $f) ? $f['jetons'] : 1; }
 
 add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08e_demande'])) return;
@@ -259,12 +267,17 @@ add_action('template_redirect', function () {
     if (count($today->posts) >= 10) $back('trop');
 
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
-    $over = aled08e_meta($uid, 'illimite') !== '1' && aled08e_count_month($uid) >= (int) $f['quota'];
+    // par Lia (automatique, un jeton) ou par Alex (à la main) ; plus de jeton ce mois-ci : la demande passe à Alex
+    $par = sanitize_key(wp_unslash($_POST['par'] ?? 'alex')) === 'lia' ? 'lia' : 'alex';
+    $jetons = aled08e_jetons($f);
+    if ($par === 'lia' && $jetons !== null && aled08e_count_month($uid, 'lia') >= (int) $jetons) $par = 'alex';
+    $over = $par === 'alex' && aled08e_meta($uid, 'illimite') !== '1' && aled08e_count_month($uid, 'alex') >= (int) $f['quota'];
     $title = mb_strlen($txt) > 70 ? rtrim(mb_substr($txt, 0, 67)) . '…' : $txt;
     $title = trim(preg_replace('/\s+/', ' ', $title));
     $pid = wp_insert_post(['post_type' => ALED08E_CPT, 'post_status' => 'private', 'post_author' => $uid, 'post_title' => $title, 'post_content' => $txt, 'comment_status' => 'closed', 'ping_status' => 'closed'], true);
     if (is_wp_error($pid)) $back('erreur');
     update_post_meta($pid, '_aled08_statut', 'recue');
+    update_post_meta($pid, '_aled08_par', $par);
     if ($over) update_post_meta($pid, '_aled08_hors_forfait', 1);
 
     $photo = '';
@@ -291,6 +304,7 @@ add_action('template_redirect', function () {
         . 'Client   : ' . $u->display_name . ' (' . $u->user_email . ")\n"
         . 'Site     : ' . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\n"
         . 'Forfait  : ' . $f['name'] . ' (réponse sous ' . $delai . ')' . ($over ? ' (modifications du mois déjà utilisées)' : '') . "\n"
+        . 'Par      : ' . ($par === 'lia' ? 'Lia (jeton, automatisation avec vos outils)' : 'Alex (modification à la main)') . "\n"
         . ($photo ? "Photo    : $photo\n" : '')
         . "\nDemande :\n$txt\n\n"
         . 'Suivre et répondre : ' . admin_url('post.php?post=' . $pid . '&action=edit') . "\n";
@@ -322,7 +336,10 @@ function aled08e_client_box($post) {
     $f = aled08e_forfait(aled08e_meta($u->ID, 'forfait'));
     echo '<p><strong>' . esc_html($u->display_name) . '</strong><br><a href="mailto:' . esc_attr($u->user_email) . '">' . esc_html($u->user_email) . '</a></p>';
     if (aled08e_meta($u->ID, 'site')) echo '<p>Site : <a href="' . esc_url(aled08e_meta($u->ID, 'site')) . '" target="_blank" rel="noopener">' . esc_html(aled08e_meta($u->ID, 'site')) . '</a></p>';
-    echo '<p>Forfait : ' . esc_html($f['name']) . ' · ' . (int) aled08e_count_month($u->ID) . ' / ' . (int) $f['quota'] . ' ce mois-ci</p>';
+    $jt = aled08e_jetons($f);
+    echo '<p>Forfait : ' . esc_html($f['name']) . ' · Alex ' . (int) aled08e_count_month($u->ID, 'alex') . ' / ' . (int) $f['quota'] . ' · Lia ' . (int) aled08e_count_month($u->ID, 'lia') . ' / ' . ($jt === null ? 'illimité' : (int) $jt) . ' ce mois-ci</p>';
+    $par = get_post_meta($post->ID, '_aled08_par', true) === 'lia' ? 'Lia (jeton, automatisation)' : 'Alex (à la main)';
+    echo '<p><strong>Demandée à : ' . esc_html($par) . '</strong></p>';
     echo '<p><a href="' . esc_url(get_edit_user_link($u->ID)) . '#aled08e">Fiche client</a></p>';
     if (has_post_thumbnail($post)) echo '<p>' . get_the_post_thumbnail($post, 'medium', ['style' => 'max-width:100%;height:auto;border-radius:8px']) . '</p>';
 }
@@ -343,8 +360,8 @@ add_action('save_post_' . ALED08E_CPT, function ($pid, $post) {
                 . "Votre demande est faite et en ligne :\n« " . $post->post_title . " »\n\n"
                 . ($rep ? $rep . "\n\n" : '')
                 . "Vous retrouvez le suivi de vos demandes dans votre espace client :\n" . aled08e_url() . "#demandes\n\n"
-                . "À bientôt,\nALED08\n";
-            wp_mail($u->user_email, 'Votre modification est en ligne', $corps, aled08e_mail_headers('ALED08 <' . aled08e_to() . '>'));
+                . "À bientôt,\nAlex, et Lia\n";
+            wp_mail($u->user_email, 'Votre modification est en ligne', $corps, aled08e_mail_headers('Alex & Lia <' . aled08e_to() . '>'));
         }
     }
 }, 10, 2);
@@ -355,9 +372,10 @@ add_filter('wp_insert_post_data', function ($data) {
 });
 
 add_filter('manage_' . ALED08E_CPT . '_posts_columns', function ($c) {
-    return ['cb' => $c['cb'] ?? '', 'title' => 'Demande', 'aled08_client' => 'Client', 'aled08_statut' => 'Statut', 'date' => 'Date'];
+    return ['cb' => $c['cb'] ?? '', 'title' => 'Demande', 'aled08_client' => 'Client', 'aled08_par' => 'Par', 'aled08_statut' => 'Statut', 'date' => 'Date'];
 });
 add_action('manage_' . ALED08E_CPT . '_posts_custom_column', function ($col, $pid) {
+    if ($col === 'aled08_par') echo get_post_meta($pid, '_aled08_par', true) === 'lia' ? '<strong>Lia</strong> (jeton)' : 'Alex';
     if ($col === 'aled08_client') {
         $u = get_userdata(get_post_field('post_author', $pid));
         echo $u ? esc_html($u->display_name) : '';
@@ -404,7 +422,7 @@ function aled08e_fields() {
 function aled08e_profile_fields($user) {
     if (!current_user_can('edit_users')) return;
     $uid = is_object($user) ? $user->ID : 0;
-    echo '<h2 id="aled08e">Espace client ALED08</h2><p>Ces informations s’affichent dans l’espace client (page <a href="' . esc_url(aled08e_url()) . '" target="_blank">Mon espace</a>).</p>';
+    echo '<h2 id="aled08e">Espace client Alex & Lia</h2><p>Ces informations s’affichent dans l’espace client (page <a href="' . esc_url(aled08e_url()) . '" target="_blank">Mon espace</a>).</p>';
     if ($uid) {
         $abo = aled08e_meta($uid, 'abonnement') ?: 'none';
         $libAbo = ['active' => 'actif', 'past_due' => 'en retard de paiement', 'canceled' => 'arrêté', 'none' => 'aucun abonnement Stripe'];
@@ -479,7 +497,7 @@ function aled08e_profile_save($uid) {
             $m = (int) aled08e_data()['parrainageMois'];
             $corps = 'Bonjour ' . aled08e_prenom($p) . ",\n\n"
                 . 'Bonne nouvelle : ' . aled08e_prenom($u) . ' a créé son site grâce à vous. Vous recevez ' . aled08e_mois_txt($m) . " de forfait offert, merci !\n\n"
-                . "Vos parrainages sont dans votre espace client :\n" . aled08e_url() . "#parrainage\n\nÀ bientôt,\nALED08\n";
+                . "Vos parrainages sont dans votre espace client :\n" . aled08e_url() . "#parrainage\n\nÀ bientôt,\nAlex, et Lia\n";
             wp_mail($p->user_email, 'Votre parrainage : un mois offert', $corps, aled08e_mail_headers());
         }
     }
@@ -489,7 +507,7 @@ add_action('edit_user_profile_update', 'aled08e_profile_save');
 add_action('user_register', 'aled08e_profile_save');
 
 /* Colonne « Forfait » dans la liste des utilisateurs */
-add_filter('manage_users_columns', function ($c) { $c['aled08_forfait'] = 'Forfait ALED08'; return $c; });
+add_filter('manage_users_columns', function ($c) { $c['aled08_forfait'] = 'Forfait Alex & Lia'; return $c; });
 add_filter('manage_users_custom_column', function ($out, $col, $uid) {
     if ($col !== 'aled08_forfait') return $out;
     $u = get_userdata($uid);
@@ -644,7 +662,10 @@ function aled08e_dashboard() {
     $site = aled08e_meta($uid, 'site');
     $host = $site ? preg_replace('#^www\.#', '', (string) wp_parse_url($site, PHP_URL_HOST)) : '';
     $prenom = aled08e_prenom($u);
-    $used = aled08e_count_month($uid);
+    $used = aled08e_count_month($uid, 'alex');
+    $jetonsMax = aled08e_jetons($f);
+    $jetonsUtil = aled08e_count_month($uid, 'lia');
+    $jetonsLeft = $jetonsMax === null ? null : max(0, (int) $jetonsMax - $jetonsUtil);
     $illimite = aled08e_meta($uid, 'illimite') === '1';
     $quota = $illimite ? max(99, $used + 1) : (int) $f['quota'];
     $left = max(0, $quota - $used);
@@ -680,7 +701,7 @@ function aled08e_dashboard() {
         $rep = get_post_meta($p->ID, '_aled08_reponse', true);
         $thumb = $full && has_post_thumbnail($p) ? get_the_post_thumbnail($p, 'thumbnail', ['class' => 'req-thumb', 'alt' => '']) : '';
         $text = $full ? $p->post_content : $p->post_title;
-        return '<li>' . $thumb . '<span><strong>' . nl2br(esc_html(mb_strlen($text) > 220 ? mb_substr($text, 0, 217) . '…' : $text)) . '</strong><small>envoyée le ' . esc_html(aled08e_date($p->post_date)) . '</small>'
+        return '<li>' . $thumb . '<span><strong>' . nl2br(esc_html(mb_strlen($text) > 220 ? mb_substr($text, 0, 217) . '…' : $text)) . '</strong><small>' . (get_post_meta($p->ID, '_aled08_par', true) === 'lia' ? 'par Lia, ' : 'par Alex, ') . 'envoyée le ' . esc_html(aled08e_date($p->post_date)) . '</small>'
             . ($full && $rep ? '<span class="req-reply">' . nl2br(esc_html($rep)) . '</span>' : '') . '</span><em class="st ' . esc_attr($st[$s][1]) . '">' . esc_html($st[$s][0]) . '</em></li>';
     };
 
@@ -703,7 +724,7 @@ function aled08e_dashboard() {
     $total = $price;
     foreach ($optsMois as $o) $total += $annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month'];
     $wa = $D['whatsapp'] ? 'https://wa.me/' . rawurlencode($D['whatsapp']) . '?text=' . rawurlencode('Bonjour, je voudrais changer mon forfait ou mes options (' . $u->display_name . ').') : '';
-    $share = 'https://wa.me/?text=' . rawurlencode('Je te recommande ALED08 pour ton site internet. Avec mon lien, on a chacun un mois de forfait offert : ' . $plink);
+    $share = 'https://wa.me/?text=' . rawurlencode('Je te recommande Alex & Lia pour ton site internet. Avec mon lien, on a chacun un mois de forfait offert : ' . $plink);
 
     $stats = [];
     foreach (['visites' => 'visites', 'google' => 'apparitions sur Google', 'appels' => 'appels ou contacts', 'ventes' => 'ventes'] as $k => $lab) {
@@ -748,6 +769,10 @@ function aled08e_dashboard() {
         <div class="jauge<?php echo $left <= 0 ? ' is-low' : ''; ?>">
           <p class="jauge-head"><?php echo aled08e_icon('pencil'); // phpcs:ignore ?><span><?php echo $illimite ? 'Modifications ce mois' : 'Modifications restantes ce mois'; ?></span><b><?php echo $illimite ? 'illimitées' : (int) $left . ' / ' . (int) $quota; ?></b></p>
           <span class="jauge-bar"><i style="width:<?php echo $quota ? (int) round(min(100, $left / $quota * 100)) : 0; ?>%"></i></span>
+        </div>
+        <div class="jauge jauge-lia<?php echo $jetonsLeft === 0 ? ' is-low' : ''; ?>">
+          <p class="jauge-head"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Jetons Lia ce mois</span><b><?php echo $jetonsMax === null ? 'illimités' : (int) $jetonsLeft . ' / ' . (int) $jetonsMax; ?></b></p>
+          <span class="jauge-bar"><i style="width:<?php echo $jetonsMax === null ? 100 : ($jetonsMax ? (int) round(min(100, $jetonsLeft / $jetonsMax * 100)) : 0); ?>%"></i></span>
         </div>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           <?php
@@ -804,6 +829,10 @@ function aled08e_dashboard() {
           <form class="req-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(aled08e_url()); ?>" data-req-real>
             <input type="hidden" name="aled08e_demande" value="1">
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>
+            <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend>
+              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $jetonsLeft === 0 ? ' disabled' : ' checked'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, tout de suite</strong><small>Automatique, avec nos outils. Un jeton Lia<?php echo $jetonsMax === null ? ' (illimités)' : ' (' . (int) $jetonsLeft . ' restant' . ($jetonsLeft > 1 ? 's' : '') . ')'; ?>.</small></span></label>
+              <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $jetonsLeft === 0 ? ' checked' : ''; ?>><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Pour ce qui demande un regard humain. <?php echo $illimite ? 'Illimité.' : (int) $left . ' restante' . ($left > 1 ? 's' : '') . ' ce mois.'; ?></small></span></label>
+            </fieldset>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" name="demande" rows="4" maxlength="4000" required placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" name="photo" accept="image/*" class="sr-only" data-req-file><?php echo aled08e_icon('image-plus'); // phpcs:ignore ?><span data-req-file-name>Ajouter une photo (facultatif)</span></label>
             <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Envoyer ma demande</span></button>

@@ -241,7 +241,7 @@ function configurator() {
       ${body}
     </fieldset>`;
   const typeBody = `${typeChoices()}<p class="b-note">${icon('info')}Besoin de plus de pages ? ${euro(pageEnPlus)} la page.</p>`;
-  const forfaitBody = `${forfaitChoices()}<p class="b-note">${icon('info')}Chico : sauvegardes, mises à jour, nom de domaine. Power ajoute le SEO et un rapport mensuel. Titan ajoute une modification par jour ouvré et un article de blog par mois. <a href="/forfaits/">Comparer</a></p>`;
+  const forfaitBody = `${forfaitChoices()}<p class="b-note">${icon('info')}Chico : hébergement, nom de domaine, mises à jour, une modification et un jeton Lia. Power : serveur plus rapide, support et modifications rapides, quatre de chaque. Titan : retour de vos ventes et outils illimités. <a href="/forfaits/">Comparer</a></p>`;
   const payChoices = `<p class="b-label">Le site</p>
       <div class="b-seg" role="radiogroup" aria-label="Paiement du site">
         <label><input type="radio" name="b-lisse" value="non" checked><span>En une fois</span></label>
@@ -332,23 +332,24 @@ function statsCard() {
 </div>`;
 }
 
-// ---------------------------------------------------------------- comparatif : ALED08 et les autres solutions
+// ---------------------------------------------------------------- comparatif : Alex & Lia et les autres solutions
 // Sans chiffres pour les autres solutions (fourchettes sourcées ajoutées plus tard), sans nommer de marque.
 function comparatifTable() {
-  const cols = ['ALED08', 'Agence web', 'Freelance', 'Plateforme à faire soi-même'];
+  const cols = ['Alex & Lia', 'Agence web', 'Freelance', 'Plateforme à faire soi-même'];
   const prixCreation = `${euro(types[0].price)} à ${euro(types[types.length - 1].price)}, prix fixe`;
   const prixMois = forfaits.map((f) => euro(f.month)).join(', ') + ' par mois, selon le forfait';
   const rows = [
-    ['Qui fait le travail', 'Moi, avec l’IA pour aller vite. Je vérifie tout.', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
+    ['Qui fait le travail', 'Lia, l’IA, pour l’automatique. Alex, un humain, vérifie et règle tout.', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
     ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
     ['Prix chaque mois', prixMois, 'Contrat de maintenance, sur devis', 'Selon le prestataire, souvent en option', 'Abonnement mensuel, plus les applications en option'],
     ['Délai', `${types[0].delai} pour une page, ${types[1].delai} pour un site vitrine, ${types[2].delai} pour une boutique`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
-    ['Modifications', 'Comprises dans le forfait, je les fais', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
-    ['SEO', 'Bases comprises. Suivi mensuel avec Power et Titan', 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
+    ['Modifications', 'Rapides et comprises : par Lia (jetons) ou par Alex', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
+    ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
+    ['SEO', 'Bases comprises sur chaque site. Serveur rapide avec Power', 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
     ['Engagement', `Aucun. Seulement le temps du paiement si le site est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
-  return `<div class="cmp cmp-4 reveal" role="table" aria-label="ALED08 comparé à une agence web, un freelance et une plateforme à faire soi-même">
+  return `<div class="cmp cmp-4 reveal" role="table" aria-label="Alex & Lia comparé à une agence web, un freelance et une plateforme à faire soi-même">
   <div class="cmp-head" role="row"><span role="columnheader"></span>${cols.map((c, i) => `<span role="columnheader" class="cmp-cell${i === 0 ? ' cmp-me' : ''}">${i === 0 ? monster('mascotte') : ''}${esc(c)}</span>`).join('')}</div>
   ${rows.map(([l, ...cells]) => `<div class="cmp-row" role="row"><span class="cmp-label" role="rowheader">${esc(l)}</span>${cells.map(cell).join('')}</div>`).join('')}
 </div>`;

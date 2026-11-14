@@ -189,10 +189,10 @@ def chrome():
 
 # ------------------------------------------------------------------ fichiers PHP du thème
 STYLE_CSS = """/*
-Theme Name: ALED08
+Theme Name: Alex & Lia
 Theme URI: https://www.aled08.fr
-Author: ALED08
-Description: Thème sur mesure d'ALED08, sites internet et SEO. Styles, en-tête, pied de page, formulaire de contact.
+Author: Alex & Lia
+Description: Thème sur mesure d'Alex & Lia, l'IA pour tout le monde. Styles, en-tête, pied de page, formulaire de contact.
 Version: 2.0.0
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -259,7 +259,7 @@ function aled08_seo_head() {
         $img = get_the_post_thumbnail_url($id, 'large') ?: get_template_directory_uri() . '/assets/img/og-image.png';
         echo '<meta property="og:locale" content="fr_FR">' . "\n";
         echo '<meta property="og:type" content="' . (is_singular('post') ? 'article' : 'website') . "\">\n";
-        echo '<meta property="og:site_name" content="ALED08">' . "\n";
+        echo '<meta property="og:site_name" content="Alex &amp; Lia">' . "\n";
         echo '<meta property="og:title" content="' . esc_attr($title) . "\">\n";
         if ($desc) echo '<meta property="og:description" content="' . esc_attr(wp_strip_all_tags($desc)) . "\">\n";
         echo '<meta property="og:url" content="' . esc_url(get_permalink($id)) . "\">\n";
@@ -466,7 +466,7 @@ get_footer();
 
 IMPORT_PHP = r"""<?php
 /**
- * Plugin Name: ALED08 : import du site
+ * Plugin Name: Alex & Lia : import du site
  * Description: Crée en une fois les pages du site ALED08, retire les pages de l'ancien site et règle WordPress. À désactiver et supprimer après usage.
  * Version: 2.0.0
  * Requires PHP: 7.4
@@ -535,8 +535,8 @@ function aled08_import_run() {
         if ($p && !in_array($p->ID, $ids, true)) wp_delete_post($p->ID, true);
     }
 
-    update_option('blogname', 'ALED08');
-    update_option('blogdescription', 'Sites internet & SEO');
+    update_option('blogname', 'Alex & Lia');
+    update_option('blogdescription', 'L’IA pour tout le monde');
     update_option('timezone_string', 'Europe/Paris');
     update_option('date_format', 'j F Y');
     update_option('time_format', 'H:i');

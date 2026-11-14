@@ -11,9 +11,11 @@
 const site = {
   // Domaine définitif (sans slash final). Sert aux balises canonical, au sitemap, à l'Open Graph.
   url: 'https://www.aled08.fr',
-  name: 'ALED08',
-  baseline: 'Sites internet & SEO',
-  legalName: 'ALED08, Alexandre Poquet', // raison sociale / nom commercial
+  name: 'Alex & Lia',
+  baseline: 'L’IA pour tout le monde',
+  legalName: 'Alex & Lia, nom commercial d’Alexandre Poquet EI', // raison sociale / nom commercial
+  // Le jour où le domaine alexetlia.fr est pris : changer url ci-dessus et rediriger aled08.fr.
+  futurDomaine: 'alexetlia.fr',
   owner: 'Alexandre Poquet',
 
   phoneDisplay: '06 02 46 12 58',
@@ -85,7 +87,7 @@ const types = [
     label: 'Site une page',
     color: 'sky',
     icon: 'layout-template',
-    price: 150,
+    price: 250,
     delai: '3 à 5 jours',
     pitch: 'Tout sur une seule page qu’on fait défiler : qui vous êtes, ce que vous faites, comment vous joindre.',
     pourQui: 'Indépendants, artisans, associations, événements.',
@@ -97,7 +99,7 @@ const types = [
     label: 'Site vitrine',
     color: 'butter',
     icon: 'layout-grid',
-    price: 250,
+    price: 350,
     delai: '1 à 2 semaines',
     pitch: 'Un menu en haut et plusieurs pages : accueil, services, tarifs, contact.',
     pourQui: 'Entreprises, commerces, professions libérales.',
@@ -109,7 +111,7 @@ const types = [
     label: 'Boutique en ligne',
     color: 'pink',
     icon: 'shopping-bag',
-    price: 450,
+    price: 500,
     delai: '2 à 3 semaines',
     pitch: 'Vos produits en ligne, le paiement par carte et le suivi des commandes.',
     pourQui: 'Créateurs, commerçants, producteurs.',
@@ -121,6 +123,10 @@ const pageEnPlus = 40; // € par page au-delà de ce que prévoit le type de si
 // ---------------------------------------------------------------- forfaits mensuels (un petit monstre chacun)
 // En paiement annuel : 2 mois offerts sur le forfait.
 // quota : nombre de demandes de modification par mois dans l'espace client.
+// Deux façons de modifier un site :
+//  - par Lia (l'IA) : une automatisation faite avec nos outils, qui consomme un jeton Lia ;
+//  - par Alex (l'humain) : une modification faite, vérifiée et paramétrée à la main, comptée dans les modifications du mois.
+// jetons : jetons Lia par mois (null = illimité) ; quota : modifications par Alex par mois.
 const forfaits = [
   {
     id: 'chico',
@@ -128,34 +134,37 @@ const forfaits = [
     color: 'pink',
     month: 5,
     quota: 1,
+    jetons: 1,
     modifs: 'Une modification par mois',
     tagline: 'L’essentiel',
-    pitch: 'Votre site en ligne, protégé et à jour. Une modification par mois, faite par moi.',
-    features: ['Hébergement et nom de domaine', 'Sauvegardes et mises à jour', 'Une modification par mois, sur simple demande', 'Votre espace client et nos outils, gratuits'],
+    pitch: 'Votre site en ligne, sûr et à jour, sur un serveur de qualité. Une modification par Alex et un jeton Lia chaque mois.',
+    features: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié et renouvelé', 'Mises à jour des extensions', 'Formulaire de contact et HTTPS', 'Gestion du flux de visites', 'Une modification par Alex et un jeton Lia par mois'],
   },
   {
     id: 'power',
     name: 'Power',
     color: 'lilac',
-    month: 20,
+    month: 15,
     quota: 4,
-    modifs: 'Une modification par semaine',
+    jetons: 4,
+    modifs: 'Quatre modifications par mois',
     conseil: true,
-    tagline: 'Pour être trouvé',
-    pitch: 'Tout Chico, plus le SEO de votre site et un rapport clair chaque mois.',
-    features: ['Tout ce que comprend Chico', 'SEO de votre site, suivi chaque mois', 'Rapport mensuel : visiteurs, ventes, positions sur Google', 'Une modification par semaine'],
+    tagline: 'Plus rapide',
+    pitch: 'Tout Chico, sur un serveur plus rapide pour accueillir plus de visites. Support et modifications rapides.',
+    features: ['Tout ce que comprend Chico', 'Serveur plus rapide, pour plus de visites', 'Support rapide', 'Modifications rapides', 'Quatre modifications par Alex et quatre jetons Lia par mois'],
   },
   {
     id: 'titan',
     name: 'Titan',
     color: 'peach',
-    month: 40,
+    month: 30,
     quota: 20,
+    jetons: null,
     modifs: 'Une modification par jour ouvré',
     conseil: false,
-    tagline: 'Pour les boutiques',
-    pitch: 'Tout Power, plus une modification par jour ouvré, un article de blog par mois et une réponse sous 24 heures.',
-    features: ['Tout ce que comprend Power', 'Une modification par jour ouvré (produits compris)', 'Un article de blog par mois pour votre SEO', 'Réponse sous 24 heures'],
+    tagline: 'Le meilleur',
+    pitch: 'Tout Power, plus le retour de vos ventes et de vos chiffres chaque mois, et nos outils en illimité.',
+    features: ['Tout ce que comprend Power', 'Retour de vos ventes et de vos chiffres chaque mois', 'Accès illimité à nos outils : jetons Lia illimités', 'Une modification par Alex chaque jour ouvré'],
   },
 ];
 const annuel = { moisOfferts: 2 };

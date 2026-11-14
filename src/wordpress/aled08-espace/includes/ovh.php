@@ -1,6 +1,6 @@
 <?php
 /**
- * ALED08 Espace client : OVHcloud (API v1, sans SDK).
+ * Alex & Lia Espace client : OVHcloud (API v1, sans SDK).
  *  - signature des requêtes (clés dans wp-config.php ou dans les réglages, jamais affichées)
  *  - achat d'un nom de domaine au nom du client (panier, contact titulaire, configurations, essai à blanc, commande)
  *  - suivi de la commande OVH, serveurs DNS, renouvellement automatique
@@ -261,7 +261,7 @@ function aled08e_ovh_email_creer($dom, $compte, $mdp) {
     if (is_wp_error($svc)) return new WP_Error('aled08_ovh', 'Pas de service e-mail OVH pour ' . $dom . ' : ' . $svc->get_error_message());
     $deja = aled08e_ovh_request('GET', '/email/domain/' . rawurlencode($dom) . '/account/' . rawurlencode($compte), null, true);
     if (!is_wp_error($deja)) return ['deja' => true];
-    $r = aled08e_ovh_request('POST', '/email/domain/' . rawurlencode($dom) . '/account', ['accountName' => $compte, 'password' => $mdp, 'size' => 5000000000, 'description' => 'Adresse pro créée par ALED08']);
+    $r = aled08e_ovh_request('POST', '/email/domain/' . rawurlencode($dom) . '/account', ['accountName' => $compte, 'password' => $mdp, 'size' => 5000000000, 'description' => 'Adresse pro créée par Alex & Lia']);
     if (is_wp_error($r)) return $r;
     return ['deja' => false, 'tache' => (int) ($r['id'] ?? 0)];
 }
