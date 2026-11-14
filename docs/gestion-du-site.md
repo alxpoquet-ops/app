@@ -199,7 +199,9 @@ Comparaison relevée le 14 novembre 2026 (prix HT) :
 | Pour 10 sites | environ 22 € par mois | environ 16,50 € par mois |
 | Pour 30 sites | environ 35 € par mois | environ 29,50 € par mois sur Pro (bases partagées), 39,50 € sur Performance |
 
-Décision prise : tout chez OVH, en douceur.
+Décision prise (14 novembre 2026) : **noms de domaine achetés automatiquement chez OVH, sites hébergés chez o2switch** (sites illimités). Dans les réglages : clés OVH renseignées, nom de l'hébergement OVH laissé vide, hébergeur « Automatique ». L'automate achète le domaine avec les DNS o2switch (ns1/ns2.o2switch.net), puis vous envoie un e-mail : ajoutez le domaine dans cPanel (2 minutes), cliquez « Domaine ajouté sur l'hébergement », et la suite (certificat HTTPS, « tout est prêt ») est automatique. Le jour où o2switch rétablit les jetons d'API, renseignez-le (section suivante) et cette étape devient automatique aussi.
+
+Si un jour vous préférez tout héberger chez OVH, la marche à suivre est ci-dessous.
 
 1. Commandez l'hébergement Pro, créez les clés (point 4), testez l'automate sur un domaine d'essai.
 2. Les nouveaux clients partent chez OVH dès que l'automate tourne.

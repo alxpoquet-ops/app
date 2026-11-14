@@ -155,7 +155,8 @@ function aled08e_prov_etape_domaine($c) {
         aled08e_cmd_set_domaine($cid, 'reserve');
         return aled08e_prov_set($cid, 'domaine_attribue', 'déjà dans le compte OVH') ? 'ok' : 'erreur';
     }
-    $dns = aled08e_hebergeur() === 'cpanel' ? 'ns1.o2switch.net;ns2.o2switch.net' : '';
+    // hébergement o2switch (cPanel ou manuel) : le domaine acheté chez OVH pointe tout de suite vers o2switch
+    $dns = aled08e_hebergeur() !== 'ovh' ? 'ns1.o2switch.net;ns2.o2switch.net' : '';
     $valide = (bool) get_post_meta($cid, '_aled08_ovh_valide', true);
     $r = aled08e_ovh_commander_domaine($c, $valide, $dns);
     if (is_wp_error($r)) return $r;
