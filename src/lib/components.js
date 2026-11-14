@@ -83,7 +83,7 @@ function formuleCards({ link = true } = {}) {
   return `<div class="formules" data-mode="unique">${formules
     .map(
       (f) => `<article class="formule acc-${f.accent}${f.popular ? ' is-popular' : ''} reveal" id="${f.id}">
-    ${f.popular ? '<p class="formule-badge">Le plus choisi</p>' : ''}
+    ${f.popular ? '<p class="formule-badge">Conseillé</p>' : ''}
     <div class="formule-head"><span class="formule-ico">${icon(f.icon)}</span><h3>${esc(f.name)}</h3></div>
     <p class="formule-pitch">${inline(f.pitch)}</p>
     <div class="formule-price">
