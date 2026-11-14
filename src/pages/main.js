@@ -290,7 +290,7 @@ function seoPage() {
   <h2 class="section-title">Ce que je fais pour votre visibilité</h2>
   <div class="feats feats-4">
     <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur téléphone, avec les balises et les données que Google sait lire.</p></div>
-    <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand on cherche près de chez vous.</p></div>
+    <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand vos clients cherchent près de chez vous.</p></div>
     <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec l’IA et relus par moi.</p></div>
     <div class="feat reveal">${icon('chart-line')}<h3>Le suivi</h3><p>Positions, recherches, visites : je regarde ce qui marche et j’ajuste, mois après mois.</p></div>
   </div>
@@ -705,7 +705,7 @@ Dans ces cas-là, je vous le dis dès le premier échange, et je peux vous orien
 
 ## Qui je suis
 
-${site.name}, c’est moi : un jeune entrepreneur des Ardennes. Ma passion pour l’IA est récente, mais elle ne me lâche plus. Mon idée est simple : que tout le monde puisse en profiter, pas seulement les grandes entreprises, avec des prix que chacun peut se permettre.`)}
+${site.name}, c’est moi, Alex, et Lia, notre IA. Je suis un jeune entrepreneur, et tout se passe en ligne, partout en France. Ma passion pour l’IA est récente, mais elle ne me lâche plus. Mon idée est simple : que tout le monde puisse en profiter, pas seulement les grandes entreprises, avec des prix que chacun peut se permettre.`)}
 </div></section>
 
 ${f.html}
@@ -976,7 +976,7 @@ function contactPage() {
     <a class="contact-card" href="${C.tel}">${icon('phone')}<div><strong>${site.phoneDisplay}</strong><span>Appel ou SMS.</span></div></a>
     <a class="contact-card" href="mailto:${site.email}">${icon('mail')}<div><strong>${site.email}</strong><span>Pour envoyer des documents.</span></div></a>
     <a class="contact-card c-pink" href="/creer-mon-site/">${icon('wand-sparkles')}<div><strong>Créer mon site</strong><span>Composez votre site et voyez le prix tout de suite.</span></div></a>
-    <p class="contact-note">${icon('map-pin')}<span>Basé dans les Ardennes, je travaille avec des clients partout en France, à distance ou en visio.</span></p>
+    <p class="contact-note">${icon('map-pin')}<span>Tout se fait en ligne : la commande, les échanges, le suivi. Je travaille avec des clients partout en France.</span></p>
   </aside>
 </div></section>`;
   return {
@@ -987,54 +987,6 @@ function contactPage() {
     crumbs,
     body,
     priority: 0.8,
-  };
-}
-
-// ====================================================================== PAGE LOCALE
-function ardennesPage() {
-  const crumbs = [HOME, { name: 'Dans les Ardennes', path: '/creation-site-internet-ardennes/' }];
-  const f = C.faq(
-    [
-      { q: 'Peut-on se rencontrer ?', a: 'Oui. Dans les Ardennes, on peut se voir autour d’un café ou dans vos locaux. Pour les autres départements, on se parle en visio.' },
-      { q: 'Travaillez-vous avec les associations ?', a: `Oui, avec plaisir. Une page simple pour présenter l’association, ses dates et ses contacts, c’est souvent le site une page à ${euro(T('une-page').price)}.` },
-      { q: 'Mon commerce sera-t-il sur Google Maps ?', a: 'C’est le rôle de votre fiche Google. Je peux la créer ou l’améliorer pour que vous apparaissiez sur la carte quand quelqu’un cherche près de chez vous.' },
-    ],
-    'Vos questions',
-    'faq-ardennes'
-  );
-  const body = `${C.pageHero({
-    h1: 'Création de site internet dans les Ardennes',
-    lead: 'Artisans, commerçants, associations, indépendants des Ardennes : je crée votre site à prix fixe, et on peut se rencontrer pour en parler.',
-    crumbs,
-    mascot: 'chico',
-  })}
-<section class="section"><div class="container container-narrow prose reveal">
-  ${md(`## Un interlocuteur près de chez vous
-
-Je suis installé à ${site.address.city}. Que vous soyez à Charleville-Mézières, Sedan, Rethel, Rocroi, Vouziers ou dans un village du département, je peux venir vous voir pour comprendre votre activité et repartir avec vos idées.
-
-## Ce que je propose
-
-- **Site une page** : ${euro(T('une-page').price)} de création.
-- **Site vitrine** : ${euro(T('vitrine').price)} de création, jusqu’à 5 pages.
-- **Boutique en ligne** : ${euro(T('boutique').price)} de création.
-
-Puis ${euro(base.month)} par mois pour l’hébergement, le nom de domaine et les mises à jour (Chico), ${euro(F('power').month)} pour un serveur plus rapide et des modifications rapides (Power), ou ${euro(F('titan').month)} avec le retour de vos ventes et nos outils en illimité (Titan). Le détail est sur la page [forfaits](/forfaits/).
-
-## Être trouvé par les Ardennais
-
-Quand quelqu’un cherche un commerce ou un artisan, Google lui montre d’abord les entreprises proches. Je soigne votre fiche Google et les pages de vos villes, pour que les clients du coin vous trouvent.`)}
-</div></section>
-${f.html}
-${C.ctaBand({ title: 'Vous êtes dans les Ardennes ?', text: 'Écrivez-moi : on peut se voir pour parler de votre site.' })}`;
-  return {
-    path: '/creation-site-internet-ardennes/',
-    title: 'Création de site internet dans les Ardennes | Alex & Lia',
-    description: 'Création de site internet pour les artisans, commerces et associations des Ardennes : prix fixe dès 250 €, rencontre possible, référencement local soigné.',
-    crumbs,
-    body,
-    schema: [f.schema],
-    priority: 0.7,
   };
 }
 
@@ -1098,7 +1050,6 @@ function planDuSite() {
   const links = [
     ['/', 'Accueil'],
     ...Object.entries(sections).filter(([k]) => !hidden.includes(k)).map(([, s]) => [s.path, s.label]),
-    ['/creation-site-internet-ardennes/', 'Création de site dans les Ardennes'],
     ['/faq/', 'Questions fréquentes'],
     ...legal.map((l) => [l.path, l.name]),
   ];
@@ -1140,7 +1091,7 @@ function notFound() {
 
 function build() {
   return [
-    home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), outilsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), methodePage(), contactPage(), ardennesPage(), faqPage(),
+    home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), outilsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), methodePage(), contactPage(), faqPage(),
     ...legal.map(legalPage), planDuSite(), merci(), notFound(),
   ];
 }

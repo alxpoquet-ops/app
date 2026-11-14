@@ -34,7 +34,7 @@ function businessSchema() {
     name: site.name,
     slogan: `Votre site internet à partir de ${types[0].price} €, tout compris`,
     description:
-      'Création de sites internet à prix fixe (une page, site vitrine, boutique en ligne), forfaits mensuels avec hébergement, mises à jour, modifications et référencement SEO. Basé dans les Ardennes, pour des clients partout en France.',
+      'Création de sites internet à prix fixe (une page, site vitrine, boutique en ligne), forfaits mensuels avec hébergement, mises à jour, modifications et référencement SEO. Tout se fait en ligne, pour des clients partout en France.',
     url: site.url + '/',
     telephone: site.phoneIntl,
     email: site.email,
@@ -50,7 +50,7 @@ function businessSchema() {
       addressRegion: site.address.region,
       addressCountry: site.address.country,
     },
-    areaServed: [{ '@type': 'Country', name: 'France' }, { '@type': 'AdministrativeArea', name: 'Ardennes (08)' }],
+    areaServed: [{ '@type': 'Country', name: 'France' }],
     hasOfferCatalog: { '@type': 'OfferCatalog', name: 'Sites internet et forfaits', itemListElement: offers },
     knowsAbout: ['Création de site internet', 'Site vitrine', 'Boutique en ligne', 'Référencement naturel (SEO)', 'Référencement local', 'Intelligence artificielle'],
   };
@@ -123,7 +123,7 @@ function footer(p) {
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand" href="/">${logoMark({ id: 'lgf' })}<span class="brand-text"><strong>${site.name}</strong><small>${site.baseline}</small></span></a>
-      <p>Des sites internet simples, rapides et pensés pour Google, créés avec l’IA et vérifiés par moi. Basé dans les Ardennes, pour des clients partout en France.</p>
+      <p>Des sites internet simples, rapides et pensés pour Google, créés avec Lia et vérifiés par Alex. Tout se fait en ligne, pour des clients partout en France.</p>
       <ul class="footer-contact">
         <li><a href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}WhatsApp</a></li>
         <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>
@@ -153,7 +153,6 @@ function footer(p) {
       <ul class="footer-links">
         <li><a href="/methode/">Ma méthode avec l’IA</a></li>
         <li><a href="/faq/">Questions fréquentes</a></li>
-        <li><a href="/creation-site-internet-ardennes/">Création de site dans les Ardennes</a></li>
         <li><a href="/contact/">Contact</a></li>
       </ul>
     </div>
