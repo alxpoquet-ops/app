@@ -178,7 +178,7 @@
       var annual = box.getAttribute('data-billing') === 'annuel';
       var mult = annual ? 12 - data.free : 1;
       var per = annual ? '/an' : '/mois';
-      var month = f.month + t.sup;
+      var month = f.month;
       var optOnce = 0, optMonth = 0, chosen = [];
       $$('.b-opt input:checked', box).forEach(function (i) {
         var o = find(data.options, i.value);
@@ -187,7 +187,8 @@
       });
       setText('type', t.label);
       setText('type-price', euro(t.price));
-      setText('forfait', 'Forfait ' + f.name + (t.sup ? ' (boutique)' : ''));
+      setText('forfait', f.id === 'entretien' ? 'Entretien seul' : 'Entretien et forfait ' + f.name);
+      $$('[data-sum-shopify]', box).forEach(function (el) { el.hidden = t.id !== 'boutique'; });
       setText('forfait-price', euro(month * mult) + per);
       var optLine = $('[data-sum-opts]', box);
       if (optLine) {
@@ -220,6 +221,235 @@
         entries.forEach(function (en) { bar.classList.toggle('is-hidden', en.isIntersecting); });
       }, { threshold: 0.2 }).observe(sum);
     }
+  }
+
+  /* ---------- démo de l'espace client ---------- */
+  var appEl = $('[data-app]');
+  if (appEl) initApp(appEl);
+
+  function initApp(app) {
+    var tpl = $('template[data-icons]', app), mtpl = $('template[data-monsters]', app);
+    var ico = function (n) { var el = tpl && tpl.content.querySelector('[data-i="' + n + '"]'); return el ? el.innerHTML : ''; };
+    var toastEl = $('[data-toast]', app), toastTimer;
+    var toast = function (msg) {
+      toastEl.textContent = msg; toastEl.hidden = false;
+      clearTimeout(toastTimer); toastTimer = setTimeout(function () { toastEl.hidden = true; }, 2800);
+    };
+
+    /* onglets */
+    var tabs = $$('[role="tab"]', app);
+    var show = function (id, focus) {
+      tabs.forEach(function (t) {
+        var on = t.getAttribute('data-tab') === id;
+        t.setAttribute('aria-selected', on);
+        t.tabIndex = on ? 0 : -1;
+        if (on && focus) t.focus();
+        var panel = d.getElementById(t.getAttribute('aria-controls'));
+        if (panel) panel.hidden = !on;
+        if (on && t.scrollIntoView && window.innerWidth < 900) t.scrollIntoView({ block: 'nearest', inline: 'center' });
+      });
+      var main = $('.app-main', app);
+      var top = main.getBoundingClientRect().top;
+      if (top < 0) window.scrollBy({ top: top - 90, behavior: 'smooth' });
+    };
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { show(t.getAttribute('data-tab')); });
+      t.addEventListener('keydown', function (e) {
+        var n = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') n = tabs[(i + 1) % tabs.length];
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = tabs[(i - 1 + tabs.length) % tabs.length];
+        if (n) { e.preventDefault(); show(n.getAttribute('data-tab'), true); }
+      });
+    });
+    $$('[data-go]', app).forEach(function (b) { b.addEventListener('click', function () { show(b.getAttribute('data-go')); }); });
+    $$('[data-toast-msg]', app).forEach(function (b) { b.addEventListener('click', function () { toast(b.getAttribute('data-toast-msg')); }); });
+
+    /* journal */
+    var log = $('[data-log]', app);
+    var addLog = function (ic, text) {
+      if (!log) return;
+      var li = d.createElement('li');
+      li.innerHTML = ico(ic) + '<span></span><small>à l’instant</small>';
+      li.querySelector('span').textContent = text;
+      log.insertBefore(li, log.firstChild);
+    };
+
+    /* jetons IA */
+    var jetons = 7, max = 10;
+    var recharge = +app.getAttribute('data-recharge') || 10, rechargePrice = app.getAttribute('data-recharge-price') || '5';
+    var jauge = $('[data-jauge]', app);
+    var drawJauge = function () {
+      $('[data-jetons]', app).textContent = jetons;
+      var cap = Math.max(max, jetons);
+      $('[data-jetons-max]', app).textContent = cap;
+      $('[data-jauge-fill]', app).style.width = (cap ? jetons / cap * 100 : 0) + '%';
+      jauge.classList.toggle('is-low', jetons <= 2);
+    };
+    var useJeton = function () {
+      if (jetons <= 0) { toast('Plus de jetons ce mois-ci : rechargez ou changez de forfait'); return false; }
+      jetons--; drawJauge();
+      if (jetons === 0) setTimeout(function () { toast('C’était votre dernier jeton du mois. Vous pouvez recharger en un clic.'); }, 1500);
+      return true;
+    };
+    $('[data-recharger]', app).addEventListener('click', function () {
+      jetons += recharge; drawJauge();
+      toast('+' + recharge + ' jetons pour ' + rechargePrice + ' \u20ac (démo, rien n’est payé)');
+      addLog('coins', 'Recharge de ' + recharge + ' jetons');
+    });
+    drawJauge();
+
+    /* modifier le site */
+    var chatLog = $('[data-chat-log]', app), chatForm = $('[data-chat-form]', app), chatIn = $('#chat-in', app);
+    var versions = $('[data-versions]', app);
+    var bubble = function (cls, html) {
+      var el = d.createElement('div');
+      el.className = 'bubble ' + cls;
+      if (html) el.innerHTML = html;
+      chatLog.appendChild(el);
+      chatLog.scrollTop = chatLog.scrollHeight;
+      return el;
+    };
+    var say = function (cls, text) { var el = bubble(cls, ''); el.textContent = text; chatLog.scrollTop = chatLog.scrollHeight; return el; };
+    var understand = function (text) {
+      var t = text.toLowerCase();
+      if (/ferm|horaire|ouvert|heure|lundi|dimanche/.test(t)) return { what: 'vos horaires', page: 'Accueil', hl: text.length > 42 ? 'Horaires mis à jour' : text.replace(/[.!]+$/, ''), photo: false };
+      if (/photo|image|vitrine/.test(t)) return { what: 'la photo du haut de page', page: 'Accueil', hl: 'Nouvelle photo', photo: true };
+      var price = t.match(/(\d+(?:[.,]\d+)?)\s?\u20ac/);
+      if (price || /prix|tarif|produit|carte|ajoute/.test(t)) return { what: 'votre carte', page: 'Carte', hl: price ? 'Nouveau : ' + price[1] + ' \u20ac' : 'Carte mise à jour', photo: false };
+      return { what: 'le texte demandé', page: 'Accueil', hl: 'Texte mis à jour', photo: false };
+    };
+    var addVersion = function () {
+      var first = versions.firstElementChild;
+      if (first) first.innerHTML = '<span>' + ico('history') + 'Version précédente</span><button type="button" class="link-btn" data-restore>Restaurer</button>';
+      var li = d.createElement('li');
+      li.innerHTML = '<span>' + ico('circle-check') + 'Version actuelle</span><small>à l’instant</small>';
+      versions.insertBefore(li, versions.firstChild);
+    };
+    versions.addEventListener('click', function (e) {
+      if (e.target.closest('[data-restore]')) toast('Version restaurée, sans jeton (démo)');
+    });
+    var send = function (text) {
+      text = (text || '').trim();
+      if (!text) return;
+      chatIn.value = '';
+      say('me', text);
+      var typing = bubble('ai typing', '<i></i><i></i><i></i>');
+      setTimeout(function () {
+        typing.remove();
+        var p = understand(text);
+        var b = bubble('ai', '<p></p><div class="mini-site"><i class="ms-photo' + (p.photo ? ' new' : '') + '"></i><i class="ms-line"></i><i class="ms-line short"></i><span class="ms-hl"></span></div><div class="bubble-actions"><button type="button" class="pill pill-go">' + ico('check') + 'Publier (1 jeton)</button><button type="button" class="pill">' + ico('undo-2') + 'Annuler</button></div>');
+        b.querySelector('p').textContent = 'C’est prêt ! J’ai préparé ' + p.what + ' sur la page ' + p.page + '. Voici l’aperçu :';
+        b.querySelector('.ms-hl').textContent = p.hl;
+        var btns = b.querySelectorAll('button');
+        var done = function () { btns[0].disabled = true; btns[1].disabled = true; };
+        btns[0].addEventListener('click', function () {
+          if (!useJeton()) return;
+          done();
+          say('ai', 'Publié ! Votre site est à jour.');
+          addVersion();
+          addLog('check', 'Site modifié : ' + p.what);
+          toast('Modification publiée (démo)');
+        });
+        btns[1].addEventListener('click', function () { done(); say('ai', 'D’accord, je n’ai rien changé. Aucun jeton utilisé.'); });
+      }, 1100);
+    };
+    chatForm.addEventListener('submit', function (e) { e.preventDefault(); send(chatIn.value); });
+    $$('[data-say]', app).forEach(function (b) { b.addEventListener('click', function () { send(b.getAttribute('data-say')); }); });
+
+    /* publier sur les réseaux */
+    var pub = $('[data-pub]', app), file = $('[data-pub-file]', app), img = $('[data-pub-img]', app);
+    var out = $('[data-pub-out]', app), posts = $('[data-posts]', app), desc = $('[data-pub-desc]', app);
+    var NETS = {
+      instagram: { name: 'Instagram', icon: 'camera', ratio: 'r-1', fmt: 'Carré' },
+      facebook: { name: 'Facebook', icon: 'thumbs-up', ratio: 'r-191', fmt: 'Paysage' },
+      google: { name: 'Fiche Google', icon: 'map-pin', ratio: 'r-43', fmt: '4:3' }
+    };
+    var STOP = ['avec', 'pour', 'dans', 'nous', 'notre', 'votre', 'vous', 'cette', 'plus', 'tout', 'tous', 'toute', 'toutes', 'chez', 'week', 'weekend', 'nouvelle', 'nouveau', 'nouvelles', 'nouveaux', 'aussi', 'sont', 'vient', 'arrive'];
+    var hashtags = function (text) {
+      var t = text.toLowerCase();
+      if (t.normalize) t = t.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      var seen = [];
+      t.split(/[^a-z0-9]+/).forEach(function (w) { if (w.length > 3 && STOP.indexOf(w) < 0 && seen.indexOf(w) < 0) seen.push(w); });
+      return seen.slice(0, 3).concat(['patisserie', 'rethel', 'faitmaison']).slice(0, 5).map(function (w) { return '#' + w; }).join(' ');
+    };
+    var textFor = function (net, text) {
+      var base = text.trim().replace(/[.!\s]+$/, '');
+      if (net === 'instagram') return base + ' !\n\nPassez nous voir, on vous attend.\n\n' + hashtags(base);
+      if (net === 'facebook') return base + ' ! C’est à découvrir en boutique dès maintenant. Une question, une réservation ? Écrivez-nous en message privé.';
+      return base + '. À découvrir chez Pâtisserie Lila, 12 rue des Lilas à Rethel.';
+    };
+    file.addEventListener('change', function () {
+      var f = file.files && file.files[0];
+      if (!f || !/^image\//.test(f.type)) return;
+      if (img._url) URL.revokeObjectURL(img._url);
+      img._url = URL.createObjectURL(f);
+      img.src = img._url;
+      if (!out.hidden) build();
+    });
+    var build = function () {
+      var nets = $$('.pub-nets input:checked', app).map(function (i) { return i.value; });
+      if (!nets.length) { toast('Choisissez au moins un réseau'); return false; }
+      var text = desc.value.trim() || 'Notre nouveauté du moment';
+      posts.innerHTML = '';
+      nets.forEach(function (n) {
+        var c = NETS[n], el = d.createElement('article');
+        el.className = 'post';
+        el.innerHTML = '<p class="post-head">' + ico(c.icon) + c.name + '<small>' + c.fmt + '</small></p><img class="post-img ' + c.ratio + '" alt=""><p class="post-text" contenteditable="true" spellcheck="true"></p>' + (n === 'google' ? '<span class="post-cta">En savoir plus</span>' : '');
+        el.querySelector('img').src = img.src;
+        var pt = el.querySelector('.post-text');
+        pt.textContent = textFor(n, text);
+        pt.setAttribute('aria-label', 'Texte pour ' + c.name);
+        posts.appendChild(el);
+      });
+      out.hidden = false;
+      return true;
+    };
+    pub.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var btn = pub.querySelector('button[type="submit"]'), span = btn.querySelector('span'), label = span.textContent;
+      btn.disabled = true; span.textContent = 'L’IA prépare vos textes…';
+      setTimeout(function () {
+        btn.disabled = false; span.textContent = label;
+        if (build()) out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 900);
+    });
+    $('[data-pub-send]', app).addEventListener('click', function () {
+      if (!useJeton()) return;
+      var n = posts.children.length;
+      toast('Publié sur ' + n + (n > 1 ? ' réseaux' : ' réseau') + ' (démo : rien n’est parti)');
+      addLog('send', '« ' + (desc.value.trim().slice(0, 40) || 'Publication') + ' » publiée');
+    });
+    $('[data-pub-plan]', app).addEventListener('click', function () { toast('Programmé pour demain à 18 h (démo)'); });
+
+    /* forfait et options */
+    var total = $('[data-app-total]', app);
+    var recompute = function () {
+      var p = $('input[name="app-plan"]:checked', app);
+      var sum = p ? +p.getAttribute('data-month') : 0;
+      $$('.app-opt input:checked', app).forEach(function (i) { sum += +i.getAttribute('data-month'); });
+      total.textContent = euro(sum);
+      if (p) {
+        $('[data-app-plan-name]', app).textContent = p.getAttribute('data-name');
+        $('[data-app-plan-price]', app).textContent = euro(+p.getAttribute('data-month')) + ' par mois';
+        var m = mtpl && mtpl.content.querySelector('[data-m="' + p.value + '"]');
+        if (m) $('[data-app-plan-art]', app).innerHTML = m.innerHTML;
+      }
+    };
+    $$('input[name="app-plan"]', app).forEach(function (r) {
+      r.addEventListener('change', function () {
+        max = +r.getAttribute('data-jetons');
+        drawJauge(); recompute();
+        toast(r.getAttribute('data-name') + ' choisi : ' + (max ? max + ' jetons par mois' : 'sans jetons, recharge possible') + ' (démo)');
+      });
+    });
+    $$('.app-opt input', app).forEach(function (c) {
+      c.addEventListener('change', function () {
+        recompute();
+        var name = c.closest('.app-opt').querySelector('strong').textContent;
+        toast((c.checked ? 'Option ajoutée : ' : 'Option retirée : ') + name + ' (démo)');
+      });
+    });
+    recompute();
   }
 
   /* ---------- formulaire de contact ---------- */

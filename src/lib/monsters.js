@@ -5,8 +5,8 @@
 const INK = '#2E2A47';
 
 const C = {
-  mascotte: { body: '#FFB8D2', light: '#FFE3EE', deep: '#C94A7C', foot: '#FF9DC2' },
-  chico: { body: '#A6EBCF', light: '#D9F8EC', deep: '#2E8F6A', foot: '#86DDBA' },
+  mascotte: { body: '#A6EBCF', light: '#D9F8EC', deep: '#2E8F6A', foot: '#86DDBA' },
+  chico: { body: '#FFB8D2', light: '#FFE3EE', deep: '#C94A7C', foot: '#FF9DC2' },
   power: { body: '#C9B8FF', light: '#EEE8FF', deep: '#6A4ED6', foot: '#B29CFF' },
   titan: { body: '#FFBE9C', light: '#FFE6D8', deep: '#CC5F33', foot: '#FFA57A' },
   triste: { body: '#BFDDFB', light: '#E4F1FE', deep: '#3F78B8', foot: '#A3CDF7' },
@@ -40,7 +40,7 @@ ${feet(c)}
 ${eyes(63, 97, 76, c)}
 ${blush(50, 110, 95)}
 <path d="M71 96q9 9 18 0" fill="none" stroke="${INK}" stroke-width="3.4" stroke-linecap="round"/>
-<g transform="rotate(-8 120 118)"><rect x="100" y="100" width="44" height="34" rx="7" fill="#fff" stroke="${c.deep}" stroke-width="3"/><rect x="106" y="107" width="18" height="5" rx="2.5" fill="#FFB8D2"/><rect x="106" y="116" width="32" height="4" rx="2" fill="#D9D4EA"/><rect x="106" y="124" width="24" height="4" rx="2" fill="#D9D4EA"/></g>
+<g transform="rotate(-8 120 118)"><rect x="100" y="100" width="44" height="34" rx="7" fill="#fff" stroke="${c.deep}" stroke-width="3"/><rect x="106" y="107" width="18" height="5" rx="2.5" fill="#FF9DC2"/><rect x="106" y="116" width="32" height="4" rx="2" fill="#D9D4EA"/><rect x="106" y="124" width="24" height="4" rx="2" fill="#D9D4EA"/></g>
 <path d="M126 106c6-3 10 2 7 7" fill="${c.body}" stroke="${c.deep}" stroke-width="3.2" stroke-linecap="round"/>
 </g>`;
   },
@@ -129,7 +129,7 @@ function monster(kind, { size, cls = '', title } = {}) {
 function logoMark({ id = 'lg', size } = {}) {
   const c = C.mascotte;
   const dim = size ? ` width="${size}" height="${size}"` : '';
-  return `<svg class="logo" viewBox="0 0 64 64"${dim} aria-hidden="true" focusable="false"><defs><radialGradient id="${id}" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFD3E3"/><stop offset="1" stop-color="${c.body}"/></radialGradient></defs>
+  return `<svg class="logo" viewBox="0 0 64 64"${dim} aria-hidden="true" focusable="false"><defs><radialGradient id="${id}" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#E2FAEF"/><stop offset="1" stop-color="${c.body}"/></radialGradient></defs>
 <path d="M32 9V3" stroke="${c.deep}" stroke-width="2.6" stroke-linecap="round"/><path d="M34.4-1 27 8.4h4.6l-2 6.6 7.4-9.8h-4.6l2-6.2Z" fill="#FFD45E" stroke="${c.deep}" stroke-width="1.8" stroke-linejoin="round" transform="translate(0 2)"/>
 <path d="M32 10c14.5 0 25 10.5 25 25S46.5 61 32 61 7 49.5 7 35s10.5-25 25-25Z" fill="url(#${id})" stroke="${c.deep}" stroke-width="2.6"/>
 <ellipse cx="23.5" cy="33" rx="5.6" ry="6.2" fill="#fff" stroke="${c.deep}" stroke-width="2"/><ellipse cx="40.5" cy="33" rx="5.6" ry="6.2" fill="#fff" stroke="${c.deep}" stroke-width="2"/>

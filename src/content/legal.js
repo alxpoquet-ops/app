@@ -1,7 +1,7 @@
 // Mentions légales, politique de confidentialité, conditions générales
 // ⚠️ Les éléments entre crochets proviennent de src/config.js et doivent y être complétés.
 // ⚠️ Modèle à faire relire : il ne remplace pas l'avis d'un professionnel du droit.
-const { site, annuel, paiement, fidelite } = require('../config');
+const { site, annuel, paiement, fidelite, entretien, jetons } = require('../config');
 const L = site.legal;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 
@@ -84,7 +84,7 @@ Vous pouvez demander l’accès, la correction ou la suppression de vos données
     path: '/conditions-generales/',
     name: 'Conditions générales',
     title: 'Conditions générales de vente | ALED08',
-    description: 'Conditions générales de vente d’ALED08 : création à prix fixe, forfaits au mois ou à l’année, options, espace client, résiliation et droit de rétractation.',
+    description: 'Conditions générales de vente d’ALED08 : création à prix fixe, entretien et forfaits au mois ou à l’année, jetons IA, espace client et rétractation.',
     lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif accepté.',
     updated: '2026-11-14',
     body: `## 1. Commande
@@ -95,44 +95,48 @@ Chaque projet fait l’objet d’un récapitulatif gratuit : type de site, forfa
 
 Le prix de création est fixe pour le type de site choisi. ${paiement.acompte} % sont payés à la commande, le reste à la mise en ligne. Les pages ou produits en plus sont indiqués dans le récapitulatif.
 
-## 3. Forfaits
+## 3. Entretien et forfaits
 
-Le forfait comprend l’hébergement, le nom de domaine, les mises à jour, les sauvegardes et le référencement décrits sur la page Forfaits. Il démarre à la mise en ligne.
+L’entretien (${entretien.month} € par mois) comprend l’hébergement, le nom de domaine, les sauvegardes, les mises à jour des extensions et l’accès à l’espace client. Il démarre à la mise en ligne. Les forfaits IA s’y ajoutent et donnent chaque mois des jetons, le référencement et le support décrits sur la page Forfaits.
 
 - **Au mois** : sans engagement, résiliable à tout moment avec un mois de préavis.
-- **À l’année** : payé d’avance pour douze mois, avec ${annuel.moisOfferts} mois offerts.
+- **À l’année** : engagement de douze mois, payé en une fois, avec ${annuel.moisOfferts} mois offerts.
 
 Le client peut changer de forfait ou ajouter une option à tout moment. Le nouveau prix s’applique à la période suivante.
 
-## 4. Nom de domaine et fin du forfait
+## 4. Jetons IA
+
+Un jeton permet une petite modification du site ou une publication sur les réseaux sociaux avec les outils de l’espace client. Des jetons supplémentaires peuvent être achetés à tout moment (${jetons.recharge.price} € les ${jetons.recharge.qty}). Les jetons ne sont pas remboursables ni convertibles en argent.
+
+## 5. Nom de domaine et fin du forfait
 
 Le nom de domaine est enregistré au nom du client. À la fin du forfait, le client garde son nom de domaine et reçoit une copie de son site (contenus, images et fichiers).
 
-## 5. Espace client et IA
+## 6. Espace client et IA
 
 Les modifications demandées dans l’espace client sont préparées par une intelligence artificielle. Le client voit l’aperçu et valide avant la publication. Chaque version est conservée et peut être restaurée. Le client reste responsable des contenus qu’il publie, sur son site comme sur ses réseaux sociaux.
 
-## 6. Référencement
+## 7. Référencement
 
 Le référencement est une obligation de moyens : ${site.name} s’engage à appliquer les bonnes pratiques et à suivre les résultats, sans pouvoir garantir une position précise sur Google.
 
-## 7. Délais
+## 8. Délais
 
 Les délais sont donnés à titre indicatif. Ils courent à partir de la réception des éléments nécessaires (textes, photos, accès).
 
-## 8. Contenus fournis par le client
+## 9. Contenus fournis par le client
 
 Le client garantit qu’il a le droit d’utiliser les textes, images et logos qu’il fournit.
 
-## 9. Fidélité
+## 10. Fidélité
 
-Le parrainage donne ${fidelite.parrainageMois} mois de forfait offert au parrain et au filleul, quand le site du filleul est en ligne. Les avantages ne sont pas convertibles en argent.
+Le parrainage donne ${fidelite.parrainageMois} mois d’entretien et de forfait offert au parrain et au filleul, quand le site du filleul est en ligne. Les avantages ne sont pas convertibles en argent.
 
-## 10. Droit de rétractation
+## 11. Droit de rétractation
 
 Le client particulier dispose de 14 jours après la commande pour se rétracter. S’il demande que le travail commence avant la fin de ce délai, il paie la part déjà réalisée en cas de rétractation.
 
-## 11. Médiation
+## 12. Médiation
 
 En cas de litige, le client peut recourir gratuitement au médiateur de la consommation : ${L.mediator}.`,
   },

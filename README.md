@@ -2,9 +2,11 @@
 
 Site d'**ALED08** : des sites internet à petit prix, pensés pour Google, avec un espace client pour les modifier grâce à l'IA.
 
-- **Création à prix fixe** : site une page, site vitrine, boutique en ligne.
-- **Forfaits mensuels ou annuels**, chacun avec son petit monstre : **Chico** (l'essentiel), **Power** (modifications par l'IA), **Titan** (publication sur les réseaux et SEO renforcé).
-- **Options activables plus tard** : fiche Google, avis clients, kit QR code, lettre d'info, e-mail pro, réservation, assistant IA, version anglaise, logo, textes.
+- **Création à prix fixe** : site une page (100 €), site vitrine (150 €), boutique en ligne (250 €).
+- **Entretien** : 10 € par mois, toujours compris (hébergement, nom de domaine, sauvegardes, mises à jour, espace client).
+- **Forfaits IA**, chacun avec son petit monstre : **Chico** (+5 €, 3 jetons), **Power** (+10 €, 10 jetons, SEO suivi, support prioritaire), **Titan** (+15 €, 30 jetons, pour se faire connaître). Un jeton = une modification ou une publication ; recharge à 5 € les 10.
+- **À l'année** : engagement d'un an payé en une fois, 2 mois offerts.
+- **Options activables plus tard** : fiche Google, avis clients, annuaires, kit QR code, lettre d'info, carte de fidélité, e-mail pro, réservation, assistant IA, version anglaise, logo, textes.
 
 Site **statique**, rapide, sans base de données : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans `dist/`.
 
@@ -16,8 +18,10 @@ Site **statique**, rapide, sans base de données : un petit générateur Node.js
 |---|---|---|
 | Accueil | `/` | Promesse, types de site, forfaits, espace client, SEO, comparaison avec Shopify |
 | Créer mon site | `/creer-mon-site/` | **Configurateur** : type de site, nom de domaine vérifié en direct, forfait, au mois ou à l'année, options, récapitulatif |
-| Forfaits | `/forfaits/` | Chico, Power, Titan (au mois ou à l'année), prix de création, options |
+| Forfaits | `/forfaits/` | Entretien, Chico, Power, Titan (au mois ou à l'année), jetons IA, prix de création, options |
 | Espace client | `/espace-client/` | Modifier son site en écrivant à l'IA, publier sur les réseaux, suivre sa visibilité |
+| Mon espace (démo) | `/mon-espace/` | Démo interactive : jetons, modification par l'IA, outil de publication, forfait et options |
+| Se faire connaître | `/se-faire-connaitre/` | La boîte à outils : Google, réseaux, site, près de chez vous |
 | SEO | `/referencement-seo/` | Ce que je fais, le SEO dans chaque forfait, ce que je ne promets pas |
 | Comparatif Shopify | `/comparatif-shopify/` | Shopify Basic ligne par ligne, et le coût sur un an |
 | Autres | | Fidélité, Ma méthode, Contact, page Ardennes, FAQ, pages légales, plan du site, merci, 404 |
@@ -26,7 +30,7 @@ Chaque rubrique a sa couleur pastel (menu, pastille en haut de page) pour qu'on 
 
 ## Où changer les prix
 
-Tout est dans **`src/config.js`** : `types` (prix de création), `forfaits` (prix mensuels), `annuel` (mois offerts), `options`, `fidelite`, `paiement`, `shopify` (prix relevés pour le comparatif, avec la date). Le site, le configurateur et les données structurées se mettent à jour au prochain `npm run build`.
+Tout est dans **`src/config.js`** : `types` (prix de création), `entretien`, `forfaits` (supplément et jetons), `jetons` (recharge), `annuel` (mois offerts), `options`, `fidelite`, `paiement`, `shopify` (prix relevés pour le comparatif, avec la date). Le site, le configurateur et les données structurées se mettent à jour au prochain `npm run build`.
 
 L'espace client n'est pas encore ouvert : `site.espaceClient.ouvert` vaut `false`, et la page l'annonce. Le plan pour le construire est dans `docs/espace-client-ia.md`.
 
@@ -87,7 +91,7 @@ src/assets/              CSS, JS, police Nunito (OFL), images
 src/static/              fichiers copiés tels quels (.htaccess, favicon…)
 src/server/envoi.php     traitement du formulaire de devis
 dist/                    SITE GÉNÉRÉ, à mettre en ligne
-docs/espace-client-ia.md plan pour l'espace client, les paiements et l'IA
+docs/espace-client-ia.md mode d'emploi : jetons, paiements, outil de publication (Make), IA
 docs/                    (autres fichiers : archives de l'ancienne activité d'électricien)
 ```
 

@@ -1,8 +1,6 @@
 // Questions fréquentes, par rubrique. La page /faq/ les reprend toutes.
-const { types, forfaits, annuel, options, paiement, fidelite, pageEnPlus } = require('../config');
+const { types, entretien, jetons, forfaits, annuel, options, paiement, fidelite, pageEnPlus } = require('../config');
 const opt = (id) => options.find((o) => o.id === id);
-const F = (id) => forfaits.find((f) => f.id === id);
-const boutique = types.find((t) => t.id === 'boutique');
 
 module.exports = {
   creation: [
@@ -12,17 +10,22 @@ module.exports = {
     { q: 'Comment se passe le paiement de la création ?', a: `Vous réglez ${paiement.acompte} % pour lancer le projet, puis le solde quand le site est en ligne. Le forfait démarre ce jour-là.` },
   ],
   forfaits: [
-    { q: 'Suis-je engagé ?', a: `Non, pas au mois : vous arrêtez quand vous voulez, avec un mois de préavis. À l’année, vous payez douze mois d’avance et vous avez ${annuel.moisOfferts} mois offerts.` },
+    { q: 'Que comprend l’entretien ?', a: `Pour ${entretien.month} € par mois : l’hébergement, le nom de domaine, les sauvegardes, les mises à jour des extensions et votre espace client. Il est compris dans tous les forfaits.` },
+    { q: 'Suis-je engagé ?', a: `Au mois, non : vous arrêtez quand vous voulez, avec un mois de préavis. À l’année, vous vous engagez pour un an, payé en une fois, et vous avez ${annuel.moisOfferts} mois offerts.` },
     { q: 'Que se passe-t-il si j’arrête ?', a: 'Votre nom de domaine est à votre nom : vous le gardez. Je vous remets une copie de votre site (contenus, images et fichiers) pour que vous puissiez le faire héberger ailleurs.' },
     { q: 'Puis-je changer de forfait ?', a: 'Oui, à tout moment depuis votre espace client ou par message. Le nouveau prix s’applique le mois suivant.' },
-    { q: 'Pourquoi un supplément pour une boutique ?', a: `Une boutique demande plus de surveillance : paiements, stocks, commandes, mises à jour de sécurité. C’est ${boutique.supplement} € de plus par mois, quel que soit le forfait.` },
-    { q: 'Y a-t-il des frais cachés ?', a: 'Non. Le récapitulatif indique tout : la création, le forfait et les options choisies. Rien d’autre.' },
+    { q: 'Y a-t-il des frais cachés ?', a: 'Non. Le récapitulatif indique tout : la création, l’entretien, le forfait et les options choisies. Rien d’autre.' },
+  ],
+  jetons: [
+    { q: 'C’est quoi, un jeton IA ?', a: 'C’est votre crédit pour nos outils IA. Une petite modification de votre site ou une publication sur vos réseaux utilise un jeton.' },
+    { q: 'Combien de jetons dans chaque forfait ?', a: `${forfaits.map((f) => `${f.name} : ${f.jetons} par mois`).join(', ')}. ${forfaits[0].name} offre en plus une publication chaque mois.` },
+    { q: 'Et si je n’ai plus de jetons ?', a: `Vous rechargez en un clic depuis votre espace : ${jetons.recharge.price} € les ${jetons.recharge.qty} jetons. Ou vous passez au forfait du dessus.` },
   ],
   espace: [
     { q: 'Faut-il savoir se servir d’un ordinateur ?', a: 'Non. Si vous savez envoyer un message, vous savez modifier votre site. Tout se fait depuis votre téléphone.' },
     { q: 'Et si l’IA se trompe ?', a: 'Vous voyez l’aperçu avant de publier, et vous revenez à la version précédente en un clic. Je garde aussi un œil sur les changements.' },
-    { q: 'Les modifications sont-elles vraiment à volonté ?', a: `Oui, avec ${F('power').name} et ${F('titan').name}, pour l’usage normal d’un site d’entreprise : textes, photos, horaires, prix, nouvelles sections. Une refonte complète, c’est un autre projet.` },
-    { q: 'Sur quels réseaux puis-je publier ?', a: `Avec ${F('titan').name} : Instagram, Facebook et votre fiche Google. Vos comptes restent les vôtres, vous pouvez couper l’accès à tout moment.` },
+    { q: 'Que puis-je modifier avec l’IA ?', a: 'Les textes, les photos, les horaires, les prix, une nouvelle section. Chaque modification publiée utilise un jeton. Une refonte complète, c’est un autre projet.' },
+    { q: 'Sur quels réseaux puis-je publier ?', a: 'Instagram, Facebook et votre fiche Google, avec tous les forfaits. Vos comptes restent les vôtres, vous pouvez couper l’accès à tout moment.' },
   ],
   seo: [
     { q: 'En combien de temps serai-je sur Google ?', a: 'Votre site est déclaré à Google dès la mise en ligne. On le trouve vite sur votre nom. Pour des recherches plus disputées, comptez quelques semaines à quelques mois.' },
@@ -37,6 +40,11 @@ module.exports = {
   shopify: [
     { q: 'Puis-je quitter Shopify pour une boutique ALED08 ?', a: 'Oui. Je reprends vos produits, vos photos et vos textes, et je prépare les redirections pour ne pas perdre votre place sur Google. Le prix dépend du nombre de produits : demandez-moi un devis.' },
     { q: 'Les frais de paiement sont-ils différents ?', a: 'Presque pas : environ 1,5 % + 0,25 € par paiement par carte européenne dans les deux cas. La vraie différence se joue sur l’abonnement, les applications et le temps que vous y passez.' },
+  ],
+  visibilite: [
+    { q: 'Par quoi commencer quand on a peu de budget ?', a: 'Pour un commerce ou un artisan, la fiche Google et les avis clients rapportent souvent le plus. Ensuite viennent le site, puis les réseaux.' },
+    { q: 'Faut-il être sur tous les réseaux ?', a: 'Non. Mieux vaut un ou deux réseaux bien tenus que cinq comptes abandonnés. On choisit ensemble ceux où sont vos clients.' },
+    { q: 'Puis-je ajouter un outil plus tard ?', a: 'Bien sûr. Vous l’activez quand vous voulez, dans votre espace client ou en m’écrivant. Rien n’est obligatoire au départ.' },
   ],
   fidelite: [
     { q: 'Comment mon filleul profite-t-il du parrainage ?', a: `Il indique votre nom dans sa demande. Quand son site est en ligne, vous recevez chacun ${fidelite.parrainageMois} mois de forfait offert.` },
