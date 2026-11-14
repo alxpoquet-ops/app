@@ -137,7 +137,7 @@ Faites tout d'abord en **mode test** (clés `sk_test_` et webhook créé en mode
 
 ### 5.5 Comment Stripe facture une commande
 
-- **Un abonnement par commande** : la ligne du forfait (au mois ou à l'année), la ligne de l'option e-mail pro si elle est prise, et, si le client a choisi le lissage, une ligne « Création du site, lissée » (prix divisé par 24, arrondi au centime inférieur ; ou divisé par 2 si le forfait est à l'année).
+- **Un abonnement par commande** : la ligne du forfait (au mois ou à l'année), la ligne de l'option e-mail pro si elle est prise, et, si le client a choisi le lissage, une ligne « Création du site, en 6 fois sans frais » ou « en 12 fois » (prix divisé par 6 ou 12, arrondi au centime inférieur ; le forfait est alors au mois).
 - **Sans lissage** : l'acompte de 30 % et la traduction éventuelle sont facturés une seule fois, sur la première facture. Le solde de 70 % est demandé à la mise en ligne (bouton dans l'espace client, ou lien copié depuis la fiche).
 - **Fin du paiement en plusieurs fois** : l'extension compte les mensualités payées (« Lissage : 4 / 12 payées » dans la fiche et le tableau de bord). Après la dernière (6e ou 12e), la ligne « Création du site » est retirée de l'abonnement Stripe automatiquement : il ne reste que le forfait, sans engagement.
 - Les factures Stripe apparaissent dans l'espace client dès qu'elles sont payées.
