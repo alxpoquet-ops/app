@@ -266,6 +266,7 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 .b-price { font-weight: 900; color: var(--ink); font-size: 1.15rem; }
 .b-price b { font-weight: 900; }
 .b-price small { font-size: .8rem; color: var(--muted); }
+.b-choice input:checked + .b-card .b-price small { color: var(--c-dd); }
 .b-card .type-ico { width: 44px; height: 44px; border-radius: 14px; margin-bottom: 4px; }
 .b-art { width: 74px; margin-bottom: 2px; }
 .b-check { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--c-dd); color: #fff; opacity: 0; transform: scale(.6); transition: opacity .2s, transform .2s; }
@@ -979,7 +980,7 @@ button.app-card:hover { transform: translateY(-2px); }
 .b-seg input:checked + span { background: var(--mint); color: var(--mint-dd); }
 .b-seg input:focus-visible + span { outline: 3px solid var(--lilac-d); outline-offset: 2px; }
 .b-step .billing-switch { margin: 0; }
-@media (max-width: 720px) { .b-seg { width: 100%; } .b-seg label { flex: 1; } .b-seg span { width: 100%; justify-content: center; padding: 10px 8px; } }
+@media (max-width: 720px) { .b-seg { width: 100%; } .b-seg label { flex: 1; } .b-seg span { width: 100%; justify-content: center; flex-wrap: wrap; gap: 4px; padding: 10px 8px; } .b-seg em { margin-left: 0; white-space: nowrap; } }
 .plans { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .b-plans, .app-plans { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 720px) { .plans { grid-template-columns: 1fr; max-width: 460px; } }

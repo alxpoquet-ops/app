@@ -112,11 +112,14 @@ function typeCards() {
 
 // ---------------------------------------------------------------- prix du site lissé (arrondi au centime inférieur)
 const lisse = (price) => Math.floor((price / lissage.mois) * 100) / 100;
+// « un site une page », « un site vitrine », « une boutique en ligne »
+const unType = (t) => (t.id === 'boutique' ? 'une boutique en ligne' : 'un ' + t.label.toLowerCase());
+
 function payBox() {
   return `<div class="jetons-box reveal">
   <h3>${icon('calendar-check')}Comment payer ?</h3>
   <ul class="list-check">
-    <li><strong>Le site</strong> : en une fois (${paiement.acompte} % à la commande, le solde à la mise en ligne), ou lissé sur ${lissage.mois} mois avec un engagement de ${lissage.mois} mois, le temps de payer le site. Par exemple ${types.map((t) => `${euro(lisse(t.price))} par mois pour ${t.label.toLowerCase()}`).join(', ')}.</li>
+    <li><strong>Le site</strong> : en une fois (${paiement.acompte} % à la commande, le solde à la mise en ligne), ou lissé sur ${lissage.mois} mois avec un engagement de ${lissage.mois} mois, le temps de payer le site. Par exemple ${types.map((t) => `${euro(lisse(t.price))} par mois pour ${unType(t)}`).join(', ')}.</li>
     <li><strong>Le forfait</strong> : au mois, ou à l’année avec ${annuel.moisOfferts} mois offerts.</li>
   </ul>
 </div>`;
@@ -274,7 +277,7 @@ function configurator() {
       <a class="btn btn-primary btn-block btn-lg" href="${sections.commander.path}" data-sum-order>${icon('shopping-bag')}<span>Commander</span></a>
       <a class="btn btn-light btn-block" href="/contact/#devis" data-sum-go>${icon('message-circle')}<span>Poser une question</span></a>
     </div>
-    <p class="b-sum-note">${icon('shield-check')}Paiement sécurisé par Stripe. Aujourd’hui, vous réglez ${paiement.acompte} % du site (ou la première mensualité) et le premier mois de forfait.</p>
+    <p class="b-sum-note">${icon('shield-check')}Paiement sécurisé par Stripe. Aujourd’hui, vous réglez ${paiement.acompte} % du site (ou sa première mensualité) et la première échéance de votre forfait.</p>
   </aside>
   <div class="b-bar" data-sum-bar>
     <p data-sum="bar"><b>250 €</b> puis <b>20 €/mois</b></p>
@@ -335,7 +338,7 @@ function comparatifTable() {
     ['Qui fait le travail', 'Moi, avec l’IA pour aller vite. Je vérifie tout.', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
     ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
     ['Prix chaque mois', prixMois, 'Contrat de maintenance, sur devis', 'Selon le prestataire, souvent en option', 'Abonnement mensuel, plus les applications en option'],
-    ['Délai', `${types[0].delai} pour une page, ${types[1].delai} pour un site vitrine`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
+    ['Délai', `${types[0].delai} pour une page, ${types[1].delai} pour un site vitrine, ${types[2].delai} pour une boutique`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
     ['Modifications', 'Comprises dans le forfait, je les fais', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['SEO', 'Bases comprises. Suivi mensuel avec Power et Titan', 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
     ['Engagement', `Aucun au mois. ${lissage.mois} mois si le site est lissé`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
@@ -348,6 +351,7 @@ function comparatifTable() {
 }
 
 module.exports = {
+  unType,
   tel, waUrl, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, optPrice, optionsCompact, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,

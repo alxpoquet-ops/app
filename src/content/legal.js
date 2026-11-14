@@ -20,7 +20,7 @@ const listeDelais = types.map((t) => `${t.label.toLowerCase()} : ${t.delai}`).jo
 const listeOptions = options
   .map((o) => `${o.name.toLowerCase()} ${o.price.month ? `${eur(o.price.month)} € par mois` : `${eur(o.price.once)} € une fois`}`)
   .join(', ');
-const tvaMention = L.tva || 'TVA non applicable, art. 293 B du CGI';
+const tvaMention = L.tva || 'non applicable, art. 293 B du CGI';
 
 module.exports = [
   {
@@ -95,7 +95,7 @@ Les paiements sont confiés à Stripe, prestataire de paiement. Au moment de pay
 
 Quand vous vérifiez un nom de domaine, le nom saisi est envoyé au registre officiel de l’extension par le protocole RDAP : l’AFNIC pour les .fr, Verisign pour les .com et les .net, PIR pour les .org. Cette vérification part de votre navigateur pendant que vous tapez, puis de mon serveur au moment de la commande, pour confirmer la disponibilité. Seul le nom recherché est transmis.
 
-Pour réserver le nom de domaine, je transmets vos coordonnées de titulaire (prénom, nom, adresse, e-mail, téléphone) au bureau d’enregistrement et au registre de l’extension. C’est obligatoire pour que le nom soit à votre nom. En règle générale, les coordonnées d’un particulier ne sont pas publiées dans l’annuaire public du registre.
+Pour réserver le nom de domaine, je transmets vos coordonnées de titulaire (prénom, nom, adresse, e-mail, téléphone) au bureau d’enregistrement et au registre de l’extension. C’est obligatoire pour que le nom de domaine soit enregistré à votre nom. En règle générale, les coordonnées d’un particulier ne sont pas publiées dans l’annuaire public du registre.
 
 ## 6. Espace client et comptes
 
@@ -111,7 +111,7 @@ Un compte sans aucune connexion depuis 12 mois et sans forfait actif est supprim
 
 ## 8. Destinataires
 
-Vos données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site (${L.host}), par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Elles ne sont jamais vendues ni cédées.
+Vos données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site, ${L.host}, par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Elles ne sont jamais vendues ni cédées.
 
 ## 9. Cookies et stockage local
 
@@ -128,12 +128,12 @@ Vous pouvez demander l’accès à vos données, leur correction, leur suppressi
     path: '/conditions-generales/',
     name: 'Conditions générales',
     title: `Conditions générales de vente | ${site.name}`,
-    description: `Conditions générales de vente de ${site.name} : commande en ligne, création à prix fixe ou lissée, forfaits, engagement, nom de domaine, rétractation, médiation.`,
+    description: `Conditions générales de vente d’${site.name} : commande en ligne, création à prix fixe ou lissée, forfaits, engagement, nom de domaine, rétractation, médiation.`,
     lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif de commande.',
     updated: UPDATED,
     body: `## 1. Objet
 
-Ces conditions s’appliquent à toute commande passée auprès de ${site.name} : création d’un site internet, forfait mensuel ou annuel, options et services liés. Elles complètent le récapitulatif de commande, qui précise le type de site, le forfait, les options et les prix.
+Ces conditions s’appliquent à toute commande passée auprès d’${site.name} : création d’un site internet, forfait mensuel ou annuel, options et services liés. Elles complètent le récapitulatif de commande, qui précise le type de site, le forfait, les options et les prix.
 
 ## 2. Commande en ligne
 
@@ -168,7 +168,7 @@ En cas d’échec de paiement, le client est prévenu par e-mail. Si rien n’es
 
 ## 6. Engagement et résiliation
 
-- **Sans lissage** : le forfait est sans engagement. Le client peut l’arrêter à tout moment depuis son espace client ou par e-mail. L’arrêt prend effet à la fin de la période déjà payée.
+- **Sans lissage** : le forfait est sans engagement. Le client peut l’arrêter à tout moment par e-mail ou par message : le bouton est dans son espace client. L’arrêt prend effet à la fin de la période déjà payée.
 - **Avec lissage** : le client s’engage pour ${lissage.mois} mois, le temps de régler son site. S’il arrête avant, le reste du prix de création devient exigible en une fois. Le forfait s’arrête ensuite à la fin de la période payée.
 
 Le client peut changer de forfait à tout moment. Le nouveau prix s’applique à la période suivante.
@@ -187,7 +187,7 @@ En commandant, le client demande expressément, en cochant la case prévue, que 
 
 Le client est le titulaire de son nom de domaine. ${site.name} y figure comme contact technique, pour pouvoir le gérer. Le nom est réservé après le premier paiement, s’il est encore disponible à ce moment-là.
 
-Le prix d’un nom de domaine standard en .fr ou en .com est compris dans le forfait. Les autres extensions et les noms dits « premium », vendus plus cher par les registres, font l’objet d’un devis.
+Le prix d’un nom de domaine standard en .fr, .com, .net ou .org est compris dans le forfait. Les autres extensions et les noms dits « premium », vendus plus cher par les registres, font l’objet d’un devis.
 
 Si le client possède déjà un nom de domaine, il peut le transférer vers ${site.name} ou le garder chez son prestataire et le faire pointer vers le site. ${site.name} lui envoie les réglages à faire.
 
@@ -233,7 +233,7 @@ Chaque client dispose d’un lien et d’un code de parrainage dans son espace c
 
 ## 18. Responsabilité
 
-${site.name} met tout en œuvre pour que le site reste disponible et sauvegardé. Il ne peut pas être tenu responsable d’une panne de l’hébergeur, d’un registre ou du service de paiement, ni des contenus fournis par le client. Un éventuel dédommagement ne peut pas dépasser les sommes versées au titre du forfait au cours des 12 derniers mois, sauf si la loi en dispose autrement.
+${site.name} met tout en œuvre pour que le site reste disponible et sauvegardé. ${site.name} ne peut pas être tenu responsable d’une panne de l’hébergeur, d’un registre ou du service de paiement, ni des contenus fournis par le client. Un éventuel dédommagement ne peut pas dépasser les sommes versées au titre du forfait au cours des 12 derniers mois, sauf si la loi en dispose autrement.
 
 ## 19. Médiation et litiges
 

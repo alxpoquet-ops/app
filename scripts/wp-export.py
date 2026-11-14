@@ -145,7 +145,7 @@ def collect():
         title = text_of(h1.group(1)) if h1 else path.strip('/')
         segs = [s for s in path.strip('/').split('/') if s]
         body = re.search(r'<body class="([^"]*)"', page)
-        item = {'path': path, 'head': head_of(page), 'body_class': body.group(1) if body else '', 'nobar': 'class="mobile-bar"' not in page}
+        item = {'path': path, 'head': head_of(page), 'body_class': body.group(1) if body else '', 'nobar': 'class="mobile-bar"' not in page, 'noindex': 'content="noindex' in page}
         if path == '/':
             item.update(kind='front', slug='accueil', parent='', title='Accueil')
         else:
@@ -290,8 +290,8 @@ add_action('template_redirect', function () {
 /* Pages à ne pas proposer à Google (remerciement après envoi d'un formulaire) */
 add_filter('wp_sitemaps_posts_query_args', function ($args, $post_type) {
     if ($post_type === 'page') {
-        $merci = get_page_by_path('merci');
-        if ($merci) $args['post__not_in'] = array_merge($args['post__not_in'] ?? [], [$merci->ID]);
+        $hidden = get_posts(['post_type' => 'page', 'post_status' => 'publish', 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => '_aled08_noindex', 'meta_value' => '1']);
+        if ($hidden) $args['post__not_in'] = array_merge($args['post__not_in'] ?? [], $hidden);
     }
     return $args;
 }, 10, 2);
@@ -511,6 +511,7 @@ function aled08_import_run() {
         update_post_meta($id, '_aled08_head', wp_slash($it['head']));
         update_post_meta($id, '_aled08_full', 1);
         update_post_meta($id, '_aled08_body_class', $it['body_class']);
+        if (!empty($it['noindex'])) update_post_meta($id, '_aled08_noindex', '1'); else delete_post_meta($id, '_aled08_noindex');
         if (!empty($it['nobar'])) update_post_meta($id, '_aled08_nobar', 1); else delete_post_meta($id, '_aled08_nobar');
         $ids[$it['path']] = $id;
     }

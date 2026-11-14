@@ -42,7 +42,7 @@ const site = {
     tva: '', // ex. : 'TVA non applicable, art. 293 B du CGI' si vous êtes en franchise de TVA
     mediator: 'en cours de désignation, ses coordonnées seront indiquées ici', // ⚠️ À REMPLACER
     mediatorUrl: '',
-    host: 'o2switch, Clermont-Ferrand (France), www.o2switch.fr',
+    host: 'o2switch, 222-224 boulevard Gustave Flaubert, 63000 Clermont-Ferrand, 04 44 44 60 40, www.o2switch.fr',
     publicationDirector: 'Alexandre Poquet',
   },
 

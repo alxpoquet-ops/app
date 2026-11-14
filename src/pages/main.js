@@ -51,7 +51,7 @@ function home() {
 
 <section class="section"><div class="container">
   <h2 class="section-title">Quel site vous faut-il ?</h2>
-  <p class="section-sub">Un prix de création fixe, et votre site est en ligne en quelques jours.</p>
+  <p class="section-sub">Un prix de création fixe, et un délai annoncé pour chaque type de site.</p>
   ${C.typeCards()}
 </div></section>
 
@@ -124,7 +124,7 @@ function creerPage() {
   const f = C.faq(FAQ.creation, 'Vos questions sur la création', 'faq-creation');
   const body = `${C.pageHero({
     section: 'creer',
-    h1: 'Créez votre site en deux minutes',
+    h1: 'Composez votre site en deux minutes',
     lead: 'Choisissez votre site, votre nom de domaine et votre forfait. Vous voyez le prix tout de suite, et vous commandez en ligne quand vous êtes prêt.',
     crumbs,
   })}
@@ -133,7 +133,7 @@ function creerPage() {
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Et ensuite ?</h2>
   ${C.steps([
-    { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % de la création, ou la première mensualité si le site est lissé, et le premier mois de forfait.` },
+    { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % de la création, ou la première mensualité si le site est lissé, et la première échéance de votre forfait.` },
     { t: 'Je réserve votre nom de domaine', d: 'Il est à votre nom. Je vous écris sous 24 heures avec les questions utiles pour démarrer.' },
     { t: 'Je crée votre site', d: 'Vous recevez un aperçu. Vous me dites ce qui change, je corrige.' },
     { t: 'C’est en ligne', d: 'Vous réglez le solde (sauf si le site est lissé). Vos modifications passent ensuite par votre espace client.' },
@@ -166,6 +166,7 @@ function forfaitsPage() {
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
+  <h2 class="section-title">Trois forfaits, un monstre chacun</h2>
   ${C.billingSwitch()}
   ${C.forfaitCards()}
   ${C.payBox()}
@@ -213,7 +214,7 @@ ${C.ctaBand({ title: 'Votre monstre est choisi ?', text: 'Composez votre site en
     path: '/forfaits/',
     section: 'forfaits',
     title: 'Forfaits Chico, Power et Titan, dès 5 € par mois | ALED08',
-    description: 'Chico à 5 € par mois : hébergement, domaine, sauvegardes, une modification. Power à 20 € : SEO et rapport mensuel. Titan à 40 € : une modification par jour ouvré.',
+    description: 'Chico à 5 € par mois : hébergement, nom de domaine, sauvegardes, une modification. Power à 20 € : SEO et rapport mensuel. Titan à 40 € : une modification par jour.',
     crumbs,
     body,
     schema: [f.schema],
@@ -238,7 +239,7 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
   <div class="reveal">
     <p class="kicker c-mint">${icon('message-circle')}Demande de modification</p>
     <h2>Une demande, et c’est fait</h2>
-    <p>Un horaire, un prix, une photo, une nouvelle page ? Écrivez-le dans votre espace, avec une photo si besoin. Je fais la modification, je vérifie que tout s’affiche bien, et je vous préviens quand c’est en ligne.</p>
+    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. Je fais la modification, je vérifie que tout s’affiche bien, et je vous préviens quand c’est en ligne.</p>
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
       <li>Réponse sous ${delais.reponse}, ou ${delais.titan} avec Titan</li>
@@ -275,7 +276,7 @@ function seoPage() {
   const crumbs = crumb('seo');
   const f = C.faq(FAQ.seo, 'Vos questions sur le SEO', 'faq-seo');
   const levels = [
-    ['chico', 'Les bases', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Google Search Console et suivi']],
+    ['chico', 'Les bases', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Site déclaré dans Google Search Console']],
     ['power', 'Le suivi', ['Tout Chico', 'SEO suivi chaque mois', 'Un rapport de visibilité mensuel']],
     ['titan', 'Le contenu', ['Tout Power', 'Un article de blog par mois, écrit pour votre SEO', `Réponse sous ${delais.titan}`]],
   ];
@@ -474,7 +475,7 @@ function commanderPage() {
       <fieldset class="o-card">
         <legend><span class="b-n">${icon('globe')}</span><span class="b-t">Votre nom de domaine</span></legend>
         <div class="o-in">
-        <p class="b-hint">L’adresse de votre site. Elle est comprise dans le forfait et reste à votre nom. Disponible à l’instant : je la réserve à la commande.</p>
+        <p class="b-hint">L’adresse de votre site. Elle est comprise dans le forfait et reste à votre nom. Je vérifie qu’elle est libre, puis je la réserve à la commande.</p>
         ${C.domainBox({ prefix: 'o', ownName: 'domaine_mien' })}
         </div>
       </fieldset>
@@ -564,7 +565,7 @@ function commanderPage() {
 // ====================================================================== COMMANDE CONFIRMÉE
 function confirmationPage() {
   const S = sections.confirmation;
-  const delaiList = types.map((t) => `${t.delai} pour ${t.label.toLowerCase()}`).join(', ');
+  const delaiList = types.map((t) => `${t.delai} pour ${C.unType(t)}`).join(', ');
   const body = `${C.pageHero({
     section: 'confirmation',
     h1: 'Merci, votre commande est bien reçue !',
@@ -743,7 +744,7 @@ function monEspacePage() {
       <aside class="app-side">
         <div class="app-user">${monster('mascotte')}<div><strong>Pâtisserie Lila</strong><small>patisserie-lila.fr</small></div></div>
         <div class="jauge" data-jauge>
-          <p class="jauge-head">${icon('pencil')}<span>Modifications du mois</span><b><span data-jetons>3</span> / <span data-jetons-max>${P.quota}</span></b></p>
+          <p class="jauge-head">${icon('pencil')}<span>Modifications restantes ce mois</span><b><span data-jetons>3</span> / <span data-jetons-max>${P.quota}</span></b></p>
           <span class="jauge-bar"><i data-jauge-fill style="width:75%"></i></span>
         </div>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
@@ -981,7 +982,7 @@ function ardennesPage() {
   const f = C.faq(
     [
       { q: 'Peut-on se rencontrer ?', a: 'Oui. Dans les Ardennes, on peut se voir autour d’un café ou dans vos locaux. Pour les autres départements, on se parle en visio.' },
-      { q: 'Travaillez-vous avec les associations ?', a: `Oui, avec plaisir. Une page simple pour présenter l’association, ses dates et ses contacts, c’est souvent le site d’une page à ${euro(T('une-page').price)}.` },
+      { q: 'Travaillez-vous avec les associations ?', a: `Oui, avec plaisir. Une page simple pour présenter l’association, ses dates et ses contacts, c’est souvent le site une page à ${euro(T('une-page').price)}.` },
       { q: 'Mon commerce sera-t-il sur Google Maps ?', a: 'C’est le rôle de votre fiche Google. Je peux la créer ou l’améliorer pour que vous apparaissiez sur la carte quand quelqu’un cherche près de chez vous.' },
     ],
     'Vos questions',
@@ -1000,7 +1001,7 @@ Je suis installé à ${site.address.city}. Que vous soyez à Charleville-Méziè
 
 ## Ce que je propose
 
-- **Site d’une page** : ${euro(T('une-page').price)} de création.
+- **Site une page** : ${euro(T('une-page').price)} de création.
 - **Site vitrine** : ${euro(T('vitrine').price)} de création, jusqu’à 5 pages.
 - **Boutique en ligne** : ${euro(T('boutique').price)} de création.
 
