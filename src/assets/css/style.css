@@ -1236,14 +1236,15 @@ button.app-card:hover { transform: translateY(-2px); }
 .coulure { position: fixed; z-index: 80; right: 3px; top: calc(var(--header-h) + 14px); bottom: 22px; width: 14px; pointer-events: none; opacity: 0; transition: opacity .3s; }
 .coulure.is-on { opacity: 1; }
 .coulure i { position: absolute; left: 50%; top: 0; display: block; }
-/* la traînée : fine, de plus en plus marquée vers la goutte */
-.coulure .c-trait { width: 4px; margin-left: -2px; height: calc(var(--p, 0) * (100% - 20px) + 6px); border-radius: 4px; background: linear-gradient(180deg, rgba(226, 88, 154, 0), rgba(226, 88, 154, .55)); }
+/* la traînée : un filet de peinture bien visible, du haut de la page jusqu'à la goutte (il s'allonge quand on descend) */
+.coulure::before { content: ""; position: absolute; left: 50%; top: -5px; width: 10px; height: 8px; margin-left: -5px; border-radius: 50%; background: #E2589A; }
+.coulure .c-trait { width: 5px; margin-left: -2.5px; height: calc(var(--p, 0) * (100% - 20px) + 8px); border-radius: 3px; background: linear-gradient(180deg, #E2589A, #F07DB4 60%, #E2589A); box-shadow: inset -1.5px 0 0 rgba(0, 0, 0, .14), inset 1px 0 0 rgba(255, 255, 255, .28); }
 /* la goutte : pointue en haut, ronde en bas, avec un petit reflet */
 .coulure .c-goutte { width: 14px; height: 20px; margin-left: -7px; top: calc(var(--p, 0) * (100% - 20px)); background: #E2589A;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 20'%3E%3Cpath d='M7 0C7 0 0 9 0 13a7 7 0 0014 0C14 9 7 0 7 0Z'/%3E%3C/svg%3E") center / contain no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 20'%3E%3Cpath d='M7 0C7 0 0 9 0 13a7 7 0 0014 0C14 9 7 0 7 0Z'/%3E%3C/svg%3E") center / contain no-repeat; }
 .coulure .c-reflet { width: 3px; height: 5px; margin-left: -4.5px; top: calc(var(--p, 0) * (100% - 20px) + 9px); border-radius: 50%; background: rgba(255, 255, 255, .7); transform: rotate(20deg); }
-@media (max-width: 960px) { .coulure { right: 1px; bottom: 96px; width: 12px; } .coulure .c-goutte { width: 12px; height: 17px; margin-left: -6px; } .coulure .c-trait { width: 3px; margin-left: -1.5px; } }
+@media (max-width: 960px) { .coulure { right: 1px; bottom: 96px; width: 12px; } .coulure .c-goutte { width: 12px; height: 17px; margin-left: -6px; } .coulure .c-trait { width: 4px; margin-left: -2px; } .coulure::before { width: 8px; height: 7px; margin-left: -4px; } }
 @media print { .coulure { display: none; } }
 
 /* taches de peinture décoratives, par-ci par-là */
