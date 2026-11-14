@@ -591,6 +591,25 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 .prose ul { padding-left: 1.3em; }
 .prose li { margin-bottom: .35em; }
 .legal h2 { font-size: 1.3rem; }
+/* ---------- guides ---------- */
+.callout { margin: 1.3em 0; padding: 16px 18px; border-radius: 18px; background: var(--card); box-shadow: 0 0 0 2px var(--edge) inset; border-left: 6px solid var(--mint-d); }
+.callout p { margin: 0; }
+.callout-warn { border-left-color: var(--peach-d); }
+.prose .list-num { padding-left: 1.4em; }
+.prose h2 { scroll-margin-top: 90px; }
+.section-lead { max-width: 640px; margin: -6px auto 26px; text-align: center; color: var(--muted); }
+.guide-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.guide-card { display: flex; align-items: flex-start; gap: 14px; padding: 18px; border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow-sm); color: var(--ink); text-decoration: none; transition: transform .15s, box-shadow .15s; }
+.guide-card:hover { transform: translateY(-2px); box-shadow: 0 0 0 2px var(--c-d) inset, var(--shadow-sm); }
+.guide-card .type-ico { width: 46px; height: 46px; border-radius: 15px; }
+.guide-card .type-ico .ico { width: 22px; height: 22px; }
+.guide-card-text { display: grid; gap: 4px; min-width: 0; }
+.guide-card-text strong { font-size: 1.05rem; line-height: 1.25; }
+.guide-card-text span { color: var(--muted); font-size: .94rem; line-height: 1.45; }
+.guide-card > .ico { margin-left: auto; margin-top: 12px; flex: none; width: 20px; height: 20px; color: var(--c-dd); }
+.related { padding: 10px 0 56px; }
+.related .guide-cards { margin-bottom: 22px; }
+.link-more { font-weight: 900; color: var(--c-dd); }
 .sitemap-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .sitemap-list a { display: block; padding: 14px 18px; border-radius: 18px; background: var(--card); box-shadow: var(--shadow-sm); color: var(--ink); text-decoration: none; font-weight: 800; }
 .sitemap-list a:hover { box-shadow: 0 0 0 2px var(--lilac) inset, var(--shadow-sm); }
@@ -633,6 +652,7 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
   .nav-link { padding: 10px 11px; }
 }
 @media (max-width: 1000px) {
+  .guide-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   :root { --header-h: 66px; }
   .burger { display: flex; }
   .site-header { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--bg); }
@@ -695,7 +715,7 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
   .type-name { margin-top: 0; }
   .type-pitch, .type-qui, .type-go { grid-column: 1 / -1; }
   .type-pitch { margin-top: 8px; }
-  .feats, .feats-4, .compare, .form-row, .sitemap-list, .years, .duo, .go-links { grid-template-columns: 1fr; }
+  .feats, .feats-4, .compare, .form-row, .sitemap-list, .years, .duo, .go-links, .guide-cards { grid-template-columns: 1fr; }
   .promo { grid-template-columns: auto minmax(0, 1fr); padding: 18px; gap: 14px; }
   .promo .promo-go { display: none; }
   .promo-ico { width: 48px; height: 48px; border-radius: 16px; }

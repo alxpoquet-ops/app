@@ -8,6 +8,7 @@ const C = require('../lib/components');
 const FAQ = require('../content/faq');
 const legal = require('../content/legal');
 const OUTILS = require('../content/outils');
+const GUIDES = require('../content/guides');
 
 const HOME = { name: 'Accueil', path: '/' };
 const DEMO_CRUMBS = [HOME, { name: 'Mon espace', path: '/mon-espace/' }, { name: 'Démo', path: '/mon-espace/demo/' }];
@@ -316,7 +317,9 @@ Ce ne sont **pas des pages inutiles** remplies de mots-clés : Google les repèr
 
 ## Une seule page principale, c’est possible
 
-Votre site peut garder **une seule page principale**, simple et claire, avec tout ce que vous faites. À côté, on ajoute **une série de pages pour le référencement**, chacune sur un sujet précis. Vos visiteurs voient un site simple, et Google trouve plus de bonnes raisons de vous montrer.`)}
+Votre site peut garder **une seule page principale**, simple et claire, avec tout ce que vous faites. À côté, on ajoute **une série de pages pour le référencement**, chacune sur un sujet précis. Vos visiteurs voient un site simple, et Google trouve plus de bonnes raisons de vous montrer.
+
+> Ce site applique la même méthode. Ses [guides](/guides/) répondent chacun à une question précise : le prix d’un site, le choix d’un nom de domaine, la fiche Google, et d’autres.`)}
 </div></section>
 
 <section class="section"><div class="container">
@@ -1025,6 +1028,78 @@ function contactPage() {
   };
 }
 
+// ====================================================================== GUIDES (pages utiles pour le référencement)
+const guideCard = (g) => `<a class="guide-card reveal" href="/guides/${g.slug}/"><span class="type-ico">${icon(g.icon)}</span><span class="guide-card-text"><strong>${inline(g.nom)}</strong><span>${inline(g.resume)}</span></span>${icon('arrow-right')}</a>`;
+
+function guidesHub() {
+  const crumbs = crumb('guides');
+  const body = `${C.pageHero({
+    section: 'guides',
+    h1: 'Guides : tout comprendre avant de créer votre site',
+    lead: 'Des explications simples, écrites pour ceux qui n’y connaissent rien. Pas de jargon, pas de blabla : ce qu’il faut savoir, et rien d’autre.',
+    crumbs,
+  })}
+${GUIDES.groupes
+  .map(
+    (gr, i) => `<section class="section${i % 2 ? ' section-soft' : ''}"><div class="container">
+  <h2 class="section-title">${gr.titre}</h2>
+  <p class="section-lead">${inline(gr.texte)}</p>
+  <div class="guide-cards">${GUIDES.guides.filter((g) => g.groupe === gr.id).map(guideCard).join('')}</div>
+</div></section>`
+  )
+  .join('\n')}
+${C.ctaBand({ title: 'Vous avez votre réponse ?', text: 'Composez votre site en deux minutes : le prix s’affiche avant de commander.' })}`;
+  return {
+    path: '/guides/',
+    section: 'guides',
+    title: 'Guides pour créer son site internet, sans jargon | Alex & Lia',
+    description: 'Prix d’un site, nom de domaine, fiche Google, boutique en ligne, site pour artisan, restaurant ou association : des guides simples pour décider sans se tromper.',
+    crumbs,
+    body,
+    schema: [{ '@type': 'ItemList', itemListElement: GUIDES.guides.map((g, i) => ({ '@type': 'ListItem', position: i + 1, name: g.nom, url: site.url + '/guides/' + g.slug + '/' })) }],
+    priority: 0.8,
+  };
+}
+
+function guidePage(g) {
+  const path = `/guides/${g.slug}/`;
+  const crumbs = [...crumb('guides'), { name: g.nom, path }];
+  const f = C.faq(g.faq, 'Vos questions', 'faq-guide');
+  const voir = g.voir.map((s) => GUIDES.guides.find((x) => x.slug === s)).filter(Boolean);
+  const body = `${C.pageHero({ section: 'guides', h1: g.h1, lead: g.lead, crumbs })}
+<section class="section"><div class="container container-narrow prose reveal">
+  ${md(g.body)}
+</div></section>
+${f.html}
+<nav class="related" aria-label="À lire aussi"><div class="container"><h2 class="section-title">À lire aussi</h2><div class="guide-cards">${voir.map(guideCard).join('')}</div><p class="center"><a class="link-more" href="/guides/">Tous les guides</a></p></div></nav>
+${C.ctaBand()}`;
+  return {
+    path,
+    section: 'guides',
+    title: g.title,
+    description: g.description,
+    crumbs,
+    body,
+    schema: [
+      {
+        '@type': 'Article',
+        '@id': site.url + path + '#article',
+        headline: g.h1,
+        description: g.description,
+        inLanguage: 'fr-FR',
+        datePublished: GUIDES.PUBLIE,
+        dateModified: GUIDES.PUBLIE,
+        author: { '@id': site.url + '/#entreprise' },
+        publisher: { '@id': site.url + '/#entreprise' },
+        image: site.url + '/assets/img/og-image.png',
+        mainEntityOfPage: { '@id': site.url + path + '#page' },
+      },
+      f.schema,
+    ],
+    priority: 0.7,
+  };
+}
+
 // ====================================================================== FAQ COMPLÈTE
 function faqPage() {
   const crumbs = [HOME, { name: 'Questions fréquentes', path: '/faq/' }];
@@ -1086,6 +1161,7 @@ function planDuSite() {
     ['/', 'Accueil'],
     ...Object.entries(sections).filter(([k]) => !hidden.includes(k)).map(([, s]) => [s.path, s.label]),
     ['/faq/', 'Questions fréquentes'],
+    ...GUIDES.guides.map((g) => ['/guides/' + g.slug + '/', g.nom]),
     ...legal.map((l) => [l.path, l.name]),
   ];
   return {
@@ -1127,6 +1203,7 @@ function notFound() {
 function build() {
   return [
     home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), methodePage(), contactPage(), faqPage(),
+    guidesHub(), ...GUIDES.guides.map(guidePage),
     ...legal.map(legalPage), planDuSite(), merci(), notFound(),
   ];
 }

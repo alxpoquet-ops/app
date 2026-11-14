@@ -76,12 +76,12 @@ write(
   'site.webmanifest',
   JSON.stringify(
     {
-      name: 'ALED08, sites internet et SEO',
-      short_name: 'ALED08',
+      name: 'Alex & Lia, sites internet et SEO',
+      short_name: 'Alex & Lia',
       start_url: '/',
       display: 'standalone',
-      background_color: '#FFF8F2',
-      theme_color: '#FFF8F2',
+      background_color: '#16142A',
+      theme_color: '#16142A',
       icons: [
         { src: '/assets/img/logo-192.png', sizes: '192x192', type: 'image/png' },
         { src: '/assets/img/logo-512.png', sizes: '512x512', type: 'image/png' },

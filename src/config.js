@@ -65,6 +65,7 @@ const sections = {
   espace: { path: '/nos-outils/', label: 'Nos outils', color: 'sky', icon: 'toolbox' },
   seo: { path: '/referencement-seo/', label: 'SEO', color: 'butter', icon: 'search-check' },
   contact: { path: '/contact/', label: 'Contact', color: 'peach', icon: 'message-circle' },
+  guides: { path: '/guides/', label: 'Guides', color: 'sky', icon: 'book-open' },
   // Hors du menu principal
   comparatif: { path: '/comparatif/', label: 'Comparatif', color: 'butter', icon: 'scale' },
   fidelite: { path: '/fidelite/', label: 'Fidélité', color: 'pink', icon: 'gift' },
