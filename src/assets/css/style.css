@@ -1232,6 +1232,9 @@ button.app-card:hover { transform: translateY(-2px); }
   -webkit-mask: var(--tache-2) center / contain no-repeat; mask: var(--tache-2) center / contain no-repeat; opacity: .85; transition: transform .4s; }
 .brand:hover .brand-lia::before { transform: translate(-50%, -50%) rotate(20deg) scale(1.08); }
 
+/* la barre de défilement d'origine est cachée : la goutte de peinture la remplace (la page défile toujours pareil) */
+html.js { scrollbar-width: none; -ms-overflow-style: none; }
+html.js::-webkit-scrollbar, html.js body::-webkit-scrollbar { width: 0; height: 0; display: none; }
 /* goutte de peinture qui descend sur le bord droit quand on fait défiler la page (créée par main.js) */
 .coulure { position: fixed; z-index: 80; right: 3px; top: calc(var(--header-h) + 14px); bottom: 22px; width: 14px; pointer-events: none; opacity: 0; transition: opacity .3s; }
 .coulure.is-on { opacity: 1; }
@@ -1245,6 +1248,8 @@ button.app-card:hover { transform: translateY(-2px); }
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 20'%3E%3Cpath d='M7 0C7 0 0 9 0 13a7 7 0 0014 0C14 9 7 0 7 0Z'/%3E%3C/svg%3E") center / contain no-repeat; }
 .coulure .c-reflet { width: 3px; height: 5px; margin-left: -4.5px; top: calc(var(--p, 0) * (100% - 20px) + 9px); border-radius: 50%; background: rgba(255, 255, 255, .7); transform: rotate(20deg); }
 @media (max-width: 960px) { .coulure { right: 1px; bottom: 96px; width: 12px; } .coulure .c-goutte { width: 12px; height: 17px; margin-left: -6px; } .coulure .c-trait { width: 4px; margin-left: -2px; } .coulure::before { width: 8px; height: 7px; margin-left: -4px; } }
+/* à la souris : on peut attraper la goutte ou cliquer sur son rail pour se déplacer dans la page */
+@media (hover: hover) and (pointer: fine) { .coulure { pointer-events: auto; cursor: grab; width: 18px; right: 2px; touch-action: none; } .coulure.is-drag { cursor: grabbing; } }
 @media print { .coulure { display: none; } }
 
 /* taches de peinture décoratives, par-ci par-là */

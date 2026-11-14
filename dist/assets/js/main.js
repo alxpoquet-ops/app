@@ -29,6 +29,21 @@
     window.addEventListener('resize', demande);
     window.addEventListener('load', demande);
     maj();
+    // à la souris : attraper la goutte (ou cliquer sur son rail) fait défiler la page
+    var aller = function (e) {
+      var r = c.getBoundingClientRect(), f = Math.min(1, Math.max(0, (e.clientY - r.top - 10) / Math.max(1, r.height - 20)));
+      window.scrollTo({ top: f * (d.documentElement.scrollHeight - window.innerHeight), behavior: 'auto' });
+    };
+    c.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      e.preventDefault(); c.classList.add('is-drag');
+      if (c.setPointerCapture) c.setPointerCapture(e.pointerId);
+      aller(e);
+    });
+    c.addEventListener('pointermove', function (e) { if (c.classList.contains('is-drag')) aller(e); });
+    var fin = function () { c.classList.remove('is-drag'); };
+    c.addEventListener('pointerup', fin);
+    c.addEventListener('pointercancel', fin);
   })();
 
   // Peinture : sous chaque bouton essentiel, une flaque dessinée au hasard (jamais deux pareilles), et une éclaboussure au clic
