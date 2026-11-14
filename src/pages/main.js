@@ -931,9 +931,19 @@ function espacePage() {
     </div>
     <aside class="login-side">
       <span class="login-art">${monster('mascotte')}</span>
-      <h2 class="h3">Pas encore client ?</h2>
-      <p>Votre compte est créé dès votre commande. Vous recevez alors un e-mail pour choisir votre mot de passe.</p>
-      <div class="login-ctas">${C.btn(site.espaceClient.demo, 'btn-light', 'circle-user', 'Essayer la démo')}${C.btnCreer('btn-primary')}</div>
+      <h2 class="h3" id="inscription">Pas encore de compte ?</h2>
+      <p>Créez-le en une minute, sans rien commander. Vous recevez un e-mail pour choisir votre mot de passe.</p>
+      <p class="form-alert" data-signup-msg hidden></p>
+      <form class="form signup-form" method="post" action="/mon-espace/">
+        <input type="hidden" name="aled08e_inscription" value="1">
+        <div class="hp" aria-hidden="true"><label for="s-web">Ne pas remplir</label><input id="s-web" name="site_web" type="text" tabindex="-1" autocomplete="off"></div>
+        <div class="field"><label for="s-prenom">Prénom</label><input id="s-prenom" name="prenom" type="text" autocomplete="given-name" required maxlength="60"></div>
+        <div class="field"><label for="s-nom">Nom</label><input id="s-nom" name="nom" type="text" autocomplete="family-name" maxlength="60"></div>
+        <div class="field"><label for="s-email">E-mail</label><input id="s-email" name="email" type="email" autocomplete="email" required></div>
+        <button class="btn btn-primary btn-block" type="submit">${icon('circle-user')}<span>Créer mon compte</span></button>
+        <p class="form-note">Gratuit et sans engagement. Votre adresse sert seulement à votre compte (<a href="/politique-de-confidentialite/">confidentialité</a>).</p>
+      </form>
+      <div class="login-ctas">${C.btn(site.espaceClient.demo, 'btn-light', 'circle-user', 'Essayer la démo')}${C.btnCreer('btn-light')}</div>
     </aside>
   </div>
 </div></section>`;

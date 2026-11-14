@@ -1152,3 +1152,7 @@ button.app-card:hover { transform: translateY(-2px); }
 .compare-col h3 .monster { width: 48px; height: 48px; flex: none; }
 
 .seo-ex { padding: 14px 16px; border-radius: 18px; background: #fff; border-left: 5px solid var(--mint-d, #3fbf8f); }
+
+.form-ok { padding: 14px 18px; border-radius: 18px; background: var(--mint); color: var(--mint-dd); font-weight: 800; margin: 0; }
+.signup-form { width: 100%; text-align: left; margin: 8px 0 16px; }
+.form-note { font-size: .9rem; color: var(--muted); margin: 0; }

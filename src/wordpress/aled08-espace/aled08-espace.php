@@ -88,6 +88,7 @@ require_once __DIR__ . '/includes/ovh.php';
 require_once __DIR__ . '/includes/provision.php';
 require_once __DIR__ . '/includes/lia.php';
 require_once __DIR__ . '/includes/compte.php';
+require_once __DIR__ . '/includes/inscription.php';
 
 /* =========================================================================
  *  Rôle « Client Alex & Lia » et type de contenu « Demande »
@@ -175,7 +176,8 @@ add_filter('wp_new_user_notification_email', function ($email, $user) {
     $email['message'] = 'Bonjour ' . aled08e_prenom($user) . ",\n\n"
         . ($ctx && !empty($ctx['ref'])
             ? 'Votre commande ' . $ctx['ref'] . ' est bien enregistrée. Votre espace client Alex & Lia est prêt : vous y suivez votre commande, puis vous y envoyez vos demandes de modification. Vous y retrouvez aussi votre QR code, votre lien d’avis, votre parrainage et vos factures.' . "\n\n"
-            : 'Votre espace client Alex & Lia est prêt. Vous y envoyez vos demandes de modification, vous suivez leur avancement, et vous retrouvez votre QR code, votre lien d’avis, votre parrainage et vos factures.' . "\n\n")
+            : (get_user_meta($user->ID, 'aled08_inscrit_seul', true) ? 'Votre compte Alex & Lia est créé, merci ! Quand vous commanderez votre site, vous y suivrez tout : la commande, vos demandes de modification à Lia ou à Alex, votre QR code et votre parrainage.' . "\n\n"
+            : 'Votre espace client Alex & Lia est prêt. Vous y envoyez vos demandes de modification, vous suivez leur avancement, et vous retrouvez votre QR code, votre lien d’avis, votre parrainage et vos factures.' . "\n\n"))
         . "Pour choisir votre mot de passe, ouvrez ce lien :\n" . $link . "\n\n"
         . "Ensuite, connectez-vous ici :\n" . aled08e_url() . "\n"
         . 'Votre identifiant : ' . $user->user_login . " (ou votre adresse e-mail)\n\n"
@@ -541,7 +543,7 @@ add_shortcode('aled08_espace', function ($atts, $content = '') {
         );
         if (isset($_GET['mdp'])) $c = str_replace('<form class="form" method="post"', '<p class="esp-warn">Si cette adresse correspond à un compte, un e-mail vient de partir pour choisir un nouveau mot de passe.</p><form class="form" method="post"', $c);
         if (isset($_GET['connexion'])) $c = str_replace('data-login-error hidden', 'data-login-error', $c);
-        return $c;
+        return aled08e_inscription_message($c);
     }
     return aled08e_dashboard();
 });
@@ -658,6 +660,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
 function aled08e_dashboard() {
     $u = wp_get_current_user();
     $uid = $u->ID;
+    if (aled08e_sans_forfait($uid)) return aled08e_dashboard_libre($u);
     $D = aled08e_data();
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
     $annuel = aled08e_meta($uid, 'paiement') === 'annee';

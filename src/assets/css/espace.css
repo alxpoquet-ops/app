@@ -132,3 +132,4 @@
 .esp-form .btn { justify-self: start; }
 .esp-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 @media (max-width: 720px) { .esp-grid2 { grid-template-columns: 1fr; } .esp-form .btn { justify-self: stretch; } }
+a.app-card { text-decoration: none; color: inherit; }

@@ -41,7 +41,7 @@ module.exports = {
   espace: [
     { q: 'Comment demander une modification ?', a: 'Depuis votre espace client : vous écrivez ce que vous voulez changer, avec une photo si besoin. Vous pouvez aussi m’écrire sur WhatsApp. Je m’occupe du reste.' },
     { q: 'En combien de temps est-ce fait ?', a: `Je vous réponds sous ${delais.reponse} en jours ouvrés${titan ? `, et sous ${delais.titan} avec ${titan.name}` : ''}. Une petite modification est en général en ligne dans ce délai. Je vous préviens dès que c’est fait.` },
-    { q: 'Comment est créé mon compte ?', a: 'Tout seul, dès que votre commande est validée. Vous recevez un e-mail avec un lien pour choisir votre mot de passe. Si un compte existait déjà avec votre adresse, la commande y est simplement rattachée.' },
+    { q: 'Comment est créé mon compte ?', a: 'Tout seul, dès que votre commande est validée. Vous pouvez aussi le créer avant, sans rien commander, sur la page Mon espace. Dans les deux cas, vous recevez un e-mail avec un lien pour choisir votre mot de passe. Si un compte existait déjà avec votre adresse, la commande y est simplement rattachée.' },
     { q: 'Mon compte peut-il être supprimé ?', a: 'Seulement s’il ne sert plus : aucune connexion depuis 12 mois et aucun forfait actif. Je vous préviens par e-mail 30 jours avant, et une simple connexion annule tout. Tant que votre forfait tourne, votre compte reste.' },
     { q: 'Les outils de l’espace client sont-ils payants ?', a: 'Non. Tableau de bord, QR code, lien d’avis et factures sont gratuits pour les sites hébergés chez moi.' },
   ],
