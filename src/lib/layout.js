@@ -123,7 +123,7 @@ function footer(p) {
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand" href="/">${logoMark({ id: 'lgf' })}<span class="brand-text"><strong>${site.name}</strong><small>${site.baseline}</small></span></a>
-      <p>Des sites internet simples, rapides et pensés pour Google, créés avec Lia et vérifiés par Alex. Tout se fait en ligne, pour des clients partout en France.</p>
+      <p>Des sites internet simples, rapides et faits pour être trouvés sur Google, créés avec Lia et vérifiés par Alex. Tout se fait en ligne, pour des clients partout en France.</p>
       <ul class="footer-contact">
         <li><a href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}WhatsApp</a></li>
         <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>

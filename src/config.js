@@ -138,6 +138,8 @@ const forfaits = [
     modifs: 'Une modification par mois',
     tagline: 'L’essentiel',
     pitch: 'Votre site en ligne, sûr et à jour, sur un serveur de qualité. Une modification par Alex et un jeton Lia chaque mois.',
+    main: ['Site hébergé, sécurisé et tenu à jour', 'Nom de domaine compris', 'Une modification par Alex et un jeton Lia par mois'],
+    details: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié à votre site et renouvelé chaque année (liaison OVH)', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour des extensions, faites pour vous', 'Formulaire de contact qui arrive dans votre boîte mail', 'Gestion du flux de visites : le site tient quand il y a du monde', 'Bases du SEO : Google sait lire et comprendre votre site', 'Une modification par Alex chaque mois, réponse sous 48 heures', 'Un jeton Lia par mois : Lia fait une petite modification tout de suite', 'Votre espace client : demandes, suivi, QR code et parrainage', 'Sans engagement : vous arrêtez quand vous voulez'],
     features: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié et renouvelé', 'Mises à jour des extensions', 'Formulaire de contact et HTTPS', 'Gestion du flux de visites', 'Bases du SEO : Google sait lire votre site', 'Une modification par Alex et un jeton Lia par mois'],
   },
   {
@@ -151,6 +153,8 @@ const forfaits = [
     conseil: true,
     tagline: 'Pour être trouvé',
     pitch: 'Tout Chico, plus le SEO : je fais remonter votre site sur Google. Serveur plus rapide, support et modifications rapides.',
+    main: ['Tout ce que comprend Chico', 'Le SEO : votre site monte sur Google', 'Quatre modifications et quatre jetons Lia par mois'],
+    details: ['Tout ce que comprend Chico, et en plus :', 'Le SEO suivi chaque mois : je choisis avec vous les mots que vos clients tapent et je fais monter votre site', 'Un serveur plus rapide, pour accueillir plus de visites', 'Un support rapide quand vous avez une question', 'Vos modifications faites plus vite', 'Quatre modifications par Alex par mois', 'Quatre jetons Lia par mois'],
     features: ['Tout ce que comprend Chico', 'SEO : je fais remonter votre site sur Google, chaque mois', 'Serveur plus rapide, pour plus de visites', 'Support et modifications rapides', 'Quatre modifications par Alex et quatre jetons Lia par mois'],
   },
   {
@@ -164,6 +168,8 @@ const forfaits = [
     conseil: false,
     tagline: 'Le meilleur',
     pitch: 'Tout Power, plus le retour de vos ventes et de vos chiffres chaque mois, et nos outils en illimité.',
+    main: ['Tout ce que comprend Power', 'Vos ventes et vos chiffres chaque mois', 'Une modification par jour ouvré, jetons Lia illimités'],
+    details: ['Tout ce que comprend Power, et en plus :', 'Un rapport chaque mois : vos ventes, vos visites et vos chiffres, expliqués simplement', 'Accès illimité à nos outils : jetons Lia sans limite', 'Une modification par Alex chaque jour ouvré', 'Réponse sous 24 heures'],
     features: ['Tout ce que comprend Power', 'Retour de vos ventes et de vos chiffres chaque mois', 'Accès illimité à nos outils : jetons Lia illimités', 'Une modification par Alex chaque jour ouvré'],
   },
 ];

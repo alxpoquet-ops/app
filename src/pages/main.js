@@ -70,7 +70,9 @@ function home() {
   <div class="reveal">
     <p class="kicker c-mint">${icon('search-check')}Référencement</p>
     <h2>Le SEO, je maîtrise</h2>
-    <p>Être joli ne suffit pas : votre site doit sortir quand vos clients cherchent. Le référencement, c’est ma spécialité. Chaque site est construit pour Google dès le départ, puis je le suis mois après mois.</p>
+    <p>Le SEO, c’est ce qui fait apparaître votre site sur Google quand quelqu’un cherche ce que vous faites.</p>
+    <p class="seo-ex"><strong>Exemple :</strong> une personne tape « plombier Charleville » sur son téléphone. Si votre site est bien préparé, il sort dans les premiers résultats. Elle clique, elle vous appelle, et pas votre concurrent.</p>
+    <p>Pour ça, je prépare votre site dès la création : les bons mots dans les titres et les textes, un site rapide, une fiche Google. Avec le forfait Power, je le fais monter mois après mois.</p>
     <ul class="pillars">${pillars.map(([ic, t, d]) => `<li>${icon(ic)}<span><strong>${t}</strong><small>${d}</small></span></li>`).join('')}</ul>
     <p>${C.btn('/referencement-seo/', 'btn-light', 'search-check', 'Ma méthode SEO')}</p>
   </div>
@@ -86,8 +88,8 @@ function home() {
 <section class="section section-soft c-sky"><div class="container split">
   <div class="reveal">
     <p class="kicker c-sky">${icon('toolbox')}Nos outils</p>
-    <h2>Vous demandez, je m’en occupe</h2>
-    <p>Une modification ? Envoyez votre demande depuis votre espace client, avec une photo si besoin. Je la fais de mon côté et je vous préviens quand c’est en ligne. Vous n’avez rien de technique à gérer.</p>
+    <h2>Vous demandez, Lia ou Alex s’en occupe</h2>
+    <p>Une modification ? Envoyez votre demande depuis votre espace client, avec une photo si besoin, et choisissez qui la fait : Lia, tout de suite, avec un jeton, ou Alex, à la main, pour ce qui demande un regard humain. Vous êtes prévenu quand c’est en ligne. Vous n’avez rien de technique à gérer.</p>
     <div class="hero-ctas">${C.btn('/nos-outils/', 'btn-primary', 'toolbox', 'Découvrir nos outils')}${C.btn(site.espaceClient.demo, 'btn-light', 'circle-user', 'Essayer la démo')}</div>
   </div>
   ${C.phoneEdit()}
@@ -228,8 +230,8 @@ function outilsPage() {
   const f = C.faq(FAQ.espace, 'Vos questions sur l’espace client', 'faq-outils');
   const body = `${C.pageHero({
     section: 'espace',
-    h1: 'Nos outils : vous demandez, je m’en occupe',
-    lead: 'Depuis votre espace client, vous m’envoyez vos demandes de modification. Je les fais de mon côté, vous n’avez rien de technique à gérer. Et les outils de l’espace sont gratuits pour les sites hébergés chez moi.',
+    h1: 'Nos outils : vous demandez, Lia ou Alex s’en occupe',
+    lead: 'Depuis votre espace client, vous envoyez vos demandes de modification. Lia les fait tout de suite, ou Alex à la main, au choix : vous n’avez rien de technique à gérer. Et les outils de l’espace sont gratuits pour les sites hébergés chez moi.',
     crumbs,
   })}
 ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez-moi vos demandes par message ou par WhatsApp : je m’en occupe de la même façon.</span></p></div>`}
@@ -239,7 +241,7 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
   <div class="reveal">
     <p class="kicker c-mint">${icon('message-circle')}Demande de modification</p>
     <h2>Une demande, et c’est fait</h2>
-    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. Je fais la modification, je vérifie que tout s’affiche bien, et je vous préviens quand c’est en ligne.</p>
+    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. Lia fait la modification tout de suite, ou Alex s’en charge à la main. Alex vérifie toujours que tout s’affiche bien, et vous êtes prévenu quand c’est en ligne.</p>
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
       <li>Réponse sous ${delais.reponse}, ou ${delais.titan} avec Titan</li>
@@ -263,7 +265,7 @@ ${C.ctaBand({ title: 'Prêt à vous libérer du technique ?', text: 'Créez votr
     path: '/nos-outils/',
     section: 'espace',
     title: 'Nos outils : vos demandes de modification, gérées par moi | Alex & Lia',
-    description: 'Envoyez vos demandes de modification depuis votre espace client, je m’en occupe. Tableau de bord, QR code et lien d’avis gratuits pour les sites hébergés chez moi.',
+    description: 'Vos modifications depuis votre espace client, faites par Lia ou par Alex. Tableau de bord, QR code et lien d’avis gratuits pour les sites hébergés chez moi.',
     crumbs,
     body,
     schema: [f.schema],
@@ -685,7 +687,7 @@ function methodePage() {
 
 Un site vitrine demande d’habitude de longues heures de travail : mise en page, code, textes, tests. Avec l’IA, une bonne partie de ce travail va beaucoup plus vite. Je passe moins d’heures sur votre projet, donc je peux vous le facturer moins cher.
 
-Le résultat, lui, reste du travail soigné : un site rapide, adapté au téléphone, sécurisé et prêt pour Google.`)}
+Le résultat, lui, reste du travail soigné : un site rapide, adapté au téléphone, sécurisé et prêt à être trouvé sur Google.`)}
 </div></section>
 
 <section class="section section-soft"><div class="container">

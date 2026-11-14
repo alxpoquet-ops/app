@@ -125,3 +125,10 @@
 .req-par-opt input:disabled + span { opacity: .5; cursor: not-allowed; }
 .jauge-lia .ico { color: var(--mint-d); }
 @media (max-width: 720px) { .req-par { grid-template-columns: minmax(0, 1fr); } }
+
+/* Mon compte */
+.esp-form { display: grid; gap: 12px; padding: 16px; margin: 0 0 16px; border-radius: 22px; background: var(--soft); }
+.esp-form .app-sub { display: flex; align-items: center; gap: 8px; margin: 0; }
+.esp-form .btn { justify-self: start; }
+.esp-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 720px) { .esp-grid2 { grid-template-columns: 1fr; } .esp-form .btn { justify-self: stretch; } }

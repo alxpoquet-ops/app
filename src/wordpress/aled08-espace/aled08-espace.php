@@ -87,6 +87,7 @@ require_once __DIR__ . '/includes/admin.php';
 require_once __DIR__ . '/includes/ovh.php';
 require_once __DIR__ . '/includes/provision.php';
 require_once __DIR__ . '/includes/lia.php';
+require_once __DIR__ . '/includes/compte.php';
 
 /* =========================================================================
  *  Rôle « Client Alex & Lia » et type de contenu « Demande »
@@ -780,7 +781,7 @@ function aled08e_dashboard() {
           <?php
           echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
           if ($cmd) echo aled08e_tab('commande', 'package', 'Ma commande'); // phpcs:ignore
-          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'chart-line', 'Tableau de bord') . aled08e_tab('outils', 'qr-code', 'QR code et avis') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('forfait', 'heart', 'Forfait et factures'); // phpcs:ignore
+          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'chart-line', 'Tableau de bord') . aled08e_tab('outils', 'qr-code', 'QR code et avis') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('forfait', 'heart', 'Forfait et factures') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -938,6 +939,10 @@ function aled08e_dashboard() {
           <p class="app-sub">Nom de domaine</p>
           <p class="app-domain"><?php echo aled08e_icon('globe'); // phpcs:ignore ?><span><strong><?php echo esc_html($host ?: aled08e_meta($uid, 'domaine_info')); ?></strong><small><?php echo esc_html(aled08e_meta($uid, 'domaine_info') ?: ($cmd && $cmd['domaine_mien'] ? 'Votre nom de domaine actuel' : 'À votre nom, renouvelé avec le forfait')); ?></small></span></p>
           <?php endif; ?>
+        </div>
+
+        <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
+          <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>
         </div>
 
       </div>

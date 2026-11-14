@@ -187,12 +187,25 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 /* ---------- forfaits : version courte ---------- */
 .minis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .mini { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; padding: 22px 22px 26px; border-radius: var(--radius-lg); background: #fff; box-shadow: var(--shadow); text-decoration: none; color: var(--text); transition: transform .2s; }
-.mini:hover { transform: translateY(-4px); color: var(--text); }
+.mini:hover { color: var(--text); }
 .mini-art { width: 130px; margin: -4px 0 4px; padding: 10px; border-radius: 50%; background: var(--c); }
 .mini-name { font-weight: 900; font-size: 1.5rem; color: var(--ink); }
 .mini-price { color: var(--muted); font-weight: 800; }
 .mini-price b { font-size: 1.5rem; color: var(--c-dd); }
 .mini-tag { font-weight: 700; }
+.mini h3.mini-name { margin: 0; }
+.mini-main { list-style: none; margin: 10px 0 4px; padding: 0; display: grid; gap: 8px; text-align: left; width: 100%; }
+.mini-main li { display: flex; gap: 8px; align-items: flex-start; font-weight: 700; line-height: 1.35; }
+.mini-main .ico { flex: none; width: 20px; height: 20px; margin-top: 1px; color: var(--c-dd); }
+.mini-more { width: 100%; margin: 6px 0 12px; text-align: left; border-radius: 16px; background: var(--soft); }
+.mini-more summary { display: flex; gap: 8px; align-items: center; padding: 12px 14px; min-height: 44px; cursor: pointer; font-weight: 800; color: var(--c-dd); list-style: none; }
+.mini-more summary::-webkit-details-marker { display: none; }
+.mini-more summary::after { content: '+'; margin-left: auto; font-size: 1.3rem; line-height: 1; }
+.mini-more[open] summary::after { content: '−'; }
+.mini-more summary .ico { width: 20px; height: 20px; flex: none; }
+.mini-more ul { margin: 0; padding: 0 16px 14px 34px; display: grid; gap: 6px; color: var(--text); line-height: 1.4; }
+.mini .btn { margin-top: auto; }
+.minis { align-items: start; }
 
 /* ---------- forfaits : version complète ---------- */
 .billing-switch { display: flex; width: max-content; max-width: 100%; margin: 0 auto 34px; padding: 6px; gap: 4px; border-radius: 999px; background: #fff; box-shadow: var(--shadow-sm); }
@@ -1137,3 +1150,5 @@ button.app-card:hover { transform: translateY(-2px); }
 .jauge + .jauge { margin-top: 8px; }
 .jauge-lia .ico { color: var(--mint-d); }
 .compare-col h3 .monster { width: 48px; height: 48px; flex: none; }
+
+.seo-ex { padding: 14px 16px; border-radius: 18px; background: #fff; border-left: 5px solid var(--mint-d, #3fbf8f); }

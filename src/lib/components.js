@@ -133,12 +133,16 @@ function payBox() {
 function forfaitMinis() {
   return `<div class="minis">${forfaits
     .map(
-      (f) => `<a class="mini c-${f.color} reveal" href="/forfaits/#${f.id}">
+      (f) => `<article class="mini c-${f.color} reveal">
     <span class="mini-art">${monster(f.id)}</span>
-    <span class="mini-name">${f.name}</span>
+    <h3 class="mini-name">${f.name}</h3>
     <span class="mini-price"><b>${euro(f.month)}</b>/mois</span>
-    <span class="mini-tag">${f.modifs}</span>
-  </a>`
+    <ul class="mini-main">${f.main.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>
+    <details class="mini-more"><summary>${icon('info')}<span>Tout ce que comprend ${f.name}</span></summary>
+      <ul>${f.details.map((x) => `<li>${inline(x)}</li>`).join('')}</ul>
+    </details>
+    ${btn(creerUrl({ forfait: f.id }), 'btn-light btn-block', null, `Choisir ${f.name}`)}
+  </article>`
     )
     .join('')}</div>`;
 }
