@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { site, sections, types, pageEnPlus, entretien, jetons, forfaits, annuel, options, paiement, shopify, stripe } = require('../config');
+const { site, sections, types, pageEnPlus, forfaits, annuel, lissage, options, paiement, shopify, stripe } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
 const { inline, esc, plain } = require('./md');
@@ -107,22 +107,15 @@ function typeCards() {
     .join('')}</div>`;
 }
 
-// ---------------------------------------------------------------- entretien et jetons
-function entretienBox() {
-  return `<div class="base-box reveal">
-  <div class="base-art">${monster('mascotte')}</div>
-  <div class="base-text">
-    <p class="base-kicker">Toujours compris</p>
-    <h3>L’entretien : <span class="base-price">${billed(entretien.month)}</span></h3>
-    <ul class="list-check">${entretien.features.map((x) => `<li>${inline(x)}</li>`).join('')}</ul>
-  </div>
-</div>`;
-}
-function jetonsBox() {
+// ---------------------------------------------------------------- prix du site lissé
+const lisse = (price) => Math.round(price / lissage.mois * 100) / 100;
+function payBox() {
   return `<div class="jetons-box reveal">
-  <h3>${icon('coins')}Comment marchent les jetons IA ?</h3>
-  <p>Chaque mois, votre forfait vous donne des jetons. <strong>Un jeton, c’est une petite modification ou une publication</strong>, que je la fasse pour vous ou que vous passiez par <a href="/nos-outils/">nos outils</a>. Tous les forfaits ont accès à tous les outils.</p>
-  <p class="jetons-recharge">${icon('plus')}<span>Besoin de plus ? Rechargez quand vous voulez : <strong>${euro(jetons.recharge.price)} les ${jetons.recharge.qty} jetons</strong>.</span></p>
+  <h3>${icon('calendar-check')}Comment payer ?</h3>
+  <ul class="list-check">
+    <li><strong>Le site</strong> : en une fois, ou lissé sur 2 ans si vous préférez (engagement de 2 ans). Par exemple ${types.map((t) => `${euro(lisse(t.price))} par mois pour ${t.label.toLowerCase()}`).join(', ')}.</li>
+    <li><strong>Le forfait</strong> : au mois, ou à l’année avec ${annuel.moisOfferts} mois offerts.</li>
+  </ul>
 </div>`;
 }
 
@@ -135,7 +128,7 @@ function forfaitMinis() {
     <span class="mini-art">${monster(f.id)}</span>
     <span class="mini-name">${f.name}</span>
     <span class="mini-price"><b>${euro(f.month)}</b>/mois</span>
-    <span class="mini-tag">${f.jetons} jetons IA par mois</span>
+    <span class="mini-tag">${f.modifs}</span>
   </a>`
     )
     .join('')}</div>`;
@@ -153,8 +146,7 @@ function forfaitCards({ choose = true } = {}) {
       <p class="plan-tagline">${inline(f.tagline)}</p>
     </div>
     <p class="plan-price">${billed(f.month)}</p>
-    <p class="plan-detail">Entretien compris : ${euro(entretien.month)} + ${euro(f.plus)}</p>
-    <p class="plan-jetons">${icon('coins')}<b>${f.jetons}</b> jetons IA par mois</p>
+    <p class="plan-jetons">${icon('pencil')}${f.modifs}</p>
     <ul class="plan-list">${f.features.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>
     ${choose ? btn(creerUrl({ forfait: f.id }), 'btn-primary btn-block', null, `Choisir ${f.name}`) : ''}
   </article>`
@@ -183,10 +175,11 @@ function optionsCompact() {
 
 // ---------------------------------------------------------------- configurateur « Créer mon site »
 function configurator() {
-  const plans = [{ id: 'entretien', name: 'Entretien seul', month: entretien.month, jetons: 0 }, ...forfaits];
+  const plans = forfaits;
   const data = esc(
     JSON.stringify({
       types: types.map((t) => ({ id: t.id, label: t.label, price: t.price })),
+      lissage: lissage.mois,
       forfaits: plans.map((f) => ({ id: f.id, name: f.name, month: f.month })),
       options: options.map((o) => ({ id: o.id, name: o.name, once: o.price.once || 0, month: o.price.month || 0 })),
       free: annuel.moisOfferts,
@@ -216,12 +209,18 @@ function configurator() {
         <label class="b-tick"><input type="checkbox" data-domain-own><span>J’ai déjà un nom de domaine</span></label>
       </div>`;
   const forfaitChoices = `<div class="b-choices b-plans">${plans
-    .map((f) => {
-      const isBase = f.id === 'entretien';
-      return `<label class="b-choice c-${isBase ? 'mint' : f.color}"><input type="radio" name="b-forfait" value="${f.id}"${f.conseil ? ' checked' : ''}>
-        <span class="b-card"><span class="b-art">${monster(isBase ? 'mascotte' : f.id)}</span><strong>${f.name}</strong><span class="b-price">${billed(f.month)}</span><small>${isBase ? 'Sans jetons IA' : `${f.jetons} jetons IA par mois`}</small><span class="b-check">${icon('check')}</span></span></label>`;
-    })
-    .join('')}</div><p class="b-note">${icon('info')}Tous les prix comprennent l’entretien (${euro(entretien.month)} par mois). Jetons en plus : ${euro(jetons.recharge.price)} les ${jetons.recharge.qty}. <a href="/forfaits/">Comparer les forfaits</a></p>`;
+    .map(
+      (f) => `<label class="b-choice c-${f.color}"><input type="radio" name="b-forfait" value="${f.id}"${f.conseil ? ' checked' : ''}>
+        <span class="b-card"><span class="b-art">${monster(f.id)}</span><strong>${f.name}</strong><span class="b-price">${billed(f.month)}</span><small>${f.modifs}</small><span class="b-check">${icon('check')}</span></span></label>`
+    )
+    .join('')}</div><p class="b-note">${icon('info')}Chico : sauvegardes, mises à jour, nom de domaine. Power ajoute le SEO et un rapport mensuel. <a href="/forfaits/">Comparer</a></p>`;
+  const payChoices = `<p class="b-label">Le site</p>
+      <div class="b-seg" role="radiogroup" aria-label="Paiement du site">
+        <label><input type="radio" name="b-lisse" value="non" checked><span>En une fois</span></label>
+        <label><input type="radio" name="b-lisse" value="oui"><span>Lissé sur 2 ans</span></label>
+      </div>
+      <p class="b-label">Le forfait</p>
+      ${billingSwitch()}`;
   const optionList = `<details class="b-options">
         <summary>${icon('plus')}<span>Ajouter des options <small>(facultatif, activables plus tard)</small></span>${icon('chevron-down')}</summary>
         ${[
@@ -242,21 +241,22 @@ function configurator() {
   return `<div class="builder" data-builder="${data}" data-billing-scope>
   <form class="b-steps" data-builder-form>
     ${step(1, 'Votre site', 'Le prix de création est fixe. Il comprend la maquette, le site complet et la mise en ligne.', typeChoices)}
-    ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est incluse dans l’entretien et elle reste à votre nom.', domain)}
-    ${step(3, 'Votre forfait', 'L’entretien est toujours compris. Les forfaits ajoutent des modifications chaque mois (jetons), le SEO et le support prioritaire.', forfaitChoices)}
-    ${step(4, 'Paiement mensuel ou annuel', 'À l’année : engagement d’un an, payé en une fois, avec deux mois offerts.', billingSwitch())}
+    ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est comprise dans les forfaits et elle reste à votre nom.', domain)}
+    ${step(3, 'Votre forfait', 'Je m’occupe de votre site chaque mois. Les modifications, c’est moi qui les fais.', forfaitChoices)}
+    ${step(4, 'Paiement', 'Le site en une fois, ou lissé sur 2 ans (engagement de 2 ans). Le forfait au mois, ou à l’année avec deux mois offerts.', payChoices)}
     ${step(5, 'Options', 'Rien n’est obligatoire : vous pourrez aussi les ajouter plus tard depuis votre espace client.', optionList, ' b-step-last')}
   </form>
   <aside class="b-sum" aria-live="polite">
     <p class="b-sum-title">Votre récapitulatif</p>
     <ul class="b-lines">
-      <li><span data-sum="type">Site vitrine</span><b data-sum="type-price">150 €</b></li>
+      <li><span data-sum="type">Site vitrine</span><b data-sum="type-price">250 €</b></li>
       <li><span data-sum="domain">Nom de domaine à choisir</span><b>inclus</b></li>
-      <li><span data-sum="forfait">Entretien et forfait Power</span><b data-sum="forfait-price">20 €/mois</b></li>
+      <li><span data-sum="forfait">Forfait Power</span><b data-sum="forfait-price">20 €/mois</b></li>
       <li data-sum-opts hidden><span>Options</span><b data-sum="opts">0 €</b></li>
     </ul>
     <div class="b-total">
-      <p><span>Création, une fois</span><b data-sum="once">150 €</b></p>
+      <p><span data-sum="once-label">Création, une fois</span><b data-sum="once">250 €</b></p>
+      <p data-sum-lisse hidden><span>Site lissé, pendant 2 ans</span><b data-sum="lisse">0 €</b></p>
       <p><span data-sum="recur-label">Puis chaque mois</span><b data-sum="recur">20 €</b></p>
     </div>
     <p class="b-shopify" data-sum-shopify hidden>${icon('store')}<span>Chez Shopify, le forfait Basic seul coûte ${euro(shopify.basicMensuel)} par mois, sans création ni suivi. <a href="/comparatif-shopify/">Voir le comparatif</a></span></p>
@@ -264,7 +264,7 @@ function configurator() {
     <p class="b-sum-note">Gratuit et sans engagement : je vous réponds avec un récapitulatif à valider.</p>
   </aside>
   <div class="b-bar" data-sum-bar>
-    <p><b data-sum="once">150 €</b> puis <b data-sum="recur-short">20 €/mois</b></p>
+    <p><b data-sum="once">250 €</b> puis <b data-sum="recur-short">20 €/mois</b></p>
     <a class="btn btn-primary btn-sm" href="/contact/#devis" data-sum-go>${icon('send')}<span>Envoyer</span></a>
   </div>
 </div>`;
@@ -290,7 +290,7 @@ function phoneSocial() {
     ['map-pin', 'Fiche Google', 'Avec l’adresse'],
   ];
   return `<div class="phone reveal" aria-hidden="true">
-  <div class="phone-top">${monster('titan')}<span>Publier</span><em>Exemple</em></div>
+  <div class="phone-top">${monster('power')}<span>Publier</span><em>Exemple</em></div>
   <div class="phone-body social">
     <div class="post-photo">${icon('image')}</div>
     <p class="post-desc">« Nouvelle tarte aux fraises ce week-end »</p>
@@ -317,7 +317,7 @@ function shopifyTable() {
   const b = T('boutique');
   const rows = [
     ['Création de la boutique', 'À faire vous-même, ou à confier à un prestataire', `Faite par moi : ${euro(b.price)}, une fois`],
-    ['Abonnement', `${euro(shopify.basicMensuel)} par mois, ou ${euro(shopify.basicAnnuel)} par mois à l’année`, `Entretien : ${euro(entretien.month)} par mois, ou ${euro(year(entretien.month))} par an`],
+    ['Abonnement', `${euro(shopify.basicMensuel)} par mois, ou ${euro(shopify.basicAnnuel)} par mois à l’année`, `${euro(forfaits[0].month)} par mois, ou ${euro(year(forfaits[0].month))} par an (forfait Chico)`],
     ['Nom de domaine', 'En plus', 'Inclus'],
     ['Mises à jour, sécurité, sauvegardes', 'À surveiller vous-même', 'Incluses'],
     ['Référencement (SEO)', 'À faire vous-même, souvent avec des applications', 'Bases faites par moi, suivi dans les forfaits'],
@@ -333,5 +333,5 @@ function shopifyTable() {
 
 module.exports = {
   tel, waUrl, euro, creerUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
-  billingSwitch, billed, typeCards, entretienBox, jetonsBox, forfaitMinis, forfaitCards, optPrice, optionsCompact, configurator, phoneEdit, phoneSocial, statsCard, shopifyTable,
+  billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, optPrice, optionsCompact, configurator, phoneEdit, phoneSocial, statsCard, shopifyTable,
 };

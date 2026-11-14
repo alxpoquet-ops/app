@@ -1,6 +1,6 @@
 // ============================================================================
-//  ALED08 : configuration centrale du site (identité, types de site, entretien,
-//  forfaits IA, jetons, options, comparatif). Tous les prix du site viennent d'ici.
+//  ALED08 : configuration centrale du site (identité, types de site, formules,
+//  options, comparatif). Tous les prix du site viennent d'ici.
 //  ⚠️  Les valeurs marquées « À REMPLACER » doivent être complétées avant la
 //      mise en ligne (le build affiche un avertissement tant qu'elles restent).
 // ============================================================================
@@ -80,7 +80,7 @@ const types = [
     label: 'Site une page',
     color: 'sky',
     icon: 'layout-template',
-    price: 100,
+    price: 150,
     delai: '3 à 5 jours',
     pitch: 'Tout sur une seule page qu’on fait défiler : qui vous êtes, ce que vous faites, comment vous joindre.',
     pourQui: 'Indépendants, artisans, associations, événements.',
@@ -92,7 +92,7 @@ const types = [
     label: 'Site vitrine',
     color: 'butter',
     icon: 'layout-grid',
-    price: 150,
+    price: 250,
     delai: '1 à 2 semaines',
     pitch: 'Un menu en haut et plusieurs pages : accueil, services, tarifs, contact.',
     pourQui: 'Entreprises, commerces, professions libérales.',
@@ -104,7 +104,7 @@ const types = [
     label: 'Boutique en ligne',
     color: 'pink',
     icon: 'shopping-bag',
-    price: 250,
+    price: 450,
     delai: '2 à 3 semaines',
     pitch: 'Vos produits en ligne, le paiement par carte et le suivi des commandes.',
     pourQui: 'Créateurs, commerçants, producteurs.',
@@ -113,58 +113,34 @@ const types = [
 ];
 const pageEnPlus = 40; // € par page au-delà de ce que prévoit le type de site
 
-// ---------------------------------------------------------------- entretien (toujours compris)
-const entretien = {
-  month: 10,
-  features: [
-    'Hébergement rapide et sécurisé',
-    'Nom de domaine inclus (.fr, .com, .net ou .org)',
-    'Sauvegardes et mises à jour des extensions',
-    'Votre espace client, avec l’accès à tous nos outils',
-  ],
-};
-
-// ---------------------------------------------------------------- jetons IA
-// Un jeton = une petite modification du site ou une publication sur les réseaux.
-const jetons = { recharge: { qty: 10, price: 5 } };
-
-// ---------------------------------------------------------------- forfaits IA (un petit monstre chacun)
-// « plus » : prix ajouté à l'entretien, par mois. En paiement annuel : 2 mois offerts.
+// ---------------------------------------------------------------- formules mensuelles (un petit monstre chacune)
+// En paiement annuel : 2 mois offerts sur l'abonnement.
 const forfaits = [
   {
     id: 'chico',
     name: 'Chico',
     color: 'pink',
-    plus: 5,
-    jetons: 3,
-    tagline: 'Pour bien démarrer',
-    pitch: 'Je fais 2 ou 3 changements par mois pour vous, ou vous les faites avec nos outils.',
-    features: ['De quoi faire 2 à 3 petites modifications par mois', '1 publication offerte chaque mois', 'SEO de base : Google Search Console et suivi'],
+    month: 5,
+    modifs: 'Une modification par mois',
+    tagline: 'L’essentiel',
+    pitch: 'Votre site en ligne, protégé et à jour. Une modification par mois, faite par moi.',
+    features: ['Hébergement et nom de domaine', 'Sauvegardes et mises à jour', 'Une modification par mois', 'Accès à nos outils'],
   },
   {
     id: 'power',
     name: 'Power',
     color: 'lilac',
-    plus: 10,
-    jetons: 10,
+    month: 20,
+    modifs: 'Une modification par semaine',
     conseil: true,
-    tagline: 'Votre site toujours à jour',
-    pitch: 'Une dizaine de modifications par mois, un SEO suivi et un support prioritaire.',
-    features: ['Une dizaine de modifications par mois', 'SEO suivi chaque mois, avec un rapport', 'Support prioritaire'],
-  },
-  {
-    id: 'titan',
-    name: 'Titan',
-    color: 'peach',
-    plus: 15,
-    jetons: 30,
-    tagline: 'Pour vous faire connaître',
-    pitch: 'De quoi publier souvent sur vos réseaux : je m’en occupe, ou vous utilisez notre studio publication.',
-    features: ['Une trentaine de modifications ou publications par mois', 'Studio publication : texte, image et hashtags préparés pour vous', 'SEO suivi chaque mois, avec un rapport', 'Support prioritaire'],
+    tagline: 'Pour être trouvé',
+    pitch: 'Tout Chico, plus le SEO de votre site et un rapport clair chaque mois.',
+    features: ['Tout ce que comprend Chico', 'SEO de votre site, suivi chaque mois', 'Rapport mensuel : visiteurs, ventes, positions sur Google', 'Une modification par semaine'],
   },
 ];
-forfaits.forEach((f) => { f.month = entretien.month + f.plus; });
 const annuel = { moisOfferts: 2 };
+// Prix du site lissé sur 24 mois, au besoin (engagement de 2 ans).
+const lissage = { mois: 24 };
 
 // ---------------------------------------------------------------- options (activables plus tard)
 // price : { once } pour un paiement unique, { month } pour un paiement mensuel.
@@ -199,4 +175,4 @@ const shopify = {
 };
 const stripe = { fraisCarte: '1,5 % + 0,25 €' }; // carte européenne standard
 
-module.exports = { site, sections, types, pageEnPlus, entretien, jetons, forfaits, annuel, options, fidelite, paiement, shopify, stripe };
+module.exports = { site, sections, types, pageEnPlus, forfaits, annuel, lissage, options, fidelite, paiement, shopify, stripe };

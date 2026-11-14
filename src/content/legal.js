@@ -1,7 +1,7 @@
 // Mentions légales, politique de confidentialité, conditions générales
 // ⚠️ Les éléments entre crochets proviennent de src/config.js et doivent y être complétés.
 // ⚠️ Modèle à faire relire : il ne remplace pas l'avis d'un professionnel du droit.
-const { site, annuel, paiement, fidelite, entretien, jetons } = require('../config');
+const { site, annuel, paiement, fidelite, forfaits, lissage } = require('../config');
 const L = site.legal;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 
@@ -84,7 +84,7 @@ Vous pouvez demander l’accès, la correction ou la suppression de vos données
     path: '/conditions-generales/',
     name: 'Conditions générales',
     title: 'Conditions générales de vente | ALED08',
-    description: 'Conditions générales de vente d’ALED08 : création à prix fixe, entretien et forfaits au mois ou à l’année, jetons IA, espace client et rétractation.',
+    description: 'Conditions générales de vente d’ALED08 : création à prix fixe ou lissée sur 2 ans, forfaits au mois ou à l’année, outils, espace client et rétractation.',
     lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif accepté.',
     updated: '2026-11-14',
     body: `## 1. Commande
@@ -93,20 +93,20 @@ Chaque projet fait l’objet d’un récapitulatif gratuit : type de site, forfa
 
 ## 2. Création du site
 
-Le prix de création est fixe pour le type de site choisi. ${paiement.acompte} % sont payés à la commande, le reste à la mise en ligne. Les pages ou produits en plus sont indiqués dans le récapitulatif.
+Le prix de création est fixe pour le type de site choisi. Il se paie en une fois (${paiement.acompte} % à la commande, le reste à la mise en ligne) ou, au choix du client, lissé sur ${lissage.mois} mois. Dans ce dernier cas, le client s’engage pour 2 ans.
 
-## 3. Entretien et forfaits
+## 3. Forfaits
 
-L’entretien (${entretien.month} € par mois) comprend l’hébergement, le nom de domaine, les sauvegardes, les mises à jour des extensions et l’accès à l’espace client. Il démarre à la mise en ligne. Les forfaits IA s’y ajoutent et donnent chaque mois des jetons, le référencement et le support décrits sur la page Forfaits.
+Le forfait Chico (${forfaits[0].month} € par mois) comprend l’hébergement, le nom de domaine, les sauvegardes, les mises à jour et une modification par mois. Le forfait Power (${forfaits[1].month} € par mois) ajoute le référencement, un rapport mensuel et une modification par semaine. Les modifications non utilisées ne sont pas reportées. Le forfait démarre à la mise en ligne.
 
-- **Au mois** : sans engagement, résiliable à tout moment avec un mois de préavis.
-- **À l’année** : engagement de douze mois, payé en une fois, avec ${annuel.moisOfferts} mois offerts.
+- **Au mois** : sans engagement, résiliable à tout moment avec un mois de préavis, sauf site lissé sur 2 ans.
+- **À l’année** : douze mois payés en une fois, avec ${annuel.moisOfferts} mois offerts.
 
 Le client peut changer de forfait ou ajouter une option à tout moment. Le nouveau prix s’applique à la période suivante.
 
-## 4. Jetons IA
+## 4. Outils de l’espace client
 
-Un jeton permet une petite modification du site ou une publication sur les réseaux sociaux avec les outils de l’espace client. Des jetons supplémentaires peuvent être achetés à tout moment (${jetons.recharge.price} € les ${jetons.recharge.qty}). Les jetons ne sont pas remboursables ni convertibles en argent.
+Les modifications sont réalisées par ${site.name}. Le client peut aussi utiliser les outils de son espace (modification rapide, publication sur les réseaux) ; une modification qu’il publie lui-même compte dans ses modifications du mois.
 
 ## 5. Nom de domaine et fin du forfait
 
@@ -130,7 +130,7 @@ Le client garantit qu’il a le droit d’utiliser les textes, images et logos q
 
 ## 10. Fidélité
 
-Le parrainage donne ${fidelite.parrainageMois} mois d’entretien et de forfait offert au parrain et au filleul, quand le site du filleul est en ligne. Les avantages ne sont pas convertibles en argent.
+Le parrainage donne ${fidelite.parrainageMois} mois de forfait offert au parrain et au filleul, quand le site du filleul est en ligne. Les avantages ne sont pas convertibles en argent.
 
 ## 11. Droit de rétractation
 

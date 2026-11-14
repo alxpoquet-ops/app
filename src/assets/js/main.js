@@ -187,7 +187,7 @@
       });
       setText('type', t.label);
       setText('type-price', euro(t.price));
-      setText('forfait', f.id === 'entretien' ? 'Entretien seul' : 'Entretien et forfait ' + f.name);
+      setText('forfait', 'Forfait ' + f.name);
       $$('[data-sum-shopify]', box).forEach(function (el) { el.hidden = t.id !== 'boutique'; });
       setText('forfait-price', euro(month * mult) + per);
       var optLine = $('[data-sum-opts]', box);
@@ -203,11 +203,16 @@
       if (dom.status === 'mien') domText = 'Mon nom de domaine actuel';
       else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? ' (libre)' : dom.status === 'pris' ? ' (déjà pris)' : '');
       setText('domain', domText || 'Nom de domaine à choisir');
-      setText('once', euro(t.price + optOnce));
+      var lisse = val('b-lisse') === 'oui';
+      var lisseLine = $('[data-sum-lisse]', box);
+      if (lisseLine) lisseLine.hidden = !lisse;
+      setText('lisse', euro(Math.round(t.price / data.lissage * 100) / 100) + '/mois');
+      setText('once-label', lisse ? 'À la commande' : 'Création, une fois');
+      setText('once', euro((lisse ? 0 : t.price) + optOnce));
       setText('recur-label', annual ? 'Puis chaque année' : 'Puis chaque mois');
       setText('recur', euro((month + optMonth) * mult));
       setText('recur-short', euro((month + optMonth) * mult) + per);
-      var q = { type: t.label, forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', domaine: domText, options: chosen.join(', ') };
+      var q = { type: t.label, forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? 'oui' : '', domaine: domText, options: chosen.join(', ') };
       $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
     }
     box.addEventListener('change', update);
@@ -276,28 +281,21 @@
       log.insertBefore(li, log.firstChild);
     };
 
-    /* jetons IA */
-    var jetons = 7, max = 10;
-    var recharge = +app.getAttribute('data-recharge') || 10, rechargePrice = app.getAttribute('data-recharge-price') || '5';
+    /* modifications du mois */
+    var jetons = 3, max = 4;
     var jauge = $('[data-jauge]', app);
     var drawJauge = function () {
       $('[data-jetons]', app).textContent = jetons;
-      var cap = Math.max(max, jetons);
-      $('[data-jetons-max]', app).textContent = cap;
-      $('[data-jauge-fill]', app).style.width = (cap ? jetons / cap * 100 : 0) + '%';
-      jauge.classList.toggle('is-low', jetons <= 2);
+      $('[data-jetons-max]', app).textContent = max;
+      $('[data-jauge-fill]', app).style.width = (max ? Math.min(100, jetons / max * 100) : 0) + '%';
+      jauge.classList.toggle('is-low', jetons <= 1);
     };
     var useJeton = function () {
-      if (jetons <= 0) { toast('Plus de jetons ce mois-ci : rechargez ou changez de forfait'); return false; }
+      if (jetons <= 0) { toast('Vos modifications du mois sont utilisées : écrivez-moi, on trouve une solution'); return false; }
       jetons--; drawJauge();
-      if (jetons === 0) setTimeout(function () { toast('C’était votre dernier jeton du mois. Vous pouvez recharger en un clic.'); }, 1500);
       return true;
     };
-    $('[data-recharger]', app).addEventListener('click', function () {
-      jetons += recharge; drawJauge();
-      toast('+' + recharge + ' jetons pour ' + rechargePrice + ' \u20ac (démo, rien n’est payé)');
-      addLog('coins', 'Recharge de ' + recharge + ' jetons');
-    });
+    $('[data-recharger]', app).addEventListener('click', function () { toast('Message envoyé : je reviens vers vous (démo)'); });
     drawJauge();
 
     /* modifier le site */
@@ -328,7 +326,7 @@
       versions.insertBefore(li, versions.firstChild);
     };
     versions.addEventListener('click', function (e) {
-      if (e.target.closest('[data-restore]')) toast('Version restaurée, sans jeton (démo)');
+      if (e.target.closest('[data-restore]')) toast('Version restaurée (démo)');
     });
     var send = function (text) {
       text = (text || '').trim();
@@ -339,7 +337,7 @@
       setTimeout(function () {
         typing.remove();
         var p = understand(text);
-        var b = bubble('ai', '<p></p><div class="mini-site"><i class="ms-photo' + (p.photo ? ' new' : '') + '"></i><i class="ms-line"></i><i class="ms-line short"></i><span class="ms-hl"></span></div><div class="bubble-actions"><button type="button" class="pill pill-go">' + ico('check') + 'Publier (1 jeton)</button><button type="button" class="pill">' + ico('undo-2') + 'Annuler</button></div>');
+        var b = bubble('ai', '<p></p><div class="mini-site"><i class="ms-photo' + (p.photo ? ' new' : '') + '"></i><i class="ms-line"></i><i class="ms-line short"></i><span class="ms-hl"></span></div><div class="bubble-actions"><button type="button" class="pill pill-go">' + ico('check') + 'Publier</button><button type="button" class="pill">' + ico('undo-2') + 'Annuler</button></div>');
         b.querySelector('p').textContent = 'C’est prêt ! J’ai préparé ' + p.what + ' sur la page ' + p.page + '. Voici l’aperçu :';
         b.querySelector('.ms-hl').textContent = p.hl;
         var btns = b.querySelectorAll('button');
@@ -352,7 +350,7 @@
           addLog('check', 'Site modifié : ' + p.what);
           toast('Modification publiée (démo)');
         });
-        btns[1].addEventListener('click', function () { done(); say('ai', 'D’accord, je n’ai rien changé. Aucun jeton utilisé.'); });
+        btns[1].addEventListener('click', function () { done(); say('ai', 'D’accord, je n’ai rien changé.'); });
       }, 1100);
     };
     chatForm.addEventListener('submit', function (e) { e.preventDefault(); send(chatIn.value); });
@@ -416,7 +414,6 @@
       }, 900);
     });
     $('[data-pub-send]', app).addEventListener('click', function () {
-      if (!useJeton()) return;
       var n = posts.children.length;
       toast('Publié sur ' + n + (n > 1 ? ' réseaux' : ' réseau') + ' (démo : rien n’est parti)');
       addLog('send', '« ' + (desc.value.trim().slice(0, 40) || 'Publication') + ' » publiée');
@@ -439,9 +436,9 @@
     };
     $$('input[name="app-plan"]', app).forEach(function (r) {
       r.addEventListener('change', function () {
-        max = +r.getAttribute('data-jetons');
+        max = +r.getAttribute('data-jetons'); jetons = Math.min(jetons, max);
         drawJauge(); recompute();
-        toast(r.getAttribute('data-name') + ' choisi : ' + (max ? max + ' jetons par mois' : 'sans jetons, recharge possible') + ' (démo)');
+        toast('Forfait ' + r.getAttribute('data-name') + ' choisi, à partir du mois prochain (démo)');
       });
     });
     $$('.app-opt input', app).forEach(function (c) {
@@ -466,7 +463,10 @@
     var dom = p.get('domaine'), domInput = f.querySelector('input[name="domaine"]');
     if (dom && domInput) domInput.value = dom;
     var opts = p.get('options'), msg = f.querySelector('textarea[name="message"]');
-    if (opts && msg && !msg.value) msg.value = 'Options choisies : ' + opts + '.\n\n';
+    var intro = [];
+    if (p.get('lissage') === 'oui') intro.push('Je souhaite lisser le prix du site sur 2 ans.');
+    if (opts) intro.push('Options choisies : ' + opts + '.');
+    if (intro.length && msg && !msg.value) msg.value = intro.join('\n') + '\n\n';
     f.addEventListener('submit', function (e) {
       if (!f.checkValidity()) { e.preventDefault(); f.reportValidity(); return; }
       var btn = f.querySelector('button[type="submit"]');

@@ -1,5 +1,5 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, sections, types, entretien, forfaits, annuel } = require('../config');
+const { site, sections, types, forfaits, annuel } = require('../config');
 const { icon } = require('./icons');
 const { logoMark } = require('./monsters');
 const { esc, typo } = require('./md');
@@ -19,14 +19,6 @@ function businessSchema() {
       description: t.pitch.replace(/’/g, "'"),
       url: site.url + C.creerUrl({ type: t.id }),
     })),
-    {
-      '@type': 'Offer',
-      name: 'Entretien du site',
-      priceCurrency: 'EUR',
-      priceSpecification: { '@type': 'UnitPriceSpecification', price: entretien.month, priceCurrency: 'EUR', unitCode: 'MON', referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: 'MON' } },
-      description: 'Hébergement, nom de domaine, sauvegardes et mises à jour.',
-      url: site.url + '/forfaits/',
-    },
     ...forfaits.map((f) => ({
       '@type': 'Offer',
       name: 'Forfait ' + f.name,
@@ -40,9 +32,9 @@ function businessSchema() {
     '@type': 'ProfessionalService',
     '@id': site.url + '/#entreprise',
     name: site.name,
-    slogan: 'Votre site internet à partir de 100 €, tout compris',
+    slogan: 'Votre site internet à partir de 150 €, tout compris',
     description:
-      'Création de sites internet à prix fixe (une page, site vitrine, boutique en ligne), entretien mensuel avec hébergement et mises à jour, forfaits IA avec référencement SEO et outils pour modifier son site et publier sur les réseaux. Basé dans les Ardennes, pour des clients partout en France.',
+      'Création de sites internet à prix fixe (une page, site vitrine, boutique en ligne), forfaits mensuels avec hébergement, mises à jour, modifications et référencement SEO. Basé dans les Ardennes, pour des clients partout en France.',
     url: site.url + '/',
     telephone: site.phoneIntl,
     email: site.email,
@@ -218,7 +210,7 @@ function page(p) {
 <meta property="og:image" content="${ogImage}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="ALED08, votre site internet à partir de 100 €, tout compris">
+<meta property="og:image:alt" content="ALED08, votre site internet à partir de 150 €, tout compris">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(p.title)}">
 <meta name="twitter:description" content="${esc(p.description)}">

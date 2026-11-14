@@ -1,5 +1,5 @@
 // Questions fréquentes, par rubrique. La page /faq/ les reprend toutes.
-const { types, entretien, jetons, forfaits, annuel, options, paiement, fidelite, pageEnPlus } = require('../config');
+const { types, forfaits, annuel, lissage, options, paiement, fidelite, pageEnPlus } = require('../config');
 const opt = (id) => options.find((o) => o.id === id);
 
 module.exports = {
@@ -10,16 +10,11 @@ module.exports = {
     { q: 'Comment se passe le paiement de la création ?', a: `Vous réglez ${paiement.acompte} % pour lancer le projet, puis le solde quand le site est en ligne. Le forfait démarre ce jour-là.` },
   ],
   forfaits: [
-    { q: 'Que comprend l’entretien ?', a: `Pour ${entretien.month} € par mois : l’hébergement, le nom de domaine, les sauvegardes, les mises à jour des extensions et votre espace client. Il est compris dans tous les forfaits.` },
-    { q: 'Suis-je engagé ?', a: `Au mois, non : vous arrêtez quand vous voulez, avec un mois de préavis. À l’année, vous vous engagez pour un an, payé en une fois, et vous avez ${annuel.moisOfferts} mois offerts.` },
+    { q: 'Quelle différence entre Chico et Power ?', a: `Chico (${forfaits[0].month} € par mois) garde votre site en ligne et à jour, avec une modification par mois. Power (${forfaits[1].month} € par mois) ajoute le SEO, un rapport mensuel sur vos visiteurs, vos ventes et vos positions, et une modification par semaine.` },
+    { q: 'Puis-je payer le site en plusieurs fois ?', a: `Oui : le prix du site peut être lissé sur ${lissage.mois} mois. Dans ce cas, l’engagement est de 2 ans.` },
+    { q: 'Suis-je engagé ?', a: `Au mois, non : vous arrêtez quand vous voulez, avec un mois de préavis. À l’année, vous payez douze mois d’un coup et ${annuel.moisOfferts} sont offerts. Si le site est lissé sur 2 ans, l’engagement est de 2 ans.` },
     { q: 'Que se passe-t-il si j’arrête ?', a: 'Votre nom de domaine est à votre nom : vous le gardez. Je vous remets une copie de votre site (contenus, images et fichiers) pour que vous puissiez le faire héberger ailleurs.' },
-    { q: 'Puis-je changer de forfait ?', a: 'Oui, à tout moment depuis votre espace client ou par message. Le nouveau prix s’applique le mois suivant.' },
-    { q: 'Y a-t-il des frais cachés ?', a: 'Non. Le récapitulatif indique tout : la création, l’entretien, le forfait et les options choisies. Rien d’autre.' },
-  ],
-  jetons: [
-    { q: 'C’est quoi, un jeton ?', a: 'C’est votre crédit de modifications. Une petite modification de votre site ou une publication sur vos réseaux utilise un jeton, que je la fasse pour vous ou que vous passiez par nos outils.' },
-    { q: 'Combien de jetons dans chaque forfait ?', a: `${forfaits.map((f) => `${f.name} : ${f.jetons} par mois`).join(', ')}. ${forfaits[0].name} offre en plus une publication chaque mois.` },
-    { q: 'Et si je n’ai plus de jetons ?', a: `Vous rechargez en un clic depuis votre espace : ${jetons.recharge.price} € les ${jetons.recharge.qty} jetons. Ou vous passez au forfait du dessus.` },
+    { q: 'Y a-t-il des frais cachés ?', a: 'Non. Le récapitulatif indique tout : la création, le forfait et les options choisies. Rien d’autre.' },
   ],
   espace: [
     { q: 'Dois-je faire les modifications moi-même ?', a: 'Non. Je m’occupe de vos modifications : un message suffit. Nos outils sont là si vous voulez la main, par exemple pour annoncer une fermeture un dimanche soir.' },

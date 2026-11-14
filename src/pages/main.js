@@ -1,5 +1,6 @@
 // Pages du site
-const { site, sections, types, entretien, jetons, forfaits, annuel, options, fidelite, paiement, shopify, pageEnPlus } = require('../config');
+const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, shopify, pageEnPlus } = require('../config');
+const base = forfaits[0];
 const { icon } = require('../lib/icons');
 const { monster } = require('../lib/monsters');
 const { md, inline, esc } = require('../lib/md');
@@ -27,11 +28,11 @@ function home() {
     <div class="hero-text">
       <p class="kicker">${icon('sparkles')}Sites internet, SEO et IA</p>
       <h1>Votre site internet à partir de ${euro(T('une-page').price)}, <mark>tout compris</mark></h1>
-      <p class="hero-lead">Je crée votre site à prix fixe, puis il est hébergé et entretenu pour ${euro(entretien.month)} par mois. Je m’occupe de son référencement et de vos modifications. Et si vous voulez la main, nos outils sont là.</p>
+      <p class="hero-lead">Je crée votre site à prix fixe, puis je m’en occupe pour ${euro(base.month)} par mois : hébergement, nom de domaine, sauvegardes, mises à jour et une modification par mois. Le prix du site peut aussi être lissé sur 2 ans.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}${C.btn('/forfaits/', 'btn-light btn-lg', 'heart', 'Voir les forfaits')}</div>
       <ul class="hero-points">
         <li>${icon('check')}Prix de création fixe</li>
-        <li>${icon('check')}Entretien ${euro(entretien.month)} par mois</li>
+        <li>${icon('check')}Dès ${euro(base.month)} par mois</li>
         <li>${icon('check')}Sans engagement</li>
       </ul>
     </div>
@@ -60,8 +61,8 @@ function home() {
 </div></section>
 
 <section class="section"><div class="container">
-  <h2 class="section-title">Ajoutez un petit monstre</h2>
-  <p class="section-sub">Chaque forfait comprend l’entretien et vous donne des jetons IA pour modifier votre site et publier sur vos réseaux.</p>
+  <h2 class="section-title">Choisissez votre petit monstre</h2>
+  <p class="section-sub">Deux forfaits simples, au mois ou à l’année avec deux mois offerts.</p>
   ${C.forfaitMinis()}
   <p class="center more">${C.btn('/forfaits/', 'btn-light', 'arrow-right', 'Comparer les forfaits')}</p>
 </div></section>
@@ -84,7 +85,7 @@ function home() {
   </a>
   <a class="promo c-butter reveal" href="/comparatif-shopify/">
     <span class="promo-ico">${icon('store')}</span>
-    <span class="promo-text"><strong>Moins cher que Shopify chaque mois</strong><span>Une boutique entretenue pour ${euro(entretien.month)} par mois, contre ${euro(shopify.basicMensuel)} pour Shopify Basic seul.</span></span>
+    <span class="promo-text"><strong>Moins cher que Shopify chaque mois</strong><span>Une boutique entretenue pour ${euro(base.month)} par mois, contre ${euro(shopify.basicMensuel)} pour Shopify Basic seul.</span></span>
     <span class="promo-go">${icon('arrow-right')}</span>
   </a>
 </div></section>
@@ -130,7 +131,7 @@ ${f.html}`;
     bodyClass: 'page-creer',
     noMobileBar: true,
     title: 'Créer mon site : prix, nom de domaine et forfait | ALED08',
-    description: 'Choisissez votre type de site, vérifiez votre nom de domaine, prenez un forfait Chico, Power ou Titan et vos options. Récapitulatif gratuit, sans engagement.',
+    description: 'Choisissez votre type de site, vérifiez votre nom de domaine, prenez le forfait Chico ou Power et vos options. Récapitulatif gratuit, sans engagement.',
     crumbs,
     body,
     schema: [f.schema],
@@ -141,25 +142,22 @@ ${f.html}`;
 // ====================================================================== FORFAITS
 function forfaitsPage() {
   const crumbs = crumb('forfaits');
-  const f = C.faq([...FAQ.forfaits, ...FAQ.jetons], 'Vos questions sur les forfaits', 'faq-forfaits');
+  const f = C.faq(FAQ.forfaits, 'Vos questions sur les forfaits', 'faq-forfaits');
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: 'Les forfaits : choisissez votre monstre',
-    lead: `Votre site est hébergé et entretenu pour ${euro(entretien.month)} par mois. Ajoutez un forfait pour profiter de nos outils IA, du SEO suivi et du support prioritaire.`,
+    lead: 'Deux forfaits, pas plus. Chico garde votre site en ligne et à jour. Power ajoute le SEO, un rapport chaque mois et une modification par semaine.',
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
   ${C.billingSwitch()}
-  ${C.entretienBox()}
-  <p class="plans-plus">${icon('plus')}Ajoutez un forfait IA</p>
   ${C.forfaitCards()}
-  <p class="plans-note">${icon('calendar-check')}<span>Au mois : sans engagement. À l’année : engagement d’un an, payé en une fois, avec ${annuel.moisOfferts} mois offerts.</span></p>
-  ${C.jetonsBox()}
+  ${C.payBox()}
 </div></section>
 
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">La création, à prix fixe</h2>
-  <p class="section-sub">Payée une seule fois : un acompte de ${paiement.acompte} % au départ, le solde à la mise en ligne.</p>
+  <p class="section-sub">En une fois, avec un acompte de ${paiement.acompte} % au départ, ou lissée sur 2 ans.</p>
   <div class="create-prices">${types
     .map(
       (t) => `<a class="create-price c-${t.color} reveal" href="${C.creerUrl({ type: t.id })}">
@@ -198,8 +196,8 @@ ${C.ctaBand({ title: 'Votre monstre est choisi ?', text: 'Composez votre site en
   return {
     path: '/forfaits/',
     section: 'forfaits',
-    title: 'Forfaits site internet Chico, Power et Titan dès 15 €/mois | ALED08',
-    description: 'Hébergement, nom de domaine, mises à jour et SEO dès 15 €/mois, modification par IA avec Power, publication sur les réseaux avec Titan. Sans engagement.',
+    title: 'Forfaits site internet Chico et Power, dès 5 € par mois | ALED08',
+    description: 'Chico à 5 € par mois : hébergement, domaine, sauvegardes, une modification. Power à 20 € : SEO, rapport mensuel, une modification par semaine.',
     crumbs,
     body,
     schema: [f.schema],
@@ -208,7 +206,7 @@ ${C.ctaBand({ title: 'Votre monstre est choisi ?', text: 'Composez votre site en
 }
 
 // ====================================================================== NOS OUTILS
-const outilTag = (t) => `<span class="tool-tag${t.cout ? '' : ' c-mint'}">${t.cout ? `${t.cout} jeton` : 'Compris, sans jeton'}</span>`;
+const outilTag = () => '<span class="tool-tag c-mint">Compris</span>';
 
 function outilsPage() {
   const crumbs = crumb('espace');
@@ -296,7 +294,6 @@ function seoPage() {
   const levels = [
     ['chico', 'Les bases', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Google Search Console et suivi']],
     ['power', 'Le suivi', ['Tout Chico', 'SEO suivi chaque mois', 'Un rapport de visibilité mensuel']],
-    ['titan', 'La visibilité', ['Tout Power', 'Des publications régulières sur vos réseaux', 'Fiche Google suivie et avis']],
   ];
   const body = `${C.pageHero({
     section: 'seo',
@@ -371,7 +368,7 @@ function shopifyPage() {
   const f = C.faq(FAQ.shopify, 'Vos questions', 'faq-shopify');
   const b = T('boutique');
   const shopYear = shopify.basicAnnuel * 12;
-  const meYear = C.year(entretien.month);
+  const meYear = C.year(base.month);
   const body = `${C.pageHero({
     section: 'shopify',
     h1: 'Shopify ou ALED08 : le vrai prix d’une petite boutique',
@@ -392,13 +389,13 @@ function shopifyPage() {
       <ul class="list-dot"><li>Abonnement : ${euro(shopify.basicAnnuel)} × 12 mois</li><li>Nom de domaine en plus</li><li>Applications payantes selon vos besoins</li><li>Et le temps de tout construire vous-même</li></ul>
     </div>
     <div class="year-card is-me reveal">
-      <p class="year-who">${monster('mascotte')}ALED08, entretien payé à l’année</p>
+      <p class="year-who">${monster('chico')}ALED08, forfait Chico à l’année</p>
       <p class="year-big">${euro(b.price + meYear)}<small>la première année</small></p>
-      <ul class="list-check"><li>Création : ${euro(b.price)}, une fois</li><li>Entretien : ${euro(meYear)} (${annuel.moisOfferts} mois offerts)</li><li>Nom de domaine, mises à jour et bases du SEO compris</li></ul>
+      <ul class="list-check"><li>Création : ${euro(b.price)}, une fois</li><li>Forfait Chico : ${euro(meYear)} (${annuel.moisOfferts} mois offerts)</li><li>Nom de domaine, mises à jour et bases du SEO compris</li></ul>
       <p class="year-after">Puis ${euro(meYear)} par an.</p>
     </div>
   </div>
-  <p class="center years-note">La première année, vous payez la création. Ensuite, ${euro(meYear)} par an au lieu de ${euro(shopYear)}, et c’est moi qui m’occupe de tout. Les forfaits IA restent en option.</p>
+  <p class="center years-note">La première année, vous payez la création. Ensuite, ${euro(meYear)} par an au lieu de ${euro(shopYear)}, et c’est moi qui m’occupe de tout. Power reste en option.</p>
 </div></section>
 
 <section class="section"><div class="container container-narrow prose reveal">
@@ -553,8 +550,8 @@ function visibilitePage() {
       ['map', 'Des pages pour vos villes', 'Une page utile par ville où vous travaillez, pour les recherches locales.', '<span class="tool-tag">Sur devis</span>'],
     ]],
     ['camera', 'Sur les réseaux', 'peach', [
-      ['send', 'Publication en un geste', 'Une photo et quelques mots : l’IA prépare et publie sur Instagram, Facebook et Google.', `<span class="tool-tag c-mint">Avec les jetons IA</span>`, '/mon-espace/'],
-      ['image', 'Images et hashtags automatiques', 'L’IA recadre votre photo pour chaque réseau et choisit des hashtags qui vous font trouver.', `<span class="tool-tag c-mint">Avec les jetons IA</span>`],
+      ['send', 'Publication en un geste', 'Une photo et quelques mots : l’IA prépare et publie sur Instagram, Facebook et Google.', `<span class="tool-tag c-mint">Avec nos outils</span>`, '/mon-espace/'],
+      ['image', 'Images et hashtags automatiques', 'L’IA recadre votre photo pour chaque réseau et choisit des hashtags qui vous font trouver.', `<span class="tool-tag c-mint">Avec nos outils</span>`],
       ['link', 'Une page « liens »', 'Le lien à mettre dans votre bio Instagram ou TikTok, à vos couleurs.', inc],
     ]],
     ['monitor', 'Sur votre site', 'lilac', [
@@ -616,23 +613,23 @@ function monEspacePage() {
       (o) => `<label class="app-opt"><span class="app-opt-ico">${icon(o.icon)}</span><span class="app-opt-txt"><strong>${esc(o.name)}</strong><small>${euro(o.price.month)} par mois</small></span><input type="checkbox" role="switch" value="${o.id}" data-month="${o.price.month}"${o.id === 'mail' ? ' checked' : ''}><span class="switch" aria-hidden="true"></span></label>`
     )
     .join('');
-  const plans = [{ id: 'entretien', name: 'Entretien seul', month: entretien.month, jetons: 0, color: 'mint', monster: 'mascotte' }, ...forfaits.map((x) => ({ ...x, monster: x.id }))];
+  const plans = forfaits.map((x) => ({ ...x, monster: x.id, quota: x.id === 'power' ? 4 : 1 }));
   const total = P.month + mail.price.month;
   const body = `${C.pageHero({
     section: 'monespace',
     h1: 'Mon espace : la démo',
-    lead: 'Voici l’espace de « Pâtisserie Lila », une cliente imaginaire. Essayez : modifiez son site, publiez une photo, rechargez des jetons, changez de forfait. Rien n’est enregistré ni publié.',
+    lead: 'Voici l’espace de « Pâtisserie Lila », une cliente imaginaire. Essayez : modifiez son site, publiez une photo, changez de forfait. Rien n’est enregistré ni publié.',
     crumbs: [HOME, { name: 'Nos outils', path: '/nos-outils/' }, { name: 'Démo', path: '/mon-espace/' }],
   })}
 <section class="section section-app"><div class="container">
-  <div class="app" data-app data-recharge="${jetons.recharge.qty}" data-recharge-price="${jetons.recharge.price}">
+  <div class="app" data-app>
     <div class="app-shell">
       <aside class="app-side">
         <div class="app-user">${monster('mascotte')}<div><strong>Pâtisserie Lila</strong><small>patisserie-lila.fr</small></div></div>
         <div class="jauge" data-jauge>
-          <p class="jauge-head">${icon('coins')}<span>Jetons IA</span><b><span data-jetons>7</span> / <span data-jetons-max>${P.jetons}</span></b></p>
-          <span class="jauge-bar"><i data-jauge-fill style="width:70%"></i></span>
-          <button type="button" class="link-btn" data-recharger>Recharger : ${euro(jetons.recharge.price)} les ${jetons.recharge.qty}</button>
+          <p class="jauge-head">${icon('pencil')}<span>Modifications du mois</span><b><span data-jetons>3</span> / <span data-jetons-max>4</span></b></p>
+          <span class="jauge-bar"><i data-jauge-fill style="width:75%"></i></span>
+          <button type="button" class="link-btn" data-recharger>Besoin de plus ? Écrivez-moi</button>
         </div>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           ${tab('accueil', 'house', 'Accueil', true)}
@@ -654,9 +651,9 @@ function monEspacePage() {
           </div>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
-            <button type="button" data-toast-msg="Demande envoyée : je m’en occupe (démo)">${icon('message-circle')}<strong>Me demander une modification</strong><small>Je m’en charge, 1 jeton</small></button>
-            <button type="button" data-go="modifier">${icon('zap')}<strong>Modification rapide</strong><small>Vous le faites, 1 jeton</small></button>
-            <button type="button" data-go="publier">${icon('send')}<strong>Publier sur mes réseaux</strong><small>1 jeton par publication</small></button>
+            <button type="button" data-toast-msg="Demande envoyée : je m’en occupe (démo)">${icon('message-circle')}<strong>Me demander une modification</strong><small>Je m’en charge</small></button>
+            <button type="button" data-go="modifier">${icon('zap')}<strong>Modification rapide</strong><small>Vous le faites vous-même</small></button>
+            <button type="button" data-go="publier">${icon('send')}<strong>Publier sur mes réseaux</strong><small>Texte, image et hashtags</small></button>
             <button type="button" data-go="outils">${icon('toolbox')}<strong>Tous les outils</strong><small>Annonce, avis, QR code…</small></button>
           </div>
           <p class="app-sub">Dernières activités</p>
@@ -669,7 +666,7 @@ function monEspacePage() {
 
         <div class="app-panel" role="tabpanel" id="t-modifier" aria-labelledby="tab-modifier" hidden>
           <h2 class="app-h">Modification rapide</h2>
-          <p class="app-p">Écrivez ce que vous voulez changer : l’outil prépare la modification et vous montre l’aperçu. Un jeton n’est utilisé que si vous publiez.</p>
+          <p class="app-p">Écrivez ce que vous voulez changer : l’outil prépare la modification et vous montre l’aperçu. Elle compte dans vos modifications du mois seulement si vous publiez.</p>
           <p class="app-confier">${icon('message-circle')}<span>Vous préférez me laisser faire ?</span><button type="button" class="link-btn" data-toast-msg="Demande envoyée : je m’en occupe (démo)">Me confier la modification</button></p>
           <div class="chat">
             <div class="chat-log" data-chat-log aria-live="polite">
@@ -715,7 +712,7 @@ function monEspacePage() {
           <div class="pub-out" data-pub-out hidden>
             <p class="app-sub">Vos publications, prêtes à partir</p>
             <div class="posts" data-posts></div>
-            <div class="hero-ctas"><button type="button" class="btn btn-primary" data-pub-send>${icon('send')}<span>Publier partout (1 jeton)</span></button><button type="button" class="btn btn-light" data-pub-plan>${icon('clock')}<span>Programmer</span></button></div>
+            <div class="hero-ctas"><button type="button" class="btn btn-primary" data-pub-send>${icon('send')}<span>Publier partout</span></button><button type="button" class="btn btn-light" data-pub-plan>${icon('clock')}<span>Programmer</span></button></div>
             <p class="app-note">Vous pouvez retoucher chaque texte avant de publier. Dans votre espace, c’est l’IA qui les écrit à partir de votre photo et de vos mots ; ici, la démo utilise un modèle simple.</p>
           </div>
         </div>
@@ -740,10 +737,10 @@ function monEspacePage() {
 
         <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
           <h2 class="app-h">Tous les outils</h2>
-          <p class="app-p">Tout est accessible avec votre forfait. Les outils marqués d’un jeton l’utilisent quand vous publiez.</p>
+          <p class="app-p">Tous les outils sont compris dans votre forfait.</p>
           ${OUTILS.map(
             (g) => `<p class="app-sub">${g.title}</p><div class="app-tools">${g.tools
-              .map((t) => `<button type="button" class="app-tool c-${g.color}" ${t.demo ? `data-go="${t.demo}"` : `data-toast-msg="${t.name} : disponible à l’ouverture de l’espace (démo)"`}><span class="tool-ico">${icon(t.icon)}</span><strong>${t.name}</strong><small>${t.cout ? t.cout + ' jeton' : 'Sans jeton'}</small></button>`)
+              .map((t) => `<button type="button" class="app-tool c-${g.color}" ${t.demo ? `data-go="${t.demo}"` : `data-toast-msg="${t.name} : disponible à l’ouverture de l’espace (démo)"`}><span class="tool-ico">${icon(t.icon)}</span><strong>${t.name}</strong><small>Compris</small></button>`)
               .join('')}</div>`
           ).join('')}
         </div>
@@ -752,7 +749,7 @@ function monEspacePage() {
           <h2 class="app-h">Mon forfait et mes options</h2>
           <div class="app-plans">${plans
             .map(
-              (x) => `<label class="app-plan c-${x.color}"><input type="radio" name="app-plan" value="${x.id}" data-month="${x.month}" data-name="${x.name}" data-jetons="${x.jetons}"${x.id === 'power' ? ' checked' : ''}><span class="app-plan-card"><span class="app-plan-art">${monster(x.monster)}</span><strong>${x.name}</strong><small>${euro(x.month)}/mois</small><small>${x.jetons ? x.jetons + ' jetons' : 'sans jetons'}</small></span></label>`
+              (x) => `<label class="app-plan c-${x.color}"><input type="radio" name="app-plan" value="${x.id}" data-month="${x.month}" data-name="${x.name}" data-jetons="${x.quota}"${x.id === 'power' ? ' checked' : ''}><span class="app-plan-card"><span class="app-plan-art">${monster(x.monster)}</span><strong>${x.name}</strong><small>${euro(x.month)}/mois</small><small>${x.modifs}</small></span></label>`
             )
             .join('')}</div>
           <p class="app-sub">Options</p>
@@ -783,7 +780,7 @@ ${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site, choisissez v
     noindex: true,
     noMobileBar: true,
     title: 'Mon espace, la démo | ALED08',
-    description: 'Essayez les outils de l’espace client ALED08 : modification rapide, studio publication, jetons, forfait. Démonstration, rien n’est publié.',
+    description: 'Essayez les outils de l’espace client ALED08 : modification rapide, studio publication, forfait et options. Démonstration, rien n’est publié.',
     crumbs: [HOME, { name: 'Nos outils', path: '/nos-outils/' }, { name: 'Démo', path: '/mon-espace/' }],
     body,
   };
@@ -882,7 +879,7 @@ Je suis installé à ${site.address.city}. Que vous soyez à Charleville-Méziè
 - **Site vitrine** : ${euro(T('vitrine').price)} de création, jusqu’à 5 pages.
 - **Boutique en ligne** : ${euro(T('boutique').price)} de création.
 
-Puis ${euro(entretien.month)} par mois pour l’hébergement, le nom de domaine et l’entretien, et un forfait IA si vous le souhaitez. Le détail est sur la page [forfaits](/forfaits/).
+Puis ${euro(base.month)} par mois pour l’hébergement, le nom de domaine et une modification par mois, ou ${euro(forfaits[1].month)} avec le SEO suivi. Le détail est sur la page [forfaits](/forfaits/).
 
 ## Être trouvé par les Ardennais
 
@@ -906,7 +903,7 @@ function faqPage() {
   const crumbs = [HOME, { name: 'Questions fréquentes', path: '/faq/' }];
   const groups = [
     ['La création', FAQ.creation, 'creer'],
-    ['Les forfaits', [...FAQ.forfaits, ...FAQ.jetons], 'forfaits'],
+    ['Les forfaits', FAQ.forfaits, 'forfaits'],
     ['Nos outils', FAQ.espace, 'espace'],
     ['Le référencement', FAQ.seo, 'seo'],
     ['Se faire connaître', FAQ.visibilite, 'visibilite'],
@@ -925,7 +922,7 @@ ${C.ctaBand()}`;
   return {
     path: '/faq/',
     title: 'Questions fréquentes : création, forfaits, IA, SEO | ALED08',
-    description: 'Toutes les réponses sur la création de votre site, les forfaits Chico, Power et Titan, l’espace client et l’IA, le référencement et le parrainage.',
+    description: 'Toutes les réponses sur la création de votre site, les forfaits Chico et Power, nos outils, le référencement et le parrainage.',
     crumbs,
     body,
     schema: [C.faqSchema(all)],
