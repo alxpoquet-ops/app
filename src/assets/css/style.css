@@ -934,7 +934,7 @@ button.app-card:hover { transform: translateY(-2px); }
 .jauge { margin: 0 0 16px; padding: 12px 14px; border-radius: 18px; background: #fff; box-shadow: var(--shadow-sm); }
 .jauge-head { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-weight: 900; color: var(--ink); font-size: .92rem; }
 .jauge-head .ico { color: var(--butter-d); }
-.jauge-head b { margin-left: auto; font-variant-numeric: tabular-nums; }
+.jauge-head b { margin-left: auto; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .jauge-bar { display: block; height: 10px; border-radius: 999px; background: var(--soft); overflow: hidden; }
 .jauge-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--mint-d), #9BE3C6); transition: width .4s ease; }
 .jauge.is-low .jauge-bar i { background: linear-gradient(90deg, var(--peach-d), #FFC2A3); }
