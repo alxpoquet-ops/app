@@ -212,7 +212,8 @@
     });
     var sw = $('[data-billing-switch]', box);
     if (/^ann/.test(params.get('periode') || '') && sw && sw._set) sw._set('annuel');
-    if (params.get('lissage') === 'oui') { var l = $('input[name="b-lisse"][value="oui"]', box); if (l) l.checked = true; }
+    var lp = params.get('lissage') === 'oui' ? '12' : (params.get('lissage') || '');
+    if (lp) { var l = $('input[name="b-lisse"][value="' + slug(lp) + '"]', box); if (l) l.checked = true; }
     (params.get('options') || '').split(',').forEach(function (id) {
       var c = id && $('.b-opt input[value="' + slug(id) + '"]', box);
       if (c) c.checked = true;
@@ -222,10 +223,18 @@
     var domain = initDomain(box, update);
 
     /* récapitulatif */
-    function update() {
+    function update(ev) {
       var t = find(data.types, val('b-type')) || data.types[0];
       var f = find(data.forfaits, val('b-forfait')) || data.forfaits[0];
       filterOpts(box, t.id);
+      // site en plusieurs fois : le forfait se paie au mois (un clic sur « à l'année » repasse le site en une fois)
+      var lisseN = parseInt(val('b-lisse'), 10) || 0;
+      if (lisseN && box.getAttribute('data-billing') === 'annuel') {
+        if (ev && ev.type === 'billing') { var one = $('input[name="b-lisse"][value="non"]', box); if (one) one.checked = true; lisseN = 0; }
+        else if (sw && sw._set) { sw._set('mensuel'); return; }
+      }
+      var lnote = $('[data-lisse-note]', box);
+      if (lnote) lnote.hidden = !lisseN;
       var annual = box.getAttribute('data-billing') === 'annuel';
       var mult = annual ? 12 - data.free : 1;
       var per = annual ? '/an' : '/mois';
@@ -253,11 +262,11 @@
       if (domain.own()) domText = 'Mon nom de domaine actuel';
       else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? ' (disponible)' : dom.status === 'pris' ? ' (déjà pris)' : '');
       setText('domain', domText || 'Nom de domaine à choisir');
-      var lisse = val('b-lisse') === 'oui';
-      var lisseAmt = annual ? round2(t.price / 2) : floor2(t.price / data.lissage);
+      var lisse = lisseN > 0;
+      var lisseAmt = lisse ? floor2(t.price / lisseN) : 0;
       var lisseLine = $('[data-sum-lisse]', box);
       if (lisseLine) lisseLine.hidden = !lisse;
-      setText('lisse-label', annual ? 'Site lissé, 2 annuités' : 'Site lissé, pendant ' + data.lissage + ' mois');
+      setText('lisse-label', 'Site en ' + lisseN + ' fois sans frais');
       setText('lisse', euro(lisseAmt) + per);
       var onceLine = $('[data-sum="once"]', box) && $('[data-sum="once"]', box).parentNode;
       if (onceLine) onceLine.hidden = lisse && !optOnce;
@@ -273,13 +282,13 @@
       var bar = $('[data-sum="bar"]', box);
       if (bar) {
         bar.innerHTML = 'Aujourd’hui <b>' + euro(today) + '</b>, puis <b>' + euro(lisse ? recur + lisseAmt : recur) + per + '</b>'
-          + (lisse ? ' pendant ' + (annual ? '2 ans' : data.lissage + ' mois') : '');
+          + (lisse ? ' pendant ' + lisseN + ' mois' : '');
       }
       // Lien « Poser une question » (formulaire de contact, en clair)
-      var q = { type: t.label, forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? 'oui' : '', domaine: domText, options: chosen.join(', '), parrain: parrain };
+      var q = { type: t.label, forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: domText, options: chosen.join(', '), parrain: parrain };
       $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
       // Lien « Commander » : paramètres exacts attendus par /commander/
-      var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? 'oui' : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), parrain: parrain };
+      var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), parrain: parrain };
       $$('[data-sum-order]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href').split('?')[0], o)); });
     }
     var pLine = $('[data-sum-parrain]', box);
@@ -354,8 +363,8 @@
       var r = v && $('input[name="' + k + '"][value="' + v + '"]', form);
       if (r) r.checked = true;
     });
-    var lisseBox = $('[data-order-lissage]', form);
-    if (lisseBox && params.get('lissage') === 'oui') lisseBox.checked = true;
+    var lpo = params.get('lissage') === 'oui' ? '12' : (params.get('lissage') || '');
+    if (lpo) { var lr = $('input[name="lissage"][value="' + slug(lpo) + '"]', form); if (lr) lr.checked = true; }
     (params.get('options') || '').split(',').forEach(function (id) {
       var c = id && $('.b-opt input[value="' + slug(id) + '"]', form);
       if (c) c.checked = true;
@@ -367,17 +376,27 @@
     var hiddenDomain = $('[data-order-domaine]', form);
     var engRow = $('[data-order-engagement]', form), engBox = engRow && engRow.querySelector('input');
 
-    function update(fromUser) {
+    function update(fromUser, ev) {
       var t = find(data.types, val('type')) || data.types[0];
       var f = find(data.forfaits, val('forfait')) || data.forfaits[0];
       filterOpts(form, t.id);
+      // site en plusieurs fois : le forfait se paie au mois (choisir « à l'année » repasse le site en une fois)
+      var lisseN = parseInt(val('lissage'), 10) || 0;
+      if (lisseN && val('periode') === 'annee') {
+        var target = ev && ev.target && ev.target.name;
+        if (target === 'periode') { var one = $('input[name="lissage"][value=""]', form); if (one) one.checked = true; lisseN = 0; }
+        else { var m = $('input[name="periode"][value="mois"]', form); if (m) m.checked = true; }
+      }
+      var lnote = $('[data-lisse-note]', form);
+      if (lnote) lnote.hidden = !lisseN;
       var annual = val('periode') === 'annee';
       root.setAttribute('data-billing', annual ? 'annuel' : 'mensuel');
       var mult = annual ? 12 - data.free : 1;
       var per = annual ? '/an' : '/mois';
       var perWord = annual ? 'année' : 'mois';
       var perUnit = annual ? 'an' : 'mois';
-      var lisse = !!(lisseBox && lisseBox.checked);
+      var lisse = lisseN > 0;
+      setText('eng-n', String(lisseN || ''));
       if (engRow) { engRow.hidden = !lisse; }
       if (engBox) { engBox.required = lisse; if (!lisse) engBox.checked = false; }
       var optOnce = 0, optRec = 0, names = [], ids = [], lines = [];
@@ -388,11 +407,10 @@
       });
       var acompte = round2(t.price * data.acompte / 100);
       var solde = round2(t.price - acompte);
-      var lisseAmt = annual ? round2(t.price / 2) : floor2(t.price / data.lissage);
-      var lisseN = annual ? 2 : data.lissage;
+      var lisseAmt = lisse ? floor2(t.price / lisseN) : 0;
       var forfaitFirst = f.month * mult;
       var first = annual ? 'première année' : 'premier mois';
-      if (lisse) lines.push([t.label + ', lissé : 1 échéance sur ' + lisseN, lisseAmt]);
+      if (lisse) lines.push([t.label + ', 1re mensualité sur ' + lisseN, lisseAmt]);
       else lines.push(['Acompte de ' + data.acompte + ' % sur la création (' + t.label.toLowerCase() + ')', acompte]);
       lines.push(['Forfait ' + f.name + ', ' + first, forfaitFirst]);
       $$('.b-opt input:checked', form).forEach(function (i) {
@@ -410,7 +428,7 @@
       setText('solde', euro(solde));
       setText('lisse', euro(lisseAmt));
       setText('lisse-per', perUnit);
-      setText('lisse-n', lisseN + ' ' + (annual ? 'ans' : 'mois'));
+      setText('lisse-n', String(lisseN));
       var soldeNote = $('[data-order-solde]', root), lisseNote = $('[data-order-lisse-note]', root);
       if (soldeNote) soldeNote.hidden = lisse;
       if (lisseNote) lisseNote.hidden = !lisse;
@@ -450,14 +468,14 @@
       /* la configuration reste dans l'adresse (retour arrière, partage, erreur serveur) */
       if (fromUser && window.history && history.replaceState) {
         var q = new URLSearchParams(location.search);
-        var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? 'oui' : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), parrain: pCode };
+        var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), parrain: pCode };
         Object.keys(o).forEach(function (k) { if (o[k]) q.set(k, o[k]); else q.delete(k); });
         q.delete('erreur'); q.delete('annule');
         var qs = q.toString();
         history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
       }
     }
-    form.addEventListener('change', function () { update(true); });
+    form.addEventListener('change', function (e) { update(true, e); });
     if (pInput) pInput.addEventListener('input', function () { update(true); });
     update(false);
     if (params.get('domaine') || params.get('domaine_statut') === 'mien') domain.set(params.get('domaine'), params.get('domaine_statut'));
@@ -723,7 +741,8 @@
     if (dom && domInput) domInput.value = dom;
     var opts = p.get('options'), msg = f.querySelector('textarea[name="message"]');
     var intro = [];
-    if (p.get('lissage') === 'oui') intro.push('Je souhaite lisser le prix du site sur 24 mois.');
+    var pl = p.get('lissage') === 'oui' ? '12' : p.get('lissage');
+    if (pl && /^\d+$/.test(pl)) intro.push('Je souhaite payer le site en ' + pl + ' fois.');
     if (opts) intro.push('Options choisies : ' + opts + '.');
     if (intro.length && msg && !msg.value) msg.value = intro.join('\n') + '\n\n';
     f.addEventListener('submit', function (e) {

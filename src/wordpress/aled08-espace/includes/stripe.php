@@ -165,7 +165,7 @@ function aled08e_stripe_checkout($cid) {
         if ($o['once'] > 0) $items[] = $once('Option : ' . $o['name'], $o['once'], 'option');
     }
     if ($c['lissage']) {
-        $items[] = $recurring('Création du site, lissée (' . (int) $m['lissage_total_echeances'] . ($annee ? ' annuités' : ' mensualités') . ')', $m['lissage_mensualite'], 'lissage');
+        $items[] = $recurring('Création du site, en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais', $m['lissage_mensualite'], 'lissage');
     } else {
         $items[] = $once('Acompte de ' . (int) $D['acompte'] . ' % sur la création (' . ($type ? mb_strtolower($type['label'], 'UTF-8') : 'site') . ')', $m['acompte'], 'acompte');
     }

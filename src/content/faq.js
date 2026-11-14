@@ -10,7 +10,8 @@ const titan = F('titan'); // peut ne pas exister encore : chaque réponse qui le
 const vitrine = types.find((t) => t.id === 'vitrine') || types[0];
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 // Mensualité du lissage, arrondie au centime inférieur (même règle que le serveur).
-const lisse = (prix) => Math.floor((prix / lissage.mois) * 100) / 100;
+const LN = lissage.durees[lissage.durees.length - 1];
+const lisse = (prix, n = LN) => Math.floor((prix / n) * 100) / 100;
 const solde = 100 - paiement.acompte;
 
 module.exports = {
@@ -18,13 +19,13 @@ module.exports = {
     { q: 'Je n’ai ni textes ni photos, c’est un problème ?', a: 'Non. On écrit les textes ensemble à partir de ce que vous me racontez, et je choisis des photos libres de droits adaptées à votre activité. Vous les remplacerez par les vôtres quand vous voudrez.' },
     { q: 'Le prix de création est-il vraiment fixe ?', a: `Oui. Il couvre ce que décrit chaque type de site. Si vous voulez plus de pages, c’est ${eur(pageEnPlus)} € la page, et tout est écrit dans le récapitulatif avant de commencer.` },
     { q: 'Quelle différence avec un site fait par un développeur ?', a: 'Pour un site vitrine ou une petite boutique, le résultat est comparable : moderne, rapide, soigné. Je vais plus vite grâce à l’IA, donc je coûte moins cher. Pour une application sur mesure ou un très gros catalogue, l’expertise d’un développeur reste irremplaçable, et je vous le dirai.' },
-    { q: 'Comment se passe le paiement de la création ?', a: `Vous réglez ${paiement.acompte} % en commandant, puis le solde quand le site est en ligne. Si vous préférez, le prix se lisse sur ${lissage.mois} mois, ajouté à votre forfait.` },
+    { q: 'Comment se passe le paiement de la création ?', a: `Vous réglez ${paiement.acompte} % en commandant, puis le solde quand le site est en ligne. Si vous préférez, vous le payez en ${lissage.durees.join(' ou ')} fois sans frais, ajouté à votre forfait.` },
   ],
   commande: [
     { q: 'Comment ça se passe quand je commande ?', a: 'Vous composez votre site, puis vous cliquez sur Commander. Vous relisez le récapitulatif, vous donnez vos coordonnées et vous payez en ligne. Un e-mail de confirmation arrive aussitôt, avec une référence de commande. Je vous écris ensuite pour démarrer.' },
-    { q: 'Que paie-je aujourd’hui ?', a: `Sans lissage : un acompte de ${paiement.acompte} % sur la création, plus la première échéance de votre forfait et de vos options. Les ${solde} % restants vous sont demandés quand le site est en ligne. Avec lissage : la première mensualité du site et celle du forfait. Le montant exact s’affiche sur le bouton avant de valider.` },
-    { q: 'Puis-je payer le site en plusieurs fois ?', a: `Oui. Le prix du site se répartit sur ${lissage.mois} mois, en plus du forfait (ou en 2 annuités si vous payez à l’année). Un ${vitrine.label.toLowerCase()} à ${eur(vitrine.price)} € revient ainsi à ${eur(lisse(vitrine.price))} € par mois. Rien de plus à payer quand c’est fini.` },
-    { q: 'Suis-je engagé ?', a: `Sans lissage, non : le forfait s’arrête quand vous le décidez, à la fin de la période payée. Avec le lissage, vous vous engagez ${lissage.mois} mois, le temps de finir de payer votre site. Si vous partez avant, ce qui reste du prix du site est dû en une fois.` },
+    { q: 'Que paie-je aujourd’hui ?', a: `En une fois : un acompte de ${paiement.acompte} % sur la création, plus la première échéance de votre forfait et de vos options. Les ${solde} % restants vous sont demandés quand le site est en ligne. En plusieurs fois : la première mensualité du site et celle du forfait. Le montant exact s’affiche sur le bouton avant de valider.` },
+    { q: 'Puis-je payer le site en plusieurs fois ?', a: `Oui, en ${lissage.durees.join(' ou ')} fois sans frais, en plus du forfait payé au mois. Un ${vitrine.label.toLowerCase()} à ${eur(vitrine.price)} € revient ainsi à ${eur(lisse(vitrine.price, lissage.durees[0]))} € par mois pendant ${lissage.durees[0]} mois, ou ${eur(lisse(vitrine.price))} € pendant ${LN} mois. Rien de plus à payer quand c’est fini.` },
+    { q: 'Suis-je engagé ?', a: `Non, le forfait s’arrête quand vous le décidez, à la fin de la période payée. Seule exception : si vous payez le site en ${lissage.durees.join(' ou ')} fois, vous vous engagez le temps du paiement. Si vous partez avant, ce qui reste du prix du site est dû en une fois.` },
     { q: 'Puis-je changer de forfait ?', a: 'Oui, dans les deux sens, par message : le bouton est dans votre espace client, onglet Forfait et factures. Le nouveau prix démarre à la période suivante. Avec un site lissé, le forfait continue jusqu’à la fin des mensualités, quel que soit son niveau.' },
     { q: 'Comment sont faites les factures ?', a: 'À chaque paiement, Stripe émet la facture et vous l’envoie par e-mail. Vous la retrouvez aussi dans votre espace client, onglet Forfait et factures. La TVA n’y figure pas : l’entreprise est en franchise (article 293 B du CGI).' },
     { q: 'Que se passe-t-il si j’arrête ?', a: 'Vous me prévenez, et le forfait se termine à la fin de la période en cours. Vous repartez avec votre nom de domaine et une copie complète de votre site. L’hébergement chez moi reste actif 30 jours, le temps de déménager.' },

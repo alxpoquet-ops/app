@@ -34,7 +34,7 @@ function home() {
     <div class="hero-text">
       <p class="kicker">${icon('sparkles')}Sites internet, SEO et IA</p>
       <h1>Votre site internet à partir de ${euro(T('une-page').price)}, <mark>tout compris</mark></h1>
-      <p class="hero-lead">Je crée votre site à prix fixe, puis je m’en occupe pour ${euro(base.month)} par mois : hébergement, nom de domaine, sauvegardes, mises à jour et une modification par mois. Le prix du site peut aussi être lissé sur ${lissage.mois} mois.</p>
+      <p class="hero-lead">Je crée votre site à prix fixe, puis je m’en occupe pour ${euro(base.month)} par mois : hébergement, nom de domaine, sauvegardes, mises à jour et une modification par mois. Le site peut aussi se payer en ${C.lissageTxt} fois sans frais.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}${C.btn('/forfaits/', 'btn-light btn-lg', 'heart', 'Voir les forfaits')}</div>
       <ul class="hero-points">
         <li>${icon('check')}Prix de création fixe</li>
@@ -174,7 +174,7 @@ function forfaitsPage() {
 
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">La création, à prix fixe</h2>
-  <p class="section-sub">En une fois, avec un acompte de ${paiement.acompte} % au départ, ou lissée sur ${lissage.mois} mois.</p>
+  <p class="section-sub">En une fois, avec un acompte de ${paiement.acompte} % au départ, ou en ${C.lissageTxt} fois sans frais.</p>
   <div class="create-prices">${types
     .map(
       (t) => `<a class="create-price c-${t.color} reveal" href="${C.creerUrl({ type: t.id })}">
@@ -412,7 +412,7 @@ const ORDER_ERRORS = {
   domaine: 'Indiquez le nom de domaine souhaité, ou cochez « J’ai déjà un nom de domaine ».',
   cgv: 'Pour commander, il faut accepter les conditions générales de vente.',
   demarrage: 'Pour commander, il faut accepter que la création commence tout de suite.',
-  engagement: `Avec le site lissé sur ${lissage.mois} mois, il faut accepter l’engagement de ${lissage.mois} mois.`,
+  engagement: 'Pour payer le site en plusieurs fois, il faut accepter l’engagement le temps du paiement.',
   paiement: 'Le paiement n’a pas abouti. Votre commande est gardée : vous pouvez réessayer, ou m’écrire.',
   robot: 'L’envoi a été bloqué par la protection contre les robots. Attendez quelques secondes et réessayez.',
   annule: 'Le paiement a été annulé. Rien n’a été débité : vous pouvez reprendre quand vous voulez.',
@@ -466,7 +466,12 @@ function commanderPage() {
           <label><input type="radio" name="periode" value="mois" checked><span>Au mois</span></label>
           <label><input type="radio" name="periode" value="annee"><span>À l’année <em>${annuel.moisOfferts} mois offerts</em></span></label>
         </div>
-        <label class="b-tick o-lisse"><input type="checkbox" name="lissage" value="oui" data-order-lissage><span><strong>Payer mon site en ${lissage.mois} fois</strong><small>Engagement de ${lissage.mois} mois, le temps de payer le site. À l’année : 2 annuités.</small></span></label>
+        <p class="b-label">Le site est payé</p>
+        <div class="b-seg" role="radiogroup" aria-label="Paiement du site">
+          <label><input type="radio" name="lissage" value="" checked><span>En une fois</span></label>
+          ${lissage.durees.map((n) => `<label><input type="radio" name="lissage" value="${n}"><span>En ${n} fois</span></label>`).join('')}
+        </div>
+        <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Engagement le temps du paiement, et le forfait se paie au mois.</p>
         <p class="b-label">Les options <span class="opt">(facultatif)</span></p>
         ${C.optionChoices({ name: 'options[]' })}
         </div>
@@ -508,7 +513,7 @@ function commanderPage() {
         <div class="o-in">
         <label class="check"><input type="checkbox" name="cgv" value="oui" required><span>J’accepte les <a href="/conditions-generales/" target="_blank" rel="noopener">conditions générales de vente</a>. <span class="req">*</span></span></label>
         <label class="check"><input type="checkbox" name="demarrage" value="oui" required><span>Je demande que la création commence tout de suite. Si je me rétracte dans les 14 jours, je paie le travail déjà fait. <span class="req">*</span></span></label>
-        <label class="check" data-order-engagement hidden><input type="checkbox" name="engagement" value="oui"><span>Je m’engage pour ${lissage.mois} mois, le temps de payer mon site. <span class="req">*</span></span></label>
+        <label class="check" data-order-engagement hidden><input type="checkbox" name="engagement" value="oui"><span>Je m’engage pour <span data-order="eng-n">${C.LMAX}</span> mois, le temps de payer mon site. <span class="req">*</span></span></label>
         <div class="o-pay">
           <p class="o-pay-today"><span>Aujourd’hui vous payez</span><b data-order="today">${euro(today0)}</b></p>
           <ul class="o-pay-lines" data-order-lines>
@@ -517,7 +522,7 @@ function commanderPage() {
           </ul>
           <p class="o-pay-next"><span data-order="next-label">Ensuite, chaque mois</span><b data-order="next">${euro(f0.month)}</b></p>
           <p class="o-pay-note" data-order-solde>Le solde du site, <b data-order="solde">${euro(t0.price - acompte0)}</b> (${100 - paiement.acompte} %), est à régler à la mise en ligne. Je vous envoie le lien de paiement.</p>
-          <p class="o-pay-note" data-order-lisse-note hidden>Le site est lissé : <b data-order="lisse">${euro(C.lisse(t0.price))}</b> par <span data-order="lisse-per">mois</span>, pendant <span data-order="lisse-n">${lissage.mois} mois</span>. Ensuite, il ne reste que le forfait.</p>
+          <p class="o-pay-note" data-order-lisse-note hidden>Le site est payé en <span data-order="lisse-n">${C.LMAX}</span> fois sans frais : <b data-order="lisse">${euro(C.lisse(t0.price))}</b> par mois. Ensuite, il ne reste que le forfait, sans engagement.</p>
         </div>
         <button class="btn btn-primary btn-lg btn-block" type="submit">${icon('lock')}<span>Commander et payer <b data-order="btn">${euro(today0)}</b></span></button>
         <p class="o-trust">${icon('shield-check')}<span>Paiement sécurisé par Stripe. Vous recevez vos factures par e-mail.</span></p>

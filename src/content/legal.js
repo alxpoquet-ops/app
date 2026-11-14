@@ -128,7 +128,7 @@ Vous pouvez demander l’accès à vos données, leur correction, leur suppressi
     path: '/conditions-generales/',
     name: 'Conditions générales',
     title: `Conditions générales de vente | ${site.name}`,
-    description: `Conditions générales de vente d’${site.name} : commande en ligne, création à prix fixe ou lissée, forfaits, engagement, nom de domaine, rétractation, médiation.`,
+    description: `Conditions générales de vente d’${site.name} : commande en ligne, création à prix fixe en une ou plusieurs fois, forfaits, nom de domaine, rétractation, médiation.`,
     lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif de commande.',
     updated: UPDATED,
     body: `## 1. Objet
@@ -156,7 +156,7 @@ Les forfaits sont mensuels : ${listeForfaits}. À l’année, le client paie dix
 Le client choisit l’une des deux formules au moment de la commande.
 
 - **En une fois** : un acompte de ${paiement.acompte} % est réglé à la commande. Le solde de ${solde} % est demandé quand le site est mis en ligne, par un lien de paiement envoyé par e-mail et visible dans l’espace client.
-- **Lissé sur ${lissage.mois} mois** : le prix du site est divisé en ${lissage.mois} mensualités ajoutées au forfait. Si le forfait est payé à l’année, il est divisé en 2 annuités. Chaque échéance est arrondie au centime inférieur. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
+- **En ${lissage.durees.join(' ou ')} fois sans frais** : le prix du site est divisé en ${lissage.durees.join(' ou ')} mensualités, au choix du client, ajoutées au forfait. Le forfait est alors payé au mois. Chaque échéance est arrondie au centime inférieur : le total ne dépasse jamais le prix du site. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
 
 ## 5. Paiement du forfait et factures
 
@@ -168,8 +168,8 @@ En cas d’échec de paiement, le client est prévenu par e-mail. Si rien n’es
 
 ## 6. Engagement et résiliation
 
-- **Sans lissage** : le forfait est sans engagement. Le client peut l’arrêter à tout moment par e-mail ou par message : le bouton est dans son espace client. L’arrêt prend effet à la fin de la période déjà payée.
-- **Avec lissage** : le client s’engage pour ${lissage.mois} mois, le temps de régler son site. S’il arrête avant, le reste du prix de création devient exigible en une fois. Le forfait s’arrête ensuite à la fin de la période payée.
+- **Site payé en une fois** : le forfait est sans engagement. Le client peut l’arrêter à tout moment par e-mail ou par message : le bouton est dans son espace client. L’arrêt prend effet à la fin de la période déjà payée.
+- **Site payé en plusieurs fois** : le client s’engage le temps du paiement, soit ${lissage.durees.join(' ou ')} mois. S’il arrête avant, le reste du prix de création devient exigible en une fois. Ensuite, le forfait est sans engagement.
 
 Le client peut changer de forfait à tout moment. Le nouveau prix s’applique à la période suivante.
 

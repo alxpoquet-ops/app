@@ -6,7 +6,7 @@ Ce guide explique, en français simple, comment fonctionne le site www.aled08.fr
 
 - **Création à prix fixe** : une page 150 €, site vitrine 250 €, boutique en ligne 450 €. Page en plus : 40 €.
 - **Forfaits mensuels** : Chico 5 € (1 modification par mois), Power 20 € (SEO suivi, rapport mensuel, 1 modification par semaine), Titan 40 € (1 modification par jour ouvré, 1 article de blog par mois, réponse sous 24 heures). À l'année : 2 mois offerts (le client paie 10 mois).
-- **Paiement de la création** : soit un acompte de 30 % à la commande et le solde de 70 % à la mise en ligne, soit un lissage sur 24 mensualités (ou 2 annuités si le forfait est à l'année), avec un engagement de 24 mois.
+- **Paiement de la création** : soit un acompte de 30 % à la commande et le solde de 70 % à la mise en ligne, soit en 6 ou 12 fois sans frais (le forfait passe alors au mois), avec un engagement le temps du paiement. Sinon, aucun engagement.
 - **Options** : adresse e-mail pro 3 € par mois, traduction en anglais 50 € une fois.
 - **Parrainage** : 1 mois de forfait offert au parrain et au filleul quand le site du filleul est en ligne.
 - **Délai de réponse aux demandes** : sous 48 heures (Titan : 24 heures).
@@ -139,7 +139,7 @@ Faites tout d'abord en **mode test** (clés `sk_test_` et webhook créé en mode
 
 - **Un abonnement par commande** : la ligne du forfait (au mois ou à l'année), la ligne de l'option e-mail pro si elle est prise, et, si le client a choisi le lissage, une ligne « Création du site, lissée » (prix divisé par 24, arrondi au centime inférieur ; ou divisé par 2 si le forfait est à l'année).
 - **Sans lissage** : l'acompte de 30 % et la traduction éventuelle sont facturés une seule fois, sur la première facture. Le solde de 70 % est demandé à la mise en ligne (bouton dans l'espace client, ou lien copié depuis la fiche).
-- **Fin du lissage** : l'extension compte les échéances payées (« Lissage : 12 / 24 payées » dans la fiche et le tableau de bord). Après la 24e (ou la 2e annuité), la ligne est retirée de l'abonnement toute seule : il ne reste que le forfait. Une vérification tourne chaque nuit pour recompter depuis les factures Stripe, au cas où un événement serait passé à côté.
+- **Fin du paiement en plusieurs fois** : l'extension compte les mensualités payées (« Lissage : 4 / 12 payées » dans la fiche et le tableau de bord). Après la dernière (6e ou 12e), la ligne « Création du site » est retirée de l'abonnement Stripe automatiquement : il ne reste que le forfait, sans engagement.
 - Les factures Stripe apparaissent dans l'espace client dès qu'elles sont payées.
 
 ## 6. Le portail client Stripe
@@ -148,7 +148,7 @@ Le bouton « Gérer mon paiement et mes factures » de l'espace client ouvre le 
 
 1. Stripe : **Paramètres › Facturation › Portail client**.
 2. Autorisez : **mettre à jour le moyen de paiement**, **consulter l'historique des factures**.
-3. N'autorisez PAS : annuler l'abonnement, changer d'offre, modifier la quantité. L'engagement de 24 mois et les changements de forfait passent par vous (le client vous écrit, vous ajustez l'abonnement dans Stripe).
+3. N'autorisez PAS : annuler l'abonnement, changer d'offre, modifier la quantité. L'engagement pendant le paiement en plusieurs fois et les changements de forfait passent par vous (le client vous écrit, vous ajustez l'abonnement dans Stripe).
 4. Enregistrez. Le lien du portail est créé à chaque clic et expire en 5 minutes : il n'y a rien à copier.
 
 ## 7. Les factures : mention TVA et SIRET

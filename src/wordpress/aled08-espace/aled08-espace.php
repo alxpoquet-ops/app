@@ -26,7 +26,7 @@ function aled08e_data() {
         $d += [
             'name' => 'ALED08', 'whatsapp' => '', 'email' => '',
             'forfaits' => [], 'types' => [], 'options' => [], 'icons' => [], 'monsters' => [],
-            'moisOfferts' => 2, 'lissageMois' => 24, 'acompte' => 30, 'parrainageMois' => 1, 'remiseSecondSite' => 10,
+            'moisOfferts' => 2, 'lissageDurees' => [6, 12], 'acompte' => 30, 'parrainageMois' => 1, 'remiseSecondSite' => 10,
             'delais' => ['reponse' => '48 heures', 'titan' => '24 heures'],
         ];
     }
@@ -608,7 +608,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
           <p class="app-sub">Paiement</p>
           <ul class="esp-amounts">
             <?php if ($cmd['lissage']) : ?>
-            <li><span>Création du site, lissée</span><b><?php echo aled08e_euro($m['lissage_mensualite']) . ' ' . esc_html($per); // phpcs:ignore ?></b><small><?php echo (int) $cmd['lissage_paye']; ?> / <?php echo (int) $m['lissage_total_echeances']; ?> échéances payées, puis plus rien à payer</small></li>
+            <li><span>Création du site, en <?php echo (int) $m['lissage_total_echeances']; ?> fois sans frais</span><b><?php echo aled08e_euro($m['lissage_mensualite']) . ' ' . esc_html($per); // phpcs:ignore ?></b><small><?php echo (int) $cmd['lissage_paye']; ?> / <?php echo (int) $m['lissage_total_echeances']; ?> échéances payées, puis plus rien à payer</small></li>
             <?php else : ?>
             <li><span>Acompte de <?php echo (int) $D['acompte']; ?> %</span><b><?php echo aled08e_euro($m['acompte']); // phpcs:ignore ?></b><small><?php echo in_array($s, aled08e_cmd_statuts_payes(), true) ? 'payé' : 'à payer à la commande'; ?></small></li>
             <li><span>Solde à la mise en ligne</span><b><?php echo aled08e_euro($solde); // phpcs:ignore ?></b><small><?php echo $cmd['solde_paye'] ? 'payé, merci !' : 'demandé quand le site est en ligne'; ?></small></li>

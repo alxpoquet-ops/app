@@ -111,7 +111,10 @@ function typeCards() {
 }
 
 // ---------------------------------------------------------------- prix du site lissé (arrondi au centime inférieur)
-const lisse = (price) => Math.floor((price / lissage.mois) * 100) / 100;
+// Mensualité du site payé en n fois (12 par défaut), arrondie au centime inférieur : jamais plus que le prix.
+const lisse = (price, n = lissage.durees[lissage.durees.length - 1]) => Math.floor((price / n) * 100) / 100;
+const LMAX = lissage.durees[lissage.durees.length - 1];
+const lissageTxt = lissage.durees.join(' ou ');
 // « un site une page », « un site vitrine », « une boutique en ligne »
 const unType = (t) => (t.id === 'boutique' ? 'une boutique en ligne' : 'un ' + t.label.toLowerCase());
 
@@ -119,7 +122,7 @@ function payBox() {
   return `<div class="jetons-box reveal">
   <h3>${icon('calendar-check')}Comment payer ?</h3>
   <ul class="list-check">
-    <li><strong>Le site</strong> : en une fois (${paiement.acompte} % à la commande, le solde à la mise en ligne), ou lissé sur ${lissage.mois} mois avec un engagement de ${lissage.mois} mois, le temps de payer le site. Par exemple ${types.map((t) => `${euro(lisse(t.price))} par mois pour ${unType(t)}`).join(', ')}.</li>
+    <li><strong>Le site</strong> : en une fois (${paiement.acompte} % à la commande, le solde à la mise en ligne), ou en ${lissageTxt} fois sans frais, avec un engagement seulement le temps de payer le site. Par exemple ${types.map((t) => `${euro(lisse(t.price))} par mois pour ${unType(t)}`).join(', ')}.</li>
     <li><strong>Le forfait</strong> : au mois, ou à l’année avec ${annuel.moisOfferts} mois offerts.</li>
   </ul>
 </div>`;
@@ -176,7 +179,7 @@ function priceData() {
   return esc(
     JSON.stringify({
       types: types.map((t) => ({ id: t.id, label: t.label, price: t.price, delai: t.delai })),
-      lissage: lissage.mois,
+      lissage: lissage.durees,
       acompte: paiement.acompte,
       forfaits: forfaits.map((f) => ({ id: f.id, name: f.name, month: f.month })),
       options: options.map((o) => ({ id: o.id, name: o.name, once: o.price.once || 0, month: o.price.month || 0, types: o.types || null })),
@@ -242,8 +245,9 @@ function configurator() {
   const payChoices = `<p class="b-label">Le site</p>
       <div class="b-seg" role="radiogroup" aria-label="Paiement du site">
         <label><input type="radio" name="b-lisse" value="non" checked><span>En une fois</span></label>
-        <label><input type="radio" name="b-lisse" value="oui"><span>Lissé sur ${lissage.mois} mois</span></label>
+        ${lissage.durees.map((n) => `<label><input type="radio" name="b-lisse" value="${n}"><span>En ${n} fois</span></label>`).join('')}
       </div>
+      <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Engagement le temps du paiement, et le forfait se paie au mois.</p>
       <p class="b-label">Le forfait</p>
       ${billingSwitch()}`;
   const optionList = `<details class="b-options">
@@ -256,7 +260,7 @@ function configurator() {
     ${step(1, 'Votre site', 'Le prix de création est fixe. Il comprend la maquette, le site complet et la mise en ligne.', typeBody)}
     ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est comprise dans les forfaits et elle reste à votre nom.', domainBox())}
     ${step(3, 'Votre forfait', 'Je m’occupe de votre site chaque mois. Les modifications, c’est moi qui les fais.', forfaitBody)}
-    ${step(4, 'Paiement', `Le site en une fois (${paiement.acompte} % à la commande), ou lissé sur ${lissage.mois} mois avec un engagement de ${lissage.mois} mois. Le forfait au mois, ou à l’année avec deux mois offerts.`, payChoices)}
+    ${step(4, 'Paiement', `Le site en une fois (${paiement.acompte} % à la commande), ou en ${lissageTxt} fois sans frais. Le forfait au mois, ou à l’année avec deux mois offerts. Aucun engagement, sauf le temps de payer le site en plusieurs fois.`, payChoices)}
     ${step(5, 'Options', 'E-mail pro ou traduction : rien n’est obligatoire, vous pourrez les ajouter plus tard.', optionList, ' b-step-last')}
   </form>
   <aside class="b-sum" aria-live="polite">
@@ -269,7 +273,7 @@ function configurator() {
     </ul>
     <div class="b-total">
       <p><span data-sum="once-label">Création, une fois</span><b data-sum="once">250 €</b></p>
-      <p data-sum-lisse hidden><span data-sum="lisse-label">Site lissé, pendant ${lissage.mois} mois</span><b data-sum="lisse">0 €</b></p>
+      <p data-sum-lisse hidden><span data-sum="lisse-label">Site en ${LMAX} fois</span><b data-sum="lisse">0 €</b></p>
       <p data-sum-parrain hidden><span>Parrainage</span><b>${fidelite.parrainageMois} mois offert</b></p>
       <p><span data-sum="recur-label">Puis chaque mois</span><b data-sum="recur">20 €</b></p>
     </div>
@@ -341,7 +345,7 @@ function comparatifTable() {
     ['Délai', `${types[0].delai} pour une page, ${types[1].delai} pour un site vitrine, ${types[2].delai} pour une boutique`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
     ['Modifications', 'Comprises dans le forfait, je les fais', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['SEO', 'Bases comprises. Suivi mensuel avec Power et Titan', 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
-    ['Engagement', `Aucun au mois. ${lissage.mois} mois si le site est lissé`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
+    ['Engagement', `Aucun. Seulement le temps du paiement si le site est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
   return `<div class="cmp cmp-4 reveal" role="table" aria-label="ALED08 comparé à une agence web, un freelance et une plateforme à faire soi-même">
@@ -351,6 +355,8 @@ function comparatifTable() {
 }
 
 module.exports = {
+  LMAX,
+  lissageTxt,
   unType,
   tel, waUrl, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, optPrice, optionsCompact, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,

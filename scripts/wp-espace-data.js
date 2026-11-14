@@ -28,7 +28,7 @@ process.stdout.write(
     types: types.map((t) => ({ id: t.id, name: t.name, label: t.label, price: t.price, delai: t.delai })),
     options: options.map((o) => ({ id: o.id, name: o.name, month: o.price.month || 0, once: o.price.once || 0, types: o.types || [] })),
     moisOfferts: annuel.moisOfferts,
-    lissageMois: lissage.mois || 24,
+    lissageDurees: lissage.durees || [6, 12],
     acompte: paiement.acompte || 30,
     delais: { reponse: delais.reponse || '48 heures', titan: delais.titan || '24 heures' },
     parrainageMois: fidelite.parrainageMois,

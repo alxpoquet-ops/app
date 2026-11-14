@@ -159,8 +159,9 @@ const forfaits = [
   },
 ];
 const annuel = { moisOfferts: 2 };
-// Prix du site lissé sur 24 mois, au besoin (engagement de 24 mois, le temps de payer le site).
-const lissage = { mois: 24 };
+// Prix du site payable en 6 ou 12 fois sans frais (engagement le temps du paiement ; sinon, aucun engagement).
+// Le paiement en plusieurs fois se fait au mois : le forfait passe alors au mois.
+const lissage = { durees: [6, 12] };
 // Délai de réponse aux demandes de modification.
 const delais = { reponse: '48 heures', titan: '24 heures' };
 
