@@ -29,6 +29,16 @@
     if (!parrain && saved && Date.now() - saved.t < 60 * 864e5) parrain = cleanCode(saved.c);
   } catch (e) { /* stockage indisponible : le code de l'adresse suffit */ }
 
+  /* options réservées à certains types de site (stock, comptes clients : boutique) */
+  var filterOpts = function (scope, typeId) {
+    $$('.b-opt[data-types]', scope).forEach(function (l) {
+      var ok = (' ' + l.getAttribute('data-types') + ' ').indexOf(' ' + typeId + ' ') >= 0;
+      l.hidden = !ok;
+      var i = l.querySelector('input');
+      if (!ok && i) i.checked = false;
+    });
+  };
+
   /* ---------- menu mobile ---------- */
   var burger = $('.burger'), nav = $('#nav');
   if (burger && nav) {
@@ -215,6 +225,7 @@
     function update() {
       var t = find(data.types, val('b-type')) || data.types[0];
       var f = find(data.forfaits, val('b-forfait')) || data.forfaits[0];
+      filterOpts(box, t.id);
       var annual = box.getAttribute('data-billing') === 'annuel';
       var mult = annual ? 12 - data.free : 1;
       var per = annual ? '/an' : '/mois';
@@ -359,6 +370,7 @@
     function update(fromUser) {
       var t = find(data.types, val('type')) || data.types[0];
       var f = find(data.forfaits, val('forfait')) || data.forfaits[0];
+      filterOpts(form, t.id);
       var annual = val('periode') === 'annee';
       root.setAttribute('data-billing', annual ? 'annuel' : 'mensuel');
       var mult = annual ? 12 - data.free : 1;

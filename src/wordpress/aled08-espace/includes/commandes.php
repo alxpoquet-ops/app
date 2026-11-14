@@ -314,8 +314,11 @@ function aled08e_cmd_traiter_post() {
     if (!is_array($optionsIn)) $optionsIn = explode(',', (string) $optionsIn);
     $options = [];
     foreach ($optionsIn as $o) { $o = sanitize_key($o); if ($o !== '' && aled08e_option($o)) $options[] = $o; }
+    // options réservées à certains types de site (stock, comptes clients : boutique seulement)
+    $typeIn = sanitize_key($get('type', 30));
+    $options = array_values(array_filter($options, function ($oid) use ($typeIn) { $o = aled08e_option($oid); return $o && (empty($o['types']) || in_array($typeIn, (array) $o['types'], true)); }));
     $cfg = [
-        'type' => sanitize_key($get('type', 30)),
+        'type' => $typeIn,
         'forfait' => sanitize_key($get('forfait', 30)),
         'periode' => $get('periode', 10) === 'annee' ? 'annee' : 'mois',
         'lissage' => $get('lissage', 5) === 'oui',

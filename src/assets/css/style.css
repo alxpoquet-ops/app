@@ -1133,3 +1133,4 @@ button.app-card:hover { transform: translateY(-2px); }
   .confirm { padding: 22px 18px; }
   .confirm .steps { grid-template-columns: 1fr; }
 }
+.opt-only { font-style: normal; font-size: .72rem; font-weight: 900; padding: 2px 8px; border-radius: 999px; background: var(--pink); color: var(--pink-dd); margin-left: 6px; vertical-align: middle; }

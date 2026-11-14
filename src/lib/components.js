@@ -166,7 +166,7 @@ const optPrice = (p) => (p.once ? euro(p.once) : `${euro(p.month)}/mois`);
 // Liste compacte des options (page forfaits)
 function optionsCompact() {
   return `<div class="opt-groups opt-single"><div class="opt-group reveal"><ul>${options
-    .map((o) => `<li><span class="opt-ico">${icon(o.icon)}</span><span class="opt-txt"><strong>${esc(o.name)}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${optPrice(o.price)}</span></li>`)
+    .map((o) => `<li><span class="opt-ico">${icon(o.icon)}</span><span class="opt-txt"><strong>${esc(o.name)}${o.types ? ' <em class="opt-only">boutique</em>' : ''}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${optPrice(o.price)}</span></li>`)
     .join('')}</ul></div></div>`;
 }
 
@@ -179,7 +179,7 @@ function priceData() {
       lissage: lissage.mois,
       acompte: paiement.acompte,
       forfaits: forfaits.map((f) => ({ id: f.id, name: f.name, month: f.month })),
-      options: options.map((o) => ({ id: o.id, name: o.name, once: o.price.once || 0, month: o.price.month || 0 })),
+      options: options.map((o) => ({ id: o.id, name: o.name, once: o.price.once || 0, month: o.price.month || 0, types: o.types || null })),
       free: annuel.moisOfferts,
     })
   );
@@ -209,7 +209,7 @@ function forfaitChoices({ name = 'b-forfait', checked = 'power' } = {}) {
 function optionChoices({ name = '' } = {}) {
   return `<div class="b-opts">${options
     .map(
-      (o) => `<label class="b-opt"><input type="checkbox"${name ? ` name="${name}"` : ''} value="${o.id}"><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${esc(o.name)}</strong></span><em class="p-opt">${o.price.once ? euro(o.price.once) : `<span class="p-month">${euro(o.price.month)}/mois</span><span class="p-year">${euro(year(o.price.month))}/an</span>`}</em></label>`
+      (o) => `<label class="b-opt"${o.types ? ` data-types="${o.types.join(' ')}"` : ''}><input type="checkbox"${name ? ` name="${name}"` : ''} value="${o.id}"><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${esc(o.name)}</strong></span><em class="p-opt">${o.price.once ? euro(o.price.once) : `<span class="p-month">${euro(o.price.month)}/mois</span><span class="p-year">${euro(year(o.price.month))}/an</span>`}</em></label>`
     )
     .join('')}</div>`;
 }
