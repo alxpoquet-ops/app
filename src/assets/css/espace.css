@@ -133,3 +133,13 @@
 .esp-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 @media (max-width: 720px) { .esp-grid2 { grid-template-columns: 1fr; } .esp-form .btn { justify-self: stretch; } }
 a.app-card { text-decoration: none; color: inherit; }
+/* Aperçu de Lia à valider */
+.lia-confirm { display: grid; gap: 10px; margin-top: 10px; padding: 14px; border-radius: 18px; background: var(--mint); color: var(--text); }
+.lia-confirm-h { display: flex; gap: 10px; align-items: center; margin: 0; }
+.lia-confirm-h .monster, .lia-confirm-h svg { width: 44px; height: 44px; flex: none; }
+.lia-confirm ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.lia-confirm li { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 14px; background: var(--card); }
+.lia-confirm-form { display: grid; gap: 10px; }
+.lia-confirm-form .btn { justify-self: start; }
+.lia-confirm details summary { cursor: pointer; font-weight: 800; color: var(--mint-dd); min-height: 44px; display: flex; align-items: center; }
+@media (max-width: 720px) { .lia-confirm-form .btn { justify-self: stretch; } }

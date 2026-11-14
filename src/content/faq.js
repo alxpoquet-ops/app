@@ -1,7 +1,7 @@
 // Questions fréquentes, par rubrique. La page /faq/ les reprend toutes.
 // Règles : réponses courtes et honnêtes, aucun tiret long, aucun chiffre sur les concurrents,
 // et pas de phrase de 9 mots ou plus reprise d'une autre réponse ou d'une page (scripts/check.js).
-const { forfaits, annuel, lissage, options, paiement, fidelite, pageEnPlus, types, delais = { reponse: '48 heures', titan: '24 heures' } } = require('../config');
+const { forfaits, annuel, lissage, options, paiement, fidelite, pageEnPlus, types, delais = { reponse: '72 heures', titan: '24 heures' } } = require('../config');
 const opt = (id) => options.find((o) => o.id === id);
 const F = (id) => forfaits.find((f) => f.id === id);
 const chico = F('chico') || forfaits[0];
@@ -32,14 +32,14 @@ module.exports = {
     { q: 'Et si je me rétracte ?', a: 'Vous avez 14 jours, par simple e-mail. Comme vous me demandez de commencer tout de suite, vous payez seulement le travail déjà fait, au prorata. Le nom de domaine déjà réservé reste à votre charge : il est à votre nom, pour un an.' },
   ],
   forfaits: [
-    { q: `Quelle différence entre ${chico.name}, ${power.name} et ${titan ? titan.name : ''} ?`, a: `${chico.name} (${eur(chico.month)} € par mois) garde votre site en ligne et à jour sur un serveur de qualité, avec une modification par Alex et un jeton Lia par mois. ${power.name} (${eur(power.month)} € par mois) ajoute le SEO, pour faire remonter votre site sur Google, un serveur plus rapide, un support et des modifications rapides : quatre modifications et quatre jetons Lia par mois.${titan ? ` ${titan.name} (${eur(titan.month)} € par mois) ajoute le retour de vos ventes et de vos chiffres chaque mois, et nos outils en illimité.` : ''}` },
-    { q: 'Lia ou Alex : qui modifie mon site ?', a: 'Lia, c’est l’IA : elle modifie et met à jour votre site directement, depuis votre espace client (un horaire, un prix, une actualité, une photo). Chaque action de Lia utilise un jeton Lia. Alex, c’est moi : je fais les modifications qui demandent un regard humain, et je vérifie et je règle tout ce que fait Lia.' },
+    { q: `Quelle différence entre ${chico.name}, ${power.name} et ${titan ? titan.name : ''} ?`, a: `${chico.name} (${eur(chico.month)} € par mois) garde votre site en ligne et à jour sur un serveur de qualité, avec une modification par mois, faite par Lia ou par Alex, au choix. ${power.name} (${eur(power.month)} € par mois) ajoute le SEO, pour faire remonter votre site sur Google, un serveur plus rapide, un support et des modifications rapides : quatre modifications et quatre jetons Lia par mois.${titan ? ` ${titan.name} (${eur(titan.month)} € par mois) ajoute le retour de vos ventes et de vos chiffres chaque mois, et nos outils en illimité.` : ''}` },
+    { q: 'Lia ou Alex : qui modifie mon site ?', a: 'C’est vous qui choisissez, à chaque demande. Lia, c’est l’IA : c’est instantané. Elle prépare la modification, vous montre l’aperçu, et ne modifie votre site qu’après votre accord. Chaque action de Lia utilise un jeton Lia. Alex, c’est moi : je fais la modification à la main, sous 72 heures, et je la vérifie moi-même. Je vérifie aussi tout ce que fait Lia.' },
     { q: 'Au mois ou à l’année ?', a: `Comme vous voulez. Au mois, vous arrêtez quand vous le souhaitez. À l’année, vous payez dix mois d’un coup et ${annuel.moisOfferts} sont offerts. Vous pouvez passer de l’un à l’autre au renouvellement.` },
     { q: 'Qu’est-ce qui compte comme une modification ?', a: 'Un changement précis sur une page qui existe : un horaire, un prix, une photo, un texte, un produit. Une demande, une modification. Les demandes non utilisées ne se reportent pas. Une page entière ou une nouvelle fonction, c’est un petit devis.' },
     { q: 'Y a-t-il des frais cachés ?', a: 'Non. Le récapitulatif indique tout : la création, le forfait et les options choisies. Rien d’autre.' },
   ],
   espace: [
-    { q: 'Comment demander une modification ?', a: 'Depuis votre espace client : vous écrivez ce que vous voulez changer, avec une photo si besoin. Vous pouvez aussi m’écrire sur WhatsApp. Je m’occupe du reste.' },
+    { q: 'Comment demander une modification ?', a: 'Depuis votre espace client : vous écrivez ce que vous voulez changer, avec une photo si besoin. Vous choisissez qui s’en charge : Lia ou Alex. Je m’occupe du reste.' },
     { q: 'En combien de temps est-ce fait ?', a: `Je vous réponds sous ${delais.reponse} en jours ouvrés${titan ? `, et sous ${delais.titan} avec ${titan.name}` : ''}. Une petite modification est en général en ligne dans ce délai. Je vous préviens dès que c’est fait.` },
     { q: 'Comment est créé mon compte ?', a: 'Tout seul, dès que votre commande est validée. Vous pouvez aussi le créer avant, sans rien commander, sur la page Mon espace. Dans les deux cas, vous recevez un e-mail avec un lien pour choisir votre mot de passe. Si un compte existait déjà avec votre adresse, la commande y est simplement rattachée.' },
     { q: 'Mon compte peut-il être supprimé ?', a: 'Seulement s’il ne sert plus : aucune connexion depuis 12 mois et aucun forfait actif. Je vous préviens par e-mail 30 jours avant, et une simple connexion annule tout. Tant que votre forfait tourne, votre compte reste.' },

@@ -36,18 +36,13 @@ function businessSchema() {
     description:
       'Création de sites internet à prix fixe (une page, site vitrine, boutique en ligne), forfaits mensuels avec hébergement, mises à jour, modifications et référencement SEO. Tout se fait en ligne, pour des clients partout en France.',
     url: site.url + '/',
-    telephone: site.phoneIntl,
-    email: site.email,
+    ...(site.email ? { email: site.email } : {}),
     image: site.url + '/assets/img/og-image.png',
     logo: site.url + '/assets/img/logo-512.png',
     priceRange: '€',
     currenciesAccepted: 'EUR',
     address: {
       '@type': 'PostalAddress',
-      ...(site.address.street ? { streetAddress: site.address.street } : {}),
-      postalCode: site.address.postalCode,
-      addressLocality: site.address.city,
-      addressRegion: site.address.region,
       addressCountry: site.address.country,
     },
     areaServed: [{ '@type': 'Country', name: 'France' }],
@@ -105,7 +100,7 @@ function header(currentPath) {
         }).join('')}
       </ul>
       <div class="nav-mobile-cta">
-        ${C.btnWa('btn-wa btn-block', 'Écrire sur WhatsApp')}
+        ${C.btnWa('btn-light btn-block', 'Nous écrire')}
       </div>
     </nav>
     <div class="header-actions">
@@ -126,9 +121,8 @@ function footer(p) {
       <a class="brand" href="/">${logoMark({ id: 'lgf' })}<span class="brand-text"><strong>${site.name}</strong><small>${site.baseline}</small></span></a>
       <p>Des sites internet simples, rapides et faits pour être trouvés sur Google, créés avec Lia et vérifiés par Alex. Tout se fait en ligne, pour des clients partout en France.</p>
       <ul class="footer-contact">
-        <li><a href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}WhatsApp</a></li>
-        <li><a href="${C.tel}">${icon('phone')}${site.phoneDisplay}</a></li>
-        <li><a href="mailto:${site.email}">${icon('mail')}${site.email}</a></li>
+        <li><a href="${C.contactUrl}">${icon('message-circle')}Nous écrire</a></li>
+        ${site.email ? `<li><a href="mailto:${site.email}">${icon('mail')}${site.email}</a></li>` : ''}
       </ul>
     </div>
     <div>
@@ -169,7 +163,7 @@ function footer(p) {
   </div></div>
 </footer>
 ${p.noMobileBar ? '' : `<nav class="mobile-bar" aria-label="Accès rapide">
-  <a href="${C.waUrl()}" class="mb-wa" target="_blank" rel="noopener">${icon('whatsapp')}<span>WhatsApp</span></a>
+  <a href="${C.contactUrl}" class="mb-wa">${icon('message-circle')}<span>Nous écrire</span></a>
   <a href="${sections.creer.path}" class="mb-creer">${icon('wand-sparkles')}<span>Créer mon site</span></a>
 </nav>`}`;
 }
@@ -198,7 +192,7 @@ function page(p) {
 <link rel="canonical" href="${url}">
 <meta name="robots" content="${robots}">
 <meta name="author" content="${esc(site.name)}">
-<meta name="theme-color" content="#FFF8F2">
+<meta name="theme-color" content="#16142A">
 <meta name="format-detection" content="telephone=no">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:type" content="website">
@@ -221,7 +215,7 @@ function page(p) {
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <script type="application/ld+json">${graph(p)}</script>
-<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('al-theme');if(t==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('al-theme');if(t!=='light')document.documentElement.dataset.theme='dark'}catch(e){}</script>
 </head>
 <body class="c-${color}${p.bodyClass ? ' ' + p.bodyClass : ''}">
 ${smartQuotes(`${header(p.path)}

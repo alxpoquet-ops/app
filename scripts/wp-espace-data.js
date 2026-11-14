@@ -8,7 +8,7 @@ const { monster } = require('../src/lib/monsters');
 const { site, forfaits, types, annuel, options, fidelite } = cfg;
 const paiement = cfg.paiement || { acompte: 30 };
 const lissage = cfg.lissage || { mois: 24 };
-const delais = cfg.delais || { reponse: '48 heures', titan: '24 heures' };
+const delais = cfg.delais || { reponse: '72 heures', titan: '24 heures' };
 // Quotas de modifications par mois : lus dans config.js (f.quota) ; valeurs de repli si absents.
 const QUOTA = { chico: 1, power: 4, titan: 20 };
 
@@ -22,15 +22,15 @@ const ICONS = [
 process.stdout.write(
   JSON.stringify({
     name: site.name,
-    whatsapp: site.whatsapp,
+    whatsapp: '',
     email: site.email,
-    forfaits: forfaits.map((f) => ({ id: f.id, name: f.name, month: f.month, quota: f.quota || QUOTA[f.id] || 1, jetons: f.jetons === undefined ? 1 : f.jetons, modifs: f.modifs, color: f.color, tagline: f.tagline })),
+    forfaits: forfaits.map((f) => ({ id: f.id, name: f.name, month: f.month, quota: f.quota || QUOTA[f.id] || 1, jetons: f.jetons === undefined ? 1 : f.jetons, partage: !!f.partage, modifs: f.modifs, color: f.color, tagline: f.tagline })),
     types: types.map((t) => ({ id: t.id, name: t.name, label: t.label, price: t.price, delai: t.delai })),
     options: options.map((o) => ({ id: o.id, name: o.name, month: o.price.month || 0, once: o.price.once || 0, types: o.types || [] })),
     moisOfferts: annuel.moisOfferts,
     lissageDurees: lissage.durees || [6, 12],
     acompte: paiement.acompte || 30,
-    delais: { reponse: delais.reponse || '48 heures', titan: delais.titan || '24 heures' },
+    delais: { reponse: delais.reponse || '72 heures', titan: delais.titan || '24 heures' },
     parrainageMois: fidelite.parrainageMois,
     remiseSecondSite: fidelite.remiseSecondSite || 0,
     icons: Object.fromEntries(ICONS.map((n) => [n, icon(n)])),

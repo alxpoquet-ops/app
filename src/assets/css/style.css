@@ -56,6 +56,8 @@
 :root[data-theme="dark"] .cta-box { background: linear-gradient(120deg, #1E4A3C, #342B63 55%, #4A2540); }
 :root[data-theme="dark"] .site-header { background: rgba(22, 20, 42, .9); }
 :root[data-theme="dark"] .mobile-bar { background: rgba(33, 30, 58, .96); }
+:root[data-theme="dark"] .skip { background: #3A3466; }
+:root[data-theme="dark"] .app-toast { background: #3A3466; color: #fff; box-shadow: 0 0 0 2px var(--mint-d), 0 14px 30px -10px rgba(0, 0, 0, .7); }
 :root[data-theme="dark"] mark { background: linear-gradient(transparent 56%, #2E6B55 56% 94%, transparent 94%); }
 :root[data-theme="dark"] img:not([src$=".svg"]) { filter: brightness(.92); }
 .theme-btn { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; flex: none; border: 0; border-radius: 50%; background: var(--card); color: var(--ink); box-shadow: 0 0 0 2px var(--edge) inset; cursor: pointer; padding: 0; }

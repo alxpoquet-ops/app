@@ -5,8 +5,7 @@ const { monster } = require('./monsters');
 const { inline, esc, plain } = require('./md');
 
 // ---------------------------------------------------------------- liens et prix
-const tel = `tel:${site.phoneIntl}`;
-const waUrl = (msg = site.whatsappMessage) => `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(msg)}`;
+const contactUrl = site.contactPath || '/contact/';
 const euro = (n) => `${String(n).replace('.', ',')} €`;
 const withQuery = (path, params = {}) => {
   const q = Object.entries(params).filter(([, v]) => v).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
@@ -27,7 +26,8 @@ function btn(href, cls, ico, text, extra = '') {
   return `<a class="btn ${cls}" href="${href}"${extra}>${ico ? icon(ico) : ''}<span>${text}</span></a>`;
 }
 const btnCreer = (cls = 'btn-primary', text = 'Créer mon site', params) => btn(creerUrl(params), cls, 'wand-sparkles', text);
-const btnWa = (cls = 'btn-wa', text = 'WhatsApp', msg) => btn(waUrl(msg), cls, 'whatsapp', text, ' target="_blank" rel="noopener"');
+// Bouton « Nous écrire » (formulaire de contact) : aucun numéro ni adresse personnelle sur le site
+const btnWa = (cls = 'btn-light', text = 'Nous écrire') => btn(contactUrl, cls.replace('btn-wa', 'btn-light'), 'message-circle', text);
 
 // ---------------------------------------------------------------- fil d'Ariane
 function breadcrumbs(crumbs) {
@@ -245,7 +245,7 @@ function configurator() {
       ${body}
     </fieldset>`;
   const typeBody = `${typeChoices()}<p class="b-note">${icon('info')}Besoin de plus de pages ? ${euro(pageEnPlus)} la page.</p>`;
-  const forfaitBody = `${forfaitChoices()}<p class="b-note">${icon('info')}Chico : hébergement, nom de domaine, mises à jour, une modification et un jeton Lia. Power : SEO pour remonter sur Google, serveur plus rapide, quatre de chaque. Titan : retour de vos ventes et outils illimités. <a href="/forfaits/">Comparer</a></p>`;
+  const forfaitBody = `${forfaitChoices()}<p class="b-note">${icon('info')}Chico : hébergement, nom de domaine, mises à jour, une modification par mois, par Lia ou par Alex. Power : SEO pour remonter sur Google, serveur plus rapide, quatre modifications et quatre jetons Lia. Titan : retour de vos ventes et outils illimités. <a href="/forfaits/">Comparer</a></p>`;
   const payChoices = `<p class="b-label">Le site</p>
       <div class="b-seg" role="radiogroup" aria-label="Paiement du site">
         <label><input type="radio" name="b-lisse" value="non" checked><span>En une fois</span></label>
@@ -363,7 +363,7 @@ module.exports = {
   LMAX,
   lissageTxt,
   unType,
-  tel, waUrl, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
+  contactUrl, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, optPrice, optionsCompact, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
 };

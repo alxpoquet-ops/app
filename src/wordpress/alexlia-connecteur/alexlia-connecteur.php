@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Alex & Lia : connecteur
  * Description: À installer sur le site d'un client. Permet à Lia (l'IA d'Alex & Lia) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Requires PHP: 7.4
  * Author: Alex & Lia
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '1.0.0');
+define('ALEXLIA_CONN_VERSION', '1.1.0');
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Lia (Réglages › Alex & Lia)
@@ -112,6 +112,9 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'image': return alexlia_conn_image($args);
         case 'reglage': return alexlia_conn_reglage($args);
         case 'restaurer': return alexlia_conn_restaurer($args);
+        case 'preparer': return alexlia_conn_preparer($args);
+        case 'appliquer': return alexlia_conn_appliquer($args);
+        case 'abandonner': return alexlia_conn_abandonner($args);
         default: return new WP_Error('alexlia_action', 'Action inconnue.', ['status' => 400]);
     }
 }
@@ -137,6 +140,9 @@ function alexlia_conn_lire($args) {
     $p = alexlia_conn_post($args['id'] ?? 0);
     if (!$p) return new WP_Error('alexlia_introuvable', 'Contenu introuvable.', ['status' => 404]);
     $c = (string) $p->post_content;
+    // avec un jeton : le contenu tel qu'il sera après les changements déjà préparés
+    $b = alexlia_conn_brouillon($args['jeton'] ?? '');
+    if ($b && isset($b['posts'][$p->ID]['contenu'])) $c = (string) $b['posts'][$p->ID]['contenu'];
     return ['id' => $p->ID, 'type' => $p->post_type, 'titre' => $p->post_title, 'contenu' => mb_substr($c, 0, 60000), 'tronque' => mb_strlen($c) > 60000, 'extrait' => $p->post_excerpt, 'adresse' => get_permalink($p)];
 }
 
@@ -230,3 +236,140 @@ function alexlia_conn_restaurer($args) {
     alexlia_conn_journal('Changement annulé sur « ' . $parent->post_title . ' ».');
     return ['ok' => true, 'id' => $parent->ID];
 }
+
+/* =========================================================================
+ *  Aperçu avant mise en ligne : Lia prépare les changements dans un brouillon (jeton),
+ *  le client les voit sur son vrai site avec ?alexlia_apercu=jeton, puis confirme : « appliquer ».
+ * ========================================================================= */
+function alexlia_conn_jeton_ok($j) { return is_string($j) && preg_match('/^[A-Za-z0-9]{24,64}$/', $j); }
+function alexlia_conn_brouillon($j) {
+    if (!alexlia_conn_jeton_ok($j)) return null;
+    $b = get_transient('alexlia_ap_' . $j);
+    return is_array($b) ? $b : null;
+}
+function alexlia_conn_brouillon_set($j, $b) { set_transient('alexlia_ap_' . $j, $b, 21 * DAY_IN_SECONDS); }
+function alexlia_conn_apercu_url($j, $url) { return add_query_arg('alexlia_apercu', $j, $url); }
+
+function alexlia_conn_preparer($args) {
+    $j = (string) ($args['jeton'] ?? '');
+    if (!alexlia_conn_jeton_ok($j)) return new WP_Error('alexlia_jeton', 'Jeton d’aperçu invalide.', ['status' => 400]);
+    $b = alexlia_conn_brouillon($j) ?: ['posts' => [], 'articles' => [], 'reglages' => [], 'cree' => time()];
+    $op = (string) ($args['op'] ?? '');
+    if ($op === 'remplacer' || $op === 'modifier') {
+        $p = alexlia_conn_post($args['id'] ?? 0);
+        if (!$p) return new WP_Error('alexlia_introuvable', 'Contenu introuvable.', ['status' => 404]);
+        $d = $b['posts'][$p->ID] ?? [];
+        $base = isset($d['contenu']) ? (string) $d['contenu'] : (string) $p->post_content;
+        if ($op === 'remplacer') {
+            $ancien = (string) ($args['ancien'] ?? '');
+            $nouveau = alexlia_conn_propre($args['nouveau'] ?? '');
+            if ($ancien === '' || mb_strlen($ancien) > 20000) return new WP_Error('alexlia_args', 'Texte à remplacer manquant.', ['status' => 400]);
+            $n = substr_count($base, $ancien);
+            if ($n === 0) return new WP_Error('alexlia_absent', 'Le texte à remplacer n’a pas été trouvé tel quel. Relisez la page (avec le jeton).', ['status' => 409]);
+            if ($n > 1 && empty($args['tous'])) return new WP_Error('alexlia_plusieurs', 'Le texte apparaît ' . $n . ' fois : précisez un passage plus long, ou demandez de tout remplacer.', ['status' => 409]);
+            $d['contenu'] = $n > 1 ? str_replace($ancien, $nouveau, $base) : alexlia_conn_remplacer_un($base, $ancien, $nouveau);
+        } else {
+            if (!isset($args['titre']) && !isset($args['contenu'])) return new WP_Error('alexlia_args', 'Rien à modifier.', ['status' => 400]);
+            if (isset($args['titre'])) $d['titre'] = sanitize_text_field((string) $args['titre']);
+            if (isset($args['contenu'])) $d['contenu'] = alexlia_conn_propre($args['contenu']);
+        }
+        $b['posts'][$p->ID] = $d;
+        alexlia_conn_brouillon_set($j, $b);
+        return ['ok' => true, 'prepare' => true, 'id' => $p->ID, 'apercu' => alexlia_conn_apercu_url($j, get_permalink($p)), 'adresse' => get_permalink($p)];
+    }
+    if ($op === 'publier') {
+        $titre = sanitize_text_field((string) ($args['titre'] ?? ''));
+        $contenu = alexlia_conn_propre($args['contenu'] ?? '');
+        if ($titre === '' || $contenu === '') return new WP_Error('alexlia_args', 'Titre et contenu obligatoires.', ['status' => 400]);
+        $b['articles'][] = ['titre' => $titre, 'contenu' => $contenu, 'image_id' => (int) ($args['image_id'] ?? 0)];
+        alexlia_conn_brouillon_set($j, $b);
+        $k = count($b['articles']) - 1;
+        return ['ok' => true, 'prepare' => true, 'apercu' => alexlia_conn_apercu_url($j, add_query_arg('alexlia_article', $k, home_url('/')))];
+    }
+    if ($op === 'reglage') {
+        $ok = ['nom' => 'blogname', 'slogan' => 'blogdescription'];
+        $nom = (string) ($args['nom'] ?? '');
+        if (!isset($ok[$nom])) return new WP_Error('alexlia_reglage', 'Réglage non autorisé.', ['status' => 403]);
+        $b['reglages'][$nom] = sanitize_text_field((string) ($args['valeur'] ?? ''));
+        alexlia_conn_brouillon_set($j, $b);
+        return ['ok' => true, 'prepare' => true, 'avant' => get_option($ok[$nom]), 'apercu' => alexlia_conn_apercu_url($j, home_url('/'))];
+    }
+    return new WP_Error('alexlia_args', 'Opération inconnue.', ['status' => 400]);
+}
+
+function alexlia_conn_appliquer($args) {
+    $j = (string) ($args['jeton'] ?? '');
+    $b = alexlia_conn_brouillon($j);
+    if (!$b) return new WP_Error('alexlia_jeton', 'Aperçu introuvable ou expiré.', ['status' => 404]);
+    $faits = [];
+    foreach ($b['posts'] as $id => $d) {
+        $p = alexlia_conn_post($id);
+        if (!$p) continue;
+        $maj = ['ID' => $p->ID];
+        if (isset($d['titre'])) $maj['post_title'] = $d['titre'];
+        if (isset($d['contenu'])) $maj['post_content'] = $d['contenu'];
+        $rev = alexlia_conn_revision_avant($p);
+        $r = wp_update_post($maj, true);
+        if (is_wp_error($r)) return $r;
+        $faits[] = ['type' => 'contenu', 'id' => $p->ID, 'revision_avant' => $rev, 'adresse' => get_permalink($p), 'titre' => $maj['post_title'] ?? $p->post_title];
+        alexlia_conn_journal('Contenu mis à jour après accord du client : « ' . ($maj['post_title'] ?? $p->post_title) . ' ».');
+    }
+    foreach ($b['articles'] as $a) {
+        $r = alexlia_conn_publier($a);
+        if (is_wp_error($r)) return $r;
+        $faits[] = ['type' => 'publier', 'id' => $r['id'], 'revision_avant' => 0, 'adresse' => $r['adresse'], 'titre' => $a['titre']];
+    }
+    foreach ($b['reglages'] as $nom => $v) {
+        $r = alexlia_conn_reglage(['nom' => $nom, 'valeur' => $v]);
+        if (is_wp_error($r)) return $r;
+        $faits[] = ['type' => 'reglage', 'id' => 0, 'revision_avant' => 0, 'adresse' => '', 'titre' => $nom, 'avant' => $r['avant']];
+    }
+    delete_transient('alexlia_ap_' . $j);
+    return ['ok' => true, 'faits' => $faits];
+}
+function alexlia_conn_abandonner($args) {
+    $j = (string) ($args['jeton'] ?? '');
+    if (alexlia_conn_jeton_ok($j)) delete_transient('alexlia_ap_' . $j);
+    return ['ok' => true];
+}
+
+/* Affichage de l'aperçu sur le vrai site (rien n'est enregistré, rien n'est en cache, non indexé) */
+function alexlia_conn_apercu_actif() {
+    static $b = false;
+    if ($b !== false) return $b;
+    $b = null;
+    if (!empty($_GET['alexlia_apercu'])) $b = alexlia_conn_brouillon(sanitize_text_field(wp_unslash($_GET['alexlia_apercu'])));
+    return $b;
+}
+add_action('init', function () {
+    $b = alexlia_conn_apercu_actif();
+    if (!$b) return;
+    if (!defined('DONOTCACHEPAGE')) define('DONOTCACHEPAGE', true);
+    add_action('send_headers', 'nocache_headers');
+    add_filter('wp_robots', function ($r) { $r['noindex'] = true; $r['nofollow'] = true; return $r; });
+    $art = isset($_GET['alexlia_article']) ? (int) $_GET['alexlia_article'] : -1;
+    $article = ($art >= 0 && isset($b['articles'][$art])) ? $b['articles'][$art] : null;
+    add_filter('the_content', function ($c) use ($b, $article) {
+        $id = get_the_ID();
+        if ($article && in_the_loop() && is_main_query()) return $article['contenu'] . ($article['image_id'] ? wp_get_attachment_image($article['image_id'], 'large') : '');
+        // le contenu prévu passe ensuite par les filtres habituels (blocs, paragraphes, codes courts)
+        if ($id && isset($b['posts'][$id]['contenu'])) return $b['posts'][$id]['contenu'];
+        return $c;
+    }, 1);
+    add_filter('the_title', function ($t, $id = 0) use ($b, $article) {
+        if ($article && in_the_loop() && is_main_query()) return $article['titre'];
+        return isset($b['posts'][$id]['titre']) ? $b['posts'][$id]['titre'] : $t;
+    }, 10, 2);
+    foreach (['nom' => 'blogname', 'slogan' => 'blogdescription'] as $k => $opt) {
+        if (isset($b['reglages'][$k])) { $v = $b['reglages'][$k]; add_filter('option_' . $opt, function () use ($v) { return $v; }); }
+    }
+    // l'actualité prévue s'affiche à la place de la page d'accueil (ou de la dernière actualité)
+    if ($article) add_action('pre_get_posts', function ($q) {
+        if (!$q->is_main_query() || is_admin()) return;
+        $last = get_posts(['post_type' => 'post', 'numberposts' => 1, 'fields' => 'ids']);
+        if ($last) { $q->set('p', $last[0]); $q->set('post_type', 'post'); $q->is_home = false; $q->is_single = true; $q->is_singular = true; $q->is_front_page = false; }
+    });
+    // un bandeau en haut : ce n'est qu'un aperçu
+    $bandeau = function () { echo '<div style="position:sticky;top:0;z-index:99999;background:#2E2A47;color:#fff;font:600 15px/1.4 system-ui,sans-serif;text-align:center;padding:10px 14px">Aperçu préparé par Lia : rien n’est encore en ligne. Confirmez dans votre espace Alex &amp; Lia.</div>'; };
+    add_action('wp_body_open', $bandeau);
+});

@@ -234,18 +234,18 @@ function outilsPage() {
     lead: 'Depuis votre espace client, vous envoyez vos demandes de modification. Lia les fait tout de suite, ou Alex à la main, au choix : vous n’avez rien de technique à gérer. Et les outils de l’espace sont gratuits pour les sites hébergés chez moi.',
     crumbs,
   })}
-${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez-moi vos demandes par message ou par WhatsApp : je m’en occupe de la même façon.</span></p></div>`}
+${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez vos demandes par le formulaire de contact : on s’en occupe de la même façon.</span></p></div>`}
 <div class="container center demo-cta">${C.btn(site.espaceClient.demo, 'btn-primary btn-lg', 'circle-user', 'Essayer la démo')}</div>
 
 <section class="section"><div class="container split">
   <div class="reveal">
     <p class="kicker c-mint">${icon('message-circle')}Demande de modification</p>
     <h2>Une demande, et c’est fait</h2>
-    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. Lia fait la modification tout de suite, ou Alex s’en charge à la main. Alex vérifie toujours que tout s’affiche bien, et vous êtes prévenu quand c’est en ligne.</p>
+    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. Lia prépare la modification tout de suite et vous montre l’aperçu : votre site ne change qu’après votre accord. Ou Alex s’en charge à la main, sous 72 heures, et vérifie lui-même. Vous êtes prévenu quand c’est en ligne.</p>
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
       <li>Réponse sous ${delais.reponse}, ou ${delais.titan} avec Titan</li>
-      <li>Chico : une modification et un jeton Lia par mois. Power : quatre de chaque. Titan : une modification par jour ouvré et des jetons illimités.</li>
+      <li>Chico : une modification par mois, par Lia ou par Alex. Power : quatre modifications et quatre jetons Lia. Titan : une modification par jour ouvré et des jetons illimités.</li>
     </ul>
   </div>
   ${C.phoneEdit(true)}
@@ -399,7 +399,7 @@ function comparatifPage() {
 <section class="section"><div class="container container-narrow prose reveal">
   ${md(`## Des modifications rapides
 
-Un horaire, un prix, une actualité : Lia, l’IA, le change directement sur votre site en quelques minutes, en utilisant un jeton Lia. Pour ce qui demande un regard humain, c’est Alex. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
+Un horaire, un prix, une actualité : Lia, l’IA, prépare le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui, avec un jeton Lia. Pour ce qui demande un regard humain, c’est Alex, sous 72 heures. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
 
 ## Pourquoi mes prix sont plus bas
 
@@ -415,7 +415,7 @@ Une application sur mesure, un logiciel métier, un catalogue de milliers de pro
 </div></section>
 
 ${f.html}
-${C.ctaBand({ title: 'On regarde votre projet ?', text: 'Composez votre site en deux minutes, ou posez-moi vos questions sur WhatsApp.' })}`;
+${C.ctaBand({ title: 'On regarde votre projet ?', text: 'Composez votre site en deux minutes, ou posez vos questions par le formulaire de contact.' })}`;
   return {
     path: sections.comparatif.path,
     section: 'comparatif',
@@ -441,7 +441,7 @@ const ORDER_ERRORS = {
   paiement: 'Le paiement n’a pas abouti. Votre commande est gardée : vous pouvez réessayer, ou m’écrire.',
   robot: 'L’envoi a été bloqué par la protection contre les robots. Attendez quelques secondes et réessayez.',
   annule: 'Le paiement a été annulé. Rien n’a été débité : vous pouvez reprendre quand vous voulez.',
-  inconnu: 'Quelque chose n’a pas fonctionné. Réessayez, ou écrivez-moi sur WhatsApp : je finalise la commande avec vous.',
+  inconnu: 'Quelque chose n’a pas fonctionné. Réessayez, ou écrivez-nous par le formulaire de contact : on finalise la commande avec vous.',
 };
 function commanderPage() {
   const S = sections.commander;
@@ -574,7 +574,7 @@ function commanderPage() {
       <div class="o-next reveal">
         <h2 class="h3">${icon('list-checks')}Ce qui se passe ensuite</h2>
         <ol>${nextSteps.map(([ic, t, d]) => `<li>${icon(ic)}<span><strong>${t}</strong><small>${d}</small></span></li>`).join('')}</ol>
-        <p class="o-help">Une question avant de commander ? ${C.btnWa('btn-wa btn-sm', 'Écrivez-moi sur WhatsApp')}</p>
+        <p class="o-help">Une question avant de commander ? ${C.btnWa('btn-light btn-sm', 'Nous écrire')}</p>
       </div>
     </aside>
   </div>
@@ -614,7 +614,7 @@ function confirmationPage() {
       { t: 'Votre espace client arrive par e-mail', d: 'Vous y suivez votre commande et, ensuite, vos demandes de modification.' },
       { t: 'Votre site est en ligne', d: `Dans le délai de votre type de site : ${delaiList}.` },
     ])}
-    <div class="hero-ctas centered">${C.btn(sections.monespace.path, 'btn-primary btn-lg', 'circle-user', 'Accéder à mon espace')}${C.btnWa('btn-wa btn-lg', 'WhatsApp', 'Bonjour, je viens de passer commande sur Alex & Lia.')}</div>
+    <div class="hero-ctas centered">${C.btn(sections.monespace.path, 'btn-primary btn-lg', 'circle-user', 'Accéder à mon espace')}${C.btnWa('btn-light btn-lg', 'Une question ? Nous écrire')}</div>
   </div>
 </div></section>`;
   return {
@@ -696,7 +696,7 @@ Le résultat, lui, reste du travail soigné : un site rapide, adapté au télép
     <div class="compare-col reveal">
       <h3>${monster('mascotte')}Lia, l’IA, s’occupe de…</h3>
       <ul class="list-check">
-        <li>modifier et mettre à jour votre site, depuis votre espace client (un jeton Lia par action) ;</li>
+        <li>modifier et mettre à jour votre site, depuis votre espace client, après vous avoir montré l’aperçu (un jeton Lia par action) ;</li>
         <li>écrire le code du site, plus vite ;</li>
         <li>proposer des mises en page et des premiers textes ;</li>
         <li>repérer des erreurs.</li>
@@ -974,7 +974,7 @@ function contactPage() {
     <h2 class="h3">Votre demande</h2>
     <form class="form" method="post" action="${site.formAction}" data-form novalidate>
       ${formHidden()}
-      <p class="form-alert" data-form-error hidden>L’envoi n’a pas abouti. Vérifiez les champs obligatoires, ou écrivez-moi sur WhatsApp.</p>
+      <p class="form-alert" data-form-error hidden>L’envoi n’a pas abouti. Vérifiez les champs obligatoires, puis réessayez.</p>
       <div class="form-row">
         <div class="field"><label for="c-nom">Votre nom <span class="req">*</span></label><input id="c-nom" name="nom" type="text" autocomplete="name" required></div>
         <div class="field"><label for="c-email">Votre e-mail <span class="req">*</span></label><input id="c-email" name="email" type="email" autocomplete="email" required></div>
@@ -1003,9 +1003,8 @@ function contactPage() {
     </form>
   </div>
   <aside class="contact-side">
-    <a class="contact-card wa" href="${C.waUrl()}" target="_blank" rel="noopener">${icon('whatsapp')}<div><strong>WhatsApp</strong><span>Le plus rapide pour échanger, même avec des photos.</span></div></a>
-    <a class="contact-card" href="${C.tel}">${icon('phone')}<div><strong>${site.phoneDisplay}</strong><span>Appel ou SMS.</span></div></a>
-    <a class="contact-card" href="mailto:${site.email}">${icon('mail')}<div><strong>${site.email}</strong><span>Pour envoyer des documents.</span></div></a>
+    ${site.email ? `<a class="contact-card" href="mailto:${site.email}">${icon('mail')}<div><strong>${site.email}</strong><span>Pour envoyer des documents.</span></div></a>` : ''}
+    <a class="contact-card c-mint" href="/mon-espace/">${icon('circle-user')}<div><strong>Déjà client ?</strong><span>Vos demandes de modification se font depuis votre espace client.</span></div></a>
     <a class="contact-card c-pink" href="/creer-mon-site/">${icon('wand-sparkles')}<div><strong>Créer mon site</strong><span>Composez votre site et voyez le prix tout de suite.</span></div></a>
     <p class="contact-note">${icon('map-pin')}<span>Tout se fait en ligne : la commande, les échanges, le suivi. Je travaille avec des clients partout en France.</span></p>
   </aside>
@@ -1014,7 +1013,7 @@ function contactPage() {
     path: '/contact/',
     section: 'contact',
     title: 'Contact et devis gratuit pour votre site internet | Alex & Lia',
-    description: 'Une question, un projet de site, de boutique ou de référencement ? Écrivez-moi par le formulaire, WhatsApp ou e-mail. Réponse rapide, en général dans la journée.',
+    description: 'Une question, un projet de site, de boutique ou de référencement ? Écrivez-nous par le formulaire. Réponse rapide, en général dans la journée.',
     crumbs,
     body,
     priority: 0.8,
@@ -1101,8 +1100,8 @@ function merci() {
     noindex: true,
     title: 'Demande envoyée | Alex & Lia',
     description: 'Votre demande a bien été envoyée à Alex & Lia. Je vous réponds rapidement, en général dans la journée, avec un récapitulatif clair.',
-    body: `${C.pageHero({ h1: 'Merci, votre demande est bien partie !', lead: 'Je vous réponds rapidement, en général dans la journée. Si c’est pressé, écrivez-moi aussi sur WhatsApp.', mascot: 'mascotte' })}
-<section class="section"><div class="container center"><div class="hero-ctas centered">${C.btnWa('btn-wa btn-lg')}${C.btn('/', 'btn-light btn-lg', 'arrow-right', 'Retour à l’accueil')}</div></div></section>`,
+    body: `${C.pageHero({ h1: 'Merci, votre demande est bien partie !', lead: 'Je vous réponds rapidement, en général dans la journée. Pensez à regarder vos e-mails, et vos indésirables.', mascot: 'mascotte' })}
+<section class="section"><div class="container center"><div class="hero-ctas centered">${C.btnWa('btn-light btn-lg')}${C.btn('/', 'btn-light btn-lg', 'arrow-right', 'Retour à l’accueil')}</div></div></section>`,
   };
 }
 

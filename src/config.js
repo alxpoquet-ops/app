@@ -18,14 +18,10 @@ const site = {
   futurDomaine: 'alexetlia.fr',
   owner: 'Alexandre Poquet',
 
-  phoneDisplay: '06 02 46 12 58',
-  phoneIntl: '+33602461258',
-  // WhatsApp : même numéro au format international sans le « + ».
-  whatsapp: '33602461258',
-  whatsappMessage: 'Bonjour, je voudrais un renseignement pour un site internet.',
-
-  // Adresse e-mail affichée et de réception des demandes.
-  email: 'alx.poquet@gmail.com',
+  // Aucune coordonnée personnelle affichée : on écrit par le formulaire de contact (/contact/).
+  // Quand une adresse de support existe (ex. support@alexetlia.fr), la mettre ici : elle s'affichera.
+  email: '',
+  contactPath: '/contact/',
 
   address: {
     street: '', // Optionnel : rue (laisser vide pour n'afficher que la commune)
@@ -127,6 +123,8 @@ const pageEnPlus = 40; // € par page au-delà de ce que prévoit le type de si
 //  - par Lia (l'IA) : une automatisation faite avec nos outils, qui consomme un jeton Lia ;
 //  - par Alex (l'humain) : une modification faite, vérifiée et paramétrée à la main, comptée dans les modifications du mois.
 // jetons : jetons Lia par mois (null = illimité) ; quota : modifications par Alex par mois.
+// partage : quota et jetons ne font qu'un (Chico : une modification par mois, par Lia ou par Alex, au choix).
+// Lia est instantanée et montre l'aperçu à confirmer avant de modifier le site ; Alex répond sous 72 heures et vérifie à la main.
 const forfaits = [
   {
     id: 'chico',
@@ -135,12 +133,13 @@ const forfaits = [
     month: 5,
     quota: 1,
     jetons: 1,
+    partage: true,
     modifs: 'Une modification par mois',
     tagline: 'L’essentiel',
-    pitch: 'Votre site en ligne, sûr et à jour, sur un serveur de qualité. Une modification par Alex et un jeton Lia chaque mois.',
-    main: ['Site hébergé, sécurisé et tenu à jour', 'Nom de domaine compris', 'Une modification par Alex et un jeton Lia par mois'],
-    details: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié à votre site et renouvelé chaque année (liaison OVH)', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour des extensions, faites pour vous', 'Formulaire de contact qui arrive dans votre boîte mail', 'Gestion du flux de visites : le site tient quand il y a du monde', 'Bases du SEO : Google sait lire et comprendre votre site', 'Une modification par Alex chaque mois, réponse sous 48 heures', 'Un jeton Lia par mois : Lia fait une petite modification tout de suite', 'Votre espace client : demandes, suivi, QR code et parrainage', 'Sans engagement : vous arrêtez quand vous voulez'],
-    features: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié et renouvelé', 'Mises à jour des extensions', 'Formulaire de contact et HTTPS', 'Gestion du flux de visites', 'Bases du SEO : Google sait lire votre site', 'Une modification par Alex et un jeton Lia par mois'],
+    pitch: 'Votre site en ligne, sûr et à jour, sur un serveur de qualité. Une modification par mois, faite par Lia ou par Alex, au choix.',
+    main: ['Site hébergé, sécurisé et tenu à jour', 'Nom de domaine compris', 'Une modification par mois, par Lia ou par Alex'],
+    details: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié à votre site et renouvelé chaque année (liaison OVH)', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour des extensions, faites pour vous', 'Formulaire de contact qui arrive dans votre boîte mail', 'Gestion du flux de visites : le site tient quand il y a du monde', 'Bases du SEO : Google sait lire et comprendre votre site', 'Une modification par mois, et vous choisissez qui la fait :', 'Lia, instantanée : elle vous montre l’aperçu et attend votre accord avant de modifier votre site', 'ou Alex, sous 72 heures : fait et vérifié à la main', 'Votre espace client : demandes, suivi, QR code et parrainage', 'Sans engagement : vous arrêtez quand vous voulez'],
+    features: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié et renouvelé', 'Mises à jour des extensions', 'Formulaire de contact et HTTPS', 'Gestion du flux de visites', 'Bases du SEO : Google sait lire votre site', 'Une modification par mois, par Lia ou par Alex, au choix'],
   },
   {
     id: 'power',
@@ -178,7 +177,7 @@ const annuel = { moisOfferts: 2 };
 // Le paiement en plusieurs fois se fait au mois : le forfait passe alors au mois.
 const lissage = { durees: [6, 12] };
 // Délai de réponse aux demandes de modification.
-const delais = { reponse: '48 heures', titan: '24 heures' };
+const delais = { reponse: '72 heures', titan: '24 heures' };
 
 // ---------------------------------------------------------------- options (activables plus tard)
 // price : { once } pour un paiement unique, { month } pour un paiement mensuel.

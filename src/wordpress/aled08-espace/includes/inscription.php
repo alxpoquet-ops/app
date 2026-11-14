@@ -80,7 +80,7 @@ function aled08e_dashboard_libre($u) {
             <a class="app-card c-lilac" href="<?php echo esc_url(home_url('/forfaits/')); ?>"><span class="app-card-ico"><?php echo aled08e_icon('heart'); // phpcs:ignore ?></span><span><small>Les forfaits</small><strong>Chico, Power, Titan</strong><span>Dès 5 € par mois</span></span></a>
             <a class="app-card c-pink" href="<?php echo esc_url(home_url('/mon-espace/demo/')); ?>"><span class="app-card-ico"><?php echo aled08e_icon('circle-user'); // phpcs:ignore ?></span><span><small>Pour voir</small><strong>La démo</strong><span>Un espace client rempli d’exemples</span></span></a>
           </div>
-          <?php if ($D['whatsapp']) : ?><p class="app-note">Une question avant de vous lancer ? <a href="<?php echo esc_url('https://wa.me/' . rawurlencode($D['whatsapp'])); ?>" target="_blank" rel="noopener">Écrivez-moi sur WhatsApp</a>.</p><?php endif; ?>
+          <p class="app-note">Une question avant de vous lancer ? <a href="<?php echo esc_url(home_url('/contact/')); ?>">Écrivez-nous</a>.</p>
         </div>
         <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
           <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>

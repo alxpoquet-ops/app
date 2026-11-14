@@ -73,17 +73,17 @@ function aled08e_lia_outils() {
         ['name' => 'publier_actualite', 'description' => 'Publie un nouvel article (actualité) sur le site du client, avec une image facultative déjà importée.', 'inputSchema' => $obj(['titre' => ['type' => 'string'], 'contenu' => ['type' => 'string', 'description' => 'HTML simple : paragraphes, listes, liens'], 'image_id' => ['type' => 'integer']], ['titre', 'contenu'])],
         ['name' => 'importer_image', 'description' => 'Importe dans la médiathèque du site du client la photo jointe à la demande. Renvoie l’id et la balise HTML de l’image.', 'inputSchema' => $obj(['description' => ['type' => 'string', 'description' => 'Texte alternatif de l’image']])],
         ['name' => 'modifier_reglage', 'description' => 'Change le nom ou le slogan du site.', 'inputSchema' => $obj(['nom' => ['type' => 'string', 'enum' => ['nom', 'slogan']], 'valeur' => ['type' => 'string']], ['nom', 'valeur'])],
-        ['name' => 'terminer', 'description' => 'À appeler une seule fois, à la fin. resultat = « fait » si la demande est entièrement faite, « pour_alex » si tu n’as rien changé (ou pas tout) parce que la demande est floue, risquée, ou hors de tes outils.', 'inputSchema' => $obj([
+        ['name' => 'terminer', 'description' => 'À appeler une seule fois, à la fin. resultat = « fait » si la demande est entièrement préparée, « pour_alex » si tu n’as rien changé (ou pas tout) parce que la demande est floue, risquée, ou hors de tes outils.', 'inputSchema' => $obj([
             'resultat' => ['type' => 'string', 'enum' => ['fait', 'pour_alex']],
-            'message_client' => ['type' => 'string', 'description' => 'Deux ou trois phrases simples pour le client, en vouvoyant : ce qui a été fait, ou ce qu’Alex va regarder.'],
+            'message_client' => ['type' => 'string', 'description' => 'Deux ou trois phrases simples pour le client, en vouvoyant : ce que vous avez préparé (il va regarder l’aperçu et confirmer), ou ce qu’Alex va regarder.'],
             'note_alex' => ['type' => 'string', 'description' => 'Pour Alex : détails techniques, ce qu’il doit vérifier ou faire.'],
         ], ['resultat', 'message_client', 'note_alex'])],
     ];
 }
 function aled08e_lia_systeme($u, $infos) {
     return "Tu es Lia, l'IA d'Alex & Lia, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, artisans et associations. "
-        . "Tu reçois une demande de modification écrite par le propriétaire d'un site, et tu la fais toi-même sur son site WordPress avec les outils fournis. "
-        . "Alex, l'humain, vérifie ensuite ton travail.\n\n"
+        . "Tu reçois une demande de modification écrite par le propriétaire d'un site, et tu la prépares toi-même sur son site WordPress avec les outils fournis. "
+        . "Tes changements sont préparés dans un aperçu : le client le regarde et confirme, puis ils sont mis en ligne. Alex, l'humain, vérifie ensuite.\n\n"
         . "Règles :\n"
         . "- Fais exactement ce qui est demandé, rien de plus. Ne change ni le style, ni la mise en page, ni les autres textes.\n"
         . "- Lis toujours le contenu avant de le modifier. Préfère remplacer_texte pour un petit changement, en recopiant le passage exact (balises comprises).\n"
@@ -100,38 +100,44 @@ function aled08e_lia_systeme($u, $infos) {
  * ========================================================================= */
 function aled08e_lia_executer($uid, $pid, $nom, $in, &$actions) {
     $in = is_array($in) ? $in : [];
+    $jeton = (string) get_post_meta($pid, '_aled08_lia_jeton', true);
+    $prevu = function ($r, $type, $id, $detail) use (&$actions) {
+        if (!is_wp_error($r)) $actions[] = ['type' => $type, 'id' => (int) $id, 'revision' => 0, 'adresse' => (string) ($r['adresse'] ?? ''), 'apercu' => (string) ($r['apercu'] ?? ''), 'prepare' => true, 'detail' => $detail];
+    };
     switch ($nom) {
         case 'lister_contenus': $r = aled08e_lia_appel($uid, 'lister', ['type' => $in['type'] ?? 'any']); break;
-        case 'lire_contenu': $r = aled08e_lia_appel($uid, 'lire', ['id' => (int) ($in['id'] ?? 0)]); break;
+        case 'lire_contenu': $r = aled08e_lia_appel($uid, 'lire', ['id' => (int) ($in['id'] ?? 0), 'jeton' => $jeton]); break;
         case 'remplacer_texte':
-            $r = aled08e_lia_appel($uid, 'remplacer', ['id' => (int) ($in['id'] ?? 0), 'ancien' => (string) ($in['ancien'] ?? ''), 'nouveau' => (string) ($in['nouveau'] ?? ''), 'tous' => !empty($in['tous'])]);
-            if (!is_wp_error($r)) $actions[] = ['type' => 'remplacer', 'id' => (int) ($in['id'] ?? 0), 'revision' => (int) ($r['revision_avant'] ?? 0), 'adresse' => (string) ($r['adresse'] ?? ''), 'detail' => 'Texte remplacé : « ' . mb_substr(wp_strip_all_tags((string) ($in['ancien'] ?? '')), 0, 80) . ' » par « ' . mb_substr(wp_strip_all_tags((string) ($in['nouveau'] ?? '')), 0, 80) . ' »'];
+            $r = aled08e_lia_appel($uid, 'preparer', ['jeton' => $jeton, 'op' => 'remplacer', 'id' => (int) ($in['id'] ?? 0), 'ancien' => (string) ($in['ancien'] ?? ''), 'nouveau' => (string) ($in['nouveau'] ?? ''), 'tous' => !empty($in['tous'])]);
+            $prevu($r, 'remplacer', $in['id'] ?? 0, 'Texte changé : « ' . mb_substr(wp_strip_all_tags((string) ($in['ancien'] ?? '')), 0, 80) . ' » devient « ' . mb_substr(wp_strip_all_tags((string) ($in['nouveau'] ?? '')), 0, 80) . ' »');
             break;
         case 'modifier_contenu':
-            $args = ['id' => (int) ($in['id'] ?? 0)];
+            $args = ['jeton' => $jeton, 'op' => 'modifier', 'id' => (int) ($in['id'] ?? 0)];
             if (isset($in['titre'])) $args['titre'] = (string) $in['titre'];
             if (isset($in['contenu'])) $args['contenu'] = (string) $in['contenu'];
-            $r = aled08e_lia_appel($uid, 'modifier', $args);
-            if (!is_wp_error($r)) $actions[] = ['type' => 'modifier', 'id' => $args['id'], 'revision' => (int) ($r['revision_avant'] ?? 0), 'adresse' => (string) ($r['adresse'] ?? ''), 'detail' => 'Contenu modifié' . (isset($in['titre']) ? ' (titre : « ' . mb_substr((string) $in['titre'], 0, 80) . ' »)' : '')];
+            $r = aled08e_lia_appel($uid, 'preparer', $args);
+            $prevu($r, 'modifier', $args['id'], 'Page modifiée' . (isset($in['titre']) ? ' (titre : « ' . mb_substr((string) $in['titre'], 0, 80) . ' »)' : ''));
             break;
         case 'publier_actualite':
-            $r = aled08e_lia_appel($uid, 'publier', ['titre' => (string) ($in['titre'] ?? ''), 'contenu' => (string) ($in['contenu'] ?? ''), 'image_id' => (int) ($in['image_id'] ?? 0)]);
-            if (!is_wp_error($r)) $actions[] = ['type' => 'publier', 'id' => (int) ($r['id'] ?? 0), 'revision' => 0, 'adresse' => (string) ($r['adresse'] ?? ''), 'detail' => 'Actualité publiée : « ' . mb_substr((string) ($in['titre'] ?? ''), 0, 80) . ' »'];
+            $r = aled08e_lia_appel($uid, 'preparer', ['jeton' => $jeton, 'op' => 'publier', 'titre' => (string) ($in['titre'] ?? ''), 'contenu' => (string) ($in['contenu'] ?? ''), 'image_id' => (int) ($in['image_id'] ?? 0)]);
+            $prevu($r, 'publier', 0, 'Nouvelle actualité : « ' . mb_substr((string) ($in['titre'] ?? ''), 0, 80) . ' »');
             break;
         case 'importer_image':
             $att = get_post_thumbnail_id($pid);
             $url = $att ? wp_get_attachment_url($att) : '';
             if (!$url) { $r = new WP_Error('aled08_lia', 'Aucune photo n’est jointe à cette demande.'); break; }
+            // la photo va dans la médiathèque (invisible tant qu'aucune page ne l'utilise)
             $r = aled08e_lia_appel($uid, 'image', ['url' => $url, 'description' => (string) ($in['description'] ?? '')]);
             if (!is_wp_error($r)) $actions[] = ['type' => 'image', 'id' => (int) ($r['image_id'] ?? 0), 'revision' => 0, 'adresse' => (string) ($r['adresse'] ?? ''), 'detail' => 'Photo ajoutée à la médiathèque'];
             break;
         case 'modifier_reglage':
-            $r = aled08e_lia_appel($uid, 'reglage', ['nom' => (string) ($in['nom'] ?? ''), 'valeur' => (string) ($in['valeur'] ?? '')]);
-            if (!is_wp_error($r)) $actions[] = ['type' => 'reglage', 'id' => 0, 'revision' => 0, 'adresse' => '', 'detail' => 'Réglage « ' . ($in['nom'] ?? '') . ' » : « ' . mb_substr((string) ($in['valeur'] ?? ''), 0, 80) . ' » (avant : « ' . mb_substr((string) ($r['avant'] ?? ''), 0, 80) . ' »)'];
+            $r = aled08e_lia_appel($uid, 'preparer', ['jeton' => $jeton, 'op' => 'reglage', 'nom' => (string) ($in['nom'] ?? ''), 'valeur' => (string) ($in['valeur'] ?? '')]);
+            $prevu($r, 'reglage', 0, ($in['nom'] ?? '') === 'slogan' ? 'Slogan : « ' . mb_substr((string) ($in['valeur'] ?? ''), 0, 80) . ' »' : 'Nom du site : « ' . mb_substr((string) ($in['valeur'] ?? ''), 0, 80) . ' »');
             break;
         default: $r = new WP_Error('aled08_lia', 'Outil inconnu.');
     }
     if (is_wp_error($r)) return ['erreur' => $r->get_error_message()];
+    if (!empty($r['prepare'])) $r['note'] = 'Préparé dans l’aperçu : le site ne change qu’après l’accord du client.';
     return $r;
 }
 
@@ -162,6 +168,9 @@ function aled08e_lia_traiter($pid) {
     if (!aled08e_lia_sdk()) { $fin('pour_alex', 'Je transmets votre demande à Alex, qui s’en occupe.', 'Kit Anthropic introuvable (extension alexlia-sdk).', []); return; }
 
     @set_time_limit(600);
+    $ancien = (string) get_post_meta($pid, '_aled08_lia_jeton', true);
+    if ($ancien) aled08e_lia_appel($uid, 'abandonner', ['jeton' => $ancien]);
+    update_post_meta($pid, '_aled08_lia_jeton', wp_generate_password(40, false, false));
     update_post_meta($pid, '_aled08_statut', 'encours');
     update_post_meta($pid, '_aled08_lia_etat', 'en_cours');
     $infos = aled08e_lia_appel($uid, 'infos');
@@ -190,7 +199,7 @@ function aled08e_lia_traiter($pid) {
                 // fin sans l'outil terminer : on demande à Alex de regarder
                 $txt = '';
                 foreach ($r->content as $b) if ($b->type === 'text') $txt .= $b->text;
-                $resultat = [$actions ? 'fait' : 'pour_alex', $actions ? 'C’est fait. Alex vérifie le résultat.' : 'Je transmets votre demande à Alex, qui s’en occupe.', 'Lia s’est arrêtée sans conclure : ' . mb_substr($txt, 0, 600)];
+                $resultat = [$actions ? 'fait' : 'pour_alex', $actions ? 'Votre modification est prête : regardez l’aperçu et confirmez.' : 'Je transmets votre demande à Alex, qui s’en occupe.', 'Lia s’est arrêtée sans conclure : ' . mb_substr($txt, 0, 600)];
                 break;
             }
             $results = [];
@@ -209,9 +218,9 @@ function aled08e_lia_traiter($pid) {
         }
     } catch (\Throwable $e) {
         aled08e_lia_journal_add('Erreur Claude sur la demande #' . $pid . ' : ' . $e->getMessage());
-        $resultat = [$actions ? 'fait' : 'pour_alex', $actions ? 'C’est fait en partie. Alex vérifie et termine.' : 'Je transmets votre demande à Alex, qui s’en occupe.', 'Erreur pendant le travail de Lia : ' . mb_substr($e->getMessage(), 0, 400)];
+        $resultat = ['pour_alex', $actions ? 'Une partie est prête. Alex vérifie et termine.' : 'Je transmets votre demande à Alex, qui s’en occupe.', 'Erreur pendant le travail de Lia : ' . mb_substr($e->getMessage(), 0, 400)];
     }
-    if ($resultat === null) $resultat = [$actions ? 'fait' : 'pour_alex', 'Alex vérifie et termine votre demande.', 'Lia a atteint le nombre maximum d’étapes.'];
+    if ($resultat === null) $resultat = ['pour_alex', 'Alex vérifie et termine votre demande.', 'Lia a atteint le nombre maximum d’étapes.'];
     $fin($resultat[0], $resultat[1], $resultat[2], $actions);
 }
 
@@ -223,14 +232,13 @@ function aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $act
     update_post_meta($pid, '_aled08_reponse', mb_substr($msgClient, 0, 1000));
     $liste = '';
     foreach ($actions as $a) $liste .= '- ' . $a['detail'] . ($a['adresse'] ? ' (' . $a['adresse'] . ')' : '') . "\n";
-    if ($res === 'fait' && $actions) {
-        update_post_meta($pid, '_aled08_statut', 'faite');
-        update_post_meta($pid, '_aled08_lia_etat', 'fait');
-        update_post_meta($pid, '_aled08_a_verifier', 1);
-        update_post_meta($pid, '_aled08_faite_le', current_time('mysql'));
-        aled08e_lia_journal_add('Demande #' . $pid . ' faite par Lia (' . count($actions) . ' changement(s)).');
-        if ($u) wp_mail($u->user_email, 'Lia a fait votre modification', 'Bonjour ' . aled08e_prenom($u) . ",\n\n" . $msgClient . "\n\nAlex vérifie toujours ce que fait Lia. Vous suivez vos demandes ici :\n" . aled08e_url() . "#demandes\n\nÀ bientôt,\nAlex, et Lia\n", aled08e_mail_headers('"Alex & Lia" <' . aled08e_to() . '>'));
-        wp_mail(aled08e_to(), 'Lia a fait une modification à vérifier', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n\nCe que Lia a fait :\n" . $liste . "\nNote de Lia : " . $noteAlex . "\n\nVérifier ou annuler : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
+    $prepares = array_filter($actions, function ($a) { return !empty($a['prepare']); });
+    if ($res === 'fait' && $prepares) {
+        // le client regarde l'aperçu et confirme avant que son site change
+        update_post_meta($pid, '_aled08_statut', 'encours');
+        update_post_meta($pid, '_aled08_lia_etat', 'a_confirmer');
+        aled08e_lia_journal_add('Demande #' . $pid . ' préparée par Lia, en attente de l’accord du client.');
+        if ($u) wp_mail($u->user_email, 'Lia a préparé votre modification : à vous de voir', 'Bonjour ' . aled08e_prenom($u) . ",\n\n" . $msgClient . "\n\nRien n’est encore changé sur votre site. Regardez l’aperçu et confirmez dans votre espace :\n" . aled08e_url() . "#demandes\n\nÀ bientôt,\nAlex, et Lia\n", aled08e_mail_headers('"Alex & Lia" <' . aled08e_to() . '>'));
     } else {
         // passée à Alex : le jeton n'est pas compté, la demande rejoint les modifications d'Alex
         update_post_meta($pid, '_aled08_par', 'alex');
@@ -354,7 +362,7 @@ add_action('add_meta_boxes_' . ALED08E_CPT, function ($post) {
 });
 function aled08e_lia_box($post) {
     $etat = get_post_meta($post->ID, '_aled08_lia_etat', true);
-    $lib = ['en_attente' => 'en attente', 'en_cours' => 'en cours', 'fait' => 'fait par Lia', 'pour_alex' => 'passée à Alex'];
+    $lib = ['en_attente' => 'en attente', 'en_cours' => 'en cours', 'a_confirmer' => 'aperçu prêt, en attente de l’accord du client', 'fait' => 'mis en ligne par Lia après accord du client', 'pour_alex' => 'passée à Alex', 'refuse' => 'aperçu refusé par le client, passée à Alex'];
     echo '<p><strong>État : ' . esc_html($lib[$etat] ?? $etat) . '</strong>' . (get_post_meta($post->ID, '_aled08_lia_le', true) ? ', le ' . esc_html(get_post_meta($post->ID, '_aled08_lia_le', true)) : '') . '</p>';
     $actions = (array) get_post_meta($post->ID, '_aled08_lia_actions', true);
     if ($actions) {
@@ -362,6 +370,7 @@ function aled08e_lia_box($post) {
         foreach ($actions as $a) echo '<li>' . esc_html($a['detail'] ?? '') . (!empty($a['adresse']) ? ' : <a href="' . esc_url($a['adresse']) . '" target="_blank" rel="noopener">voir</a>' : '') . '</li>';
         echo '</ul>';
     }
+    if ($c = get_post_meta($post->ID, '_aled08_lia_commentaire', true)) echo '<p><em>Commentaire du client :</em> ' . nl2br(esc_html($c)) . '</p>';
     if ($n = get_post_meta($post->ID, '_aled08_lia_note', true)) echo '<p><em>Note de Lia :</em> ' . nl2br(esc_html($n)) . '</p>';
     if ($a = get_post_meta($post->ID, '_aled08_lia_annule', true)) echo '<p style="color:#b32d2e">Changements annulés le ' . esc_html($a) . '.</p>';
     $btn = function ($act, $label, $cls = 'button') use ($post) {
@@ -395,3 +404,85 @@ add_action('admin_post_aled08e_lia', function () {
     wp_safe_redirect(add_query_arg('aled08e_msg', $msg, admin_url('post.php?post=' . $pid . '&action=edit')));
     exit;
 });
+
+/* =========================================================================
+ *  L'accord du client : il a vu l'aperçu, il dit oui (mise en ligne) ou non (Alex reprend)
+ * ========================================================================= */
+function aled08e_lia_confirmer($pid, $oui, $commentaire = '') {
+    $p = get_post($pid);
+    if (!$p || get_post_meta($pid, '_aled08_lia_etat', true) !== 'a_confirmer') return new WP_Error('aled08_lia', 'Rien à confirmer.');
+    $uid = (int) $p->post_author;
+    $u = get_userdata($uid);
+    $jeton = (string) get_post_meta($pid, '_aled08_lia_jeton', true);
+    $prevues = (array) get_post_meta($pid, '_aled08_lia_actions', true);
+    if (!$oui) {
+        aled08e_lia_appel($uid, 'abandonner', ['jeton' => $jeton]);
+        update_post_meta($pid, '_aled08_par', 'alex');
+        update_post_meta($pid, '_aled08_lia_etat', 'refuse');
+        update_post_meta($pid, '_aled08_statut', 'recue');
+        update_post_meta($pid, '_aled08_reponse', 'Vous n’avez pas validé l’aperçu de Lia : Alex reprend votre demande à la main.');
+        $c = trim((string) $commentaire);
+        if ($c !== '') update_post_meta($pid, '_aled08_lia_commentaire', mb_substr($c, 0, 2000));
+        aled08e_lia_journal_add('Demande #' . $pid . ' : le client n’a pas validé l’aperçu, passée à Alex.');
+        wp_mail(aled08e_to(), 'Le client n’a pas validé l’aperçu de Lia', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n\nCe que Lia avait préparé :\n" . implode("\n", array_map(function ($a) { return '- ' . $a['detail']; }, $prevues)) . "\n\nCommentaire du client : " . ($c !== '' ? $c : '(aucun)') . "\n\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
+        return 'refuse';
+    }
+    $r = aled08e_lia_appel($uid, 'appliquer', ['jeton' => $jeton]);
+    if (is_wp_error($r)) {
+        aled08e_lia_journal_add('Demande #' . $pid . ' : mise en ligne impossible après accord : ' . $r->get_error_message());
+        update_post_meta($pid, '_aled08_par', 'alex');
+        update_post_meta($pid, '_aled08_lia_etat', 'pour_alex');
+        update_post_meta($pid, '_aled08_statut', 'recue');
+        update_post_meta($pid, '_aled08_reponse', 'Merci ! La mise en ligne automatique n’a pas abouti : Alex s’en occupe à la main.');
+        wp_mail(aled08e_to(), 'Lia : mise en ligne impossible, à reprendre', 'Demande #' . $pid . ' (' . ($u ? $u->display_name : '?') . ")\nErreur : " . $r->get_error_message() . "\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
+        return $r;
+    }
+    // ce qui a été mis en ligne, avec la révision gardée juste avant (pour pouvoir annuler)
+    $faites = [];
+    foreach ((array) ($r['faits'] ?? []) as $f) {
+        $lib = ['contenu' => 'Page mise à jour : « ' . ($f['titre'] ?? '') . ' »', 'publier' => 'Actualité publiée : « ' . ($f['titre'] ?? '') . ' »', 'reglage' => 'Réglage « ' . ($f['titre'] ?? '') . ' » changé (avant : « ' . ($f['avant'] ?? '') . ' »)'];
+        $faites[] = ['type' => $f['type'] === 'contenu' ? 'modifier' : $f['type'], 'id' => (int) ($f['id'] ?? 0), 'revision' => (int) ($f['revision_avant'] ?? 0), 'adresse' => (string) ($f['adresse'] ?? ''), 'detail' => $lib[$f['type']] ?? ''];
+    }
+    foreach ($prevues as $a) if (($a['type'] ?? '') === 'image') $faites[] = $a;
+    update_post_meta($pid, '_aled08_lia_prevues', $prevues);
+    update_post_meta($pid, '_aled08_lia_actions', $faites);
+    update_post_meta($pid, '_aled08_statut', 'faite');
+    update_post_meta($pid, '_aled08_lia_etat', 'fait');
+    update_post_meta($pid, '_aled08_a_verifier', 1);
+    update_post_meta($pid, '_aled08_faite_le', current_time('mysql'));
+    update_post_meta($pid, '_aled08_reponse', 'C’est en ligne, merci ! Alex vérifie toujours ce que fait Lia.');
+    $liste = implode("\n", array_map(function ($a) { return '- ' . $a['detail'] . ($a['adresse'] ? ' (' . $a['adresse'] . ')' : ''); }, $faites));
+    aled08e_lia_journal_add('Demande #' . $pid . ' mise en ligne par Lia après accord du client (' . count($faites) . ' changement(s)).');
+    wp_mail(aled08e_to(), 'Lia a mis en ligne une modification à vérifier', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n\nMis en ligne après l’accord du client :\n" . $liste . "\n\nNote de Lia : " . get_post_meta($pid, '_aled08_lia_note', true) . "\n\nVérifier ou annuler : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
+    return 'oui';
+}
+add_action('template_redirect', function () {
+    if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08e_lia_confirmer'])) return;
+    if (!is_user_logged_in()) { wp_safe_redirect(aled08e_url(), 303); exit; }
+    $pid = (int) $_POST['aled08e_lia_confirmer'];
+    $p = get_post($pid);
+    $ok = $p && (int) $p->post_author === get_current_user_id() && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_aled08e_lia'] ?? '')), 'aled08e_lia_confirmer_' . $pid);
+    $m = 'erreur';
+    if ($ok) {
+        $oui = sanitize_key(wp_unslash($_POST['reponse'] ?? '')) === 'oui';
+        $r = aled08e_lia_confirmer($pid, $oui, sanitize_textarea_field(wp_unslash($_POST['commentaire'] ?? '')));
+        $m = is_wp_error($r) ? 'lia_erreur' : ($oui ? 'lia_oui' : 'lia_non');
+    }
+    wp_safe_redirect(aled08e_url(['m' => $m]) . '#demandes', 303);
+    exit;
+}, 5);
+
+/* Dans « Mes demandes » : l'aperçu préparé par Lia, à valider */
+function aled08e_lia_bloc_confirmation($p) {
+    if (get_post_meta($p->ID, '_aled08_lia_etat', true) !== 'a_confirmer') return '';
+    $actions = array_filter((array) get_post_meta($p->ID, '_aled08_lia_actions', true), function ($a) { return !empty($a['prepare']); });
+    $h = '<div class="lia-confirm"><p class="lia-confirm-h">' . aled08e_monster('mascotte') . '<strong>Lia a préparé votre modification. Rien n’est encore changé : regardez, puis dites-lui.</strong></p><ul>';
+    foreach ($actions as $a) $h .= '<li><span>' . esc_html($a['detail']) . '</span>' . (!empty($a['apercu']) ? ' <a class="btn btn-light btn-sm" href="' . esc_url($a['apercu']) . '" target="_blank" rel="noopener">' . aled08e_icon('globe') . '<span>Voir l’aperçu</span></a>' : '') . '</li>';
+    $h .= '</ul><form method="post" action="' . esc_url(aled08e_url()) . '" class="lia-confirm-form">'
+        . '<input type="hidden" name="aled08e_lia_confirmer" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_lia_confirmer_' . $p->ID, '_aled08e_lia', true, false)
+        . '<button class="btn btn-primary" type="submit" name="reponse" value="oui">' . aled08e_icon('check') . '<span>Oui, mettre en ligne</span></button>'
+        . '<details><summary>Non, ce n’est pas ça</summary><div class="field"><label for="lia-c-' . (int) $p->ID . '">Dites ce qui ne va pas (facultatif) : Alex reprend la demande à la main.</label><textarea id="lia-c-' . (int) $p->ID . '" name="commentaire" rows="3" maxlength="2000"></textarea></div>'
+        . '<button class="btn btn-light" type="submit" name="reponse" value="non">' . aled08e_icon('user') . '<span>Confier à Alex</span></button></details>'
+        . '</form></div>';
+    return $h;
+}

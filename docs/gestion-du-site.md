@@ -177,11 +177,13 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 - Le client écrit sa demande (avec une photo s'il veut) dans « Mes demandes ». Vous recevez un e-mail avec un lien direct.
 - Dans Alex & Lia › Demandes clients, vous changez le statut : Reçue, En cours, Faite, avec un message facultatif affiché chez le client. En passant à « Faite », le client reçoit un e-mail.
 - Le compteur du mois suit le forfait : Chico 1, Power 4, Titan 20. Au-delà, la demande part quand même et est marquée « hors forfait » : vous dites au client si elle attend le mois prochain ou si elle est facturée.
-- Délai de réponse annoncé : 48 heures, 24 heures pour Titan.
+- Délai de réponse annoncé pour Alex : 72 heures, 24 heures pour Titan. Lia : instantané, avec un aperçu à valider.
 
 ### Lia, pour de vrai (Claude, d'Anthropic)
 
-Quand le client choisit « Lia, tout de suite », Lia fait la modification toute seule sur son site, en tâche de fond, en général en une à deux minutes. Elle lit la page, change seulement ce qui est demandé, puis rend compte. Vous vérifiez après.
+Quand le client choisit « Lia, instantané », Lia prépare la modification toute seule, en tâche de fond, en une à deux minutes. Rien ne change encore sur le site : le client reçoit un e-mail, ouvre « Voir l’aperçu » (sa vraie page, avec un bandeau « Aperçu »), puis clique « Oui, mettre en ligne » ou « Non, ce n’est pas ça ». Oui : c’est mis en ligne et vous recevez « Lia a mis en ligne une modification à vérifier ». Non : la demande vous revient, avec son commentaire. L’aperçu reste valable 21 jours.
+
+Avec Alex, la réponse annoncée est sous 72 heures (24 heures pour Titan). Avec Chico, il y a une seule modification par mois, par Lia ou par Alex au choix du client.
 
 Ce qu'elle sait faire : changer un texte (horaires, prix affiché, phrase), modifier le contenu ou le titre d'une page, publier une actualité, ajouter la photo jointe, changer le nom ou le slogan du site. Ce qu'elle ne fait jamais : supprimer, toucher aux extensions, au thème, aux comptes, aux prix d'une boutique, aux CGV ou mentions légales. Si la demande est floue ou risquée, elle ne touche à rien et vous la passe (e-mail « Lia vous passe une demande »). Le jeton n'est alors pas compté : la demande devient une modification d'Alex.
 

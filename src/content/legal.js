@@ -2,8 +2,9 @@
 // ⚠️ Les éléments entre accolades proviennent de src/config.js et doivent y être complétés.
 // ⚠️ Modèle à faire relire : il ne remplace pas l'avis d'un professionnel du droit.
 // Règles : aucun tiret long, phrases courtes, rien d'invérifiable. Le nom de marque vient de site.name.
-const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, pageEnPlus, delais = { reponse: '48 heures', titan: '24 heures' } } = require('../config');
+const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, pageEnPlus, delais = { reponse: '72 heures', titan: '24 heures' } } = require('../config');
 const L = site.legal;
+const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 const UPDATED = '2026-11-14';
 
@@ -36,8 +37,7 @@ module.exports = [
 - **Exploitant** : ${site.owner}
 - **Forme juridique** : ${L.status}
 - **Adresse** : ${addr}, France
-- **Téléphone** : ${site.phoneDisplay}
-- **E-mail** : ${site.email}
+- **Contact** : ${contact}
 - **SIRET** : ${L.siret}
 - **TVA** : ${tvaMention}
 
@@ -74,7 +74,7 @@ Pour un litige avec un consommateur, un médiateur de la consommation peut être
     updated: UPDATED,
     body: `## 1. Responsable du traitement
 
-${site.owner}, ${site.name}, ${addr}. Contact : ${site.email}.
+${site.owner}, ${site.name}, ${addr}. Contact : ${contact}.
 
 ## 2. Les données que je collecte
 
@@ -122,7 +122,7 @@ Ce site n’utilise aucun traceur publicitaire ni outil de mesure d’audience. 
 
 ## 10. Vos droits
 
-Vous pouvez demander l’accès à vos données, leur correction, leur suppression ou une copie, et vous opposer à un traitement, en écrivant à ${site.email}. Je réponds sous un mois. Vous pouvez aussi saisir la CNIL (www.cnil.fr).`,
+Vous pouvez demander l’accès à vos données, leur correction, leur suppression ou une copie, et vous opposer à un traitement, en écrivant par ${contact}. Je réponds sous un mois. Vous pouvez aussi saisir la CNIL (www.cnil.fr).`,
   },
   {
     path: '/conditions-generales/',
@@ -179,7 +179,7 @@ Le client peut changer de forfait à tout moment. Le nouveau prix s’applique �
 
 ## 8. Droit de rétractation
 
-Le client qui commande à distance dispose de 14 jours pour se rétracter, sans avoir à se justifier. Un e-mail à ${site.email} suffit.
+Le client qui commande à distance dispose de 14 jours pour se rétracter, sans avoir à se justifier. Un message par ${contact} suffit.
 
 En commandant, le client demande expressément, en cochant la case prévue, que la création commence tout de suite. S’il se rétracte pendant ces 14 jours, il paie le travail déjà réalisé, au prorata du prix de création. Le nom de domaine déjà réservé reste à sa charge, car il est enregistré à son nom et pour un an.
 
@@ -199,12 +199,12 @@ Le client fournit ses textes, photos et informations, ou les prépare avec ${sit
 
 Le client envoie ses demandes de modification depuis son espace client ou par message. Il y a deux sortes de modifications :
 
-- **Par Lia** : une automatisation faite avec les outils d’${site.name} (l’IA), qui utilise un jeton Lia.
-- **Par Alex** : une modification faite à la main, vérifiée et paramétrée par Alexandre Poquet.
+- **Par Lia** : une automatisation faite avec les outils d’${site.name} (l’IA), qui utilise un jeton Lia. Lia montre l’aperçu au client et ne modifie le site qu’après son accord.
+- **Par Alex** : une modification faite à la main, vérifiée et paramétrée par Alex.
 
 Chaque forfait comprend, par mois :
 
-- ${chico.name} : une modification par Alex et un jeton Lia.
+- ${chico.name} : une modification, faite par Lia ou par Alex, au choix du client.
 - ${power.name} : quatre modifications par Alex et quatre jetons Lia.
 ${titan ? `- ${titan.name} : une modification par Alex chaque jour ouvré et des jetons Lia illimités.` : ''}
 
@@ -242,6 +242,6 @@ ${site.name} met tout en œuvre pour que le site reste disponible et sauvegardé
 
 ## 19. Médiation et litiges
 
-En cas de désaccord, le client écrit d’abord à ${site.email} : la plupart des questions se règlent en quelques échanges. Si la réponse ne lui convient pas, le client consommateur peut saisir gratuitement un médiateur de la consommation : ${L.mediator}. Le droit français s’applique.`,
+En cas de désaccord, le client écrit d’abord par ${contact} : la plupart des questions se règlent en quelques échanges. Si la réponse ne lui convient pas, le client consommateur peut saisir gratuitement un médiateur de la consommation : ${L.mediator}. Le droit français s’applique.`,
   },
 ];

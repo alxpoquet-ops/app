@@ -411,13 +411,13 @@ HEADER_PHP = r"""<?php defined('ABSPATH') || exit; $u = get_template_directory_u
 <head>
 <meta charset="<?php bloginfo('charset'); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#FFF8F2">
+<meta name="theme-color" content="#16142A">
 <meta name="format-detection" content="telephone=no">
 <link rel="preload" href="<?php echo esc_url($u); ?>/assets/fonts/nunito-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="<?php echo esc_url($u); ?>/assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="<?php echo esc_url($u); ?>/assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="<?php echo esc_url($u); ?>/assets/apple-touch-icon.png">
-<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('al-theme');if(t==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('al-theme');if(t!=='light')document.documentElement.dataset.theme='dark'}catch(e){}</script>
 <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
