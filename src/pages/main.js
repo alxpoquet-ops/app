@@ -82,7 +82,7 @@ function home() {
   <h2 class="section-title">Choisissez votre petit monstre</h2>
   <p class="section-sub">Trois forfaits simples, au mois ou à l’année avec deux mois offerts.</p>
   ${C.forfaitMinis()}
-  <p class="center more">${C.btn('/forfaits/', 'btn-light', 'arrow-right', 'Comparer les forfaits')}</p>
+  <p class="center more">${C.btn('/forfaits/', 'btn-light btn-flaque', 'arrow-right', 'Comparer les forfaits')}</p>
 </div></section>
 
 <section class="section section-soft c-sky"><div class="container split">

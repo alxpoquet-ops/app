@@ -1221,6 +1221,8 @@ button.app-card:hover { transform: translateY(-2px); }
 /* gouttes projetées au clic (créées par main.js) */
 .goutte-vol { position: absolute; z-index: -1; width: var(--t, 10px); height: var(--t, 10px); border-radius: 50%; background: var(--wave, var(--primary-shadow)); pointer-events: none; transform: translate(-50%, -50%); animation: goutte .6s cubic-bezier(.2, .7, .3, 1) forwards; }
 @keyframes goutte { 70% { opacity: 1; } to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.4); opacity: 0; } }
+/* flaque lilas sous un bouton sombre (ex. « Comparer les forfaits ») */
+.btn-light.btn-flaque { --wave: var(--lilac-d); }
 /* de l'air autour de la flaque : elle ne touche jamais un champ, un texte ou un autre bouton */
 .btn-flaque { margin-block: 14px; }
 @media (min-width: 721px) { .btn-flaque:not(.btn-block) { margin-inline: 14px; } }
