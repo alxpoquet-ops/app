@@ -259,7 +259,7 @@ add_action('template_redirect', function () {
     if (count($today->posts) >= 10) $back('trop');
 
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
-    $over = aled08e_count_month($uid) >= (int) $f['quota'];
+    $over = aled08e_meta($uid, 'illimite') !== '1' && aled08e_count_month($uid) >= (int) $f['quota'];
     $title = mb_strlen($txt) > 70 ? rtrim(mb_substr($txt, 0, 67)) . '…' : $txt;
     $title = trim(preg_replace('/\s+/', ' ', $title));
     $pid = wp_insert_post(['post_type' => ALED08E_CPT, 'post_status' => 'private', 'post_author' => $uid, 'post_title' => $title, 'post_content' => $txt, 'comment_status' => 'closed', 'ping_status' => 'closed'], true);
@@ -382,6 +382,9 @@ function aled08e_fields() {
         'paiement' => ['Paiement du forfait', 'select', ['mois' => 'Au mois', 'annee' => 'À l’année']],
         'site' => ['Adresse du site', 'url', 'https://www.exemple.fr'],
         'mail' => ['Option e-mail pro', 'check', 'Active'],
+        'stock' => ['Option gestion du stock', 'check', 'Active'],
+        'comptes' => ['Option comptes clients', 'check', 'Active'],
+        'illimite' => ['Option modifications illimitées', 'check', 'Active'],
         'domaine_info' => ['Nom de domaine (info affichée)', 'text', 'exemple.fr, renouvelé le 3 mars 2027'],
         'avis' => ['Lien d’avis Google', 'url', 'https://g.page/r/.../review'],
         'parrain' => ['Parrainé par (code)', 'text', 'Ex. : LILA-7K2'],
@@ -642,8 +645,15 @@ function aled08e_dashboard() {
     $host = $site ? preg_replace('#^www\.#', '', (string) wp_parse_url($site, PHP_URL_HOST)) : '';
     $prenom = aled08e_prenom($u);
     $used = aled08e_count_month($uid);
-    $quota = (int) $f['quota'];
+    $illimite = aled08e_meta($uid, 'illimite') === '1';
+    $quota = $illimite ? max(99, $used + 1) : (int) $f['quota'];
     $left = max(0, $quota - $used);
+    // options mensuelles actives du compte (e-mail pro, stock, comptes clients, modifications illimitées)
+    $optsMois = [];
+    foreach (['mail', 'stock', 'comptes', 'illimite'] as $oid) {
+        $o = aled08e_option($oid);
+        if ($o && $o['month'] > 0 && aled08e_meta($uid, $oid) === '1') $optsMois[] = $o;
+    }
     $code = aled08e_code($uid);
     $plink = home_url('/creer-mon-site/?parrain=' . rawurlencode($code));
     $filleuls = aled08e_filleuls($uid);
@@ -690,7 +700,8 @@ function aled08e_dashboard() {
 
     $price = $annuel ? ($f['month'] * (12 - (int) $D['moisOfferts'])) : $f['month'];
     $per = $annuel ? 'par an' : 'par mois';
-    $total = $price + ($mail ? ($annuel ? $optMail['month'] * (12 - (int) $D['moisOfferts']) : $optMail['month']) : 0);
+    $total = $price;
+    foreach ($optsMois as $o) $total += $annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month'];
     $wa = $D['whatsapp'] ? 'https://wa.me/' . rawurlencode($D['whatsapp']) . '?text=' . rawurlencode('Bonjour, je voudrais changer mon forfait ou mes options (' . $u->display_name . ').') : '';
     $share = 'https://wa.me/?text=' . rawurlencode('Je te recommande ALED08 pour ton site internet. Avec mon lien, on a chacun un mois de forfait offert : ' . $plink);
 
@@ -735,7 +746,7 @@ function aled08e_dashboard() {
       <aside class="app-side">
         <div class="app-user"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><div><strong><?php echo esc_html($u->display_name); ?></strong><small><?php echo esc_html($host ?: $u->user_email); ?></small></div></div>
         <div class="jauge<?php echo $left <= 0 ? ' is-low' : ''; ?>">
-          <p class="jauge-head"><?php echo aled08e_icon('pencil'); // phpcs:ignore ?><span>Modifications restantes ce mois</span><b><?php echo (int) $left; ?> / <?php echo (int) $quota; ?></b></p>
+          <p class="jauge-head"><?php echo aled08e_icon('pencil'); // phpcs:ignore ?><span><?php echo $illimite ? 'Modifications ce mois' : 'Modifications restantes ce mois'; ?></span><b><?php echo $illimite ? 'illimitées' : (int) $left . ' / ' . (int) $quota; ?></b></p>
           <span class="jauge-bar"><i style="width:<?php echo $quota ? (int) round(min(100, $left / $quota * 100)) : 0; ?>%"></i></span>
         </div>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
@@ -870,9 +881,11 @@ function aled08e_dashboard() {
           <?php echo $flashForfait; // phpcs:ignore ?>
           <div class="app-card c-<?php echo esc_attr($f['color']); ?>"><span class="app-card-art"><?php echo aled08e_monster($f['id']); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($f['name']); ?></strong><span><?php echo aled08e_euro($price) . ' ' . esc_html($per) . ' · ' . esc_html($f['modifs']); // phpcs:ignore ?></span></span></div>
           <?php if ($f['id'] === 'titan') : ?><p class="app-note">Titan : <?php echo (int) $quota; ?> modifications par mois, ajout et mise à jour de produits compris, un article de blog par mois pour votre SEO, réponse sous <?php echo esc_html($D['delais']['titan']); ?>.</p><?php endif; ?>
-          <?php if ($mail) : ?>
+          <?php if ($optsMois) : ?>
           <p class="app-sub">Options</p>
-          <p class="app-domain"><?php echo aled08e_icon('check'); // phpcs:ignore ?><span><strong><?php echo esc_html($optMail['name']); ?></strong><small><?php echo aled08e_euro($annuel ? $optMail['month'] * (12 - (int) $D['moisOfferts']) : $optMail['month']) . ' ' . esc_html($per); // phpcs:ignore ?></small></span></p>
+          <?php foreach ($optsMois as $o) : ?>
+          <p class="app-domain"><?php echo aled08e_icon('check'); // phpcs:ignore ?><span><strong><?php echo esc_html($o['name']); ?></strong><small><?php echo aled08e_euro($annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month']) . ' ' . esc_html($per); // phpcs:ignore ?></small></span></p>
+          <?php endforeach; ?>
           <?php endif; ?>
           <p class="app-total"><span>Total <?php echo $annuel ? 'chaque année' : 'chaque mois'; ?></span><b><?php echo aled08e_euro($total); // phpcs:ignore ?></b></p>
           <?php if ($annuel) : ?><p class="app-note">Vous payez à l’année : <?php echo (int) $D['moisOfferts']; ?> mois offerts sur le forfait.</p><?php endif; ?>

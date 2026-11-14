@@ -169,6 +169,9 @@ const delais = { reponse: '48 heures', titan: '24 heures' };
 const options = [
   { id: 'mail', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
   { id: 'en', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 50 }, desc: 'Votre site traduit en anglais et relu, pour les touristes et les clients venus d’ailleurs.' },
+  { id: 'stock', group: 'site', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
+  { id: 'comptes', group: 'site', name: 'Comptes clients', icon: 'users', price: { month: 5 }, desc: 'Vos clients se créent un compte sur votre site : commandes passées, adresses et favoris gardés.' },
+  { id: 'illimite', group: 'site', name: 'Modifications illimitées', icon: 'infinity', price: { month: 10 }, desc: 'Autant de demandes de modification que vous voulez, en plus de votre forfait.' },
 ];
 
 // ---------------------------------------------------------------- fidélité et paiement
