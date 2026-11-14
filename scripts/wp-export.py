@@ -195,7 +195,7 @@ STYLE_CSS = """/*
 Theme Name: Alex & Lia
 Theme URI: https://www.aled08.fr
 Author: Alex & Lia
-Description: Thème sur mesure d'Alex & Lia, l'IA pour tout le monde. Styles, en-tête, pied de page, formulaire de contact.
+Description: Thème sur mesure d'Alex & Lia. Styles, en-tête, pied de page, formulaire de contact.
 Version: 2.0.0
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -539,7 +539,7 @@ function aled08_import_run() {
     }
 
     update_option('blogname', 'Alex & Lia');
-    update_option('blogdescription', 'L’IA pour tout le monde');
+    update_option('blogdescription', 'Sites internet et SEO');
     update_option('timezone_string', 'Europe/Paris');
     update_option('date_format', 'j F Y');
     update_option('time_format', 'H:i');

@@ -32,7 +32,6 @@ function home() {
   const body = `<section class="hero">
   <div class="container hero-in">
     <div class="hero-text">
-      <p class="kicker">${icon('sparkles')}L’IA pour tout le monde</p>
       <h1>Votre site internet à partir de ${euro(T('une-page').price)}, <mark>tout compris</mark></h1>
       <p class="hero-lead">Je crée votre site à prix fixe, puis on s’en occupe pour ${euro(base.month)} par mois : Lia, l’IA, modifie et met à jour votre site, et moi, Alex, je vérifie et je règle tout. Vous payez ${paiement.acompte} % à la commande, le reste à la réception, en une fois ou en ${C.lissageTxt} fois sans frais.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg btn-flaque')}${C.btn('/forfaits/', 'btn-light btn-lg', 'heart', 'Voir les forfaits')}</div>
@@ -44,6 +43,7 @@ function home() {
     </div>
     <div class="hero-art">
       ${monster('mascotte', { cls: 'hero-mascotte' })}
+      ${C.flecheLia()}
       <p class="hero-tag">${icon('sparkles')}Créé avec Lia, vérifié par Alex</p>
     </div>
   </div>
@@ -1090,7 +1090,7 @@ function planDuSite() {
   ];
   return {
     path: '/plan-du-site/',
-    title: 'Plan du site | Alex & Lia, l’IA pour tout le monde',
+    title: 'Plan du site | Alex & Lia',
     description: 'Toutes les pages du site Alex & Lia : créer mon site, forfaits, espace client, SEO, comparatif, fidélité, contact, FAQ et pages légales.',
     crumbs,
     body: `${C.pageHero({ h1: 'Plan du site', lead: 'Toutes les pages du site, au même endroit.', crumbs })}

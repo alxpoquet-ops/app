@@ -12,7 +12,7 @@ const site = {
   // Domaine définitif (sans slash final). Sert aux balises canonical, au sitemap, à l'Open Graph.
   url: 'https://www.aled08.fr',
   name: 'Alex & Lia',
-  baseline: 'L’IA pour tout le monde',
+  baseline: 'Sites internet et SEO', // n'est plus affiché sous le logo
   legalName: 'Alex & Lia, nom commercial d’Alexandre Poquet EI', // raison sociale / nom commercial
   // Le jour où le domaine alexetlia.fr est pris : changer url ci-dessus et rediriger aled08.fr.
   futurDomaine: 'alexetlia.fr',
