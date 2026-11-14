@@ -245,7 +245,7 @@ function configurator() {
       ${body}
     </fieldset>`;
   const typeBody = `${typeChoices()}<p class="b-note">${icon('info')}Besoin de plus de pages ? ${euro(pageEnPlus)} la page.</p>`;
-  const forfaitBody = `${forfaitChoices()}<p class="b-note">${icon('info')}Chico : hébergement, nom de domaine, mises à jour, une modification par mois, par Lia ou par Alex. Power : SEO pour remonter sur Google, serveur plus rapide, quatre modifications et quatre jetons Lia. Titan : retour de vos ventes et outils illimités. <a href="/forfaits/">Comparer</a></p>`;
+  const forfaitBody = `${forfaitChoices()}<p class="b-note">${icon('info')}Chico : hébergement, nom de domaine, mises à jour, une modification par mois. Power : SEO pour remonter sur Google, serveur plus rapide, quatre modifications. Pour chaque modification, vous choisissez Lia ou Alex. Titan : retour de vos ventes et outils illimités. <a href="/forfaits/">Comparer</a></p>`;
   const payChoices = `<p class="b-label">Le site</p>
       <div class="b-seg" role="radiogroup" aria-label="Paiement du site">
         <label><input type="radio" name="b-lisse" value="non" checked><span>En une fois</span></label>
@@ -347,7 +347,7 @@ function comparatifTable() {
     ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
     ['Prix chaque mois', prixMois, 'Contrat de maintenance, sur devis', 'Selon le prestataire, souvent en option', 'Abonnement mensuel, plus les applications en option'],
     ['Délai', `${types[0].delai} pour une page, ${types[1].delai} pour un site vitrine, ${types[2].delai} pour une boutique`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
-    ['Modifications', 'Rapides et comprises : par Lia (jetons) ou par Alex', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
+    ['Modifications', 'Rapides et comprises : par Lia ou par Alex, au choix', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
     ['SEO', 'Bases comprises sur chaque site. Avec Power, je fais remonter votre site chaque mois', 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
     ['Engagement', `Aucun. Seulement le temps du paiement si le site est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],

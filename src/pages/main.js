@@ -61,7 +61,7 @@ function home() {
   ${C.steps([
     { t: 'Vous commandez en ligne', d: `Vous choisissez votre site et votre forfait. Vous réglez le site en une fois, ou la première mensualité si vous payez en plusieurs fois.` },
     { t: 'Je crée votre site', d: 'Je réserve votre nom de domaine et je vous écris sous 24 heures. Vous voyez l’aperçu, vous me dites ce qui change.' },
-    { t: 'Vous demandez, on s’en occupe', d: 'Un horaire, un prix, une photo : demandez-le depuis votre espace client. Lia le fait tout de suite avec un jeton, ou Alex s’en charge.' },
+    { t: 'Vous demandez, on s’en occupe', d: 'Un horaire, un prix, une photo : demandez-le depuis votre espace client. Lia le prépare tout de suite, ou Alex s’en charge, au choix.' },
   ])}
 </div></section>
 
@@ -89,7 +89,7 @@ function home() {
   <div class="reveal">
     <p class="kicker c-sky">${icon('pencil')}Vos modifications</p>
     <h2>Vous demandez, Lia ou Alex s’en occupe</h2>
-    <p>Une modification ? Envoyez votre demande depuis votre espace client, avec une photo si besoin, et choisissez qui la fait : Lia, tout de suite, avec un jeton, ou Alex, à la main, pour ce qui demande un regard humain. Vous êtes prévenu quand c’est en ligne. Vous n’avez rien de technique à gérer.</p>
+    <p>Une modification ? Envoyez votre demande depuis votre espace client, avec une photo si besoin, et choisissez qui la fait : Lia, tout de suite, ou Alex, à la main, pour ce qui demande un regard humain. Vous êtes prévenu quand c’est en ligne. Vous n’avez rien de technique à gérer.</p>
     <div class="hero-ctas">${C.btn(site.espaceClient.demo, 'btn-primary', 'circle-user', 'Essayer l’espace client')}</div>
   </div>
   ${C.phoneEdit()}
@@ -164,7 +164,7 @@ function forfaitsPage() {
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: 'Les forfaits : choisissez votre monstre',
-    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power ajoute le SEO pour remonter sur Google, et un serveur plus rapide. Titan ajoute le retour de vos ventes et des jetons Lia illimités.',
+    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power ajoute le SEO pour remonter sur Google, et un serveur plus rapide. Titan ajoute le retour de vos ventes et une modification par jour ouvré.',
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
@@ -245,7 +245,7 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
       <li>Réponse sous ${delais.reponse}, ou ${delais.titan} avec Titan</li>
-      <li>Chico : une modification par mois, par Lia ou par Alex. Power : quatre modifications et quatre jetons Lia. Titan : une modification par jour ouvré et des jetons illimités.</li>
+      <li>Chico : une modification par mois. Power : quatre. Titan : une par jour ouvré. Pour chacune, vous choisissez Lia ou Alex.</li>
     </ul>
   </div>
   ${C.phoneEdit(true)}
@@ -280,7 +280,7 @@ function seoPage() {
   const levels = [
     ['chico', 'Les bases', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Site déclaré dans Google Search Console']],
     ['power', 'Le SEO suivi', ['Tout Chico', 'Je travaille chaque mois pour faire remonter votre site sur Google', 'Des pages utiles qui renvoient vers votre site', 'Serveur plus rapide : Google aime les sites rapides']],
-    ['titan', 'Les chiffres', ['Tout Power', 'Le retour de vos ventes et de vos chiffres chaque mois', 'Jetons Lia illimités']],
+    ['titan', 'Les chiffres', ['Tout Power', 'Le retour de vos ventes et de vos chiffres chaque mois', 'Une modification par jour ouvré']],
   ];
   const body = `${C.pageHero({
     section: 'seo',
@@ -409,7 +409,7 @@ function comparatifPage() {
 <section class="section"><div class="container container-narrow prose reveal">
   ${md(`## Des modifications rapides
 
-Un horaire, un prix, une actualité : Lia, l’IA, prépare le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui, avec un jeton Lia. Pour ce qui demande un regard humain, c’est Alex, sous 72 heures. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
+Un horaire, un prix, une actualité : Lia, l’IA, prépare le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui. Pour ce qui demande un regard humain, c’est Alex, sous 72 heures. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
 
 ## Pourquoi mes prix sont plus bas
 
@@ -706,7 +706,7 @@ Le résultat, lui, reste du travail soigné : un site rapide, adapté au télép
     <div class="compare-col reveal">
       <h3>${monster('mascotte')}Lia, l’IA, s’occupe de…</h3>
       <ul class="list-check">
-        <li>modifier et mettre à jour votre site, depuis votre espace client, après vous avoir montré l’aperçu (un jeton Lia par action) ;</li>
+        <li>modifier et mettre à jour votre site, depuis votre espace client, après vous avoir montré l’aperçu ;</li>
         <li>écrire le code du site, plus vite ;</li>
         <li>proposer des mises en page et des premiers textes ;</li>
         <li>repérer des erreurs.</li>
@@ -785,12 +785,8 @@ function monEspacePage() {
       <aside class="app-side">
         <div class="app-user">${monster('mascotte')}<div><strong>Pâtisserie Lila</strong><small>patisserie-lila.fr</small></div></div>
         <div class="jauge" data-jauge>
-          <p class="jauge-head">${icon('pencil')}<span>Modifications par Alex</span><b><span data-jetons>3</span> / <span data-jetons-max>${P.quota}</span></b></p>
+          <p class="jauge-head">${icon('pencil')}<span>Modifications ce mois (Lia ou Alex)</span><b><span data-jetons>3</span> / <span data-jetons-max>${P.quota}</span></b></p>
           <span class="jauge-bar"><i data-jauge-fill style="width:75%"></i></span>
-        </div>
-        <div class="jauge jauge-lia">
-          <p class="jauge-head">${icon('sparkles')}<span>Jetons Lia</span><b>${P.jetons === null ? 'illimités' : `${P.jetons} / ${P.jetons}`}</b></p>
-          <span class="jauge-bar"><i style="width:100%"></i></span>
         </div>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           ${tab('accueil', 'house', 'Accueil', true)}

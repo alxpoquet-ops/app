@@ -119,11 +119,10 @@ const pageEnPlus = 40; // € par page au-delà de ce que prévoit le type de si
 // ---------------------------------------------------------------- forfaits mensuels (un petit monstre chacun)
 // En paiement annuel : 2 mois offerts sur le forfait.
 // quota : nombre de demandes de modification par mois dans l'espace client.
-// Deux façons de modifier un site :
-//  - par Lia (l'IA) : une automatisation faite avec nos outils, qui consomme un jeton Lia ;
-//  - par Alex (l'humain) : une modification faite, vérifiée et paramétrée à la main, comptée dans les modifications du mois.
-// jetons : jetons Lia par mois (null = illimité) ; quota : modifications par Alex par mois.
-// partage : quota et jetons ne font qu'un (Chico : une modification par mois, par Lia ou par Alex, au choix).
+// Un seul compteur : chaque forfait donne des modifications par mois, et pour chacune le client choisit qui la fait :
+//  - Lia (l'IA) : instantanée, avec un aperçu à valider ;
+//  - Alex (l'humain) : à la main, sous 72 heures.
+// quota = modifications par mois ; jetons = quota et partage = true (compteur commun Lia + Alex).
 // Lia est instantanée et montre l'aperçu à confirmer avant de modifier le site ; Alex répond sous 72 heures et vérifie à la main.
 const forfaits = [
   {
@@ -148,13 +147,14 @@ const forfaits = [
     month: 15,
     quota: 4,
     jetons: 4,
+    partage: true,
     modifs: 'Quatre modifications par mois',
     conseil: true,
     tagline: 'Pour être trouvé',
     pitch: 'Tout Chico, plus le SEO : je fais remonter votre site sur Google. Serveur plus rapide, support et modifications rapides.',
-    main: ['Tout ce que comprend Chico', 'Le SEO : votre site monte sur Google', 'Quatre modifications et quatre jetons Lia par mois'],
-    details: ['Tout ce que comprend Chico, et en plus :', 'Le SEO suivi chaque mois : je choisis avec vous les mots que vos clients tapent et je fais monter votre site', 'Des pages utiles pour le référencement, qui renvoient vers votre site (jamais des pages inutiles)', 'Un serveur plus rapide, pour accueillir plus de visites', 'Un support rapide quand vous avez une question', 'Vos modifications faites plus vite', 'Quatre modifications par Alex par mois', 'Quatre jetons Lia par mois'],
-    features: ['Tout ce que comprend Chico', 'SEO : je fais remonter votre site sur Google, chaque mois', 'Serveur plus rapide, pour plus de visites', 'Support et modifications rapides', 'Quatre modifications par Alex et quatre jetons Lia par mois'],
+    main: ['Tout ce que comprend Chico', 'Le SEO : votre site monte sur Google', 'Quatre modifications par mois, par Lia ou par Alex'],
+    details: ['Tout ce que comprend Chico, et en plus :', 'Le SEO suivi chaque mois : je choisis avec vous les mots que vos clients tapent et je fais monter votre site', 'Des pages utiles pour le référencement, qui renvoient vers votre site (jamais des pages inutiles)', 'Un serveur plus rapide, pour accueillir plus de visites', 'Un support rapide quand vous avez une question', 'Quatre modifications par mois, et vous choisissez qui fait chacune : Lia ou Alex'],
+    features: ['Tout ce que comprend Chico', 'SEO : je fais remonter votre site sur Google, chaque mois', 'Serveur plus rapide, pour plus de visites', 'Support rapide', 'Quatre modifications par mois, par Lia ou par Alex'],
   },
   {
     id: 'titan',
@@ -162,14 +162,15 @@ const forfaits = [
     color: 'peach',
     month: 30,
     quota: 20,
-    jetons: null,
+    jetons: 20,
+    partage: true,
     modifs: 'Une modification par jour ouvré',
     conseil: false,
     tagline: 'Le meilleur',
-    pitch: 'Tout Power, plus le retour de vos ventes et de vos chiffres chaque mois, et des jetons Lia illimités.',
-    main: ['Tout ce que comprend Power', 'Vos ventes et vos chiffres chaque mois', 'Une modification par jour ouvré, jetons Lia illimités'],
-    details: ['Tout ce que comprend Power, et en plus :', 'Un rapport chaque mois : vos ventes, vos visites et vos chiffres, expliqués simplement', 'Jetons Lia sans limite', 'Une modification par Alex chaque jour ouvré', 'Réponse sous 24 heures'],
-    features: ['Tout ce que comprend Power', 'Retour de vos ventes et de vos chiffres chaque mois', 'Jetons Lia illimités', 'Une modification par Alex chaque jour ouvré'],
+    pitch: 'Tout Power, plus le retour de vos ventes et de vos chiffres chaque mois, et une modification par jour ouvré.',
+    main: ['Tout ce que comprend Power', 'Vos ventes et vos chiffres chaque mois', 'Une modification par jour ouvré, par Lia ou par Alex'],
+    details: ['Tout ce que comprend Power, et en plus :', 'Un rapport chaque mois : vos ventes, vos visites et vos chiffres, expliqués simplement', 'Une modification chaque jour ouvré, par Lia ou par Alex', 'Avec Alex, réponse sous 24 heures'],
+    features: ['Tout ce que comprend Power', 'Retour de vos ventes et de vos chiffres chaque mois', 'Une modification par jour ouvré, par Lia ou par Alex'],
   },
 ];
 const annuel = { moisOfferts: 2 };

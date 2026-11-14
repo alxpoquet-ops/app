@@ -277,7 +277,7 @@ add_action('template_redirect', function () {
     $illim = aled08e_meta($uid, 'illimite') === '1';
     $partage = !empty($f['partage']) && !$illim;
     $usedTot = $partage ? aled08e_count_month($uid, 'alex') + aled08e_count_month($uid, 'lia') : 0;
-    if ($par === 'lia' && $jetons !== null && ($partage ? $usedTot >= (int) $f['quota'] : aled08e_count_month($uid, 'lia') >= (int) $jetons)) $par = 'alex';
+    if ($par === 'lia' && !$illim && $jetons !== null && ($partage ? $usedTot >= (int) $f['quota'] : aled08e_count_month($uid, 'lia') >= (int) $jetons)) $par = 'alex';
     $over = $par === 'alex' && !$illim && ($partage ? $usedTot >= (int) $f['quota'] : aled08e_count_month($uid, 'alex') >= (int) $f['quota']);
     $title = mb_strlen($txt) > 70 ? rtrim(mb_substr($txt, 0, 67)) . '…' : $txt;
     $title = trim(preg_replace('/\s+/', ' ', $title));
@@ -311,7 +311,7 @@ add_action('template_redirect', function () {
         . 'Client   : ' . $u->display_name . ' (' . $u->user_email . ")\n"
         . 'Site     : ' . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\n"
         . 'Forfait  : ' . $f['name'] . ' (réponse sous ' . $delai . ')' . ($over ? ' (modifications du mois déjà utilisées)' : '') . "\n"
-        . 'Par      : ' . ($par === 'lia' ? 'Lia (jeton, automatisation avec vos outils)' : 'Alex (modification à la main)') . "\n"
+        . 'Par      : ' . ($par === 'lia' ? 'Lia (instantané, avec aperçu à valider)' : 'Alex (modification à la main)') . "\n"
         . ($photo ? "Photo    : $photo\n" : '')
         . "\nDemande :\n$txt\n\n"
         . 'Suivre et répondre : ' . admin_url('post.php?post=' . $pid . '&action=edit') . "\n";
@@ -346,7 +346,7 @@ function aled08e_client_box($post) {
     if (aled08e_meta($u->ID, 'site')) echo '<p>Site : <a href="' . esc_url(aled08e_meta($u->ID, 'site')) . '" target="_blank" rel="noopener">' . esc_html(aled08e_meta($u->ID, 'site')) . '</a></p>';
     $jt = aled08e_jetons($f);
     echo '<p>Forfait : ' . esc_html($f['name']) . ' · Alex ' . (int) aled08e_count_month($u->ID, 'alex') . ' / ' . (int) $f['quota'] . ' · Lia ' . (int) aled08e_count_month($u->ID, 'lia') . ' / ' . ($jt === null ? 'illimité' : (int) $jt) . ' ce mois-ci</p>';
-    $par = get_post_meta($post->ID, '_aled08_par', true) === 'lia' ? 'Lia (jeton, automatisation)' : 'Alex (à la main)';
+    $par = get_post_meta($post->ID, '_aled08_par', true) === 'lia' ? 'Lia (instantané, avec aperçu)' : 'Alex (à la main)';
     echo '<p><strong>Demandée à : ' . esc_html($par) . '</strong></p>';
     echo '<p><a href="' . esc_url(get_edit_user_link($u->ID)) . '#aled08e">Fiche client</a></p>';
     if (has_post_thumbnail($post)) echo '<p>' . get_the_post_thumbnail($post, 'medium', ['style' => 'max-width:100%;height:auto;border-radius:8px']) . '</p>';
@@ -383,7 +383,7 @@ add_filter('manage_' . ALED08E_CPT . '_posts_columns', function ($c) {
     return ['cb' => $c['cb'] ?? '', 'title' => 'Demande', 'aled08_client' => 'Client', 'aled08_par' => 'Par', 'aled08_statut' => 'Statut', 'date' => 'Date'];
 });
 add_action('manage_' . ALED08E_CPT . '_posts_custom_column', function ($col, $pid) {
-    if ($col === 'aled08_par') echo get_post_meta($pid, '_aled08_par', true) === 'lia' ? '<strong>Lia</strong> (jeton)' : 'Alex';
+    if ($col === 'aled08_par') echo get_post_meta($pid, '_aled08_par', true) === 'lia' ? '<strong>Lia</strong>' : 'Alex';
     if ($col === 'aled08_client') {
         $u = get_userdata(get_post_field('post_author', $pid));
         echo $u ? esc_html($u->display_name) : '';
@@ -682,6 +682,7 @@ function aled08e_dashboard() {
     // Chico : une seule modification par mois, par Lia ou par Alex (compteur partagé)
     $partage = !empty($f['partage']) && !$illimite;
     if ($partage) { $left = max(0, $quota - $used - $jetonsUtil); $jetonsLeft = $left; }
+    if ($illimite) { $jetonsMax = null; $jetonsLeft = null; }
     // options mensuelles actives du compte (e-mail pro, stock, comptes clients, modifications illimitées)
     $optsMois = [];
     foreach (['mail', 'stock', 'comptes', 'illimite'] as $oid) {
@@ -785,13 +786,10 @@ function aled08e_dashboard() {
       <aside class="app-side">
         <div class="app-user"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><div><strong><?php echo esc_html($u->display_name); ?></strong><small><?php echo esc_html($host ?: $u->user_email); ?></small></div></div>
         <div class="jauge<?php echo $left <= 0 ? ' is-low' : ''; ?>">
-          <p class="jauge-head"><?php echo aled08e_icon('pencil'); // phpcs:ignore ?><span><?php echo $illimite ? 'Modifications ce mois' : ($partage ? 'Modification du mois (Lia ou Alex)' : 'Modifications restantes ce mois'); ?></span><b><?php echo $illimite ? 'illimitées' : (int) $left . ' / ' . (int) $quota; ?></b></p>
+          <p class="jauge-head"><?php echo aled08e_icon('pencil'); // phpcs:ignore ?><span><?php echo $illimite ? 'Modifications ce mois (Lia ou Alex)' : 'Modifications restantes (Lia ou Alex)'; ?></span><b><?php echo $illimite ? 'illimitées' : (int) $left . ' / ' . (int) $quota; ?></b></p>
           <span class="jauge-bar"><i style="width:<?php echo $quota ? (int) round(min(100, $left / $quota * 100)) : 0; ?>%"></i></span>
         </div>
-        <?php if (!$partage) : ?><div class="jauge jauge-lia<?php echo $jetonsLeft === 0 ? ' is-low' : ''; ?>">
-          <p class="jauge-head"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Jetons Lia ce mois</span><b><?php echo $jetonsMax === null ? 'illimités' : (int) $jetonsLeft . ' / ' . (int) $jetonsMax; ?></b></p>
-          <span class="jauge-bar"><i style="width:<?php echo $jetonsMax === null ? 100 : ($jetonsMax ? (int) round(min(100, $jetonsLeft / $jetonsMax * 100)) : 0); ?>%"></i></span>
-        </div><?php endif; ?>
+        
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           <?php
           echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
@@ -846,9 +844,9 @@ function aled08e_dashboard() {
           <form class="req-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(aled08e_url()); ?>" data-req-real>
             <input type="hidden" name="aled08e_demande" value="1">
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>
-            <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend>
-              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $jetonsLeft === 0 ? ' disabled' : ' checked'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, instantané</strong><small>Lia prépare la modification et vous montre l’aperçu. Votre site ne change qu’après votre accord. Un jeton Lia<?php echo $jetonsMax === null ? ' (illimités)' : ($partage ? '' : ' (' . (int) $jetonsLeft . ' restant' . ($jetonsLeft > 1 ? 's' : '') . ')'); ?>.</small></span></label>
-              <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $jetonsLeft === 0 ? ' checked' : ''; ?>><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même. <?php echo $illimite ? 'Illimité.' : ($partage ? '' : (int) $left . ' restante' . ($left > 1 ? 's' : '') . ' ce mois.'); ?></small></span></label>
+            <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend><p class="app-note"><?php echo $illimite ? 'Modifications illimitées.' : 'Il vous reste ' . (int) $left . ' modification' . ($left > 1 ? 's' : '') . ' ce mois-ci, par Lia ou par Alex, au choix.'; ?></p>
+              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $jetonsLeft === 0 ? ' disabled' : ' checked'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, instantané</strong><small>Lia prépare la modification et vous montre l’aperçu. Votre site ne change qu’après votre accord. </small></span></label>
+              <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $jetonsLeft === 0 ? ' checked' : ''; ?>><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même. </small></span></label>
             </fieldset>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" name="demande" rows="4" maxlength="4000" required placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" name="photo" accept="image/*" class="sr-only" data-req-file><?php echo aled08e_icon('image-plus'); // phpcs:ignore ?><span data-req-file-name>Ajouter une photo (facultatif)</span></label>

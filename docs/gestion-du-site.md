@@ -176,7 +176,7 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 
 - Le client écrit sa demande (avec une photo s'il veut) dans « Mes demandes ». Vous recevez un e-mail avec un lien direct.
 - Dans Alex & Lia › Demandes clients, vous changez le statut : Reçue, En cours, Faite, avec un message facultatif affiché chez le client. En passant à « Faite », le client reçoit un e-mail.
-- Le compteur du mois suit le forfait : Chico 1, Power 4, Titan 20. Au-delà, la demande part quand même et est marquée « hors forfait » : vous dites au client si elle attend le mois prochain ou si elle est facturée.
+- Un seul compteur par mois, Lia et Alex confondus : Chico 1, Power 4, Titan 20 (une par jour ouvré). Le client choisit qui fait chaque modification. Au-delà, la demande part quand même et est marquée « hors forfait » : vous dites au client si elle attend le mois prochain ou si elle est facturée.
 - Délai de réponse annoncé pour Alex : 72 heures, 24 heures pour Titan. Lia : instantané, avec un aperçu à valider.
 
 ### Lia, pour de vrai (Claude, d'Anthropic)

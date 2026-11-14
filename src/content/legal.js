@@ -199,14 +199,16 @@ Le client fournit ses textes, photos et informations, ou les prépare avec ${sit
 
 Le client envoie ses demandes de modification depuis son espace client ou par message. Il y a deux sortes de modifications :
 
-- **Par Lia** : une automatisation faite par Lia, l’IA d’${site.name}, qui utilise un jeton Lia. Lia montre l’aperçu au client et ne modifie le site qu’après son accord.
+- **Par Lia** : une modification faite par Lia, l’IA d’${site.name}. Lia montre l’aperçu au client et ne modifie le site qu’après son accord.
 - **Par Alex** : une modification faite à la main, vérifiée et paramétrée par Alex.
 
 Chaque forfait comprend, par mois :
 
-- ${chico.name} : une modification, faite par Lia ou par Alex, au choix du client.
-- ${power.name} : quatre modifications par Alex et quatre jetons Lia.
-${titan ? `- ${titan.name} : une modification par Alex chaque jour ouvré et des jetons Lia illimités.` : ''}
+- ${chico.name} : une modification.
+- ${power.name} : quatre modifications.
+${titan ? `- ${titan.name} : une modification chaque jour ouvré.` : ''}
+
+Pour chaque modification, le client choisit qui la fait : Lia ou Alex.
 
 Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications non utilisées ne se reportent pas. Au-delà du nombre compris, la demande est reportée à la période suivante ou fait l’objet d’un devis, au choix du client. Une page en plus est facturée ${eur(pageEnPlus)} €.
 
