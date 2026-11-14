@@ -9,6 +9,29 @@
   var euro = function (n) { var v = round2(n); return (v % 1 ? v.toFixed(2) : String(v)).replace('.', ',') + ' €'; };
   var slug = function (v) { return (v || '').replace(/[^a-z0-9-]/g, ''); };
 
+  // Peinture : une flaque différente sous chaque bouton principal, et une éclaboussure au clic
+  (function () {
+    $$('.btn-primary').forEach(function (b, i) { b.setAttribute('data-flaque', String((i % 4) + 1)); });
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    d.addEventListener('pointerdown', function (e) {
+      var b = e.target.closest && e.target.closest('.btn-primary:not(.btn-sm)');
+      if (!b) return;
+      var r = b.getBoundingClientRect(), w = r.width, h = r.height;
+      b.classList.remove('is-splash'); void b.offsetWidth; b.classList.add('is-splash');
+      for (var k = 0; k < 9; k++) {
+        // chaque goutte part du bord du bouton et s'envole vers l'extérieur
+        var g = d.createElement('span'), a = (k / 9) * 6.283 + Math.random() * 0.5, dist = 26 + Math.random() * 34;
+        g.className = 'goutte-vol';
+        g.style.left = (w / 2 + Math.cos(a) * w / 2.1) + 'px'; g.style.top = (h / 2 + Math.sin(a) * h / 2) + 'px';
+        g.style.setProperty('--dx', Math.round(Math.cos(a) * dist * 1.3) + 'px');
+        g.style.setProperty('--dy', Math.round(Math.sin(a) * dist) + 'px');
+        g.style.setProperty('--t', Math.round(6 + Math.random() * 9) + 'px');
+        b.appendChild(g);
+        setTimeout(function (el) { return function () { if (el.parentNode) el.parentNode.removeChild(el); }; }(g), 700);
+      }
+    });
+  })();
+
   // Mode sombre : bouton lune / soleil en haut, choix gardé sur l'appareil
   (function () {
     var root = d.documentElement;
