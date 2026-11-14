@@ -64,23 +64,25 @@ ${blush(50, 110, 101)}
 <path d="M76.5 103.6 79 109l2.6-5.2" fill="#fff" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round"/>
 </g>`;
   },
-  // Power : lilas, cornes pêche, éclair sur le ventre, bras levés
+  // Power : gros monstre lilas tout rond, grosses lunettes rondes, petites oreilles, éclair sur le ventre
   power(c) {
-    return `${shadow(38)}
+    return `${shadow(48)}
 <g class="m-bob">
-${feet(c, 143)}
-<path d="M54 36C40 28 35 12 43 5c5 9 13 18 20 23" fill="#FFC2A3" stroke="${c.deep}" stroke-width="3" stroke-linejoin="round"/>
-<path d="M106 36c14-8 19-24 11-31-5 9-13 18-20 23" fill="#FFC2A3" stroke="${c.deep}" stroke-width="3" stroke-linejoin="round"/>
-<path d="M80 22c31 0 50 27 51 61 1 35-19 61-51 61S28 118 29 83c1-34 20-61 51-61Z" fill="${c.body}" stroke="${c.deep}" stroke-width="3.2"/>
-<ellipse cx="80" cy="114" rx="28" ry="23" fill="${c.light}"/>
-<path d="m86 99-13 18h8l-4 15 15-21h-8l5-12Z" fill="#FFD45E" stroke="${c.deep}" stroke-width="2.6" stroke-linejoin="round"/>
-<path class="m-flex" d="M33 82c-15-8-19-26-9-29 8-2 12 13 15 21" fill="${c.body}" stroke="${c.deep}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="m-flex m-flex-r" d="M127 82c15-8 19-26 9-29-8-2-12 13-15 21" fill="${c.body}" stroke="${c.deep}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M53 60l15 4M107 60l-15 4" stroke="${INK}" stroke-width="3.2" stroke-linecap="round"/>
-${eyes(63, 97, 76, c, { dir: 0.5 })}
-${blush(49, 111, 94)}
-<path d="M69 92q11 10 22 0" fill="none" stroke="${INK}" stroke-width="3.4" stroke-linecap="round"/>
-<path d="M72.4 94.4 74.5 99.5l2.4-4.1M83.2 95.4l2.3 4.1 2.2-5.1" fill="#fff" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round"/>
+<ellipse cx="58" cy="144" rx="14" ry="7.5" fill="${c.foot}" stroke="${c.deep}" stroke-width="3"/><ellipse cx="102" cy="144" rx="14" ry="7.5" fill="${c.foot}" stroke="${c.deep}" stroke-width="3"/>
+<path d="M40 46c-9-6-12-17-5-21 6 3 11 9 14 15" fill="${c.foot}" stroke="${c.deep}" stroke-width="3" stroke-linejoin="round"/>
+<path d="M120 46c9-6 12-17 5-21-6 3-11 9-14 15" fill="${c.foot}" stroke="${c.deep}" stroke-width="3" stroke-linejoin="round"/>
+<path d="M80 30c40 0 64 26 64 60 0 33-25 56-64 56S16 123 16 90c0-34 24-60 64-60Z" fill="${c.body}" stroke="${c.deep}" stroke-width="3.2"/>
+<ellipse cx="80" cy="118" rx="40" ry="22" fill="${c.light}"/>
+<path d="m85 106-11 15h7l-3 12 13-18h-7l4-9Z" fill="#FFD45E" stroke="${c.deep}" stroke-width="2.4" stroke-linejoin="round"/>
+<path class="m-flex" d="M20 96c-12 2-17 14-11 18 5 3 11-3 15-9" fill="${c.body}" stroke="${c.deep}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="m-flex m-flex-r" d="M140 96c12 2 17 14 11 18-5 3-11-3-15-9" fill="${c.body}" stroke="${c.deep}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+${eyes(60, 100, 76, c, { rx: 9, ry: 10, pupil: 5.6 })}
+<g fill="rgba(255,255,255,.22)" stroke="${INK}" stroke-width="3.6"><circle cx="60" cy="77" r="17"/><circle cx="100" cy="77" r="17"/></g>
+<path d="M77 75q3-4 6 0" fill="none" stroke="${INK}" stroke-width="3.6" stroke-linecap="round"/>
+<path d="M43 73l-9-4M117 73l9-4" stroke="${INK}" stroke-width="3.6" stroke-linecap="round"/>
+<path d="M49 68q4-6 10-6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".8"/><path d="M89 68q4-6 10-6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".8"/>
+${blush(42, 118, 99)}
+<path d="M72 100q8 7 16 0" fill="none" stroke="${INK}" stroke-width="3.4" stroke-linecap="round"/>
 </g>`;
   },
   // Titan : pêche, large, couronne, grand sourire, étoile

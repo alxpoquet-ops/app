@@ -9,6 +9,28 @@
   var euro = function (n) { var v = round2(n); return (v % 1 ? v.toFixed(2) : String(v)).replace('.', ',') + ' €'; };
   var slug = function (v) { return (v || '').replace(/[^a-z0-9-]/g, ''); };
 
+  // Goutte de peinture sur le bord droit : elle descend avec la page (discret repère de défilement)
+  (function () {
+    var c = d.createElement('div');
+    c.className = 'coulure'; c.setAttribute('aria-hidden', 'true');
+    c.innerHTML = '<i class="c-trait"></i><i class="c-goutte"></i><i class="c-reflet"></i>';
+    d.body.appendChild(c);
+    var attente = false;
+    var maj = function () {
+      attente = false;
+      var max = d.documentElement.scrollHeight - window.innerHeight;
+      if (max < 200) { c.classList.remove('is-on'); return; } // page courte : pas de goutte
+      var p = Math.min(1, Math.max(0, (window.pageYOffset || d.documentElement.scrollTop) / max));
+      c.style.setProperty('--p', p.toFixed(4));
+      c.classList.add('is-on');
+    };
+    var demande = function () { if (!attente) { attente = true; (window.requestAnimationFrame || setTimeout)(maj); } };
+    window.addEventListener('scroll', demande, { passive: true });
+    window.addEventListener('resize', demande);
+    window.addEventListener('load', demande);
+    maj();
+  })();
+
   // Peinture : sous chaque bouton essentiel, une flaque dessinée au hasard (jamais deux pareilles), et une éclaboussure au clic
   (function () {
     var lisse = function (pts) { // courbe fermée et douce passant par les points
