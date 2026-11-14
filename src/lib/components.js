@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { site, sections, types, pageEnPlus, forfaits, annuel, lissage, options, fidelite, paiement } = require('../config');
+const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
 const { inline, esc, plain } = require('./md');
@@ -104,6 +104,7 @@ function typeCards() {
     <span class="type-name">${esc(t.label)}</span>
     <span class="type-price"><small>Création</small><b>${euro(t.price)}</b></span>
     <span class="type-pitch">${inline(t.pitch)}</span>
+    <span class="type-qui">${inline(t.qui)}</span>
     <span class="type-go">Choisir ${icon('arrow-right')}</span>
   </a>`
     )
@@ -247,7 +248,7 @@ function configurator() {
       ${hint ? `<p class="b-hint">${hint}</p>` : ''}
       ${body}
     </fieldset>`;
-  const typeBody = `${typeChoices()}<p class="b-note">${icon('info')}Besoin de plus de pages ? ${euro(pageEnPlus)} la page.</p>`;
+  const typeBody = `${typeChoices()}<div class="b-note b-note-types">${icon('info')}<ul>${types.map((t) => `<li><strong>${esc(t.label)}</strong> : ${inline(t.ideal)}</li>`).join('')}<li><strong>Un site plus grand ?</strong> Sur devis : <a href="/contact/">écrivez-nous</a>.</li></ul></div>`;
   const forfaitBody = `${forfaitChoices()}<p class="b-note">${icon('info')}Chico : hébergement, nom de domaine, mises à jour, une modification par mois. Power : SEO pour remonter sur Google, serveur plus rapide, quatre modifications. Pour chaque modification, vous choisissez Lia ou Alex. Titan : retour de vos ventes et dix modifications. <a href="/forfaits/">Comparer</a></p>`;
   const payChoices = `<p class="b-label">Le site</p>
       <div class="b-seg" role="radiogroup" aria-label="Paiement du site">

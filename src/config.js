@@ -85,8 +85,10 @@ const types = [
     icon: 'layout-template',
     price: 250,
     delai: '3 à 5 jours',
-    pitch: 'Tout sur une seule page qu’on fait défiler : qui vous êtes, ce que vous faites, comment vous joindre.',
-    pourQui: 'Indépendants, artisans, associations, événements.',
+    pitch: 'Une seule page qu’on fait défiler, comme une grande carte de visite : qui vous êtes, ce que vous faites, vos horaires, comment vous joindre.',
+    qui: 'Pour démarrer, ou pour être simplement trouvé et joignable.',
+    ideal: 'idéal pour démarrer, une carte de visite sur internet',
+    pourQui: 'Pour vous si vous démarrez, si votre activité se présente en quelques lignes, ou si vous voulez surtout être trouvé et joignable. Par exemple : artisan, indépendant, association, événement.',
     inclus: ['Une page en plusieurs parties', 'Formulaire de contact', 'Parfait sur téléphone', 'Bases du SEO'],
   },
   {
@@ -97,8 +99,10 @@ const types = [
     icon: 'layout-grid',
     price: 350,
     delai: '1 à 2 semaines',
-    pitch: 'Un menu en haut et plusieurs pages : accueil, services, tarifs, contact.',
-    pourQui: 'Entreprises, commerces, professions libérales.',
+    pitch: 'Plusieurs pages avec un menu : l’accueil, vos services, vos tarifs, qui vous êtes, le contact.',
+    qui: 'Pour présenter plusieurs services. Le meilleur choix pour sortir sur Google.',
+    ideal: 'idéal pour le référencement, avec une page par sujet',
+    pourQui: 'Pour vous si vous proposez plusieurs services, ou si vous voulez bien sortir sur Google. Chaque page parle d’un sujet précis, et Google peut montrer chacune dans ses résultats : c’est le meilleur choix pour le référencement. Par exemple : entreprise, commerce, profession libérale.',
     inclus: ['Jusqu’à 5 pages', 'Menu clair sur téléphone', 'Formulaire de contact', 'SEO de chaque page'],
   },
   {
@@ -109,12 +113,13 @@ const types = [
     icon: 'shopping-bag',
     price: 500,
     delai: '2 à 3 semaines',
-    pitch: 'Vos produits en ligne, le paiement par carte et le suivi des commandes.',
-    pourQui: 'Créateurs, commerçants, producteurs.',
+    pitch: 'Un magasin sur internet : vos clients choisissent vos produits, paient par carte sur le site, et vous recevez la commande.',
+    qui: 'Pour vendre vos produits sur internet, même quand votre magasin est fermé.',
+    ideal: 'idéal pour vendre, avec le paiement par carte',
+    pourQui: 'Pour vous si vous voulez vendre vos produits en ligne, même quand votre boutique est fermée. Par exemple : créateur, commerçant, producteur.',
     inclus: ['Jusqu’à 20 produits ajoutés par moi', 'Paiement par carte sécurisé', 'Commandes et stocks', 'Conditions de vente à compléter'],
   },
 ];
-const pageEnPlus = 40; // € par page au-delà de ce que prévoit le type de site
 
 // ---------------------------------------------------------------- forfaits mensuels (un petit monstre chacun)
 // En paiement annuel : 2 mois offerts sur le forfait.
@@ -196,4 +201,4 @@ const paiement = { acompte: 25 }; // 25 % à la commande ; à la réception : le
 
 // Boost : une modification en plus du forfait, à l'unité, ajoutée à la prochaine facture.
 const boost = { prix: 1 };
-module.exports = { site, sections, types, pageEnPlus, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost };
+module.exports = { site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost };

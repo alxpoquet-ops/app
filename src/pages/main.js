@@ -1,5 +1,5 @@
 // Pages du site
-const { site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, pageEnPlus } = require('../config');
+const { site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement } = require('../config');
 const base = forfaits[0];
 const { icon } = require('../lib/icons');
 const { monster } = require('../lib/monsters');
@@ -184,11 +184,12 @@ function forfaitsPage() {
       <strong>${esc(t.label)}</strong>
       <b>${euro(t.price)}</b>
       <small>${icon('timer')}${esc(t.delai)}</small>
+      <p class="create-qui">${inline(t.pourQui)}</p>
       <ul>${t.inclus.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
     </a>`
     )
     .join('')}</div>
-  <p class="center small muted">Une page en plus : ${euro(pageEnPlus)}. Un projet plus grand ? Je vous fais un devis.</p>
+  <p class="center small muted">Un site plus grand que ça ? C’est sur devis : <a href="/contact/">écrivez-nous</a>.</p>
 </div></section>
 
 <section class="section" id="options"><div class="container">

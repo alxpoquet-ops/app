@@ -1200,3 +1200,7 @@ button.app-card:hover { transform: translateY(-2px); }
 .boost-box .opt-ico { flex: none; }
 .o-pay-next { flex-wrap: wrap; row-gap: 4px; }
 .o-pay-next > span { flex: 1 1 100%; }
+.type-qui { display: block; margin: 6px 0 4px; font-size: .92rem; color: var(--muted); }
+.create-qui { margin: 6px 0 10px; font-size: .92rem; color: var(--muted); font-weight: 600; text-align: left; }
+.b-note-types { display: flex; gap: 8px; align-items: flex-start; }
+.b-note-types ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }

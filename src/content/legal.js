@@ -2,7 +2,7 @@
 // ⚠️ Les éléments entre accolades proviennent de src/config.js et doivent y être complétés.
 // ⚠️ Modèle à faire relire : il ne remplace pas l'avis d'un professionnel du droit.
 // Règles : aucun tiret long, phrases courtes, rien d'invérifiable. Le nom de marque vient de site.name.
-const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, pageEnPlus, delais = { reponse: '72 heures', titan: '24 heures' } } = require('../config');
+const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, delais = { reponse: '72 heures', titan: '24 heures' } } = require('../config');
 const L = site.legal;
 const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
@@ -147,7 +147,7 @@ Une commande peut aussi être passée par e-mail ou par message. Elle est alors 
 
 Les prix sont en euros. La TVA n’est pas applicable (article 293 B du Code général des impôts) tant que l’entreprise bénéficie de la franchise de TVA. Si cette situation change, les prix affichés sont mis à jour ; les commandes déjà passées gardent leur prix.
 
-La création du site est à prix fixe pour le type choisi : ${listeTypes}. Une page en plus coûte ${eur(pageEnPlus)} €. Les options sont au tarif indiqué à la commande : ${listeOptions}.
+La création du site est à prix fixe pour le type choisi : ${listeTypes}. Un site plus grand fait l’objet d’un devis. Les options sont au tarif indiqué à la commande : ${listeOptions}.
 
 Les forfaits sont mensuels : ${listeForfaits}. À l’année, le client paie dix mois pour douze, soit ${annuel.moisOfferts} mois offerts.
 
@@ -211,7 +211,7 @@ ${titan ? `- ${titan.name} : dix modifications.` : ''}
 
 Pour chaque modification, le client choisit qui la fait : Lia ou Alex.
 
-Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications non utilisées ne se reportent pas. Au-delà du nombre compris, le client peut demander un Boost : une modification en plus pour 1 €, ajoutée à sa prochaine facture, avec son accord à chaque demande. Sinon, la demande est reportée à la période suivante, au choix du client. Une page en plus est facturée ${eur(pageEnPlus)} €.
+Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications non utilisées ne se reportent pas. Au-delà du nombre compris, le client peut demander un Boost : une modification en plus pour 1 €, ajoutée à sa prochaine facture, avec son accord à chaque demande. Sinon, la demande est reportée à la période suivante, au choix du client. Une page nouvelle ou un site plus grand fait l’objet d’un devis.
 
 ## 12. Délais de réponse
 

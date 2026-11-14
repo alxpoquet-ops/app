@@ -1,7 +1,7 @@
 // Questions fréquentes, par rubrique. La page /faq/ les reprend toutes.
 // Règles : réponses courtes et honnêtes, aucun tiret long, aucun chiffre sur les concurrents,
 // et pas de phrase de 9 mots ou plus reprise d'une autre réponse ou d'une page (scripts/check.js).
-const { forfaits, annuel, lissage, options, paiement, fidelite, pageEnPlus, types, delais = { reponse: '72 heures', titan: '24 heures' } } = require('../config');
+const { forfaits, annuel, lissage, options, paiement, fidelite, types, delais = { reponse: '72 heures', titan: '24 heures' } } = require('../config');
 const opt = (id) => options.find((o) => o.id === id);
 const F = (id) => forfaits.find((f) => f.id === id);
 const chico = F('chico') || forfaits[0];
@@ -17,7 +17,8 @@ const solde = 100 - paiement.acompte;
 module.exports = {
   creation: [
     { q: 'Je n’ai ni textes ni photos, c’est un problème ?', a: 'Non. On écrit les textes ensemble à partir de ce que vous me racontez, et je choisis des photos libres de droits adaptées à votre activité. Vous les remplacerez par les vôtres quand vous voudrez.' },
-    { q: 'Le prix de création est-il vraiment fixe ?', a: `Oui. Il couvre ce que décrit chaque type de site. Si vous voulez plus de pages, c’est ${eur(pageEnPlus)} € la page, et tout est écrit dans le récapitulatif avant de commencer.` },
+    { q: 'Quel site choisir ?', a: 'Le site une page, si vous démarrez ou si quelques lignes suffisent pour vous présenter : c’est votre carte de visite sur internet. Le site vitrine, si vous avez plusieurs services ou si vous voulez bien sortir sur Google : chaque page parle d’un sujet, et Google peut toutes les montrer. La boutique en ligne, si vous voulez vendre vos produits sur internet. Vous hésitez ? Écrivez-nous, on vous conseille.' },
+    { q: 'Le prix de création est-il vraiment fixe ?', a: `Oui. Il couvre ce que décrit chaque type de site. Pour un site plus grand, c’est sur devis, et tout est écrit dans le récapitulatif avant de commencer.` },
     { q: 'Quelle différence avec un site fait par un développeur ?', a: 'Pour un site vitrine ou une petite boutique, le résultat est comparable : moderne, rapide, soigné. Je vais plus vite grâce à l’IA, donc je coûte moins cher. Pour une application sur mesure ou un très gros catalogue, l’expertise d’un développeur reste irremplaçable, et je vous le dirai.' },
     { q: 'Comment se passe le paiement de la création ?', a: `Vous réglez ${paiement.acompte} % en commandant. À la réception du site, vous réglez le reste : en une fois, ou en ${lissage.durees.join(' ou ')} fois sans frais, avec votre forfait.` },
   ],
