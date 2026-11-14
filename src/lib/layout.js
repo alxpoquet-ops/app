@@ -109,6 +109,7 @@ function header(currentPath) {
       </div>
     </nav>
     <div class="header-actions">
+      <button class="theme-btn" type="button" data-theme-toggle aria-label="Passer en mode sombre" title="Mode sombre ou clair">${icon('moon', 't-moon')}${icon('sun', 't-sun')}</button>
       <a class="btn-espace" href="${sections.monespace.path}"${currentPath.startsWith(sections.monespace.path) ? ' aria-current="page"' : ''}>${icon('circle-user')}<span>Mon espace</span></a>
       ${C.btn(sections.creer.path, 'btn-primary btn-sm btn-creer', 'wand-sparkles', 'Créer mon site', onCreer ? ' aria-current="page"' : '')}
       <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
@@ -220,7 +221,7 @@ function page(p) {
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <script type="application/ld+json">${graph(p)}</script>
-<script>document.documentElement.classList.add('js')</script>
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('al-theme');if(t==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
 </head>
 <body class="c-${color}${p.bodyClass ? ' ' + p.bodyClass : ''}">
 ${smartQuotes(`${header(p.path)}

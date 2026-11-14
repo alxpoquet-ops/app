@@ -8,6 +8,25 @@
   var floor2 = function (n) { return Math.floor(n * 100 + 1e-6) / 100; };
   var euro = function (n) { return round2(n).toString().replace('.', ',') + ' €'; };
   var slug = function (v) { return (v || '').replace(/[^a-z0-9-]/g, ''); };
+
+  // Mode sombre : bouton lune / soleil en haut, choix gardé sur l'appareil
+  (function () {
+    var root = d.documentElement;
+    var meta = $('meta[name="theme-color"]');
+    var apply = function (dark) {
+      if (dark) root.setAttribute('data-theme', 'dark'); else root.removeAttribute('data-theme');
+      if (meta) meta.setAttribute('content', dark ? '#16142A' : '#FFF8F2');
+      $$('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-label', dark ? 'Passer en mode clair' : 'Passer en mode sombre'); b.setAttribute('aria-pressed', dark ? 'true' : 'false'); });
+    };
+    apply(root.getAttribute('data-theme') === 'dark');
+    d.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('[data-theme-toggle]');
+      if (!b) return;
+      var dark = root.getAttribute('data-theme') !== 'dark';
+      apply(dark);
+      try { localStorage.setItem('al-theme', dark ? 'dark' : 'light'); } catch (err) {}
+    });
+  })();
   // Change des paramètres d'un lien sans toucher au chemin (qui peut être relatif)
   var withParams = function (href, params) {
     var hash = '', i = href.indexOf('#');
