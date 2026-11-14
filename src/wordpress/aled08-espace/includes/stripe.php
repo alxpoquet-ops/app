@@ -167,7 +167,7 @@ function aled08e_stripe_checkout($cid) {
     if ($c['lissage']) {
         $items[] = $recurring('Création du site, en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais', $m['lissage_mensualite'], 'lissage');
     } else {
-        $items[] = $once('Acompte de ' . (int) $D['acompte'] . ' % sur la création (' . ($type ? mb_strtolower($type['label'], 'UTF-8') : 'site') . ')', $m['acompte'], 'acompte');
+        $items[] = $once(((int) $D['acompte'] >= 100 ? 'Création du site' : 'Acompte de ' . (int) $D['acompte'] . ' % sur la création') . ' (' . ($type ? mb_strtolower($type['label'], 'UTF-8') : 'site') . ')', $m['acompte'], 'acompte');
     }
     $cfg = ['type' => $c['type'], 'forfait' => $c['forfait'], 'periode' => $c['periode'], 'lissage' => $c['lissage'], 'options' => $c['options'], 'domaine' => $c['domaine'], 'domaine_mien' => $c['domaine_mien'], 'parrain' => $c['parrain']];
     $params = [

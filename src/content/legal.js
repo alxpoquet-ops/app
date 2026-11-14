@@ -155,7 +155,7 @@ Les forfaits sont mensuels : ${listeForfaits}. À l’année, le client paie dix
 
 Le client choisit l’une des deux formules au moment de la commande.
 
-- **En une fois** : un acompte de ${paiement.acompte} % est réglé à la commande. Le solde de ${solde} % est demandé quand le site est mis en ligne, par un lien de paiement envoyé par e-mail et visible dans l’espace client.
+- **En une fois** : le prix de la création est réglé en totalité à la commande.
 - **En ${lissage.durees.join(' ou ')} fois sans frais** : le prix du site est divisé en ${lissage.durees.join(' ou ')} mensualités, au choix du client, ajoutées au forfait. Le forfait est alors payé au mois. Chaque échéance est arrondie au centime inférieur : le total ne dépasse jamais le prix du site. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
 
 ## 5. Paiement du forfait et factures
@@ -199,7 +199,7 @@ Le client fournit ses textes, photos et informations, ou les prépare avec ${sit
 
 Le client envoie ses demandes de modification depuis son espace client ou par message. Il y a deux sortes de modifications :
 
-- **Par Lia** : une automatisation faite avec les outils d’${site.name} (l’IA), qui utilise un jeton Lia. Lia montre l’aperçu au client et ne modifie le site qu’après son accord.
+- **Par Lia** : une automatisation faite par Lia, l’IA d’${site.name}, qui utilise un jeton Lia. Lia montre l’aperçu au client et ne modifie le site qu’après son accord.
 - **Par Alex** : une modification faite à la main, vérifiée et paramétrée par Alex.
 
 Chaque forfait comprend, par mois :

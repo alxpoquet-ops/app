@@ -74,7 +74,7 @@ function aled08e_dashboard_libre($u) {
       <div class="app-main">
         <div class="app-panel" role="tabpanel" id="t-accueil" aria-labelledby="tab-accueil">
           <h2 class="app-h">Bienvenue <?php echo esc_html(aled08e_prenom($u)); ?> !</h2>
-          <p class="app-p">Votre compte est prêt. Quand vous commandez votre site, tout arrive ici : le suivi de la commande, vos demandes de modification à Lia ou à Alex, votre tableau de bord, votre QR code et votre parrainage.</p>
+          <p class="app-p">Votre compte est prêt. Quand vous commandez votre site, tout arrive ici : le suivi de la commande, vos demandes de modification à Lia ou à Alex, votre tableau de bord et votre parrainage.</p>
           <div class="app-cards">
             <a class="app-card c-mint" href="<?php echo esc_url(home_url('/creer-mon-site/')); ?>"><span class="app-card-ico"><?php echo aled08e_icon('wand-sparkles'); // phpcs:ignore ?></span><span><small>Étape suivante</small><strong>Créer mon site</strong><span>Choisir, voir le prix, commander</span></span></a>
             <a class="app-card c-lilac" href="<?php echo esc_url(home_url('/forfaits/')); ?>"><span class="app-card-ico"><?php echo aled08e_icon('heart'); // phpcs:ignore ?></span><span><small>Les forfaits</small><strong>Chico, Power, Titan</strong><span>Dès 5 € par mois</span></span></a>

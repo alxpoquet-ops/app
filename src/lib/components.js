@@ -122,7 +122,7 @@ function payBox() {
   return `<div class="jetons-box reveal">
   <h3>${icon('calendar-check')}Comment payer ?</h3>
   <ul class="list-check">
-    <li><strong>Le site</strong> : en une fois (${paiement.acompte} % à la commande, le solde à la mise en ligne), ou en ${lissageTxt} fois sans frais, avec un engagement seulement le temps de payer le site. Par exemple ${types.map((t) => `${euro(lisse(t.price))} par mois pour ${unType(t)}`).join(', ')}.</li>
+    <li><strong>Le site</strong> : en une fois à la commande, ou en ${lissageTxt} fois sans frais, avec un engagement seulement le temps de payer le site. Par exemple ${types.map((t) => `${euro(lisse(t.price))} par mois pour ${unType(t)}`).join(', ')}.</li>
     <li><strong>Le forfait</strong> : au mois, ou à l’année avec ${annuel.moisOfferts} mois offerts.</li>
   </ul>
 </div>`;
@@ -263,8 +263,8 @@ function configurator() {
   <form class="b-steps" data-builder-form>
     ${step(1, 'Votre site', 'Le prix de création est fixe. Il comprend la maquette, le site complet et la mise en ligne.', typeBody)}
     ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est comprise dans les forfaits et elle reste à votre nom.', domainBox())}
-    ${step(3, 'Votre forfait', 'Je m’occupe de votre site chaque mois. Les modifications, c’est moi qui les fais.', forfaitBody)}
-    ${step(4, 'Paiement', `Le site en une fois (${paiement.acompte} % à la commande), ou en ${lissageTxt} fois sans frais. Le forfait au mois, ou à l’année avec deux mois offerts. Aucun engagement, sauf le temps de payer le site en plusieurs fois.`, payChoices)}
+    ${step(3, 'Votre forfait', 'Votre site reste en ligne et à jour chaque mois. Les modifications, c’est Lia ou Alex, au choix.', forfaitBody)}
+    ${step(4, 'Paiement', `Le site en une fois à la commande, ou en ${lissageTxt} fois sans frais. Le forfait au mois, ou à l’année avec deux mois offerts. Aucun engagement, sauf le temps de payer le site en plusieurs fois.`, payChoices)}
     ${step(5, 'Options', 'E-mail pro ou traduction : rien n’est obligatoire, vous pourrez les ajouter plus tard.', optionList, ' b-step-last')}
   </form>
   <aside class="b-sum" aria-live="polite">
@@ -285,7 +285,7 @@ function configurator() {
       <a class="btn btn-primary btn-block btn-lg" href="${sections.commander.path}" data-sum-order>${icon('shopping-bag')}<span>Commander</span></a>
       <a class="btn btn-light btn-block" href="/contact/#devis" data-sum-go>${icon('message-circle')}<span>Poser une question</span></a>
     </div>
-    <p class="b-sum-note">${icon('shield-check')}Paiement sécurisé par Stripe. Aujourd’hui, vous réglez ${paiement.acompte} % du site (ou sa première mensualité) et la première échéance de votre forfait.</p>
+    <p class="b-sum-note">${icon('shield-check')}Paiement sécurisé par Stripe. Aujourd’hui, vous réglez le site (ou sa première mensualité) et la première échéance de votre forfait.</p>
   </aside>
   <div class="b-bar" data-sum-bar>
     <p data-sum="bar"><b>250 €</b> puis <b>20 €/mois</b></p>

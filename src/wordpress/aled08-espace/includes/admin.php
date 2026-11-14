@@ -343,7 +343,7 @@ function aled08e_cmd_box_detail($post) {
     $row('Options', $opts ? esc_html(implode(', ', $opts)) . ($m['mensuel_options'] > 0 ? ', ' . aled08e_euro($m['mensuel_options']) . ' ' . esc_html($per) : '') . ($m['options_ponctuel'] > 0 ? ', ' . aled08e_euro($m['options_ponctuel']) . ' une fois' : '') : 'aucune');
     $row('Création', $c['lissage']
         ? 'lissée : ' . aled08e_euro($m['lissage_mensualite']) . ' ' . esc_html($per) . ' pendant ' . (int) $m['lissage_total_echeances'] . ' échéances. <strong>Lissage : ' . (int) $c['lissage_paye'] . ' / ' . (int) $m['lissage_total_echeances'] . ' payées</strong>' . (get_post_meta($c['id'], '_aled08_lissage_fini', true) ? ' (terminé)' : '')
-        : 'acompte ' . aled08e_euro($m['acompte']) . ' à la commande, solde ' . aled08e_euro($m['solde']) . ' à la mise en ligne' . ($c['solde_paye'] ? ' <strong>(solde payé)</strong>' : ' <strong>(solde dû)</strong>'));
+        : ($m['solde'] > 0 ? 'acompte ' . aled08e_euro($m['acompte']) . ' à la commande, solde ' . aled08e_euro($m['solde']) . ' à la mise en ligne' . ($c['solde_paye'] ? ' <strong>(solde payé)</strong>' : ' <strong>(solde dû)</strong>') : 'payée en une fois à la commande : ' . aled08e_euro($m['acompte'])));
     $row('Montant du jour de la commande', '<strong>' . aled08e_euro($m['total_jour']) . '</strong>');
     if ($c['parrain']) { $p = aled08e_user_by_code($c['parrain']); $row('Parrainage', esc_html($c['parrain']) . ' (' . ($p ? '<a href="' . esc_url(get_edit_user_link($p->ID)) . '">' . esc_html($p->display_name) . '</a>' : 'code inconnu') . ')'); }
     if ($c['message']) $row('Message du client', '<div class="aled08-pre">' . esc_html($c['message']) . '</div>');

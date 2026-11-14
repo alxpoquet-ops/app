@@ -225,7 +225,7 @@ function aled08e_cmd_recap_txt($c) {
     else $dom = $c['domaine'] . ' (à réserver au nom du client)';
     $pay = $c['lissage']
         ? 'en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais, ' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois, engagement de ' . (int) $m['lissage_total_echeances'] . ' mois'
-        : 'acompte de ' . aled08e_euro_txt($m['acompte']) . ' à la commande, solde de ' . aled08e_euro_txt($m['solde']) . ' à la mise en ligne';
+        : ($m['solde'] > 0 ? 'acompte de ' . aled08e_euro_txt($m['acompte']) . ' à la commande, solde de ' . aled08e_euro_txt($m['solde']) . ' à la mise en ligne' : 'en une fois à la commande, ' . aled08e_euro_txt($m['acompte']));
     return 'Référence : ' . $c['ref'] . "\n"
         . 'Site : ' . ($type ? $type['label'] : $c['type']) . ', création ' . aled08e_euro_txt($m['creation']) . ($type ? ' (délai habituel : ' . $type['delai'] . ')' : '') . "\n"
         . 'Nom de domaine : ' . $dom . "\n"
@@ -547,7 +547,6 @@ function aled08e_cmd_mail_client_en_ligne($c) {
                     : "Je vous envoie le lien de paiement dans un e-mail séparé.\n\n")
             : '')
         . "Pour faire évoluer votre site, envoyez vos demandes depuis votre espace client, onglet « Mes demandes » :\n" . aled08e_url() . "\n"
-        . "Vous y trouvez aussi votre QR code et votre lien d’avis Google, prêts à partager.\n\n"
         . "Merci pour votre confiance,\nAlex, et Lia\n";
     wp_mail($c['email'], 'Votre site est en ligne', $corps, aled08e_mail_headers('Alex & Lia <' . aled08e_to() . '>'));
 }

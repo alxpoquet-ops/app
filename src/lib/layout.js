@@ -82,7 +82,7 @@ function graph(p) {
 }
 
 // ---------------------------------------------------------------- en-tête
-const NAV = ['forfaits', 'espace', 'seo', 'contact'];
+const NAV = ['forfaits', 'seo', 'contact'];
 
 function header(currentPath) {
   const onCreer = currentPath.startsWith(sections.creer.path);
@@ -136,7 +136,6 @@ function footer(p) {
     <div>
       <h2 class="footer-title">Bon à savoir</h2>
       <ul class="footer-links">
-        <li><a href="/nos-outils/">Nos outils</a></li>
         <li><a href="/mon-espace/demo/">Essayer la démo</a></li>
         <li><a href="/referencement-seo/">Référencement SEO</a></li>
         <li><a href="${sections.comparatif.path}">Alex & Lia et les autres solutions</a></li>

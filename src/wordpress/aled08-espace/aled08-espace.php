@@ -26,7 +26,7 @@ function aled08e_data() {
         $d += [
             'name' => 'Alex & Lia', 'whatsapp' => '', 'email' => '',
             'forfaits' => [], 'types' => [], 'options' => [], 'icons' => [], 'monsters' => [],
-            'moisOfferts' => 2, 'lissageDurees' => [6, 12], 'acompte' => 30, 'parrainageMois' => 1, 'remiseSecondSite' => 10,
+            'moisOfferts' => 2, 'lissageDurees' => [6, 12], 'acompte' => 100, 'parrainageMois' => 1, 'remiseSecondSite' => 10,
             'delais' => ['reponse' => '48 heures', 'titan' => '24 heures'],
         ];
     }
@@ -175,9 +175,9 @@ add_filter('wp_new_user_notification_email', function ($email, $user) {
     $email['subject'] = 'Votre espace client Alex & Lia';
     $email['message'] = 'Bonjour ' . aled08e_prenom($user) . ",\n\n"
         . ($ctx && !empty($ctx['ref'])
-            ? 'Votre commande ' . $ctx['ref'] . ' est bien enregistrée. Votre espace client Alex & Lia est prêt : vous y suivez votre commande, puis vous y envoyez vos demandes de modification. Vous y retrouvez aussi votre QR code, votre lien d’avis, votre parrainage et vos factures.' . "\n\n"
-            : (get_user_meta($user->ID, 'aled08_inscrit_seul', true) ? 'Votre compte Alex & Lia est créé, merci ! Quand vous commanderez votre site, vous y suivrez tout : la commande, vos demandes de modification à Lia ou à Alex, votre QR code et votre parrainage.' . "\n\n"
-            : 'Votre espace client Alex & Lia est prêt. Vous y envoyez vos demandes de modification, vous suivez leur avancement, et vous retrouvez votre QR code, votre lien d’avis, votre parrainage et vos factures.' . "\n\n"))
+            ? 'Votre commande ' . $ctx['ref'] . ' est bien enregistrée. Votre espace client Alex & Lia est prêt : vous y suivez votre commande, puis vous y envoyez vos demandes de modification. Vous y retrouvez aussi votre parrainage et vos factures.' . "\n\n"
+            : (get_user_meta($user->ID, 'aled08_inscrit_seul', true) ? 'Votre compte Alex & Lia est créé, merci ! Quand vous commanderez votre site, vous y suivrez tout : la commande, vos demandes de modification à Lia ou à Alex et votre parrainage.' . "\n\n"
+            : 'Votre espace client Alex & Lia est prêt. Vous y envoyez vos demandes de modification, vous suivez leur avancement, et vous retrouvez votre parrainage et vos factures.' . "\n\n"))
         . "Pour choisir votre mot de passe, ouvrez ce lien :\n" . $link . "\n\n"
         . "Ensuite, connectez-vous ici :\n" . aled08e_url() . "\n"
         . 'Votre identifiant : ' . $user->user_login . " (ou votre adresse e-mail)\n\n"
@@ -637,8 +637,8 @@ function aled08e_panel_commande($cmd, $u, $D) {
             <?php if ($cmd['lissage']) : ?>
             <li><span>Création du site, en <?php echo (int) $m['lissage_total_echeances']; ?> fois sans frais</span><b><?php echo aled08e_euro($m['lissage_mensualite']) . ' ' . esc_html($per); // phpcs:ignore ?></b><small><?php echo (int) $cmd['lissage_paye']; ?> / <?php echo (int) $m['lissage_total_echeances']; ?> échéances payées, puis plus rien à payer</small></li>
             <?php else : ?>
-            <li><span>Acompte de <?php echo (int) $D['acompte']; ?> %</span><b><?php echo aled08e_euro($m['acompte']); // phpcs:ignore ?></b><small><?php echo in_array($s, aled08e_cmd_statuts_payes(), true) ? 'payé' : 'à payer à la commande'; ?></small></li>
-            <li><span>Solde à la mise en ligne</span><b><?php echo aled08e_euro($solde); // phpcs:ignore ?></b><small><?php echo $cmd['solde_paye'] ? 'payé, merci !' : 'demandé quand le site est en ligne'; ?></small></li>
+            <li><span><?php echo $solde > 0 ? 'Acompte sur la création' : 'Création du site, en une fois'; ?></span><b><?php echo aled08e_euro($m['acompte']); // phpcs:ignore ?></b><small><?php echo in_array($s, aled08e_cmd_statuts_payes(), true) ? 'payé' : 'à payer à la commande'; ?></small></li>
+            <?php if ($solde > 0) : ?><li><span>Solde à la mise en ligne</span><b><?php echo aled08e_euro($solde); // phpcs:ignore ?></b><small><?php echo $cmd['solde_paye'] ? 'payé, merci !' : 'demandé quand le site est en ligne'; ?></small></li><?php endif; ?>
             <?php endif; ?>
             <li><span>Forfait <?php echo esc_html($f['name']); ?><?php echo $m['mensuel_options'] > 0 ? ' et options' : ''; ?></span><b><?php echo aled08e_euro($m['mensuel_forfait'] + $m['mensuel_options']) . ' ' . esc_html($per); // phpcs:ignore ?></b><small>démarre à la commande</small></li>
             <li class="esp-amount-total"><span><?php echo $s === 'attente_paiement' ? 'À payer aujourd’hui' : 'Payé le jour de la commande'; ?></span><b><?php echo aled08e_euro($m['total_jour']); // phpcs:ignore ?></b></li>
@@ -796,7 +796,7 @@ function aled08e_dashboard() {
           <?php
           echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
           if ($cmd) echo aled08e_tab('commande', 'package', 'Ma commande'); // phpcs:ignore
-          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'chart-line', 'Tableau de bord') . aled08e_tab('outils', 'qr-code', 'QR code et avis') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('forfait', 'heart', 'Forfait et factures') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
+          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'chart-line', 'Tableau de bord') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('forfait', 'heart', 'Forfait et factures') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -822,7 +822,6 @@ function aled08e_dashboard() {
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
             <button type="button" data-go="demandes"><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><strong>Demander une modification</strong><small>Je m’en occupe</small></button>
-            <button type="button" data-go="outils"><?php echo aled08e_icon('qr-code'); // phpcs:ignore ?><strong>QR code et lien d’avis</strong><small>Prêts à partager</small></button>
             <button type="button" data-go="parrainage"><?php echo aled08e_icon('gift'); // phpcs:ignore ?><strong>Parrainer un proche</strong><small>Un mois offert chacun</small></button>
           </div>
           <p class="app-sub">Dernières demandes</p>

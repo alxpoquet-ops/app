@@ -430,7 +430,7 @@
       var forfaitFirst = f.month * mult;
       var first = annual ? 'première année' : 'premier mois';
       if (lisse) lines.push([t.label + ', 1re mensualité sur ' + lisseN, lisseAmt]);
-      else lines.push(['Acompte de ' + data.acompte + ' % sur la création (' + t.label.toLowerCase() + ')', acompte]);
+      else lines.push([data.acompte >= 100 ? 'Création du site (' + t.label.toLowerCase() + ')' : 'Acompte de ' + data.acompte + ' % sur la création (' + t.label.toLowerCase() + ')', acompte]);
       lines.push(['Forfait ' + f.name + ', ' + first, forfaitFirst]);
       $$('.b-opt input:checked', form).forEach(function (i) {
         var o = find(data.options, i.value);
@@ -444,7 +444,7 @@
       setText('btn', euro(today));
       setText('next', euro(next));
       setText('next-label', 'Ensuite, chaque ' + perWord);
-      setText('solde', euro(solde));
+      if ($('[data-order="solde"]', root)) setText('solde', euro(solde));
       setText('lisse', euro(lisseAmt));
       setText('lisse-per', perUnit);
       setText('lisse-n', String(lisseN));

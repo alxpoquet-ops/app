@@ -6,7 +6,7 @@ const { icon } = require('../src/lib/icons');
 const { monster } = require('../src/lib/monsters');
 
 const { site, forfaits, types, annuel, options, fidelite } = cfg;
-const paiement = cfg.paiement || { acompte: 30 };
+const paiement = cfg.paiement || { acompte: 100 };
 const lissage = cfg.lissage || { mois: 24 };
 const delais = cfg.delais || { reponse: '72 heures', titan: '24 heures' };
 // Quotas de modifications par mois : lus dans config.js (f.quota) ; valeurs de repli si absents.
@@ -29,7 +29,7 @@ process.stdout.write(
     options: options.map((o) => ({ id: o.id, name: o.name, month: o.price.month || 0, once: o.price.once || 0, types: o.types || [] })),
     moisOfferts: annuel.moisOfferts,
     lissageDurees: lissage.durees || [6, 12],
-    acompte: paiement.acompte || 30,
+    acompte: paiement.acompte || 100,
     delais: { reponse: delais.reponse || '72 heures', titan: delais.titan || '24 heures' },
     parrainageMois: fidelite.parrainageMois,
     remiseSecondSite: fidelite.remiseSecondSite || 0,

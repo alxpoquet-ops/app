@@ -59,7 +59,7 @@ function home() {
   <h2 class="section-title">Comment ça marche</h2>
   <p class="section-sub">Trois étapes, et rien de technique pour vous.</p>
   ${C.steps([
-    { t: 'Vous commandez en ligne', d: `Vous choisissez votre site et votre forfait. Vous réglez ${paiement.acompte} % du site, ou la première mensualité si vous payez en plusieurs fois.` },
+    { t: 'Vous commandez en ligne', d: `Vous choisissez votre site et votre forfait. Vous réglez le site en une fois, ou la première mensualité si vous payez en plusieurs fois.` },
     { t: 'Je crée votre site', d: 'Je réserve votre nom de domaine et je vous écris sous 24 heures. Vous voyez l’aperçu, vous me dites ce qui change.' },
     { t: 'Vous demandez, on s’en occupe', d: 'Un horaire, un prix, une photo : demandez-le depuis votre espace client. Lia le fait tout de suite avec un jeton, ou Alex s’en charge.' },
   ])}
@@ -87,10 +87,10 @@ function home() {
 
 <section class="section section-soft c-sky"><div class="container split">
   <div class="reveal">
-    <p class="kicker c-sky">${icon('toolbox')}Nos outils</p>
+    <p class="kicker c-sky">${icon('pencil')}Vos modifications</p>
     <h2>Vous demandez, Lia ou Alex s’en occupe</h2>
     <p>Une modification ? Envoyez votre demande depuis votre espace client, avec une photo si besoin, et choisissez qui la fait : Lia, tout de suite, avec un jeton, ou Alex, à la main, pour ce qui demande un regard humain. Vous êtes prévenu quand c’est en ligne. Vous n’avez rien de technique à gérer.</p>
-    <div class="hero-ctas">${C.btn('/nos-outils/', 'btn-primary', 'toolbox', 'Découvrir nos outils')}${C.btn(site.espaceClient.demo, 'btn-light', 'circle-user', 'Essayer la démo')}</div>
+    <div class="hero-ctas">${C.btn(site.espaceClient.demo, 'btn-primary', 'circle-user', 'Essayer l’espace client')}</div>
   </div>
   ${C.phoneEdit()}
 </div></section>
@@ -135,7 +135,7 @@ function creerPage() {
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Et ensuite ?</h2>
   ${C.steps([
-    { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % de la création, ou la première mensualité si le site est lissé, et la première échéance de votre forfait.` },
+    { t: 'Vous commandez', d: `Vous réglez la création, ou la première mensualité si le site est lissé, et la première échéance de votre forfait.` },
     { t: 'Je réserve votre nom de domaine', d: 'Il est à votre nom. Je vous écris sous 24 heures avec les questions utiles pour démarrer.' },
     { t: 'Je crée votre site', d: 'Vous recevez un aperçu. Vous me dites ce qui change, je corrige.' },
     { t: 'C’est en ligne', d: 'Vous réglez le solde (sauf si le site est lissé). Vos modifications passent ensuite par votre espace client.' },
@@ -164,7 +164,7 @@ function forfaitsPage() {
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: 'Les forfaits : choisissez votre monstre',
-    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power ajoute le SEO pour remonter sur Google, et un serveur plus rapide. Titan ajoute le retour de vos ventes et nos outils en illimité.',
+    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power ajoute le SEO pour remonter sur Google, et un serveur plus rapide. Titan ajoute le retour de vos ventes et des jetons Lia illimités.',
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
@@ -176,7 +176,7 @@ function forfaitsPage() {
 
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">La création, à prix fixe</h2>
-  <p class="section-sub">En une fois, avec un acompte de ${paiement.acompte} % au départ, ou en ${C.lissageTxt} fois sans frais.</p>
+  <p class="section-sub">En une fois à la commande, ou en ${C.lissageTxt} fois sans frais.</p>
   <div class="create-prices">${types
     .map(
       (t) => `<a class="create-price c-${t.color} reveal" href="${C.creerUrl({ type: t.id })}">
@@ -230,7 +230,7 @@ function outilsPage() {
   const f = C.faq(FAQ.espace, 'Vos questions sur l’espace client', 'faq-outils');
   const body = `${C.pageHero({
     section: 'espace',
-    h1: 'Nos outils : vous demandez, Lia ou Alex s’en occupe',
+    h1: 'Vos modifications : Lia ou Alex s’en occupe',
     lead: 'Depuis votre espace client, vous envoyez vos demandes de modification. Lia les fait tout de suite, ou Alex à la main, au choix : vous n’avez rien de technique à gérer. Et les outils de l’espace sont gratuits pour les sites hébergés chez moi.',
     crumbs,
   })}
@@ -279,8 +279,8 @@ function seoPage() {
   const f = C.faq(FAQ.seo, 'Vos questions sur le SEO', 'faq-seo');
   const levels = [
     ['chico', 'Les bases', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Site déclaré dans Google Search Console']],
-    ['power', 'Le SEO suivi', ['Tout Chico', 'Je travaille chaque mois pour faire remonter votre site sur Google', 'Serveur plus rapide : Google aime les sites rapides']],
-    ['titan', 'Les chiffres', ['Tout Power', 'Le retour de vos ventes et de vos chiffres chaque mois', 'Nos outils en illimité']],
+    ['power', 'Le SEO suivi', ['Tout Chico', 'Je travaille chaque mois pour faire remonter votre site sur Google', 'Des pages utiles qui renvoient vers votre site', 'Serveur plus rapide : Google aime les sites rapides']],
+    ['titan', 'Les chiffres', ['Tout Power', 'Le retour de vos ventes et de vos chiffres chaque mois', 'Jetons Lia illimités']],
   ];
   const body = `${C.pageHero({
     section: 'seo',
@@ -304,7 +304,17 @@ Vous êtes fleuriste à Reims. Une cliente tape « fleuriste Reims » sur Google
 
 ## Ce que ça vous rapporte
 
-Plus de visites, plus d’appels, plus de ventes, sans payer chaque clic. Le SEO se travaille dans le temps : les premiers résultats arrivent en quelques semaines, puis ça progresse.`)}
+Plus de visites, plus d’appels, plus de ventes, sans payer chaque clic. Le SEO se travaille dans le temps : les premiers résultats arrivent en quelques semaines, puis ça progresse.
+
+## Des pages utiles, pas des pages pour rien
+
+Une grande partie du SEO, c’est de **créer des pages qui renvoient vers votre site**. Chaque page répond à une recherche précise de vos clients, par exemple « bouquet de mariage Reims » ou « livraison de fleurs Épernay ». Elle explique, elle aide, et elle mène vers votre page principale ou votre contact.
+
+Ce ne sont **pas des pages inutiles** remplies de mots-clés : Google les repère et les met de côté. Une page n’est créée que si elle sert vraiment à quelqu’un.
+
+## Une seule page principale, c’est possible
+
+Votre site peut garder **une seule page principale**, simple et claire, avec tout ce que vous faites. À côté, on ajoute **une série de pages pour le référencement**, chacune sur un sujet précis. Vos visiteurs voient un site simple, et Google trouve plus de bonnes raisons de vous montrer.`)}
 </div></section>
 
 <section class="section"><div class="container">
@@ -542,11 +552,11 @@ function commanderPage() {
         <div class="o-pay">
           <p class="o-pay-today"><span>Aujourd’hui vous payez</span><b data-order="today">${euro(today0)}</b></p>
           <ul class="o-pay-lines" data-order-lines>
-            <li><span>Acompte de ${paiement.acompte} % sur le site</span><b>${euro(acompte0)}</b></li>
+            <li><span>Création du site (${t0.label.toLowerCase()})</span><b>${euro(acompte0)}</b></li>
             <li><span>Forfait ${f0.name}, premier mois</span><b>${euro(f0.month)}</b></li>
           </ul>
           <p class="o-pay-next"><span data-order="next-label">Ensuite, chaque mois</span><b data-order="next">${euro(f0.month)}</b></p>
-          <p class="o-pay-note" data-order-solde>Le solde du site, <b data-order="solde">${euro(t0.price - acompte0)}</b> (${100 - paiement.acompte} %), est à régler à la mise en ligne. Je vous envoie le lien de paiement.</p>
+          <p class="o-pay-note" data-order-solde>Le site est payé en une fois : rien d’autre à régler pour la création.</p>
           <p class="o-pay-note" data-order-lisse-note hidden>Le site est payé en <span data-order="lisse-n">${C.LMAX}</span> fois sans frais : <b data-order="lisse">${euro(C.lisse(t0.price))}</b> par mois. Ensuite, il ne reste que le forfait, sans engagement.</p>
         </div>
         <button class="btn btn-primary btn-lg btn-block" type="submit">${icon('lock')}<span>Commander et payer <b data-order="btn">${euro(today0)}</b></span></button>
@@ -679,7 +689,7 @@ function methodePage() {
   const body = `${C.pageHero({
     section: 'methode',
     h1: 'Ma méthode : Lia automatise, Alex vérifie',
-    lead: 'Alex, c’est moi : je suis passionné d’intelligence artificielle. Lia, c’est notre IA : elle gère les outils et tout ce qui est automatique. Voici qui fait quoi, sans rien cacher.',
+    lead: 'Alex, c’est moi : je suis passionné d’intelligence artificielle. Lia, c’est notre IA : elle gère tout ce qui est automatique. Voici qui fait quoi, sans rien cacher.',
     crumbs,
   })}
 <section class="section"><div class="container container-narrow prose reveal">
@@ -786,7 +796,6 @@ function monEspacePage() {
           ${tab('accueil', 'house', 'Accueil', true)}
           ${tab('demandes', 'message-circle', 'Mes demandes')}
           ${tab('visibilite', 'chart-line', 'Tableau de bord')}
-          ${tab('outils', 'qr-code', 'QR code et avis')}
           ${tab('forfait', 'heart', 'Forfait et factures')}
         </div>
       </aside>
@@ -802,7 +811,6 @@ function monEspacePage() {
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
             <button type="button" data-go="demandes">${icon('message-circle')}<strong>Demander une modification</strong><small>Je m’en occupe</small></button>
-            <button type="button" data-go="outils">${icon('qr-code')}<strong>QR code et lien d’avis</strong><small>Prêts à partager</small></button>
             <button type="button" data-go="forfait">${icon('receipt')}<strong>Forfait et factures</strong><small>Tout au même endroit</small></button>
           </div>
           <p class="app-sub">Dernières activités</p>
@@ -897,7 +905,7 @@ ${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : vous m’en
     noindex: true,
     noMobileBar: true,
     title: 'Mon espace, la démo | Alex & Lia',
-    description: 'Essayez l’espace client Alex & Lia : demandes de modification et leur suivi, tableau de bord, QR code, lien d’avis, forfait et factures. Démonstration.',
+    description: 'Essayez l’espace client Alex & Lia : demandes de modification et leur suivi, tableau de bord, parrainage, forfait et factures. Démonstration.',
     crumbs: DEMO_CRUMBS,
     body,
   };
@@ -911,7 +919,7 @@ function espacePage() {
   const body = `${C.pageHero({
     section: 'monespace',
     h1: 'Mon espace client',
-    lead: 'Vos demandes de modification et leur suivi, votre tableau de bord, votre QR code, votre lien d’avis et votre parrainage, au même endroit.',
+    lead: 'Vos demandes de modification et leur suivi, votre tableau de bord, votre parrainage et vos factures, au même endroit.',
     crumbs,
   })}
 <section class="section section-app" data-aled-espace><div class="container">
@@ -953,7 +961,7 @@ function espacePage() {
     noindex: true,
     noMobileBar: true,
     title: 'Mon espace client | Alex & Lia',
-    description: 'Connectez-vous à votre espace client Alex & Lia : demandes de modification et leur suivi, tableau de bord, QR code, lien d’avis et parrainage.',
+    description: 'Connectez-vous à votre espace client Alex & Lia : demandes de modification et leur suivi, tableau de bord, factures et parrainage.',
     crumbs,
     body,
   };
@@ -1027,7 +1035,7 @@ function faqPage() {
     ['La création', FAQ.creation, 'creer'],
     ['La commande', FAQ.commande || [], 'commander'],
     ['Les forfaits', FAQ.forfaits, 'forfaits'],
-    ['Nos outils', FAQ.espace, 'espace'],
+    ['Votre espace client', FAQ.espace, 'espace'],
     ['Le référencement', FAQ.seo, 'seo'],
     ['Ma méthode', FAQ.methode, 'methode'],
     ['Le comparatif', FAQ.comparatif || [], 'comparatif'],
@@ -1044,7 +1052,7 @@ ${C.ctaBand()}`;
   return {
     path: '/faq/',
     title: 'Questions fréquentes : création, forfaits, IA, SEO | Alex & Lia',
-    description: 'Toutes les réponses sur la création de votre site, la commande en ligne, les forfaits Chico, Power et Titan, nos outils, le référencement et le parrainage.',
+    description: 'Toutes les réponses sur la création de votre site, la commande en ligne, les forfaits Chico, Power et Titan, l’espace client, le référencement et le parrainage.',
     crumbs,
     body,
     schema: [C.faqSchema(all)],
@@ -1076,7 +1084,7 @@ function legalPage(l) {
 function planDuSite() {
   const crumbs = [HOME, { name: 'Plan du site', path: '/plan-du-site/' }];
   // Les pages du parcours de commande (noindex) ne figurent pas dans le plan.
-  const hidden = ['commander', 'confirmation'];
+  const hidden = ['commander', 'confirmation', 'espace'];
   const links = [
     ['/', 'Accueil'],
     ...Object.entries(sections).filter(([k]) => !hidden.includes(k)).map(([, s]) => [s.path, s.label]),
@@ -1113,7 +1121,7 @@ function notFound() {
     title: 'Page introuvable | Alex & Lia',
     description: 'Cette page n’existe pas ou a été déplacée. Retrouvez la création de site, les forfaits, l’espace client et le référencement depuis l’accueil.',
     body: `${C.pageHero({ h1: 'Oups, cette page s’est perdue', lead: 'Elle a peut-être été déplacée. Voici où aller :', mascot: 'triste' })}
-<section class="section"><div class="container"><div class="go-links">${['creer', 'forfaits', 'espace', 'seo']
+<section class="section"><div class="container"><div class="go-links">${['creer', 'forfaits', 'seo', 'contact']
       .map((k) => `<a class="go-link c-${sections[k].color}" href="${sections[k].path}"><span class="type-ico">${icon(sections[k].icon)}</span><strong>${sections[k].label}</strong>${icon('arrow-right')}</a>`)
       .join('')}</div></div></section>`,
   };
@@ -1121,7 +1129,7 @@ function notFound() {
 
 function build() {
   return [
-    home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), outilsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), methodePage(), contactPage(), faqPage(),
+    home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), methodePage(), contactPage(), faqPage(),
     ...legal.map(legalPage), planDuSite(), merci(), notFound(),
   ];
 }
