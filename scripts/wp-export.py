@@ -3,7 +3,9 @@
 Exporte le site généré (dist/) vers WordPress :
   - wp-export/aled08/          : thème WordPress « ALED08 » (styles, scripts, en-tête, pied de page, formulaires)
   - wp-export/aled08-import/   : extension d'import à usage unique (crée les pages, retire l'ancien site, règle WordPress)
-  - wp-export/aled08-espace/   : extension « ALED08 Espace client » (src/wordpress/aled08-espace + données)
+  - wp-export/aled08-espace/   : extension « Alex & Lia Espace client » (src/wordpress/aled08-espace + données)
+  - wp-export/alexlia-connecteur/ : extension à installer sur chaque site client (Lia y travaille)
+  - wp-export/alexlia-sdk/     : kit Claude (composer install), chargé seulement quand Lia travaille
   - wp-export/*.zip            : les archives prêtes à installer
 
 Usage : node build.js && python3 scripts/wp-export.py
@@ -14,6 +16,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import zipfile
 from html.parser import HTMLParser
 
@@ -592,7 +595,25 @@ def main():
     data = subprocess.run(['node', os.path.join(ROOT, 'scripts', 'wp-espace-data.js')], check=True, capture_output=True, text=True).stdout
     write(os.path.join(edir, 'data.json'), data)
 
-    for name in [THEME, 'aled08-import', 'aled08-espace']:
+    # connecteur à installer sur chaque site client (Lia y fait ses modifications)
+    shutil.copytree(os.path.join(ROOT, 'src', 'wordpress', 'alexlia-connecteur'), os.path.join(OUT, 'alexlia-connecteur'))
+    names = [THEME, 'aled08-import', 'aled08-espace', 'alexlia-connecteur']
+
+    # kit Claude (anthropic-ai/sdk) : extension séparée, chargée seulement quand Lia travaille
+    sdir = os.path.join(OUT, 'alexlia-sdk')
+    shutil.copytree(os.path.join(ROOT, 'src', 'wordpress', 'alexlia-sdk'), sdir)
+    if shutil.which('composer') and '--sans-sdk' not in sys.argv:
+        subprocess.run(['composer', 'install', '--no-dev', '--prefer-dist', '--no-interaction', '--no-progress', '-q', '--optimize-autoloader'], cwd=sdir, check=True)
+        for d, dirs, _ in os.walk(os.path.join(sdir, 'vendor')):
+            for x in list(dirs):
+                if x in ('.git', '.github', 'tests', 'examples', 'fixtures', 'scripts', 'docs'):
+                    shutil.rmtree(os.path.join(d, x))
+                    dirs.remove(x)
+        names.append('alexlia-sdk')
+    else:
+        print('alexlia-sdk : composer absent ou --sans-sdk, kit non construit')
+
+    for name in names:
         zp = os.path.join(OUT, name + '.zip')
         with zipfile.ZipFile(zp, 'w', zipfile.ZIP_DEFLATED) as z:
             base = os.path.join(OUT, name)

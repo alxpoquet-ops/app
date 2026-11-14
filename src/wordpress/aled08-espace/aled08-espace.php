@@ -86,6 +86,7 @@ require_once __DIR__ . '/includes/stripe.php';
 require_once __DIR__ . '/includes/admin.php';
 require_once __DIR__ . '/includes/ovh.php';
 require_once __DIR__ . '/includes/provision.php';
+require_once __DIR__ . '/includes/lia.php';
 
 /* =========================================================================
  *  Rôle « Client Alex & Lia » et type de contenu « Demande »
@@ -309,6 +310,7 @@ add_action('template_redirect', function () {
         . "\nDemande :\n$txt\n\n"
         . 'Suivre et répondre : ' . admin_url('post.php?post=' . $pid . '&action=edit') . "\n";
     wp_mail(aled08e_to(), 'Demande de modification : ' . $u->display_name, $corps, aled08e_mail_headers($u->display_name . ' <' . $u->user_email . '>'));
+    do_action('aled08e_demande_creee', $pid, $par, $uid);
 
     $back($photoFail ? 'photo' : ($over ? 'hors' : 'ok'));
 }, 5);

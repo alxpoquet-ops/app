@@ -443,14 +443,14 @@ add_action('admin_notices', function () {
         'hebergement_ok' => 'Domaine noté comme ajouté sur l’hébergement : l’automate attend le certificat HTTPS.', 'avancer' => 'Automate relancé.', 'passer' => 'Étape passée.', 'pret' => 'Hébergement marqué prêt : le client a reçu l’e-mail.', 'ovh_confirmer' => 'Achat OVH confirmé.', 'test_ovh' => 'Test OVH :', 'test_cpanel' => 'Test cPanel :',
         'en_ligne' => 'Site en ligne : le client a reçu l’e-mail.', 'solde_paye' => 'Solde noté comme payé.', 'annuler' => 'Commande annulée.', 'renvoyer_acces' => 'E-mail d’accès renvoyé au client.',
         'lien_solde' => 'Lien de paiement créé (valable 24 heures). Copiez-le et envoyez-le au client :', 'cpanel' => 'Réponse du cPanel (à tester une fois sur un domaine de test) :', 'note' => 'Note enregistrée.',
-        'reglages' => 'Réglages enregistrés.', 'test' => 'Test de connexion Stripe :', 'erreur' => 'L’action n’a pas abouti.',
+        'reglages' => 'Réglages enregistrés.', 'test_lia' => 'Test de Lia :', 'lia_ok' => 'Demande notée comme vérifiée.', 'lia_annule' => 'Changements de Lia annulés :', 'lia_relance' => 'Lia est relancée sur cette demande.', 'test' => 'Test de connexion Stripe :', 'erreur' => 'L’action n’a pas abouti.',
     ];
     if (!isset($lib[$m])) return;
     $detail = get_transient('aled08e_msg_' . get_current_user_id());
     $lien = get_transient('aled08e_lien_' . get_current_user_id());
     delete_transient('aled08e_msg_' . get_current_user_id());
     delete_transient('aled08e_lien_' . get_current_user_id());
-    $ok = $m !== 'erreur' && !(in_array($m, ['test', 'test_ovh', 'test_cpanel'], true) && is_string($detail) && strpos($detail, 'OK') !== 0);
+    $ok = $m !== 'erreur' && !(in_array($m, ['test', 'test_ovh', 'test_cpanel', 'test_lia'], true) && is_string($detail) && strpos($detail, 'OK') !== 0);
     echo '<div class="notice ' . ($ok ? 'notice-success' : 'notice-error') . ' is-dismissible"><p>' . esc_html($lib[$m]) . ($detail ? ' <strong>' . esc_html($detail) . '</strong>' : '') . '</p>';
     if ($lien) echo '<p><input type="text" class="aled08-copy" readonly value="' . esc_attr($lien) . '" onclick="this.select()"></p>';
     echo '</div>';
@@ -540,6 +540,7 @@ function aled08e_admin_reglages() {
     if (aled08e_cpanel_ok()) echo '<p>Configuré dans wp-config.php : hôte <code>' . esc_html(ALED08_CPANEL_HOST) . '</code>, utilisateur <code>' . esc_html(ALED08_CPANEL_USER) . '</code>, domaine principal <code>' . esc_html(ALED08_CPANEL_MAIN_DOMAIN) . '</code>. Le jeton n’est jamais enregistré en base de données.</p>';
     else echo '<p>Non configuré. Pour l’utiliser, ajoutez dans wp-config.php les constantes <code>ALED08_CPANEL_HOST</code>, <code>ALED08_CPANEL_USER</code>, <code>ALED08_CPANEL_TOKEN</code> et <code>ALED08_CPANEL_MAIN_DOMAIN</code> (voir le guide). Note : o2switch a désactivé temporairement la création de jetons (novembre 2026).</p>';
 
+    aled08e_lia_reglages_html();
     echo '<p class="submit"><button type="submit" class="button button-primary">Enregistrer</button></p></form></div>';
 }
 /* Options sans autoload : les clés ne sont chargées qu'à la demande */
@@ -569,7 +570,7 @@ add_action('admin_post_aled08e_reglages', function () {
     update_option('aled08_hebergeur', in_array($heb, ['auto', 'ovh', 'cpanel', 'manuel'], true) ? $heb : 'auto', false);
     update_option('aled08_ovh_essai', !empty($P['ovh_essai']) ? '1' : '0', false);
     update_option('aled08_ovh_wp', !empty($P['ovh_wp']) ? '1' : '0', false);
-    $msg = 'reglages';
+    $msg = aled08e_lia_reglages_save($P) ?: 'reglages';
     if (!empty($P['tester_ovh'])) {
         $t = aled08e_ovh_test();
         set_transient('aled08e_msg_' . get_current_user_id(), is_wp_error($t) ? 'Erreur : ' . $t->get_error_message() : $t, 300);

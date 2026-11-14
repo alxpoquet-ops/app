@@ -175,9 +175,35 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 ## 9. Les demandes de modification
 
 - Le client écrit sa demande (avec une photo s'il veut) dans « Mes demandes ». Vous recevez un e-mail avec un lien direct.
-- Dans ALED08 › Demandes clients, vous changez le statut : Reçue, En cours, Faite, avec un message facultatif affiché chez le client. En passant à « Faite », le client reçoit un e-mail.
+- Dans Alex & Lia › Demandes clients, vous changez le statut : Reçue, En cours, Faite, avec un message facultatif affiché chez le client. En passant à « Faite », le client reçoit un e-mail.
 - Le compteur du mois suit le forfait : Chico 1, Power 4, Titan 20. Au-delà, la demande part quand même et est marquée « hors forfait » : vous dites au client si elle attend le mois prochain ou si elle est facturée.
 - Délai de réponse annoncé : 48 heures, 24 heures pour Titan.
+
+### Lia, pour de vrai (Claude, d'Anthropic)
+
+Quand le client choisit « Lia, tout de suite », Lia fait la modification toute seule sur son site, en tâche de fond, en général en une à deux minutes. Elle lit la page, change seulement ce qui est demandé, puis rend compte. Vous vérifiez après.
+
+Ce qu'elle sait faire : changer un texte (horaires, prix affiché, phrase), modifier le contenu ou le titre d'une page, publier une actualité, ajouter la photo jointe, changer le nom ou le slogan du site. Ce qu'elle ne fait jamais : supprimer, toucher aux extensions, au thème, aux comptes, aux prix d'une boutique, aux CGV ou mentions légales. Si la demande est floue ou risquée, elle ne touche à rien et vous la passe (e-mail « Lia vous passe une demande »). Le jeton n'est alors pas compté : la demande devient une modification d'Alex.
+
+À installer une fois :
+
+1. Une clé Claude : sur platform.claude.com, créez un compte, ajoutez un moyen de paiement (on paie à l'usage, quelques centimes par demande), puis API keys, Create key. Collez-la dans Alex & Lia › Réglages, rubrique Lia, ou mieux dans wp-config.php : `define('ALED08_ANTHROPIC_KEY', 'sk-ant-...');`. Bouton « Tester Lia » pour vérifier.
+2. L'extension `alexlia-sdk.zip` (kit officiel Anthropic) sur aled08.fr. Elle ne charge rien tant que Lia ne travaille pas.
+
+Pour chaque client :
+
+1. Sur le site du client, installez `alexlia-connecteur.zip` (dans `wp-export/` après `python3 scripts/wp-export.py`).
+2. Dans la fiche du client sur aled08.fr (Utilisateurs, le client, rubrique « Lia : site relié ») : mettez l'adresse du site (en https), cochez « Créer la clé », enregistrez. Copiez la clé affichée.
+3. Sur le site du client, Réglages › Alex & Lia : collez la clé, enregistrez. De retour sur la fiche client, la ligne « Connexion » doit dire OK.
+
+Tant qu'un client n'est pas relié, ses demandes « par Lia » arrivent chez vous par e-mail comme avant, et vous les faites à la main.
+
+Après le passage de Lia, la fiche de la demande montre un encadré « Travail de Lia » : la liste des changements avec un lien vers chaque page, sa note pour vous, et trois boutons :
+- « C'est bon, vérifié » ;
+- « Annuler les changements de Lia » : chaque page est remise exactement comme avant (une révision est gardée avant chaque changement). Une actualité publiée ou un nom de site changé se défont à la main, l'encadré vous dit lesquels ;
+- « Relancer Lia » si elle n'a pas pu finir.
+
+Sécurité : chaque échange avec le site client est signé avec la clé du client, valable 5 minutes et une seule fois. Sur le site client, la case « Pause » dans Réglages › Alex & Lia coupe Lia tout de suite. Le journal des 100 derniers changements est sur la même page. Si le pare-feu de l'hébergeur bloque l'adresse `/wp-json/alexlia/v1/action`, demandez au support de l'autoriser.
 
 ## 10. Le parrainage
 
