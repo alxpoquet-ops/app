@@ -2,6 +2,8 @@
 const { site, sections, types, forfaits, annuel } = require('../config');
 const { icon } = require('./icons');
 const { logoMark } = require('./monsters');
+// « Alex & Lia » avec une éclaboussure rose derrière « Lia »
+const brandName = 'Alex &amp; <span class="brand-lia">Lia</span>';
 const { esc, typo } = require('./md');
 const C = require('./components');
 
@@ -89,7 +91,7 @@ function header(currentPath) {
   return `<a class="skip" href="#contenu">Aller au contenu</a>
 <header class="site-header">
   <div class="container header-in">
-    <a class="brand" href="/" aria-label="${site.name}, accueil">${logoMark({ id: 'lgh' })}<span class="brand-text"><strong>${site.name}</strong><small>${site.baseline}</small></span></a>
+    <a class="brand" href="/" aria-label="${site.name}, accueil">${logoMark({ id: 'lgh' })}<span class="brand-text"><strong>${brandName}</strong><small>${site.baseline}</small></span></a>
     <nav class="nav" id="nav" aria-label="Navigation principale">
       <ul class="nav-list">
         <li class="nav-creer"><a class="nav-link c-${sections.creer.color}" href="${sections.creer.path}"${onCreer ? ' aria-current="page"' : ''}>${icon(sections.creer.icon)}${sections.creer.label}</a></li>
@@ -104,7 +106,6 @@ function header(currentPath) {
       </div>
     </nav>
     <div class="header-actions">
-      <button class="theme-btn" type="button" data-theme-toggle aria-label="Passer en mode sombre" title="Mode sombre ou clair">${icon('moon', 't-moon')}${icon('sun', 't-sun')}</button>
       <a class="btn-espace" href="${sections.monespace.path}"${currentPath.startsWith(sections.monespace.path) ? ' aria-current="page"' : ''}>${icon('circle-user')}<span>Mon espace</span></a>
       ${C.btn(sections.creer.path, 'btn-primary btn-sm btn-creer', 'wand-sparkles', 'Créer mon site', onCreer ? ' aria-current="page"' : '')}
       <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
@@ -118,7 +119,7 @@ function footer(p) {
   return `<footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <a class="brand" href="/">${logoMark({ id: 'lgf' })}<span class="brand-text"><strong>${site.name}</strong><small>${site.baseline}</small></span></a>
+      <a class="brand" href="/">${logoMark({ id: 'lgf' })}<span class="brand-text"><strong>${brandName}</strong><small>${site.baseline}</small></span></a>
       <p>Des sites internet simples, rapides et faits pour être trouvés sur Google, créés avec Lia et vérifiés par Alex. Tout se fait en ligne, pour des clients partout en France.</p>
       <ul class="footer-contact">
         <li><a href="${C.contactUrl}">${icon('message-circle')}Nous écrire</a></li>
@@ -182,7 +183,7 @@ function page(p) {
   const robots = p.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1';
   const color = p.section ? sections[p.section].color : 'mint';
   return `<!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -214,7 +215,7 @@ function page(p) {
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <script type="application/ld+json">${graph(p)}</script>
-<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('al-theme');if(t!=='light')document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body class="c-${color}${p.bodyClass ? ' ' + p.bodyClass : ''}">
 ${smartQuotes(`${header(p.path)}

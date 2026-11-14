@@ -407,7 +407,7 @@ function aled08_simple_page() {
 """
 
 HEADER_PHP = r"""<?php defined('ABSPATH') || exit; $u = get_template_directory_uri(); ?><!doctype html>
-<html <?php language_attributes(); ?>>
+<html <?php language_attributes(); ?> data-theme="dark">
 <head>
 <meta charset="<?php bloginfo('charset'); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -417,7 +417,7 @@ HEADER_PHP = r"""<?php defined('ABSPATH') || exit; $u = get_template_directory_u
 <link rel="icon" href="<?php echo esc_url($u); ?>/assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="<?php echo esc_url($u); ?>/assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="<?php echo esc_url($u); ?>/assets/apple-touch-icon.png">
-<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('al-theme');if(t!=='light')document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script>document.documentElement.classList.add('js')</script>
 <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>

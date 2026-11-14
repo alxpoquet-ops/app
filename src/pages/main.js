@@ -35,7 +35,7 @@ function home() {
       <p class="kicker">${icon('sparkles')}L’IA pour tout le monde</p>
       <h1>Votre site internet à partir de ${euro(T('une-page').price)}, <mark>tout compris</mark></h1>
       <p class="hero-lead">Je crée votre site à prix fixe, puis on s’en occupe pour ${euro(base.month)} par mois : Lia, l’IA, modifie et met à jour votre site, et moi, Alex, je vérifie et je règle tout. Vous payez ${paiement.acompte} % à la commande, le reste à la réception, en une fois ou en ${C.lissageTxt} fois sans frais.</p>
-      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}${C.btn('/forfaits/', 'btn-light btn-lg', 'heart', 'Voir les forfaits')}</div>
+      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg btn-flaque')}${C.btn('/forfaits/', 'btn-light btn-lg', 'heart', 'Voir les forfaits')}</div>
       <ul class="hero-points">
         <li>${icon('check')}Prix de création fixe</li>
         <li>${icon('check')}Dès ${euro(base.month)} par mois</li>
@@ -560,7 +560,7 @@ function commanderPage() {
           <p class="o-pay-note" data-order-solde>À la réception de votre site, vous réglez le reste, <b data-order="solde">${euro(t0.price - acompte0)}</b>, et votre forfait démarre. Vous pourrez encore choisir de payer le reste en ${C.lissageTxt} fois.</p>
           <p class="o-pay-note" data-order-lisse-note hidden>À la réception, le reste se paie en <span data-order="lisse-n">${C.LMAX}</span> fois sans frais : <b data-order="lisse">${euro(C.lisse(t0.price))}</b> par mois, avec le forfait. Ensuite, il ne reste que le forfait, sans engagement.</p>
         </div>
-        <button class="btn btn-primary btn-lg btn-block" type="submit">${icon('lock')}<span>Commander et payer <b data-order="btn">${euro(today0)}</b></span></button>
+        <button class="btn btn-primary btn-lg btn-block btn-flaque" type="submit">${icon('lock')}<span>Commander et payer <b data-order="btn">${euro(today0)}</b></span></button>
         <p class="o-trust">${icon('shield-check')}<span>Paiement sécurisé par Stripe. Vous recevez vos factures par e-mail.</span></p>
         </div>
       </fieldset>

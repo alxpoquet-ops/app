@@ -133,7 +133,7 @@ const forfaits = [
   {
     id: 'chico',
     name: 'Chico',
-    color: 'pink',
+    color: 'mint',
     month: 5,
     quota: 1,
     jetons: 1,

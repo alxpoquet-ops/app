@@ -47,7 +47,7 @@ function pageHero({ section, h1, lead, crumbs, mascot, actions = false, compact 
       ${s ? `<p class="where">${icon(s.icon)}<span>${s.label}</span></p>` : ''}
       <h1>${inline(h1)}</h1>
       ${lead ? `<p class="lead">${inline(lead)}</p>` : ''}
-      ${actions ? `<div class="hero-ctas">${btnCreer('btn-primary btn-lg')}${btnWa('btn-wa btn-lg')}</div>` : ''}
+      ${actions ? `<div class="hero-ctas">${btnCreer('btn-primary btn-lg btn-flaque')}${btnWa('btn-wa btn-lg')}</div>` : ''}
     </div>
     ${mascot ? `<div class="page-hero-art">${monster(mascot)}</div>` : ''}
   </div>
@@ -286,7 +286,7 @@ function configurator() {
       <p><span data-sum="recur-label">Forfait, dès la réception, par mois</span><b data-sum="recur">20 €</b></p>
     </div>
     <div class="b-sum-actions">
-      <a class="btn btn-primary btn-block btn-lg" href="${sections.commander.path}" data-sum-order>${icon('shopping-bag')}<span>Commander</span></a>
+      <a class="btn btn-primary btn-block btn-lg btn-flaque" href="${sections.commander.path}" data-sum-order>${icon('shopping-bag')}<span>Commander</span></a>
       <a class="btn btn-light btn-block" href="/contact/#devis" data-sum-go>${icon('message-circle')}<span>Poser une question</span></a>
     </div>
     <p class="b-sum-note">${icon('shield-check')}Paiement sécurisé par Stripe. Aujourd’hui, vous réglez seulement ${paiement.acompte} % du site. Le reste et le forfait, à la réception.</p>

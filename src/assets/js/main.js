@@ -9,47 +9,57 @@
   var euro = function (n) { var v = round2(n); return (v % 1 ? v.toFixed(2) : String(v)).replace('.', ',') + ' €'; };
   var slug = function (v) { return (v || '').replace(/[^a-z0-9-]/g, ''); };
 
-  // Peinture : une flaque différente sous chaque bouton principal, et une éclaboussure au clic
+  // Peinture : sous chaque bouton essentiel, une flaque dessinée au hasard (jamais deux pareilles), et une éclaboussure au clic
   (function () {
-    $$('.btn-primary').forEach(function (b, i) { b.setAttribute('data-flaque', String((i % 4) + 1)); });
+    var lisse = function (pts) { // courbe fermée et douce passant par les points
+      var n = pts.length, dd = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
+      for (var i = 0; i < n; i++) {
+        var p0 = pts[(i - 1 + n) % n], p1 = pts[i], p2 = pts[(i + 1) % n], p3 = pts[(i + 2) % n];
+        dd += 'C' + (p1[0] + (p2[0] - p0[0]) / 6).toFixed(1) + ' ' + (p1[1] + (p2[1] - p0[1]) / 6).toFixed(1) + ' ' + (p2[0] - (p3[0] - p1[0]) / 6).toFixed(1) + ' ' + (p2[1] - (p3[1] - p1[1]) / 6).toFixed(1) + ' ' + p2[0].toFixed(1) + ' ' + p2[1].toFixed(1);
+      }
+      return dd + 'Z';
+    };
+    var pilule = function (t) { // point et normale sur une pilule (x 50 à 250, rayon 32, centre y 50)
+      var x0 = 50, x1 = 250, r = 32, cy = 50, a = x1 - x0, L = 2 * a + 2 * Math.PI * r, s = t * L, g;
+      if (s < a) return [x0 + s, cy - r, 0, -1]; s -= a;
+      if (s < Math.PI * r) { g = -Math.PI / 2 + s / r; return [x1 + r * Math.cos(g), cy + r * Math.sin(g), Math.cos(g), Math.sin(g)]; } s -= Math.PI * r;
+      if (s < a) return [x1 - s, cy + r, 0, 1]; s -= a;
+      g = Math.PI / 2 + s / r; return [x0 + r * Math.cos(g), cy + r * Math.sin(g), Math.cos(g), Math.sin(g)];
+    };
+    var flaque = function () {
+      var pts = [], f1 = Math.random() * 6.3, f2 = Math.random() * 6.3, k1 = 2 + Math.floor(Math.random() * 3), k2 = 5 + Math.floor(Math.random() * 4);
+      for (var i = 0; i < 34; i++) {
+        var t = i / 34, q = pilule(t), off = 6 + 3.2 * Math.sin(t * 6.283 * k1 + f1) + 2.6 * Math.sin(t * 6.283 * k2 + f2) + (Math.random() - 0.5) * 2.4;
+        pts.push([q[0] + q[2] * off, q[1] + q[3] * off]);
+      }
+      var svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100' preserveAspectRatio='none'><path d='" + lisse(pts) + "'/>";
+      for (var g = 0, ng = 1 + Math.floor(Math.random() * 3); g < ng; g++) {
+        var q2 = pilule(Math.random()), o = 13 + Math.random() * 4;
+        svg += "<circle cx='" + (q2[0] + q2[2] * o).toFixed(1) + "' cy='" + (q2[1] + q2[3] * o).toFixed(1) + "' r='" + (2.4 + Math.random() * 2).toFixed(1) + "'/>";
+      }
+      return 'url("data:image/svg+xml,' + encodeURIComponent(svg + '</svg>') + '")';
+    };
+    $$('.btn-flaque').forEach(function (b) { b.style.setProperty('--fl', flaque()); });
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     d.addEventListener('pointerdown', function (e) {
-      var b = e.target.closest && e.target.closest('.btn-primary:not(.btn-sm)');
+      var b = e.target.closest && e.target.closest('.btn-flaque');
       if (!b) return;
       var r = b.getBoundingClientRect(), w = r.width, h = r.height;
       b.classList.remove('is-splash'); void b.offsetWidth; b.classList.add('is-splash');
       for (var k = 0; k < 9; k++) {
         // chaque goutte part du bord du bouton et s'envole vers l'extérieur
-        var g = d.createElement('span'), a = (k / 9) * 6.283 + Math.random() * 0.5, dist = 26 + Math.random() * 34;
-        g.className = 'goutte-vol';
-        g.style.left = (w / 2 + Math.cos(a) * w / 2.1) + 'px'; g.style.top = (h / 2 + Math.sin(a) * h / 2) + 'px';
-        g.style.setProperty('--dx', Math.round(Math.cos(a) * dist * 1.3) + 'px');
-        g.style.setProperty('--dy', Math.round(Math.sin(a) * dist) + 'px');
-        g.style.setProperty('--t', Math.round(6 + Math.random() * 9) + 'px');
-        b.appendChild(g);
-        setTimeout(function (el) { return function () { if (el.parentNode) el.parentNode.removeChild(el); }; }(g), 700);
+        var gt = d.createElement('span'), a = (k / 9) * 6.283 + Math.random() * 0.5, dist = 26 + Math.random() * 34;
+        gt.className = 'goutte-vol';
+        gt.style.left = (w / 2 + Math.cos(a) * w / 2.1) + 'px'; gt.style.top = (h / 2 + Math.sin(a) * h / 2) + 'px';
+        gt.style.setProperty('--dx', Math.round(Math.cos(a) * dist * 1.3) + 'px');
+        gt.style.setProperty('--dy', Math.round(Math.sin(a) * dist) + 'px');
+        gt.style.setProperty('--t', Math.round(6 + Math.random() * 9) + 'px');
+        b.appendChild(gt);
+        setTimeout(function (el) { return function () { if (el.parentNode) el.parentNode.removeChild(el); }; }(gt), 700);
       }
     });
   })();
 
-  // Mode sombre : bouton lune / soleil en haut, choix gardé sur l'appareil
-  (function () {
-    var root = d.documentElement;
-    var meta = $('meta[name="theme-color"]');
-    var apply = function (dark) {
-      if (dark) root.setAttribute('data-theme', 'dark'); else root.removeAttribute('data-theme');
-      if (meta) meta.setAttribute('content', dark ? '#16142A' : '#FFF8F2');
-      $$('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-label', dark ? 'Passer en mode clair' : 'Passer en mode sombre'); b.setAttribute('aria-pressed', dark ? 'true' : 'false'); });
-    };
-    apply(root.getAttribute('data-theme') === 'dark');
-    d.addEventListener('click', function (e) {
-      var b = e.target.closest && e.target.closest('[data-theme-toggle]');
-      if (!b) return;
-      var dark = root.getAttribute('data-theme') !== 'dark';
-      apply(dark);
-      try { localStorage.setItem('al-theme', dark ? 'dark' : 'light'); } catch (err) {}
-    });
-  })();
   // Change des paramètres d'un lien sans toucher au chemin (qui peut être relatif)
   var withParams = function (href, params) {
     var hash = '', i = href.indexOf('#');
