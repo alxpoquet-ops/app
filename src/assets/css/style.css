@@ -1293,10 +1293,10 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
 /* PEINTURE:FIN */
 
 /* flèche au crayon qui présente Lia (haut de l'accueil) : elle se dessine toute seule à l'arrivée */
-.hero-fleche { position: absolute; right: calc(100% - 20px); top: 2%; width: min(150px, 26vw); height: auto; overflow: visible; pointer-events: none; }
+.hero-fleche { position: absolute; right: calc(100% - 2px); top: -11%; width: min(150px, 25vw); height: auto; overflow: visible; pointer-events: none; }
 .hero-fleche path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: crayon .5s ease-out forwards; }
 .hero-fleche .fl-L { animation-delay: .5s; } .hero-fleche .fl-i { animation-delay: .8s; } .hero-fleche .fl-a { animation-delay: 1s; }
 .hero-fleche .fl-fleche { animation-duration: .9s; animation-delay: 1.4s; } .hero-fleche .fl-pointe { animation-duration: .25s; animation-delay: 2.3s; }
 @keyframes crayon { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { .hero-fleche path { animation: none; stroke-dashoffset: 0; } }
-@media (min-width: 961px) { .hero-fleche { width: 200px; top: 5%; right: calc(100% - 44px); } }
+@media (min-width: 961px) { .hero-fleche { width: 200px; top: -6%; right: calc(100% - 12px); } }
