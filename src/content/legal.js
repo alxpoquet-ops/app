@@ -206,11 +206,11 @@ Chaque forfait comprend, par mois :
 
 - ${chico.name} : une modification.
 - ${power.name} : quatre modifications.
-${titan ? `- ${titan.name} : une modification chaque jour ouvré.` : ''}
+${titan ? `- ${titan.name} : dix modifications.` : ''}
 
 Pour chaque modification, le client choisit qui la fait : Lia ou Alex.
 
-Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications non utilisées ne se reportent pas. Au-delà du nombre compris, la demande est reportée à la période suivante ou fait l’objet d’un devis, au choix du client. Une page en plus est facturée ${eur(pageEnPlus)} €.
+Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications non utilisées ne se reportent pas. Au-delà du nombre compris, le client peut demander un Boost : une modification en plus pour 1 €, ajoutée à sa prochaine facture, avec son accord à chaque demande. Sinon, la demande est reportée à la période suivante, au choix du client. Une page en plus est facturée ${eur(pageEnPlus)} €.
 
 ## 12. Délais de réponse
 

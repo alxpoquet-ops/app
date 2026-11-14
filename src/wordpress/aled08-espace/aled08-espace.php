@@ -26,7 +26,7 @@ function aled08e_data() {
         $d += [
             'name' => 'Alex & Lia', 'whatsapp' => '', 'email' => '',
             'forfaits' => [], 'types' => [], 'options' => [], 'icons' => [], 'monsters' => [],
-            'moisOfferts' => 2, 'lissageDurees' => [6, 12], 'acompte' => 100, 'parrainageMois' => 1, 'remiseSecondSite' => 10,
+            'moisOfferts' => 2, 'boost' => 1, 'lissageDurees' => [6, 12], 'acompte' => 100, 'parrainageMois' => 1, 'remiseSecondSite' => 10,
             'delais' => ['reponse' => '48 heures', 'titan' => '24 heures'],
         ];
     }
@@ -274,18 +274,19 @@ add_action('template_redirect', function () {
     // par Lia (automatique, un jeton) ou par Alex (à la main) ; plus de jeton ce mois-ci : la demande passe à Alex
     $par = sanitize_key(wp_unslash($_POST['par'] ?? 'alex')) === 'lia' ? 'lia' : 'alex';
     $jetons = aled08e_jetons($f);
-    $illim = aled08e_meta($uid, 'illimite') === '1';
+    $illim = false;
     $partage = !empty($f['partage']) && !$illim;
     $usedTot = $partage ? aled08e_count_month($uid, 'alex') + aled08e_count_month($uid, 'lia') : 0;
-    if ($par === 'lia' && !$illim && $jetons !== null && ($partage ? $usedTot >= (int) $f['quota'] : aled08e_count_month($uid, 'lia') >= (int) $jetons)) $par = 'alex';
-    $over = $par === 'alex' && !$illim && ($partage ? $usedTot >= (int) $f['quota'] : aled08e_count_month($uid, 'alex') >= (int) $f['quota']);
+    // modifications du mois utilisées : la demande devient un Boost (1 € la modification en plus), avec l'accord du client
+    $over = !$illim && ($partage ? $usedTot >= (int) $f['quota'] : aled08e_count_month($uid, 'alex') >= (int) $f['quota']);
+    if ($over && empty($_POST['boost_ok'])) $back('boost_accord');
     $title = mb_strlen($txt) > 70 ? rtrim(mb_substr($txt, 0, 67)) . '…' : $txt;
     $title = trim(preg_replace('/\s+/', ' ', $title));
     $pid = wp_insert_post(['post_type' => ALED08E_CPT, 'post_status' => 'private', 'post_author' => $uid, 'post_title' => $title, 'post_content' => $txt, 'comment_status' => 'closed', 'ping_status' => 'closed'], true);
     if (is_wp_error($pid)) $back('erreur');
     update_post_meta($pid, '_aled08_statut', 'recue');
     update_post_meta($pid, '_aled08_par', $par);
-    if ($over) update_post_meta($pid, '_aled08_hors_forfait', 1);
+    if ($over) { update_post_meta($pid, '_aled08_boost', 1); update_post_meta($pid, '_aled08_hors_forfait', 1); aled08e_boost_facturer($pid, $uid); }
 
     $photo = '';
     $photoFail = false;
@@ -310,7 +311,7 @@ add_action('template_redirect', function () {
     $corps = "Nouvelle demande de modification\n\n"
         . 'Client   : ' . $u->display_name . ' (' . $u->user_email . ")\n"
         . 'Site     : ' . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\n"
-        . 'Forfait  : ' . $f['name'] . ' (réponse sous ' . $delai . ')' . ($over ? ' (modifications du mois déjà utilisées)' : '') . "\n"
+        . 'Forfait  : ' . $f['name'] . ' (réponse sous ' . $delai . ')' . ($over ? ' (BOOST : 1 € en plus, ' . (get_post_meta($pid, '_aled08_boost_facture', true) ? 'ajouté à sa prochaine facture Stripe' : 'à facturer à la main') . ')' : '') . "\n"
         . 'Par      : ' . ($par === 'lia' ? 'Lia (instantané, avec aperçu à valider)' : 'Alex (modification à la main)') . "\n"
         . ($photo ? "Photo    : $photo\n" : '')
         . "\nDemande :\n$txt\n\n"
@@ -318,7 +319,7 @@ add_action('template_redirect', function () {
     wp_mail(aled08e_to(), 'Demande de modification : ' . $u->display_name, $corps, aled08e_mail_headers($u->display_name . ' <' . $u->user_email . '>'));
     do_action('aled08e_demande_creee', $pid, $par, $uid);
 
-    $back($photoFail ? 'photo' : ($over ? 'hors' : 'ok'));
+    $back($photoFail ? 'photo' : ($over ? 'boost' : 'ok'));
 }, 5);
 
 /* =========================================================================
@@ -336,7 +337,7 @@ function aled08e_suivi_box($post) {
     echo '</select></p>';
     echo '<p><label for="aled08e-rep"><strong>Message au client</strong> (facultatif, affiché dans son espace)</label><textarea id="aled08e-rep" name="aled08e_reponse" rows="4" style="width:100%">' . esc_textarea(get_post_meta($post->ID, '_aled08_reponse', true)) . '</textarea></p>';
     echo '<p class="description">Quand vous passez la demande à « Faite », le client reçoit un e-mail.</p>';
-    if (get_post_meta($post->ID, '_aled08_hors_forfait', true)) echo '<p style="color:#b32d2e"><strong>Hors forfait :</strong> les modifications du mois étaient déjà utilisées.</p>';
+    if (get_post_meta($post->ID, '_aled08_hors_forfait', true)) echo '<p style="color:#b32d2e"><strong>Boost (1 €) :</strong> les modifications du mois étaient déjà utilisées. ' . (get_post_meta($post->ID, '_aled08_boost_facture', true) ? 'Ajouté à la prochaine facture Stripe du client.' : 'À facturer à la main.') . '</p>';
 }
 function aled08e_client_box($post) {
     $u = get_userdata($post->post_author);
@@ -392,7 +393,7 @@ add_action('manage_' . ALED08E_CPT . '_posts_custom_column', function ($col, $pi
         $st = get_post_meta($pid, '_aled08_statut', true) ?: 'recue';
         $colors = ['recue' => '#2C67AE', 'encours' => '#9a6a00', 'faite' => '#1f7a55'];
         echo '<strong style="color:' . esc_attr($colors[$st] ?? '#333') . '">' . esc_html(aled08e_statuts()[$st][0] ?? $st) . '</strong>';
-        if (get_post_meta($pid, '_aled08_hors_forfait', true)) echo '<br><small>hors forfait</small>';
+        if (get_post_meta($pid, '_aled08_hors_forfait', true)) echo '<br><small>Boost 1 €</small>';
     }
 }, 10, 2);
 
@@ -410,7 +411,6 @@ function aled08e_fields() {
         'mail' => ['Option e-mail pro', 'check', 'Active'],
         'stock' => ['Option gestion du stock', 'check', 'Active'],
         'comptes' => ['Option comptes clients', 'check', 'Active'],
-        'illimite' => ['Option modifications illimitées', 'check', 'Active'],
         'domaine_info' => ['Nom de domaine (info affichée)', 'text', 'exemple.fr, renouvelé le 3 mars 2027'],
         'avis' => ['Lien d’avis Google', 'url', 'https://g.page/r/.../review'],
         'parrain' => ['Parrainé par (code)', 'text', 'Ex. : LILA-7K2'],
@@ -676,7 +676,7 @@ function aled08e_dashboard() {
     $jetonsMax = aled08e_jetons($f);
     $jetonsUtil = aled08e_count_month($uid, 'lia');
     $jetonsLeft = $jetonsMax === null ? null : max(0, (int) $jetonsMax - $jetonsUtil);
-    $illimite = aled08e_meta($uid, 'illimite') === '1';
+    $illimite = false; // l'option « modifications illimitées » n'existe plus : au-delà du forfait, c'est le Boost
     $quota = $illimite ? max(99, $used + 1) : (int) $f['quota'];
     $left = max(0, $quota - $used);
     // Chico : une seule modification par mois, par Lia ou par Alex (compteur partagé)
@@ -685,7 +685,7 @@ function aled08e_dashboard() {
     if ($illimite) { $jetonsMax = null; $jetonsLeft = null; }
     // options mensuelles actives du compte (e-mail pro, stock, comptes clients, modifications illimitées)
     $optsMois = [];
-    foreach (['mail', 'stock', 'comptes', 'illimite'] as $oid) {
+    foreach (['mail', 'stock', 'comptes'] as $oid) {
         $o = aled08e_option($oid);
         if ($o && $o['month'] > 0 && aled08e_meta($uid, $oid) === '1') $optsMois[] = $o;
     }
@@ -723,7 +723,8 @@ function aled08e_dashboard() {
     $m = isset($_GET['m']) ? sanitize_key(wp_unslash($_GET['m'])) : '';
     $msgs = [
         'ok' => ['esp-empty', 'Demande envoyée, merci ! Je m’en occupe et je vous préviens quand c’est en ligne.'],
-        'hors' => ['esp-warn', 'Demande envoyée. Vos modifications du mois étaient déjà utilisées : je vous dis avant de la faire si elle attend le mois prochain ou si elle est facturée.'],
+        'boost' => ['esp-empty', 'Demande envoyée, en Boost : 1 € en plus, ajouté à votre prochaine facture.'],
+        'boost_accord' => ['esp-warn', 'Vos modifications du mois sont utilisées. Cochez « Boost à 1 € » pour envoyer cette demande en plus.'],
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
         'trop' => ['esp-warn', 'Vous avez envoyé beaucoup de demandes aujourd’hui. Écrivez-nous par le formulaire de contact si c’est pressé.'],
@@ -840,14 +841,15 @@ function aled08e_dashboard() {
           <h2 class="app-h">Mes demandes</h2>
           <?php echo $flash; // phpcs:ignore ?>
           <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. Je m’en occupe et vous suivez l’avancement ici. <?php echo esc_html($f['name'] . ' : ' . mb_strtolower($f['modifs'], 'UTF-8') . ', réponse sous ' . $delai . '.'); ?></p>
-          <?php if ($left <= 0) : ?><p class="esp-warn">Vos modifications du mois sont utilisées. Vous pouvez quand même envoyer votre demande : je vous dis avant si elle attend le mois prochain ou si elle est facturée.</p><?php endif; ?>
+          <?php if ($left <= 0) : ?><p class="esp-warn">Vos modifications du mois sont utilisées. Besoin d’une de plus ? Le Boost : 1 € la modification, ajouté à votre prochaine facture.</p><?php endif; ?>
           <form class="req-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(aled08e_url()); ?>" data-req-real>
             <input type="hidden" name="aled08e_demande" value="1">
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>
             <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend><p class="app-note"><?php echo $illimite ? 'Modifications illimitées.' : 'Il vous reste ' . (int) $left . ' modification' . ($left > 1 ? 's' : '') . ' ce mois-ci, par Lia ou par Alex, au choix.'; ?></p>
-              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $jetonsLeft === 0 ? ' disabled' : ' checked'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, instantané</strong><small>Lia prépare la modification et vous montre l’aperçu. Votre site ne change qu’après votre accord. </small></span></label>
-              <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $jetonsLeft === 0 ? ' checked' : ''; ?>><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même. </small></span></label>
+              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo ' checked'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, instantané</strong><small>Lia prépare la modification et vous montre l’aperçu. Votre site ne change qu’après votre accord. </small></span></label>
+              <label class="req-par-opt"><input type="radio" name="par" value="alex"><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même. </small></span></label>
             </fieldset>
+            <?php if ($left <= 0) : ?><label class="check"><input type="checkbox" name="boost_ok" value="1" required><span>Boost : j’accepte 1 € pour cette modification en plus</span></label><?php endif; ?>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" name="demande" rows="4" maxlength="4000" required placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" name="photo" accept="image/*" class="sr-only" data-req-file><?php echo aled08e_icon('image-plus'); // phpcs:ignore ?><span data-req-file-name>Ajouter une photo (facultatif)</span></label>
             <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Envoyer ma demande</span></button>
@@ -965,4 +967,15 @@ function aled08e_dashboard() {
 </div></section>
     <?php
     return ob_get_clean();
+}
+
+/* Boost : une modification en plus, 1 €, ajoutée à la prochaine facture Stripe du client (sinon : à facturer à la main) */
+function aled08e_boost_facturer($pid, $uid) {
+    $prix = (float) (aled08e_data()['boost'] ?? 1);
+    $cus = aled08e_meta($uid, 'stripe_customer');
+    if (!function_exists('aled08e_stripe_ready') || !aled08e_stripe_ready() || $cus === '') return false;
+    $r = aled08e_stripe_request('POST', '/v1/invoiceitems', ['customer' => $cus, 'amount' => (int) round($prix * 100), 'currency' => 'eur', 'description' => 'Boost : une modification en plus (demande n° ' . (int) $pid . ')'], 'boost_' . (int) $pid, true);
+    if (is_wp_error($r) || empty($r['id'])) return false;
+    update_post_meta($pid, '_aled08_boost_facture', (string) $r['id']);
+    return true;
 }

@@ -161,16 +161,16 @@ const forfaits = [
     name: 'Titan',
     color: 'peach',
     month: 30,
-    quota: 20,
-    jetons: 20,
+    quota: 10,
+    jetons: 10,
     partage: true,
-    modifs: 'Une modification par jour ouvré',
+    modifs: 'Dix modifications par mois',
     conseil: false,
     tagline: 'Le meilleur',
-    pitch: 'Tout Power, plus le retour de vos ventes et de vos chiffres chaque mois, et une modification par jour ouvré.',
-    main: ['Tout ce que comprend Power', 'Vos ventes et vos chiffres chaque mois', 'Une modification par jour ouvré, par Lia ou par Alex'],
-    details: ['Tout ce que comprend Power, et en plus :', 'Un rapport chaque mois : vos ventes, vos visites et vos chiffres, expliqués simplement', 'Une modification chaque jour ouvré, par Lia ou par Alex', 'Avec Alex, réponse sous 24 heures'],
-    features: ['Tout ce que comprend Power', 'Retour de vos ventes et de vos chiffres chaque mois', 'Une modification par jour ouvré, par Lia ou par Alex'],
+    pitch: 'Tout Power, plus le retour de vos ventes et de vos chiffres chaque mois, et dix modifications par mois.',
+    main: ['Tout ce que comprend Power', 'Vos ventes et vos chiffres chaque mois', 'Dix modifications par mois, par Lia ou par Alex'],
+    details: ['Tout ce que comprend Power, et en plus :', 'Un rapport chaque mois : vos ventes, vos visites et vos chiffres, expliqués simplement', 'Dix modifications par mois, par Lia ou par Alex', 'Avec Alex, réponse sous 24 heures'],
+    features: ['Tout ce que comprend Power', 'Retour de vos ventes et de vos chiffres chaque mois', 'Dix modifications par mois, par Lia ou par Alex'],
   },
 ];
 const annuel = { moisOfferts: 2 };
@@ -188,11 +188,12 @@ const options = [
   { id: 'en', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 50 }, desc: 'Votre site traduit en anglais et relu, pour les touristes et les clients venus d’ailleurs.' },
   { id: 'stock', group: 'site', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, types: ['boutique'], desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
   { id: 'comptes', group: 'site', name: 'Comptes clients', icon: 'users', price: { month: 5 }, types: ['boutique'], desc: 'Vos clients se créent un compte sur votre site : commandes passées, adresses et favoris gardés.' },
-  { id: 'illimite', group: 'site', name: 'Modifications illimitées', icon: 'infinity', price: { month: 10 }, desc: 'Autant de demandes de modification que vous voulez, en plus de votre forfait.' },
 ];
 
 // ---------------------------------------------------------------- fidélité et paiement
 const fidelite = { parrainageMois: 1, remiseSecondSite: 10 };
 const paiement = { acompte: 100 }; // création payée en une fois à la commande (ou en 6 / 12 fois sans frais)
 
-module.exports = { site, sections, types, pageEnPlus, forfaits, annuel, lissage, delais, options, fidelite, paiement };
+// Boost : une modification en plus du forfait, à l'unité, ajoutée à la prochaine facture.
+const boost = { prix: 1 };
+module.exports = { site, sections, types, pageEnPlus, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost };

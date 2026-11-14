@@ -245,7 +245,7 @@ function configurator() {
       ${body}
     </fieldset>`;
   const typeBody = `${typeChoices()}<p class="b-note">${icon('info')}Besoin de plus de pages ? ${euro(pageEnPlus)} la page.</p>`;
-  const forfaitBody = `${forfaitChoices()}<p class="b-note">${icon('info')}Chico : hébergement, nom de domaine, mises à jour, une modification par mois. Power : SEO pour remonter sur Google, serveur plus rapide, quatre modifications. Pour chaque modification, vous choisissez Lia ou Alex. Titan : retour de vos ventes et outils illimités. <a href="/forfaits/">Comparer</a></p>`;
+  const forfaitBody = `${forfaitChoices()}<p class="b-note">${icon('info')}Chico : hébergement, nom de domaine, mises à jour, une modification par mois. Power : SEO pour remonter sur Google, serveur plus rapide, quatre modifications. Pour chaque modification, vous choisissez Lia ou Alex. Titan : retour de vos ventes et dix modifications. <a href="/forfaits/">Comparer</a></p>`;
   const payChoices = `<p class="b-label">Le site</p>
       <div class="b-seg" role="radiogroup" aria-label="Paiement du site">
         <label><input type="radio" name="b-lisse" value="non" checked><span>En une fois</span></label>
