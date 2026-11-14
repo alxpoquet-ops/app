@@ -138,7 +138,7 @@ const forfaits = [
     modifs: 'Une modification par mois',
     tagline: 'L’essentiel',
     pitch: 'Votre site en ligne, sûr et à jour, sur un serveur de qualité. Une modification par Alex et un jeton Lia chaque mois.',
-    features: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié et renouvelé', 'Mises à jour des extensions', 'Formulaire de contact et HTTPS', 'Gestion du flux de visites', 'Une modification par Alex et un jeton Lia par mois'],
+    features: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié et renouvelé', 'Mises à jour des extensions', 'Formulaire de contact et HTTPS', 'Gestion du flux de visites', 'Bases du SEO : Google sait lire votre site', 'Une modification par Alex et un jeton Lia par mois'],
   },
   {
     id: 'power',
@@ -149,9 +149,9 @@ const forfaits = [
     jetons: 4,
     modifs: 'Quatre modifications par mois',
     conseil: true,
-    tagline: 'Plus rapide',
-    pitch: 'Tout Chico, sur un serveur plus rapide pour accueillir plus de visites. Support et modifications rapides.',
-    features: ['Tout ce que comprend Chico', 'Serveur plus rapide, pour plus de visites', 'Support rapide', 'Modifications rapides', 'Quatre modifications par Alex et quatre jetons Lia par mois'],
+    tagline: 'Pour être trouvé',
+    pitch: 'Tout Chico, plus le SEO : je fais remonter votre site sur Google. Serveur plus rapide, support et modifications rapides.',
+    features: ['Tout ce que comprend Chico', 'SEO : je fais remonter votre site sur Google, chaque mois', 'Serveur plus rapide, pour plus de visites', 'Support et modifications rapides', 'Quatre modifications par Alex et quatre jetons Lia par mois'],
   },
   {
     id: 'titan',

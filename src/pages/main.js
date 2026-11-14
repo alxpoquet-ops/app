@@ -34,7 +34,7 @@ function home() {
     <div class="hero-text">
       <p class="kicker">${icon('sparkles')}L’IA pour tout le monde</p>
       <h1>Votre site internet à partir de ${euro(T('une-page').price)}, <mark>tout compris</mark></h1>
-      <p class="hero-lead">Je crée votre site à prix fixe, puis on s’en occupe pour ${euro(base.month)} par mois : Lia, l’IA, fait l’automatique, et moi, Alex, je vérifie et je règle tout. Le site peut aussi se payer en ${C.lissageTxt} fois sans frais.</p>
+      <p class="hero-lead">Je crée votre site à prix fixe, puis on s’en occupe pour ${euro(base.month)} par mois : Lia, l’IA, modifie et met à jour votre site, et moi, Alex, je vérifie et je règle tout. Le site peut aussi se payer en ${C.lissageTxt} fois sans frais.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}${C.btn('/forfaits/', 'btn-light btn-lg', 'heart', 'Voir les forfaits')}</div>
       <ul class="hero-points">
         <li>${icon('check')}Prix de création fixe</li>
@@ -162,7 +162,7 @@ function forfaitsPage() {
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: 'Les forfaits : choisissez votre monstre',
-    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power le met sur un serveur plus rapide, avec des modifications rapides. Titan ajoute le retour de vos ventes et nos outils en illimité.',
+    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power ajoute le SEO pour remonter sur Google, et un serveur plus rapide. Titan ajoute le retour de vos ventes et nos outils en illimité.',
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
@@ -214,7 +214,7 @@ ${C.ctaBand({ title: 'Votre monstre est choisi ?', text: 'Composez votre site en
     path: '/forfaits/',
     section: 'forfaits',
     title: 'Forfaits Chico, Power et Titan, dès 5 € par mois | Alex & Lia',
-    description: `Chico à ${F('chico').month} € par mois : hébergement, nom de domaine, mises à jour. Power à ${F('power').month} € : serveur rapide. Titan à ${F('titan').month} € : chiffres et outils illimités.`,
+    description: `Chico à ${F('chico').month} € par mois : hébergement, nom de domaine, mises à jour. Power à ${F('power').month} € : SEO et serveur rapide. Titan à ${F('titan').month} € : chiffres et outils illimités.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -277,22 +277,41 @@ function seoPage() {
   const f = C.faq(FAQ.seo, 'Vos questions sur le SEO', 'faq-seo');
   const levels = [
     ['chico', 'Les bases', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Site déclaré dans Google Search Console']],
-    ['power', 'La vitesse', ['Tout Chico', 'Serveur plus rapide : Google aime les sites rapides', 'Modifications rapides pour garder le site à jour']],
+    ['power', 'Le SEO suivi', ['Tout Chico', 'Je travaille chaque mois pour faire remonter votre site sur Google', 'Serveur plus rapide : Google aime les sites rapides']],
     ['titan', 'Les chiffres', ['Tout Power', 'Le retour de vos ventes et de vos chiffres chaque mois', 'Nos outils en illimité']],
   ];
   const body = `${C.pageHero({
     section: 'seo',
     h1: 'Référencement SEO : être trouvé sur Google',
-    lead: 'Un site que personne ne trouve ne sert à rien. Le SEO, c’est mon terrain : chaque site part avec des bases solides, et je le suis dans le temps.',
+    lead: 'Le SEO, c’est tout ce qui aide Google à trouver votre site et à le faire monter en haut des résultats. Plus il est haut, plus on clique dessus. Je vous explique simplement.',
     crumbs,
   })}
+<section class="section"><div class="container container-narrow prose reveal">
+  ${md(`## Le SEO, c’est quoi ?
+
+Quand quelqu’un cherche quelque chose sur Google, il tape quelques mots. Google lui montre alors une liste de sites, du premier au dernier. Presque tout le monde clique sur les premiers. Très peu de gens vont voir la deuxième page.
+
+Le SEO (on dit aussi « référencement naturel »), c’est l’ensemble des réglages qui permettent à Google de **trouver votre site**, de **comprendre ce que vous faites** et de le **montrer le plus haut possible**. C’est gratuit pour chaque clic : ce n’est pas de la publicité.
+
+## Un exemple
+
+Vous êtes fleuriste à Reims. Une cliente tape « fleuriste Reims » sur Google.
+
+- Sans SEO, votre site existe, mais Google le range en page 3. Personne ne le voit.
+- Avec du SEO, Google comprend que vous êtes fleuriste, à Reims, avec vos horaires et vos avis. Votre site remonte dans les premiers résultats, et la cliente vous appelle.
+
+## Ce que ça vous rapporte
+
+Plus de visites, plus d’appels, plus de ventes, sans payer chaque clic. Le SEO se travaille dans le temps : les premiers résultats arrivent en quelques semaines, puis ça progresse.`)}
+</div></section>
+
 <section class="section"><div class="container">
   <h2 class="section-title">Ce que je fais pour votre visibilité</h2>
   <div class="feats feats-4">
     <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur téléphone, avec les balises et les données que Google sait lire.</p></div>
     <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand vos clients cherchent près de chez vous.</p></div>
     <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec l’IA et relus par moi.</p></div>
-    <div class="feat reveal">${icon('chart-line')}<h3>Le suivi</h3><p>Positions, recherches, visites : je regarde ce qui marche et j’ajuste, mois après mois.</p></div>
+    <div class="feat reveal">${icon('chart-line')}<h3>Le suivi, avec Power</h3><p>Positions, recherches, visites : je regarde ce qui marche et j’ajuste chaque mois pour faire remonter votre site.</p></div>
   </div>
 </div></section>
 
@@ -355,7 +374,7 @@ function comparatifPage() {
     ['butter', 'building-2', 'L’agence web', 'Une équipe complète : chef de projet, graphiste, développeur. Idéale pour un gros projet avec un budget à la hauteur. Le prix et le délai dépendent du devis.'],
     ['sky', 'user', 'Le freelance', 'Une personne qui fait tout. La qualité dépend beaucoup de qui vous choisissez. Les modifications et le suivi se font souvent au devis, quand le freelance est disponible.'],
     ['lilac', 'mouse-pointer-click', 'La plateforme à faire soi-même', 'Vous construisez votre site à partir de modèles, pour un abonnement mensuel. C’est vous qui faites le travail, les mises à jour et le référencement.'],
-    ['mint', 'sparkles', 'Alex & Lia', 'Un prix juste et fixe, des modifications rapides. Lia, l’IA, fait l’automatique avec nos outils. Alex vérifie et règle tout. Pour les très gros projets, je vous oriente vers une agence.'],
+    ['mint', 'sparkles', 'Alex & Lia', 'Un prix juste et fixe, des modifications rapides. Lia, l’IA, modifie et met à jour votre site depuis votre espace client. Alex vérifie et règle tout. Pour les très gros projets, je vous oriente vers une agence.'],
   ];
   const body = `${C.pageHero({
     section: 'comparatif',
@@ -378,7 +397,7 @@ function comparatifPage() {
 <section class="section"><div class="container container-narrow prose reveal">
   ${md(`## Des modifications rapides
 
-Un horaire, un prix, une actualité : Lia, l’IA, le change avec nos outils en quelques minutes, en utilisant un jeton Lia. Pour ce qui demande un regard humain, c’est Alex. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
+Un horaire, un prix, une actualité : Lia, l’IA, le change directement sur votre site en quelques minutes, en utilisant un jeton Lia. Pour ce qui demande un regard humain, c’est Alex. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
 
 ## Pourquoi mes prix sont plus bas
 
@@ -675,7 +694,7 @@ Le résultat, lui, reste du travail soigné : un site rapide, adapté au télép
     <div class="compare-col reveal">
       <h3>${monster('mascotte')}Lia, l’IA, s’occupe de…</h3>
       <ul class="list-check">
-        <li>l’automatique : vos changements simples, avec nos outils (un jeton Lia par action) ;</li>
+        <li>modifier et mettre à jour votre site, depuis votre espace client (un jeton Lia par action) ;</li>
         <li>écrire le code du site, plus vite ;</li>
         <li>proposer des mises en page et des premiers textes ;</li>
         <li>repérer des erreurs.</li>
