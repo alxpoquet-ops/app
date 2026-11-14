@@ -130,20 +130,18 @@ function monster(kind, { size, cls = '', title } = {}) {
   return `<svg class="monster monster-${kind}${cls ? ' ' + cls : ''}" viewBox="0 0 160 160"${dim} ${label}>${draw}</svg>`;
 }
 
-// Tête de Lia, pour le logo et les icônes
-function logoMark({ id = 'lg', size } = {}) {
-  const c = C.mascotte;
+// Logo : une tache de peinture, une petite fenêtre de site, une étincelle (l'IA).
+// La tache est vert menthe : elle répond à l'éclaboussure rose derrière « Lia » dans le nom.
+function logoMark({ id = 'lg', size, teinte = 'menthe' } = {}) {
+  const T = teinte === 'rose' ? ['#FF8CC0', '#D9408B', '#34B27F'] : ['#9BEBCB', '#2FA878', '#E2589A'];
   const dim = size ? ` width="${size}" height="${size}"` : '';
-  const cil = (x, sx) => [[-4.8, -4.6, -7.6, -7.6], [-2.6, -6, -3.8, -9.6], [0, -6.4, 0, -10]]
-    .map(([a, b, cx, cy]) => `<path d="M${x + sx * a} ${35 + b}L${x + sx * cx} ${35 + cy}" stroke="${INK}" stroke-width="1.7" stroke-linecap="round"/>`).join('');
-  return `<svg class="logo" viewBox="0 0 64 64"${dim} aria-hidden="true" focusable="false"><defs><radialGradient id="${id}" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#FFE3EE"/><stop offset="1" stop-color="${c.body}"/></radialGradient></defs>
-<path d="M32 10c14.5 0 25 10.5 25 25S46.5 61 32 61 7 49.5 7 35s10.5-25 25-25Z" fill="url(#${id})" stroke="${c.deep}" stroke-width="2.6"/>
-<g transform="rotate(-14 43 11)"><path d="M43 11c-5-7.5-14-7.5-14-.6s9 7.6 14 .6Z" fill="${c.noeud}" stroke="${c.deep}" stroke-width="2" stroke-linejoin="round"/><path d="M43 11c5-7.5 14-7.5 14-.6s-9 7.6-14 .6Z" fill="${c.noeud}" stroke="${c.deep}" stroke-width="2" stroke-linejoin="round"/><circle cx="43" cy="11" r="3.6" fill="#FFD45E" stroke="${c.deep}" stroke-width="1.8"/></g>
-${cil(23.5, 1)}${cil(40.5, -1)}
-<ellipse cx="23.5" cy="35" rx="5.6" ry="6.2" fill="#fff" stroke="${c.deep}" stroke-width="2"/><ellipse cx="40.5" cy="35" rx="5.6" ry="6.2" fill="#fff" stroke="${c.deep}" stroke-width="2"/>
-<circle cx="24.3" cy="36.6" r="3.4" fill="${INK}"/><circle cx="41.3" cy="36.6" r="3.4" fill="${INK}"/><circle cx="25.6" cy="34.7" r="1.3" fill="#fff"/><circle cx="42.6" cy="34.7" r="1.3" fill="#fff"/>
-<ellipse cx="16.5" cy="45" rx="4" ry="2.4" fill="#FF5F9E" opacity=".55"/><ellipse cx="47.5" cy="45" rx="4" ry="2.4" fill="#FF5F9E" opacity=".55"/>
-<path d="M27.5 45.5q4.5 4.5 9 0" fill="none" stroke="${INK}" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+  return `<svg class="logo" viewBox="0 0 64 64"${dim} aria-hidden="true" focusable="false"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${T[0]}"/><stop offset="1" stop-color="${T[1]}"/></linearGradient></defs>
+<path d="M51.9 32.0C52.6 32.9 54.4 33.9 55.6 35.1C56.8 36.3 59.3 38.2 59.2 39.3C59.1 40.4 56.4 40.9 55.0 41.5C53.5 42.1 51.3 42.0 50.5 42.7C49.6 43.4 50.2 44.8 49.8 45.7C49.4 46.5 48.5 47.1 47.9 47.9C47.3 48.7 46.6 49.2 46.1 50.4C45.6 51.5 45.6 53.2 45.1 54.7C44.6 56.2 44.4 59.1 43.3 59.3C42.2 59.5 39.9 57.0 38.4 56.0C37.0 55.0 35.9 53.5 34.8 53.1C33.7 52.8 32.9 53.8 32.0 53.7C31.1 53.6 30.2 52.7 29.3 52.7C28.3 52.8 27.5 53.0 26.1 53.9C24.8 54.8 22.1 58.4 21.2 58.0C20.3 57.6 21.0 53.1 20.8 51.5C20.5 49.9 20.1 49.1 19.6 48.2C19.1 47.3 18.4 46.9 17.8 46.2C17.1 45.6 16.6 45.0 15.7 44.5C14.8 44.0 13.7 43.7 12.5 43.3C11.3 42.8 10.3 42.3 8.6 41.7C6.9 41.2 2.9 41.0 2.3 40.0C1.7 38.9 4.0 36.9 5.1 35.6C6.1 34.2 7.6 33.1 8.4 32.0C9.2 30.9 9.5 30.1 9.8 29.1C10.0 28.1 9.4 26.9 9.8 26.0C10.1 25.2 11.7 24.7 11.9 23.7C12.1 22.6 11.2 21.2 10.9 19.8C10.6 18.4 9.4 16.0 10.1 15.2C10.8 14.4 13.5 15.0 15.1 15.1C16.7 15.3 18.6 16.1 19.7 16.0C20.8 15.8 20.9 14.6 21.6 14.1C22.4 13.5 23.2 13.0 24.0 12.7C24.9 12.4 25.9 13.1 26.7 12.3C27.5 11.5 27.9 9.5 28.8 7.8C29.7 6.2 30.9 2.5 32.0 2.4C33.1 2.2 34.3 5.6 35.3 7.0C36.2 8.4 36.8 9.9 37.7 10.5C38.6 11.2 39.7 10.7 40.7 11.0C41.7 11.2 42.8 11.3 43.6 11.9C44.4 12.5 44.4 14.1 45.4 14.6C46.3 15.0 48.1 14.4 49.4 14.6C50.7 14.8 52.6 14.9 53.0 15.9C53.4 16.9 52.0 19.3 51.7 20.6C51.5 22.0 51.5 22.9 51.4 24.0C51.3 25.0 51.4 25.9 51.4 26.8C51.4 27.7 51.4 28.6 51.4 29.4C51.5 30.3 51.2 31.1 51.9 32.0Z" fill="url(#${id})"/><circle cx="44.5" cy="62.2" r="1.7" fill="${T[1]}"/><circle cx="6.1" cy="12.1" r="1.9" fill="${T[1]}"/><circle cx="56.0" cy="13.6" r="1.4" fill="${T[1]}"/>
+<rect x="17.5" y="21" width="29" height="23" rx="5.5" fill="#fff"/>
+<path d="M17.5 28.4h29" stroke="${INK}" stroke-width="1.6"/>
+<circle cx="22" cy="24.8" r="1.35" fill="#F27BA8"/><circle cx="26" cy="24.8" r="1.35" fill="#F2B83A"/><circle cx="30" cy="24.8" r="1.35" fill="#34B27F"/>
+<path d="M32 30.6Q32.9 35.3 37.6 36.2 32.9 37.1 32 41.8 31.1 37.1 26.4 36.2 31.1 35.3 32 30.6Z" fill="${T[2]}"/>
+<path d="M40.6 31.4q.4 1.9 2.3 2.3-1.9.4-2.3 2.3-.4-1.9-2.3-2.3 1.9-.4 2.3-2.3Z" fill="#8C6CF2"/></svg>`;
 }
 
 module.exports = { monster, logoMark, COLORS: C };

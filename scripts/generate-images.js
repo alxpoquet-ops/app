@@ -28,7 +28,7 @@ const icon = (s, pad = 0, bg = 'transparent') => `${base}<div style="width:${s}p
     [og, 1200, 630, 'src/assets/img/og-image.png'],
     [icon(512), 512, 512, 'src/assets/img/logo-512.png'],
     [icon(192), 192, 192, 'src/assets/img/logo-192.png'],
-    [icon(180, 18, '#DDF7EC'), 180, 180, 'src/static/apple-touch-icon.png'],
+    [icon(180, 14, '#16142A'), 180, 180, 'src/static/apple-touch-icon.png'],
     [icon(32), 32, 32, 'src/static/favicon-32.png'],
   ];
   for (const [html, w, h, out] of shots) {
