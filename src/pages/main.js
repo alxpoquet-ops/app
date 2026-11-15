@@ -798,8 +798,8 @@ function monEspacePage() {
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           ${tab('accueil', 'house', 'Accueil', true)}
           ${tab('demandes', 'message-circle', 'Mes demandes')}
-          ${tab('visibilite', 'chart-line', 'Tableau de bord')}
-          ${tab('forfait', 'heart', 'Forfait et factures')}
+          ${tab('visibilite', 'gauge', 'Tableau de bord')}
+          ${tab('forfait', 'receipt', 'Forfait et factures')}
         </div>
       </aside>
       <div class="app-main">

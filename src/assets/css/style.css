@@ -1400,3 +1400,29 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
   .app-side .app-tabs button .ico { flex: none; }
   .app-side .app-logout { order: 12; flex: 1 1 100%; justify-content: center; margin-bottom: 8px; }
 }
+
+/* onglets de l'espace client : une couleur par onglet, Tableau de bord en haut et Mon compte en bas, en pleine largeur */
+.app-side .app-tabs button { --c: var(--lilac); --c-d: var(--lilac-d); --c-dd: var(--lilac-dd); }
+.app-side .app-tabs button .ico { width: 30px; height: 30px; padding: 6px; border-radius: 10px; background: var(--c); color: var(--c-dd); flex: none; }
+.app-side .app-tabs [data-tab="accueil"] { --c: var(--lilac); --c-d: var(--lilac-d); --c-dd: var(--lilac-dd); }
+.app-side .app-tabs [data-tab="commande"] { --c: var(--butter); --c-d: var(--butter-d); --c-dd: var(--butter-dd); }
+.app-side .app-tabs [data-tab="demandes"] { --c: var(--sky); --c-d: var(--sky-d); --c-dd: var(--sky-dd); }
+.app-side .app-tabs [data-tab="tableau"], .app-side .app-tabs [data-tab="visibilite"] { --c: var(--mint); --c-d: var(--mint-d); --c-dd: var(--mint-dd); }
+.app-side .app-tabs [data-tab="vacances"] { --c: var(--butter); --c-d: var(--butter-d); --c-dd: var(--butter-dd); }
+.app-side .app-tabs [data-tab="parrainage"] { --c: var(--pink); --c-d: var(--pink-d); --c-dd: var(--pink-dd); }
+.app-side .app-tabs [data-tab="forfait"] { --c: var(--peach); --c-d: var(--peach-d); --c-dd: var(--peach-dd); }
+.app-side .app-tabs [data-tab="compte"] { --c: var(--sky); --c-d: var(--sky-d); --c-dd: var(--sky-dd); }
+.app-side .app-tabs button[aria-selected="true"] { box-shadow: 0 0 0 2px var(--c-d) inset; color: var(--ink); }
+.app-side .app-tabs:has(> [data-tab="tableau"], > [data-tab="visibilite"]) > [data-tab="tableau"],
+.app-side .app-tabs:has(> [data-tab="tableau"], > [data-tab="visibilite"]) > [data-tab="visibilite"] { order: -1; }
+.app-side .app-tabs:has(> [data-tab="tableau"], > [data-tab="visibilite"]) > [data-tab="compte"] { order: 99; }
+@media (max-width: 720px) {
+  .app-side .app-tabs:has(> [data-tab="tableau"], > [data-tab="visibilite"]) > :is([data-tab="tableau"], [data-tab="visibilite"], [data-tab="compte"]) { grid-column: 1 / -1; justify-content: center; }
+  .app-side .app-tabs > :is([data-tab="tableau"], [data-tab="visibilite"]) { background: linear-gradient(120deg, var(--mint), var(--sky)); padding: 13px 12px; font-size: 1rem; }
+  .app-side .app-tabs > :is([data-tab="tableau"], [data-tab="visibilite"]) .ico { background: var(--card); }
+  .app-side .app-tabs > [data-tab="compte"] { background: linear-gradient(120deg, var(--sky), var(--lilac)); }
+  .app-side .app-tabs > [data-tab="compte"] .ico { background: var(--card); }
+  /* nombre impair d'onglets au milieu : le dernier prend toute la largeur, pour ne pas laisser de trou */
+  .app-side .app-tabs:has(> [data-tab="tableau"]):has(> [data-tab="compte"]):has(> button:last-child:nth-child(odd)) > button:nth-last-child(2),
+  .app-side .app-tabs:has(> [data-tab="visibilite"]):not(:has(> [data-tab="compte"])):has(> button:last-child:nth-child(even)) > button:last-child { grid-column: 1 / -1; justify-content: center; }
+}
