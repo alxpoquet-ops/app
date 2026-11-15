@@ -527,7 +527,7 @@ Mon service est né de ce constat. Vous ne construisez rien vous-même, mais vou
 Pour voir à quoi cela ressemble avant de vous décider, [essayez la démo de l'espace client](/mon-espace/demo/). Et pour une vue d'ensemble des solutions, le [comparatif](/comparatif/) les met côte à côte.`,
     faq: [
       { q: 'J’ai commencé un site moi-même sans le finir, pouvez-vous le reprendre ?', a: 'Je repars d’un site neuf, mais rien n’est perdu : vos textes, vos photos et vos idées servent de base. Envoyez-moi l’adresse de ce que vous avez commencé, c’est un excellent point de départ.' },
-      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: 'Oui, sans rien apprendre : vous décrivez le changement dans votre espace client. Selon votre forfait, vous disposez d’une à dix modifications par mois.' },
+      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: 'Oui, sans rien apprendre : vous décrivez le changement dans votre espace client. Selon votre forfait, vous disposez d’une à quatre modifications par mois.' },
       { q: 'Combien de temps faut-il pour faire un site seul ?', a: 'Cela dépend beaucoup de chacun. Le montage lui-même va assez vite. Ce qui prend du temps, ce sont les textes, le choix des photos et tous les petits réglages auxquels on ne pense pas au départ.' },
     ],
     voir: ['prix-site-internet', 'site-une-page-ou-site-vitrine', 'site-internet-auto-entrepreneur'],

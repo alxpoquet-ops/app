@@ -168,7 +168,7 @@ function forfaitsPage() {
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: 'Les forfaits : choisissez votre monstre',
-    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power ajoute le SEO pour remonter sur Google, et un serveur plus rapide. Titan ajoute le retour de vos ventes et dix modifications par mois.',
+    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power ajoute le SEO pour remonter sur Google, et un serveur plus rapide. Titan ajoute le retour de vos ventes et quatre modifications par mois.',
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
@@ -200,7 +200,7 @@ function forfaitsPage() {
   <h2 class="section-title">Les options</h2>
   <p class="section-sub">À ajouter quand vous voulez, depuis votre espace client ou par message.</p>
   ${C.optionsCompact()}
-  <div class="boost-box reveal"><span class="opt-ico">${icon('zap')}</span><div><h3>Le Boost : 1 € la modification en plus</h3><p>Vos modifications du mois sont utilisées ? Demandez-en une de plus depuis votre espace client, par Lia ou par Alex. Vous confirmez le Boost à chaque fois, et il s’ajoute à votre prochaine facture.</p></div></div>
+  <div class="boost-box reveal"><span class="opt-ico">${icon('zap')}</span><div><h3>Le Boost : 1 € la modification en plus</h3><p>Vos modifications du mois sont utilisées ? Demandez-en une de plus depuis votre espace client : c’est Alex qui la fait, à la main. Vous confirmez le Boost à chaque fois, et il s’ajoute à votre prochaine facture.</p></div></div>
 </div></section>
 
 <section class="section section-soft"><div class="container duo">
@@ -222,7 +222,7 @@ ${C.ctaBand({ title: 'Votre monstre est choisi ?', text: 'Composez votre site en
     path: '/forfaits/',
     section: 'forfaits',
     title: 'Forfaits Chico, Power et Titan, dès 5 € par mois | Alex & Lia',
-    description: `Chico à ${F('chico').month} € par mois : hébergement, nom de domaine, mises à jour. Power à ${F('power').month} € : SEO et serveur rapide. Titan à ${F('titan').month} € : chiffres et dix modifications.`,
+    description: `Chico à ${F('chico').month} € par mois : hébergement, nom de domaine, mises à jour. Power à ${F('power').month} € : SEO et serveur rapide. Titan à ${F('titan').month} € : chiffres et quatre modifications.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -251,7 +251,7 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
       <li>Réponse sous ${delais.reponse}, ou ${delais.titan} avec Titan</li>
-      <li>Chico : une modification par mois. Power : quatre. Titan : dix. Pour chacune, vous choisissez Lia ou Alex. Besoin de plus ? Le Boost : 1 € la modification.</li>
+      <li>Chico : une modification par mois. Power : deux. Titan : quatre. Pour chacune, vous choisissez Lia ou Alex. Besoin de plus ? Le Boost : 1 € la modification, faite par Alex.</li>
     </ul>
   </div>
   ${C.phoneEdit(true)}
@@ -286,7 +286,7 @@ function seoPage() {
   const levels = [
     ['chico', 'Les bases', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Site déclaré dans Google Search Console']],
     ['power', 'Le SEO suivi', ['Tout Chico', 'Je travaille chaque mois pour faire remonter votre site sur Google', 'Des pages utiles qui renvoient vers votre site', 'Serveur plus rapide : Google aime les sites rapides']],
-    ['titan', 'Les chiffres', ['Tout Power', 'Le retour de vos ventes et de vos chiffres chaque mois', 'Dix modifications par mois']],
+    ['titan', 'Les chiffres', ['Tout Power', 'Le retour de vos ventes et de vos chiffres chaque mois', 'Quatre modifications par mois']],
   ];
   const body = `${C.pageHero({
     section: 'seo',

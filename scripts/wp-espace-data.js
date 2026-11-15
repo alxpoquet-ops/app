@@ -11,7 +11,7 @@ const paiement = cfg.paiement || { acompte: 25 };
 const lissage = cfg.lissage || { mois: 24 };
 const delais = cfg.delais || { reponse: '72 heures', titan: '24 heures' };
 // Quotas de modifications par mois : lus dans config.js (f.quota) ; valeurs de repli si absents.
-const QUOTA = { chico: 1, power: 4, titan: 20 };
+const QUOTA = { chico: 1, power: 2, titan: 4 };
 
 const ICONS = [
   'house', 'message-circle', 'chart-line', 'qr-code', 'heart', 'gift', 'users', 'receipt', 'check', 'send', 'image-plus', 'download',

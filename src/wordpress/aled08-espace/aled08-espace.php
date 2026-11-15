@@ -282,6 +282,7 @@ add_action('template_redirect', function () {
     // modifications du mois utilisées : la demande devient un Boost (1 € la modification en plus), avec l'accord du client
     $over = !$illim && ($partage ? $usedTot >= (int) $f['quota'] : aled08e_count_month($uid, 'alex') >= (int) $f['quota']);
     if ($over && empty($_POST['boost_ok'])) $back('boost_accord');
+    if ($over) $par = 'alex'; // le Boost (modification en plus à 1 €) est toujours fait par Alex, à la main
     $title = mb_strlen($txt) > 70 ? rtrim(mb_substr($txt, 0, 67)) . '…' : $txt;
     $title = trim(preg_replace('/\s+/', ' ', $title));
     $pid = wp_insert_post(['post_type' => ALED08E_CPT, 'post_status' => 'private', 'post_author' => $uid, 'post_title' => $title, 'post_content' => $txt, 'comment_status' => 'closed', 'ping_status' => 'closed'], true);
@@ -717,7 +718,7 @@ function aled08e_dashboard() {
         'changer_ok' => ['esp-empty', 'C’est enregistré : votre nouveau forfait et vos options s’appliquent à votre prochaine échéance.'],
         'changer_rien' => ['esp-empty', 'Rien n’a changé : c’est déjà votre forfait.'],
         'changer_erreur' => ['esp-warn', 'Le changement n’a pas pu se faire tout seul : Alex est prévenu et s’en occupe.'],
-        'boost' => ['esp-empty', 'Demande envoyée, en Boost : 1 € en plus, ajouté à votre prochaine facture.'],
+        'boost' => ['esp-empty', 'Demande envoyée à Alex, en Boost : 1 € en plus, ajouté à votre prochaine facture.'],
         'boost_accord' => ['esp-warn', 'Vos modifications du mois sont utilisées. Cochez « Boost à 1 € » pour envoyer cette demande en plus.'],
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
@@ -837,7 +838,7 @@ function aled08e_dashboard() {
           <h2 class="app-h">Mes demandes</h2>
           <?php echo $flash; // phpcs:ignore ?>
           <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. Je m’en occupe et vous suivez l’avancement ici. <?php echo esc_html($f['name'] . ' : ' . mb_strtolower($f['modifs'], 'UTF-8') . ', réponse sous ' . $delai . '.'); ?></p>
-          <?php if ($left <= 0) : ?><p class="esp-warn">Vos modifications du mois sont utilisées. Besoin d’une de plus ? Le Boost : 1 € la modification, ajouté à votre prochaine facture.</p><?php endif; ?>
+          <?php if ($left <= 0) : ?><p class="esp-warn">Vos modifications du mois sont utilisées. Besoin d’une de plus ? Le Boost : 1 € la modification, faite par Alex, ajouté à votre prochaine facture.</p><?php endif; ?>
           <form class="req-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(aled08e_url()); ?>" data-req-real>
             <input type="hidden" name="aled08e_demande" value="1">
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>
@@ -845,7 +846,7 @@ function aled08e_dashboard() {
               <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo ' checked'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, instantané</strong><small>Lia prépare la modification et vous montre l’aperçu. Votre site ne change qu’après votre accord. </small></span></label>
               <label class="req-par-opt"><input type="radio" name="par" value="alex"><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même. </small></span></label>
             </fieldset>
-            <?php if ($left <= 0) : ?><label class="check"><input type="checkbox" name="boost_ok" value="1" required><span>Boost : j’accepte 1 € pour cette modification en plus</span></label><?php endif; ?>
+            <?php if ($left <= 0) : ?><label class="check"><input type="checkbox" name="boost_ok" value="1" required><span>Boost : j’accepte 1 € pour cette modification en plus, faite par Alex</span></label><?php endif; ?>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" name="demande" rows="4" maxlength="4000" required placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" name="photo" accept="image/*" class="sr-only" data-req-file><?php echo aled08e_icon('image-plus'); // phpcs:ignore ?><span data-req-file-name>Ajouter une photo (facultatif)</span></label>
             <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Envoyer ma demande</span></button>

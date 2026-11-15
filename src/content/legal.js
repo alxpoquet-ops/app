@@ -206,12 +206,12 @@ Le client envoie ses demandes de modification depuis son espace client ou par me
 Chaque forfait comprend, par mois :
 
 - ${chico.name} : une modification.
-- ${power.name} : quatre modifications.
-${titan ? `- ${titan.name} : dix modifications.` : ''}
+- ${power.name} : deux modifications.
+${titan ? `- ${titan.name} : quatre modifications.` : ''}
 
 Pour chaque modification, le client choisit qui la fait : Lia ou Alex.
 
-Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications non utilisées ne se reportent pas. Au-delà du nombre compris, le client peut demander un Boost : une modification en plus pour 1 €, ajoutée à sa prochaine facture, avec son accord à chaque demande. Sinon, la demande est reportée à la période suivante, au choix du client. Une page nouvelle ou un site plus grand fait l’objet d’un devis.
+Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications non utilisées ne se reportent pas. Au-delà du nombre compris, le client peut demander un Boost : une modification en plus pour 1 €, réalisée par Alex, ajoutée à sa prochaine facture, avec son accord à chaque demande. Sinon, la demande est reportée à la période suivante, au choix du client. Une page nouvelle ou un site plus grand fait l’objet d’un devis.
 
 ## 12. Délais de réponse
 
