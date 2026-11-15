@@ -292,3 +292,48 @@ a.app-card { text-decoration: none; color: inherit; }
 /* ---------- mode vacances ---------- */
 .vac-etat { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 4px; font-weight: 700; color: var(--muted); font-size: .9rem; }
 .vac-form input[type="date"] { color-scheme: dark; }
+
+/* tableau de bord simple (hors Titan) : l'essentiel, puis une invitation discrète */
+.live.is-simple .live-kpis { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.live-titan { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 14px; align-items: center; margin: 14px 0; padding: 16px 18px; border-radius: 20px; background: var(--card); box-shadow: 0 0 0 2px var(--line) inset; }
+.live-titan > span { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--peach); color: var(--peach-dd); }
+.live-titan strong { color: var(--ink); }
+.live-titan p { margin: 2px 0 0; color: var(--muted); font-size: .92rem; }
+@media (max-width: 560px) { .live-titan { grid-template-columns: 44px minmax(0, 1fr); } .live-titan .btn { grid-column: 1 / -1; justify-content: center; } }
+
+/* onglet « Ma boutique » : codes promo, soldes, bandeau */
+.bq-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0 28px; }
+.bq-card { padding: 20px; border-radius: 22px; background: var(--card); box-shadow: 0 0 0 2px var(--line) inset; min-width: 0; }
+.bq-card#bq-promo { grid-row: span 2; }
+.bq-h { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0 0 10px; font-size: 1.12rem; color: var(--ink); }
+.bq-h .st { margin-left: auto; font-size: .78rem; }
+.bq-ico { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--c); color: var(--c-dd); flex: none; }
+.bq-ico .ico { width: 20px; height: 20px; }
+.bq-form { display: grid; gap: 12px; }
+.bq-inline { display: flex; gap: 8px; }
+.bq-inline input { flex: 1; min-width: 0; }
+.bq-inline select { width: auto; flex: none; }
+.bq-check { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--ink); cursor: pointer; }
+.bq-check input { width: 20px; height: 20px; accent-color: var(--mint-d); }
+.bq-plus summary { cursor: pointer; font-weight: 800; color: var(--lilac-dd); padding: 4px 0; }
+.bq-plus[open] summary { margin-bottom: 10px; }
+.bq-plus .esp-grid2 { margin-bottom: 10px; }
+.bq-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 8px; }
+.bq-list li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 14px; background: var(--bg); }
+.bq-list li.is-fini { opacity: .55; }
+.bq-code { font: 900 .95rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .04em; padding: 7px 10px; border-radius: 10px; background: var(--pink); color: var(--pink-dd); border: 2px dashed var(--pink-d); }
+.bq-det { font-weight: 700; color: var(--ink); font-size: .92rem; min-width: 0; }
+.bq-det small { display: block; color: var(--muted); font-weight: 600; }
+.bq-x { width: 34px; height: 34px; border-radius: 10px; border: 0; background: transparent; color: var(--muted); cursor: pointer; display: grid; place-items: center; }
+.bq-x:hover { background: var(--card); color: var(--ink); }
+.bq-x .ico { width: 18px; height: 18px; }
+.bq-form input[type="range"] { width: 100%; accent-color: var(--peach-d); }
+.bq-couleurs { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.bq-couleurs legend { width: 100%; font-weight: 800; color: var(--ink); margin-bottom: 6px; }
+.bq-couleurs label { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px 6px 6px; border-radius: 999px; background: var(--bg); cursor: pointer; font-weight: 700; font-size: .9rem; }
+.bq-couleurs input { position: absolute; opacity: 0; }
+.bq-couleurs span { width: 22px; height: 22px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(0, 0, 0, .12) inset; }
+.bq-couleurs label:has(input:checked) { box-shadow: 0 0 0 2px var(--sky-d) inset; }
+.bq-couleurs label:has(input:focus-visible) { outline: 3px solid var(--lilac-d); outline-offset: 2px; }
+.bq-vac { padding-top: 24px; border-top: 1px solid var(--line); }
+@media (max-width: 860px) { .bq-grid { grid-template-columns: minmax(0, 1fr); } .bq-card#bq-promo { grid-row: auto; } }

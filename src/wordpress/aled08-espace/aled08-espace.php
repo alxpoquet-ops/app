@@ -93,6 +93,7 @@ require_once __DIR__ . '/includes/changer.php';
 require_once __DIR__ . '/includes/gestion.php';
 require_once __DIR__ . '/includes/stats.php';
 require_once __DIR__ . '/includes/vacances.php';
+require_once __DIR__ . '/includes/boutique.php';
 
 /* =========================================================================
  *  Rôle « Client Alex & Lia » et type de contenu « Demande »
@@ -881,7 +882,7 @@ function aled08e_dashboard() {
           <?php
           echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
           if ($cmd) echo aled08e_tab('commande', 'package', 'Ma commande'); // phpcs:ignore
-          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'gauge', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'sun', 'Vacances') : '') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
+          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'gauge', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'shopping-bag', 'Ma boutique') : '') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -1052,7 +1053,7 @@ function aled08e_dashboard() {
 
         <?php if (aled08e_est_boutique($uid)) : ?>
         <div class="app-panel" role="tabpanel" id="t-vacances" aria-labelledby="tab-vacances" hidden>
-          <?php echo aled08e_vacances_html($uid); // phpcs:ignore ?>
+          <?php echo aled08e_boutique_html($uid); // phpcs:ignore ?>
         </div>
         <?php endif; ?>
 

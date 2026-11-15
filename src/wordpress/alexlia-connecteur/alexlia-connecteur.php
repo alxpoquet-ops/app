@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Alex & Lia : connecteur
  * Description: À installer sur le site d'un client. Permet à Lia (l'IA d'Alex & Lia) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 1.3.0
+ * Version: 1.4.0
  * Requires PHP: 7.4
  * Author: Alex & Lia
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '1.3.0');
+define('ALEXLIA_CONN_VERSION', '1.4.0');
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Lia (Réglages › Alex & Lia)
@@ -118,6 +118,11 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'stats': return alexlia_conn_stats();
         case 'vacances_lire': return alexlia_vac_get();
         case 'vacances_regler': return alexlia_vac_regler($args);
+        case 'boutique_lire': return alexlia_bq_lire();
+        case 'promo_creer': return alexlia_bq_promo_creer($args);
+        case 'promo_supprimer': return alexlia_bq_promo_supprimer($args);
+        case 'soldes_regler': return alexlia_bq_soldes_regler($args);
+        case 'bandeau_regler': return alexlia_bq_bandeau_regler($args);
         default: return new WP_Error('alexlia_action', 'Action inconnue.', ['status' => 400]);
     }
 }
@@ -556,4 +561,152 @@ add_action('init', function () {
     };
     add_action('wp_body_open', $bandeau, 1);
     add_action('wp_footer', function () use ($bandeau) { ob_start(); $bandeau(); $h = ob_get_clean(); if ($h) echo '<script>(function(){var d=document.createElement("div");d.innerHTML=' . wp_json_encode($h) . ';document.body.insertBefore(d.firstChild,document.body.firstChild);})();</script>'; }, 1);
+});
+
+
+/* =========================================================================
+ *  Outils de la boutique, réglés par le client depuis son espace Alex & Lia :
+ *  codes promo, soldes rapides (un pourcentage sur tout ou une catégorie, avec des dates)
+ *  et bandeau d'annonce en haut du site. Rien ne touche aux fiches produits : les soldes
+ *  sont calculés à l'affichage, et s'arrêtent seuls à la date de fin.
+ * ========================================================================= */
+function alexlia_bq_vider_cache() {
+    if (function_exists('litespeed_purge_all')) litespeed_purge_all();
+    do_action('litespeed_purge_all');
+    if (function_exists('wc_delete_product_transients')) wc_delete_product_transients();
+    if (function_exists('wp_cache_flush')) wp_cache_flush();
+}
+function alexlia_bq_wc() { return class_exists('WooCommerce') && class_exists('WC_Coupon'); }
+function alexlia_bq_soldes() {
+    $v = get_option('alexlia_soldes');
+    $v = is_array($v) ? $v : [];
+    return $v + ['actif' => false, 'pct' => 10, 'debut' => '', 'fin' => '', 'categorie' => 0];
+}
+function alexlia_bq_bandeau() {
+    $v = get_option('alexlia_bandeau');
+    $v = is_array($v) ? $v : [];
+    return $v + ['actif' => false, 'message' => '', 'couleur' => 'rose', 'fin' => ''];
+}
+function alexlia_bq_dans_dates($v) {
+    if (empty($v['actif'])) return false;
+    $auj = wp_date('Y-m-d');
+    if (!empty($v['debut']) && $auj < $v['debut']) return false;
+    if (!empty($v['fin']) && $auj > $v['fin']) return false;
+    return true;
+}
+function alexlia_bq_lire() {
+    if (!alexlia_bq_wc()) return ['boutique' => false];
+    $promos = [];
+    foreach (get_posts(['post_type' => 'shop_coupon', 'post_status' => 'publish', 'numberposts' => 40, 'orderby' => 'date', 'order' => 'DESC']) as $p) {
+        $c = new WC_Coupon($p->ID);
+        $exp = $c->get_date_expires();
+        $promos[] = [
+            'id' => $p->ID, 'code' => strtoupper($c->get_code()), 'type' => $c->get_discount_type(), 'montant' => (float) $c->get_amount(),
+            'livraison' => (bool) $c->get_free_shipping(), 'minimum' => (float) $c->get_minimum_amount(),
+            'fin' => $exp ? $exp->date('Y-m-d') : '', 'utilise' => (int) $c->get_usage_count(), 'limite' => (int) $c->get_usage_limit(),
+            'expire' => $exp && $exp->getTimestamp() < time(),
+        ];
+    }
+    $cats = [];
+    foreach (get_terms(['taxonomy' => 'product_cat', 'hide_empty' => true, 'number' => 60]) as $t) if (!is_wp_error($t)) $cats[] = ['id' => $t->term_id, 'nom' => html_entity_decode($t->name)];
+    $so = alexlia_bq_soldes(); $so['en_cours'] = alexlia_bq_dans_dates($so);
+    $ba = alexlia_bq_bandeau(); $ba['en_cours'] = alexlia_bq_dans_dates($ba);
+    return ['boutique' => true, 'devise' => get_woocommerce_currency(), 'promos' => $promos, 'categories' => $cats, 'soldes' => $so, 'bandeau' => $ba];
+}
+function alexlia_bq_promo_creer($a) {
+    if (!alexlia_bq_wc()) return new WP_Error('alexlia_bq', 'Pas de boutique sur ce site.', ['status' => 400]);
+    $code = strtoupper(preg_replace('/[^A-Za-z0-9-]/', '', (string) ($a['code'] ?? '')));
+    if (strlen($code) < 3 || strlen($code) > 20) return new WP_Error('alexlia_bq', 'Le code doit faire de 3 à 20 lettres ou chiffres.', ['status' => 400]);
+    if (wc_get_coupon_id_by_code($code)) return new WP_Error('alexlia_bq_pris', 'Ce code existe déjà.', ['status' => 409]);
+    $type = ($a['type'] ?? '') === 'fixe' ? 'fixed_cart' : 'percent';
+    $m = round((float) ($a['montant'] ?? 0), 2);
+    $livraison = !empty($a['livraison']);
+    if (!$livraison && ($m <= 0 || ($type === 'percent' && $m > 90) || ($type === 'fixed_cart' && $m > 500))) return new WP_Error('alexlia_bq', 'Montant de la réduction impossible.', ['status' => 400]);
+    $c = new WC_Coupon();
+    $c->set_code(strtolower($code));
+    $c->set_discount_type($type);
+    $c->set_amount(max(0, $m));
+    $c->set_free_shipping($livraison);
+    $c->set_individual_use(true);
+    if (!empty($a['minimum'])) $c->set_minimum_amount(max(0, round((float) $a['minimum'], 2)));
+    if (!empty($a['limite'])) $c->set_usage_limit(max(1, (int) $a['limite']));
+    if (!empty($a['un_par_client'])) $c->set_usage_limit_per_user(1);
+    $fin = alexlia_vac_date($a['fin'] ?? '');
+    if ($fin) $c->set_date_expires(strtotime($fin . ' 23:59:59'));
+    $c->set_description('Créé depuis l’espace Alex & Lia');
+    $id = $c->save();
+    if (!$id) return new WP_Error('alexlia_bq', 'Le code n’a pas pu être créé.', ['status' => 500]);
+    alexlia_conn_journal('Code promo ' . $code . ' créé.');
+    return alexlia_bq_lire();
+}
+function alexlia_bq_promo_supprimer($a) {
+    $id = (int) ($a['id'] ?? 0);
+    $p = $id ? get_post($id) : null;
+    if (!$p || $p->post_type !== 'shop_coupon') return new WP_Error('alexlia_bq', 'Code introuvable.', ['status' => 404]);
+    wp_trash_post($id);
+    alexlia_conn_journal('Code promo ' . strtoupper($p->post_title) . ' supprimé (corbeille).');
+    return alexlia_bq_lire();
+}
+function alexlia_bq_soldes_regler($a) {
+    $v = [
+        'actif' => !empty($a['actif']),
+        'pct' => max(5, min(70, (int) ($a['pct'] ?? 10))),
+        'debut' => alexlia_vac_date($a['debut'] ?? ''),
+        'fin' => alexlia_vac_date($a['fin'] ?? ''),
+        'categorie' => max(0, (int) ($a['categorie'] ?? 0)),
+    ];
+    if ($v['debut'] && $v['fin'] && $v['fin'] < $v['debut']) return new WP_Error('alexlia_bq', 'La date de fin est avant la date de début.', ['status' => 400]);
+    update_option('alexlia_soldes', $v, true);
+    alexlia_conn_journal('Soldes ' . ($v['actif'] ? 'activées : -' . $v['pct'] . ' %' : 'arrêtées') . '.');
+    alexlia_bq_vider_cache();
+    return alexlia_bq_lire();
+}
+function alexlia_bq_bandeau_regler($a) {
+    $v = [
+        'actif' => !empty($a['actif']),
+        'message' => mb_substr(sanitize_text_field((string) ($a['message'] ?? '')), 0, 160),
+        'couleur' => in_array($a['couleur'] ?? '', ['rose', 'vert', 'bleu', 'jaune'], true) ? $a['couleur'] : 'rose',
+        'fin' => alexlia_vac_date($a['fin'] ?? ''),
+    ];
+    if ($v['actif'] && $v['message'] === '') return new WP_Error('alexlia_bq', 'Écrivez le message du bandeau.', ['status' => 400]);
+    update_option('alexlia_bandeau', $v, true);
+    alexlia_conn_journal('Bandeau ' . ($v['actif'] ? 'affiché' : 'retiré') . '.');
+    alexlia_bq_vider_cache();
+    return alexlia_bq_lire();
+}
+
+/* soldes : prix calculé à l'affichage, jamais enregistré dans le produit */
+function alexlia_bq_solde_pour($product) {
+    static $regle = null;
+    if ($regle === null) { $s = alexlia_bq_soldes(); $regle = alexlia_bq_dans_dates($s) ? $s : false; }
+    if (!$regle || !$product || !is_object($product)) return null;
+    $pid = $product->get_parent_id() ?: $product->get_id();
+    if ($regle['categorie'] && !has_term((int) $regle['categorie'], 'product_cat', $pid)) return null;
+    $reg = $product->get_regular_price('edit');
+    if ($reg === '' || (float) $reg <= 0) return null;
+    $prix = round((float) $reg * (100 - (int) $regle['pct']) / 100, wc_get_price_decimals());
+    $propre = $product->get_sale_price('edit');
+    if ($propre !== '' && (float) $propre < $prix) return null; // une promo déjà plus forte sur le produit reste
+    return $prix;
+}
+add_action('init', function () {
+    if (!class_exists('WooCommerce') || (is_admin() && !wp_doing_ajax())) return;
+    if (alexlia_bq_dans_dates(alexlia_bq_soldes())) {
+        $prix = function ($p, $product) { $n = alexlia_bq_solde_pour($product); return $n === null ? $p : $n; };
+        foreach (['woocommerce_product_get_price', 'woocommerce_product_get_sale_price', 'woocommerce_product_variation_get_price', 'woocommerce_product_variation_get_sale_price'] as $f) add_filter($f, $prix, 99, 2);
+        add_filter('woocommerce_variation_prices_price', function ($p, $var) { $n = alexlia_bq_solde_pour($var); return $n === null ? $p : $n; }, 99, 2);
+        add_filter('woocommerce_variation_prices_sale_price', function ($p, $var) { $n = alexlia_bq_solde_pour($var); return $n === null ? $p : $n; }, 99, 2);
+        add_filter('woocommerce_get_variation_prices_hash', function ($h) { $h[] = 'alexlia-' . md5(wp_json_encode(alexlia_bq_soldes())); return $h; }, 99);
+        add_filter('woocommerce_product_is_on_sale', function ($on, $product) { return alexlia_bq_solde_pour($product) !== null ? true : $on; }, 99, 2);
+    }
+    $b = alexlia_bq_bandeau();
+    if (alexlia_bq_dans_dates($b) && $b['message'] !== '') {
+        $c = ['rose' => ['#ffe1ea', '#7a1f3d'], 'vert' => ['#dcf5e8', '#145a3a'], 'bleu' => ['#dcecff', '#173f73'], 'jaune' => ['#fff4d6', '#5b4300']][$b['couleur']] ?? ['#ffe1ea', '#7a1f3d'];
+        $bandeau = function () use ($b, $c) {
+            static $fait = false; if ($fait) return; $fait = true;
+            echo '<div class="alexlia-bandeau" role="status" style="position:relative;z-index:99998;padding:9px 16px;text-align:center;background:' . esc_attr($c[0]) . ';color:' . esc_attr($c[1]) . ';font:600 15px/1.4 system-ui,sans-serif">' . esc_html($b['message']) . '</div>';
+        };
+        add_action('wp_body_open', $bandeau, 2);
+        add_action('wp_footer', function () use ($bandeau) { ob_start(); $bandeau(); $h = ob_get_clean(); if ($h) echo '<script>(function(){var d=document.createElement("div");d.innerHTML=' . wp_json_encode($h) . ';document.body.insertBefore(d.firstChild,document.body.firstChild);})();</script>'; }, 2);
+    }
 });

@@ -6,9 +6,11 @@
  */
 defined('ABSPATH') || exit;
 
-function aled08e_stats_acces($uid) {
+/* Tout client relié voit l'essentiel ; Titan (et la famille) voit tout le détail */
+function aled08e_stats_complet($uid) {
     return aled08e_meta($uid, 'forfait') === 'titan' || aled08e_famille($uid);
 }
+function aled08e_stats_acces($uid) { return (bool) $uid; }
 
 /* Chiffres du site du client (gardés une heure : une mise à jour par heure suffit) */
 function aled08e_stats_lire($uid) {
@@ -35,13 +37,14 @@ add_action('wp_ajax_aled08e_stats', function () {
 
 function aled08e_stats_html($uid) {
     $acces = aled08e_stats_acces($uid);
+    $complet = aled08e_stats_complet($uid);
     $boutique = function_exists('aled08e_est_boutique') && aled08e_est_boutique($uid);
     $carte = function ($id, $ic, $label, $couleur) { return '<div class="live-kpi c-' . $couleur . '"><span class="live-kpi-ico">' . aled08e_icon($ic) . '</span><span><small>' . esc_html($label) . '</small><strong data-live="' . $id . '">0</strong></span></div>'; };
     ob_start();
     ?>
-<section class="live<?php echo $acces ? '' : ' is-locked'; ?>" data-live-stats="<?php echo $acces ? '1' : '0'; ?>" data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" data-nonce="<?php echo esc_attr($acces ? wp_create_nonce('aled08e_stats') : ''); ?>">
+<section class="live<?php echo $complet ? '' : ' is-simple'; ?>" data-live-stats="<?php echo $acces ? '1' : '0'; ?>" data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" data-nonce="<?php echo esc_attr($acces ? wp_create_nonce('aled08e_stats') : ''); ?>">
   <div class="live-head">
-    <p class="app-sub"><span class="live-dot" aria-hidden="true"></span>Votre site, heure par heure</p>
+    <p class="app-sub"><span class="live-dot" aria-hidden="true"></span><?php echo $complet ? 'Votre site, heure par heure' : 'Votre site en bref'; ?></p>
     <small class="live-maj" data-live-maj aria-live="polite"><?php echo $acces ? 'Connexion à votre site…' : 'Exemple'; ?></small>
   </div>
   <ul class="live-voyants" aria-label="État de votre site">
@@ -53,9 +56,15 @@ function aled08e_stats_html($uid) {
   </ul>
   <p class="esp-warn" data-live-msg hidden></p>
   <div class="live-kpis">
-    <?php echo $carte('actifs', 'users', 'Dans la dernière heure', 'pink') . $carte('visiteurs', 'user', 'Visiteurs aujourd’hui', 'mint') . $carte('vues', 'eye', 'Pages vues aujourd’hui', 'sky') . $carte('temps', 'timer', 'Temps de réponse', 'butter'); // phpcs:ignore ?>
-    <?php echo str_replace('class="live-kpi', 'data-si-boutique' . ($boutique ? '' : ' hidden') . ' class="live-kpi', $carte('commandes', 'shopping-bag', 'Commandes aujourd’hui', 'lilac') . $carte('ventes', 'euro', 'Ventes sur 30 jours', 'peach')); // phpcs:ignore ?>
+    <?php echo $carte('total', 'users', 'Visiteurs sur 30 jours', 'mint'); // phpcs:ignore ?>
+    <?php echo str_replace('class="live-kpi', 'data-si-boutique' . ($boutique ? '' : ' hidden') . ' class="live-kpi', $carte('commandes', 'shopping-bag', 'Commandes sur 30 jours', 'lilac') . $carte('ventes', 'euro', 'Ventes sur 30 jours', 'peach')); // phpcs:ignore ?>
   </div>
+  <?php if (!$complet) : ?>
+  <div class="live-grid">
+    <div class="live-card live-wide"><p class="live-title">Pages les plus vues</p><div class="live-bars" data-chart="pages"></div></div>
+  </div>
+  <div class="live-titan"><span><?php echo aled08e_icon('chart-line'); // phpcs:ignore ?></span><div><strong>Envie de plus de détails ?</strong><p>Avec Titan : la courbe de vos visites, les appareils, d’où viennent vos visiteurs, et la santé de votre serveur.</p></div><button type="button" class="btn btn-light btn-sm" data-go="forfait"><?php echo aled08e_icon('arrow-right'); // phpcs:ignore ?><span>Voir Titan</span></button></div>
+  <?php else : ?>
   <div class="live-grid">
     <div class="live-card live-wide"><p class="live-title">Visiteurs sur 30 jours</p><div class="live-chart" data-chart="jours"></div><p class="live-legend"><span class="lg lg-a"></span>Visiteurs <span class="lg lg-b"></span>Pages vues</p></div>
     <div class="live-card"><p class="live-title">Aujourd’hui, heure par heure</p><div class="live-chart" data-chart="heures"></div></div>
@@ -78,7 +87,7 @@ function aled08e_stats_html($uid) {
       </dl>
     </div>
   </div>
-  <?php if (!$acces) : ?><div class="live-lock"><span><?php echo aled08e_icon('lock'); // phpcs:ignore ?></span><strong>Votre site heure par heure, avec Titan</strong><p>Visiteurs, pages vues, appareils, provenance, mémoire et charge du serveur : tout se met à jour toutes les heures.</p><button type="button" class="btn btn-primary btn-sm" data-go="forfait"><?php echo aled08e_icon('arrow-right'); // phpcs:ignore ?><span>Voir le forfait Titan</span></button></div><?php endif; ?>
+  <?php endif; ?>
   <p class="app-note">Mesure d’audience sans cookie : vos visiteurs sont comptés de façon anonyme, sans aucune donnée personnelle gardée. Les visites des personnes connectées et des robots ne sont pas comptées.</p>
 </section>
 <script>
@@ -94,7 +103,7 @@ function aled08e_stats_html($uid) {
   var COUL = ['var(--mint-d)', 'var(--lilac-d)', 'var(--pink-d)', 'var(--sky-d)', 'var(--butter-d)', 'var(--peach-d)'];
 
   function courbe(n, jours) {
-    vider(n);
+    if (!n) return; vider(n);
     var W = 600, H = 180, P = 24, max = 1;
     jours.forEach(function (j) { max = Math.max(max, j.vues, j.visiteurs); });
     var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'live-svg', role: 'img', 'aria-label': 'Visiteurs sur 30 jours' });
@@ -111,7 +120,7 @@ function aled08e_stats_html($uid) {
     n.appendChild(svg);
   }
   function barres(n, vals, lab) {
-    vider(n);
+    if (!n) return; vider(n);
     var W = 300, H = 150, max = Math.max.apply(null, vals.concat([1])), bw = W / vals.length;
     var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'live-svg', role: 'img', 'aria-label': lab });
     var h = new Date().getHours();
@@ -120,7 +129,7 @@ function aled08e_stats_html($uid) {
     n.appendChild(svg);
   }
   function camembert(n, obj) {
-    vider(n);
+    if (!n) return; vider(n);
     var cles = Object.keys(obj || {}), total = cles.reduce(function (s, k) { return s + (+obj[k] || 0); }, 0);
     var svg = el('svg', { viewBox: '0 0 120 120', class: 'live-svg donut', role: 'img' });
     svg.appendChild(el('circle', { cx: 60, cy: 60, r: 44, class: 'donut-bg' }));
@@ -138,7 +147,7 @@ function aled08e_stats_html($uid) {
     n.appendChild(svg); n.appendChild(leg);
   }
   function pages(n, obj) {
-    vider(n);
+    if (!n) return; vider(n);
     var cles = Object.keys(obj || {}), max = Math.max.apply(null, cles.map(function (k) { return obj[k]; }).concat([1]));
     if (!cles.length) { n.innerHTML = '<p class="live-vide">Les pages les plus vues s’afficheront ici.</p>'; return; }
     cles.forEach(function (k) { var d = document.createElement('div'); d.className = 'pb'; d.innerHTML = '<span class="pb-l"></span><span class="pb-v"></span><span class="pb-b"><i style="width:' + Math.round(obj[k] / max * 100) + '%"></i></span>'; d.children[0].textContent = k === '/' ? 'Accueil' : decodeURIComponent(k); d.children[1].textContent = nf(obj[k]); n.appendChild(d); });
@@ -173,9 +182,8 @@ function aled08e_stats_html($uid) {
   function afficher(d) {
     var a = d.aujourdhui || {}, s = d.serveur || {}, b = d.boutique;
     var set = function (k, v) { var e = $('[data-live="' + k + '"]'); if (e) e.textContent = v; };
-    set('actifs', nf(a.actifs || 0)); set('visiteurs', nf(a.visiteurs || 0)); set('vues', nf(a.vues || 0));
-    set('temps', s.temps_reponse != null ? nf(s.temps_reponse * 1000) + ' ms' : '–');
-    if (b) { set('commandes', nf(b.commandes_aujourdhui || 0)); set('ventes', nf(b.ventes_30j || 0) + ' €'); }
+    set('total', nf((d.jours || []).reduce(function (t, j) { return t + (+j.visiteurs || 0); }, 0)));
+    if (b) { set('commandes', nf(b.commandes_30j || 0)); set('ventes', nf(b.ventes_30j || 0) + ' €'); }
     courbe($('[data-chart="jours"]'), d.jours || []);
     barres($('[data-chart="heures"]'), a.heures || new Array(24).fill(0), 'Visites heure par heure');
     camembert($('[data-chart="appareils"]'), d.appareils || {});
