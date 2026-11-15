@@ -73,7 +73,8 @@ function aled08e_vacances_html($uid) {
 <?php if (isset($msgs[$mv])) echo '<p class="' . esc_attr($msgs[$mv][0]) . '" role="status">' . esc_html($msgs[$mv][1]) . '</p>'; ?>
 <p class="app-p">Vous partez ? Mettez votre boutique en pause pour les dates de votre choix. Un bandeau prévient vos visiteurs, et tout repart seul à la date de retour. Ça ne compte pas dans vos modifications.</p>
 <div class="vac-etat"><em class="st <?php echo esc_attr($etat[0]); ?>"><?php echo esc_html($etat[1]); ?></em><?php if ($v['actif']) echo '<span>' . esc_html(($v['debut'] ? 'Du ' . $fr($v['debut']) : 'Dès maintenant') . ($v['fin'] ? ' au ' . $fr($v['fin']) . ' inclus' : ', sans date de retour') . ' · ' . ($v['mode'] === 'retard' ? 'commandes acceptées, expédition au retour' : 'commandes fermées')) . '</span>'; ?></div>
-<form class="form esp-form vac-form" method="post" action="<?php echo esc_url(aled08e_url()); ?>">
+<div class="vac-wrap">
+<form class="form esp-form vac-form" method="post" action="<?php echo esc_url(aled08e_url()); ?>" data-vac-form>
   <?php wp_nonce_field('aled08e_vacances', '_aled08e_vac'); ?>
   <div class="esp-grid2">
     <div class="field"><label for="vac-debut">Départ (premier jour fermé)</label><input id="vac-debut" type="date" name="debut" value="<?php echo esc_attr($v['debut']); ?>" min="<?php echo esc_attr(wp_date('Y-m-d')); ?>"><small class="field-hint">Vide : dès maintenant</small></div>
@@ -89,6 +90,48 @@ function aled08e_vacances_html($uid) {
     <?php if ($v['actif']) : ?><button class="btn btn-light" type="submit" name="aled08e_vacances" value="arreter"><?php echo aled08e_icon('x'); // phpcs:ignore ?><span>Arrêter, rouvrir la boutique</span></button><?php endif; ?>
   </div>
 </form>
+<figure class="vac-apercu" aria-label="Aperçu : ce que vos visiteurs verront pendant vos vacances">
+  <figcaption><?php echo aled08e_icon('eye'); // phpcs:ignore ?>Ce que verront vos visiteurs</figcaption>
+  <div class="vac-ecran" data-vac-ecran>
+    <div class="vac-nav"><i></i><i></i><i></i><span><?php echo esc_html(wp_parse_url(aled08e_meta($uid, 'lia_url') ?: home_url(), PHP_URL_HOST) ?: 'votre-boutique.fr'); ?></span></div>
+    <p class="vac-bandeau" data-vac-texte></p>
+    <div class="vac-prod">
+      <span class="vac-img" aria-hidden="true"><?php echo aled08e_icon('shopping-bag'); // phpcs:ignore ?></span>
+      <div>
+        <strong>Votre produit</strong>
+        <span class="vac-prix">25,00 €</span>
+        <p class="vac-note" data-vac-note></p>
+        <span class="vac-btn" data-vac-btn>Ajouter au panier</span>
+      </div>
+    </div>
+  </div>
+  <p class="vac-legende" data-vac-legende></p>
+</figure>
+</div>
+<script>
+(function () {
+  var f = document.querySelector('[data-vac-form]'), e = document.querySelector('[data-vac-ecran]');
+  if (!f || !e) return;
+  var mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  var date = function (v) { if (!v) return ''; var p = v.split('-'); return (+p[2]) + ' ' + mois[+p[1] - 1] + ' ' + p[0]; };
+  function maj() {
+    var mode = (f.querySelector('input[name="mode"]:checked') || {}).value || 'ferme';
+    var fin = date(f.querySelector('[name="fin"]').value), msg = f.querySelector('[name="message"]').value.trim();
+    var txt = msg || (mode === 'retard'
+      ? 'Nous sommes en congés' + (fin ? ' jusqu’au ' + fin : '') + '. Vous pouvez commander : votre colis partira dès notre retour.'
+      : 'La boutique est en pause pour congés' + (fin ? ' jusqu’au ' + fin : '') + '. Les commandes reprennent à notre retour. Merci de votre patience !');
+    e.querySelector('[data-vac-texte]').textContent = txt;
+    e.querySelector('[data-vac-note]').textContent = txt;
+    var b = e.querySelector('[data-vac-btn]');
+    b.classList.toggle('is-off', mode === 'ferme');
+    b.textContent = mode === 'ferme' ? 'Commande impossible pour le moment' : 'Ajouter au panier';
+    document.querySelector('[data-vac-legende]').textContent = mode === 'ferme'
+      ? 'Le bandeau s’affiche en haut de toutes les pages. Vos produits restent visibles, mais le bouton d’achat est bloqué.'
+      : 'Le bandeau s’affiche en haut de toutes les pages. On peut toujours commander : le message le rappelle sur chaque produit et au panier.';
+  }
+  f.addEventListener('input', maj); f.addEventListener('change', maj); maj();
+})();
+</script>
     <?php
     return ob_get_clean();
 }
