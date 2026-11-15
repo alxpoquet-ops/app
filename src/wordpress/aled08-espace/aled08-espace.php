@@ -843,7 +843,7 @@ function aled08e_dashboard() {
             <input type="hidden" name="aled08e_demande" value="1">
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>
             <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend><p class="app-note"><?php echo $illimite ? 'Modifications illimitées.' : 'Il vous reste ' . (int) $left . ' modification' . ($left > 1 ? 's' : '') . ' ce mois-ci, par Lia ou par Alex, au choix.'; ?></p>
-              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo ' checked'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, instantané</strong><small>Lia prépare la modification et vous montre l’aperçu. Votre site ne change qu’après votre accord. </small></span></label>
+              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo ' checked'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, instantané</strong><small>Un changement de texte et une image au plus par demande. Lia vous montre l’aperçu, et votre site ne change qu’après votre accord.</small></span></label>
               <label class="req-par-opt"><input type="radio" name="par" value="alex"><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même. </small></span></label>
             </fieldset>
             <?php if ($left <= 0) : ?><label class="check"><input type="checkbox" name="boost_ok" value="1" required><span>Boost : j’accepte 1 € pour cette modification en plus, faite par Alex</span></label><?php endif; ?>

@@ -58,6 +58,14 @@ function aled08e_lia_appel($uid, $action, $args = []) {
     if ($code >= 400) return new WP_Error('aled08_lia', is_array($data) && !empty($data['message']) ? $data['message'] : 'Réponse ' . $code . ' du site du client.', ['code' => $code]);
     return is_array($data) ? $data : [];
 }
+/* Coût estimé d'une demande, en dollars, d'après les jetons comptés par Claude.
+ * Tarifs par million de jetons (à ajuster si le modèle change) : lecture, écriture, cache lu, cache écrit. */
+function aled08e_lia_cout($c) {
+    $t = apply_filters('aled08e_lia_tarifs', ['entree' => 4.0, 'sortie' => 20.0, 'cache_lu' => 0.2, 'cache_ecrit' => 5.0]);
+    $s = 0.0;
+    foreach ($t as $k => $prix) $s += ((int) ($c[$k] ?? 0)) * $prix / 1000000;
+    return $s;
+}
 function aled08e_lia_secret_nouveau() { return wp_generate_password(48, false, false); }
 
 /* =========================================================================
@@ -86,6 +94,8 @@ function aled08e_lia_systeme($u, $infos) {
         . "Tes changements sont préparés dans un aperçu : le client le regarde et confirme, puis ils sont mis en ligne. Alex, l'humain, vérifie ensuite.\n\n"
         . "Règles :\n"
         . "- Fais exactement ce qui est demandé, rien de plus. Ne change ni le style, ni la mise en page, ni les autres textes.\n"
+        . "- Une demande = une petite modification : UN changement de texte (une phrase, un prix, un horaire, un paragraphe) et, au plus, UNE image. Rien d'autre.\n"
+        . "- Si la demande contient plusieurs changements, une refonte, une nouvelle page, une nouvelle rubrique ou un long texte à réécrire : ne modifie rien et termine avec « pour_alex », en expliquant gentiment au client qu'avec Lia c'est un changement à la fois, et qu'Alex s'occupe du reste.\n"
         . "- Lis toujours le contenu avant de le modifier. Préfère remplacer_texte pour un petit changement, en recopiant le passage exact (balises comprises).\n"
         . "- Écris en français correct, dans le ton du site. Garde les espaces insécables et la typographie existantes.\n"
         . "- Tu ne peux ni supprimer une page, ni toucher aux extensions, au thème, aux prix d'une boutique en ligne ou aux comptes : si la demande l'exige, ne fais rien et termine avec « pour_alex ».\n"
@@ -104,6 +114,17 @@ function aled08e_lia_executer($uid, $pid, $nom, $in, &$actions) {
     $prevu = function ($r, $type, $id, $detail) use (&$actions) {
         if (!is_wp_error($r)) $actions[] = ['type' => $type, 'id' => (int) $id, 'revision' => 0, 'adresse' => (string) ($r['adresse'] ?? ''), 'apercu' => (string) ($r['apercu'] ?? ''), 'prepare' => true, 'detail' => $detail];
     };
+    // Bride : une demande = un changement de texte et, au plus, une image (qu'il faut ensuite poser dans la page).
+    $ecritures = 0; $images = 0;
+    foreach ($actions as $a) { if (($a['type'] ?? '') === 'image') $images++; else $ecritures++; }
+    $trop = function ($pourquoi) { return ['erreur' => $pourquoi . ' Avec Lia, une demande = un changement de texte et une image au plus. N’essaie pas autrement : termine avec « pour_alex » si la demande n’est pas entièrement faite, sinon avec « fait ».']; };
+    if (in_array($nom, ['remplacer_texte', 'modifier_contenu', 'publier_actualite', 'modifier_reglage'], true)) {
+        if ($ecritures >= 1 + min(1, $images)) return $trop('Limite atteinte : un changement est déjà préparé.');
+        $long = mb_strlen(wp_strip_all_tags((string) ($in['nouveau'] ?? $in['contenu'] ?? $in['valeur'] ?? '')));
+        if ($nom === 'modifier_contenu' && isset($in['contenu'])) return $trop('Réécrire toute une page est trop gros pour Lia.');
+        if ($long > ($nom === 'publier_actualite' ? 2500 : 1500)) return $trop('Ce texte est trop long pour Lia.');
+    }
+    if ($nom === 'importer_image' && $images >= 1) return $trop('Limite atteinte : une image est déjà importée.');
     switch ($nom) {
         case 'lister_contenus': $r = aled08e_lia_appel($uid, 'lister', ['type' => $in['type'] ?? 'any']); break;
         case 'lire_contenu': $r = aled08e_lia_appel($uid, 'lire', ['id' => (int) ($in['id'] ?? 0), 'jeton' => $jeton]); break;
@@ -182,10 +203,11 @@ function aled08e_lia_traiter($pid) {
     $resultat = null;
     try {
         $client = new \Anthropic\Client(apiKey: aled08e_lia_cle());
-        for ($tour = 0; $tour < 16 && $resultat === null; $tour++) {
+        $conso = ['entree' => 0, 'sortie' => 0, 'cache_lu' => 0, 'cache_ecrit' => 0, 'appels' => 0];
+        for ($tour = 0; $tour < 8 && $resultat === null; $tour++) {
             $r = $client->beta->messages->create(
                 model: aled08e_lia_modele(),
-                maxTokens: 16000,
+                maxTokens: 6000,
                 system: [['type' => 'text', 'text' => aled08e_lia_systeme($u, $infos), 'cacheControl' => ['type' => 'ephemeral']]],
                 messages: $messages,
                 tools: aled08e_lia_outils(),
@@ -193,6 +215,14 @@ function aled08e_lia_traiter($pid) {
                 fallbacks: 'default',
                 betas: ['server-side-fallback-2026-07-01'],
             );
+            if (isset($r->usage)) {
+                $conso['appels']++;
+                $conso['entree'] += (int) ($r->usage->inputTokens ?? 0);
+                $conso['sortie'] += (int) ($r->usage->outputTokens ?? 0);
+                $conso['cache_lu'] += (int) ($r->usage->cacheReadInputTokens ?? 0);
+                $conso['cache_ecrit'] += (int) ($r->usage->cacheCreationInputTokens ?? 0);
+                update_post_meta($pid, '_aled08_lia_conso', $conso);
+            }
             if ($r->stopReason === 'refusal') { $resultat = ['pour_alex', 'Je transmets votre demande à Alex, qui s’en occupe.', 'Claude a refusé la demande (' . ($r->stopDetails->category ?? 'sans catégorie') . ').']; break; }
             $messages[] = ['role' => 'assistant', 'content' => $r->content];
             if ($r->stopReason !== 'tool_use') {
@@ -214,6 +244,12 @@ function aled08e_lia_traiter($pid) {
                 $out = aled08e_lia_executer($uid, $pid, $b->name, $b->input, $actions);
                 $results[] = ['type' => 'tool_result', 'toolUseID' => $b->id, 'content' => wp_json_encode($out, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 'isError' => isset($out['erreur'])];
             }
+            // la conversation déjà envoyée est mise en cache : seul le dernier résultat garde le repère (4 repères au plus par requête)
+            foreach ($messages as &$m) {
+                if (($m['role'] ?? '') === 'user' && is_array($m['content'])) foreach ($m['content'] as &$bloc) if (is_array($bloc)) unset($bloc['cacheControl']);
+            }
+            unset($m, $bloc);
+            if ($results) $results[count($results) - 1]['cacheControl'] = ['type' => 'ephemeral'];
             $messages[] = ['role' => 'user', 'content' => $results];
         }
     } catch (\Throwable $e) {
@@ -372,6 +408,8 @@ function aled08e_lia_box($post) {
     }
     if ($c = get_post_meta($post->ID, '_aled08_lia_commentaire', true)) echo '<p><em>Commentaire du client :</em> ' . nl2br(esc_html($c)) . '</p>';
     if ($n = get_post_meta($post->ID, '_aled08_lia_note', true)) echo '<p><em>Note de Lia :</em> ' . nl2br(esc_html($n)) . '</p>';
+    $c = get_post_meta($post->ID, '_aled08_lia_conso', true);
+    if (is_array($c) && !empty($c['appels'])) echo '<p><em>Coût estimé de cette demande :</em> ' . esc_html(number_format(aled08e_lia_cout($c), 3, ',', ' ')) . ' $ (' . (int) $c['appels'] . ' appels, ' . (int) ($c['entree'] + $c['cache_lu'] + $c['cache_ecrit']) . ' jetons lus, ' . (int) $c['sortie'] . ' écrits)</p>';
     if ($a = get_post_meta($post->ID, '_aled08_lia_annule', true)) echo '<p style="color:#b32d2e">Changements annulés le ' . esc_html($a) . '.</p>';
     $btn = function ($act, $label, $cls = 'button') use ($post) {
         return '<a class="' . $cls . '" href="' . esc_url(wp_nonce_url(admin_url('admin-post.php?action=aled08e_lia&do=' . $act . '&pid=' . $post->ID), 'aled08e_lia_' . $post->ID)) . '"' . ($act === 'annuler' ? ' onclick="return confirm(\'Remettre le site du client comme avant le passage de Lia ?\')"' : '') . '>' . esc_html($label) . '</a> ';
