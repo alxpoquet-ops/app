@@ -2,7 +2,7 @@
 // vers src/lib/icons.js. Usage : node scripts/gen-icons.js <chemin node_modules>
 const fs = require('fs'), path = require('path');
 const nm = process.argv[2];
-const names = `zap phone search plug power toggle-right lightbulb lamp-wall-up lamp-ceiling shield-check panel-top circuit-board clock moon calendar-days map-pin check circle-check star message-circle mail euro wrench house arrow-right chevron-down chevron-right menu x quote file-text triangle-alert zap-off thermometer cable plug-zap badge-check handshake eye sparkles ruler route car-front cloud-lightning droplets flame key-round hammer list-checks calculator user send image info circle-help lightbulb-off bath warehouse sun battery-charging gauge clipboard-check receipt cookie lock scale book-open navigation timer sun-moon shield-alert phone-call smartphone tree-pine building-2 house-plug fence lamp-floor`.split(/\s+/);
+const names = `music zap phone search plug power toggle-right lightbulb lamp-wall-up lamp-ceiling shield-check panel-top circuit-board clock moon calendar-days map-pin check circle-check star message-circle mail euro wrench house arrow-right chevron-down chevron-right menu x quote file-text triangle-alert zap-off thermometer cable plug-zap badge-check handshake eye sparkles ruler route car-front cloud-lightning droplets flame key-round hammer list-checks calculator user send image info circle-help lightbulb-off bath warehouse sun battery-charging gauge clipboard-check receipt cookie lock scale book-open navigation timer sun-moon shield-alert phone-call smartphone tree-pine building-2 house-plug fence lamp-floor`.split(/\s+/);
 const out = {};
 for (const n of names) {
   const svg = fs.readFileSync(path.join(nm, 'lucide-static/icons', n + '.svg'), 'utf8');

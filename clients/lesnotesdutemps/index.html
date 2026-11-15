@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Les Notes du Temps | Boîtes à musique à ressort, mécanisme Sankyo</title>
+<meta name="description" content="Boîtes à musique à ressort avec mécanisme Sankyo, sans pile : grands classiques, berceuses, mariage, films, chansons françaises, Noël. Un cadeau qui se remonte.">
+<link rel="canonical" href="https://www.lesnotesdutemps.fr/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Les Notes du Temps">
+<meta property="og:title" content="Les Notes du Temps : boîtes à musique à ressort">
+<meta property="og:description" content="Des boîtes à musique à remonter, avec mécanisme Sankyo, sur plusieurs thèmes. Un cadeau qui garde une mélodie.">
+<meta property="og:url" content="https://www.lesnotesdutemps.fr/">
+<meta property="og:image" content="https://www.lesnotesdutemps.fr/og-image.png">
+<meta name="theme-color" content="#2B1D16">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/cormorant.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/jost.woff2" as="font" type="font/woff2" crossorigin>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"Store","@id":"https://www.lesnotesdutemps.fr/#boutique","name":"Les Notes du Temps","url":"https://www.lesnotesdutemps.fr/","description":"Boîtes à musique à ressort avec mécanisme Sankyo, sur plusieurs thèmes.","image":"https://www.lesnotesdutemps.fr/og-image.png"},
+ {"@type":"WebSite","@id":"https://www.lesnotesdutemps.fr/#site","url":"https://www.lesnotesdutemps.fr/","name":"Les Notes du Temps","inLanguage":"fr-FR","publisher":{"@id":"https://www.lesnotesdutemps.fr/#boutique"}},
+ {"@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"Faut-il des piles ?","acceptedAnswer":{"@type":"Answer","text":"Non. La boîte fonctionne avec un ressort : on tourne la clé, et la mélodie joue. Rien à brancher, rien à recharger."}},
+  {"@type":"Question","name":"Qu’est-ce qu’un mécanisme Sankyo ?","acceptedAnswer":{"@type":"Answer","text":"Sankyo est une marque japonaise connue pour ses mécanismes de boîte à musique. Un cylindre à picots tourne et pince les lames d’un peigne en métal, ce qui donne ce son clair et cristallin."}},
+  {"@type":"Question","name":"Peut-on choisir sa mélodie ?","acceptedAnswer":{"@type":"Answer","text":"Chaque thème propose plusieurs airs. Écrivez-nous avec le thème qui vous plaît : nous vous envoyons la liste des mélodies disponibles."}},
+  {"@type":"Question","name":"Comment entretenir une boîte à musique ?","acceptedAnswer":{"@type":"Answer","text":"Gardez-la au sec et à l’abri de la poussière. Remontez la clé doucement, sans forcer quand elle résiste. Un chiffon doux suffit pour l’extérieur."}}
+ ]}
+]}
+</script>
+<style>
+@font-face{font-family:'Cormorant';font-style:normal;font-weight:500 600;font-display:swap;src:url(fonts/cormorant.woff2) format('woff2')}
+@font-face{font-family:'Cormorant';font-style:italic;font-weight:500;font-display:swap;src:url(fonts/cormorant-italic.woff2) format('woff2')}
+@font-face{font-family:'Jost';font-style:normal;font-weight:400 600;font-display:swap;src:url(fonts/jost.woff2) format('woff2')}
+:root{
+  --ink:#2B1D16; --text:#4A3A30; --muted:#7A6758; --bg:#FBF6EE; --paper:#F4EBDD; --card:#FFFDF8; --line:#E6D8C3;
+  --wood:#7B4A2D; --wood-d:#5A3320; --brass:#B8893B; --brass-l:#E2C27A; --rose:#C98B7A; --sage:#8FA58A; --night:#2B1D16;
+  --serif:'Cormorant',Georgia,'Times New Roman',serif; --sans:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --r:18px; --shadow:0 18px 40px -22px rgba(60,35,20,.45); --w:1120px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--text);font:400 1.06rem/1.7 var(--sans)}
+img,svg{display:block;max-width:100%}
+a{color:var(--wood)}
+h1,h2,h3{font-family:var(--serif);color:var(--ink);font-weight:600;line-height:1.1;margin:0 0 .5em;letter-spacing:.005em}
+h1{font-size:clamp(2.6rem,6.4vw,4.6rem)} h2{font-size:clamp(2rem,4.4vw,3rem)} h3{font-size:1.55rem}
+h1 em,h2 em{font-style:italic;font-weight:500;color:var(--wood)}
+p{margin:0 0 1em}
+.w{max-width:var(--w);margin:0 auto;padding:0 20px}
+.ey{font:600 .78rem/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--brass);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.ey::before{content:"";width:26px;height:1px;background:currentColor}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:999px;font:500 1rem/1 var(--sans);text-decoration:none;border:0;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn-main{background:var(--ink);color:#FBF6EE;box-shadow:0 10px 24px -12px rgba(43,29,22,.7)}
+.btn-soft{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn svg{width:18px;height:18px}
+.skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;z-index:99;background:#fff;padding:8px 12px}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+
+/* en-tête */
+.top{position:sticky;top:0;z-index:20;background:rgba(251,246,238,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .3s}
+.top.is-scrolled{border-color:var(--line)}
+.top .w{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:600 1.45rem/1 var(--serif)}
+.logo svg{width:34px;height:34px}
+.nav{display:flex;gap:26px;align-items:center}
+.nav a{color:var(--text);text-decoration:none;font-size:.95rem}
+.nav a:hover{color:var(--wood)}
+.nav .btn{padding:10px 18px;font-size:.92rem;color:#FBF6EE}
+@media (max-width:820px){.nav a:not(.btn){display:none}}
+
+/* haut de page */
+.hero{position:relative;overflow:hidden;padding:56px 0 90px;background:radial-gradient(700px 420px at 85% 10%,#F1DFC4,transparent 70%),radial-gradient(520px 380px at 0% 100%,#F3E3DA,transparent 70%)}
+.hero .w{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.lead{font-size:1.2rem;max-width:34em;color:var(--text)}
+.hero-btns{display:flex;flex-wrap:wrap;gap:12px;margin:26px 0 22px}
+.chips{display:flex;flex-wrap:wrap;gap:8px 18px;padding:0;margin:0;list-style:none;font-size:.92rem;color:var(--muted)}
+.chips li{display:flex;align-items:center;gap:7px}.chips svg{width:17px;height:17px;color:var(--brass)}
+.box-art{position:relative;width:100%}
+.box-art > svg{width:100%;height:auto}
+.box-art .notes span{position:absolute;font:500 2rem/1 var(--serif);color:var(--brass);opacity:0;animation:float 6s ease-in-out infinite}
+.box-art .notes span:nth-child(1){left:24%;top:22%}.box-art .notes span:nth-child(2){left:52%;top:12%;animation-delay:2s;font-size:1.6rem}.box-art .notes span:nth-child(3){left:72%;top:24%;animation-delay:4s}
+@keyframes float{0%{transform:translateY(20px) rotate(-8deg);opacity:0}20%{opacity:.9}100%{transform:translateY(-70px) rotate(10deg);opacity:0}}
+.box-art.is-playing .notes span{animation-duration:3s}
+#cyl{transform-box:fill-box;transform-origin:center}
+.is-playing #cyl-pins{animation:pins 1.2s linear infinite}
+@keyframes pins{to{transform:translateY(-14px)}}
+@media (max-width:860px){.hero .w{grid-template-columns:1fr}.box-art{max-width:440px;margin:0 auto}.hero{padding-top:30px}}
+
+/* sections */
+.s{padding:96px 0}
+.s-paper{background:var(--paper)}
+.head{max-width:640px;margin-bottom:46px}
+.head p{font-size:1.1rem}
+.center{text-align:center;margin-left:auto;margin-right:auto}.center .ey{justify-content:center}.center .ey::after{content:"";width:26px;height:1px;background:currentColor}
+
+/* thèmes */
+.themes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.theme{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:28px 26px 24px;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s}
+.theme:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.theme-ico{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;margin-bottom:18px;background:var(--t,#F1DFC4);color:var(--ink)}
+.theme-ico svg{width:28px;height:28px}
+.theme h3{margin-bottom:.3em}
+.theme p{color:var(--muted);font-size:.98rem;flex:1}
+.theme .airs{font:italic 500 1.12rem/1.4 var(--serif);color:var(--wood);margin:0 0 18px}
+.theme button{align-self:flex-start;background:none;border:0;padding:0;font:500 .95rem/1 var(--sans);color:var(--ink);cursor:pointer;display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--brass);padding-bottom:5px}
+.theme button svg{width:16px;height:16px;transition:transform .2s}.theme button:hover svg{transform:translateX(4px)}
+@media (max-width:900px){.themes{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){.themes{grid-template-columns:1fr}}
+
+/* mécanisme */
+.meca{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center}
+.steps{counter-reset:s;display:grid;gap:22px;margin:0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:48px 1fr;gap:16px;align-items:start}
+.steps li::before{counter-increment:s;content:counter(s);width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font:600 1.5rem/1 var(--serif);color:var(--wood);background:var(--card);box-shadow:inset 0 0 0 1.5px var(--brass-l)}
+.steps h3{font-size:1.35rem;margin:.2em 0 .2em}.steps p{margin:0;color:var(--muted)}
+.meca-art{background:var(--card);border-radius:24px;padding:28px;box-shadow:var(--shadow)}
+.meca-art figcaption{font-size:.88rem;color:var(--muted);text-align:center;margin-top:12px}
+@media (max-width:860px){.meca{grid-template-columns:1fr;gap:36px}}
+
+/* pourquoi */
+.whys{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.why{padding:6px 0}.why svg{width:30px;height:30px;color:var(--brass);margin-bottom:12px}
+.why h3{font-size:1.3rem;margin-bottom:.25em}.why p{font-size:.96rem;color:var(--muted);margin:0}
+@media (max-width:900px){.whys{grid-template-columns:repeat(2,1fr);gap:28px}}
+@media (max-width:480px){.whys{grid-template-columns:1fr}}
+
+/* occasions */
+.occ{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:0;margin:0;list-style:none}
+.occ li{padding:12px 20px;border-radius:999px;background:var(--card);border:1px solid var(--line);font:500 1.15rem/1 var(--serif);color:var(--ink)}
+
+/* écoute */
+.listen{background:var(--night);color:#EADBC6;border-radius:28px;padding:48px;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center;position:relative;overflow:hidden}
+.listen::after{content:"";position:absolute;inset:auto -80px -120px auto;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(226,194,122,.25),transparent 70%)}
+.listen h2{color:#FBF6EE}.listen h2 em{color:var(--brass-l)}.listen p{margin:0;max-width:36em}
+.listen .btn-main{background:var(--brass-l);color:var(--ink)}
+@media (max-width:700px){.listen{grid-template-columns:1fr;padding:34px 24px}}
+
+/* FAQ */
+.faq{max-width:760px;margin:0 auto}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:20px 40px 20px 0;position:relative;font:600 1.35rem/1.3 var(--serif);color:var(--ink)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:6px;top:16px;font:400 1.7rem/1 var(--sans);color:var(--brass);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{margin:0 0 22px;color:var(--muted)}
+
+/* contact */
+.contact{display:grid;grid-template-columns:.85fr 1.15fr;gap:50px;align-items:start}
+.form{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:30px;display:grid;gap:16px;box-shadow:var(--shadow)}
+.form .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form label{display:block;font:500 .9rem/1.2 var(--sans);color:var(--ink);margin-bottom:7px}
+.form input,.form select,.form textarea{width:100%;font:400 1rem/1.4 var(--sans);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.form input:focus,.form select:focus,.form textarea:focus{outline:none;border-color:var(--brass);box-shadow:0 0 0 3px rgba(184,137,59,.18)}
+.form textarea{min-height:130px;resize:vertical}
+.form .hp{position:absolute;left:-9999px}
+.form .small{font-size:.85rem;color:var(--muted);margin:0}
+.form-ok{display:none;padding:14px 16px;border-radius:12px;background:#EAF1E6;color:#3D5A36}
+.form-ok.is-on{display:block}
+.contact ul{padding:0;margin:20px 0 0;list-style:none;display:grid;gap:12px}
+.contact li{display:flex;gap:12px;align-items:flex-start}.contact li svg{width:22px;height:22px;color:var(--brass);flex:none;margin-top:3px}
+@media (max-width:860px){.contact{grid-template-columns:1fr}.form .two{grid-template-columns:1fr}}
+
+/* pied */
+.foot{background:var(--night);color:#BFAE9A;padding:46px 0 30px;font-size:.92rem}
+.foot .w{display:flex;flex-wrap:wrap;justify-content:space-between;gap:18px;align-items:center}
+.foot .logo{color:#FBF6EE}
+.foot a{color:#EADBC6}
+.credit{display:flex;justify-content:center;margin-top:26px;padding-top:20px;border-top:1px solid rgba(234,219,198,.12);font-size:.86rem;width:100%}
+.credit a{display:inline-flex;align-items:center;gap:6px;text-decoration:none}.credit a span{text-decoration:underline}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s,transform .7s}
+.reveal.is-in{opacity:1;transform:none}
+.no-js .reveal{opacity:1;transform:none}
+</style>
+</head>
+<body class="no-js">
+<a class="skip" href="#themes">Aller au contenu</a>
+
+<header class="top" id="top">
+  <div class="w">
+    <a class="logo" href="#top" aria-label="Les Notes du Temps, retour en haut">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#2B1D16"/><path d="M15 27.5a3.2 3.2 0 1 1-2-3V11.8l14-3.3v15a3.2 3.2 0 1 1-2-3v-8.8l-10 2.4z" fill="#E2C27A"/></svg>
+      Les Notes du Temps
+    </a>
+    <nav class="nav" aria-label="Menu">
+      <a href="#themes">Les thèmes</a>
+      <a href="#mecanisme">Le mécanisme</a>
+      <a href="#questions">Questions</a>
+      <a class="btn btn-main" href="#contact">Nous écrire</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="w">
+    <div>
+      <p class="ey">Mécanisme Sankyo, sans pile</p>
+      <h1>Une mélodie qui se <em>remonte</em>, et qui dure</h1>
+      <p class="lead">Des boîtes à musique à ressort, sur plusieurs thèmes : grands classiques, berceuses, mariage, musiques de films, chansons françaises et Noël. On tourne la clé, et le temps s’arrête un instant.</p>
+      <div class="hero-btns">
+        <a class="btn btn-main" href="#themes">Voir les thèmes
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <button class="btn btn-soft" type="button" data-play>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg><span>Écouter un air</span></button>
+      </div>
+      <ul class="chips">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>À remonter, sans pile</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Son clair et cristallin</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Un cadeau qui se garde</li>
+      </ul>
+    </div>
+
+    <div class="box-art" data-box>
+      <div class="notes" aria-hidden="true"><span>♪</span><span>♫</span><span>♪</span></div>
+      <svg viewBox="0 0 460 400" role="img" aria-label="Une boîte à musique en bois ouverte, avec son cylindre et son peigne en métal">
+        <defs>
+          <linearGradient id="wd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8C5634"/><stop offset="1" stop-color="#5A3320"/></linearGradient>
+          <linearGradient id="wd2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B3E25"/><stop offset=".5" stop-color="#8C5634"/><stop offset="1" stop-color="#6B3E25"/></linearGradient>
+          <linearGradient id="br" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0D48E"/><stop offset=".5" stop-color="#C99A45"/><stop offset="1" stop-color="#9C722C"/></linearGradient>
+          <linearGradient id="st" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4F1EC"/><stop offset="1" stop-color="#B9B2A8"/></linearGradient>
+          <linearGradient id="vel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9B4A4A"/><stop offset="1" stop-color="#6E2F33"/></linearGradient>
+          <clipPath id="cylclip"><rect x="138" y="232" width="150" height="36" rx="18"/></clipPath>
+        </defs>
+        <ellipse cx="230" cy="372" rx="190" ry="16" fill="#3B2418" opacity=".16"/>
+        <!-- couvercle ouvert -->
+        <path d="M70 196 L104 48 Q108 34 122 34 H338 Q352 34 356 48 L390 196 Z" fill="url(#wd2)"/>
+        <path d="M92 186 L120 60 H340 L368 186 Z" fill="url(#vel)"/>
+        <path d="M92 186 L120 60 H340 L368 186 Z" fill="none" stroke="#C99A45" stroke-width="2" opacity=".6"/>
+        <g opacity=".35" fill="none" stroke="#F0D48E" stroke-width="1.4"><path d="M230 86c-30 0-46 24-46 46s16 40 46 40 46-18 46-40-16-46-46-46z"/><path d="M230 104c-16 0-26 12-26 28s10 24 26 24 26-10 26-24-10-28-26-28z"/></g>
+        <!-- caisse -->
+        <path d="M58 196 H402 V340 Q402 356 386 356 H74 Q58 356 58 340 Z" fill="url(#wd)"/>
+        <rect x="58" y="196" width="344" height="14" fill="#9A6440"/>
+        <path d="M78 214 H382 V328 H78 Z" fill="#3E2417"/>
+        <!-- platine -->
+        <rect x="100" y="222" width="262" height="96" rx="8" fill="url(#br)"/>
+        <!-- peigne -->
+        <g id="comb">
+          <rect x="176" y="276" width="166" height="22" rx="3" fill="url(#st)"/>
+          <g fill="#E8E4DE" stroke="#A8A196" stroke-width=".6">
+            <rect x="180" y="262" width="6" height="18" rx="1"/><rect x="189" y="262" width="6" height="18" rx="1"/><rect x="198" y="263" width="6" height="17" rx="1"/><rect x="207" y="263" width="6" height="17" rx="1"/><rect x="216" y="264" width="6" height="16" rx="1"/><rect x="225" y="264" width="6" height="16" rx="1"/><rect x="234" y="265" width="6" height="15" rx="1"/><rect x="243" y="265" width="6" height="15" rx="1"/><rect x="252" y="266" width="6" height="14" rx="1"/><rect x="261" y="266" width="6" height="14" rx="1"/><rect x="270" y="267" width="6" height="13" rx="1"/><rect x="279" y="267" width="6" height="13" rx="1"/>
+          </g>
+          <circle cx="300" cy="287" r="4" fill="#8E877D"/><circle cx="330" cy="287" r="4" fill="#8E877D"/>
+        </g>
+        <!-- cylindre -->
+        <g id="cyl">
+          <rect x="138" y="232" width="150" height="36" rx="18" fill="url(#st)"/>
+          <g clip-path="url(#cylclip)"><g id="cyl-pins" fill="#6E675E">
+            <circle cx="150" cy="238" r="1.6"/><circle cx="168" cy="250" r="1.6"/><circle cx="183" cy="242" r="1.6"/><circle cx="192" cy="258" r="1.6"/><circle cx="207" cy="236" r="1.6"/><circle cx="219" cy="252" r="1.6"/><circle cx="228" cy="244" r="1.6"/><circle cx="246" cy="260" r="1.6"/><circle cx="256" cy="238" r="1.6"/><circle cx="270" cy="250" r="1.6"/><circle cx="279" cy="242" r="1.6"/>
+            <circle cx="158" cy="252" r="1.6"/><circle cx="175" cy="264" r="1.6"/><circle cx="198" cy="248" r="1.6"/><circle cx="213" cy="266" r="1.6"/><circle cx="236" cy="256" r="1.6"/><circle cx="262" cy="264" r="1.6"/><circle cx="150" cy="266" r="1.6"/><circle cx="185" cy="272" r="1.6"/><circle cx="222" cy="276" r="1.6"/><circle cx="252" cy="274" r="1.6"/><circle cx="276" cy="270" r="1.6"/>
+          </g></g>
+          <rect x="138" y="232" width="150" height="36" rx="18" fill="none" stroke="#8E877D" stroke-width="1.2"/>
+        </g>
+        <!-- barillet (ressort) -->
+        <circle cx="122" cy="282" r="20" fill="#C99A45" stroke="#8C6526" stroke-width="2"/>
+        <path d="M122 270a12 12 0 1 1-11 8m11-2a6 6 0 1 1-5 4" fill="none" stroke="#7C5A20" stroke-width="2" stroke-linecap="round"/>
+        <!-- clé -->
+        <g transform="translate(402 286)">
+          <rect x="0" y="-5" width="22" height="10" rx="3" fill="#B8893B"/>
+          <path d="M22 -16 q16 0 16 16 q0 16 -16 16 q-6 0 -6 -6 v-20 q0 -6 6 -6z" fill="#D6AE5E" stroke="#9C722C" stroke-width="2"/>
+        </g>
+        <!-- charnières -->
+        <rect x="128" y="190" width="30" height="10" rx="2" fill="#C99A45"/><rect x="302" y="190" width="30" height="10" rx="2" fill="#C99A45"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="themes">
+  <div class="w">
+    <div class="head reveal">
+      <p class="ey">Les thèmes</p>
+      <h2>Un air pour chaque <em>histoire</em></h2>
+      <p>Choisissez un thème, nous vous envoyons la liste des mélodies disponibles et les modèles de boîtes. Chaque boîte joue un seul air, celui que vous aurez choisi.</p>
+    </div>
+    <div class="themes">
+      <article class="theme reveal" style="--t:#F1DFC4">
+        <span class="theme-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+        <h3>Les grands classiques</h3>
+        <p class="airs">Mozart, Beethoven, Tchaïkovski…</p>
+        <p>Les airs que tout le monde fredonne, dans leur version la plus délicate.</p>
+        <button type="button" data-theme="Les grands classiques">Demander ce thème <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </article>
+      <article class="theme reveal" style="--t:#E9EEF5">
+        <span class="theme-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/><path d="M19 3v4M17 5h4"/></svg></span>
+        <h3>Berceuses et naissance</h3>
+        <p class="airs">Pour les premières nuits</p>
+        <p>Une douce mélodie au chevet de bébé, et un souvenir qui grandira avec lui.</p>
+        <button type="button" data-theme="Berceuses et naissance">Demander ce thème <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </article>
+      <article class="theme reveal" style="--t:#F3E1DC">
+        <span class="theme-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></svg></span>
+        <h3>Mariage et amour</h3>
+        <p class="airs">Pour dire « oui », et s’en souvenir</p>
+        <p>Pour un mariage, un anniversaire de rencontre, ou simplement pour dire je t’aime.</p>
+        <button type="button" data-theme="Mariage et amour">Demander ce thème <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </article>
+      <article class="theme reveal" style="--t:#E6ECE2">
+        <span class="theme-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="m2 10 20-4M7 6l3 3.5M13 4.8l3 3.6"/></svg></span>
+        <h3>Musiques de films</h3>
+        <p class="airs">Le cinéma au creux de la main</p>
+        <p>Les thèmes de films et de séries qui ont marqué une génération, ou une soirée.</p>
+        <button type="button" data-theme="Musiques de films">Demander ce thème <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </article>
+      <article class="theme reveal" style="--t:#EFE6F3">
+        <span class="theme-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></svg></span>
+        <h3>Chansons françaises</h3>
+        <p class="airs">Les refrains d’ici</p>
+        <p>Des chansons qui rappellent une voix, un lieu, une époque. À offrir à ceux qui chantent encore.</p>
+        <button type="button" data-theme="Chansons françaises">Demander ce thème <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </article>
+      <article class="theme reveal" style="--t:#F5E9D2">
+        <span class="theme-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 7 9h3l-4 6h4l-3 5h10l-3-5h4l-4-6h3z"/></svg></span>
+        <h3>Noël et fêtes</h3>
+        <p class="airs">Sous le sapin, chaque année</p>
+        <p>Les airs de Noël et des fêtes, à sortir en décembre comme une décoration qui chante.</p>
+        <button type="button" data-theme="Noël et fêtes">Demander ce thème <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="s s-paper" id="mecanisme">
+  <div class="w meca">
+    <figure class="meca-art reveal" style="margin:0">
+      <svg viewBox="0 0 420 250" role="img" aria-label="Schéma : le ressort fait tourner le cylindre, dont les picots pincent les lames du peigne">
+        <rect x="0" y="0" width="420" height="250" rx="16" fill="#FBF6EE"/>
+        <circle cx="70" cy="125" r="42" fill="#E2C27A" stroke="#9C722C" stroke-width="2"/>
+        <path d="M70 99a26 26 0 1 1-24 16m24-4a12 12 0 1 1-10 6" fill="none" stroke="#7C5A20" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M118 125h30" stroke="#9C722C" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+        <rect x="156" y="88" width="170" height="74" rx="37" fill="#E9E5DF" stroke="#8E877D" stroke-width="1.5"/>
+        <g fill="#5E574F"><circle cx="180" cy="104" r="3"/><circle cx="205" cy="130" r="3"/><circle cx="228" cy="112" r="3"/><circle cx="250" cy="146" r="3"/><circle cx="272" cy="120" r="3"/><circle cx="296" cy="138" r="3"/><circle cx="192" cy="148" r="3"/><circle cx="262" cy="100" r="3"/></g>
+        <g fill="#D9D4CC" stroke="#8E877D" stroke-width="1"><rect x="172" y="168" width="10" height="44" rx="2"/><rect x="190" y="168" width="10" height="40" rx="2"/><rect x="208" y="168" width="10" height="36" rx="2"/><rect x="226" y="168" width="10" height="33" rx="2"/><rect x="244" y="168" width="10" height="30" rx="2"/><rect x="262" y="168" width="10" height="27" rx="2"/><rect x="280" y="168" width="10" height="24" rx="2"/><rect x="298" y="168" width="10" height="22" rx="2"/></g>
+        <g font-family="Jost, sans-serif" font-size="13" fill="#4A3A30"><text x="70" y="196" text-anchor="middle">le ressort</text><text x="241" y="74" text-anchor="middle">le cylindre et ses picots</text><text x="241" y="236" text-anchor="middle">le peigne en métal</text></g>
+      </svg>
+      <figcaption>Un mécanisme entièrement mécanique : ni pile, ni prise, ni écran.</figcaption>
+    </figure>
+    <div class="reveal">
+      <p class="ey">Le mécanisme</p>
+      <h2>Un petit moteur <em>à l’ancienne</em></h2>
+      <p>Nos boîtes utilisent des mécanismes à ressort de la marque japonaise Sankyo, réputée pour la netteté de leur son. Le principe n’a presque pas changé depuis le XIX<sup>e</sup> siècle.</p>
+      <ol class="steps">
+        <li><div><h3>On remonte la clé</h3><p>Quelques tours suffisent : le ressort se tend et garde l’énergie.</p></div></li>
+        <li><div><h3>Le cylindre tourne</h3><p>En se détendant, le ressort fait tourner lentement un cylindre couvert de petits picots.</p></div></li>
+        <li><div><h3>Le peigne chante</h3><p>Chaque picot pince une lame du peigne en métal. Chaque lame a sa note : la mélodie naît.</p></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="s">
+  <div class="w">
+    <div class="head center reveal">
+      <p class="ey">Pourquoi une boîte à musique</p>
+      <h2>Un cadeau qui ne <em>s’use</em> pas</h2>
+    </div>
+    <div class="whys">
+      <div class="why reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/><path d="m2 2 20 20"/></svg><h3>Sans pile</h3><p>Rien à recharger, rien à jeter. Juste une clé à tourner.</p></div>
+      <div class="why reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><h3>Faite pour durer</h3><p>Un objet mécanique qui se transmet, d’une chambre d’enfant à une étagère d’adulte.</p></div>
+      <div class="why reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg><h3>Un vrai son</h3><p>Pas un haut-parleur : des lames de métal qui vibrent, juste devant vous.</p></div>
+      <div class="why reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg><h3>Un cadeau qui parle</h3><p>Une mélodie choisie dit souvent mieux les choses qu’une carte.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="s s-paper">
+  <div class="w">
+    <div class="head center reveal">
+      <p class="ey">À offrir</p>
+      <h2>Pour les <em>moments</em> qui comptent</h2>
+    </div>
+    <ul class="occ reveal">
+      <li>Une naissance</li><li>Un baptême</li><li>Un mariage</li><li>Un anniversaire</li><li>La fête des mères</li><li>Noël</li><li>Un départ à la retraite</li><li>Un merci</li><li>Juste pour soi</li>
+    </ul>
+  </div>
+</section>
+
+<section class="s">
+  <div class="w">
+    <div class="listen reveal">
+      <div>
+        <h2>Fermez les yeux, <em>écoutez</em></h2>
+        <p>Un petit air traditionnel, « Au clair de la lune », joué par votre navigateur avec un son de boîte à musique. Le vrai, en bois et en métal, est encore plus doux.</p>
+      </div>
+      <button class="btn btn-main" type="button" data-play>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg><span>Écouter un air</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="s s-paper" id="questions">
+  <div class="w">
+    <div class="head center reveal">
+      <p class="ey">Questions</p>
+      <h2>Ce qu’on nous <em>demande</em> souvent</h2>
+    </div>
+    <div class="faq reveal">
+      <details><summary>Faut-il des piles ?</summary><p>Non. La boîte fonctionne avec un ressort : on tourne la clé, et la mélodie joue. Rien à brancher, rien à recharger.</p></details>
+      <details><summary>Qu’est-ce qu’un mécanisme Sankyo ?</summary><p>Sankyo est une marque japonaise connue pour ses mécanismes de boîte à musique. Un cylindre à picots tourne et pince les lames d’un peigne en métal, ce qui donne ce son clair et cristallin.</p></details>
+      <details><summary>Peut-on choisir sa mélodie ?</summary><p>Chaque thème propose plusieurs airs. Écrivez-nous avec le thème qui vous plaît : nous vous envoyons la liste des mélodies disponibles.</p></details>
+      <details><summary>Comment entretenir une boîte à musique ?</summary><p>Gardez-la au sec et à l’abri de la poussière. Remontez la clé doucement, sans forcer quand elle résiste. Un chiffon doux suffit pour l’extérieur.</p></details>
+      <details><summary>Comment commander ?</summary><p>Écrivez-nous avec le formulaire ci-dessous : le thème, l’occasion, et si vous avez déjà un air en tête. Nous vous répondons par e-mail avec les modèles disponibles et leur prix.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="contact">
+  <div class="w contact">
+    <div class="reveal">
+      <p class="ey">Nous écrire</p>
+      <h2>Votre <em>mélodie</em>, votre boîte</h2>
+      <p>Dites-nous le thème qui vous plaît et l’occasion. Nous vous répondons par e-mail avec les airs et les modèles disponibles.</p>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span>Réponse par e-mail</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Vos coordonnées servent seulement à vous répondre</span></li>
+      </ul>
+    </div>
+    <form class="form reveal" action="contact.php" method="post" data-form>
+      <div class="two">
+        <div><label for="f-nom">Votre prénom</label><input id="f-nom" name="nom" autocomplete="given-name" required maxlength="80"></div>
+        <div><label for="f-mail">Votre e-mail</label><input id="f-mail" name="email" type="email" autocomplete="email" required maxlength="120"></div>
+      </div>
+      <div><label for="f-theme">Le thème</label>
+        <select id="f-theme" name="theme">
+          <option>Je ne sais pas encore</option><option>Les grands classiques</option><option>Berceuses et naissance</option><option>Mariage et amour</option><option>Musiques de films</option><option>Chansons françaises</option><option>Noël et fêtes</option>
+        </select></div>
+      <div><label for="f-msg">Votre message</label><textarea id="f-msg" name="message" required maxlength="2000" placeholder="L’occasion, l’air que vous avez en tête, pour quand…"></textarea></div>
+      <div class="hp" aria-hidden="true"><label for="f-site">Ne pas remplir</label><input id="f-site" name="site" tabindex="-1" autocomplete="off"></div>
+      <button class="btn btn-main" type="submit">Envoyer ma demande
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg></button>
+      <p class="form-ok" role="status" data-ok>Merci ! Votre message est bien parti. Nous vous répondons très vite.</p>
+      <p class="small">En envoyant ce formulaire, vous acceptez que vos coordonnées servent à vous répondre. Elles ne sont ni vendues ni partagées. <a href="mentions-legales.html">Mentions légales</a></p>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="w">
+    <a class="logo" href="#top"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#E2C27A"/><path d="M15 27.5a3.2 3.2 0 1 1-2-3V11.8l14-3.3v15a3.2 3.2 0 1 1-2-3v-8.8l-10 2.4z" fill="#2B1D16"/></svg>Les Notes du Temps</a>
+    <span>Boîtes à musique à ressort · <a href="mentions-legales.html">Mentions légales</a></span>
+    <p class="credit">Site fait et entretenu par&nbsp;<a href="https://www.aled08.fr/" target="_blank" rel="noopener"><svg width="30" height="22" style="flex:none" viewBox="2 17 62 46" aria-hidden="true" focusable="false"><defs><linearGradient id="alc" gradientUnits="userSpaceOnUse" x1="17" y1="0" x2="63" y2="0"><stop offset="0" stop-color="#7EDDB5"/><stop offset=".28" stop-color="#FFD45E"/><stop offset=".52" stop-color="#FF9E6E"/><stop offset=".76" stop-color="#FF6FAE"/><stop offset="1" stop-color="#9B7BFF"/></linearGradient><linearGradient id="alci" gradientUnits="userSpaceOnUse" x1="15" y1="0" x2="49" y2="0"><stop offset="0" stop-color="#9B7BFF"/><stop offset=".35" stop-color="#FF6FAE"/><stop offset=".65" stop-color="#FF9E6E"/><stop offset="1" stop-color="#FFD45E"/></linearGradient><linearGradient id="alcb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#ECE7FB"/><stop offset="1" stop-color="#B4A9DC"/></linearGradient></defs><path d="M3.5 57.6c1.5-2.2 6-2.8 11-2.6 6-.8 12-.6 17 0 1.5 2.4-1 4.6-6 5-7 .8-15 .6-19.5-.4-2.2-.5-3.3-1.2-2.5-2Z" fill="#000" opacity=".28"/><g transform="translate(23 37.4) rotate(84.3) translate(-30 -34)"><path d="M15 21 18.2 51.500c8 4.2 19.6 4.2 27.6 0L49 21Z" fill="url(#alcb)"/><path d="M16.2 31.500c10 3.6 21.6 3.6 31.6 0M17.4 43c9.3 3.4 19.9 3.4 29.2 0" fill="none" stroke="#B9AFE0" stroke-width="1.5" opacity=".75"/><path d="M15.5 22C12 40 52 40 48.5 22" fill="none" stroke="#9E93CC" stroke-width="2" stroke-linecap="round"/><ellipse cx="32" cy="21" rx="17" ry="5.2" fill="url(#alci)" stroke="#E4DEF8" stroke-width="2.2"/></g><path d="M33 43.5C36 42 39.5 43.5 41 46.5 43 50 49 49.6 55 50.4 59.5 51 63 52.6 63.4 55 63.8 58.2 59.5 59.8 54 60.3 44 61.6 33 61.5 24 60.2 18.5 59.4 15.5 57.6 17 55.4 19 52.6 26 53.6 29 50.5 31 48.4 31 45 33 43.5Z" fill="url(#alc)"/><path d="M36 47.500c2 2.5 6 3.5 10 3.8" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/><circle cx="57.5" cy="45.5" r="1.8" fill="#FF6FAE"/><circle cx="49.5" cy="42.5" r="1.2" fill="#FFD45E"/><circle cx="13" cy="60.8" r="1.3" fill="#7EDDB5"/></svg><span>Alex &amp; Lia</span></a>&nbsp;2026</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  document.body.classList.remove('no-js');
+  var top = document.getElementById('top');
+  var onScroll = function () { top.classList.toggle('is-scrolled', window.scrollY > 8); };
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  /* apparition douce des blocs */
+  var els = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
+    els.forEach(function (el) { io.observe(el); });
+  } else els.forEach(function (el) { el.classList.add('is-in'); });
+
+  /* « Demander ce thème » : on remplit le formulaire et on y descend */
+  var sel = document.getElementById('f-theme');
+  document.querySelectorAll('[data-theme]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      sel.value = b.getAttribute('data-theme');
+      document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+      setTimeout(function () { document.getElementById('f-nom').focus({ preventScroll: true }); }, 600);
+    });
+  });
+
+  /* un air de boîte à musique, joué par le navigateur (Au clair de la lune, air traditionnel) */
+  var ctx = null, playing = false, box = document.querySelector('[data-box]');
+  var N = { C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, C6: 1046.5 };
+  var tune = [['C5',1],['C5',1],['C5',1],['D5',1],['E5',2],['D5',2],['C5',1],['E5',1],['D5',1],['D5',1],['C5',4],
+              ['C5',1],['C5',1],['C5',1],['D5',1],['E5',2],['D5',2],['C5',1],['E5',1],['D5',1],['D5',1],['C5',4]];
+  function pluck(t, f) {
+    [[1, .5], [2, .14], [4.2, .05]].forEach(function (h) {
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = f * h[0];
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(h[1] * .5, t + .004);
+      g.gain.exponentialRampToValueAtTime(.0001, t + (h[0] === 1 ? 1.6 : .5));
+      o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 1.7);
+    });
+  }
+  function play() {
+    if (playing) return;
+    var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    ctx = ctx || new AC(); if (ctx.state === 'suspended') ctx.resume();
+    playing = true; if (box) box.classList.add('is-playing');
+    var t = ctx.currentTime + .08, beat = .36;
+    tune.forEach(function (n) { pluck(t, N[n[0]]); if (n[1] >= 2) pluck(t, N[n[0]] / 2); t += n[1] * beat; });
+    setTimeout(function () { playing = false; if (box) box.classList.remove('is-playing'); }, (t - ctx.currentTime + 1) * 1000);
+  }
+  document.querySelectorAll('[data-play]').forEach(function (b) { b.addEventListener('click', play); });
+
+  /* envoi du formulaire sans quitter la page (sinon, envoi classique) */
+  var form = document.querySelector('[data-form]');
+  if (form && window.fetch && window.FormData) form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = form.querySelector('button[type=submit]'); btn.disabled = true;
+    fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (r) { if (!r.ok) throw 0; form.reset(); form.querySelector('[data-ok]').classList.add('is-on'); })
+      .catch(function () { alert('Le message n’est pas parti. Réessayez dans un instant.'); })
+      .then(function () { btn.disabled = false; });
+  });
+})();
+</script>
+</body>
+</html>

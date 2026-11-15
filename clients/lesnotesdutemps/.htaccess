@@ -1,0 +1,15 @@
+# Une seule adresse : https://www.lesnotesdutemps.fr/
+RewriteEngine On
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^ https://www.lesnotesdutemps.fr%{REQUEST_URI} [L,R=301]
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+</IfModule>
+<FilesMatch "^(config\.php)$">
+  Require all denied
+</FilesMatch>

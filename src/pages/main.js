@@ -1259,7 +1259,7 @@ ${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: 'Composez votre s
     path: sections.confiance.path,
     section: 'confiance',
     title: 'Ils nous ont fait confiance : nos sites en ligne | Alex & Lia',
-    description: `Les sites réalisés par Alex & Lia, à visiter librement : ${clients.map((c) => c.domaine).join(' et ')}. De vrais sites en ligne, sans faux avis ni témoignage inventé.`,
+    description: `Les sites réalisés par Alex & Lia, à visiter librement : ${clients.map((c) => c.domaine).join(', ').replace(/, ([^,]*)$/, ' et $1')}. De vrais sites, sans faux avis.`,
     crumbs,
     body,
     priority: 0.7,
