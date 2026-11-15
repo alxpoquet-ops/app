@@ -591,6 +591,15 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 .prose ul { padding-left: 1.3em; }
 .prose li { margin-bottom: .35em; }
 .legal h2 { font-size: 1.3rem; }
+/* ---------- ils nous ont fait confiance ---------- */
+.client-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; max-width: 860px; margin: 0 auto 22px; }
+.client-card { display: grid; gap: 8px; justify-items: start; padding: 24px; border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow-sm); color: var(--ink); text-decoration: none; transition: transform .15s, box-shadow .15s; }
+.client-card:hover { transform: translateY(-3px); box-shadow: 0 0 0 2px var(--c-d) inset, var(--shadow-sm); }
+.client-card strong { font-size: 1.45rem; line-height: 1.2; }
+.client-genre { font-size: .82rem; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; color: var(--c-dd); }
+.client-desc { color: var(--muted); }
+.client-url { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 9px 14px; border-radius: 999px; background: var(--c); color: var(--c-dd); font-weight: 900; }
+.client-url .ico { width: 18px; height: 18px; }
 /* ---------- guides ---------- */
 .callout { margin: 1.3em 0; padding: 16px 18px; border-radius: 18px; background: var(--card); box-shadow: 0 0 0 2px var(--edge) inset; border-left: 6px solid var(--mint-d); }
 .callout p { margin: 0; }
@@ -715,7 +724,7 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
   .type-name { margin-top: 0; }
   .type-pitch, .type-qui, .type-go { grid-column: 1 / -1; }
   .type-pitch { margin-top: 8px; }
-  .feats, .feats-4, .compare, .form-row, .sitemap-list, .years, .duo, .go-links, .guide-cards { grid-template-columns: 1fr; }
+  .feats, .feats-4, .compare, .form-row, .sitemap-list, .years, .duo, .go-links, .guide-cards, .client-cards { grid-template-columns: 1fr; }
   .promo { grid-template-columns: auto minmax(0, 1fr); padding: 18px; gap: 14px; }
   .promo .promo-go { display: none; }
   .promo-ico { width: 48px; height: 48px; border-radius: 16px; }

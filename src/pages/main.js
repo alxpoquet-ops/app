@@ -9,6 +9,7 @@ const FAQ = require('../content/faq');
 const legal = require('../content/legal');
 const OUTILS = require('../content/outils');
 const GUIDES = require('../content/guides');
+const { clients } = require('../config');
 
 const HOME = { name: 'Accueil', path: '/' };
 const DEMO_CRUMBS = [HOME, { name: 'Mon espace', path: '/mon-espace/' }, { name: 'Démo', path: '/mon-espace/demo/' }];
@@ -1100,6 +1101,35 @@ ${C.ctaBand()}`;
   };
 }
 
+// ====================================================================== ILS NOUS ONT FAIT CONFIANCE
+function confiancePage() {
+  const crumbs = crumb('confiance');
+  const body = `${C.pageHero({
+    section: 'confiance',
+    h1: 'Ils nous ont fait confiance',
+    lead: 'Des sites en ligne, que vous pouvez visiter. Pas de faux avis ici : allez voir par vous-même.',
+    crumbs,
+  })}
+<section class="section"><div class="container">
+  <div class="client-cards">${clients
+    .map(
+      (c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-desc">${inline(c.desc)}</span><span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`
+    )
+    .join('')}</div>
+  <p class="small muted center">Ces sites s’ouvrent dans un nouvel onglet.</p>
+</div></section>
+${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: 'Composez votre site en deux minutes. Le prix est affiché avant la commande.' })}`;
+  return {
+    path: sections.confiance.path,
+    section: 'confiance',
+    title: 'Ils nous ont fait confiance : nos sites en ligne | Alex & Lia',
+    description: `Les sites réalisés par Alex & Lia, à visiter librement : ${clients.map((c) => c.domaine).join(' et ')}. De vrais sites en ligne, sans faux avis ni témoignage inventé.`,
+    crumbs,
+    body,
+    priority: 0.7,
+  };
+}
+
 // ====================================================================== FAQ COMPLÈTE
 function faqPage() {
   const crumbs = [HOME, { name: 'Questions fréquentes', path: '/faq/' }];
@@ -1203,6 +1233,7 @@ function notFound() {
 function build() {
   return [
     home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), methodePage(), contactPage(), faqPage(),
+    confiancePage(),
     guidesHub(), ...GUIDES.guides.map(guidePage),
     ...legal.map(legalPage), planDuSite(), merci(), notFound(),
   ];

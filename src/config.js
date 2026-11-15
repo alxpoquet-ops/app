@@ -65,6 +65,7 @@ const sections = {
   espace: { path: '/nos-outils/', label: 'Nos outils', color: 'sky', icon: 'toolbox' },
   seo: { path: '/referencement-seo/', label: 'SEO', color: 'butter', icon: 'search-check' },
   contact: { path: '/contact/', label: 'Contact', color: 'peach', icon: 'message-circle' },
+  confiance: { path: '/ils-nous-ont-fait-confiance/', label: 'Ils nous ont fait confiance', color: 'pink', icon: 'handshake' },
   guides: { path: '/guides/', label: 'Guides', color: 'sky', icon: 'book-open' },
   // Hors du menu principal
   comparatif: { path: '/comparatif/', label: 'Comparatif', color: 'butter', icon: 'scale' },
@@ -202,4 +203,11 @@ const paiement = { acompte: 25 }; // 25 % à la commande ; à la réception : le
 
 // Boost : une modification en plus du forfait, à l'unité, ajoutée à la prochaine facture.
 const boost = { prix: 1 };
-module.exports = { site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost };
+// ---------------------------------------------------------------- sites réalisés (page « Ils nous ont fait confiance »)
+// Uniquement de vrais clients, avec leur accord. desc : une phrase factuelle, pas d'avis inventé.
+const clients = [
+  { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Une boutique en ligne, avec ses produits, son panier et le paiement par carte.' },
+  { nom: 'Dodedo', domaine: 'dodedo.fr', url: 'https://dodedo.fr/', genre: 'Site vitrine', icon: 'hand-heart', color: 'lilac', desc: 'Le site de Dominique Schneider, magnétiseur et barreur de feu, qui accompagne à distance partout en France ou à domicile.' },
+];
+
+module.exports = { clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost };

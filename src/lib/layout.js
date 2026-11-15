@@ -83,7 +83,7 @@ function graph(p) {
 }
 
 // ---------------------------------------------------------------- en-tête
-const NAV = ['forfaits', 'seo', 'contact'];
+const NAV = ['forfaits', 'seo', 'confiance', 'contact'];
 
 function header(currentPath) {
   const onCreer = currentPath.startsWith(sections.creer.path);
