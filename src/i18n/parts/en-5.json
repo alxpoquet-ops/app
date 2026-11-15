@@ -133,7 +133,6 @@
  "<strong>Boutique en ligne</strong><b>500 €</b>": "<strong>Online shop</strong><b>€500</b>",
  "Pour vendre en ligne : paiement par carte, suivi des commandes, et les outils de la boutique.": "To sell online: card payment, order tracking, and the shop tools.",
  "Un vrai site client : <a href=\"https://www.dodedo.fr/\" target=\"_blank\" rel=\"noopener\">dodedo.fr</a>, un site une page avec des pages de conseils autour.": "A real client website: <a href=\"https://www.dodedo.fr/\" target=\"_blank\" rel=\"noopener\">dodedo.fr</a>, a one-page website with advice pages around it.",
- "Les Notes du Temps : un site une page, encore en création.": "Les Notes du Temps: a one-page website, still being built.",
  "Voir les sites de nos clients": "See our clients’ websites",
  "3. Les forfaits": "3. The plans",
  "Chico, Power et Titan, côte à côte": "Chico, Power and Titan, side by side",
@@ -223,7 +222,6 @@
  "Écrivez-nous : on vous répond, et on complète cette page.": "Write to us: we will reply, and add it to this page.",
  "Sommaire de la documentation": "Documentation contents",
  "Page d’accueil du site Dodedo": "Home page of the Dodedo website",
- "Aperçu du site Les Notes du Temps": "Preview of the Les Notes du Temps website",
  "L’espace client : les onglets et la page d’accueil": "The client area: the tabs and the home page",
  "L’onglet Mes demandes": "The My requests tab",
  "Tableau de bord simple": "Simple dashboard",
@@ -253,5 +251,7 @@
  "Ajouter des options <small>(facultatif, activables plus tard)</small>": "Add options <small>(optional, can be turned on later)</small>",
  "Le détail de chaque option": "Each option in detail",
  "<span data-sum=\"type\">Site vitrine</span><b data-sum=\"type-price\">250 €</b>": "<span data-sum=\"type\">Showcase website</span><b data-sum=\"type-price\">€250</b>",
- "<span data-sum=\"domain\">Nom de domaine à choisir</span><b>inclus</b>": "<span data-sum=\"domain\">Domain name to choose</span><b>included</b>"
+ "<span data-sum=\"domain\">Nom de domaine à choisir</span><b>inclus</b>": "<span data-sum=\"domain\">Domain name to choose</span><b>included</b>",
+ "Aperçu du site Flore & Chenilles": "Preview of the Flore & Chenilles website",
+ "Un autre site client : <a href=\"https://www.floreetchenilles.fr/\" target=\"_blank\" rel=\"noopener\">floreetchenilles.fr</a>, des compositions à découvrir et à réserver par e-mail.": "Another client website: <a href=\"https://www.floreetchenilles.fr/\" target=\"_blank\" rel=\"noopener\">floreetchenilles.fr</a>, handmade arrangements to browse and book by e-mail."
 }

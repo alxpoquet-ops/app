@@ -1360,7 +1360,7 @@ function docPage() {
   const crumbs = crumb('documentation');
   const IMG = {
     espace: [1500, 1040], demandes: [1500, 1155], chico: [1482, 1044], titan: [1429, 2600],
-    boutique: [1482, 1823], vacances: [654, 650], 'site-dodedo': [1500, 938], 'site-lndt': [1500, 938],
+    boutique: [1482, 1823], vacances: [654, 650], 'site-dodedo': [1500, 938], 'site-flore': [1500, 938],
   };
   const fig = (k, alt, cap, cls = '') => `<figure class="doc-fig ${cls} reveal"><img src="/assets/img/doc/${k}.webp" width="${IMG[k][0]}" height="${IMG[k][1]}" alt="${esc(alt)}" loading="lazy" decoding="async"><figcaption>${cap}</figcaption></figure>`;
   const ch = F('chico'), pw = F('power'), ti = F('titan');
@@ -1450,7 +1450,7 @@ function docPage() {
   </div>
   <div class="doc-duo">
     ${fig('site-dodedo', 'Page d’accueil du site Dodedo', 'Un vrai site client : <a href="https://www.dodedo.fr/" target="_blank" rel="noopener">dodedo.fr</a>, un site une page avec des pages de conseils autour.')}
-    ${fig('site-lndt', 'Aperçu du site Les Notes du Temps', 'Les Notes du Temps : un site une page, encore en création.')}
+    ${fig('site-flore', 'Aperçu du site Flore & Chenilles', 'Un autre site client : <a href="https://www.floreetchenilles.fr/" target="_blank" rel="noopener">floreetchenilles.fr</a>, des compositions à découvrir et à réserver par e-mail.')}
   </div>
   <p class="doc-more center">${C.btn(sections.confiance.path, 'btn-light', 'handshake', 'Voir les sites de nos clients')}</p>
 </div></section>
