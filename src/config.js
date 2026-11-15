@@ -214,6 +214,7 @@ const boost = { prix: 1 };
 const clients = [
   { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', sitemap: 'https://www.floreetchenilles.fr/sitemap_index.xml', forfait: 'titan', genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Des fleurs éternelles en fil chenille, faites main à Signy-l’Abbaye, dans les Ardennes. La boutique ouvre très bientôt.' },
   { nom: 'Dodedo', domaine: 'dodedo.fr', url: 'https://dodedo.fr/', sitemap: 'https://www.dodedo.fr/sitemap.xml', forfait: 'titan', genre: 'Site une page', icon: 'hand-heart', color: 'lilac', desc: 'Le site de Dominique Schneider, magnétiseur et barreur de feu. Une seule page principale, et des pages de conseils autour pour le référencement.' },
+  { nom: 'Alex & Lia', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', sitemap: 'https://www.aled08.fr/wp-sitemap.xml', genre: 'Notre propre site', icon: 'sparkles', color: 'lilac', desc: 'Notre site à nous : on se fait confiance, alors on se met dedans aussi. En français et en anglais.' },
   { nom: 'Les Notes du Temps', domaine: 'lesnotesdutemps.fr', url: 'https://www.lesnotesdutemps.fr/', sitemap: 'https://www.lesnotesdutemps.fr/sitemap.xml', forfait: 'chico', genre: 'Site une page', icon: 'music', color: 'peach', enCreation: true, desc: '' },
 ];
 

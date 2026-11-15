@@ -205,6 +205,51 @@ def load_all():
     return {norm(k): v for k, v in dico.items()}
 
 
+NUM = re.compile(r'\d+(?:[  ., ]\d{3})*')
+MOIS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
+MOIS_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+DATE_FR = re.compile(r'\b(1er|\d{1,2}) (' + '|'.join(MOIS_FR) + r') (\d{4})\b')
+DATE_EN = re.compile(r'\b(\d{1,2}) (' + '|'.join(MOIS_EN) + r') (\d{4})\b')
+
+
+def date_en(m):
+    j = '1' if m.group(1) == '1er' else m.group(1)
+    return f'{j} {MOIS_EN[MOIS_FR.index(m.group(2))]} {m.group(3)}'
+
+
+class Dico(dict):
+    """Dictionnaire qui retrouve aussi un morceau dont seuls les nombres ont changé
+    (compteurs de pages, dates…) : « <b>58</b> pages » se traduit comme « <b>47</b> pages »."""
+    def __init__(self, d):
+        super().__init__(d)
+        self.gabarits = {}
+        for k, v in d.items():
+            if len(DATE_FR.findall(k)) != len(DATE_EN.findall(v)):
+                continue
+            k2, v2 = DATE_FR.sub('¤', k), DATE_EN.sub('¤', v)
+            nk, nv = NUM.findall(k2), NUM.findall(v2)
+            if (nk or '¤' in k2) and len(nk) == len(nv):
+                self.gabarits.setdefault(NUM.sub('§', k2), (v2, nk))
+    def trouve(self, k):
+        if k in self:
+            return self[k]
+        dates = [date_en(m) for m in DATE_FR.finditer(k)]
+        k = DATE_FR.sub('¤', k)
+        g = self.gabarits.get(NUM.sub('§', k))
+        if not g:
+            return None
+        v, anciens = g
+        nouveaux = NUM.findall(k)
+        if len(nouveaux) != len(anciens):
+            return None
+        for a, n in zip(anciens, nouveaux):
+            v = v.replace(a, '\x00' + n + '\x00', 1)
+        v = v.replace('\x00', '')
+        for dt in dates:
+            v = v.replace('¤', dt, 1)
+        return v
+
+
 def chemin_en(path):
     """Adresse anglaise d'une adresse du site (chemin), ou None si elle reste en français."""
     if not path.startswith('/') or path.startswith('//'):
@@ -229,7 +274,7 @@ def url_page(rel):
 
 
 def apply():
-    dico = load_all()
+    dico = Dico(load_all())
     manquants = {}
     nouvelles = []
     hreflang = lambda fr, en: (f'<link rel="alternate" hreflang="fr" href="{SITE}{fr}">'
@@ -254,30 +299,31 @@ def apply():
             k = norm(core)
             if re.sub(r'<[^>]+>', '', k) in ('FR', 'EN', 'FREN'):
                 continue
-            if k in dico:
-                t = t[:a] + dico[k] + t[b:]
+            tr = dico.trouve(k)
+            if tr is not None:
+                t = t[:a] + tr + t[b:]
             else:
                 manquants.setdefault(k, rel)
         # 3) les attributs, le titre et les descriptions
         def attr(m):
             v = norm(m.group(2))
-            if v in dico:
-                return f' {m.group(1)}="{dico[v].replace(chr(34), "&quot;")}"'
+            if dico.trouve(v) is not None:
+                return f' {m.group(1)}="{dico.trouve(v).replace(chr(34), "&quot;")}"'
             if LETTRE.search(html.unescape(v)) and v not in ('Version française',):
                 manquants.setdefault(v, rel)
             return m.group(0)
         t = re.sub(r'\s(' + '|'.join(ATTRS) + r')="([^"]*)"', attr, t)
         def meta(m):
             v = norm(m.group(2))
-            if v in dico:
-                return m.group(1) + dico[v].replace('"', '&quot;') + '"'
+            if dico.trouve(v) is not None:
+                return m.group(1) + dico.trouve(v).replace('"', '&quot;') + '"'
             manquants.setdefault(v, rel)
             return m.group(0)
         t = re.sub(r'(<meta (?:name|property)="(?:description|og:title|og:description|twitter:title|twitter:description|og:image:alt)" content=")([^"]*)"', meta, t)
         def titre(m):
             v = norm(m.group(1))
-            if v in dico:
-                return '<title>' + dico[v] + '</title>'
+            if dico.trouve(v) is not None:
+                return '<title>' + dico.trouve(v) + '</title>'
             manquants.setdefault(v, rel)
             return m.group(0)
         t = re.sub(r'<title>(.*?)</title>', titre, t, count=1, flags=re.S)
@@ -303,8 +349,8 @@ def apply():
                     if k in ('@type', '@context', 'url', 'logo', 'image', 'email', 'telephone', 'priceCurrency', 'contentUrl') or x.startswith('http'):
                         return x
                     n = norm(x)
-                    if n in dico:
-                        return html.unescape(re.sub(r'<[^>]+>', '', dico[n]))
+                    if dico.trouve(n) is not None:
+                        return html.unescape(re.sub(r'<[^>]+>', '', dico.trouve(n)))
                     if LETTRE.search(x):
                         manquants.setdefault(n, rel)
                 return x
