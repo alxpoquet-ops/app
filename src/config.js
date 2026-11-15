@@ -68,6 +68,7 @@ const sections = {
   confiance: { path: '/ils-nous-ont-fait-confiance/', label: 'Ils nous ont fait confiance', color: 'butter', icon: 'handshake' },
   liaalex: { path: '/lia-et-alex/', label: 'Lia et Alex', color: 'pink', icon: 'sparkles' },
   guides: { path: '/guides/', label: 'Guides', color: 'sky', icon: 'book-open' },
+  documentation: { path: '/documentation/', label: 'Documentation', color: 'sky', icon: 'book-open' },
   // Hors du menu principal
   comparatif: { path: '/comparatif/', label: 'Comparatif', color: 'butter', icon: 'scale' },
   fidelite: { path: '/fidelite/', label: 'Fidélité', color: 'pink', icon: 'gift' },

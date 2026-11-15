@@ -1266,6 +1266,220 @@ ${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: 'Composez votre s
   };
 }
 
+// ====================================================================== DOCUMENTATION
+function docPage() {
+  const crumbs = crumb('documentation');
+  const IMG = {
+    espace: [1500, 1040], demandes: [1500, 1155], chico: [1482, 825], titan: [1482, 2219],
+    boutique: [1482, 1823], vacances: [654, 650], 'site-dodedo': [1500, 938], 'site-lndt': [1500, 938],
+  };
+  const fig = (k, alt, cap, cls = '') => `<figure class="doc-fig ${cls} reveal"><img src="/assets/img/doc/${k}.webp" width="${IMG[k][0]}" height="${IMG[k][1]}" alt="${esc(alt)}" loading="lazy" decoding="async"><figcaption>${cap}</figcaption></figure>`;
+  const ch = F('chico'), pw = F('power'), ti = F('titan');
+  const une = T('une-page'), vit = T('vitrine'), bou = T('boutique');
+  const liaPlus = options.find((o) => o.id === 'liaplus');
+  const toc = [
+    ['etapes', 'list-checks', 'Comment ça se passe'],
+    ['sites', 'layout-template', 'Les sites'],
+    ['forfaits', 'heart', 'Les forfaits'],
+    ['espace', 'circle-user', 'L’espace client'],
+    ['demandes', 'message-circle', 'Demander une modification'],
+    ['tableau', 'gauge', 'Le tableau de bord'],
+    ['boutique', 'shopping-bag', 'La boutique en ligne'],
+    ['seo', 'search-check', 'Le référencement (SEO)'],
+    ['paiement', 'credit-card', 'Paiement et fidélité'],
+  ];
+  const oui = `<span class="doc-yes">${icon('check')}<span class="sr-only">Oui</span></span>`;
+  const non = `<span class="doc-no" aria-hidden="true">${icon('minus')}</span><span class="sr-only">Non</span>`;
+  const rows = [
+    ['Prix par mois', euro(ch.month), euro(pw.month), euro(ti.month)],
+    ['Modifications par Lia, chaque mois', ch.jetons, pw.jetons, ti.jetons],
+    ['Modifications par Alex, chaque mois', ch.quota, pw.quota, ti.quota],
+    ['Réponse d’Alex', `sous ${delais.reponse}`, 'support rapide', `sous ${delais.titan}`],
+    ['Hébergement, HTTPS, nom de domaine, mises à jour', oui, oui, oui],
+    ['Tableau de bord', 'l’essentiel', 'l’essentiel', 'complet, heure par heure'],
+    ['Outils de boutique (codes promo, soldes, bandeau, vacances)', 'si boutique', 'si boutique', 'si boutique'],
+    ['SEO suivi chaque mois', non, oui, oui],
+    ['Serveur plus rapide', non, oui, oui],
+    ['Rapport chaque mois', non, non, oui],
+  ];
+  const tabs = [
+    ['gauge', 'Tableau de bord', 'vos visiteurs et l’état de votre site, en un coup d’œil.'],
+    ['house', 'Accueil', 'votre forfait, votre site, vos dernières activités.'],
+    ['package', 'Ma commande', 'le suivi de la création de votre site, étape par étape.'],
+    ['message-circle', 'Mes demandes', 'vous écrivez ce qu’il faut changer, et vous suivez où ça en est.'],
+    ['shopping-bag', 'Ma boutique', 'codes promo, soldes, bandeau et mode vacances (boutiques en ligne).'],
+    ['gift', 'Parrainage', 'votre code à partager, et les mois offerts gagnés.'],
+    ['circle-user', 'Mon compte', 'vos coordonnées, votre mot de passe, votre forfait et vos factures.'],
+  ];
+  const body = `${C.pageHero({
+    section: 'documentation',
+    h1: 'Documentation : tout comprendre, en images',
+    lead: 'Comment on crée votre site, ce que comprend chaque forfait, à quoi ressemble votre espace client et ce que vous voyez dans votre tableau de bord. Les captures sont des exemples, avec des chiffres inventés.',
+    crumbs,
+    mascot: 'mascotte',
+  })}
+<section class="section section-tight"><div class="container">
+  <nav class="doc-toc reveal" aria-label="Sommaire de la documentation">
+    ${toc.map(([id, ic, t], i) => `<a href="#${id}"><span class="doc-num">${i + 1}</span>${icon(ic)}<span>${t}</span></a>`).join('')}
+  </nav>
+</div></section>
+
+<section class="section doc-sec" id="etapes"><div class="container container-narrow">
+  <p class="doc-kicker">1. Comment ça se passe</p>
+  <h2>De la commande à la mise en ligne</h2>
+  <ol class="doc-steps">
+    <li><strong>Vous composez votre site en ligne.</strong> Type de site, forfait, options : le prix total s’affiche avant de commander.</li>
+    <li><strong>Vous réglez un acompte de ${paiement.acompte} %.</strong> C’est le signal de départ : je commence la création.</li>
+    <li><strong>Je crée votre site.</strong> Vous suivez chaque étape dans l’onglet « Ma commande » de votre espace client.</li>
+    <li><strong>Vous recevez votre site et payez le reste.</strong> En une fois, ou en ${lissage.durees.join(' ou ')} fois sans frais.</li>
+    <li><strong>Votre forfait démarre.</strong> Hébergement, sécurité, mises à jour et modifications du mois : on s’occupe de tout.</li>
+  </ol>
+  <p class="doc-more">${C.btn(sections.creer.path, 'btn-primary', 'wand-sparkles', 'Composer mon site')}</p>
+</div></section>
+
+<section class="section section-soft doc-sec" id="sites"><div class="container">
+  <div class="container-narrow">
+    <p class="doc-kicker">2. Les sites</p>
+    <h2>Trois types de site, à prix fixe</h2>
+    <p>Le prix de la création ne change pas en cours de route. Le délai court à partir du moment où j’ai vos textes et vos photos.</p>
+  </div>
+  <div class="doc-types">
+    ${[[une, 'Pour être présent sur internet sans complication : tout tient sur une page qu’on fait défiler.'], [vit, 'Pour présenter une activité en détail, avec une page par sujet et un menu.'], [bou, 'Pour vendre en ligne : paiement par carte, suivi des commandes, et les outils de la boutique.']].map(([t, d]) => `<div class="doc-type reveal"><strong>${esc(t.label)}</strong><b>${euro(t.price)}</b><span>${icon('clock')}${esc(t.delai)}</span><p>${d}</p></div>`).join('')}
+  </div>
+  <div class="doc-duo">
+    ${fig('site-dodedo', 'Page d’accueil du site Dodedo', 'Un vrai site client : <a href="https://www.dodedo.fr/" target="_blank" rel="noopener">dodedo.fr</a>, un site une page avec des pages de conseils autour.')}
+    ${fig('site-lndt', 'Aperçu du site Les Notes du Temps', 'Les Notes du Temps : un site une page, encore en création.')}
+  </div>
+  <p class="doc-more center">${C.btn(sections.confiance.path, 'btn-light', 'handshake', 'Voir les sites de nos clients')}</p>
+</div></section>
+
+<section class="section doc-sec" id="forfaits"><div class="container">
+  <div class="container-narrow">
+    <p class="doc-kicker">3. Les forfaits</p>
+    <h2>Chico, Power et Titan, côte à côte</h2>
+    <p>Le forfait fait vivre votre site une fois en ligne. Il est sans engagement : vous changez ou arrêtez quand vous voulez, depuis votre espace client.</p>
+  </div>
+  <div class="doc-table-wrap reveal">
+    <table class="doc-table">
+      <thead><tr><th scope="col"><span class="sr-only">Ce qui est compris</span></th>${[ch, pw, ti].map((f) => `<th scope="col" class="c-${f.color}"><span class="doc-th-art">${monster(f.id)}</span>${esc(f.name)}<small>${esc(f.tagline)}</small></th>`).join('')}</tr></thead>
+      <tbody>${rows.map((r) => `<tr><th scope="row">${r[0]}</th>${r.slice(1).map((v) => `<td>${v}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table>
+  </div>
+  <div class="doc-cards3">
+    <div class="doc-mini reveal"><strong>${icon('sparkles')}${esc(liaPlus.name)}</strong><p>${liaPlus.price.month} € par mois pour 10 modifications de plus par Lia, sur n’importe quel forfait.</p></div>
+    <div class="doc-mini reveal"><strong>${icon('zap')}Boost</strong><p>Besoin d’une modification de plus par Alex ? ${euro(1)} l’unité, ajouté à votre prochaine facture.</p></div>
+    <div class="doc-mini reveal"><strong>${icon('calendar-check')}Paiement à l’année</strong><p>${annuel.moisOfferts} mois offerts sur le forfait quand vous payez l’année d’un coup.</p></div>
+  </div>
+  <p class="doc-more center">${C.btn(sections.forfaits.path, 'btn-light', 'heart', 'Le détail des forfaits')}</p>
+</div></section>
+
+<section class="section section-soft doc-sec" id="espace"><div class="container">
+  <div class="doc-split">
+    <div>
+      <p class="doc-kicker">4. L’espace client</p>
+      <h2>Tout votre site, au même endroit</h2>
+      <p>Chaque client a son espace, sur ordinateur comme sur téléphone. Tous les onglets sont visibles d’un coup, sans rien faire glisser.</p>
+      <ul class="doc-tabs">${tabs.map(([ic, t, d]) => `<li>${icon(ic)}<span><strong>${t}</strong> : ${d}</span></li>`).join('')}</ul>
+      <p class="doc-note">L’onglet « Ma boutique » n’apparaît que pour les boutiques en ligne.</p>
+    </div>
+    ${fig('espace', 'L’espace client : les onglets et la page d’accueil', 'L’accueil de l’espace client (exemple : « Pâtisserie Lila », une cliente imaginaire).')}
+  </div>
+  <p class="doc-more">${C.btn('/mon-espace/demo/', 'btn-light', 'eye', 'Essayer la démo')}</p>
+</div></section>
+
+<section class="section doc-sec" id="demandes"><div class="container">
+  <div class="doc-split doc-split-rev">
+    ${fig('demandes', 'L’onglet Mes demandes', 'L’onglet « Mes demandes » : on écrit, on ajoute une photo si besoin, on suit l’avancement.')}
+    <div>
+      <p class="doc-kicker">5. Demander une modification</p>
+      <h2>Vous écrivez, Lia ou Alex s’en charge</h2>
+      <p>Pour chaque demande, vous choisissez qui la fait :</p>
+      <ul class="list-check">
+        <li><strong>Lia</strong>, l’IA, fait les petites et moyennes modifications en 5 minutes, sur une seule page. Elle vous montre l’aperçu, et ne change rien sans votre accord.</li>
+        <li><strong>Alex</strong> fait les plus grandes, à la main. Si une demande est trop grosse pour Lia, elle passe à Alex.</li>
+        <li>Une demande peut être annulée gratuitement pendant 24 heures, 3 fois par mois.</li>
+        <li>Les deux compteurs du mois sont affichés en haut de votre espace.</li>
+      </ul>
+      <p class="doc-more">${C.btn(sections.liaalex.path, 'btn-light', 'sparkles', 'Tout sur Lia et Alex')}</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="section section-soft doc-sec" id="tableau"><div class="container">
+  <div class="container-narrow">
+    <p class="doc-kicker">6. Le tableau de bord</p>
+    <h2>Ce que vous voyez, selon votre forfait</h2>
+    <p>Les visites sont comptées sans cookie et sans donnée personnelle. Les chiffres se mettent à jour toutes les heures.</p>
+  </div>
+  <div class="doc-compare">
+    <div class="doc-compare-col reveal">
+      <p class="doc-badge c-${ch.color}"><span>${monster(ch.id)}</span>${esc(ch.name)} et ${esc(pw.name)} : l’essentiel</p>
+      ${fig('chico', 'Tableau de bord simple', 'Les voyants de votre site, le total des visiteurs sur 30 jours, vos commandes et ventes si vous avez une boutique, et vos pages les plus vues.', 'doc-fig-flat')}
+    </div>
+    <div class="doc-compare-col reveal">
+      <p class="doc-badge c-${ti.color}"><span>${monster(ti.id)}</span>${esc(ti.name)} : tout le détail</p>
+      ${fig('titan', 'Tableau de bord complet de Titan', 'En plus : la courbe des 30 derniers jours, les visites heure par heure, les appareils, la provenance des visiteurs et la santé du serveur.', 'doc-fig-flat')}
+    </div>
+  </div>
+  <ul class="doc-legend reveal">
+    <li><span class="doc-dot ok"></span><span><strong>Voyants</strong> : site en ligne, cadenas HTTPS, vitesse, serveur, espace disque. Vert, tout va bien.</span></li>
+    <li><span class="doc-dot"></span><span><strong>Provenance</strong> : Google, accès direct, réseaux sociaux ou autres sites.</span></li>
+    <li><span class="doc-dot"></span><span><strong>Serveur</strong> : la mémoire de votre site, la charge du serveur et l’espace disque, en jauges.</span></li>
+  </ul>
+</div></section>
+
+<section class="section doc-sec" id="boutique"><div class="container">
+  <div class="container-narrow">
+    <p class="doc-kicker">7. La boutique en ligne</p>
+    <h2>Vos outils de vente, réglés en quelques secondes</h2>
+    <p>Dans l’onglet « Ma boutique », vous gérez vous-même vos petites opérations. Ça ne compte pas dans vos modifications du mois.</p>
+  </div>
+  <div class="doc-split">
+    <ul class="doc-tools">
+      <li>${icon('badge-percent')}<span><strong>Codes promo</strong>En % ou en €, ou la livraison offerte. Date de fin, commande minimum, nombre d’utilisations : tout se règle en un formulaire.</span></li>
+      <li>${icon('tag')}<span><strong>Soldes rapides</strong>De -5 à -70 % sur toute la boutique ou une catégorie. Les prix barrés apparaissent seuls et disparaissent à la date de fin.</span></li>
+      <li>${icon('megaphone')}<span><strong>Bandeau d’annonce</strong>Une phrase en haut du site, en quatre couleurs au choix.</span></li>
+      <li>${icon('sun')}<span><strong>Mode vacances</strong>Boutique fermée, ou commandes acceptées avec expédition au retour. Un aperçu montre ce que verront vos visiteurs.</span></li>
+    </ul>
+    ${fig('vacances', 'Aperçu du mode vacances', 'L’aperçu du mode vacances, tel qu’il s’affiche pendant que vous remplissez le formulaire.', 'doc-fig-small')}
+  </div>
+  ${fig('boutique', 'L’onglet Ma boutique', 'L’onglet « Ma boutique » : codes promo, soldes rapides et bandeau (exemple).', 'doc-fig-wide')}
+</div></section>
+
+<section class="section section-soft doc-sec" id="seo"><div class="container container-narrow">
+  <p class="doc-kicker">8. Le référencement (SEO)</p>
+  <h2>Être trouvé sur Google</h2>
+  <p>Tous les sites partent avec de bonnes bases : des titres et des descriptions écrits pour Google, un plan du site, des pages rapides et lisibles sur téléphone. Avec Power et Titan, le SEO est suivi chaque mois : on choisit ensemble les mots que vos clients tapent, et j’ajoute des pages utiles qui renvoient vers votre site.</p>
+  <div class="go-links">
+    <a class="go-link c-${sections.seo.color}" href="${sections.seo.path}"><span class="type-ico">${icon(sections.seo.icon)}</span><strong>Le référencement en détail</strong>${icon('arrow-right')}</a>
+    <a class="go-link c-${sections.guides.color}" href="${sections.guides.path}"><span class="type-ico">${icon(sections.guides.icon)}</span><strong>Les guides pratiques</strong>${icon('arrow-right')}</a>
+    <a class="go-link c-${sections.confiance.color}" href="${sections.confiance.path}"><span class="type-ico">${icon(sections.confiance.icon)}</span><strong>Les pages créées pour nos clients</strong>${icon('arrow-right')}</a>
+  </div>
+</div></section>
+
+<section class="section doc-sec" id="paiement"><div class="container container-narrow">
+  <p class="doc-kicker">9. Paiement et fidélité</p>
+  <h2>Payer simplement, et être remercié</h2>
+  <ul class="list-check">
+    <li>Acompte de ${paiement.acompte} % à la commande, le reste à la réception du site, en une fois ou en ${lissage.durees.join(' ou ')} fois sans frais.</li>
+    <li>Forfait au mois, ou à l’année avec ${annuel.moisOfferts} mois offerts. Sans engagement.</li>
+    <li>Parrainage : quand le site d’un filleul est en ligne, vous recevez chacun ${fidelite.parrainageMois} mois de forfait offert.</li>
+    <li>Un deuxième site : ${fidelite.remiseSecondSite} % de remise sur sa création.</li>
+  </ul>
+  <p class="doc-more">${C.btn(sections.fidelite.path, 'btn-light', 'gift', 'La fidélité')} ${C.btn('/faq/', 'btn-light', 'circle-help', 'Questions fréquentes')}</p>
+</div></section>
+${C.ctaBand({ title: 'Une question qui n’est pas ici ?', text: 'Écrivez-nous : on vous répond, et on complète cette page.' })}`;
+  return {
+    path: sections.documentation.path,
+    section: 'documentation',
+    title: 'Documentation : forfaits, espace client, tableau de bord | Alex & Lia',
+    description: 'Tout comprendre en images : la création de votre site, les forfaits Chico, Power et Titan, l’espace client, le tableau de bord et les outils de boutique.',
+    crumbs,
+    body,
+    priority: 0.7,
+  };
+}
+
 // ====================================================================== FAQ COMPLÈTE
 function faqPage() {
   const crumbs = [HOME, { name: 'Questions fréquentes', path: '/faq/' }];
@@ -1371,6 +1585,7 @@ function build() {
     home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), methodePage(), contactPage(), faqPage(),
     liaAlexPage(),
     confiancePage(),
+    docPage(),
     guidesHub(), ...GUIDES.guides.map(guidePage),
     ...legal.map(legalPage), planDuSite(), merci(), notFound(),
   ];
