@@ -6,7 +6,49 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || d).querySelectorAll(s)); };
   var round2 = function (n) { return Math.round(n * 100) / 100; };
   var floor2 = function (n) { return Math.floor(n * 100 + 1e-6) / 100; };
-  var euro = function (n) { var v = round2(n); return (v % 1 ? v.toFixed(2) : String(v)).replace('.', ',') + ' €'; };
+  // Version anglaise (pages /en/) : petits textes écrits par le script, et prix au format « €250 »
+  var EN = /^en\b/i.test(d.documentElement.lang || '');
+  var TR = {
+    'Fermer le menu': 'Close the menu', 'Ouvrir le menu': 'Open the menu',
+    'Écrivez au moins deux lettres, par exemple le nom de votre entreprise.': 'Type at least two letters, for example the name of your business.',
+    'Je regarde si ': 'Checking whether ', ' est libre…': ' is available…',
+    ' est disponible à l’instant. Je le réserve à la commande, à votre nom.': ' is available right now. I will register it in your name when you order.',
+    ' est déjà pris. Une idée :': ' is already taken. An idea:',
+    'Je n’arrive pas à vérifier pour l’instant. Pas de souci : je le ferai pour vous.': 'I cannot check right now. No problem: I will do it for you.',
+    'Parfait, on gardera votre nom de domaine actuel.': 'Perfect, we will keep your current domain name.',
+    'Forfait ': 'Plan ', '/an': '/year', '/mois': '/month', 'an': 'year', 'mois': 'month', 'année': 'year',
+    'Mon nom de domaine actuel': 'My current domain name', ' (disponible)': ' (available)', ' (déjà pris)': ' (already taken)',
+    'Nom de domaine à choisir': 'Domain name to choose', 'Le reste en ': 'The rest in ', ' fois sans frais': ' interest-free instalments',
+    'Création, une fois': 'Creation, one-off', 'Forfait, dès la réception, par ': 'Plan, from delivery, per ',
+    'Aujourd’hui ': 'Today ', ', à la réception ': ', on delivery ', ' + forfait': ' + plan',
+    'À l’année': 'Yearly', 'Au mois': 'Monthly', 'Acompte de ': 'Deposit of ', ' % sur la création (': '% of the creation (',
+    'À la réception : le reste en ': 'On delivery: the rest in ', ' fois, et le forfait': ' instalments, and the plan',
+    'À la réception : le reste, et le forfait': 'On delivery: the rest, and the plan', ' options': ' options', 'Options': 'Options',
+    'Un instant, je prépare le paiement…': 'One moment, I am preparing the payment…', 'Lien copié, prêt à envoyer': 'Link copied, ready to send',
+    'Écrivez votre demande en quelques mots': 'Write your request in a few words',
+    'La photo dépasse 8 Mo : choisissez-en une plus légère': 'The photo is over 8 MB: please choose a lighter one',
+    'Envoi en cours…': 'Sending…', 'Nouvelle étape': 'New step', 'QR code vers votre site': 'QR code to your website', 'QR code téléchargé': 'QR code downloaded',
+    'Vos modifications du mois sont utilisées : je vous recontacte pour en parler (démo)': 'You have used this month’s changes: I will get back to you to talk about it (demo)',
+    'envoyée à l’instant': 'sent just now', 'Reçue': 'Received', 'Ajouter une photo (facultatif)': 'Add a photo (optional)',
+    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'En cours': 'In progress', 'Faite': 'Done',
+    'Votre modification est en ligne (démo)': 'Your change is live (demo)', ' choisi, à partir du mois prochain (démo)': ' chosen, from next month (demo)',
+    'Option ajoutée': 'Option added', 'Option retirée': 'Option removed', ' (démo)': ' (demo)', 'à l’instant': 'just now',
+    'Je souhaite payer le site en ': 'I would like to pay for the website in ', ' fois.': ' instalments.', 'Options choisies : ': 'Chosen options: ',
+    // valeurs venues des données du site (types, délais, options)
+    'Site une page': 'One-page website', 'Site vitrine': 'Showcase website', 'Boutique en ligne': 'Online shop',
+    'site une page': 'one-page website', 'site vitrine': 'showcase website', 'boutique en ligne': 'online shop',
+    '3 à 5 jours': '3 to 5 days', '1 à 2 semaines': '1 to 2 weeks', '2 à 3 semaines': '2 to 3 weeks',
+    'Adresse e-mail pro': 'Professional email address', 'Traduction en anglais': 'English translation', 'Gestion du stock': 'Stock management', 'Comptes clients': 'Customer accounts'
+  };
+  var planName = function (n) { return EN ? n + ' plan' : 'Forfait ' + n; };
+  var tr = function (s) { return EN && Object.prototype.hasOwnProperty.call(TR, s) ? TR[s] : s; };
+  // Bouton FR | EN : il mène à la même page dans l'autre langue (l'espace client réel n'existe qu'en français)
+  $$('[data-lang-switch]').forEach(function (a) {
+    var p = location.pathname;
+    if (EN) a.href = p.replace(/^\/en(\/|$)/, '/') + location.hash;
+    else a.href = (/^\/mon-espace\/(?!demo\/)/.test(p) && p !== '/mon-espace/demo/' ? '/en/' : '/en' + p) + location.hash;
+  });
+  var euro = function (n) { var v = round2(n); var t = v % 1 ? v.toFixed(2) : String(v); return EN ? '€' + t : t.replace('.', ',') + ' €'; };
   var slug = function (v) { return (v || '').replace(/[^a-z0-9-]/g, ''); };
 
   // Goutte de peinture sur le bord droit : elle descend avec la page (discret repère de défilement)
@@ -136,7 +178,7 @@
       var hd = $('.site-header');
       if (open && hd) nav.style.setProperty('--nav-top', Math.max(0, hd.getBoundingClientRect().bottom) + 'px');
       burger.setAttribute('aria-expanded', open);
-      burger.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+      burger.setAttribute('aria-label', tr(open ? 'Fermer le menu' : 'Ouvrir le menu'));
       nav.classList.toggle('is-open', open);
       d.body.classList.toggle('nav-open', open);
     });
@@ -227,20 +269,20 @@
       var name = clean(input.value);
       input.value = name;
       dom.name = name; dom.tld = tld.value; dom.status = '';
-      if (name.length < 2) { show('d-err', 'Écrivez au moins deux lettres, par exemple le nom de votre entreprise.'); notify(); return; }
+      if (name.length < 2) { show('d-err', tr('Écrivez au moins deux lettres, par exemple le nom de votre entreprise.')); notify(); return; }
       var full = name + tld.value;
       busy = true; checkBtn.disabled = true;
-      show('d-wait', ICO.wait + 'Je regarde si ' + full + ' est libre…');
+      show('d-wait', ICO.wait + tr('Je regarde si ') + full + tr(' est libre…'));
       var ctrl = window.AbortController ? new AbortController() : null;
       var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 8000);
       fetch(RDAP[tld.value] + encodeURIComponent(full), { headers: { Accept: 'application/rdap+json' }, signal: ctrl ? ctrl.signal : undefined })
         .then(function (res) {
           if (res.status === 404) {
             dom.status = 'libre';
-            show('d-ok', ICO.ok + full + ' est disponible à l’instant. Je le réserve à la commande, à votre nom.');
+            show('d-ok', ICO.ok + full + tr(' est disponible à l’instant. Je le réserve à la commande, à votre nom.'));
           } else if (res.ok) {
             dom.status = 'pris';
-            show('d-taken', ICO.no + full + ' est déjà pris. Une idée :');
+            show('d-taken', ICO.no + full + tr(' est déjà pris. Une idée :'));
             suggest(name, tld.value);
           } else {
             throw new Error('rdap ' + res.status);
@@ -248,13 +290,13 @@
         })
         .catch(function () {
           dom.status = 'inconnu';
-          show('d-err', 'Je n’arrive pas à vérifier pour l’instant. Pas de souci : je le ferai pour vous.');
+          show('d-err', tr('Je n’arrive pas à vérifier pour l’instant. Pas de souci : je le ferai pour vous.'));
         })
         .then(function () { clearTimeout(timer); busy = false; checkBtn.disabled = false; notify(); });
     }
     var applyOwn = function () {
       [input, tld, checkBtn].forEach(function (el) { el.disabled = own.checked; });
-      if (own.checked) { dom.status = 'mien'; show('d-ok', ICO.ok + 'Parfait, on gardera votre nom de domaine actuel.'); }
+      if (own.checked) { dom.status = 'mien'; show('d-ok', ICO.ok + tr('Parfait, on gardera votre nom de domaine actuel.')); }
       else { dom.status = ''; out.innerHTML = ''; }
     };
     checkBtn.addEventListener('click', check);
@@ -326,17 +368,17 @@
       if (lnote) lnote.hidden = !lisseN;
       var annual = box.getAttribute('data-billing') === 'annuel';
       var mult = annual ? 12 - data.free : 1;
-      var per = annual ? '/an' : '/mois';
+      var per = tr(annual ? '/an' : '/mois');
       var month = f.month;
       var optOnce = 0, optMonth = 0, chosen = [], ids = [];
       $$('.b-opt input:checked', box).forEach(function (i) {
         var o = find(data.options, i.value);
         if (!o) return;
-        chosen.push(o.name); ids.push(o.id); optOnce += o.once; optMonth += o.month;
+        chosen.push(tr(o.name)); ids.push(o.id); optOnce += o.once; optMonth += o.month;
       });
-      setText('type', t.label);
+      setText('type', tr(t.label));
       setText('type-price', euro(t.price));
-      setText('forfait', 'Forfait ' + f.name);
+      setText('forfait', planName(f.name));
       setText('forfait-price', euro(month * mult) + per);
       var optLine = $('[data-sum-opts]', box);
       if (optLine) {
@@ -344,27 +386,27 @@
         var parts = [];
         if (optOnce) parts.push(euro(optOnce));
         if (optMonth) parts.push(euro(optMonth * mult) + per);
-        optLine.querySelector('span').textContent = chosen.length > 1 ? chosen.length + ' options' : (chosen[0] || 'Options');
+        optLine.querySelector('span').textContent = chosen.length > 1 ? chosen.length + tr(' options') : (chosen[0] || tr('Options'));
         setText('opts', parts.join(' + '));
       }
       var dom = domain.get(), domText = '';
-      if (domain.own()) domText = 'Mon nom de domaine actuel';
-      else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? ' (disponible)' : dom.status === 'pris' ? ' (déjà pris)' : '');
-      setText('domain', domText || 'Nom de domaine à choisir');
+      if (domain.own()) domText = tr('Mon nom de domaine actuel');
+      else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? tr(' (disponible)') : dom.status === 'pris' ? tr(' (déjà pris)') : '');
+      setText('domain', domText || tr('Nom de domaine à choisir'));
       var lisse = lisseN > 0;
       var acompte = round2(t.price * data.acompte / 100);
       var reste = round2(t.price - acompte);
       var lisseAmt = lisse ? floor2(reste / lisseN) : 0;
       var lisseLine = $('[data-sum-lisse]', box);
       if (lisseLine) lisseLine.hidden = !lisse;
-      setText('lisse-label', 'Le reste en ' + lisseN + ' fois sans frais');
+      setText('lisse-label', tr('Le reste en ') + lisseN + tr(' fois sans frais'));
       setText('lisse', euro(lisseAmt) + per);
       var onceLine = $('[data-sum="once"]', box) && $('[data-sum="once"]', box).parentNode;
       if (onceLine) onceLine.hidden = false;
-      setText('once-label', 'Création, une fois');
+      setText('once-label', tr('Création, une fois'));
       setText('once', euro(t.price + optOnce));
       var recur = (month + optMonth) * mult;
-      setText('recur-label', 'Forfait, dès la réception, par ' + (annual ? 'an' : 'mois'));
+      setText('recur-label', tr('Forfait, dès la réception, par ') + tr(annual ? 'an' : 'mois'));
       setText('recur', euro(recur));
       // montant du jour, le même que sur /commander/ : l'acompte et les options payées une fois.
       // À la réception : le reste (en une fois ou lissé) et le forfait démarre.
@@ -372,7 +414,7 @@
       setText('today', euro(today));
       var bar = $('[data-sum="bar"]', box);
       if (bar) {
-        bar.innerHTML = 'Aujourd’hui <b>' + euro(today) + '</b>, à la réception <b>' + (lisse ? euro(lisseAmt) + '/mois × ' + lisseN : euro(reste)) + '</b> + forfait';
+        bar.innerHTML = tr('Aujourd’hui ') + '<b>' + euro(today) + '</b>' + tr(', à la réception ') + '<b>' + (lisse ? euro(lisseAmt) + tr('/mois') + ' × ' + lisseN : euro(reste)) + '</b>' + tr(' + forfait');
       }
       // Lien « Poser une question » (formulaire de contact, en clair)
       var q = { type: t.label, forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: domText, options: chosen.join(', '), parrain: parrain };
@@ -482,9 +524,9 @@
       var annual = val('periode') === 'annee';
       root.setAttribute('data-billing', annual ? 'annuel' : 'mensuel');
       var mult = annual ? 12 - data.free : 1;
-      var per = annual ? '/an' : '/mois';
-      var perWord = annual ? 'année' : 'mois';
-      var perUnit = annual ? 'an' : 'mois';
+      var per = tr(annual ? '/an' : '/mois');
+      var perWord = tr(annual ? 'année' : 'mois');
+      var perUnit = tr(annual ? 'an' : 'mois');
       var lisse = lisseN > 0;
       setText('eng-n', String(lisseN || ''));
       if (engRow) { engRow.hidden = !lisse; }
@@ -493,24 +535,24 @@
       $$('.b-opt input:checked', form).forEach(function (i) {
         var o = find(data.options, i.value);
         if (!o) return;
-        names.push(o.name); ids.push(o.id); optOnce += o.once; optRec += o.month * mult;
+        names.push(tr(o.name)); ids.push(o.id); optOnce += o.once; optRec += o.month * mult;
       });
       var acompte = round2(t.price * data.acompte / 100);
       var solde = round2(t.price - acompte);
       var lisseAmt = lisse ? floor2(solde / lisseN) : 0;
       var forfaitFirst = f.month * mult;
       // aujourd'hui : l'acompte et les options payées une fois ; le forfait démarre à la réception du site
-      lines.push(['Acompte de ' + data.acompte + ' % sur la création (' + t.label.toLowerCase() + ')', acompte]);
+      lines.push([tr('Acompte de ') + data.acompte + tr(' % sur la création (') + tr(t.label.toLowerCase()) + ')', acompte]);
       $$('.b-opt input:checked', form).forEach(function (i) {
         var o = find(data.options, i.value);
-        if (o && o.once) lines.push([o.name, o.once]);
+        if (o && o.once) lines.push([tr(o.name), o.once]);
       });
       var today = round2(lines.reduce(function (s, l) { return s + l[1]; }, 0));
       var next = round2(forfaitFirst + optRec);
       setText('today', euro(today));
       setText('btn', euro(today));
       setText('next', lisse ? euro(lisseAmt) + ' × ' + lisseN + ' + ' + euro(next) + per : euro(solde) + ' + ' + euro(next) + per);
-      setText('next-label', lisse ? 'À la réception : le reste en ' + lisseN + ' fois, et le forfait' : 'À la réception : le reste, et le forfait');
+      setText('next-label', lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois, et le forfait') : tr('À la réception : le reste, et le forfait'));
       if ($('[data-order="solde"]', root)) setText('solde', euro(solde));
       setText('lisse', euro(lisseAmt));
       setText('lisse-per', perUnit);
@@ -530,24 +572,24 @@
         });
       }
       /* récapitulatif latéral */
-      setText('type', t.label);
+      setText('type', tr(t.label));
       setText('type-price', euro(t.price));
-      setText('forfait', 'Forfait ' + f.name);
+      setText('forfait', planName(f.name));
       setText('forfait-price', euro(forfaitFirst) + per);
-      setText('delai', t.delai);
+      setText('delai', tr(t.delai));
       var optLine = $('[data-order-opts]', root);
       if (optLine) {
         optLine.hidden = !names.length;
-        setText('opts-label', names.length > 1 ? names.length + ' options' : (names[0] || 'Options'));
+        setText('opts-label', names.length > 1 ? names.length + tr(' options') : (names[0] || tr('Options')));
         var parts = [];
         if (optOnce) parts.push(euro(optOnce));
         if (optRec) parts.push(euro(optRec) + per);
         setText('opts', parts.join(' + '));
       }
       var dom = domain.get(), domText = '';
-      if (domain.own()) domText = 'Mon nom de domaine actuel';
-      else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? ' (disponible)' : dom.status === 'pris' ? ' (déjà pris)' : '');
-      setText('domain', domText || 'Nom de domaine à choisir');
+      if (domain.own()) domText = tr('Mon nom de domaine actuel');
+      else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? tr(' (disponible)') : dom.status === 'pris' ? tr(' (déjà pris)') : '');
+      setText('domain', domText || tr('Nom de domaine à choisir'));
       if (hiddenDomain) hiddenDomain.value = domain.full();
       var pCode = pInput ? cleanCode(pInput.value) : parrain;
       if (pLine) pLine.hidden = !pCode;
@@ -588,7 +630,7 @@
       }
       var t = form.querySelector('input[name="_t"]'); if (t && !t.value) t.value = Date.now();
       var btn = form.querySelector('button[type="submit"]');
-      if (btn) { btn.disabled = true; btn.querySelector('span').textContent = 'Un instant, je prépare le paiement…'; }
+      if (btn) { btn.disabled = true; btn.querySelector('span').textContent = tr('Un instant, je prépare le paiement…'); }
     });
   }
 
@@ -665,7 +707,7 @@
       var src = d.getElementById(btn.getAttribute('data-copy')) || $('[data-copy-src]', app);
       if (!src) return;
       btn.addEventListener('click', function () {
-        var done = function () { toast(btn.getAttribute('data-copy-msg') || 'Lien copié, prêt à envoyer'); };
+        var done = function () { toast(btn.getAttribute('data-copy-msg') || tr('Lien copié, prêt à envoyer')); };
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(src.value).then(done, function () { src.select(); done(); });
         else { src.select(); done(); }
       });
@@ -682,10 +724,10 @@
     var reqForm = $('form[data-req-real]', app);
     if (reqForm) reqForm.addEventListener('submit', function (e) {
       var ta = reqForm.querySelector('textarea');
-      if (ta && !ta.value.trim()) { e.preventDefault(); toast('Écrivez votre demande en quelques mots'); ta.focus(); return; }
-      if (file && file.files && file.files[0] && file.files[0].size > 8 * 1024 * 1024) { e.preventDefault(); toast('La photo dépasse 8 Mo : choisissez-en une plus légère'); return; }
+      if (ta && !ta.value.trim()) { e.preventDefault(); toast(tr('Écrivez votre demande en quelques mots')); ta.focus(); return; }
+      if (file && file.files && file.files[0] && file.files[0].size > 8 * 1024 * 1024) { e.preventDefault(); toast(tr('La photo dépasse 8 Mo : choisissez-en une plus légère')); return; }
       var b = reqForm.querySelector('button[type="submit"]');
-      if (b) { b.disabled = true; b.querySelector('span').textContent = 'Envoi en cours…'; }
+      if (b) { b.disabled = true; b.querySelector('span').textContent = tr('Envoi en cours…'); }
     });
     var flash = $('[data-flash]', app);
     if (flash && flash.textContent.trim()) toast(flash.textContent.trim());
@@ -700,7 +742,7 @@
           .then(function (j) {
             if (!j || !j.html) return;
             etat.innerHTML = j.html;
-            if (lastStatut && j.statut !== lastStatut) toast(j.libelle || 'Nouvelle étape');
+            if (lastStatut && j.statut !== lastStatut) toast(j.libelle || tr('Nouvelle étape'));
             lastStatut = j.statut;
             if (!j.auto) { clearInterval(timer); setTimeout(function () { location.reload(); }, 1500); }
           })
@@ -718,7 +760,7 @@
       var n = qr.getModuleCount(), m = 2, path = '';
       for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (qr.isDark(r, c)) path += 'M' + (c + m) + ',' + (r + m) + 'h1v1h-1z';
       var size = n + m * 2;
-      qrBox.innerHTML = '<svg class="qr" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + size + ' ' + size + '" role="img" aria-label="QR code vers votre site" shape-rendering="crispEdges"><rect width="' + size + '" height="' + size + '" fill="#fff"/><path fill="#2E2A47" d="' + path + '"/></svg>';
+      qrBox.innerHTML = '<svg class="qr" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + size + ' ' + size + '" role="img" aria-label="' + tr('QR code vers votre site') + '" shape-rendering="crispEdges"><rect width="' + size + '" height="' + size + '" fill="#fff"/><path fill="#2E2A47" d="' + path + '"/></svg>';
       var dl = $('[data-qr-dl]', app);
       if (dl) dl.addEventListener('click', function () {
         var svg = qrBox.querySelector('svg').outerHTML;
@@ -727,7 +769,7 @@
           var cv = d.createElement('canvas'); cv.width = cv.height = 1200;
           var cx = cv.getContext('2d'); cx.imageSmoothingEnabled = false; cx.drawImage(img, 0, 0, 1200, 1200);
           var a = d.createElement('a'); a.download = 'qr-code.png'; a.href = cv.toDataURL('image/png'); d.body.appendChild(a); a.click(); a.remove();
-          toast('QR code téléchargé');
+          toast(tr('QR code téléchargé'));
         };
         img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
       });
@@ -770,20 +812,20 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var text = txt.value.trim();
-      if (!text) { toast('Écrivez votre demande en quelques mots'); txt.focus(); return; }
-      if (left <= 0) { toast('Vos modifications du mois sont utilisées : je vous recontacte pour en parler (démo)'); return; }
+      if (!text) { toast(tr('Écrivez votre demande en quelques mots')); txt.focus(); return; }
+      if (left <= 0) { toast(tr('Vos modifications du mois sont utilisées : je vous recontacte pour en parler (démo)')); return; }
       used++; left = Math.max(0, max - used); drawJauge();
       var li = d.createElement('li');
-      li.innerHTML = '<span><strong></strong><small>envoyée à l’instant</small></span><em class="st st-new">Reçue</em>';
+      li.innerHTML = '<span><strong></strong><small>' + tr('envoyée à l’instant') + '</small></span><em class="st st-new">' + tr('Reçue') + '</em>';
       li.querySelector('strong').textContent = text.length > 60 ? text.slice(0, 57) + '…' : text;
       list.insertBefore(li, list.firstChild);
-      txt.value = ''; file.value = ''; fileName.textContent = 'Ajouter une photo (facultatif)';
-      toast('Demande envoyée : je m’en occupe (démo)');
+      txt.value = ''; file.value = ''; fileName.textContent = tr('Ajouter une photo (facultatif)');
+      toast(tr('Demande envoyée : je m’en occupe (démo)'));
       var st = li.querySelector('.st');
-      setTimeout(function () { st.className = 'st st-doing'; st.textContent = 'En cours'; }, 2000);
+      setTimeout(function () { st.className = 'st st-doing'; st.textContent = tr('En cours'); }, 2000);
       setTimeout(function () {
-        st.className = 'st st-done'; st.textContent = 'Faite';
-        toast('Votre modification est en ligne (démo)');
+        st.className = 'st st-done'; st.textContent = tr('Faite');
+        toast(tr('Votre modification est en ligne (démo)'));
         addLog('check', 'Modification faite : ' + li.querySelector('strong').textContent);
       }, 4500);
     });
@@ -809,13 +851,13 @@
       r.addEventListener('change', function () {
         max = +r.getAttribute('data-jetons'); left = Math.max(0, max - used);
         drawJauge(); recompute();
-        toast('Forfait ' + r.getAttribute('data-name') + ' choisi, à partir du mois prochain (démo)');
+        toast(planName(r.getAttribute('data-name')) + tr(' choisi, à partir du mois prochain (démo)'));
       });
     });
     $$('.app-opt input', app).forEach(function (c) {
       c.addEventListener('change', function () {
         recompute();
-        toast((c.checked ? 'Option ajoutée' : 'Option retirée') + ' (démo)');
+        toast(tr(c.checked ? 'Option ajoutée' : 'Option retirée') + tr(' (démo)'));
       });
     });
     recompute();
@@ -837,13 +879,13 @@
     var opts = p.get('options'), msg = f.querySelector('textarea[name="message"]');
     var intro = [];
     var pl = p.get('lissage') === 'oui' ? '12' : p.get('lissage');
-    if (pl && /^\d+$/.test(pl)) intro.push('Je souhaite payer le site en ' + pl + ' fois.');
-    if (opts) intro.push('Options choisies : ' + opts + '.');
+    if (pl && /^\d+$/.test(pl)) intro.push(tr('Je souhaite payer le site en ') + pl + tr(' fois.'));
+    if (opts) intro.push(tr('Options choisies : ') + opts + '.');
     if (intro.length && msg && !msg.value) msg.value = intro.join('\n') + '\n\n';
     f.addEventListener('submit', function (e) {
       if (!f.checkValidity()) { e.preventDefault(); f.reportValidity(); return; }
       var btn = f.querySelector('button[type="submit"]');
-      if (btn) { btn.disabled = true; btn.querySelector('span').textContent = 'Envoi en cours…'; }
+      if (btn) { btn.disabled = true; btn.querySelector('span').textContent = tr('Envoi en cours…'); }
     });
   });
   if (/[?&]connexion=erreur/.test(location.search)) {

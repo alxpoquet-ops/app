@@ -1530,3 +1530,10 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
 .demo-voyants strong { display: block; color: var(--ink); font-size: .88rem; }
 .demo-voyants small { color: var(--muted); font-weight: 700; font-size: .8rem; }
 @media (max-width: 560px) { .demo-voyants { grid-template-columns: minmax(0, 1fr); } }
+
+/* bouton de langue FR | EN */
+.lang-switch { display: inline-flex; align-items: center; padding: 3px; border-radius: 999px; background: var(--card); box-shadow: 0 0 0 1.5px var(--line) inset; text-decoration: none; font: 900 .78rem/1 var(--font); letter-spacing: .04em; flex: none; }
+.lang-switch span { padding: 7px 9px; border-radius: 999px; color: var(--muted); transition: background-color .2s, color .2s; }
+.lang-switch span.is-on { background: var(--sky); color: var(--sky-dd); }
+.lang-switch:hover span:not(.is-on) { color: var(--ink); }
+@media (max-width: 380px) { .lang-switch span { padding: 6px 7px; } }

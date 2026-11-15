@@ -102,7 +102,7 @@ for (const p of MUST_NOINDEX) if (!seen.has(p)) errors.push(`${p} : page manquan
 
 const dups = [...sentences.entries()].filter(([, set]) => set.size > 1);
 // La page /faq/ reprend volontairement les questions de chaque rubrique : tolérance
-const sharedOk = (set) => set.has('/faq/') && set.size === 2;
+const sharedOk = (set) => (set.has('/faq/') || set.has('/en/faq/')) && set.size === 2;
 const realDups = dups.filter(([, set]) => !sharedOk(set));
 
 console.log(`Pages analysées : ${files.length}`);

@@ -96,6 +96,9 @@ write(
 const php = fs.readFileSync(path.join(ROOT, 'src/server/envoi.php'), 'utf8').replace('__EMAIL__', site.email).replace('__SITE__', site.url);
 write('envoi.php', php);
 
+// 5) version anglaise : dist/en/ (textes dans src/i18n/parts/*.json, voir scripts/i18n.py)
+require('child_process').execFileSync('python3', [path.join(ROOT, 'scripts/i18n.py'), 'apply'], { stdio: 'inherit' });
+
 // ---------------------------------------------------------------- rapport
 const warn = [];
 if (/en cours/.test(site.legal.siret + site.legal.mediator)) warn.push('Informations légales en attente dans src/config.js (SIRET, médiateur).');

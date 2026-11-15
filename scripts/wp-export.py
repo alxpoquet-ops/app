@@ -175,8 +175,9 @@ def redirects(items):
     return out
 
 
-def chrome():
-    page = read(os.path.join(DIST, 'plan-du-site', 'index.html'))
+def chrome(langue=''):
+    base = os.path.join(DIST, langue) if langue else DIST
+    page = read(os.path.join(base, 'plan-du-site', 'index.html'))
     body = page[page.index('<body'):]
     body = body[body.index('>') + 1:]
     top = body[:body.index('<main id="contenu">')]
@@ -186,7 +187,10 @@ def chrome():
     bar = m.group(0) if m else ''
     if m:
         bottom = bottom.replace(bar, '')
-    nf = read(os.path.join(DIST, '404.html'))
+    # en-tête commun à toutes les pages : le bouton de langue mène par défaut à l'accueil de l'autre langue
+    # (le script du site le fait pointer vers la même page, une fois chargée)
+    top = re.sub(r'(<a class="lang-switch" href=")[^"]*"', lambda m: m.group(1) + ('/' if langue else '/en/') + '"', top)
+    nf = read(os.path.join(base, '404.html'))
     return fix_urls(top.strip()), fix_urls(bottom.strip()), fix_urls(bar.strip()), fix_urls(main_of(nf).strip())
 
 
@@ -369,12 +373,23 @@ add_action('template_redirect', function () {
 });
 
 /* ---------- menu : élément courant ---------- */
+/* Version anglaise : les pages sous /en/ ont leur en-tête et leur pied de page en anglais */
+function aled08_is_en() {
+    $path = wp_parse_url(isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '/', PHP_URL_PATH) ?: '/';
+    return $path === '/en' || strpos($path, '/en/') === 0;
+}
+function aled08_part($nom) {
+    $dir = get_template_directory() . '/parts/';
+    $f = $dir . $nom . (aled08_is_en() && file_exists($dir . $nom . '-en.html') ? '-en' : '') . '.html';
+    return (string) file_get_contents($f);
+}
+add_filter('language_attributes', function ($out) { return aled08_is_en() ? preg_replace('/lang="[^"]*"/', 'lang="en-GB"', $out) : $out; });
 function aled08_chrome_top() {
-    $top = file_get_contents(get_template_directory() . '/parts/top.html');
+    $top = aled08_part('top');
     $path = wp_parse_url(isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '/', PHP_URL_PATH) ?: '/';
     if ($path !== '/') {
         $top = preg_replace_callback('#(class="nav-link[^"]*" href="([^"]+)")#', function ($m) use ($path) {
-            return ($m[2] !== '/' && strpos($path, $m[2]) === 0) ? $m[1] . ' aria-current="page"' : $m[1];
+            return ($m[2] !== '/' && $m[2] !== '/en/' && strpos($path, $m[2]) === 0) ? $m[1] . ' aria-current="page"' : $m[1];
         }, $top);
         if (strpos($path, '/mon-espace/') === 0) $top = str_replace('class="btn-espace" href="/mon-espace/"', 'class="btn-espace" href="/mon-espace/" aria-current="page"', $top);
     }
@@ -391,7 +406,7 @@ add_filter('body_class', function ($classes) {
 function aled08_mobile_bar() {
     $id = aled08_page_id();
     if ($id && get_post_meta($id, '_aled08_nobar', true)) return '';
-    return file_get_contents(get_template_directory() . '/parts/mobilebar.html');
+    return aled08_part('mobilebar');
 }
 
 /* Contenu d'une page créée plus tard dans WordPress (sans mise en page ALED08) */
@@ -429,7 +444,7 @@ HEADER_PHP = r"""<?php defined('ABSPATH') || exit; $u = get_template_directory_u
 
 FOOTER_PHP = r"""<?php defined('ABSPATH') || exit; ?>
 </main>
-<?php echo file_get_contents(get_template_directory() . '/parts/bottom.html'); // phpcs:ignore ?>
+<?php echo aled08_part('bottom'); // phpcs:ignore ?>
 <?php echo aled08_mobile_bar(); // phpcs:ignore ?>
 <?php wp_footer(); ?>
 </body>
@@ -456,7 +471,7 @@ get_header();
 if (is_singular()) {
     while (have_posts()) { the_post(); aled08_simple_page(); }
 } else {
-    echo file_get_contents(get_template_directory() . '/parts/404.html'); // phpcs:ignore
+    echo aled08_part('404'); // phpcs:ignore
 }
 get_footer();
 """
@@ -464,7 +479,7 @@ get_footer();
 NOTFOUND_PHP = r"""<?php
 defined('ABSPATH') || exit;
 get_header();
-echo file_get_contents(get_template_directory() . '/parts/404.html'); // phpcs:ignore
+echo aled08_part('404'); // phpcs:ignore
 get_footer();
 """
 
@@ -577,6 +592,12 @@ def main():
     write(os.path.join(tdir, 'parts', 'bottom.html'), bottom)
     write(os.path.join(tdir, 'parts', 'mobilebar.html'), bar)
     write(os.path.join(tdir, 'parts', '404.html'), notfound)
+    if os.path.exists(os.path.join(DIST, 'en', 'plan-du-site', 'index.html')):
+        top, bottom, bar, notfound = chrome('en')
+        write(os.path.join(tdir, 'parts', 'top-en.html'), top)
+        write(os.path.join(tdir, 'parts', 'bottom-en.html'), bottom)
+        write(os.path.join(tdir, 'parts', 'mobilebar-en.html'), bar)
+        write(os.path.join(tdir, 'parts', '404-en.html'), notfound)
     write(os.path.join(tdir, 'style.css'), STYLE_CSS)
     write(os.path.join(tdir, 'functions.php'), FUNCTIONS_PHP.replace('__RECIPIENT__', FORM_RECIPIENT))
     write(os.path.join(tdir, 'header.php'), HEADER_PHP)
