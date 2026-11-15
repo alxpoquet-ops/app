@@ -417,6 +417,7 @@ HEADER_PHP = r"""<?php defined('ABSPATH') || exit; $u = get_template_directory_u
 <link rel="icon" href="<?php echo esc_url($u); ?>/assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="<?php echo esc_url($u); ?>/assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="<?php echo esc_url($u); ?>/assets/apple-touch-icon.png">
+<link rel="manifest" href="<?php echo esc_url($u); ?>/assets/app.webmanifest">
 <script>document.documentElement.classList.add('js')</script>
 <?php wp_head(); ?>
 </head>
@@ -565,6 +566,12 @@ def main():
     for f in ['favicon.svg', 'favicon-32.png', 'apple-touch-icon.png']:
         shutil.copy(os.path.join(DIST, f), os.path.join(tdir, 'assets', f))
     shutil.copy(os.path.join(DIST, 'assets', 'img', 'og-image.png'), os.path.join(tdir, 'screenshot.png'))
+    # application à installer sur téléphone et ordinateur : elle s'ouvre sur l'espace (client ou gestion)
+    write(os.path.join(tdir, 'assets', 'app.webmanifest'), json.dumps({
+        'name': 'Alex & Lia', 'short_name': 'Alex & Lia', 'lang': 'fr', 'start_url': '/mon-espace/', 'scope': '/',
+        'display': 'standalone', 'background_color': '#16142A', 'theme_color': '#16142A',
+        'icons': [{'src': 'img/logo-192.png', 'sizes': '192x192', 'type': 'image/png'}, {'src': 'img/logo-512.png', 'sizes': '512x512', 'type': 'image/png'}],
+    }, ensure_ascii=False, indent=2))
     top, bottom, bar, notfound = chrome()
     write(os.path.join(tdir, 'parts', 'top.html'), top)
     write(os.path.join(tdir, 'parts', 'bottom.html'), bottom)

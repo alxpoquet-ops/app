@@ -159,3 +159,30 @@ a.app-card { text-decoration: none; color: inherit; }
 .esp-changer-list { display: grid; gap: 8px; }
 .esp-changer .btn { justify-self: start; }
 @media (max-width: 720px) { .esp-changer .btn { justify-self: stretch; } }
+
+/* ---------- gestion (administrateur) ---------- */
+.ges-cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ges-cards .app-card strong { font-size: 1.7rem; }
+.ges-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.ges-item { display: grid; gap: 8px; padding: 14px 16px; border-radius: 18px; background: var(--soft); min-width: 0; }
+.ges-item[hidden] { display: none; }
+.ges-head { display: flex; align-items: center; gap: 10px; }
+.ges-head strong { flex: 1; min-width: 0; font-size: 1.05rem; overflow-wrap: anywhere; }
+.ges-meta { margin: 0; color: var(--muted); font-size: .88rem; font-weight: 700; overflow-wrap: anywhere; }
+.ges-meta a { color: var(--lilac-dd); }
+.ges-text { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
+.ges-photo img { width: 72px; height: 72px; border-radius: 12px; object-fit: cover; display: block; }
+.ges-form { display: grid; gap: 8px; }
+.ges-form textarea, .ges-msg textarea { width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 0; border-radius: 14px; padding: 10px 12px; box-shadow: 0 0 0 2px var(--edge) inset; resize: vertical; }
+.ges-msg textarea { margin: 8px 0; font-size: .92rem; }
+.ges-msg summary { cursor: pointer; font-weight: 900; color: var(--lilac-dd); }
+.ges-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
+.ges-actions .btn { max-width: 100%; }
+.ges-actions .btn span { overflow: hidden; text-overflow: ellipsis; }
+.ges-actions a[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+.ges-suppr { color: var(--pink-dd); }
+.ges-filter { margin: 0 0 12px; }
+.ges-tips { margin: 4px 0 0; padding-left: 1.2em; color: var(--muted); font-size: .9rem; display: grid; gap: 4px; }
+.ges-tips b { color: var(--ink); }
+.ges-find { margin-bottom: 14px; }
+@media (max-width: 900px) { .ges-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

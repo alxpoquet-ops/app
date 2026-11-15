@@ -90,6 +90,7 @@ require_once __DIR__ . '/includes/lia.php';
 require_once __DIR__ . '/includes/compte.php';
 require_once __DIR__ . '/includes/inscription.php';
 require_once __DIR__ . '/includes/changer.php';
+require_once __DIR__ . '/includes/gestion.php';
 
 /* =========================================================================
  *  Rôle « Client Alex & Lia » et type de contenu « Demande »
@@ -356,24 +357,7 @@ function aled08e_client_box($post) {
 add_action('save_post_' . ALED08E_CPT, function ($pid, $post) {
     if (!isset($_POST['_aled08e_suivi']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_aled08e_suivi'])), 'aled08e_suivi')) return;
     if (!current_user_can('edit_post', $pid) || wp_is_post_revision($pid)) return;
-    $old = get_post_meta($pid, '_aled08_statut', true) ?: 'recue';
-    $new = sanitize_key(wp_unslash($_POST['aled08e_statut'] ?? 'recue'));
-    if (!isset(aled08e_statuts()[$new])) $new = 'recue';
-    $rep = sanitize_textarea_field(wp_unslash($_POST['aled08e_reponse'] ?? ''));
-    update_post_meta($pid, '_aled08_statut', $new);
-    update_post_meta($pid, '_aled08_reponse', $rep);
-    if ($new === 'faite' && $old !== 'faite') {
-        update_post_meta($pid, '_aled08_faite_le', current_time('mysql'));
-        $u = get_userdata($post->post_author);
-        if ($u) {
-            $corps = 'Bonjour ' . aled08e_prenom($u) . ",\n\n"
-                . "Votre demande est faite et en ligne :\n« " . $post->post_title . " »\n\n"
-                . ($rep ? $rep . "\n\n" : '')
-                . "Vous retrouvez le suivi de vos demandes dans votre espace client :\n" . aled08e_url() . "#demandes\n\n"
-                . "À bientôt,\nAlex, et Lia\n";
-            wp_mail($u->user_email, 'Votre modification est en ligne', $corps, aled08e_mail_headers('Alex & Lia <' . aled08e_to() . '>'));
-        }
-    }
+    aled08e_demande_marquer($pid, sanitize_key(wp_unslash($_POST['aled08e_statut'] ?? 'recue')), sanitize_textarea_field(wp_unslash($_POST['aled08e_reponse'] ?? '')));
 }, 10, 2);
 /* Statut privé conservé quand on enregistre depuis l'administration (demandes et commandes) */
 add_filter('wp_insert_post_data', function ($data) {
@@ -669,6 +653,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
 function aled08e_dashboard() {
     $u = wp_get_current_user();
     $uid = $u->ID;
+    if (aled08e_est_gerant()) return aled08e_gestion($u); // l'administrateur voit la gestion, pas l'espace client
     if (aled08e_sans_forfait($uid)) return aled08e_dashboard_libre($u);
     $D = aled08e_data();
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
