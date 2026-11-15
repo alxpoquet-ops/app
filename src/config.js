@@ -206,7 +206,7 @@ const boost = { prix: 1 };
 // ---------------------------------------------------------------- sites réalisés (page « Ils nous ont fait confiance »)
 // Uniquement de vrais clients, avec leur accord. desc : une phrase factuelle, pas d'avis inventé.
 const clients = [
-  { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Une boutique en ligne, avec ses produits, son panier et le paiement par carte.' },
+  { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Des fleurs éternelles en fil chenille, faites main à Signy-l’Abbaye, dans les Ardennes. La boutique ouvre très bientôt.' },
   { nom: 'Dodedo', domaine: 'dodedo.fr', url: 'https://dodedo.fr/', genre: 'Site vitrine', icon: 'hand-heart', color: 'lilac', desc: 'Le site de Dominique Schneider, magnétiseur et barreur de feu, qui accompagne à distance partout en France ou à domicile.' },
 ];
 
