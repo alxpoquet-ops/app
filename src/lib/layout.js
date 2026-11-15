@@ -137,6 +137,7 @@ function footer(p) {
         <li><a href="/mon-espace/demo/">Essayer la démo</a></li>
         <li><a href="/referencement-seo/">Référencement SEO</a></li>
         <li><a href="/guides/">Guides pour créer son site</a></li>
+        <li><a href="/lexique/">Lexique du web</a></li>
         <li><a href="${sections.comparatif.path}">Alex & Lia et les autres solutions</a></li>
         <li><a href="/fidelite/">Fidélité et parrainage</a></li>
       </ul>

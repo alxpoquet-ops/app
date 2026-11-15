@@ -9,6 +9,8 @@ const FAQ = require('../content/faq');
 const legal = require('../content/legal');
 const OUTILS = require('../content/outils');
 const GUIDES = require('../content/guides');
+let LEXIQUE = { termes: [], PUBLIE: '' };
+try { LEXIQUE = require('../content/lexique'); } catch (e) { /* lexique pas encore écrit */ }
 const { clients } = require('../config');
 let CLIENTS_PAGES = {};
 try { CLIENTS_PAGES = require('../content/clients-pages.json'); } catch (e) { /* pas encore compté : node scripts/compter-pages.js */ }
@@ -1112,6 +1114,67 @@ ${C.ctaBand()}`;
   };
 }
 
+// ====================================================================== LEXIQUE
+const lexCard = (t) => `<a class="guide-card reveal" href="/lexique/${t.slug}/"><span class="type-ico">${icon(t.icon)}</span><span class="guide-card-text"><strong>${inline(t.nom)}</strong><span>${inline(t.resume)}</span></span>${icon('arrow-right')}</a>`;
+
+function lexiqueHub() {
+  const crumbs = crumb('lexique');
+  const tri = [...LEXIQUE.termes].sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
+  const lettres = [...new Set(tri.map((t) => t.nom[0].toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '')))];
+  const body = `${C.pageHero({
+    section: 'lexique',
+    h1: 'Lexique du web : les mots d’internet expliqués simplement',
+    lead: 'Nom de domaine, hébergement, SEO, HTTPS… Vous entendez ces mots sans savoir ce qu’ils veulent dire ? Chaque page explique un mot, avec un exemple concret.',
+    crumbs,
+  })}
+<section class="section"><div class="container">
+  <nav class="lex-lettres" aria-label="Aller à une lettre">${lettres.map((l) => `<a href="#lettre-${l}">${l}</a>`).join('')}</nav>
+  ${lettres
+    .map((l) => `<h2 class="lex-lettre" id="lettre-${l}">${l}</h2><div class="guide-cards">${tri.filter((t) => t.nom[0].toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '') === l).map(lexCard).join('')}</div>`)
+    .join('\n')}
+  <p class="center"><a class="link-more" href="/guides/">Et nos guides pour créer votre site</a></p>
+</div></section>
+${C.ctaBand({ title: 'Plus besoin de tout savoir', text: 'On s’occupe de la technique pour vous. Composez votre site en deux minutes, le prix s’affiche tout de suite.' })}`;
+  return {
+    path: '/lexique/',
+    section: 'lexique',
+    title: 'Lexique du web : définitions simples des mots d’internet | Alex & Lia',
+    description: 'Nom de domaine, hébergement, SEO, HTTPS, responsive, CMS : les mots du web expliqués simplement, avec un exemple concret pour chacun. Sans jargon.',
+    crumbs,
+    body,
+    schema: [{ '@type': 'DefinedTermSet', '@id': site.url + '/lexique/#lexique', name: 'Lexique du web', hasDefinedTerm: LEXIQUE.termes.map((t) => ({ '@type': 'DefinedTerm', name: t.nom, url: site.url + '/lexique/' + t.slug + '/' })) }],
+    priority: 0.7,
+  };
+}
+
+function lexiquePage(t) {
+  const path = `/lexique/${t.slug}/`;
+  const crumbs = [...crumb('lexique'), { name: t.nom, path }];
+  const f = C.faq(t.faq, 'Vos questions', 'faq-lexique');
+  const voir = t.voir.map((s) => LEXIQUE.termes.find((x) => x.slug === s)).filter(Boolean);
+  const body = `${C.pageHero({ section: 'lexique', h1: t.h1, lead: t.lead, crumbs })}
+<section class="section"><div class="container container-narrow prose reveal">
+  ${md(t.body)}
+</div></section>
+${f.html}
+<nav class="related" aria-label="À lire aussi"><div class="container"><h2 class="section-title">À lire aussi</h2><div class="guide-cards">${voir.map(lexCard).join('')}</div><p class="center"><a class="link-more" href="/lexique/">Tout le lexique</a></p></div></nav>
+${C.ctaBand()}`;
+  return {
+    path,
+    section: 'lexique',
+    title: t.title,
+    description: t.description,
+    crumbs,
+    body,
+    schema: [
+      { '@type': 'DefinedTerm', '@id': site.url + path + '#terme', name: t.nom, description: t.description, inDefinedTermSet: site.url + '/lexique/#lexique' },
+      { '@type': 'Article', '@id': site.url + path + '#article', headline: t.h1, description: t.description, inLanguage: 'fr-FR', datePublished: LEXIQUE.PUBLIE, dateModified: LEXIQUE.PUBLIE, author: { '@id': site.url + '/#entreprise' }, publisher: { '@id': site.url + '/#entreprise' }, image: site.url + '/assets/img/og-image.png', mainEntityOfPage: { '@id': site.url + path + '#page' } },
+      f.schema,
+    ],
+    priority: 0.6,
+  };
+}
+
 // ====================================================================== LIA ET ALEX
 function liaAlexPage() {
   const crumbs = crumb('liaalex');
@@ -1462,6 +1525,7 @@ function docPage() {
   <div class="go-links">
     <a class="go-link c-${sections.seo.color}" href="${sections.seo.path}"><span class="type-ico">${icon(sections.seo.icon)}</span><strong>Le référencement en détail</strong>${icon('arrow-right')}</a>
     <a class="go-link c-${sections.guides.color}" href="${sections.guides.path}"><span class="type-ico">${icon(sections.guides.icon)}</span><strong>Les guides pratiques</strong>${icon('arrow-right')}</a>
+    ${LEXIQUE.termes.length ? `<a class="go-link c-${sections.lexique.color}" href="${sections.lexique.path}"><span class="type-ico">${icon(sections.lexique.icon)}</span><strong>Le lexique du web</strong>${icon('arrow-right')}</a>` : ''}
     <a class="go-link c-${sections.confiance.color}" href="${sections.confiance.path}"><span class="type-ico">${icon(sections.confiance.icon)}</span><strong>Les pages créées pour nos clients</strong>${icon('arrow-right')}</a>
   </div>
 </div></section>
@@ -1596,6 +1660,7 @@ function build() {
     confiancePage(),
     docPage(),
     guidesHub(), ...GUIDES.guides.map(guidePage),
+    ...(LEXIQUE.termes.length ? [lexiqueHub(), ...LEXIQUE.termes.map(lexiquePage)] : []),
     ...legal.map(legalPage), planDuSite(), merci(), notFound(),
   ];
 }

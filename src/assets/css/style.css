@@ -1560,3 +1560,9 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
   .brand-text strong { white-space: nowrap; overflow: hidden; text-overflow: clip; }
   .header-actions { flex: none; }
 }
+
+/* lexique : navigation par lettre */
+.lex-lettres { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 26px; }
+.lex-lettres a { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; background: var(--card); box-shadow: var(--shadow-sm); color: var(--ink); font-weight: 900; text-decoration: none; }
+.lex-lettres a:hover { background: var(--mint); color: var(--mint-dd); }
+.lex-lettre { font-size: 1.6rem; margin: 30px 0 12px; scroll-margin-top: 90px; color: var(--mint-d); }
