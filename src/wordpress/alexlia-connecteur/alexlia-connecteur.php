@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Alex & Lia : connecteur
  * Description: À installer sur le site d'un client. Permet à Lia (l'IA d'Alex & Lia) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 1.2.2
+ * Version: 1.2.3
  * Requires PHP: 7.4
  * Author: Alex & Lia
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '1.2.2');
+define('ALEXLIA_CONN_VERSION', '1.2.3');
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Lia (Réglages › Alex & Lia)
@@ -427,12 +427,12 @@ add_action('shutdown', function () {
     foreach (array_keys($s['jours']) as $k) { if ($k !== $jour) unset($s['jours'][$k]['vus']); }
     $s['jours'] = array_slice($s['jours'], -31, null, true);
     $s['srv'] = ['memoire' => memory_get_peak_usage(true), 'le' => time()];
-    // visiteurs présents ces 5 dernières minutes
+    // visiteurs venus dans la dernière heure
     $actifs = get_transient('alexlia_actifs');
     $actifs = is_array($actifs) ? $actifs : [];
     $actifs[$empreinte] = time();
-    $actifs = array_filter($actifs, function ($t) { return $t > time() - 300; });
-    set_transient('alexlia_actifs', array_slice($actifs, -500, null, true), 600);
+    $actifs = array_filter($actifs, function ($t) { return $t > time() - HOUR_IN_SECONDS; });
+    set_transient('alexlia_actifs', array_slice($actifs, -2000, null, true), 2 * HOUR_IN_SECONDS);
     update_option('alexlia_stats', $s, false);
 }, 99);
 
@@ -453,7 +453,7 @@ function alexlia_conn_stats() {
     $auj = $s['jours'][$jour] ?? [];
     $somme = function ($cle) use ($s) { $t = []; foreach ($s['jours'] as $d) foreach ((array) ($d[$cle] ?? []) as $k => $v) $t[$k] = ($t[$k] ?? 0) + (int) $v; arsort($t); return $t; };
     $actifs = get_transient('alexlia_actifs');
-    $actifs = is_array($actifs) ? count(array_filter($actifs, function ($t) { return $t > time() - 300; })) : 0;
+    $actifs = is_array($actifs) ? count(array_filter($actifs, function ($t) { return $t > time() - HOUR_IN_SECONDS; })) : 0;
     $tps = 0; $mes = 0; foreach ($s['jours'] as $d) { $tps += (float) ($d['temps'] ?? 0); $mes += (int) ($d['mesures'] ?? 0); }
     $charge = function_exists('sys_getloadavg') ? @sys_getloadavg() : false;
     $coeurs = 0;

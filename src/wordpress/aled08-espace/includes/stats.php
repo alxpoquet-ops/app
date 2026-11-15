@@ -1,8 +1,8 @@
 <?php
 /**
- * Alex & Lia Espace client : le tableau de bord en direct (forfait Titan).
+ * Alex & Lia Espace client : le tableau de bord heure par heure (forfait Titan).
  * Les chiffres viennent du site du client, par le connecteur (action « stats »), et se mettent
- * à jour toutes les 30 secondes. Les autres forfaits voient un aperçu flouté.
+ * à jour toutes les heures. Les autres forfaits voient un aperçu flouté.
  */
 defined('ABSPATH') || exit;
 
@@ -10,7 +10,7 @@ function aled08e_stats_acces($uid) {
     return aled08e_meta($uid, 'forfait') === 'titan' || aled08e_famille($uid);
 }
 
-/* Chiffres du site du client (gardés 20 secondes pour ne pas solliciter son site à chaque rafraîchissement) */
+/* Chiffres du site du client (gardés une heure : une mise à jour par heure suffit) */
 function aled08e_stats_lire($uid) {
     $cle = 'aled08_stats_' . (int) $uid;
     $c = get_transient($cle);
@@ -22,7 +22,7 @@ function aled08e_stats_lire($uid) {
         return ['etat' => $code === 400 ? 'connecteur_ancien' : 'injoignable'];
     }
     $r['etat'] = 'ok';
-    set_transient($cle, $r, 20);
+    set_transient($cle, $r, HOUR_IN_SECONDS);
     return $r;
 }
 
@@ -42,12 +42,12 @@ function aled08e_stats_html($uid) {
     ?>
 <section class="live<?php echo $acces ? '' : ' is-locked'; ?>" data-live-stats="<?php echo $acces ? '1' : '0'; ?>" data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" data-nonce="<?php echo esc_attr($acces ? wp_create_nonce('aled08e_stats') : ''); ?>">
   <div class="live-head">
-    <p class="app-sub"><span class="live-dot" aria-hidden="true"></span>Votre site en direct</p>
+    <p class="app-sub"><span class="live-dot" aria-hidden="true"></span>Votre site, heure par heure</p>
     <small class="live-maj" data-live-maj aria-live="polite"><?php echo $acces ? 'Connexion à votre site…' : 'Exemple'; ?></small>
   </div>
   <p class="esp-warn" data-live-msg hidden></p>
   <div class="live-kpis">
-    <?php echo $carte('actifs', 'users', 'En ce moment', 'pink') . $carte('visiteurs', 'user', 'Visiteurs aujourd’hui', 'mint') . $carte('vues', 'eye', 'Pages vues aujourd’hui', 'sky') . $carte('temps', 'timer', 'Temps de réponse', 'butter'); // phpcs:ignore ?>
+    <?php echo $carte('actifs', 'users', 'Dans la dernière heure', 'pink') . $carte('visiteurs', 'user', 'Visiteurs aujourd’hui', 'mint') . $carte('vues', 'eye', 'Pages vues aujourd’hui', 'sky') . $carte('temps', 'timer', 'Temps de réponse', 'butter'); // phpcs:ignore ?>
     <?php if ($boutique) echo $carte('commandes', 'shopping-bag', 'Commandes aujourd’hui', 'lilac') . $carte('ventes', 'euro', 'Ventes sur 30 jours', 'peach'); // phpcs:ignore ?>
   </div>
   <div class="live-grid">
@@ -72,7 +72,7 @@ function aled08e_stats_html($uid) {
       </dl>
     </div>
   </div>
-  <?php if (!$acces) : ?><div class="live-lock"><span><?php echo aled08e_icon('lock'); // phpcs:ignore ?></span><strong>Votre site en direct, avec Titan</strong><p>Visiteurs en ce moment, pages vues, appareils, provenance, mémoire et charge du serveur : tout se met à jour toutes les 30 secondes.</p><button type="button" class="btn btn-primary btn-sm" data-go="forfait"><?php echo aled08e_icon('arrow-right'); // phpcs:ignore ?><span>Voir le forfait Titan</span></button></div><?php endif; ?>
+  <?php if (!$acces) : ?><div class="live-lock"><span><?php echo aled08e_icon('lock'); // phpcs:ignore ?></span><strong>Votre site heure par heure, avec Titan</strong><p>Visiteurs, pages vues, appareils, provenance, mémoire et charge du serveur : tout se met à jour toutes les heures.</p><button type="button" class="btn btn-primary btn-sm" data-go="forfait"><?php echo aled08e_icon('arrow-right'); // phpcs:ignore ?><span>Voir le forfait Titan</span></button></div><?php endif; ?>
   <p class="app-note">Mesure d’audience sans cookie : vos visiteurs sont comptés de façon anonyme, sans aucune donnée personnelle gardée. Les visites des personnes connectées et des robots ne sont pas comptées.</p>
 </section>
 <script>
@@ -173,18 +173,20 @@ function aled08e_stats_html($uid) {
   }
   afficher(vide);
   var msg = $('[data-live-msg]'), maj = $('[data-live-maj]'), dernier = 0, minuteur = null;
-  var MSG = { non_relie: 'Votre site n’est pas encore relié à votre espace. Alex s’en occupe : les chiffres apparaîtront ici dès que c’est fait.', connecteur_ancien: 'L’extension de votre site doit être mise à jour pour afficher les chiffres. Alex s’en occupe.', injoignable: 'Votre site ne répond pas pour le moment. Nouvel essai dans 30 secondes.' };
+  var MSG = { non_relie: 'Votre site n’est pas encore relié à votre espace. Alex s’en occupe : les chiffres apparaîtront ici dès que c’est fait.', connecteur_ancien: 'L’extension de votre site doit être mise à jour pour afficher les chiffres. Alex s’en occupe.', injoignable: 'Votre site ne répond pas pour le moment. Nouvel essai dans une heure, ou rechargez la page.' };
   function charger() {
     if (document.hidden) return;
     var f = new FormData(); f.append('action', 'aled08e_stats'); f.append('_n', box.getAttribute('data-nonce'));
     fetch(box.getAttribute('data-ajax'), { method: 'POST', body: f, credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (r) {
       var d = r && r.data ? r.data : {};
       if (!r.success || d.etat !== 'ok') { msg.textContent = MSG[d.etat] || 'Les chiffres ne sont pas disponibles pour le moment.'; msg.hidden = false; return; }
-      msg.hidden = true; dernier = Date.now(); afficher(d);
+      msg.hidden = true; dernier = Date.now(); leSite = d.le || Date.now() / 1000; afficher(d); maj.textContent = 'Mis à jour ' + quand(leSite) + ' · prochaine mise à jour dans l’heure';
     }).catch(function () { msg.textContent = MSG.injoignable; msg.hidden = false; });
   }
-  setInterval(function () { maj.textContent = dernier ? 'Mis à jour il y a ' + Math.round((Date.now() - dernier) / 1000) + ' s' : 'Connexion à votre site…'; }, 1000);
-  charger(); minuteur = setInterval(charger, 30000);
+  var quand = function (le) { var m = Math.round((Date.now() / 1000 - le) / 60); return m < 1 ? 'à l’instant' : (m < 60 ? 'il y a ' + m + ' min' : 'il y a ' + Math.floor(m / 60) + ' h'); };
+  var leSite = 0;
+  setInterval(function () { maj.textContent = dernier ? 'Mis à jour ' + quand(leSite) + ' · prochaine mise à jour dans l’heure' : 'Connexion à votre site…'; }, 15000);
+  charger(); minuteur = setInterval(charger, 3600000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) charger(); });
 })();
 </script>

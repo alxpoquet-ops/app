@@ -174,14 +174,14 @@ const forfaits = [
     quota: 2, // modifications par Alex, par mois
     jetons: 10, // modifications par Lia, par mois
     partage: false,
-    bulle: 'Pour suivre votre site et vos ventes en direct',
+    bulle: 'Pour suivre votre site et vos ventes de près',
     modifs: 'Dix modifications par Lia et deux par Alex, chaque mois',
     conseil: false,
     tagline: 'Le meilleur',
     pitch: 'Tout Power, plus le retour de vos ventes et de vos chiffres chaque mois, et dix modifications par Lia chaque mois.',
-    main: ['Tout ce que comprend Power', 'Votre site en direct : visiteurs, ventes, serveur', 'Dix modifications par Lia et deux par Alex, chaque mois'],
-    details: ['Tout ce que comprend Power, et en plus :', 'Votre site en direct : visiteurs en ce moment, pages vues, appareils, provenance, mémoire et charge du serveur, mis à jour toutes les 30 secondes', 'Un rapport chaque mois : vos ventes, vos visites et vos chiffres, expliqués simplement', 'Dix modifications par Lia et deux par Alex, chaque mois', 'Avec Alex, réponse sous 24 heures'],
-    features: ['Tout ce que comprend Power', 'Votre site en direct : visiteurs, ventes, serveur', 'Retour de vos ventes et de vos chiffres chaque mois', 'Dix modifications par Lia et deux par Alex, chaque mois'],
+    main: ['Tout ce que comprend Power', 'Votre site heure par heure : visiteurs, ventes, serveur', 'Dix modifications par Lia et deux par Alex, chaque mois'],
+    details: ['Tout ce que comprend Power, et en plus :', 'Votre site heure par heure : visiteurs, pages vues, appareils, provenance, mémoire et charge du serveur, mis à jour toutes les heures', 'Un rapport chaque mois : vos ventes, vos visites et vos chiffres, expliqués simplement', 'Dix modifications par Lia et deux par Alex, chaque mois', 'Avec Alex, réponse sous 24 heures'],
+    features: ['Tout ce que comprend Power', 'Votre site heure par heure : visiteurs, ventes, serveur', 'Retour de vos ventes et de vos chiffres chaque mois', 'Dix modifications par Lia et deux par Alex, chaque mois'],
   },
 ];
 const annuel = { moisOfferts: 2 };
