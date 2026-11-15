@@ -1387,3 +1387,16 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
   .app-side .app-logout { order: 11; flex: none; }
   .app-side .app-tabs button { padding: 10px 13px; }
 }
+
+/* onglets toujours tous visibles : ils passent à la ligne au lieu de glisser */
+.app-side .app-tabs { flex-wrap: wrap; overflow: visible; margin: 0; gap: 6px; padding: 4px 0 12px; }
+.app-side .app-tabs button { border-radius: 14px; }
+.app-side .app-tabs button[aria-selected="true"] { box-shadow: 0 0 0 2px var(--lilac-d) inset; }
+@media (max-width: 720px) {
+  .app-side .jauge { flex: 1 1 100%; }
+  .app-side .jauge-head { font-size: .88rem; }
+  .app-side .app-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .app-side .app-tabs button { width: 100%; justify-content: flex-start; padding: 11px 12px; font-size: .92rem; white-space: normal; text-align: left; line-height: 1.2; background: var(--card); }
+  .app-side .app-tabs button .ico { flex: none; }
+  .app-side .app-logout { order: 12; flex: 1 1 100%; justify-content: center; margin-bottom: 8px; }
+}
