@@ -542,6 +542,7 @@ function aled08e_admin_reglages() {
     else echo '<p>Non configuré. Pour l’utiliser, ajoutez dans wp-config.php les constantes <code>ALED08_CPANEL_HOST</code>, <code>ALED08_CPANEL_USER</code>, <code>ALED08_CPANEL_TOKEN</code> et <code>ALED08_CPANEL_MAIN_DOMAIN</code> (voir le guide). Note : o2switch a désactivé temporairement la création de jetons (novembre 2026).</p>';
 
     aled08e_lia_reglages_html();
+    aled08e_rs_reglages_html();
     echo '<p class="submit"><button type="submit" class="button button-primary">Enregistrer</button></p></form>';
     aled08e_jl_bilan_html();
     echo '</div>';
@@ -573,6 +574,7 @@ add_action('admin_post_aled08e_reglages', function () {
     update_option('aled08_hebergeur', in_array($heb, ['auto', 'ovh', 'cpanel', 'manuel'], true) ? $heb : 'auto', false);
     update_option('aled08_ovh_essai', !empty($P['ovh_essai']) ? '1' : '0', false);
     update_option('aled08_ovh_wp', !empty($P['ovh_wp']) ? '1' : '0', false);
+    aled08e_rs_reglages_save($P);
     $msg = aled08e_lia_reglages_save($P) ?: 'reglages';
     if (!empty($P['tester_ovh'])) {
         $t = aled08e_ovh_test();

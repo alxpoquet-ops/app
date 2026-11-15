@@ -6,7 +6,7 @@
 //          0 = gratuit : l'outil tourne dans le navigateur, il ne me coûte rien.
 // champs : le formulaire (kind : texte, texte_long, choix, multi, image). consigne : ce que Lia doit rendre.
 // blocs  : titres attendus dans la réponse (un bloc = un texte prêt à copier).
-const RESEAUX = ['Facebook', 'Instagram', 'LinkedIn', 'X', 'Fiche Google', 'TikTok'];
+const RESEAUX = ['Facebook', 'Instagram', 'LinkedIn', 'X', 'Fiche Google', 'TikTok', 'Bluesky', 'Mastodon'];
 
 const outils = [
   {
@@ -14,10 +14,10 @@ const outils = [
     icon: 'megaphone',
     color: 'pink',
     name: 'Publier partout',
-    court: 'Une photo, une description : Lia écrit la publication pour chaque réseau.',
-    desc: 'Vous donnez une photo et quelques mots. Lia écrit le texte adapté à chaque réseau, avec les hashtags. Vous relisez, puis vous partagez sur chaque réseau depuis la même page.',
+    court: 'Une photo, une description : publiez sur tous vos réseaux depuis la même page.',
+    desc: 'Vous donnez une photo et quelques mots, puis vous publiez sur tous vos réseaux depuis la même page. Avec votre texte, c’est gratuit. Lia peut aussi l’adapter à chaque réseau, avec les hashtags.',
     coutCts: 5,
-    jetons: 8,
+    jetons: 20,
     bouton: 'Écrire mes publications',
     champs: [
       { id: 'image', label: 'Votre photo (facultatif)', kind: 'image' },
@@ -25,7 +25,7 @@ const outils = [
       { id: 'reseaux', label: 'Pour quels réseaux ?', kind: 'multi', options: RESEAUX, defaut: ['Facebook', 'Instagram'] },
       { id: 'ton', label: 'Le ton', kind: 'choix', options: ['Chaleureux', 'Professionnel', 'Drôle', 'Sobre'], defaut: 'Chaleureux' },
     ],
-    consigne: 'Écris une publication pour chaque réseau demandé, adaptée à ses usages : Facebook (2 à 4 phrases, chaleureux), Instagram (accroche courte, 2 à 3 phrases, puis une ligne de 8 à 12 hashtags), LinkedIn (professionnel, 3 à 5 phrases, 3 hashtags), X (moins de 260 caractères, 1 ou 2 hashtags), Fiche Google (factuel, 2 à 3 phrases, sans hashtag, avec une invitation à venir ou à appeler), TikTok (légende courte et vivante, 4 à 6 hashtags). Un bloc par réseau, dont le titre est exactement le nom du réseau. Si une photo est jointe, décris ce qu’on y voit sans inventer.',
+    consigne: 'Écris une publication pour chaque réseau demandé, adaptée à ses usages : Facebook (2 à 4 phrases, chaleureux), Instagram (accroche courte, 2 à 3 phrases, puis une ligne de 8 à 12 hashtags), LinkedIn (professionnel, 3 à 5 phrases, 3 hashtags), X (moins de 260 caractères, 1 ou 2 hashtags), Fiche Google (factuel, 2 à 3 phrases, sans hashtag, avec une invitation à venir ou à appeler), TikTok (légende courte et vivante, 4 à 6 hashtags), Bluesky (moins de 280 caractères, 1 ou 2 hashtags), Mastodon (moins de 450 caractères, 2 à 4 hashtags). Un bloc par réseau, dont le titre est exactement le nom du réseau. Si une photo est jointe, décris ce qu’on y voit sans inventer.',
   },
   {
     id: 'idees',
@@ -35,7 +35,7 @@ const outils = [
     court: 'Sept idées pour la semaine, avec le texte déjà écrit.',
     desc: 'Plus de page blanche : Lia propose sept publications pour votre activité, une par jour, chacune avec son texte prêt à copier.',
     coutCts: 3,
-    jetons: 5,
+    jetons: 12,
     bouton: 'Trouver mes idées',
     champs: [
       { id: 'activite', label: 'Votre activité', kind: 'texte', requis: true, prerempli: 'activite', aide: 'Par exemple : fleuriste à Signy-l’Abbaye.' },
@@ -51,7 +51,7 @@ const outils = [
     court: 'Les bons hashtags pour votre publication.',
     desc: 'Vous écrivez le sujet, Lia donne trois listes de hashtags : les plus cherchés, ceux de votre métier, et ceux de votre région.',
     coutCts: 1.2,
-    jetons: 2,
+    jetons: 5,
     bouton: 'Trouver mes hashtags',
     champs: [
       { id: 'sujet', label: 'Le sujet de la publication', kind: 'texte', requis: true },
@@ -67,7 +67,7 @@ const outils = [
     court: 'Une réponse polie à un avis Google, même difficile.',
     desc: 'Vous collez l’avis d’un client. Lia écrit une réponse courte et polie, que l’avis soit bon ou mauvais. Vous la copiez sur votre fiche Google.',
     coutCts: 1.2,
-    jetons: 2,
+    jetons: 5,
     bouton: 'Écrire la réponse',
     champs: [
       { id: 'avis', label: 'L’avis du client', kind: 'texte_long', requis: true },
@@ -83,7 +83,7 @@ const outils = [
     court: 'Le titre et la description d’un produit, prêts à vendre.',
     desc: 'Une photo ou quelques mots sur votre produit : Lia écrit un titre, une phrase d’accroche et une description claire pour votre boutique.',
     coutCts: 3,
-    jetons: 5,
+    jetons: 12,
     bouton: 'Écrire la fiche',
     champs: [
       { id: 'image', label: 'La photo du produit (facultatif)', kind: 'image' },
@@ -100,7 +100,7 @@ const outils = [
     court: 'Ce que Google affiche pour votre page, bien écrit.',
     desc: 'Pour une page de votre site, Lia écrit le titre et la description que Google affiche dans ses résultats, à la bonne longueur.',
     coutCts: 1.2,
-    jetons: 2,
+    jetons: 5,
     bouton: 'Écrire pour Google',
     champs: [
       { id: 'page', label: 'De quoi parle la page ?', kind: 'texte_long', requis: true },

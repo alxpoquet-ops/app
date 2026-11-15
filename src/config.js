@@ -215,7 +215,7 @@ const paiement = { acompte: 25 }; // 25 % à la commande ; à la réception : le
 // recharge : jetons en plus, à l'unité, ajoutés à la prochaine facture. liaplus : jetons de l'option Lia +, chaque mois.
 const jetonsLia = {
   valeur: 0.01,
-  margeOutils: 1.5,
+  margeOutils: 4,
   margeLia: 2,
   modif: { base: 30, mots: 10, image: 10 },
   recharge: [{ jetons: 100, prix: 1 }, { jetons: 500, prix: 5 }, { jetons: 1000, prix: 10 }],

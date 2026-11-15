@@ -58,9 +58,18 @@
     'linkedin': ['LinkedIn', function (t) { return 'https://www.linkedin.com/feed/?shareActive=true&text=' + encodeURIComponent(t); }],
     'x': ['X', function (t) { return 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(t); }],
     'fiche google': ['Google', function () { return 'https://business.google.com/'; }],
-    'tiktok': ['TikTok', function () { return 'https://www.tiktok.com/upload'; }]
+    'tiktok': ['TikTok', function () { return 'https://www.tiktok.com/upload'; }],
+    'bluesky': ['Bluesky', function (t) { return 'https://bsky.app/intent/compose?text=' + encodeURIComponent(t); }],
+    'mastodon': ['Mastodon', function (t) { return 'https://mastodon.social/share?text=' + encodeURIComponent(t); }]
   };
-  function bloc(b, partage, image) {
+  function poster(donnees) {
+    var fd = new FormData();
+    Object.keys(donnees).forEach(function (k) { if (donnees[k] != null) fd.append(k, donnees[k]); });
+    fd.append('_aled08e_jl', nonce);
+    return fetch(ajax, { method: 'POST', body: fd, credentials: 'same-origin' })
+      .then(function (r) { return r.json().catch(function () { return { success: false, data: { message: 'Réponse illisible. Réessayez.' } }; }); });
+  }
+  function bloc(b, partage, image, relies) {
     var c = el('div', 'ol-bloc');
     var tete = el('div', 'ol-bloc-tete');
     tete.appendChild(el('strong', '', b.titre || 'Texte'));
@@ -79,8 +88,27 @@
     var bc = el('button', 'btn btn-light btn-sm', 'Copier'); bc.type = 'button';
     bc.addEventListener('click', function () { copier(ta.value, function () { dire('Copié.'); }); });
     actions.appendChild(bc);
-    var r = partage && RESEAUX[(b.titre || '').toLowerCase()];
-    if (r) {
+    var cle = (b.titre || '').toLowerCase();
+    var r = partage && RESEAUX[cle];
+    if (r && relies && relies.indexOf(cle) !== -1) {
+      /* compte relié : la publication part directement */
+      var bd = el('button', 'btn btn-primary btn-sm', 'Publier sur ' + r[0]); bd.type = 'button';
+      bd.setAttribute('data-ol-publier', cle);
+      c.publier = function () {
+        if (bd.disabled) return Promise.resolve();
+        if (cle === 'instagram' && !image) { msg.className = 'ol-bloc-msg is-err'; msg.textContent = 'Instagram demande une photo : ajoutez-en une en haut.'; return Promise.resolve(); }
+        bd.disabled = true; msg.className = 'ol-bloc-msg'; msg.textContent = 'Publication en cours…';
+        return poster({ action: 'aled08e_publier', reseau: cle, texte: ta.value, image: image }).then(function (j) {
+          if (!j || !j.success) { bd.disabled = false; msg.className = 'ol-bloc-msg is-err'; msg.textContent = (j && j.data && j.data.message) || 'La publication n’est pas partie. Réessayez.'; return; }
+          msg.className = 'ol-bloc-msg'; msg.textContent = 'Publié. ';
+          var a = el('a', '', 'Voir la publication'); a.href = j.data.url; a.target = '_blank'; a.rel = 'noopener';
+          msg.appendChild(a);
+          bd.textContent = 'Publié'; c.classList.add('is-publie');
+        }, function () { bd.disabled = false; msg.className = 'ol-bloc-msg is-err'; msg.textContent = 'La connexion a coupé. Réessayez.'; });
+      };
+      bd.addEventListener('click', c.publier);
+      actions.appendChild(bd);
+    } else if (r) {
       var bo = el('button', 'btn btn-primary btn-sm', 'Publier sur ' + r[0]); bo.type = 'button';
       bo.addEventListener('click', function () {
         var url = r[1](ta.value);
@@ -103,8 +131,37 @@
     return c;
   }
 
+  function afficher(res, blocs, image) {
+    var partage = res.hasAttribute('data-partage'), relies = [];
+    try { relies = JSON.parse(res.getAttribute('data-relies') || '[]'); } catch (e) {}
+    res.innerHTML = '';
+    var directs = blocs.filter(function (b) { return relies.indexOf((b.titre || '').toLowerCase()) !== -1; }).length;
+    res.appendChild(el('p', 'app-note', !partage ? 'Relisez, changez ce que vous voulez, puis copiez.' : directs ? 'Relisez, changez ce que vous voulez, puis publiez. Sur vos comptes reliés, la publication part directement.' : 'Relisez, changez ce que vous voulez, puis publiez : le texte est copié, le réseau s’ouvre, il reste à coller.'));
+    var cartes = blocs.map(function (b) { var c = bloc(b, partage, image, relies); res.appendChild(c); return c; });
+    if (directs > 1) {
+      var tout = el('button', 'btn btn-primary', 'Tout publier sur mes ' + directs + ' comptes reliés'); tout.type = 'button';
+      tout.addEventListener('click', function () {
+        tout.disabled = true;
+        cartes.filter(function (c) { return c.publier; }).reduce(function (p, c) { return p.then(c.publier); }, Promise.resolve()).then(function () { tout.textContent = 'C’est parti'; });
+      });
+      res.insertBefore(tout, res.children[1]);
+    }
+    res.hidden = false;
+    res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
   $$('[data-ol-form]').forEach(function (form) {
     var sec = form.closest('[data-ol]'), res = $('[data-ol-resultat]', sec), etat = $('[data-ol-etat]', form), btn = $('button[type=submit]', form);
+    var direct = $('[data-ol-direct]', form);
+    if (direct) direct.addEventListener('click', function () {
+      var t = $('textarea[name="c_description"]', form), texte = t.value.trim();
+      if (!texte) { etat.className = 'ol-etat is-err'; etat.textContent = 'Écrivez d’abord votre texte.'; t.focus(); return; }
+      var choisis = $$('input[name="c_reseaux[]"]:checked', form).map(function (i) { return i.value; });
+      if (!choisis.length) { etat.className = 'ol-etat is-err'; etat.textContent = 'Cochez au moins un réseau.'; return; }
+      var fi = $('[data-ol-file]', form);
+      etat.className = 'ol-etat'; etat.textContent = '';
+      afficher(res, choisis.map(function (n) { return { titre: n, texte: texte }; }), fi && fi.files && fi.files[0] ? fi.files[0] : null);
+    });
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
       if (btn.disabled) return;
@@ -123,15 +180,35 @@
           etat.className = 'ol-etat is-ok';
           etat.textContent = data.illimite ? 'C’est prêt.' : 'C’est prêt. ' + jetons(data.jetons) + ' utilisé' + (data.jetons > 1 ? 's' : '') + ', il vous en reste ' + data.solde + '.';
           var s = $('[data-jl-solde]'); if (s && !data.illimite) s.textContent = data.solde;
-          res.innerHTML = '';
-          res.appendChild(el('p', 'app-note', res.hasAttribute('data-partage') ? 'Relisez, changez ce que vous voulez, puis publiez : le texte est copié, le réseau s’ouvre, il reste à coller.' : 'Relisez, changez ce que vous voulez, puis copiez.'));
-          data.blocs.forEach(function (b) { res.appendChild(bloc(b, res.hasAttribute('data-partage'), image)); });
-          res.hidden = false;
-          res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          afficher(res, data.blocs, image);
         })
         .catch(function () { btn.disabled = false; form.classList.remove('is-busy'); etat.className = 'ol-etat is-err'; etat.textContent = 'La connexion a coupé. Réessayez : aucun jeton n’a été compté.'; });
     });
   });
+
+  /* ---------- mes réseaux : relier, délier, choisir sa page ---------- */
+  var revenir = function () { try { sessionStorage.setItem('aled08-ol', 'publier'); } catch (e) {} location.hash = 'outils'; location.reload(); };
+  $$('[data-rs-relier]').forEach(function (f) {
+    f.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var et = $('[data-rs-etat]', f), b = $('button[type=submit]', f), d2 = { action: 'aled08e_rs', op: 'relier', reseau: f.getAttribute('data-rs-relier') };
+      $$('input', f).forEach(function (i) { d2[i.name] = i.value; });
+      b.disabled = true; et.className = 'ol-etat'; et.textContent = 'Vérification…';
+      poster(d2).then(function (j) {
+        if (j && j.success) { et.className = 'ol-etat is-ok'; et.textContent = j.data.message; revenir(); return; }
+        b.disabled = false; et.className = 'ol-etat is-err'; et.textContent = (j && j.data && j.data.message) || 'La liaison n’a pas marché. Réessayez.';
+      }, function () { b.disabled = false; et.className = 'ol-etat is-err'; et.textContent = 'La connexion a coupé. Réessayez.'; });
+    });
+  });
+  $$('[data-rs-delier]').forEach(function (b) {
+    b.addEventListener('click', function () { b.disabled = true; poster({ action: 'aled08e_rs', op: 'delier', reseau: b.getAttribute('data-rs-delier') }).then(revenir, revenir); });
+  });
+  var selPage = $('[data-rs-page]');
+  if (selPage) selPage.addEventListener('change', function () { poster({ action: 'aled08e_rs', op: 'page', page: selPage.value }).then(revenir, revenir); });
+  /* retour d'une liaison : l'outil se rouvre tout seul */
+  var rouvrir = new URLSearchParams(location.search).get('ol');
+  try { rouvrir = rouvrir || sessionStorage.getItem('aled08-ol'); sessionStorage.removeItem('aled08-ol'); } catch (e) {}
+  if (rouvrir && d.getElementById('ol-' + rouvrir)) setTimeout(function () { ouvrir(rouvrir); }, 400);
 
   /* ---------- photo aux bons formats : tout se passe dans le navigateur ---------- */
   var fz = $('[data-formats]');

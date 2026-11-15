@@ -491,3 +491,35 @@ a.app-card { text-decoration: none; color: inherit; }
 }
 @media (prefers-reduced-motion: reduce) { .ol-carte { transition: none; } .ol-carte:hover { transform: none; } }
 .ol-btn-prix { color: #2E2A47; }
+
+/* Publier partout : mes réseaux, publication directe */
+.rs { margin: 0 0 18px; padding: 16px; border-radius: 20px; background: var(--soft); }
+.rs .app-sub { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; }
+.rs .app-note { margin: 0 0 12px; }
+.rs-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.rs-ligne { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 14px; border-radius: 14px; background: var(--card); box-shadow: 0 0 0 2px var(--line) inset; }
+.rs-ligne.is-on { box-shadow: 0 0 0 2px var(--mint-d) inset; }
+.rs-ligne > strong { min-width: 92px; color: var(--ink); font-weight: 900; }
+.rs-compte { display: inline-flex; align-items: center; gap: 6px; flex: 1; min-width: 0; color: var(--mint-dd); font-weight: 800; overflow-wrap: anywhere; }
+.rs-compte .ico { width: 16px; height: 16px; flex: none; }
+.rs-bientot { flex: 1; color: var(--muted); font-weight: 700; font-size: .9rem; }
+.rs-ligne .link-btn { color: var(--muted); font-weight: 800; font-size: .88rem; }
+.rs-form { flex: 1 1 auto; }
+.rs-form > summary { list-style: none; cursor: pointer; display: inline-flex; }
+.rs-form > summary::-webkit-details-marker { display: none; }
+.rs-form[open] { flex-basis: 100%; }
+.rs-form form { display: grid; gap: 10px; margin-top: 12px; max-width: 460px; }
+.rs-form .field { margin: 0; }
+.rs-form .btn { justify-self: start; }
+.rs-page { margin: 12px 0 0; max-width: 460px; }
+.rs-page select { width: 100%; font: 700 1rem var(--font); color: var(--ink); background: var(--card); border: 0; box-shadow: 0 0 0 2px var(--line) inset; border-radius: 14px; padding: 12px 14px; }
+.rs-histo { margin-top: 12px; font-weight: 700; }
+.rs-histo summary { cursor: pointer; color: var(--ink); font-weight: 800; }
+.rs-histo ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.rs-histo small { color: var(--muted); }
+.ol-boutons { display: flex; flex-wrap: wrap; gap: 10px; }
+.ol-bloc-msg.is-err { color: var(--peach-dd); }
+.ol-bloc-msg a { color: inherit; text-decoration: underline; }
+.ol-bloc.is-publie { box-shadow: 0 0 0 2px var(--mint-d) inset; }
+.ol-resultat > .btn { justify-self: start; }
+@media (max-width: 520px) { .ol-boutons .btn { width: 100%; justify-content: center; } .rs-ligne > strong { min-width: 0; flex-basis: 100%; } }

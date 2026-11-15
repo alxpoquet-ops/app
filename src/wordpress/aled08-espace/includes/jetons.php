@@ -8,7 +8,7 @@
  * Chaque forfait donne des jetons chaque mois (ils ne se reportent pas). L'option Lia + en ajoute chaque mois.
  * Une recharge ajoute des jetons qui restent jusqu'à ce qu'ils soient utilisés.
  * Le journal garde, pour chaque dépense, les jetons comptés au client et ce que Claude a vraiment coûté :
- * c'est ce qui permet de vérifier la marge (coût × 1,5 pour les outils, × 2 pour les modifications).
+ * c'est ce qui permet de vérifier la marge (coût × 4 pour les outils, × 2 pour les modifications).
  */
 defined('ABSPATH') || exit;
 
@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
  * ========================================================================= */
 function aled08e_jl_cfg() {
     $c = (array) (aled08e_data()['jetonsLia'] ?? []);
-    $c += ['valeur' => 0.01, 'margeOutils' => 1.5, 'margeLia' => 2, 'modif' => [], 'recharge' => [['jetons' => 100, 'prix' => 1]], 'liaplus' => 500];
+    $c += ['valeur' => 0.01, 'margeOutils' => 4, 'margeLia' => 2, 'modif' => [], 'recharge' => [['jetons' => 100, 'prix' => 1]], 'liaplus' => 500];
     $c['modif'] = (array) $c['modif'] + ['base' => 30, 'mots' => 10, 'image' => 10];
     return $c;
 }
@@ -338,7 +338,7 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
       </details>
       <?php endif; ?>
     </div>
-    <?php if (!$prets) : ?><p class="esp-warn">Lia se branche en ce moment : les outils qui écrivent arrivent très bientôt. Les outils gratuits marchent déjà.</p><?php endif; ?>
+    <?php if (!$prets) : ?><p class="esp-warn">Lia se branche en ce moment : les outils où elle écrit arrivent très bientôt. Publier votre propre texte et les outils gratuits marchent déjà.</p><?php endif; ?>
 
     <div class="ol-grille" data-outils data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" data-nonce="<?php echo esc_attr(wp_create_nonce('aled08e_jl')); ?>">
       <?php foreach ($outils as $o) : $gratuit = (int) $o['jetons'] === 0; ?>
@@ -346,7 +346,7 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
         <span class="ol-ico"><?php echo aled08e_icon($o['icon']); // phpcs:ignore ?></span>
         <strong><?php echo esc_html($o['name']); ?></strong>
         <small><?php echo esc_html($o['court']); ?></small>
-        <span class="ol-prix<?php echo $gratuit ? ' is-gratuit' : ''; ?>"><?php echo $gratuit ? 'Gratuit' : esc_html(aled08e_jl_txt($o['jetons'])); ?></span>
+        <?php if ($gratuit) : ?><span class="ol-prix is-gratuit">Gratuit</span><?php endif; ?>
       </button>
       <?php endforeach; ?>
     </div>
@@ -370,13 +370,17 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
         <button type="button" class="btn btn-primary" data-copy="avis-link"><?php echo aled08e_icon('check'); // phpcs:ignore ?><span>Copier le lien</span></button>
         <?php else : ?><p class="esp-empty">Je prépare votre lien d’avis Google à partir de votre fiche : il apparaîtra ici.</p><?php endif; ?>
       <?php else : ?>
+      <?php $pub = $o['id'] === 'publier'; if ($pub) echo aled08e_rs_html($uid); // phpcs:ignore ?>
       <form class="ol-form" data-ol-form enctype="multipart/form-data">
         <input type="hidden" name="outil" value="<?php echo esc_attr($o['id']); ?>">
         <?php foreach ((array) $o['champs'] as $c) echo aled08e_jl_champ_html($o, $c, $uid); // phpcs:ignore ?>
-        <button class="btn btn-primary" type="submit"<?php echo $prets ? '' : ' disabled'; ?>><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span><?php echo esc_html($o['bouton'] ?? 'Lancer'); ?></span><b class="ol-btn-prix"><?php echo $e['illimite'] ? 'offert' : esc_html(aled08e_jl_txt($o['jetons'])); ?></b></button>
+        <div class="ol-boutons">
+          <?php if ($pub) : ?><button class="btn btn-primary" type="button" data-ol-direct><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Publier mon texte</span><b class="ol-btn-prix">gratuit</b></button><?php endif; ?>
+          <button class="btn <?php echo $pub ? 'btn-light' : 'btn-primary'; ?>" type="submit"<?php echo $prets ? '' : ' disabled'; ?>><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span><?php echo esc_html($pub ? 'Lia adapte mon texte' : ($o['bouton'] ?? 'Lancer')); ?></span><b class="ol-btn-prix"><?php echo $e['illimite'] ? 'offert' : esc_html(aled08e_jl_txt($o['jetons'])); ?></b></button>
+        </div>
         <p class="ol-etat" data-ol-etat role="status" aria-live="polite"></p>
       </form>
-      <div class="ol-resultat" data-ol-resultat<?php echo $o['id'] === 'publier' ? ' data-partage="1"' : ''; ?> hidden></div>
+      <div class="ol-resultat" data-ol-resultat<?php echo $pub ? ' data-partage="1" data-relies="' . esc_attr(wp_json_encode(array_keys(aled08e_rs_relies($uid)))) . '"' : ''; ?> hidden></div>
       <?php endif; ?>
     </section>
     <?php endforeach; ?>
@@ -431,7 +435,7 @@ function aled08e_jl_bilan_html() {
     }
     $eur = function ($cts) { return esc_html(number_format($cts / 100, 2, ',', ' ')) . ' €'; };
     echo '<h2>Jetons Lia : le bilan du mois</h2>';
-    echo '<p>1 jeton = 1 centime. Règle : un outil est compté 1,5 fois ce qu’il coûte chez Claude, une modification par Lia 2 fois. Les jetons compris dans les forfaits sont déjà payés par le forfait : la colonne « valeur » dit ce qu’ils représentent.</p>';
+    echo '<p>1 jeton = 1 centime. Règle : un outil est compté ' . esc_html(str_replace('.', ',', (string) aled08e_jl_cfg()['margeOutils'])) . ' fois ce qu’il coûte chez Claude, une modification par Lia ' . esc_html(str_replace('.', ',', (string) aled08e_jl_cfg()['margeLia'])) . ' fois. Les jetons compris dans les forfaits sont déjà payés par le forfait : la colonne « valeur » dit ce qu’ils représentent.</p>';
     if (!$lignes) { echo '<p><em>Aucun jeton utilisé ce mois-ci.</em></p>'; return; }
     echo '<table class="widefat striped" style="max-width:760px"><thead><tr><th>Client</th><th>Utilisations</th><th>Jetons comptés</th><th>Valeur</th><th>Coût Claude</th><th>Reste</th></tr></thead><tbody>';
     foreach ($lignes as $l) echo '<tr><td>' . esc_html($l[0]) . '</td><td>' . (int) $l[1] . '</td><td>' . (int) $l[2] . '</td><td>' . $eur($l[2]) . '</td><td>' . $eur($l[3]) . '</td><td>' . $eur($l[2] - $l[3]) . '</td></tr>'; // phpcs:ignore

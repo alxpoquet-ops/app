@@ -96,6 +96,7 @@ require_once __DIR__ . '/includes/vacances.php';
 require_once __DIR__ . '/includes/boutique.php';
 require_once __DIR__ . '/includes/brief.php';
 require_once __DIR__ . '/includes/jetons.php';
+require_once __DIR__ . '/includes/reseaux.php';
 
 /* =========================================================================
  *  Rôle « Client Alex & Lia » et type de contenu « Demande »

@@ -249,25 +249,26 @@ function outilsPage() {
     crumbs,
   })}
 ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez vos demandes par le formulaire de contact : on s’en occupe de la même façon.</span></p></div>`}
-<div class="container center demo-cta">${C.btn(sections.monespace.path + '#outils', 'btn-primary btn-lg', 'circle-user', 'Ouvrir mes outils')} ${C.btn(site.espaceClient.demo, 'btn-light btn-lg', 'eye', 'Essayer la démo')}</div>
+<div class="container demo-cta demo-cta-duo">${C.btn(sections.monespace.path + '#outils', 'btn-primary btn-lg', 'circle-user', 'Ouvrir mes outils')}${C.btn(site.espaceClient.demo, 'btn-light btn-lg', 'eye', 'Essayer la démo')}</div>
 
 <section class="section" id="outils-lia"><div class="container">
   <h2 class="section-title">Les outils de Lia</h2>
-  <p class="section-sub">Il faut être connecté à son espace client. Le prix de chaque outil est affiché avant de le lancer, en Jetons Lia.</p>
+  <p class="section-sub">Ils sont dans votre espace client : il suffit d’être connecté.</p>
   <div class="tools">${OUTILS_LIA.map(
-    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${t.name}</strong><span>${t.desc}</span></span><span class="tool-tag ${t.jetons ? 'c-butter' : 'c-mint'}">${jl(t.jetons)}</span></div>`
+    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${t.name}</strong><span>${t.desc}</span></span>${t.jetons ? '' : '<span class="tool-tag c-mint">Gratuit</span>'}</div>`
   ).join('')}</div>
 </div></section>
 
 <section class="section section-soft" id="publier"><div class="container container-narrow">
   <p class="kicker c-pink">${icon('megaphone')}${pub.name}</p>
   <h2>Tous vos réseaux, depuis la même page</h2>
-  <p>Facebook, Instagram, LinkedIn, X, votre fiche Google, TikTok : chaque réseau a ses habitudes. Vous n’écrivez qu’une fois, Lia adapte le texte à chacun.</p>
+  <p>Facebook, Instagram, LinkedIn, Bluesky, Mastodon, X, votre fiche Google, TikTok : vous n’écrivez qu’une fois, et vous publiez partout sans changer de page.</p>
   <ol class="doc-steps">
+    <li><strong>Vous reliez vos comptes, une seule fois.</strong> Dans l’outil, à la ligne « Mes réseaux ».</li>
     <li><strong>Vous donnez une photo et quelques mots.</strong> Par exemple : « Nouveau bouquet de printemps, disponible samedi ».</li>
-    <li><strong>Lia écrit une publication par réseau.</strong> Le bon ton, la bonne longueur, les hashtags. Cela coûte ${jl(pub.jetons)}, quel que soit le nombre de réseaux.</li>
-    <li><strong>Vous relisez et vous changez ce que vous voulez.</strong> Rien ne part sans vous.</li>
-    <li><strong>Vous publiez.</strong> Un bouton par réseau : le texte est copié, le réseau s’ouvre, il reste à coller. Sur téléphone, le bouton « Partager » envoie la photo et le texte à l’application de votre choix.</li>
+    <li><strong>Vous gardez votre texte, ou Lia l’adapte.</strong> Avec le vôtre, publier ne coûte aucun jeton. Lia peut écrire une version par réseau : le bon ton, la bonne longueur, les hashtags.</li>
+    <li><strong>Vous relisez, puis vous publiez.</strong> Un bouton par réseau, ou « Tout publier » : la photo et le texte partent sur vos comptes reliés. Rien ne part sans vous.</li>
+    <li><strong>Un réseau n’est pas relié ?</strong> Le texte est copié et le réseau s’ouvre : il reste à coller. Sur téléphone, « Partager » envoie la photo et le texte à l’application de votre choix.</li>
   </ol>
 </div></section>
 
