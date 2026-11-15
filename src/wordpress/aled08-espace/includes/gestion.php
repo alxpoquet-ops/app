@@ -22,6 +22,30 @@ add_action('init', function () {
     ]);
 }, 11);
 
+const ALED08E_CPT_ANNONCE = 'aled08_annonce';
+add_action('init', function () {
+    register_post_type(ALED08E_CPT_ANNONCE, [
+        'labels' => ['name' => 'Annonces', 'singular_name' => 'Annonce'],
+        'public' => false, 'show_ui' => false, 'show_in_rest' => false, 'exclude_from_search' => true,
+        'supports' => ['title', 'editor'], 'capability_type' => 'post', 'capabilities' => aled08e_cpt_caps(), 'map_meta_cap' => true,
+    ]);
+}, 11);
+
+/* Les dernières annonces, montrées en haut de l'espace de chaque client (texte simple, écrit par l'administrateur). */
+function aled08e_annonces($max = 3) {
+    return get_posts(['post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'numberposts' => (int) $max, 'orderby' => 'date', 'order' => 'DESC', 'suppress_filters' => true]);
+}
+function aled08e_annonces_html($max = 3) {
+    $l = aled08e_annonces($max);
+    if (!$l) return '';
+    $h = '<div class="esp-annonces" role="region" aria-label="Dernières infos"><p class="app-sub">' . aled08e_icon('megaphone') . ' Dernières infos</p><ul>';
+    foreach ($l as $p) {
+        $h .= '<li><strong>' . esc_html($p->post_title) . '</strong><small>' . esc_html(aled08e_date($p->post_date)) . '</small>'
+            . ($p->post_content !== '' ? '<p>' . nl2br(esc_html($p->post_content)) . '</p>' : '') . '</li>';
+    }
+    return $h . '</ul></div>';
+}
+
 function aled08e_prospect_statuts() {
     return [
         'a_contacter' => ['À contacter', 'st-new'],
@@ -71,7 +95,7 @@ add_action('template_redirect', function () {
     if (!aled08e_est_gerant()) { wp_safe_redirect(aled08e_url(), 303); exit; }
     $P = wp_unslash($_POST);
     $quoi = sanitize_key($P['aled08e_gestion']);
-    $onglet = in_array($quoi, ['demande'], true) ? 'accueil' : 'prospects';
+    $onglet = $quoi === 'demande' ? 'accueil' : (strpos($quoi, 'annonce') === 0 ? 'annonces' : 'prospects');
     $back = function ($m) use ($onglet) { wp_safe_redirect(aled08e_url(['mg' => $m]) . '#' . $onglet, 303); exit; };
     if (!wp_verify_nonce(sanitize_text_field((string) ($P['_aled08e_gestion'] ?? '')), 'aled08e_gestion')) $back('erreur');
 
@@ -80,6 +104,20 @@ add_action('template_redirect', function () {
         $rep = sanitize_textarea_field((string) ($P['reponse'] ?? ''));
         $ok = aled08e_demande_marquer($pid, sanitize_key((string) ($P['statut'] ?? '')), $rep);
         $back($ok ? 'demande_ok' : 'erreur');
+    }
+
+    if ($quoi === 'annonce_ajout') {
+        $titre = sanitize_text_field((string) ($P['titre'] ?? ''));
+        $texte = sanitize_textarea_field((string) ($P['texte'] ?? ''));
+        if ($titre === '') $back('titre_vide');
+        $pid = wp_insert_post(['post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'post_title' => mb_substr($titre, 0, 120), 'post_content' => mb_substr($texte, 0, 1500), 'post_author' => get_current_user_id()], true);
+        $back(is_wp_error($pid) || !$pid ? 'erreur' : 'annonce_ok');
+    }
+    if ($quoi === 'annonce_suppr') {
+        $a = get_post((int) ($P['id'] ?? 0));
+        if (!$a || $a->post_type !== ALED08E_CPT_ANNONCE) $back('erreur');
+        wp_delete_post($a->ID, true);
+        $back('annonce_suppr');
     }
 
     if ($quoi === 'prospect_ajout') {
@@ -152,6 +190,9 @@ function aled08e_gestion($u) {
         'prospect_ok' => ['esp-empty', 'Prospect ajouté à la liste.'],
         'statut_ok' => ['esp-empty', 'Prospect mis à jour.'],
         'suppr_ok' => ['esp-empty', 'Prospect retiré de la liste.'],
+        'annonce_ok' => ['esp-empty', 'Annonce publiée : vos clients la voient en haut de leur espace.'],
+        'annonce_suppr' => ['esp-empty', 'Annonce retirée.'],
+        'titre_vide' => ['esp-warn', 'Donnez un titre à votre annonce.'],
         'nom_vide' => ['esp-warn', 'Indiquez au moins le nom du prospect.'],
         'erreur' => ['esp-warn', 'Ça n’a pas marché. Rechargez la page et réessayez.'],
     ];
@@ -168,7 +209,7 @@ function aled08e_gestion($u) {
       <aside class="app-side">
         <div class="app-user"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><div><strong><?php echo esc_html($u->display_name); ?></strong><small>Gestion Alex &amp; Lia</small></div></div>
         <div class="app-tabs" role="tablist" aria-label="Gestion">
-          <?php echo aled08e_tab('accueil', 'house', 'À faire', true) . aled08e_tab('clients', 'users', 'Clients') . aled08e_tab('commandes', 'package', 'Commandes') . aled08e_tab('prospects', 'target', 'Prospects') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore ?>
+          <?php echo aled08e_tab('accueil', 'house', 'À faire', true) . aled08e_tab('clients', 'users', 'Clients') . aled08e_tab('commandes', 'package', 'Commandes') . aled08e_tab('prospects', 'target', 'Prospects') . aled08e_tab('annonces', 'megaphone', 'Annonces') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore ?>
         </div>
         <a class="app-logout" href="<?php echo esc_url(admin_url()); ?>"><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>Administration WordPress</span></a>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -328,6 +369,35 @@ function aled08e_gestion($u) {
           </ul>
           <?php endif; ?>
           <p class="app-note">Un seul message par personne, sans relance, et uniquement pour son activité professionnelle. Si quelqu’un répond non, passez-le en « Pas intéressé » pour ne jamais lui réécrire.</p>
+        </div>
+
+        <div class="app-panel" role="tabpanel" id="t-annonces" aria-labelledby="tab-annonces" hidden>
+          <h2 class="app-h">Annonces</h2>
+          <?php echo $flash; // phpcs:ignore ?>
+          <p class="app-p">Une info à donner à tous vos clients : une nouveauté, des congés, une maintenance. Les trois dernières annonces s’affichent en haut de leur espace.</p>
+          <form class="form esp-form" method="post" action="<?php echo $act; // phpcs:ignore ?>">
+            <input type="hidden" name="aled08e_gestion" value="annonce_ajout"><?php echo $nonce; // phpcs:ignore ?>
+            <p class="app-sub"><?php echo aled08e_icon('megaphone'); // phpcs:ignore ?> Nouvelle annonce</p>
+            <div class="field"><label for="an-titre">Titre</label><input id="an-titre" name="titre" type="text" maxlength="120" placeholder="Nouveau : la traduction en anglais" required></div>
+            <div class="field"><label for="an-texte">Message (facultatif)</label><textarea id="an-texte" name="texte" rows="4" maxlength="1500" placeholder="Quelques lignes, en texte simple."></textarea></div>
+            <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Publier pour tous les clients</span></button>
+          </form>
+          <p class="app-sub">Annonces en ligne</p>
+          <?php $annonces = aled08e_annonces(30); if (!$annonces) : ?><p class="esp-empty">Aucune annonce pour le moment.</p><?php else : ?>
+          <ul class="ges-list">
+            <?php foreach ($annonces as $i => $a) : ?>
+            <li class="ges-item">
+              <div class="ges-head"><strong><?php echo esc_html($a->post_title); ?></strong><em class="st <?php echo $i < 3 ? 'st-done' : 'esp-st-off'; ?>"><?php echo $i < 3 ? 'Affichée' : 'Ancienne'; ?></em></div>
+              <p class="ges-meta">Publiée le <?php echo esc_html(aled08e_date($a->post_date)); ?></p>
+              <?php if ($a->post_content !== '') : ?><p class="ges-text"><?php echo nl2br(esc_html($a->post_content)); ?></p><?php endif; ?>
+              <form class="ges-actions" method="post" action="<?php echo $act; // phpcs:ignore ?>">
+                <input type="hidden" name="aled08e_gestion" value="annonce_suppr"><input type="hidden" name="id" value="<?php echo (int) $a->ID; ?>"><?php echo $nonce; // phpcs:ignore ?>
+                <button class="btn btn-light btn-sm ges-suppr" type="submit" data-ges-quoi="annonce_suppr" data-ges-confirm="Retirer cette annonce ?"><?php echo aled08e_icon('x'); // phpcs:ignore ?><span>Retirer</span></button>
+              </form>
+            </li>
+            <?php endforeach; ?>
+          </ul>
+          <?php endif; ?>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>

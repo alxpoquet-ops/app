@@ -186,3 +186,13 @@ a.app-card { text-decoration: none; color: inherit; }
 .ges-tips b { color: var(--ink); }
 .ges-find { margin-bottom: 14px; }
 @media (max-width: 900px) { .ges-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- annonces (dernières infos, en haut de l'espace client) ---------- */
+.esp-annonces { margin: 0 0 18px; padding: 14px 16px; border-radius: 20px; background: var(--butter); color: var(--ink); }
+.esp-annonces .app-sub { margin: 0 0 8px; display: flex; align-items: center; gap: 8px; color: var(--butter-dd); }
+.esp-annonces ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.esp-annonces li { padding: 10px 12px; border-radius: 14px; background: var(--card); }
+.esp-annonces strong { display: block; }
+.esp-annonces small { color: var(--muted); font-weight: 700; font-size: .8rem; }
+.esp-annonces p { margin: 6px 0 0; overflow-wrap: anywhere; }
+.ges-form textarea, .esp-form textarea { min-height: 0; }

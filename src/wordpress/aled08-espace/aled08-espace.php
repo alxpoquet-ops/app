@@ -799,6 +799,7 @@ function aled08e_dashboard() {
 
         <div class="app-panel" role="tabpanel" id="t-accueil" aria-labelledby="tab-accueil">
           <h2 class="app-h">Bonjour <?php echo esc_html($prenom); ?> !</h2>
+          <?php echo aled08e_annonces_html(); // phpcs:ignore ?>
           <div class="app-cards">
             <button type="button" class="app-card c-<?php echo esc_attr($f['color']); ?>" data-go="forfait"><span class="app-card-art"><?php echo aled08e_monster($f['id']); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($f['name']); ?></strong><span><?php echo $offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per); // phpcs:ignore ?></span></span></button>
             <?php if ($cmd) : ?>
