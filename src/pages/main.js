@@ -799,7 +799,7 @@ function monEspacePage() {
           ${tab('accueil', 'house', 'Accueil', true)}
           ${tab('demandes', 'message-circle', 'Mes demandes')}
           ${tab('visibilite', 'gauge', 'Tableau de bord')}
-          ${tab('forfait', 'receipt', 'Forfait et factures')}
+          ${tab('forfait', 'circle-user', 'Mon compte')}
         </div>
       </aside>
       <div class="app-main">

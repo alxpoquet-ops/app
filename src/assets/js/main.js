@@ -624,7 +624,15 @@
 
   function initTabs(app) {
     var tabs = $$('[role="tab"]', app);
+    /* « Forfait et factures » est rangé dans « Mon compte » : on y va, puis on descend jusqu'au bloc */
+    var bloc = null;
+    var alias = function (id) {
+      bloc = null;
+      if (id === 'forfait' && !$('[data-tab="forfait"]', app) && $('#forfait-bloc', app)) { bloc = $('#forfait-bloc', app); return 'compte'; }
+      return id;
+    };
     var show = function (id, focus) {
+      id = alias(id);
       tabs.forEach(function (t) {
         var on = t.getAttribute('data-tab') === id;
         t.setAttribute('aria-selected', on);
@@ -634,6 +642,7 @@
         if (panel) panel.hidden = !on;
         if (on && t.scrollIntoView && window.innerWidth < 900) t.scrollIntoView({ block: 'nearest', inline: 'center' });
       });
+      if (bloc) { window.scrollBy({ top: bloc.getBoundingClientRect().top - 90, behavior: 'smooth' }); return; }
       var top = $('.app-main', app).getBoundingClientRect().top;
       if (top < 0) window.scrollBy({ top: top - 90, behavior: 'smooth' });
     };
@@ -648,7 +657,7 @@
     });
     $$('[data-go]', app).forEach(function (b) { b.addEventListener('click', function () { show(b.getAttribute('data-go')); }); });
     var startTab = (new URLSearchParams(location.search).get('outil') || location.hash.slice(1) || '').replace(/[^a-z]/g, '');
-    if (startTab && $('[data-tab="' + startTab + '"]', app)) show(startTab);
+    if (startTab && $('[data-tab="' + alias(startTab) + '"]', app)) show(startTab);
   }
 
   function copyButtons(app, toast) {

@@ -881,7 +881,7 @@ function aled08e_dashboard() {
           <?php
           echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
           if ($cmd) echo aled08e_tab('commande', 'package', 'Ma commande'); // phpcs:ignore
-          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'gauge', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'sun', 'Vacances') : '') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('forfait', 'receipt', 'Forfait et factures') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
+          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'gauge', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'sun', 'Vacances') : '') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -1012,7 +1012,9 @@ function aled08e_dashboard() {
           <?php if ($moisDispo > 0) : ?><p class="esp-empty">Mois offerts à utiliser sur votre forfait : <?php echo (int) $moisDispo; ?>.</p><?php endif; ?>
         </div>
 
-        <div class="app-panel" role="tabpanel" id="t-forfait" aria-labelledby="tab-forfait" hidden>
+        <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
+          <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>
+          <section class="compte-forfait" id="forfait-bloc">
           <h2 class="app-h">Forfait et factures</h2>
           <?php echo $flashForfait; // phpcs:ignore ?>
           <div class="app-card c-<?php echo esc_attr($f['color']); ?>"><span class="app-card-art"><?php echo aled08e_monster($f['id']); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($f['name']); ?></strong><span><?php echo ($offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . esc_html($f['modifs']); // phpcs:ignore ?></span></span></div>
@@ -1045,6 +1047,7 @@ function aled08e_dashboard() {
           <p class="app-sub">Nom de domaine</p>
           <p class="app-domain"><?php echo aled08e_icon('globe'); // phpcs:ignore ?><span><strong><?php echo esc_html($host ?: aled08e_meta($uid, 'domaine_info')); ?></strong><small><?php echo esc_html(aled08e_meta($uid, 'domaine_info') ?: ($cmd && $cmd['domaine_mien'] ? 'Votre nom de domaine actuel' : 'À votre nom, renouvelé avec le forfait')); ?></small></span></p>
           <?php endif; ?>
+          </section>
         </div>
 
         <?php if (aled08e_est_boutique($uid)) : ?>
@@ -1052,10 +1055,6 @@ function aled08e_dashboard() {
           <?php echo aled08e_vacances_html($uid); // phpcs:ignore ?>
         </div>
         <?php endif; ?>
-
-        <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
-          <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>
-        </div>
 
       </div>
     </div>

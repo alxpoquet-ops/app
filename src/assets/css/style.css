@@ -1426,3 +1426,6 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
   .app-side .app-tabs:has(> [data-tab="tableau"]):has(> [data-tab="compte"]):has(> button:last-child:nth-child(odd)) > button:nth-last-child(2),
   .app-side .app-tabs:has(> [data-tab="visibilite"]):not(:has(> [data-tab="compte"])):has(> button:last-child:nth-child(even)) > button:last-child { grid-column: 1 / -1; justify-content: center; }
 }
+
+/* « Forfait et factures » rangé dans « Mon compte » */
+.compte-forfait { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--line); scroll-margin-top: 90px; }
