@@ -1,14 +1,14 @@
 <?php
 /**
- * Alex & Lia Espace client : le tableau de bord heure par heure (forfait Titan).
+ * Alex & Lia Espace client : le tableau de bord heure par heure (extra « Chiffres détaillés »).
  * Les chiffres viennent du site du client, par le connecteur (action « stats »), et se mettent
- * à jour toutes les heures. Les autres forfaits voient un aperçu flouté.
+ * à jour toutes les heures. Sans l'extra, le client voit l'essentiel.
  */
 defined('ABSPATH') || exit;
 
-/* Tout client relié voit l'essentiel ; Titan (et la famille) voit tout le détail */
+/* Tout client relié voit l'essentiel ; l'extra « Chiffres détaillés » (et la famille) voit tout le détail */
 function aled08e_stats_complet($uid) {
-    return aled08e_meta($uid, 'forfait') === 'titan' || aled08e_famille($uid);
+    return aled08e_meta($uid, 'stats') === '1' || aled08e_famille($uid);
 }
 function aled08e_stats_acces($uid) { return (bool) $uid; }
 
@@ -64,7 +64,7 @@ function aled08e_stats_html($uid) {
     <div class="live-card"><p class="live-title">Vos meilleures recherches sur Google</p><div data-chart="google"></div></div>
     <div class="live-card"><p class="live-title">Pages les plus vues</p><div class="live-bars" data-chart="pages"></div></div>
   </div>
-  <div class="live-titan"><span><?php echo aled08e_icon('chart-line'); // phpcs:ignore ?></span><div><strong>Envie de plus de détails ?</strong><p>Avec Titan : la courbe de vos visites, les appareils, d’où viennent vos visiteurs, et la santé de votre serveur.</p></div><button type="button" class="btn btn-light btn-sm" data-go="forfait"><?php echo aled08e_icon('arrow-right'); // phpcs:ignore ?><span>Voir Titan</span></button></div>
+  <div class="live-titan"><span><?php echo aled08e_icon('chart-line'); // phpcs:ignore ?></span><div><strong>Envie de plus de détails ?</strong><p>Avec l’extra « Chiffres détaillés »<?php $oStats = aled08e_option('stats'); echo $oStats ? ' (' . aled08e_euro($oStats['month']) . ' par mois)' : ''; // phpcs:ignore ?> : la courbe de vos visites, les appareils, d’où viennent vos visiteurs, et la santé de votre serveur.</p></div><button type="button" class="btn btn-light btn-sm" data-go="forfait"><?php echo aled08e_icon('arrow-right'); // phpcs:ignore ?><span>Ajouter l’extra</span></button></div>
   <?php else : ?>
   <div class="live-grid">
     <div class="live-card live-wide"><p class="live-title">Visiteurs sur 30 jours</p><div class="live-chart" data-chart="jours"></div><p class="live-legend"><span class="lg lg-a"></span>Visiteurs <span class="lg lg-b"></span>Pages vues</p></div>

@@ -19,11 +19,11 @@
     'Forfait ': 'Plan ', '/an': '/year', '/mois': '/month', 'an': 'year', 'mois': 'month', 'année': 'year',
     'Mon nom de domaine actuel': 'My current domain name', ' (disponible)': ' (available)', ' (déjà pris)': ' (already taken)',
     'Nom de domaine à choisir': 'Domain name to choose', 'Le reste en ': 'The rest in ', ' fois sans frais': ' interest-free instalments',
-    'Création, une fois': 'Creation, one-off', 'Forfait, dès la réception, par ': 'Plan, from delivery, per ',
-    'Aujourd’hui ': 'Today ', ', à la réception ': ', on delivery ', ' + forfait': ' + plan',
+    'Création, une fois': 'Creation, one-off', 'Abonnement, dès la réception, par ': 'Subscription, from delivery, per ', 'Abonnement': 'Subscription',
+    'Aujourd’hui ': 'Today ', ', à la réception ': ', on delivery ', ' + abonnement': ' + subscription',
     'À l’année': 'Yearly', 'Au mois': 'Monthly', 'Acompte de ': 'Deposit of ', ' % sur la création (': '% of the creation (',
-    'À la réception : le reste en ': 'On delivery: the rest in ', ' fois, et le forfait': ' instalments, and the plan',
-    'À la réception : le reste, et le forfait': 'On delivery: the rest, and the plan', ' options': ' options', 'Options': 'Options',
+    'À la réception : le reste en ': 'On delivery: the rest in ', ' fois, et l’abonnement': ' instalments, and the subscription',
+    'À la réception : le reste, et l’abonnement': 'On delivery: the rest, and the subscription', ' options': ' options', 'Options': 'Options',
     'Un instant, je prépare le paiement…': 'One moment, I am preparing the payment…', 'Lien copié, prêt à envoyer': 'Link copied, ready to send',
     'Écrivez votre demande en quelques mots': 'Write your request in a few words',
     'La photo dépasse 8 Mo : choisissez-en une plus légère': 'The photo is over 8 MB: please choose a lighter one',
@@ -40,7 +40,8 @@
     '3 à 5 jours': '3 to 5 days', '1 à 2 semaines': '1 to 2 weeks', '2 à 3 semaines': '2 to 3 weeks',
     'Adresse e-mail pro': 'Professional email address', 'Traduction en anglais': 'English translation', 'Gestion du stock': 'Stock management', 'Comptes clients': 'Customer accounts'
   };
-  var planName = function (n) { return EN ? n + ' plan' : 'Forfait ' + n; };
+  /* il n'y a plus qu'un abonnement : on l'appelle par son nom, sans « forfait » devant */
+  var planName = function (n) { return tr(n); };
   var tr = function (s) { return EN && Object.prototype.hasOwnProperty.call(TR, s) ? TR[s] : s; };
   // Bouton FR | EN : il mène à la même page dans l'autre langue (l'espace client réel n'existe qu'en français)
   $$('[data-lang-switch]').forEach(function (a) {
@@ -406,7 +407,7 @@
       setText('once-label', tr('Création, une fois'));
       setText('once', euro(t.price + optOnce));
       var recur = (month + optMonth) * mult;
-      setText('recur-label', tr('Forfait, dès la réception, par ') + tr(annual ? 'an' : 'mois'));
+      setText('recur-label', tr('Abonnement, dès la réception, par ') + tr(annual ? 'an' : 'mois'));
       setText('recur', euro(recur));
       // montant du jour, le même que sur /commander/ : l'acompte et les options payées une fois.
       // À la réception : le reste (en une fois ou lissé) et le forfait démarre.
@@ -414,7 +415,7 @@
       setText('today', euro(today));
       var bar = $('[data-sum="bar"]', box);
       if (bar) {
-        bar.innerHTML = tr('Aujourd’hui ') + '<b>' + euro(today) + '</b>' + tr(', à la réception ') + '<b>' + (lisse ? euro(lisseAmt) + tr('/mois') + ' × ' + lisseN : euro(reste)) + '</b>' + tr(' + forfait');
+        bar.innerHTML = tr('Aujourd’hui ') + '<b>' + euro(today) + '</b>' + tr(', à la réception ') + '<b>' + (lisse ? euro(lisseAmt) + tr('/mois') + ' × ' + lisseN : euro(reste)) + '</b>' + tr(' + abonnement');
       }
       // Lien « Poser une question » (formulaire de contact, en clair)
       var q = { type: t.label, forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: domText, options: chosen.join(', '), parrain: parrain };
@@ -552,7 +553,7 @@
       setText('today', euro(today));
       setText('btn', euro(today));
       setText('next', lisse ? euro(lisseAmt) + ' × ' + lisseN + ' + ' + euro(next) + per : euro(solde) + ' + ' + euro(next) + per);
-      setText('next-label', lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois, et le forfait') : tr('À la réception : le reste, et le forfait'));
+      setText('next-label', lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois, et l’abonnement') : tr('À la réception : le reste, et l’abonnement'));
       if ($('[data-order="solde"]', root)) setText('solde', euro(solde));
       setText('lisse', euro(lisseAmt));
       setText('lisse-per', perUnit);
@@ -862,6 +863,70 @@
       });
     });
     recompute();
+  }
+
+  /* ---------- Lia flottante : le chibi en bas de l'écran, sur toutes les pages ---------- */
+  var flot = $('[data-lia-flot]');
+  if (flot) {
+    var flotBtn = $('.lia-flot-btn', flot), flotPanel = $('.lia-flot-panel', flot), coucou = $('.lia-flot-coucou', flot);
+    var flotOuvrir = function (oui) {
+      flotPanel.hidden = !oui;
+      flotBtn.setAttribute('aria-expanded', oui ? 'true' : 'false');
+      flot.classList.toggle('is-open', oui);
+      if (coucou) coucou.hidden = true;
+      try { sessionStorage.setItem('lia_vue', '1'); } catch (e) {}
+    };
+    /* dans l'espace client, Lia propose les onglets de l'espace */
+    var appTabs = $('[data-app] [role="tab"], [data-espace] [role="tab"]');
+    if (appTabs) {
+      $$('[data-lia-liens]', flot).forEach(function (g) { g.hidden = g.getAttribute('data-lia-liens') !== 'espace'; });
+      var msgEspace = $('[data-lia-msg-espace]', flot), msgSite = $('[data-lia-msg]', flot);
+      if (msgEspace && msgSite) { msgSite.hidden = true; msgEspace.hidden = false; }
+      $$('[data-lia-go]', flot).forEach(function (b) {
+        b.addEventListener('click', function () {
+          var t = $('[role="tab"][data-tab="' + b.getAttribute('data-lia-go') + '"]');
+          if (t) { t.click(); flotOuvrir(false); }
+        });
+      });
+    }
+    flot.hidden = false;
+    flotBtn.addEventListener('click', function () { flotOuvrir(flotPanel.hidden); });
+    var flotX = $('.lia-flot-fermer', flot);
+    if (flotX) flotX.addEventListener('click', function () { flotOuvrir(false); flotBtn.focus(); });
+    d.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !flotPanel.hidden) { flotOuvrir(false); flotBtn.focus(); } });
+    d.addEventListener('click', function (e) { if (!flotPanel.hidden && !flot.contains(e.target)) flotOuvrir(false); });
+    /* un petit bonjour, une seule fois par visite */
+    var dejaVue = false;
+    try { dejaVue = sessionStorage.getItem('lia_vue') === '1'; } catch (e) {}
+    if (coucou && !dejaVue) {
+      setTimeout(function () { if (flotPanel.hidden) coucou.hidden = false; }, 2500);
+      setTimeout(function () { coucou.hidden = true; try { sessionStorage.setItem('lia_vue', '1'); } catch (e) {} }, 11000);
+      coucou.addEventListener('click', function () { flotOuvrir(true); });
+    }
+  }
+  /* Lia suit le visiteur des yeux : chaque dessin de Lia regarde vers le pointeur (ou le doigt) */
+  if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    var regards = $$('.chibi .m-look'), regardRaf = 0, regardXY = null;
+    var regarder = function () {
+      regardRaf = 0;
+      if (!regardXY) return;
+      regards.forEach(function (g) {
+        var svg = g.ownerSVGElement, r = svg ? svg.getBoundingClientRect() : null;
+        if (!r || !r.width || r.bottom < -200 || r.top > window.innerHeight + 200) return;
+        var dx = regardXY[0] - (r.left + r.width / 2), dy = regardXY[1] - (r.top + r.height * 0.6), n = Math.sqrt(dx * dx + dy * dy) || 1;
+        var f = Math.min(1, n / 160) * 2.6;
+        g.setAttribute('transform', 'translate(' + (dx / n * f).toFixed(2) + ' ' + (dy / n * f * 0.8).toFixed(2) + ')');
+      });
+    };
+    var regardVers = function (e) {
+      var p = e.touches && e.touches[0] ? e.touches[0] : e;
+      regardXY = [p.clientX, p.clientY];
+      if (!regardRaf) regardRaf = requestAnimationFrame(regarder);
+    };
+    if (regards.length) {
+      window.addEventListener('pointermove', regardVers, { passive: true });
+      window.addEventListener('touchstart', regardVers, { passive: true });
+    }
   }
 
   /* ---------- formulaire de contact ---------- */

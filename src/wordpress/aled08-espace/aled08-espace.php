@@ -2,21 +2,21 @@
 /**
  * Plugin Name: Alex & Lia Espace client
  * Description: L'espace client Alex & Lia sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.0.0
+ * Version: 2.1.0
  * Requires PHP: 7.4
  * Author: Alex & Lia
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.0.0');
+define('ALED08E_VERSION', '2.1.0');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
 define('ALED08E_CPT_CMD', 'aled08_commande');
 
 /* =========================================================================
- *  Données (forfaits, types de site, options, montants, icônes, monstres) : data.json, généré depuis le site
+ *  Données (abonnement, types de site, options et extras, montants, icônes, dessins de Lia) : data.json, généré depuis le site
  * ========================================================================= */
 function aled08e_data() {
     static $d = null;
@@ -26,8 +26,8 @@ function aled08e_data() {
         $d += [
             'name' => 'Alex & Lia', 'whatsapp' => '', 'email' => '',
             'forfaits' => [], 'types' => [], 'options' => [], 'icons' => [], 'monsters' => [],
-            'moisOfferts' => 2, 'boost' => 1, 'lissageDurees' => [6, 12], 'acompte' => 25, 'parrainageMois' => 1, 'remiseSecondSite' => 10,
-            'delais' => ['reponse' => '48 heures', 'titan' => '24 heures'],
+            'moisOfferts' => 2, 'boost' => 5, 'lissageDurees' => [6, 12], 'acompte' => 25, 'parrainageMois' => 1, 'remiseSecondSite' => 10,
+            'delais' => ['reponse' => '72 heures', 'titan' => '72 heures'], 'creation' => ['prix' => 500, 'boutique' => 200],
         ];
     }
     return $d;
@@ -37,8 +37,26 @@ function aled08e_monster($n) { $d = aled08e_data(); return $d['monsters'][$n] ??
 function aled08e_forfait($id) {
     foreach (aled08e_data()['forfaits'] as $f) if ($f['id'] === $id) return $f;
     $all = aled08e_data()['forfaits'];
-    return $all ? $all[0] : ['id' => 'chico', 'name' => 'Chico', 'month' => 5, 'quota' => 1, 'modifs' => 'Une modification par mois', 'color' => 'pink', 'tagline' => ''];
+    return $all ? $all[0] : ['id' => 'base', 'name' => 'Abonnement', 'month' => 10, 'quota' => 1, 'jetons' => 100, 'modifs' => '100 Jetons Lia et une modification par Alex, chaque mois', 'color' => 'pink', 'tagline' => ''];
 }
+/* Le nom de l'abonnement sur une facture ou dans un e-mail */
+function aled08e_abo_nom($f) { return count(aled08e_data()['forfaits']) > 1 ? 'Forfait ' . $f['name'] : 'Abonnement Alex & Lia'; }
+/* Les extras de l'abonnement : les options payées chaque mois, qu'on ajoute ou retire quand on veut */
+function aled08e_extras() {
+    $out = [];
+    foreach (aled08e_data()['options'] as $o) if ((float) $o['month'] > 0) $out[] = $o;
+    return $out;
+}
+/* Un extra est-il actif pour ce client ? */
+function aled08e_extra_actif($uid, $id) { return aled08e_meta($uid, $id) === '1'; }
+/* Les métas « extras » d'un compte d'après la liste d'options d'une commande : [id => '1' ou ''] */
+function aled08e_extras_metas($options) {
+    $m = [];
+    foreach (aled08e_extras() as $o) $m[$o['id']] = in_array($o['id'], (array) $options, true) ? '1' : '';
+    return $m;
+}
+/* Le prix du Boost (une modification par Alex en plus), en texte */
+function aled08e_boost_txt() { return aled08e_euro_txt((float) (aled08e_data()['boost'] ?? 5)); }
 function aled08e_type($id) {
     foreach (aled08e_data()['types'] as $t) if ($t['id'] === $id) return $t;
     return null;
@@ -302,7 +320,7 @@ function aled08e_annuler_demande($pid) {
     $u = get_userdata($uid);
     wp_mail(aled08e_to(), 'Une demande a été annulée par le client', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n"
         . ($note ? "\nCe que Lia avait mis en ligne : " . $note . "\n" : '')
-        . (get_post_meta($pid, '_aled08_hors_forfait', true) ? "\nC'était un Boost (1 €) : à rembourser ou retirer de sa facture.\n" : '')
+        . (get_post_meta($pid, '_aled08_hors_forfait', true) ? "\nC'était un Boost (" . aled08e_boost_txt() . ") : à rembourser ou retirer de sa facture.\n" : '')
         . "\nAnnulations ce mois-ci : " . aled08e_annulations_mois($uid) . ' / ' . ALED08E_ANNUL_MOIS . "\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
     return true;
 }
@@ -365,7 +383,7 @@ add_action('template_redirect', function () {
     elseif (!empty($_FILES['photo']['name'])) $nbPhotos = 1;
     $prixLia = aled08e_jl_prix_modif($txt, $nbPhotos);
     if (!$famille && $par === 'lia' && $prixLia > aled08e_jl_etat($uid, $f)['solde']) $back('lia_epuise');
-    // modifications d'Alex du mois utilisées : la demande devient un Boost (1 € la modification en plus), avec l'accord du client
+    // modifications d'Alex du mois utilisées : la demande devient un Boost (une modification en plus, payante), avec l'accord du client
     $over = !$famille && $par === 'alex' && aled08e_count_month($uid, 'alex') >= (int) $f['quota'];
     if ($over && empty($_POST['boost_ok'])) $back('boost_accord');
     $title = mb_strlen($txt) > 70 ? rtrim(mb_substr($txt, 0, 67)) . '…' : $txt;
@@ -416,11 +434,11 @@ add_action('template_redirect', function () {
     }
 
     $u = wp_get_current_user();
-    $delai = $f['id'] === 'titan' ? aled08e_data()['delais']['titan'] : aled08e_data()['delais']['reponse'];
+    $delai = aled08e_data()['delais']['reponse'];
     $corps = "Nouvelle demande de modification\n\n"
         . 'Client   : ' . $u->display_name . ' (' . $u->user_email . ")\n"
         . 'Site     : ' . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\n"
-        . 'Forfait  : ' . $f['name'] . ' (réponse sous ' . $delai . ')' . ($over ? ' (BOOST : 1 € en plus, ' . (get_post_meta($pid, '_aled08_boost_facture', true) ? 'ajouté à sa prochaine facture Stripe' : 'à facturer à la main') . ')' : '') . "\n"
+        . 'Délai    : réponse sous ' . $delai . ($over ? ' (BOOST : ' . aled08e_boost_txt() . ' en plus, ' . (get_post_meta($pid, '_aled08_boost_facture', true) ? 'ajouté à sa prochaine facture Stripe' : 'à facturer à la main') . ')' : '') . "\n"
         . 'Par      : ' . ($par === 'lia' ? 'Lia (instantané, avec aperçu à valider)' : 'Alex (modification à la main)') . "\n"
         . ($photo ? "Photo    : $photo\n" : '')
         . "\nDemande :\n$txt\n\n"
@@ -446,7 +464,7 @@ function aled08e_suivi_box($post) {
     echo '</select></p>';
     echo '<p><label for="aled08e-rep"><strong>Message au client</strong> (facultatif, affiché dans son espace)</label><textarea id="aled08e-rep" name="aled08e_reponse" rows="4" style="width:100%">' . esc_textarea(get_post_meta($post->ID, '_aled08_reponse', true)) . '</textarea></p>';
     echo '<p class="description">Quand vous passez la demande à « Faite », le client reçoit un e-mail.</p>';
-    if (get_post_meta($post->ID, '_aled08_hors_forfait', true)) echo '<p style="color:#b32d2e"><strong>Boost (1 €) :</strong> les modifications du mois étaient déjà utilisées. ' . (get_post_meta($post->ID, '_aled08_boost_facture', true) ? 'Ajouté à la prochaine facture Stripe du client.' : 'À facturer à la main.') . '</p>';
+    if (get_post_meta($post->ID, '_aled08_hors_forfait', true)) echo '<p style="color:#b32d2e"><strong>Boost (' . esc_html(aled08e_boost_txt()) . ') :</strong> les modifications du mois étaient déjà utilisées. ' . (get_post_meta($post->ID, '_aled08_boost_facture', true) ? 'Ajouté à la prochaine facture Stripe du client.' : 'À facturer à la main.') . '</p>';
 }
 function aled08e_client_box($post) {
     $u = get_userdata($post->post_author);
@@ -455,7 +473,7 @@ function aled08e_client_box($post) {
     echo '<p><strong>' . esc_html($u->display_name) . '</strong><br><a href="mailto:' . esc_attr($u->user_email) . '">' . esc_html($u->user_email) . '</a></p>';
     if (aled08e_meta($u->ID, 'site')) echo '<p>Site : <a href="' . esc_url(aled08e_meta($u->ID, 'site')) . '" target="_blank" rel="noopener">' . esc_html(aled08e_meta($u->ID, 'site')) . '</a></p>';
     $jt = aled08e_jetons($f);
-    echo '<p>Forfait : ' . esc_html($f['name']) . ' · Alex ' . (int) aled08e_count_month($u->ID, 'alex') . ' / ' . (int) $f['quota'] . ' · Jetons Lia ' . (int) aled08e_jl_etat($u->ID, $f)['solde'] . ' restants (' . (int) aled08e_jl_mois($u->ID, $f) . ' par mois)</p>';
+    echo '<p>Abonnement · Alex ' . (int) aled08e_count_month($u->ID, 'alex') . ' / ' . (int) $f['quota'] . ' · Jetons Lia ' . (int) aled08e_jl_etat($u->ID, $f)['solde'] . ' restants (' . (int) aled08e_jl_mois($u->ID, $f) . ' par mois)</p>';
     $par = get_post_meta($post->ID, '_aled08_par', true) === 'lia' ? 'Lia (instantané, avec aperçu)' : 'Alex (à la main)';
     echo '<p><strong>Demandée à : ' . esc_html($par) . '</strong></p>';
     echo '<p><a href="' . esc_url(get_edit_user_link($u->ID)) . '#aled08e">Fiche client</a></p>';
@@ -485,7 +503,7 @@ add_action('manage_' . ALED08E_CPT . '_posts_custom_column', function ($col, $pi
         $st = get_post_meta($pid, '_aled08_statut', true) ?: 'recue';
         $colors = ['recue' => '#2C67AE', 'encours' => '#9a6a00', 'faite' => '#1f7a55'];
         echo '<strong style="color:' . esc_attr($colors[$st] ?? '#333') . '">' . esc_html(aled08e_statuts()[$st][0] ?? $st) . '</strong>';
-        if (get_post_meta($pid, '_aled08_hors_forfait', true)) echo '<br><small>Boost 1 €</small>';
+        if (get_post_meta($pid, '_aled08_hors_forfait', true)) echo '<br><small>Boost ' . esc_html(aled08e_boost_txt()) . '</small>';
     }
 }, 10, 2);
 
@@ -495,15 +513,14 @@ add_action('manage_' . ALED08E_CPT . '_posts_custom_column', function ($col, $pi
 function aled08e_fields() {
     $forfaits = [];
     foreach (aled08e_data()['forfaits'] as $f) $forfaits[$f['id']] = $f['name'];
-    if (!$forfaits) $forfaits = ['chico' => 'Chico', 'power' => 'Power', 'titan' => 'Titan'];
+    if (!$forfaits) $forfaits = ['base' => 'Abonnement'];
+    $extras = [];
+    foreach (aled08e_extras() as $o) $extras[$o['id']] = ['Extra : ' . $o['name'] . ' (' . aled08e_euro_txt($o['month']) . ' par mois)', 'check', 'Actif'];
     return [
-        'forfait' => ['Forfait', 'select', $forfaits],
-        'paiement' => ['Paiement du forfait', 'select', ['mois' => 'Au mois', 'annee' => 'À l’année']],
+        'forfait' => ['Abonnement', 'select', $forfaits],
+        'paiement' => ['Paiement de l’abonnement', 'select', ['mois' => 'Au mois', 'annee' => 'À l’année']],
         'site' => ['Adresse du site', 'url', 'https://www.exemple.fr'],
-        'mail' => ['Option e-mail pro', 'check', 'Active'],
-        'stock' => ['Option gestion du stock', 'check', 'Active'],
-        'comptes' => ['Option comptes clients', 'check', 'Active'],
-        'liaplus' => ['Option Lia + (' . (int) aled08e_jl_cfg()['liaplus'] . ' Jetons Lia en plus chaque mois)', 'check', 'Active'],
+    ] + $extras + [
         'domaine_info' => ['Nom de domaine (info affichée)', 'text', 'exemple.fr, renouvelé le 3 mars 2027'],
         'avis' => ['Lien d’avis Google', 'url', 'https://g.page/r/.../review'],
         'parrain' => ['Parrainé par (code)', 'text', 'Ex. : LILA-7K2'],
@@ -511,7 +528,7 @@ function aled08e_fields() {
         'mois_offerts' => ['Mois offerts à utiliser', 'text', '0'],
         'boutique' => ['Boutique en ligne', 'check', 'Oui : le client a une boutique (onglet Vacances, ventes dans le tableau de bord).'],
         'famille' => ['Famille : modifications illimitées', 'check', 'Oui : modifications par Lia et par Alex sans limite (affichées ∞ avec un cœur).'],
-        'offert' => ['Forfait offert à vie', 'check', 'Oui : le forfait et ses options sont gratuits pour ce client, pour toujours. Son compte n’est jamais supprimé automatiquement.'],
+        'offert' => ['Abonnement offert à vie', 'check', 'Oui : l’abonnement et ses extras sont gratuits pour ce client, pour toujours. Son compte n’est jamais supprimé automatiquement.'],
         'abonnement_manuel' => ['Abonnement actif hors Stripe', 'check', 'Oui : ce client paie autrement (virement, espèces). Son compte n’est jamais supprimé automatiquement.'],
         'stats_mois' => ['Tableau de bord : mois', 'text', 'Novembre 2026'],
         'stats_visites' => ['Visites', 'text', '1240'],
@@ -520,7 +537,7 @@ function aled08e_fields() {
         'stats_ventes' => ['Ventes (boutique)', 'text', ''],
         'stats_recherches' => ['Meilleures recherches (une par ligne : recherche | position)', 'textarea', "pâtisserie rethel | 4\ntarte aux fraises rethel | 2"],
         'stats_rapport' => ['Lien du rapport mensuel (PDF)', 'url', ''],
-        'factures' => ['Factures saisies à la main (une par ligne : date ; libellé ; montant ; lien)', 'textarea', "Novembre 2026 ; Forfait Power ; 20 € ; https://..."],
+        'factures' => ['Factures saisies à la main (une par ligne : date ; libellé ; montant ; lien)', 'textarea', "Novembre 2026 ; Abonnement ; 10 € ; https://..."],
     ];
 }
 function aled08e_profile_fields($user) {
@@ -600,7 +617,7 @@ function aled08e_profile_save($uid) {
         if ($p && $u && $p->ID !== $u->ID) {
             $m = (int) aled08e_data()['parrainageMois'];
             $corps = 'Bonjour ' . aled08e_prenom($p) . ",\n\n"
-                . 'Bonne nouvelle : ' . aled08e_prenom($u) . ' a créé son site grâce à vous. Vous recevez ' . aled08e_mois_txt($m) . " de forfait offert, merci !\n\n"
+                . 'Bonne nouvelle : ' . aled08e_prenom($u) . ' a créé son site grâce à vous. Vous recevez ' . aled08e_mois_txt($m) . " d’abonnement offert, merci !\n\n"
                 . "Vos parrainages sont dans votre espace client :\n" . aled08e_url() . "#parrainage\n\nÀ bientôt,\nAlex, et Lia\n";
             wp_mail($p->user_email, 'Votre parrainage : un mois offert', $corps, aled08e_mail_headers());
         }
@@ -611,7 +628,7 @@ add_action('edit_user_profile_update', 'aled08e_profile_save');
 add_action('user_register', 'aled08e_profile_save');
 
 /* Colonne « Forfait » dans la liste des utilisateurs */
-add_filter('manage_users_columns', function ($c) { $c['aled08_forfait'] = 'Forfait Alex & Lia'; return $c; });
+add_filter('manage_users_columns', function ($c) { $c['aled08_forfait'] = 'Abonnement Alex & Lia'; return $c; });
 add_filter('manage_users_custom_column', function ($out, $col, $uid) {
     if ($col !== 'aled08_forfait') return $out;
     $u = get_userdata($uid);
@@ -688,7 +705,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
     $solde = (float) ($m['solde'] ?? 0);
     $soldeDu = aled08e_cmd_reception_due($cmd);
     $flash = '';
-    if (isset($_GET['solde']) && $_GET['solde'] === 'ok') $flash = '<p class="esp-empty" role="status">Merci ! Votre paiement est en cours de confirmation. Il apparaîtra ici dans quelques minutes, et votre forfait démarre.</p>';
+    if (isset($_GET['solde']) && $_GET['solde'] === 'ok') $flash = '<p class="esp-empty" role="status">Merci ! Votre paiement est en cours de confirmation. Il apparaîtra ici dans quelques minutes, et votre abonnement démarre.</p>';
     if (isset($_GET['m']) && sanitize_key(wp_unslash($_GET['m'])) === 'paiement_erreur') $flash = '<p class="esp-warn" role="status">Le paiement en ligne n’a pas pu démarrer. Réessayez dans un instant, ou écrivez-moi : je vous envoie un lien de paiement.</p>';
 
     ob_start();
@@ -725,7 +742,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
           <dl class="esp-grid">
             <div><dt>Type de site</dt><dd><?php echo esc_html($type ? $type['label'] : $cmd['type']); ?><small><?php echo aled08e_euro($m['creation']); // phpcs:ignore ?> de création</small></dd></div>
             <div><dt>Nom de domaine</dt><dd><?php echo esc_html($cmd['domaine'] ?: 'À choisir'); ?><small><?php echo esc_html(aled08e_cmd_domaine_libelle_client($cmd)); ?></small></dd></div>
-            <div><dt>Forfait</dt><dd><?php echo esc_html($f['name']); ?><small><?php echo aled08e_euro($m['mensuel_forfait']) . ' ' . esc_html($per); // phpcs:ignore ?></small></dd></div>
+            <div><dt>Abonnement</dt><dd><?php echo aled08e_euro($m['mensuel_forfait']) . ' ' . esc_html($per); // phpcs:ignore ?><small>Nom de domaine, hébergement, suivi, Jetons Lia</small></dd></div>
             <div><dt>Options</dt><dd><?php echo $opts ? esc_html(implode(', ', $opts)) : 'Aucune'; ?></dd></div>
           </dl>
 
@@ -738,7 +755,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
             <?php else : ?>
             <li><span>Le reste, à la réception du site</span><b><?php echo aled08e_euro($solde); // phpcs:ignore ?></b><small><?php echo ($cmd['solde_paye'] || $cmd['reception_payee']) ? 'payé, merci !' : 'en une fois, ou en ' . esc_html(implode(' ou ', (array) $D['lissageDurees'])) . ' fois sans frais'; ?></small></li>
             <?php endif; ?>
-            <li><span>Forfait <?php echo esc_html($f['name']); ?><?php echo $m['mensuel_options'] > 0 ? ' et options' : ''; ?></span><b><?php echo aled08e_euro($m['mensuel_forfait'] + $m['mensuel_options']) . ' ' . esc_html($per); // phpcs:ignore ?></b><small><?php echo $cmd['reception_payee'] ? 'en cours' : 'démarre à la réception du site'; ?></small></li>
+            <li><span>Abonnement<?php echo $m['mensuel_options'] > 0 ? ' et extras' : ''; ?></span><b><?php echo aled08e_euro($m['mensuel_forfait'] + $m['mensuel_options']) . ' ' . esc_html($per); // phpcs:ignore ?></b><small><?php echo $cmd['reception_payee'] ? 'en cours' : 'démarre à la réception du site'; ?></small></li>
           </ul>
           <?php if ($soldeDu) : ?>
             <?php if (aled08e_stripe_ready()) :
@@ -746,12 +763,12 @@ function aled08e_panel_commande($cmd, $u, $D) {
             <form method="post" action="<?php echo esc_url(aled08e_url()); ?>" class="esp-pay esp-reception">
               <input type="hidden" name="aled08e_solde" value="1"><input type="hidden" name="cid" value="<?php echo (int) $cmd['id']; ?>">
               <?php wp_nonce_field('aled08e_solde_' . $cmd['id'], '_aled08e_solde'); ?>
-              <p><strong>Votre site est en ligne !</strong> Il reste <?php echo aled08e_euro($solde); // phpcs:ignore ?> pour la création. Choisissez comment payer : votre forfait démarre en même temps.</p>
-              <label class="esp-reste"><input type="radio" name="reste" value="0"<?php checked(!$cmd['lissage']); ?>><span><strong>En une fois</strong><small><?php echo aled08e_euro($mf['solde']); // phpcs:ignore ?>, puis le forfait : <?php echo aled08e_euro($mf['mensuel_forfait'] + $mf['mensuel_options']) . ' ' . esc_html($per); // phpcs:ignore ?></small></span></label>
+              <p><strong>Votre site est en ligne !</strong> Il reste <?php echo aled08e_euro($solde); // phpcs:ignore ?> pour la création. Choisissez comment payer : votre abonnement démarre en même temps.</p>
+              <label class="esp-reste"><input type="radio" name="reste" value="0"<?php checked(!$cmd['lissage']); ?>><span><strong>En une fois</strong><small><?php echo aled08e_euro($mf['solde']); // phpcs:ignore ?>, puis l’abonnement : <?php echo aled08e_euro($mf['mensuel_forfait'] + $mf['mensuel_options']) . ' ' . esc_html($per); // phpcs:ignore ?></small></span></label>
               <?php foreach ((array) $D['lissageDurees'] as $n) : $mn = aled08e_cmd_montants_reception($cmd, (int) $n); ?>
-              <label class="esp-reste"><input type="radio" name="reste" value="<?php echo (int) $n; ?>"<?php checked((int) $cmd['lissage'], (int) $n); ?>><span><strong>En <?php echo (int) $n; ?> fois sans frais</strong><small><?php echo aled08e_euro($mn['lissage_mensualite'] + $mn['mensuel_forfait'] + $mn['mensuel_options']); // phpcs:ignore ?> par mois pendant <?php echo (int) $n; ?> mois (<?php echo aled08e_euro($mn['lissage_mensualite']); // phpcs:ignore ?> pour le site + le forfait), engagement le temps de payer</small></span></label>
+              <label class="esp-reste"><input type="radio" name="reste" value="<?php echo (int) $n; ?>"<?php checked((int) $cmd['lissage'], (int) $n); ?>><span><strong>En <?php echo (int) $n; ?> fois sans frais</strong><small><?php echo aled08e_euro($mn['lissage_mensualite'] + $mn['mensuel_forfait'] + $mn['mensuel_options']); // phpcs:ignore ?> par mois pendant <?php echo (int) $n; ?> mois (<?php echo aled08e_euro($mn['lissage_mensualite']); // phpcs:ignore ?> pour le site + l’abonnement), engagement le temps de payer</small></span></label>
               <?php endforeach; ?>
-              <button class="btn btn-primary btn-flaque" type="submit"><?php echo aled08e_icon('credit-card'); // phpcs:ignore ?><span>Payer et démarrer mon forfait</span></button>
+              <button class="btn btn-primary btn-flaque" type="submit"><?php echo aled08e_icon('credit-card'); // phpcs:ignore ?><span>Payer et démarrer mon abonnement</span></button>
             </form>
             <?php else : ?>
             <p class="esp-warn">Votre site est en ligne : il reste <?php echo aled08e_euro($solde); // phpcs:ignore ?> pour la création, en une fois ou en <?php echo esc_html(implode(' ou ', (array) $D['lissageDurees'])); ?> fois sans frais. Je vous envoie le lien de paiement par e-mail.</p>
@@ -789,10 +806,7 @@ function aled08e_dashboard() {
     $liaLim = aled08e_lia_limites();
     // options mensuelles actives du compte (e-mail pro, stock, comptes clients, modifications illimitées)
     $optsMois = [];
-    foreach (['mail', 'stock', 'comptes', 'liaplus'] as $oid) {
-        $o = aled08e_option($oid);
-        if ($o && $o['month'] > 0 && aled08e_meta($uid, $oid) === '1') $optsMois[] = $o;
-    }
+    foreach (aled08e_extras() as $o) if (aled08e_extra_actif($uid, $o['id'])) $optsMois[] = $o;
     $code = aled08e_code($uid);
     $plink = home_url('/creer-mon-site/?parrain=' . rawurlencode($code));
     $filleuls = aled08e_filleuls($uid);
@@ -800,7 +814,8 @@ function aled08e_dashboard() {
     $demandesFilleuls = is_array($demandesFilleuls) ? $demandesFilleuls : [];
     $moisGagnes = count($filleuls) * (int) $D['parrainageMois'];
     $moisDispo = (int) aled08e_meta($uid, 'mois_offerts');
-    $delai = $f['id'] === 'titan' ? $D['delais']['titan'] : $D['delais']['reponse'];
+    $delai = $D['delais']['reponse'];
+    $boostTxt = aled08e_boost_txt();
 
     // la commande la plus récente (une commande annulée n'est montrée que s'il n'y en a pas d'autre)
     $cmds = aled08e_cmd_user_commandes($uid);
@@ -827,11 +842,11 @@ function aled08e_dashboard() {
     $m = isset($_GET['m']) ? sanitize_key(wp_unslash($_GET['m'])) : '';
     $msgs = [
         'ok' => ['esp-empty', 'Demande envoyée, merci ! Je m’en occupe et je vous préviens quand c’est en ligne.'],
-        'changer_ok' => ['esp-empty', 'C’est enregistré : votre nouveau forfait et vos options s’appliquent à votre prochaine échéance. Vos Jetons Lia changent le 1er du mois prochain.'],
-        'changer_rien' => ['esp-empty', 'Rien n’a changé : c’est déjà votre forfait.'],
+        'changer_ok' => ['esp-empty', 'C’est enregistré : vos extras changent à votre prochaine échéance. Vos Jetons Lia changent le 1er du mois prochain.'],
+        'changer_rien' => ['esp-empty', 'Rien n’a changé : ce sont déjà vos extras.'],
         'changer_erreur' => ['esp-warn', 'Le changement n’a pas pu se faire tout seul : Alex est prévenu et s’en occupe.'],
-        'boost' => ['esp-empty', 'Demande envoyée à Alex, en Boost : 1 € en plus, ajouté à votre prochaine facture.'],
-        'boost_accord' => ['esp-warn', 'Vos modifications par Alex du mois sont utilisées. Cochez la case « Boost » (1 €) pour envoyer cette demande en plus.'],
+        'boost' => ['esp-empty', 'Demande envoyée à Alex, en Boost : ' . $boostTxt . ' en plus, ajouté à votre prochaine facture.'],
+        'boost_accord' => ['esp-warn', 'Vos modifications par Alex du mois sont utilisées. Cochez la case « Boost » (' . $boostTxt . ') pour envoyer cette demande en plus.'],
         'lia_epuise' => ['esp-warn', 'Il ne vous reste pas assez de Jetons Lia pour cette demande. Raccourcissez-la, rechargez dans l’onglet Outils, ou choisissez Alex.'],
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
@@ -856,7 +871,7 @@ function aled08e_dashboard() {
     $total = $price;
     if (!$offert) foreach ($optsMois as $o) $total += $annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month'];
     $wa = home_url('/contact/');
-    $share = 'https://wa.me/?text=' . rawurlencode('Je te recommande Alex & Lia pour ton site internet. Avec mon lien, on a chacun un mois de forfait offert : ' . $plink);
+    $share = 'https://wa.me/?text=' . rawurlencode('Je te recommande Alex & Lia pour ton site internet. Avec mon lien, on a chacun un mois d’abonnement offert : ' . $plink);
 
     $stats = [];
     foreach (['visites' => 'visites', 'google' => 'apparitions sur Google', 'appels' => 'appels ou contacts', 'ventes' => 'ventes'] as $k => $lab) {
@@ -922,7 +937,7 @@ function aled08e_dashboard() {
           <h2 class="app-h">Bonjour <?php echo esc_html($prenom); ?> !</h2>
           <?php echo aled08e_annonces_html(); // phpcs:ignore ?>
           <div class="app-cards">
-            <button type="button" class="app-card c-<?php echo esc_attr($f['color']); ?>" data-go="forfait"><span class="app-card-art"><?php echo aled08e_monster($f['id']); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($f['name']); ?></strong><span><?php echo $offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per); // phpcs:ignore ?></span></span></button>
+            <button type="button" class="app-card c-<?php echo esc_attr($f['color']); ?>" data-go="forfait"><span class="app-card-art"><?php echo aled08e_monster('clin'); // phpcs:ignore ?></span><span><small>Votre abonnement</small><strong><?php echo $optsMois ? 'Avec ' . count($optsMois) . ' extra' . (count($optsMois) > 1 ? 's' : '') : 'Tout compris'; ?></strong><span><?php echo $offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per); // phpcs:ignore ?></span></span></button>
             <?php if ($cmd) : ?>
             <button type="button" class="app-card c-mint" data-go="commande"><span class="app-card-ico"><?php echo aled08e_icon('globe'); // phpcs:ignore ?></span><span><small>Votre site</small><strong><?php echo esc_html($host ?: 'En préparation'); ?></strong><span class="<?php echo $siteOk ? 'dot-ok' : ''; ?>"><?php echo esc_html($siteEtat); ?></span></span></button>
             <?php else : ?>
@@ -936,7 +951,7 @@ function aled08e_dashboard() {
           <?php if ($cmd && $cmd['statut'] === 'attente_paiement') : ?>
           <p class="esp-warn">Votre commande <?php echo esc_html($cmd['ref']); ?> attend son paiement. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
           <?php elseif ($cmd && aled08e_cmd_reception_due($cmd)) : ?>
-          <p class="esp-warn">Votre site est en ligne : il reste <?php echo aled08e_euro($cmd['montants']['solde']); // phpcs:ignore ?> pour la création, en une fois ou en plusieurs fois, et votre forfait démarre. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
+          <p class="esp-warn">Votre site est en ligne : il reste <?php echo aled08e_euro($cmd['montants']['solde']); // phpcs:ignore ?> pour la création, en une fois ou en plusieurs fois, et votre abonnement démarre. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
           <?php endif; ?>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
@@ -960,8 +975,8 @@ function aled08e_dashboard() {
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
           <h2 class="app-h">Mes demandes</h2>
           <?php echo $flash; // phpcs:ignore ?>
-          <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. Je m’en occupe et vous suivez l’avancement ici. <?php echo esc_html($f['name'] . ' : ' . mb_strtolower($f['modifs'], 'UTF-8') . ', réponse sous ' . $delai . '.'); ?></p>
-          <?php if ($left <= 0) : ?><p class="esp-warn">Vos modifications par Alex du mois sont utilisées. Besoin d’une de plus ? Le Boost : 1 € la modification, faite par Alex, ajouté à votre prochaine facture.</p><?php endif; ?>
+          <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. Je m’en occupe et vous suivez l’avancement ici. <?php echo esc_html('Dans votre abonnement : ' . mb_strtolower($f['modifs'], 'UTF-8') . ', réponse sous ' . $delai . '.'); ?></p>
+          <?php if ($left <= 0) : ?><p class="esp-warn">Vos modifications par Alex du mois sont utilisées. Besoin d’une de plus ? Le Boost : <?php echo esc_html($boostTxt); ?> la modification, faite par Alex, ajouté à votre prochaine facture.</p><?php endif; ?>
           <?php $liaPrete = aled08e_lia_prete_pour($uid); $liaOk = $liaPrete && ($famille || $jetonsLeft >= (int) $jlModif['base']); ?>
           <?php if (!$liaPrete) : ?><p class="esp-empty">Lia n’est pas encore reliée à votre site : pour l’instant, c’est Alex qui fait vos modifications. Vos Jetons Lia servent déjà aux outils de l’onglet Outils.</p>
           <?php elseif (!$liaOk) : ?><p class="esp-warn">Il vous reste <?php echo (int) $jetonsLeft; ?> Jetons Lia : pas assez pour une modification par Lia (<?php echo (int) $jlModif['base']; ?> au moins). Ils reviennent le 1<sup>er</sup> du mois. Pour en avoir tout de suite : « Recharger », dans l’onglet Outils.</p><?php endif; ?>
@@ -972,7 +987,7 @@ function aled08e_dashboard() {
               <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $liaOk ? ' checked' : ' disabled'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, en 5 minutes</strong><small>Pour une petite ou moyenne modification : jusqu’à <?php echo (int) $liaLim['mots'][0]; ?> mots de texte, ou jusqu’à <?php echo (int) $liaLim['images']; ?> photos avec un texte plus court. Lia vous montre toujours l’aperçu de la page : rien ne change sans votre accord. Prix : <?php echo (int) $jlModif['base']; ?> jetons, plus 1 par tranche de <?php echo (int) $jlModif['mots']; ?> mots et <?php echo (int) $jlModif['image']; ?> par photo.</small></span></label>
               <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $liaOk ? '' : ' checked'; ?>><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Pour une grande modification. Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même.</small></span></label>
             </fieldset>
-            <?php if ($left <= 0) : ?><label class="check"><input type="checkbox" name="boost_ok" value="1"><span>Si je choisis Alex : j’accepte le Boost, 1 € pour cette modification en plus</span></label><?php endif; ?>
+            <?php if ($left <= 0) : ?><label class="check"><input type="checkbox" name="boost_ok" value="1"><span>Si je choisis Alex : j’accepte le Boost, <?php echo esc_html($boostTxt); ?> pour cette modification en plus</span></label><?php endif; ?>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" name="demande" rows="4" maxlength="4000" required placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" name="photos[]" accept="image/*" multiple class="sr-only" data-req-file><?php echo aled08e_icon('image-plus'); // phpcs:ignore ?><span data-req-file-name>Ajouter jusqu’à 3 photos (facultatif)</span></label>
             <?php if (!$famille) : ?><p class="jl-estime" data-jl-estime data-base="<?php echo (int) $jlModif['base']; ?>" data-mots="<?php echo (int) $jlModif['mots']; ?>" data-image="<?php echo (int) $jlModif['image']; ?>" data-solde="<?php echo (int) $jetonsLeft; ?>" aria-live="polite"><?php echo aled08e_icon('coins'); // phpcs:ignore ?><span>Avec Lia, cette demande coûte <b data-jl-prix><?php echo (int) $jlModif['base']; ?></b> jetons. Avec Alex : aucun jeton.</span></p><?php endif; ?>
@@ -997,7 +1012,7 @@ function aled08e_dashboard() {
             <p class="esp-empty">Vos premiers chiffres arrivent dans le mois qui suit la mise en ligne : visites, apparitions sur Google, appels.</p>
           <?php endif; ?>
           <?php if ($rapport) : ?><a class="btn btn-light" href="<?php echo esc_url($rapport); ?>" target="_blank" rel="noopener"><?php echo aled08e_icon('download'); // phpcs:ignore ?><span>Rapport du mois</span></a><?php endif; ?>
-          <?php if ($f['id'] === 'chico') : ?><p class="app-note">Le rapport mensuel détaillé et le suivi SEO font partie des forfaits Power et Titan.</p><?php endif; ?>
+          <?php if (!$famille && !aled08e_extra_actif($uid, 'seo')) : ?><p class="app-note">Pour aller plus loin : les extras « SEO suivi » et « Chiffres détaillés » s’ajoutent quand vous voulez, dans Mon compte.</p><?php endif; ?>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
@@ -1006,7 +1021,7 @@ function aled08e_dashboard() {
 
         <div class="app-panel" role="tabpanel" id="t-parrainage" aria-labelledby="tab-parrainage" hidden>
           <h2 class="app-h">Parrainage</h2>
-          <p class="app-p">Un proche fait créer son site avec votre lien ou votre code : quand il est en ligne, vous recevez chacun <?php echo esc_html(aled08e_mois_txt($D['parrainageMois'])); ?> de forfait offert.</p>
+          <p class="app-p">Un proche fait créer son site avec votre lien ou votre code : quand il est en ligne, vous recevez chacun <?php echo esc_html(aled08e_mois_txt($D['parrainageMois'])); ?> d’abonnement offert.</p>
           <p class="app-sub">Votre code</p>
           <p class="parrain-code"><?php echo esc_html($code); ?></p>
           <p class="app-sub">Votre lien</p>
@@ -1023,25 +1038,24 @@ function aled08e_dashboard() {
             <div><b><?php echo (int) $moisGagnes; ?></b><small>mois offert<?php echo $moisGagnes > 1 ? 's' : ''; ?> gagné<?php echo $moisGagnes > 1 ? 's' : ''; ?></small></div>
           </div>
           <?php if ($filleuls) : ?><ul class="reqs"><?php foreach ($filleuls as $fl) echo '<li><span><strong>' . esc_html(aled08e_prenom($fl)) . '</strong><small>site en ligne</small></span><em class="st st-done">' . esc_html(aled08e_mois_txt($D['parrainageMois'])) . ' offert</em></li>'; // phpcs:ignore ?></ul><?php endif; ?>
-          <?php if ($moisDispo > 0) : ?><p class="esp-empty">Mois offerts à utiliser sur votre forfait : <?php echo (int) $moisDispo; ?>.</p><?php endif; ?>
+          <?php if ($moisDispo > 0) : ?><p class="esp-empty">Mois offerts à utiliser sur votre abonnement : <?php echo (int) $moisDispo; ?>.</p><?php endif; ?>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
           <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>
           <section class="compte-forfait" id="forfait-bloc">
-          <h2 class="app-h">Forfait et factures</h2>
+          <h2 class="app-h">Abonnement et factures</h2>
           <?php echo $flashForfait; // phpcs:ignore ?>
-          <div class="app-card c-<?php echo esc_attr($f['color']); ?>"><span class="app-card-art"><?php echo aled08e_monster($f['id']); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($f['name']); ?></strong><span><?php echo ($offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . esc_html($f['modifs']); // phpcs:ignore ?></span></span></div>
-          <?php if ($offert) : ?><p class="app-note">Votre forfait <?php echo esc_html($f['name']); ?> est offert, à vie. Merci de votre confiance !</p><?php endif; ?>
-          <?php if ($f['id'] === 'titan') : ?><p class="app-note">Titan : <?php echo (int) $quota; ?> modifications par mois, ajout et mise à jour de produits compris, un article de blog par mois pour votre SEO, réponse sous <?php echo esc_html($D['delais']['titan']); ?>.</p><?php endif; ?>
+          <div class="app-card c-<?php echo esc_attr($f['color']); ?>"><span class="app-card-art"><?php echo aled08e_monster('ravie'); // phpcs:ignore ?></span><span><small>Votre abonnement</small><strong>Nom de domaine, hébergement, suivi</strong><span><?php echo ($offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . esc_html($f['modifs']); // phpcs:ignore ?></span></span></div>
+          <?php if ($offert) : ?><p class="app-note">Votre abonnement est offert, à vie. Merci de votre confiance !</p><?php endif; ?>
           <?php if ($optsMois) : ?>
-          <p class="app-sub">Options</p>
+          <p class="app-sub">Vos extras</p>
           <?php foreach ($optsMois as $o) : ?>
           <p class="app-domain"><?php echo aled08e_icon('check'); // phpcs:ignore ?><span><strong><?php echo esc_html($o['name']); ?></strong><small><?php echo aled08e_euro($annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month']) . ' ' . esc_html($per); // phpcs:ignore ?></small></span></p>
           <?php endforeach; ?>
           <?php endif; ?>
           <p class="app-total"><span>Total <?php echo $annuel ? 'chaque année' : 'chaque mois'; ?></span><b><?php echo aled08e_euro($total); // phpcs:ignore ?></b></p>
-          <?php if ($annuel) : ?><p class="app-note">Vous payez à l’année : <?php echo (int) $D['moisOfferts']; ?> mois offerts sur le forfait.</p><?php endif; ?>
+          <?php if ($annuel) : ?><p class="app-note">Vous payez à l’année : <?php echo (int) $D['moisOfferts']; ?> mois offerts.</p><?php endif; ?>
           <?php if ($cmd && $cmd['lissage'] && $cmd['lissage_paye'] < $cmd['montants']['lissage_total_echeances']) : ?><p class="app-note">Et la création de votre site, lissée : <?php echo aled08e_euro($cmd['montants']['lissage_mensualite']) . ' ' . esc_html($cmd['periode'] === 'annee' ? 'par an' : 'par mois'); // phpcs:ignore ?>, <?php echo (int) $cmd['lissage_paye']; ?> / <?php echo (int) $cmd['montants']['lissage_total_echeances']; ?> échéances payées.</p><?php endif; ?>
           <?php if ($abo === 'past_due') : ?><p class="esp-warn">Votre dernier paiement n’a pas abouti. Mettez à jour votre moyen de paiement ci-dessous, ou écrivez-moi.</p><?php endif; ?>
           <div class="esp-actions">
@@ -1059,7 +1073,7 @@ function aled08e_dashboard() {
           <?php if ($factures) : ?><ul class="invoices"><?php echo implode('', $factures); // phpcs:ignore ?></ul><?php else : ?><p class="esp-empty">Vos factures apparaîtront ici après chaque paiement.</p><?php endif; ?>
           <?php if (aled08e_meta($uid, 'domaine_info') || $host) : ?>
           <p class="app-sub">Nom de domaine</p>
-          <p class="app-domain"><?php echo aled08e_icon('globe'); // phpcs:ignore ?><span><strong><?php echo esc_html($host ?: aled08e_meta($uid, 'domaine_info')); ?></strong><small><?php echo esc_html(aled08e_meta($uid, 'domaine_info') ?: ($cmd && $cmd['domaine_mien'] ? 'Votre nom de domaine actuel' : 'À votre nom, renouvelé avec le forfait')); ?></small></span></p>
+          <p class="app-domain"><?php echo aled08e_icon('globe'); // phpcs:ignore ?><span><strong><?php echo esc_html($host ?: aled08e_meta($uid, 'domaine_info')); ?></strong><small><?php echo esc_html(aled08e_meta($uid, 'domaine_info') ?: ($cmd && $cmd['domaine_mien'] ? 'Votre nom de domaine actuel' : 'À votre nom, renouvelé avec l’abonnement')); ?></small></span></p>
           <?php endif; ?>
           </section>
         </div>
@@ -1079,9 +1093,9 @@ function aled08e_dashboard() {
     return ob_get_clean();
 }
 
-/* Boost : une modification en plus, 1 €, ajoutée à la prochaine facture Stripe du client (sinon : à facturer à la main) */
+/* Boost : une modification par Alex en plus, payante, ajoutée à la prochaine facture Stripe du client (sinon : à facturer à la main) */
 function aled08e_boost_facturer($pid, $uid) {
-    $prix = (float) (aled08e_data()['boost'] ?? 1);
+    $prix = (float) (aled08e_data()['boost'] ?? 5);
     $cus = aled08e_meta($uid, 'stripe_customer');
     if (!function_exists('aled08e_stripe_ready') || !aled08e_stripe_ready() || $cus === '') return false;
     $r = aled08e_stripe_request('POST', '/v1/invoiceitems', ['customer' => $cus, 'amount' => (int) round($prix * 100), 'currency' => 'eur', 'description' => 'Boost : une modification en plus (demande n° ' . (int) $pid . ')'], 'boost_' . (int) $pid, true);
@@ -1089,3 +1103,18 @@ function aled08e_boost_facturer($pid, $uid) {
     update_post_meta($pid, '_aled08_boost_facture', (string) $r['id']);
     return true;
 }
+
+/* Passage à l'offre unique (novembre 2026) : les anciens forfaits deviennent l'abonnement, avec les extras
+ * qui correspondent à ce que le client avait (Power : SEO suivi ; Titan : SEO suivi et chiffres détaillés).
+ * Fait une seule fois. L'abonnement Stripe d'un ancien client ne bouge pas tant qu'il ne change pas ses extras. */
+add_action('init', function () {
+    if (get_option('aled08e_offre') === '2') return;
+    $anciens = ['chico' => [], 'power' => ['seo'], 'titan' => ['seo', 'stats']];
+    foreach (get_users(['meta_key' => 'aled08_forfait', 'meta_value' => array_keys($anciens), 'meta_compare' => 'IN', 'fields' => 'ID']) as $uid) {
+        $avant = (string) get_user_meta($uid, 'aled08_forfait', true);
+        foreach ($anciens[$avant] ?? [] as $extra) update_user_meta($uid, 'aled08_' . $extra, '1');
+        update_user_meta($uid, 'aled08_forfait_avant', $avant);
+        update_user_meta($uid, 'aled08_forfait', 'base');
+    }
+    update_option('aled08e_offre', '2', false);
+}, 5);

@@ -202,7 +202,7 @@ function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
     $items = [];
     $offert = $c['user'] && aled08e_meta($c['user'], 'offert') === '1';
     if (!$offert) {
-        $items[] = $recurring('Forfait ' . $f['name'] . ($annee ? ' (à l’année, ' . (int) $D['moisOfferts'] . ' mois offerts)' : ' (au mois)'), $m['mensuel_forfait'], 'forfait');
+        $items[] = $recurring(aled08e_abo_nom($f) . ($annee ? ' (à l’année, ' . (int) $D['moisOfferts'] . ' mois offerts)' : ' (au mois)'), $m['mensuel_forfait'], 'forfait');
         foreach ($c['options'] as $oid) {
             $o = aled08e_option($oid);
             if ($o && $o['month'] > 0) $items[] = $recurring('Option : ' . $o['name'], $annee ? $o['month'] * max(1, 12 - (int) $D['moisOfferts']) : $o['month'], 'option');
@@ -440,7 +440,7 @@ function aled08e_stripe_arreter_lissage($cid) {
     update_post_meta($cid, '_aled08_stripe_lissage_item', '');
     update_post_meta($cid, '_aled08_lissage_fini', 1);
     aled08e_cmd_journal($cid, 'Lissage terminé : la ligne « création lissée » est retirée de l’abonnement.');
-    aled08e_stripe_mail_owner('Lissage terminé : commande ' . $c['ref'], 'Les ' . (int) $c['montants']['lissage_total_echeances'] . ' échéances de la création du site de ' . aled08e_cmd_nom($c) . " sont payées. La ligne a été retirée de l’abonnement : il ne reste que le forfait.\n");
+    aled08e_stripe_mail_owner('Lissage terminé : commande ' . $c['ref'], 'Les ' . (int) $c['montants']['lissage_total_echeances'] . ' échéances de la création du site de ' . aled08e_cmd_nom($c) . " sont payées. La ligne a été retirée de l’abonnement : il ne reste que l’abonnement et ses extras.\n");
     return true;
 }
 
@@ -517,8 +517,8 @@ function aled08e_stripe_on_invoice_failed($inv) {
     aled08e_stripe_maj_abonnement($uid, $c ? $c['id'] : 0, 'past_due');
     $u = get_userdata($uid);
     $nom = $u ? $u->display_name . ' (' . $u->user_email . ')' : 'client ' . $uid;
-    if ($c) aled08e_cmd_journal($c['id'], 'Un paiement du forfait a échoué : abonnement en retard.');
-    aled08e_stripe_mail_owner('Paiement du forfait échoué : ' . $nom, 'Le paiement de la facture ' . ($inv['number'] ?? '') . ' (' . aled08e_euro_txt(((int) ($inv['amount_due'] ?? 0)) / 100) . ') de ' . $nom . " a échoué. Stripe réessaie tout seul pendant quelques jours. Le client voit un message dans son espace pour mettre à jour son moyen de paiement.\n" . ($c ? "\nFiche commande : " . aled08e_cmd_admin_url($c['id']) . "\n" : ''));
+    if ($c) aled08e_cmd_journal($c['id'], 'Un paiement de l’abonnement a échoué : abonnement en retard.');
+    aled08e_stripe_mail_owner('Paiement de l’abonnement échoué : ' . $nom, 'Le paiement de la facture ' . ($inv['number'] ?? '') . ' (' . aled08e_euro_txt(((int) ($inv['amount_due'] ?? 0)) / 100) . ') de ' . $nom . " a échoué. Stripe réessaie tout seul pendant quelques jours. Le client voit un message dans son espace pour mettre à jour son moyen de paiement.\n" . ($c ? "\nFiche commande : " . aled08e_cmd_admin_url($c['id']) . "\n" : ''));
     return 'retard de paiement noté pour ' . $nom;
 }
 function aled08e_stripe_on_subscription($sub, $deleted) {
@@ -534,7 +534,7 @@ function aled08e_stripe_on_subscription($sub, $deleted) {
     $u = get_userdata($uid);
     $nom = $u ? $u->display_name . ' (' . $u->user_email . ')' : 'client ' . $uid;
     if ($c) aled08e_cmd_journal($c['id'], 'Abonnement Stripe : ' . ($deleted ? 'arrêté' : $status) . '.');
-    if ($deleted) aled08e_stripe_mail_owner('Abonnement arrêté : ' . $nom, 'L’abonnement Stripe de ' . $nom . " est terminé. Le site et le nom de domaine ne sont plus couverts par un forfait : voyez avec le client ce qu’il souhaite.\n" . ($c ? "\nFiche commande : " . aled08e_cmd_admin_url($c['id']) . "\n" : ''));
+    if ($deleted) aled08e_stripe_mail_owner('Abonnement arrêté : ' . $nom, 'L’abonnement Stripe de ' . $nom . " est terminé. Le site et le nom de domaine ne sont plus couverts par un abonnement : voyez avec le client ce qu’il souhaite.\n" . ($c ? "\nFiche commande : " . aled08e_cmd_admin_url($c['id']) . "\n" : ''));
     return 'abonnement de ' . $nom . ' : ' . $abo;
 }
 
@@ -590,6 +590,6 @@ function aled08e_stripe_on_reception($s) {
     if ($c['user']) { update_user_meta($c['user'], 'aled08_paiement', $n ? 'mois' : ($c['periode'] === 'annee' ? 'annee' : 'mois')); }
     $quoi = $n ? 'reste en ' . $n . ' fois (' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois)' : 'reste payé en une fois (' . aled08e_euro_txt($m['solde']) . ')';
     aled08e_cmd_journal($cid, 'Réception réglée par Stripe : ' . $quoi . ', abonnement démarré.');
-    aled08e_stripe_mail_owner('Réception réglée : commande ' . $c['ref'], 'Commande ' . $c['ref'] . ' (' . aled08e_cmd_nom($c) . ') : ' . $quoi . ". Le forfait a démarré.\n\nFiche : " . aled08e_cmd_admin_url($cid) . "\n");
+    aled08e_stripe_mail_owner('Réception réglée : commande ' . $c['ref'], 'Commande ' . $c['ref'] . ' (' . aled08e_cmd_nom($c) . ') : ' . $quoi . ". L’abonnement a démarré.\n\nFiche : " . aled08e_cmd_admin_url($cid) . "\n");
     return $c['ref'] . ' : réception réglée (' . $quoi . ')';
 }

@@ -224,12 +224,12 @@ function aled08e_cmd_recap_txt($c) {
     elseif ($c['domaine_mien']) $dom = $c['domaine'] . ' (le client l’a déjà)';
     else $dom = $c['domaine'] . ' (à réserver au nom du client)';
     $pay = 'acompte de ' . aled08e_euro_txt($m['acompte']) . ' à la commande, puis à la réception du site : '
-        . ($c['lissage'] ? 'le reste en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais, ' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois (engagement de ' . (int) $m['lissage_total_echeances'] . ' mois), avec le forfait' : 'le reste en une fois, ' . aled08e_euro_txt($m['solde']) . ', et le forfait démarre');
+        . ($c['lissage'] ? 'le reste en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais, ' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois (engagement de ' . (int) $m['lissage_total_echeances'] . ' mois), avec l’abonnement' : 'le reste en une fois, ' . aled08e_euro_txt($m['solde']) . ', et l’abonnement démarre');
     return 'Référence : ' . $c['ref'] . "\n"
         . 'Site : ' . ($type ? $type['label'] : $c['type']) . ', création ' . aled08e_euro_txt($m['creation']) . ($type ? ' (délai habituel : ' . $type['delai'] . ')' : '') . "\n"
         . 'Nom de domaine : ' . $dom . "\n"
-        . 'Forfait : ' . $f['name'] . ', ' . aled08e_euro_txt($m['mensuel_forfait']) . ' ' . $per . ($annee ? ' (' . (int) $D['moisOfferts'] . ' mois offerts)' : '') . "\n"
-        . 'Options : ' . ($opts ? implode(' ; ', $opts) : 'aucune') . "\n"
+        . 'Abonnement : ' . aled08e_euro_txt($m['mensuel_forfait']) . ' ' . $per . ($annee ? ' (' . (int) $D['moisOfferts'] . ' mois offerts)' : '') . "\n"
+        . 'Options et extras : ' . ($opts ? implode(' ; ', $opts) : 'aucun') . "\n"
         . 'Paiement de la création : ' . $pay . "\n"
         . 'Montant du jour de la commande : ' . aled08e_euro_txt($m['total_jour']) . "\n";
 }
@@ -472,7 +472,7 @@ function aled08e_cmd_parrainage_en_ligne($cmd) {
         if (aled08e_meta($cmd['user'], 'parrain') === '') update_user_meta($cmd['user'], 'aled08_parrain', aled08e_clean_code($cmd['parrain']));
     }
     $corps = 'Bonjour ' . aled08e_prenom($p) . ",\n\n"
-        . 'Bonne nouvelle : ' . $cmd['prenom'] . ' a créé son site grâce à vous. Vous recevez ' . aled08e_mois_txt($mois) . " de forfait offert, merci !\n\n"
+        . 'Bonne nouvelle : ' . $cmd['prenom'] . ' a créé son site grâce à vous. Vous recevez ' . aled08e_mois_txt($mois) . " d’abonnement offert, merci !\n\n"
         . "Vos parrainages sont dans votre espace client :\n" . aled08e_url() . "#parrainage\n\nÀ bientôt,\nAlex, et Lia\n";
     wp_mail($p->user_email, 'Votre parrainage : un mois offert', $corps, aled08e_mail_headers());
     aled08e_cmd_journal($cmd['id'], 'Parrainage : ' . aled08e_mois_txt($mois) . ' offert au parrain ' . $p->display_name . ' et au client.');
@@ -512,7 +512,7 @@ function aled08e_cmd_mail_client_payee($c) {
     $delai = aled08e_cmd_delai_type($c);
     $corps = 'Bonjour ' . $c['prenom'] . ",\n\n"
         . "Votre acompte est bien reçu, merci !\n"
-        . "Le reste se règle à la réception de votre site (en une fois, ou en plusieurs fois sans frais), et votre forfait démarre à ce moment-là.\n"
+        . "Le reste se règle à la réception de votre site (en une fois, ou en plusieurs fois sans frais), et votre abonnement démarre à ce moment-là.\n"
         . 'Référence de la commande : ' . $c['ref'] . "\n\n"
         . "Ce qui se passe maintenant :\n"
         . ($c['domaine'] && !$c['domaine_mien'] ? '1. Je réserve le nom de domaine ' . $c['domaine'] . " à votre nom.\n" : "1. Je prépare l’hébergement de votre site.\n")
@@ -541,7 +541,7 @@ function aled08e_cmd_mail_client_en_ligne($c) {
     $corps = 'Bonjour ' . $c['prenom'] . ",\n\n"
         . "Bonne nouvelle : votre site est en ligne !\n" . ($site ? 'Adresse : ' . $site . "\n" : '') . "\n"
         . ($soldeDu
-            ? 'À la réception, il reste ' . aled08e_euro_txt($solde) . ' pour la création. Vous choisissez : en une fois, ou en ' . implode(' ou ', (array) aled08e_data()['lissageDurees']) . " fois sans frais. Votre forfait démarre en même temps.\n"
+            ? 'À la réception, il reste ' . aled08e_euro_txt($solde) . ' pour la création. Vous choisissez : en une fois, ou en ' . implode(' ou ', (array) aled08e_data()['lissageDurees']) . " fois sans frais. Votre abonnement démarre en même temps.\n"
                 . (aled08e_stripe_ready()
                     ? "Tout se fait dans votre espace client, onglet « Ma commande » :\n" . aled08e_url() . "#commande\n\n"
                     : "Je vous envoie le lien de paiement dans un e-mail séparé.\n\n")

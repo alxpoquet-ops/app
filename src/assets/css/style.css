@@ -1,6 +1,6 @@
 /* ==========================================================================
    ALED08 : feuille de style
-   Pastel, arrondi, léger. Une couleur douce par rubrique, des petits monstres.
+   Pastel, arrondi, léger. Une couleur douce par rubrique, et Lia, la mascotte.
    ========================================================================== */
 
 @font-face { font-family: "Plus Jakarta Sans"; src: url("../fonts/jakarta-var.woff2") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }
@@ -116,7 +116,7 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 .btn[disabled] { opacity: .7; cursor: wait; transform: none; }
 .btn[aria-current] { --bs: #2E9C70; background: #6AD3A8; }
 
-/* ---------- petits monstres ---------- */
+/* ---------- Lia, la mascotte (classe .monster gardée pour le code) ---------- */
 .monster { display: block; width: 100%; height: auto; overflow: visible; }
 .js .monster .m-bob { animation: m-bob 3.4s ease-in-out infinite; }
 .js .monster .m-shadow { animation: m-shadow 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
@@ -1619,3 +1619,98 @@ div.tool { cursor: default; }
 /* Page Outils : un titre par famille d'outils */
 .tools-famille { margin: 34px 0 14px; font-size: 1.25rem; color: var(--ink); }
 .tools-famille:first-of-type { margin-top: 10px; }
+
+/* Lia, la mascotte chibi : la seconde main salue en miroir */
+.js .monster .m-wave-r { transform-origin: 10% 90%; animation-delay: -.5s; }
+
+/* ============================================================
+   L'offre unique : le site (500 €) + l'abonnement (10 € par mois)
+   ============================================================ */
+.offre { position: relative; max-width: 940px; margin: 0 auto; padding: 30px 26px 26px; border-radius: var(--radius-lg); background: var(--card); box-shadow: var(--shadow); }
+.offre-lia { position: absolute; top: -58px; right: 22px; width: 104px; pointer-events: none; }
+.offre-cols { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 16px; align-items: stretch; }
+.offre-col { display: flex; flex-direction: column; padding: 22px; border-radius: var(--radius); background: var(--c); }
+.offre-k { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-weight: 900; color: var(--c-dd); font-size: 1.05rem; }
+.offre-k span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--card); color: var(--c-dd); font-size: .95rem; }
+.offre-prix { margin: 0 0 4px; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.offre-prix b { font-size: 2.9rem; line-height: 1; font-weight: 900; color: var(--ink); }
+.offre-prix small { font-size: 1rem; font-weight: 800; color: var(--c-dd); }
+.offre-sous { margin: 0 0 14px; font-weight: 700; color: var(--c-dd); line-height: 1.4; }
+.offre-col .plan-list { margin-bottom: 0; }
+.offre-col .plan-list li { color: var(--ink); }
+.offre-col .plan-list .ico { background: var(--card); }
+.offre-plus { align-self: center; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--butter); color: var(--butter-dd); font-size: 1.7rem; font-weight: 900; }
+.offre-options { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0 0; padding: 14px 16px; border-radius: 18px; background: var(--soft); color: var(--text); font-weight: 600; line-height: 1.5; }
+.offre-options .ico { flex: none; margin-top: 3px; color: var(--lilac-dd); }
+.offre-options b { color: var(--ink); white-space: nowrap; }
+.offre-go { margin: 20px 0 0; text-align: center; }
+.type-plus { align-self: center; padding: 3px 10px; border-radius: 999px; background: var(--card); color: var(--c-dd); font-style: normal; font-weight: 900; font-size: .95rem; white-space: nowrap; }
+
+/* Pourquoi c'est moins cher : deux barres, à l'échelle */
+.eco { max-width: 760px; margin: 28px auto 0; padding: 24px 26px; border-radius: var(--radius-lg); background: var(--mint); color: var(--mint-dd); }
+.eco h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; color: var(--ink); }
+.eco h3 .ico { flex: none; color: var(--mint-dd); }
+.eco-barres { display: grid; gap: 10px; margin-bottom: 14px; }
+.eco-ligne { display: grid; grid-template-columns: minmax(0, 190px) minmax(0, 1fr) auto; gap: 12px; align-items: center; margin: 0; font-weight: 800; color: var(--ink); }
+.eco-ligne i { display: block; height: 18px; border-radius: 999px; background: var(--peach-d); justify-self: start; min-width: 18px; }
+.eco-ligne.is-nous i { background: var(--mint-d); }
+.eco-ligne b { white-space: nowrap; font-weight: 900; }
+.eco > p { margin: 0; font-weight: 600; line-height: 1.55; }
+.eco > p.eco-note { margin-top: 10px; font-weight: 500; font-size: .92rem; opacity: .9; }
+
+/* Configurateur : l'abonnement unique, et les deux listes d'options */
+.b-abo { display: flex; align-items: flex-start; gap: 14px; padding: 16px; margin-bottom: 12px; border-radius: 22px; background: var(--c); }
+.b-abo .b-art { width: 78px; flex: none; margin: 0; }
+.b-abo-txt { min-width: 0; display: grid; gap: 4px; }
+.b-abo-txt > strong { font-weight: 900; color: var(--ink); font-size: 1.05rem; }
+.b-abo-txt ul { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 4px; }
+.b-abo-txt li { display: flex; gap: 8px; align-items: flex-start; font-weight: 700; color: var(--c-dd); font-size: .93rem; }
+.b-abo-txt li .ico { flex: none; margin-top: 3px; }
+.b-step .b-label { padding: 0 12px; margin: 10px 0 8px; }
+.b-step .b-opts { padding-bottom: 6px; }
+.b-step .b-more { padding: 0 12px 10px; margin: 0; }
+.opt-group:nth-child(2) .opt-ico { background: var(--lilac); color: var(--lilac-dd); }
+.opt-price { white-space: nowrap; font-weight: 900; color: var(--ink); }
+@media (max-width: 760px) {
+  .offre { padding: 26px 16px 18px; }
+  .offre-lia { width: 78px; top: -46px; right: 12px; }
+  .offre-cols { grid-template-columns: 1fr; }
+  .offre-plus { justify-self: center; }
+  .offre-prix b { font-size: 2.4rem; }
+  .eco { padding: 20px 16px; }
+  .eco-ligne { grid-template-columns: 1fr auto; }
+  .eco-ligne span { grid-column: 1 / -1; }
+  .b-abo { flex-direction: column; align-items: center; text-align: left; }
+  .opt-groups { grid-template-columns: 1fr; }
+}
+
+/* ---------- Lia flottante : elle suit le visiteur sur toutes les pages ---------- */
+.lia-flot { position: fixed; right: max(14px, env(safe-area-inset-right)); bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 88; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; pointer-events: none; }
+.lia-flot[hidden] { display: none; }
+.lia-flot > * { pointer-events: auto; }
+.lia-flot-btn { position: relative; width: 66px; height: 66px; padding: 0; border: 0; border-radius: 50%; background: var(--card); box-shadow: 0 0 0 3px var(--pink-d), 0 12px 26px -10px rgba(46, 42, 71, .55); cursor: pointer; display: grid; place-items: center; transition: transform .18s; -webkit-tap-highlight-color: transparent; }
+.lia-flot-btn:hover { transform: translateY(-2px) scale(1.05); }
+.lia-flot-btn:focus-visible { outline: 3px solid var(--lilac-d); outline-offset: 3px; }
+.lia-flot-btn .monster { width: 60px; height: 60px; margin-top: 2px; }
+.lia-flot-btn .m-shadow { display: none; }
+.lia-flot-coucou { margin: 0; max-width: 220px; padding: 9px 14px; border-radius: 16px 16px 4px 16px; background: var(--card); color: var(--ink); font-weight: 800; font-size: .88rem; line-height: 1.35; box-shadow: 0 0 0 2px var(--pink), var(--shadow-sm); cursor: pointer; animation: lia-pop .35s ease-out both; }
+.lia-flot.is-open .lia-flot-coucou { display: none; }
+.lia-flot-panel { position: relative; width: min(310px, calc(100vw - 28px)); padding: 18px 18px 16px; border-radius: 22px 22px 6px 22px; background: var(--card); color: var(--text); box-shadow: 0 0 0 3px var(--pink), 0 22px 44px -18px rgba(46, 42, 71, .6); animation: lia-pop .22s ease-out both; }
+.lia-flot-panel[hidden] { display: none; }
+.lia-flot-titre { margin: 0 34px 6px 0; color: var(--ink); font-weight: 900; font-size: 1.05rem; line-height: 1.25; }
+.lia-flot-msg { margin: 0 0 12px; font-size: .93rem; line-height: 1.5; }
+.lia-flot-liens { display: grid; gap: 7px; }
+.lia-flot-liens[hidden] { display: none; }
+.lia-flot-liens a, .lia-flot-liens button { display: flex; align-items: center; gap: 9px; width: 100%; min-height: 44px; padding: 8px 14px; border: 0; border-radius: 14px; background: var(--soft); color: var(--ink); font: inherit; font-weight: 800; font-size: .93rem; text-align: left; text-decoration: none; cursor: pointer; transition: background .15s; }
+.lia-flot-liens a:hover, .lia-flot-liens button:hover { background: var(--pink); }
+.lia-flot-liens .ico { flex: none; width: 18px; height: 18px; color: var(--pink-d); }
+.lia-flot-fermer { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: var(--soft); color: var(--ink); cursor: pointer; display: grid; place-items: center; }
+.lia-flot-fermer .ico { width: 16px; height: 16px; }
+@keyframes lia-pop { from { opacity: 0; transform: translateY(8px) scale(.96); } }
+@media (max-width: 720px) {
+  .lia-flot-btn { width: 58px; height: 58px; }
+  .lia-flot-btn .monster { width: 53px; height: 53px; }
+  body:has(.mobile-bar) .lia-flot, body:has(.b-bar) .lia-flot { bottom: calc(82px + env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) { .lia-flot-coucou, .lia-flot-panel { animation: none; } }
+@media print { .lia-flot { display: none; } }

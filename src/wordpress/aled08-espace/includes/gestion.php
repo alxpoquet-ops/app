@@ -154,13 +154,13 @@ add_action('template_redirect', function () {
 
 /* ------------------------------------------------------------------ message de premier contact */
 function aled08e_prospect_message($nom, $activite, $ville) {
-    $t = aled08e_type('une-page');
-    $f = aled08e_forfait('chico');
+    $t = aled08e_type('vitrine');
+    $f = aled08e_forfait('base');
     $quoi = $activite ? 'votre activité de ' . mb_strtolower($activite) : 'votre activité';
     if ($ville) $quoi .= ' à ' . $ville;
     return "Bonjour,\n\n"
         . 'Je suis tombé sur ' . $quoi . " en cherchant sur internet, et j'ai vu que vous n'aviez pas encore de site.\n\n"
-        . 'Je crée des sites simples pour les indépendants : à partir de ' . aled08e_euro_txt($t ? $t['price'] : 250) . ', puis ' . aled08e_euro_txt($f['month']) . " par mois tout compris (hébergement, nom de domaine, mises à jour). Le prix est affiché avant de commander, et le forfait est sans engagement.\n\n"
+        . 'Je crée des sites simples pour les indépendants : ' . aled08e_euro_txt($t ? $t['price'] : 500) . ' le site, puis ' . aled08e_euro_txt($f['month']) . " par mois tout compris (hébergement, nom de domaine, mises à jour). Le prix est affiché avant de commander, et l’abonnement est sans engagement.\n\n"
         . "Si cela vous intéresse, tout est expliqué ici :\n" . home_url('/') . "\n\n"
         . "Et si ce n'est pas le moment, aucun souci : je ne vous relancerai pas.\n\n"
         . "Bonne journée,\nAlex, d'Alex & Lia\n";
@@ -326,7 +326,7 @@ function aled08e_gestion($u) {
                 $util = $f ? aled08e_count_month($c->ID, 'alex') + aled08e_count_month($c->ID, 'lia') : 0;
                 ?>
             <li class="ges-item" data-ges-text="<?php echo esc_attr(mb_strtolower($c->display_name . ' ' . $site . ' ' . $c->user_email)); ?>">
-              <div class="ges-head"><strong><?php echo esc_html($c->display_name); ?></strong><?php if ($f) : ?><em class="st st-done"><?php echo esc_html($f['name']); ?><?php echo aled08e_meta($c->ID, 'offert') === '1' ? ', offert' : ''; ?></em><?php else : ?><em class="st esp-st-off">Sans forfait</em><?php endif; ?></div>
+              <div class="ges-head"><strong><?php echo esc_html($c->display_name); ?></strong><?php if ($f) : ?><em class="st st-done"><?php echo esc_html($f['name']); ?><?php echo aled08e_meta($c->ID, 'offert') === '1' ? ', offert' : ''; ?></em><?php else : ?><em class="st esp-st-off">Sans abonnement</em><?php endif; ?></div>
               <p class="ges-meta"><?php if ($site) : ?><a href="<?php echo esc_url($site); ?>" target="_blank" rel="noopener"><?php echo esc_html(preg_replace('#^https?://(www\.)?#', '', untrailingslashit($site))); ?></a> · <?php endif; ?><?php if ($f) echo aled08e_famille($c->ID) ? 'modifications illimitées ∞ ♥ · ' : (int) $util . ' modification' . ($util > 1 ? 's' : '') . ' ce mois (Lia ' . (int) aled08e_jetons_user($c->ID, $f) . ', Alex ' . (int) $f['quota'] . ') · '; ?>client depuis le <?php echo esc_html(aled08e_date($c->user_registered)); ?></p>
               <div class="ges-actions">
                 <a class="btn btn-light btn-sm" href="mailto:<?php echo esc_attr($c->user_email); ?>"><?php echo aled08e_icon('mail'); // phpcs:ignore ?><span><?php echo esc_html($c->user_email); ?></span></a>
@@ -349,7 +349,7 @@ function aled08e_gestion($u) {
                 ?>
             <li class="ges-item">
               <div class="ges-head"><strong><?php echo esc_html(aled08e_cmd_nom($c)); ?></strong><em class="st <?php echo esc_attr($s[1]); ?>"><?php echo esc_html($s[0]); ?></em></div>
-              <p class="ges-meta"><?php echo esc_html($c['ref']); ?> · <?php echo esc_html($t ? $t['name'] : $c['type']); ?> · forfait <?php echo esc_html(aled08e_forfait($c['forfait'])['name']); ?><?php if ($c['domaine']) echo ' · ' . esc_html($c['domaine']); ?> · le <?php echo esc_html(aled08e_date($c['date'])); ?></p>
+              <p class="ges-meta"><?php echo esc_html($c['ref']); ?> · <?php echo esc_html($t ? $t['name'] : $c['type']); ?> · abonnement <?php echo esc_html(aled08e_euro_txt(aled08e_forfait($c['forfait'])['month'])); ?> par mois<?php if ($c['domaine']) echo ' · ' . esc_html($c['domaine']); ?> · le <?php echo esc_html(aled08e_date($c['date'])); ?></p>
               <p class="ges-meta">Création <?php echo aled08e_euro($c['montants']['creation']); // phpcs:ignore ?>, acompte <?php echo aled08e_euro($c['montants']['acompte']); // phpcs:ignore ?><?php if (aled08e_cmd_reception_due($c)) echo ', <b>reste ' . aled08e_euro($c['montants']['solde']) . ' à régler</b>'; // phpcs:ignore ?></p>
               <?php $ble = function_exists('aled08e_brief_le') ? aled08e_brief_le($c['id']) : ''; ?>
               <p class="ges-meta">Questionnaire : <?php echo $ble ? '<b>reçu le ' . esc_html(aled08e_date($ble)) . '</b>' : 'pas encore rempli'; // phpcs:ignore ?></p>

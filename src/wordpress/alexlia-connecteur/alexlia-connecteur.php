@@ -384,7 +384,7 @@ add_action('init', function () {
 
 
 /* =========================================================================
- *  Statistiques du site, pour le tableau de bord du client (forfait Titan)
+ *  Statistiques du site, pour le tableau de bord du client (extra « Chiffres détaillés »)
  *  Mesure d'audience sans cookie : chaque visiteur est compté par une empreinte
  *  anonyme (adresse IP + navigateur + sel du jour), jamais conservée en clair,
  *  et le sel change chaque jour. Aucune donnée personnelle n'est gardée.

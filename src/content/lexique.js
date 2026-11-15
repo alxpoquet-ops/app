@@ -2,10 +2,11 @@
 // Règles (scripts/check.js) : title de 70 caractères au plus, description de 110 à 165, aucun tiret long, pas de phrase de 9 mots ou plus reprise d'une autre page.
 const { types, forfaits, options } = require('../config');
 const T = (id) => types.find((t) => t.id === id);
-const F = (id) => forfaits.find((f) => f.id === id);
-const page = T('une-page'), vitrine = T('vitrine');
-const chico = F('chico'), power = F('power'), titan = F('titan');
-const mail = options.find((o) => o.id === 'mail');
+const O = (id) => options.find((o) => o.id === id);
+const page = T('une-page');
+// L'offre unique : un seul abonnement, et des extras au mois (SEO suivi, Chiffres détaillés, Adresse e-mail pro).
+const abo = forfaits[0];
+const seo = O('seo'), stats = O('stats'), mail = O('mail');
 
 const PUBLIE = '2026-11-15';
 
@@ -51,10 +52,10 @@ Une fleuriste prend un hébergement très bon marché pour son site. Tout va bie
 
 ## Chez Alex & Lia
 
-Je ne vous demande pas de chercher un hébergeur. Tous les [forfaits](/forfaits/) comprennent l'hébergement sur un serveur de qualité, et le forfait ${power.name} passe sur un serveur plus rapide. Vous n'avez ni facture à part ni réglage à faire. Pour comprendre ce qu'est la machine elle-même, lisez la définition du [serveur](/lexique/serveur-web/).`,
+Je ne vous demande pas de chercher un hébergeur. L'[abonnement](/tarifs/) comprend l'hébergement sur un serveur de qualité, quel que soit votre site. Vous n'avez ni facture à part ni réglage à faire. Pour comprendre ce qu'est la machine elle-même, lisez la définition du [serveur](/lexique/serveur-web/).`,
     faq: [
       { q: 'Peut-on avoir un site sans hébergement ?', a: 'Non. Un site doit être posé quelque part pour être visible. Certaines plateformes intègrent l’hébergement dans leur abonnement, mais il existe toujours, même quand on ne le voit pas.' },
-      { q: 'Combien coûte un hébergement ?', a: `Les prix varient beaucoup selon la puissance et le service. Chez moi, il est compris dans le forfait, à partir de ${chico.month} € par mois, qui couvre aussi votre nom de domaine et l’entretien du site.` },
+      { q: 'Combien coûte un hébergement ?', a: `Les prix varient beaucoup selon la puissance et le service. Chez moi, il est compris dans l’abonnement à ${abo.month} € par mois, qui couvre aussi votre nom de domaine et l’entretien du site.` },
       { q: 'Puis-je changer d’hébergeur plus tard ?', a: 'Oui. On copie les fichiers du site chez le nouvel hébergeur, puis on fait pointer le nom de domaine vers lui. Bien fait, le changement passe inaperçu pour vos visiteurs.' },
     ],
     voir: ['serveur-web', 'maintenance-site', 'sauvegarde-site'],
@@ -100,7 +101,7 @@ Un traiteur partage un serveur bas de gamme avec des centaines d'autres sites. U
 
 ## Chez Alex & Lia
 
-Je m'occupe du serveur pour vous. Avec le forfait ${chico.name}, votre site tourne sur une machine de qualité qui tient les pics de visites. Le forfait ${power.name} donne un serveur plus rapide, et le forfait ${titan.name} vous montre sa mémoire et sa charge heure par heure. Le détail est sur la page des [forfaits](/forfaits/).`,
+Je m'occupe du serveur pour vous. Avec l'abonnement, votre site tourne sur une machine de qualité qui tient les pics de visites. Et si vous êtes curieux de ce qui s'y passe, l'extra ${stats.name} vous montre vos visiteurs heure par heure. Le détail est sur la page des [tarifs](/tarifs/).`,
     faq: [
       { q: 'Où se trouve physiquement le serveur de mon site ?', a: 'Dans un centre de données, chez un hébergeur. Pour un site qui s’adresse à des clients en France, il vaut mieux un serveur situé en Europe : les pages arrivent plus vite et les règles sur les données sont plus claires.' },
       { q: 'Mon site peut-il tomber en panne si le serveur s’arrête ?', a: 'Oui, c’est pour ça qu’un serveur doit être surveillé et entretenu. Un bon hébergeur répare vite, et une sauvegarde récente permet de tout remettre en place.' },
@@ -146,7 +147,7 @@ Une couturière ouvre son site sur son téléphone pour le montrer à une client
 
 ## Chez Alex & Lia
 
-Le HTTPS est compris dans tous les [forfaits](/forfaits/), dès ${chico.name}. Je pose le certificat à la mise en ligne et il se renouvelle tout seul. Vous n'avez pas à y penser. Pour voir ce que contient le reste de l'entretien, lisez la page sur la [maintenance de site](/lexique/maintenance-site/).`,
+Le HTTPS est compris dans l'[abonnement](/tarifs/), pour chaque site. Je pose le certificat à la mise en ligne et il se renouvelle tout seul. Vous n'avez pas à y penser. Pour voir ce que contient le reste de l'entretien, lisez la page sur la [maintenance de site](/lexique/maintenance-site/).`,
     faq: [
       { q: 'Le certificat SSL est-il payant ?', a: 'Il existe des certificats gratuits, reconnus par tous les navigateurs, qui conviennent très bien à un site d’entreprise. Les certificats payants servent surtout aux très grandes structures. Ce qui compte, c’est qu’il soit posé correctement et renouvelé à temps.' },
       { q: 'Comment savoir si mon site est en HTTPS ?', a: 'Ouvrez-le et regardez la barre d’adresse. Un cadenas ou une icône de réglages à gauche de l’adresse veut dire que c’est bon. La mention « Non sécurisé » veut dire qu’il manque le certificat.' },
@@ -232,7 +233,7 @@ Une éleveuse de chèvres crée son site WordPress seule, un week-end, avec un t
 
 ## Chez Alex & Lia
 
-Que votre site soit sur WordPress ou non, la question pour vous reste la même : qui s'en occupe ? Avec un [forfait](/forfaits/), je fais les mises à jour des extensions pour vous et je surveille que tout tourne. Si vous hésitez entre faire seul ou déléguer, le guide [créer son site soi-même ou le faire faire](/guides/creer-son-site-soi-meme-ou-le-faire-faire/) vous aide à trancher.`,
+Que votre site soit sur WordPress ou non, la question pour vous reste la même : qui s'en occupe ? Avec l'[abonnement](/tarifs/), je fais les mises à jour des extensions pour vous et je surveille que tout tourne. Si vous hésitez entre faire seul ou déléguer, le guide [créer son site soi-même ou le faire faire](/guides/creer-son-site-soi-meme-ou-le-faire-faire/) vous aide à trancher.`,
     faq: [
       { q: 'WordPress est-il sûr ?', a: 'Oui, s’il est tenu à jour. La plupart des piratages viennent d’une version ancienne, d’une extension abandonnée ou d’un mot de passe trop simple, pas du logiciel lui-même.' },
       { q: 'Peut-on vendre en ligne avec WordPress ?', a: 'Oui, grâce à des extensions de commerce qui ajoutent un panier, le paiement par carte et la gestion des commandes. Il faut alors être encore plus attentif aux mises à jour et à la sécurité.' },
@@ -325,7 +326,7 @@ Un ostéopathe installe une extension de rendez-vous, une de galerie, une pour l
 
 ## Chez Alex & Lia
 
-Les mises à jour des extensions font partie de tous les [forfaits](/forfaits/). Je les fais pour vous et je vérifie que le site tient debout ensuite. Vous gardez un site léger, sans module inutile. Pour savoir comment on revient en arrière quand quelque chose casse, lisez la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+Les mises à jour des extensions font partie de l'[abonnement](/tarifs/). Je les fais pour vous et je vérifie que le site tient debout ensuite. Vous gardez un site léger, sans module inutile. Pour savoir comment on revient en arrière quand quelque chose casse, lisez la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'Combien d’extensions faut-il sur un site ?', a: 'Il n’y a pas de bon nombre. La règle est simple : uniquement celles dont vous avez besoin, chacune choisie avec soin. Un petit site bien fait en a souvent peu.' },
       { q: 'Les extensions gratuites sont-elles dangereuses ?', a: 'Pas forcément. Beaucoup sont excellentes et suivies par des équipes sérieuses. Le danger vient surtout des extensions plus mises à jour, gratuites ou payantes.' },
@@ -420,7 +421,7 @@ Une esthéticienne écrit sur son site « Bienvenue dans mon univers de douceur 
 
 ## Chez Alex & Lia
 
-Chaque site part avec les bases du SEO. Avec le forfait ${power.name}, je vais plus loin : je choisis avec vous les mots que tapent vos clients et je travaille votre site chaque mois pour l'aider à monter. Tout est expliqué sur la page [référencement SEO](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
+Chaque site part avec les bases du SEO. Avec l'extra ${seo.name}, à ${seo.price.month} € par mois, je vais plus loin : je choisis avec vous les mots que tapent vos clients et je travaille votre site chaque mois pour l'aider à monter. Tout est expliqué sur la page [référencement SEO](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
     faq: [
       { q: 'Quelle différence entre SEO et publicité Google ?', a: 'La publicité vous place en haut des résultats tant que vous payez chaque clic. Le SEO vise les résultats gratuits : il demande du travail au départ, mais ne s’arrête pas le jour où vous cessez de payer.' },
       { q: 'Au bout de combien de temps voit-on des effets ?', a: 'Cela dépend de votre métier, de votre ville et de la concurrence. Il faut en général compter plusieurs mois avant de juger. C’est un travail de fond, pas un interrupteur.' },
@@ -468,7 +469,7 @@ Un électricien a déménagé son atelier dans la commune voisine. Sur son site,
 
 ## Chez Alex & Lia
 
-Je suis installé dans les Ardennes et je travaille avec des entreprises de toute la France. Sur chaque site, je soigne la zone que vous couvrez, et avec le forfait ${power.name}, je suis votre visibilité locale chaque mois. Plus de détails sur la page [référencement SEO](/referencement-seo/).`,
+Je suis installé dans les Ardennes et je travaille avec des entreprises de toute la France. Sur chaque site, je soigne la zone que vous couvrez, et avec l'extra ${seo.name}, je suis votre visibilité locale chaque mois. Plus de détails sur la page [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Faut-il une adresse pour faire du référencement local ?', a: 'Une adresse aide, mais les entreprises qui se déplacent chez le client peuvent aussi définir une zone desservie sur leur fiche, sans afficher leur domicile.' },
       { q: 'Le site ou la fiche Google : lequel compte le plus ?', a: 'Les deux travaillent ensemble. La fiche vous place sur la carte, le site donne les détails et rassure. Une fiche qui renvoie vers un bon site est plus convaincante qu’une fiche seule.' },
@@ -516,7 +517,7 @@ Dans la [balise title](/lexique/balise-title/), dans le grand titre de la page, 
 
 ## Chez Alex & Lia
 
-Avec le forfait ${power.name}, le choix des mots-clés se fait ensemble : je vous propose les recherches qui comptent pour votre métier et votre zone, puis je les travaille page après page. La méthode complète est sur [référencement SEO](/referencement-seo/).`,
+Avec l'extra ${seo.name}, le choix des mots-clés se fait ensemble : je vous propose les recherches qui comptent pour votre métier et votre zone, puis je les travaille page après page. La méthode complète est sur [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de mots-clés par page ?', a: 'Une page doit viser un sujet principal, avec son mot-clé et quelques variantes proches. Si vous voulez couvrir un autre sujet, mieux vaut lui donner sa propre page.' },
       { q: 'Faut-il viser les mots-clés les plus recherchés ?', a: 'Pas forcément. Pour une petite entreprise, des expressions plus précises, avec votre ville ou un service particulier, attirent souvent des visiteurs plus prêts à vous contacter.' },
@@ -566,7 +567,7 @@ Un menuisier a cinq pages, et toutes portent le même title : « Accueil ». Dan
 
 ## Chez Alex & Lia
 
-J'écris le title de chaque page à la création, avec le bon [mot-clé](/lexique/mot-cle/) et votre nom. Il fait partie des bases du SEO comprises dès le forfait ${chico.name}. Pour la petite phrase qui s'affiche juste en dessous dans Google, voyez la [meta description](/lexique/meta-description/).`,
+J'écris le title de chaque page à la création, avec le bon [mot-clé](/lexique/mot-cle/) et votre nom. Il fait partie des bases du SEO, comprises pour chaque site. Pour la petite phrase qui s'affiche juste en dessous dans Google, voyez la [meta description](/lexique/meta-description/).`,
     faq: [
       { q: 'Le title et le titre de la page sont-ils la même chose ?', a: 'Pas tout à fait. Le title s’affiche dans Google et dans l’onglet, le grand titre s’affiche sur la page. Ils peuvent se ressembler, mais le title est souvent plus court et contient le nom de l’entreprise.' },
       { q: 'Changer un title peut-il changer ma place dans Google ?', a: 'Cela peut jouer, en bien ou en mal, et il faut quelques jours ou semaines pour que Google en tienne compte. Mieux vaut le modifier avec une raison claire, pas tous les quatre matins.' },
@@ -699,7 +700,7 @@ Pendant la fabrication d'un site, le prestataire ajoute une ligne qui interdit t
 
 ## Chez Alex & Lia
 
-Je règle le robots.txt à la mise en ligne de votre site, et je vérifie qu'il laisse bien passer Google sur les pages qui comptent. C'est une petite partie des bases du SEO comprises dans les [forfaits](/forfaits/). Pour la suite du parcours, lisez la page sur l'[indexation](/lexique/indexation/).`,
+Je règle le robots.txt à la mise en ligne de votre site, et je vérifie qu'il laisse bien passer Google sur les pages qui comptent. C'est une petite partie des bases du SEO comprises dans l'[abonnement](/tarifs/). Pour la suite du parcours, lisez la page sur l'[indexation](/lexique/indexation/).`,
     faq: [
       { q: 'Mon site doit-il avoir un fichier robots.txt ?', a: 'Ce n’est pas obligatoire : sans lui, les robots considèrent qu’ils peuvent tout visiter. En avoir un, bien réglé, permet d’indiquer le sitemap et d’écarter les zones inutiles.' },
       { q: 'Peut-on bloquer les robots des outils d’intelligence artificielle ?', a: 'Certains de ces robots respectent des consignes données dans le robots.txt, d’autres non. C’est un choix à faire selon votre activité, en sachant que le fichier reste une demande et non une barrière.' },
@@ -749,7 +750,7 @@ Tapez dans Google site: suivi de votre adresse, sans espace, par exemple site:vo
 
 ## Chez Alex & Lia
 
-À la mise en ligne, je déclare votre site à Google et je surveille que les pages importantes entrent bien dans l'index. Avec le forfait ${power.name}, ce suivi fait partie du travail de SEO de chaque mois, détaillé sur [référencement SEO](/referencement-seo/).`,
+À la mise en ligne, je déclare votre site à Google et je surveille que les pages importantes entrent bien dans l'index. Si vous prenez l'extra ${seo.name}, cette surveillance continue chaque mois, avec le reste du travail détaillé sur [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de temps faut-il pour qu’une page soit indexée ?', a: 'Cela varie de quelques jours à quelques semaines, selon la notoriété du site et la façon dont la page est reliée. Un sitemap déclaré et un lien depuis une page déjà connue aident à aller plus vite.' },
       { q: 'Peut-on demander à Google d’indexer une page ?', a: 'Oui, depuis la Search Console, avec l’outil d’inspection d’adresse. C’est une demande : Google reste libre de garder la page ou non.' },
@@ -802,7 +803,7 @@ Un apiculteur vend son miel sur les marchés. Il demande au site du marché de p
 
 ## Chez Alex & Lia
 
-Avec le forfait ${power.name}, j’écris aussi des pages qui pointent vers votre site et apportent une vraie information, jamais des pages creuses faites pour tromper Google. Je vous aide aussi à repérer les liens locaux qui ont du sens pour vous. La démarche complète est sur [référencement SEO](/referencement-seo/).`,
+Avec l’extra ${seo.name}, les liens font partie du travail de chaque mois : je vous aide à repérer les liens locaux qui ont du sens pour vous, jamais des liens achetés pour tromper Google. La démarche complète est sur [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Les liens depuis les réseaux sociaux comptent-ils ?', a: 'Ils amènent des visiteurs, ce qui est déjà bien, mais Google leur accorde en général peu de poids pour le classement. Ils restent utiles pour faire connaître votre site.' },
       { q: 'Un mauvais lien peut-il me faire du tort ?', a: 'Un lien isolé venant d’un site douteux n’a en général pas d’effet, Google sait l’ignorer. Le risque apparaît quand on cherche à tromper avec des liens achetés ou fabriqués en masse.' },
@@ -850,7 +851,7 @@ Un vendeur de bois de chauffage découvre dans la Search Console qu'il apparaît
 
 ## Chez Alex & Lia
 
-Je relie votre site à la Search Console dès la mise en ligne et je déclare le sitemap. Avec le forfait ${power.name}, je m'en sers chaque mois pour suivre vos recherches et ajuster vos pages. Voyez aussi la définition de l'[indexation](/lexique/indexation/), et la page [référencement SEO](/referencement-seo/) pour la méthode.`,
+Je relie votre site à la Search Console dès la mise en ligne et je déclare le sitemap. Avec l'extra ${seo.name}, je m'en sers chaque mois pour suivre vos recherches et ajuster vos pages. Voyez aussi la définition de l'[indexation](/lexique/indexation/), et la page [référencement SEO](/referencement-seo/) pour la méthode.`,
     faq: [
       { q: 'La Search Console est-elle payante ?', a: 'Non, elle est gratuite pour tous les propriétaires de sites. Il suffit d’un compte Google et de prouver que le site est à vous.' },
       { q: 'Quelle différence avec un outil de statistiques ?', a: 'La Search Console montre ce qui se passe dans Google avant le clic. Un outil de statistiques montre ce que font les visiteurs une fois sur votre site, d’où qu’ils viennent.' },
@@ -954,7 +955,7 @@ Un salon de toilettage distribue des cartes chez les vétérinaires du coin, ave
 
 ## Chez Alex & Lia
 
-Un site une page, à ${page.price} €, peut faire office de landing page pour lancer une activité ou un événement. Sur un site existant, une nouvelle page dédiée peut s'ajouter selon votre forfait. Les formules sont comparées sur [créer mon site](/creer-mon-site/). Le bouton qui fait agir est détaillé à la page [call to action](/lexique/call-to-action/).`,
+Un site une page, à ${page.price} €, peut faire office de landing page pour lancer une activité ou un événement. Sur un site existant, une nouvelle page dédiée s'ajoute sur un petit devis. Les types de site sont présentés sur [créer mon site](/creer-mon-site/). Le bouton qui fait agir est détaillé à la page [call to action](/lexique/call-to-action/).`,
     faq: [
       { q: 'Quelle différence entre landing page et page d’accueil ?', a: 'La page d’accueil présente toute l’entreprise et oriente vers le reste du site. La landing page parle d’une seule offre et vise une seule action.' },
       { q: 'Faut-il faire de la publicité pour avoir une landing page ?', a: 'Non. Elle peut aussi recevoir des visiteurs depuis un e-mail, un QR code, un post sur les réseaux ou une carte de visite. Ce qui compte, c’est qu’ils arrivent avec une attente précise.' },
@@ -1058,7 +1059,7 @@ Un photographe de mariage reçoit des messages du genre « Bonjour, c'est combie
 
 ## Chez Alex & Lia
 
-Chaque site que je livre a son formulaire, relié à votre messagerie, dès le forfait ${chico.name}. Je le teste avant la mise en ligne et il tourne sur une connexion protégée en HTTPS. Le détail est sur la page des [forfaits](/forfaits/). Les règles sur les données personnelles sont résumées à la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
+Chaque site que je livre a son formulaire, relié à votre messagerie. Je le teste avant la mise en ligne et il tourne sur une connexion protégée en HTTPS. Tout ce que comprend l'abonnement est listé sur la page des [tarifs](/tarifs/). Les règles sur les données personnelles sont résumées à la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
     faq: [
       { q: 'Où arrivent les messages du formulaire ?', a: 'Dans la boîte mail de votre choix. Il peut s’agir de votre adresse habituelle ou d’une adresse professionnelle à votre nom de domaine.' },
       { q: 'Pourquoi je reçois des messages publicitaires par mon formulaire ?', a: 'Des robots remplissent automatiquement les formulaires trouvés sur internet. Une protection bien réglée en bloque la plus grande partie, sans gêner vos vrais clients.' },
@@ -1207,7 +1208,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 ## Chez Alex & Lia
 
-C'est le cœur des [forfaits](/forfaits/). Dès ${chico.name}, à ${chico.month} € par mois, j'héberge votre site, je fais les mises à jour, je garde le HTTPS et je surveille que tout tourne. Vos modifications passent par l'espace client : Lia s'occupe des petites et moyennes en quelques minutes, et moi des plus grandes. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'héberge votre site, je fais les mises à jour, je garde le HTTPS et je surveille que tout tourne. Vos modifications passent par l'espace client : Lia s'occupe des petites et moyennes en quelques minutes, et moi des plus grandes. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'À quelle fréquence faut-il faire la maintenance ?', a: 'La surveillance doit être continue, et les mises à jour faites dès qu’elles sortent, surtout celles de sécurité. Les autres vérifications peuvent suivre un rythme régulier, par exemple chaque mois.' },
       { q: 'Puis-je faire la maintenance de mon site moi-même ?', a: 'C’est possible si vous avez le temps et les bases techniques. Le plus dur n’est pas de cliquer sur « mettre à jour », mais de savoir quoi faire quand une mise à jour casse quelque chose.' },
@@ -1258,7 +1259,7 @@ Une épicerie fine supprime par erreur la page de ses paniers garnis, la plus vi
 
 ## Chez Alex & Lia
 
-Les sauvegardes font partie de l'entretien compris dans les [forfaits](/forfaits/). Je m'en occupe pour vous, et je m'en sers si quelque chose doit être remis en place. Vous n'avez rien à programmer. Pour le reste de l'entretien, voyez la page [maintenance de site](/lexique/maintenance-site/).`,
+Les sauvegardes font partie de l'entretien compris dans l'[abonnement](/tarifs/). Je m'en occupe pour vous, et je m'en sers si quelque chose doit être remis en place. Vous n'avez rien à programmer. Pour le reste de l'entretien, voyez la page [maintenance de site](/lexique/maintenance-site/).`,
     faq: [
       { q: 'Combien de temps faut-il garder les sauvegardes ?', a: 'Assez longtemps pour revenir avant un problème qui serait passé inaperçu quelques jours. Garder plusieurs copies d’âges différents est plus sûr qu’une seule copie très récente.' },
       { q: 'Puis-je récupérer une copie de mon site ?', a: 'Oui. Votre site vous appartient : si vous changez de prestataire, je vous transmets ses fichiers.' },
@@ -1305,7 +1306,7 @@ Ouvrez votre site sur votre téléphone, en 4G plutôt qu'en wifi. C'est le test
 
 ## Chez Alex & Lia
 
-Je fais des sites légers : images allégées, peu de modules, code propre. Votre site tourne sur un serveur de qualité, et le forfait ${power.name} vous installe sur une machine encore plus véloce, qui encaisse mieux les pics. Les détails sont sur la page des [forfaits](/forfaits/). Pour comprendre le rôle de la machine, voyez la définition du [serveur web](/lexique/serveur-web/).`,
+Je fais des sites légers : images allégées, peu de modules, code propre. Votre site tourne sur un serveur de qualité, qui tient bon quand il y a du monde. L'hébergement fait partie de l'abonnement, décrit sur la page des [tarifs](/tarifs/). Pour comprendre le rôle de la machine, voyez la définition du [serveur web](/lexique/serveur-web/).`,
     faq: [
       { q: 'Quel est un bon temps de chargement ?', a: 'Le plus court possible. Une page dont le contenu principal apparaît en un clin d’œil sur téléphone donne une bonne impression. Au-delà de quelques secondes d’attente, beaucoup de visiteurs abandonnent.' },
       { q: 'Un site rapide sur mon ordinateur l’est-il aussi pour mes clients ?', a: 'Pas forcément. Votre ordinateur a peut-être déjà gardé les fichiers en mémoire et profite d’une bonne connexion. Testez depuis un téléphone, en données mobiles, et si possible depuis un autre appareil que le vôtre.' },
@@ -1347,7 +1348,7 @@ Un plaquiste répond aux demandes de devis depuis une adresse gratuite créée i
 
 ## Chez Alex & Lia
 
-L'adresse e-mail pro est une option, à ${mail.price.month} € par mois : une adresse à votre nom de domaine, sur votre téléphone et votre ordinateur. Je fais les réglages pour que vos messages arrivent bien. Elle s'ajoute à votre site sur la page [créer mon site](/creer-mon-site/) ou plus tard depuis votre espace client. Les messages de votre [formulaire de contact](/lexique/formulaire-de-contact/) peuvent y arriver directement.`,
+L'adresse e-mail pro est un extra de l'abonnement, à ${mail.price.month} € par mois : une adresse à votre nom de domaine, sur votre téléphone et votre ordinateur. Je fais les réglages pour que vos messages arrivent bien. Elle s'ajoute à votre site sur la page [créer mon site](/creer-mon-site/) ou plus tard depuis votre espace client, et elle se retire aussi simplement. Les messages de votre [formulaire de contact](/lexique/formulaire-de-contact/) peuvent y arriver directement.`,
     faq: [
       { q: 'Peut-on avoir plusieurs adresses avec le même nom de domaine ?', a: 'Oui, autant que nécessaire en général : une pour les contacts, une pour la facturation, une par personne. Chaque boîte peut avoir un coût selon le fournisseur.' },
       { q: 'Vais-je perdre mes anciens e-mails ?', a: 'Non. Vos anciens messages restent dans l’ancienne boîte. Vous pouvez aussi les transférer ou les garder en parallèle le temps de la transition.' },
@@ -1396,7 +1397,7 @@ Un loueur de vélos pense que ses clients sont surtout des touristes étrangers.
 
 ## Chez Alex & Lia
 
-Avec le forfait ${titan.name}, vous suivez votre site heure par heure : visiteurs, pages vues, appareils, provenance, et l'état du serveur. Chaque mois, un rapport explique simplement vos ventes, vos visites et vos chiffres. Tout est décrit sur la page des [forfaits](/forfaits/). Pour la partie qui se passe dans Google avant le clic, voyez la [Google Search Console](/lexique/google-search-console/).`,
+Avec l'extra ${stats.name}, à ${stats.price.month} € par mois, vous suivez votre site heure par heure : visiteurs, pages vues, provenance, ventes. Chaque mois, un rapport vous explique simplement ces chiffres. Tout est décrit sur la page des [tarifs](/tarifs/). Pour la partie qui se passe dans Google avant le clic, voyez la [Google Search Console](/lexique/google-search-console/).`,
     faq: [
       { q: 'Les statistiques de visite sont-elles compatibles avec le RGPD ?', a: 'Cela dépend de l’outil et de ses réglages. Certains peuvent fonctionner sans consentement s’ils restent limités à la mesure d’audience, d’autres demandent l’accord du visiteur. La CNIL publie des repères à ce sujet.' },
       { q: 'Quelle différence avec la Search Console ?', a: 'La Search Console parle de votre présence dans Google : recherches, affichages, clics. Les statistiques de visite montrent ce que font les gens une fois arrivés, qu’ils viennent de Google ou d’ailleurs.' },
@@ -1443,7 +1444,7 @@ Le [plan du site](/lexique/sitemap/) aide Google à trouver les pages, mais il n
 
 ## Chez Alex & Lia
 
-Sur un site vitrine, à ${vitrine.price} €, chaque page parle d'un sujet précis, et je les relie entre elles de façon logique. Avec le forfait ${power.name}, je continue ce travail chaque mois quand de nouvelles pages s'ajoutent. La méthode est expliquée sur [référencement SEO](/referencement-seo/).`,
+Sur un site vitrine, chaque page parle d'un sujet précis, et je les relie entre elles de façon logique. Avec l'extra ${seo.name}, je reprends ces liens chaque mois, à mesure que vos pages évoluent. La méthode est expliquée sur [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de liens internes mettre sur une page ?', a: 'Il n’y a pas de chiffre magique. Mettez ceux qui aident vraiment le lecteur à continuer. Sur une page de service, quelques liens bien placés suffisent en général.' },
       { q: 'Le menu compte-t-il comme lien interne ?', a: 'Oui. Les liens du menu et du pied de page sont des liens internes. Ceux placés dans le texte ont souvent plus de poids, parce qu’ils sont entourés de mots qui expliquent leur sujet.' },

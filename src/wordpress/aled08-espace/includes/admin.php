@@ -210,7 +210,7 @@ function aled08e_admin_tableau() {
  *  Liste des commandes : colonnes
  * ========================================================================= */
 add_filter('manage_' . ALED08E_CPT_CMD . '_posts_columns', function ($c) {
-    return ['cb' => $c['cb'] ?? '', 'aled08_ref' => 'Référence', 'aled08_client' => 'Client', 'aled08_site' => 'Site', 'aled08_forfait' => 'Forfait', 'aled08_jour' => 'Montant du jour', 'aled08_statut' => 'Statut', 'aled08_domaine' => 'Nom de domaine', 'date' => 'Date'];
+    return ['cb' => $c['cb'] ?? '', 'aled08_ref' => 'Référence', 'aled08_client' => 'Client', 'aled08_site' => 'Site', 'aled08_forfait' => 'Abonnement', 'aled08_jour' => 'Montant du jour', 'aled08_statut' => 'Statut', 'aled08_domaine' => 'Nom de domaine', 'date' => 'Date'];
 });
 add_action('manage_' . ALED08E_CPT_CMD . '_posts_custom_column', function ($col, $pid) {
     $c = aled08e_cmd_get($pid);
@@ -228,7 +228,7 @@ add_action('manage_' . ALED08E_CPT_CMD . '_posts_custom_column', function ($col,
             echo esc_html($t ? $t['label'] : $c['type']) . '<br><small>' . aled08e_euro($c['montants']['creation']) . '</small>';
             break;
         case 'aled08_forfait':
-            echo esc_html(aled08e_forfait($c['forfait'])['name']) . '<br><small>' . ($c['periode'] === 'annee' ? 'à l’année' : 'au mois') . ($c['options'] ? ', ' . esc_html(implode(', ', $c['options'])) : '') . '</small>';
+            echo esc_html(aled08e_euro_txt(aled08e_forfait($c['forfait'])['month'])) . ' par mois<br><small>' . ($c['periode'] === 'annee' ? 'payé à l’année' : 'payé au mois') . ($c['options'] ? ', ' . esc_html(implode(', ', $c['options'])) : '') . '</small>';
             break;
         case 'aled08_jour':
             echo '<strong>' . aled08e_euro($c['montants']['total_jour']) . '</strong>';
@@ -312,7 +312,7 @@ function aled08e_cmd_box_actions($post) {
     }
     if ($soldeDu && in_array($s, aled08e_cmd_statuts_payes(), true)) {
         echo aled08e_cmd_bouton($post->ID, 'solde_paye', 'Reste payé (hors Stripe)', 'button', 'Le solde de ' . aled08e_euro_txt($c['montants']['solde']) . ' a été payé autrement ?');
-        if ($stripe) echo aled08e_cmd_bouton($post->ID, 'lien_solde', 'Copier un lien de paiement du reste (en une fois, avec le forfait)');
+        if ($stripe) echo aled08e_cmd_bouton($post->ID, 'lien_solde', 'Copier un lien de paiement du reste (en une fois, avec l’abonnement)');
     }
     if ($c['user']) echo aled08e_cmd_bouton($post->ID, 'renvoyer_acces', 'Renvoyer l’e-mail d’accès à l’espace');
     if (aled08e_cpanel_ok() && $c['domaine'] && in_array($s, aled08e_cmd_statuts_en_cours(), true) && aled08e_hebergeur() !== 'cpanel') {
@@ -341,7 +341,7 @@ function aled08e_cmd_box_detail($post) {
     $row('Coordonnées', '<a href="mailto:' . esc_attr($c['email']) . '">' . esc_html($c['email']) . '</a> · ' . esc_html($c['telephone']) . '<br>' . esc_html($c['adresse'] . ', ' . $c['code_postal'] . ' ' . $c['ville']));
     $row('Site', esc_html($t ? $t['label'] : $c['type']) . ', création ' . aled08e_euro($m['creation']) . ($t ? ' (délai habituel : ' . esc_html($t['delai']) . ')' : ''));
     $row('Nom de domaine', $c['domaine'] ? '<strong>' . esc_html($c['domaine']) . '</strong> : ' . esc_html(aled08e_cmd_domaine_statuts()[$c['domaine_statut']] ?? $c['domaine_statut']) . ($c['domaine_mien'] ? ' (le client l’a déjà, il faudra pointer ses DNS)' : '') : '<em>à choisir avec le client</em>');
-    $row('Forfait', esc_html($f['name']) . ', ' . aled08e_euro($m['mensuel_forfait']) . ' ' . esc_html($per) . ($c['periode'] === 'annee' ? ' (' . (int) $D['moisOfferts'] . ' mois offerts)' : ''));
+    $row('Abonnement', aled08e_euro($m['mensuel_forfait']) . ' ' . esc_html($per) . ($c['periode'] === 'annee' ? ' (' . (int) $D['moisOfferts'] . ' mois offerts)' : ''));
     $row('Options', $opts ? esc_html(implode(', ', $opts)) . ($m['mensuel_options'] > 0 ? ', ' . aled08e_euro($m['mensuel_options']) . ' ' . esc_html($per) : '') . ($m['options_ponctuel'] > 0 ? ', ' . aled08e_euro($m['options_ponctuel']) . ' une fois' : '') : 'aucune');
     $row('Création', 'acompte ' . aled08e_euro($m['acompte']) . ' à la commande, puis à la réception : '
         . ($c['reception_payee']

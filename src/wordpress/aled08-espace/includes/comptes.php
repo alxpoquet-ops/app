@@ -63,11 +63,7 @@ function aled08e_compte_pour_commande($d) {
     $metas = [
         'forfait' => sanitize_key($d['forfait'] ?? ''),
         'paiement' => ($d['periode'] ?? 'mois') === 'annee' ? 'annee' : 'mois',
-        'mail' => in_array('mail', $options, true) ? '1' : '',
-        'stock' => in_array('stock', $options, true) ? '1' : '',
-        'comptes' => in_array('comptes', $options, true) ? '1' : '',
-        'liaplus' => in_array('liaplus', $options, true) ? '1' : '',
-        'illimite' => in_array('illimite', $options, true) ? '1' : '',
+    ] + aled08e_extras_metas($options) + [
         'site' => (!empty($d['domaine']) && empty($d['domaine_mien'])) ? 'https://' . $d['domaine'] : '',
     ];
 
@@ -111,11 +107,7 @@ function aled08e_compte_metas_commande($cmd) {
     $metas = [
         'forfait' => sanitize_key($cmd['forfait'] ?? ''),
         'paiement' => ($cmd['periode'] ?? 'mois') === 'annee' ? 'annee' : 'mois',
-        'mail' => in_array('mail', (array) ($cmd['options'] ?? []), true) ? '1' : '',
-        'stock' => in_array('stock', (array) ($cmd['options'] ?? []), true) ? '1' : '',
-        'comptes' => in_array('comptes', (array) ($cmd['options'] ?? []), true) ? '1' : '',
-        'liaplus' => in_array('liaplus', (array) ($cmd['options'] ?? []), true) ? '1' : '',
-        'illimite' => in_array('illimite', (array) ($cmd['options'] ?? []), true) ? '1' : '',
+    ] + aled08e_extras_metas((array) ($cmd['options'] ?? [])) + [
         'site' => (!empty($cmd['domaine']) && empty($cmd['domaine_mien'])) ? 'https://' . $cmd['domaine'] : '',
     ];
     foreach ($metas as $k => $v) {
@@ -222,7 +214,7 @@ function aled08e_comptes_nettoyage() {
         if (!$averti) {
             $date = wp_date('j F Y', aled08e_compte_date_suppression($u));
             $corps = 'Bonjour ' . aled08e_prenom($u) . ",\n\n"
-                . "Votre espace client Alex & Lia n’a pas été ouvert depuis près d’un an, et aucun forfait n’est en cours.\n"
+                . "Votre espace client Alex & Lia n’a pas été ouvert depuis près d’un an, et aucun abonnement n’est en cours.\n"
                 . "Sans connexion de votre part, votre compte et ses données seront supprimés le " . $date . ".\n\n"
                 . "Pour le garder, il suffit de vous connecter une fois :\n" . aled08e_url() . "\n\n"
                 . "Une question ? Répondez à cet e-mail.\n\nÀ bientôt,\nAlex, et Lia\n";

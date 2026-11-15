@@ -4,12 +4,17 @@ Ce guide explique, en français simple, comment fonctionne le site www.aled08.fr
 
 ## 1. L'offre, en bref
 
-- **Création à prix fixe** : une page 150 €, site vitrine 250 €, boutique en ligne 450 €. Page en plus : 40 €.
-- **Forfaits mensuels** : Chico 5 € (1 modification par mois), Power 20 € (SEO suivi, rapport mensuel, 1 modification par semaine), Titan 40 € (1 modification par jour ouvré, 1 article de blog par mois, réponse sous 24 heures). À l'année : 2 mois offerts (le client paie 10 mois).
-- **Paiement de la création** : soit un acompte de 30 % à la commande et le solde de 70 % à la mise en ligne, soit en 6 ou 12 fois sans frais (le forfait passe alors au mois), avec un engagement le temps du paiement. Sinon, aucun engagement.
-- **Options** : adresse e-mail pro 3 € par mois, traduction en anglais 50 € une fois.
-- **Parrainage** : 1 mois de forfait offert au parrain et au filleul quand le site du filleul est en ligne.
-- **Délai de réponse aux demandes** : sous 48 heures (Titan : 24 heures).
+- **Une seule offre** : le site à 500 €, quel que soit le site (une page ou plusieurs). Boutique en ligne : + 200 €.
+- **Un abonnement obligatoire, sans engagement** : 10 € par mois. Il comprend le nom de domaine, l'hébergement, les mises à jour, le suivi, le support, 100 Jetons Lia et une modification par Alex chaque mois. À l'année : 2 mois offerts (le client paie 10 mois).
+- **Paiement de la création** : 25 % à la commande. À la réception du site : le reste, en une fois ou en 6 ou 12 fois sans frais (l'abonnement se paie alors au mois), avec un engagement le temps du paiement. Sinon, aucun engagement.
+- **Options à la création** (payées une fois) : traduction en anglais, prise de rendez-vous, reprise de l'ancien site, cinq pages de plus. 100 € chacune.
+- **Extras au mois**, que le client ajoute ou retire lui-même dans « Abonnement et factures » : SEO suivi 10 €, Lia + 5 € (500 jetons de plus), chiffres détaillés 5 €, adresse e-mail pro 3 €, et pour une boutique gestion du stock 5 € et comptes clients 5 €.
+- **Boost** : une modification par Alex en plus dans le mois, 5 €.
+- **Parrainage** : 1 mois d'abonnement offert au parrain et au filleul quand le site du filleul est en ligne.
+- **Délai de réponse aux demandes** : sous 72 heures.
+- **Les anciens forfaits** (Chico, Power, Titan) n'existent plus. Un ancien client passe tout seul à l'abonnement : Power garde l'extra SEO suivi, Titan garde SEO suivi et chiffres détaillés. Son abonnement Stripe ne bouge pas tant qu'il ne change pas ses extras.
+
+Les repères de prix du marché et la comparaison des assistants IA sont dans `docs/prix-et-ia-2026.md`.
 
 Tous les prix viennent d'un seul fichier, `src/config.js`. Si un prix change, on relance `node build.js && python3 scripts/wp-export.py` et on réinstalle le thème et l'extension (voir la partie 12). L'extension lit ses prix dans son fichier `data.json`, fabriqué à ce moment-là.
 
@@ -31,7 +36,7 @@ Une pastille rouge sur le menu ALED08 indique le nombre de commandes à traiter.
 
 Le paiement en deux temps : le client paie 25 % de la création à la commande (plus les options payées une fois). À la réception du site (statut « En ligne »), il choisit dans son espace, onglet « Ma commande » : le reste en une fois, ou en 6 ou 12 fois sans frais (engagement le temps de payer). Le même paiement Stripe démarre son forfait et ses options. Sans Stripe, ou s'il paie autrement, bouton « Reste payé (hors Stripe) » dans la fiche ; « Copier un lien de paiement du reste » donne un lien valable 24 heures.
 
-Le client change de forfait et d'options quand il veut (onglet « Forfait et factures ») : l'abonnement Stripe est mis à jour, le nouveau prix s'applique à l'échéance suivante, et vous recevez un e-mail.
+Le client ajoute ou retire ses extras quand il veut (« Abonnement et factures », dans Mon compte) : l'abonnement Stripe est mis à jour, le nouveau prix s'applique à l'échéance suivante, et vous recevez un e-mail.
 
 
 ### Ce qui se passe tout seul
@@ -142,7 +147,7 @@ Faites tout d'abord en **mode test** (clés `sk_test_` et webhook créé en mode
 
 ### 5.5 Comment Stripe facture une commande
 
-- **Un abonnement par commande** : la ligne du forfait (au mois ou à l'année), la ligne de l'option e-mail pro si elle est prise, et, si le client a choisi le lissage, une ligne « Création du site, en 6 fois sans frais » ou « en 12 fois » (prix divisé par 6 ou 12, arrondi au centime inférieur ; le forfait est alors au mois).
+- **Un abonnement par commande** : la ligne de l'abonnement (au mois ou à l'année), une ligne par extra pris, et, si le client a choisi le lissage, une ligne « Création du site, en 6 fois sans frais » ou « en 12 fois » (prix divisé par 6 ou 12, arrondi au centime inférieur ; le forfait est alors au mois).
 - **Sans lissage** : l'acompte de 30 % et la traduction éventuelle sont facturés une seule fois, sur la première facture. Le solde de 70 % est demandé à la mise en ligne (bouton dans l'espace client, ou lien copié depuis la fiche).
 - **Fin du paiement en plusieurs fois** : l'extension compte les mensualités payées (« Lissage : 4 / 12 payées » dans la fiche et le tableau de bord). Après la dernière (6e ou 12e), la ligne « Création du site » est retirée de l'abonnement Stripe automatiquement : il ne reste que le forfait, sans engagement.
 - Les factures Stripe apparaissent dans l'espace client dès qu'elles sont payées.
@@ -181,14 +186,14 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 
 - Le client écrit sa demande (avec une photo s'il veut) dans « Mes demandes ». Vous recevez un e-mail avec un lien direct.
 - Dans Alex & Lia › Demandes clients, vous changez le statut : Reçue, En cours, Faite, avec un message facultatif affiché chez le client. En passant à « Faite », le client reçoit un e-mail.
-- Un seul compteur par mois, Lia et Alex confondus : Chico 1, Power 4, Titan 20 (une par jour ouvré). Le client choisit qui fait chaque modification. Au-delà, la demande part quand même et est marquée « hors forfait » : vous dites au client si elle attend le mois prochain ou si elle est facturée.
-- Délai de réponse annoncé pour Alex : 72 heures, 24 heures pour Titan. Lia : instantané, avec un aperçu à valider.
+- Deux compteurs par mois : les Jetons Lia (100 dans l'abonnement, 500 de plus avec Lia +) pour les modifications par Lia, et une modification par Alex. Le client choisit qui fait chaque modification. Au-delà, une modification par Alex part en « Boost » (5 €, ajouté à sa facture), avec son accord.
+- Délai de réponse annoncé pour Alex : 72 heures. Lia : instantané, avec un aperçu à valider.
 
 ### Lia, pour de vrai (Claude, d'Anthropic)
 
 Quand le client choisit « Lia, instantané », Lia prépare la modification toute seule, en tâche de fond, en une à deux minutes. Rien ne change encore sur le site : le client reçoit un e-mail, ouvre « Voir l’aperçu » (sa vraie page, avec un bandeau « Aperçu »), puis clique « Oui, mettre en ligne » ou « Non, ce n’est pas ça ». Oui : c’est mis en ligne et vous recevez « Lia a mis en ligne une modification à vérifier ». Non : la demande vous revient, avec son commentaire. L’aperçu reste valable 21 jours.
 
-Avec Alex, la réponse annoncée est sous 72 heures (24 heures pour Titan). Avec Chico, il y a une seule modification par mois, par Lia ou par Alex au choix du client.
+Avec Alex, la réponse annoncée est sous 72 heures, et l'abonnement comprend une modification par mois.
 
 Ce qu'elle sait faire : changer un texte (horaires, prix affiché, phrase), modifier le contenu ou le titre d'une page, publier une actualité, ajouter la photo jointe, changer le nom ou le slogan du site. Ce qu'elle ne fait jamais : supprimer, toucher aux extensions, au thème, aux comptes, aux prix d'une boutique, aux CGV ou mentions légales. Si la demande est floue ou risquée, elle ne touche à rien et vous la passe (e-mail « Lia vous passe une demande »). Le jeton n'est alors pas compté : la demande devient une modification d'Alex.
 
@@ -230,9 +235,9 @@ Quatre sont gratuits parce qu'ils tournent dans le navigateur du client : Annonc
 
 **Les règles du compteur** (`includes/jetons.php`) :
 
-- **Chaque forfait donne des jetons chaque mois** : Chico 100, Power 250, Titan 600 (`forfaits[].jetons` dans `src/config.js`). Ils reviennent le 1er et ne se reportent pas. L'option Lia + en ajoute 500.
-- **Seulement si le forfait court** : abonnement Stripe actif, ou case « Abonnement actif hors Stripe », ou « Forfait offert à vie », ou compte famille. Une commande pas encore payée ne donne aucun jeton. La fiche du client le dit quand c'est le cas.
-- **Un changement de forfait ou d'option en cours de mois** compte à partir du mois suivant, comme sa facture.
+- **L'abonnement donne 100 jetons chaque mois** (`forfaits[0].jetons` dans `src/config.js`). Ils reviennent le 1er et ne se reportent pas. L'extra Lia + en ajoute 500.
+- **Seulement si l'abonnement court** : abonnement Stripe actif, ou case « Abonnement actif hors Stripe », ou « Abonnement offert à vie », ou compte famille. Une commande pas encore payée ne donne aucun jeton. La fiche du client le dit quand c'est le cas.
+- **Un extra ajouté ou retiré en cours de mois** compte à partir du mois suivant, comme sa facture.
 - **Une modification par Lia** coûte 30 jetons, plus 1 par tranche de 10 mots écrits, plus 10 par photo (`jetonsLia.modif`). Le prix s'affiche pendant que le client écrit. Si Lia passe la demande à Alex, si la mise en ligne échoue, si le client refuse l'aperçu ou annule dans les 24 heures, les jetons sont rendus. Si Lia n'est pas reliée au site du client, la demande va à Alex, sans jeton.
 - **Un outil** a un prix fixe (`jetons`) : ce qu'il coûte chez Claude (`coutCts`, en centimes) × 4, arrondi au-dessus. Pour une modification, c'est × 2. Les jetons sont comptés au lancement et rendus si Lia ne rend rien d'utilisable (panne, réponse coupée, texte qui ne veut rien dire : Lia répond alors « STOP » avec ce qu'il faut donner).
 - **Garde-fous** : un seul outil à la fois par client, 40 essais par heure, longueur de la réponse bornée par le prix de l'outil, texte trop long refusé (jamais coupé), page lue seulement sur le site du client.

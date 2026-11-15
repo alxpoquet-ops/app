@@ -1,4 +1,4 @@
-// Les outils de Lia : dans l'espace client, dès le forfait Chico. Ils ne demandent qu'une chose : la clé Claude,
+// Les outils de Lia : dans l'espace client, compris dans l'abonnement. Ils ne demandent qu'une chose : la clé Claude,
 // réglée une fois dans la gestion. Aucun autre compte, aucun autre service.
 // Une seule définition, utilisée par la page « Outils », la Documentation et l'espace client (PHP, via data.json).
 //
@@ -405,6 +405,38 @@ const outils = [
     "imageMax": 1568
   },
   {
+    "id": "question",
+    "categorie": "site",
+    "icon": "circle-help",
+    "color": "pink",
+    "name": "Une question à Lia",
+    "court": "Posez votre question sur votre site, Google ou les réseaux. Lia répond simplement.",
+    "desc": "Vous écrivez votre question avec vos mots. Lia répond en quelques phrases simples, vous dit quoi faire en premier, et vous indique l’outil ou l’onglet de votre espace qui peut le faire. Pour changer votre site, passez par l’onglet Demandes.",
+    "coutCts": 1.5,
+    "jetons": 6,
+    "bouton": "Poser ma question",
+    "champs": [
+      {
+        "id": "question",
+        "label": "Votre question",
+        "kind": "texte_long",
+        "requis": true,
+        "max": 800,
+        "aide": "Par exemple : comment avoir plus d’avis Google ? Que mettre sur ma page d’accueil ?"
+      },
+      {
+        "id": "activite",
+        "label": "Votre activité",
+        "kind": "texte",
+        "prerempli": "activite",
+        "max": 200,
+        "aide": "Par exemple : fleuriste à Rethel. Lia adapte sa réponse."
+      }
+    ],
+    "consigne": "Tu réponds à la question d’un commerçant ou d’un indépendant sur son site internet, sa place dans Google, ses réseaux sociaux, ses avis ou sa façon de se faire connaître. Réponds avec des mots de tous les jours, sans jargon, en phrases courtes, comme à quelqu’un qui n’y connaît rien. Reste dans ce sujet : pour une question de droit, de comptabilité, d’impôts, de santé ou sans rapport avec son activité sur internet, écris un seul bloc « STOP » qui dit en une phrase que tu ne réponds pas à ce sujet et vers qui se tourner. Ne promets aucun résultat, aucune place dans Google, aucun chiffre de ventes. N’invente ni prix, ni loi, ni statistique. Tu ne vois pas son site : ne dis rien de précis sur ses pages, parle de ce qu’il peut vérifier lui-même. Quand c’est utile, cite un outil de son espace client Alex & Lia par son nom exact : {OUTILS}. Pour changer une page de son site, dis-lui de passer par l’onglet « Demandes » : Lia fait les petites modifications, Alex les grandes. Trois blocs, avec ces titres exacts. « Réponse » : la réponse directe, en 3 à 6 phrases. « À faire en premier » : une à trois actions concrètes, une par ligne, la plus utile d’abord. « Pour aller plus loin » : une ou deux phrases, avec l’outil ou l’onglet qui peut aider, ou rien d’autre à ajouter.",
+    "note": "Lia répond d’après ce qu’elle sait en général. Elle n’a pas regardé votre site : pour cela, l’outil « Conseils pour ma page »."
+  },
+  {
     "id": "conseilpage",
     "categorie": "site",
     "icon": "search-check",
@@ -512,5 +544,9 @@ const outils = [
     "local": true
   }
 ];
+
+// « Une question à Lia » cite les autres outils par leur nom exact : la liste se met à jour toute seule.
+const question = outils.find((o) => o.id === 'question');
+if (question) question.consigne = question.consigne.replace('{OUTILS}', outils.filter((o) => o.id !== 'question').map((o) => `« ${o.name} »`).join(', '));
 
 module.exports = { outils, RESEAUX, FAMILLES };

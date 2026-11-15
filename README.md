@@ -2,9 +2,11 @@
 
 Site d'**ALED08** : des sites internet à petit prix, pensés pour Google, avec un espace client pour les modifier grâce à l'IA.
 
-- **Création** : une page 150 €, vitrine 250 €, boutique 450 €, en une fois ou lissée sur 2 ans.
-- **Forfaits** : Chico 5 €/mois (hébergement, domaine, sauvegardes, mises à jour, 1 modification par mois), Power 20 €/mois (+ SEO, rapport mensuel, 1 modification par semaine). À l'année : 2 mois offerts.
-- **Options** : e-mail pro, traduction. Les modifications sont faites par moi, sur demande depuis l'espace client.
+- **Une seule offre** : le site à 500 €, quel que soit le site. Boutique en ligne : + 200 €. En une fois, ou en 6 ou 12 fois sans frais.
+- **Un abonnement obligatoire, sans engagement** : 10 € par mois (nom de domaine, hébergement, mises à jour, suivi, support, 100 Jetons Lia et une modification par Alex chaque mois). À l'année : 2 mois offerts.
+- **Options à la création** (une fois) : anglais, prise de rendez-vous, reprise de l'ancien site, cinq pages de plus, 100 € chacune.
+- **Extras au mois**, à ajouter ou retirer quand on veut : SEO suivi 10 €, Lia + 5 €, chiffres détaillés 5 €, e-mail pro 3 €, et pour une boutique gestion du stock 5 € et comptes clients 5 €.
+- **Lia**, la mascotte : une petite tête chibi aux cheveux roses (`src/lib/chibi.js`). Elle suit le visiteur sur toutes les pages.
 
 Site **statique**, rapide, sans base de données : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans `dist/`.
 
@@ -16,7 +18,7 @@ Site **statique**, rapide, sans base de données : un petit générateur Node.js
 |---|---|---|
 | Accueil | `/` | Promesse, types de site, forfaits, espace client, SEO, comparaison avec Shopify |
 | Créer mon site | `/creer-mon-site/` | **Configurateur** : type de site, nom de domaine vérifié en direct, forfait, au mois ou à l'année, options, récapitulatif |
-| Forfaits | `/forfaits/` | Entretien, Chico, Power, Titan (au mois ou à l'année), jetons IA, prix de création, options |
+| Tarifs | `/tarifs/` | L'offre unique : 500 € le site, 10 € par mois, les options, les extras, les Jetons Lia, la comparaison avec le marché |
 | Nos outils | `/nos-outils/` | Demandes de modification gérées par moi ; outils gratuits (tableau de bord, QR code, lien d'avis, factures) |
 | Mon espace (démo) | `/mon-espace/` | Démo : demandes et suivi, tableau de bord, QR code, lien d'avis, forfait et factures |
 | SEO | `/referencement-seo/` | Ce que je fais, le SEO dans chaque forfait, ce que je ne promets pas |
@@ -74,7 +76,8 @@ Le guide du propriétaire : `docs/gestion-du-site.md`.
 | `src/content/faq.js` | Questions fréquentes par rubrique (reprises sur `/faq/`) |
 | `src/content/legal.js` | Mentions légales, confidentialité, conditions générales |
 | `src/lib/components.js` | Cartes des forfaits, configurateur, maquettes de l'espace client, comparatif |
-| `src/lib/monsters.js` | Les petits monstres (SVG dessinés à la main) et le logo |
+| `src/lib/chibi.js` | Lia, la mascotte chibi (SVG dessiné à la main, cinq humeurs) |
+| `src/lib/monsters.js` | Le logo, et l'ancien nom `monster()` qui renvoie maintenant Lia |
 | `src/assets/css/style.css` | Le design (couleurs pastel dans `:root`) |
 | `src/assets/js/main.js` | Menu, au mois ou à l'année, configurateur, vérification du nom de domaine, formulaire |
 
@@ -86,7 +89,7 @@ scripts/check.js         contrôle qualité SEO et anti-duplication
 scripts/generate-images.js  image de partage et icônes
 scripts/add-icons.js     ajoute des icônes Lucide à src/lib/icons.js
 src/config.js            configuration et prix
-src/lib/                 gabarit, composants, monstres, icônes, mini-markdown
+src/lib/                 gabarit, composants, Lia (chibi), icônes, mini-markdown
 src/pages/main.js        les pages
 src/content/             FAQ et pages légales
 src/assets/              CSS, JS, police Nunito (OFL), images
@@ -99,4 +102,4 @@ docs/gestion-du-site.md  guide du propriétaire : commandes, Stripe, noms de dom
 docs/                    (autres fichiers : archives de l'ancienne activité d'électricien)
 ```
 
-Crédits : police Nunito (SIL Open Font License), icônes Lucide (ISC), pictogramme WhatsApp (Simple Icons, CC0). Les monstres sont des dessins originaux.
+Crédits : police Nunito (SIL Open Font License), icônes Lucide (ISC), pictogramme WhatsApp (Simple Icons, CC0). Lia, la mascotte, est un dessin original.

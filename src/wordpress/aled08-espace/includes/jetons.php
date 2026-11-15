@@ -184,7 +184,7 @@ add_action('template_redirect', function () {
     $ip = (int) $_POST['aled08e_jl_recharge'];
     $p = $packs[$ip] ?? null;
     if (!$p) $back(false, 'Cette recharge n’existe pas.');
-    if (!aled08e_jl_forfait_actif($uid)) $back(false, 'La recharge s’ouvre quand votre forfait a démarré.');
+    if (!aled08e_jl_forfait_actif($uid)) $back(false, 'La recharge s’ouvre quand votre abonnement a démarré.');
     if (get_transient('aled08_jl_rech_' . $uid)) $back(false, 'Une recharge vient d’être demandée. Attendez une minute avant la suivante.');
     set_transient('aled08_jl_rech_' . $uid, 1, MINUTE_IN_SECONDS); // posé avant Stripe : un double clic ne passe pas deux fois
     $mois = get_user_meta($uid, 'aled08_jl_rech_mois', true);
@@ -632,7 +632,7 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
         <?php else : ?>
         <strong><span data-jl-solde><?php echo (int) $e['solde']; ?></span> Jetons Lia</strong>
         <?php if (!$e['actif']) : ?>
-        <small>Vos Jetons Lia arrivent quand votre forfait démarre. Les outils gratuits marchent déjà. 1 jeton = 1 centime.</small>
+        <small>Vos Jetons Lia arrivent quand votre abonnement démarre. Les outils gratuits marchent déjà. 1 jeton = 1 centime.</small>
         <?php else : ?>
         <small><?php echo esc_html($f['name']); ?> : <?php echo (int) $e['mois']; ?> jetons chaque mois, remis à neuf le 1<sup>er</sup><?php echo $e['extra'] ? '. Dont ' . (int) $e['extra'] . ' de recharge, qui restent jusqu’à ce que vous les utilisiez' : ''; ?>. 1 jeton = 1 centime.</small>
         <?php endif; ?>
@@ -736,8 +736,8 @@ function aled08e_jl_profil($user) {
     $m = wp_date('Y-m');
     foreach (aled08e_jl_journal($user->ID) as $l) if (($l['m'] ?? '') === $m) { $cout += (float) ($l['c'] ?? 0); if (empty($l['rendu'])) $n += (int) $l['n']; }
     echo '<h2>Jetons Lia</h2><table class="form-table" role="presentation">';
-    echo '<tr><th>Ce mois-ci</th><td>' . (int) $e['reste'] . ' / ' . (int) $e['mois'] . ' jetons du forfait restants. ' . (int) $n . ' jetons comptés (' . esc_html(number_format($n / 100, 2, ',', ' ')) . ' €), pour ' . esc_html(number_format($cout / 100, 2, ',', ' ')) . ' € de Claude.</td></tr>';
-    if (!$e['actif']) echo '<tr><th>Forfait</th><td><strong>Pas encore démarré</strong> : ce client n’a aucun jeton du mois. Ils arrivent quand son abonnement Stripe est actif. S’il paie autrement, cochez « Abonnement actif hors Stripe » ; s’il ne paie pas, « Forfait offert à vie ».</td></tr>';
+    echo '<tr><th>Ce mois-ci</th><td>' . (int) $e['reste'] . ' / ' . (int) $e['mois'] . ' jetons de l’abonnement restants. ' . (int) $n . ' jetons comptés (' . esc_html(number_format($n / 100, 2, ',', ' ')) . ' €), pour ' . esc_html(number_format($cout / 100, 2, ',', ' ')) . ' € de Claude.</td></tr>';
+    if (!$e['actif']) echo '<tr><th>Abonnement</th><td><strong>Pas encore démarré</strong> : ce client n’a aucun jeton du mois. Ils arrivent quand son abonnement Stripe est actif. S’il paie autrement, cochez « Abonnement actif hors Stripe » ; s’il ne paie pas, « Abonnement offert à vie ».</td></tr>';
     echo '<tr><th><label for="aled08e-jl-extra">Jetons Lia en plus (recharge)</label></th><td><input type="number" min="0" step="1" id="aled08e-jl-extra" name="aled08e_jl_extra" value="' . (int) $e['extra'] . '" class="small-text"> <span class="description">Ils restent jusqu’à ce que le client les utilise.</span></td></tr>';
     echo '</table>';
 }
@@ -767,7 +767,7 @@ function aled08e_jl_bilan_html() {
     }
     $eur = function ($cts) { return esc_html(number_format($cts / 100, 2, ',', ' ')) . ' €'; };
     echo '<h2>Jetons Lia : le bilan du mois</h2>';
-    echo '<p>1 jeton = 1 centime. Règle : un outil est compté ' . esc_html(str_replace('.', ',', (string) aled08e_jl_cfg()['margeOutils'])) . ' fois ce qu’il coûte chez Claude, une modification par Lia ' . esc_html(str_replace('.', ',', (string) aled08e_jl_cfg()['margeLia'])) . ' fois. Les jetons compris dans les forfaits sont déjà payés par le forfait : la colonne « valeur » dit ce qu’ils représentent.</p>';
+    echo '<p>1 jeton = 1 centime. Règle : un outil est compté ' . esc_html(str_replace('.', ',', (string) aled08e_jl_cfg()['margeOutils'])) . ' fois ce qu’il coûte chez Claude, une modification par Lia ' . esc_html(str_replace('.', ',', (string) aled08e_jl_cfg()['margeLia'])) . ' fois. Les jetons compris dans l’abonnement sont déjà payés par l’abonnement : la colonne « valeur » dit ce qu’ils représentent.</p>';
     if (!$lignes) { echo '<p><em>Aucun jeton utilisé ce mois-ci.</em></p>'; return; }
     echo '<table class="widefat striped" style="max-width:760px"><thead><tr><th>Client</th><th>Utilisations</th><th>Jetons comptés</th><th>Valeur</th><th>Coût Claude</th><th>Reste</th></tr></thead><tbody>';
     foreach ($lignes as $l) echo '<tr><td>' . esc_html($l[0]) . '</td><td>' . (int) $l[1] . '</td><td>' . (int) $l[2] . '</td><td>' . $eur($l[2]) . '</td><td>' . $eur($l[3]) . '</td><td>' . $eur($l[2] - $l[3]) . '</td></tr>'; // phpcs:ignore

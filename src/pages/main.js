@@ -1,6 +1,7 @@
 // Pages du site
-const { site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, jetonsLia } = require('../config');
-const base = forfaits[0];
+const { site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, jetonsLia, boost, creation, marche } = require('../config');
+// L'offre unique : le site à prix unique (creation), un seul abonnement (forfaits[0]), des options et des extras (options).
+const ABO = forfaits[0];
 const { icon } = require('../lib/icons');
 const { monster } = require('../lib/monsters');
 const { md, inline, esc } = require('../lib/md');
@@ -13,6 +14,13 @@ const FAMILLES_OUTILS = require('../content/outils-lia').FAMILLES;
 // Prix d'un outil ou d'une modification, en Jetons Lia
 const jl = (n) => (n ? `${n} jeton${n > 1 ? 's' : ''}` : 'Gratuit');
 const JL_MODIF = `${jetonsLia.modif.base} jetons, plus 1 par tranche de ${jetonsLia.modif.mots} mots et ${jetonsLia.modif.image} par photo`;
+// Une modification par Lia coûte de 30 jetons (la base) à 65 (la plus grosse demande que Lia accepte : trois photos et leur légende).
+const JL_MODIF_FOURCHETTE = `${jetonsLia.modif.base} à 65`;
+// Ce que font les jetons de l'abonnement en un mois : des modifications par Lia, ou des utilisations d'outils.
+const JL_MODIFS_MOIS = '2 à 3';
+const JL_OUTILS_MOIS = 'une dizaine';
+// « 100 jetons pour 1 €, 500 pour 5 €, 1000 pour 10 € »
+const RECHARGES = jetonsLia.recharge.map((r, i) => `${r.jetons}${i ? '' : ' jetons'} pour ${r.prix} €`).join(', ');
 const GUIDES = require('../content/guides');
 const BRIEF = require('../content/brief');
 let LEXIQUE = { termes: [], PUBLIE: '' };
@@ -25,9 +33,14 @@ const HOME = { name: 'Accueil', path: '/' };
 const DEMO_CRUMBS = [HOME, { name: 'Mon espace', path: '/mon-espace/' }, { name: 'Démo', path: '/mon-espace/demo/' }];
 const crumb = (k) => [HOME, { name: sections[k].label, path: sections[k].path }];
 const euro = C.euro;
-const F = (id) => forfaits.find((f) => f.id === id);
 const T = (id) => types.find((t) => t.id === id);
+const O = (id) => options.find((o) => o.id === id);
 const round2 = (n) => Math.round(n * 100) / 100;
+// L'abonnement à l'année, et « une modification » (par Alex, chaque mois) écrit en toutes lettres
+const ABO_AN = C.year(ABO.month);
+const UNE_MODIF = ABO.quota === 1 ? 'une modification' : `${ABO.quota} modifications`;
+// Texte des appels à l'action de bas de page
+const CTA_TEXTE = 'Composez votre site en deux minutes. Vous voyez le prix tout de suite, et vous commandez quand vous êtes prêt.';
 // Champs cachés communs aux formulaires : horodatage anti-robot et champ piège.
 function formHidden() {
   return `<input type="hidden" name="_t" value=""><div class="hp" aria-hidden="true"><label>Site web <input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>`;
@@ -35,22 +48,30 @@ function formHidden() {
 
 // ====================================================================== ACCUEIL
 function home() {
+  const seo = O('seo');
   const pillars = [
     ['zap', 'Technique', 'Rapide, sécurisé, parfait sur téléphone.'],
     ['map-pin', 'Local', 'Fiche Google, avis, pages pour vos villes.'],
     ['pen-tool', 'Contenus', 'Des textes utiles, écrits pour vos clients.'],
-    ['chart-line', 'Suivi', 'Positions et visites, chaque mois.'],
+    ['chart-line', 'Suivi', 'Positions et visites chaque mois, avec l’extra SEO suivi.'],
+  ];
+  // Pourquoi le prix est bas : les quatre raisons, dites simplement
+  const raisons = [
+    ['sparkles', 'Lia fait le gros du travail', 'Notre IA monte les pages, écrit le code et propose les premiers textes en quelques heures. À la main, ce travail prend des semaines.'],
+    ['user-check', 'Alex vérifie tout à la main', 'Je relis chaque page, je teste le site sur téléphone et je corrige ce qu’il faut. Rien n’est mis en ligne sans ma vérification.'],
+    ['tag', 'Le prix est affiché', 'Il est écrit sur le site, et il est le même pour tous les clients. Vous n’attendez pas de devis.'],
+    ['piggy-bank', 'Vous payez le temps passé', 'Quelques heures pour Lia, une vraie relecture pour Alex. La différence de prix vient de là, et de nulle part ailleurs.'],
   ];
   const body = `<section class="hero">
   <div class="container hero-in">
     <div class="hero-text">
-      <h1>Votre site internet à partir de ${euro(T('une-page').price)}, <mark>tout compris</mark></h1>
-      <p class="hero-lead">Je crée votre site à prix fixe, puis on s’en occupe pour ${euro(base.month)} par mois : Lia, l’IA, modifie et met à jour votre site, et moi, Alex, je vérifie et je règle tout. Vous payez ${paiement.acompte} % à la commande, le reste à la réception, en une fois ou en ${C.lissageTxt} fois sans frais.</p>
-      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg btn-flaque')}${C.btn('/forfaits/', 'btn-light btn-lg', 'heart', 'Voir les forfaits')}</div>
+      <h1>Votre site internet à ${euro(creation.prix)}, <mark>le même prix pour tous</mark></h1>
+      <p class="hero-lead">Lia, notre IA, fait le gros du travail en quelques heures. Moi, Alex, je vérifie tout à la main. Votre site coûte ainsi ${marche.fois} fois moins cher qu’un site fait à la main. Ensuite, un seul abonnement s’occupe de tout : ${euro(ABO.month)} par mois, sans engagement.</p>
+      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg btn-flaque')}${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</div>
       <ul class="hero-points">
-        <li>${icon('check')}Prix de création fixe</li>
-        <li>${icon('check')}Dès ${euro(base.month)} par mois</li>
-        <li>${icon('check')}Forfait sans engagement</li>
+        <li>${icon('check')}${euro(creation.prix)} le site, une fois</li>
+        <li>${icon('check')}${euro(ABO.month)} par mois, sans engagement</li>
+        <li>${icon('check')}Prix affiché, sans devis</li>
       </ul>
     </div>
     <div class="hero-art">
@@ -62,39 +83,46 @@ function home() {
 </section>
 
 <section class="section"><div class="container">
-  <h2 class="section-title">Quel site vous faut-il ?</h2>
-  <p class="section-sub">Un prix de création fixe, et un délai annoncé pour chaque type de site.</p>
-  ${C.typeCards()}
+  <h2 class="section-title">Un seul prix, et rien de caché</h2>
+  <p class="section-sub">Vous payez votre site une fois. Ensuite, l’abonnement le garde en ligne, sûr et à jour.</p>
+  ${C.offre({ compact: true })}
+  <p class="center more">${C.btn(sections.forfaits.path, 'btn-light btn-flaque', 'arrow-right', 'Tout le détail des tarifs')}</p>
+</div></section>
+
+<section class="section section-soft c-mint"><div class="container">
+  <h2 class="section-title">Pourquoi c’est ${marche.fois} fois moins cher</h2>
+  <p class="section-sub">Un site vitrine fait à la main, par une agence ou un indépendant, coûte en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Le vôtre coûte ${euro(creation.prix)}, et voici pourquoi.</p>
+  <div class="feats">${raisons.map(([ic, t, d]) => `<div class="feat reveal">${icon(ic)}<h3>${t}</h3><p>${d}</p></div>`).join('')}</div>
+  <p class="center more">${C.btn(sections.methode.path, 'btn-light', 'sparkles', 'Ma méthode, sans rien cacher')}</p>
 </div></section>
 
 <section class="section"><div class="container">
+  <h2 class="section-title">Quel site vous faut-il ?</h2>
+  <p class="section-sub">Une page ou plusieurs, le prix ne change pas. Seule la boutique en ligne ajoute ${euro(creation.boutique)}.</p>
+  ${C.typeCards()}
+</div></section>
+
+<section class="section section-soft"><div class="container">
   <h2 class="section-title">Comment ça marche</h2>
   <p class="section-sub">Trois étapes, et rien de technique pour vous.</p>
   ${C.steps([
-    { t: 'Vous commandez en ligne', d: `Vous choisissez votre site et votre forfait. Vous réglez ${paiement.acompte} % du site, rien de plus.` },
-    { t: 'Je crée votre site', d: 'Je réserve votre nom de domaine et je vous écris sous 24 heures. Vous voyez l’aperçu, vous me dites ce qui change.' },
+    { t: 'Vous commandez en ligne', d: `Vous choisissez votre site et vos options. Vous réglez ${paiement.acompte} % du site, rien de plus.` },
+    { t: 'Lia et Alex créent votre site', d: 'Je réserve votre nom de domaine et je vous écris sous 24 heures. Lia prépare le site, je le vérifie, et vous voyez l’aperçu.' },
     { t: 'Vous demandez, on s’en occupe', d: 'Un horaire, un prix, une photo : demandez-le depuis votre espace client. Lia le fait en 5 minutes, ou Alex s’en charge, au choix.' },
   ])}
 </div></section>
 
-<section class="section section-soft c-mint"><div class="container split split-rev">
+<section class="section"><div class="container split split-rev">
   ${C.statsCard()}
   <div class="reveal">
     <p class="kicker c-mint">${icon('search-check')}Référencement</p>
     <h2>Le SEO, je maîtrise</h2>
     <p>Le SEO, c’est ce qui fait apparaître votre site sur Google quand quelqu’un cherche ce que vous faites.</p>
     <p class="seo-ex"><strong>Exemple :</strong> une personne tape « plombier Charleville » sur son téléphone. Si votre site est bien préparé, il sort dans les premiers résultats. Elle clique, elle vous appelle, et pas votre concurrent.</p>
-    <p>Pour ça, je prépare votre site dès la création : les bons mots dans les titres et les textes, un site rapide, une fiche Google. Avec le forfait Power, je le fais monter mois après mois.</p>
+    <p>Pour ça, je prépare votre site dès la création : les bons mots dans les titres et les textes, un site rapide, une fiche Google. Ces bases sont comprises. Avec l’extra ${seo.name}, à ${euro(seo.price.month)} par mois, je le fais monter mois après mois.</p>
     <ul class="pillars">${pillars.map(([ic, t, d]) => `<li>${icon(ic)}<span><strong>${t}</strong><small>${d}</small></span></li>`).join('')}</ul>
-    <p>${C.btn('/referencement-seo/', 'btn-light', 'search-check', 'Ma méthode SEO')}</p>
+    <p>${C.btn(sections.seo.path, 'btn-light', 'search-check', 'Ma méthode SEO')}</p>
   </div>
-</div></section>
-
-<section class="section"><div class="container">
-  <h2 class="section-title">Choisissez votre petit monstre</h2>
-  <p class="section-sub">Trois forfaits simples, au mois ou à l’année avec deux mois offerts.</p>
-  ${C.forfaitMinis()}
-  <p class="center more">${C.btn('/forfaits/', 'btn-light btn-flaque', 'arrow-right', 'Comparer les forfaits')}</p>
 </div></section>
 
 <section class="section section-soft c-sky"><div class="container split">
@@ -102,13 +130,14 @@ function home() {
     <p class="kicker c-sky">${icon('pencil')}Vos modifications</p>
     <h2>Vous demandez, Lia ou Alex s’en occupe</h2>
     <p>Une modification ? Envoyez votre demande depuis votre espace client, avec une photo si besoin, et choisissez qui la fait : Lia, en 5 minutes, ou Alex, à la main, pour ce qui demande un regard humain. Vous êtes prévenu quand c’est en ligne. Vous n’avez rien de technique à gérer.</p>
+    <p>Chaque mois, l’abonnement vous donne ${ABO.jetons} Jetons Lia, de quoi faire ${JL_MODIFS_MOIS} modifications avec Lia, et ${UNE_MODIF} par Alex.</p>
     <div class="hero-ctas">${C.btn(site.espaceClient.demo, 'btn-primary', 'circle-user', 'Essayer l’espace client')}</div>
   </div>
   ${C.phoneEdit()}
 </div></section>
 
 <section class="section"><div class="container duo">
-  <a class="promo c-pink reveal" href="/fidelite/">
+  <a class="promo c-pink reveal" href="${sections.fidelite.path}">
     <span class="promo-ico">${icon('gift')}</span>
     <span class="promo-text"><strong>Un mois offert en parrainant</strong><span>Pour vous et pour la personne que vous recommandez.</span></span>
     <span class="promo-go">${icon('arrow-right')}</span>
@@ -120,11 +149,11 @@ function home() {
   </a>
 </div></section>
 
-${C.ctaBand()}`;
+${C.ctaBand({ text: CTA_TEXTE })}`;
   return {
     path: '/',
-    title: `Création de site internet à partir de ${T('une-page').price} €, tout compris | Alex & Lia`,
-    description: `Votre site internet à prix fixe dès ${T('une-page').price} €, puis ${base.month} € par mois : hébergement, nom de domaine, mises à jour. Lia automatise, Alex vérifie.`,
+    title: `Site internet à ${creation.prix} €, puis ${ABO.month} € par mois | Alex & Lia`,
+    description: `Votre site internet pour ${creation.prix} €, le même prix pour tous, puis ${ABO.month} € par mois. Lia, notre IA, le crée, Alex vérifie tout : ${marche.fois} fois moins cher qu’à la main.`,
     crumbs: [HOME],
     body,
     priority: 1,
@@ -139,7 +168,7 @@ function creerPage() {
   const body = `${C.pageHero({
     section: 'creer',
     h1: 'Composez votre site en deux minutes',
-    lead: 'Choisissez votre site, votre nom de domaine et votre forfait. Vous voyez le prix tout de suite, et vous commandez en ligne quand vous êtes prêt.',
+    lead: `Choisissez votre site, votre nom de domaine et vos options. Le site coûte ${euro(creation.prix)}, l’abonnement ${euro(ABO.month)} par mois. Le total s’affiche tout de suite, et vous commandez en ligne quand vous êtes prêt.`,
     crumbs,
   })}
 <section class="section section-builder"><div class="container">${C.configurator()}</div></section>
@@ -147,21 +176,21 @@ function creerPage() {
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Et ensuite ?</h2>
   ${C.steps([
-    { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % de la création. Le reste et le forfait viennent à la réception du site.` },
+    { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % du site. Le reste et l’abonnement viennent à la réception.` },
     { t: 'Je réserve votre nom de domaine', d: 'Il est à votre nom. Je vous écris sous 24 heures avec les questions utiles pour démarrer.' },
-    { t: 'Je crée votre site', d: 'Vous recevez un aperçu. Vous me dites ce qui change, je corrige.' },
-    { t: 'C’est en ligne', d: 'Vous réglez le solde (sauf si le site est lissé). Vos modifications passent ensuite par votre espace client.' },
+    { t: 'Lia et moi créons votre site', d: 'Vous recevez un aperçu. Vous me dites ce qui change, je corrige.' },
+    { t: 'C’est en ligne', d: `Vous réglez le reste, en une fois ou en ${C.lissageTxt} fois sans frais. L’abonnement démarre, et vos modifications passent par votre espace client.` },
   ])}
 </div></section>
 
 ${f.html}`;
   return {
-    path: '/creer-mon-site/',
+    path: sections.creer.path,
     section: 'creer',
     bodyClass: 'page-creer',
     noMobileBar: true,
-    title: 'Créer mon site : prix, nom de domaine et forfait | Alex & Lia',
-    description: 'Choisissez votre type de site, vérifiez votre nom de domaine, prenez le forfait Chico, Power ou Titan et vos options. Le prix s’affiche tout de suite.',
+    title: 'Créer mon site : composez-le en deux minutes | Alex & Lia',
+    description: `Choisissez votre site, vérifiez votre nom de domaine, ajoutez vos options. Le site coûte ${creation.prix} €, l’abonnement ${ABO.month} € par mois. Le total s’affiche tout de suite.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -169,26 +198,29 @@ ${f.html}`;
   };
 }
 
-// ====================================================================== FORFAITS
+// ====================================================================== TARIFS (l'offre unique)
+// La fonction garde son nom : la rubrique s'appelle toujours « forfaits » dans config.js (sections.forfaits).
 function forfaitsPage() {
   const crumbs = crumb('forfaits');
-  const f = C.faq(FAQ.forfaits, 'Vos questions sur les forfaits', 'faq-forfaits');
+  const f = C.faq(FAQ.forfaits || FAQ.tarifs || [], 'Vos questions sur les tarifs', 'faq-tarifs');
+  const liaPlus = O('liaplus'), pages = O('pages');
   const body = `${C.pageHero({
     section: 'forfaits',
-    h1: 'Les forfaits : choisissez votre monstre',
-    lead: `Trois forfaits. Chico garde votre site en ligne et à jour. Power ajoute le SEO pour remonter sur Google, et un serveur plus rapide. Titan ajoute le retour de vos ventes. Chacun vous donne des Jetons Lia chaque mois : ${F('chico').jetons} avec Chico, ${F('power').jetons} avec Power, ${F('titan').jetons} avec Titan.`,
+    h1: `Tarifs : ${euro(creation.prix)} le site, puis ${euro(ABO.month)} par mois`,
+    lead: 'Un seul prix, le même pour tous, écrit noir sur blanc. Vous payez votre site une fois, puis un abonnement qui s’occupe de tout. Les options sont à part, et vous les choisissez.',
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
-  <h2 class="section-title">Trois forfaits, un monstre chacun</h2>
+  <h2 class="section-title">L’offre, en entier</h2>
+  <p class="section-sub">Le site se paie une fois. L’abonnement est obligatoire : sans nom de domaine, sans hébergement et sans mises à jour, un site ne tient pas longtemps.</p>
   ${C.billingSwitch()}
-  ${C.forfaitCards()}
-  ${C.payBox()}
+  ${C.offre()}
+  ${C.economie()}
 </div></section>
 
 <section class="section section-soft"><div class="container">
-  <h2 class="section-title">La création, à prix fixe</h2>
-  <p class="section-sub">${paiement.acompte} % à la commande. À la réception : le reste en une fois, ou en ${C.lissageTxt} fois sans frais, et le forfait démarre.</p>
+  <h2 class="section-title">Quel site, pour ce prix ?</h2>
+  <p class="section-sub">Une page, ou un site vitrine jusqu’à cinq pages : c’est ${euro(creation.prix)}. Avec une boutique en ligne, c’est ${euro(creation.prix + creation.boutique)}.</p>
   <div class="create-prices">${types
     .map(
       (t) => `<a class="create-price c-${t.color} reveal" href="${C.creerUrl({ type: t.id })}">
@@ -201,14 +233,41 @@ function forfaitsPage() {
     </a>`
     )
     .join('')}</div>
-  <p class="center small muted">Un site plus grand que ça ? C’est sur devis : <a href="/contact/">écrivez-nous</a>.</p>
+  <p class="center small muted">Un site plus grand ? L’option « ${esc(pages.name)} » coûte ${euro(pages.price.once)}. Au-delà, <a href="${C.contactUrl}">écrivez-nous</a>.</p>
 </div></section>
 
 <section class="section" id="options"><div class="container">
-  <h2 class="section-title">Les options</h2>
-  <p class="section-sub">À ajouter quand vous voulez, depuis votre espace client ou par message.</p>
+  <h2 class="section-title">Les options et les extras</h2>
+  <p class="section-sub">Une option se paie une fois, à la création. Un extra se paie au mois : vous l’ajoutez ou vous le retirez quand vous voulez, depuis votre espace client.</p>
   ${C.optionsCompact()}
-  <div class="boost-box reveal"><span class="opt-ico">${icon('zap')}</span><div><h3>Besoin de plus ? Lia + et le Boost</h3><p><strong>Lia +</strong> : 500 Jetons Lia en plus chaque mois, pour 5 € par mois. <strong>La recharge</strong> : 100 jetons pour 1 €, quand vous en avez besoin. <strong>Le Boost</strong> : une modification par Alex en plus, 1 €, confirmée à chaque fois et ajoutée à votre prochaine facture. Les Jetons Lia et les modifications par Alex sont comptés à part. Votre forfait vous les redonne chaque mois, et ce qui reste ne se reporte pas.</p></div></div>
+  <div class="boost-box reveal"><span class="opt-ico">${icon('zap')}</span><div><h3>Le Boost : Alex, une fois de plus</h3><p>L’abonnement comprend ${UNE_MODIF} par Alex chaque mois. Il vous en faut une autre ? C’est ${euro(boost.prix)}, à l’unité. Vous le confirmez à chaque fois, et il s’ajoute à votre prochaine facture.</p></div></div>
+</div></section>
+
+<section class="section section-soft" id="jetons"><div class="container container-narrow">
+  <p class="kicker c-butter">${icon('coins')}Jetons Lia</p>
+  <h2>Les Jetons Lia, en cinq lignes</h2>
+  <ul class="list-check">
+    <li><strong>Un jeton vaut un centime.</strong> Il paie ce que fait Lia : une modification de votre site, ou un outil de votre espace client.</li>
+    <li><strong>Une modification coûte ${JL_MODIF_FOURCHETTE} jetons.</strong> Le calcul : ${jetonsLia.modif.base} jetons, plus 1 par tranche de ${jetonsLia.modif.mots} mots dans votre demande, plus ${jetonsLia.modif.image} par photo.</li>
+    <li><strong>Un outil affiche son prix sur son bouton.</strong> Vous le voyez avant de cliquer.</li>
+    <li><strong>L’abonnement vous donne ${ABO.jetons} jetons par mois.</strong> Cela fait ${JL_MODIFS_MOIS} modifications par Lia, ou ${JL_OUTILS_MOIS} d’utilisations d’outils. Ils reviennent le 1<sup>er</sup> du mois, et le reste ne se reporte pas.</li>
+    <li><strong>Il vous en faut plus ?</strong> L’extra ${esc(liaPlus.name)} en ajoute ${jetonsLia.liaplus} chaque mois pour ${euro(liaPlus.price.month)}. Ou prenez une recharge : ${RECHARGES}.</li>
+  </ul>
+  <p>${C.btn(sections.espace.path + '#jetons', 'btn-light', 'coins', 'Le prix de chaque outil')}</p>
+</div></section>
+
+<section class="section"><div class="container">
+  <h2 class="section-title">Payer, et arrêter si vous le voulez</h2>
+  ${C.payBox()}
+  <div class="jetons-box reveal">
+    <h3>${icon('log-out')}Et si vous arrêtez ?</h3>
+    <ul class="list-check">
+      <li><strong>Vous arrêtez quand vous voulez</strong> : un message suffit, ou le bouton de votre espace client. L’abonnement se termine à la fin de la période déjà payée.</li>
+      <li><strong>Votre nom de domaine reste à vous</strong> : il est à votre nom, et vous le transférez où vous voulez.</li>
+      <li><strong>Vous repartez avec votre site</strong> : je vous remets ses fichiers, textes, images et pages, pour le faire héberger ailleurs. Notre hébergement s’arrête 30 jours après la fin de l’abonnement.</li>
+      <li><strong>La seule exception</strong> : si vous payez le reste du site en ${C.lissageTxt} fois, vous vous engagez le temps de ce paiement. Si vous partez avant, ce qui reste du prix du site est dû en une fois.</li>
+    </ul>
+  </div>
 </div></section>
 
 <section class="section section-soft"><div class="container duo">
@@ -217,20 +276,20 @@ function forfaitsPage() {
     <span class="promo-text"><strong>Et par rapport aux autres solutions ?</strong><span>Agence, freelance, plateforme : la comparaison, ligne par ligne.</span></span>
     <span class="promo-go">${icon('arrow-right')}</span>
   </a>
-  <a class="promo c-pink reveal" href="/fidelite/">
+  <a class="promo c-pink reveal" href="${sections.fidelite.path}">
     <span class="promo-ico">${icon('gift')}</span>
-    <span class="promo-text"><strong>Un mois offert en parrainant</strong><span>Pour vous et pour la personne que vous recommandez.</span></span>
+    <span class="promo-text"><strong>Parrainez, et gagnez un mois</strong><span>Un mois d’abonnement offert, pour vous comme pour votre filleul.</span></span>
     <span class="promo-go">${icon('arrow-right')}</span>
   </a>
 </div></section>
 
 ${f.html}
-${C.ctaBand({ title: 'Votre monstre est choisi ?', text: 'Composez votre site en deux minutes et commandez en ligne.' })}`;
+${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Composez votre site en deux minutes : le total s’affiche avant de commander.' })}`;
   return {
-    path: '/forfaits/',
+    path: sections.forfaits.path,
     section: 'forfaits',
-    title: 'Forfaits Chico, Power et Titan, dès 5 € par mois | Alex & Lia',
-    description: `Chico à ${F('chico').month} € par mois : hébergement, nom de domaine, mises à jour. Power à ${F('power').month} € : SEO et serveur rapide. Titan à ${F('titan').month} € : chiffres et ${F('titan').jetons} Jetons Lia chaque mois.`,
+    title: `Tarifs : ${creation.prix} € le site, ${ABO.month} € par mois | Alex & Lia`,
+    description: `Un seul prix : ${creation.prix} € le site, puis ${ABO.month} € par mois pour le nom de domaine, l’hébergement, les mises à jour et le support. Boutique en ligne : + ${creation.boutique} €. Sans devis.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -243,10 +302,17 @@ function outilsPage() {
   const crumbs = crumb('espace');
   const f = C.faq(FAQ.espace, 'Vos questions sur l’espace client', 'faq-outils');
   const pub = OUTILS_LIA.find((o) => o.id === 'publier');
+  const liaPlus = O('liaplus');
+  // D'où viennent les Jetons Lia : l'abonnement, l'extra Lia +, la recharge
+  const sources = [
+    ['pink', 'mascotte', 'L’abonnement', `${euro(ABO.month)} par mois`, ABO.jetons, 'Jetons Lia chaque mois'],
+    ['lilac', 'ravie', `L’extra ${liaPlus.name}`, `${euro(liaPlus.price.month)} par mois de plus`, `+ ${jetonsLia.liaplus}`, 'Jetons Lia chaque mois'],
+    ['butter', 'clin', 'La recharge', 'quand il vous en manque', jetonsLia.recharge[0].jetons, `jetons pour ${euro(jetonsLia.recharge[0].prix)}`],
+  ];
   const body = `${C.pageHero({
     section: 'espace',
     h1: 'Des outils simples pour vous faire connaître',
-    lead: `Corriger un texte, préparer une photo, publier sur vos réseaux, savoir quoi améliorer sur une page : Lia vous aide, et vous gardez la main. Les outils sont dans votre espace client, dès le forfait ${F('chico').name} à ${F('chico').month} € par mois.`,
+    lead: `Corriger un texte, préparer une photo, publier sur vos réseaux, savoir quoi améliorer sur une page : Lia vous aide, et vous gardez la main. Les outils sont dans votre espace client, compris dans l’abonnement à ${euro(ABO.month)} par mois.`,
     crumbs,
   })}
 ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez vos demandes par le formulaire de contact : on s’en occupe de la même façon.</span></p></div>`}
@@ -277,8 +343,8 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
 <section class="section" id="jetons"><div class="container container-narrow">
   <p class="kicker c-butter">${icon('coins')}Jetons Lia</p>
   <h2>Les Jetons Lia, c’est simple</h2>
-  <p><strong>1 Jeton Lia = 1 centime.</strong> Votre forfait vous en donne chaque mois. Ils paient tout ce que fait Lia : ses outils, et les modifications de votre site.</p>
-  <div class="quota-cards">${forfaits.map((x) => `<div class="quota-card c-${x.color} reveal"><span class="quota-art">${monster(x.id)}</span><h3>${x.name}<small>${x.month} € par mois</small></h3><p><b>${x.jetons}</b> Jetons Lia par mois</p></div>`).join('')}</div>
+  <p><strong>1 Jeton Lia = 1 centime.</strong> Votre abonnement vous en donne ${ABO.jetons} chaque mois. Ils paient tout ce que fait Lia : ses outils, et les modifications de votre site.</p>
+  <div class="quota-cards">${sources.map(([c, humeur, t, sous, n, quoi]) => `<div class="quota-card c-${c} reveal"><span class="quota-art">${monster(humeur)}</span><h3>${t}<small>${sous}</small></h3><p><b>${n}</b> ${quoi}</p></div>`).join('')}</div>
   <div class="doc-table-wrap reveal"><table class="doc-table jl-table">
     <thead><tr><th scope="col">Ce que fait Lia</th><th scope="col">Prix</th></tr></thead>
     <tbody>
@@ -289,7 +355,9 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
   <ul class="list-check">
     <li>Le prix est toujours affiché avant : pas de surprise.</li>
     <li>Si Lia n’arrive pas à répondre, ou si votre demande passe à Alex, vos jetons vous sont rendus.</li>
-    <li>Plus de jetons ? Prenez une recharge : ${jetonsLia.recharge.map((r) => `${r.prix} € les ${r.jetons}`).join(', ')}. Ou l’option Lia + : ${jetonsLia.liaplus} jetons de plus chaque mois.</li>
+    <li>Avec ${ABO.jetons} jetons, vous lancez ${JL_OUTILS_MOIS} d’outils dans le mois, ou vous faites ${JL_MODIFS_MOIS} modifications de votre site.</li>
+    <li>Plus de jetons ? Prenez une recharge : ${jetonsLia.recharge.map((r) => `${r.prix} € les ${r.jetons}`).join(', ')}. Ou l’extra ${liaPlus.name} : ${jetonsLia.liaplus} jetons de plus chaque mois.</li>
+    <li>Les jetons de l’abonnement reviennent le 1<sup>er</sup> du mois. Ceux d’une recharge restent jusqu’à ce que vous les utilisiez.</li>
   </ul>
 </div></section>
 
@@ -301,7 +369,8 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
       <li>Avec Lia : ${JL_MODIF}</li>
-      <li>Avec Alex : ${F('chico').quota} modification par mois avec ${F('chico').name}, ${F('power').quota} avec ${F('power').name} et ${F('titan').name}, sans jeton</li>
+      <li>Avec Alex : ${UNE_MODIF} par mois, comprise dans l’abonnement, sans jeton</li>
+      <li>Une de plus par Alex ? C’est le Boost, à ${euro(boost.prix)}</li>
     </ul>
   </div>
   ${C.phoneEdit(true)}
@@ -309,19 +378,19 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
 
 <section class="section"><div class="container">
   <h2 class="section-title">Aussi dans votre espace client</h2>
-  <p class="section-sub">Compris dans tous les forfaits.</p>
+  <p class="section-sub">Compris dans l’abonnement, sans jeton.</p>
   <div class="tools">${OUTILS.filter((t) => !['qr', 'avis'].includes(t.id)).map(
     (t) => `<a class="tool c-${t.color} reveal" href="${site.espaceClient.demo}?outil=${t.demo}"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${t.name}</strong><span>${t.desc}</span></span><span class="tool-tag c-mint">Compris</span></a>`
   ).join('')}</div>
 </div></section>
 
 ${f.html}
-${C.ctaBand({ title: 'Envie d’essayer les outils ?', text: 'Créez votre site : les outils et vos premiers Jetons Lia arrivent avec votre forfait.' })}`;
+${C.ctaBand({ title: 'Envie d’essayer les outils ?', text: 'Créez votre site : les outils et vos premiers Jetons Lia arrivent avec votre abonnement.' })}`;
   return {
     path: sections.espace.path,
     section: 'espace',
     title: 'Outils de Lia : textes, photos, réseaux et site | Alex & Lia',
-    description: 'Corriger ou traduire un texte, préparer une photo, publier sur vos réseaux, des conseils pour votre page : les outils de Lia, dès 5 € par mois.',
+    description: `Corriger ou traduire un texte, préparer une photo, publier sur vos réseaux : les outils de Lia sont compris dans l’abonnement, avec ${ABO.jetons} Jetons Lia par mois.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -333,10 +402,12 @@ ${C.ctaBand({ title: 'Envie d’essayer les outils ?', text: 'Créez votre site 
 function seoPage() {
   const crumbs = crumb('seo');
   const f = C.faq(FAQ.seo, 'Vos questions sur le SEO', 'faq-seo');
+  const seo = O('seo'), stats = O('stats');
+  // Ce qui est compris dans l'abonnement, et les deux extras qui vont plus loin : [couleur, humeur de Lia, titre, prix, liste]
   const levels = [
-    ['chico', 'Les bases', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Site déclaré dans Google Search Console']],
-    ['power', 'Le SEO suivi', ['Tout Chico', 'Je travaille chaque mois pour faire remonter votre site sur Google', 'Des pages utiles qui renvoient vers votre site', 'Serveur plus rapide : Google aime les sites rapides']],
-    ['titan', 'Les chiffres', ['Tout Power', 'Le retour de vos ventes et de vos chiffres chaque mois', `${F('titan').jetons} Jetons Lia et deux modifications par Alex`]],
+    ['pink', 'mascotte', 'Les bases', 'Comprises dans l’abonnement', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Site déclaré dans Google Search Console']],
+    ['butter', 'clin', seo.name, `Extra à ${euro(seo.price.month)} par mois`, ['Les bases, bien sûr', 'On choisit ensemble les mots que vos clients tapent', 'Je travaille vos pages chaque mois pour les faire monter sur Google', 'Je vous montre où vous en êtes']],
+    ['lilac', 'pense', stats.name, `Extra à ${euro(stats.price.month)} par mois`, ['Vos visiteurs, heure par heure', 'Les pages vues et la provenance des visites', 'Un rapport simple chaque mois']],
   ];
   const body = `${C.pageHero({
     section: 'seo',
@@ -381,7 +452,7 @@ Votre site peut garder **une seule page principale**, simple et claire, avec tou
     <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur téléphone, avec les balises et les données que Google sait lire.</p></div>
     <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand vos clients cherchent près de chez vous.</p></div>
     <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec l’IA et relus par moi.</p></div>
-    <div class="feat reveal">${icon('chart-line')}<h3>Le suivi, avec Power</h3><p>Positions, recherches, visites : je regarde ce qui marche et j’ajuste chaque mois pour faire remonter votre site.</p></div>
+    <div class="feat reveal">${icon('chart-line')}<h3>Le suivi, en extra</h3><p>Positions, recherches, visites : avec l’extra ${seo.name}, je regarde ce qui marche et j’ajuste chaque mois pour faire remonter votre site.</p></div>
   </div>
 </div></section>
 
@@ -404,12 +475,13 @@ Votre site peut garder **une seule page principale**, simple et claire, avec tou
 </div></section>
 
 <section class="section section-soft"><div class="container">
-  <h2 class="section-title">Le SEO dans chaque forfait</h2>
+  <h2 class="section-title">Ce qui est compris, et ce qui est en extra</h2>
   <div class="seo-levels">${levels
     .map(
-      ([id, t, list]) => `<div class="seo-level c-${F(id).color} reveal"><span class="seo-art">${monster(id)}</span><p class="seo-name">${F(id).name}<small>${t}</small></p><ul class="list-check">${list.map((x) => `<li>${inline(x)}</li>`).join('')}</ul></div>`
+      ([c, humeur, t, prix, list]) => `<div class="seo-level c-${c} reveal"><span class="seo-art">${monster(humeur)}</span><p class="seo-name">${esc(t)}<small>${prix}</small></p><ul class="list-check">${list.map((x) => `<li>${inline(x)}</li>`).join('')}</ul></div>`
     )
     .join('')}</div>
+  <p class="source">Un extra s’ajoute ou se retire quand vous voulez, depuis votre espace client. Tous les prix sont sur la page <a href="${sections.forfaits.path}#options">tarifs</a>.</p>
 </div></section>
 
 <section class="section"><div class="container container-narrow prose reveal">
@@ -423,12 +495,12 @@ Je ne publie pas des centaines de pages vides pour gonfler votre site : Google l
 </div></section>
 
 ${f.html}
-${C.ctaBand({ title: 'Être trouvé, ça commence ici', text: 'Créez votre site avec un forfait qui suit votre référencement.', mascot: 'chico' })}`;
+${C.ctaBand({ title: 'Être trouvé, ça commence ici', text: 'Créez votre site : les bases du SEO sont comprises, et le suivi s’ajoute quand vous voulez.', mascot: 'clin' })}`;
   return {
-    path: '/referencement-seo/',
+    path: sections.seo.path,
     section: 'seo',
     title: 'Référencement SEO : être trouvé sur Google | Alex & Lia',
-    description: 'Bases techniques, référencement local, contenus utiles et suivi chaque mois : comment je rends votre site visible sur Google, sans fausses promesses.',
+    description: `Bases du SEO comprises, référencement local, contenus utiles, et un suivi chaque mois en extra à ${seo.price.month} € : comment je rends votre site visible sur Google.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -444,17 +516,17 @@ function comparatifPage() {
     ['butter', 'building-2', 'L’agence web', 'Une équipe complète : chef de projet, graphiste, développeur. Idéale pour un gros projet avec un budget à la hauteur. Le prix et le délai dépendent du devis.'],
     ['sky', 'user', 'Le freelance', 'Une personne qui fait tout. La qualité dépend beaucoup de qui vous choisissez. Les modifications et le suivi se font souvent au devis, quand le freelance est disponible.'],
     ['lilac', 'mouse-pointer-click', 'La plateforme à faire soi-même', 'Vous construisez votre site à partir de modèles, pour un abonnement mensuel. C’est vous qui faites le travail, les mises à jour et le référencement.'],
-    ['mint', 'sparkles', 'Alex & Lia', 'Un prix juste et fixe, des modifications rapides. Lia, l’IA, modifie et met à jour votre site depuis votre espace client. Alex vérifie et règle tout. Pour les très gros projets, je vous oriente vers une agence.'],
+    ['mint', 'sparkles', 'Alex & Lia', `Un seul prix, ${euro(creation.prix)}, et des modifications rapides. Lia, l’IA, modifie et met à jour votre site depuis votre espace client. Alex vérifie et règle tout. Pour les très gros projets, je vous oriente vers une agence.`],
   ];
   const body = `${C.pageHero({
     section: 'comparatif',
     h1: 'Alex & Lia et les autres solutions',
-    lead: 'Agence web, freelance ou plateforme à faire soi-même : chaque solution a sa place. Chez Alex & Lia, deux choses comptent : des modifications rapides et un prix juste.',
+    lead: 'Agence web, freelance ou plateforme à faire soi-même : chaque solution a sa place. Chez Alex & Lia, deux choses comptent : des modifications rapides et un prix affiché, le même pour tous.',
     crumbs,
   })}
 <section class="section"><div class="container">
   ${C.comparatifTable()}
-  <p class="source">Les prix des autres solutions dépendent du prestataire et du projet : je ne les chiffre pas ici. Les prix Alex & Lia sont ceux de la page <a href="/forfaits/">forfaits</a>.</p>
+  <p class="source">Les prix des autres solutions dépendent du prestataire et du projet : le tableau ne les chiffre pas. Les prix Alex & Lia sont ceux de la page <a href="${sections.forfaits.path}">tarifs</a>.</p>
 </div></section>
 
 <section class="section section-soft"><div class="container">
@@ -467,11 +539,13 @@ function comparatifPage() {
 <section class="section"><div class="container container-narrow prose reveal">
   ${md(`## Des modifications rapides
 
-Un horaire, un prix, une actualité : Lia, l’IA, prépare le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui. Pour ce qui demande un regard humain, c’est Alex, sous 72 heures. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
+Un horaire, un prix, une actualité : Lia, l’IA, prépare le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui. Pour ce qui demande un regard humain, c’est Alex, sous ${delais.reponse}. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
 
-## Pourquoi mes prix sont plus bas
+## ${marche.fois} fois moins cher, et sans tour de magie
 
-J’utilise l’IA pour coder plus vite. Elle ne remplace pas un vrai développeur, mais pour un site vitrine ou une petite boutique, elle me fait gagner beaucoup d’heures. Ces heures en moins, c’est un prix en moins pour vous. Le détail est sur la page [ma méthode](/methode/).
+Un site vitrine commandé à une agence ou à un freelance coûte en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. C’est un ordre de grandeur, pas un devis : chaque prestataire a ses prix. Ici, un site vitrine coûte ${euro(creation.prix)}.
+
+La raison est simple. Pour un site vitrine ou une petite boutique, Lia fait en quelques heures un travail qui demande des semaines à la main. Alex contrôle le résultat, page par page. Ces semaines en moins, c’est le prix en moins. Le détail est sur la page [ma méthode](${sections.methode.path}).
 
 ## Ce que vous ne faites pas vous-même
 
@@ -488,7 +562,7 @@ ${C.ctaBand({ title: 'On regarde votre projet ?', text: 'Composez votre site en 
     path: sections.comparatif.path,
     section: 'comparatif',
     title: 'Comparatif : agence web, freelance, plateforme | Alex & Lia',
-    description: 'Agence web, freelance ou plateforme à faire soi-même : qui fait le travail, les prix, les délais, les modifications et le SEO, comparés simplement et honnêtement.',
+    description: 'Agence web, freelance ou plateforme à faire soi-même : qui fait le travail, les prix, les délais, les modifications et le SEO, comparés simplement.',
     crumbs,
     body,
     schema: [f.schema],
@@ -514,7 +588,7 @@ const ORDER_ERRORS = {
 function commanderPage() {
   const S = sections.commander;
   const crumbs = [HOME, { name: sections.creer.label, path: sections.creer.path }, { name: S.label, path: S.path }];
-  const t0 = T('vitrine'), f0 = F('power');
+  const t0 = T('vitrine'), f0 = ABO;
   const acompte0 = round2((t0.price * paiement.acompte) / 100);
   const today0 = acompte0;
   const field = (name, label, attrs, { req = true, hint = '' } = {}) =>
@@ -552,10 +626,10 @@ function commanderPage() {
         <p class="b-hint">Vous pouvez encore changer d’avis : les prix se mettent à jour.</p>
         <p class="b-label">Le type de site</p>
         ${C.typeChoices({ name: 'type' })}
-        <p class="b-label">Le forfait</p>
+        <p class="b-label">L’abonnement</p>
         ${C.forfaitChoices({ name: 'forfait' })}
-        <p class="b-label">Le forfait est payé</p>
-        <div class="b-seg" role="radiogroup" aria-label="Période du forfait">
+        <p class="b-label">L’abonnement est payé</p>
+        <div class="b-seg" role="radiogroup" aria-label="Période de l’abonnement">
           <label><input type="radio" name="periode" value="mois" checked><span>Au mois</span></label>
           <label><input type="radio" name="periode" value="annee"><span>À l’année <em>${annuel.moisOfferts} mois offerts</em></span></label>
         </div>
@@ -564,8 +638,8 @@ function commanderPage() {
           <label><input type="radio" name="lissage" value="" checked><span>En une fois</span></label>
           ${lissage.durees.map((n) => `<label><input type="radio" name="lissage" value="${n}"><span>En ${n} fois</span></label>`).join('')}
         </div>
-        <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Engagement le temps du paiement, et le forfait se paie au mois.</p>
-        <p class="b-label">Les options <span class="opt">(facultatif)</span></p>
+        <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Vous vous engagez le temps du paiement, et l’abonnement se règle alors chaque mois.</p>
+        <p class="b-label">Options et extras <span class="opt">(facultatif)</span></p>
         ${C.optionChoices({ name: 'options[]' })}
         </div>
       </fieldset>
@@ -573,7 +647,7 @@ function commanderPage() {
       <fieldset class="o-card">
         <legend><span class="b-n">${icon('globe')}</span><span class="b-t">Votre nom de domaine</span></legend>
         <div class="o-in">
-        <p class="b-hint">L’adresse de votre site. Elle est comprise dans le forfait et reste à votre nom. Je vérifie qu’elle est libre, puis je la réserve à la commande.</p>
+        <p class="b-hint">L’adresse de votre site. Elle est comprise dans l’abonnement et reste à votre nom. Je vérifie qu’elle est libre, puis je la réserve à la commande.</p>
         ${C.domainBox({ prefix: 'o', ownName: 'domaine_mien' })}
         </div>
       </fieldset>
@@ -612,9 +686,9 @@ function commanderPage() {
           <ul class="o-pay-lines" data-order-lines>
             <li><span>Acompte de ${paiement.acompte} % sur la création (${t0.label.toLowerCase()})</span><b>${euro(acompte0)}</b></li>
           </ul>
-          <p class="o-pay-next"><span data-order="next-label">À la réception : le reste, et le forfait</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month)}/mois</b></p>
-          <p class="o-pay-note" data-order-solde>À la réception de votre site, vous réglez le reste, <b data-order="solde">${euro(t0.price - acompte0)}</b>, et votre forfait démarre. Vous pourrez encore choisir de payer le reste en ${C.lissageTxt} fois.</p>
-          <p class="o-pay-note" data-order-lisse-note hidden>À la réception, le reste se paie en <span data-order="lisse-n">${C.LMAX}</span> fois sans frais : <b data-order="lisse">${euro(C.lisse(t0.price))}</b> par mois, avec le forfait. Ensuite, il ne reste que le forfait, sans engagement.</p>
+          <p class="o-pay-next"><span data-order="next-label">À la réception : le reste, et l’abonnement</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month)}/mois</b></p>
+          <p class="o-pay-note" data-order-solde>À la réception de votre site, vous réglez le reste, <b data-order="solde">${euro(t0.price - acompte0)}</b>, et votre abonnement démarre. Vous pourrez encore choisir de payer le reste en ${C.lissageTxt} fois.</p>
+          <p class="o-pay-note" data-order-lisse-note hidden>À la réception, le reste se paie en <span data-order="lisse-n">${C.LMAX}</span> fois sans frais : <b data-order="lisse">${euro(C.lisse(t0.price))}</b> par mois, avec l’abonnement. Ensuite, il ne reste que l’abonnement, sans engagement.</p>
         </div>
         <button class="btn btn-primary btn-lg btn-block btn-flaque" type="submit">${icon('lock')}<span>Commander et payer <b data-order="btn">${euro(today0)}</b></span></button>
         <p class="o-trust">${icon('shield-check')}<span>Paiement sécurisé par Stripe. Vous recevez vos factures par e-mail.</span></p>
@@ -628,15 +702,15 @@ function commanderPage() {
         <ul class="b-lines">
           <li><span data-order="type">${esc(t0.label)}</span><b data-order="type-price">${euro(t0.price)}</b></li>
           <li><span data-order="domain">Nom de domaine à choisir</span><b>inclus</b></li>
-          <li><span data-order="forfait">Forfait ${f0.name}</span><b data-order="forfait-price">${euro(f0.month)}/mois</b></li>
+          <li><span data-order="forfait">${esc(f0.name)}</span><b data-order="forfait-price">${euro(f0.month)}/mois</b></li>
           <li data-order-opts hidden><span data-order="opts-label">Options</span><b data-order="opts">0 €</b></li>
         </ul>
         <div class="b-total">
           <p><span>Aujourd’hui</span><b data-order="today">${euro(today0)}</b></p>
-          <p><span data-order="next-label">Ensuite, chaque mois</span><b data-order="next">${euro(f0.month)}</b></p>
+          <p><span data-order="next-label">À la réception : le reste, et l’abonnement</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month)}/mois</b></p>
           <p data-order-parrain hidden><span>Parrainage</span><b>${fidelite.parrainageMois} mois offert</b></p>
         </div>
-        <p class="b-sum-note">${icon('check')}Le forfait démarre à la commande : il couvre la réservation du nom de domaine et l’hébergement.</p>
+        <p class="b-sum-note">${icon('check')}L’abonnement démarre à la réception de votre site, pas avant. Le nom de domaine, lui, est réservé dès la commande.</p>
       </div>
       <div class="o-next reveal">
         <h2 class="h3">${icon('list-checks')}Ce qui se passe ensuite</h2>
@@ -653,7 +727,7 @@ function commanderPage() {
     noindex: true,
     noMobileBar: true,
     title: 'Votre commande | Alex & Lia',
-    description: 'Vérifiez votre site, votre forfait et vos options, donnez vos coordonnées et payez en ligne en toute sécurité. Je réserve votre nom de domaine et je vous écris sous 24 heures.',
+    description: 'Vérifiez votre site, l’abonnement et vos options, donnez vos coordonnées et payez en ligne en toute sécurité. Je réserve votre nom de domaine sans attendre.',
     crumbs,
     body,
   };
@@ -667,7 +741,7 @@ function confirmationPage() {
     section: 'confirmation',
     h1: 'Merci, votre commande est bien reçue !',
     lead: 'Je m’en occupe dès maintenant. Voici ce qui se passe ensuite.',
-    mascot: 'mascotte',
+    mascot: 'ravie',
   })}
 <section class="section"><div class="container container-narrow">
   <div class="confirm reveal">
@@ -676,7 +750,7 @@ function confirmationPage() {
     <p class="confirm-msg is-wait" data-confirm-wait hidden>${icon('hourglass')}<span>Je vous envoie le lien de paiement sous 24 heures. Votre commande est gardée : rien à faire de votre côté pour l’instant.</span></p>
     <h2 class="h3">Les prochaines étapes</h2>
     ${C.steps([
-      { t: 'Je réserve votre nom de domaine', d: 'Il est à votre nom, et compris dans le forfait.' },
+      { t: 'Je réserve votre nom de domaine', d: 'Il est à votre nom, et compris dans l’abonnement.' },
       { t: 'Je vous écris sous 24 heures', d: 'Pour poser les questions utiles et démarrer votre site.' },
       { t: 'Votre espace client arrive par e-mail', d: 'Vous y suivez votre commande et, ensuite, vos demandes de modification.' },
       { t: 'Votre site est en ligne', d: `Dans le délai de votre type de site : ${delaiList}.` },
@@ -700,9 +774,9 @@ function fidelitePage() {
   const crumbs = crumb('fidelite');
   const f = C.faq(FAQ.fidelite, 'Vos questions sur la fidélité', 'faq-fidelite');
   const perks = [
-    ['pink', 'users', 'Parrainage', `${fidelite.parrainageMois} mois offert pour vous deux`, 'Un proche fait créer son site grâce à vous : quand il est en ligne, vous recevez chacun un mois de forfait offert.'],
-    ['butter', 'badge-percent', 'Deuxième site', `${fidelite.remiseSecondSite} % sur la création`, 'Un deuxième site, une boutique en plus ? La création vous coûte moins cher.'],
-    ['mint', 'calendar-check', 'À l’année', `${annuel.moisOfferts} mois offerts`, 'En payant à l’année, d’un coup, vous ne payez que dix mois sur douze.'],
+    ['pink', 'users', 'Parrainage', `${fidelite.parrainageMois} mois offert pour vous deux`, `Un proche fait créer son site grâce à vous : quand il est en ligne, vous recevez chacun un mois d’abonnement offert, soit ${euro(ABO.month)}.`],
+    ['butter', 'badge-percent', 'Deuxième site', `${fidelite.remiseSecondSite} % sur la création`, `Un deuxième site ? Sa création coûte ${euro(creation.prix * (100 - fidelite.remiseSecondSite) / 100)} au lieu de ${euro(creation.prix)}. Pour une boutique en ligne, la remise est la même.`],
+    ['mint', 'calendar-check', 'À l’année', `${annuel.moisOfferts} mois offerts`, `En payant l’abonnement à l’année, vous réglez ${euro(ABO_AN)} au lieu de ${euro(ABO.month * 12)}.`],
   ];
   const body = `${C.pageHero({
     section: 'fidelite',
@@ -721,17 +795,17 @@ function fidelitePage() {
   ${C.steps([
     { t: 'Partagez votre lien', d: 'Votre lien et votre code de parrainage sont dans votre espace client, onglet Parrainage.' },
     { t: 'Il crée son site', d: 'Votre filleul passe par votre lien, ou donne votre code dans sa commande.' },
-    { t: 'Un mois offert chacun', d: 'Dès que son site est en ligne, vous recevez tous les deux un mois de forfait. Vous suivez vos filleuls dans votre espace.' },
+    { t: 'Un mois offert chacun', d: 'Dès que son site est en ligne, vous recevez tous les deux un mois d’abonnement. Vous suivez vos filleuls dans votre espace.' },
   ])}
 </div></section>
 
 ${f.html}
 ${C.ctaBand({ title: 'Quelqu’un a un projet autour de vous ?', text: 'Envoyez-lui le lien du site. Vous y gagnez tous les deux.' })}`;
   return {
-    path: '/fidelite/',
+    path: sections.fidelite.path,
     section: 'fidelite',
-    title: 'Fidélité et parrainage : un mois de forfait offert | Alex & Lia',
-    description: 'Parrainez un proche : vous recevez chacun un mois de forfait offert. 10 % de remise sur la création d’un deuxième site, et 2 mois offerts à l’année.',
+    title: 'Fidélité et parrainage : un mois offert | Alex & Lia',
+    description: `Parrainez un proche : vous recevez chacun un mois d’abonnement offert. ${fidelite.remiseSecondSite} % de remise sur la création d’un deuxième site, et ${annuel.moisOfferts} mois offerts à l’année.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -750,9 +824,13 @@ function methodePage() {
     crumbs,
   })}
 <section class="section"><div class="container container-narrow prose reveal">
-  ${md(`## Pourquoi mes prix sont plus bas
+  ${md(`## Pourquoi c’est ${marche.fois} fois moins cher
 
-Un site vitrine demande d’habitude de longues heures de travail : mise en page, code, textes, tests. Avec l’IA, une bonne partie de ce travail va beaucoup plus vite. Je passe moins d’heures sur votre projet, donc je peux vous le facturer moins cher.
+Un site vitrine fait à la main demande des semaines : la maquette, le code, les textes, les tests. C’est ce temps que vous payez quand il coûte entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}, le prix habituel chez une agence ou un indépendant.
+
+Chez nous, Lia fait le gros de ce travail en quelques heures. Ensuite, je reprends tout à la main : je relis, je teste, je corrige. Vous ne payez donc pas des semaines de travail, et votre site coûte ${euro(creation.prix)}.
+
+Ce prix est le même pour tout le monde. Il est affiché sur le site, et vous n’avez pas de devis à attendre.
 
 Le résultat, lui, reste du travail soigné : un site rapide, adapté au téléphone, sécurisé et prêt à être trouvé sur Google.`)}
 </div></section>
@@ -763,20 +841,21 @@ Le résultat, lui, reste du travail soigné : un site rapide, adapté au télép
     <div class="compare-col reveal">
       <h3>${monster('mascotte')}Lia, l’IA, s’occupe de…</h3>
       <ul class="list-check">
-        <li>modifier et mettre à jour votre site, depuis votre espace client, après vous avoir montré l’aperçu ;</li>
-        <li>écrire le code du site, plus vite ;</li>
-        <li>proposer des mises en page et des premiers textes ;</li>
-        <li>repérer des erreurs.</li>
+        <li>créer le gros de votre site, en quelques heures</li>
+        <li>écrire le code, proposer des mises en page et des premiers textes</li>
+        <li>modifier et mettre à jour votre site, depuis votre espace client, après vous avoir montré l’aperçu</li>
+        <li>repérer des erreurs</li>
       </ul>
     </div>
     <div class="compare-col is-me reveal">
       <h3>${icon('user')}Alex, l’humain, …</h3>
       <ul class="list-check">
-        <li>vous écoute et fait les choix ;</li>
-        <li>règle Lia et fixe ses limites, pour qu’elle reste prudente ;</li>
-        <li>fait les modifications qui demandent un regard humain ;</li>
-        <li>teste le site sur plusieurs appareils ;</li>
-        <li>met en ligne et reste là après.</li>
+        <li>vous écoute et fait les choix</li>
+        <li>vérifie tout ce que fait Lia, page par page</li>
+        <li>règle Lia et fixe ses limites, pour qu’elle reste prudente</li>
+        <li>fait les modifications qui demandent un regard humain</li>
+        <li>teste le site sur plusieurs appareils</li>
+        <li>met en ligne et reste là après</li>
       </ul>
     </div>
   </div>
@@ -799,10 +878,10 @@ ${site.name}, c’est moi, Alex, et Lia, notre IA. Je suis un jeune entrepreneur
 ${f.html}
 ${C.ctaBand({ title: 'Envie d’essayer ?', text: 'Parlez-moi de votre projet. Vous verrez vite ce que l’IA et moi pouvons faire pour vous.' })}`;
   return {
-    path: '/methode/',
+    path: sections.methode.path,
     section: 'methode',
-    title: 'Ma méthode : sites créés avec l’IA, vérifiés par moi | Alex & Lia',
-    description: 'Comment je crée des sites avec l’IA : ce que fait l’IA, ce que je fais moi-même, pourquoi c’est moins cher, et mes limites, dites honnêtement.',
+    title: 'Ma méthode : Lia crée, Alex vérifie tout | Alex & Lia',
+    description: `Comment je crée des sites avec l’IA : ce que fait Lia, ce que je fais moi-même, pourquoi c’est ${marche.fois} fois moins cher, et mes limites, dites honnêtement.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -825,15 +904,20 @@ const DEMO_QR = (() => {
 })();
 
 function monEspacePage() {
-  const P = F('power');
-  const mail = options.find((o) => o.id === 'mail');
   const tab = (id, ic, label, on) => `<button type="button" role="tab" id="tab-${id}" aria-controls="t-${id}" aria-selected="${on ? 'true' : 'false'}"${on ? '' : ' tabindex="-1"'} data-tab="${id}">${icon(ic)}<span>${label}</span></button>`;
-  const plans = forfaits;
-  const total = P.month + mail.price.month;
+  // La cliente imaginaire a un site vitrine : on montre les extras de tous les sites, pas ceux des boutiques.
+  const extras = C.optsMois.filter((o) => !o.types);
+  const extrasBoutique = C.optsMois.filter((o) => o.types);
+  const actifs = ['mail']; // les extras déjà pris dans la démo
+  const stats = O('stats');
+  const total = ABO.month + extras.filter((o) => actifs.includes(o.id)).reduce((n, o) => n + o.price.month, 0);
+  // Jetons déjà dépensés ce mois-ci dans la démo (deux demandes faites) : la même valeur que « used » dans src/assets/js/main.js.
+  const DEPENSES = 62;
+  const reste = Math.max(0, ABO.jetons - DEPENSES);
   const body = `${C.pageHero({
     section: 'monespace',
     h1: 'Mon espace : la démo',
-    lead: 'Voici l’espace de « Pâtisserie Lila », une cliente imaginaire. Essayez : envoyez une demande de modification, suivez-la, créez un QR code, changez de forfait. Rien n’est envoyé.',
+    lead: 'Voici l’espace de « Pâtisserie Lila », une cliente imaginaire. Essayez : envoyez une demande de modification, suivez-la, ajoutez un extra à l’abonnement. Rien n’est envoyé.',
     crumbs: DEMO_CRUMBS,
   })}
 <section class="section section-app"><div class="container">
@@ -842,8 +926,8 @@ function monEspacePage() {
       <aside class="app-side">
         <div class="app-user">${monster('mascotte')}<div><strong>Pâtisserie Lila</strong><small>patisserie-lila.fr</small></div></div>
         <div class="jauge" data-jauge>
-          <p class="jauge-head">${icon('pencil')}<span>Jetons Lia</span><b><span data-jetons>188</span> / <span data-jetons-max>${P.jetons}</span></b></p>
-          <span class="jauge-bar"><i data-jauge-fill style="width:75%"></i></span>
+          <p class="jauge-head">${icon('pencil')}<span>Jetons Lia</span><b><span data-jetons>${reste}</span> / <span data-jetons-max>${ABO.jetons}</span></b></p>
+          <span class="jauge-bar"><i data-jauge-fill style="width:${Math.round((reste / ABO.jetons) * 100)}%"></i></span>
         </div>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           ${tab('accueil', 'house', 'Accueil', true)}
@@ -857,14 +941,14 @@ function monEspacePage() {
         <div class="app-panel" role="tabpanel" id="t-accueil" aria-labelledby="tab-accueil">
           <h2 class="app-h">Bonjour Lila !</h2>
           <div class="app-cards">
-            <button type="button" class="app-card c-lilac" data-go="forfait"><span class="app-card-art" data-app-plan-art>${monster('power')}</span><span><small>Votre forfait</small><strong data-app-plan-name>${P.name}</strong><span data-app-plan-price>${euro(P.month)} par mois</span></span></button>
+            <button type="button" class="app-card c-${ABO.color}" data-go="forfait"><span class="app-card-art" data-app-plan-art>${monster('mascotte')}</span><span><small>Votre compte</small><strong data-app-plan-name>${esc(ABO.name)}</strong><span data-app-plan-price>${euro(ABO.month)} par mois</span></span></button>
             <div class="app-card c-mint"><span class="app-card-ico">${icon('globe')}</span><span><small>Votre site</small><strong>patisserie-lila.fr</strong><span class="dot-ok">En ligne</span></span></div>
             <button type="button" class="app-card c-sky" data-go="visibilite"><span class="app-card-ico">${icon('chart-line')}</span><span><small>Sur 30 jours</small><strong>1 240 visiteurs</strong><span>Voir le tableau de bord</span></span></button>
           </div>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
             <button type="button" data-go="demandes">${icon('message-circle')}<strong>Demander une modification</strong><small>Je m’en occupe</small></button>
-            <button type="button" data-go="forfait">${icon('receipt')}<strong>Forfait et factures</strong><small>Tout au même endroit</small></button>
+            <button type="button" data-go="forfait">${icon('receipt')}<strong>Abonnement et factures</strong><small>Tout au même endroit</small></button>
           </div>
           <p class="app-sub">Dernières activités</p>
           <ul class="app-log" data-log>
@@ -912,7 +996,7 @@ function monEspacePage() {
             <li><span>Nos gâteaux</span><b>298</b></li>
             <li><span>Contact et horaires</span><b>187</b></li>
           </ul>
-          <p class="app-note">Avec Titan, en plus : la courbe de vos visites, les appareils, d’où viennent vos visiteurs et la santé de votre serveur.</p>
+          <p class="app-note">Avec l’extra « ${esc(stats.name)} », en plus : vos visites heure par heure, les appareils, d’où viennent vos visiteurs, et un rapport chaque mois.</p>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
@@ -934,14 +1018,16 @@ function monEspacePage() {
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-forfait" aria-labelledby="tab-forfait" hidden>
-          <h2 class="app-h">Forfait et factures</h2>
-          <div class="app-plans">${plans
+          <h2 class="app-h">Abonnement et factures</h2>
+          <p class="app-sub">Votre abonnement</p>
+          <label class="app-plan c-${ABO.color}"><input type="radio" name="app-plan" value="${ABO.id}" data-month="${ABO.month}" data-name="${esc(ABO.name)}" data-jetons="${ABO.jetons}" checked><span class="app-plan-card"><span class="app-plan-art">${monster('mascotte')}</span><strong>${esc(ABO.name)}</strong><small>${euro(ABO.month)}/mois</small><small>${ABO.modifs}</small></span></label>
+          <p class="app-sub">Vos extras</p>
+          <div class="app-opts">${extras
             .map(
-              (x) => `<label class="app-plan c-${x.color}"><input type="radio" name="app-plan" value="${x.id}" data-month="${x.month}" data-name="${x.name}" data-jetons="${x.jetons}"${x.id === 'power' ? ' checked' : ''}><span class="app-plan-card"><span class="app-plan-art">${monster(x.id)}</span><strong>${x.name}</strong><small>${euro(x.month)}/mois</small><small>${x.modifs}</small></span></label>`
+              (o) => `<label class="app-opt"><span class="app-opt-ico">${icon(o.icon)}</span><span class="app-opt-txt"><strong>${esc(o.name)}</strong><small>${euro(o.price.month)} par mois</small></span><input type="checkbox" role="switch" value="${o.id}" data-month="${o.price.month}"${actifs.includes(o.id) ? ' checked' : ''}><span class="switch" aria-hidden="true"></span></label>`
             )
             .join('')}</div>
-          <p class="app-sub">Options</p>
-          <div class="app-opts"><label class="app-opt"><span class="app-opt-ico">${icon(mail.icon)}</span><span class="app-opt-txt"><strong>${esc(mail.name)}</strong><small>${euro(mail.price.month)} par mois</small></span><input type="checkbox" role="switch" value="mail" data-month="${mail.price.month}" checked><span class="switch" aria-hidden="true"></span></label></div>
+          <p class="app-note">Un extra s’ajoute ou se retire quand vous voulez.${extrasBoutique.length ? ` Pour une boutique en ligne, il y en a ${extrasBoutique.length === 2 ? 'deux' : extrasBoutique.length} de plus : ${extrasBoutique.map((o) => esc(o.name.toLowerCase())).join(' et ')}.` : ''}</p>
           <p class="app-total"><span>Total chaque mois</span><b data-app-total>${euro(total)}</b></p>
           <p class="app-sub">Factures</p>
           <ul class="invoices">
@@ -956,7 +1042,7 @@ function monEspacePage() {
     </div>
     <p class="app-toast" data-toast role="status" hidden></p>
     <template data-icons>${['check', 'message-circle', 'history'].map((n) => `<span data-i="${n}">${icon(n)}</span>`).join('')}</template>
-    <template data-monsters>${plans.map((x) => `<span data-m="${x.id}">${monster(x.id)}</span>`).join('')}</template>
+    <template data-monsters><span data-m="${ABO.id}">${monster('mascotte')}</span></template>
   </div>
 </div></section>
 
@@ -967,7 +1053,7 @@ ${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : vous m’en
     noindex: true,
     noMobileBar: true,
     title: 'Mon espace, la démo | Alex & Lia',
-    description: 'Essayez l’espace client Alex & Lia : demandes de modification et leur suivi, tableau de bord, parrainage, forfait et factures. Démonstration.',
+    description: 'Essayez l’espace client Alex & Lia : demandes de modification et leur suivi, tableau de bord, abonnement, extras et factures. Démonstration.',
     crumbs: DEMO_CRUMBS,
     body,
   };
@@ -1035,8 +1121,8 @@ function contactPage() {
   const opt = (v) => `<option value="${esc(v)}">${esc(v)}</option>`;
   const body = `${C.pageHero({
     section: 'contact',
-    h1: 'Contact et devis gratuit',
-    lead: 'Une question, un projet ? Écrivez-moi. Je vous réponds rapidement, en général dans la journée.',
+    h1: 'Contact : une question, un projet ?',
+    lead: `Écrivez-moi. Je vous réponds rapidement, en général dans la journée. Les prix sont déjà affichés : ${euro(creation.prix)} le site, puis ${euro(ABO.month)} par mois. Vous n’avez pas de devis à demander.`,
     crumbs,
   })}
 <section class="section"><div class="container contact-grid">
@@ -1055,12 +1141,10 @@ function contactPage() {
           <select id="c-type" name="type" required><option value="">Choisir…</option>${types.map((t) => opt(t.label)).join('')}${opt('Je ne sais pas encore')}${opt('Autre projet')}</select></div>
       </div>
       <div class="form-row">
-        <div class="field"><label for="c-forfait">Forfait</label>
-          <select id="c-forfait" name="forfait">${forfaits.map((x) => opt(x.name)).join('')}<option value="Je ne sais pas encore" selected>Je ne sais pas encore</option></select></div>
         <div class="field"><label for="c-domaine">Nom de domaine <span class="opt">(facultatif)</span></label><input id="c-domaine" name="domaine" type="text" autocomplete="off" placeholder="mon-entreprise.fr"></div>
+        <div class="field"><label for="c-parrain">Code de parrainage <span class="opt">(facultatif)</span></label><input id="c-parrain" name="parrain" type="text" autocomplete="off" maxlength="20" placeholder="Ex. : LILA-7K2"></div>
       </div>
-      <div class="field"><label for="c-parrain">Code de parrainage <span class="opt">(facultatif)</span></label><input id="c-parrain" name="parrain" type="text" autocomplete="off" maxlength="20" placeholder="Ex. : LILA-7K2"></div>
-      <div class="field"><span class="label">Paiement du forfait</span>
+      <div class="field"><span class="label">Paiement de l’abonnement</span>
         <div class="radio-group">
           <label><input type="radio" name="paiement" value="Au mois"> Au mois</label>
           <label><input type="radio" name="paiement" value="À l’année"> À l’année</label>
@@ -1075,14 +1159,15 @@ function contactPage() {
   <aside class="contact-side">
     ${site.email ? `<a class="contact-card" href="mailto:${site.email}">${icon('mail')}<div><strong>${site.email}</strong><span>Pour envoyer des documents.</span></div></a>` : ''}
     <a class="contact-card c-mint" href="/mon-espace/">${icon('circle-user')}<div><strong>Déjà client ?</strong><span>Vos demandes de modification se font depuis votre espace client.</span></div></a>
-    <a class="contact-card c-pink" href="/creer-mon-site/">${icon('wand-sparkles')}<div><strong>Créer mon site</strong><span>Composez votre site et voyez le prix tout de suite.</span></div></a>
+    <a class="contact-card c-pink" href="${sections.creer.path}">${icon('wand-sparkles')}<div><strong>Créer mon site</strong><span>Composez votre site et voyez le prix tout de suite.</span></div></a>
+    <a class="contact-card" href="${sections.forfaits.path}">${icon(sections.forfaits.icon)}<div><strong>Voir les tarifs</strong><span>${euro(creation.prix)} le site, ${euro(ABO.month)} par mois, et le prix de chaque option.</span></div></a>
     <p class="contact-note">${icon('map-pin')}<span>Tout se fait en ligne : la commande, les échanges, le suivi. Je travaille avec des clients partout en France.</span></p>
   </aside>
 </div></section>`;
   return {
     path: '/contact/',
     section: 'contact',
-    title: 'Contact et devis gratuit pour votre site internet | Alex & Lia',
+    title: 'Contact : posez votre question | Alex & Lia',
     description: 'Une question, un projet de site, de boutique ou de référencement ? Écrivez-nous par le formulaire. Réponse rapide, en général dans la journée.',
     crumbs,
     body,
@@ -1134,7 +1219,7 @@ function guidePage(g) {
 </div></section>
 ${f.html}
 <nav class="related" aria-label="À lire aussi"><div class="container"><h2 class="section-title">À lire aussi</h2><div class="guide-cards">${voir.map(guideCard).join('')}</div><p class="center"><a class="link-more" href="/guides/">Tous les guides</a></p></div></nav>
-${C.ctaBand()}`;
+${C.ctaBand({ text: CTA_TEXTE })}`;
   return {
     path,
     section: 'guides',
@@ -1206,7 +1291,7 @@ function lexiquePage(t) {
 </div></section>
 ${f.html}
 <nav class="related" aria-label="À lire aussi"><div class="container"><h2 class="section-title">À lire aussi</h2><div class="guide-cards">${voir.map(lexCard).join('')}</div><p class="center"><a class="link-more" href="/lexique/">Tout le lexique</a></p></div></nav>
-${C.ctaBand()}`;
+${C.ctaBand({ text: CTA_TEXTE })}`;
   return {
     path,
     section: 'lexique',
@@ -1230,9 +1315,9 @@ function liaAlexPage() {
   const liaPlus = options.find((o) => o.id === 'liaplus');
   const faqItems = [
     { q: 'Lia peut-elle casser mon site ?', a: 'Non. Elle ne peut ni supprimer une page, ni toucher au thème, aux extensions, aux comptes ou aux prix d’une boutique. Chaque changement est d’abord préparé dans un aperçu, que vous validez. Et l’état d’avant est gardé : Alex peut revenir en arrière.' },
-    { q: 'Que se passe-t-il si ma demande est trop grande pour Lia ?', a: 'Lia ne touche à rien et passe la demande à Alex. C’est plus long, puisqu’elle est faite à la main, et elle compte alors pour une de vos demandes Alex du mois. Les jetons de cette demande vous sont rendus.' },
+    { q: 'Que se passe-t-il si ma demande est trop grande pour Lia ?', a: 'Lia ne touche à rien et passe la demande à Alex. C’est plus long, puisqu’elle est faite à la main, et elle compte alors comme votre modification par Alex du mois. Les jetons de cette demande vous sont rendus.' },
     { q: 'Mes Jetons Lia et mes modifications par Alex se cumulent-ils ?', a: 'Non, ils sont comptés chacun de leur côté. Les Jetons Lia paient ce que fait Lia : les modifications de votre site et les outils de votre espace client. Les modifications par Alex ont leur propre compteur. Les uns ne se transforment pas en les autres. Tout revient chaque mois, et ce qui n’est pas utilisé ne se reporte pas au mois suivant. Seuls les jetons d’une recharge restent tant que vous ne les avez pas dépensés.' },
-    { q: 'Dois-je prendre un abonnement à une IA ?', a: 'Non. Tout est compris dans votre forfait : vous n’avez aucun compte à créer, aucun réglage à faire, aucune liaison à installer. Vous écrivez votre demande, c’est tout.' },
+    { q: 'Dois-je payer une IA de mon côté ?', a: 'Non. Lia est comprise dans votre abonnement Alex & Lia : vous n’avez aucun compte à créer ailleurs, aucun réglage à faire, aucune liaison à installer. Vous écrivez votre demande, c’est tout.' },
     { q: 'Puis-je annuler une demande ?', a: 'Oui, gratuitement pendant 24 heures après l’envoi, jusqu’à 3 fois par mois, depuis votre espace client. La demande ne compte plus dans votre mois, et ses jetons reviennent sur votre compte. Au-delà, écrivez à Alex.' },
     { q: 'Est-ce que je peux me passer de Lia ?', a: 'Oui. À chaque demande, vous choisissez Lia ou Alex. Si vous préférez que tout soit fait à la main, choisissez toujours Alex.' },
   ];
@@ -1297,7 +1382,7 @@ Lia a un budget, pour rester sur des modifications petites et moyennes :
 
 Plus il y a de photos, moins il y a de texte, et l’inverse. Le tout sur une seule page.
 
-> Au-delà, la demande passe à Alex. C’est plus long, car elle est faite à la main, et elle compte pour une de vos demandes Alex.
+> Au-delà, la demande passe à Alex. C’est plus long, car elle est faite à la main, et elle prend la place de votre modification par Alex du mois.
 
 ## Toujours un aperçu, jamais de surprise
 
@@ -1325,19 +1410,16 @@ Lia est configurée pour rester prudente :
 
 Si une demande est floue, elle ne devine pas : elle me la passe.
 
-## Pourquoi c’est compris dans votre forfait
+## Pourquoi c’est compris dans l’abonnement
 
-Chaque demande faite à Lia consomme de la puissance de calcul, qui m’est facturée à l’usage. J’ai choisi de l’inclure dans les forfaits, pour votre confort : vous n’avez pas d’abonnement à une IA à prendre, pas de réglages à faire, pas de liaison compliquée à installer. Vous écrivez votre demande, et c’est tout.`)}
+Chaque demande faite à Lia consomme de la puissance de calcul, qui m’est facturée à l’usage. J’ai choisi de l’inclure dans l’abonnement, sous forme de Jetons Lia, pour votre confort : vous n’avez rien à payer à une autre entreprise, pas de réglages à faire, pas de liaison compliquée à installer. Vous écrivez votre demande, et c’est tout.`)}
 </div></section>
 
 <section class="section"><div class="container">
   <h2 class="section-title">Combien de modifications par mois ?</h2>
-  <p class="section-lead">Des Jetons Lia d’un côté, des modifications par Alex de l’autre. Les deux reviennent chaque mois.</p>
-  <div class="quota-cards">${forfaits
-    .map((x) => `<div class="quota-card c-${x.color} reveal"><span class="quota-art">${monster(x.id)}</span><h3>${x.name}<small>${x.month} € par mois</small></h3><p><b>${x.jetons}</b> Jetons Lia</p><p><b>${x.quota}</b> par Alex</p></div>`)
-    .join('')}</div>
-  <div class="boost-box reveal"><span class="opt-ico">${icon('coins')}</span><div><h3>À quoi servent les Jetons Lia ?</h3><p>Un Jeton Lia vaut 1 centime. Vos jetons servent à deux choses : les modifications de votre site par Lia, et les outils de votre espace client (publier sur les réseaux, corriger ou traduire un texte, des conseils sur une photo ou une page). Une modification faite par Lia coûte 30 jetons, plus 1 jeton par tranche de 10 mots écrits dans votre demande, plus 10 jetons par photo jointe. Soit 30 à 65 jetons environ. Avec Chico, cela fait 2 à 3 modifications par mois. Avec Power, 4 à 8. Avec Titan, 10 à 20. Si Lia passe votre demande à Alex, vos jetons vous sont rendus.</p></div></div>
-  <div class="boost-box reveal"><span class="opt-ico">${icon('sparkles')}</span><div><h3>Besoin de plus ?</h3><p><strong>Lia +</strong> ajoute 500 Jetons Lia à votre mois, pour ${liaPlus ? liaPlus.price.month : 5} € de plus. <strong>Une recharge</strong> se prend à l’unité : 100 jetons pour 1 €, 500 pour 5 €, 1000 pour 10 €, sur votre prochaine facture. Ces jetons-là ne s’effacent pas en fin de mois. <strong>Le Boost</strong> : une modification par Alex en plus pour 1 €, à l’unité. Vous ajoutez ou retirez Lia + quand vous voulez, depuis votre espace client.</p></div></div>
+  <p class="section-lead">Avec l’abonnement, vous avez chaque mois ${ABO.jetons} Jetons Lia et ${UNE_MODIF} par Alex. Les deux compteurs sont séparés, et ils repartent le 1<sup>er</sup> du mois.</p>
+  <div class="boost-box reveal"><span class="opt-ico">${icon('coins')}</span><div><h3>À quoi servent les Jetons Lia ?</h3><p>Un Jeton Lia vaut 1 centime. Vos jetons servent à deux choses : les modifications de votre site par Lia, et les outils de votre espace client (publier sur les réseaux, corriger ou traduire un texte, des conseils sur une photo ou une page). Une modification faite par Lia coûte ${jetonsLia.modif.base} jetons, plus 1 jeton par tranche de ${jetonsLia.modif.mots} mots écrits dans votre demande, plus ${jetonsLia.modif.image} jetons par photo jointe. Soit ${JL_MODIF_FOURCHETTE} jetons environ. Vos ${ABO.jetons} jetons du mois font donc ${JL_MODIFS_MOIS} modifications par Lia, ou ${JL_OUTILS_MOIS} d’outils lancés. Si Lia passe votre demande à Alex, vos jetons vous sont rendus.</p></div></div>
+  <div class="boost-box reveal"><span class="opt-ico">${icon('sparkles')}</span><div><h3>Besoin de plus ?</h3><p><strong>${esc(liaPlus.name)}</strong> est un extra : il ajoute ${jetonsLia.liaplus} Jetons Lia à votre mois, pour ${euro(liaPlus.price.month)} de plus. Vous le prenez ou vous le retirez quand vous voulez, depuis votre espace client. <strong>Une recharge</strong> se prend à l’unité : ${RECHARGES}, sur votre prochaine facture. Ces jetons-là ne s’effacent pas en fin de mois. <strong>Le Boost</strong>, lui, concerne Alex : une modification en plus de celle du mois, pour ${euro(boost.prix)}.</p></div></div>
 </div></section>
 
 ${f.html}
@@ -1345,7 +1427,7 @@ ${C.ctaBand({ title: 'Envie de voir Lia à l’œuvre ?', text: 'Essayez la dém
   return {
     path: sections.liaalex.path,
     section: 'liaalex',
-    title: 'Lia et Alex : ce que fait l’IA, ce que fait l’humain | Alex & Lia',
+    title: 'Lia et Alex : qui fait quoi sur votre site | Alex & Lia',
     description: 'Lia, l’IA, fait en 5 minutes les petites modifications de votre site, avec un aperçu à valider. Alex, l’humain, fait le reste, à la main. Qui fait quoi.',
     crumbs,
     body,
@@ -1370,12 +1452,12 @@ function confiancePage() {
   ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages créées pour les sites de nos clients et pour le nôtre${le ? `, au ${frDate(le)}` : ''}.<br>Chaque nouvelle page est une porte d’entrée de plus depuis Google.</span></p>` : ''}
   <div class="client-cards">${clients
     .map(
-      (c) => c.enCreation ? `<div class="client-card c-${c.color} reveal is-creation">${c.forfait && F(c.forfait) ? `<span class="client-forfait c-${F(c.forfait).color}"><span class="client-forfait-art">${monster(c.forfait)}</span>Forfait ${F(c.forfait).name}</span>` : ''}<span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-creation">${icon('hammer')}Site en création</span><span class="client-url">${icon('globe')}${esc(c.domaine)}</span></div>` : `<a class="client-card c-${c.color} reveal" href="${c.url}"${c.url.startsWith('/') ? '' : ' target="_blank" rel="noopener"'}>${c.forfait && F(c.forfait) ? `<span class="client-forfait c-${F(c.forfait).color}"><span class="client-forfait-art">${monster(c.forfait)}</span>Forfait ${F(c.forfait).name}</span>` : ''}<span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-desc">${inline(c.desc)}</span>${pagesDe(c) ? `<span class="client-pages"><b>${pagesDe(c)}</b> page${pagesDe(c) > 1 ? 's' : ''}</span>` : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`
+      (c) => c.enCreation ? `<div class="client-card c-${c.color} reveal is-creation"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-creation">${icon('hammer')}Site en création</span><span class="client-url">${icon('globe')}${esc(c.domaine)}</span></div>` : `<a class="client-card c-${c.color} reveal" href="${c.url}"${c.url.startsWith('/') ? '' : ' target="_blank" rel="noopener"'}><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-desc">${inline(c.desc)}</span>${pagesDe(c) ? `<span class="client-pages"><b>${pagesDe(c)}</b> page${pagesDe(c) > 1 ? 's' : ''}</span>` : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`
     )
     .join('')}</div>
   <p class="small muted center">Ces sites s’ouvrent dans un nouvel onglet.</p>
 </div></section>
-${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: 'Composez votre site en deux minutes. Le prix est affiché avant la commande.' })}`;
+${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: `Composez votre site en deux minutes. Le prix est le même pour tous : ${euro(creation.prix)}.` })}`;
   return {
     path: sections.confiance.path,
     section: 'confiance',

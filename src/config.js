@@ -1,7 +1,7 @@
 // ============================================================================
-//  ALED08 : configuration centrale du site (identité, rubriques, types de site,
-//  forfaits Chico / Power / Titan et leurs quotas, options, délais, fidélité,
-//  paiement). Tous les prix du site viennent d'ici : le configurateur, la page
+//  Alex & Lia : configuration centrale du site (identité, rubriques, l'offre unique :
+//  création à 500 €, abonnement à 10 € par mois, options et extras, Jetons Lia,
+//  fidélité, paiement). Tous les prix du site viennent d'ici : le configurateur, la page
 //  /commander/, les données structurées et l'extension WordPress (data.json)
 //  se mettent à jour au prochain build.
 //  ⚠️  Les valeurs marquées « À REMPLACER » doivent être complétées avant la
@@ -61,7 +61,7 @@ const site = {
 // Chaque rubrique a sa couleur pastel : on la retrouve dans le menu et en haut de la page.
 const sections = {
   creer: { path: '/creer-mon-site/', label: 'Créer mon site', color: 'mint', icon: 'wand-sparkles' },
-  forfaits: { path: '/forfaits/', label: 'Forfaits', color: 'lilac', icon: 'heart' },
+  forfaits: { path: '/tarifs/', label: 'Tarifs', color: 'lilac', icon: 'tag' },
   espace: { path: '/outils/', label: 'Outils', color: 'sky', icon: 'toolbox' },
   seo: { path: '/referencement-seo/', label: 'SEO', color: 'butter', icon: 'search-check' },
   contact: { path: '/contact/', label: 'Contact', color: 'peach', icon: 'message-circle' },
@@ -80,7 +80,17 @@ const sections = {
   confirmation: { path: '/commande-confirmee/', label: 'Commande confirmée', color: 'mint', icon: 'party-popper' },
 };
 
-// ---------------------------------------------------------------- types de site (création, prix fixe)
+// ---------------------------------------------------------------- l'offre : un seul prix
+// Création du site : 500 €, quel que soit le site (une page ou plusieurs). Une boutique en ligne : + 200 €.
+// Puis un abonnement obligatoire : 10 € par mois, sur lequel on ajoute ou on retire des extras quand on veut.
+const creation = { prix: 500, boutique: 200 };
+// Repères du marché pour la page Tarifs : prix publics relevés en France en novembre 2026 pour un site fait
+// par un indépendant (sources dans docs/prix-et-ia-2026.md). À relire une fois par an.
+// vitrine : site vitrine d'environ cinq pages. boutique : boutique en ligne simple. entretien : maintenance par mois.
+// bas : les offres à bas prix qui existent aussi (on le dit, par transparence).
+const marche = { vitrineMin: 1500, vitrineMax: 3000, boutiqueMin: 2000, boutiqueMax: 6000, entretienMin: 60, entretienMax: 200, basMin: 400, basMax: 1300, fois: '4 à 5' };
+
+// ---------------------------------------------------------------- types de site (même prix, sauf la boutique)
 const types = [
   {
     id: 'une-page',
@@ -88,7 +98,7 @@ const types = [
     label: 'Site une page',
     color: 'sky',
     icon: 'layout-template',
-    price: 250,
+    price: creation.prix,
     delai: '3 à 5 jours',
     pitch: 'Une seule page qu’on fait défiler, comme une grande carte de visite : qui vous êtes, ce que vous faites, vos horaires, comment vous joindre.',
     qui: 'Pour démarrer, ou pour être simplement trouvé et joignable.',
@@ -102,7 +112,7 @@ const types = [
     label: 'Site vitrine',
     color: 'butter',
     icon: 'layout-grid',
-    price: 350,
+    price: creation.prix,
     delai: '1 à 2 semaines',
     pitch: 'Plusieurs pages avec un menu : l’accueil, vos services, vos tarifs, qui vous êtes, le contact.',
     qui: 'Pour présenter plusieurs services. Le meilleur choix pour sortir sur Google.',
@@ -116,7 +126,8 @@ const types = [
     label: 'Boutique en ligne',
     color: 'pink',
     icon: 'shopping-bag',
-    price: 500,
+    price: creation.prix + creation.boutique,
+    supplement: creation.boutique, // l'option « boutique en ligne », ajoutée au prix unique
     delai: '2 à 3 semaines',
     pitch: 'Un magasin sur internet : vos clients choisissent vos produits, paient par carte sur le site, et vous recevez la commande.',
     qui: 'Pour vendre vos produits sur internet, même quand votre magasin est fermé.',
@@ -126,87 +137,57 @@ const types = [
   },
 ];
 
-// ---------------------------------------------------------------- forfaits mensuels (un petit monstre chacun)
-// En paiement annuel : 2 mois offerts sur le forfait.
-// quota : nombre de demandes de modification par mois dans l'espace client.
-// Un seul compteur : chaque forfait donne des modifications par mois, et pour chacune le client choisit qui la fait :
-//  - Lia (l'IA) : en 5 minutes, avec un aperçu à valider par le client (pas de validation par Alex) ;
-//  - Alex (l'humain) : à la main, sous 72 heures.
-// quota = modifications par mois ; jetons = quota et partage = true (compteur commun Lia + Alex).
-// Lia fait la modification en 5 minutes et montre l'aperçu à confirmer ; Alex répond sous 72 heures, à la main.
+// ---------------------------------------------------------------- l'abonnement (un seul, obligatoire)
+// En paiement annuel : 2 mois offerts.
+// quota : modifications faites à la main par Alex, par mois. jetons : Jetons Lia donnés chaque mois.
+// Les anciens forfaits (chico, power, titan) n'existent plus : un ancien client garde ce qu'il avait
+// (power : extra SEO ; titan : extras SEO et chiffres détaillés), c'est géré dans l'extension WordPress.
 const forfaits = [
   {
-    id: 'chico',
-    name: 'Chico',
-    color: 'mint',
-    month: 5,
+    id: 'base',
+    name: 'Abonnement',
+    color: 'pink',
+    month: 10,
     quota: 1, // modifications par Alex, par mois
     jetons: 100, // Jetons Lia par mois
     partage: false,
-    bulle: 'Le forfait de base pour faire tourner votre site',
+    bulle: 'Tout ce qu’il faut pour que votre site tourne',
     modifs: '100 Jetons Lia et une modification par Alex, chaque mois',
-    tagline: 'L’essentiel',
-    pitch: 'Votre site en ligne, sûr et à jour, sur un serveur de qualité. 100 Jetons Lia et une modification par Alex, chaque mois.',
-    main: ['Site hébergé, sécurisé et tenu à jour', 'Nom de domaine compris', '100 Jetons Lia et une modification par Alex, chaque mois'],
-    details: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié à votre site et renouvelé chaque année (liaison OVH)', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour des extensions, faites pour vous', 'Formulaire de contact qui arrive dans votre boîte mail', 'Gestion du flux de visites : le site tient quand il y a du monde', 'Bases du SEO : Google sait lire et comprendre votre site', '100 Jetons Lia et une modification par Alex, chaque mois', 'Vos Jetons Lia servent aux modifications par Lia et aux outils de l’espace client', 'Lia, en 5 minutes, pour les petites et moyennes modifications : elle vous montre l’aperçu de la page et attend votre accord', 'Alex, sous 72 heures, pour les plus grandes : fait et vérifié à la main', 'Votre espace client : demandes, suivi et parrainage', 'Sans engagement : vous arrêtez quand vous voulez'],
-    features: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié et renouvelé', 'Mises à jour des extensions', 'Formulaire de contact et HTTPS', 'Gestion du flux de visites', 'Bases du SEO : Google sait lire votre site', '100 Jetons Lia et une modification par Alex, chaque mois'],
-  },
-  {
-    id: 'power',
-    name: 'Power',
-    color: 'lilac',
-    month: 15,
-    quota: 2, // modifications par Alex, par mois
-    jetons: 250, // Jetons Lia par mois
-    partage: false,
-    bulle: 'Pour être trouvé sur Google et faire vivre votre site',
-    modifs: '250 Jetons Lia et deux modifications par Alex, chaque mois',
-    conseil: true,
-    tagline: 'Pour être trouvé',
-    pitch: 'Tout Chico, plus le SEO : je fais remonter votre site sur Google. Serveur plus rapide, support et modifications rapides.',
-    main: ['Tout ce que comprend Chico', 'Le SEO : votre site monte sur Google', '250 Jetons Lia et deux modifications par Alex, chaque mois'],
-    details: ['Tout ce que comprend Chico, et en plus :', 'Le SEO suivi chaque mois : je choisis avec vous les mots que vos clients tapent et je fais monter votre site', 'Des pages utiles pour le référencement, qui renvoient vers votre site (jamais des pages inutiles)', 'Un serveur plus rapide, pour accueillir plus de visites', 'Un support rapide quand vous avez une question', '250 Jetons Lia et deux modifications par Alex, chaque mois'],
-    features: ['Tout ce que comprend Chico', 'SEO : je fais remonter votre site sur Google, chaque mois', 'Serveur plus rapide, pour plus de visites', 'Support rapide', '250 Jetons Lia et deux modifications par Alex, chaque mois'],
-  },
-  {
-    id: 'titan',
-    name: 'Titan',
-    color: 'peach',
-    month: 30,
-    quota: 2, // modifications par Alex, par mois
-    jetons: 600, // Jetons Lia par mois
-    partage: false,
-    bulle: 'Pour suivre votre site et vos ventes de près',
-    modifs: '600 Jetons Lia et deux modifications par Alex, chaque mois',
     conseil: false,
-    tagline: 'Le meilleur',
-    pitch: 'Tout Power, plus le retour de vos ventes et de vos chiffres chaque mois, et 600 Jetons Lia chaque mois.',
-    main: ['Tout ce que comprend Power', 'Votre site heure par heure : visiteurs, ventes, serveur', '600 Jetons Lia et deux modifications par Alex, chaque mois'],
-    details: ['Tout ce que comprend Power, et en plus :', 'Votre site heure par heure : visiteurs, pages vues, appareils, provenance, mémoire et charge du serveur, mis à jour toutes les heures', 'Un rapport chaque mois : vos ventes, vos visites et vos chiffres, expliqués simplement', '600 Jetons Lia et deux modifications par Alex, chaque mois', 'Avec Alex, réponse sous 24 heures'],
-    features: ['Tout ce que comprend Power', 'Votre site heure par heure : visiteurs, ventes, serveur', 'Retour de vos ventes et de vos chiffres chaque mois', '600 Jetons Lia et deux modifications par Alex, chaque mois'],
+    tagline: 'Obligatoire, sans engagement',
+    pitch: 'Votre site en ligne, sûr et à jour, avec son nom de domaine, le support et 100 Jetons Lia chaque mois.',
+    main: ['Nom de domaine et hébergement compris', 'Mises à jour, suivi et support', '100 Jetons Lia et une modification par Alex, chaque mois'],
+    details: ['Nom de domaine relié à votre site et renouvelé chaque année, à votre nom', 'Hébergement sur un serveur de qualité', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour faites pour vous, et sauvegardes', 'Suivi : le site est surveillé, il tient quand il y a du monde', 'Support : une question, une réponse sous 72 heures', 'Formulaire de contact qui arrive dans votre boîte mail', 'Bases du SEO : Google sait lire et comprendre votre site', '100 Jetons Lia chaque mois, pour les modifications par Lia et les outils de l’espace client', 'Une modification par Alex chaque mois, faite et vérifiée à la main', 'Votre espace client : demandes, outils, suivi et parrainage', 'Sans engagement : vous arrêtez quand vous voulez'],
+    features: ['Nom de domaine relié et renouvelé', 'Hébergement sur un serveur de qualité', 'Mises à jour, sauvegardes et HTTPS', 'Suivi du site et support sous 72 heures', 'Bases du SEO : Google sait lire votre site', '100 Jetons Lia chaque mois', 'Une modification par Alex chaque mois', 'Votre espace client et ses outils'],
   },
 ];
 const annuel = { moisOfferts: 2 };
 // Prix du site payable en 6 ou 12 fois sans frais (engagement le temps du paiement ; sinon, aucun engagement).
-// Le paiement en plusieurs fois se fait au mois : le forfait passe alors au mois.
+// Le paiement en plusieurs fois se fait au mois : l'abonnement passe alors au mois.
 const lissage = { durees: [6, 12] };
-// Délai de réponse aux demandes de modification.
-const delais = { reponse: '72 heures', titan: '24 heures' };
+// Délai de réponse aux demandes de modification (le même pour tous).
+const delais = { reponse: '72 heures', titan: '72 heures' };
 
-// ---------------------------------------------------------------- options (activables plus tard)
+// ---------------------------------------------------------------- options et extras
+// quand : 'creation' = payé une fois, à la création du site ; 'mois' = extra de l'abonnement, activable et désactivable.
 // price : { once } pour un paiement unique, { month } pour un paiement mensuel.
-// types : réservée à ces types de site (ex. ['boutique']) ; absent = tous les sites.
+// types : réservé à ces types de site (ex. ['boutique']) ; absent = tous les sites.
 const options = [
-  { id: 'mail', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
-  { id: 'en', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 50 }, desc: 'Votre site traduit en anglais et relu, pour les touristes et les clients venus d’ailleurs.' },
-  { id: 'stock', group: 'site', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, types: ['boutique'], desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
-  { id: 'liaplus', group: 'site', name: 'Lia +', icon: 'sparkles', price: { month: 5 }, desc: '500 Jetons Lia en plus chaque mois, pour ceux qui changent souvent leur site ou publient beaucoup.' },
-  { id: 'comptes', group: 'site', name: 'Comptes clients', icon: 'users', price: { month: 5 }, types: ['boutique'], desc: 'Vos clients se créent un compte sur votre site : commandes passées, adresses et favoris gardés.' },
+  { id: 'en', quand: 'creation', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 100 }, desc: 'Votre site traduit en anglais et relu, avec un bouton pour changer de langue. Pour les touristes et les clients venus d’ailleurs.' },
+  { id: 'rdv', quand: 'creation', group: 'site', name: 'Prise de rendez-vous', icon: 'calendar-check', price: { once: 100 }, desc: 'Vos clients réservent un créneau sur votre site, selon vos disponibilités. Vous recevez un e-mail à chaque réservation.' },
+  { id: 'reprise', quand: 'creation', group: 'site', name: 'Reprise de votre ancien site', icon: 'refresh-cw', price: { once: 100 }, desc: 'Vos textes, vos photos et vos adresses de pages repris de l’ancien site, pour garder votre place sur Google.' },
+  { id: 'pages', quand: 'creation', group: 'site', name: 'Cinq pages de plus', icon: 'layers', price: { once: 100 }, types: ['vitrine', 'boutique'], desc: 'Pour un site plus grand : cinq pages en plus des cinq comprises.' },
+  { id: 'seo', quand: 'mois', group: 'site', name: 'SEO suivi', icon: 'search-check', price: { month: 10 }, desc: 'Chaque mois, je regarde les mots que vos clients tapent, j’améliore vos pages pour Google et je vous montre où vous en êtes.' },
+  { id: 'liaplus', quand: 'mois', group: 'site', name: 'Lia +', icon: 'sparkles', price: { month: 5 }, desc: '500 Jetons Lia en plus chaque mois, pour ceux qui changent souvent leur site ou publient beaucoup.' },
+  { id: 'stats', quand: 'mois', group: 'site', name: 'Chiffres détaillés', icon: 'chart-line', price: { month: 5 }, desc: 'Votre site heure par heure : visiteurs, pages vues, provenance, ventes. Et un rapport simple chaque mois.' },
+  { id: 'mail', quand: 'mois', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
+  { id: 'stock', quand: 'mois', group: 'site', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, types: ['boutique'], desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
+  { id: 'comptes', quand: 'mois', group: 'site', name: 'Comptes clients', icon: 'users', price: { month: 5 }, types: ['boutique'], desc: 'Vos clients se créent un compte sur votre site : commandes passées, adresses et favoris gardés.' },
 ];
 
 // ---------------------------------------------------------------- fidélité et paiement
 const fidelite = { parrainageMois: 1, remiseSecondSite: 10 };
-const paiement = { acompte: 25 }; // 25 % à la commande ; à la réception : le reste (en une fois, ou en 6 / 12 fois sans frais) et le forfait démarre
+const paiement = { acompte: 25 }; // 25 % à la commande ; à la réception : le reste (en une fois, ou en 6 / 12 fois sans frais) et l'abonnement démarre
 
 // ---------------------------------------------------------------- Jetons Lia
 // 1 Jeton Lia = 1 centime. Les jetons paient ce que fait Lia : les modifications du site et les outils.
@@ -222,16 +203,16 @@ const jetonsLia = {
   liaplus: 500,
 };
 
-// Boost : une modification en plus du forfait, à l'unité, ajoutée à la prochaine facture.
-const boost = { prix: 1 };
+// Boost : une modification par Alex en plus de celle du mois, à l'unité, ajoutée à la prochaine facture.
+const boost = { prix: 5 };
 // ---------------------------------------------------------------- sites réalisés (page « Ils nous ont fait confiance »)
 // Uniquement de vrais clients, avec leur accord. desc : une phrase factuelle, pas d'avis inventé.
 const clients = [
-  { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', sitemap: 'https://www.floreetchenilles.fr/sitemap_index.xml', forfait: 'titan', genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Des fleurs éternelles en fil chenille, faites main à Signy-l’Abbaye, dans les Ardennes. La boutique ouvre très bientôt.' },
-  { nom: 'Dodedo', domaine: 'dodedo.fr', url: 'https://dodedo.fr/', sitemap: 'https://www.dodedo.fr/sitemap.xml', forfait: 'titan', genre: 'Site une page', icon: 'hand-heart', color: 'lilac', desc: 'Le site de Dominique Schneider, magnétiseur et barreur de feu. Une seule page principale, et des pages de conseils autour pour le référencement.' },
+  { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', sitemap: 'https://www.floreetchenilles.fr/sitemap_index.xml', forfait: 'base', genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Des fleurs éternelles en fil chenille, faites main à Signy-l’Abbaye, dans les Ardennes. La boutique ouvre très bientôt.' },
+  { nom: 'Dodedo', domaine: 'dodedo.fr', url: 'https://dodedo.fr/', sitemap: 'https://www.dodedo.fr/sitemap.xml', forfait: 'base', genre: 'Site une page', icon: 'hand-heart', color: 'lilac', desc: 'Le site de Dominique Schneider, magnétiseur et barreur de feu. Une seule page principale, et des pages de conseils autour pour le référencement.' },
   { nom: 'Alex & Lia', domaine: 'alexetlia.fr', url: '/', sitemap: 'https://www.aled08.fr/wp-sitemap.xml' /* à passer sur https://www.alexetlia.fr/wp-sitemap.xml au changement de domaine */, genre: 'Notre propre site', icon: 'sparkles', color: 'lilac', desc: 'Notre site à nous : on se fait confiance, alors on se met dedans aussi. En français et en anglais.' },
-  { nom: 'Les Notes du Temps', domaine: 'lesnotesdutemps.fr', url: 'https://www.lesnotesdutemps.fr/', sitemap: 'https://www.lesnotesdutemps.fr/sitemap.xml', forfait: 'chico', genre: 'Site une page', icon: 'music', color: 'peach', enCreation: true, desc: '' },
+  { nom: 'Les Notes du Temps', domaine: 'lesnotesdutemps.fr', url: 'https://www.lesnotesdutemps.fr/', sitemap: 'https://www.lesnotesdutemps.fr/sitemap.xml', forfait: 'base', genre: 'Site une page', icon: 'music', color: 'peach', enCreation: true, desc: '' },
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: '' },
 ];
 
-module.exports = { clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost, jetonsLia };
+module.exports = { clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost, jetonsLia, creation, marche };
