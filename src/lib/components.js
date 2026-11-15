@@ -180,7 +180,7 @@ function forfaitCards({ choose = true } = {}) {
       <p class="plan-tagline">${inline(f.tagline)}</p>
     </div>
     <p class="plan-price">${billed(f.month)}</p>
-    <p class="plan-jetons">${icon('pencil')}${f.modifs}</p>
+    <p class="plan-jetons">${icon('lightbulb')}${f.bulle || f.modifs}</p>
     <ul class="plan-list">${f.features.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>
     ${choose ? btn(creerUrl({ forfait: f.id }), 'btn-primary btn-block', null, `Choisir ${f.name}`) : ''}
   </article>`

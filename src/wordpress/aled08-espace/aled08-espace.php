@@ -91,6 +91,7 @@ require_once __DIR__ . '/includes/compte.php';
 require_once __DIR__ . '/includes/inscription.php';
 require_once __DIR__ . '/includes/changer.php';
 require_once __DIR__ . '/includes/gestion.php';
+require_once __DIR__ . '/includes/stats.php';
 
 /* =========================================================================
  *  Rôle « Client Alex & Lia » et type de contenu « Demande »
@@ -948,7 +949,9 @@ function aled08e_dashboard() {
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-tableau" aria-labelledby="tab-tableau" hidden>
-          <h2 class="app-h">Tableau de bord<?php echo $mois ? ' : ' . esc_html($mois) : ''; ?></h2>
+          <h2 class="app-h">Tableau de bord</h2>
+          <?php echo aled08e_stats_html($uid); // phpcs:ignore ?>
+          <p class="app-sub">Votre rapport du mois<?php echo $mois ? ' : ' . esc_html($mois) : ''; ?></p>
           <?php if ($stats || $ranks) : ?>
             <?php if ($stats) : ?><div class="kpis"><?php echo implode('', $stats); // phpcs:ignore ?></div><?php endif; ?>
             <?php if ($ranks) : ?><p class="app-sub">Vos meilleures recherches sur Google</p><ul class="ranks"><?php echo implode('', $ranks); // phpcs:ignore ?></ul><?php endif; ?>

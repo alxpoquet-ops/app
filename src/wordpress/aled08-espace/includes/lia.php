@@ -567,5 +567,10 @@ add_action('aled08_lia_test_liaison', function ($uid = 0) {
     $res = ['uid' => $uid, 'le' => current_time('mysql'), 'ok' => !is_wp_error($r), 'cle_claude' => aled08e_lia_cle() !== ''];
     if (is_wp_error($r)) $res['erreur'] = $r->get_error_message();
     else $res['site'] = array_intersect_key((array) $r, ['nom' => 1, 'url' => 1, 'connecteur' => 1, 'wordpress' => 1]);
+    if (!is_wp_error($r) && function_exists('aled08e_stats_lire')) {
+        delete_transient('aled08_stats_' . $uid);
+        $st = aled08e_stats_lire($uid);
+        $res['stats'] = ['etat' => $st['etat'] ?? '', 'aujourdhui' => array_diff_key((array) ($st['aujourdhui'] ?? []), ['heures' => 1]), 'appareils' => $st['appareils'] ?? null, 'serveur' => array_intersect_key((array) ($st['serveur'] ?? []), ['memoire' => 1, 'memoire_max' => 1, 'charge' => 1, 'temps_reponse' => 1, 'php' => 1])];
+    }
     update_option('aled08_lia_test', $res, false);
 }, 10, 1);

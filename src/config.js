@@ -141,6 +141,7 @@ const forfaits = [
     quota: 1, // modifications par Alex, par mois
     jetons: 2, // modifications par Lia, par mois
     partage: false,
+    bulle: 'Le forfait de base pour faire tourner votre site',
     modifs: 'Deux modifications par Lia et une par Alex, chaque mois',
     tagline: 'L’essentiel',
     pitch: 'Votre site en ligne, sûr et à jour, sur un serveur de qualité. Deux modifications par Lia et une par Alex, chaque mois.',
@@ -156,6 +157,7 @@ const forfaits = [
     quota: 2, // modifications par Alex, par mois
     jetons: 4, // modifications par Lia, par mois
     partage: false,
+    bulle: 'Pour être trouvé sur Google et faire vivre votre site',
     modifs: 'Quatre modifications par Lia et deux par Alex, chaque mois',
     conseil: true,
     tagline: 'Pour être trouvé',
@@ -172,13 +174,14 @@ const forfaits = [
     quota: 2, // modifications par Alex, par mois
     jetons: 10, // modifications par Lia, par mois
     partage: false,
+    bulle: 'Pour suivre votre site et vos ventes en direct',
     modifs: 'Dix modifications par Lia et deux par Alex, chaque mois',
     conseil: false,
     tagline: 'Le meilleur',
     pitch: 'Tout Power, plus le retour de vos ventes et de vos chiffres chaque mois, et dix modifications par Lia chaque mois.',
-    main: ['Tout ce que comprend Power', 'Vos ventes et vos chiffres chaque mois', 'Dix modifications par Lia et deux par Alex, chaque mois'],
-    details: ['Tout ce que comprend Power, et en plus :', 'Un rapport chaque mois : vos ventes, vos visites et vos chiffres, expliqués simplement', 'Dix modifications par Lia et deux par Alex, chaque mois', 'Avec Alex, réponse sous 24 heures'],
-    features: ['Tout ce que comprend Power', 'Retour de vos ventes et de vos chiffres chaque mois', 'Dix modifications par Lia et deux par Alex, chaque mois'],
+    main: ['Tout ce que comprend Power', 'Votre site en direct : visiteurs, ventes, serveur', 'Dix modifications par Lia et deux par Alex, chaque mois'],
+    details: ['Tout ce que comprend Power, et en plus :', 'Votre site en direct : visiteurs en ce moment, pages vues, appareils, provenance, mémoire et charge du serveur, mis à jour toutes les 30 secondes', 'Un rapport chaque mois : vos ventes, vos visites et vos chiffres, expliqués simplement', 'Dix modifications par Lia et deux par Alex, chaque mois', 'Avec Alex, réponse sous 24 heures'],
+    features: ['Tout ce que comprend Power', 'Votre site en direct : visiteurs, ventes, serveur', 'Retour de vos ventes et de vos chiffres chaque mois', 'Dix modifications par Lia et deux par Alex, chaque mois'],
   },
 ];
 const annuel = { moisOfferts: 2 };

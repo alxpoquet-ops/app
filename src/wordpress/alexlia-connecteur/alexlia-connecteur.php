@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Alex & Lia : connecteur
  * Description: À installer sur le site d'un client. Permet à Lia (l'IA d'Alex & Lia) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 1.1.0
+ * Version: 1.2.2
  * Requires PHP: 7.4
  * Author: Alex & Lia
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '1.1.0');
+define('ALEXLIA_CONN_VERSION', '1.2.2');
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Lia (Réglages › Alex & Lia)
@@ -115,6 +115,7 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'preparer': return alexlia_conn_preparer($args);
         case 'appliquer': return alexlia_conn_appliquer($args);
         case 'abandonner': return alexlia_conn_abandonner($args);
+        case 'stats': return alexlia_conn_stats();
         default: return new WP_Error('alexlia_action', 'Action inconnue.', ['status' => 400]);
     }
 }
@@ -373,3 +374,118 @@ add_action('init', function () {
     $bandeau = function () { echo '<div style="position:sticky;top:0;z-index:99999;background:#2E2A47;color:#fff;font:600 15px/1.4 system-ui,sans-serif;text-align:center;padding:10px 14px">Aperçu préparé par Lia : rien n’est encore en ligne. Confirmez dans votre espace Alex &amp; Lia.</div>'; };
     add_action('wp_body_open', $bandeau);
 });
+
+
+/* =========================================================================
+ *  Statistiques du site, pour le tableau de bord du client (forfait Titan)
+ *  Mesure d'audience sans cookie : chaque visiteur est compté par une empreinte
+ *  anonyme (adresse IP + navigateur + sel du jour), jamais conservée en clair,
+ *  et le sel change chaque jour. Aucune donnée personnelle n'est gardée.
+ * ========================================================================= */
+function alexlia_stats_get() { $s = get_option('alexlia_stats'); return is_array($s) ? $s : ['jours' => [], 'srv' => []]; }
+function alexlia_stats_robot($ua) { return $ua === '' || (bool) preg_match('/bot|crawl|spider|slurp|facebookexternalhit|preview|monitor|curl|wget|python|headless|lighthouse|pingdom|uptime/i', $ua); }
+
+add_action('template_redirect', function () {
+    if (is_admin() || wp_doing_ajax() || is_feed() || is_preview() || is_404() || (defined('REST_REQUEST') && REST_REQUEST)) return;
+    if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET' || isset($_GET['alexlia_apercu']) || is_user_logged_in()) return;
+    $ua = (string) ($_SERVER['HTTP_USER_AGENT'] ?? '');
+    if (alexlia_stats_robot($ua)) return;
+    $GLOBALS['alexlia_stats_hit'] = ['ua' => $ua, 'url' => (string) wp_parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH), 'ref' => (string) ($_SERVER['HTTP_REFERER'] ?? '')];
+}, 1);
+
+add_action('shutdown', function () {
+    $hit = $GLOBALS['alexlia_stats_hit'] ?? null;
+    if (!$hit) return;
+    $jour = wp_date('Y-m-d');
+    $sel = get_option('alexlia_stats_sel');
+    if (!is_array($sel) || ($sel['jour'] ?? '') !== $jour) { $sel = ['jour' => $jour, 'sel' => wp_generate_password(32, false, false)]; update_option('alexlia_stats_sel', $sel, false); }
+    $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
+    $empreinte = substr(hash('sha256', $sel['sel'] . '|' . $ip . '|' . $hit['ua']), 0, 16);
+
+    $s = alexlia_stats_get();
+    $d = $s['jours'][$jour] ?? ['vues' => 0, 'visiteurs' => 0, 'vus' => [], 'pages' => [], 'sources' => [], 'appareils' => ['mobile' => 0, 'ordinateur' => 0, 'tablette' => 0], 'heures' => array_fill(0, 24, 0), 'temps' => 0, 'mesures' => 0];
+    $d['vues']++;
+    $d['heures'][(int) wp_date('G')]++;
+    if (!isset($d['vus'][$empreinte])) {
+        if (count($d['vus']) < 5000) $d['vus'][$empreinte] = 1;
+        $d['visiteurs']++;
+        $type = preg_match('/ipad|tablet/i', $hit['ua']) ? 'tablette' : (preg_match('/mobi|android|iphone/i', $hit['ua']) ? 'mobile' : 'ordinateur');
+        $d['appareils'][$type]++;
+        $hote = (string) wp_parse_url($hit['ref'], PHP_URL_HOST);
+        $hote = preg_replace('/^www\./', '', strtolower($hote));
+        $ici = preg_replace('/^www\./', '', strtolower((string) wp_parse_url(home_url(), PHP_URL_HOST)));
+        $src = $hote === '' || $hote === $ici ? 'Accès direct' : (preg_match('/google\./', $hote) ? 'Google' : (preg_match('/facebook|fb\.|instagram/', $hote) ? 'Réseaux sociaux' : (preg_match('/bing|qwant|duckduckgo|ecosia|yahoo/', $hote) ? 'Autres moteurs' : 'Autres sites')));
+        $d['sources'][$src] = ($d['sources'][$src] ?? 0) + 1;
+    }
+    $page = mb_substr($hit['url'] ?: '/', 0, 120);
+    $d['pages'][$page] = ($d['pages'][$page] ?? 0) + 1;
+    if (count($d['pages']) > 60) { arsort($d['pages']); $d['pages'] = array_slice($d['pages'], 0, 40, true); }
+    if (!empty($_SERVER['REQUEST_TIME_FLOAT'])) { $d['temps'] += max(0, microtime(true) - (float) $_SERVER['REQUEST_TIME_FLOAT']); $d['mesures']++; }
+    $s['jours'][$jour] = $d;
+    // trente jours gardés ; les empreintes des jours passés sont effacées
+    ksort($s['jours']);
+    foreach (array_keys($s['jours']) as $k) { if ($k !== $jour) unset($s['jours'][$k]['vus']); }
+    $s['jours'] = array_slice($s['jours'], -31, null, true);
+    $s['srv'] = ['memoire' => memory_get_peak_usage(true), 'le' => time()];
+    // visiteurs présents ces 5 dernières minutes
+    $actifs = get_transient('alexlia_actifs');
+    $actifs = is_array($actifs) ? $actifs : [];
+    $actifs[$empreinte] = time();
+    $actifs = array_filter($actifs, function ($t) { return $t > time() - 300; });
+    set_transient('alexlia_actifs', array_slice($actifs, -500, null, true), 600);
+    update_option('alexlia_stats', $s, false);
+}, 99);
+
+function alexlia_conn_octets($v) {
+    $v = trim((string) $v); if ($v === '' || $v === '-1') return 0;
+    $n = (float) $v; $u = strtolower(substr($v, -1));
+    return (int) ($u === 'g' ? $n * 1073741824 : ($u === 'm' ? $n * 1048576 : ($u === 'k' ? $n * 1024 : $n)));
+}
+function alexlia_conn_stats() {
+    $s = alexlia_stats_get();
+    $jour = wp_date('Y-m-d');
+    $jours = [];
+    for ($i = 29; $i >= 0; $i--) {
+        $k = wp_date('Y-m-d', time() - $i * DAY_IN_SECONDS);
+        $d = $s['jours'][$k] ?? [];
+        $jours[] = ['jour' => $k, 'vues' => (int) ($d['vues'] ?? 0), 'visiteurs' => (int) ($d['visiteurs'] ?? 0)];
+    }
+    $auj = $s['jours'][$jour] ?? [];
+    $somme = function ($cle) use ($s) { $t = []; foreach ($s['jours'] as $d) foreach ((array) ($d[$cle] ?? []) as $k => $v) $t[$k] = ($t[$k] ?? 0) + (int) $v; arsort($t); return $t; };
+    $actifs = get_transient('alexlia_actifs');
+    $actifs = is_array($actifs) ? count(array_filter($actifs, function ($t) { return $t > time() - 300; })) : 0;
+    $tps = 0; $mes = 0; foreach ($s['jours'] as $d) { $tps += (float) ($d['temps'] ?? 0); $mes += (int) ($d['mesures'] ?? 0); }
+    $charge = function_exists('sys_getloadavg') ? @sys_getloadavg() : false;
+    $coeurs = 0;
+    if (@is_readable('/proc/cpuinfo')) { $ci = (string) @file_get_contents('/proc/cpuinfo'); $coeurs = preg_match_all('/^processor\s*:/m', $ci); }
+    $libre = function_exists('disk_free_space') ? @disk_free_space(ABSPATH) : false;
+    $total = function_exists('disk_total_space') ? @disk_total_space(ABSPATH) : false;
+    $comptes = wp_count_posts('page'); $articles = wp_count_posts('post');
+    $boutique = null;
+    if (function_exists('wc_get_orders')) {
+        $cmd30 = wc_get_orders(['limit' => 500, 'status' => ['wc-processing', 'wc-completed'], 'date_created' => '>' . (time() - 30 * DAY_IN_SECONDS), 'return' => 'objects']);
+        $ca = 0.0; $auj_n = 0; foreach ($cmd30 as $o) { $ca += (float) $o->get_total(); if ($o->get_date_created() && $o->get_date_created()->date('Y-m-d') === $jour) $auj_n++; }
+        $prod = wp_count_posts('product');
+        $boutique = ['commandes_30j' => count($cmd30), 'commandes_aujourdhui' => $auj_n, 'ventes_30j' => round($ca, 2), 'produits' => (int) ($prod->publish ?? 0), 'devise' => function_exists('get_woocommerce_currency') ? get_woocommerce_currency() : 'EUR'];
+    }
+    return [
+        'le' => time(),
+        'aujourdhui' => ['vues' => (int) ($auj['vues'] ?? 0), 'visiteurs' => (int) ($auj['visiteurs'] ?? 0), 'actifs' => $actifs, 'heures' => array_values(array_map('intval', (array) ($auj['heures'] ?? array_fill(0, 24, 0))))],
+        'jours' => $jours,
+        'pages' => array_slice($somme('pages'), 0, 8, true),
+        'sources' => $somme('sources'),
+        'appareils' => $somme('appareils'),
+        'serveur' => [
+            'memoire' => (int) ($s['srv']['memoire'] ?? memory_get_peak_usage(true)),
+            'memoire_max' => alexlia_conn_octets(ini_get('memory_limit')),
+            'coeurs' => $coeurs ?: null,
+            'charge' => is_array($charge) ? array_map(function ($v) { return round((float) $v, 2); }, $charge) : null,
+            'disque_libre' => $libre !== false ? (int) $libre : null,
+            'disque_total' => $total !== false ? (int) $total : null,
+            'temps_reponse' => $mes ? round($tps / $mes, 3) : null,
+            'php' => PHP_VERSION, 'wordpress' => get_bloginfo('version'), 'https' => is_ssl() || strpos(home_url(), 'https://') === 0,
+        ],
+        'contenu' => ['pages' => (int) ($comptes->publish ?? 0), 'articles' => (int) ($articles->publish ?? 0)],
+        'boutique' => $boutique,
+    ];
+}

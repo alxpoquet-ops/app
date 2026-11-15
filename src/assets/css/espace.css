@@ -209,3 +209,70 @@ a.app-card { text-decoration: none; color: inherit; }
 .jauge-coeur { color: var(--pink-d); font-size: .85em; animation: esp-coeur 2.4s ease-in-out infinite; display: inline-block; }
 @keyframes esp-coeur { 0%, 100% { transform: scale(1); } 12% { transform: scale(1.25); } 24% { transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .jauge-coeur { animation: none; } }
+
+/* ---------- tableau de bord en direct (Titan) ---------- */
+.live { position: relative; margin: 0 0 22px; padding: 16px; border-radius: 22px; background: var(--soft); }
+.live-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px; }
+.live-head .app-sub { margin: 0; display: flex; align-items: center; gap: 8px; }
+.live-maj { color: var(--muted); font-weight: 700; font-size: .8rem; }
+.live-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--mint-d); box-shadow: 0 0 0 0 var(--mint-d); animation: live-pulse 2s infinite; }
+@keyframes live-pulse { 0% { box-shadow: 0 0 0 0 rgba(52, 178, 127, .6); } 70% { box-shadow: 0 0 0 9px rgba(52, 178, 127, 0); } 100% { box-shadow: 0 0 0 0 rgba(52, 178, 127, 0); } }
+.live .esp-warn { margin: 12px 0 0; }
+.live-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 14px 0; }
+.live-kpi { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 16px; background: var(--card); }
+.live-kpi-ico { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: var(--c); color: var(--c-dd); flex: none; }
+.live-kpi-ico .ico { width: 20px; height: 20px; }
+.live-kpi small { display: block; color: var(--muted); font-weight: 700; font-size: .78rem; line-height: 1.2; }
+.live-kpi strong { font-size: 1.45rem; line-height: 1.1; color: var(--ink); }
+.live-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.live-card { padding: 14px; border-radius: 16px; background: var(--card); min-width: 0; }
+.live-wide { grid-column: 1 / -1; }
+.live-title { margin: 0 0 8px; font-weight: 900; font-size: .92rem; color: var(--ink); }
+.live-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.live-svg .grid { stroke: var(--edge); stroke-width: 1; }
+.live-svg .axe { fill: var(--muted); font: 700 11px var(--font); }
+.live-svg .line-a { fill: none; stroke: var(--mint-d); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.live-svg .line-b { fill: none; stroke: var(--sky-d); stroke-width: 2; stroke-dasharray: 5 5; opacity: .8; }
+.live-svg .area { fill: var(--mint-d); opacity: .15; }
+.live-svg .bar { fill: var(--lilac-d); opacity: .55; }
+.live-svg .bar.now { opacity: 1; fill: var(--pink-d); }
+.live-legend { margin: 6px 0 0; display: flex; gap: 14px; align-items: center; color: var(--muted); font-size: .8rem; font-weight: 700; }
+.lg { display: inline-block; width: 18px; height: 3px; border-radius: 3px; margin-right: -8px; }
+.lg-a { background: var(--mint-d); } .lg-b { background: var(--sky-d); }
+.live-donut { display: flex; align-items: center; gap: 12px; }
+.live-donut .donut { width: 120px; flex: none; }
+.donut-bg { fill: none; stroke: var(--edge); stroke-width: 16; }
+.donut-part { fill: none; stroke-width: 16; transition: stroke-dasharray .6s; }
+.donut-total { fill: var(--ink); font: 900 18px var(--font); }
+.donut-leg { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: .82rem; font-weight: 700; color: var(--ink); min-width: 0; }
+.donut-leg i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.live-bars { display: grid; gap: 7px; }
+.pb { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 8px; font-size: .82rem; font-weight: 700; }
+.pb-l { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+.pb-v { color: var(--muted); }
+.pb-b { grid-column: 1 / -1; height: 6px; border-radius: 6px; background: var(--edge); overflow: hidden; }
+.pb-b i { display: block; height: 100%; border-radius: 6px; background: var(--peach-d); transition: width .6s; }
+.live-vide { margin: 0; color: var(--muted); font-size: .85rem; }
+.live-gauges { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; text-align: center; }
+.live-gauge svg { width: 100%; max-width: 150px; display: block; margin: 0 auto; }
+.live-gauge .g-bg, .live-gauge .g-val { fill: none; stroke-width: 12; stroke-linecap: round; }
+.live-gauge .g-bg { stroke: var(--edge); }
+.live-gauge .g-val { stroke: var(--mint-d); transition: stroke-dasharray .6s; }
+.live-gauge.is-haut .g-val { stroke: var(--peach-d); }
+.live-gauge strong { display: block; margin-top: -8px; font-size: 1rem; color: var(--ink); }
+.live-gauge small { color: var(--muted); font-weight: 700; font-size: .78rem; }
+.live-infos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 14px 0 0; }
+.live-infos div { padding: 8px 10px; border-radius: 12px; background: var(--soft); }
+.live-infos dt { font-size: .75rem; font-weight: 800; color: var(--muted); }
+.live-infos dd { margin: 0; font-weight: 900; color: var(--ink); font-size: .9rem; overflow-wrap: anywhere; }
+.live .app-note { margin-top: 12px; }
+.live.is-locked .live-kpis, .live.is-locked .live-grid { filter: blur(3px) saturate(.8); opacity: .55; pointer-events: none; user-select: none; }
+.live-lock { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(92%, 380px); display: grid; justify-items: center; gap: 8px; padding: 20px; border-radius: 20px; background: var(--card); box-shadow: var(--shadow-sm), 0 0 0 2px var(--peach-d) inset; text-align: center; }
+.live-lock > span { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: var(--peach); color: var(--peach-dd); }
+.live-lock p { margin: 0; color: var(--muted); font-size: .9rem; }
+@media (max-width: 720px) {
+  .live-grid { grid-template-columns: 1fr; }
+  .live-gauges, .live-infos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .live-gauges .live-gauge:last-child { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
