@@ -486,3 +486,17 @@ function aled08e_lia_bloc_confirmation($p) {
         . '</form></div>';
     return $h;
 }
+
+/* =========================================================================
+ *  Test de la liaison avec le site d'un client (sans passer par Claude)
+ *  Tâche planifiée « aled08_lia_test_liaison » : appelle l'action « infos » du connecteur
+ *  et garde le résultat dans l'option aled08_lia_test (aucun secret n'y est écrit).
+ * ========================================================================= */
+add_action('aled08_lia_test_liaison', function ($uid = 0) {
+    $uid = (int) $uid;
+    $r = aled08e_lia_appel($uid, 'infos', []);
+    $res = ['uid' => $uid, 'le' => current_time('mysql'), 'ok' => !is_wp_error($r), 'cle_claude' => aled08e_lia_cle() !== ''];
+    if (is_wp_error($r)) $res['erreur'] = $r->get_error_message();
+    else $res['site'] = array_intersect_key((array) $r, ['nom' => 1, 'url' => 1, 'connecteur' => 1, 'wordpress' => 1]);
+    update_option('aled08_lia_test', $res, false);
+}, 10, 1);
