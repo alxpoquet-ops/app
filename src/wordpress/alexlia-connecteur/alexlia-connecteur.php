@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Alex & Lia : connecteur
  * Description: À installer sur le site d'un client. Permet à Lia (l'IA d'Alex & Lia) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 1.4.0
+ * Version: 1.5.0
  * Requires PHP: 7.4
  * Author: Alex & Lia
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '1.4.0');
+define('ALEXLIA_CONN_VERSION', '1.5.0');
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Lia (Réglages › Alex & Lia)
@@ -494,7 +494,26 @@ function alexlia_conn_stats() {
         ],
         'contenu' => ['pages' => (int) ($comptes->publish ?? 0), 'articles' => (int) ($articles->publish ?? 0)],
         'boutique' => $boutique,
+        'google' => alexlia_conn_google(),
     ];
+}
+
+/* Les recherches Google qui amènent au site : lues dans les données Search Console que Rank Math
+ * enregistre sur le site (si Search Console est relié dans Rank Math). Sinon : null, avec la raison. */
+function alexlia_conn_google() {
+    global $wpdb;
+    $t = $wpdb->prefix . 'rank_math_analytics_gsc';
+    if (!defined('RANK_MATH_VERSION') && !class_exists('RankMath')) return ['etat' => 'sans_rank_math'];
+    if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $t)) !== $t) return ['etat' => 'non_relie'];
+    $cols = $wpdb->get_col("SHOW COLUMNS FROM `$t`");
+    foreach (['created', 'query', 'impressions', 'clicks', 'position'] as $c) if (!in_array($c, (array) $cols, true)) return ['etat' => 'format_inconnu'];
+    $depuis = gmdate('Y-m-d H:i:s', time() - 28 * DAY_IN_SECONDS);
+    $tot = $wpdb->get_row($wpdb->prepare("SELECT SUM(impressions) i, SUM(clicks) c FROM `$t` WHERE created >= %s", $depuis), ARRAY_A);
+    if (!$tot || !(int) $tot['i']) return ['etat' => 'vide'];
+    $rows = $wpdb->get_results($wpdb->prepare("SELECT query q, SUM(impressions) i, SUM(clicks) c, SUM(position * impressions) / NULLIF(SUM(impressions), 0) p FROM `$t` WHERE created >= %s AND query <> '' GROUP BY query ORDER BY SUM(clicks) DESC, SUM(impressions) DESC LIMIT 8", $depuis), ARRAY_A);
+    $liste = [];
+    foreach ((array) $rows as $r) $liste[] = ['recherche' => (string) $r['q'], 'position' => round((float) $r['p'], 1), 'apparitions' => (int) $r['i'], 'clics' => (int) $r['c']];
+    return ['etat' => 'ok', 'jours' => 28, 'apparitions' => (int) $tot['i'], 'clics' => (int) $tot['c'], 'recherches' => $liste];
 }
 
 

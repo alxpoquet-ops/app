@@ -56,12 +56,13 @@ function aled08e_stats_html($uid) {
   </ul>
   <p class="esp-warn" data-live-msg hidden></p>
   <div class="live-kpis">
-    <?php echo $carte('total', 'users', 'Visiteurs sur 30 jours', 'mint'); // phpcs:ignore ?>
+    <?php echo $carte('total', 'users', 'Visiteurs sur 30 jours', 'mint') . $carte('google', 'search', 'Apparitions sur Google', 'sky'); // phpcs:ignore ?>
     <?php echo str_replace('class="live-kpi', 'data-si-boutique' . ($boutique ? '' : ' hidden') . ' class="live-kpi', $carte('commandes', 'shopping-bag', 'Commandes sur 30 jours', 'lilac') . $carte('ventes', 'euro', 'Ventes sur 30 jours', 'peach')); // phpcs:ignore ?>
   </div>
   <?php if (!$complet) : ?>
   <div class="live-grid">
-    <div class="live-card live-wide"><p class="live-title">Pages les plus vues</p><div class="live-bars" data-chart="pages"></div></div>
+    <div class="live-card"><p class="live-title">Vos meilleures recherches sur Google</p><div data-chart="google"></div></div>
+    <div class="live-card"><p class="live-title">Pages les plus vues</p><div class="live-bars" data-chart="pages"></div></div>
   </div>
   <div class="live-titan"><span><?php echo aled08e_icon('chart-line'); // phpcs:ignore ?></span><div><strong>Envie de plus de détails ?</strong><p>Avec Titan : la courbe de vos visites, les appareils, d’où viennent vos visiteurs, et la santé de votre serveur.</p></div><button type="button" class="btn btn-light btn-sm" data-go="forfait"><?php echo aled08e_icon('arrow-right'); // phpcs:ignore ?><span>Voir Titan</span></button></div>
   <?php else : ?>
@@ -71,6 +72,7 @@ function aled08e_stats_html($uid) {
     <div class="live-card"><p class="live-title">Appareils</p><div class="live-donut" data-chart="appareils"></div></div>
     <div class="live-card"><p class="live-title">D’où viennent vos visiteurs</p><div class="live-donut" data-chart="sources"></div></div>
     <div class="live-card"><p class="live-title">Pages les plus vues</p><div class="live-bars" data-chart="pages"></div></div>
+    <div class="live-card live-wide"><p class="live-title">Vos meilleures recherches sur Google</p><div data-chart="google"></div></div>
     <div class="live-card live-wide"><p class="live-title">Votre serveur</p>
       <div class="live-gauges">
         <div class="live-gauge" data-gauge="memoire"><svg viewBox="0 0 120 70" aria-hidden="true"><path d="M10 60a50 50 0 0 1 100 0" class="g-bg"/><path d="M10 60a50 50 0 0 1 100 0" class="g-val" pathLength="100" stroke-dasharray="0 100"/></svg><strong>0 %</strong><small>Mémoire (RAM) de votre site</small></div>
@@ -152,6 +154,20 @@ function aled08e_stats_html($uid) {
     if (!cles.length) { n.innerHTML = '<p class="live-vide">Les pages les plus vues s’afficheront ici.</p>'; return; }
     cles.forEach(function (k) { var d = document.createElement('div'); d.className = 'pb'; d.innerHTML = '<span class="pb-l"></span><span class="pb-v"></span><span class="pb-b"><i style="width:' + Math.round(obj[k] / max * 100) + '%"></i></span>'; d.children[0].textContent = k === '/' ? 'Accueil' : decodeURIComponent(k); d.children[1].textContent = nf(obj[k]); n.appendChild(d); });
   }
+  var GMSG = { non_relie: 'Vos recherches Google s’afficheront ici dès que Google Search Console sera relié à votre site. Alex s’en occupe.', sans_rank_math: 'Vos recherches Google s’afficheront ici dès que Google Search Console sera relié à votre site. Alex s’en occupe.', vide: 'Google n’a pas encore envoyé de chiffres. Ça prend souvent quelques jours après la liaison.', format_inconnu: 'Les recherches Google ne sont pas lisibles pour le moment. Alex regarde.' };
+  function recherches(n, g) {
+    if (!n) return; vider(n);
+    if (!g || g.etat !== 'ok' || !(g.recherches || []).length) { var p = document.createElement('p'); p.className = 'live-vide'; p.textContent = GMSG[(g || {}).etat] || GMSG.non_relie; n.appendChild(p); return; }
+    var ul = document.createElement('ul'); ul.className = 'ranks';
+    g.recherches.forEach(function (r) {
+      var li = document.createElement('li'), s = document.createElement('span'), b = document.createElement('b'), sm = document.createElement('small');
+      s.textContent = r.recherche; sm.textContent = nf(r.apparitions) + ' apparitions · ' + nf(r.clics) + ' clics';
+      s.appendChild(sm); var pos = Math.max(1, Math.round(r.position)); b.innerHTML = pos + '<sup>' + (pos === 1 ? 'er' : 'e') + '</sup>';
+      li.appendChild(s); li.appendChild(b); ul.appendChild(li);
+    });
+    n.appendChild(ul);
+    var note = document.createElement('p'); note.className = 'live-vide'; note.textContent = 'Position moyenne dans Google sur les ' + (g.jours || 28) + ' derniers jours.'; n.appendChild(note);
+  }
   function jauge(nom, pct, texte) {
     var g = box.querySelector('[data-gauge="' + nom + '"]'); if (!g) return;
     pct = Math.max(0, Math.min(100, pct || 0));
@@ -184,6 +200,8 @@ function aled08e_stats_html($uid) {
     var set = function (k, v) { var e = $('[data-live="' + k + '"]'); if (e) e.textContent = v; };
     set('total', nf((d.jours || []).reduce(function (t, j) { return t + (+j.visiteurs || 0); }, 0)));
     if (b) { set('commandes', nf(b.commandes_30j || 0)); set('ventes', nf(b.ventes_30j || 0) + ' €'); }
+    var g = d.google || {}; set('google', g.etat === 'ok' ? nf(g.apparitions || 0) : '–');
+    recherches($('[data-chart="google"]'), g);
     courbe($('[data-chart="jours"]'), d.jours || []);
     barres($('[data-chart="heures"]'), a.heures || new Array(24).fill(0), 'Visites heure par heure');
     camembert($('[data-chart="appareils"]'), d.appareils || {});
@@ -203,7 +221,7 @@ function aled08e_stats_html($uid) {
   }
   var vide = { aujourdhui: { heures: new Array(24).fill(0) }, jours: Array.from({ length: 30 }, function () { return { vues: 0, visiteurs: 0 }; }), serveur: {} };
   if (!actif) {
-    var ex = { aujourdhui: { actifs: 3, visiteurs: 48, vues: 131, heures: [0,0,0,0,0,0,1,2,4,6,7,5,6,4,5,6,8,9,7,5,3,2,1,0] }, jours: Array.from({ length: 30 }, function (_, i) { var v = 20 + Math.round(18 * Math.sin(i / 3) + i); return { visiteurs: v, vues: v * 3 }; }), appareils: { mobile: 64, ordinateur: 30, tablette: 6 }, sources: { Google: 52, 'Accès direct': 27, 'Réseaux sociaux': 15, 'Autres sites': 6 }, pages: { '/': 60, '/contact/': 22, '/tarifs/': 17 }, serveur: { memoire: 64 * 1048576, memoire_max: 256 * 1048576, charge: [0.6], disque_libre: 6e9, disque_total: 10e9, temps_reponse: 0.32, https: true, php: '8.3', wordpress: '7.1' }, contenu: { pages: 6, articles: 4 }, boutique: { commandes_aujourdhui: 2, commandes_30j: 14, ventes_30j: 845, produits: 20 } };
+    var ex = { aujourdhui: { actifs: 3, visiteurs: 48, vues: 131, heures: [0,0,0,0,0,0,1,2,4,6,7,5,6,4,5,6,8,9,7,5,3,2,1,0] }, jours: Array.from({ length: 30 }, function (_, i) { var v = 20 + Math.round(18 * Math.sin(i / 3) + i); return { visiteurs: v, vues: v * 3 }; }), appareils: { mobile: 64, ordinateur: 30, tablette: 6 }, sources: { Google: 52, 'Accès direct': 27, 'Réseaux sociaux': 15, 'Autres sites': 6 }, pages: { '/': 60, '/contact/': 22, '/tarifs/': 17 }, serveur: { memoire: 64 * 1048576, memoire_max: 256 * 1048576, charge: [0.6], disque_libre: 6e9, disque_total: 10e9, temps_reponse: 0.32, https: true, php: '8.3', wordpress: '7.1' }, contenu: { pages: 6, articles: 4 }, boutique: { commandes_aujourdhui: 2, commandes_30j: 14, ventes_30j: 845, produits: 20 }, google: { etat: 'ok', jours: 28, apparitions: 3420, clics: 186, recherches: [{ recherche: 'tarte aux fraises rethel', position: 2.1, apparitions: 410, clics: 64 }, { recherche: 'pâtisserie rethel', position: 4.3, apparitions: 980, clics: 71 }, { recherche: 'gâteau d’anniversaire ardennes', position: 8.8, apparitions: 520, clics: 19 }] } };
     afficher(ex); return;
   }
   afficher(vide); voyants({ etat: 'attente' });

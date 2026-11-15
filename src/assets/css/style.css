@@ -1519,3 +1519,14 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
   .doc-th-art { width: 36px; height: 36px; }
 }
 .doc-table thead th:first-child { background: transparent; }
+
+/* tableau de bord : recherches Google (démo et vrai espace) */
+.ranks li > span small { display: block; color: var(--muted); font-size: .8rem; font-weight: 600; }
+.ranks-pages b { color: var(--ink); }
+.kpis-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.demo-voyants { list-style: none; padding: 0; margin: 0 0 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.demo-voyants li { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: var(--soft); }
+.demo-voyants i { width: 12px; height: 12px; border-radius: 50%; background: var(--mint-d); box-shadow: 0 0 0 4px var(--mint); flex: none; }
+.demo-voyants strong { display: block; color: var(--ink); font-size: .88rem; }
+.demo-voyants small { color: var(--muted); font-weight: 700; font-size: .8rem; }
+@media (max-width: 560px) { .demo-voyants { grid-template-columns: minmax(0, 1fr); } }

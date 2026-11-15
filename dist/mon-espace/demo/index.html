@@ -25,7 +25,7 @@
 <meta name="twitter:description" content="Essayez l’espace client Alex &amp; Lia : demandes de modification et leur suivi, tableau de bord, parrainage, forfait et factures. Démonstration.">
 <meta name="twitter:image" content="https://www.aled08.fr/assets/img/og-image.png">
 <link rel="preload" href="/assets/fonts/jakarta-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/style.css?v=ea1192a3">
+<link rel="stylesheet" href="/assets/css/style.css?v=21150b83">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -142,7 +142,7 @@
 <path d="M72 100q8 7 16 0" fill="none" stroke="#2E2A47" stroke-width="3.4" stroke-linecap="round"/>
 </g></svg></span><span><small>Votre forfait</small><strong data-app-plan-name>Power</strong><span data-app-plan-price>15 € par mois</span></span></button>
             <div class="app-card c-mint"><span class="app-card-ico"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /><path d="M2 12h20" /></svg></span><span><small>Votre site</small><strong>patisserie-lila.fr</strong><span class="dot-ok">En ligne</span></span></div>
-            <button type="button" class="app-card c-sky" data-go="visibilite"><span class="app-card-ico"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="m19 9-5 5-4-4-3 3" /></svg></span><span><small>Ce mois-ci</small><strong>1 240 visites</strong><span>+18 % sur un mois</span></span></button>
+            <button type="button" class="app-card c-sky" data-go="visibilite"><span class="app-card-ico"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="m19 9-5 5-4-4-3 3" /></svg></span><span><small>Sur 30 jours</small><strong>1 240 visiteurs</strong><span>Voir le tableau de bord</span></span></button>
           </div>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
@@ -173,20 +173,29 @@
 
         <div class="app-panel" role="tabpanel" id="t-visibilite" aria-labelledby="tab-visibilite" hidden>
           <h2 class="app-h">Tableau de bord</h2>
-          <div class="kpis">
-            <div><b>1 240</b><small>visites ce mois-ci</small></div>
+          <ul class="demo-voyants" aria-label="État de votre site">
+            <li><i></i><span><strong>Site en ligne</strong><small>Tout va bien</small></span></li>
+            <li><i></i><span><strong>Sécurité HTTPS</strong><small>Cadenas actif</small></span></li>
+            <li><i></i><span><strong>Vitesse</strong><small>Rapide</small></span></li>
+          </ul>
+          <div class="kpis kpis-2">
+            <div><b>1 240</b><small>visiteurs sur 30 jours</small></div>
             <div><b>3 420</b><small>apparitions sur Google</small></div>
-            <div><b>23</b><small>appels depuis le site</small></div>
-            <div><b>41</b><small>itinéraires demandés</small></div>
           </div>
-          <div class="stats-bars big" aria-hidden="true"><i style="height:30%"></i><i style="height:42%"></i><i style="height:38%"></i><i style="height:55%"></i><i style="height:49%"></i><i style="height:66%"></i><i style="height:61%"></i><i style="height:78%"></i></div>
           <p class="app-sub">Vos meilleures recherches sur Google</p>
           <ul class="ranks">
-            <li><span>tarte aux fraises rethel</span><b>2<sup>e</sup></b></li>
-            <li><span>pâtisserie rethel</span><b>4<sup>e</sup></b></li>
-            <li><span>gâteau d’anniversaire ardennes</span><b>9<sup>e</sup></b></li>
+            <li><span>tarte aux fraises rethel<small>410 apparitions · 64 clics</small></span><b>2<sup>e</sup></b></li>
+            <li><span>pâtisserie rethel<small>980 apparitions · 71 clics</small></span><b>4<sup>e</sup></b></li>
+            <li><span>gâteau d’anniversaire ardennes<small>520 apparitions · 19 clics</small></span><b>9<sup>e</sup></b></li>
           </ul>
-          <button type="button" class="btn btn-light" data-toast-msg="Rapport téléchargé (démo)"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 15V3" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /></svg><span>Rapport de novembre</span></button>
+          <p class="app-note">Position moyenne dans Google sur les 28 derniers jours.</p>
+          <p class="app-sub">Pages les plus vues</p>
+          <ul class="ranks ranks-pages">
+            <li><span>Accueil</span><b>612</b></li>
+            <li><span>Nos gâteaux</span><b>298</b></li>
+            <li><span>Contact et horaires</span><b>187</b></li>
+          </ul>
+          <p class="app-note">Avec Titan, en plus : la courbe de vos visites, les appareils, d’où viennent vos visiteurs et la santé de votre serveur.</p>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>

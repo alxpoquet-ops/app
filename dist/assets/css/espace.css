@@ -358,3 +358,7 @@ a.app-card { text-decoration: none; color: inherit; }
 .vac-btn.is-off { background: #e3e1ea; color: #8a8796; text-decoration: line-through; text-decoration-thickness: 1px; }
 .vac-legende { margin: 10px 0 0; color: var(--muted); font-size: .86rem; }
 @media (max-width: 900px) { .vac-wrap { grid-template-columns: minmax(0, 1fr); } .vac-apercu { position: static; order: -1; } }
+/* hors Titan : 3 voyants seulement (site, sécurité, vitesse) */
+.live.is-simple [data-voyant="serveur"], .live.is-simple [data-voyant="espace"] { display: none; }
+.live.is-simple .live-voyants { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 560px) { .live.is-simple .live-voyants { grid-template-columns: minmax(0, 1fr); } }

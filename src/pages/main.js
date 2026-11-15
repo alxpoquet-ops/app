@@ -809,7 +809,7 @@ function monEspacePage() {
           <div class="app-cards">
             <button type="button" class="app-card c-lilac" data-go="forfait"><span class="app-card-art" data-app-plan-art>${monster('power')}</span><span><small>Votre forfait</small><strong data-app-plan-name>${P.name}</strong><span data-app-plan-price>${euro(P.month)} par mois</span></span></button>
             <div class="app-card c-mint"><span class="app-card-ico">${icon('globe')}</span><span><small>Votre site</small><strong>patisserie-lila.fr</strong><span class="dot-ok">En ligne</span></span></div>
-            <button type="button" class="app-card c-sky" data-go="visibilite"><span class="app-card-ico">${icon('chart-line')}</span><span><small>Ce mois-ci</small><strong>1 240 visites</strong><span>+18 % sur un mois</span></span></button>
+            <button type="button" class="app-card c-sky" data-go="visibilite"><span class="app-card-ico">${icon('chart-line')}</span><span><small>Sur 30 jours</small><strong>1 240 visiteurs</strong><span>Voir le tableau de bord</span></span></button>
           </div>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
@@ -840,20 +840,29 @@ function monEspacePage() {
 
         <div class="app-panel" role="tabpanel" id="t-visibilite" aria-labelledby="tab-visibilite" hidden>
           <h2 class="app-h">Tableau de bord</h2>
-          <div class="kpis">
-            <div><b>1 240</b><small>visites ce mois-ci</small></div>
+          <ul class="demo-voyants" aria-label="État de votre site">
+            <li><i></i><span><strong>Site en ligne</strong><small>Tout va bien</small></span></li>
+            <li><i></i><span><strong>Sécurité HTTPS</strong><small>Cadenas actif</small></span></li>
+            <li><i></i><span><strong>Vitesse</strong><small>Rapide</small></span></li>
+          </ul>
+          <div class="kpis kpis-2">
+            <div><b>1 240</b><small>visiteurs sur 30 jours</small></div>
             <div><b>3 420</b><small>apparitions sur Google</small></div>
-            <div><b>23</b><small>appels depuis le site</small></div>
-            <div><b>41</b><small>itinéraires demandés</small></div>
           </div>
-          <div class="stats-bars big" aria-hidden="true">${[30, 42, 38, 55, 49, 66, 61, 78].map((h) => `<i style="height:${h}%"></i>`).join('')}</div>
           <p class="app-sub">Vos meilleures recherches sur Google</p>
           <ul class="ranks">
-            <li><span>tarte aux fraises rethel</span><b>2<sup>e</sup></b></li>
-            <li><span>pâtisserie rethel</span><b>4<sup>e</sup></b></li>
-            <li><span>gâteau d’anniversaire ardennes</span><b>9<sup>e</sup></b></li>
+            <li><span>tarte aux fraises rethel<small>410 apparitions · 64 clics</small></span><b>2<sup>e</sup></b></li>
+            <li><span>pâtisserie rethel<small>980 apparitions · 71 clics</small></span><b>4<sup>e</sup></b></li>
+            <li><span>gâteau d’anniversaire ardennes<small>520 apparitions · 19 clics</small></span><b>9<sup>e</sup></b></li>
           </ul>
-          <button type="button" class="btn btn-light" data-toast-msg="Rapport téléchargé (démo)">${icon('download')}<span>Rapport de novembre</span></button>
+          <p class="app-note">Position moyenne dans Google sur les 28 derniers jours.</p>
+          <p class="app-sub">Pages les plus vues</p>
+          <ul class="ranks ranks-pages">
+            <li><span>Accueil</span><b>612</b></li>
+            <li><span>Nos gâteaux</span><b>298</b></li>
+            <li><span>Contact et horaires</span><b>187</b></li>
+          </ul>
+          <p class="app-note">Avec Titan, en plus : la courbe de vos visites, les appareils, d’où viennent vos visiteurs et la santé de votre serveur.</p>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
@@ -1270,7 +1279,7 @@ ${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: 'Composez votre s
 function docPage() {
   const crumbs = crumb('documentation');
   const IMG = {
-    espace: [1500, 1040], demandes: [1500, 1155], chico: [1482, 825], titan: [1482, 2219],
+    espace: [1500, 1040], demandes: [1500, 1155], chico: [1482, 1044], titan: [1429, 2600],
     boutique: [1482, 1823], vacances: [654, 650], 'site-dodedo': [1500, 938], 'site-lndt': [1500, 938],
   };
   const fig = (k, alt, cap, cls = '') => `<figure class="doc-fig ${cls} reveal"><img src="/assets/img/doc/${k}.webp" width="${IMG[k][0]}" height="${IMG[k][1]}" alt="${esc(alt)}" loading="lazy" decoding="async"><figcaption>${cap}</figcaption></figure>`;
@@ -1414,7 +1423,7 @@ function docPage() {
   <div class="doc-compare">
     <div class="doc-compare-col reveal">
       <p class="doc-badge c-${ch.color}"><span>${monster(ch.id)}</span>${esc(ch.name)} et ${esc(pw.name)} : l’essentiel</p>
-      ${fig('chico', 'Tableau de bord simple', 'Les voyants de votre site, le total des visiteurs sur 30 jours, vos commandes et ventes si vous avez une boutique, et vos pages les plus vues.', 'doc-fig-flat')}
+      ${fig('chico', 'Tableau de bord simple', 'Les voyants de votre site, vos visiteurs sur 30 jours, vos apparitions et vos meilleures recherches sur Google, vos pages les plus vues, et vos commandes si vous avez une boutique.', 'doc-fig-flat')}
     </div>
     <div class="doc-compare-col reveal">
       <p class="doc-badge c-${ti.color}"><span>${monster(ti.id)}</span>${esc(ti.name)} : tout le détail</p>
