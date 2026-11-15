@@ -351,7 +351,9 @@ function aled08e_gestion($u) {
               <div class="ges-head"><strong><?php echo esc_html(aled08e_cmd_nom($c)); ?></strong><em class="st <?php echo esc_attr($s[1]); ?>"><?php echo esc_html($s[0]); ?></em></div>
               <p class="ges-meta"><?php echo esc_html($c['ref']); ?> · <?php echo esc_html($t ? $t['name'] : $c['type']); ?> · forfait <?php echo esc_html(aled08e_forfait($c['forfait'])['name']); ?><?php if ($c['domaine']) echo ' · ' . esc_html($c['domaine']); ?> · le <?php echo esc_html(aled08e_date($c['date'])); ?></p>
               <p class="ges-meta">Création <?php echo aled08e_euro($c['montants']['creation']); // phpcs:ignore ?>, acompte <?php echo aled08e_euro($c['montants']['acompte']); // phpcs:ignore ?><?php if (aled08e_cmd_reception_due($c)) echo ', <b>reste ' . aled08e_euro($c['montants']['solde']) . ' à régler</b>'; // phpcs:ignore ?></p>
-              <div class="ges-actions"><a class="btn btn-light btn-sm" href="<?php echo esc_url(aled08e_cmd_admin_url($c['id'])); ?>"><?php echo aled08e_icon('pencil'); // phpcs:ignore ?><span>Ouvrir la commande</span></a></div>
+              <?php $ble = function_exists('aled08e_brief_le') ? aled08e_brief_le($c['id']) : ''; ?>
+              <p class="ges-meta">Questionnaire : <?php echo $ble ? '<b>reçu le ' . esc_html(aled08e_date($ble)) . '</b>' : 'pas encore rempli'; // phpcs:ignore ?></p>
+              <div class="ges-actions"><a class="btn btn-light btn-sm" href="<?php echo esc_url(aled08e_cmd_admin_url($c['id'])); ?>"><?php echo aled08e_icon('pencil'); // phpcs:ignore ?><span>Ouvrir la commande</span></a><?php if ($ble) : ?> <a class="btn btn-primary btn-sm" href="<?php echo esc_url(add_query_arg('aled08e_brief', $c['id'], home_url('/'))); ?>"><?php echo aled08e_icon('download'); // phpcs:ignore ?><span>Questionnaire</span></a><?php endif; ?></div>
             </li>
             <?php endforeach; ?>
           </ul>

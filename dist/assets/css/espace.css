@@ -362,3 +362,42 @@ a.app-card { text-decoration: none; color: inherit; }
 .live.is-simple [data-voyant="serveur"], .live.is-simple [data-voyant="espace"] { display: none; }
 .live.is-simple .live-voyants { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 560px) { .live.is-simple .live-voyants { grid-template-columns: minmax(0, 1fr); } }
+
+/* questionnaire de création (onglet Ma commande) */
+.bf { margin: 22px 0; padding: 18px; border-radius: 22px; background: var(--card); box-shadow: 0 0 0 2px var(--mint) inset; }
+.bf-head { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 12px; align-items: start; }
+.bf-head h3 { margin: 0 0 4px; font-size: 1.12rem; color: var(--ink); }
+.bf-head p { margin: 0; color: var(--muted); font-size: .94rem; }
+.bf-ico { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--mint); color: var(--mint-dd); }
+.bf-details { margin-top: 14px; }
+.bf-details > summary { cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; background: var(--mint); color: var(--mint-dd); font-weight: 900; list-style: none; }
+.bf-details > summary::-webkit-details-marker { display: none; }
+.bf-details[open] > summary { margin-bottom: 14px; }
+.bf-form { display: grid; gap: 16px; }
+.bf-section { border: 0; margin: 0; padding: 16px; border-radius: 18px; background: var(--bg); display: grid; gap: 14px; min-width: 0; }
+.bf-section > legend { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 1.05rem; color: var(--ink); padding: 0; margin-bottom: 4px; float: left; width: 100%; }
+.bf-section > legend .ico { width: 20px; height: 20px; color: var(--mint-d); }
+.bf-section > legend + * { clear: both; }
+.bf-num { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--mint); color: var(--mint-dd); font-size: .82rem; }
+.bf-champ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.bf-champ legend { font-weight: 800; color: var(--ink); margin-bottom: 8px; padding: 0; }
+.bf-req { color: var(--pink-d); }
+.bf-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.bf-pill { position: relative; cursor: pointer; }
+.bf-pill input { position: absolute; opacity: 0; }
+.bf-pill span { display: inline-block; padding: 8px 14px; border-radius: 999px; background: var(--card); box-shadow: 0 0 0 2px var(--line) inset; font-weight: 700; font-size: .92rem; }
+.bf-pill input:checked + span { background: var(--mint); color: var(--mint-dd); box-shadow: 0 0 0 2px var(--mint-d) inset; }
+.bf-pill input:focus-visible + span { outline: 3px solid var(--lilac-d); outline-offset: 2px; }
+.bf-autre { margin-top: 8px; }
+.bf-liste { display: grid; gap: 10px; margin: 8px 0; }
+.bf-ligne { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; padding: 10px; border-radius: 14px; background: var(--card); }
+.bf-ligne label span { display: block; font-size: .8rem; font-weight: 800; color: var(--muted); margin-bottom: 4px; }
+.bf-ligne-img { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); }
+.bf-images { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.bf-img { display: grid; gap: 6px; padding: 8px; border-radius: 14px; background: var(--card); }
+.bf-img img, .bf-logo img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; }
+.bf-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.bf-logo img { width: 90px; aspect-ratio: 1; object-fit: contain; background: var(--card); }
+.bf-rappel { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.bf-rappel .ico { width: 20px; height: 20px; flex: none; }
+@media (max-width: 560px) { .bf-head { grid-template-columns: 44px minmax(0, 1fr); } .bf-head > .st { grid-column: 1 / -1; justify-self: start; } .bf-ligne-img { grid-template-columns: minmax(0, 1fr); } }

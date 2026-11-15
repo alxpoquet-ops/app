@@ -9,6 +9,7 @@ const FAQ = require('../content/faq');
 const legal = require('../content/legal');
 const OUTILS = require('../content/outils');
 const GUIDES = require('../content/guides');
+const BRIEF = require('../content/brief');
 let LEXIQUE = { termes: [], PUBLIE: '' };
 try { LEXIQUE = require('../content/lexique'); } catch (e) { /* lexique pas encore écrit */ }
 const { clients } = require('../config');
@@ -1338,6 +1339,22 @@ ${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: 'Composez votre s
   };
 }
 
+// Une question du questionnaire, décrite pour la page Documentation
+function briefDetail(c) {
+  const opts = (c.options || []).map((o) => `<i>${esc(o)}</i>`).join('');
+  const si = c.si ? ` <small>(si « ${esc([].concat(c.si.vaut).join(' » ou « ').toLowerCase())} »)</small>` : '';
+  const pre = c.prerempli ? ' <small>(prérempli)</small>' : '';
+  switch (c.kind) {
+    case 'choix': return `<span class="doc-opts">${opts}${c.autre ? '<i>Autre…</i>' : ''}</span>${si}`;
+    case 'multi': return `<span class="doc-opts">${opts}${c.autre ? '<i>Autre…</i>' : ''}</span><small>plusieurs choix possibles</small>${si}`;
+    case 'ouinon': return `<span class="doc-opts"><i>Oui</i><i>Non</i></span>${si}`;
+    case 'images': return `<small>jusqu’à ${c.max} photos, chacune avec sa description</small>`;
+    case 'fichier': return '<small>un fichier (image ou PDF)</small>';
+    case 'liste': return `<small>un tableau : ${c.colonnes.map((x) => esc(x.label.toLowerCase())).join(', ')}</small>${si}`;
+    default: return `${pre}${si}`;
+  }
+}
+
 // ====================================================================== DOCUMENTATION
 function docPage() {
   const crumbs = crumb('documentation');
@@ -1351,6 +1368,7 @@ function docPage() {
   const liaPlus = options.find((o) => o.id === 'liaplus');
   const toc = [
     ['etapes', 'list-checks', 'Comment ça se passe'],
+    ['questionnaire', 'clipboard-check', 'Le questionnaire de création'],
     ['sites', 'layout-template', 'Les sites'],
     ['forfaits', 'heart', 'Les forfaits'],
     ['espace', 'circle-user', 'L’espace client'],
@@ -1402,6 +1420,7 @@ function docPage() {
   <ol class="doc-steps">
     <li><strong>Vous composez votre site en ligne.</strong> Type de site, forfait, options : le prix total s’affiche avant de commander.</li>
     <li><strong>Vous réglez un acompte de ${paiement.acompte} %.</strong> C’est le signal de départ : je commence la création.</li>
+    <li><strong>Vous remplissez le questionnaire de création.</strong> Dans votre espace client : couleurs, ambiance, photos, prix ou produits. C’est lui qui lance la création.</li>
     <li><strong>Je crée votre site.</strong> Vous suivez chaque étape dans l’onglet « Ma commande » de votre espace client.</li>
     <li><strong>Vous recevez votre site et payez le reste.</strong> En une fois, ou en ${lissage.durees.join(' ou ')} fois sans frais.</li>
     <li><strong>Votre forfait démarre.</strong> Hébergement, sécurité, mises à jour et modifications du mois : on s’occupe de tout.</li>
@@ -1409,9 +1428,20 @@ function docPage() {
   <p class="doc-more">${C.btn(sections.creer.path, 'btn-primary', 'wand-sparkles', 'Composer mon site')}</p>
 </div></section>
 
+<section class="section doc-sec" id="questionnaire"><div class="container container-narrow">
+  <p class="doc-kicker">2. Le questionnaire de création</p>
+  <h2>Ce que je vous demande pour créer votre site</h2>
+  <p>Après votre commande, un questionnaire vous attend dans l’onglet « Ma commande ». Il est déjà prérempli avec votre nom de domaine et vos coordonnées. Vos réponses me suffisent pour créer le site : pas de rendez-vous, pas d’allers-retours. Vous pouvez les modifier tant que le site n’est pas en ligne.</p>
+  <div class="doc-brief">
+    ${['une-page', 'vitrine', 'boutique'].map((tid, k) => `<details class="doc-brief-type"${k === 0 ? ' open' : ''}><summary>${icon(tid === 'boutique' ? 'shopping-bag' : tid === 'vitrine' ? 'layout-template' : 'file-text')}Pour ${tid === 'boutique' ? 'une' : 'un'} ${esc(T(tid).label.toLowerCase())}</summary>
+      <ol class="doc-brief-sections">${BRIEF.pour(tid).map((sec) => `<li><strong>${icon(sec.icon)}${esc(sec.titre)}</strong><ul>${sec.champs.map((c) => `<li><span>${esc(c.label)}${c.requis ? ' <em class="doc-req">obligatoire</em>' : ''}</span>${briefDetail(c)}</li>`).join('')}</ul></li>`).join('')}</ol>
+    </details>`).join('')}
+  </div>
+</div></section>
+
 <section class="section section-soft doc-sec" id="sites"><div class="container">
   <div class="container-narrow">
-    <p class="doc-kicker">2. Les sites</p>
+    <p class="doc-kicker">3. Les sites</p>
     <h2>Trois types de site, à prix fixe</h2>
     <p>Le prix de la création ne change pas en cours de route. Le délai court à partir du moment où j’ai vos textes et vos photos.</p>
   </div>
@@ -1427,7 +1457,7 @@ function docPage() {
 
 <section class="section doc-sec" id="forfaits"><div class="container">
   <div class="container-narrow">
-    <p class="doc-kicker">3. Les forfaits</p>
+    <p class="doc-kicker">4. Les forfaits</p>
     <h2>Chico, Power et Titan, côte à côte</h2>
     <p>Le forfait fait vivre votre site une fois en ligne. Il est sans engagement : vous changez ou arrêtez quand vous voulez, depuis votre espace client.</p>
   </div>
@@ -1448,7 +1478,7 @@ function docPage() {
 <section class="section section-soft doc-sec" id="espace"><div class="container">
   <div class="doc-split">
     <div>
-      <p class="doc-kicker">4. L’espace client</p>
+      <p class="doc-kicker">5. L’espace client</p>
       <h2>Tout votre site, au même endroit</h2>
       <p>Chaque client a son espace, sur ordinateur comme sur téléphone. Tous les onglets sont visibles d’un coup, sans rien faire glisser.</p>
       <ul class="doc-tabs">${tabs.map(([ic, t, d]) => `<li>${icon(ic)}<span><strong>${t}</strong> : ${d}</span></li>`).join('')}</ul>
@@ -1463,7 +1493,7 @@ function docPage() {
   <div class="doc-split doc-split-rev">
     ${fig('demandes', 'L’onglet Mes demandes', 'L’onglet « Mes demandes » : on écrit, on ajoute une photo si besoin, on suit l’avancement.')}
     <div>
-      <p class="doc-kicker">5. Demander une modification</p>
+      <p class="doc-kicker">6. Demander une modification</p>
       <h2>Vous écrivez, Lia ou Alex s’en charge</h2>
       <p>Pour chaque demande, vous choisissez qui la fait :</p>
       <ul class="list-check">
@@ -1479,7 +1509,7 @@ function docPage() {
 
 <section class="section section-soft doc-sec" id="tableau"><div class="container">
   <div class="container-narrow">
-    <p class="doc-kicker">6. Le tableau de bord</p>
+    <p class="doc-kicker">7. Le tableau de bord</p>
     <h2>Ce que vous voyez, selon votre forfait</h2>
     <p>Les visites sont comptées sans cookie et sans donnée personnelle. Les chiffres se mettent à jour toutes les heures.</p>
   </div>
@@ -1502,7 +1532,7 @@ function docPage() {
 
 <section class="section doc-sec" id="boutique"><div class="container">
   <div class="container-narrow">
-    <p class="doc-kicker">7. La boutique en ligne</p>
+    <p class="doc-kicker">8. La boutique en ligne</p>
     <h2>Vos outils de vente, réglés en quelques secondes</h2>
     <p>Dans l’onglet « Ma boutique », vous gérez vous-même vos petites opérations. Ça ne compte pas dans vos modifications du mois.</p>
   </div>
@@ -1519,7 +1549,7 @@ function docPage() {
 </div></section>
 
 <section class="section section-soft doc-sec" id="seo"><div class="container container-narrow">
-  <p class="doc-kicker">8. Le référencement (SEO)</p>
+  <p class="doc-kicker">9. Le référencement (SEO)</p>
   <h2>Être trouvé sur Google</h2>
   <p>Tous les sites partent avec de bonnes bases : des titres et des descriptions écrits pour Google, un plan du site, des pages rapides et lisibles sur téléphone. Avec Power et Titan, le SEO est suivi chaque mois : on choisit ensemble les mots que vos clients tapent, et j’ajoute des pages utiles qui renvoient vers votre site.</p>
   <div class="go-links">
@@ -1531,7 +1561,7 @@ function docPage() {
 </div></section>
 
 <section class="section doc-sec" id="paiement"><div class="container container-narrow">
-  <p class="doc-kicker">9. Paiement et fidélité</p>
+  <p class="doc-kicker">10. Paiement et fidélité</p>
   <h2>Payer simplement, et être remercié</h2>
   <ul class="list-check">
     <li>Acompte de ${paiement.acompte} % à la commande, le reste à la réception du site, en une fois ou en ${lissage.durees.join(' ou ')} fois sans frais.</li>

@@ -94,6 +94,7 @@ require_once __DIR__ . '/includes/gestion.php';
 require_once __DIR__ . '/includes/stats.php';
 require_once __DIR__ . '/includes/vacances.php';
 require_once __DIR__ . '/includes/boutique.php';
+require_once __DIR__ . '/includes/brief.php';
 
 /* =========================================================================
  *  Rôle « Client Alex & Lia » et type de contenu « Demande »
@@ -692,6 +693,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
               <p class="esp-warn">Cette commande est annulée. Une question ? Écrivez-moi, je vous réponds vite.</p>
             <?php endif; ?>
           </div>
+          <?php echo aled08e_brief_html($cmd); // phpcs:ignore ?>
 
           <p class="app-sub">Votre site</p>
           <dl class="esp-grid">
@@ -901,6 +903,9 @@ function aled08e_dashboard() {
             <?php endif; ?>
             <button type="button" class="app-card c-pink" data-go="parrainage"><span class="app-card-ico"><?php echo aled08e_icon('gift'); // phpcs:ignore ?></span><span><small>Parrainage</small><strong><?php echo esc_html($code); ?></strong><span><?php echo (int) count($filleuls); ?> filleul<?php echo count($filleuls) > 1 ? 's' : ''; ?> en ligne</span></span></button>
           </div>
+          <?php if ($cmd && $cmd['statut'] !== 'annulee' && $cmd['statut'] !== 'en_ligne' && (aled08e_brief_le($cmd['id']) === '' || get_post_meta($cmd['id'], '_aled08_brief_brouillon', true))) : ?>
+          <p class="esp-warn bf-rappel"><?php echo aled08e_icon('clipboard-check'); // phpcs:ignore ?><span><b>À faire :</b> votre questionnaire de création attend vos réponses. C’est lui qui lance la création de votre site.</span> <button type="button" class="link-btn" data-go="commande">Le remplir</button></p>
+          <?php endif; ?>
           <?php if ($cmd && $cmd['statut'] === 'attente_paiement') : ?>
           <p class="esp-warn">Votre commande <?php echo esc_html($cmd['ref']); ?> attend son paiement. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
           <?php elseif ($cmd && aled08e_cmd_reception_due($cmd)) : ?>

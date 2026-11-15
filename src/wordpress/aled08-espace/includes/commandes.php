@@ -516,8 +516,8 @@ function aled08e_cmd_mail_client_payee($c) {
         . 'Référence de la commande : ' . $c['ref'] . "\n\n"
         . "Ce qui se passe maintenant :\n"
         . ($c['domaine'] && !$c['domaine_mien'] ? '1. Je réserve le nom de domaine ' . $c['domaine'] . " à votre nom.\n" : "1. Je prépare l’hébergement de votre site.\n")
-        . '2. Je vous écris sous 24 heures pour commencer la création' . ($delai ? ' (délai habituel : ' . $delai . ')' : '') . ".\n"
-        . "3. Vous suivez l’avancement dans votre espace client : " . aled08e_url() . "#commande\n\n"
+        . "2. Vous remplissez votre questionnaire de création dans votre espace client (une dizaine de minutes) : couleurs, ambiance, photos, prix ou produits. C’est lui qui lance la création : " . aled08e_url() . "#commande\n"
+        . '3. Je crée votre site' . ($delai ? ' (délai habituel : ' . $delai . ', à partir de vos réponses)' : '') . ", et vous suivez l’avancement dans votre espace client.\n\n"
         . "À bientôt,\nAlex, et Lia\n";
     wp_mail($c['email'], 'Votre acompte pour la commande ' . $c['ref'] . ' est reçu', $corps, aled08e_mail_headers('Alex & Lia <' . aled08e_to() . '>'));
 }
