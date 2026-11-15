@@ -319,6 +319,8 @@ function aled08e_annulation_html($p) {
 /* Jetons Lia du forfait (null = illimité) */
 function aled08e_jetons($f) { return array_key_exists('jetons', $f) ? $f['jetons'] : 1; }
 /* Modifications par Lia du mois pour ce client : celles du forfait, plus 10 avec l'option Lia + */
+/* Comptes « famille » : modifications par Lia et par Alex sans limite */
+function aled08e_famille($uid) { return aled08e_meta($uid, 'famille') === '1'; }
 function aled08e_jetons_user($uid, $f) { return (int) aled08e_jetons($f) + (aled08e_meta($uid, 'liaplus') === '1' ? 10 : 0); }
 /* Ce que Lia peut faire dans une demande : nombre de mots selon le nombre d'images (0, 1, 2 ou 3 images) */
 function aled08e_lia_limites() { return ['mots' => [300, 200, 100, 40], 'images' => 3]; }
@@ -343,9 +345,10 @@ add_action('template_redirect', function () {
     $par = sanitize_key(wp_unslash($_POST['par'] ?? 'alex')) === 'lia' ? 'lia' : 'alex';
     // deux compteurs séparés : les modifications par Lia (forfait + option Lia +) et celles par Alex
     $liaMax = aled08e_jetons_user($uid, $f);
-    if ($par === 'lia' && aled08e_count_month($uid, 'lia') >= $liaMax) $back('lia_epuise');
+    $famille = aled08e_famille($uid);
+    if (!$famille && $par === 'lia' && aled08e_count_month($uid, 'lia') >= $liaMax) $back('lia_epuise');
     // modifications d'Alex du mois utilisées : la demande devient un Boost (1 € la modification en plus), avec l'accord du client
-    $over = $par === 'alex' && aled08e_count_month($uid, 'alex') >= (int) $f['quota'];
+    $over = !$famille && $par === 'alex' && aled08e_count_month($uid, 'alex') >= (int) $f['quota'];
     if ($over && empty($_POST['boost_ok'])) $back('boost_accord');
     $title = mb_strlen($txt) > 70 ? rtrim(mb_substr($txt, 0, 67)) . '…' : $txt;
     $title = trim(preg_replace('/\s+/', ' ', $title));
@@ -477,6 +480,7 @@ function aled08e_fields() {
         'parrain' => ['Parrainé par (code)', 'text', 'Ex. : LILA-7K2'],
         'code' => ['Son code de parrainage', 'text', 'Créé automatiquement'],
         'mois_offerts' => ['Mois offerts à utiliser', 'text', '0'],
+        'famille' => ['Famille : modifications illimitées', 'check', 'Oui : modifications par Lia et par Alex sans limite (affichées ∞ avec un cœur).'],
         'offert' => ['Forfait offert à vie', 'check', 'Oui : le forfait et ses options sont gratuits pour ce client, pour toujours. Son compte n’est jamais supprimé automatiquement.'],
         'abonnement_manuel' => ['Abonnement actif hors Stripe', 'check', 'Oui : ce client paie autrement (virement, espèces). Son compte n’est jamais supprimé automatiquement.'],
         'stats_mois' => ['Tableau de bord : mois', 'text', 'Novembre 2026'],
@@ -746,6 +750,9 @@ function aled08e_dashboard() {
     $illimite = false;
     $quota = (int) $f['quota'];
     $left = max(0, $quota - $used); // modifications par Alex restantes
+    $famille = aled08e_famille($uid);
+    if ($famille) { $left = 999; $jetonsLeft = 999; }
+    $infini = '<span class="jauge-infini">∞ <span class="jauge-coeur" aria-hidden="true">♥</span></span><span class="sr-only">illimité</span>';
     $liaLim = aled08e_lia_limites();
     // options mensuelles actives du compte (e-mail pro, stock, comptes clients, modifications illimitées)
     $optsMois = [];
@@ -859,12 +866,12 @@ function aled08e_dashboard() {
       <aside class="app-side">
         <div class="app-user"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><div><strong><?php echo esc_html($u->display_name); ?></strong><small><?php echo esc_html($host ?: $u->user_email); ?></small></div></div>
         <div class="jauge<?php echo $jetonsLeft <= 0 ? ' is-low' : ''; ?>">
-          <p class="jauge-head"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Avec Lia, ce mois</span><b><?php echo (int) $jetonsLeft . ' / ' . (int) $jetonsMax; ?></b></p>
-          <span class="jauge-bar"><i style="width:<?php echo $jetonsMax ? (int) round(min(100, $jetonsLeft / $jetonsMax * 100)) : 0; ?>%"></i></span>
+          <p class="jauge-head"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Avec Lia, ce mois</span><b><?php echo $famille ? $infini : (int) $jetonsLeft . ' / ' . (int) $jetonsMax; // phpcs:ignore ?></b></p>
+          <span class="jauge-bar"><i style="width:<?php echo $famille ? 100 : ($jetonsMax ? (int) round(min(100, $jetonsLeft / $jetonsMax * 100)) : 0); ?>%"></i></span>
         </div>
         <div class="jauge<?php echo $left <= 0 ? ' is-low' : ''; ?>">
-          <p class="jauge-head"><?php echo aled08e_icon('user'); // phpcs:ignore ?><span>Avec Alex, ce mois</span><b><?php echo (int) $left . ' / ' . (int) $quota; ?></b></p>
-          <span class="jauge-bar"><i style="width:<?php echo $quota ? (int) round(min(100, $left / $quota * 100)) : 0; ?>%"></i></span>
+          <p class="jauge-head"><?php echo aled08e_icon('user'); // phpcs:ignore ?><span>Avec Alex, ce mois</span><b><?php echo $famille ? $infini : (int) $left . ' / ' . (int) $quota; // phpcs:ignore ?></b></p>
+          <span class="jauge-bar"><i style="width:<?php echo $famille ? 100 : ($quota ? (int) round(min(100, $left / $quota * 100)) : 0); ?>%"></i></span>
         </div>
         
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
@@ -923,7 +930,7 @@ function aled08e_dashboard() {
           <form class="req-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(aled08e_url()); ?>" data-req-real>
             <input type="hidden" name="aled08e_demande" value="1">
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>
-            <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend><p class="app-note">Ce mois-ci, il vous reste <?php echo (int) $jetonsLeft; ?> modification<?php echo $jetonsLeft > 1 ? 's' : ''; ?> avec Lia et <?php echo (int) $left; ?> avec Alex. Lia fait les petites et moyennes modifications, Alex les plus grandes.</p>
+            <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend><p class="app-note"><?php if ($famille) : ?>Pour vous, c’est sans limite, avec Lia comme avec Alex <span class="jauge-coeur" aria-hidden="true">♥</span>. Lia fait les petites et moyennes modifications, Alex les plus grandes.<?php else : ?>Ce mois-ci, il vous reste <?php echo (int) $jetonsLeft; ?> modification<?php echo $jetonsLeft > 1 ? 's' : ''; ?> avec Lia et <?php echo (int) $left; ?> avec Alex. Lia fait les petites et moyennes modifications, Alex les plus grandes.<?php endif; ?></p>
               <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $jetonsLeft > 0 ? ' checked' : ' disabled'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, en 5 minutes</strong><small>Pour une petite ou moyenne modification : jusqu’à <?php echo (int) $liaLim['mots'][0]; ?> mots de texte, ou jusqu’à <?php echo (int) $liaLim['images']; ?> photos avec un texte plus court. Lia vous montre toujours l’aperçu de la page : rien ne change sans votre accord.</small></span></label>
               <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $jetonsLeft > 0 ? '' : ' checked'; ?>><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Pour une grande modification. Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même.</small></span></label>
             </fieldset>

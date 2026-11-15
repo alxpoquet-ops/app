@@ -203,3 +203,9 @@ a.app-card { text-decoration: none; color: inherit; }
 .req-annul .link-btn .ico { width: 16px; height: 16px; }
 .req-annul small, .req-annul-info { color: var(--muted); font-size: .8rem; font-weight: 700; }
 .req-annul-info { display: block; margin-top: 8px; }
+
+/* ---------- comptes « famille » : modifications illimitées ---------- */
+.jauge-infini { display: inline-flex; align-items: center; gap: 4px; font-size: 1.25em; line-height: 1; }
+.jauge-coeur { color: var(--pink-d); font-size: .85em; animation: esp-coeur 2.4s ease-in-out infinite; display: inline-block; }
+@keyframes esp-coeur { 0%, 100% { transform: scale(1); } 12% { transform: scale(1.25); } 24% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .jauge-coeur { animation: none; } }
