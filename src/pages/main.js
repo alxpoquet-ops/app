@@ -1236,7 +1236,7 @@ ${C.ctaBand({ title: 'Envie de voir Lia à l’œuvre ?', text: 'Essayez la dém
 // ====================================================================== ILS NOUS ONT FAIT CONFIANCE
 function confiancePage() {
   const crumbs = crumb('confiance');
-  const pagesDe = (c) => (CLIENTS_PAGES[c.domaine] || {}).pages || 0;
+  const pagesDe = (c) => (c.enCreation ? 0 : (CLIENTS_PAGES[c.domaine] || {}).pages || 0);
   const total = clients.reduce((n, c) => n + pagesDe(c), 0);
   const le = clients.map((c) => (CLIENTS_PAGES[c.domaine] || {}).le || '').sort().pop();
   const body = `${C.pageHero({
@@ -1249,7 +1249,7 @@ function confiancePage() {
   ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages créées pour les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque nouvelle page est une porte d’entrée de plus depuis Google.</span></p>` : ''}
   <div class="client-cards">${clients
     .map(
-      (c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener">${c.forfait && F(c.forfait) ? `<span class="client-forfait c-${F(c.forfait).color}"><span class="client-forfait-art">${monster(c.forfait)}</span>Forfait ${F(c.forfait).name}</span>` : ''}<span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-desc">${inline(c.desc)}</span>${pagesDe(c) ? `<span class="client-pages"><b>${pagesDe(c)}</b> page${pagesDe(c) > 1 ? 's' : ''}</span>` : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`
+      (c) => c.enCreation ? `<div class="client-card c-${c.color} reveal is-creation">${c.forfait && F(c.forfait) ? `<span class="client-forfait c-${F(c.forfait).color}"><span class="client-forfait-art">${monster(c.forfait)}</span>Forfait ${F(c.forfait).name}</span>` : ''}<span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-creation">${icon('hammer')}Site en création</span><span class="client-url">${icon('globe')}${esc(c.domaine)}</span></div>` : `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener">${c.forfait && F(c.forfait) ? `<span class="client-forfait c-${F(c.forfait).color}"><span class="client-forfait-art">${monster(c.forfait)}</span>Forfait ${F(c.forfait).name}</span>` : ''}<span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-desc">${inline(c.desc)}</span>${pagesDe(c) ? `<span class="client-pages"><b>${pagesDe(c)}</b> page${pagesDe(c) > 1 ? 's' : ''}</span>` : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`
     )
     .join('')}</div>
   <p class="small muted center">Ces sites s’ouvrent dans un nouvel onglet.</p>
@@ -1259,7 +1259,7 @@ ${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: 'Composez votre s
     path: sections.confiance.path,
     section: 'confiance',
     title: 'Ils nous ont fait confiance : nos sites en ligne | Alex & Lia',
-    description: `Les sites réalisés par Alex & Lia, à visiter librement : ${clients.map((c) => c.domaine).join(', ').replace(/, ([^,]*)$/, ' et $1')}. De vrais sites, sans faux avis.`,
+    description: `Les sites réalisés par Alex & Lia, à visiter librement : ${clients.filter((c) => !c.enCreation).map((c) => c.domaine).join(', ').replace(/, ([^,]*)$/, ' et $1')}. De vrais sites, sans faux avis.`,
     crumbs,
     body,
     priority: 0.7,

@@ -21,7 +21,7 @@ function compter(url, niveau = 0) {
 const avant = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, 'utf8')) : {};
 const res = {};
 for (const c of clients) {
-  if (!c.sitemap) continue;
+  if (!c.sitemap || c.enCreation) continue;
   let n = 0;
   try { n = compter(c.sitemap); } catch (e) { console.log(`✖ ${c.domaine} : plan de site illisible`); }
   // un plan illisible ne remet pas le compteur à zéro : on garde le dernier chiffre connu
