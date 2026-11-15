@@ -3,7 +3,7 @@
    Pastel, arrondi, léger. Une couleur douce par rubrique, des petits monstres.
    ========================================================================== */
 
-@font-face { font-family: "Nunito"; src: url("../fonts/nunito-var.woff2") format("woff2"); font-weight: 200 1000; font-style: normal; font-display: swap; }
+@font-face { font-family: "Plus Jakarta Sans"; src: url("../fonts/jakarta-var.woff2") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }
 
 :root {
   --bg: #FFF8F2;
@@ -25,7 +25,7 @@
   --radius-lg: 36px;
   --shadow: 0 1px 2px rgba(46, 42, 71, .05), 0 18px 40px -22px rgba(91, 63, 196, .38);
   --shadow-sm: 0 10px 24px -16px rgba(91, 63, 196, .4);
-  --font: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --header-h: 72px;
   --container: 1160px;
   --edge: #E3D9FB;
@@ -81,7 +81,7 @@ body { margin: 0; overflow-x: clip; font-family: var(--font); font-size: 17px; l
 img, svg { max-width: 100%; height: auto; }
 a { color: var(--lilac-dd); text-underline-offset: .18em; }
 a:hover { color: var(--ink); }
-h1, h2, h3 { font-family: var(--font); color: var(--ink); line-height: 1.15; margin: 0 0 .5em; font-weight: 900; letter-spacing: -.01em; text-wrap: balance; }
+h1, h2, h3 { font-family: var(--font); color: var(--ink); line-height: 1.15; margin: 0 0 .5em; font-weight: 900; letter-spacing: -.02em; text-wrap: balance; }
 h1 { font-size: clamp(2.1rem, 4.6vw, 3.4rem); }
 h2 { font-size: clamp(1.6rem, 2.9vw, 2.3rem); }
 h3, .h3 { font-size: 1.2rem; font-weight: 900; }
