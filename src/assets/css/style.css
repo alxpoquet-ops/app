@@ -1615,3 +1615,7 @@ div.tool { cursor: default; }
 /* Deux boutons côte à côte, l'un sous l'autre sur téléphone */
 .demo-cta-duo { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
 @media (max-width: 560px) { .demo-cta-duo { flex-direction: column; align-items: stretch; } .demo-cta-duo .btn { justify-content: center; } }
+
+/* Page Outils : un titre par famille d'outils */
+.tools-famille { margin: 34px 0 14px; font-size: 1.25rem; color: var(--ink); }
+.tools-famille:first-of-type { margin-top: 10px; }

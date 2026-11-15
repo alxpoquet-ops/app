@@ -39,7 +39,8 @@ process.stdout.write(
     delais: { reponse: delais.reponse || '72 heures', titan: delais.titan || '24 heures' },
     parrainageMois: fidelite.parrainageMois,
     remiseSecondSite: fidelite.remiseSecondSite || 0,
-    icons: Object.fromEntries(ICONS.map((n) => [n, icon(n)])),
+      // les icônes de l'espace client, plus celles des outils de Lia (lues dans leur définition)
+    icons: Object.fromEntries([...new Set([...ICONS, ...require('../src/content/outils-lia').outils.map((o) => o.icon)])].map((n) => [n, icon(n)])),
     monsters: Object.fromEntries(['mascotte', 'chico', 'power', 'titan'].map((n) => [n, monster(n)])),
   })
 );

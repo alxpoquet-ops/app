@@ -89,6 +89,12 @@ add_action('template_redirect', function () {
         wp_mail(aled08e_to(), 'Changement de forfait à faire à la main', $u->display_name . ' veut passer à ' . aled08e_forfait($forfait)['name'] . ' avec les options : ' . (implode(', ', $voulues) ?: 'aucune') . ".\nStripe a répondu : " . $res->get_error_message() . "\nFiche : " . admin_url('user-edit.php?user_id=' . $uid) . "\n", aled08e_mail_headers());
         $back('changer_erreur');
     }
+    // Jetons Lia : le changement est facturé à la prochaine échéance, il compte donc à partir du mois suivant.
+    // Jusque-là, le client garde les jetons du forfait qu'il avait au début du mois.
+    if (function_exists('aled08e_jl_mois')) {
+        $fige = get_user_meta($uid, 'aled08_jl_fige', true);
+        if (!is_array($fige) || ($fige['m'] ?? '') !== wp_date('Y-m')) update_user_meta($uid, 'aled08_jl_fige', ['m' => wp_date('Y-m'), 'n' => aled08e_jl_mois($uid, aled08e_forfait(aled08e_meta($uid, 'forfait')))]);
+    }
     update_user_meta($uid, 'aled08_forfait', $forfait);
     foreach ($possibles as $id) update_user_meta($uid, 'aled08_' . $id, in_array($id, $voulues, true) ? '1' : '');
     $apres = aled08e_forfait($forfait)['name'];

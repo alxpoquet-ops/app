@@ -290,10 +290,15 @@ function aled08e_annuler_demande($pid) {
     if ($etat === 'a_confirmer' && function_exists('aled08e_lia_appel')) aled08e_lia_appel($uid, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]);
     if ($etat === 'fait' && function_exists('aled08e_lia_annuler')) $note = aled08e_lia_annuler($pid);
     update_post_meta($pid, '_aled08_annulee_le', current_time('mysql'));
-    aled08e_jl_rendre($uid, 'demande:' . $pid);
+    // ce que Lia a publié de nouveau (actualité, photo, nom du site) ne se défait pas tout seul : dans ce cas les jetons restent comptés
+    $resteEnLigne = false;
+    if ($etat === 'fait') foreach ((array) get_post_meta($pid, '_aled08_lia_actions', true) as $a) if (in_array($a['type'] ?? '', ['publier', 'image', 'reglage'], true)) $resteEnLigne = true;
+    if (!$resteEnLigne) aled08e_jl_rendre($uid, 'demande:' . $pid);
     update_post_meta($pid, '_aled08_statut', 'annulee');
     if ($etat) update_post_meta($pid, '_aled08_lia_etat', 'annule');
-    update_post_meta($pid, '_aled08_reponse', 'Demande annulée. Elle ne compte pas ce mois-ci : vos jetons vous sont rendus.' . ($etat === 'fait' ? ' Votre page a été remise comme avant.' : ''));
+    update_post_meta($pid, '_aled08_reponse', $resteEnLigne
+        ? 'Demande annulée. Ce que Lia avait publié de nouveau reste en ligne : Alex le retire à la main. Les jetons de cette demande restent comptés.'
+        : 'Demande annulée. Elle ne compte pas ce mois-ci' . (get_post_meta($pid, '_aled08_jetons', true) ? ' : vos jetons vous sont rendus.' : '.') . ($etat === 'fait' ? ' Votre page a été remise comme avant.' : ''));
     $u = get_userdata($uid);
     wp_mail(aled08e_to(), 'Une demande a été annulée par le client', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n"
         . ($note ? "\nCe que Lia avait mis en ligne : " . $note . "\n" : '')
@@ -350,6 +355,8 @@ add_action('template_redirect', function () {
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
     // par Lia (automatique, un jeton) ou par Alex (à la main) ; plus de jeton ce mois-ci : la demande passe à Alex
     $par = sanitize_key(wp_unslash($_POST['par'] ?? 'alex')) === 'lia' ? 'lia' : 'alex';
+    // Lia ne peut pas travailler pour ce client (clé Claude absente ou site pas encore relié) : la demande va à Alex, sans jeton
+    if ($par === 'lia' && !aled08e_lia_prete_pour($uid)) $par = 'alex';
     // deux compteurs séparés : les modifications par Lia (forfait + option Lia +) et celles par Alex
     $famille = aled08e_famille($uid);
     // prix de la modification par Lia, en Jetons Lia : selon le nombre de mots écrits et de photos jointes
@@ -367,7 +374,6 @@ add_action('template_redirect', function () {
     if (is_wp_error($pid)) $back('erreur');
     update_post_meta($pid, '_aled08_statut', 'recue');
     update_post_meta($pid, '_aled08_par', $par);
-    if ($par === 'lia') { aled08e_jl_debiter($uid, $prixLia, 'Modification par Lia', 'demande:' . $pid); update_post_meta($pid, '_aled08_jetons', $famille ? 0 : $prixLia); }
     if ($over) { update_post_meta($pid, '_aled08_boost', 1); update_post_meta($pid, '_aled08_hors_forfait', 1); aled08e_boost_facturer($pid, $uid); }
 
     $photo = '';
@@ -397,6 +403,17 @@ add_action('template_redirect', function () {
         $photosIds[] = (int) $att;
     }
     if ($photosIds) update_post_meta($pid, '_aled08_photos', $photosIds);
+    // les Jetons Lia sont comptés ici, sur les photos vraiment jointes. Pas assez de jetons au dernier moment
+    // (deux demandes envoyées en même temps) : la demande est retirée, rien n'est compté.
+    if ($par === 'lia') {
+        $prixLia = aled08e_jl_prix_modif($txt, count($photosIds));
+        if (!aled08e_jl_debiter($uid, $prixLia, 'Modification par Lia', 'demande:' . $pid)) {
+            foreach ($photosIds as $att) wp_delete_attachment($att, true);
+            wp_delete_post($pid, true);
+            $back('lia_epuise');
+        }
+        update_post_meta($pid, '_aled08_jetons', $famille ? 0 : $prixLia);
+    }
 
     $u = wp_get_current_user();
     $delai = $f['id'] === 'titan' ? aled08e_data()['delais']['titan'] : aled08e_data()['delais']['reponse'];
@@ -810,7 +827,7 @@ function aled08e_dashboard() {
     $m = isset($_GET['m']) ? sanitize_key(wp_unslash($_GET['m'])) : '';
     $msgs = [
         'ok' => ['esp-empty', 'Demande envoyée, merci ! Je m’en occupe et je vous préviens quand c’est en ligne.'],
-        'changer_ok' => ['esp-empty', 'C’est enregistré : votre nouveau forfait et vos options s’appliquent à votre prochaine échéance.'],
+        'changer_ok' => ['esp-empty', 'C’est enregistré : votre nouveau forfait et vos options s’appliquent à votre prochaine échéance. Vos Jetons Lia changent le 1er du mois prochain.'],
         'changer_rien' => ['esp-empty', 'Rien n’a changé : c’est déjà votre forfait.'],
         'changer_erreur' => ['esp-warn', 'Le changement n’a pas pu se faire tout seul : Alex est prévenu et s’en occupe.'],
         'boost' => ['esp-empty', 'Demande envoyée à Alex, en Boost : 1 € en plus, ajouté à votre prochaine facture.'],
@@ -945,8 +962,9 @@ function aled08e_dashboard() {
           <?php echo $flash; // phpcs:ignore ?>
           <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. Je m’en occupe et vous suivez l’avancement ici. <?php echo esc_html($f['name'] . ' : ' . mb_strtolower($f['modifs'], 'UTF-8') . ', réponse sous ' . $delai . '.'); ?></p>
           <?php if ($left <= 0) : ?><p class="esp-warn">Vos modifications par Alex du mois sont utilisées. Besoin d’une de plus ? Le Boost : 1 € la modification, faite par Alex, ajouté à votre prochaine facture.</p><?php endif; ?>
-          <?php $liaOk = $famille || $jetonsLeft >= (int) $jlModif['base']; ?>
-          <?php if (!$liaOk) : ?><p class="esp-warn">Il vous reste <?php echo (int) $jetonsLeft; ?> Jetons Lia : pas assez pour une modification par Lia (<?php echo (int) $jlModif['base']; ?> au moins). Ils reviennent le 1<sup>er</sup> du mois. Pour en avoir tout de suite : « Recharger », dans l’onglet Outils.</p><?php endif; ?>
+          <?php $liaPrete = aled08e_lia_prete_pour($uid); $liaOk = $liaPrete && ($famille || $jetonsLeft >= (int) $jlModif['base']); ?>
+          <?php if (!$liaPrete) : ?><p class="esp-empty">Lia n’est pas encore reliée à votre site : pour l’instant, c’est Alex qui fait vos modifications. Vos Jetons Lia servent déjà aux outils de l’onglet Outils.</p>
+          <?php elseif (!$liaOk) : ?><p class="esp-warn">Il vous reste <?php echo (int) $jetonsLeft; ?> Jetons Lia : pas assez pour une modification par Lia (<?php echo (int) $jlModif['base']; ?> au moins). Ils reviennent le 1<sup>er</sup> du mois. Pour en avoir tout de suite : « Recharger », dans l’onglet Outils.</p><?php endif; ?>
           <form class="req-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(aled08e_url()); ?>" data-req-real>
             <input type="hidden" name="aled08e_demande" value="1">
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>

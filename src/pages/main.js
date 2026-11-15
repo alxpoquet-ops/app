@@ -9,6 +9,7 @@ const FAQ = require('../content/faq');
 const legal = require('../content/legal');
 const OUTILS = require('../content/outils');
 const OUTILS_LIA = require('../content/outils-lia').outils;
+const FAMILLES_OUTILS = require('../content/outils-lia').FAMILLES;
 // Prix d'un outil ou d'une modification, en Jetons Lia
 const jl = (n) => (n ? `${n} jeton${n > 1 ? 's' : ''}` : 'Gratuit');
 const JL_MODIF = `${jetonsLia.modif.base} jetons, plus 1 par tranche de ${jetonsLia.modif.mots} mots et ${jetonsLia.modif.image} par photo`;
@@ -245,7 +246,7 @@ function outilsPage() {
   const body = `${C.pageHero({
     section: 'espace',
     h1: 'Des outils simples pour vous faire connaître',
-    lead: `Publier sur tous vos réseaux depuis la même page, trouver des idées, répondre à un avis : Lia écrit, vous relisez, vous publiez. Les outils sont dans votre espace client, dès le forfait ${F('chico').name} à ${F('chico').month} € par mois.`,
+    lead: `Corriger un texte, préparer une photo, publier sur vos réseaux, savoir quoi améliorer sur une page : Lia vous aide, et vous gardez la main. Les outils sont dans votre espace client, dès le forfait ${F('chico').name} à ${F('chico').month} € par mois.`,
     crumbs,
   })}
 ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez vos demandes par le formulaire de contact : on s’en occupe de la même façon.</span></p></div>`}
@@ -253,10 +254,11 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
 
 <section class="section" id="outils-lia"><div class="container">
   <h2 class="section-title">Les outils de Lia</h2>
-  <p class="section-sub">Ils sont dans votre espace client : il suffit d’être connecté.</p>
-  <div class="tools">${OUTILS_LIA.map(
-    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${t.name}</strong><span>${t.desc}</span></span>${t.jetons ? '' : '<span class="tool-tag c-mint">Gratuit</span>'}</div>`
-  ).join('')}</div>
+  <p class="section-sub">Ils sont dans votre espace client : il suffit d’être connecté. Rien d’autre à installer, aucun autre compte à créer.</p>
+  ${Object.entries(FAMILLES_OUTILS).map(([fid, fnom]) => `<h3 class="tools-famille reveal">${fnom}</h3>
+  <div class="tools">${OUTILS_LIA.filter((t) => t.categorie === fid).map(
+    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${t.name}</strong><span>${t.desc}</span></span>${t.jetons && !t.visuel ? '' : '<span class="tool-tag c-mint">Gratuit</span>'}</div>`
+  ).join('')}</div>`).join('\n  ')}
 </div></section>
 
 <section class="section section-soft" id="publier"><div class="container container-narrow">
@@ -318,8 +320,8 @@ ${C.ctaBand({ title: 'Envie d’essayer les outils ?', text: 'Créez votre site 
   return {
     path: sections.espace.path,
     section: 'espace',
-    title: 'Outils : publier sur tous vos réseaux, idées, avis | Alex & Lia',
-    description: 'Une photo, une description : Lia écrit vos publications pour chaque réseau. Idées, hashtags, réponses aux avis. Dès 5 € par mois, payé en Jetons Lia.',
+    title: 'Outils de Lia : textes, photos, réseaux et site | Alex & Lia',
+    description: 'Corriger ou traduire un texte, préparer une photo, publier sur vos réseaux, des conseils pour votre page : les outils de Lia, dès 5 € par mois.',
     crumbs,
     body,
     schema: [f.schema],
@@ -1334,7 +1336,7 @@ Chaque demande faite à Lia consomme de la puissance de calcul, qui m’est fact
   <div class="quota-cards">${forfaits
     .map((x) => `<div class="quota-card c-${x.color} reveal"><span class="quota-art">${monster(x.id)}</span><h3>${x.name}<small>${x.month} € par mois</small></h3><p><b>${x.jetons}</b> Jetons Lia</p><p><b>${x.quota}</b> par Alex</p></div>`)
     .join('')}</div>
-  <div class="boost-box reveal"><span class="opt-ico">${icon('coins')}</span><div><h3>À quoi servent les Jetons Lia ?</h3><p>Un Jeton Lia vaut 1 centime. Vos jetons servent à deux choses : les modifications de votre site par Lia, et les outils de votre espace client (publications pour les réseaux, hashtags, réponses aux avis, fiches produit). Une modification faite par Lia coûte 30 jetons, plus 1 jeton par tranche de 10 mots écrits dans votre demande, plus 10 jetons par photo jointe. Soit 30 à 65 jetons environ. Avec Chico, cela fait 2 à 3 modifications par mois. Avec Power, 4 à 8. Avec Titan, 10 à 20. Si Lia passe votre demande à Alex, vos jetons vous sont rendus.</p></div></div>
+  <div class="boost-box reveal"><span class="opt-ico">${icon('coins')}</span><div><h3>À quoi servent les Jetons Lia ?</h3><p>Un Jeton Lia vaut 1 centime. Vos jetons servent à deux choses : les modifications de votre site par Lia, et les outils de votre espace client (publier sur les réseaux, corriger ou traduire un texte, des conseils sur une photo ou une page). Une modification faite par Lia coûte 30 jetons, plus 1 jeton par tranche de 10 mots écrits dans votre demande, plus 10 jetons par photo jointe. Soit 30 à 65 jetons environ. Avec Chico, cela fait 2 à 3 modifications par mois. Avec Power, 4 à 8. Avec Titan, 10 à 20. Si Lia passe votre demande à Alex, vos jetons vous sont rendus.</p></div></div>
   <div class="boost-box reveal"><span class="opt-ico">${icon('sparkles')}</span><div><h3>Besoin de plus ?</h3><p><strong>Lia +</strong> ajoute 500 Jetons Lia à votre mois, pour ${liaPlus ? liaPlus.price.month : 5} € de plus. <strong>Une recharge</strong> se prend à l’unité : 100 jetons pour 1 €, 500 pour 5 €, 1000 pour 10 €, sur votre prochaine facture. Ces jetons-là ne s’effacent pas en fin de mois. <strong>Le Boost</strong> : une modification par Alex en plus pour 1 €, à l’unité. Vous ajoutez ou retirez Lia + quand vous voulez, depuis votre espace client.</p></div></div>
 </div></section>
 

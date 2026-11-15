@@ -214,15 +214,33 @@ Sécurité : chaque échange avec le site client est signé avec la clé du clie
 
 ### Les Jetons Lia et les outils
 
-Tout ce que fait Lia se compte en **Jetons Lia**. Un jeton vaut 1 centime.
+Tout ce que fait Lia se compte en **Jetons Lia**. Un jeton vaut 1 centime. Les outils ne demandent qu'une chose : **votre clé Claude**, entrée une fois dans Alex & Lia, Réglages, « Clé Claude ». Tant qu'elle manque, le tableau de bord de la gestion vous le rappelle, les outils où Lia écrit sont grisés et les outils gratuits marchent.
 
-- **Chaque forfait en donne chaque mois** : Chico 100, Power 250, Titan 600 (`forfaits[].jetons` dans `src/config.js`). Ils reviennent le 1er et ne se reportent pas. L'option Lia + en ajoute 500.
-- **Une modification par Lia** coûte 30 jetons, plus 1 par tranche de 10 mots écrits, plus 10 par photo (`jetonsLia.modif`). Le prix s'affiche pendant que le client écrit. Si Lia passe la demande à Alex, si le client refuse l'aperçu ou annule dans les 24 heures, les jetons sont rendus.
-- **Les outils** (onglet « Outils » de l'espace client) ont un prix fixe, écrit dans `src/content/outils-lia.js` (`jetons`). La règle : ce que l'outil coûte chez Claude (`coutCts`, en centimes) × 4, arrondi au-dessus. Pour une modification, c'est × 2.
-- **La recharge** : 100 jetons pour 1 €, 500 pour 5 €, 1000 pour 10 € (`jetonsLia.recharge`). Elle s'ajoute à la prochaine facture Stripe du client et les jetons arrivent tout de suite. Sans Stripe pour ce client, vous recevez un e-mail : ajoutez les jetons dans sa fiche (« Jetons Lia en plus ») et facturez-les.
-- **Publier partout, pour de vrai** : dans l'outil, le client relie ses comptes (« Mes réseaux ») et publie sa photo et son texte directement. Publier son propre texte est gratuit ; « Lia adapte mon texte » coûte des jetons. Bluesky et Mastodon marchent tout de suite (le client donne un mot de passe d'application ou un jeton). Pour Facebook, Instagram et LinkedIn, déclarez une fois l'application chez le réseau et collez son identifiant et sa clé secrète dans les Réglages de l'extension, « Publier sur les réseaux » : la marche à suivre et l'adresse de retour y sont écrites. Tant que c'est vide, le client voit « Liaison directe bientôt » et publie par copier-coller. Le code est dans `includes/reseaux.php`.
-- **Vérifier que vous vous y retrouvez** : Réglages de l'extension, en bas, « Jetons Lia : le bilan du mois ». Pour chaque client : les jetons comptés, leur valeur, ce que Claude a vraiment coûté, et ce qu'il reste. Si un outil coûte plus que prévu, montez son prix dans `outils-lia.js` et relancez l'export.
+**Les 15 outils** (définis dans `src/content/outils-lia.js`, un seul fichier pour le site, la Documentation et l'espace client) :
+
+| Famille | Outils |
+|---|---|
+| Réseaux | Publier partout, Idées de publications |
+| Textes | Corriger un texte, Réécrire un texte, Traduire un texte, Répondre à un client, Fiche produit |
+| Photos | Annonce en image, Recadrer et alléger une photo, Conseils sur une photo, Recopier le texte d'une photo |
+| Mon site | Conseils pour ma page, QR code |
+| Avis | Répondre à un avis, Lien d'avis Google |
+
+Quatre sont gratuits parce qu'ils tournent dans le navigateur du client : Annonce en image (seuls les mots trouvés par Lia coûtent des jetons), Recadrer et alléger une photo, QR code, Lien d'avis Google.
+
+**Les règles du compteur** (`includes/jetons.php`) :
+
+- **Chaque forfait donne des jetons chaque mois** : Chico 100, Power 250, Titan 600 (`forfaits[].jetons` dans `src/config.js`). Ils reviennent le 1er et ne se reportent pas. L'option Lia + en ajoute 500.
+- **Seulement si le forfait court** : abonnement Stripe actif, ou case « Abonnement actif hors Stripe », ou « Forfait offert à vie », ou compte famille. Une commande pas encore payée ne donne aucun jeton. La fiche du client le dit quand c'est le cas.
+- **Un changement de forfait ou d'option en cours de mois** compte à partir du mois suivant, comme sa facture.
+- **Une modification par Lia** coûte 30 jetons, plus 1 par tranche de 10 mots écrits, plus 10 par photo (`jetonsLia.modif`). Le prix s'affiche pendant que le client écrit. Si Lia passe la demande à Alex, si la mise en ligne échoue, si le client refuse l'aperçu ou annule dans les 24 heures, les jetons sont rendus. Si Lia n'est pas reliée au site du client, la demande va à Alex, sans jeton.
+- **Un outil** a un prix fixe (`jetons`) : ce qu'il coûte chez Claude (`coutCts`, en centimes) × 4, arrondi au-dessus. Pour une modification, c'est × 2. Les jetons sont comptés au lancement et rendus si Lia ne rend rien d'utilisable (panne, réponse coupée, texte qui ne veut rien dire : Lia répond alors « STOP » avec ce qu'il faut donner).
+- **Garde-fous** : un seul outil à la fois par client, 40 essais par heure, longueur de la réponse bornée par le prix de l'outil, texte trop long refusé (jamais coupé), page lue seulement sur le site du client.
+- **La recharge** : 100 jetons pour 1 €, 500 pour 5 €, 1000 pour 10 € (`jetonsLia.recharge`), 5000 jetons par mois au plus. Elle s'ajoute à la prochaine facture Stripe si le client a un abonnement mensuel actif, et les jetons arrivent tout de suite. Sinon vous recevez un e-mail : ajoutez les jetons dans sa fiche (« Jetons Lia en plus ») et facturez-les.
+- **Publier partout** : publier son propre texte est gratuit ; « Lia adapte mon texte » coûte des jetons. Le client relie Bluesky ou Mastodon lui-même, sans réglage de votre part. Facebook, Instagram et LinkedIn n'apparaissent dans « Mes réseaux » que si vous déclarez l'application chez le réseau (Réglages, « Publier sur les réseaux », marche à suivre sur place). Sans cela, le texte est copié et le réseau s'ouvre. Le code est dans `includes/reseaux.php`.
+- **Vérifier que vous vous y retrouvez** : Réglages, en bas, « Jetons Lia : le bilan du mois ». Pour chaque client : les jetons comptés, leur valeur, ce que Claude a vraiment coûté, et ce qu'il reste. Si un outil coûte plus que prévu, montez son `coutCts` et son `jetons` dans `outils-lia.js` et relancez l'export.
 - **Changer de modèle** : Lia et les outils utilisent le modèle réglé dans les Réglages (par défaut `claude-opus-5-5`). Avec `claude-sonnet-5-5`, le coût est divisé par deux, pour les mêmes prix en jetons.
+- **Confidentialité** : la politique de confidentialité dit que les textes, photos et adresses de page confiés à Lia sont envoyés à Claude (Anthropic). Relisez ce passage, il vous engage.
 
 ## 10. Le parrainage
 

@@ -504,10 +504,11 @@ function aled08e_lia_confirmer($pid, $oui, $commentaire = '') {
     $r = aled08e_lia_appel($uid, 'appliquer', ['jeton' => $jeton]);
     if (is_wp_error($r)) {
         aled08e_lia_journal_add('Demande #' . $pid . ' : mise en ligne impossible après accord : ' . $r->get_error_message());
+        aled08e_jl_rendre($uid, 'demande:' . $pid); // Lia n'a pas pu finir : les Jetons Lia sont rendus
         update_post_meta($pid, '_aled08_par', 'alex');
         update_post_meta($pid, '_aled08_lia_etat', 'pour_alex');
         update_post_meta($pid, '_aled08_statut', 'recue');
-        update_post_meta($pid, '_aled08_reponse', 'Merci ! La mise en ligne automatique n’a pas abouti : Alex s’en occupe à la main.');
+        update_post_meta($pid, '_aled08_reponse', 'Merci ! La mise en ligne automatique n’a pas abouti : Alex s’en occupe à la main, et vos jetons vous sont rendus.');
         wp_mail(aled08e_to(), 'Lia : mise en ligne impossible, à reprendre', 'Demande #' . $pid . ' (' . ($u ? $u->display_name : '?') . ")\nErreur : " . $r->get_error_message() . "\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
         return $r;
     }

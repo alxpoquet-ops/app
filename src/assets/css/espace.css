@@ -523,3 +523,30 @@ a.app-card { text-decoration: none; color: inherit; }
 .ol-bloc.is-publie { box-shadow: 0 0 0 2px var(--mint-d) inset; }
 .ol-resultat > .btn { justify-self: start; }
 @media (max-width: 520px) { .ol-boutons .btn { width: 100%; justify-content: center; } .rs-ligne > strong { min-width: 0; flex-basis: 100%; } }
+
+/* Familles d'outils */
+.ol-filtres { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+.ol-filtre { padding: 8px 16px; border: 0; border-radius: 999px; background: var(--soft); color: var(--text); font: 800 .92rem var(--font); cursor: pointer; box-shadow: 0 0 0 2px var(--line) inset; }
+.ol-filtre.is-on { background: var(--lilac); color: var(--lilac-dd); box-shadow: 0 0 0 2px var(--lilac-d) inset; }
+.ol-filtre:focus-visible { outline: 3px solid var(--lilac-d); outline-offset: 2px; }
+.ol-carte[hidden] { display: none; }
+
+/* Visuel d'annonce : réglages à gauche, aperçu à droite */
+.ol-visuel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 320px); gap: 18px; align-items: start; margin-bottom: 8px; }
+.ol-visuel-reglages { display: grid; gap: 12px; min-width: 0; }
+.ol-visuel-reglages .field { margin: 0; }
+.ol-visuel-photo { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.ol-visuel.a-photo .ol-visuel-couleurs { display: none; }
+.ol-visuel-apercu { display: grid; gap: 10px; justify-items: stretch; position: sticky; top: calc(var(--header-h) + 12px); }
+.ol-visuel-apercu canvas { width: 100%; height: auto; max-height: 62vh; object-fit: contain; border-radius: 16px; background: var(--soft); box-shadow: 0 0 0 2px var(--line) inset; }
+.ol-visuel-apercu .btn { justify-content: center; }
+.ol-visuel-apercu .app-note { margin: 0; text-align: center; }
+.ol-ou { display: flex; align-items: center; gap: 8px; margin: 18px 0 10px; padding-top: 16px; border-top: 2px dashed var(--line); }
+@media (max-width: 760px) {
+  .ol-visuel { grid-template-columns: 1fr; }
+  .ol-visuel-apercu { position: static; order: -1; max-width: 340px; margin: 0 auto; width: 100%; }
+}
+
+/* Compteurs : le texte devient orange quand il dépasse */
+.ol-compte { display: block; margin-top: 4px; color: var(--muted); font-weight: 700; min-height: 0; }
+.ol-compte.is-trop, .ol-bloc-tete small.is-trop { color: var(--peach-dd); font-weight: 900; }

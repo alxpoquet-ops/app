@@ -46,27 +46,30 @@ function aled08e_rs_relies($uid) {
 /* =========================================================================
  *  Appels aux réseaux
  * ========================================================================= */
-function aled08e_rs_http($methode, $url, $args = []) {
+/* $protege : l'adresse vient du client (serveur Mastodon) : pas de redirection suivie, pas d'adresse interne, pas de détail d'erreur renvoyé */
+function aled08e_rs_http($methode, $url, $args = [], $protege = false) {
     $args += ['timeout' => 40, 'method' => $methode];
-    $r = wp_remote_request($url, $args);
-    if (is_wp_error($r)) return new WP_Error('aled08_rs', 'Le réseau ne répond pas : ' . $r->get_error_message());
+    if ($protege) $r = wp_safe_remote_request($url, ['redirection' => 0, 'reject_unsafe_urls' => true, 'limit_response_size' => 200000] + $args);
+    else $r = wp_remote_request($url, $args);
+    if (is_wp_error($r)) return new WP_Error('aled08_rs', 'Le réseau ne répond pas. Réessayez dans un instant.');
     $code = (int) wp_remote_retrieve_response_code($r);
     $corps = (string) wp_remote_retrieve_body($r);
     $j = json_decode($corps, true);
     if ($code >= 400) {
         $m = '';
         if (is_array($j)) $m = $j['error']['message'] ?? ($j['message'] ?? ($j['error_description'] ?? (is_string($j['error'] ?? null) ? $j['error'] : '')));
-        return new WP_Error('aled08_rs', $m !== '' ? (string) $m : 'Réponse ' . $code . ' du réseau.', ['code' => $code]);
+        return new WP_Error('aled08_rs', $m !== '' && !$protege ? mb_substr(wp_strip_all_tags((string) $m), 0, 300) : 'Le réseau a refusé (réponse ' . $code . ').', ['code' => $code]);
     }
     return ['code' => $code, 'json' => is_array($j) ? $j : [], 'headers' => wp_remote_retrieve_headers($r)];
 }
-function aled08e_rs_json($methode, $url, $donnees, $entetes = []) {
-    return aled08e_rs_http($methode, $url, ['headers' => $entetes + ['Content-Type' => 'application/json'], 'body' => wp_json_encode($donnees, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+function aled08e_rs_json($methode, $url, $donnees, $entetes = [], $protege = false) {
+    return aled08e_rs_http($methode, $url, ['headers' => $entetes + ['Content-Type' => 'application/json'], 'body' => wp_json_encode($donnees, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)], $protege);
 }
 
 /* ---------- La photo : réduite, en JPEG, gardée une heure dans un dossier public (Facebook et Instagram viennent la chercher) ---------- */
 function aled08e_rs_image($fichier) {
-    if (empty($fichier['tmp_name']) || !empty($fichier['error']) || !is_uploaded_file($fichier['tmp_name'])) return null;
+    if (empty($fichier['name'])) return null;
+    if (!empty($fichier['error']) || empty($fichier['tmp_name']) || !is_uploaded_file($fichier['tmp_name'])) return new WP_Error('aled08_rs', 'Votre photo n’est pas arrivée (trop lourde, ou envoi coupé). Rien n’a été publié : réessayez avec une photo plus légère.');
     if ($fichier['size'] > 8 * 1024 * 1024) return new WP_Error('aled08_rs', 'Cette photo est trop lourde (8 Mo au plus).');
     $type = wp_check_filetype_and_ext($fichier['tmp_name'], $fichier['name']);
     if (!in_array($type['type'], ['image/jpeg', 'image/png', 'image/webp'], true)) return new WP_Error('aled08_rs', 'Choisissez une photo JPG, PNG ou WebP.');
@@ -80,6 +83,8 @@ function aled08e_rs_image($fichier) {
     // moins de 1 Mo : c'est la limite de Bluesky, et c'est bien assez pour les autres réseaux
     foreach ([[1600, 85], [1280, 78], [1080, 68]] as $essai) {
         $e = wp_get_image_editor($fichier['tmp_name']);
+        if (is_wp_error($e)) return new WP_Error('aled08_rs', 'Cette photo ne peut pas être lue. Essayez-en une autre.');
+        if (method_exists($e, 'maybe_exif_rotate')) $e->maybe_exif_rotate(); // photo de téléphone prise en portrait
         $e->resize($essai[0], $essai[0], false);
         $e->set_quality($essai[1]);
         $s = $e->save($dossier . '/' . $nom, 'image/jpeg');
@@ -113,10 +118,10 @@ function aled08e_rs_bluesky_facets($t) {
     return $f;
 }
 function aled08e_rs_bluesky_publier($c, $texte, $image) {
+    if (mb_strlen($texte) > 300) return new WP_Error('aled08_rs', 'Bluesky accepte 300 caractères : votre texte en fait ' . mb_strlen($texte) . '. Raccourcissez-le dans la case, puis publiez.');
     $s = aled08e_rs_bluesky_session($c['handle'], $c['mdp']);
     if (is_wp_error($s)) return $s;
     $auth = ['Authorization' => 'Bearer ' . $s['accessJwt']];
-    $texte = mb_substr($texte, 0, 300);
     $post = ['$type' => 'app.bsky.feed.post', 'text' => $texte, 'createdAt' => gmdate('Y-m-d\TH:i:s.000\Z'), 'langs' => ['fr']];
     $facets = aled08e_rs_bluesky_facets($texte);
     if ($facets) $post['facets'] = $facets;
@@ -133,19 +138,21 @@ function aled08e_rs_bluesky_publier($c, $texte, $image) {
 
 /* ---------- Mastodon ---------- */
 function aled08e_rs_mastodon_publier($c, $texte, $image) {
+    if (mb_strlen($texte) > 500) return new WP_Error('aled08_rs', 'Mastodon accepte 500 caractères : votre texte en fait ' . mb_strlen($texte) . '. Raccourcissez-le dans la case, puis publiez.');
     $auth = ['Authorization' => 'Bearer ' . $c['jeton']];
-    $donnees = ['status' => mb_substr($texte, 0, 500), 'language' => 'fr'];
+    $donnees = ['status' => $texte, 'language' => 'fr'];
     if ($image) {
         $sep = '----aled08' . wp_generate_password(16, false, false);
         $corps = "--$sep\r\nContent-Disposition: form-data; name=\"file\"; filename=\"photo.jpg\"\r\nContent-Type: " . $image['mime'] . "\r\n\r\n" . file_get_contents($image['chemin']) . "\r\n--$sep--\r\n";
-        $m = aled08e_rs_http('POST', $c['instance'] . '/api/v2/media', ['headers' => $auth + ['Content-Type' => 'multipart/form-data; boundary=' . $sep], 'body' => $corps]);
+        $m = aled08e_rs_http('POST', $c['instance'] . '/api/v2/media', ['headers' => $auth + ['Content-Type' => 'multipart/form-data; boundary=' . $sep], 'body' => $corps], true);
         if (is_wp_error($m)) return $m;
         if (!empty($m['json']['id'])) $donnees['media_ids'] = [(string) $m['json']['id']];
         if ($m['code'] === 202) sleep(2); // la photo est encore en traitement
     }
-    $r = aled08e_rs_json('POST', $c['instance'] . '/api/v1/statuses', $donnees, $auth);
+    $r = aled08e_rs_json('POST', $c['instance'] . '/api/v1/statuses', $donnees, $auth, true);
     if (is_wp_error($r)) return $r;
-    return ['url' => (string) ($r['json']['url'] ?? $c['instance'])];
+    $lien = esc_url_raw((string) ($r['json']['url'] ?? ''), ['https']);
+    return ['url' => $lien !== '' ? $lien : $c['instance']];
 }
 
 /* ---------- Facebook (page) et Instagram (compte professionnel relié à la page) ---------- */
@@ -243,6 +250,7 @@ add_action('wp_ajax_aled08e_rs', function () {
         wp_send_json_success(['message' => 'Page choisie.']);
     }
     if ($op !== 'relier') wp_send_json_error(['message' => 'Action inconnue.'], 400);
+    if (!aled08e_jl_quota($uid, 'aled08_rs_lier_', 12)) wp_send_json_error(['message' => 'Trop d’essais cette heure-ci. Réessayez dans un moment.'], 429);
     if ($reseau === 'bluesky') {
         $id = ltrim(strtolower(trim(sanitize_text_field((string) ($P['identifiant'] ?? '')))), '@');
         $mdp = trim((string) ($P['mdp'] ?? ''));
@@ -259,9 +267,9 @@ add_action('wp_ajax_aled08e_rs', function () {
         $inst = preg_replace('#^https?://#', '', rtrim($inst, '/'));
         $jeton = trim(sanitize_text_field((string) ($P['jeton'] ?? '')));
         if (!preg_match('/^[a-z0-9.-]+\.[a-z]{2,}$/', $inst) || $jeton === '') wp_send_json_error(['message' => 'Donnez l’adresse de votre serveur Mastodon (par exemple mastodon.social) et votre jeton d’accès.'], 400);
-        $v = aled08e_rs_http('GET', 'https://' . $inst . '/api/v1/accounts/verify_credentials', ['headers' => ['Authorization' => 'Bearer ' . $jeton]]);
-        if (is_wp_error($v)) wp_send_json_error(['message' => 'Mastodon refuse ce jeton : vérifiez l’adresse du serveur et le jeton.'], 400);
-        $c['mastodon'] = ['instance' => 'https://' . $inst, 'jeton' => $jeton, 'nom' => '@' . ($v['json']['username'] ?? '?') . '@' . $inst];
+        $v = aled08e_rs_http('GET', 'https://' . $inst . '/api/v1/accounts/verify_credentials', ['headers' => ['Authorization' => 'Bearer ' . $jeton], 'timeout' => 15], true);
+        if (is_wp_error($v) || empty($v['json']['id'])) wp_send_json_error(['message' => 'Mastodon refuse ce jeton : vérifiez l’adresse du serveur et le jeton.'], 400);
+        $c['mastodon'] = ['instance' => 'https://' . $inst, 'jeton' => $jeton, 'nom' => '@' . mb_substr(preg_replace('/[^A-Za-z0-9_.-]/', '', (string) ($v['json']['username'] ?? '')), 0, 40) . '@' . $inst];
         aled08e_rs_set($uid, $c);
         wp_send_json_success(['message' => 'Mastodon est relié.']);
     }
@@ -334,18 +342,17 @@ add_action('wp_ajax_aled08e_publier', function () {
     $uid = get_current_user_id();
     if (!$uid || !check_ajax_referer('aled08e_jl', '_aled08e_jl', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
     $reseau = sanitize_key(wp_unslash($_POST['reseau'] ?? ''));
-    $texte = trim(sanitize_textarea_field(wp_unslash($_POST['texte'] ?? '')));
+    // le texte part tel quel vers le réseau (« <3 », « -50 % », un lien avec des accents) : on retire seulement ce qui n'est pas du texte
+    $texte = aled08e_jl_texte(is_scalar($_POST['texte'] ?? '') ? wp_unslash($_POST['texte'] ?? '') : '');
     if ($texte === '') wp_send_json_error(['message' => 'Le texte est vide.'], 400);
-    $cle = 'aled08_rs_nb_' . $uid;
-    $nb = (int) get_transient($cle);
-    if ($nb >= 30) wp_send_json_error(['message' => 'Vous avez beaucoup publié cette heure-ci. Réessayez dans un moment.'], 429);
+    if (mb_strlen($texte) > 5000) wp_send_json_error(['message' => 'Ce texte est trop long pour une publication.'], 400);
+    if (!aled08e_jl_quota($uid, 'aled08_rs_nb_', 30)) wp_send_json_error(['message' => 'Vous avez beaucoup publié cette heure-ci. Réessayez dans un moment.'], 429);
     $image = null;
     if (!empty($_FILES['image']['name'])) {
         $image = aled08e_rs_image($_FILES['image']);
         if (is_wp_error($image)) wp_send_json_error(['message' => $image->get_error_message()], 400);
     }
     @set_time_limit(120);
-    set_transient($cle, $nb + 1, HOUR_IN_SECONDS);
     $r = aled08e_rs_publier($uid, $reseau, $texte, $image);
     if (is_wp_error($r)) wp_send_json_error(['message' => $r->get_error_message()], 400);
     $h = get_user_meta($uid, 'aled08_rs_histo', true);
@@ -365,8 +372,11 @@ function aled08e_rs_html($uid) {
     $noms = aled08e_rs_noms();
     $aller = function ($r) { return esc_url(add_query_arg(['aled08e_rs' => $r, 'aller' => 1, '_n' => wp_create_nonce('aled08e_rs_aller')], home_url('/mon-espace/'))); };
     $h = '<div class="rs" data-rs><p class="app-sub">' . aled08e_icon('link') . 'Mes réseaux</p>'
-        . '<p class="app-note">Reliez un compte une fois : ensuite, un bouton suffit pour y publier. Pour un réseau non relié, le texte est copié et le réseau s’ouvre : il reste à coller.</p><ul class="rs-liste">';
+        . '<p class="app-note">Reliez un compte une fois : ensuite, un bouton suffit pour y publier. Pour les autres réseaux (Facebook, Instagram, LinkedIn…), le texte est copié et le réseau s’ouvre : il reste à coller.</p><ul class="rs-liste">';
     foreach ($noms as $id => $nom) {
+        // un réseau dont l'application n'est pas déclarée dans les réglages n'est pas montré : il reste le copier-coller
+        if (!isset($relies[$id]) && in_array($id, ['facebook', 'instagram'], true) && !aled08e_rs_meta_ok()) continue;
+        if (!isset($relies[$id]) && $id === 'linkedin' && !aled08e_rs_linkedin_ok()) continue;
         $h .= '<li class="rs-ligne' . (isset($relies[$id]) ? ' is-on' : '') . '"><strong>' . esc_html($nom) . '</strong>';
         if (isset($relies[$id])) {
             $h .= '<span class="rs-compte">' . aled08e_icon('check') . esc_html($relies[$id]) . '</span>';

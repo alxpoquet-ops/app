@@ -103,7 +103,11 @@ Pour réserver le nom de domaine, je transmets vos coordonnées de titulaire (pr
 
 ## 6. Espace client et comptes
 
-Votre compte est créé automatiquement à la commande, avec votre adresse e-mail. Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée. Pour aller plus vite, je peux m’aider d’outils d’intelligence artificielle ; je vérifie tout avant la mise en ligne.
+Votre compte est créé automatiquement à la commande, avec votre adresse e-mail. Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée.
+
+Lia, l’IA de l’espace client, fonctionne avec Claude, un service de la société Anthropic. Quand vous lui confiez une modification ou que vous lancez un de ses outils, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude, par une liaison chiffrée, pour produire la réponse. Ils ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
+
+Quand vous publiez sur un réseau social depuis l’outil « Publier partout », votre texte et votre photo sont envoyés à ce réseau, sur le compte que vous avez relié. La photo est gardée une heure sur notre serveur, le temps de l’envoi, puis effacée.
 
 Un compte sans aucune connexion depuis 12 mois et sans forfait actif est supprimé automatiquement, avec les demandes et les photos qu’il contient. Un e-mail vous prévient 30 jours avant. Il suffit de vous connecter pour le conserver.
 
@@ -115,7 +119,7 @@ Un compte sans aucune connexion depuis 12 mois et sans forfait actif est supprim
 
 ## 8. Destinataires
 
-Vos données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site, ${L.host}, par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Elles ne sont jamais vendues ni cédées.
+Vos données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site, ${L.host}, par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Ce que vous confiez à Lia passe par Anthropic (Claude), société américaine : ce traitement peut avoir lieu hors de l’Union européenne, dans le cadre prévu par ses conditions de traitement des données. Elles ne sont jamais vendues ni cédées.
 
 ## 9. Cookies et stockage local
 
@@ -207,7 +211,7 @@ Le client envoie ses demandes de modification depuis son espace client ou par me
 - **Par Lia** : une modification faite par Lia, l’IA d’${site.name}, et payée en Jetons Lia. Lia montre l’aperçu au client et ne modifie le site qu’après son accord.
 - **Par Alex** : une modification faite à la main, vérifiée et paramétrée par Alex.
 
-Les **Jetons Lia** paient ce que fait Lia : les modifications du site et les outils de l’espace client (publications pour les réseaux, hashtags, réponses aux avis, fiches produit et autres outils du même genre). Un Jeton Lia vaut ${eur(Math.round(jetonsLia.valeur * 100))} centime d’euro.
+Les **Jetons Lia** paient ce que fait Lia : les modifications du site et les outils de l’espace client (publier sur les réseaux, corriger ou traduire un texte, conseils sur une photo ou sur une page du site, et autres outils du même genre). Un Jeton Lia vaut ${eur(Math.round(jetonsLia.valeur * 100))} centime d’euro.
 
 Chaque forfait comprend, par mois :
 
@@ -239,7 +243,7 @@ Le client garantit qu’il a le droit d’utiliser les textes, images, logos et 
 
 ## 15. Versions et intelligence artificielle
 
-Chaque version du site est conservée et peut être restaurée sur demande. ${site.name} s’aide d’outils d’intelligence artificielle pour travailler plus vite ; chaque modification est relue et testée avant la mise en ligne.
+Chaque version du site est conservée et peut être restaurée sur demande. ${site.name} s’aide d’outils d’intelligence artificielle pour travailler plus vite. Une modification préparée par Lia n’est mise en ligne qu’après l’accord du client, qui voit l’aperçu. Les textes et les conseils que donnent les outils de Lia sont des propositions : le client les relit avant de s’en servir et reste responsable de ce qu’il publie. Lia ne donne pas de conseil juridique, médical ou comptable.
 
 ## 16. Référencement
 
