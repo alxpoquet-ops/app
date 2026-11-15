@@ -10,6 +10,8 @@ const legal = require('../content/legal');
 const OUTILS = require('../content/outils');
 const GUIDES = require('../content/guides');
 const { clients } = require('../config');
+let CLIENTS_PAGES = {};
+try { CLIENTS_PAGES = require('../content/clients-pages.json'); } catch (e) { /* pas encore compté : node scripts/compter-pages.js */ }
 
 const HOME = { name: 'Accueil', path: '/' };
 const DEMO_CRUMBS = [HOME, { name: 'Mon espace', path: '/mon-espace/' }, { name: 'Démo', path: '/mon-espace/demo/' }];
@@ -1104,6 +1106,9 @@ ${C.ctaBand()}`;
 // ====================================================================== ILS NOUS ONT FAIT CONFIANCE
 function confiancePage() {
   const crumbs = crumb('confiance');
+  const pagesDe = (c) => (CLIENTS_PAGES[c.domaine] || {}).pages || 0;
+  const total = clients.reduce((n, c) => n + pagesDe(c), 0);
+  const le = clients.map((c) => (CLIENTS_PAGES[c.domaine] || {}).le || '').sort().pop();
   const body = `${C.pageHero({
     section: 'confiance',
     h1: 'Ils nous ont fait confiance',
@@ -1111,9 +1116,10 @@ function confiancePage() {
     crumbs,
   })}
 <section class="section"><div class="container">
+  ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages créées pour les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque nouvelle page est une porte d’entrée de plus depuis Google.</span></p>` : ''}
   <div class="client-cards">${clients
     .map(
-      (c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-desc">${inline(c.desc)}</span><span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`
+      (c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-desc">${inline(c.desc)}</span>${pagesDe(c) ? `<span class="client-pages"><b>${pagesDe(c)}</b> page${pagesDe(c) > 1 ? 's' : ''}</span>` : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`
     )
     .join('')}</div>
   <p class="small muted center">Ces sites s’ouvrent dans un nouvel onglet.</p>
