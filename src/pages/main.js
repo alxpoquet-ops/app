@@ -1119,7 +1119,7 @@ function confiancePage() {
   ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages créées pour les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque nouvelle page est une porte d’entrée de plus depuis Google.</span></p>` : ''}
   <div class="client-cards">${clients
     .map(
-      (c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-desc">${inline(c.desc)}</span>${pagesDe(c) ? `<span class="client-pages"><b>${pagesDe(c)}</b> page${pagesDe(c) > 1 ? 's' : ''}</span>` : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`
+      (c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener">${c.forfait && F(c.forfait) ? `<span class="client-forfait c-${F(c.forfait).color}"><span class="client-forfait-art">${monster(c.forfait)}</span>Forfait ${F(c.forfait).name}</span>` : ''}<span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-desc">${inline(c.desc)}</span>${pagesDe(c) ? `<span class="client-pages"><b>${pagesDe(c)}</b> page${pagesDe(c) > 1 ? 's' : ''}</span>` : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`
     )
     .join('')}</div>
   <p class="small muted center">Ces sites s’ouvrent dans un nouvel onglet.</p>

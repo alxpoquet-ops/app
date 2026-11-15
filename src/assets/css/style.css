@@ -600,6 +600,10 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 .client-desc { color: var(--muted); }
 .client-url { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 9px 14px; border-radius: 999px; background: var(--c); color: var(--c-dd); font-weight: 900; }
 .client-url .ico { width: 18px; height: 18px; }
+.client-card { position: relative; }
+.client-forfait { position: absolute; top: 18px; right: 18px; display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 6px; border-radius: 999px; background: var(--c); color: var(--c-dd); font-weight: 800; font-size: .86rem; }
+.client-forfait-art { display: block; width: 26px; flex: none; }
+.client-forfait-art svg { display: block; width: 100%; height: auto; }
 .client-total { display: flex; align-items: center; justify-content: center; gap: 16px; max-width: 860px; margin: 0 auto 22px; padding: 18px 22px; border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow-sm); }
 .client-total b { font-size: clamp(2.4rem, 6vw, 3.4rem); line-height: 1; font-weight: 900; color: var(--pink-dd); }
 .client-total span { color: var(--muted); }
