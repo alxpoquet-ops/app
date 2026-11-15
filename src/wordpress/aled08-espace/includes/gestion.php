@@ -511,3 +511,16 @@ function aled08e_gestion($u) {
     <?php
     return ob_get_clean();
 }
+
+/* Publier une annonce sans passer par l'écran de gestion : l'option aled08_annonce_a_publier
+ * ({"titre": "...", "texte": "..."}) est lue par la tâche planifiée « aled08_annonce_publier », puis effacée. */
+add_action('aled08_annonce_publier', function () {
+    $a = get_option('aled08_annonce_a_publier');
+    if (is_string($a)) $a = json_decode($a, true);
+    delete_option('aled08_annonce_a_publier');
+    $titre = is_array($a) ? sanitize_text_field((string) ($a['titre'] ?? '')) : '';
+    if ($titre === '') return;
+    $admins = get_users(['role' => 'administrator', 'number' => 1, 'orderby' => 'ID', 'fields' => 'ids']);
+    wp_insert_post(['post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'post_title' => mb_substr($titre, 0, 120), 'post_content' => mb_substr(sanitize_textarea_field((string) ($a['texte'] ?? '')), 0, 1500), 'post_author' => $admins ? (int) $admins[0] : 0]);
+    update_option('aled08_annonce_derniere', ['titre' => $titre, 'le' => current_time('mysql'), 'total' => count(aled08e_annonces(100))], false);
+});
