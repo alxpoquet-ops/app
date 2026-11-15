@@ -105,7 +105,7 @@ function aled08e_lia_systeme($u, $infos) {
         . "Règles :\n"
         . "- Fais exactement ce qui est demandé, rien de plus. Ne change ni le style, ni la mise en page, ni les autres textes.\n"
         . "- Tu fais les petites et moyennes modifications. Ton budget pour une demande : " . aled08e_lia_budget_txt() . " Tout se passe sur UNE seule page (ou une seule actualité).\n"
-        . "- Si la demande dépasse ce budget (plusieurs pages, refonte, nouvelle page ou rubrique, long texte, beaucoup de photos) : ne modifie rien et termine avec « pour_alex ». Dans message_client, explique simplement que cette demande est trop grande pour Lia, qu'elle passe à Alex, que cela prend plus de temps et que cela compte pour une de ses demandes Alex du mois.\n"
+        . "- Si la demande dépasse ce budget (plusieurs pages, refonte, nouvelle page ou rubrique, long texte, beaucoup de photos) : ne modifie rien et termine avec « pour_alex ». Dans message_client, explique simplement que cette demande est trop grande pour Lia, qu'elle passe à Alex, que cela prend plus de temps et que cela compte pour une de ses demandes Alex du mois (ses Jetons Lia lui sont rendus).\n"
         . "- Lis toujours le contenu avant de le modifier. Préfère remplacer_texte pour un petit changement, en recopiant le passage exact (balises comprises).\n"
         . "- Écris en français correct, dans le ton du site. Garde les espaces insécables et la typographie existantes.\n"
         . "- Tu ne peux ni supprimer une page, ni toucher aux extensions, au thème, aux prix d'une boutique en ligne ou aux comptes : si la demande l'exige, ne fais rien et termine avec « pour_alex ».\n"
@@ -292,6 +292,8 @@ function aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $act
         update_post_meta($pid, '_aled08_lia_etat', 'annule');
         return;
     }
+    $conso = get_post_meta($pid, '_aled08_lia_conso', true);
+    if (is_array($conso)) aled08e_jl_cout_noter($uid, 'demande:' . $pid, aled08e_jl_centimes(aled08e_lia_cout($conso))); // ce que la demande a vraiment coûté
     update_post_meta($pid, '_aled08_lia_actions', $actions);
     update_post_meta($pid, '_aled08_lia_note', mb_substr((string) $noteAlex, 0, 2000));
     update_post_meta($pid, '_aled08_lia_le', current_time('mysql'));
@@ -307,7 +309,8 @@ function aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $act
         aled08e_lia_journal_add('Demande #' . $pid . ' préparée par Lia, en attente de l’accord du client.');
         if ($u) wp_mail($u->user_email, 'Lia a préparé votre modification : à vous de voir', 'Bonjour ' . aled08e_prenom($u) . ",\n\n" . $msgClient . "\n\nRien n’est encore changé sur votre site. Regardez l’aperçu et confirmez dans votre espace :\n" . aled08e_url() . "#demandes\n\nÀ bientôt,\nAlex, et Lia\n", aled08e_mail_headers('"Alex & Lia" <' . aled08e_to() . '>'));
     } else {
-        // passée à Alex : le jeton n'est pas compté, la demande rejoint les modifications d'Alex
+        // passée à Alex : les Jetons Lia sont rendus, la demande rejoint les modifications d'Alex
+        aled08e_jl_rendre($uid, 'demande:' . $pid);
         update_post_meta($pid, '_aled08_par', 'alex');
         update_post_meta($pid, '_aled08_lia_etat', 'pour_alex');
         update_post_meta($pid, '_aled08_statut', 'recue');
@@ -487,6 +490,7 @@ function aled08e_lia_confirmer($pid, $oui, $commentaire = '') {
     $prevues = (array) get_post_meta($pid, '_aled08_lia_actions', true);
     if (!$oui) {
         aled08e_lia_appel($uid, 'abandonner', ['jeton' => $jeton]);
+        aled08e_jl_rendre($uid, 'demande:' . $pid); // aperçu refusé : les Jetons Lia sont rendus
         update_post_meta($pid, '_aled08_par', 'alex');
         update_post_meta($pid, '_aled08_lia_etat', 'refuse');
         update_post_meta($pid, '_aled08_statut', 'recue');

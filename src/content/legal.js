@@ -2,11 +2,11 @@
 // ⚠️ Les éléments entre accolades proviennent de src/config.js et doivent y être complétés.
 // ⚠️ Modèle à faire relire : il ne remplace pas l'avis d'un professionnel du droit.
 // Règles : aucun tiret long, phrases courtes, rien d'invérifiable. Le nom de marque vient de site.name.
-const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, delais = { reponse: '72 heures', titan: '24 heures' } } = require('../config');
+const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, jetonsLia, delais = { reponse: '72 heures', titan: '24 heures' } } = require('../config');
 const L = site.legal;
 const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
-const UPDATED = '2026-11-14';
+const UPDATED = '2026-11-15';
 
 // Le forfait Titan peut ne pas encore exister : chaque phrase qui le cite est conditionnelle.
 const F = (id) => forfaits.find((f) => f.id === id);
@@ -22,6 +22,10 @@ const listeOptions = options
   .map((o) => `${o.name.toLowerCase()} ${o.price.month ? `${eur(o.price.month)} € par mois` : `${eur(o.price.once)} € une fois`}`)
   .join(', ');
 const tvaMention = L.tva || 'non applicable, art. 293 B du CGI';
+// Jetons Lia : les nombres viennent de config.jetonsLia, pour que les CGV suivent toujours les prix.
+const modifsAlex = (f) => `${f.quota} modification${f.quota > 1 ? 's' : ''} par Alex`;
+const liaPlusOpt = options.find((o) => o.id === 'liaplus');
+const listeRecharges = jetonsLia.recharge.map((r) => `${r.jetons} jetons pour ${eur(r.prix)} €`).join(', ');
 
 module.exports = [
   {
@@ -200,18 +204,24 @@ Le client fournit ses textes, photos et informations, ou les prépare avec ${sit
 
 Le client envoie ses demandes de modification depuis son espace client ou par message. Il y a deux sortes de modifications :
 
-- **Par Lia** : une modification faite par Lia, l’IA d’${site.name}. Lia montre l’aperçu au client et ne modifie le site qu’après son accord.
+- **Par Lia** : une modification faite par Lia, l’IA d’${site.name}, et payée en Jetons Lia. Lia montre l’aperçu au client et ne modifie le site qu’après son accord.
 - **Par Alex** : une modification faite à la main, vérifiée et paramétrée par Alex.
+
+Les **Jetons Lia** paient ce que fait Lia : les modifications du site et les outils de l’espace client (publications pour les réseaux, hashtags, réponses aux avis, fiches produit et autres outils du même genre). Un Jeton Lia vaut ${eur(Math.round(jetonsLia.valeur * 100))} centime d’euro.
 
 Chaque forfait comprend, par mois :
 
-- ${chico.name} : ${chico.jetons} modifications par Lia et ${chico.quota} par Alex.
-- ${power.name} : ${power.jetons} modifications par Lia et ${power.quota} par Alex.
-${titan ? `- ${titan.name} : ${titan.jetons} modifications par Lia et ${titan.quota} par Alex.` : ''}
+- ${chico.name} : ${chico.jetons} Jetons Lia et ${modifsAlex(chico)}.
+- ${power.name} : ${power.jetons} Jetons Lia et ${modifsAlex(power)}.
+${titan ? `- ${titan.name} : ${titan.jetons} Jetons Lia et ${modifsAlex(titan)}.` : ''}
 
-Les deux compteurs sont séparés et ne se reportent pas d’un mois sur l’autre. Lia réalise les petites et moyennes modifications (un budget de mots et d’images par demande, sur une seule page) et montre toujours un aperçu que le client valide avant toute mise en ligne. Alex réalise les plus grandes. Une demande trop grande pour Lia est transmise à Alex et compte alors parmi les demandes Alex. L’option Lia + ajoute dix modifications par Lia par mois.
+Une modification faite par Lia coûte ${jetonsLia.modif.base} Jetons Lia, plus 1 jeton par tranche de ${jetonsLia.modif.mots} mots écrits dans la demande, plus ${jetonsLia.modif.image} jetons par photo jointe. Les outils de l’espace client sont accessibles dès le forfait ${chico.name}. Chaque outil se paie en Jetons Lia, au tarif affiché avant son utilisation.
 
-Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications non utilisées ne se reportent pas. Une demande peut être annulée gratuitement par le client dans les 24 heures qui suivent son envoi, depuis son espace client, dans la limite de trois annulations par mois : elle n’est alors pas décomptée, et ce que Lia avait mis en ligne est remis comme avant. Au-delà, l’annulation se demande à Alex. Les modifications réalisées par Lia sont mises en ligne dès que le client valide l’aperçu, en général dans les 5 minutes qui suivent la demande. Au-delà du nombre de modifications par Alex compris, le client peut demander un Boost : une modification en plus pour 1 €, réalisée par Alex, ajoutée à sa prochaine facture, avec son accord à chaque demande. Sinon, la demande est reportée à la période suivante, au choix du client. Une page nouvelle ou un site plus grand fait l’objet d’un devis.
+Les Jetons Lia et les modifications par Alex sont comptés séparément. Les jetons du forfait sont remis chaque mois et ne se reportent pas d’un mois sur l’autre. Lia réalise les petites et moyennes modifications (un budget de mots et d’images par demande, sur une seule page) et montre toujours un aperçu que le client valide avant toute mise en ligne. Alex réalise les plus grandes. Une demande trop grande pour Lia est transmise à Alex. Elle compte alors parmi les demandes Alex, et ses jetons sont rendus au client.
+
+L’option Lia + ajoute ${jetonsLia.liaplus} Jetons Lia par mois${liaPlusOpt ? `, pour ${eur(liaPlusOpt.price.month)} € par mois` : ''}. Le client peut aussi acheter une recharge à l’unité : ${listeRecharges}. La recharge est ajoutée à sa prochaine facture. Les jetons d’une recharge ne s’effacent pas à la fin du mois.
+
+Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications par Alex non utilisées ne se reportent pas. Une demande peut être annulée gratuitement par le client dans les 24 heures qui suivent son envoi, depuis son espace client, dans la limite de trois annulations par mois : elle n’est alors pas décomptée, ses jetons sont rendus, et ce que Lia avait mis en ligne est remis comme avant. Au-delà, l’annulation se demande à Alex. Les modifications réalisées par Lia sont mises en ligne dès que le client valide l’aperçu, en général dans les 5 minutes qui suivent la demande. Au-delà du nombre de modifications par Alex compris, le client peut demander un Boost : une modification en plus pour 1 €, réalisée par Alex, ajoutée à sa prochaine facture, avec son accord à chaque demande. Sinon, la demande est reportée à la période suivante, au choix du client. Une page nouvelle ou un site plus grand fait l’objet d’un devis.
 
 ## 12. Délais de réponse
 

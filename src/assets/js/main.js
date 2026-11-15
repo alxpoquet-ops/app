@@ -30,7 +30,7 @@
     'Envoi en cours…': 'Sending…', 'Nouvelle étape': 'New step', 'QR code vers votre site': 'QR code to your website', 'QR code téléchargé': 'QR code downloaded',
     'Vos modifications du mois sont utilisées : je vous recontacte pour en parler (démo)': 'You have used this month’s changes: I will get back to you to talk about it (demo)',
     'envoyée à l’instant': 'sent just now', 'Reçue': 'Received', 'Ajouter une photo (facultatif)': 'Add a photo (optional)',
-    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'En cours': 'In progress', 'Faite': 'Done',
+    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'Demande envoyée': 'Request sent', 'jetons (démo)': 'tokens (demo)', 'Il ne vous reste pas assez de Jetons Lia pour cette demande (démo)': 'You do not have enough Lia Tokens left for this request (demo)', 'En cours': 'In progress', 'Faite': 'Done',
     'Votre modification est en ligne (démo)': 'Your change is live (demo)', ' choisi, à partir du mois prochain (démo)': ' chosen, from next month (demo)',
     'Option ajoutée': 'Option added', 'Option retirée': 'Option removed', ' (démo)': ' (demo)', 'à l’instant': 'just now',
     'Je souhaite payer le site en ': 'I would like to pay for the website in ', ' fois.': ' instalments.', 'Options choisies : ': 'Chosen options: ',
@@ -795,13 +795,13 @@
 
     /* modifications restantes ce mois : le quota vient du forfait coché (data-jetons), deux demandes sont déjà faites dans la démo */
     var startPlan = $('input[name="app-plan"]:checked', app);
-    var used = 2;
-    var max = startPlan ? +startPlan.getAttribute('data-jetons') : 4, left = Math.max(0, max - used);
+    var used = 62;
+    var max = startPlan ? +startPlan.getAttribute('data-jetons') : 250, left = Math.max(0, max - used);
     var drawJauge = function () {
       $('[data-jetons]', app).textContent = left;
       $('[data-jetons-max]', app).textContent = max;
       $('[data-jauge-fill]', app).style.width = (max ? Math.min(100, left / max * 100) : 0) + '%';
-      $('[data-jauge]', app).classList.toggle('is-low', left <= 0);
+      $('[data-jauge]', app).classList.toggle('is-low', left < 30);
     };
     drawJauge();
 
@@ -813,14 +813,15 @@
       e.preventDefault();
       var text = txt.value.trim();
       if (!text) { toast(tr('Écrivez votre demande en quelques mots')); txt.focus(); return; }
-      if (left <= 0) { toast(tr('Vos modifications du mois sont utilisées : je vous recontacte pour en parler (démo)')); return; }
-      used++; left = Math.max(0, max - used); drawJauge();
+      var prix = 30 + Math.ceil((text.match(/\S+/g) || []).length / 10) + (file.files && file.files.length ? 10 : 0);
+      if (left < prix) { toast(tr('Il ne vous reste pas assez de Jetons Lia pour cette demande (démo)')); return; }
+      used += prix; left = Math.max(0, max - used); drawJauge();
       var li = d.createElement('li');
       li.innerHTML = '<span><strong></strong><small>' + tr('envoyée à l’instant') + '</small></span><em class="st st-new">' + tr('Reçue') + '</em>';
       li.querySelector('strong').textContent = text.length > 60 ? text.slice(0, 57) + '…' : text;
       list.insertBefore(li, list.firstChild);
       txt.value = ''; file.value = ''; fileName.textContent = tr('Ajouter une photo (facultatif)');
-      toast(tr('Demande envoyée : je m’en occupe (démo)'));
+      toast(tr('Demande envoyée') + ' : ' + prix + ' ' + tr('jetons (démo)'));
       var st = li.querySelector('.st');
       setTimeout(function () { st.className = 'st st-doing'; st.textContent = tr('En cours'); }, 2000);
       setTimeout(function () {

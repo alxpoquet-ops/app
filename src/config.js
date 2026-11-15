@@ -48,7 +48,7 @@ const site = {
   formAction: '/envoi.php',
 
   // Espace client : /mon-espace/ (connexion, sous WordPress) et sa démonstration /mon-espace/demo/.
-  // ouvert: false affiche « ouvre bientôt » sur la page Nos outils.
+  // ouvert: false affiche « ouvre bientôt » sur la page Outils.
   espaceClient: { ouvert: true, url: '/mon-espace/', demo: '/mon-espace/demo/' },
 
   social: {
@@ -62,7 +62,7 @@ const site = {
 const sections = {
   creer: { path: '/creer-mon-site/', label: 'Créer mon site', color: 'mint', icon: 'wand-sparkles' },
   forfaits: { path: '/forfaits/', label: 'Forfaits', color: 'lilac', icon: 'heart' },
-  espace: { path: '/nos-outils/', label: 'Nos outils', color: 'sky', icon: 'toolbox' },
+  espace: { path: '/outils/', label: 'Outils', color: 'sky', icon: 'toolbox' },
   seo: { path: '/referencement-seo/', label: 'SEO', color: 'butter', icon: 'search-check' },
   contact: { path: '/contact/', label: 'Contact', color: 'peach', icon: 'message-circle' },
   confiance: { path: '/ils-nous-ont-fait-confiance/', label: 'Ils nous ont fait confiance', color: 'butter', icon: 'handshake' },
@@ -141,15 +141,15 @@ const forfaits = [
     color: 'mint',
     month: 5,
     quota: 1, // modifications par Alex, par mois
-    jetons: 2, // modifications par Lia, par mois
+    jetons: 100, // Jetons Lia par mois
     partage: false,
     bulle: 'Le forfait de base pour faire tourner votre site',
-    modifs: 'Deux modifications par Lia et une par Alex, chaque mois',
+    modifs: '100 Jetons Lia et une modification par Alex, chaque mois',
     tagline: 'L’essentiel',
-    pitch: 'Votre site en ligne, sûr et à jour, sur un serveur de qualité. Deux modifications par Lia et une par Alex, chaque mois.',
-    main: ['Site hébergé, sécurisé et tenu à jour', 'Nom de domaine compris', 'Deux modifications par Lia et une par Alex, chaque mois'],
-    details: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié à votre site et renouvelé chaque année (liaison OVH)', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour des extensions, faites pour vous', 'Formulaire de contact qui arrive dans votre boîte mail', 'Gestion du flux de visites : le site tient quand il y a du monde', 'Bases du SEO : Google sait lire et comprendre votre site', 'Deux modifications par Lia et une par Alex, chaque mois', 'Lia, en 5 minutes, pour les petites et moyennes modifications : elle vous montre l’aperçu de la page et attend votre accord', 'Alex, sous 72 heures, pour les plus grandes : fait et vérifié à la main', 'Votre espace client : demandes, suivi et parrainage', 'Sans engagement : vous arrêtez quand vous voulez'],
-    features: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié et renouvelé', 'Mises à jour des extensions', 'Formulaire de contact et HTTPS', 'Gestion du flux de visites', 'Bases du SEO : Google sait lire votre site', 'Deux modifications par Lia et une par Alex, chaque mois'],
+    pitch: 'Votre site en ligne, sûr et à jour, sur un serveur de qualité. 100 Jetons Lia et une modification par Alex, chaque mois.',
+    main: ['Site hébergé, sécurisé et tenu à jour', 'Nom de domaine compris', '100 Jetons Lia et une modification par Alex, chaque mois'],
+    details: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié à votre site et renouvelé chaque année (liaison OVH)', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour des extensions, faites pour vous', 'Formulaire de contact qui arrive dans votre boîte mail', 'Gestion du flux de visites : le site tient quand il y a du monde', 'Bases du SEO : Google sait lire et comprendre votre site', '100 Jetons Lia et une modification par Alex, chaque mois', 'Vos Jetons Lia servent aux modifications par Lia et aux outils de l’espace client', 'Lia, en 5 minutes, pour les petites et moyennes modifications : elle vous montre l’aperçu de la page et attend votre accord', 'Alex, sous 72 heures, pour les plus grandes : fait et vérifié à la main', 'Votre espace client : demandes, suivi et parrainage', 'Sans engagement : vous arrêtez quand vous voulez'],
+    features: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié et renouvelé', 'Mises à jour des extensions', 'Formulaire de contact et HTTPS', 'Gestion du flux de visites', 'Bases du SEO : Google sait lire votre site', '100 Jetons Lia et une modification par Alex, chaque mois'],
   },
   {
     id: 'power',
@@ -157,16 +157,16 @@ const forfaits = [
     color: 'lilac',
     month: 15,
     quota: 2, // modifications par Alex, par mois
-    jetons: 4, // modifications par Lia, par mois
+    jetons: 250, // Jetons Lia par mois
     partage: false,
     bulle: 'Pour être trouvé sur Google et faire vivre votre site',
-    modifs: 'Quatre modifications par Lia et deux par Alex, chaque mois',
+    modifs: '250 Jetons Lia et deux modifications par Alex, chaque mois',
     conseil: true,
     tagline: 'Pour être trouvé',
     pitch: 'Tout Chico, plus le SEO : je fais remonter votre site sur Google. Serveur plus rapide, support et modifications rapides.',
-    main: ['Tout ce que comprend Chico', 'Le SEO : votre site monte sur Google', 'Quatre modifications par Lia et deux par Alex, chaque mois'],
-    details: ['Tout ce que comprend Chico, et en plus :', 'Le SEO suivi chaque mois : je choisis avec vous les mots que vos clients tapent et je fais monter votre site', 'Des pages utiles pour le référencement, qui renvoient vers votre site (jamais des pages inutiles)', 'Un serveur plus rapide, pour accueillir plus de visites', 'Un support rapide quand vous avez une question', 'Deux modifications par mois, et vous choisissez qui fait chacune : Lia ou Alex'],
-    features: ['Tout ce que comprend Chico', 'SEO : je fais remonter votre site sur Google, chaque mois', 'Serveur plus rapide, pour plus de visites', 'Support rapide', 'Quatre modifications par Lia et deux par Alex, chaque mois'],
+    main: ['Tout ce que comprend Chico', 'Le SEO : votre site monte sur Google', '250 Jetons Lia et deux modifications par Alex, chaque mois'],
+    details: ['Tout ce que comprend Chico, et en plus :', 'Le SEO suivi chaque mois : je choisis avec vous les mots que vos clients tapent et je fais monter votre site', 'Des pages utiles pour le référencement, qui renvoient vers votre site (jamais des pages inutiles)', 'Un serveur plus rapide, pour accueillir plus de visites', 'Un support rapide quand vous avez une question', '250 Jetons Lia et deux modifications par Alex, chaque mois'],
+    features: ['Tout ce que comprend Chico', 'SEO : je fais remonter votre site sur Google, chaque mois', 'Serveur plus rapide, pour plus de visites', 'Support rapide', '250 Jetons Lia et deux modifications par Alex, chaque mois'],
   },
   {
     id: 'titan',
@@ -174,16 +174,16 @@ const forfaits = [
     color: 'peach',
     month: 30,
     quota: 2, // modifications par Alex, par mois
-    jetons: 10, // modifications par Lia, par mois
+    jetons: 600, // Jetons Lia par mois
     partage: false,
     bulle: 'Pour suivre votre site et vos ventes de près',
-    modifs: 'Dix modifications par Lia et deux par Alex, chaque mois',
+    modifs: '600 Jetons Lia et deux modifications par Alex, chaque mois',
     conseil: false,
     tagline: 'Le meilleur',
-    pitch: 'Tout Power, plus le retour de vos ventes et de vos chiffres chaque mois, et dix modifications par Lia chaque mois.',
-    main: ['Tout ce que comprend Power', 'Votre site heure par heure : visiteurs, ventes, serveur', 'Dix modifications par Lia et deux par Alex, chaque mois'],
-    details: ['Tout ce que comprend Power, et en plus :', 'Votre site heure par heure : visiteurs, pages vues, appareils, provenance, mémoire et charge du serveur, mis à jour toutes les heures', 'Un rapport chaque mois : vos ventes, vos visites et vos chiffres, expliqués simplement', 'Dix modifications par Lia et deux par Alex, chaque mois', 'Avec Alex, réponse sous 24 heures'],
-    features: ['Tout ce que comprend Power', 'Votre site heure par heure : visiteurs, ventes, serveur', 'Retour de vos ventes et de vos chiffres chaque mois', 'Dix modifications par Lia et deux par Alex, chaque mois'],
+    pitch: 'Tout Power, plus le retour de vos ventes et de vos chiffres chaque mois, et 600 Jetons Lia chaque mois.',
+    main: ['Tout ce que comprend Power', 'Votre site heure par heure : visiteurs, ventes, serveur', '600 Jetons Lia et deux modifications par Alex, chaque mois'],
+    details: ['Tout ce que comprend Power, et en plus :', 'Votre site heure par heure : visiteurs, pages vues, appareils, provenance, mémoire et charge du serveur, mis à jour toutes les heures', 'Un rapport chaque mois : vos ventes, vos visites et vos chiffres, expliqués simplement', '600 Jetons Lia et deux modifications par Alex, chaque mois', 'Avec Alex, réponse sous 24 heures'],
+    features: ['Tout ce que comprend Power', 'Votre site heure par heure : visiteurs, ventes, serveur', 'Retour de vos ventes et de vos chiffres chaque mois', '600 Jetons Lia et deux modifications par Alex, chaque mois'],
   },
 ];
 const annuel = { moisOfferts: 2 };
@@ -200,13 +200,27 @@ const options = [
   { id: 'mail', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
   { id: 'en', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 50 }, desc: 'Votre site traduit en anglais et relu, pour les touristes et les clients venus d’ailleurs.' },
   { id: 'stock', group: 'site', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, types: ['boutique'], desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
-  { id: 'liaplus', group: 'site', name: 'Lia +', icon: 'sparkles', price: { month: 5 }, desc: 'Dix modifications par Lia en plus chaque mois, pour ceux qui changent souvent leur site.' },
+  { id: 'liaplus', group: 'site', name: 'Lia +', icon: 'sparkles', price: { month: 5 }, desc: '500 Jetons Lia en plus chaque mois, pour ceux qui changent souvent leur site ou publient beaucoup.' },
   { id: 'comptes', group: 'site', name: 'Comptes clients', icon: 'users', price: { month: 5 }, types: ['boutique'], desc: 'Vos clients se créent un compte sur votre site : commandes passées, adresses et favoris gardés.' },
 ];
 
 // ---------------------------------------------------------------- fidélité et paiement
 const fidelite = { parrainageMois: 1, remiseSecondSite: 10 };
 const paiement = { acompte: 25 }; // 25 % à la commande ; à la réception : le reste (en une fois, ou en 6 / 12 fois sans frais) et le forfait démarre
+
+// ---------------------------------------------------------------- Jetons Lia
+// 1 Jeton Lia = 1 centime. Les jetons paient ce que fait Lia : les modifications du site et les outils.
+// Règle de prix : ce que Lia me coûte (Claude) × margeOutils pour les outils, × margeLia pour les modifications.
+// modif : prix d'une modification par Lia = base + 1 jeton par tranche de `mots` mots écrits + `image` par photo jointe.
+// recharge : jetons en plus, à l'unité, ajoutés à la prochaine facture. liaplus : jetons de l'option Lia +, chaque mois.
+const jetonsLia = {
+  valeur: 0.01,
+  margeOutils: 1.5,
+  margeLia: 2,
+  modif: { base: 30, mots: 10, image: 10 },
+  recharge: [{ jetons: 100, prix: 1 }, { jetons: 500, prix: 5 }, { jetons: 1000, prix: 10 }],
+  liaplus: 500,
+};
 
 // Boost : une modification en plus du forfait, à l'unité, ajoutée à la prochaine facture.
 const boost = { prix: 1 };
@@ -220,4 +234,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: '' },
 ];
 
-module.exports = { clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost };
+module.exports = { clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost, jetonsLia };

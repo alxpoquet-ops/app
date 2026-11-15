@@ -95,6 +95,7 @@ require_once __DIR__ . '/includes/stats.php';
 require_once __DIR__ . '/includes/vacances.php';
 require_once __DIR__ . '/includes/boutique.php';
 require_once __DIR__ . '/includes/brief.php';
+require_once __DIR__ . '/includes/jetons.php';
 
 /* =========================================================================
  *  Rôle « Client Alex & Lia » et type de contenu « Demande »
@@ -288,9 +289,10 @@ function aled08e_annuler_demande($pid) {
     if ($etat === 'a_confirmer' && function_exists('aled08e_lia_appel')) aled08e_lia_appel($uid, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]);
     if ($etat === 'fait' && function_exists('aled08e_lia_annuler')) $note = aled08e_lia_annuler($pid);
     update_post_meta($pid, '_aled08_annulee_le', current_time('mysql'));
+    aled08e_jl_rendre($uid, 'demande:' . $pid);
     update_post_meta($pid, '_aled08_statut', 'annulee');
     if ($etat) update_post_meta($pid, '_aled08_lia_etat', 'annule');
-    update_post_meta($pid, '_aled08_reponse', 'Demande annulée. Elle ne compte pas dans vos modifications du mois.' . ($etat === 'fait' ? ' Votre page a été remise comme avant.' : ''));
+    update_post_meta($pid, '_aled08_reponse', 'Demande annulée. Elle ne compte pas ce mois-ci : vos jetons vous sont rendus.' . ($etat === 'fait' ? ' Votre page a été remise comme avant.' : ''));
     $u = get_userdata($uid);
     wp_mail(aled08e_to(), 'Une demande a été annulée par le client', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n"
         . ($note ? "\nCe que Lia avait mis en ligne : " . $note . "\n" : '')
@@ -322,10 +324,10 @@ function aled08e_annulation_html($p) {
 }
 /* Jetons Lia du forfait (null = illimité) */
 function aled08e_jetons($f) { return array_key_exists('jetons', $f) ? $f['jetons'] : 1; }
-/* Modifications par Lia du mois pour ce client : celles du forfait, plus 10 avec l'option Lia + */
 /* Comptes « famille » : modifications par Lia et par Alex sans limite */
 function aled08e_famille($uid) { return aled08e_meta($uid, 'famille') === '1'; }
-function aled08e_jetons_user($uid, $f) { return (int) aled08e_jetons($f) + (aled08e_meta($uid, 'liaplus') === '1' ? 10 : 0); }
+/* Jetons Lia du mois pour ce client : ceux du forfait, plus ceux de l'option Lia + */
+function aled08e_jetons_user($uid, $f) { return aled08e_jl_mois($uid, $f); }
 /* Ce que Lia peut faire dans une demande : nombre de mots selon le nombre d'images (0, 1, 2 ou 3 images) */
 function aled08e_lia_limites() { return ['mots' => [300, 200, 100, 40], 'images' => 3]; }
 
@@ -348,9 +350,13 @@ add_action('template_redirect', function () {
     // par Lia (automatique, un jeton) ou par Alex (à la main) ; plus de jeton ce mois-ci : la demande passe à Alex
     $par = sanitize_key(wp_unslash($_POST['par'] ?? 'alex')) === 'lia' ? 'lia' : 'alex';
     // deux compteurs séparés : les modifications par Lia (forfait + option Lia +) et celles par Alex
-    $liaMax = aled08e_jetons_user($uid, $f);
     $famille = aled08e_famille($uid);
-    if (!$famille && $par === 'lia' && aled08e_count_month($uid, 'lia') >= $liaMax) $back('lia_epuise');
+    // prix de la modification par Lia, en Jetons Lia : selon le nombre de mots écrits et de photos jointes
+    $nbPhotos = 0;
+    if (!empty($_FILES['photos']['name']) && is_array($_FILES['photos']['name'])) $nbPhotos = min(aled08e_lia_limites()['images'], count(array_filter($_FILES['photos']['name'], 'strlen')));
+    elseif (!empty($_FILES['photo']['name'])) $nbPhotos = 1;
+    $prixLia = aled08e_jl_prix_modif($txt, $nbPhotos);
+    if (!$famille && $par === 'lia' && $prixLia > aled08e_jl_etat($uid, $f)['solde']) $back('lia_epuise');
     // modifications d'Alex du mois utilisées : la demande devient un Boost (1 € la modification en plus), avec l'accord du client
     $over = !$famille && $par === 'alex' && aled08e_count_month($uid, 'alex') >= (int) $f['quota'];
     if ($over && empty($_POST['boost_ok'])) $back('boost_accord');
@@ -360,6 +366,7 @@ add_action('template_redirect', function () {
     if (is_wp_error($pid)) $back('erreur');
     update_post_meta($pid, '_aled08_statut', 'recue');
     update_post_meta($pid, '_aled08_par', $par);
+    if ($par === 'lia') { aled08e_jl_debiter($uid, $prixLia, 'Modification par Lia', 'demande:' . $pid); update_post_meta($pid, '_aled08_jetons', $famille ? 0 : $prixLia); }
     if ($over) { update_post_meta($pid, '_aled08_boost', 1); update_post_meta($pid, '_aled08_hors_forfait', 1); aled08e_boost_facturer($pid, $uid); }
 
     $photo = '';
@@ -430,7 +437,7 @@ function aled08e_client_box($post) {
     echo '<p><strong>' . esc_html($u->display_name) . '</strong><br><a href="mailto:' . esc_attr($u->user_email) . '">' . esc_html($u->user_email) . '</a></p>';
     if (aled08e_meta($u->ID, 'site')) echo '<p>Site : <a href="' . esc_url(aled08e_meta($u->ID, 'site')) . '" target="_blank" rel="noopener">' . esc_html(aled08e_meta($u->ID, 'site')) . '</a></p>';
     $jt = aled08e_jetons($f);
-    echo '<p>Forfait : ' . esc_html($f['name']) . ' · Alex ' . (int) aled08e_count_month($u->ID, 'alex') . ' / ' . (int) $f['quota'] . ' · Lia ' . (int) aled08e_count_month($u->ID, 'lia') . ' / ' . ($jt === null ? 'illimité' : (int) $jt) . ' ce mois-ci</p>';
+    echo '<p>Forfait : ' . esc_html($f['name']) . ' · Alex ' . (int) aled08e_count_month($u->ID, 'alex') . ' / ' . (int) $f['quota'] . ' · Jetons Lia ' . (int) aled08e_jl_etat($u->ID, $f)['solde'] . ' restants (' . (int) aled08e_jl_mois($u->ID, $f) . ' par mois)</p>';
     $par = get_post_meta($post->ID, '_aled08_par', true) === 'lia' ? 'Lia (instantané, avec aperçu)' : 'Alex (à la main)';
     echo '<p><strong>Demandée à : ' . esc_html($par) . '</strong></p>';
     echo '<p><a href="' . esc_url(get_edit_user_link($u->ID)) . '#aled08e">Fiche client</a></p>';
@@ -478,7 +485,7 @@ function aled08e_fields() {
         'mail' => ['Option e-mail pro', 'check', 'Active'],
         'stock' => ['Option gestion du stock', 'check', 'Active'],
         'comptes' => ['Option comptes clients', 'check', 'Active'],
-        'liaplus' => ['Option Lia + (10 modifications par Lia en plus)', 'check', 'Active'],
+        'liaplus' => ['Option Lia + (' . (int) aled08e_jl_cfg()['liaplus'] . ' Jetons Lia en plus chaque mois)', 'check', 'Active'],
         'domaine_info' => ['Nom de domaine (info affichée)', 'text', 'exemple.fr, renouvelé le 3 mars 2027'],
         'avis' => ['Lien d’avis Google', 'url', 'https://g.page/r/.../review'],
         'parrain' => ['Parrainé par (code)', 'text', 'Ex. : LILA-7K2'],
@@ -601,6 +608,7 @@ add_filter('manage_users_custom_column', function ($out, $col, $uid) {
 add_action('wp_enqueue_scripts', function () {
     if (!is_page('mon-espace') || !is_user_logged_in()) return;
     wp_enqueue_script('aled08-qrcode', plugins_url('qrcode.js', __FILE__), [], ALED08E_VERSION, ['in_footer' => true, 'strategy' => 'defer']);
+    wp_enqueue_script('aled08-outils', plugins_url('outils.js', __FILE__), [], (string) @filemtime(__DIR__ . '/outils.js'), ['in_footer' => true, 'strategy' => 'defer']);
     // Styles propres à l'espace client : dans le thème (assets/css/espace.css), sinon la copie livrée avec l'extension
     $theme = get_template_directory() . '/assets/css/espace.css';
     if (file_exists($theme)) wp_enqueue_style('aled08-espace', get_template_directory_uri() . '/assets/css/espace.css', ['aled08'], (string) filemtime($theme));
@@ -751,8 +759,9 @@ function aled08e_dashboard() {
     $prenom = aled08e_prenom($u);
     $used = aled08e_count_month($uid, 'alex');
     $jetonsMax = aled08e_jetons_user($uid, $f);
-    $jetonsUtil = aled08e_count_month($uid, 'lia');
-    $jetonsLeft = max(0, (int) $jetonsMax - $jetonsUtil);
+    $jl = aled08e_jl_etat($uid, $f);
+    $jlModif = aled08e_jl_cfg()['modif'];
+    $jetonsLeft = (int) $jl['solde']; // Jetons Lia restants (forfait du mois + recharge)
     $illimite = false;
     $quota = (int) $f['quota'];
     $left = max(0, $quota - $used); // modifications par Alex restantes
@@ -805,7 +814,7 @@ function aled08e_dashboard() {
         'changer_erreur' => ['esp-warn', 'Le changement n’a pas pu se faire tout seul : Alex est prévenu et s’en occupe.'],
         'boost' => ['esp-empty', 'Demande envoyée à Alex, en Boost : 1 € en plus, ajouté à votre prochaine facture.'],
         'boost_accord' => ['esp-warn', 'Vos modifications par Alex du mois sont utilisées. Cochez la case « Boost » (1 €) pour envoyer cette demande en plus.'],
-        'lia_epuise' => ['esp-warn', 'Vos modifications par Lia du mois sont utilisées. Choisissez Alex pour cette demande, ou ajoutez l’option Lia + (10 de plus par mois).'],
+        'lia_epuise' => ['esp-warn', 'Il ne vous reste pas assez de Jetons Lia pour cette demande. Raccourcissez-la, rechargez dans l’onglet Outils, ou choisissez Alex.'],
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
         'trop' => ['esp-warn', 'Vous avez envoyé beaucoup de demandes aujourd’hui. Écrivez-nous par le formulaire de contact si c’est pressé.'],
@@ -871,9 +880,9 @@ function aled08e_dashboard() {
     <div class="app-shell">
       <aside class="app-side">
         <div class="app-user"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><div><strong><?php echo esc_html($u->display_name); ?></strong><small><?php echo esc_html($host ?: $u->user_email); ?></small></div></div>
-        <div class="jauge<?php echo $jetonsLeft <= 0 ? ' is-low' : ''; ?>">
-          <p class="jauge-head"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Avec Lia, ce mois</span><b><?php echo $famille ? $infini : (int) $jetonsLeft . ' / ' . (int) $jetonsMax; // phpcs:ignore ?></b></p>
-          <span class="jauge-bar"><i style="width:<?php echo $famille ? 100 : ($jetonsMax ? (int) round(min(100, $jetonsLeft / $jetonsMax * 100)) : 0); ?>%"></i></span>
+        <div class="jauge<?php echo $jetonsLeft < (int) $jlModif['base'] ? ' is-low' : ''; ?>">
+          <p class="jauge-head"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Jetons Lia</span><b><?php echo $famille ? $infini : (int) $jetonsLeft . ' / ' . (int) max($jetonsMax, $jetonsLeft); // phpcs:ignore ?></b></p>
+          <span class="jauge-bar"><i style="width:<?php echo $famille ? 100 : ($jetonsMax ? (int) round(min(100, $jetonsLeft / max($jetonsMax, $jetonsLeft) * 100)) : 0); ?>%"></i></span>
         </div>
         <div class="jauge<?php echo $left <= 0 ? ' is-low' : ''; ?>">
           <p class="jauge-head"><?php echo aled08e_icon('user'); // phpcs:ignore ?><span>Avec Alex, ce mois</span><b><?php echo $famille ? $infini : (int) $left . ' / ' . (int) $quota; // phpcs:ignore ?></b></p>
@@ -884,7 +893,7 @@ function aled08e_dashboard() {
           <?php
           echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
           if ($cmd) echo aled08e_tab('commande', 'package', 'Ma commande'); // phpcs:ignore
-          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'gauge', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'shopping-bag', 'Ma boutique') : '') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
+          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'gauge', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'shopping-bag', 'Ma boutique') : '') . aled08e_tab('outils', 'toolbox', 'Outils') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -935,17 +944,19 @@ function aled08e_dashboard() {
           <?php echo $flash; // phpcs:ignore ?>
           <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. Je m’en occupe et vous suivez l’avancement ici. <?php echo esc_html($f['name'] . ' : ' . mb_strtolower($f['modifs'], 'UTF-8') . ', réponse sous ' . $delai . '.'); ?></p>
           <?php if ($left <= 0) : ?><p class="esp-warn">Vos modifications par Alex du mois sont utilisées. Besoin d’une de plus ? Le Boost : 1 € la modification, faite par Alex, ajouté à votre prochaine facture.</p><?php endif; ?>
-          <?php if ($jetonsLeft <= 0) : ?><p class="esp-warn">Vos modifications par Lia du mois sont utilisées. <?php echo aled08e_meta($uid, 'liaplus') === '1' ? 'Elles reviennent le mois prochain.' : 'L’option Lia + en ajoute 10 par mois pour 5 € : voyez l’onglet Forfait et factures.'; ?></p><?php endif; ?>
+          <?php $liaOk = $famille || $jetonsLeft >= (int) $jlModif['base']; ?>
+          <?php if (!$liaOk) : ?><p class="esp-warn">Il vous reste <?php echo (int) $jetonsLeft; ?> Jetons Lia : pas assez pour une modification par Lia (<?php echo (int) $jlModif['base']; ?> au moins). Ils reviennent le 1<sup>er</sup> du mois. Pour en avoir tout de suite : « Recharger », dans l’onglet Outils.</p><?php endif; ?>
           <form class="req-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(aled08e_url()); ?>" data-req-real>
             <input type="hidden" name="aled08e_demande" value="1">
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>
-            <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend><p class="app-note"><?php if ($famille) : ?>Pour vous, c’est sans limite, avec Lia comme avec Alex <span class="jauge-coeur" aria-hidden="true">♥</span>. Lia fait les petites et moyennes modifications, Alex les plus grandes.<?php else : ?>Ce mois-ci, il vous reste <?php echo (int) $jetonsLeft; ?> modification<?php echo $jetonsLeft > 1 ? 's' : ''; ?> avec Lia et <?php echo (int) $left; ?> avec Alex. Lia fait les petites et moyennes modifications, Alex les plus grandes.<?php endif; ?></p>
-              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $jetonsLeft > 0 ? ' checked' : ' disabled'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, en 5 minutes</strong><small>Pour une petite ou moyenne modification : jusqu’à <?php echo (int) $liaLim['mots'][0]; ?> mots de texte, ou jusqu’à <?php echo (int) $liaLim['images']; ?> photos avec un texte plus court. Lia vous montre toujours l’aperçu de la page : rien ne change sans votre accord.</small></span></label>
-              <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $jetonsLeft > 0 ? '' : ' checked'; ?>><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Pour une grande modification. Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même.</small></span></label>
+            <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend><p class="app-note"><?php if ($famille) : ?>Pour vous, c’est sans limite, avec Lia comme avec Alex <span class="jauge-coeur" aria-hidden="true">♥</span>. Lia fait les petites et moyennes modifications, Alex les plus grandes.<?php else : ?>Il vous reste <?php echo (int) $jetonsLeft; ?> Jetons Lia et <?php echo (int) $left; ?> modification<?php echo $left > 1 ? 's' : ''; ?> avec Alex ce mois-ci. Lia fait les petites et moyennes modifications, Alex les plus grandes.<?php endif; ?></p>
+              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $liaOk ? ' checked' : ' disabled'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, en 5 minutes</strong><small>Pour une petite ou moyenne modification : jusqu’à <?php echo (int) $liaLim['mots'][0]; ?> mots de texte, ou jusqu’à <?php echo (int) $liaLim['images']; ?> photos avec un texte plus court. Lia vous montre toujours l’aperçu de la page : rien ne change sans votre accord. Prix : <?php echo (int) $jlModif['base']; ?> jetons, plus 1 par tranche de <?php echo (int) $jlModif['mots']; ?> mots et <?php echo (int) $jlModif['image']; ?> par photo.</small></span></label>
+              <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $liaOk ? '' : ' checked'; ?>><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Pour une grande modification. Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même.</small></span></label>
             </fieldset>
             <?php if ($left <= 0) : ?><label class="check"><input type="checkbox" name="boost_ok" value="1"><span>Si je choisis Alex : j’accepte le Boost, 1 € pour cette modification en plus</span></label><?php endif; ?>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" name="demande" rows="4" maxlength="4000" required placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" name="photos[]" accept="image/*" multiple class="sr-only" data-req-file><?php echo aled08e_icon('image-plus'); // phpcs:ignore ?><span data-req-file-name>Ajouter jusqu’à 3 photos (facultatif)</span></label>
+            <?php if (!$famille) : ?><p class="jl-estime" data-jl-estime data-base="<?php echo (int) $jlModif['base']; ?>" data-mots="<?php echo (int) $jlModif['mots']; ?>" data-image="<?php echo (int) $jlModif['image']; ?>" data-solde="<?php echo (int) $jetonsLeft; ?>" aria-live="polite"><?php echo aled08e_icon('coins'); // phpcs:ignore ?><span>Avec Lia, cette demande coûte <b data-jl-prix><?php echo (int) $jlModif['base']; ?></b> jetons. Avec Alex : aucun jeton.</span></p><?php endif; ?>
             <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Envoyer ma demande</span></button>
           </form>
           <p class="app-sub">Suivi</p>
@@ -971,29 +982,7 @@ function aled08e_dashboard() {
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
-          <h2 class="app-h">QR code et lien d’avis</h2>
-          <div class="tool-duo">
-            <div class="tool-card">
-              <p class="app-sub"><?php echo aled08e_icon('qr-code'); // phpcs:ignore ?>Votre QR code</p>
-              <?php if ($site) : ?>
-              <div data-qr="<?php echo esc_attr($site); ?>"></div>
-              <p class="app-note">Il mène à <?php echo esc_html($host); ?>. À imprimer sur vos cartes, votre vitrine ou vos flyers.</p>
-              <button type="button" class="btn btn-light btn-block" data-qr-dl><?php echo aled08e_icon('download'); // phpcs:ignore ?><span>Télécharger</span></button>
-              <?php else : ?>
-              <p class="esp-empty">Votre QR code apparaîtra ici dès que votre site sera en ligne.</p>
-              <?php endif; ?>
-            </div>
-            <div class="tool-card">
-              <p class="app-sub"><?php echo aled08e_icon('star'); // phpcs:ignore ?>Votre lien d’avis Google</p>
-              <?php if ($avis) : ?>
-              <p class="app-note">Envoyez-le à vos clients contents : il ouvre directement la page pour laisser un avis.</p>
-              <input class="copy-in" id="avis-link" type="text" readonly value="<?php echo esc_attr($avis); ?>" aria-label="Lien d’avis Google">
-              <button type="button" class="btn btn-primary btn-block" data-copy="avis-link"><?php echo aled08e_icon('check'); // phpcs:ignore ?><span>Copier le lien</span></button>
-              <?php else : ?>
-              <p class="esp-empty">Je prépare votre lien d’avis Google à partir de votre fiche : il apparaîtra ici.</p>
-              <?php endif; ?>
-            </div>
-          </div>
+          <?php echo aled08e_jl_onglet_html($uid, $f, $site, $host, $avis); // phpcs:ignore ?>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-parrainage" aria-labelledby="tab-parrainage" hidden>

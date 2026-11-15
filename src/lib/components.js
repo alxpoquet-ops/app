@@ -266,7 +266,7 @@ function configurator() {
       ${body}
     </fieldset>`;
   const typeBody = `${typeChoices()}<div class="b-note b-note-types">${icon('info')}<ul>${types.map((t) => `<li><strong>${esc(t.label)}</strong> : ${inline(t.ideal)}</li>`).join('')}<li><strong>Un site plus grand ?</strong> Sur devis : <a href="/contact/">écrivez-nous</a>.</li></ul></div>`;
-  const forfaitBody = `${forfaitChoices()}<p class="b-note">${icon('info')}Chico : hébergement, nom de domaine, mises à jour, 2 modifications par Lia et 1 par Alex. Power : SEO pour remonter sur Google, serveur plus rapide, 4 par Lia et 2 par Alex. Titan : retour de vos ventes, 10 par Lia et 2 par Alex. <a href="/forfaits/">Comparer</a></p>`;
+  const forfaitBody = `${forfaitChoices()}<p class="b-note">${icon('info')}Chico : hébergement, nom de domaine, mises à jour, ${F('chico').jetons} Jetons Lia et 1 modification par Alex. Power : SEO pour remonter sur Google, serveur plus rapide, ${F('power').jetons} Jetons Lia et 2 modifications par Alex. Titan : retour de vos ventes, ${F('titan').jetons} Jetons Lia et 2 modifications par Alex. <a href="/forfaits/">Comparer</a></p>`;
   const payChoices = `<p class="b-label">Le site</p>
       <div class="b-seg" role="radiogroup" aria-label="Paiement du site">
         <label><input type="radio" name="b-lisse" value="non" checked><span>En une fois</span></label>

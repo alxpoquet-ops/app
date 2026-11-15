@@ -30,7 +30,7 @@ FORM_RECIPIENT = 'alx.poquet@gmail.com'
 # Anciennes adresses (ancien site d'électricien, anciennes pages du site ALED08) : redirigées vers l'accueil,
 # sauf cas particuliers. Les clés de OLD_TARGETS sont toujours redirigées, même absentes de wp-old-paths.txt.
 OLD_PATHS_FILE = os.path.join(ROOT, 'scripts', 'wp-old-paths.txt')
-OLD_TARGETS = {'/devis/': '/contact/', '/prestations/': '/creer-mon-site/', '/blog/': '/', '/comparatif-shopify/': '/comparatif/', '/creation-site-internet-ardennes/': '/', '/nos-outils/': '/forfaits/'}
+OLD_TARGETS = {'/devis/': '/contact/', '/prestations/': '/creer-mon-site/', '/blog/': '/', '/comparatif-shopify/': '/comparatif/', '/creation-site-internet-ardennes/': '/', '/nos-outils/': '/outils/'}
 
 
 def read(p):

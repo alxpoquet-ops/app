@@ -1591,3 +1591,23 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
 @media (max-width: 340px) {
   .brand-text strong { font-size: .9rem; }
 }
+
+/* Documentation : Lia et Alex, tableau des Jetons Lia */
+.doc-duo-qui { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+.doc-qui { padding: 22px; border-radius: var(--radius); background: var(--c); color: var(--c-dd); }
+.doc-qui h3 { margin: 10px 0 6px; color: var(--ink); }
+.doc-qui p { margin: 0; font-weight: 600; }
+.doc-qui-art { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--card); }
+.doc-qui-art svg { width: 44px; height: 44px; }
+.doc-qui-art .ico { width: 30px; height: 30px; }
+.jl-table { min-width: 0; }
+.jl-table td { text-align: left; font-weight: 700; }
+.jl-table td:last-child { font-weight: 900; white-space: nowrap; }
+.jl-table thead th { text-align: left; font-size: 1rem; }
+.tool-tag.c-butter { background: var(--butter); color: var(--butter-dd); }
+div.tool { cursor: default; }
+@media (max-width: 640px) {
+  .doc-duo-qui { grid-template-columns: 1fr; }
+  .jl-table td:last-child { white-space: normal; }
+  .jl-table th, .jl-table td { padding: 10px; font-size: .9rem; }
+}

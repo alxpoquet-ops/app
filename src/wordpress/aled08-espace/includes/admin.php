@@ -542,7 +542,9 @@ function aled08e_admin_reglages() {
     else echo '<p>Non configuré. Pour l’utiliser, ajoutez dans wp-config.php les constantes <code>ALED08_CPANEL_HOST</code>, <code>ALED08_CPANEL_USER</code>, <code>ALED08_CPANEL_TOKEN</code> et <code>ALED08_CPANEL_MAIN_DOMAIN</code> (voir le guide). Note : o2switch a désactivé temporairement la création de jetons (novembre 2026).</p>';
 
     aled08e_lia_reglages_html();
-    echo '<p class="submit"><button type="submit" class="button button-primary">Enregistrer</button></p></form></div>';
+    echo '<p class="submit"><button type="submit" class="button button-primary">Enregistrer</button></p></form>';
+    aled08e_jl_bilan_html();
+    echo '</div>';
 }
 /* Options sans autoload : les clés ne sont chargées qu'à la demande */
 function aled08e_option_set($k, $v) {

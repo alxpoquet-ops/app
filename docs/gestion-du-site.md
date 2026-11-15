@@ -212,6 +212,17 @@ Après le passage de Lia, la fiche de la demande montre un encadré « Travail d
 
 Sécurité : chaque échange avec le site client est signé avec la clé du client, valable 5 minutes et une seule fois. Sur le site client, la case « Pause » dans Réglages › Alex & Lia coupe Lia tout de suite. Le journal des 100 derniers changements est sur la même page. Si le pare-feu de l'hébergeur bloque l'adresse `/wp-json/alexlia/v1/action`, demandez au support de l'autoriser.
 
+### Les Jetons Lia et les outils
+
+Tout ce que fait Lia se compte en **Jetons Lia**. Un jeton vaut 1 centime.
+
+- **Chaque forfait en donne chaque mois** : Chico 100, Power 250, Titan 600 (`forfaits[].jetons` dans `src/config.js`). Ils reviennent le 1er et ne se reportent pas. L'option Lia + en ajoute 500.
+- **Une modification par Lia** coûte 30 jetons, plus 1 par tranche de 10 mots écrits, plus 10 par photo (`jetonsLia.modif`). Le prix s'affiche pendant que le client écrit. Si Lia passe la demande à Alex, si le client refuse l'aperçu ou annule dans les 24 heures, les jetons sont rendus.
+- **Les outils** (onglet « Outils » de l'espace client) ont un prix fixe, écrit dans `src/content/outils-lia.js` (`jetons`). La règle : ce que l'outil coûte chez Claude (`coutCts`, en centimes) × 1,5, arrondi au-dessus. Pour une modification, c'est × 2.
+- **La recharge** : 100 jetons pour 1 €, 500 pour 5 €, 1000 pour 10 € (`jetonsLia.recharge`). Elle s'ajoute à la prochaine facture Stripe du client et les jetons arrivent tout de suite. Sans Stripe pour ce client, vous recevez un e-mail : ajoutez les jetons dans sa fiche (« Jetons Lia en plus ») et facturez-les.
+- **Vérifier que vous vous y retrouvez** : Réglages de l'extension, en bas, « Jetons Lia : le bilan du mois ». Pour chaque client : les jetons comptés, leur valeur, ce que Claude a vraiment coûté, et ce qu'il reste. Si un outil coûte plus que prévu, montez son prix dans `outils-lia.js` et relancez l'export.
+- **Changer de modèle** : Lia et les outils utilisent le modèle réglé dans les Réglages (par défaut `claude-opus-5-5`). Avec `claude-sonnet-5-5`, le coût est divisé par deux, pour les mêmes prix en jetons.
+
 ## 10. Le parrainage
 
 - Chaque client a un code (par exemple `LILA-7K2`) et un lien `https://www.aled08.fr/creer-mon-site/?parrain=LILA-7K2`, onglet Parrainage, avec un bouton WhatsApp.

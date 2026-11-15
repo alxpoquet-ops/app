@@ -83,7 +83,7 @@ function graph(p) {
 }
 
 // ---------------------------------------------------------------- en-tête
-const NAV = ['forfaits', 'liaalex', 'documentation', 'confiance', 'contact'];
+const NAV = ['forfaits', 'espace', 'documentation', 'confiance', 'contact'];
 
 function header(currentPath) {
   const onCreer = currentPath.startsWith(sections.creer.path);
@@ -145,6 +145,7 @@ function footer(p) {
     <div>
       <h2 class="footer-title">Infos</h2>
       <ul class="footer-links">
+        <li><a href="/lia-et-alex/">Lia et Alex</a></li>
         <li><a href="/methode/">Ma méthode avec l’IA</a></li>
         <li><a href="/faq/">Questions fréquentes</a></li>
         <li><a href="/contact/">Contact</a></li>

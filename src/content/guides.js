@@ -92,7 +92,7 @@ La bonne méthode est d'**écrire la carte en vrai texte** sur le site. Elle se 
 
 C'est la vraie difficulté pour un restaurant : le plat du jour, la carte de saison, les congés annuels. Un site qui affiche encore le menu de l'été en plein hiver donne une mauvaise image.
 
-Avec un [forfait](/forfaits/), vous envoyez le changement depuis votre espace client. Lia modifie la page en quelques instants et vous montre l'aperçu avant que ce soit visible par vos clients. Pour un restaurant dont la carte bouge chaque mois, le forfait ${power.name}, avec ses ${power.jetons} modifications par Lia chaque mois, est le plus adapté.
+Avec un [forfait](/forfaits/), vous envoyez le changement depuis votre espace client. Lia modifie la page en quelques instants et vous montre l'aperçu avant que ce soit visible par vos clients. Pour un restaurant dont la carte bouge chaque mois, le forfait ${power.name}, avec ses ${power.jetons} Jetons Lia chaque mois, est le plus adapté. Cela fait 4 à 8 changements de carte confiés à Lia.
 
 ## Quel site choisir ?
 
@@ -196,13 +196,13 @@ Avec un [forfait](/forfaits/), le site ne repose sur personne en particulier. N'
 Je sais que chaque dépense se vote. Les chiffres sont donc simples à présenter en réunion :
 
 - **${page.price} € une fois** pour un site une page, dont ${acompte(page.price)} € à la commande et ${reste(page.price)} € à la mise en ligne.
-- **${chico.month} € par mois** pour le forfait ${chico.name} : hébergement, nom de domaine, mises à jour, deux modifications par Lia et une par Alex chaque mois.
+- **${chico.month} € par mois** pour le forfait ${chico.name} : hébergement, nom de domaine, mises à jour, ${chico.jetons} Jetons Lia et une modification par Alex chaque mois.
 
 Le reste du prix de création peut aussi être étalé sur 6 ou 12 mois, sans frais.
 
 ## Les événements et les actualités
 
-Deux modifications par Lia suffisent pour annoncer les prochains rendez-vous. Si votre calendrier est chargé, le forfait ${power.name} en donne ${power.jetons}, et l’option Lia + en ajoute dix de plus pour 5 € par mois.
+Les ${chico.jetons} Jetons Lia du forfait ${chico.name} suffisent pour annoncer deux ou trois rendez-vous chaque mois. Si votre calendrier est chargé, le forfait ${power.name} en donne ${power.jetons}, et l’option Lia + en ajoute 500 pour 5 € par mois.
 
 ## Adhésions et dons
 
@@ -376,9 +376,11 @@ Vous payez ${paiement.acompte} % à la commande, le reste à la mise en ligne. C
 
 Ensuite, un forfait mensuel regroupe tout ce qui est récurrent : nom de domaine, hébergement, mises à jour et modifications.
 
-- **${chico.name} : ${chico.month} € par mois**, avec ${chico.jetons} modifications par Lia et ${chico.quota} par Alex.
-- **${power.name} : ${power.month} € par mois**, avec ${power.jetons} modifications par Lia, ${power.quota} par Alex et le suivi du référencement.
-- **${titan.name} : ${titan.month} € par mois**, avec ${titan.jetons} modifications par Lia, ${titan.quota} par Alex et vos chiffres chaque mois.
+- **${chico.name} : ${chico.month} € par mois**, avec ${chico.jetons} Jetons Lia et ${chico.quota} modification${chico.quota > 1 ? 's' : ''} par Alex.
+- **${power.name} : ${power.month} € par mois**, avec ${power.jetons} Jetons Lia, ${power.quota} modification${power.quota > 1 ? 's' : ''} par Alex et le suivi du référencement.
+- **${titan.name} : ${titan.month} € par mois**, avec ${titan.jetons} Jetons Lia, ${titan.quota} modification${titan.quota > 1 ? 's' : ''} par Alex et vos chiffres chaque mois.
+
+Un Jeton Lia vaut un centime. Vos jetons paient les changements que Lia fait sur votre site, entre 30 et 65 jetons chacun, et les outils de votre espace client.
 
 ## Trois exemples sur la première année
 
