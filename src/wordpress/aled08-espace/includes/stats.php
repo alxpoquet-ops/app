@@ -35,8 +35,7 @@ add_action('wp_ajax_aled08e_stats', function () {
 
 function aled08e_stats_html($uid) {
     $acces = aled08e_stats_acces($uid);
-    $boutique = false;
-    foreach (aled08e_cmd_user_commandes($uid) as $c) if ($c['type'] === 'boutique') $boutique = true;
+    $boutique = function_exists('aled08e_est_boutique') && aled08e_est_boutique($uid);
     $carte = function ($id, $ic, $label, $couleur) { return '<div class="live-kpi c-' . $couleur . '"><span class="live-kpi-ico">' . aled08e_icon($ic) . '</span><span><small>' . esc_html($label) . '</small><strong data-live="' . $id . '">0</strong></span></div>'; };
     ob_start();
     ?>
@@ -45,10 +44,17 @@ function aled08e_stats_html($uid) {
     <p class="app-sub"><span class="live-dot" aria-hidden="true"></span>Votre site, heure par heure</p>
     <small class="live-maj" data-live-maj aria-live="polite"><?php echo $acces ? 'Connexion à votre site…' : 'Exemple'; ?></small>
   </div>
+  <ul class="live-voyants" aria-label="État de votre site">
+    <li data-voyant="site"><i></i><span><strong>Site en ligne</strong><small>…</small></span></li>
+    <li data-voyant="https"><i></i><span><strong>Sécurité HTTPS</strong><small>…</small></span></li>
+    <li data-voyant="vitesse"><i></i><span><strong>Vitesse</strong><small>…</small></span></li>
+    <li data-voyant="serveur"><i></i><span><strong>Serveur</strong><small>…</small></span></li>
+    <li data-voyant="espace"><i></i><span><strong>Espace disque</strong><small>…</small></span></li>
+  </ul>
   <p class="esp-warn" data-live-msg hidden></p>
   <div class="live-kpis">
     <?php echo $carte('actifs', 'users', 'Dans la dernière heure', 'pink') . $carte('visiteurs', 'user', 'Visiteurs aujourd’hui', 'mint') . $carte('vues', 'eye', 'Pages vues aujourd’hui', 'sky') . $carte('temps', 'timer', 'Temps de réponse', 'butter'); // phpcs:ignore ?>
-    <?php if ($boutique) echo $carte('commandes', 'shopping-bag', 'Commandes aujourd’hui', 'lilac') . $carte('ventes', 'euro', 'Ventes sur 30 jours', 'peach'); // phpcs:ignore ?>
+    <?php echo str_replace('class="live-kpi', 'data-si-boutique' . ($boutique ? '' : ' hidden') . ' class="live-kpi', $carte('commandes', 'shopping-bag', 'Commandes aujourd’hui', 'lilac') . $carte('ventes', 'euro', 'Ventes sur 30 jours', 'peach')); // phpcs:ignore ?>
   </div>
   <div class="live-grid">
     <div class="live-card live-wide"><p class="live-title">Visiteurs sur 30 jours</p><div class="live-chart" data-chart="jours"></div><p class="live-legend"><span class="lg lg-a"></span>Visiteurs <span class="lg lg-b"></span>Pages vues</p></div>
@@ -64,11 +70,11 @@ function aled08e_stats_html($uid) {
       </div>
       <dl class="live-infos" data-live-infos>
         <div><dt>Sécurité HTTPS</dt><dd data-info="https">…</dd></div>
-        <div><dt>WordPress</dt><dd data-info="wordpress">…</dd></div>
         <div><dt>PHP</dt><dd data-info="php">…</dd></div>
         <div><dt>Pages en ligne</dt><dd data-info="pages">…</dd></div>
         <div><dt>Articles</dt><dd data-info="articles">…</dd></div>
-        <?php if ($boutique) : ?><div><dt>Produits</dt><dd data-info="produits">…</dd></div><?php endif; ?>
+        <div data-si-boutique<?php echo $boutique ? '' : ' hidden'; ?>><dt>Produits en vente</dt><dd data-info="produits">…</dd></div>
+        <div data-si-boutique<?php echo $boutique ? '' : ' hidden'; ?>><dt>Commandes sur 30 jours</dt><dd data-info="commandes30">…</dd></div>
       </dl>
     </div>
   </div>
@@ -144,6 +150,25 @@ function aled08e_stats_html($uid) {
     g.classList.toggle('is-haut', pct > 80);
     g.querySelector('strong').textContent = texte;
   }
+  function voyant(nom, etat, texte) {
+    var v = box.querySelector('[data-voyant="' + nom + '"]'); if (!v) return;
+    v.className = 'v-' + etat; v.querySelector('small').textContent = texte;
+  }
+  function voyants(d) {
+    var s = d.serveur || {};
+    if (d.etat === 'attente') { ['site', 'https', 'vitesse', 'serveur', 'espace'].forEach(function (n) { voyant(n, 'attente', 'En attente'); }); return; }
+    if (d.etat && d.etat !== 'ok') { voyant('site', 'alerte', 'Ne répond pas'); ['https', 'vitesse', 'serveur', 'espace'].forEach(function (n) { voyant(n, 'attente', 'Inconnu'); }); return; }
+    voyant('site', 'ok', 'Tout va bien');
+    voyant('https', s.https ? 'ok' : 'alerte', s.https ? 'Cadenas actif' : 'À vérifier');
+    var t = s.temps_reponse;
+    voyant('vitesse', t == null ? 'attente' : (t < 0.6 ? 'ok' : (t < 1.2 ? 'attention' : 'alerte')), t == null ? 'Pas encore mesurée' : (t < 0.6 ? 'Rapide' : (t < 1.2 ? 'Un peu lente' : 'Lente')));
+    var ch = s.charge ? (s.coeurs ? s.charge[0] / s.coeurs * 100 : s.charge[0] * 25) : null;
+    var mem = s.memoire_max ? s.memoire / s.memoire_max * 100 : null;
+    var pire = Math.max(ch || 0, mem || 0);
+    voyant('serveur', ch == null && mem == null ? 'attente' : (pire < 80 ? 'ok' : (pire < 95 ? 'attention' : 'alerte')), ch == null && mem == null ? 'Non mesuré' : (pire < 80 ? 'Tout va bien' : 'Très sollicité'));
+    var dq = s.disque_total ? (1 - s.disque_libre / s.disque_total) * 100 : null;
+    voyant('espace', dq == null ? 'attente' : (dq < 85 ? 'ok' : (dq < 95 ? 'attention' : 'alerte')), dq == null ? 'Non mesuré' : (dq < 85 ? 'Large' : 'Presque plein'));
+  }
   var go = function (o) { return Math.round(o / 1048576) + ' Mo'; };
   function afficher(d) {
     var a = d.aujourdhui || {}, s = d.serveur || {}, b = d.boutique;
@@ -162,16 +187,18 @@ function aled08e_stats_html($uid) {
     jauge('disque', s.disque_total ? (1 - s.disque_libre / s.disque_total) * 100 : 0, s.disque_total ? Math.round((1 - s.disque_libre / s.disque_total) * 100) + ' %' : 'non fourni');
     var info = function (k, v) { var e = $('[data-info="' + k + '"]'); if (e) e.textContent = v; };
     info('https', s.https ? 'Active, cadenas affiché' : (s.https === false ? 'À vérifier' : '–'));
-    info('wordpress', s.wordpress || '–'); info('php', s.php || '–');
+    info('php', s.php || '–');
     info('pages', d.contenu ? nf(d.contenu.pages) : '–'); info('articles', d.contenu ? nf(d.contenu.articles) : '–');
-    if (b) info('produits', nf(b.produits || 0));
+    box.querySelectorAll('[data-si-boutique]').forEach(function (e) { if (b) e.hidden = false; });
+    if (b) { info('produits', nf(b.produits || 0)); info('commandes30', nf(b.commandes_30j || 0)); }
+    voyants(d);
   }
   var vide = { aujourdhui: { heures: new Array(24).fill(0) }, jours: Array.from({ length: 30 }, function () { return { vues: 0, visiteurs: 0 }; }), serveur: {} };
   if (!actif) {
     var ex = { aujourdhui: { actifs: 3, visiteurs: 48, vues: 131, heures: [0,0,0,0,0,0,1,2,4,6,7,5,6,4,5,6,8,9,7,5,3,2,1,0] }, jours: Array.from({ length: 30 }, function (_, i) { var v = 20 + Math.round(18 * Math.sin(i / 3) + i); return { visiteurs: v, vues: v * 3 }; }), appareils: { mobile: 64, ordinateur: 30, tablette: 6 }, sources: { Google: 52, 'Accès direct': 27, 'Réseaux sociaux': 15, 'Autres sites': 6 }, pages: { '/': 60, '/contact/': 22, '/tarifs/': 17 }, serveur: { memoire: 64 * 1048576, memoire_max: 256 * 1048576, charge: [0.6], disque_libre: 6e9, disque_total: 10e9, temps_reponse: 0.32, https: true, php: '8.3', wordpress: '7.1' }, contenu: { pages: 6, articles: 4 }, boutique: { commandes_aujourdhui: 2, ventes_30j: 845, produits: 20 } };
     afficher(ex); return;
   }
-  afficher(vide);
+  afficher(vide); voyants({ etat: 'attente' });
   var msg = $('[data-live-msg]'), maj = $('[data-live-maj]'), dernier = 0, minuteur = null;
   var MSG = { non_relie: 'Votre site n’est pas encore relié à votre espace. Alex s’en occupe : les chiffres apparaîtront ici dès que c’est fait.', connecteur_ancien: 'L’extension de votre site doit être mise à jour pour afficher les chiffres. Alex s’en occupe.', injoignable: 'Votre site ne répond pas pour le moment. Nouvel essai dans une heure, ou rechargez la page.' };
   function charger() {
@@ -179,7 +206,7 @@ function aled08e_stats_html($uid) {
     var f = new FormData(); f.append('action', 'aled08e_stats'); f.append('_n', box.getAttribute('data-nonce'));
     fetch(box.getAttribute('data-ajax'), { method: 'POST', body: f, credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (r) {
       var d = r && r.data ? r.data : {};
-      if (!r.success || d.etat !== 'ok') { msg.textContent = MSG[d.etat] || 'Les chiffres ne sont pas disponibles pour le moment.'; msg.hidden = false; return; }
+      if (!r.success || d.etat !== 'ok') { voyants({ etat: 'erreur' }); msg.textContent = MSG[d.etat] || 'Les chiffres ne sont pas disponibles pour le moment.'; msg.hidden = false; return; }
       msg.hidden = true; dernier = Date.now(); leSite = d.le || Date.now() / 1000; afficher(d); maj.textContent = 'Mis à jour ' + quand(leSite) + ' · prochaine mise à jour dans l’heure';
     }).catch(function () { msg.textContent = MSG.injoignable; msg.hidden = false; });
   }

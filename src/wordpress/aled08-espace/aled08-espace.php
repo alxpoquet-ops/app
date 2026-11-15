@@ -92,6 +92,7 @@ require_once __DIR__ . '/includes/inscription.php';
 require_once __DIR__ . '/includes/changer.php';
 require_once __DIR__ . '/includes/gestion.php';
 require_once __DIR__ . '/includes/stats.php';
+require_once __DIR__ . '/includes/vacances.php';
 
 /* =========================================================================
  *  Rôle « Client Alex & Lia » et type de contenu « Demande »
@@ -481,6 +482,7 @@ function aled08e_fields() {
         'parrain' => ['Parrainé par (code)', 'text', 'Ex. : LILA-7K2'],
         'code' => ['Son code de parrainage', 'text', 'Créé automatiquement'],
         'mois_offerts' => ['Mois offerts à utiliser', 'text', '0'],
+        'boutique' => ['Boutique en ligne', 'check', 'Oui : le client a une boutique (onglet Vacances, ventes dans le tableau de bord).'],
         'famille' => ['Famille : modifications illimitées', 'check', 'Oui : modifications par Lia et par Alex sans limite (affichées ∞ avec un cœur).'],
         'offert' => ['Forfait offert à vie', 'check', 'Oui : le forfait et ses options sont gratuits pour ce client, pour toujours. Son compte n’est jamais supprimé automatiquement.'],
         'abonnement_manuel' => ['Abonnement actif hors Stripe', 'check', 'Oui : ce client paie autrement (virement, espèces). Son compte n’est jamais supprimé automatiquement.'],
@@ -879,7 +881,7 @@ function aled08e_dashboard() {
           <?php
           echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
           if ($cmd) echo aled08e_tab('commande', 'package', 'Ma commande'); // phpcs:ignore
-          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'chart-line', 'Tableau de bord') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('forfait', 'heart', 'Forfait et factures') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
+          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'chart-line', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'calendar-check', 'Vacances') : '') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('forfait', 'heart', 'Forfait et factures') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -1044,6 +1046,12 @@ function aled08e_dashboard() {
           <p class="app-domain"><?php echo aled08e_icon('globe'); // phpcs:ignore ?><span><strong><?php echo esc_html($host ?: aled08e_meta($uid, 'domaine_info')); ?></strong><small><?php echo esc_html(aled08e_meta($uid, 'domaine_info') ?: ($cmd && $cmd['domaine_mien'] ? 'Votre nom de domaine actuel' : 'À votre nom, renouvelé avec le forfait')); ?></small></span></p>
           <?php endif; ?>
         </div>
+
+        <?php if (aled08e_est_boutique($uid)) : ?>
+        <div class="app-panel" role="tabpanel" id="t-vacances" aria-labelledby="tab-vacances" hidden>
+          <?php echo aled08e_vacances_html($uid); // phpcs:ignore ?>
+        </div>
+        <?php endif; ?>
 
         <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
           <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>

@@ -1368,3 +1368,22 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
 @keyframes crayon { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { .hero-fleche path { animation: none; stroke-dashoffset: 0; } }
 @media (min-width: 961px) { .hero-fleche { width: 200px; top: -6%; right: calc(100% - 12px); } }
+
+/* ---------- espace client : onglets en haut ---------- */
+.app-shell { grid-template-columns: minmax(0, 1fr); }
+.app-side { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 18px 24px 0; border-bottom: 2px solid var(--edge); }
+.app-side .app-user { margin: 0 auto 0 0; padding: 0; }
+.app-side .jauge { flex: 0 1 230px; margin: 0; padding: 8px 12px; }
+.app-side .jauge + .jauge { margin-top: 0; }
+.app-side .app-logout { order: 3; margin: 0; padding: 8px 12px; }
+.app-side .app-tabs { order: 10; flex: 1 1 100%; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; padding: 4px 0 0; margin: 0 -4px; }
+.app-side .app-tabs::-webkit-scrollbar { display: none; }
+.app-side .app-tabs button { flex: none; width: auto; padding: 11px 16px; border-radius: 14px 14px 0 0; white-space: nowrap; }
+.app-side .app-tabs button[aria-selected="true"] { background: var(--card); box-shadow: 0 -2px 0 var(--lilac-d) inset; }
+@media (max-width: 720px) {
+  .app-side { padding: 14px 12px 0; }
+  .app-side .app-user { flex: 1 1 100%; }
+  .app-side .jauge { flex: 1 1 140px; }
+  .app-side .app-logout { order: 11; flex: none; }
+  .app-side .app-tabs button { padding: 10px 13px; }
+}

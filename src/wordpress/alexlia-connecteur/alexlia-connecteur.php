@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Alex & Lia : connecteur
  * Description: À installer sur le site d'un client. Permet à Lia (l'IA d'Alex & Lia) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 1.2.3
+ * Version: 1.3.0
  * Requires PHP: 7.4
  * Author: Alex & Lia
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '1.2.3');
+define('ALEXLIA_CONN_VERSION', '1.3.0');
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Lia (Réglages › Alex & Lia)
@@ -116,6 +116,8 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'appliquer': return alexlia_conn_appliquer($args);
         case 'abandonner': return alexlia_conn_abandonner($args);
         case 'stats': return alexlia_conn_stats();
+        case 'vacances_lire': return alexlia_vac_get();
+        case 'vacances_regler': return alexlia_vac_regler($args);
         default: return new WP_Error('alexlia_action', 'Action inconnue.', ['status' => 400]);
     }
 }
@@ -489,3 +491,69 @@ function alexlia_conn_stats() {
         'boutique' => $boutique,
     ];
 }
+
+
+/* =========================================================================
+ *  Mode vacances de la boutique (réglé par le client depuis son espace Alex & Lia)
+ *  mode « ferme » : plus aucune commande possible ; mode « retard » : commandes
+ *  acceptées, expédition au retour. Un bandeau prévient les visiteurs.
+ * ========================================================================= */
+function alexlia_vac_get() {
+    $v = get_option('alexlia_vacances');
+    $v = is_array($v) ? $v : [];
+    $v += ['actif' => false, 'debut' => '', 'fin' => '', 'mode' => 'ferme', 'message' => ''];
+    $v['en_cours'] = alexlia_vac_en_cours($v);
+    $v['boutique'] = class_exists('WooCommerce');
+    return $v;
+}
+function alexlia_vac_date($d) { return preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $d) ? (string) $d : ''; }
+function alexlia_vac_en_cours($v = null) {
+    $v = $v ?? get_option('alexlia_vacances');
+    if (!is_array($v) || empty($v['actif'])) return false;
+    $auj = wp_date('Y-m-d');
+    if (!empty($v['debut']) && $auj < $v['debut']) return false;
+    if (!empty($v['fin']) && $auj > $v['fin']) return false;
+    return true;
+}
+function alexlia_vac_regler($args) {
+    $v = [
+        'actif' => !empty($args['actif']),
+        'debut' => alexlia_vac_date($args['debut'] ?? ''),
+        'fin' => alexlia_vac_date($args['fin'] ?? ''),
+        'mode' => ($args['mode'] ?? '') === 'retard' ? 'retard' : 'ferme',
+        'message' => mb_substr(sanitize_textarea_field((string) ($args['message'] ?? '')), 0, 400),
+    ];
+    if ($v['debut'] && $v['fin'] && $v['fin'] < $v['debut']) return new WP_Error('alexlia_vac', 'La date de fin est avant la date de début.', ['status' => 400]);
+    update_option('alexlia_vacances', $v, true);
+    alexlia_conn_journal('Mode vacances ' . ($v['actif'] ? 'activé (' . ($v['debut'] ?: 'dès maintenant') . ' au ' . ($v['fin'] ?: 'sans date de fin') . ', ' . $v['mode'] . ')' : 'désactivé') . '.');
+    if (function_exists('litespeed_purge_all')) litespeed_purge_all();
+    do_action('litespeed_purge_all');
+    if (function_exists('wp_cache_flush')) wp_cache_flush();
+    return alexlia_vac_get();
+}
+function alexlia_vac_texte() {
+    $v = alexlia_vac_get();
+    $fin = $v['fin'] ? date_i18n('j F Y', strtotime($v['fin'])) : '';
+    if ($v['message'] !== '') return $v['message'];
+    if ($v['mode'] === 'retard') return 'Nous sommes en congés' . ($fin ? ' jusqu’au ' . $fin : '') . '. Vous pouvez commander : votre colis partira dès notre retour.';
+    return 'La boutique est en pause pour congés' . ($fin ? ' jusqu’au ' . $fin : '') . '. Les commandes reprennent à notre retour. Merci de votre patience !';
+}
+add_action('init', function () {
+    if (is_admin() || !alexlia_vac_en_cours()) return;
+    $v = alexlia_vac_get();
+    if ($v['mode'] === 'ferme') {
+        add_filter('woocommerce_is_purchasable', '__return_false', 99);
+        add_filter('woocommerce_variation_is_purchasable', '__return_false', 99);
+        add_action('woocommerce_check_cart_items', function () { wc_add_notice(alexlia_vac_texte(), 'error'); });
+    } else {
+        add_action('woocommerce_before_cart', function () { wc_print_notice(alexlia_vac_texte(), 'notice'); });
+        add_action('woocommerce_before_checkout_form', function () { wc_print_notice(alexlia_vac_texte(), 'notice'); });
+    }
+    add_action('woocommerce_single_product_summary', function () { echo '<p class="alexlia-vac-produit" style="padding:10px 14px;border-radius:12px;background:#fff4d6;color:#5b4300;font-weight:600">' . esc_html(alexlia_vac_texte()) . '</p>'; }, 25);
+    $bandeau = function () {
+        static $fait = false; if ($fait) return; $fait = true;
+        echo '<div class="alexlia-vacances" role="status" style="position:relative;z-index:99999;padding:10px 16px;text-align:center;background:#fff4d6;color:#5b4300;font:600 15px/1.4 system-ui,sans-serif">' . esc_html(alexlia_vac_texte()) . '</div>';
+    };
+    add_action('wp_body_open', $bandeau, 1);
+    add_action('wp_footer', function () use ($bandeau) { ob_start(); $bandeau(); $h = ob_get_clean(); if ($h) echo '<script>(function(){var d=document.createElement("div");d.innerHTML=' . wp_json_encode($h) . ';document.body.insertBefore(d.firstChild,document.body.firstChild);})();</script>'; }, 1);
+});

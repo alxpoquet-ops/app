@@ -276,3 +276,19 @@ a.app-card { text-decoration: none; color: inherit; }
   .live-gauges .live-gauge:last-child { grid-column: 1 / -1; }
 }
 @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+
+/* ---------- voyants d'état du site ---------- */
+.live-voyants { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.live-voyants li { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: var(--card); min-width: 0; }
+.live-voyants i { flex: none; width: 14px; height: 14px; border-radius: 50%; background: var(--edge); }
+.live-voyants .v-ok i { background: #3FCB8C; box-shadow: 0 0 0 4px rgba(63, 203, 140, .2), 0 0 10px rgba(63, 203, 140, .6); }
+.live-voyants .v-attention i { background: #F7B731; box-shadow: 0 0 0 4px rgba(247, 183, 49, .2), 0 0 10px rgba(247, 183, 49, .6); }
+.live-voyants .v-alerte i { background: #F2545B; box-shadow: 0 0 0 4px rgba(242, 84, 91, .22), 0 0 10px rgba(242, 84, 91, .6); animation: live-pulse 1.6s infinite; }
+.live-voyants span { display: grid; min-width: 0; }
+.live-voyants strong { font-size: .82rem; color: var(--ink); line-height: 1.2; }
+.live-voyants small { font-size: .76rem; font-weight: 700; color: var(--muted); }
+@media (max-width: 900px) { .live-voyants { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- mode vacances ---------- */
+.vac-etat { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 4px; font-weight: 700; color: var(--muted); font-size: .9rem; }
+.vac-form input[type="date"] { color-scheme: dark; }
