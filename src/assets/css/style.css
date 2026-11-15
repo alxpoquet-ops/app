@@ -1550,9 +1550,6 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
   .btn-espace { width: 38px; min-height: 38px; }
   .burger { width: 40px; height: 40px; padding: 0 11px; }
 }
-@media (max-width: 360px) {
-  .brand-text { display: none; }
-}
 /* sécurité : si la police du téléphone est agrandie, c'est le nom qui se resserre, jamais le menu */
 @media (max-width: 720px) {
   .brand { flex: 0 1 auto; min-width: 0; }
@@ -1583,3 +1580,14 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
 .doc-opts { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
 .doc-opts i { font-style: normal; font-size: .8rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--soft); color: var(--text); }
 .doc-req { font-style: normal; font-size: .72rem; font-weight: 900; color: var(--pink-dd); background: var(--pink); padding: 1px 7px; border-radius: 999px; margin-left: 4px; }
+/* téléphone : le bouton de langue ne montre que l'autre langue, pour laisser toute la place au nom */
+@media (max-width: 520px) {
+  .lang-switch span.is-on { display: none; }
+  .lang-switch span { padding: 7px 9px; }
+  .brand-text { min-width: max-content; }
+  .brand-text strong { overflow: visible; font-size: 1rem; }
+  .brand .logo { width: 40px; height: 30px; }
+}
+@media (max-width: 340px) {
+  .brand-text strong { font-size: .9rem; }
+}
