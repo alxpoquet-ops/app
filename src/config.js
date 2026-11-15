@@ -128,10 +128,10 @@ const types = [
 // En paiement annuel : 2 mois offerts sur le forfait.
 // quota : nombre de demandes de modification par mois dans l'espace client.
 // Un seul compteur : chaque forfait donne des modifications par mois, et pour chacune le client choisit qui la fait :
-//  - Lia (l'IA) : instantanée, avec un aperçu à valider ;
+//  - Lia (l'IA) : en 5 minutes, avec un aperçu à valider par le client (pas de validation par Alex) ;
 //  - Alex (l'humain) : à la main, sous 72 heures.
 // quota = modifications par mois ; jetons = quota et partage = true (compteur commun Lia + Alex).
-// Lia est instantanée et montre l'aperçu à confirmer avant de modifier le site ; Alex répond sous 72 heures et vérifie à la main.
+// Lia fait la modification en 5 minutes et montre l'aperçu à confirmer ; Alex répond sous 72 heures, à la main.
 const forfaits = [
   {
     id: 'chico',
@@ -145,7 +145,7 @@ const forfaits = [
     tagline: 'L’essentiel',
     pitch: 'Votre site en ligne, sûr et à jour, sur un serveur de qualité. Deux modifications par Lia et une par Alex, chaque mois.',
     main: ['Site hébergé, sécurisé et tenu à jour', 'Nom de domaine compris', 'Deux modifications par Lia et une par Alex, chaque mois'],
-    details: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié à votre site et renouvelé chaque année (liaison OVH)', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour des extensions, faites pour vous', 'Formulaire de contact qui arrive dans votre boîte mail', 'Gestion du flux de visites : le site tient quand il y a du monde', 'Bases du SEO : Google sait lire et comprendre votre site', 'Deux modifications par Lia et une par Alex, chaque mois', 'Lia, instantanée, pour les petites et moyennes modifications : elle vous montre l’aperçu de la page et attend votre accord', 'Alex, sous 72 heures, pour les plus grandes : fait et vérifié à la main', 'Votre espace client : demandes, suivi et parrainage', 'Sans engagement : vous arrêtez quand vous voulez'],
+    details: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié à votre site et renouvelé chaque année (liaison OVH)', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour des extensions, faites pour vous', 'Formulaire de contact qui arrive dans votre boîte mail', 'Gestion du flux de visites : le site tient quand il y a du monde', 'Bases du SEO : Google sait lire et comprendre votre site', 'Deux modifications par Lia et une par Alex, chaque mois', 'Lia, en 5 minutes, pour les petites et moyennes modifications : elle vous montre l’aperçu de la page et attend votre accord', 'Alex, sous 72 heures, pour les plus grandes : fait et vérifié à la main', 'Votre espace client : demandes, suivi et parrainage', 'Sans engagement : vous arrêtez quand vous voulez'],
     features: ['Hébergement sur un serveur de qualité', 'Nom de domaine relié et renouvelé', 'Mises à jour des extensions', 'Formulaire de contact et HTTPS', 'Gestion du flux de visites', 'Bases du SEO : Google sait lire votre site', 'Deux modifications par Lia et une par Alex, chaque mois'],
   },
   {

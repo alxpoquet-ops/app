@@ -65,7 +65,7 @@ function home() {
   ${C.steps([
     { t: 'Vous commandez en ligne', d: `Vous choisissez votre site et votre forfait. Vous réglez ${paiement.acompte} % du site, rien de plus.` },
     { t: 'Je crée votre site', d: 'Je réserve votre nom de domaine et je vous écris sous 24 heures. Vous voyez l’aperçu, vous me dites ce qui change.' },
-    { t: 'Vous demandez, on s’en occupe', d: 'Un horaire, un prix, une photo : demandez-le depuis votre espace client. Lia le prépare tout de suite, ou Alex s’en charge, au choix.' },
+    { t: 'Vous demandez, on s’en occupe', d: 'Un horaire, un prix, une photo : demandez-le depuis votre espace client. Lia le fait en 5 minutes, ou Alex s’en charge, au choix.' },
   ])}
 </div></section>
 
@@ -93,7 +93,7 @@ function home() {
   <div class="reveal">
     <p class="kicker c-sky">${icon('pencil')}Vos modifications</p>
     <h2>Vous demandez, Lia ou Alex s’en occupe</h2>
-    <p>Une modification ? Envoyez votre demande depuis votre espace client, avec une photo si besoin, et choisissez qui la fait : Lia, tout de suite, ou Alex, à la main, pour ce qui demande un regard humain. Vous êtes prévenu quand c’est en ligne. Vous n’avez rien de technique à gérer.</p>
+    <p>Une modification ? Envoyez votre demande depuis votre espace client, avec une photo si besoin, et choisissez qui la fait : Lia, en 5 minutes, ou Alex, à la main, pour ce qui demande un regard humain. Vous êtes prévenu quand c’est en ligne. Vous n’avez rien de technique à gérer.</p>
     <div class="hero-ctas">${C.btn(site.espaceClient.demo, 'btn-primary', 'circle-user', 'Essayer l’espace client')}</div>
   </div>
   ${C.phoneEdit()}
@@ -237,7 +237,7 @@ function outilsPage() {
   const body = `${C.pageHero({
     section: 'espace',
     h1: 'Vos modifications : Lia ou Alex s’en occupe',
-    lead: 'Depuis votre espace client, vous envoyez vos demandes de modification. Lia les fait tout de suite, ou Alex à la main, au choix : vous n’avez rien de technique à gérer. Et les outils de l’espace sont gratuits pour les sites hébergés chez moi.',
+    lead: 'Depuis votre espace client, vous envoyez vos demandes de modification. Lia les fait en 5 minutes, ou Alex à la main, au choix : vous n’avez rien de technique à gérer. Et les outils de l’espace sont gratuits pour les sites hébergés chez moi.',
     crumbs,
   })}
 ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez vos demandes par le formulaire de contact : on s’en occupe de la même façon.</span></p></div>`}
@@ -247,7 +247,7 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
   <div class="reveal">
     <p class="kicker c-mint">${icon('message-circle')}Demande de modification</p>
     <h2>Une demande, et c’est fait</h2>
-    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. Lia prépare la modification tout de suite et vous montre l’aperçu : votre site ne change qu’après votre accord. Ou Alex s’en charge à la main, sous 72 heures, et vérifie lui-même. Vous êtes prévenu quand c’est en ligne.</p>
+    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. Lia prépare la modification en 5 minutes et vous montre l’aperçu : votre site ne change qu’après votre accord. Ou Alex s’en charge à la main, sous 72 heures, et vérifie lui-même. Vous êtes prévenu quand c’est en ligne.</p>
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
       <li>Réponse sous ${delais.reponse}, ou ${delais.titan} avec Titan</li>
@@ -723,7 +723,7 @@ Le résultat, lui, reste du travail soigné : un site rapide, adapté au télép
       <h3>${icon('user')}Alex, l’humain, …</h3>
       <ul class="list-check">
         <li>vous écoute et fait les choix ;</li>
-        <li>vérifie et paramètre tout ce que fait Lia ;</li>
+        <li>règle Lia et fixe ses limites, pour qu’elle reste prudente ;</li>
         <li>fait les modifications qui demandent un regard humain ;</li>
         <li>teste le site sur plusieurs appareils ;</li>
         <li>met en ligne et reste là après.</li>
@@ -1113,13 +1113,14 @@ function liaAlexPage() {
     { q: 'Que se passe-t-il si ma demande est trop grande pour Lia ?', a: 'Lia ne touche à rien et passe la demande à Alex. C’est plus long, puisqu’elle est faite à la main, et elle compte alors pour une de vos demandes Alex du mois.' },
     { q: 'Mes modifications par Lia et par Alex se cumulent-elles ?', a: 'Non, ce sont deux compteurs séparés. Les unes ne se transforment pas en les autres, et ce qui n’est pas utilisé ne se reporte pas au mois suivant.' },
     { q: 'Dois-je prendre un abonnement à une IA ?', a: 'Non. Tout est compris dans votre forfait : vous n’avez aucun compte à créer, aucun réglage à faire, aucune liaison à installer. Vous écrivez votre demande, c’est tout.' },
+    { q: 'Puis-je annuler une demande ?', a: 'Oui, gratuitement pendant 24 heures après l’envoi, jusqu’à 3 fois par mois, depuis votre espace client. La demande ne compte plus dans votre mois. Au-delà, écrivez à Alex.' },
     { q: 'Est-ce que je peux me passer de Lia ?', a: 'Oui. À chaque demande, vous choisissez Lia ou Alex. Si vous préférez que tout soit fait à la main, choisissez toujours Alex.' },
   ];
   const f = C.faq(faqItems, 'Vos questions sur Lia et Alex', 'faq-lia');
   const body = `${C.pageHero({
     section: 'liaalex',
     h1: 'Lia et Alex : une IA pour aller vite, un humain pour tout le reste',
-    lead: 'Lia est un outil. Alex est une personne. Lia fait tout de suite les petites et moyennes modifications de votre site. Alex fait le reste, vérifie tout, et répond quand vous avez besoin de quelqu’un.',
+    lead: 'Lia est un outil. Alex est une personne. Lia fait en 5 minutes les petites et moyennes modifications de votre site. Alex fait le reste, à la main, et répond quand vous avez besoin de quelqu’un.',
     crumbs,
     mascot: 'mascotte',
   })}
@@ -1128,7 +1129,7 @@ function liaAlexPage() {
     <article class="duo-card c-pink reveal">
       <span class="duo-art">${monster('mascotte')}</span>
       <h2>Lia, l’IA</h2>
-      <p class="duo-sub">Tout de suite, pour les petites et moyennes modifications</p>
+      <p class="duo-sub">En 5 minutes, pour les petites et moyennes modifications</p>
       <ul class="list-check">
         <li>Change un texte, un horaire, un prix affiché, une phrase</li>
         <li>Ajoute ou remplace une photo, publie une actualité</li>
@@ -1146,7 +1147,7 @@ function liaAlexPage() {
         <li>Relie le site, installe le certificat SSL (le cadenas) et l’hébergement</li>
         <li>S’occupe du référencement SEO et des mises à jour</li>
         <li>Fait les grandes modifications : nouvelle page, refonte, boutique</li>
-        <li>Vérifie chaque changement de Lia, et vous répond en personne</li>
+        <li>Règle Lia, et vous répond en personne</li>
       </ul>
     </article>
   </div>
@@ -1185,7 +1186,11 @@ Lia ne modifie jamais votre site directement. Elle prépare le changement, puis 
 1. **C’est bon** : le changement est mis en ligne.
 2. **Ce n’est pas ça** : rien ne change, et Alex reprend la demande.
 
-Ensuite, je vérifie moi-même ce qui a été mis en ligne.
+C’est vous qui validez : une fois votre accord donné, la modification est en ligne, sans attendre personne. Le tout prend environ 5 minutes.
+
+## Annuler une demande
+
+Vous changez d’avis ? Une demande s’annule **gratuitement pendant 24 heures**, depuis votre espace client, jusqu’à **3 fois par mois**. Elle ne compte alors pas dans vos modifications du mois, et si Lia l’avait déjà mise en ligne, la page est remise comme avant. Au-delà, écrivez-moi et on regarde ensemble.
 
 ## Des limites, pour votre sécurité
 
@@ -1220,7 +1225,7 @@ ${C.ctaBand({ title: 'Envie de voir Lia à l’œuvre ?', text: 'Essayez la dém
     path: sections.liaalex.path,
     section: 'liaalex',
     title: 'Lia et Alex : ce que fait l’IA, ce que fait l’humain | Alex & Lia',
-    description: 'Lia, l’IA, fait tout de suite les petites modifications de votre site, avec un aperçu à valider. Alex, l’humain, fait le reste et vérifie tout. Qui fait quoi.',
+    description: 'Lia, l’IA, fait en 5 minutes les petites modifications de votre site, avec un aperçu à valider. Alex, l’humain, fait le reste, à la main. Qui fait quoi.',
     crumbs,
     body,
     schema: [f.schema],

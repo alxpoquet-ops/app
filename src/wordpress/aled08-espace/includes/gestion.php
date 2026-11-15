@@ -176,7 +176,7 @@ function aled08e_gestion($u) {
 
     // demandes à traiter (tout ce qui n'est pas « faite »)
     $demandes = get_posts(['post_type' => ALED08E_CPT, 'post_status' => ['private', 'publish'], 'numberposts' => 60, 'orderby' => 'date', 'order' => 'ASC',
-        'meta_query' => ['relation' => 'OR', ['key' => '_aled08_statut', 'compare' => 'NOT EXISTS'], ['key' => '_aled08_statut', 'value' => 'faite', 'compare' => '!=']]]);
+        'meta_query' => ['relation' => 'OR', ['key' => '_aled08_statut', 'compare' => 'NOT EXISTS'], ['key' => '_aled08_statut', 'value' => ['faite', 'annulee'], 'compare' => 'NOT IN']]]);
     $clients = get_users(['role' => ALED08E_ROLE, 'orderby' => 'display_name', 'order' => 'ASC', 'number' => 300]);
     $cmds = aled08e_cmd_liste(['numberposts' => 40]);
     $cmdsVivantes = array_filter($cmds, function ($c) { return !in_array($c['statut'], ['en_ligne', 'annulee'], true); });
@@ -264,7 +264,7 @@ function aled08e_gestion($u) {
           $etats = [
               'en_attente' => ['Lia travaille', 'st-doing'], 'a_confirmer' => ['Aperçu envoyé, en attente du client', 'st-new'],
               'fait' => ['Aperçu validé par le client, mis en ligne', 'st-done'], 'refuse' => ['Aperçu refusé par le client', 'esp-st-off'],
-              'pour_alex' => ['Passée à Alex par Lia', 'st-doing'], 'annule' => ['Changements de Lia annulés', 'esp-st-off'],
+              'pour_alex' => ['Passée à Alex par Lia', 'st-doing'], 'annule' => ['Annulée', 'esp-st-off'],
           ];
           $nLia = 0; $nAlex = 0; $nValide = 0; $nRefus = 0; $cout = 0.0;
           foreach ($toutes as $d) {
@@ -291,6 +291,7 @@ function aled08e_gestion($u) {
                 $parLia = get_post_meta($d->ID, '_aled08_par', true) === 'lia';
                 $e = (string) get_post_meta($d->ID, '_aled08_lia_etat', true);
                 $et = $etats[$e] ?? null;
+                $annulee = (string) get_post_meta($d->ID, '_aled08_annulee_le', true);
                 $le = (string) get_post_meta($d->ID, '_aled08_lia_le', true);
                 $conf = (string) get_post_meta($d->ID, '_aled08_lia_confirme_le', true);
                 $com = (string) get_post_meta($d->ID, '_aled08_lia_commentaire', true);
@@ -302,6 +303,7 @@ function aled08e_gestion($u) {
               <p class="ges-meta">Le <?php echo esc_html(aled08e_date($d->post_date)); ?> · <?php echo $parLia ? 'par Lia' : ($e === 'pour_alex' ? 'demandée à Lia, faite par Alex' : 'par Alex'); ?><?php if (get_post_meta($d->ID, '_aled08_hors_forfait', true)) echo ' · Boost 1 €'; ?><?php if ($faite) echo ' · faite le ' . esc_html(aled08e_date($faite)); ?></p>
               <p class="ges-text"><?php echo esc_html(mb_strlen($d->post_content) > 260 ? mb_substr($d->post_content, 0, 257) . '…' : ($d->post_content ?: $d->post_title)); ?></p>
               <?php if ($et) : ?><p class="ges-meta"><em class="st <?php echo esc_attr($et[1]); ?>"><?php echo esc_html($et[0]); ?></em><?php if ($conf) echo ' le ' . esc_html(aled08e_date($conf)); elseif ($le) echo ' · Lia a fini le ' . esc_html(aled08e_date($le)); ?></p><?php endif; ?>
+              <?php if ($annulee) : ?><p class="ges-meta"><em class="st esp-st-off">Annulée par le client</em> le <?php echo esc_html(aled08e_date($annulee)); ?></p><?php endif; ?>
               <?php if ($com) : ?><p class="ges-meta">Mot du client : <?php echo esc_html($com); ?></p><?php endif; ?>
               <?php if (is_array($c) && !empty($c['appels'])) : ?><p class="ges-meta">Coût estimé : <?php echo esc_html(number_format(aled08e_lia_cout($c), 3, ',', ' ')); ?> $</p><?php endif; ?>
               <div class="ges-actions"><a class="btn btn-light btn-sm" href="<?php echo esc_url(admin_url('post.php?post=' . (int) $d->ID . '&action=edit')); ?>"><?php echo aled08e_icon('pencil'); // phpcs:ignore ?><span>Ouvrir la demande</span></a></div>

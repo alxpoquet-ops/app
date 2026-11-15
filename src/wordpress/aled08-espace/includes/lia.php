@@ -4,7 +4,7 @@
  *  - une demande « par Lia » est traitée en tâche de fond : Claude lit le site du client par le connecteur
  *    (extension « Alex & Lia : connecteur » installée sur le site du client), fait le changement demandé
  *    avec des outils limités, puis rend compte ;
- *  - chaque changement garde une révision sur le site du client : Alex vérifie, et peut tout annuler en un clic ;
+ *  - chaque changement garde une révision sur le site du client : on peut tout annuler en un clic ;
  *  - si la demande est floue, risquée ou hors des outils, Lia ne touche à rien et la passe à Alex.
  * Le kit officiel Anthropic pour PHP (anthropic-ai/sdk) est fourni par l'extension séparée « alexlia-sdk »,
  * chargée seulement quand Lia travaille.
@@ -101,7 +101,7 @@ function aled08e_lia_outils() {
 function aled08e_lia_systeme($u, $infos) {
     return "Tu es Lia, l'IA d'Alex & Lia, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, artisans et associations. "
         . "Tu reçois une demande de modification écrite par le propriétaire d'un site, et tu la prépares toi-même sur son site WordPress avec les outils fournis. "
-        . "Tes changements sont préparés dans un aperçu : le client le regarde et confirme, puis ils sont mis en ligne. Alex, l'humain, vérifie ensuite.\n\n"
+        . "Tes changements sont préparés dans un aperçu : le client le regarde et confirme, puis ils sont mis en ligne directement.\n\n"
         . "Règles :\n"
         . "- Fais exactement ce qui est demandé, rien de plus. Ne change ni le style, ni la mise en page, ni les autres textes.\n"
         . "- Tu fais les petites et moyennes modifications. Ton budget pour une demande : " . aled08e_lia_budget_txt() . " Tout se passe sur UNE seule page (ou une seule actualité).\n"
@@ -201,6 +201,7 @@ function aled08e_lia_traiter($pid) {
     $pid = (int) $pid;
     $p = get_post($pid);
     if (!$p || $p->post_type !== ALED08E_CPT) return;
+    if (get_post_meta($pid, '_aled08_annulee_le', true)) return; // annulée par le client avant que Lia commence
     if (get_transient('aled08_lia_' . $pid)) return;
     set_transient('aled08_lia_' . $pid, 1, 15 * MINUTE_IN_SECONDS);
     $uid = (int) $p->post_author;
@@ -279,13 +280,18 @@ function aled08e_lia_traiter($pid) {
         }
     } catch (\Throwable $e) {
         aled08e_lia_journal_add('Erreur Claude sur la demande #' . $pid . ' : ' . $e->getMessage());
-        $resultat = ['pour_alex', $actions ? 'Une partie est prête. Alex vérifie et termine.' : 'Je transmets votre demande à Alex, qui s’en occupe.', 'Erreur pendant le travail de Lia : ' . mb_substr($e->getMessage(), 0, 400)];
+        $resultat = ['pour_alex', $actions ? 'Une partie est prête. Alex termine votre demande.' : 'Je transmets votre demande à Alex, qui s’en occupe.', 'Erreur pendant le travail de Lia : ' . mb_substr($e->getMessage(), 0, 400)];
     }
-    if ($resultat === null) $resultat = ['pour_alex', 'Alex vérifie et termine votre demande.', 'Lia a atteint le nombre maximum d’étapes.'];
+    if ($resultat === null) $resultat = ['pour_alex', 'Alex termine votre demande.', 'Lia a atteint le nombre maximum d’étapes.'];
     $fin($resultat[0], $resultat[1], $resultat[2], $actions);
 }
 
 function aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $actions) {
+    if (get_post_meta($pid, '_aled08_annulee_le', true)) { // annulée par le client pendant que Lia travaillait
+        aled08e_lia_appel($uid, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]);
+        update_post_meta($pid, '_aled08_lia_etat', 'annule');
+        return;
+    }
     update_post_meta($pid, '_aled08_lia_actions', $actions);
     update_post_meta($pid, '_aled08_lia_note', mb_substr((string) $noteAlex, 0, 2000));
     update_post_meta($pid, '_aled08_lia_le', current_time('mysql'));
@@ -354,7 +360,7 @@ function aled08e_lia_test() {
 function aled08e_lia_masque($k) { return $k === '' ? 'aucune clé' : 'enregistrée, se termine par ' . substr($k, -4); }
 function aled08e_lia_reglages_html() {
     echo '<h2>Lia (Claude, d’Anthropic)</h2>';
-    echo '<p>Lia fait les demandes « par Lia » toute seule sur le site du client, puis vous les vérifiez. Il faut : une clé Claude, l’extension <code>alexlia-sdk</code> installée ici (kit officiel Anthropic), et l’extension <code>alexlia-connecteur</code> sur chaque site client, reliée dans la fiche du client.</p>';
+    echo '<p>Lia fait les demandes « par Lia » toute seule sur le site du client, en quelques minutes, sans validation de votre part : seul le client valide l’aperçu. Il faut : une clé Claude, l’extension <code>alexlia-sdk</code> installée ici (kit officiel Anthropic), et l’extension <code>alexlia-connecteur</code> sur chaque site client, reliée dans la fiche du client.</p>';
     echo '<table class="form-table" role="presentation">';
     echo '<tr><th><label for="aled08e-lia-key">Clé Claude (API Anthropic)</label></th><td>';
     if (defined('ALED08_ANTHROPIC_KEY') && ALED08_ANTHROPIC_KEY) echo '<p>Définie dans wp-config.php (constante ALED08_ANTHROPIC_KEY) : ' . esc_html(aled08e_lia_masque(ALED08_ANTHROPIC_KEY)) . '.</p>';
@@ -512,12 +518,11 @@ function aled08e_lia_confirmer($pid, $oui, $commentaire = '') {
     update_post_meta($pid, '_aled08_lia_actions', $faites);
     update_post_meta($pid, '_aled08_statut', 'faite');
     update_post_meta($pid, '_aled08_lia_etat', 'fait');
-    update_post_meta($pid, '_aled08_a_verifier', 1);
     update_post_meta($pid, '_aled08_faite_le', current_time('mysql'));
-    update_post_meta($pid, '_aled08_reponse', 'C’est en ligne, merci ! Alex vérifie toujours ce que fait Lia.');
+    update_post_meta($pid, '_aled08_reponse', 'C’est en ligne, merci !');
     $liste = implode("\n", array_map(function ($a) { return '- ' . $a['detail'] . ($a['adresse'] ? ' (' . $a['adresse'] . ')' : ''); }, $faites));
     aled08e_lia_journal_add('Demande #' . $pid . ' mise en ligne par Lia après accord du client (' . count($faites) . ' changement(s)).');
-    wp_mail(aled08e_to(), 'Lia a mis en ligne une modification à vérifier', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n\nMis en ligne après l’accord du client :\n" . $liste . "\n\nNote de Lia : " . get_post_meta($pid, '_aled08_lia_note', true) . "\n\nVérifier ou annuler : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
+    // pas de validation par Alex : la modification est directe ; elle apparaît dans son récapitulatif des demandes
     return 'oui';
 }
 add_action('template_redirect', function () {

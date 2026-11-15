@@ -74,7 +74,7 @@ function aled08e_prenom($u) { return $u ? ($u->first_name ?: $u->display_name) :
 
 /* Statuts d'une demande */
 function aled08e_statuts() {
-    return ['recue' => ['Reçue', 'st-new'], 'encours' => ['En cours', 'st-doing'], 'faite' => ['Faite', 'st-done']];
+    return ['recue' => ['Reçue', 'st-new'], 'encours' => ['En cours', 'st-doing'], 'faite' => ['Faite', 'st-done'], 'annulee' => ['Annulée', 'esp-st-off']];
 }
 
 /* =========================================================================
@@ -249,10 +249,72 @@ function aled08e_count_month($uid, $par = 'alex') {
         'posts_per_page' => 200, 'no_found_rows' => true,
         'date_query' => [['year' => (int) wp_date('Y'), 'month' => (int) wp_date('n')]],
     ];
-    if ($par === 'lia') $args['meta_query'] = [['key' => '_aled08_par', 'value' => 'lia']];
-    if ($par === 'alex') $args['meta_query'] = ['relation' => 'OR', ['key' => '_aled08_par', 'value' => 'alex'], ['key' => '_aled08_par', 'compare' => 'NOT EXISTS']];
+    $pasAnnulee = ['key' => '_aled08_annulee_le', 'compare' => 'NOT EXISTS'];
+    if ($par === 'lia') $args['meta_query'] = ['relation' => 'AND', ['key' => '_aled08_par', 'value' => 'lia'], $pasAnnulee];
+    elseif ($par === 'alex') $args['meta_query'] = ['relation' => 'AND', ['relation' => 'OR', ['key' => '_aled08_par', 'value' => 'alex'], ['key' => '_aled08_par', 'compare' => 'NOT EXISTS']], $pasAnnulee];
+    else $args['meta_query'] = [$pasAnnulee];
     $q = new WP_Query($args);
     return count($q->posts);
+}
+/* =========================================================================
+ *  Annulation d'une demande par le client : gratuite dans les 24 heures, 3 fois par mois.
+ *  La demande ne compte plus dans le mois ; ce que Lia avait mis en ligne est remis comme avant.
+ * ========================================================================= */
+const ALED08E_ANNUL_MOIS = 3;
+const ALED08E_ANNUL_HEURES = 24;
+function aled08e_annulations_mois($uid) {
+    $q = new WP_Query(['post_type' => ALED08E_CPT, 'author' => (int) $uid, 'post_status' => ['private', 'publish'], 'fields' => 'ids', 'posts_per_page' => 50, 'no_found_rows' => true,
+        'meta_query' => [['key' => '_aled08_annulee_le', 'value' => wp_date('Y-m'), 'compare' => 'LIKE']]]);
+    return count($q->posts);
+}
+/* '' si la demande peut être annulée, sinon la raison : 'deja', 'delai', 'quota' */
+function aled08e_annulation_possible($p) {
+    if (get_post_meta($p->ID, '_aled08_annulee_le', true)) return 'deja';
+    if (time() - (int) get_post_time('U', true, $p) > ALED08E_ANNUL_HEURES * HOUR_IN_SECONDS) return 'delai';
+    if (aled08e_annulations_mois($p->post_author) >= ALED08E_ANNUL_MOIS) return 'quota';
+    return '';
+}
+function aled08e_annuler_demande($pid) {
+    $p = get_post($pid);
+    if (!$p || $p->post_type !== ALED08E_CPT) return new WP_Error('aled08_annul', 'Demande introuvable.');
+    if (($pourquoi = aled08e_annulation_possible($p)) !== '') return new WP_Error('aled08_annul', $pourquoi);
+    $uid = (int) $p->post_author;
+    $etat = (string) get_post_meta($pid, '_aled08_lia_etat', true);
+    $note = '';
+    if ($etat === 'a_confirmer' && function_exists('aled08e_lia_appel')) aled08e_lia_appel($uid, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]);
+    if ($etat === 'fait' && function_exists('aled08e_lia_annuler')) $note = aled08e_lia_annuler($pid);
+    update_post_meta($pid, '_aled08_annulee_le', current_time('mysql'));
+    update_post_meta($pid, '_aled08_statut', 'annulee');
+    if ($etat) update_post_meta($pid, '_aled08_lia_etat', 'annule');
+    update_post_meta($pid, '_aled08_reponse', 'Demande annulée. Elle ne compte pas dans vos modifications du mois.' . ($etat === 'fait' ? ' Votre page a été remise comme avant.' : ''));
+    $u = get_userdata($uid);
+    wp_mail(aled08e_to(), 'Une demande a été annulée par le client', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n"
+        . ($note ? "\nCe que Lia avait mis en ligne : " . $note . "\n" : '')
+        . (get_post_meta($pid, '_aled08_hors_forfait', true) ? "\nC'était un Boost (1 €) : à rembourser ou retirer de sa facture.\n" : '')
+        . "\nAnnulations ce mois-ci : " . aled08e_annulations_mois($uid) . ' / ' . ALED08E_ANNUL_MOIS . "\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
+    return true;
+}
+add_action('template_redirect', function () {
+    if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08e_annuler'])) return;
+    if (!is_user_logged_in()) { wp_safe_redirect(aled08e_url(), 303); exit; }
+    $pid = (int) $_POST['aled08e_annuler'];
+    $p = get_post($pid);
+    $ok = $p && (int) $p->post_author === get_current_user_id() && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_aled08e_annul'] ?? '')), 'aled08e_annuler_' . $pid);
+    $r = $ok ? aled08e_annuler_demande($pid) : new WP_Error('aled08_annul', 'erreur');
+    $m = !is_wp_error($r) ? 'annul_ok' : ($r->get_error_message() === 'quota' ? 'annul_quota' : ($r->get_error_message() === 'delai' ? 'annul_delai' : 'erreur'));
+    wp_safe_redirect(aled08e_url(['m' => $m]) . '#demandes', 303);
+    exit;
+}, 4);
+
+function aled08e_annulation_html($p) {
+    if (get_post_meta($p->ID, '_aled08_annulee_le', true)) return '';
+    $pourquoi = aled08e_annulation_possible($p);
+    if ($pourquoi === 'delai') return '';
+    if ($pourquoi === 'quota') return '<span class="req-annul-info">Vous avez utilisé vos 3 annulations du mois. Pour annuler celle-ci, <a href="' . esc_url(home_url('/contact/')) . '">écrivez à Alex</a>.</span>';
+    $reste = ALED08E_ANNUL_MOIS - aled08e_annulations_mois($p->post_author);
+    return '<form method="post" action="' . esc_url(aled08e_url()) . '" class="req-annul" onsubmit="return confirm(\'Annuler cette demande ? Elle ne comptera pas dans vos modifications du mois.\');">'
+        . '<input type="hidden" name="aled08e_annuler" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_annuler_' . $p->ID, '_aled08e_annul', true, false)
+        . '<button class="link-btn" type="submit">' . aled08e_icon('x') . 'Annuler la demande</button><small>gratuit pendant 24 heures, encore ' . (int) $reste . ' ce mois-ci</small></form>';
 }
 /* Jetons Lia du forfait (null = illimité) */
 function aled08e_jetons($f) { return array_key_exists('jetons', $f) ? $f['jetons'] : 1; }
@@ -718,7 +780,7 @@ function aled08e_dashboard() {
         $thumb = $full && has_post_thumbnail($p) ? get_the_post_thumbnail($p, 'thumbnail', ['class' => 'req-thumb', 'alt' => '']) : '';
         $text = $full ? $p->post_content : $p->post_title;
         return '<li>' . $thumb . '<span><strong>' . nl2br(esc_html(mb_strlen($text) > 220 ? mb_substr($text, 0, 217) . '…' : $text)) . '</strong><small>' . (get_post_meta($p->ID, '_aled08_par', true) === 'lia' ? 'par Lia, ' : 'par Alex, ') . 'envoyée le ' . esc_html(aled08e_date($p->post_date)) . '</small>'
-            . ($full && $rep ? '<span class="req-reply">' . nl2br(esc_html($rep)) . '</span>' : '') . ($full ? aled08e_lia_bloc_confirmation($p) : '') . '</span><em class="st ' . esc_attr($st[$s][1]) . '">' . esc_html($st[$s][0]) . '</em></li>';
+            . ($full && $rep ? '<span class="req-reply">' . nl2br(esc_html($rep)) . '</span>' : '') . ($full ? aled08e_lia_bloc_confirmation($p) : '') . ($full ? aled08e_annulation_html($p) : '') . '</span><em class="st ' . esc_attr($st[$s][1]) . '">' . esc_html($st[$s][0]) . '</em></li>';
     };
 
     $flash = '';
@@ -735,7 +797,10 @@ function aled08e_dashboard() {
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
         'trop' => ['esp-warn', 'Vous avez envoyé beaucoup de demandes aujourd’hui. Écrivez-nous par le formulaire de contact si c’est pressé.'],
         'erreur' => ['esp-warn', 'L’envoi n’a pas abouti. Réessayez dans un instant.'],
-        'lia_oui' => ['esp-empty', 'Merci ! Lia met votre modification en ligne. Alex vérifie toujours après elle.'],
+        'lia_oui' => ['esp-empty', 'Merci ! Votre modification est en ligne.'],
+        'annul_ok' => ['esp-empty', 'Demande annulée. Elle ne compte pas dans vos modifications du mois.'],
+        'annul_quota' => ['esp-warn', 'Vous avez déjà annulé 3 demandes ce mois-ci. Pour celle-ci, écrivez à Alex.'],
+        'annul_delai' => ['esp-warn', 'Une demande s’annule dans les 24 heures. Pour celle-ci, écrivez à Alex.'],
         'lia_non' => ['esp-empty', 'C’est noté : Alex reprend votre demande à la main.'],
         'lia_erreur' => ['esp-warn', 'La mise en ligne automatique n’a pas abouti : Alex s’en occupe à la main.'],
     ];
@@ -859,7 +924,7 @@ function aled08e_dashboard() {
             <input type="hidden" name="aled08e_demande" value="1">
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>
             <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend><p class="app-note">Ce mois-ci, il vous reste <?php echo (int) $jetonsLeft; ?> modification<?php echo $jetonsLeft > 1 ? 's' : ''; ?> avec Lia et <?php echo (int) $left; ?> avec Alex. Lia fait les petites et moyennes modifications, Alex les plus grandes.</p>
-              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $jetonsLeft > 0 ? ' checked' : ' disabled'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, instantané</strong><small>Pour une petite ou moyenne modification : jusqu’à <?php echo (int) $liaLim['mots'][0]; ?> mots de texte, ou jusqu’à <?php echo (int) $liaLim['images']; ?> photos avec un texte plus court. Lia vous montre toujours l’aperçu de la page : rien ne change sans votre accord.</small></span></label>
+              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $jetonsLeft > 0 ? ' checked' : ' disabled'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, en 5 minutes</strong><small>Pour une petite ou moyenne modification : jusqu’à <?php echo (int) $liaLim['mots'][0]; ?> mots de texte, ou jusqu’à <?php echo (int) $liaLim['images']; ?> photos avec un texte plus court. Lia vous montre toujours l’aperçu de la page : rien ne change sans votre accord.</small></span></label>
               <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $jetonsLeft > 0 ? '' : ' checked'; ?>><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Pour une grande modification. Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même.</small></span></label>
             </fieldset>
             <?php if ($left <= 0) : ?><label class="check"><input type="checkbox" name="boost_ok" value="1"><span>Si je choisis Alex : j’accepte le Boost, 1 € pour cette modification en plus</span></label><?php endif; ?>

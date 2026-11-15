@@ -521,7 +521,7 @@ Mon service est né de ce constat. Vous ne construisez rien vous-même, mais vou
 
 - Le prix est fixe et connu d'avance, à partir de ${page.price} €.
 - Vous demandez vos changements en une phrase depuis votre espace client.
-- Lia les réalise tout de suite et vous montre l'aperçu, ou je les fais à la main sous 72 heures. C'est vous qui choisissez à chaque fois.
+- Lia les réalise en 5 minutes et vous montre l'aperçu, ou je les fais à la main sous 72 heures. C'est vous qui choisissez à chaque fois.
 - Le forfait est sans engagement.
 
 Pour voir à quoi cela ressemble avant de vous décider, [essayez la démo de l'espace client](/mon-espace/demo/). Et pour une vue d'ensemble des solutions, le [comparatif](/comparatif/) les met côte à côte.`,

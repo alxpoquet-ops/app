@@ -196,3 +196,10 @@ a.app-card { text-decoration: none; color: inherit; }
 .esp-annonces small { color: var(--muted); font-weight: 700; font-size: .8rem; }
 .esp-annonces p { margin: 6px 0 0; overflow-wrap: anywhere; }
 .ges-form textarea, .esp-form textarea { min-height: 0; }
+
+/* ---------- annulation d'une demande ---------- */
+.req-annul { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 8px 0 0; }
+.req-annul .link-btn { display: inline-flex; align-items: center; gap: 4px; padding: 0; color: var(--pink-dd); }
+.req-annul .link-btn .ico { width: 16px; height: 16px; }
+.req-annul small, .req-annul-info { color: var(--muted); font-size: .8rem; font-weight: 700; }
+.req-annul-info { display: block; margin-top: 8px; }
