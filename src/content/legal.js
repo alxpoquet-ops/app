@@ -205,13 +205,13 @@ Le client envoie ses demandes de modification depuis son espace client ou par me
 
 Chaque forfait comprend, par mois :
 
-- ${chico.name} : une modification.
-- ${power.name} : deux modifications.
-${titan ? `- ${titan.name} : quatre modifications.` : ''}
+- ${chico.name} : ${chico.jetons} modifications par Lia et ${chico.quota} par Alex.
+- ${power.name} : ${power.jetons} modifications par Lia et ${power.quota} par Alex.
+${titan ? `- ${titan.name} : ${titan.jetons} modifications par Lia et ${titan.quota} par Alex.` : ''}
 
-Pour chaque modification, le client choisit qui la fait : Lia ou Alex.
+Les deux compteurs sont séparés et ne se reportent pas d’un mois sur l’autre. Lia réalise les petites et moyennes modifications (un budget de mots et d’images par demande, sur une seule page) et montre toujours un aperçu que le client valide avant toute mise en ligne. Alex réalise les plus grandes. Une demande trop grande pour Lia est transmise à Alex et compte alors parmi les demandes Alex. L’option Lia + ajoute dix modifications par Lia par mois.
 
-Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications non utilisées ne se reportent pas. Au-delà du nombre compris, le client peut demander un Boost : une modification en plus pour 1 €, réalisée par Alex, ajoutée à sa prochaine facture, avec son accord à chaque demande. Sinon, la demande est reportée à la période suivante, au choix du client. Une page nouvelle ou un site plus grand fait l’objet d’un devis.
+Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Les modifications non utilisées ne se reportent pas. Au-delà du nombre de modifications par Alex compris, le client peut demander un Boost : une modification en plus pour 1 €, réalisée par Alex, ajoutée à sa prochaine facture, avec son accord à chaque demande. Sinon, la demande est reportée à la période suivante, au choix du client. Une page nouvelle ou un site plus grand fait l’objet d’un devis.
 
 ## 12. Délais de réponse
 

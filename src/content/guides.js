@@ -92,7 +92,7 @@ La bonne méthode est d'**écrire la carte en vrai texte** sur le site. Elle se 
 
 C'est la vraie difficulté pour un restaurant : le plat du jour, la carte de saison, les congés annuels. Un site qui affiche encore le menu de l'été en plein hiver donne une mauvaise image.
 
-Avec un [forfait](/forfaits/), vous envoyez le changement depuis votre espace client. Lia modifie la page en quelques instants et vous montre l'aperçu avant que ce soit visible par vos clients. Pour un restaurant dont la carte bouge chaque mois, le forfait ${power.name} avec ses ${power.quota} modifications par mois est le plus adapté.
+Avec un [forfait](/forfaits/), vous envoyez le changement depuis votre espace client. Lia modifie la page en quelques instants et vous montre l'aperçu avant que ce soit visible par vos clients. Pour un restaurant dont la carte bouge chaque mois, le forfait ${power.name}, avec ses ${power.jetons} modifications par Lia chaque mois, est le plus adapté.
 
 ## Quel site choisir ?
 
@@ -196,13 +196,13 @@ Avec un [forfait](/forfaits/), le site ne repose sur personne en particulier. N'
 Je sais que chaque dépense se vote. Les chiffres sont donc simples à présenter en réunion :
 
 - **${page.price} € une fois** pour un site une page, dont ${acompte(page.price)} € à la commande et ${reste(page.price)} € à la mise en ligne.
-- **${chico.month} € par mois** pour le forfait ${chico.name} : hébergement, nom de domaine, mises à jour et une modification par mois.
+- **${chico.month} € par mois** pour le forfait ${chico.name} : hébergement, nom de domaine, mises à jour, deux modifications par Lia et une par Alex chaque mois.
 
 Le reste du prix de création peut aussi être étalé sur 6 ou 12 mois, sans frais.
 
 ## Les événements et les actualités
 
-Une modification par mois suffit pour annoncer le prochain rendez-vous. Si votre calendrier est chargé, le forfait ${power.name} en donne ${power.quota}, et vous pouvez ajouter une modification ponctuelle pour 1 € quand il en manque une.
+Deux modifications par Lia suffisent pour annoncer les prochains rendez-vous. Si votre calendrier est chargé, le forfait ${power.name} en donne ${power.jetons}, et l’option Lia + en ajoute dix de plus pour 5 € par mois.
 
 ## Adhésions et dons
 
@@ -376,9 +376,9 @@ Vous payez ${paiement.acompte} % à la commande, le reste à la mise en ligne. C
 
 Ensuite, un forfait mensuel regroupe tout ce qui est récurrent : nom de domaine, hébergement, mises à jour et modifications.
 
-- **${chico.name} : ${chico.month} € par mois**, avec ${chico.quota} modification par mois.
-- **${power.name} : ${power.month} € par mois**, avec ${power.quota} modifications et le suivi du référencement.
-- **${titan.name} : ${titan.month} € par mois**, avec ${titan.quota} modifications et vos chiffres chaque mois.
+- **${chico.name} : ${chico.month} € par mois**, avec ${chico.jetons} modifications par Lia et ${chico.quota} par Alex.
+- **${power.name} : ${power.month} € par mois**, avec ${power.jetons} modifications par Lia, ${power.quota} par Alex et le suivi du référencement.
+- **${titan.name} : ${titan.month} € par mois**, avec ${titan.jetons} modifications par Lia, ${titan.quota} par Alex et vos chiffres chaque mois.
 
 ## Trois exemples sur la première année
 
@@ -527,7 +527,7 @@ Mon service est né de ce constat. Vous ne construisez rien vous-même, mais vou
 Pour voir à quoi cela ressemble avant de vous décider, [essayez la démo de l'espace client](/mon-espace/demo/). Et pour une vue d'ensemble des solutions, le [comparatif](/comparatif/) les met côte à côte.`,
     faq: [
       { q: 'J’ai commencé un site moi-même sans le finir, pouvez-vous le reprendre ?', a: 'Je repars d’un site neuf, mais rien n’est perdu : vos textes, vos photos et vos idées servent de base. Envoyez-moi l’adresse de ce que vous avez commencé, c’est un excellent point de départ.' },
-      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: 'Oui, sans rien apprendre : vous décrivez le changement dans votre espace client. Selon votre forfait, vous disposez d’une à quatre modifications par mois.' },
+      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: 'Oui, sans rien apprendre : vous décrivez le changement dans votre espace client. Selon votre forfait, Lia fait de deux à dix modifications par mois, et Alex une ou deux.' },
       { q: 'Combien de temps faut-il pour faire un site seul ?', a: 'Cela dépend beaucoup de chacun. Le montage lui-même va assez vite. Ce qui prend du temps, ce sont les textes, le choix des photos et tous les petits réglages auxquels on ne pense pas au départ.' },
     ],
     voir: ['prix-site-internet', 'site-une-page-ou-site-vitrine', 'site-internet-auto-entrepreneur'],

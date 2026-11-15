@@ -66,6 +66,16 @@ function aled08e_lia_cout($c) {
     foreach ($t as $k => $prix) $s += ((int) ($c[$k] ?? 0)) * $prix / 1000000;
     return $s;
 }
+/* Nombre de mots d'un texte (balises retirées) */
+function aled08e_lia_mots($html) {
+    $t = trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags((string) $html)));
+    return $t === '' ? 0 : count(preg_split('/\s+/u', $t));
+}
+/* Le budget de Lia, en une phrase (pour sa consigne et pour le client) */
+function aled08e_lia_budget_txt() {
+    $l = aled08e_lia_limites();
+    return 'jusqu’à ' . $l['mots'][0] . ' mots de texte sans image, ' . $l['mots'][1] . ' mots avec une image, ' . $l['mots'][2] . ' mots avec deux images, ou ' . $l['images'] . ' images avec une courte légende.';
+}
 function aled08e_lia_secret_nouveau() { return wp_generate_password(48, false, false); }
 
 /* =========================================================================
@@ -79,7 +89,7 @@ function aled08e_lia_outils() {
         ['name' => 'remplacer_texte', 'description' => 'Remplace un passage exact du contenu d’une page par un nouveau passage. Méthode préférée pour un petit changement (horaire, prix, phrase). « ancien » doit être copié tel quel depuis lire_contenu, balises comprises, assez long pour être unique.', 'inputSchema' => $obj(['id' => ['type' => 'integer'], 'ancien' => ['type' => 'string'], 'nouveau' => ['type' => 'string'], 'tous' => ['type' => 'boolean', 'description' => 'Remplacer toutes les occurrences (par défaut : une seule, unique)']], ['id', 'ancien', 'nouveau'])],
         ['name' => 'modifier_contenu', 'description' => 'Remplace le titre et/ou tout le contenu d’une page. À réserver aux changements importants ; garder la même structure de blocs WordPress que le contenu lu.', 'inputSchema' => $obj(['id' => ['type' => 'integer'], 'titre' => ['type' => 'string'], 'contenu' => ['type' => 'string']], ['id'])],
         ['name' => 'publier_actualite', 'description' => 'Publie un nouvel article (actualité) sur le site du client, avec une image facultative déjà importée.', 'inputSchema' => $obj(['titre' => ['type' => 'string'], 'contenu' => ['type' => 'string', 'description' => 'HTML simple : paragraphes, listes, liens'], 'image_id' => ['type' => 'integer']], ['titre', 'contenu'])],
-        ['name' => 'importer_image', 'description' => 'Importe dans la médiathèque du site du client la photo jointe à la demande. Renvoie l’id et la balise HTML de l’image.', 'inputSchema' => $obj(['description' => ['type' => 'string', 'description' => 'Texte alternatif de l’image']])],
+        ['name' => 'importer_image', 'description' => 'Importe dans la médiathèque du site du client la photo jointe à la demande. Renvoie l’id et la balise HTML de l’image.', 'inputSchema' => $obj(['numero' => ['type' => 'integer', 'description' => 'Numéro de la photo jointe à importer : 1 pour la première, 2 pour la deuxième, 3 pour la troisième. Par défaut 1.'], 'description' => ['type' => 'string', 'description' => 'Texte alternatif de l’image']])],
         ['name' => 'modifier_reglage', 'description' => 'Change le nom ou le slogan du site.', 'inputSchema' => $obj(['nom' => ['type' => 'string', 'enum' => ['nom', 'slogan']], 'valeur' => ['type' => 'string']], ['nom', 'valeur'])],
         ['name' => 'terminer', 'description' => 'À appeler une seule fois, à la fin. resultat = « fait » si la demande est entièrement préparée, « pour_alex » si tu n’as rien changé (ou pas tout) parce que la demande est floue, risquée, ou hors de tes outils.', 'inputSchema' => $obj([
             'resultat' => ['type' => 'string', 'enum' => ['fait', 'pour_alex']],
@@ -94,8 +104,8 @@ function aled08e_lia_systeme($u, $infos) {
         . "Tes changements sont préparés dans un aperçu : le client le regarde et confirme, puis ils sont mis en ligne. Alex, l'humain, vérifie ensuite.\n\n"
         . "Règles :\n"
         . "- Fais exactement ce qui est demandé, rien de plus. Ne change ni le style, ni la mise en page, ni les autres textes.\n"
-        . "- Une demande = une petite modification : UN changement de texte (une phrase, un prix, un horaire, un paragraphe) et, au plus, UNE image. Rien d'autre.\n"
-        . "- Si la demande contient plusieurs changements, une refonte, une nouvelle page, une nouvelle rubrique ou un long texte à réécrire : ne modifie rien et termine avec « pour_alex », en expliquant gentiment au client qu'avec Lia c'est un changement à la fois, et qu'Alex s'occupe du reste.\n"
+        . "- Tu fais les petites et moyennes modifications. Ton budget pour une demande : " . aled08e_lia_budget_txt() . " Tout se passe sur UNE seule page (ou une seule actualité).\n"
+        . "- Si la demande dépasse ce budget (plusieurs pages, refonte, nouvelle page ou rubrique, long texte, beaucoup de photos) : ne modifie rien et termine avec « pour_alex ». Dans message_client, explique simplement que cette demande est trop grande pour Lia, qu'elle passe à Alex, que cela prend plus de temps et que cela compte pour une de ses demandes Alex du mois.\n"
         . "- Lis toujours le contenu avant de le modifier. Préfère remplacer_texte pour un petit changement, en recopiant le passage exact (balises comprises).\n"
         . "- Écris en français correct, dans le ton du site. Garde les espaces insécables et la typographie existantes.\n"
         . "- Tu ne peux ni supprimer une page, ni toucher aux extensions, au thème, aux prix d'une boutique en ligne ou aux comptes : si la demande l'exige, ne fais rien et termine avec « pour_alex ».\n"
@@ -111,20 +121,32 @@ function aled08e_lia_systeme($u, $infos) {
 function aled08e_lia_executer($uid, $pid, $nom, $in, &$actions) {
     $in = is_array($in) ? $in : [];
     $jeton = (string) get_post_meta($pid, '_aled08_lia_jeton', true);
-    $prevu = function ($r, $type, $id, $detail) use (&$actions) {
-        if (!is_wp_error($r)) $actions[] = ['type' => $type, 'id' => (int) $id, 'revision' => 0, 'adresse' => (string) ($r['adresse'] ?? ''), 'apercu' => (string) ($r['apercu'] ?? ''), 'prepare' => true, 'detail' => $detail];
+    $nouveauxMots = 0;
+    $prevu = function ($r, $type, $id, $detail) use (&$actions, &$nouveauxMots) {
+        if (!is_wp_error($r)) $actions[] = ['type' => $type, 'mots' => $nouveauxMots, 'id' => (int) $id, 'revision' => 0, 'adresse' => (string) ($r['adresse'] ?? ''), 'apercu' => (string) ($r['apercu'] ?? ''), 'prepare' => true, 'detail' => $detail];
     };
-    // Bride : une demande = un changement de texte et, au plus, une image (qu'il faut ensuite poser dans la page).
-    $ecritures = 0; $images = 0;
-    foreach ($actions as $a) { if (($a['type'] ?? '') === 'image') $images++; else $ecritures++; }
-    $trop = function ($pourquoi) { return ['erreur' => $pourquoi . ' Avec Lia, une demande = un changement de texte et une image au plus. N’essaie pas autrement : termine avec « pour_alex » si la demande n’est pas entièrement faite, sinon avec « fait ».']; };
-    if (in_array($nom, ['remplacer_texte', 'modifier_contenu', 'publier_actualite', 'modifier_reglage'], true)) {
-        if ($ecritures >= 1 + min(1, $images)) return $trop('Limite atteinte : un changement est déjà préparé.');
-        $long = mb_strlen(wp_strip_all_tags((string) ($in['nouveau'] ?? $in['contenu'] ?? $in['valeur'] ?? '')));
-        if ($nom === 'modifier_contenu' && isset($in['contenu'])) return $trop('Réécrire toute une page est trop gros pour Lia.');
-        if ($long > ($nom === 'publier_actualite' ? 2500 : 1500)) return $trop('Ce texte est trop long pour Lia.');
+    // Bride : un budget de mots et d'images par demande (plus de mots sans image, plus d'images avec peu de mots), sur une seule page.
+    $lim = aled08e_lia_limites();
+    $ecritures = 0; $images = 0; $mots = 0; $pages = [];
+    foreach ($actions as $a) {
+        if (($a['type'] ?? '') === 'image') { $images++; continue; }
+        $ecritures++; $mots += (int) ($a['mots'] ?? 0);
+        if (!empty($a['id'])) $pages[(int) $a['id']] = 1;
     }
-    if ($nom === 'importer_image' && $images >= 1) return $trop('Limite atteinte : une image est déjà importée.');
+    $trop = function ($pourquoi) { return ['erreur' => $pourquoi . ' Budget de Lia pour une demande : ' . aled08e_lia_budget_txt() . ' N’essaie pas autrement : termine avec « pour_alex » si la demande n’est pas entièrement faite, sinon avec « fait ».']; };
+    $nouveauxMots = 0;
+    if (in_array($nom, ['remplacer_texte', 'modifier_contenu', 'publier_actualite', 'modifier_reglage'], true)) {
+        if ($nom === 'modifier_contenu' && isset($in['contenu'])) return $trop('Réécrire toute une page est trop gros pour Lia.');
+        $nouveauxMots = aled08e_lia_mots((string) ($in['nouveau'] ?? $in['contenu'] ?? $in['valeur'] ?? '') . ' ' . (string) ($in['titre'] ?? ''));
+        if ($ecritures >= 4) return $trop('Trop de changements dans une seule demande.');
+        if ($mots + $nouveauxMots > $lim['mots'][min($images, $lim['images'])]) return $trop('Ce texte dépasse le budget de mots.');
+        $cible = (int) ($in['id'] ?? 0);
+        if ($cible && $pages && !isset($pages[$cible])) return $trop('Une demande ne touche qu’une seule page.');
+    }
+    if ($nom === 'importer_image') {
+        if ($images >= $lim['images']) return $trop('Limite d’images atteinte.');
+        if ($mots > $lim['mots'][$images + 1]) return $trop('Avec autant de texte, il n’y a plus de place pour une image de plus.');
+    }
     switch ($nom) {
         case 'lister_contenus': $r = aled08e_lia_appel($uid, 'lister', ['type' => $in['type'] ?? 'any']); break;
         case 'lire_contenu': $r = aled08e_lia_appel($uid, 'lire', ['id' => (int) ($in['id'] ?? 0), 'jeton' => $jeton]); break;
@@ -144,9 +166,11 @@ function aled08e_lia_executer($uid, $pid, $nom, $in, &$actions) {
             $prevu($r, 'publier', 0, 'Nouvelle actualité : « ' . mb_substr((string) ($in['titre'] ?? ''), 0, 80) . ' »');
             break;
         case 'importer_image':
-            $att = get_post_thumbnail_id($pid);
+            $photos = array_values(array_filter(array_map('intval', (array) get_post_meta($pid, '_aled08_photos', true))));
+            if (!$photos && get_post_thumbnail_id($pid)) $photos = [(int) get_post_thumbnail_id($pid)];
+            $att = $photos[max(1, (int) ($in['numero'] ?? 1)) - 1] ?? 0;
             $url = $att ? wp_get_attachment_url($att) : '';
-            if (!$url) { $r = new WP_Error('aled08_lia', 'Aucune photo n’est jointe à cette demande.'); break; }
+            if (!$url) { $r = new WP_Error('aled08_lia', 'Cette photo n’existe pas : ' . count($photos) . ' photo(s) jointe(s) à cette demande.'); break; }
             // la photo va dans la médiathèque (invisible tant qu'aucune page ne l'utilise)
             $r = aled08e_lia_appel($uid, 'image', ['url' => $url, 'description' => (string) ($in['description'] ?? '')]);
             if (!is_wp_error($r)) $actions[] = ['type' => 'image', 'id' => (int) ($r['image_id'] ?? 0), 'revision' => 0, 'adresse' => (string) ($r['adresse'] ?? ''), 'detail' => 'Photo ajoutée à la médiathèque'];
@@ -197,7 +221,8 @@ function aled08e_lia_traiter($pid) {
     $infos = aled08e_lia_appel($uid, 'infos');
     if (is_wp_error($infos)) { $fin('pour_alex', 'Je n’arrive pas à joindre votre site pour le moment. Alex s’en occupe.', 'Connecteur injoignable : ' . $infos->get_error_message(), []); return; }
 
-    $photo = get_post_thumbnail_id($pid) ? 'Une photo est jointe à la demande (outil importer_image).' : 'Aucune photo jointe.';
+    $nbPhotos = count(array_filter((array) get_post_meta($pid, '_aled08_photos', true))) ?: (get_post_thumbnail_id($pid) ? 1 : 0);
+    $photo = $nbPhotos ? $nbPhotos . ' photo(s) jointe(s) à la demande (outil importer_image, numero de 1 à ' . $nbPhotos . ').' : 'Aucune photo jointe.';
     $messages = [['role' => 'user', 'content' => "Demande du client, envoyée le " . aled08e_date($p->post_date) . " :\n\n<demande>\n" . $p->post_content . "\n</demande>\n\n" . $photo]];
     $actions = [];
     $resultat = null;
@@ -449,6 +474,7 @@ add_action('admin_post_aled08e_lia', function () {
 function aled08e_lia_confirmer($pid, $oui, $commentaire = '') {
     $p = get_post($pid);
     if (!$p || get_post_meta($pid, '_aled08_lia_etat', true) !== 'a_confirmer') return new WP_Error('aled08_lia', 'Rien à confirmer.');
+    update_post_meta($pid, '_aled08_lia_confirme_le', current_time('mysql')); // date de la réponse du client à l'aperçu (oui ou non)
     $uid = (int) $p->post_author;
     $u = get_userdata($uid);
     $jeton = (string) get_post_meta($pid, '_aled08_lia_jeton', true);

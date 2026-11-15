@@ -168,7 +168,7 @@ function forfaitsPage() {
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: 'Les forfaits : choisissez votre monstre',
-    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power ajoute le SEO pour remonter sur Google, et un serveur plus rapide. Titan ajoute le retour de vos ventes et quatre modifications par mois.',
+    lead: 'Trois forfaits. Chico garde votre site en ligne et à jour. Power ajoute le SEO pour remonter sur Google, et un serveur plus rapide. Titan ajoute le retour de vos ventes et dix modifications par Lia chaque mois.',
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
@@ -200,7 +200,7 @@ function forfaitsPage() {
   <h2 class="section-title">Les options</h2>
   <p class="section-sub">À ajouter quand vous voulez, depuis votre espace client ou par message.</p>
   ${C.optionsCompact()}
-  <div class="boost-box reveal"><span class="opt-ico">${icon('zap')}</span><div><h3>Le Boost : 1 € la modification en plus</h3><p>Vos modifications du mois sont utilisées ? Demandez-en une de plus depuis votre espace client : c’est Alex qui la fait, à la main. Vous confirmez le Boost à chaque fois, et il s’ajoute à votre prochaine facture.</p></div></div>
+  <div class="boost-box reveal"><span class="opt-ico">${icon('zap')}</span><div><h3>Besoin de plus ? Lia + et le Boost</h3><p><strong>Lia +</strong> : 10 modifications par Lia en plus chaque mois, pour 5 € par mois. <strong>Le Boost</strong> : une modification par Alex en plus, 1 €, confirmée à chaque fois et ajoutée à votre prochaine facture. Les deux compteurs sont séparés, et repartent de zéro chaque mois.</p></div></div>
 </div></section>
 
 <section class="section section-soft"><div class="container duo">
@@ -222,7 +222,7 @@ ${C.ctaBand({ title: 'Votre monstre est choisi ?', text: 'Composez votre site en
     path: '/forfaits/',
     section: 'forfaits',
     title: 'Forfaits Chico, Power et Titan, dès 5 € par mois | Alex & Lia',
-    description: `Chico à ${F('chico').month} € par mois : hébergement, nom de domaine, mises à jour. Power à ${F('power').month} € : SEO et serveur rapide. Titan à ${F('titan').month} € : chiffres et quatre modifications.`,
+    description: `Chico à ${F('chico').month} € par mois : hébergement, nom de domaine, mises à jour. Power à ${F('power').month} € : SEO et serveur rapide. Titan à ${F('titan').month} € : chiffres et dix modifications par Lia.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -251,7 +251,7 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
       <li>Réponse sous ${delais.reponse}, ou ${delais.titan} avec Titan</li>
-      <li>Chico : une modification par mois. Power : deux. Titan : quatre. Pour chacune, vous choisissez Lia ou Alex. Besoin de plus ? Le Boost : 1 € la modification, faite par Alex.</li>
+      <li>Chaque mois : Chico, 2 modifications par Lia et 1 par Alex. Power, 4 et 2. Titan, 10 et 2. Lia fait les petites et moyennes, Alex les plus grandes. Besoin de plus ? Lia + (10 de plus par Lia, 5 € par mois) ou le Boost (1 € la modification par Alex).</li>
     </ul>
   </div>
   ${C.phoneEdit(true)}
@@ -286,7 +286,7 @@ function seoPage() {
   const levels = [
     ['chico', 'Les bases', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Site déclaré dans Google Search Console']],
     ['power', 'Le SEO suivi', ['Tout Chico', 'Je travaille chaque mois pour faire remonter votre site sur Google', 'Des pages utiles qui renvoient vers votre site', 'Serveur plus rapide : Google aime les sites rapides']],
-    ['titan', 'Les chiffres', ['Tout Power', 'Le retour de vos ventes et de vos chiffres chaque mois', 'Quatre modifications par mois']],
+    ['titan', 'Les chiffres', ['Tout Power', 'Le retour de vos ventes et de vos chiffres chaque mois', 'Dix modifications par Lia, deux par Alex']],
   ];
   const body = `${C.pageHero({
     section: 'seo',
@@ -792,7 +792,7 @@ function monEspacePage() {
       <aside class="app-side">
         <div class="app-user">${monster('mascotte')}<div><strong>Pâtisserie Lila</strong><small>patisserie-lila.fr</small></div></div>
         <div class="jauge" data-jauge>
-          <p class="jauge-head">${icon('pencil')}<span>Modifications ce mois (Lia ou Alex)</span><b><span data-jetons>3</span> / <span data-jetons-max>${P.quota}</span></b></p>
+          <p class="jauge-head">${icon('pencil')}<span>Avec Lia, ce mois</span><b><span data-jetons>3</span> / <span data-jetons-max>${P.jetons}</span></b></p>
           <span class="jauge-bar"><i data-jauge-fill style="width:75%"></i></span>
         </div>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
@@ -878,7 +878,7 @@ function monEspacePage() {
           <h2 class="app-h">Forfait et factures</h2>
           <div class="app-plans">${plans
             .map(
-              (x) => `<label class="app-plan c-${x.color}"><input type="radio" name="app-plan" value="${x.id}" data-month="${x.month}" data-name="${x.name}" data-jetons="${x.quota}"${x.id === 'power' ? ' checked' : ''}><span class="app-plan-card"><span class="app-plan-art">${monster(x.id)}</span><strong>${x.name}</strong><small>${euro(x.month)}/mois</small><small>${x.modifs}</small></span></label>`
+              (x) => `<label class="app-plan c-${x.color}"><input type="radio" name="app-plan" value="${x.id}" data-month="${x.month}" data-name="${x.name}" data-jetons="${x.jetons}"${x.id === 'power' ? ' checked' : ''}><span class="app-plan-card"><span class="app-plan-art">${monster(x.id)}</span><strong>${x.name}</strong><small>${euro(x.month)}/mois</small><small>${x.modifs}</small></span></label>`
             )
             .join('')}</div>
           <p class="app-sub">Options</p>
@@ -1103,6 +1103,131 @@ ${C.ctaBand()}`;
   };
 }
 
+// ====================================================================== LIA ET ALEX
+function liaAlexPage() {
+  const crumbs = crumb('liaalex');
+  const LIM = { mots: [300, 200, 100], images: 3 }; // mêmes valeurs que aled08e_lia_limites() dans l'extension
+  const liaPlus = options.find((o) => o.id === 'liaplus');
+  const faqItems = [
+    { q: 'Lia peut-elle casser mon site ?', a: 'Non. Elle ne peut ni supprimer une page, ni toucher au thème, aux extensions, aux comptes ou aux prix d’une boutique. Chaque changement est d’abord préparé dans un aperçu, que vous validez. Et l’état d’avant est gardé : Alex peut revenir en arrière.' },
+    { q: 'Que se passe-t-il si ma demande est trop grande pour Lia ?', a: 'Lia ne touche à rien et passe la demande à Alex. C’est plus long, puisqu’elle est faite à la main, et elle compte alors pour une de vos demandes Alex du mois.' },
+    { q: 'Mes modifications par Lia et par Alex se cumulent-elles ?', a: 'Non, ce sont deux compteurs séparés. Les unes ne se transforment pas en les autres, et ce qui n’est pas utilisé ne se reporte pas au mois suivant.' },
+    { q: 'Dois-je prendre un abonnement à une IA ?', a: 'Non. Tout est compris dans votre forfait : vous n’avez aucun compte à créer, aucun réglage à faire, aucune liaison à installer. Vous écrivez votre demande, c’est tout.' },
+    { q: 'Est-ce que je peux me passer de Lia ?', a: 'Oui. À chaque demande, vous choisissez Lia ou Alex. Si vous préférez que tout soit fait à la main, choisissez toujours Alex.' },
+  ];
+  const f = C.faq(faqItems, 'Vos questions sur Lia et Alex', 'faq-lia');
+  const body = `${C.pageHero({
+    section: 'liaalex',
+    h1: 'Lia et Alex : une IA pour aller vite, un humain pour tout le reste',
+    lead: 'Lia est un outil. Alex est une personne. Lia fait tout de suite les petites et moyennes modifications de votre site. Alex fait le reste, vérifie tout, et répond quand vous avez besoin de quelqu’un.',
+    crumbs,
+    mascot: 'mascotte',
+  })}
+<section class="section"><div class="container">
+  <div class="duo-cards">
+    <article class="duo-card c-pink reveal">
+      <span class="duo-art">${monster('mascotte')}</span>
+      <h2>Lia, l’IA</h2>
+      <p class="duo-sub">Tout de suite, pour les petites et moyennes modifications</p>
+      <ul class="list-check">
+        <li>Change un texte, un horaire, un prix affiché, une phrase</li>
+        <li>Ajoute ou remplace une photo, publie une actualité</li>
+        <li>Travaille sur une seule page par demande</li>
+        <li>Vous montre toujours l’aperçu de la page avant de changer quoi que ce soit</li>
+        <li>Passe la main à Alex dès que c’est trop grand ou pas clair</li>
+      </ul>
+    </article>
+    <article class="duo-card c-lilac reveal">
+      <span class="duo-art duo-art-ico">${icon('user')}</span>
+      <h2>Alex, l’humain</h2>
+      <p class="duo-sub">À la main, pour tout ce qui compte</p>
+      <ul class="list-check">
+        <li>Crée votre site et réserve votre nom de domaine</li>
+        <li>Relie le site, installe le certificat SSL (le cadenas) et l’hébergement</li>
+        <li>S’occupe du référencement SEO et des mises à jour</li>
+        <li>Fait les grandes modifications : nouvelle page, refonte, boutique</li>
+        <li>Vérifie chaque changement de Lia, et vous répond en personne</li>
+      </ul>
+    </article>
+  </div>
+</div></section>
+
+<section class="section section-soft"><div class="container container-narrow prose reveal">
+  ${md(`## Je suis vraiment là
+
+Je m’appelle Alex, et derrière ce site il y a bien quelqu’un. C’est moi qui crée votre site, qui le mets en ligne et qui en réponds. Quand vous écrivez, c’est moi qui lis.
+
+Lia ne me remplace pas. Elle me fait gagner du temps sur les petites choses, pour que j’en aie davantage pour le reste : votre référencement, vos nouvelles pages, vos questions. C’est ce mélange qui permet des prix bas sans vous laisser seul face à une machine.
+
+## Lia, c’est quoi exactement ?
+
+Lia est une IA réglée spécialement pour les sites que je crée. Elle s’appuie sur un modèle d’IA professionnel, celui d’une entreprise spécialisée, que j’ai configuré avec mes propres règles : ce qu’elle a le droit de faire, ce qu’elle doit refuser, et comment elle doit vous montrer son travail.
+
+Elle n’est pas une personne et elle n’est pas un développeur. Elle peut vous aider, vite et bien, sur des changements simples. Elle ne remplace pas un humain, et elle ne le prétend pas.
+
+## Ce que Lia peut faire dans une demande
+
+Lia a un budget, pour rester sur des modifications petites et moyennes :
+
+- **Du texte seul** : jusqu’à ${LIM.mots[0]} mots.
+- **Du texte et une photo** : jusqu’à ${LIM.mots[1]} mots.
+- **Du texte et deux photos** : jusqu’à ${LIM.mots[2]} mots.
+- **Surtout des photos** : jusqu’à ${LIM.images} photos, avec une courte légende.
+
+Plus il y a de photos, moins il y a de texte, et l’inverse. Le tout sur une seule page.
+
+> Au-delà, la demande passe à Alex. C’est plus long, car elle est faite à la main, et elle compte pour une de vos demandes Alex.
+
+## Toujours un aperçu, jamais de surprise
+
+Lia ne modifie jamais votre site directement. Elle prépare le changement, puis vous montre la page telle qu’elle sera. Vous regardez, et vous choisissez :
+
+1. **C’est bon** : le changement est mis en ligne.
+2. **Ce n’est pas ça** : rien ne change, et Alex reprend la demande.
+
+Ensuite, je vérifie moi-même ce qui a été mis en ligne.
+
+## Des limites, pour votre sécurité
+
+Lia est configurée pour rester prudente :
+
+- Elle ne peut pas supprimer une page.
+- Elle ne touche ni au thème, ni aux extensions, ni aux comptes.
+- Elle ne modifie pas les prix d’une boutique en ligne.
+- Elle ne réécrit pas vos textes juridiques (mentions légales, conditions de vente).
+- Elle n’agit que sur votre site, par une liaison protégée, et chaque action est notée.
+- L’état d’avant est gardé : on peut toujours revenir en arrière.
+
+Si une demande est floue, elle ne devine pas : elle me la passe.
+
+## Pourquoi c’est compris dans votre forfait
+
+Chaque demande faite à Lia consomme de la puissance de calcul, qui m’est facturée à l’usage. J’ai choisi de l’inclure dans les forfaits, pour votre confort : vous n’avez pas d’abonnement à une IA à prendre, pas de réglages à faire, pas de liaison compliquée à installer. Vous écrivez votre demande, et c’est tout.`)}
+</div></section>
+
+<section class="section"><div class="container">
+  <h2 class="section-title">Combien de modifications par mois ?</h2>
+  <p class="section-lead">Deux compteurs séparés, qui repartent de zéro chaque mois.</p>
+  <div class="quota-cards">${forfaits
+    .map((x) => `<div class="quota-card c-${x.color} reveal"><span class="quota-art">${monster(x.id)}</span><h3>${x.name}<small>${x.month} € par mois</small></h3><p><b>${x.jetons}</b> par Lia</p><p><b>${x.quota}</b> par Alex</p></div>`)
+    .join('')}</div>
+  <div class="boost-box reveal"><span class="opt-ico">${icon('sparkles')}</span><div><h3>Besoin de plus ?</h3><p><strong>Lia +</strong> ajoute dix modifications par Lia à votre mois, pour ${liaPlus ? liaPlus.price.month : 5} € de plus. <strong>Le Boost</strong> : une modification par Alex en plus pour 1 €, à l’unité. Vous ajoutez ou retirez Lia + quand vous voulez, depuis votre espace client.</p></div></div>
+</div></section>
+
+${f.html}
+${C.ctaBand({ title: 'Envie de voir Lia à l’œuvre ?', text: 'Essayez la démo de l’espace client, ou composez votre site en deux minutes.' })}`;
+  return {
+    path: sections.liaalex.path,
+    section: 'liaalex',
+    title: 'Lia et Alex : ce que fait l’IA, ce que fait l’humain | Alex & Lia',
+    description: 'Lia, l’IA, fait tout de suite les petites modifications de votre site, avec un aperçu à valider. Alex, l’humain, fait le reste et vérifie tout. Qui fait quoi.',
+    crumbs,
+    body,
+    schema: [f.schema],
+    priority: 0.8,
+  };
+}
+
 // ====================================================================== ILS NOUS ONT FAIT CONFIANCE
 function confiancePage() {
   const crumbs = crumb('confiance');
@@ -1239,6 +1364,7 @@ function notFound() {
 function build() {
   return [
     home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), methodePage(), contactPage(), faqPage(),
+    liaAlexPage(),
     confiancePage(),
     guidesHub(), ...GUIDES.guides.map(guidePage),
     ...legal.map(legalPage), planDuSite(), merci(), notFound(),
