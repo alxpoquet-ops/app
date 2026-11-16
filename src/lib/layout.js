@@ -136,7 +136,7 @@ function footer(p) {
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand" href="/">${logoMark({ id: 'lgf' })}<span class="brand-text"><strong>${brandName}</strong></span></a>
-      <p>Des sites internet professionnels, simples et faits pour être trouvés sur Google. Alex conçoit et suit votre site, ses automatisations font le reste. Depuis les Ardennes, pour des clients partout en France.</p>
+      <p>Des sites internet professionnels, simples et faits pour être trouvés sur Google. Je conçois votre site et je reste à vos côtés, mes automatisations font le reste. Depuis les Ardennes, pour des clients partout en France.</p>
       <ul class="footer-contact">
         <li><a href="${C.contactUrl}">${icon('message-circle')}Nous écrire</a></li>
         ${site.email ? `<li><a href="mailto:${site.email}">${icon('mail')}${site.email}</a></li>` : ''}

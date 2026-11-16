@@ -32,9 +32,9 @@ const quotidien = bande.filter((b) => b.outils); // les outils de l'espace clien
 const parOption = bande.filter((b) => b.option && O(b.option)); // un de plus par option au mois
 // Ce que fait chaque petit monstre, écrit pour ces pages (différent du texte de config.bande), après « qui ».
 const DIT = {
-  support: 'répond à vos questions dans la bulle, en bas de l’écran, et passe la main à Alex quand il le faut.',
+  support: 'répond à vos questions dans la bulle, en bas de l’écran, et me passe la main quand il le faut.',
   gardien: 'installe les mises à jour, lance les sauvegardes, garde la sécurité et vérifie jour et nuit que votre site répond.',
-  bricoleur: 'prépare vos petites modifications, les fait voir à Alex, puis vous laisse valider l’aperçu.',
+  bricoleur: 'prépare vos petites modifications, me les fait voir, puis vous laisse valider l’aperçu.',
   ecrivain: 'corrige, clarifie ou traduit vos textes, et vous aide à répondre à un client ou à un avis.',
   messager: 'prépare vos publications pour les réseaux, propose des idées et recadre vos photos.',
   etoile: 'note chaque semaine votre place sur Google et me dit quelles pages reprendre.',
@@ -65,7 +65,7 @@ const pages = [
     icon: 'piggy-bank',
     color: 'lilac',
     title: 'Pourquoi un site moins cher, sans rien sacrifier | Les Minis Monstres',
-    description: `Un site à partir de ${eur(creation.prix)} € : le temps gagné sur les tâches répétitives, ce qu’Alex vérifie à la main, et tout ce qui n’est jamais sacrifié.`,
+    description: `Un site à partir de ${eur(creation.prix)} € : le temps gagné sur les tâches répétitives, ce que je vérifie à la main, et tout ce qui n’est jamais sacrifié.`,
     h1: 'Pourquoi sommes-nous moins chers ?',
     lead: 'Un site coûte cher surtout à cause du temps passé dessus. J’ai réduit ce temps, pas le soin. Voici comment, et ce que vous gardez.',
     resume: 'Le temps gagné, et ce qui ne change pas.',
@@ -310,7 +310,7 @@ Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les au
     icon: 'heart-handshake',
     color: 'pink',
     title: 'Pourquoi choisir les Minis Monstres : nos engagements | Les Minis Monstres',
-    description: 'Alex fait votre site et vous répond, sa petite bande d’automatisations s’occupe du répétitif. Un prix affiché, sans engagement, et le domaine à votre nom.',
+    description: 'Je fais votre site et je vous réponds, ma petite bande d’automatisations s’occupe du répétitif. Un prix affiché, sans engagement, et le domaine à votre nom.',
     h1: 'Pourquoi choisir les Minis Monstres ?',
     lead: 'Parce qu’internet devrait être simple. Derrière ce site, il y a une personne, moi, qui conçoit votre site, le met en ligne et vous répond. Et tout ce qui se répète, je l’ai confié à une petite bande de monstres que j’ai programmés, pour que vous payiez moins.',
     resume: 'Un vrai interlocuteur, des engagements écrits.',
@@ -320,7 +320,7 @@ Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les au
       { icon: 'lock', t: 'Rien ne vous retient', d: 'Sans engagement, et votre nom de domaine reste à votre nom.' },
       { icon: 'workflow', t: 'Une petite bande', d: 'Des petits monstres font le répétitif, et votre facture baisse d’autant.' },
     ],
-    body: `## Alex, un vrai interlocuteur
+    body: `## Moi, Alex, un vrai interlocuteur
 
 Je m’appelle Alex. Je crée des sites internet pour des indépendants, des artisans, des commerces et des associations. Je suis installé à ${ville}, dans les ${dept}, et je travaille à distance pour toute la France.
 
@@ -454,7 +454,7 @@ Et après ? Votre nom de domaine est à votre nom, il reste donc à vous. Je vou
 Tous les prix sont réunis sur la page [tarifs](/tarifs/). Et si vous parlez de moi autour de vous, le [parrainage](/fidelite/) vous offre ${fidelite.parrainageMois} mois d’abonnement, à vous comme à la personne parrainée.`,
     faq: [
       { q: 'Puis-je avoir un site sans abonnement ?', a: 'Non, tant que votre site est hébergé chez moi. L’abonnement couvre ce qui le fait vivre : son adresse, son hébergement et son entretien. Il reste sans engagement.' },
-      { q: 'Combien de modifications puis-je demander ?', a: `Les petites retouches de la bande sont comprises pour un usage normal, avec ${interv} faite à la main par ${abo.periode}. Il vous en faut beaucoup plus ? Vous en reprenez depuis votre espace, à partir de ${eur(rechargeMin)} €, ou vous demandez une intervention d’Alex en plus pour ${eur(alexEnPlus.prix)} €.` },
+      { q: 'Combien de modifications puis-je demander ?', a: `Les petites retouches de la bande sont comprises pour un usage normal, avec ${interv} faite à la main par ${abo.periode}. Il vous en faut beaucoup plus ? Vous en reprenez depuis votre espace, à partir de ${eur(rechargeMin)} €, ou vous me demandez une intervention en plus pour ${eur(alexEnPlus.prix)} €.` },
       { q: 'En combien de temps ma demande est-elle traitée ?', a: `Une petite retouche de la bande est en ligne en quelques minutes, une fois l’aperçu validé. Pour une demande faite à la main, je réponds sous ${delais.reponse}. Si c’est pressé, l’extra « ${urgent.name} » la fait passer avant les autres.` },
       { q: 'Puis-je changer d’options plus tard ?', a: 'Oui. Les options au mois se prennent ou s’arrêtent depuis votre espace client, à tout moment, et le changement compte pour la période suivante.' },
     ],
@@ -469,7 +469,7 @@ Tous les prix sont réunis sur la page [tarifs](/tarifs/). Et si vous parlez de 
     icon: 'map-pin',
     color: 'peach',
     title: `Création de site internet dans les ${dept} (${num}) | Les Minis Monstres`,
-    description: `Alex crée votre site internet depuis ${ville} : rencontre possible à Charleville-Mézières, Sedan ou Rethel, ou tout à distance. À partir de ${eur(creation.prix)} €.`,
+    description: `Je crée votre site internet depuis ${ville} : rencontre possible à Charleville-Mézières, Sedan ou Rethel, ou tout à distance. À partir de ${eur(creation.prix)} €.`,
     h1: `Création de site internet dans les ${dept}`,
     lead: `Je suis installé à ${ville}, dans les ${dept}. Si vous êtes dans le coin, on peut se rencontrer. Sinon, tout se fait très bien à distance.`,
     resume: `Un créateur de sites installé dans les ${dept}.`,

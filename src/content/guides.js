@@ -258,7 +258,7 @@ Ensuite, un seul abonnement regroupe tout ce qui est récurrent : **${eur(abo.mo
 - Les bases du SEO.
 - ${gardien}, un petit monstre que j'ai programmé, qui veille sur votre site jour et nuit.
 - Les outils de la bande et les petites retouches, compris tant que l'usage reste normal.
-- ${maj(intervAlex)} d'Alex par ${periode}, faite à la main.
+- ${maj(intervAlex)} par ${periode}, que je fais à la main.
 
 Si vous dépassez largement cet usage, vous reprenez des retouches et des outils depuis votre espace client, à partir de ${eur(rechargeMin)} €, ajoutés à la facture suivante.
 
@@ -420,7 +420,7 @@ Mon service est né de ce constat. Vous ne construisez rien vous-même, mais vou
 Pour voir à quoi cela ressemble avant de vous décider, [essayez la démo de l'espace client](/mon-espace/demo/). Et pour une vue d'ensemble des solutions, le [comparatif](/comparatif/) les met côte à côte.`,
     faq: [
       { q: 'J’ai commencé un site moi-même sans le finir, pouvez-vous le reprendre ?', a: 'Je repars d’un site neuf, mais rien n’est perdu : vos textes, vos photos et vos idées servent de base. Envoyez-moi l’adresse de ce que vous avez commencé, c’est un excellent point de départ.' },
-      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: `Oui, sans rien apprendre : vous décrivez le changement dans votre espace client. L’abonnement comprend les outils et les petites retouches pour un usage normal, et ${intervAlex} d’Alex par ${periode}. Il vous faut Alex une fois de plus ? ${maj(alexPlus.name)} se commande pour ${eur(alexPlus.prix)} €.` },
+      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: `Oui, sans rien apprendre : vous décrivez le changement dans votre espace client. L’abonnement comprend les outils et les petites retouches pour un usage normal, et ${intervAlex} de ma part par ${periode}. Besoin de moi une fois de plus ? ${maj(alexPlus.name)} se commande pour ${eur(alexPlus.prix)} €.` },
       { q: 'Combien de temps faut-il pour faire un site seul ?', a: 'Cela dépend beaucoup de chacun. Le montage lui-même va assez vite. Ce qui prend du temps, ce sont les textes, le choix des photos et tous les petits réglages auxquels on ne pense pas au départ.' },
     ],
     voir: ['prix-site-internet', 'site-une-page-ou-site-vitrine', 'site-internet-auto-entrepreneur'],
@@ -600,7 +600,7 @@ Le service de paiement prélève de son côté une petite commission sur chaque 
 
 Une boutique sans visiteurs ne vend rien. Parlez-en à vos clients actuels, glissez l'adresse dans chaque colis et sur vos emballages, et pensez au [référencement](/referencement-seo/) : chaque fiche produit bien écrite est une porte d'entrée depuis Google.`,
     faq: [
-      { q: 'Combien de produits puis-je vendre ?', a: 'La boutique comprend la mise en ligne de 20 produits. Vous pouvez ensuite en ajouter d’autres par des petites retouches, ou lors de l’intervention d’Alex comprise dans l’abonnement. Pour un catalogue beaucoup plus grand dès le départ, la boutique se fait sur devis.' },
+      { q: 'Combien de produits puis-je vendre ?', a: 'La boutique comprend la mise en ligne de 20 produits. Vous pouvez ensuite en ajouter d’autres par des petites retouches, ou lors de mon intervention comprise dans l’abonnement. Pour un catalogue beaucoup plus grand dès le départ, la boutique se fait sur devis.' },
       { q: 'Faut-il un statut d’entreprise pour vendre en ligne ?', a: 'Oui. Vendre régulièrement, même de petites quantités, suppose une activité déclarée, par exemple en micro-entreprise. Renseignez-vous avant d’ouvrir : la démarche est rapide et se fait en ligne.' },
       { q: 'Puis-je garder mon magasin et ajouter une boutique en ligne ?', a: `Oui, c’est même un très bon cas. L’extra ${stock.name} évite de vendre en ligne un article qui vient de partir en magasin.` },
     ],

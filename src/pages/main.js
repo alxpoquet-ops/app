@@ -92,7 +92,7 @@ function home() {
       <span class="scene-m sm-3">${C.petit('gelee')}</span>
       <span class="scene-m sm-4">${C.petit('chaton', { humeur: 'ravi' })}</span>
       <span class="scene-m sm-5">${C.petit('etoile')}</span>
-      <p class="hero-tag">${icon('sparkles')}Fait par Alex, aidé de sa petite bande</p>
+      <p class="hero-tag">${icon('sparkles')}Fait par moi, Alex, avec ma petite bande</p>
     </div>
   </div>
 </section>
@@ -115,7 +115,7 @@ function home() {
 
 <section class="section section-soft section-equipe-court"><div class="container center">
   <h2 class="section-title">Notre équipe</h2>
-  <p class="section-sub">Alex conçoit chaque site à la main. Ses petits monstres, programmés par lui, font le répétitif à côté.</p>
+  <p class="section-sub">Je conçois chaque site à la main. Mes petits monstres, que j’ai programmés, font le répétitif à côté.</p>
   <div class="equipe-court reveal" aria-hidden="true"><span>${C.alexPortrait()}</span>${['coucou', 'mochi', 'bricou', 'fantome', 'nuage'].map((n) => `<span>${n === 'coucou' ? monster('coucou') : C.petit(n)}</span>`).join('')}</div>
   <p class="more">${C.btn(sections.equipe.path, 'btn-light btn-flaque', sections.equipe.icon, 'Rencontrer l’équipe')}</p>
 </div></section>
@@ -347,11 +347,11 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
   <div class="reveal">
     <p class="kicker c-mint">${icon('message-circle')}Demande de modification</p>
     <h2>Une demande, et c’est fait</h2>
-    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. La petite bande prépare la retouche en 5 minutes, avec un aperçu : votre site ne change qu’après votre accord. Ou Alex s’en charge à la main, sous ${delais.reponse}, et vérifie lui-même.</p>
+    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. La petite bande prépare la retouche en 5 minutes, avec un aperçu : votre site ne change qu’après votre accord. Ou je m’en charge à la main, sous ${delais.reponse}, et je vérifie moi-même.</p>
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
-      <li>Avec Alex : ${UNE_MODIF} ${PAR_PERIODE}, comprise dans l’abonnement</li>
-      <li>Une de plus par Alex ? ${euro(boost.prix)} à l’unité, ajoutée à votre prochaine facture</li>
+      <li>Avec moi : ${UNE_MODIF} ${PAR_PERIODE}, comprise dans l’abonnement</li>
+      <li>Une de plus faite par moi ? ${euro(boost.prix)} à l’unité, ajoutée à votre prochaine facture</li>
     </ul>
   </div>
   ${C.phoneEdit(true)}
@@ -497,7 +497,7 @@ function comparatifPage() {
     ['butter', 'building-2', 'L’agence web', 'Une équipe complète : chef de projet, graphiste, développeur. Idéale pour un gros projet avec un budget à la hauteur. Le prix et le délai dépendent du devis.'],
     ['sky', 'user', 'Le freelance', 'Une personne qui fait tout. La qualité dépend beaucoup de qui vous choisissez. Les modifications et le suivi se font souvent au devis, quand le freelance est disponible.'],
     ['lilac', 'mouse-pointer-click', 'La plateforme à faire soi-même', 'Vous construisez votre site à partir de modèles, pour un abonnement mensuel. C’est vous qui faites le travail, les mises à jour et le référencement.'],
-    ['mint', 'sparkles', 'Les Minis Monstres', `Un prix affiché, à partir de ${euro(creation.prix)}, et un interlocuteur qui répond. Alex crée et suit votre site, et ses automatisations s’occupent des petites retouches et des tâches répétitives. Pour les très gros projets, je vous oriente vers une agence.`],
+    ['mint', 'sparkles', 'Les Minis Monstres', `Un prix affiché, à partir de ${euro(creation.prix)}, et un interlocuteur qui répond. Je crée votre site et je reste à vos côtés, et mes automatisations s’occupent des petites retouches et des tâches répétitives. Pour les très gros projets, je vous oriente vers une agence.`],
   ];
   const body = `${C.pageHero({
     section: 'comparatif',
@@ -520,7 +520,7 @@ function comparatifPage() {
 <section class="section"><div class="container container-narrow prose reveal">
   ${md(`## Des modifications rapides
 
-Un horaire, un prix, une actualité : mes automatisations préparent le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui. Pour ce qui demande un regard humain, c’est Alex, sous ${delais.reponse}. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
+Un horaire, un prix, une actualité : mes automatisations préparent le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui. Pour ce qui demande un regard humain, c’est moi, sous ${delais.reponse}. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
 
 ## ${marche.fois} fois moins cher, et sans tour de magie
 
@@ -530,7 +530,7 @@ La raison est simple. Pour un site vitrine ou une petite boutique, mes automatis
 
 ## Ce que vous ne faites pas vous-même
 
-Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, faire les mises à jour, écrire pour Google. Avec les Minis Monstres, vous dites ce que vous voulez : les automatisations s’occupent du répétitif, Alex du reste. Vous gardez votre temps pour votre activité.
+Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, faire les mises à jour, écrire pour Google. Avec les Minis Monstres, vous dites ce que vous voulez : les automatisations s’occupent du répétitif, et moi du reste. Vous gardez votre temps pour votre activité.
 
 ## Quand je vous dirai d’aller ailleurs
 
@@ -1260,7 +1260,7 @@ function equipePage() {
   const crumbs = crumb('equipe');
   const body = `${C.pageHero({
     section: 'equipe',
-    h1: 'Notre équipe : Alex et sa petite bande',
+    h1: 'Notre équipe : moi et ma petite bande',
     lead: 'Un humain qui conçoit et vérifie tout, et une bande de petits monstres qui s’occupent du répétitif. C’est comme ça que votre site coûte moins cher, sans être fait à la va-vite.',
     crumbs,
   })}
@@ -1272,9 +1272,9 @@ function equipePage() {
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Comment on travaille ensemble</h2>
   <div class="feats">
-    <div class="feat reveal">${icon('palette')}<h3>Alex conçoit</h3><p>Votre maquette, vos pages et vos textes importants : c’est moi, du début à la fin.</p></div>
+    <div class="feat reveal">${icon('palette')}<h3>Je conçois</h3><p>Votre maquette, vos pages et vos textes importants : c’est moi, du début à la fin.</p></div>
     <div class="feat reveal">${icon('sparkles')}<h3>La bande s’occupe du répétitif</h3><p>Mises à jour, sauvegardes, petites retouches, chiffres du mois : chaque monstre fait sa tâche, sans se lasser.</p></div>
-    <div class="feat reveal">${icon('shield-check')}<h3>Alex vérifie</h3><p>Rien ne part en ligne sans un œil humain. Et pour tout le reste, vous parlez directement avec moi.</p></div>
+    <div class="feat reveal">${icon('shield-check')}<h3>Je vérifie</h3><p>Rien ne part en ligne sans un œil humain. Et pour tout le reste, vous parlez directement avec moi.</p></div>
   </div>
   <p class="center more">${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>
@@ -1282,8 +1282,8 @@ ${C.ctaBand({ title: 'On s’occupe de votre site ?', text: 'Composez-le en deux
   return {
     path: sections.equipe.path,
     section: 'equipe',
-    title: 'Notre équipe : Alex et sa petite bande de monstres | Les Minis Monstres',
-    description: 'Alex conçoit chaque site à la main. Sa petite bande de monstres programmés s’occupe du répétitif : mises à jour, sauvegardes, retouches. Faites connaissance.',
+    title: 'Notre équipe : moi, Alex, et ma petite bande de monstres | Les Minis Monstres',
+    description: 'Je conçois chaque site à la main. Ma petite bande de monstres programmés s’occupe du répétitif : mises à jour, sauvegardes, retouches. Faites connaissance.',
     crumbs,
     body,
     priority: 0.7,
@@ -1452,7 +1452,7 @@ function docPage() {
   const stats = O('stats'), seo = O('seo');
   const toc = [
     ['etapes', 'list-checks', 'Comment ça se passe'],
-    ['lia-alex', 'sparkles', 'Bricou et Alex'],
+    ['lia-alex', 'sparkles', 'Bricou et moi'],
     ['questionnaire', 'clipboard-check', 'Le questionnaire de création'],
     ['sites', 'layout-template', 'Les sites'],
     ['prix', sections.forfaits.icon, 'Le prix'],
@@ -1512,11 +1512,11 @@ function docPage() {
 </div></section>
 
 <section class="section section-soft doc-sec" id="lia-alex"><div class="container container-narrow">
-  <p class="doc-kicker">2. Bricou et Alex</p>
+  <p class="doc-kicker">2. Bricou et moi</p>
   <h2>Deux pour s’occuper de votre site</h2>
   <div class="doc-duo-qui">
-    <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${C.petit('bricou')}</span><h3>Bricou, le bricoleur de la bande</h3><p>Il fait les petites et moyennes modifications. Il montre d’abord votre demande à Alex, puis vous laisse valider l’aperçu : rien ne change sans votre accord.</p></div>
-    <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${icon('user')}</span><h3>Alex, l’humain</h3><p>Il crée votre site, fait les grandes modifications à la main, vérifie et répond à vos questions. Ce que Bricou ne sait pas faire lui revient.</p></div>
+    <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${C.petit('bricou')}</span><h3>Bricou, le bricoleur de la bande</h3><p>Il fait les petites et moyennes modifications. Il me montre d’abord votre demande, puis vous laisse valider l’aperçu : rien ne change sans votre accord.</p></div>
+    <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${icon('user')}</span><h3>Moi, l’humain de la bande</h3><p>Je crée votre site, je fais les grandes modifications à la main, je vérifie et je réponds à vos questions. Ce que Bricou ne sait pas faire me revient.</p></div>
   </div>
   <p class="doc-more">${C.btn(sections.liaalex.path, 'btn-primary', 'sparkles', 'Pourquoi les Minis Monstres')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>
@@ -1593,14 +1593,14 @@ function docPage() {
     ${fig('demandes', 'L’onglet Mes demandes', 'L’onglet « Mes demandes » : on écrit, on ajoute une photo si besoin, on suit l’avancement.')}
     <div>
       <p class="doc-kicker">7. Demander une modification</p>
-      <h2>Vous écrivez, Bricou ou Alex s’en charge</h2>
+      <h2>Vous écrivez, Bricou ou moi, on s’en charge</h2>
       <p>Pour chaque demande, vous choisissez qui la fait :</p>
       <ul class="list-check">
         <li><strong>Bricou</strong>, le bricoleur de ma petite bande, fait les petites et moyennes modifications, sur une seule page. Il vous montre l’aperçu, et ne change rien sans votre accord.</li>
-        <li><strong>Alex</strong> fait les plus grandes, à la main. Si une demande est trop grosse pour Bricou, elle passe à Alex.</li>
+        <li><strong>Moi</strong>, je fais les plus grandes, à la main. Si une demande est trop grosse pour Bricou, elle me revient.</li>
         <li>Une demande peut être annulée gratuitement pendant 24 heures, 3 fois par mois.</li>
-        <li>L’énergie de vos petits monstres et vos interventions d’Alex (${UNE_MODIF} ${PAR_PERIODE}) sont affichés en haut de votre espace.</li>
-        <li>Besoin de plus ? Un article, un point avec Alex ou une demande sous 24 heures se commandent à l’unité, dans le même onglet.</li>
+        <li>L’énergie de vos petits monstres et mes interventions (${UNE_MODIF} ${PAR_PERIODE}) sont affichées en haut de votre espace.</li>
+        <li>Besoin de plus ? Un article, un point avec moi ou une demande sous 24 heures se commandent à l’unité, dans le même onglet.</li>
       </ul>
       <p class="doc-more">${C.btn(sections.accompagnement.path, 'btn-light', sections.accompagnement.icon, 'L’accompagnement')}</p>
     </div>
