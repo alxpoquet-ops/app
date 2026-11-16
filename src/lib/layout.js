@@ -98,8 +98,16 @@ function graph(p) {
 }
 
 // ---------------------------------------------------------------- en-tête
-// V2 : Votre métier, Réalisations, Tarifs, Accompagnement, Contact. Outils et Documentation passent dans l'espace client.
-const NAV = ['equipe', 'confiance', 'forfaits', 'accompagnement', 'contact'];
+// Notre équipe, Accompagnement, Tarifs, Réalisations, Contact. Outils et Documentation passent dans l'espace client.
+// Sur téléphone, chaque lien a une petite phrase (NAV_DESC), et « Créer mon site » est le grand bouton du bas.
+const NAV = ['equipe', 'accompagnement', 'forfaits', 'confiance', 'contact'];
+const NAV_DESC = {
+  equipe: 'Moi et ma petite bande',
+  accompagnement: 'Après la mise en ligne',
+  forfaits: `Tout compris, dès ${creation.prix} €`,
+  confiance: 'Des sites à visiter',
+  contact: 'Une question, un projet ?',
+};
 
 function header(currentPath) {
   const onCreer = currentPath.startsWith(sections.creer.path);
@@ -109,12 +117,12 @@ function header(currentPath) {
     <a class="brand" href="/" aria-label="${site.name}, accueil">${logoMark({ id: 'lgh' })}<span class="brand-text"><strong>${brandName}</strong></span></a>
     <nav class="nav" id="nav" aria-label="Navigation principale">
       <ul class="nav-list">
-        <li class="nav-creer"><a class="nav-link c-${sections.creer.color}" href="${sections.creer.path}"${onCreer ? ' aria-current="page"' : ''}>${icon(sections.creer.icon)}${sections.creer.label}</a></li>
         ${NAV.map((k) => {
           const s = sections[k];
           const on = currentPath.startsWith(s.path);
-          return `<li><a class="nav-link c-${s.color}" href="${s.path}"${on ? ' aria-current="page"' : ''}>${icon(s.icon)}${s.label}</a></li>`;
+          return `<li><a class="nav-link c-${s.color}" href="${s.path}"${on ? ' aria-current="page"' : ''}>${icon(s.icon)}<span class="nav-txt">${s.label}<small>${NAV_DESC[k]}</small></span>${icon('chevron-right')}</a></li>`;
         }).join('')}
+        <li class="nav-creer"><span class="nav-creer-art" aria-hidden="true">${petit('mochi', { humeur: 'ravi' })}</span>${C.btn(sections.creer.path, 'btn-primary btn-lg', sections.creer.icon, sections.creer.label, onCreer ? ' aria-current="page"' : '')}<small>Le prix s’affiche tout de suite, sans devis.</small></li>
       </ul>
     </nav>
     <div class="header-actions">
