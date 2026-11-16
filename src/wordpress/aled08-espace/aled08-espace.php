@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres Espace client
  * Description: L'espace client des Minis Monstres sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.4.6
+ * Version: 2.4.7
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.4.6');
+define('ALED08E_VERSION', '2.4.7');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
@@ -1253,6 +1253,30 @@ add_action('init', function () {
     ]);
     update_option('aled08e_annonce_v2', '1', false);
 }, 21);
+
+/* Annonces de novembre 2026 (une seule fois) : les anciennes annonces sont retirées de l'espace des clients (passées en
+ * brouillon, pas supprimées) et trois annonces à jour les remplacent : l'énergie du mois, le prix des outils, la page en plus. */
+add_action('init', function () {
+    if (get_option('aled08e_annonce_energie') === '1' || !post_type_exists(ALED08E_CPT_ANNONCE)) return;
+    update_option('aled08e_annonce_energie', '1', false); // posé d'abord : deux visites en même temps ne publient pas deux fois
+    foreach (get_posts(['post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'numberposts' => 100, 'suppress_filters' => true]) as $p) wp_update_post(['ID' => $p->ID, 'post_status' => 'draft']);
+    $energie = (int) aled08e_jetons(aled08e_forfait('base'));
+    $corriger = function_exists('aled08e_jl_outil') ? (int) ((aled08e_jl_outil('corriger') ?: [])['jetons'] ?? 12) : 12;
+    $page = aled08e_a_la_demande('page');
+    $annonces = []; // de la plus ancienne à la plus récente : la plus récente s'affiche en premier
+    if ($page) $annonces[] = ['Nouveau : une page en plus pour ' . aled08e_euro_txt($page['prix']), "Besoin d’une nouvelle page sur votre site ? Commandez-la dans « Mes demandes ». Je la prépare avec vos textes et vos photos, puis je la publie. Les " . aled08e_euro_txt($page['prix']) . " s’ajoutent à votre prochaine facture."];
+    $annonces[] = ['Le prix de chaque outil, sur sa carte', "Dans l’onglet Outils, chaque carte montre l’énergie que l’outil utilise, par exemple " . $corriger . " pour corriger un texte. Tous les outils en utilisent un peu, même le QR code ou le recadrage d’une photo. Une même action ne compte qu’une fois par jour : retélécharger ne coûte rien de plus."];
+    $annonces[] = ['Plus d’énergie : ' . $energie . ' chaque mois', "Votre abonnement donne maintenant " . $energie . " d’énergie par mois à vos petits monstres, au lieu de 100. Vous avez plus de place pour les outils et les petites retouches de votre site, au même prix."];
+    $admins = get_users(['role' => 'administrator', 'number' => 1, 'orderby' => 'ID', 'fields' => 'ids']);
+    $t = time(); // wp_date() passe l'heure dans le fuseau du site
+    foreach ($annonces as $i => $a) {
+        wp_insert_post([
+            'post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'post_title' => $a[0], 'post_content' => $a[1],
+            'post_author' => $admins ? (int) $admins[0] : 0, 'post_date' => wp_date('Y-m-d H:i:s', $t - (count($annonces) - $i) * 60),
+        ]);
+    }
+    update_option('aled08_annonce_derniere', ['titre' => end($annonces)[0], 'le' => current_time('mysql'), 'total' => count(aled08e_annonces(100))], false);
+}, 22);
 
 /* Annonce de l'offre unique (une seule fois) : les anciennes annonces qui parlent des forfaits Chico, Power et Titan
  * sont retirées de l'espace des clients (passées en brouillon, pas supprimées), et une annonce à jour les remplace. */

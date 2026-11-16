@@ -998,7 +998,6 @@ function espacePage() {
   const body = `${C.pageHero({
     section: 'monespace',
     h1: 'Mon espace client',
-    lead: 'Vos demandes de modification et leur suivi, votre tableau de bord, votre parrainage et vos factures, au même endroit.',
     crumbs,
   })}
 <section class="section section-app" data-aled-espace><div class="container">
