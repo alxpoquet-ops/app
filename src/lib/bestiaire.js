@@ -175,33 +175,33 @@ ${eclat(100, 30, 6, '#FFE07A')}${eclat(18, 34, 4, '#FFB3D1')}
 
 const NOMS = Object.keys(DESSINS);
 
-// Alex, l'humain de la bande : portrait chibi. Cheveux brun foncé, courts et un peu en pointe sur le dessus,
-// côtés dégradés, grosses lunettes un peu carrées, pas de barbe, un sweat menthe.
+// Alex, le chef de chantier de la bande : un petit monstre bleu pervenche, avec ses cheveux brun foncé en pointe
+// (côtés dégradés), ses grosses lunettes un peu carrées, et son bloc-notes : c'est lui qui conçoit et qui vérifie tout.
 function alexPortrait({ cls = '', title } = {}) {
-  const PEAU = '#FFD9BE', PEAU_T = '#C98A64', CHEV = '#3A2820', CHEV_C = '#5C4336';
+  const c = { corps: '#BCC8FF', ventre: '#E6EBFF', trait: '#4F5FC4' };
+  const CHEV = '#3A2820', CHEV_C = '#6B4F40';
   const label = title ? `role="img" aria-label="${title}"` : 'aria-hidden="true" focusable="false"';
-  const oeilA = (x) => `<ellipse cx="${x}" cy="69" rx="4.6" ry="5.6" fill="${INK}"/><circle cx="${x + 1.6}" cy="67" r="1.9" fill="#fff"/><circle cx="${x - 1.4}" cy="71" r=".8" fill="#fff"/>`;
+  const oeilA = (x) => `<ellipse cx="${x}" cy="77" rx="4.4" ry="5.4" fill="${INK}"/><circle cx="${x + 1.5}" cy="75" r="1.8" fill="#fff"/><circle cx="${x - 1.3}" cy="79" r=".8" fill="#fff"/>`;
   return `<svg class="petit petit-alex${cls ? ' ' + cls : ''}" viewBox="0 0 120 120" ${label}>
-<ellipse class="p-ombre" cx="60" cy="116" rx="34" ry="3.5" fill="${INK}" opacity=".12"/>
-<g class="p-bob">
-<path d="M22 118C22 100 38 92 60 92S98 100 98 118Z" fill="#9FE8CB" stroke="#23805E" stroke-width="3" stroke-linejoin="round"/>
-<path d="M50 93l10 9 10-9" fill="none" stroke="#23805E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M44 104v8M76 104v8" stroke="#DDF9EE" stroke-width="2.6" stroke-linecap="round"/>
-<rect x="53" y="82" width="14" height="13" rx="5" fill="${PEAU}" stroke="${PEAU_T}" stroke-width="2.4"/>
-<ellipse cx="27" cy="66" rx="6.5" ry="8" fill="${PEAU}" stroke="${PEAU_T}" stroke-width="2.6"/><ellipse cx="93" cy="66" rx="6.5" ry="8" fill="${PEAU}" stroke="${PEAU_T}" stroke-width="2.6"/>
-<path d="M30 60C30 36 43 24 60 24S90 36 90 60C90 80 77 90 60 90S30 80 30 60Z" fill="${PEAU}" stroke="${PEAU_T}" stroke-width="3"/>
-<defs><linearGradient id="degrade-alex" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${CHEV}" stop-opacity=".95"/><stop offset="1" stop-color="${CHEV_C}" stop-opacity=".15"/></linearGradient></defs>
-<path d="M31 62C30 50 31 42 35 36L41 34 37 60ZM89 62C90 50 89 42 85 36L79 34 83 60Z" fill="url(#degrade-alex)"/>
-<path d="M32 46C30 30 42 17 60 17C76 17 90 27 88 46C84 40 80 37 76 36L78 30 71 34 70 27 64 33 61 25 56 32 52 26 49 33 43 29 43 37C38 38 34 41 32 46Z" fill="${CHEV}" stroke="${CHEV}" stroke-width="2" stroke-linejoin="round"/>
-<path d="M40 28l1-10 6 7M46 24l3-11 5 9M57 21l4-12 5 10M68 23l6-10 2 10M77 28l7-7v10" fill="${CHEV}" stroke="${CHEV}" stroke-width="2" stroke-linejoin="round"/>
-<path d="M50 22c4-3 9-4 14-3" fill="none" stroke="#7A5E4E" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-${oeilA(47)}${oeilA(73)}
-<g fill="rgba(255,255,255,.18)" stroke="${INK}" stroke-width="3.2" stroke-linejoin="round"><rect x="35" y="58" width="24" height="20" rx="6"/><rect x="61" y="58" width="24" height="20" rx="6"/></g>
-<path d="M59 66q1-2 2 0M35 64l-6-2M85 64l6-2" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>
-<path d="M39 62l5-1M65 62l5-1" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8"/>
-<path d="M44 54q4-3 8-1M68 53q4-2 8 1" fill="none" stroke="${CHEV}" stroke-width="2.6" stroke-linecap="round"/>
-<ellipse cx="38" cy="81" rx="5" ry="2.8" fill="${ROSE}" opacity=".55"/><ellipse cx="82" cy="81" rx="5" ry="2.8" fill="${ROSE}" opacity=".55"/>
-<path d="M53 82q7 6 14 0" fill="none" stroke="#8A3B2E" stroke-width="2.6" stroke-linecap="round"/>
+<defs><linearGradient id="alex-degrade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${CHEV}"/><stop offset="1" stop-color="${CHEV_C}" stop-opacity="0"/></linearGradient></defs>
+${ombre(34)}<g class="p-bob">
+<ellipse cx="45" cy="107" rx="9" ry="5" fill="${c.corps}" ${t(c, 2.6)}/><ellipse cx="75" cy="107" rx="9" ry="5" fill="${c.corps}" ${t(c, 2.6)}/>
+<path d="M22 88C22 58 38 42 60 42S98 58 98 88C98 103 88 108 60 108S22 103 22 88Z" fill="${c.corps}" ${t(c)}/>
+<ellipse cx="60" cy="96" rx="20" ry="8.5" fill="${c.ventre}"/>
+<path d="M27 66C28 54 33 47 39 43L37 62ZM93 66C92 54 87 47 81 43L83 62Z" fill="url(#alex-degrade)" opacity=".85"/>
+<path d="M35 52C36 40 46 32 60 32S84 40 85 52C80 47 73 45 66 45 58 45 47 46 35 52Z" fill="${CHEV}" stroke="${CHEV}" stroke-width="2" stroke-linejoin="round"/>
+<path d="M40 42l-2-12 9 7M49 36l1-13 7 10M60 33l4-13 4 12M70 36l7-11 1 12M79 42l8-8-1 11" fill="${CHEV}" stroke="${CHEV}" stroke-width="2.4" stroke-linejoin="round"/>
+<path d="M50 38c4-3 9-4 14-3" fill="none" stroke="#8C6A58" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+${reflet('M32 70c2-6 5-10 9-12')}
+<g class="p-cligne">${oeilA(47)}${oeilA(73)}</g>
+<g fill="rgba(255,255,255,.22)" stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="35" y="66" width="24" height="21" rx="6"/><rect x="61" y="66" width="24" height="21" rx="6"/></g>
+<path d="M59 74q1-2 2 0M35 72l-7-2M85 72l7-2" fill="none" stroke="${INK}" stroke-width="2.8" stroke-linecap="round"/>
+<path d="M39 70l5-1M65 70l5-1" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+${joues(33, 87, 92, 0.9)}${bouche.w(60, 93)}
+<g transform="rotate(-12 96 92)"><rect x="84" y="76" width="24" height="30" rx="4" fill="#FFFDF7" stroke="#8C6A58" stroke-width="2.4"/><rect x="91" y="73" width="10" height="6" rx="2" fill="#C9B8A8" stroke="#8C6A58" stroke-width="2"/>
+<path d="M88 86l2 2 4-4M88 94l2 2 4-4" fill="none" stroke="#34B27F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M97 87h7M97 95h7M88 101h16" stroke="#D9D4EA" stroke-width="2" stroke-linecap="round"/></g>
+<path class="p-salut" d="M27 86c-9 1-13-6-9-10 3-3 8-1 10 3" fill="${c.corps}" ${t(c, 2.6)}/>
+<path d="M90 98c-6 3-9-2-6-6" fill="${c.corps}" ${t(c, 2.6)}/>
 </g></svg>`;
 }
 
