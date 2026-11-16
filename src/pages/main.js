@@ -12,8 +12,8 @@ const OUTILS = require('../content/outils');
 const OUTILS_LIA = require('../content/outils-lia').outils;
 const FAMILLES_OUTILS = require('../content/outils-lia').FAMILLES;
 // Prix d'un outil ou d'une modification, en Jetons Cerise
-const jl = (n) => (n ? `${n} point${n > 1 ? 's' : ''} d’énergie` : 'Gratuit');
-const JL_MODIF = `${jetonsLia.modif.base} points d’énergie, plus 1 par tranche de ${jetonsLia.modif.mots} mots et ${jetonsLia.modif.image} par photo`;
+const jl = (n) => (n ? `${n} d’énergie` : 'Gratuit');
+const JL_MODIF = `${jetonsLia.modif.base} d’énergie, plus 1 par tranche de ${jetonsLia.modif.mots} mots et ${jetonsLia.modif.image} par photo`;
 // Une modification par Cerise coûte de 30 jetons (la base) à 65 (la plus grosse demande que Cerise accepte : trois photos et leur légende).
 const JL_MODIF_FOURCHETTE = `${jetonsLia.modif.base} à 65`;
 // Ce que font les jetons de l'abonnement en un mois : des modifications par Cerise, ou des utilisations d'outils.
@@ -23,7 +23,7 @@ const JL_OUTILS_MOIS = 'une dizaine';
 const JL_OUTIL_MIN = Math.min(...OUTILS_LIA.filter((t) => t.jetons).map((t) => t.jetons));
 const JL_OUTIL_MAX = Math.max(...OUTILS_LIA.map((t) => t.jetons));
 // « 100 jetons pour 1 €, 500 pour 5 €, 1000 pour 10 € »
-const RECHARGES = jetonsLia.recharge.map((r, i) => `${r.jetons}${i ? '' : ' points d’énergie'} pour ${r.prix} €`).join(', ');
+const RECHARGES = jetonsLia.recharge.map((r, i) => `${r.jetons}${i ? '' : ' d’énergie'} pour ${r.prix} €`).join(', ');
 const GUIDES = require('../content/guides');
 const BRIEF = require('../content/brief');
 // V2 : pages métier (/<slug>/) et pages de réassurance, guides de fond et page locale
@@ -829,7 +829,7 @@ function monEspacePage() {
       <p data-mots="horaire,fermé,ferme,ouvert,ouvre,hours,closed,open" data-type="demande" data-par="lia" data-cout="31" data-texte="Sur la page Contact, changer les horaires : nous serons fermés le lundi 24 novembre.">C’est noté. J’ai préparé votre demande : il vous reste à la relire et à l’envoyer.</p>
       <p data-mots="photo,image,picture" data-type="demande" data-par="lia" data-cout="41" data-texte="Sur la page d’accueil, remplacer la photo du haut par celle que je joins.">Bien sûr. J’ai préparé la demande : vous pourrez ajouter votre photo avant d’envoyer.</p>
       <p data-mots="avis,google,review" data-type="outil" data-outil="lienavis" data-nom="Lien d’avis Google" data-cout="0">Le plus simple : donnez à vos clients un lien qui ouvre tout de suite la page pour laisser un avis. Un outil le prépare pour vous.</p>
-      <p data-mots="jeton,reste,combien,token" data-type="onglet" data-onglet="forfait" data-nom="Abonnement et factures">Il vous reste ${reste - jetonsLia.bulle.jetons} points d’énergie ce mois-ci. Ils reviennent le 1er du mois. Une retouche faite par la bande en utilise ${jetonsLia.modif.base} et plus.</p>
+      <p data-mots="jeton,reste,combien,token" data-type="onglet" data-onglet="forfait" data-nom="Abonnement et factures">Il vous reste ${reste - jetonsLia.bulle.jetons} d’énergie ce mois-ci. Elle revient le 1er du mois. Une retouche faite par la bande en utilise ${jetonsLia.modif.base} et plus.</p>
       <p data-mots="boutique,vendre,nouvelle page,refaire,shop,sell" data-type="demande" data-par="alex" data-texte="Je voudrais ajouter une boutique en ligne à mon site. Pouvez-vous me dire comment faire ?">C’est une grande modification : c’est Alex qui s’en occupe. J’ai préparé votre message pour lui.</p>
       <p data-defaut>Dans votre vrai espace, je réponds à votre question et je prépare ce que vous voulez changer. Essayez par exemple : changer mes horaires.</p>
     </div>
@@ -1567,8 +1567,8 @@ function docPage() {
   ${tableau('À la création, une fois', lignesOptions)}
   ${tableau('Chaque mois, à ajouter ou retirer', lignesExtras)}
   <div class="doc-cards3">
-    <div class="doc-mini reveal"><strong>${icon('coins')}Énergie</strong><p>L’abonnement en donne ${ABO.jetons} points par mois. Un point vaut 1 centime, et une modification par Bricou en coûte ${JL_MODIF_FOURCHETTE}.</p></div>
-    <div class="doc-mini reveal"><strong>${icon('sparkles')}Plus d’énergie</strong><p>Vous en reprenez à l’utilisation : ${RECHARGES}, ajoutés à votre prochaine facture. Ces points-là restent jusqu’à ce que vous les utilisiez.</p></div>
+    <div class="doc-mini reveal"><strong>${icon('coins')}Énergie</strong><p>L’abonnement en donne ${ABO.jetons} par mois, et une modification par Bricou en coûte de ${JL_MODIF_FOURCHETTE}.</p></div>
+    <div class="doc-mini reveal"><strong>${icon('sparkles')}Plus d’énergie</strong><p>Vous en reprenez à l’utilisation : ${RECHARGES}, ajoutés à votre prochaine facture. Cette énergie-là reste jusqu’à ce que vous l’utilisiez.</p></div>
     <div class="doc-mini reveal"><strong>${icon('hand-coins')}À la demande</strong><p>${aLaDemande.map((x) => `${esc(x.name)} : ${euro(x.prix)}`).join('. ')}. Payés une fois, ajoutés à votre prochaine facture.</p></div>
   </div>
   <p class="doc-more center">${C.btn(sections.forfaits.path, 'btn-light', sections.forfaits.icon, 'La page des tarifs')}</p>
@@ -1610,7 +1610,7 @@ function docPage() {
 <section class="section doc-sec" id="jetons"><div class="container container-narrow">
   <p class="doc-kicker">8. L’énergie et les outils</p>
   <h2>L’énergie de vos petits monstres</h2>
-  <p>Chaque mois, votre petite bande a ${ABO.jetons} points d’énergie. Un point vaut 1 centime. Vous les utilisez comme vous voulez, en retouches de votre site ou en outils.</p>
+  <p>Chaque mois, votre petite bande a ${ABO.jetons} d’énergie. Vous l’utilisez comme vous voulez, en retouches de votre site ou en outils.</p>
   <div class="doc-table-wrap reveal"><table class="doc-table jl-table">
     <thead><tr><th scope="col">Dans l’onglet « Outils »</th><th scope="col">Ce que ça fait</th><th scope="col">Prix</th></tr></thead>
     <tbody>
@@ -1619,8 +1619,8 @@ function docPage() {
     </tbody>
   </table></div>
   <ul class="list-check">
-    <li>L’énergie de l’abonnement repart à ${ABO.jetons} points le 1<sup>er</sup> de chaque mois. Ce qui reste ne se garde pas.</li>
-    <li>Pour en reprendre : à partir de ${jetonsLia.recharge[0].jetons} points pour ${jetonsLia.recharge[0].prix} €, ajoutés à votre prochaine facture. Ces points-là restent jusqu’à ce que vous les utilisiez.</li>
+    <li>L’énergie de l’abonnement repart à ${ABO.jetons} le 1<sup>er</sup> de chaque mois. Ce qui reste ne se garde pas.</li>
+    <li>Pour en reprendre : à partir de ${jetonsLia.recharge[0].jetons} d’énergie pour ${jetonsLia.recharge[0].prix} €, ajoutés à votre prochaine facture. Cette énergie-là reste jusqu’à ce que vous l’utilisiez.</li>
     <li>Les outils gratuits tournent sur votre appareil : ils ne consomment rien.</li>
   </ul>
   <p class="doc-more">${C.btn(sections.espace.path, 'btn-light', 'toolbox', 'Voir tous les outils')}</p>

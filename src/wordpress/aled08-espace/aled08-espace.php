@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres Espace client
  * Description: L'espace client des Minis Monstres sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.4.1
+ * Version: 2.4.2
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.4.1');
+define('ALED08E_VERSION', '2.4.2');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
@@ -349,7 +349,7 @@ function aled08e_annuler_demande($pid) {
     if ($etat) update_post_meta($pid, '_aled08_lia_etat', 'annule');
     update_post_meta($pid, '_aled08_reponse', $resteEnLigne
         ? 'Demande annulée. Ce que les petits monstres avaient publié de nouveau reste en ligne : Alex le retire à la main. L’énergie de cette demande reste comptée.'
-        : 'Demande annulée. Elle ne compte pas dans vos interventions' . (get_post_meta($pid, '_aled08_jetons', true) ? ' : vos points d’énergie vous sont rendus.' : '.') . ($etat === 'fait' ? ' Votre page a été remise comme avant.' : ''));
+        : 'Demande annulée. Elle ne compte pas dans vos interventions' . (get_post_meta($pid, '_aled08_jetons', true) ? ' : votre énergie vous est rendue.' : '.') . ($etat === 'fait' ? ' Votre page a été remise comme avant.' : ''));
     $u = get_userdata($uid);
     wp_mail(aled08e_to(), 'Une demande a été annulée par le client', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n"
         . ($note ? "\nCe que Bricou avait mis en ligne : " . $note . "\n" : '')
@@ -1048,14 +1048,14 @@ function aled08e_dashboard() {
             <input type="hidden" name="aled08e_demande" value="1">
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>
             <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend><p class="app-note"><?php if ($famille) : ?>Pour vous, c’est sans limite, avec Bricou comme avec Alex <span class="jauge-coeur" aria-hidden="true">♥</span>. Bricou fait les petites et moyennes modifications, Alex les plus grandes.<?php else : ?>Il vous reste <?php echo esc_html(aled08e_jl_txt($jetonsLeft)); ?> et <?php echo (int) $left; ?> intervention<?php echo $left > 1 ? 's' : ''; ?> d’Alex <?php echo esc_html($periodeCe); ?>. Bricou fait les petites et moyennes modifications, Alex les plus grandes.<?php endif; ?></p>
-              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $liaOk ? ' checked' : ' disabled'; ?>><span><?php echo aled08e_monster('bricou'); // phpcs:ignore ?><strong>Bricou, dans l’heure</strong><small>Le petit monstre des modifications. Il montre d’abord votre demande à Alex, puis il s’y met (30 minutes au plus). Pour une petite ou moyenne modification : jusqu’à <?php echo (int) $liaLim['mots'][0]; ?> mots de texte, ou jusqu’à <?php echo (int) $liaLim['images']; ?> photos avec un texte plus court. Il vous montre toujours l’aperçu de la page : rien ne change sans votre accord. Énergie : <?php echo (int) $jlModif['base']; ?> points, plus 1 par tranche de <?php echo (int) $jlModif['mots']; ?> mots et <?php echo (int) $jlModif['image']; ?> par photo.</small></span></label>
+              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $liaOk ? ' checked' : ' disabled'; ?>><span><?php echo aled08e_monster('bricou'); // phpcs:ignore ?><strong>Bricou, dans l’heure</strong><small>Le petit monstre des modifications. Il montre d’abord votre demande à Alex, puis il s’y met (30 minutes au plus). Pour une petite ou moyenne modification : jusqu’à <?php echo (int) $liaLim['mots'][0]; ?> mots de texte, ou jusqu’à <?php echo (int) $liaLim['images']; ?> photos avec un texte plus court. Il vous montre toujours l’aperçu de la page : rien ne change sans votre accord. Énergie : <?php echo (int) $jlModif['base']; ?>, plus 1 par tranche de <?php echo (int) $jlModif['mots']; ?> mots et <?php echo (int) $jlModif['image']; ?> par photo.</small></span></label>
               <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $liaOk ? '' : ' checked'; ?>><span><?php echo aled08e_monster('alex'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Pour une grande modification. Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même.</small></span></label>
             </fieldset>
             <?php if ($left <= 0 && !$famille) : ?><label class="check"><input type="checkbox" name="boost_ok" value="1"><span>Si je choisis Alex : j’accepte une intervention en plus, <?php echo esc_html($boostTxt); ?>, ajoutée à ma prochaine facture</span></label><?php endif; ?>
             <?php $xUrg = aled08e_a_la_demande('urgent'); if ($xUrg && !$famille) : ?><label class="check"><input type="checkbox" name="urgent" value="1"><span>Si je choisis Alex : je la veux sous <?php echo esc_html($D['delais']['urgent'] ?? '24 heures'); ?>, du lundi au vendredi (<?php echo esc_html(aled08e_euro_txt($xUrg['prix'])); ?> ajoutés à ma prochaine facture)</span></label><?php endif; ?>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" name="demande" rows="4" maxlength="4000" required placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" name="photos[]" accept="image/*" multiple class="sr-only" data-req-file><?php echo aled08e_icon('image-plus'); // phpcs:ignore ?><span data-req-file-name>Ajouter jusqu’à 3 photos (facultatif)</span></label>
-            <?php if (!$famille) : ?><p class="jl-estime" data-jl-estime data-base="<?php echo (int) $jlModif['base']; ?>" data-mots="<?php echo (int) $jlModif['mots']; ?>" data-image="<?php echo (int) $jlModif['image']; ?>" data-solde="<?php echo (int) $jetonsLeft; ?>" aria-live="polite"><?php echo aled08e_icon('coins'); // phpcs:ignore ?><span>Avec les petits monstres, cette demande utilise <b data-jl-prix><?php echo (int) $jlModif['base']; ?></b> points d’énergie. Avec Alex : aucun point d’énergie.</span></p><?php endif; ?>
+            <?php if (!$famille) : ?><p class="jl-estime" data-jl-estime data-base="<?php echo (int) $jlModif['base']; ?>" data-mots="<?php echo (int) $jlModif['mots']; ?>" data-image="<?php echo (int) $jlModif['image']; ?>" data-solde="<?php echo (int) $jetonsLeft; ?>" aria-live="polite"><?php echo aled08e_icon('coins'); // phpcs:ignore ?><span>Avec les petits monstres, cette demande utilise <b data-jl-prix><?php echo (int) $jlModif['base']; ?></b> d’énergie. Avec Alex : aucune énergie.</span></p><?php endif; ?>
             <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Envoyer ma demande</span></button>
           </form>
           <?php echo aled08e_a_la_demande_html($uid, $famille); // phpcs:ignore ?>

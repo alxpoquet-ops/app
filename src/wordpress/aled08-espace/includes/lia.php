@@ -105,7 +105,7 @@ function aled08e_lia_systeme($u, $infos) {
         . "Règles :\n"
         . "- Fais exactement ce qui est demandé, rien de plus. Ne change ni le style, ni la mise en page, ni les autres textes.\n"
         . "- Tu fais les petites et moyennes modifications. Ton budget pour une demande : " . aled08e_lia_budget_txt() . " Tout se passe sur UNE seule page (ou une seule actualité).\n"
-        . "- Si la demande dépasse ce budget (plusieurs pages, refonte, nouvelle page ou rubrique, long texte, beaucoup de photos) : ne modifie rien et termine avec « pour_alex ». Dans message_client, explique simplement que cette demande est trop grande pour les petits monstres, qu'elle passe à Alex, que cela prend plus de temps et que cela compte pour une de ses demandes Alex du mois (ses points d'énergie lui sont rendus).\n"
+        . "- Si la demande dépasse ce budget (plusieurs pages, refonte, nouvelle page ou rubrique, long texte, beaucoup de photos) : ne modifie rien et termine avec « pour_alex ». Dans message_client, explique simplement que cette demande est trop grande pour les petits monstres, qu'elle passe à Alex, que cela prend plus de temps et que cela compte pour une de ses demandes Alex du mois (son énergie lui est rendue).\n"
         . "- Lis toujours le contenu avant de le modifier. Préfère remplacer_texte pour un petit changement, en recopiant le passage exact (balises comprises).\n"
         . "- Écris en français correct, dans le ton du site. Garde les espaces insécables et la typographie existantes.\n"
         . "- Tu ne peux ni supprimer une page, ni toucher aux extensions, au thème, aux prix d'une boutique en ligne ou aux comptes : si la demande l'exige, ne fais rien et termine avec « pour_alex ».\n"
@@ -609,7 +609,7 @@ function aled08e_lia_confirmer($pid, $oui, $commentaire = '') {
         update_post_meta($pid, '_aled08_par', 'alex');
         update_post_meta($pid, '_aled08_lia_etat', 'pour_alex');
         update_post_meta($pid, '_aled08_statut', 'recue');
-        update_post_meta($pid, '_aled08_reponse', 'Merci ! La mise en ligne automatique n’a pas abouti : Alex s’en occupe à la main, et vos points d’énergie vous sont rendus.');
+        update_post_meta($pid, '_aled08_reponse', 'Merci ! La mise en ligne automatique n’a pas abouti : Alex s’en occupe à la main, et votre énergie vous est rendue.');
         wp_mail(aled08e_to(), 'Bricou : mise en ligne impossible, à reprendre', 'Demande #' . $pid . ' (' . ($u ? $u->display_name : '?') . ")\nErreur : " . $r->get_error_message() . "\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
         return $r;
     }

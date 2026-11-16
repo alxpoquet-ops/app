@@ -5,7 +5,7 @@
   function $(s, r) { return (r || d).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || d).querySelectorAll(s)); }
   function el(tag, cls, txt) { var e = d.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
-  function jetons(n) { return n + ' point' + (n > 1 ? 's' : '') + ' d’énergie'; }
+  function jetons(n) { return n + ' d’énergie'; }
   function copier(txt, fini) {
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(fini, fini);
     else { var t = el('textarea'); t.value = txt; d.body.appendChild(t); t.select(); try { d.execCommand('copy'); } catch (e) {} d.body.removeChild(t); fini(); }
@@ -230,7 +230,7 @@
               if (j && j.success) { reussi(j.data); return; }
               if (essais < 4) { setTimeout(revoir, 15000); return; }
               btn.disabled = false; form.classList.remove('is-busy'); etat.className = 'ol-etat is-err';
-              etat.textContent = 'La connexion a coupé avant la réponse. Regardez votre énergie en rechargeant la page : si des points ont été comptés, écrivez à Alex.';
+              etat.textContent = 'La connexion a coupé avant la réponse. Regardez votre énergie en rechargeant la page : si de l’énergie a été comptée, écrivez à Alex.';
             }, function () { if (essais < 4) setTimeout(revoir, 15000); else { btn.disabled = false; form.classList.remove('is-busy'); etat.className = 'ol-etat is-err'; etat.textContent = 'Pas de connexion. Réessayez quand le réseau est revenu.'; } });
           };
           setTimeout(revoir, 8000);

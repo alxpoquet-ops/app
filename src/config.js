@@ -152,6 +152,8 @@ const types = [
 // en rachète à l'utilisation (jetonsLia.recharge), ajoutés à sa prochaine facture. L'option « Cerise + » n'existe plus.
 // Les anciens forfaits (chico, power, titan) n'existent plus : un ancien client garde ce qu'il avait
 // (power : extra Suivi Google ; titan : extras Suivi Google et chiffres détaillés), c'est géré dans l'extension WordPress.
+// L'énergie donnée chaque mois avec l'abonnement : elle sert aux outils de l'espace client et aux petites retouches.
+const energieMois = 100;
 const forfaits = [
   {
     id: 'base',
@@ -160,16 +162,16 @@ const forfaits = [
     month: 10,
     quota: 1, // interventions d'Alex par période
     periode: 'trimestre',
-    jetons: 100, // Jetons Cerise par mois
+    jetons: energieMois, // énergie par mois (Jetons Cerise dans l'extension)
     partage: false,
     bulle: 'Tout ce qu’il faut pour que votre site tourne',
     modifs: 'les petites retouches et les outils de la bande, et une intervention de ma part par trimestre',
     conseil: false,
     tagline: 'Sans engagement',
     pitch: 'Votre site en ligne, sûr et à jour, avec son nom de domaine, le support, le gardien qui veille sur lui, les outils de la bande et mon intervention chaque trimestre.',
-    main: ['Nom de domaine et hébergement compris', 'Le gardien : mises à jour, sauvegardes, surveillance', 'Les outils de la bande, au quotidien', 'Mon intervention, une fois par trimestre'],
-    details: ['Nom de domaine relié à votre site et renouvelé chaque année, à votre nom', 'Hébergement sur un serveur de qualité', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour faites pour vous, et sauvegardes', 'Suivi : le site est surveillé, il tient quand il y a du monde', 'Support : une question, une réponse sous 72 heures', 'Formulaire de contact qui arrive dans votre boîte mail', 'Bases du référencement : Google sait lire et comprendre votre site', 'Le gardien, un petit monstre qui veille sur votre site jour et nuit', 'Les petites retouches et les outils de la bande, pour un usage normal', 'Une intervention par trimestre, que je fais et vérifie à la main', 'Votre espace client : demandes, outils pour vous faire connaître, suivi', 'Sans engagement : vous arrêtez quand vous voulez'],
-    features: ['Nom de domaine relié et renouvelé', 'Hébergement sur un serveur de qualité', 'Mises à jour, sauvegardes et HTTPS', 'Suivi du site et support sous 72 heures', 'Bases du référencement', 'Le gardien qui veille sur votre site', 'Les outils de la bande', 'Une intervention de ma part par trimestre', 'Votre espace client et ses outils'],
+    main: ['Nom de domaine et hébergement compris', 'Le gardien : mises à jour, sauvegardes, surveillance', `Les outils de la bande, avec ${energieMois} d’énergie par mois`, 'Mon intervention, une fois par trimestre'],
+    details: ['Nom de domaine relié à votre site et renouvelé chaque année, à votre nom', 'Hébergement sur un serveur de qualité', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour faites pour vous, et sauvegardes', 'Suivi : le site est surveillé, il tient quand il y a du monde', 'Support : une question, une réponse sous 72 heures', 'Formulaire de contact qui arrive dans votre boîte mail', 'Bases du référencement : Google sait lire et comprendre votre site', 'Le gardien, un petit monstre qui veille sur votre site jour et nuit', `Les petites retouches et les outils de la bande, avec ${energieMois} d’énergie chaque mois pour un usage normal`, 'Une intervention par trimestre, que je fais et vérifie à la main', 'Votre espace client : demandes, outils pour vous faire connaître, suivi', 'Sans engagement : vous arrêtez quand vous voulez'],
+    features: ['Nom de domaine relié et renouvelé', 'Hébergement sur un serveur de qualité', 'Mises à jour, sauvegardes et HTTPS', 'Suivi du site et support sous 72 heures', 'Bases du référencement', 'Le gardien qui veille sur votre site', `Les outils de la bande, avec ${energieMois} d’énergie par mois`, 'Une intervention de ma part par trimestre', 'Votre espace client et ses outils'],
   },
 ];
 const annuel = { moisOfferts: 2 };

@@ -43,8 +43,7 @@
     'Dans votre vrai espace, je vous réponds ici.': 'In your real client area, I answer you here.',
     'Cerise n’a pas pu répondre. Réessayez dans un instant.': 'Cerise couldn’t answer. Try again in a moment.',
     'La connexion a coupé. Réessayez dans un instant.': 'The connection dropped. Try again in a moment.',
-    ' points d’énergie': ' energy points',
-    ' point d’énergie': ' energy point',
+    ' d’énergie': ' energy',
     'Énergie': 'Energy',
     ' par message.': ' per message.',
     'Redonner de l’énergie': 'Top up the energy',
@@ -71,7 +70,7 @@
     'Envoi en cours…': 'Sending…', 'Nouvelle étape': 'New step', 'QR code vers votre site': 'QR code to your website', 'QR code téléchargé': 'QR code downloaded',
     'Vos modifications du mois sont utilisées : je vous recontacte pour en parler (démo)': 'You have used this month’s changes: I will get back to you to talk about it (demo)',
     'envoyée à l’instant': 'sent just now', 'Reçue': 'Received', 'Ajouter une photo (facultatif)': 'Add a photo (optional)',
-    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'Demande envoyée': 'Request sent', 'points d’énergie (démo)': 'energy points (demo)', 'Il ne vous reste pas assez d’énergie pour cette demande (démo)': 'You do not have enough energy left for this request (demo)', 'En cours': 'In progress', 'Faite': 'Done',
+    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'Demande envoyée': 'Request sent', 'd’énergie (démo)': 'energy (demo)', 'Il ne vous reste pas assez d’énergie pour cette demande (démo)': 'You do not have enough energy left for this request (demo)', 'En cours': 'In progress', 'Faite': 'Done',
     'Votre modification est en ligne (démo)': 'Your change is live (demo)', ' choisi, à partir du mois prochain (démo)': ' chosen, from next month (demo)',
     'Option ajoutée': 'Option added', 'Option retirée': 'Option removed', ' (démo)': ' (demo)', 'à l’instant': 'just now',
     'Je souhaite payer le site en ': 'I would like to pay for the website in ', ' fois.': ' instalments.', 'Options choisies : ': 'Chosen options: ',
@@ -867,7 +866,7 @@
       li.querySelector('strong').textContent = text.length > 60 ? text.slice(0, 57) + '…' : text;
       list.insertBefore(li, list.firstChild);
       txt.value = ''; file.value = ''; fileName.textContent = tr('Ajouter une photo (facultatif)');
-      toast(tr('Demande envoyée') + ' : ' + prix + ' ' + tr('points d’énergie (démo)'));
+      toast(tr('Demande envoyée') + ' : ' + prix + ' ' + tr('d’énergie (démo)'));
       var st = li.querySelector('.st');
       setTimeout(function () { st.className = 'st st-doing'; st.textContent = tr('En cours'); }, 2000);
       setTimeout(function () {
@@ -941,7 +940,7 @@
         sessionStorage.setItem(cleFil, JSON.stringify(l.slice(-20)));
       } catch (e) {}
     };
-    var jetonsTxt = function (n) { return n + tr(n > 1 ? ' points d’énergie' : ' point d’énergie'); };
+    var jetonsTxt = function (n) { return n + tr(' d’énergie'); };
     var majJetons = function () {
       if (!dial || !jetonsEl) return;
       jetonsEl.hidden = false;

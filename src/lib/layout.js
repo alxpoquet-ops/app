@@ -98,13 +98,14 @@ function graph(p) {
 }
 
 // ---------------------------------------------------------------- en-tête
-// Notre équipe, Accompagnement, Tarifs, Réalisations, Contact. Outils et Documentation passent dans l'espace client.
+// Notre équipe, Accompagnement, Tarifs, Outils, Réalisations, Contact. Outils et Documentation passent dans l'espace client.
 // Sur téléphone, chaque lien a une petite phrase (NAV_DESC), et « Créer mon site » est le grand bouton du bas.
-const NAV = ['equipe', 'accompagnement', 'forfaits', 'confiance', 'contact'];
+const NAV = ['equipe', 'accompagnement', 'forfaits', 'espace', 'confiance', 'contact'];
 const NAV_DESC = {
   equipe: 'Ma petite bande et moi',
   accompagnement: 'Après la mise en ligne',
   forfaits: 'Tout compris, voir nos tarifs',
+  espace: 'Des outils pour vous aider',
   confiance: 'Des sites à visiter',
   contact: 'Une question, un projet ?',
 };

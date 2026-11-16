@@ -74,7 +74,7 @@ const compteur = Object.values(cfg).find((v) => v && v.recharge && v.modif);
 const nb = (o) => o[Object.keys(o).find((k) => /^jet/.test(k))]; // le nombre de points d'un réglage
 const energieMois = nb(abo); // points d'énergie compris chaque mois
 const modifMax = 65; // la plus grande demande qu'une retouche automatique accepte (mots et photos)
-const listeRecharges = compteur.recharge.map((r) => `${nb(r)} points pour ${eur(r.prix)} €`).join(', ');
+const listeRecharges = compteur.recharge.map((r) => `${nb(r)} d’énergie pour ${eur(r.prix)} €`).join(', ');
 const OUTILS = require('./outils-lia').outils;
 const payants = OUTILS.map(nb).filter((n) => n > 0);
 const outilMin = Math.min(...payants), outilMax = Math.max(...payants);
@@ -260,7 +260,7 @@ Il comprend :
 - **Le support** : une réponse sous ${delais.reponse}, en jours ouvrés (article 11).
 - **Les bases du SEO** : le site est construit pour que Google puisse le lire et le comprendre.
 - **Les outils automatisés de base** : ${bandeNoms} (article 15).
-- **${energieMois} points d’énergie par mois**, pour les outils de l’espace client et les retouches automatiques (article 12).
+- **${energieMois} d’énergie par mois**, pour les outils de l’espace client et les retouches automatiques (article 12).
 - **${maj(intervAlex)} d’Alex par ${periode}** (article 11).${periode === 'trimestre' ? ` Le client inscrit avant le ${DATE_V2} garde une intervention d’Alex par mois.` : ''}
 - **L’espace client et ses outils** (article 13).
 
@@ -320,7 +320,7 @@ Le client envoie ses demandes de modification depuis son espace client ou par me
 
 À chaque demande, le client choisit qui s’en charge :
 
-- **Retouche automatique** : la modification est préparée par ${bricoleur}, un des outils automatisés des Minis Monstres (article 15). Le client voit l’aperçu, et le site n’est modifié qu’après sa validation. La retouche utilise des points d’énergie (article 12).
+- **Retouche automatique** : la modification est préparée par ${bricoleur}, un des outils automatisés des Minis Monstres (article 15). Le client voit l’aperçu, et le site n’est modifié qu’après sa validation. La retouche utilise de l’énergie (article 12).
 - **Alex** : la modification est faite à la main, vérifiée et paramétrée par Alex.
 
 **Retouches automatiques.** Elles couvrent les petites et moyennes modifications : un budget de mots et d’images par demande, sur une seule page. La modification est mise en ligne dès que le client valide l’aperçu, en général dans les 5 minutes qui suivent la demande. Une demande trop grande pour une retouche automatique est transmise à Alex. Elle compte alors comme une intervention d’Alex.
@@ -329,7 +329,7 @@ Le client envoie ses demandes de modification depuis son espace client ou par me
 
 **${alexPlus.name}.** Quand l’intervention de la période est déjà utilisée, le client peut commander ${minus(alexPlus.name)}, pour ${eur(alexPlus.prix)} € (article 6). Cet extra à la demande remplace le « Boost », au même prix. Le client donne son accord à chaque commande, et le montant est ajouté à sa prochaine facture. Il peut aussi choisir de reporter sa demande à la période suivante.
 
-**Annulation.** Une demande peut être annulée gratuitement par le client dans les 24 heures qui suivent son envoi, depuis son espace client, dans la limite de trois annulations par mois : elle n’est alors pas décomptée, les points d’énergie utilisés sont rendus, et ce qui avait été mis en ligne est remis comme avant. Au-delà, l’annulation se demande à Alex.
+**Annulation.** Une demande peut être annulée gratuitement par le client dans les 24 heures qui suivent son envoi, depuis son espace client, dans la limite de trois annulations par mois : elle n’est alors pas décomptée, l’énergie utilisée est rendue, et ce qui avait été mis en ligne est remis comme avant. Au-delà, l’annulation se demande à Alex.
 
 **Délai de réponse.** Les Minis Monstres répondent à chaque demande sous ${delais.reponse}, en jours ouvrés. Ce délai est le même pour tous les clients. Répondre, c’est prendre en charge la demande et donner une date. Les petites modifications sont en général faites dans ce délai. Avec l’extra à la demande « ${urgent.name} » (article 6), la demande est traitée sous ${delais.urgent}, du lundi au vendredi.
 
@@ -337,17 +337,17 @@ Le client envoie ses demandes de modification depuis son espace client ou par me
 
 Les outils de l’espace client, les retouches automatiques et la bulle d’aide utilisent de l’énergie. C’est un compteur, affiché dans l’espace client. Les outils sont par exemple : publier sur les réseaux, corriger ou traduire un texte, conseils sur une photo ou sur une page du site, et autres outils du même genre.
 
-**Énergie comprise.** L’abonnement comprend ${energieMois} points d’énergie par mois, ce qui correspond à un usage normal. Ces points sont remis le 1er de chaque mois et ne se reportent pas d’un mois sur l’autre.
+**Énergie comprise.** L’abonnement comprend ${energieMois} d’énergie par mois, ce qui correspond à un usage normal. Cette énergie est remise à ${energieMois} le 1er de chaque mois et ne se reporte pas d’un mois sur l’autre.
 
-**Retouche automatique.** Une retouche automatique utilise ${compteur.modif.base} points, plus 1 point par tranche de ${compteur.modif.mots} mots écrits dans la demande, plus ${compteur.modif.image} points par photo jointe. Cela fait entre ${compteur.modif.base} et ${modifMax} points par retouche.
+**Retouche automatique.** Une retouche automatique utilise ${compteur.modif.base} d’énergie, plus 1 par tranche de ${compteur.modif.mots} mots écrits dans la demande, plus ${compteur.modif.image} par photo jointe. Cela fait entre ${compteur.modif.base} et ${modifMax} d’énergie par retouche.
 
-**Outils.** Un outil utilise de ${outilMin} à ${outilMax} points. Ce nombre est affiché sur son bouton, avant son utilisation.${outilsGratuits}
+**Outils.** Un outil utilise de ${outilMin} à ${outilMax} d’énergie. Ce nombre est affiché sur son bouton, avant son utilisation.${outilsGratuits}
 
-**Bulle d’aide.** Chaque message écrit dans la bulle utilise ${parMessage} point${parMessage > 1 ? 's' : ''} d’énergie, dans la limite de ${compteur.bulle.parJour} messages par jour.
+**Bulle d’aide.** Chaque message écrit dans la bulle utilise ${parMessage} d’énergie, dans la limite de ${compteur.bulle.parJour} messages par jour.
 
-**Recharge.** Au-delà, le client reprend de l’énergie à l’utilisation, depuis son espace client : ${listeRecharges}. Le montant est ajouté à sa prochaine facture. Les points repris sont gardés d’un mois sur l’autre, jusqu’à leur utilisation.
+**Recharge.** Au-delà, le client reprend de l’énergie à l’utilisation, depuis son espace client : ${listeRecharges}. Le montant est ajouté à sa prochaine facture. L’énergie reprise est gardée d’un mois sur l’autre, jusqu’à son utilisation.
 
-**Énergie rendue.** Les points d’une demande sont rendus au client dans quatre cas : la demande est transmise à Alex, la mise en ligne échoue, le client refuse l’aperçu, ou le client annule sa demande dans les 24 heures.
+**Énergie rendue.** L’énergie d’une demande est rendue au client dans quatre cas : la demande est transmise à Alex, la mise en ligne échoue, le client refuse l’aperçu, ou le client annule sa demande dans les 24 heures.
 
 L’énergie et les interventions d’Alex sont comptées séparément.
 

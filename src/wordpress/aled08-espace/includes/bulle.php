@@ -61,7 +61,7 @@ function aled08e_bulle_quota($uid) {
 function aled08e_bulle_systeme() {
     return "Tu es Cerise, l'assistante des Minis Monstres, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, des artisans et des associations. "
         . "Tu parles au client dans son espace client. Alex est l'humain de l'entreprise : c'est lui qui conçoit les sites, il vérifie tout et fait les grandes modifications à la main. "
-        . "Présente-toi comme l'assistante autonome d'Alex, qui automatise les tâches répétitives. Tu fais partie de la petite bande de petits monstres qu'Alex a programmés : ce sont ses automatisations. Les outils et les petites modifications utilisent l'énergie des petits monstres, comptée en points d'énergie : dis toujours « points d'énergie ». Si le client te demande si tu es une intelligence artificielle ou un humain, réponds honnêtement : tu es un assistant automatique, et Alex reprend tout ce qui demande un humain.\n\n"
+        . "Présente-toi comme l'assistante autonome d'Alex, qui automatise les tâches répétitives. Tu fais partie de la petite bande de petits monstres qu'Alex a programmés : ce sont ses automatisations. Les outils et les petites modifications utilisent l'énergie des petits monstres, comptée avec un simple nombre : dis « 30 d'énergie », jamais « points » ni « jetons ». Si le client te demande si tu es une intelligence artificielle ou un humain, réponds honnêtement : tu es un assistant automatique, et Alex reprend tout ce qui demande un humain.\n\n"
         . "Ton rôle : répondre à ses questions, et préparer ce qu'il veut faire. Tu ne fais jamais l'action toi-même : tu la proposes dans le champ « action », et le client la valide ensuite d'un clic dans son espace.\n\n"
         . "Comment répondre :\n"
         . "- En français simple, avec des mots de tous les jours, sans jargon. Une à quatre phrases courtes. Vouvoie le client. Pas de tiret long, pas d'émoji, pas de liste à puces, pas de mise en forme.\n"
@@ -105,14 +105,14 @@ function aled08e_bulle_contexte($uid) {
     $compte[] = 'Les petits monstres peuvent modifier ce site eux-mêmes : ' . (aled08e_lia_prete_pour($uid) ? 'oui' : 'pas encore, les modifications passent par Alex');
 
     $offre = [];
-    $offre[] = 'Abonnement : ' . aled08e_euro_txt($f['month']) . ' par mois (nom de domaine, hébergement, mises à jour, suivi, support, ' . (int) $f['jetons'] . ' points d’énergie chaque mois et ' . aled08e_alex_txt($uid, $f) . '). Sans engagement. À l’année : ' . (int) $D['moisOfferts'] . ' mois offerts.';
-    $offre[] = '1 point d’énergie = 1 centime. Un message dans cette bulle : ' . aled08e_jl_txt(aled08e_bulle_prix()) . '.';
-    $offre[] = 'Une modification du site par les petits monstres : ' . (int) $jl['modif']['base'] . ' points d’énergie, plus 1 par tranche de ' . (int) $jl['modif']['mots'] . ' mots écrits et ' . (int) $jl['modif']['image'] . ' par photo. Ils montrent toujours un aperçu de la page : rien ne change sans l’accord du client.';
+    $offre[] = 'Abonnement : ' . aled08e_euro_txt($f['month']) . ' par mois (nom de domaine, hébergement, mises à jour, suivi, support, ' . (int) $f['jetons'] . ' d’énergie chaque mois et ' . aled08e_alex_txt($uid, $f) . '). Sans engagement. À l’année : ' . (int) $D['moisOfferts'] . ' mois offerts.';
+    $offre[] = '100 d’énergie = 1 €. Un message dans cette bulle : ' . aled08e_jl_txt(aled08e_bulle_prix()) . '.';
+    $offre[] = 'Une modification du site par les petits monstres : ' . (int) $jl['modif']['base'] . ' d’énergie, plus 1 par tranche de ' . (int) $jl['modif']['mots'] . ' mots écrits et ' . (int) $jl['modif']['image'] . ' par photo. Ils montrent toujours un aperçu de la page : rien ne change sans l’accord du client.';
     $ald = [];
     foreach (aled08e_a_la_demande() as $x) $ald[] = $x['name'] . ' : ' . aled08e_euro_txt($x['prix']);
     $offre[] = 'Extras à la demande, payés une fois et ajoutés à la prochaine facture (onglet Mes demandes) : ' . implode(', ', $ald) . '. Alex répond sous ' . $D['delais']['reponse'] . '.';
     $rech = [];
-    foreach ((array) $jl['recharge'] as $r) $rech[] = (int) $r['jetons'] . ' points pour ' . aled08e_euro_txt($r['prix']);
+    foreach ((array) $jl['recharge'] as $r) $rech[] = (int) $r['jetons'] . ' d’énergie pour ' . aled08e_euro_txt($r['prix']);
     $offre[] = 'Redonner de l’énergie (onglet Outils) : ' . implode(', ', $rech) . '.';
     $ex = [];
     foreach (aled08e_changer_options_possibles($uid) as $o) $ex[] = $o['name'] . ' ' . aled08e_euro_txt($o['month']) . ' par mois';
@@ -203,14 +203,14 @@ function aled08e_bulle_repondre($uid, $message) {
         );
     } catch (\Throwable $e) {
         aled08e_lia_journal_add('Bulle de Cerise : erreur Claude : ' . $e->getMessage());
-        return $echec('Cerise n’a pas pu répondre cette fois. Réessayez dans un instant : aucun point d’énergie n’a été compté.');
+        return $echec('Cerise n’a pas pu répondre cette fois. Réessayez dans un instant : aucune énergie n’a été comptée.');
     }
     if (isset($r->usage)) $dollars += ((int) ($r->usage->inputTokens ?? 0) * $t['entree'] + (int) ($r->usage->outputTokens ?? 0) * $t['sortie']) / 1000000;
-    if (($r->stopReason ?? '') === 'refusal') return $echec('Cerise ne peut pas répondre à ce message. Aucun point d’énergie n’a été compté.');
+    if (($r->stopReason ?? '') === 'refusal') return $echec('Cerise ne peut pas répondre à ce message. Aucune énergie n’a été comptée.');
     $brut = '';
     foreach ($r->content as $b) if ($b->type === 'text') $brut .= $b->text;
     $lu = aled08e_bulle_lire($uid, $brut);
-    if (!$lu) return $echec('La réponse de Cerise est arrivée incomplète. Réessayez : aucun point d’énergie n’a été compté.');
+    if (!$lu) return $echec('La réponse de Cerise est arrivée incomplète. Réessayez : aucune énergie n’a été comptée.');
     aled08e_jl_cout_noter($uid, $ref, aled08e_jl_centimes($dollars));
     // on garde l'échange : le message tel que le client l'a écrit, et la réponse telle que Cerise l'a rendue
     $fil[] = ['r' => 'moi', 't' => "<message_du_client>\n" . $message . "\n</message_du_client>"];
