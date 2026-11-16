@@ -1311,16 +1311,11 @@ button.app-card:hover { transform: translateY(-2px); }
 @media (min-width: 721px) { .btn-flaque:not(.btn-block) { margin-inline: 14px; } }
 @media (max-width: 720px) { .btn-flaque::before { inset: -13px -9px; } }
 
-/* le nom du site : la peinture du pot coule au sol et souligne « Alex & Co » d'une traînée multicolore */
-.brand { position: relative; isolation: isolate; }
-.brand::after { content: ""; position: absolute; z-index: -1; left: 58px; right: -12px; bottom: 0; height: 12px; pointer-events: none;
-  background: linear-gradient(90deg, #FF6FAE 0, #9B7BFF 20px, #5AA2F0 34%, #7EDDB5 54%, #FFD45E 72%, #FF9E6E 88%, #FF6FAE);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5C18 2 40 3.4 62 4.2S104 1.6 132 3.6S176 2 190 4.8C198 6.4 197.5 10 189 10.6C166 12.6 140 10.2 110 11.6S52 12.8 30 11.2S2 11.4 0 9Z'/%3E%3Cellipse cx='197' cy='3' rx='1.6' ry='2.2'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5C18 2 40 3.4 62 4.2S104 1.6 132 3.6S176 2 190 4.8C198 6.4 197.5 10 189 10.6C166 12.6 140 10.2 110 11.6S52 12.8 30 11.2S2 11.4 0 9Z'/%3E%3Cellipse cx='197' cy='3' rx='1.6' ry='2.2'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
-  transform-origin: 0 50%; transition: transform .35s; }
-.brand:hover::after { transform: scaleX(1.05); }
-/* le nom se pose juste au-dessus de la coulée ; le slogan passe au-dessus du nom */
-.brand-text { flex-direction: column-reverse; padding-bottom: 9px; }
-.brand-text small { margin: 0 0 2px; }
+/* le nom du site : « & Co » est posé sur une tache de peinture rose */
+.brand-co { position: relative; z-index: 0; display: inline-block; margin-left: .1em; padding: 0 .26em 0 .2em; color: #2A1F3D; }
+.brand-co::before { content: ""; position: absolute; z-index: -1; left: -.14em; right: -.2em; top: -.26em; bottom: -.3em; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 50' preserveAspectRatio='none'%3E%3Cg fill='%23FF7AB8'%3E%3Cpath d='M8 22C6 12 18 5 32 7C42 3 56 4 66 8C78 5 92 9 94 19C98 27 92 35 84 36C82 40 82 46 79 47C76 48 76 42 74 38C64 41 52 40 44 39C40 41 38 45 35 45C32 45 33 41 33 38C22 40 10 38 7 31C3 28 4 24 8 22Z'/%3E%3Ccircle cx='98' cy='9' r='2.2'/%3E%3Ccircle cx='3' cy='39' r='1.8'/%3E%3Ccircle cx='89' cy='45' r='1.5'/%3E%3C/g%3E%3Cpath d='M16 15C22 10 30 10 36 11' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' opacity='.5'/%3E%3C/svg%3E") center / 100% 100% no-repeat; transform: rotate(-4deg); transition: transform .35s; }
+.brand:hover .brand-co::before { transform: rotate(2deg) scale(1.06); }
 
 /* la barre de défilement d'origine est cachée : la goutte de peinture la remplace (la page défile toujours pareil) */
 html.js { scrollbar-width: none; -ms-overflow-style: none; }
@@ -1571,7 +1566,7 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
 @media (max-width: 720px) {
   .brand { flex: 0 1 auto; min-width: 0; }
   .brand-text { min-width: 0; }
-  .brand-text strong { white-space: nowrap; overflow: hidden; text-overflow: clip; }
+  .brand-text strong { white-space: nowrap; overflow: hidden; text-overflow: clip; padding: .32em .26em .36em 0; margin: -.32em 0 -.36em; }
   .header-actions { flex: none; }
 }
 

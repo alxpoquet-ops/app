@@ -8,5 +8,6 @@
  "Il fait les petites et moyennes modifications. Il montre d’abord votre demande à Alex, puis vous laisse valider l’aperçu : rien ne change sans votre accord.": "He makes the small and medium changes. He first shows your request to Alex, then lets you approve the preview: nothing changes without your say-so.",
  "Bricou, le bricoleur de la bande": "Bricou, the band’s handyman",
  "2. Bricou et Alex": "2. Bricou and Alex",
- "<span>Bricou et Alex</span></a><a href=\"#questionnaire\"><span class=\"doc-num\">3</span>": "<span>Bricou and Alex</span></a><a href=\"#questionnaire\"><span class=\"doc-num\">3</span>"
+ "<span>Bricou et Alex</span></a><a href=\"#questionnaire\"><span class=\"doc-num\">3</span>": "<span>Bricou and Alex</span></a><a href=\"#questionnaire\"><span class=\"doc-num\">3</span>",
+ "Alex <span class=\"brand-co\">&amp; Co</span>": "Alex <span class=\"brand-co\">&amp; Co</span>"
 }

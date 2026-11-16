@@ -155,24 +155,27 @@ function monster(kind, { size, cls = '', title } = {}) {
   return `<svg class="${classes}${cls ? ' ' + cls : ''}" viewBox="${vb}"${dim} ${label}>${dessin}</svg>`.replace(/(\d)\.(\d)00\b/g, '$1.$2');
 }
 
-// Logo : un petit monstre en autocollant (contour blanc), tout rond, rose et lilas, deux petites cornes dorées,
-// de grands yeux brillants, des joues roses et un sourire en « w ». Une étincelle à côté.
+// Logo : la tête d'Alex en autocollant (contour blanc) : petit monstre bleu pervenche, casque blanc de chef de chantier
+// avec son étoile dorée, grosses lunettes un peu carrées, joues roses et sourire en « w ».
 // Il reste lisible en tout petit (icône de l'onglet).
 function logoMark({ id = 'lg', size } = {}) {
   const dim = size ? ` width="${size}" height="${size}"` : '';
-  const oeil = (x) => `<ellipse cx="${x}" cy="35" rx="4.3" ry="5.4" fill="${INK}"/><circle cx="${x + 1.5}" cy="33" r="1.8" fill="#fff"/><circle cx="${x - 1.4}" cy="37" r=".8" fill="#fff"/>`;
-  return `<svg class="logo" viewBox="0 0 64 64"${dim} aria-hidden="true" focusable="false"><defs>
-<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB8D6"/><stop offset=".55" stop-color="#E6B9FF"/><stop offset="1" stop-color="#B9A6FF"/></linearGradient></defs>
-<g stroke="#fff" stroke-width="7" stroke-linejoin="round" fill="#fff">
-<path d="M19 20l-3-10 9 6ZM45 20l3-10-9 6Z"/>
-<path d="M9 40C9 23 19 13 32 13S55 23 55 40C55 52 46 56 32 56S9 52 9 40Z"/></g>
-<path d="M19 20l-3-10 9 6ZM45 20l3-10-9 6Z" fill="#FFE07A" stroke="#D9A400" stroke-width="1.8" stroke-linejoin="round"/>
-<path d="M9 40C9 23 19 13 32 13S55 23 55 40C55 52 46 56 32 56S9 52 9 40Z" fill="url(#${id})" stroke="#9B6FD8" stroke-width="2.2"/>
-<path d="M16 30c2-6 6-10 11-11" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".75"/>
-${oeil(24)}${oeil(40)}
-<ellipse cx="17.5" cy="43" rx="4" ry="2.4" fill="#FF7FAE" opacity=".7"/><ellipse cx="46.5" cy="43" rx="4" ry="2.4" fill="#FF7FAE" opacity=".7"/>
-<path d="M28 42.5q2 2.8 4 0q2 2.8 4 0" fill="none" stroke="${INK}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M57 9q.6 3.4 4 4q-3.4.6-4 4q-.6-3.4-4-4q3.4-.6 4-4Z" fill="#FFE07A"/></svg>`;
+  const CORPS = 'M8 44C8 27 18 17 32 17S56 27 56 44C56 54 48 59 32 59S8 54 8 44Z';
+  const CASQUE = 'M12 27C13 14 21 6 32 6S51 14 52 27Z';
+  const oeil = (x) => `<ellipse cx="${x}" cy="40" rx="2.6" ry="3.2" fill="${INK}"/><circle cx="${x + 1}" cy="38.7" r="1.05" fill="#fff"/>`;
+  return `<svg class="logo" viewBox="0 0 64 64"${dim} aria-hidden="true" focusable="false">
+<g fill="#fff" stroke="#fff" stroke-width="7" stroke-linejoin="round"><path d="${CORPS}"/><path d="${CASQUE}"/><rect x="7" y="24" width="50" height="7" rx="3.5"/></g>
+<path d="${CORPS}" fill="#BCC8FF" stroke="#4F5FC4" stroke-width="2.2"/>
+<path d="M14 42c1-5 3-8 6-9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+<path d="${CASQUE}" fill="#fff" stroke="#7D87BE" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M32 8V25" stroke="#DCE1F7" stroke-width="3.4" stroke-linecap="round"/>
+<rect x="7" y="24" width="50" height="7" rx="3.5" fill="#F1F3FF" stroke="#7D87BE" stroke-width="2.2"/>
+<path d="M22 11.2l1.1 2.9 3.1.2-2.4 1.9.8 3-2.6-1.7-2.6 1.7.8-3-2.4-1.9 3.1-.2Z" fill="#FFC23D" stroke="#C99A00" stroke-width="1" stroke-linejoin="round"/>
+${oeil(23)}${oeil(41)}
+<g fill="rgba(255,255,255,.22)" stroke="${INK}" stroke-width="2.3" stroke-linejoin="round"><rect x="15" y="33.5" width="16" height="13" rx="4"/><rect x="33" y="33.5" width="16" height="13" rx="4"/></g>
+<path d="M31 38.5q1-1.4 2 0M15 37l-4.5-1.2M49 37l4.5-1.2" fill="none" stroke="${INK}" stroke-width="2" stroke-linecap="round"/>
+<ellipse cx="13.5" cy="50" rx="3.6" ry="2.1" fill="#FF7FAE" opacity=".65"/><ellipse cx="50.5" cy="50" rx="3.6" ry="2.1" fill="#FF7FAE" opacity=".65"/>
+<path d="M28 51q2 2.6 4 0q2 2.6 4 0" fill="none" stroke="${INK}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 
 module.exports = { monster, logoMark, HUMEURS: Object.keys(HUMEURS) };

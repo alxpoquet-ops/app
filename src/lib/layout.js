@@ -5,7 +5,7 @@ try { METIERS = require('../content/metiers').metiers; } catch (e) { /* pas enco
 const { icon } = require('./icons');
 const { logoMark, monster } = require('./monsters');
 const { petit } = require('./bestiaire');
-const brandName = 'Alex &amp; Co';
+const brandName = 'Alex <span class="brand-co">&amp; Co</span>';
 const { esc, typo } = require('./md');
 const C = require('./components');
 
