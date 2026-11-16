@@ -20,7 +20,9 @@ const extrasMois = options.filter((o) => o.quand === 'mois');
 // Jetons : ceux de l'abonnement reviennent le 1er du mois, ceux rachetés restent.
 const recharge = jetonsLia.recharge[0]; // la plus petite recharge, rachetée à l'utilisation
 const OUTIL = '3 à 16'; // jetons pour un outil, le prix exact est affiché sur son bouton
-const retouchesMois = Math.floor(abo.jetons / jetonsLia.modif.base); // retouches courtes par Lia avec les jetons du mois
+const retouchesMois = Math.floor(abo.jetons / jetonsLia.modif.base); // petites retouches automatiques avec les jetons du mois
+// Textes publics : on parle des automatisations d'Alex et des « retouches automatiques », pas de Lia
+// (au plus une mention par page, comme l'assistante de la bulle en bas de l'écran).
 const alexEnPlus = A('alex'), urgent = A('urgent');
 const interv = abo.quota === 1 ? 'une intervention' : `${abo.quota} interventions`;
 const ville = site.address.city.replace(/'/g, '’');
@@ -66,7 +68,7 @@ J’ai passé du temps à automatiser mon travail, et j’ai des accès directs 
 
 ### Un travail automatisé là où il se répète
 
-Beaucoup d’étapes reviennent sur chaque projet. Pour celles-là, je suis épaulé par Lia, mon assistante autonome : elle automatise les tâches répétitives. Ce qui me prenait des jours se fait en quelques heures, et le délai comme le prix baissent d’autant.
+Beaucoup d’étapes reviennent sur chaque projet. J’ai automatisé tout ce qui se répète : c’est ce qui fait baisser les délais et le prix. Ce qui me prenait des jours se fait maintenant en quelques heures.
 
 - **La mise en page de base** : une première version des écrans, à partir de ce que vous m’avez raconté.
 - **Les premiers textes** : une base de travail, que je reprends ensuite avec vos mots.
@@ -80,7 +82,7 @@ Vos sites sont hébergés en France, chez des hébergeurs auxquels j’accède e
 
 ## Ce que je fais à la main
 
-Lia va vite, mais elle ne décide de rien. C’est moi qui conçois votre site : je vous écoute, je fais les choix et je reprends tout ce qu’elle prépare.
+Mes automatisations vont vite, mais elles ne décident de rien. C’est moi qui conçois votre site : je vous écoute, je fais les choix et je reprends tout ce qu’elles préparent.
 
 - **La relecture** : chaque page, chaque texte, chaque horaire et chaque prix affiché.
 - **Les tests sur téléphone** : je parcours le site sur plusieurs appareils, comme le feront vos clients.
@@ -116,7 +118,7 @@ Un prix plus bas ne veut pas dire un travail bâclé. Voici ce que vous gardez, 
 Et si votre projet dépasse ce que je sais bien faire, comme une application sur mesure ou un catalogue de milliers de produits, je vous le dis dès notre premier échange.`,
     faq: [
       { q: 'Moins cher, ça veut dire moins bien ?', a: 'Non. Le prix baisse parce que je passe moins de temps sur ce qui se répète, pas parce que je saute des étapes. Chaque site est relu, testé sur téléphone et vérifié avant d’être publié.' },
-      { q: 'Lia fait-elle mon site toute seule ?', a: 'Non. C’est moi qui conçois votre site. Lia automatise les tâches répétitives : une mise en page de base, des premiers textes, des réglages. Je reprends ensuite tout à la main, je fais les choix avec vous et je publie le site moi-même.' },
+      { q: 'Mon site est-il fait automatiquement ?', a: 'Non. C’est moi qui conçois votre site. Mes automatisations s’occupent seulement de ce qui se répète : une mise en page de base, des premiers textes, des réglages. Je reprends ensuite tout à la main, je fais les choix avec vous et je publie le site moi-même.' },
       { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. La création démarre à ${eur(creation.prix)} €, puis l’abonnement coûte ${eur(abo.month)} € par mois. Les options sont facultatives, et leur prix est indiqué avant que vous commandiez.` },
       { q: 'Pourquoi n’y a-t-il pas de devis ?', a: 'Parce que la plupart des sites d’indépendants, d’artisans, de commerces ou d’associations se construisent de la même façon. Un prix fixe est plus simple pour vous comme pour moi. Pour un projet hors norme, je vous le dis franchement.' },
     ],
@@ -287,15 +289,15 @@ Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les au
     icon: 'heart-handshake',
     color: 'pink',
     title: 'Pourquoi choisir Alex & Lia : nos engagements | Alex & Lia',
-    description: 'Un vrai interlocuteur qui répond, un prix affiché, sans engagement, le nom de domaine à votre nom, et Lia, l’assistante qui fait gagner du temps. Nos promesses.',
+    description: 'Un vrai interlocuteur qui vous répond, un prix affiché, sans engagement, le nom de domaine à votre nom, et des automatisations qui font baisser le prix.',
     h1: 'Pourquoi choisir Alex & Lia ?',
-    lead: 'Parce qu’internet devrait être simple. Derrière ce site, il y a une personne qui conçoit votre site, le met en ligne et vous répond. Et une assistante autonome qui l’aide à aller plus vite.',
+    lead: 'Parce qu’internet devrait être simple. Derrière ce site, il y a une personne, moi, qui conçoit votre site, le met en ligne et vous répond. Et tout ce qui se répète, je l’ai automatisé pour que vous payiez moins.',
     resume: 'Un vrai interlocuteur, des engagements écrits.',
     points: [
       { icon: 'user', t: 'Une vraie personne', d: 'C’est moi, Alex, qui lis vos messages et qui vous réponds.' },
       { icon: 'tag', t: 'Un prix affiché', d: 'Le même pour tous, sans devis et sans surprise.' },
       { icon: 'lock', t: 'Rien ne vous retient', d: 'Sans engagement, et votre nom de domaine reste à votre nom.' },
-      { icon: 'sparkles', t: 'Lia, en coulisses', d: 'Elle automatise les tâches répétitives pour réduire délais et coûts.' },
+      { icon: 'workflow', t: 'Des automatisations', d: 'Le travail répétitif est automatisé, et votre facture baisse d’autant.' },
     ],
     body: `## Alex, un vrai interlocuteur
 
@@ -310,7 +312,7 @@ Vous pouvez me poser vos questions avant de commander, sans rien vous engager. S
 ## Ma méthode, en quatre temps
 
 1. **On échange** : vous me dites ce que vous faites, pour qui, et ce que vous attendez du site. Les choix se font avec vous.
-2. **Je conçois votre site** : la structure, les pages, le style. Lia, mon assistante autonome, automatise au passage les tâches répétitives, comme la mise en page de base, les premiers textes et les réglages.
+2. **Je conçois votre site** : la structure, les pages, le style. Au passage, mes automatisations prennent en charge le répétitif, comme la mise en page de base, les premiers textes et les réglages.
 3. **Je vérifie** : je relis tout, je teste le site sur plusieurs appareils et je corrige ce qui doit l’être.
 4. **Je mets en ligne, et je reste là** : le nom de domaine, l’hébergement, le cadenas HTTPS, puis le suivi au fil des mois.
 
@@ -322,18 +324,18 @@ Ce sont des promesses simples, écrites ici pour que vous puissiez me les rappel
 - **Sans engagement** : l’abonnement s’arrête quand vous le décidez. Seule exception, si vous payez le site en ${durees} fois, vous restez le temps du paiement.
 - **Le nom de domaine à votre nom** : l’adresse de votre site vous appartient, pas à moi.
 - **Vous repartez avec votre site** : si vous arrêtez, je vous remets une copie complète, et votre adresse vous suit.
-- **Rien en ligne sans vérification** : je contrôle votre site avant sa mise en ligne, et chaque retouche de Lia passe par un aperçu que vous validez.
+- **Rien en ligne sans vérification** : je contrôle votre site avant sa mise en ligne, et chaque retouche automatique passe d’abord par un aperçu que vous validez.
 - **Une réponse sous ${delais.reponse}** : le support est compris dans l’abonnement, pour toutes vos questions sur votre site.
 
-## Lia, mon assistante
+## Mes automatisations
 
-Lia est mon assistante autonome, réglée pour les sites que je conçois. Elle automatise les tâches répétitives, et c’est ce qui fait baisser les délais et les coûts. La conception de votre site, elle, reste mon travail.
+D’un site à l’autre, beaucoup de choses se ressemblent : la structure de départ, les réglages pour Google, l’affichage sur téléphone, les sauvegardes. Ce travail-là, je l’ai automatisé. Il se fait vite et sans oubli, et c’est autant de temps que vous ne payez pas. La conception de votre site, elle, reste mon travail.
 
-Une fois votre site en ligne, elle s’occupe aussi des petites retouches que vous demandez depuis votre espace client : un horaire, un prix, une photo. Ces retouches utilisent les jetons compris dans votre abonnement. Elle vous montre toujours un aperçu avant de changer quoi que ce soit. Dès qu’une demande est trop grande ou pas claire, elle me la passe.
+Une fois le site en ligne, vos petites demandes passent aussi par une retouche automatique : un horaire, un prix, une photo. Elle utilise les jetons compris dans votre abonnement, et vous voyez toujours un aperçu avant que quoi que ce soit change. Une demande trop grande ou pas claire arrive directement chez moi.
 
-Ce que Lia ne fait pas : elle ne vend rien, elle ne décide pas à votre place, et elle ne me remplace pas. Elle ne peut pas supprimer une page, ni toucher aux réglages sensibles de votre site.
+Ces automatisations ne vendent rien et ne décident pas à votre place. Elles ne peuvent ni supprimer une page, ni toucher aux réglages sensibles de votre site. Et elles ne me remplacent pas : c’est toujours moi qui réponds de votre site.
 
-Sur ce site, vous croiserez aussi nos deux mascottes, deux petits monstres mignons. Ils sont là pour rappeler qu’internet peut rester sympathique.
+Une question en passant ? Lia, mon assistante, vous répond dans la bulle en bas de l’écran, ici comme dans votre espace client. Sur ce site, vous croiserez aussi nos deux mascottes, deux petits monstres mignons. Ils sont là pour rappeler qu’internet peut rester sympathique.
 
 ## Ce que je fais bien, et ce que je ne fais pas
 
@@ -341,10 +343,10 @@ Je crée des sites une page, des sites vitrines et des petites boutiques en lign
 
 Pour une application sur mesure, un logiciel métier ou un catalogue de milliers de produits, il faut un développeur expérimenté. Dans ce cas, je vous le dis honnêtement, et je peux vous orienter vers les bonnes personnes.
 
-Si mes prix restent doux, c’est que j’ai pris le temps d’automatiser mon travail, et que je passe directement par des hébergeurs français. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout.`,
+Si mes prix restent doux, c’est grâce aux automatisations que j’ai mises en place, et à mes accès directs chez des hébergeurs français. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout.`,
     faq: [
-      { q: 'Est-ce que je parle à une vraie personne ?', a: 'Oui. Les messages du formulaire de contact arrivent chez moi, et c’est moi qui réponds. Dans votre espace client, Lia peut préparer une petite retouche, mais vous pouvez toujours choisir de vous adresser à moi.' },
-      { q: 'Lia peut-elle se tromper ?', a: 'Oui, comme tout outil. C’est pour cela qu’elle montre un aperçu avant chaque retouche, qu’elle n’a pas accès aux réglages sensibles, et que je contrôle chaque site avant de le publier.' },
+      { q: 'Est-ce que je parle à une vraie personne ?', a: 'Oui. Les messages du formulaire de contact arrivent chez moi, et c’est moi qui réponds. Dans votre espace client, une petite retouche peut se faire automatiquement, mais vous pouvez toujours choisir de vous adresser à moi.' },
+      { q: 'Et si une retouche automatique se trompe ?', a: 'Cela peut arriver, comme avec tout outil. C’est pour cela que chaque retouche montre un aperçu avant d’être publiée, qu’elle n’a pas accès aux réglages sensibles, et que je contrôle chaque site avant de le publier.' },
       { q: 'Et si je veux partir un jour ?', a: 'Vous partez librement. Le nom de domaine est déjà à votre nom, et je vous remets les fichiers de votre site pour le faire héberger ailleurs.' },
       { q: 'Faut-il habiter près de chez vous ?', a: `Non. Tout peut se faire à distance, par e-mail, au téléphone ou en visio, partout en France. Si vous êtes dans les ${dept}, on peut aussi se rencontrer.` },
     ],
@@ -382,19 +384,19 @@ L’hébergement, c’est l’ordinateur où vit votre site. Le nom de domaine, 
 Un horaire qui change, une nouvelle photo, un prix à mettre à jour ? Tout passe par votre espace client, sur ordinateur comme sur téléphone.
 
 1. **Vous écrivez votre demande** en quelques mots, et vous joignez une photo si besoin.
-2. **Pour une petite retouche**, Lia, mon assistante autonome, prépare le changement et vous montre un aperçu. Vous validez, et c’est en ligne.
+2. **Pour une petite retouche**, le changement se prépare automatiquement et vous voyez un aperçu. Vous validez, et c’est en ligne.
 3. **Pour une demande plus grande**, ou si vous préférez, je m’en occupe à la main. L’abonnement comprend ${interv} de ma part par ${abo.periode}.
 4. **Vous suivez tout** depuis votre espace, et je vous préviens quand c’est fait.
 
-Pour une simple question sur votre site, je vous réponds sous ${delais.reponse}.
+Pour une simple question sur votre site, je vous réponds sous ${delais.reponse}. Et pour un renseignement rapide, Lia, mon assistante, est là dans la bulle en bas de votre espace client.
 
 > Envie de voir à quoi cela ressemble ? La [démo de l’espace client](/mon-espace/demo/) se visite librement, sans créer de compte.
 
-## Les jetons, pour Lia et les outils
+## Les jetons, pour les retouches et les outils
 
-Les retouches faites par Lia et les outils de votre espace client fonctionnent avec des jetons. L’abonnement en comprend ${abo.jetons} chaque mois.
+Les retouches automatiques et les outils de votre espace client fonctionnent avec des jetons. L’abonnement en comprend ${abo.jetons} chaque mois.
 
-- **Une retouche par Lia** : ${jetonsLia.modif.base} jetons et plus, selon la longueur du texte et le nombre de photos.
+- **Une retouche automatique** : ${jetonsLia.modif.base} jetons et plus, selon la longueur du texte et le nombre de photos.
 - **Un outil** : de ${OUTIL} jetons, et son prix est affiché sur son bouton avant de le lancer.
 - **Besoin de plus ?** Vous en rachetez à l’utilisation, ${eur(recharge.prix)} € les ${recharge.jetons} jetons, ajoutés à votre prochaine facture.
 
@@ -414,7 +416,7 @@ Besoin d’un coup de main ponctuel ? Ces extras se commandent depuis votre espa
 
 ${aLaDemande.map((a) => `- **${a.name}** : ${eur(a.prix)} €`).join('\n')}
 
-Pour l’article, vous donnez le sujet : Lia prépare un premier jet, puis je le relis, je l’illustre et je le publie sur votre site. Le point avec moi se fait au téléphone ou en visio, pour regarder ensemble votre site et vos projets.
+Pour l’article, vous donnez le sujet : un premier jet se prépare automatiquement, puis je le relis, je l’illustre et je le publie sur votre site. Le point avec moi se fait au téléphone ou en visio, pour regarder ensemble votre site et vos projets.
 
 ## Sans engagement, et si vous arrêtez
 
@@ -425,8 +427,8 @@ Et après ? Votre nom de domaine est à votre nom, il reste donc à vous. Je vou
 Tous les prix sont réunis sur la page [tarifs](/tarifs/). Et si vous parlez de moi autour de vous, le [parrainage](/fidelite/) vous offre ${fidelite.parrainageMois} mois d’abonnement, à vous comme à la personne parrainée.`,
     faq: [
       { q: 'Puis-je avoir un site sans abonnement ?', a: 'Non, tant que votre site est hébergé chez moi. L’abonnement couvre ce qui le fait vivre : son adresse, son hébergement et son entretien. Il reste sans engagement.' },
-      { q: 'Combien de modifications puis-je demander ?', a: `Avec les ${abo.jetons} jetons du mois, jusqu’à ${retouchesMois} retouches courtes par Lia, et ${interv} faite à la main par ${abo.periode}. Il vous en faut plus ? Rachetez des jetons, ${eur(recharge.prix)} € les ${recharge.jetons}, ou demandez une intervention d’Alex en plus pour ${eur(alexEnPlus.prix)} €.` },
-      { q: 'En combien de temps ma demande est-elle traitée ?', a: `Une petite retouche avec Lia se fait en quelques minutes, une fois l’aperçu validé. Pour une demande faite à la main, je réponds sous ${delais.reponse}. Si c’est pressé, l’extra « ${urgent.name} » la fait passer avant les autres.` },
+      { q: 'Combien de modifications puis-je demander ?', a: `Avec les ${abo.jetons} jetons du mois, jusqu’à ${retouchesMois} petites retouches automatiques, et ${interv} faite à la main par ${abo.periode}. Il vous en faut plus ? Rachetez des jetons, ${eur(recharge.prix)} € les ${recharge.jetons}, ou demandez une intervention d’Alex en plus pour ${eur(alexEnPlus.prix)} €.` },
+      { q: 'En combien de temps ma demande est-elle traitée ?', a: `Une petite retouche automatique est en ligne en quelques minutes, une fois l’aperçu validé. Pour une demande faite à la main, je réponds sous ${delais.reponse}. Si c’est pressé, l’extra « ${urgent.name} » la fait passer avant les autres.` },
       { q: 'Puis-je changer d’options plus tard ?', a: 'Oui. Les options au mois se prennent ou s’arrêtent depuis votre espace client, à tout moment, et le changement compte pour la période suivante.' },
     ],
     voir: ['/tarifs/', '/mon-espace/demo/', '/pourquoi-alex-et-lia/'],

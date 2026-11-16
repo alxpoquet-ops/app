@@ -2,7 +2,8 @@
 // Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160, aucun tiret long
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de config.js), aucun client,
 // avis ou chiffre inventé, et pas de phrase de 9 mots ou plus reprise d'une autre page.
-// Lia apparaît au plus une fois par page, comme l'assistante d'Alex.
+// Le prix bas vient des automatisations d'Alex : on en parle ainsi, sans présenter Lia (elle se trouve
+// dans la bulle en bas de l'écran). Au plus une mention de Lia par page, et seulement si elle est utile.
 const { creation, types, forfaits, options, aLaDemande, paiement, lissage, delais, marche } = require('../config');
 
 const O = (id) => options.find((o) => o.id === id);
@@ -85,7 +86,7 @@ Pour être trouvé autour de chez vous, le site fait équipe avec votre [fiche G
 
 Vous n’avez ni le temps ni l’envie de gérer un site le soir, et c’est normal. Je rédige les textes avec vous après un court échange, je prépare la mise en page et je mets tout en ligne. Plus tard, un tarif change ou une nouvelle photo arrive ? Vous me l’envoyez depuis votre téléphone, et c’est fait.
 
-Pour aller vite sans bâcler, je travaille avec Lia, mon assistante autonome. Elle automatise les tâches répétitives, et moi je relis chaque page avant qu’elle parte en ligne. C’est ce qui garde des délais courts et un prix doux.
+Pour aller vite sans bâcler, j’ai automatisé tout ce qui se répète d’un site à l’autre. Je garde pour moi la conception, puis la relecture de chaque page avant sa mise en ligne. C’est ce qui garde des délais courts et un prix doux.
 
 ## Combien ça coûte
 
@@ -161,7 +162,7 @@ Les pages de conseils sont une autre piste, à petits pas. Comment se passe une 
 
 ## Vous accompagnez, je m’occupe du site
 
-Vous n’avez pas à écrire seul. Racontez-moi votre pratique avec vos mots, au téléphone ou par écrit. Lia, mon assistante autonome, met ces notes en forme et prépare la mise en page, ce qui raccourcit les délais et allège la facture. Je relis ensuite chaque phrase avec vous, surtout les plus délicates. Rien ne part en ligne sans votre accord.
+Vous n’avez pas à écrire seul. Racontez-moi votre pratique avec vos mots, au téléphone ou par écrit. Je conçois la mise en page, et mes automatisations se chargent de mettre vos notes en forme. Les délais raccourcissent, et la facture s’allège d’autant. Je relis ensuite chaque phrase avec vous, surtout les plus délicates. Rien ne part en ligne sans votre accord.
 
 ## Le prix
 
@@ -235,7 +236,7 @@ Le guide pour [créer une boutique en ligne](/guides/creer-boutique-en-ligne/) d
 
 ## Vous créez, je m’occupe du reste
 
-Vous m’envoyez vos photos et quelques notes sur chaque pièce. Lia, mon assistante autonome, s’occupe de la partie répétitive : elle prépare les fiches et la mise en page à partir de vos notes, en bien moins de temps qu’à la main. Je reprends ensuite chaque texte pour qu’il sonne comme vous, et je vérifie chaque page avant la mise en ligne.
+Vous m’envoyez vos photos et quelques notes sur chaque pièce. J’ai automatisé la partie répétitive : les fiches se préparent à partir de vos notes, en bien moins de temps qu’à la main. Je reprends ensuite chaque texte pour qu’il sonne comme vous, et je vérifie chaque page avant la mise en ligne.
 
 Côté prix, la création coûte à partir de ${prix} € pour la galerie, et à partir de ${prixBoutique} € avec la boutique. Vous réglez ${acompte} en commandant, puis le solde à la réception, en une fois ou en ${durees} fois sans frais. L’abonnement de base, à ${mensuel} et sans engagement, garde le site en ligne, sauvegardé et à jour. Une nouvelle collection à ajouter ? Envoyez-la-moi, je m’en charge.`,
     faq: [
@@ -308,7 +309,7 @@ Dans le tourisme, les avis pèsent lourd. Publiez seulement de vrais commentaire
 
 La création coûte à partir de ${prix} €. La plupart des hébergements choisissent un site vitrine : l’accueil, les chambres, les environs, les tarifs et le contact avec l’accès tiennent dans les cinq pages comprises.
 
-Ensuite, l’abonnement de base coûte ${mensuel} et ne vous engage à rien. Il garde le site en ligne, à jour et sauvegardé, avec son nom de domaine. Les petites retouches de saison, un tarif d’été ou une date de fermeture, passent par Lia, mon assistante autonome, qui automatise ces changements répétitifs pour qu’ils soient faits vite. Une fois par ${periode}, je prends moi-même en charge un travail plus important.`,
+Ensuite, l’abonnement de base coûte ${mensuel} et ne vous engage à rien. Il garde le site en ligne, à jour et sauvegardé, avec son nom de domaine. Les petites retouches de saison, un tarif d’été ou une date de fermeture, sont automatiques : vous validez l’aperçu, et c’est en ligne. Une fois par ${periode}, je prends moi-même en charge un travail plus important.`,
     faq: [
       { q: 'Le site peut-il afficher mes disponibilités ?', a: 'Si vous tenez déjà un calendrier en ligne, le site peut y renvoyer. Sinon, la demande de séjour suffit souvent : vous gardez la main sur votre planning et vous confirmez chaque réservation vous-même.' },
       { q: 'Faut-il vraiment une version anglaise ?', a: 'Si vous recevez des voyageurs étrangers, c’est souvent utile. Une personne qui ne comprend pas vos conditions préfère réserver là où tout est clair pour elle. Si vos hôtes sont surtout français, vous pouvez attendre.' },
@@ -374,7 +375,7 @@ Commencez petit, avec vos produits les plus demandés, ceux qui se gardent et se
 
 Un commerce bouge tout le temps : les horaires d’été, la fermeture d’une semaine en août, la nouvelle gamme, le marché de Noël. Un site qui affiche encore les horaires de l’an dernier déçoit, et le client ne revient pas forcément.
 
-Avec l’abonnement de base, à ${mensuel} et sans engagement, ces changements ne vous demandent qu’un message. Lia, mon assistante autonome, prend en charge les retouches répétitives comme un horaire ou un prix, ce qui les rend rapides et peu coûteuses. Pour un changement plus important, j’interviens moi-même une fois par ${periode}, et vous pouvez demander un passage de plus, à ${extra('alex')}, quand la saison l’exige.
+Avec l’abonnement de base, à ${mensuel} et sans engagement, ces changements ne vous demandent qu’un message. Les retouches courantes, comme un horaire ou un prix, passent par mes automatisations : elles sont rapides et coûtent peu. Pour un changement plus important, j’interviens moi-même une fois par ${periode}, et vous pouvez demander un passage de plus, à ${extra('alex')}, quand la saison l’exige.
 
 ## Combien ça coûte
 
@@ -443,7 +444,7 @@ Pour les bénévoles, une page dédiée change beaucoup de choses. Dites précis
 
 C’est le problème classique : le membre qui avait fait le site s’en va, et plus personne ne sait le modifier. Ici, le site ne dépend d’aucun bénévole. Le président, la secrétaire ou le nouveau trésorier envoie sa demande depuis l’espace client, et je m’en occupe. Quand le bureau change, il suffit de transmettre l’accès.
 
-Lia, mon assistante autonome, se charge des petits changements répétitifs, une date ou un horaire, ce qui permet de garder un prix très bas. Une fois par ${periode}, je fais moi-même une modification plus importante.
+Les petits changements, une date ou un horaire, passent par les retouches automatiques, et c’est ce qui garde le prix très bas. Une fois par ${periode}, je fais moi-même une modification plus importante.
 
 ## Un budget qui se vote
 

@@ -2,6 +2,17 @@
 const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, creation, marche, boost, aLaDemande } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
+const { petit } = require('./bestiaire');
+
+// ---------------------------------------------------------------- la petite famille de monstres
+// Sur les pages publiques, ce sont eux qu'on voit, un peu partout. Lia n'apparaît que dans la bulle, en bas de l'écran.
+// Les anciens noms de Lia (ses humeurs) donnent un monstre de la famille.
+const PETIT_DE = { mascotte: 'mochi', bonjour: 'mochi', coucou: 'mochi', clin: 'chaton', ravie: 'etoile', pense: 'nuage', triste: 'fantome', alex: 'dino' };
+// Le monstre de chaque rubrique, dans le haut de ses pages
+const PETIT_SECTION = { creer: 'mochi', forfaits: 'etoile', espace: 'gelee', seo: 'nuage', contact: 'chaton', confiance: 'champi', liaalex: 'mochi', metiers: 'dino', accompagnement: 'gelee', guides: 'nuage', documentation: 'fantome', lexique: 'champi', comparatif: 'chaton', fidelite: 'etoile', methode: 'mochi', monespace: 'fantome', commander: 'etoile', confirmation: 'etoile' };
+const bouille = (nom, opts) => petit(PETIT_DE[nom] || nom, opts);
+// Un petit monstre posé au bord d'un bloc : place = haut-droite, haut-gauche, bas-droite, bas-gauche, cote-gauche, cote-droite
+const deco = (nom, place = 'haut-droite', humeur) => `<span class="deco deco-${place}" aria-hidden="true">${petit(nom, { humeur })}</span>`;
 const { inline, esc, plain } = require('./md');
 
 // ---------------------------------------------------------------- liens et prix
@@ -42,10 +53,12 @@ function breadcrumbs(crumbs) {
 
 // ---------------------------------------------------------------- en-tête de page
 // La pastille (couleur + icône de la rubrique) dit tout de suite où l'on est.
-function pageHero({ section, h1, lead, crumbs, mascot, actions = false, compact = false }) {
+function pageHero({ section, h1, lead, crumbs, mascot, actions = false, compact = false, humeur }) {
   const s = section ? sections[section] : null;
+  // un petit monstre de la famille à droite du titre : celui demandé, sinon celui de la rubrique
+  const art = mascot ? bouille(mascot, { humeur }) : petit(PETIT_SECTION[section] || 'mochi', { humeur });
   return `<section class="page-hero c-${s ? s.color : 'mint'}${compact ? ' page-hero-compact' : ''}">
-  <div class="container page-hero-in${mascot ? ' has-mascot' : ''}">
+  <div class="container page-hero-in has-mascot">
     <div class="page-hero-text">
       ${crumbs ? breadcrumbs(crumbs) : ''}
       ${s ? `<p class="where">${icon(s.icon)}<span>${s.label}</span></p>` : ''}
@@ -53,7 +66,7 @@ function pageHero({ section, h1, lead, crumbs, mascot, actions = false, compact 
       ${lead ? `<p class="lead">${inline(lead)}</p>` : ''}
       ${actions ? `<div class="hero-ctas">${btnCreer('btn-primary btn-lg btn-flaque')}${btnWa('btn-wa btn-lg')}</div>` : ''}
     </div>
-    ${mascot ? `<div class="page-hero-art">${monster(mascot)}</div>` : ''}
+    <div class="page-hero-art" aria-hidden="true">${art}</div>
   </div>
 </section>`;
 }
@@ -84,7 +97,7 @@ const faqSchema = (items) => ({
 function ctaBand({ title = 'On crée votre site ?', text = 'Choisissez votre site et vos options en deux minutes. Vous voyez le prix tout de suite, et vous commandez quand vous êtes prêt.', mascot = 'mascotte' } = {}) {
   return `<section class="cta-band"><div class="container">
   <div class="cta-box reveal">
-    <div class="cta-art">${monster(mascot)}</div>
+    <div class="cta-art cta-duo" aria-hidden="true">${bouille(mascot)}${petit(mascot === 'mascotte' ? 'fantome' : 'gelee', { humeur: 'ravi' })}</div>
     <div class="cta-text"><h2>${esc(title)}</h2><p>${inline(text)}</p></div>
     <div class="cta-actions">${btnCreer('btn-primary btn-lg')}${btnWa('btn-wa btn-lg')}</div>
   </div>
@@ -161,7 +174,7 @@ const INCLUS_SITE = ['La maquette, le site complet et la mise en ligne', 'Une pa
 function offre({ compact = false, choose = true } = {}) {
   const liste = (items) => `<ul class="plan-list">${items.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>`;
   return `<div class="offre reveal" id="offre">
-  <div class="offre-lia">${monster('ravie')}${monster('alex')}</div>
+  <div class="offre-lia" aria-hidden="true">${petit('gelee')}${petit('chaton', { humeur: 'ravi' })}</div>
   <div class="offre-cols">
     <article class="offre-col c-mint">
       <p class="offre-k"><span>1</span>Votre site</p>
@@ -196,7 +209,7 @@ function economie() {
     <p class="eco-ligne"><span>Site vitrine fait par un indépendant</span><i style="width:100%"></i><b>${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)}</b></p>
     <p class="eco-ligne is-nous"><span>Chez Alex & Lia</span><i style="width:${Math.max(14, Math.round((creation.prix / milieu) * 100))}%"></i><b>${euro(creation.prix)}</b></p>
   </div>
-  <p>Pas de secret : j’ai passé du temps à automatiser mon travail, et Lia, mon assistante autonome, s’occupe des tâches répétitives. Je conçois le site et je vérifie tout à la main. Vous ne payez pas des semaines de travail. Le prix est le même pour tout le monde, affiché ici, sans devis.</p>
+  <p>Pas de secret : j’ai passé du temps à automatiser mon travail, et tout ce qui se répète se fait maintenant tout seul. Je conçois le site et je vérifie tout à la main. Vous ne payez pas des semaines de travail. Le prix est le même pour tout le monde, affiché ici, sans devis.</p>
   <p class="eco-note">Nos repères : les prix publics relevés en France en 2026 pour un site vitrine de cinq pages fait par un indépendant. Une agence demande souvent plus. Il existe aussi des offres à bas prix, entre ${euro(marche.basMin)} et ${euro(marche.basMax)}, proches du nôtre.</p>
 </div>`;
 }
@@ -263,7 +276,7 @@ function typeChoices({ name = 'b-type', checked = 'vitrine' } = {}) {
 // L'abonnement : il n'y en a qu'un. Le bouton radio caché garde le nom attendu par le script et par la commande.
 function forfaitChoices({ name = 'b-forfait' } = {}) {
   return `<div class="b-abo c-${ABO.color}"><input type="radio" name="${name}" value="${ABO.id}" checked hidden>
-        <span class="b-art">${monster('mascotte')}</span>
+        <span class="b-art">${petit('etoile')}</span>
         <div class="b-abo-txt"><strong>L’abonnement</strong><span class="b-price">${billed(ABO.month)}</span>
         <ul>${ABO.main.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul></div>
       </div>`;
@@ -395,18 +408,18 @@ function comparatifTable() {
   const prixCreation = `${euro(creation.prix)}, le même prix pour tous. Boutique en ligne : + ${euro(creation.boutique)}`;
   const prixMois = `${euro(ABO.month)} par mois, nom de domaine et hébergement compris`;
   const rows = [
-    ['Qui fait le travail', 'Alex conçoit votre site. Lia, son assistante autonome, automatise les tâches répétitives.', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
+    ['Qui fait le travail', 'Alex conçoit votre site. Ses automatisations s’occupent des tâches répétitives.', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
     ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
     ['Prix chaque mois', prixMois, 'Contrat de maintenance, sur devis', 'Selon le prestataire, souvent en option', 'Abonnement mensuel, plus les applications en option'],
     ['Délai', `${types[0].delai} pour une page, ${types[1].delai} pour un site vitrine, ${types[2].delai} pour une boutique`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
-    ['Modifications', 'Avec Lia, grâce aux jetons compris chaque mois, et Alex une fois par trimestre', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
+    ['Modifications', 'Retouches automatiques avec les jetons compris chaque mois, et Alex une fois par trimestre', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
     ['SEO', 'Bases comprises sur chaque site. Avec l’extra Suivi Google, je travaille votre place chaque mois', 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
     ['Engagement', `Aucun. Seulement le temps du paiement si le reste est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
   return `<div class="cmp cmp-4 reveal" role="table" aria-label="Alex & Lia comparé à une agence web, un freelance et une plateforme à faire soi-même">
-  <div class="cmp-head" role="row"><span role="columnheader"></span>${cols.map((c, i) => `<span role="columnheader" class="cmp-cell${i === 0 ? ' cmp-me' : ''}">${i === 0 ? monster('mascotte') : ''}${esc(c)}</span>`).join('')}</div>
+  <div class="cmp-head" role="row"><span role="columnheader"></span>${cols.map((c, i) => `<span role="columnheader" class="cmp-cell${i === 0 ? ' cmp-me' : ''}">${i === 0 ? petit('mochi') : ''}${esc(c)}</span>`).join('')}</div>
   ${rows.map(([l, ...cells]) => `<div class="cmp-row" role="row"><span class="cmp-label" role="rowheader">${esc(l)}</span>${cells.map(cell).join('')}</div>`).join('')}
 </div>`;
 }
@@ -419,4 +432,5 @@ module.exports = {
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, optsCreation, optsMois, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
+  petit, bouille, deco, PETIT_SECTION,
 };

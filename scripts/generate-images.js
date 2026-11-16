@@ -6,6 +6,7 @@ const { chromium } = require('playwright');
 const ROOT = path.join(__dirname, '..');
 const font = (f) => 'data:font/woff2;base64,' + fs.readFileSync(path.join(ROOT, 'src/assets/fonts', f)).toString('base64');
 const { logoMark, monster } = require('../src/lib/monsters');
+const { petit } = require('../src/lib/bestiaire');
 const { forfaits, types } = require('../src/config');
 const logo = logoMark({ id: 'g' }).replace('class="logo"', 'width="100%" height="100%"');
 const { creation, marche } = require('../src/config');
@@ -21,10 +22,13 @@ const NOEL = jour >= 1115 || jour <= 106 ? ' class="noel"' : '';
 const og = `${base}<div${NOEL} style="width:1200px;height:630px;position:relative;overflow:hidden;font-family:Jakarta;color:#4B4668;background:radial-gradient(520px 380px at 88% 18%,#FFE8F1,transparent 70%),radial-gradient(480px 340px at 0% 100%,#DDF7EC,transparent 70%),radial-gradient(420px 300px at 50% 0%,#EEE7FF,transparent 70%),#FFF8F2">
 <div style="position:absolute;left:72px;top:62px;display:flex;align-items:center;gap:18px"><div style="width:84px;height:84px">${logo}</div><div><div style="font-weight:900;font-size:56px;line-height:1;color:#2E2A47">Alex &amp; Lia</div><div style="font-size:24px;font-weight:800;color:#6B6789;margin-top:6px">Sites internet et SEO</div></div></div>
 <div style="position:absolute;left:72px;top:212px;width:700px;font-weight:900;font-size:66px;line-height:1.06;letter-spacing:-1px;color:#2E2A47">Votre site internet, <span style="background:linear-gradient(transparent 58%,#BFF0DA 58% 94%,transparent 94%)">${marche.fois} fois moins cher</span></div>
-<div style="position:absolute;left:72px;top:440px;width:660px;font-size:27px;line-height:1.35;font-weight:700">Maquette, nom de domaine, hébergement, mises à jour : tout est compris. Alex conçoit votre site, Lia automatise le reste.</div>
+<div style="position:absolute;left:72px;top:440px;width:660px;font-size:27px;line-height:1.35;font-weight:700">Tout est compris : maquette, nom de domaine, hébergement et mises à jour.</div>
 <div style="position:absolute;left:72px;bottom:52px;display:flex;gap:12px;font-size:22px">${PILLS.map(([a, b, bg, fg]) => `<span style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;background:${bg};color:${fg};font-weight:900"><b style="font-weight:900;color:#2E2A47">${a}</b> ${b}</span>`).join('')}</div>
-<div style="position:absolute;right:170px;top:120px;width:300px">${monster('bonjour')}</div>
-<div style="position:absolute;right:16px;top:226px;width:250px">${monster('alex')}</div>
+<div style="position:absolute;right:250px;top:96px;width:200px">${petit('mochi')}</div>
+<div style="position:absolute;right:60px;top:70px;width:170px">${petit('fantome', { humeur: 'ravi' })}</div>
+<div style="position:absolute;right:170px;top:300px;width:190px">${petit('gelee')}</div>
+<div style="position:absolute;right:20px;top:300px;width:150px">${petit('chaton', { humeur: 'ravi' })}</div>
+<div style="position:absolute;right:420px;top:330px;width:110px">${petit('etoile')}</div>
 </div>`;
 const icon = (s, pad = 0, bg = 'transparent') => `${base}<div style="width:${s}px;height:${s}px;padding:${pad}px;background:${bg}">${logo}</div>`;
 (async () => {

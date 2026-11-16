@@ -143,7 +143,8 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 .header-in { display: flex; align-items: center; gap: 18px; min-height: var(--header-h); }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); flex: none; }
 .brand:hover { color: var(--ink); }
-.brand .logo { width: 62px; height: 46px; overflow: visible; }
+.brand .logo { width: 48px; height: 48px; overflow: visible; filter: drop-shadow(0 4px 8px rgba(155, 111, 216, .35)); transition: transform .3s; }
+.brand:hover .logo { transform: rotate(-8deg) scale(1.06); }
 .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
 .brand-text strong { font-size: 1.4rem; font-weight: 900; letter-spacing: .01em; }
 .brand-text small { font-size: .78rem; color: var(--muted); font-weight: 800; margin-top: 3px; }
@@ -1312,7 +1313,7 @@ button.app-card:hover { transform: translateY(-2px); }
 
 /* le nom du site : la peinture du pot coule au sol et souligne « Alex & Lia » d'une traînée multicolore */
 .brand { position: relative; isolation: isolate; }
-.brand::after { content: ""; position: absolute; z-index: -1; left: 42px; right: -12px; bottom: 0; height: 12px; pointer-events: none;
+.brand::after { content: ""; position: absolute; z-index: -1; left: 58px; right: -12px; bottom: 0; height: 12px; pointer-events: none;
   background: linear-gradient(90deg, #FF6FAE 0, #9B7BFF 20px, #5AA2F0 34%, #7EDDB5 54%, #FFD45E 72%, #FF9E6E 88%, #FF6FAE);
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5C18 2 40 3.4 62 4.2S104 1.6 132 3.6S176 2 190 4.8C198 6.4 197.5 10 189 10.6C166 12.6 140 10.2 110 11.6S52 12.8 30 11.2S2 11.4 0 9Z'/%3E%3Cellipse cx='197' cy='3' rx='1.6' ry='2.2'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5C18 2 40 3.4 62 4.2S104 1.6 132 3.6S176 2 190 4.8C198 6.4 197.5 10 189 10.6C166 12.6 140 10.2 110 11.6S52 12.8 30 11.2S2 11.4 0 9Z'/%3E%3Cellipse cx='197' cy='3' rx='1.6' ry='2.2'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
   transform-origin: 0 50%; transition: transform .35s; }
@@ -1559,7 +1560,7 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
   .header-in { gap: 6px; }
   .header-actions { gap: 6px; }
   .brand { gap: 6px; }
-  .brand .logo { width: 44px; height: 34px; }
+  .brand .logo { width: 40px; height: 40px; }
   .brand-text strong { font-size: 1.05rem; }
   .lang-switch { font-size: .7rem; padding: 2px; }
   .lang-switch span { padding: 6px 6px; }
@@ -1602,7 +1603,7 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
   .lang-switch span { padding: 7px 9px; }
   .brand-text { min-width: max-content; }
   .brand-text strong { overflow: visible; font-size: 1rem; }
-  .brand .logo { width: 40px; height: 30px; }
+  .brand .logo { width: 36px; height: 36px; }
 }
 @media (max-width: 340px) {
   .brand-text strong { font-size: .9rem; }
@@ -1824,3 +1825,89 @@ div.tool { cursor: default; }
 .opt-conseil { max-width: 980px; margin: 0 auto; }
 .metier-ex-titre { margin-top: 56px; }
 .client-cards-solo { grid-template-columns: minmax(0, 420px); justify-content: center; }
+
+/* ==========================================================================
+   THÈME KAWAII : la petite famille de monstres, semée un peu partout
+   ========================================================================== */
+.petit { display: block; width: 100%; height: auto; overflow: visible; }
+.petit .p-bob { animation: p-bob 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+.petit .p-ombre { animation: p-ombre 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.petit .p-cligne { animation: p-cligne 6s infinite; transform-box: fill-box; transform-origin: center; }
+.petit .p-salut { animation: p-salut 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 85% 85%; }
+.petit-fantome .p-bob, .petit-nuage .p-bob, .petit-etoile .p-bob { animation-name: p-flotte; animation-duration: 4.2s; }
+.petit-chaton .p-cligne { animation-delay: 1.3s; } .petit-gelee .p-cligne { animation-delay: 2.6s; } .petit-dino .p-cligne { animation-delay: 3.4s; }
+.petit-champi .p-cligne { animation-delay: .7s; } .petit-nuage .p-cligne { animation-delay: 4.1s; } .petit-etoile .p-cligne { animation-delay: 2s; }
+@keyframes p-bob { 0%, 100% { transform: translateY(0) scale(1, 1); } 45% { transform: translateY(-3px) scale(.98, 1.02); } 55% { transform: translateY(-3px) scale(.98, 1.02); } 90% { transform: translateY(0) scale(1.03, .97); } }
+@keyframes p-flotte { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-7px) rotate(2deg); } }
+@keyframes p-ombre { 0%, 100% { transform: scaleX(1); opacity: .12; } 50% { transform: scaleX(.86); opacity: .07; } }
+@keyframes p-cligne { 0%, 93%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+@keyframes p-salut { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-18deg); } 60% { transform: rotate(8deg); } }
+@media (prefers-reduced-motion: reduce) { .petit .p-bob, .petit .p-ombre, .petit .p-cligne, .petit .p-salut { animation: none; } }
+
+/* un petit monstre posé au bord d'un bloc */
+.section { position: relative; }
+.deco, main > .section-soft > .deco, .section > .deco { position: absolute; z-index: 3; width: 96px; pointer-events: none; }
+.deco-haut-droite { top: -58px; right: max(16px, 6%); }
+.deco-haut-gauche { top: -58px; left: max(16px, 5%); }
+.deco-bas-droite { bottom: -34px; right: max(16px, 5%); }
+.deco-bas-gauche { bottom: -34px; left: max(16px, 4%); }
+.deco-cote-droite { top: 44%; right: 14px; width: 82px; transform: rotate(-14deg); }
+.deco-cote-gauche { top: 44%; left: 14px; width: 82px; transform: rotate(14deg); }
+@media (max-width: 720px) {
+  .deco { width: 66px; }
+  .deco-haut-droite, .deco-haut-gauche { top: -40px; }
+  .deco-cote-droite, .deco-cote-gauche { width: 58px; top: 22px; }
+  .deco-cote-droite { right: 12px; } .deco-cote-gauche { left: 12px; }
+}
+
+/* l'accueil : une page de site, et la petite bande qui s'en occupe */
+.hero-scene { width: min(440px, 100%); aspect-ratio: 1 / .92; }
+.scene-site { position: absolute; inset: 14% 8% 16% 10%; border-radius: 26px; background: #FFFDF9; box-shadow: 0 0 0 5px rgba(255, 255, 255, .14), 0 30px 60px -24px rgba(0, 0, 0, .65); overflow: hidden; transform: rotate(-3deg); }
+.scene-bar { margin: 0; display: flex; align-items: center; gap: 6px; padding: 10px 14px; background: #F3EEFF; }
+.scene-bar i { width: 10px; height: 10px; border-radius: 50%; background: #FF9EC4; }
+.scene-bar i:nth-child(2) { background: #FFE07A; } .scene-bar i:nth-child(3) { background: #A9EFD4; }
+.scene-bar span { flex: 1; height: 10px; margin-left: 8px; border-radius: 99px; background: #E3DBFB; }
+.scene-page { display: grid; gap: 9px; padding: 18px 20px; }
+.scene-page b { display: block; height: 14px; border-radius: 99px; background: #2E2A47; width: 72%; }
+.scene-page .sc-t2 { width: 48%; background: linear-gradient(90deg, #FF8FB8, #B9A6FF); }
+.scene-page .sc-l { height: 8px; width: 86%; background: #E7E1F5; } .scene-page .sc-l2 { width: 64%; }
+.sc-btn { width: 44%; height: 26px; border-radius: 99px; background: #7EDDB5; box-shadow: 0 4px 0 #3FAE82; margin-top: 4px; }
+.sc-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.sc-cards i { height: 48px; border-radius: 12px; background: #FFE3D6; } .sc-cards i:nth-child(2) { background: #DDF0FF; } .sc-cards i:nth-child(3) { background: #FFF1C2; }
+.scene-m { position: absolute; display: block; }
+.sm-1 { width: 31%; left: -2%; top: -1%; transform: rotate(-6deg); }
+.sm-2 { width: 25%; right: -1%; top: -5%; }
+.sm-3 { width: 30%; right: -4%; bottom: 6%; }
+.sm-4 { width: 26%; left: 2%; bottom: 3%; transform: rotate(5deg); }
+.sm-5 { width: 15%; left: 46%; top: -4%; }
+.hero-scene .hero-tag { bottom: -14px; z-index: 4; }
+@media (max-width: 960px) { .hero-art.hero-scene { width: min(360px, 88vw); margin-bottom: 26px; } }
+@media (max-width: 720px) { .hero-art.hero-scene { width: min(250px, 72vw); margin-bottom: 30px; } }
+
+/* les petits monstres des titres de page, des bandeaux et de l'offre */
+.page-hero-art .petit { filter: drop-shadow(0 16px 24px rgba(0, 0, 0, .25)); }
+.page-hero-art { width: 170px; }
+.cta-duo { display: flex; align-items: flex-end; width: 170px; }
+.cta-duo .petit { width: 62%; flex: none; }
+.cta-duo .petit + .petit { width: 46%; margin-left: -14%; }
+.offre-lia .petit { width: 54%; flex: none; }
+.offre-lia .petit + .petit { margin-left: -10%; width: 46%; }
+.cmp-head .petit { width: 46px; margin: 0 auto 4px; }
+.b-art .petit { width: 100%; }
+@media (max-width: 720px) { .page-hero-art { width: 96px; } .cta-duo { width: 120px; } }
+
+/* la parade : toute la famille assise sur le bord du pied de page */
+.site-footer { position: relative; }
+.parade { position: absolute; left: 0; right: 0; top: -66px; height: 72px; pointer-events: none; max-width: var(--container); margin: 0 auto; }
+.parade-m { position: absolute; bottom: -8px; width: 74px; }
+.pm-0 { left: 2%; } .pm-1 { left: 14%; width: 66px; } .pm-2 { left: 27%; bottom: 26px; width: 58px; } .pm-3 { left: 39%; width: 70px; }
+.pm-4 { left: 52%; width: 72px; } .pm-5 { left: 64%; bottom: 22px; width: 84px; } .pm-6 { left: 78%; width: 70px; } .pm-7 { left: 91%; bottom: 34px; width: 52px; }
+@media (max-width: 720px) {
+  .parade { top: -50px; height: 56px; }
+  .parade-m { width: 54px; } .pm-1, .pm-3, .pm-5 { display: none; }
+  .pm-0 { left: 6%; } .pm-2 { left: 28%; width: 46px; bottom: 18px; } .pm-4 { left: 50%; width: 54px; } .pm-6 { left: 70%; } .pm-7 { left: 87%; width: 38px; bottom: 24px; }
+}
+
+/* les taches de peinture deviennent de douces lueurs pastel, comme un ciel de nuit */
+.hero::before, .hero::after, .page-hero::before, main > .section-soft::before { -webkit-mask: none; mask: none; border-radius: 50%; filter: blur(36px); opacity: .35; }
+:root[data-theme="dark"] .hero::before, :root[data-theme="dark"] .hero::after, :root[data-theme="dark"] .page-hero::before, :root[data-theme="dark"] main > .section-soft::before { opacity: .28; }

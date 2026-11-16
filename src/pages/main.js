@@ -78,38 +78,49 @@ function home() {
         <li>${icon('check')}Sans engagement</li>
       </ul>
     </div>
-    <div class="hero-art">
-      ${monster('mascotte', { cls: 'hero-mascotte' })}
-      ${C.flecheLia()}
-      <p class="hero-tag">${icon('sparkles')}Fait par Alex, avec l’aide de Lia</p>
+    <div class="hero-art hero-scene" aria-hidden="true">
+      <div class="scene-site">
+        <p class="scene-bar"><i></i><i></i><i></i><span></span></p>
+        <div class="scene-page">
+          <b class="sc-t"></b><b class="sc-t sc-t2"></b><b class="sc-l"></b><b class="sc-l sc-l2"></b>
+          <span class="sc-btn"></span>
+          <div class="sc-cards"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <span class="scene-m sm-1">${C.petit('mochi')}</span>
+      <span class="scene-m sm-2">${C.petit('fantome', { humeur: 'ravi' })}</span>
+      <span class="scene-m sm-3">${C.petit('gelee')}</span>
+      <span class="scene-m sm-4">${C.petit('chaton', { humeur: 'ravi' })}</span>
+      <span class="scene-m sm-5">${C.petit('etoile')}</span>
+      <p class="hero-tag">${icon('sparkles')}Fait main, accéléré par l’automatisation</p>
     </div>
   </div>
 </section>
 
-${METIERS.length ? `<section class="section"><div class="container">
+${METIERS.length ? `<section class="section">${C.deco('champi', 'haut-droite')}<div class="container">
   <h2 class="section-title">Un site pensé pour votre métier</h2>
   <p class="section-sub">Un artisan, une sophrologue et un gîte n’ont pas besoin du même site. Je pars de votre activité et de ce que cherchent vos clients.</p>
   ${metierCards()}
 </div></section>` : ''}
 
-<section class="section section-soft c-butter"><div class="container">
+<section class="section section-soft c-butter">${C.deco('dino', 'haut-gauche')}<div class="container">
   <h2 class="section-title">Des sites en ligne, à visiter</h2>
   <p class="section-sub">Pas de faux avis ici : allez voir par vous-même.</p>
   ${clientCards({ max: 3, desc: false })}
   <p class="center more">${C.btn(sections.confiance.path, 'btn-light', sections.confiance.icon, 'Toutes les réalisations')}</p>
 </div></section>
 
-<section class="section"><div class="container">
+<section class="section">${C.deco('nuage', 'cote-droite')}<div class="container">
   <h2 class="section-title">Ce que vous y gagnez</h2>
   <div class="feats">${gains.map(([ic, t, d]) => `<div class="feat reveal">${icon(ic)}<h3>${t}</h3><p>${d}</p></div>`).join('')}</div>
 </div></section>
 
-<section class="section section-soft"><div class="container">
+<section class="section section-soft">${C.deco('chaton', 'haut-droite')}<div class="container">
   <h2 class="section-title">Comment ça se passe</h2>
   <p class="section-sub">Quatre étapes, et rien de technique pour vous.</p>
   ${C.steps([
     { t: 'Vous composez votre site', d: `Vous choisissez votre site et vos options en deux minutes, le prix s’affiche. Vous réglez ${paiement.acompte} % à la commande.` },
-    { t: 'Je prépare votre site', d: 'Je réserve votre nom de domaine et je vous pose les bonnes questions. Lia m’aide sur la mise en page et les premiers textes.' },
+    { t: 'Je prépare votre site', d: 'Je réserve votre nom de domaine et je vous pose les bonnes questions. Mes automatisations préparent la mise en page et les premiers textes.' },
     { t: 'Vous validez l’aperçu', d: 'Vous voyez votre site avant tout le monde. Vous me dites ce qui change, je corrige.' },
     { t: 'Je le mets en ligne et je m’en occupe', d: 'Votre site est en ligne, sûr et à jour. Une modification ? Vous la demandez depuis votre espace client.' },
   ])}
@@ -119,15 +130,15 @@ ${METIERS.length ? `<section class="section"><div class="container">
   <h2 class="section-title">Le prix, en clair</h2>
   <p class="section-sub">Tout est compris, rien n’est caché, et c’est le même prix pour tous.</p>
   ${C.offre({ compact: true })}
-  <p class="center small muted">C’est moi qui conçois votre site. Lia, mon assistante autonome, automatise les tâches répétitives, et j’ai des accès directs chez des hébergeurs français. Pas de magie, de l’optimisation : vous ne payez que le temps utile.</p>
+  <p class="center small muted">C’est moi qui conçois votre site. J’ai automatisé tout ce qui se répète, et j’ai des accès directs chez des hébergeurs français. Pas de magie, de l’optimisation : vous ne payez que le temps utile.</p>
   <p class="center more">${C.btn(sections.forfaits.path, 'btn-light btn-flaque', 'arrow-right', 'Tout le détail des tarifs')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>
 
-<section class="section section-soft c-sky"><div class="container split">
+<section class="section section-soft c-sky">${C.deco('etoile', 'bas-gauche', 'ravi')}<div class="container split">
   <div class="reveal">
     <p class="kicker c-sky">${icon('pencil')}Après la mise en ligne</p>
     <h2>Vous demandez, je m’en occupe</h2>
-    <p>Un horaire, un prix, une photo à changer ? Écrivez-le depuis votre espace client, avec une photo si besoin. Les petites retouches se font avec Lia en quelques minutes, avec un aperçu à valider. Pour le reste, c’est moi, à la main.</p>
+    <p>Un horaire, un prix, une photo à changer ? Écrivez-le depuis votre espace client, avec une photo si besoin. Les petites retouches se font automatiquement en quelques minutes, avec un aperçu à valider. Pour le reste, c’est moi, à la main.</p>
     <p>L’abonnement comprend ${ABO.jetons} jetons par mois pour ces retouches et pour les outils, et une intervention de ma part chaque trimestre. Besoin de plus ? Vous rachetez des jetons à l’utilisation. Un article, un point ensemble ou une intervention en plus se commandent à l’unité.</p>
     <div class="hero-ctas">${C.btn(sections.accompagnement.path, 'btn-primary', sections.accompagnement.icon, 'L’accompagnement')}${C.btn(site.espaceClient.demo, 'btn-light', 'circle-user', 'Essayer l’espace client')}</div>
   </div>
@@ -190,7 +201,7 @@ function creerPage() {
   ${C.steps([
     { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % du site. Le reste et l’abonnement viennent à la réception.` },
     { t: 'Je réserve votre nom de domaine', d: 'Il est à votre nom. Je vous écris sous 24 heures avec les questions utiles pour démarrer.' },
-    { t: 'Lia et moi créons votre site', d: 'Vous recevez un aperçu. Vous me dites ce qui change, je corrige.' },
+    { t: 'Je crée votre site', d: 'Vous recevez un aperçu. Vous me dites ce qui change, je corrige.' },
     { t: 'C’est en ligne', d: `Vous réglez le reste, en une fois ou en ${C.lissageTxt} fois sans frais. L’abonnement démarre, et vos modifications passent par votre espace client.` },
   ])}
 </div></section>
@@ -261,7 +272,7 @@ function forfaitsPage() {
   <ul class="list-check">
     <li><strong>${ABO.jetons} jetons compris chaque mois</strong> dans l’abonnement. Ils reviennent le 1<sup>er</sup> du mois.</li>
     <li><strong>Un outil coûte de ${JL_OUTIL_MIN} à ${JL_OUTIL_MAX} jetons</strong> : corriger un texte, préparer une publication, répondre à un avis. Le prix est écrit sur son bouton, et certains outils sont gratuits.</li>
-    <li><strong>Une retouche de votre site par Lia coûte ${JL_MODIF_FOURCHETTE} jetons</strong>, selon sa longueur et les photos jointes.</li>
+    <li><strong>Une retouche automatique de votre site coûte ${JL_MODIF_FOURCHETTE} jetons</strong>, selon sa longueur et les photos jointes.</li>
     <li><strong>Il vous en faut plus ?</strong> Vous en rachetez à l’utilisation : ${RECHARGES}, ajoutés à votre prochaine facture. Ces jetons-là restent jusqu’à ce que vous les utilisiez.</li>
     <li><strong>Une retouche refusée ou qui échoue</strong> ne coûte rien : vos jetons vous sont rendus.</li>
   </ul>
@@ -310,30 +321,37 @@ ${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Composez votre site en de
 }
 
 // ====================================================================== NOS OUTILS
+// Sur la page publique, les outils sont présentés sans parler de Lia (elle vit dans la bulle et dans l'espace client) :
+// on montre la phrase courte de chaque outil, et ces trois-là sont redits autrement.
+const PUBLIC_OUTIL = {
+  question: ['Une question sur internet', 'Posez votre question sur votre site, Google ou les réseaux : la réponse arrive, simple et claire.'],
+  conseilphoto: ['Conseils sur une photo', 'Des conseils simples pour réussir vos photos avec votre téléphone.'],
+  conseilpage: ['Conseils pour ma page', 'Une page de votre site relue, avec ce qu’il faut changer en premier.'],
+};
 function outilsPage() {
   const crumbs = crumb('espace');
   const f = C.faq(FAQ.espace, 'Vos questions sur l’espace client', 'faq-outils');
   const pub = OUTILS_LIA.find((o) => o.id === 'publier');
   // D'où viennent les Jetons Lia : l'abonnement, puis la recharge, achetée à l'utilisation
   const sources = [
-    ['pink', 'mascotte', 'L’abonnement', `${euro(ABO.month)} par mois`, ABO.jetons, 'Jetons Lia par mois'],
+    ['pink', 'mascotte', 'L’abonnement', `${euro(ABO.month)} par mois`, ABO.jetons, 'jetons par mois'],
     ['butter', 'clin', 'La recharge', 'quand il vous en manque', jetonsLia.recharge[0].jetons, `jetons pour ${euro(jetonsLia.recharge[0].prix)}`],
   ];
   const body = `${C.pageHero({
     section: 'espace',
     h1: 'Des outils simples pour vous faire connaître',
-    lead: `Corriger un texte, préparer une photo, publier sur vos réseaux, savoir quoi améliorer sur une page : Lia, mon assistante autonome, vous aide, et vous gardez la main. Les outils sont dans votre espace client, avec ${ABO.jetons} jetons compris chaque mois dans l’abonnement.`,
+    lead: `Corriger un texte, préparer une photo, publier sur vos réseaux, savoir quoi améliorer sur une page : des outils automatiques vous aident, et vous gardez la main. Ils sont dans votre espace client, avec ${ABO.jetons} jetons compris chaque mois dans l’abonnement.`,
     crumbs,
   })}
 ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez vos demandes par le formulaire de contact : on s’en occupe de la même façon.</span></p></div>`}
 <div class="container demo-cta demo-cta-duo">${C.btn(sections.monespace.path + '#outils', 'btn-primary btn-lg', 'circle-user', 'Ouvrir mes outils')}${C.btn(site.espaceClient.demo, 'btn-light btn-lg', 'eye', 'Essayer la démo')}</div>
 
 <section class="section" id="outils-lia"><div class="container">
-  <h2 class="section-title">Les outils de Lia</h2>
+  <h2 class="section-title">Les outils de votre espace</h2>
   <p class="section-sub">Ils sont dans votre espace client : il suffit d’être connecté. Rien d’autre à installer, aucun autre compte à créer.</p>
   ${Object.entries(FAMILLES_OUTILS).map(([fid, fnom]) => `<h3 class="tools-famille reveal">${fnom}</h3>
   <div class="tools">${OUTILS_LIA.filter((t) => t.categorie === fid).map(
-    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${t.name}</strong><span>${t.desc}</span></span>${t.jetons && !t.visuel ? '' : '<span class="tool-tag c-mint">Gratuit</span>'}</div>`
+    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][0] : t.name}</strong><span>${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][1] : t.court}</span></span>${t.jetons && !t.visuel ? '' : '<span class="tool-tag c-mint">Gratuit</span>'}</div>`
   ).join('')}</div>`).join('\n  ')}
 </div></section>
 
@@ -344,27 +362,27 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
   <ol class="doc-steps">
     <li><strong>Vous reliez vos comptes, une seule fois.</strong> Dans l’outil, à la ligne « Mes réseaux ».</li>
     <li><strong>Vous donnez une photo et quelques mots.</strong> Par exemple : « Nouveau bouquet de printemps, disponible samedi ».</li>
-    <li><strong>Vous gardez votre texte, ou Lia l’adapte.</strong> Avec le vôtre, publier ne coûte aucun jeton. Lia peut écrire une version par réseau : le bon ton, la bonne longueur, les hashtags.</li>
+    <li><strong>Vous gardez votre texte, ou l’outil l’adapte.</strong> Avec le vôtre, publier ne coûte aucun jeton. L’outil peut écrire une version par réseau : le bon ton, la bonne longueur, les hashtags.</li>
     <li><strong>Vous relisez, puis vous publiez.</strong> Un bouton par réseau, ou « Tout publier » : la photo et le texte partent sur vos comptes reliés. Rien ne part sans vous.</li>
     <li><strong>Un réseau n’est pas relié ?</strong> Le texte est copié et le réseau s’ouvre : il reste à coller. Sur téléphone, « Partager » envoie la photo et le texte à l’application de votre choix.</li>
   </ol>
 </div></section>
 
 <section class="section" id="jetons"><div class="container container-narrow">
-  <p class="kicker c-butter">${icon('coins')}Jetons Lia</p>
-  <h2>Les Jetons Lia, c’est simple</h2>
-  <p><strong>1 Jeton Lia = 1 centime.</strong> Votre abonnement vous en donne ${ABO.jetons} chaque mois. Ils paient tout ce que fait Lia : ses outils, et les modifications de votre site.</p>
-  <div class="quota-cards">${sources.map(([c, humeur, t, sous, n, quoi]) => `<div class="quota-card c-${c} reveal"><span class="quota-art">${monster(humeur)}</span><h3>${t}<small>${sous}</small></h3><p><b>${n}</b> ${quoi}</p></div>`).join('')}</div>
+  <p class="kicker c-butter">${icon('coins')}Les jetons</p>
+  <h2>Les jetons, c’est simple</h2>
+  <p><strong>1 jeton = 1 centime.</strong> Votre abonnement vous en donne ${ABO.jetons} chaque mois. Ils paient les outils et les retouches automatiques de votre site.</p>
+  <div class="quota-cards">${sources.map(([c, humeur, t, sous, n, quoi]) => `<div class="quota-card c-${c} reveal"><span class="quota-art">${C.bouille(humeur)}</span><h3>${t}<small>${sous}</small></h3><p><b>${n}</b> ${quoi}</p></div>`).join('')}</div>
   <div class="doc-table-wrap reveal"><table class="doc-table jl-table">
-    <thead><tr><th scope="col">Ce que fait Lia</th><th scope="col">Prix</th></tr></thead>
+    <thead><tr><th scope="col">Outil ou retouche</th><th scope="col">Prix</th></tr></thead>
     <tbody>
       <tr><th scope="row">Une modification de votre site</th><td>${JL_MODIF}</td></tr>
-      ${OUTILS_LIA.map((t) => `<tr><th scope="row">${t.name}</th><td>${jl(t.jetons)}</td></tr>`).join('')}
+      ${OUTILS_LIA.map((t) => `<tr><th scope="row">${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][0] : t.name}</th><td>${jl(t.jetons)}</td></tr>`).join('')}
     </tbody>
   </table></div>
   <ul class="list-check">
     <li>Le prix est toujours affiché avant : pas de surprise.</li>
-    <li>Si Lia n’arrive pas à répondre, ou si votre demande passe à Alex, vos jetons vous sont rendus.</li>
+    <li>Si l’outil n’arrive pas à répondre, ou si votre demande passe à Alex, vos jetons vous sont rendus.</li>
     <li>Avec ${ABO.jetons} jetons, vous utilisez les outils ${JL_OUTILS_MOIS} de fois dans le mois, ou vous faites ${JL_MODIFS_MOIS} modifications de votre site.</li>
     <li>Plus de jetons ? Vous en rachetez à l’utilisation : ${jetonsLia.recharge.map((r) => `${r.prix} € les ${r.jetons}`).join(', ')}, ajoutés à votre prochaine facture.</li>
     <li>Les jetons de l’abonnement reviennent le 1<sup>er</sup> du mois. Ceux d’une recharge restent jusqu’à ce que vous les utilisiez.</li>
@@ -375,10 +393,10 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
   <div class="reveal">
     <p class="kicker c-mint">${icon('message-circle')}Demande de modification</p>
     <h2>Une demande, et c’est fait</h2>
-    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. Lia prépare la modification en 5 minutes et vous montre l’aperçu : votre site ne change qu’après votre accord. Ou Alex s’en charge à la main, sous ${delais.reponse}, et vérifie lui-même.</p>
+    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. La retouche automatique est prête en 5 minutes, avec un aperçu : votre site ne change qu’après votre accord. Ou Alex s’en charge à la main, sous ${delais.reponse}, et vérifie lui-même.</p>
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
-      <li>Avec Lia : ${JL_MODIF}</li>
+      <li>Retouche automatique : ${JL_MODIF}</li>
       <li>Avec Alex : ${UNE_MODIF} ${PAR_PERIODE}, comprise dans l’abonnement, sans jeton</li>
       <li>Une de plus par Alex ? ${euro(boost.prix)} à l’unité, ajoutée à votre prochaine facture</li>
     </ul>
@@ -395,12 +413,12 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
 </div></section>
 
 ${f.html}
-${C.ctaBand({ title: 'Envie d’essayer les outils ?', text: 'Créez votre site : les outils et vos premiers Jetons Lia arrivent avec votre abonnement.' })}`;
+${C.ctaBand({ title: 'Envie d’essayer les outils ?', text: 'Créez votre site : les outils et vos premiers jetons arrivent avec votre abonnement.' })}`;
   return {
     path: sections.espace.path,
     section: 'espace',
-    title: 'Outils de Lia : textes, photos, réseaux et site | Alex & Lia',
-    description: `Corriger ou traduire un texte, préparer une photo, publier sur vos réseaux : les outils de Lia sont compris dans l’abonnement, avec ${ABO.jetons} Jetons Lia par mois.`,
+    title: 'Outils : textes, photos, réseaux et votre site | Alex & Lia',
+    description: `Corriger ou traduire un texte, préparer une photo, publier sur vos réseaux : les outils sont compris dans l’abonnement, avec ${ABO.jetons} jetons par mois.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -461,7 +479,7 @@ Votre site peut garder **une seule page principale**, simple et claire, avec tou
   <div class="feats feats-4">
     <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur téléphone, avec les balises et les données que Google sait lire.</p></div>
     <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand vos clients cherchent près de chez vous.</p></div>
-    <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec l’aide de Lia, mon assistante autonome, et relus par moi.</p></div>
+    <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec mes automatisations et relus par moi.</p></div>
     <div class="feat reveal">${icon('chart-line')}<h3>Le suivi, en extra</h3><p>Positions, recherches, visites : avec l’extra ${seo.name}, je regarde ce qui marche et j’ajuste vos pages chaque mois.</p></div>
   </div>
 </div></section>
@@ -488,7 +506,7 @@ Votre site peut garder **une seule page principale**, simple et claire, avec tou
   <h2 class="section-title">Ce qui est compris, et ce qui est en extra</h2>
   <div class="seo-levels">${levels
     .map(
-      ([c, humeur, t, prix, list]) => `<div class="seo-level c-${c} reveal"><span class="seo-art">${monster(humeur)}</span><p class="seo-name">${esc(t)}<small>${prix}</small></p><ul class="list-check">${list.map((x) => `<li>${inline(x)}</li>`).join('')}</ul></div>`
+      ([c, humeur, t, prix, list]) => `<div class="seo-level c-${c} reveal"><span class="seo-art">${C.bouille(humeur)}</span><p class="seo-name">${esc(t)}<small>${prix}</small></p><ul class="list-check">${list.map((x) => `<li>${inline(x)}</li>`).join('')}</ul></div>`
     )
     .join('')}</div>
   <p class="source">Un extra s’ajoute ou se retire quand vous voulez, depuis votre espace client. Tous les prix sont sur la page <a href="${sections.forfaits.path}#options">tarifs</a>.</p>
@@ -526,7 +544,7 @@ function comparatifPage() {
     ['butter', 'building-2', 'L’agence web', 'Une équipe complète : chef de projet, graphiste, développeur. Idéale pour un gros projet avec un budget à la hauteur. Le prix et le délai dépendent du devis.'],
     ['sky', 'user', 'Le freelance', 'Une personne qui fait tout. La qualité dépend beaucoup de qui vous choisissez. Les modifications et le suivi se font souvent au devis, quand le freelance est disponible.'],
     ['lilac', 'mouse-pointer-click', 'La plateforme à faire soi-même', 'Vous construisez votre site à partir de modèles, pour un abonnement mensuel. C’est vous qui faites le travail, les mises à jour et le référencement.'],
-    ['mint', 'sparkles', 'Alex & Lia', `Un prix affiché, à partir de ${euro(creation.prix)}, et un interlocuteur qui répond. Alex crée et suit votre site, aidé de Lia, son assistante, pour les petites retouches et les tâches répétitives. Pour les très gros projets, je vous oriente vers une agence.`],
+    ['mint', 'sparkles', 'Alex & Lia', `Un prix affiché, à partir de ${euro(creation.prix)}, et un interlocuteur qui répond. Alex crée et suit votre site, et ses automatisations s’occupent des petites retouches et des tâches répétitives. Pour les très gros projets, je vous oriente vers une agence.`],
   ];
   const body = `${C.pageHero({
     section: 'comparatif',
@@ -549,7 +567,7 @@ function comparatifPage() {
 <section class="section"><div class="container container-narrow prose reveal">
   ${md(`## Des modifications rapides
 
-Un horaire, un prix, une actualité : Lia, l’assistante autonome d’Alex, prépare le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui. Pour ce qui demande un regard humain, c’est Alex, sous ${delais.reponse}. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
+Un horaire, un prix, une actualité : mes automatisations préparent le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui. Pour ce qui demande un regard humain, c’est Alex, sous ${delais.reponse}. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
 
 ## ${marche.fois} fois moins cher, et sans tour de magie
 
@@ -557,11 +575,11 @@ Un site vitrine commandé à un freelance coûte en général entre ${euro(march
 
 Soyons complets : des offres à bas prix existent aussi, entre ${euro(marche.basMin)} et ${euro(marche.basMax)} le site. Face à elles, nous sommes au même niveau de prix.
 
-La raison est simple. Pour un site vitrine ou une petite boutique, Lia automatise les tâches répétitives qui prennent des jours à la main. Alex fait le reste et contrôle le résultat, page par page. Ces jours en moins, c’est le prix en moins. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).
+La raison est simple. Pour un site vitrine ou une petite boutique, mes automatisations font en quelques heures ce qui prend des jours à la main. Je fais le reste et je contrôle le résultat, page par page. Ces jours en moins, c’est le prix en moins. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).
 
 ## Ce que vous ne faites pas vous-même
 
-Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, faire les mises à jour, écrire pour Google. Avec Alex & Lia, vous dites ce que vous voulez : Lia s’occupe de l’automatique, Alex du reste. Vous gardez votre temps pour votre activité.
+Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, faire les mises à jour, écrire pour Google. Avec Alex & Lia, vous dites ce que vous voulez : les automatisations s’occupent du répétitif, Alex du reste. Vous gardez votre temps pour votre activité.
 
 ## Quand je vous dirai d’aller ailleurs
 
@@ -1345,6 +1363,8 @@ const articleSchema = (path, h1, description, date) => ({
   mainEntityOfPage: { '@id': site.url + path + '#page' },
 });
 
+// Le petit monstre de chaque métier, dans le haut de sa page
+const MONSTRE_METIER = { 'site-internet-artisan': 'dino', 'site-internet-therapeute': 'nuage', 'site-internet-createur-artiste': 'champi', 'site-internet-gite-chambre-hotes': 'chaton', 'site-internet-commercant': 'mochi', 'site-internet-association': 'etoile' };
 function metierPage(m) {
   const path = `/${m.slug}/`;
   const crumbs = [...crumb('metiers'), { name: m.nom, path }];
@@ -1357,7 +1377,7 @@ function metierPage(m) {
     if (x) return { ic: x.icon, nom: x.name, prix: `${euro(x.prix)}, à la demande`, pourquoi: o.pourquoi };
     return null;
   }).filter(Boolean);
-  const body = `${C.pageHero({ section: 'metiers', h1: m.h1, lead: m.lead, crumbs })}
+  const body = `${C.pageHero({ section: 'metiers', h1: m.h1, lead: m.lead, crumbs, mascot: MONSTRE_METIER[m.slug] })}
 <section class="section"><div class="container">
   <div class="feats">${m.besoins.map((b) => `<div class="feat reveal">${icon(b.icon)}<h3>${inline(b.t)}</h3><p>${inline(b.d)}</p></div>`).join('')}</div>
 </div></section>

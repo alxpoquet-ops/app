@@ -161,12 +161,12 @@ const forfaits = [
     jetons: 100, // Jetons Lia par mois
     partage: false,
     bulle: 'Tout ce qu’il faut pour que votre site tourne',
-    modifs: '100 jetons pour les outils et les retouches avec Lia, et une intervention d’Alex par trimestre',
+    modifs: '100 jetons pour les outils et les retouches automatiques, et une intervention d’Alex par trimestre',
     conseil: false,
     tagline: 'Sans engagement',
-    pitch: 'Votre site en ligne, sûr et à jour, avec son nom de domaine, le support, 100 jetons par mois pour les outils et les retouches avec Lia, et une intervention d’Alex chaque trimestre.',
+    pitch: 'Votre site en ligne, sûr et à jour, avec son nom de domaine, le support, 100 jetons par mois pour les outils et les retouches automatiques, et une intervention d’Alex chaque trimestre.',
     main: ['Nom de domaine et hébergement compris', 'Mises à jour, sauvegardes et support', '100 jetons par mois pour les outils et les retouches', 'Alex une fois par trimestre'],
-    details: ['Nom de domaine relié à votre site et renouvelé chaque année, à votre nom', 'Hébergement sur un serveur de qualité', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour faites pour vous, et sauvegardes', 'Suivi : le site est surveillé, il tient quand il y a du monde', 'Support : une question, une réponse sous 72 heures', 'Formulaire de contact qui arrive dans votre boîte mail', 'Bases du référencement : Google sait lire et comprendre votre site', '100 jetons chaque mois pour les outils et les retouches avec Lia, mon assistante autonome', 'Besoin de plus de jetons ? Vous en rachetez à l’utilisation, 1 € les 100', 'Une intervention d’Alex par trimestre, faite et vérifiée à la main', 'Votre espace client : demandes, outils pour vous faire connaître, suivi', 'Sans engagement : vous arrêtez quand vous voulez'],
+    details: ['Nom de domaine relié à votre site et renouvelé chaque année, à votre nom', 'Hébergement sur un serveur de qualité', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour faites pour vous, et sauvegardes', 'Suivi : le site est surveillé, il tient quand il y a du monde', 'Support : une question, une réponse sous 72 heures', 'Formulaire de contact qui arrive dans votre boîte mail', 'Bases du référencement : Google sait lire et comprendre votre site', '100 jetons chaque mois pour les outils et les retouches automatiques', 'Besoin de plus de jetons ? Vous en rachetez à l’utilisation, 1 € les 100', 'Une intervention d’Alex par trimestre, faite et vérifiée à la main', 'Votre espace client : demandes, outils pour vous faire connaître, suivi', 'Sans engagement : vous arrêtez quand vous voulez'],
     features: ['Nom de domaine relié et renouvelé', 'Hébergement sur un serveur de qualité', 'Mises à jour, sauvegardes et HTTPS', 'Suivi du site et support sous 72 heures', 'Bases du référencement', '100 jetons par mois pour les outils', 'Une intervention d’Alex par trimestre', 'Votre espace client et ses outils'],
   },
 ];
@@ -225,7 +225,7 @@ const jetonsLia = {
 const aLaDemande = [
   { id: 'alex', name: 'Une intervention d’Alex en plus', prix: 5, icon: 'user-check', desc: 'Une modification faite à la main par Alex, en plus de celle du trimestre.' },
   { id: 'urgent', name: 'Votre demande sous 24 heures', prix: 5, icon: 'zap', desc: 'Votre demande passe avant les autres et elle est traitée sous 24 heures, du lundi au vendredi.' },
-  { id: 'article', name: 'Un article écrit et publié', prix: 15, icon: 'pen-tool', desc: 'Vous donnez le sujet. Lia prépare l’article, Alex le relit, l’illustre et le publie sur votre site.' },
+  { id: 'article', name: 'Un article écrit et publié', prix: 15, icon: 'pen-tool', desc: 'Vous donnez le sujet. Je prépare l’article, je le relis, je l’illustre et je le publie sur votre site.' },
   { id: 'point', name: 'Un point de 30 minutes avec Alex', prix: 15, icon: 'phone', desc: 'Au téléphone ou en visio : on fait le tour de votre site, de vos résultats et de vos idées.' },
 ];
 // Boost : l'ancien nom de l'intervention d'Alex en plus (gardé pour l'extension WordPress et l'espace client).

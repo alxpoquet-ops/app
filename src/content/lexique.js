@@ -5,7 +5,8 @@ const T = (id) => types.find((t) => t.id === id);
 const O = (id) => options.find((o) => o.id === id);
 const page = T('une-page');
 // L'offre unique : un seul abonnement, et des extras au mois (Suivi Google, Chiffres détaillés, Adresse e-mail pro).
-// V2 (novembre 2026) : Lia est toujours « mon assistante autonome » dans ces textes. Retouches et outils : jetons compris chaque mois.
+// V2 (novembre 2026) : on parle des automatisations d'Alex et des retouches automatiques, sans présenter Lia
+// (« Chez Alex & Lia » reste : c'est le nom de la marque). Retouches et outils : jetons compris chaque mois.
 const abo = forfaits[0];
 const seo = O('seo'), stats = O('stats'), mail = O('mail');
 
@@ -191,7 +192,7 @@ Un moniteur d'auto-école veut afficher ses nouvelles dates de stage code chaque
 
 ## Chez Alex & Lia
 
-Vous n'avez pas à apprendre d'outil. Vous décrivez ce que vous voulez changer dans votre espace client, et c'est fait pour vous : par Lia, mon assistante autonome, en quelques minutes, avec un aperçu à valider, ou par moi pour les changements plus grands. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
+Vous n'avez pas à apprendre d'outil. Vous décrivez ce que vous voulez changer dans votre espace client, et c'est fait pour vous : automatiquement et en quelques minutes pour une petite retouche, avec un aperçu à valider, ou par moi pour les changements plus grands. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
     faq: [
       { q: 'Un CMS est-il obligatoire pour avoir un site ?', a: 'Non. Un site peut être fait de simples fichiers, sans base de données. C’est même souvent plus rapide et plus sûr. Le CMS devient utile quand le contenu change souvent ou quand plusieurs personnes doivent publier.' },
       { q: 'Quel CMS choisir pour mon entreprise ?', a: 'Celui qui répond à votre besoin et que quelqu’un saura entretenir. Pour un site de présentation ou une petite boutique, les grands CMS connus ont l’avantage d’être bien suivis et de trouver facilement de l’aide.' },
@@ -1160,7 +1161,7 @@ Une créatrice de bijoux lance sa boutique en ligne et recopie les mentions lég
 
 ## Chez Alex & Lia
 
-Je prévois une page de mentions légales sur chaque site et je vous indique les informations à me fournir. Le contenu juridique reste sous votre responsabilité, et Lia ne réécrit pas ce type de texte : c'est moi qui m'en occupe quand il faut le modifier. Pour les données de vos visiteurs, voyez la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
+Je prévois une page de mentions légales sur chaque site et je vous indique les informations à me fournir. Le contenu juridique reste sous votre responsabilité, et les retouches automatiques ne touchent jamais à ce type de texte : c'est moi qui m'en occupe quand il faut le modifier. Pour les données de vos visiteurs, voyez la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
     faq: [
       { q: 'Que risque-t-on sans mentions légales ?', a: 'L’absence de mentions légales sur un site professionnel est un manquement qui peut être sanctionné. Surtout, c’est un signal négatif pour les visiteurs qui cherchent à vous identifier.' },
       { q: 'Où placer le lien vers les mentions légales ?', a: 'En bas de chaque page, dans le pied de site. Il doit être facile à trouver depuis n’importe quel endroit du site.' },
@@ -1209,7 +1210,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 ## Chez Alex & Lia
 
-C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'héberge votre site, je fais les mises à jour, je garde le HTTPS et je surveille que tout tourne. Vos changements de contenu passent par l'espace client. Lia, mon assistante autonome, se charge des petites retouches en quelques minutes, avec les ${abo.jetons} jetons compris chaque mois. Pour le reste, j'interviens moi-même une fois par ${abo.periode || 'mois'}, comme prévu dans l'abonnement. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'héberge votre site, je fais les mises à jour, je garde le HTTPS et je surveille que tout tourne. Vos changements de contenu passent par l'espace client. Les petites retouches s'y font automatiquement en quelques minutes, avec les ${abo.jetons} jetons compris chaque mois. Pour le reste, j'interviens moi-même une fois par ${abo.periode || 'mois'}, comme prévu dans l'abonnement. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'À quelle fréquence faut-il faire la maintenance ?', a: 'La surveillance doit être continue, et les mises à jour faites dès qu’elles sortent, surtout celles de sécurité. Les autres vérifications peuvent suivre un rythme régulier, par exemple chaque mois.' },
       { q: 'Puis-je faire la maintenance de mon site moi-même ?', a: 'C’est possible si vous avez le temps et les bases techniques. Le plus dur n’est pas de cliquer sur « mettre à jour », mais de savoir quoi faire quand une mise à jour casse quelque chose.' },

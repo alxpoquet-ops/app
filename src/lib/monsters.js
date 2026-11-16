@@ -167,24 +167,24 @@ function monster(kind, { size, cls = '', title } = {}) {
   return `<svg class="${classes}${cls ? ' ' + cls : ''}" viewBox="0 0 160 160"${dim} ${label}>${dessin}</svg>`.replace(/(\d)\.(\d)00\b/g, '$1.$2');
 }
 
-// Logo : un pot de peinture renversé. Il est couché sur le côté, la peinture multicolore s'en échappe et fait une flaque au sol ;
-// dans l'en-tête, cette flaque se prolonge sous « Alex & Lia » pour souligner le nom (voir .brand::after dans style.css).
+// Logo : un petit monstre en autocollant (contour blanc), tout rond, rose et lilas, deux petites cornes dorées,
+// de grands yeux brillants, des joues roses et un sourire en « w ». Une étincelle à côté.
+// Il reste lisible en tout petit (icône de l'onglet).
 function logoMark({ id = 'lg', size } = {}) {
-  const dim = size ? ` width="${size}" height="${Math.round(size * 46 / 62)}"` : ''; // logo plus large que haut
-  return `<svg class="logo" viewBox="2 17 62 46"${dim} aria-hidden="true" focusable="false"><defs>
-<linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="17" y1="0" x2="63" y2="0"><stop offset="0" stop-color="#7EDDB5"/><stop offset=".28" stop-color="#FFD45E"/><stop offset=".52" stop-color="#FF9E6E"/><stop offset=".76" stop-color="#FF6FAE"/><stop offset="1" stop-color="#9B7BFF"/></linearGradient>
-<linearGradient id="${id}i" gradientUnits="userSpaceOnUse" x1="15" y1="0" x2="49" y2="0"><stop offset="0" stop-color="#9B7BFF"/><stop offset=".35" stop-color="#FF6FAE"/><stop offset=".65" stop-color="#FF9E6E"/><stop offset="1" stop-color="#FFD45E"/></linearGradient>
-<linearGradient id="${id}b" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#ECE7FB"/><stop offset="1" stop-color="#B4A9DC"/></linearGradient></defs>
-<path d="M3.5 57.6c1.5-2.2 6-2.800 11-2.600 6-.800 12-.600 17 0 1.500 2.400-1 4.600-6 5-7 .800-15 .600-19.500-.400-2.200-.500-3.300-1.200-2.500-2Z" fill="#000" opacity=".28"/>
-<g transform="translate(23 37.4) rotate(84.3) translate(-30 -34)">
-<path d="M15 21 18.200 51.500c8 4.200 19.600 4.200 27.600 0L49 21Z" fill="url(#${id}b)"/>
-<path d="M16.200 31.500c10 3.600 21.600 3.600 31.600 0M17.400 43c9.300 3.400 19.900 3.400 29.200 0" fill="none" stroke="#B9AFE0" stroke-width="1.500" opacity=".75"/>
-<path d="M15.500 22C12 40 52 40 48.500 22" fill="none" stroke="#9E93CC" stroke-width="2" stroke-linecap="round"/>
-<ellipse cx="32" cy="21" rx="17" ry="5.200" fill="url(#${id}i)" stroke="#E4DEF8" stroke-width="2.200"/>
-</g>
-<path d="M33 43.500C36 42 39.500 43.500 41 46.500 43 50 49 49.600 55 50.400 59.500 51 63 52.600 63.400 55 63.800 58.200 59.500 59.800 54 60.300 44 61.600 33 61.500 24 60.200 18.500 59.400 15.500 57.600 17 55.400 19 52.600 26 53.600 29 50.500 31 48.400 31 45 33 43.500Z" fill="url(#${id})"/>
-<path d="M36 47.500c2 2.500 6 3.500 10 3.800" fill="none" stroke="#fff" stroke-width="1.500" stroke-linecap="round" opacity=".5"/>
-<circle cx="57.500" cy="45.500" r="1.800" fill="#FF6FAE"/><circle cx="49.500" cy="42.500" r="1.200" fill="#FFD45E"/><circle cx="13" cy="60.800" r="1.300" fill="#7EDDB5"/></svg>`;
+  const dim = size ? ` width="${size}" height="${size}"` : '';
+  const oeil = (x) => `<ellipse cx="${x}" cy="35" rx="4.3" ry="5.4" fill="${INK}"/><circle cx="${x + 1.5}" cy="33" r="1.8" fill="#fff"/><circle cx="${x - 1.4}" cy="37" r=".8" fill="#fff"/>`;
+  return `<svg class="logo" viewBox="0 0 64 64"${dim} aria-hidden="true" focusable="false"><defs>
+<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB8D6"/><stop offset=".55" stop-color="#E6B9FF"/><stop offset="1" stop-color="#B9A6FF"/></linearGradient></defs>
+<g stroke="#fff" stroke-width="7" stroke-linejoin="round" fill="#fff">
+<path d="M19 20l-3-10 9 6ZM45 20l3-10-9 6Z"/>
+<path d="M9 40C9 23 19 13 32 13S55 23 55 40C55 52 46 56 32 56S9 52 9 40Z"/></g>
+<path d="M19 20l-3-10 9 6ZM45 20l3-10-9 6Z" fill="#FFE07A" stroke="#D9A400" stroke-width="1.8" stroke-linejoin="round"/>
+<path d="M9 40C9 23 19 13 32 13S55 23 55 40C55 52 46 56 32 56S9 52 9 40Z" fill="url(#${id})" stroke="#9B6FD8" stroke-width="2.2"/>
+<path d="M16 30c2-6 6-10 11-11" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".75"/>
+${oeil(24)}${oeil(40)}
+<ellipse cx="17.5" cy="43" rx="4" ry="2.4" fill="#FF7FAE" opacity=".7"/><ellipse cx="46.5" cy="43" rx="4" ry="2.4" fill="#FF7FAE" opacity=".7"/>
+<path d="M28 42.5q2 2.8 4 0q2 2.8 4 0" fill="none" stroke="${INK}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M57 9q.6 3.4 4 4q-3.4.6-4 4q-.6-3.4-4-4q3.4-.6 4-4Z" fill="#FFE07A"/></svg>`;
 }
 
 module.exports = { monster, logoMark, HUMEURS: Object.keys(HUMEURS) };

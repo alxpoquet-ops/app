@@ -4,6 +4,7 @@ let METIERS = [];
 try { METIERS = require('../content/metiers').metiers; } catch (e) { /* pas encore écrit */ }
 const { icon } = require('./icons');
 const { logoMark, monster } = require('./monsters');
+const { petit } = require('./bestiaire');
 const brandName = 'Alex &amp; Lia';
 const { esc, typo } = require('./md');
 const C = require('./components');
@@ -120,11 +121,14 @@ function header(currentPath) {
 
 // ---------------------------------------------------------------- pied de page
 function footer(p) {
+  // la petite famille, assise sur le bord du pied de page
+  const parade = ['champi', 'mochi', 'fantome', 'gelee', 'chaton', 'nuage', 'dino', 'etoile'];
   return `<footer class="site-footer">
+  <div class="parade" aria-hidden="true">${parade.map((n, i) => `<span class="parade-m pm-${i}">${petit(n, { humeur: i % 3 === 1 ? 'ravi' : 'content' })}</span>`).join('')}</div>
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand" href="/">${logoMark({ id: 'lgf' })}<span class="brand-text"><strong>${brandName}</strong></span></a>
-      <p>Des sites internet professionnels, simples et faits pour être trouvés sur Google. Alex conçoit et suit votre site, avec Lia, son assistante autonome. Depuis les Ardennes, pour des clients partout en France.</p>
+      <p>Des sites internet professionnels, simples et faits pour être trouvés sur Google. Alex conçoit et suit votre site, ses automatisations font le reste. Depuis les Ardennes, pour des clients partout en France.</p>
       <ul class="footer-contact">
         <li><a href="${C.contactUrl}">${icon('message-circle')}Nous écrire</a></li>
         ${site.email ? `<li><a href="mailto:${site.email}">${icon('mail')}${site.email}</a></li>` : ''}
