@@ -1,4 +1,4 @@
-/* Alex & Co : scripts (léger, sans dépendance) */
+/* Les Minis Monstres : scripts (léger, sans dépendance) */
 (function () {
   'use strict';
   var d = document;

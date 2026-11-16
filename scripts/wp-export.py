@@ -3,7 +3,7 @@
 Exporte le site généré (dist/) vers WordPress :
   - wp-export/aled08/          : thème WordPress « ALED08 » (styles, scripts, en-tête, pied de page, formulaires)
   - wp-export/aled08-import/   : extension d'import à usage unique (crée les pages, retire l'ancien site, règle WordPress)
-  - wp-export/aled08-espace/   : extension « Alex & Co Espace client » (src/wordpress/aled08-espace + données)
+  - wp-export/aled08-espace/   : extension « Les Minis Monstres Espace client » (src/wordpress/aled08-espace + données)
   - wp-export/alexlia-connecteur/ : extension à installer sur chaque site client (Cerise y travaille)
   - wp-export/alexlia-sdk/     : kit Claude (composer install), chargé seulement quand Cerise travaille
   - wp-export/*.zip            : les archives prêtes à installer
@@ -32,7 +32,7 @@ FORM_RECIPIENT = 'alx.poquet@gmail.com'
 OLD_PATHS_FILE = os.path.join(ROOT, 'scripts', 'wp-old-paths.txt')
 OLD_TARGETS = {'/devis/': '/contact/', '/prestations/': '/creer-mon-site/', '/blog/': '/', '/comparatif-shopify/': '/comparatif/', '/nos-outils/': '/outils/', '/forfaits/': '/tarifs/', '/en/forfaits/': '/en/tarifs/'}
 # V2 (novembre 2026) : pages renommées, et trois guides devenus des pages métier à la racine
-for _old, _new in {'/methode/': '/pourquoi-moins-cher/', '/lia-et-alex/': '/pourquoi-alex-et-co/', '/pourquoi-alex-et-lia/': '/pourquoi-alex-et-co/', '/ils-nous-ont-fait-confiance/': '/realisations/',
+for _old, _new in {'/methode/': '/pourquoi-moins-cher/', '/lia-et-alex/': '/pourquoi-les-minis-monstres/', '/pourquoi-alex-et-lia/': '/pourquoi-les-minis-monstres/', '/pourquoi-alex-et-co/': '/pourquoi-les-minis-monstres/', '/ils-nous-ont-fait-confiance/': '/realisations/',
                    '/guides/site-internet-artisan/': '/site-internet-artisan/', '/guides/site-internet-therapeute/': '/site-internet-therapeute/',
                    '/guides/site-internet-association/': '/site-internet-association/'}.items():
     OLD_TARGETS[_old] = _new
@@ -202,10 +202,10 @@ def chrome(langue=''):
 
 # ------------------------------------------------------------------ fichiers PHP du thème
 STYLE_CSS = """/*
-Theme Name: Alex & Co
+Theme Name: Les Minis Monstres
 Theme URI: https://www.aled08.fr
-Author: Alex & Co
-Description: Thème sur mesure d'Alex & Co. Styles, en-tête, pied de page, formulaire de contact.
+Author: Les Minis Monstres
+Description: Thème sur mesure des Minis Monstres. Styles, en-tête, pied de page, formulaire de contact.
 Version: 2.0.0
 Requires at least: 6.0
 Requires PHP: 7.4
@@ -272,7 +272,7 @@ function aled08_seo_head() {
         $img = get_the_post_thumbnail_url($id, 'large') ?: get_template_directory_uri() . '/assets/img/og-image.png';
         echo '<meta property="og:locale" content="fr_FR">' . "\n";
         echo '<meta property="og:type" content="' . (is_singular('post') ? 'article' : 'website') . "\">\n";
-        echo '<meta property="og:site_name" content="Alex &amp; Co">' . "\n";
+        echo '<meta property="og:site_name" content="Les Minis Monstres">' . "\n";
         echo '<meta property="og:title" content="' . esc_attr($title) . "\">\n";
         if ($desc) echo '<meta property="og:description" content="' . esc_attr(wp_strip_all_tags($desc)) . "\">\n";
         echo '<meta property="og:url" content="' . esc_url(get_permalink($id)) . "\">\n";
@@ -491,7 +491,7 @@ get_footer();
 
 IMPORT_PHP = r"""<?php
 /**
- * Plugin Name: Alex & Co : import du site
+ * Plugin Name: Les Minis Monstres : import du site
  * Description: Crée en une fois les pages du site ALED08, retire les pages de l'ancien site et règle WordPress. À désactiver et supprimer après usage.
  * Version: 2.0.0
  * Requires PHP: 7.4
@@ -560,7 +560,7 @@ function aled08_import_run() {
         if ($p && !in_array($p->ID, $ids, true)) wp_delete_post($p->ID, true);
     }
 
-    update_option('blogname', 'Alex & Co');
+    update_option('blogname', 'Les Minis Monstres');
     update_option('blogdescription', 'Sites internet et SEO');
     update_option('timezone_string', 'Europe/Paris');
     update_option('date_format', 'j F Y');
@@ -589,7 +589,7 @@ def main():
     shutil.copy(os.path.join(DIST, 'assets', 'img', 'og-image.png'), os.path.join(tdir, 'screenshot.png'))
     # application à installer sur téléphone et ordinateur : elle s'ouvre sur l'espace (client ou gestion)
     write(os.path.join(tdir, 'assets', 'app.webmanifest'), json.dumps({
-        'name': 'Alex & Co', 'short_name': 'Alex & Co', 'lang': 'fr', 'start_url': '/mon-espace/', 'scope': '/',
+        'name': 'Les Minis Monstres', 'short_name': 'Les Minis Monstres', 'lang': 'fr', 'start_url': '/mon-espace/', 'scope': '/',
         'display': 'standalone', 'background_color': '#16142A', 'theme_color': '#16142A',
         'icons': [{'src': 'img/logo-192.png', 'sizes': '192x192', 'type': 'image/png'}, {'src': 'img/logo-512.png', 'sizes': '512x512', 'type': 'image/png'}],
     }, ensure_ascii=False, indent=2))

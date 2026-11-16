@@ -1,4 +1,4 @@
-/* Alex & Co Espace client : l'onglet « Outils » (outils de Cerise, Jetons Cerise) et le prix d'une demande par Cerise. */
+/* Les Minis Monstres Espace client : l'onglet « Outils » (outils de Cerise, Jetons Cerise) et le prix d'une demande par Cerise. */
 (function () {
   'use strict';
   var d = document;

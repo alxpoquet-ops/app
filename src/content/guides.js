@@ -45,7 +45,7 @@ const guides = [
     nom: 'Site internet pour restaurant',
     resume: 'La carte, les horaires, l’adresse : les trois choses que vos clients cherchent, et comment les montrer.',
     h1: 'Site internet pour restaurant : la carte, les horaires, la réservation',
-    title: 'Site internet pour restaurant : carte et horaires | Alex & Co',
+    title: 'Site internet pour restaurant : carte et horaires | Les Minis Monstres',
     description: 'Ce que les clients cherchent sur le site d’un restaurant : la carte, les horaires, l’adresse et un moyen de réserver. Comment le faire simplement, à prix fixe.',
     lead: 'Avant de pousser votre porte, un client veut savoir trois choses : ce qu’on mange, à quel prix, et si vous êtes ouvert ce soir. Votre site doit répondre en dix secondes.',
     body: `## Ce que vos clients cherchent vraiment
@@ -98,7 +98,7 @@ Les horaires que Google affiche viennent de votre fiche d'établissement. Si ell
     nom: 'Site internet pour coiffeur ou institut',
     resume: 'Tarifs, photos, prise de rendez-vous : un site simple pour un salon de coiffure ou de beauté.',
     h1: 'Site internet pour salon de coiffure ou institut de beauté',
-    title: 'Site internet pour coiffeur ou institut de beauté | Alex & Co',
+    title: 'Site internet pour coiffeur ou institut de beauté | Les Minis Monstres',
     description: 'Tarifs clairs, photos de vos réalisations, horaires et prise de rendez-vous : ce qu’il faut sur le site d’un salon de coiffure ou d’un institut de beauté.',
     lead: 'Une nouvelle cliente compare deux ou trois salons avant de choisir. Elle regarde les tarifs, les photos et la facilité à prendre rendez-vous. Le salon qui montre tout ça clairement a une longueur d’avance.',
     body: `## Les tarifs d'abord
@@ -151,7 +151,7 @@ Un salon change souvent ses horaires : nocturne, fermeture exceptionnelle, vacan
     nom: 'Site internet pour auto-entrepreneur',
     resume: 'Vous lancez votre activité : un site sérieux sans y laisser votre trésorerie de départ.',
     h1: 'Site internet pour auto-entrepreneur : bien démarrer sans se ruiner',
-    title: 'Site internet pour auto-entrepreneur : bien démarrer | Alex & Co',
+    title: 'Site internet pour auto-entrepreneur : bien démarrer | Les Minis Monstres',
     description: `Vous lancez votre micro-entreprise ? Un site clair pour inspirer confiance et trouver vos premiers clients, à ${eur(page.price)} € avec ${paiement.acompte} % seulement à la commande.`,
     lead: 'Quand on démarre seul, on n’a ni réputation ni budget. Un site propre règle le premier problème sans creuser le second.',
     body: `## Pourquoi un site dès le début
@@ -210,7 +210,7 @@ Votre activité va évoluer : nouvelles prestations, nouveaux tarifs, premières
     nom: 'Combien coûte un site internet ?',
     resume: 'Création, nom de domaine, hébergement, entretien : tout ce qui compose le vrai prix d’un site.',
     h1: 'Combien coûte un site internet ? Le vrai prix, sans surprise',
-    title: 'Combien coûte un site internet ? Le vrai prix | Alex & Co',
+    title: 'Combien coûte un site internet ? Le vrai prix | Les Minis Monstres',
     description: 'Création, nom de domaine, hébergement, mises à jour, modifications : tout ce qui compose le prix d’un site internet, avec des exemples chiffrés sur un an.',
     lead: 'Le prix d’un site ne s’arrête pas à sa création. Il y a ce que l’on paie une fois, et ce que l’on paie tant que le site existe. Voici comment tout additionner avant de signer.',
     body: `## Les deux parties du prix
@@ -269,7 +269,7 @@ Les années suivantes, il ne reste que l'abonnement. En le payant à l'année, $
 
 ## Pourquoi ces prix sont bas
 
-Ce n'est pas un site au rabais. Fait à la main par une agence ou un indépendant, un site vitrine se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Le mien coûte ${marche.fois} fois moins, et la différence vient de la méthode. C'est moi qui conçois chaque site, mais j'ai pris le temps de programmer une petite bande de monstres qui s'occupe de ce qui revient d'un projet à l'autre. J'ai aussi des accès directs chez des hébergeurs français, sans intermédiaire à payer. Je relis, je corrige et je vérifie tout avant la mise en ligne. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille d'où vient l'écart, et [pourquoi Alex & Co](/pourquoi-alex-et-co/) présente ma méthode.
+Ce n'est pas un site au rabais. Fait à la main par une agence ou un indépendant, un site vitrine se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Le mien coûte ${marche.fois} fois moins, et la différence vient de la méthode. C'est moi qui conçois chaque site, mais j'ai pris le temps de programmer une petite bande de monstres qui s'occupe de ce qui revient d'un projet à l'autre. J'ai aussi des accès directs chez des hébergeurs français, sans intermédiaire à payer. Je relis, je corrige et je vérifie tout avant la mise en ligne. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille d'où vient l'écart, et [pourquoi les Minis Monstres](/pourquoi-les-minis-monstres/) présente ma méthode.
 
 ## Ce qui peut faire monter la note
 
@@ -296,7 +296,7 @@ Vous composez le tout sur la page [créer mon site](/creer-mon-site/), et le tot
     nom: 'Site une page ou site vitrine ?',
     resume: 'La différence entre les deux, et un test en trois questions pour savoir lequel est fait pour vous.',
     h1: 'Site une page ou site vitrine : lequel choisir ?',
-    title: 'Site une page ou site vitrine : lequel choisir ? | Alex & Co',
+    title: 'Site une page ou site vitrine : lequel choisir ? | Les Minis Monstres',
     description: 'La différence entre un site une page et un site vitrine, expliquée simplement, avec un test en trois questions pour choisir celui qui convient à votre activité.',
     lead: 'C’est la première question que l’on me pose. La réponse ne dépend pas de votre budget, puisque les deux sont au même prix. Elle dépend de ce que vous avez à dire, et de la façon dont vos clients vous cherchent.',
     body: `## La différence en une image
@@ -360,7 +360,7 @@ Elle répond à un autre besoin : encaisser des commandes sur le site. Si vous v
     nom: 'Faire son site soi-même ou le faire faire ?',
     resume: 'Les avantages et les limites de chaque solution, dits honnêtement, pour décider sans regret.',
     h1: 'Créer son site soi-même ou le faire faire ?',
-    title: 'Créer son site soi-même ou le faire faire ? | Alex & Co',
+    title: 'Créer son site soi-même ou le faire faire ? | Les Minis Monstres',
     description: 'Faire son site seul avec un outil en ligne ou le confier à quelqu’un : le temps, le coût, le résultat et l’entretien, comparés honnêtement pour bien choisir.',
     lead: 'Les deux solutions sont bonnes, mais pas pour les mêmes personnes. La vraie question n’est pas « est-ce que j’en suis capable ? », c’est « est-ce que j’ai envie d’y passer mes soirées ? ».',
     body: `## Faire son site soi-même
@@ -429,7 +429,7 @@ Pour voir à quoi cela ressemble avant de vous décider, [essayez la démo de l'
     nom: 'Bien choisir son nom de domaine',
     resume: 'L’adresse de votre site : comment la choisir courte, claire et facile à retenir.',
     h1: 'Nom de domaine : comment bien choisir l’adresse de son site',
-    title: 'Nom de domaine : comment bien choisir le sien | Alex & Co',
+    title: 'Nom de domaine : comment bien choisir le sien | Les Minis Monstres',
     description: 'Un nom de domaine, c’est l’adresse de votre site. Les règles simples pour le choisir court, clair, facile à dicter, et vérifier tout de suite s’il est libre.',
     lead: 'Le nom de domaine est ce que l’on tape pour arriver chez vous, par exemple « maboulangerie.fr ». Il figurera sur vos cartes, votre camionnette et vos factures. Autant bien le choisir.',
     body: `## Un nom de domaine, c'est quoi ?
@@ -490,7 +490,7 @@ C'est le piège classique : on oublie l'échéance, le nom expire, et le site di
     nom: 'La fiche Google de votre entreprise',
     resume: 'Gratuite et indispensable : comment apparaître sur Google et sur la carte près de chez vous.',
     h1: 'Fiche Google : apparaître sur Google et sur la carte, gratuitement',
-    title: 'Fiche Google : apparaître sur la carte gratuitement | Alex & Co',
+    title: 'Fiche Google : apparaître sur la carte gratuitement | Les Minis Monstres',
     description: 'La fiche d’établissement Google est gratuite. Comment la créer, la remplir et obtenir de vrais avis pour apparaître quand on vous cherche près de chez vous.',
     lead: 'Quand vous cherchez un commerce sur Google, un encadré apparaît avec une carte, des horaires, des photos et des étoiles. C’est une fiche d’établissement. La vôtre est gratuite, et c’est souvent elle que l’on voit en premier.',
     body: `## À quoi sert cette fiche
@@ -546,7 +546,7 @@ Sur chaque site, les informations de votre activité sont décrites dans un form
     nom: 'Créer une boutique en ligne',
     resume: 'Produits, paiement, livraison, obligations : par où commencer pour vendre sur internet.',
     h1: 'Créer une boutique en ligne : par où commencer ?',
-    title: 'Créer une boutique en ligne : par où commencer ? | Alex & Co',
+    title: 'Créer une boutique en ligne : par où commencer ? | Les Minis Monstres',
     description: `Produits, photos, paiement par carte, livraison, conditions de vente : les étapes pour ouvrir une boutique en ligne sans se perdre. ${eur(boutique.price)} €, à prix fixe.`,
     lead: 'Vendre sur internet, ce n’est pas seulement mettre des produits en ligne. Il faut penser au paiement, à l’envoi et à quelques règles. Rien d’insurmontable, à condition de prendre les choses dans l’ordre.',
     body: `## Une boutique en ligne, c'est quoi exactement ?

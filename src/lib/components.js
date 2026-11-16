@@ -205,9 +205,9 @@ function economie() {
   const milieu = Math.round((marche.vitrineMin + marche.vitrineMax) / 2);
   return `<div class="eco reveal">
   <h3>${icon('scale')}${marche.fois} fois moins cher qu’un site fait à la main</h3>
-  <div class="eco-barres" role="img" aria-label="Un site vitrine fait à la main par un indépendant coûte en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Chez Alex & Co : ${euro(creation.prix)}.">
+  <div class="eco-barres" role="img" aria-label="Un site vitrine fait à la main par un indépendant coûte en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Chez les Minis Monstres : ${euro(creation.prix)}.">
     <p class="eco-ligne"><span>Site vitrine fait par un indépendant</span><i style="width:100%"></i><b>${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)}</b></p>
-    <p class="eco-ligne is-nous"><span>Chez Alex & Co</span><i style="width:${Math.max(14, Math.round((creation.prix / milieu) * 100))}%"></i><b>${euro(creation.prix)}</b></p>
+    <p class="eco-ligne is-nous"><span>Chez les Minis Monstres</span><i style="width:${Math.max(14, Math.round((creation.prix / milieu) * 100))}%"></i><b>${euro(creation.prix)}</b></p>
   </div>
   <p>Pas de secret : j’ai passé du temps à automatiser mon travail, et tout ce qui se répète se fait maintenant tout seul. Je conçois le site et je vérifie tout à la main. Vous ne payez pas des semaines de travail. Le prix est le même pour tout le monde, affiché ici, sans devis.</p>
   <p class="eco-note">Nos repères : les prix publics relevés en France en 2026 pour un site vitrine de cinq pages fait par un indépendant. Une agence demande souvent plus. Il existe aussi des offres à bas prix, entre ${euro(marche.basMin)} et ${euro(marche.basMax)}, proches du nôtre.</p>
@@ -416,10 +416,10 @@ function statsCard() {
 </div>`;
 }
 
-// ---------------------------------------------------------------- comparatif : Alex & Co et les autres solutions
+// ---------------------------------------------------------------- comparatif : Les Minis Monstres et les autres solutions
 // Sans chiffres pour les autres solutions (fourchettes sourcées ajoutées plus tard), sans nommer de marque.
 function comparatifTable() {
-  const cols = ['Alex & Co', 'Agence web', 'Freelance', 'Plateforme à faire soi-même'];
+  const cols = ['Les Minis Monstres', 'Agence web', 'Freelance', 'Plateforme à faire soi-même'];
   const prixCreation = `${euro(creation.prix)}, le même prix pour tous. Boutique en ligne : + ${euro(creation.boutique)}`;
   const prixMois = `${euro(ABO.month)} par mois, nom de domaine et hébergement compris`;
   const rows = [
@@ -433,7 +433,7 @@ function comparatifTable() {
     ['Engagement', `Aucun. Seulement le temps du paiement si le reste est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
-  return `<div class="cmp cmp-4 reveal" role="table" aria-label="Alex & Co comparé à une agence web, un freelance et une plateforme à faire soi-même">
+  return `<div class="cmp cmp-4 reveal" role="table" aria-label="Les Minis Monstres comparé à une agence web, un freelance et une plateforme à faire soi-même">
   <div class="cmp-head" role="row"><span role="columnheader"></span>${cols.map((c, i) => `<span role="columnheader" class="cmp-cell${i === 0 ? ' cmp-me' : ''}">${i === 0 ? petit('mochi') : ''}${esc(c)}</span>`).join('')}</div>
   ${rows.map(([l, ...cells]) => `<div class="cmp-row" role="row"><span class="cmp-label" role="rowheader">${esc(l)}</span>${cells.map(cell).join('')}</div>`).join('')}
 </div>`;

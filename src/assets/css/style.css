@@ -1985,3 +1985,7 @@ div.tool { cursor: default; }
   .aa { padding: 18px; }
 }
 .aa-pts .aa-n::before { content: attr(data-n) " "; font-weight: 800; color: var(--ink); }
+/* le nom sur deux lignes : « Les Minis » en petit, au-dessus de « Monstres » posé sur sa tache de peinture */
+.brand-text strong { display: inline-flex; flex-direction: column; align-items: flex-start; line-height: 1; }
+.brand-pre { display: block; font-size: .6em; font-weight: 800; letter-spacing: .04em; margin: 0 0 .28em .1em; opacity: .9; }
+.brand-text strong .brand-co { margin-left: 0; }

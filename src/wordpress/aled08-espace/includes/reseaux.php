@@ -1,12 +1,12 @@
 <?php
 /**
- * Alex & Co Espace client : publier sur les réseaux sociaux depuis l'espace client (outil « Publier partout »).
+ * Les Minis Monstres Espace client : publier sur les réseaux sociaux depuis l'espace client (outil « Publier partout »).
  *
  * Le client relie ses comptes une fois, puis publie une photo et un texte sur chacun, sans quitter son espace.
  *  - Bluesky et Mastodon : le client donne un mot de passe d'application ou un jeton. Aucune application à déclarer.
- *  - Facebook (page) et Instagram (compte professionnel relié à la page) : par l'application Meta d'Alex & Co
+ *  - Facebook (page) et Instagram (compte professionnel relié à la page) : par l'application Meta des Minis Monstres
  *    (identifiant et clé secrète dans les réglages de l'extension).
- *  - LinkedIn (profil) : par l'application LinkedIn d'Alex & Co (identifiant et clé secrète dans les réglages).
+ *  - LinkedIn (profil) : par l'application LinkedIn des Minis Monstres (identifiant et clé secrète dans les réglages).
  * Les jetons d'accès restent dans la fiche du client (jamais affichés). La photo est gardée une heure, le temps
  * que les réseaux la récupèrent, puis effacée. Publier ne coûte aucun Jeton Cerise : seul le texte écrit par Cerise en coûte.
  */
@@ -420,7 +420,7 @@ function aled08e_rs_html($uid) {
 function aled08e_rs_reglages_html() {
     $m = function ($k) { $v = aled08e_rs_opt($k); return $v === '' ? 'aucune' : 'enregistrée, se termine par ' . substr($v, -4); };
     echo '<h2>Publier sur les réseaux (outil « Publier partout »)</h2>';
-    echo '<p>Bluesky et Mastodon marchent sans rien régler ici : chaque client relie son compte dans son espace. Pour Facebook, Instagram et LinkedIn, il faut déclarer une fois l’application Alex & Co chez le réseau, puis coller ici son identifiant et sa clé secrète. Tant que c’est vide, le client voit « Liaison directe bientôt » et publie par copier-coller.</p>';
+    echo '<p>Bluesky et Mastodon marchent sans rien régler ici : chaque client relie son compte dans son espace. Pour Facebook, Instagram et LinkedIn, il faut déclarer une fois l’application des Minis Monstres chez le réseau, puis coller ici son identifiant et sa clé secrète. Tant que c’est vide, le client voit « Liaison directe bientôt » et publie par copier-coller.</p>';
     echo '<table class="form-table" role="presentation">';
     echo '<tr><th>Facebook et Instagram (Meta)</th><td><p><label>Identifiant de l’application <input type="text" name="rs_meta_id" class="regular-text" value="' . esc_attr(aled08e_rs_opt('meta_id')) . '" autocomplete="off"></label></p>'
         . '<p><label>Clé secrète <input type="password" name="rs_meta_secret" class="regular-text" autocomplete="off"></label> <span class="description">' . esc_html($m('meta_secret')) . '. Laissez vide pour ne rien changer.</span></p>'

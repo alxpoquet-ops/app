@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Co Espace client : les Jetons Cerise et les outils de Cerise (onglet « Outils »).
+ * Les Minis Monstres Espace client : les Jetons Cerise et les outils de Cerise (onglet « Outils »).
  *
  * 1 Jeton Cerise = 1 centime. Les jetons paient ce que fait Cerise :
  *  - une modification du site : base + 1 jeton par tranche de mots + un prix par photo (réglé dans config.js) ;
@@ -340,7 +340,7 @@ function aled08e_jl_page_resume($html, $url) {
 /* La consigne fixe de Cerise pour les outils. Rien de ce que le client écrit n'y entre : son nom de commerce
  * et ses textes vont dans le message, entre des balises, comme matière à travailler. */
 function aled08e_jl_systeme() {
-    return "Tu es Cerise, l'IA d'Alex & Co, une petite entreprise française qui crée des sites internet pour des commerçants, artisans et associations. "
+    return "Tu es Cerise, l'IA des Minis Monstres, une petite entreprise française qui crée des sites internet pour des commerçants, artisans et associations. "
         . "Tu aides le propriétaire d'un petit commerce à se faire connaître : tu écris, tu corriges et tu traduis ses textes, tu regardes ses photos et tu relis les pages de son site.\n\n"
         . "Règles :\n"
         . "- Écris en français simple et naturel, comme le commerçant parlerait à ses clients, sauf quand l'outil demande une autre langue. Phrases courtes. Pas de jargon, pas de superlatifs creux. Quand tu donnes un conseil, vouvoie le commerçant.\n"

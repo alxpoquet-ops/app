@@ -1,15 +1,15 @@
 <?php
 /**
- * Plugin Name: Alex & Co Espace client
- * Description: L'espace client Alex & Co sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.3.2
+ * Plugin Name: Les Minis Monstres Espace client
+ * Description: L'espace client des Minis Monstres sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
+ * Version: 2.3.3
  * Requires PHP: 7.4
- * Author: Alex & Co
+ * Author: Les Minis Monstres
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.3.2');
+define('ALED08E_VERSION', '2.3.3');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
@@ -24,7 +24,7 @@ function aled08e_data() {
         $raw = @file_get_contents(__DIR__ . '/data.json');
         $d = $raw ? (json_decode($raw, true) ?: []) : [];
         $d += [
-            'name' => 'Alex & Co', 'whatsapp' => '', 'email' => '',
+            'name' => 'Les Minis Monstres', 'whatsapp' => '', 'email' => '',
             'forfaits' => [], 'types' => [], 'options' => [], 'icons' => [], 'monsters' => [],
             'moisOfferts' => 2, 'boost' => 5, 'aLaDemande' => [], 'lissageDurees' => [6, 12], 'acompte' => 25, 'parrainageMois' => 1, 'remiseSecondSite' => 10,
             'delais' => ['reponse' => '72 heures', 'titan' => '72 heures', 'urgent' => '24 heures'], 'creation' => ['prix' => 500, 'boutique' => 200],
@@ -40,7 +40,7 @@ function aled08e_forfait($id) {
     return $all ? $all[0] : ['id' => 'base', 'name' => 'Abonnement', 'month' => 10, 'quota' => 1, 'periode' => 'trimestre', 'jetons' => 100, 'modifs' => 'les petites retouches et les outils de la bande, et une intervention d’Alex par trimestre', 'color' => 'pink', 'tagline' => ''];
 }
 /* Le nom de l'abonnement sur une facture ou dans un e-mail */
-function aled08e_abo_nom($f) { return count(aled08e_data()['forfaits']) > 1 ? 'Forfait ' . $f['name'] : 'Abonnement Alex & Co'; }
+function aled08e_abo_nom($f) { return count(aled08e_data()['forfaits']) > 1 ? 'Forfait ' . $f['name'] : 'Abonnement des Minis Monstres'; }
 /* Les extras de l'abonnement : les options payées chaque mois, qu'on ajoute ou retire quand on veut */
 function aled08e_extras() {
     $out = [];
@@ -112,7 +112,7 @@ function aled08e_url($q = []) { return add_query_arg($q, home_url('/mon-espace/'
 function aled08e_meta($uid, $k) { return (string) get_user_meta($uid, 'aled08_' . $k, true); }
 function aled08e_mail_headers($reply = '') {
     $h = ['Content-Type: text/plain; charset=UTF-8'];
-    // « Alex & Co <x@y> » : le nom affiché contient un caractère spécial, on le met entre guillemets
+    // « Les Minis Monstres <x@y> » : le nom affiché contient un caractère spécial, on le met entre guillemets
     if ($reply && preg_match('/^\s*([^<"]+?)\s*<([^>]+)>\s*$/', $reply, $mm)) $reply = '"' . str_replace('"', '', $mm[1]) . '" <' . $mm[2] . '>';
     if ($reply) $h[] = 'Reply-To: ' . $reply;
     return $h;
@@ -148,10 +148,10 @@ require_once __DIR__ . '/includes/reseaux.php';
 require_once __DIR__ . '/includes/bulle.php';
 
 /* =========================================================================
- *  Rôle « Client Alex & Co » et type de contenu « Demande »
+ *  Rôle « Client des Minis Monstres » et type de contenu « Demande »
  * ========================================================================= */
 function aled08e_add_role() {
-    if (!get_role(ALED08E_ROLE)) add_role(ALED08E_ROLE, 'Client Alex & Co', ['read' => true]);
+    if (!get_role(ALED08E_ROLE)) add_role(ALED08E_ROLE, 'Client des Minis Monstres', ['read' => true]);
 }
 register_activation_hook(__FILE__, function () {
     aled08e_add_role();
@@ -229,12 +229,12 @@ add_filter('wp_new_user_notification_email', function ($email, $user) {
     if (preg_match('#(https?://\S*action=rp\S*)#', $email['message'], $m)) $link = rtrim($m[1], '>');
     if (!$link) return $email;
     $ctx = aled08e_compte_contexte();
-    $email['subject'] = 'Votre espace client Alex & Co';
+    $email['subject'] = 'Votre espace client des Minis Monstres';
     $email['message'] = 'Bonjour ' . aled08e_prenom($user) . ",\n\n"
         . ($ctx && !empty($ctx['ref'])
-            ? 'Votre commande ' . $ctx['ref'] . ' est bien enregistrée. Votre espace client Alex & Co est prêt : vous y suivez votre commande, puis vous y envoyez vos demandes de modification. Vous y retrouvez aussi votre parrainage et vos factures.' . "\n\n"
-            : (get_user_meta($user->ID, 'aled08_inscrit_seul', true) ? 'Votre compte Alex & Co est créé, merci ! Quand vous commanderez votre site, vous y suivrez tout : la commande, vos demandes de modification aux petits monstres ou à Alex et votre parrainage.' . "\n\n"
-            : 'Votre espace client Alex & Co est prêt. Vous y envoyez vos demandes de modification, vous suivez leur avancement, et vous retrouvez votre parrainage et vos factures.' . "\n\n"))
+            ? 'Votre commande ' . $ctx['ref'] . ' est bien enregistrée. Votre espace client des Minis Monstres est prêt : vous y suivez votre commande, puis vous y envoyez vos demandes de modification. Vous y retrouvez aussi votre parrainage et vos factures.' . "\n\n"
+            : (get_user_meta($user->ID, 'aled08_inscrit_seul', true) ? 'Votre compte des Minis Monstres est créé, merci ! Quand vous commanderez votre site, vous y suivrez tout : la commande, vos demandes de modification aux petits monstres ou à Alex et votre parrainage.' . "\n\n"
+            : 'Votre espace client des Minis Monstres est prêt. Vous y envoyez vos demandes de modification, vous suivez leur avancement, et vous retrouvez votre parrainage et vos factures.' . "\n\n"))
         . "Pour choisir votre mot de passe, ouvrez ce lien :\n" . $link . "\n\n"
         . "Ensuite, connectez-vous ici :\n" . aled08e_url() . "\n"
         . 'Votre identifiant : ' . $user->user_login . " (ou votre adresse e-mail)\n\n"
@@ -247,7 +247,7 @@ add_filter('wp_new_user_notification_email', function ($email, $user) {
 add_action('template_redirect', function () {
     if (!is_page('mon-espace') && !is_page('commande-confirmee')) return;
     nocache_headers();
-    do_action('litespeed_control_set_nocache', 'espace client Alex & Co');
+    do_action('litespeed_control_set_nocache', 'espace client des Minis Monstres');
     if (!defined('DONOTCACHEPAGE')) define('DONOTCACHEPAGE', true);
 }, 0);
 
@@ -598,7 +598,7 @@ function aled08e_fields() {
 function aled08e_profile_fields($user) {
     if (!current_user_can('edit_users')) return;
     $uid = is_object($user) ? $user->ID : 0;
-    echo '<h2 id="aled08e">Espace client Alex & Co</h2><p>Ces informations s’affichent dans l’espace client (page <a href="' . esc_url(aled08e_url()) . '" target="_blank">Mon espace</a>).</p>';
+    echo '<h2 id="aled08e">Espace client des Minis Monstres</h2><p>Ces informations s’affichent dans l’espace client (page <a href="' . esc_url(aled08e_url()) . '" target="_blank">Mon espace</a>).</p>';
     if ($uid) {
         $abo = aled08e_meta($uid, 'abonnement') ?: 'none';
         $libAbo = ['active' => 'actif', 'past_due' => 'en retard de paiement', 'canceled' => 'arrêté', 'none' => 'aucun abonnement Stripe'];
@@ -683,7 +683,7 @@ add_action('edit_user_profile_update', 'aled08e_profile_save');
 add_action('user_register', 'aled08e_profile_save');
 
 /* Colonne « Forfait » dans la liste des utilisateurs */
-add_filter('manage_users_columns', function ($c) { $c['aled08_forfait'] = 'Abonnement Alex & Co'; return $c; });
+add_filter('manage_users_columns', function ($c) { $c['aled08_forfait'] = 'Abonnement des Minis Monstres'; return $c; });
 add_filter('manage_users_custom_column', function ($out, $col, $uid) {
     if ($col !== 'aled08_forfait') return $out;
     $u = get_userdata($uid);
@@ -933,7 +933,7 @@ function aled08e_dashboard() {
     $total = $price;
     if (!$offert) foreach ($optsMois as $o) $total += $annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month'];
     $wa = home_url('/contact/');
-    $share = 'https://wa.me/?text=' . rawurlencode('Je te recommande Alex & Co pour ton site internet. Avec mon lien, on a chacun un mois d’abonnement offert : ' . $plink);
+    $share = 'https://wa.me/?text=' . rawurlencode('Je te recommande les Minis Monstres pour ton site internet. Avec mon lien, on a chacun un mois d’abonnement offert : ' . $plink);
 
     $stats = [];
     foreach (['visites' => 'visites', 'google' => 'apparitions sur Google', 'appels' => 'appels ou contacts', 'ventes' => 'ventes'] as $k => $lab) {
@@ -1262,7 +1262,7 @@ add_action('init', function () {
     wp_insert_post([
         'post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private',
         'post_title' => 'Nouveau : un seul abonnement, et des extras à la carte',
-        'post_content' => "Votre forfait devient l’abonnement Alex & Co : vous gardez tout ce que vous aviez, au même prix.\n"
+        'post_content' => "Votre forfait devient l’abonnement des Minis Monstres : vous gardez tout ce que vous aviez, au même prix.\n"
             . "Les extras (SEO suivi, chiffres détaillés, e-mail pro…) s’ajoutent ou se retirent quand vous voulez, dans Mon compte. Le petit « i » montre ce que chacun ajoute.\n"
             . "Et Cerise s’installe dans la bulle en bas de votre espace : bientôt, vous pourrez lui écrire directement.",
     ]);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Co Espace client : comptes clients automatiques.
+ * Les Minis Monstres Espace client : comptes clients automatiques.
  *  - création (ou rattachement) du compte à la commande, e-mail pour choisir le mot de passe
  *  - dernière connexion (connexion WordPress et visite connectée de /mon-espace/, une fois par jour)
  *  - tâche quotidienne « aled08_quotidien » : avertissement à 11 mois, suppression à 12 mois sans abonnement actif,
@@ -115,7 +115,7 @@ function aled08e_compte_metas_commande($cmd) {
     }
 }
 
-/* E-mail « Votre espace client Alex & Co » avec le lien pour choisir le mot de passe (nouveau compte ou renvoi) */
+/* E-mail « Votre espace client des Minis Monstres » avec le lien pour choisir le mot de passe (nouveau compte ou renvoi) */
 function aled08e_compte_envoyer_acces($uid, $ref = '') {
     $u = get_userdata($uid);
     if (!$u) return false;
@@ -214,11 +214,11 @@ function aled08e_comptes_nettoyage() {
         if (!$averti) {
             $date = wp_date('j F Y', aled08e_compte_date_suppression($u));
             $corps = 'Bonjour ' . aled08e_prenom($u) . ",\n\n"
-                . "Votre espace client Alex & Co n’a pas été ouvert depuis près d’un an, et aucun abonnement n’est en cours.\n"
+                . "Votre espace client des Minis Monstres n’a pas été ouvert depuis près d’un an, et aucun abonnement n’est en cours.\n"
                 . "Sans connexion de votre part, votre compte et ses données seront supprimés le " . $date . ".\n\n"
                 . "Pour le garder, il suffit de vous connecter une fois :\n" . aled08e_url() . "\n\n"
                 . "Une question ? Répondez à cet e-mail.\n\nÀ bientôt,\nAlex et sa petite bande\n";
-            wp_mail($u->user_email, 'Votre espace client Alex & Co : une connexion avant le ' . $date . ' pour le garder', $corps, aled08e_mail_headers('Alex & Co <' . aled08e_to() . '>'));
+            wp_mail($u->user_email, 'Votre espace client des Minis Monstres : une connexion avant le ' . $date . ' pour le garder', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
             update_user_meta($u->ID, 'aled08_avertissement_suppression', current_time('mysql'));
             aled08e_comptes_journal_add('Avertissement envoyé à ' . $nom . ' : suppression le ' . $date . ($last <= strtotime('-12 months') ? ' (compte déjà inactif depuis plus de 12 mois)' : '') . '.');
             continue;

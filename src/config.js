@@ -1,5 +1,5 @@
 // ============================================================================
-//  Alex & Co : configuration centrale du site (identité, rubriques, l'offre unique :
+//  Les Minis Monstres : configuration centrale du site (identité, rubriques, l'offre unique :
 //  création à 500 €, abonnement à 10 € par mois, options et extras, Jetons Cerise,
 //  fidélité, paiement). Tous les prix du site viennent d'ici : le configurateur, la page
 //  /commander/, les données structurées et l'extension WordPress (data.json)
@@ -11,15 +11,15 @@
 const site = {
   // Domaine définitif (sans slash final). Sert aux balises canonical, au sitemap, à l'Open Graph.
   url: 'https://www.aled08.fr',
-  name: 'Alex & Co',
+  name: 'Les Minis Monstres',
   baseline: 'Sites internet et SEO', // n'est plus affiché sous le logo
-  legalName: 'Alex & Co, nom commercial d’Alexandre Poquet EI', // raison sociale / nom commercial
-  // Le jour où le domaine alexetco.fr est réservé et relié : changer url ci-dessus et rediriger aled08.fr.
-  futurDomaine: 'alexetco.fr',
+  legalName: 'Les Minis Monstres, nom commercial d’Alexandre Poquet EI', // raison sociale / nom commercial
+  // Le jour où le domaine les-minis-monstres.com est réservé et relié : changer url ci-dessus et rediriger aled08.fr.
+  futurDomaine: 'les-minis-monstres.com',
   owner: 'Alexandre Poquet',
 
   // Aucune coordonnée personnelle affichée : on écrit par le formulaire de contact (/contact/).
-  // Quand une adresse de support existe (ex. support@alexetco.fr), la mettre ici : elle s'affichera.
+  // Quand une adresse de support existe (ex. support@les-minis-monstres.com), la mettre ici : elle s'affichera.
   email: '',
   contactPath: '/contact/',
 
@@ -65,10 +65,10 @@ const sections = {
   espace: { path: '/outils/', label: 'Outils', color: 'sky', icon: 'toolbox' },
   seo: { path: '/referencement-seo/', label: 'SEO', color: 'butter', icon: 'search-check' },
   contact: { path: '/contact/', label: 'Contact', color: 'peach', icon: 'message-circle' },
-  // V2 (novembre 2026) : « Ils nous ont fait confiance » devient Réalisations, « Cerise et Alex » devient Pourquoi Alex & Co,
+  // V2 (novembre 2026) : « Ils nous ont fait confiance » devient Réalisations, « Cerise et Alex » devient Pourquoi les Minis Monstres,
   // « Ma méthode » devient Pourquoi moins cher. Les anciennes adresses sont redirigées (scripts/wp-export.py).
   confiance: { path: '/realisations/', label: 'Réalisations', color: 'butter', icon: 'image' },
-  liaalex: { path: '/pourquoi-alex-et-co/', label: 'Pourquoi Alex & Co', color: 'pink', icon: 'heart-handshake' },
+  liaalex: { path: '/pourquoi-les-minis-monstres/', label: 'Pourquoi les Minis Monstres', color: 'pink', icon: 'heart-handshake' },
   metiers: { path: '/metiers/', label: 'Votre métier', color: 'peach', icon: 'store' },
   accompagnement: { path: '/accompagnement/', label: 'Accompagnement', color: 'mint', icon: 'life-buoy' },
   guides: { path: '/guides/', label: 'Guides', color: 'sky', icon: 'book-open' },
@@ -264,7 +264,7 @@ const clients = [
     avant: { icon: 'pencil', titre: 'Un site fait à la main', points: ['Un site fait soi-même', 'Aucun travail de référencement', 'Difficile à trouver sur Google'] },
     apres: { image: '/assets/img/realisations/dodedo.jpg', titre: 'Un site pensé pour être trouvé', points: ['{pages} pages en ligne', 'Une page pour chaque soin', 'Des conseils et une FAQ', 'Un bouton pour réserver une séance'] },
     avis: { texte: '', qui: '' } },
-  { nom: 'Alex & Co', domaine: 'alexetco.fr', url: '/', sitemap: 'https://www.aled08.fr/wp-sitemap.xml' /* à passer sur https://www.alexetco.fr/wp-sitemap.xml au changement de domaine */, genre: 'Notre propre site', icon: 'sparkles', color: 'lilac', desc: 'Notre site à nous : on se fait confiance, alors on se met dedans aussi. En français et en anglais.' },
+  { nom: 'Les Minis Monstres', domaine: 'les-minis-monstres.com', url: '/', sitemap: 'https://www.aled08.fr/wp-sitemap.xml' /* à passer sur https://www.les-minis-monstres.com/wp-sitemap.xml au changement de domaine */, genre: 'Notre propre site', icon: 'sparkles', color: 'lilac', desc: 'Notre site à nous : on se fait confiance, alors on se met dedans aussi. En français et en anglais.' },
   { nom: 'Les Notes du Temps', domaine: 'lesnotesdutemps.fr', url: 'https://www.lesnotesdutemps.fr/', sitemap: 'https://www.lesnotesdutemps.fr/sitemap.xml', forfait: 'base', genre: 'Site une page', icon: 'music', color: 'peach', enCreation: true, desc: '' },
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: '' },
 ];

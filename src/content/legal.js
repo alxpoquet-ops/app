@@ -96,13 +96,13 @@ module.exports = [
   {
     path: '/mentions-legales/',
     name: 'Mentions légales',
-    title: `Mentions légales | ${site.name}`,
-    description: `Mentions légales du site ${site.name} : éditeur, hébergeur, prestataire de paiement, propriété intellectuelle, responsabilité et médiation.`,
+    title: `Mentions légales | Les Minis Monstres`,
+    description: `Mentions légales du site des Minis Monstres : éditeur, hébergeur, prestataire de paiement, propriété intellectuelle, responsabilité et médiation.`,
     lead: 'Informations sur l’éditeur et l’hébergeur du site, conformément à la loi pour la confiance dans l’économie numérique.',
     updated: UPDATED,
     body: `## Éditeur du site
 
-- **Nom commercial** : ${site.name}
+- **Nom commercial** : Les Minis Monstres
 - **Exploitant** : ${site.owner}
 - **Forme juridique** : ${L.status}
 - **Adresse** : ${addr}, France
@@ -124,7 +124,7 @@ Les paiements sur ce site sont traités par Stripe (Stripe Payments Europe Ltd, 
 
 ## Propriété intellectuelle
 
-Les textes, la mise en page, le logo, les personnages et les éléments graphiques de ce site appartiennent à ${site.name}, sauf mention contraire. Toute reproduction sans accord écrit est interdite.
+Les textes, la mise en page, le logo, les personnages et les éléments graphiques de ce site appartiennent aux Minis Monstres, sauf mention contraire. Toute reproduction sans accord écrit est interdite.
 
 ## Responsabilité
 
@@ -137,13 +137,13 @@ Pour un litige avec un consommateur, un médiateur de la consommation peut être
   {
     path: '/politique-de-confidentialite/',
     name: 'Politique de confidentialité',
-    title: `Politique de confidentialité | ${site.name}`,
-    description: `Comment ${site.name} traite vos données : demande de devis, commande en ligne, paiement par Stripe, nom de domaine, espace client. Aucun traceur publicitaire.`,
+    title: `Politique de confidentialité | Les Minis Monstres`,
+    description: `Comment les Minis Monstres traitent vos données : devis, commande en ligne, paiement par Stripe, nom de domaine, espace client. Aucun traceur publicitaire.`,
     lead: 'Ce que deviennent les informations que vous m’envoyez, combien de temps je les garde, et vos droits.',
     updated: UPDATED_CONF,
     body: `## 1. Responsable du traitement
 
-${site.owner}, ${site.name}, ${addr}. Contact : ${contact}.
+${site.owner}, Les Minis Monstres, ${addr}. Contact : ${contact}.
 
 ## 2. Les données que je collecte
 
@@ -158,7 +158,7 @@ Pour vous répondre et préparer votre récapitulatif. Pour exécuter votre comm
 
 ## 4. Paiement par Stripe
 
-Les paiements sont confiés à Stripe, prestataire de paiement. Au moment de payer, vous saisissez vos données bancaires sur une page sécurisée de Stripe. Elles ne passent pas par mon site et ${site.name} ne les stocke jamais. Je reçois seulement l’état du paiement (réussi, en attente, refusé) et la facture correspondante. Stripe traite ces données selon sa propre politique de confidentialité, consultable sur [stripe.com/fr/privacy](https://stripe.com/fr/privacy).
+Les paiements sont confiés à Stripe, prestataire de paiement. Au moment de payer, vous saisissez vos données bancaires sur une page sécurisée de Stripe. Elles ne passent pas par mon site et les Minis Monstres ne les stockent jamais. Je reçois seulement l’état du paiement (réussi, en attente, refusé) et la facture correspondante. Stripe traite ces données selon sa propre politique de confidentialité, consultable sur [stripe.com/fr/privacy](https://stripe.com/fr/privacy).
 
 ## 5. Nom de domaine
 
@@ -184,7 +184,7 @@ Un compte sans aucune connexion depuis 12 mois et sans abonnement actif est supp
 
 ## 8. Destinataires
 
-Vos données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site, ${L.host}, par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Ce que vous confiez à ces outils passe par Anthropic (Claude), société américaine : ce traitement peut avoir lieu hors de l’Union européenne, dans le cadre prévu par ses conditions de traitement des données. Elles ne sont jamais vendues ni cédées.
+Vos données sont destinées aux Minis Monstres uniquement. Elles transitent par l’hébergeur du site, ${L.host}, par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Ce que vous confiez à ces outils passe par Anthropic (Claude), société américaine : ce traitement peut avoir lieu hors de l’Union européenne, dans le cadre prévu par ses conditions de traitement des données. Elles ne sont jamais vendues ni cédées.
 
 ## 9. Cookies et stockage local
 
@@ -200,13 +200,13 @@ Vous pouvez demander l’accès à vos données, leur correction, leur suppressi
   {
     path: '/conditions-generales/',
     name: 'Conditions générales',
-    title: `Conditions générales de vente | ${site.name}`,
-    description: `Conditions générales de vente d’${site.name} : commande en ligne, création à prix fixe, abonnement, extras au mois et à la demande, domaine, rétractation.`,
+    title: `Conditions générales de vente | Les Minis Monstres`,
+    description: `Conditions générales de vente des Minis Monstres : commande en ligne, création à prix fixe, abonnement, extras au mois et à la demande, domaine, rétractation.`,
     lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif de commande.',
     updated: UPDATED_CGV,
     body: `## 1. Objet
 
-Ces conditions s’appliquent à toute commande passée auprès d’${site.name} : création d’un site internet, abonnement, options, extras et services liés. Elles complètent le récapitulatif de commande, qui précise le type de site, les options, les extras et les prix.
+Ces conditions s’appliquent à toute commande passée auprès des Minis Monstres : création d’un site internet, abonnement, options, extras et services liés. Elles complètent le récapitulatif de commande, qui précise le type de site, les options, les extras et les prix.
 
 ## 2. Commande en ligne
 
@@ -220,7 +220,7 @@ Une commande peut aussi être passée par e-mail ou par message. Elle est alors 
 
 Les prix sont en euros. La TVA n’est pas applicable (article 293 B du Code général des impôts) tant que l’entreprise bénéficie de la franchise de TVA. Si cette situation change, les prix affichés sont mis à jour. Les commandes déjà passées gardent leur prix.
 
-L’offre est la même pour tous les clients. Elle tient en deux prix : la création du site, payée une fois, et l’abonnement, payé tant que le site est hébergé par ${site.name}.
+L’offre est la même pour tous les clients. Elle tient en deux prix : la création du site, payée une fois, et l’abonnement, payé tant que le site est hébergé par les Minis Monstres.
 
 **La création du site coûte ${eur(creation.prix)} €.** Ce prix est le même pour un site d’une seule page et pour un site vitrine de cinq pages au plus. Il comprend la maquette, le site complet et sa mise en ligne.
 
@@ -248,7 +248,7 @@ Exemple pour un site à ${eur(creation.prix)} € : le client paie ${eur(acompte
 
 ## 5. Abonnement
 
-L’abonnement est obligatoire : ${site.name} n’héberge pas de site sans abonnement. Il n’y en a qu’un, le même pour tous les sites. Il démarre à la réception du site.
+L’abonnement est obligatoire : Les Minis Monstres n’hébergent pas de site sans abonnement. Il n’y en a qu’un, le même pour tous les sites. Il démarre à la réception du site.
 
 Il comprend :
 
@@ -265,7 +265,7 @@ Il comprend :
 
 L’abonnement est prélevé d’avance, chaque mois ou chaque année selon la période choisie par le client. À l’année, il coûte ${eur(annee)} € : le client paie ${12 - annuel.moisOfferts} mois sur 12, soit ${annuel.moisOfferts} mois offerts. Le client peut passer du mois à l’année, ou de l’année au mois, au renouvellement.
 
-Les paiements sont confiés à Stripe, par carte bancaire ou prélèvement SEPA. ${site.name} ne voit pas et ne conserve pas les données bancaires. Chaque facture est envoyée par e-mail et reste disponible dans l’espace client.
+Les paiements sont confiés à Stripe, par carte bancaire ou prélèvement SEPA. Les Minis Monstres ne voient pas et ne conservent pas les données bancaires. Chaque facture est envoyée par e-mail et reste disponible dans l’espace client.
 
 En cas d’échec de paiement, le client est prévenu par e-mail. Si rien n’est régularisé sous 30 jours, le site peut être mis en pause jusqu’au règlement.
 
@@ -293,7 +293,7 @@ L’abonnement est sans engagement. Le client peut l’arrêter à tout moment p
 
 Une seule exception : quand le reste du prix de création est payé en plusieurs fois, le client s’engage le temps du paiement, soit ${durees} mois à partir de la réception du site. S’il arrête avant, le reste du prix de création devient exigible en une fois. Une fois le site payé, l’abonnement est sans engagement.
 
-La fin de l’abonnement met fin aux extras et à l’hébergement du site par ${site.name}. Le client reçoit son site sous forme de fichiers (textes, images, pages), pour le faire héberger où il veut. Le nom de domaine lui appartient : il peut le transférer vers le prestataire de son choix. L’hébergement par ${site.name} s’arrête 30 jours après la fin de l’abonnement.
+La fin de l’abonnement met fin aux extras et à l’hébergement du site par les Minis Monstres. Le client reçoit son site sous forme de fichiers (textes, images, pages), pour le faire héberger où il veut. Le nom de domaine lui appartient : il peut le transférer vers le prestataire de son choix. L’hébergement par les Minis Monstres s’arrête 30 jours après la fin de l’abonnement.
 
 ## 8. Droit de rétractation
 
@@ -303,15 +303,15 @@ En commandant, le client demande expressément, en cochant la case prévue, que 
 
 ## 9. Nom de domaine
 
-Le client est le titulaire de son nom de domaine. ${site.name} y figure comme contact technique, pour pouvoir le gérer. Le nom est réservé après le premier paiement, s’il est encore disponible à ce moment-là.
+Le client est le titulaire de son nom de domaine. Les Minis Monstres y figurent comme contact technique, pour pouvoir le gérer. Le nom est réservé après le premier paiement, s’il est encore disponible à ce moment-là.
 
 Le prix d’un nom de domaine standard en .fr, .com, .net ou .org est compris dans l’abonnement, renouvellement annuel compris. Les autres extensions et les noms dits « premium », vendus plus cher par les registres, font l’objet d’un devis.
 
-Si le client possède déjà un nom de domaine, il peut le transférer vers ${site.name} ou le garder chez son prestataire et le faire pointer vers le site. ${site.name} lui envoie les réglages à faire.
+Si le client possède déjà un nom de domaine, il peut le transférer vers les Minis Monstres ou le garder chez son prestataire et le faire pointer vers le site. Les Minis Monstres lui envoient les réglages à faire.
 
 ## 10. Création du site et délais
 
-Le client fournit ses textes, photos et informations, ou les prépare avec ${site.name} à partir de ses explications. Les délais annoncés (${listeDelais}) sont indicatifs. Ils courent à partir de la réception de ces éléments. Le client voit son site avant la mise en ligne et peut demander des ajustements sur ce qui a été commandé.
+Le client fournit ses textes, photos et informations, ou les prépare avec les Minis Monstres à partir de ses explications. Les délais annoncés (${listeDelais}) sont indicatifs. Ils courent à partir de la réception de ces éléments. Le client voit son site avant la mise en ligne et peut demander des ajustements sur ce qui a été commandé.
 
 ## 11. Modifications et délai de réponse
 
@@ -319,7 +319,7 @@ Le client envoie ses demandes de modification depuis son espace client ou par me
 
 À chaque demande, le client choisit qui s’en charge :
 
-- **Retouche automatique** : la modification est préparée par ${bricoleur}, un des outils automatisés d’${site.name} (article 15). Le client voit l’aperçu, et le site n’est modifié qu’après sa validation. La retouche utilise des points d’énergie (article 12).
+- **Retouche automatique** : la modification est préparée par ${bricoleur}, un des outils automatisés des Minis Monstres (article 15). Le client voit l’aperçu, et le site n’est modifié qu’après sa validation. La retouche utilise des points d’énergie (article 12).
 - **Alex** : la modification est faite à la main, vérifiée et paramétrée par Alex.
 
 **Retouches automatiques.** Elles couvrent les petites et moyennes modifications : un budget de mots et d’images par demande, sur une seule page. La modification est mise en ligne dès que le client valide l’aperçu, en général dans les 5 minutes qui suivent la demande. Une demande trop grande pour une retouche automatique est transmise à Alex. Elle compte alors comme une intervention d’Alex.
@@ -330,7 +330,7 @@ Le client envoie ses demandes de modification depuis son espace client ou par me
 
 **Annulation.** Une demande peut être annulée gratuitement par le client dans les 24 heures qui suivent son envoi, depuis son espace client, dans la limite de trois annulations par mois : elle n’est alors pas décomptée, les points d’énergie utilisés sont rendus, et ce qui avait été mis en ligne est remis comme avant. Au-delà, l’annulation se demande à Alex.
 
-**Délai de réponse.** ${site.name} répond à chaque demande sous ${delais.reponse}, en jours ouvrés. Ce délai est le même pour tous les clients. Répondre, c’est prendre en charge la demande et donner une date. Les petites modifications sont en général faites dans ce délai. Avec l’extra à la demande « ${urgent.name} » (article 6), la demande est traitée sous ${delais.urgent}, du lundi au vendredi.
+**Délai de réponse.** Les Minis Monstres répondent à chaque demande sous ${delais.reponse}, en jours ouvrés. Ce délai est le même pour tous les clients. Répondre, c’est prendre en charge la demande et donner une date. Les petites modifications sont en général faites dans ce délai. Avec l’extra à la demande « ${urgent.name} » (article 6), la demande est traitée sous ${delais.urgent}, du lundi au vendredi.
 
 ## 12. Énergie
 
@@ -352,7 +352,7 @@ L’énergie et les interventions d’Alex sont comptées séparément.
 
 ## 13. Espace client et compte
 
-Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. Il y suit sa commande, ses demandes, son abonnement, ses extras et ses factures. Il y commande les extras à la demande (article 6). Il y trouve aussi les outils de la petite bande et son compteur d’énergie, et il peut y reprendre de l’énergie (article 12). Il garde ses identifiants pour lui et prévient ${site.name} en cas de doute sur leur usage.
+Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. Il y suit sa commande, ses demandes, son abonnement, ses extras et ses factures. Il y commande les extras à la demande (article 6). Il y trouve aussi les outils de la petite bande et son compteur d’énergie, et il peut y reprendre de l’énergie (article 12). Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
 
 Un compte sans connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec ses demandes et ses photos. Le client est prévenu par e-mail 30 jours avant. Une connexion suffit pour annuler la suppression. Les factures sont conservées en dehors du compte, le temps prévu par la loi.
 
@@ -370,7 +370,7 @@ Les petits monstres sont des outils automatisés, dont certains reposent sur un 
 
 ## 16. Référencement
 
-Les bases du SEO sont comprises dans l’abonnement. Le travail mené chaque mois pour faire monter le site relève de l’extra ${seoSuivi.name} (article 6). Dans les deux cas, le référencement est une obligation de moyens. ${site.name} applique les bonnes pratiques et suit les résultats, sans garantir une position donnée sur Google.
+Les bases du SEO sont comprises dans l’abonnement. Le travail mené chaque mois pour faire monter le site relève de l’extra ${seoSuivi.name} (article 6). Dans les deux cas, le référencement est une obligation de moyens. Les Minis Monstres appliquent les bonnes pratiques et suivent les résultats, sans garantir une position donnée sur Google.
 
 ## 17. Parrainage et fidélité
 
@@ -378,7 +378,7 @@ Chaque client dispose d’un lien et d’un code de parrainage dans son espace c
 
 ## 18. Responsabilité
 
-${site.name} met tout en œuvre pour que le site reste disponible et sauvegardé. ${site.name} ne peut pas être tenu responsable d’une panne de l’hébergeur, d’un registre ou du service de paiement, ni des contenus fournis par le client. Un éventuel dédommagement ne peut pas dépasser les sommes versées au titre de l’abonnement au cours des 12 derniers mois, sauf si la loi en dispose autrement.
+Les Minis Monstres mettent tout en œuvre pour que le site reste disponible et sauvegardé. Les Minis Monstres ne peuvent pas être tenus responsables d’une panne de l’hébergeur, d’un registre ou du service de paiement, ni des contenus fournis par le client. Un éventuel dédommagement ne peut pas dépasser les sommes versées au titre de l’abonnement au cours des 12 derniers mois, sauf si la loi en dispose autrement.
 
 ## 19. Médiation et litiges
 

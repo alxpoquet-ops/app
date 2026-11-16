@@ -1,8 +1,8 @@
 <?php
 /**
- * Alex & Co Espace client : Bricou, l'IA (Claude, d'Anthropic) qui modifie et met à jour le site du client.
+ * Les Minis Monstres Espace client : Bricou, l'IA (Claude, d'Anthropic) qui modifie et met à jour le site du client.
  *  - une demande « par Bricou » est traitée en tâche de fond : Claude lit le site du client par le connecteur
- *    (extension « Alex & Co : connecteur » installée sur le site du client), fait le changement demandé
+ *    (extension « Les Minis Monstres : connecteur » installée sur le site du client), fait le changement demandé
  *    avec des outils limités, puis rend compte ;
  *  - chaque changement garde une révision sur le site du client : on peut tout annuler en un clic ;
  *  - si la demande est floue, risquée ou hors des outils, Bricou ne touche à rien et la passe à Alex.
@@ -99,7 +99,7 @@ function aled08e_lia_outils() {
     ];
 }
 function aled08e_lia_systeme($u, $infos) {
-    return "Tu es Bricou, l'IA d'Alex & Co, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, artisans et associations. "
+    return "Tu es Bricou, l'IA des Minis Monstres, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, artisans et associations. "
         . "Tu reçois une demande de modification écrite par le propriétaire d'un site, et tu la prépares toi-même sur son site WordPress avec les outils fournis. "
         . "Tes changements sont préparés dans un aperçu : le client le regarde et confirme, puis ils sont mis en ligne directement.\n\n"
         . "Règles :\n"
@@ -276,7 +276,7 @@ add_action('admin_post_aled08e_feu_vert', function () {
     $choix = sanitize_key(wp_unslash($_GET['choix'] ?? ''));
     $cle = sanitize_text_field(wp_unslash($_GET['cle'] ?? ''));
     $bonne = (string) get_post_meta($pid, '_aled08_feu_vert_cle', true);
-    if (!current_user_can('manage_options') || !$pid || $bonne === '' || !hash_equals($bonne, $cle)) wp_die('Ce lien n’est plus valable.', 'Alex & Co', ['response' => 403]);
+    if (!current_user_can('manage_options') || !$pid || $bonne === '' || !hash_equals($bonne, $cle)) wp_die('Ce lien n’est plus valable.', 'Les Minis Monstres', ['response' => 403]);
     $fiche = admin_url('post.php?post=' . $pid . '&action=edit');
     if ($choix === 'go') {
         $msg = aled08e_feu_vert($pid, 'alex') ? 'C’est parti : Bricou s’occupe de la demande.' : 'Cette demande est déjà lancée, ou elle a été annulée.';
@@ -294,7 +294,7 @@ add_action('admin_post_aled08e_feu_vert', function () {
     } else {
         $msg = 'Choix inconnu.';
     }
-    wp_die(esc_html($msg) . ' <a href="' . esc_url($fiche) . '">Voir la demande</a>', 'Alex & Co', ['response' => 200]);
+    wp_die(esc_html($msg) . ' <a href="' . esc_url($fiche) . '">Voir la demande</a>', 'Les Minis Monstres', ['response' => 200]);
 });
 add_action('aled08_lia_traiter', 'aled08e_lia_traiter');
 
@@ -408,7 +408,7 @@ function aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $act
         update_post_meta($pid, '_aled08_statut', 'encours');
         update_post_meta($pid, '_aled08_lia_etat', 'a_confirmer');
         aled08e_lia_journal_add('Demande #' . $pid . ' préparée par Bricou, en attente de l’accord du client.');
-        if ($u) wp_mail($u->user_email, 'Bricou a préparé votre modification : à vous de voir', 'Bonjour ' . aled08e_prenom($u) . ",\n\n" . $msgClient . "\n\nRien n’est encore changé sur votre site. Regardez l’aperçu et confirmez dans votre espace :\n" . aled08e_url() . "#demandes\n\nÀ bientôt,\nAlex et sa petite bande\n", aled08e_mail_headers('"Alex & Co" <' . aled08e_to() . '>'));
+        if ($u) wp_mail($u->user_email, 'Bricou a préparé votre modification : à vous de voir', 'Bonjour ' . aled08e_prenom($u) . ",\n\n" . $msgClient . "\n\nRien n’est encore changé sur votre site. Regardez l’aperçu et confirmez dans votre espace :\n" . aled08e_url() . "#demandes\n\nÀ bientôt,\nAlex et sa petite bande\n", aled08e_mail_headers('"Les Minis Monstres" <' . aled08e_to() . '>'));
     } else {
         // passée à Alex : les Jetons Bricou sont rendus, la demande rejoint les modifications d'Alex
         aled08e_jl_rendre($uid, 'demande:' . $pid);
@@ -503,7 +503,7 @@ function aled08e_lia_profil($user) {
     $url = aled08e_meta($uid, 'lia_url');
     $sec = aled08e_meta($uid, 'lia_secret');
     echo '<h3>Bricou : site relié</h3><table class="form-table" role="presentation">';
-    echo '<tr><th><label for="aled08e-lia-url">Adresse du site à modifier</label></th><td><input type="url" id="aled08e-lia-url" name="aled08e_lia_url" class="regular-text" value="' . esc_attr($url) . '" placeholder="' . esc_attr(aled08e_meta($uid, 'site') ?: 'https://www.exemple.fr') . '"><p class="description">Sur ce site, installez l’extension « Alex & Co : connecteur », puis collez la clé ci-dessous dans Réglages, Alex & Co.</p></td></tr>';
+    echo '<tr><th><label for="aled08e-lia-url">Adresse du site à modifier</label></th><td><input type="url" id="aled08e-lia-url" name="aled08e_lia_url" class="regular-text" value="' . esc_attr($url) . '" placeholder="' . esc_attr(aled08e_meta($uid, 'site') ?: 'https://www.exemple.fr') . '"><p class="description">Sur ce site, installez l’extension « Les Minis Monstres : connecteur », puis collez la clé ci-dessous dans Réglages, Les Minis Monstres.</p></td></tr>';
     echo '<tr><th>Clé du connecteur</th><td>';
     if ($sec) echo '<input type="text" readonly class="regular-text code" value="' . esc_attr($sec) . '" onclick="this.select()"><br>';
     echo '<label><input type="checkbox" name="aled08e_lia_nouvelle" value="1"> ' . ($sec ? 'Créer une nouvelle clé (l’ancienne ne marchera plus)' : 'Créer la clé') . '</label></td></tr>';

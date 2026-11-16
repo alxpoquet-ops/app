@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Co Espace client : le questionnaire de création (« brief »).
+ * Les Minis Monstres Espace client : le questionnaire de création (« brief »).
  * Après sa commande, le client le remplit dans l'onglet « Ma commande » : nom du site, couleurs, ambiance,
  * coordonnées, photos avec description, prix ou produits, livraison… Il est prérempli avec la commande.
  * Son envoi lance la création. Les questions viennent de src/content/brief.js (data.json → « brief »).

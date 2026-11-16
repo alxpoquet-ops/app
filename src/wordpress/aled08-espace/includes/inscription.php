@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Co Espace client : créer son compte sans commander.
+ * Les Minis Monstres Espace client : créer son compte sans commander.
  * Le visiteur donne son prénom, son nom et son e-mail ; il reçoit un e-mail pour choisir son mot de passe
  * (ce qui vérifie aussi l'adresse). Un compte sans forfait voit un espace simple : bienvenue, démo, commander, Mon compte.
  * Sans commande ni forfait, la règle habituelle s'applique : compte supprimé après 12 mois sans connexion.

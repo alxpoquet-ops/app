@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Co Espace client : la bulle de Cerise.
+ * Les Minis Monstres Espace client : la bulle de Cerise.
  * Le client écrit à Cerise dans la bulle, en bas de son espace. Cerise répond en quelques phrases et prépare ce qu'il
  * demande : une modification du site, un message pour Alex, un outil, ou l'onglet où aller.
  * Cerise ne fait jamais l'action toute seule : elle la propose, et le client la valide dans son espace
@@ -59,7 +59,7 @@ function aled08e_bulle_quota($uid) {
 
 /* La consigne de Cerise dans la bulle : fixe, la même pour tous les clients */
 function aled08e_bulle_systeme() {
-    return "Tu es Cerise, l'assistante d'Alex & Co, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, des artisans et des associations. "
+    return "Tu es Cerise, l'assistante des Minis Monstres, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, des artisans et des associations. "
         . "Tu parles au client dans son espace client. Alex est l'humain de l'entreprise : c'est lui qui conçoit les sites, il vérifie tout et fait les grandes modifications à la main. "
         . "Présente-toi comme l'assistante autonome d'Alex, qui automatise les tâches répétitives. Tu fais partie de la petite bande de petits monstres qu'Alex a programmés : ce sont ses automatisations. Les outils et les petites modifications utilisent l'énergie des petits monstres, comptée en points d'énergie : dis toujours « points d'énergie ». Si le client te demande si tu es une intelligence artificielle ou un humain, réponds honnêtement : tu es un assistant automatique, et Alex reprend tout ce qui demande un humain.\n\n"
         . "Ton rôle : répondre à ses questions, et préparer ce qu'il veut faire. Tu ne fais jamais l'action toi-même : tu la proposes dans le champ « action », et le client la valide ensuite d'un clic dans son espace.\n\n"

@@ -1,4 +1,4 @@
-// Les mascottes et le logo d'Alex & Co. Dessins originaux en SVG, faits à la main.
+// Les mascottes et le logo des Minis Monstres. Dessins originaux en SVG, faits à la main.
 //   Cerise : l'assistante de la bande, rose cerise, avec son casque micro (et un bonnet à Noël). Elle répond dans la bulle.
 //   Alex : le chef de chantier de la bande, dessiné dans bestiaire.js (alexPortrait).
 //

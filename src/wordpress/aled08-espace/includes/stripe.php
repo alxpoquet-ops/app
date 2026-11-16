@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Co Espace client : Stripe, sans SDK (API REST via wp_remote_request).
+ * Les Minis Monstres Espace client : Stripe, sans SDK (API REST via wp_remote_request).
  *  - clés : constantes ALED08_STRIPE_SECRET / ALED08_STRIPE_WEBHOOK_SECRET (wp-config.php) ou options saisies dans les réglages
  *  - paiement d'une commande : Checkout Session en mode abonnement (forfait, options, lissage ou acompte)
  *  - webhook REST aled08/v1/stripe : signature vérifiée, événements dédoublonnés, journal des 50 derniers
@@ -10,7 +10,7 @@
 defined('ABSPATH') || exit;
 
 define('ALED08E_STRIPE_API', '2026-10-28.endive');
-define('ALED08E_STRIPE_FOOTER_DEFAUT', 'Alex & Co, entreprise individuelle. TVA non applicable, art. 293 B du CGI.');
+define('ALED08E_STRIPE_FOOTER_DEFAUT', 'Les Minis Monstres, entreprise individuelle. TVA non applicable, art. 293 B du CGI.');
 
 /* =========================================================================
  *  Réglages

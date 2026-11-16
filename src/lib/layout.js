@@ -5,7 +5,15 @@ try { METIERS = require('../content/metiers').metiers; } catch (e) { /* pas enco
 const { icon } = require('./icons');
 const { logoMark, monster } = require('./monsters');
 const { petit } = require('./bestiaire');
-const brandName = 'Alex <span class="brand-co">&amp; Co</span>';
+// Les titres trop longs pour Google (plus de 70 caractères) gardent la marque en court, ou la perdent.
+const MARQUE = ' | ' + site.name;
+const MARQUE_COURTE = ' | Minis Monstres';
+function titreCourt(t) {
+  if (!t || t.length <= 70 || !t.endsWith(MARQUE)) return t;
+  const b = t.slice(0, -MARQUE.length);
+  return (b + MARQUE_COURTE).length <= 70 ? b + MARQUE_COURTE : b;
+}
+const brandName = '<span class="brand-pre">Les Minis</span> <span class="brand-co">Monstres</span>';
 const { esc, typo } = require('./md');
 const C = require('./components');
 
@@ -157,14 +165,14 @@ function footer(p) {
         <li><a href="/referencement-seo/">Référencement SEO</a></li>
         <li><a href="/guides/">Guides pour créer son site</a></li>
         <li><a href="/lexique/">Lexique du web</a></li>
-        <li><a href="${sections.comparatif.path}">Alex & Co et les autres solutions</a></li>
+        <li><a href="${sections.comparatif.path}">Les Minis Monstres et les autres solutions</a></li>
         <li><a href="/fidelite/">Fidélité et parrainage</a></li>
       </ul>
     </div>
     <div>
       <h2 class="footer-title">Infos</h2>
       <ul class="footer-links">
-        <li><a href="${sections.liaalex.path}">Pourquoi Alex & Co ?</a></li>
+        <li><a href="${sections.liaalex.path}">Pourquoi les Minis Monstres ?</a></li>
         <li><a href="${sections.methode.path}">Pourquoi c’est moins cher</a></li>
         <li><a href="${sections.confiance.path}">Réalisations</a></li>
         <li><a href="${sections.accompagnement.path}">Accompagnement</a></li>
@@ -254,7 +262,7 @@ function page(p) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>${esc(p.title)}</title>
+<title>${esc(titreCourt(p.title))}</title>
 <meta name="description" content="${esc(p.description)}">
 <link rel="canonical" href="${url}">
 <meta name="robots" content="${robots}">
@@ -264,7 +272,7 @@ function page(p) {
 <meta property="og:locale" content="fr_FR">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${site.name}">
-<meta property="og:title" content="${esc(p.title)}">
+<meta property="og:title" content="${esc(titreCourt(p.title))}">
 <meta property="og:description" content="${esc(p.description)}">
 <meta property="og:url" content="${url}">
 <meta property="og:image" content="${ogImage}">
@@ -272,7 +280,7 @@ function page(p) {
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="${esc(`${site.name} : votre site internet tout compris, ${marche.fois} fois moins cher`)}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${esc(p.title)}">
+<meta name="twitter:title" content="${esc(titreCourt(p.title))}">
 <meta name="twitter:description" content="${esc(p.description)}">
 <meta name="twitter:image" content="${ogImage}">
 <link rel="preload" href="/assets/fonts/jakarta-var.woff2" as="font" type="font/woff2" crossorigin>

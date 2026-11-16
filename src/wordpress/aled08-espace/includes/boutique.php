@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Co Espace client : les outils de la boutique en ligne (onglet « Ma boutique »).
+ * Les Minis Monstres Espace client : les outils de la boutique en ligne (onglet « Ma boutique »).
  * Codes promo, soldes rapides et bandeau d'annonce, réglés en quelques secondes par le client.
  * Tout passe par le connecteur de son site (actions boutique_lire, promo_creer, promo_supprimer,
  * soldes_regler, bandeau_regler). Ça ne compte pas dans les modifications du forfait.

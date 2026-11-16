@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Co Espace client : ajouter ou retirer des extras à tout moment, depuis « Abonnement et factures ».
+ * Les Minis Monstres Espace client : ajouter ou retirer des extras à tout moment, depuis « Abonnement et factures ».
  * Il n'y a qu'un abonnement : seuls les extras (options payées chaque mois) changent.
  * Si un abonnement Stripe tourne, il est mis à jour (sans prorata : le nouveau prix s'applique à la prochaine échéance).
  * Les options « boutique » (stock, comptes clients) ne sont proposées que pour une boutique en ligne.

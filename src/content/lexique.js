@@ -8,7 +8,7 @@ const O = (id) => options.find((o) => o.id === id);
 const page = T('une-page');
 // L'offre unique : un seul abonnement, et des extras au mois (Suivi Google, Chiffres détaillés, Adresse e-mail pro).
 // V2 (novembre 2026) : Alex fait chaque site, sa petite bande d'automatisations (des petits monstres) s'occupe du
-// répétitif. « Chez Alex & Co » reste : c'est le nom de la marque. Petites retouches et outils compris pour un usage normal.
+// répétitif. « Chez les Minis Monstres » reste : c'est le nom de la marque. Petites retouches et outils compris pour un usage normal.
 const abo = forfaits[0];
 const seo = O('seo'), stats = O('stats'), mail = O('mail');
 
@@ -22,7 +22,7 @@ const termes = [
     nom: 'Hébergement web',
     resume: 'L’endroit où les fichiers de votre site sont rangés pour être visibles jour et nuit.',
     h1: "Hébergement web : c'est quoi, et pourquoi chaque site en a besoin ?",
-    title: 'Hébergement web : définition simple pour les pros | Alex & Co',
+    title: 'Hébergement web : définition simple pour les pros | Les Minis Monstres',
     description: 'L’hébergement web, c’est la place louée sur un ordinateur allumé en permanence pour que votre site reste visible. Ce que ça change pour votre entreprise.',
     lead: `Un hébergement web, c'est un espace loué sur un ordinateur qui ne s'éteint jamais, et qui garde votre site disponible pour tout le monde. Sans lui, votre adresse internet ne mène nulle part.`,
     body: `## La définition en une phrase
@@ -54,7 +54,7 @@ Une fleuriste prend un hébergement très bon marché pour son site. Tout va bie
 
 !> L'hébergement et le nom de domaine sont deux choses différentes, souvent vendues séparément. Avoir l'un ne veut pas dire avoir l'autre.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Je ne vous demande pas de chercher un hébergeur. L'[abonnement](/tarifs/) comprend l'hébergement sur un serveur de qualité, quel que soit votre site. Vous n'avez ni facture à part ni réglage à faire. Pour comprendre ce qu'est la machine elle-même, lisez la définition du [serveur](/lexique/serveur-web/).`,
     faq: [
@@ -70,7 +70,7 @@ Je ne vous demande pas de chercher un hébergeur. L'[abonnement](/tarifs/) compr
     nom: 'Serveur web',
     resume: 'La machine qui reçoit les visites de votre site et envoie les pages à chaque écran.',
     h1: "Serveur web : c'est quoi, concrètement ?",
-    title: 'Serveur web : c’est quoi, expliqué sans jargon | Alex & Co',
+    title: 'Serveur web : c’est quoi, expliqué sans jargon | Les Minis Monstres',
     description: 'Un serveur web est un ordinateur qui envoie les pages de votre site à ceux qui les demandent. Ce qui le rend rapide ou lent, et pourquoi ça compte pour vous.',
     lead: `Un serveur web est un ordinateur spécialisé, branché à internet en continu, qui livre les pages de votre site à chaque visiteur. Plus il est puissant et bien réglé, plus votre site s'affiche vite.`,
     body: `## La définition en une phrase
@@ -103,7 +103,7 @@ Un traiteur partage un serveur bas de gamme avec des centaines d'autres sites. U
 
 !> Un site lent n'est pas toujours la faute du serveur. Des photos trop lourdes ou trop d'extensions ralentissent aussi. Le bon diagnostic regarde les deux.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Je m'occupe du serveur pour vous. Avec l'abonnement, votre site tourne sur une machine de qualité qui tient les pics de visites. Et si vous êtes curieux de ce qui s'y passe, l'extra ${stats.name} vous montre vos visiteurs heure par heure. Le détail est sur la page des [tarifs](/tarifs/).`,
     faq: [
@@ -118,7 +118,7 @@ Je m'occupe du serveur pour vous. Avec l'abonnement, votre site tourne sur une m
     nom: 'HTTPS et certificat SSL',
     resume: 'Le petit cadenas dans la barre d’adresse : vos visiteurs échangent avec vous en toute sécurité.',
     h1: "HTTPS et certificat SSL : c'est quoi, ce petit cadenas ?",
-    title: 'HTTPS et certificat SSL : le cadenas expliqué | Alex & Co',
+    title: 'HTTPS et certificat SSL : le cadenas expliqué | Les Minis Monstres',
     description: 'Le HTTPS chiffre ce qui passe entre votre site et vos visiteurs, grâce à un certificat SSL. Pourquoi c’est devenu obligatoire, même pour un petit site.',
     lead: `Le HTTPS est la version protégée de l'adresse d'un site : ce qui circule entre le visiteur et vous est brouillé pour les curieux. Le certificat SSL est la pièce qui rend cette protection possible.`,
     body: `## La définition en une phrase
@@ -149,7 +149,7 @@ Une couturière ouvre son site sur son téléphone pour le montrer à une client
 
 !> Si votre site affiche encore « Non sécurisé » aujourd'hui, c'est la première chose à corriger, avant même le design.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Le HTTPS est compris dans l'[abonnement](/tarifs/), pour chaque site. Je pose le certificat à la mise en ligne et il se renouvelle tout seul. Vous n'avez pas à y penser. Pour voir ce que contient le reste de l'entretien, lisez la page sur la [maintenance de site](/lexique/maintenance-site/).`,
     faq: [
@@ -165,7 +165,7 @@ Le HTTPS est compris dans l'[abonnement](/tarifs/), pour chaque site. Je pose le
     nom: 'CMS',
     resume: 'Le logiciel qui permet de modifier les pages d’un site sans écrire une ligne de code.',
     h1: "CMS : c'est quoi, un système de gestion de contenu ?",
-    title: 'CMS : définition simple d’un gestionnaire de site | Alex & Co',
+    title: 'CMS : définition simple d’un gestionnaire de site | Les Minis Monstres',
     description: 'Un CMS est le logiciel qui fait tourner un site et permet d’en changer les textes et les images sans coder. Les avantages, les pièges, et qui doit s’en servir.',
     lead: `Un CMS est un logiciel installé derrière un site, qui sert à ajouter ou changer des pages comme on remplit un document. Le sigle vient de l'anglais Content Management System, système de gestion de contenu.`,
     body: `## La définition en une phrase
@@ -192,7 +192,7 @@ Un moniteur d'auto-école veut afficher ses nouvelles dates de stage code chaque
 
 !> Avant de choisir un CMS, demandez-vous qui fera les modifications. Si la réponse est « personne », le meilleur outil du monde restera vide.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Vous n'avez pas à apprendre d'outil. Vous décrivez ce que vous voulez changer dans votre espace client, et c'est fait pour vous : par ma petite bande d'automatisations, en quelques minutes, pour une petite retouche avec un aperçu à valider, ou par moi pour les changements plus grands. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
     faq: [
@@ -207,7 +207,7 @@ Vous n'avez pas à apprendre d'outil. Vous décrivez ce que vous voulez changer 
     nom: 'WordPress',
     resume: 'Le logiciel gratuit qui fait tourner une très grande partie des sites dans le monde.',
     h1: "WordPress : c'est quoi, et est-ce fait pour vous ?",
-    title: 'WordPress : c’est quoi, avantages et limites | Alex & Co',
+    title: 'WordPress : c’est quoi, avantages et limites | Les Minis Monstres',
     description: 'WordPress est un logiciel libre et gratuit pour créer et gérer un site. Ce qu’il permet, ce qu’il demande comme entretien, et les erreurs à éviter au départ.',
     lead: `WordPress est un CMS libre et gratuit, c'est-à-dire un logiciel qui sert à construire un site et à en modifier le contenu sans coder. Né pour les blogs, il fait aujourd'hui tourner des sites vitrines comme des boutiques.`,
     body: `## La définition en une phrase
@@ -235,7 +235,7 @@ Une éleveuse de chèvres crée son site WordPress seule, un week-end, avec un t
 
 !> WordPress est gratuit, mais un site WordPress ne l'est pas : il lui faut un hébergement, un nom de domaine et de l'entretien régulier.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Que votre site soit sur WordPress ou non, la question pour vous reste la même : qui s'en occupe ? Avec l'[abonnement](/tarifs/), je fais les mises à jour des extensions pour vous et je surveille que tout tourne. Si vous hésitez entre faire seul ou déléguer, le guide [créer son site soi-même ou le faire faire](/guides/creer-son-site-soi-meme-ou-le-faire-faire/) vous aide à trancher.`,
     faq: [
@@ -251,7 +251,7 @@ Que votre site soit sur WordPress ou non, la question pour vous reste la même :
     nom: 'Thème',
     resume: 'Le modèle graphique qui donne au site ses couleurs, ses polices et sa mise en page.',
     h1: "Thème de site internet : c'est quoi, et comment bien le choisir ?",
-    title: 'Thème de site internet : définition et conseils | Alex & Co',
+    title: 'Thème de site internet : définition et conseils | Les Minis Monstres',
     description: 'Un thème est le modèle de présentation d’un site : couleurs, polices, disposition des blocs. Comment il influence la vitesse, la lisibilité et votre image.',
     lead: `Un thème est l'habit d'un site : il décide des couleurs, des polices, de la place du menu et de l'allure des pages. On change le thème sans toucher aux textes, un peu comme on repeint une boutique sans changer la marchandise.`,
     body: `## La définition en une phrase
@@ -281,7 +281,7 @@ Un paysagiste choisit un thème magnifique sur la démonstration : grandes vidé
 
 !> Un thème acheté une fois peut cesser d'être suivi par son auteur. Vérifiez qu'il reçoit encore des mises à jour avant de vous engager.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Je ne vous fais pas choisir dans un catalogue. Je pars de votre métier, de vos couleurs et de vos photos pour faire un site qui vous ressemble, léger et lisible sur téléphone. Vous pouvez voir comment ça se passe sur la page [créer mon site](/creer-mon-site/). Pour la partie qui ajoute des fonctions, voyez la définition d'une [extension](/lexique/extension-plugin/).`,
     faq: [
@@ -296,7 +296,7 @@ Je ne vous fais pas choisir dans un catalogue. Je pars de votre métier, de vos 
     nom: 'Extension (plugin)',
     resume: 'Un petit module qu’on ajoute à un site pour lui donner une fonction de plus.',
     h1: "Extension ou plugin : c'est quoi, sur un site internet ?",
-    title: 'Extension (plugin) de site : définition et pièges | Alex & Co',
+    title: 'Extension (plugin) de site : définition et pièges | Les Minis Monstres',
     description: 'Une extension, ou plugin, ajoute une fonction à un site : formulaire, galerie, paiement. Pourquoi il en faut peu, et pourquoi chacune doit rester à jour.',
     lead: `Une extension, qu'on appelle aussi plugin en anglais, est un module qu'on branche sur un site pour lui apprendre à faire quelque chose de nouveau. C'est comme ajouter un accessoire à un robot de cuisine.`,
     body: `## La définition en une phrase
@@ -328,7 +328,7 @@ Un ostéopathe installe une extension de rendez-vous, une de galerie, une pour l
 - **Supprimer** celles qui ne servent plus, au lieu de simplement les désactiver.
 - Faire une **sauvegarde** avant chaque grosse mise à jour.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Les mises à jour des extensions font partie de l'[abonnement](/tarifs/). Je les fais pour vous et je vérifie que le site tient debout ensuite. Vous gardez un site léger, sans module inutile. Pour savoir comment on revient en arrière quand quelque chose casse, lisez la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
@@ -343,7 +343,7 @@ Les mises à jour des extensions font partie de l'[abonnement](/tarifs/). Je les
     nom: 'Site responsive',
     resume: 'Un site qui s’adapte tout seul à l’écran : téléphone, tablette ou ordinateur.',
     h1: "Site responsive : c'est quoi, et pourquoi c'est indispensable ?",
-    title: 'Site responsive : définition et bonnes pratiques | Alex & Co',
+    title: 'Site responsive : définition et bonnes pratiques | Les Minis Monstres',
     description: 'Un site responsive change sa mise en page selon la taille de l’écran pour rester lisible sur téléphone. Pourquoi c’est vital pour un commerce ou un artisan.',
     lead: `Un site responsive réorganise ses blocs selon l'écran qui l'affiche : en colonnes sur un ordinateur, l'un sous l'autre sur un téléphone. On dit aussi site adaptatif. Le visiteur n'a jamais besoin de zoomer.`,
     body: `## La définition en une phrase
@@ -376,7 +376,7 @@ Un garagiste a un site fait il y a longtemps, pensé pour l'ordinateur. Sur tél
 
 !> Testez votre site sur votre propre téléphone, debout, d'une seule main. C'est comme ça que vos clients le regardent le plus souvent.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Tous les sites que je crée sont pensés d'abord pour le téléphone, puis élargis pour l'ordinateur. Le numéro est cliquable, le menu se replie proprement, et je teste sur plusieurs tailles d'écran avant la mise en ligne. Vous pouvez comparer les types de sites sur [créer mon site](/creer-mon-site/). La vitesse sur mobile est expliquée à la page [temps de chargement](/lexique/temps-de-chargement/).`,
     faq: [
@@ -392,7 +392,7 @@ Tous les sites que je crée sont pensés d'abord pour le téléphone, puis élar
     nom: 'Référencement naturel (SEO)',
     resume: 'Tout ce qui aide votre site à apparaître dans les résultats de Google, sans payer de publicité.',
     h1: "Référencement naturel (SEO) : c'est quoi, simplement ?",
-    title: 'Référencement naturel (SEO) : définition simple | Alex & Co',
+    title: 'Référencement naturel (SEO) : définition simple | Les Minis Monstres',
     description: 'Le référencement naturel, ou SEO, regroupe le travail qui aide un site à se montrer dans Google sans publicité. Ce qui compte, et ce qui ne sert à rien.',
     lead: `Le référencement naturel, ou SEO, c'est l'ensemble du travail qui rend un site plus facile à trouver dans les résultats gratuits de Google. On ne paie pas pour chaque clic : on gagne sa place avec un site clair, utile et bien construit.`,
     body: `## La définition en une phrase
@@ -423,7 +423,7 @@ Une esthéticienne écrit sur son site « Bienvenue dans mon univers de douceur 
 
 !> Le meilleur SEO pour un commerce local reste simple : dire clairement ce que vous faites, où, et comment vous joindre.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Chaque site part avec les bases du SEO. Avec l'extra ${seo.name}, à ${seo.price.month} € par mois, je vais plus loin : je choisis avec vous les mots que tapent vos clients et je travaille votre site chaque mois pour l'aider à monter. Tout est expliqué sur la page [référencement SEO](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
     faq: [
@@ -439,7 +439,7 @@ Chaque site part avec les bases du SEO. Avec l'extra ${seo.name}, à ${seo.price
     nom: 'Référencement local',
     resume: 'Être trouvé par les gens qui cherchent votre métier près de chez eux, dans votre ville.',
     h1: "Référencement local : c'est quoi, et comment ça marche ?",
-    title: 'Référencement local : être trouvé dans votre ville | Alex & Co',
+    title: 'Référencement local : être trouvé dans votre ville | Les Minis Monstres',
     description: 'Le référencement local aide votre entreprise à sortir quand on cherche votre métier tout près. Ce qui compte : fiche Google, site, avis et adresse cohérente.',
     lead: `Le référencement local est la partie du SEO qui vise les recherches liées à un lieu, comme « boulangerie Rethel » ou « plombier près de moi ». Il fait apparaître votre entreprise sur la carte et dans les résultats proches du client.`,
     body: `## La définition en une phrase
@@ -471,7 +471,7 @@ Un électricien a déménagé son atelier dans la commune voisine. Sur son site,
 
 !> Le référencement local ne s'achète pas. Il se gagne avec des informations justes, une présence régulière et de vrais clients contents.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Je suis installé dans les Ardennes et je travaille avec des entreprises de toute la France. Sur chaque site, je soigne la zone que vous couvrez, et avec l'extra ${seo.name}, je suis votre visibilité locale chaque mois. Plus de détails sur la page [référencement SEO](/referencement-seo/).`,
     faq: [
@@ -486,7 +486,7 @@ Je suis installé dans les Ardennes et je travaille avec des entreprises de tout
     nom: 'Mot-clé',
     resume: 'Les mots que vos clients tapent dans Google, et que votre site doit savoir employer.',
     h1: "Mot-clé : c'est quoi, en référencement ?",
-    title: 'Mot-clé en SEO : définition et comment les trouver | Alex & Co',
+    title: 'Mot-clé en SEO : définition et comment les trouver | Les Minis Monstres',
     description: 'Un mot-clé, c’est la recherche que tape un client dans Google. Comment trouver les vôtres, où les placer sur votre site, et pourquoi il ne faut pas en abuser.',
     lead: `Un mot-clé est le mot ou le groupe de mots qu'une personne tape dans un moteur de recherche, comme « menuisier sur mesure » ou « gâteau d'anniversaire Sedan ». Pour être trouvé, votre site doit parler avec ces mots-là.`,
     body: `## La définition en une phrase
@@ -519,7 +519,7 @@ Dans la [balise title](/lexique/balise-title/), dans le grand titre de la page, 
 
 !> Répéter un mot-clé à chaque ligne ne fait pas monter un site. Google le repère, et vos lecteurs aussi. Écrivez d'abord pour des humains.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Avec l'extra ${seo.name}, le choix des mots-clés se fait ensemble : je vous propose les recherches qui comptent pour votre métier et votre zone, puis je les travaille page après page. La méthode complète est sur [référencement SEO](/referencement-seo/).`,
     faq: [
@@ -534,7 +534,7 @@ Avec l'extra ${seo.name}, le choix des mots-clés se fait ensemble : je vous pro
     nom: 'Balise title',
     resume: 'Le titre bleu qui s’affiche dans Google pour chaque page de votre site.',
     h1: "Balise title : c'est quoi, et comment bien l'écrire ?",
-    title: 'Balise title : définition et exemples concrets | Alex & Co',
+    title: 'Balise title : définition et exemples concrets | Les Minis Monstres',
     description: 'La balise title est le titre cliquable d’une page dans Google et dans l’onglet du navigateur. Comment l’écrire pour donner envie de cliquer, avec des exemples.',
     lead: `La balise title est le titre officiel d'une page, caché dans son code. C'est lui que Google affiche en gros et en couleur dans ses résultats, et lui qu'on lit dans l'onglet du navigateur.`,
     body: `## La définition en une phrase
@@ -569,7 +569,7 @@ Un menuisier a cinq pages, et toutes portent le même title : « Accueil ». Dan
 
 !> Google réécrit parfois le title qu'il affiche, s'il le juge peu clair. Un title précis et fidèle à la page a plus de chances d'être gardé tel quel.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 J'écris le title de chaque page à la création, avec le bon [mot-clé](/lexique/mot-cle/) et votre nom. Il fait partie des bases du SEO, comprises pour chaque site. Pour la petite phrase qui s'affiche juste en dessous dans Google, voyez la [meta description](/lexique/meta-description/).`,
     faq: [
@@ -584,7 +584,7 @@ J'écris le title de chaque page à la création, avec le bon [mot-clé](/lexiqu
     nom: 'Meta description',
     resume: 'Les deux lignes de résumé qui apparaissent sous le titre de votre page dans Google.',
     h1: "Meta description : c'est quoi, et à quoi elle sert ?",
-    title: 'Meta description : définition et comment l’écrire | Alex & Co',
+    title: 'Meta description : définition et comment l’écrire | Les Minis Monstres',
     description: 'La meta description est le court résumé affiché sous le titre d’une page dans Google. Elle ne fait pas monter le site, mais elle donne envie de cliquer.',
     lead: `La meta description est un petit texte caché dans le code de chaque page, qui la résume en une ou deux phrases. Google l'affiche souvent sous le titre bleu, pour aider la personne à choisir.`,
     body: `## La définition en une phrase
@@ -617,7 +617,7 @@ Deux pizzerias sortent l'une sous l'autre. La première affiche un morceau de te
 
 !> Une meta description n'est pas une liste de mots-clés. Si le mot cherché y figure, Google le met en gras, ce qui attire l'œil. Une fois suffit.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 À la création, j'écris une meta description pour chaque page de votre site, en pensant à ce que votre client cherche. Si votre offre change, vous me le dites depuis votre espace client et je l'adapte. Pour le titre qui l'accompagne, lisez la page [balise title](/lexique/balise-title/), et pour la vue d'ensemble, celle sur le [référencement naturel](/lexique/referencement-naturel-seo/).`,
     faq: [
@@ -632,7 +632,7 @@ Deux pizzerias sortent l'une sous l'autre. La première affiche un morceau de te
     nom: 'Plan du site (sitemap)',
     resume: 'La liste de toutes les pages de votre site, préparée pour que Google n’en oublie aucune.',
     h1: "Sitemap : c'est quoi, le plan du site pour Google ?",
-    title: 'Sitemap (plan du site) : définition et utilité | Alex & Co',
+    title: 'Sitemap (plan du site) : définition et utilité | Les Minis Monstres',
     description: 'Un sitemap est un fichier qui liste les pages d’un site pour que Google les trouve. À quoi il sert, comment le déclarer, et les erreurs qui le rendent inutile.',
     lead: `Un sitemap, ou plan du site, est un fichier qui donne à Google la liste des pages de votre site, avec leur date de mise à jour. C'est une feuille de route qui l'aide à ne rien rater.`,
     body: `## La définition en une phrase
@@ -661,7 +661,7 @@ Une librairie ajoute une page pour chaque rencontre d'auteur. Ces pages ne sont 
 
 !> La plupart des CMS et des outils modernes créent le sitemap tout seuls. Vérifiez quand même qu'il existe et qu'il ne liste pas des pages à cacher.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Chaque site que je mets en ligne a son sitemap, qui se met à jour quand une page est ajoutée ou retirée. Je le déclare à Google pour vous. Pour comprendre la suite, quand Google range vos pages dans son catalogue, lisez la définition de l'[indexation](/lexique/indexation/). Le fichier qui guide les robots est expliqué sur la page [robots.txt](/lexique/robots-txt/).`,
     faq: [
@@ -676,7 +676,7 @@ Chaque site que je mets en ligne a son sitemap, qui se met à jour quand une pag
     nom: 'Fichier robots.txt',
     resume: 'Un petit fichier texte qui dit aux robots des moteurs où ils peuvent aller sur votre site.',
     h1: "Robots.txt : c'est quoi, ce fichier pour les moteurs de recherche ?",
-    title: 'Robots.txt : définition simple et erreurs à éviter | Alex & Co',
+    title: 'Robots.txt : définition simple et erreurs à éviter | Les Minis Monstres',
     description: 'Le fichier robots.txt donne des consignes aux robots qui visitent votre site, comme celui de Google. À quoi il sert, et la petite erreur qui peut tout bloquer.',
     lead: `Le robots.txt est un fichier texte posé à la racine d'un site, qui indique aux robots des moteurs de recherche les parties qu'ils peuvent visiter et celles à laisser de côté. C'est un panneau à l'entrée, pas une serrure.`,
     body: `## La définition en une phrase
@@ -702,7 +702,7 @@ Pendant la fabrication d'un site, le prestataire ajoute une ligne qui interdit t
 
 !> Si votre site n'apparaît pas du tout dans Google après plusieurs semaines, le robots.txt fait partie des premières choses à vérifier.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Je règle le robots.txt à la mise en ligne de votre site, et je vérifie qu'il laisse bien passer Google sur les pages qui comptent. C'est une petite partie des bases du SEO comprises dans l'[abonnement](/tarifs/). Pour la suite du parcours, lisez la page sur l'[indexation](/lexique/indexation/).`,
     faq: [
@@ -717,7 +717,7 @@ Je règle le robots.txt à la mise en ligne de votre site, et je vérifie qu'il 
     nom: 'Indexation',
     resume: 'Le moment où Google range une page dans son catalogue, pour pouvoir la montrer ensuite.',
     h1: "Indexation : c'est quoi, quand Google range votre site ?",
-    title: 'Indexation Google : définition et vérification | Alex & Co',
+    title: 'Indexation Google : définition et vérification | Les Minis Monstres',
     description: 'L’indexation, c’est l’entrée d’une page dans le catalogue de Google. Sans elle, la page ne sort pas dans les résultats. Comment la vérifier et la faciliter.',
     lead: `L'indexation est l'étape où Google enregistre une page dans son immense catalogue, appelé index. Une page non indexée est invisible dans les résultats, même si elle est en ligne et parfaitement belle.`,
     body: `## La définition en une phrase
@@ -752,7 +752,7 @@ Tapez dans Google site: suivi de votre adresse, sans espace, par exemple site:vo
 
 !> Être indexé ne veut pas dire être bien placé. C'est une condition de départ, pas une garantie de visites.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 À la mise en ligne, je déclare votre site à Google et je surveille que les pages importantes entrent bien dans l'index. Si vous prenez l'extra ${seo.name}, cette surveillance continue chaque mois, avec le reste du travail détaillé sur [référencement SEO](/referencement-seo/).`,
     faq: [
@@ -767,7 +767,7 @@ Tapez dans Google site: suivi de votre adresse, sans espace, par exemple site:vo
     nom: 'Backlink (lien entrant)',
     resume: 'Un lien posé sur un autre site et qui mène au vôtre : une forme de recommandation.',
     h1: "Backlink : c'est quoi, un lien entrant ?",
-    title: 'Backlink (lien entrant) : définition et conseils | Alex & Co',
+    title: 'Backlink (lien entrant) : définition et conseils | Les Minis Monstres',
     description: 'Un backlink est un lien d’un autre site vers le vôtre. Google y voit une recommandation. Lesquels comptent pour une petite entreprise, et lesquels éviter.',
     lead: `Un backlink, ou lien entrant, est un lien placé sur un autre site qui renvoie vers le vôtre. Pour Google, c'est un peu comme un voisin qui vous recommande : plus la source est sérieuse et proche de votre activité, plus la recommandation pèse.`,
     body: `## La définition en une phrase
@@ -805,7 +805,7 @@ Un apiculteur vend son miel sur les marchés. Il demande au site du marché de p
 
 !> Un bon lien entrant se mérite. Le plus simple est souvent d'avoir quelque chose à montrer : une actualité, un savoir-faire, un partenariat réel.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Avec l’extra ${seo.name}, les liens font partie du travail de chaque mois : je vous aide à repérer les liens locaux qui ont du sens pour vous, jamais des liens achetés pour tromper Google. La démarche complète est sur [référencement SEO](/referencement-seo/).`,
     faq: [
@@ -820,7 +820,7 @@ Avec l’extra ${seo.name}, les liens font partie du travail de chaque mois : je
     nom: 'Google Search Console',
     resume: 'L’outil gratuit de Google pour voir comment votre site apparaît dans ses résultats.',
     h1: "Google Search Console : c'est quoi, et à quoi ça sert ?",
-    title: 'Google Search Console : définition et usage simple | Alex & Co',
+    title: 'Google Search Console : définition et usage simple | Les Minis Monstres',
     description: 'La Google Search Console est un outil gratuit qui montre comment Google voit votre site : recherches, clics, pages indexées, erreurs. Ce qu’il faut y regarder.',
     lead: `La Google Search Console est un outil gratuit fourni par Google aux propriétaires de sites. Elle montre les recherches qui vous font apparaître, les clics obtenus, et les problèmes que Google rencontre en lisant vos pages.`,
     body: `## La définition en une phrase
@@ -853,7 +853,7 @@ Un vendeur de bois de chauffage découvre dans la Search Console qu'il apparaît
 
 !> La Search Console est réservée au propriétaire du site et aux personnes qu'il autorise. Gardez la main sur l'accès principal, même si un prestataire s'en sert.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Je relie votre site à la Search Console dès la mise en ligne et je déclare le sitemap. Avec l'extra ${seo.name}, je m'en sers chaque mois pour suivre vos recherches et ajuster vos pages. Voyez aussi la définition de l'[indexation](/lexique/indexation/), et la page [référencement SEO](/referencement-seo/) pour la méthode.`,
     faq: [
@@ -869,7 +869,7 @@ Je relie votre site à la Search Console dès la mise en ligne et je déclare le
     nom: 'Page d’accueil',
     resume: 'La première page de votre site, celle qui doit dire en quelques secondes ce que vous faites.',
     h1: "Page d'accueil : c'est quoi, et que faut-il y mettre ?",
-    title: 'Page d’accueil d’un site : définition et contenu | Alex & Co',
+    title: 'Page d’accueil d’un site : définition et contenu | Les Minis Monstres',
     description: 'La page d’accueil est la porte d’entrée de votre site. Ce qu’elle doit dire en un coup d’œil, ce qu’on oublie souvent, et comment guider le visiteur ensuite.',
     lead: `La page d'accueil est la page qui s'ouvre quand on tape simplement votre adresse, sans rien derrière. Elle doit dire tout de suite qui vous êtes, ce que vous proposez, où, et comment vous joindre.`,
     body: `## La définition en une phrase
@@ -909,7 +909,7 @@ Une agence de voyages locale ouvre son site sur un diaporama de plages, avec la 
 
 !> Faites le test : montrez votre page d'accueil cinq secondes à quelqu'un qui ne vous connaît pas, puis demandez-lui ce que vous faites. S'il hésite, la page doit être plus claire.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Je construis la page d'accueil autour de ce que vos clients viennent chercher, avec un bouton d'appel visible sur téléphone. Le parcours de création est expliqué sur [créer mon site](/creer-mon-site/). Pour une page pensée autour d'une seule offre, voyez la [landing page](/lexique/landing-page/).`,
     faq: [
@@ -924,7 +924,7 @@ Je construis la page d'accueil autour de ce que vos clients viennent chercher, a
     nom: 'Landing page',
     resume: 'Une page pensée pour une seule offre et une seule action, souvent liée à une campagne.',
     h1: "Landing page : c'est quoi, une page d'atterrissage ?",
-    title: 'Landing page : définition simple et exemples | Alex & Co',
+    title: 'Landing page : définition simple et exemples | Les Minis Monstres',
     description: 'Une landing page est une page conçue pour une seule offre et un seul but : appeler, réserver, s’inscrire. Quand en créer une, et ce qui la rend efficace.',
     lead: `Une landing page, ou page d'atterrissage, est une page faite pour accueillir les visiteurs venus d'une publicité, d'un e-mail ou d'un flyer, et les pousser vers une seule action. Elle parle d'une seule chose, et elle le fait bien.`,
     body: `## La définition en une phrase
@@ -957,7 +957,7 @@ Un salon de toilettage distribue des cartes chez les vétérinaires du coin, ave
 
 !> Une landing page se juge sur une chose : le nombre de personnes qui font l'action prévue. Le reste n'est que décoration.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Un site une page, à ${page.price} €, peut faire office de landing page pour lancer une activité ou un événement. Sur un site existant, une nouvelle page dédiée s'ajoute sur un petit devis. Les types de site sont présentés sur [créer mon site](/creer-mon-site/). Le bouton qui fait agir est détaillé à la page [call to action](/lexique/call-to-action/).`,
     faq: [
@@ -972,7 +972,7 @@ Un site une page, à ${page.price} €, peut faire office de landing page pour l
     nom: 'Call to action',
     resume: 'Le bouton ou la phrase qui invite le visiteur à passer à l’action : appeler, réserver, commander.',
     h1: "Call to action : c'est quoi, un appel à l'action ?",
-    title: 'Call to action (CTA) : définition et exemples | Alex & Co',
+    title: 'Call to action (CTA) : définition et exemples | Les Minis Monstres',
     description: 'Un call to action est un bouton ou une phrase qui invite à agir : appeler, réserver, demander un devis. Comment l’écrire et où le placer pour qu’il soit vu.',
     lead: `Un call to action, souvent abrégé CTA, est un élément qui invite clairement le visiteur à faire quelque chose : un bouton « Appeler », un lien « Demander un devis », une phrase « Réservez votre table ». C'est le pont entre l'intérêt et le contact.`,
     body: `## La définition en une phrase
@@ -1010,7 +1010,7 @@ Un couvreur a un site joli et complet. Tout en bas, en petit, une ligne : « Pou
 
 !> Chaque page devrait avoir une action principale. Demandez-vous : si le visiteur ne fait qu'une chose ici, laquelle je veux qu'il fasse ?
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Sur chaque site, je place un appel à l'action clair, adapté à votre métier : appel direct pour un dépanneur, réservation pour un restaurant, ajout au panier pour une boutique. Vous pouvez en voir le principe sur [créer mon site](/creer-mon-site/). Ce qui se passe après le clic est expliqué à la page [formulaire de contact](/lexique/formulaire-de-contact/).`,
     faq: [
@@ -1025,7 +1025,7 @@ Sur chaque site, je place un appel à l'action clair, adapté à votre métier :
     nom: 'Formulaire de contact',
     resume: 'Les quelques cases à remplir sur votre site pour qu’un client vous écrive sans ouvrir sa messagerie.',
     h1: "Formulaire de contact : c'est quoi, et comment le rendre utile ?",
-    title: 'Formulaire de contact : définition et bons usages | Alex & Co',
+    title: 'Formulaire de contact : définition et bons usages | Les Minis Monstres',
     description: 'Un formulaire de contact permet à un visiteur de vous écrire depuis votre site. Les champs à demander, ceux à éviter, et pourquoi certains messages se perdent.',
     lead: `Un formulaire de contact est un petit bloc de cases sur votre site, où le visiteur écrit son nom, son moyen de contact et sa demande. Il clique sur un bouton, et le message arrive dans votre boîte mail.`,
     body: `## La définition en une phrase
@@ -1061,7 +1061,7 @@ Un photographe de mariage reçoit des messages du genre « Bonjour, c'est combie
 
 !> Un formulaire ne remplace pas le téléphone. Affichez les deux, et laissez le client choisir sa façon de vous joindre.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Chaque site que je livre a son formulaire, relié à votre messagerie. Je le teste avant la mise en ligne et il tourne sur une connexion protégée en HTTPS. Tout ce que comprend l'abonnement est listé sur la page des [tarifs](/tarifs/). Les règles sur les données personnelles sont résumées à la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
     faq: [
@@ -1077,7 +1077,7 @@ Chaque site que je livre a son formulaire, relié à votre messagerie. Je le tes
     nom: 'RGPD et cookies',
     resume: 'Les règles européennes sur les données personnelles, et ce qu’elles changent pour votre site.',
     h1: "RGPD et cookies : c'est quoi, pour le site d'une petite entreprise ?",
-    title: 'RGPD et cookies : ce que doit faire un petit site | Alex & Co',
+    title: 'RGPD et cookies : ce que doit faire un petit site | Les Minis Monstres',
     description: 'Le RGPD encadre l’usage des données personnelles, et les cookies en font partie. Ce que cela change pour le site d’une petite entreprise, expliqué simplement.',
     lead: `Le RGPD est le règlement européen qui protège les données personnelles : nom, e-mail, téléphone, adresse, mais aussi certaines traces de navigation. Les cookies sont de petits fichiers déposés par un site dans le navigateur, et ils sont concernés par ces règles.`,
     body: `## La définition en une phrase
@@ -1109,7 +1109,7 @@ Un caviste ajoute à son site une vidéo, une carte et un bouton de partage. San
 
 La CNIL est l'autorité française qui veille au respect de ces règles. Son site propose des fiches pratiques pour les petites structures. Pour un cas particulier, un professionnel du droit reste le bon interlocuteur.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Je construis des sites sobres, sans traceurs inutiles, en HTTPS, avec un formulaire qui ne demande que l'essentiel. Si votre site a besoin d'un bandeau de consentement, je le mets en place. La page sur les [mentions légales](/lexique/mentions-legales/) complète ce sujet, et vous pouvez me poser vos questions sur la page [contact](/contact/).`,
     faq: [
@@ -1124,7 +1124,7 @@ Je construis des sites sobres, sans traceurs inutiles, en HTTPS, avec un formula
     nom: 'Mentions légales',
     resume: 'La page obligatoire qui dit qui édite le site, qui l’héberge et comment vous joindre.',
     h1: "Mentions légales : c'est quoi, et que doivent-elles contenir ?",
-    title: 'Mentions légales d’un site : définition et contenu | Alex & Co',
+    title: 'Mentions légales d’un site : définition et contenu | Les Minis Monstres',
     description: 'Les mentions légales sont une page obligatoire sur le site d’une entreprise : identité, contact, hébergeur. Ce qu’on y met en général et les oublis fréquents.',
     lead: `Les mentions légales sont une page de votre site qui indique qui en est responsable : le nom de l'entreprise, ses coordonnées, ses numéros d'immatriculation et l'hébergeur. En France, tout site professionnel doit en avoir une.`,
     body: `## La définition en une phrase
@@ -1161,7 +1161,7 @@ Une créatrice de bijoux lance sa boutique en ligne et recopie les mentions lég
 
 !> Pour un cas particulier ou une profession réglementée, vérifiez auprès de votre chambre consulaire ou d'un professionnel du droit. Cette page donne des repères, pas un avis juridique.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Je prévois une page de mentions légales sur chaque site et je vous indique les informations à me fournir. Le contenu juridique reste sous votre responsabilité, et mes petits monstres ne touchent jamais à ce type de texte : c'est moi qui m'en occupe quand il faut le modifier. Pour les données de vos visiteurs, voyez la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
     faq: [
@@ -1177,7 +1177,7 @@ Je prévois une page de mentions légales sur chaque site et je vous indique les
     nom: 'Maintenance de site',
     resume: 'L’entretien régulier qui garde un site sûr, rapide et en état de marche, mois après mois.',
     h1: "Maintenance de site internet : c'est quoi, et pourquoi c'est nécessaire ?",
-    title: 'Maintenance de site internet : définition simple | Alex & Co',
+    title: 'Maintenance de site internet : définition simple | Les Minis Monstres',
     description: 'La maintenance d’un site, c’est l’entretien qui le garde sûr et en état : mises à jour, sauvegardes, surveillance, petites corrections. Ce qu’elle comprend.',
     lead: `La maintenance d'un site, c'est tout ce qu'on fait après la mise en ligne pour qu'il continue de bien fonctionner : mises à jour, sauvegardes, surveillance, corrections. Un site n'est pas un objet qu'on pose et qu'on oublie.`,
     body: `## La définition en une phrase
@@ -1210,7 +1210,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 !> Un site sans maintenance coûte rarement moins cher. Il coûte plus tard, d'un coup, et souvent au pire moment.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'héberge votre site, et ${minus(gardien)}, un petit monstre que j'ai programmé, fait les mises à jour, garde le HTTPS et surveille que tout tourne. Je vérifie ce qu'il fait. Vos changements de contenu passent par l'espace client, où la bande fait les petites retouches en quelques minutes. Pour le reste, j'interviens moi-même une fois par ${abo.periode || 'mois'}, comme prévu dans l'abonnement. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
@@ -1225,7 +1225,7 @@ C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'h�
     nom: 'Sauvegarde de site',
     resume: 'Une copie complète de votre site, gardée à l’abri, pour tout remettre en place après un problème.',
     h1: "Sauvegarde de site internet : c'est quoi, et pourquoi en faire ?",
-    title: 'Sauvegarde de site internet : définition et conseils | Alex & Co',
+    title: 'Sauvegarde de site internet : définition et conseils | Les Minis Monstres',
     description: 'Une sauvegarde est une copie de votre site gardée ailleurs, pour le restaurer après une panne, une erreur ou un piratage. Les règles d’une bonne sauvegarde.',
     lead: `Une sauvegarde de site est une copie de tous ses fichiers et de sa base de données, rangée à un autre endroit. Si le site casse, est piraté ou qu'une modification tourne mal, on le remet dans l'état de la copie.`,
     body: `## La définition en une phrase
@@ -1261,7 +1261,7 @@ Une épicerie fine supprime par erreur la page de ses paniers garnis, la plus vi
 - Garder une seule copie, écrasée chaque nuit.
 - Oublier la base de données et ne sauvegarder que les fichiers.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Les sauvegardes font partie de l'entretien compris dans l'[abonnement](/tarifs/). ${gardien}, le petit monstre qui veille sur votre site, les fait pour vous, et je m'en sers si quelque chose doit être remis en place. Vous n'avez rien à programmer. Pour le reste de l'entretien, voyez la page [maintenance de site](/lexique/maintenance-site/).`,
     faq: [
@@ -1276,7 +1276,7 @@ Les sauvegardes font partie de l'entretien compris dans l'[abonnement](/tarifs/)
     nom: 'Temps de chargement',
     resume: 'Le temps qu’il faut à une page pour s’afficher : quelques secondes qui comptent beaucoup.',
     h1: "Temps de chargement : c'est quoi, et pourquoi la vitesse compte ?",
-    title: 'Temps de chargement d’un site : définition et causes | Alex & Co',
+    title: 'Temps de chargement d’un site : définition et causes | Les Minis Monstres',
     description: 'Le temps de chargement est la durée avant qu’une page s’affiche et réponde. Pourquoi un site lent perd des clients, et les causes de lenteur les plus courantes.',
     lead: `Le temps de chargement est le temps qui s'écoule entre le moment où l'on tape une adresse ou touche un lien, et celui où la page est lisible et utilisable. Sur téléphone, chaque seconde de trop fait partir des visiteurs.`,
     body: `## La définition en une phrase
@@ -1308,7 +1308,7 @@ Ouvrez votre site sur votre téléphone, en 4G plutôt qu'en wifi. C'est le test
 
 !> Le score d'un outil de test n'est qu'un indicateur. Ce qui compte, c'est ce que ressent un vrai client, sur un vrai téléphone, avec une vraie connexion.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Je fais des sites légers : images allégées, peu de modules, code propre. Votre site tourne sur un serveur de qualité, qui tient bon quand il y a du monde. L'hébergement fait partie de l'abonnement, décrit sur la page des [tarifs](/tarifs/). Pour comprendre le rôle de la machine, voyez la définition du [serveur web](/lexique/serveur-web/).`,
     faq: [
@@ -1323,7 +1323,7 @@ Je fais des sites légers : images allégées, peu de modules, code propre. Votr
     nom: 'E-mail professionnel',
     resume: 'Une adresse à votre nom de domaine, comme contact@votreboite.fr, au lieu d’une adresse gratuite.',
     h1: "E-mail professionnel : c'est quoi, et pourquoi en avoir un ?",
-    title: 'E-mail professionnel : définition et avantages | Alex & Co',
+    title: 'E-mail professionnel : définition et avantages | Les Minis Monstres',
     description: 'Un e-mail professionnel utilise le nom de domaine de votre entreprise au lieu d’une adresse gratuite. Ce qu’il apporte en confiance, et ce qu’il faut vérifier.',
     lead: `Un e-mail professionnel est une adresse qui finit par le nom de domaine de votre entreprise, par exemple contact@boulangerie-martin.fr. Il remplace l'adresse gratuite du type prenom.nom1987 chez un grand fournisseur.`,
     body: `## La définition en une phrase
@@ -1350,7 +1350,7 @@ Un plaquiste répond aux demandes de devis depuis une adresse gratuite créée i
 
 !> Gardez votre ancienne adresse active quelque temps et faites-la renvoyer vers la nouvelle. Les clients qui ont l'ancienne pourront encore vous joindre.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 L'adresse e-mail pro est un extra de l'abonnement, à ${mail.price.month} € par mois : une adresse à votre nom de domaine, sur votre téléphone et votre ordinateur. Je fais les réglages pour que vos messages arrivent bien. Elle s'ajoute à votre site sur la page [créer mon site](/creer-mon-site/) ou plus tard depuis votre espace client, et elle se retire aussi simplement. Les messages de votre [formulaire de contact](/lexique/formulaire-de-contact/) peuvent y arriver directement.`,
     faq: [
@@ -1366,7 +1366,7 @@ L'adresse e-mail pro est un extra de l'abonnement, à ${mail.price.month} € pa
     nom: 'Statistiques de visite',
     resume: 'Les chiffres qui montrent combien de personnes viennent sur votre site, d’où, et ce qu’elles regardent.',
     h1: "Statistiques de site (analytics) : c'est quoi, et que regarder ?",
-    title: 'Statistiques de site (analytics) : définition simple | Alex & Co',
+    title: 'Statistiques de site (analytics) : définition simple | Les Minis Monstres',
     description: 'Les statistiques de visite, ou analytics, montrent qui vient sur votre site, d’où et sur quelles pages. Les quelques chiffres utiles pour une petite entreprise.',
     lead: `Les statistiques de visite, qu'on appelle souvent analytics, sont les chiffres qui racontent la vie de votre site : combien de visiteurs, d'où ils viennent, sur quel appareil et quelles pages ils lisent. Elles servent à décider sur du concret plutôt qu'à l'intuition.`,
     body: `## La définition en une phrase
@@ -1399,7 +1399,7 @@ Un loueur de vélos pense que ses clients sont surtout des touristes étrangers.
 
 !> Une statistique ne vaut que si elle fait changer quelque chose. Si vous ne regardez jamais un chiffre, il n'est pas utile de le suivre.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Avec l'extra ${stats.name}, à ${stats.price.month} € par mois, vous suivez votre site heure par heure : visiteurs, pages vues, provenance, ventes. Chaque mois, un rapport vous explique simplement ces chiffres. Tout est décrit sur la page des [tarifs](/tarifs/). Pour la partie qui se passe dans Google avant le clic, voyez la [Google Search Console](/lexique/google-search-console/).`,
     faq: [
@@ -1414,7 +1414,7 @@ Avec l'extra ${stats.name}, à ${stats.price.month} € par mois, vous suivez vo
     nom: 'Lien interne',
     resume: 'Un lien qui relie deux pages de votre propre site, pour guider le visiteur et Google.',
     h1: "Lien interne : c'est quoi, et pourquoi c'est utile ?",
-    title: 'Lien interne : définition et rôle pour le SEO | Alex & Co',
+    title: 'Lien interne : définition et rôle pour le SEO | Les Minis Monstres',
     description: 'Un lien interne relie deux pages d’un même site. Il guide le visiteur vers la suite et aide Google à comprendre quelles pages comptent. Comment bien les placer.',
     lead: `Un lien interne est un lien qui mène d'une page de votre site à une autre page de ce même site. Le menu en est un, mais les plus utiles sont souvent glissés au milieu d'un texte, au moment où le lecteur a besoin d'en savoir plus.`,
     body: `## La définition en une phrase
@@ -1446,7 +1446,7 @@ Un plombier a une page « chauffe-eau » bien faite, mais elle n'est accessible 
 
 Le [plan du site](/lexique/sitemap/) aide Google à trouver les pages, mais il ne remplace pas les liens internes. Le premier est une liste, les seconds montrent les relations entre les pages et leur importance.
 
-## Chez Alex & Co
+## Chez les Minis Monstres
 
 Sur un site vitrine, chaque page parle d'un sujet précis, et je les relie entre elles de façon logique. Avec l'extra ${seo.name}, je reprends ces liens chaque mois, à mesure que vos pages évoluent. La méthode est expliquée sur [référencement SEO](/referencement-seo/).`,
     faq: [

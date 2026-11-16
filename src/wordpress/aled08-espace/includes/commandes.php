@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Co Espace client : les commandes passées sur /commander/.
+ * Les Minis Monstres Espace client : les commandes passées sur /commander/.
  *  - type de contenu privé « aled08_commande » (référence ALED-AAAA-NNNN, métas _aled08_*)
  *  - montants recalculés côté serveur depuis data.json (le navigateur ne fait jamais foi)
  *  - traitement du formulaire POST (anti-robot, validation stricte, compte client, e-mails, Stripe ou attente)
@@ -506,7 +506,7 @@ function aled08e_cmd_mail_client_nouvelle($c, $compte, $stripe) {
             ? "   Un autre e-mail arrive avec le lien pour choisir votre mot de passe.\n\n"
             : "   Vous avez déjà un compte : connectez-vous avec votre mot de passe habituel.\n\n")
         . "Une question ? Répondez à cet e-mail.\n\nÀ bientôt,\nAlex et sa petite bande\n";
-    wp_mail($c['email'], 'Votre commande ' . $c['ref'] . ' est bien reçue', $corps, aled08e_mail_headers('Alex & Co <' . aled08e_to() . '>'));
+    wp_mail($c['email'], 'Votre commande ' . $c['ref'] . ' est bien reçue', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
 }
 function aled08e_cmd_mail_client_payee($c) {
     $delai = aled08e_cmd_delai_type($c);
@@ -519,7 +519,7 @@ function aled08e_cmd_mail_client_payee($c) {
         . "2. Vous remplissez votre questionnaire de création dans votre espace client (une dizaine de minutes) : couleurs, ambiance, photos, prix ou produits. C’est lui qui lance la création : " . aled08e_url() . "#commande\n"
         . '3. Je crée votre site' . ($delai ? ' (délai habituel : ' . $delai . ', à partir de vos réponses)' : '') . ", et vous suivez l’avancement dans votre espace client.\n\n"
         . "À bientôt,\nAlex et sa petite bande\n";
-    wp_mail($c['email'], 'Votre acompte pour la commande ' . $c['ref'] . ' est reçu', $corps, aled08e_mail_headers('Alex & Co <' . aled08e_to() . '>'));
+    wp_mail($c['email'], 'Votre acompte pour la commande ' . $c['ref'] . ' est reçu', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
 }
 function aled08e_cmd_mail_owner_payee($c) {
     $dom = $c['domaine'] && !$c['domaine_mien'];
@@ -548,7 +548,7 @@ function aled08e_cmd_mail_client_en_ligne($c) {
             : '')
         . "Pour faire évoluer votre site, envoyez vos demandes depuis votre espace client, onglet « Mes demandes » :\n" . aled08e_url() . "\n"
         . "Merci pour votre confiance,\nAlex et sa petite bande\n";
-    wp_mail($c['email'], 'Votre site est en ligne', $corps, aled08e_mail_headers('Alex & Co <' . aled08e_to() . '>'));
+    wp_mail($c['email'], 'Votre site est en ligne', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
 }
 
 /* Rappel quotidien : noms de domaine à réserver (commandes payées) */

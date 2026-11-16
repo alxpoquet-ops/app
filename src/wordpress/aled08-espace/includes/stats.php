@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Co Espace client : le tableau de bord heure par heure (extra « Chiffres détaillés »).
+ * Les Minis Monstres Espace client : le tableau de bord heure par heure (extra « Chiffres détaillés »).
  * Les chiffres viennent du site du client, par le connecteur (action « stats »), et se mettent
  * à jour toutes les heures. Sans l'extra, le client voit l'essentiel.
  */
