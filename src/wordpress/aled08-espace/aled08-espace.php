@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres Espace client
  * Description: L'espace client des Minis Monstres sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.3.3
+ * Version: 2.4.0
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.3.3');
+define('ALED08E_VERSION', '2.4.0');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
@@ -757,6 +757,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
         $o = aled08e_option($oid);
         if ($o) $opts[] = $o['name'] . ' (' . ($o['once'] ? aled08e_euro_txt($o['once']) . ' une fois' : aled08e_euro_txt($annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month']) . ' ' . $per) . ')';
     }
+    if (!empty($cmd['pages_plus']) && function_exists('aled08e_cmd_pages_plus_txt')) $opts[] = aled08e_cmd_pages_plus_txt($cmd['pages_plus']) . ' (' . aled08e_euro_txt($cmd['pages_plus'] * aled08e_cmd_page_prix()) . ' une fois)';
     $solde = (float) ($m['solde'] ?? 0);
     $soldeDu = aled08e_cmd_reception_due($cmd);
     $flash = '';

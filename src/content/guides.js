@@ -14,12 +14,13 @@ const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 5
 const acompte = (p) => eur(Math.round(p * paiement.acompte) / 100);
 const reste = (p) => eur(p - Math.round(p * paiement.acompte) / 100);
 
-// L'offre unique : le même prix de création pour une page ou un site vitrine, la boutique en plus, un seul abonnement.
-const page = T('une-page'), vitrine = T('vitrine'), boutique = T('boutique');
+// L'offre unique : le même prix de création d'une page à creation.pages pages, creation.pagePlus € par page en plus,
+// la boutique en plus, un seul abonnement. Plus d'offre distincte « site une page » ou « site vitrine ».
+const page = T('une-page'), boutique = T('boutique');
 const abo = forfaits[0];
 const annee = abo.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const durees = lissage.durees.join(' ou ');
-const seo = O('seo'), rdv = O('rdv'), pagesPlus = O('pages'), mail = O('mail'), stock = O('stock'), comptes = O('comptes');
+const seo = O('seo'), rdv = O('rdv'), mail = O('mail'), stock = O('stock'), comptes = O('comptes');
 // L'intervention d'Alex comprise dans l'abonnement : une par trimestre depuis la V2 (novembre 2026).
 const periode = abo.periode || 'mois';
 const intervAlex = abo.quota === 1 ? 'une intervention' : `${abo.quota} interventions`;
@@ -31,7 +32,7 @@ const maj = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 const rechargeMin = Object.values(cfg).find((v) => v && v.recharge && v.modif).recharge[0].prix;
 const gardien = bande.find((b) => b.id === 'gardien').role; // Le gardien (présenté par son rôle, sans prénom)
 const demandesUneFois =aLaDemande.map((x) => `${minus(x.name)} (${eur(x.prix)} €)`).join(', ');
-const optionsUneFois = options.filter((o) => o.quand === 'creation').map((o) => `${o.name} (${eur(o.price.once)} €)`).join(', ');
+const optionsUneFois = options.filter((o) => o.quand === 'creation' && !o.retire).map((o) => `${o.name} (${eur(o.price.once)} €)`).join(', ');
 const extrasPourTous = options.filter((o) => o.quand === 'mois' && !o.types).map((o) => `${o.name} (${eur(o.price.month)} € par mois)`).join(', ');
 
 const PUBLIE = '2026-11-14';
@@ -75,7 +76,7 @@ Un **site une page** convient très bien à la plupart des restaurants : une bel
 
 Le **site vitrine** devient utile si vous avez plusieurs activités à présenter : traiteur, privatisation de salle, vente à emporter, chambres. Chacune mérite alors sa propre page.
 
-Le prix ne change pas : ${eur(page.price)} € dans les deux cas.
+Le prix ne change pas : ${eur(creation.prix)} € dans les deux cas, avec jusqu'à ${creation.pages} pages comprises.
 
 ## Ne négligez pas les photos
 
@@ -132,7 +133,7 @@ Avec l'extra ${seo.name}, à ${eur(seo.price.month)} € par mois, je travaille 
 
 Le **site une page** est le bon choix pour la grande majorité des salons. Il contient la présentation, les tarifs, les photos, les horaires et le contact, livré en ${page.delai}.
 
-Si vous avez plusieurs univers (coiffure, esthétique, onglerie, vente de produits), le **site vitrine** donne une page à chacun. L'un comme l'autre coûte ${eur(page.price)} €.
+Si vous avez plusieurs univers (coiffure, esthétique, onglerie, vente de produits), le **site vitrine** donne une page à chacun. L'un comme l'autre coûte ${eur(creation.prix)} €, jusqu'à ${creation.pages} pages.
 
 ## Les horaires et les congés
 
@@ -167,7 +168,7 @@ Inutile de voir grand. Pour un lancement, il faut un site qui réponde à quatre
 3. **À quel prix ?** Ou au moins une fourchette, ou « devis gratuit ».
 4. **Comment vous joindre ?** Formulaire, e-mail, téléphone professionnel.
 
-Un **site une page** contient tout cela, et il est prêt en ${page.delai}. Le site vitrine coûte le même prix : prenez-le dès le départ si vous avez déjà plusieurs prestations à présenter.
+Un **site une page** contient tout cela, et il est prêt en ${page.delai}. Plusieurs pages ne coûtent pas plus cher, jusqu'à ${creation.pages}. Si vous avez déjà plusieurs prestations à présenter, prévoyez-les dès le départ.
 
 ## Ménager sa trésorerie
 
@@ -196,7 +197,7 @@ C'est possible, et pour certains c'est le bon choix. Le guide [faire son site so
 Votre activité va évoluer : nouvelles prestations, nouveaux tarifs, premières réalisations à montrer. Vos changements passent par votre espace client, et les extras de l'abonnement s'ajoutent ou se retirent à tout moment.`,
     faq: [
       { q: 'Le site est-il une dépense déductible ?', a: 'En micro-entreprise, vous ne déduisez pas vos frais un par un : l’administration applique un abattement forfaitaire sur votre chiffre d’affaires. Pour votre situation précise, le mieux est de poser la question à votre service des impôts ou à un comptable.' },
-      { q: 'Puis-je commencer petit et agrandir le site plus tard ?', a: 'Oui. Beaucoup démarrent avec une page, puis passent à un site vitrine quand ils ont plusieurs prestations à présenter. On en parle au moment où le besoin se présente.' },
+      { q: 'Puis-je commencer petit et agrandir le site plus tard ?', a: 'Oui. Vous pouvez démarrer avec une seule page, puis ajouter des pages le jour où vous avez plusieurs prestations à présenter. On en parle au moment où le besoin se présente.' },
       { q: 'Dois-je déjà avoir mon numéro SIRET pour commander ?', a: 'Non, vous pouvez commander pendant vos démarches. Le SIRET sera ajouté dans les mentions légales dès que vous l’aurez reçu.' },
     ],
     voir: ['creer-son-site-soi-meme-ou-le-faire-faire', 'choisir-nom-de-domaine', 'prix-site-internet'],
@@ -242,7 +243,8 @@ Un devis qui ne répond pas à ces cinq questions n'est pas complet.
 
 Chez moi, il n'y a qu'un prix de création, affiché avant la commande :
 
-- **Site une page ou site vitrine jusqu'à cinq pages : ${eur(page.price)} €**
+- **Votre site, d'une page à ${creation.pages} pages : ${eur(creation.prix)} €**
+- **Au-delà de ${creation.pages} pages : ${eur(creation.pagePlus)} € la page**, payée une fois
 - **Boutique en ligne : ${eur(boutique.price)} €**, soit ${eur(creation.boutique)} € de plus
 
 Vous payez ${paiement.acompte} % à la commande, le reste à la mise en ligne. Ce reste peut être étalé sur ${durees} mois sans frais.
@@ -261,8 +263,8 @@ Si vous dépassez largement cet usage, vous reprenez des retouches et des outils
 
 ## Trois exemples sur la première année
 
-- **Un artisan avec un site une page** : ${eur(page.price)} € + 12 × ${eur(abo.month)} € = **${eur(page.price + 12 * abo.month)} €**.
-- **Un commerce avec un site vitrine et l'extra ${seo.name}** : ${eur(vitrine.price)} € + 12 × (${eur(abo.month)} € + ${eur(seo.price.month)} €) = **${eur(vitrine.price + 12 * (abo.month + seo.price.month))} €**.
+- **Un artisan avec une seule page** : ${eur(creation.prix)} € + 12 × ${eur(abo.month)} € = **${eur(creation.prix + 12 * abo.month)} €**.
+- **Un commerce avec plusieurs pages et l'extra ${seo.name}** : ${eur(creation.prix)} € + 12 × (${eur(abo.month)} € + ${eur(seo.price.month)} €) = **${eur(creation.prix + 12 * (abo.month + seo.price.month))} €**.
 - **Un créateur avec une boutique en ligne** : ${eur(boutique.price)} € + 12 × ${eur(abo.month)} € = **${eur(boutique.price + 12 * abo.month)} €**.
 
 Les années suivantes, il ne reste que l'abonnement. En le payant à l'année, ${annuel.moisOfferts} mois sont offerts : ${eur(annee)} € au lieu de ${eur(12 * abo.month)} €.
@@ -275,7 +277,7 @@ Ce n'est pas un site au rabais. Fait à la main par une agence ou un indépendan
 
 Soyons clairs sur ce qui n'est pas dans le prix de base.
 
-À la création, des options se paient une fois : ${optionsUneFois}.
+À la création, des options se paient une fois : ${optionsUneFois}. Votre site dépasse ${creation.pages} pages ? Chaque page de plus ajoute ${eur(creation.pagePlus)} €, une seule fois.
 
 Ensuite, des extras s'ajoutent à l'abonnement si vous en avez besoin, et se retirent quand vous voulez : ${extrasPourTous}.
 
@@ -305,7 +307,7 @@ Un **site une page**, c'est une grande affiche. Tout est au même endroit : on f
 
 Un **site vitrine**, c'est un petit livret. Il y a une couverture (l'accueil), puis une page par chapitre : vos services, vos tarifs, votre histoire, le contact. On passe de l'une à l'autre par le menu.
 
-Côté prix, aucune différence : ${eur(page.price)} € pour l'affiche comme pour le livret. Vous choisissez donc selon votre activité, pas selon votre porte-monnaie.
+Côté prix, aucune différence chez moi : ${eur(creation.prix)} € pour l'affiche comme pour le livret, avec jusqu'à ${creation.pages} pages comprises. Au-delà, chaque page en plus coûte ${eur(creation.pagePlus)} €. Vous choisissez donc selon votre activité, pas selon votre porte-monnaie.
 
 ## Quand le site une page suffit
 
@@ -347,7 +349,7 @@ Ce n'est pas grave. On peut commencer avec une page et évoluer ensuite : vos te
 
 Elle répond à un autre besoin : encaisser des commandes sur le site. Si vous voulez vendre des produits, lisez le guide pour [créer une boutique en ligne](/guides/creer-boutique-en-ligne/).`,
     faq: [
-      { q: 'Combien de pages contient un site vitrine ?', a: `Jusqu’à cinq pages : en général l’accueil, les services, les tarifs, une présentation et le contact. Il vous en faut davantage ? Prenez l’option « ${pagesPlus.name} », à ${eur(pagesPlus.price.once)} €, au moment de la commande.` },
+      { q: 'Combien de pages contient un site vitrine ?', a: `Chez moi, jusqu’à ${creation.pages} pages sont comprises dans le prix du site. On y trouve en général l’accueil, les services, les tarifs, une présentation et le contact. Il vous en faut plus de ${creation.pages} ? Ajoutez-les au moment de la commande, à ${eur(creation.pagePlus)} € la page, payée une fois.` },
       { q: 'Un site une page peut-il sortir sur Google ?', a: 'Oui, surtout sur votre nom et sur votre métier dans votre ville. Il est simplement moins armé qu’un site vitrine pour les recherches portant sur un service précis.' },
       { q: 'Peut-on transformer un site une page en site vitrine plus tard ?', a: 'Oui. Les textes et les photos existants sont repris, et les nouvelles pages viennent s’y ajouter. Écrivez-moi quand le besoin se présente, je vous dis ce que cela représente.' },
     ],

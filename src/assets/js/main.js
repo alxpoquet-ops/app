@@ -64,7 +64,7 @@
     'Aujourd’hui ': 'Today ', ', à la réception ': ', on delivery ', ' + abonnement': ' + subscription',
     'À l’année': 'Yearly', 'Au mois': 'Monthly', 'Acompte de ': 'Deposit of ', ' % sur la création (': '% of the creation (',
     'À la réception : le reste en ': 'On delivery: the rest in ', ' fois, et l’abonnement': ' instalments, and the subscription',
-    'À la réception : le reste, et l’abonnement': 'On delivery: the rest, and the subscription', ' options': ' options', 'Options': 'Options',
+    'À la réception : le reste, et l’abonnement': 'On delivery: the rest, and the subscription', ' options': ' options', 'Options': 'Options', ' pages en plus': ' extra pages', ' page en plus': ' extra page',
     'Un instant, je prépare le paiement…': 'One moment, I am preparing the payment…', 'Lien copié, prêt à envoyer': 'Link copied, ready to send',
     'Écrivez votre demande en quelques mots': 'Write your request in a few words',
     'La photo dépasse 8 Mo : choisissez-en une plus légère': 'The photo is over 8 MB: please choose a lighter one',
@@ -339,6 +339,31 @@
     };
   }
 
+  /* ---------- pages en plus : compteur (boutons + et -), 10 € la page, payé une fois ---------- */
+  var pagesPlus = function (scope, data) {
+    var i = $('[data-pages-plus]', scope);
+    if (!i) return 0;
+    var n = parseInt(i.value, 10);
+    n = isNaN(n) ? 0 : Math.max(0, Math.min(data.pagesPlusMax || 40, n));
+    if (String(n) !== i.value) i.value = String(n);
+    var prix = $('[data-pp-prix]', scope);
+    if (prix) prix.textContent = n ? '+ ' + euro(n * (data.pagePlus || 0)) : euro(0);
+    return n;
+  };
+  var initPagesPlus = function (scope, n) {
+    var i = $('[data-pages-plus]', scope);
+    if (!i) return;
+    if (n) i.value = String(parseInt(n, 10) || 0);
+    $$('[data-pp-step]', scope).forEach(function (b) {
+      b.addEventListener('click', function () {
+        i.value = String(Math.max(0, (parseInt(i.value, 10) || 0) + parseInt(b.getAttribute('data-pp-step'), 10)));
+        i.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    });
+    i.addEventListener('input', function () { i.dispatchEvent(new Event('change', { bubbles: true })); });
+  };
+  var ppNom = function (n) { return n + (n > 1 ? tr(' pages en plus') : tr(' page en plus')); };
+
   /* ---------- configurateur « Créer mon site » ---------- */
   var builder = $('[data-builder]');
   if (builder) {
@@ -366,6 +391,7 @@
       var c = id && $('.b-opt input[value="' + slug(id) + '"]', box);
       if (c) c.checked = true;
     });
+    initPagesPlus(box, params.get('pages_plus'));
     var form = $('[data-builder-form]', box);
     if (form) form.addEventListener('submit', function (e) { e.preventDefault(); });
     var domain = initDomain(box, update);
@@ -393,6 +419,8 @@
         if (!o) return;
         chosen.push(tr(o.name)); ids.push(o.id); optOnce += o.once; optMonth += o.month;
       });
+      var pp = pagesPlus(box, data);
+      if (pp) { chosen.push(ppNom(pp)); optOnce += pp * data.pagePlus; }
       setText('type', siteNom(t));
       setText('type-price', euro(t.price));
       setText('forfait', planName(f.name));
@@ -433,7 +461,7 @@
       var q = { type: t.id === 'boutique' ? 'Site avec boutique en ligne' : 'Site', forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: domText, options: chosen.join(', '), parrain: parrain };
       $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
       // Lien « Commander » : paramètres exacts attendus par /commander/
-      var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), parrain: parrain };
+      var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), pages_plus: pp ? String(pp) : '', parrain: parrain };
       $$('[data-sum-order]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href').split('?')[0], o)); });
     }
     var pLine = $('[data-sum-parrain]', box);
@@ -515,6 +543,7 @@
       var c = id && $('.b-opt input[value="' + slug(id) + '"]', form);
       if (c) c.checked = true;
     });
+    initPagesPlus(form, params.get('pages_plus'));
     var pInput = form.querySelector('input[name="parrain"]');
     if (pInput && !pInput.value) pInput.value = cleanCode(params.get('parrain')) || parrain;
     var pLine = $('[data-order-parrain]', root);
@@ -551,6 +580,8 @@
         if (!o) return;
         names.push(tr(o.name)); ids.push(o.id); optOnce += o.once; optRec += o.month * mult;
       });
+      var pp = pagesPlus(form, data);
+      if (pp) { names.push(ppNom(pp)); optOnce += pp * data.pagePlus; }
       var acompte = round2(t.price * data.acompte / 100);
       var solde = round2(t.price - acompte);
       var lisseAmt = lisse ? floor2(solde / lisseN) : 0;
@@ -561,6 +592,7 @@
         var o = find(data.options, i.value);
         if (o && o.once) lines.push([tr(o.name), o.once]);
       });
+      if (pp) lines.push([ppNom(pp) + ' (' + pp + ' × ' + euro(data.pagePlus) + ')', pp * data.pagePlus]);
       var today = round2(lines.reduce(function (s, l) { return s + l[1]; }, 0));
       var next = round2(forfaitFirst + optRec);
       setText('today', euro(today));
@@ -610,7 +642,7 @@
       /* la configuration reste dans l'adresse (retour arrière, partage, erreur serveur) */
       if (fromUser && window.history && history.replaceState) {
         var q = new URLSearchParams(location.search);
-        var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), parrain: pCode };
+        var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), pages_plus: pp ? String(pp) : '', parrain: pCode };
         Object.keys(o).forEach(function (k) { if (o[k]) q.set(k, o[k]); else q.delete(k); });
         q.delete('erreur'); q.delete('annule');
         var qs = q.toString();

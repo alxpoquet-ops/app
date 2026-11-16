@@ -334,6 +334,7 @@ function aled08e_cmd_box_detail($post) {
     $u = $c['user'] ? get_userdata($c['user']) : null;
     $opts = [];
     foreach ($c['options'] as $oid) { $o = aled08e_option($oid); $opts[] = $o ? $o['name'] : $oid; }
+    if (!empty($c['pages_plus'])) $opts[] = aled08e_cmd_pages_plus_txt($c['pages_plus']);
     $row = function ($k, $v) { echo '<dt>' . esc_html($k) . '</dt><dd>' . $v . '</dd>'; };
     echo '<div class="aled08-detail"><dl>';
     $row('Référence', '<strong>' . esc_html($c['ref']) . '</strong>, reçue le ' . esc_html(aled08e_date($c['date'])));

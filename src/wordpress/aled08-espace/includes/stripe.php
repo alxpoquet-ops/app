@@ -156,7 +156,8 @@ function aled08e_stripe_checkout($cid) {
         $o = aled08e_option($oid);
         if ($o && $o['once'] > 0) $items[] = $once('Option : ' . $o['name'], $o['once'], 'option');
     }
-    $cfg = ['type' => $c['type'], 'forfait' => $c['forfait'], 'periode' => $c['periode'], 'lissage' => $c['lissage'], 'options' => $c['options'], 'domaine' => $c['domaine'], 'domaine_mien' => $c['domaine_mien'], 'parrain' => $c['parrain']];
+    if (!empty($c['pages_plus'])) $items[] = $once('Option : ' . aled08e_cmd_pages_plus_txt($c['pages_plus']) . ' (' . (int) $c['pages_plus'] . ' × ' . aled08e_euro_txt(aled08e_cmd_page_prix()) . ')', $c['pages_plus'] * aled08e_cmd_page_prix(), 'option');
+    $cfg = ['type' => $c['type'], 'forfait' => $c['forfait'], 'periode' => $c['periode'], 'lissage' => $c['lissage'], 'options' => $c['options'], 'pages_plus' => $c['pages_plus'] ?? 0, 'domaine' => $c['domaine'], 'domaine_mien' => $c['domaine_mien'], 'parrain' => $c['parrain']];
     $params = [
         'mode' => 'payment',
         'locale' => 'fr',

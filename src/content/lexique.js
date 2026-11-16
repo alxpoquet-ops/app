@@ -378,7 +378,7 @@ Un garagiste a un site fait il y a longtemps, pensé pour l'ordinateur. Sur tél
 
 ## Chez les Minis Monstres
 
-Tous les sites que je crée sont pensés d'abord pour le téléphone, puis élargis pour l'ordinateur. Le numéro est cliquable, le menu se replie proprement, et je teste sur plusieurs tailles d'écran avant la mise en ligne. Vous pouvez comparer les types de sites sur [créer mon site](/creer-mon-site/). La vitesse sur mobile est expliquée à la page [temps de chargement](/lexique/temps-de-chargement/).`,
+Tous les sites que je crée sont pensés d'abord pour le téléphone, puis élargis pour l'ordinateur. Le numéro est cliquable, le menu se replie proprement, et je teste sur plusieurs tailles d'écran avant la mise en ligne. Vous pouvez composer le vôtre et voir son prix sur [créer mon site](/creer-mon-site/). La vitesse sur mobile est expliquée à la page [temps de chargement](/lexique/temps-de-chargement/).`,
     faq: [
       { q: 'Faut-il une application en plus d’un site responsive ?', a: 'Pour la plupart des petites entreprises, non. Un site bien adapté au téléphone suffit, et vos clients n’ont rien à installer pour vous trouver.' },
       { q: 'Comment savoir si mon site est responsive ?', a: 'Ouvrez-le sur un téléphone. Si vous devez zoomer pour lire ou si la page déborde sur le côté, il ne l’est pas, ou mal. Sur ordinateur, vous pouvez aussi réduire la largeur de la fenêtre et regarder si les blocs se réorganisent.' },
@@ -959,7 +959,7 @@ Un salon de toilettage distribue des cartes chez les vétérinaires du coin, ave
 
 ## Chez les Minis Monstres
 
-Un site une page, à ${page.price} €, peut faire office de landing page pour lancer une activité ou un événement. Sur un site existant, une nouvelle page dédiée s'ajoute sur un petit devis. Les types de site sont présentés sur [créer mon site](/creer-mon-site/). Le bouton qui fait agir est détaillé à la page [call to action](/lexique/call-to-action/).`,
+Un site d'une seule page peut faire office de landing page pour lancer une activité ou un événement. Il coûte ${page.price} €, le même prix qu'un site plus grand, jusqu'à 10 pages. Sur un site existant, une nouvelle page dédiée s'ajoute sur un petit devis. Le prix et les options sont détaillés sur [créer mon site](/creer-mon-site/). Le bouton qui fait agir est détaillé à la page [call to action](/lexique/call-to-action/).`,
     faq: [
       { q: 'Quelle différence entre landing page et page d’accueil ?', a: 'La page d’accueil présente toute l’entreprise et oriente vers le reste du site. La landing page parle d’une seule offre et vise une seule action.' },
       { q: 'Faut-il faire de la publicité pour avoir une landing page ?', a: 'Non. Elle peut aussi recevoir des visiteurs depuis un e-mail, un QR code, un post sur les réseaux ou une carte de visite. Ce qui compte, c’est qu’ils arrivent avec une attente précise.' },

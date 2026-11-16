@@ -17,6 +17,8 @@ const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 5
 const abo = forfaits[0]; // l'abonnement de base, le seul
 const prix = eur(creation.prix); // création d'un site, toujours écrite « à partir de »
 const prixBoutique = eur(creation.prix + creation.boutique); // création avec la boutique en ligne
+const pagesComprises = creation.pages; // pages comprises dans la création, une page ou plusieurs (même prix)
+const pagePlus = `${eur(creation.pagePlus)} €`; // une page au-delà, payée une fois
 const mensuel = `${eur(abo.month)} € par mois`;
 const periode = abo.periode; // une intervention d'Alex par trimestre
 const durees = lissage.durees.join(' ou ');
@@ -54,7 +56,6 @@ const metiers = [
     },
     options: [
       { id: 'seo', pourquoi: 'Chaque mois, je regarde ce que tapent les gens de votre secteur et je retouche vos pages pour qu’elles ressortent mieux.' },
-      { id: 'pages', pourquoi: 'Dépannage, rénovation, salle de bain clé en main : une page par prestation donne à chacune sa chance d’être trouvée.' },
       { id: 'mail', pourquoi: 'Un devis envoyé depuis une adresse à votre nom fait plus sérieux qu’une boîte gratuite.' },
     ],
     body: `## Ce que votre client veut savoir en trente secondes
@@ -94,9 +95,9 @@ Pour aller vite sans bâcler, j’ai programmé une petite bande de monstres qui
 
 Un site vitrine confié à un indépendant se paie en général entre ${marcheVitrine}. Le mien revient ${marche.fois} fois moins cher, sans rien enlever à l’essentiel : je gagne du temps sur la technique, jamais sur la relecture.
 
-La création coûte à partir de ${prix} €, pour une page comme pour un site vitrine. Vous versez ${acompte} à la commande, puis le reste à la mise en ligne, d’un coup ou en ${durees} fois sans frais. L’abonnement de base suit, à ${mensuel} et sans engagement : nom de domaine, hébergement, mises à jour, sauvegardes, support, et mon intervention une fois par ${periode}. Tout est détaillé sur la page [tarifs](/tarifs/).`,
+La création coûte à partir de ${prix} €, et ce prix couvre jusqu’à ${pagesComprises} pages. Vous versez ${acompte} à la commande, puis le reste à la mise en ligne, d’un coup ou en ${durees} fois sans frais. L’abonnement de base suit, à ${mensuel} et sans engagement : nom de domaine, hébergement, mises à jour, sauvegardes, support, et mon intervention une fois par ${periode}. Tout est détaillé sur la page [tarifs](/tarifs/).`,
     faq: [
-      { q: 'Combien coûte un site internet pour un artisan ?', a: `La création coûte à partir de ${prix} €, que vous preniez une page ou un site vitrine de cinq pages. Ensuite, l’abonnement de base à ${mensuel} couvre l’adresse du site, l’hébergement et l’entretien. Vous connaissez le total avant de commander.` },
+      { q: 'Combien coûte un site internet pour un artisan ?', a: `La création coûte à partir de ${prix} €, que votre site compte une seule page ou ${pagesComprises}. Ensuite, l’abonnement de base à ${mensuel} couvre l’adresse du site, l’hébergement et l’entretien. Vous connaissez le total avant de commander.` },
       { q: 'Je travaille sur une grande zone, comment être trouvé partout ?', a: 'Citez les principales communes où vous intervenez, sans en aligner des dizaines. Une liste honnête sur le site, et une zone d’intervention bien réglée sur votre fiche Google, valent mieux qu’une page par village.' },
       { q: 'Je n’ai presque pas de photos de chantier, est-ce un problème ?', a: 'Non. On démarre avec ce que vous avez, même deux clichés pris au téléphone. Le site s’étoffe ensuite chantier après chantier : vous m’envoyez les photos, je les ajoute.' },
       { q: 'J’ai déjà un vieux site, faut-il tout recommencer ?', a: `Rien n’est perdu. Avec l’option ${O('reprise').name}, je récupère vos textes, vos photos et les adresses de vos pages, pour garder la place que vous avez déjà sur Google.` },
@@ -168,7 +169,7 @@ Vous n’avez pas à écrire seul. Racontez-moi votre pratique avec vos mots, au
 
 ## Le prix
 
-La création coûte à partir de ${prix} €, pour une page comme pour un site vitrine. Si vous voulez que l’on réserve directement en ligne, l’option ${O('rdv').name} s’ajoute pour ${once('rdv')}, payés une seule fois.
+La création coûte à partir de ${prix} €, pour une seule page comme pour une page par pratique, jusqu’à ${pagesComprises} pages. Si vous voulez que l’on réserve directement en ligne, l’option ${O('rdv').name} s’ajoute pour ${once('rdv')}, payés une seule fois.
 
 Ensuite, l’abonnement de base est à ${mensuel}, sans engagement. Il garde votre site en ligne et à jour, avec son nom de domaine, son hébergement et le support. Vos horaires ou vos tarifs bougent ? Les petites retouches sont comprises, et j’interviens moi-même une fois par ${periode} pour un changement plus important.`,
     faq: [
@@ -274,7 +275,6 @@ Côté prix, la création coûte à partir de ${prix} € pour la galerie, et à
     },
     options: [
       { id: 'en', pourquoi: 'Vos voyageurs étrangers lisent tout dans une langue qu’ils comprennent, et Google peut leur montrer cette version.' },
-      { id: 'pages', pourquoi: 'Plusieurs gîtes ou plusieurs chambres ? Chacun mérite sa page, avec ses photos, sa capacité et ses prix.' },
       { id: 'mail', pourquoi: 'Une adresse comme reservation@votregite.fr inspire confiance au moment où le voyageur envoie ses dates.' },
     ],
     body: `## Ce que le voyageur regarde avant de réserver
@@ -309,7 +309,7 @@ Dans le tourisme, les avis pèsent lourd. Publiez seulement de vrais commentaire
 
 ## Le prix, et qui s’en occupe
 
-La création coûte à partir de ${prix} €. La plupart des hébergements choisissent un site vitrine : l’accueil, les chambres, les environs, les tarifs et le contact avec l’accès tiennent dans les cinq pages comprises.
+La création coûte à partir de ${prix} €, avec jusqu’à ${pagesComprises} pages comprises. L’accueil, les chambres, les environs, les tarifs et le contact avec l’accès y tiennent sans peine. Il reste même de la place pour donner sa page à chaque gîte ou à chaque chambre, avec ses photos, sa capacité et ses prix. Au-delà de ${pagesComprises} pages, chacune coûte ${pagePlus}, payée une fois.
 
 Ensuite, l’abonnement de base coûte ${mensuel} et ne vous engage à rien. Il garde le site en ligne, à jour et sauvegardé, avec son nom de domaine. Les petites retouches de saison, un tarif d’été ou une date de fermeture, sont préparées par ma petite bande : vous validez l’aperçu, et c’est en ligne. Une fois par ${periode}, je prends moi-même en charge un travail plus important.`,
     faq: [
@@ -381,7 +381,7 @@ Avec l’abonnement de base, à ${mensuel} et sans engagement, ces changements n
 
 ## Combien ça coûte
 
-La création coûte à partir de ${prix} € pour un site vitrine, et à partir de ${prixBoutique} € avec la boutique en ligne. Pour comparer, un site de ce genre fait par un indépendant demande souvent entre ${marcheVitrine}. Vous versez ${acompte} à la commande et le reste à la mise en ligne, en une fois ou en ${durees} mensualités sans frais.`,
+La création coûte à partir de ${prix} € pour un site sans boutique, jusqu’à ${pagesComprises} pages, et à partir de ${prixBoutique} € avec la boutique en ligne. Pour comparer, un site de ce genre fait par un indépendant demande souvent entre ${marcheVitrine}. Vous versez ${acompte} à la commande et le reste à la mise en ligne, en une fois ou en ${durees} mensualités sans frais.`,
     faq: [
       { q: 'J’ai déjà une page sur les réseaux sociaux, ai-je besoin d’un site ?', a: 'Les deux se complètent. Sur les réseaux, vos horaires et vos produits se noient vite sous les publications, et tout le monde n’y a pas de compte. Le site garde l’essentiel au même endroit, à votre nom.' },
       { q: 'Comment fonctionne le retrait en magasin ?', a: 'Le client choisit ses produits, paie en ligne et coche le retrait au moment de valider. Vous recevez la commande par e-mail, vous la préparez, et il passe la prendre aux horaires que vous avez fixés.' },
@@ -453,7 +453,7 @@ Les petits changements, une date ou un horaire, passent par les petites retouche
 - **La création** : à partir de ${prix} €, avec ${acompte} à la commande et le reste à la mise en ligne, ou étalé sur ${durees} mois sans frais.
 - **L’abonnement de base** : ${mensuel}, sans engagement. Il paie l’adresse du site, l’hébergement, les mises à jour, les sauvegardes et le support.
 
-Pour la plupart des associations, une page suffit, sans aucune option. Si vous avez plusieurs sections, comme le foot, la gym et la randonnée, un site vitrine leur donne une page chacune, pour le même prix de création. Un nom de domaine au nom de l’association fait aussi sérieux sur un dossier de subvention : le guide pour [choisir un nom de domaine](/guides/choisir-nom-de-domaine/) vous aide à le trouver.`,
+Pour la plupart des associations, une page suffit, sans aucune option. Si vous avez plusieurs sections, comme le foot, la gym et la randonnée, chacune peut avoir sa page, sans changer le prix de création jusqu’à ${pagesComprises} pages. Un nom de domaine au nom de l’association fait aussi sérieux sur un dossier de subvention : le guide pour [choisir un nom de domaine](/guides/choisir-nom-de-domaine/) vous aide à le trouver.`,
     faq: [
       { q: 'Notre budget est très serré, que faut-il prévoir ?', a: `Le site coûte à partir de ${prix} €, une seule fois, puis ${mensuel}. Le prix du site peut s’étaler sur ${durees} mois. Les options restent facultatives, et l’abonnement de base suffit dans la plupart des cas.` },
       { q: 'Qui peut demander des changements sur le site ?', a: 'Le bureau décide qui reçoit les codes de l’espace client. À chaque changement d’équipe, il suffit de mettre à jour l’adresse e-mail et le mot de passe du compte, et le site continue sans interruption.' },

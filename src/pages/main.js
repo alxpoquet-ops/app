@@ -188,7 +188,6 @@ ${f.html}`;
 function forfaitsPage() {
   const crumbs = crumb('forfaits');
   const f = C.faq(FAQ.forfaits || FAQ.tarifs || [], 'Vos questions sur les tarifs', 'faq-tarifs');
-  const pages = O('pages');
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: `Tarifs : tout compris, ${marche.fois} fois moins cher`,
@@ -201,24 +200,6 @@ function forfaitsPage() {
   ${C.billingSwitch()}
   ${C.offre()}
   ${C.economie()}
-</div></section>
-
-<section class="section section-soft"><div class="container">
-  <h2 class="section-title">Quel site, pour ce prix ?</h2>
-  <p class="section-sub">Une page, ou un site vitrine jusqu’à cinq pages : c’est ${euro(creation.prix)}. Avec une boutique en ligne, c’est ${euro(creation.prix + creation.boutique)}.</p>
-  <div class="create-prices">${types
-    .map(
-      (t) => `<a class="create-price c-${t.color} reveal" href="${C.creerUrl({ type: t.id })}">
-      <span class="type-ico">${icon(t.icon)}</span>
-      <strong>${esc(t.label)}</strong>
-      <b>${euro(t.price)}</b>
-      <small>${icon('timer')}${esc(t.delai)}</small>
-      <p class="create-qui">${inline(t.pourQui)}</p>
-      <ul>${t.inclus.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>
-    </a>`
-    )
-    .join('')}</div>
-  <p class="center small muted">Un site plus grand ? L’option « ${esc(pages.name)} » coûte ${euro(pages.price.once)}. Au-delà, <a href="${C.contactUrl}">écrivez-nous</a>.</p>
 </div></section>
 
 <section class="section" id="options"><div class="container">
@@ -589,7 +570,7 @@ function commanderPage() {
         <div class="o-in">
         <p class="b-hint">Vous pouvez encore changer d’avis : les prix se mettent à jour.</p>
         ${C.siteChoice({ name: 'type' })}
-        ${C.optionChoices({ name: 'options[]', quand: 'creation' })}
+        ${C.optionChoices({ name: 'options[]', quand: 'creation', pagesName: 'pages_plus' })}
         <p class="b-label">Ensuite, chaque mois</p>
         ${C.forfaitChoices({ name: 'forfait' })}
         ${C.optionChoices({ name: 'options[]', quand: 'mois' })}
@@ -1341,7 +1322,7 @@ function metierPage(m) {
   const f = C.faq(m.faq, 'Vos questions', 'faq-metier');
   const ex = m.exemple && m.exemple.client ? clients.find((c) => c.domaine.startsWith(m.exemple.client)) : null;
   const opts = (m.options || []).map((o) => {
-    const opt = options.find((x) => x.id === o.id);
+    const opt = options.find((x) => x.id === o.id && !x.retire);
     if (opt) return { ic: opt.icon, nom: opt.name, prix: opt.price.once ? `+ ${euro(opt.price.once)}, une fois` : `${euro(opt.price.month)} par mois`, pourquoi: o.pourquoi };
     const x = aLaDemande.find((y) => y.id === o.id);
     if (x) return { ic: x.icon, nom: x.name, prix: `${euro(x.prix)}, à la demande`, pourquoi: o.pourquoi };
@@ -1518,8 +1499,8 @@ function docPage() {
 <section class="section section-soft doc-sec" id="sites"><div class="container">
   <div class="container-narrow">
     <p class="doc-kicker">4. Les sites</p>
-    <h2>Trois types de site, un seul prix</h2>
-    <p>Une page ou un site vitrine : le prix de la création est le même, et il ne change pas en cours de route. La boutique en ligne ajoute ${euro(creation.boutique)}. Le délai court à partir du moment où j’ai vos textes et vos photos.</p>
+    <h2>Un seul prix, jusqu’à ${creation.pages} pages</h2>
+    <p>Une seule page ou plusieurs : le prix de la création est le même jusqu’à ${creation.pages} pages, et il ne change pas en cours de route. Au-delà, chaque page coûte ${euro(creation.pagePlus)}. La boutique en ligne ajoute ${euro(creation.boutique)}. Le délai court à partir du moment où j’ai vos textes et vos photos.</p>
   </div>
   <div class="doc-types">
     ${[[une, 'Pour être présent sur internet sans complication : tout tient sur une page qu’on fait défiler.'], [vit, 'Pour présenter une activité en détail, avec une page par sujet et un menu.'], [bou, 'Pour vendre en ligne : paiement par carte, suivi des commandes, et les outils de la boutique.']].map(([t, d]) => `<div class="doc-type reveal"><strong>${esc(t.label)}</strong><b>${C.prixType(t)}</b><span>${icon('clock')}${esc(t.delai)}</span><p>${d}</p></div>`).join('')}
@@ -1538,7 +1519,7 @@ function docPage() {
     <p>Il n’y a qu’une offre, la même pour tous les clients. Vous payez votre site une fois. Ensuite, l’abonnement le fait vivre : il est obligatoire, et vous l’arrêtez quand vous voulez depuis votre espace client.</p>
   </div>
   <div class="doc-types">
-    <div class="doc-type reveal"><strong>Le site</strong><b>${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une fois</span><p>Une page, ou un site vitrine jusqu’à cinq pages. Avec une boutique en ligne : ${euro(bou.price)}.</p></div>
+    <div class="doc-type reveal"><strong>Le site</strong><b>${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une fois</span><p>Jusqu’à ${creation.pages} pages comprises, puis ${euro(creation.pagePlus)} la page en plus. Avec une boutique en ligne : ${euro(bou.price)}.</p></div>
     <div class="doc-type reveal"><strong>L’abonnement</strong><b>${euro(ABO.month)}</b><span>${icon('repeat')}Par mois, sans engagement</span><p>Il démarre à la réception du site. À l’année : ${euro(ABO_AN)}, soit ${annuel.moisOfferts} mois offerts.</p></div>
     <div class="doc-type reveal"><strong>Options et extras</strong><b>Au choix</b><span>${icon('plus')}Jamais obligatoires</span><p>Les options se règlent une seule fois, avec le site. Les extras se règlent au mois, et s’arrêtent quand vous voulez.</p></div>
   </div>

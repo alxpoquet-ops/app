@@ -101,6 +101,13 @@ function aled08e_cmd_lissage_n($v) {
     $ok = (array) (aled08e_data()['lissageDurees'] ?? [6, 12]);
     return in_array($n, array_map('intval', $ok), true) ? $n : 0;
 }
+/* Pages en plus : au-delà des pages comprises, un prix par page, payé une fois (borné à pagesPlusMax) */
+function aled08e_cmd_pages_plus($v) {
+    $max = (int) (aled08e_data()['creation']['pagesPlusMax'] ?? 40);
+    return max(0, min($max, (int) $v));
+}
+function aled08e_cmd_page_prix() { return (float) (aled08e_data()['creation']['pagePlus'] ?? 10); }
+function aled08e_cmd_pages_plus_txt($n) { $n = (int) $n; return $n . ($n > 1 ? ' pages en plus' : ' page en plus'); }
 function aled08e_cmd_montants($cfg) {
     $D = aled08e_data();
     $type = aled08e_type($cfg['type'] ?? '');
@@ -119,6 +126,8 @@ function aled08e_cmd_montants($cfg) {
         $mensuelOptions += (float) $o['month'] * $mult;
         $ponctuel += (float) $o['once'];
     }
+    $pagesPlus = aled08e_cmd_pages_plus($cfg['pages_plus'] ?? 0);
+    $ponctuel += $pagesPlus * aled08e_cmd_page_prix();
     // À la commande : l'acompte (25 %) et les options ponctuelles. À la réception du site : le reste,
     // en une fois ou en 6 / 12 fois sans frais (engagement le temps de payer), et le forfait démarre.
     $nb = (int) ($cfg['lissage'] ?? 0);
@@ -132,6 +141,7 @@ function aled08e_cmd_montants($cfg) {
         'mensuel_forfait' => $mensuelForfait,
         'mensuel_options' => $mensuelOptions,
         'options_ponctuel' => $ponctuel,
+        'pages_plus' => $pagesPlus,
         'lissage_mensualite' => $lissage ? $mensualite : 0.0,
         'lissage_total_echeances' => $lissage ? $nb : 0,
         'total_jour' => round($totalJour, 2),
@@ -153,7 +163,7 @@ function aled08e_cmd_get($id) {
     $out = [
         'id' => (int) $id, 'ref' => (string) $g('ref', '#' . $id), 'date' => $p->post_date, 'post' => $p,
         'type' => (string) $g('type'), 'forfait' => (string) $g('forfait'), 'periode' => (string) $g('periode', 'mois'),
-        'lissage' => (int) $g('lissage', 0), 'options' => array_values((array) $g('options', [])),
+        'lissage' => (int) $g('lissage', 0), 'options' => array_values((array) $g('options', [])), 'pages_plus' => (int) $g('pages_plus', 0),
         'domaine' => (string) $g('domaine'), 'domaine_mien' => (int) $g('domaine_mien', 0), 'domaine_statut' => (string) $g('domaine_statut', 'a_reserver'),
         'statut' => (string) $g('statut', 'attente_paiement'), 'montants' => $m,
         'message' => (string) $g('message'), 'parrain' => (string) $g('parrain'), 'user' => (int) $g('user', $p->post_author),
@@ -192,8 +202,8 @@ function aled08e_cmd_recentes_email($email, $depuis) {
 }
 /* Même configuration (type, forfait, période, lissage, options, nom de domaine) ? */
 function aled08e_cmd_meme_config($c, $cfg) {
-    $a = [$c['type'], $c['forfait'], $c['periode'], (int) $c['lissage'], array_values((array) $c['options']), $c['domaine'], (int) $c['domaine_mien']];
-    $b = [$cfg['type'], $cfg['forfait'], $cfg['periode'], (int) ($cfg['lissage'] ?? 0), array_values((array) $cfg['options']), $cfg['domaine'], !empty($cfg['domaine_mien']) ? 1 : 0];
+    $a = [(int) ($c['pages_plus'] ?? 0), $c['type'], $c['forfait'], $c['periode'], (int) $c['lissage'], array_values((array) $c['options']), $c['domaine'], (int) $c['domaine_mien']];
+    $b = [(int) ($cfg['pages_plus'] ?? 0), $cfg['type'], $cfg['forfait'], $cfg['periode'], (int) ($cfg['lissage'] ?? 0), array_values((array) $cfg['options']), $cfg['domaine'], !empty($cfg['domaine_mien']) ? 1 : 0];
     return $a === $b;
 }
 
@@ -220,6 +230,7 @@ function aled08e_cmd_recap_txt($c) {
         $o = aled08e_option($oid);
         if ($o) $opts[] = $o['name'] . ', ' . ($o['once'] ? aled08e_euro_txt($o['once']) . ' une fois' : aled08e_euro_txt($annee ? $o['month'] * max(1, 12 - (int) $D['moisOfferts']) : $o['month']) . ' ' . $per);
     }
+    if (!empty($c['pages_plus'])) $opts[] = aled08e_cmd_pages_plus_txt($c['pages_plus']) . ', ' . aled08e_euro_txt($c['pages_plus'] * aled08e_cmd_page_prix()) . ' une fois';
     if (!$c['domaine']) $dom = 'à choisir ensemble';
     elseif ($c['domaine_mien']) $dom = $c['domaine'] . ' (le client l’a déjà)';
     else $dom = $c['domaine'] . ' (à réserver au nom du client)';
@@ -277,7 +288,7 @@ function aled08e_cmd_url_commander($cfg, $extra = []) {
     $q = $extra + [
         'type' => $cfg['type'] ?? '', 'forfait' => $cfg['forfait'] ?? '', 'periode' => $cfg['periode'] ?? '',
         'lissage' => !empty($cfg['lissage']) ? (string) (int) $cfg['lissage'] : '', 'domaine' => $cfg['domaine'] ?? '',
-        'domaine_statut' => !empty($cfg['domaine_mien']) ? 'mien' : '', 'options' => implode(',', (array) ($cfg['options'] ?? [])), 'parrain' => $cfg['parrain'] ?? '',
+        'domaine_statut' => !empty($cfg['domaine_mien']) ? 'mien' : '', 'options' => implode(',', (array) ($cfg['options'] ?? [])), 'pages_plus' => !empty($cfg['pages_plus']) ? (string) (int) $cfg['pages_plus'] : '', 'parrain' => $cfg['parrain'] ?? '',
     ];
     $q = array_filter($q, function ($v) { return (string) $v !== ''; });
     return home_url('/commander/') . ($q ? '?' . http_build_query($q, '', '&', PHP_QUERY_RFC3986) : '');
@@ -327,6 +338,7 @@ function aled08e_cmd_traiter_post() {
         'periode' => $get('periode', 10) === 'annee' ? 'annee' : 'mois',
         'lissage' => aled08e_cmd_lissage_n($get('lissage', 5)),
         'options' => array_values(array_unique($options)),
+        'pages_plus' => aled08e_cmd_pages_plus($get('pages_plus', 4)),
         'domaine' => aled08e_cmd_nettoyer_domaine($get('domaine', 253)),
         'domaine_mien' => $get('domaine_mien', 2) === '1',
         'parrain' => aled08e_clean_code($get('parrain', 20)),
@@ -404,7 +416,7 @@ function aled08e_cmd_traiter_post() {
     update_post_meta($pid, '_aled08_ref', $ref);
     wp_update_post(['ID' => $pid, 'post_title' => $ref . ' : ' . $titre]);
     $metas = [
-        'ref' => $ref, 'type' => $cfg['type'], 'forfait' => $cfg['forfait'], 'periode' => $cfg['periode'], 'lissage' => (int) $cfg['lissage'], 'options' => $cfg['options'],
+        'ref' => $ref, 'type' => $cfg['type'], 'forfait' => $cfg['forfait'], 'periode' => $cfg['periode'], 'lissage' => (int) $cfg['lissage'], 'options' => $cfg['options'], 'pages_plus' => (int) $cfg['pages_plus'],
         'domaine' => $cfg['domaine'], 'domaine_mien' => $cfg['domaine_mien'] ? 1 : 0, 'domaine_statut' => $cfg['domaine_mien'] ? 'client' : 'a_reserver',
         'statut' => 'attente_paiement', 'montants' => $m, 'message' => $message, 'parrain' => $cfg['parrain'], 'user' => $uid,
         'stripe_session' => '', 'stripe_customer' => '', 'stripe_subscription' => '', 'stripe_lissage_item' => '', 'lissage_paye' => 0, 'solde_paye' => 0, 'solde_session' => '',
@@ -574,6 +586,6 @@ function aled08e_cmd_reception_due($c) {
 }
 /* Montants recalculés pour le choix fait à la réception (n = 0 : en une fois ; 6 ou 12 : en plusieurs fois, forfait au mois) */
 function aled08e_cmd_montants_reception($c, $n) {
-    $cfg = ['type' => $c['type'], 'forfait' => $c['forfait'], 'periode' => $n ? 'mois' : $c['periode'], 'lissage' => $n, 'options' => $c['options']];
+    $cfg = ['type' => $c['type'], 'forfait' => $c['forfait'], 'periode' => $n ? 'mois' : $c['periode'], 'lissage' => $n, 'options' => $c['options'], 'pages_plus' => $c['pages_plus'] ?? 0];
     return aled08e_cmd_montants($cfg);
 }

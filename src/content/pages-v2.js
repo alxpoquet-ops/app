@@ -95,7 +95,7 @@ Beaucoup d’étapes reviennent sur chaque projet, puis chaque mois une fois le 
 - **Après la mise en ligne** : ${role(gardien)} s’occupe des mises à jour, des sauvegardes et de la surveillance. ${maj(et(quotidien.map(role)))} vous donnent un coup de main dans votre espace client.
 - **Pour vous** : rien à apprendre, rien à surveiller. Je gère tout, et vous n’avez aucun effort à fournir.
 
-Résultat : un site une page est prêt en ${page.delai}, un site vitrine en ${vitrine.delai}.
+Résultat : une seule page est prête en ${page.delai}, et un site de plusieurs pages en ${vitrine.delai}.
 
 ### Un hébergement en direct
 
@@ -114,7 +114,7 @@ Votre site ne part en ligne qu’après être passé entre mes mains.
 
 ## Un prix affiché, sans devis
 
-Chez beaucoup de prestataires, il faut demander un devis, attendre, puis comparer. Ici, le prix est écrit sur le site et il est le même pour tout le monde. La création démarre à ${eur(creation.prix)} €, pour un site une page comme pour un site vitrine jusqu’à cinq pages. Une boutique en ligne ajoute ${eur(creation.boutique)} €.
+Chez beaucoup de prestataires, il faut demander un devis, attendre, puis comparer. Ici, le prix est écrit sur le site et il est le même pour tout le monde. La création démarre à ${eur(creation.prix)} €, et ce prix comprend jusqu’à ${creation.pages} pages, que votre site en ait une ou plusieurs. Au-delà, chaque page coûte ${eur(creation.pagePlus)} €, payée une fois. Une boutique en ligne ajoute ${eur(creation.boutique)} €.
 
 Vous réglez ${paiement.acompte} % à la commande et le reste à la mise en ligne, en une fois ou en ${durees} fois sans frais. Ensuite, l’abonnement à ${eur(abo.month)} € par mois fait vivre le site, sans engagement. Le détail complet est sur la page [tarifs](/tarifs/).
 
@@ -217,7 +217,7 @@ Chez moi, la création démarre à ${eur(creation.prix)} €. Ensuite, l’abonn
       { q: 'Ma page Facebook ne suffit pas ?', a: 'Elle suffit pour garder le contact avec vos abonnés. Pour être trouvé par quelqu’un qui ne vous connaît pas encore, et pour présenter clairement vos services, un site fait mieux. Les deux vont très bien ensemble.' },
       { q: 'J’ai déjà une fiche Google, à quoi bon un site ?', a: 'La fiche indique votre adresse, vos horaires et vos avis. Le site raconte ce que vous faites, comment, et pourquoi vous choisir. Une fiche reliée à un vrai site inspire aussi davantage confiance.' },
       { q: 'Un site, c’est compliqué à tenir à jour ?', a: 'Pas si quelqu’un s’en charge pour vous. Avec l’abonnement, vous envoyez vos changements depuis votre espace client, avec une photo si besoin, et ils sont faits pour vous.' },
-      { q: 'Quel site choisir pour commencer ?', a: 'Un site une page, si vous voulez surtout être trouvé et joignable. Un site vitrine, si vous avez plusieurs services à présenter. Le prix de création est le même dans les deux cas.' },
+      { q: 'Quel site choisir pour commencer ?', a: `Une seule page, si vous voulez surtout être trouvé et joignable. Plusieurs pages, si vous avez plusieurs services à présenter. Chez moi, le prix de création ne bouge pas jusqu’à ${creation.pages} pages.` },
     ],
     voir: ['/etre-visible-sur-google/', '/guides/site-une-page-ou-site-vitrine/', '/metiers/'],
     cta: { titre: 'Votre site, sans prise de tête', texte: 'Dites-moi ce que vous faites, je m’occupe du reste.' },
@@ -362,7 +362,7 @@ Une question en passant ? Écrivez-la dans la bulle, en bas de l’écran.
 
 ## Ce que je fais bien, et ce que je ne fais pas
 
-Je crée des sites une page, des sites vitrines et des petites boutiques en ligne. C’est ce que je sais bien faire, vite et avec soin. Vous pouvez en voir quelques-uns sur la page [réalisations](/realisations/).
+Je crée des sites d’une seule page ou de quelques pages, et des petites boutiques en ligne. C’est ce que je sais bien faire, vite et avec soin. Vous pouvez en voir quelques-uns sur la page [réalisations](/realisations/).
 
 Pour une application sur mesure, un logiciel métier ou un catalogue de milliers de produits, il faut un développeur expérimenté. Dans ce cas, je vous le dis honnêtement, et je peux vous orienter vers les bonnes personnes.
 
@@ -483,7 +483,7 @@ Tous les prix sont réunis sur la page [tarifs](/tarifs/). Et si vous parlez de 
 
 Je m’appelle Alex et je crée des sites internet depuis ${ville} (${site.address.postalCode}). Je travaille à distance pour toute la France, et les ${dept}, c’est chez moi.
 
-Je fais des sites une page, des sites vitrines et des boutiques en ligne. L’offre est la même ici qu’ailleurs : un prix affiché, un site vérifié à la main, puis un abonnement qui s’occupe de l’entretien.
+Je fais des sites d’une page ou de plusieurs, et des boutiques en ligne. L’offre est la même ici qu’ailleurs : un prix affiché, un site vérifié à la main, puis un abonnement qui s’occupe de l’entretien.
 
 Indépendants, artisans, commerçants, gîtes, associations : si vous êtes à Charleville-Mézières, à Sedan, à Rethel, à ${ville} ou dans un village autour, on peut se voir pour parler de votre projet. Ce n’est jamais obligatoire. Beaucoup de choses se règlent très bien par téléphone ou par e-mail.
 
@@ -520,7 +520,7 @@ C’est un bon exemple de ce qu’un site peut apporter à une activité d’ici
 
 1. **Vous me contactez** par le [formulaire](/contact/), en précisant si vous aimeriez une rencontre.
 2. **On fait le point**, en rendez-vous dans les Ardennes ou au téléphone.
-3. **Je crée votre site** : un site une page en ${page.delai}, un site vitrine en ${vitrine.delai}, une boutique en ${boutique.delai}.
+3. **Je crée votre site** : comptez ${page.delai} pour une seule page, ${vitrine.delai} pour plusieurs pages, ${boutique.delai} pour une boutique.
 4. **Je le mets en ligne** après vérification, puis je m’occupe de son entretien et de vos changements.
 
 Côté paiement, vous réglez ${paiement.acompte} % à la commande, et le reste quand le site est en ligne.`,
