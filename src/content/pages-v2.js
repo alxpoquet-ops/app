@@ -18,7 +18,7 @@ const durees = lissage.durees.join(' ou ');
 const seo = O('seo');
 const extrasMois = options.filter((o) => o.quand === 'mois');
 // Jetons : ceux de l'abonnement reviennent le 1er du mois, ceux rachetés restent.
-const recharge = jetonsLia.recharge[0]; // la plus petite recharge (ex. 100 jetons pour 1 €)
+const recharge = jetonsLia.recharge[0]; // la plus petite recharge, rachetée à l'utilisation
 const OUTIL = '3 à 16'; // jetons pour un outil, le prix exact est affiché sur son bouton
 const retouchesMois = Math.floor(abo.jetons / jetonsLia.modif.base); // retouches courtes par Lia avec les jetons du mois
 const alexEnPlus = A('alex'), urgent = A('urgent');
