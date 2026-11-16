@@ -266,9 +266,9 @@ add_action('wp_ajax_aled08e_rs', function () {
         $inst = strtolower(trim(sanitize_text_field((string) ($P['instance'] ?? ''))));
         $inst = preg_replace('#^https?://#', '', rtrim($inst, '/'));
         $jeton = trim(sanitize_text_field((string) ($P['jeton'] ?? '')));
-        if (!preg_match('/^[a-z0-9.-]+\.[a-z]{2,}$/', $inst) || $jeton === '') wp_send_json_error(['message' => 'Donnez l’adresse de votre serveur Mastodon (par exemple mastodon.social) et votre jeton d’accès.'], 400);
+        if (!preg_match('/^[a-z0-9.-]+\.[a-z]{2,}$/', $inst) || $jeton === '') wp_send_json_error(['message' => 'Donnez l’adresse de votre serveur Mastodon (par exemple mastodon.social) et votre code d’accès.'], 400);
         $v = aled08e_rs_http('GET', 'https://' . $inst . '/api/v1/accounts/verify_credentials', ['headers' => ['Authorization' => 'Bearer ' . $jeton], 'timeout' => 15], true);
-        if (is_wp_error($v) || empty($v['json']['id'])) wp_send_json_error(['message' => 'Mastodon refuse ce jeton : vérifiez l’adresse du serveur et le jeton.'], 400);
+        if (is_wp_error($v) || empty($v['json']['id'])) wp_send_json_error(['message' => 'Mastodon refuse ce code : vérifiez l’adresse du serveur et le code d’accès.'], 400);
         $c['mastodon'] = ['instance' => 'https://' . $inst, 'jeton' => $jeton, 'nom' => '@' . mb_substr(preg_replace('/[^A-Za-z0-9_.-]/', '', (string) ($v['json']['username'] ?? '')), 0, 40) . '@' . $inst];
         aled08e_rs_set($uid, $c);
         wp_send_json_success(['message' => 'Mastodon est relié.']);
@@ -393,7 +393,7 @@ function aled08e_rs_html($uid) {
                 . '<button class="btn btn-primary btn-sm" type="submit">Relier Bluesky</button><p class="ol-etat" data-rs-etat role="status"></p></form></details>';
         } elseif ($id === 'mastodon') {
             $h .= '<details class="rs-form"><summary class="btn btn-light btn-sm">Relier</summary><form data-rs-relier="mastodon"><div class="field"><label for="rs-ma-i">L’adresse de votre serveur</label><input id="rs-ma-i" type="text" name="instance" placeholder="mastodon.social" autocomplete="off" required></div>'
-                . '<div class="field"><label for="rs-ma-j">Votre jeton d’accès</label><input id="rs-ma-j" type="password" name="jeton" autocomplete="off" required><small class="ol-aide">À créer dans Mastodon : Préférences, Développement, Nouvelle application. Cochez « write:statuses » et « write:media », puis copiez « Votre jeton d’accès ».</small></div>'
+                . '<div class="field"><label for="rs-ma-j">Votre code d’accès</label><input id="rs-ma-j" type="password" name="jeton" autocomplete="off" required><small class="ol-aide">À créer dans Mastodon : Préférences, Développement, Nouvelle application. Cochez « write:statuses » et « write:media », puis copiez le code que Mastodon affiche sous « Votre jeton d’accès ».</small></div>'
                 . '<button class="btn btn-primary btn-sm" type="submit">Relier Mastodon</button><p class="ol-etat" data-rs-etat role="status"></p></form></details>';
         }
         $h .= '</li>';

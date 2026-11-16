@@ -61,7 +61,7 @@ function aled08e_bulle_quota($uid) {
 function aled08e_bulle_systeme() {
     return "Tu es Lia, l'assistante d'Alex & Lia, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, des artisans et des associations. "
         . "Tu parles au client dans son espace client. Alex est l'humain de l'entreprise : c'est lui qui conçoit les sites, il vérifie tout et fait les grandes modifications à la main. "
-        . "Présente-toi comme l'assistante autonome d'Alex, qui automatise les tâches répétitives. Si le client te demande si tu es une intelligence artificielle ou un humain, réponds honnêtement : tu es un assistant automatique, et Alex reprend tout ce qui demande un humain.\n\n"
+        . "Présente-toi comme l'assistante autonome d'Alex, qui automatise les tâches répétitives. Tu fais partie de la petite bande de petits monstres qu'Alex a programmés : ce sont ses automatisations. Les outils et les petites modifications utilisent l'énergie des petits monstres, comptée en points d'énergie : ne parle jamais de jetons. Si le client te demande si tu es une intelligence artificielle ou un humain, réponds honnêtement : tu es un assistant automatique, et Alex reprend tout ce qui demande un humain.\n\n"
         . "Ton rôle : répondre à ses questions, et préparer ce qu'il veut faire. Tu ne fais jamais l'action toi-même : tu la proposes dans le champ « action », et le client la valide ensuite d'un clic dans son espace.\n\n"
         . "Comment répondre :\n"
         . "- En français simple, avec des mots de tous les jours, sans jargon. Une à quatre phrases courtes. Vouvoie le client. Pas de tiret long, pas d'émoji, pas de liste à puces, pas de mise en forme.\n"
@@ -100,20 +100,20 @@ function aled08e_bulle_contexte($uid) {
     $pris = [];
     foreach (aled08e_extras() as $o) if (aled08e_extra_actif($uid, $o['id'])) $pris[] = $o['name'];
     $compte[] = 'Extras actifs : ' . ($pris ? implode(', ', $pris) : 'aucun');
-    $compte[] = $famille ? 'Jetons Lia : sans limite' : 'Jetons Lia restants : ' . (int) $e['solde'] . ' (' . (int) $e['mois'] . ' donnés chaque mois, ils reviennent le 1er)';
+    $compte[] = $famille ? 'Énergie des petits monstres : sans limite' : 'Points d’énergie restants : ' . (int) $e['solde'] . ' (' . (int) $e['mois'] . ' donnés chaque mois, ils reviennent le 1er)';
     if (!$famille) $compte[] = 'Interventions d’Alex restantes ' . aled08e_periode_ce($uid) . ' : ' . max(0, (int) $f['quota'] - (int) aled08e_count_alex($uid)) . ' sur ' . (int) $f['quota'];
-    $compte[] = 'Lia peut modifier ce site elle-même : ' . (aled08e_lia_prete_pour($uid) ? 'oui' : 'pas encore, les modifications passent par Alex');
+    $compte[] = 'Les petits monstres peuvent modifier ce site eux-mêmes : ' . (aled08e_lia_prete_pour($uid) ? 'oui' : 'pas encore, les modifications passent par Alex');
 
     $offre = [];
-    $offre[] = 'Abonnement : ' . aled08e_euro_txt($f['month']) . ' par mois (nom de domaine, hébergement, mises à jour, suivi, support, ' . (int) $f['jetons'] . ' Jetons Lia chaque mois et ' . aled08e_alex_txt($uid, $f) . '). Sans engagement. À l’année : ' . (int) $D['moisOfferts'] . ' mois offerts.';
-    $offre[] = '1 Jeton Lia = 1 centime. Un message dans cette bulle : ' . aled08e_jl_txt(aled08e_bulle_prix()) . '.';
-    $offre[] = 'Une modification du site par Lia : ' . (int) $jl['modif']['base'] . ' jetons, plus 1 par tranche de ' . (int) $jl['modif']['mots'] . ' mots écrits et ' . (int) $jl['modif']['image'] . ' par photo. Lia montre toujours un aperçu de la page : rien ne change sans l’accord du client.';
+    $offre[] = 'Abonnement : ' . aled08e_euro_txt($f['month']) . ' par mois (nom de domaine, hébergement, mises à jour, suivi, support, ' . (int) $f['jetons'] . ' points d’énergie chaque mois et ' . aled08e_alex_txt($uid, $f) . '). Sans engagement. À l’année : ' . (int) $D['moisOfferts'] . ' mois offerts.';
+    $offre[] = '1 point d’énergie = 1 centime. Un message dans cette bulle : ' . aled08e_jl_txt(aled08e_bulle_prix()) . '.';
+    $offre[] = 'Une modification du site par les petits monstres : ' . (int) $jl['modif']['base'] . ' points d’énergie, plus 1 par tranche de ' . (int) $jl['modif']['mots'] . ' mots écrits et ' . (int) $jl['modif']['image'] . ' par photo. Ils montrent toujours un aperçu de la page : rien ne change sans l’accord du client.';
     $ald = [];
     foreach (aled08e_a_la_demande() as $x) $ald[] = $x['name'] . ' : ' . aled08e_euro_txt($x['prix']);
     $offre[] = 'Extras à la demande, payés une fois et ajoutés à la prochaine facture (onglet Mes demandes) : ' . implode(', ', $ald) . '. Alex répond sous ' . $D['delais']['reponse'] . '.';
     $rech = [];
-    foreach ((array) $jl['recharge'] as $r) $rech[] = (int) $r['jetons'] . ' jetons pour ' . aled08e_euro_txt($r['prix']);
-    $offre[] = 'Recharge de jetons (onglet Outils) : ' . implode(', ', $rech) . '.';
+    foreach ((array) $jl['recharge'] as $r) $rech[] = (int) $r['jetons'] . ' points pour ' . aled08e_euro_txt($r['prix']);
+    $offre[] = 'Redonner de l’énergie (onglet Outils) : ' . implode(', ', $rech) . '.';
     $ex = [];
     foreach (aled08e_changer_options_possibles($uid) as $o) $ex[] = $o['name'] . ' ' . aled08e_euro_txt($o['month']) . ' par mois';
     if ($ex) $offre[] = 'Options au mois, à ajouter ou retirer quand on veut (onglet forfait) : ' . implode(' ; ', $ex) . '.';
@@ -176,7 +176,7 @@ function aled08e_bulle_repondre($uid, $message) {
     $prix = aled08e_bulle_prix();
     $ref = 'bulle:' . time() . ':' . wp_generate_password(6, false, false);
     if (!aled08e_jl_debiter($uid, $prix, 'Message à Lia', $ref)) {
-        return new WP_Error('aled08_jl_solde', 'Il vous reste ' . aled08e_jl_txt(aled08e_jl_etat($uid)['solde']) . ' : un message en demande ' . $prix . '. Rechargez dans l’onglet Outils, ou attendez le 1er du mois.');
+        return new WP_Error('aled08_jl_solde', 'Il vous reste ' . aled08e_jl_txt(aled08e_jl_etat($uid)['solde']) . ' : un message en utilise ' . $prix . '. Redonnez de l’énergie dans l’onglet Outils, ou attendez le 1er du mois.');
     }
     $dollars = 0.0;
     $echec = function ($texte) use ($uid, $ref, &$dollars) {
@@ -203,14 +203,14 @@ function aled08e_bulle_repondre($uid, $message) {
         );
     } catch (\Throwable $e) {
         aled08e_lia_journal_add('Bulle de Lia : erreur Claude : ' . $e->getMessage());
-        return $echec('Lia n’a pas pu répondre cette fois. Réessayez dans un instant : aucun jeton n’a été compté.');
+        return $echec('Lia n’a pas pu répondre cette fois. Réessayez dans un instant : aucun point d’énergie n’a été compté.');
     }
     if (isset($r->usage)) $dollars += ((int) ($r->usage->inputTokens ?? 0) * $t['entree'] + (int) ($r->usage->outputTokens ?? 0) * $t['sortie']) / 1000000;
-    if (($r->stopReason ?? '') === 'refusal') return $echec('Lia ne peut pas répondre à ce message. Aucun jeton n’a été compté.');
+    if (($r->stopReason ?? '') === 'refusal') return $echec('Lia ne peut pas répondre à ce message. Aucun point d’énergie n’a été compté.');
     $brut = '';
     foreach ($r->content as $b) if ($b->type === 'text') $brut .= $b->text;
     $lu = aled08e_bulle_lire($uid, $brut);
-    if (!$lu) return $echec('La réponse de Lia est arrivée incomplète. Réessayez : aucun jeton n’a été compté.');
+    if (!$lu) return $echec('La réponse de Lia est arrivée incomplète. Réessayez : aucun point d’énergie n’a été compté.');
     aled08e_jl_cout_noter($uid, $ref, aled08e_jl_centimes($dollars));
     // on garde l'échange : le message tel que le client l'a écrit, et la réponse telle que Lia l'a rendue
     $fil[] = ['r' => 'moi', 't' => "<message_du_client>\n" . $message . "\n</message_du_client>"];

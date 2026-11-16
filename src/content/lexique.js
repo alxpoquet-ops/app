@@ -1,12 +1,14 @@
 // Lexique : « c'est quoi … ? », des définitions simples des mots du web.
-// Règles (scripts/check.js) : title de 70 caractères au plus, description de 110 à 165, aucun tiret long, pas de phrase de 9 mots ou plus reprise d'une autre page.
-const { types, forfaits, options } = require('../config');
+// Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160, aucun tiret long, pas de phrase de 9 mots ou plus reprise d'une autre page.
+const { types, forfaits, options, bande } = require('../config');
+const gardien = bande.find((b) => b.compris).role; // Le gardien, le petit monstre compris dans l'abonnement
+const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const T = (id) => types.find((t) => t.id === id);
 const O = (id) => options.find((o) => o.id === id);
 const page = T('une-page');
 // L'offre unique : un seul abonnement, et des extras au mois (Suivi Google, Chiffres détaillés, Adresse e-mail pro).
-// V2 (novembre 2026) : on parle des automatisations d'Alex et des retouches automatiques, sans présenter Lia
-// (« Chez Alex & Lia » reste : c'est le nom de la marque). Retouches et outils : jetons compris chaque mois.
+// V2 (novembre 2026) : Alex fait chaque site, sa petite bande d'automatisations (des petits monstres) s'occupe du
+// répétitif. « Chez Alex & Lia » reste : c'est le nom de la marque. Petites retouches et outils compris pour un usage normal.
 const abo = forfaits[0];
 const seo = O('seo'), stats = O('stats'), mail = O('mail');
 
@@ -192,7 +194,7 @@ Un moniteur d'auto-école veut afficher ses nouvelles dates de stage code chaque
 
 ## Chez Alex & Lia
 
-Vous n'avez pas à apprendre d'outil. Vous décrivez ce que vous voulez changer dans votre espace client, et c'est fait pour vous : automatiquement et en quelques minutes pour une petite retouche, avec un aperçu à valider, ou par moi pour les changements plus grands. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
+Vous n'avez pas à apprendre d'outil. Vous décrivez ce que vous voulez changer dans votre espace client, et c'est fait pour vous : par ma petite bande d'automatisations, en quelques minutes, pour une petite retouche avec un aperçu à valider, ou par moi pour les changements plus grands. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
     faq: [
       { q: 'Un CMS est-il obligatoire pour avoir un site ?', a: 'Non. Un site peut être fait de simples fichiers, sans base de données. C’est même souvent plus rapide et plus sûr. Le CMS devient utile quand le contenu change souvent ou quand plusieurs personnes doivent publier.' },
       { q: 'Quel CMS choisir pour mon entreprise ?', a: 'Celui qui répond à votre besoin et que quelqu’un saura entretenir. Pour un site de présentation ou une petite boutique, les grands CMS connus ont l’avantage d’être bien suivis et de trouver facilement de l’aide.' },
@@ -391,7 +393,7 @@ Tous les sites que je crée sont pensés d'abord pour le téléphone, puis élar
     resume: 'Tout ce qui aide votre site à apparaître dans les résultats de Google, sans payer de publicité.',
     h1: "Référencement naturel (SEO) : c'est quoi, simplement ?",
     title: 'Référencement naturel (SEO) : définition simple | Alex & Lia',
-    description: 'Le référencement naturel, ou SEO, regroupe le travail qui aide un site à se montrer dans Google sans publicité. Ce qui compte vraiment, et ce qui ne sert à rien.',
+    description: 'Le référencement naturel, ou SEO, regroupe le travail qui aide un site à se montrer dans Google sans publicité. Ce qui compte, et ce qui ne sert à rien.',
     lead: `Le référencement naturel, ou SEO, c'est l'ensemble du travail qui rend un site plus facile à trouver dans les résultats gratuits de Google. On ne paie pas pour chaque clic : on gagne sa place avec un site clair, utile et bien construit.`,
     body: `## La définition en une phrase
 
@@ -438,7 +440,7 @@ Chaque site part avec les bases du SEO. Avec l'extra ${seo.name}, à ${seo.price
     resume: 'Être trouvé par les gens qui cherchent votre métier près de chez eux, dans votre ville.',
     h1: "Référencement local : c'est quoi, et comment ça marche ?",
     title: 'Référencement local : être trouvé dans votre ville | Alex & Lia',
-    description: 'Le référencement local aide votre entreprise à sortir quand on cherche votre métier près de chez soi. Ce qui compte : fiche Google, site, avis et adresse cohérente.',
+    description: 'Le référencement local aide votre entreprise à sortir quand on cherche votre métier tout près. Ce qui compte : fiche Google, site, avis et adresse cohérente.',
     lead: `Le référencement local est la partie du SEO qui vise les recherches liées à un lieu, comme « boulangerie Rethel » ou « plombier près de moi ». Il fait apparaître votre entreprise sur la carte et dans les résultats proches du client.`,
     body: `## La définition en une phrase
 
@@ -631,7 +633,7 @@ Deux pizzerias sortent l'une sous l'autre. La première affiche un morceau de te
     resume: 'La liste de toutes les pages de votre site, préparée pour que Google n’en oublie aucune.',
     h1: "Sitemap : c'est quoi, le plan du site pour Google ?",
     title: 'Sitemap (plan du site) : définition et utilité | Alex & Lia',
-    description: 'Un sitemap est un fichier qui liste les pages d’un site pour aider Google à les trouver. À quoi il sert, comment le déclarer, et les erreurs qui le rendent inutile.',
+    description: 'Un sitemap est un fichier qui liste les pages d’un site pour que Google les trouve. À quoi il sert, comment le déclarer, et les erreurs qui le rendent inutile.',
     lead: `Un sitemap, ou plan du site, est un fichier qui donne à Google la liste des pages de votre site, avec leur date de mise à jour. C'est une feuille de route qui l'aide à ne rien rater.`,
     body: `## La définition en une phrase
 
@@ -715,8 +717,8 @@ Je règle le robots.txt à la mise en ligne de votre site, et je vérifie qu'il 
     nom: 'Indexation',
     resume: 'Le moment où Google range une page dans son catalogue, pour pouvoir la montrer ensuite.',
     h1: "Indexation : c'est quoi, quand Google range votre site ?",
-    title: 'Indexation Google : définition et comment la vérifier | Alex & Lia',
-    description: 'L’indexation, c’est l’entrée d’une page dans le catalogue de Google. Sans elle, la page ne peut pas sortir dans les résultats. Comment la vérifier et la faciliter.',
+    title: 'Indexation Google : définition et vérification | Alex & Lia',
+    description: 'L’indexation, c’est l’entrée d’une page dans le catalogue de Google. Sans elle, la page ne sort pas dans les résultats. Comment la vérifier et la faciliter.',
     lead: `L'indexation est l'étape où Google enregistre une page dans son immense catalogue, appelé index. Une page non indexée est invisible dans les résultats, même si elle est en ligne et parfaitement belle.`,
     body: `## La définition en une phrase
 
@@ -765,7 +767,7 @@ Tapez dans Google site: suivi de votre adresse, sans espace, par exemple site:vo
     nom: 'Backlink (lien entrant)',
     resume: 'Un lien posé sur un autre site et qui mène au vôtre : une forme de recommandation.',
     h1: "Backlink : c'est quoi, un lien entrant ?",
-    title: 'Backlink (lien entrant) : définition et bons réflexes | Alex & Lia',
+    title: 'Backlink (lien entrant) : définition et conseils | Alex & Lia',
     description: 'Un backlink est un lien d’un autre site vers le vôtre. Google y voit une recommandation. Lesquels comptent pour une petite entreprise, et lesquels éviter.',
     lead: `Un backlink, ou lien entrant, est un lien placé sur un autre site qui renvoie vers le vôtre. Pour Google, c'est un peu comme un voisin qui vous recommande : plus la source est sérieuse et proche de votre activité, plus la recommandation pèse.`,
     body: `## La définition en une phrase
@@ -819,7 +821,7 @@ Avec l’extra ${seo.name}, les liens font partie du travail de chaque mois : je
     resume: 'L’outil gratuit de Google pour voir comment votre site apparaît dans ses résultats.',
     h1: "Google Search Console : c'est quoi, et à quoi ça sert ?",
     title: 'Google Search Console : définition et usage simple | Alex & Lia',
-    description: 'La Google Search Console est un outil gratuit qui montre comment Google voit votre site : recherches, clics, pages indexées et erreurs. Ce qu’il faut y regarder.',
+    description: 'La Google Search Console est un outil gratuit qui montre comment Google voit votre site : recherches, clics, pages indexées, erreurs. Ce qu’il faut y regarder.',
     lead: `La Google Search Console est un outil gratuit fourni par Google aux propriétaires de sites. Elle montre les recherches qui vous font apparaître, les clics obtenus, et les problèmes que Google rencontre en lisant vos pages.`,
     body: `## La définition en une phrase
 
@@ -868,7 +870,7 @@ Je relie votre site à la Search Console dès la mise en ligne et je déclare le
     resume: 'La première page de votre site, celle qui doit dire en quelques secondes ce que vous faites.',
     h1: "Page d'accueil : c'est quoi, et que faut-il y mettre ?",
     title: 'Page d’accueil d’un site : définition et contenu | Alex & Lia',
-    description: 'La page d’accueil est la porte d’entrée de votre site. Ce qu’elle doit dire en un coup d’œil, ce qu’on oublie souvent, et comment guider le visiteur vers la suite.',
+    description: 'La page d’accueil est la porte d’entrée de votre site. Ce qu’elle doit dire en un coup d’œil, ce qu’on oublie souvent, et comment guider le visiteur ensuite.',
     lead: `La page d'accueil est la page qui s'ouvre quand on tape simplement votre adresse, sans rien derrière. Elle doit dire tout de suite qui vous êtes, ce que vous proposez, où, et comment vous joindre.`,
     body: `## La définition en une phrase
 
@@ -1023,7 +1025,7 @@ Sur chaque site, je place un appel à l'action clair, adapté à votre métier :
     nom: 'Formulaire de contact',
     resume: 'Les quelques cases à remplir sur votre site pour qu’un client vous écrive sans ouvrir sa messagerie.',
     h1: "Formulaire de contact : c'est quoi, et comment le rendre utile ?",
-    title: 'Formulaire de contact : définition et bonnes pratiques | Alex & Lia',
+    title: 'Formulaire de contact : définition et bons usages | Alex & Lia',
     description: 'Un formulaire de contact permet à un visiteur de vous écrire depuis votre site. Les champs à demander, ceux à éviter, et pourquoi certains messages se perdent.',
     lead: `Un formulaire de contact est un petit bloc de cases sur votre site, où le visiteur écrit son nom, son moyen de contact et sa demande. Il clique sur un bouton, et le message arrive dans votre boîte mail.`,
     body: `## La définition en une phrase
@@ -1161,7 +1163,7 @@ Une créatrice de bijoux lance sa boutique en ligne et recopie les mentions lég
 
 ## Chez Alex & Lia
 
-Je prévois une page de mentions légales sur chaque site et je vous indique les informations à me fournir. Le contenu juridique reste sous votre responsabilité, et les retouches automatiques ne touchent jamais à ce type de texte : c'est moi qui m'en occupe quand il faut le modifier. Pour les données de vos visiteurs, voyez la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
+Je prévois une page de mentions légales sur chaque site et je vous indique les informations à me fournir. Le contenu juridique reste sous votre responsabilité, et mes petits monstres ne touchent jamais à ce type de texte : c'est moi qui m'en occupe quand il faut le modifier. Pour les données de vos visiteurs, voyez la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
     faq: [
       { q: 'Que risque-t-on sans mentions légales ?', a: 'L’absence de mentions légales sur un site professionnel est un manquement qui peut être sanctionné. Surtout, c’est un signal négatif pour les visiteurs qui cherchent à vous identifier.' },
       { q: 'Où placer le lien vers les mentions légales ?', a: 'En bas de chaque page, dans le pied de site. Il doit être facile à trouver depuis n’importe quel endroit du site.' },
@@ -1176,7 +1178,7 @@ Je prévois une page de mentions légales sur chaque site et je vous indique les
     resume: 'L’entretien régulier qui garde un site sûr, rapide et en état de marche, mois après mois.',
     h1: "Maintenance de site internet : c'est quoi, et pourquoi c'est nécessaire ?",
     title: 'Maintenance de site internet : définition simple | Alex & Lia',
-    description: 'La maintenance d’un site, c’est l’entretien qui le garde sûr et en état : mises à jour, sauvegardes, surveillance, petites corrections. Ce qu’elle comprend vraiment.',
+    description: 'La maintenance d’un site, c’est l’entretien qui le garde sûr et en état : mises à jour, sauvegardes, surveillance, petites corrections. Ce qu’elle comprend.',
     lead: `La maintenance d'un site, c'est tout ce qu'on fait après la mise en ligne pour qu'il continue de bien fonctionner : mises à jour, sauvegardes, surveillance, corrections. Un site n'est pas un objet qu'on pose et qu'on oublie.`,
     body: `## La définition en une phrase
 
@@ -1210,7 +1212,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 ## Chez Alex & Lia
 
-C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'héberge votre site, je fais les mises à jour, je garde le HTTPS et je surveille que tout tourne. Vos changements de contenu passent par l'espace client. Les petites retouches s'y font automatiquement en quelques minutes, avec les ${abo.jetons} jetons compris chaque mois. Pour le reste, j'interviens moi-même une fois par ${abo.periode || 'mois'}, comme prévu dans l'abonnement. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'héberge votre site, et ${minus(gardien)}, un petit monstre que j'ai programmé, fait les mises à jour, garde le HTTPS et surveille que tout tourne. Je vérifie ce qu'il fait. Vos changements de contenu passent par l'espace client, où la bande fait les petites retouches en quelques minutes. Pour le reste, j'interviens moi-même une fois par ${abo.periode || 'mois'}, comme prévu dans l'abonnement. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'À quelle fréquence faut-il faire la maintenance ?', a: 'La surveillance doit être continue, et les mises à jour faites dès qu’elles sortent, surtout celles de sécurité. Les autres vérifications peuvent suivre un rythme régulier, par exemple chaque mois.' },
       { q: 'Puis-je faire la maintenance de mon site moi-même ?', a: 'C’est possible si vous avez le temps et les bases techniques. Le plus dur n’est pas de cliquer sur « mettre à jour », mais de savoir quoi faire quand une mise à jour casse quelque chose.' },
@@ -1224,7 +1226,7 @@ C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'h�
     resume: 'Une copie complète de votre site, gardée à l’abri, pour tout remettre en place après un problème.',
     h1: "Sauvegarde de site internet : c'est quoi, et pourquoi en faire ?",
     title: 'Sauvegarde de site internet : définition et conseils | Alex & Lia',
-    description: 'Une sauvegarde est une copie de votre site gardée ailleurs, pour le restaurer après une panne, une erreur ou un piratage. Les règles simples d’une bonne sauvegarde.',
+    description: 'Une sauvegarde est une copie de votre site gardée ailleurs, pour le restaurer après une panne, une erreur ou un piratage. Les règles d’une bonne sauvegarde.',
     lead: `Une sauvegarde de site est une copie de tous ses fichiers et de sa base de données, rangée à un autre endroit. Si le site casse, est piraté ou qu'une modification tourne mal, on le remet dans l'état de la copie.`,
     body: `## La définition en une phrase
 
@@ -1261,7 +1263,7 @@ Une épicerie fine supprime par erreur la page de ses paniers garnis, la plus vi
 
 ## Chez Alex & Lia
 
-Les sauvegardes font partie de l'entretien compris dans l'[abonnement](/tarifs/). Je m'en occupe pour vous, et je m'en sers si quelque chose doit être remis en place. Vous n'avez rien à programmer. Pour le reste de l'entretien, voyez la page [maintenance de site](/lexique/maintenance-site/).`,
+Les sauvegardes font partie de l'entretien compris dans l'[abonnement](/tarifs/). ${gardien}, le petit monstre qui veille sur votre site, les fait pour vous, et je m'en sers si quelque chose doit être remis en place. Vous n'avez rien à programmer. Pour le reste de l'entretien, voyez la page [maintenance de site](/lexique/maintenance-site/).`,
     faq: [
       { q: 'Combien de temps faut-il garder les sauvegardes ?', a: 'Assez longtemps pour revenir avant un problème qui serait passé inaperçu quelques jours. Garder plusieurs copies d’âges différents est plus sûr qu’une seule copie très récente.' },
       { q: 'Puis-je récupérer une copie de mon site ?', a: 'Oui. Votre site vous appartient : si vous changez de prestataire, je vous transmets ses fichiers.' },
@@ -1274,7 +1276,7 @@ Les sauvegardes font partie de l'entretien compris dans l'[abonnement](/tarifs/)
     nom: 'Temps de chargement',
     resume: 'Le temps qu’il faut à une page pour s’afficher : quelques secondes qui comptent beaucoup.',
     h1: "Temps de chargement : c'est quoi, et pourquoi la vitesse compte ?",
-    title: 'Temps de chargement d’un site : définition et conseils | Alex & Lia',
+    title: 'Temps de chargement d’un site : définition et causes | Alex & Lia',
     description: 'Le temps de chargement est la durée avant qu’une page s’affiche et réponde. Pourquoi un site lent perd des clients, et les causes de lenteur les plus courantes.',
     lead: `Le temps de chargement est le temps qui s'écoule entre le moment où l'on tape une adresse ou touche un lien, et celui où la page est lisible et utilisable. Sur téléphone, chaque seconde de trop fait partir des visiteurs.`,
     body: `## La définition en une phrase

@@ -127,8 +127,8 @@ ${METIERS.length ? `<section class="section">${C.deco('champi', 'haut-droite')}<
 </div></section>
 
 <section class="section section-bande" id="bande"><div class="container">
-  <h2 class="section-title">Ma petite bande de monstres</h2>
-  <p class="section-sub">Je fais votre site moi-même. À côté, j’ai pris le temps de programmer une petite bande de compagnons : ce sont mes automatisations. Chacun s’occupe d’une tâche répétitive mais utile, travaille en autonomie, et je vérifie tout ce qu’ils font.</p>
+  <h2 class="section-title">Alex et sa petite bande</h2>
+  <div class="alex-bulle reveal"><span class="alex-art">${C.alexPortrait({ title: 'Alex' })}</span><p><strong>Moi, c’est Alex.</strong> Je conçois et je fais votre site moi-même. À côté, j’ai pris le temps de programmer une petite bande de compagnons : ce sont mes automatisations. Chacun a son prénom et une seule tâche, répétitive mais utile. Ils travaillent en autonomie, et je vérifie tout ce qu’ils font.</p></div>
   ${C.bandeGrid({ complet: true })}
   <p class="center more">${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>

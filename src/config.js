@@ -200,18 +200,21 @@ const options = [
 // Alex conçoit et fait chaque site lui-même. À côté, il a programmé une petite bande de compagnons : ce sont ses
 // automatisations, dessinées en petits monstres (src/lib/bestiaire.js). Chacun s'occupe d'une tâche répétitive mais
 // utile, travaille en autonomie, et Alex vérifie tout ce qu'il fait. C'est ce qui permet un site 4 à 5 fois moins cher.
-// Sur le site public, on ne parle ni d'IA ni de jetons : seulement de ces petits monstres. Pas de prénoms : un rôle.
+// Sur le site public, on ne parle ni d'IA ni de jetons : seulement de ces petits monstres. Chacun a un prénom et UN rôle :
+// un seul pour la bulle (Lia), un seul pour les modifications (Bricou), un par outil ou par option.
 // option : l'option au mois qui l'ajoute à votre abonnement. compris : dans l'abonnement de base.
 // outils : il aide aussi le client au quotidien, dans son espace (au service de tous).
 const bande = [
-  { id: 'gardien', monstre: 'mochi', role: 'Le gardien', compris: true, court: 'Mises à jour, sauvegardes et surveillance.', fait: 'Il fait les mises à jour, les sauvegardes et la sécurité, et il surveille jour et nuit que votre site reste en ligne et rapide.' },
-  { id: 'ecrivain', monstre: 'fantome', role: 'L’écrivain', outils: true, court: 'Vos textes, vos réponses et vos avis.', fait: 'Il vous aide à écrire : corriger un texte, le rendre plus clair, le traduire, répondre à un client ou à un avis.' },
-  { id: 'messager', monstre: 'nuage', role: 'Le messager', outils: true, court: 'Vos publications et vos photos.', fait: 'Il prépare vos publications pour les réseaux, vous donne des idées et met vos photos au bon format.' },
-  { id: 'etoile', monstre: 'etoile', role: 'L’étoile de Google', option: 'seo', court: 'Votre place sur Google, chaque semaine.', fait: 'Elle suit votre place sur Google chaque semaine et me signale ce qu’il faut améliorer sur vos pages.' },
-  { id: 'observateur', monstre: 'gelee', role: 'L’observateur', option: 'stats', court: 'Vos visiteurs et votre rapport du mois.', fait: 'Il compte vos visiteurs, regarde d’où ils viennent et prépare votre rapport du mois.' },
-  { id: 'facteur', monstre: 'chaton', role: 'Le facteur', option: 'mail', court: 'Votre adresse e-mail pro, sans indésirables.', fait: 'Il s’occupe de votre adresse e-mail pro et écarte les messages indésirables.' },
-  { id: 'magasinier', monstre: 'dino', role: 'Le magasinier', option: 'stock', court: 'Votre stock, décompté à chaque vente.', fait: 'Il décompte le stock à chaque vente et vous prévient quand il en reste peu.' },
-  { id: 'hote', monstre: 'champi', role: 'L’hôte', option: 'comptes', court: 'Les comptes de vos clients.', fait: 'Il garde les commandes, les adresses et les favoris de vos clients, pour qu’ils recommandent en un clic.' },
+  { id: 'support', nom: 'Lia', monstre: 'lia', role: 'L’assistante', compris: true, court: 'Elle répond à vos questions, dans la bulle.', fait: 'C’est elle qui vous répond dans la petite bulle, en bas de l’écran. Une question sur votre site ? Elle est là, et elle passe le relais à Alex quand il le faut.' },
+  { id: 'gardien', nom: 'Mochi', monstre: 'mochi', role: 'Le gardien', compris: true, court: 'Mises à jour, sauvegardes et surveillance.', fait: 'Il fait les mises à jour, les sauvegardes et la sécurité, et il surveille jour et nuit que votre site reste en ligne et rapide.' },
+  { id: 'bricoleur', nom: 'Bricou', monstre: 'bricou', role: 'Le bricoleur', compris: true, court: 'Vos petites modifications, avec un aperçu.', fait: 'Vous lui demandez un changement : il le montre d’abord à Alex, puis il prépare la modification et vous laisse valider l’aperçu.' },
+  { id: 'ecrivain', nom: 'Plume', monstre: 'fantome', role: 'L’écrivain', outils: true, court: 'Vos textes, vos réponses et vos avis.', fait: 'Il vous aide à écrire : corriger un texte, le rendre plus clair, le traduire, répondre à un client ou à un avis.' },
+  { id: 'messager', nom: 'Pouf', monstre: 'nuage', role: 'Le messager', outils: true, court: 'Vos publications et vos photos.', fait: 'Il prépare vos publications pour les réseaux, vous donne des idées et met vos photos au bon format.' },
+  { id: 'etoile', nom: 'Lumi', monstre: 'etoile', role: 'L’étoile de Google', option: 'seo', court: 'Votre place sur Google, chaque semaine.', fait: 'Elle suit votre place sur Google chaque semaine et me signale ce qu’il faut améliorer sur vos pages.' },
+  { id: 'observateur', nom: 'Mirette', monstre: 'gelee', role: 'L’observatrice', option: 'stats', court: 'Vos visiteurs et votre rapport du mois.', fait: 'Elle compte vos visiteurs, regarde d’où ils viennent et prépare votre rapport du mois.' },
+  { id: 'facteur', nom: 'Minou', monstre: 'chaton', role: 'Le facteur', option: 'mail', court: 'Votre adresse e-mail pro, sans indésirables.', fait: 'Il s’occupe de votre adresse e-mail pro et écarte les messages indésirables.' },
+  { id: 'magasinier', nom: 'Pistache', monstre: 'dino', role: 'Le magasinier', option: 'stock', court: 'Votre stock, décompté à chaque vente.', fait: 'Il décompte le stock à chaque vente et vous prévient quand il en reste peu.' },
+  { id: 'hote', nom: 'Champi', monstre: 'champi', role: 'L’hôte', option: 'comptes', court: 'Les comptes de vos clients.', fait: 'Il garde les commandes, les adresses et les favoris de vos clients, pour qu’ils recommandent en un clic.' },
 ];
 
 // ---------------------------------------------------------------- fidélité et paiement

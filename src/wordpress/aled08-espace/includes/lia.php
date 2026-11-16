@@ -105,7 +105,7 @@ function aled08e_lia_systeme($u, $infos) {
         . "Règles :\n"
         . "- Fais exactement ce qui est demandé, rien de plus. Ne change ni le style, ni la mise en page, ni les autres textes.\n"
         . "- Tu fais les petites et moyennes modifications. Ton budget pour une demande : " . aled08e_lia_budget_txt() . " Tout se passe sur UNE seule page (ou une seule actualité).\n"
-        . "- Si la demande dépasse ce budget (plusieurs pages, refonte, nouvelle page ou rubrique, long texte, beaucoup de photos) : ne modifie rien et termine avec « pour_alex ». Dans message_client, explique simplement que cette demande est trop grande pour Lia, qu'elle passe à Alex, que cela prend plus de temps et que cela compte pour une de ses demandes Alex du mois (ses Jetons Lia lui sont rendus).\n"
+        . "- Si la demande dépasse ce budget (plusieurs pages, refonte, nouvelle page ou rubrique, long texte, beaucoup de photos) : ne modifie rien et termine avec « pour_alex ». Dans message_client, explique simplement que cette demande est trop grande pour les petits monstres, qu'elle passe à Alex, que cela prend plus de temps et que cela compte pour une de ses demandes Alex du mois (ses points d'énergie lui sont rendus).\n"
         . "- Lis toujours le contenu avant de le modifier. Préfère remplacer_texte pour un petit changement, en recopiant le passage exact (balises comprises).\n"
         . "- Écris en français correct, dans le ton du site. Garde les espaces insécables et la typographie existantes.\n"
         . "- Tu ne peux ni supprimer une page, ni toucher aux extensions, au thème, aux prix d'une boutique en ligne ou aux comptes : si la demande l'exige, ne fais rien et termine avec « pour_alex ».\n"
@@ -494,7 +494,7 @@ function aled08e_lia_confirmer($pid, $oui, $commentaire = '') {
         update_post_meta($pid, '_aled08_par', 'alex');
         update_post_meta($pid, '_aled08_lia_etat', 'refuse');
         update_post_meta($pid, '_aled08_statut', 'recue');
-        update_post_meta($pid, '_aled08_reponse', 'Vous n’avez pas validé l’aperçu de Lia : Alex reprend votre demande à la main.');
+        update_post_meta($pid, '_aled08_reponse', 'Vous n’avez pas validé l’aperçu des petits monstres : Alex reprend votre demande à la main.');
         $c = trim((string) $commentaire);
         if ($c !== '') update_post_meta($pid, '_aled08_lia_commentaire', mb_substr($c, 0, 2000));
         aled08e_lia_journal_add('Demande #' . $pid . ' : le client n’a pas validé l’aperçu, passée à Alex.');
@@ -508,7 +508,7 @@ function aled08e_lia_confirmer($pid, $oui, $commentaire = '') {
         update_post_meta($pid, '_aled08_par', 'alex');
         update_post_meta($pid, '_aled08_lia_etat', 'pour_alex');
         update_post_meta($pid, '_aled08_statut', 'recue');
-        update_post_meta($pid, '_aled08_reponse', 'Merci ! La mise en ligne automatique n’a pas abouti : Alex s’en occupe à la main, et vos jetons vous sont rendus.');
+        update_post_meta($pid, '_aled08_reponse', 'Merci ! La mise en ligne automatique n’a pas abouti : Alex s’en occupe à la main, et vos points d’énergie vous sont rendus.');
         wp_mail(aled08e_to(), 'Lia : mise en ligne impossible, à reprendre', 'Demande #' . $pid . ' (' . ($u ? $u->display_name : '?') . ")\nErreur : " . $r->get_error_message() . "\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
         return $r;
     }
@@ -550,7 +550,7 @@ add_action('template_redirect', function () {
 function aled08e_lia_bloc_confirmation($p) {
     if (get_post_meta($p->ID, '_aled08_lia_etat', true) !== 'a_confirmer') return '';
     $actions = array_filter((array) get_post_meta($p->ID, '_aled08_lia_actions', true), function ($a) { return !empty($a['prepare']); });
-    $h = '<div class="lia-confirm"><p class="lia-confirm-h">' . aled08e_monster('mascotte') . '<strong>Lia a préparé votre modification. Rien n’est encore changé : regardez, puis dites-lui.</strong></p><ul>';
+    $h = '<div class="lia-confirm"><p class="lia-confirm-h">' . aled08e_monster('mascotte') . '<strong>Les petits monstres ont préparé votre modification. Rien n’est encore changé : regardez, puis dites-leur.</strong></p><ul>';
     foreach ($actions as $a) $h .= '<li><span>' . esc_html($a['detail']) . '</span>' . (!empty($a['apercu']) ? ' <a class="btn btn-light btn-sm" href="' . esc_url($a['apercu']) . '" target="_blank" rel="noopener">' . aled08e_icon('globe') . '<span>Voir l’aperçu</span></a>' : '') . '</li>';
     $h .= '</ul><form method="post" action="' . esc_url(aled08e_url()) . '" class="lia-confirm-form">'
         . '<input type="hidden" name="aled08e_lia_confirmer" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_lia_confirmer_' . $p->ID, '_aled08e_lia', true, false)

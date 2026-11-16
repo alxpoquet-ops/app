@@ -24,7 +24,8 @@
     'Fermer': 'Close',
     'Exemple : ': 'Example: ',
     'Exemple d’écran : le vôtre sera à vos couleurs.': 'Example screen: yours will be in your own colours.',
-    'Demande pour Lia': 'Request for Lia',
+    'Demande pour les petits monstres': 'Request for the little monsters',
+    'Les petits monstres': 'The little monsters',
     'Demande pour Alex': 'Request for Alex',
     'Environ ': 'About ',
     '. Vous verrez l’aperçu avant la mise en ligne.': '. You will see the preview before it goes live.',
@@ -42,10 +43,11 @@
     'Dans votre vrai espace, je vous réponds ici.': 'In your real client area, I answer you here.',
     'Lia n’a pas pu répondre. Réessayez dans un instant.': 'Lia couldn’t answer. Try again in a moment.',
     'La connexion a coupé. Réessayez dans un instant.': 'The connection dropped. Try again in a moment.',
-    ' jetons': ' tokens',
-    ' jeton': ' token',
+    ' points d’énergie': ' energy points',
+    ' point d’énergie': ' energy point',
+    'Énergie': 'Energy',
     ' par message.': ' per message.',
-    'Recharger mes jetons': 'Top up my tokens',
+    'Redonner de l’énergie': 'Top up the energy',
     'Lien d’avis Google': 'Google review link',
     'Abonnement et factures': 'Subscription and invoices',
     'Fermer le menu': 'Close the menu', 'Ouvrir le menu': 'Open the menu',
@@ -69,7 +71,7 @@
     'Envoi en cours…': 'Sending…', 'Nouvelle étape': 'New step', 'QR code vers votre site': 'QR code to your website', 'QR code téléchargé': 'QR code downloaded',
     'Vos modifications du mois sont utilisées : je vous recontacte pour en parler (démo)': 'You have used this month’s changes: I will get back to you to talk about it (demo)',
     'envoyée à l’instant': 'sent just now', 'Reçue': 'Received', 'Ajouter une photo (facultatif)': 'Add a photo (optional)',
-    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'Demande envoyée': 'Request sent', 'jetons (démo)': 'tokens (demo)', 'Il ne vous reste pas assez de Jetons Lia pour cette demande (démo)': 'You do not have enough Lia Tokens left for this request (demo)', 'En cours': 'In progress', 'Faite': 'Done',
+    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'Demande envoyée': 'Request sent', 'points d’énergie (démo)': 'energy points (demo)', 'Il ne vous reste pas assez d’énergie pour cette demande (démo)': 'You do not have enough energy left for this request (demo)', 'En cours': 'In progress', 'Faite': 'Done',
     'Votre modification est en ligne (démo)': 'Your change is live (demo)', ' choisi, à partir du mois prochain (démo)': ' chosen, from next month (demo)',
     'Option ajoutée': 'Option added', 'Option retirée': 'Option removed', ' (démo)': ' (demo)', 'à l’instant': 'just now',
     'Je souhaite payer le site en ': 'I would like to pay for the website in ', ' fois.': ' instalments.', 'Options choisies : ': 'Chosen options: ',
@@ -863,14 +865,14 @@
       var text = txt.value.trim();
       if (!text) { toast(tr('Écrivez votre demande en quelques mots')); txt.focus(); return; }
       var prix = 30 + Math.ceil((text.match(/\S+/g) || []).length / 10) + (file.files && file.files.length ? 10 : 0);
-      if (left < prix) { toast(tr('Il ne vous reste pas assez de Jetons Lia pour cette demande (démo)')); return; }
+      if (left < prix) { toast(tr('Il ne vous reste pas assez d’énergie pour cette demande (démo)')); return; }
       used += prix; left = Math.max(0, max - used); drawJauge();
       var li = d.createElement('li');
       li.innerHTML = '<span><strong></strong><small>' + tr('envoyée à l’instant') + '</small></span><em class="st st-new">' + tr('Reçue') + '</em>';
       li.querySelector('strong').textContent = text.length > 60 ? text.slice(0, 57) + '…' : text;
       list.insertBefore(li, list.firstChild);
       txt.value = ''; file.value = ''; fileName.textContent = tr('Ajouter une photo (facultatif)');
-      toast(tr('Demande envoyée') + ' : ' + prix + ' ' + tr('jetons (démo)'));
+      toast(tr('Demande envoyée') + ' : ' + prix + ' ' + tr('points d’énergie (démo)'));
       var st = li.querySelector('.st');
       setTimeout(function () { st.className = 'st st-doing'; st.textContent = tr('En cours'); }, 2000);
       setTimeout(function () {
@@ -944,7 +946,7 @@
         sessionStorage.setItem(cleFil, JSON.stringify(l.slice(-20)));
       } catch (e) {}
     };
-    var jetonsTxt = function (n) { return n + tr(n > 1 ? ' jetons' : ' jeton'); };
+    var jetonsTxt = function (n) { return n + tr(n > 1 ? ' points d’énergie' : ' point d’énergie'); };
     var majJetons = function () {
       if (!dial || !jetonsEl) return;
       jetonsEl.hidden = false;
@@ -970,7 +972,7 @@
       var titre, detail = '', petit = '', oui;
       if (a.type === 'demande') {
         var parLia = a.par === 'lia';
-        titre = tr(parLia ? 'Demande pour Lia' : 'Demande pour Alex');
+        titre = tr(parLia ? 'Demande pour les petits monstres' : 'Demande pour Alex');
         detail = a.texte || '';
         petit = parLia ? tr('Environ ') + jetonsTxt(a.jetons || 0) + tr('. Vous verrez l’aperçu avant la mise en ligne.') : tr('Faite à la main par Alex.');
         oui = tr('Préparer ma demande');
@@ -1058,7 +1060,7 @@
         $('button', liaForm).disabled = false;
         if (!r) {
           ecrire(erreur, 'err');
-          if (manque) carte({ type: 'onglet', onglet: 'outils', nom: 'Recharger mes jetons' });
+          if (manque) carte({ type: 'onglet', onglet: 'outils', nom: 'Redonner de l’énergie' });
           return;
         }
         if (typeof r.solde === 'number') solde = r.solde;

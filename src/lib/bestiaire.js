@@ -145,6 +145,22 @@ ${reflet('M34 66c3-8 9-13 17-14')}
 ${yeux(47, 73, 72, h, 1.22)}${joues(36, 84, 83)}${bouche.dent(60, 84)}
 </g>`;
   },
+  // Un petit bricoleur turquoise, casque jaune et petite clé : c'est lui qui fait les modifications
+  bricou: (h) => {
+    const c = { corps: '#A8E6EE', ventre: '#DDF7FA', trait: '#2E8FA0' };
+    return `${ombre(32)}<g class="p-bob">
+<ellipse cx="45" cy="107" rx="9" ry="5" fill="${c.corps}" ${t(c, 2.6)}/><ellipse cx="75" cy="107" rx="9" ry="5" fill="${c.corps}" ${t(c, 2.6)}/>
+<path d="M22 86C22 60 38 46 60 46S98 60 98 86C98 103 88 108 60 108S22 103 22 86Z" fill="${c.corps}" ${t(c)}/>
+<ellipse cx="60" cy="95" rx="21" ry="9" fill="${c.ventre}"/>
+<path d="M28 58C30 36 44 26 60 26S90 36 92 58Z" fill="#FFD45E" stroke="#C99A00" stroke-width="3" stroke-linejoin="round"/>
+<rect x="21" y="54" width="78" height="9" rx="4.5" fill="#FFC23D" stroke="#C99A00" stroke-width="3"/>
+<path d="M60 28V54" stroke="#FFF1B8" stroke-width="5" stroke-linecap="round"/>
+${reflet('M38 46c3-8 9-13 16-14')}
+<g transform="rotate(30 98 84)"><path d="M95 64c-4 1-6 5-5 9l3 2v17c0 2 2 4 4 4s4-2 4-4V75l3-2c1-4-1-8-5-9v6h-4Z" fill="#E4E2F2" stroke="#6B6789" stroke-width="2.2" stroke-linejoin="round"/></g>
+<path class="p-salut" d="M93 86c9 1 13-6 9-10-3-3-8-1-10 3" fill="${c.corps}" ${t(c, 2.6)}/>
+${yeux(47, 73, 76, h, 1.2)}${joues(36, 84, 86)}${bouche.w(60, 86)}
+</g>`;
+  },
   // Une étoile jaune, toute ronde, qui pétille
   etoile: (h) => {
     const c = C.etoile;
@@ -159,10 +175,40 @@ ${eclat(100, 30, 6, '#FFE07A')}${eclat(18, 34, 4, '#FFB3D1')}
 
 const NOMS = Object.keys(DESSINS);
 
+// Alex, l'humain de la bande : portrait chibi. Cheveux brun foncé, courts et un peu en pointe sur le dessus,
+// côtés dégradés, grosses lunettes un peu carrées, pas de barbe, un sweat menthe.
+function alexPortrait({ cls = '', title } = {}) {
+  const PEAU = '#FFD9BE', PEAU_T = '#C98A64', CHEV = '#3A2820', CHEV_C = '#5C4336';
+  const label = title ? `role="img" aria-label="${title}"` : 'aria-hidden="true" focusable="false"';
+  const oeilA = (x) => `<ellipse cx="${x}" cy="69" rx="4.6" ry="5.6" fill="${INK}"/><circle cx="${x + 1.6}" cy="67" r="1.9" fill="#fff"/><circle cx="${x - 1.4}" cy="71" r=".8" fill="#fff"/>`;
+  return `<svg class="petit petit-alex${cls ? ' ' + cls : ''}" viewBox="0 0 120 120" ${label}>
+<ellipse class="p-ombre" cx="60" cy="116" rx="34" ry="3.5" fill="${INK}" opacity=".12"/>
+<g class="p-bob">
+<path d="M22 118C22 100 38 92 60 92S98 100 98 118Z" fill="#9FE8CB" stroke="#23805E" stroke-width="3" stroke-linejoin="round"/>
+<path d="M50 93l10 9 10-9" fill="none" stroke="#23805E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M44 104v8M76 104v8" stroke="#DDF9EE" stroke-width="2.6" stroke-linecap="round"/>
+<rect x="53" y="82" width="14" height="13" rx="5" fill="${PEAU}" stroke="${PEAU_T}" stroke-width="2.4"/>
+<ellipse cx="27" cy="66" rx="6.5" ry="8" fill="${PEAU}" stroke="${PEAU_T}" stroke-width="2.6"/><ellipse cx="93" cy="66" rx="6.5" ry="8" fill="${PEAU}" stroke="${PEAU_T}" stroke-width="2.6"/>
+<path d="M30 60C30 36 43 24 60 24S90 36 90 60C90 80 77 90 60 90S30 80 30 60Z" fill="${PEAU}" stroke="${PEAU_T}" stroke-width="3"/>
+<defs><linearGradient id="degrade-alex" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${CHEV}" stop-opacity=".95"/><stop offset="1" stop-color="${CHEV_C}" stop-opacity=".15"/></linearGradient></defs>
+<path d="M31 62C30 50 31 42 35 36L41 34 37 60ZM89 62C90 50 89 42 85 36L79 34 83 60Z" fill="url(#degrade-alex)"/>
+<path d="M32 46C30 30 42 17 60 17C76 17 90 27 88 46C84 40 80 37 76 36L78 30 71 34 70 27 64 33 61 25 56 32 52 26 49 33 43 29 43 37C38 38 34 41 32 46Z" fill="${CHEV}" stroke="${CHEV}" stroke-width="2" stroke-linejoin="round"/>
+<path d="M40 28l1-10 6 7M46 24l3-11 5 9M57 21l4-12 5 10M68 23l6-10 2 10M77 28l7-7v10" fill="${CHEV}" stroke="${CHEV}" stroke-width="2" stroke-linejoin="round"/>
+<path d="M50 22c4-3 9-4 14-3" fill="none" stroke="#7A5E4E" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+${oeilA(47)}${oeilA(73)}
+<g fill="rgba(255,255,255,.18)" stroke="${INK}" stroke-width="3.2" stroke-linejoin="round"><rect x="35" y="58" width="24" height="20" rx="6"/><rect x="61" y="58" width="24" height="20" rx="6"/></g>
+<path d="M59 66q1-2 2 0M35 64l-6-2M85 64l6-2" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>
+<path d="M39 62l5-1M65 62l5-1" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+<path d="M44 54q4-3 8-1M68 53q4-2 8 1" fill="none" stroke="${CHEV}" stroke-width="2.6" stroke-linecap="round"/>
+<ellipse cx="38" cy="81" rx="5" ry="2.8" fill="${ROSE}" opacity=".55"/><ellipse cx="82" cy="81" rx="5" ry="2.8" fill="${ROSE}" opacity=".55"/>
+<path d="M53 82q7 6 14 0" fill="none" stroke="#8A3B2E" stroke-width="2.6" stroke-linecap="round"/>
+</g></svg>`;
+}
+
 function petit(nom, { cls = '', title, humeur = 'content' } = {}) {
   const dessin = (DESSINS[nom] || DESSINS.mochi)(humeur);
   const label = title ? `role="img" aria-label="${title}"` : 'aria-hidden="true" focusable="false"';
   return `<svg class="petit petit-${DESSINS[nom] ? nom : 'mochi'}${cls ? ' ' + cls : ''}" viewBox="0 0 120 120" ${label}>${dessin}</svg>`;
 }
 
-module.exports = { petit, NOMS, eclat, COULEURS: C };
+module.exports = { petit, NOMS, eclat, COULEURS: C, alexPortrait };

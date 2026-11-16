@@ -207,7 +207,7 @@ function liaFlot() {
   const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', 'Comment avoir plus d’avis Google ?', 'Que comprend mon abonnement ?'];
   return `<div class="lia-flot" data-lia-flot hidden>
   <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Lia, l’assistante d’Alex" hidden>
-    <div class="lia-tete">${monster('coucou')}<p><strong>Lia</strong><small>De la petite bande d’Alex</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Lia">${icon('x')}</button></div>
+    <div class="lia-tete">${monster('coucou')}<p><strong>Lia</strong><small>L’assistante de la petite bande</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Lia">${icon('x')}</button></div>
     <div class="lia-fil" data-lia-fil aria-live="polite">
       <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Lia, de la petite bande d’Alex ! Choisissez une question, je vous réponds tout de suite.</p>
       <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Bonjour ! Dites-moi ce que vous voulez changer sur votre site, ou posez-moi une question.</p>
@@ -230,7 +230,7 @@ function liaFlot() {
     </form>
     <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Lia répond automatiquement et peut se tromper : rien ne change sans votre accord. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
   </div>
-  <p class="lia-flot-coucou" hidden>Une question ? Je suis là.</p>
+  <p class="lia-flot-coucou" hidden><strong>Je suis là pour vous aider !</strong><small>Lia, l’assistante de la bande</small></p>
   <button type="button" class="lia-flot-btn" aria-expanded="false" aria-controls="lia-panel"><span class="sr-only">Parler à Lia</span>${monster('coucou')}</button>
 </div>`;
 }

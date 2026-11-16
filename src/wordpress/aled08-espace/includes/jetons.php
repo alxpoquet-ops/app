@@ -168,7 +168,7 @@ function aled08e_jl_cout_noter($uid, $ref, $coutCts) {
     }
     aled08e_jl_deverrou($uid);
 }
-function aled08e_jl_txt($n) { return (int) $n . ' jeton' . ((int) $n > 1 ? 's' : ''); }
+function aled08e_jl_txt($n) { return (int) $n . ' point' . ((int) $n > 1 ? 's' : '') . ' d’énergie'; }
 
 /* =========================================================================
  *  Recharge : des jetons en plus, ajoutés à la prochaine facture
@@ -189,19 +189,19 @@ add_action('template_redirect', function () {
     set_transient('aled08_jl_rech_' . $uid, 1, MINUTE_IN_SECONDS); // posé avant Stripe : un double clic ne passe pas deux fois
     $mois = get_user_meta($uid, 'aled08_jl_rech_mois', true);
     $deja = is_array($mois) && ($mois['m'] ?? '') === wp_date('Y-m') ? (int) $mois['n'] : 0;
-    if ($deja + (int) $p['jetons'] > ALED08E_JL_RECHARGE_MOIS) $back(false, 'Vous avez déjà rechargé ' . $deja . ' jetons ce mois-ci. Pour aller plus loin, écrivez à Alex.');
+    if ($deja + (int) $p['jetons'] > ALED08E_JL_RECHARGE_MOIS) $back(false, 'Vous avez déjà redonné ' . aled08e_jl_txt($deja) . ' ce mois-ci. Pour aller plus loin, écrivez à Alex.');
     $u = get_userdata($uid);
     $cus = aled08e_meta($uid, 'stripe_customer');
     $ok = false;
     // facturation automatique : seulement pour un abonnement mensuel actif chez Stripe (il y aura bien une prochaine facture)
     $auto = function_exists('aled08e_stripe_ready') && aled08e_stripe_ready() && $cus !== '' && aled08e_meta($uid, 'abonnement') === 'active' && aled08e_meta($uid, 'stripe_subscription') !== '' && aled08e_meta($uid, 'paiement') !== 'annee';
     if ($auto) {
-        $r = aled08e_stripe_request('POST', '/v1/invoiceitems', ['customer' => $cus, 'amount' => (int) round($p['prix'] * 100), 'currency' => 'eur', 'description' => 'Recharge : ' . (int) $p['jetons'] . ' Jetons Lia'], 'jl_' . $uid . '_' . $ip . '_' . wp_date('YmdHi'), true);
+        $r = aled08e_stripe_request('POST', '/v1/invoiceitems', ['customer' => $cus, 'amount' => (int) round($p['prix'] * 100), 'currency' => 'eur', 'description' => 'Énergie des petits monstres : ' . (int) $p['jetons'] . ' points'], 'jl_' . $uid . '_' . $ip . '_' . wp_date('YmdHi'), true);
         $ok = !is_wp_error($r) && !empty($r['id']);
     }
     if (!$ok) {
         wp_mail(aled08e_to(), 'Recharge de Jetons Lia demandée', 'Client : ' . ($u ? $u->display_name : '?') . "\nRecharge : " . (int) $p['jetons'] . ' jetons pour ' . $p['prix'] . " €\n\nLa facturation automatique ne s’applique pas à ce client (pas d’abonnement mensuel actif chez Stripe) : ajoutez les jetons dans sa fiche (Jetons Lia en plus) et facturez-les.\n" . admin_url('user-edit.php?user_id=' . $uid) . "\n", aled08e_mail_headers());
-        $back(true, 'Votre demande de recharge est envoyée à Alex. Vos jetons arrivent sous 24 heures.');
+        $back(true, 'Votre demande est envoyée à Alex. Les petits monstres reçoivent leur énergie sous 24 heures.');
     }
     aled08e_jl_verrou($uid);
     update_user_meta($uid, 'aled08_jl_extra', aled08e_jl_extra($uid) + (int) $p['jetons']);
@@ -229,7 +229,7 @@ function aled08e_jl_texte($v) {
  * Rend null s'il n'y a pas de photo, une WP_Error si elle est arrivée abîmée. */
 function aled08e_jl_image($fichier, $cote = 1024) {
     if (empty($fichier['name'])) return null;
-    if (!empty($fichier['error']) || empty($fichier['tmp_name']) || !is_uploaded_file($fichier['tmp_name'])) return new WP_Error('aled08_jl', 'Votre photo n’est pas arrivée (trop lourde, ou envoi coupé). Réessayez avec une photo plus légère : aucun jeton n’a été compté.');
+    if (!empty($fichier['error']) || empty($fichier['tmp_name']) || !is_uploaded_file($fichier['tmp_name'])) return new WP_Error('aled08_jl', 'Votre photo n’est pas arrivée (trop lourde, ou envoi coupé). Réessayez avec une photo plus légère : aucun point d’énergie n’a été compté.');
     if ($fichier['size'] > 8 * 1024 * 1024) return new WP_Error('aled08_jl', 'Cette photo est trop lourde (8 Mo au plus).');
     $type = wp_check_filetype_and_ext($fichier['tmp_name'], $fichier['name']);
     if (!in_array($type['type'], ['image/jpeg', 'image/png', 'image/webp', 'image/gif'], true)) return new WP_Error('aled08_jl', 'Choisissez une photo JPG, PNG ou WebP.');
@@ -247,7 +247,7 @@ function aled08e_jl_image($fichier, $cote = 1024) {
         if (file_exists($tmp)) @unlink($tmp);
     }
     if ($donnees === null) $donnees = file_get_contents($fichier['tmp_name']);
-    if (!$donnees) return new WP_Error('aled08_jl', 'Cette photo ne peut pas être lue. Essayez-en une autre : aucun jeton n’a été compté.');
+    if (!$donnees) return new WP_Error('aled08_jl', 'Cette photo ne peut pas être lue. Essayez-en une autre : aucun point d’énergie n’a été compté.');
     return ['mime' => $mime, 'data' => base64_encode($donnees)];
 }
 
@@ -276,7 +276,7 @@ function aled08e_jl_page($url, $uid = 0) {
     $o = is_array($r) ? ($r['http_response'] ?? null) : null;
     if (is_object($o) && method_exists($o, 'get_response_object')) { $ro = $o->get_response_object(); if (is_object($ro) && !empty($ro->url)) $final = (string) $ro->url; }
     $resume = aled08e_jl_page_resume($html, $final);
-    if ((int) $resume['mots'] < 30) return new WP_Error('aled08_jl', 'Cette page me donne trop peu de texte à lire. Elle est peut-être faite surtout d’images. Aucun jeton n’a été compté.');
+    if ((int) $resume['mots'] < 30) return new WP_Error('aled08_jl', 'Cette page me donne trop peu de texte à lire. Elle est peut-être faite surtout d’images. Aucun point d’énergie n’a été compté.');
     return ['url' => $final, 'resume' => $resume['texte']];
 }
 /* L'essentiel d'une page, en texte : ce que Google et un visiteur voient. Rend ['texte' => relevé, 'mots' => nombre de mots visibles]. */
@@ -383,11 +383,11 @@ function aled08e_jl_blocs($txt) {
  * Rend ['blocs' => [...], 'jetons' => n, 'solde' => n] ou une WP_Error. */
 function aled08e_jl_lancer($uid, $outil, $valeurs, $image = null) {
     $prix = (int) ($outil['jetons'] ?? 0);
-    if (!aled08e_jl_outils_prets() || !aled08e_lia_sdk()) return new WP_Error('aled08_jl', 'Lia n’est pas encore branchée. Alex s’en occupe : revenez un peu plus tard.');
+    if (!aled08e_jl_outils_prets() || !aled08e_lia_sdk()) return new WP_Error('aled08_jl', 'Les petits monstres ne sont pas encore branchés. Alex s’en occupe : revenez un peu plus tard.');
     $u = get_userdata($uid);
     $ref = 'outil:' . ($outil['id'] ?? '') . ':' . time() . ':' . wp_generate_password(6, false, false);
     if (!aled08e_jl_debiter($uid, $prix, $outil['name'] ?? 'Outil', $ref)) {
-        return new WP_Error('aled08_jl_solde', 'Il vous reste ' . aled08e_jl_txt(aled08e_jl_etat($uid)['solde']) . ' : cet outil en demande ' . $prix . '. Rechargez, ou attendez le mois prochain.');
+        return new WP_Error('aled08_jl_solde', 'Il vous reste ' . aled08e_jl_txt(aled08e_jl_etat($uid)['solde']) . ' : cet outil en utilise ' . $prix . '. Redonnez de l’énergie, ou attendez le mois prochain.');
     }
     $dollars = 0.0;
     // rien d'utilisable : on note ce que l'essai a coûté chez Claude, et on rend les jetons
@@ -449,30 +449,30 @@ function aled08e_jl_lancer($uid, $outil, $valeurs, $image = null) {
     try {
         $r = $appel(false);
         $compter($r);
-        if (($r->stopReason ?? '') === 'refusal') return $echec('Lia ne peut pas écrire ce texte. Aucun jeton n’a été compté.');
+        if (($r->stopReason ?? '') === 'refusal') return $echec('Le petit monstre ne peut pas écrire ce texte. Aucun point d’énergie n’a été compté.');
         $coupe = ($r->stopReason ?? '') === 'max_tokens';
         $blocs = aled08e_jl_blocs($lire($r));
     } catch (\Throwable $e) {
         aled08e_lia_journal_add('Outil « ' . ($outil['name'] ?? '?') . ' » : erreur Claude (format imposé) : ' . $e->getMessage());
     }
     // réponse coupée parce que trop longue : un second essai coûterait autant pour le même résultat
-    if (!$blocs && $coupe) return $echec('La réponse de Lia était trop longue pour cet outil. Donnez un texte plus court, puis réessayez : aucun jeton n’a été compté.');
+    if (!$blocs && $coupe) return $echec('La réponse du petit monstre était trop longue pour cet outil. Donnez un texte plus court, puis réessayez : aucun point d’énergie n’a été compté.');
     if (!$blocs) {
         // deuxième essai, sans format imposé : utile si le modèle ou le kit refuse le format, ou si la réponse est arrivée abîmée
         try {
             $r = $appel(true);
             $compter($r);
-            if (($r->stopReason ?? '') === 'refusal') return $echec('Lia ne peut pas écrire ce texte. Aucun jeton n’a été compté.');
+            if (($r->stopReason ?? '') === 'refusal') return $echec('Le petit monstre ne peut pas écrire ce texte. Aucun point d’énergie n’a été compté.');
             $blocs = aled08e_jl_blocs($lire($r));
         } catch (\Throwable $e) {
             aled08e_lia_journal_add('Outil « ' . ($outil['name'] ?? '?') . ' » : erreur Claude : ' . $e->getMessage());
-            return $echec('Lia n’a pas pu répondre cette fois. Réessayez dans un instant : aucun jeton n’a été compté.');
+            return $echec('Le petit monstre n’a pas pu répondre cette fois. Réessayez dans un instant : aucun point d’énergie n’a été compté.');
         }
     }
-    if (!$blocs) return $echec('La réponse de Lia est arrivée incomplète. Réessayez : aucun jeton n’a été compté.');
+    if (!$blocs) return $echec('La réponse du petit monstre est arrivée incomplète. Réessayez : aucun point d’énergie n’a été compté.');
     // la matière ne permettait pas de faire le travail : Lia le dit dans un seul bloc « STOP », et rien n'est compté
     if (count($blocs) === 1 && mb_strtoupper(trim($blocs[0]['titre'], " \t\n\r«»\"'.:")) === 'STOP') {
-        return $echec(rtrim($blocs[0]['texte']) . ' Aucun jeton n’a été compté.');
+        return $echec(rtrim($blocs[0]['texte']) . ' Aucun point d’énergie n’a été compté.');
     }
     aled08e_jl_cout_noter($uid, $ref, aled08e_jl_centimes($dollars));
     $apres = aled08e_jl_etat($uid);
@@ -493,8 +493,8 @@ add_action('wp_ajax_aled08e_outil', function () {
     global $wpdb;
     if ((int) $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, 0)', 'aled08_jlo_' . $wpdb->prefix . $uid)) !== 1) wp_send_json_error(['message' => 'Un outil travaille déjà pour vous. Attendez sa réponse, puis relancez.'], 429);
     $etat = aled08e_jl_etat($uid);
-    if (!$etat['illimite'] && (int) $outil['jetons'] > $etat['solde']) wp_send_json_error(['message' => 'Il vous reste ' . aled08e_jl_txt($etat['solde']) . ' : cet outil en demande ' . (int) $outil['jetons'] . '. Rechargez, ou attendez le mois prochain.', 'solde' => true], 400);
-    if (!aled08e_jl_outils_prets()) wp_send_json_error(['message' => 'Lia n’est pas encore branchée. Alex s’en occupe : revenez un peu plus tard.'], 400);
+    if (!$etat['illimite'] && (int) $outil['jetons'] > $etat['solde']) wp_send_json_error(['message' => 'Il vous reste ' . aled08e_jl_txt($etat['solde']) . ' : cet outil en utilise ' . (int) $outil['jetons'] . '. Redonnez de l’énergie, ou attendez le mois prochain.', 'solde' => true], 400);
+    if (!aled08e_jl_outils_prets()) wp_send_json_error(['message' => 'Les petits monstres ne sont pas encore branchés. Alex s’en occupe : revenez un peu plus tard.'], 400);
     $P = wp_unslash($_POST);
     $valeurs = [];
     $champImage = null;
@@ -622,36 +622,37 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
     ?>
     <h2 class="app-h">Outils</h2>
     <?php if (is_array($flash)) : ?><p class="<?php echo $flash[0] ? 'esp-empty' : 'esp-warn'; ?>" role="status"><?php echo esc_html($flash[1]); ?></p><?php endif; ?>
-    <p class="app-p">Des outils simples pour vos textes, vos photos, vos réseaux et votre site. Lia vous aide, et vous gardez la main. Quand un outil coûte des Jetons Lia, son prix est écrit sur son bouton, avant de le lancer.</p>
+    <p class="app-p">Des outils simples pour vos textes, vos photos, vos réseaux et votre site. Les petits monstres d’Alex vous aident, et vous gardez la main. Quand un outil utilise de l’énergie, le nombre de points est écrit sur son bouton, avant de le lancer.</p>
     <div class="jl-solde" data-jl>
       <span class="jl-ico"><?php echo aled08e_icon('coins'); // phpcs:ignore ?></span>
       <div class="jl-txt">
         <?php if ($e['illimite']) : ?>
-        <strong>Jetons Lia sans limite <span class="jauge-coeur" aria-hidden="true">♥</span></strong>
+        <strong>Énergie sans limite <span class="jauge-coeur" aria-hidden="true">♥</span></strong>
         <small>Pour vous, tous les outils sont offerts.</small>
         <?php else : ?>
-        <strong><span data-jl-solde><?php echo (int) $e['solde']; ?></span> Jetons Lia</strong>
+        <strong>Il vous reste <span data-jl-solde><?php echo esc_html(aled08e_jl_txt($e['solde'])); ?></span></strong>
         <?php if (!$e['actif']) : ?>
-        <small>Vos Jetons Lia arrivent quand votre abonnement démarre. Les outils gratuits marchent déjà. 1 jeton = 1 centime.</small>
+        <small>L’énergie des petits monstres arrive quand votre abonnement démarre. Les outils gratuits marchent déjà. 1 point d’énergie = 1 centime.</small>
         <?php else : ?>
-        <small><?php echo esc_html($f['name']); ?> : <?php echo (int) $e['mois']; ?> jetons chaque mois, remis à neuf le 1<sup>er</sup><?php echo $e['extra'] ? '. Dont ' . (int) $e['extra'] . ' de recharge, qui restent jusqu’à ce que vous les utilisiez' : ''; ?>. 1 jeton = 1 centime.</small>
+        <small><?php echo esc_html($f['name']); ?> : <?php echo esc_html(aled08e_jl_txt($e['mois'])); ?> par mois, remis à neuf le 1<sup>er</sup><?php echo $e['extra'] ? '. Dont ' . (int) $e['extra'] . ' redonnés en plus, qui restent jusqu’à ce que vous les utilisiez' : ''; ?>. 1 point d’énergie = 1 centime.</small>
         <?php endif; ?>
         <?php endif; ?>
       </div>
       <?php if (!$e['illimite'] && $e['actif']) : ?>
       <details class="jl-recharge">
-        <summary class="btn btn-light"><?php echo aled08e_icon('plus'); // phpcs:ignore ?><span>Recharger</span></summary>
+        <summary class="btn btn-light"><?php echo aled08e_icon('plus'); // phpcs:ignore ?><span>Redonner de l’énergie</span></summary>
         <form method="post" action="<?php echo esc_url(aled08e_url()); ?>" class="jl-packs">
           <?php wp_nonce_field('aled08e_jl', '_aled08e_jl'); ?>
-          <p class="app-note">Ajoutés tout de suite, payés sur votre prochaine facture. Ils restent à vous jusqu’à ce qu’ils soient utilisés.</p>
+          <?php $p0 = $cfg['recharge'][0] ?? null; ?>
+          <p class="app-note"><?php if ($p0) : ?>Redonner de l’énergie : <?php echo esc_html(number_format((float) $p0['prix'], 0, ',', ' ')); ?> € les <?php echo (int) $p0['jetons']; ?> points. <?php endif; ?>Ajoutés tout de suite, payés sur votre prochaine facture. Ils restent à vous jusqu’à ce qu’ils soient utilisés.</p>
           <?php foreach ($cfg['recharge'] as $i => $p) : ?>
-          <button class="btn btn-light" type="submit" name="aled08e_jl_recharge" value="<?php echo (int) $i; ?>"><span><?php echo (int) $p['jetons']; ?> jetons</span><b><?php echo esc_html(number_format((float) $p['prix'], 0, ',', ' ')); ?> €</b></button>
+          <button class="btn btn-light" type="submit" name="aled08e_jl_recharge" value="<?php echo (int) $i; ?>"><span><?php echo (int) $p['jetons']; ?> points</span><b><?php echo esc_html(number_format((float) $p['prix'], 0, ',', ' ')); ?> €</b></button>
           <?php endforeach; ?>
         </form>
       </details>
       <?php endif; ?>
     </div>
-    <?php if (!$prets) : ?><p class="esp-warn">Lia se branche en ce moment : les outils où elle écrit arrivent très bientôt. Publier votre propre texte et les outils gratuits marchent déjà.</p><?php endif; ?>
+    <?php if (!$prets) : ?><p class="esp-warn">Les petits monstres se branchent en ce moment : les outils où ils écrivent arrivent très bientôt. Publier votre propre texte et les outils gratuits marchent déjà.</p><?php endif; ?>
 
     <?php
     $familles = ['reseaux' => 'Réseaux', 'texte' => 'Textes', 'image' => 'Photos', 'site' => 'Mon site', 'avis' => 'Avis'];
@@ -697,14 +698,14 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
       <?php else : ?>
       <?php $pub = $o['id'] === 'publier'; if ($pub) echo aled08e_rs_html($uid); // phpcs:ignore ?>
       <?php if (!empty($o['visuel'])) echo aled08e_jl_visuel_html($host); // phpcs:ignore ?>
-      <?php if (!empty($o['visuel']) && !empty($o['champs'])) : ?><p class="app-sub ol-ou"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?>Pas d’idée pour les mots ? Lia les trouve</p><?php endif; ?>
+      <?php if (!empty($o['visuel']) && !empty($o['champs'])) : ?><p class="app-sub ol-ou"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?>Pas d’idée pour les mots ? Le messager les trouve</p><?php endif; ?>
       <?php if (empty($o['champs'])) : else : ?>
       <form class="ol-form" data-ol-form enctype="multipart/form-data">
         <input type="hidden" name="outil" value="<?php echo esc_attr($o['id']); ?>">
         <?php foreach ((array) $o['champs'] as $c) echo aled08e_jl_champ_html($o, $c, $uid); // phpcs:ignore ?>
         <div class="ol-boutons">
           <?php if ($pub) : ?><button class="btn btn-primary" type="button" data-ol-direct><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Publier mon texte</span><b class="ol-btn-prix">gratuit</b></button><?php endif; ?>
-          <button class="btn <?php echo $pub ? 'btn-light' : 'btn-primary'; ?>" type="submit"<?php echo $prets ? '' : ' disabled'; ?>><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span><?php echo esc_html($pub ? 'Lia adapte mon texte' : ($o['bouton'] ?? 'Lancer')); ?></span><b class="ol-btn-prix"><?php echo $e['illimite'] ? 'offert' : esc_html(aled08e_jl_txt($o['jetons'])); ?></b></button>
+          <button class="btn <?php echo $pub ? 'btn-light' : 'btn-primary'; ?>" type="submit"<?php echo $prets ? '' : ' disabled'; ?>><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span><?php echo esc_html($pub ? 'Le messager adapte mon texte' : ($o['bouton'] ?? 'Lancer')); ?></span><b class="ol-btn-prix"><?php echo $e['illimite'] ? 'offert' : esc_html(aled08e_jl_txt($o['jetons'])); ?></b></button>
         </div>
         <p class="ol-etat" data-ol-etat role="status" aria-live="polite"></p>
       </form>
@@ -715,7 +716,7 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
     <?php endforeach; ?>
 
     <?php $j = array_slice(array_values(array_filter(aled08e_jl_journal($uid), function ($l) { return empty($l['rendu']) || strpos((string) ($l['r'] ?? ''), 'outil:') !== 0; })), 0, 8); if ($j && !$e['illimite']) : ?>
-    <p class="app-sub">Vos derniers jetons utilisés</p>
+    <p class="app-sub">Votre énergie utilisée dernièrement</p>
     <ul class="jl-journal">
       <?php foreach ($j as $l) : ?>
       <li><span><?php echo esc_html($l['q']); ?></span><small><?php echo esc_html(wp_date('j F', (int) $l['t'])); ?></small><b><?php echo !empty($l['rendu']) ? 'rendus' : '− ' . (int) $l['n']; ?></b></li>

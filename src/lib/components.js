@@ -2,7 +2,7 @@
 const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
-const { petit } = require('./bestiaire');
+const { petit, alexPortrait } = require('./bestiaire');
 
 // ---------------------------------------------------------------- la petite famille de monstres
 // Sur les pages publiques, ce sont eux qu'on voit, un peu partout. Lia n'apparaît que dans la bulle, en bas de l'écran.
@@ -237,8 +237,9 @@ function bandeGrid({ complet = false } = {}) {
     const o = options.find((x) => x.id === b.option);
     return o ? `Avec l’option ${o.name}, ${euro(o.price.month)}/mois` : '';
   };
+  const art = (b) => (b.monstre === 'lia' ? monster('coucou') : petit(b.monstre));
   return `<div class="bande">${bande
-    .map((b) => `<div class="bande-carte reveal${b.compris ? ' is-compris' : ''}"><span class="bande-art">${petit(b.monstre)}</span><strong>${esc(b.role)}</strong><span class="bande-fait">${inline(complet ? b.fait : b.court)}</span><em class="bande-prix">${prixDe(b)}</em></div>`)
+    .map((b) => `<div class="bande-carte reveal${b.compris ? ' is-compris' : ''}"><span class="bande-art">${art(b)}</span><strong>${esc(b.nom)}<small>${esc(b.role)}</small></strong><span class="bande-fait">${inline(complet ? b.fait : b.court)}</span><em class="bande-prix">${prixDe(b)}</em></div>`)
     .join('')}</div>`;
 }
 function optionsCompact() {
@@ -446,5 +447,5 @@ module.exports = {
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, optsCreation, optsMois, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
-  petit, bouille, deco, PETIT_SECTION, bandeGrid,
+  petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait,
 };

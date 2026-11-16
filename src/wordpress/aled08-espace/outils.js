@@ -5,7 +5,7 @@
   function $(s, r) { return (r || d).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || d).querySelectorAll(s)); }
   function el(tag, cls, txt) { var e = d.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
-  function jetons(n) { return n + ' jeton' + (n > 1 ? 's' : ''); }
+  function jetons(n) { return n + ' point' + (n > 1 ? 's' : '') + ' d’énergie'; }
   function copier(txt, fini) {
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(fini, fini);
     else { var t = el('textarea'); t.value = txt; d.body.appendChild(t); t.select(); try { d.execCommand('copy'); } catch (e) {} d.body.removeChild(t); fini(); }
@@ -203,7 +203,7 @@
           btn.disabled = false; form.classList.remove('is-busy');
           etat.className = 'ol-etat is-ok';
           etat.textContent = data.illimite ? 'C’est prêt.' : 'C’est prêt. ' + jetons(data.jetons) + ' utilisé' + (data.jetons > 1 ? 's' : '') + ', il vous en reste ' + data.solde + '.';
-          var s = $('[data-jl-solde]'); if (s && !data.illimite) s.textContent = data.solde;
+          var s = $('[data-jl-solde]'); if (s && !data.illimite) s.textContent = jetons(data.solde);
           var vz = $('[data-visuel]', sec);
           if (vz && vz.remplir) { vz.remplir(data.blocs); res.hidden = true; }
           else afficher(res, data.blocs, image);
@@ -213,16 +213,16 @@
       fd.append('_aled08e_jl', nonce);
       var fi = $('[data-ol-file]', form), image = fi && fi.files && fi.files[0] ? fi.files[0] : null;
       btn.disabled = true; form.classList.add('is-busy');
-      etat.className = 'ol-etat'; etat.textContent = 'Lia écrit… quelques secondes.';
+      etat.className = 'ol-etat'; etat.textContent = 'Un petit monstre s’y met… quelques secondes.';
       fetch(ajax, { method: 'POST', body: fd, credentials: 'same-origin' })
         .then(function (r) { return r.json().catch(function () { return { success: false, data: { message: 'Réponse illisible. Réessayez.' } }; }); })
         .then(function (j) {
-          if (!j || !j.success) { btn.disabled = false; form.classList.remove('is-busy'); etat.className = 'ol-etat is-err'; etat.textContent = (j && j.data && j.data.message) || 'Lia n’a pas pu répondre. Réessayez.'; return; }
+          if (!j || !j.success) { btn.disabled = false; form.classList.remove('is-busy'); etat.className = 'ol-etat is-err'; etat.textContent = (j && j.data && j.data.message) || 'Le petit monstre n’a pas pu répondre. Réessayez.'; return; }
           reussi(j.data);
         })
         .catch(function () {
           /* la connexion a coupé, mais Lia a peut-être fini : on revient chercher son résultat (4 essais sur une minute) */
-          etat.className = 'ol-etat'; etat.textContent = 'La connexion a coupé. Je regarde si Lia a fini…';
+          etat.className = 'ol-etat'; etat.textContent = 'La connexion a coupé. Je regarde si le petit monstre a fini…';
           var essais = 0, outil = fd.get('outil');
           var revoir = function () {
             essais++;
@@ -230,7 +230,7 @@
               if (j && j.success) { reussi(j.data); return; }
               if (essais < 4) { setTimeout(revoir, 15000); return; }
               btn.disabled = false; form.classList.remove('is-busy'); etat.className = 'ol-etat is-err';
-              etat.textContent = 'La connexion a coupé avant la réponse. Regardez votre solde en rechargeant la page : si des jetons ont été comptés, écrivez à Alex.';
+              etat.textContent = 'La connexion a coupé avant la réponse. Regardez votre énergie en rechargeant la page : si des points ont été comptés, écrivez à Alex.';
             }, function () { if (essais < 4) setTimeout(revoir, 15000); else { btn.disabled = false; form.classList.remove('is-busy'); etat.className = 'ol-etat is-err'; etat.textContent = 'Pas de connexion. Réessayez quand le réseau est revenu.'; } });
           };
           setTimeout(revoir, 8000);
