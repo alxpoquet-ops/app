@@ -5,7 +5,7 @@ const T = (id) => types.find((t) => t.id === id);
 const O = (id) => options.find((o) => o.id === id);
 const page = T('une-page');
 // L'offre unique : un seul abonnement, et des extras au mois (Suivi Google, Chiffres détaillés, Adresse e-mail pro).
-// V2 (novembre 2026) : aucun compteur ici. Lia est l'assistante d'Alex, on parle de « petites retouches avec Lia ».
+// V2 (novembre 2026) : Lia est « mon assistante autonome » (jamais « IA » dans ces textes). Retouches et outils : jetons compris chaque mois.
 const abo = forfaits[0];
 const seo = O('seo'), stats = O('stats'), mail = O('mail');
 
@@ -191,7 +191,7 @@ Un moniteur d'auto-école veut afficher ses nouvelles dates de stage code chaque
 
 ## Chez Alex & Lia
 
-Vous n'avez pas à apprendre d'outil. Vous décrivez ce que vous voulez changer dans votre espace client, et c'est fait pour vous : par Lia, mon assistante, en quelques minutes, avec un aperçu à valider, ou par moi pour les changements plus grands. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
+Vous n'avez pas à apprendre d'outil. Vous décrivez ce que vous voulez changer dans votre espace client, et c'est fait pour vous : par Lia, mon assistante autonome, en quelques minutes, avec un aperçu à valider, ou par moi pour les changements plus grands. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
     faq: [
       { q: 'Un CMS est-il obligatoire pour avoir un site ?', a: 'Non. Un site peut être fait de simples fichiers, sans base de données. C’est même souvent plus rapide et plus sûr. Le CMS devient utile quand le contenu change souvent ou quand plusieurs personnes doivent publier.' },
       { q: 'Quel CMS choisir pour mon entreprise ?', a: 'Celui qui répond à votre besoin et que quelqu’un saura entretenir. Pour un site de présentation ou une petite boutique, les grands CMS connus ont l’avantage d’être bien suivis et de trouver facilement de l’aide.' },
@@ -704,7 +704,7 @@ Pendant la fabrication d'un site, le prestataire ajoute une ligne qui interdit t
 Je règle le robots.txt à la mise en ligne de votre site, et je vérifie qu'il laisse bien passer Google sur les pages qui comptent. C'est une petite partie des bases du SEO comprises dans l'[abonnement](/tarifs/). Pour la suite du parcours, lisez la page sur l'[indexation](/lexique/indexation/).`,
     faq: [
       { q: 'Mon site doit-il avoir un fichier robots.txt ?', a: 'Ce n’est pas obligatoire : sans lui, les robots considèrent qu’ils peuvent tout visiter. En avoir un, bien réglé, permet d’indiquer le sitemap et d’écarter les zones inutiles.' },
-      { q: 'Peut-on bloquer les robots des outils d’intelligence artificielle ?', a: 'Certains de ces robots respectent des consignes données dans le robots.txt, d’autres non. C’est un choix à faire selon votre activité, en sachant que le fichier reste une demande et non une barrière.' },
+      { q: 'Peut-on bloquer les robots qui recopient les textes des sites ?', a: 'Certains de ces robots respectent des consignes données dans le robots.txt, d’autres non. C’est un choix à faire selon votre activité, en sachant que le fichier reste une demande et non une barrière.' },
     ],
     voir: ['sitemap', 'indexation', 'google-search-console'],
   },
@@ -1209,7 +1209,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 ## Chez Alex & Lia
 
-C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'héberge votre site, je fais les mises à jour, je garde le HTTPS et je surveille que tout tourne. Vos changements de contenu passent par l'espace client. Lia, mon assistante, se charge des petites retouches en quelques minutes. Pour le reste, j'interviens moi-même une fois par ${abo.periode || 'mois'}, comme prévu dans l'abonnement. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'héberge votre site, je fais les mises à jour, je garde le HTTPS et je surveille que tout tourne. Vos changements de contenu passent par l'espace client. Lia, mon assistante autonome, se charge des petites retouches en quelques minutes, avec les ${abo.jetons} jetons compris chaque mois. Pour le reste, j'interviens moi-même une fois par ${abo.periode || 'mois'}, comme prévu dans l'abonnement. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'À quelle fréquence faut-il faire la maintenance ?', a: 'La surveillance doit être continue, et les mises à jour faites dès qu’elles sortent, surtout celles de sécurité. Les autres vérifications peuvent suivre un rythme régulier, par exemple chaque mois.' },
       { q: 'Puis-je faire la maintenance de mon site moi-même ?', a: 'C’est possible si vous avez le temps et les bases techniques. Le plus dur n’est pas de cliquer sur « mettre à jour », mais de savoir quoi faire quand une mise à jour casse quelque chose.' },
