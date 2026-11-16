@@ -300,7 +300,7 @@ Le client envoie ses demandes de modification depuis son espace client ou par me
 
 À chaque demande, le client choisit qui s’en charge :
 
-- **Lia** : la modification est préparée par Lia, l’assistante numérique d’${site.name}. Lia est une intelligence artificielle. Elle aide Alex à automatiser certaines tâches répétitives et ne le remplace pas. Lia montre l’aperçu au client et ne modifie le site qu’après son accord. La modification est décomptée du compteur de Jetons Lia (article 12).
+- **Lia** : la modification est préparée par Lia, l’assistante autonome d’${site.name}. Lia est un outil automatisé, un système d’intelligence artificielle, qui peut se tromper. Rien n’est publié sans l’accord du client : Lia lui montre l’aperçu et ne modifie le site qu’après sa validation. Lia automatise des tâches répétitives. C’est Alex qui conçoit les sites. La modification se paie en Jetons Lia (article 12).
 - **Alex** : la modification est faite à la main, vérifiée et paramétrée par Alex.
 
 **Petites retouches avec Lia.** Lia réalise les petites et moyennes modifications : un budget de mots et d’images par demande, sur une seule page. La modification est mise en ligne dès que le client valide l’aperçu, en général dans les 5 minutes qui suivent la demande. Une demande trop grande pour Lia est transmise à Alex. Elle compte alors comme une intervention d’Alex.
