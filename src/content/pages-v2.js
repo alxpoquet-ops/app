@@ -21,7 +21,7 @@ const extrasMois = options.filter((o) => o.quand === 'mois');
 // (réglages du compteur des outils dans config.js, appelé « énergie » dans l'espace client).
 const rechargeMin = Object.values(require('../config')).find((v) => v && v.recharge && v.modif).recharge[0].prix;
 // Textes publics : Alex fait chaque site, sa petite bande d'automatisations (config.bande) s'occupe du répétitif.
-// On ne présente pas Lia (au plus « la bulle en bas de l'écran »), et on ne parle pas du compteur.
+// On ne présente pas Cerise (au plus « la bulle en bas de l'écran »), et on ne parle pas du compteur.
 const role = (b) => b.role.charAt(0).toLowerCase() + b.role.slice(1); // « le gardien »
 const maj = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 const et = (l) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} et ${l[l.length - 1]}` : l.join(''));

@@ -16,7 +16,7 @@ const PILLS = [
   ['Sans', 'engagement', '#D5F5E8', '#176A4C'],
 ];
 const base = `<style>@font-face{font-family:Jakarta;src:url(${font('jakarta-var.woff2')});font-weight:200 800}*{margin:0;box-sizing:border-box}body{background:transparent}.monster{display:block;width:100%;height:auto;overflow:visible}.noel .monster-lia .m-noel{display:inline}.noel .monster-lia .m-noeud,.noel .monster-lia .m-cornes{display:none}</style>`;
-// À Noël (du 15 novembre au 6 janvier), Lia porte son bonnet sur l'image de partage aussi
+// À Noël (du 15 novembre au 6 janvier), Cerise porte son bonnet sur l'image de partage aussi
 const jour = (new Date().getMonth() + 1) * 100 + new Date().getDate();
 const NOEL = jour >= 1115 || jour <= 106 ? ' class="noel"' : '';
 const og = `${base}<div${NOEL} style="width:1200px;height:630px;position:relative;overflow:hidden;font-family:Jakarta;color:#4B4668;background:radial-gradient(520px 380px at 88% 18%,#FFE8F1,transparent 70%),radial-gradient(480px 340px at 0% 100%,#DDF7EC,transparent 70%),radial-gradient(420px 300px at 50% 0%,#EEE7FF,transparent 70%),#FFF8F2">

@@ -5,8 +5,8 @@ const { monster } = require('./monsters');
 const { petit, alexPortrait } = require('./bestiaire');
 
 // ---------------------------------------------------------------- la petite famille de monstres
-// Sur les pages publiques, ce sont eux qu'on voit, un peu partout. Lia n'apparaît que dans la bulle, en bas de l'écran.
-// Les anciens noms de Lia (ses humeurs) donnent un monstre de la famille.
+// Sur les pages publiques, ce sont eux qu'on voit, un peu partout. Cerise n'apparaît que dans la bulle, en bas de l'écran.
+// Les anciens noms de Cerise (ses humeurs) donnent un monstre de la famille.
 const PETIT_DE = { mascotte: 'mochi', bonjour: 'mochi', coucou: 'mochi', clin: 'chaton', ravie: 'etoile', pense: 'nuage', triste: 'fantome', alex: 'dino' };
 // Le monstre de chaque rubrique, dans le haut de ses pages
 const PETIT_SECTION = { creer: 'mochi', forfaits: 'etoile', espace: 'gelee', seo: 'nuage', contact: 'chaton', confiance: 'champi', liaalex: 'mochi', metiers: 'dino', accompagnement: 'gelee', guides: 'nuage', documentation: 'fantome', lexique: 'champi', comparatif: 'chaton', fidelite: 'etoile', methode: 'mochi', monespace: 'fantome', commander: 'etoile', confirmation: 'etoile' };
@@ -112,7 +112,7 @@ function billingSwitch() {
 </div>`;
 }
 
-// Annotation au crayon : « Lia » écrit à la main, et une flèche qui fait un looping avant de pointer la mascotte
+// Annotation au crayon : « Cerise » écrit à la main, et une flèche qui fait un looping avant de pointer la mascotte
 function flecheLia() {
   const trait = 'fill="none" stroke-linecap="round" stroke-linejoin="round"';
   const d = {

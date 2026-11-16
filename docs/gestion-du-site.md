@@ -5,7 +5,7 @@ Ce guide explique, en français simple, comment fonctionne le site www.aled08.fr
 ## 1. L'offre, en bref
 
 - **Une seule offre** : le site à 500 €, quel que soit le site (une page ou plusieurs). Boutique en ligne : + 200 €.
-- **Un abonnement obligatoire, sans engagement** : 10 € par mois. Il comprend le nom de domaine, l'hébergement, les mises à jour, le suivi, le support, 100 Jetons Lia par mois (compteur interne, jamais affiché sur le site public) et une intervention d'Alex par trimestre. Les clients inscrits avant le 16 novembre 2026 gardent une intervention par mois (case « Une intervention d'Alex chaque mois » de leur fiche). À l'année : 2 mois offerts (le client paie 10 mois).
+- **Un abonnement obligatoire, sans engagement** : 10 € par mois. Il comprend le nom de domaine, l'hébergement, les mises à jour, le suivi, le support, 100 Jetons Cerise par mois (compteur interne, jamais affiché sur le site public) et une intervention d'Alex par trimestre. Les clients inscrits avant le 16 novembre 2026 gardent une intervention par mois (case « Une intervention d'Alex chaque mois » de leur fiche). À l'année : 2 mois offerts (le client paie 10 mois).
 - **Paiement de la création** : 25 % à la commande. À la réception du site : le reste, en une fois ou en 6 ou 12 fois sans frais (l'abonnement se paie alors au mois), avec un engagement le temps du paiement. Sinon, aucun engagement.
 - **Options à la création** (payées une fois) : traduction en anglais, prise de rendez-vous, reprise de l'ancien site, cinq pages de plus. 100 € chacune.
 - **Extras au mois**, que le client ajoute ou retire lui-même dans « Abonnement et factures » : Suivi Google 10 €, chiffres détaillés 5 €, adresse e-mail pro 3 €, et pour une boutique gestion du stock 5 € et comptes clients 5 €.
@@ -80,7 +80,7 @@ Dès que la commande est payée, l'automate enchaîne tout seul, une étape tout
 4. **Certificat SSL** : dès que le site répond en HTTPS, le client reçoit « Tout est prêt, je crée votre site » et la commande passe à « Prêt ». Vous recevez le même signal.
 5. **Création** : c'est vous. Quand le site est terminé, cliquez « Site en ligne ».
 
-Le client voit chaque étape dans son espace, onglet « Ma commande », avec Lia qui avance sur la frise. Le texte dit « en général une heure environ, jusqu'à 24 heures pour certains noms de domaine ». La page se met à jour toute seule.
+Le client voit chaque étape dans son espace, onglet « Ma commande », avec Cerise qui avance sur la frise. Le texte dit « en général une heure environ, jusqu'à 24 heures pour certains noms de domaine ». La page se met à jour toute seule.
 
 Si une étape échoue trois fois ou dure trop longtemps, vous recevez un e-mail « Intervention nécessaire » avec l'erreur exacte. Le client voit seulement « je m'en occupe personnellement ». Dans la fiche : « Réessayer maintenant », « Passer l'étape » (si vous l'avez faite à la main) ou « Tout est prêt (forcer) ».
 
@@ -186,40 +186,40 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 
 - Le client écrit sa demande (avec une photo s'il veut) dans « Mes demandes ». Vous recevez un e-mail avec un lien direct.
 - Dans Alex & Co › Demandes clients, vous changez le statut : Reçue, En cours, Faite, avec un message facultatif affiché chez le client. En passant à « Faite », le client reçoit un e-mail.
-- Deux compteurs : les Jetons Lia par mois (100 dans l'abonnement, plus les recharges achetées) pour les modifications par Lia, et les interventions d'Alex (une par trimestre, ou une par mois pour les clients d'avant la V2). Le client choisit qui fait chaque modification. Au-delà, une intervention d'Alex en plus coûte 5 €, ajoutée à sa facture, avec son accord.
-- Délai de réponse annoncé pour Alex : 72 heures. Lia : instantané, avec un aperçu à valider.
+- Deux compteurs : les Jetons Cerise par mois (100 dans l'abonnement, plus les recharges achetées) pour les modifications par Cerise, et les interventions d'Alex (une par trimestre, ou une par mois pour les clients d'avant la V2). Le client choisit qui fait chaque modification. Au-delà, une intervention d'Alex en plus coûte 5 €, ajoutée à sa facture, avec son accord.
+- Délai de réponse annoncé pour Alex : 72 heures. Cerise : instantané, avec un aperçu à valider.
 
-### Lia, pour de vrai (Claude, d'Anthropic)
+### Cerise, pour de vrai (Claude, d'Anthropic)
 
-Quand le client choisit « Lia, instantané », Lia prépare la modification toute seule, en tâche de fond, en une à deux minutes. Rien ne change encore sur le site : le client reçoit un e-mail, ouvre « Voir l’aperçu » (sa vraie page, avec un bandeau « Aperçu »), puis clique « Oui, mettre en ligne » ou « Non, ce n’est pas ça ». Oui : c’est mis en ligne et vous recevez « Lia a mis en ligne une modification à vérifier ». Non : la demande vous revient, avec son commentaire. L’aperçu reste valable 21 jours.
+Quand le client choisit « Cerise, instantané », Cerise prépare la modification toute seule, en tâche de fond, en une à deux minutes. Rien ne change encore sur le site : le client reçoit un e-mail, ouvre « Voir l’aperçu » (sa vraie page, avec un bandeau « Aperçu »), puis clique « Oui, mettre en ligne » ou « Non, ce n’est pas ça ». Oui : c’est mis en ligne et vous recevez « Cerise a mis en ligne une modification à vérifier ». Non : la demande vous revient, avec son commentaire. L’aperçu reste valable 21 jours.
 
 Avec Alex, la réponse annoncée est sous 72 heures (sous 24 heures avec l'extra payé), et l'abonnement comprend une intervention par trimestre.
 
-Ce qu'elle sait faire : changer un texte (horaires, prix affiché, phrase), modifier le contenu ou le titre d'une page, publier une actualité, ajouter la photo jointe, changer le nom ou le slogan du site. Ce qu'elle ne fait jamais : supprimer, toucher aux extensions, au thème, aux comptes, aux prix d'une boutique, aux CGV ou mentions légales. Si la demande est floue ou risquée, elle ne touche à rien et vous la passe (e-mail « Lia vous passe une demande »). Le jeton n'est alors pas compté : la demande devient une modification d'Alex.
+Ce qu'elle sait faire : changer un texte (horaires, prix affiché, phrase), modifier le contenu ou le titre d'une page, publier une actualité, ajouter la photo jointe, changer le nom ou le slogan du site. Ce qu'elle ne fait jamais : supprimer, toucher aux extensions, au thème, aux comptes, aux prix d'une boutique, aux CGV ou mentions légales. Si la demande est floue ou risquée, elle ne touche à rien et vous la passe (e-mail « Cerise vous passe une demande »). Le jeton n'est alors pas compté : la demande devient une modification d'Alex.
 
 À installer une fois :
 
-1. Une clé Claude : sur platform.claude.com, créez un compte, ajoutez un moyen de paiement (on paie à l'usage, quelques centimes par demande), puis API keys, Create key. Collez-la dans Alex & Co › Réglages, rubrique Lia, ou mieux dans wp-config.php : `define('ALED08_ANTHROPIC_KEY', 'sk-ant-...');`. Bouton « Tester Lia » pour vérifier.
-2. L'extension `alexlia-sdk.zip` (kit officiel Anthropic) sur aled08.fr. Elle ne charge rien tant que Lia ne travaille pas.
+1. Une clé Claude : sur platform.claude.com, créez un compte, ajoutez un moyen de paiement (on paie à l'usage, quelques centimes par demande), puis API keys, Create key. Collez-la dans Alex & Co › Réglages, rubrique Cerise, ou mieux dans wp-config.php : `define('ALED08_ANTHROPIC_KEY', 'sk-ant-...');`. Bouton « Tester Cerise » pour vérifier.
+2. L'extension `alexlia-sdk.zip` (kit officiel Anthropic) sur aled08.fr. Elle ne charge rien tant que Cerise ne travaille pas.
 
 Pour chaque client :
 
 1. Sur le site du client, installez `alexlia-connecteur.zip` (dans `wp-export/` après `python3 scripts/wp-export.py`).
-2. Dans la fiche du client sur aled08.fr (Utilisateurs, le client, rubrique « Lia : site relié ») : mettez l'adresse du site (en https), cochez « Créer la clé », enregistrez. Copiez la clé affichée.
+2. Dans la fiche du client sur aled08.fr (Utilisateurs, le client, rubrique « Cerise : site relié ») : mettez l'adresse du site (en https), cochez « Créer la clé », enregistrez. Copiez la clé affichée.
 3. Sur le site du client, Réglages › Alex & Co : collez la clé, enregistrez. De retour sur la fiche client, la ligne « Connexion » doit dire OK.
 
-Tant qu'un client n'est pas relié, ses demandes « par Lia » arrivent chez vous par e-mail comme avant, et vous les faites à la main.
+Tant qu'un client n'est pas relié, ses demandes « par Cerise » arrivent chez vous par e-mail comme avant, et vous les faites à la main.
 
-Après le passage de Lia, la fiche de la demande montre un encadré « Travail de Lia » : la liste des changements avec un lien vers chaque page, sa note pour vous, et trois boutons :
+Après le passage de Cerise, la fiche de la demande montre un encadré « Travail de Cerise » : la liste des changements avec un lien vers chaque page, sa note pour vous, et trois boutons :
 - « C'est bon, vérifié » ;
-- « Annuler les changements de Lia » : chaque page est remise exactement comme avant (une révision est gardée avant chaque changement). Une actualité publiée ou un nom de site changé se défont à la main, l'encadré vous dit lesquels ;
-- « Relancer Lia » si elle n'a pas pu finir.
+- « Annuler les changements de Cerise » : chaque page est remise exactement comme avant (une révision est gardée avant chaque changement). Une actualité publiée ou un nom de site changé se défont à la main, l'encadré vous dit lesquels ;
+- « Relancer Cerise » si elle n'a pas pu finir.
 
-Sécurité : chaque échange avec le site client est signé avec la clé du client, valable 5 minutes et une seule fois. Sur le site client, la case « Pause » dans Réglages › Alex & Co coupe Lia tout de suite. Le journal des 100 derniers changements est sur la même page. Si le pare-feu de l'hébergeur bloque l'adresse `/wp-json/alexlia/v1/action`, demandez au support de l'autoriser.
+Sécurité : chaque échange avec le site client est signé avec la clé du client, valable 5 minutes et une seule fois. Sur le site client, la case « Pause » dans Réglages › Alex & Co coupe Cerise tout de suite. Le journal des 100 derniers changements est sur la même page. Si le pare-feu de l'hébergeur bloque l'adresse `/wp-json/alexlia/v1/action`, demandez au support de l'autoriser.
 
-### Les Jetons Lia et les outils
+### Les Jetons Cerise et les outils
 
-Tout ce que fait Lia se compte en **Jetons Lia**. Un jeton vaut 1 centime. Les outils ne demandent qu'une chose : **votre clé Claude**, entrée une fois dans Alex & Co, Réglages, « Clé Claude ». Tant qu'elle manque, le tableau de bord de la gestion vous le rappelle, les outils où Lia écrit sont grisés et les outils gratuits marchent.
+Tout ce que fait Cerise se compte en **Jetons Cerise**. Un jeton vaut 1 centime. Les outils ne demandent qu'une chose : **votre clé Claude**, entrée une fois dans Alex & Co, Réglages, « Clé Claude ». Tant qu'elle manque, le tableau de bord de la gestion vous le rappelle, les outils où Cerise écrit sont grisés et les outils gratuits marchent.
 
 **Les 15 outils** (définis dans `src/content/outils-lia.js`, un seul fichier pour le site, la Documentation et l'espace client) :
 
@@ -231,21 +231,21 @@ Tout ce que fait Lia se compte en **Jetons Lia**. Un jeton vaut 1 centime. Les o
 | Mon site | Conseils pour ma page, QR code |
 | Avis | Répondre à un avis, Lien d'avis Google |
 
-Quatre sont gratuits parce qu'ils tournent dans le navigateur du client : Annonce en image (seuls les mots trouvés par Lia coûtent des jetons), Recadrer et alléger une photo, QR code, Lien d'avis Google.
+Quatre sont gratuits parce qu'ils tournent dans le navigateur du client : Annonce en image (seuls les mots trouvés par Cerise coûtent des jetons), Recadrer et alléger une photo, QR code, Lien d'avis Google.
 
 **Les règles du compteur** (`includes/jetons.php`) :
 
-- **L'abonnement donne 100 jetons chaque mois** (`forfaits[0].jetons` dans `src/config.js`). Ils reviennent le 1er et ne se reportent pas. Au-delà, le client rachète des jetons à l'utilisation (1 € les 100). L'option Lia + a été supprimée le 16 novembre 2026.
+- **L'abonnement donne 100 jetons chaque mois** (`forfaits[0].jetons` dans `src/config.js`). Ils reviennent le 1er et ne se reportent pas. Au-delà, le client rachète des jetons à l'utilisation (1 € les 100). L'option Cerise + a été supprimée le 16 novembre 2026.
 - **Seulement si l'abonnement court** : abonnement Stripe actif, ou case « Abonnement actif hors Stripe », ou « Abonnement offert à vie », ou compte famille. Une commande pas encore payée ne donne aucun jeton. La fiche du client le dit quand c'est le cas.
 - **Un extra ajouté ou retiré en cours de mois** compte à partir du mois suivant, comme sa facture.
-- **Une modification par Lia** coûte 30 jetons, plus 1 par tranche de 10 mots écrits, plus 10 par photo (`jetonsLia.modif`). Le prix s'affiche pendant que le client écrit. Si Lia passe la demande à Alex, si la mise en ligne échoue, si le client refuse l'aperçu ou annule dans les 24 heures, les jetons sont rendus. Si Lia n'est pas reliée au site du client, la demande va à Alex, sans jeton.
-- **Un outil** a un prix fixe (`jetons`) : ce qu'il coûte chez Claude (`coutCts`, en centimes) × 4, arrondi au-dessus. Pour une modification, c'est × 2. Les jetons sont comptés au lancement et rendus si Lia ne rend rien d'utilisable (panne, réponse coupée, texte qui ne veut rien dire : Lia répond alors « STOP » avec ce qu'il faut donner).
+- **Une modification par Cerise** coûte 30 jetons, plus 1 par tranche de 10 mots écrits, plus 10 par photo (`jetonsLia.modif`). Le prix s'affiche pendant que le client écrit. Si Cerise passe la demande à Alex, si la mise en ligne échoue, si le client refuse l'aperçu ou annule dans les 24 heures, les jetons sont rendus. Si Cerise n'est pas reliée au site du client, la demande va à Alex, sans jeton.
+- **Un outil** a un prix fixe (`jetons`) : ce qu'il coûte chez Claude (`coutCts`, en centimes) × 4, arrondi au-dessus. Pour une modification, c'est × 2. Les jetons sont comptés au lancement et rendus si Cerise ne rend rien d'utilisable (panne, réponse coupée, texte qui ne veut rien dire : Cerise répond alors « STOP » avec ce qu'il faut donner).
 - **Garde-fous** : un seul outil à la fois par client, 40 essais par heure, longueur de la réponse bornée par le prix de l'outil, texte trop long refusé (jamais coupé), page lue seulement sur le site du client.
-- **La recharge** : 100 jetons pour 1 €, 500 pour 5 €, 1000 pour 10 € (`jetonsLia.recharge`), 5000 jetons par mois au plus. Elle s'ajoute à la prochaine facture Stripe si le client a un abonnement mensuel actif, et les jetons arrivent tout de suite. Sinon vous recevez un e-mail : ajoutez les jetons dans sa fiche (« Jetons Lia en plus ») et facturez-les.
-- **Publier partout** : publier son propre texte est gratuit ; « Lia adapte mon texte » coûte des jetons. Le client relie Bluesky ou Mastodon lui-même, sans réglage de votre part. Facebook, Instagram et LinkedIn n'apparaissent dans « Mes réseaux » que si vous déclarez l'application chez le réseau (Réglages, « Publier sur les réseaux », marche à suivre sur place). Sans cela, le texte est copié et le réseau s'ouvre. Le code est dans `includes/reseaux.php`.
-- **Vérifier que vous vous y retrouvez** : Réglages, en bas, « Jetons Lia : le bilan du mois ». Pour chaque client : les jetons comptés, leur valeur, ce que Claude a vraiment coûté, et ce qu'il reste. Si un outil coûte plus que prévu, montez son `coutCts` et son `jetons` dans `outils-lia.js` et relancez l'export.
-- **Changer de modèle** : Lia et les outils utilisent le modèle réglé dans les Réglages (par défaut `claude-opus-5-5`). Avec `claude-sonnet-5-5`, le coût est divisé par deux, pour les mêmes prix en jetons.
-- **Confidentialité** : la politique de confidentialité dit que les textes, photos et adresses de page confiés à Lia sont envoyés à Claude (Anthropic). Relisez ce passage, il vous engage.
+- **La recharge** : 100 jetons pour 1 €, 500 pour 5 €, 1000 pour 10 € (`jetonsLia.recharge`), 5000 jetons par mois au plus. Elle s'ajoute à la prochaine facture Stripe si le client a un abonnement mensuel actif, et les jetons arrivent tout de suite. Sinon vous recevez un e-mail : ajoutez les jetons dans sa fiche (« Jetons Cerise en plus ») et facturez-les.
+- **Publier partout** : publier son propre texte est gratuit ; « Cerise adapte mon texte » coûte des jetons. Le client relie Bluesky ou Mastodon lui-même, sans réglage de votre part. Facebook, Instagram et LinkedIn n'apparaissent dans « Mes réseaux » que si vous déclarez l'application chez le réseau (Réglages, « Publier sur les réseaux », marche à suivre sur place). Sans cela, le texte est copié et le réseau s'ouvre. Le code est dans `includes/reseaux.php`.
+- **Vérifier que vous vous y retrouvez** : Réglages, en bas, « Jetons Cerise : le bilan du mois ». Pour chaque client : les jetons comptés, leur valeur, ce que Claude a vraiment coûté, et ce qu'il reste. Si un outil coûte plus que prévu, montez son `coutCts` et son `jetons` dans `outils-lia.js` et relancez l'export.
+- **Changer de modèle** : Cerise et les outils utilisent le modèle réglé dans les Réglages (par défaut `claude-opus-5-5`). Avec `claude-sonnet-5-5`, le coût est divisé par deux, pour les mêmes prix en jetons.
+- **Confidentialité** : la politique de confidentialité dit que les textes, photos et adresses de page confiés à Cerise sont envoyés à Claude (Anthropic). Relisez ce passage, il vous engage.
 
 ## 10. Le parrainage
 
@@ -322,7 +322,7 @@ Faites cette liste une fois, en vrai, avec un téléphone et un ordinateur.
 
 Le site public ne parle ni d'IA ni de jetons. Alex conçoit et fait les sites. À côté, ses automatisations sont dessinées en petits monstres (`src/lib/bestiaire.js`), chacun avec un prénom et un seul rôle (`bande` dans `src/config.js`) :
 
-- **Lia** : l'assistante de la bulle d'aide (et les questions dans l'espace client).
+- **Cerise** : l'assistante de la bulle d'aide (et les questions dans l'espace client).
 - **Mochi** : le gardien (mises à jour, sauvegardes, surveillance), compris dans l'abonnement.
 - **Bricou** : le bricoleur, qui fait les modifications demandées par le client.
 - **Plume** (textes, avis) et **Pouf** (réseaux, photos) : les outils de l'espace client.

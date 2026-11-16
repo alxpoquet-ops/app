@@ -90,7 +90,7 @@ add_action('template_redirect', function () {
         wp_mail(aled08e_to(), 'Changement d’extras à faire à la main', $u->display_name . ' veut ces extras : ' . (implode(', ', $voulues) ?: 'aucune') . ".\nStripe a répondu : " . $res->get_error_message() . "\nFiche : " . admin_url('user-edit.php?user_id=' . $uid) . "\n", aled08e_mail_headers());
         $back('changer_erreur');
     }
-    // Jetons Lia : le changement est facturé à la prochaine échéance, il compte donc à partir du mois suivant.
+    // Jetons Cerise : le changement est facturé à la prochaine échéance, il compte donc à partir du mois suivant.
     // Jusque-là, le client garde les jetons du forfait qu'il avait au début du mois.
     if (function_exists('aled08e_jl_mois')) {
         $fige = get_user_meta($uid, 'aled08_jl_fige', true);

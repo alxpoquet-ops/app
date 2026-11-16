@@ -47,7 +47,7 @@ Les 120 € d'abonnement couvrent cela.
 | Plateforme fermée | 10Web (marque blanche, 85 à 160 $ par mois), SiteGround AI Studio | Les sites doivent être chez eux, ou c'est leur interface. |
 | Chatbot pour visiteurs | WPBot, Tidio, Chatbase, MxChat | Il répond aux visiteurs, il ne modifie pas le site. |
 
-**Le plus simple reste notre montage : Lia dans l'espace client, avec une seule clé Claude.**
+**Le plus simple reste notre montage : Cerise dans l'espace client, avec une seule clé Claude.**
 C'est la seule solution qui tient en un seul endroit, à nos couleurs, pour tous nos outils.
 WordPress 7.0 a bien un « client IA », mais il demande une clé sur chaque site.
 
@@ -67,13 +67,13 @@ Action type : un texte de 6 000 jetons lu, 1 500 jetons écrits. 1 € vaut envi
 | Chatbase (visiteurs) | 3 à 4 centimes le crédit |
 | Tidio Lyro (visiteurs) | 60 centimes la conversation |
 
-**Nos Jetons Lia.** 1 jeton = 1 centime. Un outil est vendu 4 fois ce qu'il nous coûte chez Claude,
+**Nos Jetons Cerise.** 1 jeton = 1 centime. Un outil est vendu 4 fois ce qu'il nous coûte chez Claude,
 une modification du site 2 fois. Un outil coûte donc 3 à 16 jetons au client (3 à 16 centimes),
-une modification par Lia 30 jetons et plus. C'est dans les prix du marché, et souvent en dessous
+une modification par Cerise 30 jetons et plus. C'est dans les prix du marché, et souvent en dessous
 (Divi : jusqu'à 50 centimes la tâche ; Tidio : 60 centimes la conversation).
 
-Avec les 100 jetons de l'abonnement, un client fait par mois trois modifications par Lia,
-ou huit textes corrigés. Au-delà : la recharge, achetée à l'utilisation (1 € les 100 jetons). L'option Lia + a été supprimée le 16 novembre 2026.
+Avec les 100 jetons de l'abonnement, un client fait par mois trois modifications par Cerise,
+ou huit textes corrigés. Au-delà : la recharge, achetée à l'utilisation (1 € les 100 jetons). L'option Cerise + a été supprimée le 16 novembre 2026.
 
 ## 5. Adresses lues
 

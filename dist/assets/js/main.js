@@ -9,7 +9,7 @@
   // Version anglaise (pages /en/) : petits textes écrits par le script, et prix au format « €250 »
   var EN = /^en\b/i.test(d.documentElement.lang || '');
   var TR = {
-    // bulle de Lia et « i » des options
+    // bulle de Cerise et « i » des options
     "Aujourd’hui : l’acompte et les options": "Today: the deposit and the options",
     "Aujourd’hui : l’acompte de ": "Today: the deposit of ",
     "Puis, dès la réception, pendant ": "Then, from delivery, for ",
@@ -41,7 +41,7 @@
     'D’accord, je ne fais rien. Dites-moi si vous voulez autre chose.': 'All right, I won’t do anything. Tell me if you need something else.',
     'C’est prêt dans « Mes demandes » : relisez, ajoutez une photo si vous voulez, puis envoyez.': 'It’s ready in “My requests”: read it, add a photo if you like, then send it.',
     'Dans votre vrai espace, je vous réponds ici.': 'In your real client area, I answer you here.',
-    'Lia n’a pas pu répondre. Réessayez dans un instant.': 'Lia couldn’t answer. Try again in a moment.',
+    'Cerise n’a pas pu répondre. Réessayez dans un instant.': 'Cerise couldn’t answer. Try again in a moment.',
     'La connexion a coupé. Réessayez dans un instant.': 'The connection dropped. Try again in a moment.',
     ' points d’énergie': ' energy points',
     ' point d’énergie': ' energy point',
@@ -915,9 +915,9 @@
     recompute();
   }
 
-  /* ---------- la bulle de Lia : en bas de l'écran, sur toutes les pages ----------
+  /* ---------- la bulle de Cerise : en bas de l'écran, sur toutes les pages ----------
      Sur le site : quelques questions, avec la réponse tout de suite (écrite dans la page, sans IA).
-     Dans l'espace client : on écrit à Lia, elle répond et prépare l'action, que le client valide d'un clic.
+     Dans l'espace client : on écrit à Cerise, elle répond et prépare l'action, que le client valide d'un clic.
      Dans la démo : les mêmes gestes, avec des réponses d'exemple écrites dans la page. */
   var flot = $('[data-lia-flot]');
   if (flot) {
@@ -966,7 +966,7 @@
       if (oui) { fil.scrollTop = fil.scrollHeight; if (dial && champ && window.innerWidth > 720) champ.focus(); }
     };
 
-    /* la carte d'une action préparée par Lia : le client valide, ou non */
+    /* la carte d'une action préparée par Cerise : le client valide, ou non */
     var carte = function (a) {
       if (!a || !a.type || a.type === 'aucune') return;
       var titre, detail = '', petit = '', oui;
@@ -1021,7 +1021,7 @@
       });
     };
 
-    /* la réponse de Lia : par le serveur (espace client), ou tirée des exemples de la page (démo) */
+    /* la réponse de Cerise : par le serveur (espace client), ou tirée des exemples de la page (démo) */
     var repondre = function (message, fait) {
       if (mode === 'demo') {
         // les réponses d'exemple sont écrites dans la page (data-cout et non data-jetons : la démo réécrit ces éléments-là)
@@ -1041,7 +1041,7 @@
       fd.append('message', message);
       fetch(reglages.getAttribute('data-ajax'), { method: 'POST', body: fd, credentials: 'same-origin' })
         .then(function (r) { return r.json(); })
-        .then(function (j) { if (j && j.success) fait(j.data); else fait(null, (j && j.data && j.data.message) || tr('Lia n’a pas pu répondre. Réessayez dans un instant.'), j && j.data && j.data.solde); })
+        .then(function (j) { if (j && j.success) fait(j.data); else fait(null, (j && j.data && j.data.message) || tr('Cerise n’a pas pu répondre. Réessayez dans un instant.'), j && j.data && j.data.solde); })
         .catch(function () { fait(null, tr('La connexion a coupé. Réessayez dans un instant.')); });
     };
     var occupe = false;
@@ -1120,7 +1120,7 @@
       coucou.addEventListener('click', function () { flotOuvrir(true); });
     }
   }
-  /* Lia et Alex suivent le visiteur des yeux : chaque monstre regarde vers le pointeur (ou le doigt) */
+  /* Cerise et Alex suivent le visiteur des yeux : chaque monstre regarde vers le pointeur (ou le doigt) */
   if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
     var regards = $$('.monster .m-look'), regardRaf = 0, regardXY = null;
     var regarder = function () {

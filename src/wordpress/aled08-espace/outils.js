@@ -1,4 +1,4 @@
-/* Alex & Co Espace client : l'onglet « Outils » (outils de Lia, Jetons Lia) et le prix d'une demande par Lia. */
+/* Alex & Co Espace client : l'onglet « Outils » (outils de Cerise, Jetons Cerise) et le prix d'une demande par Cerise. */
 (function () {
   'use strict';
   var d = document;
@@ -11,7 +11,7 @@
     else { var t = el('textarea'); t.value = txt; d.body.appendChild(t); t.select(); try { d.execCommand('copy'); } catch (e) {} d.body.removeChild(t); fini(); }
   }
 
-  /* ---------- prix d'une demande par Lia, calculé pendant que le client écrit ---------- */
+  /* ---------- prix d'une demande par Cerise, calculé pendant que le client écrit ---------- */
   var est = $('[data-jl-estime]');
   if (est) {
     var form = est.closest('form'), txt = $('textarea[name="demande"]', form), file = $('[data-req-file]', form), out = $('[data-jl-prix]', est);
@@ -221,7 +221,7 @@
           reussi(j.data);
         })
         .catch(function () {
-          /* la connexion a coupé, mais Lia a peut-être fini : on revient chercher son résultat (4 essais sur une minute) */
+          /* la connexion a coupé, mais Cerise a peut-être fini : on revient chercher son résultat (4 essais sur une minute) */
           etat.className = 'ol-etat'; etat.textContent = 'La connexion a coupé. Je regarde si le petit monstre a fini…';
           var essais = 0, outil = fd.get('outil');
           var revoir = function () {
@@ -346,7 +346,7 @@
       img.src = url;
     });
     if (retirer) retirer.addEventListener('click', function () { photo = null; fp.value = ''; retirer.hidden = true; vz.classList.remove('a-photo'); dessiner(); });
-    /* quand Lia propose les mots (outil juste au-dessous), ils vont dans le visuel */
+    /* quand Cerise propose les mots (outil juste au-dessous), ils vont dans le visuel */
     vz.remplir = function (blocs) {
       blocs.forEach(function (b) {
         var t = (b.titre || '').toLowerCase();

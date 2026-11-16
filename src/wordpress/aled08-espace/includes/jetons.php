@@ -1,11 +1,11 @@
 <?php
 /**
- * Alex & Co Espace client : les Jetons Lia et les outils de Lia (onglet « Outils »).
+ * Alex & Co Espace client : les Jetons Cerise et les outils de Cerise (onglet « Outils »).
  *
- * 1 Jeton Lia = 1 centime. Les jetons paient ce que fait Lia :
+ * 1 Jeton Cerise = 1 centime. Les jetons paient ce que fait Cerise :
  *  - une modification du site : base + 1 jeton par tranche de mots + un prix par photo (réglé dans config.js) ;
  *  - un outil (publications pour les réseaux, hashtags, réponse à un avis…) : prix fixe affiché avant de lancer.
- * Chaque forfait donne des jetons chaque mois (ils ne se reportent pas). L'option Lia + en ajoute chaque mois.
+ * Chaque forfait donne des jetons chaque mois (ils ne se reportent pas). L'option Cerise + en ajoute chaque mois.
  * Une recharge ajoute des jetons qui restent jusqu'à ce qu'ils soient utilisés.
  * Le journal garde, pour chaque dépense, les jetons comptés au client et ce que Claude a vraiment coûté :
  * c'est ce qui permet de vérifier la marge (coût × 4 pour les outils, × 2 pour les modifications).
@@ -40,7 +40,7 @@ function aled08e_jl_tarifs($modele) {
 add_filter('aled08e_lia_tarifs', function ($t) { return function_exists('aled08e_lia_modele') ? aled08e_jl_tarifs(aled08e_lia_modele()) : $t; });
 /* Un coût Claude (en dollars) converti en centimes d'euro */
 function aled08e_jl_centimes($dollars) { return (float) $dollars * (float) apply_filters('aled08e_usd_eur', 0.93) * 100; }
-/* Le modèle des outils : celui de Lia, sauf réglage à part (option aled08_outils_modele) */
+/* Le modèle des outils : celui de Cerise, sauf réglage à part (option aled08_outils_modele) */
 function aled08e_jl_modele() {
     $m = (string) get_option('aled08_outils_modele', '');
     return $m !== '' ? $m : aled08e_lia_modele();
@@ -51,7 +51,7 @@ function aled08e_jl_modele() {
  * ========================================================================= */
 /* Un seul changement du compteur à la fois par client : verrou MySQL court, et métas relues en base.
  * (WordPress garde les métas en mémoire pendant tout un traitement : sans cela, une tâche longue comme
- * le travail de Lia réécrirait un journal périmé et effacerait les dépenses faites entre-temps.) */
+ * le travail de Cerise réécrirait un journal périmé et effacerait les dépenses faites entre-temps.) */
 function aled08e_jl_verrou($uid, $attente = 8) {
     global $wpdb, $aled08e_jl_verrous;
     $uid = (int) $uid;
@@ -87,7 +87,7 @@ function aled08e_jl_forfait_actif($uid) {
     if (aled08e_famille($uid) || aled08e_meta($uid, 'offert') === '1' || aled08e_meta($uid, 'abonnement_manuel') === '1') return true;
     return aled08e_meta($uid, 'abonnement') === 'active';
 }
-/* Jetons du mois : ceux du forfait, plus ceux de l'option Lia +. Un changement de forfait ou d'option en cours
+/* Jetons du mois : ceux du forfait, plus ceux de l'option Cerise +. Un changement de forfait ou d'option en cours
  * de mois ne compte qu'au mois suivant, comme sa facture (méta aled08_jl_fige, posée par changer.php). */
 function aled08e_jl_mois($uid, $f) {
     if (!aled08e_jl_forfait_actif($uid)) return 0;
@@ -109,7 +109,7 @@ function aled08e_jl_etat($uid, $f = null) {
     $extra = aled08e_jl_extra($uid);
     return ['mois' => $mois, 'reste' => $reste, 'extra' => $extra, 'solde' => $reste + $extra, 'illimite' => aled08e_famille($uid), 'actif' => aled08e_jl_forfait_actif($uid)];
 }
-/* Prix d'une modification par Lia : base + 1 jeton par tranche de mots + un prix par photo.
+/* Prix d'une modification par Cerise : base + 1 jeton par tranche de mots + un prix par photo.
  * Un texte écrit sans espaces compte quand même : 6 caractères font un mot. */
 function aled08e_jl_prix_modif($texte, $photos = 0) {
     $m = aled08e_jl_cfg()['modif'];
@@ -155,7 +155,7 @@ function aled08e_jl_rendre($uid, $ref) {
     aled08e_jl_deverrou($uid);
     return $rendu;
 }
-/* Noter ce qu'une dépense a vraiment coûté chez Claude (connu quand Lia a fini) */
+/* Noter ce qu'une dépense a vraiment coûté chez Claude (connu quand Cerise a fini) */
 function aled08e_jl_cout_noter($uid, $ref, $coutCts) {
     if ((string) $ref === '') return;
     aled08e_jl_verrou($uid);
@@ -200,19 +200,19 @@ add_action('template_redirect', function () {
         $ok = !is_wp_error($r) && !empty($r['id']);
     }
     if (!$ok) {
-        wp_mail(aled08e_to(), 'Recharge de Jetons Lia demandée', 'Client : ' . ($u ? $u->display_name : '?') . "\nRecharge : " . (int) $p['jetons'] . ' jetons pour ' . $p['prix'] . " €\n\nLa facturation automatique ne s’applique pas à ce client (pas d’abonnement mensuel actif chez Stripe) : ajoutez les jetons dans sa fiche (Jetons Lia en plus) et facturez-les.\n" . admin_url('user-edit.php?user_id=' . $uid) . "\n", aled08e_mail_headers());
+        wp_mail(aled08e_to(), 'Recharge d’énergie demandée', 'Client : ' . ($u ? $u->display_name : '?') . "\nRecharge : " . (int) $p['jetons'] . ' jetons pour ' . $p['prix'] . " €\n\nLa facturation automatique ne s’applique pas à ce client (pas d’abonnement mensuel actif chez Stripe) : ajoutez les jetons dans sa fiche (Jetons Cerise en plus) et facturez-les.\n" . admin_url('user-edit.php?user_id=' . $uid) . "\n", aled08e_mail_headers());
         $back(true, 'Votre demande est envoyée à Alex. Les petits monstres reçoivent leur énergie sous 24 heures.');
     }
     aled08e_jl_verrou($uid);
     update_user_meta($uid, 'aled08_jl_extra', aled08e_jl_extra($uid) + (int) $p['jetons']);
     update_user_meta($uid, 'aled08_jl_rech_mois', ['m' => wp_date('Y-m'), 'n' => $deja + (int) $p['jetons']]);
     aled08e_jl_deverrou($uid);
-    wp_mail(aled08e_to(), 'Recharge de Jetons Lia', 'Client : ' . ($u ? $u->display_name : '?') . "\nRecharge : " . (int) $p['jetons'] . ' jetons pour ' . $p['prix'] . " €, ajoutée à sa prochaine facture.\n", aled08e_mail_headers());
+    wp_mail(aled08e_to(), 'Recharge d’énergie', 'Client : ' . ($u ? $u->display_name : '?') . "\nRecharge : " . (int) $p['jetons'] . ' jetons pour ' . $p['prix'] . " €, ajoutée à sa prochaine facture.\n", aled08e_mail_headers());
     $back(true, aled08e_jl_txt($p['jetons']) . ' ajoutés. ' . number_format((float) $p['prix'], 2, ',', ' ') . ' € seront sur votre prochaine facture.');
 });
 
 /* =========================================================================
- *  Les outils de Lia : un appel à Claude, une réponse en blocs de texte prêts à copier
+ *  Les outils de Cerise : un appel à Claude, une réponse en blocs de texte prêts à copier
  * ========================================================================= */
 function aled08e_jl_outils_prets() { return aled08e_lia_cle() !== '' && aled08e_lia_sdk_present(); }
 
@@ -251,7 +251,7 @@ function aled08e_jl_image($fichier, $cote = 1024) {
     return ['mime' => $mime, 'data' => base64_encode($donnees)];
 }
 
-/* Une page web à faire lire par Lia (champ « page ») : notre serveur la télécharge et en garde l'essentiel.
+/* Une page web à faire lire par Cerise (champ « page ») : notre serveur la télécharge et en garde l'essentiel.
  * Quand le site du client est connu, seules ses pages sont acceptées.
  * Rend ['url' => adresse, 'resume' => texte pour Claude] ou une WP_Error (aucun jeton compté). */
 function aled08e_jl_page($url, $uid = 0) {
@@ -337,10 +337,10 @@ function aled08e_jl_page_resume($html, $url) {
     return ['texte' => implode("\n", $l), 'mots' => count($mots)];
 }
 
-/* La consigne fixe de Lia pour les outils. Rien de ce que le client écrit n'y entre : son nom de commerce
+/* La consigne fixe de Cerise pour les outils. Rien de ce que le client écrit n'y entre : son nom de commerce
  * et ses textes vont dans le message, entre des balises, comme matière à travailler. */
 function aled08e_jl_systeme() {
-    return "Tu es Lia, l'IA d'Alex & Co, une petite entreprise française qui crée des sites internet pour des commerçants, artisans et associations. "
+    return "Tu es Cerise, l'IA d'Alex & Co, une petite entreprise française qui crée des sites internet pour des commerçants, artisans et associations. "
         . "Tu aides le propriétaire d'un petit commerce à se faire connaître : tu écris, tu corriges et tu traduis ses textes, tu regardes ses photos et tu relis les pages de son site.\n\n"
         . "Règles :\n"
         . "- Écris en français simple et naturel, comme le commerçant parlerait à ses clients, sauf quand l'outil demande une autre langue. Phrases courtes. Pas de jargon, pas de superlatifs creux. Quand tu donnes un conseil, vouvoie le commerçant.\n"
@@ -378,7 +378,7 @@ function aled08e_jl_blocs($txt) {
     return $blocs;
 }
 
-/* Lance un outil. Les jetons sont comptés d'abord, puis rendus si Lia ne rend rien d'utilisable :
+/* Lance un outil. Les jetons sont comptés d'abord, puis rendus si Cerise ne rend rien d'utilisable :
  * ainsi plusieurs lancements en même temps ne passent jamais pour le prix d'un seul.
  * Rend ['blocs' => [...], 'jetons' => n, 'solde' => n] ou une WP_Error. */
 function aled08e_jl_lancer($uid, $outil, $valeurs, $image = null) {
@@ -470,14 +470,14 @@ function aled08e_jl_lancer($uid, $outil, $valeurs, $image = null) {
         }
     }
     if (!$blocs) return $echec('La réponse du petit monstre est arrivée incomplète. Réessayez : aucun point d’énergie n’a été compté.');
-    // la matière ne permettait pas de faire le travail : Lia le dit dans un seul bloc « STOP », et rien n'est compté
+    // la matière ne permettait pas de faire le travail : Cerise le dit dans un seul bloc « STOP », et rien n'est compté
     if (count($blocs) === 1 && mb_strtoupper(trim($blocs[0]['titre'], " \t\n\r«»\"'.:")) === 'STOP') {
         return $echec(rtrim($blocs[0]['texte']) . ' Aucun point d’énergie n’a été compté.');
     }
     aled08e_jl_cout_noter($uid, $ref, aled08e_jl_centimes($dollars));
     $apres = aled08e_jl_etat($uid);
     $resultat = ['blocs' => $blocs, 'jetons' => $apres['illimite'] ? 0 : $prix, 'solde' => $apres['solde'], 'illimite' => $apres['illimite']];
-    // gardé une heure : si la connexion coupe pendant que Lia écrit, le navigateur vient rechercher le résultat
+    // gardé une heure : si la connexion coupe pendant que Cerise écrit, le navigateur vient rechercher le résultat
     update_user_meta($uid, 'aled08_jl_dernier', ['outil' => (string) ($outil['id'] ?? ''), 't' => time(), 'resultat' => $resultat]);
     return $resultat;
 }
@@ -528,7 +528,7 @@ add_action('wp_ajax_aled08e_outil', function () {
         if (is_wp_error($image)) wp_send_json_error(['message' => $image->get_error_message()], 400);
         if (!$image && !empty($champImage['requis'])) wp_send_json_error(['message' => 'Il manque : votre photo.'], 400);
     }
-    // les pages à regarder sont téléchargées ici, avant d'appeler Lia
+    // les pages à regarder sont téléchargées ici, avant d'appeler Cerise
     foreach ((array) ($outil['champs'] ?? []) as $c) {
         if ($c['kind'] !== 'page') continue;
         $pg = aled08e_jl_page($valeurs[$c['id']], $uid);
@@ -540,7 +540,7 @@ add_action('wp_ajax_aled08e_outil', function () {
     wp_send_json_success($r);
 });
 
-/* Connexion coupée pendant que Lia écrivait : le navigateur redemande le dernier résultat (gardé une heure) */
+/* Connexion coupée pendant que Cerise écrivait : le navigateur redemande le dernier résultat (gardé une heure) */
 add_action('wp_ajax_aled08e_outil_dernier', function () {
     $uid = get_current_user_id();
     if (!$uid || !check_ajax_referer('aled08e_jl', '_aled08e_jl', false)) wp_send_json_error(['message' => 'La page avait expiré.'], 403);
@@ -736,10 +736,10 @@ function aled08e_jl_profil($user) {
     $cout = 0.0; $n = 0;
     $m = wp_date('Y-m');
     foreach (aled08e_jl_journal($user->ID) as $l) if (($l['m'] ?? '') === $m) { $cout += (float) ($l['c'] ?? 0); if (empty($l['rendu'])) $n += (int) $l['n']; }
-    echo '<h2>Jetons Lia</h2><table class="form-table" role="presentation">';
+    echo '<h2>Points d’énergie</h2><table class="form-table" role="presentation">';
     echo '<tr><th>Ce mois-ci</th><td>' . (int) $e['reste'] . ' / ' . (int) $e['mois'] . ' jetons de l’abonnement restants. ' . (int) $n . ' jetons comptés (' . esc_html(number_format($n / 100, 2, ',', ' ')) . ' €), pour ' . esc_html(number_format($cout / 100, 2, ',', ' ')) . ' € de Claude.</td></tr>';
     if (!$e['actif']) echo '<tr><th>Abonnement</th><td><strong>Pas encore démarré</strong> : ce client n’a aucun jeton du mois. Ils arrivent quand son abonnement Stripe est actif. S’il paie autrement, cochez « Abonnement actif hors Stripe » ; s’il ne paie pas, « Abonnement offert à vie ».</td></tr>';
-    echo '<tr><th><label for="aled08e-jl-extra">Jetons Lia en plus (recharge)</label></th><td><input type="number" min="0" step="1" id="aled08e-jl-extra" name="aled08e_jl_extra" value="' . (int) $e['extra'] . '" class="small-text"> <span class="description">Ils restent jusqu’à ce que le client les utilise.</span></td></tr>';
+    echo '<tr><th><label for="aled08e-jl-extra">Points d’énergie en plus (recharge)</label></th><td><input type="number" min="0" step="1" id="aled08e-jl-extra" name="aled08e_jl_extra" value="' . (int) $e['extra'] . '" class="small-text"> <span class="description">Ils restent jusqu’à ce que le client les utilise.</span></td></tr>';
     echo '</table>';
 }
 add_action('show_user_profile', 'aled08e_jl_profil', 21);
@@ -767,8 +767,8 @@ function aled08e_jl_bilan_html() {
         $tn += $n; $tc += $c;
     }
     $eur = function ($cts) { return esc_html(number_format($cts / 100, 2, ',', ' ')) . ' €'; };
-    echo '<h2>Jetons Lia : le bilan du mois</h2>';
-    echo '<p>1 jeton = 1 centime. Règle : un outil est compté ' . esc_html(str_replace('.', ',', (string) aled08e_jl_cfg()['margeOutils'])) . ' fois ce qu’il coûte chez Claude, une modification par Lia ' . esc_html(str_replace('.', ',', (string) aled08e_jl_cfg()['margeLia'])) . ' fois. Les jetons compris dans l’abonnement sont déjà payés par l’abonnement : la colonne « valeur » dit ce qu’ils représentent.</p>';
+    echo '<h2>Énergie : le bilan du mois</h2>';
+    echo '<p>1 jeton = 1 centime. Règle : un outil est compté ' . esc_html(str_replace('.', ',', (string) aled08e_jl_cfg()['margeOutils'])) . ' fois ce qu’il coûte chez Claude, une modification par Cerise ' . esc_html(str_replace('.', ',', (string) aled08e_jl_cfg()['margeLia'])) . ' fois. Les jetons compris dans l’abonnement sont déjà payés par l’abonnement : la colonne « valeur » dit ce qu’ils représentent.</p>';
     if (!$lignes) { echo '<p><em>Aucun jeton utilisé ce mois-ci.</em></p>'; return; }
     echo '<table class="widefat striped" style="max-width:760px"><thead><tr><th>Client</th><th>Utilisations</th><th>Jetons comptés</th><th>Valeur</th><th>Coût Claude</th><th>Reste</th></tr></thead><tbody>';
     foreach ($lignes as $l) echo '<tr><td>' . esc_html($l[0]) . '</td><td>' . (int) $l[1] . '</td><td>' . (int) $l[2] . '</td><td>' . $eur($l[2]) . '</td><td>' . $eur($l[3]) . '</td><td>' . $eur($l[2] - $l[3]) . '</td></tr>'; // phpcs:ignore

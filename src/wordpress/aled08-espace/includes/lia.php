@@ -1,13 +1,13 @@
 <?php
 /**
- * Alex & Co Espace client : Lia, l'IA (Claude, d'Anthropic) qui modifie et met à jour le site du client.
- *  - une demande « par Lia » est traitée en tâche de fond : Claude lit le site du client par le connecteur
+ * Alex & Co Espace client : Bricou, l'IA (Claude, d'Anthropic) qui modifie et met à jour le site du client.
+ *  - une demande « par Bricou » est traitée en tâche de fond : Claude lit le site du client par le connecteur
  *    (extension « Alex & Co : connecteur » installée sur le site du client), fait le changement demandé
  *    avec des outils limités, puis rend compte ;
  *  - chaque changement garde une révision sur le site du client : on peut tout annuler en un clic ;
- *  - si la demande est floue, risquée ou hors des outils, Lia ne touche à rien et la passe à Alex.
+ *  - si la demande est floue, risquée ou hors des outils, Bricou ne touche à rien et la passe à Alex.
  * Le kit officiel Anthropic pour PHP (anthropic-ai/sdk) est fourni par l'extension séparée « alexlia-sdk »,
- * chargée seulement quand Lia travaille.
+ * chargée seulement quand Bricou travaille.
  */
 defined('ABSPATH') || exit;
 
@@ -26,7 +26,7 @@ function aled08e_lia_sdk() {
     return class_exists('Anthropic\\Client');
 }
 function aled08e_lia_sdk_present() { return class_exists('Anthropic\\Client') || file_exists(WP_PLUGIN_DIR . '/alexlia-sdk/vendor/autoload.php'); }
-/* Lia est prête pour ce client : clé Claude, kit installé, site relié */
+/* Bricou est prête pour ce client : clé Claude, kit installé, site relié */
 function aled08e_lia_prete_pour($uid) {
     return aled08e_lia_cle() !== '' && aled08e_lia_sdk_present() && aled08e_meta($uid, 'lia_url') !== '' && aled08e_meta($uid, 'lia_secret') !== '';
 }
@@ -71,7 +71,7 @@ function aled08e_lia_mots($html) {
     $t = trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags((string) $html)));
     return $t === '' ? 0 : count(preg_split('/\s+/u', $t));
 }
-/* Le budget de Lia, en une phrase (pour sa consigne et pour le client) */
+/* Le budget de Bricou, en une phrase (pour sa consigne et pour le client) */
 function aled08e_lia_budget_txt() {
     $l = aled08e_lia_limites();
     return 'jusqu’à ' . $l['mots'][0] . ' mots de texte sans image, ' . $l['mots'][1] . ' mots avec une image, ' . $l['mots'][2] . ' mots avec deux images, ou ' . $l['images'] . ' images avec une courte légende.';
@@ -79,7 +79,7 @@ function aled08e_lia_budget_txt() {
 function aled08e_lia_secret_nouveau() { return wp_generate_password(48, false, false); }
 
 /* =========================================================================
- *  Les outils de Lia (définitions envoyées à Claude)
+ *  Les outils de Bricou (définitions envoyées à Claude)
  * ========================================================================= */
 function aled08e_lia_outils() {
     $obj = function ($props, $req = []) { return ['type' => 'object', 'properties' => $props ?: new stdClass(), 'required' => $req, 'additionalProperties' => false]; };
@@ -99,7 +99,7 @@ function aled08e_lia_outils() {
     ];
 }
 function aled08e_lia_systeme($u, $infos) {
-    return "Tu es Lia, l'IA d'Alex & Co, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, artisans et associations. "
+    return "Tu es Bricou, l'IA d'Alex & Co, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, artisans et associations. "
         . "Tu reçois une demande de modification écrite par le propriétaire d'un site, et tu la prépares toi-même sur son site WordPress avec les outils fournis. "
         . "Tes changements sont préparés dans un aperçu : le client le regarde et confirme, puis ils sont mis en ligne directement.\n\n"
         . "Règles :\n"
@@ -133,10 +133,10 @@ function aled08e_lia_executer($uid, $pid, $nom, $in, &$actions) {
         $ecritures++; $mots += (int) ($a['mots'] ?? 0);
         if (!empty($a['id'])) $pages[(int) $a['id']] = 1;
     }
-    $trop = function ($pourquoi) { return ['erreur' => $pourquoi . ' Budget de Lia pour une demande : ' . aled08e_lia_budget_txt() . ' N’essaie pas autrement : termine avec « pour_alex » si la demande n’est pas entièrement faite, sinon avec « fait ».']; };
+    $trop = function ($pourquoi) { return ['erreur' => $pourquoi . ' Budget de Bricou pour une demande : ' . aled08e_lia_budget_txt() . ' N’essaie pas autrement : termine avec « pour_alex » si la demande n’est pas entièrement faite, sinon avec « fait ».']; };
     $nouveauxMots = 0;
     if (in_array($nom, ['remplacer_texte', 'modifier_contenu', 'publier_actualite', 'modifier_reglage'], true)) {
-        if ($nom === 'modifier_contenu' && isset($in['contenu'])) return $trop('Réécrire toute une page est trop gros pour Lia.');
+        if ($nom === 'modifier_contenu' && isset($in['contenu'])) return $trop('Réécrire toute une page est trop gros pour Bricou.');
         $nouveauxMots = aled08e_lia_mots((string) ($in['nouveau'] ?? $in['contenu'] ?? $in['valeur'] ?? '') . ' ' . (string) ($in['titre'] ?? ''));
         if ($ecritures >= 4) return $trop('Trop de changements dans une seule demande.');
         if ($mots + $nouveauxMots > $lim['mots'][min($images, $lim['images'])]) return $trop('Ce texte dépasse le budget de mots.');
@@ -187,7 +187,7 @@ function aled08e_lia_executer($uid, $pid, $nom, $in, &$actions) {
 }
 
 /* =========================================================================
- *  Traitement d'une demande par Lia (tâche de fond)
+ *  Traitement d'une demande par Bricou (tâche de fond)
  * ========================================================================= */
 /* Bricou, le petit monstre des modifications, montre d'abord chaque demande à Alex : Alex reçoit un e-mail avec
  * deux boutons (« Laisser Bricou faire » ou « Je m'en occupe »). S'il ne dit rien dans les 30 minutes, Bricou se lance :
@@ -302,7 +302,7 @@ function aled08e_lia_traiter($pid) {
     $pid = (int) $pid;
     $p = get_post($pid);
     if (!$p || $p->post_type !== ALED08E_CPT) return;
-    if (get_post_meta($pid, '_aled08_annulee_le', true)) return; // annulée par le client avant que Lia commence
+    if (get_post_meta($pid, '_aled08_annulee_le', true)) return; // annulée par le client avant que Bricou commence
     if (get_transient('aled08_lia_' . $pid)) return;
     set_transient('aled08_lia_' . $pid, 1, 15 * MINUTE_IN_SECONDS);
     $uid = (int) $p->post_author;
@@ -311,7 +311,7 @@ function aled08e_lia_traiter($pid) {
         aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $actions);
         delete_transient('aled08_lia_' . $pid);
     };
-    if (!$u || !aled08e_lia_prete_pour($uid)) { $fin('pour_alex', 'Je transmets votre demande à Alex, qui s’en occupe.', 'Lia n’est pas configurée pour ce client (clé Claude, kit ou site relié).', []); return; }
+    if (!$u || !aled08e_lia_prete_pour($uid)) { $fin('pour_alex', 'Je transmets votre demande à Alex, qui s’en occupe.', 'Bricou n’est pas configurée pour ce client (clé Claude, kit ou site relié).', []); return; }
     if (!aled08e_lia_sdk()) { $fin('pour_alex', 'Je transmets votre demande à Alex, qui s’en occupe.', 'Kit Anthropic introuvable (extension alexlia-sdk).', []); return; }
 
     @set_time_limit(600);
@@ -356,7 +356,7 @@ function aled08e_lia_traiter($pid) {
                 // fin sans l'outil terminer : on demande à Alex de regarder
                 $txt = '';
                 foreach ($r->content as $b) if ($b->type === 'text') $txt .= $b->text;
-                $resultat = [$actions ? 'fait' : 'pour_alex', $actions ? 'Votre modification est prête : regardez l’aperçu et confirmez.' : 'Je transmets votre demande à Alex, qui s’en occupe.', 'Lia s’est arrêtée sans conclure : ' . mb_substr($txt, 0, 600)];
+                $resultat = [$actions ? 'fait' : 'pour_alex', $actions ? 'Votre modification est prête : regardez l’aperçu et confirmez.' : 'Je transmets votre demande à Alex, qui s’en occupe.', 'Bricou s’est arrêtée sans conclure : ' . mb_substr($txt, 0, 600)];
                 break;
             }
             $results = [];
@@ -381,14 +381,14 @@ function aled08e_lia_traiter($pid) {
         }
     } catch (\Throwable $e) {
         aled08e_lia_journal_add('Erreur Claude sur la demande #' . $pid . ' : ' . $e->getMessage());
-        $resultat = ['pour_alex', $actions ? 'Une partie est prête. Alex termine votre demande.' : 'Je transmets votre demande à Alex, qui s’en occupe.', 'Erreur pendant le travail de Lia : ' . mb_substr($e->getMessage(), 0, 400)];
+        $resultat = ['pour_alex', $actions ? 'Une partie est prête. Alex termine votre demande.' : 'Je transmets votre demande à Alex, qui s’en occupe.', 'Erreur pendant le travail de Bricou : ' . mb_substr($e->getMessage(), 0, 400)];
     }
-    if ($resultat === null) $resultat = ['pour_alex', 'Alex termine votre demande.', 'Lia a atteint le nombre maximum d’étapes.'];
+    if ($resultat === null) $resultat = ['pour_alex', 'Alex termine votre demande.', 'Bricou a atteint le nombre maximum d’étapes.'];
     $fin($resultat[0], $resultat[1], $resultat[2], $actions);
 }
 
 function aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $actions) {
-    if (get_post_meta($pid, '_aled08_annulee_le', true)) { // annulée par le client pendant que Lia travaillait
+    if (get_post_meta($pid, '_aled08_annulee_le', true)) { // annulée par le client pendant que Bricou travaillait
         aled08e_lia_appel($uid, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]);
         update_post_meta($pid, '_aled08_lia_etat', 'annule');
         return;
@@ -407,27 +407,27 @@ function aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $act
         // le client regarde l'aperçu et confirme avant que son site change
         update_post_meta($pid, '_aled08_statut', 'encours');
         update_post_meta($pid, '_aled08_lia_etat', 'a_confirmer');
-        aled08e_lia_journal_add('Demande #' . $pid . ' préparée par Lia, en attente de l’accord du client.');
-        if ($u) wp_mail($u->user_email, 'Lia a préparé votre modification : à vous de voir', 'Bonjour ' . aled08e_prenom($u) . ",\n\n" . $msgClient . "\n\nRien n’est encore changé sur votre site. Regardez l’aperçu et confirmez dans votre espace :\n" . aled08e_url() . "#demandes\n\nÀ bientôt,\nAlex et sa petite bande\n", aled08e_mail_headers('"Alex & Co" <' . aled08e_to() . '>'));
+        aled08e_lia_journal_add('Demande #' . $pid . ' préparée par Bricou, en attente de l’accord du client.');
+        if ($u) wp_mail($u->user_email, 'Bricou a préparé votre modification : à vous de voir', 'Bonjour ' . aled08e_prenom($u) . ",\n\n" . $msgClient . "\n\nRien n’est encore changé sur votre site. Regardez l’aperçu et confirmez dans votre espace :\n" . aled08e_url() . "#demandes\n\nÀ bientôt,\nAlex et sa petite bande\n", aled08e_mail_headers('"Alex & Co" <' . aled08e_to() . '>'));
     } else {
-        // passée à Alex : les Jetons Lia sont rendus, la demande rejoint les modifications d'Alex
+        // passée à Alex : les Jetons Bricou sont rendus, la demande rejoint les modifications d'Alex
         aled08e_jl_rendre($uid, 'demande:' . $pid);
         update_post_meta($pid, '_aled08_par', 'alex');
         update_post_meta($pid, '_aled08_lia_etat', 'pour_alex');
         update_post_meta($pid, '_aled08_statut', 'recue');
         aled08e_lia_journal_add('Demande #' . $pid . ' passée à Alex : ' . mb_substr((string) $noteAlex, 0, 200));
-        wp_mail(aled08e_to(), 'Lia vous passe une demande', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n\n" . ($liste ? "Ce que Lia a déjà fait :\n" . $liste . "\n" : '') . 'Pourquoi : ' . $noteAlex . "\n\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
+        wp_mail(aled08e_to(), 'Bricou vous passe une demande', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n\n" . ($liste ? "Ce que Bricou a déjà fait :\n" . $liste . "\n" : '') . 'Pourquoi : ' . $noteAlex . "\n\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
     }
 }
 
-/* Annuler tous les changements de Lia sur une demande (révisions gardées avant chaque changement) */
+/* Annuler tous les changements de Bricou sur une demande (révisions gardées avant chaque changement) */
 function aled08e_lia_annuler($pid) {
     $p = get_post($pid);
     if (!$p) return new WP_Error('aled08_lia', 'Demande introuvable.');
     $uid = (int) $p->post_author;
     $actions = (array) get_post_meta($pid, '_aled08_lia_actions', true);
     $faits = 0; $erreurs = [];
-    // en commençant par la plus ancienne révision de chaque contenu (l'état d'avant Lia)
+    // en commençant par la plus ancienne révision de chaque contenu (l'état d'avant Bricou)
     $premiere = [];
     foreach ($actions as $a) if (!empty($a['revision']) && !isset($premiere[$a['id']])) $premiere[$a['id']] = (int) $a['revision'];
     foreach ($premiere as $id => $rev) {
@@ -439,7 +439,7 @@ function aled08e_lia_annuler($pid) {
     update_post_meta($pid, '_aled08_lia_annule', current_time('mysql'));
     update_post_meta($pid, '_aled08_a_verifier', 0);
     $msg = $faits . ' contenu(s) remis comme avant.' . ($reste ? ' À défaire à la main sur le site du client : ' . implode(' ; ', $reste) . '.' : '') . ($erreurs ? ' Erreurs : ' . implode(' ; ', $erreurs) : '');
-    aled08e_lia_journal_add('Changements de Lia annulés sur la demande #' . $pid . ' : ' . $msg);
+    aled08e_lia_journal_add('Changements de Bricou annulés sur la demande #' . $pid . ' : ' . $msg);
     return $msg;
 }
 
@@ -449,7 +449,7 @@ function aled08e_lia_test() {
     if (!aled08e_lia_sdk()) return new WP_Error('aled08_lia', 'Kit Anthropic introuvable : installez l’extension « alexlia-sdk ».');
     try {
         $client = new \Anthropic\Client(apiKey: aled08e_lia_cle());
-        $r = $client->messages->create(model: aled08e_lia_modele(), maxTokens: 2000, outputConfig: ['effort' => 'low'], messages: [['role' => 'user', 'content' => 'Réponds seulement : « Lia est prête. »']]);
+        $r = $client->messages->create(model: aled08e_lia_modele(), maxTokens: 2000, outputConfig: ['effort' => 'low'], messages: [['role' => 'user', 'content' => 'Réponds seulement : « Bricou est prête. »']]);
         $txt = '';
         foreach ($r->content as $b) if ($b->type === 'text') $txt .= $b->text;
         return 'OK, ' . aled08e_lia_modele() . ' répond : ' . trim($txt);
@@ -463,8 +463,8 @@ function aled08e_lia_test() {
  * ========================================================================= */
 function aled08e_lia_masque($k) { return $k === '' ? 'aucune clé' : 'enregistrée, se termine par ' . substr($k, -4); }
 function aled08e_lia_reglages_html() {
-    echo '<h2>Lia (Claude, d’Anthropic)</h2>';
-    echo '<p>Lia fait les demandes « par Lia » toute seule sur le site du client, en quelques minutes, sans validation de votre part : seul le client valide l’aperçu. Il faut : une clé Claude, l’extension <code>alexlia-sdk</code> installée ici (kit officiel Anthropic), et l’extension <code>alexlia-connecteur</code> sur chaque site client, reliée dans la fiche du client.</p>';
+    echo '<h2>La petite bande (Claude, d’Anthropic)</h2>';
+    echo '<p>Bricou fait les demandes « par Bricou » toute seule sur le site du client, en quelques minutes, sans validation de votre part : seul le client valide l’aperçu. Il faut : une clé Claude, l’extension <code>alexlia-sdk</code> installée ici (kit officiel Anthropic), et l’extension <code>alexlia-connecteur</code> sur chaque site client, reliée dans la fiche du client.</p>';
     echo '<table class="form-table" role="presentation">';
     echo '<tr><th><label for="aled08e-lia-key">Clé Claude (API Anthropic)</label></th><td>';
     if (defined('ALED08_ANTHROPIC_KEY') && ALED08_ANTHROPIC_KEY) echo '<p>Définie dans wp-config.php (constante ALED08_ANTHROPIC_KEY) : ' . esc_html(aled08e_lia_masque(ALED08_ANTHROPIC_KEY)) . '.</p>';
@@ -473,7 +473,7 @@ function aled08e_lia_reglages_html() {
     echo '<tr><th><label for="aled08e-lia-mod">Modèle</label></th><td><input type="text" id="aled08e-lia-mod" name="lia_modele" class="regular-text" value="' . esc_attr(aled08e_lia_modele()) . '"></td></tr>';
     echo '<tr><th>Kit Anthropic</th><td>' . (aled08e_lia_sdk_present() ? 'Installé.' : '<strong>Absent</strong> : installez l’extension « alexlia-sdk ».') . '</td></tr>';
     if (!defined('ALED08_ANTHROPIC_KEY')) echo '<tr><th>Effacer</th><td><label><input type="checkbox" name="effacer_lia" value="1"> Effacer la clé Claude enregistrée</label></td></tr>';
-    echo '<tr><th>Test</th><td><button type="submit" name="tester_lia" value="1" class="button">Tester Lia</button><p class="description">Envoie une toute petite question à Claude.</p></td></tr>';
+    echo '<tr><th>Test</th><td><button type="submit" name="tester_lia" value="1" class="button">Tester Bricou</button><p class="description">Envoie une toute petite question à Claude.</p></td></tr>';
     $j = array_slice(aled08e_lia_journal(), 0, 8);
     if ($j) {
         echo '<tr><th>Derniers travaux</th><td><ul style="margin:0">';
@@ -496,13 +496,13 @@ function aled08e_lia_reglages_save($P) {
     return '';
 }
 
-/* Fiche client : relier son site à Lia */
+/* Fiche client : relier son site à Bricou */
 function aled08e_lia_profil($user) {
     if (!current_user_can('edit_users') || !is_object($user)) return;
     $uid = $user->ID;
     $url = aled08e_meta($uid, 'lia_url');
     $sec = aled08e_meta($uid, 'lia_secret');
-    echo '<h3>Lia : site relié</h3><table class="form-table" role="presentation">';
+    echo '<h3>Bricou : site relié</h3><table class="form-table" role="presentation">';
     echo '<tr><th><label for="aled08e-lia-url">Adresse du site à modifier</label></th><td><input type="url" id="aled08e-lia-url" name="aled08e_lia_url" class="regular-text" value="' . esc_attr($url) . '" placeholder="' . esc_attr(aled08e_meta($uid, 'site') ?: 'https://www.exemple.fr') . '"><p class="description">Sur ce site, installez l’extension « Alex & Co : connecteur », puis collez la clé ci-dessous dans Réglages, Alex & Co.</p></td></tr>';
     echo '<tr><th>Clé du connecteur</th><td>';
     if ($sec) echo '<input type="text" readonly class="regular-text code" value="' . esc_attr($sec) . '" onclick="this.select()"><br>';
@@ -526,14 +526,14 @@ function aled08e_lia_profil_save($uid) {
 add_action('personal_options_update', 'aled08e_lia_profil_save');
 add_action('edit_user_profile_update', 'aled08e_lia_profil_save');
 
-/* Fiche de la demande : ce que Lia a fait, vérifier, annuler */
+/* Fiche de la demande : ce que Bricou a fait, vérifier, annuler */
 add_action('add_meta_boxes_' . ALED08E_CPT, function ($post) {
     if (get_post_meta($post->ID, '_aled08_lia_etat', true) === '') return;
-    add_meta_box('aled08e_lia', 'Travail de Lia', 'aled08e_lia_box', ALED08E_CPT, 'normal', 'high');
+    add_meta_box('aled08e_lia', 'Travail de Bricou', 'aled08e_lia_box', ALED08E_CPT, 'normal', 'high');
 });
 function aled08e_lia_box($post) {
     $etat = get_post_meta($post->ID, '_aled08_lia_etat', true);
-    $lib = ['attente_alex' => 'montrée à Alex, Bricou attend son feu vert (30 minutes au plus)', 'en_attente' => 'en attente', 'en_cours' => 'en cours', 'a_confirmer' => 'aperçu prêt, en attente de l’accord du client', 'fait' => 'mis en ligne par Lia après accord du client', 'pour_alex' => 'passée à Alex', 'refuse' => 'aperçu refusé par le client, passée à Alex'];
+    $lib = ['attente_alex' => 'montrée à Alex, Bricou attend son feu vert (30 minutes au plus)', 'en_attente' => 'en attente', 'en_cours' => 'en cours', 'a_confirmer' => 'aperçu prêt, en attente de l’accord du client', 'fait' => 'mis en ligne par Bricou après accord du client', 'pour_alex' => 'passée à Alex', 'refuse' => 'aperçu refusé par le client, passée à Alex'];
     echo '<p><strong>État : ' . esc_html($lib[$etat] ?? $etat) . '</strong>' . (get_post_meta($post->ID, '_aled08_lia_le', true) ? ', le ' . esc_html(get_post_meta($post->ID, '_aled08_lia_le', true)) : '') . '</p>';
     $actions = (array) get_post_meta($post->ID, '_aled08_lia_actions', true);
     if ($actions) {
@@ -542,17 +542,17 @@ function aled08e_lia_box($post) {
         echo '</ul>';
     }
     if ($c = get_post_meta($post->ID, '_aled08_lia_commentaire', true)) echo '<p><em>Commentaire du client :</em> ' . nl2br(esc_html($c)) . '</p>';
-    if ($n = get_post_meta($post->ID, '_aled08_lia_note', true)) echo '<p><em>Note de Lia :</em> ' . nl2br(esc_html($n)) . '</p>';
+    if ($n = get_post_meta($post->ID, '_aled08_lia_note', true)) echo '<p><em>Note de Bricou :</em> ' . nl2br(esc_html($n)) . '</p>';
     $c = get_post_meta($post->ID, '_aled08_lia_conso', true);
     if (is_array($c) && !empty($c['appels'])) echo '<p><em>Coût estimé de cette demande :</em> ' . esc_html(number_format(aled08e_lia_cout($c), 3, ',', ' ')) . ' $ (' . (int) $c['appels'] . ' appels, ' . (int) ($c['entree'] + $c['cache_lu'] + $c['cache_ecrit']) . ' jetons lus, ' . (int) $c['sortie'] . ' écrits)</p>';
     if ($a = get_post_meta($post->ID, '_aled08_lia_annule', true)) echo '<p style="color:#b32d2e">Changements annulés le ' . esc_html($a) . '.</p>';
     $btn = function ($act, $label, $cls = 'button') use ($post) {
-        return '<a class="' . $cls . '" href="' . esc_url(wp_nonce_url(admin_url('admin-post.php?action=aled08e_lia&do=' . $act . '&pid=' . $post->ID), 'aled08e_lia_' . $post->ID)) . '"' . ($act === 'annuler' ? ' onclick="return confirm(\'Remettre le site du client comme avant le passage de Lia ?\')"' : '') . '>' . esc_html($label) . '</a> ';
+        return '<a class="' . $cls . '" href="' . esc_url(wp_nonce_url(admin_url('admin-post.php?action=aled08e_lia&do=' . $act . '&pid=' . $post->ID), 'aled08e_lia_' . $post->ID)) . '"' . ($act === 'annuler' ? ' onclick="return confirm(\'Remettre le site du client comme avant le passage de Bricou ?\')"' : '') . '>' . esc_html($label) . '</a> ';
     };
     echo '<p>';
     if (get_post_meta($post->ID, '_aled08_a_verifier', true)) echo $btn('verifie', 'C’est bon, vérifié', 'button button-primary');
-    if ($actions && !get_post_meta($post->ID, '_aled08_lia_annule', true)) echo $btn('annuler', 'Annuler les changements de Lia');
-    if (in_array($etat, ['pour_alex', 'fait'], true) || ($etat === 'en_attente' && !wp_next_scheduled('aled08_lia_traiter', [(int) $post->ID]))) echo $btn('relancer', 'Relancer Lia');
+    if ($actions && !get_post_meta($post->ID, '_aled08_lia_annule', true)) echo $btn('annuler', 'Annuler les changements de Bricou');
+    if (in_array($etat, ['pour_alex', 'fait'], true) || ($etat === 'en_attente' && !wp_next_scheduled('aled08_lia_traiter', [(int) $post->ID]))) echo $btn('relancer', 'Relancer Bricou');
     echo '</p>';
 }
 add_action('admin_post_aled08e_lia', function () {
@@ -591,7 +591,7 @@ function aled08e_lia_confirmer($pid, $oui, $commentaire = '') {
     $prevues = (array) get_post_meta($pid, '_aled08_lia_actions', true);
     if (!$oui) {
         aled08e_lia_appel($uid, 'abandonner', ['jeton' => $jeton]);
-        aled08e_jl_rendre($uid, 'demande:' . $pid); // aperçu refusé : les Jetons Lia sont rendus
+        aled08e_jl_rendre($uid, 'demande:' . $pid); // aperçu refusé : les Jetons Bricou sont rendus
         update_post_meta($pid, '_aled08_par', 'alex');
         update_post_meta($pid, '_aled08_lia_etat', 'refuse');
         update_post_meta($pid, '_aled08_statut', 'recue');
@@ -599,18 +599,18 @@ function aled08e_lia_confirmer($pid, $oui, $commentaire = '') {
         $c = trim((string) $commentaire);
         if ($c !== '') update_post_meta($pid, '_aled08_lia_commentaire', mb_substr($c, 0, 2000));
         aled08e_lia_journal_add('Demande #' . $pid . ' : le client n’a pas validé l’aperçu, passée à Alex.');
-        wp_mail(aled08e_to(), 'Le client n’a pas validé l’aperçu de Lia', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n\nCe que Lia avait préparé :\n" . implode("\n", array_map(function ($a) { return '- ' . $a['detail']; }, $prevues)) . "\n\nCommentaire du client : " . ($c !== '' ? $c : '(aucun)') . "\n\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
+        wp_mail(aled08e_to(), 'Le client n’a pas validé l’aperçu de Bricou', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n\nCe que Bricou avait préparé :\n" . implode("\n", array_map(function ($a) { return '- ' . $a['detail']; }, $prevues)) . "\n\nCommentaire du client : " . ($c !== '' ? $c : '(aucun)') . "\n\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
         return 'refuse';
     }
     $r = aled08e_lia_appel($uid, 'appliquer', ['jeton' => $jeton]);
     if (is_wp_error($r)) {
         aled08e_lia_journal_add('Demande #' . $pid . ' : mise en ligne impossible après accord : ' . $r->get_error_message());
-        aled08e_jl_rendre($uid, 'demande:' . $pid); // Lia n'a pas pu finir : les Jetons Lia sont rendus
+        aled08e_jl_rendre($uid, 'demande:' . $pid); // Bricou n'a pas pu finir : les Jetons Bricou sont rendus
         update_post_meta($pid, '_aled08_par', 'alex');
         update_post_meta($pid, '_aled08_lia_etat', 'pour_alex');
         update_post_meta($pid, '_aled08_statut', 'recue');
         update_post_meta($pid, '_aled08_reponse', 'Merci ! La mise en ligne automatique n’a pas abouti : Alex s’en occupe à la main, et vos points d’énergie vous sont rendus.');
-        wp_mail(aled08e_to(), 'Lia : mise en ligne impossible, à reprendre', 'Demande #' . $pid . ' (' . ($u ? $u->display_name : '?') . ")\nErreur : " . $r->get_error_message() . "\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
+        wp_mail(aled08e_to(), 'Bricou : mise en ligne impossible, à reprendre', 'Demande #' . $pid . ' (' . ($u ? $u->display_name : '?') . ")\nErreur : " . $r->get_error_message() . "\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
         return $r;
     }
     // ce qui a été mis en ligne, avec la révision gardée juste avant (pour pouvoir annuler)
@@ -627,7 +627,7 @@ function aled08e_lia_confirmer($pid, $oui, $commentaire = '') {
     update_post_meta($pid, '_aled08_faite_le', current_time('mysql'));
     update_post_meta($pid, '_aled08_reponse', 'C’est en ligne, merci !');
     $liste = implode("\n", array_map(function ($a) { return '- ' . $a['detail'] . ($a['adresse'] ? ' (' . $a['adresse'] . ')' : ''); }, $faites));
-    aled08e_lia_journal_add('Demande #' . $pid . ' mise en ligne par Lia après accord du client (' . count($faites) . ' changement(s)).');
+    aled08e_lia_journal_add('Demande #' . $pid . ' mise en ligne par Bricou après accord du client (' . count($faites) . ' changement(s)).');
     // pas de validation par Alex : la modification est directe ; elle apparaît dans son récapitulatif des demandes
     return 'oui';
 }
@@ -647,7 +647,7 @@ add_action('template_redirect', function () {
     exit;
 }, 5);
 
-/* Dans « Mes demandes » : l'aperçu préparé par Lia, à valider */
+/* Dans « Mes demandes » : l'aperçu préparé par Bricou, à valider */
 function aled08e_lia_bloc_confirmation($p) {
     if (get_post_meta($p->ID, '_aled08_lia_etat', true) !== 'a_confirmer') return '';
     $actions = array_filter((array) get_post_meta($p->ID, '_aled08_lia_actions', true), function ($a) { return !empty($a['prepare']); });

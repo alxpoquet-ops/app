@@ -2,21 +2,21 @@
 /**
  * Plugin Name: Alex & Co Espace client
  * Description: L'espace client Alex & Co sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.3.0
+ * Version: 2.3.2
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.3.0');
+define('ALED08E_VERSION', '2.3.2');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
 define('ALED08E_CPT_CMD', 'aled08_commande');
 
 /* =========================================================================
- *  Données (abonnement, types de site, options et extras, montants, icônes, dessins de Lia) : data.json, généré depuis le site
+ *  Données (abonnement, types de site, options et extras, montants, icônes, dessins de Cerise) : data.json, généré depuis le site
  * ========================================================================= */
 function aled08e_data() {
     static $d = null;
@@ -297,7 +297,7 @@ add_filter('aled08_parrain_info', function ($info, $code, $nom) {
 /* =========================================================================
  *  Demandes de modification : envoi depuis l'espace
  * ========================================================================= */
-/* Demandes du mois (ou du trimestre avec $periode = 'trimestre') : $par = 'alex' (interventions à la main), 'lia' (jetons Lia, automatisations) ou '' (toutes) */
+/* Demandes du mois (ou du trimestre avec $periode = 'trimestre') : $par = 'alex' (interventions à la main), 'lia' (jetons Cerise, automatisations) ou '' (toutes) */
 function aled08e_count_month($uid, $par = 'alex', $periode = 'mois') {
     $args = [
         'post_type' => ALED08E_CPT, 'author' => $uid, 'post_status' => ['private', 'publish'], 'fields' => 'ids',
@@ -315,7 +315,7 @@ function aled08e_count_month($uid, $par = 'alex', $periode = 'mois') {
 }
 /* =========================================================================
  *  Annulation d'une demande par le client : gratuite dans les 24 heures, 3 fois par mois.
- *  La demande ne compte plus dans le mois ; ce que Lia avait mis en ligne est remis comme avant.
+ *  La demande ne compte plus dans le mois ; ce que Cerise avait mis en ligne est remis comme avant.
  * ========================================================================= */
 const ALED08E_ANNUL_MOIS = 3;
 const ALED08E_ANNUL_HEURES = 24;
@@ -341,7 +341,7 @@ function aled08e_annuler_demande($pid) {
     if ($etat === 'a_confirmer' && function_exists('aled08e_lia_appel')) aled08e_lia_appel($uid, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]);
     if ($etat === 'fait' && function_exists('aled08e_lia_annuler')) $note = aled08e_lia_annuler($pid);
     update_post_meta($pid, '_aled08_annulee_le', current_time('mysql'));
-    // ce que Lia a publié de nouveau (actualité, photo, nom du site) ne se défait pas tout seul : dans ce cas les jetons restent comptés
+    // ce que Cerise a publié de nouveau (actualité, photo, nom du site) ne se défait pas tout seul : dans ce cas les jetons restent comptés
     $resteEnLigne = false;
     if ($etat === 'fait') foreach ((array) get_post_meta($pid, '_aled08_lia_actions', true) as $a) if (in_array($a['type'] ?? '', ['publier', 'image', 'reglage'], true)) $resteEnLigne = true;
     if (!$resteEnLigne) aled08e_jl_rendre($uid, 'demande:' . $pid);
@@ -352,7 +352,7 @@ function aled08e_annuler_demande($pid) {
         : 'Demande annulée. Elle ne compte pas dans vos interventions' . (get_post_meta($pid, '_aled08_jetons', true) ? ' : vos points d’énergie vous sont rendus.' : '.') . ($etat === 'fait' ? ' Votre page a été remise comme avant.' : ''));
     $u = get_userdata($uid);
     wp_mail(aled08e_to(), 'Une demande a été annulée par le client', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n"
-        . ($note ? "\nCe que Lia avait mis en ligne : " . $note . "\n" : '')
+        . ($note ? "\nCe que Bricou avait mis en ligne : " . $note . "\n" : '')
         . (get_post_meta($pid, '_aled08_hors_forfait', true) ? "\nC'était une intervention d'Alex en plus (" . aled08e_boost_txt() . ") : à rembourser ou retirer de sa facture.\n" : '')
         . (aled08e_extras_demande($pid) ? "\nExtras payés à retirer de sa facture : " . aled08e_extras_demande_txt($pid) . "\n" : '')
         . "\nAnnulations ce mois-ci : " . aled08e_annulations_mois($uid) . ' / ' . ALED08E_ANNUL_MOIS . "\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
@@ -380,13 +380,13 @@ function aled08e_annulation_html($p) {
         . '<input type="hidden" name="aled08e_annuler" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_annuler_' . $p->ID, '_aled08e_annul', true, false)
         . '<button class="link-btn" type="submit">' . aled08e_icon('x') . 'Annuler la demande</button><small>gratuit pendant 24 heures, encore ' . (int) $reste . ' ce mois-ci</small></form>';
 }
-/* Jetons Lia du forfait (null = illimité) */
+/* Jetons Cerise du forfait (null = illimité) */
 function aled08e_jetons($f) { return array_key_exists('jetons', $f) ? $f['jetons'] : 1; }
-/* Comptes « famille » : modifications par Lia et par Alex sans limite */
+/* Comptes « famille » : modifications par Bricou et par Alex sans limite */
 function aled08e_famille($uid) { return aled08e_meta($uid, 'famille') === '1'; }
-/* Jetons Lia du mois pour ce client : ceux du forfait, plus ceux de l'option Lia + */
+/* Jetons Cerise du mois pour ce client : ceux du forfait, plus ceux de l'option Cerise + */
 function aled08e_jetons_user($uid, $f) { return aled08e_jl_mois($uid, $f); }
-/* Ce que Lia peut faire dans une demande : nombre de mots selon le nombre d'images (0, 1, 2 ou 3 images) */
+/* Ce que Cerise peut faire dans une demande : nombre de mots selon le nombre d'images (0, 1, 2 ou 3 images) */
 function aled08e_lia_limites() { return ['mots' => [300, 200, 100, 40], 'images' => 3]; }
 
 add_action('template_redirect', function () {
@@ -409,13 +409,13 @@ add_action('template_redirect', function () {
     $extra = sanitize_key(wp_unslash($_POST['extra'] ?? ''));
     if (!in_array($extra, ['article', 'point'], true) || !aled08e_a_la_demande($extra)) $extra = '';
     if ($extra && empty($_POST['extra_ok'])) $back('extra_accord');
-    // par Lia (automatique, un jeton) ou par Alex (à la main) ; plus de jeton ce mois-ci : la demande passe à Alex
+    // par Cerise (automatique, un jeton) ou par Alex (à la main) ; plus de jeton ce mois-ci : la demande passe à Alex
     $par = !$extra && sanitize_key(wp_unslash($_POST['par'] ?? 'alex')) === 'lia' ? 'lia' : 'alex';
-    // Lia ne peut pas travailler pour ce client (clé Claude absente ou site pas encore relié) : la demande va à Alex, sans jeton
+    // Cerise ne peut pas travailler pour ce client (clé Claude absente ou site pas encore relié) : la demande va à Alex, sans jeton
     if ($par === 'lia' && !aled08e_lia_prete_pour($uid)) $par = 'alex';
-    // deux compteurs séparés : les modifications par Lia (forfait + option Lia +) et celles par Alex
+    // deux compteurs séparés : les modifications par Cerise (forfait + option Cerise +) et celles par Alex
     $famille = aled08e_famille($uid);
-    // prix de la modification par Lia, en Jetons Lia : selon le nombre de mots écrits et de photos jointes
+    // prix de la modification par Cerise, en Jetons Cerise : selon le nombre de mots écrits et de photos jointes
     $nbPhotos = 0;
     if (!empty($_FILES['photos']['name']) && is_array($_FILES['photos']['name'])) $nbPhotos = min(aled08e_lia_limites()['images'], count(array_filter($_FILES['photos']['name'], 'strlen')));
     elseif (!empty($_FILES['photo']['name'])) $nbPhotos = 1;
@@ -425,7 +425,7 @@ add_action('template_redirect', function () {
     // avec l'accord du client (le « Boost »). Un article ou un point avec Alex se paient à part et ne comptent pas.
     $over = !$famille && !$extra && $par === 'alex' && aled08e_count_alex($uid) >= (int) $f['quota'];
     if ($over && empty($_POST['boost_ok'])) $back('boost_accord');
-    // demande traitée sous 24 heures : seulement pour Alex (Lia fait la sienne tout de suite)
+    // demande traitée sous 24 heures : seulement pour Alex (Cerise fait la sienne tout de suite)
     $urgent = !$famille && $par === 'alex' && !empty($_POST['urgent']) && aled08e_a_la_demande('urgent');
     $prefixe = $extra === 'article' ? 'Article : ' : ($extra === 'point' ? 'Point avec Alex : ' : '');
     $title = mb_strlen($txt) > 70 ? rtrim(mb_substr($txt, 0, 67)) . '…' : $txt;
@@ -470,7 +470,7 @@ add_action('template_redirect', function () {
         $photosIds[] = (int) $att;
     }
     if ($photosIds) update_post_meta($pid, '_aled08_photos', $photosIds);
-    // les Jetons Lia sont comptés ici, sur les photos vraiment jointes. Pas assez de jetons au dernier moment
+    // les Jetons Cerise sont comptés ici, sur les photos vraiment jointes. Pas assez de jetons au dernier moment
     // (deux demandes envoyées en même temps) : la demande est retirée, rien n'est compté.
     if ($par === 'lia') {
         $prixLia = aled08e_jl_prix_modif($txt, count($photosIds));
@@ -490,7 +490,7 @@ add_action('template_redirect', function () {
         . 'Site     : ' . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\n"
         . 'Délai    : réponse sous ' . $delai . ($urgent ? ' (URGENT)' : '') . ($over ? ' (INTERVENTION EN PLUS : ' . aled08e_boost_txt() . ', ' . (get_post_meta($pid, '_aled08_boost_facture', true) ? 'ajoutée à sa prochaine facture Stripe' : 'à facturer à la main') . ')' : '') . "\n"
         . ($payes ? 'Extras   : ' . aled08e_extras_demande_txt($pid) . "\n" : '')
-        . 'Par      : ' . ($par === 'lia' ? 'Lia (instantané, avec aperçu à valider)' : 'Alex (modification à la main)') . "\n"
+        . 'Par      : ' . ($par === 'lia' ? 'Bricou (instantané, avec aperçu à valider)' : 'Alex (modification à la main)') . "\n"
         . ($photo ? "Photo    : $photo\n" : '')
         . "\nDemande :\n$txt\n\n"
         . 'Suivre et répondre : ' . admin_url('post.php?post=' . $pid . '&action=edit') . "\n";
@@ -526,8 +526,8 @@ function aled08e_client_box($post) {
     echo '<p><strong>' . esc_html($u->display_name) . '</strong><br><a href="mailto:' . esc_attr($u->user_email) . '">' . esc_html($u->user_email) . '</a></p>';
     if (aled08e_meta($u->ID, 'site')) echo '<p>Site : <a href="' . esc_url(aled08e_meta($u->ID, 'site')) . '" target="_blank" rel="noopener">' . esc_html(aled08e_meta($u->ID, 'site')) . '</a></p>';
     $jt = aled08e_jetons($f);
-    echo '<p>Abonnement · Alex ' . (int) aled08e_count_alex($u->ID) . ' / ' . (int) $f['quota'] . ' ' . esc_html(aled08e_periode_ce($u->ID)) . ' · Jetons Lia ' . (int) aled08e_jl_etat($u->ID, $f)['solde'] . ' restants (' . (int) aled08e_jl_mois($u->ID, $f) . ' par mois)</p>';
-    $par = get_post_meta($post->ID, '_aled08_par', true) === 'lia' ? 'Lia (instantané, avec aperçu)' : 'Alex (à la main)';
+    echo '<p>Abonnement · Alex ' . (int) aled08e_count_alex($u->ID) . ' / ' . (int) $f['quota'] . ' ' . esc_html(aled08e_periode_ce($u->ID)) . ' · Énergie ' . (int) aled08e_jl_etat($u->ID, $f)['solde'] . ' restants (' . (int) aled08e_jl_mois($u->ID, $f) . ' par mois)</p>';
+    $par = get_post_meta($post->ID, '_aled08_par', true) === 'lia' ? 'Bricou (instantané, avec aperçu)' : 'Alex (à la main)';
     echo '<p><strong>Demandée à : ' . esc_html($par) . '</strong></p>';
     echo '<p><a href="' . esc_url(get_edit_user_link($u->ID)) . '#aled08e">Fiche client</a></p>';
     if (has_post_thumbnail($post)) echo '<p>' . get_the_post_thumbnail($post, 'medium', ['style' => 'max-width:100%;height:auto;border-radius:8px']) . '</p>';
@@ -547,7 +547,7 @@ add_filter('manage_' . ALED08E_CPT . '_posts_columns', function ($c) {
     return ['cb' => $c['cb'] ?? '', 'title' => 'Demande', 'aled08_client' => 'Client', 'aled08_par' => 'Par', 'aled08_statut' => 'Statut', 'date' => 'Date'];
 });
 add_action('manage_' . ALED08E_CPT . '_posts_custom_column', function ($col, $pid) {
-    if ($col === 'aled08_par') echo get_post_meta($pid, '_aled08_par', true) === 'lia' ? '<strong>Lia</strong>' : 'Alex';
+    if ($col === 'aled08_par') echo get_post_meta($pid, '_aled08_par', true) === 'lia' ? '<strong>Bricou</strong>' : 'Alex';
     if ($col === 'aled08_client') {
         $u = get_userdata(get_post_field('post_author', $pid));
         echo $u ? esc_html($u->display_name) : '';
@@ -581,7 +581,7 @@ function aled08e_fields() {
         'code' => ['Son code de parrainage', 'text', 'Créé automatiquement'],
         'mois_offerts' => ['Mois offerts à utiliser', 'text', '0'],
         'boutique' => ['Boutique en ligne', 'check', 'Oui : le client a une boutique (onglet Vacances, ventes dans le tableau de bord).'],
-        'famille' => ['Famille : modifications illimitées', 'check', 'Oui : modifications par Lia et par Alex sans limite (affichées ∞ avec un cœur).'],
+        'famille' => ['Famille : modifications illimitées', 'check', 'Oui : modifications par Bricou et par Alex sans limite (affichées ∞ avec un cœur).'],
         'alex_mensuel' => ['Une intervention d’Alex chaque mois', 'check', 'Oui : client inscrit avant l’offre V2 (16 novembre 2026), il garde une intervention par mois. Sinon : une par trimestre.'],
         'offert' => ['Abonnement offert à vie', 'check', 'Oui : l’abonnement et ses extras sont gratuits pour ce client, pour toujours. Son compte n’est jamais supprimé automatiquement.'],
         'abonnement_manuel' => ['Abonnement actif hors Stripe', 'check', 'Oui : ce client paie autrement (virement, espèces). Son compte n’est jamais supprimé automatiquement.'],
@@ -853,7 +853,7 @@ function aled08e_dashboard() {
     $jetonsMax = aled08e_jetons_user($uid, $f);
     $jl = aled08e_jl_etat($uid, $f);
     $jlModif = aled08e_jl_cfg()['modif'];
-    $jetonsLeft = (int) $jl['solde']; // Jetons Lia restants (forfait du mois + recharge)
+    $jetonsLeft = (int) $jl['solde']; // Jetons Cerise restants (forfait du mois + recharge)
     $illimite = false;
     $quota = (int) $f['quota'];
     $left = max(0, $quota - $used); // modifications par Alex restantes
@@ -1263,8 +1263,8 @@ add_action('init', function () {
         'post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private',
         'post_title' => 'Nouveau : un seul abonnement, et des extras à la carte',
         'post_content' => "Votre forfait devient l’abonnement Alex & Co : vous gardez tout ce que vous aviez, au même prix.\n"
-            . "Les extras (SEO suivi, chiffres détaillés, Lia +, e-mail pro…) s’ajoutent ou se retirent quand vous voulez, dans Mon compte. Le petit « i » montre ce que chacun ajoute.\n"
-            . "Et Lia s’installe dans la bulle en bas de votre espace : bientôt, vous pourrez lui écrire directement.",
+            . "Les extras (SEO suivi, chiffres détaillés, e-mail pro…) s’ajoutent ou se retirent quand vous voulez, dans Mon compte. Le petit « i » montre ce que chacun ajoute.\n"
+            . "Et Cerise s’installe dans la bulle en bas de votre espace : bientôt, vous pourrez lui écrire directement.",
     ]);
     update_option('aled08e_annonce_offre', '1', false);
 }, 20);

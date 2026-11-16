@@ -3,7 +3,7 @@
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de config.js), aucun client,
 // avis ou chiffre inventé, et pas de phrase de 9 mots ou plus reprise d'une autre page.
 // Le prix bas vient de la petite bande d'Alex : ses automatisations, dessinées en petits monstres (config.bande).
-// Alex fait chaque site, la bande s'occupe du répétitif et Alex vérifie. On ne présente pas Lia sur ces pages.
+// Alex fait chaque site, la bande s'occupe du répétitif et Alex vérifie. On ne présente pas Cerise sur ces pages.
 const { creation, types, forfaits, options, aLaDemande, paiement, lissage, delais, marche, bande } = require('../config');
 const M = (option) => bande.find((b) => b.option === option).role; // le petit monstre ajouté par une option au mois
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);

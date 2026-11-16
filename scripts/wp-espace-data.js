@@ -1,5 +1,5 @@
 // Données de l'extension WordPress « ALED08 Espace client » : l'abonnement, types de site, options et extras,
-// montants, délais, icônes et dessins de Lia. Tout vient de src/config.js (source unique des prix).
+// montants, délais, icônes et dessins de Cerise. Tout vient de src/config.js (source unique des prix).
 // Appelé par scripts/wp-export.py : node scripts/wp-espace-data.js > data.json
 const cfg = require('../src/config');
 const { icon } = require('../src/lib/icons');
@@ -44,10 +44,10 @@ process.stdout.write(
     delais: { reponse: delais.reponse || '72 heures', titan: delais.titan || delais.reponse || '72 heures', urgent: delais.urgent || '24 heures' },
     parrainageMois: fidelite.parrainageMois,
     remiseSecondSite: fidelite.remiseSecondSite || 0,
-      // les icônes de l'espace client, plus celles des outils de Lia (lues dans leur définition)
+      // les icônes de l'espace client, plus celles des outils de Cerise (lues dans leur définition)
     icons: Object.fromEntries([...new Set([...ICONS, ...require('../src/content/outils-lia').outils.map((o) => o.icon), ...options.map((o) => o.icon).filter(Boolean), ...(cfg.aLaDemande || []).map((x) => x.icon)])].map((n) => [n, icon(n)])),
-    // Lia (une humeur par dessin, mascotte = bonjour) et Alex, le petit monstre à lunettes
-    // Lia (une humeur par dessin), Alex en portrait, et la petite bande (Bricou fait les modifications)
+    // Cerise (une humeur par dessin, mascotte = bonjour) et Alex, le petit monstre à lunettes
+    // Cerise (une humeur par dessin), Alex en portrait, et la petite bande (Bricou fait les modifications)
     monsters: Object.fromEntries([
       ...['mascotte', 'clin', 'ravie', 'pense', 'triste'].map((n) => [n, monster(n)]),
       ['alex', alexPortrait()],

@@ -3,11 +3,11 @@
 Site d'**ALED08** : des sites internet à petit prix, pensés pour Google, avec un espace client pour les modifier grâce à l'IA.
 
 - **Une seule offre** : le site à 500 €, quel que soit le site. Boutique en ligne : + 200 €. En une fois, ou en 6 ou 12 fois sans frais.
-- **Un abonnement obligatoire, sans engagement** : 10 € par mois (nom de domaine, hébergement, mises à jour, suivi, support, 100 jetons par mois pour les outils et les retouches avec Lia, rachetables à l'utilisation, et une intervention d'Alex par trimestre). À l'année : 2 mois offerts.
+- **Un abonnement obligatoire, sans engagement** : 10 € par mois (nom de domaine, hébergement, mises à jour, suivi, support, 100 jetons par mois pour les outils et les retouches avec Cerise, rachetables à l'utilisation, et une intervention d'Alex par trimestre). À l'année : 2 mois offerts.
 - **Extras à la demande, payés une fois** : intervention d'Alex en plus 5 €, demande sous 24 heures 5 €, article écrit et publié 15 €, point de 30 minutes avec Alex 15 €.
 - **Options à la création** (une fois) : anglais, prise de rendez-vous, reprise de l'ancien site, cinq pages de plus, 100 € chacune.
 - **Extras au mois**, à ajouter ou retirer quand on veut : Suivi Google 10 €, chiffres détaillés 5 €, e-mail pro 3 €, et pour une boutique gestion du stock 5 € et comptes clients 5 €.
-- **Les mascottes** : Lia, un joli petit monstre rose (c'est l'IA), et Alex, un petit monstre à lunettes (c'est l'humain). Dessins dans `src/lib/monsters.js`. Lia suit le visiteur dans une bulle, en bas de chaque page.
+- **Les mascottes** : Cerise, un joli petit monstre rose (c'est l'IA), et Alex, un petit monstre à lunettes (c'est l'humain). Dessins dans `src/lib/monsters.js`. Cerise suit le visiteur dans une bulle, en bas de chaque page.
 
 Site **statique**, rapide, sans base de données : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans `dist/`.
 
@@ -19,7 +19,7 @@ Site **statique**, rapide, sans base de données : un petit générateur Node.js
 |---|---|---|
 | Accueil | `/` | Promesse, types de site, forfaits, espace client, SEO, comparaison avec Shopify |
 | Créer mon site | `/creer-mon-site/` | **Configurateur** : type de site, nom de domaine vérifié en direct, forfait, au mois ou à l'année, options, récapitulatif |
-| Tarifs | `/tarifs/` | L'offre unique : 500 € le site, 10 € par mois, les options, les extras, les Jetons Lia, la comparaison avec le marché |
+| Tarifs | `/tarifs/` | L'offre unique : 500 € le site, 10 € par mois, les options, les extras, les Jetons Cerise, la comparaison avec le marché |
 | Nos outils | `/nos-outils/` | Demandes de modification gérées par moi ; outils gratuits (tableau de bord, QR code, lien d'avis, factures) |
 | Mon espace (démo) | `/mon-espace/` | Démo : demandes et suivi, tableau de bord, QR code, lien d'avis, forfait et factures |
 | SEO | `/referencement-seo/` | Ce que je fais, le SEO dans chaque forfait, ce que je ne promets pas |
@@ -77,7 +77,7 @@ Le guide du propriétaire : `docs/gestion-du-site.md`.
 | `src/content/faq.js` | Questions fréquentes par rubrique (reprises sur `/faq/`) |
 | `src/content/legal.js` | Mentions légales, confidentialité, conditions générales |
 | `src/lib/components.js` | Cartes des forfaits, configurateur, maquettes de l'espace client, comparatif |
-| `src/lib/monsters.js` | Les mascottes (Lia en cinq humeurs, Alex à lunettes), en SVG dessiné à la main, et le logo |
+| `src/lib/monsters.js` | Les mascottes (Cerise en cinq humeurs, Alex à lunettes), en SVG dessiné à la main, et le logo |
 | `src/assets/css/style.css` | Le design (couleurs pastel dans `:root`) |
 | `src/assets/js/main.js` | Menu, au mois ou à l'année, configurateur, vérification du nom de domaine, formulaire |
 
@@ -102,4 +102,4 @@ docs/gestion-du-site.md  guide du propriétaire : commandes, Stripe, noms de dom
 docs/                    (autres fichiers : archives de l'ancienne activité d'électricien)
 ```
 
-Crédits : police Nunito (SIL Open Font License), icônes Lucide (ISC), pictogramme WhatsApp (Simple Icons, CC0). Lia et Alex, les mascottes, sont des dessins originaux.
+Crédits : police Nunito (SIL Open Font License), icônes Lucide (ISC), pictogramme WhatsApp (Simple Icons, CC0). Cerise et Alex, les mascottes, sont des dessins originaux.

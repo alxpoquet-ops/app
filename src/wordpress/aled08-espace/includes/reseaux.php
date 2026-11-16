@@ -8,7 +8,7 @@
  *    (identifiant et clé secrète dans les réglages de l'extension).
  *  - LinkedIn (profil) : par l'application LinkedIn d'Alex & Co (identifiant et clé secrète dans les réglages).
  * Les jetons d'accès restent dans la fiche du client (jamais affichés). La photo est gardée une heure, le temps
- * que les réseaux la récupèrent, puis effacée. Publier ne coûte aucun Jeton Lia : seul le texte écrit par Lia en coûte.
+ * que les réseaux la récupèrent, puis effacée. Publier ne coûte aucun Jeton Cerise : seul le texte écrit par Cerise en coûte.
  */
 defined('ABSPATH') || exit;
 

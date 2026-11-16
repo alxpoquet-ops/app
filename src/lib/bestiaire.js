@@ -1,5 +1,5 @@
 // La petite famille de monstres du site : huit bouilles kawaii, dessinées à la main en SVG,
-// semées un peu partout (en-tête de page, cartes, pied de page, bandeaux). Lia reste à part : elle vit dans la bulle.
+// semées un peu partout (en-tête de page, cartes, pied de page, bandeaux). Cerise reste à part : elle vit dans la bulle.
 //
 //   petit(nom, { cls, title, humeur })   nom : mochi, fantome, nuage, chaton, gelee, champi, dino, etoile
 //   humeur : 'content' (yeux ouverts, par défaut) ou 'ravi' (yeux fermés qui sourient)
@@ -175,23 +175,22 @@ ${eclat(100, 30, 6, '#FFE07A')}${eclat(18, 34, 4, '#FFB3D1')}
 
 const NOMS = Object.keys(DESSINS);
 
-// Alex, le chef de chantier de la bande : un petit monstre bleu pervenche, avec ses cheveux brun foncé en pointe
-// (côtés dégradés), ses grosses lunettes un peu carrées, et son bloc-notes : c'est lui qui conçoit et qui vérifie tout.
+// Alex, le chef de chantier de la bande : un petit monstre bleu pervenche, avec le casque blanc du chef de chantier
+// (une étoile dorée dessus), ses grosses lunettes un peu carrées et son bloc-notes : c'est lui qui conçoit et qui vérifie tout.
 function alexPortrait({ cls = '', title } = {}) {
   const c = { corps: '#BCC8FF', ventre: '#E6EBFF', trait: '#4F5FC4' };
-  const CHEV = '#3A2820', CHEV_C = '#6B4F40';
   const label = title ? `role="img" aria-label="${title}"` : 'aria-hidden="true" focusable="false"';
   const oeilA = (x) => `<ellipse cx="${x}" cy="77" rx="4.4" ry="5.4" fill="${INK}"/><circle cx="${x + 1.5}" cy="75" r="1.8" fill="#fff"/><circle cx="${x - 1.3}" cy="79" r=".8" fill="#fff"/>`;
   return `<svg class="petit petit-alex${cls ? ' ' + cls : ''}" viewBox="0 0 120 120" ${label}>
-<defs><linearGradient id="alex-degrade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${CHEV}"/><stop offset="1" stop-color="${CHEV_C}" stop-opacity="0"/></linearGradient></defs>
 ${ombre(34)}<g class="p-bob">
 <ellipse cx="45" cy="107" rx="9" ry="5" fill="${c.corps}" ${t(c, 2.6)}/><ellipse cx="75" cy="107" rx="9" ry="5" fill="${c.corps}" ${t(c, 2.6)}/>
 <path d="M22 88C22 58 38 42 60 42S98 58 98 88C98 103 88 108 60 108S22 103 22 88Z" fill="${c.corps}" ${t(c)}/>
 <ellipse cx="60" cy="96" rx="20" ry="8.5" fill="${c.ventre}"/>
-<path d="M27 66C28 54 33 47 39 43L37 62ZM93 66C92 54 87 47 81 43L83 62Z" fill="url(#alex-degrade)" opacity=".85"/>
-<path d="M35 52C36 40 46 32 60 32S84 40 85 52C80 47 73 45 66 45 58 45 47 46 35 52Z" fill="${CHEV}" stroke="${CHEV}" stroke-width="2" stroke-linejoin="round"/>
-<path d="M40 42l-2-12 9 7M49 36l1-13 7 10M60 33l4-13 4 12M70 36l7-11 1 12M79 42l8-8-1 11" fill="${CHEV}" stroke="${CHEV}" stroke-width="2.4" stroke-linejoin="round"/>
-<path d="M50 38c4-3 9-4 14-3" fill="none" stroke="#8C6A58" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+<path d="M28 54C30 32 44 22 60 22S90 32 92 54Z" fill="#FFFFFF" stroke="#7D87BE" stroke-width="3" stroke-linejoin="round"/>
+<path d="M34 50C36 36 45 28 56 26" fill="none" stroke="#E4E8FB" stroke-width="4" stroke-linecap="round"/>
+<path d="M60 24V50" stroke="#DCE1F7" stroke-width="5" stroke-linecap="round"/>
+<rect x="21" y="50" width="78" height="9" rx="4.5" fill="#F1F3FF" stroke="#7D87BE" stroke-width="3"/>
+<path d="M45 32.5L46.5 36.6L50.8 36.8L47.4 39.5L48.6 43.6L45 41.2L41.4 43.6L42.6 39.5L39.2 36.8L43.5 36.6Z" fill="#FFC23D" stroke="#C99A00" stroke-width="1.5" stroke-linejoin="round"/>
 ${reflet('M32 70c2-6 5-10 9-12')}
 <g class="p-cligne">${oeilA(47)}${oeilA(73)}</g>
 <g fill="rgba(255,255,255,.22)" stroke="${INK}" stroke-width="3" stroke-linejoin="round"><rect x="35" y="66" width="24" height="21" rx="6"/><rect x="61" y="66" width="24" height="21" rx="6"/></g>

@@ -193,8 +193,8 @@ ${p.noMobileBar ? '' : `<nav class="mobile-bar" aria-label="Accès rapide">
 ${liaFlot()}`;
 }
 
-// ---------------------------------------------------------------- la bulle de Lia
-// En bas de chaque page. Sur le site : Lia répond tout de suite à quelques questions (réponses écrites ici, sans appel au modèle).
+// ---------------------------------------------------------------- la bulle de Cerise
+// En bas de chaque page. Sur le site : Cerise répond tout de suite à quelques questions (réponses écrites ici, sans appel au modèle).
 // Dans l'espace client : on lui écrit, elle répond et prépare l'action à valider (voir main.js et includes/bulle.php).
 function liaFlot() {
   const eur = (n) => `${n} €`;
@@ -206,10 +206,10 @@ function liaFlot() {
   ];
   const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', 'Comment avoir plus d’avis Google ?', 'Que comprend mon abonnement ?'];
   return `<div class="lia-flot" data-lia-flot hidden>
-  <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Lia, l’assistante d’Alex" hidden>
-    <div class="lia-tete">${monster('coucou')}<p><strong>Lia</strong><small>L’assistante de la petite bande</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Lia">${icon('x')}</button></div>
+  <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Cerise, l’assistante d’Alex" hidden>
+    <div class="lia-tete">${monster('coucou')}<p><strong>Cerise</strong><small>L’assistante de la petite bande</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Cerise">${icon('x')}</button></div>
     <div class="lia-fil" data-lia-fil aria-live="polite">
-      <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Lia, de la petite bande d’Alex ! Choisissez une question, je vous réponds tout de suite.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Cerise, de la petite bande d’Alex ! Choisissez une question, je vous réponds tout de suite.</p>
       <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Bonjour ! Dites-moi ce que vous voulez changer sur votre site, ou posez-moi une question.</p>
       <p class="lia-msg is-lia" data-lia-accueil="demo" hidden>Bonjour ! Ici, c’est une démonstration : écrivez-moi comme un client, je vous montre comment je réponds.</p>
       <p class="lia-msg is-lia" data-lia-accueil="attente" hidden>Bonjour ! Je ne suis pas encore branchée dans cet espace. En attendant, écrivez à Alex dans l’onglet Mes demandes.</p>
@@ -224,14 +224,14 @@ function liaFlot() {
       ${exemples.map((e) => `<button type="button" data-lia-ex>${e}</button>`).join('')}
     </div>
     <form class="lia-saisie" data-lia-form hidden>
-      <label class="sr-only" for="lia-champ">Votre message pour Lia</label>
-      <textarea id="lia-champ" rows="2" maxlength="${jetonsLia.bulle.max}" placeholder="Écrivez à Lia…" required></textarea>
-      <button type="submit" aria-label="Envoyer à Lia">${icon('send')}</button>
+      <label class="sr-only" for="lia-champ">Votre message pour Cerise</label>
+      <textarea id="lia-champ" rows="2" maxlength="${jetonsLia.bulle.max}" placeholder="Écrivez à Cerise…" required></textarea>
+      <button type="submit" aria-label="Envoyer à Cerise">${icon('send')}</button>
     </form>
-    <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Lia répond automatiquement et peut se tromper : rien ne change sans votre accord. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
+    <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Cerise répond automatiquement et peut se tromper : rien ne change sans votre accord. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
   </div>
-  <p class="lia-flot-coucou" hidden><strong>Je suis là pour vous aider !</strong><small>Lia, l’assistante de la bande</small></p>
-  <button type="button" class="lia-flot-btn" aria-expanded="false" aria-controls="lia-panel"><span class="sr-only">Parler à Lia</span>${monster('coucou')}</button>
+  <p class="lia-flot-coucou" hidden><strong>Je suis là pour vous aider !</strong><small>Cerise, l’assistante de la bande</small></p>
+  <button type="button" class="lia-flot-btn" aria-expanded="false" aria-controls="lia-panel"><span class="sr-only">Parler à Cerise</span>${monster('coucou')}</button>
 </div>`;
 }
 

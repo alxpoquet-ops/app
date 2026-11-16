@@ -1,13 +1,13 @@
 <?php
 /**
- * Alex & Co Espace client : la bulle de Lia.
- * Le client écrit à Lia dans la bulle, en bas de son espace. Lia répond en quelques phrases et prépare ce qu'il
+ * Alex & Co Espace client : la bulle de Cerise.
+ * Le client écrit à Cerise dans la bulle, en bas de son espace. Cerise répond en quelques phrases et prépare ce qu'il
  * demande : une modification du site, un message pour Alex, un outil, ou l'onglet où aller.
- * Lia ne fait jamais l'action toute seule : elle la propose, et le client la valide dans son espace
+ * Cerise ne fait jamais l'action toute seule : elle la propose, et le client la valide dans son espace
  * (pour une modification, il y a en plus l'aperçu de la page à accepter).
  *
- * Prix : chaque message coûte des Jetons Lia, selon la règle des outils (ce que le message coûte chez Claude
- * × margeOutils, arrondi au-dessus, 1 jeton au moins). Les jetons sont rendus si Lia ne répond pas.
+ * Prix : chaque message coûte des Jetons Cerise, selon la règle des outils (ce que le message coûte chez Claude
+ * × margeOutils, arrondi au-dessus, 1 jeton au moins). Les jetons sont rendus si Cerise ne répond pas.
  * Modèle : rapide et peu cher par défaut (option aled08_bulle_modele pour en changer).
  */
 defined('ABSPATH') || exit;
@@ -22,7 +22,7 @@ function aled08e_bulle_modele() {
     $m = (string) get_option('aled08_bulle_modele', '');
     return $m !== '' ? $m : 'claude-haiku-5-5';
 }
-/* Prix d'un message, en Jetons Lia */
+/* Prix d'un message, en Jetons Cerise */
 function aled08e_bulle_prix() {
     $c = aled08e_bulle_cfg();
     $t = aled08e_jl_tarifs(aled08e_bulle_modele());
@@ -32,7 +32,7 @@ function aled08e_bulle_prix() {
 /* La bulle peut-elle répondre ? (clé Claude et kit installés) */
 function aled08e_bulle_prete() { return aled08e_jl_outils_prets(); }
 
-/* Les onglets où Lia peut envoyer ce client : [identifiant => nom affiché] */
+/* Les onglets où Cerise peut envoyer ce client : [identifiant => nom affiché] */
 function aled08e_bulle_onglets($uid) {
     $o = ['accueil' => 'Accueil'];
     if (aled08e_cmd_user_commandes($uid)) $o['commande'] = 'Ma commande';
@@ -57,9 +57,9 @@ function aled08e_bulle_quota($uid) {
     return true;
 }
 
-/* La consigne de Lia dans la bulle : fixe, la même pour tous les clients */
+/* La consigne de Cerise dans la bulle : fixe, la même pour tous les clients */
 function aled08e_bulle_systeme() {
-    return "Tu es Lia, l'assistante d'Alex & Co, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, des artisans et des associations. "
+    return "Tu es Cerise, l'assistante d'Alex & Co, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, des artisans et des associations. "
         . "Tu parles au client dans son espace client. Alex est l'humain de l'entreprise : c'est lui qui conçoit les sites, il vérifie tout et fait les grandes modifications à la main. "
         . "Présente-toi comme l'assistante autonome d'Alex, qui automatise les tâches répétitives. Tu fais partie de la petite bande de petits monstres qu'Alex a programmés : ce sont ses automatisations. Les outils et les petites modifications utilisent l'énergie des petits monstres, comptée en points d'énergie : dis toujours « points d'énergie ». Si le client te demande si tu es une intelligence artificielle ou un humain, réponds honnêtement : tu es un assistant automatique, et Alex reprend tout ce qui demande un humain.\n\n"
         . "Ton rôle : répondre à ses questions, et préparer ce qu'il veut faire. Tu ne fais jamais l'action toi-même : tu la proposes dans le champ « action », et le client la valide ensuite d'un clic dans son espace.\n\n"
@@ -80,7 +80,7 @@ function aled08e_bulle_systeme() {
         . "Une seule action par réponse. Dans « reponse », dis en une phrase ce que tu as préparé et ce qu'il lui reste à faire. Les champs qui ne servent pas restent vides.";
 }
 
-/* Ce que Lia sait du client et de l'offre, redonné à chaque message */
+/* Ce que Cerise sait du client et de l'offre, redonné à chaque message */
 function aled08e_bulle_contexte($uid) {
     $u = get_userdata($uid);
     $D = aled08e_data();
@@ -139,7 +139,7 @@ function aled08e_bulle_schema($uid) {
     ]];
 }
 
-/* Ce que Lia a rendu, vérifié : on ne garde qu'une action que ce client peut vraiment faire */
+/* Ce que Cerise a rendu, vérifié : on ne garde qu'une action que ce client peut vraiment faire */
 function aled08e_bulle_lire($uid, $brut) {
     $brut = trim((string) $brut);
     // filet de sécurité : un bloc de code autour du JSON
@@ -155,7 +155,7 @@ function aled08e_bulle_lire($uid, $brut) {
         $txt = aled08e_jl_texte((string) ($a['texte'] ?? ''));
         if ($txt !== '') {
             $txt = mb_substr($txt, 0, 1500);
-            // Lia n'est pas reliée à ce site : la demande part chez Alex
+            // Cerise n'est pas reliée à ce site : la demande part chez Alex
             $par = ($type === 'modification' && aled08e_lia_prete_pour($uid)) ? 'lia' : 'alex';
             $action = ['type' => 'demande', 'par' => $par, 'texte' => $txt, 'jetons' => $par === 'lia' ? (int) aled08e_jl_prix_modif($txt, 0) : 0];
         }
@@ -172,10 +172,10 @@ function aled08e_bulle_lire($uid, $brut) {
 
 /* Un message du client : débit, appel à Claude, réponse vérifiée. Rend un tableau, ou WP_Error. */
 function aled08e_bulle_repondre($uid, $message) {
-    if (!aled08e_bulle_prete() || !aled08e_lia_sdk()) return new WP_Error('aled08_bulle', 'Lia n’est pas encore branchée. Alex s’en occupe : revenez un peu plus tard.');
+    if (!aled08e_bulle_prete() || !aled08e_lia_sdk()) return new WP_Error('aled08_bulle', 'Cerise n’est pas encore branchée. Alex s’en occupe : revenez un peu plus tard.');
     $prix = aled08e_bulle_prix();
     $ref = 'bulle:' . time() . ':' . wp_generate_password(6, false, false);
-    if (!aled08e_jl_debiter($uid, $prix, 'Message à Lia', $ref)) {
+    if (!aled08e_jl_debiter($uid, $prix, 'Message à Cerise', $ref)) {
         return new WP_Error('aled08_jl_solde', 'Il vous reste ' . aled08e_jl_txt(aled08e_jl_etat($uid)['solde']) . ' : un message en utilise ' . $prix . '. Redonnez de l’énergie dans l’onglet Outils, ou attendez le 1er du mois.');
     }
     $dollars = 0.0;
@@ -202,17 +202,17 @@ function aled08e_bulle_repondre($uid, $message) {
             outputConfig: ['effort' => 'low', 'format' => ['type' => 'json_schema', 'schema' => aled08e_bulle_schema($uid)]],
         );
     } catch (\Throwable $e) {
-        aled08e_lia_journal_add('Bulle de Lia : erreur Claude : ' . $e->getMessage());
-        return $echec('Lia n’a pas pu répondre cette fois. Réessayez dans un instant : aucun point d’énergie n’a été compté.');
+        aled08e_lia_journal_add('Bulle de Cerise : erreur Claude : ' . $e->getMessage());
+        return $echec('Cerise n’a pas pu répondre cette fois. Réessayez dans un instant : aucun point d’énergie n’a été compté.');
     }
     if (isset($r->usage)) $dollars += ((int) ($r->usage->inputTokens ?? 0) * $t['entree'] + (int) ($r->usage->outputTokens ?? 0) * $t['sortie']) / 1000000;
-    if (($r->stopReason ?? '') === 'refusal') return $echec('Lia ne peut pas répondre à ce message. Aucun point d’énergie n’a été compté.');
+    if (($r->stopReason ?? '') === 'refusal') return $echec('Cerise ne peut pas répondre à ce message. Aucun point d’énergie n’a été compté.');
     $brut = '';
     foreach ($r->content as $b) if ($b->type === 'text') $brut .= $b->text;
     $lu = aled08e_bulle_lire($uid, $brut);
-    if (!$lu) return $echec('La réponse de Lia est arrivée incomplète. Réessayez : aucun point d’énergie n’a été compté.');
+    if (!$lu) return $echec('La réponse de Cerise est arrivée incomplète. Réessayez : aucun point d’énergie n’a été compté.');
     aled08e_jl_cout_noter($uid, $ref, aled08e_jl_centimes($dollars));
-    // on garde l'échange : le message tel que le client l'a écrit, et la réponse telle que Lia l'a rendue
+    // on garde l'échange : le message tel que le client l'a écrit, et la réponse telle que Cerise l'a rendue
     $fil[] = ['r' => 'moi', 't' => "<message_du_client>\n" . $message . "\n</message_du_client>"];
     $fil[] = ['r' => 'lia', 't' => $brut];
     aled08e_bulle_fil_garder($uid, $fil);
@@ -229,11 +229,11 @@ add_action('wp_ajax_aled08e_bulle', function () {
     $max = (int) aled08e_bulle_cfg()['max'];
     if ($msg === '') wp_send_json_error(['message' => 'Écrivez votre message, puis envoyez.'], 400);
     if (mb_strlen($msg) > $max) wp_send_json_error(['message' => 'Votre message fait ' . mb_strlen($msg) . ' caractères. La bulle en prend ' . $max . ' : faites plus court, ou passez par l’onglet Mes demandes.'], 400);
-    if (!aled08e_famille($uid) && !aled08e_jl_forfait_actif($uid)) wp_send_json_error(['message' => 'Lia vous répond ici dès que votre abonnement a démarré. En attendant, écrivez à Alex par l’onglet Mes demandes.'], 400);
-    if (!aled08e_bulle_quota($uid)) wp_send_json_error(['message' => 'Vous avez beaucoup écrit à Lia aujourd’hui. Revenez demain, ou passez par l’onglet Mes demandes.'], 429);
+    if (!aled08e_famille($uid) && !aled08e_jl_forfait_actif($uid)) wp_send_json_error(['message' => 'Cerise vous répond ici dès que votre abonnement a démarré. En attendant, écrivez à Alex par l’onglet Mes demandes.'], 400);
+    if (!aled08e_bulle_quota($uid)) wp_send_json_error(['message' => 'Vous avez beaucoup écrit à Cerise aujourd’hui. Revenez demain, ou passez par l’onglet Mes demandes.'], 429);
     // un seul message à la fois par client (le verrou tombe tout seul à la fin de la requête)
     global $wpdb;
-    if ((int) $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, 0)', 'aled08_bulle_' . $wpdb->prefix . $uid)) !== 1) wp_send_json_error(['message' => 'Lia est déjà en train de vous répondre. Attendez sa réponse.'], 429);
+    if ((int) $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, 0)', 'aled08_bulle_' . $wpdb->prefix . $uid)) !== 1) wp_send_json_error(['message' => 'Cerise est déjà en train de vous répondre. Attendez sa réponse.'], 429);
     $r = aled08e_bulle_repondre($uid, $msg);
     if (is_wp_error($r)) wp_send_json_error(['message' => $r->get_error_message(), 'solde' => $r->get_error_code() === 'aled08_jl_solde'], 400);
     wp_send_json_success($r);

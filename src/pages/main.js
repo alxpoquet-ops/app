@@ -11,12 +11,12 @@ const legal = require('../content/legal');
 const OUTILS = require('../content/outils');
 const OUTILS_LIA = require('../content/outils-lia').outils;
 const FAMILLES_OUTILS = require('../content/outils-lia').FAMILLES;
-// Prix d'un outil ou d'une modification, en Jetons Lia
+// Prix d'un outil ou d'une modification, en Jetons Cerise
 const jl = (n) => (n ? `${n} point${n > 1 ? 's' : ''} d’énergie` : 'Gratuit');
 const JL_MODIF = `${jetonsLia.modif.base} points d’énergie, plus 1 par tranche de ${jetonsLia.modif.mots} mots et ${jetonsLia.modif.image} par photo`;
-// Une modification par Lia coûte de 30 jetons (la base) à 65 (la plus grosse demande que Lia accepte : trois photos et leur légende).
+// Une modification par Cerise coûte de 30 jetons (la base) à 65 (la plus grosse demande que Cerise accepte : trois photos et leur légende).
 const JL_MODIF_FOURCHETTE = `${jetonsLia.modif.base} à 65`;
-// Ce que font les jetons de l'abonnement en un mois : des modifications par Lia, ou des utilisations d'outils.
+// Ce que font les jetons de l'abonnement en un mois : des modifications par Cerise, ou des utilisations d'outils.
 const JL_MODIFS_MOIS = '2 à 3';
 const JL_OUTILS_MOIS = 'une dizaine';
 // Le prix des outils payants, du moins cher au plus cher (en jetons)
@@ -58,7 +58,7 @@ function formHidden() {
 
 // ====================================================================== ACCUEIL (V2)
 // La promesse d'abord (un site pro, visible, quelqu'un qui s'occupe de tout), puis pour qui, les preuves,
-// ce que vous y gagnez, comment ça se passe, et le prix en clair. Lia apparaît une fois, comme l'assistante d'Alex.
+// ce que vous y gagnez, comment ça se passe, et le prix en clair. Cerise apparaît une fois, comme l'assistante d'Alex.
 function home() {
   const gains = [
     ['search-check', 'Être trouvé sur Google', 'Votre site est préparé pour Google dès le premier jour : les bons mots, une page par service, un site rapide sur téléphone.'],
@@ -321,7 +321,7 @@ ${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Composez votre site en de
 }
 
 // ====================================================================== NOS OUTILS
-// Sur la page publique, les outils sont présentés sans parler de Lia (elle vit dans la bulle et dans l'espace client) :
+// Sur la page publique, les outils sont présentés sans parler de Cerise (elle vit dans la bulle et dans l'espace client) :
 // on montre la phrase courte de chaque outil, et ces trois-là sont redits autrement.
 const PUBLIC_OUTIL = {
   question: ['Une question sur internet', 'Posez votre question sur votre site, Google ou les réseaux : la réponse arrive, simple et claire.'],
@@ -410,7 +410,7 @@ function seoPage() {
   const crumbs = crumb('seo');
   const f = C.faq(FAQ.seo, 'Vos questions sur le SEO', 'faq-seo');
   const seo = O('seo'), stats = O('stats');
-  // Ce qui est compris dans l'abonnement, et les deux extras qui vont plus loin : [couleur, humeur de Lia, titre, prix, liste]
+  // Ce qui est compris dans l'abonnement, et les deux extras qui vont plus loin : [couleur, humeur de Cerise, titre, prix, liste]
   const levels = [
     ['pink', 'mascotte', 'Les bases', 'Comprises dans l’abonnement', ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', 'Site déclaré dans Google Search Console']],
     ['butter', 'clin', seo.name, `Extra à ${euro(seo.price.month)} par mois`, ['Les bases, bien sûr', 'Je regarde les mots que vos clients tapent', 'J’améliore vos pages pour Google, chaque mois', 'Je vous montre où vous en êtes']],
@@ -892,7 +892,7 @@ function monEspacePage() {
           <p class="app-sub">Dernières activités</p>
           <ul class="app-log" data-log>
             <li>${icon('check')}<span>Horaires d’été mis à jour</span><small>il y a 2 jours</small></li>
-            <li>${icon('file-text')}<span>Horaires d’hiver changés par Lia</span><small>1er novembre</small></li>
+            <li>${icon('file-text')}<span>Horaires d’hiver changés par Bricou</span><small>1er novembre</small></li>
           </ul>
         </div>
 
@@ -1444,7 +1444,7 @@ function docPage() {
   const stats = O('stats'), seo = O('seo');
   const toc = [
     ['etapes', 'list-checks', 'Comment ça se passe'],
-    ['lia-alex', 'sparkles', 'Lia et Alex'],
+    ['lia-alex', 'sparkles', 'Bricou et Alex'],
     ['questionnaire', 'clipboard-check', 'Le questionnaire de création'],
     ['sites', 'layout-template', 'Les sites'],
     ['prix', sections.forfaits.icon, 'Le prix'],
@@ -1504,11 +1504,11 @@ function docPage() {
 </div></section>
 
 <section class="section section-soft doc-sec" id="lia-alex"><div class="container container-narrow">
-  <p class="doc-kicker">2. Lia et Alex</p>
+  <p class="doc-kicker">2. Bricou et Alex</p>
   <h2>Deux pour s’occuper de votre site</h2>
   <div class="doc-duo-qui">
-    <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${monster('mascotte')}</span><h3>Lia, l’assistante autonome</h3><p>Elle fait les petites et moyennes modifications en 5 minutes, et écrit vos publications pour les réseaux. Elle montre toujours un aperçu : rien ne change sans votre accord.</p></div>
-    <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${icon('user')}</span><h3>Alex, l’humain</h3><p>Il crée votre site, fait les grandes modifications à la main, vérifie et répond à vos questions. Ce que Lia ne sait pas faire lui revient.</p></div>
+    <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${C.petit('bricou')}</span><h3>Bricou, le bricoleur de la bande</h3><p>Il fait les petites et moyennes modifications. Il montre d’abord votre demande à Alex, puis vous laisse valider l’aperçu : rien ne change sans votre accord.</p></div>
+    <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${icon('user')}</span><h3>Alex, l’humain</h3><p>Il crée votre site, fait les grandes modifications à la main, vérifie et répond à vos questions. Ce que Bricou ne sait pas faire lui revient.</p></div>
   </div>
   <p class="doc-more">${C.btn(sections.liaalex.path, 'btn-primary', 'sparkles', 'Pourquoi Alex & Co')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>
@@ -1559,7 +1559,7 @@ function docPage() {
   ${tableau('À la création, une fois', lignesOptions)}
   ${tableau('Chaque mois, à ajouter ou retirer', lignesExtras)}
   <div class="doc-cards3">
-    <div class="doc-mini reveal"><strong>${icon('coins')}Énergie</strong><p>L’abonnement en donne ${ABO.jetons} points par mois. Un point vaut 1 centime, et une modification par Lia en coûte ${JL_MODIF_FOURCHETTE}.</p></div>
+    <div class="doc-mini reveal"><strong>${icon('coins')}Énergie</strong><p>L’abonnement en donne ${ABO.jetons} points par mois. Un point vaut 1 centime, et une modification par Bricou en coûte ${JL_MODIF_FOURCHETTE}.</p></div>
     <div class="doc-mini reveal"><strong>${icon('sparkles')}Plus d’énergie</strong><p>Vous en reprenez à l’utilisation : ${RECHARGES}, ajoutés à votre prochaine facture. Ces points-là restent jusqu’à ce que vous les utilisiez.</p></div>
     <div class="doc-mini reveal"><strong>${icon('hand-coins')}À la demande</strong><p>${aLaDemande.map((x) => `${esc(x.name)} : ${euro(x.prix)}`).join('. ')}. Payés une fois, ajoutés à votre prochaine facture.</p></div>
   </div>
@@ -1585,11 +1585,11 @@ function docPage() {
     ${fig('demandes', 'L’onglet Mes demandes', 'L’onglet « Mes demandes » : on écrit, on ajoute une photo si besoin, on suit l’avancement.')}
     <div>
       <p class="doc-kicker">7. Demander une modification</p>
-      <h2>Vous écrivez, Lia ou Alex s’en charge</h2>
+      <h2>Vous écrivez, Bricou ou Alex s’en charge</h2>
       <p>Pour chaque demande, vous choisissez qui la fait :</p>
       <ul class="list-check">
-        <li><strong>Lia</strong>, mon assistante autonome, fait les petites et moyennes modifications en 5 minutes, sur une seule page. Elle vous montre l’aperçu, et ne change rien sans votre accord.</li>
-        <li><strong>Alex</strong> fait les plus grandes, à la main. Si une demande est trop grosse pour Lia, elle passe à Alex.</li>
+        <li><strong>Bricou</strong>, le bricoleur de ma petite bande, fait les petites et moyennes modifications, sur une seule page. Il vous montre l’aperçu, et ne change rien sans votre accord.</li>
+        <li><strong>Alex</strong> fait les plus grandes, à la main. Si une demande est trop grosse pour Bricou, elle passe à Alex.</li>
         <li>Une demande peut être annulée gratuitement pendant 24 heures, 3 fois par mois.</li>
         <li>L’énergie de vos petits monstres et vos interventions d’Alex (${UNE_MODIF} ${PAR_PERIODE}) sont affichés en haut de votre espace.</li>
         <li>Besoin de plus ? Un article, un point avec Alex ou une demande sous 24 heures se commandent à l’unité, dans le même onglet.</li>

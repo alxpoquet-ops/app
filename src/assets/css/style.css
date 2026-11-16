@@ -1,6 +1,6 @@
 /* ==========================================================================
    ALED08 : feuille de style
-   Pastel, arrondi, léger. Une couleur douce par rubrique, et deux petits monstres : Lia et Alex.
+   Pastel, arrondi, léger. Une couleur douce par rubrique, et deux petits monstres : Cerise et Alex.
    ========================================================================== */
 
 @font-face { font-family: "Plus Jakarta Sans"; src: url("../fonts/jakarta-var.woff2") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }
@@ -116,10 +116,10 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 .btn[disabled] { opacity: .7; cursor: wait; transform: none; }
 .btn[aria-current] { --bs: #2E9C70; background: #6AD3A8; }
 
-/* ---------- les mascottes : Lia et Alex ---------- */
-/* À Noël (classe « noel » posée dans la tête de la page) : Lia met son bonnet, le nœud et les cornes passent dessous */
+/* ---------- les mascottes : Cerise et Alex ---------- */
+/* À Noël (classe « noel » posée dans la tête de la page) : Cerise met son bonnet, l’arceau du casque passe dessous */
 .noel .monster-lia .m-noel { display: inline; }
-.noel .monster-lia .m-noeud, .noel .monster-lia .m-cornes { display: none; }
+.noel .monster-lia .m-arceau { display: none; }
 .monster { display: block; width: 100%; height: auto; overflow: visible; }
 .js .monster .m-bob { animation: m-bob 3.4s ease-in-out infinite; }
 .js .monster .m-shadow { animation: m-shadow 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
@@ -599,7 +599,7 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 .prose ul { padding-left: 1.3em; }
 .prose li { margin-bottom: .35em; }
 .legal h2 { font-size: 1.3rem; }
-/* ---------- Lia et Alex ---------- */
+/* ---------- Cerise et Alex ---------- */
 .duo-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; max-width: 980px; margin: 0 auto; }
 .duo-card { padding: 26px; border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow-sm); }
 .duo-card h2 { margin: 12px 0 2px; font-size: 1.6rem; }
@@ -1377,7 +1377,7 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
 }
 /* PEINTURE:FIN */
 
-/* flèche au crayon qui présente Lia (haut de l'accueil) : elle se dessine toute seule à l'arrivée */
+/* flèche au crayon qui présente Cerise (haut de l'accueil) : elle se dessine toute seule à l'arrivée */
 .hero-fleche { position: absolute; right: calc(100% - 2px); top: -11%; width: min(150px, 25vw); height: auto; overflow: visible; pointer-events: none; }
 .hero-fleche path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: crayon .5s ease-out forwards; }
 .hero-fleche .fl-L { animation-delay: .5s; } .hero-fleche .fl-i { animation-delay: .8s; } .hero-fleche .fl-a { animation-delay: 1s; }
@@ -1609,7 +1609,7 @@ main > .section-soft:nth-of-type(odd)::before { --tm: var(--tache-2); right: aut
   .brand-text strong { font-size: .9rem; }
 }
 
-/* Documentation : Lia et Alex, tableau des Jetons Lia */
+/* Documentation : Cerise et Alex, tableau des Jetons Cerise */
 .doc-duo-qui { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
 .doc-qui { padding: 22px; border-radius: var(--radius); background: var(--c); color: var(--c-dd); }
 .doc-qui h3 { margin: 10px 0 6px; color: var(--ink); }
@@ -1637,7 +1637,7 @@ div.tool { cursor: default; }
 .tools-famille { margin: 34px 0 14px; font-size: 1.25rem; color: var(--ink); }
 .tools-famille:first-of-type { margin-top: 10px; }
 
-/* Lia : le second bras salue en miroir */
+/* Cerise : le second bras salue en miroir */
 .js .monster .m-wave-r { transform-origin: 10% 90%; animation-delay: -.5s; }
 
 /* ============================================================
@@ -1703,7 +1703,7 @@ div.tool { cursor: default; }
   .opt-groups { grid-template-columns: 1fr; }
 }
 
-/* ---------- la bulle de Lia : en bas de chaque page ---------- */
+/* ---------- la bulle de Cerise : en bas de chaque page ---------- */
 .lia-flot { position: fixed; right: max(14px, env(safe-area-inset-right)); bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 88; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; pointer-events: none; }
 .lia-flot[hidden] { display: none; }
 .lia-flot > * { pointer-events: auto; }

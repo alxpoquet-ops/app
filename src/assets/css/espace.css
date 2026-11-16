@@ -111,7 +111,7 @@
 @media (prefers-reduced-motion: reduce) { .esp-wait-art, .esp-wait-bar i::after, .esp-timeline li.is-now .esp-tl-ico { animation: none; } }
 @media (max-width: 720px) { .esp-wait { grid-template-columns: 72px minmax(0, 1fr); padding: 14px; } .esp-wait-art { width: 72px; } .esp-wait-title { font-size: 1.05rem; } }
 
-/* ---------- demande : par Lia (jeton) ou par Alex ---------- */
+/* ---------- demande : par Cerise (jeton) ou par Alex ---------- */
 .req-par { border: 0; padding: 0; margin: 0 0 4px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .req-par legend { margin-bottom: 8px; }
 .req-par-opt { position: relative; cursor: pointer; }
@@ -133,7 +133,7 @@
 .esp-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 @media (max-width: 720px) { .esp-grid2 { grid-template-columns: 1fr; } .esp-form .btn { justify-self: stretch; } }
 a.app-card { text-decoration: none; color: inherit; }
-/* Aperçu de Lia à valider */
+/* Aperçu de Cerise à valider */
 .lia-confirm { display: grid; gap: 10px; margin-top: 10px; padding: 14px; border-radius: 18px; background: var(--mint); color: var(--text); }
 .lia-confirm-h { display: flex; gap: 10px; align-items: center; margin: 0; }
 .lia-confirm-h .monster, .lia-confirm-h svg { width: 44px; height: 44px; flex: none; }
@@ -403,7 +403,7 @@ a.app-card { text-decoration: none; color: inherit; }
 @media (max-width: 560px) { .bf-head { grid-template-columns: 44px minmax(0, 1fr); } .bf-head > .st { grid-column: 1 / -1; justify-self: start; } .bf-ligne-img { grid-template-columns: minmax(0, 1fr); } }
 
 /* ============================================================
-   Jetons Lia et outils de Lia (onglet « Outils »)
+   Jetons Cerise et outils de Cerise (onglet « Outils »)
    ============================================================ */
 .jl-solde { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 16px 18px; margin: 0 0 18px; border-radius: 22px; background: var(--butter); color: var(--butter-dd); }
 .jl-ico { display: grid; place-items: center; width: 46px; height: 46px; flex: none; border-radius: 50%; background: var(--card); color: var(--butter-d); }

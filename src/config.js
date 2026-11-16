@@ -1,6 +1,6 @@
 // ============================================================================
 //  Alex & Co : configuration centrale du site (identité, rubriques, l'offre unique :
-//  création à 500 €, abonnement à 10 € par mois, options et extras, Jetons Lia,
+//  création à 500 €, abonnement à 10 € par mois, options et extras, Jetons Cerise,
 //  fidélité, paiement). Tous les prix du site viennent d'ici : le configurateur, la page
 //  /commander/, les données structurées et l'extension WordPress (data.json)
 //  se mettent à jour au prochain build.
@@ -65,7 +65,7 @@ const sections = {
   espace: { path: '/outils/', label: 'Outils', color: 'sky', icon: 'toolbox' },
   seo: { path: '/referencement-seo/', label: 'SEO', color: 'butter', icon: 'search-check' },
   contact: { path: '/contact/', label: 'Contact', color: 'peach', icon: 'message-circle' },
-  // V2 (novembre 2026) : « Ils nous ont fait confiance » devient Réalisations, « Lia et Alex » devient Pourquoi Alex & Co,
+  // V2 (novembre 2026) : « Ils nous ont fait confiance » devient Réalisations, « Cerise et Alex » devient Pourquoi Alex & Co,
   // « Ma méthode » devient Pourquoi moins cher. Les anciennes adresses sont redirigées (scripts/wp-export.py).
   confiance: { path: '/realisations/', label: 'Réalisations', color: 'butter', icon: 'image' },
   liaalex: { path: '/pourquoi-alex-et-co/', label: 'Pourquoi Alex & Co', color: 'pink', icon: 'heart-handshake' },
@@ -146,8 +146,8 @@ const types = [
 // En paiement annuel : 2 mois offerts.
 // quota : interventions d'Alex (modifications faites à la main) par période. periode : 'trimestre' depuis la V2
 // (novembre 2026). Les clients inscrits avant gardent une intervention par mois : c'est géré dans l'extension WordPress.
-// jetons : Jetons Lia donnés chaque mois, pour les outils et les retouches faites par Lia. Besoin de plus : le client
-// en rachète à l'utilisation (jetonsLia.recharge), ajoutés à sa prochaine facture. L'option « Lia + » n'existe plus.
+// jetons : Jetons Cerise donnés chaque mois, pour les outils et les retouches faites par Cerise. Besoin de plus : le client
+// en rachète à l'utilisation (jetonsLia.recharge), ajoutés à sa prochaine facture. L'option « Cerise + » n'existe plus.
 // Les anciens forfaits (chico, power, titan) n'existent plus : un ancien client garde ce qu'il avait
 // (power : extra Suivi Google ; titan : extras Suivi Google et chiffres détaillés), c'est géré dans l'extension WordPress.
 const forfaits = [
@@ -158,7 +158,7 @@ const forfaits = [
     month: 10,
     quota: 1, // interventions d'Alex par période
     periode: 'trimestre',
-    jetons: 100, // Jetons Lia par mois
+    jetons: 100, // Jetons Cerise par mois
     partage: false,
     bulle: 'Tout ce qu’il faut pour que votre site tourne',
     modifs: 'les petites retouches et les outils de la bande, et une intervention d’Alex par trimestre',
@@ -201,11 +201,11 @@ const options = [
 // automatisations, dessinées en petits monstres (src/lib/bestiaire.js). Chacun s'occupe d'une tâche répétitive mais
 // utile, travaille en autonomie, et Alex vérifie tout ce qu'il fait. C'est ce qui permet un site 4 à 5 fois moins cher.
 // Sur le site public, on ne parle ni d'IA ni de jetons : seulement de ces petits monstres. Chacun a un prénom et UN rôle :
-// un seul pour la bulle (Lia), un seul pour les modifications (Bricou), un par outil ou par option.
+// un seul pour la bulle (Cerise), un seul pour les modifications (Bricou), un par outil ou par option.
 // option : l'option au mois qui l'ajoute à votre abonnement. compris : dans l'abonnement de base.
 // outils : il aide aussi le client au quotidien, dans son espace (au service de tous).
 const bande = [
-  { id: 'support', nom: 'Lia', monstre: 'lia', role: 'L’assistante', compris: true, court: 'Elle répond à vos questions, dans la bulle.', fait: 'C’est elle qui vous répond dans la petite bulle, en bas de l’écran. Une question sur votre site ? Elle est là, et elle passe le relais à Alex quand il le faut.' },
+  { id: 'support', nom: 'Cerise', monstre: 'lia', role: 'L’assistante', compris: true, court: 'Elle répond à vos questions, dans la bulle.', fait: 'C’est elle qui vous répond dans la petite bulle, en bas de l’écran. Une question sur votre site ? Elle est là, et elle passe le relais à Alex quand il le faut.' },
   { id: 'gardien', nom: 'Mochi', monstre: 'mochi', role: 'Le gardien', compris: true, court: 'Mises à jour, sauvegardes et surveillance.', fait: 'Il fait les mises à jour, les sauvegardes et la sécurité, et il surveille jour et nuit que votre site reste en ligne et rapide.' },
   { id: 'bricoleur', nom: 'Bricou', monstre: 'bricou', role: 'Le bricoleur', compris: true, court: 'Vos petites modifications, avec un aperçu.', fait: 'Vous lui demandez un changement : il le montre d’abord à Alex, puis il prépare la modification et vous laisse valider l’aperçu.' },
   { id: 'ecrivain', nom: 'Plume', monstre: 'fantome', role: 'L’écrivain', outils: true, court: 'Vos textes, vos réponses et vos avis.', fait: 'Il vous aide à écrire : corriger un texte, le rendre plus clair, le traduire, répondre à un client ou à un avis.' },
@@ -221,12 +221,12 @@ const bande = [
 const fidelite = { parrainageMois: 1, remiseSecondSite: 10 };
 const paiement = { acompte: 25 }; // 25 % à la commande ; à la réception : le reste (en une fois, ou en 6 / 12 fois sans frais) et l'abonnement démarre
 
-// ---------------------------------------------------------------- Jetons Lia
-// 1 Jeton Lia = 1 centime. Les jetons paient ce que fait Lia : les modifications du site et les outils.
-// Règle de prix : ce que Lia me coûte (Claude) × margeOutils pour les outils, × margeLia pour les modifications.
-// modif : prix d'une modification par Lia = base + 1 jeton par tranche de `mots` mots écrits + `image` par photo jointe.
+// ---------------------------------------------------------------- Jetons Cerise
+// 1 Jeton Cerise = 1 centime. Les jetons paient ce que fait Cerise : les modifications du site et les outils.
+// Règle de prix : ce que Cerise me coûte (Claude) × margeOutils pour les outils, × margeLia pour les modifications.
+// modif : prix d'une modification par Cerise = base + 1 jeton par tranche de `mots` mots écrits + `image` par photo jointe.
 // recharge : jetons en plus, achetés à l'utilisation, ajoutés à la prochaine facture.
-// liaplus : jetons de l'ancienne option Lia + (supprimée en novembre 2026, plus aucun client ne l'avait), gardé pour l'extension.
+// liaplus : jetons de l'ancienne option Cerise + (supprimée en novembre 2026, plus aucun client ne l'avait), gardé pour l'extension.
 const jetonsLia = {
   valeur: 0.01,
   margeOutils: 4,
@@ -234,7 +234,7 @@ const jetonsLia = {
   modif: { base: 30, mots: 10, image: 10 },
   recharge: [{ jetons: 100, prix: 1 }, { jetons: 500, prix: 5 }, { jetons: 1000, prix: 10 }],
   liaplus: 500,
-  // La bulle de Lia, en bas de l'espace client : on lui écrit, elle répond et prépare l'action à valider.
+  // La bulle de Cerise, en bas de l'espace client : on lui écrit, elle répond et prépare l'action à valider.
   // jetons : prix d'un message (avec le modèle rapide ; l'extension le recalcule si on change de modèle).
   // parJour : messages par jour et par client. max : longueur d'un message.
   bulle: { jetons: 1, parJour: 40, max: 600 },

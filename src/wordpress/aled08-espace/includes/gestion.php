@@ -234,7 +234,7 @@ function aled08e_gestion($u) {
                 $s = get_post_meta($p->ID, '_aled08_statut', true) ?: 'recue';
                 $c = get_userdata($p->post_author);
                 $site = $c ? aled08e_meta($c->ID, 'site') : '';
-                $par = get_post_meta($p->ID, '_aled08_par', true) === 'lia' ? 'Lia' : 'Alex';
+                $par = get_post_meta($p->ID, '_aled08_par', true) === 'lia' ? 'Bricou' : 'Alex';
                 ?>
             <li class="ges-item">
               <div class="ges-head"><strong><?php echo esc_html($c ? $c->display_name : 'Client supprimé'); ?></strong><em class="st <?php echo esc_attr($st[$s][1] ?? 'st-new'); ?>"><?php echo esc_html($st[$s][0] ?? $s); ?></em></div>
@@ -258,13 +258,13 @@ function aled08e_gestion($u) {
 
         <div class="app-panel" role="tabpanel" id="t-suivi" aria-labelledby="tab-suivi" hidden>
           <h2 class="app-h">Toutes les demandes</h2>
-          <p class="app-p">Les 60 dernières demandes, avec qui les a faites et ce que le client a répondu à l’aperçu de Lia.</p>
+          <p class="app-p">Les 60 dernières demandes, avec qui les a faites et ce que le client a répondu à l’aperçu de Bricou.</p>
           <?php
           $toutes = get_posts(['post_type' => ALED08E_CPT, 'post_status' => ['private', 'publish'], 'numberposts' => 60, 'orderby' => 'date', 'order' => 'DESC']);
           $etats = [
-              'en_attente' => ['Lia travaille', 'st-doing'], 'a_confirmer' => ['Aperçu envoyé, en attente du client', 'st-new'],
+              'en_attente' => ['Bricou travaille', 'st-doing'], 'a_confirmer' => ['Aperçu envoyé, en attente du client', 'st-new'],
               'fait' => ['Aperçu validé par le client, mis en ligne', 'st-done'], 'refuse' => ['Aperçu refusé par le client', 'esp-st-off'],
-              'pour_alex' => ['Passée à Alex par Lia', 'st-doing'], 'annule' => ['Annulée', 'esp-st-off'],
+              'pour_alex' => ['Passée à Alex par Bricou', 'st-doing'], 'annule' => ['Annulée', 'esp-st-off'],
           ];
           $nLia = 0; $nAlex = 0; $nValide = 0; $nRefus = 0; $cout = 0.0;
           foreach ($toutes as $d) {
@@ -277,13 +277,13 @@ function aled08e_gestion($u) {
           }
           ?>
           <div class="app-cards ges-cards">
-            <div class="app-card c-pink"><span class="app-card-ico"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?></span><span><small>Faites par Lia</small><strong><?php echo (int) $nLia; ?></strong></span></div>
+            <div class="app-card c-pink"><span class="app-card-ico"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?></span><span><small>Faites par Bricou</small><strong><?php echo (int) $nLia; ?></strong></span></div>
             <div class="app-card c-lilac"><span class="app-card-ico"><?php echo aled08e_icon('user'); // phpcs:ignore ?></span><span><small>Pour Alex</small><strong><?php echo (int) $nAlex; ?></strong></span></div>
             <div class="app-card c-mint"><span class="app-card-ico"><?php echo aled08e_icon('circle-check'); // phpcs:ignore ?></span><span><small>Aperçus validés</small><strong><?php echo (int) $nValide; ?></strong></span></div>
-            <div class="app-card c-sky"><span class="app-card-ico"><?php echo aled08e_icon('badge-euro'); // phpcs:ignore ?></span><span><small>Coût estimé de Lia</small><strong><?php echo esc_html(number_format($cout, 2, ',', ' ')); ?> $</strong></span></div>
+            <div class="app-card c-sky"><span class="app-card-ico"><?php echo aled08e_icon('badge-euro'); // phpcs:ignore ?></span><span><small>Coût estimé de Bricou</small><strong><?php echo esc_html(number_format($cout, 2, ',', ' ')); ?> $</strong></span></div>
           </div>
           <?php if (!$toutes) : ?><p class="esp-empty">Aucune demande pour le moment.</p><?php else : ?>
-          <div class="field ges-filter"><label for="ges-dq">Filtrer</label><input id="ges-dq" type="search" placeholder="Client, Lia, Alex, validé, refusé" data-ges-filter="#ges-suivi"></div>
+          <div class="field ges-filter"><label for="ges-dq">Filtrer</label><input id="ges-dq" type="search" placeholder="Client, Bricou, Alex, validé, refusé" data-ges-filter="#ges-suivi"></div>
           <ul class="ges-list" id="ges-suivi">
             <?php foreach ($toutes as $d) :
                 $sd = get_post_meta($d->ID, '_aled08_statut', true) ?: 'recue';
@@ -300,9 +300,9 @@ function aled08e_gestion($u) {
                 ?>
             <li class="ges-item" data-ges-text="<?php echo esc_attr(mb_strtolower(($cl ? $cl->display_name : '') . ' ' . ($parLia || $e ? 'lia ' : '') . ($parLia ? '' : 'alex ') . ($et ? $et[0] : '') . ' ' . ($st[$sd][0] ?? ''))); ?>">
               <div class="ges-head"><strong><?php echo esc_html($cl ? $cl->display_name : 'Client supprimé'); ?></strong><em class="st <?php echo esc_attr($st[$sd][1] ?? 'st-new'); ?>"><?php echo esc_html($st[$sd][0] ?? $sd); ?></em></div>
-              <p class="ges-meta">Le <?php echo esc_html(aled08e_date($d->post_date)); ?> · <?php echo $parLia ? 'par Lia' : ($e === 'pour_alex' ? 'demandée à Lia, faite par Alex' : 'par Alex'); ?><?php if (get_post_meta($d->ID, '_aled08_hors_forfait', true)) echo ' · Boost 1 €'; ?><?php if ($faite) echo ' · faite le ' . esc_html(aled08e_date($faite)); ?></p>
+              <p class="ges-meta">Le <?php echo esc_html(aled08e_date($d->post_date)); ?> · <?php echo $parLia ? 'par Bricou' : ($e === 'pour_alex' ? 'demandée à Bricou, faite par Alex' : 'par Alex'); ?><?php if (get_post_meta($d->ID, '_aled08_hors_forfait', true)) echo ' · Boost 1 €'; ?><?php if ($faite) echo ' · faite le ' . esc_html(aled08e_date($faite)); ?></p>
               <p class="ges-text"><?php echo esc_html(mb_strlen($d->post_content) > 260 ? mb_substr($d->post_content, 0, 257) . '…' : ($d->post_content ?: $d->post_title)); ?></p>
-              <?php if ($et) : ?><p class="ges-meta"><em class="st <?php echo esc_attr($et[1]); ?>"><?php echo esc_html($et[0]); ?></em><?php if ($conf) echo ' le ' . esc_html(aled08e_date($conf)); elseif ($le) echo ' · Lia a fini le ' . esc_html(aled08e_date($le)); ?></p><?php endif; ?>
+              <?php if ($et) : ?><p class="ges-meta"><em class="st <?php echo esc_attr($et[1]); ?>"><?php echo esc_html($et[0]); ?></em><?php if ($conf) echo ' le ' . esc_html(aled08e_date($conf)); elseif ($le) echo ' · Bricou a fini le ' . esc_html(aled08e_date($le)); ?></p><?php endif; ?>
               <?php if ($annulee) : ?><p class="ges-meta"><em class="st esp-st-off">Annulée par le client</em> le <?php echo esc_html(aled08e_date($annulee)); ?></p><?php endif; ?>
               <?php if ($com) : ?><p class="ges-meta">Mot du client : <?php echo esc_html($com); ?></p><?php endif; ?>
               <?php if (is_array($c) && !empty($c['appels'])) : ?><p class="ges-meta">Coût estimé : <?php echo esc_html(number_format(aled08e_lia_cout($c), 3, ',', ' ')); ?> $</p><?php endif; ?>
@@ -327,7 +327,7 @@ function aled08e_gestion($u) {
                 ?>
             <li class="ges-item" data-ges-text="<?php echo esc_attr(mb_strtolower($c->display_name . ' ' . $site . ' ' . $c->user_email)); ?>">
               <div class="ges-head"><strong><?php echo esc_html($c->display_name); ?></strong><?php if ($f) : ?><em class="st st-done"><?php echo esc_html($f['name']); ?><?php echo aled08e_meta($c->ID, 'offert') === '1' ? ', offert' : ''; ?></em><?php else : ?><em class="st esp-st-off">Sans abonnement</em><?php endif; ?></div>
-              <p class="ges-meta"><?php if ($site) : ?><a href="<?php echo esc_url($site); ?>" target="_blank" rel="noopener"><?php echo esc_html(preg_replace('#^https?://(www\.)?#', '', untrailingslashit($site))); ?></a> · <?php endif; ?><?php if ($f) echo aled08e_famille($c->ID) ? 'modifications illimitées ∞ ♥ · ' : (int) $util . ' modification' . ($util > 1 ? 's' : '') . ' ce mois (Lia ' . (int) aled08e_jetons_user($c->ID, $f) . ' jetons, Alex ' . (int) aled08e_count_alex($c->ID) . '/' . (int) $f['quota'] . ' ' . aled08e_periode_ce($c->ID) . ') · '; ?>client depuis le <?php echo esc_html(aled08e_date($c->user_registered)); ?></p>
+              <p class="ges-meta"><?php if ($site) : ?><a href="<?php echo esc_url($site); ?>" target="_blank" rel="noopener"><?php echo esc_html(preg_replace('#^https?://(www\.)?#', '', untrailingslashit($site))); ?></a> · <?php endif; ?><?php if ($f) echo aled08e_famille($c->ID) ? 'modifications illimitées ∞ ♥ · ' : (int) $util . ' modification' . ($util > 1 ? 's' : '') . ' ce mois (Bricou ' . (int) aled08e_jetons_user($c->ID, $f) . ' jetons, Alex ' . (int) aled08e_count_alex($c->ID) . '/' . (int) $f['quota'] . ' ' . aled08e_periode_ce($c->ID) . ') · '; ?>client depuis le <?php echo esc_html(aled08e_date($c->user_registered)); ?></p>
               <div class="ges-actions">
                 <a class="btn btn-light btn-sm" href="mailto:<?php echo esc_attr($c->user_email); ?>"><?php echo aled08e_icon('mail'); // phpcs:ignore ?><span><?php echo esc_html($c->user_email); ?></span></a>
                 <?php if ($tel) : ?><a class="btn btn-light btn-sm" href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/', '', $tel)); ?>"><?php echo aled08e_icon('phone'); // phpcs:ignore ?><span><?php echo esc_html($tel); ?></span></a><?php endif; ?>
