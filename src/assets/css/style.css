@@ -1938,3 +1938,9 @@ div.tool { cursor: default; }
 @media (max-width: 720px) { .alex-bulle { flex-direction: column; text-align: left; } .alex-art { width: 110px; } .alex-bulle p::before { left: 50%; top: -9px; transform: translateX(-50%) rotate(45deg); } }
 .lia-flot-coucou strong { display: block; }
 .lia-flot-coucou small { display: block; margin-top: 2px; font-weight: 700; font-size: .76rem; color: var(--muted); }
+/* espace client : Bricou parle au client dans le suivi de ses demandes */
+.req-bricou { display: flex; gap: 10px; align-items: flex-start; }
+.req-bricou > .petit { width: 46px; flex: none; margin-top: -4px; }
+.req-bricou b { display: block; color: var(--ink); font-size: .85rem; }
+.lia-confirm-h .petit { width: 54px; flex: none; }
+.req-par-opt .petit-alex, .req-par-opt .petit { width: 64px; }

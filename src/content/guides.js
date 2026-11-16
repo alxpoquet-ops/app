@@ -29,7 +29,7 @@ const maj = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 // Au-delà d'un usage normal, le client reprend des outils depuis son espace : on cite seulement la plus petite recharge
 // (réglages du compteur des outils dans config.js, appelé « énergie » dans l'espace client).
 const rechargeMin = Object.values(cfg).find((v) => v && v.recharge && v.modif).recharge[0].prix;
-const gardien = bande.find((b) => b.compris).role; // Le gardien
+const gardien = bande.find((b) => b.id === 'gardien').role; // Le gardien (présenté par son rôle, sans prénom)
 const demandesUneFois =aLaDemande.map((x) => `${minus(x.name)} (${eur(x.prix)} €)`).join(', ');
 const optionsUneFois = options.filter((o) => o.quand === 'creation').map((o) => `${o.name} (${eur(o.price.once)} €)`).join(', ');
 const extrasPourTous = options.filter((o) => o.quand === 'mois' && !o.types).map((o) => `${o.name} (${eur(o.price.month)} € par mois)`).join(', ');

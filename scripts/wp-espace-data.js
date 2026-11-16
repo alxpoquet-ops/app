@@ -4,6 +4,7 @@
 const cfg = require('../src/config');
 const { icon } = require('../src/lib/icons');
 const { monster } = require('../src/lib/monsters');
+const { petit, alexPortrait } = require('../src/lib/bestiaire');
 
 const { site, forfaits, types, annuel, options, fidelite } = cfg;
 const boost = cfg.boost || { prix: 5 };
@@ -46,6 +47,11 @@ process.stdout.write(
       // les icônes de l'espace client, plus celles des outils de Lia (lues dans leur définition)
     icons: Object.fromEntries([...new Set([...ICONS, ...require('../src/content/outils-lia').outils.map((o) => o.icon), ...options.map((o) => o.icon).filter(Boolean), ...(cfg.aLaDemande || []).map((x) => x.icon)])].map((n) => [n, icon(n)])),
     // Lia (une humeur par dessin, mascotte = bonjour) et Alex, le petit monstre à lunettes
-    monsters: Object.fromEntries(['mascotte', 'clin', 'ravie', 'pense', 'triste', 'alex'].map((n) => [n, monster(n)])),
+    // Lia (une humeur par dessin), Alex en portrait, et la petite bande (Bricou fait les modifications)
+    monsters: Object.fromEntries([
+      ...['mascotte', 'clin', 'ravie', 'pense', 'triste'].map((n) => [n, monster(n)]),
+      ['alex', alexPortrait()],
+      ...['bricou', 'mochi', 'fantome', 'nuage', 'etoile', 'gelee', 'chaton', 'dino', 'champi'].map((n) => [n, petit(n)]),
+    ]),
   })
 );

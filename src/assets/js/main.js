@@ -1115,8 +1115,8 @@
     var dejaVue = false;
     try { dejaVue = sessionStorage.getItem('lia_vue') === '1'; } catch (e) {}
     if (coucou && !dejaVue) {
-      setTimeout(function () { if (flotPanel.hidden) coucou.hidden = false; }, 2500);
-      setTimeout(function () { coucou.hidden = true; try { sessionStorage.setItem('lia_vue', '1'); } catch (e) {} }, 11000);
+      // « Je suis là pour vous aider ! » : il apparaît au bout de 2 secondes et reste là tant que la bulle n'a pas été ouverte
+      setTimeout(function () { if (flotPanel.hidden) coucou.hidden = false; }, 2000);
       coucou.addEventListener('click', function () { flotOuvrir(true); });
     }
   }

@@ -1,7 +1,7 @@
 // Lexique : « c'est quoi … ? », des définitions simples des mots du web.
 // Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160, aucun tiret long, pas de phrase de 9 mots ou plus reprise d'une autre page.
 const { types, forfaits, options, bande } = require('../config');
-const gardien = bande.find((b) => b.compris).role; // Le gardien, le petit monstre compris dans l'abonnement
+const gardien = bande.find((b) => b.id === 'gardien').role; // Le gardien, compris dans l'abonnement (présenté sans prénom)
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const T = (id) => types.find((t) => t.id === id);
 const O = (id) => options.find((o) => o.id === id);

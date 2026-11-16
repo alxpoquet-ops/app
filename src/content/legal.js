@@ -2,15 +2,17 @@
 // ⚠️ Les éléments entre accolades proviennent de src/config.js et doivent y être complétés.
 // ⚠️ Modèle à faire relire : il ne remplace pas l'avis d'un professionnel du droit.
 // Règles : aucun tiret long, phrases courtes, rien d'invérifiable. Le nom de marque vient de site.name.
-const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, jetonsLia, delais, creation, aLaDemande } = require('../config');
+const cfg = require('../config');
+const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, delais, creation, aLaDemande, bande } = cfg;
 const L = site.legal;
 const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 const UPDATED = '2026-11-15'; // mentions légales
-const UPDATED_CONF = '2026-11-16'; // politique de confidentialité : Lia présentée comme l'assistante autonome
-const UPDATED_CGV = '2026-11-16'; // conditions générales : offre V2 (intervention d'Alex par trimestre, extras à la demande, jetons)
-// Lia : dans les textes publics, « assistante autonome ». Seule exception, l'article 11 des conditions générales, qui informe
-// le client qu'il échange avec un système automatisé (règlement européen AI Act, obligation de transparence).
+const UPDATED_CONF = '2026-11-16'; // politique de confidentialité : les outils automatiques et leur fournisseur
+const UPDATED_CGV = '2026-11-16'; // conditions générales : la petite bande, l'énergie, Alex par trimestre, les extras à la demande
+// La petite bande (config.bande) : les automatisations d'Alex, présentées par leur rôle, sans prénom.
+// Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
+// (règlement européen AI Act, obligation de transparence). La politique de confidentialité nomme le fournisseur.
 
 // L'offre unique : la création à prix fixe, un seul abonnement, des options payées une fois, des extras au mois,
 // et des extras à la demande payés une fois. Tous les nombres viennent de src/config.js, pour que les CGV suivent toujours les prix.
@@ -57,7 +59,7 @@ const seoSuivi = options.find((o) => o.id === 'seo');
 const DETAIL_DEMANDE = {
   alex: `une modification faite à la main par Alex, en plus de l’intervention comprise dans la période (article 11)`,
   urgent: `la demande est prise en charge avant les autres et traitée sous ${delais.urgent}, du lundi au vendredi`,
-  article: 'le client choisit le sujet, Lia prépare l’article, Alex le relit, l’illustre et le publie sur le site du client',
+  article: 'le client choisit le sujet, un outil automatisé prépare un premier jet, Alex le relit, l’illustre et le publie sur le site du client',
   point: 'un rendez-vous avec Alex, par téléphone ou en visio, pour faire le point sur le site et les projets du client',
 };
 const listeDemande = aLaDemande
@@ -65,14 +67,29 @@ const listeDemande = aLaDemande
   .join('\n');
 const alexPlus = aLaDemande.find((x) => x.id === 'alex');
 const urgent = aLaDemande.find((x) => x.id === 'urgent');
-// Jetons Lia : les outils et les retouches avec Lia fonctionnent avec des jetons (100 par mois, rachat à l'utilisation).
-const centime = eur(Math.round(jetonsLia.valeur * 100));
-const modifMax = 65; // la plus grande demande que Lia accepte (mots et photos)
-const listeRecharges = jetonsLia.recharge.map((r) => `${r.jetons} jetons pour ${eur(r.prix)} €`).join(', ');
-const OUTILS_LIA = require('./outils-lia').outils;
-const payants = OUTILS_LIA.map((t) => t.jetons).filter((n) => n > 0);
+// L'énergie : le compteur des outils, des retouches automatiques et de la bulle d'aide, dans l'espace client.
+// Ses réglages sont dans config.js sous un ancien nom de clé, lu ici sans le recopier (le site public n'en parle pas).
+const compteur = Object.values(cfg).find((v) => v && v.recharge && v.modif);
+const nb = (o) => o[Object.keys(o).find((k) => /^jet/.test(k))]; // le nombre de points d'un réglage
+const energieMois = nb(abo); // points d'énergie compris chaque mois
+const modifMax = 65; // la plus grande demande qu'une retouche automatique accepte (mots et photos)
+const listeRecharges = compteur.recharge.map((r) => `${nb(r)} points pour ${eur(r.prix)} €`).join(', ');
+const OUTILS = require('./outils-lia').outils;
+const payants = OUTILS.map(nb).filter((n) => n > 0);
 const outilMin = Math.min(...payants), outilMax = Math.max(...payants);
-const outilsGratuits = OUTILS_LIA.some((t) => !t.jetons) ? ' Certains outils sont gratuits.' : '';
+const outilsGratuits = OUTILS.some((t) => !nb(t)) ? ' Certains outils n’en utilisent aucun.' : '';
+const parMessage = nb(compteur.bulle); // un message dans la bulle d'aide
+// La petite bande, présentée par rôle
+const et = (l) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} et ${l[l.length - 1]}` : l.join(''));
+const ROLE_CGV = {
+  support: 'la bulle d’aide, qui répond aux questions du client et transmet à Alex ce qui doit l’être',
+  gardien: 'les mises à jour, les sauvegardes, la sécurité et la surveillance du site',
+  bricoleur: 'la préparation des retouches automatiques',
+};
+const compris = bande.filter((b) => b.compris);
+const bandeComprise = et(compris.map((b) => `${minus(b.role)}${ROLE_CGV[b.id] ? ` (${ROLE_CGV[b.id]})` : ''}`));
+const bandeOutils = et(bande.filter((b) => b.outils).map((b) => minus(b.role)));
+const bricoleur = minus((bande.find((b) => b.id === 'bricoleur') || { role: 'un outil automatisé' }).role);
 
 module.exports = [
   {
@@ -120,7 +137,7 @@ Pour un litige avec un consommateur, un médiateur de la consommation peut être
     path: '/politique-de-confidentialite/',
     name: 'Politique de confidentialité',
     title: `Politique de confidentialité | ${site.name}`,
-    description: `Comment ${site.name} traite vos données : demande de devis, commande en ligne, paiement par Stripe, nom de domaine, espace client et Lia. Aucun traceur publicitaire.`,
+    description: `Comment ${site.name} traite vos données : demande de devis, commande en ligne, paiement par Stripe, nom de domaine, espace client. Aucun traceur publicitaire.`,
     lead: 'Ce que deviennent les informations que vous m’envoyez, combien de temps je les garde, et vos droits.',
     updated: UPDATED_CONF,
     body: `## 1. Responsable du traitement
@@ -152,7 +169,7 @@ Pour réserver le nom de domaine, je transmets vos coordonnées de titulaire (pr
 
 Votre compte est créé automatiquement à la commande, avec votre adresse e-mail. Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée.
 
-Lia, l’assistante autonome de l’espace client, fonctionne avec Claude, un service de la société Anthropic. Quand vous lui confiez une modification ou que vous lancez un de ses outils, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude, par une liaison chiffrée, pour produire la réponse. Ils ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
+Certains outils automatiques de l’espace client, dont la bulle d’aide et les retouches automatiques, fonctionnent avec Claude, un service de la société Anthropic. Quand vous demandez une retouche, que vous lancez un outil ou que vous écrivez dans la bulle, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude, par une liaison chiffrée, pour produire la réponse. Ils ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
 
 Quand vous publiez sur un réseau social depuis l’outil « Publier partout », votre texte et votre photo sont envoyés à ce réseau, sur le compte que vous avez relié. La photo est gardée une heure sur notre serveur, le temps de l’envoi, puis effacée.
 
@@ -166,7 +183,7 @@ Un compte sans aucune connexion depuis 12 mois et sans abonnement actif est supp
 
 ## 8. Destinataires
 
-Vos données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site, ${L.host}, par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Ce que vous confiez à Lia passe par Anthropic (Claude), société américaine : ce traitement peut avoir lieu hors de l’Union européenne, dans le cadre prévu par ses conditions de traitement des données. Elles ne sont jamais vendues ni cédées.
+Vos données sont destinées à ${site.name} uniquement. Elles transitent par l’hébergeur du site, ${L.host}, par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Ce que vous confiez à ces outils passe par Anthropic (Claude), société américaine : ce traitement peut avoir lieu hors de l’Union européenne, dans le cadre prévu par ses conditions de traitement des données. Elles ne sont jamais vendues ni cédées.
 
 ## 9. Cookies et stockage local
 
@@ -240,7 +257,8 @@ Il comprend :
 - **Le suivi du site** : son bon fonctionnement est surveillé.
 - **Le support** : une réponse sous ${delais.reponse}, en jours ouvrés (article 11).
 - **Les bases du SEO** : le site est construit pour que Google puisse le lire et le comprendre.
-- **${abo.jetons} Jetons Lia par mois**, pour les outils de l’espace client et les retouches faites par Lia (article 12).
+- **Les outils automatisés de base** : ${bandeComprise} (article 15).
+- **${energieMois} points d’énergie par mois**, pour les outils de l’espace client et les retouches automatiques (article 12).
 - **${maj(intervAlex)} d’Alex par ${periode}** (article 11).${periode === 'trimestre' ? ` Le client inscrit avant le ${DATE_V2} garde une intervention d’Alex par mois.` : ''}
 - **L’espace client et ses outils** (article 13).
 
@@ -258,7 +276,7 @@ Un extra est un service en plus. Il y en a deux sortes : les extras au mois et l
 
 ${listeExtras}
 
-L’extra ${seoSuivi.name} s’appelait auparavant « SEO suivi ». Seul le nom change.
+Chaque extra au mois ajoute l’outil automatisé qui lui correspond (article 15). L’extra ${seoSuivi.name} s’appelait auparavant « SEO suivi ». Seul le nom change.
 
 Le client ajoute ou retire un extra au mois quand il veut, depuis son espace client. Le nouveau prix s’applique à l’échéance suivante. Quand l’abonnement est payé à l’année, les extras au mois le sont aussi, avec les mêmes ${annuel.moisOfferts} mois offerts.
 
@@ -300,38 +318,40 @@ Le client envoie ses demandes de modification depuis son espace client ou par me
 
 À chaque demande, le client choisit qui s’en charge :
 
-- **Lia** : la modification est préparée par Lia, l’assistante autonome d’${site.name}. Lia est un outil automatisé, un système d’intelligence artificielle, qui peut se tromper. Rien n’est publié sans l’accord du client : Lia lui montre l’aperçu et ne modifie le site qu’après sa validation. Lia automatise des tâches répétitives. C’est Alex qui conçoit les sites. La modification se paie en Jetons Lia (article 12).
+- **Retouche automatique** : la modification est préparée par ${bricoleur}, un des outils automatisés d’${site.name} (article 15). Le client voit l’aperçu, et le site n’est modifié qu’après sa validation. La retouche utilise des points d’énergie (article 12).
 - **Alex** : la modification est faite à la main, vérifiée et paramétrée par Alex.
 
-**Petites retouches avec Lia.** Lia réalise les petites et moyennes modifications : un budget de mots et d’images par demande, sur une seule page. La modification est mise en ligne dès que le client valide l’aperçu, en général dans les 5 minutes qui suivent la demande. Une demande trop grande pour Lia est transmise à Alex. Elle compte alors comme une intervention d’Alex.
+**Retouches automatiques.** Elles couvrent les petites et moyennes modifications : un budget de mots et d’images par demande, sur une seule page. La modification est mise en ligne dès que le client valide l’aperçu, en général dans les 5 minutes qui suivent la demande. Une demande trop grande pour une retouche automatique est transmise à Alex. Elle compte alors comme une intervention d’Alex.
 
 **Intervention d’Alex.** L’abonnement comprend ${intervAlex} d’Alex par ${periode} : une modification faite à la main.${periode === 'trimestre' ? ` Pour un client inscrit avant le ${DATE_V2}, c’est une intervention par mois, aux mêmes conditions.` : ''} Une intervention non utilisée ne se reporte pas à la période suivante.
 
 **${alexPlus.name}.** Quand l’intervention de la période est déjà utilisée, le client peut commander ${minus(alexPlus.name)}, pour ${eur(alexPlus.prix)} € (article 6). Cet extra à la demande remplace le « Boost », au même prix. Le client donne son accord à chaque commande, et le montant est ajouté à sa prochaine facture. Il peut aussi choisir de reporter sa demande à la période suivante.
 
-**Annulation.** Une demande peut être annulée gratuitement par le client dans les 24 heures qui suivent son envoi, depuis son espace client, dans la limite de trois annulations par mois : elle n’est alors pas décomptée, ses Jetons Lia sont recrédités, et ce que Lia avait mis en ligne est remis comme avant. Au-delà, l’annulation se demande à Alex.
+**Annulation.** Une demande peut être annulée gratuitement par le client dans les 24 heures qui suivent son envoi, depuis son espace client, dans la limite de trois annulations par mois : elle n’est alors pas décomptée, les points d’énergie utilisés sont rendus, et ce qui avait été mis en ligne est remis comme avant. Au-delà, l’annulation se demande à Alex.
 
 **Délai de réponse.** ${site.name} répond à chaque demande sous ${delais.reponse}, en jours ouvrés. Ce délai est le même pour tous les clients. Répondre, c’est prendre en charge la demande et donner une date. Les petites modifications sont en général faites dans ce délai. Avec l’extra à la demande « ${urgent.name} » (article 6), la demande est traitée sous ${delais.urgent}, du lundi au vendredi.
 
-## 12. Jetons Lia
+## 12. Énergie
 
-Les outils de l’espace client et les retouches faites par Lia fonctionnent avec des Jetons Lia. Le client voit son solde de jetons dans son espace client. Un Jeton Lia vaut ${centime} centime d’euro. Les outils sont par exemple : publier sur les réseaux, corriger ou traduire un texte, conseils sur une photo ou sur une page du site, et autres outils du même genre.
+Les outils de l’espace client, les retouches automatiques et la bulle d’aide utilisent de l’énergie. C’est un compteur, affiché dans l’espace client. Les outils sont par exemple : publier sur les réseaux, corriger ou traduire un texte, conseils sur une photo ou sur une page du site, et autres outils du même genre.
 
-**Prix d’une retouche.** Une retouche faite par Lia coûte ${jetonsLia.modif.base} Jetons Lia, plus 1 jeton par tranche de ${jetonsLia.modif.mots} mots écrits dans la demande, plus ${jetonsLia.modif.image} jetons par photo jointe. Cela fait entre ${jetonsLia.modif.base} et ${modifMax} jetons par retouche.
+**Énergie comprise.** L’abonnement comprend ${energieMois} points d’énergie par mois, ce qui correspond à un usage normal. Ces points sont remis le 1er de chaque mois et ne se reportent pas d’un mois sur l’autre.
 
-**Prix d’un outil.** Un outil coûte de ${outilMin} à ${outilMax} Jetons Lia. Son prix est affiché sur son bouton, avant son utilisation.${outilsGratuits}
+**Retouche automatique.** Une retouche automatique utilise ${compteur.modif.base} points, plus 1 point par tranche de ${compteur.modif.mots} mots écrits dans la demande, plus ${compteur.modif.image} points par photo jointe. Cela fait entre ${compteur.modif.base} et ${modifMax} points par retouche.
 
-**Jetons de l’abonnement.** L’abonnement comprend ${abo.jetons} Jetons Lia par mois. Ces jetons sont remis le 1er de chaque mois et ne se reportent pas d’un mois sur l’autre.
+**Outils.** Un outil utilise de ${outilMin} à ${outilMax} points. Ce nombre est affiché sur son bouton, avant son utilisation.${outilsGratuits}
 
-**Jetons rachetés.** Quand il en manque, le client rachète des jetons à l’utilisation, depuis son espace client : ${listeRecharges}. Le montant est ajouté à sa prochaine facture. Ces jetons-là sont gardés d’un mois sur l’autre, jusqu’à leur utilisation.
+**Bulle d’aide.** Chaque message écrit dans la bulle utilise ${parMessage} point${parMessage > 1 ? 's' : ''} d’énergie, dans la limite de ${compteur.bulle.parJour} messages par jour.
 
-**Jetons rendus.** Les jetons d’une demande sont rendus au client dans quatre cas : la demande est transmise à Alex, la mise en ligne échoue, le client refuse l’aperçu, ou le client annule sa demande dans les 24 heures.
+**Recharge.** Au-delà, le client reprend de l’énergie à l’utilisation, depuis son espace client : ${listeRecharges}. Le montant est ajouté à sa prochaine facture. Les points repris sont gardés d’un mois sur l’autre, jusqu’à leur utilisation.
 
-Les Jetons Lia et les interventions d’Alex sont comptés séparément.
+**Énergie rendue.** Les points d’une demande sont rendus au client dans quatre cas : la demande est transmise à Alex, la mise en ligne échoue, le client refuse l’aperçu, ou le client annule sa demande dans les 24 heures.
+
+L’énergie et les interventions d’Alex sont comptées séparément.
 
 ## 13. Espace client et compte
 
-Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. Il y suit sa commande, ses demandes, son abonnement, ses extras et ses factures. Il y commande les extras à la demande (article 6). Il y trouve aussi les outils de Lia et son solde de Jetons Lia, et il peut y racheter des jetons (article 12). Il garde ses identifiants pour lui et prévient ${site.name} en cas de doute sur leur usage.
+Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. Il y suit sa commande, ses demandes, son abonnement, ses extras et ses factures. Il y commande les extras à la demande (article 6). Il y trouve aussi les outils de la petite bande et son compteur d’énergie, et il peut y reprendre de l’énergie (article 12). Il garde ses identifiants pour lui et prévient ${site.name} en cas de doute sur leur usage.
 
 Un compte sans connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec ses demandes et ses photos. Le client est prévenu par e-mail 30 jours avant. Une connexion suffit pour annuler la suppression. Les factures sont conservées en dehors du compte, le temps prévu par la loi.
 
@@ -339,9 +359,13 @@ Un compte sans connexion depuis 12 mois et sans abonnement actif est supprimé a
 
 Le client garantit qu’il a le droit d’utiliser les textes, images, logos et produits qu’il fournit. Il reste responsable des informations légales propres à son activité : mentions obligatoires, conditions de vente de sa boutique, prix affichés.
 
-## 15. Versions et outils de Lia
+## 15. Versions et outils automatisés
 
-Chaque version du site est conservée et peut être restaurée sur demande. Une modification préparée par Lia n’est mise en ligne qu’après l’accord du client, qui voit l’aperçu. Les textes et les conseils que donnent les outils de Lia sont des propositions : le client les relit avant de s’en servir et reste responsable de ce qu’il publie. Lia ne donne pas de conseil juridique, médical ou comptable.
+Chaque version du site est conservée et peut être restaurée sur demande.
+
+Alex conçoit et réalise chaque site. Pour les tâches répétitives, il s’aide d’outils automatisés qu’il a programmés, présentés sur le site comme une petite bande de petits monstres. L’abonnement de base comprend ${bandeComprise}. Les outils de l’espace client sont ${bandeOutils}. Chaque extra au mois ajoute l’outil qui lui correspond. Dans cet article, « les petits monstres » désigne l’ensemble de ces outils, bulle d’aide comprise.
+
+Les petits monstres sont des outils automatisés, dont certains reposent sur un système d’intelligence artificielle, qui peuvent se tromper. Rien n’est publié sans l’accord du client. Alex vérifie leur travail. Les textes et les conseils que donnent les outils sont des propositions : le client les relit avant de s’en servir et reste responsable de ce qu’il publie. Ces outils ne donnent pas de conseil juridique, médical ou comptable.
 
 ## 16. Référencement
 

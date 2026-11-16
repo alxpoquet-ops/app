@@ -2,7 +2,7 @@
 // Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160, aucun tiret long
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de src/config.js),
 // aucun chiffre sans source, et pas de phrase de 9 mots ou plus reprise d'une autre page.
-const { site, creation, types, forfaits, annuel, lissage, delais, options, aLaDemande, paiement, marche, fidelite, clients, jetonsLia } = require('../config');
+const { site, creation, types, forfaits, annuel, lissage, delais, options, aLaDemande, paiement, marche, fidelite, clients, bande } = require('../config');
 
 // helpers
 const T = (id) => types.find((t) => t.id === id);
@@ -17,12 +17,33 @@ const annee = abo.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'
 const durees = lissage.durees.join(' ou ');
 const seo = O('seo');
 const extrasMois = options.filter((o) => o.quand === 'mois');
-// Jetons : ceux de l'abonnement reviennent le 1er du mois, ceux rachetés restent.
-const recharge = jetonsLia.recharge[0]; // la plus petite recharge, rachetée à l'utilisation
-const OUTIL = '3 à 16'; // jetons pour un outil, le prix exact est affiché sur son bouton
-const retouchesMois = Math.floor(abo.jetons / jetonsLia.modif.base); // petites retouches automatiques avec les jetons du mois
-// Textes publics : on parle des automatisations d'Alex et des « retouches automatiques », pas de Lia
-// (au plus une mention par page, comme l'assistante de la bulle en bas de l'écran).
+// Au-delà d'un usage normal, le client reprend des outils depuis son espace : on cite seulement la plus petite recharge
+// (réglages du compteur des outils dans config.js, appelé « énergie » dans l'espace client).
+const rechargeMin = Object.values(require('../config')).find((v) => v && v.recharge && v.modif).recharge[0].prix;
+// Textes publics : Alex fait chaque site, sa petite bande d'automatisations (config.bande) s'occupe du répétitif.
+// On ne présente pas Lia (au plus « la bulle en bas de l'écran »), et on ne parle pas du compteur.
+const role = (b) => b.role.charAt(0).toLowerCase() + b.role.slice(1); // « le gardien »
+const maj = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+const et = (l) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} et ${l[l.length - 1]}` : l.join(''));
+// On présente chaque petit monstre par son rôle, jamais par un prénom.
+const gardien = bande.find((b) => b.id === 'gardien');
+const compris = bande.filter((b) => b.compris); // dans l'abonnement de base
+const quotidien = bande.filter((b) => b.outils); // les outils de l'espace client, au service de tous
+const parOption = bande.filter((b) => b.option && O(b.option)); // un de plus par option au mois
+// Ce que fait chaque petit monstre, écrit pour ces pages (différent du texte de config.bande), après « qui ».
+const DIT = {
+  support: 'répond à vos questions dans la bulle, en bas de l’écran, et passe la main à Alex quand il le faut.',
+  gardien: 'installe les mises à jour, lance les sauvegardes, garde la sécurité et vérifie jour et nuit que votre site répond.',
+  bricoleur: 'prépare vos petites modifications, les fait voir à Alex, puis vous laisse valider l’aperçu.',
+  ecrivain: 'corrige, clarifie ou traduit vos textes, et vous aide à répondre à un client ou à un avis.',
+  messager: 'prépare vos publications pour les réseaux, propose des idées et recadre vos photos.',
+  etoile: 'note chaque semaine votre place sur Google et me dit quelles pages reprendre.',
+  observateur: 'compte les visites, repère d’où elles viennent et prépare votre rapport mensuel.',
+  facteur: 'fait marcher votre adresse e-mail pro et met de côté les messages indésirables.',
+  magasinier: 'tient le stock à jour à chaque vente et vous alerte avant la rupture.',
+  hote: 'retient les commandes, les adresses et les produits préférés de vos acheteurs.',
+};
+const qui = (b) => (DIT[b.id] ? `, qui ${DIT[b.id]}` : '.');
 const alexEnPlus = A('alex'), urgent = A('urgent');
 const interv = abo.quota === 1 ? 'une intervention' : `${abo.quota} interventions`;
 const ville = site.address.city.replace(/'/g, '’');
@@ -49,7 +70,7 @@ const pages = [
     lead: 'Un site coûte cher surtout à cause du temps passé dessus. J’ai réduit ce temps, pas le soin. Voici comment, et ce que vous gardez.',
     resume: 'Le temps gagné, et ce qui ne change pas.',
     points: [
-      { icon: 'timer', t: 'De l’optimisation', d: 'Un travail automatisé là où il se répète, et un hébergement en direct, en France.' },
+      { icon: 'timer', t: 'De l’optimisation', d: 'Une petite bande d’automatisations pour le répétitif, et un hébergement en direct, en France.' },
       { icon: 'user-check', t: 'Tout vérifié à la main', d: 'Je relis, je teste sur téléphone et je mets en ligne moi-même.' },
       { icon: 'badge-euro', t: 'Un prix affiché', d: `À partir de ${eur(creation.prix)} €, le même pour tous, sans devis à attendre.` },
       { icon: 'shield-check', t: 'Rien de sacrifié', d: 'Qualité, sécurité, référencement et un vrai interlocuteur restent au rendez-vous.' },
@@ -64,15 +85,15 @@ Mon idée est différente. Je passe moins de temps sur ce qui se répète d’un
 
 ## Pas de magie : de l’optimisation
 
-J’ai passé du temps à automatiser mon travail, et j’ai des accès directs chez des hébergeurs français. C’est ce qui me permet de proposer ces prix. Ce n’est pas de la magie, c’est de l’optimisation.
+À côté des sites que je fais moi-même, j’ai passé du temps à programmer une petite bande de compagnons. Ce sont mes automatisations, que j’ai dessinées en petits monstres. Chacun s’occupe d’une tâche répétitive mais utile, et il travaille en autonomie. Ajoutez des accès directs chez des hébergeurs français, et vous avez tout le secret de ces prix. Rien de magique là-dedans, c’est de l’optimisation.
 
-### Un travail automatisé là où il se répète
+### Une petite bande pour le répétitif
 
-Beaucoup d’étapes reviennent sur chaque projet. J’ai automatisé tout ce qui se répète : c’est ce qui fait baisser les délais et le prix. Ce qui me prenait des jours se fait maintenant en quelques heures.
+Beaucoup d’étapes reviennent sur chaque projet, puis chaque mois une fois le site en ligne. La bande s’en charge, et je vérifie toujours ce qu’elle a fait. Ce qui me prenait des jours se fait maintenant en quelques heures.
 
-- **La mise en page de base** : une première version des écrans, à partir de ce que vous m’avez raconté.
-- **Les premiers textes** : une base de travail, que je reprends ensuite avec vos mots.
-- **Les réglages** : les titres lus par Google, l’affichage sur téléphone, le formulaire de contact.
+- **À la création** : une première mise en page, une base pour les textes, les réglages lus par Google et l’affichage sur téléphone. Je reprends ensuite tout avec vos mots.
+- **Après la mise en ligne** : ${role(gardien)} s’occupe des mises à jour, des sauvegardes et de la surveillance. ${maj(et(quotidien.map(role)))} vous donnent un coup de main dans votre espace client.
+- **Pour vous** : rien à apprendre, rien à surveiller. Je gère tout, et vous n’avez aucun effort à fournir.
 
 Résultat : un site une page est prêt en ${page.delai}, un site vitrine en ${vitrine.delai}.
 
@@ -82,7 +103,7 @@ Vos sites sont hébergés en France, chez des hébergeurs auxquels j’accède e
 
 ## Ce que je fais à la main
 
-Mes automatisations vont vite, mais elles ne décident de rien. C’est moi qui conçois votre site : je vous écoute, je fais les choix et je reprends tout ce qu’elles préparent.
+Les petits monstres vont vite, mais ils ne décident de rien. C’est moi qui conçois et fais votre site : je vous écoute, je fais les choix et je reprends tout ce qu’ils préparent.
 
 - **La relecture** : chaque page, chaque texte, chaque horaire et chaque prix affiché.
 - **Les tests sur téléphone** : je parcours le site sur plusieurs appareils, comme le feront vos clients.
@@ -118,7 +139,7 @@ Un prix plus bas ne veut pas dire un travail bâclé. Voici ce que vous gardez, 
 Et si votre projet dépasse ce que je sais bien faire, comme une application sur mesure ou un catalogue de milliers de produits, je vous le dis dès notre premier échange.`,
     faq: [
       { q: 'Moins cher, ça veut dire moins bien ?', a: 'Non. Le prix baisse parce que je passe moins de temps sur ce qui se répète, pas parce que je saute des étapes. Chaque site est relu, testé sur téléphone et vérifié avant d’être publié.' },
-      { q: 'Mon site est-il fait automatiquement ?', a: 'Non. C’est moi qui conçois votre site. Mes automatisations s’occupent seulement de ce qui se répète : une mise en page de base, des premiers textes, des réglages. Je reprends ensuite tout à la main, je fais les choix avec vous et je publie le site moi-même.' },
+      { q: 'Mon site est-il fait automatiquement ?', a: 'Non. C’est moi qui conçois et fais votre site. Ma petite bande s’occupe seulement de ce qui se répète : une mise en page de base, des premiers textes, des réglages. Je reprends ensuite tout à la main, je fais les choix avec vous et je publie le site moi-même.' },
       { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. La création démarre à ${eur(creation.prix)} €, puis l’abonnement coûte ${eur(abo.month)} € par mois. Les options sont facultatives, et leur prix est indiqué avant que vous commandiez.` },
       { q: 'Pourquoi n’y a-t-il pas de devis ?', a: 'Parce que la plupart des sites d’indépendants, d’artisans, de commerces ou d’associations se construisent de la même façon. Un prix fixe est plus simple pour vous comme pour moi. Pour un projet hors norme, je vous le dis franchement.' },
     ],
@@ -271,7 +292,7 @@ Ce qui aide ensuite : garder vos informations à jour, ajouter de temps en temps
 
 Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les autres, des mots répétés à l’excès, des liens achetés. Ils font souvent plus de mal que de bien, et le retard se rattrape ensuite difficilement.
 
-> Vous préférez que quelqu’un s’en occupe ? Avec l’option ${seo.name}, à ${eur(seo.price.month)} € par mois, je regarde ce que vos clients recherchent et j’améliore vos pages en conséquence. Tout est expliqué sur la page [référencement SEO](/referencement-seo/).`,
+> Vous préférez que quelqu’un s’en occupe ? Avec l’option ${seo.name}, à ${eur(seo.price.month)} € par mois, ${role(bande.find((b) => b.option === 'seo'))} rejoint votre bande : elle suit votre place, et j’améliore vos pages en conséquence. Tout est expliqué sur la page [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de temps pour apparaître sur Google ?', a: 'Sur le nom de votre entreprise, c’est en général rapide. Sur des recherches où beaucoup d’entreprises sont présentes, comptez plutôt plusieurs mois, avec un site soigné et des informations à jour.' },
       { q: 'Faut-il payer Google pour être bien placé ?', a: 'Non. Les résultats naturels ne s’achètent pas. Les annonces payantes existent, elles sont signalées comme sponsorisées, et elles disparaissent dès que vous arrêtez de payer.' },
@@ -289,15 +310,15 @@ Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les au
     icon: 'heart-handshake',
     color: 'pink',
     title: 'Pourquoi choisir Alex & Lia : nos engagements | Alex & Lia',
-    description: 'Un vrai interlocuteur qui vous répond, un prix affiché, sans engagement, le nom de domaine à votre nom, et des automatisations qui font baisser le prix.',
+    description: 'Alex fait votre site et vous répond, sa petite bande d’automatisations s’occupe du répétitif. Un prix affiché, sans engagement, et le domaine à votre nom.',
     h1: 'Pourquoi choisir Alex & Lia ?',
-    lead: 'Parce qu’internet devrait être simple. Derrière ce site, il y a une personne, moi, qui conçoit votre site, le met en ligne et vous répond. Et tout ce qui se répète, je l’ai automatisé pour que vous payiez moins.',
+    lead: 'Parce qu’internet devrait être simple. Derrière ce site, il y a une personne, moi, qui conçoit votre site, le met en ligne et vous répond. Et tout ce qui se répète, je l’ai confié à une petite bande de monstres que j’ai programmés, pour que vous payiez moins.',
     resume: 'Un vrai interlocuteur, des engagements écrits.',
     points: [
       { icon: 'user', t: 'Une vraie personne', d: 'C’est moi, Alex, qui lis vos messages et qui vous réponds.' },
       { icon: 'tag', t: 'Un prix affiché', d: 'Le même pour tous, sans devis et sans surprise.' },
       { icon: 'lock', t: 'Rien ne vous retient', d: 'Sans engagement, et votre nom de domaine reste à votre nom.' },
-      { icon: 'workflow', t: 'Des automatisations', d: 'Le travail répétitif est automatisé, et votre facture baisse d’autant.' },
+      { icon: 'workflow', t: 'Une petite bande', d: 'Des petits monstres font le répétitif, et votre facture baisse d’autant.' },
     ],
     body: `## Alex, un vrai interlocuteur
 
@@ -312,7 +333,7 @@ Vous pouvez me poser vos questions avant de commander, sans rien vous engager. S
 ## Ma méthode, en quatre temps
 
 1. **On échange** : vous me dites ce que vous faites, pour qui, et ce que vous attendez du site. Les choix se font avec vous.
-2. **Je conçois votre site** : la structure, les pages, le style. Au passage, mes automatisations prennent en charge le répétitif, comme la mise en page de base, les premiers textes et les réglages.
+2. **Je conçois votre site** : la structure, les pages, le style. Au passage, ma petite bande prend en charge le répétitif, comme la mise en page de base, les premiers textes et les réglages.
 3. **Je vérifie** : je relis tout, je teste le site sur plusieurs appareils et je corrige ce qui doit l’être.
 4. **Je mets en ligne, et je reste là** : le nom de domaine, l’hébergement, le cadenas HTTPS, puis le suivi au fil des mois.
 
@@ -324,18 +345,20 @@ Ce sont des promesses simples, écrites ici pour que vous puissiez me les rappel
 - **Sans engagement** : l’abonnement s’arrête quand vous le décidez. Seule exception, si vous payez le site en ${durees} fois, vous restez le temps du paiement.
 - **Le nom de domaine à votre nom** : l’adresse de votre site vous appartient, pas à moi.
 - **Vous repartez avec votre site** : si vous arrêtez, je vous remets une copie complète, et votre adresse vous suit.
-- **Rien en ligne sans vérification** : je contrôle votre site avant sa mise en ligne, et chaque retouche automatique passe d’abord par un aperçu que vous validez.
+- **Rien en ligne sans vérification** : je contrôle votre site avant sa mise en ligne, et chaque petite retouche de la bande passe d’abord par un aperçu que vous validez.
 - **Une réponse sous ${delais.reponse}** : le support est compris dans l’abonnement, pour toutes vos questions sur votre site.
 
-## Mes automatisations
+## Ma petite bande
 
-D’un site à l’autre, beaucoup de choses se ressemblent : la structure de départ, les réglages pour Google, l’affichage sur téléphone, les sauvegardes. Ce travail-là, je l’ai automatisé. Il se fait vite et sans oubli, et c’est autant de temps que vous ne payez pas. La conception de votre site, elle, reste mon travail.
+D’un site à l’autre, beaucoup de choses se ressemblent : la structure de départ, les réglages pour Google, l’affichage sur téléphone, les sauvegardes. Pour tout ce travail-là, j’ai programmé une petite bande de compagnons, mes automatisations, que j’ai dessinées en petits monstres mignons. Chacun a son rôle. Ils travaillent seuls, vite et sans oubli, et c’est autant de temps que vous ne payez pas. La conception de votre site, elle, reste mon travail.
 
-Une fois le site en ligne, vos petites demandes passent aussi par une retouche automatique : un horaire, un prix, une photo. Elle utilise les jetons compris dans votre abonnement, et vous voyez toujours un aperçu avant que quoi que ce soit change. Une demande trop grande ou pas claire arrive directement chez moi.
+Dans l’abonnement de base, il y a ${et(compris.map(role))}. ${maj(et(quotidien.map(role)))} sont au service de tous dans l’espace client. Ensuite, chaque option au mois en ajoute un : ${et(parOption.map(role))}. Le détail est sur la page [accompagnement](/accompagnement/).
 
-Ces automatisations ne vendent rien et ne décident pas à votre place. Elles ne peuvent ni supprimer une page, ni toucher aux réglages sensibles de votre site. Et elles ne me remplacent pas : c’est toujours moi qui réponds de votre site.
+Une fois le site en ligne, vos petites demandes passent aussi par la bande : un horaire, un prix, une photo. C’est compris dans l’abonnement, et vous voyez toujours un aperçu avant que quoi que ce soit change. Une demande trop grande ou pas claire arrive directement chez moi.
 
-Une question en passant ? Lia, mon assistante, vous répond dans la bulle en bas de l’écran, ici comme dans votre espace client. Sur ce site, vous croiserez aussi nos deux mascottes, deux petits monstres mignons. Ils sont là pour rappeler qu’internet peut rester sympathique.
+Ces petits monstres ne vendent rien et ne décident pas à votre place. Ils ne peuvent ni supprimer une page, ni toucher aux réglages sensibles de votre site. Et ils ne me remplacent pas : je regarde ce qu’ils font, et c’est toujours moi qui réponds de votre site.
+
+Une question en passant ? Écrivez-la dans la bulle, en bas de l’écran.
 
 ## Ce que je fais bien, et ce que je ne fais pas
 
@@ -343,10 +366,10 @@ Je crée des sites une page, des sites vitrines et des petites boutiques en lign
 
 Pour une application sur mesure, un logiciel métier ou un catalogue de milliers de produits, il faut un développeur expérimenté. Dans ce cas, je vous le dis honnêtement, et je peux vous orienter vers les bonnes personnes.
 
-Si mes prix restent doux, c’est grâce aux automatisations que j’ai mises en place, et à mes accès directs chez des hébergeurs français. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout.`,
+Si mes prix restent doux, c’est grâce à cette petite bande, et à mes accès directs chez des hébergeurs français. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout.`,
     faq: [
-      { q: 'Est-ce que je parle à une vraie personne ?', a: 'Oui. Les messages du formulaire de contact arrivent chez moi, et c’est moi qui réponds. Dans votre espace client, une petite retouche peut se faire automatiquement, mais vous pouvez toujours choisir de vous adresser à moi.' },
-      { q: 'Et si une retouche automatique se trompe ?', a: 'Cela peut arriver, comme avec tout outil. C’est pour cela que chaque retouche montre un aperçu avant d’être publiée, qu’elle n’a pas accès aux réglages sensibles, et que je contrôle chaque site avant de le publier.' },
+      { q: 'Est-ce que je parle à une vraie personne ?', a: 'Oui. Les messages du formulaire de contact arrivent chez moi, et c’est moi qui réponds. Dans votre espace client, la bande peut faire une petite retouche, mais vous pouvez toujours choisir de vous adresser à moi.' },
+      { q: 'Et si un petit monstre se trompe ?', a: 'Cela peut arriver, comme avec tout outil. C’est pour cela que chaque retouche montre un aperçu avant d’être publiée, qu’elle n’a pas accès aux réglages sensibles, et que je contrôle chaque site avant de le publier.' },
       { q: 'Et si je veux partir un jour ?', a: 'Vous partez librement. Le nom de domaine est déjà à votre nom, et je vous remets les fichiers de votre site pour le faire héberger ailleurs.' },
       { q: 'Faut-il habiter près de chez vous ?', a: `Non. Tout peut se faire à distance, par e-mail, au téléphone ou en visio, partout en France. Si vous êtes dans les ${dept}, on peut aussi se rencontrer.` },
     ],
@@ -361,14 +384,14 @@ Si mes prix restent doux, c’est grâce aux automatisations que j’ai mises en
     icon: 'life-buoy',
     color: 'mint',
     title: 'Accompagnement après la mise en ligne du site | Alex & Lia',
-    description: `Pour ${eur(abo.month)} € par mois : nom de domaine, hébergement, mises à jour, sauvegardes, support et retouches. Options et extras à la carte, sans engagement.`,
+    description: `Pour ${eur(abo.month)} € par mois, ${role(gardien)} veille sur votre site, avec domaine, hébergement et support. Chaque option ajoute un petit monstre, et rien ne vous engage.`,
     h1: 'Accompagnement : ce qui se passe après la mise en ligne',
     lead: 'Un site ne s’arrête pas le jour où il est publié. Chaque mois, je m’occupe de ce qui le fait tourner, et vous me demandez les changements quand vous en avez besoin.',
     resume: 'Chaque mois, votre site entretenu et suivi.',
     points: [
-      { icon: 'shield-check', t: 'Votre site entretenu', d: 'Mises à jour, sauvegardes, surveillance et cadenas HTTPS, faits pour vous.' },
+      { icon: 'shield-check', t: 'Votre site entretenu', d: `${maj(role(gardien))} fait les mises à jour et les sauvegardes, et surveille votre site.` },
       { icon: 'pencil', t: 'Des changements simples', d: 'Une demande depuis votre espace client, avec une photo si besoin.' },
-      { icon: 'layout-grid', t: 'À la carte', d: 'Des options au mois et des extras ponctuels, quand vous voulez.' },
+      { icon: 'layout-grid', t: 'À la carte', d: 'Chaque option au mois ajoute un petit monstre, et des extras ponctuels existent.' },
       { icon: 'handshake', t: 'Sans engagement', d: 'Vous arrêtez quand vous voulez et vous gardez votre adresse.' },
     ],
     body: `## Ce que fait l’abonnement, chaque mois
@@ -384,29 +407,33 @@ L’hébergement, c’est l’ordinateur où vit votre site. Le nom de domaine, 
 Un horaire qui change, une nouvelle photo, un prix à mettre à jour ? Tout passe par votre espace client, sur ordinateur comme sur téléphone.
 
 1. **Vous écrivez votre demande** en quelques mots, et vous joignez une photo si besoin.
-2. **Pour une petite retouche**, le changement se prépare automatiquement et vous voyez un aperçu. Vous validez, et c’est en ligne.
+2. **Pour une petite retouche**, la bande prépare le changement et vous voyez un aperçu. Vous validez, et c’est en ligne.
 3. **Pour une demande plus grande**, ou si vous préférez, je m’en occupe à la main. L’abonnement comprend ${interv} de ma part par ${abo.periode}.
 4. **Vous suivez tout** depuis votre espace, et je vous préviens quand c’est fait.
 
-Pour une simple question sur votre site, je vous réponds sous ${delais.reponse}. Et pour un renseignement rapide, Lia, mon assistante, est là dans la bulle en bas de votre espace client.
+Pour une simple question sur votre site, je vous réponds sous ${delais.reponse}. Et pour un renseignement rapide, la bulle en bas de votre espace client vous répond.
 
 > Envie de voir à quoi cela ressemble ? La [démo de l’espace client](/mon-espace/demo/) se visite librement, sans créer de compte.
 
-## Les jetons, pour les retouches et les outils
+## La petite bande, après la mise en ligne
 
-Les retouches automatiques et les outils de votre espace client fonctionnent avec des jetons. L’abonnement en comprend ${abo.jetons} chaque mois.
+Une fois votre site publié, mes petits monstres prennent le relais sur tout ce qui se répète. Ce sont mes automatisations : chacun a sa tâche, travaille seul, et je vérifie ce qu’il fait.
 
-- **Une retouche automatique** : ${jetonsLia.modif.base} jetons et plus, selon la longueur du texte et le nombre de photos.
-- **Un outil** : de ${OUTIL} jetons, et son prix est affiché sur son bouton avant de le lancer.
-- **Besoin de plus ?** Vous en rachetez à l’utilisation, ${eur(recharge.prix)} € les ${recharge.jetons} jetons, ajoutés à votre prochaine facture.
+Compris dans l’abonnement de base :
 
-Les jetons de l’abonnement repartent à ${abo.jetons} le 1er de chaque mois. Ceux que vous rachetez restent sur votre compte tant que vous ne les avez pas utilisés.
+${compris.map((b) => `- **${b.role}**${qui(b)}`).join('\n')}
 
-## Les options au mois
+Au service de tous, dans votre espace client :
 
-Elles s’ajoutent ou se retirent quand vous voulez, depuis votre espace client. Aucune n’est obligatoire.
+${quotidien.map((b) => `- **${b.role}**${qui(b)}`).join('\n')}
 
-${extrasMois.map((o) => `- **${o.name}**, ${eur(o.price.month)} € par mois${o.types ? ', pour une boutique en ligne' : ''}. ${o.court}`).join('\n')}
+Les petites retouches et les outils de la bande sont là pour un usage normal, sans rien à compter de votre côté. Si vous en faites beaucoup plus, vous en reprenez depuis votre espace, à partir de ${eur(rechargeMin)} €, ajouté à votre prochaine facture.
+
+## Les options au mois : un petit monstre de plus
+
+Chaque option au mois ajoute un membre à votre bande. Elles se prennent ou se retirent quand vous voulez, depuis votre espace client. Aucune n’est obligatoire.
+
+${extrasMois.map((o) => { const b = bande.find((x) => x.option === o.id); return `- **${o.name}**, ${eur(o.price.month)} € par mois${o.types ? ', pour une boutique en ligne' : ''}${b ? ` : ${role(b)}${qui(b)}` : `. ${o.court}`}`; }).join('\n')}
 
 Le nouveau montant s’applique à partir de la période suivante, sans démarche compliquée.
 
@@ -416,7 +443,7 @@ Besoin d’un coup de main ponctuel ? Ces extras se commandent depuis votre espa
 
 ${aLaDemande.map((a) => `- **${a.name}** : ${eur(a.prix)} €`).join('\n')}
 
-Pour l’article, vous donnez le sujet : un premier jet se prépare automatiquement, puis je le relis, je l’illustre et je le publie sur votre site. Le point avec moi se fait au téléphone ou en visio, pour regarder ensemble votre site et vos projets.
+Pour l’article, vous donnez le sujet : la bande prépare un premier jet, puis je le relis, je l’illustre et je le publie sur votre site. Le point avec moi se fait au téléphone ou en visio, pour regarder ensemble votre site et vos projets.
 
 ## Sans engagement, et si vous arrêtez
 
@@ -427,8 +454,8 @@ Et après ? Votre nom de domaine est à votre nom, il reste donc à vous. Je vou
 Tous les prix sont réunis sur la page [tarifs](/tarifs/). Et si vous parlez de moi autour de vous, le [parrainage](/fidelite/) vous offre ${fidelite.parrainageMois} mois d’abonnement, à vous comme à la personne parrainée.`,
     faq: [
       { q: 'Puis-je avoir un site sans abonnement ?', a: 'Non, tant que votre site est hébergé chez moi. L’abonnement couvre ce qui le fait vivre : son adresse, son hébergement et son entretien. Il reste sans engagement.' },
-      { q: 'Combien de modifications puis-je demander ?', a: `Avec les ${abo.jetons} jetons du mois, jusqu’à ${retouchesMois} petites retouches automatiques, et ${interv} faite à la main par ${abo.periode}. Il vous en faut plus ? Rachetez des jetons, ${eur(recharge.prix)} € les ${recharge.jetons}, ou demandez une intervention d’Alex en plus pour ${eur(alexEnPlus.prix)} €.` },
-      { q: 'En combien de temps ma demande est-elle traitée ?', a: `Une petite retouche automatique est en ligne en quelques minutes, une fois l’aperçu validé. Pour une demande faite à la main, je réponds sous ${delais.reponse}. Si c’est pressé, l’extra « ${urgent.name} » la fait passer avant les autres.` },
+      { q: 'Combien de modifications puis-je demander ?', a: `Les petites retouches de la bande sont comprises pour un usage normal, avec ${interv} faite à la main par ${abo.periode}. Il vous en faut beaucoup plus ? Vous en reprenez depuis votre espace, à partir de ${eur(rechargeMin)} €, ou vous demandez une intervention d’Alex en plus pour ${eur(alexEnPlus.prix)} €.` },
+      { q: 'En combien de temps ma demande est-elle traitée ?', a: `Une petite retouche de la bande est en ligne en quelques minutes, une fois l’aperçu validé. Pour une demande faite à la main, je réponds sous ${delais.reponse}. Si c’est pressé, l’extra « ${urgent.name} » la fait passer avant les autres.` },
       { q: 'Puis-je changer d’options plus tard ?', a: 'Oui. Les options au mois se prennent ou s’arrêtent depuis votre espace client, à tout moment, et le changement compte pour la période suivante.' },
     ],
     voir: ['/tarifs/', '/mon-espace/demo/', '/pourquoi-alex-et-lia/'],

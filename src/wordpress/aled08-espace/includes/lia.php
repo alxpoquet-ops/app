@@ -189,12 +189,113 @@ function aled08e_lia_executer($uid, $pid, $nom, $in, &$actions) {
 /* =========================================================================
  *  Traitement d'une demande par Lia (tâche de fond)
  * ========================================================================= */
+/* Bricou, le petit monstre des modifications, montre d'abord chaque demande à Alex : Alex reçoit un e-mail avec
+ * deux boutons (« Laisser Bricou faire » ou « Je m'en occupe »). S'il ne dit rien dans les 30 minutes, Bricou se lance :
+ * Alex a bien été prévenu, c'est un vrai délai pour qu'il puisse reprendre la main, pas une confirmation inventée. */
+const ALED08E_FEU_VERT_MIN = 30;
 add_action('aled08e_demande_creee', function ($pid, $par, $uid) {
     if ($par !== 'lia' || !aled08e_lia_prete_pour($uid)) return;
-    update_post_meta($pid, '_aled08_lia_etat', 'en_attente');
-    wp_schedule_single_event(time(), 'aled08_lia_traiter', [(int) $pid]);
-    if (function_exists('spawn_cron')) spawn_cron();
+    update_post_meta($pid, '_aled08_lia_etat', 'attente_alex');
+    update_post_meta($pid, '_aled08_feu_vert_cle', wp_generate_password(32, false, false));
+    update_post_meta($pid, '_aled08_reponse', 'Bricou : J’ai bien reçu votre demande. Je la montre à Alex, et je m’y mets dans ' . ALED08E_FEU_VERT_MIN . ' minutes au plus tard.');
+    wp_schedule_single_event(time() + ALED08E_FEU_VERT_MIN * MINUTE_IN_SECONDS, 'aled08_feu_vert', [(int) $pid, 'auto']);
+    aled08e_feu_vert_mail_alex((int) $pid, (int) $uid);
 }, 10, 3);
+add_action('aled08_feu_vert', 'aled08e_feu_vert', 10, 2);
+
+/* L'e-mail à Alex : la demande, et les deux boutons */
+function aled08e_feu_vert_mail_alex($pid, $uid) {
+    $p = get_post($pid);
+    $u = get_userdata($uid);
+    $cle = (string) get_post_meta($pid, '_aled08_feu_vert_cle', true);
+    $lien = function ($choix) use ($pid, $cle) { return admin_url('admin-post.php?action=aled08e_feu_vert&pid=' . (int) $pid . '&choix=' . $choix . '&cle=' . rawurlencode($cle)); };
+    wp_mail(aled08e_to(), 'Bricou va s’occuper d’une demande dans ' . ALED08E_FEU_VERT_MIN . ' min : ' . ($u ? $u->display_name : '?'),
+        'Client : ' . ($u ? $u->display_name . ' (' . $u->user_email . ')' : '?') . "
+"
+        . 'Site   : ' . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "
+
+"
+        . "Demande :
+" . ($p ? $p->post_content : '') . "
+
+"
+        . 'Sans réponse de votre part, Bricou s’y met dans ' . ALED08E_FEU_VERT_MIN . " minutes. Le client valide toujours l’aperçu avant la mise en ligne.
+
+"
+        . 'Laisser Bricou faire maintenant : ' . $lien('go') . "
+"
+        . 'Je m’en occupe moi-même : ' . $lien('alex') . "
+
+"
+        . 'Fiche : ' . admin_url('post.php?post=' . (int) $pid . '&action=edit') . "
+",
+        aled08e_mail_headers());
+}
+
+/* Le feu vert : Alex a cliqué ($qui = 'alex'), ou les 30 minutes sont passées ($qui = 'auto'). Bricou se met au travail. */
+function aled08e_feu_vert($pid, $qui = 'auto') {
+    $pid = (int) $pid;
+    $p = get_post($pid);
+    if (!$p || $p->post_type !== ALED08E_CPT) return false;
+    if (get_post_meta($pid, '_aled08_lia_etat', true) !== 'attente_alex' || get_post_meta($pid, '_aled08_annulee_le', true)) return false;
+    update_post_meta($pid, '_aled08_lia_etat', 'en_attente');
+    update_post_meta($pid, '_aled08_feu_vert', $qui === 'alex' ? 'alex' : 'auto');
+    update_post_meta($pid, '_aled08_reponse', $qui === 'alex' ? 'Bricou : Alex a validé votre demande. Je m’en occupe !' : 'Bricou : C’est confirmé, je m’en occupe !');
+    $u = get_userdata($p->post_author);
+    if ($u) wp_mail($u->user_email, 'Demande confirmée : Bricou s’en occupe',
+        'Bonjour ' . aled08e_prenom($u) . ",
+
+"
+        . ($qui === 'alex' ? 'Alex a validé votre demande.' : 'Votre demande est confirmée.') . " Bricou, le petit monstre des modifications, s’en occupe.
+"
+        . "Dès que c’est prêt, vous verrez l’aperçu dans votre espace : rien ne change sur votre site sans votre accord.
+" . aled08e_url() . "#demandes
+
+"
+        . "Votre demande :
+" . $p->post_content . "
+
+À bientôt,
+Alex et sa petite bande
+",
+        aled08e_mail_headers());
+    wp_clear_scheduled_hook('aled08_feu_vert', [$pid, 'auto']);
+    wp_schedule_single_event(time(), 'aled08_lia_traiter', [$pid]);
+    if (function_exists('spawn_cron')) spawn_cron();
+    return true;
+}
+
+/* Les deux boutons de l'e-mail à Alex (il doit être connecté en administrateur) */
+add_action('admin_post_nopriv_aled08e_feu_vert', function () {
+    $ici = admin_url('admin-post.php?' . http_build_query(array_map('sanitize_text_field', wp_unslash($_GET))));
+    wp_safe_redirect(wp_login_url($ici));
+    exit;
+});
+add_action('admin_post_aled08e_feu_vert', function () {
+    $pid = (int) ($_GET['pid'] ?? 0);
+    $choix = sanitize_key(wp_unslash($_GET['choix'] ?? ''));
+    $cle = sanitize_text_field(wp_unslash($_GET['cle'] ?? ''));
+    $bonne = (string) get_post_meta($pid, '_aled08_feu_vert_cle', true);
+    if (!current_user_can('manage_options') || !$pid || $bonne === '' || !hash_equals($bonne, $cle)) wp_die('Ce lien n’est plus valable.', 'Alex & Co', ['response' => 403]);
+    $fiche = admin_url('post.php?post=' . $pid . '&action=edit');
+    if ($choix === 'go') {
+        $msg = aled08e_feu_vert($pid, 'alex') ? 'C’est parti : Bricou s’occupe de la demande.' : 'Cette demande est déjà lancée, ou elle a été annulée.';
+    } elseif ($choix === 'alex') {
+        $msg = 'Cette demande est déjà lancée, ou elle a été annulée.';
+        if (get_post_meta($pid, '_aled08_lia_etat', true) === 'attente_alex') {
+            $p = get_post($pid);
+            wp_clear_scheduled_hook('aled08_feu_vert', [$pid, 'auto']);
+            update_post_meta($pid, '_aled08_lia_etat', 'pour_alex');
+            update_post_meta($pid, '_aled08_jetons', 0);
+            if (function_exists('aled08e_jl_rendre')) aled08e_jl_rendre((int) $p->post_author, 'demande:' . $pid);
+            update_post_meta($pid, '_aled08_reponse', 'Bricou : Alex a regardé votre demande et préfère s’en occuper lui-même. Il vous répond sous ' . (aled08e_data()['delais']['reponse'] ?? '72 heures') . '.');
+            $msg = 'Noté : vous vous occupez de cette demande. L’énergie du client lui est rendue.';
+        }
+    } else {
+        $msg = 'Choix inconnu.';
+    }
+    wp_die(esc_html($msg) . ' <a href="' . esc_url($fiche) . '">Voir la demande</a>', 'Alex & Co', ['response' => 200]);
+});
 add_action('aled08_lia_traiter', 'aled08e_lia_traiter');
 
 function aled08e_lia_traiter($pid) {
@@ -432,7 +533,7 @@ add_action('add_meta_boxes_' . ALED08E_CPT, function ($post) {
 });
 function aled08e_lia_box($post) {
     $etat = get_post_meta($post->ID, '_aled08_lia_etat', true);
-    $lib = ['en_attente' => 'en attente', 'en_cours' => 'en cours', 'a_confirmer' => 'aperçu prêt, en attente de l’accord du client', 'fait' => 'mis en ligne par Lia après accord du client', 'pour_alex' => 'passée à Alex', 'refuse' => 'aperçu refusé par le client, passée à Alex'];
+    $lib = ['attente_alex' => 'montrée à Alex, Bricou attend son feu vert (30 minutes au plus)', 'en_attente' => 'en attente', 'en_cours' => 'en cours', 'a_confirmer' => 'aperçu prêt, en attente de l’accord du client', 'fait' => 'mis en ligne par Lia après accord du client', 'pour_alex' => 'passée à Alex', 'refuse' => 'aperçu refusé par le client, passée à Alex'];
     echo '<p><strong>État : ' . esc_html($lib[$etat] ?? $etat) . '</strong>' . (get_post_meta($post->ID, '_aled08_lia_le', true) ? ', le ' . esc_html(get_post_meta($post->ID, '_aled08_lia_le', true)) : '') . '</p>';
     $actions = (array) get_post_meta($post->ID, '_aled08_lia_actions', true);
     if ($actions) {
@@ -550,7 +651,7 @@ add_action('template_redirect', function () {
 function aled08e_lia_bloc_confirmation($p) {
     if (get_post_meta($p->ID, '_aled08_lia_etat', true) !== 'a_confirmer') return '';
     $actions = array_filter((array) get_post_meta($p->ID, '_aled08_lia_actions', true), function ($a) { return !empty($a['prepare']); });
-    $h = '<div class="lia-confirm"><p class="lia-confirm-h">' . aled08e_monster('mascotte') . '<strong>Les petits monstres ont préparé votre modification. Rien n’est encore changé : regardez, puis dites-leur.</strong></p><ul>';
+    $h = '<div class="lia-confirm"><p class="lia-confirm-h">' . aled08e_monster('bricou') . '<strong>Bricou a préparé votre modification. Rien n’est encore changé : regardez, puis dites-lui.</strong></p><ul>';
     foreach ($actions as $a) $h .= '<li><span>' . esc_html($a['detail']) . '</span>' . (!empty($a['apercu']) ? ' <a class="btn btn-light btn-sm" href="' . esc_url($a['apercu']) . '" target="_blank" rel="noopener">' . aled08e_icon('globe') . '<span>Voir l’aperçu</span></a>' : '') . '</li>';
     $h .= '</ul><form method="post" action="' . esc_url(aled08e_url()) . '" class="lia-confirm-form">'
         . '<input type="hidden" name="aled08e_lia_confirmer" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_lia_confirmer_' . $p->ID, '_aled08e_lia', true, false)
