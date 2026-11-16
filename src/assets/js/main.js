@@ -10,6 +10,8 @@
   var EN = /^en\b/i.test(d.documentElement.lang || '');
   var TR = {
     // bulle de Lia et « i » des options
+    'Votre site, avec boutique en ligne': 'Your website, with an online shop',
+    'Votre site': 'Your website',
     'Fermer': 'Close',
     'Exemple : ': 'Example: ',
     'Exemple d’écran : le vôtre sera à vos couleurs.': 'Example screen: yours will be in your own colours.',
@@ -199,6 +201,17 @@
     });
   };
 
+  /* la boutique en ligne : une case parmi ce qui se paie une fois ; elle règle le type de site (champ caché) */
+  var initBoutique = function (scope) {
+    var c = $('[data-boutique]', scope), f = $('[data-type-field]', scope);
+    if (!c || !f) return;
+    if (/^boutique/.test(slug(new URLSearchParams(location.search).get('type') || ''))) c.checked = true;
+    var maj = function () { f.value = c.checked ? 'boutique' : 'vitrine'; };
+    c.addEventListener('change', maj); // avant le recalcul des prix (l'événement remonte ensuite au formulaire)
+    maj();
+  };
+  var siteNom = function (t) { return tr(t.id === 'boutique' ? 'Votre site, avec boutique en ligne' : 'Votre site'); };
+
   /* ---------- menu mobile ---------- */
   var burger = $('.burger'), nav = $('#nav');
   if (burger && nav) {
@@ -362,7 +375,8 @@
 
   function initBuilder(box, data) {
     var find = function (list, id) { return list.filter(function (x) { return x.id === id; })[0]; };
-    var val = function (name) { var r = $('input[name="' + name + '"]:checked', box); return r ? r.value : ''; };
+    var val = function (name) { var r = $('input[name="' + name + '"]:checked', box) || $('input[type="hidden"][name="' + name + '"]', box); return r ? r.value : ''; };
+    initBoutique(box);
     var setText = function (key, text) { $$('[data-sum="' + key + '"]', box).forEach(function (el) { el.textContent = text; }); };
     var params = new URLSearchParams(location.search);
     ['type', 'forfait'].forEach(function (k) {
@@ -384,7 +398,7 @@
 
     /* récapitulatif */
     function update(ev) {
-      var t = find(data.types, val('b-type')) || data.types[0];
+      var t = find(data.types, val('b-type')) || find(data.types, 'vitrine') || data.types[0];
       var f = find(data.forfaits, val('b-forfait')) || data.forfaits[0];
       filterOpts(box, t.id);
       // site en plusieurs fois : le forfait se paie au mois (un clic sur « à l'année » repasse le site en une fois)
@@ -405,7 +419,7 @@
         if (!o) return;
         chosen.push(tr(o.name)); ids.push(o.id); optOnce += o.once; optMonth += o.month;
       });
-      setText('type', tr(t.label));
+      setText('type', siteNom(t));
       setText('type-price', euro(t.price));
       setText('forfait', planName(f.name));
       setText('forfait-price', euro(month * mult) + per);
@@ -446,7 +460,7 @@
         bar.innerHTML = tr('Aujourd’hui ') + '<b>' + euro(today) + '</b>' + tr(', à la réception ') + '<b>' + (lisse ? euro(lisseAmt) + tr('/mois') + ' × ' + lisseN : euro(reste)) + '</b>' + tr(' + abonnement');
       }
       // Lien « Poser une question » (formulaire de contact, en clair)
-      var q = { type: t.label, forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: domText, options: chosen.join(', '), parrain: parrain };
+      var q = { type: t.id === 'boutique' ? 'Site avec boutique en ligne' : 'Site', forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: domText, options: chosen.join(', '), parrain: parrain };
       $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
       // Lien « Commander » : paramètres exacts attendus par /commander/
       var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), parrain: parrain };
@@ -480,7 +494,8 @@
     var form = $('[data-order-form]', root);
     if (!form) return;
     var find = function (list, id) { return list.filter(function (x) { return x.id === id; })[0]; };
-    var val = function (name) { var r = $('input[name="' + name + '"]:checked', form); return r ? r.value : ''; };
+    var val = function (name) { var r = $('input[name="' + name + '"]:checked', form) || $('input[type="hidden"][name="' + name + '"]', form); return r ? r.value : ''; };
+    initBoutique(form);
     var setText = function (key, text) { $$('[data-order="' + key + '"]', root).forEach(function (el) { el.textContent = text; }); };
     var params = new URLSearchParams(location.search);
     var t0 = form.querySelector('input[name="_t"]'); if (t0) t0.value = Date.now();
@@ -538,7 +553,7 @@
     var engRow = $('[data-order-engagement]', form), engBox = engRow && engRow.querySelector('input');
 
     function update(fromUser, ev) {
-      var t = find(data.types, val('type')) || data.types[0];
+      var t = find(data.types, val('type')) || find(data.types, 'vitrine') || data.types[0];
       var f = find(data.forfaits, val('forfait')) || data.forfaits[0];
       filterOpts(form, t.id);
       // site en plusieurs fois : le forfait se paie au mois (choisir « à l'année » repasse le site en une fois)
@@ -571,7 +586,7 @@
       var lisseAmt = lisse ? floor2(solde / lisseN) : 0;
       var forfaitFirst = f.month * mult;
       // aujourd'hui : l'acompte et les options payées une fois ; le forfait démarre à la réception du site
-      lines.push([tr('Acompte de ') + data.acompte + tr(' % sur la création (') + tr(t.label.toLowerCase()) + ')', acompte]);
+      lines.push([tr('Acompte de ') + data.acompte + tr(' % sur la création (') + siteNom(t).toLowerCase() + ')', acompte]);
       $$('.b-opt input:checked', form).forEach(function (i) {
         var o = find(data.options, i.value);
         if (o && o.once) lines.push([tr(o.name), o.once]);
@@ -601,7 +616,7 @@
         });
       }
       /* récapitulatif latéral */
-      setText('type', tr(t.label));
+      setText('type', siteNom(t));
       setText('type-price', euro(t.price));
       setText('forfait', planName(f.name));
       setText('forfait-price', euro(forfaitFirst) + per);

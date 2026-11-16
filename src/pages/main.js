@@ -626,10 +626,11 @@ function commanderPage() {
         <legend><span class="b-n">1</span><span class="b-t">Votre site</span></legend>
         <div class="o-in">
         <p class="b-hint">Vous pouvez encore changer d’avis : les prix se mettent à jour.</p>
-        <p class="b-label">Le type de site</p>
-        ${C.typeChoices({ name: 'type' })}
+        ${C.siteChoice({ name: 'type' })}
+        ${C.optionChoices({ name: 'options[]', quand: 'creation' })}
         <p class="b-label">Ensuite, chaque mois</p>
         ${C.forfaitChoices({ name: 'forfait' })}
+        ${C.optionChoices({ name: 'options[]', quand: 'mois' })}
         <p class="b-label">L’abonnement est payé</p>
         <div class="b-seg" role="radiogroup" aria-label="Période de l’abonnement">
           <label><input type="radio" name="periode" value="mois" checked><span>Au mois</span></label>
@@ -641,8 +642,6 @@ function commanderPage() {
           ${lissage.durees.map((n) => `<label><input type="radio" name="lissage" value="${n}"><span>En ${n} fois</span></label>`).join('')}
         </div>
         <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Vous vous engagez le temps du paiement, et l’abonnement se règle alors chaque mois.</p>
-        <p class="b-label">Options et extras <span class="opt">(facultatif)</span></p>
-        ${C.optionChoices({ name: 'options[]' })}
         </div>
       </fieldset>
 

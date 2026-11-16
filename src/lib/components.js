@@ -239,6 +239,12 @@ function priceData() {
 }
 
 // Cartes « type de site » (radios) : même prix, la boutique ajoute son option
+// Le site : un seul choix, le même prix pour tous. La boutique en ligne est une option payée une fois, juste en dessous
+// (une case data-boutique ; main.js met alors « boutique » dans le champ caché du type de site).
+function siteChoice({ name = 'b-type' } = {}) {
+  return `<input type="hidden" name="${name}" value="vitrine" data-type-field>
+  <div class="b-choices b-solo"><div class="b-choice c-butter"><span class="b-card is-on"><span class="type-ico">${icon('layout-grid')}</span><span class="b-solo-txt"><strong>Votre site</strong><small>Une page, ou jusqu’à cinq pages, au même prix</small></span><span class="b-price">${euro(creation.prix)}</span><span class="b-check">${icon('check')}</span></span></div></div>`;
+}
 function typeChoices({ name = 'b-type', checked = 'vitrine' } = {}) {
   return `<div class="b-choices b-types">${types
     .map(
@@ -258,13 +264,15 @@ function forfaitChoices({ name = 'b-forfait' } = {}) {
 }
 
 // Cases « options » (une fois) et « extras » (au mois)
-function optionChoices({ name = '' } = {}) {
+function optionChoices({ name = '', quand = 'tout' } = {}) {
   const prix = (o) => (o.price.once ? `+ ${euro(o.price.once)}` : `<span class="p-month">${euro(o.price.month)}/mois</span><span class="p-year">${euro(year(o.price.month))}/an</span>`);
-  const cases = (liste) => `<div class="b-opts">${liste
-    .map((o) => `<label class="b-opt"${o.types ? ` data-types="${o.types.join(' ')}"` : ''}><input type="checkbox"${name ? ` name="${name}"` : ''} value="${o.id}"><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${esc(o.name)}${infoBtn(o.id, o.name, o.info)}</strong><small>${inline((o.court || o.desc))}</small></span><em class="p-opt">${prix(o)}</em></label>`)
-    .join('')}</div>`;
-  return `<p class="b-label">À la création, une fois</p>${cases(optsCreation)}
-        <p class="b-label">Extras de l’abonnement, à ajouter ou retirer quand vous voulez</p>${cases(optsMois)}`;
+  const ligne = (o) => `<label class="b-opt"${o.types ? ` data-types="${o.types.join(' ')}"` : ''}><input type="checkbox"${name ? ` name="${name}"` : ''} value="${o.id}"><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${esc(o.name)}${infoBtn(o.id, o.name, o.info)}</strong><small>${inline((o.court || o.desc))}</small></span><em class="p-opt">${prix(o)}</em></label>`;
+  const boutique = `<label class="b-opt b-opt-boutique"><input type="checkbox" value="boutique" data-boutique><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>Boutique en ligne${infoBtn('boutique', 'Boutique en ligne', BOUTIQUE.info)}</strong><small>Panier, paiement par carte et commandes.</small></span><em class="p-opt">+ ${euro(creation.boutique)}</em></label>`;
+  const unefois = `<p class="b-label">À ajouter, une seule fois</p><div class="b-opts">${boutique}${optsCreation.map(ligne).join('')}</div>`;
+  const aumois = `<p class="b-label">Extras au mois, à ajouter ou retirer quand vous voulez</p><div class="b-opts">${optsMois.map(ligne).join('')}</div>`;
+  if (quand === 'creation') return unefois;
+  if (quand === 'mois') return aumois;
+  return unefois + aumois;
 }
 
 // Nom de domaine : saisie, extension, vérification RDAP (JS), case « j'ai déjà un nom de domaine »
@@ -290,27 +298,24 @@ function configurator() {
       ${hint ? `<p class="b-hint">${hint}</p>` : ''}
       ${body}
     </fieldset>`;
-  const typeBody = `${typeChoices()}<div class="b-note b-note-types">${icon('info')}<ul>${types.map((t) => `<li><strong>${esc(t.label)}</strong> : ${inline(t.ideal)}</li>`).join('')}<li><strong>Un site plus grand ?</strong> L’option « Cinq pages de plus », ou <a href="/contact/">écrivez-nous</a>.</li></ul></div>`;
-  const aboBody = `${forfaitChoices()}${billingSwitch()}<p class="b-note">${icon('info')}Un seul abonnement, pour tous les sites. Il démarre à la réception du site, et vous l’arrêtez quand vous voulez. <a href="${sections.forfaits.path}">Tout ce qu’il comprend</a></p>`;
+  const typeBody = `${siteChoice()}${optionChoices({ quand: 'creation' })}<p class="b-note">${icon('info')}Un site plus grand ? L’option « Cinq pages de plus », ou <a href="/contact/">écrivez-nous</a>.</p>`;
+  const aboBody = `${forfaitChoices()}${billingSwitch()}${optionChoices({ quand: 'mois' })}<p class="b-note">${icon('info')}Un seul abonnement, pour tous les sites. Il démarre à la réception du site, et vous l’arrêtez quand vous voulez. <a href="${sections.forfaits.path}">Tout ce qu’il comprend</a></p>`;
   const payChoices = `<div class="b-seg" role="radiogroup" aria-label="Paiement du site">
         <label><input type="radio" name="b-lisse" value="non" checked><span>En une fois</span></label>
         ${lissage.durees.map((n) => `<label><input type="radio" name="b-lisse" value="${n}"><span>En ${n} fois</span></label>`).join('')}
       </div>
       <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Engagement le temps du paiement, et l’abonnement se paie alors au mois.</p>`;
-  const optionList = `${optionChoices()}
-        <p class="b-more"><a href="${sections.forfaits.path}#options">Le détail de chaque option</a></p>`;
   return `<div class="builder" data-builder="${priceData()}" data-billing-scope>
   <form class="b-steps" data-builder-form>
-    ${step(1, 'Votre site', `Le prix de création est le même pour tous les sites : ${euro(creation.prix)}. Il comprend la maquette, le site complet et la mise en ligne. Une boutique en ligne : + ${euro(creation.boutique)}.`, typeBody)}
+    ${step(1, 'Votre site', `Le prix de création est le même pour tous les sites : ${euro(creation.prix)}. Il comprend la maquette, le site complet et la mise en ligne. En dessous, ce que vous pouvez ajouter, payé une seule fois.`, typeBody)}
     ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est comprise dans l’abonnement et elle reste à votre nom.', domainBox())}
-    ${step(3, 'L’abonnement', 'Votre site reste en ligne, sûr et à jour. Nom de domaine, hébergement, support et Jetons Lia compris.', aboBody)}
-    ${step(4, 'Options et extras', 'Rien n’est obligatoire. Les extras au mois s’ajoutent et se retirent plus tard, depuis votre espace client.', optionList)}
-    ${step(5, 'Paiement du site', `${paiement.acompte} % à la commande. À la réception : le reste en une fois, ou en ${lissageTxt} fois sans frais. Aucun engagement, sauf le temps de payer le reste en plusieurs fois.`, payChoices, ' b-step-last')}
+    ${step(3, 'L’abonnement', 'Votre site reste en ligne, sûr et à jour. Nom de domaine, hébergement, support et Jetons Lia compris. En dessous, les extras au mois : rien n’est obligatoire.', aboBody)}
+    ${step(4, 'Paiement du site', `${paiement.acompte} % à la commande. À la réception : le reste en une fois, ou en ${lissageTxt} fois sans frais. Aucun engagement, sauf le temps de payer le reste en plusieurs fois.`, payChoices, ' b-step-last')}
   </form>
   <aside class="b-sum" aria-live="polite">
     <p class="b-sum-title">Votre récapitulatif</p>
     <ul class="b-lines">
-      <li><span data-sum="type">Site vitrine</span><b data-sum="type-price">${euro(creation.prix)}</b></li>
+      <li><span data-sum="type">Votre site</span><b data-sum="type-price">${euro(creation.prix)}</b></li>
       <li><span data-sum="domain">Nom de domaine à choisir</span><b>inclus</b></li>
       <li><span data-sum="forfait">Abonnement</span><b data-sum="forfait-price">${euro(ABO.month)}/mois</b></li>
       <li data-sum-opts hidden><span>Options</span><b data-sum="opts">0 €</b></li>
@@ -400,7 +405,7 @@ function comparatifTable() {
 }
 
 module.exports = {
-  infoBtn,
+  infoBtn, siteChoice,
   LMAX,
   lissageTxt,
   unType,
