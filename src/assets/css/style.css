@@ -1777,7 +1777,9 @@ div.tool { cursor: default; }
 @media (prefers-reduced-motion: reduce) { .opt-pop { animation: none; } }
 
 /* récapitulatif : un montant ne se coupe jamais en deux lignes */
-[data-sum="once"], [data-sum="recur"], [data-sum="today"], [data-sum="lisse"] { white-space: nowrap; }
+[data-sum="once"], [data-sum="recur"], [data-sum="today"], [data-sum="lisse"], [data-sum="reste"] { white-space: nowrap; }
+.b-total .b-today b { font-size: 1.5em; }
+.b-sum-detail { margin: 10px 4px 0; color: var(--muted); font-size: .86rem; font-weight: 700; }
 
 /* ---------- configurateur : le site, un seul choix ---------- */
 .b-choices.b-solo { grid-template-columns: 1fr; margin-bottom: 14px; }

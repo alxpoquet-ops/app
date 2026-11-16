@@ -10,6 +10,15 @@
   var EN = /^en\b/i.test(d.documentElement.lang || '');
   var TR = {
     // bulle de Lia et « i » des options
+    "Aujourd’hui : l’acompte et les options": "Today: the deposit and the options",
+    "Aujourd’hui : l’acompte de ": "Today: the deposit of ",
+    "Puis, dès la réception, pendant ": "Then, from delivery, for ",
+    " mois": " months",
+    "À la réception du site : le reste": "When the website is delivered: the rest",
+    "Et l’abonnement, chaque année": "And the subscription, every year",
+    "Et l’abonnement, chaque mois": "And the subscription, every month",
+    "Prix total du site : ": "Total price of the website: ",
+    ", sans frais en plus.": ", with no extra fees.",
     'Votre site, avec boutique en ligne': 'Your website, with an online shop',
     'Votre site': 'Your website',
     'Fermer': 'Close',
@@ -440,21 +449,17 @@
       var acompte = round2(t.price * data.acompte / 100);
       var reste = round2(t.price - acompte);
       var lisseAmt = lisse ? floor2(reste / lisseN) : 0;
-      var lisseLine = $('[data-sum-lisse]', box);
-      if (lisseLine) lisseLine.hidden = !lisse;
-      setText('lisse-label', tr('Le reste en ') + lisseN + tr(' fois sans frais'));
-      setText('lisse', euro(lisseAmt) + per);
-      var onceLine = $('[data-sum="once"]', box) && $('[data-sum="once"]', box).parentNode;
-      if (onceLine) onceLine.hidden = false;
-      setText('once-label', tr('Création, une fois'));
-      setText('once', euro(t.price + optOnce));
       var recur = (month + optMonth) * mult;
-      setText('recur-label', tr('Abonnement, dès la réception, par ') + tr(annual ? 'an' : 'mois'));
-      setText('recur', euro(recur));
-      // montant du jour, le même que sur /commander/ : l'acompte et les options payées une fois.
-      // À la réception : le reste (en une fois ou lissé) et le forfait démarre.
+      // ce que le client paie, dans l'ordre : aujourd'hui (l'acompte et les options payées une fois),
+      // à la réception (le reste, en une fois ou chaque mois pendant N mois), puis l'abonnement. Le même calcul que /commander/.
       var today = round2(acompte + optOnce);
+      setText('today-label', optOnce ? tr('Aujourd’hui : l’acompte et les options') : tr('Aujourd’hui : l’acompte de ') + data.acompte + ' %');
       setText('today', euro(today));
+      setText('reste-label', lisse ? tr('Puis, dès la réception, pendant ') + lisseN + tr(' mois') : tr('À la réception du site : le reste'));
+      setText('reste', lisse ? euro(lisseAmt) + tr('/mois') : euro(reste));
+      setText('recur-label', annual ? tr('Et l’abonnement, chaque année') : tr('Et l’abonnement, chaque mois'));
+      setText('recur', euro(recur) + per);
+      setText('detail', tr('Prix total du site : ') + euro(t.price + optOnce) + (lisse ? tr(', sans frais en plus.') : '.'));
       var bar = $('[data-sum="bar"]', box);
       if (bar) {
         bar.innerHTML = tr('Aujourd’hui ') + '<b>' + euro(today) + '</b>' + tr(', à la réception ') + '<b>' + (lisse ? euro(lisseAmt) + tr('/mois') + ' × ' + lisseN : euro(reste)) + '</b>' + tr(' + abonnement');

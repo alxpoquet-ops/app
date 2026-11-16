@@ -321,11 +321,12 @@ function configurator() {
       <li data-sum-opts hidden><span>Options</span><b data-sum="opts">0 €</b></li>
     </ul>
     <div class="b-total">
-      <p><span data-sum="once-label">Création, une fois</span><b data-sum="once">${euro(creation.prix)}</b></p>
-      <p data-sum-lisse hidden><span data-sum="lisse-label">Site en ${LMAX} fois</span><b data-sum="lisse">0 €</b></p>
+      <p class="b-today"><span data-sum="today-label">Aujourd’hui : l’acompte de ${paiement.acompte} %</span><b data-sum="today">${euro(Math.round(creation.prix * paiement.acompte) / 100)}</b></p>
+      <p><span data-sum="reste-label">À la réception du site : le reste</span><b data-sum="reste">${euro(creation.prix - Math.round(creation.prix * paiement.acompte) / 100)}</b></p>
       <p data-sum-parrain hidden><span>Parrainage</span><b>${fidelite.parrainageMois} mois offert</b></p>
-      <p><span data-sum="recur-label">Abonnement, dès la réception, par mois</span><b data-sum="recur">${euro(ABO.month)}</b></p>
+      <p><span data-sum="recur-label">Et l’abonnement, chaque mois</span><b data-sum="recur">${euro(ABO.month)}/mois</b></p>
     </div>
+    <p class="b-sum-detail" data-sum="detail">Prix total du site : ${euro(creation.prix)}.</p>
     <div class="b-sum-actions">
       <a class="btn btn-primary btn-block btn-lg btn-flaque" href="${sections.commander.path}" data-sum-order>${icon('shopping-bag')}<span>Commander</span></a>
       <a class="btn btn-light btn-block" href="/contact/#devis" data-sum-go>${icon('message-circle')}<span>Poser une question</span></a>

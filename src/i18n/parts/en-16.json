@@ -55,5 +55,9 @@
  "<span data-sum=\"type\">Votre site</span><b data-sum=\"type-price\">500 €</b>": "<span data-sum=\"type\">Your website</span><b data-sum=\"type-price\">€500</b>",
  "Votre site reste en ligne, sûr et à jour. Nom de domaine, hébergement, support et Jetons Lia compris. En dessous, les extras au mois : rien n’est obligatoire.": "Your website stays online, safe and up to date. Domain name, hosting, support and Lia Tokens included. Below, the monthly extras: none of them is required.",
  "Un site plus grand ? L’option « Cinq pages de plus », ou <a href=\"/contact/\">écrivez-nous</a>.": "A bigger website? The “Five more pages” option, or <a href=\"/contact/\">write to us</a>.",
- "Le prix de création est le même pour tous les sites : 500 €. Il comprend la maquette, le site complet et la mise en ligne. En dessous, ce que vous pouvez ajouter, payé une seule fois.": "The build price is the same for every website: €500. It covers the mock-up, the full website and putting it online. Below, what you can add, paid once."
+ "Le prix de création est le même pour tous les sites : 500 €. Il comprend la maquette, le site complet et la mise en ligne. En dessous, ce que vous pouvez ajouter, payé une seule fois.": "The build price is the same for every website: €500. It covers the mock-up, the full website and putting it online. Below, what you can add, paid once.",
+ "Prix total du site : 500 €.": "Total price of the website: €500.",
+ "<span data-sum=\"recur-label\">Et l’abonnement, chaque mois</span><b data-sum=\"recur\">10 €/mois</b>": "<span data-sum=\"recur-label\">And the subscription, every month</span><b data-sum=\"recur\">€10/month</b>",
+ "<span data-sum=\"reste-label\">À la réception du site : le reste</span><b data-sum=\"reste\">375 €</b>": "<span data-sum=\"reste-label\">When the website is delivered: the rest</span><b data-sum=\"reste\">€375</b>",
+ "<span data-sum=\"today-label\">Aujourd’hui : l’acompte de 25 %</span><b data-sum=\"today\">125 €</b>": "<span data-sum=\"today-label\">Today: the deposit of 25 %</span><b data-sum=\"today\">€125</b>"
 }
