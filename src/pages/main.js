@@ -65,13 +65,13 @@ function home() {
   const body = `<section class="hero">
   <div class="container hero-in">
     <div class="hero-text">
-      <h1>Votre site internet à ${euro(creation.prix)}, <mark>le même prix pour tous</mark></h1>
-      <p class="hero-lead">Lia, notre IA, fait le gros du travail en quelques heures. Moi, Alex, je vérifie tout à la main. Votre site coûte ainsi ${marche.fois} fois moins cher qu’un site fait à la main. Ensuite, un seul abonnement s’occupe de tout : ${euro(ABO.month)} par mois, sans engagement.</p>
+      <h1>Votre site internet, <mark>${marche.fois} fois moins cher</mark></h1>
+      <p class="hero-lead">Tout est compris : la maquette, le site complet, parfait sur téléphone, votre nom de domaine, l’hébergement, les mises à jour et le suivi. Lia, notre IA, fait le gros du travail en quelques heures. Moi, Alex, je vérifie tout à la main.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg btn-flaque')}${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</div>
       <ul class="hero-points">
-        <li>${icon('check')}${euro(creation.prix)} le site, une fois</li>
-        <li>${icon('check')}${euro(ABO.month)} par mois, sans engagement</li>
+        <li>${icon('check')}Nom de domaine et hébergement compris</li>
         <li>${icon('check')}Prix affiché, sans devis</li>
+        <li>${icon('check')}Sans engagement</li>
       </ul>
     </div>
     <div class="hero-art">
@@ -83,22 +83,22 @@ function home() {
 </section>
 
 <section class="section"><div class="container">
-  <h2 class="section-title">Un seul prix, et rien de caché</h2>
-  <p class="section-sub">Vous payez votre site une fois. Ensuite, l’abonnement le garde en ligne, sûr et à jour.</p>
+  <h2 class="section-title">Tout est compris, rien n’est caché</h2>
+  <p class="section-sub">Votre site d’abord, puis un abonnement qui le garde en ligne, sûr et à jour.</p>
   ${C.offre({ compact: true })}
   <p class="center more">${C.btn(sections.forfaits.path, 'btn-light btn-flaque', 'arrow-right', 'Tout le détail des tarifs')}</p>
 </div></section>
 
 <section class="section section-soft c-mint"><div class="container">
   <h2 class="section-title">Pourquoi c’est ${marche.fois} fois moins cher</h2>
-  <p class="section-sub">Un site vitrine fait à la main par un indépendant coûte en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}, et souvent plus dans une agence. Le vôtre coûte ${euro(creation.prix)}, et voici pourquoi.</p>
+  <p class="section-sub">Un site vitrine fait à la main par un indépendant coûte en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}, et souvent plus dans une agence. Chez nous, c’est ${marche.fois} fois moins, et voici pourquoi.</p>
   <div class="feats">${raisons.map(([ic, t, d]) => `<div class="feat reveal">${icon(ic)}<h3>${t}</h3><p>${d}</p></div>`).join('')}</div>
   <p class="center more">${C.btn(sections.methode.path, 'btn-light', 'sparkles', 'Ma méthode, sans rien cacher')}</p>
 </div></section>
 
 <section class="section"><div class="container">
   <h2 class="section-title">Quel site vous faut-il ?</h2>
-  <p class="section-sub">Une page ou plusieurs, le prix ne change pas. Seule la boutique en ligne ajoute ${euro(creation.boutique)}.</p>
+  <p class="section-sub">Une page ou plusieurs, le prix ne change pas. Seule la boutique en ligne coûte un peu plus.</p>
   ${C.typeCards()}
 </div></section>
 
@@ -152,8 +152,8 @@ function home() {
 ${C.ctaBand({ text: CTA_TEXTE })}`;
   return {
     path: '/',
-    title: `Site internet à ${creation.prix} €, puis ${ABO.month} € par mois | Alex & Lia`,
-    description: `Votre site internet pour ${creation.prix} €, le même prix pour tous, puis ${ABO.month} € par mois. Lia, notre IA, le crée, Alex vérifie tout : ${marche.fois} fois moins cher qu’à la main.`,
+    title: `Site internet ${marche.fois} fois moins cher | Alex & Lia`,
+    description: `Votre site tout compris : maquette, nom de domaine, hébergement, mises à jour. Créé par Lia, notre IA, vérifié par Alex, ${marche.fois} fois moins cher.`,
     crumbs: [HOME],
     body,
     priority: 1,
@@ -168,7 +168,7 @@ function creerPage() {
   const body = `${C.pageHero({
     section: 'creer',
     h1: 'Composez votre site en deux minutes',
-    lead: `Choisissez votre site, votre nom de domaine et vos options. Le site coûte ${euro(creation.prix)}, l’abonnement ${euro(ABO.month)} par mois. Le total s’affiche tout de suite, et vous commandez en ligne quand vous êtes prêt.`,
+    lead: 'Choisissez votre site, votre nom de domaine et vos options. Tout est compris, le total s’affiche tout de suite, et vous commandez en ligne quand vous êtes prêt.',
     crumbs,
   })}
 <section class="section section-builder"><div class="container">${C.configurator()}</div></section>
@@ -190,7 +190,7 @@ ${f.html}`;
     bodyClass: 'page-creer',
     noMobileBar: true,
     title: 'Créer mon site : composez-le en deux minutes | Alex & Lia',
-    description: `Choisissez votre site, vérifiez votre nom de domaine, ajoutez vos options. Le site coûte ${creation.prix} €, l’abonnement ${ABO.month} € par mois. Le total s’affiche tout de suite.`,
+    description: `Composez votre site en deux minutes : tout est compris, à partir de ${creation.prix} €. Vérifiez votre nom de domaine, ajoutez vos options, le total s’affiche.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -206,8 +206,8 @@ function forfaitsPage() {
   const liaPlus = O('liaplus'), pages = O('pages');
   const body = `${C.pageHero({
     section: 'forfaits',
-    h1: `Tarifs : ${euro(creation.prix)} le site, puis ${euro(ABO.month)} par mois`,
-    lead: 'Un seul prix, le même pour tous, écrit noir sur blanc. Vous payez votre site une fois, puis un abonnement qui s’occupe de tout. Les options sont à part, et vous les choisissez.',
+    h1: `Tarifs : tout compris, ${marche.fois} fois moins cher`,
+    lead: `Le site, son nom de domaine, l’hébergement, les mises à jour et le suivi : tout est compris, le même prix pour tous, sans devis. À partir de ${euro(creation.prix)} le site, puis ${euro(ABO.month)} par mois. Les options sont à part, et vous les choisissez.`,
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
@@ -288,8 +288,8 @@ ${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Composez votre site en de
   return {
     path: sections.forfaits.path,
     section: 'forfaits',
-    title: `Tarifs : ${creation.prix} € le site, ${ABO.month} € par mois | Alex & Lia`,
-    description: `Un seul prix : ${creation.prix} € le site, puis ${ABO.month} € par mois pour le nom de domaine, l’hébergement, les mises à jour et le support. Boutique en ligne : + ${creation.boutique} €. Sans devis.`,
+    title: `Tarifs : tout compris, ${marche.fois} fois moins cher | Alex & Lia`,
+    description: `Tout compris : maquette, site complet, nom de domaine, hébergement, mises à jour et support. À partir de ${creation.prix} € le site, puis ${ABO.month} € par mois. Sans devis.`,
     crumbs,
     body,
     schema: [f.schema],

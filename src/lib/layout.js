@@ -1,5 +1,5 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, sections, types, forfaits, creation, jetonsLia } = require('../config');
+const { site, sections, types, forfaits, creation, jetonsLia, marche } = require('../config');
 const { icon } = require('./icons');
 const { logoMark, monster } = require('./monsters');
 const brandName = 'Alex &amp; Lia';
@@ -132,7 +132,7 @@ function footer(p) {
       <ul class="footer-links">
         <li><a href="${sections.creer.path}">Créer mon site</a></li>
         ${types.map((t) => `<li><a href="${C.creerUrl({ type: t.id })}">${t.label}</a></li>`).join('')}
-        <li><a href="${sections.forfaits.path}">Tarifs : ${C.euro(creation.prix)} et ${C.euro(ABO.month)} par mois</a></li>
+        <li><a href="${sections.forfaits.path}">Tarifs : ${marche.fois} fois moins cher</a></li>
       </ul>
     </div>
     <div>
@@ -179,7 +179,7 @@ ${liaFlot()}`;
 function liaFlot() {
   const eur = (n) => `${n} €`;
   const questions = [
-    ['C’est combien ?', `Le site coûte ${eur(creation.prix)}, quel que soit le site. Ensuite, l’abonnement est de ${eur(ABO.month)} par mois : nom de domaine, hébergement, mises à jour et support compris.`, sections.forfaits.path, 'Voir les tarifs'],
+    ['C’est combien ?', `Tout est compris : la maquette, le site, le nom de domaine, l’hébergement et les mises à jour. C’est ${marche.fois} fois moins cher qu’un site fait à la main : à partir de ${eur(creation.prix)} le site, puis ${eur(ABO.month)} par mois.`, sections.forfaits.path, 'Voir les tarifs'],
     ['Comment ça marche ?', 'Vous répondez à quelques questions, je prépare votre site, et Alex vérifie tout avant la mise en ligne. Vous voyez le prix avant de commander.', sections.creer.path, 'Créer mon site'],
     ['Qui fait mon site ?', 'Moi, Lia, je fais le gros du travail. Alex, le petit monstre à lunettes, relit, corrige et règle tout à la main.', sections.liaalex.path, 'Lia et Alex'],
     ['Et pour changer mon site après ?', 'Dans votre espace client, vous m’écrivez ici ce que vous voulez changer. Je vous montre l’aperçu, et rien ne change sans votre accord.', site.espaceClient.demo, 'Essayer la démo'],
@@ -250,7 +250,7 @@ function page(p) {
 <meta property="og:image" content="${ogImage}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="${esc(`${site.name}, votre site internet à ${creation.prix} €, puis ${ABO.month} € par mois`)}">
+<meta property="og:image:alt" content="${esc(`${site.name} : votre site internet tout compris, ${marche.fois} fois moins cher`)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(p.title)}">
 <meta name="twitter:description" content="${esc(p.description)}">

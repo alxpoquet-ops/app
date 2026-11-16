@@ -125,7 +125,7 @@ function typeCards() {
       (t) => `<a class="type-card c-${t.color} reveal" href="${creerUrl({ type: t.id })}">
     <span class="type-ico">${icon(t.icon)}</span>
     <span class="type-name">${esc(t.label)}</span>
-    <span class="type-price"><small>Création</small><b>${euro(creation.prix)}</b>${t.supplement ? `<em class="type-plus">+ ${euro(t.supplement)}</em>` : ''}</span>
+    <span class="type-price"><small>${t.supplement ? 'Avec un petit supplément' : 'Le même prix'}</small></span>
     <span class="type-pitch">${inline(t.pitch)}</span>
     <span class="type-qui">${inline(t.qui)}</span>
     <span class="type-go">Choisir ${icon('arrow-right')}</span>
@@ -165,20 +165,20 @@ function offre({ compact = false, choose = true } = {}) {
   <div class="offre-cols">
     <article class="offre-col c-mint">
       <p class="offre-k"><span>1</span>Votre site</p>
-      <p class="offre-prix"><b>${euro(creation.prix)}</b><small>une fois</small></p>
-      <p class="offre-sous">${compact ? `Le même prix pour tous les sites. Payable en ${lissageTxt} fois sans frais.` : `Le même prix pour tous les sites. En ${lissageTxt} fois sans frais si vous voulez.`}</p>
       ${liste(compact ? INCLUS_SITE.slice(0, 4) : INCLUS_SITE)}
+      ${compact ? `<p class="offre-doux">À partir de <b>${euro(creation.prix)}</b>, une fois</p>` : `<p class="offre-prix"><small>à partir de</small><b>${euro(creation.prix)}</b><small>une fois</small></p>`}
+      <p class="offre-sous">${compact ? `Le même prix pour tous les sites. Payable en ${lissageTxt} fois sans frais.` : `Le même prix pour tous les sites. En ${lissageTxt} fois sans frais si vous voulez.`}</p>
     </article>
     <span class="offre-plus" aria-hidden="true">+</span>
     <article class="offre-col c-pink">
       <p class="offre-k"><span>2</span>L’abonnement</p>
-      <p class="offre-prix">${billed(ABO.month)}</p>
-      <p class="offre-sous">Obligatoire, sans engagement. À l’année : ${annuel.moisOfferts} mois offerts.</p>
       ${liste(compact ? ABO.main : ABO.features)}
+      ${compact ? `<p class="offre-doux"><b>${euro(ABO.month)}</b> par mois</p>` : `<p class="offre-prix">${billed(ABO.month)}</p>`}
+      <p class="offre-sous">Obligatoire, sans engagement. À l’année : ${annuel.moisOfferts} mois offerts.</p>
     </article>
   </div>
   <p class="offre-options">${icon('plus')}<span>${compact
-    ? `Des options à la carte : la boutique en ligne à <b>+ ${euro(creation.boutique)}</b>, l’anglais ou les rendez-vous à <b>+ ${euro(optsCreation[0].price.once)}</b>. Les extras au mois s’ajoutent et se retirent en un clic.`
+    ? `Des options à la carte, comme la boutique en ligne, l’anglais ou la prise de rendez-vous. Les extras au mois s’ajoutent et se retirent en un clic.`
     : `En option : boutique en ligne <b>+ ${euro(creation.boutique)}</b>, ${optsCreation.slice(0, 2).map((o) => `${o.name.toLowerCase()} <b>+ ${euro(o.price.once)}</b>`).join(', ')}. Et des extras au mois, à ajouter ou retirer quand vous voulez.`}</span></p>
   ${choose ? `<p class="offre-go">${btnCreer('btn-primary btn-lg')}</p>` : ''}
 </div>`;
@@ -243,7 +243,7 @@ function priceData() {
 // (une case data-boutique ; main.js met alors « boutique » dans le champ caché du type de site).
 function siteChoice({ name = 'b-type' } = {}) {
   return `<input type="hidden" name="${name}" value="vitrine" data-type-field>
-  <div class="b-choices b-solo"><div class="b-choice c-butter"><span class="b-card is-on"><span class="type-ico">${icon('layout-grid')}</span><span class="b-solo-txt"><strong>Votre site</strong><small>Une page, ou jusqu’à cinq pages, au même prix</small></span><span class="b-price">${euro(creation.prix)}</span><span class="b-check">${icon('check')}</span></span></div></div>`;
+  <div class="b-choices b-solo"><div class="b-choice c-butter"><span class="b-card is-on"><span class="type-ico">${icon('layout-grid')}</span><span class="b-solo-txt"><strong>Votre site</strong><small>Une page, ou jusqu’à cinq pages, au même prix</small></span><span class="b-price"><small>à partir de</small>${euro(creation.prix)}</span><span class="b-check">${icon('check')}</span></span></div></div>`;
 }
 function typeChoices({ name = 'b-type', checked = 'vitrine' } = {}) {
   return `<div class="b-choices b-types">${types
@@ -307,7 +307,7 @@ function configurator() {
       <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Engagement le temps du paiement, et l’abonnement se paie alors au mois.</p>`;
   return `<div class="builder" data-builder="${priceData()}" data-billing-scope>
   <form class="b-steps" data-builder-form>
-    ${step(1, 'Votre site', `Le prix de création est le même pour tous les sites : ${euro(creation.prix)}. Il comprend la maquette, le site complet et la mise en ligne. En dessous, ce que vous pouvez ajouter, payé une seule fois.`, typeBody)}
+    ${step(1, 'Votre site', 'Tout est compris : la maquette, le site complet, parfait sur téléphone, et sa mise en ligne. Une page ou cinq, au même prix. En dessous, ce que vous pouvez ajouter, payé une seule fois.', typeBody)}
     ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est comprise dans l’abonnement et elle reste à votre nom.', domainBox())}
     ${step(3, 'L’abonnement', 'Votre site reste en ligne, sûr et à jour. Nom de domaine, hébergement, support et Jetons Lia compris. En dessous, les extras au mois : rien n’est obligatoire.', aboBody)}
     ${step(4, 'Paiement du site', `${paiement.acompte} % à la commande. À la réception : le reste en une fois, ou en ${lissageTxt} fois sans frais. Aucun engagement, sauf le temps de payer le reste en plusieurs fois.`, payChoices, ' b-step-last')}

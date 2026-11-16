@@ -1797,3 +1797,13 @@ div.tool { cursor: default; }
 .b-step .b-opts { padding: 0 0 6px; }
 .b-step .b-label { margin: 14px 0 8px; }
 .b-step .b-opt { background: var(--soft); }
+
+/* l'offre : la liste de ce qui est compris d'abord, le prix ensuite */
+.offre-col .plan-list { margin-bottom: 16px; }
+.offre-col .offre-prix { margin-top: auto; }
+.offre-col { display: flex; flex-direction: column; }
+.offre-prix small:first-child { width: 100%; margin-bottom: -4px; font-size: .9rem; color: var(--muted); }
+.b-solo .b-price small { display: block !important; font-size: .74rem; font-weight: 800; color: var(--c-dd); text-align: right; }
+.type-price small { display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--card); font-weight: 800; }
+.offre-doux { margin: auto 0 2px; font-weight: 800; color: var(--c-dd); }
+.offre-doux b { font-size: 1.3rem; color: var(--ink); }
