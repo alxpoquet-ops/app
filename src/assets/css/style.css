@@ -910,6 +910,8 @@ a.tool:hover { transform: translateY(-3px); color: var(--text); }
 .tool-body span { display: block; font-size: .95rem; }
 .tool-tag { grid-column: 2; justify-self: start; margin-top: 10px; padding: 4px 12px; border-radius: 999px; background: var(--soft); color: var(--ink); font-weight: 900; font-size: .85rem; }
 .tool-tag[class*="c-"] { background: var(--c); color: var(--c-dd); }
+.tool-energie { display: inline-flex; align-items: center; gap: 4px; padding-left: 9px; }
+.tool-energie .ico { width: 14px; height: 14px; color: #E0A800; fill: #FFD45E; }
 
 /* bouton « Mon espace » de l'en-tête */
 .btn-espace { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 0 14px; border-radius: 999px; background: var(--card); color: var(--ink); text-decoration: none; font-weight: 900; font-size: .95rem; box-shadow: 0 0 0 2px var(--edge) inset; white-space: nowrap; }

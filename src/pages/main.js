@@ -326,6 +326,12 @@ function energieOutils() {
   </div>
 </div></section>`;
 }
+// Le prix d'un outil en énergie, sur sa carte : « 12 », ou « 2 à 14 » pour un outil qui marche aussi sans Cerise
+function prixOutil(t) {
+  const n = t.jetons || 0, l = t.jetonsLocal || 0;
+  const txt = l && l !== n ? `${Math.min(l, n)} à ${Math.max(l, n)}` : String(n);
+  return `<span class="tool-tag tool-energie" title="${txt} d’énergie">${icon('zap')}${txt}<span class="sr-only"> d’énergie</span></span>`;
+}
 function outilsPage() {
   const crumbs = crumb('espace');
   const f = C.faq(FAQ.espace, 'Vos questions sur l’espace client', 'faq-outils');
@@ -346,7 +352,7 @@ ${energieOutils()}
   <p class="section-sub">Ils sont dans votre espace client : il suffit d’être connecté. Rien d’autre à installer, aucun autre compte à créer.</p>
   ${Object.entries(FAMILLES_OUTILS).map(([fid, fnom]) => `<h3 class="tools-famille reveal">${fnom}</h3>
   <div class="tools">${OUTILS_LIA.filter((t) => t.categorie === fid).map(
-    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][0] : t.name}</strong><span>${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][1] : t.court}</span></span></div>`
+    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][0] : t.name}</strong><span>${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][1] : t.court}</span></span>${prixOutil(t)}</div>`
   ).join('')}</div>`).join('\n  ')}
 </div></section>
 

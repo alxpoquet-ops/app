@@ -548,6 +548,16 @@ function aled08e_jl_prix_local($o) {
     if (!$o) return 0;
     return !empty($o['local']) ? (int) ($o['jetons'] ?? 0) : (int) ($o['jetonsLocal'] ?? 0);
 }
+/* Le prix d'un outil, sur sa carte et dans son titre : « 12 », ou « 2 à 14 » pour un outil qui marche aussi sans Cerise */
+function aled08e_jl_prix_txt($o) {
+    $n = (int) ($o['jetons'] ?? 0);
+    $l = (int) ($o['jetonsLocal'] ?? 0);
+    return $l && $l !== $n ? min($l, $n) . ' à ' . max($l, $n) : (string) $n;
+}
+function aled08e_jl_prix_html($o, $cls = 'ol-prix') {
+    $t = aled08e_jl_prix_txt($o);
+    return '<span class="' . esc_attr($cls) . '" title="' . esc_attr($t . ' d’énergie') . '">' . aled08e_icon('zap') . '<span>' . esc_html($t) . '</span><span class="sr-only"> d’énergie</span></span>';
+}
 add_action('wp_ajax_aled08e_outil_local', function () {
     $uid = get_current_user_id();
     if (!$uid || !check_ajax_referer('aled08e_jl', '_aled08e_jl', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
@@ -705,13 +715,14 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
         <span class="ol-ico"><?php echo aled08e_icon($o['icon']); // phpcs:ignore ?></span>
         <strong><?php echo esc_html($o['name']); ?></strong>
         <small><?php echo esc_html($o['court']); ?></small>
+        <?php echo aled08e_jl_prix_html($o); // phpcs:ignore ?>
       </button>
       <?php endforeach; ?>
     </div>
 
     <?php foreach ($outils as $o) : ?>
     <section class="ol-outil c-<?php echo esc_attr($o['color']); ?>" id="ol-<?php echo esc_attr($o['id']); ?>" data-ol="<?php echo esc_attr($o['id']); ?>" hidden>
-      <header class="ol-tete"><span class="ol-ico"><?php echo aled08e_icon($o['icon']); // phpcs:ignore ?></span><div><h3><?php echo esc_html($o['name']); ?></h3><p><?php echo esc_html($o['desc']); ?></p></div><button type="button" class="ol-fermer" data-ol-fermer aria-label="Fermer l’outil"><?php echo aled08e_icon('x'); // phpcs:ignore ?></button></header>
+      <header class="ol-tete"><span class="ol-ico"><?php echo aled08e_icon($o['icon']); // phpcs:ignore ?></span><div><h3><?php echo esc_html($o['name']); ?> <?php echo aled08e_jl_prix_html($o, 'ol-prix ol-prix-tete'); // phpcs:ignore ?></h3><p><?php echo esc_html($o['desc']); ?></p></div><button type="button" class="ol-fermer" data-ol-fermer aria-label="Fermer l’outil"><?php echo aled08e_icon('x'); // phpcs:ignore ?></button></header>
       <?php if ($o['id'] === 'formats') : ?>
       <div class="ol-formats" data-formats>
         <label class="req-photo ol-photo"><input type="file" accept="image/*" class="sr-only" data-formats-file><?php echo aled08e_icon('image-plus'); // phpcs:ignore ?><span>Choisir une photo</span><?php $n = aled08e_jl_prix_local($o); if ($n) : ?><b class="ol-btn-prix"><?php echo esc_html(aled08e_jl_txt($n)); ?></b><?php endif; ?></label>

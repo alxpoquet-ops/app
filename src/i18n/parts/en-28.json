@@ -141,5 +141,15 @@
  "2 à 3 d’énergie": "2 to 3 energy",
  "2 à 14 d’énergie": "2 to 14 energy",
  "<strong>Outils.</strong> Un outil utilise de 1 à 16 d’énergie. Ce nombre est affiché sur son bouton, avant son utilisation. Pour un outil qui tourne sur l’appareil du client, une même action n’est comptée qu’une fois en 24 heures.": "<strong>Tools.</strong> A tool uses from 1 to 16 energy. This number is shown on its button, before it is used. For a tool that runs on the client’s device, the same action is only counted once in 24 hours.",
- "Avec 250 d’énergie, vous pouvez par exemple corriger 20 textes, répondre à 50 avis ou faire 8 retouches de votre site.": "With 250 energy, you can for example correct 20 texts, reply to 50 reviews or make 8 edits to your website."
+ "Avec 250 d’énergie, vous pouvez par exemple corriger 20 textes, répondre à 50 avis ou faire 8 retouches de votre site.": "With 250 energy, you can for example correct 20 texts, reply to 50 reviews or make 8 edits to your website.",
+ "1<span class=\"sr-only\"> d’énergie</span>": "1<span class=\"sr-only\"> energy</span>",
+ "5<span class=\"sr-only\"> d’énergie</span>": "5<span class=\"sr-only\"> energy</span>",
+ "16<span class=\"sr-only\"> d’énergie</span>": "16<span class=\"sr-only\"> energy</span>",
+ "6<span class=\"sr-only\"> d’énergie</span>": "6<span class=\"sr-only\"> energy</span>",
+ "13<span class=\"sr-only\"> d’énergie</span>": "13<span class=\"sr-only\"> energy</span>",
+ "8<span class=\"sr-only\"> d’énergie</span>": "8<span class=\"sr-only\"> energy</span>",
+ "2<span class=\"sr-only\"> d’énergie</span>": "2<span class=\"sr-only\"> energy</span>",
+ "2 à 3<span class=\"sr-only\"> d’énergie</span>": "2 to 3<span class=\"sr-only\"> energy</span>",
+ "12<span class=\"sr-only\"> d’énergie</span>": "12<span class=\"sr-only\"> energy</span>",
+ "2 à 14<span class=\"sr-only\"> d’énergie</span>": "2 to 14<span class=\"sr-only\"> energy</span>"
 }

@@ -438,7 +438,10 @@ a.app-card { text-decoration: none; color: inherit; }
 .ol-carte strong { font-weight: 900; color: var(--ink); font-size: 1.02rem; padding-right: 74px; }
 .ol-carte small { font-weight: 700; line-height: 1.35; }
 .ol-ico { display: grid; place-items: center; width: 40px; height: 40px; flex: none; border-radius: 14px; background: var(--card); color: var(--c-dd); }
-.ol-prix { position: absolute; top: 14px; right: 14px; padding: 4px 10px; border-radius: 999px; background: var(--card); color: var(--ink); font-weight: 900; font-size: .8rem; white-space: nowrap; }
+.ol-prix { position: absolute; top: 14px; right: 14px; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px 4px 7px; border-radius: 999px; background: var(--card); color: var(--ink); font-weight: 900; font-size: .82rem; line-height: 1.2; white-space: nowrap; }
+.ol-prix .ico { width: 14px; height: 14px; color: #E0A800; fill: #FFD45E; }
+/* le prix dans le titre de l'outil ouvert */
+.ol-prix.ol-prix-tete { position: static; vertical-align: 3px; margin-left: 4px; background: var(--c); color: var(--c-dd); font-size: .8rem; }
 .ol-prix.is-gratuit { background: var(--mint); color: var(--mint-dd); }
 .ol-outil { margin-top: 16px; padding: 18px; border-radius: 24px; background: var(--card); box-shadow: 0 0 0 3px var(--c) inset; scroll-margin-top: calc(var(--header-h) + 12px); }
 .ol-tete { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
@@ -447,7 +450,7 @@ a.app-card { text-decoration: none; color: inherit; }
 .ol-tete h3 { margin: 0 0 2px; font-size: 1.15rem; }
 .ol-tete p { margin: 0; color: var(--text); font-weight: 600; line-height: 1.45; }
 .ol-fermer { display: grid; place-items: center; width: 38px; height: 38px; flex: none; border: 0; border-radius: 50%; background: var(--soft); color: var(--ink); cursor: pointer; }
-.ol-form { display: grid; gap: 12px; }
+.ol-form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
 .ol-form .field { margin: 0; }
 .ol-form select { width: 100%; font: 700 1rem var(--font); color: var(--ink); background: var(--card); border: 0; box-shadow: 0 0 0 2px var(--line) inset; border-radius: 14px; padding: 12px 14px; }
 .ol-aide { display: block; margin-top: 4px; color: var(--muted); font-weight: 600; }
@@ -522,7 +525,8 @@ a.app-card { text-decoration: none; color: inherit; }
 .ol-bloc-msg a { color: inherit; text-decoration: underline; }
 .ol-bloc.is-publie { box-shadow: 0 0 0 2px var(--mint-d) inset; }
 .ol-resultat > .btn { justify-self: start; }
-@media (max-width: 520px) { .ol-boutons .btn { width: 100%; justify-content: center; } .rs-ligne > strong { min-width: 0; flex-basis: 100%; } }
+@media (max-width: 520px) { .ol-boutons .btn { width: 100%; justify-content: center; white-space: normal; flex-wrap: wrap; row-gap: 4px; text-align: center; } .rs-ligne > strong { min-width: 0; flex-basis: 100%; } }
+.ol-outil, .ol-outil > * { min-width: 0; }
 
 /* Familles d'outils */
 .ol-filtres { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
