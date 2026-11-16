@@ -255,11 +255,11 @@ Côté prix, la création coûte à partir de ${prix} € pour la galerie, et à
   {
     slug: 'site-internet-gite-chambre-hotes',
     nom: 'Hébergements touristiques',
-    qui: 'Gîtes, chambres d’hôtes, meublés de tourisme',
+    qui: 'Gîtes, chambres d’hôtes, locations de vacances',
     icon: 'house',
     color: 'sky',
     title: 'Site internet pour gîte et chambre d’hôtes | Les Minis Monstres',
-    description: 'Gîte, chambre d’hôtes, meublé de tourisme : un site avec vos photos, vos tarifs, l’accès et une version anglaise, pour recevoir des réservations en direct.',
+    description: 'Gîte, chambre d’hôtes, location de vacances : un site avec vos photos, vos tarifs, l’accès et une version anglaise, pour recevoir des réservations en direct.',
     h1: 'Site internet pour gîte et chambre d’hôtes : vos réservations en direct',
     lead: 'Beaucoup de voyageurs cherchent le nom d’un gîte repéré ailleurs avant de réserver. Je crée le site qui les accueille : de belles photos, des tarifs clairs, l’accès, et une demande de séjour qui arrive chez vous, sans commission.',
     resume: 'Réservations en direct, photos, accès et version anglaise.',
@@ -305,7 +305,7 @@ Une partie de vos hôtes ne lit pas le français. Avec l’option ${O('en').name
 
 Dans le tourisme, les avis pèsent lourd. Publiez seulement de vrais commentaires de vos hôtes, avec leur accord, ou renvoyez vers votre [fiche Google](/guides/fiche-google-entreprise/), où chacun peut en laisser librement. Cette fiche vous place aussi sur la carte quand quelqu’un cherche où dormir dans le coin.
 
-!> Les meublés de tourisme et les chambres d’hôtes se déclarent en mairie. Si vous avez reçu un numéro d’enregistrement, il doit apparaître sur vos annonces, et votre site en est une : je l’y ajoute.
+!> Les locations de vacances et les chambres d’hôtes se déclarent en mairie. Si vous avez reçu un numéro d’enregistrement, il doit apparaître sur vos annonces, et votre site en est une : je l’y ajoute.
 
 ## Le prix, et qui s’en occupe
 

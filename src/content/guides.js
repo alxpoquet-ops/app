@@ -32,7 +32,7 @@ const maj = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 const rechargeMin = Object.values(cfg).find((v) => v && v.recharge && v.modif).recharge[0].prix;
 const gardien = bande.find((b) => b.id === 'gardien').role; // Le gardien (présenté par son rôle, sans prénom)
 const demandesUneFois =aLaDemande.map((x) => `${minus(x.name)} (${eur(x.prix)} €)`).join(', ');
-const optionsUneFois = options.filter((o) => o.quand === 'creation' && !o.retire).map((o) => `${o.name} (${eur(o.price.once)} €)`).join(', ');
+const optionsUneFois = options.filter((o) => o.quand === 'creation' && !o.retire).map((o) => `${o.name.charAt(0).toLowerCase() + o.name.slice(1)} (${eur(o.price.once)} €)`).join(', ');
 const extrasPourTous = options.filter((o) => o.quand === 'mois' && !o.types).map((o) => `${o.name} (${eur(o.price.month)} € par mois)`).join(', ');
 
 const PUBLIE = '2026-11-14';

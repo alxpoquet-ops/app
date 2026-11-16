@@ -935,7 +935,7 @@ function monEspacePage() {
           <p class="app-sub">Vos extras</p>
           <div class="app-opts">${extras
             .map(
-              (o) => `<label class="app-opt"><span class="app-opt-ico">${icon(o.icon)}</span><span class="app-opt-txt"><strong>${esc(o.name)}${C.infoBtn(o.id, o.name, o.info)}</strong><small>${euro(o.price.month)} par mois</small></span><input type="checkbox" role="switch" value="${o.id}" data-month="${o.price.month}"${actifs.includes(o.id) ? ' checked' : ''}><span class="switch" aria-hidden="true"></span></label>`
+              (o) => `<label class="app-opt"><span class="app-opt-ico">${icon(o.icon)}</span><span class="app-opt-txt"><strong>${C.nomI(o.name, o.id, o.info)}</strong><small>${euro(o.price.month)} par mois</small></span><input type="checkbox" role="switch" value="${o.id}" data-month="${o.price.month}"${actifs.includes(o.id) ? ' checked' : ''}><span class="switch" aria-hidden="true"></span></label>`
             )
             .join('')}</div>
           <p class="app-note">Un extra s’ajoute ou se retire quand vous voulez.${extrasBoutique.length ? ` Pour une boutique en ligne, il y en a ${extrasBoutique.length === 2 ? 'deux' : extrasBoutique.length} de plus : ${extrasBoutique.map((o) => esc(o.name.toLowerCase())).join(' et ')}.` : ''}</p>
@@ -1228,7 +1228,7 @@ function confiancePage() {
   const body = `${C.pageHero({
     section: 'confiance',
     h1: 'Nos réalisations',
-    lead: 'Des sites en ligne, que vous pouvez visiter. Pas de faux avis ici : allez voir par vous-même, et jugez sur pièce.',
+    lead: 'Des sites en ligne, que vous pouvez visiter. Pas de faux avis ici : allez les voir par vous-même.',
     crumbs,
   })}
 <section class="section"><div class="container">
@@ -1271,7 +1271,7 @@ function equipePage() {
 
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Comment on travaille ensemble</h2>
-  <div class="feats">
+  <div class="feats feats-3">
     <div class="feat reveal">${icon('palette')}<h3>Je conçois</h3><p>Votre maquette, vos pages et vos textes importants : c’est moi, du début à la fin.</p></div>
     <div class="feat reveal">${icon('sparkles')}<h3>La bande s’occupe du répétitif</h3><p>Mises à jour, sauvegardes, petites retouches, chiffres du mois : chaque monstre fait sa tâche, sans se lasser.</p></div>
     <div class="feat reveal">${icon('shield-check')}<h3>Je vérifie</h3><p>Rien ne part en ligne sans un œil humain. Et pour tout le reste, vous parlez directement avec moi.</p></div>
@@ -1516,7 +1516,7 @@ function docPage() {
   <h2>Deux pour s’occuper de votre site</h2>
   <div class="doc-duo-qui">
     <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${C.petit('bricou')}</span><h3>Bricou, le bricoleur de la bande</h3><p>Il fait les petites et moyennes modifications. Il me montre d’abord votre demande, puis vous laisse valider l’aperçu : rien ne change sans votre accord.</p></div>
-    <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${icon('user')}</span><h3>Moi, l’humain de la bande</h3><p>Je crée votre site, je fais les grandes modifications à la main, je vérifie et je réponds à vos questions. Ce que Bricou ne sait pas faire me revient.</p></div>
+    <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${C.alexPortrait({ title: 'Alex' })}</span><h3>Moi, l’humain de la bande</h3><p>Je crée votre site, je fais les grandes modifications à la main, je vérifie et je réponds à vos questions. Ce que Bricou ne sait pas faire me revient.</p></div>
   </div>
   <p class="doc-more">${C.btn(sections.liaalex.path, 'btn-primary', 'sparkles', 'Pourquoi les Minis Monstres')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>

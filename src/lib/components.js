@@ -17,7 +17,7 @@ const { inline, esc, plain } = require('./md');
 
 // ---------------------------------------------------------------- liens et prix
 const contactUrl = site.contactPath || '/contact/';
-const euro = (n) => `${(Math.round(n * 100) / 100 % 1 ? (Math.round(n * 100) / 100).toFixed(2) : String(Math.round(n * 100) / 100)).replace('.', ',')} €`;
+const euro = (n) => `${(Math.round(n * 100) / 100 % 1 ? (Math.round(n * 100) / 100).toFixed(2) : String(Math.round(n * 100) / 100)).replace('.', ',').replace(/^(\d+)(\d{3})(?=,|$)/, '$1 $2')} €`;
 const withQuery = (path, params = {}) => {
   const q = Object.entries(params).filter(([, v]) => v).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
   return path + (q ? '?' + q : '');
@@ -192,7 +192,7 @@ function offre({ compact = false, choose = true } = {}) {
   </div>
   <p class="offre-options">${icon('plus')}<span>${compact
     ? `Des options à la carte, comme la boutique en ligne, l’anglais ou la prise de rendez-vous. Les extras au mois s’ajoutent et se retirent en un clic.`
-    : `En option : boutique en ligne <b>+ ${euro(creation.boutique)}</b>, page en plus au-delà de ${creation.pages} <b>${euro(creation.pagePlus)} la page</b> (les pages pour Google ne comptent pas), ${optsCreation.slice(0, 2).map((o) => `${o.name.toLowerCase()} <b>+ ${euro(o.price.once)}</b>`).join(', ')}. Et des extras au mois, à ajouter ou retirer quand vous voulez.`}</span></p>
+    : `En option : boutique en ligne <b>+ ${euro(creation.boutique)}</b>, au-delà de ${creation.pages} pages <b>${euro(creation.pagePlus)} la page</b> (les pages pour Google ne comptent pas), ${optsCreation.slice(0, 2).map((o) => `${o.name.toLowerCase()} <b>+ ${euro(o.price.once)}</b>`).join(', ')}. Et des extras au mois, à ajouter ou retirer quand vous voulez.`}</span></p>
   ${choose ? `<p class="offre-go">${btnCreer('btn-primary btn-lg')}</p>` : ''}
 </div>`;
 }
@@ -221,6 +221,11 @@ const optPrice = (p) => (p.once ? euro(p.once) : `${euro(p.month)}/mois`);
 // Le petit « i » à côté d'une option ou d'un extra : au survol ou au clic, une bulle dit ce qu'il ajoute,
 // avec une capture d'exemple (src/assets/img/options/<id>.webp). Le texte est dans des attributs : main.js fait la bulle.
 const CAPTURES = (() => { try { return new Set(require('fs').readdirSync(require('path').join(__dirname, '../assets/img/options')).map((f) => f.replace(/\.webp$/, ''))); } catch (e) { return new Set(); } })();
+// Le nom d'une option suivi de son « i » : le dernier mot et le bouton restent sur la même ligne
+function nomI(nom, id, texte, entre = '') {
+  const i = nom.lastIndexOf(' ');
+  return `${i > 0 ? esc(nom.slice(0, i + 1)) : ''}<span class="nw">${esc(nom.slice(i + 1))}${entre}${infoBtn(id, nom, texte)}</span>`;
+}
 function infoBtn(id, nom, texte) {
   if (!texte) return '';
   const img = CAPTURES.has(id) ? ` data-img="/assets/img/options/${id}.webp"` : '';
@@ -243,8 +248,8 @@ function bandeGrid({ complet = false } = {}) {
     .join('')}</div>`;
 }
 function optionsCompact() {
-  const ligne = (o) => `<li><span class="opt-ico${MONSTRE_OPTION[o.id] ? ' opt-monstre' : ''}">${MONSTRE_OPTION[o.id] ? petit(MONSTRE_OPTION[o.id]) : icon(o.icon)}</span><span class="opt-txt"><strong>${esc(o.name)}${o.types && o.types.length === 1 && o.types[0] === 'boutique' ? ' <em class="opt-only">boutique</em>' : ''}${infoBtn(o.id, o.name, o.info)}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${o.price.once ? '+ ' + euro(o.price.once) : `${euro(o.price.month)}/mois`}</span></li>`;
-  const boutique = `<li><span class="opt-ico">${icon('shopping-bag')}</span><span class="opt-txt"><strong>Boutique en ligne${infoBtn('boutique', 'Boutique en ligne', BOUTIQUE.info)}</strong><small>Vos produits, le panier, le paiement par carte et le suivi des commandes. Jusqu’à 20 produits ajoutés par moi.</small></span><span class="opt-price">+ ${euro(creation.boutique)}</span></li>`;
+  const ligne = (o) => `<li><span class="opt-ico${MONSTRE_OPTION[o.id] ? ' opt-monstre' : ''}">${MONSTRE_OPTION[o.id] ? petit(MONSTRE_OPTION[o.id]) : icon(o.icon)}</span><span class="opt-txt"><strong>${nomI(o.name, o.id, o.info, o.types && o.types.length === 1 && o.types[0] === 'boutique' ? ' <em class="opt-only">boutique</em>' : '')}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${o.price.once ? '+ ' + euro(o.price.once) : `${euro(o.price.month)}/mois`}</span></li>`;
+  const boutique = `<li><span class="opt-ico">${icon('shopping-bag')}</span><span class="opt-txt"><strong>${nomI('Boutique en ligne', 'boutique', BOUTIQUE.info)}</strong><small>Vos produits, le panier, le paiement par carte et le suivi des commandes. Jusqu’à 20 produits ajoutés par moi.</small></span><span class="opt-price">+ ${euro(creation.boutique)}</span></li>`;
   return `<div class="opt-groups">
   <div class="opt-group reveal"><h3>${icon('wand-sparkles')}À la création, une fois</h3><ul>${boutique}${optsCreation.map(ligne).join('')}</ul></div>
   <div class="opt-group reveal"><h3>${icon('repeat')}Chaque mois, à ajouter ou retirer</h3><ul>${optsMois.map(ligne).join('')}</ul></div>
@@ -286,7 +291,7 @@ function typeChoices({ name = 'b-type', checked = 'vitrine' } = {}) {
   return `<div class="b-choices b-types">${types
     .map(
       (t) => `<label class="b-choice c-${t.color}"><input type="radio" name="${name}" value="${t.id}"${t.id === checked ? ' checked' : ''}>
-        <span class="b-card"><span class="type-ico">${icon(t.icon)}</span><strong>${esc(t.label)}${infoBtn(t.id, t.label, t.info)}</strong><span class="b-price">${prixType(t)}</span><small>${esc(t.delai)}</small><span class="b-check">${icon('check')}</span></span></label>`
+        <span class="b-card"><span class="type-ico">${icon(t.icon)}</span><strong>${nomI(t.label, t.id, t.info)}</strong><span class="b-price">${prixType(t)}</span><small>${esc(t.delai)}</small><span class="b-check">${icon('check')}</span></span></label>`
     )
     .join('')}</div>`;
 }
@@ -311,8 +316,8 @@ function pagesPlusBox({ name = '' } = {}) {
 }
 function optionChoices({ name = '', quand = 'tout', pagesName = '' } = {}) {
   const prix = (o) => (o.price.once ? `+ ${euro(o.price.once)}` : `<span class="p-month">${euro(o.price.month)}/mois</span><span class="p-year">${euro(year(o.price.month))}/an</span>`);
-  const ligne = (o) => `<label class="b-opt"${o.types ? ` data-types="${o.types.join(' ')}"` : ''}><input type="checkbox"${name ? ` name="${name}"` : ''} value="${o.id}"><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${esc(o.name)}${infoBtn(o.id, o.name, o.info)}</strong><small>${inline((o.court || o.desc))}</small></span><em class="p-opt">${prix(o)}</em></label>`;
-  const boutique = `<label class="b-opt b-opt-boutique"><input type="checkbox" value="boutique" data-boutique><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>Boutique en ligne${infoBtn('boutique', 'Boutique en ligne', BOUTIQUE.info)}</strong><small>Panier, paiement par carte et commandes.</small></span><em class="p-opt">+ ${euro(creation.boutique)}</em></label>`;
+  const ligne = (o) => `<label class="b-opt"${o.types ? ` data-types="${o.types.join(' ')}"` : ''}><input type="checkbox"${name ? ` name="${name}"` : ''} value="${o.id}"><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${nomI(o.name, o.id, o.info)}</strong><small>${inline((o.court || o.desc))}</small></span><em class="p-opt">${prix(o)}</em></label>`;
+  const boutique = `<label class="b-opt b-opt-boutique"><input type="checkbox" value="boutique" data-boutique><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${nomI('Boutique en ligne', 'boutique', BOUTIQUE.info)}</strong><small>Panier, paiement par carte et commandes.</small></span><em class="p-opt">+ ${euro(creation.boutique)}</em></label>`;
   const unefois = `<p class="b-label">À ajouter, une seule fois</p><div class="b-opts">${boutique}${optsCreation.map(ligne).join('')}</div>${pagesPlusBox({ name: pagesName })}`;
   const aumois = `<p class="b-label">Extras au mois, à ajouter ou retirer quand vous voulez</p><div class="b-opts">${optsMois.map(ligne).join('')}</div>`;
   if (quand === 'creation') return unefois;
@@ -352,7 +357,7 @@ function configurator() {
       <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Engagement le temps du paiement, et l’abonnement se paie alors au mois.</p>`;
   return `<div class="builder" data-builder="${priceData()}" data-billing-scope>
   <form class="b-steps" data-builder-form>
-    ${step(1, 'Votre site', 'Tout est compris : la maquette, le site complet, parfait sur téléphone, et sa mise en ligne. Une page ou cinq, au même prix. En dessous, ce que vous pouvez ajouter, payé une seule fois.', typeBody)}
+    ${step(1, 'Votre site', `Tout est compris : la maquette, le site complet, parfait sur téléphone, et sa mise en ligne. Jusqu’à ${creation.pages} pages, au même prix. En dessous, ce que vous pouvez ajouter, payé une seule fois.`, typeBody)}
     ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est comprise dans l’abonnement et elle reste à votre nom.', domainBox())}
     ${step(3, 'L’abonnement', 'Votre site reste en ligne, sûr et à jour. Nom de domaine, hébergement, support et le gardien qui veille sur votre site, compris. En dessous, les extras au mois : rien n’est obligatoire.', aboBody)}
     ${step(4, 'Paiement du site', `${paiement.acompte} % à la commande. À la réception : le reste en une fois, ou en ${lissageTxt} fois sans frais. Aucun engagement, sauf le temps de payer le reste en plusieurs fois.`, payChoices, ' b-step-last')}
@@ -458,5 +463,5 @@ module.exports = {
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, optsCreation, optsMois, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
-  petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait,
+  petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };
