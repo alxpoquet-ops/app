@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Alex & Lia Espace client
  * Description: L'espace client Alex & Lia sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.1.0
+ * Version: 2.1.1
  * Requires PHP: 7.4
  * Author: Alex & Lia
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.1.0');
+define('ALED08E_VERSION', '2.1.1');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
@@ -1120,3 +1120,20 @@ add_action('init', function () {
     }
     update_option('aled08e_offre', '2', false);
 }, 5);
+
+/* Annonce de l'offre unique (une seule fois) : les anciennes annonces qui parlent des forfaits Chico, Power et Titan
+ * sont retirées de l'espace des clients (passées en brouillon, pas supprimées), et une annonce à jour les remplace. */
+add_action('init', function () {
+    if (get_option('aled08e_annonce_offre') === '1' || !post_type_exists(ALED08E_CPT_ANNONCE)) return;
+    foreach (get_posts(['post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'numberposts' => 50, 'suppress_filters' => true]) as $p) {
+        if (preg_match('/\b(Chico|Power|Titan)\b/u', $p->post_title . ' ' . $p->post_content)) wp_update_post(['ID' => $p->ID, 'post_status' => 'draft']);
+    }
+    wp_insert_post([
+        'post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private',
+        'post_title' => 'Nouveau : un seul abonnement, et des extras à la carte',
+        'post_content' => "Votre forfait devient l’abonnement Alex & Lia : vous gardez tout ce que vous aviez, au même prix.\n"
+            . "Les extras (SEO suivi, chiffres détaillés, Lia +, e-mail pro…) s’ajoutent ou se retirent quand vous voulez, dans Mon compte. Le petit « i » montre ce que chacun ajoute.\n"
+            . "Et Lia s’installe dans la bulle en bas de votre espace : bientôt, vous pourrez lui écrire directement.",
+    ]);
+    update_option('aled08e_annonce_offre', '1', false);
+}, 20);
