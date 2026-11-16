@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres Espace client
  * Description: L'espace client des Minis Monstres sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.4.4
+ * Version: 2.4.5
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.4.4');
+define('ALED08E_VERSION', '2.4.5');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
@@ -37,7 +37,7 @@ function aled08e_monster($n) { $d = aled08e_data(); return $d['monsters'][$n] ??
 function aled08e_forfait($id) {
     foreach (aled08e_data()['forfaits'] as $f) if ($f['id'] === $id) return $f;
     $all = aled08e_data()['forfaits'];
-    return $all ? $all[0] : ['id' => 'base', 'name' => 'Abonnement', 'month' => 10, 'quota' => 1, 'periode' => 'trimestre', 'jetons' => 100, 'modifs' => 'les petites retouches et les outils de la bande, et une intervention d’Alex par trimestre', 'color' => 'pink', 'tagline' => ''];
+    return $all ? $all[0] : ['id' => 'base', 'name' => 'Abonnement', 'month' => 10, 'quota' => 1, 'periode' => 'trimestre', 'jetons' => 250, 'modifs' => 'les petites retouches et les outils de la bande, et une intervention d’Alex par trimestre', 'color' => 'pink', 'tagline' => ''];
 }
 /* Le nom de l'abonnement sur une facture ou dans un e-mail */
 function aled08e_abo_nom($f) { return count(aled08e_data()['forfaits']) > 1 ? 'Forfait ' . $f['name'] : 'Abonnement des Minis Monstres'; }

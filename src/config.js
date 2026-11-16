@@ -153,7 +153,7 @@ const types = [
 // Les anciens forfaits (chico, power, titan) n'existent plus : un ancien client garde ce qu'il avait
 // (power : extra Suivi Google ; titan : extras Suivi Google et chiffres détaillés), c'est géré dans l'extension WordPress.
 // L'énergie donnée chaque mois avec l'abonnement : elle sert aux outils de l'espace client et aux petites retouches.
-const energieMois = 100;
+const energieMois = 250;
 const forfaits = [
   {
     id: 'base',
