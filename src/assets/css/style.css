@@ -1778,7 +1778,11 @@ div.tool { cursor: default; }
 
 /* récapitulatif : un montant ne se coupe jamais en deux lignes */
 [data-sum="once"], [data-sum="recur"], [data-sum="today"], [data-sum="lisse"], [data-sum="reste"] { white-space: nowrap; }
-.b-total .b-today b { font-size: 1.5em; }
+.b-total p { display: grid; grid-template-columns: 1fr; gap: 0; justify-content: stretch; }
+.b-total p + p { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+.b-total p span { font-size: .9rem; font-weight: 700; color: var(--muted); line-height: 1.35; }
+.b-total p b { justify-self: start; font-size: 1.45rem; line-height: 1.2; }
+.b-total .b-today b { font-size: 1.85rem; color: var(--mint-dd); }
 .b-sum-detail { margin: 10px 4px 0; color: var(--muted); font-size: .86rem; font-weight: 700; }
 
 /* ---------- configurateur : le site, un seul choix ---------- */

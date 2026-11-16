@@ -1022,13 +1022,14 @@
     /* la réponse de Lia : par le serveur (espace client), ou tirée des exemples de la page (démo) */
     var repondre = function (message, fait) {
       if (mode === 'demo') {
+        // les réponses d'exemple sont écrites dans la page (data-cout et non data-jetons : la démo réécrit ces éléments-là)
         var ex = $$('[data-lia-demo] [data-mots]'), bas = message.toLowerCase(), choix = null;
         ex.forEach(function (e) { if (!choix && e.getAttribute('data-mots').split(',').some(function (m) { return m && bas.indexOf(m) > -1; })) choix = e; });
         choix = choix || $('[data-lia-demo] [data-defaut]');
         setTimeout(function () {
           if (!choix) return fait({ reponse: tr('Dans votre vrai espace, je vous réponds ici.'), action: { type: 'aucune' }, solde: solde });
           var g = function (n) { return choix.getAttribute('data-' + n) || ''; };
-          fait({ reponse: choix.textContent.trim(), solde: Math.max(0, solde - prix), action: { type: g('type') || 'aucune', par: g('par'), texte: g('texte'), jetons: +g('jetons') || 0, outil: g('outil'), nom: g('nom'), onglet: g('onglet') } });
+          fait({ reponse: choix.textContent.trim(), solde: Math.max(0, solde - prix), action: { type: g('type') || 'aucune', par: g('par'), texte: g('texte'), jetons: +g('cout') || 0, outil: g('outil'), nom: g('nom'), onglet: g('onglet') } });
         }, 700);
         return;
       }
