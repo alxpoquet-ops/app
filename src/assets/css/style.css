@@ -1820,3 +1820,7 @@ div.tool { cursor: default; }
 .type-price small { display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--card); font-weight: 800; }
 .offre-doux { margin: auto 0 2px; font-weight: 800; color: var(--c-dd); }
 .offre-doux b { font-size: 1.3rem; color: var(--ink); }
+/* V2 : pages métier */
+.opt-conseil { max-width: 980px; margin: 0 auto; }
+.metier-ex-titre { margin-top: 56px; }
+.client-cards-solo { grid-template-columns: minmax(0, 420px); justify-content: center; }

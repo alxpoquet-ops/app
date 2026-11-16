@@ -92,7 +92,7 @@ ${METIERS.length ? `<section class="section"><div class="container">
 <section class="section section-soft c-butter"><div class="container">
   <h2 class="section-title">Des sites en ligne, à visiter</h2>
   <p class="section-sub">Pas de faux avis ici : allez voir par vous-même.</p>
-  ${clientCards({ max: 3 })}
+  ${clientCards({ max: 3, desc: false })}
   <p class="center more">${C.btn(sections.confiance.path, 'btn-light', sections.confiance.icon, 'Toutes les réalisations')}</p>
 </div></section>
 
@@ -163,10 +163,10 @@ function metierCards() {
 // Cartes des sites réalisés : uniquement de vrais clients, déjà en ligne (pas notre propre site)
 const CLIENTS_EN_LIGNE = clients.filter((c) => !c.enCreation && c.url && !c.url.startsWith('/'));
 const pagesDe = (c) => (c.enCreation ? 0 : (CLIENTS_PAGES[c.domaine] || {}).pages || 0);
-function clientCards({ max = 0 } = {}) {
+function clientCards({ max = 0, desc = true } = {}) {
   const liste = max ? CLIENTS_EN_LIGNE.slice(0, max) : CLIENTS_EN_LIGNE;
   return `<div class="client-cards">${liste
-    .map((c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-desc">${inline(c.desc)}</span>${pagesDe(c) ? `<span class="client-pages"><b>${pagesDe(c)}</b> page${pagesDe(c) > 1 ? 's' : ''}</span>` : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`)
+    .map((c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong>${desc ? `<span class="client-desc">${inline(c.desc)}</span>` : ''}${pagesDe(c) ? `<span class="client-pages"><b>${pagesDe(c)}</b> page${pagesDe(c) > 1 ? 's' : ''}</span>` : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`)
     .join('')}</div>`;
 }
 
@@ -1560,11 +1560,11 @@ function metierPage(m) {
 </div></section>
 ${ex || opts.length ? `<section class="section"><div class="container">
   ${opts.length ? `<h2 class="section-title">Ce que je vous conseille</h2>
-  <p class="section-sub">Rien n’est obligatoire : voici ce qui sert le plus pour votre métier.</p>
+  <p class="section-sub">Rien n’est obligatoire. Voici ce qui sert le plus.</p>
   <div class="opt-group opt-conseil reveal"><ul>${opts.map((o) => `<li><span class="opt-ico">${icon(o.ic)}</span><span class="opt-txt"><strong>${esc(o.nom)}</strong><small>${inline(o.pourquoi)}</small></span><span class="opt-price">${o.prix}</span></li>`).join('')}</ul></div>` : ''}
   ${ex ? `<h2 class="section-title metier-ex-titre">Un exemple en ligne</h2>
   ${m.exemple.texte ? `<p class="section-sub">${inline(m.exemple.texte)}</p>` : ''}
-  <div class="client-cards client-cards-solo"><a class="client-card c-${ex.color} reveal" href="${ex.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(ex.icon)}</span><span class="client-genre">${esc(ex.genre)}</span><strong>${esc(ex.nom)}</strong><span class="client-desc">${inline(ex.desc)}</span><span class="client-url">${icon('globe')}${esc(ex.domaine)}${icon('arrow-right')}</span></a></div>` : ''}
+  <div class="client-cards client-cards-solo"><a class="client-card c-${ex.color} reveal" href="${ex.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(ex.icon)}</span><span class="client-genre">${esc(ex.genre)}</span><strong>${esc(ex.nom)}</strong><span class="client-url">${icon('globe')}${esc(ex.domaine)}${icon('arrow-right')}</span></a></div>` : ''}
 </div></section>` : ''}
 ${f.html}
 ${voirCards(m.voir || [])}

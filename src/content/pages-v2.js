@@ -161,7 +161,7 @@ Avec un site, l’adresse est à votre nom. Vous choisissez ce qui est écrit et
 
 ### Pour un indépendant ou un artisan
 
-Chaque prestation a sa page, avec des photos de vos réalisations et votre zone d’intervention. Les demandes de devis arrivent par le formulaire, même quand vous êtes en rendez-vous ou sur un chantier. Le guide du [site pour artisan](/site-internet-artisan/) détaille ce qu’il faut y mettre.
+Chaque prestation a sa page, avec des photos de vos réalisations et votre zone d’intervention. Les demandes de devis arrivent par le formulaire, même quand vous êtes en rendez-vous ou sur un chantier. La page [site internet pour artisan](/site-internet-artisan/) détaille ce qu’il faut y mettre.
 
 ### Pour un commerce
 
@@ -382,7 +382,7 @@ Les petites retouches avec Lia sont prévues pour un usage occasionnel. Si vous 
 
 Elles s’ajoutent ou se retirent quand vous voulez, depuis votre espace client. Aucune n’est obligatoire.
 
-${extrasMois.map((o) => `- **${o.name}**, ${eur(o.price.month)} € par mois${o.types ? ', pour une boutique en ligne' : ''} : ${o.court}`).join('\n')}
+${extrasMois.map((o) => `- **${o.name}**, ${eur(o.price.month)} € par mois${o.types ? ', pour une boutique en ligne' : ''}. ${o.court}`).join('\n')}
 
 Le nouveau montant s’applique à partir de la période suivante, sans démarche compliquée.
 
