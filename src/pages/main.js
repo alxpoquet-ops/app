@@ -116,14 +116,6 @@ function home() {
   <p class="more">${C.btn(sections.equipe.path, 'btn-light btn-flaque', sections.equipe.icon, 'Rencontrer l’équipe')}</p>
 </div></section>
 
-<section class="section"><div class="container">
-  <h2 class="section-title">Le prix, en clair</h2>
-  <p class="section-sub">Tout est compris, rien n’est caché, et c’est le même prix pour tous.</p>
-  ${C.offre({ compact: true })}
-  <p class="center small muted">C’est moi qui conçois votre site. Ma petite bande s’occupe du répétitif, et j’ai des accès directs chez des hébergeurs français. Vous ne payez que le temps utile.</p>
-  <p class="center more">${C.btn(sections.forfaits.path, 'btn-light btn-flaque', 'arrow-right', 'Tout le détail des tarifs')}</p>
-</div></section>
-
 ${C.ctaBand({ title: 'Pas sûr de ce qu’il vous faut ?', text: 'Écrivez-moi en deux lignes : je vous dis quel site vous convient, sans engagement. Ou composez-le tout de suite.' })}`;
   return {
     path: '/',
