@@ -1075,7 +1075,7 @@
     if (dial) {
       liaForm.hidden = false; liaNote.hidden = false;
       var prixEl = $('[data-lia-prix]', flot);
-      if (prixEl && prix !== 1) prixEl.textContent = jetonsTxt(prix) + tr(' par message.');
+      if (prixEl) prixEl.textContent = jetonsTxt(prix) + tr(' par message.');
       if (reglages.getAttribute('data-max')) champ.maxLength = +reglages.getAttribute('data-max');
       majJetons();
       try {

@@ -100,20 +100,22 @@ function aled08e_bulle_contexte($uid) {
     foreach (aled08e_extras() as $o) if (aled08e_extra_actif($uid, $o['id'])) $pris[] = $o['name'];
     $compte[] = 'Extras actifs : ' . ($pris ? implode(', ', $pris) : 'aucun');
     $compte[] = $famille ? 'Jetons Lia : sans limite' : 'Jetons Lia restants : ' . (int) $e['solde'] . ' (' . (int) $e['mois'] . ' donnés chaque mois, ils reviennent le 1er)';
-    if (!$famille) $compte[] = 'Modifications par Alex restantes ce mois-ci : ' . max(0, (int) $f['quota'] - (int) aled08e_count_month($uid, 'alex')) . ' sur ' . (int) $f['quota'];
+    if (!$famille) $compte[] = 'Interventions d’Alex restantes ' . aled08e_periode_ce($uid) . ' : ' . max(0, (int) $f['quota'] - (int) aled08e_count_alex($uid)) . ' sur ' . (int) $f['quota'];
     $compte[] = 'Lia peut modifier ce site elle-même : ' . (aled08e_lia_prete_pour($uid) ? 'oui' : 'pas encore, les modifications passent par Alex');
 
     $offre = [];
-    $offre[] = 'Abonnement : ' . aled08e_euro_txt($f['month']) . ' par mois (nom de domaine, hébergement, mises à jour, suivi, support, ' . (int) $f['jetons'] . ' Jetons Lia et ' . (int) $f['quota'] . ' modification par Alex chaque mois). Sans engagement. À l’année : ' . (int) $D['moisOfferts'] . ' mois offerts.';
+    $offre[] = 'Abonnement : ' . aled08e_euro_txt($f['month']) . ' par mois (nom de domaine, hébergement, mises à jour, suivi, support, ' . (int) $f['jetons'] . ' Jetons Lia chaque mois et ' . aled08e_alex_txt($uid, $f) . '). Sans engagement. À l’année : ' . (int) $D['moisOfferts'] . ' mois offerts.';
     $offre[] = '1 Jeton Lia = 1 centime. Un message dans cette bulle : ' . aled08e_jl_txt(aled08e_bulle_prix()) . '.';
     $offre[] = 'Une modification du site par Lia : ' . (int) $jl['modif']['base'] . ' jetons, plus 1 par tranche de ' . (int) $jl['modif']['mots'] . ' mots écrits et ' . (int) $jl['modif']['image'] . ' par photo. Lia montre toujours un aperçu de la page : rien ne change sans l’accord du client.';
-    $offre[] = 'Une modification par Alex en plus dans le mois (le Boost) : ' . aled08e_boost_txt() . '. Alex répond sous ' . $D['delais']['reponse'] . '.';
+    $ald = [];
+    foreach (aled08e_a_la_demande() as $x) $ald[] = $x['name'] . ' : ' . aled08e_euro_txt($x['prix']);
+    $offre[] = 'Extras à la demande, payés une fois et ajoutés à la prochaine facture (onglet Mes demandes) : ' . implode(', ', $ald) . '. Alex répond sous ' . $D['delais']['reponse'] . '.';
     $rech = [];
     foreach ((array) $jl['recharge'] as $r) $rech[] = (int) $r['jetons'] . ' jetons pour ' . aled08e_euro_txt($r['prix']);
     $offre[] = 'Recharge de jetons (onglet Outils) : ' . implode(', ', $rech) . '.';
     $ex = [];
     foreach (aled08e_changer_options_possibles($uid) as $o) $ex[] = $o['name'] . ' ' . aled08e_euro_txt($o['month']) . ' par mois';
-    if ($ex) $offre[] = 'Extras à ajouter ou retirer quand on veut (onglet forfait) : ' . implode(' ; ', $ex) . '.';
+    if ($ex) $offre[] = 'Options au mois, à ajouter ou retirer quand on veut (onglet forfait) : ' . implode(' ; ', $ex) . '.';
 
     $outils = [];
     foreach (aled08e_jl_outils() as $o) $outils[] = $o['id'] . ' : ' . $o['name'] . ' (' . ((int) $o['jetons'] > 0 ? aled08e_jl_txt($o['jetons']) : 'gratuit') . '). ' . ($o['court'] ?? '');

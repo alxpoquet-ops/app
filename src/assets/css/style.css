@@ -286,6 +286,10 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 .opt-group { padding: 26px; border-radius: var(--radius-lg); background: var(--card); box-shadow: var(--shadow); }
 .opt-group h3 { display: flex; align-items: center; gap: 10px; }
 .opt-group h3 .ico { color: var(--pink-d); }
+.opt-demande { margin-top: 22px; }
+.opt-demande ul { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; }
+.opt-note { margin: 12px 0 0; color: var(--muted); font-size: .95rem; }
+@media (max-width: 860px) { .opt-demande ul { grid-template-columns: 1fr; } }
 .opt-group ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
 .opt-group li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; }
 .opt-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 14px; background: var(--lilac); color: var(--lilac-dd); }
@@ -656,7 +660,8 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 
 /* ---------- pied de page ---------- */
 .site-footer { background: var(--soft); color: var(--text); font-size: .96rem; padding-top: 56px; border-radius: 48px 48px 0 0; }
-.footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 32px; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr; gap: 28px; }
+@media (max-width: 1180px) { .footer-grid { grid-template-columns: 1fr 1fr 1fr; } .footer-brand { grid-column: 1 / -1; } }
 .footer-brand p { margin: 16px 0; }
 .footer-title { font-size: 1rem; margin-bottom: 12px; }
 .footer-links, .footer-contact { list-style: none; padding: 0; margin: 0; }
@@ -1107,6 +1112,14 @@ button.app-card:hover { transform: translateY(-2px); }
 /* Démo : demandes, QR code, lien d'avis */
 .req-form { display: grid; gap: 12px; padding: 16px; border-radius: 22px; background: var(--soft); }
 .req-form .btn { justify-self: start; }
+/* Extras à la demande (article, point avec Alex) dans l'onglet Mes demandes */
+.extra-cards { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.extra-form { align-content: start; }
+.extra-tete { display: flex; align-items: center; gap: 10px; margin: 0; }
+.extra-tete strong { flex: 1; line-height: 1.25; }
+.extra-tete b { white-space: nowrap; color: var(--ink); }
+.extra-ico { display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: var(--card, #fff); flex: none; }
+.extra-ico .ico { width: 20px; height: 20px; }
 .req-photo { display: inline-flex; align-items: center; gap: 8px; justify-self: start; padding: 9px 14px; border-radius: 999px; background: var(--card); box-shadow: 0 0 0 2px var(--line) inset; font-weight: 800; font-size: .9rem; cursor: pointer; }
 .req-photo .ico { color: var(--mint-d); }
 .req-photo:focus-within { outline: 3px solid var(--lilac-d); outline-offset: 2px; }

@@ -1,5 +1,5 @@
 // Pages du site
-const { site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, jetonsLia, boost, creation, marche } = require('../config');
+const { site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, jetonsLia, boost, aLaDemande, creation, marche } = require('../config');
 // L'offre unique : le site à prix unique (creation), un seul abonnement (forfaits[0]), des options et des extras (options).
 const ABO = forfaits[0];
 const { icon } = require('../lib/icons');
@@ -23,6 +23,11 @@ const JL_OUTILS_MOIS = 'une dizaine';
 const RECHARGES = jetonsLia.recharge.map((r, i) => `${r.jetons}${i ? '' : ' jetons'} pour ${r.prix} €`).join(', ');
 const GUIDES = require('../content/guides');
 const BRIEF = require('../content/brief');
+// V2 : pages métier (/<slug>/) et pages de réassurance, guides de fond et page locale
+let METIERS = [], METIERS_PUBLIE = '2026-11-16';
+try { ({ metiers: METIERS, PUBLIE: METIERS_PUBLIE } = require('../content/metiers')); } catch (e) { /* pas encore écrit */ }
+let PAGES_V2 = [], PAGES_V2_PUBLIE = '2026-11-16';
+try { ({ pages: PAGES_V2, PUBLIE: PAGES_V2_PUBLIE } = require('../content/pages-v2')); } catch (e) { /* pas encore écrit */ }
 let LEXIQUE = { termes: [], PUBLIE: '' };
 try { LEXIQUE = require('../content/lexique'); } catch (e) { /* lexique pas encore écrit */ }
 const { clients } = require('../config');
@@ -38,7 +43,9 @@ const O = (id) => options.find((o) => o.id === id);
 const round2 = (n) => Math.round(n * 100) / 100;
 // L'abonnement à l'année, et « une modification » (par Alex, chaque mois) écrit en toutes lettres
 const ABO_AN = C.year(ABO.month);
-const UNE_MODIF = ABO.quota === 1 ? 'une modification' : `${ABO.quota} modifications`;
+const UNE_MODIF = ABO.quota === 1 ? 'une intervention' : `${ABO.quota} interventions`;
+// « par trimestre » (V2) ou « par mois »
+const PAR_PERIODE = ABO.periode === 'trimestre' ? 'par trimestre' : 'par mois';
 // Texte des appels à l'action de bas de page
 const CTA_TEXTE = 'Composez votre site en deux minutes. Vous voyez le prix tout de suite, et vous commandez quand vous êtes prêt.';
 // Champs cachés communs aux formulaires : horodatage anti-robot et champ piège.
@@ -46,100 +53,88 @@ function formHidden() {
   return `<input type="hidden" name="_t" value=""><div class="hp" aria-hidden="true"><label>Site web <input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>`;
 }
 
-// ====================================================================== ACCUEIL
+// ====================================================================== ACCUEIL (V2)
+// La promesse d'abord (un site pro, visible, quelqu'un qui s'occupe de tout), puis pour qui, les preuves,
+// ce que vous y gagnez, comment ça se passe, et le prix en clair. Lia apparaît une fois, comme l'assistante d'Alex.
 function home() {
-  const seo = O('seo');
-  const pillars = [
-    ['zap', 'Technique', 'Rapide, sécurisé, parfait sur téléphone.'],
-    ['map-pin', 'Local', 'Fiche Google, avis, pages pour vos villes.'],
-    ['pen-tool', 'Contenus', 'Des textes utiles, écrits pour vos clients.'],
-    ['chart-line', 'Suivi', 'Positions et visites chaque mois, avec l’extra SEO suivi.'],
-  ];
-  // Pourquoi le prix est bas : les quatre raisons, dites simplement
-  const raisons = [
-    ['sparkles', 'Lia fait le gros du travail', 'Notre IA monte les pages, écrit le code et propose les premiers textes en quelques heures. À la main, ce travail prend des semaines.'],
-    ['user-check', 'Alex vérifie tout à la main', 'Je relis chaque page, je teste le site sur téléphone et je corrige ce qu’il faut. Rien n’est mis en ligne sans ma vérification.'],
-    ['tag', 'Le prix est affiché', 'Il est écrit sur le site, et il est le même pour tous les clients. Vous n’attendez pas de devis.'],
-    ['piggy-bank', 'Vous payez le temps passé', 'Quelques heures pour Lia, une vraie relecture pour Alex. La différence de prix vient de là, et de nulle part ailleurs.'],
+  const gains = [
+    ['search-check', 'Être trouvé sur Google', 'Votre site est préparé pour Google dès le premier jour : les bons mots, une page par service, un site rapide sur téléphone.'],
+    ['badge-check', 'Avoir l’air aussi sérieux qu’un grand', 'Un site soigné, à votre nom, avec votre adresse e-mail pro si vous voulez. Vos clients vous prennent au sérieux tout de suite.'],
+    ['shield-check', 'Ne plus vous occuper de rien', 'Nom de domaine, hébergement, mises à jour, sauvegardes : je m’en charge. Vous, vous faites votre métier.'],
+    ['message-circle', 'Parler à une vraie personne', 'Une question, une modification ? Vous m’écrivez depuis votre espace client, et je vous réponds moi-même.'],
   ];
   const body = `<section class="hero">
   <div class="container hero-in">
     <div class="hero-text">
-      <h1>Votre site internet, <mark>${marche.fois} fois moins cher</mark></h1>
-      <p class="hero-lead">Tout est compris : la maquette, le site complet, parfait sur téléphone, votre nom de domaine, l’hébergement, les mises à jour et le suivi. Lia, notre IA, fait le gros du travail en quelques heures. Moi, Alex, je vérifie tout à la main.</p>
-      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg btn-flaque')}${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</div>
+      <h1>Votre site professionnel, <mark>visible sur Google</mark></h1>
+      <p class="hero-lead">Je crée votre site, je m’occupe de tout, et je reste votre interlocuteur. Sans jargon, sans surprise, sans devis compliqué. Et c’est ${marche.fois} fois moins cher qu’une création classique.</p>
+      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg btn-flaque')}${C.btn(sections.confiance.path, 'btn-light btn-lg', sections.confiance.icon, 'Voir les réalisations')}</div>
       <ul class="hero-points">
-        <li>${icon('check')}Nom de domaine et hébergement compris</li>
-        <li>${icon('check')}Prix affiché, sans devis</li>
+        <li>${icon('check')}Tout compris, sans devis</li>
+        <li>${icon('check')}Nom de domaine à votre nom</li>
         <li>${icon('check')}Sans engagement</li>
       </ul>
     </div>
     <div class="hero-art">
       ${monster('mascotte', { cls: 'hero-mascotte' })}
       ${C.flecheLia()}
-      <p class="hero-tag">${icon('sparkles')}Créé avec Lia, vérifié par Alex</p>
+      <p class="hero-tag">${icon('sparkles')}Fait par Alex, avec l’aide de Lia</p>
     </div>
   </div>
 </section>
 
-<section class="section"><div class="container">
-  <h2 class="section-title">Tout est compris, rien n’est caché</h2>
-  <p class="section-sub">Votre site d’abord, puis un abonnement qui le garde en ligne, sûr et à jour.</p>
-  ${C.offre({ compact: true })}
-  <p class="center more">${C.btn(sections.forfaits.path, 'btn-light btn-flaque', 'arrow-right', 'Tout le détail des tarifs')}</p>
+${METIERS.length ? `<section class="section"><div class="container">
+  <h2 class="section-title">Un site pensé pour votre métier</h2>
+  <p class="section-sub">Un artisan, une sophrologue et un gîte n’ont pas besoin du même site. Je pars de votre activité et de ce que cherchent vos clients.</p>
+  ${metierCards()}
+</div></section>` : ''}
+
+<section class="section section-soft c-butter"><div class="container">
+  <h2 class="section-title">Des sites en ligne, à visiter</h2>
+  <p class="section-sub">Pas de faux avis ici : allez voir par vous-même.</p>
+  ${clientCards({ max: 3 })}
+  <p class="center more">${C.btn(sections.confiance.path, 'btn-light', sections.confiance.icon, 'Toutes les réalisations')}</p>
 </div></section>
 
-<section class="section section-soft c-mint"><div class="container">
-  <h2 class="section-title">Pourquoi c’est ${marche.fois} fois moins cher</h2>
-  <p class="section-sub">Un site vitrine fait à la main par un indépendant coûte en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}, et souvent plus dans une agence. Chez nous, c’est ${marche.fois} fois moins, et voici pourquoi.</p>
-  <div class="feats">${raisons.map(([ic, t, d]) => `<div class="feat reveal">${icon(ic)}<h3>${t}</h3><p>${d}</p></div>`).join('')}</div>
-  <p class="center more">${C.btn(sections.methode.path, 'btn-light', 'sparkles', 'Ma méthode, sans rien cacher')}</p>
-</div></section>
-
 <section class="section"><div class="container">
-  <h2 class="section-title">Quel site vous faut-il ?</h2>
-  <p class="section-sub">Une page ou plusieurs, le prix ne change pas. Seule la boutique en ligne coûte un peu plus.</p>
-  ${C.typeCards()}
+  <h2 class="section-title">Ce que vous y gagnez</h2>
+  <div class="feats">${gains.map(([ic, t, d]) => `<div class="feat reveal">${icon(ic)}<h3>${t}</h3><p>${d}</p></div>`).join('')}</div>
 </div></section>
 
 <section class="section section-soft"><div class="container">
-  <h2 class="section-title">Comment ça marche</h2>
-  <p class="section-sub">Trois étapes, et rien de technique pour vous.</p>
+  <h2 class="section-title">Comment ça se passe</h2>
+  <p class="section-sub">Quatre étapes, et rien de technique pour vous.</p>
   ${C.steps([
-    { t: 'Vous commandez en ligne', d: `Vous choisissez votre site et vos options. Vous réglez ${paiement.acompte} % du site, rien de plus.` },
-    { t: 'Lia et Alex créent votre site', d: 'Je réserve votre nom de domaine et je vous écris sous 24 heures. Lia prépare le site, je le vérifie, et vous voyez l’aperçu.' },
-    { t: 'Vous demandez, on s’en occupe', d: 'Un horaire, un prix, une photo : demandez-le depuis votre espace client. Lia le fait en 5 minutes, ou Alex s’en charge, au choix.' },
+    { t: 'Vous composez votre site', d: `Vous choisissez votre site et vos options en deux minutes, le prix s’affiche. Vous réglez ${paiement.acompte} % à la commande.` },
+    { t: 'Je prépare votre site', d: 'Je réserve votre nom de domaine et je vous pose les bonnes questions. Lia m’aide sur la mise en page et les premiers textes.' },
+    { t: 'Vous validez l’aperçu', d: 'Vous voyez votre site avant tout le monde. Vous me dites ce qui change, je corrige.' },
+    { t: 'Je le mets en ligne et je m’en occupe', d: 'Votre site est en ligne, sûr et à jour. Une modification ? Vous la demandez depuis votre espace client.' },
   ])}
 </div></section>
 
-<section class="section"><div class="container split split-rev">
-  ${C.statsCard()}
-  <div class="reveal">
-    <p class="kicker c-mint">${icon('search-check')}Référencement</p>
-    <h2>Le SEO, je maîtrise</h2>
-    <p>Le SEO, c’est ce qui fait apparaître votre site sur Google quand quelqu’un cherche ce que vous faites.</p>
-    <p class="seo-ex"><strong>Exemple :</strong> une personne tape « plombier Charleville » sur son téléphone. Si votre site est bien préparé, il sort dans les premiers résultats. Elle clique, elle vous appelle, et pas votre concurrent.</p>
-    <p>Pour ça, je prépare votre site dès la création : les bons mots dans les titres et les textes, un site rapide, une fiche Google. Ces bases sont comprises. Avec l’extra ${seo.name}, à ${euro(seo.price.month)} par mois, je continue à l’améliorer pour Google, mois après mois.</p>
-    <ul class="pillars">${pillars.map(([ic, t, d]) => `<li>${icon(ic)}<span><strong>${t}</strong><small>${d}</small></span></li>`).join('')}</ul>
-    <p>${C.btn(sections.seo.path, 'btn-light', 'search-check', 'Ma méthode SEO')}</p>
-  </div>
+<section class="section"><div class="container">
+  <h2 class="section-title">Le prix, en clair</h2>
+  <p class="section-sub">Tout est compris, rien n’est caché, et c’est le même prix pour tous.</p>
+  ${C.offre({ compact: true })}
+  <p class="center small muted">Mon assistante numérique, Lia, m’aide sur les tâches répétitives. C’est ce qui réduit les délais et les coûts : vous ne payez que le temps utile.</p>
+  <p class="center more">${C.btn(sections.forfaits.path, 'btn-light btn-flaque', 'arrow-right', 'Tout le détail des tarifs')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>
 
 <section class="section section-soft c-sky"><div class="container split">
   <div class="reveal">
-    <p class="kicker c-sky">${icon('pencil')}Vos modifications</p>
-    <h2>Vous demandez, Lia ou Alex s’en occupe</h2>
-    <p>Une modification ? Envoyez votre demande depuis votre espace client, avec une photo si besoin, et choisissez qui la fait : Lia, en 5 minutes, ou Alex, à la main, pour ce qui demande un regard humain. Vous êtes prévenu quand c’est en ligne. Vous n’avez rien de technique à gérer.</p>
-    <p>Chaque mois, l’abonnement vous donne ${ABO.jetons} Jetons Lia, de quoi faire ${JL_MODIFS_MOIS} modifications avec Lia, et ${UNE_MODIF} par Alex.</p>
-    <div class="hero-ctas">${C.btn(site.espaceClient.demo, 'btn-primary', 'circle-user', 'Essayer l’espace client')}</div>
+    <p class="kicker c-sky">${icon('pencil')}Après la mise en ligne</p>
+    <h2>Vous demandez, je m’en occupe</h2>
+    <p>Un horaire, un prix, une photo à changer ? Écrivez-le depuis votre espace client, avec une photo si besoin. Les petites retouches se font avec Lia en quelques minutes, avec un aperçu à valider. Pour le reste, c’est moi, à la main.</p>
+    <p>L’abonnement comprend ces petites retouches et une intervention de ma part chaque trimestre. Besoin de plus ? Un article, un point ensemble ou une intervention en plus se commandent à l’unité, seulement quand vous en avez besoin.</p>
+    <div class="hero-ctas">${C.btn(sections.accompagnement.path, 'btn-primary', sections.accompagnement.icon, 'L’accompagnement')}${C.btn(site.espaceClient.demo, 'btn-light', 'circle-user', 'Essayer l’espace client')}</div>
   </div>
   ${C.phoneEdit()}
 </div></section>
 
 <section class="section"><div class="container duo">
-  <a class="promo c-pink reveal" href="${sections.fidelite.path}">
-    <span class="promo-ico">${icon('gift')}</span>
-    <span class="promo-text"><strong>Un mois offert en parrainant</strong><span>Pour vous et pour la personne que vous recommandez.</span></span>
+  <a class="promo c-pink reveal" href="${sections.liaalex.path}">
+    <span class="promo-ico">${icon(sections.liaalex.icon)}</span>
+    <span class="promo-text"><strong>Pourquoi choisir Alex & Lia ?</strong><span>Un vrai interlocuteur, un prix affiché, et votre site reste à vous.</span></span>
     <span class="promo-go">${icon('arrow-right')}</span>
   </a>
   <a class="promo c-butter reveal" href="${sections.comparatif.path}">
@@ -149,16 +144,30 @@ function home() {
   </a>
 </div></section>
 
-${C.ctaBand({ text: CTA_TEXTE })}`;
+${C.ctaBand({ title: 'Pas sûr de ce qu’il vous faut ?', text: 'Écrivez-moi en deux lignes : je vous dis quel site vous convient, sans engagement. Ou composez-le tout de suite.' })}`;
   return {
     path: '/',
-    title: `Site internet ${marche.fois} fois moins cher | Alex & Lia`,
-    description: `Votre site tout compris : maquette, nom de domaine, hébergement, mises à jour. Créé par Lia, notre IA, vérifié par Alex, ${marche.fois} fois moins cher.`,
+    title: `Site internet professionnel, ${marche.fois} fois moins cher | Alex & Lia`,
+    description: `Je crée votre site professionnel, visible sur Google, et je m’occupe de tout : nom de domaine, hébergement, mises à jour. Sans devis, ${marche.fois} fois moins cher.`,
     crumbs: [HOME],
     body,
     priority: 1,
     changefreq: 'weekly',
   };
+}
+
+// Cartes « Votre métier » (accueil et page /metiers/)
+function metierCards() {
+  return `<div class="guide-cards metier-cards">${METIERS.map((m) => `<a class="guide-card c-${m.color} reveal" href="/${m.slug}/"><span class="type-ico">${icon(m.icon)}</span><span class="guide-card-text"><strong>${inline(m.nom)}</strong><span>${inline(m.qui)}</span></span>${icon('arrow-right')}</a>`).join('')}</div>`;
+}
+// Cartes des sites réalisés : uniquement de vrais clients, déjà en ligne (pas notre propre site)
+const CLIENTS_EN_LIGNE = clients.filter((c) => !c.enCreation && c.url && !c.url.startsWith('/'));
+const pagesDe = (c) => (c.enCreation ? 0 : (CLIENTS_PAGES[c.domaine] || {}).pages || 0);
+function clientCards({ max = 0 } = {}) {
+  const liste = max ? CLIENTS_EN_LIGNE.slice(0, max) : CLIENTS_EN_LIGNE;
+  return `<div class="client-cards">${liste
+    .map((c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-desc">${inline(c.desc)}</span>${pagesDe(c) ? `<span class="client-pages"><b>${pagesDe(c)}</b> page${pagesDe(c) > 1 ? 's' : ''}</span>` : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`)
+    .join('')}</div>`;
 }
 
 // ====================================================================== CRÉER MON SITE
@@ -203,7 +212,7 @@ ${f.html}`;
 function forfaitsPage() {
   const crumbs = crumb('forfaits');
   const f = C.faq(FAQ.forfaits || FAQ.tarifs || [], 'Vos questions sur les tarifs', 'faq-tarifs');
-  const liaPlus = O('liaplus'), pages = O('pages');
+  const pages = O('pages');
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: `Tarifs : tout compris, ${marche.fois} fois moins cher`,
@@ -238,22 +247,9 @@ function forfaitsPage() {
 
 <section class="section" id="options"><div class="container">
   <h2 class="section-title">Les options et les extras</h2>
-  <p class="section-sub">Une option se paie une fois, à la création. Un extra se paie au mois : vous l’ajoutez ou vous le retirez quand vous voulez, depuis votre espace client.</p>
+  <p class="section-sub">Une option se paie une fois, à la création. Un extra au mois s’ajoute ou se retire quand vous voulez. Et quelques extras se commandent à l’unité, seulement quand vous en avez besoin.</p>
   ${C.optionsCompact()}
-  <div class="boost-box reveal"><span class="opt-ico">${icon('zap')}</span><div><h3>Le Boost : Alex, une fois de plus</h3><p>L’abonnement comprend ${UNE_MODIF} par Alex chaque mois. Il vous en faut une autre ? C’est ${euro(boost.prix)}, à l’unité. Vous le confirmez à chaque fois, et il s’ajoute à votre prochaine facture.</p></div></div>
-</div></section>
-
-<section class="section section-soft" id="jetons"><div class="container container-narrow">
-  <p class="kicker c-butter">${icon('coins')}Jetons Lia</p>
-  <h2>Les Jetons Lia, en cinq lignes</h2>
-  <ul class="list-check">
-    <li><strong>Un jeton vaut un centime.</strong> Il paie ce que fait Lia : une modification de votre site, ou un outil de votre espace client.</li>
-    <li><strong>Une modification coûte ${JL_MODIF_FOURCHETTE} jetons.</strong> Le calcul : ${jetonsLia.modif.base} jetons, plus 1 par tranche de ${jetonsLia.modif.mots} mots dans votre demande, plus ${jetonsLia.modif.image} par photo.</li>
-    <li><strong>Un outil affiche son prix sur son bouton.</strong> Vous le voyez avant de cliquer.</li>
-    <li><strong>L’abonnement vous donne ${ABO.jetons} jetons par mois.</strong> Cela fait ${JL_MODIFS_MOIS} modifications par Lia, ou ${JL_OUTILS_MOIS} d’utilisations d’outils. Ils reviennent le 1<sup>er</sup> du mois, et le reste ne se reporte pas.</li>
-    <li><strong>Il vous en faut plus ?</strong> L’extra ${esc(liaPlus.name)} en ajoute ${jetonsLia.liaplus} chaque mois pour ${euro(liaPlus.price.month)}. Ou prenez une recharge : ${RECHARGES}.</li>
-  </ul>
-  <p>${C.btn(sections.espace.path + '#jetons', 'btn-light', 'coins', 'Le prix de chaque outil')}</p>
+  ${C.extrasDemande()}
 </div></section>
 
 <section class="section"><div class="container">
@@ -369,8 +365,8 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
       <li>Avec Lia : ${JL_MODIF}</li>
-      <li>Avec Alex : ${UNE_MODIF} par mois, comprise dans l’abonnement, sans jeton</li>
-      <li>Une de plus par Alex ? C’est le Boost, à ${euro(boost.prix)}</li>
+      <li>Avec Alex : ${UNE_MODIF} ${PAR_PERIODE}, comprise dans l’abonnement, sans jeton</li>
+      <li>Une de plus par Alex ? ${euro(boost.prix)} à l’unité, ajoutée à votre prochaine facture</li>
     </ul>
   </div>
   ${C.phoneEdit(true)}
@@ -390,6 +386,7 @@ ${C.ctaBand({ title: 'Envie d’essayer les outils ?', text: 'Créez votre site 
     path: sections.espace.path,
     section: 'espace',
     title: 'Outils de Lia : textes, photos, réseaux et site | Alex & Lia',
+    noindex: true, // V2 : le détail des outils et des jetons est pour les clients, hors des moteurs de recherche
     description: `Corriger ou traduire un texte, préparer une photo, publier sur vos réseaux : les outils de Lia sont compris dans l’abonnement, avec ${ABO.jetons} Jetons Lia par mois.`,
     crumbs,
     body,
@@ -451,7 +448,7 @@ Votre site peut garder **une seule page principale**, simple et claire, avec tou
   <div class="feats feats-4">
     <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur téléphone, avec les balises et les données que Google sait lire.</p></div>
     <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand vos clients cherchent près de chez vous.</p></div>
-    <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec l’IA et relus par moi.</p></div>
+    <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec l’aide de Lia, mon assistante, et relus par moi.</p></div>
     <div class="feat reveal">${icon('chart-line')}<h3>Le suivi, en extra</h3><p>Positions, recherches, visites : avec l’extra ${seo.name}, je regarde ce qui marche et j’ajuste vos pages chaque mois.</p></div>
   </div>
 </div></section>
@@ -516,7 +513,7 @@ function comparatifPage() {
     ['butter', 'building-2', 'L’agence web', 'Une équipe complète : chef de projet, graphiste, développeur. Idéale pour un gros projet avec un budget à la hauteur. Le prix et le délai dépendent du devis.'],
     ['sky', 'user', 'Le freelance', 'Une personne qui fait tout. La qualité dépend beaucoup de qui vous choisissez. Les modifications et le suivi se font souvent au devis, quand le freelance est disponible.'],
     ['lilac', 'mouse-pointer-click', 'La plateforme à faire soi-même', 'Vous construisez votre site à partir de modèles, pour un abonnement mensuel. C’est vous qui faites le travail, les mises à jour et le référencement.'],
-    ['mint', 'sparkles', 'Alex & Lia', `Un seul prix, ${euro(creation.prix)}, et des modifications rapides. Lia, l’IA, modifie et met à jour votre site depuis votre espace client. Alex vérifie et règle tout. Pour les très gros projets, je vous oriente vers une agence.`],
+    ['mint', 'sparkles', 'Alex & Lia', `Un prix affiché, à partir de ${euro(creation.prix)}, et un interlocuteur qui répond. Alex crée et suit votre site, aidé de Lia, son assistante, pour les petites retouches et les tâches répétitives. Pour les très gros projets, je vous oriente vers une agence.`],
   ];
   const body = `${C.pageHero({
     section: 'comparatif',
@@ -539,7 +536,7 @@ function comparatifPage() {
 <section class="section"><div class="container container-narrow prose reveal">
   ${md(`## Des modifications rapides
 
-Un horaire, un prix, une actualité : Lia, l’IA, prépare le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui. Pour ce qui demande un regard humain, c’est Alex, sous ${delais.reponse}. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
+Un horaire, un prix, une actualité : Lia, l’assistante d’Alex, prépare le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui. Pour ce qui demande un regard humain, c’est Alex, sous ${delais.reponse}. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
 
 ## ${marche.fois} fois moins cher, et sans tour de magie
 
@@ -547,7 +544,7 @@ Un site vitrine commandé à un freelance coûte en général entre ${euro(march
 
 Soyons complets : des offres à bas prix existent aussi, entre ${euro(marche.basMin)} et ${euro(marche.basMax)} le site. Face à elles, nous sommes au même niveau de prix.
 
-La raison est simple. Pour un site vitrine ou une petite boutique, Lia fait en quelques heures un travail qui demande des semaines à la main. Alex contrôle le résultat, page par page. Ces semaines en moins, c’est le prix en moins. Le détail est sur la page [ma méthode](${sections.methode.path}).
+La raison est simple. Pour un site vitrine ou une petite boutique, Lia automatise les tâches répétitives qui prennent des jours à la main. Alex fait le reste et contrôle le résultat, page par page. Ces jours en moins, c’est le prix en moins. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).
 
 ## Ce que vous ne faites pas vous-même
 
@@ -1448,34 +1445,176 @@ ${C.ctaBand({ title: 'Envie de voir Lia à l’œuvre ?', text: 'Essayez la dém
 
 // ====================================================================== ILS NOUS ONT FAIT CONFIANCE
 function confiancePage() {
+  // V2 : « Réalisations ». Uniquement de vrais clients, avec un site en ligne. Pas d'avis inventé.
   const crumbs = crumb('confiance');
-  const pagesDe = (c) => (c.enCreation ? 0 : (CLIENTS_PAGES[c.domaine] || {}).pages || 0);
-  const total = clients.reduce((n, c) => n + pagesDe(c), 0);
-  const le = clients.map((c) => (CLIENTS_PAGES[c.domaine] || {}).le || '').sort().pop();
+  const total = CLIENTS_EN_LIGNE.reduce((n, c) => n + pagesDe(c), 0);
+  const le = CLIENTS_EN_LIGNE.map((c) => (CLIENTS_PAGES[c.domaine] || {}).le || '').sort().pop();
+  const enCours = clients.filter((c) => c.enCreation && c.url && !c.url.includes('aled08'));
   const body = `${C.pageHero({
     section: 'confiance',
-    h1: 'Ils nous ont fait confiance',
-    lead: 'Des sites en ligne, que vous pouvez visiter. Pas de faux avis ici : allez voir par vous-même.',
+    h1: 'Nos réalisations',
+    lead: 'Des sites en ligne, que vous pouvez visiter. Pas de faux avis ici : allez voir par vous-même, et jugez sur pièce.',
     crumbs,
   })}
 <section class="section"><div class="container">
-  ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages créées pour les sites de nos clients et pour le nôtre${le ? `, au ${frDate(le)}` : ''}.<br>Chaque nouvelle page est une porte d’entrée de plus depuis Google.</span></p>` : ''}
-  <div class="client-cards">${clients
-    .map(
-      (c) => c.enCreation ? `<div class="client-card c-${c.color} reveal is-creation"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-creation">${icon('hammer')}Site en création</span><span class="client-url">${icon('globe')}${esc(c.domaine)}</span></div>` : `<a class="client-card c-${c.color} reveal" href="${c.url}"${c.url.startsWith('/') ? '' : ' target="_blank" rel="noopener"'}><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong><span class="client-desc">${inline(c.desc)}</span>${pagesDe(c) ? `<span class="client-pages"><b>${pagesDe(c)}</b> page${pagesDe(c) > 1 ? 's' : ''}</span>` : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`
-    )
-    .join('')}</div>
+  ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages en ligne sur les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque page utile est une porte d’entrée de plus depuis Google.</span></p>` : ''}
+  ${clientCards()}
   <p class="small muted center">Ces sites s’ouvrent dans un nouvel onglet.</p>
+  ${enCours.length ? `<p class="center muted">En ce moment, je prépare aussi ${enCours.map((c) => esc(c.nom)).join(' et ')}.</p>` : ''}
 </div></section>
-${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: `Composez votre site en deux minutes. Le prix est le même pour tous : ${euro(creation.prix)}.` })}`;
+${METIERS.length ? `<section class="section section-soft"><div class="container">
+  <h2 class="section-title">Et pour votre métier ?</h2>
+  <p class="section-sub">Ce qu’un site doit montrer change d’un métier à l’autre. Voici ce que je prévois pour le vôtre.</p>
+  ${metierCards()}
+</div></section>` : ''}
+${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: `Composez votre site en deux minutes. Le prix est affiché, le même pour tous : à partir de ${euro(creation.prix)}.` })}`;
   return {
     path: sections.confiance.path,
     section: 'confiance',
-    title: 'Ils nous ont fait confiance : nos sites | Alex & Lia',
-    description: `Les sites réalisés par Alex & Lia, à visiter librement : ${clients.filter((c) => !c.enCreation).map((c) => c.domaine).join(', ').replace(/, ([^,]*)$/, ' et $1')}. De vrais sites, sans faux avis.`,
+    title: 'Nos réalisations : des sites en ligne à visiter | Alex & Lia',
+    description: `Les sites créés par Alex & Lia, à visiter librement : ${CLIENTS_EN_LIGNE.map((c) => c.domaine).join(', ').replace(/, ([^,]*)$/, ' et $1')}. De vrais clients, de vrais sites, sans faux avis.`,
     crumbs,
     body,
-    priority: 0.7,
+    priority: 0.8,
+  };
+}
+
+// ====================================================================== V2 : VOTRE MÉTIER
+function metiersHub() {
+  const crumbs = crumb('metiers');
+  const body = `${C.pageHero({
+    section: 'metiers',
+    h1: 'Un site internet pensé pour votre métier',
+    lead: 'Un artisan, une sophrologue, un gîte ou une association n’ont pas les mêmes clients. Choisissez votre activité : je vous montre ce que votre site doit faire pour vous.',
+    crumbs,
+  })}
+<section class="section"><div class="container">
+  ${metierCards()}
+  <p class="center muted">Votre métier n’est pas dans la liste ? Les <a href="/guides/">guides</a> parlent aussi des restaurants, des instituts et des auto-entrepreneurs. Et vous pouvez <a href="${C.contactUrl}">m’écrire</a>.</p>
+</div></section>
+${C.ctaBand({ text: CTA_TEXTE })}`;
+  return {
+    path: sections.metiers.path,
+    section: 'metiers',
+    title: 'Site internet par métier : artisans, gîtes, thérapeutes | Alex & Lia',
+    description: 'Artisans, thérapeutes, créateurs, gîtes et chambres d’hôtes, commerçants, associations : ce que votre site doit montrer pour rassurer vos clients et être trouvé.',
+    crumbs,
+    body,
+    schema: [{ '@type': 'ItemList', itemListElement: METIERS.map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.nom, url: site.url + '/' + m.slug + '/' })) }],
+    priority: 0.8,
+  };
+}
+
+// Le nom lisible d'une adresse interne (pour les liens « À lire aussi »)
+function nomDe(path) {
+  const m = METIERS.find((x) => '/' + x.slug + '/' === path);
+  if (m) return [m.nom, m.resume, m.icon];
+  const p = PAGES_V2.find((x) => x.path === path);
+  if (p) return [p.nom, p.resume, p.icon];
+  const g = GUIDES.guides.find((x) => '/guides/' + x.slug + '/' === path);
+  if (g) return [g.nom, g.resume, g.icon];
+  const sec = Object.values(sections).find((x) => x.path === path);
+  if (sec) return [sec.label, '', sec.icon];
+  return null;
+}
+function voirCards(paths) {
+  const cards = paths.map((p) => [p, nomDe(p)]).filter(([, n]) => n);
+  if (!cards.length) return '';
+  return `<nav class="related" aria-label="À lire aussi"><div class="container"><h2 class="section-title">À lire aussi</h2><div class="guide-cards">${cards
+    .map(([p, [nom, resume, ic]]) => `<a class="guide-card reveal" href="${p}"><span class="type-ico">${icon(ic || 'arrow-right')}</span><span class="guide-card-text"><strong>${inline(nom)}</strong>${resume ? `<span>${inline(resume)}</span>` : ''}</span>${icon('arrow-right')}</a>`)
+    .join('')}</div></div></nav>`;
+}
+// Schéma Article commun aux pages V2
+const articleSchema = (path, h1, description, date) => ({
+  '@type': 'Article',
+  '@id': site.url + path + '#article',
+  headline: h1,
+  description,
+  inLanguage: 'fr-FR',
+  datePublished: date,
+  dateModified: date,
+  author: { '@id': site.url + '/#entreprise' },
+  publisher: { '@id': site.url + '/#entreprise' },
+  image: site.url + '/assets/img/og-image.png',
+  mainEntityOfPage: { '@id': site.url + path + '#page' },
+});
+
+function metierPage(m) {
+  const path = `/${m.slug}/`;
+  const crumbs = [...crumb('metiers'), { name: m.nom, path }];
+  const f = C.faq(m.faq, 'Vos questions', 'faq-metier');
+  const ex = m.exemple && m.exemple.client ? clients.find((c) => c.domaine.startsWith(m.exemple.client)) : null;
+  const opts = (m.options || []).map((o) => {
+    const opt = options.find((x) => x.id === o.id);
+    if (opt) return { ic: opt.icon, nom: opt.name, prix: opt.price.once ? `+ ${euro(opt.price.once)}, une fois` : `${euro(opt.price.month)} par mois`, pourquoi: o.pourquoi };
+    const x = aLaDemande.find((y) => y.id === o.id);
+    if (x) return { ic: x.icon, nom: x.name, prix: `${euro(x.prix)}, à la demande`, pourquoi: o.pourquoi };
+    return null;
+  }).filter(Boolean);
+  const body = `${C.pageHero({ section: 'metiers', h1: m.h1, lead: m.lead, crumbs })}
+<section class="section"><div class="container">
+  <div class="feats">${m.besoins.map((b) => `<div class="feat reveal">${icon(b.icon)}<h3>${inline(b.t)}</h3><p>${inline(b.d)}</p></div>`).join('')}</div>
+</div></section>
+<section class="section section-soft"><div class="container container-narrow prose reveal">
+  ${md(m.body)}
+</div></section>
+${ex || opts.length ? `<section class="section"><div class="container">
+  ${opts.length ? `<h2 class="section-title">Ce que je vous conseille</h2>
+  <p class="section-sub">Rien n’est obligatoire : voici ce qui sert le plus pour votre métier.</p>
+  <div class="opt-group opt-conseil reveal"><ul>${opts.map((o) => `<li><span class="opt-ico">${icon(o.ic)}</span><span class="opt-txt"><strong>${esc(o.nom)}</strong><small>${inline(o.pourquoi)}</small></span><span class="opt-price">${o.prix}</span></li>`).join('')}</ul></div>` : ''}
+  ${ex ? `<h2 class="section-title metier-ex-titre">Un exemple en ligne</h2>
+  ${m.exemple.texte ? `<p class="section-sub">${inline(m.exemple.texte)}</p>` : ''}
+  <div class="client-cards client-cards-solo"><a class="client-card c-${ex.color} reveal" href="${ex.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(ex.icon)}</span><span class="client-genre">${esc(ex.genre)}</span><strong>${esc(ex.nom)}</strong><span class="client-desc">${inline(ex.desc)}</span><span class="client-url">${icon('globe')}${esc(ex.domaine)}${icon('arrow-right')}</span></a></div>` : ''}
+</div></section>` : ''}
+${f.html}
+${voirCards(m.voir || [])}
+${C.ctaBand({ title: `On crée votre site ?`, text: `Composez votre site en deux minutes : tout est compris, à partir de ${euro(creation.prix)}. Ou écrivez-moi pour en parler d’abord.` })}`;
+  return {
+    path,
+    section: 'metiers',
+    title: m.title,
+    description: m.description,
+    crumbs,
+    body,
+    schema: [articleSchema(path, m.h1, m.description, METIERS_PUBLIE), f.schema],
+    priority: 0.8,
+  };
+}
+
+// ====================================================================== V2 : RÉASSURANCE, GUIDES DE FOND, PAGE LOCALE
+// La section (couleur, rubrique du fil d'Ariane) de chaque page V2 : celles qui ont leur rubrique dans config.js,
+// sinon la rubrique « Guides » (guides de fond et page locale).
+const SECTION_V2 = { '/pourquoi-moins-cher/': 'methode', '/pourquoi-alex-et-lia/': 'liaalex', '/accompagnement/': 'accompagnement' };
+function pageV2(p) {
+  const k = SECTION_V2[p.path];
+  const crumbs = k ? crumb(k) : [HOME, { name: p.nom, path: p.path }];
+  const f = C.faq(p.faq || [], 'Vos questions', 'faq-v2');
+  const extra = p.path === '/accompagnement/' ? `<section class="section section-soft"><div class="container">
+  <h2 class="section-title">Ce qui s’ajoute si vous le voulez</h2>
+  <p class="section-sub">Les options au mois s’ajoutent ou se retirent quand vous voulez. Les extras à la demande se commandent à l’unité.</p>
+  <div class="opt-groups"><div class="opt-group reveal"><h3>${icon('repeat')}Chaque mois, à ajouter ou retirer</h3><ul>${C.optsMois.map((o) => `<li><span class="opt-ico">${icon(o.icon)}</span><span class="opt-txt"><strong>${esc(o.name)}${o.types && o.types[0] === 'boutique' ? ' <em class="opt-only">boutique</em>' : ''}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${euro(o.price.month)}/mois</span></li>`).join('')}</ul></div>
+  ${C.extrasDemande().replace('opt-group opt-demande', 'opt-group')}</div>
+</div></section>` : '';
+  const body = `${C.pageHero({ section: k || 'guides', h1: p.h1, lead: p.lead, crumbs })}
+${p.points && p.points.length ? `<section class="section"><div class="container">
+  <div class="feats">${p.points.map((b) => `<div class="feat reveal">${icon(b.icon)}<h3>${inline(b.t)}</h3><p>${inline(b.d)}</p></div>`).join('')}</div>
+</div></section>` : ''}
+<section class="section${p.points && p.points.length ? ' section-soft' : ''}"><div class="container container-narrow prose reveal">
+  ${md(p.body)}
+</div></section>
+${extra}
+${f.html}
+${voirCards(p.voir || [])}
+${C.ctaBand({ title: (p.cta && p.cta.titre) || 'On crée votre site ?', text: (p.cta && p.cta.texte) || CTA_TEXTE })}`;
+  return {
+    path: p.path,
+    section: k || 'guides',
+    title: p.title,
+    description: p.description,
+    crumbs,
+    body,
+    schema: [articleSchema(p.path, p.h1, p.description, PAGES_V2_PUBLIE), f.schema],
+    priority: 0.8,
   };
 }
 
@@ -1573,7 +1712,7 @@ function docPage() {
     <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${monster('mascotte')}</span><h3>Lia, l’IA</h3><p>Elle fait les petites et moyennes modifications en 5 minutes, et écrit vos publications pour les réseaux. Elle montre toujours un aperçu : rien ne change sans votre accord.</p></div>
     <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${icon('user')}</span><h3>Alex, l’humain</h3><p>Il crée votre site, fait les grandes modifications à la main, vérifie et répond à vos questions. Ce que Lia ne sait pas faire lui revient.</p></div>
   </div>
-  <p class="doc-more">${C.btn(sections.liaalex.path, 'btn-primary', 'sparkles', 'Tout sur Lia et Alex')} ${C.btn(sections.methode.path, 'btn-light', 'wand-sparkles', 'Ma méthode avec l’IA')}</p>
+  <p class="doc-more">${C.btn(sections.liaalex.path, 'btn-primary', 'sparkles', 'Pourquoi Alex & Lia')} ${C.btn(sections.methode.path, 'btn-light', 'wand-sparkles', 'Ma méthode avec l’IA')}</p>
 </div></section>
 
 <section class="section doc-sec" id="questionnaire"><div class="container container-narrow">
@@ -1624,7 +1763,7 @@ function docPage() {
   <div class="doc-cards3">
     <div class="doc-mini reveal"><strong>${icon('coins')}Jetons Lia</strong><p>L’abonnement en donne ${ABO.jetons} par mois. Un jeton vaut 1 centime, et une modification par Lia en coûte ${JL_MODIF_FOURCHETTE}.</p></div>
     <div class="doc-mini reveal"><strong>${icon('sparkles')}Plus de jetons</strong><p>L’extra ${esc(liaPlus.name)} en ajoute ${jetonsLia.liaplus} par mois. Une recharge de ${jetonsLia.recharge[0].jetons} jetons coûte ${euro(jetonsLia.recharge[0].prix)}, quand il vous en manque.</p></div>
-    <div class="doc-mini reveal"><strong>${icon('zap')}Boost</strong><p>Besoin d’une modification de plus par Alex ? ${euro(boost.prix)} l’unité, ajouté à votre prochaine facture.</p></div>
+    <div class="doc-mini reveal"><strong>${icon('hand-coins')}À la demande</strong><p>${aLaDemande.map((x) => `${esc(x.name)} : ${euro(x.prix)}`).join('. ')}. Payés une fois, ajoutés à votre prochaine facture.</p></div>
   </div>
   <p class="doc-more center">${C.btn(sections.forfaits.path, 'btn-light', sections.forfaits.icon, 'La page des tarifs')}</p>
 </div></section>
@@ -1654,9 +1793,10 @@ function docPage() {
         <li><strong>Lia</strong>, l’IA, fait les petites et moyennes modifications en 5 minutes, sur une seule page. Elle vous montre l’aperçu, et ne change rien sans votre accord.</li>
         <li><strong>Alex</strong> fait les plus grandes, à la main. Si une demande est trop grosse pour Lia, elle passe à Alex.</li>
         <li>Une demande peut être annulée gratuitement pendant 24 heures, 3 fois par mois.</li>
-        <li>Vos Jetons Lia et vos modifications par Alex sont affichés en haut de votre espace.</li>
+        <li>Vos Jetons Lia et vos interventions d’Alex (${UNE_MODIF} ${PAR_PERIODE}) sont affichés en haut de votre espace.</li>
+        <li>Besoin de plus ? Un article, un point avec Alex ou une demande sous 24 heures se commandent à l’unité, dans le même onglet.</li>
       </ul>
-      <p class="doc-more">${C.btn(sections.liaalex.path, 'btn-light', 'sparkles', 'Tout sur Lia et Alex')}</p>
+      <p class="doc-more">${C.btn(sections.accompagnement.path, 'btn-light', sections.accompagnement.icon, 'L’accompagnement')}</p>
     </div>
   </div>
 </div></section>
@@ -1749,6 +1889,7 @@ ${C.ctaBand({ title: 'Une question qui n’est pas ici ?', text: 'Écrivez-nous 
     path: sections.documentation.path,
     section: 'documentation',
     title: 'Documentation : tout comprendre en images | Alex & Lia',
+    noindex: true, // V2 : la documentation est pour les clients
     description: 'Tout comprendre en images : la création de votre site, le prix, l’abonnement et ses extras, l’espace client, le tableau de bord et les outils de boutique.',
     crumbs,
     body,
@@ -1812,18 +1953,21 @@ function legalPage(l) {
 function planDuSite() {
   const crumbs = [HOME, { name: 'Plan du site', path: '/plan-du-site/' }];
   // Les pages du parcours de commande (noindex) ne figurent pas dans le plan.
+  // Outils et Documentation (noindex depuis la V2) restent dans le plan : les clients les cherchent.
   const hidden = ['commander', 'confirmation'];
   const links = [
     ['/', 'Accueil'],
     ...Object.entries(sections).filter(([k]) => !hidden.includes(k)).map(([, s]) => [s.path, s.label]),
     ['/faq/', 'Questions fréquentes'],
+    ...METIERS.map((m) => ['/' + m.slug + '/', 'Site internet : ' + m.nom.toLowerCase()]),
+    ...PAGES_V2.filter((p) => !Object.values(sections).some((x) => x.path === p.path)).map((p) => [p.path, p.nom]),
     ...GUIDES.guides.map((g) => ['/guides/' + g.slug + '/', g.nom]),
     ...legal.map((l) => [l.path, l.name]),
   ];
   return {
     path: '/plan-du-site/',
     title: 'Plan du site | Alex & Lia',
-    description: 'Toutes les pages du site Alex & Lia : créer mon site, tarifs, outils, SEO, comparatif, fidélité, documentation, contact, FAQ et pages légales.',
+    description: 'Toutes les pages du site Alex & Lia : créer mon site, tarifs, réalisations, votre métier, accompagnement, guides, contact, FAQ et pages légales.',
     crumbs,
     body: `${C.pageHero({ h1: 'Plan du site', lead: 'Toutes les pages du site, au même endroit.', crumbs })}
 <section class="section"><div class="container container-narrow"><ul class="sitemap-list">${links.map(([p, l]) => `<li><a href="${p}">${esc(l)}</a></li>`).join('')}</ul></div></section>`,
@@ -1858,10 +2002,14 @@ function notFound() {
 
 function build() {
   return [
-    home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), methodePage(), contactPage(), faqPage(),
+    home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), contactPage(), faqPage(),
     outilsPage(),
-    liaAlexPage(),
     confiancePage(),
+    // V2 : pages métier, réassurance, guides de fond, page locale (remplacent /methode/ et /lia-et-alex/)
+    ...(METIERS.length ? [metiersHub(), ...METIERS.map(metierPage)] : []),
+    ...PAGES_V2.map(pageV2),
+    ...(PAGES_V2.some((p) => p.path === sections.methode.path) ? [] : [methodePage()]),
+    ...(PAGES_V2.some((p) => p.path === sections.liaalex.path) ? [] : [liaAlexPage()]),
     docPage(),
     guidesHub(), ...GUIDES.guides.map(guidePage),
     ...(LEXIQUE.termes.length ? [lexiqueHub(), ...LEXIQUE.termes.map(lexiquePage)] : []),

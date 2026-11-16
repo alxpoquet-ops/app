@@ -2,18 +2,23 @@
 // ⚠️ Les éléments entre accolades proviennent de src/config.js et doivent y être complétés.
 // ⚠️ Modèle à faire relire : il ne remplace pas l'avis d'un professionnel du droit.
 // Règles : aucun tiret long, phrases courtes, rien d'invérifiable. Le nom de marque vient de site.name.
-const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, jetonsLia, delais, creation, boost } = require('../config');
+const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, jetonsLia, delais, creation, aLaDemande } = require('../config');
 const L = site.legal;
 const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
-const UPDATED = '2026-11-15';
+const UPDATED = '2026-11-15'; // mentions légales et politique de confidentialité
+const UPDATED_CGV = '2026-11-16'; // conditions générales : offre V2 (intervention d'Alex par trimestre, extras à la demande)
 
-// L'offre unique : la création à prix fixe, un seul abonnement, des options payées une fois, des extras au mois.
-// Tous les nombres viennent de src/config.js, pour que les CGV suivent toujours les prix.
+// L'offre unique : la création à prix fixe, un seul abonnement, des options payées une fois, des extras au mois,
+// et des extras à la demande payés une fois. Tous les nombres viennent de src/config.js, pour que les CGV suivent toujours les prix.
 const abo = forfaits[0];
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
-const modifsAlex = abo.quota === 1 ? 'une modification' : `${abo.quota} modifications`; // par Alex, chaque mois
+// Interventions d'Alex comprises : une par trimestre depuis la V2. Les clients inscrits avant gardent une par mois.
+const periode = abo.periode || 'mois';
+const intervAlex = abo.quota === 1 ? 'une intervention' : `${abo.quota} interventions`;
+const DATE_V2 = '16 novembre 2026';
 const maj = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const durees = lissage.durees.join(' ou ');
 const acompte = (prix) => Math.round(prix * paiement.acompte) / 100;
 const lisse = (prix, n) => Math.floor(((prix - acompte(prix)) / n) * 100) / 100; // échéance arrondie au centime inférieur
@@ -29,7 +34,7 @@ const DETAIL = {
   reprise: 'les textes, les photos et les adresses de pages de l’ancien site du client, repris dans le nouveau',
   pages: 'cinq pages en plus des cinq comprises, pour un site vitrine ou une boutique en ligne',
   seo: 'le travail de référencement mené chaque mois, avec un point sur les résultats',
-  liaplus: `${jetonsLia.liaplus} Jetons Lia en plus chaque mois`,
+  liaplus: `un usage régulier de Lia et de ses outils, soit ${jetonsLia.liaplus} Jetons Lia en plus chaque mois (article 12)`,
   stats: 'les chiffres du site heure par heure, et un rapport chaque mois',
   mail: 'une adresse e-mail au nom de domaine du client',
   stock: 'le stock de la boutique, décompté à chaque vente',
@@ -47,7 +52,19 @@ const listeExtras = options
   .join('\n');
 const liaPlus = options.find((o) => o.id === 'liaplus');
 const seoSuivi = options.find((o) => o.id === 'seo');
-// Jetons Lia
+// Extras à la demande : payés une fois, commandés par le client depuis son espace, ajoutés à la prochaine facture.
+const DETAIL_DEMANDE = {
+  alex: `une modification faite à la main par Alex, en plus de l’intervention comprise dans la période (article 11)`,
+  urgent: `la demande est prise en charge avant les autres et traitée sous ${delais.urgent}, du lundi au vendredi`,
+  article: 'le client choisit le sujet, Lia prépare l’article, Alex le relit, l’illustre et le publie sur le site du client',
+  point: 'un rendez-vous avec Alex, par téléphone ou en visio, pour faire le point sur le site et les projets du client',
+};
+const listeDemande = aLaDemande
+  .map((x) => `- **${x.name}, ${eur(x.prix)} €**${DETAIL_DEMANDE[x.id] ? ` : ${DETAIL_DEMANDE[x.id]}` : ''}.`)
+  .join('\n');
+const alexPlus = aLaDemande.find((x) => x.id === 'alex');
+const urgent = aLaDemande.find((x) => x.id === 'urgent');
+// Jetons Lia : le compteur interne de l'espace client (les pages publiques n'en parlent pas)
 const centime = eur(Math.round(jetonsLia.valeur * 100));
 const modifMax = 65; // la plus grande demande que Lia accepte (mots et photos)
 const listeRecharges = jetonsLia.recharge.map((r) => `${r.jetons} jetons pour ${eur(r.prix)} €`).join(', ');
@@ -161,9 +178,9 @@ Vous pouvez demander l’accès à vos données, leur correction, leur suppressi
     path: '/conditions-generales/',
     name: 'Conditions générales',
     title: `Conditions générales de vente | ${site.name}`,
-    description: `Conditions générales de vente d’${site.name} : commande en ligne, création à prix fixe, abonnement, extras, Jetons Lia, nom de domaine, rétractation, médiation.`,
+    description: `Conditions générales de vente d’${site.name} : commande en ligne, création à prix fixe, abonnement, extras au mois et à la demande, domaine, rétractation.`,
     lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif de commande.',
-    updated: UPDATED,
+    updated: UPDATED_CGV,
     body: `## 1. Objet
 
 Ces conditions s’appliquent à toute commande passée auprès d’${site.name} : création d’un site internet, abonnement, options, extras et services liés. Elles complètent le récapitulatif de commande, qui précise le type de site, les options, les extras et les prix.
@@ -190,7 +207,7 @@ L’offre est la même pour tous les clients. Elle tient en deux prix : la créa
 
 ${listeOptions}
 
-**L’abonnement coûte ${eur(abo.month)} € par mois**, ou ${eur(annee)} € par an (article 5). Des **extras** payés au mois peuvent s’y ajouter (article 6).
+**L’abonnement coûte ${eur(abo.month)} € par mois**, ou ${eur(annee)} € par an (article 5). Des **extras** payés au mois peuvent s’y ajouter, ainsi que des **extras à la demande**, payés une fois (article 6).
 
 Un site plus grand, ou une demande qui sort de ce cadre, fait l’objet d’un devis que le client accepte avant le début du travail.
 
@@ -218,8 +235,8 @@ Il comprend :
 - **Le suivi du site** : son bon fonctionnement est surveillé.
 - **Le support** : une réponse sous ${delais.reponse}, en jours ouvrés (article 11).
 - **Les bases du SEO** : le site est construit pour que Google puisse le lire et le comprendre.
-- **${abo.jetons} Jetons Lia par mois** (article 12).
-- **${maj(modifsAlex)} par Alex par mois** (article 11).
+- **Les petites retouches avec Lia** et l’usage des outils de l’espace client, dans la limite du compteur de Jetons Lia (article 12).
+- **${maj(intervAlex)} d’Alex par ${periode}** (article 11).${periode === 'trimestre' ? ` Le client inscrit avant le ${DATE_V2} garde une intervention d’Alex par mois.` : ''}
 - **L’espace client et ses outils** (article 13).
 
 L’abonnement est prélevé d’avance, chaque mois ou chaque année selon la période choisie par le client. À l’année, il coûte ${eur(annee)} € : le client paie ${12 - annuel.moisOfferts} mois sur 12, soit ${annuel.moisOfferts} mois offerts. Le client peut passer du mois à l’année, ou de l’année au mois, au renouvellement.
@@ -228,13 +245,23 @@ Les paiements sont confiés à Stripe, par carte bancaire ou prélèvement SEPA.
 
 En cas d’échec de paiement, le client est prévenu par e-mail. Si rien n’est régularisé sous 30 jours, le site peut être mis en pause jusqu’au règlement.
 
-## 6. Extras de l’abonnement
+## 6. Extras au mois et extras à la demande
 
-Un extra est un service en plus, payé au mois avec l’abonnement. Aucun extra n’est obligatoire.
+Un extra est un service en plus. Il y en a deux sortes : les extras au mois et les extras à la demande. Aucun extra n’est obligatoire.
+
+**Extras au mois.** Ils sont payés au mois avec l’abonnement.
 
 ${listeExtras}
 
-Le client ajoute ou retire un extra quand il veut, depuis son espace client. Le nouveau prix s’applique à l’échéance suivante. Quand l’abonnement est payé à l’année, les extras le sont aussi, avec les mêmes ${annuel.moisOfferts} mois offerts.
+L’extra ${seoSuivi.name} s’appelait auparavant « SEO suivi ». Seul le nom change.
+
+Le client ajoute ou retire un extra au mois quand il veut, depuis son espace client. Le nouveau prix s’applique à l’échéance suivante. Quand l’abonnement est payé à l’année, les extras au mois le sont aussi, avec les mêmes ${annuel.moisOfferts} mois offerts.
+
+**Extras à la demande.** Ils sont payés une fois, à l’unité.
+
+${listeDemande}
+
+Le client commande lui-même un extra à la demande depuis son espace client, quand il en a besoin. Il voit le prix et donne son accord avant chaque commande. Le montant est ajouté à sa prochaine facture. Un client qui ne commande rien ne paie rien de plus.
 
 ## 7. Engagement, résiliation et fin de l’abonnement
 
@@ -268,36 +295,36 @@ Le client envoie ses demandes de modification depuis son espace client ou par me
 
 À chaque demande, le client choisit qui s’en charge :
 
-- **Lia** : la modification est faite par Lia, l’IA d’${site.name}, et payée en Jetons Lia (article 12). Lia montre l’aperçu au client et ne modifie le site qu’après son accord.
+- **Lia** : la modification est préparée par Lia, l’assistante numérique d’${site.name}. Lia est une intelligence artificielle. Elle aide Alex à automatiser certaines tâches répétitives et ne le remplace pas. Lia montre l’aperçu au client et ne modifie le site qu’après son accord. La modification est décomptée du compteur de Jetons Lia (article 12).
 - **Alex** : la modification est faite à la main, vérifiée et paramétrée par Alex.
 
-**Modifications par Lia.** Lia réalise les petites et moyennes modifications : un budget de mots et d’images par demande, sur une seule page. La modification est mise en ligne dès que le client valide l’aperçu, en général dans les 5 minutes qui suivent la demande. Une demande trop grande pour Lia est transmise à Alex. Elle compte alors comme une modification par Alex.
+**Petites retouches avec Lia.** Lia réalise les petites et moyennes modifications : un budget de mots et d’images par demande, sur une seule page. La modification est mise en ligne dès que le client valide l’aperçu, en général dans les 5 minutes qui suivent la demande. Une demande trop grande pour Lia est transmise à Alex. Elle compte alors comme une intervention d’Alex.
 
-**Modification par Alex.** L’abonnement comprend ${modifsAlex} par Alex par mois. Une modification par Alex non utilisée ne se reporte pas au mois suivant.
+**Intervention d’Alex.** L’abonnement comprend ${intervAlex} d’Alex par ${periode} : une modification faite à la main.${periode === 'trimestre' ? ` Pour un client inscrit avant le ${DATE_V2}, c’est une intervention par mois, aux mêmes conditions.` : ''} Une intervention non utilisée ne se reporte pas à la période suivante.
 
-**Boost.** Quand la modification par Alex du mois est déjà utilisée, le client peut demander un Boost : une modification par Alex en plus, pour ${eur(boost.prix)} €. Le client donne son accord à chaque Boost, et le montant est ajouté à sa prochaine facture. Il peut aussi choisir de reporter sa demande au mois suivant.
+**${alexPlus.name}.** Quand l’intervention de la période est déjà utilisée, le client peut commander ${minus(alexPlus.name)}, pour ${eur(alexPlus.prix)} € (article 6). Cet extra à la demande remplace le « Boost », au même prix. Le client donne son accord à chaque commande, et le montant est ajouté à sa prochaine facture. Il peut aussi choisir de reporter sa demande à la période suivante.
 
-**Annulation.** Une demande peut être annulée gratuitement par le client dans les 24 heures qui suivent son envoi, depuis son espace client, dans la limite de trois annulations par mois : elle n’est alors pas décomptée, ses jetons sont rendus, et ce que Lia avait mis en ligne est remis comme avant. Au-delà, l’annulation se demande à Alex.
+**Annulation.** Une demande peut être annulée gratuitement par le client dans les 24 heures qui suivent son envoi, depuis son espace client, dans la limite de trois annulations par mois : elle n’est alors pas décomptée, ses Jetons Lia sont recrédités, et ce que Lia avait mis en ligne est remis comme avant. Au-delà, l’annulation se demande à Alex.
 
-**Délai de réponse.** ${site.name} répond à chaque demande sous ${delais.reponse}, en jours ouvrés. Ce délai est le même pour tous les clients. Répondre, c’est prendre en charge la demande et donner une date. Les petites modifications sont en général faites dans ce délai.
+**Délai de réponse.** ${site.name} répond à chaque demande sous ${delais.reponse}, en jours ouvrés. Ce délai est le même pour tous les clients. Répondre, c’est prendre en charge la demande et donner une date. Les petites modifications sont en général faites dans ce délai. Avec l’extra à la demande « ${urgent.name} » (article 6), la demande est traitée sous ${delais.urgent}, du lundi au vendredi.
 
 ## 12. Jetons Lia
 
-Un Jeton Lia vaut ${centime} centime d’euro. Les Jetons Lia paient ce que fait Lia : les modifications du site et les outils de l’espace client (publier sur les réseaux, corriger ou traduire un texte, conseils sur une photo ou sur une page du site, et autres outils du même genre).
+Les Jetons Lia sont le compteur interne des retouches avec Lia et des outils de l’espace client. Le client voit ce compteur dans son espace client. Un Jeton Lia vaut ${centime} centime d’euro. Le compteur sert aux modifications du site par Lia et aux outils de l’espace client (publier sur les réseaux, corriger ou traduire un texte, conseils sur une photo ou sur une page du site, et autres outils du même genre).
 
-**Ce que coûte Lia.** Une modification faite par Lia coûte ${jetonsLia.modif.base} Jetons Lia, plus 1 jeton par tranche de ${jetonsLia.modif.mots} mots écrits dans la demande, plus ${jetonsLia.modif.image} jetons par photo jointe. Cela fait entre ${jetonsLia.modif.base} et ${modifMax} jetons par modification. Chaque outil se paie au tarif affiché avant son utilisation.
+**Décompte.** Une modification faite par Lia compte ${jetonsLia.modif.base} Jetons Lia, plus 1 jeton par tranche de ${jetonsLia.modif.mots} mots écrits dans la demande, plus ${jetonsLia.modif.image} jetons par photo jointe. Cela fait entre ${jetonsLia.modif.base} et ${modifMax} jetons par modification. Chaque outil compte le nombre de jetons affiché avant son utilisation.
 
-**Les jetons de l’abonnement.** L’abonnement donne ${abo.jetons} Jetons Lia par mois. Cela représente en général 2 à 3 modifications par Lia, ou une dizaine d’utilisations d’outils. Ces jetons sont remis le 1er de chaque mois et ne se reportent pas d’un mois sur l’autre.
+**Usage compris dans l’abonnement.** L’abonnement donne ${abo.jetons} Jetons Lia par mois, pour un usage occasionnel. Cela représente en général 2 à 3 retouches avec Lia, ou une dizaine d’utilisations d’outils. Ces jetons sont remis le 1er de chaque mois et ne se reportent pas d’un mois sur l’autre.
 
-**Avoir plus de jetons.** L’extra ${liaPlus.name} ajoute ${jetonsLia.liaplus} Jetons Lia par mois, pour ${eur(liaPlus.price.month)} € par mois. Ces jetons suivent la même règle que ceux de l’abonnement : ils reviennent le 1er du mois, sans report. Le client peut aussi acheter une recharge à l’unité : ${listeRecharges}. La recharge est ajoutée à sa prochaine facture. Les jetons d’une recharge ne s’effacent pas à la fin du mois : ils restent jusqu’à ce qu’ils soient utilisés.
+**Usage régulier.** L’extra ${liaPlus.name} ajoute ${jetonsLia.liaplus} Jetons Lia par mois, pour ${eur(liaPlus.price.month)} € par mois. Ces jetons suivent la même règle que ceux de l’abonnement : ils reviennent le 1er du mois, sans report. Le client peut aussi acheter une recharge à l’unité : ${listeRecharges}. La recharge est ajoutée à sa prochaine facture. Les jetons d’une recharge ne s’effacent pas à la fin du mois : ils restent jusqu’à ce qu’ils soient utilisés.
 
-**Jetons rendus.** Les jetons d’une demande sont rendus au client dans quatre cas : la demande est transmise à Alex, la mise en ligne échoue, le client refuse l’aperçu, ou le client annule sa demande dans les 24 heures.
+**Jetons recrédités.** Les jetons d’une demande sont recrédités dans quatre cas : la demande est transmise à Alex, la mise en ligne échoue, le client refuse l’aperçu, ou le client annule sa demande dans les 24 heures.
 
-Les Jetons Lia et les modifications par Alex sont comptés séparément.
+Le compteur de Jetons Lia et les interventions d’Alex sont comptés séparément.
 
 ## 13. Espace client et compte
 
-Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. Il y suit sa commande, ses demandes, son abonnement, ses extras et ses factures. Il y trouve aussi les outils de Lia, payés en Jetons Lia (article 12). Il garde ses identifiants pour lui et prévient ${site.name} en cas de doute sur leur usage.
+Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. Il y suit sa commande, ses demandes, son abonnement, ses extras et ses factures. Il y commande les extras à la demande (article 6). Il y trouve aussi les outils de Lia et son compteur de Jetons Lia (article 12). Il garde ses identifiants pour lui et prévient ${site.name} en cas de doute sur leur usage.
 
 Un compte sans connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec ses demandes et ses photos. Le client est prévenu par e-mail 30 jours avant. Une connexion suffit pour annuler la suppression. Les factures sont conservées en dehors du compte, le temps prévu par la loi.
 

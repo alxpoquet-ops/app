@@ -1,5 +1,7 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
 const { site, sections, types, forfaits, creation, jetonsLia, marche } = require('../config');
+let METIERS = [];
+try { METIERS = require('../content/metiers').metiers; } catch (e) { /* pas encore écrit */ }
 const { icon } = require('./icons');
 const { logoMark, monster } = require('./monsters');
 const brandName = 'Alex &amp; Lia';
@@ -87,7 +89,8 @@ function graph(p) {
 }
 
 // ---------------------------------------------------------------- en-tête
-const NAV = ['forfaits', 'espace', 'documentation', 'confiance', 'contact'];
+// V2 : Votre métier, Réalisations, Tarifs, Accompagnement, Contact. Outils et Documentation passent dans l'espace client.
+const NAV = ['metiers', 'confiance', 'forfaits', 'accompagnement', 'contact'];
 
 function header(currentPath) {
   const onCreer = currentPath.startsWith(sections.creer.path);
@@ -121,7 +124,7 @@ function footer(p) {
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand" href="/">${logoMark({ id: 'lgf' })}<span class="brand-text"><strong>${brandName}</strong></span></a>
-      <p>Des sites internet simples, rapides et faits pour être trouvés sur Google, créés avec Lia et vérifiés par Alex. Tout se fait en ligne, pour des clients partout en France.</p>
+      <p>Des sites internet professionnels, simples et faits pour être trouvés sur Google. Alex crée et suit votre site, avec l’aide de Lia, son assistante numérique. Depuis les Ardennes, pour des clients partout en France.</p>
       <ul class="footer-contact">
         <li><a href="${C.contactUrl}">${icon('message-circle')}Nous écrire</a></li>
         ${site.email ? `<li><a href="mailto:${site.email}">${icon('mail')}${site.email}</a></li>` : ''}
@@ -136,9 +139,17 @@ function footer(p) {
       </ul>
     </div>
     <div>
+      <h2 class="footer-title">Votre métier</h2>
+      <ul class="footer-links">
+        ${METIERS.map((m) => `<li><a href="/${m.slug}/">${m.nom}</a></li>`).join('')}
+        <li><a href="/creation-site-internet-ardennes/">Création de site dans les Ardennes</a></li>
+      </ul>
+    </div>
+    <div>
       <h2 class="footer-title">Bon à savoir</h2>
       <ul class="footer-links">
-        <li><a href="/mon-espace/demo/">Essayer la démo</a></li>
+        <li><a href="/pourquoi-un-site-internet/">Pourquoi avoir un site internet ?</a></li>
+        <li><a href="/etre-visible-sur-google/">Être visible sur Google</a></li>
         <li><a href="/referencement-seo/">Référencement SEO</a></li>
         <li><a href="/guides/">Guides pour créer son site</a></li>
         <li><a href="/lexique/">Lexique du web</a></li>
@@ -149,9 +160,14 @@ function footer(p) {
     <div>
       <h2 class="footer-title">Infos</h2>
       <ul class="footer-links">
-        <li><a href="/lia-et-alex/">Lia et Alex</a></li>
-        <li><a href="/methode/">Ma méthode avec l’IA</a></li>
+        <li><a href="${sections.liaalex.path}">Pourquoi Alex & Lia ?</a></li>
+        <li><a href="${sections.methode.path}">Pourquoi c’est moins cher</a></li>
+        <li><a href="${sections.confiance.path}">Réalisations</a></li>
+        <li><a href="${sections.accompagnement.path}">Accompagnement</a></li>
         <li><a href="/faq/">Questions fréquentes</a></li>
+        <li><a href="/mon-espace/demo/">Essayer l’espace client</a></li>
+        <li><a href="${sections.espace.path}">Les outils de l’espace client</a></li>
+        <li><a href="${sections.documentation.path}">Documentation client</a></li>
         <li><a href="/contact/">Contact</a></li>
       </ul>
     </div>
@@ -180,16 +196,16 @@ function liaFlot() {
   const eur = (n) => `${n} €`;
   const questions = [
     ['C’est combien ?', `Tout est compris : la maquette, le site, le nom de domaine, l’hébergement et les mises à jour. C’est ${marche.fois} fois moins cher qu’un site fait à la main : à partir de ${eur(creation.prix)} le site, puis ${eur(ABO.month)} par mois.`, sections.forfaits.path, 'Voir les tarifs'],
-    ['Comment ça marche ?', 'Vous répondez à quelques questions, je prépare votre site, et Alex vérifie tout avant la mise en ligne. Vous voyez le prix avant de commander.', sections.creer.path, 'Créer mon site'],
-    ['Qui fait mon site ?', 'Moi, Lia, je fais le gros du travail. Alex, le petit monstre à lunettes, relit, corrige et règle tout à la main.', sections.liaalex.path, 'Lia et Alex'],
-    ['Et pour changer mon site après ?', 'Dans votre espace client, vous m’écrivez ici ce que vous voulez changer. Je vous montre l’aperçu, et rien ne change sans votre accord.', site.espaceClient.demo, 'Essayer la démo'],
+    ['Comment ça marche ?', 'Vous composez votre site en deux minutes, Alex le prépare avec mon aide, et vous validez l’aperçu avant la mise en ligne. Vous voyez le prix avant de commander.', sections.creer.path, 'Créer mon site'],
+    ['Qui fait mon site ?', 'Alex, le petit monstre à lunettes : c’est lui qui crée votre site et qui vous répond. Moi, je suis son assistante. J’automatise les tâches répétitives, c’est ce qui réduit les délais et les coûts.', sections.liaalex.path, 'Pourquoi Alex & Lia'],
+    ['Et pour changer mon site après ?', 'Dans votre espace client, vous écrivez ce que vous voulez changer. Les petites retouches, je les prépare avec un aperçu à valider. Le reste, Alex s’en occupe.', sections.accompagnement.path, 'L’accompagnement'],
   ];
-  const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', 'Comment avoir plus d’avis Google ?', 'Où en sont mes jetons ?'];
+  const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', 'Comment avoir plus d’avis Google ?', 'Que comprend mon abonnement ?'];
   return `<div class="lia-flot" data-lia-flot hidden>
-  <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Lia, l’assistante d’Alex & Lia" hidden>
-    <div class="lia-tete">${monster('coucou')}<p><strong>Lia</strong><small>L’IA d’Alex & Lia</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Lia">${icon('x')}</button></div>
+  <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Lia, l’assistante d’Alex" hidden>
+    <div class="lia-tete">${monster('coucou')}<p><strong>Lia</strong><small>L’assistante d’Alex</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Lia">${icon('x')}</button></div>
     <div class="lia-fil" data-lia-fil aria-live="polite">
-      <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Lia ! Choisissez une question, je vous réponds tout de suite.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Lia, l’assistante d’Alex ! Choisissez une question, je vous réponds tout de suite.</p>
       <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Bonjour ! Dites-moi ce que vous voulez changer sur votre site, ou posez-moi une question.</p>
       <p class="lia-msg is-lia" data-lia-accueil="demo" hidden>Bonjour ! Ici, c’est une démonstration : écrivez-moi comme un client, je vous montre comment je réponds.</p>
       <p class="lia-msg is-lia" data-lia-accueil="attente" hidden>Bonjour ! Je ne suis pas encore branchée dans cet espace. En attendant, écrivez à Alex dans l’onglet Mes demandes.</p>
@@ -208,7 +224,7 @@ function liaFlot() {
       <textarea id="lia-champ" rows="2" maxlength="${jetonsLia.bulle.max}" placeholder="Écrivez à Lia…" required></textarea>
       <button type="submit" aria-label="Envoyer à Lia">${icon('send')}</button>
     </form>
-    <p class="lia-note" data-lia-note hidden><span data-lia-prix>${jetonsLia.bulle.jetons} jeton par message.</span> Lia peut se tromper : rien ne change sans votre accord. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
+    <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Lia peut se tromper : rien ne change sans votre accord. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
   </div>
   <p class="lia-flot-coucou" hidden>Une question ? Je suis là.</p>
   <button type="button" class="lia-flot-btn" aria-expanded="false" aria-controls="lia-panel"><span class="sr-only">Parler à Lia</span>${monster('coucou')}</button>

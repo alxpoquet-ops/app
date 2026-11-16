@@ -5,11 +5,11 @@ Ce guide explique, en français simple, comment fonctionne le site www.aled08.fr
 ## 1. L'offre, en bref
 
 - **Une seule offre** : le site à 500 €, quel que soit le site (une page ou plusieurs). Boutique en ligne : + 200 €.
-- **Un abonnement obligatoire, sans engagement** : 10 € par mois. Il comprend le nom de domaine, l'hébergement, les mises à jour, le suivi, le support, 100 Jetons Lia et une modification par Alex chaque mois. À l'année : 2 mois offerts (le client paie 10 mois).
+- **Un abonnement obligatoire, sans engagement** : 10 € par mois. Il comprend le nom de domaine, l'hébergement, les mises à jour, le suivi, le support, 100 Jetons Lia par mois (compteur interne, jamais affiché sur le site public) et une intervention d'Alex par trimestre. Les clients inscrits avant le 16 novembre 2026 gardent une intervention par mois (case « Une intervention d'Alex chaque mois » de leur fiche). À l'année : 2 mois offerts (le client paie 10 mois).
 - **Paiement de la création** : 25 % à la commande. À la réception du site : le reste, en une fois ou en 6 ou 12 fois sans frais (l'abonnement se paie alors au mois), avec un engagement le temps du paiement. Sinon, aucun engagement.
 - **Options à la création** (payées une fois) : traduction en anglais, prise de rendez-vous, reprise de l'ancien site, cinq pages de plus. 100 € chacune.
 - **Extras au mois**, que le client ajoute ou retire lui-même dans « Abonnement et factures » : SEO suivi 10 €, Lia + 5 € (500 jetons de plus), chiffres détaillés 5 €, adresse e-mail pro 3 €, et pour une boutique gestion du stock 5 € et comptes clients 5 €.
-- **Boost** : une modification par Alex en plus dans le mois, 5 €.
+- **Extras à la demande, payés une fois** (`aLaDemande` dans `src/config.js`), commandés par le client dans l'onglet Mes demandes et ajoutés à sa prochaine facture Stripe (sinon : à facturer à la main, l'e-mail le dit) : une intervention d'Alex en plus (5 €, l'ancien « Boost »), une demande traitée sous 24 heures (5 €), un article écrit et publié (15 €), un point de 30 minutes avec Alex (15 €). Un article ou un point ne compte pas dans les interventions de l'abonnement.
 - **Parrainage** : 1 mois d'abonnement offert au parrain et au filleul quand le site du filleul est en ligne.
 - **Délai de réponse aux demandes** : sous 72 heures.
 - **Les anciens forfaits** (Chico, Power, Titan) n'existent plus. Un ancien client passe tout seul à l'abonnement : Power garde l'extra SEO suivi, Titan garde SEO suivi et chiffres détaillés. Son abonnement Stripe ne bouge pas tant qu'il ne change pas ses extras.
@@ -186,14 +186,14 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 
 - Le client écrit sa demande (avec une photo s'il veut) dans « Mes demandes ». Vous recevez un e-mail avec un lien direct.
 - Dans Alex & Lia › Demandes clients, vous changez le statut : Reçue, En cours, Faite, avec un message facultatif affiché chez le client. En passant à « Faite », le client reçoit un e-mail.
-- Deux compteurs par mois : les Jetons Lia (100 dans l'abonnement, 500 de plus avec Lia +) pour les modifications par Lia, et une modification par Alex. Le client choisit qui fait chaque modification. Au-delà, une modification par Alex part en « Boost » (5 €, ajouté à sa facture), avec son accord.
+- Deux compteurs : les Jetons Lia par mois (100 dans l'abonnement, 500 de plus avec Lia +) pour les modifications par Lia, et les interventions d'Alex (une par trimestre, ou une par mois pour les clients d'avant la V2). Le client choisit qui fait chaque modification. Au-delà, une intervention d'Alex en plus coûte 5 €, ajoutée à sa facture, avec son accord.
 - Délai de réponse annoncé pour Alex : 72 heures. Lia : instantané, avec un aperçu à valider.
 
 ### Lia, pour de vrai (Claude, d'Anthropic)
 
 Quand le client choisit « Lia, instantané », Lia prépare la modification toute seule, en tâche de fond, en une à deux minutes. Rien ne change encore sur le site : le client reçoit un e-mail, ouvre « Voir l’aperçu » (sa vraie page, avec un bandeau « Aperçu »), puis clique « Oui, mettre en ligne » ou « Non, ce n’est pas ça ». Oui : c’est mis en ligne et vous recevez « Lia a mis en ligne une modification à vérifier ». Non : la demande vous revient, avec son commentaire. L’aperçu reste valable 21 jours.
 
-Avec Alex, la réponse annoncée est sous 72 heures, et l'abonnement comprend une modification par mois.
+Avec Alex, la réponse annoncée est sous 72 heures (sous 24 heures avec l'extra payé), et l'abonnement comprend une intervention par trimestre.
 
 Ce qu'elle sait faire : changer un texte (horaires, prix affiché, phrase), modifier le contenu ou le titre d'une page, publier une actualité, ajouter la photo jointe, changer le nom ou le slogan du site. Ce qu'elle ne fait jamais : supprimer, toucher aux extensions, au thème, aux comptes, aux prix d'une boutique, aux CGV ou mentions légales. Si la demande est floue ou risquée, elle ne touche à rien et vous la passe (e-mail « Lia vous passe une demande »). Le jeton n'est alors pas compté : la demande devient une modification d'Alex.
 

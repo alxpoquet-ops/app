@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, creation, marche, boost } = require('../config');
+const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, creation, marche, boost, aLaDemande } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
 const { inline, esc, plain } = require('./md');
@@ -156,7 +156,7 @@ function payBox() {
 }
 
 // ---------------------------------------------------------------- l'offre unique : le site, puis l'abonnement
-const INCLUS_SITE = ['La maquette, le site complet et la mise en ligne', 'Une page ou plusieurs, jusqu’à cinq', 'Parfait sur téléphone', 'Formulaire de contact', 'Bases du SEO : Google sait lire votre site', 'Vos textes écrits avec vous'];
+const INCLUS_SITE = ['La maquette, le site complet et la mise en ligne', 'Une page ou plusieurs, jusqu’à cinq', 'Parfait sur téléphone', 'Formulaire de contact', 'Bases du référencement : Google sait lire votre site', 'Vos textes écrits avec vous'];
 // compact : pour l'accueil (moins de lignes) ; choose : avec le bouton « Créer mon site »
 function offre({ compact = false, choose = true } = {}) {
   const liste = (items) => `<ul class="plan-list">${items.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>`;
@@ -196,7 +196,7 @@ function economie() {
     <p class="eco-ligne"><span>Site vitrine fait par un indépendant</span><i style="width:100%"></i><b>${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)}</b></p>
     <p class="eco-ligne is-nous"><span>Chez Alex & Lia</span><i style="width:${Math.max(14, Math.round((creation.prix / milieu) * 100))}%"></i><b>${euro(creation.prix)}</b></p>
   </div>
-  <p>Pas de secret : Lia, l’IA, fait le gros du travail en quelques heures, et Alex vérifie tout à la main. Vous ne payez pas des semaines de travail. Le prix est le même pour tout le monde, affiché ici, sans devis.</p>
+  <p>Pas de secret : Lia, mon assistante numérique, automatise les tâches répétitives, et je fais le reste à la main, en vérifiant tout. Vous ne payez pas des semaines de travail. Le prix est le même pour tout le monde, affiché ici, sans devis.</p>
   <p class="eco-note">Nos repères : les prix publics relevés en France en 2026 pour un site vitrine de cinq pages fait par un indépendant. Une agence demande souvent plus. Il existe aussi des offres à bas prix, entre ${euro(marche.basMin)} et ${euro(marche.basMax)}, proches du nôtre.</p>
 </div>`;
 }
@@ -221,6 +221,12 @@ function optionsCompact() {
   <div class="opt-group reveal"><h3>${icon('wand-sparkles')}À la création, une fois</h3><ul>${boutique}${optsCreation.map(ligne).join('')}</ul></div>
   <div class="opt-group reveal"><h3>${icon('repeat')}Chaque mois, à ajouter ou retirer</h3><ul>${optsMois.map(ligne).join('')}</ul></div>
 </div>`;
+}
+// Les extras à la demande : payés une fois, depuis l'espace client, quand on en a besoin
+function extrasDemande() {
+  return `<div class="opt-group opt-demande reveal"><h3>${icon('hand-coins')}À la demande, payé une fois</h3><ul>${aLaDemande
+    .map((x) => `<li><span class="opt-ico">${icon(x.icon)}</span><span class="opt-txt"><strong>${esc(x.name)}</strong><small>${inline(x.desc)}</small></span><span class="opt-price">${euro(x.prix)}</span></li>`)
+    .join('')}</ul><p class="opt-note">Vous les commandez depuis votre espace client, et ils s’ajoutent à votre prochaine facture. Rien à payer si vous ne vous en servez pas.</p></div>`;
 }
 
 // ---------------------------------------------------------------- choix partagés (configurateur et page Commander)
@@ -309,7 +315,7 @@ function configurator() {
   <form class="b-steps" data-builder-form>
     ${step(1, 'Votre site', 'Tout est compris : la maquette, le site complet, parfait sur téléphone, et sa mise en ligne. Une page ou cinq, au même prix. En dessous, ce que vous pouvez ajouter, payé une seule fois.', typeBody)}
     ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est comprise dans l’abonnement et elle reste à votre nom.', domainBox())}
-    ${step(3, 'L’abonnement', 'Votre site reste en ligne, sûr et à jour. Nom de domaine, hébergement, support et Jetons Lia compris. En dessous, les extras au mois : rien n’est obligatoire.', aboBody)}
+    ${step(3, 'L’abonnement', 'Votre site reste en ligne, sûr et à jour. Nom de domaine, hébergement, support et petites retouches compris. En dessous, les extras au mois : rien n’est obligatoire.', aboBody)}
     ${step(4, 'Paiement du site', `${paiement.acompte} % à la commande. À la réception : le reste en une fois, ou en ${lissageTxt} fois sans frais. Aucun engagement, sauf le temps de payer le reste en plusieurs fois.`, payChoices, ' b-step-last')}
   </form>
   <aside class="b-sum" aria-live="polite">
@@ -389,13 +395,13 @@ function comparatifTable() {
   const prixCreation = `${euro(creation.prix)}, le même prix pour tous. Boutique en ligne : + ${euro(creation.boutique)}`;
   const prixMois = `${euro(ABO.month)} par mois, nom de domaine et hébergement compris`;
   const rows = [
-    ['Qui fait le travail', 'Lia, l’IA, pour l’automatique. Alex, un humain, vérifie et règle tout.', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
+    ['Qui fait le travail', 'Alex, votre interlocuteur, aidé de Lia, son assistante numérique, pour les tâches répétitives.', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
     ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
     ['Prix chaque mois', prixMois, 'Contrat de maintenance, sur devis', 'Selon le prestataire, souvent en option', 'Abonnement mensuel, plus les applications en option'],
     ['Délai', `${types[0].delai} pour une page, ${types[1].delai} pour un site vitrine, ${types[2].delai} pour une boutique`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
-    ['Modifications', 'Rapides et comprises : par Lia ou par Alex, au choix', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
+    ['Modifications', 'Petites retouches comprises avec Lia, et Alex une fois par trimestre', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
-    ['SEO', 'Bases comprises sur chaque site. Avec l’extra SEO suivi, je fais remonter votre site chaque mois', 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
+    ['SEO', 'Bases comprises sur chaque site. Avec l’extra Suivi Google, je travaille votre place chaque mois', 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
     ['Engagement', `Aucun. Seulement le temps du paiement si le reste est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
@@ -411,6 +417,6 @@ module.exports = {
   lissageTxt,
   unType,
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
-  billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, optsCreation, optsMois, prixType, optPrice, optionsCompact, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
+  billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, optsCreation, optsMois, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
 };

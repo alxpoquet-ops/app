@@ -30,7 +30,13 @@ FORM_RECIPIENT = 'alx.poquet@gmail.com'
 # Anciennes adresses (ancien site d'électricien, anciennes pages du site ALED08) : redirigées vers l'accueil,
 # sauf cas particuliers. Les clés de OLD_TARGETS sont toujours redirigées, même absentes de wp-old-paths.txt.
 OLD_PATHS_FILE = os.path.join(ROOT, 'scripts', 'wp-old-paths.txt')
-OLD_TARGETS = {'/devis/': '/contact/', '/prestations/': '/creer-mon-site/', '/blog/': '/', '/comparatif-shopify/': '/comparatif/', '/creation-site-internet-ardennes/': '/', '/nos-outils/': '/outils/', '/forfaits/': '/tarifs/', '/en/forfaits/': '/en/tarifs/'}
+OLD_TARGETS = {'/devis/': '/contact/', '/prestations/': '/creer-mon-site/', '/blog/': '/', '/comparatif-shopify/': '/comparatif/', '/nos-outils/': '/outils/', '/forfaits/': '/tarifs/', '/en/forfaits/': '/en/tarifs/'}
+# V2 (novembre 2026) : pages renommées, et trois guides devenus des pages métier à la racine
+for _old, _new in {'/methode/': '/pourquoi-moins-cher/', '/lia-et-alex/': '/pourquoi-alex-et-lia/', '/ils-nous-ont-fait-confiance/': '/realisations/',
+                   '/guides/site-internet-artisan/': '/site-internet-artisan/', '/guides/site-internet-therapeute/': '/site-internet-therapeute/',
+                   '/guides/site-internet-association/': '/site-internet-association/'}.items():
+    OLD_TARGETS[_old] = _new
+    OLD_TARGETS['/en' + _old] = '/en' + _new
 
 
 def read(p):
