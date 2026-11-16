@@ -249,6 +249,7 @@ const aLaDemande = [
   { id: 'alex', name: 'Une intervention d’Alex en plus', prix: 5, icon: 'user-check', desc: 'Une modification faite à la main par Alex, en plus de celle du trimestre.' },
   { id: 'urgent', name: 'Votre demande sous 24 heures', prix: 5, icon: 'zap', desc: 'Votre demande passe avant les autres et elle est traitée sous 24 heures, du lundi au vendredi.' },
   { id: 'article', name: 'Un article écrit et publié', prix: 15, icon: 'pen-tool', desc: 'Vous donnez le sujet. Je prépare l’article, je le relis, je l’illustre et je le publie sur votre site.' },
+  { id: 'page', name: 'Une page en plus', prix: creation.pagePlus, icon: 'file-text', desc: 'Une nouvelle page sur votre site, après sa mise en ligne. Je la prépare avec vos textes et vos photos, puis je la publie.' },
   { id: 'point', name: 'Un point de 30 minutes avec Alex', prix: 15, icon: 'phone', desc: 'Au téléphone ou en visio : on fait le tour de votre site, de vos résultats et de vos idées.' },
 ];
 // Boost : l'ancien nom de l'intervention d'Alex en plus (gardé pour l'extension WordPress et l'espace client).

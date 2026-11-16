@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres Espace client
  * Description: L'espace client des Minis Monstres sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.4.0
+ * Version: 2.4.1
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.4.0');
+define('ALED08E_VERSION', '2.4.1');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
@@ -407,7 +407,7 @@ add_action('template_redirect', function () {
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
     // extra à la demande, payé à part : un article écrit et publié, ou un point de 30 minutes avec Alex
     $extra = sanitize_key(wp_unslash($_POST['extra'] ?? ''));
-    if (!in_array($extra, ['article', 'point'], true) || !aled08e_a_la_demande($extra)) $extra = '';
+    if (!in_array($extra, ['article', 'page', 'point'], true) || !aled08e_a_la_demande($extra)) $extra = '';
     if ($extra && empty($_POST['extra_ok'])) $back('extra_accord');
     // par Cerise (automatique, un jeton) ou par Alex (à la main) ; plus de jeton ce mois-ci : la demande passe à Alex
     $par = !$extra && sanitize_key(wp_unslash($_POST['par'] ?? 'alex')) === 'lia' ? 'lia' : 'alex';
@@ -427,7 +427,7 @@ add_action('template_redirect', function () {
     if ($over && empty($_POST['boost_ok'])) $back('boost_accord');
     // demande traitée sous 24 heures : seulement pour Alex (Cerise fait la sienne tout de suite)
     $urgent = !$famille && $par === 'alex' && !empty($_POST['urgent']) && aled08e_a_la_demande('urgent');
-    $prefixe = $extra === 'article' ? 'Article : ' : ($extra === 'point' ? 'Point avec Alex : ' : '');
+    $prefixe = $extra === 'article' ? 'Article : ' : ($extra === 'point' ? 'Point avec Alex : ' : ($extra === 'page' ? 'Page en plus : ' : ''));
     $title = mb_strlen($txt) > 70 ? rtrim(mb_substr($txt, 0, 67)) . '…' : $txt;
     $title = $prefixe . trim(preg_replace('/\s+/', ' ', $title));
     $pid = wp_insert_post(['post_type' => ALED08E_CPT, 'post_status' => 'private', 'post_author' => $uid, 'post_title' => $title, 'post_content' => $txt, 'comment_status' => 'closed', 'ping_status' => 'closed'], true);
@@ -1184,10 +1184,11 @@ function aled08e_a_la_demande_html($uid, $famille) {
     $D = aled08e_data();
     $aide = [
         'article' => ['Le sujet de l’article, et ce que vous voulez y dire', 'Ex. : nos conseils pour entretenir un parquet'],
+        'page' => ['Ce que la nouvelle page doit présenter', 'Ex. : une page pour nos menus de groupe, avec les prix'],
         'point' => ['Vos disponibilités et le sujet du point', 'Ex. : mardi ou jeudi après 18 heures, pour parler de Google'],
     ];
     $cartes = '';
-    foreach (['article', 'point'] as $id) {
+    foreach (['article', 'page', 'point'] as $id) {
         $x = aled08e_a_la_demande($id);
         if (!$x) continue;
         $prix = $famille ? 'offert' : aled08e_euro_txt($x['prix']);

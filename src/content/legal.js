@@ -29,7 +29,7 @@ const acompte = (prix) => Math.round(prix * paiement.acompte) / 100;
 const lisse = (prix, n) => Math.floor(((prix - acompte(prix)) / n) * 100) / 100; // échéance arrondie au centime inférieur
 const annee = abo.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const boutique = creation.prix + creation.boutique;
-const listeDelais = types.map((t) => `${t.label.toLowerCase()} : ${t.delai}`).join(', ');
+const listeDelais = types.map((t) => `${t.id === 'boutique' ? 'une boutique en ligne' : t.id === 'une-page' ? 'une seule page' : 'un site de plusieurs pages'} : ${t.delai}`).join(', ');
 const tvaMention = L.tva || 'non applicable, art. 293 B du CGI';
 // Options payées une fois et extras au mois : le nom et le prix viennent de la config, la phrase d'explication est ici
 // (écrite pour les CGV, différente de celle de la page Tarifs).
@@ -37,7 +37,6 @@ const DETAIL = {
   en: 'le site traduit en anglais et relu, avec un bouton pour changer de langue',
   rdv: 'un agenda sur le site, où les visiteurs réservent un créneau parmi ceux que le client ouvre',
   reprise: 'les textes, les photos et les adresses de pages de l’ancien site du client, repris dans le nouveau',
-  pages: 'cinq pages en plus des cinq comprises, pour un site vitrine ou une boutique en ligne',
   seo: 'le travail de référencement mené chaque mois, avec un point sur les résultats',
   stats: 'les chiffres du site heure par heure, et un rapport chaque mois',
   mail: 'une adresse e-mail au nom de domaine du client',
@@ -47,11 +46,12 @@ const DETAIL = {
 const detail = (o) => (DETAIL[o.id] ? ` : ${DETAIL[o.id]}` : '');
 const boutiqueSeule = (o) => (o.types && o.types.length === 1 && o.types[0] === 'boutique' ? ' Réservé aux boutiques en ligne.' : '');
 const listeOptions = options
-  .filter((o) => o.quand === 'creation')
+  .filter((o) => o.quand === 'creation' && !o.retire)
   .map((o) => `- **${o.name}, ${eur(o.price.once)} €**${detail(o)}.`)
+  .concat(`- **Pages en plus, ${eur(creation.pagePlus)} € la page** : chaque page au-delà des ${creation.pages} comprises.`)
   .join('\n');
 const listeExtras = options
-  .filter((o) => o.quand === 'mois')
+  .filter((o) => o.quand === 'mois' && !o.retire)
   .map((o) => `- **${o.name}, ${eur(o.price.month)} € par mois**${detail(o)}.${boutiqueSeule(o)}`)
   .join('\n');
 const seoSuivi = options.find((o) => o.id === 'seo');
@@ -60,6 +60,7 @@ const DETAIL_DEMANDE = {
   alex: `une modification faite à la main par Alex, en plus de l’intervention comprise dans la période (article 11)`,
   urgent: `la demande est prise en charge avant les autres et traitée sous ${delais.urgent}, du lundi au vendredi`,
   article: 'le client choisit le sujet, un outil automatisé prépare un premier jet, Alex le relit, l’illustre et le publie sur le site du client',
+  page: 'une nouvelle page ajoutée au site après sa mise en ligne, préparée avec les textes et les photos du client',
   point: 'un rendez-vous avec Alex, par téléphone ou en visio, pour faire le point sur le site et les projets du client',
 };
 const listeDemande = aLaDemande
@@ -222,7 +223,7 @@ Les prix sont en euros. La TVA n’est pas applicable (article 293 B du Code gé
 
 L’offre est la même pour tous les clients. Elle tient en deux prix : la création du site, payée une fois, et l’abonnement, payé tant que le site est hébergé par les Minis Monstres.
 
-**La création du site coûte ${eur(creation.prix)} €.** Ce prix est le même pour un site d’une seule page et pour un site vitrine de cinq pages au plus. Il comprend la maquette, le site complet et sa mise en ligne.
+**La création du site coûte ${eur(creation.prix)} €.** Ce prix comprend jusqu’à ${creation.pages} pages, que le site en compte une seule ou plusieurs. Il comprend la maquette, le site complet et sa mise en ligne.
 
 **La boutique en ligne coûte ${eur(creation.boutique)} € de plus**, soit ${eur(boutique)} € pour la création. Ce supplément comprend le paiement par carte, le suivi des commandes, la mise en ligne de 20 produits au plus et une base de conditions de vente que le client complète.
 
@@ -232,7 +233,7 @@ ${listeOptions}
 
 **L’abonnement coûte ${eur(abo.month)} € par mois**, ou ${eur(annee)} € par an (article 5). Des **extras** payés au mois peuvent s’y ajouter, ainsi que des **extras à la demande**, payés une fois (article 6).
 
-Un site plus grand, ou une demande qui sort de ce cadre, fait l’objet d’un devis que le client accepte avant le début du travail.
+Une demande qui sort de ce cadre, comme une fonction nouvelle ou une refonte, fait l’objet d’un devis que le client accepte avant le début du travail.
 
 ## 4. Paiement de la création
 
@@ -315,7 +316,7 @@ Le client fournit ses textes, photos et informations, ou les prépare avec les M
 
 ## 11. Modifications et délai de réponse
 
-Le client envoie ses demandes de modification depuis son espace client ou par message. Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Une page nouvelle ou un site plus grand fait l’objet d’un devis.
+Le client envoie ses demandes de modification depuis son espace client ou par message. Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Une page nouvelle coûte ${eur(creation.pagePlus)} €, payée une fois (article 6). Une fonction nouvelle ou une refonte fait l’objet d’un devis.
 
 À chaque demande, le client choisit qui s’en charge :
 

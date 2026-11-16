@@ -343,7 +343,7 @@ Sur un site vitrine, la page « Élagage » ne parle que de cela, avec ses mots,
 
 ## Et si je me trompe ?
 
-Ce n'est pas grave. On peut commencer avec une page et évoluer ensuite : vos textes et vos photos resservent. Ajouter des pages après la mise en ligne se fait sur un petit devis. Rien n'est figé.
+Ce n'est pas grave. On peut commencer avec une page et évoluer ensuite : vos textes et vos photos resservent. Ajouter une page après la mise en ligne coûte 10 €, payée une fois. Rien n'est figé.
 
 ## Et la boutique en ligne ?
 
