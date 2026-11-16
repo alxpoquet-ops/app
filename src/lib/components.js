@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, creation, marche, boost, aLaDemande } = require('../config');
+const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
 const { petit } = require('./bestiaire');
@@ -227,8 +227,22 @@ function infoBtn(id, nom, texte) {
   return `<button type="button" class="opt-i" data-titre="${esc(nom)}" data-info="${esc(texte)}"${img} aria-label="${esc('Voir ce que ça ajoute : ' + nom)}">${icon('info')}</button>`;
 }
 const BOUTIQUE = types.find((t) => t.id === 'boutique') || {};
+// Le petit monstre que chaque option au mois ajoute à la bande
+const MONSTRE_OPTION = Object.fromEntries(bande.filter((b) => b.option).map((b) => [b.option, b.monstre]));
+// La petite bande, en cartes. complet : avec la phrase entière (accueil) ; sinon la phrase courte et le prix (tarifs).
+function bandeGrid({ complet = false } = {}) {
+  const prixDe = (b) => {
+    if (b.compris) return 'Compris dans l’abonnement';
+    if (b.outils) return 'Au service de tous';
+    const o = options.find((x) => x.id === b.option);
+    return o ? `Avec l’option ${o.name}, ${euro(o.price.month)}/mois` : '';
+  };
+  return `<div class="bande">${bande
+    .map((b) => `<div class="bande-carte reveal${b.compris ? ' is-compris' : ''}"><span class="bande-art">${petit(b.monstre)}</span><strong>${esc(b.role)}</strong><span class="bande-fait">${inline(complet ? b.fait : b.court)}</span><em class="bande-prix">${prixDe(b)}</em></div>`)
+    .join('')}</div>`;
+}
 function optionsCompact() {
-  const ligne = (o) => `<li><span class="opt-ico">${icon(o.icon)}</span><span class="opt-txt"><strong>${esc(o.name)}${o.types && o.types.length === 1 && o.types[0] === 'boutique' ? ' <em class="opt-only">boutique</em>' : ''}${infoBtn(o.id, o.name, o.info)}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${o.price.once ? '+ ' + euro(o.price.once) : `${euro(o.price.month)}/mois`}</span></li>`;
+  const ligne = (o) => `<li><span class="opt-ico${MONSTRE_OPTION[o.id] ? ' opt-monstre' : ''}">${MONSTRE_OPTION[o.id] ? petit(MONSTRE_OPTION[o.id]) : icon(o.icon)}</span><span class="opt-txt"><strong>${esc(o.name)}${o.types && o.types.length === 1 && o.types[0] === 'boutique' ? ' <em class="opt-only">boutique</em>' : ''}${infoBtn(o.id, o.name, o.info)}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${o.price.once ? '+ ' + euro(o.price.once) : `${euro(o.price.month)}/mois`}</span></li>`;
   const boutique = `<li><span class="opt-ico">${icon('shopping-bag')}</span><span class="opt-txt"><strong>Boutique en ligne${infoBtn('boutique', 'Boutique en ligne', BOUTIQUE.info)}</strong><small>Vos produits, le panier, le paiement par carte et le suivi des commandes. Jusqu’à 20 produits ajoutés par moi.</small></span><span class="opt-price">+ ${euro(creation.boutique)}</span></li>`;
   return `<div class="opt-groups">
   <div class="opt-group reveal"><h3>${icon('wand-sparkles')}À la création, une fois</h3><ul>${boutique}${optsCreation.map(ligne).join('')}</ul></div>
@@ -328,7 +342,7 @@ function configurator() {
   <form class="b-steps" data-builder-form>
     ${step(1, 'Votre site', 'Tout est compris : la maquette, le site complet, parfait sur téléphone, et sa mise en ligne. Une page ou cinq, au même prix. En dessous, ce que vous pouvez ajouter, payé une seule fois.', typeBody)}
     ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est comprise dans l’abonnement et elle reste à votre nom.', domainBox())}
-    ${step(3, 'L’abonnement', 'Votre site reste en ligne, sûr et à jour. Nom de domaine, hébergement, support et 100 jetons par mois compris. En dessous, les extras au mois : rien n’est obligatoire.', aboBody)}
+    ${step(3, 'L’abonnement', 'Votre site reste en ligne, sûr et à jour. Nom de domaine, hébergement, support et le gardien qui veille sur votre site, compris. En dessous, les extras au mois : rien n’est obligatoire.', aboBody)}
     ${step(4, 'Paiement du site', `${paiement.acompte} % à la commande. À la réception : le reste en une fois, ou en ${lissageTxt} fois sans frais. Aucun engagement, sauf le temps de payer le reste en plusieurs fois.`, payChoices, ' b-step-last')}
   </form>
   <aside class="b-sum" aria-live="polite">
@@ -412,7 +426,7 @@ function comparatifTable() {
     ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
     ['Prix chaque mois', prixMois, 'Contrat de maintenance, sur devis', 'Selon le prestataire, souvent en option', 'Abonnement mensuel, plus les applications en option'],
     ['Délai', `${types[0].delai} pour une page, ${types[1].delai} pour un site vitrine, ${types[2].delai} pour une boutique`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
-    ['Modifications', 'Retouches automatiques avec les jetons compris chaque mois, et Alex une fois par trimestre', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
+    ['Modifications', 'Petites retouches par ma petite bande, et Alex une fois par trimestre', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
     ['SEO', 'Bases comprises sur chaque site. Avec l’extra Suivi Google, je travaille votre place chaque mois', 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
     ['Engagement', `Aucun. Seulement le temps du paiement si le reste est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
@@ -432,5 +446,5 @@ module.exports = {
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, optsCreation, optsMois, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
-  petit, bouille, deco, PETIT_SECTION,
+  petit, bouille, deco, PETIT_SECTION, bandeGrid,
 };

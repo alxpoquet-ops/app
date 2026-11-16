@@ -161,13 +161,13 @@ const forfaits = [
     jetons: 100, // Jetons Lia par mois
     partage: false,
     bulle: 'Tout ce qu’il faut pour que votre site tourne',
-    modifs: '100 jetons pour les outils et les retouches automatiques, et une intervention d’Alex par trimestre',
+    modifs: 'les petites retouches et les outils de la bande, et une intervention d’Alex par trimestre',
     conseil: false,
     tagline: 'Sans engagement',
-    pitch: 'Votre site en ligne, sûr et à jour, avec son nom de domaine, le support, 100 jetons par mois pour les outils et les retouches automatiques, et une intervention d’Alex chaque trimestre.',
-    main: ['Nom de domaine et hébergement compris', 'Mises à jour, sauvegardes et support', '100 jetons par mois pour les outils et les retouches', 'Alex une fois par trimestre'],
-    details: ['Nom de domaine relié à votre site et renouvelé chaque année, à votre nom', 'Hébergement sur un serveur de qualité', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour faites pour vous, et sauvegardes', 'Suivi : le site est surveillé, il tient quand il y a du monde', 'Support : une question, une réponse sous 72 heures', 'Formulaire de contact qui arrive dans votre boîte mail', 'Bases du référencement : Google sait lire et comprendre votre site', '100 jetons chaque mois pour les outils et les retouches automatiques', 'Besoin de plus de jetons ? Vous en rachetez à l’utilisation, 1 € les 100', 'Une intervention d’Alex par trimestre, faite et vérifiée à la main', 'Votre espace client : demandes, outils pour vous faire connaître, suivi', 'Sans engagement : vous arrêtez quand vous voulez'],
-    features: ['Nom de domaine relié et renouvelé', 'Hébergement sur un serveur de qualité', 'Mises à jour, sauvegardes et HTTPS', 'Suivi du site et support sous 72 heures', 'Bases du référencement', '100 jetons par mois pour les outils', 'Une intervention d’Alex par trimestre', 'Votre espace client et ses outils'],
+    pitch: 'Votre site en ligne, sûr et à jour, avec son nom de domaine, le support, le gardien qui veille sur lui, les outils de la bande et une intervention d’Alex chaque trimestre.',
+    main: ['Nom de domaine et hébergement compris', 'Le gardien : mises à jour, sauvegardes, surveillance', 'Les outils de la bande, au quotidien', 'Alex une fois par trimestre'],
+    details: ['Nom de domaine relié à votre site et renouvelé chaque année, à votre nom', 'Hébergement sur un serveur de qualité', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour faites pour vous, et sauvegardes', 'Suivi : le site est surveillé, il tient quand il y a du monde', 'Support : une question, une réponse sous 72 heures', 'Formulaire de contact qui arrive dans votre boîte mail', 'Bases du référencement : Google sait lire et comprendre votre site', 'Le gardien, un petit monstre qui veille sur votre site jour et nuit', 'Les petites retouches et les outils de la bande, pour un usage normal', 'Une intervention d’Alex par trimestre, faite et vérifiée à la main', 'Votre espace client : demandes, outils pour vous faire connaître, suivi', 'Sans engagement : vous arrêtez quand vous voulez'],
+    features: ['Nom de domaine relié et renouvelé', 'Hébergement sur un serveur de qualité', 'Mises à jour, sauvegardes et HTTPS', 'Suivi du site et support sous 72 heures', 'Bases du référencement', 'Le gardien qui veille sur votre site', 'Les outils de la bande', 'Une intervention d’Alex par trimestre', 'Votre espace client et ses outils'],
   },
 ];
 const annuel = { moisOfferts: 2 };
@@ -194,6 +194,24 @@ const options = [
   { id: 'mail', quand: 'mois', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, court: 'Une adresse comme contact@votreboite.fr.', info: 'Une vraie boîte à votre nom, comme contact@votreboite.fr, sur votre téléphone et votre ordinateur. Je la crée et je vous envoie les réglages.', desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
   { id: 'stock', quand: 'mois', group: 'site', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, types: ['boutique'], court: 'Le stock se décompte à chaque vente.', info: 'Vous indiquez combien vous avez de chaque produit. Le stock baisse tout seul à chaque vente, le site affiche « Plus que 2 » quand il en reste peu, puis « Épuisé » à zéro.', desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
   { id: 'comptes', quand: 'mois', group: 'site', name: 'Comptes clients', icon: 'users', price: { month: 5 }, types: ['boutique'], court: 'Vos clients gardent commandes, adresses et favoris.', info: 'Vos clients se créent un compte : ils retrouvent leurs commandes, leurs adresses et leurs produits favoris, et recommandent en un clic.', desc: 'Vos clients se créent un compte sur votre site : commandes passées, adresses et favoris gardés.' },
+];
+
+// ---------------------------------------------------------------- la petite bande : les automatisations d'Alex
+// Alex conçoit et fait chaque site lui-même. À côté, il a programmé une petite bande de compagnons : ce sont ses
+// automatisations, dessinées en petits monstres (src/lib/bestiaire.js). Chacun s'occupe d'une tâche répétitive mais
+// utile, travaille en autonomie, et Alex vérifie tout ce qu'il fait. C'est ce qui permet un site 4 à 5 fois moins cher.
+// Sur le site public, on ne parle ni d'IA ni de jetons : seulement de ces petits monstres. Pas de prénoms : un rôle.
+// option : l'option au mois qui l'ajoute à votre abonnement. compris : dans l'abonnement de base.
+// outils : il aide aussi le client au quotidien, dans son espace (au service de tous).
+const bande = [
+  { id: 'gardien', monstre: 'mochi', role: 'Le gardien', compris: true, court: 'Mises à jour, sauvegardes et surveillance.', fait: 'Il fait les mises à jour, les sauvegardes et la sécurité, et il surveille jour et nuit que votre site reste en ligne et rapide.' },
+  { id: 'ecrivain', monstre: 'fantome', role: 'L’écrivain', outils: true, court: 'Vos textes, vos réponses et vos avis.', fait: 'Il vous aide à écrire : corriger un texte, le rendre plus clair, le traduire, répondre à un client ou à un avis.' },
+  { id: 'messager', monstre: 'nuage', role: 'Le messager', outils: true, court: 'Vos publications et vos photos.', fait: 'Il prépare vos publications pour les réseaux, vous donne des idées et met vos photos au bon format.' },
+  { id: 'etoile', monstre: 'etoile', role: 'L’étoile de Google', option: 'seo', court: 'Votre place sur Google, chaque semaine.', fait: 'Elle suit votre place sur Google chaque semaine et me signale ce qu’il faut améliorer sur vos pages.' },
+  { id: 'observateur', monstre: 'gelee', role: 'L’observateur', option: 'stats', court: 'Vos visiteurs et votre rapport du mois.', fait: 'Il compte vos visiteurs, regarde d’où ils viennent et prépare votre rapport du mois.' },
+  { id: 'facteur', monstre: 'chaton', role: 'Le facteur', option: 'mail', court: 'Votre adresse e-mail pro, sans indésirables.', fait: 'Il s’occupe de votre adresse e-mail pro et écarte les messages indésirables.' },
+  { id: 'magasinier', monstre: 'dino', role: 'Le magasinier', option: 'stock', court: 'Votre stock, décompté à chaque vente.', fait: 'Il décompte le stock à chaque vente et vous prévient quand il en reste peu.' },
+  { id: 'hote', monstre: 'champi', role: 'L’hôte', option: 'comptes', court: 'Les comptes de vos clients.', fait: 'Il garde les commandes, les adresses et les favoris de vos clients, pour qu’ils recommandent en un clic.' },
 ];
 
 // ---------------------------------------------------------------- fidélité et paiement
@@ -240,4 +258,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: '' },
 ];
 
-module.exports = { clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche };
+module.exports = { clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande };

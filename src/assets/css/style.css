@@ -1911,3 +1911,18 @@ div.tool { cursor: default; }
 /* les taches de peinture deviennent de douces lueurs pastel, comme un ciel de nuit */
 .hero::before, .hero::after, .page-hero::before, main > .section-soft::before { -webkit-mask: none; mask: none; border-radius: 50%; filter: blur(36px); opacity: .35; }
 :root[data-theme="dark"] .hero::before, :root[data-theme="dark"] .hero::after, :root[data-theme="dark"] .page-hero::before, :root[data-theme="dark"] main > .section-soft::before { opacity: .28; }
+
+/* la petite bande : les automatisations d'Alex, une carte par petit monstre */
+.bande { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.bande-carte { display: grid; justify-items: center; align-content: start; gap: 6px; padding: 18px 16px 18px; border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow-sm); text-align: center; }
+.bande-carte.is-compris { box-shadow: 0 0 0 2px var(--mint-d) inset, var(--shadow-sm); }
+.bande-art { width: 92px; margin-top: -6px; }
+.bande-carte strong { color: var(--ink); font-size: 1.05rem; line-height: 1.25; }
+.bande-fait { color: var(--muted); font-size: .92rem; line-height: 1.45; }
+.bande-prix { margin-top: 4px; font-style: normal; font-weight: 800; font-size: .8rem; padding: 4px 10px; border-radius: 999px; background: var(--soft); color: var(--lilac-dd); }
+.bande-carte.is-compris .bande-prix { background: var(--mint); color: var(--mint-dd); }
+@media (max-width: 960px) { .bande { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .bande-carte { padding: 14px 10px; } .bande-art { width: 72px; } }
+/* une option au mois montre le petit monstre qu'elle ajoute */
+.opt-ico.opt-monstre { background: transparent; width: 48px; height: 48px; }
+.opt-ico.opt-monstre .petit { width: 48px; }
