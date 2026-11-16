@@ -2,7 +2,8 @@
 // Règles (scripts/check.js) : title de 70 caractères au plus, description de 110 à 165,
 // aucun tiret long, aucun prix d'un concurrent nommé (seule la fourchette du marché de config.marche est citée),
 // aucun faux avis, et pas de phrase de 9 mots ou plus reprise d'une autre page.
-const { types, forfaits, options, paiement, annuel, lissage, creation, aLaDemande, delais, marche } = require('../config');
+const { types, forfaits, options, paiement, annuel, lissage, creation, aLaDemande, jetonsLia, delais, marche } = require('../config');
+const OUTILS_LIA = require('./outils-lia').outils;
 const T = (id) => types.find((t) => t.id === id);
 const O = (id) => options.find((o) => o.id === id);
 const X = (id) => aLaDemande.find((x) => x.id === id); // extras à la demande, payés une fois
