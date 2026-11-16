@@ -102,9 +102,9 @@ function graph(p) {
 // Sur téléphone, chaque lien a une petite phrase (NAV_DESC), et « Créer mon site » est le grand bouton du bas.
 const NAV = ['equipe', 'accompagnement', 'forfaits', 'confiance', 'contact'];
 const NAV_DESC = {
-  equipe: 'Moi et ma petite bande',
+  equipe: 'Ma petite bande et moi',
   accompagnement: 'Après la mise en ligne',
-  forfaits: `Tout compris, dès ${creation.prix} €`,
+  forfaits: 'Tout compris, voir nos tarifs',
   confiance: 'Des sites à visiter',
   contact: 'Une question, un projet ?',
 };
