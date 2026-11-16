@@ -93,7 +93,7 @@ const creation = { prix: 500, pages: 10, pagePlus: 10, pagesPlusMax: 40, boutiqu
 // Repères du marché pour la page Tarifs : prix publics relevés en France en novembre 2026 pour un site fait
 // par un indépendant (sources dans docs/prix-et-ia-2026.md). À relire une fois par an.
 // vitrine : site vitrine d'environ cinq pages. boutique : boutique en ligne simple. entretien : maintenance par mois.
-// bas : les offres à bas prix qui existent aussi (on le dit, par transparence).
+// bas : les offres à bas prix qui existent aussi (plus affichées sur le site depuis novembre 2026, gardées pour mémoire).
 const marche = { vitrineMin: 1500, vitrineMax: 3000, boutiqueMin: 2000, boutiqueMax: 6000, entretienMin: 60, entretienMax: 200, basMin: 400, basMax: 1300, fois: '4 à 5' };
 
 // ---------------------------------------------------------------- types de site (même prix, sauf la boutique)

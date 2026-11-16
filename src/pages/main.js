@@ -488,8 +488,6 @@ Un horaire, un prix, une actualité : mes automatisations préparent le changeme
 
 Un site vitrine commandé à un freelance coûte en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence demande souvent plus. C’est un ordre de grandeur, pas un devis : chaque prestataire a ses prix. Ici, un site vitrine coûte ${euro(creation.prix)}.
 
-Soyons complets : des offres à bas prix existent aussi, entre ${euro(marche.basMin)} et ${euro(marche.basMax)} le site. Face à elles, nous sommes au même niveau de prix.
-
 La raison est simple. Pour un site vitrine ou une petite boutique, mes automatisations font en quelques heures ce qui prend des jours à la main. Je fais le reste et je contrôle le résultat, page par page. Ces jours en moins, c’est le prix en moins. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).
 
 ## Ce que vous ne faites pas vous-même

@@ -120,7 +120,7 @@ Vous réglez ${paiement.acompte} % à la commande et le reste à la mise en lign
 
 ## Les repères du marché, honnêtement
 
-Face à un site vitrine fait par un indépendant, l’écart est souvent de ${marche.fois} fois. Je préfère pourtant être complet : des offres à bas prix existent aussi, entre ${mille(marche.basMin)} et ${mille(marche.basMax)} € le site. Face à elles, nous sommes dans les mêmes eaux.
+Face à un site vitrine fait par un indépendant, l’écart est souvent de ${marche.fois} fois.
 
 La différence se joue alors sur ce qui vient avec : la vérification à la main, le suivi après la mise en ligne, et quelqu’un qui vous répond quand vous avez une question.
 

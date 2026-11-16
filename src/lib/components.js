@@ -210,7 +210,7 @@ function economie() {
     <p class="eco-ligne is-nous"><span>Chez les Minis Monstres</span><i style="width:${Math.max(14, Math.round((creation.prix / milieu) * 100))}%"></i><b>${euro(creation.prix)}</b></p>
   </div>
   <p>Pas de secret : j’ai passé du temps à automatiser mon travail, et tout ce qui se répète se fait maintenant tout seul. Je conçois le site et je vérifie tout à la main. Vous ne payez pas des semaines de travail. Le prix est le même pour tout le monde, affiché ici, sans devis.</p>
-  <p class="eco-note">Nos repères : les prix publics relevés en France en 2026 pour un site vitrine de cinq pages fait par un indépendant. Une agence demande souvent plus. Il existe aussi des offres à bas prix, entre ${euro(marche.basMin)} et ${euro(marche.basMax)}, proches du nôtre.</p>
+  <p class="eco-note">Nos repères : les prix publics relevés en France en 2026 pour un site vitrine de cinq pages fait par un indépendant. Une agence demande souvent plus.</p>
 </div>`;
 }
 
