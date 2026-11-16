@@ -297,17 +297,17 @@ ${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Composez votre site en de
 // ====================================================================== NOS OUTILS
 // Sur la page publique, les outils sont présentés sans parler de Cerise (elle vit dans la bulle et dans l'espace client) :
 // on montre la phrase courte de chaque outil, et ces trois-là sont redits autrement.
+// Sur la page publique, chaque outil est expliqué en entier (sa description complète). Quelques noms changent.
 const PUBLIC_OUTIL = {
-  question: ['Une question sur internet', 'Posez votre question sur votre site, Google ou les réseaux : la réponse arrive, simple et claire.'],
-  conseilphoto: ['Conseils sur une photo', 'Des conseils simples pour réussir vos photos avec votre téléphone.'],
-  conseilpage: ['Conseils pour ma page', 'Une page de votre site relue, avec ce qu’il faut changer en premier.'],
+  question: ['Une question sur internet', 'Vous posez votre question avec vos mots, sur votre site, Google ou les réseaux. La réponse arrive en quelques phrases simples, avec ce qu’il faut faire en premier et l’outil de votre espace qui peut s’en charger.'],
+  conseilphoto: ['Conseils sur une photo'],
+  conseilpage: ['Conseils pour ma page'],
 };
 // Le système d'énergie, expliqué en haut de la page Outils : tout est compris, la bande a juste besoin d'énergie
 function energieOutils() {
   const e = ABO.jetons;
   const cout = (id) => (OUTILS_LIA.find((t) => t.id === id) || {}).jetons || 1;
   const fois = (n) => Math.floor(e / n);
-  const reprise = jetonsLia.recharge[0];
   return `<section class="section section-energie" id="energie"><div class="container">
   <div class="energie reveal">
     <div class="energie-jauge" aria-hidden="true"><span class="energie-art">${C.petit('mochi', { humeur: 'ravi' })}</span><p class="energie-nb">${icon('zap')}<b>${e}</b></p><span class="energie-barre"><i></i></span><small>d’énergie chaque mois</small></div>
@@ -317,12 +317,6 @@ function energieOutils() {
       <p>Les outils sont tous compris dans l’abonnement. Pour travailler, mes petits monstres utilisent de l’énergie, et votre abonnement leur en donne ${e} chaque mois.</p>
       <p class="energie-ex">Avec ${e} d’énergie, vous pouvez par exemple corriger ${fois(cout('corriger'))} textes, répondre à ${fois(cout('avis'))} avis ou faire ${fois(jetonsLia.modif.base)} retouches de votre site.</p>
     </div>
-  </div>
-  <div class="feats feats-4">
-    <div class="feat reveal">${icon('toolbox')}<h3>Écrite sur chaque bouton</h3><p>Un outil utilise de ${JL_OUTIL_MIN} à ${JL_OUTIL_MAX} d’énergie. Vous voyez le nombre avant de le lancer, et même les plus petits outils en utilisent un peu.</p></div>
-    <div class="feat reveal">${icon('wand-sparkles')}<h3>Pour vos retouches aussi</h3><p>Une retouche de votre site par Bricou utilise de ${JL_MODIF_FOURCHETTE} d’énergie, selon la longueur du texte et le nombre de photos.</p></div>
-    <div class="feat reveal">${icon('refresh-cw')}<h3>Rendue si ça ne marche pas</h3><p>Une retouche qui échoue, un aperçu que vous refusez ou une demande annulée sous 24 heures : l’énergie vous revient.</p></div>
-    <div class="feat reveal">${icon('calendar-check')}<h3>De retour chaque mois</h3><p>Le 1<sup>er</sup> du mois, elle repart à ${e}. Besoin de plus ? ${reprise.jetons} d’énergie pour ${reprise.prix} €, ajoutés à votre prochaine facture et gardés jusqu’à ce que vous les utilisiez.</p></div>
   </div>
 </div></section>`;
 }
@@ -352,7 +346,7 @@ ${energieOutils()}
   <p class="section-sub">Ils sont dans votre espace client : il suffit d’être connecté. Rien d’autre à installer, aucun autre compte à créer.</p>
   ${Object.entries(FAMILLES_OUTILS).map(([fid, fnom]) => `<h3 class="tools-famille reveal">${fnom}</h3>
   <div class="tools">${OUTILS_LIA.filter((t) => t.categorie === fid).map(
-    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][0] : t.name}</strong><span>${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][1] : t.court}</span></span>${prixOutil(t)}</div>`
+    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${(PUBLIC_OUTIL[t.id] || [])[0] || t.name}</strong><span>${(PUBLIC_OUTIL[t.id] || [])[1] || t.desc}</span></span>${prixOutil(t)}</div>`
   ).join('')}</div>`).join('\n  ')}
 </div></section>
 
