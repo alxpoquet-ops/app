@@ -352,7 +352,7 @@ Ce sont des promesses simples, écrites ici pour que vous puissiez me les rappel
 
 D’un site à l’autre, beaucoup de choses se ressemblent : la structure de départ, les réglages pour Google, l’affichage sur téléphone, les sauvegardes. Pour tout ce travail-là, j’ai programmé une petite bande de compagnons, mes automatisations, que j’ai dessinées en petits monstres mignons. Chacun a son rôle. Ils travaillent seuls, vite et sans oubli, et c’est autant de temps que vous ne payez pas. La conception de votre site, elle, reste mon travail.
 
-Dans l’abonnement de base, il y a ${et(compris.map(role))}. ${maj(et(quotidien.map(role)))} sont au service de tous dans l’espace client. Ensuite, chaque option au mois en ajoute un : ${et(parOption.map(role))}. Le détail est sur la page [accompagnement](/accompagnement/).
+Dans l’abonnement de base, il y a ${et(compris.map(role))}. ${maj(et(quotidien.map(role)))} sont aussi compris, dans votre espace client. Ensuite, chaque option au mois en ajoute un : ${et(parOption.map(role))}. Le détail est sur la page [accompagnement](/accompagnement/).
 
 Une fois le site en ligne, vos petites demandes passent aussi par la bande : un horaire, un prix, une photo. C’est compris dans l’abonnement, et vous voyez toujours un aperçu avant que quoi que ce soit change. Une demande trop grande ou pas claire arrive directement chez moi.
 
@@ -423,7 +423,7 @@ Compris dans l’abonnement de base :
 
 ${compris.map((b) => `- **${b.role}**${qui(b)}`).join('\n')}
 
-Au service de tous, dans votre espace client :
+Compris aussi, dans votre espace client :
 
 ${quotidien.map((b) => `- **${b.role}**${qui(b)}`).join('\n')}
 

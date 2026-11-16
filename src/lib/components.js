@@ -237,14 +237,13 @@ const MONSTRE_OPTION = Object.fromEntries(bande.filter((b) => b.option).map((b) 
 // La petite bande, en cartes. complet : avec la phrase entière (accueil) ; sinon la phrase courte et le prix (tarifs).
 function bandeGrid({ complet = false } = {}) {
   const prixDe = (b) => {
-    if (b.compris) return 'Compris dans l’abonnement';
-    if (b.outils) return 'Au service de tous';
+    if (b.compris || b.outils) return 'Compris dans l’abonnement';
     const o = options.find((x) => x.id === b.option);
     return o ? `Avec l’option ${o.name}, ${euro(o.price.month)}/mois` : '';
   };
   const art = (b) => (b.monstre === 'lia' ? monster('coucou') : petit(b.monstre));
   return `<div class="bande">${bande
-    .map((b) => `<div class="bande-carte reveal${b.compris ? ' is-compris' : ''}"><span class="bande-art">${art(b)}</span><strong>${esc(b.nom)}<small>${esc(b.role)}</small></strong><span class="bande-fait">${inline(complet ? b.fait : b.court)}</span><em class="bande-prix">${prixDe(b)}</em></div>`)
+    .map((b) => `<div class="bande-carte reveal${b.compris || b.outils ? ' is-compris' : ''}"><span class="bande-art">${art(b)}</span><strong>${esc(b.nom)}<small>${esc(b.role)}</small></strong><span class="bande-fait">${inline(complet ? b.fait : b.court)}</span><em class="bande-prix">${prixDe(b)}</em></div>`)
     .join('')}</div>`;
 }
 function optionsCompact() {
