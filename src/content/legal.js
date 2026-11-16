@@ -88,6 +88,7 @@ const ROLE_CGV = {
 };
 const compris = bande.filter((b) => b.compris);
 const bandeComprise = et(compris.map((b) => `${minus(b.role)}${ROLE_CGV[b.id] ? ` (${ROLE_CGV[b.id]})` : ''}`));
+const bandeNoms = et(compris.map((b) => minus(b.role)));
 const bandeOutils = et(bande.filter((b) => b.outils).map((b) => minus(b.role)));
 const bricoleur = minus((bande.find((b) => b.id === 'bricoleur') || { role: 'un outil automatisé' }).role);
 
@@ -257,7 +258,7 @@ Il comprend :
 - **Le suivi du site** : son bon fonctionnement est surveillé.
 - **Le support** : une réponse sous ${delais.reponse}, en jours ouvrés (article 11).
 - **Les bases du SEO** : le site est construit pour que Google puisse le lire et le comprendre.
-- **Les outils automatisés de base** : ${bandeComprise} (article 15).
+- **Les outils automatisés de base** : ${bandeNoms} (article 15).
 - **${energieMois} points d’énergie par mois**, pour les outils de l’espace client et les retouches automatiques (article 12).
 - **${maj(intervAlex)} d’Alex par ${periode}** (article 11).${periode === 'trimestre' ? ` Le client inscrit avant le ${DATE_V2} garde une intervention d’Alex par mois.` : ''}
 - **L’espace client et ses outils** (article 13).
