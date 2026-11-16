@@ -317,3 +317,23 @@ Faites cette liste une fois, en vrai, avec un téléphone et un ordinateur.
 - [ ] Les pages `/commander/`, `/commande-confirmee/` et `/mon-espace/` ne sont pas dans le plan du site et portent `noindex`.
 - [ ] Supprimez la commande de test (Commandes › Corbeille) et le compte de test, ou gardez-les si vous voulez des exemples.
 - [ ] Mentions légales et CGV à jour : SIRET quand il arrive, médiateur de la consommation.
+
+## La petite bande (novembre 2026)
+
+Le site public ne parle ni d'IA ni de jetons. Alex conçoit et fait les sites. À côté, ses automatisations sont dessinées en petits monstres (`src/lib/bestiaire.js`), chacun avec un prénom et un seul rôle (`bande` dans `src/config.js`) :
+
+- **Lia** : l'assistante de la bulle d'aide (et les questions dans l'espace client).
+- **Mochi** : le gardien (mises à jour, sauvegardes, surveillance), compris dans l'abonnement.
+- **Bricou** : le bricoleur, qui fait les modifications demandées par le client.
+- **Plume** (textes, avis) et **Pouf** (réseaux, photos) : les outils de l'espace client.
+- Un monstre par option au mois : **Lumi** (Suivi Google), **Mirette** (Chiffres détaillés), **Minou** (e-mail pro), **Pistache** (stock), **Champi** (comptes clients).
+- **Alex** a son portrait (`alexPortrait()`).
+
+Dans l'espace client, le compteur s'appelle « énergie » (100 points par mois, recharge 1 € les 100).
+
+### Une demande pour Bricou
+
+1. Le client choisit Bricou : sa demande passe à l'état « attente_alex ». Bricou lui écrit « Je la montre à Alex, et je m'y mets dans 30 minutes au plus tard ».
+2. Alex reçoit un e-mail avec deux liens (il doit être connecté en administrateur) : **Laisser Bricou faire maintenant**, ou **Je m'en occupe moi-même** (l'énergie du client lui est rendue).
+3. Sans réponse en 30 minutes, Bricou se lance tout seul. Le client reçoit « Demande confirmée : Bricou s'en occupe » (ou « Alex a validé votre demande » si Alex a cliqué).
+4. Bricou prépare la modification. Le client valide l'aperçu avant toute mise en ligne, comme avant.
