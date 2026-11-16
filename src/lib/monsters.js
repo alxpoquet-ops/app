@@ -1,7 +1,7 @@
 // Les mascottes et le logo d'Alex & Co. Dessins originaux en SVG, faits à la main.
 //   Lia  : un joli petit monstre fille, rose et tout rond (style chibi), avec un nœud, de grands yeux,
-//          une queue en cœur, et un bonnet à Noël. C'est l'IA.
-//   Alex : un petit monstre menthe à lunettes, avec sa clé plate. C'est l'humain qui vérifie tout.
+//          une queue en cœur, et un bonnet à Noël. Elle répond dans la bulle.
+//   Alex : le chef de chantier de la bande, dessiné dans bestiaire.js (alexPortrait).
 //
 //   monster('mascotte' | 'bonjour' | 'coucou' | 'clin' | 'ravie' | 'pense' | 'triste' | 'alex', { size, cls, title })
 //
