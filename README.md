@@ -3,10 +3,10 @@
 Site d'**ALED08** : des sites internet à petit prix, pensés pour Google, avec un espace client pour les modifier grâce à l'IA.
 
 - **Une seule offre** : le site à 500 €, quel que soit le site. Boutique en ligne : + 200 €. En une fois, ou en 6 ou 12 fois sans frais.
-- **Un abonnement obligatoire, sans engagement** : 10 € par mois (nom de domaine, hébergement, mises à jour, suivi, support, petites retouches avec Lia et une intervention d'Alex par trimestre). À l'année : 2 mois offerts.
+- **Un abonnement obligatoire, sans engagement** : 10 € par mois (nom de domaine, hébergement, mises à jour, suivi, support, 100 jetons par mois pour les outils et les retouches avec Lia, rachetables à l'utilisation, et une intervention d'Alex par trimestre). À l'année : 2 mois offerts.
 - **Extras à la demande, payés une fois** : intervention d'Alex en plus 5 €, demande sous 24 heures 5 €, article écrit et publié 15 €, point de 30 minutes avec Alex 15 €.
 - **Options à la création** (une fois) : anglais, prise de rendez-vous, reprise de l'ancien site, cinq pages de plus, 100 € chacune.
-- **Extras au mois**, à ajouter ou retirer quand on veut : SEO suivi 10 €, Lia + 5 €, chiffres détaillés 5 €, e-mail pro 3 €, et pour une boutique gestion du stock 5 € et comptes clients 5 €.
+- **Extras au mois**, à ajouter ou retirer quand on veut : Suivi Google 10 €, chiffres détaillés 5 €, e-mail pro 3 €, et pour une boutique gestion du stock 5 € et comptes clients 5 €.
 - **Les mascottes** : Lia, un joli petit monstre rose (c'est l'IA), et Alex, un petit monstre à lunettes (c'est l'humain). Dessins dans `src/lib/monsters.js`. Lia suit le visiteur dans une bulle, en bas de chaque page.
 
 Site **statique**, rapide, sans base de données : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans `dist/`.

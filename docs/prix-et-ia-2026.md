@@ -73,7 +73,7 @@ une modification par Lia 30 jetons et plus. C'est dans les prix du marché, et s
 (Divi : jusqu'à 50 centimes la tâche ; Tidio : 60 centimes la conversation).
 
 Avec les 100 jetons de l'abonnement, un client fait par mois trois modifications par Lia,
-ou huit textes corrigés. Au-delà : la recharge (1 € les 100 jetons) ou l'extra Lia + (5 € par mois, 500 jetons).
+ou huit textes corrigés. Au-delà : la recharge, achetée à l'utilisation (1 € les 100 jetons). L'option Lia + a été supprimée le 16 novembre 2026.
 
 ## 5. Adresses lues
 

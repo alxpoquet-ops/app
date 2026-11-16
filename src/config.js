@@ -146,8 +146,8 @@ const types = [
 // En paiement annuel : 2 mois offerts.
 // quota : interventions d'Alex (modifications faites à la main) par période. periode : 'trimestre' depuis la V2
 // (novembre 2026). Les clients inscrits avant gardent une intervention par mois : c'est géré dans l'extension WordPress.
-// jetons : Jetons Lia donnés chaque mois. C'est un compteur interne de l'espace client : les pages publiques n'en parlent
-// pas, elles disent « petites retouches avec Lia » (usage occasionnel) et « Lia + » (usage régulier).
+// jetons : Jetons Lia donnés chaque mois, pour les outils et les retouches faites par Lia. Besoin de plus : le client
+// en rachète à l'utilisation (jetonsLia.recharge), ajoutés à sa prochaine facture. L'option « Lia + » n'existe plus.
 // Les anciens forfaits (chico, power, titan) n'existent plus : un ancien client garde ce qu'il avait
 // (power : extra Suivi Google ; titan : extras Suivi Google et chiffres détaillés), c'est géré dans l'extension WordPress.
 const forfaits = [
@@ -158,16 +158,16 @@ const forfaits = [
     month: 10,
     quota: 1, // interventions d'Alex par période
     periode: 'trimestre',
-    jetons: 100, // Jetons Lia par mois (interne)
+    jetons: 100, // Jetons Lia par mois
     partage: false,
     bulle: 'Tout ce qu’il faut pour que votre site tourne',
-    modifs: 'des petites retouches avec Lia, et une intervention d’Alex par trimestre',
+    modifs: '100 jetons pour les outils et les retouches avec Lia, et une intervention d’Alex par trimestre',
     conseil: false,
     tagline: 'Sans engagement',
-    pitch: 'Votre site en ligne, sûr et à jour, avec son nom de domaine, le support, des petites retouches avec Lia et une intervention d’Alex chaque trimestre.',
-    main: ['Nom de domaine et hébergement compris', 'Mises à jour, sauvegardes et support', 'Petites retouches avec Lia, et Alex une fois par trimestre'],
-    details: ['Nom de domaine relié à votre site et renouvelé chaque année, à votre nom', 'Hébergement sur un serveur de qualité', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour faites pour vous, et sauvegardes', 'Suivi : le site est surveillé, il tient quand il y a du monde', 'Support : une question, une réponse sous 72 heures', 'Formulaire de contact qui arrive dans votre boîte mail', 'Bases du référencement : Google sait lire et comprendre votre site', 'Petites retouches avec Lia, mon assistante : un horaire, un prix, une photo', 'Une intervention d’Alex par trimestre, faite et vérifiée à la main', 'Votre espace client : demandes, outils pour vous faire connaître, suivi', 'Sans engagement : vous arrêtez quand vous voulez'],
-    features: ['Nom de domaine relié et renouvelé', 'Hébergement sur un serveur de qualité', 'Mises à jour, sauvegardes et HTTPS', 'Suivi du site et support sous 72 heures', 'Bases du référencement', 'Petites retouches avec Lia', 'Une intervention d’Alex par trimestre', 'Votre espace client et ses outils'],
+    pitch: 'Votre site en ligne, sûr et à jour, avec son nom de domaine, le support, 100 jetons par mois pour les outils et les retouches avec Lia, et une intervention d’Alex chaque trimestre.',
+    main: ['Nom de domaine et hébergement compris', 'Mises à jour, sauvegardes et support', '100 jetons par mois pour les outils et les retouches', 'Alex une fois par trimestre'],
+    details: ['Nom de domaine relié à votre site et renouvelé chaque année, à votre nom', 'Hébergement sur un serveur de qualité', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour faites pour vous, et sauvegardes', 'Suivi : le site est surveillé, il tient quand il y a du monde', 'Support : une question, une réponse sous 72 heures', 'Formulaire de contact qui arrive dans votre boîte mail', 'Bases du référencement : Google sait lire et comprendre votre site', '100 jetons chaque mois pour les outils et les retouches avec Lia, mon assistante autonome', 'Besoin de plus de jetons ? Vous en rachetez à l’utilisation, 1 € les 100', 'Une intervention d’Alex par trimestre, faite et vérifiée à la main', 'Votre espace client : demandes, outils pour vous faire connaître, suivi', 'Sans engagement : vous arrêtez quand vous voulez'],
+    features: ['Nom de domaine relié et renouvelé', 'Hébergement sur un serveur de qualité', 'Mises à jour, sauvegardes et HTTPS', 'Suivi du site et support sous 72 heures', 'Bases du référencement', '100 jetons par mois pour les outils', 'Une intervention d’Alex par trimestre', 'Votre espace client et ses outils'],
   },
 ];
 const annuel = { moisOfferts: 2 };
@@ -190,7 +190,6 @@ const options = [
   { id: 'reprise', quand: 'creation', group: 'site', name: 'Reprise de votre ancien site', icon: 'refresh-cw', price: { once: 100 }, court: 'On garde vos textes, photos et adresses.', info: 'Je récupère les textes, les photos et les adresses des pages de votre ancien site, et je les remets au propre. Les anciens liens mènent au bon endroit : vous gardez votre place sur Google.', desc: 'Vos textes, vos photos et vos adresses de pages repris de l’ancien site, pour garder votre place sur Google.' },
   { id: 'pages', quand: 'creation', group: 'site', name: 'Cinq pages de plus', icon: 'layers', price: { once: 100 }, types: ['vitrine', 'boutique'], court: 'Cinq pages en plus des cinq comprises.', info: 'Votre site passe de cinq à dix pages : une page par service, par produit phare ou par événement. Chaque page utile est une chance de plus d’être trouvé sur Google.', desc: 'Pour un site plus grand : cinq pages en plus des cinq comprises.' },
   { id: 'seo', quand: 'mois', group: 'site', name: 'Suivi Google', icon: 'search-check', price: { month: 10 }, court: 'Je travaille votre place sur Google, chaque mois.', info: 'Chaque mois, je suis les mots que tapent vos clients, je retouche vos pages pour les aider à monter sur Google, et vous recevez un rapport simple : votre place pour chaque mot et les visites venues de Google.', desc: 'Chaque mois, je regarde les mots que vos clients tapent, j’améliore vos pages pour Google et je vous montre où vous en êtes.' },
-  { id: 'liaplus', quand: 'mois', group: 'site', name: 'Lia +', icon: 'sparkles', price: { month: 5 }, court: 'Plus de retouches et d’outils, chaque mois.', info: 'Pour ceux qui changent souvent leur site ou publient beaucoup : vous passez d’un usage occasionnel à un usage régulier. De quoi faire une vingtaine de retouches avec Lia, ou une cinquantaine de textes avec les outils, chaque mois.', desc: 'Un usage régulier de Lia et des outils, pour ceux qui changent souvent leur site ou publient beaucoup.' },
   { id: 'stats', quand: 'mois', group: 'site', name: 'Chiffres détaillés', icon: 'chart-line', price: { month: 5 }, court: 'Visiteurs, provenance et ventes, heure par heure.', info: 'Le tableau de bord complet : la courbe de vos visites, les appareils, d’où viennent vos visiteurs, vos ventes, et un rapport chaque mois.', desc: 'Votre site heure par heure : visiteurs, pages vues, provenance, ventes. Et un rapport simple chaque mois.' },
   { id: 'mail', quand: 'mois', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, court: 'Une adresse comme contact@votreboite.fr.', info: 'Une vraie boîte à votre nom, comme contact@votreboite.fr, sur votre téléphone et votre ordinateur. Je la crée et je vous envoie les réglages.', desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
   { id: 'stock', quand: 'mois', group: 'site', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, types: ['boutique'], court: 'Le stock se décompte à chaque vente.', info: 'Vous indiquez combien vous avez de chaque produit. Le stock baisse tout seul à chaque vente, le site affiche « Plus que 2 » quand il en reste peu, puis « Épuisé » à zéro.', desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
@@ -205,7 +204,8 @@ const paiement = { acompte: 25 }; // 25 % à la commande ; à la réception : le
 // 1 Jeton Lia = 1 centime. Les jetons paient ce que fait Lia : les modifications du site et les outils.
 // Règle de prix : ce que Lia me coûte (Claude) × margeOutils pour les outils, × margeLia pour les modifications.
 // modif : prix d'une modification par Lia = base + 1 jeton par tranche de `mots` mots écrits + `image` par photo jointe.
-// recharge : jetons en plus, à l'unité, ajoutés à la prochaine facture. liaplus : jetons de l'option Lia +, chaque mois.
+// recharge : jetons en plus, achetés à l'utilisation, ajoutés à la prochaine facture.
+// liaplus : jetons de l'ancienne option Lia + (supprimée en novembre 2026, plus aucun client ne l'avait), gardé pour l'extension.
 const jetonsLia = {
   valeur: 0.01,
   margeOutils: 4,

@@ -19,6 +19,9 @@ const JL_MODIF_FOURCHETTE = `${jetonsLia.modif.base} à 65`;
 // Ce que font les jetons de l'abonnement en un mois : des modifications par Lia, ou des utilisations d'outils.
 const JL_MODIFS_MOIS = '2 à 3';
 const JL_OUTILS_MOIS = 'une dizaine';
+// Le prix des outils payants, du moins cher au plus cher (en jetons)
+const JL_OUTIL_MIN = Math.min(...OUTILS_LIA.filter((t) => t.jetons).map((t) => t.jetons));
+const JL_OUTIL_MAX = Math.max(...OUTILS_LIA.map((t) => t.jetons));
 // « 100 jetons pour 1 €, 500 pour 5 €, 1000 pour 10 € »
 const RECHARGES = jetonsLia.recharge.map((r, i) => `${r.jetons}${i ? '' : ' jetons'} pour ${r.prix} €`).join(', ');
 const GUIDES = require('../content/guides');
@@ -116,7 +119,7 @@ ${METIERS.length ? `<section class="section"><div class="container">
   <h2 class="section-title">Le prix, en clair</h2>
   <p class="section-sub">Tout est compris, rien n’est caché, et c’est le même prix pour tous.</p>
   ${C.offre({ compact: true })}
-  <p class="center small muted">Mon assistante numérique, Lia, m’aide sur les tâches répétitives. C’est ce qui réduit les délais et les coûts : vous ne payez que le temps utile.</p>
+  <p class="center small muted">C’est moi qui conçois votre site. Lia, mon assistante autonome, automatise les tâches répétitives, et j’ai des accès directs chez des hébergeurs français. Pas de magie, de l’optimisation : vous ne payez que le temps utile.</p>
   <p class="center more">${C.btn(sections.forfaits.path, 'btn-light btn-flaque', 'arrow-right', 'Tout le détail des tarifs')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>
 
@@ -125,7 +128,7 @@ ${METIERS.length ? `<section class="section"><div class="container">
     <p class="kicker c-sky">${icon('pencil')}Après la mise en ligne</p>
     <h2>Vous demandez, je m’en occupe</h2>
     <p>Un horaire, un prix, une photo à changer ? Écrivez-le depuis votre espace client, avec une photo si besoin. Les petites retouches se font avec Lia en quelques minutes, avec un aperçu à valider. Pour le reste, c’est moi, à la main.</p>
-    <p>L’abonnement comprend ces petites retouches et une intervention de ma part chaque trimestre. Besoin de plus ? Un article, un point ensemble ou une intervention en plus se commandent à l’unité, seulement quand vous en avez besoin.</p>
+    <p>L’abonnement comprend ${ABO.jetons} jetons par mois pour ces retouches et pour les outils, et une intervention de ma part chaque trimestre. Besoin de plus ? Vous rachetez des jetons à l’utilisation. Un article, un point ensemble ou une intervention en plus se commandent à l’unité.</p>
     <div class="hero-ctas">${C.btn(sections.accompagnement.path, 'btn-primary', sections.accompagnement.icon, 'L’accompagnement')}${C.btn(site.espaceClient.demo, 'btn-light', 'circle-user', 'Essayer l’espace client')}</div>
   </div>
   ${C.phoneEdit()}
@@ -252,6 +255,19 @@ function forfaitsPage() {
   ${C.extrasDemande()}
 </div></section>
 
+<section class="section section-soft" id="jetons"><div class="container container-narrow">
+  <p class="kicker c-butter">${icon('coins')}Les jetons</p>
+  <h2>Les outils et les retouches, avec des jetons</h2>
+  <ul class="list-check">
+    <li><strong>${ABO.jetons} jetons compris chaque mois</strong> dans l’abonnement. Ils reviennent le 1<sup>er</sup> du mois.</li>
+    <li><strong>Un outil coûte de ${JL_OUTIL_MIN} à ${JL_OUTIL_MAX} jetons</strong> : corriger un texte, préparer une publication, répondre à un avis. Le prix est écrit sur son bouton, et certains outils sont gratuits.</li>
+    <li><strong>Une retouche de votre site par Lia coûte ${JL_MODIF_FOURCHETTE} jetons</strong>, selon sa longueur et les photos jointes.</li>
+    <li><strong>Il vous en faut plus ?</strong> Vous en rachetez à l’utilisation : ${RECHARGES}, ajoutés à votre prochaine facture. Ces jetons-là restent jusqu’à ce que vous les utilisiez.</li>
+    <li><strong>Une retouche refusée ou qui échoue</strong> ne coûte rien : vos jetons vous sont rendus.</li>
+  </ul>
+  <p>${C.btn(sections.espace.path + '#jetons', 'btn-light', 'coins', 'Le prix de chaque outil')}</p>
+</div></section>
+
 <section class="section"><div class="container">
   <h2 class="section-title">Payer, et arrêter si vous le voulez</h2>
   ${C.payBox()}
@@ -298,17 +314,15 @@ function outilsPage() {
   const crumbs = crumb('espace');
   const f = C.faq(FAQ.espace, 'Vos questions sur l’espace client', 'faq-outils');
   const pub = OUTILS_LIA.find((o) => o.id === 'publier');
-  const liaPlus = O('liaplus');
-  // D'où viennent les Jetons Lia : l'abonnement, l'extra Lia +, la recharge
+  // D'où viennent les Jetons Lia : l'abonnement, puis la recharge, achetée à l'utilisation
   const sources = [
     ['pink', 'mascotte', 'L’abonnement', `${euro(ABO.month)} par mois`, ABO.jetons, 'Jetons Lia par mois'],
-    ['lilac', 'ravie', `L’extra ${liaPlus.name}`, `${euro(liaPlus.price.month)} par mois de plus`, `+ ${jetonsLia.liaplus}`, 'Jetons Lia par mois'],
     ['butter', 'clin', 'La recharge', 'quand il vous en manque', jetonsLia.recharge[0].jetons, `jetons pour ${euro(jetonsLia.recharge[0].prix)}`],
   ];
   const body = `${C.pageHero({
     section: 'espace',
     h1: 'Des outils simples pour vous faire connaître',
-    lead: `Corriger un texte, préparer une photo, publier sur vos réseaux, savoir quoi améliorer sur une page : Lia vous aide, et vous gardez la main. Les outils sont dans votre espace client, compris dans l’abonnement à ${euro(ABO.month)} par mois.`,
+    lead: `Corriger un texte, préparer une photo, publier sur vos réseaux, savoir quoi améliorer sur une page : Lia, mon assistante autonome, vous aide, et vous gardez la main. Les outils sont dans votre espace client, avec ${ABO.jetons} jetons compris chaque mois dans l’abonnement.`,
     crumbs,
   })}
 ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez vos demandes par le formulaire de contact : on s’en occupe de la même façon.</span></p></div>`}
@@ -352,7 +366,7 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
     <li>Le prix est toujours affiché avant : pas de surprise.</li>
     <li>Si Lia n’arrive pas à répondre, ou si votre demande passe à Alex, vos jetons vous sont rendus.</li>
     <li>Avec ${ABO.jetons} jetons, vous utilisez les outils ${JL_OUTILS_MOIS} de fois dans le mois, ou vous faites ${JL_MODIFS_MOIS} modifications de votre site.</li>
-    <li>Plus de jetons ? Prenez une recharge : ${jetonsLia.recharge.map((r) => `${r.prix} € les ${r.jetons}`).join(', ')}. Ou l’extra ${liaPlus.name} : ${jetonsLia.liaplus} jetons de plus chaque mois.</li>
+    <li>Plus de jetons ? Vous en rachetez à l’utilisation : ${jetonsLia.recharge.map((r) => `${r.prix} € les ${r.jetons}`).join(', ')}, ajoutés à votre prochaine facture.</li>
     <li>Les jetons de l’abonnement reviennent le 1<sup>er</sup> du mois. Ceux d’une recharge restent jusqu’à ce que vous les utilisiez.</li>
   </ul>
 </div></section>
@@ -386,7 +400,6 @@ ${C.ctaBand({ title: 'Envie d’essayer les outils ?', text: 'Créez votre site 
     path: sections.espace.path,
     section: 'espace',
     title: 'Outils de Lia : textes, photos, réseaux et site | Alex & Lia',
-    noindex: true, // V2 : le détail des outils et des jetons est pour les clients, hors des moteurs de recherche
     description: `Corriger ou traduire un texte, préparer une photo, publier sur vos réseaux : les outils de Lia sont compris dans l’abonnement, avec ${ABO.jetons} Jetons Lia par mois.`,
     crumbs,
     body,
@@ -448,7 +461,7 @@ Votre site peut garder **une seule page principale**, simple et claire, avec tou
   <div class="feats feats-4">
     <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur téléphone, avec les balises et les données que Google sait lire.</p></div>
     <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand vos clients cherchent près de chez vous.</p></div>
-    <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec l’aide de Lia, mon assistante, et relus par moi.</p></div>
+    <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec l’aide de Lia, mon assistante autonome, et relus par moi.</p></div>
     <div class="feat reveal">${icon('chart-line')}<h3>Le suivi, en extra</h3><p>Positions, recherches, visites : avec l’extra ${seo.name}, je regarde ce qui marche et j’ajuste vos pages chaque mois.</p></div>
   </div>
 </div></section>
@@ -536,7 +549,7 @@ function comparatifPage() {
 <section class="section"><div class="container container-narrow prose reveal">
   ${md(`## Des modifications rapides
 
-Un horaire, un prix, une actualité : Lia, l’assistante d’Alex, prépare le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui. Pour ce qui demande un regard humain, c’est Alex, sous ${delais.reponse}. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
+Un horaire, un prix, une actualité : Lia, l’assistante autonome d’Alex, prépare le changement en quelques minutes, vous montre l’aperçu, puis le met en ligne dès que vous dites oui. Pour ce qui demande un regard humain, c’est Alex, sous ${delais.reponse}. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
 
 ## ${marche.fois} fois moins cher, et sans tour de magie
 
@@ -811,84 +824,6 @@ ${C.ctaBand({ title: 'Quelqu’un a un projet autour de vous ?', text: 'Envoyez-
   };
 }
 
-// ====================================================================== MA MÉTHODE
-function methodePage() {
-  const crumbs = crumb('methode');
-  const f = C.faq(FAQ.methode, 'Vos questions sur l’IA', 'faq-ia');
-  const body = `${C.pageHero({
-    section: 'methode',
-    h1: 'Ma méthode : Lia automatise, Alex vérifie',
-    lead: 'Alex, c’est moi : je suis passionné d’intelligence artificielle. Lia, c’est notre IA : elle gère tout ce qui est automatique. Voici qui fait quoi, sans rien cacher.',
-    crumbs,
-  })}
-<section class="section"><div class="container container-narrow prose reveal">
-  ${md(`## Pourquoi c’est ${marche.fois} fois moins cher
-
-Un site vitrine fait à la main demande des semaines : la maquette, le code, les textes, les tests. C’est ce temps que vous payez quand il coûte entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}, le prix habituel chez un indépendant. Dans une agence, c’est souvent plus.
-
-Chez nous, Lia fait le gros de ce travail en quelques heures. Ensuite, je reprends tout à la main : je relis, je teste, je corrige. Vous ne payez donc pas des semaines de travail, et votre site coûte ${euro(creation.prix)}.
-
-Ce prix est le même pour tout le monde. Il est affiché sur le site, et vous n’avez pas de devis à attendre.
-
-Le résultat, lui, reste du travail soigné : un site rapide, adapté au téléphone, sécurisé et prêt à être trouvé sur Google.`)}
-</div></section>
-
-<section class="section section-soft"><div class="container">
-  <h2 class="section-title">Qui fait quoi ?</h2>
-  <div class="compare">
-    <div class="compare-col reveal">
-      <h3>${monster('mascotte')}Lia, l’IA, s’occupe de…</h3>
-      <ul class="list-check">
-        <li>créer le gros de votre site, en quelques heures</li>
-        <li>écrire le code, proposer des mises en page et des premiers textes</li>
-        <li>modifier et mettre à jour votre site, depuis votre espace client, après vous avoir montré l’aperçu</li>
-        <li>repérer des erreurs</li>
-      </ul>
-    </div>
-    <div class="compare-col is-me reveal">
-      <h3>${icon('user')}Alex, l’humain, …</h3>
-      <ul class="list-check">
-        <li>vous écoute et fait les choix</li>
-        <li>vérifie tout ce que fait Lia, page par page</li>
-        <li>règle Lia et fixe ses limites, pour qu’elle reste prudente</li>
-        <li>fait les modifications qui demandent un regard humain</li>
-        <li>teste le site sur plusieurs appareils</li>
-        <li>met en ligne et reste là après</li>
-      </ul>
-    </div>
-  </div>
-</div></section>
-
-<section class="section"><div class="container container-narrow prose reveal">
-  ${md(`## L’IA m’aide à coder, elle ne remplace pas un vrai développeur
-
-J’utilise l’IA tous les jours : elle m’aide à écrire le code plus vite. Mais elle ne remplace pas un vrai développeur, et je ne prétends pas en être un sur les gros projets.
-
-Pour un site vitrine ou une petite boutique, je suis rapide et efficace. Pour un projet complexe, il faut un développeur expérimenté : une application sur mesure, un logiciel métier, un site avec des milliers de produits, un service qui demande une sécurité renforcée.
-
-Dans ces cas-là, je vous le dis dès le premier échange, et je peux vous orienter vers les bonnes personnes.
-
-## Qui je suis
-
-${site.name}, c’est moi, Alex, et Lia, notre IA. Je suis un jeune entrepreneur, et tout se passe en ligne, partout en France. Ma passion pour l’IA est récente, mais elle ne me lâche plus. Mon idée est simple : que tout le monde puisse en profiter, pas seulement les grandes entreprises, avec des prix que chacun peut se permettre.`)}
-</div></section>
-
-${f.html}
-${C.ctaBand({ title: 'Envie d’essayer ?', text: 'Parlez-moi de votre projet. Vous verrez vite ce que l’IA et moi pouvons faire pour vous.' })}`;
-  return {
-    path: sections.methode.path,
-    section: 'methode',
-    title: 'Ma méthode : Lia crée, Alex vérifie tout | Alex & Lia',
-    description: `Comment je crée des sites avec l’IA : ce que fait Lia, ce que je fais moi-même, pourquoi c’est ${marche.fois} fois moins cher, et mes limites, dites honnêtement.`,
-    crumbs,
-    body,
-    schema: [f.schema],
-    priority: 0.6,
-  };
-}
-
-// ====================================================================== MON ESPACE (démonstration)
-// Un faux QR code dessiné (illustration de l'outil).
 const DEMO_QR = (() => {
   let seed = 7;
   const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
@@ -1315,135 +1250,6 @@ ${C.ctaBand({ text: CTA_TEXTE })}`;
   };
 }
 
-// ====================================================================== LIA ET ALEX
-function liaAlexPage() {
-  const crumbs = crumb('liaalex');
-  const LIM = { mots: [300, 200, 100], images: 3 }; // mêmes valeurs que aled08e_lia_limites() dans l'extension
-  const liaPlus = O('liaplus');
-  const faqItems = [
-    { q: 'Lia peut-elle casser mon site ?', a: 'Non. Elle ne peut ni supprimer une page, ni toucher au thème, aux extensions, aux comptes ou aux prix d’une boutique. Chaque changement est d’abord préparé dans un aperçu, que vous validez. Et l’état d’avant est gardé : Alex peut revenir en arrière.' },
-    { q: 'Que se passe-t-il si ma demande est trop grande pour Lia ?', a: 'Lia ne touche à rien et passe la demande à Alex. C’est plus long, puisqu’elle est faite à la main, et elle compte alors comme votre modification par Alex du mois. Les jetons de cette demande vous sont rendus.' },
-    { q: 'Mes Jetons Lia et mes modifications par Alex se cumulent-ils ?', a: 'Non, ils sont comptés chacun de leur côté. Les Jetons Lia paient ce que fait Lia : les modifications de votre site et les outils de votre espace client. La modification par Alex, elle, a son propre compteur. L’un ne se transforme pas en l’autre. Tout revient chaque mois, et ce qui n’est pas utilisé ne se reporte pas au mois suivant. Seuls les jetons d’une recharge restent tant que vous ne les avez pas dépensés.' },
-    { q: 'Dois-je payer une IA de mon côté ?', a: 'Non. Lia est comprise dans votre abonnement Alex & Lia : vous n’avez aucun compte à créer ailleurs, aucun réglage à faire, aucune liaison à installer. Vous écrivez votre demande, c’est tout.' },
-    { q: 'Puis-je annuler une demande ?', a: 'Oui, gratuitement pendant 24 heures après l’envoi, jusqu’à 3 fois par mois, depuis votre espace client. La demande ne compte plus dans votre mois, et ses jetons reviennent sur votre compte. Au-delà, écrivez à Alex.' },
-    { q: 'Est-ce que je peux me passer de Lia ?', a: 'Oui. À chaque demande, vous choisissez Lia ou Alex. Si vous préférez que tout soit fait à la main, choisissez toujours Alex.' },
-  ];
-  const f = C.faq(faqItems, 'Vos questions sur Lia et Alex', 'faq-lia');
-  const body = `${C.pageHero({
-    section: 'liaalex',
-    h1: 'Lia et Alex : une IA pour aller vite, un humain pour tout le reste',
-    lead: 'Lia est un outil. Alex est une personne. Lia fait en 5 minutes les petites et moyennes modifications de votre site. Alex fait le reste, à la main, et répond quand vous avez besoin de quelqu’un.',
-    crumbs,
-    mascot: 'mascotte',
-  })}
-<section class="section"><div class="container">
-  <div class="duo-cards">
-    <article class="duo-card c-pink reveal">
-      <span class="duo-art">${monster('mascotte')}</span>
-      <h2>Lia, l’IA</h2>
-      <p class="duo-sub">En 5 minutes, pour les petites et moyennes modifications</p>
-      <ul class="list-check">
-        <li>Change un texte, un horaire, un prix affiché, une phrase</li>
-        <li>Ajoute ou remplace une photo, publie une actualité</li>
-        <li>Travaille sur une seule page par demande</li>
-        <li>Vous montre toujours l’aperçu de la page avant de changer quoi que ce soit</li>
-        <li>Passe la main à Alex dès que c’est trop grand ou pas clair</li>
-      </ul>
-    </article>
-    <article class="duo-card c-lilac reveal">
-      <span class="duo-art duo-art-ico">${icon('user')}</span>
-      <h2>Alex, l’humain</h2>
-      <p class="duo-sub">À la main, pour tout ce qui compte</p>
-      <ul class="list-check">
-        <li>Crée votre site et réserve votre nom de domaine</li>
-        <li>Relie le site, installe le certificat SSL (le cadenas) et l’hébergement</li>
-        <li>S’occupe du référencement SEO et des mises à jour</li>
-        <li>Fait les grandes modifications : nouvelle page, refonte, boutique</li>
-        <li>Règle Lia, et vous répond en personne</li>
-      </ul>
-    </article>
-  </div>
-</div></section>
-
-<section class="section section-soft"><div class="container container-narrow prose reveal">
-  ${md(`## Je suis vraiment là
-
-Je m’appelle Alex, et derrière ce site il y a bien quelqu’un. C’est moi qui crée votre site, qui le mets en ligne et qui en réponds. Quand vous écrivez, c’est moi qui lis.
-
-Lia ne me remplace pas. Elle me fait gagner du temps sur les petites choses, pour que j’en aie davantage pour le reste : votre référencement, vos nouvelles pages, vos questions. C’est ce mélange qui permet des prix bas sans vous laisser seul face à une machine.
-
-## Lia, c’est quoi exactement ?
-
-Lia est une IA réglée spécialement pour les sites que je crée. Elle s’appuie sur un modèle d’IA professionnel, celui d’une entreprise spécialisée, que j’ai configuré avec mes propres règles : ce qu’elle a le droit de faire, ce qu’elle doit refuser, et comment elle doit vous montrer son travail.
-
-Elle n’est pas une personne et elle n’est pas un développeur. Elle peut vous aider, vite et bien, sur des changements simples. Elle ne remplace pas un humain, et elle ne le prétend pas.
-
-## Ce que Lia peut faire dans une demande
-
-Lia a un budget, pour rester sur des modifications petites et moyennes :
-
-- **Du texte seul** : jusqu’à ${LIM.mots[0]} mots.
-- **Du texte et une photo** : jusqu’à ${LIM.mots[1]} mots.
-- **Du texte et deux photos** : jusqu’à ${LIM.mots[2]} mots.
-- **Surtout des photos** : jusqu’à ${LIM.images} photos, avec une courte légende.
-
-Plus il y a de photos, moins il y a de texte, et l’inverse. Le tout sur une seule page.
-
-> Au-delà, la demande passe à Alex. C’est plus long, car elle est faite à la main, et elle prend la place de votre modification par Alex du mois.
-
-## Toujours un aperçu, jamais de surprise
-
-Lia ne modifie jamais votre site directement. Elle prépare le changement, puis vous montre la page telle qu’elle sera. Vous regardez, et vous choisissez :
-
-1. **C’est bon** : le changement est mis en ligne.
-2. **Ce n’est pas ça** : rien ne change, et Alex reprend la demande.
-
-C’est vous qui validez : une fois votre accord donné, la modification est en ligne, sans attendre personne. Le tout prend environ 5 minutes.
-
-## Annuler une demande
-
-Vous changez d’avis ? Une demande s’annule **gratuitement pendant 24 heures**, depuis votre espace client, jusqu’à **3 fois par mois**. Elle ne compte alors pas dans vos modifications du mois, et si Lia l’avait déjà mise en ligne, la page est remise comme avant. Au-delà, écrivez-moi et on regarde ensemble.
-
-## Des limites, pour votre sécurité
-
-Lia est configurée pour rester prudente :
-
-- Elle ne peut pas supprimer une page.
-- Elle ne touche ni au thème, ni aux extensions, ni aux comptes.
-- Elle ne modifie pas les prix d’une boutique en ligne.
-- Elle ne réécrit pas vos textes juridiques (mentions légales, conditions de vente).
-- Elle n’agit que sur votre site, par une liaison protégée, et chaque action est notée.
-- L’état d’avant est gardé : on peut toujours revenir en arrière.
-
-Si une demande est floue, elle ne devine pas : elle me la passe.
-
-## Pourquoi c’est compris dans l’abonnement
-
-Chaque demande faite à Lia consomme de la puissance de calcul, qui m’est facturée à l’usage. J’ai choisi de l’inclure dans l’abonnement, sous forme de Jetons Lia, pour votre confort : vous n’avez rien à payer à une autre entreprise, pas de réglages à faire, pas de liaison compliquée à installer. Vous écrivez votre demande, et c’est tout.`)}
-</div></section>
-
-<section class="section"><div class="container">
-  <h2 class="section-title">Combien de modifications par mois ?</h2>
-  <p class="section-lead">Avec l’abonnement, vous avez chaque mois ${ABO.jetons} Jetons Lia et ${UNE_MODIF} par Alex. Les deux compteurs sont séparés, et ils repartent le 1<sup>er</sup> du mois.</p>
-  <div class="boost-box reveal"><span class="opt-ico">${icon('coins')}</span><div><h3>À quoi servent les Jetons Lia ?</h3><p>Un Jeton Lia vaut 1 centime. Vos jetons servent à deux choses : les modifications de votre site par Lia, et les outils de votre espace client (publier sur les réseaux, corriger ou traduire un texte, des conseils sur une photo ou une page). Une modification faite par Lia coûte ${jetonsLia.modif.base} jetons, plus 1 jeton par tranche de ${jetonsLia.modif.mots} mots écrits dans votre demande, plus ${jetonsLia.modif.image} jetons par photo jointe. Soit ${JL_MODIF_FOURCHETTE} jetons environ. Vos ${ABO.jetons} jetons du mois font donc ${JL_MODIFS_MOIS} modifications par Lia. Si vous préférez les outils, comptez ${JL_OUTILS_MOIS} d’utilisations. Si Lia passe votre demande à Alex, vos jetons vous sont rendus.</p></div></div>
-  <div class="boost-box reveal"><span class="opt-ico">${icon('sparkles')}</span><div><h3>Besoin de plus ?</h3><p><strong>${esc(liaPlus.name)}</strong> est un extra : il ajoute ${jetonsLia.liaplus} Jetons Lia à votre mois, pour ${euro(liaPlus.price.month)} de plus. Vous le prenez ou vous le retirez quand vous voulez, depuis votre espace client. <strong>Une recharge</strong> se prend à l’unité : ${RECHARGES}, sur votre prochaine facture. Ces jetons-là ne s’effacent pas en fin de mois. <strong>Le Boost</strong>, lui, concerne Alex : une modification en plus de celle du mois, pour ${euro(boost.prix)}.</p></div></div>
-</div></section>
-
-${f.html}
-${C.ctaBand({ title: 'Envie de voir Lia à l’œuvre ?', text: 'Essayez la démo de l’espace client, ou composez votre site en deux minutes.' })}`;
-  return {
-    path: sections.liaalex.path,
-    section: 'liaalex',
-    title: 'Lia et Alex : qui fait quoi sur votre site | Alex & Lia',
-    description: 'Lia, l’IA, fait en 5 minutes les petites modifications de votre site, avec un aperçu à valider. Alex, l’humain, fait le reste, à la main. Qui fait quoi.',
-    crumbs,
-    body,
-    schema: [f.schema],
-    priority: 0.8,
-  };
-}
-
-// ====================================================================== ILS NOUS ONT FAIT CONFIANCE
 function confiancePage() {
   // V2 : « Réalisations ». Uniquement de vrais clients, avec un site en ligne. Pas d'avis inventé.
   const crumbs = crumb('confiance');
@@ -1589,12 +1395,6 @@ function pageV2(p) {
   const k = SECTION_V2[p.path];
   const crumbs = k ? crumb(k) : [HOME, { name: p.nom, path: p.path }];
   const f = C.faq(p.faq || [], 'Vos questions', 'faq-v2');
-  const extra = p.path === '/accompagnement/' ? `<section class="section section-soft"><div class="container">
-  <h2 class="section-title">Ce qui s’ajoute si vous le voulez</h2>
-  <p class="section-sub">Les options au mois s’ajoutent ou se retirent quand vous voulez. Les extras à la demande se commandent à l’unité.</p>
-  <div class="opt-groups"><div class="opt-group reveal"><h3>${icon('repeat')}Chaque mois, à ajouter ou retirer</h3><ul>${C.optsMois.map((o) => `<li><span class="opt-ico">${icon(o.icon)}</span><span class="opt-txt"><strong>${esc(o.name)}${o.types && o.types[0] === 'boutique' ? ' <em class="opt-only">boutique</em>' : ''}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${euro(o.price.month)}/mois</span></li>`).join('')}</ul></div>
-  ${C.extrasDemande().replace('opt-group opt-demande', 'opt-group')}</div>
-</div></section>` : '';
   const body = `${C.pageHero({ section: k || 'guides', h1: p.h1, lead: p.lead, crumbs })}
 ${p.points && p.points.length ? `<section class="section"><div class="container">
   <div class="feats">${p.points.map((b) => `<div class="feat reveal">${icon(b.icon)}<h3>${inline(b.t)}</h3><p>${inline(b.d)}</p></div>`).join('')}</div>
@@ -1602,7 +1402,6 @@ ${p.points && p.points.length ? `<section class="section"><div class="container"
 <section class="section${p.points && p.points.length ? ' section-soft' : ''}"><div class="container container-narrow prose reveal">
   ${md(p.body)}
 </div></section>
-${extra}
 ${f.html}
 ${voirCards(p.voir || [])}
 ${C.ctaBand({ title: (p.cta && p.cta.titre) || 'On crée votre site ?', text: (p.cta && p.cta.texte) || CTA_TEXTE })}`;
@@ -1643,7 +1442,7 @@ function docPage() {
   };
   const fig = (k, alt, cap, cls = '') => `<figure class="doc-fig ${cls} reveal"><img src="/assets/img/doc/${k}.webp" width="${IMG[k][0]}" height="${IMG[k][1]}" alt="${esc(alt)}" loading="lazy" decoding="async"><figcaption>${cap}</figcaption></figure>`;
   const une = T('une-page'), vit = T('vitrine'), bou = T('boutique');
-  const liaPlus = O('liaplus'), stats = O('stats'), seo = O('seo');
+  const stats = O('stats'), seo = O('seo');
   const toc = [
     ['etapes', 'list-checks', 'Comment ça se passe'],
     ['lia-alex', 'sparkles', 'Lia et Alex'],
@@ -1709,10 +1508,10 @@ function docPage() {
   <p class="doc-kicker">2. Lia et Alex</p>
   <h2>Deux pour s’occuper de votre site</h2>
   <div class="doc-duo-qui">
-    <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${monster('mascotte')}</span><h3>Lia, l’IA</h3><p>Elle fait les petites et moyennes modifications en 5 minutes, et écrit vos publications pour les réseaux. Elle montre toujours un aperçu : rien ne change sans votre accord.</p></div>
+    <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${monster('mascotte')}</span><h3>Lia, l’assistante autonome</h3><p>Elle fait les petites et moyennes modifications en 5 minutes, et écrit vos publications pour les réseaux. Elle montre toujours un aperçu : rien ne change sans votre accord.</p></div>
     <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${icon('user')}</span><h3>Alex, l’humain</h3><p>Il crée votre site, fait les grandes modifications à la main, vérifie et répond à vos questions. Ce que Lia ne sait pas faire lui revient.</p></div>
   </div>
-  <p class="doc-more">${C.btn(sections.liaalex.path, 'btn-primary', 'sparkles', 'Pourquoi Alex & Lia')} ${C.btn(sections.methode.path, 'btn-light', 'wand-sparkles', 'Ma méthode avec l’IA')}</p>
+  <p class="doc-more">${C.btn(sections.liaalex.path, 'btn-primary', 'sparkles', 'Pourquoi Alex & Lia')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>
 
 <section class="section doc-sec" id="questionnaire"><div class="container container-narrow">
@@ -1762,7 +1561,7 @@ function docPage() {
   ${tableau('Chaque mois, à ajouter ou retirer', lignesExtras)}
   <div class="doc-cards3">
     <div class="doc-mini reveal"><strong>${icon('coins')}Jetons Lia</strong><p>L’abonnement en donne ${ABO.jetons} par mois. Un jeton vaut 1 centime, et une modification par Lia en coûte ${JL_MODIF_FOURCHETTE}.</p></div>
-    <div class="doc-mini reveal"><strong>${icon('sparkles')}Plus de jetons</strong><p>L’extra ${esc(liaPlus.name)} en ajoute ${jetonsLia.liaplus} par mois. Une recharge de ${jetonsLia.recharge[0].jetons} jetons coûte ${euro(jetonsLia.recharge[0].prix)}, quand il vous en manque.</p></div>
+    <div class="doc-mini reveal"><strong>${icon('sparkles')}Plus de jetons</strong><p>Vous en rachetez à l’utilisation : ${RECHARGES}, ajoutés à votre prochaine facture. Ces jetons-là restent jusqu’à ce que vous les utilisiez.</p></div>
     <div class="doc-mini reveal"><strong>${icon('hand-coins')}À la demande</strong><p>${aLaDemande.map((x) => `${esc(x.name)} : ${euro(x.prix)}`).join('. ')}. Payés une fois, ajoutés à votre prochaine facture.</p></div>
   </div>
   <p class="doc-more center">${C.btn(sections.forfaits.path, 'btn-light', sections.forfaits.icon, 'La page des tarifs')}</p>
@@ -1790,7 +1589,7 @@ function docPage() {
       <h2>Vous écrivez, Lia ou Alex s’en charge</h2>
       <p>Pour chaque demande, vous choisissez qui la fait :</p>
       <ul class="list-check">
-        <li><strong>Lia</strong>, l’IA, fait les petites et moyennes modifications en 5 minutes, sur une seule page. Elle vous montre l’aperçu, et ne change rien sans votre accord.</li>
+        <li><strong>Lia</strong>, mon assistante autonome, fait les petites et moyennes modifications en 5 minutes, sur une seule page. Elle vous montre l’aperçu, et ne change rien sans votre accord.</li>
         <li><strong>Alex</strong> fait les plus grandes, à la main. Si une demande est trop grosse pour Lia, elle passe à Alex.</li>
         <li>Une demande peut être annulée gratuitement pendant 24 heures, 3 fois par mois.</li>
         <li>Vos Jetons Lia et vos interventions d’Alex (${UNE_MODIF} ${PAR_PERIODE}) sont affichés en haut de votre espace.</li>
@@ -2008,8 +1807,6 @@ function build() {
     // V2 : pages métier, réassurance, guides de fond, page locale (remplacent /methode/ et /lia-et-alex/)
     ...(METIERS.length ? [metiersHub(), ...METIERS.map(metierPage)] : []),
     ...PAGES_V2.map(pageV2),
-    ...(PAGES_V2.some((p) => p.path === sections.methode.path) ? [] : [methodePage()]),
-    ...(PAGES_V2.some((p) => p.path === sections.liaalex.path) ? [] : [liaAlexPage()]),
     docPage(),
     guidesHub(), ...GUIDES.guides.map(guidePage),
     ...(LEXIQUE.termes.length ? [lexiqueHub(), ...LEXIQUE.termes.map(lexiquePage)] : []),

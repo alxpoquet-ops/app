@@ -82,10 +82,6 @@ const SCENES = {
     </div>
   </div>`,
 
-  liaplus: espace(`<h2>Mes Jetons Lia</h2>
-    <div class="jauge"><p><span>${icon('sparkles')}Jetons Lia ce mois-ci</span><b>600 / 600</b></p><i><u style="width:100%"></u></i><small>100 avec l’abonnement + 500 avec Lia +</small></div>
-    <div class="lp">${[['pencil', 'Jusqu’à 20 modifications', 'faites par Lia, avec aperçu'], ['file-text', 'Ou une cinquantaine de textes', 'corrigés, réécrits ou traduits'], ['megaphone', 'Ou des publications', 'pour vos réseaux, chaque semaine']].map(([ic, a, b]) => `<div>${icon(ic)}<b>${a}</b><small>${b}</small></div>`).join('')}</div>`),
-
   stats: espace(`<h2>Votre site, heure par heure</h2>
     <div class="kpis">${[['Visiteurs', '1 240'], ['Sur Google', '3 420'], ['Ventes', '86']].map(([a, b]) => `<p><small>${a}</small><b>${b}</b></p>`).join('')}</div>
     <div class="charts"><div class="ch"><small>Visiteurs sur 30 jours</small><svg viewBox="0 0 220 70"><path d="M0 60 L0 50 L20 46 L40 52 L60 40 L80 44 L100 34 L120 38 L140 26 L160 30 L180 20 L200 24 L220 14 L220 60Z" fill="#D5F5E8"/><polyline points="0,50 20,46 40,52 60,40 80,44 100,34 120,38 140,26 160,30 180,20 200,24 220,14" fill="none" stroke="#34B27F" stroke-width="3" stroke-linejoin="round"/></svg></div>

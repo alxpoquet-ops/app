@@ -2,7 +2,7 @@
 // Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160, aucun tiret long
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de src/config.js),
 // aucun chiffre sans source, et pas de phrase de 9 mots ou plus reprise d'une autre page.
-const { site, creation, types, forfaits, annuel, lissage, delais, options, aLaDemande, paiement, marche, fidelite, clients } = require('../config');
+const { site, creation, types, forfaits, annuel, lissage, delais, options, aLaDemande, paiement, marche, fidelite, clients, jetonsLia } = require('../config');
 
 // helpers
 const T = (id) => types.find((t) => t.id === id);
@@ -15,8 +15,12 @@ const page = T('une-page'), vitrine = T('vitrine'), boutique = T('boutique');
 const abo = forfaits[0]; // l'abonnement : il n'y en a qu'un
 const annee = abo.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const durees = lissage.durees.join(' ou ');
-const seo = O('seo'), liaPlus = O('liaplus');
+const seo = O('seo');
 const extrasMois = options.filter((o) => o.quand === 'mois');
+// Jetons : ceux de l'abonnement reviennent le 1er du mois, ceux rachetés restent.
+const recharge = jetonsLia.recharge[0]; // la plus petite recharge (ex. 100 jetons pour 1 €)
+const OUTIL = '3 à 16'; // jetons pour un outil, le prix exact est affiché sur son bouton
+const retouchesMois = Math.floor(abo.jetons / jetonsLia.modif.base); // retouches courtes par Lia avec les jetons du mois
 const alexEnPlus = A('alex'), urgent = A('urgent');
 const interv = abo.quota === 1 ? 'une intervention' : `${abo.quota} interventions`;
 const ville = site.address.city.replace(/'/g, '’');
@@ -43,7 +47,7 @@ const pages = [
     lead: 'Un site coûte cher surtout à cause du temps passé dessus. J’ai réduit ce temps, pas le soin. Voici comment, et ce que vous gardez.',
     resume: 'Le temps gagné, et ce qui ne change pas.',
     points: [
-      { icon: 'timer', t: 'Moins de temps passé', d: 'Les tâches qui se répètent sont automatisées. Vous ne payez pas des semaines de travail.' },
+      { icon: 'timer', t: 'De l’optimisation', d: 'Un travail automatisé là où il se répète, et un hébergement en direct, en France.' },
       { icon: 'user-check', t: 'Tout vérifié à la main', d: 'Je relis, je teste sur téléphone et je mets en ligne moi-même.' },
       { icon: 'badge-euro', t: 'Un prix affiché', d: `À partir de ${eur(creation.prix)} €, le même pour tous, sans devis à attendre.` },
       { icon: 'shield-check', t: 'Rien de sacrifié', d: 'Qualité, sécurité, référencement et un vrai interlocuteur restent au rendez-vous.' },
@@ -56,19 +60,27 @@ D’après des repères publics relevés en France, un site vitrine fait par un 
 
 Mon idée est différente. Je passe moins de temps sur ce qui se répète d’un site à l’autre, pour que les petites entreprises et les associations aient elles aussi un site pro, à un prix qu’elles peuvent se permettre.
 
-## Le rôle de Lia : les tâches répétitives
+## Pas de magie : de l’optimisation
 
-Beaucoup d’étapes reviennent sur chaque projet. Lia, mon assistante numérique, m’aide à les automatiser. Ce qui me prenait des jours se fait en quelques heures, et le délai comme le prix baissent d’autant.
+J’ai passé du temps à automatiser mon travail, et j’ai des accès directs chez des hébergeurs français. C’est ce qui me permet de proposer ces prix. Ce n’est pas de la magie, c’est de l’optimisation.
 
-- **La mise en page** : une première version des écrans, à partir de ce que vous m’avez raconté.
+### Un travail automatisé là où il se répète
+
+Beaucoup d’étapes reviennent sur chaque projet. Pour celles-là, je suis épaulé par Lia, mon assistante autonome : elle automatise les tâches répétitives. Ce qui me prenait des jours se fait en quelques heures, et le délai comme le prix baissent d’autant.
+
+- **La mise en page de base** : une première version des écrans, à partir de ce que vous m’avez raconté.
 - **Les premiers textes** : une base de travail, que je reprends ensuite avec vos mots.
 - **Les réglages** : les titres lus par Google, l’affichage sur téléphone, le formulaire de contact.
 
 Résultat : un site une page est prêt en ${page.delai}, un site vitrine en ${vitrine.delai}.
 
+### Un hébergement en direct
+
+Vos sites sont hébergés en France, chez des hébergeurs auxquels j’accède en direct. Il n’y a pas d’intermédiaire entre eux et moi, et c’est aussi ce qui garde l’abonnement à un prix bas.
+
 ## Ce que je fais à la main
 
-Lia va vite, mais elle ne décide de rien. C’est moi qui vous écoute, qui fais les choix et qui reprends tout derrière elle.
+Lia va vite, mais elle ne décide de rien. C’est moi qui conçois votre site : je vous écoute, je fais les choix et je reprends tout ce qu’elle prépare.
 
 - **La relecture** : chaque page, chaque texte, chaque horaire et chaque prix affiché.
 - **Les tests sur téléphone** : je parcours le site sur plusieurs appareils, comme le feront vos clients.
@@ -104,7 +116,7 @@ Un prix plus bas ne veut pas dire un travail bâclé. Voici ce que vous gardez, 
 Et si votre projet dépasse ce que je sais bien faire, comme une application sur mesure ou un catalogue de milliers de produits, je vous le dis dès notre premier échange.`,
     faq: [
       { q: 'Moins cher, ça veut dire moins bien ?', a: 'Non. Le prix baisse parce que je passe moins de temps sur ce qui se répète, pas parce que je saute des étapes. Chaque site est relu, testé sur téléphone et vérifié avant d’être publié.' },
-      { q: 'Lia fait-elle mon site toute seule ?', a: 'Non. Elle prépare une base : une mise en page, des premiers textes, des réglages. Je reprends ensuite tout à la main, je fais les choix avec vous et je publie le site moi-même.' },
+      { q: 'Lia fait-elle mon site toute seule ?', a: 'Non. C’est moi qui conçois votre site. Lia automatise les tâches répétitives : une mise en page de base, des premiers textes, des réglages. Je reprends ensuite tout à la main, je fais les choix avec vous et je publie le site moi-même.' },
       { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. La création démarre à ${eur(creation.prix)} €, puis l’abonnement coûte ${eur(abo.month)} € par mois. Les options sont facultatives, et leur prix est indiqué avant que vous commandiez.` },
       { q: 'Pourquoi n’y a-t-il pas de devis ?', a: 'Parce que la plupart des sites d’indépendants, d’artisans, de commerces ou d’associations se construisent de la même façon. Un prix fixe est plus simple pour vous comme pour moi. Pour un projet hors norme, je vous le dis franchement.' },
     ],
@@ -277,7 +289,7 @@ Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les au
     title: 'Pourquoi choisir Alex & Lia : nos engagements | Alex & Lia',
     description: 'Un vrai interlocuteur qui répond, un prix affiché, sans engagement, le nom de domaine à votre nom, et Lia, l’assistante qui fait gagner du temps. Nos promesses.',
     h1: 'Pourquoi choisir Alex & Lia ?',
-    lead: 'Parce qu’internet devrait être simple. Derrière ce site, il y a une personne qui crée votre site, le met en ligne et vous répond. Et une assistante qui l’aide à aller plus vite.',
+    lead: 'Parce qu’internet devrait être simple. Derrière ce site, il y a une personne qui conçoit votre site, le met en ligne et vous répond. Et une assistante autonome qui l’aide à aller plus vite.',
     resume: 'Un vrai interlocuteur, des engagements écrits.',
     points: [
       { icon: 'user', t: 'Une vraie personne', d: 'C’est moi, Alex, qui lis vos messages et qui vous réponds.' },
@@ -291,14 +303,14 @@ Je m’appelle Alex. Je crée des sites internet pour des indépendants, des art
 
 Quand vous m’écrivez, c’est moi qui lis. Quand votre site est en ligne, c’est moi qui en réponds. Vous n’avez pas un standard ou un ticket anonyme en face de vous, mais quelqu’un qui connaît votre site.
 
-Je suis un jeune entrepreneur, passionné d’intelligence artificielle. Mon idée de départ est simple : que ces outils profitent aussi aux petites structures, pas seulement aux grandes entreprises, avec un site pro à un prix raisonnable.
+Je suis un jeune entrepreneur. Mon idée de départ est simple : que les petites structures aient, elles aussi, un site pro, à un prix qu’elles peuvent se permettre, et pas seulement les grandes entreprises.
 
 Vous pouvez me poser vos questions avant de commander, sans rien vous engager. Si mon offre ne correspond pas à votre besoin, je vous le dis franchement.
 
 ## Ma méthode, en quatre temps
 
 1. **On échange** : vous me dites ce que vous faites, pour qui, et ce que vous attendez du site. Les choix se font avec vous.
-2. **Je prépare** : Lia m’aide sur les tâches répétitives, comme la mise en page, les premiers textes et les réglages.
+2. **Je conçois votre site** : la structure, les pages, le style. Lia, mon assistante autonome, automatise au passage les tâches répétitives, comme la mise en page de base, les premiers textes et les réglages.
 3. **Je vérifie** : je relis tout, je teste le site sur plusieurs appareils et je corrige ce qui doit l’être.
 4. **Je mets en ligne, et je reste là** : le nom de domaine, l’hébergement, le cadenas HTTPS, puis le suivi au fil des mois.
 
@@ -315,9 +327,9 @@ Ce sont des promesses simples, écrites ici pour que vous puissiez me les rappel
 
 ## Lia, mon assistante
 
-Lia est une assistante numérique, une intelligence artificielle que j’ai réglée pour les sites que je crée. Elle m’aide à automatiser des tâches répétitives, et c’est ce qui fait baisser les délais et les coûts.
+Lia est mon assistante autonome, réglée pour les sites que je conçois. Elle automatise les tâches répétitives, et c’est ce qui fait baisser les délais et les coûts. La conception de votre site, elle, reste mon travail.
 
-Une fois votre site en ligne, elle s’occupe aussi des petites retouches que vous demandez depuis votre espace client : un horaire, un prix, une photo. Elle vous montre toujours un aperçu avant de changer quoi que ce soit. Dès qu’une demande est trop grande ou pas claire, elle me la passe.
+Une fois votre site en ligne, elle s’occupe aussi des petites retouches que vous demandez depuis votre espace client : un horaire, un prix, une photo. Ces retouches utilisent les jetons compris dans votre abonnement. Elle vous montre toujours un aperçu avant de changer quoi que ce soit. Dès qu’une demande est trop grande ou pas claire, elle me la passe.
 
 Ce que Lia ne fait pas : elle ne vend rien, elle ne décide pas à votre place, et elle ne me remplace pas. Elle ne peut pas supprimer une page, ni toucher aux réglages sensibles de votre site.
 
@@ -329,7 +341,7 @@ Je crée des sites une page, des sites vitrines et des petites boutiques en lign
 
 Pour une application sur mesure, un logiciel métier ou un catalogue de milliers de produits, il faut un développeur expérimenté. Dans ce cas, je vous le dis honnêtement, et je peux vous orienter vers les bonnes personnes.
 
-Et pour comprendre comment ce mélange permet des prix plus doux, la page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout.`,
+Si mes prix restent doux, c’est que j’ai pris le temps d’automatiser mon travail, et que je passe directement par des hébergeurs français. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout.`,
     faq: [
       { q: 'Est-ce que je parle à une vraie personne ?', a: 'Oui. Les messages du formulaire de contact arrivent chez moi, et c’est moi qui réponds. Dans votre espace client, Lia peut préparer une petite retouche, mais vous pouvez toujours choisir de vous adresser à moi.' },
       { q: 'Lia peut-elle se tromper ?', a: 'Oui, comme tout outil. C’est pour cela qu’elle montre un aperçu avant chaque retouche, qu’elle n’a pas accès aux réglages sensibles, et que je contrôle chaque site avant de le publier.' },
@@ -370,13 +382,23 @@ L’hébergement, c’est l’ordinateur où vit votre site. Le nom de domaine, 
 Un horaire qui change, une nouvelle photo, un prix à mettre à jour ? Tout passe par votre espace client, sur ordinateur comme sur téléphone.
 
 1. **Vous écrivez votre demande** en quelques mots, et vous joignez une photo si besoin.
-2. **Pour une petite retouche**, Lia, mon assistante, prépare le changement et vous montre un aperçu. Vous validez, et c’est en ligne.
+2. **Pour une petite retouche**, Lia, mon assistante autonome, prépare le changement et vous montre un aperçu. Vous validez, et c’est en ligne.
 3. **Pour une demande plus grande**, ou si vous préférez, je m’en occupe à la main. L’abonnement comprend ${interv} de ma part par ${abo.periode}.
 4. **Vous suivez tout** depuis votre espace, et je vous préviens quand c’est fait.
 
-Les petites retouches avec Lia sont prévues pour un usage occasionnel. Si vous changez souvent votre site ou publiez beaucoup, l’option ${liaPlus.name} vous fait passer à un usage régulier. Pour une question, je vous réponds sous ${delais.reponse}.
+Pour une simple question sur votre site, je vous réponds sous ${delais.reponse}.
 
 > Envie de voir à quoi cela ressemble ? La [démo de l’espace client](/mon-espace/demo/) se visite librement, sans créer de compte.
+
+## Les jetons, pour Lia et les outils
+
+Les retouches faites par Lia et les outils de votre espace client fonctionnent avec des jetons. L’abonnement en comprend ${abo.jetons} chaque mois.
+
+- **Une retouche par Lia** : ${jetonsLia.modif.base} jetons et plus, selon la longueur du texte et le nombre de photos.
+- **Un outil** : de ${OUTIL} jetons, et son prix est affiché sur son bouton avant de le lancer.
+- **Besoin de plus ?** Vous en rachetez à l’utilisation, ${eur(recharge.prix)} € les ${recharge.jetons} jetons, ajoutés à votre prochaine facture.
+
+Les jetons de l’abonnement repartent à ${abo.jetons} le 1er de chaque mois. Ceux que vous rachetez restent sur votre compte tant que vous ne les avez pas utilisés.
 
 ## Les options au mois
 
@@ -403,7 +425,7 @@ Et après ? Votre nom de domaine est à votre nom, il reste donc à vous. Je vou
 Tous les prix sont réunis sur la page [tarifs](/tarifs/). Et si vous parlez de moi autour de vous, le [parrainage](/fidelite/) vous offre ${fidelite.parrainageMois} mois d’abonnement, à vous comme à la personne parrainée.`,
     faq: [
       { q: 'Puis-je avoir un site sans abonnement ?', a: 'Non, tant que votre site est hébergé chez moi. L’abonnement couvre ce qui le fait vivre : son adresse, son hébergement et son entretien. Il reste sans engagement.' },
-      { q: 'Combien de modifications puis-je demander ?', a: `Des petites retouches avec Lia pour un usage occasionnel, et ${interv} faite à la main par ${abo.periode}. Il vous en faut plus ? Une intervention d’Alex en plus coûte ${eur(alexEnPlus.prix)} €, et l’option ${liaPlus.name} couvre un usage régulier de Lia.` },
+      { q: 'Combien de modifications puis-je demander ?', a: `Avec les ${abo.jetons} jetons du mois, jusqu’à ${retouchesMois} retouches courtes par Lia, et ${interv} faite à la main par ${abo.periode}. Il vous en faut plus ? Rachetez des jetons, ${eur(recharge.prix)} € les ${recharge.jetons}, ou demandez une intervention d’Alex en plus pour ${eur(alexEnPlus.prix)} €.` },
       { q: 'En combien de temps ma demande est-elle traitée ?', a: `Une petite retouche avec Lia se fait en quelques minutes, une fois l’aperçu validé. Pour une demande faite à la main, je réponds sous ${delais.reponse}. Si c’est pressé, l’extra « ${urgent.name} » la fait passer avant les autres.` },
       { q: 'Puis-je changer d’options plus tard ?', a: 'Oui. Les options au mois se prennent ou s’arrêtent depuis votre espace client, à tout moment, et le changement compte pour la période suivante.' },
     ],

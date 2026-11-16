@@ -124,7 +124,7 @@ function footer(p) {
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand" href="/">${logoMark({ id: 'lgf' })}<span class="brand-text"><strong>${brandName}</strong></span></a>
-      <p>Des sites internet professionnels, simples et faits pour être trouvés sur Google. Alex crée et suit votre site, avec l’aide de Lia, son assistante numérique. Depuis les Ardennes, pour des clients partout en France.</p>
+      <p>Des sites internet professionnels, simples et faits pour être trouvés sur Google. Alex conçoit et suit votre site, avec Lia, son assistante autonome. Depuis les Ardennes, pour des clients partout en France.</p>
       <ul class="footer-contact">
         <li><a href="${C.contactUrl}">${icon('message-circle')}Nous écrire</a></li>
         ${site.email ? `<li><a href="mailto:${site.email}">${icon('mail')}${site.email}</a></li>` : ''}
@@ -190,7 +190,7 @@ ${liaFlot()}`;
 }
 
 // ---------------------------------------------------------------- la bulle de Lia
-// En bas de chaque page. Sur le site : Lia répond tout de suite à quelques questions (réponses écrites ici, sans IA).
+// En bas de chaque page. Sur le site : Lia répond tout de suite à quelques questions (réponses écrites ici, sans appel au modèle).
 // Dans l'espace client : on lui écrit, elle répond et prépare l'action à valider (voir main.js et includes/bulle.php).
 function liaFlot() {
   const eur = (n) => `${n} €`;
@@ -203,7 +203,7 @@ function liaFlot() {
   const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', 'Comment avoir plus d’avis Google ?', 'Que comprend mon abonnement ?'];
   return `<div class="lia-flot" data-lia-flot hidden>
   <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Lia, l’assistante d’Alex" hidden>
-    <div class="lia-tete">${monster('coucou')}<p><strong>Lia</strong><small>L’assistante d’Alex</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Lia">${icon('x')}</button></div>
+    <div class="lia-tete">${monster('coucou')}<p><strong>Lia</strong><small>L’assistante autonome d’Alex</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Lia">${icon('x')}</button></div>
     <div class="lia-fil" data-lia-fil aria-live="polite">
       <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Lia, l’assistante d’Alex ! Choisissez une question, je vous réponds tout de suite.</p>
       <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Bonjour ! Dites-moi ce que vous voulez changer sur votre site, ou posez-moi une question.</p>
@@ -224,7 +224,7 @@ function liaFlot() {
       <textarea id="lia-champ" rows="2" maxlength="${jetonsLia.bulle.max}" placeholder="Écrivez à Lia…" required></textarea>
       <button type="submit" aria-label="Envoyer à Lia">${icon('send')}</button>
     </form>
-    <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Lia peut se tromper : rien ne change sans votre accord. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
+    <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Lia répond automatiquement et peut se tromper : rien ne change sans votre accord. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
   </div>
   <p class="lia-flot-coucou" hidden>Une question ? Je suis là.</p>
   <button type="button" class="lia-flot-btn" aria-expanded="false" aria-controls="lia-panel"><span class="sr-only">Parler à Lia</span>${monster('coucou')}</button>

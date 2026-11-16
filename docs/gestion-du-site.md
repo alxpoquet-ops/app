@@ -8,7 +8,7 @@ Ce guide explique, en français simple, comment fonctionne le site www.aled08.fr
 - **Un abonnement obligatoire, sans engagement** : 10 € par mois. Il comprend le nom de domaine, l'hébergement, les mises à jour, le suivi, le support, 100 Jetons Lia par mois (compteur interne, jamais affiché sur le site public) et une intervention d'Alex par trimestre. Les clients inscrits avant le 16 novembre 2026 gardent une intervention par mois (case « Une intervention d'Alex chaque mois » de leur fiche). À l'année : 2 mois offerts (le client paie 10 mois).
 - **Paiement de la création** : 25 % à la commande. À la réception du site : le reste, en une fois ou en 6 ou 12 fois sans frais (l'abonnement se paie alors au mois), avec un engagement le temps du paiement. Sinon, aucun engagement.
 - **Options à la création** (payées une fois) : traduction en anglais, prise de rendez-vous, reprise de l'ancien site, cinq pages de plus. 100 € chacune.
-- **Extras au mois**, que le client ajoute ou retire lui-même dans « Abonnement et factures » : SEO suivi 10 €, Lia + 5 € (500 jetons de plus), chiffres détaillés 5 €, adresse e-mail pro 3 €, et pour une boutique gestion du stock 5 € et comptes clients 5 €.
+- **Extras au mois**, que le client ajoute ou retire lui-même dans « Abonnement et factures » : Suivi Google 10 €, chiffres détaillés 5 €, adresse e-mail pro 3 €, et pour une boutique gestion du stock 5 € et comptes clients 5 €.
 - **Extras à la demande, payés une fois** (`aLaDemande` dans `src/config.js`), commandés par le client dans l'onglet Mes demandes et ajoutés à sa prochaine facture Stripe (sinon : à facturer à la main, l'e-mail le dit) : une intervention d'Alex en plus (5 €, l'ancien « Boost »), une demande traitée sous 24 heures (5 €), un article écrit et publié (15 €), un point de 30 minutes avec Alex (15 €). Un article ou un point ne compte pas dans les interventions de l'abonnement.
 - **Parrainage** : 1 mois d'abonnement offert au parrain et au filleul quand le site du filleul est en ligne.
 - **Délai de réponse aux demandes** : sous 72 heures.
@@ -186,7 +186,7 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 
 - Le client écrit sa demande (avec une photo s'il veut) dans « Mes demandes ». Vous recevez un e-mail avec un lien direct.
 - Dans Alex & Lia › Demandes clients, vous changez le statut : Reçue, En cours, Faite, avec un message facultatif affiché chez le client. En passant à « Faite », le client reçoit un e-mail.
-- Deux compteurs : les Jetons Lia par mois (100 dans l'abonnement, 500 de plus avec Lia +) pour les modifications par Lia, et les interventions d'Alex (une par trimestre, ou une par mois pour les clients d'avant la V2). Le client choisit qui fait chaque modification. Au-delà, une intervention d'Alex en plus coûte 5 €, ajoutée à sa facture, avec son accord.
+- Deux compteurs : les Jetons Lia par mois (100 dans l'abonnement, plus les recharges achetées) pour les modifications par Lia, et les interventions d'Alex (une par trimestre, ou une par mois pour les clients d'avant la V2). Le client choisit qui fait chaque modification. Au-delà, une intervention d'Alex en plus coûte 5 €, ajoutée à sa facture, avec son accord.
 - Délai de réponse annoncé pour Alex : 72 heures. Lia : instantané, avec un aperçu à valider.
 
 ### Lia, pour de vrai (Claude, d'Anthropic)
@@ -235,7 +235,7 @@ Quatre sont gratuits parce qu'ils tournent dans le navigateur du client : Annonc
 
 **Les règles du compteur** (`includes/jetons.php`) :
 
-- **L'abonnement donne 100 jetons chaque mois** (`forfaits[0].jetons` dans `src/config.js`). Ils reviennent le 1er et ne se reportent pas. L'extra Lia + en ajoute 500.
+- **L'abonnement donne 100 jetons chaque mois** (`forfaits[0].jetons` dans `src/config.js`). Ils reviennent le 1er et ne se reportent pas. Au-delà, le client rachète des jetons à l'utilisation (1 € les 100). L'option Lia + a été supprimée le 16 novembre 2026.
 - **Seulement si l'abonnement court** : abonnement Stripe actif, ou case « Abonnement actif hors Stripe », ou « Abonnement offert à vie », ou compte famille. Une commande pas encore payée ne donne aucun jeton. La fiche du client le dit quand c'est le cas.
 - **Un extra ajouté ou retiré en cours de mois** compte à partir du mois suivant, comme sa facture.
 - **Une modification par Lia** coûte 30 jetons, plus 1 par tranche de 10 mots écrits, plus 10 par photo (`jetonsLia.modif`). Le prix s'affiche pendant que le client écrit. Si Lia passe la demande à Alex, si la mise en ligne échoue, si le client refuse l'aperçu ou annule dans les 24 heures, les jetons sont rendus. Si Lia n'est pas reliée au site du client, la demande va à Alex, sans jeton.
