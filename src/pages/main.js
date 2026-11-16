@@ -142,7 +142,8 @@ const pagesDe = (c) => (c.enCreation ? 0 : (CLIENTS_PAGES[c.domaine] || {}).page
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1180 → 1 180
 const s_ = (n) => (n > 1 ? 's' : '');
 // Prix estimé d'un site client avec la grille actuelle : le prix unique, la boutique si c'en est une, 10 € par page
-// au-delà des pages comprises, et ses options payées une fois. Les fiches produits ne comptent pas comme des pages.
+// au-delà des pages comprises, et ses options payées une fois. Les fiches produits ne comptent pas comme des pages,
+// et les pages faites pour Google (clients[].seo dans config) sont comprises : elles ne sont pas comptées en plus.
 // C'est une estimation (ce que le site coûterait aujourd'hui), pas le prix payé par le client.
 function estimeClient(c) {
   const t = types.find((x) => x.id === c.type);
@@ -150,11 +151,12 @@ function estimeClient(c) {
   if (!t || !compte.pages) return null;
   const produits = compte.produits || 0;
   const pages = compte.pages - produits;
-  const plus = Math.max(0, pages - creation.pages);
+  const seo = compte.seo || 0;
+  const plus = Math.max(0, pages - seo - creation.pages);
   const opts = (c.optionsCreation || []).map((id) => options.find((o) => o.id === id)).filter(Boolean);
   const supplement = t.supplement || 0;
   const total = creation.prix + supplement + plus * creation.pagePlus + opts.reduce((n, o) => n + o.price.once, 0);
-  return { total, pages, produits, plus, supplement, opts };
+  return { total, pages, produits, seo, plus, supplement, opts };
 }
 function clientPrix(c) {
   const e = estimeClient(c);
@@ -164,13 +166,16 @@ function clientPrix(c) {
   e.opts.forEach((o) => parts.push(`${mille(o.price.once)} € ${o.name.toLowerCase()}`));
   if (e.plus) parts.push(`${mille(e.plus * creation.pagePlus)} € pour ${e.plus} page${s_(e.plus)} en plus`);
   const detail = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} et ${parts[parts.length - 1]}` : parts[0];
-  return `<span class="client-prix"><span class="client-prix-t">Prix estimé au tarif actuel</span><b>${mille(e.total)} €</b><span class="client-prix-d">${detail}, puis ${forfaits[0].month} € par mois.</span></span>`;
+  const compris = e.seo ? ` Les ${e.seo} pages pour Google sont comprises.` : '';
+  return `<span class="client-prix"><span class="client-prix-t">Prix estimé au tarif actuel</span><b>${mille(e.total)} €</b><span class="client-prix-d">${detail}, puis ${forfaits[0].month} € par mois.${compris}</span></span>`;
 }
 function clientPages(c) {
   const e = estimeClient(c);
   const n = e ? e.pages : pagesDe(c);
   if (!n) return '';
-  return `<span class="client-pages"><b>${n}</b> page${s_(n)}${e && e.produits ? ` et <b>${e.produits}</b> produit${s_(e.produits)}` : ''}</span>`;
+  const seo = e && e.seo ? `, dont <b>${e.seo}</b> pour Google` : '';
+  const produits = e && e.produits ? `${seo ? ',' : ''} et <b>${e.produits}</b> produit${s_(e.produits)}` : '';
+  return `<span class="client-pages"><b>${n}</b> page${s_(n)}${seo}${produits}</span>`;
 }
 function clientCards({ max = 0, desc = true, prix = true } = {}) {
   const liste = max ? CLIENTS_EN_LIGNE.slice(0, max) : CLIENTS_EN_LIGNE;
@@ -1229,7 +1234,7 @@ function confiancePage() {
 <section class="section"><div class="container">
   ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages en ligne sur les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque page utile est une porte d’entrée de plus depuis Google.</span></p>` : ''}
   ${clientCards()}
-  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille, d’après les pages en ligne. Les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
+  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille, d’après les pages en ligne. Les pages faites pour Google sont comprises, et les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
   ${enCours.length ? `<p class="center muted">En ce moment, je prépare aussi ${enCours.map((c) => esc(c.nom)).join(' et ')}.</p>` : ''}
 </div></section>
 ${METIERS.length ? `<section class="section section-soft"><div class="container">

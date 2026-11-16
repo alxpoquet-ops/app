@@ -1,17 +1,20 @@
 {
   "floreetchenilles.fr": {
-    "pages": 151,
+    "pages": 150,
     "produits": 64,
+    "seo": 85,
     "le": "2026-11-16"
   },
   "dodedo.fr": {
     "pages": 78,
     "produits": 0,
+    "seo": 72,
     "le": "2026-11-16"
   },
   "les-minis-monstres.com": {
     "pages": 138,
     "produits": 0,
+    "seo": 0,
     "le": "2026-11-16"
   }
 }
