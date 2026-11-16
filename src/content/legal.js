@@ -78,7 +78,7 @@ const listeRecharges = compteur.recharge.map((r) => `${nb(r)} d’énergie pour 
 const OUTILS = require('./outils-lia').outils;
 const payants = OUTILS.map(nb).filter((n) => n > 0);
 const outilMin = Math.min(...payants), outilMax = Math.max(...payants);
-const outilsGratuits = OUTILS.some((t) => !nb(t)) ? ' Certains outils n’en utilisent aucun.' : '';
+const outilsGratuits = OUTILS.some((t) => !nb(t)) ? ' Certains outils n’en utilisent aucun.' : ' Pour un outil qui tourne sur l’appareil du client, une même action n’est comptée qu’une fois en 24 heures.';
 const parMessage = nb(compteur.bulle); // un message dans la bulle d'aide
 // La petite bande, présentée par rôle
 const et = (l) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} et ${l[l.length - 1]}` : l.join(''));

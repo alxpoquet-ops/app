@@ -540,6 +540,37 @@ add_action('wp_ajax_aled08e_outil', function () {
     wp_send_json_success($r);
 });
 
+/* Les outils qui tournent dans le navigateur (photo recadrée, QR code, lien d'avis, image d'annonce, texte publié tel quel)
+ * utilisent aussi un peu d'énergie : c'est elle qui fait vivre la bande. Le serveur la compte avant que le navigateur
+ * ne donne le résultat. Une même action (même photo, même image, même jour pour le lien d'avis) n'est comptée qu'une
+ * fois en 24 heures : retélécharger ou recopier ne coûte rien de plus. */
+function aled08e_jl_prix_local($o) {
+    if (!$o) return 0;
+    return !empty($o['local']) ? (int) ($o['jetons'] ?? 0) : (int) ($o['jetonsLocal'] ?? 0);
+}
+add_action('wp_ajax_aled08e_outil_local', function () {
+    $uid = get_current_user_id();
+    if (!$uid || !check_ajax_referer('aled08e_jl', '_aled08e_jl', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
+    $outil = aled08e_jl_outil(sanitize_key(wp_unslash($_POST['outil'] ?? '')));
+    $n = aled08e_jl_prix_local($outil);
+    if ($n <= 0) wp_send_json_error(['message' => 'Outil inconnu.'], 400);
+    $cle = substr(preg_replace('/[^a-z0-9]/', '', strtolower((string) wp_unslash($_POST['cle'] ?? ''))), 0, 40);
+    $ref = 'local:' . $outil['id'] . ':' . $cle;
+    $vus = get_user_meta($uid, 'aled08_jl_local', true);
+    $vus = array_filter(is_array($vus) ? $vus : [], function ($t) { return (int) $t > time() - DAY_IN_SECONDS; });
+    $etat = aled08e_jl_etat($uid);
+    if (isset($vus[$ref])) wp_send_json_success(['deja' => true, 'jetons' => 0, 'solde' => $etat['solde'], 'illimite' => $etat['illimite']]);
+    if (!$etat['actif'] && !$etat['illimite']) wp_send_json_error(['message' => 'L’énergie des petits monstres arrive quand votre abonnement démarre.', 'solde' => true], 400);
+    $manque = 'Il vous reste ' . aled08e_jl_txt($etat['solde']) . ' : cet outil en utilise ' . $n . '. Redonnez de l’énergie, ou attendez le mois prochain.';
+    if (!$etat['illimite'] && $n > $etat['solde']) wp_send_json_error(['message' => $manque, 'solde' => true], 400);
+    if (!aled08e_jl_debiter($uid, $n, $outil['name'], $ref)) wp_send_json_error(['message' => $manque, 'solde' => true], 400);
+    $vus[$ref] = time();
+    arsort($vus);
+    update_user_meta($uid, 'aled08_jl_local', array_slice($vus, 0, 100, true));
+    $etat = aled08e_jl_etat($uid);
+    wp_send_json_success(['jetons' => $etat['illimite'] ? 0 : $n, 'solde' => $etat['solde'], 'illimite' => $etat['illimite']]);
+});
+
 /* Connexion coupée pendant que Cerise écrivait : le navigateur redemande le dernier résultat (gardé une heure) */
 add_action('wp_ajax_aled08e_outil_dernier', function () {
     $uid = get_current_user_id();
@@ -592,6 +623,8 @@ function aled08e_jl_champ_html($o, $c, $uid) {
 
 /* Le visuel d'annonce : un texte sur une couleur ou sur une photo, dessiné dans le navigateur (gratuit) */
 function aled08e_jl_visuel_html($host) {
+    $n = aled08e_jl_prix_local(aled08e_jl_outil('visuel'));
+    $prix = $n ? '<b class="ol-btn-prix">' . esc_html(aled08e_jl_txt($n)) . '</b>' : '';
     $puces = function ($nom, $legende, $options, $defaut) {
         $h = '<fieldset class="field ol-multi"><legend>' . esc_html($legende) . '</legend><div class="ol-puces">';
         foreach ($options as $v => $l) $h .= '<label class="ol-puce"><input type="radio" name="v-' . esc_attr($nom) . '" value="' . esc_attr($v) . '"' . ($v === $defaut ? ' checked' : '') . '><span>' . esc_html($l) . '</span></label>';
@@ -607,8 +640,9 @@ function aled08e_jl_visuel_html($host) {
         . '<div class="ol-visuel-couleurs">' . $puces('couleur', 'La couleur du fond', ['rose' => 'Rose', 'lilas' => 'Lilas', 'menthe' => 'Menthe', 'peche' => 'Pêche', 'ciel' => 'Ciel', 'beurre' => 'Jaune', 'blanc' => 'Blanc', 'sombre' => 'Sombre'], 'rose') . '</div>'
         . $puces('place', 'La place du texte', ['haut' => 'En haut', 'milieu' => 'Au milieu', 'bas' => 'En bas'], 'milieu')
         . '</div><div class="ol-visuel-apercu"><canvas data-v-canvas width="1080" height="1080" role="img" aria-label="Aperçu de votre visuel"></canvas>'
-        . '<a class="btn btn-primary" data-v-dl download="annonce.jpg" href="#">' . aled08e_icon('download') . '<span>Télécharger l’image</span></a>'
-        . '<p class="app-note">L’image est faite sur votre appareil : rien n’est envoyé, et elle n’utilise pas d’énergie.</p></div></div>';
+        . '<a class="btn btn-primary" data-v-dl download="annonce.jpg" href="#">' . aled08e_icon('download') . '<span>Télécharger l’image</span>' . $prix . '</a>'
+        . '<p class="ol-etat" data-ol-etat-local role="status" aria-live="polite"></p>'
+        . '<p class="app-note">L’image est faite sur votre appareil : rien n’est envoyé. Vous pouvez la retélécharger sans rien de plus.</p></div></div>';
 }
 
 function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
@@ -632,7 +666,7 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
         <?php else : ?>
         <strong>Il vous reste <span data-jl-solde><?php echo esc_html(aled08e_jl_txt($e['solde'])); ?></span></strong>
         <?php if (!$e['actif']) : ?>
-        <small>L’énergie des petits monstres arrive quand votre abonnement démarre. Les outils qui n’utilisent pas d’énergie marchent déjà. 100 d’énergie = 1 €.</small>
+        <small>L’énergie des petits monstres arrive quand votre abonnement démarre. 100 d’énergie = 1 €.</small>
         <?php else : ?>
         <small><?php echo esc_html($f['name']); ?> : <?php echo esc_html(aled08e_jl_txt($e['mois'])); ?> par mois, remis à neuf le 1<sup>er</sup><?php echo $e['extra'] ? '. Dont ' . (int) $e['extra'] . ' redonnés en plus, qui restent jusqu’à ce que vous les utilisiez' : ''; ?>. 100 d’énergie = 1 €.</small>
         <?php endif; ?>
@@ -652,7 +686,7 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
       </details>
       <?php endif; ?>
     </div>
-    <?php if (!$prets) : ?><p class="esp-warn">Les petits monstres se branchent en ce moment : les outils où ils écrivent arrivent très bientôt. Publier votre propre texte et les outils gratuits marchent déjà.</p><?php endif; ?>
+    <?php if (!$prets) : ?><p class="esp-warn">Les petits monstres se branchent en ce moment : les outils où ils écrivent arrivent très bientôt. Publier votre propre texte et les outils qui tournent sur votre appareil marchent déjà.</p><?php endif; ?>
 
     <?php
     $familles = ['reseaux' => 'Réseaux', 'texte' => 'Textes', 'image' => 'Photos', 'site' => 'Mon site', 'avis' => 'Avis'];
@@ -680,19 +714,21 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
       <header class="ol-tete"><span class="ol-ico"><?php echo aled08e_icon($o['icon']); // phpcs:ignore ?></span><div><h3><?php echo esc_html($o['name']); ?></h3><p><?php echo esc_html($o['desc']); ?></p></div><button type="button" class="ol-fermer" data-ol-fermer aria-label="Fermer l’outil"><?php echo aled08e_icon('x'); // phpcs:ignore ?></button></header>
       <?php if ($o['id'] === 'formats') : ?>
       <div class="ol-formats" data-formats>
-        <label class="req-photo ol-photo"><input type="file" accept="image/*" class="sr-only" data-formats-file><?php echo aled08e_icon('image-plus'); // phpcs:ignore ?><span>Choisir une photo</span></label>
+        <label class="req-photo ol-photo"><input type="file" accept="image/*" class="sr-only" data-formats-file><?php echo aled08e_icon('image-plus'); // phpcs:ignore ?><span>Choisir une photo</span><?php $n = aled08e_jl_prix_local($o); if ($n) : ?><b class="ol-btn-prix"><?php echo esc_html(aled08e_jl_txt($n)); ?></b><?php endif; ?></label>
         <p class="ol-etat" data-formats-info role="status" aria-live="polite"></p>
         <div class="ol-formats-liste" data-formats-liste></div>
       </div>
       <?php elseif ($o['id'] === 'qr') : ?>
         <?php if ($site) : ?>
-        <div class="ol-qr"><div data-qr="<?php echo esc_attr($site); ?>"></div><div><p class="app-note">Il mène à <?php echo esc_html($host); ?>. À imprimer sur vos cartes, votre vitrine ou vos flyers.</p><button type="button" class="btn btn-light" data-qr-dl><?php echo aled08e_icon('download'); // phpcs:ignore ?><span>Télécharger</span></button></div></div>
+        <div class="ol-qr"><div data-qr="<?php echo esc_attr($site); ?>"></div><div><p class="app-note">Il mène à <?php echo esc_html($host); ?>. À imprimer sur vos cartes, votre vitrine ou vos flyers.</p><button type="button" class="btn btn-light" data-qr-dl><?php echo aled08e_icon('download'); // phpcs:ignore ?><span>Télécharger</span><b class="ol-btn-prix"><?php echo esc_html(aled08e_jl_txt(aled08e_jl_prix_local($o))); ?></b></button><p class="ol-etat" data-ol-etat-local role="status" aria-live="polite"></p></div></div>
         <?php else : ?><p class="esp-empty">Votre QR code apparaîtra ici dès que votre site sera en ligne.</p><?php endif; ?>
       <?php elseif ($o['id'] === 'lienavis') : ?>
         <?php if ($avis) : ?>
         <p class="app-note">Envoyez-le à vos clients après une vente ou une prestation : il ouvre directement la page pour laisser un avis. Sans rien offrir en échange : c’est la règle de Google.</p>
         <input class="copy-in" id="avis-link" type="text" readonly value="<?php echo esc_attr($avis); ?>" aria-label="Lien d’avis Google">
-        <button type="button" class="btn btn-primary" data-copy="avis-link"><?php echo aled08e_icon('check'); // phpcs:ignore ?><span>Copier le lien</span></button>
+        <button type="button" class="btn btn-primary" data-copy="avis-link"><?php echo aled08e_icon('check'); // phpcs:ignore ?><span>Copier le lien</span><b class="ol-btn-prix"><?php echo esc_html(aled08e_jl_txt(aled08e_jl_prix_local($o))); ?></b></button>
+        <p class="ol-etat" data-ol-etat-local role="status" aria-live="polite"></p>
+        <p class="app-note">Compté une fois par jour : recopiez-le autant que vous voulez.</p>
         <?php else : ?><p class="esp-empty">Je prépare votre lien d’avis Google à partir de votre fiche : il apparaîtra ici.</p><?php endif; ?>
       <?php else : ?>
       <?php $pub = $o['id'] === 'publier'; if ($pub) echo aled08e_rs_html($uid); // phpcs:ignore ?>
@@ -703,7 +739,7 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
         <input type="hidden" name="outil" value="<?php echo esc_attr($o['id']); ?>">
         <?php foreach ((array) $o['champs'] as $c) echo aled08e_jl_champ_html($o, $c, $uid); // phpcs:ignore ?>
         <div class="ol-boutons">
-          <?php if ($pub) : ?><button class="btn btn-primary" type="button" data-ol-direct><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Publier mon texte</span><b class="ol-btn-prix">gratuit</b></button><?php endif; ?>
+          <?php if ($pub) : ?><button class="btn btn-primary" type="button" data-ol-direct><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Publier mon texte</span><b class="ol-btn-prix"><?php echo esc_html(aled08e_jl_txt(aled08e_jl_prix_local($o))); ?></b></button><?php endif; ?>
           <button class="btn <?php echo $pub ? 'btn-light' : 'btn-primary'; ?>" type="submit"<?php echo $prets ? '' : ' disabled'; ?>><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span><?php echo esc_html($pub ? 'Le messager adapte mon texte' : ($o['bouton'] ?? 'Lancer')); ?></span><b class="ol-btn-prix"><?php echo $e['illimite'] ? 'offert' : esc_html(aled08e_jl_txt($o['jetons'])); ?></b></button>
         </div>
         <p class="ol-etat" data-ol-etat role="status" aria-live="polite"></p>

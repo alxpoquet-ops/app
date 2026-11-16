@@ -319,7 +319,7 @@ function energieOutils() {
     </div>
   </div>
   <div class="feats feats-4">
-    <div class="feat reveal">${icon('toolbox')}<h3>Écrite sur chaque bouton</h3><p>Un outil utilise de ${JL_OUTIL_MIN} à ${JL_OUTIL_MAX} d’énergie. Vous voyez le nombre avant de le lancer. Certains outils n’en utilisent pas du tout.</p></div>
+    <div class="feat reveal">${icon('toolbox')}<h3>Écrite sur chaque bouton</h3><p>Un outil utilise de ${JL_OUTIL_MIN} à ${JL_OUTIL_MAX} d’énergie. Vous voyez le nombre avant de le lancer, et même les plus petits outils en utilisent un peu.</p></div>
     <div class="feat reveal">${icon('wand-sparkles')}<h3>Pour vos retouches aussi</h3><p>Une retouche de votre site par Bricou utilise de ${JL_MODIF_FOURCHETTE} d’énergie, selon la longueur du texte et le nombre de photos.</p></div>
     <div class="feat reveal">${icon('refresh-cw')}<h3>Rendue si ça ne marche pas</h3><p>Une retouche qui échoue, un aperçu que vous refusez ou une demande annulée sous 24 heures : l’énergie vous revient.</p></div>
     <div class="feat reveal">${icon('calendar-check')}<h3>De retour chaque mois</h3><p>Le 1<sup>er</sup> du mois, elle repart à ${e}. Besoin de plus ? ${reprise.jetons} d’énergie pour ${reprise.prix} €, ajoutés à votre prochaine facture et gardés jusqu’à ce que vous les utilisiez.</p></div>
@@ -1634,14 +1634,14 @@ function docPage() {
   <div class="doc-table-wrap reveal"><table class="doc-table jl-table">
     <thead><tr><th scope="col">Dans l’onglet « Outils »</th><th scope="col">Ce que ça fait</th><th scope="col">Prix</th></tr></thead>
     <tbody>
-      ${OUTILS_LIA.map((t) => `<tr><th scope="row">${t.name}</th><td>${t.court}</td><td>${jl(t.jetons)}</td></tr>`).join('')}
+      ${OUTILS_LIA.map((t) => `<tr><th scope="row">${t.name}</th><td>${t.court}</td><td>${t.jetonsLocal ? `${t.jetonsLocal} à ${t.jetons} d’énergie` : jl(t.jetons)}</td></tr>`).join('')}
       <tr><th scope="row">Retouche du site par la bande</th><td>Depuis l’onglet « Mes demandes ».</td><td>${JL_MODIF}</td></tr>
     </tbody>
   </table></div>
   <ul class="list-check">
     <li>L’énergie de l’abonnement repart à ${ABO.jetons} le 1<sup>er</sup> de chaque mois. Ce qui reste ne se garde pas.</li>
     <li>Pour en reprendre : à partir de ${jetonsLia.recharge[0].jetons} d’énergie pour ${jetonsLia.recharge[0].prix} €, ajoutés à votre prochaine facture. Cette énergie-là reste jusqu’à ce que vous l’utilisiez.</li>
-    <li>Certains outils tournent sur votre appareil : ils n’utilisent pas d’énergie.</li>
+    <li>Les outils qui tournent sur votre appareil en utilisent juste un peu, une seule fois pour un même résultat.</li>
   </ul>
   <p class="doc-more">${C.btn(sections.espace.path, 'btn-light', 'toolbox', 'Voir tous les outils')}</p>
 </div></section>

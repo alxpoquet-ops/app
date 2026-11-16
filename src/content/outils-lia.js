@@ -5,14 +5,15 @@
 // categorie : la famille (reseaux, texte, image, site, avis), qui sert de filtre dans l'onglet.
 // jetons    : prix fixe de l'outil en Jetons Cerise (1 jeton = 1 centime). Règle : ce que l'outil coûte chez Claude
 //             (coutCts, en centimes, estimé pour Claude Opus 5.5) × config.jetonsLia.margeOutils, arrondi au-dessus.
-//             0 = gratuit : l'outil tourne dans le navigateur (local: true), il ne coûte rien.
+//             Un outil qui tourne dans le navigateur (local: true) utilise aussi un peu d'énergie, comptée par le serveur.
+// jetonsLocal : pour un outil qui marche aussi sans Cerise (visuel téléchargé, texte publié tel quel), l'énergie de cet usage-là.
 // champs    : le formulaire. kind : texte (une ligne), texte_long, choix, multi, image (une photo, vue par Cerise),
 //             page (une page du site du client, lue par notre serveur). requis, aide, options, defaut,
 //             max (longueur maximale : un texte trop long est refusé, jamais coupé).
 // consigne  : ce que Cerise doit rendre, bloc par bloc (titres exacts). Un seul bloc « STOP » = rien d'utilisable :
 //             le message s'affiche et aucun jeton n'est compté.
 // note      : la phrase fixe affichée sous le résultat. limites : longueur conseillée par titre de bloc.
-// visuel    : l'outil dessine une image dans le navigateur (gratuit) ; ses champs servent à demander les mots à Cerise.
+// visuel    : l'outil dessine une image dans le navigateur (jetonsLocal au téléchargement) ; ses champs servent à demander les mots à Cerise.
 // imageMax  : taille de la photo envoyée à Cerise (1024 par défaut).
 // Sources des idées : baromètre France Num, bibliothèque de prompts d'Anthropic, outils d'IA de Wix, Shopify, Canva.
 const RESEAUX = ['Facebook', 'Instagram', 'LinkedIn', 'X', 'Fiche Google', 'TikTok', 'Bluesky', 'Mastodon'];
@@ -27,9 +28,10 @@ const outils = [
     "color": "pink",
     "name": "Publier partout",
     "court": "Une photo, une description : publiez sur tous vos réseaux depuis la même page.",
-    "desc": "Vous donnez une photo et quelques mots, puis vous publiez sur tous vos réseaux depuis la même page. Avec votre texte, il n’utilise pas d’énergie. Pouf peut aussi l’adapter à chaque réseau, avec les hashtags.",
+    "desc": "Vous donnez une photo et quelques mots, puis vous publiez sur tous vos réseaux depuis la même page. Avec votre texte, il utilise juste un peu d’énergie. Pouf peut aussi l’adapter à chaque réseau, avec les hashtags.",
     "coutCts": 3.3,
     "jetons": 14,
+    "jetonsLocal": 2,
     "bouton": "Écrire mes publications",
     "champs": [
       {
@@ -297,9 +299,10 @@ const outils = [
     "color": "lilac",
     "name": "Annonce en image",
     "court": "Votre annonce en image : un texte sur une couleur ou sur votre photo.",
-    "desc": "Vous écrivez un titre, vous choisissez une couleur ou une de vos photos, et vous téléchargez une image prête à publier. Tout se fait sur votre appareil, sans énergie. Si vous séchez, le messager trouve les mots.",
+    "desc": "Vous écrivez un titre, vous choisissez une couleur ou une de vos photos, et vous téléchargez une image prête à publier. Tout se fait sur votre appareil, avec juste un peu d’énergie. Si vous séchez, le messager trouve les mots.",
     "coutCts": 0.6,
     "jetons": 3,
+    "jetonsLocal": 2,
     "bouton": "Le messager trouve les mots",
     "champs": [
       {
@@ -327,7 +330,7 @@ const outils = [
     "court": "Votre photo au bon format pour chaque réseau, et légère pour votre site.",
     "desc": "Vous choisissez une photo. Elle est recadrée au bon format pour Instagram, les stories, Facebook, LinkedIn et votre fiche Google, et une version légère est préparée pour votre site. Vous téléchargez celles que vous voulez. Rien ne quitte votre appareil.",
     "coutCts": 0,
-    "jetons": 0,
+    "jetons": 2,
     "local": true
   },
   {
@@ -484,7 +487,7 @@ const outils = [
     "court": "Un QR code vers votre site, prêt à imprimer.",
     "desc": "Un QR code vers votre site, à imprimer sur vos cartes, votre vitrine ou vos flyers. Vos clients le visent avec leur téléphone et arrivent chez vous.",
     "coutCts": 0,
-    "jetons": 0,
+    "jetons": 1,
     "local": true
   },
   {
@@ -540,7 +543,7 @@ const outils = [
     "court": "Le lien à envoyer à vos clients pour qu’ils laissent un avis.",
     "desc": "Un lien tout prêt à envoyer à vos clients après une vente ou une prestation. Il ouvre directement la page pour laisser un avis sur votre fiche Google. Envoyez-le à tous vos clients, sans rien offrir en échange : c’est la règle de Google.",
     "coutCts": 0,
-    "jetons": 0,
+    "jetons": 1,
     "local": true
   }
 ];

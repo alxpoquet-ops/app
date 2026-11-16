@@ -93,6 +93,34 @@
     return fetch(ajax, { method: 'POST', body: fd, credentials: 'same-origin' })
       .then(function (r) { return r.json().catch(function () { return { success: false, data: { message: 'Réponse illisible. Réessayez.' } }; }); });
   }
+  /* ---------- les outils du navigateur utilisent aussi un peu d'énergie ----------
+   * Le serveur la compte avant de donner le résultat. Une même action (même photo, même image, même jour pour le lien
+   * d'avis) n'est comptée qu'une fois en 24 heures : retélécharger ou recopier ne coûte rien de plus. */
+  function empreinte(t) { var h = 5381; t = String(t); for (var i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
+  function payer(outil, cle, etat) {
+    if (etat) { etat.className = 'ol-etat'; etat.textContent = 'Un instant…'; }
+    return poster({ action: 'aled08e_outil_local', outil: outil, cle: empreinte(cle) }).then(function (j) {
+      if (!j || !j.success) { if (etat) { etat.className = 'ol-etat is-err'; etat.textContent = (j && j.data && j.data.message) || 'Ça n’a pas marché. Réessayez.'; } return false; }
+      var data = j.data;
+      if (etat) { etat.className = 'ol-etat is-ok'; etat.textContent = data.jetons ? 'Énergie utilisée : ' + data.jetons + ', il vous en reste ' + data.solde + '.' : ''; }
+      var s = $('[data-jl-solde]'); if (s && !data.illimite) s.textContent = jetons(data.solde);
+      return true;
+    }, function () { if (etat) { etat.className = 'ol-etat is-err'; etat.textContent = 'La connexion a coupé. Réessayez.'; } return false; });
+  }
+  /* un bouton dont l'action est faite ailleurs (QR code, lien d'avis) : on compte l'énergie d'abord, puis on le relance */
+  function garder(b, outil, cleFn) {
+    var paye = '';
+    b.addEventListener('click', function (ev) {
+      var cle = cleFn();
+      if (paye === cle) return;
+      ev.preventDefault(); ev.stopImmediatePropagation();
+      var sec = b.closest('[data-ol]'), etat = sec && $('[data-ol-etat-local]', sec);
+      b.disabled = true;
+      payer(outil, cle, etat).then(function (ok) { b.disabled = false; if (ok) { paye = cle; b.click(); } });
+    }, true);
+  }
+  $$('[data-ol="qr"] [data-qr-dl]').forEach(function (b) { garder(b, 'qr', function () { return 'qr'; }); });
+  $$('[data-ol="lienavis"] [data-copy]').forEach(function (b) { garder(b, 'lienavis', function () { return 'avis' + new Date().toISOString().slice(0, 10); }); });
   var LIMITES_RESEAUX = { 'x': 280, 'bluesky': 300, 'mastodon': 500 };
   function bloc(b, partage, image, relies, limites) {
     var c = el('div', 'ol-bloc');
@@ -188,9 +216,12 @@
       if (!texte) { etat.className = 'ol-etat is-err'; etat.textContent = 'Écrivez d’abord votre texte.'; t.focus(); return; }
       var choisis = $$('input[name="c_reseaux[]"]:checked', form).map(function (i) { return i.value; });
       if (!choisis.length) { etat.className = 'ol-etat is-err'; etat.textContent = 'Cochez au moins un réseau.'; return; }
-      var fi = $('[data-ol-file]', form);
-      etat.className = 'ol-etat'; etat.textContent = '';
-      afficher(res, choisis.map(function (n) { return { titre: n, texte: texte }; }), fi && fi.files && fi.files[0] ? fi.files[0] : null);
+      var fi = $('[data-ol-file]', form), ph = fi && fi.files && fi.files[0] ? fi.files[0] : null;
+      direct.disabled = true;
+      payer('publier', texte + '|' + choisis.join(',') + '|' + (ph ? ph.name + ph.size : ''), etat).then(function (ok) {
+        direct.disabled = false;
+        if (ok) afficher(res, choisis.map(function (n) { return { titre: n, texte: texte }; }), ph);
+      });
     });
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
@@ -202,7 +233,7 @@
       var reussi = function (data) {
           btn.disabled = false; form.classList.remove('is-busy');
           etat.className = 'ol-etat is-ok';
-          etat.textContent = data.illimite ? 'C’est prêt.' : 'C’est prêt. ' + jetons(data.jetons) + ' utilisé' + (data.jetons > 1 ? 's' : '') + ', il vous en reste ' + data.solde + '.';
+          etat.textContent = data.illimite ? 'C’est prêt.' : 'C’est prêt. Énergie utilisée : ' + data.jetons + ', il vous en reste ' + data.solde + '.';
           var s = $('[data-jl-solde]'); if (s && !data.illimite) s.textContent = jetons(data.solde);
           var vz = $('[data-visuel]', sec);
           if (vz && vz.remplir) { vz.remplir(data.blocs); res.hidden = true; }
@@ -264,7 +295,7 @@
 
   /* ---------- visuel d'annonce : un texte sur une couleur ou sur une photo, dessiné dans le navigateur ---------- */
   $$('[data-visuel]').forEach(function (vz) {
-    var cv = $('[data-v-canvas]', vz), ctx = cv.getContext('2d'), dl = $('[data-v-dl]', vz), photo = null;
+    var cv = $('[data-v-canvas]', vz), ctx = cv.getContext('2d'), dl = $('[data-v-dl]', vz), photo = null, photoNom = '', paye = '';
     var champ = function (n) { return $('[data-v-' + n + ']', vz); };
     var choix = function (n) { var c = $('input[name="v-' + n + '"]:checked', vz); return c ? c.value : ''; };
     var FORMATS = { carre: [1080, 1080], portrait: [1080, 1350], story: [1080, 1920] };
@@ -342,10 +373,17 @@
       var f = fp.files && fp.files[0];
       if (!f) return;
       var img = new Image(), url = URL.createObjectURL(f);
-      img.onload = function () { photo = img; if (retirer) retirer.hidden = false; vz.classList.add('a-photo'); dessiner(); URL.revokeObjectURL(url); };
+      img.onload = function () { photo = img; photoNom = f.name + f.size; if (retirer) retirer.hidden = false; vz.classList.add('a-photo'); dessiner(); URL.revokeObjectURL(url); };
       img.src = url;
     });
-    if (retirer) retirer.addEventListener('click', function () { photo = null; fp.value = ''; retirer.hidden = true; vz.classList.remove('a-photo'); dessiner(); });
+    if (retirer) retirer.addEventListener('click', function () { photo = null; photoNom = ''; fp.value = ''; retirer.hidden = true; vz.classList.remove('a-photo'); dessiner(); });
+    /* le téléchargement compte un peu d'énergie, une seule fois pour une même image */
+    if (dl) dl.addEventListener('click', function (ev) {
+      var cle = [champ('titre').value, champ('sous').value, champ('pied').value, choix('format'), choix('couleur'), choix('place'), photoNom].join('|');
+      if (paye === cle) return;
+      ev.preventDefault();
+      payer('visuel', cle, $('[data-ol-etat-local]', vz)).then(function (ok) { if (ok) { paye = cle; dl.click(); } });
+    });
     /* quand Cerise propose les mots (outil juste au-dessous), ils vont dans le visuel */
     vz.remplir = function (blocs) {
       blocs.forEach(function (b) {
@@ -374,8 +412,11 @@
     $('[data-formats-file]', fz).addEventListener('change', function () {
       var f = this.files && this.files[0];
       if (!f) return;
-      var img = new Image(), url = URL.createObjectURL(f);
       liste.innerHTML = '';
+      payer('formats', f.name + f.size + f.lastModified, info).then(function (ok) { if (ok) preparer(f); });
+    });
+    var preparer = function (f) {
+      var img = new Image(), url = URL.createObjectURL(f);
       if (info) { info.className = 'ol-etat'; info.textContent = 'Préparation…'; }
       img.onerror = function () {
         URL.revokeObjectURL(url);
@@ -405,6 +446,6 @@
         URL.revokeObjectURL(url);
       };
       img.src = url;
-    });
+    };
   }
 })();
