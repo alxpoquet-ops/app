@@ -6,8 +6,11 @@ const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, jet
 const L = site.legal;
 const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
-const UPDATED = '2026-11-15'; // mentions légales et politique de confidentialité
-const UPDATED_CGV = '2026-11-16'; // conditions générales : offre V2 (intervention d'Alex par trimestre, extras à la demande)
+const UPDATED = '2026-11-15'; // mentions légales
+const UPDATED_CONF = '2026-11-16'; // politique de confidentialité : Lia présentée comme l'assistante autonome
+const UPDATED_CGV = '2026-11-16'; // conditions générales : offre V2 (intervention d'Alex par trimestre, extras à la demande, jetons)
+// Lia : dans les textes publics, « assistante autonome ». Seule exception, l'article 11 des conditions générales, qui informe
+// le client qu'il échange avec un système automatisé (règlement européen AI Act, obligation de transparence).
 
 // L'offre unique : la création à prix fixe, un seul abonnement, des options payées une fois, des extras au mois,
 // et des extras à la demande payés une fois. Tous les nombres viennent de src/config.js, pour que les CGV suivent toujours les prix.
@@ -34,7 +37,6 @@ const DETAIL = {
   reprise: 'les textes, les photos et les adresses de pages de l’ancien site du client, repris dans le nouveau',
   pages: 'cinq pages en plus des cinq comprises, pour un site vitrine ou une boutique en ligne',
   seo: 'le travail de référencement mené chaque mois, avec un point sur les résultats',
-  liaplus: `un usage régulier de Lia et de ses outils, soit ${jetonsLia.liaplus} Jetons Lia en plus chaque mois (article 12)`,
   stats: 'les chiffres du site heure par heure, et un rapport chaque mois',
   mail: 'une adresse e-mail au nom de domaine du client',
   stock: 'le stock de la boutique, décompté à chaque vente',
@@ -50,7 +52,6 @@ const listeExtras = options
   .filter((o) => o.quand === 'mois')
   .map((o) => `- **${o.name}, ${eur(o.price.month)} € par mois**${detail(o)}.${boutiqueSeule(o)}`)
   .join('\n');
-const liaPlus = options.find((o) => o.id === 'liaplus');
 const seoSuivi = options.find((o) => o.id === 'seo');
 // Extras à la demande : payés une fois, commandés par le client depuis son espace, ajoutés à la prochaine facture.
 const DETAIL_DEMANDE = {
@@ -64,10 +65,14 @@ const listeDemande = aLaDemande
   .join('\n');
 const alexPlus = aLaDemande.find((x) => x.id === 'alex');
 const urgent = aLaDemande.find((x) => x.id === 'urgent');
-// Jetons Lia : le compteur interne de l'espace client (les pages publiques n'en parlent pas)
+// Jetons Lia : les outils et les retouches avec Lia fonctionnent avec des jetons (100 par mois, rachat à l'utilisation).
 const centime = eur(Math.round(jetonsLia.valeur * 100));
 const modifMax = 65; // la plus grande demande que Lia accepte (mots et photos)
 const listeRecharges = jetonsLia.recharge.map((r) => `${r.jetons} jetons pour ${eur(r.prix)} €`).join(', ');
+const OUTILS_LIA = require('./outils-lia').outils;
+const payants = OUTILS_LIA.map((t) => t.jetons).filter((n) => n > 0);
+const outilMin = Math.min(...payants), outilMax = Math.max(...payants);
+const outilsGratuits = OUTILS_LIA.some((t) => !t.jetons) ? ' Certains outils sont gratuits.' : '';
 
 module.exports = [
   {
@@ -115,9 +120,9 @@ Pour un litige avec un consommateur, un médiateur de la consommation peut être
     path: '/politique-de-confidentialite/',
     name: 'Politique de confidentialité',
     title: `Politique de confidentialité | ${site.name}`,
-    description: `Comment ${site.name} traite vos données : demande de devis, commande en ligne, paiement par Stripe, nom de domaine, espace client et IA. Aucun traceur publicitaire.`,
+    description: `Comment ${site.name} traite vos données : demande de devis, commande en ligne, paiement par Stripe, nom de domaine, espace client et Lia. Aucun traceur publicitaire.`,
     lead: 'Ce que deviennent les informations que vous m’envoyez, combien de temps je les garde, et vos droits.',
-    updated: UPDATED,
+    updated: UPDATED_CONF,
     body: `## 1. Responsable du traitement
 
 ${site.owner}, ${site.name}, ${addr}. Contact : ${contact}.
@@ -147,7 +152,7 @@ Pour réserver le nom de domaine, je transmets vos coordonnées de titulaire (pr
 
 Votre compte est créé automatiquement à la commande, avec votre adresse e-mail. Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée.
 
-Lia, l’IA de l’espace client, fonctionne avec Claude, un service de la société Anthropic. Quand vous lui confiez une modification ou que vous lancez un de ses outils, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude, par une liaison chiffrée, pour produire la réponse. Ils ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
+Lia, l’assistante autonome de l’espace client, fonctionne avec Claude, un service de la société Anthropic. Quand vous lui confiez une modification ou que vous lancez un de ses outils, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude, par une liaison chiffrée, pour produire la réponse. Ils ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
 
 Quand vous publiez sur un réseau social depuis l’outil « Publier partout », votre texte et votre photo sont envoyés à ce réseau, sur le compte que vous avez relié. La photo est gardée une heure sur notre serveur, le temps de l’envoi, puis effacée.
 
@@ -235,7 +240,7 @@ Il comprend :
 - **Le suivi du site** : son bon fonctionnement est surveillé.
 - **Le support** : une réponse sous ${delais.reponse}, en jours ouvrés (article 11).
 - **Les bases du SEO** : le site est construit pour que Google puisse le lire et le comprendre.
-- **Les petites retouches avec Lia** et l’usage des outils de l’espace client, dans la limite du compteur de Jetons Lia (article 12).
+- **${abo.jetons} Jetons Lia par mois**, pour les outils de l’espace client et les retouches faites par Lia (article 12).
 - **${maj(intervAlex)} d’Alex par ${periode}** (article 11).${periode === 'trimestre' ? ` Le client inscrit avant le ${DATE_V2} garde une intervention d’Alex par mois.` : ''}
 - **L’espace client et ses outils** (article 13).
 
