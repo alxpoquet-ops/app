@@ -315,21 +315,23 @@ Le client envoie ses demandes de modification depuis son espace client ou par me
 
 ## 12. Jetons Lia
 
-Les Jetons Lia sont le compteur interne des retouches avec Lia et des outils de l’espace client. Le client voit ce compteur dans son espace client. Un Jeton Lia vaut ${centime} centime d’euro. Le compteur sert aux modifications du site par Lia et aux outils de l’espace client (publier sur les réseaux, corriger ou traduire un texte, conseils sur une photo ou sur une page du site, et autres outils du même genre).
+Les outils de l’espace client et les retouches faites par Lia fonctionnent avec des Jetons Lia. Le client voit son solde de jetons dans son espace client. Un Jeton Lia vaut ${centime} centime d’euro. Les outils sont par exemple : publier sur les réseaux, corriger ou traduire un texte, conseils sur une photo ou sur une page du site, et autres outils du même genre.
 
-**Décompte.** Une modification faite par Lia compte ${jetonsLia.modif.base} Jetons Lia, plus 1 jeton par tranche de ${jetonsLia.modif.mots} mots écrits dans la demande, plus ${jetonsLia.modif.image} jetons par photo jointe. Cela fait entre ${jetonsLia.modif.base} et ${modifMax} jetons par modification. Chaque outil compte le nombre de jetons affiché avant son utilisation.
+**Prix d’une retouche.** Une retouche faite par Lia coûte ${jetonsLia.modif.base} Jetons Lia, plus 1 jeton par tranche de ${jetonsLia.modif.mots} mots écrits dans la demande, plus ${jetonsLia.modif.image} jetons par photo jointe. Cela fait entre ${jetonsLia.modif.base} et ${modifMax} jetons par retouche.
 
-**Usage compris dans l’abonnement.** L’abonnement donne ${abo.jetons} Jetons Lia par mois, pour un usage occasionnel. Cela représente en général 2 à 3 retouches avec Lia, ou une dizaine d’utilisations d’outils. Ces jetons sont remis le 1er de chaque mois et ne se reportent pas d’un mois sur l’autre.
+**Prix d’un outil.** Un outil coûte de ${outilMin} à ${outilMax} Jetons Lia. Son prix est affiché sur son bouton, avant son utilisation.${outilsGratuits}
 
-**Usage régulier.** L’extra ${liaPlus.name} ajoute ${jetonsLia.liaplus} Jetons Lia par mois, pour ${eur(liaPlus.price.month)} € par mois. Ces jetons suivent la même règle que ceux de l’abonnement : ils reviennent le 1er du mois, sans report. Le client peut aussi acheter une recharge à l’unité : ${listeRecharges}. La recharge est ajoutée à sa prochaine facture. Les jetons d’une recharge ne s’effacent pas à la fin du mois : ils restent jusqu’à ce qu’ils soient utilisés.
+**Jetons de l’abonnement.** L’abonnement comprend ${abo.jetons} Jetons Lia par mois. Ces jetons sont remis le 1er de chaque mois et ne se reportent pas d’un mois sur l’autre.
 
-**Jetons recrédités.** Les jetons d’une demande sont recrédités dans quatre cas : la demande est transmise à Alex, la mise en ligne échoue, le client refuse l’aperçu, ou le client annule sa demande dans les 24 heures.
+**Jetons rachetés.** Quand il en manque, le client rachète des jetons à l’utilisation, depuis son espace client : ${listeRecharges}. Le montant est ajouté à sa prochaine facture. Les jetons rachetés ne s’effacent pas à la fin du mois : ils restent jusqu’à ce qu’ils soient utilisés.
 
-Le compteur de Jetons Lia et les interventions d’Alex sont comptés séparément.
+**Jetons rendus.** Les jetons d’une demande sont rendus au client dans quatre cas : la demande est transmise à Alex, la mise en ligne échoue, le client refuse l’aperçu, ou le client annule sa demande dans les 24 heures.
+
+Les Jetons Lia et les interventions d’Alex sont comptés séparément.
 
 ## 13. Espace client et compte
 
-Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. Il y suit sa commande, ses demandes, son abonnement, ses extras et ses factures. Il y commande les extras à la demande (article 6). Il y trouve aussi les outils de Lia et son compteur de Jetons Lia (article 12). Il garde ses identifiants pour lui et prévient ${site.name} en cas de doute sur leur usage.
+Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. Il y suit sa commande, ses demandes, son abonnement, ses extras et ses factures. Il y commande les extras à la demande (article 6). Il y trouve aussi les outils de Lia et son solde de Jetons Lia, et il peut y racheter des jetons (article 12). Il garde ses identifiants pour lui et prévient ${site.name} en cas de doute sur leur usage.
 
 Un compte sans connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec ses demandes et ses photos. Le client est prévenu par e-mail 30 jours avant. Une connexion suffit pour annuler la suppression. Les factures sont conservées en dehors du compte, le temps prévu par la loi.
 
@@ -337,9 +339,9 @@ Un compte sans connexion depuis 12 mois et sans abonnement actif est supprimé a
 
 Le client garantit qu’il a le droit d’utiliser les textes, images, logos et produits qu’il fournit. Il reste responsable des informations légales propres à son activité : mentions obligatoires, conditions de vente de sa boutique, prix affichés.
 
-## 15. Versions et intelligence artificielle
+## 15. Versions et outils de Lia
 
-Chaque version du site est conservée et peut être restaurée sur demande. ${site.name} s’aide d’outils d’intelligence artificielle pour travailler plus vite. Une modification préparée par Lia n’est mise en ligne qu’après l’accord du client, qui voit l’aperçu. Les textes et les conseils que donnent les outils de Lia sont des propositions : le client les relit avant de s’en servir et reste responsable de ce qu’il publie. Lia ne donne pas de conseil juridique, médical ou comptable.
+Chaque version du site est conservée et peut être restaurée sur demande. Une modification préparée par Lia n’est mise en ligne qu’après l’accord du client, qui voit l’aperçu. Les textes et les conseils que donnent les outils de Lia sont des propositions : le client les relit avant de s’en servir et reste responsable de ce qu’il publie. Lia ne donne pas de conseil juridique, médical ou comptable.
 
 ## 16. Référencement
 
