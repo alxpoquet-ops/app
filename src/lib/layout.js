@@ -5,7 +5,7 @@ try { METIERS = require('../content/metiers').metiers; } catch (e) { /* pas enco
 const { icon } = require('./icons');
 const { logoMark, monster } = require('./monsters');
 const { petit } = require('./bestiaire');
-const brandName = 'Alex &amp; Lia';
+const brandName = 'Alex &amp; Co';
 const { esc, typo } = require('./md');
 const C = require('./components');
 
@@ -157,14 +157,14 @@ function footer(p) {
         <li><a href="/referencement-seo/">Référencement SEO</a></li>
         <li><a href="/guides/">Guides pour créer son site</a></li>
         <li><a href="/lexique/">Lexique du web</a></li>
-        <li><a href="${sections.comparatif.path}">Alex & Lia et les autres solutions</a></li>
+        <li><a href="${sections.comparatif.path}">Alex & Co et les autres solutions</a></li>
         <li><a href="/fidelite/">Fidélité et parrainage</a></li>
       </ul>
     </div>
     <div>
       <h2 class="footer-title">Infos</h2>
       <ul class="footer-links">
-        <li><a href="${sections.liaalex.path}">Pourquoi Alex & Lia ?</a></li>
+        <li><a href="${sections.liaalex.path}">Pourquoi Alex & Co ?</a></li>
         <li><a href="${sections.methode.path}">Pourquoi c’est moins cher</a></li>
         <li><a href="${sections.confiance.path}">Réalisations</a></li>
         <li><a href="${sections.accompagnement.path}">Accompagnement</a></li>

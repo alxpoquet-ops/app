@@ -1,6 +1,6 @@
 # Prix du marché et assistants IA pour WordPress (novembre 2026)
 
-Recherche faite le 15 novembre 2026 pour fixer l'offre unique d'Alex & Lia :
+Recherche faite le 15 novembre 2026 pour fixer l'offre unique d'Alex & Co :
 500 € le site, 10 € par mois, des options à la création et des extras au mois.
 Les chiffres viennent de pages publiques. Ce sont des ordres de grandeur, à relire une fois par an.
 Les repères utilisés par le site sont dans `src/config.js` (`marche`).
@@ -24,7 +24,7 @@ Les 120 € d'abonnement couvrent cela.
 
 ## 2. Les options vues ailleurs
 
-| Option | Prix vus ailleurs | Chez Alex & Lia |
+| Option | Prix vus ailleurs | Chez Alex & Co |
 |---|---|---|
 | Langue en plus | 120 € par langue | 100 € (anglais) |
 | Page en plus | 60 à 200 € la page | 100 € les cinq pages |

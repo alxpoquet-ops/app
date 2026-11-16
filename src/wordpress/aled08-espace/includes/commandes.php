@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Lia Espace client : les commandes passées sur /commander/.
+ * Alex & Co Espace client : les commandes passées sur /commander/.
  *  - type de contenu privé « aled08_commande » (référence ALED-AAAA-NNNN, métas _aled08_*)
  *  - montants recalculés côté serveur depuis data.json (le navigateur ne fait jamais foi)
  *  - traitement du formulaire POST (anti-robot, validation stricte, compte client, e-mails, Stripe ou attente)
@@ -473,7 +473,7 @@ function aled08e_cmd_parrainage_en_ligne($cmd) {
     }
     $corps = 'Bonjour ' . aled08e_prenom($p) . ",\n\n"
         . 'Bonne nouvelle : ' . $cmd['prenom'] . ' a créé son site grâce à vous. Vous recevez ' . aled08e_mois_txt($mois) . " d’abonnement offert, merci !\n\n"
-        . "Vos parrainages sont dans votre espace client :\n" . aled08e_url() . "#parrainage\n\nÀ bientôt,\nAlex, et Lia\n";
+        . "Vos parrainages sont dans votre espace client :\n" . aled08e_url() . "#parrainage\n\nÀ bientôt,\nAlex et sa petite bande\n";
     wp_mail($p->user_email, 'Votre parrainage : un mois offert', $corps, aled08e_mail_headers());
     aled08e_cmd_journal($cmd['id'], 'Parrainage : ' . aled08e_mois_txt($mois) . ' offert au parrain ' . $p->display_name . ' et au client.');
 }
@@ -505,8 +505,8 @@ function aled08e_cmd_mail_client_nouvelle($c, $compte, $stripe) {
         . ($compte['cree']
             ? "   Un autre e-mail arrive avec le lien pour choisir votre mot de passe.\n\n"
             : "   Vous avez déjà un compte : connectez-vous avec votre mot de passe habituel.\n\n")
-        . "Une question ? Répondez à cet e-mail.\n\nÀ bientôt,\nAlex, et Lia\n";
-    wp_mail($c['email'], 'Votre commande ' . $c['ref'] . ' est bien reçue', $corps, aled08e_mail_headers('Alex & Lia <' . aled08e_to() . '>'));
+        . "Une question ? Répondez à cet e-mail.\n\nÀ bientôt,\nAlex et sa petite bande\n";
+    wp_mail($c['email'], 'Votre commande ' . $c['ref'] . ' est bien reçue', $corps, aled08e_mail_headers('Alex & Co <' . aled08e_to() . '>'));
 }
 function aled08e_cmd_mail_client_payee($c) {
     $delai = aled08e_cmd_delai_type($c);
@@ -518,8 +518,8 @@ function aled08e_cmd_mail_client_payee($c) {
         . ($c['domaine'] && !$c['domaine_mien'] ? '1. Je réserve le nom de domaine ' . $c['domaine'] . " à votre nom.\n" : "1. Je prépare l’hébergement de votre site.\n")
         . "2. Vous remplissez votre questionnaire de création dans votre espace client (une dizaine de minutes) : couleurs, ambiance, photos, prix ou produits. C’est lui qui lance la création : " . aled08e_url() . "#commande\n"
         . '3. Je crée votre site' . ($delai ? ' (délai habituel : ' . $delai . ', à partir de vos réponses)' : '') . ", et vous suivez l’avancement dans votre espace client.\n\n"
-        . "À bientôt,\nAlex, et Lia\n";
-    wp_mail($c['email'], 'Votre acompte pour la commande ' . $c['ref'] . ' est reçu', $corps, aled08e_mail_headers('Alex & Lia <' . aled08e_to() . '>'));
+        . "À bientôt,\nAlex et sa petite bande\n";
+    wp_mail($c['email'], 'Votre acompte pour la commande ' . $c['ref'] . ' est reçu', $corps, aled08e_mail_headers('Alex & Co <' . aled08e_to() . '>'));
 }
 function aled08e_cmd_mail_owner_payee($c) {
     $dom = $c['domaine'] && !$c['domaine_mien'];
@@ -547,8 +547,8 @@ function aled08e_cmd_mail_client_en_ligne($c) {
                     : "Je vous envoie le lien de paiement dans un e-mail séparé.\n\n")
             : '')
         . "Pour faire évoluer votre site, envoyez vos demandes depuis votre espace client, onglet « Mes demandes » :\n" . aled08e_url() . "\n"
-        . "Merci pour votre confiance,\nAlex, et Lia\n";
-    wp_mail($c['email'], 'Votre site est en ligne', $corps, aled08e_mail_headers('Alex & Lia <' . aled08e_to() . '>'));
+        . "Merci pour votre confiance,\nAlex et sa petite bande\n";
+    wp_mail($c['email'], 'Votre site est en ligne', $corps, aled08e_mail_headers('Alex & Co <' . aled08e_to() . '>'));
 }
 
 /* Rappel quotidien : noms de domaine à réserver (commandes payées) */

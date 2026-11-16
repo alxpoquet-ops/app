@@ -1,4 +1,4 @@
-/* Alex & Lia : scripts (léger, sans dépendance) */
+/* Alex & Co : scripts (léger, sans dépendance) */
 (function () {
   'use strict';
   var d = document;

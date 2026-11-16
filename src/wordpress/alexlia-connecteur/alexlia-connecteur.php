@@ -1,10 +1,10 @@
 <?php
 /**
- * Plugin Name: Alex & Lia : connecteur
- * Description: À installer sur le site d'un client. Permet à Lia (l'IA d'Alex & Lia) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
+ * Plugin Name: Alex & Co : connecteur
+ * Description: À installer sur le site d'un client. Permet à Lia (l'IA d'Alex & Co) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
  * Version: 1.5.0
  * Requires PHP: 7.4
- * Author: Alex & Lia
+ * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
@@ -12,19 +12,19 @@ defined('ABSPATH') || exit;
 define('ALEXLIA_CONN_VERSION', '1.5.0');
 
 /* =========================================================================
- *  Réglage : la clé secrète partagée avec Alex & Lia (Réglages › Alex & Lia)
+ *  Réglage : la clé secrète partagée avec Alex & Co (Réglages › Alex & Co)
  * ========================================================================= */
 function alexlia_conn_secret() {
     if (defined('ALEXLIA_SECRET') && ALEXLIA_SECRET) return (string) ALEXLIA_SECRET;
     return (string) get_option('alexlia_secret', '');
 }
 function alexlia_conn_source() {
-    // le site d'Alex & Lia, seule origine acceptée pour les images à importer
+    // le site d'Alex & Co, seule origine acceptée pour les images à importer
     return (string) get_option('alexlia_source', 'https://www.aled08.fr');
 }
 
 add_action('admin_menu', function () {
-    add_options_page('Alex & Lia', 'Alex & Lia', 'manage_options', 'alexlia', 'alexlia_conn_page');
+    add_options_page('Alex & Co', 'Alex & Co', 'manage_options', 'alexlia', 'alexlia_conn_page');
 });
 function alexlia_conn_page() {
     if (!current_user_can('manage_options')) return;
@@ -37,16 +37,16 @@ function alexlia_conn_page() {
         echo '<div class="notice notice-success"><p>Réglages enregistrés.</p></div>';
     }
     $sec = alexlia_conn_secret();
-    echo '<div class="wrap"><h1>Alex &amp; Lia : connecteur</h1>';
-    echo '<p>Ce connecteur permet à Lia de modifier ce site à la demande de son propriétaire, depuis son espace client Alex &amp; Lia. Lia ne peut ni supprimer de page, ni toucher aux extensions, au thème ou aux comptes. Chaque changement garde une révision.</p>';
+    echo '<div class="wrap"><h1>Alex &amp; Co : connecteur</h1>';
+    echo '<p>Ce connecteur permet à Lia de modifier ce site à la demande de son propriétaire, depuis son espace client Alex &amp; Co. Lia ne peut ni supprimer de page, ni toucher aux extensions, au thème ou aux comptes. Chaque changement garde une révision.</p>';
     echo '<form method="post">';
     wp_nonce_field('alexlia_save', '_alexlia');
     echo '<table class="form-table" role="presentation">';
     echo '<tr><th><label for="alexlia-secret">Clé secrète</label></th><td>';
     if (defined('ALEXLIA_SECRET') && ALEXLIA_SECRET) echo '<p>Définie dans wp-config.php.</p>';
-    else echo '<input type="password" id="alexlia-secret" name="alexlia_secret" class="regular-text" autocomplete="off"><p class="description">' . ($sec ? 'Clé enregistrée, se termine par …' . esc_html(substr($sec, -4)) . '. Laissez vide pour ne rien changer.' : 'Collez ici la clé affichée dans la fiche du client, sur le site Alex &amp; Lia.') . '</p>';
+    else echo '<input type="password" id="alexlia-secret" name="alexlia_secret" class="regular-text" autocomplete="off"><p class="description">' . ($sec ? 'Clé enregistrée, se termine par …' . esc_html(substr($sec, -4)) . '. Laissez vide pour ne rien changer.' : 'Collez ici la clé affichée dans la fiche du client, sur le site Alex &amp; Co.') . '</p>';
     echo '</td></tr>';
-    echo '<tr><th><label for="alexlia-source">Site Alex &amp; Lia</label></th><td><input type="url" id="alexlia-source" name="alexlia_source" class="regular-text" value="' . esc_attr(alexlia_conn_source()) . '"><p class="description">Les images envoyées par le client ne sont importées que depuis cette adresse.</p></td></tr>';
+    echo '<tr><th><label for="alexlia-source">Site Alex &amp; Co</label></th><td><input type="url" id="alexlia-source" name="alexlia_source" class="regular-text" value="' . esc_attr(alexlia_conn_source()) . '"><p class="description">Les images envoyées par le client ne sont importées que depuis cette adresse.</p></td></tr>';
     echo '<tr><th>Pause</th><td><label><input type="checkbox" name="alexlia_pause" value="1"' . checked(get_option('alexlia_pause'), '1', false) . '> Mettre Lia en pause sur ce site (elle ne peut plus rien modifier)</label></td></tr>';
     echo '</table><p class="submit"><button class="button button-primary" type="submit">Enregistrer</button></p></form>';
     $j = get_option('alexlia_journal', []);
@@ -209,11 +209,11 @@ function alexlia_conn_publier($args) {
     alexlia_conn_journal('Actualité publiée : « ' . $titre . ' ».');
     return ['ok' => true, 'id' => (int) $id, 'adresse' => get_permalink($id)];
 }
-/* Importer une image envoyée par le client (uniquement depuis le site Alex & Lia) */
+/* Importer une image envoyée par le client (uniquement depuis le site Alex & Co) */
 function alexlia_conn_image($args) {
     $url = esc_url_raw((string) ($args['url'] ?? ''));
     $src = wp_parse_url(alexlia_conn_source(), PHP_URL_HOST);
-    if (!$url || wp_parse_url($url, PHP_URL_HOST) !== $src) return new WP_Error('alexlia_image', 'Image refusée : elle doit venir du site Alex & Lia.', ['status' => 400]);
+    if (!$url || wp_parse_url($url, PHP_URL_HOST) !== $src) return new WP_Error('alexlia_image', 'Image refusée : elle doit venir du site Alex & Co.', ['status' => 400]);
     require_once ABSPATH . 'wp-admin/includes/file.php';
     require_once ABSPATH . 'wp-admin/includes/media.php';
     require_once ABSPATH . 'wp-admin/includes/image.php';
@@ -378,7 +378,7 @@ add_action('init', function () {
         if ($last) { $q->set('p', $last[0]); $q->set('post_type', 'post'); $q->is_home = false; $q->is_single = true; $q->is_singular = true; $q->is_front_page = false; }
     });
     // un bandeau en haut : ce n'est qu'un aperçu
-    $bandeau = function () { echo '<div style="position:sticky;top:0;z-index:99999;background:#2E2A47;color:#fff;font:600 15px/1.4 system-ui,sans-serif;text-align:center;padding:10px 14px">Aperçu préparé par Lia : rien n’est encore en ligne. Confirmez dans votre espace Alex &amp; Lia.</div>'; };
+    $bandeau = function () { echo '<div style="position:sticky;top:0;z-index:99999;background:#2E2A47;color:#fff;font:600 15px/1.4 system-ui,sans-serif;text-align:center;padding:10px 14px">Aperçu préparé par Lia : rien n’est encore en ligne. Confirmez dans votre espace Alex &amp; Co.</div>'; };
     add_action('wp_body_open', $bandeau);
 });
 
@@ -518,7 +518,7 @@ function alexlia_conn_google() {
 
 
 /* =========================================================================
- *  Mode vacances de la boutique (réglé par le client depuis son espace Alex & Lia)
+ *  Mode vacances de la boutique (réglé par le client depuis son espace Alex & Co)
  *  mode « ferme » : plus aucune commande possible ; mode « retard » : commandes
  *  acceptées, expédition au retour. Un bandeau prévient les visiteurs.
  * ========================================================================= */
@@ -584,7 +584,7 @@ add_action('init', function () {
 
 
 /* =========================================================================
- *  Outils de la boutique, réglés par le client depuis son espace Alex & Lia :
+ *  Outils de la boutique, réglés par le client depuis son espace Alex & Co :
  *  codes promo, soldes rapides (un pourcentage sur tout ou une catégorie, avec des dates)
  *  et bandeau d'annonce en haut du site. Rien ne touche aux fiches produits : les soldes
  *  sont calculés à l'affichage, et s'arrêtent seuls à la date de fin.
@@ -652,7 +652,7 @@ function alexlia_bq_promo_creer($a) {
     if (!empty($a['un_par_client'])) $c->set_usage_limit_per_user(1);
     $fin = alexlia_vac_date($a['fin'] ?? '');
     if ($fin) $c->set_date_expires(strtotime($fin . ' 23:59:59'));
-    $c->set_description('Créé depuis l’espace Alex & Lia');
+    $c->set_description('Créé depuis l’espace Alex & Co');
     $id = $c->save();
     if (!$id) return new WP_Error('alexlia_bq', 'Le code n’a pas pu être créé.', ['status' => 500]);
     alexlia_conn_journal('Code promo ' . $code . ' créé.');

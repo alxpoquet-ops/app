@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Lia Espace client : mode vacances d'une boutique en ligne.
+ * Alex & Co Espace client : mode vacances d'une boutique en ligne.
  * Le client choisit les dates, ce qui se passe pendant ce temps (boutique fermée, ou commandes
  * acceptées avec expédition au retour) et le message affiché. Le réglage part sur son site
  * par le connecteur (action « vacances_regler ») ; il ne compte pas comme une modification.

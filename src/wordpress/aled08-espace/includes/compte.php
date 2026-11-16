@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Lia Espace client : onglet « Mon compte ».
+ * Alex & Co Espace client : onglet « Mon compte ».
  * Le client change lui-même son nom, son entreprise, son téléphone, son adresse e-mail et son mot de passe.
  * L'e-mail et le mot de passe demandent le mot de passe actuel ; WordPress prévient l'ancienne adresse du changement.
  */

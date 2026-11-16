@@ -1,4 +1,4 @@
-/* Alex & Lia Espace client : l'onglet « Outils » (outils de Lia, Jetons Lia) et le prix d'une demande par Lia. */
+/* Alex & Co Espace client : l'onglet « Outils » (outils de Lia, Jetons Lia) et le prix d'une demande par Lia. */
 (function () {
   'use strict';
   var d = document;

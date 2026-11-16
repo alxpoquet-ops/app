@@ -1,5 +1,5 @@
 // ============================================================================
-//  Alex & Lia : configuration centrale du site (identité, rubriques, l'offre unique :
+//  Alex & Co : configuration centrale du site (identité, rubriques, l'offre unique :
 //  création à 500 €, abonnement à 10 € par mois, options et extras, Jetons Lia,
 //  fidélité, paiement). Tous les prix du site viennent d'ici : le configurateur, la page
 //  /commander/, les données structurées et l'extension WordPress (data.json)
@@ -11,15 +11,15 @@
 const site = {
   // Domaine définitif (sans slash final). Sert aux balises canonical, au sitemap, à l'Open Graph.
   url: 'https://www.aled08.fr',
-  name: 'Alex & Lia',
+  name: 'Alex & Co',
   baseline: 'Sites internet et SEO', // n'est plus affiché sous le logo
-  legalName: 'Alex & Lia, nom commercial d’Alexandre Poquet EI', // raison sociale / nom commercial
-  // Le jour où le domaine alexetlia.fr est pris : changer url ci-dessus et rediriger aled08.fr.
-  futurDomaine: 'alexetlia.fr',
+  legalName: 'Alex & Co, nom commercial d’Alexandre Poquet EI', // raison sociale / nom commercial
+  // Le jour où le domaine alexetco.fr est réservé et relié : changer url ci-dessus et rediriger aled08.fr.
+  futurDomaine: 'alexetco.fr',
   owner: 'Alexandre Poquet',
 
   // Aucune coordonnée personnelle affichée : on écrit par le formulaire de contact (/contact/).
-  // Quand une adresse de support existe (ex. support@alexetlia.fr), la mettre ici : elle s'affichera.
+  // Quand une adresse de support existe (ex. support@alexetco.fr), la mettre ici : elle s'affichera.
   email: '',
   contactPath: '/contact/',
 
@@ -65,10 +65,10 @@ const sections = {
   espace: { path: '/outils/', label: 'Outils', color: 'sky', icon: 'toolbox' },
   seo: { path: '/referencement-seo/', label: 'SEO', color: 'butter', icon: 'search-check' },
   contact: { path: '/contact/', label: 'Contact', color: 'peach', icon: 'message-circle' },
-  // V2 (novembre 2026) : « Ils nous ont fait confiance » devient Réalisations, « Lia et Alex » devient Pourquoi Alex & Lia,
+  // V2 (novembre 2026) : « Ils nous ont fait confiance » devient Réalisations, « Lia et Alex » devient Pourquoi Alex & Co,
   // « Ma méthode » devient Pourquoi moins cher. Les anciennes adresses sont redirigées (scripts/wp-export.py).
   confiance: { path: '/realisations/', label: 'Réalisations', color: 'butter', icon: 'image' },
-  liaalex: { path: '/pourquoi-alex-et-lia/', label: 'Pourquoi Alex & Lia', color: 'pink', icon: 'heart-handshake' },
+  liaalex: { path: '/pourquoi-alex-et-co/', label: 'Pourquoi Alex & Co', color: 'pink', icon: 'heart-handshake' },
   metiers: { path: '/metiers/', label: 'Votre métier', color: 'peach', icon: 'store' },
   accompagnement: { path: '/accompagnement/', label: 'Accompagnement', color: 'mint', icon: 'life-buoy' },
   guides: { path: '/guides/', label: 'Guides', color: 'sky', icon: 'book-open' },
@@ -256,7 +256,7 @@ const boost = { prix: aLaDemande[0].prix };
 const clients = [
   { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', sitemap: 'https://www.floreetchenilles.fr/sitemap_index.xml', forfait: 'base', genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Des fleurs éternelles en fil chenille, faites main à Signy-l’Abbaye, dans les Ardennes. La boutique ouvre très bientôt.' },
   { nom: 'Dodedo', domaine: 'dodedo.fr', url: 'https://dodedo.fr/', sitemap: 'https://www.dodedo.fr/sitemap.xml', forfait: 'base', genre: 'Site une page', icon: 'hand-heart', color: 'lilac', desc: 'Le site de Dominique Schneider, magnétiseur et barreur de feu. Une seule page principale, et des pages de conseils autour pour le référencement.' },
-  { nom: 'Alex & Lia', domaine: 'alexetlia.fr', url: '/', sitemap: 'https://www.aled08.fr/wp-sitemap.xml' /* à passer sur https://www.alexetlia.fr/wp-sitemap.xml au changement de domaine */, genre: 'Notre propre site', icon: 'sparkles', color: 'lilac', desc: 'Notre site à nous : on se fait confiance, alors on se met dedans aussi. En français et en anglais.' },
+  { nom: 'Alex & Co', domaine: 'alexetco.fr', url: '/', sitemap: 'https://www.aled08.fr/wp-sitemap.xml' /* à passer sur https://www.alexetco.fr/wp-sitemap.xml au changement de domaine */, genre: 'Notre propre site', icon: 'sparkles', color: 'lilac', desc: 'Notre site à nous : on se fait confiance, alors on se met dedans aussi. En français et en anglais.' },
   { nom: 'Les Notes du Temps', domaine: 'lesnotesdutemps.fr', url: 'https://www.lesnotesdutemps.fr/', sitemap: 'https://www.lesnotesdutemps.fr/sitemap.xml', forfait: 'base', genre: 'Site une page', icon: 'music', color: 'peach', enCreation: true, desc: '' },
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: '' },
 ];

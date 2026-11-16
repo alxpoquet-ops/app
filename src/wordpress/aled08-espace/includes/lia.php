@@ -1,8 +1,8 @@
 <?php
 /**
- * Alex & Lia Espace client : Lia, l'IA (Claude, d'Anthropic) qui modifie et met à jour le site du client.
+ * Alex & Co Espace client : Lia, l'IA (Claude, d'Anthropic) qui modifie et met à jour le site du client.
  *  - une demande « par Lia » est traitée en tâche de fond : Claude lit le site du client par le connecteur
- *    (extension « Alex & Lia : connecteur » installée sur le site du client), fait le changement demandé
+ *    (extension « Alex & Co : connecteur » installée sur le site du client), fait le changement demandé
  *    avec des outils limités, puis rend compte ;
  *  - chaque changement garde une révision sur le site du client : on peut tout annuler en un clic ;
  *  - si la demande est floue, risquée ou hors des outils, Lia ne touche à rien et la passe à Alex.
@@ -99,7 +99,7 @@ function aled08e_lia_outils() {
     ];
 }
 function aled08e_lia_systeme($u, $infos) {
-    return "Tu es Lia, l'IA d'Alex & Lia, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, artisans et associations. "
+    return "Tu es Lia, l'IA d'Alex & Co, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, artisans et associations. "
         . "Tu reçois une demande de modification écrite par le propriétaire d'un site, et tu la prépares toi-même sur son site WordPress avec les outils fournis. "
         . "Tes changements sont préparés dans un aperçu : le client le regarde et confirme, puis ils sont mis en ligne directement.\n\n"
         . "Règles :\n"
@@ -408,7 +408,7 @@ function aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $act
         update_post_meta($pid, '_aled08_statut', 'encours');
         update_post_meta($pid, '_aled08_lia_etat', 'a_confirmer');
         aled08e_lia_journal_add('Demande #' . $pid . ' préparée par Lia, en attente de l’accord du client.');
-        if ($u) wp_mail($u->user_email, 'Lia a préparé votre modification : à vous de voir', 'Bonjour ' . aled08e_prenom($u) . ",\n\n" . $msgClient . "\n\nRien n’est encore changé sur votre site. Regardez l’aperçu et confirmez dans votre espace :\n" . aled08e_url() . "#demandes\n\nÀ bientôt,\nAlex, et Lia\n", aled08e_mail_headers('"Alex & Lia" <' . aled08e_to() . '>'));
+        if ($u) wp_mail($u->user_email, 'Lia a préparé votre modification : à vous de voir', 'Bonjour ' . aled08e_prenom($u) . ",\n\n" . $msgClient . "\n\nRien n’est encore changé sur votre site. Regardez l’aperçu et confirmez dans votre espace :\n" . aled08e_url() . "#demandes\n\nÀ bientôt,\nAlex et sa petite bande\n", aled08e_mail_headers('"Alex & Co" <' . aled08e_to() . '>'));
     } else {
         // passée à Alex : les Jetons Lia sont rendus, la demande rejoint les modifications d'Alex
         aled08e_jl_rendre($uid, 'demande:' . $pid);
@@ -503,7 +503,7 @@ function aled08e_lia_profil($user) {
     $url = aled08e_meta($uid, 'lia_url');
     $sec = aled08e_meta($uid, 'lia_secret');
     echo '<h3>Lia : site relié</h3><table class="form-table" role="presentation">';
-    echo '<tr><th><label for="aled08e-lia-url">Adresse du site à modifier</label></th><td><input type="url" id="aled08e-lia-url" name="aled08e_lia_url" class="regular-text" value="' . esc_attr($url) . '" placeholder="' . esc_attr(aled08e_meta($uid, 'site') ?: 'https://www.exemple.fr') . '"><p class="description">Sur ce site, installez l’extension « Alex & Lia : connecteur », puis collez la clé ci-dessous dans Réglages, Alex & Lia.</p></td></tr>';
+    echo '<tr><th><label for="aled08e-lia-url">Adresse du site à modifier</label></th><td><input type="url" id="aled08e-lia-url" name="aled08e_lia_url" class="regular-text" value="' . esc_attr($url) . '" placeholder="' . esc_attr(aled08e_meta($uid, 'site') ?: 'https://www.exemple.fr') . '"><p class="description">Sur ce site, installez l’extension « Alex & Co : connecteur », puis collez la clé ci-dessous dans Réglages, Alex & Co.</p></td></tr>';
     echo '<tr><th>Clé du connecteur</th><td>';
     if ($sec) echo '<input type="text" readonly class="regular-text code" value="' . esc_attr($sec) . '" onclick="this.select()"><br>';
     echo '<label><input type="checkbox" name="aled08e_lia_nouvelle" value="1"> ' . ($sec ? 'Créer une nouvelle clé (l’ancienne ne marchera plus)' : 'Créer la clé') . '</label></td></tr>';

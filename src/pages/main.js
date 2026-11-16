@@ -155,12 +155,12 @@ ${METIERS.length ? `<section class="section">${C.deco('champi', 'haut-droite')}<
 <section class="section"><div class="container duo">
   <a class="promo c-pink reveal" href="${sections.liaalex.path}">
     <span class="promo-ico">${icon(sections.liaalex.icon)}</span>
-    <span class="promo-text"><strong>Pourquoi choisir Alex & Lia ?</strong><span>Un vrai interlocuteur, un prix affiché, et votre site reste à vous.</span></span>
+    <span class="promo-text"><strong>Pourquoi choisir Alex & Co ?</strong><span>Un vrai interlocuteur, un prix affiché, et votre site reste à vous.</span></span>
     <span class="promo-go">${icon('arrow-right')}</span>
   </a>
   <a class="promo c-butter reveal" href="${sections.comparatif.path}">
     <span class="promo-ico">${icon('scale')}</span>
-    <span class="promo-text"><strong>Alex & Lia et les autres solutions</strong><span>Agence, freelance, plateforme à faire soi-même : qui fait quoi, et à quel prix.</span></span>
+    <span class="promo-text"><strong>Alex & Co et les autres solutions</strong><span>Agence, freelance, plateforme à faire soi-même : qui fait quoi, et à quel prix.</span></span>
     <span class="promo-go">${icon('arrow-right')}</span>
   </a>
 </div></section>
@@ -168,7 +168,7 @@ ${METIERS.length ? `<section class="section">${C.deco('champi', 'haut-droite')}<
 ${C.ctaBand({ title: 'Pas sûr de ce qu’il vous faut ?', text: 'Écrivez-moi en deux lignes : je vous dis quel site vous convient, sans engagement. Ou composez-le tout de suite.' })}`;
   return {
     path: '/',
-    title: `Site internet professionnel, ${marche.fois} fois moins cher | Alex & Lia`,
+    title: `Site internet professionnel, ${marche.fois} fois moins cher | Alex & Co`,
     description: `Je crée votre site professionnel, visible sur Google, et je m’occupe de tout : nom de domaine, hébergement, mises à jour. Sans devis, ${marche.fois} fois moins cher.`,
     crumbs: [HOME],
     body,
@@ -219,7 +219,7 @@ ${f.html}`;
     section: 'creer',
     bodyClass: 'page-creer',
     noMobileBar: true,
-    title: 'Créer mon site : composez-le en deux minutes | Alex & Lia',
+    title: 'Créer mon site : composez-le en deux minutes | Alex & Co',
     description: `Composez votre site en deux minutes : tout est compris, à partir de ${creation.prix} €. Vérifiez votre nom de domaine, ajoutez vos options, le total s’affiche.`,
     crumbs,
     body,
@@ -311,7 +311,7 @@ ${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Composez votre site en de
   return {
     path: sections.forfaits.path,
     section: 'forfaits',
-    title: `Tarifs : tout compris, ${marche.fois} fois moins cher | Alex & Lia`,
+    title: `Tarifs : tout compris, ${marche.fois} fois moins cher | Alex & Co`,
     description: `Tout compris : maquette, site complet, nom de domaine, hébergement, mises à jour et support. À partir de ${creation.prix} € le site, puis ${ABO.month} € par mois. Sans devis.`,
     crumbs,
     body,
@@ -396,7 +396,7 @@ ${C.ctaBand({ title: 'Envie d’essayer les outils ?', text: 'Créez votre site 
   return {
     path: sections.espace.path,
     section: 'espace',
-    title: 'Outils : textes, photos, réseaux et votre site | Alex & Lia',
+    title: 'Outils : textes, photos, réseaux et votre site | Alex & Co',
     description: 'Corriger ou traduire un texte, préparer une photo, publier sur vos réseaux : ma petite bande vous aide, et les outils sont compris dans l’abonnement.',
     crumbs,
     body,
@@ -506,7 +506,7 @@ ${C.ctaBand({ title: 'Être trouvé, ça commence ici', text: 'Créez votre site
   return {
     path: sections.seo.path,
     section: 'seo',
-    title: 'Référencement SEO : être trouvé sur Google | Alex & Lia',
+    title: 'Référencement SEO : être trouvé sur Google | Alex & Co',
     description: `Bases du SEO comprises, référencement local, contenus utiles, et un suivi chaque mois en extra à ${seo.price.month} € : comment je rends votre site visible sur Google.`,
     crumbs,
     body,
@@ -515,7 +515,7 @@ ${C.ctaBand({ title: 'Être trouvé, ça commence ici', text: 'Créez votre site
   };
 }
 
-// ====================================================================== COMPARATIF : Alex & Lia ET LES AUTRES SOLUTIONS
+// ====================================================================== COMPARATIF : Alex & Co ET LES AUTRES SOLUTIONS
 function comparatifPage() {
   const crumbs = crumb('comparatif');
   const f = C.faq(FAQ.comparatif || [], 'Vos questions sur le comparatif', 'faq-comparatif');
@@ -523,17 +523,17 @@ function comparatifPage() {
     ['butter', 'building-2', 'L’agence web', 'Une équipe complète : chef de projet, graphiste, développeur. Idéale pour un gros projet avec un budget à la hauteur. Le prix et le délai dépendent du devis.'],
     ['sky', 'user', 'Le freelance', 'Une personne qui fait tout. La qualité dépend beaucoup de qui vous choisissez. Les modifications et le suivi se font souvent au devis, quand le freelance est disponible.'],
     ['lilac', 'mouse-pointer-click', 'La plateforme à faire soi-même', 'Vous construisez votre site à partir de modèles, pour un abonnement mensuel. C’est vous qui faites le travail, les mises à jour et le référencement.'],
-    ['mint', 'sparkles', 'Alex & Lia', `Un prix affiché, à partir de ${euro(creation.prix)}, et un interlocuteur qui répond. Alex crée et suit votre site, et ses automatisations s’occupent des petites retouches et des tâches répétitives. Pour les très gros projets, je vous oriente vers une agence.`],
+    ['mint', 'sparkles', 'Alex & Co', `Un prix affiché, à partir de ${euro(creation.prix)}, et un interlocuteur qui répond. Alex crée et suit votre site, et ses automatisations s’occupent des petites retouches et des tâches répétitives. Pour les très gros projets, je vous oriente vers une agence.`],
   ];
   const body = `${C.pageHero({
     section: 'comparatif',
-    h1: 'Alex & Lia et les autres solutions',
-    lead: 'Agence web, freelance ou plateforme à faire soi-même : chaque solution a sa place. Chez Alex & Lia, deux choses comptent : des modifications rapides et un prix affiché, le même pour tous.',
+    h1: 'Alex & Co et les autres solutions',
+    lead: 'Agence web, freelance ou plateforme à faire soi-même : chaque solution a sa place. Chez Alex & Co, deux choses comptent : des modifications rapides et un prix affiché, le même pour tous.',
     crumbs,
   })}
 <section class="section"><div class="container">
   ${C.comparatifTable()}
-  <p class="source">Les prix des autres solutions dépendent du prestataire et du projet : le tableau ne les chiffre pas. Les prix Alex & Lia sont ceux de la page <a href="${sections.forfaits.path}">tarifs</a>.</p>
+  <p class="source">Les prix des autres solutions dépendent du prestataire et du projet : le tableau ne les chiffre pas. Les prix Alex & Co sont ceux de la page <a href="${sections.forfaits.path}">tarifs</a>.</p>
 </div></section>
 
 <section class="section section-soft"><div class="container">
@@ -558,7 +558,7 @@ La raison est simple. Pour un site vitrine ou une petite boutique, mes automatis
 
 ## Ce que vous ne faites pas vous-même
 
-Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, faire les mises à jour, écrire pour Google. Avec Alex & Lia, vous dites ce que vous voulez : les automatisations s’occupent du répétitif, Alex du reste. Vous gardez votre temps pour votre activité.
+Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, faire les mises à jour, écrire pour Google. Avec Alex & Co, vous dites ce que vous voulez : les automatisations s’occupent du répétitif, Alex du reste. Vous gardez votre temps pour votre activité.
 
 ## Quand je vous dirai d’aller ailleurs
 
@@ -570,7 +570,7 @@ ${C.ctaBand({ title: 'On regarde votre projet ?', text: 'Composez votre site en 
   return {
     path: sections.comparatif.path,
     section: 'comparatif',
-    title: 'Comparatif : agence web, freelance, plateforme | Alex & Lia',
+    title: 'Comparatif : agence web, freelance, plateforme | Alex & Co',
     description: 'Agence web, freelance ou plateforme à faire soi-même : qui fait le travail, les prix, les délais, les modifications et le SEO, comparés simplement.',
     crumbs,
     body,
@@ -734,7 +734,7 @@ function commanderPage() {
     bodyClass: 'page-commander',
     noindex: true,
     noMobileBar: true,
-    title: 'Votre commande | Alex & Lia',
+    title: 'Votre commande | Alex & Co',
     description: 'Vérifiez votre site, l’abonnement et vos options, donnez vos coordonnées et payez en ligne en toute sécurité. Je réserve votre nom de domaine sans attendre.',
     crumbs,
     body,
@@ -771,7 +771,7 @@ function confirmationPage() {
     section: 'confirmation',
     noindex: true,
     noMobileBar: true,
-    title: 'Commande confirmée | Alex & Lia',
+    title: 'Commande confirmée | Alex & Co',
     description: 'Merci pour votre commande. Je réserve votre nom de domaine, je vous écris sous 24 heures et votre espace client arrive par e-mail.',
     body,
   };
@@ -812,7 +812,7 @@ ${C.ctaBand({ title: 'Quelqu’un a un projet autour de vous ?', text: 'Envoyez-
   return {
     path: sections.fidelite.path,
     section: 'fidelite',
-    title: 'Fidélité et parrainage : un mois offert | Alex & Lia',
+    title: 'Fidélité et parrainage : un mois offert | Alex & Co',
     description: `Parrainez un proche : vous recevez chacun un mois d’abonnement offert. ${fidelite.remiseSecondSite} % de remise sur la création d’un deuxième site, et ${annuel.moisOfferts} mois offerts à l’année.`,
     crumbs,
     body,
@@ -991,15 +991,15 @@ ${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : vous m’en
     section: 'monespace',
     noindex: true,
     noMobileBar: true,
-    title: 'Mon espace, la démo | Alex & Lia',
-    description: 'Essayez l’espace client Alex & Lia : demandes de modification et leur suivi, tableau de bord, abonnement, extras et factures. Démonstration.',
+    title: 'Mon espace, la démo | Alex & Co',
+    description: 'Essayez l’espace client Alex & Co : demandes de modification et leur suivi, tableau de bord, abonnement, extras et factures. Démonstration.',
     crumbs: DEMO_CRUMBS,
     body,
   };
 }
 
 // ====================================================================== MON ESPACE (connexion)
-// Sous WordPress, le bloc [data-aled-espace] devient le vrai espace client (extension « Alex & Lia Espace client ») :
+// Sous WordPress, le bloc [data-aled-espace] devient le vrai espace client (extension « Alex & Co Espace client ») :
 // formulaire de connexion si on n'est pas connecté, tableau de bord sinon.
 function espacePage() {
   const crumbs = [HOME, { name: 'Mon espace', path: '/mon-espace/' }];
@@ -1047,8 +1047,8 @@ function espacePage() {
     section: 'monespace',
     noindex: true,
     noMobileBar: true,
-    title: 'Mon espace client | Alex & Lia',
-    description: 'Connectez-vous à votre espace client Alex & Lia : demandes de modification et leur suivi, tableau de bord, factures et parrainage.',
+    title: 'Mon espace client | Alex & Co',
+    description: 'Connectez-vous à votre espace client Alex & Co : demandes de modification et leur suivi, tableau de bord, factures et parrainage.',
     crumbs,
     body,
   };
@@ -1106,7 +1106,7 @@ function contactPage() {
   return {
     path: '/contact/',
     section: 'contact',
-    title: 'Contact : posez votre question | Alex & Lia',
+    title: 'Contact : posez votre question | Alex & Co',
     description: 'Une question, un projet de site, de boutique ou de référencement ? Écrivez-nous par le formulaire. Réponse rapide, en général dans la journée.',
     crumbs,
     body,
@@ -1138,7 +1138,7 @@ ${C.ctaBand({ title: 'Vous avez votre réponse ?', text: 'Composez votre site en
   return {
     path: '/guides/',
     section: 'guides',
-    title: 'Guides pour créer son site, sans jargon | Alex & Lia',
+    title: 'Guides pour créer son site, sans jargon | Alex & Co',
     description: 'Prix d’un site, nom de domaine, fiche Google, boutique en ligne, site pour artisan, restaurant ou association : des guides simples pour décider sans se tromper.',
     crumbs,
     body,
@@ -1210,7 +1210,7 @@ ${C.ctaBand({ title: 'Plus besoin de tout savoir', text: 'On s’occupe de la te
   return {
     path: '/lexique/',
     section: 'lexique',
-    title: 'Lexique du web : les mots d’internet expliqués | Alex & Lia',
+    title: 'Lexique du web : les mots d’internet expliqués | Alex & Co',
     description: 'Nom de domaine, hébergement, SEO, HTTPS, responsive, CMS : les mots du web expliqués simplement, avec un exemple concret pour chacun. Sans jargon.',
     crumbs,
     body,
@@ -1274,8 +1274,8 @@ ${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: `Composez votre s
   return {
     path: sections.confiance.path,
     section: 'confiance',
-    title: 'Nos réalisations : des sites en ligne à visiter | Alex & Lia',
-    description: `Les sites créés par Alex & Lia, à visiter librement : ${CLIENTS_EN_LIGNE.map((c) => c.domaine).join(', ').replace(/, ([^,]*)$/, ' et $1')}. De vrais clients, de vrais sites, sans faux avis.`,
+    title: 'Nos réalisations : des sites en ligne à visiter | Alex & Co',
+    description: `Les sites créés par Alex & Co, à visiter librement : ${CLIENTS_EN_LIGNE.map((c) => c.domaine).join(', ').replace(/, ([^,]*)$/, ' et $1')}. De vrais clients, de vrais sites, sans faux avis.`,
     crumbs,
     body,
     priority: 0.8,
@@ -1299,7 +1299,7 @@ ${C.ctaBand({ text: CTA_TEXTE })}`;
   return {
     path: sections.metiers.path,
     section: 'metiers',
-    title: 'Site internet par métier : artisans, gîtes, thérapeutes | Alex & Lia',
+    title: 'Site internet par métier : artisans, gîtes, thérapeutes | Alex & Co',
     description: 'Artisans, thérapeutes, créateurs, gîtes et chambres d’hôtes, commerçants, associations : ce que votre site doit montrer pour rassurer vos clients et être trouvé.',
     crumbs,
     body,
@@ -1389,7 +1389,7 @@ ${C.ctaBand({ title: `On crée votre site ?`, text: `Composez votre site en deux
 // ====================================================================== V2 : RÉASSURANCE, GUIDES DE FOND, PAGE LOCALE
 // La section (couleur, rubrique du fil d'Ariane) de chaque page V2 : celles qui ont leur rubrique dans config.js,
 // sinon la rubrique « Guides » (guides de fond et page locale).
-const SECTION_V2 = { '/pourquoi-moins-cher/': 'methode', '/pourquoi-alex-et-lia/': 'liaalex', '/accompagnement/': 'accompagnement' };
+const SECTION_V2 = { '/pourquoi-moins-cher/': 'methode', '/pourquoi-alex-et-co/': 'liaalex', '/accompagnement/': 'accompagnement' };
 function pageV2(p) {
   const k = SECTION_V2[p.path];
   const crumbs = k ? crumb(k) : [HOME, { name: p.nom, path: p.path }];
@@ -1510,7 +1510,7 @@ function docPage() {
     <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${monster('mascotte')}</span><h3>Lia, l’assistante autonome</h3><p>Elle fait les petites et moyennes modifications en 5 minutes, et écrit vos publications pour les réseaux. Elle montre toujours un aperçu : rien ne change sans votre accord.</p></div>
     <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${icon('user')}</span><h3>Alex, l’humain</h3><p>Il crée votre site, fait les grandes modifications à la main, vérifie et répond à vos questions. Ce que Lia ne sait pas faire lui revient.</p></div>
   </div>
-  <p class="doc-more">${C.btn(sections.liaalex.path, 'btn-primary', 'sparkles', 'Pourquoi Alex & Lia')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
+  <p class="doc-more">${C.btn(sections.liaalex.path, 'btn-primary', 'sparkles', 'Pourquoi Alex & Co')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>
 
 <section class="section doc-sec" id="questionnaire"><div class="container container-narrow">
@@ -1686,7 +1686,7 @@ ${C.ctaBand({ title: 'Une question qui n’est pas ici ?', text: 'Écrivez-nous 
   return {
     path: sections.documentation.path,
     section: 'documentation',
-    title: 'Documentation : tout comprendre en images | Alex & Lia',
+    title: 'Documentation : tout comprendre en images | Alex & Co',
     noindex: true, // V2 : la documentation est pour les clients
     description: 'Tout comprendre en images : la création de votre site, le prix, l’abonnement et ses extras, l’espace client, le tableau de bord et les outils de boutique.',
     crumbs,
@@ -1718,7 +1718,7 @@ function faqPage() {
 ${C.ctaBand({ text: CTA_TEXTE })}`;
   return {
     path: '/faq/',
-    title: 'Questions fréquentes : création, tarifs, SEO | Alex & Lia',
+    title: 'Questions fréquentes : création, tarifs, SEO | Alex & Co',
     description: 'Toutes les réponses sur la création de votre site, la commande en ligne, les tarifs et l’abonnement, l’espace client, le référencement et le parrainage.',
     crumbs,
     body,
@@ -1764,8 +1764,8 @@ function planDuSite() {
   ];
   return {
     path: '/plan-du-site/',
-    title: 'Plan du site | Alex & Lia',
-    description: 'Toutes les pages du site Alex & Lia : créer mon site, tarifs, réalisations, votre métier, accompagnement, guides, contact, FAQ et pages légales.',
+    title: 'Plan du site | Alex & Co',
+    description: 'Toutes les pages du site Alex & Co : créer mon site, tarifs, réalisations, votre métier, accompagnement, guides, contact, FAQ et pages légales.',
     crumbs,
     body: `${C.pageHero({ h1: 'Plan du site', lead: 'Toutes les pages du site, au même endroit.', crumbs })}
 <section class="section"><div class="container container-narrow"><ul class="sitemap-list">${links.map(([p, l]) => `<li><a href="${p}">${esc(l)}</a></li>`).join('')}</ul></div></section>`,
@@ -1777,8 +1777,8 @@ function merci() {
   return {
     path: '/merci/',
     noindex: true,
-    title: 'Demande envoyée | Alex & Lia',
-    description: 'Votre demande a bien été envoyée à Alex & Lia. Je vous réponds rapidement, en général dans la journée, avec un récapitulatif clair.',
+    title: 'Demande envoyée | Alex & Co',
+    description: 'Votre demande a bien été envoyée à Alex & Co. Je vous réponds rapidement, en général dans la journée, avec un récapitulatif clair.',
     body: `${C.pageHero({ h1: 'Merci, votre demande est bien partie !', lead: 'Je vous réponds rapidement, en général dans la journée. Pensez à regarder vos e-mails, et vos indésirables.', mascot: 'mascotte' })}
 <section class="section"><div class="container center"><div class="hero-ctas centered">${C.btnWa('btn-light btn-lg')}${C.btn('/', 'btn-light btn-lg', 'arrow-right', 'Retour à l’accueil')}</div></div></section>`,
   };
@@ -1789,7 +1789,7 @@ function notFound() {
     path: '/404/',
     file: '404.html',
     noindex: true,
-    title: 'Page introuvable | Alex & Lia',
+    title: 'Page introuvable | Alex & Co',
     description: 'Cette page n’existe pas ou a été déplacée. Retrouvez la création de site, les tarifs, l’espace client et le référencement depuis l’accueil.',
     body: `${C.pageHero({ h1: 'Oups, cette page s’est perdue', lead: 'Elle a peut-être été déplacée. Voici où aller :', mascot: 'triste' })}
 <section class="section"><div class="container"><div class="go-links">${['creer', 'forfaits', 'seo', 'contact']

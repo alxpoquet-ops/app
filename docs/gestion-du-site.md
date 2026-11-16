@@ -185,7 +185,7 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 ## 9. Les demandes de modification
 
 - Le client écrit sa demande (avec une photo s'il veut) dans « Mes demandes ». Vous recevez un e-mail avec un lien direct.
-- Dans Alex & Lia › Demandes clients, vous changez le statut : Reçue, En cours, Faite, avec un message facultatif affiché chez le client. En passant à « Faite », le client reçoit un e-mail.
+- Dans Alex & Co › Demandes clients, vous changez le statut : Reçue, En cours, Faite, avec un message facultatif affiché chez le client. En passant à « Faite », le client reçoit un e-mail.
 - Deux compteurs : les Jetons Lia par mois (100 dans l'abonnement, plus les recharges achetées) pour les modifications par Lia, et les interventions d'Alex (une par trimestre, ou une par mois pour les clients d'avant la V2). Le client choisit qui fait chaque modification. Au-delà, une intervention d'Alex en plus coûte 5 €, ajoutée à sa facture, avec son accord.
 - Délai de réponse annoncé pour Alex : 72 heures. Lia : instantané, avec un aperçu à valider.
 
@@ -199,14 +199,14 @@ Ce qu'elle sait faire : changer un texte (horaires, prix affiché, phrase), modi
 
 À installer une fois :
 
-1. Une clé Claude : sur platform.claude.com, créez un compte, ajoutez un moyen de paiement (on paie à l'usage, quelques centimes par demande), puis API keys, Create key. Collez-la dans Alex & Lia › Réglages, rubrique Lia, ou mieux dans wp-config.php : `define('ALED08_ANTHROPIC_KEY', 'sk-ant-...');`. Bouton « Tester Lia » pour vérifier.
+1. Une clé Claude : sur platform.claude.com, créez un compte, ajoutez un moyen de paiement (on paie à l'usage, quelques centimes par demande), puis API keys, Create key. Collez-la dans Alex & Co › Réglages, rubrique Lia, ou mieux dans wp-config.php : `define('ALED08_ANTHROPIC_KEY', 'sk-ant-...');`. Bouton « Tester Lia » pour vérifier.
 2. L'extension `alexlia-sdk.zip` (kit officiel Anthropic) sur aled08.fr. Elle ne charge rien tant que Lia ne travaille pas.
 
 Pour chaque client :
 
 1. Sur le site du client, installez `alexlia-connecteur.zip` (dans `wp-export/` après `python3 scripts/wp-export.py`).
 2. Dans la fiche du client sur aled08.fr (Utilisateurs, le client, rubrique « Lia : site relié ») : mettez l'adresse du site (en https), cochez « Créer la clé », enregistrez. Copiez la clé affichée.
-3. Sur le site du client, Réglages › Alex & Lia : collez la clé, enregistrez. De retour sur la fiche client, la ligne « Connexion » doit dire OK.
+3. Sur le site du client, Réglages › Alex & Co : collez la clé, enregistrez. De retour sur la fiche client, la ligne « Connexion » doit dire OK.
 
 Tant qu'un client n'est pas relié, ses demandes « par Lia » arrivent chez vous par e-mail comme avant, et vous les faites à la main.
 
@@ -215,11 +215,11 @@ Après le passage de Lia, la fiche de la demande montre un encadré « Travail d
 - « Annuler les changements de Lia » : chaque page est remise exactement comme avant (une révision est gardée avant chaque changement). Une actualité publiée ou un nom de site changé se défont à la main, l'encadré vous dit lesquels ;
 - « Relancer Lia » si elle n'a pas pu finir.
 
-Sécurité : chaque échange avec le site client est signé avec la clé du client, valable 5 minutes et une seule fois. Sur le site client, la case « Pause » dans Réglages › Alex & Lia coupe Lia tout de suite. Le journal des 100 derniers changements est sur la même page. Si le pare-feu de l'hébergeur bloque l'adresse `/wp-json/alexlia/v1/action`, demandez au support de l'autoriser.
+Sécurité : chaque échange avec le site client est signé avec la clé du client, valable 5 minutes et une seule fois. Sur le site client, la case « Pause » dans Réglages › Alex & Co coupe Lia tout de suite. Le journal des 100 derniers changements est sur la même page. Si le pare-feu de l'hébergeur bloque l'adresse `/wp-json/alexlia/v1/action`, demandez au support de l'autoriser.
 
 ### Les Jetons Lia et les outils
 
-Tout ce que fait Lia se compte en **Jetons Lia**. Un jeton vaut 1 centime. Les outils ne demandent qu'une chose : **votre clé Claude**, entrée une fois dans Alex & Lia, Réglages, « Clé Claude ». Tant qu'elle manque, le tableau de bord de la gestion vous le rappelle, les outils où Lia écrit sont grisés et les outils gratuits marchent.
+Tout ce que fait Lia se compte en **Jetons Lia**. Un jeton vaut 1 centime. Les outils ne demandent qu'une chose : **votre clé Claude**, entrée une fois dans Alex & Co, Réglages, « Clé Claude ». Tant qu'elle manque, le tableau de bord de la gestion vous le rappelle, les outils où Lia écrit sont grisés et les outils gratuits marchent.
 
 **Les 15 outils** (définis dans `src/content/outils-lia.js`, un seul fichier pour le site, la Documentation et l'espace client) :
 

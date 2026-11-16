@@ -1,6 +1,6 @@
 <?php
 /**
- * Alex & Lia Espace client : la gestion, pour l'administrateur.
+ * Alex & Co Espace client : la gestion, pour l'administrateur.
  * Quand l'administrateur ouvre /mon-espace/, il voit ce tableau à la place de l'espace client :
  * les demandes à traiter, les clients, les commandes et sa liste de prospects.
  * Tout est réservé à la capacité manage_options ; rien n'est visible ni modifiable par un client.
@@ -73,8 +73,8 @@ function aled08e_demande_marquer($pid, $new, $rep = null) {
                 . "Votre demande est faite et en ligne :\n« " . $post->post_title . " »\n\n"
                 . ($rep ? $rep . "\n\n" : '')
                 . "Vous retrouvez le suivi de vos demandes dans votre espace client :\n" . aled08e_url() . "#demandes\n\n"
-                . "À bientôt,\nAlex, et Lia\n";
-            wp_mail($u->user_email, 'Votre modification est en ligne', $corps, aled08e_mail_headers('Alex & Lia <' . aled08e_to() . '>'));
+                . "À bientôt,\nAlex et sa petite bande\n";
+            wp_mail($u->user_email, 'Votre modification est en ligne', $corps, aled08e_mail_headers('Alex & Co <' . aled08e_to() . '>'));
         }
     }
     return true;
@@ -163,7 +163,7 @@ function aled08e_prospect_message($nom, $activite, $ville) {
         . 'Je crée des sites simples pour les indépendants : ' . aled08e_euro_txt($t ? $t['price'] : 500) . ' le site, puis ' . aled08e_euro_txt($f['month']) . " par mois tout compris (hébergement, nom de domaine, mises à jour). Le prix est affiché avant de commander, et l’abonnement est sans engagement.\n\n"
         . "Si cela vous intéresse, tout est expliqué ici :\n" . home_url('/') . "\n\n"
         . "Et si ce n'est pas le moment, aucun souci : je ne vous relancerai pas.\n\n"
-        . "Bonne journée,\nAlex, d'Alex & Lia\n";
+        . "Bonne journée,\nAlex, d'Alex & Co\n";
 }
 
 /* ------------------------------------------------------------------ le tableau de gestion */
@@ -207,7 +207,7 @@ function aled08e_gestion($u) {
   <div class="app" data-espace data-gestion>
     <div class="app-shell">
       <aside class="app-side">
-        <div class="app-user"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><div><strong><?php echo esc_html($u->display_name); ?></strong><small>Gestion Alex &amp; Lia</small></div></div>
+        <div class="app-user"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><div><strong><?php echo esc_html($u->display_name); ?></strong><small>Gestion Alex &amp; Co</small></div></div>
         <div class="app-tabs" role="tablist" aria-label="Gestion">
           <?php echo aled08e_tab('accueil', 'house', 'À faire', true) . aled08e_tab('suivi', 'history', 'Demandes'). aled08e_tab('clients', 'users', 'Clients') . aled08e_tab('commandes', 'package', 'Commandes') . aled08e_tab('prospects', 'target', 'Prospects') . aled08e_tab('annonces', 'megaphone', 'Annonces') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore ?>
         </div>

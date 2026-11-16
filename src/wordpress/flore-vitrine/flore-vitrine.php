@@ -4,7 +4,7 @@
  * Description: Le site présente les compositions sans prix ni paiement. Les visiteurs ajoutent leurs coups de cœur à leur sélection et envoient une demande de réservation, qui arrive par e-mail. Le compositeur « Votre bouquet à vous » est retiré. Désactiver l'extension remet la boutique comme avant.
  * Version: 1.0.3
  * Requires PHP: 7.4
- * Author: Alex & Lia
+ * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;

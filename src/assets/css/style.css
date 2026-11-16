@@ -1311,7 +1311,7 @@ button.app-card:hover { transform: translateY(-2px); }
 @media (min-width: 721px) { .btn-flaque:not(.btn-block) { margin-inline: 14px; } }
 @media (max-width: 720px) { .btn-flaque::before { inset: -13px -9px; } }
 
-/* le nom du site : la peinture du pot coule au sol et souligne « Alex & Lia » d'une traînée multicolore */
+/* le nom du site : la peinture du pot coule au sol et souligne « Alex & Co » d'une traînée multicolore */
 .brand { position: relative; isolation: isolate; }
 .brand::after { content: ""; position: absolute; z-index: -1; left: 58px; right: -12px; bottom: 0; height: 12px; pointer-events: none;
   background: linear-gradient(90deg, #FF6FAE 0, #9B7BFF 20px, #5AA2F0 34%, #7EDDB5 54%, #FFD45E 72%, #FF9E6E 88%, #FF6FAE);
