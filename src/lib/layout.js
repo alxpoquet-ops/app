@@ -99,7 +99,7 @@ function graph(p) {
 
 // ---------------------------------------------------------------- en-tête
 // V2 : Votre métier, Réalisations, Tarifs, Accompagnement, Contact. Outils et Documentation passent dans l'espace client.
-const NAV = ['metiers', 'confiance', 'forfaits', 'accompagnement', 'contact'];
+const NAV = ['equipe', 'confiance', 'forfaits', 'accompagnement', 'contact'];
 
 function header(currentPath) {
   const onCreer = currentPath.startsWith(sections.creer.path);

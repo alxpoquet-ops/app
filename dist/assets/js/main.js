@@ -130,7 +130,7 @@
     c.addEventListener('pointercancel', fin);
   })();
 
-  // Peinture : sous chaque bouton essentiel, une flaque dessinée au hasard (jamais deux pareilles, toujours bien ronde), et une éclaboussure au clic
+  // Peinture : sous chaque bouton essentiel, une flaque dessinée au hasard (jamais deux pareilles, toujours bien régulière), et une éclaboussure au clic
   (function () {
     var lisse = function (pts) { // courbe fermée et douce passant par les points
       var n = pts.length, dd = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
@@ -140,17 +140,23 @@
       }
       return dd + 'Z';
     };
-    // la flaque : posée sous le bouton, le haut caché derrière lui, un bord bien rond et ondulé en bas, et une ou deux gouttes
+    var pilule = function (t) { // point et normale sur une pilule (x 50 à 250, rayon 32, centre y 50)
+      var x0 = 50, x1 = 250, r = 32, cy = 50, a = x1 - x0, L = 2 * a + 2 * Math.PI * r, s = t * L, g;
+      if (s < a) return [x0 + s, cy - r, 0, -1]; s -= a;
+      if (s < Math.PI * r) { g = -Math.PI / 2 + s / r; return [x1 + r * Math.cos(g), cy + r * Math.sin(g), Math.cos(g), Math.sin(g)]; } s -= Math.PI * r;
+      if (s < a) return [x1 - s, cy + r, 0, 1]; s -= a;
+      g = Math.PI / 2 + s / r; return [x0 + r * Math.cos(g), cy + r * Math.sin(g), Math.cos(g), Math.sin(g)];
+    };
     var flaque = function () {
-      var pts = [[70, 0], [230, 0], [276, 8], [293, 20]], n = 9, ph = Math.random() * 6.3, k = 2 + Math.floor(Math.random() * 2);
-      for (var i = 0; i <= n; i++) {
-        var t = i / n, x = 290 - t * 280;
-        pts.push([x, 38 + 5 * Math.sin(t * 3.1416) + 3.5 * Math.sin(t * 6.283 * k + ph) + (Math.random() - 0.5) * 2]);
+      var pts = [], f1 = Math.random() * 6.3, f2 = Math.random() * 6.3, k1 = 2 + Math.floor(Math.random() * 3), k2 = 5 + Math.floor(Math.random() * 4);
+      for (var i = 0; i < 34; i++) {
+        var t = i / 34, q = pilule(t), off = 8 + 2.4 * Math.sin(t * 6.283 * k1 + f1) + 1.8 * Math.sin(t * 6.283 * k2 + f2) + (Math.random() - 0.5) * 1.4; // toujours au moins 3 : jamais de trou
+        pts.push([q[0] + q[2] * off, q[1] + q[3] * off]);
       }
-      pts.push([7, 20], [24, 8]);
-      var svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 60' preserveAspectRatio='none'><path d='" + lisse(pts) + "'/>";
-      for (var g = 0, ng = 1 + Math.floor(Math.random() * 2); g < ng; g++) {
-        svg += "<circle cx='" + (40 + Math.random() * 220).toFixed(1) + "' cy='" + (54 + Math.random() * 3).toFixed(1) + "' r='" + (2.4 + Math.random() * 1.4).toFixed(1) + "'/>";
+      var svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100' preserveAspectRatio='none'><path d='" + lisse(pts) + "'/>";
+      for (var g = 0, ng = 1 + Math.floor(Math.random() * 3); g < ng; g++) {
+        var q2 = pilule(Math.random()), o = 13 + Math.random() * 4;
+        svg += "<circle cx='" + (q2[0] + q2[2] * o).toFixed(1) + "' cy='" + (q2[1] + q2[3] * o).toFixed(1) + "' r='" + (2.4 + Math.random() * 2).toFixed(1) + "'/>";
       }
       return 'url("data:image/svg+xml,' + encodeURIComponent(svg + '</svg>') + '")';
     };

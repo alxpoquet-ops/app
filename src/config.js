@@ -70,6 +70,7 @@ const sections = {
   confiance: { path: '/realisations/', label: 'Réalisations', color: 'butter', icon: 'image' },
   liaalex: { path: '/pourquoi-les-minis-monstres/', label: 'Pourquoi les Minis Monstres', color: 'pink', icon: 'heart-handshake' },
   metiers: { path: '/metiers/', label: 'Votre métier', color: 'peach', icon: 'store' },
+  equipe: { path: '/notre-equipe/', label: 'Notre équipe', color: 'lilac', icon: 'users' },
   accompagnement: { path: '/accompagnement/', label: 'Accompagnement', color: 'mint', icon: 'life-buoy' },
   guides: { path: '/guides/', label: 'Guides', color: 'sky', icon: 'book-open' },
   documentation: { path: '/documentation/', label: 'Documentation', color: 'sky', icon: 'book-open' },

@@ -97,12 +97,6 @@ function home() {
   </div>
 </section>
 
-${METIERS.length ? `<section class="section">${C.deco('champi', 'haut-droite')}<div class="container">
-  <h2 class="section-title">Un site pensé pour votre métier</h2>
-  <p class="section-sub">Un artisan, une sophrologue et un gîte n’ont pas besoin du même site. Je pars de votre activité et de ce que cherchent vos clients.</p>
-  ${metierCards()}
-</div></section>` : ''}
-
 <section class="section section-soft c-butter">${C.deco('dino', 'haut-gauche')}<div class="container">
   <h2 class="section-title">Des sites en ligne, à visiter</h2>
   <p class="section-sub">Pas de faux avis ici : allez voir par vous-même.</p>
@@ -115,22 +109,11 @@ ${METIERS.length ? `<section class="section">${C.deco('champi', 'haut-droite')}<
   <div class="feats">${gains.map(([ic, t, d]) => `<div class="feat reveal">${icon(ic)}<h3>${t}</h3><p>${d}</p></div>`).join('')}</div>
 </div></section>
 
-<section class="section section-soft">${C.deco('chaton', 'haut-droite')}<div class="container">
-  <h2 class="section-title">Comment ça se passe</h2>
-  <p class="section-sub">Quatre étapes, et rien de technique pour vous.</p>
-  ${C.steps([
-    { t: 'Vous composez votre site', d: `Vous choisissez votre site et vos options en deux minutes, le prix s’affiche. Vous réglez ${paiement.acompte} % à la commande.` },
-    { t: 'Je prépare votre site', d: 'Je réserve votre nom de domaine et je vous pose les bonnes questions. Ma petite bande prépare la mise en page et les premiers textes.' },
-    { t: 'Vous validez l’aperçu', d: 'Vous voyez votre site avant tout le monde. Vous me dites ce qui change, je corrige.' },
-    { t: 'Je le mets en ligne et je m’en occupe', d: 'Votre site est en ligne, sûr et à jour. Une modification ? Vous la demandez depuis votre espace client.' },
-  ])}
-</div></section>
-
-<section class="section section-bande" id="bande"><div class="container">
-  <h2 class="section-title">Alex et sa petite bande</h2>
-  <div class="alex-bulle reveal"><span class="alex-art">${C.alexPortrait({ title: 'Alex' })}</span><p><strong>Moi, c’est Alex.</strong> Je conçois et je fais votre site moi-même. À côté, j’ai pris le temps de programmer une petite bande de compagnons : ce sont mes automatisations. Chacun a son prénom et une seule tâche, répétitive mais utile. Ils travaillent en autonomie, et je vérifie tout ce qu’ils font.</p></div>
-  ${C.bandeGrid({ complet: true })}
-  <p class="center more">${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
+<section class="section section-soft section-equipe-court"><div class="container center">
+  <h2 class="section-title">Notre équipe</h2>
+  <p class="section-sub">Alex conçoit chaque site à la main. Ses petits monstres, programmés par lui, font le répétitif à côté.</p>
+  <div class="equipe-court reveal" aria-hidden="true"><span>${C.alexPortrait()}</span>${['coucou', 'mochi', 'bricou', 'fantome', 'nuage'].map((n) => `<span>${n === 'coucou' ? monster('coucou') : C.petit(n)}</span>`).join('')}</div>
+  <p class="more">${C.btn(sections.equipe.path, 'btn-light btn-flaque', sections.equipe.icon, 'Rencontrer l’équipe')}</p>
 </div></section>
 
 <section class="section"><div class="container">
@@ -139,30 +122,6 @@ ${METIERS.length ? `<section class="section">${C.deco('champi', 'haut-droite')}<
   ${C.offre({ compact: true })}
   <p class="center small muted">C’est moi qui conçois votre site. Ma petite bande s’occupe du répétitif, et j’ai des accès directs chez des hébergeurs français. Vous ne payez que le temps utile.</p>
   <p class="center more">${C.btn(sections.forfaits.path, 'btn-light btn-flaque', 'arrow-right', 'Tout le détail des tarifs')}</p>
-</div></section>
-
-<section class="section section-soft c-sky">${C.deco('etoile', 'bas-gauche', 'ravi')}<div class="container split">
-  <div class="reveal">
-    <p class="kicker c-sky">${icon('pencil')}Après la mise en ligne</p>
-    <h2>Vous demandez, je m’en occupe</h2>
-    <p>Un horaire, un prix, une photo à changer ? Écrivez-le depuis votre espace client, avec une photo si besoin. La petite bande fait les petites retouches en quelques minutes, avec un aperçu à valider. Pour le reste, c’est moi, à la main.</p>
-    <p>L’abonnement comprend ces petites retouches, les outils de la bande et une intervention de ma part chaque trimestre. Besoin de plus ? Un article, un point ensemble ou une intervention en plus se commandent à l’unité.</p>
-    <div class="hero-ctas">${C.btn(sections.accompagnement.path, 'btn-primary', sections.accompagnement.icon, 'L’accompagnement')}${C.btn(site.espaceClient.demo, 'btn-light', 'circle-user', 'Essayer l’espace client')}</div>
-  </div>
-  ${C.phoneEdit()}
-</div></section>
-
-<section class="section"><div class="container duo">
-  <a class="promo c-pink reveal" href="${sections.liaalex.path}">
-    <span class="promo-ico">${icon(sections.liaalex.icon)}</span>
-    <span class="promo-text"><strong>Pourquoi choisir les Minis Monstres ?</strong><span>Un vrai interlocuteur, un prix affiché, et votre site reste à vous.</span></span>
-    <span class="promo-go">${icon('arrow-right')}</span>
-  </a>
-  <a class="promo c-butter reveal" href="${sections.comparatif.path}">
-    <span class="promo-ico">${icon('scale')}</span>
-    <span class="promo-text"><strong>Les Minis Monstres et les autres solutions</strong><span>Agence, freelance, plateforme à faire soi-même : qui fait quoi, et à quel prix.</span></span>
-    <span class="promo-go">${icon('arrow-right')}</span>
-  </a>
 </div></section>
 
 ${C.ctaBand({ title: 'Pas sûr de ce qu’il vous faut ?', text: 'Écrivez-moi en deux lignes : je vous dis quel site vous convient, sans engagement. Ou composez-le tout de suite.' })}`;
@@ -1282,6 +1241,42 @@ ${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: `Composez votre s
   };
 }
 
+// ====================================================================== NOTRE ÉQUIPE
+// Alex, et sa petite bande de monstres : un prénom et une tâche chacun. Ce que l'accueil montrait avant, en entier.
+function equipePage() {
+  const crumbs = crumb('equipe');
+  const body = `${C.pageHero({
+    section: 'equipe',
+    h1: 'Notre équipe : Alex et sa petite bande',
+    lead: 'Un humain qui conçoit et vérifie tout, et une bande de petits monstres qui s’occupent du répétitif. C’est comme ça que votre site coûte moins cher, sans être fait à la va-vite.',
+    crumbs,
+  })}
+<section class="section section-bande" id="bande"><div class="container">
+  <div class="alex-bulle reveal"><span class="alex-art">${C.alexPortrait({ title: 'Alex' })}</span><p><strong>Moi, c’est Alex.</strong> Je conçois et je fais votre site moi-même. À côté, j’ai pris le temps de programmer une petite bande de compagnons : ce sont mes automatisations. Chacun a son prénom et une seule tâche, répétitive mais utile. Ils travaillent en autonomie, et je vérifie tout ce qu’ils font.</p></div>
+  ${C.bandeGrid({ complet: true })}
+</div></section>
+
+<section class="section section-soft"><div class="container">
+  <h2 class="section-title">Comment on travaille ensemble</h2>
+  <div class="feats">
+    <div class="feat reveal">${icon('palette')}<h3>Alex conçoit</h3><p>Votre maquette, vos pages et vos textes importants : c’est moi, du début à la fin.</p></div>
+    <div class="feat reveal">${icon('sparkles')}<h3>La bande s’occupe du répétitif</h3><p>Mises à jour, sauvegardes, petites retouches, chiffres du mois : chaque monstre fait sa tâche, sans se lasser.</p></div>
+    <div class="feat reveal">${icon('shield-check')}<h3>Alex vérifie</h3><p>Rien ne part en ligne sans un œil humain. Et pour tout le reste, vous parlez directement avec moi.</p></div>
+  </div>
+  <p class="center more">${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
+</div></section>
+${C.ctaBand({ title: 'On s’occupe de votre site ?', text: 'Composez-le en deux minutes, le prix s’affiche tout de suite. Ou écrivez-moi pour en parler.' })}`;
+  return {
+    path: sections.equipe.path,
+    section: 'equipe',
+    title: 'Notre équipe : Alex et sa petite bande de monstres | Les Minis Monstres',
+    description: 'Alex conçoit chaque site à la main. Sa petite bande de monstres programmés s’occupe du répétitif : mises à jour, sauvegardes, retouches. Faites connaissance.',
+    crumbs,
+    body,
+    priority: 0.7,
+  };
+}
+
 // ====================================================================== V2 : VOTRE MÉTIER
 function metiersHub() {
   const crumbs = crumb('metiers');
@@ -1803,6 +1798,7 @@ function build() {
     home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), contactPage(), faqPage(),
     outilsPage(),
     confiancePage(),
+    equipePage(),
     // V2 : pages métier, réassurance, guides de fond, page locale (remplacent /methode/ et /lia-et-alex/)
     ...(METIERS.length ? [metiersHub(), ...METIERS.map(metierPage)] : []),
     ...PAGES_V2.map(pageV2),
