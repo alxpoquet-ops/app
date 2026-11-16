@@ -33,7 +33,7 @@
     'Préparer ma demande': 'Prepare my request',
     'Outil : ': 'Tool: ',
     ' à chaque lancement.': ' each time you use it.',
-    'Gratuit.': 'Free.',
+    'Sans énergie.': 'No energy needed.',
     'Ouvrir l’outil': 'Open the tool',
     'Dans votre espace : ': 'In your area: ',
     'Y aller': 'Go there',
@@ -972,7 +972,7 @@
         oui = tr('Préparer ma demande');
       } else if (a.type === 'outil') {
         titre = tr('Outil : ') + tr(a.nom || '');
-        petit = a.jetons > 0 ? jetonsTxt(a.jetons) + tr(' à chaque lancement.') : tr('Gratuit.');
+        petit = a.jetons > 0 ? jetonsTxt(a.jetons) + tr(' à chaque lancement.') : tr('Sans énergie.');
         oui = tr('Ouvrir l’outil');
       } else if (a.type === 'onglet') {
         titre = tr('Dans votre espace : ') + tr(a.nom || '');

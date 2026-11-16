@@ -608,7 +608,7 @@ function aled08e_jl_visuel_html($host) {
         . $puces('place', 'La place du texte', ['haut' => 'En haut', 'milieu' => 'Au milieu', 'bas' => 'En bas'], 'milieu')
         . '</div><div class="ol-visuel-apercu"><canvas data-v-canvas width="1080" height="1080" role="img" aria-label="Aperçu de votre visuel"></canvas>'
         . '<a class="btn btn-primary" data-v-dl download="annonce.jpg" href="#">' . aled08e_icon('download') . '<span>Télécharger l’image</span></a>'
-        . '<p class="app-note">L’image est faite sur votre appareil : rien n’est envoyé, et c’est gratuit.</p></div></div>';
+        . '<p class="app-note">L’image est faite sur votre appareil : rien n’est envoyé, et elle n’utilise pas d’énergie.</p></div></div>';
 }
 
 function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
@@ -632,7 +632,7 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
         <?php else : ?>
         <strong>Il vous reste <span data-jl-solde><?php echo esc_html(aled08e_jl_txt($e['solde'])); ?></span></strong>
         <?php if (!$e['actif']) : ?>
-        <small>L’énergie des petits monstres arrive quand votre abonnement démarre. Les outils gratuits marchent déjà. 100 d’énergie = 1 €.</small>
+        <small>L’énergie des petits monstres arrive quand votre abonnement démarre. Les outils qui n’utilisent pas d’énergie marchent déjà. 100 d’énergie = 1 €.</small>
         <?php else : ?>
         <small><?php echo esc_html($f['name']); ?> : <?php echo esc_html(aled08e_jl_txt($e['mois'])); ?> par mois, remis à neuf le 1<sup>er</sup><?php echo $e['extra'] ? '. Dont ' . (int) $e['extra'] . ' redonnés en plus, qui restent jusqu’à ce que vous les utilisiez' : ''; ?>. 100 d’énergie = 1 €.</small>
         <?php endif; ?>
@@ -666,12 +666,11 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
     </div>
     <?php endif; ?>
     <div class="ol-grille" data-outils data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" data-nonce="<?php echo esc_attr(wp_create_nonce('aled08e_jl')); ?>">
-      <?php foreach ($outils as $o) : $gratuit = (int) $o['jetons'] === 0 || !empty($o['visuel']); ?>
+      <?php foreach ($outils as $o) : ?>
       <button type="button" class="ol-carte c-<?php echo esc_attr($o['color']); ?>" data-cat="<?php echo esc_attr($o['categorie'] ?? ''); ?>" data-ol-ouvrir="<?php echo esc_attr($o['id']); ?>" aria-expanded="false" aria-controls="ol-<?php echo esc_attr($o['id']); ?>">
         <span class="ol-ico"><?php echo aled08e_icon($o['icon']); // phpcs:ignore ?></span>
         <strong><?php echo esc_html($o['name']); ?></strong>
         <small><?php echo esc_html($o['court']); ?></small>
-        <?php if ($gratuit) : ?><span class="ol-prix is-gratuit">Gratuit</span><?php endif; ?>
       </button>
       <?php endforeach; ?>
     </div>

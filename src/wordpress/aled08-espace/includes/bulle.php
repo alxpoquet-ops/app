@@ -119,7 +119,7 @@ function aled08e_bulle_contexte($uid) {
     if ($ex) $offre[] = 'Options au mois, à ajouter ou retirer quand on veut (onglet forfait) : ' . implode(' ; ', $ex) . '.';
 
     $outils = [];
-    foreach (aled08e_jl_outils() as $o) $outils[] = $o['id'] . ' : ' . $o['name'] . ' (' . ((int) $o['jetons'] > 0 ? aled08e_jl_txt($o['jetons']) : 'gratuit') . '). ' . ($o['court'] ?? '');
+    foreach (aled08e_jl_outils() as $o) $outils[] = $o['id'] . ' : ' . $o['name'] . ' (' . ((int) $o['jetons'] > 0 ? aled08e_jl_txt($o['jetons']) : 'sans énergie') . '). ' . ($o['court'] ?? '');
     $onglets = [];
     foreach (aled08e_bulle_onglets($uid) as $id => $nom) $onglets[] = $id . ' : ' . $nom;
 

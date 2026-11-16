@@ -12,7 +12,7 @@ const OUTILS = require('../content/outils');
 const OUTILS_LIA = require('../content/outils-lia').outils;
 const FAMILLES_OUTILS = require('../content/outils-lia').FAMILLES;
 // Prix d'un outil ou d'une modification, en Jetons Cerise
-const jl = (n) => (n ? `${n} d’énergie` : 'Gratuit');
+const jl = (n) => (n ? `${n} d’énergie` : 'Sans énergie');
 const JL_MODIF = `${jetonsLia.modif.base} d’énergie, plus 1 par tranche de ${jetonsLia.modif.mots} mots et ${jetonsLia.modif.image} par photo`;
 // Une modification par Cerise coûte de 30 jetons (la base) à 65 (la plus grosse demande que Cerise accepte : trois photos et leur légende).
 const JL_MODIF_FOURCHETTE = `${jetonsLia.modif.base} à 65`;
@@ -320,7 +320,7 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
   <p class="section-sub">Ils sont dans votre espace client : il suffit d’être connecté. Rien d’autre à installer, aucun autre compte à créer.</p>
   ${Object.entries(FAMILLES_OUTILS).map(([fid, fnom]) => `<h3 class="tools-famille reveal">${fnom}</h3>
   <div class="tools">${OUTILS_LIA.filter((t) => t.categorie === fid).map(
-    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][0] : t.name}</strong><span>${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][1] : t.court}</span></span>${t.jetons && !t.visuel ? '' : '<span class="tool-tag c-mint">Gratuit</span>'}</div>`
+    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][0] : t.name}</strong><span>${PUBLIC_OUTIL[t.id] ? PUBLIC_OUTIL[t.id][1] : t.court}</span></span></div>`
   ).join('')}</div>`).join('\n  ')}
 </div></section>
 
@@ -1621,7 +1621,7 @@ function docPage() {
   <ul class="list-check">
     <li>L’énergie de l’abonnement repart à ${ABO.jetons} le 1<sup>er</sup> de chaque mois. Ce qui reste ne se garde pas.</li>
     <li>Pour en reprendre : à partir de ${jetonsLia.recharge[0].jetons} d’énergie pour ${jetonsLia.recharge[0].prix} €, ajoutés à votre prochaine facture. Cette énergie-là reste jusqu’à ce que vous l’utilisiez.</li>
-    <li>Les outils gratuits tournent sur votre appareil : ils ne consomment rien.</li>
+    <li>Certains outils tournent sur votre appareil : ils n’utilisent pas d’énergie.</li>
   </ul>
   <p class="doc-more">${C.btn(sections.espace.path, 'btn-light', 'toolbox', 'Voir tous les outils')}</p>
 </div></section>
