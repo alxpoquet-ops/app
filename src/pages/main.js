@@ -302,6 +302,30 @@ const PUBLIC_OUTIL = {
   conseilphoto: ['Conseils sur une photo', 'Des conseils simples pour réussir vos photos avec votre téléphone.'],
   conseilpage: ['Conseils pour ma page', 'Une page de votre site relue, avec ce qu’il faut changer en premier.'],
 };
+// Le système d'énergie, expliqué en haut de la page Outils : tout est compris, la bande a juste besoin d'énergie
+function energieOutils() {
+  const e = ABO.jetons;
+  const cout = (id) => (OUTILS_LIA.find((t) => t.id === id) || {}).jetons || 1;
+  const fois = (n) => Math.floor(e / n);
+  const reprise = jetonsLia.recharge[0];
+  return `<section class="section section-energie" id="energie"><div class="container">
+  <div class="energie reveal">
+    <div class="energie-jauge" aria-hidden="true"><span class="energie-art">${C.petit('mochi', { humeur: 'ravi' })}</span><p class="energie-nb">${icon('zap')}<b>${e}</b></p><span class="energie-barre"><i></i></span><small>d’énergie chaque mois</small></div>
+    <div class="energie-txt">
+      <p class="kicker c-butter">${icon('zap')}L’énergie de la bande</p>
+      <h2>Tout est compris, il faut juste de l’énergie</h2>
+      <p>Les outils sont tous compris dans l’abonnement. Pour travailler, mes petits monstres utilisent de l’énergie, et votre abonnement leur en donne ${e} chaque mois.</p>
+      <p class="energie-ex">Avec ${e} d’énergie, vous pouvez par exemple corriger ${fois(cout('corriger'))} textes, répondre à ${fois(cout('avis'))} avis ou faire ${fois(jetonsLia.modif.base)} retouches de votre site.</p>
+    </div>
+  </div>
+  <div class="feats feats-4">
+    <div class="feat reveal">${icon('toolbox')}<h3>Écrite sur chaque bouton</h3><p>Un outil utilise de ${JL_OUTIL_MIN} à ${JL_OUTIL_MAX} d’énergie. Vous voyez le nombre avant de le lancer. Certains outils n’en utilisent pas du tout.</p></div>
+    <div class="feat reveal">${icon('wand-sparkles')}<h3>Pour vos retouches aussi</h3><p>Une retouche de votre site par Bricou utilise de ${JL_MODIF_FOURCHETTE} d’énergie, selon la longueur du texte et le nombre de photos.</p></div>
+    <div class="feat reveal">${icon('refresh-cw')}<h3>Rendue si ça ne marche pas</h3><p>Une retouche qui échoue, un aperçu que vous refusez ou une demande annulée sous 24 heures : l’énergie vous revient.</p></div>
+    <div class="feat reveal">${icon('calendar-check')}<h3>De retour chaque mois</h3><p>Le 1<sup>er</sup> du mois, elle repart à ${e}. Besoin de plus ? ${reprise.jetons} d’énergie pour ${reprise.prix} €, ajoutés à votre prochaine facture et gardés jusqu’à ce que vous les utilisiez.</p></div>
+  </div>
+</div></section>`;
+}
 function outilsPage() {
   const crumbs = crumb('espace');
   const f = C.faq(FAQ.espace, 'Vos questions sur l’espace client', 'faq-outils');
@@ -314,6 +338,8 @@ function outilsPage() {
   })}
 ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez vos demandes par le formulaire de contact : on s’en occupe de la même façon.</span></p></div>`}
 <div class="container demo-cta demo-cta-duo">${C.btn(sections.monespace.path + '#outils', 'btn-primary btn-lg', 'circle-user', 'Ouvrir mes outils')}${C.btn(site.espaceClient.demo, 'btn-light btn-lg', 'eye', 'Essayer la démo')}</div>
+
+${energieOutils()}
 
 <section class="section" id="outils-lia"><div class="container">
   <h2 class="section-title">Les outils de votre espace</h2>
@@ -335,12 +361,6 @@ ${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice revea
     <li><strong>Vous relisez, puis vous publiez.</strong> Un bouton par réseau, ou « Tout publier » : la photo et le texte partent sur vos comptes reliés. Rien ne part sans vous.</li>
     <li><strong>Un réseau n’est pas relié ?</strong> Le texte est copié et le réseau s’ouvre : il reste à coller. Sur téléphone, « Partager » envoie la photo et le texte à l’application de votre choix.</li>
   </ol>
-</div></section>
-
-<section class="section" id="compris"><div class="container container-narrow">
-  <p class="kicker c-butter">${icon('gift')}Compris dans l’abonnement</p>
-  <h2>Des outils compris, sans compter</h2>
-  <p>Les outils et les petites retouches de votre site sont compris dans l’abonnement, pour un usage normal. Si un mois vous en faites beaucoup plus, vous pouvez en reprendre depuis votre espace client, à petit prix. Une retouche qui échoue ne compte jamais.</p>
 </div></section>
 
 <section class="section section-soft"><div class="container split">

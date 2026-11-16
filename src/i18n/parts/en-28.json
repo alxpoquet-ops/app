@@ -122,5 +122,18 @@
  "<strong>Recadrer et alléger une photo</strong><span>Votre photo au bon format pour chaque réseau, et légère pour votre site.</span>": "<strong>Crop and lighten a photo</strong><span>Your photo in the right format for each network, and light for your website.</span>",
  "<strong>Annonce en image</strong><span>Votre annonce en image : un texte sur une couleur ou sur votre photo.</span>": "<strong>Announcement image</strong><span>Your announcement as an image: some text on a colour or on your photo.</span>",
  "Certains outils tournent sur votre appareil : ils n’utilisent pas d’énergie.": "Some tools run on your device: they use no energy.",
- "Sans énergie": "No energy needed"
+ "Sans énergie": "No energy needed",
+ "Le 1<sup>er</sup> du mois, elle repart à 100. Besoin de plus ? 100 d’énergie pour 1 €, ajoutés à votre prochaine facture et gardés jusqu’à ce que vous les utilisiez.": "On the 1<sup>st</sup> of the month, it goes back to 100. Need more? 100 energy for €1, added to your next invoice and kept until you use it.",
+ "De retour chaque mois": "Back every month",
+ "Une retouche qui échoue, un aperçu que vous refusez ou une demande annulée sous 24 heures : l’énergie vous revient.": "An edit that fails, a preview you turn down or a request cancelled within 24 hours: the energy comes back to you.",
+ "Rendue si ça ne marche pas": "Given back if it does not work",
+ "Une retouche de votre site par Bricou utilise de 30 à 65 d’énergie, selon la longueur du texte et le nombre de photos.": "An edit to your website by Bricou uses 30 to 65 energy, depending on the length of the text and the number of photos.",
+ "Pour vos retouches aussi": "For your edits too",
+ "Un outil utilise de 3 à 16 d’énergie. Vous voyez le nombre avant de le lancer. Certains outils n’en utilisent pas du tout.": "A tool uses 3 to 16 energy. You see the number before you launch it. Some tools use none at all.",
+ "Écrite sur chaque bouton": "Shown on every button",
+ "Avec 100 d’énergie, vous pouvez par exemple corriger 8 textes, répondre à 20 avis ou faire 3 retouches de votre site.": "With 100 energy, you can for example correct 8 texts, reply to 20 reviews or make 3 edits to your website.",
+ "Les outils sont tous compris dans l’abonnement. Pour travailler, mes petits monstres utilisent de l’énergie, et votre abonnement leur en donne 100 chaque mois.": "All the tools are included in the subscription. To work, my little monsters use energy, and your subscription gives them 100 every month.",
+ "Tout est compris, il faut juste de l’énergie": "Everything is included, it just takes energy",
+ "L’énergie de la bande": "The band’s energy",
+ "<span class=\"energie-barre\"><i></i></span><small>d’énergie chaque mois</small>": "<span class=\"energie-barre\"><i></i></span><small>energy every month</small>"
 }
