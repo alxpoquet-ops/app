@@ -433,7 +433,7 @@ HEADER_PHP = r"""<?php defined('ABSPATH') || exit; $u = get_template_directory_u
 <link rel="icon" href="<?php echo esc_url($u); ?>/assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="<?php echo esc_url($u); ?>/assets/apple-touch-icon.png">
 <link rel="manifest" href="<?php echo esc_url($u); ?>/assets/app.webmanifest">
-<script>document.documentElement.classList.add('js')</script>
+<script>(function(h){h.classList.add('js');var d=new Date(),n=(d.getMonth()+1)*100+d.getDate(),q=/[?&]noel=([01])/.exec(location.search);if(q?q[1]==='1':(n>=1115||n<=106))h.classList.add('noel')})(document.documentElement)</script>
 <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>

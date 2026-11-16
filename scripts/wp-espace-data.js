@@ -32,7 +32,7 @@ process.stdout.write(
     forfaits: forfaits.map((f) => ({ id: f.id, name: f.name, month: f.month, quota: f.quota || QUOTA[f.id] || 1, jetons: f.jetons === undefined ? 1 : f.jetons, partage: !!f.partage, modifs: f.modifs, color: f.color, tagline: f.tagline })),
     types: types.map((t) => ({ id: t.id, name: t.name, label: t.label, price: t.price, delai: t.delai })),
     // quand : 'creation' (payée une fois, à la commande) ou 'mois' (extra de l'abonnement, à ajouter ou retirer)
-    options: options.map((o) => ({ id: o.id, name: o.name, month: o.price.month || 0, once: o.price.once || 0, types: o.types || [], quand: o.quand || (o.price.month ? 'mois' : 'creation'), icon: o.icon || 'check', desc: o.desc || '' })),
+    options: options.map((o) => ({ id: o.id, name: o.name, month: o.price.month || 0, once: o.price.once || 0, types: o.types || [], quand: o.quand || (o.price.month ? 'mois' : 'creation'), icon: o.icon || 'check', desc: o.desc || '', info: o.info || '' })),
     creation: cfg.creation || { prix: 500, boutique: 200 },
     moisOfferts: annuel.moisOfferts,
     boost: boost.prix,
@@ -43,7 +43,7 @@ process.stdout.write(
     remiseSecondSite: fidelite.remiseSecondSite || 0,
       // les icônes de l'espace client, plus celles des outils de Lia (lues dans leur définition)
     icons: Object.fromEntries([...new Set([...ICONS, ...require('../src/content/outils-lia').outils.map((o) => o.icon), ...options.map((o) => o.icon).filter(Boolean)])].map((n) => [n, icon(n)])),
-    // Lia, la mascotte : une humeur par dessin (mascotte = bonjour)
-    monsters: Object.fromEntries(['mascotte', 'clin', 'ravie', 'pense', 'triste'].map((n) => [n, monster(n)])),
+    // Lia (une humeur par dessin, mascotte = bonjour) et Alex, le petit monstre à lunettes
+    monsters: Object.fromEntries(['mascotte', 'clin', 'ravie', 'pense', 'triste', 'alex'].map((n) => [n, monster(n)])),
   })
 );

@@ -1,6 +1,6 @@
 /* ==========================================================================
    ALED08 : feuille de style
-   Pastel, arrondi, léger. Une couleur douce par rubrique, et Lia, la mascotte.
+   Pastel, arrondi, léger. Une couleur douce par rubrique, et deux petits monstres : Lia et Alex.
    ========================================================================== */
 
 @font-face { font-family: "Plus Jakarta Sans"; src: url("../fonts/jakarta-var.woff2") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }
@@ -116,7 +116,10 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 .btn[disabled] { opacity: .7; cursor: wait; transform: none; }
 .btn[aria-current] { --bs: #2E9C70; background: #6AD3A8; }
 
-/* ---------- Lia, la mascotte (classe .monster gardée pour le code) ---------- */
+/* ---------- les mascottes : Lia et Alex ---------- */
+/* À Noël (classe « noel » posée dans la tête de la page) : Lia met son bonnet, le nœud et les cornes passent dessous */
+.noel .monster-lia .m-noel { display: inline; }
+.noel .monster-lia .m-noeud, .noel .monster-lia .m-cornes { display: none; }
 .monster { display: block; width: 100%; height: auto; overflow: visible; }
 .js .monster .m-bob { animation: m-bob 3.4s ease-in-out infinite; }
 .js .monster .m-shadow { animation: m-shadow 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
@@ -1620,14 +1623,16 @@ div.tool { cursor: default; }
 .tools-famille { margin: 34px 0 14px; font-size: 1.25rem; color: var(--ink); }
 .tools-famille:first-of-type { margin-top: 10px; }
 
-/* Lia, la mascotte chibi : la seconde main salue en miroir */
+/* Lia : le second bras salue en miroir */
 .js .monster .m-wave-r { transform-origin: 10% 90%; animation-delay: -.5s; }
 
 /* ============================================================
    L'offre unique : le site (500 €) + l'abonnement (10 € par mois)
    ============================================================ */
 .offre { position: relative; max-width: 940px; margin: 0 auto; padding: 30px 26px 26px; border-radius: var(--radius-lg); background: var(--card); box-shadow: var(--shadow); }
-.offre-lia { position: absolute; top: -58px; right: 22px; width: 104px; pointer-events: none; }
+.offre-lia { position: absolute; top: -62px; right: 18px; width: 178px; display: flex; align-items: flex-end; pointer-events: none; }
+.offre-lia .monster { width: 54%; flex: none; }
+.offre-lia .monster-alex { margin-left: -8%; }
 .offre-cols { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 16px; align-items: stretch; }
 .offre-col { display: flex; flex-direction: column; padding: 22px; border-radius: var(--radius); background: var(--c); }
 .offre-k { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-weight: 900; color: var(--c-dd); font-size: 1.05rem; }
@@ -1673,7 +1678,7 @@ div.tool { cursor: default; }
 .opt-price { white-space: nowrap; font-weight: 900; color: var(--ink); }
 @media (max-width: 760px) {
   .offre { padding: 26px 16px 18px; }
-  .offre-lia { width: 78px; top: -46px; right: 12px; }
+  .offre-lia { width: 128px; top: -46px; right: 8px; }
   .offre-cols { grid-template-columns: 1fr; }
   .offre-plus { justify-self: center; }
   .offre-prix b { font-size: 2.4rem; }
@@ -1684,33 +1689,92 @@ div.tool { cursor: default; }
   .opt-groups { grid-template-columns: 1fr; }
 }
 
-/* ---------- Lia flottante : elle suit le visiteur sur toutes les pages ---------- */
+/* ---------- la bulle de Lia : en bas de chaque page ---------- */
 .lia-flot { position: fixed; right: max(14px, env(safe-area-inset-right)); bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 88; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; pointer-events: none; }
 .lia-flot[hidden] { display: none; }
 .lia-flot > * { pointer-events: auto; }
-.lia-flot-btn { position: relative; width: 66px; height: 66px; padding: 0; border: 0; border-radius: 50%; background: var(--card); box-shadow: 0 0 0 3px var(--pink-d), 0 12px 26px -10px rgba(46, 42, 71, .55); cursor: pointer; display: grid; place-items: center; transition: transform .18s; -webkit-tap-highlight-color: transparent; }
+.lia-flot-btn { position: relative; width: 68px; height: 68px; padding: 0; border: 0; border-radius: 50%; background: var(--card); box-shadow: 0 0 0 3px var(--pink-d), 0 12px 26px -10px rgba(46, 42, 71, .55); cursor: pointer; display: grid; place-items: center; transition: transform .18s; -webkit-tap-highlight-color: transparent; }
 .lia-flot-btn:hover { transform: translateY(-2px) scale(1.05); }
 .lia-flot-btn:focus-visible { outline: 3px solid var(--lilac-d); outline-offset: 3px; }
-.lia-flot-btn .monster { width: 60px; height: 60px; margin-top: 2px; }
+.lia-flot-btn .monster { width: 62px; height: 62px; }
 .lia-flot-btn .m-shadow { display: none; }
 .lia-flot-coucou { margin: 0; max-width: 220px; padding: 9px 14px; border-radius: 16px 16px 4px 16px; background: var(--card); color: var(--ink); font-weight: 800; font-size: .88rem; line-height: 1.35; box-shadow: 0 0 0 2px var(--pink), var(--shadow-sm); cursor: pointer; animation: lia-pop .35s ease-out both; }
-.lia-flot.is-open .lia-flot-coucou { display: none; }
-.lia-flot-panel { position: relative; width: min(310px, calc(100vw - 28px)); padding: 18px 18px 16px; border-radius: 22px 22px 6px 22px; background: var(--card); color: var(--text); box-shadow: 0 0 0 3px var(--pink), 0 22px 44px -18px rgba(46, 42, 71, .6); animation: lia-pop .22s ease-out both; }
+.lia-flot-coucou[hidden], .lia-flot.is-open .lia-flot-coucou { display: none; }
+.lia-flot-panel { display: flex; flex-direction: column; width: min(350px, calc(100vw - 28px)); max-height: min(560px, calc(100vh - 150px)); max-height: min(560px, calc(100dvh - 150px)); border-radius: 22px 22px 6px 22px; background: var(--card); color: var(--text); box-shadow: 0 0 0 3px var(--pink), 0 22px 44px -18px rgba(46, 42, 71, .6); overflow: hidden; animation: lia-pop .22s ease-out both; }
 .lia-flot-panel[hidden] { display: none; }
-.lia-flot-titre { margin: 0 34px 6px 0; color: var(--ink); font-weight: 900; font-size: 1.05rem; line-height: 1.25; }
-.lia-flot-msg { margin: 0 0 12px; font-size: .93rem; line-height: 1.5; }
-.lia-flot-liens { display: grid; gap: 7px; }
-.lia-flot-liens[hidden] { display: none; }
-.lia-flot-liens a, .lia-flot-liens button { display: flex; align-items: center; gap: 9px; width: 100%; min-height: 44px; padding: 8px 14px; border: 0; border-radius: 14px; background: var(--soft); color: var(--ink); font: inherit; font-weight: 800; font-size: .93rem; text-align: left; text-decoration: none; cursor: pointer; transition: background .15s; }
-.lia-flot-liens a:hover, .lia-flot-liens button:hover { background: var(--pink); }
-.lia-flot-liens .ico { flex: none; width: 18px; height: 18px; color: var(--pink-d); }
-.lia-flot-fermer { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: var(--soft); color: var(--ink); cursor: pointer; display: grid; place-items: center; }
+.lia-tete { display: flex; align-items: center; gap: 10px; padding: 10px 12px 10px 14px; background: var(--pink); color: var(--pink-dd); flex: none; }
+.lia-tete .monster { width: 42px; height: 42px; flex: none; }
+.lia-tete .m-shadow { display: none; }
+.lia-tete p { margin: 0; flex: 1; min-width: 0; line-height: 1.2; }
+.lia-tete strong { display: block; color: var(--ink); font-size: 1.02rem; font-weight: 900; }
+.lia-tete small { font-weight: 700; font-size: .78rem; }
+.lia-jetons { flex: none; padding: 4px 10px; border-radius: 999px; background: var(--card); color: var(--ink); font-weight: 900; font-size: .78rem; white-space: nowrap; }
+.lia-jetons[hidden] { display: none; }
+.lia-flot-fermer { flex: none; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: var(--card); color: var(--ink); cursor: pointer; display: grid; place-items: center; }
 .lia-flot-fermer .ico { width: 16px; height: 16px; }
+.lia-fil { flex: 1; min-height: 90px; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 8px; padding: 14px 14px 6px; }
+.lia-msg { margin: 0; max-width: 88%; padding: 9px 13px; border-radius: 16px; font-size: .93rem; line-height: 1.45; overflow-wrap: anywhere; white-space: pre-line; }
+.lia-msg[hidden] { display: none; }
+.lia-msg.is-lia { align-self: flex-start; background: var(--soft); color: var(--ink); border-bottom-left-radius: 5px; }
+.lia-msg.is-moi { align-self: flex-end; background: var(--primary); color: #1B2A24; font-weight: 700; border-bottom-right-radius: 5px; }
+.lia-msg.is-err { align-self: flex-start; background: var(--butter); color: var(--butter-dd); font-weight: 700; }
+.lia-msg a { color: var(--pink-dd); font-weight: 800; }
+.lia-msg.is-attente { display: inline-flex; gap: 5px; align-items: center; padding: 13px 14px; }
+.lia-msg.is-attente i { width: 7px; height: 7px; border-radius: 50%; background: var(--pink-d); animation: lia-points 1s infinite ease-in-out; }
+.lia-msg.is-attente i:nth-child(2) { animation-delay: .15s; }
+.lia-msg.is-attente i:nth-child(3) { animation-delay: .3s; }
+.lia-carte { align-self: stretch; margin: 0; padding: 12px 13px; border-radius: 16px; background: var(--card); box-shadow: 0 0 0 2px var(--pink) inset; display: grid; gap: 6px; }
+.lia-carte strong { color: var(--ink); font-size: .9rem; }
+.lia-carte p { margin: 0; font-size: .9rem; line-height: 1.45; color: var(--ink); white-space: pre-line; overflow-wrap: anywhere; }
+.lia-carte small { color: var(--muted); font-weight: 700; font-size: .8rem; }
+.lia-carte-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.lia-carte-btns button { min-height: 40px; padding: 7px 14px; border: 0; border-radius: 999px; font: inherit; font-weight: 800; font-size: .88rem; cursor: pointer; }
+.lia-carte-btns .lia-oui { background: var(--primary); color: #1B2A24; }
+.lia-carte-btns .lia-non { background: var(--soft); color: var(--ink); }
+.lia-carte.is-fait { opacity: .6; }
+.lia-puces { flex: none; display: flex; flex-wrap: wrap; gap: 7px; padding: 8px 14px 12px; }
+.lia-puces[hidden] { display: none; }
+.lia-puces a, .lia-puces button { min-height: 36px; padding: 6px 13px; border: 0; border-radius: 999px; background: var(--soft); color: var(--ink); font: inherit; font-weight: 800; font-size: .84rem; line-height: 1.25; text-align: left; text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; transition: background .15s; }
+.lia-puces a:hover, .lia-puces button:hover { background: var(--pink); }
+.lia-saisie { flex: none; display: flex; align-items: flex-end; gap: 8px; padding: 8px 12px 6px; border-top: 2px solid var(--line); }
+.lia-saisie[hidden] { display: none; }
+.lia-saisie textarea { flex: 1; min-width: 0; min-height: 44px; max-height: 120px; padding: 10px 13px; border: 2px solid var(--line); border-radius: 16px; background: var(--bg); color: var(--ink); font: inherit; font-size: 1rem; line-height: 1.35; resize: none; }
+.lia-saisie textarea:focus { outline: none; border-color: var(--pink-d); }
+.lia-saisie button { flex: none; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: var(--primary); color: #1B2A24; cursor: pointer; display: grid; place-items: center; }
+.lia-saisie button:disabled { opacity: .5; cursor: default; }
+.lia-saisie button .ico { width: 19px; height: 19px; }
+.lia-note { flex: none; margin: 0; padding: 0 14px 10px; color: var(--muted); font-size: .74rem; font-weight: 600; line-height: 1.4; }
+.lia-note[hidden] { display: none; }
+.lia-note .link-btn { font-size: inherit; font-weight: 800; }
 @keyframes lia-pop { from { opacity: 0; transform: translateY(8px) scale(.96); } }
+@keyframes lia-points { 0%, 80%, 100% { transform: translateY(0); opacity: .45; } 40% { transform: translateY(-4px); opacity: 1; } }
 @media (max-width: 720px) {
   .lia-flot-btn { width: 58px; height: 58px; }
   .lia-flot-btn .monster { width: 53px; height: 53px; }
   body:has(.mobile-bar) .lia-flot, body:has(.b-bar) .lia-flot { bottom: calc(82px + env(safe-area-inset-bottom)); }
+  .lia-flot-panel { max-height: min(520px, calc(100vh - 190px)); max-height: min(520px, calc(100dvh - 190px)); }
 }
-@media (prefers-reduced-motion: reduce) { .lia-flot-coucou, .lia-flot-panel { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .lia-flot-coucou, .lia-flot-panel, .lia-msg.is-attente i { animation: none; } }
 @media print { .lia-flot { display: none; } }
+
+/* ---------- le petit « i » des options et des extras ---------- */
+.opt-i { position: relative; display: inline-grid; place-items: center; width: 22px; height: 22px; margin: 0 0 0 7px; padding: 0; border: 0; border-radius: 50%; background: var(--lilac); color: var(--lilac-dd); vertical-align: -4px; cursor: help; transition: background .15s, color .15s; -webkit-tap-highlight-color: transparent; }
+.opt-i::before { content: ""; position: absolute; inset: -9px; }
+.opt-i .ico { width: 14px; height: 14px; }
+.opt-i:hover, .opt-i[aria-expanded="true"] { background: var(--lilac-d); color: #fff; }
+.opt-i:focus-visible { outline: 3px solid var(--lilac-d); outline-offset: 2px; }
+.opt-pop { position: fixed; z-index: 130; width: min(340px, calc(100vw - 24px)); padding: 12px 12px 10px; border-radius: 18px; background: var(--card); color: var(--text); box-shadow: 0 0 0 2px var(--lilac), 0 22px 44px -16px rgba(46, 42, 71, .55); display: grid; gap: 7px; animation: lia-pop .18s ease-out both; }
+.opt-pop[hidden], .opt-pop-img[hidden] { display: none; }
+.opt-pop-img img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; border-radius: 12px; background: var(--soft); }
+.opt-pop strong { padding-right: 30px; color: var(--ink); font-weight: 900; font-size: 1rem; line-height: 1.3; }
+.opt-pop p { margin: 0; font-size: .9rem; line-height: 1.5; }
+.opt-pop small { color: var(--muted); font-size: .76rem; font-weight: 700; }
+.opt-pop-x { position: absolute; top: 8px; right: 8px; z-index: 1; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 50%; background: var(--card); color: var(--ink); font: 900 1.1rem/1 var(--font); cursor: pointer; box-shadow: 0 2px 8px rgba(46, 42, 71, .2); }
+.opt-pop-img + strong { padding-right: 0; }
+@media (max-width: 560px) {
+  .opt-pop { left: 12px; right: 12px; top: auto; bottom: calc(12px + env(safe-area-inset-bottom)); width: auto; max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); overflow-y: auto; }
+}
+@media (prefers-reduced-motion: reduce) { .opt-pop { animation: none; } }
+
+/* récapitulatif : un montant ne se coupe jamais en deux lignes */
+[data-sum="once"], [data-sum="recur"], [data-sum="today"], [data-sum="lisse"] { white-space: nowrap; }

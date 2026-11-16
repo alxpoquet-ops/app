@@ -81,7 +81,7 @@ const faqSchema = (items) => ({
 });
 
 // ---------------------------------------------------------------- appel à l'action
-function ctaBand({ title = 'On crée votre site ?', text = 'Choisissez votre site et votre forfait en deux minutes. Vous voyez le prix tout de suite, et vous commandez quand vous êtes prêt.', mascot = 'mascotte' } = {}) {
+function ctaBand({ title = 'On crée votre site ?', text = 'Choisissez votre site et vos options en deux minutes. Vous voyez le prix tout de suite, et vous commandez quand vous êtes prêt.', mascot = 'mascotte' } = {}) {
   return `<section class="cta-band"><div class="container">
   <div class="cta-box reveal">
     <div class="cta-art">${monster(mascot)}</div>
@@ -161,12 +161,12 @@ const INCLUS_SITE = ['La maquette, le site complet et la mise en ligne', 'Une pa
 function offre({ compact = false, choose = true } = {}) {
   const liste = (items) => `<ul class="plan-list">${items.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>`;
   return `<div class="offre reveal" id="offre">
-  <div class="offre-lia">${monster('ravie')}</div>
+  <div class="offre-lia">${monster('ravie')}${monster('alex')}</div>
   <div class="offre-cols">
     <article class="offre-col c-mint">
       <p class="offre-k"><span>1</span>Votre site</p>
       <p class="offre-prix"><b>${euro(creation.prix)}</b><small>une fois</small></p>
-      <p class="offre-sous">Le même prix pour tous les sites. En ${lissageTxt} fois sans frais si vous voulez.</p>
+      <p class="offre-sous">${compact ? `Le même prix pour tous les sites. Payable en ${lissageTxt} fois sans frais.` : `Le même prix pour tous les sites. En ${lissageTxt} fois sans frais si vous voulez.`}</p>
       ${liste(compact ? INCLUS_SITE.slice(0, 4) : INCLUS_SITE)}
     </article>
     <span class="offre-plus" aria-hidden="true">+</span>
@@ -177,7 +177,9 @@ function offre({ compact = false, choose = true } = {}) {
       ${liste(compact ? ABO.main : ABO.features)}
     </article>
   </div>
-  <p class="offre-options">${icon('plus')}<span>En option : boutique en ligne <b>+ ${euro(creation.boutique)}</b>, ${optsCreation.slice(0, 2).map((o) => `${o.name.toLowerCase()} <b>+ ${euro(o.price.once)}</b>`).join(', ')}. Et des extras au mois, à ajouter ou retirer quand vous voulez.</span></p>
+  <p class="offre-options">${icon('plus')}<span>${compact
+    ? `Des options à la carte : la boutique en ligne à <b>+ ${euro(creation.boutique)}</b>, l’anglais ou les rendez-vous à <b>+ ${euro(optsCreation[0].price.once)}</b>. Les extras au mois s’ajoutent et se retirent en un clic.`
+    : `En option : boutique en ligne <b>+ ${euro(creation.boutique)}</b>, ${optsCreation.slice(0, 2).map((o) => `${o.name.toLowerCase()} <b>+ ${euro(o.price.once)}</b>`).join(', ')}. Et des extras au mois, à ajouter ou retirer quand vous voulez.`}</span></p>
   ${choose ? `<p class="offre-go">${btnCreer('btn-primary btn-lg')}</p>` : ''}
 </div>`;
 }
@@ -203,9 +205,18 @@ function economie() {
 const optPrice = (p) => (p.once ? euro(p.once) : `${euro(p.month)}/mois`);
 
 // Les options (une fois, à la création) et les extras (au mois), en deux listes
+// Le petit « i » à côté d'une option ou d'un extra : au survol ou au clic, une bulle dit ce qu'il ajoute,
+// avec une capture d'exemple (src/assets/img/options/<id>.webp). Le texte est dans des attributs : main.js fait la bulle.
+const CAPTURES = (() => { try { return new Set(require('fs').readdirSync(require('path').join(__dirname, '../assets/img/options')).map((f) => f.replace(/\.webp$/, ''))); } catch (e) { return new Set(); } })();
+function infoBtn(id, nom, texte) {
+  if (!texte) return '';
+  const img = CAPTURES.has(id) ? ` data-img="/assets/img/options/${id}.webp"` : '';
+  return `<button type="button" class="opt-i" data-titre="${esc(nom)}" data-info="${esc(texte)}"${img} aria-label="${esc('Voir ce que ça ajoute : ' + nom)}">${icon('info')}</button>`;
+}
+const BOUTIQUE = types.find((t) => t.id === 'boutique') || {};
 function optionsCompact() {
-  const ligne = (o) => `<li><span class="opt-ico">${icon(o.icon)}</span><span class="opt-txt"><strong>${esc(o.name)}${o.types && o.types.length === 1 && o.types[0] === 'boutique' ? ' <em class="opt-only">boutique</em>' : ''}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${o.price.once ? '+ ' + euro(o.price.once) : `${euro(o.price.month)}/mois`}</span></li>`;
-  const boutique = `<li><span class="opt-ico">${icon('shopping-bag')}</span><span class="opt-txt"><strong>Boutique en ligne</strong><small>Vos produits, le panier, le paiement par carte et le suivi des commandes. Jusqu’à 20 produits ajoutés par moi.</small></span><span class="opt-price">+ ${euro(creation.boutique)}</span></li>`;
+  const ligne = (o) => `<li><span class="opt-ico">${icon(o.icon)}</span><span class="opt-txt"><strong>${esc(o.name)}${o.types && o.types.length === 1 && o.types[0] === 'boutique' ? ' <em class="opt-only">boutique</em>' : ''}${infoBtn(o.id, o.name, o.info)}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${o.price.once ? '+ ' + euro(o.price.once) : `${euro(o.price.month)}/mois`}</span></li>`;
+  const boutique = `<li><span class="opt-ico">${icon('shopping-bag')}</span><span class="opt-txt"><strong>Boutique en ligne${infoBtn('boutique', 'Boutique en ligne', BOUTIQUE.info)}</strong><small>Vos produits, le panier, le paiement par carte et le suivi des commandes. Jusqu’à 20 produits ajoutés par moi.</small></span><span class="opt-price">+ ${euro(creation.boutique)}</span></li>`;
   return `<div class="opt-groups">
   <div class="opt-group reveal"><h3>${icon('wand-sparkles')}À la création, une fois</h3><ul>${boutique}${optsCreation.map(ligne).join('')}</ul></div>
   <div class="opt-group reveal"><h3>${icon('repeat')}Chaque mois, à ajouter ou retirer</h3><ul>${optsMois.map(ligne).join('')}</ul></div>
@@ -232,7 +243,7 @@ function typeChoices({ name = 'b-type', checked = 'vitrine' } = {}) {
   return `<div class="b-choices b-types">${types
     .map(
       (t) => `<label class="b-choice c-${t.color}"><input type="radio" name="${name}" value="${t.id}"${t.id === checked ? ' checked' : ''}>
-        <span class="b-card"><span class="type-ico">${icon(t.icon)}</span><strong>${esc(t.label)}</strong><span class="b-price">${prixType(t)}</span><small>${esc(t.delai)}</small><span class="b-check">${icon('check')}</span></span></label>`
+        <span class="b-card"><span class="type-ico">${icon(t.icon)}</span><strong>${esc(t.label)}${infoBtn(t.id, t.label, t.info)}</strong><span class="b-price">${prixType(t)}</span><small>${esc(t.delai)}</small><span class="b-check">${icon('check')}</span></span></label>`
     )
     .join('')}</div>`;
 }
@@ -250,7 +261,7 @@ function forfaitChoices({ name = 'b-forfait' } = {}) {
 function optionChoices({ name = '' } = {}) {
   const prix = (o) => (o.price.once ? `+ ${euro(o.price.once)}` : `<span class="p-month">${euro(o.price.month)}/mois</span><span class="p-year">${euro(year(o.price.month))}/an</span>`);
   const cases = (liste) => `<div class="b-opts">${liste
-    .map((o) => `<label class="b-opt"${o.types ? ` data-types="${o.types.join(' ')}"` : ''}><input type="checkbox"${name ? ` name="${name}"` : ''} value="${o.id}"><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${esc(o.name)}</strong><small>${inline(o.desc)}</small></span><em class="p-opt">${prix(o)}</em></label>`)
+    .map((o) => `<label class="b-opt"${o.types ? ` data-types="${o.types.join(' ')}"` : ''}><input type="checkbox"${name ? ` name="${name}"` : ''} value="${o.id}"><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${esc(o.name)}${infoBtn(o.id, o.name, o.info)}</strong><small>${inline((o.court || o.desc))}</small></span><em class="p-opt">${prix(o)}</em></label>`)
     .join('')}</div>`;
   return `<p class="b-label">À la création, une fois</p>${cases(optsCreation)}
         <p class="b-label">Extras de l’abonnement, à ajouter ou retirer quand vous voulez</p>${cases(optsMois)}`;
@@ -343,7 +354,7 @@ function phoneSocial() {
     ['map-pin', 'Fiche Google', 'Avec l’adresse'],
   ];
   return `<div class="phone reveal" aria-hidden="true">
-  <div class="phone-top">${monster('power')}<span>Publier</span><em>Exemple</em></div>
+  <div class="phone-top">${monster('clin')}<span>Publier</span><em>Exemple</em></div>
   <div class="phone-body social">
     <div class="post-photo">${icon('image')}</div>
     <p class="post-desc">« Nouvelle tarte aux fraises ce week-end »</p>
@@ -389,6 +400,7 @@ function comparatifTable() {
 }
 
 module.exports = {
+  infoBtn,
   LMAX,
   lissageTxt,
   unType,

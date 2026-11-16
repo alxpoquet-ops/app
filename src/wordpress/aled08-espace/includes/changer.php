@@ -103,6 +103,14 @@ add_action('template_redirect', function () {
     $back('changer_ok');
 }, 5);
 
+/* Le petit « i » d'une option : ce qu'elle ajoute, avec sa capture d'exemple (dans le thème). La bulle est faite par main.js. */
+function aled08e_info_btn($id, $nom, $texte) {
+    if ((string) $texte === '') return '';
+    $rel = '/assets/img/options/' . sanitize_key($id) . '.webp';
+    $img = file_exists(get_template_directory() . $rel) ? ' data-img="' . esc_url(get_template_directory_uri() . $rel) . '"' : '';
+    return '<button type="button" class="opt-i" data-titre="' . esc_attr($nom) . '" data-info="' . esc_attr($texte) . '"' . $img . ' aria-label="' . esc_attr('Voir ce que ça ajoute : ' . $nom) . '">' . aled08e_icon('info') . '</button>';
+}
+
 /* Le formulaire, dans « Abonnement et factures » : les extras à ajouter ou retirer */
 function aled08e_changer_html($uid) {
     $opts = aled08e_changer_options_possibles($uid);
@@ -114,7 +122,7 @@ function aled08e_changer_html($uid) {
         . '<input type="hidden" name="forfait" value="' . esc_attr(aled08e_forfait(aled08e_meta($uid, 'forfait'))['id']) . '">'
         . '<p class="app-note">Quand vous voulez, sans frais et sans engagement. Le nouveau prix s’applique à votre prochaine échéance.</p><div class="esp-changer-list">';
     foreach ($opts as $o) {
-        $h .= '<label class="esp-reste"><input type="checkbox" name="options[]" value="' . esc_attr($o['id']) . '"' . checked(aled08e_meta($uid, $o['id']), '1', false) . '><span><strong>' . esc_html($o['name']) . ' · ' . aled08e_euro($o['month'] * $mult) . ' ' . ($annuel ? 'par an' : 'par mois') . '</strong>'
+        $h .= '<label class="esp-reste"><input type="checkbox" name="options[]" value="' . esc_attr($o['id']) . '"' . checked(aled08e_meta($uid, $o['id']), '1', false) . '><span><strong>' . esc_html($o['name']) . ' · ' . aled08e_euro($o['month'] * $mult) . ' ' . ($annuel ? 'par an' : 'par mois') . aled08e_info_btn($o['id'], $o['name'], $o['info'] ?? '') . '</strong>'
             . (!empty($o['desc']) ? '<small>' . esc_html($o['desc']) . '</small>' : '') . '</span></label>';
     }
     return $h . '</div><button class="btn btn-primary" type="submit">' . aled08e_icon('check') . '<span>Enregistrer</span></button></form></details>';

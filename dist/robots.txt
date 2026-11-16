@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /merci/
+Disallow: /envoi.php
+
+Sitemap: https://www.aled08.fr/sitemap.xml

@@ -14,13 +14,17 @@ const PILLS = [
   [`${forfaits[0].month}&nbsp;€`, 'par mois', '#E8E0FF', '#5B3FC4'],
   [`${marche.fois} fois`, 'moins cher', '#D5F5E8', '#176A4C'],
 ];
-const base = `<style>@font-face{font-family:Nunito;src:url(${font('nunito-var.woff2')});font-weight:200 1000}*{margin:0;box-sizing:border-box}body{background:transparent}.monster{display:block;width:100%;height:auto;overflow:visible}</style>`;
-const og = `${base}<div style="width:1200px;height:630px;position:relative;overflow:hidden;font-family:Nunito;color:#4B4668;background:radial-gradient(520px 380px at 88% 18%,#FFE8F1,transparent 70%),radial-gradient(480px 340px at 0% 100%,#DDF7EC,transparent 70%),radial-gradient(420px 300px at 50% 0%,#EEE7FF,transparent 70%),#FFF8F2">
+const base = `<style>@font-face{font-family:Jakarta;src:url(${font('jakarta-var.woff2')});font-weight:200 800}*{margin:0;box-sizing:border-box}body{background:transparent}.monster{display:block;width:100%;height:auto;overflow:visible}.noel .monster-lia .m-noel{display:inline}.noel .monster-lia .m-noeud,.noel .monster-lia .m-cornes{display:none}</style>`;
+// À Noël (du 15 novembre au 6 janvier), Lia porte son bonnet sur l'image de partage aussi
+const jour = (new Date().getMonth() + 1) * 100 + new Date().getDate();
+const NOEL = jour >= 1115 || jour <= 106 ? ' class="noel"' : '';
+const og = `${base}<div${NOEL} style="width:1200px;height:630px;position:relative;overflow:hidden;font-family:Jakarta;color:#4B4668;background:radial-gradient(520px 380px at 88% 18%,#FFE8F1,transparent 70%),radial-gradient(480px 340px at 0% 100%,#DDF7EC,transparent 70%),radial-gradient(420px 300px at 50% 0%,#EEE7FF,transparent 70%),#FFF8F2">
 <div style="position:absolute;left:72px;top:62px;display:flex;align-items:center;gap:18px"><div style="width:84px;height:84px">${logo}</div><div><div style="font-weight:900;font-size:56px;line-height:1;color:#2E2A47">Alex &amp; Lia</div><div style="font-size:24px;font-weight:800;color:#6B6789;margin-top:6px">Sites internet et SEO</div></div></div>
 <div style="position:absolute;left:72px;top:212px;width:700px;font-weight:900;font-size:66px;line-height:1.06;letter-spacing:-1px;color:#2E2A47">Votre site internet à ${creation.prix}&nbsp;€, <span style="background:linear-gradient(transparent 58%,#BFF0DA 58% 94%,transparent 94%)">tout compris</span></div>
 <div style="position:absolute;left:72px;top:440px;width:660px;font-size:27px;line-height:1.35;font-weight:700">Puis ${forfaits[0].month}&nbsp;€ par mois. Lia, l’IA, fait le gros du travail. Alex vérifie tout.</div>
 <div style="position:absolute;left:72px;bottom:52px;display:flex;gap:12px;font-size:22px">${PILLS.map(([a, b, bg, fg]) => `<span style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;background:${bg};color:${fg};font-weight:900"><b style="font-weight:900;color:#2E2A47">${a}</b> ${b}</span>`).join('')}</div>
-<div style="position:absolute;right:54px;top:150px;width:360px">${monster('bonjour')}</div>
+<div style="position:absolute;right:170px;top:120px;width:300px">${monster('bonjour')}</div>
+<div style="position:absolute;right:16px;top:226px;width:250px">${monster('alex')}</div>
 </div>`;
 const icon = (s, pad = 0, bg = 'transparent') => `${base}<div style="width:${s}px;height:${s}px;padding:${pad}px;background:${bg}">${logo}</div>`;
 (async () => {

@@ -1,10 +1,13 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, sections, types, forfaits, annuel } = require('../config');
+const { site, sections, types, forfaits, creation, jetonsLia } = require('../config');
 const { icon } = require('./icons');
-const { logoMark } = require('./monsters');
+const { logoMark, monster } = require('./monsters');
 const brandName = 'Alex &amp; Lia';
 const { esc, typo } = require('./md');
 const C = require('./components');
+
+// L'offre unique : le site à prix unique, puis un seul abonnement
+const ABO = forfaits[0];
 
 const assetsVersion = { css: '1', js: '1' };
 function setAssetVersion(v) { Object.assign(assetsVersion, v); }
@@ -20,22 +23,23 @@ function businessSchema() {
       description: t.pitch.replace(/’/g, "'"),
       url: site.url + C.creerUrl({ type: t.id }),
     })),
+    // L'abonnement : un seul, le même pour tous les sites
     ...forfaits.map((f) => ({
       '@type': 'Offer',
-      name: 'Forfait ' + f.name,
+      name: f.name + ' mensuel',
       priceCurrency: 'EUR',
       priceSpecification: { '@type': 'UnitPriceSpecification', price: f.month, priceCurrency: 'EUR', unitCode: 'MON', referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: 'MON' } },
       description: f.pitch.replace(/’/g, "'"),
-      url: site.url + '/forfaits/#' + f.id,
+      url: site.url + sections.forfaits.path + '#offre',
     })),
   ];
   const b = {
     '@type': 'ProfessionalService',
     '@id': site.url + '/#entreprise',
     name: site.name,
-    slogan: `Votre site internet à partir de ${types[0].price} €, tout compris`,
+    slogan: `Votre site internet à ${creation.prix} €, le même prix pour tous`,
     description:
-      'Création de sites internet à prix fixe (une page, site vitrine, boutique en ligne), forfaits mensuels avec hébergement, mises à jour, modifications et référencement SEO. Tout se fait en ligne, pour des clients partout en France.',
+      `Création de sites internet à prix unique, ${creation.prix} € (une page ou site vitrine, boutique en ligne en option), puis un abonnement à ${ABO.month} € par mois : nom de domaine, hébergement, mises à jour, modifications et bases du SEO. Tout se fait en ligne, pour des clients partout en France.`,
     url: site.url + '/',
     ...(site.email ? { email: site.email } : {}),
     image: site.url + '/assets/img/og-image.png',
@@ -47,7 +51,7 @@ function businessSchema() {
       addressCountry: site.address.country,
     },
     areaServed: [{ '@type': 'Country', name: 'France' }],
-    hasOfferCatalog: { '@type': 'OfferCatalog', name: 'Sites internet et forfaits', itemListElement: offers },
+    hasOfferCatalog: { '@type': 'OfferCatalog', name: 'Sites internet et abonnement', itemListElement: offers },
     knowsAbout: ['Création de site internet', 'Site vitrine', 'Boutique en ligne', 'Référencement naturel (SEO)', 'Référencement local', 'Intelligence artificielle'],
   };
   const sameAs = Object.values(site.social).filter(Boolean);
@@ -126,9 +130,9 @@ function footer(p) {
     <div>
       <h2 class="footer-title">Votre site</h2>
       <ul class="footer-links">
-        <li><a href="/creer-mon-site/">Créer mon site</a></li>
+        <li><a href="${sections.creer.path}">Créer mon site</a></li>
         ${types.map((t) => `<li><a href="${C.creerUrl({ type: t.id })}">${t.label}</a></li>`).join('')}
-        <li><a href="/forfaits/">Forfaits ${forfaits.map((f) => f.name).join(', ')}</a></li>
+        <li><a href="${sections.forfaits.path}">Tarifs : ${C.euro(creation.prix)} et ${C.euro(ABO.month)} par mois</a></li>
       </ul>
     </div>
     <div>
@@ -165,7 +169,50 @@ function footer(p) {
 ${p.noMobileBar ? '' : `<nav class="mobile-bar" aria-label="Accès rapide">
   <a href="${C.contactUrl}" class="mb-wa">${icon('message-circle')}<span>Nous écrire</span></a>
   <a href="${sections.creer.path}" class="mb-creer">${icon('wand-sparkles')}<span>Créer mon site</span></a>
-</nav>`}`;
+</nav>`}
+${liaFlot()}`;
+}
+
+// ---------------------------------------------------------------- la bulle de Lia
+// En bas de chaque page. Sur le site : Lia répond tout de suite à quelques questions (réponses écrites ici, sans IA).
+// Dans l'espace client : on lui écrit, elle répond et prépare l'action à valider (voir main.js et includes/bulle.php).
+function liaFlot() {
+  const eur = (n) => `${n} €`;
+  const questions = [
+    ['C’est combien ?', `Le site coûte ${eur(creation.prix)}, quel que soit le site. Ensuite, l’abonnement est de ${eur(ABO.month)} par mois : nom de domaine, hébergement, mises à jour et support compris.`, sections.forfaits.path, 'Voir les tarifs'],
+    ['Comment ça marche ?', 'Vous répondez à quelques questions, je prépare votre site, et Alex vérifie tout avant la mise en ligne. Vous voyez le prix avant de commander.', sections.creer.path, 'Créer mon site'],
+    ['Qui fait mon site ?', 'Moi, Lia, je fais le gros du travail. Alex, le petit monstre à lunettes, relit, corrige et règle tout à la main.', sections.liaalex.path, 'Lia et Alex'],
+    ['Et pour changer mon site après ?', 'Dans votre espace client, vous m’écrivez ici ce que vous voulez changer. Je vous montre l’aperçu, et rien ne change sans votre accord.', site.espaceClient.demo, 'Essayer la démo'],
+  ];
+  const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', 'Comment avoir plus d’avis Google ?', 'Où en sont mes jetons ?'];
+  return `<div class="lia-flot" data-lia-flot hidden>
+  <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Lia, l’assistante d’Alex & Lia" hidden>
+    <div class="lia-tete">${monster('coucou')}<p><strong>Lia</strong><small>L’IA d’Alex & Lia</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Lia">${icon('x')}</button></div>
+    <div class="lia-fil" data-lia-fil aria-live="polite">
+      <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Lia ! Choisissez une question, je vous réponds tout de suite.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Bonjour ! Dites-moi ce que vous voulez changer sur votre site, ou posez-moi une question.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="demo" hidden>Bonjour ! Ici, c’est une démonstration : écrivez-moi comme un client, je vous montre comment je réponds.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="attente" hidden>Bonjour ! Je ne suis pas encore branchée dans cet espace. En attendant, écrivez à Alex dans l’onglet Mes demandes.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="abonnement" hidden>Bonjour ! Je vous réponds ici dès que votre abonnement a démarré. En attendant, écrivez à Alex dans l’onglet Mes demandes.</p>
+    </div>
+    <div class="lia-puces" data-lia-liens="site">
+      ${questions.map(([q], i) => `<button type="button" data-lia-q="${i}">${q}</button>`).join('')}
+      <a href="${C.contactUrl}">Écrire à Alex</a>
+    </div>
+    <div hidden>${questions.map(([, r, href, label], i) => `<p data-lia-r="${i}">${r} <a href="${href}">${label}</a></p>`).join('')}</div>
+    <div class="lia-puces" data-lia-liens="espace" hidden>
+      ${exemples.map((e) => `<button type="button" data-lia-ex>${e}</button>`).join('')}
+    </div>
+    <form class="lia-saisie" data-lia-form hidden>
+      <label class="sr-only" for="lia-champ">Votre message pour Lia</label>
+      <textarea id="lia-champ" rows="2" maxlength="${jetonsLia.bulle.max}" placeholder="Écrivez à Lia…" required></textarea>
+      <button type="submit" aria-label="Envoyer à Lia">${icon('send')}</button>
+    </form>
+    <p class="lia-note" data-lia-note hidden><span data-lia-prix>${jetonsLia.bulle.jetons} jeton par message.</span> Lia peut se tromper : rien ne change sans votre accord. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
+  </div>
+  <p class="lia-flot-coucou" hidden>Une question ? Je suis là.</p>
+  <button type="button" class="lia-flot-btn" aria-expanded="false" aria-controls="lia-panel"><span class="sr-only">Parler à Lia</span>${monster('coucou')}</button>
+</div>`;
 }
 
 // Typographie dans le texte visible (hors balises, scripts et styles) :
@@ -203,7 +250,7 @@ function page(p) {
 <meta property="og:image" content="${ogImage}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Alex & Lia, votre site internet à partir de 250 €, tout compris">
+<meta property="og:image:alt" content="${esc(`${site.name}, votre site internet à ${creation.prix} €, puis ${ABO.month} € par mois`)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(p.title)}">
 <meta name="twitter:description" content="${esc(p.description)}">
@@ -215,7 +262,7 @@ function page(p) {
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <script type="application/ld+json">${graph(p)}</script>
-<script>document.documentElement.classList.add('js')</script>
+<script>(function(h){h.classList.add('js');var d=new Date(),n=(d.getMonth()+1)*100+d.getDate(),q=/[?&]noel=([01])/.exec(location.search);if(q?q[1]==='1':(n>=1115||n<=106))h.classList.add('noel')})(document.documentElement)</script>
 </head>
 <body class="c-${color}${p.bodyClass ? ' ' + p.bodyClass : ''}">
 ${smartQuotes(`${header(p.path)}

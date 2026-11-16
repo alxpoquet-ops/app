@@ -9,6 +9,34 @@
   // Version anglaise (pages /en/) : petits textes écrits par le script, et prix au format « €250 »
   var EN = /^en\b/i.test(d.documentElement.lang || '');
   var TR = {
+    // bulle de Lia et « i » des options
+    'Fermer': 'Close',
+    'Exemple : ': 'Example: ',
+    'Exemple d’écran : le vôtre sera à vos couleurs.': 'Example screen: yours will be in your own colours.',
+    'Demande pour Lia': 'Request for Lia',
+    'Demande pour Alex': 'Request for Alex',
+    'Environ ': 'About ',
+    '. Vous verrez l’aperçu avant la mise en ligne.': '. You will see the preview before it goes live.',
+    'Faite à la main par Alex.': 'Done by hand by Alex.',
+    'Préparer ma demande': 'Prepare my request',
+    'Outil : ': 'Tool: ',
+    ' à chaque lancement.': ' each time you use it.',
+    'Gratuit.': 'Free.',
+    'Ouvrir l’outil': 'Open the tool',
+    'Dans votre espace : ': 'In your area: ',
+    'Y aller': 'Go there',
+    'Non merci': 'No thanks',
+    'D’accord, je ne fais rien. Dites-moi si vous voulez autre chose.': 'All right, I won’t do anything. Tell me if you need something else.',
+    'C’est prêt dans « Mes demandes » : relisez, ajoutez une photo si vous voulez, puis envoyez.': 'It’s ready in “My requests”: read it, add a photo if you like, then send it.',
+    'Dans votre vrai espace, je vous réponds ici.': 'In your real client area, I answer you here.',
+    'Lia n’a pas pu répondre. Réessayez dans un instant.': 'Lia couldn’t answer. Try again in a moment.',
+    'La connexion a coupé. Réessayez dans un instant.': 'The connection dropped. Try again in a moment.',
+    ' jetons': ' tokens',
+    ' jeton': ' token',
+    ' par message.': ' per message.',
+    'Recharger mes jetons': 'Top up my tokens',
+    'Lien d’avis Google': 'Google review link',
+    'Abonnement et factures': 'Subscription and invoices',
     'Fermer le menu': 'Close the menu', 'Ouvrir le menu': 'Open the menu',
     'Écrivez au moins deux lettres, par exemple le nom de votre entreprise.': 'Type at least two letters, for example the name of your business.',
     'Je regarde si ': 'Checking whether ', ' est libre…': ' is available…',
@@ -865,27 +893,192 @@
     recompute();
   }
 
-  /* ---------- Lia flottante : le chibi en bas de l'écran, sur toutes les pages ---------- */
+  /* ---------- la bulle de Lia : en bas de l'écran, sur toutes les pages ----------
+     Sur le site : quelques questions, avec la réponse tout de suite (écrite dans la page, sans IA).
+     Dans l'espace client : on écrit à Lia, elle répond et prépare l'action, que le client valide d'un clic.
+     Dans la démo : les mêmes gestes, avec des réponses d'exemple écrites dans la page. */
   var flot = $('[data-lia-flot]');
   if (flot) {
     var flotBtn = $('.lia-flot-btn', flot), flotPanel = $('.lia-flot-panel', flot), coucou = $('.lia-flot-coucou', flot);
+    var fil = $('[data-lia-fil]', flot), liaForm = $('[data-lia-form]', flot), champ = $('textarea', liaForm), liaNote = $('[data-lia-note]', flot), jetonsEl = $('[data-lia-jetons]', flot);
+    var reglages = $('[data-lia-chat]'); // posé par l'espace client (ou par la démo)
+    var mode = reglages ? reglages.getAttribute('data-lia-chat') : 'site'; // site | ok | demo | attente | abonnement
+    var dial = mode === 'ok' || mode === 'demo';
+    var prix = reglages ? +reglages.getAttribute('data-prix') || 1 : 1;
+    var solde = reglages ? +reglages.getAttribute('data-solde') || 0 : 0;
+    var sansLimite = reglages && reglages.getAttribute('data-illimite') === '1';
+    var cleFil = 'lia_fil_' + (reglages ? reglages.getAttribute('data-uid') || mode : 'site');
+
+    var ecrire = function (texte, qui, html) {
+      var p = d.createElement('p');
+      p.className = 'lia-msg is-' + qui;
+      if (html) p.innerHTML = html; else p.textContent = texte;
+      fil.appendChild(p);
+      fil.scrollTop = fil.scrollHeight;
+      return p;
+    };
+    var garder = function (qui, texte) { // la conversation survit à un changement de page
+      try {
+        var l = JSON.parse(sessionStorage.getItem(cleFil) || '[]');
+        l.push([qui, texte]);
+        sessionStorage.setItem(cleFil, JSON.stringify(l.slice(-20)));
+      } catch (e) {}
+    };
+    var jetonsTxt = function (n) { return n + tr(n > 1 ? ' jetons' : ' jeton'); };
+    var majJetons = function () {
+      if (!dial || !jetonsEl) return;
+      jetonsEl.hidden = false;
+      jetonsEl.textContent = sansLimite ? '∞' : jetonsTxt(solde);
+    };
+    var aller = function (id) {
+      var b = $('[role="tab"][data-tab="' + id + '"]') || $('[data-go="' + id + '"]');
+      if (b) b.click();
+      return !!b;
+    };
     var flotOuvrir = function (oui) {
       flotPanel.hidden = !oui;
       flotBtn.setAttribute('aria-expanded', oui ? 'true' : 'false');
       flot.classList.toggle('is-open', oui);
       if (coucou) coucou.hidden = true;
       try { sessionStorage.setItem('lia_vue', '1'); } catch (e) {}
+      if (oui) { fil.scrollTop = fil.scrollHeight; if (dial && champ && window.innerWidth > 720) champ.focus(); }
     };
-    /* dans l'espace client, Lia propose les onglets de l'espace */
-    var appTabs = $('[data-app] [role="tab"], [data-espace] [role="tab"]');
-    if (appTabs) {
-      $$('[data-lia-liens]', flot).forEach(function (g) { g.hidden = g.getAttribute('data-lia-liens') !== 'espace'; });
-      var msgEspace = $('[data-lia-msg-espace]', flot), msgSite = $('[data-lia-msg]', flot);
-      if (msgEspace && msgSite) { msgSite.hidden = true; msgEspace.hidden = false; }
-      $$('[data-lia-go]', flot).forEach(function (b) {
+
+    /* la carte d'une action préparée par Lia : le client valide, ou non */
+    var carte = function (a) {
+      if (!a || !a.type || a.type === 'aucune') return;
+      var titre, detail = '', petit = '', oui;
+      if (a.type === 'demande') {
+        var parLia = a.par === 'lia';
+        titre = tr(parLia ? 'Demande pour Lia' : 'Demande pour Alex');
+        detail = a.texte || '';
+        petit = parLia ? tr('Environ ') + jetonsTxt(a.jetons || 0) + tr('. Vous verrez l’aperçu avant la mise en ligne.') : tr('Faite à la main par Alex.');
+        oui = tr('Préparer ma demande');
+      } else if (a.type === 'outil') {
+        titre = tr('Outil : ') + tr(a.nom || '');
+        petit = a.jetons > 0 ? jetonsTxt(a.jetons) + tr(' à chaque lancement.') : tr('Gratuit.');
+        oui = tr('Ouvrir l’outil');
+      } else if (a.type === 'onglet') {
+        titre = tr('Dans votre espace : ') + tr(a.nom || '');
+        oui = tr('Y aller');
+      } else return;
+      var c = d.createElement('div');
+      c.className = 'lia-carte';
+      var st = d.createElement('strong'); st.textContent = titre; c.appendChild(st);
+      if (detail) { var pd = d.createElement('p'); pd.textContent = detail; c.appendChild(pd); }
+      if (petit) { var sm = d.createElement('small'); sm.textContent = petit; c.appendChild(sm); }
+      var bs = d.createElement('div'); bs.className = 'lia-carte-btns';
+      var bo = d.createElement('button'); bo.type = 'button'; bo.className = 'lia-oui'; bo.textContent = oui;
+      var bn = d.createElement('button'); bn.type = 'button'; bn.className = 'lia-non'; bn.textContent = tr('Non merci');
+      bs.appendChild(bo); bs.appendChild(bn); c.appendChild(bs);
+      fil.appendChild(c);
+      fil.scrollTop = fil.scrollHeight;
+      var fini = function () { c.classList.add('is-fait'); bo.disabled = bn.disabled = true; };
+      bn.addEventListener('click', function () { fini(); ecrire(tr('D’accord, je ne fais rien. Dites-moi si vous voulez autre chose.'), 'lia'); });
+      bo.addEventListener('click', function () {
+        fini();
+        if (a.type === 'demande') {
+          var ta = $('#req-txt'), radio = $('input[name="par"][value="' + a.par + '"]');
+          if (radio && !radio.disabled) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
+          if (ta) { ta.value = a.texte || ''; ta.dispatchEvent(new Event('input', { bubbles: true })); }
+          aller('demandes');
+          var m = tr('C’est prêt dans « Mes demandes » : relisez, ajoutez une photo si vous voulez, puis envoyez.');
+          ecrire(m, 'lia'); garder('lia', m);
+          flotOuvrir(false);
+          if (ta) setTimeout(function () { ta.scrollIntoView({ behavior: 'smooth', block: 'center' }); ta.focus(); }, 250);
+        } else if (a.type === 'outil') {
+          if (!aller('outils')) aller('visibilite');
+          var bt = $('[data-ol-ouvrir="' + a.outil + '"]');
+          if (bt && bt.getAttribute('aria-expanded') !== 'true') bt.click();
+          flotOuvrir(false);
+          if (bt) setTimeout(function () { bt.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 250);
+        } else {
+          aller(a.onglet);
+          flotOuvrir(false);
+        }
+      });
+    };
+
+    /* la réponse de Lia : par le serveur (espace client), ou tirée des exemples de la page (démo) */
+    var repondre = function (message, fait) {
+      if (mode === 'demo') {
+        var ex = $$('[data-lia-demo] [data-mots]'), bas = message.toLowerCase(), choix = null;
+        ex.forEach(function (e) { if (!choix && e.getAttribute('data-mots').split(',').some(function (m) { return m && bas.indexOf(m) > -1; })) choix = e; });
+        choix = choix || $('[data-lia-demo] [data-defaut]');
+        setTimeout(function () {
+          if (!choix) return fait({ reponse: tr('Dans votre vrai espace, je vous réponds ici.'), action: { type: 'aucune' }, solde: solde });
+          var g = function (n) { return choix.getAttribute('data-' + n) || ''; };
+          fait({ reponse: choix.textContent.trim(), solde: Math.max(0, solde - prix), action: { type: g('type') || 'aucune', par: g('par'), texte: g('texte'), jetons: +g('jetons') || 0, outil: g('outil'), nom: g('nom'), onglet: g('onglet') } });
+        }, 700);
+        return;
+      }
+      var fd = new FormData();
+      fd.append('action', 'aled08e_bulle');
+      fd.append('_n', reglages.getAttribute('data-nonce'));
+      fd.append('message', message);
+      fetch(reglages.getAttribute('data-ajax'), { method: 'POST', body: fd, credentials: 'same-origin' })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { if (j && j.success) fait(j.data); else fait(null, (j && j.data && j.data.message) || tr('Lia n’a pas pu répondre. Réessayez dans un instant.'), j && j.data && j.data.solde); })
+        .catch(function () { fait(null, tr('La connexion a coupé. Réessayez dans un instant.')); });
+    };
+    var occupe = false;
+    var envoyer = function (message) {
+      message = (message || '').trim();
+      if (!message || occupe) return;
+      occupe = true;
+      $('button', liaForm).disabled = true;
+      ecrire(message, 'moi'); garder('moi', message);
+      champ.value = '';
+      $$('[data-lia-liens="espace"]', flot).forEach(function (g) { g.hidden = true; }); // les exemples laissent la place à la conversation
+      var attente = ecrire('', 'lia is-attente', '<i></i><i></i><i></i>');
+      repondre(message, function (r, erreur, manque) {
+        attente.remove();
+        occupe = false;
+        $('button', liaForm).disabled = false;
+        if (!r) {
+          ecrire(erreur, 'err');
+          if (manque) carte({ type: 'onglet', onglet: 'outils', nom: 'Recharger mes jetons' });
+          return;
+        }
+        if (typeof r.solde === 'number') solde = r.solde;
+        if (r.illimite) sansLimite = true;
+        majJetons();
+        ecrire(r.reponse, 'lia'); garder('lia', r.reponse);
+        carte(r.action);
+      });
+    };
+
+    /* mise en place selon l'endroit */
+    $$('[data-lia-accueil]', flot).forEach(function (p) { p.hidden = p.getAttribute('data-lia-accueil') !== mode; });
+    $$('[data-lia-liens]', flot).forEach(function (g) { g.hidden = g.getAttribute('data-lia-liens') !== (dial ? 'espace' : 'site') || (mode !== 'site' && !dial); });
+    if (dial) {
+      liaForm.hidden = false; liaNote.hidden = false;
+      var prixEl = $('[data-lia-prix]', flot);
+      if (prixEl && prix !== 1) prixEl.textContent = jetonsTxt(prix) + tr(' par message.');
+      if (reglages.getAttribute('data-max')) champ.maxLength = +reglages.getAttribute('data-max');
+      majJetons();
+      try {
+        var ancien = JSON.parse(sessionStorage.getItem(cleFil) || '[]');
+        ancien.forEach(function (m) { ecrire(m[1], m[0] === 'moi' ? 'moi' : 'lia'); });
+        if (ancien.length) $$('[data-lia-liens="espace"]', flot).forEach(function (g) { g.hidden = true; });
+      } catch (e) {}
+      liaForm.addEventListener('submit', function (e) { e.preventDefault(); envoyer(champ.value); });
+      champ.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); envoyer(champ.value); } });
+      $$('[data-lia-ex]', flot).forEach(function (b) { b.addEventListener('click', function () { champ.value = b.textContent.trim(); champ.focus(); }); });
+      var nouveau = $('[data-lia-nouveau]', flot);
+      if (nouveau) nouveau.addEventListener('click', function () {
+        $$('.lia-msg:not([data-lia-accueil]), .lia-carte', fil).forEach(function (x) { x.remove(); });
+        try { sessionStorage.removeItem(cleFil); } catch (e) {}
+        $$('[data-lia-liens="espace"]', flot).forEach(function (g) { g.hidden = false; });
+        if (mode === 'ok') { var fd = new FormData(); fd.append('action', 'aled08e_bulle'); fd.append('_n', reglages.getAttribute('data-nonce')); fd.append('nouveau', '1'); fetch(reglages.getAttribute('data-ajax'), { method: 'POST', body: fd, credentials: 'same-origin' }); }
+        champ.focus();
+      });
+    } else if (mode === 'site') {
+      $$('[data-lia-q]', flot).forEach(function (b) {
         b.addEventListener('click', function () {
-          var t = $('[role="tab"][data-tab="' + b.getAttribute('data-lia-go') + '"]');
-          if (t) { t.click(); flotOuvrir(false); }
+          var r = $('[data-lia-r="' + b.getAttribute('data-lia-q') + '"]', flot);
+          ecrire(b.textContent.trim(), 'moi');
+          if (r) ecrire('', 'lia', r.innerHTML);
         });
       });
     }
@@ -894,7 +1087,7 @@
     var flotX = $('.lia-flot-fermer', flot);
     if (flotX) flotX.addEventListener('click', function () { flotOuvrir(false); flotBtn.focus(); });
     d.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !flotPanel.hidden) { flotOuvrir(false); flotBtn.focus(); } });
-    d.addEventListener('click', function (e) { if (!flotPanel.hidden && !flot.contains(e.target)) flotOuvrir(false); });
+    d.addEventListener('click', function (e) { if (!flotPanel.hidden && !flot.contains(e.target) && d.body.contains(e.target)) flotOuvrir(false); });
     /* un petit bonjour, une seule fois par visite */
     var dejaVue = false;
     try { dejaVue = sessionStorage.getItem('lia_vue') === '1'; } catch (e) {}
@@ -904,9 +1097,9 @@
       coucou.addEventListener('click', function () { flotOuvrir(true); });
     }
   }
-  /* Lia suit le visiteur des yeux : chaque dessin de Lia regarde vers le pointeur (ou le doigt) */
+  /* Lia et Alex suivent le visiteur des yeux : chaque monstre regarde vers le pointeur (ou le doigt) */
   if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
-    var regards = $$('.chibi .m-look'), regardRaf = 0, regardXY = null;
+    var regards = $$('.monster .m-look'), regardRaf = 0, regardXY = null;
     var regarder = function () {
       regardRaf = 0;
       if (!regardXY) return;
@@ -928,6 +1121,89 @@
       window.addEventListener('touchstart', regardVers, { passive: true });
     }
   }
+
+  /* ---------- le petit « i » des options et des extras : ce que ça ajoute, avec une capture ----------
+     Au survol (souris) ou au clic (téléphone, clavier). Le texte et l'image sont dans les attributs du bouton. */
+  (function () {
+    var pop = null, cible = null, fige = false, tCache = 0, tMontre = 0;
+    var survol = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var creer = function () {
+      pop = d.createElement('div');
+      pop.className = 'opt-pop'; pop.id = 'opt-pop'; pop.setAttribute('role', 'dialog'); pop.hidden = true;
+      pop.innerHTML = '<button type="button" class="opt-pop-x"></button><div class="opt-pop-img"></div><strong></strong><p></p><small></small>';
+      var x = $('.opt-pop-x', pop);
+      x.setAttribute('aria-label', tr('Fermer'));
+      x.textContent = '×';
+      $('small', pop).textContent = tr('Exemple d’écran : le vôtre sera à vos couleurs.');
+      d.body.appendChild(pop);
+      pop.addEventListener('mouseenter', function () { clearTimeout(tCache); });
+      pop.addEventListener('mouseleave', function () { if (!fige) cacherBientot(); });
+      x.addEventListener('click', function () { cacher(true); });
+    };
+    var placer = function () {
+      if (!cible || !pop || pop.hidden) return;
+      if (window.innerWidth <= 560) { pop.style.left = ''; pop.style.top = ''; return; } // en bas de l'écran (CSS)
+      var r = cible.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
+      var x = Math.min(Math.max(12, r.left + r.width / 2 - w / 2), window.innerWidth - w - 12);
+      var y = r.bottom + 10;
+      if (y + h > window.innerHeight - 12 && r.top - h - 10 > 12) y = r.top - h - 10;
+      pop.style.left = x + 'px';
+      pop.style.top = Math.max(12, y) + 'px';
+    };
+    var montrer = function (b, figer) {
+      if (!pop) creer();
+      clearTimeout(tCache);
+      if (cible && cible !== b) cible.setAttribute('aria-expanded', 'false');
+      cible = b; fige = !!figer;
+      var src = b.getAttribute('data-img'), box = $('.opt-pop-img', pop);
+      box.innerHTML = '';
+      box.hidden = !src;
+      if (src) {
+        var im = new Image();
+        im.width = 640; im.height = 400; im.decoding = 'async';
+        im.alt = tr('Exemple : ') + b.getAttribute('data-titre');
+        im.onload = placer;
+        im.src = src;
+        box.appendChild(im);
+      }
+      $('strong', pop).textContent = b.getAttribute('data-titre');
+      $('p', pop).textContent = b.getAttribute('data-info');
+      pop.hidden = false;
+      b.setAttribute('aria-expanded', 'true');
+      b.setAttribute('aria-controls', 'opt-pop');
+      placer();
+    };
+    var cacher = function (rendreFocus) {
+      if (!pop || pop.hidden) return;
+      pop.hidden = true;
+      if (cible) { cible.setAttribute('aria-expanded', 'false'); if (rendreFocus) cible.focus(); }
+      cible = null; fige = false;
+    };
+    var cacherBientot = function () { clearTimeout(tCache); tCache = setTimeout(function () { if (!fige) cacher(); }, 200); };
+    // phase de capture : le clic sur le « i » ne coche pas la case de l'option qui l'entoure
+    d.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('.opt-i');
+      if (b) {
+        e.preventDefault(); e.stopPropagation();
+        if (cible === b && fige) cacher(); else montrer(b, true);
+        return;
+      }
+      if (pop && !pop.hidden && !pop.contains(e.target)) cacher();
+    }, true);
+    if (survol) {
+      d.addEventListener('mouseover', function (e) {
+        var b = e.target.closest && e.target.closest('.opt-i');
+        if (b && !fige) { clearTimeout(tMontre); clearTimeout(tCache); tMontre = setTimeout(function () { montrer(b, false); }, 120); }
+      });
+      d.addEventListener('mouseout', function (e) {
+        var b = e.target.closest && e.target.closest('.opt-i');
+        if (b) { clearTimeout(tMontre); if (!fige) cacherBientot(); }
+      });
+    }
+    d.addEventListener('keydown', function (e) { if (e.key === 'Escape' && pop && !pop.hidden) cacher(true); });
+    window.addEventListener('scroll', function () { if (pop && !pop.hidden) { if (fige) placer(); else cacher(); } }, { passive: true });
+    window.addEventListener('resize', placer);
+  })();
 
   /* ---------- formulaire de contact ---------- */
   $$('form[data-form]').forEach(function (f) {

@@ -115,6 +115,7 @@ require_once __DIR__ . '/includes/boutique.php';
 require_once __DIR__ . '/includes/brief.php';
 require_once __DIR__ . '/includes/jetons.php';
 require_once __DIR__ . '/includes/reseaux.php';
+require_once __DIR__ . '/includes/bulle.php';
 
 /* =========================================================================
  *  Rôle « Client Alex & Lia » et type de contenu « Demande »
@@ -910,6 +911,7 @@ function aled08e_dashboard() {
     ?>
 <section class="section section-app"><div class="container">
   <div class="app" data-espace>
+    <?php echo aled08e_bulle_html($uid); // phpcs:ignore ?>
     <div class="app-shell">
       <aside class="app-side">
         <div class="app-user"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><div><strong><?php echo esc_html($u->display_name); ?></strong><small><?php echo esc_html($host ?: $u->user_email); ?></small></div></div>
@@ -985,7 +987,7 @@ function aled08e_dashboard() {
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>
             <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend><p class="app-note"><?php if ($famille) : ?>Pour vous, c’est sans limite, avec Lia comme avec Alex <span class="jauge-coeur" aria-hidden="true">♥</span>. Lia fait les petites et moyennes modifications, Alex les plus grandes.<?php else : ?>Il vous reste <?php echo (int) $jetonsLeft; ?> Jetons Lia et <?php echo (int) $left; ?> modification<?php echo $left > 1 ? 's' : ''; ?> avec Alex ce mois-ci. Lia fait les petites et moyennes modifications, Alex les plus grandes.<?php endif; ?></p>
               <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $liaOk ? ' checked' : ' disabled'; ?>><span><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><strong>Lia, en 5 minutes</strong><small>Pour une petite ou moyenne modification : jusqu’à <?php echo (int) $liaLim['mots'][0]; ?> mots de texte, ou jusqu’à <?php echo (int) $liaLim['images']; ?> photos avec un texte plus court. Lia vous montre toujours l’aperçu de la page : rien ne change sans votre accord. Prix : <?php echo (int) $jlModif['base']; ?> jetons, plus 1 par tranche de <?php echo (int) $jlModif['mots']; ?> mots et <?php echo (int) $jlModif['image']; ?> par photo.</small></span></label>
-              <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $liaOk ? '' : ' checked'; ?>><span><?php echo aled08e_icon('user'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Pour une grande modification. Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même.</small></span></label>
+              <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $liaOk ? '' : ' checked'; ?>><span><?php echo aled08e_monster('alex'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Pour une grande modification. Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même.</small></span></label>
             </fieldset>
             <?php if ($left <= 0) : ?><label class="check"><input type="checkbox" name="boost_ok" value="1"><span>Si je choisis Alex : j’accepte le Boost, <?php echo esc_html($boostTxt); ?> pour cette modification en plus</span></label><?php endif; ?>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" name="demande" rows="4" maxlength="4000" required placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>

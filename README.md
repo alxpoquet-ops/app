@@ -6,7 +6,7 @@ Site d'**ALED08** : des sites internet à petit prix, pensés pour Google, avec 
 - **Un abonnement obligatoire, sans engagement** : 10 € par mois (nom de domaine, hébergement, mises à jour, suivi, support, 100 Jetons Lia et une modification par Alex chaque mois). À l'année : 2 mois offerts.
 - **Options à la création** (une fois) : anglais, prise de rendez-vous, reprise de l'ancien site, cinq pages de plus, 100 € chacune.
 - **Extras au mois**, à ajouter ou retirer quand on veut : SEO suivi 10 €, Lia + 5 €, chiffres détaillés 5 €, e-mail pro 3 €, et pour une boutique gestion du stock 5 € et comptes clients 5 €.
-- **Lia**, la mascotte : une petite tête chibi aux cheveux roses (`src/lib/chibi.js`). Elle suit le visiteur sur toutes les pages.
+- **Les mascottes** : Lia, un joli petit monstre rose (c'est l'IA), et Alex, un petit monstre à lunettes (c'est l'humain). Dessins dans `src/lib/monsters.js`. Lia suit le visiteur dans une bulle, en bas de chaque page.
 
 Site **statique**, rapide, sans base de données : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans `dist/`.
 
@@ -76,8 +76,7 @@ Le guide du propriétaire : `docs/gestion-du-site.md`.
 | `src/content/faq.js` | Questions fréquentes par rubrique (reprises sur `/faq/`) |
 | `src/content/legal.js` | Mentions légales, confidentialité, conditions générales |
 | `src/lib/components.js` | Cartes des forfaits, configurateur, maquettes de l'espace client, comparatif |
-| `src/lib/chibi.js` | Lia, la mascotte chibi (SVG dessiné à la main, cinq humeurs) |
-| `src/lib/monsters.js` | Le logo, et l'ancien nom `monster()` qui renvoie maintenant Lia |
+| `src/lib/monsters.js` | Les mascottes (Lia en cinq humeurs, Alex à lunettes), en SVG dessiné à la main, et le logo |
 | `src/assets/css/style.css` | Le design (couleurs pastel dans `:root`) |
 | `src/assets/js/main.js` | Menu, au mois ou à l'année, configurateur, vérification du nom de domaine, formulaire |
 
@@ -89,7 +88,7 @@ scripts/check.js         contrôle qualité SEO et anti-duplication
 scripts/generate-images.js  image de partage et icônes
 scripts/add-icons.js     ajoute des icônes Lucide à src/lib/icons.js
 src/config.js            configuration et prix
-src/lib/                 gabarit, composants, Lia (chibi), icônes, mini-markdown
+src/lib/                 gabarit, composants, mascottes, icônes, mini-markdown
 src/pages/main.js        les pages
 src/content/             FAQ et pages légales
 src/assets/              CSS, JS, police Nunito (OFL), images
@@ -102,4 +101,4 @@ docs/gestion-du-site.md  guide du propriétaire : commandes, Stripe, noms de dom
 docs/                    (autres fichiers : archives de l'ancienne activité d'électricien)
 ```
 
-Crédits : police Nunito (SIL Open Font License), icônes Lucide (ISC), pictogramme WhatsApp (Simple Icons, CC0). Lia, la mascotte, est un dessin original.
+Crédits : police Nunito (SIL Open Font License), icônes Lucide (ISC), pictogramme WhatsApp (Simple Icons, CC0). Lia et Alex, les mascottes, sont des dessins originaux.

@@ -15,7 +15,7 @@ TODO = os.path.join(ROOT, 'src', 'i18n', 'a-traduire.json')
 
 INLINE = {'strong', 'em', 'b', 'i', 'a', 'mark', 'span', 'sup', 'sub', 'small', 'br', 'abbr', 'code', 'time', 'q', 'u', 's', 'del', 'ins', 'kbd', 'wbr'}
 SKIP = {'script', 'style', 'svg', 'noscript', 'textarea', 'code', 'pre', 'title'}
-ATTRS = ('alt', 'aria-label', 'title', 'placeholder', 'data-toast-msg', 'data-copy-msg', 'data-label', 'data-tip')
+ATTRS = ('alt', 'aria-label', 'title', 'placeholder', 'data-toast-msg', 'data-copy-msg', 'data-label', 'data-tip', 'data-titre', 'data-info', 'data-texte', 'data-nom')
 TOKEN = re.compile(r'<!--.*?-->|<![^>]*>|<(/?)([a-zA-Z][a-zA-Z0-9-]*)((?:[^>"\']|"[^"]*"|\'[^\']*\')*)(/?)>|([^<]+)', re.S)
 LETTRE = re.compile(r'[A-Za-zÀ-ÿ]')
 

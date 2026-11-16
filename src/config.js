@@ -128,6 +128,7 @@ const types = [
     icon: 'shopping-bag',
     price: creation.prix + creation.boutique,
     supplement: creation.boutique, // l'option « boutique en ligne », ajoutée au prix unique
+    info: 'Une page boutique avec vos produits, leurs photos et leurs prix, un panier et le paiement par carte. Vous recevez un e-mail à chaque commande et vous suivez vos ventes dans votre espace.',
     delai: '2 à 3 semaines',
     pitch: 'Un magasin sur internet : vos clients choisissent vos produits, paient par carte sur le site, et vous recevez la commande.',
     qui: 'Pour vendre vos produits sur internet, même quand votre magasin est fermé.',
@@ -172,17 +173,20 @@ const delais = { reponse: '72 heures', titan: '72 heures' };
 // quand : 'creation' = payé une fois, à la création du site ; 'mois' = extra de l'abonnement, activable et désactivable.
 // price : { once } pour un paiement unique, { month } pour un paiement mensuel.
 // types : réservé à ces types de site (ex. ['boutique']) ; absent = tous les sites.
+// court : la version en une ligne, pour le configurateur. desc : la description complète, pour la page Tarifs.
+// info : ce que l'option ajoute, montré par le petit « i », avec sa capture d'exemple (src/assets/img/options/<id>.webp,
+// fabriquée par scripts/captures-options.js).
 const options = [
-  { id: 'en', quand: 'creation', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 100 }, desc: 'Votre site traduit en anglais et relu, avec un bouton pour changer de langue. Pour les touristes et les clients venus d’ailleurs.' },
-  { id: 'rdv', quand: 'creation', group: 'site', name: 'Prise de rendez-vous', icon: 'calendar-check', price: { once: 100 }, desc: 'Vos clients réservent un créneau sur votre site, selon vos disponibilités. Vous recevez un e-mail à chaque réservation.' },
-  { id: 'reprise', quand: 'creation', group: 'site', name: 'Reprise de votre ancien site', icon: 'refresh-cw', price: { once: 100 }, desc: 'Vos textes, vos photos et vos adresses de pages repris de l’ancien site, pour garder votre place sur Google.' },
-  { id: 'pages', quand: 'creation', group: 'site', name: 'Cinq pages de plus', icon: 'layers', price: { once: 100 }, types: ['vitrine', 'boutique'], desc: 'Pour un site plus grand : cinq pages en plus des cinq comprises.' },
-  { id: 'seo', quand: 'mois', group: 'site', name: 'SEO suivi', icon: 'search-check', price: { month: 10 }, desc: 'Chaque mois, je regarde les mots que vos clients tapent, j’améliore vos pages pour Google et je vous montre où vous en êtes.' },
-  { id: 'liaplus', quand: 'mois', group: 'site', name: 'Lia +', icon: 'sparkles', price: { month: 5 }, desc: '500 Jetons Lia en plus chaque mois, pour ceux qui changent souvent leur site ou publient beaucoup.' },
-  { id: 'stats', quand: 'mois', group: 'site', name: 'Chiffres détaillés', icon: 'chart-line', price: { month: 5 }, desc: 'Votre site heure par heure : visiteurs, pages vues, provenance, ventes. Et un rapport simple chaque mois.' },
-  { id: 'mail', quand: 'mois', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
-  { id: 'stock', quand: 'mois', group: 'site', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, types: ['boutique'], desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
-  { id: 'comptes', quand: 'mois', group: 'site', name: 'Comptes clients', icon: 'users', price: { month: 5 }, types: ['boutique'], desc: 'Vos clients se créent un compte sur votre site : commandes passées, adresses et favoris gardés.' },
+  { id: 'en', quand: 'creation', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 100 }, court: 'Avec un bouton pour changer de langue.', info: 'Chaque page existe aussi en anglais, relue à la main. Un bouton en haut du site passe d’une langue à l’autre, et Google peut montrer la version anglaise aux visiteurs étrangers.', desc: 'Votre site traduit en anglais et relu, avec un bouton pour changer de langue. Pour les touristes et les clients venus d’ailleurs.' },
+  { id: 'rdv', quand: 'creation', group: 'site', name: 'Prise de rendez-vous', icon: 'calendar-check', price: { once: 100 }, court: 'Vos clients réservent un créneau en ligne.', info: 'Une page avec vos créneaux libres. Le client choisit son jour et son heure, reçoit une confirmation, et vous êtes prévenu par e-mail. Vous ouvrez et fermez les créneaux vous-même.', desc: 'Vos clients réservent un créneau sur votre site, selon vos disponibilités. Vous recevez un e-mail à chaque réservation.' },
+  { id: 'reprise', quand: 'creation', group: 'site', name: 'Reprise de votre ancien site', icon: 'refresh-cw', price: { once: 100 }, court: 'On garde vos textes, photos et adresses.', info: 'Je récupère les textes, les photos et les adresses des pages de votre ancien site, et je les remets au propre. Les anciens liens mènent au bon endroit : vous gardez votre place sur Google.', desc: 'Vos textes, vos photos et vos adresses de pages repris de l’ancien site, pour garder votre place sur Google.' },
+  { id: 'pages', quand: 'creation', group: 'site', name: 'Cinq pages de plus', icon: 'layers', price: { once: 100 }, types: ['vitrine', 'boutique'], court: 'Cinq pages en plus des cinq comprises.', info: 'Votre site passe de cinq à dix pages : une page par service, par produit phare ou par événement. Chaque page utile est une chance de plus d’être trouvé sur Google.', desc: 'Pour un site plus grand : cinq pages en plus des cinq comprises.' },
+  { id: 'seo', quand: 'mois', group: 'site', name: 'SEO suivi', icon: 'search-check', price: { month: 10 }, court: 'Je travaille votre place sur Google, chaque mois.', info: 'Chaque mois, je suis les mots que tapent vos clients, je retouche vos pages pour les aider à monter sur Google, et vous recevez un rapport simple : votre place pour chaque mot et les visites venues de Google.', desc: 'Chaque mois, je regarde les mots que vos clients tapent, j’améliore vos pages pour Google et je vous montre où vous en êtes.' },
+  { id: 'liaplus', quand: 'mois', group: 'site', name: 'Lia +', icon: 'sparkles', price: { month: 5 }, court: '500 Jetons Lia en plus chaque mois.', info: '500 jetons de plus chaque mois, soit 600 en tout : de quoi faire jusqu’à une vingtaine de modifications par Lia, ou une cinquantaine de textes avec les outils.', desc: '500 Jetons Lia en plus chaque mois, pour ceux qui changent souvent leur site ou publient beaucoup.' },
+  { id: 'stats', quand: 'mois', group: 'site', name: 'Chiffres détaillés', icon: 'chart-line', price: { month: 5 }, court: 'Visiteurs, provenance et ventes, heure par heure.', info: 'Le tableau de bord complet : la courbe de vos visites, les appareils, d’où viennent vos visiteurs, vos ventes, et un rapport chaque mois.', desc: 'Votre site heure par heure : visiteurs, pages vues, provenance, ventes. Et un rapport simple chaque mois.' },
+  { id: 'mail', quand: 'mois', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, court: 'Une adresse comme contact@votreboite.fr.', info: 'Une vraie boîte à votre nom, comme contact@votreboite.fr, sur votre téléphone et votre ordinateur. Je la crée et je vous envoie les réglages.', desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
+  { id: 'stock', quand: 'mois', group: 'site', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, types: ['boutique'], court: 'Le stock se décompte à chaque vente.', info: 'Vous indiquez combien vous avez de chaque produit. Le stock baisse tout seul à chaque vente, le site affiche « Plus que 2 » quand il en reste peu, puis « Épuisé » à zéro.', desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
+  { id: 'comptes', quand: 'mois', group: 'site', name: 'Comptes clients', icon: 'users', price: { month: 5 }, types: ['boutique'], court: 'Vos clients gardent commandes, adresses et favoris.', info: 'Vos clients se créent un compte : ils retrouvent leurs commandes, leurs adresses et leurs produits favoris, et recommandent en un clic.', desc: 'Vos clients se créent un compte sur votre site : commandes passées, adresses et favoris gardés.' },
 ];
 
 // ---------------------------------------------------------------- fidélité et paiement
@@ -201,6 +205,10 @@ const jetonsLia = {
   modif: { base: 30, mots: 10, image: 10 },
   recharge: [{ jetons: 100, prix: 1 }, { jetons: 500, prix: 5 }, { jetons: 1000, prix: 10 }],
   liaplus: 500,
+  // La bulle de Lia, en bas de l'espace client : on lui écrit, elle répond et prépare l'action à valider.
+  // jetons : prix d'un message (avec le modèle rapide ; l'extension le recalcule si on change de modèle).
+  // parJour : messages par jour et par client. max : longueur d'un message.
+  bulle: { jetons: 1, parJour: 40, max: 600 },
 };
 
 // Boost : une modification par Alex en plus de celle du mois, à l'unité, ajoutée à la prochaine facture.

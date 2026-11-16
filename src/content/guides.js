@@ -393,7 +393,7 @@ Ensuite, un seul abonnement regroupe tout ce qui est récurrent : **${eur(abo.mo
 - Les mises à jour, les sauvegardes et le suivi du site.
 - Le support, avec une réponse sous ${delais.reponse}.
 - Les bases du SEO.
-- ${abo.jetons} Jetons Lia et une modification par Alex chaque mois.
+- Chaque mois, ${abo.jetons} Jetons Lia et une modification faite par Alex.
 
 Un Jeton Lia vaut un centime. Vos jetons paient les changements que Lia fait sur votre site, entre ${jetonsLia.modif.base} et ${modifMax} jetons chacun, et les outils de votre espace client.
 
@@ -483,7 +483,7 @@ Ce n'est pas grave. On peut commencer avec une page et évoluer ensuite : vos te
 
 Elle répond à un autre besoin : encaisser des commandes sur le site. Si vous voulez vendre des produits, lisez le guide pour [créer une boutique en ligne](/guides/creer-boutique-en-ligne/).`,
     faq: [
-      { q: 'Combien de pages contient un site vitrine ?', a: `Jusqu’à cinq pages : en général l’accueil, les services, les tarifs, une présentation et le contact. Il vous en faut davantage ? L’option « ${pagesPlus.name} » coûte ${eur(pagesPlus.price.once)} € à la création.` },
+      { q: 'Combien de pages contient un site vitrine ?', a: `Jusqu’à cinq pages : en général l’accueil, les services, les tarifs, une présentation et le contact. Il vous en faut davantage ? Prenez l’option « ${pagesPlus.name} », à ${eur(pagesPlus.price.once)} €, au moment de la commande.` },
       { q: 'Un site une page peut-il sortir sur Google ?', a: 'Oui, surtout sur votre nom et sur votre métier dans votre ville. Il est simplement moins armé qu’un site vitrine pour les recherches portant sur un service précis.' },
       { q: 'Peut-on transformer un site une page en site vitrine plus tard ?', a: 'Oui. Les textes et les photos existants sont repris, et les nouvelles pages viennent s’y ajouter. Écrivez-moi quand le besoin se présente, je vous dis ce que cela représente.' },
     ],
