@@ -323,7 +323,7 @@ Les outils de l’espace client et les retouches faites par Lia fonctionnent ave
 
 **Jetons de l’abonnement.** L’abonnement comprend ${abo.jetons} Jetons Lia par mois. Ces jetons sont remis le 1er de chaque mois et ne se reportent pas d’un mois sur l’autre.
 
-**Jetons rachetés.** Quand il en manque, le client rachète des jetons à l’utilisation, depuis son espace client : ${listeRecharges}. Le montant est ajouté à sa prochaine facture. Les jetons rachetés ne s’effacent pas à la fin du mois : ils restent jusqu’à ce qu’ils soient utilisés.
+**Jetons rachetés.** Quand il en manque, le client rachète des jetons à l’utilisation, depuis son espace client : ${listeRecharges}. Le montant est ajouté à sa prochaine facture. Ces jetons-là sont gardés d’un mois sur l’autre, jusqu’à leur utilisation.
 
 **Jetons rendus.** Les jetons d’une demande sont rendus au client dans quatre cas : la demande est transmise à Alex, la mise en ligne échoue, le client refuse l’aperçu, ou le client annule sa demande dans les 24 heures.
 

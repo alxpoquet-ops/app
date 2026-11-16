@@ -3,7 +3,7 @@
 // (seule la fourchette du marché de config.marche est citée),
 // et pas de phrase de 9 mots ou plus reprise d'une autre réponse ou d'une page (scripts/check.js).
 // V2 (novembre 2026) : les outils et les retouches avec Lia fonctionnent avec des jetons (100 par mois dans l'abonnement,
-// rachat à l'utilisation). Lia est « mon assistante autonome » : jamais « IA » dans ces textes publics.
+// rachat à l'utilisation). Lia est toujours « mon assistante autonome » dans ces textes publics.
 const { forfaits, annuel, lissage, options, paiement, fidelite, delais, creation, aLaDemande, jetonsLia, marche } = require('../config');
 const OUTILS_LIA = require('./outils-lia').outils;
 const opt = (id) => options.find((o) => o.id === id);

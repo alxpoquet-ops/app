@@ -5,7 +5,7 @@ const T = (id) => types.find((t) => t.id === id);
 const O = (id) => options.find((o) => o.id === id);
 const page = T('une-page');
 // L'offre unique : un seul abonnement, et des extras au mois (Suivi Google, Chiffres détaillés, Adresse e-mail pro).
-// V2 (novembre 2026) : Lia est « mon assistante autonome » (jamais « IA » dans ces textes). Retouches et outils : jetons compris chaque mois.
+// V2 (novembre 2026) : Lia est toujours « mon assistante autonome » dans ces textes. Retouches et outils : jetons compris chaque mois.
 const abo = forfaits[0];
 const seo = O('seo'), stats = O('stats'), mail = O('mail');
 
