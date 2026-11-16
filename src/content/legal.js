@@ -48,7 +48,7 @@ const boutiqueSeule = (o) => (o.types && o.types.length === 1 && o.types[0] === 
 const listeOptions = options
   .filter((o) => o.quand === 'creation' && !o.retire)
   .map((o) => `- **${o.name}, ${eur(o.price.once)} €**${detail(o)}.`)
-  .concat(`- **Pages en plus, ${eur(creation.pagePlus)} € la page** : chaque page au-delà des ${creation.pages} comprises.`)
+  .concat(`- **Pages en plus, ${eur(creation.pagePlus)} € la page** : chaque page au-delà des ${creation.pages} comprises. Les pages créées pour le référencement ne sont pas comptées.`)
   .join('\n');
 const listeExtras = options
   .filter((o) => o.quand === 'mois' && !o.retire)
@@ -223,7 +223,7 @@ Les prix sont en euros. La TVA n’est pas applicable (article 293 B du Code gé
 
 L’offre est la même pour tous les clients. Elle tient en deux prix : la création du site, payée une fois, et l’abonnement, payé tant que le site est hébergé par les Minis Monstres.
 
-**La création du site coûte ${eur(creation.prix)} €.** Ce prix comprend jusqu’à ${creation.pages} pages, que le site en compte une seule ou plusieurs. Il comprend la maquette, le site complet et sa mise en ligne.
+**La création du site coûte ${eur(creation.prix)} €.** Ce prix comprend jusqu’à ${creation.pages} pages, que le site en compte une seule ou plusieurs. Il comprend la maquette, le site complet et sa mise en ligne. Les pages créées pour le référencement (pages de conseils, de questions, pages par ville) s’ajoutent à ces pages, sans supplément. Les Minis Monstres choisissent leur nombre selon ce qui est utile au client : chaque page est pensée et optimisée pour répondre à une vraie recherche, et aucune n’est créée pour faire du nombre.
 
 **La boutique en ligne coûte ${eur(creation.boutique)} € de plus**, soit ${eur(boutique)} € pour la création. Ce supplément comprend le paiement par carte, le suivi des commandes, la mise en ligne de 20 produits au plus et une base de conditions de vente que le client complète.
 

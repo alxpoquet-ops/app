@@ -169,7 +169,7 @@ function payBox() {
 }
 
 // ---------------------------------------------------------------- l'offre unique : le site, puis l'abonnement
-const INCLUS_SITE = ['La maquette, le site complet et la mise en ligne', `Jusqu’à ${creation.pages} pages comprises`, 'Parfait sur téléphone', 'Formulaire de contact', 'Bases du référencement : Google sait lire votre site', 'Vos textes écrits avec vous'];
+const INCLUS_SITE = ['La maquette, le site complet et la mise en ligne', `Jusqu’à ${creation.pages} pages comprises`, 'Les pages pour Google en plus, sans supplément', 'Parfait sur téléphone', 'Formulaire de contact', 'Bases du référencement : Google sait lire votre site', 'Vos textes écrits avec vous'];
 // compact : pour l'accueil (moins de lignes) ; choose : avec le bouton « Créer mon site »
 function offre({ compact = false, choose = true } = {}) {
   const liste = (items) => `<ul class="plan-list">${items.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>`;
@@ -192,7 +192,7 @@ function offre({ compact = false, choose = true } = {}) {
   </div>
   <p class="offre-options">${icon('plus')}<span>${compact
     ? `Des options à la carte, comme la boutique en ligne, l’anglais ou la prise de rendez-vous. Les extras au mois s’ajoutent et se retirent en un clic.`
-    : `En option : boutique en ligne <b>+ ${euro(creation.boutique)}</b>, page en plus au-delà de ${creation.pages} <b>${euro(creation.pagePlus)} la page</b>, ${optsCreation.slice(0, 2).map((o) => `${o.name.toLowerCase()} <b>+ ${euro(o.price.once)}</b>`).join(', ')}. Et des extras au mois, à ajouter ou retirer quand vous voulez.`}</span></p>
+    : `En option : boutique en ligne <b>+ ${euro(creation.boutique)}</b>, page en plus au-delà de ${creation.pages} <b>${euro(creation.pagePlus)} la page</b> (les pages pour Google ne comptent pas), ${optsCreation.slice(0, 2).map((o) => `${o.name.toLowerCase()} <b>+ ${euro(o.price.once)}</b>`).join(', ')}. Et des extras au mois, à ajouter ou retirer quand vous voulez.`}</span></p>
   ${choose ? `<p class="offre-go">${btnCreer('btn-primary btn-lg')}</p>` : ''}
 </div>`;
 }
@@ -304,7 +304,7 @@ function forfaitChoices({ name = 'b-forfait' } = {}) {
 // Pages en plus : un compteur (0 à pagesPlusMax), payé une fois. name : le champ envoyé avec la commande.
 function pagesPlusBox({ name = '' } = {}) {
   return `<div class="b-pages" data-pages-box>
-  <span class="b-pages-txt"><strong>Pages en plus</strong><small>${creation.pages} pages sont comprises. Au-delà, ${euro(creation.pagePlus)} la page.</small></span>
+  <span class="b-pages-txt"><strong>Pages en plus</strong><small>${creation.pages} pages sont comprises. Au-delà, ${euro(creation.pagePlus)} la page. Les pages pour Google ne comptent pas.</small></span>
   <span class="b-pages-ctrl"><button type="button" class="b-pp" data-pp-step="-1" aria-label="Une page de moins">${icon('minus')}</button><input type="number" min="0" max="${creation.pagesPlusMax}" step="1" value="0" inputmode="numeric"${name ? ` name="${name}"` : ''} data-pages-plus aria-label="Nombre de pages en plus"><button type="button" class="b-pp" data-pp-step="1" aria-label="Une page de plus">${icon('plus')}</button></span>
   <span class="b-pages-prix" data-pp-prix>0 €</span>
 </div>`;

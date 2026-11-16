@@ -245,6 +245,7 @@ Chez moi, il n'y a qu'un prix de création, affiché avant la commande :
 
 - **Votre site, d'une page à ${creation.pages} pages : ${eur(creation.prix)} €**
 - **Au-delà de ${creation.pages} pages : ${eur(creation.pagePlus)} € la page**, payée une fois
+- **Les pages pour Google : comprises**, sans compter dans vos ${creation.pages} pages. Je n'en ajoute pas pour faire du nombre, chacune est pensée pour une vraie recherche
 - **Boutique en ligne : ${eur(boutique.price)} €**, soit ${eur(creation.boutique)} € de plus
 
 Vous payez ${paiement.acompte} % à la commande, le reste à la mise en ligne. Ce reste peut être étalé sur ${durees} mois sans frais.

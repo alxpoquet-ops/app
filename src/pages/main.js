@@ -1536,7 +1536,7 @@ function docPage() {
   <div class="container-narrow">
     <p class="doc-kicker">4. Les sites</p>
     <h2>Un seul prix, jusqu’à ${creation.pages} pages</h2>
-    <p>Une seule page ou plusieurs : le prix de la création est le même jusqu’à ${creation.pages} pages, et il ne change pas en cours de route. Au-delà, chaque page coûte ${euro(creation.pagePlus)}. La boutique en ligne ajoute ${euro(creation.boutique)}. Le délai court à partir du moment où j’ai vos textes et vos photos.</p>
+    <p>Une seule page ou plusieurs : le prix de la création est le même jusqu’à ${creation.pages} pages, et il ne change pas en cours de route. Au-delà, chaque page coûte ${euro(creation.pagePlus)}. Les pages faites pour Google ne comptent pas : elles sont comprises, et je les crée seulement quand elles servent, chacune réfléchie et optimisée. La boutique en ligne ajoute ${euro(creation.boutique)}. Le délai court à partir du moment où j’ai vos textes et vos photos.</p>
   </div>
   <div class="doc-types">
     ${[[une, 'Pour être présent sur internet sans complication : tout tient sur une page qu’on fait défiler.'], [vit, 'Pour présenter une activité en détail, avec une page par sujet et un menu.'], [bou, 'Pour vendre en ligne : paiement par carte, suivi des commandes, et les outils de la boutique.']].map(([t, d]) => `<div class="doc-type reveal"><strong>${esc(t.label)}</strong><b>${C.prixType(t)}</b><span>${icon('clock')}${esc(t.delai)}</span><p>${d}</p></div>`).join('')}
