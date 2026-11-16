@@ -253,9 +253,17 @@ const aLaDemande = [
 const boost = { prix: aLaDemande[0].prix };
 // ---------------------------------------------------------------- sites réalisés (page « Ils nous ont fait confiance »)
 // Uniquement de vrais clients, avec leur accord. desc : une phrase factuelle, pas d'avis inventé.
+// avant / apres : la page « Avant, après » (accueil et Réalisations). {pages} = le nombre de pages compté.
+// avis : les mots exacts du client, avec son accord pour les publier. Vide = rien ne s'affiche (jamais d'avis inventé).
 const clients = [
-  { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', sitemap: 'https://www.floreetchenilles.fr/sitemap_index.xml', forfait: 'base', genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Des fleurs éternelles en fil chenille, faites main à Signy-l’Abbaye, dans les Ardennes. La boutique ouvre très bientôt.' },
-  { nom: 'Dodedo', domaine: 'dodedo.fr', url: 'https://dodedo.fr/', sitemap: 'https://www.dodedo.fr/sitemap.xml', forfait: 'base', genre: 'Site une page', icon: 'hand-heart', color: 'lilac', desc: 'Le site de Dominique Schneider, magnétiseur et barreur de feu. Une seule page principale, et des pages de conseils autour pour le référencement.' },
+  { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', sitemap: 'https://www.floreetchenilles.fr/sitemap_index.xml', forfait: 'base', genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Des fleurs éternelles en fil chenille, faites main à Signy-l’Abbaye, dans les Ardennes. La boutique ouvre très bientôt.',
+    avant: { icon: 'camera', titre: 'Seulement un compte Instagram', points: ['Pas de site internet', 'Ses créations visibles seulement sur Instagram', 'Pas de boutique en ligne'] },
+    apres: { image: '/assets/img/realisations/flore.jpg', titre: 'Une boutique vitrine à son nom', points: ['{pages} pages en ligne', 'Chaque création avec ses photos', 'Les visiteurs réservent leurs coups de cœur', 'Des pages pensées pour Google'] },
+    avis: { texte: '', qui: '' } },
+  { nom: 'Dodedo', domaine: 'dodedo.fr', url: 'https://dodedo.fr/', sitemap: 'https://www.dodedo.fr/sitemap.xml', forfait: 'base', genre: 'Site une page', icon: 'hand-heart', color: 'lilac', desc: 'Le site de Dominique Schneider, magnétiseur et barreur de feu. Une seule page principale, et des pages de conseils autour pour le référencement.',
+    avant: { icon: 'pencil', titre: 'Un site fait à la main', points: ['Un site fait soi-même', 'Aucun travail de référencement', 'Difficile à trouver sur Google'] },
+    apres: { image: '/assets/img/realisations/dodedo.jpg', titre: 'Un site pensé pour être trouvé', points: ['{pages} pages en ligne', 'Une page pour chaque soin', 'Des conseils et une FAQ', 'Un bouton pour réserver une séance'] },
+    avis: { texte: '', qui: '' } },
   { nom: 'Alex & Co', domaine: 'alexetco.fr', url: '/', sitemap: 'https://www.aled08.fr/wp-sitemap.xml' /* à passer sur https://www.alexetco.fr/wp-sitemap.xml au changement de domaine */, genre: 'Notre propre site', icon: 'sparkles', color: 'lilac', desc: 'Notre site à nous : on se fait confiance, alors on se met dedans aussi. En français et en anglais.' },
   { nom: 'Les Notes du Temps', domaine: 'lesnotesdutemps.fr', url: 'https://www.lesnotesdutemps.fr/', sitemap: 'https://www.lesnotesdutemps.fr/sitemap.xml', forfait: 'base', genre: 'Site une page', icon: 'music', color: 'peach', enCreation: true, desc: '' },
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: '' },
