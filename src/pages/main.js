@@ -104,9 +104,9 @@ ${METIERS.length ? `<section class="section">${C.deco('champi', 'haut-droite')}<
 </div></section>` : ''}
 
 <section class="section section-soft c-butter">${C.deco('dino', 'haut-gauche')}<div class="container">
-  <h2 class="section-title">Avant, après</h2>
-  <p class="section-sub">Deux clients, deux sites en ligne. Pas de faux avis ici : allez voir par vous-même.</p>
-  ${avantApres({ compact: true })}
+  <h2 class="section-title">Des sites en ligne, à visiter</h2>
+  <p class="section-sub">Pas de faux avis ici : allez voir par vous-même.</p>
+  ${clientCards({ max: 3, desc: false })}
   <p class="center more">${C.btn(sections.confiance.path, 'btn-light', sections.confiance.icon, 'Toutes les réalisations')}</p>
 </div></section>
 
@@ -184,29 +184,10 @@ function metierCards() {
 // Cartes des sites réalisés : uniquement de vrais clients, déjà en ligne (pas notre propre site)
 const CLIENTS_EN_LIGNE = clients.filter((c) => !c.enCreation && c.url && !c.url.startsWith('/'));
 const pagesDe = (c) => (c.enCreation ? 0 : (CLIENTS_PAGES[c.domaine] || {}).pages || 0);
-// Avant, après : ce que le client avait, et le site qu'il a maintenant (capture de sa page d'accueil).
-// compact (accueil) : les titres et la capture seulement. avis : affiché seulement s'il est rempli (vrais mots du client).
-function avantApres({ compact = false } = {}) {
-  const liste = CLIENTS_EN_LIGNE.filter((c) => c.avant && c.apres);
-  if (!liste.length) return '';
-  // le nombre de pages est affiché par le CSS (data-n) : la phrase reste la même, et sa traduction aussi, quand il change
-  const pts = (arr, ic, n) => `<ul class="aa-pts">${arr.map((t) => `<li>${icon(ic)}${t.includes('{pages}') ? `<span class="aa-n" data-n="${n}">${esc(t.replace('{pages}', '').trim())}</span>` : `<span>${esc(t)}</span>`}</li>`).join('')}</ul>`;
-  return `<div class="aa-liste${compact ? ' aa-compact' : ''}">${liste
-    .map((c) => {
-      const n = pagesDe(c);
-      const points = c.apres.points.filter((t) => n || !t.includes('{pages}'));
-      const avis = c.avis && c.avis.texte ? `<blockquote class="aa-avis">${icon('quote')}<p>${esc(c.avis.texte)}</p>${c.avis.qui ? `<cite>${esc(c.avis.qui)}</cite>` : ''}</blockquote>` : '';
-      return `<article class="aa c-${c.color} reveal">
-  <header class="aa-tete"><span class="type-ico">${icon(c.icon)}</span><span><strong>${esc(c.nom)}</strong><small>${esc(c.genre)}</small></span></header>
-  <div class="aa-duo">
-    <div class="aa-col aa-avant"><span class="aa-tag">Avant</span><div class="aa-vis aa-vis-avant">${icon(c.avant.icon)}<b>${esc(c.avant.titre)}</b></div>${compact ? '' : pts(c.avant.points, 'x', n)}</div>
-    <span class="aa-fleche">${icon('arrow-right')}</span>
-    <div class="aa-col aa-apres"><span class="aa-tag aa-tag-ok">Après</span><a class="aa-vis aa-shot" href="${c.url}" target="_blank" rel="noopener"><img src="${c.apres.image}" alt="La page d’accueil de ${esc(c.nom)}" width="1280" height="800" loading="lazy"></a><b class="aa-titre">${esc(c.apres.titre)}</b>${compact ? '' : pts(points, 'check', n)}</div>
-  </div>
-  ${compact ? '' : avis}
-  <a class="aa-lien" href="${c.url}" target="_blank" rel="noopener">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</a>
-</article>`;
-    })
+function clientCards({ max = 0, desc = true } = {}) {
+  const liste = max ? CLIENTS_EN_LIGNE.slice(0, max) : CLIENTS_EN_LIGNE;
+  return `<div class="client-cards">${liste
+    .map((c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong>${desc ? `<span class="client-desc">${inline(c.desc)}</span>` : ''}${pagesDe(c) ? `<span class="client-pages"><b>${pagesDe(c)}</b> page${pagesDe(c) > 1 ? 's' : ''}</span>` : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`)
     .join('')}</div>`;
 }
 
@@ -1280,9 +1261,7 @@ function confiancePage() {
   })}
 <section class="section"><div class="container">
   ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages en ligne sur les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque page utile est une porte d’entrée de plus depuis Google.</span></p>` : ''}
-  <h2 class="section-title">Avant, après</h2>
-  <p class="section-sub">Ce que chaque client avait avant, et le site qu’il a maintenant.</p>
-  ${avantApres()}
+  ${clientCards()}
   <p class="small muted center">Ces sites s’ouvrent dans un nouvel onglet.</p>
   ${enCours.length ? `<p class="center muted">En ce moment, je prépare aussi ${enCours.map((c) => esc(c.nom)).join(' et ')}.</p>` : ''}
 </div></section>
