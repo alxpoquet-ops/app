@@ -17,14 +17,19 @@ const page = T('une-page'), vitrine = T('vitrine'), boutique = T('boutique');
 const abo = forfaits[0];
 const annee = abo.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const durees = lissage.durees.join(' ou ');
-const seo = O('seo'), liaPlus = O('liaplus'), rdv = O('rdv'), pagesPlus = O('pages'), mail = O('mail'), stock = O('stock'), comptes = O('comptes');
+const seo = O('seo'), rdv = O('rdv'), pagesPlus = O('pages'), mail = O('mail'), stock = O('stock'), comptes = O('comptes');
 // L'intervention d'Alex comprise dans l'abonnement : une par trimestre depuis la V2 (novembre 2026).
 const periode = abo.periode || 'mois';
 const intervAlex = abo.quota === 1 ? 'une intervention' : `${abo.quota} interventions`;
 const alexPlus = X('alex');
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const maj = (t) => t.charAt(0).toUpperCase() + t.slice(1);
-const demandesUneFois = aLaDemande.map((x) => `${minus(x.name)} (${eur(x.prix)} €)`).join(', ');
+// Jetons : ceux de l'abonnement, le prix d'une retouche par Lia, celui des outils (outils-lia.js) et le rachat.
+const retouche = jetonsLia.modif.base;
+const payants = OUTILS_LIA.map((t) => t.jetons).filter((n) => n > 0);
+const outilMin = Math.min(...payants), outilMax = Math.max(...payants);
+const rachat = jetonsLia.recharge[0]; // 100 jetons pour 1 €
+const demandesUneFois =aLaDemande.map((x) => `${minus(x.name)} (${eur(x.prix)} €)`).join(', ');
 const optionsUneFois = options.filter((o) => o.quand === 'creation').map((o) => `${o.name} (${eur(o.price.once)} €)`).join(', ');
 const extrasPourTous = options.filter((o) => o.quand === 'mois' && !o.types).map((o) => `${o.name} (${eur(o.price.month)} € par mois)`).join(', ');
 
@@ -61,7 +66,7 @@ La bonne méthode est d'**écrire la carte en vrai texte** sur le site. Elle se 
 
 C'est la vraie difficulté pour un restaurant : le plat du jour, la carte de saison, les congés annuels. Un site qui affiche encore le menu de l'été en plein hiver donne une mauvaise image.
 
-Avec l'[abonnement](/tarifs/), vous envoyez le changement depuis votre espace client. Lia, mon assistante, modifie la page en quelques instants et vous montre l'aperçu avant que ce soit visible par vos clients. Les petites retouches avec Lia sont comprises : de quoi changer la carte de temps en temps. Si la vôtre bouge chaque semaine, l'extra ${liaPlus.name} passe à un usage régulier, pour ${eur(liaPlus.price.month)} € par mois.
+Avec l'[abonnement](/tarifs/), vous envoyez le changement depuis votre espace client. Lia, mon assistante autonome, modifie la page en quelques instants et vous montre l'aperçu avant que ce soit visible par vos clients. Un changement de carte coûte ${retouche} jetons et plus, et l'abonnement vous en donne ${abo.jetons} chaque mois. Si la vôtre bouge chaque semaine, vous rachetez des jetons quand il en manque, ${rachat.jetons} pour ${eur(rachat.prix)} €, sur votre facture suivante.
 
 ## Quel site choisir ?
 
@@ -247,10 +252,10 @@ Ensuite, un seul abonnement regroupe tout ce qui est récurrent : **${eur(abo.mo
 - Les mises à jour, les sauvegardes et le suivi du site.
 - Le support, avec une réponse sous ${delais.reponse}.
 - Les bases du SEO.
-- Des petites retouches avec Lia, mon assistante, pour un usage occasionnel.
+- ${abo.jetons} jetons par mois, pour les outils de l'espace client et les retouches faites par Lia, mon assistante autonome.
 - ${maj(intervAlex)} d'Alex par ${periode}, faite à la main.
 
-Vous changez votre site toutes les semaines ? L'extra ${liaPlus.name} donne un usage régulier de Lia et de ses outils, pour ${eur(liaPlus.price.month)} € par mois.
+Une retouche par Lia coûte ${retouche} jetons et plus, un outil de ${outilMin} à ${outilMax} jetons. S'il vous en manque, vous en rachetez à l'utilisation : ${rachat.jetons} jetons pour ${eur(rachat.prix)} €, ajoutés à la facture suivante. Les jetons du mois reviennent le 1er, et ceux que vous rachetez restent tant que vous ne les avez pas utilisés.
 
 ## Trois exemples sur la première année
 
@@ -262,7 +267,7 @@ Les années suivantes, il ne reste que l'abonnement. En le payant à l'année, $
 
 ## Pourquoi ces prix sont bas
 
-Ce n'est pas un site au rabais. Fait à la main par une agence ou un indépendant, un site vitrine se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Le mien coûte ${marche.fois} fois moins, et la différence vient de la méthode. Lia, mon assistante numérique, m'aide à automatiser les tâches qui reviennent d'un site à l'autre : les délais raccourcissent, et le prix suit. Je relis, je corrige et je vérifie tout avant la mise en ligne. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille d'où vient l'écart, et [pourquoi Alex & Lia](/pourquoi-alex-et-lia/) explique qui fait quoi.
+Ce n'est pas un site au rabais. Fait à la main par une agence ou un indépendant, un site vitrine se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Le mien coûte ${marche.fois} fois moins, et la différence vient de la méthode. C'est moi qui conçois chaque site, mais j'ai pris le temps d'automatiser ce qui revient d'un projet à l'autre : Lia s'en charge. J'ai aussi des accès directs chez des hébergeurs français, sans intermédiaire à payer. Ce n'est pas un tour de magie, juste du travail d'optimisation. Je relis, je corrige et je vérifie tout avant la mise en ligne. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille d'où vient l'écart, et [pourquoi Alex & Lia](/pourquoi-alex-et-lia/) explique qui fait quoi.
 
 ## Ce qui peut faire monter la note
 
@@ -277,7 +282,7 @@ Enfin, certains coups de main se paient une seule fois, quand vous les commandez
 Vous composez le tout sur la page [créer mon site](/creer-mon-site/), et le total s'affiche au fur et à mesure.`,
     faq: [
       { q: 'Un site gratuit, ça existe ?', a: 'Des outils permettent de publier une page sans payer, mais avec une adresse qui porte le nom de l’outil et souvent de la publicité. Pour une activité professionnelle, une adresse à votre nom reste préférable, et elle n’est jamais gratuite.' },
-      { q: 'Pourquoi les prix varient-ils autant d’un prestataire à l’autre ?', a: 'Parce que le temps passé n’est pas le même. Un site dessiné sur mesure par une équipe demande des semaines de travail. Un site bâti sur une base éprouvée, avec l’aide de l’IA, en demande beaucoup moins. Les deux approches sont valables, pour des besoins différents.' },
+      { q: 'Pourquoi les prix varient-ils autant d’un prestataire à l’autre ?', a: 'Parce que le temps passé n’est pas le même. Un site dessiné sur mesure par une équipe demande des semaines de travail. Un site bâti sur une base éprouvée, avec des tâches automatisées, en demande beaucoup moins. Les deux approches sont valables, pour des besoins différents.' },
       { q: 'Dois-je tout payer d’un coup ?', a: `Non. Vous réglez ${paiement.acompte} % à la commande. Le reste est dû quand le site est en ligne, en une fois ou en ${durees} mensualités sans frais.` },
     ],
     voir: ['site-une-page-ou-site-vitrine', 'creer-son-site-soi-meme-ou-le-faire-faire', 'creer-boutique-en-ligne'],
@@ -403,14 +408,14 @@ Mon service est né de ce constat. Vous ne construisez rien vous-même, mais vou
 
 - Le prix est fixe et connu d'avance : ${eur(page.price)} € pour le site, puis ${eur(abo.month)} € par mois.
 - Vous demandez vos changements en une phrase depuis votre espace client.
-- Les petites retouches se font avec Lia, mon assistante, en quelques minutes, avec un aperçu à valider.
+- Lia, mon assistante autonome, fait les petites retouches en quelques minutes, avec un aperçu à valider.
 - Pour le reste, je m'en occupe à la main une fois par ${periode}, avec une réponse sous ${delais.reponse}.
 - L'abonnement est sans engagement.
 
 Pour voir à quoi cela ressemble avant de vous décider, [essayez la démo de l'espace client](/mon-espace/demo/). Et pour une vue d'ensemble des solutions, le [comparatif](/comparatif/) les met côte à côte.`,
     faq: [
       { q: 'J’ai commencé un site moi-même sans le finir, pouvez-vous le reprendre ?', a: 'Je repars d’un site neuf, mais rien n’est perdu : vos textes, vos photos et vos idées servent de base. Envoyez-moi l’adresse de ce que vous avez commencé, c’est un excellent point de départ.' },
-      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: `Oui, sans rien apprendre : vous décrivez le changement dans votre espace client. L’abonnement comprend les petites retouches avec Lia et ${intervAlex} d’Alex par ${periode}. Il vous faut Alex une fois de plus ? ${maj(alexPlus.name)} se commande pour ${eur(alexPlus.prix)} €.` },
+      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: `Oui, sans rien apprendre : vous décrivez le changement dans votre espace client. L’abonnement comprend ${abo.jetons} jetons par mois pour les retouches avec Lia, et ${intervAlex} d’Alex par ${periode}. Il vous faut Alex une fois de plus ? ${maj(alexPlus.name)} se commande pour ${eur(alexPlus.prix)} €.` },
       { q: 'Combien de temps faut-il pour faire un site seul ?', a: 'Cela dépend beaucoup de chacun. Le montage lui-même va assez vite. Ce qui prend du temps, ce sont les textes, le choix des photos et tous les petits réglages auxquels on ne pense pas au départ.' },
     ],
     voir: ['prix-site-internet', 'site-une-page-ou-site-vitrine', 'site-internet-auto-entrepreneur'],
@@ -590,7 +595,7 @@ Le service de paiement prélève de son côté une petite commission sur chaque 
 
 Une boutique sans visiteurs ne vend rien. Parlez-en à vos clients actuels, glissez l'adresse dans chaque colis et sur vos emballages, et pensez au [référencement](/referencement-seo/) : chaque fiche produit bien écrite est une porte d'entrée depuis Google.`,
     faq: [
-      { q: 'Combien de produits puis-je vendre ?', a: 'La boutique comprend la mise en ligne de 20 produits. Vous pouvez ensuite en ajouter d’autres avec Lia, ou lors de l’intervention d’Alex comprise dans l’abonnement. Pour un catalogue beaucoup plus grand dès le départ, la boutique se fait sur devis.' },
+      { q: 'Combien de produits puis-je vendre ?', a: 'La boutique comprend la mise en ligne de 20 produits. Vous pouvez ensuite en ajouter d’autres avec Lia, grâce à vos jetons, ou lors de l’intervention d’Alex comprise dans l’abonnement. Pour un catalogue beaucoup plus grand dès le départ, la boutique se fait sur devis.' },
       { q: 'Faut-il un statut d’entreprise pour vendre en ligne ?', a: 'Oui. Vendre régulièrement, même de petites quantités, suppose une activité déclarée, par exemple en micro-entreprise. Renseignez-vous avant d’ouvrir : la démarche est rapide et se fait en ligne.' },
       { q: 'Puis-je garder mon magasin et ajouter une boutique en ligne ?', a: `Oui, c’est même un très bon cas. L’extra ${stock.name} évite de vendre en ligne un article qui vient de partir en magasin.` },
     ],
