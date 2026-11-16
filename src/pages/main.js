@@ -97,16 +97,20 @@ function home() {
   </div>
 </section>
 
-<section class="section section-soft c-butter">${C.deco('dino', 'haut-gauche')}<div class="container">
-  <h2 class="section-title">Des sites en ligne, à visiter</h2>
-  <p class="section-sub">Pas de faux avis ici : allez voir par vous-même.</p>
-  ${clientCards({ max: 3, desc: false })}
-  <p class="center more">${C.btn(sections.confiance.path, 'btn-light', sections.confiance.icon, 'Toutes les réalisations')}</p>
-</div></section>
-
 <section class="section">${C.deco('nuage', 'cote-droite')}<div class="container">
   <h2 class="section-title">Ce que vous y gagnez</h2>
   <div class="feats">${gains.map(([ic, t, d]) => `<div class="feat reveal">${icon(ic)}<h3>${t}</h3><p>${d}</p></div>`).join('')}</div>
+</div></section>
+
+<section class="section section-soft c-butter">${C.deco('etoile', 'haut-gauche', 'ravi')}<div class="container">
+  <h2 class="section-title">Pourquoi des prix aussi abordables ?</h2>
+  <p class="section-sub">Ce n’est pas de la magie, c’est de l’optimisation. J’ai pris le temps de bien m’organiser, et vous en profitez.</p>
+  <div class="feats feats-3">
+    <div class="feat reveal">${icon('sparkles')}<h3>Le répétitif est automatisé</h3><p>Mises à jour, sauvegardes, petites retouches : ce sont mes petits monstres qui s’en chargent. Ce temps-là, vous ne le payez pas.</p></div>
+    <div class="feat reveal">${icon('server')}<h3>Pas d’intermédiaire</h3><p>J’ai des accès directs chez des hébergeurs français. Pas de revendeur au milieu, donc pas de marge en plus sur votre facture.</p></div>
+    <div class="feat reveal">${icon('tag')}<h3>Un prix affiché, sans devis</h3><p>Le même prix pour tous, visible tout de suite. Pas de rendez-vous commercial à payer, pas de mauvaise surprise à la fin.</p></div>
+  </div>
+  <p class="center more">${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>
 
 <section class="section section-soft section-equipe-court"><div class="container center">
