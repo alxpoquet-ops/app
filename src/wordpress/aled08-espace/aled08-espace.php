@@ -445,8 +445,8 @@ add_action('template_redirect', function () {
     // garde-fou : pas plus de 10 demandes par jour
     $today = new WP_Query(['post_type' => ALED08E_CPT, 'author' => $uid, 'post_status' => 'private', 'fields' => 'ids', 'posts_per_page' => 11, 'no_found_rows' => true, 'date_query' => [['after' => '24 hours ago']]]);
     if (count($today->posts) >= 10) $back('trop');
-    // deux demandes à la fois (les pages de Lumi ne comptent pas)
-    if (empty($_POST['extra']) && count(aled08e_demandes_en_cours($uid)) >= 2) $back('deux_max');
+    // trois demandes à la fois (les pages de Lumi ne comptent pas)
+    if (empty($_POST['extra']) && count(aled08e_demandes_en_cours($uid)) >= aled08e_demandes_max()) $back('deux_max');
 
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
     // extra à la demande, payé à part : un article écrit et publié, ou un point de 30 minutes avec Alex
@@ -985,7 +985,7 @@ function aled08e_dashboard() {
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
         'sans_formule' => ['esp-warn', 'Votre site n’a pas d’abonnement : les modifications ne sont pas comprises. Envie d’un abonnement ? Écrivez-moi, je m’en occupe.'],
-        'deux_max' => ['esp-warn', 'Deux demandes sont déjà en cours : c’est le maximum à la fois. Dès que l’une est terminée (ou annulée), vous pourrez envoyer la suivante.'],
+        'deux_max' => ['esp-warn', 'Trois demandes sont déjà en cours : c’est le maximum à la fois. Dès que l’une est terminée (ou annulée), vous pourrez envoyer la suivante.'],
         'trop' => ['esp-warn', 'Vous avez envoyé beaucoup de demandes aujourd’hui. Écrivez-nous par le formulaire de contact si c’est pressé.'],
         'erreur' => ['esp-warn', 'L’envoi n’a pas abouti. Réessayez dans un instant.'],
         'lia_oui' => ['esp-empty', 'Merci ! Votre modification est en ligne.'],

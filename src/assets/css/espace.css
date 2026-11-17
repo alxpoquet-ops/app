@@ -616,3 +616,16 @@ a.app-card { text-decoration: none; color: inherit; }
 .req-detail > summary { cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--ink); padding: 10px 0; }
 .req-detail > summary svg { width: 18px; height: 18px; }
 @media (max-width: 560px) { .gauge-etapes li { font-size: .68rem; } .bande-haut-art svg { width: 46px; height: 46px; } }
+
+/* Jauge : croix d'annulation au bout de la ligne, étape « Visuel à valider » cliquable */
+.gauge-ligne { display: flex; align-items: flex-start; gap: 10px; }
+.gauge-ligne .gauge-etapes { flex: 1; min-width: 0; }
+.gauge-x-form { margin: 0; flex: none; }
+.gauge-x { flex: none; width: 30px; height: 30px; border-radius: 50%; border: 0; cursor: pointer; display: grid; place-items: center; background: var(--line); color: var(--text); text-decoration: none; transition: background .15s, color .15s; }
+.gauge-x:hover, .gauge-x:focus-visible { background: var(--pink-dd, #d6457a); color: #fff; }
+.gauge-x.is-off { opacity: .55; }
+.gauge-x svg { width: 15px; height: 15px; }
+.gauge-visuel { display: flex; flex-direction: column; align-items: center; gap: 4px; color: inherit; text-decoration: none; cursor: pointer; }
+.gauge-visuel b { box-shadow: 0 0 0 3px rgba(214, 69, 122, .35); }
+.gauge-visuel:hover span, .gauge-visuel:focus-visible span { text-decoration: underline; }
+.gauge-a a { font-weight: 800; color: var(--pink-dd, #d6457a); }

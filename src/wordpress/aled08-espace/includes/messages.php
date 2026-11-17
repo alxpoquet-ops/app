@@ -227,19 +227,43 @@ function aled08e_gauge_etape($p) {
     if (in_array($etat, ['en_cours', 'attente_alex', 'refuse', 'pour_alex'], true) || get_post_meta($p->ID, '_aled08_statut', true) === 'encours') return 2;
     return 1;
 }
+function aled08e_demandes_max() { return 3; }
+/* Le visuel (aperçu sur le vrai site) préparé par Bricou pour une demande, s'il y en a un */
+function aled08e_gauge_apercu($p) {
+    foreach ((array) get_post_meta($p->ID, '_aled08_lia_actions', true) as $a) if (is_array($a) && !empty($a['apercu'])) return (string) $a['apercu'];
+    return '';
+}
+/* La croix pour annuler, au bout de la jauge (mêmes règles que « Annuler la demande » dans l'historique) */
+function aled08e_gauge_croix($p) {
+    if (!function_exists('aled08e_annulation_possible')) return '';
+    $pourquoi = aled08e_annulation_possible($p);
+    if ($pourquoi === 'deja') return '';
+    if ($pourquoi !== '') return '<a class="gauge-x is-off" href="' . esc_url(home_url('/contact/')) . '" title="' . esc_attr($pourquoi === 'quota' ? 'Vos 3 annulations du mois sont utilisées : écrivez à Alex' : 'Après 24 heures, écrivez à Alex pour annuler') . '" aria-label="Annuler : écrire à Alex">' . aled08e_icon('x') . '</a>';
+    return '<form class="gauge-x-form" method="post" action="' . esc_url(aled08e_url()) . '" onsubmit="return confirm(\'Annuler cette demande ? Elle ne comptera pas dans vos interventions.\');">'
+        . '<input type="hidden" name="aled08e_annuler" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_annuler_' . $p->ID, '_aled08e_annul', true, false)
+        . '<button class="gauge-x" type="submit" title="Annuler cette demande" aria-label="Annuler cette demande">' . aled08e_icon('x') . '</button></form>';
+}
 function aled08e_gauge_html($uid) {
     $liste = aled08e_demandes_en_cours($uid);
     if (!$liste) return '<p class="gauge-vide">' . aled08e_icon('check') . '<span>Aucune demande en cours. Dites à Bricou ce que vous voulez changer : il s’en occupe.</span></p>';
     $etapes = ['Demande reçue', 'Prise en compte', 'Visuel à valider', 'Mise en ligne'];
     $h = '';
-    foreach (array_slice($liste, 0, 2) as $p) {
+    foreach (array_slice($liste, 0, aled08e_demandes_max()) as $p) {
         $n = aled08e_gauge_etape($p);
         $txt = trim(preg_replace('/\s+/u', ' ', $p->post_content));
-        $h .= '<div class="gauge"><p class="gauge-t"><strong>' . esc_html(mb_strlen($txt) > 70 ? mb_substr($txt, 0, 67) . '…' : $txt) . '</strong></p><ol class="gauge-etapes" style="--n:' . (int) $n . '">';
-        foreach ($etapes as $i => $e) $h .= '<li class="' . ($i + 1 < $n ? 'is-fait' : ($i + 1 === $n ? 'is-en-cours' : '')) . '"><b>' . ($i + 1 < $n ? '✓' : $i + 1) . '</b><span>' . esc_html($e) . '</span></li>';
-        $h .= '</ol>' . ($n === 3 ? '<p class="gauge-a">À vous : ouvrez l’aperçu dans « Historique » et dites si c’est bon. Dès que vous validez, Bricou modifie.</p>' : '') . '</div>';
+        $apercu = in_array($n, [3, 4], true) ? aled08e_gauge_apercu($p) : '';
+        $h .= '<div class="gauge"><p class="gauge-t"><strong>' . esc_html(mb_strlen($txt) > 70 ? mb_substr($txt, 0, 67) . '…' : $txt) . '</strong></p><div class="gauge-ligne"><ol class="gauge-etapes" style="--n:' . (int) $n . '">';
+        foreach ($etapes as $i => $e) {
+            $in = '<b>' . ($i + 1 < $n ? '✓' : $i + 1) . '</b><span>' . esc_html($e) . '</span>';
+            // le visuel à valider se clique : il s'ouvre sur le vrai site, avec ce qui change surligné
+            $in = ($i === 2 && $apercu) ? '<a class="gauge-visuel" href="' . esc_url($apercu) . '" target="_blank" rel="noopener" title="Voir le visuel à valider">' . $in . '</a>' : $in;
+            $h .= '<li class="' . ($i + 1 < $n ? 'is-fait' : ($i + 1 === $n ? 'is-en-cours' : '')) . '">' . $in . '</li>';
+        }
+        $h .= '</ol>' . aled08e_gauge_croix($p) . '</div>';
+        if ($n === 3) $h .= '<p class="gauge-a">À vous : ' . ($apercu ? '<a href="' . esc_url($apercu) . '" target="_blank" rel="noopener">voir le visuel</a>, puis ' : '') . 'dites si c’est bon dans « Historique ». Dès que vous validez, Bricou modifie.</p>';
+        $h .= '</div>';
     }
-    if (count($liste) >= 2) $h .= '<p class="gauge-max">Deux demandes à la fois : la suivante partira dès qu’une est terminée.</p>';
+    if (count($liste) >= aled08e_demandes_max()) $h .= '<p class="gauge-max">Trois demandes à la fois : la suivante partira dès qu’une est terminée.</p>';
     return $h;
 }
 function aled08e_bande_haut_html($uid) {
