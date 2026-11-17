@@ -18,6 +18,25 @@
     "Et l’abonnement, chaque année": "And the subscription, every year",
     "Et l’abonnement, chaque mois": "And the subscription, every month",
     "Prix total du site : ": "Total price of the website: ",
+    'Site Internet Professionnel, avec boutique': 'Professional Website, with an online shop',
+    'Site Internet Professionnel': 'Professional Website',
+    'Vérification du code…': 'Checking the code…',
+    'Le code sera vérifié au moment de commander.': 'The code will be checked when you order.',
+    'Code valable : la remise est appliquée.': 'Valid code: the discount is applied.',
+    'Ce code n’est pas reconnu. Vérifiez-le, ou écrivez-moi.': 'This code is not recognised. Check it, or write to me.',
+    'Et votre formule, chaque année': 'And your plan, every year',
+    'Et votre formule, chaque mois': 'And your plan, every month',
+    ' + formule': ' + plan',
+    'Code événement : ': 'Event code: ',
+    ' % de remise sur la création, déjà déduits': '% off the website, already deducted',
+    ' fois, et votre formule': ' instalments, and your plan',
+    'À la réception : le reste, et votre formule': 'On delivery: the rest, and your plan',
+    'Tranquillité': 'Peace of mind',
+    'Évolution': 'Growth',
+    'Pack SEO': 'SEO pack',
+    'Aperçu prêt': 'Preview ready',
+    'En savoir plus': 'Learn more',
+    'Validée par Alex, votre modification est en ligne (démo)': 'Approved by Alex, your change is live (demo)',
     ", sans frais en plus.": ", with no extra fees.",
     'Votre site, avec boutique en ligne': 'Your website, with an online shop',
     'Votre site': 'Your website',
@@ -70,7 +89,7 @@
     'Envoi en cours…': 'Sending…', 'Nouvelle étape': 'New step', 'QR code vers votre site': 'QR code to your website', 'QR code téléchargé': 'QR code downloaded',
     'Vos modifications du mois sont utilisées : je vous recontacte pour en parler (démo)': 'You have used this month’s changes: I will get back to you to talk about it (demo)',
     'envoyée à l’instant': 'sent just now', 'Reçue': 'Received', 'Ajouter une photo (facultatif)': 'Add a photo (optional)',
-    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'Demande envoyée': 'Request sent', 'd’énergie (démo)': 'energy (demo)', 'Il ne vous reste pas assez d’énergie pour cette demande (démo)': 'You do not have enough energy left for this request (demo)', 'En cours': 'In progress', 'Faite': 'Done',
+    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'Demande envoyée': 'Request sent', 'Demande envoyée (démo)': 'Request sent (demo)', 'Vous avez utilisé vos petites retouches du mois (démo)': 'You have used your small edits for this month (demo)', 'Vous verrez l’aperçu avant la mise en ligne.': 'You will see the preview before it goes live.', 'd’énergie (démo)': 'energy (demo)', 'Il ne vous reste pas assez d’énergie pour cette demande (démo)': 'You do not have enough energy left for this request (demo)', 'En cours': 'In progress', 'Faite': 'Done',
     'Votre modification est en ligne (démo)': 'Your change is live (demo)', ' choisi, à partir du mois prochain (démo)': ' chosen, from next month (demo)',
     'Option ajoutée': 'Option added', 'Option retirée': 'Option removed', ' (démo)': ' (demo)', 'à l’instant': 'just now',
     'Je souhaite payer le site en ': 'I would like to pay for the website in ', ' fois.': ' instalments.', 'Options choisies : ': 'Chosen options: ',
@@ -183,7 +202,36 @@
     c.addEventListener('change', maj); // avant le recalcul des prix (l'événement remonte ensuite au formulaire)
     maj();
   };
-  var siteNom = function (t) { return tr(t.id === 'boutique' ? 'Votre site, avec boutique en ligne' : 'Votre site'); };
+  var siteNom = function (t) { return tr(t.id === 'boutique' ? 'Site Internet Professionnel, avec boutique' : 'Site Internet Professionnel'); };
+  /* ---------- code événement (foire, marché, salon) : vérifié par le serveur, remise sur la création ----------
+     ok : true (code valable), false (inconnu), null (pas encore vérifié, ou vérification impossible ici) */
+  var codeEvenement = function (scope, onChange) {
+    var input = $('[data-code-evenement]', scope), etat = $('[data-code-etat]', scope);
+    var st = { code: '', ok: null }, timer = null, ajax = (window.aled08Ajax || '/wp-admin/admin-ajax.php');
+    if (!input) return st;
+    var dire = function (txt, cls) { if (etat) { etat.textContent = txt; etat.className = 'b-code-etat' + (cls ? ' ' + cls : ''); } };
+    var verifier = function () {
+      var c = cleanCode(input.value);
+      st.code = c; st.ok = null;
+      if (c.length < 3) { dire(''); onChange(); return; }
+      dire(tr('Vérification du code…'));
+      onChange();
+      if (!window.fetch) { dire(tr('Le code sera vérifié au moment de commander.')); return; }
+      fetch(ajax + '?action=aled08e_code_evenement&code=' + encodeURIComponent(c), { credentials: 'same-origin' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          if (cleanCode(input.value) !== c) return;
+          if (j && j.success) { st.ok = true; dire(tr('Code valable : la remise est appliquée.'), 'is-ok'); }
+          else if (j && j.success === false) { st.ok = false; dire(tr('Ce code n’est pas reconnu. Vérifiez-le, ou écrivez-moi.'), 'is-ko'); }
+          else dire(tr('Le code sera vérifié au moment de commander.'));
+          onChange();
+        })
+        .catch(function () { if (cleanCode(input.value) === c) dire(tr('Le code sera vérifié au moment de commander.')); });
+    };
+    input.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(verifier, 450); });
+    st.set = function (c) { if (c) { input.value = cleanCode(c); verifier(); } };
+    return st;
+  };
 
   /* ---------- menu mobile ---------- */
   var burger = $('.burger'), nav = $('#nav');
@@ -391,6 +439,7 @@
       if (c) c.checked = true;
     });
     initPagesPlus(box, params.get('pages_plus'));
+    var code = codeEvenement(box, function () { update(); });
     var form = $('[data-builder-form]', box);
     if (form) form.addEventListener('submit', function (e) { e.preventDefault(); });
     var domain = initDomain(box, update);
@@ -438,8 +487,16 @@
       else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? tr(' (disponible)') : dom.status === 'pris' ? tr(' (déjà pris)') : '');
       setText('domain', domText || tr('Nom de domaine à choisir'));
       var lisse = lisseN > 0;
-      var acompte = round2(t.price * data.acompte / 100);
-      var reste = round2(t.price - acompte);
+      // code événement valable : la remise porte sur la création (le site et les options payées une fois)
+      var r = code.ok ? (data.remise || 0) : 0;
+      var remise = round2((t.price + optOnce) * r / 100);
+      var prixSite = round2(t.price * (100 - r) / 100);
+      optOnce = round2(optOnce * (100 - r) / 100);
+      var rLine = $('[data-sum-remise]', box);
+      if (rLine) rLine.hidden = !r;
+      setText('remise', '- ' + euro(remise));
+      var acompte = round2(prixSite * data.acompte / 100);
+      var reste = round2(prixSite - acompte);
       var lisseAmt = lisse ? floor2(reste / lisseN) : 0;
       var recur = (month + optMonth) * mult;
       // ce que le client paie, dans l'ordre : aujourd'hui (l'acompte et les options payées une fois),
@@ -449,18 +506,18 @@
       setText('today', euro(today));
       setText('reste-label', lisse ? tr('Puis, dès la réception, pendant ') + lisseN + tr(' mois') : tr('À la réception du site : le reste'));
       setText('reste', lisse ? euro(lisseAmt) + tr('/mois') : euro(reste));
-      setText('recur-label', annual ? tr('Et l’abonnement, chaque année') : tr('Et l’abonnement, chaque mois'));
+      setText('recur-label', annual ? tr('Et votre formule, chaque année') : tr('Et votre formule, chaque mois'));
       setText('recur', euro(recur) + per);
-      setText('detail', tr('Prix total du site : ') + euro(t.price + optOnce) + (lisse ? tr(', sans frais en plus.') : '.'));
+      setText('detail', tr('Prix total du site : ') + euro(prixSite + optOnce) + (lisse ? tr(', sans frais en plus.') : '.'));
       var bar = $('[data-sum="bar"]', box);
       if (bar) {
-        bar.innerHTML = tr('Aujourd’hui ') + '<b>' + euro(today) + '</b>' + tr(', à la réception ') + '<b>' + (lisse ? euro(lisseAmt) + tr('/mois') + ' × ' + lisseN : euro(reste)) + '</b>' + tr(' + abonnement');
+        bar.innerHTML = tr('Aujourd’hui ') + '<b>' + euro(today) + '</b>' + tr(', à la réception ') + '<b>' + (lisse ? euro(lisseAmt) + tr('/mois') + ' × ' + lisseN : euro(reste)) + '</b>' + tr(' + formule');
       }
       // Lien « Poser une question » (formulaire de contact, en clair)
       var q = { type: t.id === 'boutique' ? 'Site avec boutique en ligne' : 'Site', forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: domText, options: chosen.join(', '), parrain: parrain };
       $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
       // Lien « Commander » : paramètres exacts attendus par /commander/
-      var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), pages_plus: pp ? String(pp) : '', parrain: parrain };
+      var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), pages_plus: pp ? String(pp) : '', parrain: parrain, code: code.code && code.ok !== false ? code.code : '' };
       $$('[data-sum-order]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href').split('?')[0], o)); });
     }
     var pLine = $('[data-sum-parrain]', box);
@@ -469,6 +526,7 @@
     box.addEventListener('billing', update);
     update();
     if (params.get('domaine') || params.get('domaine_statut') === 'mien') domain.set(params.get('domaine'), params.get('domaine_statut'));
+    if (code.set) code.set(params.get('code'));
 
     /* barre du bas (téléphone) : cachée quand le récapitulatif complet est visible */
     var bar = $('[data-sum-bar]', box), sum = $('.b-sum', box);
@@ -546,6 +604,7 @@
     var pInput = form.querySelector('input[name="parrain"]');
     if (pInput && !pInput.value) pInput.value = cleanCode(params.get('parrain')) || parrain;
     var pLine = $('[data-order-parrain]', root);
+    var code = codeEvenement(form, function () { update(true); });
     var domain = initDomain(root, function () { update(true); });
     var hiddenDomain = $('[data-order-domaine]', form);
     var engRow = $('[data-order-engagement]', form), engBox = engRow && engRow.querySelector('input');
@@ -581,23 +640,29 @@
       });
       var pp = pagesPlus(form, data);
       if (pp) { names.push(ppNom(pp)); optOnce += pp * data.pagePlus; }
-      var acompte = round2(t.price * data.acompte / 100);
-      var solde = round2(t.price - acompte);
+      // code événement valable : la remise porte sur la création (le site et les options payées une fois)
+      var r = code.ok ? (data.remise || 0) : 0;
+      var k = (100 - r) / 100;
+      var prixSite = round2(t.price * k);
+      var acompte = round2(prixSite * data.acompte / 100);
+      var solde = round2(prixSite - acompte);
       var lisseAmt = lisse ? floor2(solde / lisseN) : 0;
       var forfaitFirst = f.month * mult;
-      // aujourd'hui : l'acompte et les options payées une fois ; le forfait démarre à la réception du site
+      // aujourd'hui : l'acompte et les options payées une fois ; la formule démarre à la réception du site
       lines.push([tr('Acompte de ') + data.acompte + tr(' % sur la création (') + siteNom(t).toLowerCase() + ')', acompte]);
       $$('.b-opt input:checked', form).forEach(function (i) {
         var o = find(data.options, i.value);
-        if (o && o.once) lines.push([tr(o.name), o.once]);
+        if (o && o.once) lines.push([tr(o.name), round2(o.once * k)]);
       });
+      if (r) lines.push([tr('Code événement : ') + r + tr(' % de remise sur la création, déjà déduits'), 0]);
+      optOnce = round2(optOnce * k);
       if (pp) lines.push([ppNom(pp) + ' (' + pp + ' × ' + euro(data.pagePlus) + ')', pp * data.pagePlus]);
       var today = round2(lines.reduce(function (s, l) { return s + l[1]; }, 0));
       var next = round2(forfaitFirst + optRec);
       setText('today', euro(today));
       setText('btn', euro(today));
       setText('next', lisse ? euro(lisseAmt) + ' × ' + lisseN + ' + ' + euro(next) + per : euro(solde) + ' + ' + euro(next) + per);
-      setText('next-label', lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois, et l’abonnement') : tr('À la réception : le reste, et l’abonnement'));
+      setText('next-label', lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois, et votre formule') : tr('À la réception : le reste, et votre formule'));
       if ($('[data-order="solde"]', root)) setText('solde', euro(solde));
       setText('lisse', euro(lisseAmt));
       setText('lisse-per', perUnit);
@@ -612,13 +677,13 @@
           var li = d.createElement('li');
           li.innerHTML = '<span></span><b></b>';
           li.firstChild.textContent = l[0];
-          li.lastChild.textContent = euro(l[1]);
+          li.lastChild.textContent = l[1] ? euro(l[1]) : '';
           ul.appendChild(li);
         });
       }
       /* récapitulatif latéral */
       setText('type', siteNom(t));
-      setText('type-price', euro(t.price));
+      setText('type-price', euro(prixSite));
       setText('forfait', planName(f.name));
       setText('forfait-price', euro(forfaitFirst) + per);
       setText('delai', tr(t.delai));
@@ -641,7 +706,7 @@
       /* la configuration reste dans l'adresse (retour arrière, partage, erreur serveur) */
       if (fromUser && window.history && history.replaceState) {
         var q = new URLSearchParams(location.search);
-        var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), pages_plus: pp ? String(pp) : '', parrain: pCode };
+        var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), pages_plus: pp ? String(pp) : '', parrain: pCode, code: code.code || '' };
         Object.keys(o).forEach(function (k) { if (o[k]) q.set(k, o[k]); else q.delete(k); });
         q.delete('erreur'); q.delete('annule');
         var qs = q.toString();
@@ -652,6 +717,7 @@
     if (pInput) pInput.addEventListener('input', function () { update(true); });
     update(false);
     if (params.get('domaine') || params.get('domaine_statut') === 'mien') domain.set(params.get('domaine'), params.get('domaine_statut'));
+    if (code.set) code.set(params.get('code'));
 
     /* vérification avant envoi (le serveur revérifie tout) */
     form.addEventListener('submit', function (e) {
@@ -838,15 +904,18 @@
       log.insertBefore(li, log.firstChild);
     };
 
-    /* modifications restantes ce mois : le quota vient du forfait coché (data-jetons), deux demandes sont déjà faites dans la démo */
+    /* modifications restantes ce mois : le quota vient du forfait coché (data-jetons), deux demandes sont déjà faites dans la démo.
+       Énergie en pause (data-unite="retouches" sur la jauge) : la jauge compte les petites retouches de Bricou, une par demande. */
+    var jaugeEl = $('[data-jauge]', app), parRetouche = !!jaugeEl && jaugeEl.getAttribute('data-unite') === 'retouches';
     var startPlan = $('input[name="app-plan"]:checked', app);
-    var used = 62;
+    var used = parRetouche ? 2 : 62;
     var max = startPlan ? +startPlan.getAttribute('data-jetons') : 250, left = Math.max(0, max - used);
     var drawJauge = function () {
+      if (!$('[data-jetons]', app)) return; // modifications incluses : pas de jauge
       $('[data-jetons]', app).textContent = left;
       $('[data-jetons-max]', app).textContent = max;
       $('[data-jauge-fill]', app).style.width = (max ? Math.min(100, left / max * 100) : 0) + '%';
-      $('[data-jauge]', app).classList.toggle('is-low', left < 30);
+      $('[data-jauge]', app).classList.toggle('is-low', left < (parRetouche ? 2 : 30));
     };
     drawJauge();
 
@@ -858,20 +927,21 @@
       e.preventDefault();
       var text = txt.value.trim();
       if (!text) { toast(tr('Écrivez votre demande en quelques mots')); txt.focus(); return; }
-      var prix = 30 + Math.ceil((text.match(/\S+/g) || []).length / 10) + (file.files && file.files.length ? 10 : 0);
-      if (left < prix) { toast(tr('Il ne vous reste pas assez d’énergie pour cette demande (démo)')); return; }
+      var sansJauge = !jaugeEl;
+      var prix = sansJauge ? 0 : parRetouche ? 1 : 30 + Math.ceil((text.match(/\S+/g) || []).length / 10) + (file.files && file.files.length ? 10 : 0);
+      if (left < prix) { toast(tr(parRetouche ? 'Vous avez utilisé vos petites retouches du mois (démo)' : 'Il ne vous reste pas assez d’énergie pour cette demande (démo)')); return; }
       used += prix; left = Math.max(0, max - used); drawJauge();
       var li = d.createElement('li');
       li.innerHTML = '<span><strong></strong><small>' + tr('envoyée à l’instant') + '</small></span><em class="st st-new">' + tr('Reçue') + '</em>';
       li.querySelector('strong').textContent = text.length > 60 ? text.slice(0, 57) + '…' : text;
       list.insertBefore(li, list.firstChild);
       txt.value = ''; file.value = ''; fileName.textContent = tr('Ajouter une photo (facultatif)');
-      toast(tr('Demande envoyée') + ' : ' + prix + ' ' + tr('d’énergie (démo)'));
+      toast(sansJauge || parRetouche ? tr('Demande envoyée (démo)') : tr('Demande envoyée') + ' : ' + prix + ' ' + tr('d’énergie (démo)'));
       var st = li.querySelector('.st');
-      setTimeout(function () { st.className = 'st st-doing'; st.textContent = tr('En cours'); }, 2000);
+      setTimeout(function () { st.className = 'st st-doing'; st.textContent = tr(sansJauge ? 'Aperçu prêt' : 'En cours'); }, 2000);
       setTimeout(function () {
         st.className = 'st st-done'; st.textContent = tr('Faite');
-        toast(tr('Votre modification est en ligne (démo)'));
+        toast(tr(sansJauge ? 'Validée par Alex, votre modification est en ligne (démo)' : 'Votre modification est en ligne (démo)'));
         addLog('check', 'Modification faite : ' + li.querySelector('strong').textContent);
       }, 4500);
     });
@@ -923,6 +993,7 @@
     var prix = reglages ? +reglages.getAttribute('data-prix') || 1 : 1;
     var solde = reglages ? +reglages.getAttribute('data-solde') || 0 : 0;
     var sansLimite = reglages && reglages.getAttribute('data-illimite') === '1';
+    var sansEnergie = !!reglages && reglages.getAttribute('data-sans-energie') === '1'; // énergie en pause : rien à compter ni à afficher
     var cleFil = 'lia_fil_' + (reglages ? reglages.getAttribute('data-uid') || mode : 'site');
 
     var ecrire = function (texte, qui, html) {
@@ -942,7 +1013,7 @@
     };
     var jetonsTxt = function (n) { return n + tr(' d’énergie'); };
     var majJetons = function () {
-      if (!dial || !jetonsEl) return;
+      if (!dial || !jetonsEl || sansEnergie) return;
       jetonsEl.hidden = false;
       jetonsEl.textContent = sansLimite ? '∞' : jetonsTxt(solde);
     };
@@ -968,7 +1039,7 @@
         var parLia = a.par === 'lia';
         titre = tr(parLia ? 'Demande pour les petits monstres' : 'Demande pour Alex');
         detail = a.texte || '';
-        petit = parLia ? tr('Environ ') + jetonsTxt(a.jetons || 0) + tr('. Vous verrez l’aperçu avant la mise en ligne.') : tr('Faite à la main par Alex.');
+        petit = parLia ? (sansEnergie ? tr('Vous verrez l’aperçu avant la mise en ligne.') : tr('Environ ') + jetonsTxt(a.jetons || 0) + tr('. Vous verrez l’aperçu avant la mise en ligne.')) : tr('Faite à la main par Alex.');
         oui = tr('Préparer ma demande');
       } else if (a.type === 'outil') {
         titre = tr('Outil : ') + tr(a.nom || '');
@@ -1025,7 +1096,7 @@
         setTimeout(function () {
           if (!choix) return fait({ reponse: tr('Dans votre vrai espace, je vous réponds ici.'), action: { type: 'aucune' }, solde: solde });
           var g = function (n) { return choix.getAttribute('data-' + n) || ''; };
-          fait({ reponse: choix.textContent.trim(), solde: Math.max(0, solde - prix), action: { type: g('type') || 'aucune', par: g('par'), texte: g('texte'), jetons: +g('cout') || 0, outil: g('outil'), nom: g('nom'), onglet: g('onglet') } });
+          fait({ reponse: choix.textContent.trim(), solde: sansEnergie ? solde : Math.max(0, solde - prix), action: { type: g('type') || 'aucune', par: g('par'), texte: g('texte'), jetons: +g('cout') || 0, outil: g('outil'), nom: g('nom'), onglet: g('onglet') } });
         }, 700);
         return;
       }
@@ -1054,7 +1125,7 @@
         $('button', liaForm).disabled = false;
         if (!r) {
           ecrire(erreur, 'err');
-          if (manque) carte({ type: 'onglet', onglet: 'outils', nom: 'Redonner de l’énergie' });
+          if (manque && !sansEnergie) carte({ type: 'onglet', onglet: 'outils', nom: 'Redonner de l’énergie' });
           return;
         }
         if (typeof r.solde === 'number') solde = r.solde;
@@ -1071,7 +1142,7 @@
     if (dial) {
       liaForm.hidden = false; liaNote.hidden = false;
       var prixEl = $('[data-lia-prix]', flot);
-      if (prixEl) prixEl.textContent = jetonsTxt(prix) + tr(' par message.');
+      if (prixEl) prixEl.textContent = sansEnergie ? '' : jetonsTxt(prix) + tr(' par message.');
       if (reglages.getAttribute('data-max')) champ.maxLength = +reglages.getAttribute('data-max');
       majJetons();
       try {
@@ -1147,7 +1218,7 @@
     var creer = function () {
       pop = d.createElement('div');
       pop.className = 'opt-pop'; pop.id = 'opt-pop'; pop.setAttribute('role', 'dialog'); pop.hidden = true;
-      pop.innerHTML = '<button type="button" class="opt-pop-x"></button><div class="opt-pop-img"></div><strong></strong><p></p><small></small>';
+      pop.innerHTML = '<button type="button" class="opt-pop-x"></button><div class="opt-pop-img"></div><strong></strong><p></p><a class="opt-pop-lien" hidden></a><small></small>';
       var x = $('.opt-pop-x', pop);
       x.setAttribute('aria-label', tr('Fermer'));
       x.textContent = '×';
@@ -1185,6 +1256,11 @@
       }
       $('strong', pop).textContent = b.getAttribute('data-titre');
       $('p', pop).textContent = b.getAttribute('data-info');
+      // un mot technique : un lien « En savoir plus » vers le lexique, et pas de légende d'écran
+      var lien = b.getAttribute('data-lien'), a = $('.opt-pop-lien', pop);
+      a.hidden = !lien;
+      if (lien) { a.href = lien; a.textContent = tr('En savoir plus'); }
+      $('small', pop).hidden = !src;
       pop.hidden = false;
       b.setAttribute('aria-expanded', 'true');
       b.setAttribute('aria-controls', 'opt-pop');

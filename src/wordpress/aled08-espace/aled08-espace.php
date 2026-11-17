@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres Espace client
  * Description: L'espace client des Minis Monstres sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.4.7
+ * Version: 2.5.0
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.4.7');
+define('ALED08E_VERSION', '2.5.0');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
@@ -32,6 +32,16 @@ function aled08e_data() {
     }
     return $d;
 }
+/* Énergie et outils en pause (src/config.js, enService, novembre 2026). Sans réglage dans data.json, tout reste en service.
+ * En pause : pas d'onglet Outils, rien n'est compté en énergie. Cerise répond sans compter (limites.bulleJour messages par
+ * jour) et Bricou fait au plus limites.bricouMois petites retouches par mois et par client. */
+function aled08e_en_service($quoi) {
+    $s = aled08e_data()['enService'] ?? null;
+    return !is_array($s) || !empty($s[$quoi]);
+}
+function aled08e_energie_on() { return aled08e_en_service('energie'); }
+function aled08e_outils_on() { return aled08e_en_service('outils'); }
+function aled08e_limite($quoi, $defaut) { $l = (array) (aled08e_data()['limites'] ?? []); return max(0, (int) ($l[$quoi] ?? $defaut)); }
 function aled08e_icon($n) { $d = aled08e_data(); return $d['icons'][$n] ?? ''; }
 function aled08e_monster($n) { $d = aled08e_data(); return $d['monsters'][$n] ?? ($d['monsters']['mascotte'] ?? ''); }
 function aled08e_forfait($id) {
@@ -58,14 +68,16 @@ function aled08e_extras_metas($options) {
 /* Le prix du Boost (une intervention d'Alex en plus), en texte */
 function aled08e_boost_txt() { return aled08e_euro_txt((float) (aled08e_data()['boost'] ?? 5)); }
 /* Les extras à la demande, payés une fois (intervention d'Alex en plus, demande sous 24 heures, article, point avec Alex) */
-function aled08e_a_la_demande($id = null) {
+function aled08e_a_la_demande($id = null, $tous = false) {
     $all = (array) (aled08e_data()['aLaDemande'] ?? []);
-    if (!$all) $all = [['id' => 'alex', 'name' => 'Une intervention d’Alex en plus', 'prix' => (float) (aled08e_data()['boost'] ?? 5), 'icon' => 'user-check', 'desc' => '']];
+    // offre du 17 novembre 2026 : plus d'extras à la demande. Les anciens restent lisibles ($tous) pour les demandes passées.
+    if (!$tous) $all = array_values(array_filter($all, function ($x) { return empty($x['retire']); }));
+    if (!$all && $tous) $all = [['id' => 'alex', 'name' => 'Une intervention d’Alex en plus', 'prix' => (float) (aled08e_data()['boost'] ?? 5), 'icon' => 'user-check', 'desc' => '']];
     if ($id === null) return $all;
     foreach ($all as $x) if ($x['id'] === $id) return $x;
     return null;
 }
-function aled08e_extra_prix($id) { $x = aled08e_a_la_demande($id); return $x ? (float) $x['prix'] : 0.0; }
+function aled08e_extra_prix($id) { $x = aled08e_a_la_demande($id, true); return $x ? (float) $x['prix'] : 0.0; }
 /* Période des interventions d'Alex : 'trimestre' depuis l'offre V2 (novembre 2026), 'mois' pour les clients inscrits avant */
 function aled08e_alex_periode($uid) {
     if (aled08e_meta($uid, 'alex_mensuel') === '1') return 'mois';
@@ -82,11 +94,19 @@ function aled08e_periode_debut($periode) {
 }
 /* Interventions d'Alex déjà utilisées sur la période du client (mois ou trimestre) */
 function aled08e_count_alex($uid) { return aled08e_count_month($uid, 'alex', aled08e_alex_periode($uid)); }
-/* « une intervention d'Alex par trimestre » (ou par mois) */
+/* « une intervention d'Alex par trimestre » (ou par mois) ; avec l'offre du 17 novembre 2026 : « modifications incluses » */
 function aled08e_alex_txt($uid, $f) {
+    if (!empty($f['illimite'])) return 'modifications incluses, en ligne sous ' . aled08e_modif_delai($f) . (empty($f['priorite']) ? ' au plus' : ' en moyenne');
     $q = (int) $f['quota'];
     return ($q === 1 ? 'une intervention' : $q . ' interventions') . ' d’Alex par ' . aled08e_alex_periode($uid);
 }
+/* Offre du 17 novembre 2026 : les modifications sont incluses, sans limite (formules Tranquillité et Évolution).
+ * Le client écrit sa demande ; Bricou prépare la modification et un aperçu ; le client regarde l'aperçu ; Alex reçoit la
+ * proposition et, sans refus de sa part sous 30 minutes, elle est mise en ligne (includes/lia.php). */
+function aled08e_modifs_illimitees($uid) { return !empty(aled08e_forfait(aled08e_meta($uid, 'forfait'))['illimite']); }
+function aled08e_modif_delai($f) { return (string) (($f['delai'] ?? '') ?: (aled08e_data()['delais']['reponse'] ?? '72 heures')); }
+/* Formule Évolution : demandes traitées en priorité */
+function aled08e_priorite($uid) { return !empty(aled08e_forfait(aled08e_meta($uid, 'forfait'))['priorite']); }
 function aled08e_type($id) {
     foreach (aled08e_data()['types'] as $t) if ($t['id'] === $id) return $t;
     return null;
@@ -338,7 +358,8 @@ function aled08e_annuler_demande($pid) {
     $uid = (int) $p->post_author;
     $etat = (string) get_post_meta($pid, '_aled08_lia_etat', true);
     $note = '';
-    if ($etat === 'a_confirmer' && function_exists('aled08e_lia_appel')) aled08e_lia_appel($uid, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]);
+    if (in_array($etat, ['a_confirmer', 'validation'], true) && function_exists('aled08e_lia_appel')) aled08e_lia_appel($uid, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]);
+    wp_clear_scheduled_hook('aled08_valider', [(int) $pid, 'auto']);
     if ($etat === 'fait' && function_exists('aled08e_lia_annuler')) $note = aled08e_lia_annuler($pid);
     update_post_meta($pid, '_aled08_annulee_le', current_time('mysql'));
     // ce que Cerise a publié de nouveau (actualité, photo, nom du site) ne se défait pas tout seul : dans ce cas les jetons restent comptés
@@ -348,8 +369,8 @@ function aled08e_annuler_demande($pid) {
     update_post_meta($pid, '_aled08_statut', 'annulee');
     if ($etat) update_post_meta($pid, '_aled08_lia_etat', 'annule');
     update_post_meta($pid, '_aled08_reponse', $resteEnLigne
-        ? 'Demande annulée. Ce que les petits monstres avaient publié de nouveau reste en ligne : Alex le retire à la main. L’énergie de cette demande reste comptée.'
-        : 'Demande annulée. Elle ne compte pas dans vos interventions' . (get_post_meta($pid, '_aled08_jetons', true) ? ' : votre énergie vous est rendue.' : '.') . ($etat === 'fait' ? ' Votre page a été remise comme avant.' : ''));
+        ? 'Demande annulée. Ce que les petits monstres avaient publié de nouveau reste en ligne : Alex le retire à la main. ' . (aled08e_energie_on() ? 'L’énergie de cette demande reste comptée.' : 'Elle reste comptée dans vos retouches du mois.')
+        : (aled08e_modifs_illimitees($uid) ? 'Demande annulée.' : 'Demande annulée. Elle ne compte pas dans vos interventions' . (get_post_meta($pid, '_aled08_jetons', true) ? ' : votre énergie vous est rendue.' : '.')) . ($etat === 'fait' ? ' Votre page a été remise comme avant.' : ''));
     $u = get_userdata($uid);
     wp_mail(aled08e_to(), 'Une demande a été annulée par le client', 'Client : ' . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n"
         . ($note ? "\nCe que Bricou avait mis en ligne : " . $note . "\n" : '')
@@ -411,6 +432,9 @@ add_action('template_redirect', function () {
     if ($extra && empty($_POST['extra_ok'])) $back('extra_accord');
     // par Cerise (automatique, un jeton) ou par Alex (à la main) ; plus de jeton ce mois-ci : la demande passe à Alex
     $par = !$extra && sanitize_key(wp_unslash($_POST['par'] ?? 'alex')) === 'lia' ? 'lia' : 'alex';
+    // modifications incluses : le client ne choisit plus, Bricou prépare toujours (Alex reprend si besoin)
+    $illimite = aled08e_modifs_illimitees($uid);
+    if ($illimite && !$extra) $par = 'lia';
     // Cerise ne peut pas travailler pour ce client (clé Claude absente ou site pas encore relié) : la demande va à Alex, sans jeton
     if ($par === 'lia' && !aled08e_lia_prete_pour($uid)) $par = 'alex';
     // deux compteurs séparés : les modifications par Cerise (forfait + option Cerise +) et celles par Alex
@@ -420,10 +444,12 @@ add_action('template_redirect', function () {
     if (!empty($_FILES['photos']['name']) && is_array($_FILES['photos']['name'])) $nbPhotos = min(aled08e_lia_limites()['images'], count(array_filter($_FILES['photos']['name'], 'strlen')));
     elseif (!empty($_FILES['photo']['name'])) $nbPhotos = 1;
     $prixLia = aled08e_jl_prix_modif($txt, $nbPhotos);
-    if (!$famille && $par === 'lia' && $prixLia > aled08e_jl_etat($uid, $f)['solde']) $back('lia_epuise');
+    if (!$famille && $par === 'lia' && aled08e_energie_on() && $prixLia > aled08e_jl_etat($uid, $f)['solde']) $back('lia_epuise');
+    // énergie en pause : Bricou fait au plus limites.bricouMois petites retouches par mois
+    if (!$famille && $par === 'lia' && !aled08e_energie_on() && aled08e_jl_retouches_reste($uid) < 1) $back('lia_limite');
     // interventions d'Alex de la période (mois ou trimestre) utilisées : la demande devient une intervention en plus, payante,
     // avec l'accord du client (le « Boost »). Un article ou un point avec Alex se paient à part et ne comptent pas.
-    $over = !$famille && !$extra && $par === 'alex' && aled08e_count_alex($uid) >= (int) $f['quota'];
+    $over = !$illimite && !$famille && !$extra && $par === 'alex' && aled08e_count_alex($uid) >= (int) $f['quota'];
     if ($over && empty($_POST['boost_ok'])) $back('boost_accord');
     // demande traitée sous 24 heures : seulement pour Alex (Cerise fait la sienne tout de suite)
     $urgent = !$famille && $par === 'alex' && !empty($_POST['urgent']) && aled08e_a_la_demande('urgent');
@@ -434,6 +460,7 @@ add_action('template_redirect', function () {
     if (is_wp_error($pid)) $back('erreur');
     update_post_meta($pid, '_aled08_statut', 'recue');
     update_post_meta($pid, '_aled08_par', $par);
+    if (aled08e_priorite($uid)) update_post_meta($pid, '_aled08_priorite', 1); // formule Évolution : passe en premier
     if ($over) { update_post_meta($pid, '_aled08_boost', 1); update_post_meta($pid, '_aled08_hors_forfait', 1); aled08e_boost_facturer($pid, $uid); }
     $payes = [];
     if ($extra) { update_post_meta($pid, '_aled08_extra', $extra); $payes[] = $extra; }
@@ -474,16 +501,22 @@ add_action('template_redirect', function () {
     // (deux demandes envoyées en même temps) : la demande est retirée, rien n'est compté.
     if ($par === 'lia') {
         $prixLia = aled08e_jl_prix_modif($txt, count($photosIds));
+        // énergie en pause : deux demandes envoyées en même temps ne passent pas la limite du mois
+        if (!$famille && !aled08e_energie_on() && aled08e_jl_retouches_reste($uid) < 1) {
+            foreach ($photosIds as $att) wp_delete_attachment($att, true);
+            wp_delete_post($pid, true);
+            $back('lia_limite');
+        }
         if (!aled08e_jl_debiter($uid, $prixLia, 'Modification par les petits monstres', 'demande:' . $pid)) {
             foreach ($photosIds as $att) wp_delete_attachment($att, true);
             wp_delete_post($pid, true);
-            $back('lia_epuise');
+            $back(aled08e_energie_on() ? 'lia_epuise' : 'erreur');
         }
         update_post_meta($pid, '_aled08_jetons', $famille ? 0 : $prixLia);
     }
 
     $u = wp_get_current_user();
-    $delai = $urgent ? (aled08e_data()['delais']['urgent'] ?? '24 heures') : aled08e_data()['delais']['reponse'];
+    $delai = $urgent ? (aled08e_data()['delais']['urgent'] ?? '24 heures') : ($illimite ? aled08e_modif_delai($f) . (aled08e_priorite($uid) ? ' en moyenne (Évolution, PRIORITAIRE)' : ' au plus') : aled08e_data()['delais']['reponse']);
     $quoi = $extra === 'article' ? 'Article à écrire et publier' : ($extra === 'point' ? 'Point de 30 minutes avec Alex à caler' : 'Nouvelle demande de modification');
     $corps = $quoi . "\n\n"
         . 'Client   : ' . $u->display_name . ' (' . $u->user_email . ")\n"
@@ -526,7 +559,8 @@ function aled08e_client_box($post) {
     echo '<p><strong>' . esc_html($u->display_name) . '</strong><br><a href="mailto:' . esc_attr($u->user_email) . '">' . esc_html($u->user_email) . '</a></p>';
     if (aled08e_meta($u->ID, 'site')) echo '<p>Site : <a href="' . esc_url(aled08e_meta($u->ID, 'site')) . '" target="_blank" rel="noopener">' . esc_html(aled08e_meta($u->ID, 'site')) . '</a></p>';
     $jt = aled08e_jetons($f);
-    echo '<p>Abonnement · Alex ' . (int) aled08e_count_alex($u->ID) . ' / ' . (int) $f['quota'] . ' ' . esc_html(aled08e_periode_ce($u->ID)) . ' · Énergie ' . (int) aled08e_jl_etat($u->ID, $f)['solde'] . ' restants (' . (int) aled08e_jl_mois($u->ID, $f) . ' par mois)</p>';
+    if (aled08e_modifs_illimitees($u->ID)) echo '<p>Formule ' . esc_html($f['name']) . ' · modifications incluses' . (aled08e_priorite($u->ID) ? ' · prioritaire' : '') . '</p>';
+    else echo '<p>Abonnement · Alex ' . (int) aled08e_count_alex($u->ID) . ' / ' . (int) $f['quota'] . ' ' . esc_html(aled08e_periode_ce($u->ID)) . ' · ' . (aled08e_energie_on() ? 'Énergie ' . (int) aled08e_jl_etat($u->ID, $f)['solde'] . ' restants (' . (int) aled08e_jl_mois($u->ID, $f) . ' par mois)' : 'Retouches de Bricou ' . (int) aled08e_jl_retouches_mois($u->ID) . ' / ' . aled08e_limite('bricouMois', 8) . ' ce mois-ci') . '</p>';
     $par = get_post_meta($post->ID, '_aled08_par', true) === 'lia' ? 'Bricou (instantané, avec aperçu)' : 'Alex (à la main)';
     echo '<p><strong>Demandée à : ' . esc_html($par) . '</strong></p>';
     echo '<p><a href="' . esc_url(get_edit_user_link($u->ID)) . '#aled08e">Fiche client</a></p>';
@@ -557,7 +591,7 @@ add_action('manage_' . ALED08E_CPT . '_posts_custom_column', function ($col, $pi
         $colors = ['recue' => '#2C67AE', 'encours' => '#9a6a00', 'faite' => '#1f7a55'];
         echo '<strong style="color:' . esc_attr($colors[$st] ?? '#333') . '">' . esc_html(aled08e_statuts()[$st][0] ?? $st) . '</strong>';
         if (get_post_meta($pid, '_aled08_hors_forfait', true)) echo '<br><small>Intervention en plus ' . esc_html(aled08e_boost_txt()) . '</small>';
-        foreach (aled08e_extras_demande($pid) as $x) { $xx = aled08e_a_la_demande($x); if ($xx) echo '<br><small>' . esc_html($xx['name'] . ' ' . aled08e_euro_txt($xx['prix'])) . '</small>'; }
+        foreach (aled08e_extras_demande($pid) as $x) { $xx = aled08e_a_la_demande($x, true); if ($xx) echo '<br><small>' . esc_html($xx['name'] . ' ' . aled08e_euro_txt($xx['prix'])) . '</small>'; }
     }
 }, 10, 2);
 
@@ -698,7 +732,7 @@ add_filter('manage_users_custom_column', function ($out, $col, $uid) {
 add_action('wp_enqueue_scripts', function () {
     if (!is_page('mon-espace') || !is_user_logged_in()) return;
     wp_enqueue_script('aled08-qrcode', plugins_url('qrcode.js', __FILE__), [], ALED08E_VERSION, ['in_footer' => true, 'strategy' => 'defer']);
-    wp_enqueue_script('aled08-outils', plugins_url('outils.js', __FILE__), [], (string) @filemtime(__DIR__ . '/outils.js'), ['in_footer' => true, 'strategy' => 'defer']);
+    if (aled08e_outils_on()) wp_enqueue_script('aled08-outils', plugins_url('outils.js', __FILE__), [], (string) @filemtime(__DIR__ . '/outils.js'), ['in_footer' => true, 'strategy' => 'defer']);
     // Styles propres à l'espace client : dans le thème (assets/css/espace.css), sinon la copie livrée avec l'extension
     $theme = get_template_directory() . '/assets/css/espace.css';
     if (file_exists($theme)) wp_enqueue_style('aled08-espace', get_template_directory_uri() . '/assets/css/espace.css', ['aled08'], (string) filemtime($theme));
@@ -798,7 +832,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
           <dl class="esp-grid">
             <div><dt>Type de site</dt><dd><?php echo esc_html($type ? $type['label'] : $cmd['type']); ?><small><?php echo aled08e_euro($m['creation']); // phpcs:ignore ?> de création</small></dd></div>
             <div><dt>Nom de domaine</dt><dd><?php echo esc_html($cmd['domaine'] ?: 'À choisir'); ?><small><?php echo esc_html(aled08e_cmd_domaine_libelle_client($cmd)); ?></small></dd></div>
-            <div><dt>Abonnement</dt><dd><?php echo aled08e_euro($m['mensuel_forfait']) . ' ' . esc_html($per); // phpcs:ignore ?><small>Nom de domaine, hébergement, suivi, énergie des petits monstres</small></dd></div>
+            <div><dt>Abonnement</dt><dd><?php echo aled08e_euro($m['mensuel_forfait']) . ' ' . esc_html($per); // phpcs:ignore ?><small>Nom de domaine, hébergement, suivi, <?php echo aled08e_energie_on() ? 'énergie des petits monstres' : 'petites retouches'; ?></small></dd></div>
             <div><dt>Options</dt><dd><?php echo $opts ? esc_html(implode(', ', $opts)) : 'Aucune'; ?></dd></div>
           </dl>
 
@@ -860,6 +894,12 @@ function aled08e_dashboard() {
     $left = max(0, $quota - $used); // modifications par Alex restantes
     $famille = aled08e_famille($uid);
     if ($famille) { $left = 999; $jetonsLeft = 999; }
+    // énergie en pause : la jauge compte les petites retouches de Bricou du mois
+    $enPause = !aled08e_energie_on();
+    $retMax = aled08e_limite('bricouMois', 8);
+    $retLeft = $famille ? 999 : aled08e_jl_retouches_reste($uid);
+    $illimite = aled08e_modifs_illimitees($uid); // offre du 17 novembre 2026 : modifications incluses
+    if ($illimite) { $left = 999; $retLeft = 999; }
     $infini = '<span class="jauge-infini">∞ <span class="jauge-coeur" aria-hidden="true">♥</span></span><span class="sr-only">illimité</span>';
     $liaLim = aled08e_lia_limites();
     // options mensuelles actives du compte (e-mail pro, stock, comptes clients, modifications illimitées)
@@ -902,7 +942,7 @@ function aled08e_dashboard() {
     $m = isset($_GET['m']) ? sanitize_key(wp_unslash($_GET['m'])) : '';
     $msgs = [
         'ok' => ['esp-empty', 'Demande envoyée, merci ! Elle est bien arrivée, et vous suivez son avancement juste en dessous.'],
-        'changer_ok' => ['esp-empty', 'C’est enregistré : vos extras changent à votre prochaine échéance. Votre énergie change le 1er du mois prochain.'],
+        'changer_ok' => ['esp-empty', 'C’est enregistré : vos extras changent à votre prochaine échéance.' . (aled08e_energie_on() ? ' Votre énergie change le 1er du mois prochain.' : '')],
         'changer_rien' => ['esp-empty', 'Rien n’a changé : ce sont déjà vos extras.'],
         'changer_erreur' => ['esp-warn', 'Le changement n’a pas pu se faire tout seul : Alex est prévenu et s’en occupe.'],
         'boost' => ['esp-empty', 'Demande envoyée à Alex : c’est une intervention en plus, ' . $boostTxt . ' ajoutés à votre prochaine facture.'],
@@ -911,6 +951,7 @@ function aled08e_dashboard() {
         'extra_ok' => ['esp-empty', 'C’est commandé, merci ! Le prix est ajouté à votre prochaine facture, et Alex vous écrit sous ' . $D['delais']['reponse'] . '.'],
         'extra_accord' => ['esp-warn', 'Cochez la case qui accepte le prix avant de commander.'],
         'lia_epuise' => ['esp-warn', 'Il ne vous reste pas assez d’énergie pour cette demande. Raccourcissez-la, redonnez de l’énergie dans l’onglet Outils, ou choisissez Alex.'],
+        'lia_limite' => ['esp-warn', 'Vous avez utilisé vos ' . aled08e_limite('bricouMois', 8) . ' petites retouches du mois avec Bricou. Elles reviennent le 1er du mois. Pour celle-ci, choisissez Alex.'],
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
         'trop' => ['esp-warn', 'Vous avez envoyé beaucoup de demandes aujourd’hui. Écrivez-nous par le formulaire de contact si c’est pressé.'],
@@ -977,20 +1018,27 @@ function aled08e_dashboard() {
     <div class="app-shell">
       <aside class="app-side">
         <div class="app-user"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><div><strong><?php echo esc_html($u->display_name); ?></strong><small><?php echo esc_html($host ?: $u->user_email); ?></small></div></div>
-        <div class="jauge<?php echo $jetonsLeft < (int) $jlModif['base'] ? ' is-low' : ''; ?>">
+        <?php if ($illimite) : ?><p class="app-badge"><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>Modifications incluses<?php echo aled08e_priorite($uid) ? ', prioritaires' : ''; ?></span></p>
+        <?php else : ?>
+        <?php if ($enPause) : ?><div class="jauge<?php echo $retLeft < 1 ? ' is-low' : ''; ?>">
+          <p class="jauge-head"><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>Retouches du mois</span><b><?php echo $famille ? $infini : (int) $retLeft . ' / ' . (int) $retMax; // phpcs:ignore ?></b></p>
+          <span class="jauge-bar"><i style="width:<?php echo $famille ? 100 : ($retMax ? (int) round(min(100, $retLeft / $retMax * 100)) : 0); ?>%"></i></span>
+        <?php else : ?><div class="jauge<?php echo $jetonsLeft < (int) $jlModif['base'] ? ' is-low' : ''; ?>">
           <p class="jauge-head"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Énergie</span><b><?php echo $famille ? $infini : (int) $jetonsLeft . ' / ' . (int) max($jetonsMax, $jetonsLeft); // phpcs:ignore ?></b></p>
           <span class="jauge-bar"><i style="width:<?php echo $famille ? 100 : ($jetonsMax ? (int) round(min(100, $jetonsLeft / max($jetonsMax, $jetonsLeft) * 100)) : 0); ?>%"></i></span>
+        <?php endif; ?>
         </div>
         <div class="jauge<?php echo $left <= 0 ? ' is-low' : ''; ?>">
           <p class="jauge-head"><?php echo aled08e_icon('user'); // phpcs:ignore ?><span>Avec Alex, <?php echo esc_html(str_replace('-ci', '', $periodeCe)); ?></span><b><?php echo $famille ? $infini : (int) $left . ' / ' . (int) $quota; // phpcs:ignore ?></b></p>
           <span class="jauge-bar"><i style="width:<?php echo $famille ? 100 : ($quota ? (int) round(min(100, $left / $quota * 100)) : 0); ?>%"></i></span>
         </div>
+        <?php endif; ?>
         
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           <?php
           echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
           if ($cmd) echo aled08e_tab('commande', 'package', 'Ma commande'); // phpcs:ignore
-          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'gauge', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'shopping-bag', 'Ma boutique') : '') . aled08e_tab('outils', 'toolbox', 'Outils') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
+          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'gauge', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'shopping-bag', 'Ma boutique') : '') . (aled08e_outils_on() ? aled08e_tab('outils', 'toolbox', 'Outils') : '') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -1039,23 +1087,33 @@ function aled08e_dashboard() {
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
           <h2 class="app-h">Mes demandes</h2>
           <?php echo $flash; // phpcs:ignore ?>
+          <?php if ($illimite) : ?>
+          <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. C’est compris dans votre formule, sans compter. Vous suivez l’avancement ici.</p>
+          <ol class="req-etapes"><li><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Vous faites votre demande</span></li><li><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>Bricou prépare la modification et un aperçu</span></li><li><?php echo aled08e_icon('eye'); // phpcs:ignore ?><span>Vous regardez l’aperçu</span></li><li><?php echo aled08e_icon('user-check'); // phpcs:ignore ?><span>Je vérifie, puis c’est en ligne</span></li></ol>
+          <p class="app-note"><?php echo aled08e_icon('clock'); // phpcs:ignore ?>Délai : <?php echo esc_html(aled08e_modif_delai($f) . (aled08e_priorite($uid) ? ' en moyenne, en priorité' : ' au plus')); ?>. Si une demande demande plus de travail, je la fais moi-même, à la main.</p>
+          <?php else : ?>
           <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. Je m’en occupe et vous suivez l’avancement ici. <?php echo esc_html('Dans votre abonnement : des petites retouches avec les petits monstres et ' . aled08e_alex_txt($uid, $f) . ', réponse sous ' . $delai . '.'); ?></p>
           <?php if ($left <= 0 && !$famille) : ?><p class="esp-warn">Votre intervention d’Alex <?php echo esc_html($periodeDu); ?> est utilisée. Besoin d’une de plus ? C’est <?php echo esc_html($boostTxt); ?>, faite par Alex, ajoutée à votre prochaine facture.</p><?php endif; ?>
-          <?php $liaPrete = aled08e_lia_prete_pour($uid); $liaOk = $liaPrete && ($famille || $jetonsLeft >= (int) $jlModif['base']); ?>
-          <?php if (!$liaPrete) : ?><p class="esp-empty">Les petits monstres ne sont pas encore reliés à votre site : pour l’instant, c’est Alex qui fait vos modifications. Votre énergie sert déjà aux outils de l’onglet Outils.</p>
+          <?php $liaPrete = aled08e_lia_prete_pour($uid); $liaOk = $liaPrete && ($famille || ($enPause ? $retLeft >= 1 : $jetonsLeft >= (int) $jlModif['base'])); ?>
+          <?php if (!$liaPrete) : ?><p class="esp-empty">Les petits monstres ne sont pas encore reliés à votre site : pour l’instant, c’est Alex qui fait vos modifications.<?php echo $enPause ? '' : ' Votre énergie sert déjà aux outils de l’onglet Outils.'; ?></p>
+          <?php elseif (!$liaOk && $enPause) : ?><p class="esp-warn">Vous avez utilisé vos <?php echo (int) $retMax; ?> petites retouches du mois avec Bricou. Elles reviennent le 1<sup>er</sup> du mois. D’ici là, Alex s’occupe de vos demandes.</p>
           <?php elseif (!$liaOk) : ?><p class="esp-warn">Il vous reste <?php echo esc_html(aled08e_jl_txt($jetonsLeft)); ?> : pas assez pour une modification par les petits monstres (<?php echo (int) $jlModif['base']; ?> au moins). L’énergie revient le 1<sup>er</sup> du mois. Pour en avoir tout de suite : « Redonner de l’énergie », dans l’onglet Outils.</p><?php endif; ?>
+          <?php endif; ?>
           <form class="req-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(aled08e_url()); ?>" data-req-real>
             <input type="hidden" name="aled08e_demande" value="1">
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>
-            <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend><p class="app-note"><?php if ($famille) : ?>Pour vous, c’est sans limite, avec Bricou comme avec Alex <span class="jauge-coeur" aria-hidden="true">♥</span>. Bricou fait les petites et moyennes modifications, Alex les plus grandes.<?php else : ?>Il vous reste <?php echo esc_html(aled08e_jl_txt($jetonsLeft)); ?> et <?php echo (int) $left; ?> intervention<?php echo $left > 1 ? 's' : ''; ?> d’Alex <?php echo esc_html($periodeCe); ?>. Bricou fait les petites et moyennes modifications, Alex les plus grandes.<?php endif; ?></p>
-              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $liaOk ? ' checked' : ' disabled'; ?>><span><?php echo aled08e_monster('bricou'); // phpcs:ignore ?><strong>Bricou, dans l’heure</strong><small>Le petit monstre des modifications. Il montre d’abord votre demande à Alex, puis il s’y met (30 minutes au plus). Pour une petite ou moyenne modification : jusqu’à <?php echo (int) $liaLim['mots'][0]; ?> mots de texte, ou jusqu’à <?php echo (int) $liaLim['images']; ?> photos avec un texte plus court. Il vous montre toujours l’aperçu de la page : rien ne change sans votre accord. Énergie : <?php echo (int) $jlModif['base']; ?>, plus 1 par tranche de <?php echo (int) $jlModif['mots']; ?> mots et <?php echo (int) $jlModif['image']; ?> par photo.</small></span></label>
+            <?php if ($illimite) : ?><input type="hidden" name="par" value="lia" data-par>
+            <?php else : ?>
+            <fieldset class="req-par"><legend class="app-sub">Qui s’en occupe ?</legend><p class="app-note"><?php if ($famille) : ?>Pour vous, c’est sans limite, avec Bricou comme avec Alex <span class="jauge-coeur" aria-hidden="true">♥</span>. Bricou fait les petites et moyennes modifications, Alex les plus grandes.<?php else : ?>Il vous reste <?php echo esc_html($enPause ? $retLeft . ' petite' . ($retLeft > 1 ? 's' : '') . ' retouche' . ($retLeft > 1 ? 's' : '') . ' avec Bricou' : aled08e_jl_txt($jetonsLeft)); ?> et <?php echo (int) $left; ?> intervention<?php echo $left > 1 ? 's' : ''; ?> d’Alex <?php echo esc_html($periodeCe); ?>. Bricou fait les petites et moyennes modifications, Alex les plus grandes.<?php endif; ?></p>
+              <label class="req-par-opt"><input type="radio" name="par" value="lia"<?php echo $liaOk ? ' checked' : ' disabled'; ?>><span><?php echo aled08e_monster('bricou'); // phpcs:ignore ?><strong>Bricou, dans l’heure</strong><small>Le petit monstre des modifications. Il montre d’abord votre demande à Alex, puis il s’y met (30 minutes au plus). Pour une petite ou moyenne modification : jusqu’à <?php echo (int) $liaLim['mots'][0]; ?> mots de texte, ou jusqu’à <?php echo (int) $liaLim['images']; ?> photos avec un texte plus court. Il vous montre toujours l’aperçu de la page : rien ne change sans votre accord. <?php if ($enPause) : ?>Jusqu’à <?php echo (int) $retMax; ?> par mois, comprises dans l’abonnement.<?php else : ?>Énergie : <?php echo (int) $jlModif['base']; ?>, plus 1 par tranche de <?php echo (int) $jlModif['mots']; ?> mots et <?php echo (int) $jlModif['image']; ?> par photo.<?php endif; ?></small></span></label>
               <label class="req-par-opt"><input type="radio" name="par" value="alex"<?php echo $liaOk ? '' : ' checked'; ?>><span><?php echo aled08e_monster('alex'); // phpcs:ignore ?><strong>Alex, à la main</strong><small>Pour une grande modification. Sous <?php echo esc_html($delai); ?>, fait et vérifié par Alex lui-même.</small></span></label>
             </fieldset>
-            <?php if ($left <= 0 && !$famille) : ?><label class="check"><input type="checkbox" name="boost_ok" value="1"><span>Si je choisis Alex : j’accepte une intervention en plus, <?php echo esc_html($boostTxt); ?>, ajoutée à ma prochaine facture</span></label><?php endif; ?>
+            <?php endif; ?>
+            <?php if (!$illimite && $left <= 0 && !$famille) : ?><label class="check"><input type="checkbox" name="boost_ok" value="1"><span>Si je choisis Alex : j’accepte une intervention en plus, <?php echo esc_html($boostTxt); ?>, ajoutée à ma prochaine facture</span></label><?php endif; ?>
             <?php $xUrg = aled08e_a_la_demande('urgent'); if ($xUrg && !$famille) : ?><label class="check"><input type="checkbox" name="urgent" value="1"><span>Si je choisis Alex : je la veux sous <?php echo esc_html($D['delais']['urgent'] ?? '24 heures'); ?>, du lundi au vendredi (<?php echo esc_html(aled08e_euro_txt($xUrg['prix'])); ?> ajoutés à ma prochaine facture)</span></label><?php endif; ?>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" name="demande" rows="4" maxlength="4000" required placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" name="photos[]" accept="image/*" multiple class="sr-only" data-req-file><?php echo aled08e_icon('image-plus'); // phpcs:ignore ?><span data-req-file-name>Ajouter jusqu’à 3 photos (facultatif)</span></label>
-            <?php if (!$famille) : ?><p class="jl-estime" data-jl-estime data-base="<?php echo (int) $jlModif['base']; ?>" data-mots="<?php echo (int) $jlModif['mots']; ?>" data-image="<?php echo (int) $jlModif['image']; ?>" data-solde="<?php echo (int) $jetonsLeft; ?>" aria-live="polite"><?php echo aled08e_icon('coins'); // phpcs:ignore ?><span>Avec les petits monstres, cette demande utilise <b data-jl-prix><?php echo (int) $jlModif['base']; ?></b> d’énergie. Avec Alex : aucune énergie.</span></p><?php endif; ?>
+            <?php if (!$famille && !$enPause) : ?><p class="jl-estime" data-jl-estime data-base="<?php echo (int) $jlModif['base']; ?>" data-mots="<?php echo (int) $jlModif['mots']; ?>" data-image="<?php echo (int) $jlModif['image']; ?>" data-solde="<?php echo (int) $jetonsLeft; ?>" aria-live="polite"><?php echo aled08e_icon('coins'); // phpcs:ignore ?><span>Avec les petits monstres, cette demande utilise <b data-jl-prix><?php echo (int) $jlModif['base']; ?></b> d’énergie. Avec Alex : aucune énergie.</span></p><?php endif; ?>
             <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Envoyer ma demande</span></button>
           </form>
           <?php echo aled08e_a_la_demande_html($uid, $famille); // phpcs:ignore ?>
@@ -1081,9 +1139,9 @@ function aled08e_dashboard() {
           <?php if (!$famille && !aled08e_extra_actif($uid, 'seo')) : ?><p class="app-note">Pour aller plus loin : les extras « SEO suivi » et « Chiffres détaillés » s’ajoutent quand vous voulez, dans Mon compte.</p><?php endif; ?>
         </div>
 
-        <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
+        <?php if (aled08e_outils_on()) : ?><div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
           <?php echo aled08e_jl_onglet_html($uid, $f, $site, $host, $avis); // phpcs:ignore ?>
-        </div>
+        </div><?php endif; ?>
 
         <div class="app-panel" role="tabpanel" id="t-parrainage" aria-labelledby="tab-parrainage" hidden>
           <h2 class="app-h">Parrainage</h2>
@@ -1164,14 +1222,14 @@ function aled08e_extras_demande($pid) { $x = get_post_meta($pid, '_aled08_extras
 function aled08e_extras_demande_txt($pid) {
     $out = [];
     foreach (aled08e_extras_demande($pid) as $id) {
-        $x = aled08e_a_la_demande($id);
+        $x = aled08e_a_la_demande($id, true);
         if ($x) $out[] = $x['name'] . ' (' . aled08e_euro_txt($x['prix']) . ', ' . (get_post_meta($pid, '_aled08_extra_facture_' . $id, true) ? 'ajouté à sa prochaine facture Stripe' : 'à facturer à la main') . ')';
     }
     return implode(', ', $out);
 }
 /* Un extra à la demande, ajouté à la prochaine facture Stripe du client (sinon : à facturer à la main) */
 function aled08e_extra_facturer($pid, $uid, $id) {
-    $x = aled08e_a_la_demande($id);
+    $x = aled08e_a_la_demande($id, true);
     $cus = aled08e_meta($uid, 'stripe_customer');
     if (!$x || (float) $x['prix'] <= 0 || !function_exists('aled08e_stripe_ready') || !aled08e_stripe_ready() || $cus === '') return false;
     $r = aled08e_stripe_request('POST', '/v1/invoiceitems', ['customer' => $cus, 'amount' => (int) round((float) $x['prix'] * 100), 'currency' => 'eur', 'description' => $x['name'] . ' (demande n° ' . (int) $pid . ')'], 'extra_' . $id . '_' . (int) $pid, true);
@@ -1277,6 +1335,26 @@ add_action('init', function () {
     }
     update_option('aled08_annonce_derniere', ['titre' => end($annonces)[0], 'le' => current_time('mysql'), 'total' => count(aled08e_annonces(100))], false);
 }, 22);
+
+/* Offre du 17 novembre 2026 (une seule fois) : les annonces qui parlent d'énergie, d'outils, de retouches comptées ou
+ * d'interventions sont retirées de l'espace des clients (passées en brouillon, pas supprimées), et une annonce explique. */
+add_action('init', function () {
+    if (get_option('aled08e_annonce_offre2') === '1' || !post_type_exists(ALED08E_CPT_ANNONCE)) return;
+    update_option('aled08e_annonce_offre2', '1', false); // posé d'abord : deux visites en même temps ne publient pas deux fois
+    foreach (get_posts(['post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'numberposts' => 100, 'suppress_filters' => true]) as $p) {
+        if (preg_match('/énergie|outil|retouche|intervention|extra|Plus rien à compter/iu', $p->post_title . ' ' . $p->post_content)) wp_update_post(['ID' => $p->ID, 'post_status' => 'draft']);
+    }
+    $admins = get_users(['role' => 'administrator', 'number' => 1, 'orderby' => 'ID', 'fields' => 'ids']);
+    $evo = aled08e_forfait('evolution');
+    $titre = 'Vos modifications sont incluses';
+    wp_insert_post([
+        'post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'post_title' => $titre,
+        'post_content' => 'Plus rien à compter : vos modifications sont comprises dans votre formule. Écrivez votre demande, Bricou prépare un aperçu, vous le regardez, je le vérifie, et c’est en ligne.'
+            . (($evo['id'] ?? '') === 'evolution' ? ' Besoin d’aller plus vite ? La formule ' . $evo['name'] . ', à ' . aled08e_euro_txt($evo['month']) . ' par mois, traite vos demandes en priorité et ajoute une page pour Google chaque semaine. Elle se choisit dans Mon compte.' : ''),
+        'post_author' => $admins ? (int) $admins[0] : 0, 'post_date' => wp_date('Y-m-d H:i:s'),
+    ]);
+    update_option('aled08_annonce_derniere', ['titre' => $titre, 'le' => current_time('mysql'), 'total' => count(aled08e_annonces(100))], false);
+}, 23);
 
 /* Annonce de l'offre unique (une seule fois) : les anciennes annonces qui parlent des forfaits Chico, Power et Titan
  * sont retirées de l'espace des clients (passées en brouillon, pas supprimées), et une annonce à jour les remplace. */

@@ -2,17 +2,15 @@
 
 Ce guide explique, en français simple, comment fonctionne le site www.aled08.fr au quotidien : les commandes, les paiements, les noms de domaine, les comptes clients et les demandes de modification. Tout se passe dans WordPress, menu **ALED08** (le visage souriant, en haut à gauche).
 
-## 1. L'offre, en bref
+## 1. L'offre, en bref (depuis le 17 novembre 2026)
 
-- **Une seule offre** : le site à 500 €, quel que soit le site (une page ou plusieurs). Boutique en ligne : + 200 €.
-- **Un abonnement obligatoire, sans engagement** : 10 € par mois. Il comprend le nom de domaine, l'hébergement, les mises à jour, le suivi, le support, 100 Jetons Cerise par mois (compteur interne, jamais affiché sur le site public) et une intervention d'Alex par trimestre. Les clients inscrits avant le 16 novembre 2026 gardent une intervention par mois (case « Une intervention d'Alex chaque mois » de leur fiche). À l'année : 2 mois offerts (le client paie 10 mois).
-- **Paiement de la création** : 25 % à la commande. À la réception du site : le reste, en une fois ou en 6 ou 12 fois sans frais (l'abonnement se paie alors au mois), avec un engagement le temps du paiement. Sinon, aucun engagement.
-- **Options à la création** (payées une fois) : traduction en anglais, prise de rendez-vous, reprise de l'ancien site, cinq pages de plus. 100 € chacune.
-- **Extras au mois**, que le client ajoute ou retire lui-même dans « Abonnement et factures » : Suivi Google 10 €, chiffres détaillés 5 €, adresse e-mail pro 3 €, et pour une boutique gestion du stock 5 € et comptes clients 5 €.
-- **Extras à la demande, payés une fois** (`aLaDemande` dans `src/config.js`), commandés par le client dans l'onglet Mes demandes et ajoutés à sa prochaine facture Stripe (sinon : à facturer à la main, l'e-mail le dit) : une intervention d'Alex en plus (5 €, l'ancien « Boost »), une demande traitée sous 24 heures (5 €), un article écrit et publié (15 €), un point de 30 minutes avec Alex (15 €). Un article ou un point ne compte pas dans les interventions de l'abonnement.
-- **Parrainage** : 1 mois d'abonnement offert au parrain et au filleul quand le site du filleul est en ligne.
-- **Délai de réponse aux demandes** : sous 72 heures.
-- **Les anciens forfaits** (Chico, Power, Titan) n'existent plus. Un ancien client passe tout seul à l'abonnement : Power garde l'extra SEO suivi, Titan garde SEO suivi et chiffres détaillés. Son abonnement Stripe ne bouge pas tant qu'il ne change pas ses extras.
+- **Le site** : « Site Internet Professionnel », 500 €, jusqu'à 20 pages. Design personnalisé, téléphone et ordinateur, formulaire de contact, carte Google, référencement de base, nom de domaine et hébergement offerts la première année, mise en ligne, accompagnement. Les pages non utilisées deviennent des pages pour Google (SEO).
+- **Deux options seulement**, payées une fois : Pack SEO 25 € (10 pages SEO en plus) et Boutique en ligne 200 € (catalogue, panier, paiement en ligne, commandes, e-mails automatiques).
+- **Deux formules au mois, sans engagement** : Tranquillité 10 € (hébergement, nom de domaine, sauvegardes, sécurité, surveillance, maintenance, modifications incluses, 72 heures au plus) et Évolution 20 € (tout Tranquillité, priorité, 12 à 24 heures en moyenne, une page SEO en plus chaque semaine). À l'année : 2 mois offerts. Le client change de formule lui-même dans « Abonnement et factures » (le prix change à l'échéance suivante).
+- **Modifications incluses, sans les compter.** Plus d'intervention par trimestre, plus d'intervention en plus à 5 €, plus d'énergie ni de limite de retouches. Le déroulé est dans la partie 9.
+- **Offre événement** : un code donné sur une foire, un marché, un salon ou un événement professionnel donne 20 % de remise sur la création (site et options payées une fois, pas la formule). Les codes se règlent dans Les Minis Monstres › Réglages, champ « Codes événement », un par ligne. Le premier code, tant que rien n'est réglé, est `MONSTRES20`. Le code est vérifié par le serveur, et noté sur la commande.
+- **Paiement de la création** : 25 % à la commande (et les options), le reste à la réception, en une fois ou en 6 ou 12 fois sans frais. Parrainage : 1 mois offert pour vous deux. Deuxième site : 10 % de remise.
+- **Les anciens clients** gardent leurs options et extras tant qu'ils ne les retirent pas (ils les voient dans « Abonnement et factures », seulement pour les retirer). Leur abonnement devient la formule Tranquillité.
 
 Les repères de prix du marché et la comparaison des assistants IA sont dans `docs/prix-et-ia-2026.md`.
 
@@ -184,10 +182,16 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 
 ## 9. Les demandes de modification
 
-- Le client écrit sa demande (avec une photo s'il veut) dans « Mes demandes ». Vous recevez un e-mail avec un lien direct.
-- Dans les Minis Monstres › Demandes clients, vous changez le statut : Reçue, En cours, Faite, avec un message facultatif affiché chez le client. En passant à « Faite », le client reçoit un e-mail.
-- Deux compteurs : les Jetons Cerise par mois (100 dans l'abonnement, plus les recharges achetées) pour les modifications par Cerise, et les interventions d'Alex (une par trimestre, ou une par mois pour les clients d'avant la V2). Le client choisit qui fait chaque modification. Au-delà, une intervention d'Alex en plus coûte 5 €, ajoutée à sa facture, avec son accord.
-- Délai de réponse annoncé pour Alex : 72 heures. Cerise : instantané, avec un aperçu à valider.
+Depuis le 17 novembre 2026, les modifications sont incluses et le client ne choisit plus « Bricou ou Alex ». Le déroulé :
+
+1. Le client écrit sa demande dans « Mes demandes » (avec des photos s'il veut).
+2. Bricou prépare la modification tout de suite, en tâche de fond, et un aperçu.
+3. Le client regarde l'aperçu et clique « Oui, c'est bon » (ou « Non, ce n'est pas ça » : la demande vous revient, avec son commentaire).
+4. Vous recevez l'e-mail « Modification à valider » avec deux liens : « Valider maintenant » ou « Refuser, je reprends la main ». Avec la formule Évolution, le sujet commence par PRIORITAIRE.
+5. Sans refus de votre part sous 30 minutes, la modification est mise en ligne toute seule, et le client reçoit « Votre modification est en ligne ».
+6. Si Bricou ne peut pas faire la demande (trop grande, floue, site pas relié), elle vous revient : vous la faites à la main, sous 72 heures (12 à 24 heures en moyenne pour Évolution).
+
+Dans la fiche d'une demande, l'état « en attente de votre validation » veut dire que le client a dit oui et que les 30 minutes courent.
 
 ### Cerise, pour de vrai (Claude, d'Anthropic)
 

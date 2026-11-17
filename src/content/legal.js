@@ -1,97 +1,74 @@
 // Mentions légales, politique de confidentialité, conditions générales de vente
 // ⚠️ Les éléments entre accolades proviennent de src/config.js et doivent y être complétés.
 // ⚠️ Modèle à faire relire : il ne remplace pas l'avis d'un professionnel du droit.
-// Règles : aucun tiret long, phrases courtes, rien d'invérifiable. Le nom de marque vient de site.name.
+// Règles : aucun tiret long, aucun point-virgule, phrases courtes, rien d'invérifiable. Chaque terme technique est
+// expliqué la première fois qu'il apparaît dans un article. Le nom de marque vient de site.name.
 const cfg = require('../config');
-const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, delais, creation, aLaDemande, bande } = cfg;
+const { site, annuel, paiement, fidelite, forfaits, lissage, types, options, creation, bande, evenement, limites } = cfg;
 const L = site.legal;
 const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 const UPDATED = '2026-11-15'; // mentions légales
-const UPDATED_CONF = '2026-11-16'; // politique de confidentialité : les outils automatiques et leur fournisseur
-const UPDATED_CGV = '2026-11-16'; // conditions générales : la petite bande, l'énergie, Alex par trimestre, les extras à la demande
-// La petite bande (config.bande) : les automatisations d'Alex, présentées par leur rôle, sans prénom.
+const UPDATED_CONF = '2026-11-17'; // politique de confidentialité : offre simplifiée (formules, code événement, bulle et modifications)
+const UPDATED_CGV = '2026-11-17'; // conditions générales : offre simplifiée du 17 novembre 2026
+// La petite bande (config.bande) : les automatisations d'Alex, présentées par leur prénom et leur rôle.
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
 // (règlement européen AI Act, obligation de transparence). La politique de confidentialité nomme le fournisseur.
 
-// L'offre unique : la création à prix fixe, un seul abonnement, des options payées une fois, des extras au mois,
-// et des extras à la demande payés une fois. Tous les nombres viennent de src/config.js, pour que les CGV suivent toujours les prix.
-const abo = forfaits[0];
+// L'offre du 17 novembre 2026 : la création du « Site Internet Professionnel » à prix fixe, deux options payées une fois
+// (Pack SEO et boutique en ligne), deux formules au mois sans engagement (Tranquillité et Évolution), les modifications
+// incluses sans limite, et l'offre événement. Tous les nombres viennent de src/config.js, pour que les CGV suivent les prix.
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
-// Interventions d'Alex comprises : une par trimestre depuis la V2. Les clients inscrits avant gardent une par mois.
-const periode = abo.periode || 'mois';
-const intervAlex = abo.quota === 1 ? 'une intervention' : `${abo.quota} interventions`;
-const DATE_V2 = '16 novembre 2026';
-const maj = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+const liste = (l, mot = 'et') => (l.length > 1 ? `${l.slice(0, -1).join(', ')} ${mot} ${l[l.length - 1]}` : l.join(''));
 const durees = lissage.durees.join(' ou ');
 const acompte = (prix) => Math.round(prix * paiement.acompte) / 100;
 const lisse = (prix, n) => Math.floor(((prix - acompte(prix)) / n) * 100) / 100; // échéance arrondie au centime inférieur
-const annee = abo.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
+const tranquille = forfaits.find((f) => f.id === 'base') || forfaits[0];
+const evolution = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1];
+const parAn = (f) => f.month * (12 - annuel.moisOfferts); // une formule payée à l'année
+const packSeo = options.find((o) => o.id === 'packseo' && !o.retire) || { name: 'Pack SEO', price: { once: 0 }, pages: 0 };
 const boutique = creation.prix + creation.boutique;
+const restantes = creation.pages - creation.exemplePages;
+const NOM_SITE = creation.nom || 'Site Internet Professionnel';
+const DATE_OFFRE = '17 novembre 2026'; // offre simplifiée : clause de transition (article 7)
+const VERIF = '30 minutes'; // sans refus d'Alex dans ce délai, la modification préparée est validée (article 12)
+const lieux = liste(evenement.lieux, 'ou');
+const moisOffert = fidelite.parrainageMois === 1 ? 'un mois offert' : `${fidelite.parrainageMois} mois offerts`;
 const listeDelais = types.map((t) => `${t.id === 'boutique' ? 'une boutique en ligne' : t.id === 'une-page' ? 'une seule page' : 'un site de plusieurs pages'} : ${t.delai}`).join(', ');
 const tvaMention = L.tva || 'non applicable, art. 293 B du CGI';
-// Options payées une fois et extras au mois : le nom et le prix viennent de la config, la phrase d'explication est ici
-// (écrite pour les CGV, différente de celle de la page Tarifs).
+// Options payées une fois : celles de config.options encore proposées (sans retire), puis la boutique en ligne
+// (creation.boutique). La phrase d'explication est écrite ici pour les CGV, différente de celle de la page Tarifs.
 const DETAIL = {
-  en: 'le site traduit en anglais et relu, avec un bouton pour changer de langue',
-  rdv: 'un agenda sur le site, où les visiteurs réservent un créneau parmi ceux que le client ouvre',
-  reprise: 'les textes, les photos et les adresses de pages de l’ancien site du client, repris dans le nouveau',
-  seo: 'le travail de référencement mené chaque mois, avec un point sur les résultats',
-  stats: 'les chiffres du site heure par heure, et un rapport chaque mois',
-  mail: 'une adresse e-mail au nom de domaine du client',
-  stock: 'le stock de la boutique, décompté à chaque vente',
-  comptes: 'un compte pour chaque acheteur de la boutique, avec ses commandes et ses adresses',
+  packseo: (o) => `${o.pages} pages SEO de plus, chacune pensée pour une recherche précise faite sur Google`,
 };
-const detail = (o) => (DETAIL[o.id] ? ` : ${DETAIL[o.id]}` : '');
-const boutiqueSeule = (o) => (o.types && o.types.length === 1 && o.types[0] === 'boutique' ? ' Réservé aux boutiques en ligne.' : '');
 const listeOptions = options
   .filter((o) => o.quand === 'creation' && !o.retire)
-  .map((o) => `- **${o.name}, ${eur(o.price.once)} €**${detail(o)}.`)
-  .concat(`- **Pages en plus, ${eur(creation.pagePlus)} € la page** : chaque page au-delà des ${creation.pages} comprises. Les pages créées pour le référencement ne sont pas comptées.`)
+  .map((o) => `- **${o.name}, ${eur(o.price.once)} €**${DETAIL[o.id] ? ` : ${DETAIL[o.id](o)}` : ''}.`)
+  .concat(`- **Boutique en ligne, ${eur(creation.boutique)} €** : un catalogue de produits, un panier, le paiement en ligne, la gestion des commandes et des e-mails envoyés automatiquement aux acheteurs. Avec la boutique, la création coûte ${eur(boutique)} €.`)
   .join('\n');
-const listeExtras = options
-  .filter((o) => o.quand === 'mois' && !o.retire)
-  .map((o) => `- **${o.name}, ${eur(o.price.month)} € par mois**${detail(o)}.${boutiqueSeule(o)}`)
-  .join('\n');
-const seoSuivi = options.find((o) => o.id === 'seo');
-// Extras à la demande : payés une fois, commandés par le client depuis son espace, ajoutés à la prochaine facture.
-const DETAIL_DEMANDE = {
-  alex: `une modification faite à la main par Alex, en plus de l’intervention comprise dans la période (article 11)`,
-  urgent: `la demande est prise en charge avant les autres et traitée sous ${delais.urgent}, du lundi au vendredi`,
-  article: 'le client choisit le sujet, un outil automatisé prépare un premier jet, Alex le relit, l’illustre et le publie sur le site du client',
-  page: 'une nouvelle page ajoutée au site après sa mise en ligne, préparée avec les textes et les photos du client',
-  point: 'un rendez-vous avec Alex, par téléphone ou en visio, pour faire le point sur le site et les projets du client',
-};
-const listeDemande = aLaDemande
-  .map((x) => `- **${x.name}, ${eur(x.prix)} €**${DETAIL_DEMANDE[x.id] ? ` : ${DETAIL_DEMANDE[x.id]}` : ''}.`)
-  .join('\n');
-const alexPlus = aLaDemande.find((x) => x.id === 'alex');
-const urgent = aLaDemande.find((x) => x.id === 'urgent');
-// L'énergie : le compteur des outils, des retouches automatiques et de la bulle d'aide, dans l'espace client.
-// Ses réglages sont dans config.js sous un ancien nom de clé, lu ici sans le recopier (le site public n'en parle pas).
-const compteur = Object.values(cfg).find((v) => v && v.recharge && v.modif);
-const nb = (o) => o[Object.keys(o).find((k) => /^jet/.test(k))]; // le nombre de points d'un réglage
-const energieMois = nb(abo); // points d'énergie compris chaque mois
-const modifMax = 65; // la plus grande demande qu'une retouche automatique accepte (mots et photos)
-const listeRecharges = compteur.recharge.map((r) => `${nb(r)} d’énergie pour ${eur(r.prix)} €`).join(', ');
-const OUTILS = require('./outils-lia').outils;
-const payants = OUTILS.map(nb).filter((n) => n > 0);
-const outilMin = Math.min(...payants), outilMax = Math.max(...payants);
-const outilsGratuits = OUTILS.some((t) => !nb(t)) ? ' Certains outils n’en utilisent aucun.' : ' Pour un outil qui tourne sur l’appareil du client, une même action n’est comptée qu’une fois en 24 heures.';
-const parMessage = nb(compteur.bulle); // un message dans la bulle d'aide
-// La petite bande, présentée par rôle
-const et = (l) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} et ${l[l.length - 1]}` : l.join(''));
+const nbOptions = options.filter((o) => o.quand === 'creation' && !o.retire).length + 1;
+const NOMBRE = ['aucune', 'une', 'deux', 'trois', 'quatre', 'cinq'];
+// La petite bande, par prénom et par rôle. Ce que fait chacun est écrit ici pour les CGV.
 const ROLE_CGV = {
-  support: 'la bulle d’aide, qui répond aux questions du client et transmet à Alex ce qui doit l’être',
-  gardien: 'les mises à jour, les sauvegardes, la sécurité et la surveillance du site',
-  bricoleur: 'la préparation des retouches automatiques',
+  support: 'accueille les demandes, organise les projets, prépare les réponses et répond dans la bulle d’aide',
+  bricoleur: 'aide à construire les sites, prépare les modifications et construit les nouvelles pages',
+  ecrivain: 'prépare les contenus, aide à rédiger les textes et améliore leur lisibilité',
+  organisateur: 'classe les contenus et organise les pages',
+  gardien: 'fait les sauvegardes et la maintenance, veille sur la sécurité et surveille le site',
+  observateur: 'suit les statistiques et les performances du site, et repère ce qui peut être amélioré',
+  etoile: 'prépare les pages SEO',
+  vendeur: 'range le catalogue, suit les commandes et envoie les e-mails aux acheteurs',
 };
-const compris = bande.filter((b) => b.compris);
-const bandeComprise = et(compris.map((b) => `${minus(b.role)}${ROLE_CGV[b.id] ? ` (${ROLE_CGV[b.id]})` : ''}`));
-const bandeNoms = et(compris.map((b) => minus(b.role)));
-const bandeOutils = et(bande.filter((b) => b.outils).map((b) => minus(b.role)));
-const bricoleur = minus((bande.find((b) => b.id === 'bricoleur') || { role: 'un outil automatisé' }).role);
+const presente = (b) => `- **${b.nom}, ${minus(b.role)}** : ${ROLE_CGV[b.id] || minus(b.court.replace(/\.$/, ''))}.`;
+const bandeComprise = bande.filter((b) => b.compris).map(presente).join('\n');
+const bandeBoutique = bande
+  .filter((b) => b.option === 'boutique')
+  .map((b) => `**${b.nom}, ${minus(b.role)}**, arrive avec la boutique en ligne : il ${ROLE_CGV[b.id] || minus(b.court.replace(/\.$/, ''))}.`)
+  .join(' ');
+const monstre = (id) => bande.find((b) => b.id === id) || { nom: '', role: '' };
+const cerise = monstre('support').nom;
+const bricou = monstre('bricoleur').nom;
 
 module.exports = [
   {
@@ -148,14 +125,14 @@ ${site.owner}, Les Minis Monstres, ${addr}. Contact : ${contact}.
 
 ## 2. Les données que je collecte
 
-- **Demande de contact ou de devis** : votre nom, votre e-mail, votre téléphone si vous le donnez, vos choix dans le configurateur (type de site, options, extras, nom de domaine) et votre message.
-- **Commande en ligne** : prénom, nom, e-mail, téléphone, adresse postale, nom de votre activité, vos choix, le nom de domaine souhaité, votre message et un éventuel code de parrainage. L’adresse postale sert à la facture et à la réservation du nom de domaine.
-- **Espace client** : vos identifiants, vos demandes de modification (texte et photos) et la date de votre dernière connexion.
+- **Demande de contact ou de devis** : votre nom, votre e-mail, votre téléphone si vous le donnez, vos choix (options, formule, nom de domaine) et votre message.
+- **Commande en ligne** : prénom, nom, e-mail, téléphone, adresse postale, nom de votre activité, vos choix, le nom de domaine souhaité, votre message et un éventuel code de parrainage ou code événement. L’adresse postale sert à la facture et à la réservation du nom de domaine.
+- **Espace client** : vos identifiants, vos demandes de modification (texte et photos), vos messages dans la bulle d’aide et la date de votre dernière connexion.
 - **Paiement** : je ne reçois jamais votre numéro de carte ni votre IBAN (voir le point 4).
 
 ## 3. Pourquoi je les utilise
 
-Pour vous répondre et préparer votre récapitulatif. Pour exécuter votre commande : créer le site, réserver le nom de domaine, gérer l’abonnement et les demandes. Pour établir les factures et les garder le temps prévu par la loi. Rien d’autre : pas de publicité, pas de revente, pas de profilage.
+Pour vous répondre et préparer votre récapitulatif. Pour exécuter votre commande : créer le site, réserver le nom de domaine, gérer votre formule et vos demandes de modification. Pour établir les factures et les garder le temps prévu par la loi. Rien d’autre : pas de publicité, pas de revente, pas de profilage.
 
 ## 4. Paiement par Stripe
 
@@ -163,35 +140,33 @@ Les paiements sont confiés à Stripe, prestataire de paiement. Au moment de pay
 
 ## 5. Nom de domaine
 
-Quand vous vérifiez un nom de domaine, le nom saisi est envoyé au registre officiel de l’extension par le protocole RDAP : l’AFNIC pour les .fr, Verisign pour les .com et les .net, PIR pour les .org. Cette vérification part de votre navigateur pendant que vous tapez, puis de mon serveur au moment de la commande, pour confirmer la disponibilité. Seul le nom recherché est transmis.
+Votre nom de domaine est l’adresse de votre site, par exemple votre-activite.fr. Quand vous vérifiez s’il est libre, le nom saisi est envoyé au registre officiel de l’extension, l’organisme qui gère ces adresses : l’AFNIC pour les .fr, Verisign pour les .com et les .net, PIR pour les .org. L’envoi passe par RDAP, le service public qui indique si un nom est déjà pris. Cette vérification part de votre navigateur pendant que vous tapez, puis de mon serveur au moment de la commande, pour confirmer la disponibilité. Seul le nom recherché est transmis.
 
-Pour réserver le nom de domaine, je transmets vos coordonnées de titulaire (prénom, nom, adresse, e-mail, téléphone) au bureau d’enregistrement et au registre de l’extension. C’est obligatoire pour que le nom de domaine soit enregistré à votre nom. En règle générale, les coordonnées d’un particulier ne sont pas publiées dans l’annuaire public du registre.
+Pour réserver le nom de domaine, je transmets vos coordonnées de titulaire (prénom, nom, adresse, e-mail, téléphone) au bureau d’enregistrement, l’entreprise qui enregistre le nom pour vous, et au registre de l’extension. C’est obligatoire pour que le nom de domaine soit enregistré à votre nom. En règle générale, les coordonnées d’un particulier ne sont pas publiées dans l’annuaire public du registre.
 
 ## 6. Espace client et comptes
 
 Votre compte est créé automatiquement à la commande, avec votre adresse e-mail. Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée.
 
-Certains outils automatiques de l’espace client, dont la bulle d’aide et les retouches automatiques, fonctionnent avec Claude, un service de la société Anthropic. Quand vous demandez une retouche, que vous lancez un outil ou que vous écrivez dans la bulle, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude, par une liaison chiffrée, pour produire la réponse. Ils ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
+Certains petits monstres fonctionnent avec Claude, un service de la société Anthropic. C’est le cas de ${cerise}, qui vous répond dans la bulle d’aide, et de ${bricou}, qui prépare les modifications. Quand vous écrivez dans la bulle ou que vous demandez une modification, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude pour préparer la réponse ou l’aperçu. L’envoi passe par une liaison chiffrée, c’est-à-dire protégée contre les regards extérieurs. Ces éléments ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
 
-Quand vous publiez sur un réseau social depuis l’outil « Publier partout », votre texte et votre photo sont envoyés à ce réseau, sur le compte que vous avez relié. La photo est gardée une heure sur notre serveur, le temps de l’envoi, puis effacée.
-
-Un compte sans aucune connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec les demandes et les photos qu’il contient. Un e-mail vous prévient 30 jours avant. Il suffit de vous connecter pour le conserver.
+Un compte sans aucune connexion depuis 12 mois et sans formule active est supprimé automatiquement, avec les demandes et les photos qu’il contient. Un e-mail vous prévient 30 jours avant. Il suffit de vous connecter pour le conserver.
 
 ## 7. Durée de conservation
 
 - Demandes sans suite : 3 ans après le dernier échange.
 - Commandes et comptes clients : toute la durée de la relation, puis 5 ans pour les pièces du contrat et 10 ans pour les factures, comme la loi l’impose.
-- Comptes inactifs : supprimés après 12 mois sans connexion ni abonnement actif (point 6).
+- Comptes inactifs : supprimés après 12 mois sans connexion ni formule active (point 6).
 
 ## 8. Destinataires
 
-Vos données sont destinées aux Minis Monstres uniquement. Elles transitent par l’hébergeur du site, ${L.host}, par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Ce que vous confiez à ces outils passe par Anthropic (Claude), société américaine : ce traitement peut avoir lieu hors de l’Union européenne, dans le cadre prévu par ses conditions de traitement des données. Elles ne sont jamais vendues ni cédées.
+Vos données sont destinées aux Minis Monstres uniquement. Elles transitent par l’hébergeur du site, ${L.host}, par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Ce que vous écrivez dans la bulle d’aide ou dans une demande de modification passe par Anthropic (Claude), société américaine : ce traitement peut avoir lieu hors de l’Union européenne, dans le cadre prévu par ses conditions de traitement des données. Elles ne sont jamais vendues ni cédées.
 
 ## 9. Cookies et stockage local
 
-Ce site n’utilise aucun traceur publicitaire ni outil de mesure d’audience. Il ne pose aucun cookie tant que vous n’êtes pas connecté à votre espace client.
+Ce site n’utilise aucun traceur publicitaire ni outil de mesure d’audience. Il ne pose aucun cookie, ce petit fichier qu’un site range dans votre navigateur, tant que vous n’êtes pas connecté à votre espace client.
 
-- Si vous arrivez par un lien de parrainage, le code du parrain est gardé 60 jours dans le stockage local de votre navigateur, pour le préremplir dans le formulaire de commande. Il n’est envoyé qu’avec votre commande.
+- Si vous arrivez par un lien de parrainage, le code du parrain est gardé 60 jours dans le stockage local de votre navigateur, une petite mémoire propre à chaque site, pour le préremplir dans le formulaire de commande. Il n’est envoyé qu’avec votre commande.
 - Quand vous vous connectez à l’espace client, un cookie de connexion est posé. Il est nécessaire au service et sert uniquement à vous garder connecté.
 
 ## 10. Vos droits
@@ -202,16 +177,16 @@ Vous pouvez demander l’accès à vos données, leur correction, leur suppressi
     path: '/conditions-generales/',
     name: 'Conditions générales',
     title: `Conditions générales de vente | Les Minis Monstres`,
-    description: `Conditions générales de vente des Minis Monstres : commande en ligne, création à prix fixe, abonnement, extras au mois et à la demande, domaine, rétractation.`,
+    description: `Conditions générales de vente des Minis Monstres : commande en ligne, site à prix fixe, options, formules au mois, offre événement, nom de domaine, rétractation.`,
     lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif de commande.',
     updated: UPDATED_CGV,
     body: `## 1. Objet
 
-Ces conditions s’appliquent à toute commande passée auprès des Minis Monstres : création d’un site internet, abonnement, options, extras et services liés. Elles complètent le récapitulatif de commande, qui précise le type de site, les options, les extras et les prix.
+Ces conditions s’appliquent à toute commande passée auprès des Minis Monstres : création d’un site internet, options, formules au mois et services liés. Elles complètent le récapitulatif de commande, qui précise le site, les options, la formule choisie et les prix.
 
 ## 2. Commande en ligne
 
-La commande se passe sur le site, en trois étapes : le choix du site, de ses options et des extras, les coordonnées, puis le paiement sécurisé. Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants.
+La commande se passe sur le site, en trois étapes : le choix des options et de la formule, les coordonnées, puis le paiement sécurisé. Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants. S’il a un code événement (article 4) ou un code de parrainage (article 17), il le saisit pendant la commande.
 
 En cliquant sur « Commander et payer », le client accepte ces conditions et passe une commande ferme. Il reçoit aussitôt un e-mail de confirmation avec une référence de commande, à rappeler dans les échanges.
 
@@ -221,141 +196,122 @@ Une commande peut aussi être passée par e-mail ou par message. Elle est alors 
 
 Les prix sont en euros. La TVA n’est pas applicable (article 293 B du Code général des impôts) tant que l’entreprise bénéficie de la franchise de TVA. Si cette situation change, les prix affichés sont mis à jour. Les commandes déjà passées gardent leur prix.
 
-L’offre est la même pour tous les clients. Elle tient en deux prix : la création du site, payée une fois, et l’abonnement, payé tant que le site est hébergé par les Minis Monstres.
+L’offre est la même pour tous les clients. Elle tient en deux parties : la création du site, payée une fois, et une formule au mois, payée tant que le site est hébergé par les Minis Monstres.
 
-**La création du site coûte ${eur(creation.prix)} €.** Ce prix comprend jusqu’à ${creation.pages} pages, que le site en compte une seule ou plusieurs. Il comprend la maquette, le site complet et sa mise en ligne. Les pages créées pour le référencement (pages de conseils, de questions, pages par ville) s’ajoutent à ces pages, sans supplément. Les Minis Monstres choisissent leur nombre selon ce qui est utile au client : chaque page est pensée et optimisée pour répondre à une vraie recherche, et aucune n’est créée pour faire du nombre.
+**La création du site coûte ${eur(creation.prix)} €.** Ce prix correspond au « ${NOM_SITE} ». Il comprend jusqu’à ${creation.pages} pages, un design personnalisé, un affichage adapté au téléphone et à l’ordinateur, un formulaire de contact, une carte Google, le référencement Google de base, la mise en ligne et un accompagnement personnalisé par Alex et les Minis Monstres. Le référencement, aussi appelé SEO, désigne ce qui aide un site à être trouvé plus facilement sur Google.
 
-**La boutique en ligne coûte ${eur(creation.boutique)} € de plus**, soit ${eur(boutique)} € pour la création. Ce supplément comprend le paiement par carte, le suivi des commandes, la mise en ligne de 20 produits au plus et une base de conditions de vente que le client complète.
+**Nom de domaine et hébergement.** Le nom de domaine est l’adresse du site. L’hébergement est le service qui garde le site accessible 24 h/24. Les deux sont offerts la première année avec la création du site. Ensuite, la formule choisie par le client les prend en charge (article 6).
 
-**Les options de création** se paient une fois, en plus du prix de création :
+**Pages SEO.** Les pages que le client n’utilise pas, parmi les ${creation.pages} comprises, peuvent devenir des pages SEO. Chacune répond à une recherche que font ses propres clients sur Google, pour rendre le site plus visible. Par exemple, un client qui utilise ${creation.exemplePages} pages pour présenter son activité garde ${restantes} pages pour améliorer sa présence sur Google.
+
+**Les options** se paient une fois, en plus du prix de création. Il y en a ${NOMBRE[nbOptions] || nbOptions}, et aucune n’est obligatoire :
 
 ${listeOptions}
 
-**L’abonnement coûte ${eur(abo.month)} € par mois**, ou ${eur(annee)} € par an (article 5). Des **extras** payés au mois peuvent s’y ajouter, ainsi que des **extras à la demande**, payés une fois (article 6).
+**Les formules au mois.** Le client choisit ${tranquille.name}, à ${eur(tranquille.month)} € par mois, ou ${evolution.name}, à ${eur(evolution.month)} € par mois (article 6). Payées à l’année, elles bénéficient de ${annuel.moisOfferts} mois offerts.
 
-Une demande qui sort de ce cadre, comme une fonction nouvelle ou une refonte, fait l’objet d’un devis que le client accepte avant le début du travail.
+**Devis.** Une refonte complète du site ou une fonction nouvelle, comme une prise de rendez-vous, fait l’objet d’un devis. Le client l’accepte avant le début du travail.
 
-## 4. Paiement de la création
+## 4. Offre événement
+
+Une personne rencontrée par les Minis Monstres sur ${lieux} reçoit un code événement. Ce code donne ${evenement.remise} % de remise sur la création du site, c’est-à-dire sur le site et les options payés une fois. Il ne s’applique pas aux formules au mois.
+
+Le client saisit le code au moment de commander. Le code est vérifié, et le récapitulatif montre le prix après remise avant le paiement. L’acompte et le reste du prix de création sont calculés sur ce prix remisé (article 5).
+
+## 5. Paiement de la création
 
 Le prix de création se paie en deux temps.
 
-- **À la commande** : un acompte de ${paiement.acompte} % du prix de création, boutique en ligne comprise s’il y en a une. Les options de création sont réglées en entier ce jour-là.
+- **À la commande** : un acompte de ${paiement.acompte} % du prix de création, boutique en ligne comprise s’il y en a une. Le ${packSeo.name} est réglé en entier ce jour-là.
 - **À la réception du site** : le reste, en une fois.
-- **Ou, à la réception, en ${durees} fois sans frais** : le reste est divisé en ${durees} mensualités, au choix du client. L’abonnement est alors payé au mois. Chaque échéance est arrondie au centime inférieur : le total ne dépasse jamais le prix du site. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
+- **Ou, à la réception, en ${durees} fois sans frais** : le reste est divisé en ${durees} mensualités, au choix du client. La formule est alors payée au mois. Chaque échéance est arrondie au centime inférieur : le total ne dépasse jamais le prix du site. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
 
 Le client choisit, au moment de la commande, de payer le reste en une fois ou en plusieurs fois.
 
-Exemple pour un site à ${eur(creation.prix)} € : le client paie ${eur(acompte(creation.prix))} € à la commande. À la réception, il paie ${eur(creation.prix - acompte(creation.prix))} € en une fois, ou ${lissage.durees.map((n) => `${eur(lisse(creation.prix, n))} € par mois pendant ${n} mois`).join(', ou ')}.
+Exemple pour un site à ${eur(creation.prix)} €, sans code événement : le client paie ${eur(acompte(creation.prix))} € à la commande. À la réception, il paie ${eur(creation.prix - acompte(creation.prix))} € en une fois, ou ${lissage.durees.map((n) => `${eur(lisse(creation.prix, n))} € par mois pendant ${n} mois`).join(', ou ')}.
 
-## 5. Abonnement
+## 6. Formules au mois
 
-L’abonnement est obligatoire : Les Minis Monstres n’hébergent pas de site sans abonnement. Il n’y en a qu’un, le même pour tous les sites. Il démarre à la réception du site.
+Le client choisit une des deux formules au moment de la commande. Elle démarre à la réception du site. Elle est sans engagement (article 8).
 
-Il comprend :
+**${tranquille.name}, ${eur(tranquille.month)} € par mois.** Elle comprend :
 
-- **Le nom de domaine**, enregistré au nom du client et renouvelé chaque année (article 9).
-- **L’hébergement** du site, avec le HTTPS.
-- **Les mises à jour et les sauvegardes** du site.
-- **Le suivi du site** : son bon fonctionnement est surveillé.
-- **Le support** : une réponse sous ${delais.reponse}, en jours ouvrés (article 11).
-- **Les bases du SEO** : le site est construit pour que Google puisse le lire et le comprendre.
-- **Les outils automatisés de base** : ${bandeNoms} (article 15).
-- **${energieMois} d’énergie par mois**, pour les outils de l’espace client et les retouches automatiques (article 12).
-- **${maj(intervAlex)} d’Alex par ${periode}** (article 11).${periode === 'trimestre' ? ` Le client inscrit avant le ${DATE_V2} garde une intervention d’Alex par mois.` : ''}
-- **L’espace client et ses outils** (article 13).
+- **L’hébergement** : le site reste accessible 24 h/24, avec le HTTPS, le petit cadenas qui protège les échanges avec les visiteurs.
+- **Le nom de domaine**, c’est-à-dire l’adresse du site, enregistré au nom du client et renouvelé chaque année (article 10).
+- **Les sauvegardes** : des copies de sécurité du site, faites régulièrement.
+- **La sécurité et la surveillance** : le site est protégé, et son bon fonctionnement est vérifié jour et nuit.
+- **La maintenance** : des contrôles techniques faits régulièrement, pour que le site reste en état de marche.
+- **Les modifications**, incluses sans limite de nombre et mises en ligne en ${tranquille.delai} au plus (article 12).
+- **L’espace client**, avec la bulle d’aide (article 13).
 
-L’abonnement est prélevé d’avance, chaque mois ou chaque année selon la période choisie par le client. À l’année, il coûte ${eur(annee)} € : le client paie ${12 - annuel.moisOfferts} mois sur 12, soit ${annuel.moisOfferts} mois offerts. Le client peut passer du mois à l’année, ou de l’année au mois, au renouvellement.
+**${evolution.name}, ${eur(evolution.month)} € par mois.** Elle comprend tout le contenu de la formule ${tranquille.name}, et en plus :
 
-Les paiements sont confiés à Stripe, par carte bancaire ou prélèvement SEPA. Les Minis Monstres ne voient pas et ne conservent pas les données bancaires. Chaque facture est envoyée par e-mail et reste disponible dans l’espace client.
+- **La priorité de traitement** : les demandes du client passent avant les autres.
+- **Un délai moyen de ${evolution.delai}** pour les modifications (article 12).
+- **Une page SEO supplémentaire chaque semaine**, préparée par les Minis Monstres et ajoutée au site du client.
+
+La première année, le nom de domaine et l’hébergement sont offerts avec la création du site (article 3). À partir de la deuxième année, la formule les prend en charge, sans supplément.
+
+**Paiement.** La formule est prélevée d’avance, chaque mois ou chaque année, selon le choix du client. À l’année, le client paie ${12 - annuel.moisOfferts} mois sur 12, soit ${annuel.moisOfferts} mois offerts : ${eur(parAn(tranquille))} € par an pour ${tranquille.name}, ${eur(parAn(evolution))} € par an pour ${evolution.name}. Le client peut passer du mois à l’année, ou de l’année au mois, au renouvellement.
+
+**Changement de formule.** Le client peut passer d’une formule à l’autre depuis son espace client. Le nouveau prix s’applique à l’échéance suivante.
+
+Les paiements sont confiés à Stripe, le prestataire de paiement en ligne, par carte bancaire ou par prélèvement SEPA, c’est-à-dire directement sur le compte bancaire. Les Minis Monstres ne voient pas et ne conservent pas les données bancaires. Chaque facture est envoyée par e-mail et reste disponible dans l’espace client.
 
 En cas d’échec de paiement, le client est prévenu par e-mail. Si rien n’est régularisé sous 30 jours, le site peut être mis en pause jusqu’au règlement.
 
-## 6. Extras au mois et extras à la demande
+## 7. Clients inscrits avant le ${DATE_OFFRE}
 
-Un extra est un service en plus. Il y en a deux sortes : les extras au mois et les extras à la demande. Aucun extra n’est obligatoire.
+Un client inscrit avant le ${DATE_OFFRE} garde les options et les extras qu’il a déjà, aux mêmes conditions, tant qu’il ne les retire pas. Il peut passer à l’une des deux formules depuis son espace client.
 
-**Extras au mois.** Ils sont payés au mois avec l’abonnement.
+## 8. Engagement, résiliation et fin de la formule
 
-${listeExtras}
+La formule est sans engagement. Le client peut l’arrêter à tout moment, par e-mail, par message ou avec le bouton prévu dans son espace client. L’arrêt prend effet à la fin de la période déjà payée.
 
-Chaque extra au mois ajoute l’outil automatisé qui lui correspond (article 15). L’extra ${seoSuivi.name} s’appelait auparavant « SEO suivi ». Seul le nom change.
+Une seule exception : quand le reste du prix de création est payé en plusieurs fois, le client s’engage le temps du paiement, soit ${durees} mois à partir de la réception du site. S’il arrête avant, le reste du prix de création devient exigible en une fois. Une fois le site payé, la formule est sans engagement.
 
-Le client ajoute ou retire un extra au mois quand il veut, depuis son espace client. Le nouveau prix s’applique à l’échéance suivante. Quand l’abonnement est payé à l’année, les extras au mois le sont aussi, avec les mêmes ${annuel.moisOfferts} mois offerts.
+La fin de la formule met fin à l’hébergement du site par les Minis Monstres, à son entretien et aux modifications. Le client reçoit son site sous forme de fichiers (textes, images, pages), pour le faire héberger où il veut. Le nom de domaine lui appartient : il peut le transférer vers le prestataire de son choix. L’hébergement par les Minis Monstres s’arrête 30 jours après la fin de la formule.
 
-**Extras à la demande.** Ils sont payés une fois, à l’unité.
-
-${listeDemande}
-
-Le client commande lui-même un extra à la demande depuis son espace client, quand il en a besoin. Il voit le prix et donne son accord avant chaque commande. Le montant est ajouté à sa prochaine facture. Un client qui ne commande rien ne paie rien de plus.
-
-## 7. Engagement, résiliation et fin de l’abonnement
-
-L’abonnement est sans engagement. Le client peut l’arrêter à tout moment par e-mail ou par message : le bouton est dans son espace client. L’arrêt prend effet à la fin de la période déjà payée.
-
-Une seule exception : quand le reste du prix de création est payé en plusieurs fois, le client s’engage le temps du paiement, soit ${durees} mois à partir de la réception du site. S’il arrête avant, le reste du prix de création devient exigible en une fois. Une fois le site payé, l’abonnement est sans engagement.
-
-La fin de l’abonnement met fin aux extras et à l’hébergement du site par les Minis Monstres. Le client reçoit son site sous forme de fichiers (textes, images, pages), pour le faire héberger où il veut. Le nom de domaine lui appartient : il peut le transférer vers le prestataire de son choix. L’hébergement par les Minis Monstres s’arrête 30 jours après la fin de l’abonnement.
-
-## 8. Droit de rétractation
+## 9. Droit de rétractation
 
 Le client qui commande à distance dispose de 14 jours pour se rétracter, sans avoir à se justifier. Un message par ${contact} suffit.
 
-En commandant, le client demande expressément, en cochant la case prévue, que la création commence tout de suite. S’il se rétracte pendant ces 14 jours, il paie le travail déjà réalisé, au prorata du prix de création. Le nom de domaine déjà réservé reste à sa charge, car il est enregistré à son nom et pour un an.
+En commandant, le client demande expressément, en cochant la case prévue, que la création commence tout de suite. S’il se rétracte pendant ces 14 jours, il paie le travail déjà réalisé, au prorata du prix de création. Le nom de domaine déjà réservé, l’adresse du site, reste à sa charge, car il est enregistré à son nom et pour un an.
 
-## 9. Nom de domaine
+## 10. Nom de domaine
 
-Le client est le titulaire de son nom de domaine. Les Minis Monstres y figurent comme contact technique, pour pouvoir le gérer. Le nom est réservé après le premier paiement, s’il est encore disponible à ce moment-là.
+Le nom de domaine est l’adresse du site sur internet. Le client en est le titulaire. Les Minis Monstres y figurent comme contact technique, pour pouvoir le gérer. Le nom est réservé après le premier paiement, s’il est encore disponible à ce moment-là.
 
-Le prix d’un nom de domaine standard en .fr, .com, .net ou .org est compris dans l’abonnement, renouvellement annuel compris. Les autres extensions et les noms dits « premium », vendus plus cher par les registres, font l’objet d’un devis.
+Un nom de domaine standard en .fr, .com, .net ou .org est offert la première année avec la création du site. Ensuite, son renouvellement annuel est compris dans la formule. Les autres extensions et les noms dits « premium », vendus plus cher par les registres (les organismes qui gèrent chaque extension), font l’objet d’un devis.
 
 Si le client possède déjà un nom de domaine, il peut le transférer vers les Minis Monstres ou le garder chez son prestataire et le faire pointer vers le site. Les Minis Monstres lui envoient les réglages à faire.
 
-## 10. Création du site et délais
+## 11. Création du site et délais
 
 Le client fournit ses textes, photos et informations, ou les prépare avec les Minis Monstres à partir de ses explications. Les délais annoncés (${listeDelais}) sont indicatifs. Ils courent à partir de la réception de ces éléments. Le client voit son site avant la mise en ligne et peut demander des ajustements sur ce qui a été commandé.
 
-## 11. Modifications et délai de réponse
+## 12. Modifications
 
-Le client envoie ses demandes de modification depuis son espace client ou par message. Une modification est un changement précis sur une page existante : un texte, un prix, un horaire, une photo, un produit. Une page nouvelle coûte ${eur(creation.pagePlus)} €, payée une fois (article 6). Une fonction nouvelle ou une refonte fait l’objet d’un devis.
+**Ce qui est inclus.** Les modifications sont incluses dans les deux formules, sans limite de nombre. Une modification est un changement demandé sur le site : ajouter ou changer un texte ou des photos, mettre à jour une information. Ajouter une page en est une aussi, dans la limite des ${creation.pages} pages du site. Une refonte complète ou une fonction nouvelle, comme une prise de rendez-vous, fait l’objet d’un devis (article 3).
 
-À chaque demande, le client choisit qui s’en charge :
+**Déroulé.** Chaque modification suit les mêmes étapes :
 
-- **Retouche automatique** : la modification est préparée par ${bricoleur}, un des outils automatisés des Minis Monstres (article 15). Le client voit l’aperçu, et le site n’est modifié qu’après sa validation. La retouche utilise de l’énergie (article 12).
-- **Alex** : la modification est faite à la main, vérifiée et paramétrée par Alex.
+1. Le client fait sa demande dans son espace client.
+2. ${bricou}, le constructeur de la petite bande (article 15), prépare la modification.
+3. Un aperçu est créé : c’est une prévisualisation de la page modifiée, que le client peut regarder.
+4. Alex reçoit la proposition et la vérifie.
+5. Sans refus d’Alex dans les ${VERIF}, la proposition est validée.
+6. La modification est mise en ligne.
 
-**Retouches automatiques.** Elles couvrent les petites et moyennes modifications : un budget de mots et d’images par demande, sur une seule page. La modification est mise en ligne dès que le client valide l’aperçu, en général dans les 5 minutes qui suivent la demande. Une demande trop grande pour une retouche automatique est transmise à Alex. Elle compte alors comme une intervention d’Alex.
+Si ${bricou} ne peut pas préparer la modification, Alex la fait à la main.
 
-**Intervention d’Alex.** L’abonnement comprend ${intervAlex} d’Alex par ${periode} : une modification faite à la main.${periode === 'trimestre' ? ` Pour un client inscrit avant le ${DATE_V2}, c’est une intervention par mois, aux mêmes conditions.` : ''} Une intervention non utilisée ne se reporte pas à la période suivante.
-
-**${alexPlus.name}.** Quand l’intervention de la période est déjà utilisée, le client peut commander ${minus(alexPlus.name)}, pour ${eur(alexPlus.prix)} € (article 6). Cet extra à la demande remplace le « Boost », au même prix. Le client donne son accord à chaque commande, et le montant est ajouté à sa prochaine facture. Il peut aussi choisir de reporter sa demande à la période suivante.
-
-**Annulation.** Une demande peut être annulée gratuitement par le client dans les 24 heures qui suivent son envoi, depuis son espace client, dans la limite de trois annulations par mois : elle n’est alors pas décomptée, l’énergie utilisée est rendue, et ce qui avait été mis en ligne est remis comme avant. Au-delà, l’annulation se demande à Alex.
-
-**Délai de réponse.** Les Minis Monstres répondent à chaque demande sous ${delais.reponse}, en jours ouvrés. Ce délai est le même pour tous les clients. Répondre, c’est prendre en charge la demande et donner une date. Les petites modifications sont en général faites dans ce délai. Avec l’extra à la demande « ${urgent.name} » (article 6), la demande est traitée sous ${delais.urgent}, du lundi au vendredi.
-
-## 12. Énergie
-
-Les outils de l’espace client, les retouches automatiques et la bulle d’aide utilisent de l’énergie. C’est un compteur, affiché dans l’espace client. Les outils sont par exemple : publier sur les réseaux, corriger ou traduire un texte, conseils sur une photo ou sur une page du site, et autres outils du même genre.
-
-**Énergie comprise.** L’abonnement comprend ${energieMois} d’énergie par mois, ce qui correspond à un usage normal. Cette énergie est remise à ${energieMois} le 1er de chaque mois et ne se reporte pas d’un mois sur l’autre.
-
-**Retouche automatique.** Une retouche automatique utilise ${compteur.modif.base} d’énergie, plus 1 par tranche de ${compteur.modif.mots} mots écrits dans la demande, plus ${compteur.modif.image} par photo jointe. Cela fait entre ${compteur.modif.base} et ${modifMax} d’énergie par retouche.
-
-**Outils.** Un outil utilise de ${outilMin} à ${outilMax} d’énergie. Ce nombre est affiché sur son bouton, avant son utilisation.${outilsGratuits}
-
-**Bulle d’aide.** Chaque message écrit dans la bulle utilise ${parMessage} d’énergie, dans la limite de ${compteur.bulle.parJour} messages par jour.
-
-**Recharge.** Au-delà, le client reprend de l’énergie à l’utilisation, depuis son espace client : ${listeRecharges}. Le montant est ajouté à sa prochaine facture. L’énergie reprise est gardée d’un mois sur l’autre, jusqu’à son utilisation.
-
-**Énergie rendue.** L’énergie d’une demande est rendue au client dans quatre cas : la demande est transmise à Alex, la mise en ligne échoue, le client refuse l’aperçu, ou le client annule sa demande dans les 24 heures.
-
-L’énergie et les interventions d’Alex sont comptées séparément.
+**Délais.** Avec la formule ${tranquille.name}, la modification est mise en ligne en ${tranquille.delai} au plus. Avec la formule ${evolution.name}, les demandes sont traitées en priorité, avec un délai moyen de ${evolution.delai}. Une demande sur devis suit le délai indiqué dans le devis.
 
 ## 13. Espace client et compte
 
-Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. Il y suit sa commande, ses demandes, son abonnement, ses extras et ses factures. Il y commande les extras à la demande (article 6). Il y trouve aussi les outils de la petite bande et son compteur d’énergie, et il peut y reprendre de l’énergie (article 12). Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
+Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. C’est sa page personnelle, protégée par un mot de passe. Il y suit sa commande, ses demandes de modification, sa formule et ses factures, et il y trouve son lien de parrainage. La bulle d’aide de ${cerise} y répond à ses questions, dans la limite de ${limites.bulleJour} messages par jour. Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
 
-Un compte sans connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec ses demandes et ses photos. Le client est prévenu par e-mail 30 jours avant. Une connexion suffit pour annuler la suppression. Les factures sont conservées en dehors du compte, le temps prévu par la loi.
+Un compte sans connexion depuis 12 mois et sans formule active est supprimé automatiquement, avec ses demandes et ses photos. Le client est prévenu par e-mail 30 jours avant. Une connexion suffit pour annuler la suppression. Les factures sont conservées en dehors du compte, le temps prévu par la loi.
 
 ## 14. Contenus fournis par le client
 
@@ -365,21 +321,27 @@ Le client garantit qu’il a le droit d’utiliser les textes, images, logos et 
 
 Chaque version du site est conservée et peut être restaurée sur demande.
 
-Alex conçoit et réalise chaque site. Pour les tâches répétitives, il s’aide d’outils automatisés qu’il a programmés, présentés sur le site comme une petite bande de petits monstres. L’abonnement de base comprend ${bandeComprise}. Les outils de l’espace client sont ${bandeOutils}. Chaque extra au mois ajoute l’outil qui lui correspond. Dans cet article, « les petits monstres » désigne l’ensemble de ces outils, bulle d’aide comprise.
+Alex conçoit et réalise chaque site. Pour les tâches répétitives, il s’aide d’outils automatisés qu’il a programmés, présentés sur le site comme une petite bande de petits monstres. Avec les deux formules, la bande comprend :
 
-Les petits monstres sont des outils automatisés, dont certains reposent sur un système d’intelligence artificielle, qui peuvent se tromper. Rien n’est publié sans l’accord du client. Alex vérifie leur travail. Les textes et les conseils que donnent les outils sont des propositions : le client les relit avant de s’en servir et reste responsable de ce qu’il publie. Ces outils ne donnent pas de conseil juridique, médical ou comptable.
+${bandeComprise}
+
+${bandeBoutique} Dans cet article, « les petits monstres » désigne l’ensemble de ces outils, bulle d’aide comprise.
+
+Les petits monstres sont des outils automatisés, dont certains reposent sur un système d’intelligence artificielle, qui peuvent se tromper. Alex vérifie chaque proposition de modification avant sa mise en ligne (article 12). Les textes et les conseils que donnent les outils sont des propositions : le client les relit et reste responsable de ce qu’il publie. Ces outils ne donnent pas de conseil juridique, médical ou comptable.
 
 ## 16. Référencement
 
-Les bases du SEO sont comprises dans l’abonnement. Le travail mené chaque mois pour faire monter le site relève de l’extra ${seoSuivi.name} (article 6). Dans les deux cas, le référencement est une obligation de moyens. Les Minis Monstres appliquent les bonnes pratiques et suivent les résultats, sans garantir une position donnée sur Google.
+Le référencement, ou SEO, c’est le travail qui aide un site à être trouvé sur Google. Le référencement Google de base est compris dans la création du site. Les pages SEO (article 3), le ${packSeo.name} et la page ajoutée chaque semaine avec la formule ${evolution.name} renforcent la présence du site sur Google.
+
+Dans tous les cas, le référencement est une obligation de moyens : les Minis Monstres font de leur mieux et appliquent les bonnes pratiques, sans garantir une position donnée sur Google.
 
 ## 17. Parrainage et fidélité
 
-Chaque client dispose d’un lien et d’un code de parrainage dans son espace client. Quand le site d’un filleul est en ligne, le parrain et le filleul reçoivent chacun ${fidelite.parrainageMois} mois d’abonnement offert, crédité sur la facture suivante. Un deuxième site commandé par le même client bénéficie de ${fidelite.remiseSecondSite} % sur la création. Ces avantages ne sont pas convertibles en argent.
+Chaque client dispose d’un lien et d’un code de parrainage dans son espace client. Quand le site d’un filleul est en ligne, le parrain et le filleul reçoivent chacun ${moisOffert} sur leur formule, crédité sur la facture suivante. Un deuxième site commandé par le même client bénéficie de ${fidelite.remiseSecondSite} % de remise sur la création. Ces avantages ne sont pas convertibles en argent.
 
 ## 18. Responsabilité
 
-Les Minis Monstres mettent tout en œuvre pour que le site reste disponible et sauvegardé. Les Minis Monstres ne peuvent pas être tenus responsables d’une panne de l’hébergeur, d’un registre ou du service de paiement, ni des contenus fournis par le client. Un éventuel dédommagement ne peut pas dépasser les sommes versées au titre de l’abonnement au cours des 12 derniers mois, sauf si la loi en dispose autrement.
+Les Minis Monstres mettent tout en œuvre pour que le site reste disponible et sauvegardé. Les Minis Monstres ne peuvent pas être tenus responsables d’une panne de l’hébergeur (l’entreprise qui garde le site en ligne), d’un registre de noms de domaine ou du service de paiement, ni des contenus fournis par le client. Un éventuel dédommagement ne peut pas dépasser les sommes versées au titre de la formule au cours des 12 derniers mois, sauf si la loi en dispose autrement.
 
 ## 19. Médiation et litiges
 

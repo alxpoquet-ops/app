@@ -233,6 +233,7 @@ function aled08e_rs_publier($uid, $reseau, $texte, $image) {
  * ========================================================================= */
 add_action('wp_ajax_aled08e_rs', function () {
     $uid = get_current_user_id();
+    if (!aled08e_outils_on()) wp_send_json_error(['message' => 'Les outils sont en pause pour l’instant.'], 403);
     if (!$uid || !check_ajax_referer('aled08e_jl', '_aled08e_jl', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
     $P = wp_unslash($_POST);
     $op = sanitize_key((string) ($P['op'] ?? ''));
@@ -278,7 +279,7 @@ add_action('wp_ajax_aled08e_rs', function () {
 
 /* Départ vers Facebook ou LinkedIn, puis retour avec le code d'accord */
 add_action('template_redirect', function () {
-    if (empty($_GET['aled08e_rs']) || !is_user_logged_in()) return;
+    if (empty($_GET['aled08e_rs']) || !is_user_logged_in() || !aled08e_outils_on()) return;
     $uid = get_current_user_id();
     $reseau = sanitize_key(wp_unslash($_GET['aled08e_rs']));
     if (!in_array($reseau, ['facebook', 'linkedin'], true)) return;
@@ -340,6 +341,7 @@ add_action('template_redirect', function () {
  * ========================================================================= */
 add_action('wp_ajax_aled08e_publier', function () {
     $uid = get_current_user_id();
+    if (!aled08e_outils_on()) wp_send_json_error(['message' => 'Les outils sont en pause pour l’instant.'], 403);
     if (!$uid || !check_ajax_referer('aled08e_jl', '_aled08e_jl', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
     $reseau = sanitize_key(wp_unslash($_POST['reseau'] ?? ''));
     // le texte part tel quel vers le réseau (« <3 », « -50 % », un lien avec des accents) : on retire seulement ce qui n'est pas du texte

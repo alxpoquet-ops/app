@@ -99,7 +99,7 @@ function aled08e_admin_tableau() {
     echo '<p>Tout ce qui demande une action est ici. Les commandes arrivent depuis la page <a href="' . esc_url(home_url('/commander/')) . '" target="_blank">/commander/</a>, les demandes depuis l’espace client.</p>';
     if (!$stripe) echo '<div class="notice notice-warning inline"><p>Le paiement en ligne n’est pas activé : les commandes sont enregistrées « en attente de paiement » et vous envoyez le lien de paiement vous-même. <a href="' . esc_url(admin_url('admin.php?page=aled08-reglages')) . '">Activer Stripe</a>.</p></div>';
     elseif (aled08e_stripe_mode_test()) echo '<div class="notice notice-info inline"><p>Stripe est en <strong>mode test</strong> : aucun vrai paiement n’est encaissé. Remplacez la clé par la clé réelle (sk_live_…) dans les réglages quand tout est vérifié.</p></div>';
-    if (function_exists('aled08e_lia_cle') && aled08e_lia_cle() === '') echo '<div class="notice notice-warning inline"><p><strong>La petite bande n’est pas encore branchée.</strong> Les outils où elle écrit et ses modifications attendent votre clé Claude : c’est la seule chose à régler. <a class="button button-primary" href="' . esc_url(admin_url('admin.php?page=aled08-reglages#aled08e-lia-key')) . '">Entrer ma clé Claude</a></p></div>';
+    if (function_exists('aled08e_lia_cle') && aled08e_lia_cle() === '') echo '<div class="notice notice-warning inline"><p><strong>La petite bande n’est pas encore branchée.</strong> La bulle de Cerise et les retouches de Bricou attendent votre clé Claude : c’est la seule chose à régler. <a class="button button-primary" href="' . esc_url(admin_url('admin.php?page=aled08-reglages#aled08e-lia-key')) . '">Entrer ma clé Claude</a></p></div>';
     elseif (function_exists('aled08e_lia_sdk_present') && !aled08e_lia_sdk_present()) echo '<div class="notice notice-warning inline"><p><strong>Le kit Claude est absent.</strong> Installez l’extension « alexlia-sdk » pour que Cerise fonctionne.</p></div>';
     echo '<div class="aled08-cards">';
 
@@ -513,6 +513,7 @@ function aled08e_admin_reglages() {
     echo '</table>';
 
     echo '<h2>E-mails</h2><table class="form-table" role="presentation">';
+    echo '<tr><th><label for="aled08e-codes">Codes événement</label></th><td><textarea id="aled08e-codes" name="codes_evenement" rows="3" class="large-text code">' . esc_textarea(implode("\n", aled08e_codes_evenement())) . '</textarea><p class="description">Un code par ligne. Donnés sur une foire, un marché, un salon ou un événement professionnel : ' . (int) ((aled08e_data()['evenement']['remise'] ?? 20)) . ' % de remise sur la création du site. Laissez vide pour arrêter l’offre.</p></td></tr>';
     echo '<tr><th><label for="aled08e-to">Adresse de réception</label></th><td><input type="email" id="aled08e-to" name="form_to" class="regular-text" value="' . esc_attr(get_option('aled08_form_to', '')) . '" placeholder="' . esc_attr(defined('ALED08_FORM_TO') ? ALED08_FORM_TO : get_option('admin_email')) . '"><p class="description">Reçoit les commandes, les demandes de modification, les messages du formulaire de contact et les alertes Stripe. Vide : l’adresse du thème, sinon celle de WordPress.</p></td></tr>';
     echo '</table>';
 
@@ -565,6 +566,10 @@ add_action('admin_post_aled08e_reglages', function () {
     $wh = trim((string) ($P['stripe_webhook_secret'] ?? ''));
     if ($wh !== '' && preg_match('/^whsec_[A-Za-z0-9]+$/', $wh)) aled08e_option_set('aled08_stripe_webhook_secret', $wh);
     aled08e_option_set('aled08_stripe_footer', sanitize_text_field((string) ($P['stripe_footer'] ?? '')));
+    if (isset($P['codes_evenement'])) {
+        $codes = array_values(array_unique(array_filter(array_map('aled08e_clean_code', preg_split('/[\s,;]+/', (string) $P['codes_evenement'])))));
+        update_option('aled08_codes_evenement', implode("\n", $codes), false);
+    }
     $to = sanitize_email((string) ($P['form_to'] ?? ''));
     if ($to === '' || is_email($to)) update_option('aled08_form_to', $to);
     if (!empty($P['effacer_ovh'])) { foreach (['ak', 'as', 'ck'] as $k) delete_option('aled08_ovh_' . $k); delete_transient('aled08_ovh_delta'); }

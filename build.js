@@ -99,6 +99,9 @@ write('envoi.php', php);
 // 5) version anglaise : dist/en/ (textes dans src/i18n/parts/*.json, voir scripts/i18n.py)
 require('child_process').execFileSync('python3', [path.join(ROOT, 'scripts/i18n.py'), 'apply'], { stdio: 'inherit' });
 
+// 6) les mots techniques expliqués : un petit « ? » à leur premier usage sur chaque page (src/content/glossaire.js)
+require('./scripts/glossaire').appliquer(path.join(ROOT, 'dist'));
+
 // ---------------------------------------------------------------- rapport
 const warn = [];
 if (/en cours/.test(site.legal.siret + site.legal.mediator)) warn.push('Informations légales en attente dans src/config.js (SIRET, médiateur).');

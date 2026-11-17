@@ -2014,3 +2014,111 @@ div.tool { cursor: default; }
   .energie { grid-template-columns: 1fr; gap: 50px; margin-top: 30px; }
   .energie-jauge { max-width: 320px; width: 100%; margin: 0 auto; }
 }
+
+/* ===================== Offre simplifiée (17 novembre 2026) ===================== */
+/* La bande : huit monstres, quatre par ligne. Missions et personnalité sur les pages Équipe et Accueil. */
+.bande { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 960px) { .bande { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.bande-missions { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 4px; color: var(--text); font-size: .9rem; line-height: 1.4; }
+.bande-missions li::before { content: "•"; color: var(--c-d, var(--lilac-d)); margin-right: 6px; font-weight: 900; }
+.bande-perso { font-size: .86rem; color: var(--muted); line-height: 1.4; }
+
+/* L'offre en 30 secondes : trois étapes */
+.parcours { list-style: none; margin: 0 auto; padding: 0; max-width: 1040px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; counter-reset: none; }
+.parcours-etape { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 26px 22px 22px; border-radius: var(--radius-lg); background: var(--c); box-shadow: var(--shadow-sm); }
+.parcours-n { position: absolute; top: -16px; left: 22px; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--card); color: var(--c-dd); font-weight: 900; box-shadow: var(--shadow-sm); }
+.parcours-quoi { margin: 6px 0 0; font-weight: 900; font-size: 1.15rem; color: var(--ink); }
+.parcours-prix { margin: 0; display: flex; flex-direction: column; gap: 4px; color: var(--ink); font-weight: 700; }
+.parcours-prix > b { font-size: 2.4rem; line-height: 1; font-weight: 900; }
+.parcours-prix > small { color: var(--c-dd); font-weight: 800; }
+.parcours-prix span b { color: var(--c-dd); white-space: nowrap; }
+.parcours-d { margin: auto 0 0; color: var(--text); font-size: .95rem; line-height: 1.45; }
+@media (max-width: 860px) { .parcours { grid-template-columns: 1fr; gap: 26px; } }
+
+/* L'offre : le site, puis deux formules côte à côte */
+.offre-titre { margin: 0 0 6px; font-weight: 900; font-size: 1.25rem; color: var(--ink); }
+.offre-seo { display: flex; gap: 10px; align-items: flex-start; margin: 14px 0 0; padding: 12px 14px; border-radius: 16px; background: var(--card); color: var(--text); font-weight: 600; font-size: .92rem; line-height: 1.45; }
+.offre-seo .ico { flex: none; margin-top: 2px; color: var(--butter-dd); }
+.formules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 10px; }
+.formule { display: flex; flex-direction: column; padding: 16px; border-radius: 20px; background: var(--card); box-shadow: var(--shadow-sm); }
+.formule.is-evo { box-shadow: 0 0 0 2px var(--lilac-d) inset, var(--shadow-sm); }
+.formule-nom { margin: 0; font-weight: 900; color: var(--ink); font-size: 1.08rem; }
+.formule-prix { margin: 2px 0 8px; display: flex; align-items: baseline; gap: 4px; }
+.formule-prix b { font-size: 2rem; line-height: 1; font-weight: 900; color: var(--ink); }
+.formule-prix small { font-weight: 800; color: var(--muted); }
+.formule .plan-list { margin: 0 0 10px; }
+.formule .plan-list li { font-size: .9rem; color: var(--text); }
+.formule .plan-list .ico { background: var(--soft); }
+.formule-delai { display: flex; align-items: center; gap: 6px; margin: auto 0 0; font-size: .85rem; font-weight: 800; color: var(--c-dd); }
+.formule-delai .ico { width: 16px; height: 16px; flex: none; }
+@media (max-width: 1100px) { .offre-cols { grid-template-columns: 1fr; } .offre-plus { justify-self: center; } }
+@media (max-width: 560px) { .formules { grid-template-columns: 1fr; } }
+
+/* Les deux options, en cartes */
+.opt-cartes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; max-width: 940px; margin: 0 auto; }
+.opt-carte { display: flex; gap: 16px; align-items: flex-start; padding: 22px; border-radius: var(--radius-lg); background: var(--card); box-shadow: var(--shadow); }
+.opt-carte-art { width: 76px; flex: none; }
+.opt-carte-art .petit, .opt-carte-art svg { width: 100%; height: auto; }
+.opt-carte h3 { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 0 0 6px; }
+.opt-carte h3 b { color: var(--lilac-dd); white-space: nowrap; font-size: 1.15rem; }
+.opt-carte p { margin: 0 0 10px; color: var(--text); line-height: 1.5; }
+.opt-carte .plan-list { margin: 0; }
+.opt-note { text-align: center; margin: 18px 0 0; color: var(--muted); font-weight: 700; }
+@media (max-width: 760px) { .opt-cartes { grid-template-columns: 1fr; } }
+
+/* L'offre événement */
+.evenement { display: flex; align-items: center; gap: 28px; max-width: 940px; margin: 0 auto; padding: 28px; border-radius: var(--radius-lg); background: var(--pink); box-shadow: var(--shadow); }
+.evenement-art { width: 150px; flex: none; }
+.evenement-art svg { width: 100%; height: auto; }
+.evenement h2 { margin: 0 0 10px; color: var(--ink); }
+.evenement h2 em { font-style: normal; color: var(--pink-dd); white-space: nowrap; }
+.evenement p { color: var(--ink); line-height: 1.55; }
+.evenement .kicker { color: var(--pink-dd); }
+.evenement-comment { display: flex; gap: 8px; align-items: flex-start; font-weight: 700; }
+.evenement-comment .ico { flex: none; margin-top: 3px; color: var(--pink-dd); }
+@media (max-width: 720px) { .evenement { flex-direction: column; text-align: left; padding: 22px 18px; gap: 10px; } .evenement-art { width: 110px; } }
+
+/* Comment se passe une modification : six étapes */
+.modif-etapes { max-width: 940px; margin: 0 auto; padding: 24px 26px; border-radius: var(--radius-lg); background: var(--card); box-shadow: var(--shadow); }
+.modif-etapes h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; }
+.modif-etapes ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.modif-etapes li { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 10px; align-items: start; padding: 14px; border-radius: 18px; background: var(--soft); }
+.modif-n { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--mint); color: var(--mint-dd); font-weight: 900; font-size: .9rem; }
+.modif-ico { color: var(--lilac-dd); margin-top: 3px; }
+.modif-etapes li strong { display: block; color: var(--ink); line-height: 1.3; }
+.modif-etapes li small { display: block; margin-top: 2px; color: var(--muted); font-weight: 600; line-height: 1.4; }
+.modif-delai { display: flex; gap: 8px; align-items: flex-start; margin: 16px 0 0; color: var(--text); font-weight: 700; line-height: 1.5; }
+.modif-delai .ico { flex: none; margin-top: 3px; color: var(--mint-dd); }
+@media (max-width: 860px) { .modif-etapes ol { grid-template-columns: 1fr; } }
+
+/* Configurateur : les deux formules, la note SEO, le code événement */
+.b-formules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
+.b-card.b-formule { align-items: flex-start; text-align: left; padding: 16px; }
+.b-card.b-formule ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
+.b-card.b-formule li { display: flex; gap: 6px; align-items: flex-start; font-size: .86rem; color: var(--text); font-weight: 600; line-height: 1.35; }
+.b-card.b-formule li .ico { width: 15px; height: 15px; flex: none; margin-top: 2px; color: var(--c-dd); }
+@media (max-width: 560px) { .b-formules { grid-template-columns: 1fr; } }
+.b-note-seo { margin-top: 10px; }
+.b-code { margin-top: 16px; padding: 14px 16px; border-radius: 18px; background: var(--pink); }
+.b-code label { display: grid; gap: 2px; margin-bottom: 8px; }
+.b-code label strong { display: flex; align-items: center; gap: 8px; color: var(--ink); }
+.b-code label strong .ico { color: var(--pink-dd); }
+.b-code label small { color: var(--text); font-weight: 600; line-height: 1.4; }
+.b-code input { width: 100%; max-width: 280px; padding: 10px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--card); color: var(--ink); font: inherit; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.b-code input:focus { outline: 3px solid var(--pink-d); outline-offset: 1px; }
+.b-code-etat { margin: 6px 0 0; min-height: 1.2em; font-size: .88rem; font-weight: 700; color: var(--text); }
+.b-code-etat.is-ok { color: var(--mint-dd); }
+.b-code-etat.is-ko { color: var(--pink-dd); }
+
+/* Démo de l'espace client : modifications incluses, deux formules */
+.app-badge { display: inline-flex; align-items: center; gap: 8px; margin: 10px 0 0; padding: 8px 14px; border-radius: 999px; background: var(--mint); color: var(--mint-dd); font-weight: 800; font-size: .9rem; }
+.app-plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .app-plans { grid-template-columns: 1fr; } }
+
+/* Mots techniques : un petit « ? » au premier usage (scripts/glossaire.js), la bulle vient de .opt-i */
+.terme { white-space: nowrap; }
+.terme-i { width: 18px; height: 18px; margin-left: 4px; vertical-align: 1px; font: 900 .72rem/1 var(--font); }
+.opt-pop-lien { justify-self: start; font-weight: 800; font-size: .88rem; color: var(--lilac-dd); }
+.opt-pop small[hidden] { display: none; }
+.offre { max-width: 1120px; }
+.opt-carte h3 > span { min-width: 0; }

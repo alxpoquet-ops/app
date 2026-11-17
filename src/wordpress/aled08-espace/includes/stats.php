@@ -8,7 +8,8 @@ defined('ABSPATH') || exit;
 
 /* Tout client relié voit l'essentiel ; l'extra « Chiffres détaillés » (et la famille) voit tout le détail */
 function aled08e_stats_complet($uid) {
-    return aled08e_meta($uid, 'stats') === '1' || aled08e_famille($uid);
+    // offre du 17 novembre 2026 : Mirette, l'observatrice, montre tout le détail à chaque client
+    return true;
 }
 function aled08e_stats_acces($uid) { return (bool) $uid; }
 

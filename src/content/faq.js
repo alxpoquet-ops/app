@@ -1,118 +1,131 @@
 // Questions fréquentes, par rubrique. La page /faq/ les reprend toutes.
-// Règles : réponses courtes et honnêtes, aucun tiret long, aucun prix d'un concurrent nommé
-// (seule la fourchette du marché de config.marche est citée),
-// et pas de phrase de 9 mots ou plus reprise d'une autre réponse ou d'une page (scripts/check.js).
-// V2 (novembre 2026) : Alex fait chaque site. Ses automatisations forment une petite bande de petits monstres
-// (config.bande) : le gardien est compris, l'écrivain et le messager aident au quotidien, et chaque option au mois
-// en ajoute un. Les petites retouches et les outils sont compris pour un usage normal. On ne parle pas du compteur.
+// Règles : réponses courtes (2 à 4 phrases) et honnêtes, en mots de tous les jours. Chaque terme technique
+// (SEO, nom de domaine, hébergement, sauvegarde, maintenance, aperçu…) est expliqué la première fois qu'il apparaît
+// dans une réponse. Aucun tiret long, aucun point-virgule, aucun prix d'un concurrent nommé (seule la fourchette
+// du marché de config.marche est citée), et pas de phrase de 9 mots ou plus reprise d'une autre réponse ou d'une page
+// (scripts/check.js). Les phrases longues de config.js (pitch, desc, info, fait…) ne sont pas recopiées ici.
+// Offre du 17 novembre 2026 : le Site Internet Professionnel à prix fixe (jusqu'à creation.pages pages), deux options
+// payées une fois (Pack SEO et boutique en ligne), deux formules au mois sans engagement (Tranquillité et Évolution),
+// modifications incluses sans limite. La petite bande (config.bande) : les automatisations d'Alex, présentées
+// par leur prénom. On n'écrit jamais « IA » ici.
 const cfg = require('../config');
-const { forfaits, annuel, lissage, options, paiement, fidelite, delais, creation, aLaDemande, marche, bande } = cfg;
-// Réglages du compteur des outils (appelé « énergie » dans l'espace client) : on n'en cite que la plus petite recharge.
-const compteur = Object.values(cfg).find((v) => v && v.recharge && v.modif);
-const rechargeMin = compteur.recharge[0].prix;
-const opt = (id) => options.find((o) => o.id === id);
-const demande = (id) => aLaDemande.find((x) => x.id === id);
-const abo = forfaits[0]; // l'abonnement : il n'y en a qu'un
+const { forfaits, annuel, lissage, options, paiement, fidelite, creation, marche, bande, evenement, limites } = cfg;
+
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
-const liste = (l) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} et ${l[l.length - 1]}` : l.join(''));
+const liste = (l, mot = 'et') => (l.length > 1 ? `${l.slice(0, -1).join(', ')} ${mot} ${l[l.length - 1]}` : l.join(''));
 const durees = lissage.durees.join(' ou ');
 const D1 = lissage.durees[0];
 const LN = lissage.durees[lissage.durees.length - 1];
 const acompte = (prix) => Math.round(prix * paiement.acompte) / 100;
 // Mensualité du lissage, arrondie au centime inférieur (même règle que le serveur).
 const lisse = (prix, n = LN) => Math.floor(((prix - acompte(prix)) / n) * 100) / 100; // mensualité du reste, après l’acompte
-const annee = abo.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
+
+// Les deux formules au mois : id 'base' = Tranquillité, id 'evolution' = Évolution.
+const tranquille = forfaits.find((f) => f.id === 'base') || forfaits[0];
+const evolution = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1];
+const parAn = (f) => f.month * (12 - annuel.moisOfferts); // une formule payée à l'année
+const delaiT = tranquille.delai; // 72 heures (au plus)
+const delaiE = evolution.delai; // 12 à 24 heures (en moyenne)
+// Seule option payée une fois de config.options encore proposée : le Pack SEO. La boutique en ligne vient de creation.boutique.
+const packSeo = options.find((o) => o.id === 'packseo' && !o.retire) || { name: 'Pack SEO', price: { once: 0 }, pages: 0 };
 const boutique = creation.prix + creation.boutique;
-// L'intervention d'Alex comprise : une par trimestre depuis la V2. Les clients inscrits avant le 16 novembre 2026 gardent une par mois.
-const periode = abo.periode || 'mois';
-const interventions = abo.quota === 1 ? 'une intervention' : `${abo.quota} interventions`;
-const anciens = periode === 'trimestre' ? ' Inscrit avant le 16 novembre 2026 ? Vous gardez une intervention de ma part chaque mois.' : '';
-// La petite bande : on présente chaque petit monstre par son rôle, jamais par un prénom.
-const gardien = minus(bande.find((b) => b.id === 'gardien').role); // le gardien
-const bricoleur = minus(bande.find((b) => b.id === 'bricoleur').role); // le bricoleur, pour les petites modifications
-const NOMBRE = ['aucun', 'un', 'deux', 'trois', 'quatre', 'cinq'];
-const compris = bande.filter((b) => b.compris);
-const listeCompris = liste(compris.map((b) => minus(b.role))); // l’assistante, le gardien et le bricoleur
-const auQuotidien = liste(bande.filter((b) => b.outils).map((b) => minus(b.role))); // l’écrivain et le messager
-const parOption = liste(bande.filter((b) => b.option && opt(b.option)).map((b) => `${minus(b.role)} avec ${opt(b.option).name}`));
-const etoile = minus(bande.find((b) => b.option === 'seo').role); // l’étoile de Google
-const alexPlus = demande('alex'), urgent = demande('urgent'), article = demande('article');
-const listeDemande = (() => {
-  const l = aLaDemande.map((x) => `${minus(x.name)} à ${eur(x.prix)} €`);
-  return `${l.slice(0, -1).join(', ')} ou ${l[l.length - 1]}`;
-})();
-const extras = options.filter((o) => o.quand === 'mois');
-const prixExtra = (o) => `${o.name} à ${eur(o.price.month)} €`;
-const extrasTous = extras.filter((o) => !o.types).map(prixExtra).join(', ');
-const extrasBoutique = extras.filter((o) => o.types).map(prixExtra).join(' et ');
+const restantes = creation.pages - creation.exemplePages; // l'exemple : 8 pages utilisées, 12 pour Google
+const NOM_SITE = creation.nom || 'Site Internet Professionnel';
+const VERIF = '30 minutes'; // sans refus d'Alex dans ce délai, la modification préparée est validée
+const lieux = liste(evenement.lieux, 'ou');
+const moisOffert = fidelite.parrainageMois === 1 ? 'un mois offert' : `${fidelite.parrainageMois} mois offerts`;
+
+// La petite bande : chaque petit monstre par son prénom, avec son rôle (config.bande).
+const monstre = (id) => bande.find((b) => b.id === id) || { nom: '', role: '' };
+const cerise = monstre('support').nom;
+const bricou = monstre('bricoleur').nom;
+const plume = monstre('ecrivain').nom;
+const mirette = monstre('observateur').nom;
+const lumi = monstre('etoile').nom;
+const champi = monstre('vendeur').nom;
+// Ce que fait chacun, en quelques mots (écrit ici pour la FAQ, différent des phrases de config.js).
+const MISSION = {
+  support: 'accueille vos demandes',
+  bricoleur: 'prépare vos modifications',
+  ecrivain: 'aide à écrire vos textes',
+  organisateur: 'range vos pages',
+  gardien: 'protège votre site',
+  observateur: 'suit vos visites',
+  etoile: 'écrit les pages qui vous font trouver',
+  vendeur: 'tient votre boutique',
+};
+const mission = (b) => MISSION[b.id] || minus(b.court.replace(/\.$/, ''));
+const presente = (b) => `${b.nom} (${minus(b.role)}) ${mission(b)}`;
+const bandeComprise = liste(bande.filter((b) => b.compris).map(presente));
+const bandeBoutique = bande.filter((b) => b.option === 'boutique').map((b) => `${b.nom} (${minus(b.role)}) arrive avec la boutique en ligne.`).join(' ');
 
 module.exports = {
   creation: [
-    { q: 'Je n’ai ni textes ni photos, c’est un problème ?', a: 'Non. On écrit les textes ensemble à partir de ce que vous me racontez, et je choisis des photos libres de droits adaptées à votre activité. Vous les remplacerez par les vôtres quand vous voudrez.' },
-    { q: 'Quel site choisir ?', a: `Une seule page, si vous démarrez ou si quelques lignes suffisent pour vous présenter : c’est votre carte de visite sur internet. Plusieurs pages, si vous avez plusieurs services ou si vous voulez bien sortir sur Google : chaque page parle d’un sujet, et Google peut toutes les montrer. Le prix reste le même jusqu’à ${creation.pages} pages, alors choisissez selon ce que vous avez à dire. Ajoutez la boutique en ligne si vous voulez vendre vos produits sur internet. Vous hésitez ? Écrivez-nous, on vous conseille.` },
-    { q: 'Le prix de création est-il vraiment fixe ?', a: `Oui : ${eur(creation.prix)} € pour votre site, d’une seule page ou de plusieurs, jusqu’à ${creation.pages} pages. Une boutique en ligne ajoute ${eur(creation.boutique)} €. Il vous faut plus de place ? Chaque page au-delà de ${creation.pages} coûte ${eur(creation.pagePlus)} €, payée une fois. Tout est écrit dans le récapitulatif avant de commencer.` },
-    { q: 'Les pages pour Google sont-elles payantes ?', a: `Non. Les pages que je crée pour vous faire trouver sur Google sont comprises, et elles ne comptent pas dans vos ${creation.pages} pages. Ce sont par exemple des pages de conseils, de questions fréquentes ou une page par ville. Je ne crée pas des pages pour en créer : chacune est réfléchie, elle répond à une vraie recherche de vos clients, et elle est optimisée pour bien sortir.` },
-    { q: 'Quelle différence avec un site fait par un développeur ?', a: 'Pour un site vitrine ou une petite boutique, le résultat est comparable : moderne, rapide, soigné. C’est moi qui conçois et fais votre site, et ma petite bande d’automatisations prend en charge ce qui se répète. Je vais donc plus vite, et je coûte moins cher. Pour une application sur mesure ou un très gros catalogue, l’expertise d’un développeur reste irremplaçable, et je vous le dirai.' },
-    { q: 'Comment se passe le paiement de la création ?', a: `Vous réglez ${paiement.acompte} % en commandant. À la réception du site, vous réglez le reste d’un coup, ou en ${durees} fois sans frais. Votre abonnement commence ce jour-là, pas avant.` },
+    { q: `Que comprend le site à ${eur(creation.prix)} € ?`, a: `Le ${NOM_SITE} compte jusqu’à ${creation.pages} pages, avec un design fait pour vous, adapté au téléphone comme à l’ordinateur. Il a un formulaire de contact, une carte Google et le référencement Google de base, c’est-à-dire ce qui aide votre site à être trouvé sur Google. Le nom de domaine (l’adresse de votre site) et l’hébergement (l’endroit où il reste en ligne 24 h/24) sont offerts la première année. Je m’occupe de la mise en ligne, et je vous accompagne du début à la fin, avec les Minis Monstres.` },
+    { q: 'Que deviennent les pages que je n’utilise pas ?', a: `Elles ne sont pas perdues : elles peuvent devenir des pages SEO, écrites pour que votre site soit plus facile à trouver sur Google. Imaginons que votre activité tienne en ${creation.exemplePages} pages. Les ${restantes} pages restantes répondent alors aux recherches de vos clients et améliorent votre présence sur Google.` },
+    { q: 'Je n’ai ni textes ni photos, c’est un problème ?', a: `Non. Vous me racontez votre métier, et ${plume}, la rédactrice de ma petite bande, m’aide à en tirer des textes clairs. Pour les photos, je choisis des images que l’on a le droit d’utiliser, adaptées à votre activité. Vous mettrez les vôtres quand vous voudrez : c’est une modification, donc c’est inclus.` },
+    { q: 'Quelles options puis-je ajouter ?', a: `Deux, et aucune n’est obligatoire. Le ${packSeo.name}, à ${eur(packSeo.price.once)} €, ajoute ${packSeo.pages} pages SEO : chacune répond à une question que vos clients tapent sur Google, pour qu’ils vous trouvent plus facilement. La boutique en ligne, à ${eur(creation.boutique)} €, vous permet de vendre vos produits sur internet. Les deux se paient une seule fois.` },
+    { q: 'Quelle différence avec un site fait par un développeur ?', a: 'Pour un site vitrine ou une petite boutique, le résultat se vaut : moderne, rapide, soigné. Je conçois votre site moi-même, et ma petite bande d’automatisations se charge de ce qui se répète. Je vais donc plus vite, et je coûte moins cher. Pour une application sur mesure ou un très gros catalogue, un développeur reste le bon choix, et je vous le dirai.' },
+    { q: 'Comment se passe le paiement de la création ?', a: `Vous réglez ${paiement.acompte} % en commandant. Le reste se paie quand vous recevez votre site, d’un coup ou en ${durees} fois sans frais. Votre formule au mois démarre ce jour-là, pas avant.` },
   ],
   commande: [
-    { q: 'Comment ça se passe quand je commande ?', a: 'Vous composez votre site, puis vous cliquez sur Commander. Vous relisez le récapitulatif, vous donnez vos coordonnées et vous payez en ligne. Un e-mail de confirmation arrive aussitôt, avec une référence de commande. Je vous écris ensuite pour démarrer.' },
-    { q: 'Que paie-je aujourd’hui ?', a: `Seulement ${paiement.acompte} % du site, et les options payées une fois s’il y en a. L’abonnement ne démarre qu’à la réception du site, avec le reste à payer en une fois ou en ${durees} fois sans frais. Le montant exact s’affiche sur le bouton avant de valider.` },
-    { q: 'Puis-je payer le site en plusieurs fois ?', a: `Oui. Après l’acompte de ${paiement.acompte} %, le reste se paie à la réception, en ${durees} fois sans frais. Pour un site à ${eur(creation.prix)} € : ${eur(acompte(creation.prix))} € à la commande, puis ${eur(lisse(creation.prix, D1))} € par mois pendant ${D1} mois, ou ${eur(lisse(creation.prix))} € pendant ${LN} mois. L’abonnement se paie alors au mois. Rien de plus quand c’est fini.` },
-    { q: 'Suis-je engagé ?', a: `Non. L’abonnement s’arrête quand vous le décidez, à la fin de la période payée. Seule exception : si vous payez le reste du site en ${durees} fois, vous vous engagez le temps du paiement. Si vous partez avant, ce qui reste du prix du site est dû en une fois.` },
-    { q: 'Puis-je ajouter ou retirer un extra plus tard ?', a: 'Oui, quand vous voulez, depuis votre espace client. Le nouveau prix démarre à la période suivante. Les options de création, elles, se paient une seule fois : pour en ajouter une après coup, écrivez-moi.' },
-    { q: 'Comment sont faites les factures ?', a: 'À chaque paiement, Stripe émet la facture et vous l’envoie par e-mail. Vous la retrouvez aussi dans votre espace client. La TVA n’y figure pas : l’entreprise est en franchise (article 293 B du CGI).' },
-    { q: 'Que se passe-t-il si j’arrête ?', a: 'Vous me prévenez, et l’abonnement se termine à la fin de la période en cours. Vous repartez avec votre nom de domaine et une copie complète de votre site. L’hébergement chez moi reste actif 30 jours, le temps de déménager.' },
-    { q: 'Et si je me rétracte ?', a: 'Vous avez 14 jours, par simple e-mail. Comme vous me demandez de commencer tout de suite, vous payez seulement le travail déjà fait, au prorata. Le nom de domaine déjà réservé reste à votre charge : il est à votre nom, pour un an.' },
+    { q: 'Comment ça se passe quand je commande ?', a: 'Vous choisissez vos options et votre formule, puis vous cliquez sur Commander. Vous relisez le récapitulatif, vous donnez vos coordonnées et, si vous en avez un, votre code événement ou de parrainage. Vous payez en ligne, et un e-mail de confirmation arrive aussitôt avec votre référence de commande. Je vous écris ensuite pour démarrer.' },
+    { q: 'Que paie-je aujourd’hui ?', a: `Seulement ${paiement.acompte} % du prix du site, boutique en ligne comprise si vous l’avez choisie, et le ${packSeo.name} en entier si vous le prenez. Le reste se règle à la réception du site, et votre formule ne démarre qu’à ce moment-là. Le montant exact s’affiche sur le bouton avant de valider.` },
+    { q: 'Puis-je payer le site en plusieurs fois ?', a: `Oui. Après l’acompte de ${paiement.acompte} %, le reste se paie à la réception, en ${durees} fois sans frais. Pour un site à ${eur(creation.prix)} € : ${eur(acompte(creation.prix))} € à la commande, puis ${eur(lisse(creation.prix, D1))} € par mois pendant ${D1} mois, ou ${eur(lisse(creation.prix))} € pendant ${LN} mois. Votre formule se règle alors au mois, et plus rien ne s’ajoute quand c’est fini.` },
+    { q: 'Suis-je engagé ?', a: `Non. Votre formule s’arrête quand vous le décidez, à la fin de la période déjà payée. Seule exception : si vous payez le site en ${durees} fois, vous vous engagez le temps de ce paiement. En cas de départ avant la fin, le reste du prix du site se règle d’un coup.` },
+    { q: 'Puis-je changer de formule ou ajouter une option plus tard ?', a: `Oui. Vous passez de ${tranquille.name} à ${evolution.name}, ou l’inverse, depuis votre espace client, et le nouveau prix démarre à la période suivante. Pour ajouter le ${packSeo.name} ou la boutique en ligne après la mise en ligne, écrivez-moi : ils se paient une seule fois.` },
+    { q: 'Comment sont faites les factures ?', a: 'À chaque paiement, Stripe, le service de paiement en ligne, émet la facture et vous l’envoie par e-mail. Vous la retrouvez aussi dans votre espace client. La TVA n’y figure pas, car l’entreprise est en franchise de TVA (article 293 B du CGI).' },
+    { q: 'Que se passe-t-il si j’arrête ?', a: 'Vous me prévenez, et votre formule se termine à la fin de la période en cours. Vous gardez votre nom de domaine, c’est-à-dire l’adresse de votre site, et je vous remets une copie complète du site. Je le laisse en ligne encore 30 jours, le temps de déménager.' },
+    { q: 'Et si je me rétracte ?', a: 'Vous avez 14 jours, par simple e-mail. Comme vous me demandez de commencer tout de suite, vous payez seulement le travail déjà fait, au prorata. Le nom de domaine déjà réservé (l’adresse de votre site) reste à votre nom pour un an, et à votre charge.' },
   ],
   forfaits: [
-    { q: 'Combien ça coûte, en tout ?', a: `${eur(creation.prix)} € une fois pour le site, puis ${eur(abo.month)} € par mois pour l’abonnement. Le prix du site ne change pas, d’une page à ${creation.pages} pages. La première année revient donc à ${eur(creation.prix + 12 * abo.month)} €, ou à ${eur(creation.prix + annee)} € si vous payez l’abonnement à l’année.` },
-    { q: 'Que comprend l’abonnement ?', a: `Tout ce qui fait tourner votre site : le nom de domaine, à votre nom et renouvelé chaque année, l’hébergement, les mises à jour, les sauvegardes et le suivi du site. Il y a aussi le support, avec une réponse sous ${delais.reponse}, et les bases du SEO. ${gardien.charAt(0).toUpperCase() + gardien.slice(1)}, un petit monstre de ma bande, veille sur votre site. Vous profitez aussi des petites retouches et des outils de la bande, compris tant que l’usage reste normal. S’y ajoute ${interventions} de ma part par ${periode}.${anciens}` },
-    { q: 'L’abonnement est-il obligatoire ?', a: 'Oui, tant que votre site est en ligne chez moi : c’est lui qui paie le nom de domaine, l’hébergement et l’entretien. Mais il est sans engagement. Vous l’arrêtez quand vous voulez, et vous gardez votre nom de domaine et une copie de votre site.' },
-    { q: 'Qui sont les petits monstres ?', a: `Ce sont mes automatisations. Je les ai programmées une par une, puis dessinées en petits monstres. Chacun s’occupe d’une tâche répétitive mais utile, et il travaille seul. L’abonnement de base en compte ${NOMBRE[compris.length] || compris.length} : ${listeCompris}. ${gardien.charAt(0).toUpperCase() + gardien.slice(1)} s’occupe des mises à jour, des sauvegardes, de la sécurité et de la surveillance, et ${bricoleur} de vos petites modifications. Dans votre espace client, ${auQuotidien} vous donnent un coup de main au quotidien. Chaque option au mois en ajoute un autre : ${parOption}. Je vérifie toujours ce qu’ils font.` },
-    { q: 'Et si j’ai besoin de plus de modifications ?', a: `Les petites retouches passent par la bande, et vous pouvez en reprendre si vous dépassez un usage normal. Vous voulez que je repasse avant le prochain ${periode} ? Commandez ${minus(alexPlus.name)} depuis votre espace client, pour ${eur(alexPlus.prix)} €. Elle s’ajoute à votre facture suivante.` },
-    { q: 'Une retouche qui échoue est-elle comptée ?', a: 'Non. Elle ne compte pas si la mise en ligne échoue, si vous refusez l’aperçu ou si la demande me revient. C’est pareil quand vous annulez une demande dans les 24 heures qui suivent son envoi, jusqu’à trois fois par mois.' },
-    { q: 'Qui fait mes modifications ?', a: `C’est vous qui choisissez, à chaque demande. Pour une petite retouche, ${bricoleur}, un petit monstre de la bande, prépare le changement en quelques minutes et vous en montre l’aperçu : rien ne bouge sur votre site sans votre accord. Les plus grandes, je les fais à la main : ${interventions} par ${periode} est comprise, faite sous ${delais.reponse}, et je la vérifie moi-même. Je garde aussi un œil sur le travail de la bande.` },
-    { q: 'Quels extras puis-je ajouter à l’abonnement ?', a: `Ils se paient au mois, et vous les ajoutez ou les retirez quand vous voulez depuis votre espace client : ${extrasTous}. Pour les boutiques en ligne, il y a aussi ${extrasBoutique}. Chacun ajoute un petit monstre à votre bande. Aucun n’est obligatoire.` },
-    { q: 'Et les extras à la demande ?', a: `Ils se paient une fois, seulement quand vous en avez besoin : ${listeDemande}. Vous les commandez vous-même depuis votre espace client, et le montant est ajouté à votre prochaine facture. Pas de commande, rien à payer.` },
-    { q: 'Et pour une boutique en ligne ?', a: `C’est ${eur(creation.boutique)} € de plus à la création, soit ${eur(boutique)} € une fois. L’abonnement reste à ${eur(abo.month)} € par mois. La boutique comprend le paiement par carte, le suivi des commandes et jusqu’à 20 produits que j’ajoute pour vous.` },
-    { q: 'Au mois ou à l’année ?', a: `Comme vous voulez. Au mois, l’abonnement coûte ${eur(abo.month)} €. À l’année, il coûte ${eur(annee)} € : vous payez dix mois d’un coup et ${annuel.moisOfferts} sont offerts. Vous pouvez passer de l’un à l’autre au renouvellement.` },
-    { q: 'Qu’est-ce qui compte comme une modification ?', a: `Un changement précis sur une page qui existe : un horaire, un prix, une photo, un texte, un produit. Une demande, une modification. Mon intervention du ${periode} ne se reporte pas si vous ne l’utilisez pas. Une nouvelle page coûte 10 €, à commander depuis votre espace client. Une nouvelle fonction, c’est un petit devis.` },
-    { q: `Pourquoi est-ce ${marche.fois} fois moins cher qu’un site fait à la main ?`, a: `Parce que j’ai passé beaucoup de temps à programmer ma petite bande, des automatisations qui prennent en charge tout ce qui se répète. J’ai aussi des accès directs chez des hébergeurs français. Pas de magie là-dedans, juste de l’optimisation. Un site vitrine fait à la main par une agence ou un indépendant coûte en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Chez moi, c’est ${eur(creation.prix)} €. Vous ne payez pas des semaines de travail, et votre site est quand même conçu, relu et testé par moi.` },
-    { q: 'Y a-t-il des frais cachés ?', a: 'Non. Le récapitulatif indique tout : la création, l’abonnement, les options et les extras choisis. Les extras à la demande, eux, ne se paient que si vous les commandez. Rien d’autre.' },
+    { q: 'Combien ça coûte, en tout ?', a: `${eur(creation.prix)} € une fois pour le site, puis ${eur(tranquille.month)} € ou ${eur(evolution.month)} € par mois selon la formule choisie. Avec ${tranquille.name}, la première année revient à ${eur(creation.prix + 12 * tranquille.month)} €, ou à ${eur(creation.prix + parAn(tranquille))} € si vous payez la formule à l’année. Les options, si vous en prenez, se paient une seule fois.` },
+    { q: 'Quelle formule choisir ?', a: `Prenez ${tranquille.name}, à ${eur(tranquille.month)} € par mois, si vous voulez un site entretenu et à jour sans y penser. Choisissez ${evolution.name}, à ${eur(evolution.month)} € par mois, si vous voulez que votre site grandisse : vos demandes passent en premier, et une nouvelle page pour Google s’ajoute chaque semaine. Les deux sont sans engagement, et vous pouvez changer en cours de route.` },
+    { q: `Que comprend la formule ${tranquille.name} ?`, a: `Tout ce qui garde votre site en ligne et à jour. Elle comprend l’hébergement (l’endroit où votre site reste accessible jour et nuit), le nom de domaine (son adresse), les sauvegardes (des copies de sécurité), la sécurité, la surveillance et la maintenance, c’est-à-dire les vérifications techniques régulières qui gardent le site en état de marche. Vos modifications sont incluses, sans limite, et en ligne en ${delaiT} au plus.` },
+    { q: `Et la formule ${evolution.name} ?`, a: `Elle reprend tout ce que comprend ${tranquille.name}. En plus, vos demandes de modification passent en priorité, avec un délai moyen de ${delaiE} au lieu de ${delaiT} au plus. Chaque semaine, une page SEO s’ajoute aussi à votre site : une page de plus pour être trouvé sur Google.` },
+    { q: 'Les modifications sont-elles limitées ?', a: `Non. Avec les deux formules, vous demandez autant de modifications que vous voulez. Ajouter un texte ou des photos, changer un horaire, ajouter une page tant que le site reste dans ses ${creation.pages} pages : tout cela compte comme une modification. Seules une refonte complète ou une fonction nouvelle, comme une prise de rendez-vous, se font sur devis.` },
+    { q: 'Le nom de domaine et l’hébergement sont-ils compris ?', a: 'Oui. Le nom de domaine, c’est l’adresse de votre site, comme votre-nom.fr. L’hébergement, c’est l’endroit où votre site est rangé pour rester visible 24 h/24. Les deux sont offerts la première année avec la création, puis votre formule les prend en charge, sans supplément.' },
+    { q: 'Au mois ou à l’année ?', a: `Comme vous préférez. À l’année, vous payez ${12 - annuel.moisOfferts} mois et ${annuel.moisOfferts} sont offerts : ${eur(parAn(tranquille))} € pour ${tranquille.name}, ${eur(parAn(evolution))} € pour ${evolution.name}. Vous pouvez passer de l’un à l’autre au renouvellement.` },
+    { q: 'Comment profiter de l’offre événement ?', a: `Si l’on se rencontre sur ${lieux}, vous recevez un code événement. Tapez-le au moment de commander : il retire ${evenement.remise} % sur la création de votre site et sur vos options, qui se paient une fois. Le prix des formules au mois, lui, ne change pas.` },
+    { q: 'Et pour une boutique en ligne ?', a: `C’est une option à ${eur(creation.boutique)} €, payée une fois, soit ${eur(boutique)} € avec le site. Vous avez un catalogue de vos produits, un panier, le paiement en ligne, la gestion des commandes et des e-mails envoyés tout seuls à vos clients. ${champi}, le vendeur de ma petite bande, s’en occupe avec vous. Votre formule au mois reste la même.` },
+    { q: `Pourquoi est-ce ${marche.fois} fois moins cher qu’un site fait à la main ?`, a: `Parce que j’ai passé beaucoup de temps à programmer ma petite bande : des automatisations qui font tout ce qui se répète. Fait à la main par une agence ou un indépendant, un site vitrine coûte souvent entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Chez moi, c’est ${eur(creation.prix)} €, et votre site est quand même conçu, relu et testé par moi. Pas de magie, juste de l’organisation.` },
+    { q: 'Y a-t-il des frais cachés ?', a: 'Non. Le récapitulatif de commande montre tout : le site, vos options et votre formule. Un devis n’arrive que pour un gros chantier, comme refaire tout le site, et vous l’acceptez ou non avant que je commence.' },
   ],
   espace: [
-    { q: 'Comment demander une modification ?', a: 'Depuis votre espace client : vous écrivez ce que vous voulez changer, avec une photo si besoin. Vous choisissez ensuite : une petite retouche par la bande, ou une modification faite à la main par moi. Une question en chemin ? La bulle en bas de l’écran est là pour ça.' },
-    { q: 'En combien de temps est-ce fait ?', a: `Une petite retouche prend quelques minutes : vous validez l’aperçu et c’est en ligne. À la main, je vous réponds sous ${delais.reponse} en jours ouvrés, et une petite modification est en général faite dans ce délai. Je vous préviens dès que c’est fait. Pressé ? Avec l’extra « ${urgent.name} », à ${eur(urgent.prix)} €, votre demande passe en priorité.` },
+    { q: 'Comment se passe une modification ?', a: `Vous faites votre demande dans votre espace client, et ${bricou}, le constructeur de ma petite bande, prépare la modification. Un aperçu est créé, c’est-à-dire une prévisualisation de la page modifiée, et vous pouvez le regarder. Je reçois ensuite la proposition et je la vérifie : sans refus de ma part sous ${VERIF}, elle est validée puis mise en ligne. Si ${bricou} ne peut pas la faire, je m’en occupe à la main.` },
+    { q: 'En combien de temps est-ce fait ?', a: `Avec ${tranquille.name}, votre modification est en ligne en ${delaiT} au plus. Avec ${evolution.name}, vos demandes passent avant les autres : comptez entre ${delaiE.replace(' à ', ' et ')} en moyenne. Je vous préviens dès que c’est en ligne.` },
+    { q: 'Puis-je ajouter une page à mon site ?', a: `Oui, c’est une modification comme une autre : vous la demandez depuis votre espace client, sans rien payer de plus. La seule limite, ce sont les ${creation.pages} pages de votre site.` },
     { q: 'Comment est créé mon compte ?', a: 'Tout seul, dès que votre commande est validée. Vous pouvez aussi le créer avant, sans rien commander, sur la page Mon espace. Dans les deux cas, vous recevez un e-mail avec un lien pour choisir votre mot de passe. Si un compte existait déjà avec votre adresse, la commande y est simplement rattachée.' },
-    { q: 'Mon compte peut-il être supprimé ?', a: 'Seulement s’il ne sert plus : aucune connexion depuis 12 mois et aucun abonnement actif. Je vous préviens par e-mail 30 jours avant, et une simple connexion annule tout. Tant que votre abonnement tourne, votre compte reste.' },
-    { q: 'L’espace client est-il payant ?', a: `Non, il fait partie de l’abonnement : demandes de modification, tableau de bord, parrainage et factures. Les outils de ${auQuotidien} y sont compris aussi, pour un usage normal. C’est également là que vous commandez les extras à la demande.` },
-    { q: 'Que se passe-t-il si j’utilise beaucoup les outils ?', a: `Pour un usage normal, rien du tout : les outils et les petites retouches sont compris. Si vous en faites beaucoup plus, vous pouvez en reprendre depuis votre espace client, à partir de ${eur(rechargeMin)} €, ajouté à votre prochaine facture. Ce que vous reprenez reste disponible tant que vous ne l’avez pas utilisé.` },
+    { q: 'Mon compte peut-il être supprimé ?', a: 'Seulement s’il ne sert plus : aucune connexion depuis 12 mois et aucune formule active. Je vous préviens par e-mail 30 jours avant, et une simple connexion annule tout. Tant que votre formule tourne, votre compte reste.' },
+    { q: 'L’espace client est-il payant ?', a: `Non, il est compris avec votre formule. Vous y demandez vos modifications, vous suivez leur avancement et vous retrouvez vos factures et votre lien de parrainage. ${cerise}, la secrétaire de ma petite bande, vous y répond aussi dans la bulle en bas de l’écran, jusqu’à ${limites.bulleJour} messages par jour.` },
   ],
   seo: [
-    { q: 'En combien de temps serai-je sur Google ?', a: 'Votre site est déclaré à Google dès la mise en ligne. On le trouve vite sur votre nom. Pour des recherches plus disputées, comptez quelques semaines à quelques mois.' },
-    { q: 'Le SEO est-il compris dans l’abonnement ?', a: `Les bases, oui : Google sait lire et comprendre votre site. Pour le faire remonter mois après mois, il y a l’extra ${opt('seo').name}, à ${eur(opt('seo').price.month)} € par mois : ${etoile} rejoint alors votre bande. Vous le prenez quand vous voulez, et vous l’arrêtez de la même façon.` },
-    { q: 'Pouvez-vous me garantir la première place ?', a: `Non, et personne ne le peut honnêtement. Je mets toutes les chances de votre côté. Avec l’extra ${opt('seo').name}, je vous montre chaque mois où vous en êtes.` },
-    { q: 'C’est quoi, un contenu optimisé ?', a: `Un article ou une page qui répond à une vraie question de vos clients, avec des titres clairs et des liens vers vos services. La bande en prépare une première version, et je la relis avant de la publier. Vous pouvez en commander un à l’unité avec l’extra « ${article.name} », à ${eur(article.prix)} €.` },
-    { q: 'J’ai déjà un site. Pouvez-vous l’améliorer ?', a: 'Oui. Je regarde votre site et je vous dis ce qui freine votre visibilité. Écrivez-moi pour un devis.' },
+    { q: 'C’est quoi, le SEO ?', a: `C’est tout ce qui aide votre site à être trouvé plus facilement sur Google. Des titres clairs, des pages qui répondent aux questions de vos clients, un site rapide : Google aime tout cela. Votre site en a les bases dès sa création, et ${lumi}, l’étoile de Google de ma petite bande, prépare vos pages SEO.` },
+    { q: 'En combien de temps serai-je sur Google ?', a: 'Je déclare votre site à Google dès sa mise en ligne, et on le trouve vite en tapant votre nom. Pour des recherches plus disputées, comme votre métier et votre ville, comptez quelques semaines à quelques mois.' },
+    { q: 'Comment avoir plus de pages pour Google ?', a: `Il y a trois façons, qui s’additionnent. Les pages que vous n’utilisez pas parmi les ${creation.pages} de votre site deviennent des pages SEO, faites pour vous rendre visible sur Google. Le ${packSeo.name} en ajoute ${packSeo.pages} pour ${eur(packSeo.price.once)} €, payés une fois, et la formule ${evolution.name} en ajoute une chaque semaine.` },
+    { q: 'C’est quoi, une page SEO ?', a: `Une page qui répond à une recherche précise de vos clients sur Google, comme un service dans votre ville ou une question qu’on vous pose souvent. Elle a un titre clair et renvoie vers vos services. ${lumi} la prépare, et je la relis avant sa mise en ligne.` },
+    { q: 'Pouvez-vous me garantir la première place ?', a: `Non, et personne ne le peut honnêtement. Je mets toutes les chances de votre côté, et ${mirette}, l’observatrice de ma petite bande, suit les visites de votre site pour repérer ce qui peut être amélioré.` },
+    { q: 'J’ai déjà un site. Pouvez-vous l’améliorer ?', a: `Je peux le regarder et vous dire ce qui freine votre visibilité sur Google. Ensuite, vous choisissez : un devis pour l’améliorer, ou un nouveau site à ${eur(creation.prix)} € fait par mes soins. Écrivez-moi pour en parler.` },
   ],
   methode: [
+    { q: 'Qui sont les petits monstres ?', a: `Ce sont mes automatisations, des programmes que j’ai écrits un par un puis dessinés en petits monstres. ${bandeComprise}.${bandeBoutique ? ` ${bandeBoutique}` : ''} Je vérifie tout ce qu’ils font.` },
+    { q: 'Les petits monstres font-ils mon site ?', a: `Non. C’est moi qui conçois votre site et qui fais les choix. ${bricou} m’aide à le construire, et le reste de la bande s’occupe de ce qui se répète autour. La relecture et les vérifications, c’est moi.` },
+    { q: 'Les petits monstres peuvent-ils se tromper ?', a: 'Oui, comme tout programme automatique. C’est pour ça que je reçois chaque proposition et que je la vérifie avant sa mise en ligne. Ils vont vite, mais c’est moi qui garde la main.' },
     { q: 'Mes clients verront-ils que des automatisations ont servi ?', a: 'Non, rien ne le signale sur votre site. Ils voient un site propre et rapide. De mon côté, je préfère vous dire comment je travaille : vous savez ce que vous achetez.' },
-    { q: 'Les petits monstres peuvent-ils se tromper ?', a: 'Oui, comme tout outil automatique. C’est pour ça que je vérifie leur travail, et que rien n’est publié sans votre accord. Ils vont vite, mais c’est moi qui valide.' },
-    { q: 'Les petits monstres font-ils mon site ?', a: 'Non. C’est moi qui conçois et qui fais votre site, page par page. La bande s’occupe de ce qui se répète autour : les mises à jour, les sauvegardes, la surveillance, les petites retouches. Les choix, la relecture et les vérifications, c’est moi.' },
   ],
   comparatif: [
-    { q: 'Pourquoi êtes-vous moins cher qu’une agence ?', a: 'Parce que je travaille autrement. Ma petite bande d’automatisations se charge des tâches répétitives, et je traite directement avec des hébergeurs français, sans intermédiaire. Je n’ai ni local à payer ni équipe à faire tourner. Je garde les projets simples, que je sais bien faire. Pour un gros projet, une agence reste le bon choix.' },
+    { q: 'Pourquoi êtes-vous moins cher qu’une agence ?', a: 'Parce que je travaille autrement. Ma petite bande d’automatisations se charge des tâches répétitives, et je traite en direct avec des hébergeurs français, les entreprises qui gardent les sites en ligne. Je n’ai ni local à payer ni équipe à faire tourner. Pour un très gros projet, une agence reste le bon choix.' },
     { q: 'Quelle différence avec une plateforme à faire soi-même ?', a: 'Qui fait le travail. Sur une plateforme, c’est vous qui construisez le site, le mettez à jour et écrivez pour Google, souvent le soir. Chez moi, vous décrivez ce que vous voulez et je le fais. Vous n’avez aucun outil à apprendre.' },
-    { q: 'Et par rapport à un freelance ?', a: `Un freelance crée votre site, puis chaque changement se négocie quand il est disponible. Mon abonnement prend la suite : hébergement, sauvegardes, mises à jour, la bande et ses outils, ${interventions} de ma part par ${periode}, tout est compris. Vous connaissez le prix à l’avance.` },
-    { q: 'Si je pars, puis-je récupérer mon site ?', a: 'Oui. Le nom de domaine est à vous et se transfère où vous voulez. Je vous remets aussi les fichiers du site, pour le faire héberger ailleurs. Rien ne vous retient.' },
+    { q: 'Et par rapport à un freelance ?', a: 'Un freelance crée votre site, puis chaque changement se négocie quand il est disponible. Avec mes formules, je garde votre site en ligne, protégé et à jour, et vos modifications sont incluses, sans limite. Vous connaissez le prix à l’avance.' },
+    { q: 'Si je pars, puis-je récupérer mon site ?', a: 'Oui. Votre nom de domaine, l’adresse de votre site, est à votre nom et se transfère où vous voulez. Je vous remets aussi les fichiers du site pour le faire héberger ailleurs, c’est-à-dire le mettre en ligne chez un autre prestataire. Rien ne vous retient.' },
   ],
   fidelite: [
-    { q: 'Comment mon filleul profite-t-il du parrainage ?', a: `Il passe par votre lien de parrainage, ou donne votre code dans sa commande. Quand son site est en ligne, vous recevez chacun ${fidelite.parrainageMois} mois d’abonnement offert.` },
+    { q: 'Comment mon filleul profite-t-il du parrainage ?', a: `Il passe par votre lien de parrainage, ou il donne votre code dans sa commande. Quand son site est en ligne, vous recevez chacun ${moisOffert} sur votre formule.` },
     { q: 'Où trouver mon lien et mon code ?', a: 'Dans votre espace client, onglet Parrainage. Le lien se partage par message ou sur vos réseaux. Le code se tape dans le formulaire de commande. Les deux donnent le même avantage.' },
     { q: 'Quand le mois offert est-il appliqué ?', a: 'Dès que le site de votre filleul est en ligne. Il est déduit de votre facture suivante, et de la sienne. Il ne peut pas être échangé contre de l’argent.' },
     { q: 'Les avantages se cumulent-ils ?', a: 'Oui : vous pouvez parrainer plusieurs personnes. Chaque filleul en ligne vous apporte un mois de plus.' },
+    { q: 'Y a-t-il une remise pour un deuxième site ?', a: `Oui. La création de votre deuxième site coûte ${fidelite.remiseSecondSite} % de moins. C’est ma façon de remercier les clients qui reviennent.` },
   ],
 };

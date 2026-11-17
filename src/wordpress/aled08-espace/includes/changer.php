@@ -17,6 +17,7 @@ function aled08e_changer_options_possibles($uid) {
     $out = [];
     foreach (aled08e_data()['options'] as $o) {
         if ((float) $o['month'] <= 0) continue; // les options payées une fois se demandent par message
+        if (!empty($o['retire']) && aled08e_meta($uid, $o['id']) !== '1') continue; // ancien extra : seulement pour le retirer
         if (!empty($o['types']) && !in_array($type, (array) $o['types'], true)) continue;
         $out[] = $o;
     }
@@ -79,7 +80,7 @@ add_action('template_redirect', function () {
     $uid = get_current_user_id();
     $u = wp_get_current_user();
     $forfait = sanitize_key(wp_unslash($_POST['forfait'] ?? ''));
-    if (!aled08e_cmd_forfait_existe($forfait)) $forfait = aled08e_forfait('')['id']; // un seul abonnement : c'est toujours lui
+    if (!aled08e_cmd_forfait_existe($forfait)) $forfait = aled08e_forfait(aled08e_meta($uid, 'forfait'))['id']; // formule inconnue : on garde la sienne
     $possibles = array_column(aled08e_changer_options_possibles($uid), 'id');
     $voulues = array_values(array_intersect($possibles, array_map('sanitize_key', (array) wp_unslash($_POST['options'] ?? []))));
     $avant = aled08e_forfait(aled08e_meta($uid, 'forfait'))['name'];
@@ -111,16 +112,26 @@ function aled08e_info_btn($id, $nom, $texte) {
     return '<button type="button" class="opt-i" data-titre="' . esc_attr($nom) . '" data-info="' . esc_attr($texte) . '"' . $img . ' aria-label="' . esc_attr('Voir ce que ça ajoute : ' . $nom) . '">' . aled08e_icon('info') . '</button>';
 }
 
-/* Le formulaire, dans « Abonnement et factures » : les extras à ajouter ou retirer */
+/* Le formulaire, dans « Abonnement et factures » : changer de formule (Tranquillité ou Évolution), et retirer un ancien extra */
 function aled08e_changer_html($uid) {
     $opts = aled08e_changer_options_possibles($uid);
-    if (!$opts) return '';
+    $forfaits = (array) aled08e_data()['forfaits'];
+    if (!$opts && count($forfaits) < 2) return '';
     $annuel = aled08e_meta($uid, 'paiement') === 'annee';
     $mult = $annuel ? max(1, 12 - (int) aled08e_data()['moisOfferts']) : 1;
-    $h = '<details class="esp-changer"><summary>' . aled08e_icon('refresh-cw') . '<span>Ajouter ou retirer des extras</span></summary>'
+    $actuel = aled08e_forfait(aled08e_meta($uid, 'forfait'))['id'];
+    $h = '<details class="esp-changer"><summary>' . aled08e_icon('refresh-cw') . '<span>' . (count($forfaits) > 1 ? 'Changer de formule' : 'Ajouter ou retirer des extras') . '</span></summary>'
         . '<form method="post" action="' . esc_url(aled08e_url()) . '"><input type="hidden" name="aled08e_changer" value="1">' . wp_nonce_field('aled08e_changer', '_aled08e_changer', true, false)
-        . '<input type="hidden" name="forfait" value="' . esc_attr(aled08e_forfait(aled08e_meta($uid, 'forfait'))['id']) . '">'
-        . '<p class="app-note">Quand vous voulez, sans frais et sans engagement. Le nouveau prix s’applique à votre prochaine échéance.</p><div class="esp-changer-list">';
+        . '<p class="app-note">Quand vous voulez, sans frais et sans engagement. Le nouveau prix s’applique à votre prochaine échéance.</p>';
+    if (count($forfaits) > 1) {
+        $h .= '<div class="esp-changer-list">';
+        foreach ($forfaits as $f) $h .= '<label class="esp-reste"><input type="radio" name="forfait" value="' . esc_attr($f['id']) . '"' . checked($actuel, $f['id'], false) . '><span><strong>' . esc_html($f['name']) . ' · ' . esc_html(aled08e_euro_txt($f['month'] * $mult) . ($annuel ? '/an' : '/mois')) . '</strong>' . (!empty($f['main']) ? '<small>' . esc_html(implode(', ', (array) $f['main'])) . '</small>' : '') . '</span></label>';
+        $h .= '</div>';
+    } else {
+        $h .= '<input type="hidden" name="forfait" value="' . esc_attr($actuel) . '">';
+    }
+    if ($opts) $h .= '<p class="app-sub">Vos anciens extras</p>';
+    $h .= '<div class="esp-changer-list">';
     foreach ($opts as $o) {
         $h .= '<label class="esp-reste"><input type="checkbox" name="options[]" value="' . esc_attr($o['id']) . '"' . checked(aled08e_meta($uid, $o['id']), '1', false) . '><span><strong>' . esc_html($o['name']) . ' · ' . aled08e_euro($o['month'] * $mult) . ' ' . ($annuel ? 'par an' : 'par mois') . aled08e_info_btn($o['id'], $o['name'], $o['info'] ?? '') . '</strong>'
             . (!empty($o['desc']) ? '<small>' . esc_html($o['desc']) . '</small>' : '') . '</span></label>';

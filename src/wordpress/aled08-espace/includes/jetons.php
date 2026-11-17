@@ -112,10 +112,25 @@ function aled08e_jl_etat($uid, $f = null) {
 /* Prix d'une modification par Cerise : base + 1 jeton par tranche de mots + un prix par photo.
  * Un texte écrit sans espaces compte quand même : 6 caractères font un mot. */
 function aled08e_jl_prix_modif($texte, $photos = 0) {
+    if (!aled08e_energie_on()) return 0; // énergie en pause : les retouches se comptent à l'unité (aled08e_jl_retouches_reste)
     $m = aled08e_jl_cfg()['modif'];
     $mots = function_exists('aled08e_lia_mots') ? aled08e_lia_mots($texte) : str_word_count((string) $texte);
     $mots = max($mots, (int) ceil(mb_strlen(trim((string) $texte)) / 6));
     return (int) $m['base'] + (int) ceil($mots / max(1, (int) $m['mots'])) + (int) $m['image'] * max(0, (int) $photos);
+}
+/* Énergie en pause : petites retouches de Bricou ce mois-ci. Une demande à Bricou laisse une ligne « demande:<id> » dans le
+ * journal (à 0 d'énergie) ; une retouche rendue (passée à Alex, aperçu refusé, échec, annulation) ne compte pas. */
+function aled08e_jl_retouches_mois($uid) {
+    $m = wp_date('Y-m');
+    $n = 0;
+    foreach (aled08e_jl_journal($uid) as $e) if (($e['m'] ?? '') === $m && empty($e['rendu']) && strpos((string) ($e['r'] ?? ''), 'demande:') === 0) $n++;
+    return $n;
+}
+function aled08e_jl_retouches_reste($uid) {
+    // offre du 17 novembre 2026 : modifications incluses, sans limite (limites.bricouMois absent de data.json)
+    $max = aled08e_limite('bricouMois', 0);
+    if (!$max || aled08e_famille($uid) || (function_exists('aled08e_modifs_illimitees') && aled08e_modifs_illimitees($uid))) return 999;
+    return max(0, $max - aled08e_jl_retouches_mois($uid));
 }
 /* Compter des jetons. Rend false s'il n'y en a pas assez (les comptes « famille » ne paient pas, mais le coût est noté). */
 function aled08e_jl_debiter($uid, $n, $quoi, $ref = '', $coutCts = null) {
@@ -176,6 +191,7 @@ function aled08e_jl_txt($n) { return (int) $n . ' d’énergie'; }
 const ALED08E_JL_RECHARGE_MOIS = 5000; // plafond de jetons rechargés par mois et par client
 add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || !isset($_POST['aled08e_jl_recharge'])) return;
+    if (!aled08e_energie_on()) { wp_safe_redirect(aled08e_url(), 303); exit; } // énergie en pause : pas de recharge
     $uid = get_current_user_id();
     if (!$uid) { wp_safe_redirect(aled08e_url(), 303); exit; }
     $back = function ($ok, $texte) use ($uid) { set_transient('aled08_jl_flash_' . $uid, [$ok, $texte], 120); wp_safe_redirect(aled08e_url() . '#outils', 303); exit; };
@@ -484,6 +500,7 @@ function aled08e_jl_lancer($uid, $outil, $valeurs, $image = null) {
 
 add_action('wp_ajax_aled08e_outil', function () {
     $uid = get_current_user_id();
+    if (!aled08e_outils_on()) wp_send_json_error(['message' => 'Les outils sont en pause pour l’instant.'], 403);
     if (!$uid || !check_ajax_referer('aled08e_jl', '_aled08e_jl', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
     $outil = aled08e_jl_outil(sanitize_key(wp_unslash($_POST['outil'] ?? '')));
     if (!$outil || !empty($outil['local']) || empty($outil['champs'])) wp_send_json_error(['message' => 'Outil inconnu.'], 400);
@@ -560,6 +577,7 @@ function aled08e_jl_prix_html($o, $cls = 'ol-prix') {
 }
 add_action('wp_ajax_aled08e_outil_local', function () {
     $uid = get_current_user_id();
+    if (!aled08e_outils_on()) wp_send_json_error(['message' => 'Les outils sont en pause pour l’instant.'], 403);
     if (!$uid || !check_ajax_referer('aled08e_jl', '_aled08e_jl', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
     $outil = aled08e_jl_outil(sanitize_key(wp_unslash($_POST['outil'] ?? '')));
     $n = aled08e_jl_prix_local($outil);
@@ -584,6 +602,7 @@ add_action('wp_ajax_aled08e_outil_local', function () {
 /* Connexion coupée pendant que Cerise écrivait : le navigateur redemande le dernier résultat (gardé une heure) */
 add_action('wp_ajax_aled08e_outil_dernier', function () {
     $uid = get_current_user_id();
+    if (!aled08e_outils_on()) wp_send_json_error(['message' => 'Les outils sont en pause pour l’instant.'], 403);
     if (!$uid || !check_ajax_referer('aled08e_jl', '_aled08e_jl', false)) wp_send_json_error(['message' => 'La page avait expiré.'], 403);
     $d = get_user_meta($uid, 'aled08_jl_dernier', true);
     $depuis = time() - max(0, min(900, (int) ($_POST['il_y_a'] ?? 0)));
@@ -778,6 +797,12 @@ function aled08e_jl_onglet_html($uid, $f, $site, $host, $avis) {
  * ========================================================================= */
 function aled08e_jl_profil($user) {
     if (!current_user_can('edit_users')) return;
+    if (!aled08e_energie_on()) {
+        $cout = 0.0;
+        foreach (aled08e_jl_journal($user->ID) as $l) if (($l['m'] ?? '') === wp_date('Y-m')) $cout += (float) ($l['c'] ?? 0);
+        echo '<h2>Cerise et Bricou</h2><table class="form-table" role="presentation"><tr><th>Ce mois-ci</th><td>' . (int) aled08e_jl_retouches_mois($user->ID) . ' modifications préparées par Bricou. Coût Claude (retouches et bulle) : ' . esc_html(number_format($cout / 100, 2, ',', ' ')) . ' €. L’énergie est en pause.</td></tr></table>';
+        return;
+    }
     $e = aled08e_jl_etat($user->ID);
     $cout = 0.0; $n = 0;
     $m = wp_date('Y-m');
@@ -813,6 +838,15 @@ function aled08e_jl_bilan_html() {
         $tn += $n; $tc += $c;
     }
     $eur = function ($cts) { return esc_html(number_format($cts / 100, 2, ',', ' ')) . ' €'; };
+    if (!aled08e_energie_on()) {
+        echo '<h2>Cerise et Bricou : le bilan du mois</h2>';
+        echo '<p>Rien n’est compté aux clients : les modifications sont incluses, et Cerise répond jusqu’à ' . aled08e_limite('bulleJour', 40) . ' messages par jour. Voici ce que Claude a coûté.</p>';
+        if (!$lignes) { echo '<p><em>Rien ce mois-ci.</em></p>'; return; }
+        echo '<table class="widefat striped" style="max-width:620px"><thead><tr><th>Client</th><th>Utilisations</th><th>Coût Claude</th></tr></thead><tbody>';
+        foreach ($lignes as $l) echo '<tr><td>' . esc_html($l[0]) . '</td><td>' . (int) $l[1] . '</td><td>' . $eur($l[3]) . '</td></tr>'; // phpcs:ignore
+        echo '<tr><th>Total</th><th></th><th>' . $eur($tc) . '</th></tr></tbody></table>'; // phpcs:ignore
+        return;
+    }
     echo '<h2>Énergie : le bilan du mois</h2>';
     echo '<p>1 jeton = 1 centime. Règle : un outil est compté ' . esc_html(str_replace('.', ',', (string) aled08e_jl_cfg()['margeOutils'])) . ' fois ce qu’il coûte chez Claude, une modification par Cerise ' . esc_html(str_replace('.', ',', (string) aled08e_jl_cfg()['margeLia'])) . ' fois. Les jetons compris dans l’abonnement sont déjà payés par l’abonnement : la colonne « valeur » dit ce qu’ils représentent.</p>';
     if (!$lignes) { echo '<p><em>Aucun jeton utilisé ce mois-ci.</em></p>'; return; }

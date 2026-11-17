@@ -108,6 +108,28 @@ function aled08e_cmd_pages_plus($v) {
 }
 function aled08e_cmd_page_prix() { return (float) (aled08e_data()['creation']['pagePlus'] ?? 10); }
 function aled08e_cmd_pages_plus_txt($n) { $n = (int) $n; return $n . ($n > 1 ? ' pages en plus' : ' page en plus'); }
+/* Offre événement (foire, marché, salon) : les codes valables (réglages de l'extension), la remise en % sur la création */
+function aled08e_codes_evenement() {
+    $v = get_option('aled08_codes_evenement', null);
+    if ($v === null) $v = 'MONSTRES20'; // premier code, tant qu'aucun n'est réglé
+    return array_values(array_filter(array_map('aled08e_clean_code', preg_split('/[\s,;]+/', (string) $v))));
+}
+function aled08e_code_evenement_ok($code) { $c = aled08e_clean_code($code); return $c !== '' && in_array($c, aled08e_codes_evenement(), true); }
+function aled08e_remise_evenement() { return max(0, min(90, (int) (aled08e_data()['evenement']['remise'] ?? 20))); }
+/* Vérification d'un code depuis le configurateur et la page Commander (20 essais par heure et par adresse IP) */
+function aled08e_code_evenement_ajax() {
+    $ip = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '0';
+    $k = 'aled08_code_ev_' . md5($ip);
+    $n = (int) get_transient($k);
+    if ($n >= 20) wp_send_json_error(['message' => 'Trop d’essais. Réessayez dans une heure.'], 429);
+    set_transient($k, $n + 1, HOUR_IN_SECONDS);
+    $ok = aled08e_code_evenement_ok(wp_unslash($_GET['code'] ?? ''));
+    if ($ok) wp_send_json_success(['remise' => aled08e_remise_evenement()]);
+    wp_send_json_error(['message' => 'Code inconnu.']);
+}
+add_action('wp_ajax_aled08e_code_evenement', 'aled08e_code_evenement_ajax');
+add_action('wp_ajax_nopriv_aled08e_code_evenement', 'aled08e_code_evenement_ajax');
+
 function aled08e_cmd_montants($cfg) {
     $D = aled08e_data();
     $type = aled08e_type($cfg['type'] ?? '');
@@ -128,6 +150,14 @@ function aled08e_cmd_montants($cfg) {
     }
     $pagesPlus = aled08e_cmd_pages_plus($cfg['pages_plus'] ?? 0);
     $ponctuel += $pagesPlus * aled08e_cmd_page_prix();
+    // code événement : la remise porte sur la création (le site et ce qui se paie une fois), pas sur la formule
+    $remise = max(0, min(90, (int) ($cfg['remise'] ?? 0)));
+    if ($remise) {
+        $creation = round($creation * (100 - $remise) / 100, 2);
+        $ponctuel = round($ponctuel * (100 - $remise) / 100, 2);
+        $acompte = round($creation * (int) $D['acompte'] / 100, 2);
+        $solde = round($creation - $acompte, 2);
+    }
     // À la commande : l'acompte (25 %) et les options ponctuelles. À la réception du site : le reste,
     // en une fois ou en 6 / 12 fois sans frais (engagement le temps de payer), et le forfait démarre.
     $nb = (int) ($cfg['lissage'] ?? 0);
@@ -145,6 +175,7 @@ function aled08e_cmd_montants($cfg) {
         'lissage_mensualite' => $lissage ? $mensualite : 0.0,
         'lissage_total_echeances' => $lissage ? $nb : 0,
         'total_jour' => round($totalJour, 2),
+        'remise' => $remise,
     ];
 }
 
@@ -167,6 +198,7 @@ function aled08e_cmd_get($id) {
         'domaine' => (string) $g('domaine'), 'domaine_mien' => (int) $g('domaine_mien', 0), 'domaine_statut' => (string) $g('domaine_statut', 'a_reserver'),
         'statut' => (string) $g('statut', 'attente_paiement'), 'montants' => $m,
         'message' => (string) $g('message'), 'parrain' => (string) $g('parrain'), 'user' => (int) $g('user', $p->post_author),
+        'code_evenement' => (string) $g('code_evenement'), 'remise' => (int) $g('remise', 0),
         'stripe_session' => (string) $g('stripe_session'), 'stripe_customer' => (string) $g('stripe_customer'), 'stripe_subscription' => (string) $g('stripe_subscription'),
         'stripe_lissage_item' => (string) $g('stripe_lissage_item'), 'lissage_paye' => (int) $g('lissage_paye', 0), 'solde_paye' => (int) $g('solde_paye', 0), 'solde_session' => (string) $g('solde_session'),
         'paiement_en_cours' => (int) $g('paiement_en_cours', 0), 'reception_payee' => (int) $g('reception_payee', 0),
@@ -288,7 +320,7 @@ function aled08e_cmd_url_commander($cfg, $extra = []) {
     $q = $extra + [
         'type' => $cfg['type'] ?? '', 'forfait' => $cfg['forfait'] ?? '', 'periode' => $cfg['periode'] ?? '',
         'lissage' => !empty($cfg['lissage']) ? (string) (int) $cfg['lissage'] : '', 'domaine' => $cfg['domaine'] ?? '',
-        'domaine_statut' => !empty($cfg['domaine_mien']) ? 'mien' : '', 'options' => implode(',', (array) ($cfg['options'] ?? [])), 'pages_plus' => !empty($cfg['pages_plus']) ? (string) (int) $cfg['pages_plus'] : '', 'parrain' => $cfg['parrain'] ?? '',
+        'domaine_statut' => !empty($cfg['domaine_mien']) ? 'mien' : '', 'options' => implode(',', (array) ($cfg['options'] ?? [])), 'pages_plus' => !empty($cfg['pages_plus']) ? (string) (int) $cfg['pages_plus'] : '', 'parrain' => $cfg['parrain'] ?? '', 'code' => $cfg['code_evenement'] ?? '',
     ];
     $q = array_filter($q, function ($v) { return (string) $v !== ''; });
     return home_url('/commander/') . ($q ? '?' . http_build_query($q, '', '&', PHP_QUERY_RFC3986) : '');
@@ -328,7 +360,7 @@ function aled08e_cmd_traiter_post() {
     $optionsIn = $P['options'] ?? [];
     if (!is_array($optionsIn)) $optionsIn = explode(',', (string) $optionsIn);
     $options = [];
-    foreach ($optionsIn as $o) { $o = sanitize_key($o); if ($o !== '' && aled08e_option($o)) $options[] = $o; }
+    foreach ($optionsIn as $o) { $o = sanitize_key($o); $oo = $o !== '' ? aled08e_option($o) : null; if ($oo && empty($oo['retire'])) $options[] = $o; } // pas d'option retirée sur une nouvelle commande
     // options réservées à certains types de site (stock, comptes clients : boutique seulement)
     $typeIn = sanitize_key($get('type', 30));
     $options = array_values(array_filter($options, function ($oid) use ($typeIn) { $o = aled08e_option($oid); return $o && (empty($o['types']) || in_array($typeIn, (array) $o['types'], true)); }));
@@ -342,9 +374,13 @@ function aled08e_cmd_traiter_post() {
         'domaine' => aled08e_cmd_nettoyer_domaine($get('domaine', 253)),
         'domaine_mien' => $get('domaine_mien', 2) === '1',
         'parrain' => aled08e_clean_code($get('parrain', 20)),
+        'code_evenement' => aled08e_clean_code($get('code_evenement', 30)),
     ];
+    // code événement : vérifié ici, la remise est recalculée par le serveur
+    $cfg['remise'] = ($cfg['code_evenement'] !== '' && aled08e_code_evenement_ok($cfg['code_evenement'])) ? aled08e_remise_evenement() : 0;
     if ($cfg['lissage']) $cfg['periode'] = 'mois'; // le site en plusieurs fois se paie avec un forfait au mois
     $err = function ($code) use ($cfg) { aled08e_cmd_redirect_erreur($code, $cfg); };
+    if ($cfg['code_evenement'] !== '' && !$cfg['remise']) $err('code');
 
     // anti-robot : champ piège rempli ; horodatage absent, envoi en moins de 3 secondes, horodatage dans le futur ou vieux de plus de 24 heures
     // (le champ _t est rempli par le script de la page ; un robot qui poste le HTML brut ne passe pas)
@@ -419,6 +455,7 @@ function aled08e_cmd_traiter_post() {
         'ref' => $ref, 'type' => $cfg['type'], 'forfait' => $cfg['forfait'], 'periode' => $cfg['periode'], 'lissage' => (int) $cfg['lissage'], 'options' => $cfg['options'], 'pages_plus' => (int) $cfg['pages_plus'],
         'domaine' => $cfg['domaine'], 'domaine_mien' => $cfg['domaine_mien'] ? 1 : 0, 'domaine_statut' => $cfg['domaine_mien'] ? 'client' : 'a_reserver',
         'statut' => 'attente_paiement', 'montants' => $m, 'message' => $message, 'parrain' => $cfg['parrain'], 'user' => $uid,
+        'code_evenement' => $cfg['remise'] ? $cfg['code_evenement'] : '', 'remise' => (int) $cfg['remise'],
         'stripe_session' => '', 'stripe_customer' => '', 'stripe_subscription' => '', 'stripe_lissage_item' => '', 'lissage_paye' => 0, 'solde_paye' => 0, 'solde_session' => '',
     ];
     foreach ($c as $k => $v) $metas[$k] = $v;
@@ -496,6 +533,7 @@ function aled08e_cmd_mail_owner_nouvelle($c, $compte, $stripe) {
     $corps = "Nouvelle commande sur " . home_url('/commander/') . "\n\n"
         . aled08e_cmd_recap_txt($c) . "\n"
         . "Client :\n" . aled08e_cmd_titulaire_txt($c) . "\n\n"
+        . (!empty($c['remise']) ? 'Code événement : ' . $c['code_evenement'] . ' (' . (int) $c['remise'] . " % de remise sur la création, déjà déduits)\n" : '')
         . ($c['parrain'] ? 'Code de parrainage : ' . $c['parrain'] . ' (' . (aled08e_user_by_code($c['parrain']) ? aled08e_user_by_code($c['parrain'])->display_name : 'code inconnu') . ")\n" : '')
         . ($c['message'] ? "Message du client :\n" . $c['message'] . "\n\n" : '')
         . 'Compte client : ' . ($compte['cree'] ? 'créé (' . $compte['login'] . '), e-mail de mot de passe envoyé' : 'déjà existant (' . $compte['login'] . '), commande rattachée') . "\n"
@@ -586,6 +624,6 @@ function aled08e_cmd_reception_due($c) {
 }
 /* Montants recalculés pour le choix fait à la réception (n = 0 : en une fois ; 6 ou 12 : en plusieurs fois, forfait au mois) */
 function aled08e_cmd_montants_reception($c, $n) {
-    $cfg = ['type' => $c['type'], 'forfait' => $c['forfait'], 'periode' => $n ? 'mois' : $c['periode'], 'lissage' => $n, 'options' => $c['options'], 'pages_plus' => $c['pages_plus'] ?? 0];
+    $cfg = ['type' => $c['type'], 'forfait' => $c['forfait'], 'periode' => $n ? 'mois' : $c['periode'], 'lissage' => $n, 'options' => $c['options'], 'pages_plus' => $c['pages_plus'] ?? 0, 'remise' => (int) ($c['remise'] ?? 0)];
     return aled08e_cmd_montants($cfg);
 }

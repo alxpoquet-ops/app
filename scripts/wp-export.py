@@ -31,6 +31,11 @@ FORM_RECIPIENT = 'alx.poquet@gmail.com'
 # sauf cas particuliers. Les clés de OLD_TARGETS sont toujours redirigées, même absentes de wp-old-paths.txt.
 OLD_PATHS_FILE = os.path.join(ROOT, 'scripts', 'wp-old-paths.txt')
 OLD_TARGETS = {'/devis/': '/contact/', '/prestations/': '/creer-mon-site/', '/blog/': '/', '/comparatif-shopify/': '/comparatif/', '/nos-outils/': '/outils/', '/forfaits/': '/tarifs/', '/en/forfaits/': '/en/tarifs/'}
+# Novembre 2026 : la page Outils est en pause (config enService). Tant qu'elle n'existe pas, ses adresses mènent à
+# l'accompagnement ; quand elle revient, elle est dans les pages exportées et la redirection saute toute seule (redirects()).
+OLD_TARGETS.update({'/outils/': '/accompagnement/', '/en/outils/': '/en/accompagnement/'})
+if not os.path.exists(os.path.join(ROOT, 'dist', 'outils', 'index.html')):
+    OLD_TARGETS['/nos-outils/'] = '/accompagnement/'
 # V2 (novembre 2026) : pages renommées, et trois guides devenus des pages métier à la racine
 for _old, _new in {'/methode/': '/pourquoi-moins-cher/', '/lia-et-alex/': '/pourquoi-les-minis-monstres/', '/pourquoi-alex-et-lia/': '/pourquoi-les-minis-monstres/', '/pourquoi-alex-et-co/': '/pourquoi-les-minis-monstres/', '/ils-nous-ont-fait-confiance/': '/realisations/',
                    '/guides/site-internet-artisan/': '/site-internet-artisan/', '/guides/site-internet-therapeute/': '/site-internet-therapeute/',

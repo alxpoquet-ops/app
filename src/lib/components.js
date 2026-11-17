@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande } = require('../config');
+const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande, evenement, delais } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
 const { petit, alexPortrait } = require('./bestiaire');
@@ -28,7 +28,8 @@ const year = (month) => month * (12 - annuel.moisOfferts);
 const F = (id) => forfaits.find((f) => f.id === id);
 const T = (id) => types.find((t) => t.id === id);
 // L'offre unique : un abonnement, des options payées une fois à la création, des extras au mois
-const ABO = forfaits[0];
+const ABO = forfaits[0]; // Tranquillité
+const EVO = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1]; // Évolution
 const optsCreation = options.filter((o) => o.quand === 'creation' && !o.retire);
 const optsMois = options.filter((o) => o.quand !== 'creation' && !o.retire);
 
@@ -161,38 +162,50 @@ function payBox() {
   return `<div class="jetons-box reveal">
   <h3>${icon('calendar-check')}Comment payer ?</h3>
   <ul class="list-check">
-    <li><strong>À la commande</strong> : ${paiement.acompte} % du site, soit ${euro(acompteDe(creation.prix))} pour un site à ${euro(creation.prix)}.</li>
-    <li><strong>À la réception du site</strong> : le reste en une fois (${euro(creation.prix - acompteDe(creation.prix))}), ou en ${lissageTxt} fois sans frais, par exemple ${euro(lisse(creation.prix))} par mois pendant ${LMAX} mois. L’abonnement démarre ce jour-là.</li>
-    <li><strong>L’abonnement</strong> : ${euro(ABO.month)} par mois, ou ${euro(year(ABO.month))} par an (${annuel.moisOfferts} mois offerts). Les extras s’ajoutent et se retirent quand vous voulez.</li>
+    <li><strong>À la commande</strong> : ${paiement.acompte} % du site, soit ${euro(acompteDe(creation.prix))} pour un site à ${euro(creation.prix)}, et les options choisies.</li>
+    <li><strong>À la réception du site</strong> : le reste en une fois (${euro(creation.prix - acompteDe(creation.prix))}), ou en ${lissageTxt} fois sans frais, par exemple ${euro(lisse(creation.prix))} par mois pendant ${LMAX} mois. Votre formule démarre ce jour-là.</li>
+    <li><strong>Votre formule</strong> : ${forfaits.map((f) => `${f.name} ${euro(f.month)} par mois`).join(' ou ')}. À l’année, ${annuel.moisOfferts} mois offerts.</li>
   </ul>
 </div>`;
 }
 
-// ---------------------------------------------------------------- l'offre unique : le site, puis l'abonnement
-const INCLUS_SITE = ['La maquette, le site complet et la mise en ligne', `Jusqu’à ${creation.pages} pages comprises`, 'Les pages pour Google en plus, sans supplément', 'Parfait sur téléphone', 'Formulaire de contact', 'Bases du référencement : Google sait lire votre site', 'Vos textes écrits avec vous'];
+// ---------------------------------------------------------------- l'offre : le site, deux options, deux formules
+// Le site à 500 € : ce qui est compris (dans cet ordre, comme sur la page Tarifs)
+const INCLUS_SITE = [`Jusqu’à ${creation.pages} pages`, 'Design personnalisé', 'Adapté téléphone et ordinateur', 'Formulaire de contact', 'Carte Google', 'Référencement Google de base', 'Nom de domaine offert la première année', 'Hébergement offert la première année', 'Mise en ligne', 'Accompagnement personnalisé', 'Les Minis Monstres'];
+// Les pages non utilisées deviennent des pages pour Google : l'exemple chiffré
+const PAGES_SEO = `Les pages non utilisées peuvent être transformées en pages SEO pour améliorer votre visibilité sur Google. Par exemple : vous utilisez ${creation.exemplePages} pages pour votre activité, les ${creation.pages - creation.exemplePages} pages restantes servent à vous faire trouver sur Google.`;
+const PACK_SEO = options.find((o) => o.id === 'packseo' && !o.retire);
+const BOUTIQUE_INCLUS = ['Catalogue produits', 'Panier', 'Paiement en ligne', 'Gestion des commandes', 'E-mails automatiques'];
+// Une formule, en carte. compact : sans la liste complète.
+function formuleCarte(f, { compact = false } = {}) {
+  return `<article class="formule c-${f.color}${f.priorite ? ' is-evo' : ''}">
+    <p class="formule-nom">${esc(f.name)}</p>
+    <p class="formule-prix"><b>${euro(f.month)}</b><small>/mois</small></p>
+    <ul class="plan-list">${(compact ? f.main.slice(0, 4) : f.main).map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>
+    <p class="formule-delai">${icon('clock')}<span>Modifications ${f.priorite ? 'en' : 'sous'} ${f.priorite ? `${delais.evolution || f.delai} en moyenne` : `${f.delai} au plus`}</span></p>
+  </article>`;
+}
 // compact : pour l'accueil (moins de lignes) ; choose : avec le bouton « Créer mon site »
 function offre({ compact = false, choose = true } = {}) {
   const liste = (items) => `<ul class="plan-list">${items.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>`;
   return `<div class="offre reveal" id="offre">
-  <div class="offre-lia" aria-hidden="true">${petit('gelee')}${petit('chaton', { humeur: 'ravi' })}</div>
+  <div class="offre-lia" aria-hidden="true">${petit('bricou')}${petit('etoile', { humeur: 'ravi' })}</div>
   <div class="offre-cols">
-    <article class="offre-col c-mint">
+    <article class="offre-col c-butter">
       <p class="offre-k"><span>1</span>Votre site</p>
-      ${liste(compact ? INCLUS_SITE.slice(0, 4) : INCLUS_SITE)}
-      ${compact ? `<p class="offre-doux">À partir de <b>${euro(creation.prix)}</b>, une fois</p>` : `<p class="offre-prix"><small>à partir de</small><b>${euro(creation.prix)}</b><small>une fois</small></p>`}
-      <p class="offre-sous">${compact ? `Le même prix pour tous les sites. Payable en ${lissageTxt} fois sans frais.` : `Le même prix pour tous les sites. En ${lissageTxt} fois sans frais si vous voulez.`}</p>
+      <p class="offre-titre">Site Internet Professionnel</p>
+      <p class="offre-prix"><b>${euro(creation.prix)}</b><small>une fois</small></p>
+      ${liste(compact ? INCLUS_SITE.slice(0, 6) : INCLUS_SITE)}
+      <p class="offre-seo">${icon('search-check')}<span>${compact ? `Les pages non utilisées deviennent des pages pour Google.` : PAGES_SEO}</span></p>
     </article>
     <span class="offre-plus" aria-hidden="true">+</span>
-    <article class="offre-col c-pink">
-      <p class="offre-k"><span>2</span>L’abonnement</p>
-      ${liste(compact ? ABO.main : ABO.features)}
-      ${compact ? `<p class="offre-doux"><b>${euro(ABO.month)}</b> par mois</p>` : `<p class="offre-prix">${billed(ABO.month)}</p>`}
-      <p class="offre-sous">Obligatoire, sans engagement. À l’année : ${annuel.moisOfferts} mois offerts.</p>
+    <article class="offre-col c-lilac">
+      <p class="offre-k"><span>2</span>Votre formule, chaque mois</p>
+      <div class="formules">${forfaits.map((f) => formuleCarte(f, { compact })).join('')}</div>
+      <p class="offre-sous">Sans engagement. À l’année : ${annuel.moisOfferts} mois offerts.</p>
     </article>
   </div>
-  <p class="offre-options">${icon('plus')}<span>${compact
-    ? `Des options à la carte, comme la boutique en ligne, l’anglais ou la prise de rendez-vous. Les extras au mois s’ajoutent et se retirent en un clic.`
-    : `En option : boutique en ligne <b>+ ${euro(creation.boutique)}</b>, au-delà de ${creation.pages} pages <b>${euro(creation.pagePlus)} la page</b> (les pages pour Google ne comptent pas), ${optsCreation.slice(0, 2).map((o) => `${o.name.toLowerCase()} <b>+ ${euro(o.price.once)}</b>`).join(', ')}. Et des extras au mois, à ajouter ou retirer quand vous voulez.`}</span></p>
+  <p class="offre-options">${icon('plus')}<span>Deux options, si vous voulez : <b>${PACK_SEO ? PACK_SEO.name : 'Pack SEO'} + ${euro(PACK_SEO ? PACK_SEO.price.once : 25)}</b> (${PACK_SEO ? PACK_SEO.pages : 10} pages SEO en plus) et <b>Boutique en ligne + ${euro(creation.boutique)}</b>. Rien d’autre à prévoir.</span></p>
   ${choose ? `<p class="offre-go">${btnCreer('btn-primary btn-lg')}</p>` : ''}
 </div>`;
 }
@@ -232,33 +245,60 @@ function infoBtn(id, nom, texte) {
   return `<button type="button" class="opt-i" data-titre="${esc(nom)}" data-info="${esc(texte)}"${img} aria-label="${esc('Voir ce que ça ajoute : ' + nom)}">${icon('info')}</button>`;
 }
 const BOUTIQUE = types.find((t) => t.id === 'boutique') || {};
-// Le petit monstre que chaque option au mois ajoute à la bande
-const MONSTRE_OPTION = Object.fromEntries(bande.filter((b) => b.option).map((b) => [b.option, b.monstre]));
-// La petite bande, en cartes. complet : avec la phrase entière (accueil) ; sinon la phrase courte et le prix (tarifs).
+// Le petit monstre qui s'occupe de chaque option
+const MONSTRE_OPTION = { packseo: 'etoile', boutique: 'champi' };
+// La petite bande, en cartes : métier, missions et personnalité. complet : avec les missions (pages Équipe et Accueil).
 function bandeGrid({ complet = false } = {}) {
-  const prixDe = (b) => {
-    if (b.compris || b.outils) return 'Compris dans l’abonnement';
-    const o = options.find((x) => x.id === b.option);
-    return o ? `Avec l’option ${o.name}, ${euro(o.price.month)}/mois` : '';
-  };
+  const prixDe = (b) => (b.option === 'boutique' ? `Avec la boutique en ligne, + ${euro(creation.boutique)}` : b.compris ? 'Avec toutes les formules' : '');
   const art = (b) => (b.monstre === 'lia' ? monster('coucou') : petit(b.monstre));
   return `<div class="bande">${bande
-    .map((b) => `<div class="bande-carte reveal${b.compris || b.outils ? ' is-compris' : ''}"><span class="bande-art">${art(b)}</span><strong>${esc(b.nom)}<small>${esc(b.role)}</small></strong><span class="bande-fait">${inline(complet ? b.fait : b.court)}</span><em class="bande-prix">${prixDe(b)}</em></div>`)
+    .map((b) => `<div class="bande-carte reveal${b.compris ? ' is-compris' : ''}"><span class="bande-art">${art(b)}</span><strong>${esc(b.nom)}<small>${esc(b.role)}</small></strong>${complet && b.missions ? `<ul class="bande-missions">${b.missions.map((m) => `<li>${esc(m)}</li>`).join('')}</ul><em class="bande-perso">${esc(b.perso)}</em>` : `<span class="bande-fait">${inline(b.court)}</span>`}<em class="bande-prix">${prixDe(b)}</em></div>`)
     .join('')}</div>`;
 }
+// Les deux options, expliquées simplement
 function optionsCompact() {
-  const ligne = (o) => `<li><span class="opt-ico${MONSTRE_OPTION[o.id] ? ' opt-monstre' : ''}">${MONSTRE_OPTION[o.id] ? petit(MONSTRE_OPTION[o.id]) : icon(o.icon)}</span><span class="opt-txt"><strong>${nomI(o.name, o.id, o.info, o.types && o.types.length === 1 && o.types[0] === 'boutique' ? ' <em class="opt-only">boutique</em>' : '')}</strong><small>${inline(o.desc)}</small></span><span class="opt-price">${o.price.once ? '+ ' + euro(o.price.once) : `${euro(o.price.month)}/mois`}</span></li>`;
-  const boutique = `<li><span class="opt-ico">${icon('shopping-bag')}</span><span class="opt-txt"><strong>${nomI('Boutique en ligne', 'boutique', BOUTIQUE.info)}</strong><small>Vos produits, le panier, le paiement par carte et le suivi des commandes. Jusqu’à 20 produits ajoutés par moi.</small></span><span class="opt-price">+ ${euro(creation.boutique)}</span></li>`;
-  return `<div class="opt-groups">
-  <div class="opt-group reveal"><h3>${icon('wand-sparkles')}À la création, une fois</h3><ul>${boutique}${optsCreation.map(ligne).join('')}</ul></div>
-  <div class="opt-group reveal"><h3>${icon('repeat')}Chaque mois, à ajouter ou retirer</h3><ul>${optsMois.map(ligne).join('')}</ul></div>
-</div>`;
+  const carte = (id, nom, prix, texte, inclus, info) => `<article class="opt-carte reveal"><span class="opt-carte-art">${petit(MONSTRE_OPTION[id])}</span><div><h3><span>${nomI(nom, id, info)}</span><b>+ ${euro(prix)}</b></h3><p>${inline(texte)}</p><ul class="plan-list">${inclus.map((x) => `<li>${icon('check')}<span>${esc(x)}</span></li>`).join('')}</ul></div></article>`;
+  return `<div class="opt-cartes">
+  ${PACK_SEO ? carte('packseo', PACK_SEO.name, PACK_SEO.price.once, 'Plus votre site a de pages utiles, plus il apparaît dans Google. Chaque page répond à une recherche que font vos clients : un service, une ville, une question.', [`${PACK_SEO.pages} pages SEO supplémentaires`], PACK_SEO.info) : ''}
+  ${carte('boutique', 'Boutique en ligne', creation.boutique, 'Vos clients achètent sur votre site, même quand vous êtes fermé. Vous recevez la commande et le paiement.', BOUTIQUE_INCLUS, BOUTIQUE.info)}
+</div>
+<p class="opt-note">Ce sont les deux seules options. Payées une fois, avec la création du site.</p>`;
 }
-// Les extras à la demande : payés une fois, depuis l'espace client, quand on en a besoin
-function extrasDemande() {
-  return `<div class="opt-group opt-demande reveal"><h3>${icon('hand-coins')}À la demande, payé une fois</h3><ul>${aLaDemande
-    .map((x) => `<li><span class="opt-ico">${icon(x.icon)}</span><span class="opt-txt"><strong>${esc(x.name)}</strong><small>${inline(x.desc)}</small></span><span class="opt-price">${euro(x.prix)}</span></li>`)
-    .join('')}</ul><p class="opt-note">Vous les commandez depuis votre espace client, et ils s’ajoutent à votre prochaine facture. Rien à payer si vous ne vous en servez pas.</p></div>`;
+// Plus d'extras à la demande (offre simplifiée) : gardé pour les pages qui l'appellent encore
+function extrasDemande() { return ''; }
+
+// ---------------------------------------------------------------- l'offre événement
+function offreEvenement() {
+  const lieux = (evenement.lieux || []);
+  return `<section class="section section-evenement" id="offre-evenement"><div class="container">
+  <div class="evenement reveal">
+    <span class="evenement-art" aria-hidden="true">${monster('ravie')}</span>
+    <div class="evenement-txt">
+      <p class="kicker c-pink">${icon('ticket')}Offre événement</p>
+      <h2>On s’est rencontrés ? <em>${evenement.remise} % de moins</em> sur votre site</h2>
+      <p>Si vous m’avez rencontré sur ${lieux.slice(0, -1).join(', ')} ou ${lieux[lieux.length - 1]}, vous avez reçu un code événement. Il vous donne <b>${evenement.remise} % de remise sur la création de votre site</b> : ${euro(creation.prix)} devient ${euro(creation.prix * (100 - evenement.remise) / 100)}.</p>
+      <p class="evenement-comment">${icon('info')}<span>Entrez votre code au moment de commander. La remise s’affiche tout de suite.</span></p>
+      <p>${btnCreer('btn-primary')}</p>
+    </div>
+  </div>
+</div></section>`;
+}
+
+// ---------------------------------------------------------------- comment se passe une modification
+const ETAPES_MODIF = [
+  ['message-circle', 'Vous faites votre demande', 'Dans votre espace client, avec vos mots, et une photo si besoin.'],
+  ['wrench', 'Bricou prépare la modification', 'Le constructeur de la bande s’en charge.'],
+  ['eye', 'Un aperçu est créé', 'Vous voyez le résultat avant tout le monde.'],
+  ['user-check', 'Je reçois la proposition', 'Je la vérifie moi-même.'],
+  ['clock', 'Sans refus de ma part sous 30 minutes, elle est validée', 'Pas d’attente inutile.'],
+  ['circle-check', 'La modification est en ligne', 'Vos visiteurs voient la nouvelle version.'],
+];
+function processusModif({ titre = true } = {}) {
+  return `<div class="modif-etapes reveal">
+  ${titre ? `<h3>${icon('repeat')}Comment se passe une modification</h3>` : ''}
+  <ol>${ETAPES_MODIF.map(([ic, t, d], i) => `<li><span class="modif-n">${i + 1}</span><span class="modif-ico">${icon(ic)}</span><span><strong>${esc(t)}</strong><small>${esc(d)}</small></span></li>`).join('')}</ol>
+  <p class="modif-delai">${icon('timer')}<span>Délai : ${ABO.delai} au plus avec ${esc(ABO.name)}, ${delais.evolution || EVO.delai} en moyenne avec ${esc(EVO.name)}. Si une demande demande plus de travail, je la fais moi-même, à la main.</span></p>
+</div>`;
 }
 
 // ---------------------------------------------------------------- choix partagés (configurateur et page Commander)
@@ -270,7 +310,8 @@ function priceData() {
       lissage: lissage.durees,
       acompte: paiement.acompte,
       forfaits: forfaits.map((f) => ({ id: f.id, name: f.name, month: f.month })),
-      options: options.map((o) => ({ id: o.id, name: o.name, once: o.price.once || 0, month: o.price.month || 0, types: o.types || null })),
+      options: options.filter((o) => !o.retire).map((o) => ({ id: o.id, name: o.name, once: o.price.once || 0, month: o.price.month || 0, types: o.types || null })),
+      remise: evenement.remise,
       free: annuel.moisOfferts,
       pages: creation.pages,
       pagePlus: creation.pagePlus,
@@ -284,7 +325,7 @@ function priceData() {
 // (une case data-boutique ; main.js met alors « boutique » dans le champ caché du type de site).
 function siteChoice({ name = 'b-type' } = {}) {
   return `<input type="hidden" name="${name}" value="vitrine" data-type-field>
-  <div class="b-choices b-solo"><div class="b-choice c-butter"><span class="b-card is-on"><span class="type-ico">${icon('layout-grid')}</span><span class="b-solo-txt"><strong>Votre site</strong><small>Jusqu’à ${creation.pages} pages comprises</small></span><span class="b-price"><small>à partir de</small>${euro(creation.prix)}</span><span class="b-check">${icon('check')}</span></span></div></div>`;
+  <div class="b-choices b-solo"><div class="b-choice c-butter"><span class="b-card is-on"><span class="type-ico">${icon('layout-grid')}</span><span class="b-solo-txt"><strong>Site Internet Professionnel</strong><small>Jusqu’à ${creation.pages} pages, nom de domaine et hébergement offerts la première année</small></span><span class="b-price">${euro(creation.prix)}</span><span class="b-check">${icon('check')}</span></span></div></div>`;
 }
 function typeChoices({ name = 'b-type', checked = 'vitrine' } = {}) {
   return `<div class="b-choices b-types">${types
@@ -295,13 +336,13 @@ function typeChoices({ name = 'b-type', checked = 'vitrine' } = {}) {
     .join('')}</div>`;
 }
 
-// L'abonnement : il n'y en a qu'un. Le bouton radio caché garde le nom attendu par le script et par la commande.
+// Les deux formules : deux cartes à cocher (Tranquillité par défaut). Le nom du champ est celui attendu par le script et la commande.
 function forfaitChoices({ name = 'b-forfait' } = {}) {
-  return `<div class="b-abo c-${ABO.color}"><input type="radio" name="${name}" value="${ABO.id}" checked hidden>
-        <span class="b-art">${petit('etoile')}</span>
-        <div class="b-abo-txt"><strong>L’abonnement</strong><span class="b-price">${billed(ABO.month)}</span>
-        <ul>${ABO.main.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul></div>
-      </div>`;
+  return `<div class="b-choices b-formules">${forfaits
+    .map((f, i) => `<label class="b-choice c-${f.color}"><input type="radio" name="${name}" value="${f.id}"${i === 0 ? ' checked' : ''}>
+        <span class="b-card b-formule"><strong>${esc(f.name)}</strong><span class="b-price">${billed(f.month)}</span>
+        <ul>${f.main.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul><span class="b-check">${icon('check')}</span></span></label>`)
+    .join('')}</div>`;
 }
 
 // Cases « options » (une fois) et « extras » (au mois)
@@ -313,15 +354,20 @@ function pagesPlusBox({ name = '' } = {}) {
   <span class="b-pages-prix" data-pp-prix>0 €</span>
 </div>`;
 }
-function optionChoices({ name = '', quand = 'tout', pagesName = '' } = {}) {
-  const prix = (o) => (o.price.once ? `+ ${euro(o.price.once)}` : `<span class="p-month">${euro(o.price.month)}/mois</span><span class="p-year">${euro(year(o.price.month))}/an</span>`);
-  const ligne = (o) => `<label class="b-opt"${o.types ? ` data-types="${o.types.join(' ')}"` : ''}><input type="checkbox"${name ? ` name="${name}"` : ''} value="${o.id}"><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${nomI(o.name, o.id, o.info)}</strong><small>${inline((o.court || o.desc))}</small></span><em class="p-opt">${prix(o)}</em></label>`;
-  const boutique = `<label class="b-opt b-opt-boutique"><input type="checkbox" value="boutique" data-boutique><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${nomI('Boutique en ligne', 'boutique', BOUTIQUE.info)}</strong><small>Panier, paiement par carte et commandes.</small></span><em class="p-opt">+ ${euro(creation.boutique)}</em></label>`;
-  const unefois = `<p class="b-label">À ajouter, une seule fois</p><div class="b-opts">${boutique}${optsCreation.map(ligne).join('')}</div>${pagesPlusBox({ name: pagesName })}`;
-  const aumois = `<p class="b-label">Extras au mois, à ajouter ou retirer quand vous voulez</p><div class="b-opts">${optsMois.map(ligne).join('')}</div>`;
-  if (quand === 'creation') return unefois;
-  if (quand === 'mois') return aumois;
-  return unefois + aumois;
+function optionChoices({ name = '', quand = 'tout' } = {}) {
+  const ligne = (o) => `<label class="b-opt"${o.types ? ` data-types="${o.types.join(' ')}"` : ''}><input type="checkbox"${name ? ` name="${name}"` : ''} value="${o.id}"><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${nomI(o.name, o.id, o.info)}</strong><small>${inline((o.court || o.desc))}</small></span><em class="p-opt">+ ${euro(o.price.once)}</em></label>`;
+  const boutique = `<label class="b-opt b-opt-boutique"><input type="checkbox" value="boutique" data-boutique><span class="b-box">${icon('check')}</span><span class="b-opt-txt"><strong>${nomI('Boutique en ligne', 'boutique', BOUTIQUE.info)}</strong><small>${BOUTIQUE_INCLUS.join(', ')}.</small></span><em class="p-opt">+ ${euro(creation.boutique)}</em></label>`;
+  if (quand === 'mois') return '';
+  return `<p class="b-label">Deux options, si vous voulez (payées une fois)</p><div class="b-opts">${optsCreation.map(ligne).join('')}${boutique}</div>`;
+}
+
+// Le code événement (foire, marché, salon) : -20 % sur la création. Vérifié par le serveur à la commande.
+function codeEvenementBox({ name = '' } = {}) {
+  return `<div class="b-code" data-code-box>
+  <label for="${name || 'b-code'}"><strong>${icon('ticket')}Code événement</strong><small>Rencontrés sur une foire, un marché ou un salon ? Votre code donne ${evenement.remise} % de remise sur la création du site.</small></label>
+  <input id="${name || 'b-code'}" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" placeholder="Votre code (facultatif)"${name ? ` name="${name}"` : ''} data-code-evenement>
+  <p class="b-code-etat" data-code-etat aria-live="polite"></p>
+</div>`;
 }
 
 // Nom de domaine : saisie, extension, vérification RDAP (JS), case « j'ai déjà un nom de domaine »
@@ -347,40 +393,42 @@ function configurator() {
       ${hint ? `<p class="b-hint">${hint}</p>` : ''}
       ${body}
     </fieldset>`;
-  const typeBody = `${siteChoice()}${optionChoices({ quand: 'creation' })}<p class="b-note">${icon('info')}Plus de ${creation.pages + creation.pagesPlusMax} pages ? <a href="/contact/">Écrivez-nous</a>, on en parle.</p>`;
-  const aboBody = `${forfaitChoices()}${billingSwitch()}${optionChoices({ quand: 'mois' })}<p class="b-note">${icon('info')}Un seul abonnement, pour tous les sites. Il démarre à la réception du site, et vous l’arrêtez quand vous voulez. <a href="${sections.forfaits.path}">Tout ce qu’il comprend</a></p>`;
+  const typeBody = `${siteChoice()}<p class="b-note b-note-seo">${icon('search-check')}${esc(PAGES_SEO)}</p>${optionChoices({ quand: 'creation' })}`;
+  const aboBody = `${forfaitChoices()}${billingSwitch()}<p class="b-note">${icon('info')}Votre formule démarre à la réception du site. Sans engagement : vous changez ou vous arrêtez quand vous voulez. <a href="${sections.forfaits.path}">Le détail des formules</a></p>`;
   const payChoices = `<div class="b-seg" role="radiogroup" aria-label="Paiement du site">
         <label><input type="radio" name="b-lisse" value="non" checked><span>En une fois</span></label>
         ${lissage.durees.map((n) => `<label><input type="radio" name="b-lisse" value="${n}"><span>En ${n} fois</span></label>`).join('')}
       </div>
-      <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Engagement le temps du paiement, et l’abonnement se paie alors au mois.</p>`;
+      <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Engagement le temps du paiement, et la formule se paie alors au mois.</p>
+      ${codeEvenementBox()}`;
   return `<div class="builder" data-builder="${priceData()}" data-billing-scope>
   <form class="b-steps" data-builder-form>
-    ${step(1, 'Votre site', `Tout est compris : la maquette, le site complet, parfait sur téléphone, et sa mise en ligne. Jusqu’à ${creation.pages} pages, au même prix. En dessous, ce que vous pouvez ajouter, payé une seule fois.`, typeBody)}
-    ${step(2, 'Votre nom de domaine', 'L’adresse de votre site. Elle est comprise dans l’abonnement et elle reste à votre nom.', domainBox())}
-    ${step(3, 'L’abonnement', 'Votre site reste en ligne, sûr et à jour. Nom de domaine, hébergement, support et le gardien qui veille sur votre site, compris. En dessous, les extras au mois : rien n’est obligatoire.', aboBody)}
-    ${step(4, 'Paiement du site', `${paiement.acompte} % à la commande. À la réception : le reste en une fois, ou en ${lissageTxt} fois sans frais. Aucun engagement, sauf le temps de payer le reste en plusieurs fois.`, payChoices, ' b-step-last')}
+    ${step(1, 'Votre site', `Un seul site, un seul prix : ${euro(creation.prix)}. Jusqu’à ${creation.pages} pages, un design fait pour vous, et sa mise en ligne. Deux options si vous voulez, payées une fois.`, typeBody)}
+    ${step(2, 'Votre nom de domaine', 'Le nom de domaine, c’est l’adresse de votre site (par exemple mon-entreprise.fr). Il est offert la première année et reste à votre nom.', domainBox())}
+    ${step(3, 'Votre formule', 'Après la mise en ligne, on s’occupe de votre site chaque mois. Choisissez la formule qui vous va.', aboBody)}
+    ${step(4, 'Paiement du site', `${paiement.acompte} % à la commande. À la réception : le reste en une fois, ou en ${lissageTxt} fois sans frais. Un code événement ? Il se met ici.`, payChoices, ' b-step-last')}
   </form>
   <aside class="b-sum" aria-live="polite">
     <p class="b-sum-title">Votre récapitulatif</p>
     <ul class="b-lines">
-      <li><span data-sum="type">Votre site</span><b data-sum="type-price">${euro(creation.prix)}</b></li>
-      <li><span data-sum="domain">Nom de domaine à choisir</span><b>inclus</b></li>
-      <li><span data-sum="forfait">Abonnement</span><b data-sum="forfait-price">${euro(ABO.month)}/mois</b></li>
+      <li><span data-sum="type">Site Internet Professionnel</span><b data-sum="type-price">${euro(creation.prix)}</b></li>
+      <li><span data-sum="domain">Nom de domaine à choisir</span><b>offert</b></li>
+      <li><span data-sum="forfait">Formule ${esc(ABO.name)}</span><b data-sum="forfait-price">${euro(ABO.month)}/mois</b></li>
       <li data-sum-opts hidden><span>Options</span><b data-sum="opts">0 €</b></li>
+      <li data-sum-remise hidden><span>Code événement (- ${evenement.remise} %)</span><b data-sum="remise">0 €</b></li>
     </ul>
     <div class="b-total">
       <p class="b-today"><span data-sum="today-label">Aujourd’hui : l’acompte de ${paiement.acompte} %</span><b data-sum="today">${euro(Math.round(creation.prix * paiement.acompte) / 100)}</b></p>
       <p><span data-sum="reste-label">À la réception du site : le reste</span><b data-sum="reste">${euro(creation.prix - Math.round(creation.prix * paiement.acompte) / 100)}</b></p>
       <p data-sum-parrain hidden><span>Parrainage</span><b>${fidelite.parrainageMois} mois offert</b></p>
-      <p><span data-sum="recur-label">Et l’abonnement, chaque mois</span><b data-sum="recur">${euro(ABO.month)}/mois</b></p>
+      <p><span data-sum="recur-label">Et votre formule, chaque mois</span><b data-sum="recur">${euro(ABO.month)}/mois</b></p>
     </div>
     <p class="b-sum-detail" data-sum="detail">Prix total du site : ${euro(creation.prix)}.</p>
     <div class="b-sum-actions">
       <a class="btn btn-primary btn-block btn-lg btn-flaque" href="${sections.commander.path}" data-sum-order>${icon('shopping-bag')}<span>Commander</span></a>
       <a class="btn btn-light btn-block" href="/contact/#devis" data-sum-go>${icon('message-circle')}<span>Poser une question</span></a>
     </div>
-    <p class="b-sum-note">${icon('shield-check')}Paiement sécurisé par Stripe. Aujourd’hui, vous réglez seulement ${paiement.acompte} % du site. Le reste et l’abonnement, à la réception.</p>
+    <p class="b-sum-note">${icon('shield-check')}Paiement sécurisé par Stripe. Aujourd’hui, vous réglez seulement ${paiement.acompte} % du site et vos options. Le reste et la formule, à la réception.</p>
   </aside>
   <div class="b-bar" data-sum-bar>
     <p data-sum="bar"><b>${euro(creation.prix)}</b> puis <b>${euro(ABO.month)}/mois</b></p>
@@ -436,15 +484,15 @@ function statsCard() {
 function comparatifTable() {
   const cols = ['Les Minis Monstres', 'Agence web', 'Freelance', 'Plateforme à faire soi-même'];
   const prixCreation = `${euro(creation.prix)}, le même prix pour tous. Boutique en ligne : + ${euro(creation.boutique)}`;
-  const prixMois = `${euro(ABO.month)} par mois, nom de domaine et hébergement compris`;
+  const prixMois = `${forfaits.map((f) => `${f.name} ${euro(f.month)}`).join(' ou ')} par mois, nom de domaine et hébergement compris`;
   const rows = [
     ['Qui fait le travail', 'Je conçois votre site. Mes automatisations s’occupent des tâches répétitives.', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
     ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
     ['Prix chaque mois', prixMois, 'Contrat de maintenance, sur devis', 'Selon le prestataire, souvent en option', 'Abonnement mensuel, plus les applications en option'],
-    ['Délai', `${types[0].delai} pour une page, ${types[1].delai} pour plusieurs pages, ${types[2].delai} pour une boutique`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
-    ['Modifications', 'Petites retouches par ma petite bande, et moi une fois par trimestre', 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
+    ['Délai', `${types[1].delai} pour un site, ${types[2].delai} pour une boutique`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
+    ['Modifications', `Incluses dans la formule, en ligne sous ${ABO.delai} au plus`, 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
-    ['SEO', 'Bases comprises sur chaque site. Avec l’extra Suivi Google, je travaille votre place chaque mois', 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
+    ['SEO (être trouvé sur Google)', `Bases comprises, et les pages non utilisées deviennent des pages pour Google. Avec ${EVO.name}, une page en plus chaque semaine`, 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
     ['Engagement', `Aucun. Seulement le temps du paiement si le reste est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
@@ -460,7 +508,8 @@ module.exports = {
   lissageTxt,
   unType,
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
-  billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, optsCreation, optsMois, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
+  billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, EVO, optsCreation, optsMois, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
+  offreEvenement, processusModif, formuleCarte, codeEvenementBox, INCLUS_SITE, PAGES_SEO, PACK_SEO, BOUTIQUE_INCLUS, ETAPES_MODIF,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
   petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };

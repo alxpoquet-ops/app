@@ -89,7 +89,14 @@ const sections = {
 // Création du site : 500 €, quel que soit le site (une page ou plusieurs). Une boutique en ligne : + 200 €.
 // Puis un abonnement obligatoire : 10 € par mois, sur lequel on ajoute ou on retire des extras quand on veut.
 // pages : pages comprises dans la création. pagePlus : prix d'une page en plus (payée une fois). pagesPlusMax : au-delà, on en parle.
-const creation = { prix: 500, pages: 10, pagePlus: 10, pagesPlusMax: 40, boutique: 200 };
+// Offre du 17 novembre 2026 : « Site Internet Professionnel », 500 €, jusqu'à 20 pages. Les pages que le client n'utilise pas
+// deviennent des pages pour Google (SEO). Deux options seulement : le Pack SEO et la boutique en ligne.
+// pagePlus et pagesPlusMax ne sont plus proposés (gardés pour les anciennes commandes de l'extension).
+const creation = { prix: 500, pages: 20, pagePlus: 10, pagesPlusMax: 0, boutique: 200, exemplePages: 8 };
+// Offre événement : un code donné sur une foire, un marché, un salon ou un événement professionnel.
+// remise : en %, sur la création du site (site et options payés une fois). Les codes valables se règlent dans
+// l'extension WordPress (Réglages, « Codes événement ») : le serveur vérifie le code et recalcule le prix.
+const evenement = { remise: 20, lieux: ['une foire', 'un marché', 'un salon', 'un événement professionnel'] };
 // Repères du marché pour la page Tarifs : prix publics relevés en France en novembre 2026 pour un site fait
 // par un indépendant (sources dans docs/prix-et-ia-2026.md). À relire une fois par an.
 // vitrine : site vitrine d'environ cinq pages. boutique : boutique en ligne simple. entretien : maintenance par mois.
@@ -124,7 +131,7 @@ const types = [
     qui: 'Pour présenter plusieurs services. Le meilleur choix pour sortir sur Google.',
     ideal: 'idéal pour le référencement, avec une page par sujet',
     pourQui: 'Pour vous si vous proposez plusieurs services, ou si vous voulez bien sortir sur Google. Chaque page parle d’un sujet précis, et Google peut montrer chacune dans ses résultats : c’est le meilleur choix pour le référencement. Par exemple : entreprise, commerce, profession libérale.',
-    inclus: ['Jusqu’à 10 pages', 'Menu clair sur téléphone', 'Formulaire de contact', 'SEO de chaque page'],
+    inclus: ['Jusqu’à 20 pages', 'Menu clair sur téléphone', 'Formulaire de contact', 'SEO de chaque page'],
   },
   {
     id: 'boutique',
@@ -140,7 +147,7 @@ const types = [
     qui: 'Pour vendre vos produits sur internet, même quand votre magasin est fermé.',
     ideal: 'idéal pour vendre, avec le paiement par carte',
     pourQui: 'Pour vous si vous voulez vendre vos produits en ligne, même quand votre boutique est fermée. Par exemple : créateur, commerçant, producteur.',
-    inclus: ['Jusqu’à 20 produits ajoutés par moi', 'Paiement par carte sécurisé', 'Commandes et stocks', 'Conditions de vente à compléter'],
+    inclus: ['Catalogue produits', 'Panier', 'Paiement en ligne', 'Gestion des commandes', 'E-mails automatiques'],
   },
 ];
 
@@ -154,24 +161,59 @@ const types = [
 // (power : extra Suivi Google ; titan : extras Suivi Google et chiffres détaillés), c'est géré dans l'extension WordPress.
 // L'énergie donnée chaque mois avec l'abonnement : elle sert aux outils de l'espace client et aux petites retouches.
 const energieMois = 250;
+// ---------------------------------------------------------------- en pause
+// Novembre 2026 : l'énergie et les outils de l'espace client sont retirés pour l'instant, du site public comme de
+// l'espace client. Cerise (la bulle) et Bricou (les modifications) restent compris, sans énergie : les modifications
+// sont sans limite, la bulle garde limites.bulleJour messages par jour.
+// Pour tout remettre : outils et energie à true (les textes, l'onglet Outils et la page /outils/ reviennent).
+const enService = { outils: false, energie: false };
+const limites = { bulleJour: 40 }; // messages par jour dans la bulle de Cerise (les modifications sont sans limite)
+const enPause = !enService.energie;
+// Deux formules au mois, sans engagement. id 'base' = Tranquillité (les clients déjà abonnés y restent), 'evolution' = Évolution.
+// illimite : modifications incluses, sans quota (quota et periode ne servent plus que pour les anciens comptes de l'extension).
+// delai : délai des modifications. priorite : passe avant les autres. pageSeoSemaine : une page pour Google en plus chaque semaine.
 const forfaits = [
   {
     id: 'base',
-    name: 'Abonnement',
-    color: 'pink',
+    name: 'Tranquillité',
+    color: 'mint',
     month: 10,
-    quota: 1, // interventions d'Alex par période
+    quota: 1,
     periode: 'trimestre',
-    jetons: energieMois, // énergie par mois (Jetons Cerise dans l'extension)
+    illimite: true,
+    jetons: energieMois, // énergie (en pause)
     partage: false,
-    bulle: 'Tout ce qu’il faut pour que votre site tourne',
-    modifs: 'les petites retouches et les outils de la bande, et une intervention de ma part par trimestre',
+    delai: '72 heures',
+    bulle: 'Votre site entretenu et à jour, sans y penser',
+    modifs: 'modifications incluses',
     conseil: false,
     tagline: 'Sans engagement',
-    pitch: 'Votre site en ligne, sûr et à jour, avec son nom de domaine, le support, le gardien qui veille sur lui, les outils de la bande et mon intervention chaque trimestre.',
-    main: ['Nom de domaine et hébergement compris', 'Le gardien : mises à jour, sauvegardes, surveillance', `Les outils de la bande, avec ${energieMois} d’énergie par mois`, 'Mon intervention, une fois par trimestre'],
-    details: ['Nom de domaine relié à votre site et renouvelé chaque année, à votre nom', 'Hébergement sur un serveur de qualité', 'HTTPS : le petit cadenas qui protège vos visiteurs', 'Mises à jour faites pour vous, et sauvegardes', 'Suivi : le site est surveillé, il tient quand il y a du monde', 'Support : une question, une réponse sous 72 heures', 'Formulaire de contact qui arrive dans votre boîte mail', 'Bases du référencement : Google sait lire et comprendre votre site', 'Le gardien, un petit monstre qui veille sur votre site jour et nuit', `Les petites retouches et les outils de la bande, avec ${energieMois} d’énergie chaque mois pour un usage normal`, 'Une intervention par trimestre, que je fais et vérifie à la main', 'Votre espace client : demandes, outils pour vous faire connaître, suivi', 'Sans engagement : vous arrêtez quand vous voulez'],
-    features: ['Nom de domaine relié et renouvelé', 'Hébergement sur un serveur de qualité', 'Mises à jour, sauvegardes et HTTPS', 'Suivi du site et support sous 72 heures', 'Bases du référencement', 'Le gardien qui veille sur votre site', `Les outils de la bande, avec ${energieMois} d’énergie par mois`, 'Une intervention de ma part par trimestre', 'Votre espace client et ses outils'],
+    pitch: 'Votre site reste en ligne, protégé et à jour. Vous demandez une modification, on s’en occupe.',
+    main: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Surveillance', 'Maintenance', 'Modifications incluses'],
+    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site, à votre nom', 'Sauvegardes : une copie de sécurité de votre site', 'Sécurité : le petit cadenas HTTPS et les protections à jour', 'Surveillance : on vérifie jour et nuit que votre site répond', 'Maintenance : les vérifications techniques qui gardent votre site en forme', 'Modifications incluses, en ligne sous 72 heures au plus'],
+    features: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Surveillance', 'Maintenance', 'Modifications incluses'],
+  },
+  {
+    id: 'evolution',
+    name: 'Évolution',
+    color: 'lilac',
+    month: 20,
+    quota: 1,
+    periode: 'trimestre',
+    illimite: true,
+    priorite: true,
+    pageSeoSemaine: true,
+    jetons: energieMois,
+    partage: false,
+    delai: '12 à 24 heures',
+    bulle: 'Votre site qui grandit chaque semaine',
+    modifs: 'modifications incluses et prioritaires, et une page SEO chaque semaine',
+    conseil: false,
+    tagline: 'Sans engagement',
+    pitch: 'Tout Tranquillité, avec vos modifications en priorité et une nouvelle page pour Google chaque semaine.',
+    main: ['Tout le forfait Tranquillité', 'Modifications incluses', 'Priorité de traitement', 'Délai moyen entre 12 h et 24 h', 'Une page SEO supplémentaire chaque semaine'],
+    details: ['Tout le forfait Tranquillité', 'Modifications incluses', 'Priorité de traitement : vos demandes passent en premier', 'Délai moyen entre 12 h et 24 h', 'Une page SEO supplémentaire chaque semaine, pour être trouvé sur plus de recherches Google'],
+    features: ['Tout le forfait Tranquillité', 'Modifications incluses', 'Priorité de traitement', 'Délai moyen entre 12 h et 24 h', 'Une page SEO supplémentaire chaque semaine'],
   },
 ];
 const annuel = { moisOfferts: 2 };
@@ -179,7 +221,7 @@ const annuel = { moisOfferts: 2 };
 // Le paiement en plusieurs fois se fait au mois : l'abonnement passe alors au mois.
 const lissage = { durees: [6, 12] };
 // Délai de réponse aux demandes de modification (le même pour tous).
-const delais = { reponse: '72 heures', titan: '72 heures', urgent: '24 heures' };
+const delais = { reponse: '72 heures', titan: '72 heures', urgent: '24 heures', evolution: '12 à 24 heures' };
 
 // ---------------------------------------------------------------- options et extras
 // quand : 'creation' = payé une fois, à la création du site ; 'mois' = extra de l'abonnement, activable et désactivable.
@@ -188,16 +230,20 @@ const delais = { reponse: '72 heures', titan: '72 heures', urgent: '24 heures' }
 // court : la version en une ligne, pour le configurateur. desc : la description complète, pour la page Tarifs.
 // info : ce que l'option ajoute, montré par le petit « i », avec sa capture d'exemple (src/assets/img/options/<id>.webp,
 // fabriquée par scripts/captures-options.js).
+// 17 novembre 2026 : deux options seulement, payées une fois. Le Pack SEO ici, et la boutique en ligne (creation.boutique,
+// le type de site « boutique »). Les anciennes options et extras restent listés avec retire: true, pour les clients qui
+// les ont déjà (l'extension les montre encore dans leur compte), mais ne sont plus proposés.
 const options = [
-  { id: 'en', quand: 'creation', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 100 }, court: 'Avec un bouton pour changer de langue.', info: 'Chaque page existe aussi en anglais, relue à la main. Un bouton en haut du site passe d’une langue à l’autre, et Google peut montrer la version anglaise aux visiteurs étrangers.', desc: 'Votre site traduit en anglais et relu, avec un bouton pour changer de langue. Pour les touristes et les clients venus d’ailleurs.' },
-  { id: 'rdv', quand: 'creation', group: 'site', name: 'Prise de rendez-vous', icon: 'calendar-check', price: { once: 100 }, court: 'Vos clients réservent un créneau en ligne.', info: 'Une page avec vos créneaux libres. Le client choisit son jour et son heure, reçoit une confirmation, et vous êtes prévenu par e-mail. Vous ouvrez et fermez les créneaux vous-même.', desc: 'Vos clients réservent un créneau sur votre site, selon vos disponibilités. Vous recevez un e-mail à chaque réservation.' },
-  { id: 'reprise', quand: 'creation', group: 'site', name: 'Reprise de votre ancien site', icon: 'refresh-cw', price: { once: 100 }, court: 'On garde vos textes, photos et adresses.', info: 'Je récupère les textes, les photos et les adresses des pages de votre ancien site, et je les remets au propre. Les anciens liens mènent au bon endroit : vous gardez votre place sur Google.', desc: 'Vos textes, vos photos et vos adresses de pages repris de l’ancien site, pour garder votre place sur Google.' },
+  { id: 'packseo', quand: 'creation', group: 'site', name: 'Pack SEO', icon: 'search-check', price: { once: 25 }, pages: 10, court: '10 pages SEO en plus, pour être trouvé sur plus de recherches Google.', info: 'Dix pages de plus, chacune écrite pour une recherche que font vos clients sur Google : un service, une ville, une question fréquente. Plus votre site a de pages utiles, plus il a de chances d’apparaître.', desc: '10 pages SEO en plus. Chaque page répond à une recherche que font vos clients sur Google. Plus de pages utiles, plus de chances d’être trouvé.' },
+  { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'en', quand: 'creation', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 100 }, court: 'Avec un bouton pour changer de langue.', info: 'Chaque page existe aussi en anglais, relue à la main. Un bouton en haut du site passe d’une langue à l’autre, et Google peut montrer la version anglaise aux visiteurs étrangers.', desc: 'Votre site traduit en anglais et relu, avec un bouton pour changer de langue. Pour les touristes et les clients venus d’ailleurs.' },
+  { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'rdv', quand: 'creation', group: 'site', name: 'Prise de rendez-vous', icon: 'calendar-check', price: { once: 100 }, court: 'Vos clients réservent un créneau en ligne.', info: 'Une page avec vos créneaux libres. Le client choisit son jour et son heure, reçoit une confirmation, et vous êtes prévenu par e-mail. Vous ouvrez et fermez les créneaux vous-même.', desc: 'Vos clients réservent un créneau sur votre site, selon vos disponibilités. Vous recevez un e-mail à chaque réservation.' },
+  { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'reprise', quand: 'creation', group: 'site', name: 'Reprise de votre ancien site', icon: 'refresh-cw', price: { once: 100 }, court: 'On garde vos textes, photos et adresses.', info: 'Je récupère les textes, les photos et les adresses des pages de votre ancien site, et je les remets au propre. Les anciens liens mènent au bon endroit : vous gardez votre place sur Google.', desc: 'Vos textes, vos photos et vos adresses de pages repris de l’ancien site, pour garder votre place sur Google.' },
   { id: 'pages', retire: true /* remplacée par « 10 € la page en plus » (novembre 2026) : gardée pour les anciennes commandes */, quand: 'creation', group: 'site', name: 'Cinq pages de plus', icon: 'layers', price: { once: 100 }, types: ['vitrine', 'boutique'], court: 'Cinq pages en plus des cinq comprises.', info: 'Votre site passe de cinq à dix pages : une page par service, par produit phare ou par événement. Chaque page utile est une chance de plus d’être trouvé sur Google.', desc: 'Pour un site plus grand : cinq pages en plus des cinq comprises.' },
-  { id: 'seo', quand: 'mois', group: 'site', name: 'Suivi Google', icon: 'search-check', price: { month: 10 }, court: 'Je travaille votre place sur Google, chaque mois.', info: 'Chaque mois, je suis les mots que tapent vos clients, je retouche vos pages pour les aider à monter sur Google, et vous recevez un rapport simple : votre place pour chaque mot et les visites venues de Google.', desc: 'Chaque mois, je regarde les mots que vos clients tapent, j’améliore vos pages pour Google et je vous montre où vous en êtes.' },
-  { id: 'stats', quand: 'mois', group: 'site', name: 'Chiffres détaillés', icon: 'chart-line', price: { month: 5 }, court: 'Visiteurs, provenance et ventes, heure par heure.', info: 'Le tableau de bord complet : la courbe de vos visites, les appareils, d’où viennent vos visiteurs, vos ventes, et un rapport chaque mois.', desc: 'Votre site heure par heure : visiteurs, pages vues, provenance, ventes. Et un rapport simple chaque mois.' },
-  { id: 'mail', quand: 'mois', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, court: 'Une adresse comme contact@votreboite.fr.', info: 'Une vraie boîte à votre nom, comme contact@votreboite.fr, sur votre téléphone et votre ordinateur. Je la crée et je vous envoie les réglages.', desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
-  { id: 'stock', quand: 'mois', group: 'site', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, types: ['boutique'], court: 'Le stock se décompte à chaque vente.', info: 'Vous indiquez combien vous avez de chaque produit. Le stock baisse tout seul à chaque vente, le site affiche « Plus que 2 » quand il en reste peu, puis « Épuisé » à zéro.', desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
-  { id: 'comptes', quand: 'mois', group: 'site', name: 'Comptes clients', icon: 'users', price: { month: 5 }, types: ['boutique'], court: 'Vos clients gardent commandes, adresses et favoris.', info: 'Vos clients se créent un compte : ils retrouvent leurs commandes, leurs adresses et leurs produits favoris, et recommandent en un clic.', desc: 'Vos clients se créent un compte sur votre site : commandes passées, adresses et favoris gardés.' },
+  { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'seo', quand: 'mois', group: 'site', name: 'Suivi Google', icon: 'search-check', price: { month: 10 }, court: 'Je travaille votre place sur Google, chaque mois.', info: 'Chaque mois, je suis les mots que tapent vos clients, je retouche vos pages pour les aider à monter sur Google, et vous recevez un rapport simple : votre place pour chaque mot et les visites venues de Google.', desc: 'Chaque mois, je regarde les mots que vos clients tapent, j’améliore vos pages pour Google et je vous montre où vous en êtes.' },
+  { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'stats', quand: 'mois', group: 'site', name: 'Chiffres détaillés', icon: 'chart-line', price: { month: 5 }, court: 'Visiteurs, provenance et ventes, heure par heure.', info: 'Le tableau de bord complet : la courbe de vos visites, les appareils, d’où viennent vos visiteurs, vos ventes, et un rapport chaque mois.', desc: 'Votre site heure par heure : visiteurs, pages vues, provenance, ventes. Et un rapport simple chaque mois.' },
+  { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'mail', quand: 'mois', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, court: 'Une adresse comme contact@votreboite.fr.', info: 'Une vraie boîte à votre nom, comme contact@votreboite.fr, sur votre téléphone et votre ordinateur. Je la crée et je vous envoie les réglages.', desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
+  { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'stock', quand: 'mois', group: 'site', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, types: ['boutique'], court: 'Le stock se décompte à chaque vente.', info: 'Vous indiquez combien vous avez de chaque produit. Le stock baisse tout seul à chaque vente, le site affiche « Plus que 2 » quand il en reste peu, puis « Épuisé » à zéro.', desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
+  { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'comptes', quand: 'mois', group: 'site', name: 'Comptes clients', icon: 'users', price: { month: 5 }, types: ['boutique'], court: 'Vos clients gardent commandes, adresses et favoris.', info: 'Vos clients se créent un compte : ils retrouvent leurs commandes, leurs adresses et leurs produits favoris, et recommandent en un clic.', desc: 'Vos clients se créent un compte sur votre site : commandes passées, adresses et favoris gardés.' },
 ];
 
 // ---------------------------------------------------------------- la petite bande : les automatisations d'Alex
@@ -208,18 +254,21 @@ const options = [
 // un seul pour la bulle (Cerise), un seul pour les modifications (Bricou), un par outil ou par option.
 // option : l'option au mois qui l'ajoute à votre abonnement. compris : dans l'abonnement de base.
 // outils : il aide aussi le client au quotidien, dans son espace (au service de tous).
-const bande = [
-  { id: 'support', nom: 'Cerise', monstre: 'lia', role: 'L’assistante', compris: true, court: 'Elle répond à vos questions, dans la bulle.', fait: 'C’est elle qui vous répond dans la petite bulle, en bas de l’écran. Une question sur votre site ? Elle est là, et elle me passe le relais quand il le faut.' },
-  { id: 'gardien', nom: 'Mochi', monstre: 'mochi', role: 'Le gardien', compris: true, court: 'Mises à jour, sauvegardes et surveillance.', fait: 'Il fait les mises à jour, les sauvegardes et la sécurité, et il surveille jour et nuit que votre site reste en ligne et rapide.' },
-  { id: 'bricoleur', nom: 'Bricou', monstre: 'bricou', role: 'Le bricoleur', compris: true, court: 'Vos petites modifications, avec un aperçu.', fait: 'Vous lui demandez un changement : il me le montre d’abord, puis il prépare la modification et vous laisse valider l’aperçu.' },
-  { id: 'ecrivain', nom: 'Plume', monstre: 'fantome', role: 'L’écrivain', outils: true, court: 'Vos textes, vos réponses et vos avis.', fait: 'Il vous aide à écrire : corriger un texte, le rendre plus clair, le traduire, répondre à un client ou à un avis.' },
-  { id: 'messager', nom: 'Pouf', monstre: 'nuage', role: 'Le messager', outils: true, court: 'Vos publications et vos photos.', fait: 'Il prépare vos publications pour les réseaux, vous donne des idées et met vos photos au bon format.' },
-  { id: 'etoile', nom: 'Lumi', monstre: 'etoile', role: 'L’étoile de Google', option: 'seo', court: 'Votre place sur Google, chaque semaine.', fait: 'Elle suit votre place sur Google chaque semaine et me signale ce qu’il faut améliorer sur vos pages.' },
-  { id: 'observateur', nom: 'Mirette', monstre: 'gelee', role: 'L’observatrice', option: 'stats', court: 'Vos visiteurs et votre rapport du mois.', fait: 'Elle compte vos visiteurs, regarde d’où ils viennent et prépare votre rapport du mois.' },
-  { id: 'facteur', nom: 'Minou', monstre: 'chaton', role: 'Le facteur', option: 'mail', court: 'Votre adresse e-mail pro, sans indésirables.', fait: 'Il s’occupe de votre adresse e-mail pro et écarte les messages indésirables.' },
-  { id: 'magasinier', nom: 'Pistache', monstre: 'dino', role: 'Le magasinier', option: 'stock', court: 'Votre stock, décompté à chaque vente.', fait: 'Il décompte le stock à chaque vente et vous prévient quand il en reste peu.' },
-  { id: 'hote', nom: 'Champi', monstre: 'champi', role: 'L’hôte', option: 'comptes', court: 'Les comptes de vos clients.', fait: 'Il garde les commandes, les adresses et les favoris de vos clients, pour qu’ils recommandent en un clic.' },
+// 17 novembre 2026 : chaque monstre a un métier clair, ses missions et sa personnalité. Sur le site, on ne parle pas d'IA :
+// seulement de ces petits monstres. role : son métier. missions : ce qu'il fait pour le client. perso : son caractère.
+// compris : avec toutes les formules. option : 'boutique' (il arrive avec la boutique en ligne).
+// court / fait : une phrase courte et une phrase complète, reprises par les pages et les FAQ.
+const bandeTout = [
+  { id: 'support', nom: 'Cerise', monstre: 'lia', role: 'La secrétaire', compris: true, missions: ['Accueille vos demandes', 'Organise vos projets', 'Prépare les réponses', 'Vous accompagne pas à pas'], perso: 'Souriante et toujours là, elle n’oublie jamais personne.', court: 'Elle accueille vos demandes et vous accompagne.', fait: 'Elle accueille vos demandes, organise vos projets, prépare les réponses et vous accompagne pas à pas. C’est elle qui vous répond dans la petite bulle.' },
+  { id: 'bricoleur', nom: 'Bricou', monstre: 'bricou', role: 'Le constructeur', compris: true, missions: ['Construit votre site', 'Prépare vos modifications', 'Construit vos nouvelles pages'], perso: 'Minutieux, le casque vissé sur la tête, il mesure deux fois avant de poser une brique.', court: 'Il construit votre site et prépare vos modifications.', fait: 'Il construit votre site, prépare vos modifications avec un aperçu et construit vos nouvelles pages.' },
+  { id: 'ecrivain', nom: 'Plume', monstre: 'fantome', role: 'La rédactrice', compris: true, missions: ['Prépare vos contenus', 'Vous aide à écrire vos textes', 'Rend chaque phrase facile à lire'], perso: 'Rêveuse mais précise, elle cherche toujours le mot juste.', court: 'Elle prépare vos textes et les rend faciles à lire.', fait: 'Elle prépare vos contenus, vous aide à écrire vos textes et rend chaque phrase facile à lire.' },
+  { id: 'organisateur', nom: 'Mochi', monstre: 'mochi', role: 'L’organisateur', compris: true, missions: ['Classe vos contenus', 'Organise vos pages', 'Garde tout bien rangé'], perso: 'Un peu maniaque, il adore quand chaque chose est à sa place.', court: 'Il classe vos contenus et garde tout bien rangé.', fait: 'Il classe vos contenus, organise vos pages et garde tout bien rangé, pour que vos visiteurs trouvent vite ce qu’ils cherchent.' },
+  { id: 'gardien', nom: 'Pistache', monstre: 'dino', role: 'Le gardien', compris: true, missions: ['Fait les sauvegardes', 'Veille sur la sécurité', 'Surveille votre site jour et nuit', 'Fait la maintenance'], perso: 'Costaud et calme, il ne dort que d’un œil.', court: 'Il protège votre site, jour et nuit.', fait: 'Il fait les sauvegardes et la maintenance, veille sur la sécurité et surveille votre site jour et nuit.' },
+  { id: 'observateur', nom: 'Mirette', monstre: 'gelee', role: 'L’observatrice', compris: true, missions: ['Surveille vos statistiques', 'Observe la vitesse de votre site', 'Repère ce qui peut être amélioré'], perso: 'Curieuse, elle ne quitte jamais ses jumelles.', court: 'Elle suit vos visites et repère ce qui peut être amélioré.', fait: 'Elle surveille vos statistiques, observe la vitesse de votre site et repère ce qui peut être amélioré.' },
+  { id: 'etoile', nom: 'Lumi', monstre: 'etoile', role: 'L’étoile de Google', compris: true, missions: ['Prépare vos pages SEO', 'Aide Google à comprendre votre site', 'Vous rend plus facile à trouver'], perso: 'Elle brille un peu plus fort chaque fois qu’un client vous trouve.', court: 'Elle prépare vos pages pour être trouvé sur Google.', fait: 'Elle prépare vos pages SEO et aide Google à comprendre votre site, pour que vos clients vous trouvent plus facilement.' },
+  { id: 'vendeur', nom: 'Champi', monstre: 'champi', role: 'Le vendeur', option: 'boutique', missions: ['Range votre catalogue', 'Suit vos commandes', 'Envoie les e-mails à vos clients'], perso: 'Toujours aimable, il connaît chaque produit par cœur.', court: 'Il tient votre boutique en ligne.', fait: 'Avec la boutique en ligne, il range votre catalogue, suit vos commandes et envoie les e-mails à vos clients.' },
 ];
+const bande = bandeTout;
 
 // ---------------------------------------------------------------- fidélité et paiement
 const fidelite = { parrainageMois: 1, remiseSecondSite: 10 };
@@ -247,12 +296,13 @@ const jetonsLia = {
 // ---------------------------------------------------------------- extras à la demande (payés une fois)
 // Commandés depuis l'espace client quand on en a besoin, ajoutés à la prochaine facture. Rien à payer si on ne s'en sert pas.
 // alex : une intervention d'Alex en plus de celle de la période (l'ancien « Boost »).
+// Retirés le 17 novembre 2026 (offre simplifiée) : gardés pour les anciennes commandes de l'extension.
 const aLaDemande = [
-  { id: 'alex', name: 'Une intervention à la main en plus', prix: 5, icon: 'user-check', desc: 'Une modification que je fais à la main, en plus de celle du trimestre.' },
-  { id: 'urgent', name: 'Votre demande sous 24 heures', prix: 5, icon: 'zap', desc: 'Votre demande passe avant les autres et elle est traitée sous 24 heures, du lundi au vendredi.' },
-  { id: 'article', name: 'Un article écrit et publié', prix: 15, icon: 'pen-tool', desc: 'Vous donnez le sujet. Je prépare l’article, je le relis, je l’illustre et je le publie sur votre site.' },
-  { id: 'page', name: 'Une page en plus', prix: creation.pagePlus, icon: 'file-text', desc: 'Une nouvelle page sur votre site, après sa mise en ligne. Je la prépare avec vos textes et vos photos, puis je la publie.' },
-  { id: 'point', name: 'Un point de 30 minutes ensemble', prix: 15, icon: 'phone', desc: 'Au téléphone ou en visio : on fait le tour de votre site, de vos résultats et de vos idées.' },
+  { retire: true, id: 'alex', name: 'Une intervention à la main en plus', prix: 5, icon: 'user-check', desc: 'Une modification que je fais à la main, en plus de celle du trimestre.' },
+  { retire: true, id: 'urgent', name: 'Votre demande sous 24 heures', prix: 5, icon: 'zap', desc: 'Votre demande passe avant les autres et elle est traitée sous 24 heures, du lundi au vendredi.' },
+  { retire: true, id: 'article', name: 'Un article écrit et publié', prix: 15, icon: 'pen-tool', desc: 'Vous donnez le sujet. Je prépare l’article, je le relis, je l’illustre et je le publie sur votre site.' },
+  { retire: true, id: 'page', name: 'Une page en plus', prix: creation.pagePlus, icon: 'file-text', desc: 'Une nouvelle page sur votre site, après sa mise en ligne. Je la prépare avec vos textes et vos photos, puis je la publie.' },
+  { retire: true, id: 'point', name: 'Un point de 30 minutes ensemble', prix: 15, icon: 'phone', desc: 'Au téléphone ou en visio : on fait le tour de votre site, de vos résultats et de vos idées.' },
 ];
 // Boost : l'ancien nom de l'intervention d'Alex en plus (gardé pour l'extension WordPress et l'espace client).
 const boost = { prix: aLaDemande[0].prix };
@@ -270,4 +320,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: '' },
 ];
 
-module.exports = { clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande };
+module.exports = { clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement };

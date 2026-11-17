@@ -1,5 +1,5 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, sections, types, forfaits, creation, jetonsLia, marche } = require('../config');
+const { site, sections, types, forfaits, creation, jetonsLia, marche, enService } = require('../config');
 let METIERS = [];
 try { METIERS = require('../content/metiers').metiers; } catch (e) { /* pas encore écrit */ }
 const { icon } = require('./icons');
@@ -100,7 +100,8 @@ function graph(p) {
 // ---------------------------------------------------------------- en-tête
 // Notre équipe, Accompagnement, Tarifs, Outils, Réalisations, Contact. Outils et Documentation passent dans l'espace client.
 // Sur téléphone, chaque lien a une petite phrase (NAV_DESC), et « Créer mon site » est le grand bouton du bas.
-const NAV = ['equipe', 'accompagnement', 'forfaits', 'espace', 'confiance', 'contact'];
+// Outils en pause (config enService) : l'onglet Outils disparaît du menu.
+const NAV = ['equipe', 'accompagnement', 'forfaits', 'espace', 'confiance', 'contact'].filter((k) => k !== 'espace' || enService.outils);
 const NAV_DESC = {
   equipe: 'Ma petite bande et moi',
   accompagnement: 'Après la mise en ligne',
@@ -155,7 +156,8 @@ function footer(p) {
       <h2 class="footer-title">Votre site</h2>
       <ul class="footer-links">
         <li><a href="${sections.creer.path}">Créer mon site</a></li>
-        ${types.map((t) => `<li><a href="${C.creerUrl({ type: t.id })}">${t.label}</a></li>`).join('')}
+        <li><a href="${C.creerUrl()}">Site Internet Professionnel</a></li>
+        <li><a href="${C.creerUrl({ type: 'boutique' })}">Avec une boutique en ligne</a></li>
         <li><a href="${sections.forfaits.path}">Tarifs : ${marche.fois} fois moins cher</a></li>
       </ul>
     </div>
@@ -187,7 +189,7 @@ function footer(p) {
         <li><a href="${sections.accompagnement.path}">Accompagnement</a></li>
         <li><a href="/faq/">Questions fréquentes</a></li>
         <li><a href="/mon-espace/demo/">Essayer l’espace client</a></li>
-        <li><a href="${sections.espace.path}">Les outils de l’espace client</a></li>
+        ${enService.outils ? `<li><a href="${sections.espace.path}">Les outils de l’espace client</a></li>` : ''}
         <li><a href="${sections.documentation.path}">Documentation client</a></li>
         <li><a href="/contact/">Contact</a></li>
       </ul>
@@ -216,15 +218,15 @@ ${liaFlot()}`;
 function liaFlot() {
   const eur = (n) => `${n} €`;
   const questions = [
-    ['C’est combien ?', `Tout est compris : la maquette, le site, le nom de domaine, l’hébergement et les mises à jour. C’est ${marche.fois} fois moins cher qu’un site fait à la main : à partir de ${eur(creation.prix)} le site, puis ${eur(ABO.month)} par mois.`, sections.forfaits.path, 'Voir les tarifs'],
+    ['C’est combien ?', `Votre site professionnel coûte ${eur(creation.prix)}, jusqu’à ${creation.pages} pages. Ensuite, une formule à ${forfaits.map((f) => eur(f.month)).join(' ou ')} par mois s’occupe de tout : hébergement, sécurité, modifications.`, sections.forfaits.path, 'Voir les tarifs'],
     ['Comment ça marche ?', 'Vous composez votre site en deux minutes, Alex le prépare avec sa petite bande, et vous validez l’aperçu avant la mise en ligne. Vous voyez le prix avant de commander.', sections.creer.path, 'Créer mon site'],
-    ['Qui fait mon site ?', 'Alex ! C’est lui qui conçoit et fait votre site, et qui vous répond. Moi et les autres petits monstres, nous sommes ses automatisations : on s’occupe du répétitif, et Alex vérifie tout.', sections.liaalex.path, 'Alex et sa petite bande'],
-    ['Et pour changer mon site après ?', 'Dans votre espace client, vous écrivez ce que vous voulez changer. Les petites retouches, la bande les prépare avec un aperçu à valider. Le reste, Alex s’en occupe.', sections.accompagnement.path, 'L’accompagnement'],
+    ['Qui fait mon site ?', 'Alex ! C’est lui qui conçoit votre site et qui vous répond. Moi, je suis la secrétaire de sa petite bande : chaque monstre a son métier, et Alex vérifie tout.', sections.equipe.path, 'Rencontrer la bande'],
+    ['Et pour changer mon site après ?', 'Vous écrivez votre demande dans votre espace client. Bricou prépare la modification et un aperçu, Alex la vérifie, et c’est en ligne. C’est compris dans votre formule.', sections.accompagnement.path, 'L’accompagnement'],
   ];
-  const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', 'Comment avoir plus d’avis Google ?', 'Que comprend mon abonnement ?'];
+  const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', enService.outils ? 'Comment avoir plus d’avis Google ?' : 'Comment se passe une modification ?', 'Que comprend mon abonnement ?'];
   return `<div class="lia-flot" data-lia-flot hidden>
-  <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Cerise, l’assistante d’Alex" hidden>
-    <div class="lia-tete">${monster('coucou')}<p><strong>Cerise</strong><small>L’assistante de la petite bande</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Cerise">${icon('x')}</button></div>
+  <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Cerise, la secrétaire d’Alex" hidden>
+    <div class="lia-tete">${monster('coucou')}<p><strong>Cerise</strong><small>La secrétaire de la petite bande</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Cerise">${icon('x')}</button></div>
     <div class="lia-fil" data-lia-fil aria-live="polite">
       <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Cerise, de la petite bande d’Alex ! Choisissez une question, je vous réponds tout de suite.</p>
       <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Bonjour ! Dites-moi ce que vous voulez changer sur votre site, ou posez-moi une question.</p>
@@ -247,7 +249,7 @@ function liaFlot() {
     </form>
     <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Cerise répond automatiquement et peut se tromper : rien ne change sans votre accord. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
   </div>
-  <p class="lia-flot-coucou" hidden><strong>Je suis là pour vous aider !</strong><small>Cerise, l’assistante de la bande</small></p>
+  <p class="lia-flot-coucou" hidden><strong>Je suis là pour vous aider !</strong><small>Cerise, la secrétaire de la bande</small></p>
   <button type="button" class="lia-flot-btn" aria-expanded="false" aria-controls="lia-panel"><span class="sr-only">Parler à Cerise</span>${monster('coucou')}</button>
 </div>`;
 }
