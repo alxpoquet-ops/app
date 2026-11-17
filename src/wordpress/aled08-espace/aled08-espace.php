@@ -365,9 +365,15 @@ function aled08e_annulations_mois($uid) {
 /* '' si la demande peut être annulée, sinon la raison : 'deja', 'delai', 'quota' */
 function aled08e_annulation_possible($p) {
     if (get_post_meta($p->ID, '_aled08_annulee_le', true)) return 'deja';
+    if (aled08e_annul_illimite((int) $p->post_author)) return ''; // abonnement à 20 € : annulations à tout moment, sans limite
     if (time() - (int) get_post_time('U', true, $p) > ALED08E_ANNUL_HEURES * HOUR_IN_SECONDS) return 'delai';
     if (aled08e_annulations_mois($p->post_author) >= ALED08E_ANNUL_MOIS) return 'quota';
     return '';
+}
+/* Annulations sans limite (ni délai de 24 h, ni 3 par mois) : l'abonnement avec l'optimisation continue (Maxi, 20 €), et les comptes famille */
+function aled08e_annul_illimite($uid) {
+    $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
+    return !empty($f['optimisation']) || aled08e_famille($uid);
 }
 function aled08e_annuler_demande($pid) {
     $p = get_post($pid);
@@ -395,7 +401,7 @@ function aled08e_annuler_demande($pid) {
         . ($note ? "\nCe que Bricou avait mis en ligne : " . $note . "\n" : '')
         . (get_post_meta($pid, '_aled08_hors_forfait', true) ? "\nC'était une intervention d'Alex en plus (" . aled08e_boost_txt() . ") : à rembourser ou retirer de sa facture.\n" : '')
         . (aled08e_extras_demande($pid) ? "\nExtras payés à retirer de sa facture : " . aled08e_extras_demande_txt($pid) . "\n" : '')
-        . "\nAnnulations ce mois-ci : " . aled08e_annulations_mois($uid) . ' / ' . ALED08E_ANNUL_MOIS . "\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
+        . "\nAnnulations ce mois-ci : " . aled08e_annulations_mois($uid) . (aled08e_annul_illimite($uid) ? ' (illimitées)' : ' / ' . ALED08E_ANNUL_MOIS) . "\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
     return true;
 }
 add_action('template_redirect', function () {
@@ -415,10 +421,11 @@ function aled08e_annulation_html($p) {
     $pourquoi = aled08e_annulation_possible($p);
     if ($pourquoi === 'delai') return '';
     if ($pourquoi === 'quota') return '<span class="req-annul-info">Vous avez utilisé vos 3 annulations du mois. Pour annuler celle-ci, <a href="' . esc_url(home_url('/contact/')) . '">écrivez à Alex</a>.</span>';
+    $illim = aled08e_annul_illimite((int) $p->post_author);
     $reste = ALED08E_ANNUL_MOIS - aled08e_annulations_mois($p->post_author);
     return '<form method="post" action="' . esc_url(aled08e_url()) . '" class="req-annul" onsubmit="return confirm(\'Annuler cette demande ? Elle ne comptera pas dans vos interventions.\');">'
         . '<input type="hidden" name="aled08e_annuler" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_annuler_' . $p->ID, '_aled08e_annul', true, false)
-        . '<button class="link-btn" type="submit">' . aled08e_icon('x') . 'Annuler la demande</button><small>gratuit pendant 24 heures, encore ' . (int) $reste . ' ce mois-ci</small></form>';
+        . '<button class="link-btn" type="submit">' . aled08e_icon('x') . 'Annuler la demande</button><small>' . ($illim ? 'annulations illimitées, à tout moment' : 'gratuit pendant 24 heures, encore ' . (int) $reste . ' ce mois-ci') . '</small></form>';
 }
 /* Jetons Cerise du forfait (null = illimité) */
 function aled08e_jetons($f) { return array_key_exists('jetons', $f) ? $f['jetons'] : 1; }
