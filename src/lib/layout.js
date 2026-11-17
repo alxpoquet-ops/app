@@ -128,7 +128,6 @@ function header(currentPath) {
       </ul>
     </nav>
     <div class="header-actions">
-      <a class="lang-switch" href="/en/" hreflang="en" lang="en" data-lang-switch aria-label="English version"><span class="is-on">FR</span><span>EN</span></a>
       <a class="btn-espace" href="${sections.monespace.path}"${currentPath.startsWith(sections.monespace.path) ? ' aria-current="page"' : ''}>${icon('circle-user')}<span>Mon espace</span></a>
       ${C.btn(sections.creer.path, 'btn-primary btn-sm btn-creer', 'wand-sparkles', 'Créer mon site', onCreer ? ' aria-current="page"' : '')}
       <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>

@@ -294,6 +294,14 @@ add_action('wp_head', function () {
 remove_action('wp_head', 'rest_output_link_wp_head');
 remove_action('wp_head', 'wp_oembed_add_discovery_links');
 
+/* Ancienne version anglaise : /en/... renvoie vers la même page en français */
+add_action('template_redirect', function () {
+    $path = wp_parse_url(isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '', PHP_URL_PATH) ?: '';
+    if ($path !== '/en' && strpos($path, '/en/') !== 0) return;
+    $fr = '/' . ltrim(substr($path, 3), '/');
+    wp_safe_redirect(home_url($fr), 301); exit;
+}, 0);
+
 /* Anciennes adresses : plan du site, et pages de l'ancien site d'électricien */
 add_action('template_redirect', function () {
     if (!is_404()) return;

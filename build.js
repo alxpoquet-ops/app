@@ -96,8 +96,7 @@ write(
 const php = fs.readFileSync(path.join(ROOT, 'src/server/envoi.php'), 'utf8').replace('__EMAIL__', site.email).replace('__SITE__', site.url);
 write('envoi.php', php);
 
-// 5) version anglaise : dist/en/ (textes dans src/i18n/parts/*.json, voir scripts/i18n.py)
-require('child_process').execFileSync('python3', [path.join(ROOT, 'scripts/i18n.py'), 'apply'], { stdio: 'inherit' });
+// 5) version anglaise retirée (les anciennes adresses /en/ sont redirigées vers les pages françaises par le thème)
 
 // 6) les mots techniques expliqués : un petit « ? » à leur premier usage sur chaque page (src/content/glossaire.js)
 require('./scripts/glossaire').appliquer(path.join(ROOT, 'dist'));
