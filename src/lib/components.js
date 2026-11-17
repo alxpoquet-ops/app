@@ -355,7 +355,7 @@ function creationSeuleBox() {
   <span class="seule-ico">${icon('code')}</span>
   <div><h3>Vous avez déjà votre nom de domaine et votre hébergement ?</h3>
   <p>Choisissez la <strong>création seule</strong> : vous payez seulement votre site, ${euro(creation.prix)}, sans formule au mois. Je vous remets le code de votre site, prêt à installer chez votre hébergeur. Vous l’installez vous-même, ou votre hébergeur le fait pour vous.</p>
-  <p class="seule-note">${icon('info')}<span>Pas de formule, donc ni maintenance ni modifications comprises. Si un jour vous changez d’avis, une formule peut s’ajouter quand vous voulez.</span></p></div>
+  <p class="seule-note">${icon('info')}<span>Pas d’abonnement, donc ni maintenance ni modifications comprises. Si un jour vous changez d’avis, une formule peut s’ajouter quand vous voulez.</span></p></div>
 </div>`;
 }
 

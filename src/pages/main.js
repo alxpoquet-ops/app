@@ -106,7 +106,7 @@ function home() {
   <ol class="parcours">
     <li class="parcours-etape c-butter reveal"><span class="parcours-n">1</span><p class="parcours-quoi">Je crée mon site</p><p class="parcours-d">Site Internet Professionnel : jusqu’à ${creation.pages} pages, design personnalisé, adapté à tous les écrans.</p></li>
     <li class="parcours-etape c-mint reveal"><span class="parcours-n">2</span><p class="parcours-quoi">J’ajoute une boutique, si je vends en ligne</p><p class="parcours-d">Catalogue, panier et paiement en ligne. C’est la seule option. Pour plus de pages sur Google, le ${esc(PACK.name)} se prend plus tard, depuis votre espace client.</p></li>
-    <li class="parcours-etape c-lilac reveal"><span class="parcours-n">3</span><p class="parcours-quoi">Je choisis qui s’occupe de mon site</p><p class="parcours-d">Avec une formule, on gère le nom de domaine, l’hébergement et les modifications. Ou vous gérez vous-même, et je vous remets le code de votre site.</p></li>
+    <li class="parcours-etape c-lilac reveal"><span class="parcours-n">3</span><p class="parcours-quoi">Je choisis qui s’occupe de mon site</p><p class="parcours-d">Avec l’abonnement, on gère le nom de domaine, l’hébergement et les modifications. Ou vous gérez vous-même, et je vous remets le code de votre site.</p></li>
   </ol>
   <p class="center more">${C.btnCreer('btn-primary btn-lg')} ${C.btn(sections.forfaits.path, 'btn-light btn-lg', 'list-checks', 'Ce qui est inclus')}</p>
 </div></section>
@@ -259,7 +259,7 @@ function forfaitsPage() {
   })}
 <section class="section"><div class="container" data-billing-scope>
   <h2 class="section-title">Votre site, puis votre formule</h2>
-  <p class="section-sub">Le site se paie une fois. Ensuite, une formule au mois s’occupe de tout. Sans engagement.</p>
+  <p class="section-sub">Le site se paie une fois. Ensuite, un abonnement au mois s’occupe de tout. Sans engagement.</p>
   ${C.billingSwitch()}
   ${C.offre()}
   ${C.economie()}

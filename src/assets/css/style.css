@@ -2261,3 +2261,6 @@ a.client-url { text-decoration: none; }
 .cf-bq-sous { display: flex; align-items: center; gap: 8px; margin: 12px 0 0; font-weight: 800; color: var(--text); }
 .cf-bq-sous .ico { width: 18px; height: 18px; color: var(--c-dd); }
 .cf-bq-note { display: block; margin-top: 10px; color: var(--muted); font-weight: 600; font-size: .9rem; line-height: 1.45; }
+/* Boutons côte à côte ou empilés (téléphone) : un vrai espace entre eux */
+.more, .doc-more { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px; }
+.more.center, .doc-more.center { justify-content: center; }
