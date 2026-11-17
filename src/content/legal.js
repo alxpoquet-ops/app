@@ -15,9 +15,10 @@ const UPDATED_CGV = '2026-11-17'; // conditions générales : offre simplifiée 
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
 // (règlement européen AI Act, obligation de transparence). La politique de confidentialité nomme le fournisseur.
 
-// L'offre du 17 novembre 2026 : la création du « Site Internet Professionnel » à prix fixe, deux options payées une fois
-// (Pack SEO et boutique en ligne), deux formules au mois sans engagement (Tranquillité et Évolution), les modifications
-// incluses sans limite, et l'offre événement. Tous les nombres viennent de src/config.js, pour que les CGV suivent les prix.
+// L'offre du 17 novembre 2026 : la création du « Site Internet Professionnel » à prix fixe, une seule option à la commande
+// (la boutique en ligne, payée une fois), le Pack SEO commandé plus tard depuis l'espace client, puis le choix de la mise
+// en ligne : « On s'occupe de tout » (deux formules au mois sans engagement, Tranquillité et Évolution, modifications
+// incluses sans limite) ou « Je m'en occupe moi-même » (création seule, code du site remis au client), et l'offre événement. Tous les nombres viennent de src/config.js, pour que les CGV suivent les prix.
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const liste = (l, mot = 'et') => (l.length > 1 ? `${l.slice(0, -1).join(', ')} ${mot} ${l[l.length - 1]}` : l.join(''));
@@ -37,17 +38,19 @@ const lieux = liste(evenement.lieux, 'ou');
 const moisOffert = fidelite.parrainageMois === 1 ? 'un mois offert' : `${fidelite.parrainageMois} mois offerts`;
 const listeDelais = types.map((t) => `${t.id === 'boutique' ? 'une boutique en ligne' : t.id === 'une-page' ? 'une seule page' : 'un site de plusieurs pages'} : ${t.delai}`).join(', ');
 const tvaMention = L.tva || 'non applicable, art. 293 B du CGI';
-// Options payées une fois : celles de config.options encore proposées (sans retire), puis la boutique en ligne
-// (creation.boutique). La phrase d'explication est écrite ici pour les CGV, différente de celle de la page Tarifs.
+// Options choisies à la commande et payées une fois : celles de config.options encore proposées avec quand 'creation',
+// puis la boutique en ligne (creation.boutique). Le Pack SEO n'en fait plus partie, quel que soit son champ quand
+// ('espace' depuis le 17 novembre 2026) : il se commande plus tard depuis l'espace client (article 3, paragraphe dédié).
+// La phrase d'explication est écrite ici pour les CGV, différente de celle de la page Tarifs.
 const DETAIL = {
   packseo: (o) => `${o.pages} pages SEO de plus, chacune pensée pour une recherche précise faite sur Google`,
 };
-const listeOptions = options
-  .filter((o) => o.quand === 'creation' && !o.retire)
+const optionsCommande = options.filter((o) => o.quand === 'creation' && !o.retire && o.id !== 'packseo');
+const listeOptions = optionsCommande
   .map((o) => `- **${o.name}, ${eur(o.price.once)} €**${DETAIL[o.id] ? ` : ${DETAIL[o.id](o)}` : ''}.`)
   .concat(`- **Boutique en ligne, ${eur(creation.boutique)} €** : un catalogue de produits, un panier, le paiement en ligne, la gestion des commandes et des e-mails envoyés automatiquement aux acheteurs. Avec la boutique, la création coûte ${eur(boutique)} €.`)
   .join('\n');
-const nbOptions = options.filter((o) => o.quand === 'creation' && !o.retire).length + 1;
+const nbOptions = optionsCommande.length + 1; // la boutique en ligne comprise
 const NOMBRE = ['aucune', 'une', 'deux', 'trois', 'quatre', 'cinq'];
 // La petite bande, par prénom et par rôle. Ce que fait chacun est écrit ici pour les CGV.
 const ROLE_CGV = {
@@ -182,11 +185,11 @@ Vous pouvez demander l’accès à vos données, leur correction, leur suppressi
     updated: UPDATED_CGV,
     body: `## 1. Objet
 
-Ces conditions s’appliquent à toute commande passée auprès des Minis Monstres : création d’un site internet, options, formules au mois et services liés. Elles complètent le récapitulatif de commande, qui précise le site, les options, la formule choisie et les prix.
+Ces conditions s’appliquent à toute commande passée auprès des Minis Monstres : création d’un site internet, options, formules au mois et services liés. Elles complètent le récapitulatif de commande, qui précise le site, l’option choisie, la formule ou la création seule, et les prix.
 
 ## 2. Commande en ligne
 
-La commande se passe sur le site, en trois étapes : le choix des options et de la formule, les coordonnées, puis le paiement sécurisé. Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants. S’il a un code événement (article 4) ou un code de parrainage (article 17), il le saisit pendant la commande.
+La commande se passe sur le site, en trois étapes : la composition du site, les coordonnées, puis le paiement sécurisé. Pour composer son site, le client voit dans l’ordre : le site, l’option boutique en ligne, puis le choix de la mise en ligne. Il la confie aux Minis Monstres avec une formule au mois (« On s’occupe de tout »), ou il s’en occupe lui-même (« Je m’en occupe moi-même », la création seule). Avec une formule, il choisit ensuite son nom de domaine et sa formule. Le total s’affiche en dernier, avec le choix de payer le reste en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants. S’il a un code événement (article 4) ou un code de parrainage (article 17), il le saisit pendant la commande.
 
 En cliquant sur « Commander et payer », le client accepte ces conditions et passe une commande ferme. Il reçoit aussitôt un e-mail de confirmation avec une référence de commande, à rappeler dans les échanges.
 
@@ -196,27 +199,29 @@ Une commande peut aussi être passée par e-mail ou par message. Elle est alors 
 
 Les prix sont en euros. La TVA n’est pas applicable (article 293 B du Code général des impôts) tant que l’entreprise bénéficie de la franchise de TVA. Si cette situation change, les prix affichés sont mis à jour. Les commandes déjà passées gardent leur prix.
 
-L’offre est la même pour tous les clients. Elle tient en deux parties : la création du site, payée une fois, et une formule au mois, payée tant que le site est hébergé par les Minis Monstres.
+L’offre est la même pour tous les clients. Elle tient en deux parties : la création du site, payée une fois, puis le choix de la personne qui met le site en ligne et le fait vivre. Avec une formule au mois, payée tant que le site est hébergé par les Minis Monstres, ils s’occupent de tout. En création seule, le client s’en occupe lui-même.
 
-**La création du site coûte ${eur(creation.prix)} €.** Ce prix correspond au « ${NOM_SITE} ». Il comprend jusqu’à ${creation.pages} pages, un design personnalisé, un affichage adapté au téléphone et à l’ordinateur, un formulaire de contact, une carte Google, le référencement Google de base, la mise en ligne et un accompagnement personnalisé par Alex et les Minis Monstres. Le référencement, aussi appelé SEO, désigne ce qui aide un site à être trouvé plus facilement sur Google.
+**La création du site coûte ${eur(creation.prix)} €.** Ce prix correspond au « ${NOM_SITE} ». Il comprend jusqu’à ${creation.pages} pages, un design personnalisé, un affichage adapté au téléphone et à l’ordinateur, un formulaire de contact, une carte Google, le référencement Google de base et un accompagnement personnalisé par Alex et les Minis Monstres. Le référencement, aussi appelé SEO, désigne ce qui aide un site à être trouvé plus facilement sur Google.
 
-**Nom de domaine et hébergement.** Le nom de domaine est l’adresse du site. L’hébergement est le service qui garde le site accessible 24 h/24. Les deux sont offerts la première année avec la création du site. Ensuite, la formule choisie par le client les prend en charge (article 6).
+**Nom de domaine et hébergement.** Le nom de domaine est l’adresse du site. L’hébergement est le service qui garde le site accessible 24 h/24. Avec une formule au mois, les deux sont offerts la première année, et les Minis Monstres installent et mettent en ligne le site. Ensuite, la formule les prend en charge (article 6). En création seule, le client gère lui-même son nom de domaine et son hébergement.
 
 **Pages SEO.** Les pages que le client n’utilise pas, parmi les ${creation.pages} comprises, peuvent devenir des pages SEO. Chacune répond à une recherche que font ses propres clients sur Google, pour rendre le site plus visible. Par exemple, un client qui utilise ${creation.exemplePages} pages pour présenter son activité garde ${restantes} pages pour améliorer sa présence sur Google.
 
-**Les options** se paient une fois, en plus du prix de création. Il y en a ${NOMBRE[nbOptions] || nbOptions}, et aucune n’est obligatoire :
+**Les options** se paient une fois, en plus du prix de création, et aucune n’est obligatoire. À la commande, il y en a ${NOMBRE[nbOptions] || nbOptions} :
 
 ${listeOptions}
 
-**Les formules au mois.** Le client choisit ${tranquille.name}, à ${eur(tranquille.month)} € par mois, ou ${evolution.name}, à ${eur(evolution.month)} € par mois (article 6). Payées à l’année, elles bénéficient de ${annuel.moisOfferts} mois offerts.
+**Le ${packSeo.name}, ${eur(packSeo.price.once)} €**, payé une fois : ${DETAIL.packseo(packSeo)}. Il ne se choisit pas à la commande. Le client le commande plus tard, quand il le souhaite, depuis son espace client (onglet « Mes demandes »).
 
-**Création seule.** Un client qui a déjà son nom de domaine et son hébergement peut choisir la création seule. Il paie alors seulement la création du site, ${eur(creation.prix)} €, et ses options s’il en prend, sans formule au mois. Les Minis Monstres ne fournissent ni le nom de domaine ni l’hébergement. Une fois le site terminé et entièrement payé, Alex remet au client le code du site : ses fichiers et une sauvegarde complète, prêts à installer chez l’hébergeur du client. L’installation est faite par le client ou par son hébergeur. La maintenance, les sauvegardes, la sécurité et les modifications ne sont pas comprises. Le client peut prendre une formule plus tard.
+**Les formules au mois.** Le client qui confie la mise en ligne aux Minis Monstres choisit ${tranquille.name}, à ${eur(tranquille.month)} € par mois, ou ${evolution.name}, à ${eur(evolution.month)} € par mois (article 6). Payées à l’année, elles bénéficient de ${annuel.moisOfferts} mois offerts.
+
+**Création seule.** Le client qui préfère s’occuper lui-même de la mise en ligne choisit « Je m’en occupe moi-même » à la commande : c’est la création seule. Il paie alors seulement la création du site, ${eur(creation.prix)} €, et la boutique en ligne s’il la prend, sans formule au mois. Il gère lui-même son nom de domaine et son hébergement, qu’il peut déjà avoir. Les Minis Monstres ne fournissent ni l’un ni l’autre. Une fois le site terminé, Alex remet au client le code du site : ses fichiers et une sauvegarde complète, avec une courte notice d’installation, prêts à installer chez l’hébergeur du client. Le client fait l’installation lui-même, ou avec l’aide de son hébergeur. Il peut s’appuyer sur des guides publics et gratuits, comme les pages d’aide de son hébergeur. La maintenance, les sauvegardes, la sécurité et les modifications ne sont pas comprises. Le client peut prendre une formule plus tard.
 
 **Devis.** Une refonte complète du site ou une fonction nouvelle, comme une prise de rendez-vous, fait l’objet d’un devis. Le client l’accepte avant le début du travail.
 
 ## 4. Offre événement
 
-Une personne rencontrée par les Minis Monstres sur ${lieux} reçoit un code événement. Ce code donne ${evenement.remise} % de remise sur la création du site, c’est-à-dire sur le site et les options payés une fois. Il ne s’applique pas aux formules au mois.
+Une personne rencontrée par les Minis Monstres sur ${lieux} reçoit un code événement. Ce code donne ${evenement.remise} % de remise sur la création du site, c’est-à-dire sur le site et sur la boutique en ligne si elle est prise. Il ne s’applique pas aux formules au mois, ni au ${packSeo.name} commandé plus tard.
 
 Le client saisit le code au moment de commander. Le code est vérifié, et le récapitulatif montre le prix après remise avant le paiement. L’acompte et le reste du prix de création sont calculés sur ce prix remisé (article 5).
 
@@ -224,17 +229,17 @@ Le client saisit le code au moment de commander. Le code est vérifié, et le r�
 
 Le prix de création se paie en deux temps.
 
-- **À la commande** : un acompte de ${paiement.acompte} % du prix de création, boutique en ligne comprise s’il y en a une. Le ${packSeo.name} est réglé en entier ce jour-là.
+- **À la commande** : un acompte de ${paiement.acompte} % du prix de création, boutique en ligne comprise s’il y en a une.
 - **À la réception du site** : le reste, en une fois.
-- **Ou, à la réception, en ${durees} fois sans frais** : le reste est divisé en ${durees} mensualités, au choix du client. La formule est alors payée au mois. Chaque échéance est arrondie au centime inférieur : le total ne dépasse jamais le prix du site. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
+- **Ou, à la réception, en ${durees} fois sans frais** : le reste est divisé en ${durees} mensualités, au choix du client. S’il a une formule, elle est alors payée au mois. Chaque échéance est arrondie au centime inférieur : le total ne dépasse jamais le prix du site. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
 
-Le client choisit, au moment de la commande, de payer le reste en une fois ou en plusieurs fois. En création seule (article 3), le reste se paie en une fois.
+Le client choisit, au moment de la commande, de payer le reste en une fois ou en plusieurs fois. Ce choix est ouvert avec une formule comme en création seule (article 3).
 
 Exemple pour un site à ${eur(creation.prix)} €, sans code événement : le client paie ${eur(acompte(creation.prix))} € à la commande. À la réception, il paie ${eur(creation.prix - acompte(creation.prix))} € en une fois, ou ${lissage.durees.map((n) => `${eur(lisse(creation.prix, n))} € par mois pendant ${n} mois`).join(', ou ')}.
 
 ## 6. Formules au mois
 
-Le client choisit une des deux formules au moment de la commande. Elle démarre à la réception du site. Elle est sans engagement (article 8).
+Le client qui confie la mise en ligne aux Minis Monstres choisit une des deux formules au moment de la commande, avec son nom de domaine. Elle démarre à la réception du site. Elle est sans engagement (article 8).
 
 **${tranquille.name}, ${eur(tranquille.month)} € par mois.** Elle comprend :
 
@@ -252,7 +257,7 @@ Le client choisit une des deux formules au moment de la commande. Elle démarre 
 - **Un délai moyen de ${evolution.delai}** pour les modifications (article 12).
 - **Une page SEO supplémentaire chaque semaine**, préparée par les Minis Monstres et ajoutée au site du client.
 
-La première année, le nom de domaine et l’hébergement sont offerts avec la création du site (article 3). À partir de la deuxième année, la formule les prend en charge, sans supplément.
+La première année, le nom de domaine et l’hébergement sont offerts avec la formule, ainsi que l’installation et la mise en ligne du site (article 3). À partir de la deuxième année, la formule les prend en charge, sans supplément.
 
 **Paiement.** La formule est prélevée d’avance, chaque mois ou chaque année, selon le choix du client. À l’année, le client paie ${12 - annuel.moisOfferts} mois sur 12, soit ${annuel.moisOfferts} mois offerts : ${eur(parAn(tranquille))} € par an pour ${tranquille.name}, ${eur(parAn(evolution))} € par an pour ${evolution.name}. Le client peut passer du mois à l’année, ou de l’année au mois, au renouvellement.
 
@@ -270,7 +275,7 @@ Un client inscrit avant le ${DATE_OFFRE} garde les options et les extras qu’il
 
 La formule est sans engagement. Le client peut l’arrêter à tout moment, par e-mail, par message ou avec le bouton prévu dans son espace client. L’arrêt prend effet à la fin de la période déjà payée.
 
-Une seule exception : quand le reste du prix de création est payé en plusieurs fois, le client s’engage le temps du paiement, soit ${durees} mois à partir de la réception du site. S’il arrête avant, le reste du prix de création devient exigible en une fois. Une fois le site payé, la formule est sans engagement.
+Une seule exception : quand le reste du prix de création est payé en plusieurs fois, le client s’engage le temps du paiement, soit ${durees} mois à partir de la réception du site. S’il arrête avant, le reste du prix de création devient exigible en une fois. En création seule, les mensualités restent dues de la même façon jusqu’à la dernière. Une fois le site payé, la formule est sans engagement.
 
 La fin de la formule met fin à l’hébergement du site par les Minis Monstres, à son entretien et aux modifications. Le client reçoit son site sous forme de fichiers (textes, images, pages), pour le faire héberger où il veut. Le nom de domaine lui appartient : il peut le transférer vers le prestataire de son choix. L’hébergement par les Minis Monstres s’arrête 30 jours après la fin de la formule.
 
@@ -284,9 +289,9 @@ En commandant, le client demande expressément, en cochant la case prévue, que 
 
 Le nom de domaine est l’adresse du site sur internet. Le client en est le titulaire. Les Minis Monstres y figurent comme contact technique, pour pouvoir le gérer. Le nom est réservé après le premier paiement, s’il est encore disponible à ce moment-là.
 
-Un nom de domaine standard en .fr, .com, .net ou .org est offert la première année avec la création du site. Ensuite, son renouvellement annuel est compris dans la formule. Les autres extensions et les noms dits « premium », vendus plus cher par les registres (les organismes qui gèrent chaque extension), font l’objet d’un devis.
+Avec une formule au mois, un nom de domaine standard en .fr, .com, .net ou .org est offert la première année. Ensuite, son renouvellement annuel est compris dans la formule. Les autres extensions et les noms dits « premium », vendus plus cher par les registres (les organismes qui gèrent chaque extension), font l’objet d’un devis.
 
-Si le client possède déjà un nom de domaine, il peut le transférer vers les Minis Monstres ou le garder chez son prestataire et le faire pointer vers le site. Les Minis Monstres lui envoient les réglages à faire.
+Si le client possède déjà un nom de domaine, il peut le transférer vers les Minis Monstres ou le garder chez son prestataire et le faire pointer vers le site. Les Minis Monstres lui envoient les réglages à faire. En création seule, le client gère son nom de domaine sans les Minis Monstres (article 3).
 
 ## 11. Création du site et délais
 
@@ -311,7 +316,7 @@ Si ${bricou} ne peut pas préparer la modification, Alex la fait à la main.
 
 ## 13. Espace client et compte
 
-Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. C’est sa page personnelle, protégée par un mot de passe. Il y suit sa commande, ses demandes de modification, sa formule et ses factures, et il y trouve son lien de parrainage. La bulle d’aide de ${cerise} y répond à ses questions, dans la limite de ${limites.bulleJour} messages par jour. Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
+Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. C’est sa page personnelle, protégée par un mot de passe. Il y suit sa commande, ses demandes de modification, sa formule et ses factures, et il y trouve son lien de parrainage. C’est aussi là qu’il commande le ${packSeo.name}, dans l’onglet « Mes demandes ». La bulle d’aide de ${cerise} y répond à ses questions, dans la limite de ${limites.bulleJour} messages par jour. Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
 
 Un compte sans connexion depuis 12 mois et sans formule active est supprimé automatiquement, avec ses demandes et ses photos. Le client est prévenu par e-mail 30 jours avant. Une connexion suffit pour annuler la suppression. Les factures sont conservées en dehors du compte, le temps prévu par la loi.
 
@@ -333,7 +338,7 @@ Les petits monstres sont des outils automatisés, dont certains reposent sur un 
 
 ## 16. Référencement
 
-Le référencement, ou SEO, c’est le travail qui aide un site à être trouvé sur Google. Le référencement Google de base est compris dans la création du site. Les pages SEO (article 3), le ${packSeo.name} et la page ajoutée chaque semaine avec la formule ${evolution.name} renforcent la présence du site sur Google.
+Le référencement, ou SEO, c’est le travail qui aide un site à être trouvé sur Google. Le référencement Google de base est compris dans la création du site. Les pages SEO (article 3), le ${packSeo.name} commandé depuis l’espace client et la page ajoutée chaque semaine avec la formule ${evolution.name} renforcent la présence du site sur Google.
 
 Dans tous les cas, le référencement est une obligation de moyens : les Minis Monstres font de leur mieux et appliquent les bonnes pratiques, sans garantir une position donnée sur Google.
 

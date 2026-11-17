@@ -188,8 +188,7 @@ function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
     if (!$c) return new WP_Error('aled08_stripe', 'Commande inconnue.');
     if (!aled08e_cmd_reception_due($c)) return new WP_Error('aled08_stripe', 'Rien à régler pour cette commande.');
     $n = aled08e_cmd_lissage_n((string) $n);
-    $seule = aled08e_est_seule($c['forfait']);
-    if ($seule) $n = 0; // création seule : le reste en une fois, pas d'abonnement
+    $seule = aled08e_est_seule($c['forfait']); // création seule : pas de formule (le reste en une fois, ou seulement les mensualités)
     $D = aled08e_data();
     $m = aled08e_cmd_montants_reception($c, $n);
     $type = aled08e_type($c['type']);
@@ -437,6 +436,17 @@ function aled08e_stripe_trouver_lissage($cid, $sub) {
 }
 function aled08e_stripe_arreter_lissage($cid) {
     $c = aled08e_cmd_get($cid);
+    // création seule : l'abonnement ne porte que les mensualités du site. Stripe refuse d'en retirer la dernière ligne :
+    // on arrête donc l'abonnement entier, sans prorata.
+    if ($c && aled08e_est_seule($c['forfait']) && $c['stripe_subscription']) {
+        $r = aled08e_stripe_request('DELETE', '/v1/subscriptions/' . rawurlencode($c['stripe_subscription']), ['prorate' => 'false']);
+        if (is_wp_error($r)) { aled08e_cmd_journal($cid, 'Fin du paiement étalé : arrêt de l’abonnement impossible : ' . $r->get_error_message()); return false; }
+        update_post_meta($cid, '_aled08_stripe_lissage_item', '');
+        update_post_meta($cid, '_aled08_lissage_fini', 1);
+        aled08e_cmd_journal($cid, 'Paiement étalé terminé : le site est entièrement payé, l’abonnement Stripe des mensualités est arrêté.');
+        aled08e_stripe_mail_owner('Site entièrement payé : commande ' . $c['ref'], 'Les ' . (int) $c['montants']['lissage_total_echeances'] . ' mensualités du site de ' . aled08e_cmd_nom($c) . " (création seule) sont payées. Plus rien n’est prélevé.\n");
+        return true;
+    }
     if (!$c || !$c['stripe_lissage_item']) return false;
     $r = aled08e_stripe_request('DELETE', '/v1/subscription_items/' . rawurlencode($c['stripe_lissage_item']), ['proration_behavior' => 'none']);
     if (is_wp_error($r)) { aled08e_cmd_journal($cid, 'Arrêt du lissage impossible : ' . $r->get_error_message()); return false; }
@@ -537,6 +547,8 @@ function aled08e_stripe_on_subscription($sub, $deleted) {
     $u = get_userdata($uid);
     $nom = $u ? $u->display_name . ' (' . $u->user_email . ')' : 'client ' . $uid;
     if ($c) aled08e_cmd_journal($c['id'], 'Abonnement Stripe : ' . ($deleted ? 'arrêté' : $status) . '.');
+    // création seule : l'abonnement ne portait que les mensualités du site, sa fin est normale (pas d'alerte)
+    if ($deleted && $c && aled08e_est_seule($c['forfait']) && get_post_meta($c['id'], '_aled08_lissage_fini', true)) return 'mensualités terminées pour ' . $nom;
     if ($deleted) aled08e_stripe_mail_owner('Abonnement arrêté : ' . $nom, 'L’abonnement Stripe de ' . $nom . " est terminé. Le site et le nom de domaine ne sont plus couverts par un abonnement : voyez avec le client ce qu’il souhaite.\n" . ($c ? "\nFiche commande : " . aled08e_cmd_admin_url($c['id']) . "\n" : ''));
     return 'abonnement de ' . $nom . ' : ' . $abo;
 }
@@ -593,7 +605,7 @@ function aled08e_stripe_on_reception($s) {
     if ($c['user']) { update_user_meta($c['user'], 'aled08_paiement', $n ? 'mois' : ($c['periode'] === 'annee' ? 'annee' : 'mois')); }
     $quoi = $n ? 'reste en ' . $n . ' fois (' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois)' : 'reste payé en une fois (' . aled08e_euro_txt($m['solde']) . ')';
     $seule = aled08e_est_seule($c['forfait']);
-    aled08e_cmd_journal($cid, 'Réception réglée par Stripe : ' . $quoi . ($seule ? ' (création seule, pas d’abonnement).' : ', abonnement démarré.'));
+    aled08e_cmd_journal($cid, 'Réception réglée par Stripe : ' . $quoi . ($seule ? ($n ? ' (création seule : l’abonnement Stripe ne porte que les mensualités du site).' : ' (création seule, pas d’abonnement).') : ', abonnement démarré.'));
     aled08e_stripe_mail_owner('Réception réglée : commande ' . $c['ref'], 'Commande ' . $c['ref'] . ' (' . aled08e_cmd_nom($c) . ') : ' . $quoi . ($seule ? ". Création seule : pas d’abonnement. Remettez le code du site au client (fichiers et sauvegarde complète).\n\nFiche : " : ". L’abonnement a démarré.\n\nFiche : ") . aled08e_cmd_admin_url($cid) . "\n");
     return $c['ref'] . ' : réception réglée (' . $quoi . ')';
 }

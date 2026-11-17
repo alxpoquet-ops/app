@@ -104,9 +104,9 @@ function home() {
   <h2 class="section-title">L’offre en 30 secondes</h2>
   <p class="section-sub">Trois étapes, des prix affichés, rien de caché.</p>
   <ol class="parcours">
-    <li class="parcours-etape c-butter reveal"><span class="parcours-n">1</span><p class="parcours-quoi">Je crée mon site</p><p class="parcours-prix"><b>${euro(creation.prix)}</b><small>une fois</small></p><p class="parcours-d">Site Internet Professionnel : jusqu’à ${creation.pages} pages, design personnalisé, mise en ligne.</p></li>
-    <li class="parcours-etape c-mint reveal"><span class="parcours-n">2</span><p class="parcours-quoi">J’ajoute une option, si je veux</p><p class="parcours-prix"><span>${esc(PACK.name)} <b>+ ${euro(PACK.price.once)}</b></span><span>Boutique en ligne <b>+ ${euro(creation.boutique)}</b></span></p><p class="parcours-d">Plus de pages pour Google, ou une boutique pour vendre en ligne.</p></li>
-    <li class="parcours-etape c-lilac reveal"><span class="parcours-n">3</span><p class="parcours-quoi">Je choisis ma formule</p><p class="parcours-prix">${forfaits.map((f) => `<span>${esc(f.name)} <b>${euro(f.month)}/mois</b></span>`).join('')}</p><p class="parcours-d">On s’occupe de votre site chaque mois. Sans engagement. Vous avez déjà votre hébergement ? <a href="${sections.forfaits.path}#creation-seule">Prenez la création seule</a>.</p></li>
+    <li class="parcours-etape c-butter reveal"><span class="parcours-n">1</span><p class="parcours-quoi">Je crée mon site</p><p class="parcours-prix"><b>${euro(creation.prix)}</b><small>une fois</small></p><p class="parcours-d">Site Internet Professionnel : jusqu’à ${creation.pages} pages, design personnalisé, adapté au téléphone.</p></li>
+    <li class="parcours-etape c-mint reveal"><span class="parcours-n">2</span><p class="parcours-quoi">J’ajoute une boutique, si je vends en ligne</p><p class="parcours-prix"><span>Boutique en ligne <b>+ ${euro(creation.boutique)}</b></span></p><p class="parcours-d">C’est la seule option. Pour plus de pages sur Google, le ${esc(PACK.name)} se prend plus tard, depuis votre espace client.</p></li>
+    <li class="parcours-etape c-lilac reveal"><span class="parcours-n">3</span><p class="parcours-quoi">Je choisis qui s’occupe de mon site</p><p class="parcours-prix"><span>On s’occupe de tout <b>dès ${euro(ABO.month)}/mois</b></span><span>Je gère moi-même <b>${euro(0)}/mois</b></span></p><p class="parcours-d">Avec une formule, on gère le nom de domaine, l’hébergement et les modifications. Sinon, je vous remets le code de votre site.</p></li>
   </ol>
   <p class="center more">${C.btnCreer('btn-primary btn-lg')} ${C.btn(sections.forfaits.path, 'btn-light btn-lg', 'list-checks', 'Ce qui est inclus')}</p>
 </div></section>
@@ -207,7 +207,7 @@ function creerPage() {
   const body = `${C.pageHero({
     section: 'creer',
     h1: 'Composez votre site en deux minutes',
-    lead: `Votre site à ${euro(creation.prix)}, une option si vous voulez, puis votre formule. Le total s’affiche tout de suite, et vous commandez en ligne quand vous êtes prêt.`,
+    lead: `Votre site à ${euro(creation.prix)}, une boutique si vous vendez en ligne, puis vous choisissez : on s’occupe de tout, ou vous le faites vous-même. Le total s’affiche en bas de la page.`,
     crumbs,
   })}
 <section class="section section-builder"><div class="container">${C.configurator()}</div></section>
@@ -215,10 +215,10 @@ function creerPage() {
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Et ensuite ?</h2>
   ${C.steps([
-    { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % du site et vos options. Le reste et la formule viennent à la réception.` },
-    { t: 'Je réserve votre nom de domaine', d: 'Il est à votre nom. Je vous écris sous 24 heures avec les questions utiles pour démarrer.' },
+    { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % du site. Le reste vient à la réception, en une fois ou étalé.` },
+    { t: 'Je vous écris sous 24 heures', d: 'Avec les questions utiles pour démarrer. Si on s’occupe de tout, je réserve aussi votre nom de domaine, à votre nom.' },
     { t: 'Je crée votre site', d: 'Vous recevez un aperçu. Vous me dites ce qui change, je corrige.' },
-    { t: 'C’est en ligne', d: `Vous réglez le reste, en une fois ou en ${C.lissageTxt} fois sans frais. Votre formule démarre, et vous demandez vos modifications depuis votre espace client.` },
+    { t: 'Vous le recevez', d: `On le met en ligne et votre formule démarre. Ou, si vous gérez vous-même, je vous remets son code, prêt à installer.` },
   ])}
 </div></section>
 
@@ -229,7 +229,7 @@ ${f.html}`;
     bodyClass: 'page-creer',
     noMobileBar: true,
     title: 'Créer mon site : composez-le en deux minutes | Les Minis Monstres',
-    description: `Composez votre site en deux minutes : ${creation.prix} € jusqu’à ${creation.pages} pages, deux options possibles, puis votre formule. Le total s’affiche tout de suite.`,
+    description: `Composez votre site en deux minutes : ${creation.prix} € jusqu’à ${creation.pages} pages, une boutique si vous voulez, puis on s’occupe de tout ou vous gérez vous-même. Total immédiat.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -258,8 +258,8 @@ function forfaitsPage() {
 </div></section>
 
 <section class="section section-soft" id="options"><div class="container">
-  <h2 class="section-title">Deux options, pas plus</h2>
-  <p class="section-sub">Elles se paient une seule fois, avec la création du site. Rien n’est obligatoire.</p>
+  <h2 class="section-title">Une option à la commande, une autre plus tard</h2>
+  <p class="section-sub">Elles se paient une seule fois. Rien n’est obligatoire.</p>
   ${C.optionsCompact()}
 </div></section>
 
@@ -304,7 +304,7 @@ ${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Composez votre site en de
     path: sections.forfaits.path,
     section: 'forfaits',
     title: `Tarifs : site à ${creation.prix} €, formules dès ${ABO.month} € | Les Minis Monstres`,
-    description: `Site Internet Professionnel à ${creation.prix} €, jusqu’à ${creation.pages} pages. Deux options, deux formules (${forfaits.map((x) => `${x.month} €`).join(' et ')} par mois), modifications incluses.`,
+    description: `Site Internet Professionnel à ${creation.prix} €, jusqu’à ${creation.pages} pages. Une boutique en option, deux formules (${forfaits.map((x) => `${x.month} €`).join(' et ')} par mois) ou le code fourni sans formule.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -426,7 +426,7 @@ function seoPage() {
   // Les trois façons d'être plus visible : [couleur, humeur de Cerise, titre, prix, liste]
   const levels = [
     ['pink', 'mascotte', 'Avec votre site', `Compris dans les ${euro(creation.prix)}`, ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', `Les pages non utilisées, sur les ${creation.pages}, deviennent des pages SEO`]],
-    ['butter', 'clin', pack.name, `Option à ${euro(pack.price.once)}, une fois`, [`${pack.pages} pages SEO supplémentaires`, 'Chacune répond à une recherche de vos clients', 'Plus de chances d’apparaître sur Google']],
+    ['butter', 'clin', pack.name, `${euro(pack.price.once)} une fois, depuis votre espace client`, [`${pack.pages} pages SEO supplémentaires`, 'Chacune répond à une recherche de vos clients', 'Plus de chances d’apparaître sur Google']],
     ['lilac', 'pense', `Formule ${EVO.name}`, `${euro(EVO.month)} par mois`, ['Tout le forfait Tranquillité', 'Une page SEO supplémentaire chaque semaine', 'Votre site grandit tout seul, semaine après semaine']],
   ];
   const body = `${C.pageHero({
@@ -645,28 +645,26 @@ function commanderPage() {
         <legend><span class="b-n">1</span><span class="b-t">Votre site</span></legend>
         <div class="o-in">
         <p class="b-hint">Vous pouvez encore changer d’avis : les prix se mettent à jour.</p>
-        ${C.siteChoice({ name: 'type' })}
-        ${C.optionChoices({ name: 'options[]', quand: 'creation' })}
-        <p class="b-label">Ensuite, votre formule chaque mois</p>
-        ${C.forfaitChoices({ name: 'forfait' })}
+        <div class="cf o-cf">
+        ${C.siteCarte({ name: 'type', court: true })}
+        <p class="b-label">Vous voulez vendre en ligne ?</p>
+        ${C.boutiqueCarte({ court: true })}
+        <p class="b-label">Qui s’occupe de la mise en ligne ?</p>
+        ${C.gestionChoix({ name: 'gestion', court: true })}
         <div data-avec-formule>
+        <p class="b-label">Votre formule</p>
+        ${C.formulesChoix({ name: 'forfait', court: true })}
         <p class="b-label">La formule est payée</p>
         <div class="b-seg" role="radiogroup" aria-label="Période de la formule">
           <label><input type="radio" name="periode" value="mois" checked><span>Au mois</span></label>
           <label><input type="radio" name="periode" value="annee"><span>À l’année <em>${annuel.moisOfferts} mois offerts</em></span></label>
         </div>
-        <p class="b-label">Le site est payé</p>
-        <div class="b-seg" role="radiogroup" aria-label="Paiement du site">
-          <label><input type="radio" name="lissage" value="" checked><span>En une fois</span></label>
-          ${lissage.durees.map((n) => `<label><input type="radio" name="lissage" value="${n}"><span>En ${n} fois</span></label>`).join('')}
         </div>
-        <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Vous vous engagez le temps du paiement, et la formule se règle alors chaque mois.</p>
         </div>
-        ${C.codeEvenementBox({ name: 'code_evenement' })}
         </div>
       </fieldset>
 
-      <fieldset class="o-card">
+      <fieldset class="o-card" data-avec-formule>
         <legend><span class="b-n">${icon('globe')}</span><span class="b-t">Votre nom de domaine</span></legend>
         <div class="o-in">
         <p class="b-hint">Le nom de domaine, c’est l’adresse de votre site. Il est offert la première année, puis compris dans votre formule, et il reste à votre nom. Je vérifie qu’il est libre, puis je le réserve à la commande.</p>
@@ -700,6 +698,11 @@ function commanderPage() {
       <fieldset class="o-card">
         <legend><span class="b-n">3</span><span class="b-t">Paiement sécurisé</span></legend>
         <div class="o-in">
+        <div class="cf o-cf">
+        <p class="b-label">Comment voulez-vous payer votre site ?</p>
+        ${C.paiementChoix({ name: 'lissage', une: '' })}
+        ${C.codeEvenementBox({ name: 'code_evenement' })}
+        </div>
         <label class="check"><input type="checkbox" name="cgv" value="oui" required><span>J’accepte les <a href="/conditions-generales/" target="_blank" rel="noopener">conditions générales de vente</a>. <span class="req">*</span></span></label>
         <label class="check"><input type="checkbox" name="demarrage" value="oui" required><span>Je demande que la création commence tout de suite. Si je me rétracte dans les 14 jours, je paie le travail déjà fait. <span class="req">*</span></span></label>
         <label class="check" data-order-engagement hidden><input type="checkbox" name="engagement" value="oui"><span>Je m’engage pour <span data-order="eng-n">${C.LMAX}</span> mois à partir de la réception, le temps de payer mon site. <span class="req">*</span></span></label>
@@ -709,8 +712,8 @@ function commanderPage() {
             <li><span>Acompte de ${paiement.acompte} % sur la création (${t0.label.toLowerCase()})</span><b>${euro(acompte0)}</b></li>
           </ul>
           <p class="o-pay-next"><span data-order="next-label">À la réception : le reste, et votre formule</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month)}/mois</b></p>
-          <p class="o-pay-note" data-order-solde>À la réception de votre site, vous réglez le reste, <b data-order="solde">${euro(t0.price - acompte0)}</b>, et votre formule démarre. Vous pourrez encore choisir de payer le reste en ${C.lissageTxt} fois.</p>
-          <p class="o-pay-note" data-order-lisse-note hidden>À la réception, le reste se paie en <span data-order="lisse-n">${C.LMAX}</span> fois sans frais : <b data-order="lisse">${euro(C.lisse(t0.price))}</b> par mois, avec votre formule. Ensuite, il ne reste que la formule, sans engagement.</p>
+          <p class="o-pay-note" data-order-solde>À la réception de votre site, vous réglez le reste, <b data-order="solde">${euro(t0.price - acompte0)}</b><span data-avec-formule>, et votre formule démarre</span>. Vous pourrez encore choisir de payer le reste en ${C.lissageTxt} fois.</p>
+          <p class="o-pay-note" data-order-lisse-note hidden>À la réception, le reste se paie en <span data-order="lisse-n">${C.LMAX}</span> fois sans frais : <b data-order="lisse">${euro(C.lisse(t0.price))}</b> par mois<span data-avec-formule>, avec votre formule. Ensuite, il ne reste que la formule, sans engagement</span>.</p>
         </div>
         <button class="btn btn-primary btn-lg btn-block btn-flaque" type="submit">${icon('lock')}<span>Commander et payer <b data-order="btn">${euro(today0)}</b></span></button>
         <p class="o-trust">${icon('shield-check')}<span>Paiement sécurisé par Stripe. Vous recevez vos factures par e-mail.</span></p>
@@ -723,7 +726,7 @@ function commanderPage() {
         <p class="b-sum-title">Votre récapitulatif</p>
         <ul class="b-lines">
           <li><span data-order="type">Site Internet Professionnel</span><b data-order="type-price">${euro(t0.price)}</b></li>
-          <li><span data-order="domain">Nom de domaine à choisir</span><b data-order="domain-prix">offert</b></li>
+          <li data-avec-formule><span data-order="domain">Nom de domaine à choisir</span><b data-order="domain-prix">offert</b></li>
           <li><span data-order="forfait">${esc(f0.name)}</span><b data-order="forfait-price">${euro(f0.month)}/mois</b></li>
           <li data-order-opts hidden><span data-order="opts-label">Options</span><b data-order="opts">0 €</b></li>
         </ul>
@@ -1394,7 +1397,7 @@ function metierPage(m) {
     const fo = forfaits.find((x) => x.id === o.id);
     if (fo) return { ic: 'repeat', nom: `Formule ${fo.name}`, prix: `${euro(fo.month)} par mois`, pourquoi: o.pourquoi };
     const opt = options.find((x) => x.id === o.id && !x.retire);
-    if (opt) return { ic: opt.icon, nom: opt.name, prix: `+ ${euro(opt.price.once)}, une fois`, pourquoi: o.pourquoi };
+    if (opt) return { ic: opt.icon, nom: opt.name, prix: opt.quand === 'espace' ? `+ ${euro(opt.price.once)}, plus tard` : `+ ${euro(opt.price.once)}, une fois`, pourquoi: o.pourquoi };
     return null;
   }).filter(Boolean);
   const body = `${C.pageHero({ section: 'metiers', h1: m.h1, lead: m.lead, crumbs, mascot: MONSTRE_METIER[m.slug] })}
@@ -1506,7 +1509,7 @@ function docPage() {
     <thead><tr><th scope="col">${titre}</th><th scope="col">Pour quel site</th><th scope="col">Prix</th></tr></thead>
     <tbody>${lignes.join('')}</tbody>
   </table></div>`;
-  const lignesOptions = [ligne(esc(bou.label), 'Tous les sites', `+ ${euro(creation.boutique)}`),...C.optsCreation.map((o) => ligne(esc(o.name), pourQui(o), `+ ${euro(o.price.once)}`))];
+  const lignesOptions = [ligne(esc(bou.label), 'Tous les sites', `+ ${euro(creation.boutique)}`), ...(C.PACK_SEO ? [ligne(esc(C.PACK_SEO.name), 'Plus tard, depuis l’espace client', `+ ${euro(C.PACK_SEO.price.once)}`)] : [])];
   const lignesExtras = C.optsMois.map((o) => ligne(esc(o.name), pourQui(o), `${euro(o.price.month)} par mois`));
   const tabs = [
     ['gauge', 'Tableau de bord', 'vos visiteurs et l’état de votre site, en un coup d’œil.'],
@@ -1584,12 +1587,12 @@ function docPage() {
 <section class="section doc-sec" id="prix"><div class="container">
   <div class="container-narrow">
     <p class="doc-kicker">5. Le prix</p>
-    <h2>Un site, deux options, deux formules</h2>
-    <p>Il n’y a qu’une offre, la même pour tous les clients. Vous payez votre site une fois. Ensuite, vous choisissez votre formule : elle démarre à la réception du site, et vous l’arrêtez quand vous voulez depuis votre espace client.</p>
+    <h2>Un site, une option, deux formules</h2>
+    <p>Il n’y a qu’une offre, la même pour tous les clients. Vous payez votre site une fois. Ensuite, soit on s’occupe de tout avec une formule, qui démarre à la réception du site et s’arrête quand vous voulez, soit vous gérez vous-même et je vous remets le code de votre site.</p>
   </div>
   <div class="doc-types">
-    <div class="doc-type reveal"><strong>Le site</strong><b>${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une fois</span><p>Jusqu’à ${creation.pages} pages. Nom de domaine et hébergement offerts la première année.</p></div>
-    <div class="doc-type reveal"><strong>Les options</strong><b>${C.PACK_SEO ? `+ ${euro(C.PACK_SEO.price.once)}` : ''} ou + ${euro(creation.boutique)}</b><span>${icon('plus')}Une fois, si vous voulez</span><p>${C.PACK_SEO ? `${esc(C.PACK_SEO.name)} : ${C.PACK_SEO.pages} pages SEO en plus. ` : ''}Boutique en ligne : vendre sur votre site.</p></div>
+    <div class="doc-type reveal"><strong>Le site</strong><b>${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une fois</span><p>Jusqu’à ${creation.pages} pages. Avec une formule, nom de domaine et hébergement offerts la première année.</p></div>
+    <div class="doc-type reveal"><strong>L’option</strong><b>+ ${euro(creation.boutique)}</b><span>${icon('plus')}Une fois, si vous voulez</span><p>Boutique en ligne : vendre sur votre site.${C.PACK_SEO ? ` Plus tard, depuis l’espace client : ${esc(C.PACK_SEO.name)}, ${C.PACK_SEO.pages} pages SEO en plus pour ${euro(C.PACK_SEO.price.once)}.` : ''}</p></div>
     <div class="doc-type reveal"><strong>La formule</strong><b>${forfaits.map((x) => euro(x.month)).join(' ou ')}</b><span>${icon('repeat')}Par mois, sans engagement</span><p>${forfaits.map((x) => esc(x.name)).join(' ou ')}. À l’année : ${annuel.moisOfferts} mois offerts.</p></div>
   </div>
   <div class="container-narrow">

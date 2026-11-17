@@ -2,14 +2,16 @@
 // Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160, aucun tiret long
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de config.js), aucun client,
 // avis ou chiffre inventé, et pas de phrase de 9 mots ou plus reprise d'une autre page.
-// Offre du 17 novembre 2026 : le Site Internet Professionnel (creation), deux options payées une fois (Pack SEO et
-// boutique en ligne), deux formules au mois (Tranquillité et Évolution), modifications comprises sans limite.
+// Offre du 17 novembre 2026 : le Site Internet Professionnel (creation), une seule option à la commande (la boutique en
+// ligne, payée une fois), le Pack SEO commandé plus tard depuis l'espace client, puis deux formules au mois (Tranquillité
+// et Évolution, modifications comprises sans limite) ou la création seule (le code du site est remis au client).
 // Le prix bas vient de la petite bande d'Alex : ses automatisations, dessinées en petits monstres (config.bande).
 // Alex fait chaque site, la bande s'occupe du répétitif et Alex vérifie tout. On ne dit jamais « IA ».
-// options : les conseils de la page (« Ce que je vous conseille »). Ids acceptés : 'packseo', 'boutique' (options payées
-// une fois), 'base' et 'evolution' (formules au mois). Le prix affiché vient de config.js.
+// options : les conseils de la page (« Ce que je vous conseille »). Ids acceptés : 'packseo' (payé une fois, commandé plus
+// tard depuis l'espace client : le texte le dit), 'boutique' (option payée une fois, à la commande), 'base' et
+// 'evolution' (formules au mois). Le prix affiché vient de config.js.
 // Le code événement (config.evenement) est cité pour les métiers qui font les foires, marchés et salons.
-const { creation, forfaits, paiement, lissage, annuel, marche, bande, evenement } = require('../config');
+const { creation, forfaits, options, paiement, lissage, annuel, marche, bande, evenement } = require('../config');
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
@@ -18,6 +20,7 @@ const tranquille = forfaits.find((f) => f.id === 'base'); // Tranquillité
 const evolution = forfaits.find((f) => f.id === 'evolution'); // Évolution
 const prix = eur(creation.prix); // le Site Internet Professionnel
 const prixBoutique = eur(creation.prix + creation.boutique); // le site avec l'option boutique en ligne
+const packSeo = options.find((o) => o.id === 'packseo' && !o.retire) || { name: 'Pack SEO' }; // commandé plus tard, depuis l'espace client
 const pagesComprises = creation.pages; // pages comprises dans le site (celles qui restent deviennent des pages SEO)
 const durees = lissage.durees.join(' ou ');
 const acompte = `${paiement.acompte} %`;
@@ -53,7 +56,7 @@ const metiers = [
       texte: 'Je n’ai pas encore d’artisan parmi mes réalisations. Pour vous donner une idée, voici comment je bâtirais le site d’un couvreur : un accueil avec sa zone et son numéro, une page par prestation (toiture neuve, réparation, zinguerie, démoussage), une galerie de chantiers et un formulaire de devis.',
     },
     options: [
-      { id: 'packseo', pourquoi: 'Dix pages de plus, chacune sur un travail précis que l’on tape sur Google, comme le démoussage d’un toit ou la pose d’une fenêtre de toit.' },
+      { id: 'packseo', pourquoi: 'Dix pages de plus, chacune sur un travail précis que l’on tape sur Google, comme le démoussage d’un toit ou la pose d’une fenêtre de toit. À ajouter plus tard, depuis votre espace client.' },
       { id: 'base', pourquoi: 'Un tarif qui change ou une photo de chantier à ajouter : vous l’envoyez depuis le chantier, et je m’en occupe.' },
     ],
     body: `## Ce que votre client veut savoir en trente secondes
@@ -99,7 +102,7 @@ Pour aller vite sans bâcler, j’ai programmé cette petite bande de monstres :
 
 Un site vitrine confié à un indépendant se paie en général entre ${marcheVitrine}. Le mien revient ${marche.fois} fois moins cher, sans rien enlever à l’essentiel : je gagne du temps sur la technique, jamais sur la relecture.
 
-La création coûte ${prix} €, pour ${pagesComprises} pages au plus. Vous versez ${acompte} à la commande, puis le reste à la réception, d’un coup ou en ${durees} fois sans frais. Le nom de domaine, l’adresse de votre site, et l’hébergement, qui le garde accessible jour et nuit, sont offerts la première année. Ensuite, une formule au mois, dès ${eur(tranquille.month)} € et sans engagement, prend le relais avec vos modifications. Tout est détaillé sur la page [tarifs](/tarifs/).`,
+La création coûte ${prix} €, pour ${pagesComprises} pages au plus. Vous versez ${acompte} à la commande, puis le reste à la réception, d’un coup ou en ${durees} fois sans frais. Avec une formule au mois, dès ${eur(tranquille.month)} € et sans engagement, le nom de domaine, l’adresse de votre site, et l’hébergement, qui le garde accessible jour et nuit, sont offerts la première année. La formule prend ensuite le relais avec vos modifications. Tout est détaillé sur la page [tarifs](/tarifs/).`,
     faq: [
       { q: 'Combien coûte un site internet pour un artisan ?', a: `La création coûte ${prix} €, que votre site compte une seule page ou ${pagesComprises}. Ensuite, la formule ${tranquille.name}, à ${eur(tranquille.month)} € par mois, garde le site en ligne, entretenu et à jour. Vous connaissez le total avant de commander.` },
       { q: 'Je travaille sur une grande zone, comment être trouvé partout ?', a: 'Citez les principales communes où vous intervenez, sans en aligner des dizaines. Une liste honnête sur le site, et une zone d’intervention bien réglée sur votre fiche Google, valent mieux qu’une page par village.' },
@@ -133,7 +136,7 @@ La création coûte ${prix} €, pour ${pagesComprises} pages au plus. Vous vers
     },
     options: [
       { id: 'evolution', pourquoi: 'Une nouvelle page de conseils chaque semaine, préparée par ma petite bande et relue par moi : votre site gagne des lecteurs sans que vous ayez à écrire.' },
-      { id: 'packseo', pourquoi: 'Dix pages de plus d’un coup, chacune sur une question que l’on se pose avant de consulter pour la première fois.' },
+      { id: 'packseo', pourquoi: 'Dix pages de plus d’un coup, chacune sur une question que l’on se pose avant de consulter pour la première fois. Il se commande après coup, dans votre espace client.' },
     ],
     body: `## Ce qui aide à franchir le pas
 
@@ -208,7 +211,7 @@ Ensuite, la formule ${tranquille.name}, à ${eur(tranquille.month)} € par mois
     },
     options: [
       { id: 'boutique', pourquoi: 'Vos pièces se choisissent, se paient en ligne et partent vers leur acheteur, même quand l’atelier est fermé.' },
-      { id: 'packseo', pourquoi: 'Dix pages de plus sur vos techniques et vos matières, là où les amateurs commencent leurs recherches.' },
+      { id: 'packseo', pourquoi: 'Dix pages de plus sur vos techniques et vos matières, là où les amateurs commencent leurs recherches. Vous le demandez une fois le site lancé.' },
     ],
     body: `## Votre travail d’abord
 
@@ -280,7 +283,7 @@ Côté prix, la création coûte ${prix} € pour la galerie, et ${prixBoutique}
       texte: 'Aucun hébergement ne figure encore parmi mes réalisations. Pour des chambres d’hôtes, je proposerais un accueil avec la plus belle photo, une page pour les chambres et leurs tarifs, une page sur les environs, puis l’accès et une demande de séjour.',
     },
     options: [
-      { id: 'packseo', pourquoi: 'Dix pages sur la région, ses randonnées et ses visites, pour croiser la route des voyageurs qui préparent leurs vacances.' },
+      { id: 'packseo', pourquoi: 'Dix pages sur la région, ses randonnées et ses visites, pour croiser la route des voyageurs qui préparent leurs vacances. Il s’ajoute quand vous voulez, depuis votre espace client.' },
       { id: 'evolution', pourquoi: 'Vos tarifs de saison passent en priorité, et une page sur les environs s’ajoute chaque semaine.' },
     ],
     body: `## Ce que le voyageur regarde avant de réserver
@@ -460,7 +463,7 @@ Une date, un horaire, le bilan de la dernière fête : chaque changement est une
 
 Pour la plupart des associations, une page suffit, sans aucune option. Si vous avez plusieurs sections, comme le foot, la gym et la randonnée, chacune peut avoir sa page, sans changer le prix de création jusqu’à ${pagesComprises} pages. Une adresse de site au nom de l’association, ce qu’on appelle un nom de domaine, fait aussi sérieux sur un dossier de subvention : le guide pour [choisir un nom de domaine](/guides/choisir-nom-de-domaine/) vous aide à le trouver.`,
     faq: [
-      { q: 'Notre budget est très serré, que faut-il prévoir ?', a: `Le site coûte ${prix} €, une seule fois, puis ${eur(tranquille.month)} € par mois avec la formule ${tranquille.name}. Le prix du site peut s’étaler sur ${durees} mois. Les deux options restent facultatives, et la plupart des associations s’en passent très bien.` },
+      { q: 'Notre budget est très serré, que faut-il prévoir ?', a: `Le site coûte ${prix} €, une seule fois, puis ${eur(tranquille.month)} € par mois avec la formule ${tranquille.name}. Le prix du site peut s’étaler sur ${durees} mois. La boutique en ligne et le ${packSeo.name} restent facultatifs, et la plupart des associations s’en passent très bien.` },
       { q: 'Qui peut demander des changements sur le site ?', a: 'Le bureau décide qui reçoit les codes de l’espace client. À chaque changement d’équipe, il suffit de mettre à jour l’adresse e-mail et le mot de passe du compte, et le site continue sans interruption.' },
       { q: 'Peut-on recevoir des dons ou des adhésions en ligne ?', a: 'Oui, par un bouton qui mène vers le service de paiement que vous utilisez déjà pour vos cotisations. Si vous n’en avez pas, un bulletin à télécharger et un contact par e-mail suffisent pour commencer.' },
       { q: 'Le site peut-il servir pour un événement, comme un festival ?', a: 'Oui. Une page dédiée présente le programme, les horaires, l’accès et les partenaires. Après l’événement, elle reste en ligne avec les photos, et on la met à jour pour l’édition suivante.' },

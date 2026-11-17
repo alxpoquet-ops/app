@@ -2138,3 +2138,96 @@ div.tool { cursor: default; }
 .seule-note .ico { flex: none; margin-top: 3px; color: var(--peach-dd); }
 @media (max-width: 600px) { .seule { flex-direction: column; padding: 20px 18px; } }
 .b-seule .b-card.b-formule { padding-right: 48px; }
+
+/* ---------- « Créer mon site » : le parcours en grandes cartes, de haut en bas ---------- */
+.builder.cf { display: block; max-width: 900px; margin: 0 auto; counter-reset: cf; }
+.cf-form { display: grid; gap: 22px; min-width: 0; }
+.cf-etape { margin: 0; padding: 28px; border-radius: var(--radius-lg); background: var(--card); box-shadow: var(--shadow); counter-increment: cf; min-width: 0; }
+.cf-titre { display: flex; align-items: center; gap: 12px; margin: 0 0 6px; font-size: 1.4rem; line-height: 1.25; color: var(--ink); }
+.cf-n { display: grid; place-items: center; flex: none; width: 38px; height: 38px; border-radius: 50%; background: var(--primary); box-shadow: 0 3px 0 var(--primary-shadow); color: #16142A; font-weight: 900; font-size: 1.05rem; }
+.cf-n::before { content: counter(cf); }
+.cf-sous { margin: 0 0 18px 50px; color: var(--muted); font-weight: 600; line-height: 1.5; }
+.cf-art { flex: none; width: 84px; }
+.cf-art .petit { display: block; width: 100%; height: auto; }
+.cf-corps { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1; }
+.cf-nom { margin: 0; font-size: 1.25rem; font-weight: 900; color: var(--ink); line-height: 1.2; }
+.cf-prix { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; margin: 0; }
+.cf-prix b { font-size: 2rem; line-height: 1.05; font-weight: 900; color: var(--ink); }
+.cf-prix small { font-weight: 800; color: var(--muted); }
+.cf-txt { margin: 0; color: var(--text); font-weight: 600; line-height: 1.5; }
+.cf-liste { list-style: none; margin: 6px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 18px; }
+.cf-liste li { display: flex; gap: 8px; align-items: flex-start; font-weight: 700; font-size: .94rem; color: var(--text); line-height: 1.35; }
+.cf-liste .ico { width: 18px; height: 18px; flex: none; margin-top: 1px; color: var(--c-dd); }
+/* le site : déjà compris */
+.cf-site { position: relative; display: flex; gap: 22px; align-items: flex-start; padding: 24px; border-radius: 28px; background: var(--c); box-shadow: 0 0 0 2px var(--c-d) inset; }
+.cf-site .cf-corps { padding-right: 96px; }
+.cf-badge { position: absolute; top: 18px; right: 18px; display: inline-flex; gap: 6px; align-items: center; padding: 6px 12px; border-radius: 999px; background: var(--card); color: var(--c-dd); font-weight: 900; font-size: .85rem; }
+.cf-badge .ico { width: 16px; height: 16px; }
+/* les cartes à choisir */
+.cf-choix { position: relative; display: flex; min-width: 0; cursor: pointer; }
+.cf-input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.cf-carte { position: relative; display: flex; gap: 18px; align-items: flex-start; width: 100%; padding: 24px; border-radius: 28px; border: 2px solid var(--line); background: var(--soft); transition: border-color .2s, background-color .2s, transform .15s, box-shadow .2s; }
+.cf-carte .cf-corps { padding-right: 36px; }
+.cf-choix:hover .cf-carte { border-color: var(--c-d); transform: translateY(-2px); }
+.cf-input:checked + .cf-carte { border-color: var(--c-d); background: var(--c); box-shadow: 0 0 0 1px var(--c-d), var(--shadow-sm); }
+.cf-input:focus-visible + .cf-carte { outline: 3px solid var(--lilac-d); outline-offset: 3px; }
+.cf-coche { position: absolute; top: 18px; right: 18px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--line); background: var(--card); color: transparent; transition: background-color .2s, border-color .2s, color .2s; }
+.cf-coche .ico { width: 18px; height: 18px; }
+.cf-input:checked + .cf-carte .cf-coche { background: var(--c-d); border-color: var(--c-d); color: #16142A; }
+.cf-tag { position: absolute; top: -13px; left: 24px; padding: 4px 12px; border-radius: 999px; background: var(--c-d); color: #16142A; font-weight: 900; font-size: .8rem; letter-spacing: .01em; }
+.cf-duo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.cf-duo .cf-carte { flex-direction: column; gap: 10px; padding-top: 28px; }
+.cf-duo .cf-art { width: 72px; }
+.cf-duo .cf-liste { grid-template-columns: 1fr; }
+.cf-delai { display: flex; gap: 6px; align-items: center; margin-top: 4px; font-weight: 800; font-size: .92rem; color: var(--c-dd); }
+.cf-delai .ico { width: 16px; height: 16px; flex: none; }
+/* les petites notes */
+.cf-info, .cf-plus-tard { display: flex; gap: 10px; align-items: flex-start; margin: 16px 0 0; padding: 14px 16px; border-radius: 18px; background: var(--soft); color: var(--text); font-weight: 600; line-height: 1.5; }
+.cf-info[class*="c-"] { background: var(--c); color: var(--ink); }
+.cf-info .ico, .cf-plus-tard .ico { flex: none; margin-top: 2px; color: var(--c-dd); }
+.cf-plus-tard { background: transparent; border: 2px dashed var(--line); color: var(--muted); }
+.cf-plus-tard .ico { color: var(--muted); }
+.cf-periode { display: flex; justify-content: center; margin-top: 18px; }
+.cf-periode .billing-switch { margin: 0; }
+.cf .domain { margin-top: 4px; }
+/* le total, en bas */
+.cf-total { box-shadow: 0 0 0 3px var(--mint), var(--shadow); scroll-margin-top: calc(var(--header-h) + 16px); }
+.cf-lignes { list-style: none; margin: 10px 0 22px; padding: 0; display: grid; }
+.cf-lignes li { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px dashed var(--line); font-weight: 700; color: var(--text); }
+.cf-lignes li[hidden] { display: none; }
+.cf-lignes b { color: var(--ink); white-space: nowrap; }
+.cf-q { margin: 0 0 12px; font-weight: 900; color: var(--ink); font-size: 1.12rem; }
+.cf-paie { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.cf-paie .cf-choix { --c: var(--mint); --c-d: var(--mint-d); --c-dd: var(--mint-dd); }
+.cf-paie .cf-carte { flex-direction: column; gap: 4px; padding: 16px 48px 16px 18px; border-radius: 22px; }
+.cf-paie strong { color: var(--ink); font-size: 1.02rem; }
+.cf-paie small { color: var(--text); font-weight: 700; line-height: 1.4; font-size: .88rem; }
+.cf-paie .cf-coche { top: 14px; right: 12px; width: 28px; height: 28px; }
+.cf-total .b-code { margin-top: 18px; }
+.cf-recap { display: grid; gap: 10px; margin-top: 20px; padding: 20px; border-radius: 24px; background: var(--soft); }
+.cf-recap p { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: 0; font-weight: 700; color: var(--text); }
+.cf-recap p[hidden] { display: none; }
+.cf-recap b { color: var(--ink); white-space: nowrap; font-size: 1.12rem; }
+.cf-recap .cf-auj span { font-weight: 900; color: var(--ink); }
+.cf-recap .cf-auj b { font-size: 1.9rem; }
+.cf-detail { margin: 12px 0 0; text-align: center; color: var(--muted); font-weight: 700; }
+.cf-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+.cf-secu { display: flex; gap: 8px; justify-content: center; align-items: center; margin: 14px 0 0; color: var(--muted); font-weight: 600; font-size: .9rem; text-align: center; }
+.cf-secu .ico { flex: none; color: var(--mint-d); }
+@media (max-width: 720px) {
+  .cf-etape { padding: 22px 16px; }
+  .cf-titre { font-size: 1.2rem; }
+  .cf-sous { margin-left: 0; }
+  .cf-duo { grid-template-columns: 1fr; gap: 24px; }
+  .cf-paie { grid-template-columns: 1fr; }
+  .cf-liste { grid-template-columns: 1fr; }
+  .cf-site { flex-direction: column; gap: 10px; padding: 20px 18px; }
+  .cf-site .cf-corps { padding-right: 0; }
+  .cf-carte { padding: 22px 18px; }
+  .cf-boutique .cf-carte { flex-direction: column; gap: 10px; }
+  .cf-art, .cf-duo .cf-art { width: 64px; }
+  .cf-actions .btn { width: 100%; justify-content: center; }
+}
+.o-cf .b-label { margin-top: 20px; }
+.o-cf .b-label + .cf-duo { margin-top: 22px; }
+.o-cf .cf-site + .b-label { margin-top: 22px; }

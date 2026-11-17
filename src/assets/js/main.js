@@ -36,6 +36,18 @@
     'Pack SEO': 'SEO pack',
     'Création seule': 'Website only',
     'le vôtre': 'yours',
+    'Je m’en occupe moi-même': 'I will handle it myself',
+    'Je m’en occupe moi-même (création seule)': 'I will handle it myself (website only)',
+    'Formule ': 'Plan ',
+    ' aujourd’hui, puis ': ' today, then ',
+    ' à la réception': ' on delivery',
+    ' par mois pendant ': ' a month for ',
+    'Aujourd’hui, l’acompte de ': 'Today, the deposit of ',
+    'À la réception du site, le reste': 'On delivery, the rest',
+    'Puis votre formule, chaque année': 'Then your plan, every year',
+    'Puis votre formule, chaque mois': 'Then your plan, every month',
+    ', sans formule': ', no plan',
+    ' puis ': ' then ',
     'offert': 'free',
     'sans formule': 'no plan',
     'Ensuite, chaque mois': 'Then, every month',
@@ -390,6 +402,8 @@
         input.value = name; dom.name = name; dom.tld = tld.value;
         check();
       },
+      // Coche ou décoche « J'ai déjà un nom de domaine » (création seule : le client garde le sien)
+      setOwn: function (on) { if (own.checked !== !!on) { own.checked = !!on; applyOwn(); notify(); } },
       focus: function () { (own.checked ? own : input).focus(); }
     };
   }
@@ -433,108 +447,78 @@
     initBoutique(box);
     var setText = function (key, text) { $$('[data-sum="' + key + '"]', box).forEach(function (el) { el.textContent = text; }); };
     var params = new URLSearchParams(location.search);
-    ['type', 'forfait'].forEach(function (k) {
-      var v = params.get(k);
-      var r = v && $('input[name="b-' + k + '"][value="' + slug(v) + '"]', box);
-      if (r) r.checked = true;
-    });
+    // préremplissage : ?forfait=sans (je m'en occupe moi-même), ?forfait=evolution, ?gestion=moi…
+    var pf = slug(params.get('forfait') || '');
+    if (pf === 'sans' || slug(params.get('gestion') || '') === 'moi') { var gm = $('input[name="b-gestion"][value="moi"]', box); if (gm) gm.checked = true; }
+    else if (pf) { var fr = $('input[name="b-forfait"][value="' + pf + '"]', box); if (fr) fr.checked = true; }
     var sw = $('[data-billing-switch]', box);
     if (/^ann/.test(params.get('periode') || '') && sw && sw._set) sw._set('annuel');
     var lp = params.get('lissage') === 'oui' ? '12' : (params.get('lissage') || '');
     if (lp) { var l = $('input[name="b-lisse"][value="' + slug(lp) + '"]', box); if (l) l.checked = true; }
-    (params.get('options') || '').split(',').forEach(function (id) {
-      var c = id && $('.b-opt input[value="' + slug(id) + '"]', box);
-      if (c) c.checked = true;
-    });
-    initPagesPlus(box, params.get('pages_plus'));
     var code = codeEvenement(box, function () { update(); });
     var form = $('[data-builder-form]', box);
     if (form) form.addEventListener('submit', function (e) { e.preventDefault(); });
     var domain = initDomain(box, update);
+    var autoOwn = false; // « j'ai déjà un nom de domaine » coché par le choix « je m'en occupe moi-même »
 
-    /* récapitulatif */
+    /* le total, en bas de la page */
     function update(ev) {
       var t = find(data.types, val('b-type')) || find(data.types, 'vitrine') || data.types[0];
-      var f = find(data.forfaits, val('b-forfait')) || data.forfaits[0];
-      filterOpts(box, t.id);
-      // site en plusieurs fois : le forfait se paie au mois (un clic sur « à l'année » repasse le site en une fois)
+      var seule = val('b-gestion') === 'moi'; // création seule : pas de formule, le code du site est remis
+      var f = seule ? (find(data.forfaits, 'sans') || { id: 'sans', name: 'Création seule', month: 0 }) : (find(data.forfaits, val('b-forfait')) || data.forfaits[0]);
+      // le client garde son nom de domaine : on le note, et on le remet comme avant s'il revient à « on s'occupe de tout »
+      if (seule && !domain.own()) { autoOwn = true; domain.setOwn(true); return; }
+      if (!seule && autoOwn) { autoOwn = false; domain.setOwn(false); return; }
+      $$('[data-avec-formule]', box).forEach(function (e) { e.hidden = seule; });
+      $$('[data-seule-txt]', box).forEach(function (e) { e.hidden = !seule; });
+      // site en plusieurs fois avec une formule : elle se paie au mois (un clic sur « à l'année » repasse le site en une fois)
       var lisseN = parseInt(val('b-lisse'), 10) || 0;
-      // création seule : le reste se paie en une fois (pas d'abonnement pour porter les mensualités)
-      $$('input[name="b-lisse"]', box).forEach(function (i) { if (i.value !== 'non') i.disabled = f.id === 'sans'; });
-      if (f.id === 'sans' && lisseN) { var one0 = $('input[name="b-lisse"][value="non"]', box); if (one0) one0.checked = true; lisseN = 0; }
-      if (lisseN && box.getAttribute('data-billing') === 'annuel') {
+      if (!seule && lisseN && box.getAttribute('data-billing') === 'annuel') {
         if (ev && ev.type === 'billing') { var one = $('input[name="b-lisse"][value="non"]', box); if (one) one.checked = true; lisseN = 0; }
         else if (sw && sw._set) { sw._set('mensuel'); return; }
       }
       var lnote = $('[data-lisse-note]', box);
       if (lnote) lnote.hidden = !lisseN;
-      var annual = box.getAttribute('data-billing') === 'annuel';
+      var annual = !seule && box.getAttribute('data-billing') === 'annuel';
       var mult = annual ? 12 - data.free : 1;
       var per = tr(annual ? '/an' : '/mois');
-      var month = f.month;
-      var optOnce = 0, optMonth = 0, chosen = [], ids = [];
-      $$('.b-opt input:checked', box).forEach(function (i) {
-        var o = find(data.options, i.value);
-        if (!o) return;
-        chosen.push(tr(o.name)); ids.push(o.id); optOnce += o.once; optMonth += o.month;
-      });
-      var pp = pagesPlus(box, data);
-      if (pp) { chosen.push(ppNom(pp)); optOnce += pp * data.pagePlus; }
       setText('type', siteNom(t));
       setText('type-price', euro(t.price));
-      // création seule : pas de formule, le client a son nom de domaine et son hébergement
-      var seule = f.id === 'sans';
-      if (seule && !domain.own() && domain.set) { domain.set('', 'mien'); return; }
-      $$('[data-avec-formule]', box).forEach(function (e) { e.hidden = seule; });
-      $$('[data-seule-txt]', box).forEach(function (e) { e.hidden = !seule; });
-      setText('domain-prix', seule ? tr('le vôtre') : tr('offert'));
-      setText('forfait', planName(f.name));
-      setText('forfait-price', seule ? tr('sans formule') : euro(month * mult) + per);
-      var optLine = $('[data-sum-opts]', box);
-      if (optLine) {
-        optLine.hidden = !chosen.length;
-        var parts = [];
-        if (optOnce) parts.push(euro(optOnce));
-        if (optMonth) parts.push(euro(optMonth * mult) + per);
-        optLine.querySelector('span').textContent = chosen.length > 1 ? chosen.length + tr(' options') : (chosen[0] || tr('Options'));
-        setText('opts', parts.join(' + '));
-      }
+      setText('domain-prix', tr('offert'));
+      setText('forfait', seule ? tr('Je m’en occupe moi-même') : tr('Formule ') + planName(f.name));
+      setText('forfait-price', seule ? tr('sans formule') : euro(f.month * mult) + per);
       var dom = domain.get(), domText = '';
       if (domain.own()) domText = tr('Mon nom de domaine actuel');
       else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? tr(' (disponible)') : dom.status === 'pris' ? tr(' (déjà pris)') : '');
       setText('domain', domText || tr('Nom de domaine à choisir'));
-      var lisse = lisseN > 0;
-      // code événement valable : la remise porte sur la création (le site et les options payées une fois)
+      // code événement valable : la remise porte sur la création (le site et la boutique), jamais sur la formule
       var r = code.ok ? (data.remise || 0) : 0;
-      var remise = round2((t.price + optOnce) * r / 100);
       var prixSite = round2(t.price * (100 - r) / 100);
-      optOnce = round2(optOnce * (100 - r) / 100);
       var rLine = $('[data-sum-remise]', box);
       if (rLine) rLine.hidden = !r;
-      setText('remise', '- ' + euro(remise));
+      setText('remise', '- ' + euro(round2(t.price - prixSite)));
       var acompte = round2(prixSite * data.acompte / 100);
       var reste = round2(prixSite - acompte);
+      var recur = f.month * mult;
+      // chaque façon de payer, en clair : ce qu'on paie aujourd'hui, puis à la réception
+      setText('p-0', euro(acompte) + tr(' aujourd’hui, puis ') + euro(reste) + tr(' à la réception'));
+      (data.lissage || []).forEach(function (n) { setText('p-' + n, euro(acompte) + tr(' aujourd’hui, puis ') + euro(floor2(reste / n)) + tr(' par mois pendant ') + n + tr(' mois')); });
+      var lisse = lisseN > 0;
       var lisseAmt = lisse ? floor2(reste / lisseN) : 0;
-      var recur = (month + optMonth) * mult;
-      // ce que le client paie, dans l'ordre : aujourd'hui (l'acompte et les options payées une fois),
-      // à la réception (le reste, en une fois ou chaque mois pendant N mois), puis l'abonnement. Le même calcul que /commander/.
-      var today = round2(acompte + optOnce);
-      setText('today-label', optOnce ? tr('Aujourd’hui : l’acompte et les options') : tr('Aujourd’hui : l’acompte de ') + data.acompte + ' %');
-      setText('today', euro(today));
-      setText('reste-label', lisse ? tr('Puis, dès la réception, pendant ') + lisseN + tr(' mois') : tr('À la réception du site : le reste'));
+      setText('today-label', tr('Aujourd’hui, l’acompte de ') + data.acompte + ' %');
+      setText('today', euro(acompte));
+      setText('reste-label', lisse ? tr('Puis, dès la réception, pendant ') + lisseN + tr(' mois') : tr('À la réception du site, le reste'));
       setText('reste', lisse ? euro(lisseAmt) + tr('/mois') : euro(reste));
-      setText('recur-label', seule ? tr('Ensuite, chaque mois') : annual ? tr('Et votre formule, chaque année') : tr('Et votre formule, chaque mois'));
+      setText('recur-label', seule ? tr('Ensuite, chaque mois') : annual ? tr('Puis votre formule, chaque année') : tr('Puis votre formule, chaque mois'));
       setText('recur', seule ? tr('rien') : euro(recur) + per);
-      setText('detail', tr('Prix total du site : ') + euro(prixSite + optOnce) + (lisse ? tr(', sans frais en plus.') : '.'));
+      setText('detail', tr('Prix total du site : ') + euro(prixSite) + (lisse ? tr(', sans frais en plus.') : '.'));
       var bar = $('[data-sum="bar"]', box);
-      if (bar) {
-        bar.innerHTML = tr('Aujourd’hui ') + '<b>' + euro(today) + '</b>' + tr(', à la réception ') + '<b>' + (lisse ? euro(lisseAmt) + tr('/mois') + ' × ' + lisseN : euro(reste)) + '</b>' + (seule ? '' : tr(' + formule'));
-      }
+      if (bar) bar.innerHTML = '<b>' + euro(prixSite) + '</b>' + (seule ? tr(', sans formule') : tr(' puis ') + '<b>' + euro(recur) + per + '</b>');
       // Lien « Poser une question » (formulaire de contact, en clair)
-      var q = { type: t.id === 'boutique' ? 'Site avec boutique en ligne' : 'Site', forfait: f.name, paiement: annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: domText, options: chosen.join(', '), parrain: parrain };
+      var q = { type: t.id === 'boutique' ? 'Site avec boutique en ligne' : 'Site', forfait: seule ? 'Je m’en occupe moi-même (création seule)' : f.name, paiement: seule ? '' : annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: seule ? '' : domText, options: '', parrain: parrain };
       $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
       // Lien « Commander » : paramètres exacts attendus par /commander/
-      var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: domain.full(), domaine_statut: domain.statut(), options: ids.join(','), pages_plus: pp ? String(pp) : '', parrain: parrain, code: code.code && code.ok !== false ? code.code : '' };
+      var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: seule ? '' : domain.full(), domaine_statut: domain.statut(), options: '', pages_plus: '', parrain: parrain, code: code.code && code.ok !== false ? code.code : '' };
       $$('[data-sum-order]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href').split('?')[0], o)); });
     }
     var pLine = $('[data-sum-parrain]', box);
@@ -545,13 +529,14 @@
     if (params.get('domaine') || params.get('domaine_statut') === 'mien') domain.set(params.get('domaine'), params.get('domaine_statut'));
     if (code.set) code.set(params.get('code'));
 
-    /* barre du bas (téléphone) : cachée quand le récapitulatif complet est visible */
+    /* barre du bas (téléphone) : cachée quand le total est visible ; « Mon total » y descend */
     var bar = $('[data-sum-bar]', box), sum = $('.b-sum', box);
     if (bar && sum && 'IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         entries.forEach(function (en) { bar.classList.toggle('is-hidden', en.isIntersecting); });
-      }, { threshold: 0.2 }).observe(sum);
+      }, { threshold: 0.1 }).observe(sum);
     }
+    $$('[data-sum-total]', box).forEach(function (a) { a.addEventListener('click', function (e) { if (!sum) return; e.preventDefault(); sum.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); });
   }
 
   /* ---------- page Commander ---------- */
@@ -604,7 +589,9 @@
     if (code) showError(code);
     else if (params.get('annule') === '1') showError('annule');
 
-    /* préremplissage depuis l'adresse */
+    /* préremplissage depuis l'adresse (?forfait=sans : je m'en occupe moi-même) */
+    var pfo = slug(params.get('forfait') || '');
+    if (pfo === 'sans' || slug(params.get('gestion') || '') === 'moi') { var gmo = $('input[name="gestion"][value="moi"]', form); if (gmo) gmo.checked = true; }
     ['type', 'forfait', 'periode'].forEach(function (k) {
       var v = slug(params.get(k) || '');
       if (k === 'periode' && v === 'annuel') v = 'annee';
@@ -625,23 +612,25 @@
     var domain = initDomain(root, function () { update(true); });
     var hiddenDomain = $('[data-order-domaine]', form);
     var engRow = $('[data-order-engagement]', form), engBox = engRow && engRow.querySelector('input');
+    var autoOwn = false; // « j'ai déjà un nom de domaine » coché par « je m'en occupe moi-même »
 
     function update(fromUser, ev) {
       var t = find(data.types, val('type')) || find(data.types, 'vitrine') || data.types[0];
-      var f = find(data.forfaits, val('forfait')) || data.forfaits[0];
+      var seule = val('gestion') === 'moi'; // création seule : pas de formule, le code du site est remis
+      var f = seule ? (find(data.forfaits, 'sans') || { id: 'sans', name: 'Création seule', month: 0 }) : (find(data.forfaits, val('forfait')) || data.forfaits[0]);
+      if (seule && !domain.own()) { autoOwn = true; domain.setOwn(true); return; }
+      if (!seule && autoOwn) { autoOwn = false; domain.setOwn(false); return; }
       filterOpts(form, t.id);
       // site en plusieurs fois : le forfait se paie au mois (choisir « à l'année » repasse le site en une fois)
       var lisseN = parseInt(val('lissage'), 10) || 0;
-      $$('input[name="lissage"]', form).forEach(function (i) { if (i.value !== '') i.disabled = f.id === 'sans'; });
-      if (f.id === 'sans' && lisseN) { var one1 = $('input[name="lissage"][value=""]', form); if (one1) one1.checked = true; lisseN = 0; }
-      if (lisseN && val('periode') === 'annee') {
+      if (!seule && lisseN && val('periode') === 'annee') {
         var target = ev && ev.target && ev.target.name;
         if (target === 'periode') { var one = $('input[name="lissage"][value=""]', form); if (one) one.checked = true; lisseN = 0; }
         else { var m = $('input[name="periode"][value="mois"]', form); if (m) m.checked = true; }
       }
       var lnote = $('[data-lisse-note]', form);
       if (lnote) lnote.hidden = !lisseN;
-      var annual = val('periode') === 'annee';
+      var annual = !seule && val('periode') === 'annee';
       root.setAttribute('data-billing', annual ? 'annuel' : 'mensuel');
       var mult = annual ? 12 - data.free : 1;
       var per = tr(annual ? '/an' : '/mois');
@@ -667,11 +656,12 @@
       var solde = round2(prixSite - acompte);
       var lisseAmt = lisse ? floor2(solde / lisseN) : 0;
       var forfaitFirst = f.month * mult;
-      var seule = f.id === 'sans'; // création seule : pas de formule
-      if (seule && !domain.own() && domain.set) { domain.set('', 'mien'); return; }
       $$('[data-avec-formule]', root).forEach(function (e) { e.hidden = seule; });
       $$('[data-seule-txt]', root).forEach(function (e) { e.hidden = !seule; });
-      setText('domain-prix', seule ? tr('le vôtre') : tr('offert'));
+      setText('domain-prix', tr('offert'));
+      // chaque façon de payer, en clair
+      setText('p-0', euro(acompte) + tr(' aujourd’hui, puis ') + euro(solde) + tr(' à la réception'));
+      (data.lissage || []).forEach(function (n) { setText('p-' + n, euro(acompte) + tr(' aujourd’hui, puis ') + euro(floor2(solde / n)) + tr(' par mois pendant ') + n + tr(' mois')); });
       // aujourd'hui : l'acompte et les options payées une fois ; la formule démarre à la réception du site
       lines.push([tr('Acompte de ') + data.acompte + tr(' % sur la création (') + siteNom(t).toLowerCase() + ')', acompte]);
       $$('.b-opt input:checked', form).forEach(function (i) {
@@ -708,7 +698,7 @@
       /* récapitulatif latéral */
       setText('type', siteNom(t));
       setText('type-price', euro(prixSite));
-      setText('forfait', planName(f.name));
+      setText('forfait', seule ? tr('Je m’en occupe moi-même') : tr('Formule ') + planName(f.name));
       setText('forfait-price', seule ? tr('sans formule') : euro(forfaitFirst) + per);
       setText('delai', tr(t.delai));
       var optLine = $('[data-order-opts]', root);

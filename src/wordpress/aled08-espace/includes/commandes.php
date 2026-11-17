@@ -268,7 +268,7 @@ function aled08e_cmd_recap_txt($c) {
     elseif ($c['domaine_mien']) $dom = $c['domaine'] . ' (le client l’a déjà)';
     else $dom = $c['domaine'] . ' (à réserver au nom du client)';
     $pay = 'acompte de ' . aled08e_euro_txt($m['acompte']) . ' à la commande, puis à la réception du site : '
-        . ($c['lissage'] ? 'le reste en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais, ' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois (engagement de ' . (int) $m['lissage_total_echeances'] . ' mois), avec l’abonnement' : 'le reste en une fois, ' . aled08e_euro_txt($m['solde']) . (aled08e_est_seule($c['forfait']) ? '' : ', et l’abonnement démarre'));
+        . ($c['lissage'] ? 'le reste en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais, ' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois (engagement de ' . (int) $m['lissage_total_echeances'] . ' mois)' . (aled08e_est_seule($c['forfait']) ? '' : ', avec l’abonnement') : 'le reste en une fois, ' . aled08e_euro_txt($m['solde']) . (aled08e_est_seule($c['forfait']) ? '' : ', et l’abonnement démarre'));
     return 'Référence : ' . $c['ref'] . "\n"
         . 'Site : ' . ($type ? $type['label'] : $c['type']) . ', création ' . aled08e_euro_txt($m['creation']) . ($type ? ' (délai habituel : ' . $type['delai'] . ')' : '') . "\n"
         . 'Nom de domaine : ' . $dom . "\n"
@@ -361,7 +361,7 @@ function aled08e_cmd_traiter_post() {
     $optionsIn = $P['options'] ?? [];
     if (!is_array($optionsIn)) $optionsIn = explode(',', (string) $optionsIn);
     $options = [];
-    foreach ($optionsIn as $o) { $o = sanitize_key($o); $oo = $o !== '' ? aled08e_option($o) : null; if ($oo && empty($oo['retire'])) $options[] = $o; } // pas d'option retirée sur une nouvelle commande
+    foreach ($optionsIn as $o) { $o = sanitize_key($o); $oo = $o !== '' ? aled08e_option($o) : null; if ($oo && empty($oo['retire']) && ($oo['quand'] ?? '') !== 'espace') $options[] = $o; } // pas d'option retirée, ni le Pack SEO (il se prend dans l'espace client)
     // options réservées à certains types de site (stock, comptes clients : boutique seulement)
     $typeIn = sanitize_key($get('type', 30));
     $options = array_values(array_filter($options, function ($oid) use ($typeIn) { $o = aled08e_option($oid); return $o && (empty($o['types']) || in_array($typeIn, (array) $o['types'], true)); }));
@@ -380,8 +380,10 @@ function aled08e_cmd_traiter_post() {
     // code événement : vérifié ici, la remise est recalculée par le serveur
     $cfg['remise'] = ($cfg['code_evenement'] !== '' && aled08e_code_evenement_ok($cfg['code_evenement'])) ? aled08e_remise_evenement() : 0;
     if ($cfg['lissage']) $cfg['periode'] = 'mois'; // le site en plusieurs fois se paie avec un forfait au mois
-    // création seule : le client garde son nom de domaine et son hébergement, et paie le reste en une fois (pas d'abonnement)
-    if (aled08e_est_seule($cfg['forfait'])) { $cfg['domaine_mien'] = true; $cfg['lissage'] = 0; $cfg['periode'] = 'mois'; }
+    // « Je m'en occupe moi-même » (champ gestion = moi) : création seule, sans formule. Le client garde son nom de domaine
+    // et son hébergement. Il peut payer le reste en une fois ou étalé (un abonnement Stripe qui ne porte que les mensualités).
+    if (sanitize_key($get('gestion', 10)) === 'moi') $cfg['forfait'] = 'sans';
+    if (aled08e_est_seule($cfg['forfait'])) { $cfg['domaine_mien'] = true; $cfg['domaine'] = ''; $cfg['periode'] = 'mois'; }
     $err = function ($code) use ($cfg) { aled08e_cmd_redirect_erreur($code, $cfg); };
     if ($cfg['code_evenement'] !== '' && !$cfg['remise']) $err('code');
 

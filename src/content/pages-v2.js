@@ -2,9 +2,10 @@
 // Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160, aucun tiret long
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de src/config.js),
 // aucun chiffre sans source, et pas de phrase de 9 mots ou plus reprise d'une autre page.
-// Offre du 17 novembre 2026 : le Site Internet Professionnel (creation), deux options payées une fois (Pack SEO et
-// boutique en ligne), deux formules au mois (forfaits : Tranquillité et Évolution), modifications comprises sans limite,
-// et le code événement (config.evenement). Chaque mot technique est expliqué la première fois qu'il apparaît sur une page.
+// Offre du 17 novembre 2026 : le Site Internet Professionnel (creation), une seule option à la commande (la boutique en
+// ligne, payée une fois), le Pack SEO commandé plus tard depuis l'espace client, puis « On s'occupe de tout » (deux
+// formules au mois, forfaits : Tranquillité et Évolution, modifications comprises sans limite) ou « Je m'en occupe
+// moi-même » (création seule, le code du site est remis au client), et le code événement (config.evenement). Chaque mot technique est expliqué la première fois qu'il apparaît sur une page.
 const { site, creation, types, forfaits, annuel, lissage, delais, options, paiement, marche, fidelite, clients, bande, evenement } = require('../config');
 
 // helpers
@@ -122,9 +123,9 @@ Votre site ne part en ligne qu’après être passé entre mes mains.
 
 ## Un prix affiché, sans devis
 
-Chez beaucoup de prestataires, il faut demander un devis, attendre, puis comparer. Ici, le prix est écrit sur le site et il est le même pour tout le monde : ${eur(creation.prix)} € le site, jusqu’à ${creation.pages} pages. Les pages que vous n’utilisez pas travaillent pour Google. Deux options existent, payées une fois : le ${packSeo.name} à ${eur(packSeo.price.once)} €, soit ${packSeo.pages} pages de plus pour être trouvé sur Google (c’est ce qu’on appelle le SEO), et la boutique en ligne à ${eur(creation.boutique)} €.
+Chez beaucoup de prestataires, il faut demander un devis, attendre, puis comparer. Ici, le prix est écrit sur le site et il est le même pour tout le monde : ${eur(creation.prix)} € le site, jusqu’à ${creation.pages} pages. Les pages que vous n’utilisez pas travaillent pour Google. À la commande, une seule option, payée une fois : la boutique en ligne à ${eur(creation.boutique)} €. Le ${packSeo.name}, à ${eur(packSeo.price.once)} €, s’ajoute plus tard depuis votre espace client : ${packSeo.pages} pages de plus pour être trouvé sur Google (c’est ce qu’on appelle le SEO).
 
-Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, en une fois ou en ${durees} fois sans frais. Ensuite, une formule au mois fait vivre le site, sans engagement : ${tranquille.name} à ${eur(tranquille.month)} € ou ${evolution.name} à ${eur(evolution.month)} €. Le détail complet est sur la page [tarifs](/tarifs/).
+Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, en une fois ou en ${durees} fois sans frais. Pour la suite, vous choisissez. Une formule au mois fait vivre le site, sans engagement : ${tranquille.name} à ${eur(tranquille.month)} € ou ${evolution.name} à ${eur(evolution.month)} €. Ou bien la création seule : je vous remets le code du site, et vous l’installez vous-même. Le détail complet est sur la page [tarifs](/tarifs/).
 
 ## Les repères du marché, honnêtement
 
@@ -148,11 +149,11 @@ Et si votre projet dépasse ce que je sais bien faire, comme une application sur
     faq: [
       { q: 'Moins cher, ça veut dire moins bien ?', a: 'Non. Le prix baisse parce que je passe moins de temps sur ce qui se répète, pas parce que je saute des étapes. Chaque site est relu, testé sur téléphone et vérifié avant d’être publié.' },
       { q: 'Mon site est-il fait automatiquement ?', a: 'Non. C’est moi qui conçois et fais votre site. Ma petite bande s’occupe seulement de ce qui se répète : une mise en page de base, des premiers textes, des réglages. Je reprends ensuite tout à la main, je fais les choix avec vous et je publie le site moi-même.' },
-      { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. Le site coûte ${eur(creation.prix)} €, puis la formule ${eur(tranquille.month)} € ou ${eur(evolution.month)} € par mois. Les deux options sont facultatives, et leur prix est indiqué avant que vous commandiez.` },
+      { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. Le site coûte ${eur(creation.prix)} €, puis la formule ${eur(tranquille.month)} € ou ${eur(evolution.month)} € par mois si vous me confiez la mise en ligne. La boutique en ligne et le ${packSeo.name} sont facultatifs, et leur prix est affiché sur le site.` },
       { q: 'Pourquoi n’y a-t-il pas de devis ?', a: 'Parce que la plupart des sites d’indépendants, d’artisans, de commerces ou d’associations se construisent de la même façon. Un prix fixe est plus simple pour vous comme pour moi. Pour un projet hors norme, je vous le dis franchement.' },
     ],
     voir: ['/tarifs/', '/pourquoi-les-minis-monstres/', '/comparatif/'],
-    cta: { titre: 'Un site soigné, à prix clair', texte: 'Choisissez votre site et vos options : le total apparaît tout de suite.' },
+    cta: { titre: 'Un site soigné, à prix clair', texte: 'Votre site, la boutique si vous vendez, puis qui s’en occupe : le total apparaît tout de suite.' },
   },
 
   // ------------------------------------------------------------------ pourquoi un site internet
@@ -220,7 +221,7 @@ Un site travaille quand vous ne pouvez pas décrocher. Une personne qui vous dé
 
 > Commencer petit, c’est possible. Quelques pages suffisent souvent pour être trouvé et joignable, et les autres servent à Google en attendant. Le guide [site une page ou site vitrine](/guides/site-une-page-ou-site-vitrine/) vous aide à choisir.
 
-Chez moi, le site coûte ${eur(creation.prix)} €, avec ${creation.pages} pages au plus. Ensuite, une formule au mois, dès ${eur(tranquille.month)} €, s’occupe du reste : l’hébergement, qui garde votre site accessible 24 h/24, son adresse, son entretien technique et vos modifications. Les prix sont détaillés sur la page [tarifs](/tarifs/).`,
+Chez moi, le site coûte ${eur(creation.prix)} €, avec ${creation.pages} pages au plus. Ensuite, si vous le voulez, une formule au mois, dès ${eur(tranquille.month)} €, s’occupe du reste : l’hébergement, qui garde votre site accessible 24 h/24, son adresse, son entretien technique et vos modifications. Les prix sont détaillés sur la page [tarifs](/tarifs/).`,
     faq: [
       { q: 'Ma page Facebook ne suffit pas ?', a: 'Elle suffit pour garder le contact avec vos abonnés. Pour être trouvé par quelqu’un qui ne vous connaît pas encore, et pour présenter clairement vos services, un site fait mieux. Les deux vont très bien ensemble.' },
       { q: 'J’ai déjà une fiche Google, à quoi bon un site ?', a: 'La fiche indique votre adresse, vos horaires et vos avis. Le site raconte ce que vous faites, comment, et pourquoi vous choisir. Une fiche reliée à un vrai site inspire aussi davantage confiance.' },
@@ -302,7 +303,7 @@ Ce qui aide ensuite : garder vos informations à jour, ajouter de temps en temps
 
 Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les autres, des mots répétés à l’excès, des liens achetés. Ils font souvent plus de mal que de bien, et le retard se rattrape ensuite difficilement.
 
-> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('etoile'))} de ma petite bande, prépare vos pages SEO, et je les relis une par une. Avec la formule ${evolution.name}, une nouvelle page s’ajoute chaque semaine. Le ${packSeo.name}, lui, en ajoute ${packSeo.pages} d’un coup, pour ${eur(packSeo.price.once)} € payés une fois. Tout est expliqué sur la page [référencement SEO](/referencement-seo/).`,
+> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('etoile'))} de ma petite bande, prépare vos pages SEO, et je les relis une par une. Avec la formule ${evolution.name}, une nouvelle page s’ajoute chaque semaine. Le ${packSeo.name}, lui, en ajoute ${packSeo.pages} d’un coup, pour ${eur(packSeo.price.once)} € payés une fois, et se commande depuis votre espace client quand vous le décidez. Tout est expliqué sur la page [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de temps pour apparaître sur Google ?', a: 'Sur le nom de votre entreprise, c’est en général rapide. Sur des recherches où beaucoup d’entreprises sont présentes, comptez plutôt plusieurs mois, avec un site soigné et des informations à jour.' },
       { q: 'Faut-il payer Google pour être bien placé ?', a: 'Non. Les résultats naturels ne s’achètent pas. Les annonces payantes existent, elles sont signalées comme sponsorisées, et elles disparaissent dès que vous arrêtez de payer.' },
@@ -408,7 +409,7 @@ Si mes prix restent doux, c’est grâce à cette petite bande, et à mes accès
     ],
     body: `## Deux formules au mois, au choix
 
-Votre site reçu, vous choisissez l’une des deux formules. Elle démarre à ce moment-là, sans engagement. Payée à l’année, elle vous offre ${annuel.moisOfferts} mois.
+En commandant, si vous me confiez la mise en ligne, vous choisissez l’une des deux formules. Elle démarre à la réception de votre site, sans engagement. Payée à l’année, elle vous offre ${annuel.moisOfferts} mois.
 
 ### ${tranquille.name} : ${eur(tranquille.month)} € par mois
 
@@ -430,7 +431,7 @@ Ou ${eur(annee(evolution))} € à l’année. Pour un site qui continue de gran
 - **Un délai plus court** : ${evolution.delai} en moyenne.
 - **Une page SEO de plus chaque semaine.** Une page SEO est écrite pour une recherche précise, afin que votre site soit plus facilement trouvé sur Google.
 
-La première année, le nom de domaine et l’hébergement sont offerts avec le site. Ensuite, votre formule les prend en charge.
+La première année, le nom de domaine et l’hébergement sont offerts avec votre formule. Ensuite, elle les prend en charge.
 
 ## Demander une modification
 
@@ -463,7 +464,7 @@ Et après ? Votre nom de domaine est à votre nom, il reste donc à vous. Je vou
 
 Tous les prix sont réunis sur la page [tarifs](/tarifs/). Si vous parlez de moi autour de vous, le [parrainage](/fidelite/) offre ${fidelite.parrainageMois} mois de formule à vous comme à la personne parrainée. Et un deuxième site profite de ${fidelite.remiseSecondSite} % de remise sur sa création.`,
     faq: [
-      { q: 'Puis-je avoir un site sans formule au mois ?', a: 'Non, tant que votre site est hébergé chez moi. La formule couvre ce qui le fait vivre : son adresse, son hébergement et son entretien. Elle reste sans engagement.' },
+      { q: 'Puis-je avoir un site sans formule au mois ?', a: 'Oui, avec la création seule : en commandant, vous choisissez « Je m’en occupe moi-même ». Je vous remets alors le code de votre site, et vous l’installez chez votre hébergeur, seul ou avec son aide. Tant que votre site est hébergé chez moi, en revanche, une formule est nécessaire : elle couvre son adresse, son hébergement et son entretien.' },
       { q: 'Combien de modifications puis-je demander ?', a: 'Autant qu’il vous en faut : elles sont comprises dans les deux formules, sans limite. Seules une refonte complète ou une fonction nouvelle passent par un devis.' },
       { q: 'En combien de temps ma demande est-elle traitée ?', a: `${tranquille.delai} au plus avec ${tranquille.name}. Avec ${evolution.name}, vos demandes passent en priorité, et le délai moyen est de ${evolution.delai}.` },
       { q: 'Puis-je changer de formule plus tard ?', a: `Oui. Vous passez de ${tranquille.name} à ${evolution.name}, ou l’inverse, quand vous voulez. Écrivez-moi depuis votre espace client, et la nouvelle formule compte à partir de la période suivante.` },
@@ -493,7 +494,7 @@ Tous les prix sont réunis sur la page [tarifs](/tarifs/). Si vous parlez de moi
 
 Je m’appelle Alex et je crée des sites internet depuis ${ville} (${site.address.postalCode}). Je travaille à distance pour toute la France, et les ${dept}, c’est chez moi.
 
-Je fais des sites d’une page ou de plusieurs, et des boutiques en ligne. L’offre est la même ici qu’ailleurs : un prix affiché, un site vérifié à la main, puis une formule au mois qui s’occupe de l’entretien et de vos modifications.
+Je fais des sites d’une page ou de plusieurs, et des boutiques en ligne. L’offre est la même ici qu’ailleurs : un prix affiché, un site vérifié à la main, puis, si vous le voulez, une formule au mois qui s’occupe de l’entretien et de vos modifications.
 
 Indépendants, artisans, commerçants, gîtes, associations : si vous êtes à Charleville-Mézières, à Sedan, à Rethel, à ${ville} ou dans un village autour, on peut se voir pour parler de votre projet. Ce n’est jamais obligatoire. Beaucoup de choses se règlent très bien par téléphone ou par e-mail.
 
