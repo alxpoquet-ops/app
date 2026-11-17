@@ -109,10 +109,10 @@ function aled08e_cmd_pages_plus($v) {
 }
 function aled08e_cmd_page_prix() { return (float) (aled08e_data()['creation']['pagePlus'] ?? 10); }
 function aled08e_cmd_pages_plus_txt($n) { $n = (int) $n; return $n . ($n > 1 ? ' pages en plus' : ' page en plus'); }
-/* Offre événement (foire, marché, salon) : les codes valables (réglages de l'extension), la remise en % sur la création */
+/* Codes promo (l'ancienne « offre événement », retirée du site le 17 novembre 2026) : les codes valables se règlent dans
+ * les réglages de l'extension, la remise en % sur la création. Aucun code par défaut. */
 function aled08e_codes_evenement() {
-    $v = get_option('aled08_codes_evenement', null);
-    if ($v === null) $v = 'MONSTRES20'; // premier code, tant qu'aucun n'est réglé
+    $v = get_option('aled08_codes_evenement', '');
     return array_values(array_filter(array_map('aled08e_clean_code', preg_split('/[\s,;]+/', (string) $v))));
 }
 function aled08e_code_evenement_ok($code) { $c = aled08e_clean_code($code); return $c !== '' && in_array($c, aled08e_codes_evenement(), true); }
@@ -124,8 +124,10 @@ function aled08e_code_evenement_ajax() {
     $n = (int) get_transient($k);
     if ($n >= 20) wp_send_json_error(['message' => 'Trop d’essais. Réessayez dans une heure.'], 429);
     set_transient($k, $n + 1, HOUR_IN_SECONDS);
-    $ok = aled08e_code_evenement_ok(wp_unslash($_GET['code'] ?? ''));
-    if ($ok) wp_send_json_success(['remise' => aled08e_remise_evenement()]);
+    $code = wp_unslash($_GET['code'] ?? '');
+    // une seule case pour le code promo et le code de parrainage : on dit seulement de quel genre il est (jamais à qui il appartient)
+    if (aled08e_code_evenement_ok($code)) wp_send_json_success(['type' => 'promo', 'remise' => aled08e_remise_evenement()]);
+    if (aled08e_user_by_code(aled08e_clean_code($code))) wp_send_json_success(['type' => 'parrain', 'mois' => (int) (aled08e_data()['parrainageMois'] ?? 1)]);
     wp_send_json_error(['message' => 'Code inconnu.']);
 }
 add_action('wp_ajax_aled08e_code_evenement', 'aled08e_code_evenement_ajax');
@@ -385,6 +387,11 @@ function aled08e_cmd_traiter_post() {
     if (sanitize_key($get('gestion', 10)) === 'moi') $cfg['forfait'] = 'sans';
     if (aled08e_est_seule($cfg['forfait'])) { $cfg['domaine_mien'] = true; $cfg['domaine'] = ''; $cfg['periode'] = 'mois'; }
     $err = function ($code) use ($cfg) { aled08e_cmd_redirect_erreur($code, $cfg); };
+    // la case « Code promo ou parrainage » : un code de parrainage tapé là devient le parrain de la commande
+    if ($cfg['code_evenement'] !== '' && !$cfg['remise'] && aled08e_user_by_code($cfg['code_evenement'])) {
+        if ($cfg['parrain'] === '') $cfg['parrain'] = $cfg['code_evenement'];
+        $cfg['code_evenement'] = '';
+    }
     if ($cfg['code_evenement'] !== '' && !$cfg['remise']) $err('code');
 
     // anti-robot : champ piège rempli ; horodatage absent, envoi en moins de 3 secondes, horodatage dans le futur ou vieux de plus de 24 heures
@@ -538,7 +545,7 @@ function aled08e_cmd_mail_owner_nouvelle($c, $compte, $stripe) {
     $corps = "Nouvelle commande sur " . home_url('/commander/') . "\n\n"
         . aled08e_cmd_recap_txt($c) . "\n"
         . "Client :\n" . aled08e_cmd_titulaire_txt($c) . "\n\n"
-        . (!empty($c['remise']) ? 'Code événement : ' . $c['code_evenement'] . ' (' . (int) $c['remise'] . " % de remise sur la création, déjà déduits)\n" : '')
+        . (!empty($c['remise']) ? 'Code promo : ' . $c['code_evenement'] . ' (' . (int) $c['remise'] . " % de remise sur la création, déjà déduits)\n" : '')
         . ($c['parrain'] ? 'Code de parrainage : ' . $c['parrain'] . ' (' . (aled08e_user_by_code($c['parrain']) ? aled08e_user_by_code($c['parrain'])->display_name : 'code inconnu') . ")\n" : '')
         . ($c['message'] ? "Message du client :\n" . $c['message'] . "\n\n" : '')
         . 'Compte client : ' . ($compte['cree'] ? 'créé (' . $compte['login'] . '), e-mail de mot de passe envoyé' : 'déjà existant (' . $compte['login'] . '), commande rattachée') . "\n"

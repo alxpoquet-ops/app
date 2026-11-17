@@ -507,10 +507,6 @@ Certaines personnes aiment mettre un visage sur un nom avant de se lancer. D’a
 
 Dans les deux cas, le tarif ne change pas et il est affiché à l’avance : ${eur(creation.prix)} € pour le site, puis une formule à ${eur(tranquille.month)} € ou ${eur(evolution.month)} € par mois, sans engagement. Le détail est sur la page [tarifs](/tarifs/).
 
-## Le code événement
-
-Vous m’avez croisé sur ${lieux} ? Vous avez alors reçu un code événement. Ce code retire ${evenement.remise} % au prix de création de votre site. Gardez-le bien : il se saisit au moment de commander, sur la page [créer mon site](/creer-mon-site/).
-
 ## Être trouvé près de chez vous
 
 Pour une entreprise locale, tout ne se joue pas face à la France entière. Tout se joue sur les recherches des gens du coin : « couvreur Rethel », « fleuriste Sedan », « gîte près de Charleville ». Trois choses comptent particulièrement.

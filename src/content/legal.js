@@ -129,7 +129,7 @@ ${site.owner}, Les Minis Monstres, ${addr}. Contact : ${contact}.
 ## 2. Les données que je collecte
 
 - **Demande de contact ou de devis** : votre nom, votre e-mail, votre téléphone si vous le donnez, vos choix (options, formule, nom de domaine) et votre message.
-- **Commande en ligne** : prénom, nom, e-mail, téléphone, adresse postale, nom de votre activité, vos choix, le nom de domaine souhaité, votre message et un éventuel code de parrainage ou code événement. L’adresse postale sert à la facture et à la réservation du nom de domaine.
+- **Commande en ligne** : prénom, nom, e-mail, téléphone, adresse postale, nom de votre activité, vos choix, le nom de domaine souhaité, votre message et un éventuel code promo ou de parrainage. L’adresse postale sert à la facture et à la réservation du nom de domaine.
 - **Espace client** : vos identifiants, vos demandes de modification (texte et photos), vos messages dans la bulle d’aide et la date de votre dernière connexion.
 - **Paiement** : je ne reçois jamais votre numéro de carte ni votre IBAN (voir le point 4).
 
@@ -180,7 +180,7 @@ Vous pouvez demander l’accès à vos données, leur correction, leur suppressi
     path: '/conditions-generales/',
     name: 'Conditions générales',
     title: `Conditions générales de vente | Les Minis Monstres`,
-    description: `Conditions générales de vente des Minis Monstres : commande en ligne, site à prix fixe, options, formules au mois, offre événement, nom de domaine, rétractation.`,
+    description: `Conditions générales de vente des Minis Monstres : commande en ligne, site à prix fixe, options, formules au mois, codes promo, nom de domaine, rétractation.`,
     lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif de commande.',
     updated: UPDATED_CGV,
     body: `## 1. Objet
@@ -189,7 +189,7 @@ Ces conditions s’appliquent à toute commande passée auprès des Minis Monstr
 
 ## 2. Commande en ligne
 
-La commande se passe sur le site, en trois étapes : la composition du site, les coordonnées, puis le paiement sécurisé. Pour composer son site, le client voit dans l’ordre : le site, l’option boutique en ligne, puis le choix de la mise en ligne. Il la confie aux Minis Monstres avec une formule au mois (« On s’occupe de tout »), ou il s’en occupe lui-même (« Je m’en occupe moi-même », la création seule). Avec une formule, il choisit ensuite son nom de domaine et sa formule. Le total s’affiche en dernier, avec le choix de payer le reste en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants. S’il a un code événement (article 4) ou un code de parrainage (article 17), il le saisit pendant la commande.
+La commande se passe sur le site, en trois étapes : la composition du site, les coordonnées, puis le paiement sécurisé. Pour composer son site, le client voit dans l’ordre : le site, l’option boutique en ligne, puis le choix de la mise en ligne. Il la confie aux Minis Monstres avec une formule au mois (« On s’occupe de tout »), ou il s’en occupe lui-même (« Je m’en occupe moi-même », la création seule). Avec une formule, il choisit ensuite son nom de domaine et sa formule. Le total s’affiche en dernier, avec le choix de payer le reste en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants. S’il a un code promo (article 4) ou un code de parrainage (article 17), il le saisit dans la case « Code promo ou parrainage » avant de commander.
 
 En cliquant sur « Commander et payer », le client accepte ces conditions et passe une commande ferme. Il reçoit aussitôt un e-mail de confirmation avec une référence de commande, à rappeler dans les échanges.
 
@@ -219,9 +219,9 @@ ${listeOptions}
 
 **Devis.** Une refonte complète du site ou une fonction nouvelle, comme une prise de rendez-vous, fait l’objet d’un devis. Le client l’accepte avant le début du travail.
 
-## 4. Offre événement
+## 4. Codes promo
 
-Une personne rencontrée par les Minis Monstres sur ${lieux} reçoit un code événement. Ce code donne ${evenement.remise} % de remise sur la création du site, c’est-à-dire sur le site et sur la boutique en ligne si elle est prise. Il ne s’applique pas aux formules au mois, ni au ${packSeo.name} commandé plus tard.
+Les Minis Monstres peuvent proposer des codes promo, par exemple lors d’une opération ponctuelle. Un code promo donne une remise sur la création du site, c’est-à-dire sur le site et sur la boutique en ligne si elle est prise. Il ne s’applique pas aux formules au mois, ni au ${packSeo.name} commandé plus tard.
 
 Le client saisit le code au moment de commander. Le code est vérifié, et le récapitulatif montre le prix après remise avant le paiement. L’acompte et le reste du prix de création sont calculés sur ce prix remisé (article 5).
 
@@ -235,7 +235,7 @@ Le prix de création se paie en deux temps.
 
 Le client choisit, au moment de la commande, de payer le reste en une fois ou en plusieurs fois. Ce choix est ouvert avec une formule comme en création seule (article 3).
 
-Exemple pour un site à ${eur(creation.prix)} €, sans code événement : le client paie ${eur(acompte(creation.prix))} € à la commande. À la réception, il paie ${eur(creation.prix - acompte(creation.prix))} € en une fois, ou ${lissage.durees.map((n) => `${eur(lisse(creation.prix, n))} € par mois pendant ${n} mois`).join(', ou ')}.
+Exemple pour un site à ${eur(creation.prix)} €, sans code promo : le client paie ${eur(acompte(creation.prix))} € à la commande. À la réception, il paie ${eur(creation.prix - acompte(creation.prix))} € en une fois, ou ${lissage.durees.map((n) => `${eur(lisse(creation.prix, n))} € par mois pendant ${n} mois`).join(', ou ')}.
 
 ## 6. Formules au mois
 

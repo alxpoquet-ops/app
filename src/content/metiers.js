@@ -10,7 +10,7 @@
 // options : les conseils de la page (« Ce que je vous conseille »). Ids acceptés : 'packseo' (payé une fois, commandé plus
 // tard depuis l'espace client : le texte le dit), 'boutique' (option payée une fois, à la commande), 'base' et
 // 'evolution' (formules au mois). Le prix affiché vient de config.js.
-// Le code événement (config.evenement) est cité pour les métiers qui font les foires, marchés et salons.
+// (Le code événement a été retiré le 17 novembre 2026 : un seul champ « code promo ou parrainage » à la commande.)
 const { creation, forfaits, options, paiement, lissage, annuel, marche, bande, evenement } = require('../config');
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
@@ -95,8 +95,6 @@ Vous n’avez ni le temps ni l’envie de gérer un site le soir, et c’est nor
 Plus tard, un tarif change ou une nouvelle photo arrive ? Envoyez le changement depuis votre téléphone, dans votre espace client, votre page privée sur mon site. ${qui('bricoleur')} de ma petite bande, prépare la modification, je la vérifie, et elle est en ligne sous ${tranquille.delai} au plus. C’est compris dans votre formule au mois, sans limite.
 
 Pour aller vite sans bâcler, j’ai programmé cette petite bande de monstres : ils s’occupent de tout ce qui se répète d’un site à l’autre. Je garde pour moi la conception, puis la relecture de chaque page avant sa mise en ligne. C’est ce qui garde des délais courts et un prix doux.
-
-> Vous m’avez rencontré sur une foire, un salon ou un événement professionnel ? Le code événement reçu ce jour-là retire ${remise} au prix de la création. Saisissez-le au moment de commander.
 
 ## Combien ça coûte
 
@@ -222,8 +220,6 @@ Chaque pièce peut avoir sa fiche, avec un titre, ses dimensions, sa matière et
 Pas besoin d’un studio pour de belles images. Une grande fenêtre, un fond uni, la lumière du matin et un téléphone récent suffisent souvent. Montrez la pièce entière, puis un détail de la matière, puis la pièce en situation, posée sur une table ou accrochée au mur.
 
 Vous exposez sur des salons ou des marchés de créateurs ? Une petite page d’agenda dit où l’on peut voir votre travail en vrai.
-
-> Si nous nous sommes croisés sur l’un de ces marchés ou salons, gardez le code événement que vous avez reçu : à saisir au moment de commander, il vous fait gagner ${remise} sur la création de votre site.
 
 ## Raconter qui vous êtes
 
@@ -385,8 +381,6 @@ Commencez petit, avec vos produits les plus demandés, ceux qui se gardent et se
 Un commerce bouge tout le temps : les horaires d’été, la fermeture d’une semaine en août, la nouvelle gamme, le marché de Noël. Un site qui affiche encore les horaires de l’an dernier déçoit, et le client ne revient pas forcément.
 
 Avec votre formule au mois, ces changements ne vous demandent qu’un message dans votre espace client, la page privée où vous suivez votre site. Ce sont des modifications, comprises sans limite : ${B('bricoleur').nom} les prépare, je les vérifie, et elles sont en ligne sous ${tranquille.delai} au plus. Avec ${evolution.name}, à ${eur(evolution.month)} € par mois, vos demandes passent en priorité.
-
-> Nous nous sommes rencontrés sur un marché, une foire ou un salon ? Le code événement que vous avez reçu vous donne ${remise} de remise sur la création du site. Pensez à le saisir en commandant.
 
 ## Combien ça coûte
 

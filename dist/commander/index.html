@@ -25,7 +25,7 @@
 <meta name="twitter:description" content="Vérifiez votre site, vos options et votre formule, donnez vos coordonnées et payez en ligne en toute sécurité. Je réserve votre nom de domaine sans attendre.">
 <meta name="twitter:image" content="https://www.aled08.fr/assets/img/og-image.png">
 <link rel="preload" href="/assets/fonts/jakarta-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/style.css?v=476a3448">
+<link rel="stylesheet" href="/assets/css/style.css?v=e5595c8b">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -101,7 +101,7 @@
       <input type="hidden" name="_t" value=""><div class="hp" aria-hidden="true"><label>Site web <input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>
       <input type="hidden" name="domaine" value="" data-order-domaine>
       <div class="form-alert o-alert" data-order-error hidden role="alert" tabindex="-1"></div>
-      <template data-order-errors><p data-code="champs">Il manque une information obligatoire. Vérifiez les champs marqués d’une étoile.</p><p data-code="email">Cette adresse e-mail ne semble pas valide. Vérifiez-la, s’il vous plaît.</p><p data-code="domaine">Indiquez le nom de domaine souhaité, ou cochez « J’ai déjà un nom de domaine ».</p><p data-code="code">Ce code événement n’est pas reconnu. Vérifiez-le, ou laissez la case vide : vous pourrez m’écrire ensuite.</p><p data-code="cgv">Pour commander, il faut accepter les conditions générales de vente.</p><p data-code="demarrage">Pour commander, il faut accepter que la création commence tout de suite.</p><p data-code="engagement">Pour payer le reste en plusieurs fois, il faut accepter l’engagement le temps du paiement.</p><p data-code="paiement">Le paiement n’a pas abouti. Votre commande est gardée : vous pouvez réessayer, ou m’écrire.</p><p data-code="robot">L’envoi a été bloqué par la protection contre les robots. Attendez quelques secondes et réessayez.</p><p data-code="annule">Le paiement a été annulé. Rien n’a été débité : vous pouvez reprendre quand vous voulez.</p><p data-code="inconnu">Quelque chose n’a pas fonctionné. Réessayez, ou écrivez-nous par le formulaire de contact : on finalise la commande avec vous.</p></template>
+      <template data-order-errors><p data-code="champs">Il manque une information obligatoire. Vérifiez les champs marqués d’une étoile.</p><p data-code="email">Cette adresse e-mail ne semble pas valide. Vérifiez-la, s’il vous plaît.</p><p data-code="domaine">Indiquez le nom de domaine souhaité, ou cochez « J’ai déjà un nom de domaine ».</p><p data-code="code">Ce code promo ou de parrainage n’est pas reconnu. Vérifiez-le, ou laissez la case vide : vous pourrez m’écrire ensuite.</p><p data-code="cgv">Pour commander, il faut accepter les conditions générales de vente.</p><p data-code="demarrage">Pour commander, il faut accepter que la création commence tout de suite.</p><p data-code="engagement">Pour payer le reste en plusieurs fois, il faut accepter l’engagement le temps du paiement.</p><p data-code="paiement">Le paiement n’a pas abouti. Votre commande est gardée : vous pouvez réessayer, ou m’écrire.</p><p data-code="robot">L’envoi a été bloqué par la protection contre les robots. Attendez quelques secondes et réessayez.</p><p data-code="annule">Le paiement a été annulé. Rien n’a été débité : vous pouvez reprendre quand vous voulez.</p><p data-code="inconnu">Quelque chose n’a pas fonctionné. Réessayez, ou écrivez-nous par le formulaire de contact : on finalise la commande avec vous.</p></template>
 
       <fieldset class="o-card">
         <legend><span class="b-n">1</span><span class="b-t">Votre site</span></legend>
@@ -275,7 +275,7 @@
           <div class="field"><label for="o-ville">Ville <span class="req">*</span></label><input id="o-ville" name="ville" type="text" autocomplete="address-level2" maxlength="100" required></div>
         </div>
         <div class="field"><label for="o-message">Votre projet <span class="opt">(facultatif)</span></label><textarea id="o-message" name="message" maxlength="5000" placeholder="Votre activité, vos idées, un site que vous aimez…"></textarea></div>
-        <div class="field"><label for="o-parrain">Code de parrainage <span class="opt">(facultatif)</span></label><input id="o-parrain" name="parrain" type="text" autocomplete="off" maxlength="20" placeholder="Ex. : LILA-7K2"></div>
+        <input type="hidden" name="parrain" value="">
         </div>
       </fieldset>
 
@@ -290,7 +290,7 @@
   </div>
   <p class="cf-info" data-lisse-note hidden><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg><span>Sans frais. Vous vous engagez le temps du paiement<span data-avec-formule>, et la formule se règle alors chaque mois</span>.</span></p>
         <div class="b-code" data-code-box>
-  <label for="code_evenement"><strong><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" /><path d="M13 5v2" /><path d="M13 17v2" /><path d="M13 11v2" /></svg>Code événement</strong><small>Rencontrés sur une foire, un marché ou un salon ? Votre code donne 20 % de remise sur la création du site.</small></label>
+  <label for="code_evenement"><strong><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" /><path d="M13 5v2" /><path d="M13 17v2" /><path d="M13 11v2" /></svg>Code promo ou parrainage</strong><small>Vous avez un code promo, ou le code d’un client qui vous a recommandé ? Entrez-le ici.</small></label>
   <input id="code_evenement" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" placeholder="Votre code (facultatif)" name="code_evenement" data-code-evenement>
   <p class="b-code-etat" data-code-etat aria-live="polite"></p>
 </div>
@@ -552,6 +552,6 @@
 </g></g></g>
 </g></svg></button>
 </div>
-<script src="/assets/js/main.js?v=0fbd170f" defer></script>
+<script src="/assets/js/main.js?v=d003d426" defer></script>
 </body>
 </html>

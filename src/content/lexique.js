@@ -1,6 +1,6 @@
 // Lexique : « c'est quoi … ? », des définitions simples des mots du web.
 // Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160, aucun tiret long, pas de phrase de 9 mots ou plus reprise d'une autre page.
-const { types, forfaits, options, bande } = require('../config');
+const { types, forfaits, options, bande, creation } = require('../config');
 const gardien = bande.find((b) => b.id === 'gardien').role; // Le gardien, compris dans l'abonnement (présenté sans prénom)
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const T = (id) => types.find((t) => t.id === id);
@@ -959,7 +959,7 @@ Un salon de toilettage distribue des cartes chez les vétérinaires du coin, ave
 
 ## Chez les Minis Monstres
 
-Un site d'une seule page peut faire office de landing page pour lancer une activité ou un événement. Il coûte ${page.price} €, le même prix qu'un site plus grand, jusqu'à 10 pages. Sur un site existant, une nouvelle page dédiée s'ajoute pour 10 €, payée une fois. Le prix et les options sont détaillés sur [créer mon site](/creer-mon-site/). Le bouton qui fait agir est détaillé à la page [call to action](/lexique/call-to-action/).`,
+Un site d'une seule page peut faire office de landing page pour lancer une activité ou un événement. Il coûte ${page.price} €, le même prix qu'un site plus grand, jusqu'à ${creation.pages} pages. Le prix et les options sont détaillés sur [créer mon site](/creer-mon-site/). Le bouton qui fait agir est détaillé à la page [call to action](/lexique/call-to-action/).`,
     faq: [
       { q: 'Quelle différence entre landing page et page d’accueil ?', a: 'La page d’accueil présente toute l’entreprise et oriente vers le reste du site. La landing page parle d’une seule offre et vise une seule action.' },
       { q: 'Faut-il faire de la publicité pour avoir une landing page ?', a: 'Non. Elle peut aussi recevoir des visiteurs depuis un e-mail, un QR code, un post sur les réseaux ou une carte de visite. Ce qui compte, c’est qu’ils arrivent avec une attente précise.' },

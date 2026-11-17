@@ -278,22 +278,7 @@ function extrasDemande() { return ''; }
 
 // ---------------------------------------------------------------- l'offre événement
 // prix : false sur l'accueil (pas de prix affiché, seulement la remise en pourcentage)
-function offreEvenement({ prix = true } = {}) {
-  const lieux = (evenement.lieux || []);
-  // <!--commun--> : bloc repris tel quel sur plusieurs pages (scripts/check.js ne le compte pas comme contenu dupliqué)
-  return `<!--commun--><section class="section section-evenement" id="offre-evenement"><div class="container">
-  <div class="evenement reveal">
-    <span class="evenement-art" aria-hidden="true">${monster('ravie')}</span>
-    <div class="evenement-txt">
-      <p class="kicker c-pink">${icon('ticket')}Offre événement</p>
-      <h2>On s’est rencontrés ? <em>${evenement.remise} % de moins</em> sur votre site</h2>
-      <p>Si vous m’avez rencontré sur ${lieux.slice(0, -1).join(', ')} ou ${lieux[lieux.length - 1]}, vous avez reçu un code événement. Il vous donne <b>${evenement.remise} % de remise sur la création de votre site</b>${prix ? ` : ${euro(creation.prix)} devient ${euro(creation.prix * (100 - evenement.remise) / 100)}` : ''}.</p>
-      <p class="evenement-comment">${icon('info')}<span>Entrez votre code au moment de commander. La remise s’affiche tout de suite.</span></p>
-      <p>${btnCreer('btn-primary')}</p>
-    </div>
-  </div>
-</div></section><!--/commun-->`;
-}
+function offreEvenement() { return ''; } // l'offre événement est retirée (17 novembre 2026)
 
 // ---------------------------------------------------------------- comment se passe une modification
 const ETAPES_MODIF = [
@@ -483,7 +468,7 @@ function optionChoices({ name = '', quand = 'tout' } = {}) {
 // Le code événement (foire, marché, salon) : -20 % sur la création. Vérifié par le serveur à la commande.
 function codeEvenementBox({ name = '' } = {}) {
   return `<div class="b-code" data-code-box>
-  <label for="${name || 'b-code'}"><strong>${icon('ticket')}Code événement</strong><small>Rencontrés sur une foire, un marché ou un salon ? Votre code donne ${evenement.remise} % de remise sur la création du site.</small></label>
+  <label for="${name || 'b-code'}"><strong>${icon('ticket')}Code promo ou parrainage</strong><small>Vous avez un code promo, ou le code d’un client qui vous a recommandé ? Entrez-le ici.</small></label>
   <input id="${name || 'b-code'}" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" placeholder="Votre code (facultatif)"${name ? ` name="${name}"` : ''} data-code-evenement>
   <p class="b-code-etat" data-code-etat aria-live="polite"></p>
 </div>`;
@@ -527,7 +512,7 @@ function configurator() {
       <h2 class="cf-titre"><span class="cf-n" aria-hidden="true"></span>Votre total</h2>
       <ul class="cf-lignes">
         <li><span data-sum="type">Site Internet Professionnel</span><b data-sum="type-price">${euro(creation.prix)}</b></li>
-        <li data-sum-remise hidden><span>Code événement (- ${evenement.remise} %)</span><b data-sum="remise">0 €</b></li>
+        <li data-sum-remise hidden><span>Code promo (- ${evenement.remise} %)</span><b data-sum="remise">0 €</b></li>
         <li data-avec-formule><span data-sum="domain">Nom de domaine à choisir</span><b data-sum="domain-prix">offert</b></li>
         <li><span data-sum="forfait">Formule ${esc(ABO.name)}</span><b data-sum="forfait-price">${euro(ABO.month)}/mois</b></li>
       </ul>

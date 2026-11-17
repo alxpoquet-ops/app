@@ -2238,3 +2238,5 @@ div.tool { cursor: default; }
 .client-prix-evt .ico { width: 16px; height: 16px; flex: none; }
 .client-prix-evt b { font-size: 1.05rem; font-weight: 900; }
 .client-prix b s { font-size: 1.1rem; font-weight: 700; color: var(--muted); margin-right: 4px; }
+.client-formule { display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; margin: 2px 0 4px; padding: 4px 10px; border-radius: 999px; background: var(--c); color: var(--c-dd); font-size: .8rem; font-weight: 900; box-shadow: 0 0 0 1px var(--c-d) inset; }
+.client-formule .ico { width: 14px; height: 14px; }

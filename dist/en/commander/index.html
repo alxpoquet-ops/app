@@ -25,7 +25,7 @@
 <meta name="twitter:description" content="Check your website, your options and your plan, enter your details and pay securely online. I reserve your domain name right away.">
 <meta name="twitter:image" content="https://www.aled08.fr/assets/img/og-image.png">
 <link rel="preload" href="/assets/fonts/jakarta-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/style.css?v=476a3448">
+<link rel="stylesheet" href="/assets/css/style.css?v=e5595c8b">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -101,7 +101,7 @@
       <input type="hidden" name="_t" value=""><div class="hp" aria-hidden="true"><label>Website <input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>
       <input type="hidden" name="domaine" value="" data-order-domaine>
       <div class="form-alert o-alert" data-order-error hidden role="alert" tabindex="-1"></div>
-      <template data-order-errors><p data-code="champs">A required field is missing. Check the fields marked with an asterisk.</p><p data-code="email">This email address does not look valid. Please check it.</p><p data-code="domaine">Enter the domain name you want, or tick “I already have a domain name”.</p><p data-code="code">This event code is not recognised. Check it, or leave the box empty: you can write to me afterwards.</p><p data-code="cgv">To order, you need to accept the terms and conditions of sale.</p><p data-code="demarrage">To order, you need to agree that the creation starts straight away.</p><p data-code="engagement">To pay the rest in instalments, you need to accept the commitment for the payment period.</p><p data-code="paiement">The payment did not go through. Your order is saved: you can try again, or write to me.</p><p data-code="robot">Sending was blocked by the anti-robot protection. Wait a few seconds and try again.</p><p data-code="annule">The payment was cancelled. Nothing was charged: you can pick up again whenever you like.</p><p data-code="inconnu">Something went wrong. Try again, or write to us using the contact form: we will finalise the order with you.</p></template>
+      <template data-order-errors><p data-code="champs">A required field is missing. Check the fields marked with an asterisk.</p><p data-code="email">This email address does not look valid. Please check it.</p><p data-code="domaine">Enter the domain name you want, or tick “I already have a domain name”.</p><p data-code="code">This promo or referral code is not recognised. Check it, or leave the box empty: you can write to me afterwards.</p><p data-code="cgv">To order, you need to accept the terms and conditions of sale.</p><p data-code="demarrage">To order, you need to agree that the creation starts straight away.</p><p data-code="engagement">To pay the rest in instalments, you need to accept the commitment for the payment period.</p><p data-code="paiement">The payment did not go through. Your order is saved: you can try again, or write to me.</p><p data-code="robot">Sending was blocked by the anti-robot protection. Wait a few seconds and try again.</p><p data-code="annule">The payment was cancelled. Nothing was charged: you can pick up again whenever you like.</p><p data-code="inconnu">Something went wrong. Try again, or write to us using the contact form: we will finalise the order with you.</p></template>
 
       <fieldset class="o-card">
         <legend><span class="b-n">1</span><span class="b-t">Your website</span></legend>
@@ -265,7 +265,7 @@
           <div class="field"><label for="o-ville">Town <span class="req">*</span></label><input id="o-ville" name="ville" type="text" autocomplete="address-level2" maxlength="100" required></div>
         </div>
         <div class="field"><label for="o-message">Your project <span class="opt">(optional)</span></label><textarea id="o-message" name="message" maxlength="5000" placeholder="Your business, your ideas, a website you like…"></textarea></div>
-        <div class="field"><label for="o-parrain">Referral code <span class="opt">(optional)</span></label><input id="o-parrain" name="parrain" type="text" autocomplete="off" maxlength="20" placeholder="E.g.: LILA-7K2"></div>
+        <input type="hidden" name="parrain" value="">
         </div>
       </fieldset>
 
@@ -280,7 +280,7 @@
   </div>
   <p class="cf-info" data-lisse-note hidden><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg><span>Interest-free. You commit for the length of the payments<span data-avec-formule>, and the plan is then paid every month</span>.</span></p>
         <div class="b-code" data-code-box>
-  <label for="code_evenement"><strong><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" /><path d="M13 5v2" /><path d="M13 17v2" /><path d="M13 11v2" /></svg>Event code</strong><small>Did we meet at a fair, a market or a trade show? Your code gives 20% off the creation of the website.</small></label>
+  <label for="code_evenement"><strong><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" /><path d="M13 5v2" /><path d="M13 17v2" /><path d="M13 11v2" /></svg>Promo or referral code</strong><small>Do you have a promo code, or the code of a client who recommended you? Enter it here.</small></label>
   <input id="code_evenement" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" placeholder="Your code (optional)" name="code_evenement" data-code-evenement>
   <p class="b-code-etat" data-code-etat aria-live="polite"></p>
 </div>
@@ -542,6 +542,6 @@
 </g></g></g>
 </g></svg></button>
 </div>
-<script src="/assets/js/main.js?v=0fbd170f" defer></script>
+<script src="/assets/js/main.js?v=d003d426" defer></script>
 </body>
 </html>

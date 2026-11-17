@@ -27,7 +27,7 @@
     'Et votre formule, chaque année': 'And your plan, every year',
     'Et votre formule, chaque mois': 'And your plan, every month',
     ' + formule': ' + plan',
-    'Code événement : ': 'Event code: ',
+    'Code promo : ': 'Promo code: ',
     ' % de remise sur la création, déjà déduits': '% off the website, already deducted',
     ' fois, et votre formule': ' instalments, and your plan',
     'À la réception : le reste, et votre formule': 'On delivery: the rest, and your plan',
@@ -36,6 +36,8 @@
     'Pack SEO': 'SEO pack',
     'Création seule': 'Website only',
     'le vôtre': 'yours',
+    'Code de parrainage reconnu : un mois de formule offert, à vous comme à votre parrain.': 'Referral code recognised: one month of your plan free, for you and for your referrer.',
+    'Code promo valable : la remise est appliquée.': 'Valid promo code: the discount is applied.',
     'Je m’en occupe moi-même': 'I will handle it myself',
     'Je m’en occupe moi-même (création seule)': 'I will handle it myself (website only)',
     'Formule ': 'Plan ',
@@ -224,8 +226,9 @@
     maj();
   };
   var siteNom = function (t) { return tr(t.id === 'boutique' ? 'Site Internet Professionnel, avec boutique' : 'Site Internet Professionnel'); };
-  /* ---------- code événement (foire, marché, salon) : vérifié par le serveur, remise sur la création ----------
-     ok : true (code valable), false (inconnu), null (pas encore vérifié, ou vérification impossible ici) */
+  /* ---------- la case « Code promo ou parrainage » : vérifiée par le serveur ----------
+     ok : true (code valable), false (inconnu), null (pas encore vérifié, ou vérification impossible ici)
+     type : 'promo' (remise sur la création) ou 'parrain' (le code d'un client : un mois offert à chacun) */
   var codeEvenement = function (scope, onChange) {
     var input = $('[data-code-evenement]', scope), etat = $('[data-code-etat]', scope);
     var st = { code: '', ok: null }, timer = null, ajax = (window.aled08Ajax || '/wp-admin/admin-ajax.php');
@@ -233,7 +236,7 @@
     var dire = function (txt, cls) { if (etat) { etat.textContent = txt; etat.className = 'b-code-etat' + (cls ? ' ' + cls : ''); } };
     var verifier = function () {
       var c = cleanCode(input.value);
-      st.code = c; st.ok = null;
+      st.code = c; st.ok = null; st.type = '';
       if (c.length < 3) { dire(''); onChange(); return; }
       dire(tr('Vérification du code…'));
       onChange();
@@ -242,7 +245,8 @@
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (j) {
           if (cleanCode(input.value) !== c) return;
-          if (j && j.success) { st.ok = true; dire(tr('Code valable : la remise est appliquée.'), 'is-ok'); }
+          if (j && j.success && j.data && j.data.type === 'parrain') { st.ok = true; st.type = 'parrain'; dire(tr('Code de parrainage reconnu : un mois de formule offert, à vous comme à votre parrain.'), 'is-ok'); }
+          else if (j && j.success) { st.ok = true; st.type = 'promo'; dire(tr('Code promo valable : la remise est appliquée.'), 'is-ok'); }
           else if (j && j.success === false) { st.ok = false; dire(tr('Ce code n’est pas reconnu. Vérifiez-le, ou écrivez-moi.'), 'is-ko'); }
           else dire(tr('Le code sera vérifié au moment de commander.'));
           onChange();
@@ -492,8 +496,8 @@
       if (domain.own()) domText = tr('Mon nom de domaine actuel');
       else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? tr(' (disponible)') : dom.status === 'pris' ? tr(' (déjà pris)') : '');
       setText('domain', domText || tr('Nom de domaine à choisir'));
-      // code événement valable : la remise porte sur la création (le site et la boutique), jamais sur la formule
-      var r = code.ok ? (data.remise || 0) : 0;
+      // code promo valable : la remise porte sur la création (le site et la boutique), jamais sur la formule
+      var r = code.ok && code.type !== 'parrain' ? (data.remise || 0) : 0;
       var prixSite = round2(t.price * (100 - r) / 100);
       var rLine = $('[data-sum-remise]', box);
       if (rLine) rLine.hidden = !r;
@@ -519,7 +523,10 @@
       var q = { type: t.id === 'boutique' ? 'Site avec boutique en ligne' : 'Site', forfait: seule ? 'Je m’en occupe moi-même (création seule)' : f.name, paiement: seule ? '' : annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: seule ? '' : domText, options: '', parrain: parrain };
       $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
       // Lien « Commander » : paramètres exacts attendus par /commander/
-      var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: seule ? '' : domain.full(), domaine_statut: domain.statut(), options: '', pages_plus: '', parrain: parrain, code: code.code && code.ok !== false ? code.code : '' };
+      var estParrain = code.ok && code.type === 'parrain';
+      var pl = $('[data-sum-parrain]', box);
+      if (pl) pl.hidden = !(parrain || estParrain);
+      var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: seule ? '' : domain.full(), domaine_statut: domain.statut(), options: '', pages_plus: '', parrain: estParrain ? code.code : parrain, code: code.code && code.ok !== false && !estParrain ? code.code : '' };
       $$('[data-sum-order]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href').split('?')[0], o)); });
     }
     var pLine = $('[data-sum-parrain]', box);
@@ -649,8 +656,8 @@
       });
       var pp = pagesPlus(form, data);
       if (pp) { names.push(ppNom(pp)); optOnce += pp * data.pagePlus; }
-      // code événement valable : la remise porte sur la création (le site et les options payées une fois)
-      var r = code.ok ? (data.remise || 0) : 0;
+      // code promo valable : la remise porte sur la création (le site et les options payées une fois)
+      var r = code.ok && code.type !== 'parrain' ? (data.remise || 0) : 0;
       var k = (100 - r) / 100;
       var prixSite = round2(t.price * k);
       var acompte = round2(prixSite * data.acompte / 100);
@@ -669,7 +676,7 @@
         var o = find(data.options, i.value);
         if (o && o.once) lines.push([tr(o.name), round2(o.once * k)]);
       });
-      if (r) lines.push([tr('Code événement : ') + r + tr(' % de remise sur la création, déjà déduits'), 0]);
+      if (r) lines.push([tr('Code promo : ') + r + tr(' % de remise sur la création, déjà déduits'), 0]);
       optOnce = round2(optOnce * k);
       if (pp) lines.push([ppNom(pp) + ' (' + pp + ' × ' + euro(data.pagePlus) + ')', pp * data.pagePlus]);
       var today = round2(lines.reduce(function (s, l) { return s + l[1]; }, 0));
@@ -716,6 +723,7 @@
       else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? tr(' (disponible)') : dom.status === 'pris' ? tr(' (déjà pris)') : '');
       setText('domain', domText || tr('Nom de domaine à choisir'));
       if (hiddenDomain) hiddenDomain.value = domain.full();
+      if (pInput && code.ok && code.type === 'parrain') pInput.value = code.code;
       var pCode = pInput ? cleanCode(pInput.value) : parrain;
       if (pLine) pLine.hidden = !pCode;
       /* la configuration reste dans l'adresse (retour arrière, partage, erreur serveur) */

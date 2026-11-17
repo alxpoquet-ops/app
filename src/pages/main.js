@@ -118,7 +118,6 @@ function home() {
   <p class="center more">${C.btn(sections.equipe.path, 'btn-light btn-flaque', sections.equipe.icon, 'Rencontrer la bande')}</p>
 </div></section>
 
-${C.offreEvenement({ prix: false })}
 
 <section class="section">${C.deco('nuage', 'cote-droite')}<div class="container">
   <h2 class="section-title">Ce que vous y gagnez</h2>
@@ -158,10 +157,9 @@ const CLIENTS_EN_LIGNE = clients.filter((c) => !c.enCreation && c.url && !c.url.
 const pagesDe = (c) => (c.enCreation ? 0 : (CLIENTS_PAGES[c.domaine] || {}).pages || 0);
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1180 → 1 180
 const s_ = (n) => (n > 1 ? 's' : '');
-// Prix estimé d'un site client avec la grille actuelle, code événement compris :
-// - la création : le site, la boutique si c'en est une, et ses options payées une fois, avec la remise du code événement ;
-// - les pages au-delà des pages comprises (creation.pages) : en Pack SEO, des lots de 10 pages payés une fois, sans remise
-//   (le Pack SEO se commande depuis l'espace client, le code événement ne s'y applique pas).
+// Prix estimé d'un site client avec la grille actuelle : la création (le site, la boutique si c'en est une, et ses options
+// payées une fois). Les pages en plus ne sont pas comptées : elles viennent de la formule du client (Évolution ajoute une
+// page pour Google chaque semaine) et, au plus, de quelques Pack SEO (clients[].packsSeo dans config), cités à part.
 // Les fiches produits ne comptent pas comme des pages. C'est une estimation, pas le prix payé par le client.
 function estimeClient(c) {
   const t = types.find((x) => x.id === c.type);
@@ -169,15 +167,13 @@ function estimeClient(c) {
   if (!t || !compte.pages) return null;
   const produits = compte.produits || 0;
   const pages = compte.pages - produits;
-  const plus = Math.max(0, pages - creation.pages);
   const pack = C.PACK_SEO || { name: 'Pack SEO', price: { once: 25 }, pages: 10 };
-  const packs = plus ? Math.ceil(plus / (pack.pages || 10)) : 0;
-  const packsPrix = packs * pack.price.once;
+  const packs = c.packsSeo || 0;
   const opts = (c.optionsCreation || []).map((id) => options.find((o) => o.id === id)).filter(Boolean);
   const supplement = t.supplement || 0;
+  const formule = forfaits.find((f) => f.id === c.forfait) || null;
   const creationPrix = creation.prix + supplement + opts.reduce((n, o) => n + o.price.once, 0);
-  const creationCode = Math.round(creationPrix * (100 - evenement.remise)) / 100;
-  return { pages, produits, plus, pack, packs, packsPrix, supplement, opts, creationPrix, creationCode, total: creationPrix + packsPrix, totalCode: creationCode + packsPrix };
+  return { pages, produits, pack, packs, packsPrix: packs * pack.price.once, supplement, opts, formule, creationPrix };
 }
 const prixTxt = (n) => `${String(n).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} €`;
 function clientPrix(c) {
@@ -187,8 +183,14 @@ function clientPrix(c) {
   if (e.supplement) parts.push(`${prixTxt(e.supplement)} la boutique`);
   e.opts.forEach((o) => parts.push(`${prixTxt(o.price.once)} ${o.name.toLowerCase()}`));
   const creationTxt = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} et ${parts[parts.length - 1]}` : parts[0];
-  const pagesTxt = e.plus ? ` ${e.plus} page${s_(e.plus)} en plus des ${creation.pages} comprises : ${e.packs} ${esc(e.pack.name)} à ${prixTxt(e.pack.price.once)}, soit ${prixTxt(e.packsPrix)}.` : '';
-  return `<span class="client-prix"><span class="client-prix-t">Prix estimé avec un code événement</span><b><s>${prixTxt(e.total)}</s> ${prixTxt(e.totalCode)}</b><span class="client-prix-d">${creationTxt}, soit ${prixTxt(e.creationCode)} avec le code événement (- ${evenement.remise} %).${pagesTxt} Puis ${forfaits[0].month} € par mois.</span></span>`;
+  const f = e.formule;
+  const pagesTxt = f ? ` Les pages en plus viennent de la formule ${esc(f.name)}${f.pageSeoSemaine || f.priorite ? ', qui en ajoute une chaque semaine' : ''}${e.packs ? `, et ${e.packs === 1 ? 'd’un' : `de ${e.packs}`} ${esc(e.pack.name)} au plus (${prixTxt(e.packsPrix)})` : ''}.` : '';
+  return `<span class="client-prix"><span class="client-prix-t">Prix estimé au tarif actuel</span><b>${prixTxt(e.creationPrix)}</b><span class="client-prix-d">${creationTxt}.${pagesTxt}${f ? ` Puis ${f.month} € par mois.` : ''}</span></span>`;
+}
+// Le petit badge de la formule du client
+function clientFormule(c) {
+  const f = forfaits.find((x) => x.id === c.forfait);
+  return f ? `<span class="client-formule c-${f.color}">${icon('repeat')}Formule ${esc(f.name)}, ${f.month} €/mois</span>` : '';
 }
 function clientPages(c) {
   const e = estimeClient(c);
@@ -200,7 +202,7 @@ function clientPages(c) {
 function clientCards({ max = 0, desc = true, prix = true } = {}) {
   const liste = max ? CLIENTS_EN_LIGNE.slice(0, max) : CLIENTS_EN_LIGNE;
   return `<div class="client-cards">${liste
-    .map((c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong>${desc ? `<span class="client-desc">${inline(c.desc)}</span>` : ''}${clientPages(c)}${prix ? clientPrix(c) : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`)
+    .map((c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong>${prix ? clientFormule(c) : ''}${desc ? `<span class="client-desc">${inline(c.desc)}</span>` : ''}${clientPages(c)}${prix ? clientPrix(c) : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`)
     .join('')}</div>`;
 }
 
@@ -267,7 +269,6 @@ function forfaitsPage() {
   ${C.optionsCompact()}
 </div></section>
 
-${C.offreEvenement()}
 
 <section class="section" id="modifications"><div class="container">
   <h2 class="section-title">Vos modifications, incluses</h2>
@@ -601,7 +602,7 @@ const ORDER_ERRORS = {
   champs: 'Il manque une information obligatoire. Vérifiez les champs marqués d’une étoile.',
   email: 'Cette adresse e-mail ne semble pas valide. Vérifiez-la, s’il vous plaît.',
   domaine: 'Indiquez le nom de domaine souhaité, ou cochez « J’ai déjà un nom de domaine ».',
-  code: 'Ce code événement n’est pas reconnu. Vérifiez-le, ou laissez la case vide : vous pourrez m’écrire ensuite.',
+  code: 'Ce code promo ou de parrainage n’est pas reconnu. Vérifiez-le, ou laissez la case vide : vous pourrez m’écrire ensuite.',
   cgv: 'Pour commander, il faut accepter les conditions générales de vente.',
   demarrage: 'Pour commander, il faut accepter que la création commence tout de suite.',
   engagement: 'Pour payer le reste en plusieurs fois, il faut accepter l’engagement le temps du paiement.',
@@ -695,7 +696,7 @@ function commanderPage() {
           ${field('ville', 'Ville', 'type="text" autocomplete="address-level2" maxlength="100"')}
         </div>
         <div class="field"><label for="o-message">Votre projet <span class="opt">(facultatif)</span></label><textarea id="o-message" name="message" maxlength="5000" placeholder="Votre activité, vos idées, un site que vous aimez…"></textarea></div>
-        ${field('parrain', 'Code de parrainage', 'type="text" autocomplete="off" maxlength="20" placeholder="Ex. : LILA-7K2"', { req: false })}
+        <input type="hidden" name="parrain" value="">
         </div>
       </fieldset>
 
@@ -1267,7 +1268,7 @@ function confiancePage() {
 <section class="section"><div class="container">
   ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages en ligne sur les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque page utile est une porte d’entrée de plus depuis Google.</span></p>` : ''}
   ${clientCards()}
-  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille, d’après les pages en ligne. Ils comptent le code événement (foire, marché, salon) : ${evenement.remise} % de moins sur la création, la formule au mois ne change pas. Au-delà des ${creation.pages} pages comprises, les pages en plus sont comptées en ${C.PACK_SEO ? esc(C.PACK_SEO.name) : 'Pack SEO'} (${C.PACK_SEO ? C.PACK_SEO.pages : 10} pages pour ${euro(C.PACK_SEO ? C.PACK_SEO.price.once : 25)}). Les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
+  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille. Ces clients ont la formule ${esc(C.EVO.name)}, qui ajoute une page pour Google chaque semaine : leurs pages en plus en viennent, avec au plus un ou deux ${C.PACK_SEO ? esc(C.PACK_SEO.name) : 'Pack SEO'}. Les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
   ${enCours.length ? `<p class="center muted">En ce moment, je prépare aussi ${enCours.map((c) => esc(c.nom)).join(' et ')}.</p>` : ''}
 </div></section>
 ${METIERS.length ? `<section class="section section-soft"><div class="container">
@@ -1605,7 +1606,7 @@ function docPage() {
   <div class="doc-cards3">
     <div class="doc-mini reveal"><strong>${icon('wrench')}Modifications incluses</strong><p>Dans les deux formules, sans les compter. En ligne sous ${ABO.delai} au plus, ou ${C.EVO.delai} en moyenne avec ${esc(C.EVO.name)}.</p></div>
     <div class="doc-mini reveal"><strong>${icon('search-check')}Pages pour Google</strong><p>Les pages que vous n’utilisez pas sur les ${creation.pages} deviennent des pages SEO, pour être trouvé plus souvent.</p></div>
-    <div class="doc-mini reveal"><strong>${icon('ticket')}Code événement</strong><p>Rencontrés sur une foire, un marché ou un salon ? Votre code donne ${evenement.remise} % de remise sur la création du site.</p></div>
+    <div class="doc-mini reveal"><strong>${icon('ticket')}Code promo ou parrainage</strong><p>Une seule case, en bas de la page. Un code promo réduit le prix de la création. Un code de parrainage offre ${fidelite.parrainageMois} mois de formule à chacun.</p></div>
   </div>
   <p class="doc-more center">${C.btn(sections.forfaits.path, 'btn-light', sections.forfaits.icon, 'La page des tarifs')}</p>
 </div></section>
