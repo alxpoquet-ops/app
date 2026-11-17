@@ -1188,7 +1188,8 @@
       $$('[data-cerise-form]').forEach(function (fo) {
         fo.addEventListener('submit', function (e) { e.preventDefault(); var i = $('input', fo); ceriseDire(i.value); i.value = ''; });
       });
-      $$('[data-cerise-idee]').forEach(function (b) { b.addEventListener('click', function () { ceriseDire(b.textContent); }); });
+      // stopPropagation : sinon le clic remonte au document, qui referme la bulle juste après son ouverture
+      $$('[data-cerise-idee]').forEach(function (b) { b.addEventListener('click', function (e) { e.stopPropagation(); ceriseDire(b.textContent); }); });
       champ.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); envoyer(champ.value); } });
       $$('[data-lia-ex]', flot).forEach(function (b) { b.addEventListener('click', function () { champ.value = b.textContent.trim(); champ.focus(); }); });
       var nouveau = $('[data-lia-nouveau]', flot);

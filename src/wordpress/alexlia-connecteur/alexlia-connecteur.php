@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 1.6.0
+ * Version: 1.7.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '1.6.0');
+define('ALEXLIA_CONN_VERSION', '1.7.0');
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Co (Réglages › Alex & Co)
@@ -305,10 +305,20 @@ function alexlia_conn_preparer($args) {
         $apercu = alexlia_conn_apercu_url($j, home_url('/'));
         // le nom s'affiche-t-il vraiment sur le site ? Certains thèmes l'écrivent en dur : le réglage ne change alors rien à l'écran.
         $visible = alexlia_conn_texte_visible($apercu, $b['reglages'][$nom]);
-        $b['alertes'][$nom] = $visible === false ? 'Ce texte n’apparaît pas sur la page : le thème du site l’écrit lui-même, ce réglage ne le change pas à l’écran.' : '';
+        $avant = (string) get_option($ok[$nom]);
+        $remplace = false;
+        // le thème écrit le nom lui-même : on remplace aussi l'ancien nom à l'écran (aperçu, puis site après l'accord du client)
+        if ($visible === false && $nom === 'nom' && $avant !== '' && $avant !== $b['reglages'][$nom]) {
+            $b['affichages'] = array_values(array_filter((array) ($b['affichages'] ?? []), function ($a) use ($avant) { return ($a['ancien'] ?? '') !== $avant; }));
+            $b['affichages'][] = ['ancien' => $avant, 'nouveau' => $b['reglages'][$nom]];
+            alexlia_conn_brouillon_set($j, $b);
+            $visible = alexlia_conn_texte_visible($apercu, $b['reglages'][$nom]);
+            $remplace = $visible === true;
+        }
+        $b['alertes'][$nom] = $visible === false ? 'Ce texte n’apparaît pas sur la page : le thème du site l’écrit lui-même et je n’ai pas pu le remplacer à l’écran.' : ($remplace ? 'Le thème du site écrit ce nom lui-même : il est aussi remplacé à l’écran (en-tête, pied de page…).' : '');
         alexlia_conn_brouillon_set($j, $b);
-        return ['ok' => true, 'prepare' => true, 'avant' => get_option($ok[$nom]), 'apercu' => $apercu, 'visible_sur_le_site' => $visible,
-            'note' => $visible === false ? 'ATTENTION : avec ce réglage, le nouveau texte ne s’affiche PAS sur la page d’accueil (le thème l’écrit en dur). Le réglage ne change que l’onglet du navigateur et le référencement.' : ''];
+        return ['ok' => true, 'prepare' => true, 'avant' => $avant, 'apercu' => $apercu, 'visible_sur_le_site' => $visible, 'remplacement_affichage' => $remplace,
+            'note' => $visible === false ? 'ATTENTION : le nouveau texte ne s’affiche PAS sur la page d’accueil (le thème l’écrit en dur). Le réglage ne change que l’onglet du navigateur et le référencement.' : ($remplace ? 'Le thème écrit le nom en dur : l’ancien nom est aussi remplacé à l’écran par le nouveau, visible dans l’aperçu.' : '')];
     }
     return new WP_Error('alexlia_args', 'Opération inconnue.', ['status' => 400]);
 }
@@ -340,6 +350,7 @@ function alexlia_conn_appliquer($args) {
         if (is_wp_error($r)) return $r;
         $faits[] = ['type' => 'reglage', 'id' => 0, 'revision_avant' => 0, 'adresse' => '', 'titre' => $nom, 'avant' => $r['avant']];
     }
+    foreach ((array) ($b['affichages'] ?? []) as $a) alexlia_conn_affichage_ajouter($a['ancien'], $a['nouveau']);
     delete_transient('alexlia_ap_' . $j);
     return ['ok' => true, 'faits' => $faits];
 }
@@ -348,6 +359,50 @@ function alexlia_conn_abandonner($args) {
     if (alexlia_conn_jeton_ok($j)) delete_transient('alexlia_ap_' . $j);
     return ['ok' => true];
 }
+
+/* Remplacements d'affichage : un texte que le thème écrit lui-même (le nom du site dans l'en-tête, le pied de page…) est remplacé dans la page
+ * au moment de l'envoi au navigateur. Gardés dans l'option alexlia_affichages, dans l'ordre ; un nouveau changement de nom s'ajoute à la suite. */
+function alexlia_conn_affichages() { $l = get_option('alexlia_affichages'); return is_array($l) ? $l : []; }
+function alexlia_conn_affichage_ajouter($ancien, $nouveau) {
+    $ancien = (string) $ancien; $nouveau = (string) $nouveau;
+    if ($ancien === '' || $ancien === $nouveau) return;
+    $l = alexlia_conn_affichages();
+    $l[] = ['ancien' => $ancien, 'nouveau' => $nouveau, 'le' => time()];
+    update_option('alexlia_affichages', array_slice($l, -20), false);
+    alexlia_conn_journal('Affichage : « ' . $ancien . ' » remplacé par « ' . $nouveau . ' » à l’écran (le thème l’écrit lui-même).');
+}
+function alexlia_conn_affichage_regex($ancien) {
+    $re = '';
+    foreach (preg_split('//u', html_entity_decode((string) $ancien, ENT_QUOTES, 'UTF-8'), -1, PREG_SPLIT_NO_EMPTY) as $c) {
+        if ($c === ' ') $re .= '(?:\s|&nbsp;|<[^>]*>)+';
+        elseif ($c === '&') $re .= '(?:&amp;|&#038;|&#38;|&)';
+        elseif ($c === "'" || $c === '’') $re .= "(?:'|’|&#039;|&#8217;|&rsquo;|&apos;)";
+        else $re .= preg_quote($c, '/');
+    }
+    return '/' . $re . '/';
+}
+function alexlia_conn_affichages_appliquer($html, $liste) {
+    // ni les scripts, ni les styles, ni l'encart d'aperçu ne sont touchés
+    $morceaux = preg_split('/(<script\b.*?<\/script>|<style\b.*?<\/style>|<!--alexlia-ap-->.*?<!--\/alexlia-ap-->)/is', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+    foreach ($morceaux as $i => $m) {
+        if ($i % 2 === 1) continue;
+        foreach ($liste as $a) {
+            if (empty($a['ancien'])) continue;
+            $out = @preg_replace_callback(alexlia_conn_affichage_regex($a['ancien']), function () use ($a) { return esc_html((string) $a['nouveau']); }, $m);
+            if (is_string($out)) $m = $out;
+        }
+        $morceaux[$i] = $m;
+    }
+    return implode('', $morceaux);
+}
+add_action('template_redirect', function () {
+    if (is_admin() || wp_doing_ajax() || is_feed() || is_robots() || (defined('REST_REQUEST') && REST_REQUEST)) return;
+    $liste = alexlia_conn_affichages();
+    $b = alexlia_conn_apercu_actif();
+    if ($b && !empty($b['affichages'])) $liste = array_merge($liste, $b['affichages']);
+    if (!$liste) return;
+    ob_start(function ($h) use ($liste) { return (stripos($h, '<html') === false) ? $h : alexlia_conn_affichages_appliquer($h, $liste); });
+}, 0);
 
 /* Le texte apparaît-il dans la page affichée (hors balises d'en-tête et hors encart d'aperçu) ? null si on n'a pas pu regarder */
 function alexlia_conn_texte_visible($url, $texte) {
@@ -424,7 +479,7 @@ add_action('init', function () {
                 . ($c['avant'] !== '' ? '<del style="opacity:.7">' . esc_html($cut($c['avant'])) . '</del> → ' : '')
                 . '<ins style="text-decoration:none;background:#ffe27a;color:#2E2A47;padding:0 4px;border-radius:4px">' . esc_html($cut($c['apres']) ?: '(retiré)') . '</ins></li>';
         }
-        $al = $alertes ? '<p style="margin:8px 0 0;background:#ffe27a;color:#2E2A47;border-radius:10px;padding:6px 10px"><b>Attention :</b> ' . esc_html(implode(' ', $alertes)) . ' Bricou le signale à Alex.</p>' : '';
+        $al = $alertes ? '<p style="margin:8px 0 0;background:#ffe27a;color:#2E2A47;border-radius:10px;padding:6px 10px"><b>À savoir :</b> ' . esc_html(implode(' ', $alertes)) . '</p>' : '';
         echo '<!--alexlia-ap--><style>mark.alexlia-mod{background:#ffe27a;color:inherit;outline:2px solid #ff8fb3;outline-offset:2px;border-radius:3px;padding:0 2px}#alexlia-ap button{font:inherit;cursor:pointer;border:0;border-radius:999px;padding:5px 12px;background:#fff;color:#2E2A47;font-weight:700}</style>'
             . '<div id="alexlia-ap" role="status" style="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;max-width:620px;margin:0 auto;background:#2E2A47;color:#fff;border-radius:18px;box-shadow:0 8px 30px rgba(0,0,0,.3);font:500 14px/1.45 system-ui,sans-serif;padding:12px 16px">'
             . '<div style="display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap"><span><b>Aperçu préparé par Bricou.</b> Rien n’est encore en ligne.</span><span style="display:flex;gap:6px"><button type="button" data-ap-liste aria-expanded="true">Ce qui change (' . count($changes) . ')</button><button type="button" data-ap-fermer aria-label="Masquer l’aperçu">×</button></span></div>'
