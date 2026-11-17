@@ -203,7 +203,7 @@ L’offre est la même pour tous les clients. Elle tient en deux parties : la cr
 
 **La création du site coûte ${eur(creation.prix)} €.** Ce prix correspond au « ${NOM_SITE} ». Il comprend jusqu’à ${creation.pages} pages, un design personnalisé, un affichage adapté au téléphone et à l’ordinateur, un formulaire de contact, une carte Google, le référencement Google de base et un accompagnement personnalisé par Alex et les Minis Monstres. Le référencement, aussi appelé SEO, désigne ce qui aide un site à être trouvé plus facilement sur Google.
 
-**Nom de domaine et hébergement.** Le nom de domaine est l’adresse du site. L’hébergement est le service qui garde le site accessible 24 h/24. Avec une formule au mois, les deux sont offerts la première année, et les Minis Monstres installent et mettent en ligne le site. Ensuite, la formule les prend en charge (article 6). En création seule, le client gère lui-même son nom de domaine et son hébergement.
+**Nom de domaine et hébergement.** Le nom de domaine est l’adresse du site. L’hébergement est le service qui garde le site accessible 24 h/24. Avec une formule au mois, les Minis Monstres installent et mettent en ligne le site, et les deux sont offerts la première année, sauf pour un site avec boutique en ligne. Ensuite, la formule les prend en charge (article 6). En création seule, le client gère lui-même son nom de domaine et son hébergement.
 
 **Pages SEO.** Les pages que le client n’utilise pas, parmi les ${creation.pages} comprises, peuvent devenir des pages SEO. Chacune répond à une recherche que font ses propres clients sur Google, pour rendre le site plus visible. Par exemple, un client qui utilise ${creation.exemplePages} pages pour présenter son activité garde ${restantes} pages pour améliorer sa présence sur Google.
 
@@ -257,7 +257,7 @@ Le client qui confie la mise en ligne aux Minis Monstres choisit une des deux fo
 - **Un délai moyen de ${evolution.delai}** pour les modifications (article 12).
 - **Une page SEO supplémentaire chaque semaine**, préparée par les Minis Monstres et ajoutée au site du client.
 
-La première année, le nom de domaine et l’hébergement sont offerts avec la formule, ainsi que l’installation et la mise en ligne du site (article 3). À partir de la deuxième année, la formule les prend en charge, sans supplément.
+La première année, le nom de domaine et l’hébergement sont offerts avec la formule, sauf pour un site avec boutique en ligne. L’installation et la mise en ligne du site sont toujours comprises (article 3). À partir de la deuxième année, ou dès la mise en ligne pour un site avec boutique, la formule les prend en charge, sans supplément.
 
 **Paiement.** La formule est prélevée d’avance, chaque mois ou chaque année, selon le choix du client. À l’année, le client paie ${12 - annuel.moisOfferts} mois sur 12, soit ${annuel.moisOfferts} mois offerts : ${eur(parAn(tranquille))} € par an pour ${tranquille.name}, ${eur(parAn(evolution))} € par an pour ${evolution.name}. Le client peut passer du mois à l’année, ou de l’année au mois, au renouvellement.
 
@@ -289,7 +289,7 @@ En commandant, le client demande expressément, en cochant la case prévue, que 
 
 Le nom de domaine est l’adresse du site sur internet. Le client en est le titulaire. Les Minis Monstres y figurent comme contact technique, pour pouvoir le gérer. Le nom est réservé après le premier paiement, s’il est encore disponible à ce moment-là.
 
-Avec une formule au mois, un nom de domaine standard en .fr, .com, .net ou .org est offert la première année. Ensuite, son renouvellement annuel est compris dans la formule. Les autres extensions et les noms dits « premium », vendus plus cher par les registres (les organismes qui gèrent chaque extension), font l’objet d’un devis.
+Avec une formule au mois, un nom de domaine standard en .fr, .com, .net ou .org est offert la première année, sauf pour un site avec boutique en ligne. Ensuite, son renouvellement annuel est compris dans la formule. Les autres extensions et les noms dits « premium », vendus plus cher par les registres (les organismes qui gèrent chaque extension), font l’objet d’un devis.
 
 Si le client possède déjà un nom de domaine, il peut le transférer vers les Minis Monstres ou le garder chez son prestataire et le faire pointer vers le site. Les Minis Monstres lui envoient les réglages à faire. En création seule, le client gère son nom de domaine sans les Minis Monstres (article 3).
 

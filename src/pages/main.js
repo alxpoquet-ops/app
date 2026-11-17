@@ -668,7 +668,7 @@ function commanderPage() {
       <fieldset class="o-card" data-avec-formule>
         <legend><span class="b-n">${icon('globe')}</span><span class="b-t">Votre nom de domaine</span></legend>
         <div class="o-in">
-        <p class="b-hint">Le nom de domaine, c’est l’adresse de votre site. Il est offert la première année, puis compris dans votre formule, et il reste à votre nom. Je vérifie qu’il est libre, puis je le réserve à la commande.</p>
+        <p class="b-hint">Le nom de domaine, c’est l’adresse de votre site. Il est offert la première année (sauf avec la boutique en ligne), puis compris dans votre formule, et il reste à votre nom. Je vérifie qu’il est libre, puis je le réserve à la commande.</p>
         ${C.domainBox({ prefix: 'o', ownName: 'domaine_mien' })}
         </div>
       </fieldset>
@@ -1592,7 +1592,7 @@ function docPage() {
     <p>Il n’y a qu’une offre, la même pour tous les clients. Vous payez votre site une fois. Ensuite, soit on s’occupe de tout avec une formule, qui démarre à la réception du site et s’arrête quand vous voulez, soit vous gérez vous-même et je vous remets le code de votre site.</p>
   </div>
   <div class="doc-types">
-    <div class="doc-type reveal"><strong>Le site</strong><b>${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une fois</span><p>Jusqu’à ${creation.pages} pages. Avec une formule, nom de domaine et hébergement offerts la première année.</p></div>
+    <div class="doc-type reveal"><strong>Le site</strong><b>${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une fois</span><p>Jusqu’à ${creation.pages} pages. Avec une formule, nom de domaine et hébergement offerts la première année, sauf avec la boutique.</p></div>
     <div class="doc-type reveal"><strong>L’option</strong><b>+ ${euro(creation.boutique)}</b><span>${icon('plus')}Une fois, si vous voulez</span><p>Boutique en ligne : vendre sur votre site.${C.PACK_SEO ? ` Plus tard, depuis l’espace client : ${esc(C.PACK_SEO.name)}, ${C.PACK_SEO.pages} pages SEO en plus pour ${euro(C.PACK_SEO.price.once)}.` : ''}</p></div>
     <div class="doc-type reveal"><strong>La formule</strong><b>${forfaits.map((x) => euro(x.month)).join(' ou ')}</b><span>${icon('repeat')}Par mois, sans engagement</span><p>${forfaits.map((x) => esc(x.name)).join(' ou ')}. À l’année : ${annuel.moisOfferts} mois offerts.</p></div>
   </div>

@@ -208,7 +208,7 @@ function offre({ compact = false, choose = true } = {}) {
       <p class="offre-sous">Sans engagement. À l’année : ${annuel.moisOfferts} mois offerts. Vous préférez tout gérer vous-même ? <a href="#creation-seule">C’est possible aussi</a>.</p>
     </article>
   </div>
-  <p class="offre-options">${icon('plus')}<span>Une seule option : <b>la boutique en ligne, + ${euro(creation.boutique)}</b>, si vous vendez sur internet. Avec une formule, le nom de domaine et l’hébergement sont offerts la première année.</span></p>
+  <p class="offre-options">${icon('plus')}<span>Une seule option : <b>la boutique en ligne, + ${euro(creation.boutique)}</b>, si vous vendez sur internet. Le nom de domaine et l’hébergement offerts la première année, c’est avec une formule, pour un site sans boutique.</span></p>
   ${choose ? `<p class="offre-go">${btnCreer('btn-primary btn-lg')}</p>` : ''}
 </div>`;
 }
@@ -330,7 +330,7 @@ function priceData() {
 // (une case data-boutique ; main.js met alors « boutique » dans le champ caché du type de site).
 function siteChoice({ name = 'b-type' } = {}) {
   return `<input type="hidden" name="${name}" value="vitrine" data-type-field>
-  <div class="b-choices b-solo"><div class="b-choice c-butter"><span class="b-card is-on"><span class="type-ico">${icon('layout-grid')}</span><span class="b-solo-txt"><strong>Site Internet Professionnel</strong><small>Jusqu’à ${creation.pages} pages, nom de domaine et hébergement offerts la première année</small></span><span class="b-price">${euro(creation.prix)}</span><span class="b-check">${icon('check')}</span></span></div></div>`;
+  <div class="b-choices b-solo"><div class="b-choice c-butter"><span class="b-card is-on"><span class="type-ico">${icon('layout-grid')}</span><span class="b-solo-txt"><strong>Site Internet Professionnel</strong><small>Jusqu’à ${creation.pages} pages, design personnalisé</small></span><span class="b-price">${euro(creation.prix)}</span><span class="b-check">${icon('check')}</span></span></div></div>`;
 }
 function typeChoices({ name = 'b-type', checked = 'vitrine' } = {}) {
   return `<div class="b-choices b-types">${types
@@ -407,7 +407,7 @@ function gestionChoix({ name = 'b-gestion', court = false } = {}) {
         <span class="cf-corps">
           <strong class="cf-nom">On s’occupe de tout</strong>
           <span class="cf-prix"><small>dès</small><b>${euro(ABO.month)}</b><small>/mois, sans engagement</small></span>
-          <span class="cf-txt">Je réserve votre nom de domaine, j’installe votre site chez nous, puis on veille sur lui chaque mois. Nom de domaine et hébergement offerts la première année.</span>
+          <span class="cf-txt">Je réserve votre nom de domaine, j’installe votre site chez nous, puis on veille sur lui chaque mois. Nom de domaine et hébergement offerts la première année, sauf avec la boutique.</span>
           ${court ? '' : cfListe(INCLUS_NOUS)}
         </span>
         <span class="cf-coche" aria-hidden="true">${icon('check')}</span>

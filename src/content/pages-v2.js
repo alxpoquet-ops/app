@@ -431,7 +431,7 @@ Ou ${eur(annee(evolution))} € à l’année. Pour un site qui continue de gran
 - **Un délai plus court** : ${evolution.delai} en moyenne.
 - **Une page SEO de plus chaque semaine.** Une page SEO est écrite pour une recherche précise, afin que votre site soit plus facilement trouvé sur Google.
 
-La première année, le nom de domaine et l’hébergement sont offerts avec votre formule. Ensuite, elle les prend en charge.
+La première année, le nom de domaine et l’hébergement sont offerts avec votre formule, sauf pour un site avec boutique en ligne. Ensuite, elle les prend en charge.
 
 ## Demander une modification
 

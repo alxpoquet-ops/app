@@ -49,6 +49,7 @@
     ', sans formule': ', no plan',
     ' puis ': ' then ',
     'offert': 'free',
+    'avec la formule': 'with the plan',
     'sans formule': 'no plan',
     'Ensuite, chaque mois': 'Then, every month',
     'rien': 'nothing',
@@ -484,7 +485,7 @@
       var per = tr(annual ? '/an' : '/mois');
       setText('type', siteNom(t));
       setText('type-price', euro(t.price));
-      setText('domain-prix', tr('offert'));
+      setText('domain-prix', t.id === 'boutique' ? tr('avec la formule') : tr('offert')); // pas offert avec la boutique
       setText('forfait', seule ? tr('Je m’en occupe moi-même') : tr('Formule ') + planName(f.name));
       setText('forfait-price', seule ? tr('sans formule') : euro(f.month * mult) + per);
       var dom = domain.get(), domText = '';
@@ -658,7 +659,7 @@
       var forfaitFirst = f.month * mult;
       $$('[data-avec-formule]', root).forEach(function (e) { e.hidden = seule; });
       $$('[data-seule-txt]', root).forEach(function (e) { e.hidden = !seule; });
-      setText('domain-prix', tr('offert'));
+      setText('domain-prix', t.id === 'boutique' ? tr('avec la formule') : tr('offert')); // pas offert avec la boutique
       // chaque façon de payer, en clair
       setText('p-0', euro(acompte) + tr(' aujourd’hui, puis ') + euro(solde) + tr(' à la réception'));
       (data.lissage || []).forEach(function (n) { setText('p-' + n, euro(acompte) + tr(' aujourd’hui, puis ') + euro(floor2(solde / n)) + tr(' par mois pendant ') + n + tr(' mois')); });

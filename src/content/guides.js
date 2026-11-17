@@ -175,7 +175,7 @@ Au démarrage, chaque euro compte. C'est pour cela que le paiement est découpé
 - **Le reste à la réception du site**, en une fois ou étalé sur ${durees} mois sans frais.
 - **${eur(tranquille.month)} € par mois** avec la formule ${tranquille.name}, qui démarre seulement quand vous recevez le site, sans engagement.
 
-Avec une formule, le nom de domaine, c'est-à-dire l'adresse de votre site, et l'hébergement, l'endroit où il reste accessible jour et nuit, sont offerts la première année. Ensuite, votre formule les prend en charge. Vous connaissez donc le coût exact avant de vous engager, sans devis à rallonge.
+Avec une formule, le nom de domaine, c'est-à-dire l'adresse de votre site, et l'hébergement, l'endroit où il reste accessible jour et nuit, sont offerts la première année, sauf si vous prenez la boutique en ligne. Ensuite, votre formule les prend en charge. Vous connaissez donc le coût exact avant de vous engager, sans devis à rallonge.
 
 ## Les mentions obligatoires
 
@@ -252,7 +252,7 @@ Les deux se paient une seule fois.
 
 ### Qui met votre site en ligne ?
 
-**On s'occupe de tout**, avec une formule au mois. Je réserve votre nom de domaine à votre nom, j'installe le site et je le mets en ligne. Le nom de domaine et l'hébergement sont offerts la première année. La formule démarre à la réception du site, et elle est sans engagement :
+**On s'occupe de tout**, avec une formule au mois. Je réserve votre nom de domaine à votre nom, j'installe le site et je le mets en ligne. Pour un site sans boutique, le nom de domaine et l'hébergement sont offerts la première année. La formule démarre à la réception du site, et elle est sans engagement :
 
 - **${tranquille.name}, ${eur(tranquille.month)} € par mois** : l'hébergement, le nom de domaine, les sauvegardes, la sécurité, la surveillance, la maintenance et vos modifications, faites sous ${tranquille.delai} au plus.
 - **${evolution.name}, ${eur(evolution.month)} € par mois** : tout ${tranquille.name}, avec vos demandes en priorité, un délai moyen de ${evolution.delai} et une page SEO de plus chaque semaine.
@@ -476,7 +476,7 @@ Vous le gardez. Il suffit de l'indiquer à la commande, et je le relie à votre 
 
 ## Qui s'occupe du renouvellement ?
 
-C'est le piège classique : on oublie l'échéance, le nom expire, et le site disparaît du jour au lendemain. Si vous me confiez la mise en ligne, le nom de domaine est offert la première année. Ensuite, votre [formule au mois](/tarifs/) le prend en charge : il reste à votre nom, et je le renouvelle pour vous chaque année. Vous n'avez aucune date à surveiller.`,
+C'est le piège classique : on oublie l'échéance, le nom expire, et le site disparaît du jour au lendemain. Si vous me confiez la mise en ligne, le nom de domaine est offert la première année (hors boutique en ligne). Ensuite, votre [formule au mois](/tarifs/) le prend en charge : il reste à votre nom, et je le renouvelle pour vous chaque année. Vous n'avez aucune date à surveiller.`,
     faq: [
       { q: 'Le nom que je voulais est déjà pris, que faire ?', a: 'Essayez une variante simple : ajouter votre ville, votre prénom ou votre métier. Évitez seulement de changer une lettre par rapport à un concurrent, cela crée de la confusion pour vos clients.' },
       { q: 'Dois-je prendre le .fr et le .com en même temps ?', a: 'Ce n’est pas nécessaire pour démarrer. Un seul nom bien choisi suffit à la grande majorité des petites entreprises.' },
