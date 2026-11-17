@@ -107,12 +107,12 @@ function aled08e_bulle_contexte($uid) {
     $retMax = aled08e_limite('bricouMois', 0); // 0 : modifications sans limite (offre du 17 novembre 2026)
     if ($pause && $retMax) $compte[] = $famille ? 'Petites retouches de Bricou : sans limite' : 'Petites retouches de Bricou restantes ce mois : ' . (int) aled08e_jl_retouches_reste($uid) . ' sur ' . $retMax . ' (elles reviennent le 1er du mois)';
     elseif (!$pause) $compte[] = $famille ? 'Énergie des petits monstres : sans limite' : 'Points d’énergie restants : ' . (int) $e['solde'] . ' (' . (int) $e['mois'] . ' donnés chaque mois, ils reviennent le 1er)';
-    if (function_exists('aled08e_modifs_illimitees') && aled08e_modifs_illimitees($uid)) $compte[] = 'Formule : ' . $f['name'] . ', modifications incluses' . (aled08e_priorite($uid) ? ', prioritaires' : '');
+    if (function_exists('aled08e_modifs_illimitees') && aled08e_modifs_illimitees($uid)) $compte[] = 'Abonnement : ' . $f['name'] . ', modifications incluses' . (aled08e_priorite($uid) ? ', prioritaires' : '');
     elseif (!$famille) $compte[] = 'Interventions d’Alex restantes ' . aled08e_periode_ce($uid) . ' : ' . max(0, (int) $f['quota'] - (int) aled08e_count_alex($uid)) . ' sur ' . (int) $f['quota'];
     $compte[] = 'Les petits monstres peuvent modifier ce site eux-mêmes : ' . (aled08e_lia_prete_pour($uid) ? 'oui' : 'pas encore, les modifications passent par Alex');
 
     $offre = [];
-    $offre[] = 'Formule ' . $f['name'] . ' : ' . aled08e_euro_txt($f['month']) . ' par mois (nom de domaine, hébergement, sauvegardes, sécurité, surveillance, maintenance, support, ' . ($pause ? ($retMax ? 'jusqu’à ' . $retMax . ' petites retouches de Bricou par mois' : 'Cerise dans la bulle') : (int) $f['jetons'] . ' d’énergie chaque mois') . ' et ' . aled08e_alex_txt($uid, $f) . '). Sans engagement. À l’année : ' . (int) $D['moisOfferts'] . ' mois offerts.';
+    $offre[] = 'Abonnement ' . $f['name'] . ' : ' . aled08e_euro_txt($f['month']) . ' par mois (nom de domaine, hébergement, sauvegardes, sécurité, surveillance, maintenance, support, ' . ($pause ? ($retMax ? 'jusqu’à ' . $retMax . ' petites retouches de Bricou par mois' : 'Cerise dans la bulle') : (int) $f['jetons'] . ' d’énergie chaque mois') . ' et ' . aled08e_alex_txt($uid, $f) . '). Sans engagement. À l’année : ' . (int) $D['moisOfferts'] . ' mois offerts.';
     if ($pause) $offre[] = 'Les messages dans cette bulle sont compris, jusqu’à ' . (int) aled08e_bulle_cfg()['parJour'] . ' par jour.';
     else $offre[] = '100 d’énergie = 1 €. Un message dans cette bulle : ' . aled08e_jl_txt(aled08e_bulle_prix()) . '.';
     if ($pause && $retMax) $offre[] = 'Une petite retouche du site par Bricou : comprise, jusqu’à ' . $retMax . ' par mois. Il montre toujours un aperçu de la page : rien ne change sans l’accord du client. Au-delà, ou pour une grande demande, c’est Alex.';
@@ -123,9 +123,9 @@ function aled08e_bulle_contexte($uid) {
     if ($ald) $offre[] = 'Extras à la demande, payés une fois et ajoutés à la prochaine facture (onglet Mes demandes) : ' . implode(', ', $ald) . '. Alex répond sous ' . $D['delais']['reponse'] . '.';
     $fo = [];
     foreach ((array) $D['forfaits'] as $x) $fo[] = $x['name'] . ' ' . aled08e_euro_txt($x['month']) . ' par mois (' . implode(', ', (array) ($x['main'] ?? [])) . ')';
-    if (count($fo) > 1) $offre[] = 'Les deux formules, à changer quand on veut dans Mon compte : ' . implode(' ; ', $fo) . '.';
+    if (count($fo) > 1) $offre[] = 'Les deux abonnements, à changer quand on veut dans Mon compte : ' . implode(' ; ', $fo) . '.';
     elseif (count($fo) === 1) $offre[] = 'Un seul abonnement, sans engagement, qui comprend tout : ' . $fo[0] . '.';
-    if (!empty($D['creationSeule'])) $offre[] = 'Création seule, pour qui a déjà son nom de domaine et son hébergement : le client paie seulement le site (' . aled08e_euro_txt($D['creation']['prix'] ?? 500) . '), sans formule, et Alex lui remet le code du site, prêt à installer. Maintenance et modifications non comprises.';
+    if (!empty($D['creationSeule'])) $offre[] = 'Création seule, pour qui a déjà son nom de domaine et son hébergement : le client paie seulement le site (' . aled08e_euro_txt($D['creation']['prix'] ?? 500) . '), sans abonnement, et Alex lui remet le code du site, prêt à installer. Maintenance et modifications non comprises.';
     $offre[] = 'Une modification : le client fait sa demande, Bricou prépare la modification et un aperçu, le client le regarde, puis Alex la vérifie avant la mise en ligne.';
     $rech = [];
     foreach ((array) $jl['recharge'] as $r) $rech[] = (int) $r['jetons'] . ' d’énergie pour ' . aled08e_euro_txt($r['prix']);

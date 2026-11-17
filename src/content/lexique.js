@@ -6,11 +6,14 @@ const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const T = (id) => types.find((t) => t.id === id);
 const O = (id) => options.find((o) => o.id === id);
 const page = T('une-page');
-// L'offre unique : un seul abonnement (forfaits[0]), qui comprend tout, dont une page SEO par semaine. Les anciens extras
-// au mois (Suivi Google, Chiffres détaillés, Adresse e-mail pro) ne sont plus proposés depuis le 17 novembre 2026.
+// L'offre (17 novembre 2026) : deux abonnements au mois, sans engagement. Mini (id 'base' : modifications sous 7 jours
+// ouvrés, une page SEO par mois) et Maxi (id 'evolution' : petites modifications dans l'heure, grosses sous 48 h, une page
+// SEO par semaine, suggestions de la bande). Des pages SEO en plus se commandent à l'unité depuis l'espace client.
+// Les anciens extras au mois (Suivi Google, Chiffres détaillés, Adresse e-mail pro) ne sont plus proposés.
 // V2 (novembre 2026) : Alex fait chaque site, sa petite bande d'automatisations (des petits monstres) s'occupe du
 // répétitif. « Chez les Minis Monstres » reste : c'est le nom de la marque. Petites retouches et outils compris pour un usage normal.
-const abo = forfaits[0];
+const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini
+const maxi = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1]; // Maxi
 
 const PUBLIE = '2026-11-15';
 
@@ -59,7 +62,7 @@ Une fleuriste prend un hébergement très bon marché pour son site. Tout va bie
 Je ne vous demande pas de chercher un hébergeur. L'[abonnement](/tarifs/) comprend l'hébergement sur un serveur de qualité, quel que soit votre site. Vous n'avez ni facture à part ni réglage à faire. Pour comprendre ce qu'est la machine elle-même, lisez la définition du [serveur](/lexique/serveur-web/).`,
     faq: [
       { q: 'Peut-on avoir un site sans hébergement ?', a: 'Non. Un site doit être posé quelque part pour être visible. Certaines plateformes intègrent l’hébergement dans leur abonnement, mais il existe toujours, même quand on ne le voit pas.' },
-      { q: 'Combien coûte un hébergement ?', a: `Les prix varient beaucoup selon la puissance et le service. Chez moi, il est compris dans l’abonnement à ${abo.month} € par mois, qui couvre aussi votre nom de domaine et l’entretien du site.` },
+      { q: 'Combien coûte un hébergement ?', a: `Les prix varient beaucoup selon la puissance et le service. Chez moi, il est compris dans l’abonnement, dès ${mini.month} € par mois, qui couvre aussi votre nom de domaine et l’entretien du site.` },
       { q: 'Puis-je changer d’hébergeur plus tard ?', a: 'Oui. On copie les fichiers du site chez le nouvel hébergeur, puis on fait pointer le nom de domaine vers lui. Bien fait, le changement passe inaperçu pour vos visiteurs.' },
     ],
     voir: ['serveur-web', 'maintenance-site', 'sauvegarde-site'],
@@ -425,7 +428,7 @@ Une esthéticienne écrit sur son site « Bienvenue dans mon univers de douceur 
 
 ## Chez les Minis Monstres
 
-Sur votre site, les pages que vous n'utilisez pas parmi les ${creation.pages} prévues deviennent des pages SEO, chacune écrite pour une recherche de vos clients. L'[abonnement](/tarifs/) en ajoute ensuite une nouvelle chaque semaine. Tout est expliqué sur la page [référencement SEO](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
+Sur votre site, les pages que vous n'utilisez pas parmi les ${creation.pages} prévues deviennent des pages SEO, chacune écrite pour une recherche de vos clients. L'[abonnement](/tarifs/) en ajoute ensuite une nouvelle chaque mois avec ${mini.name}, ou chaque semaine avec ${maxi.name}. Tout est expliqué sur la page [référencement SEO](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
     faq: [
       { q: 'Quelle différence entre SEO et publicité Google ?', a: 'La publicité vous place en haut des résultats tant que vous payez chaque clic. Le SEO vise les résultats gratuits : il demande du travail au départ, mais ne s’arrête pas le jour où vous cessez de payer.' },
       { q: 'Au bout de combien de temps voit-on des effets ?', a: 'Cela dépend de votre métier, de votre ville et de la concurrence. Il faut en général compter plusieurs mois avant de juger. C’est un travail de fond, pas un interrupteur.' },
@@ -521,7 +524,7 @@ Dans la [balise title](/lexique/balise-title/), dans le grand titre de la page, 
 
 ## Chez les Minis Monstres
 
-Pour vos pages SEO, dont celle que l'abonnement ajoute chaque semaine, je choisis avec vous les recherches qui comptent pour votre métier et votre zone. La méthode complète est sur [référencement SEO](/referencement-seo/).`,
+Pour vos pages SEO, y compris celles que l'abonnement ajoute au fil du temps, je choisis avec vous les recherches qui comptent pour votre métier et votre zone. La méthode complète est sur [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de mots-clés par page ?', a: 'Une page doit viser un sujet principal, avec son mot-clé et quelques variantes proches. Si vous voulez couvrir un autre sujet, mieux vaut lui donner sa propre page.' },
       { q: 'Faut-il viser les mots-clés les plus recherchés ?', a: 'Pas forcément. Pour une petite entreprise, des expressions plus précises, avec votre ville ou un service particulier, attirent souvent des visiteurs plus prêts à vous contacter.' },
@@ -1212,7 +1215,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 ## Chez les Minis Monstres
 
-C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'héberge votre site, et ${minus(gardien)}, un petit monstre que j'ai programmé, fait les mises à jour, garde le HTTPS et surveille que tout tourne. Je vérifie ce qu'il fait. Vos changements de contenu passent par l'espace client : ils sont compris sans limite, et en ligne en ${abo.delai} en moyenne. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+C'est le cœur de l'[abonnement](/tarifs/). Dès ${mini.month} € par mois, j'héberge votre site, et ${minus(gardien)}, un petit monstre que j'ai programmé, fait les mises à jour, garde le HTTPS et surveille que tout tourne. Je vérifie ce qu'il fait. Vos changements de contenu passent par l'espace client : ils sont compris sans limite, et faits sous ${mini.delai} au plus avec ${mini.name}. Avec ${maxi.name}, les petits changements sont en ligne dans l'heure. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'À quelle fréquence faut-il faire la maintenance ?', a: 'La surveillance doit être continue, et les mises à jour faites dès qu’elles sortent, surtout celles de sécurité. Les autres vérifications peuvent suivre un rythme régulier, par exemple chaque mois.' },
       { q: 'Puis-je faire la maintenance de mon site moi-même ?', a: 'C’est possible si vous avez le temps et les bases techniques. Le plus dur n’est pas de cliquer sur « mettre à jour », mais de savoir quoi faire quand une mise à jour casse quelque chose.' },
@@ -1448,7 +1451,7 @@ Le [plan du site](/lexique/sitemap/) aide Google à trouver les pages, mais il n
 
 ## Chez les Minis Monstres
 
-Sur un site vitrine, chaque page parle d'un sujet précis, et je les relie entre elles de façon logique. Chaque nouvelle page, comme celle que l'abonnement ajoute chaque semaine, rejoint ce réseau de liens. La méthode est expliquée sur [référencement SEO](/referencement-seo/).`,
+Sur un site vitrine, chaque page parle d'un sujet précis, et je les relie entre elles de façon logique. Chaque nouvelle page, comme celles que l'abonnement ajoute chaque mois ou chaque semaine selon l’abonnement, rejoint ce réseau de liens. La méthode est expliquée sur [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de liens internes mettre sur une page ?', a: 'Il n’y a pas de chiffre magique. Mettez ceux qui aident vraiment le lecteur à continuer. Sur une page de service, quelques liens bien placés suffisent en général.' },
       { q: 'Le menu compte-t-il comme lien interne ?', a: 'Oui. Les liens du menu et du pied de page sont des liens internes. Ceux placés dans le texte ont souvent plus de poids, parce qu’ils sont entourés de mots qui expliquent leur sujet.' },

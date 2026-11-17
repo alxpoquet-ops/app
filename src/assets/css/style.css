@@ -2268,3 +2268,46 @@ a.client-url { text-decoration: none; }
 .client-encours { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; padding: 5px 12px; border-radius: 999px; background: var(--surface-2, rgba(255,255,255,.08)); color: var(--c-dd, var(--text)); font-weight: 800; font-size: .88rem; }
 .client-encours .ico { width: 15px; height: 15px; }
 .client-url.is-off { opacity: .7; cursor: default; }
+/* Mini et Maxi : le petit badge de Maxi sur sa carte */
+.formule { position: relative; }
+.formule-tag { position: absolute; top: -12px; right: 14px; display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 999px; background: var(--lilac-dd); color: #16142A; font-weight: 900; font-size: .78rem; }
+.formule-tag .ico { width: 14px; height: 14px; }
+.cf-formule .cf-carte { position: relative; }
+/* Les petits mots de la bande (espace client et démo) */
+.msgs { display: grid; gap: 12px; margin: 18px 0 8px; }
+.msgs > .app-sub { margin: 0; }
+.msg { display: grid; grid-template-columns: 58px 1fr; gap: 12px; align-items: start; padding: 14px 16px; border-radius: 18px; background: var(--soft); box-shadow: 0 0 0 1px var(--line) inset; }
+.msg.is-maxi { box-shadow: 0 0 0 1px var(--lilac-d, #6E5CC9) inset; }
+.msg-art svg { width: 58px; height: 58px; display: block; }
+.msg-corps { min-width: 0; }
+.msg-qui { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 0; }
+.msg-qui strong { color: var(--ink); font-weight: 900; }
+.msg-qui small { color: var(--muted); font-weight: 600; font-size: .82rem; }
+.msg-tag { font-style: normal; padding: 2px 9px; border-radius: 999px; background: var(--lilac); color: var(--lilac-dd); font-weight: 900; font-size: .72rem; }
+.msg-titre { margin: 4px 0 2px; color: var(--ink); font-weight: 800; }
+.msg-txt { margin: 0; color: var(--text); font-size: .94rem; line-height: 1.5; }
+.msg-vis { margin-top: 10px; border-radius: 14px; background: var(--card); padding: 10px 12px; box-shadow: 0 0 0 1px var(--line) inset; }
+.msg-barres { display: flex; align-items: flex-end; gap: 6px; height: 74px; position: relative; padding-right: 64px; }
+.msg-barres i { flex: 1; border-radius: 6px 6px 3px 3px; background: var(--mint); min-height: 6px; }
+.msg-barres i.is-on { background: var(--mint-dd); }
+.msg-barres span { position: absolute; right: 12px; top: 10px; color: var(--mint-dd); font-weight: 900; font-size: 1.05rem; }
+.msg-google { display: grid; gap: 2px; background: #fff; box-shadow: none; }
+.msg-google small { color: #3C4043; font-size: .78rem; }
+.msg-google b { color: #1A0DAB; font-weight: 600; font-size: .98rem; }
+.msg-google span { color: #4D5156; font-size: .84rem; }
+.msg-bandeau { padding: 0; overflow: hidden; }
+.msg-bandeau-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--butter); color: var(--butter-dd); font-weight: 800; font-size: .86rem; }
+.msg-bandeau-bar .ico { width: 16px; height: 16px; flex: none; }
+.msg-bandeau-site { display: grid; gap: 6px; padding: 10px 12px; }
+.msg-bandeau-site i { display: block; height: 8px; border-radius: 4px; background: var(--line); }
+.msg-bandeau-site i:nth-child(1) { width: 60%; } .msg-bandeau-site i:nth-child(2) { width: 85%; } .msg-bandeau-site i:nth-child(3) { width: 40%; }
+.msg-idee { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.msg-idee .ico { width: 18px; height: 18px; color: var(--muted); }
+.msg-idee span { color: var(--ink); font-weight: 700; }
+.msg-idee b { margin-left: auto; color: var(--sky-dd); font-size: .84rem; }
+.msg-voyants { display: flex; flex-wrap: wrap; gap: 8px; background: transparent; padding: 0; box-shadow: none; }
+.msg-voyants span { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--mint); color: var(--mint-dd); font-weight: 800; font-size: .84rem; }
+.msg-voyants .ico { width: 15px; height: 15px; }
+.msg-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; }
+.msg-teaser { background: var(--lilac); }
+@media (max-width: 560px) { .msg { grid-template-columns: 44px 1fr; padding: 12px; } .msg-art svg { width: 44px; height: 44px; } }

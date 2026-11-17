@@ -343,7 +343,7 @@ function aled08e_cmd_box_detail($post) {
     $row('Site', esc_html($t ? $t['label'] : $c['type']) . ', création ' . aled08e_euro($m['creation']) . ($t ? ' (délai habituel : ' . esc_html($t['delai']) . ')' : ''));
     $row('Nom de domaine', $c['domaine'] ? '<strong>' . esc_html($c['domaine']) . '</strong> : ' . esc_html(aled08e_cmd_domaine_statuts()[$c['domaine_statut']] ?? $c['domaine_statut']) . ($c['domaine_mien'] ? ' (le client l’a déjà, il faudra pointer ses DNS)' : '') : '<em>à choisir avec le client</em>');
     if (aled08e_est_seule($c['forfait'])) $row('Formule', '<strong>Création seule</strong> : pas d’abonnement. Le client garde son nom de domaine et son hébergement : remettez-lui le code du site (fichiers et sauvegarde).');
-    else $row('Abonnement', aled08e_euro($m['mensuel_forfait']) . ' ' . esc_html($per) . ($c['periode'] === 'annee' ? ' (' . (int) $D['moisOfferts'] . ' mois offerts)' : ''));
+    else $row('Abonnement', esc_html((aled08e_forfait($c['forfait'])['name'] ?? '') . ', ') . aled08e_euro($m['mensuel_forfait']) . ' ' . esc_html($per) . ($c['periode'] === 'annee' ? ' (' . (int) $D['moisOfferts'] . ' mois offerts)' : ''));
     $row('Options', $opts ? esc_html(implode(', ', $opts)) . ($m['mensuel_options'] > 0 ? ', ' . aled08e_euro($m['mensuel_options']) . ' ' . esc_html($per) : '') . ($m['options_ponctuel'] > 0 ? ', ' . aled08e_euro($m['options_ponctuel']) . ' une fois' : '') : 'aucune');
     $row('Création', 'acompte ' . aled08e_euro($m['acompte']) . ' à la commande, puis à la réception : '
         . ($c['reception_payee']

@@ -24,19 +24,19 @@
     'Le code sera vérifié au moment de commander.': 'The code will be checked when you order.',
     'Code valable : la remise est appliquée.': 'Valid code: the discount is applied.',
     'Ce code n’est pas reconnu. Vérifiez-le, ou écrivez-moi.': 'This code is not recognised. Check it, or write to me.',
-    'Et votre formule, chaque année': 'And your plan, every year',
-    'Et votre formule, chaque mois': 'And your plan, every month',
-    ' + formule': ' + plan',
+    'Et votre abonnement, chaque année': 'And your plan, every year',
+    'Et votre abonnement, chaque mois': 'And your plan, every month',
+    ' + abonnement': ' + plan',
     'Code promo : ': 'Promo code: ',
     ' % de remise sur la création, déjà déduits': '% off the website, already deducted',
-    ' fois, et votre formule': ' instalments, and your plan',
-    'À la réception : le reste, et votre formule': 'On delivery: the rest, and your plan',
+    ' fois, et votre abonnement': ' instalments, and your plan',
+    'À la réception : le reste, et votre abonnement': 'On delivery: the rest, and your plan',
     'Tranquillité': 'Peace of mind',
     'Évolution': 'Growth',
     'Pack SEO': 'SEO pack',
     'Création seule': 'Website only',
     'le vôtre': 'yours',
-    'Code de parrainage reconnu : un mois de formule offert, à vous comme à votre parrain.': 'Referral code recognised: one month of your plan free, for you and for your referrer.',
+    'Code de parrainage reconnu : un mois d’abonnement offert, à vous comme à votre parrain.': 'Referral code recognised: one month of your plan free, for you and for your referrer.',
     'Code promo valable : la remise est appliquée.': 'Valid promo code: the discount is applied.',
     'Je m’en occupe moi-même': 'I will handle it myself',
     'Je m’en occupe moi-même (création seule)': 'I will handle it myself (website only)',
@@ -47,13 +47,13 @@
     ' par mois pendant ': ' a month for ',
     'Aujourd’hui, l’acompte de ': 'Today, the deposit of ',
     'À la réception du site, le reste': 'On delivery, the rest',
-    'Puis votre formule, chaque année': 'Then your plan, every year',
-    'Puis votre formule, chaque mois': 'Then your plan, every month',
-    ', sans formule': ', no plan',
+    'Puis votre abonnement, chaque année': 'Then your plan, every year',
+    'Puis votre abonnement, chaque mois': 'Then your plan, every month',
+    ', sans abonnement': ', no plan',
     ' puis ': ' then ',
     'offert': 'free',
-    'avec la formule': 'with the plan',
-    'sans formule': 'no plan',
+    'avec l’abonnement': 'with the plan',
+    'sans abonnement': 'no plan',
     'Ensuite, chaque mois': 'Then, every month',
     'rien': 'nothing',
     ' fois': ' instalments',
@@ -246,7 +246,7 @@
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (j) {
           if (cleanCode(input.value) !== c) return;
-          if (j && j.success && j.data && j.data.type === 'parrain') { st.ok = true; st.type = 'parrain'; dire(tr('Code de parrainage reconnu : un mois de formule offert, à vous comme à votre parrain.'), 'is-ok'); }
+          if (j && j.success && j.data && j.data.type === 'parrain') { st.ok = true; st.type = 'parrain'; dire(tr('Code de parrainage reconnu : un mois d’abonnement offert, à vous comme à votre parrain.'), 'is-ok'); }
           else if (j && j.success) { st.ok = true; st.type = 'promo'; dire(tr('Code promo valable : la remise est appliquée.'), 'is-ok'); }
           else if (j && j.success === false) { st.ok = false; dire(tr('Ce code n’est pas reconnu. Vérifiez-le, ou écrivez-moi.'), 'is-ko'); }
           else dire(tr('Le code sera vérifié au moment de commander.'));
@@ -490,9 +490,9 @@
       var per = tr(annual ? '/an' : '/mois');
       setText('type', siteNom(t));
       setText('type-price', euro(t.price));
-      setText('domain-prix', t.id === 'boutique' ? tr('avec la formule') : tr('offert')); // pas offert avec la boutique
+      setText('domain-prix', t.id === 'boutique' ? tr('avec l’abonnement') : tr('offert')); // pas offert avec la boutique
       setText('forfait', seule ? tr('Je m’en occupe moi-même') : tr('Abonnement ') + planName(f.name));
-      setText('forfait-price', seule ? tr('sans formule') : euro(f.month * mult) + per);
+      setText('forfait-price', seule ? tr('sans abonnement') : euro(f.month * mult) + per);
       var dom = domain.get(), domText = '';
       if (domain.own()) domText = tr('Mon nom de domaine actuel');
       else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? tr(' (disponible)') : dom.status === 'pris' ? tr(' (déjà pris)') : '');
@@ -515,11 +515,11 @@
       setText('today', euro(acompte));
       setText('reste-label', lisse ? tr('Puis, dès la réception, pendant ') + lisseN + tr(' mois') : tr('À la réception du site, le reste'));
       setText('reste', lisse ? euro(lisseAmt) + tr('/mois') : euro(reste));
-      setText('recur-label', seule ? tr('Ensuite, chaque mois') : annual ? tr('Puis votre formule, chaque année') : tr('Puis votre formule, chaque mois'));
+      setText('recur-label', seule ? tr('Ensuite, chaque mois') : annual ? tr('Puis votre abonnement, chaque année') : tr('Puis votre abonnement, chaque mois'));
       setText('recur', seule ? tr('rien') : euro(recur) + per);
       setText('detail', tr('Prix total du site : ') + euro(prixSite) + (lisse ? tr(', sans frais en plus.') : '.'));
       var bar = $('[data-sum="bar"]', box);
-      if (bar) bar.innerHTML = '<b>' + euro(prixSite) + '</b>' + (seule ? tr(', sans formule') : tr(' puis ') + '<b>' + euro(recur) + per + '</b>');
+      if (bar) bar.innerHTML = '<b>' + euro(prixSite) + '</b>' + (seule ? tr(', sans abonnement') : tr(' puis ') + '<b>' + euro(recur) + per + '</b>');
       // Lien « Poser une question » (formulaire de contact, en clair)
       var q = { type: t.id === 'boutique' ? 'Site avec boutique en ligne' : 'Site', forfait: seule ? 'Je m’en occupe moi-même (création seule)' : f.name, paiement: seule ? '' : annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: seule ? '' : domText, options: '', parrain: parrain };
       $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
@@ -667,7 +667,7 @@
       var forfaitFirst = f.month * mult;
       $$('[data-avec-formule]', root).forEach(function (e) { e.hidden = seule; });
       $$('[data-seule-txt]', root).forEach(function (e) { e.hidden = !seule; });
-      setText('domain-prix', t.id === 'boutique' ? tr('avec la formule') : tr('offert')); // pas offert avec la boutique
+      setText('domain-prix', t.id === 'boutique' ? tr('avec l’abonnement') : tr('offert')); // pas offert avec la boutique
       // chaque façon de payer, en clair
       setText('p-0', euro(acompte) + tr(' aujourd’hui, puis ') + euro(solde) + tr(' à la réception'));
       (data.lissage || []).forEach(function (n) { setText('p-' + n, euro(acompte) + tr(' aujourd’hui, puis ') + euro(floor2(solde / n)) + tr(' par mois pendant ') + n + tr(' mois')); });
@@ -685,7 +685,7 @@
       setText('today', euro(today));
       setText('btn', euro(today));
       setText('next', seule ? (lisse ? euro(lisseAmt) + ' × ' + lisseN : euro(solde)) : lisse ? euro(lisseAmt) + ' × ' + lisseN + ' + ' + euro(next) + per : euro(solde) + ' + ' + euro(next) + per);
-      setText('next-label', seule ? (lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois') : tr('À la réception : le reste')) : lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois, et votre formule') : tr('À la réception : le reste, et votre formule'));
+      setText('next-label', seule ? (lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois') : tr('À la réception : le reste')) : lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois, et votre abonnement') : tr('À la réception : le reste, et votre abonnement'));
       if ($('[data-order="solde"]', root)) setText('solde', euro(solde));
       setText('lisse', euro(lisseAmt));
       setText('lisse-per', perUnit);
@@ -708,7 +708,7 @@
       setText('type', siteNom(t));
       setText('type-price', euro(prixSite));
       setText('forfait', seule ? tr('Je m’en occupe moi-même') : tr('Abonnement ') + planName(f.name));
-      setText('forfait-price', seule ? tr('sans formule') : euro(forfaitFirst) + per);
+      setText('forfait-price', seule ? tr('sans abonnement') : euro(forfaitFirst) + per);
       setText('delai', tr(t.delai));
       var optLine = $('[data-order-opts]', root);
       if (optLine) {
@@ -935,7 +935,7 @@
     var used = parRetouche ? 2 : 62;
     var max = startPlan ? +startPlan.getAttribute('data-jetons') : 250, left = Math.max(0, max - used);
     var drawJauge = function () {
-      if (!$('[data-jetons]', app)) return; // modifications incluses : pas de jauge
+      if (!$('[data-jetons-max]', app)) return; // modifications incluses : pas de jauge (les cases d'abonnement ont aussi data-jetons)
       $('[data-jetons]', app).textContent = left;
       $('[data-jetons-max]', app).textContent = max;
       $('[data-jauge-fill]', app).style.width = (max ? Math.min(100, left / max * 100) : 0) + '%';
@@ -985,6 +985,10 @@
         $('[data-app-plan-price]', app).textContent = euro(+p.getAttribute('data-month')) + ' par mois';
         var m = mtpl && mtpl.content.querySelector('[data-m="' + p.value + '"]');
         if (m) $('[data-app-plan-art]', app).innerHTML = m.innerHTML;
+        // les petits mots réservés à Maxi (analyse de Mirette, suggestions) ; avec Mini, un message qui présente Maxi
+        var maxi = p.value === 'evolution';
+        $$('[data-seulement-maxi]', app).forEach(function (e) { e.hidden = !maxi; });
+        $$('[data-seulement-mini]', app).forEach(function (e) { e.hidden = maxi; });
       }
     };
     $$('input[name="app-plan"]', app).forEach(function (r) {

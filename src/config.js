@@ -174,35 +174,65 @@ const energieMois = 250;
 const enService = { outils: false, energie: false };
 const limites = { bulleJour: 40 }; // messages par jour dans la bulle de Cerise (les modifications sont sans limite)
 const enPause = !enService.energie;
-// Un seul abonnement au mois, sans engagement : id 'base' = Tranquillité, qui comprend tout (dont une page SEO par semaine).
+// Deux abonnements au mois, sans engagement (17 novembre 2026) : Mini (id 'base', 10 €) et Maxi (id 'evolution', 20 €).
 // illimite : modifications incluses, sans quota (quota et periode ne servent plus que pour les anciens comptes de l'extension).
-// delai : délai des modifications. priorite : passe avant les autres. pageSeoSemaine : une page pour Google en plus chaque semaine.
+// delai : délai court des modifications (ex. « 7 jours ouvrés »). delaiTexte : la phrase complète après « Modifications ».
+// pageSeo : 'mois' ou 'semaine' (une page pour Google en plus). priorite : passe avant les autres.
+// optimisation : la bande surveille le site et propose des améliorations (Mirette, suggestions dans l'espace client).
 const forfaits = [
   {
     id: 'base',
-    name: 'Tranquillité',
+    name: 'Mini',
     color: 'mint',
     month: 10,
     quota: 1,
     periode: 'trimestre',
     illimite: true,
-    pageSeoSemaine: true,
-    delaiMoyen: true, // « 12 à 24 heures en moyenne »
+    pageSeo: 'mois',
     jetons: energieMois, // énergie (en pause)
     partage: false,
-    delai: '12 à 24 heures',
-    bulle: 'Votre site entretenu, à jour, et qui grandit chaque semaine',
-    modifs: 'modifications incluses et une page SEO chaque semaine',
+    delai: '7 jours ouvrés',
+    delaiTexte: 'sous 7 jours ouvrés',
+    bulle: 'Votre site en ligne, protégé et à jour',
+    modifs: 'modifications incluses et une page SEO par mois',
     conseil: false,
     tagline: 'Sans engagement',
-    pitch: 'Votre site reste en ligne, protégé et à jour. Vous demandez une modification, on s’en occupe, et une nouvelle page pour Google s’ajoute chaque semaine.',
-    main: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Surveillance', 'Maintenance', 'Modifications incluses, en 12 à 24 h en moyenne', 'Une page SEO en plus chaque semaine', 'Tableau de bord : vos visiteurs, d’où ils arrivent et vos pages les plus vues'],
-    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site, à votre nom', 'Sauvegardes : une copie de sécurité de votre site', 'Sécurité : le petit cadenas HTTPS et les protections à jour', 'Surveillance : on vérifie jour et nuit que votre site répond', 'Maintenance : les vérifications techniques qui gardent votre site en forme', 'Modifications incluses, en ligne en 12 à 24 heures en moyenne', 'Une page SEO en plus chaque semaine, pour être trouvé sur plus de recherches Google'],
-    features: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Surveillance', 'Maintenance', 'Modifications incluses', 'Une page SEO chaque semaine'],
+    pitch: 'Votre site reste en ligne, protégé et à jour. Vos modifications sont incluses, et une nouvelle page pour Google s’ajoute chaque mois.',
+    main: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Maintenance technique', 'Modifications incluses', 'Une page SEO par mois', 'Délai habituel : jusqu’à 7 jours ouvrés', 'Tableau de bord : vos visiteurs et vos pages les plus vues'],
+    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site, à votre nom', 'Sauvegardes : une copie de sécurité de votre site', 'Sécurité : le petit cadenas HTTPS et les protections à jour', 'Maintenance technique : les vérifications qui gardent votre site en forme', 'Modifications incluses, traitées en 7 jours ouvrés au plus', 'Une page SEO en plus chaque mois, pour être trouvé sur plus de recherches Google', 'Tableau de bord : vos visiteurs, d’où ils arrivent et vos pages les plus vues'],
+    features: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Maintenance technique', 'Modifications incluses', 'Une page SEO par mois'],
   },
-  // La formule Évolution (20 €/mois) est retirée le 17 novembre 2026 : un seul abonnement, qui comprend tout.
-  // Un ancien client « evolution » est lu comme cet abonnement (l'extension retombe sur le premier forfait).
+  {
+    id: 'evolution',
+    name: 'Maxi',
+    color: 'lilac',
+    month: 20,
+    quota: 1,
+    periode: 'trimestre',
+    illimite: true,
+    priorite: true,
+    pageSeo: 'semaine',
+    pageSeoSemaine: true,
+    optimisation: true,
+    jetons: energieMois,
+    partage: false,
+    delai: '48 heures',
+    delaiTexte: 'dans l’heure pour les petites, sous 48 h pour les grosses',
+    bulle: 'Votre site qui grandit chaque semaine, avec la bande aux petits soins',
+    modifs: 'modifications prioritaires, une page SEO optimisée par semaine et l’optimisation continue',
+    conseil: true,
+    tagline: 'Sans engagement',
+    pitch: 'Tout Mini, avec vos modifications en priorité, une page SEO optimisée chaque semaine, et la bande qui surveille votre site pour vous proposer des améliorations.',
+    main: ['Tout Mini', 'Modifications prioritaires', 'Petites modifications traitées dans l’heure : texte, photo, coordonnées, horaires, tarif', 'Grosses modifications sous 48 h', 'Une page SEO optimisée par semaine', 'Analyse régulière du site par Mirette', 'Suggestions d’amélioration par la bande', 'Optimisation continue de votre visibilité'],
+    details: ['Tout Mini', 'Modifications prioritaires : vos demandes passent en premier', 'Petites modifications traitées dans l’heure : un texte, une photo, vos coordonnées, vos horaires, un tarif', 'Grosses modifications sous 48 h', 'Une page SEO optimisée chaque semaine', 'Analyse régulière du site par Mirette, l’observatrice de la bande', 'Suggestions d’amélioration par la bande, dans votre espace client', 'Optimisation continue : les Minis Monstres surveillent votre site et proposent régulièrement des améliorations pour votre visibilité'],
+    features: ['Tout Mini', 'Modifications prioritaires', 'Petites modifications dans l’heure', 'Grosses modifications sous 48 h', 'Une page SEO optimisée par semaine', 'Optimisation continue'],
+  },
 ];
+// L'optimisation continue de Maxi, expliquée (page Tarifs, documentation, espace client)
+const optimisation = {
+  titre: 'Optimisation continue',
+  texte: 'Les Minis Monstres surveillent votre site et proposent régulièrement des améliorations pour augmenter votre visibilité.',
+};
 // Création seule : pour un client qui a déjà son nom de domaine et son hébergement. Il paie seulement la création,
 // sans formule au mois, et reçoit le code de son site (fichiers et sauvegarde), prêt à installer chez son hébergeur.
 // Pas de modifications ni de maintenance incluses : il peut prendre une formule plus tard. id 'sans' dans la commande.
@@ -219,7 +249,7 @@ const annuel = { moisOfferts: 2 };
 // Le paiement en plusieurs fois se fait au mois : l'abonnement passe alors au mois.
 const lissage = { durees: [6, 12] };
 // Délai de réponse aux demandes de modification (le même pour tous).
-const delais = { reponse: '72 heures', titan: '72 heures', urgent: '24 heures', evolution: '12 à 24 heures' };
+const delais = { reponse: '7 jours ouvrés', titan: '72 heures', urgent: '24 heures', evolution: '48 heures' };
 
 // ---------------------------------------------------------------- options et extras
 // quand : 'creation' = payé une fois, à la création du site ; 'mois' = extra de l'abonnement, activable et désactivable.
@@ -232,7 +262,7 @@ const delais = { reponse: '72 heures', titan: '72 heures', urgent: '24 heures', 
 // le type de site « boutique »). Les anciennes options et extras restent listés avec retire: true, pour les clients qui
 // les ont déjà (l'extension les montre encore dans leur compte), mais ne sont plus proposés.
 const options = [
-  { id: 'packseo', quand: 'espace' /* plus à la commande : se commande plus tard, depuis l'espace client (novembre 2026) */, group: 'site', name: 'Pack SEO', icon: 'search-check', price: { once: 25 }, pages: 10, court: '10 pages SEO en plus, pour être trouvé sur plus de recherches Google.', info: 'Dix pages de plus, chacune écrite pour une recherche que font vos clients sur Google : un service, une ville, une question fréquente. Plus votre site a de pages utiles, plus il a de chances d’apparaître.', desc: '10 pages SEO en plus. Chaque page répond à une recherche que font vos clients sur Google. Plus de pages utiles, plus de chances d’être trouvé.' },
+  { id: 'packseo', quand: 'espace' /* se commande depuis l'espace client, à l'unité (5 € la page, 17 novembre 2026) */, group: 'site', name: 'Page SEO supplémentaire', icon: 'search-check', price: { once: 5 }, pages: 1, exemples: ['Service + ville', 'FAQ', 'Métier', 'Page locale', 'Guide'], court: 'Une page SEO en plus, pour être trouvé sur une recherche de plus.', info: 'Une page de plus, écrite pour une recherche que font vos clients sur Google. Par exemple : un service et une ville, une FAQ, votre métier, une page locale ou un guide. Plus votre site a de pages utiles, plus il a de chances d’apparaître.', desc: 'Une page SEO en plus, à 5 €. Par exemple : service + ville, FAQ, métier, page locale ou guide. Chaque page répond à une recherche que font vos clients sur Google.' },
   { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'en', quand: 'creation', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 100 }, court: 'Avec un bouton pour changer de langue.', info: 'Chaque page existe aussi en anglais, relue à la main. Un bouton en haut du site passe d’une langue à l’autre, et Google peut montrer la version anglaise aux visiteurs étrangers.', desc: 'Votre site traduit en anglais et relu, avec un bouton pour changer de langue. Pour les touristes et les clients venus d’ailleurs.' },
   { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'rdv', quand: 'creation', group: 'site', name: 'Prise de rendez-vous', icon: 'calendar-check', price: { once: 100 }, court: 'Vos clients réservent un créneau en ligne.', info: 'Une page avec vos créneaux libres. Le client choisit son jour et son heure, reçoit une confirmation, et vous êtes prévenu par e-mail. Vous ouvrez et fermez les créneaux vous-même.', desc: 'Vos clients réservent un créneau sur votre site, selon vos disponibilités. Vous recevez un e-mail à chaque réservation.' },
   { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'reprise', quand: 'creation', group: 'site', name: 'Reprise de votre ancien site', icon: 'refresh-cw', price: { once: 100 }, court: 'On garde vos textes, photos et adresses.', info: 'Je récupère les textes, les photos et les adresses des pages de votre ancien site, et je les remets au propre. Les anciens liens mènent au bon endroit : vous gardez votre place sur Google.', desc: 'Vos textes, vos photos et vos adresses de pages repris de l’ancien site, pour garder votre place sur Google.' },
@@ -302,7 +332,7 @@ const aLaDemande = [
   { retire: true, id: 'page', name: 'Une page en plus', prix: creation.pagePlus, icon: 'file-text', desc: 'Une nouvelle page sur votre site, après sa mise en ligne. Je la prépare avec vos textes et vos photos, puis je la publie.' },
   { retire: true, id: 'point', name: 'Un point de 30 minutes ensemble', prix: 15, icon: 'phone', desc: 'Au téléphone ou en visio : on fait le tour de votre site, de vos résultats et de vos idées.' },
   // Le Pack SEO ne se choisit plus à la commande : le client le prend quand il veut, depuis son espace (onglet Mes demandes)
-  { id: 'packseo', name: 'Pack SEO : 10 pages pour Google', prix: 25, icon: 'search-check', desc: 'Dix pages de plus, chacune écrite pour une recherche que font vos clients sur Google : un service, une ville, une question fréquente. Lumi les prépare, je les relis, puis elles sont mises en ligne.' },
+  { id: 'packseo', name: 'Page SEO supplémentaire', prix: 5, icon: 'search-check', desc: 'Une page de plus, écrite pour une recherche que font vos clients sur Google : un service et une ville, une FAQ, votre métier, une page locale ou un guide. Lumi la prépare, je la relis, puis elle est mise en ligne.' },
 ];
 // Boost : l'ancien nom de l'intervention d'Alex en plus (gardé pour l'extension WordPress et l'espace client).
 const boost = { prix: aLaDemande[0].prix };
@@ -320,4 +350,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: 'Le site d’un électricien dans les Ardennes. Il sera en ligne très bientôt.' },
 ];
 
-module.exports = { clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule };
+module.exports = { optimisation, clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule };

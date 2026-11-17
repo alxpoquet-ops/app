@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres Espace client
  * Description: L'espace client des Minis Monstres sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.7.0
+ * Version: 2.8.0
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.7.0');
+define('ALED08E_VERSION', '2.8.0');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
@@ -48,7 +48,7 @@ function aled08e_monster($n) { $d = aled08e_data(); return $d['monsters'][$n] ??
  * et reçoit le code de son site. Pas d'abonnement, pas de maintenance ni de modifications comprises. */
 function aled08e_est_seule($id) { return $id === 'sans' && !empty(aled08e_data()['creationSeule']); }
 function aled08e_forfait($id) {
-    if (aled08e_est_seule($id)) return aled08e_data()['creationSeule'] + ['month' => 0, 'quota' => 0, 'periode' => '', 'jetons' => 0, 'modifs' => 'sans formule : maintenance et modifications non comprises', 'tagline' => '', 'illimite' => false, 'main' => []];
+    if (aled08e_est_seule($id)) return aled08e_data()['creationSeule'] + ['month' => 0, 'quota' => 0, 'periode' => '', 'jetons' => 0, 'modifs' => 'sans abonnement : maintenance et modifications non comprises', 'tagline' => '', 'illimite' => false, 'main' => []];
     foreach (aled08e_data()['forfaits'] as $f) if ($f['id'] === $id) return $f;
     $all = aled08e_data()['forfaits'];
     return $all ? $all[0] : ['id' => 'base', 'name' => 'Abonnement', 'month' => 10, 'quota' => 1, 'periode' => 'trimestre', 'jetons' => 250, 'modifs' => 'les petites retouches et les outils de la bande, et une intervention d’Alex par trimestre', 'color' => 'pink', 'tagline' => ''];
@@ -81,7 +81,7 @@ function aled08e_a_la_demande($id = null, $tous = false) {
     foreach ($all as $x) if ($x['id'] === $id) return $x;
     return null;
 }
-/* Sans formule (création seule, ou compte sans commande) : pas de modifications comprises. Le Pack SEO reste possible. */
+/* Sans abonnement (création seule, ou compte sans commande) : pas de modifications comprises. La page SEO supplémentaire reste possible. */
 function aled08e_sans_formule($uid) {
     return aled08e_meta($uid, 'forfait') === '' && aled08e_meta($uid, 'offert') !== '1' && aled08e_meta($uid, 'famille') !== '1' && aled08e_meta($uid, 'abonnement_manuel') !== '1';
 }
@@ -104,18 +104,22 @@ function aled08e_periode_debut($periode) {
 function aled08e_count_alex($uid) { return aled08e_count_month($uid, 'alex', aled08e_alex_periode($uid)); }
 /* « une intervention d'Alex par trimestre » (ou par mois) ; avec l'offre du 17 novembre 2026 : « modifications incluses » */
 function aled08e_alex_txt($uid, $f) {
-    if (!empty($f['illimite'])) return 'modifications incluses, en ligne en ' . aled08e_delai_txt($f);
+    if (!empty($f['illimite'])) return 'modifications incluses, traitées ' . aled08e_delai_txt($f);
     $q = (int) $f['quota'];
     return ($q === 1 ? 'une intervention' : $q . ' interventions') . ' d’Alex par ' . aled08e_alex_periode($uid);
 }
-/* Offre du 17 novembre 2026 : les modifications sont incluses, sans limite (formules Tranquillité et Évolution).
+/* Les modifications sont incluses, sans limite (abonnements Mini et Maxi).
  * Le client écrit sa demande ; Bricou prépare la modification et un aperçu ; le client regarde l'aperçu ; Alex reçoit la
  * proposition et, sans refus de sa part sous 30 minutes, elle est mise en ligne (includes/lia.php). */
 function aled08e_modifs_illimitees($uid) { return !empty(aled08e_forfait(aled08e_meta($uid, 'forfait'))['illimite']); }
 function aled08e_modif_delai($f) { return (string) (($f['delai'] ?? '') ?: (aled08e_data()['delais']['reponse'] ?? '72 heures')); }
-/* Le délai en clair : « 12 à 24 heures en moyenne » (abonnement unique depuis le 17 novembre 2026) ou « 72 heures au plus » */
-function aled08e_delai_txt($f) { return aled08e_modif_delai($f) . ((!empty($f['delaiMoyen']) || !empty($f['priorite'])) ? ' en moyenne' : ' au plus'); }
-/* Formule Évolution : demandes traitées en priorité */
+/* Le délai en clair : la phrase de l'abonnement (« sous 7 jours ouvrés » avec Mini, « dans l'heure pour les petites, sous 48 h
+ * pour les grosses » avec Maxi), sinon « 72 heures au plus » pour les anciens comptes */
+function aled08e_delai_txt($f) {
+    if (!empty($f['delaiTexte'])) return (string) $f['delaiTexte'];
+    return aled08e_modif_delai($f) . ((!empty($f['delaiMoyen']) || !empty($f['priorite'])) ? ' en moyenne' : ' au plus');
+}
+/* Maxi : demandes traitées en priorité */
 function aled08e_priorite($uid) { return !empty(aled08e_forfait(aled08e_meta($uid, 'forfait'))['priorite']); }
 function aled08e_type($id) {
     foreach (aled08e_data()['types'] as $t) if ($t['id'] === $id) return $t;
@@ -176,6 +180,7 @@ require_once __DIR__ . '/includes/brief.php';
 require_once __DIR__ . '/includes/jetons.php';
 require_once __DIR__ . '/includes/reseaux.php';
 require_once __DIR__ . '/includes/bulle.php';
+require_once __DIR__ . '/includes/messages.php';
 
 /* =========================================================================
  *  Rôle « Client des Minis Monstres » et type de contenu « Demande »
@@ -440,7 +445,7 @@ add_action('template_redirect', function () {
     $extra = sanitize_key(wp_unslash($_POST['extra'] ?? ''));
     if (!in_array($extra, ['article', 'page', 'point', 'packseo'], true) || !aled08e_a_la_demande($extra)) $extra = '';
     if ($extra && empty($_POST['extra_ok'])) $back('extra_accord');
-    // sans formule : les modifications ne sont pas comprises (le Pack SEO, payé à part, reste possible)
+    // sans abonnement : les modifications ne sont pas comprises (la page SEO supplémentaire, payée à part, reste possible)
     if (!$extra && aled08e_sans_formule($uid)) $back('sans_formule');
     // par Cerise (automatique, un jeton) ou par Alex (à la main) ; plus de jeton ce mois-ci : la demande passe à Alex
     $par = !$extra && sanitize_key(wp_unslash($_POST['par'] ?? 'alex')) === 'lia' ? 'lia' : 'alex';
@@ -465,14 +470,14 @@ add_action('template_redirect', function () {
     if ($over && empty($_POST['boost_ok'])) $back('boost_accord');
     // demande traitée sous 24 heures : seulement pour Alex (Cerise fait la sienne tout de suite)
     $urgent = !$famille && $par === 'alex' && !empty($_POST['urgent']) && aled08e_a_la_demande('urgent');
-    $prefixe = $extra === 'article' ? 'Article : ' : ($extra === 'point' ? 'Point avec Alex : ' : ($extra === 'page' ? 'Page en plus : ' : ($extra === 'packseo' ? 'Pack SEO : ' : '')));
+    $prefixe = $extra === 'article' ? 'Article : ' : ($extra === 'point' ? 'Point avec Alex : ' : ($extra === 'page' ? 'Page en plus : ' : ($extra === 'packseo' ? 'Page SEO : ' : '')));
     $title = mb_strlen($txt) > 70 ? rtrim(mb_substr($txt, 0, 67)) . '…' : $txt;
     $title = $prefixe . trim(preg_replace('/\s+/', ' ', $title));
     $pid = wp_insert_post(['post_type' => ALED08E_CPT, 'post_status' => 'private', 'post_author' => $uid, 'post_title' => $title, 'post_content' => $txt, 'comment_status' => 'closed', 'ping_status' => 'closed'], true);
     if (is_wp_error($pid)) $back('erreur');
     update_post_meta($pid, '_aled08_statut', 'recue');
     update_post_meta($pid, '_aled08_par', $par);
-    if (aled08e_priorite($uid)) update_post_meta($pid, '_aled08_priorite', 1); // formule Évolution : passe en premier
+    if (aled08e_priorite($uid)) update_post_meta($pid, '_aled08_priorite', 1); // Maxi : passe en premier
     if ($over) { update_post_meta($pid, '_aled08_boost', 1); update_post_meta($pid, '_aled08_hors_forfait', 1); aled08e_boost_facturer($pid, $uid); }
     $payes = [];
     if ($extra) { update_post_meta($pid, '_aled08_extra', $extra); $payes[] = $extra; }
@@ -528,8 +533,8 @@ add_action('template_redirect', function () {
     }
 
     $u = wp_get_current_user();
-    $delai = $urgent ? (aled08e_data()['delais']['urgent'] ?? '24 heures') : ($illimite ? aled08e_delai_txt($f) . (aled08e_priorite($uid) ? ' (PRIORITAIRE)' : '') : aled08e_data()['delais']['reponse']);
-    $quoi = $extra === 'article' ? 'Article à écrire et publier' : ($extra === 'point' ? 'Point de 30 minutes avec Alex à caler' : ($extra === 'packseo' ? 'Pack SEO commandé : 10 pages pour Google à préparer' : 'Nouvelle demande de modification'));
+    $delai = $urgent ? (aled08e_data()['delais']['urgent'] ?? '24 heures') : ($illimite ? aled08e_delai_txt($f) . (aled08e_priorite($uid) ? ' (PRIORITAIRE, ' . ($f['name'] ?? 'Maxi') . ')' : '') : aled08e_data()['delais']['reponse']);
+    $quoi = $extra === 'article' ? 'Article à écrire et publier' : ($extra === 'point' ? 'Point de 30 minutes avec Alex à caler' : ($extra === 'packseo' ? 'Page SEO supplémentaire commandée : une page pour Google à préparer' : (!empty($_POST['aled08e_msg_id']) ? 'Suggestion de la bande acceptée par le client' : 'Nouvelle demande de modification')));
     $corps = $quoi . "\n\n"
         . 'Client   : ' . $u->display_name . ' (' . $u->user_email . ")\n"
         . 'Site     : ' . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\n"
@@ -539,7 +544,7 @@ add_action('template_redirect', function () {
         . ($photo ? "Photo    : $photo\n" : '')
         . "\nDemande :\n$txt\n\n"
         . 'Suivre et répondre : ' . admin_url('post.php?post=' . $pid . '&action=edit') . "\n";
-    $sujet = ($urgent ? 'URGENT 24 h, ' : '') . ($extra === 'article' ? 'Article à écrire : ' : ($extra === 'point' ? 'Point avec Alex : ' : ($extra === 'packseo' ? 'Pack SEO à préparer : ' : 'Demande de modification : ')));
+    $sujet = ($urgent ? 'URGENT 24 h, ' : '') . ($extra === 'article' ? 'Article à écrire : ' : ($extra === 'point' ? 'Point avec Alex : ' : ($extra === 'packseo' ? 'Page SEO à préparer : ' : (!empty($_POST['aled08e_msg_id']) ? 'Suggestion acceptée : ' : 'Demande de modification : '))));
     wp_mail(aled08e_to(), $sujet . $u->display_name, $corps, aled08e_mail_headers($u->display_name . ' <' . $u->user_email . '>'));
     do_action('aled08e_demande_creee', $pid, $par, $uid);
 
@@ -571,7 +576,7 @@ function aled08e_client_box($post) {
     echo '<p><strong>' . esc_html($u->display_name) . '</strong><br><a href="mailto:' . esc_attr($u->user_email) . '">' . esc_html($u->user_email) . '</a></p>';
     if (aled08e_meta($u->ID, 'site')) echo '<p>Site : <a href="' . esc_url(aled08e_meta($u->ID, 'site')) . '" target="_blank" rel="noopener">' . esc_html(aled08e_meta($u->ID, 'site')) . '</a></p>';
     $jt = aled08e_jetons($f);
-    if (aled08e_modifs_illimitees($u->ID)) echo '<p>Formule ' . esc_html($f['name']) . ' · modifications incluses' . (aled08e_priorite($u->ID) ? ' · prioritaire' : '') . '</p>';
+    if (aled08e_modifs_illimitees($u->ID)) echo '<p>Abonnement ' . esc_html($f['name']) . ' · modifications incluses' . (aled08e_priorite($u->ID) ? ' · prioritaire' : '') . '</p>';
     else echo '<p>Abonnement · Alex ' . (int) aled08e_count_alex($u->ID) . ' / ' . (int) $f['quota'] . ' ' . esc_html(aled08e_periode_ce($u->ID)) . ' · ' . (aled08e_energie_on() ? 'Énergie ' . (int) aled08e_jl_etat($u->ID, $f)['solde'] . ' restants (' . (int) aled08e_jl_mois($u->ID, $f) . ' par mois)' : 'Retouches de Bricou ' . (int) aled08e_jl_retouches_mois($u->ID) . ' / ' . aled08e_limite('bricouMois', 8) . ' ce mois-ci') . '</p>';
     $par = get_post_meta($post->ID, '_aled08_par', true) === 'lia' ? 'Bricou (instantané, avec aperçu)' : 'Alex (à la main)';
     echo '<p><strong>Demandée à : ' . esc_html($par) . '</strong></p>';
@@ -638,6 +643,7 @@ function aled08e_fields() {
         'stats_ventes' => ['Ventes (boutique)', 'text', ''],
         'stats_recherches' => ['Meilleures recherches (une par ligne : recherche | position)', 'textarea', "pâtisserie rethel | 4\ntarte aux fraises rethel | 2"],
         'stats_rapport' => ['Lien du rapport mensuel (PDF)', 'url', ''],
+        'suggestions' => ['Suggestions de la bande (Maxi), une par ligne : monstre | titre | texte', 'textarea', "plume | Une page pour la bûche de Noël | Des gens cherchent « bûche de Noël Rethel ». Je prépare une page pour cette recherche ?\nbricou | Vos horaires des fêtes | Je peux ajouter un bandeau en haut de l’accueil."],
         'factures' => ['Factures saisies à la main (une par ligne : date ; libellé ; montant ; lien)', 'textarea', "Novembre 2026 ; Abonnement ; 10 € ; https://..."],
     ];
 }
@@ -977,7 +983,7 @@ function aled08e_dashboard() {
         'lia_limite' => ['esp-warn', 'Vous avez utilisé vos ' . aled08e_limite('bricouMois', 8) . ' petites retouches du mois avec Bricou. Elles reviennent le 1er du mois. Pour celle-ci, choisissez Alex.'],
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
-        'sans_formule' => ['esp-warn', 'Votre site n’a pas de formule : les modifications ne sont pas comprises. Envie d’une formule ? Écrivez-moi, je m’en occupe.'],
+        'sans_formule' => ['esp-warn', 'Votre site n’a pas d’abonnement : les modifications ne sont pas comprises. Envie d’un abonnement ? Écrivez-moi, je m’en occupe.'],
         'trop' => ['esp-warn', 'Vous avez envoyé beaucoup de demandes aujourd’hui. Écrivez-nous par le formulaire de contact si c’est pressé.'],
         'erreur' => ['esp-warn', 'L’envoi n’a pas abouti. Réessayez dans un instant.'],
         'lia_oui' => ['esp-empty', 'Merci ! Votre modification est en ligne.'],
@@ -1089,6 +1095,7 @@ function aled08e_dashboard() {
           <?php elseif ($cmd && aled08e_cmd_reception_due($cmd)) : ?>
           <p class="esp-warn">Votre site est en ligne : il reste <?php echo aled08e_euro($cmd['montants']['solde']); // phpcs:ignore ?> pour la création, en une fois ou en plusieurs fois, et votre abonnement démarre. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
           <?php endif; ?>
+          <?php echo aled08e_messages_html($uid); // phpcs:ignore ?>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
             <button type="button" data-go="demandes"><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><strong>Demander une modification</strong><small>Je m’en occupe</small></button>
@@ -1111,7 +1118,7 @@ function aled08e_dashboard() {
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
           <h2 class="app-h">Mes demandes</h2>
           <?php echo $flash; // phpcs:ignore ?>
-          <?php if (aled08e_sans_formule($uid)) : ?><p class="esp-warn">Votre site n’a pas de formule : les modifications ne sont pas comprises. Vous pouvez quand même commander un Pack SEO ci-dessous. Envie d’une formule ? Écrivez-moi, je m’en occupe.</p>
+          <?php if (aled08e_sans_formule($uid)) : ?><p class="esp-warn">Votre site n’a pas d’abonnement : les modifications ne sont pas comprises. Vous pouvez quand même commander une page SEO supplémentaire ci-dessous. Envie d’une formule ? Écrivez-moi, je m’en occupe.</p>
           <?php else : ?>
           <?php if ($illimite) : ?>
           <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. C’est compris dans votre formule, sans compter. Vous suivez l’avancement ici.</p>
@@ -1273,7 +1280,7 @@ function aled08e_a_la_demande_html($uid, $famille) {
         'article' => ['Le sujet de l’article, et ce que vous voulez y dire', 'Ex. : nos conseils pour entretenir un parquet'],
         'page' => ['Ce que la nouvelle page doit présenter', 'Ex. : une page pour nos menus de groupe, avec les prix'],
         'point' => ['Vos disponibilités et le sujet du point', 'Ex. : mardi ou jeudi après 18 heures, pour parler de Google'],
-        'packseo' => ['Vos services, vos villes, les questions qu’on vous pose souvent', 'Ex. : plombier à Sedan, dépannage le dimanche, prix d’un chauffe-eau'],
+        'packseo' => ['La recherche visée : un service et une ville, une question, votre métier…', 'Ex. : plombier à Sedan, ou : prix d’un chauffe-eau'],
     ];
     $cartes = '';
     foreach (['packseo', 'article', 'page', 'point'] as $id) {

@@ -112,7 +112,7 @@ function aled08e_info_btn($id, $nom, $texte) {
     return '<button type="button" class="opt-i" data-titre="' . esc_attr($nom) . '" data-info="' . esc_attr($texte) . '"' . $img . ' aria-label="' . esc_attr('Voir ce que ça ajoute : ' . $nom) . '">' . aled08e_icon('info') . '</button>';
 }
 
-/* Le formulaire, dans « Abonnement et factures » : changer de formule (Tranquillité ou Évolution), et retirer un ancien extra */
+/* Le formulaire, dans « Abonnement et factures » : changer d'abonnement (Mini ou Maxi), et retirer un ancien extra */
 function aled08e_changer_html($uid) {
     $opts = aled08e_changer_options_possibles($uid);
     $forfaits = (array) aled08e_data()['forfaits'];
@@ -120,7 +120,7 @@ function aled08e_changer_html($uid) {
     $annuel = aled08e_meta($uid, 'paiement') === 'annee';
     $mult = $annuel ? max(1, 12 - (int) aled08e_data()['moisOfferts']) : 1;
     $actuel = aled08e_forfait(aled08e_meta($uid, 'forfait'))['id'];
-    $h = '<details class="esp-changer"><summary>' . aled08e_icon('refresh-cw') . '<span>' . (count($forfaits) > 1 ? 'Changer de formule' : 'Ajouter ou retirer des extras') . '</span></summary>'
+    $h = '<details class="esp-changer"><summary>' . aled08e_icon('refresh-cw') . '<span>' . (count($forfaits) > 1 ? 'Changer d’abonnement' : 'Ajouter ou retirer des extras') . '</span></summary>'
         . '<form method="post" action="' . esc_url(aled08e_url()) . '"><input type="hidden" name="aled08e_changer" value="1">' . wp_nonce_field('aled08e_changer', '_aled08e_changer', true, false)
         . '<p class="app-note">Quand vous voulez, sans frais et sans engagement. Le nouveau prix s’applique à votre prochaine échéance.</p>';
     if (count($forfaits) > 1) {

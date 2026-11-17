@@ -28,10 +28,14 @@ const year = (month) => month * (12 - annuel.moisOfferts);
 const F = (id) => forfaits.find((f) => f.id === id);
 const T = (id) => types.find((t) => t.id === id);
 // L'offre unique : un abonnement, des options payées une fois à la création, des extras au mois
-const ABO = forfaits[0]; // Tranquillité
-const EVO = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1]; // ancienne formule Évolution : c'est maintenant l'abonnement unique
-const UNIQUE = forfaits.length === 1; // un seul abonnement (depuis le 17 novembre 2026)
-const delaiTxt = (f) => (f.delaiMoyen || f.priorite ? `en ${f.delai} en moyenne` : `sous ${f.delai} au plus`);
+const ABO = forfaits[0]; // Mini
+const EVO = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1]; // Maxi
+const UNIQUE = forfaits.length === 1; // un seul abonnement (du 17 novembre 2026 au retour de Mini et Maxi)
+const delaiTxt = (f) => f.delaiTexte || (f.delaiMoyen || f.priorite ? `en ${f.delai} en moyenne` : `sous ${f.delai} au plus`);
+// La liste d'un abonnement sans la ligne du délai (le délai a sa propre ligne sous la liste)
+const sansDelai = (arr) => arr.filter((x) => !/^Délai/.test(x));
+// La différence entre Mini et Maxi, en une phrase
+const DIFF_ABO = `Avec ${EVO.name}, vos demandes passent en premier : les petites modifications sont faites dans l’heure, les grosses sous 48 h. Vous avez une page SEO optimisée chaque semaine au lieu d’une par mois, et la bande surveille votre site pour vous proposer des améliorations.`;
 const optsCreation = options.filter((o) => o.quand === 'creation' && !o.retire);
 const optsMois = options.filter((o) => o.quand === 'mois' && !o.retire);
 
@@ -165,8 +169,8 @@ function payBox() {
   <h3>${icon('calendar-check')}Comment payer ?</h3>
   <ul class="list-check">
     <li><strong>À la commande</strong> : ${paiement.acompte} % du site, soit ${euro(acompteDe(creation.prix))} pour un site à ${euro(creation.prix)}, et les options choisies.</li>
-    <li><strong>À la réception du site</strong> : le reste en une fois (${euro(creation.prix - acompteDe(creation.prix))}), ou en ${lissageTxt} fois sans frais, par exemple ${euro(lisse(creation.prix))} par mois pendant ${LMAX} mois. Votre formule démarre ce jour-là.</li>
-    <li><strong>Votre formule</strong> : ${forfaits.map((f) => `${f.name} ${euro(f.month)} par mois`).join(' ou ')}. À l’année, ${annuel.moisOfferts} mois offerts.</li>
+    <li><strong>À la réception du site</strong> : le reste en une fois (${euro(creation.prix - acompteDe(creation.prix))}), ou en ${lissageTxt} fois sans frais, par exemple ${euro(lisse(creation.prix))} par mois pendant ${LMAX} mois. Votre abonnement démarre ce jour-là.</li>
+    <li><strong>Votre abonnement</strong> : ${forfaits.map((f) => `${f.name} ${euro(f.month)} par mois`).join(' ou ')}. À l’année, ${annuel.moisOfferts} mois offerts.</li>
   </ul>
 </div>`;
 }
@@ -187,9 +191,10 @@ const BOUTIQUE_STOCK = 'Pas de stock à tenir : on ne compte pas les quantités,
 // Une formule, en carte. compact : sans la liste complète.
 function formuleCarte(f, { compact = false } = {}) {
   return `<article class="formule c-${f.color}${f.priorite ? ' is-evo' : ''}">
+    ${f.optimisation ? `<span class="formule-tag">${icon('rocket')}Le plus complet</span>` : ''}
     <p class="formule-nom">${esc(f.name)}</p>
     <p class="formule-prix"><b>${euro(f.month)}</b><small>/mois</small></p>
-    <ul class="plan-list">${(compact ? f.main.slice(0, 4) : f.main).map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>
+    <ul class="plan-list">${(compact ? sansDelai(f.main).slice(0, 4) : sansDelai(f.main)).map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>
     <p class="formule-delai">${icon('clock')}<span>Modifications ${delaiTxt(f)}</span></p>
   </article>`;
 }
@@ -208,12 +213,12 @@ function offre({ compact = false, choose = true } = {}) {
     </article>
     <span class="offre-plus" aria-hidden="true">+</span>
     <article class="offre-col c-lilac">
-      <p class="offre-k"><span>2</span>${UNIQUE ? 'Votre abonnement, chaque mois' : 'Votre formule, chaque mois'}</p>
+      <p class="offre-k"><span>2</span>Votre abonnement, chaque mois</p>
       <div class="formules${UNIQUE ? ' is-solo' : ''}">${forfaits.map((f) => formuleCarte(f, { compact })).join('')}</div>
       <p class="offre-sous">Sans engagement. À l’année : ${annuel.moisOfferts} mois offerts. Vous préférez tout gérer vous-même ? <a href="#creation-seule">C’est possible aussi</a>.</p>
     </article>
   </div>
-  <p class="offre-options">${icon('plus')}<span>Une seule option : <b>la boutique en ligne, + ${euro(creation.boutique)}</b>, si vous vendez sur internet. Le nom de domaine et l’hébergement offerts la première année, c’est avec une formule, pour un site sans boutique.</span></p>
+  <p class="offre-options">${icon('plus')}<span>Une seule option : <b>la boutique en ligne, + ${euro(creation.boutique)}</b>, si vous vendez sur internet. Le nom de domaine et l’hébergement offerts la première année, c’est avec un abonnement, pour un site sans boutique.</span></p>
   ${choose ? `<p class="offre-go">${btnCreer('btn-primary btn-lg')}</p>` : ''}
 </div>`;
 }
@@ -274,9 +279,9 @@ function optionsCompact() {
   const carte = (id, nom, prix, texte, inclus, info) => `<article class="opt-carte reveal"><span class="opt-carte-art">${petit(MONSTRE_OPTION[id])}</span><div><h3><span>${nomI(nom, id, info)}</span><b>+ ${euro(prix)}</b></h3><p>${inline(texte)}</p><ul class="plan-list">${inclus.map((x) => `<li>${icon('check')}<span>${esc(x)}</span></li>`).join('')}</ul></div></article>`;
   return `<div class="opt-cartes">
   ${carte('boutique', 'Boutique en ligne', creation.boutique, 'Vos clients achètent sur votre site, même quand vous êtes fermé, sans créer de compte. Dans votre espace client, vous gérez vos codes promo, vos soldes et le mode vacances. Pas de stock à tenir : vos produits sont présentés en images.', BOUTIQUE_INCLUS, BOUTIQUE.info)}
-  ${PACK_SEO ? carte('packseo', `${PACK_SEO.name}, plus tard`, PACK_SEO.price.once, 'Plus votre site a de pages utiles, plus il apparaît dans Google. Quand vous le voulez, après la mise en ligne, vous le commandez depuis votre espace client.', [`${PACK_SEO.pages} pages SEO supplémentaires`, 'Payé une fois, depuis votre espace client'], PACK_SEO.info) : ''}
+  ${PACK_SEO ? carte('packseo', `${PACK_SEO.name}, plus tard`, PACK_SEO.price.once, 'Plus votre site a de pages utiles, plus il apparaît dans Google. Quand vous le voulez, après la mise en ligne, vous en commandez depuis votre espace client, une par une.', ['Une page de plus pour Google', `Par exemple : ${PACK_SEO.exemples.join(', ').toLowerCase().replace('faq', 'FAQ')}`, 'Payée une fois, depuis votre espace client'], PACK_SEO.info) : ''}
 </div>
-<p class="opt-note">À la commande, la boutique est la seule option. Le ${PACK_SEO ? esc(PACK_SEO.name) : 'Pack SEO'} se prend plus tard, si vous en avez envie.</p>`;
+<p class="opt-note">À la commande, la boutique est la seule option. Les pages SEO supplémentaires se prennent plus tard, si vous en avez envie.</p>`;
 }
 // Plus d'extras à la demande (offre simplifiée) : gardé pour les pages qui l'appellent encore
 function extrasDemande() { return ''; }
@@ -298,7 +303,7 @@ function processusModif({ titre = true } = {}) {
   return `<!--commun--><div class="modif-etapes reveal">
   ${titre ? `<h3>${icon('repeat')}Comment se passe une modification</h3>` : ''}
   <ol>${ETAPES_MODIF.map(([ic, t, d], i) => `<li><span class="modif-n">${i + 1}</span><span class="modif-ico">${icon(ic)}</span><span><strong>${esc(t)}</strong><small>${esc(d)}</small></span></li>`).join('')}</ol>
-  <p class="modif-delai">${icon('timer')}<span>Délai : ${ABO.delai} en moyenne. Si une demande demande plus de travail, je la fais moi-même, à la main.</span></p>
+  <p class="modif-delai">${icon('timer')}<span>Délai : avec ${esc(ABO.name)}, ${esc(delaiTxt(ABO))}. Avec ${esc(EVO.name)}, ${esc(delaiTxt(EVO))}. Si une demande demande plus de travail, je la fais moi-même, à la main.</span></p>
 </div><!--/commun-->`;
 }
 
@@ -340,7 +345,7 @@ function typeChoices({ name = 'b-type', checked = 'vitrine' } = {}) {
 // Les deux formules : deux cartes à cocher (Tranquillité par défaut). Le nom du champ est celui attendu par le script et la commande.
 function forfaitChoices({ name = 'b-forfait' } = {}) {
   const seule = creationSeule ? `<label class="b-choice b-seule c-${creationSeule.color}"><input type="radio" name="${name}" value="${creationSeule.id}" data-seule>
-        <span class="b-card b-formule"><strong>${esc(creationSeule.name)}</strong><span class="b-price">Sans formule</span>
+        <span class="b-card b-formule"><strong>${esc(creationSeule.name)}</strong><span class="b-price">Sans abonnement</span>
         <small>${esc(creationSeule.court)}</small><span class="b-check">${icon('check')}</span></span></label>` : '';
   return `<div class="b-choices b-formules">${forfaits
     .map((f, i) => `<label class="b-choice c-${f.color}"><input type="radio" name="${name}" value="${f.id}"${i === 0 ? ' checked' : ''}>
@@ -354,8 +359,8 @@ function creationSeuleBox() {
   return `<div class="seule reveal" id="creation-seule">
   <span class="seule-ico">${icon('code')}</span>
   <div><h3>Vous avez déjà votre nom de domaine et votre hébergement ?</h3>
-  <p>Choisissez la <strong>création seule</strong> : vous payez seulement votre site, ${euro(creation.prix)}, sans formule au mois. Je vous remets le code de votre site, prêt à installer chez votre hébergeur. Vous l’installez vous-même, ou votre hébergeur le fait pour vous.</p>
-  <p class="seule-note">${icon('info')}<span>Pas d’abonnement, donc ni maintenance ni modifications comprises. Si un jour vous changez d’avis, une formule peut s’ajouter quand vous voulez.</span></p></div>
+  <p>Choisissez la <strong>création seule</strong> : vous payez seulement votre site, ${euro(creation.prix)}, sans abonnement au mois. Je vous remets le code de votre site, prêt à installer chez votre hébergeur. Vous l’installez vous-même, ou votre hébergeur le fait pour vous.</p>
+  <p class="seule-note">${icon('info')}<span>Pas d’abonnement, donc ni maintenance ni modifications comprises. Si un jour vous changez d’avis, un abonnement peut s’ajouter quand vous voulez.</span></p></div>
 </div>`;
 }
 
@@ -418,7 +423,7 @@ function gestionChoix({ name = 'b-gestion', court = false } = {}) {
         <span class="cf-art" aria-hidden="true">${petit('chaton')}</span>
         <span class="cf-corps">
           <strong class="cf-nom">Je m’en occupe moi-même</strong>
-          <span class="cf-prix"><b>${euro(0)}</b><small>/mois, sans formule</small></span>
+          <span class="cf-prix"><b>${euro(0)}</b><small>/mois, sans abonnement</small></span>
           <span class="cf-txt">Vous gérez votre nom de domaine, votre hébergement et l’installation. Je vous remets le code de votre site, prêt à installer.</span>
           ${court ? '' : cfListe(INCLUS_MOI)}
         </span>
@@ -426,7 +431,7 @@ function gestionChoix({ name = 'b-gestion', court = false } = {}) {
       </span>
     </label>
   </div>
-  <p class="cf-info c-peach" data-seule-txt hidden>${icon('book-open')}<span>Besoin d’un coup de main pour l’installer ? Votre hébergeur a ses propres guides pas à pas, et on trouve beaucoup de tutoriels gratuits sur internet. Sans formule, la maintenance et les modifications ne sont pas comprises. Vous pourrez en prendre une plus tard.</span></p>`;
+  <p class="cf-info c-peach" data-seule-txt hidden>${icon('book-open')}<span>Besoin d’un coup de main pour l’installer ? Votre hébergeur a ses propres guides pas à pas, et on trouve beaucoup de tutoriels gratuits sur internet. Sans abonnement, la maintenance et les modifications ne sont pas comprises. Vous pourrez en prendre un plus tard.</span></p>`;
 }
 // Les deux formules, en grandes cartes, avec la différence en une phrase. name : le champ envoyé (base | evolution).
 function formulesChoix({ name = 'b-forfait', court = false } = {}) {
@@ -444,20 +449,23 @@ function formulesChoix({ name = 'b-forfait', court = false } = {}) {
     <span class="cf-badge">${icon('check')}Tout compris</span>
   </div>`;
   }
-  return `<div class="cf-duo" role="radiogroup" aria-label="Votre formule">
+  return `<div class="cf-duo" role="radiogroup" aria-label="Votre abonnement">
   ${forfaits.map((f, i) => `<label class="cf-choix cf-formule c-${f.color}">
       <input type="radio" name="${name}" value="${f.id}"${i === 0 ? ' checked' : ''} class="cf-input">
       <span class="cf-carte">
+        ${f.optimisation ? '<span class="cf-tag">Le plus complet</span>' : ''}
+        <span class="cf-art" aria-hidden="true">${petit(f.optimisation ? 'gelee' : 'dino', { humeur: 'ravi' })}</span>
         <span class="cf-corps">
           <strong class="cf-nom">${esc(f.name)}</strong>
-          <span class="cf-prix"><b>${euro(f.month)}</b><small>/mois</small></span>
-          ${court ? '' : cfListe(f.main)}
+          <span class="cf-prix"><b>${euro(f.month)}</b><small>/mois, sans engagement</small></span>
+          ${court ? '' : `<!--commun-->${cfListe(sansDelai(f.main))}<!--/commun-->`}
           <span class="cf-delai">${icon('clock')}<span>Modifications ${delaiTxt(f)}</span></span>
         </span>
         <span class="cf-coche" aria-hidden="true">${icon('check')}</span>
       </span>
     </label>`).join('')}
-  </div>`;
+  </div>
+  ${court ? '' : `<p class="cf-info c-lilac">${icon('scale')}<span><b>La différence :</b> ${esc(DIFF_ABO)}</span></p>`}`;
 }
 // Comment payer le site : en une fois, ou étalé (6 ou 12 fois sans frais). main.js écrit les montants.
 function paiementChoix({ name = 'b-lisse', une = 'non' } = {}) {
@@ -465,7 +473,7 @@ function paiementChoix({ name = 'b-lisse', une = 'non' } = {}) {
     <label class="cf-choix"><input type="radio" name="${name}" value="${une}" checked class="cf-input"><span class="cf-carte"><strong>En une fois</strong><small data-sum="p-0" data-order="p-0"></small><span class="cf-coche" aria-hidden="true">${icon('check')}</span></span></label>
     ${lissage.durees.map((n) => `<label class="cf-choix"><input type="radio" name="${name}" value="${n}" class="cf-input"><span class="cf-carte"><strong>En ${n} fois sans frais</strong><small data-sum="p-${n}" data-order="p-${n}"></small><span class="cf-coche" aria-hidden="true">${icon('check')}</span></span></label>`).join('')}
   </div>
-  <p class="cf-info" data-lisse-note hidden>${icon('info')}<span>Sans frais. Vous vous engagez le temps du paiement<span data-avec-formule>, et la formule se règle alors chaque mois</span>.</span></p>`;
+  <p class="cf-info" data-lisse-note hidden>${icon('info')}<span>Sans frais. Vous vous engagez le temps du paiement<span data-avec-formule>, et l’abonnement se règle alors chaque mois</span>.</span></p>`;
 }
 
 // Cases « options » (une fois) et « extras » (au mois)
@@ -523,10 +531,10 @@ function configurator() {
   return `<div class="builder cf" data-builder="${priceData()}" data-billing-scope>
   <form class="cf-form" data-builder-form>
     ${etape('Votre site', `Un seul site, un seul prix. Tout ceci est compris.`, `${siteCarte()}<!--commun--><p class="cf-info c-butter">${icon('search-check')}<span>${esc(PAGES_SEO)}</span></p><!--/commun-->`)}
-    ${etape('Vous voulez vendre en ligne ?', 'C’est la seule option. Cochez-la si vous voulez une boutique, sinon passez à la suite.', `${boutiqueCarte()}<p class="cf-plus-tard">${icon('search-check')}<span>Et pour être encore plus visible sur Google ? Plus tard, depuis votre espace client, vous pourrez ajouter des pages pour Google${PACK_SEO ? ` (${esc(PACK_SEO.name)}, ${euro(PACK_SEO.price.once)})` : ''}.</span></p>`)}
+    ${etape('Vous voulez vendre en ligne ?', 'C’est la seule option. Cochez-la si vous voulez une boutique, sinon passez à la suite.', `${boutiqueCarte()}<p class="cf-plus-tard">${icon('search-check')}<span>Et pour être encore plus visible sur Google ? Plus tard, depuis votre espace client, vous pourrez ajouter des pages pour Google${PACK_SEO ? `, ${euro(PACK_SEO.price.once)} la page` : ''}.</span></p>`)}
     ${etape('Qui s’occupe de la mise en ligne ?', 'Le nom de domaine (l’adresse de votre site), l’hébergement et l’installation : on s’en charge, ou vous le faites vous-même.', gestionChoix())}
     ${etape('Votre nom de domaine', 'C’est l’adresse de votre site, par exemple mon-entreprise.fr. Je vérifie qu’il est libre, puis je le réserve à votre nom.', domainBox(), ' data-avec-formule')}
-    ${etape(UNIQUE ? 'Votre abonnement' : 'Votre formule', 'Il démarre à la réception du site. Sans engagement : vous l’arrêtez quand vous voulez.', `${formulesChoix()}<div class="cf-periode">${billingSwitch()}</div>`, ' data-avec-formule')}
+    ${etape('Votre abonnement', 'Il démarre à la réception du site. Sans engagement : vous changez ou vous arrêtez quand vous voulez.', `${formulesChoix()}<div class="cf-periode">${billingSwitch()}</div>`, ' data-avec-formule')}
     <section class="cf-etape cf-total b-sum" id="cf-total" aria-live="polite">
       <h2 class="cf-titre"><span class="cf-n" aria-hidden="true"></span>Votre total</h2>
       <ul class="cf-lignes">
@@ -541,7 +549,7 @@ function configurator() {
       <div class="cf-recap">
         <p class="cf-auj"><span data-sum="today-label">Aujourd’hui, l’acompte de ${paiement.acompte} %</span><b data-sum="today">${euro(acompte0)}</b></p>
         <p><span data-sum="reste-label">À la réception du site, le reste</span><b data-sum="reste">${euro(creation.prix - acompte0)}</b></p>
-        <p><span data-sum="recur-label">Puis votre formule, chaque mois</span><b data-sum="recur">${euro(ABO.month)}/mois</b></p>
+        <p><span data-sum="recur-label">Puis votre abonnement, chaque mois</span><b data-sum="recur">${euro(ABO.month)}/mois</b></p>
         <p data-sum-parrain hidden><span>Parrainage</span><b>${fidelite.parrainageMois} mois offert</b></p>
       </div>
       <p class="cf-detail" data-sum="detail">Prix total du site : ${euro(creation.prix)}.</p>
@@ -606,15 +614,15 @@ function statsCard() {
 function comparatifTable() {
   const cols = ['Les Minis Monstres', 'Agence web', 'Freelance', 'Plateforme à faire soi-même'];
   const prixCreation = `${euro(creation.prix)}, le même prix pour tous. Boutique en ligne : + ${euro(creation.boutique)}`;
-  const prixMois = UNIQUE ? `${euro(ABO.month)} par mois, tout compris : nom de domaine, hébergement, modifications et une page SEO par semaine` : `${forfaits.map((f) => `${f.name} ${euro(f.month)}`).join(' ou ')} par mois, nom de domaine et hébergement compris`;
+  const prixMois = `${forfaits.map((f) => `${f.name} ${euro(f.month)}`).join(' ou ')} par mois, nom de domaine, hébergement et modifications compris`;
   const rows = [
     ['Qui fait le travail', 'Je conçois votre site. Mes automatisations s’occupent des tâches répétitives.', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
     ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
     ['Prix chaque mois', prixMois, 'Contrat de maintenance, sur devis', 'Selon le prestataire, souvent en option', 'Abonnement mensuel, plus les applications en option'],
     ['Délai', `${types[1].delai} pour un site, ${types[2].delai} pour une boutique`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
-    ['Modifications', `Incluses dans l’abonnement, en ligne en ${ABO.delai} en moyenne`, 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
+    ['Modifications', `Incluses. Avec ${ABO.name}, ${delaiTxt(ABO)}. Avec ${EVO.name}, ${delaiTxt(EVO)}`, 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
-    ['SEO (être trouvé sur Google)', `Les pages non utilisées deviennent des pages pour Google, et l’abonnement en ajoute une chaque semaine`, 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
+    ['SEO (être trouvé sur Google)', `Les pages non utilisées deviennent des pages pour Google. L’abonnement en ajoute une par mois avec ${ABO.name}, une par semaine avec ${EVO.name}`, 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
     ['Engagement', `Aucun. Seulement le temps du paiement si le reste est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
@@ -631,7 +639,7 @@ module.exports = {
   unType,
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, EVO, UNIQUE, optsCreation, optsMois, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
-  offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PAGES_SEO, PACK_SEO, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
+  offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PAGES_SEO, PACK_SEO, DIFF_ABO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
   petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };
