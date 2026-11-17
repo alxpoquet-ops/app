@@ -41,6 +41,7 @@
     'Je m’en occupe moi-même': 'I will handle it myself',
     'Je m’en occupe moi-même (création seule)': 'I will handle it myself (website only)',
     'Formule ': 'Plan ',
+    'Abonnement ': 'Subscription: ',
     ' aujourd’hui, puis ': ' today, then ',
     ' à la réception': ' on delivery',
     ' par mois pendant ': ' a month for ',
@@ -490,7 +491,7 @@
       setText('type', siteNom(t));
       setText('type-price', euro(t.price));
       setText('domain-prix', t.id === 'boutique' ? tr('avec la formule') : tr('offert')); // pas offert avec la boutique
-      setText('forfait', seule ? tr('Je m’en occupe moi-même') : tr('Formule ') + planName(f.name));
+      setText('forfait', seule ? tr('Je m’en occupe moi-même') : tr('Abonnement ') + planName(f.name));
       setText('forfait-price', seule ? tr('sans formule') : euro(f.month * mult) + per);
       var dom = domain.get(), domText = '';
       if (domain.own()) domText = tr('Mon nom de domaine actuel');
@@ -706,7 +707,7 @@
       /* récapitulatif latéral */
       setText('type', siteNom(t));
       setText('type-price', euro(prixSite));
-      setText('forfait', seule ? tr('Je m’en occupe moi-même') : tr('Formule ') + planName(f.name));
+      setText('forfait', seule ? tr('Je m’en occupe moi-même') : tr('Abonnement ') + planName(f.name));
       setText('forfait-price', seule ? tr('sans formule') : euro(forfaitFirst) + per);
       setText('delai', tr(t.delai));
       var optLine = $('[data-order-opts]', root);
