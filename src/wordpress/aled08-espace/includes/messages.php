@@ -141,7 +141,7 @@ function aled08e_messages_html($uid) {
         $qui = $M[$x['qui']] ?? $M['bricou'];
         $plusTard = '<form method="post" action="' . esc_url(aled08e_url()) . '#messages" class="msg-form"><input type="hidden" name="aled08e_msg" value="ecarter"><input type="hidden" name="id" value="' . esc_attr($x['id']) . '">' . wp_nonce_field('aled08e_msg', '_aled08e_msg', true, false) . '<button class="btn btn-light btn-sm" type="submit"><span>' . (!empty($x['action']) ? 'Plus tard' : 'Merci, c’est noté') . '</span></button></form>';
         if (!empty($x['teaser'])) {
-            $h .= '<article class="msg msg-teaser"><span class="msg-art">' . aled08e_monster('gelee') . '</span><div class="msg-corps"><p class="msg-titre">' . esc_html($x['titre']) . '</p><p class="msg-txt">' . esc_html($x['texte']) . '</p><p class="msg-actions"><button type="button" class="btn btn-light btn-sm" data-go="forfait">' . aled08e_icon('arrow-right') . '<span>Voir ' . esc_html($evo['name'] ?? 'Maxi') . '</span></button>' . $plusTard . '</p></div></article>';
+            $h .= '<article class="msg msg-teaser"><span class="msg-art">' . aled08e_monster('maxi') . '</span><div class="msg-corps"><p class="msg-titre">' . esc_html($x['titre']) . '</p><p class="msg-txt">' . esc_html($x['texte']) . '</p><p class="msg-actions"><button type="button" class="btn btn-light btn-sm" data-go="forfait">' . aled08e_icon('arrow-right') . '<span>Voir ' . esc_html($evo['name'] ?? 'Maxi') . '</span></button>' . $plusTard . '</p></div></article>';
             continue;
         }
         $oui = '';

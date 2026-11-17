@@ -254,6 +254,7 @@ function forfaitsPage() {
 
 <section class="section" id="maxi"><div class="container split">
   <div class="reveal">
+    <span class="maxi-art" aria-hidden="true">${C.petit('maxi')}</span>
     <h2>${esc(EVO.name)} : la bande veille sur votre site</h2>
     <p>${esc(optimisation.texte)}</p>
     <ul class="list-check">
@@ -891,7 +892,7 @@ function bandeMessages() {
     </div>
   </article>`).join('')}
   <article class="msg msg-teaser" data-seulement-mini hidden>
-    <span class="msg-art">${C.petit('gelee', { humeur: 'ravi' })}</span>
+    <span class="msg-art">${C.petit('maxi', { humeur: 'ravi' })}</span>
     <div class="msg-corps"><p class="msg-titre">Avec ${esc(EVO.name)}, la bande vous écrit chaque semaine</p><p class="msg-txt">${esc(optimisation.texte)} Mirette analyse votre site, et vos petites modifications sont faites dans l’heure.</p><p class="msg-actions"><button type="button" class="btn btn-light btn-sm" data-go="forfait">${icon('arrow-right')}<span>Voir ${esc(EVO.name)}</span></button></p></div>
   </article>
 </div>`;
@@ -935,7 +936,7 @@ function monEspacePage() {
         <div class="app-panel" role="tabpanel" id="t-accueil" aria-labelledby="tab-accueil">
           <h2 class="app-h">Bonjour Lila !</h2>
           <div class="app-cards">
-            <button type="button" class="app-card c-${EVO.color}" data-go="forfait"><span class="app-card-art" data-app-plan-art>${monster('ravie')}</span><span><small>Votre compte</small><strong data-app-plan-name>${esc(EVO.name)}</strong><span data-app-plan-price>${euro(EVO.month)} par mois</span></span></button>
+            <button type="button" class="app-card c-${EVO.color}" data-go="forfait"><span class="app-card-art" data-app-plan-art>${C.petit('maxi')}</span><span><small>Votre compte</small><strong data-app-plan-name>${esc(EVO.name)}</strong><span data-app-plan-price>${euro(EVO.month)} par mois</span></span></button>
             <div class="app-card c-mint"><span class="app-card-ico">${icon('globe')}</span><span><small>Votre site</small><strong>patisserie-lila.fr</strong><span class="dot-ok">En ligne</span></span></div>
             <button type="button" class="app-card c-sky" data-go="visibilite"><span class="app-card-ico">${icon('chart-line')}</span><span><small>Sur 30 jours</small><strong>1 240 visiteurs</strong><span>Voir le tableau de bord</span></span></button>
           </div>
@@ -1020,7 +1021,7 @@ function monEspacePage() {
         <div class="app-panel" role="tabpanel" id="t-forfait" aria-labelledby="tab-forfait" hidden>
           <h2 class="app-h">Votre abonnement et vos factures</h2>
           <p class="app-sub">Votre abonnement</p>
-          <div class="app-plans">${forfaits.map((f, i) => `<label class="app-plan c-${f.color}"><input type="radio" name="app-plan" value="${f.id}" data-month="${f.month}" data-name="${esc(f.name)}" data-jetons="0"${f.id === EVO.id ? ' checked' : ''}><span class="app-plan-card"><span class="app-plan-art">${monster(i ? 'ravie' : 'mascotte')}</span><strong>${esc(f.name)}</strong><small>${euro(f.month)}/mois</small><small>${esc(f.modifs)}</small></span></label>`).join('')}</div>
+          <div class="app-plans">${forfaits.map((f, i) => `<label class="app-plan c-${f.color}"><input type="radio" name="app-plan" value="${f.id}" data-month="${f.month}" data-name="${esc(f.name)}" data-jetons="0"${f.id === EVO.id ? ' checked' : ''}><span class="app-plan-card"><span class="app-plan-art">${f.optimisation ? C.petit('maxi') : monster('mascotte')}</span><strong>${esc(f.name)}</strong><small>${euro(f.month)}/mois</small><small>${esc(f.modifs)}</small></span></label>`).join('')}</div>
           <p class="app-note">${forfaits.length > 1 ? 'Vous changez d’abonnement quand vous voulez. Le changement compte à partir du mois suivant. Essayez : avec Mini, les messages de Mirette et les suggestions disparaissent de l’accueil.' : 'Un seul abonnement, qui comprend tout. Sans engagement : vous l’arrêtez quand vous voulez.'}</p>
           <p class="app-total"><span>Total chaque mois</span><b data-app-total>${euro(total)}</b></p>
           <p class="app-sub">Factures</p>
@@ -1036,7 +1037,7 @@ function monEspacePage() {
     </div>
     <p class="app-toast" data-toast role="status" hidden></p>
     <template data-icons>${['check', 'message-circle', 'history'].map((n) => `<span data-i="${n}">${icon(n)}</span>`).join('')}</template>
-    <template data-monsters>${forfaits.map((f, i) => `<span data-m="${f.id}">${monster(i ? 'ravie' : 'mascotte')}</span>`).join('')}</template>
+    <template data-monsters>${forfaits.map((f, i) => `<span data-m="${f.id}">${f.optimisation ? C.petit('maxi') : monster('mascotte')}</span>`).join('')}</template>
   </div>
 </div></section>
 

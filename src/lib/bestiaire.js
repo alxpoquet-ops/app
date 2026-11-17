@@ -20,6 +20,7 @@ const C = {
   champi: { corps: '#FF9EC4', ventre: '#FFF4EA', trait: '#C24A80' },
   dino: { corps: '#BDEFAA', ventre: '#E6FADD', trait: '#4E9A3A' },
   etoile: { corps: '#FFE07A', ventre: '#FFF3C4', trait: '#C99A00' },
+  maxi: { corps: '#C9B8FF', ventre: '#EEE8FF', trait: '#6E54D6' },
 };
 
 const t = (c, w = 3) => `stroke="${c.trait}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"`;
@@ -171,6 +172,30 @@ ${yeux(51, 69, 64, h, 0.95)}${joues(44, 76, 73, 0.8)}${bouche.u(60, 72)}
 ${eclat(100, 30, 6, '#FFE07A')}${eclat(18, 34, 4, '#FFB3D1')}
 </g>`;
   },
+};
+
+// Maxi, le chef de la bande pour l'abonnement Maxi : un grand monstre lilas couronné, ailes ouvertes,
+// qui brandit une étoile. Plus grand et plus brillant que les autres, mais toujours tout doux.
+DESSINS.maxi = (h) => {
+  const c = C.maxi;
+  const aile = '#B39BFF';
+  return `${ombre(38, 113)}<g class="p-bob">
+<circle cx="60" cy="68" r="52" fill="#8C6CF2" opacity=".16"/>
+<circle cx="60" cy="68" r="40" fill="#8C6CF2" opacity=".12"/>
+<path d="M30 72C16 56 4 62 6 76c6-4 11-1 9 6 6-4 11-1 10 5Z" fill="${aile}" ${t(c, 2.6)}/>
+<path d="M90 72C104 56 116 62 114 76c-6-4-11-1-9 6-6-4-11-1-10 5Z" fill="${aile}" ${t(c, 2.6)}/>
+<ellipse cx="45" cy="108" rx="10" ry="5.5" fill="${c.corps}" ${t(c, 2.6)}/><ellipse cx="75" cy="108" rx="10" ry="5.5" fill="${c.corps}" ${t(c, 2.6)}/>
+<path d="M20 84C20 57 37 41 60 41S100 57 100 84C100 102 89 109 60 109S20 102 20 84Z" fill="${c.corps}" ${t(c)}/>
+<ellipse cx="60" cy="95" rx="23" ry="10" fill="${c.ventre}"/>
+<path d="M38 47L35 21l13 11 12-17 12 17 13-11-3 26Z" fill="#FFD45E" stroke="#C99A00" stroke-width="3" stroke-linejoin="round"/>
+<rect x="36" y="42" width="48" height="8" rx="4" fill="#FFC23D" stroke="#C99A00" stroke-width="2.6"/>
+<circle cx="60" cy="31" r="3.6" fill="#FF8FB8" stroke="#C24A80" stroke-width="1.6"/><circle cx="46" cy="38" r="2.6" fill="#93EBC6" stroke="#2E9A71" stroke-width="1.4"/><circle cx="74" cy="38" r="2.6" fill="#AED2FF" stroke="#3D84C9" stroke-width="1.4"/>
+${reflet('M31 70c3-9 9-15 17-17')}
+<path d="M38 61l10 3M82 61l-10 3" stroke="${INK}" stroke-width="2.6" stroke-linecap="round"/>
+${yeux(47, 73, 73, h, 1.25)}${joues(35, 85, 85)}${bouche.dent(60, 86)}
+<g class="p-salut">${eclat(104, 48, 10, '#FFE07A')}<path d="M94 84c4-6 4-14 7-20 2-4 8-3 8 1-1 7-5 15-10 21Z" fill="${c.corps}" ${t(c, 2.6)}/></g>
+${eclat(14, 30, 5, '#FFE07A')}${eclat(108, 22, 4, '#FFB3D1')}${eclat(10, 100, 3.5, '#93EBC6')}${eclat(28, 14, 3, '#AED2FF')}
+</g>`;
 };
 
 const NOMS = Object.keys(DESSINS);

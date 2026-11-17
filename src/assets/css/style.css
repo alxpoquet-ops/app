@@ -2324,3 +2324,12 @@ a.client-url { text-decoration: none; }
 .cerise-ideas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 .cerise-ideas button { border: 0; cursor: pointer; padding: 6px 11px; border-radius: 999px; background: var(--card); color: var(--text); font: inherit; font-size: .84rem; font-weight: 700; }
 @media (max-width: 520px) { .cerise-box { grid-template-columns: 44px 1fr; padding: 12px; } .cerise-box > span svg { width: 44px; height: 44px; } .cerise-form .btn span { display: none; } }
+
+/* Maxi : son grand monstre couronné, plus grand que les autres */
+.cf-art.cf-art-maxi { width: 112px; margin: -10px 0 -6px -6px; }
+.formule-art { position: absolute; top: -34px; right: -10px; width: 74px; pointer-events: none; }
+.formule-art .petit { display: block; width: 100%; height: auto; }
+.formule.is-evo { padding-top: 22px; }
+.maxi-art { display: block; width: 130px; margin: 0 0 6px -8px; }
+.maxi-art .petit { display: block; width: 100%; height: auto; }
+.formule.is-evo .formule-tag { right: auto; left: 14px; }

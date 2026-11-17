@@ -191,7 +191,7 @@ const BOUTIQUE_STOCK = 'Pas de stock à tenir : on ne compte pas les quantités,
 // Une formule, en carte. compact : sans la liste complète.
 function formuleCarte(f, { compact = false } = {}) {
   return `<article class="formule c-${f.color}${f.priorite ? ' is-evo' : ''}">
-    ${f.optimisation ? `<span class="formule-tag">${icon('rocket')}Le plus complet</span>` : ''}
+    ${f.optimisation ? `<span class="formule-tag">${icon('rocket')}Le plus complet</span><span class="formule-art" aria-hidden="true">${petit('maxi')}</span>` : ''}
     <p class="formule-nom">${esc(f.name)}</p>
     <p class="formule-prix"><b>${euro(f.month)}</b><small>/mois</small></p>
     <ul class="plan-list">${(compact ? sansDelai(f.main).slice(0, 4) : sansDelai(f.main)).map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>
@@ -454,7 +454,7 @@ function formulesChoix({ name = 'b-forfait', court = false } = {}) {
       <input type="radio" name="${name}" value="${f.id}"${i === 0 ? ' checked' : ''} class="cf-input">
       <span class="cf-carte">
         ${f.optimisation ? '<span class="cf-tag">Le plus complet</span>' : ''}
-        <span class="cf-art" aria-hidden="true">${petit(f.optimisation ? 'gelee' : 'dino', { humeur: 'ravi' })}</span>
+        <span class="cf-art${f.optimisation ? ' cf-art-maxi' : ''}" aria-hidden="true">${petit(f.optimisation ? 'maxi' : 'dino', { humeur: 'ravi' })}</span>
         <span class="cf-corps">
           <strong class="cf-nom">${esc(f.name)}</strong>
           <span class="cf-prix"><b>${euro(f.month)}</b><small>/mois, sans engagement</small></span>
