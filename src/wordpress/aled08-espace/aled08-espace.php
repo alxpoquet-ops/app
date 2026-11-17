@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres Espace client
  * Description: L'espace client des Minis Monstres sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.6.2
+ * Version: 2.7.0
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.6.2');
+define('ALED08E_VERSION', '2.7.0');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
@@ -104,7 +104,7 @@ function aled08e_periode_debut($periode) {
 function aled08e_count_alex($uid) { return aled08e_count_month($uid, 'alex', aled08e_alex_periode($uid)); }
 /* « une intervention d'Alex par trimestre » (ou par mois) ; avec l'offre du 17 novembre 2026 : « modifications incluses » */
 function aled08e_alex_txt($uid, $f) {
-    if (!empty($f['illimite'])) return 'modifications incluses, en ligne sous ' . aled08e_modif_delai($f) . (empty($f['priorite']) ? ' au plus' : ' en moyenne');
+    if (!empty($f['illimite'])) return 'modifications incluses, en ligne en ' . aled08e_delai_txt($f);
     $q = (int) $f['quota'];
     return ($q === 1 ? 'une intervention' : $q . ' interventions') . ' d’Alex par ' . aled08e_alex_periode($uid);
 }
@@ -113,6 +113,8 @@ function aled08e_alex_txt($uid, $f) {
  * proposition et, sans refus de sa part sous 30 minutes, elle est mise en ligne (includes/lia.php). */
 function aled08e_modifs_illimitees($uid) { return !empty(aled08e_forfait(aled08e_meta($uid, 'forfait'))['illimite']); }
 function aled08e_modif_delai($f) { return (string) (($f['delai'] ?? '') ?: (aled08e_data()['delais']['reponse'] ?? '72 heures')); }
+/* Le délai en clair : « 12 à 24 heures en moyenne » (abonnement unique depuis le 17 novembre 2026) ou « 72 heures au plus » */
+function aled08e_delai_txt($f) { return aled08e_modif_delai($f) . ((!empty($f['delaiMoyen']) || !empty($f['priorite'])) ? ' en moyenne' : ' au plus'); }
 /* Formule Évolution : demandes traitées en priorité */
 function aled08e_priorite($uid) { return !empty(aled08e_forfait(aled08e_meta($uid, 'forfait'))['priorite']); }
 function aled08e_type($id) {
@@ -526,7 +528,7 @@ add_action('template_redirect', function () {
     }
 
     $u = wp_get_current_user();
-    $delai = $urgent ? (aled08e_data()['delais']['urgent'] ?? '24 heures') : ($illimite ? aled08e_modif_delai($f) . (aled08e_priorite($uid) ? ' en moyenne (Évolution, PRIORITAIRE)' : ' au plus') : aled08e_data()['delais']['reponse']);
+    $delai = $urgent ? (aled08e_data()['delais']['urgent'] ?? '24 heures') : ($illimite ? aled08e_delai_txt($f) . (aled08e_priorite($uid) ? ' (PRIORITAIRE)' : '') : aled08e_data()['delais']['reponse']);
     $quoi = $extra === 'article' ? 'Article à écrire et publier' : ($extra === 'point' ? 'Point de 30 minutes avec Alex à caler' : ($extra === 'packseo' ? 'Pack SEO commandé : 10 pages pour Google à préparer' : 'Nouvelle demande de modification'));
     $corps = $quoi . "\n\n"
         . 'Client   : ' . $u->display_name . ' (' . $u->user_email . ")\n"
@@ -1114,7 +1116,7 @@ function aled08e_dashboard() {
           <?php if ($illimite) : ?>
           <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. C’est compris dans votre formule, sans compter. Vous suivez l’avancement ici.</p>
           <ol class="req-etapes"><li><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Vous faites votre demande</span></li><li><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>Bricou prépare la modification et un aperçu</span></li><li><?php echo aled08e_icon('eye'); // phpcs:ignore ?><span>Vous regardez l’aperçu</span></li><li><?php echo aled08e_icon('user-check'); // phpcs:ignore ?><span>Je vérifie, puis c’est en ligne</span></li></ol>
-          <p class="app-note"><?php echo aled08e_icon('clock'); // phpcs:ignore ?>Délai : <?php echo esc_html(aled08e_modif_delai($f) . (aled08e_priorite($uid) ? ' en moyenne, en priorité' : ' au plus')); ?>. Si une demande demande plus de travail, je la fais moi-même, à la main.</p>
+          <p class="app-note"><?php echo aled08e_icon('clock'); // phpcs:ignore ?>Délai : <?php echo esc_html(aled08e_delai_txt($f)); ?>. Si une demande demande plus de travail, je la fais moi-même, à la main.</p>
           <?php else : ?>
           <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. Je m’en occupe et vous suivez l’avancement ici. <?php echo esc_html('Dans votre abonnement : des petites retouches avec les petits monstres et ' . aled08e_alex_txt($uid, $f) . ', réponse sous ' . $delai . '.'); ?></p>
           <?php if ($left <= 0 && !$famille) : ?><p class="esp-warn">Votre intervention d’Alex <?php echo esc_html($periodeDu); ?> est utilisée. Besoin d’une de plus ? C’est <?php echo esc_html($boostTxt); ?>, faite par Alex, ajoutée à votre prochaine facture.</p><?php endif; ?>

@@ -186,13 +186,13 @@ function clientPrix(c) {
   if (e.packs) parts.push(`${prixTxt(e.packsPrix)} pour ${e.packs === 1 ? 'un' : e.packs} ${esc(e.pack.name)}`);
   const detail = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} et ${parts[parts.length - 1]}` : parts[0];
   const f = e.formule;
-  const formuleTxt = f && (f.pageSeoSemaine || f.priorite) ? ` Les autres pages viennent de la formule ${esc(f.name)}, qui en ajoute une chaque semaine.` : '';
+  const formuleTxt = f && (f.pageSeoSemaine || f.priorite) ? ' Les autres pages viennent de l’abonnement, qui en ajoute une chaque semaine.' : '';
   return `<span class="client-prix"><span class="client-prix-t">Prix estimé au tarif actuel</span><b>${prixTxt(e.total)}</b><span class="client-prix-d">${detail}.${formuleTxt}</span></span>`;
 }
 // Le petit badge de la formule du client
 function clientFormule(c) {
   const f = forfaits.find((x) => x.id === c.forfait);
-  return f ? `<span class="client-formule c-${f.color}">${icon('repeat')}Formule ${esc(f.name)}, ${f.month} €/mois</span>` : '';
+  return f ? `<span class="client-formule c-${f.color}">${icon('repeat')}Abonnement ${esc(f.name)}</span>` : '';
 }
 function clientPages(c) {
   const e = estimeClient(c);
@@ -253,7 +253,7 @@ function forfaitsPage() {
   const f = C.faq(FAQ.forfaits || FAQ.tarifs || [], 'Vos questions sur les tarifs', 'faq-tarifs');
   const body = `${C.pageHero({
     section: 'forfaits',
-    h1: `Tarifs : votre site à ${euro(creation.prix)}, puis dès ${euro(ABO.month)} par mois`,
+    h1: `Tarifs : votre site à ${euro(creation.prix)}, puis ${euro(ABO.month)} par mois`,
     lead: `Un prix clair, affiché, sans devis. Vous créez votre site, vous ajoutez une option si vous voulez, puis vous choisissez votre formule. Rien d’autre à prévoir.`,
     crumbs,
   })}
@@ -312,7 +312,7 @@ ${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Composez votre site en de
     path: sections.forfaits.path,
     section: 'forfaits',
     title: `Tarifs : site à ${creation.prix} €, formules dès ${ABO.month} € | Les Minis Monstres`,
-    description: `Site Internet Professionnel à ${creation.prix} €, jusqu’à ${creation.pages} pages. Une boutique en option, deux formules (${forfaits.map((x) => `${x.month} €`).join(' et ')} par mois) ou le code fourni sans formule.`,
+    description: `Site Internet Professionnel à ${creation.prix} €, jusqu’à ${creation.pages} pages. Une boutique en option, un abonnement tout compris à ${ABO.month} € par mois, ou le code fourni sans abonnement.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -435,7 +435,7 @@ function seoPage() {
   const levels = [
     ['pink', 'mascotte', 'Avec votre site', `Compris dans les ${euro(creation.prix)}`, ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', `Les pages non utilisées, sur les ${creation.pages}, deviennent des pages SEO`]],
     ['butter', 'clin', pack.name, `${euro(pack.price.once)} une fois, depuis votre espace client`, [`${pack.pages} pages SEO supplémentaires`, 'Chacune répond à une recherche de vos clients', 'Plus de chances d’apparaître sur Google']],
-    ['lilac', 'pense', `Formule ${EVO.name}`, `${euro(EVO.month)} par mois`, ['Tout le forfait Tranquillité', 'Une page SEO supplémentaire chaque semaine', 'Votre site grandit tout seul, semaine après semaine']],
+    ['lilac', 'pense', 'Avec l’abonnement', `${euro(ABO.month)} par mois, tout compris`, ['Une page SEO supplémentaire chaque semaine', 'Préparée par Lumi, relue par moi', 'Votre site grandit tout seul, semaine après semaine']],
   ];
   const body = `${C.pageHero({
     section: 'seo',
@@ -480,7 +480,7 @@ Votre site peut garder **une seule page principale**, simple et claire, avec tou
     <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur téléphone, avec les balises et les données que Google sait lire.</p></div>
     <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand vos clients cherchent près de chez vous.</p></div>
     <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec mes automatisations et relus par moi.</p></div>
-    <div class="feat reveal">${icon('chart-line')}<h3>Une page de plus chaque semaine</h3><p>Avec la formule ${EVO.name}, Lumi prépare une nouvelle page SEO chaque semaine, et je la vérifie avant sa mise en ligne.</p></div>
+    <div class="feat reveal">${icon('chart-line')}<h3>Une page de plus chaque semaine</h3><p>Avec l’abonnement, Lumi prépare une nouvelle page SEO chaque semaine, et je la vérifie avant sa mise en ligne.</p></div>
   </div>
 </div></section>
 
@@ -528,7 +528,7 @@ ${C.ctaBand({ title: 'Être trouvé, ça commence ici', text: 'Créez votre site
     path: sections.seo.path,
     section: 'seo',
     title: 'Référencement SEO : être trouvé sur Google | Les Minis Monstres',
-    description: `Le SEO, c’est ce qui aide votre site à être trouvé sur Google. Bases comprises, pages SEO en plus avec le Pack SEO ou la formule ${C.EVO.name}.`,
+    description: `Le SEO, c’est ce qui aide votre site à être trouvé sur Google. Bases comprises, une page SEO en plus chaque semaine avec l’abonnement, et le Pack SEO si vous voulez.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -660,9 +660,9 @@ function commanderPage() {
         <p class="b-label">Qui s’occupe de la mise en ligne ?</p>
         ${C.gestionChoix({ name: 'gestion', court: true })}
         <div data-avec-formule>
-        <p class="b-label">Votre formule</p>
+        <p class="b-label">Votre abonnement</p>
         ${C.formulesChoix({ name: 'forfait', court: true })}
-        <p class="b-label">La formule est payée</p>
+        <p class="b-label">L’abonnement est payé</p>
         <div class="b-seg" role="radiogroup" aria-label="Période de la formule">
           <label><input type="radio" name="periode" value="mois" checked><span>Au mois</span></label>
           <label><input type="radio" name="periode" value="annee"><span>À l’année <em>${annuel.moisOfferts} mois offerts</em></span></label>
@@ -976,7 +976,7 @@ function monEspacePage() {
           <h2 class="app-h">Votre formule et vos factures</h2>
           <p class="app-sub">Votre formule</p>
           <div class="app-plans">${forfaits.map((f, i) => `<label class="app-plan c-${f.color}"><input type="radio" name="app-plan" value="${f.id}" data-month="${f.month}" data-name="${esc(f.name)}" data-jetons="0"${i === 0 ? ' checked' : ''}><span class="app-plan-card"><span class="app-plan-art">${monster(i ? 'ravie' : 'mascotte')}</span><strong>${esc(f.name)}</strong><small>${euro(f.month)}/mois</small><small>${esc(f.modifs)}</small></span></label>`).join('')}</div>
-          <p class="app-note">Vous changez de formule quand vous voulez. Le changement compte à partir du mois suivant.</p>
+          <p class="app-note">${forfaits.length > 1 ? 'Vous changez de formule quand vous voulez. Le changement compte à partir du mois suivant.' : 'Un seul abonnement, qui comprend tout. Sans engagement : vous l’arrêtez quand vous voulez.'}</p>
           <p class="app-total"><span>Total chaque mois</span><b data-app-total>${euro(total)}</b></p>
           <p class="app-sub">Factures</p>
           <ul class="invoices">
@@ -1271,7 +1271,7 @@ function confiancePage() {
 <section class="section"><div class="container">
   ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages en ligne sur les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque page utile est une porte d’entrée de plus depuis Google.</span></p>` : ''}
   ${clientCards()}
-  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille, Pack SEO compris. Ces clients ont la formule ${esc(C.EVO.name)}, qui ajoute une page pour Google chaque semaine. Les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
+  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille, Pack SEO compris. Ces clients ont l’abonnement, qui ajoute une page pour Google chaque semaine. Les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
   ${enCours.length ? `<p class="center muted">En ce moment, je prépare aussi ${enCours.map((c) => esc(c.nom)).join(' et ')}.</p>` : ''}
 </div></section>
 ${METIERS.length ? `<section class="section section-soft"><div class="container">
@@ -1595,19 +1595,19 @@ function docPage() {
 <section class="section doc-sec" id="prix"><div class="container">
   <div class="container-narrow">
     <p class="doc-kicker">5. Le prix</p>
-    <h2>Un site, une option, deux formules</h2>
-    <p>Il n’y a qu’une offre, la même pour tous les clients. Vous payez votre site une fois. Ensuite, soit on s’occupe de tout avec une formule, qui démarre à la réception du site et s’arrête quand vous voulez, soit vous gérez vous-même et je vous remets le code de votre site.</p>
+    <h2>Un site, une option, un abonnement</h2>
+    <p>Il n’y a qu’une offre, la même pour tous les clients. Vous payez votre site une fois. Ensuite, soit on s’occupe de tout avec l’abonnement, qui démarre à la réception du site et s’arrête quand vous voulez, soit vous gérez vous-même et je vous remets le code de votre site.</p>
   </div>
   <div class="doc-types">
-    <div class="doc-type reveal"><strong>Le site</strong><b>${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une fois</span><p>Jusqu’à ${creation.pages} pages. Avec une formule, nom de domaine et hébergement offerts la première année, sauf avec la boutique.</p></div>
+    <div class="doc-type reveal"><strong>Le site</strong><b>${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une fois</span><p>Jusqu’à ${creation.pages} pages. Avec l’abonnement, nom de domaine et hébergement offerts la première année, sauf avec la boutique.</p></div>
     <div class="doc-type reveal"><strong>L’option</strong><b>+ ${euro(creation.boutique)}</b><span>${icon('plus')}Une fois, si vous voulez</span><p>Boutique en ligne : vendre sur votre site.${C.PACK_SEO ? ` Plus tard, depuis l’espace client : ${esc(C.PACK_SEO.name)}, ${C.PACK_SEO.pages} pages SEO en plus pour ${euro(C.PACK_SEO.price.once)}.` : ''}</p></div>
-    <div class="doc-type reveal"><strong>La formule</strong><b>${forfaits.map((x) => euro(x.month)).join(' ou ')}</b><span>${icon('repeat')}Par mois, sans engagement</span><p>${forfaits.map((x) => esc(x.name)).join(' ou ')}. À l’année : ${annuel.moisOfferts} mois offerts.</p></div>
+    <div class="doc-type reveal"><strong>L’abonnement</strong><b>${euro(ABO.month)}</b><span>${icon('repeat')}Par mois, sans engagement</span><p>Tout compris, avec une page SEO en plus chaque semaine. À l’année : ${annuel.moisOfferts} mois offerts.</p></div>
   </div>
   <div class="container-narrow">
     ${forfaits.map((x) => `<h3>Ce que comprend ${esc(x.name)}</h3><ul class="list-check">${x.details.map((d) => `<li>${inline(d)}</li>`).join('')}</ul>`).join('')}
   </div>
   <div class="doc-cards3">
-    <div class="doc-mini reveal"><strong>${icon('wrench')}Modifications incluses</strong><p>Dans les deux formules, sans les compter. En ligne sous ${ABO.delai} au plus, ou ${C.EVO.delai} en moyenne avec ${esc(C.EVO.name)}.</p></div>
+    <div class="doc-mini reveal"><strong>${icon('wrench')}Modifications incluses</strong><p>Comprises dans l’abonnement, sans les compter. En ligne en ${ABO.delai} en moyenne.</p></div>
     <div class="doc-mini reveal"><strong>${icon('search-check')}Pages pour Google</strong><p>Les pages que vous n’utilisez pas sur les ${creation.pages} deviennent des pages SEO, pour être trouvé plus souvent.</p></div>
     <div class="doc-mini reveal"><strong>${icon('ticket')}Code promo ou parrainage</strong><p>Une seule case, en bas de la page. Un code promo réduit le prix de la création. Un code de parrainage offre ${fidelite.parrainageMois} mois de formule à chacun.</p></div>
   </div>
@@ -1742,7 +1742,7 @@ ${C.ctaBand({ title: 'Une question qui n’est pas ici ?', text: 'Écrivez-nous 
     section: 'documentation',
     title: 'Documentation : tout comprendre en images | Les Minis Monstres',
     noindex: true, // V2 : la documentation est pour les clients
-    description: 'Tout comprendre en images : la création de votre site, le prix, les deux formules, les modifications, l’espace client, le tableau de bord et la boutique.',
+    description: 'Tout comprendre en images : la création de votre site, le prix, l’abonnement, les modifications, l’espace client, le tableau de bord et la boutique.',
     crumbs,
     body,
     priority: 0.7,

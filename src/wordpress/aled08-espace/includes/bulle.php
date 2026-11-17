@@ -116,7 +116,7 @@ function aled08e_bulle_contexte($uid) {
     if ($pause) $offre[] = 'Les messages dans cette bulle sont compris, jusqu’à ' . (int) aled08e_bulle_cfg()['parJour'] . ' par jour.';
     else $offre[] = '100 d’énergie = 1 €. Un message dans cette bulle : ' . aled08e_jl_txt(aled08e_bulle_prix()) . '.';
     if ($pause && $retMax) $offre[] = 'Une petite retouche du site par Bricou : comprise, jusqu’à ' . $retMax . ' par mois. Il montre toujours un aperçu de la page : rien ne change sans l’accord du client. Au-delà, ou pour une grande demande, c’est Alex.';
-    elseif ($pause) $offre[] = 'Les modifications du site sont incluses, sans limite. Délai : ' . aled08e_modif_delai($f) . (aled08e_priorite($uid) ? ' en moyenne, en priorité.' : ' au plus.') . ' Une refonte complète ou une fonction nouvelle se fait sur devis.';
+    elseif ($pause) $offre[] = 'Les modifications du site sont incluses, sans limite. Délai : ' . aled08e_delai_txt($f) . '.' . ' Une refonte complète ou une fonction nouvelle se fait sur devis.';
     else $offre[] = 'Une modification du site par les petits monstres : ' . (int) $jl['modif']['base'] . ' d’énergie, plus 1 par tranche de ' . (int) $jl['modif']['mots'] . ' mots écrits et ' . (int) $jl['modif']['image'] . ' par photo. Ils montrent toujours un aperçu de la page : rien ne change sans l’accord du client.';
     $ald = [];
     foreach (aled08e_a_la_demande() as $x) $ald[] = $x['name'] . ' : ' . aled08e_euro_txt($x['prix']);
@@ -124,6 +124,7 @@ function aled08e_bulle_contexte($uid) {
     $fo = [];
     foreach ((array) $D['forfaits'] as $x) $fo[] = $x['name'] . ' ' . aled08e_euro_txt($x['month']) . ' par mois (' . implode(', ', (array) ($x['main'] ?? [])) . ')';
     if (count($fo) > 1) $offre[] = 'Les deux formules, à changer quand on veut dans Mon compte : ' . implode(' ; ', $fo) . '.';
+    elseif (count($fo) === 1) $offre[] = 'Un seul abonnement, sans engagement, qui comprend tout : ' . $fo[0] . '.';
     if (!empty($D['creationSeule'])) $offre[] = 'Création seule, pour qui a déjà son nom de domaine et son hébergement : le client paie seulement le site (' . aled08e_euro_txt($D['creation']['prix'] ?? 500) . '), sans formule, et Alex lui remet le code du site, prêt à installer. Maintenance et modifications non comprises.';
     $offre[] = 'Une modification : le client fait sa demande, Bricou prépare la modification et un aperçu, le client le regarde, puis Alex la vérifie avant la mise en ligne.';
     $rech = [];

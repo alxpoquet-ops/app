@@ -218,10 +218,10 @@ ${liaFlot()}`;
 function liaFlot() {
   const eur = (n) => `${n} €`;
   const questions = [
-    ['C’est combien ?', `Votre site professionnel coûte ${eur(creation.prix)}, jusqu’à ${creation.pages} pages. Ensuite, une formule à ${forfaits.map((f) => eur(f.month)).join(' ou ')} par mois s’occupe de tout : hébergement, sécurité, modifications. Vous avez déjà votre hébergement ? La création seule vous donne le code du site, sans formule.`, sections.forfaits.path, 'Voir les tarifs'],
+    ['C’est combien ?', `Votre site professionnel coûte ${eur(creation.prix)}, jusqu’à ${creation.pages} pages. Ensuite, un abonnement à ${eur(forfaits[0].month)} par mois s’occupe de tout : hébergement, sécurité, modifications, et une page pour Google chaque semaine. Vous avez déjà votre hébergement ? La création seule vous donne le code du site, sans abonnement.`, sections.forfaits.path, 'Voir les tarifs'],
     ['Comment ça marche ?', 'Vous composez votre site en deux minutes, Alex le prépare avec sa petite bande, et vous validez l’aperçu avant la mise en ligne. Vous voyez le prix avant de commander.', sections.creer.path, 'Créer mon site'],
     ['Qui fait mon site ?', 'Alex ! C’est lui qui conçoit votre site et qui vous répond. Moi, je suis la secrétaire de sa petite bande : chaque monstre a son métier, et Alex vérifie tout.', sections.equipe.path, 'Rencontrer la bande'],
-    ['Et pour changer mon site après ?', 'Vous écrivez votre demande dans votre espace client. Bricou prépare la modification et un aperçu, Alex la vérifie, et c’est en ligne. C’est compris dans votre formule.', sections.accompagnement.path, 'L’accompagnement'],
+    ['Et pour changer mon site après ?', 'Vous écrivez votre demande dans votre espace client. Bricou prépare la modification et un aperçu, Alex la vérifie, et c’est en ligne. C’est compris dans votre abonnement.', sections.accompagnement.path, 'L’accompagnement'],
   ];
   const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', enService.outils ? 'Comment avoir plus d’avis Google ?' : 'Comment se passe une modification ?', 'Que comprend mon abonnement ?'];
   return `<div class="lia-flot" data-lia-flot hidden>

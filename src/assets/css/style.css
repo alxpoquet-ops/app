@@ -2254,3 +2254,6 @@ a.client-card:hover { transform: translateY(-3px); }
 .client-pages-porte { display: block; }
 .client-pages-porte .client-i { vertical-align: -6px; margin-left: 6px; }
 a.client-url { text-decoration: none; }
+.formules.is-solo { grid-template-columns: 1fr; }
+.cf-abo .cf-corps { padding-right: 120px; }
+@media (max-width: 720px) { .cf-abo .cf-corps { padding-right: 0; } }

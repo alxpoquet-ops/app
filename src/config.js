@@ -174,7 +174,7 @@ const energieMois = 250;
 const enService = { outils: false, energie: false };
 const limites = { bulleJour: 40 }; // messages par jour dans la bulle de Cerise (les modifications sont sans limite)
 const enPause = !enService.energie;
-// Deux formules au mois, sans engagement. id 'base' = Tranquillité (les clients déjà abonnés y restent), 'evolution' = Évolution.
+// Un seul abonnement au mois, sans engagement : id 'base' = Tranquillité, qui comprend tout (dont une page SEO par semaine).
 // illimite : modifications incluses, sans quota (quota et periode ne servent plus que pour les anciens comptes de l'extension).
 // delai : délai des modifications. priorite : passe avant les autres. pageSeoSemaine : une page pour Google en plus chaque semaine.
 const forfaits = [
@@ -186,40 +186,22 @@ const forfaits = [
     quota: 1,
     periode: 'trimestre',
     illimite: true,
+    pageSeoSemaine: true,
+    delaiMoyen: true, // « 12 à 24 heures en moyenne »
     jetons: energieMois, // énergie (en pause)
     partage: false,
-    delai: '72 heures',
-    bulle: 'Votre site entretenu et à jour, sans y penser',
-    modifs: 'modifications incluses',
-    conseil: false,
-    tagline: 'Sans engagement',
-    pitch: 'Votre site reste en ligne, protégé et à jour. Vous demandez une modification, on s’en occupe.',
-    main: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Surveillance', 'Maintenance', 'Modifications incluses'],
-    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site, à votre nom', 'Sauvegardes : une copie de sécurité de votre site', 'Sécurité : le petit cadenas HTTPS et les protections à jour', 'Surveillance : on vérifie jour et nuit que votre site répond', 'Maintenance : les vérifications techniques qui gardent votre site en forme', 'Modifications incluses, en ligne sous 72 heures au plus'],
-    features: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Surveillance', 'Maintenance', 'Modifications incluses'],
-  },
-  {
-    id: 'evolution',
-    name: 'Évolution',
-    color: 'lilac',
-    month: 20,
-    quota: 1,
-    periode: 'trimestre',
-    illimite: true,
-    priorite: true,
-    pageSeoSemaine: true,
-    jetons: energieMois,
-    partage: false,
     delai: '12 à 24 heures',
-    bulle: 'Votre site qui grandit chaque semaine',
-    modifs: 'modifications incluses et prioritaires, et une page SEO chaque semaine',
+    bulle: 'Votre site entretenu, à jour, et qui grandit chaque semaine',
+    modifs: 'modifications incluses et une page SEO chaque semaine',
     conseil: false,
     tagline: 'Sans engagement',
-    pitch: 'Tout Tranquillité, avec vos modifications en priorité et une nouvelle page pour Google chaque semaine.',
-    main: ['Tout le forfait Tranquillité', 'Modifications incluses', 'Priorité de traitement', 'Délai moyen entre 12 h et 24 h', 'Une page SEO supplémentaire chaque semaine'],
-    details: ['Tout le forfait Tranquillité', 'Modifications incluses', 'Priorité de traitement : vos demandes passent en premier', 'Délai moyen entre 12 h et 24 h', 'Une page SEO supplémentaire chaque semaine, pour être trouvé sur plus de recherches Google'],
-    features: ['Tout le forfait Tranquillité', 'Modifications incluses', 'Priorité de traitement', 'Délai moyen entre 12 h et 24 h', 'Une page SEO supplémentaire chaque semaine'],
+    pitch: 'Votre site reste en ligne, protégé et à jour. Vous demandez une modification, on s’en occupe, et une nouvelle page pour Google s’ajoute chaque semaine.',
+    main: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Surveillance', 'Maintenance', 'Modifications incluses, en 12 à 24 h en moyenne', 'Une page SEO en plus chaque semaine'],
+    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site, à votre nom', 'Sauvegardes : une copie de sécurité de votre site', 'Sécurité : le petit cadenas HTTPS et les protections à jour', 'Surveillance : on vérifie jour et nuit que votre site répond', 'Maintenance : les vérifications techniques qui gardent votre site en forme', 'Modifications incluses, en ligne en 12 à 24 heures en moyenne', 'Une page SEO en plus chaque semaine, pour être trouvé sur plus de recherches Google'],
+    features: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Surveillance', 'Maintenance', 'Modifications incluses', 'Une page SEO chaque semaine'],
   },
+  // La formule Évolution (20 €/mois) est retirée le 17 novembre 2026 : un seul abonnement, qui comprend tout.
+  // Un ancien client « evolution » est lu comme cet abonnement (l'extension retombe sur le premier forfait).
 ];
 // Création seule : pour un client qui a déjà son nom de domaine et son hébergement. Il paie seulement la création,
 // sans formule au mois, et reçoit le code de son site (fichiers et sauvegarde), prêt à installer chez son hébergeur.
@@ -331,8 +313,8 @@ const boost = { prix: aLaDemande[0].prix };
 // seo : débuts de chemin des pages faites pour Google (conseils, lexique, pages par ville…). Elles sont comprises :
 // elles ne comptent pas comme des pages en plus dans l'estimation (scripts/compter-pages.js les compte).
 const clients = [
-  { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', sitemap: 'https://www.floreetchenilles.fr/sitemap_index.xml', forfait: 'evolution', packsSeo: 2, type: 'boutique', optionsCreation: [], seo: ['/fleurs/', '/occasions/', '/conseils/', '/lexique/', '/guide/', '/fleurs-eternelles-ardennes/', '/livraison-fleurs-signy-l-abbaye/', '/artisan-fleuriste-signy-l-abbaye/'], genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Des fleurs éternelles en fil chenille, faites main à Signy-l’Abbaye, dans les Ardennes. La boutique ouvre très bientôt.' },
-  { nom: 'Dodedo', domaine: 'dodedo.fr', url: 'https://dodedo.fr/', sitemap: 'https://www.dodedo.fr/sitemap.xml', forfait: 'evolution', packsSeo: 1, type: 'une-page', optionsCreation: [], seo: ['/comprendre/', '/conseils/'], genre: 'Site vitrine', icon: 'hand-heart', color: 'lilac', desc: 'Le site de Dominique Schneider, magnétiseur et barreur de feu. Une page d’accueil claire, entourée de pages de conseils pour être trouvé sur Google.' },
+  { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', sitemap: 'https://www.floreetchenilles.fr/sitemap_index.xml', forfait: 'base', packsSeo: 2, type: 'boutique', optionsCreation: [], seo: ['/fleurs/', '/occasions/', '/conseils/', '/lexique/', '/guide/', '/fleurs-eternelles-ardennes/', '/livraison-fleurs-signy-l-abbaye/', '/artisan-fleuriste-signy-l-abbaye/'], genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Des fleurs éternelles en fil chenille, faites main à Signy-l’Abbaye, dans les Ardennes. La boutique ouvre très bientôt.' },
+  { nom: 'Dodedo', domaine: 'dodedo.fr', url: 'https://dodedo.fr/', sitemap: 'https://www.dodedo.fr/sitemap.xml', forfait: 'base', packsSeo: 1, type: 'une-page', optionsCreation: [], seo: ['/comprendre/', '/conseils/'], genre: 'Site vitrine', icon: 'hand-heart', color: 'lilac', desc: 'Le site de Dominique Schneider, magnétiseur et barreur de feu. Une page d’accueil claire, entourée de pages de conseils pour être trouvé sur Google.' },
   { nom: 'Les Minis Monstres', domaine: 'les-minis-monstres.com', url: '/', sitemap: 'https://www.aled08.fr/wp-sitemap.xml' /* à passer sur https://www.les-minis-monstres.com/wp-sitemap.xml au changement de domaine */, genre: 'Notre propre site', icon: 'sparkles', color: 'lilac', desc: 'Notre site à nous : on se fait confiance, alors on se met dedans aussi. En français et en anglais.' },
   { nom: 'Les Notes du Temps', domaine: 'lesnotesdutemps.fr', url: 'https://www.lesnotesdutemps.fr/', sitemap: 'https://www.lesnotesdutemps.fr/sitemap.xml', forfait: 'base', genre: 'Site une page', icon: 'music', color: 'peach', enCreation: true, desc: '' },
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: '' },
