@@ -964,17 +964,7 @@ function aled08e_dashboard() {
     if ($cmd && $cmd['statut'] !== 'en_ligne') { $siteEtat = $cmd['statut'] === 'attente_paiement' ? 'En attente de paiement' : ($cmd['statut'] === 'annulee' ? 'Commande annulée' : (in_array($cmd['statut'], aled08e_prov_etapes_auto(), true) ? 'Mise en ligne en cours' : 'En création')); $siteOk = false; }
 
     $reqs = get_posts(['post_type' => ALED08E_CPT, 'author' => $uid, 'post_status' => ['private', 'publish'], 'numberposts' => 30, 'orderby' => 'date', 'order' => 'DESC']);
-    $st = aled08e_statuts();
-    $reqItem = function ($p, $full = true) use ($st) {
-        $s = get_post_meta($p->ID, '_aled08_statut', true) ?: 'recue';
-        $rep = get_post_meta($p->ID, '_aled08_reponse', true);
-        $thumb = $full && has_post_thumbnail($p) ? get_the_post_thumbnail($p, 'thumbnail', ['class' => 'req-thumb', 'alt' => '']) : '';
-        $text = $full ? $p->post_content : $p->post_title;
-        return '<li>' . $thumb . '<span><strong>' . nl2br(esc_html(mb_strlen($text) > 220 ? mb_substr($text, 0, 217) . '…' : $text)) . '</strong><small>' . (get_post_meta($p->ID, '_aled08_par', true) === 'lia' ? 'par Bricou, ' : 'par Alex, ') . 'envoyée le ' . esc_html(aled08e_date($p->post_date)) . '</small>'
-            . ($full && $rep ? (strpos($rep, 'Bricou : ') === 0
-                ? '<span class="req-reply req-bricou">' . aled08e_monster('bricou') . '<span><b>Bricou</b>' . nl2br(esc_html(substr($rep, strlen('Bricou : ')))) . '</span></span>'
-                : '<span class="req-reply">' . nl2br(esc_html($rep)) . '</span>') : '') . ($full ? aled08e_lia_bloc_confirmation($p) : '') . ($full ? aled08e_annulation_html($p) : '') . '</span><em class="st ' . esc_attr($st[$s][1]) . '">' . esc_html($st[$s][0]) . '</em></li>';
-    };
+    $reqItem = function ($p, $full = true) { return aled08e_req_item($p, $full); };
 
     $flash = '';
     $m = isset($_GET['m']) ? sanitize_key(wp_unslash($_GET['m'])) : '';
@@ -1128,6 +1118,7 @@ function aled08e_dashboard() {
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
           <h2 class="app-h">Mes demandes</h2>
           <?php echo $flash; // phpcs:ignore ?>
+          <?php echo aled08e_suivi_html($uid); // phpcs:ignore ?>
           <?php if (aled08e_sans_formule($uid)) : ?><p class="esp-warn">Votre site n’a pas d’abonnement : les modifications ne sont pas comprises. Vous pouvez quand même commander une page SEO supplémentaire ci-dessous. Envie d’une formule ? Écrivez-moi, je m’en occupe.</p>
           <?php else : ?>
           <?php if ($illimite) : ?>
@@ -1161,12 +1152,6 @@ function aled08e_dashboard() {
           </form>
           <?php endif; ?>
           <?php echo aled08e_a_la_demande_html($uid, $famille); // phpcs:ignore ?>
-          <p class="app-sub">Suivi</p>
-          <?php if ($reqs) : ?>
-          <ul class="reqs"><?php foreach ($reqs as $p) echo $reqItem($p); // phpcs:ignore ?></ul>
-          <?php else : ?>
-          <p class="esp-empty">Vos demandes apparaîtront ici, avec leur avancement : reçue, en cours, faite.</p>
-          <?php endif; ?>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-tableau" aria-labelledby="tab-tableau" hidden>
@@ -1285,6 +1270,79 @@ function aled08e_extra_facturer($pid, $uid, $id) {
     return true;
 }
 /* Le bloc « À la demande » de l'onglet Mes demandes : commander un article ou un point avec Alex, payés une fois */
+/* Une demande dans la liste de suivi (la même mise en page pour la page et pour le rafraîchissement automatique) */
+function aled08e_req_item($p, $full = true) {
+    $st = aled08e_statuts();
+    $s = get_post_meta($p->ID, '_aled08_statut', true) ?: 'recue';
+    $rep = get_post_meta($p->ID, '_aled08_reponse', true);
+    $thumb = $full && has_post_thumbnail($p) ? get_the_post_thumbnail($p, 'thumbnail', ['class' => 'req-thumb', 'alt' => '']) : '';
+    $text = $full ? $p->post_content : $p->post_title;
+    return '<li>' . $thumb . '<span><strong>' . nl2br(esc_html(mb_strlen($text) > 220 ? mb_substr($text, 0, 217) . '…' : $text)) . '</strong><small>' . (get_post_meta($p->ID, '_aled08_par', true) === 'lia' ? 'par Bricou, ' : 'par Alex, ') . 'envoyée le ' . esc_html(aled08e_date($p->post_date)) . '</small>'
+        . ($full && $rep ? (strpos($rep, 'Bricou : ') === 0
+            ? '<span class="req-reply req-bricou">' . aled08e_monster('bricou') . '<span><b>Bricou</b>' . nl2br(esc_html(substr($rep, strlen('Bricou : ')))) . '</span></span>'
+            : '<span class="req-reply">' . nl2br(esc_html($rep)) . '</span>') : '') . ($full ? aled08e_lia_bloc_confirmation($p) : '') . ($full ? aled08e_annulation_html($p) : '') . '</span><em class="st ' . esc_attr($st[$s][1]) . '">' . esc_html($st[$s][0]) . '</em></li>';
+}
+/* Le contenu du suivi : la liste des demandes (30 dernières, la plus récente en haut) */
+function aled08e_suivi_liste_html($uid) {
+    $reqs = get_posts(['post_type' => ALED08E_CPT, 'author' => $uid, 'post_status' => ['private', 'publish'], 'numberposts' => 30, 'orderby' => 'date', 'order' => 'DESC']);
+    if (!$reqs) return '<p class="esp-empty">Vos demandes apparaîtront ici, avec leur avancement : reçue, en cours, faite.</p>';
+    $h = '<ul class="reqs">';
+    foreach ($reqs as $p) $h .= aled08e_req_item($p);
+    return $h . '</ul>';
+}
+/* Y a-t-il une demande qui avance (Bricou ou Alex y travaille) ? Alors on rafraîchit plus souvent. */
+function aled08e_suivi_actif($uid) {
+    return (bool) get_posts(['post_type' => ALED08E_CPT, 'author' => $uid, 'post_status' => ['private', 'publish'], 'numberposts' => 1, 'fields' => 'ids', 'meta_query' => [['key' => '_aled08_statut', 'value' => ['recue', 'encours'], 'compare' => 'IN']]]);
+}
+add_action('wp_ajax_aled08e_suivi', function () {
+    if (!check_ajax_referer('aled08e_suivi', '_n', false)) wp_send_json_error(['etat' => 'session'], 403);
+    $uid = get_current_user_id();
+    if (!$uid) wp_send_json_error(['etat' => 'session'], 403);
+    $h = aled08e_suivi_liste_html($uid);
+    wp_send_json_success(['html' => $h, 'empreinte' => md5($h), 'actif' => aled08e_suivi_actif($uid)]);
+});
+/* Le bloc « Suivi » en haut de « Mes demandes », avec son rafraîchissement automatique (sans recharger la page) */
+function aled08e_suivi_html($uid) {
+    $nonce = wp_create_nonce('aled08e_suivi');
+    $liste = aled08e_suivi_liste_html($uid);
+    $h = '<section class="req-suivi" data-emp="' . md5($liste) . '" data-suivi data-ajax="' . esc_url(admin_url('admin-ajax.php')) . '" data-nonce="' . esc_attr($nonce) . '" data-actif="' . (aled08e_suivi_actif($uid) ? '1' : '0') . '" aria-live="polite">'
+        . '<p class="app-sub">Suivi de mes demandes<small class="req-live" data-suivi-live hidden>à jour</small></p><div data-suivi-liste>' . $liste . '</div></section>';
+    $h .= <<<'JS'
+<script>
+(function(){
+  var box=document.querySelector('[data-suivi]'); if(!box||!window.fetch) return;
+  var liste=box.querySelector('[data-suivi-liste]'), badge=box.querySelector('[data-suivi-live]');
+  var actif=box.getAttribute('data-actif')==='1', busy=false, timer=null; box._emp=box.getAttribute('data-emp');
+  function visible(){ var p=document.getElementById('t-demandes'); return !document.hidden && p && !p.hidden; }
+  function occupe(){ // on ne touche à rien si le client écrit ou ouvre un formulaire dans la liste
+    var a=document.activeElement; if(a&&liste.contains(a)&&/^(TEXTAREA|INPUT|SELECT|BUTTON|SUMMARY)$/.test(a.tagName)) return true;
+    return !!liste.querySelector('details[open]');
+  }
+  function planifier(){ clearTimeout(timer); timer=setTimeout(tour, actif?6000:25000); }
+  function tour(){
+    if(busy||!visible()||occupe()){ planifier(); return; }
+    busy=true;
+    var fd=new FormData(); fd.append('action','aled08e_suivi'); fd.append('_n',box.getAttribute('data-nonce'));
+    fetch(box.getAttribute('data-ajax'),{method:'POST',credentials:'same-origin',body:fd}).then(function(r){return r.json();}).then(function(j){
+      busy=false;
+      if(j&&j.success){
+        actif=!!j.data.actif;
+        if(j.data.empreinte!==box._emp && !occupe()){
+          box._emp=j.data.empreinte;
+          liste.innerHTML=j.data.html; if(badge){ badge.hidden=false; badge.textContent='mis à jour'; setTimeout(function(){ badge.hidden=true; },3000); }
+        }
+      }
+      planifier();
+    }).catch(function(){ busy=false; planifier(); });
+  }
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden) { clearTimeout(timer); timer=setTimeout(tour,300); } });
+  planifier();
+})();
+</script>
+JS;
+    return $h;
+}
+
 function aled08e_a_la_demande_html($uid, $famille) {
     $D = aled08e_data();
     $sans = aled08e_sans_formule($uid);
