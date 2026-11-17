@@ -629,3 +629,16 @@ a.app-card { text-decoration: none; color: inherit; }
 .gauge-visuel b { box-shadow: 0 0 0 3px rgba(214, 69, 122, .35); }
 .gauge-visuel:hover span, .gauge-visuel:focus-visible span { text-decoration: underline; }
 .gauge-a a { font-weight: 800; color: var(--pink-dd, #d6457a); }
+
+/* « Visuel à valider » : une tache d'encre qui pulse pour dire « cliquez ici » */
+.gauge-etapes li > a.gauge-visuel { position: relative; width: 100%; align-items: center; text-align: center; }
+.gauge-visuel .gauge-tache { position: absolute; top: -5px; left: 50%; width: 38px; height: 38px; margin-left: -19px; z-index: 0; text-decoration: none;
+  background: radial-gradient(circle at 35% 30%, #ff9cc2, var(--pink-dd, #d6457a) 70%); opacity: .45; border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%; animation: tache 3.2s ease-in-out infinite; }
+.gauge-visuel b { z-index: 1; box-shadow: none; background: var(--pink-dd, #d6457a); color: #fff; }
+.gauge-clic { font-style: normal; font-size: .66rem; font-weight: 800; color: var(--pink-dd, #d6457a); text-transform: uppercase; letter-spacing: .04em; }
+@keyframes tache {
+  0%, 100% { border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%; transform: scale(1) rotate(0deg); }
+  33% { border-radius: 42% 58% 38% 62% / 55% 40% 60% 45%; transform: scale(1.2) rotate(40deg); }
+  66% { border-radius: 55% 45% 62% 38% / 40% 58% 42% 60%; transform: scale(1.08) rotate(-30deg); }
+}
+@media (prefers-reduced-motion: reduce) { .gauge-visuel .gauge-tache { animation: none; } }

@@ -302,7 +302,13 @@ function alexlia_conn_preparer($args) {
         if (!isset($ok[$nom])) return new WP_Error('alexlia_reglage', 'Réglage non autorisé.', ['status' => 403]);
         $b['reglages'][$nom] = sanitize_text_field((string) ($args['valeur'] ?? ''));
         alexlia_conn_brouillon_set($j, $b);
-        return ['ok' => true, 'prepare' => true, 'avant' => get_option($ok[$nom]), 'apercu' => alexlia_conn_apercu_url($j, home_url('/'))];
+        $apercu = alexlia_conn_apercu_url($j, home_url('/'));
+        // le nom s'affiche-t-il vraiment sur le site ? Certains thèmes l'écrivent en dur : le réglage ne change alors rien à l'écran.
+        $visible = alexlia_conn_texte_visible($apercu, $b['reglages'][$nom]);
+        $b['alertes'][$nom] = $visible === false ? 'Ce texte n’apparaît pas sur la page : le thème du site l’écrit lui-même, ce réglage ne le change pas à l’écran.' : '';
+        alexlia_conn_brouillon_set($j, $b);
+        return ['ok' => true, 'prepare' => true, 'avant' => get_option($ok[$nom]), 'apercu' => $apercu, 'visible_sur_le_site' => $visible,
+            'note' => $visible === false ? 'ATTENTION : avec ce réglage, le nouveau texte ne s’affiche PAS sur la page d’accueil (le thème l’écrit en dur). Le réglage ne change que l’onglet du navigateur et le référencement.' : ''];
     }
     return new WP_Error('alexlia_args', 'Opération inconnue.', ['status' => 400]);
 }
@@ -341,6 +347,17 @@ function alexlia_conn_abandonner($args) {
     $j = (string) ($args['jeton'] ?? '');
     if (alexlia_conn_jeton_ok($j)) delete_transient('alexlia_ap_' . $j);
     return ['ok' => true];
+}
+
+/* Le texte apparaît-il dans la page affichée (hors balises d'en-tête et hors encart d'aperçu) ? null si on n'a pas pu regarder */
+function alexlia_conn_texte_visible($url, $texte) {
+    $r = wp_remote_get($url, ['timeout' => 12, 'redirection' => 3, 'headers' => ['Cache-Control' => 'no-cache']]);
+    if (is_wp_error($r) || (int) wp_remote_retrieve_response_code($r) !== 200) return null;
+    $h = (string) wp_remote_retrieve_body($r);
+    $h = preg_replace('/<!--alexlia-ap-->.*?<!--\/alexlia-ap-->/s', '', $h);
+    $h = preg_replace('/<head\b.*?<\/head>|<script\b.*?<\/script>|<style\b.*?<\/style>/is', '', $h);
+    $t = html_entity_decode(trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags($h))), ENT_QUOTES, 'UTF-8');
+    return mb_stripos($t, html_entity_decode((string) $texte, ENT_QUOTES, 'UTF-8')) !== false;
 }
 
 /* Affichage de l'aperçu sur le vrai site (rien n'est enregistré, rien n'est en cache, non indexé) */
@@ -398,7 +415,8 @@ add_action('init', function () {
         if ($last) { $q->set('p', $last[0]); $q->set('post_type', 'post'); $q->is_home = false; $q->is_single = true; $q->is_singular = true; $q->is_front_page = false; }
     });
     // un petit encart en bas de l'écran (il ne cache pas le site) : ce n'est qu'un aperçu, et il dit ce qui change
-    add_action('wp_footer', function () use ($changes) {
+    $alertes = array_filter((array) ($b['alertes'] ?? []));
+    add_action('wp_footer', function () use ($changes, $alertes) {
         $li = '';
         foreach ($changes as $c) {
             $cut = function ($t) { $t = trim((string) $t); return mb_strlen($t) > 140 ? mb_substr($t, 0, 137) . '…' : $t; };
@@ -406,10 +424,11 @@ add_action('init', function () {
                 . ($c['avant'] !== '' ? '<del style="opacity:.7">' . esc_html($cut($c['avant'])) . '</del> → ' : '')
                 . '<ins style="text-decoration:none;background:#ffe27a;color:#2E2A47;padding:0 4px;border-radius:4px">' . esc_html($cut($c['apres']) ?: '(retiré)') . '</ins></li>';
         }
-        echo '<style>mark.alexlia-mod{background:#ffe27a;color:inherit;outline:2px solid #ff8fb3;outline-offset:2px;border-radius:3px;padding:0 2px}#alexlia-ap button{font:inherit;cursor:pointer;border:0;border-radius:999px;padding:5px 12px;background:#fff;color:#2E2A47;font-weight:700}</style>'
+        $al = $alertes ? '<p style="margin:8px 0 0;background:#ffe27a;color:#2E2A47;border-radius:10px;padding:6px 10px"><b>Attention :</b> ' . esc_html(implode(' ', $alertes)) . ' Bricou le signale à Alex.</p>' : '';
+        echo '<!--alexlia-ap--><style>mark.alexlia-mod{background:#ffe27a;color:inherit;outline:2px solid #ff8fb3;outline-offset:2px;border-radius:3px;padding:0 2px}#alexlia-ap button{font:inherit;cursor:pointer;border:0;border-radius:999px;padding:5px 12px;background:#fff;color:#2E2A47;font-weight:700}</style>'
             . '<div id="alexlia-ap" role="status" style="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;max-width:620px;margin:0 auto;background:#2E2A47;color:#fff;border-radius:18px;box-shadow:0 8px 30px rgba(0,0,0,.3);font:500 14px/1.45 system-ui,sans-serif;padding:12px 16px">'
             . '<div style="display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap"><span><b>Aperçu préparé par Bricou.</b> Rien n’est encore en ligne.</span><span style="display:flex;gap:6px"><button type="button" data-ap-liste aria-expanded="true">Ce qui change (' . count($changes) . ')</button><button type="button" data-ap-fermer aria-label="Masquer l’aperçu">×</button></span></div>'
-            . '<div data-ap-detail style="margin-top:8px;max-height:38vh;overflow:auto"><ul style="margin:0;padding:0;list-style:none">' . $li . '</ul><p style="margin:8px 0 0;opacity:.85">Le texte changé est surligné sur la page. Pour valider, retournez dans votre espace Les Minis Monstres.</p></div></div>'
+            . '<div data-ap-detail style="margin-top:8px;max-height:38vh;overflow:auto"><ul style="margin:0;padding:0;list-style:none">' . $li . '</ul>' . $al . '<p style="margin:8px 0 0;opacity:.85">Le texte changé est surligné sur la page. Pour valider, retournez dans votre espace Les Minis Monstres.</p></div></div><!--/alexlia-ap-->'
             . '<script>(function(){var b=document.getElementById("alexlia-ap");if(!b)return;var d=b.querySelector("[data-ap-detail]"),l=b.querySelector("[data-ap-liste]");l.addEventListener("click",function(){d.hidden=!d.hidden;l.setAttribute("aria-expanded",d.hidden?"false":"true");});b.querySelector("[data-ap-fermer]").addEventListener("click",function(){b.style.display="none";});var m=document.querySelector("mark.alexlia-mod");if(m)setTimeout(function(){m.scrollIntoView({block:"center",behavior:"smooth"});},400);})();</script>';
     });
 });

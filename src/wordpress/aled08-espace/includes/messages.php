@@ -256,7 +256,7 @@ function aled08e_gauge_html($uid) {
         foreach ($etapes as $i => $e) {
             $in = '<b>' . ($i + 1 < $n ? '✓' : $i + 1) . '</b><span>' . esc_html($e) . '</span>';
             // le visuel à valider se clique : il s'ouvre sur le vrai site, avec ce qui change surligné
-            $in = ($i === 2 && $apercu) ? '<a class="gauge-visuel" href="' . esc_url($apercu) . '" target="_blank" rel="noopener" title="Voir le visuel à valider">' . $in . '</a>' : $in;
+            $in = ($i === 2 && $apercu) ? '<a class="gauge-visuel" href="' . esc_url($apercu) . '" target="_blank" rel="noopener" title="Cliquez pour voir le visuel à valider"><s class="gauge-tache" aria-hidden="true"></s>' . $in . '<i class="gauge-clic">Cliquez ici</i></a>' : $in;
             $h .= '<li class="' . ($i + 1 < $n ? 'is-fait' : ($i + 1 === $n ? 'is-en-cours' : '')) . '">' . $in . '</li>';
         }
         $h .= '</ol>' . aled08e_gauge_croix($p) . '</div>';
