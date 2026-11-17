@@ -645,3 +645,7 @@ a.app-card { text-decoration: none; color: inherit; }
   66% { border-radius: 55% 45% 62% 38% / 40% 58% 42% 60%; transform: scale(1.08) rotate(-30deg); }
 }
 @media (prefers-reduced-motion: reduce) { .gauge-visuel .gauge-tache { animation: none; } }
+
+/* La demande vers laquelle la jauge fait défiler la page */
+.reqs li.is-flash { animation: reqflash 2.4s ease-out; }
+@keyframes reqflash { 0% { box-shadow: 0 0 0 0 rgba(214, 69, 122, .6); } 30% { box-shadow: 0 0 0 8px rgba(214, 69, 122, .35); } 100% { box-shadow: 0 0 0 0 rgba(214, 69, 122, 0); } }

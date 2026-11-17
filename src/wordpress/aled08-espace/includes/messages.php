@@ -252,11 +252,13 @@ function aled08e_gauge_html($uid) {
         $n = aled08e_gauge_etape($p);
         $txt = trim(preg_replace('/\s+/u', ' ', $p->post_content));
         $apercu = in_array($n, [3, 4], true) ? aled08e_gauge_apercu($p) : '';
+        $vers = in_array($n, [3, 4], true);
         $h .= '<div class="gauge"><p class="gauge-t"><strong>' . esc_html(mb_strlen($txt) > 70 ? mb_substr($txt, 0, 67) . '…' : $txt) . '</strong></p><div class="gauge-ligne"><ol class="gauge-etapes" style="--n:' . (int) $n . '">';
         foreach ($etapes as $i => $e) {
             $in = '<b>' . ($i + 1 < $n ? '✓' : $i + 1) . '</b><span>' . esc_html($e) . '</span>';
             // le visuel à valider se clique : il s'ouvre sur le vrai site, avec ce qui change surligné
-            $in = ($i === 2 && $apercu) ? '<a class="gauge-visuel" href="' . esc_url($apercu) . '" target="_blank" rel="noopener" title="Cliquez pour voir le visuel à valider"><s class="gauge-tache" aria-hidden="true"></s>' . $in . '<i class="gauge-clic">Cliquez ici</i></a>' : $in;
+            // « à valider » se clique : on descend jusqu'à la demande, dans l'historique (aperçu, avant/après et boutons « Oui, c'est bon »)
+            $in = ($i === 2 && $vers) ? '<a class="gauge-visuel" href="#req-' . (int) $p->ID . '" data-gauge-vers="' . (int) $p->ID . '" title="Cliquez pour aller à la demande et la valider"><s class="gauge-tache" aria-hidden="true"></s>' . $in . '<i class="gauge-clic">Cliquez ici</i></a>' : $in;
             $h .= '<li class="' . ($i + 1 < $n ? 'is-fait' : ($i + 1 === $n ? 'is-en-cours' : '')) . '">' . $in . '</li>';
         }
         $h .= '</ol>' . aled08e_gauge_croix($p) . '</div>';

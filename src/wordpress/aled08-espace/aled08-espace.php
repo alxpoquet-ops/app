@@ -1282,7 +1282,7 @@ function aled08e_req_item($p, $full = true) {
     $rep = get_post_meta($p->ID, '_aled08_reponse', true);
     $thumb = $full && has_post_thumbnail($p) ? get_the_post_thumbnail($p, 'thumbnail', ['class' => 'req-thumb', 'alt' => '']) : '';
     $text = $full ? $p->post_content : $p->post_title;
-    return '<li>' . $thumb . '<span><strong>' . nl2br(esc_html(mb_strlen($text) > 220 ? mb_substr($text, 0, 217) . '…' : $text)) . '</strong><small>' . (get_post_meta($p->ID, '_aled08_par', true) === 'lia' ? 'par Bricou, ' : 'par Alex, ') . 'envoyée le ' . esc_html(aled08e_date($p->post_date)) . '</small>'
+    return '<li' . ($full ? ' id="req-' . (int) $p->ID . '"' : '') . '>' . $thumb . '<span><strong>' . nl2br(esc_html(mb_strlen($text) > 220 ? mb_substr($text, 0, 217) . '…' : $text)) . '</strong><small>' . (get_post_meta($p->ID, '_aled08_par', true) === 'lia' ? 'par Bricou, ' : 'par Alex, ') . 'envoyée le ' . esc_html(aled08e_date($p->post_date)) . '</small>'
         . ($full && $rep ? (strpos($rep, 'Bricou : ') === 0
             ? '<span class="req-reply req-bricou">' . aled08e_monster('bricou') . '<span><b>Bricou</b>' . nl2br(esc_html(substr($rep, strlen('Bricou : ')))) . '</span></span>'
             : '<span class="req-reply">' . nl2br(esc_html($rep)) . '</span>') : '') . ($full ? aled08e_lia_bloc_confirmation($p) : '') . ($full ? aled08e_annulation_html($p) : '') . '</span><em class="st ' . esc_attr($st[$s][1]) . '">' . esc_html($st[$s][0]) . '</em></li>';
@@ -1342,6 +1342,17 @@ function aled08e_suivi_html($uid) {
       planifier();
     }).catch(function(){ busy=false; planifier(); });
   }
+  // clic sur « à valider » dans la jauge : on ouvre l'historique et on descend jusqu'à la demande
+  document.addEventListener('click',function(e){
+    var a=e.target.closest?e.target.closest('[data-gauge-vers]'):null; if(!a) return;
+    e.preventDefault();
+    var onglet=document.getElementById('tab-demandes'); if(onglet&&onglet.getAttribute('aria-selected')!=='true') onglet.click();
+    setTimeout(function(){
+      var li=document.getElementById('req-'+a.getAttribute('data-gauge-vers')); if(!li) return;
+      li.scrollIntoView({behavior:'smooth',block:'center'});
+      li.classList.add('is-flash'); setTimeout(function(){ li.classList.remove('is-flash'); },2600);
+    },120);
+  });
   document.addEventListener('visibilitychange',function(){ if(!document.hidden) { clearTimeout(timer); timer=setTimeout(tour,300); } });
   planifier();
 })();
