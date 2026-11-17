@@ -169,6 +169,7 @@ require_once __DIR__ . '/includes/admin.php';
 require_once __DIR__ . '/includes/ovh.php';
 require_once __DIR__ . '/includes/provision.php';
 require_once __DIR__ . '/includes/lia.php';
+require_once __DIR__ . '/includes/mcp.php';
 require_once __DIR__ . '/includes/compte.php';
 require_once __DIR__ . '/includes/inscription.php';
 require_once __DIR__ . '/includes/changer.php';
@@ -376,6 +377,7 @@ function aled08e_annuler_demande($pid) {
     $etat = (string) get_post_meta($pid, '_aled08_lia_etat', true);
     $note = '';
     if (in_array($etat, ['a_confirmer', 'validation'], true) && function_exists('aled08e_lia_appel')) aled08e_lia_appel($uid, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]);
+    if (in_array($etat, ['a_confirmer', 'validation'], true) && function_exists('aled08e_mcp_annuler')) aled08e_mcp_annuler($pid); // fait avec le MCP : Bricou remet le site comme avant
     wp_clear_scheduled_hook('aled08_valider', [(int) $pid, 'auto']);
     if ($etat === 'fait' && function_exists('aled08e_lia_annuler')) $note = aled08e_lia_annuler($pid);
     update_post_meta($pid, '_aled08_annulee_le', current_time('mysql'));

@@ -365,3 +365,14 @@ Dans l'espace client, le compteur s'appelle « énergie » (100 points par mois,
 2. Alex reçoit un e-mail avec deux liens (il doit être connecté en administrateur) : **Laisser Bricou faire maintenant**, ou **Je m'en occupe moi-même** (l'énergie du client lui est rendue).
 3. Sans réponse en 30 minutes, Bricou se lance tout seul. Le client reçoit « Demande confirmée : Bricou s'en occupe » (ou « Alex a validé votre demande » si Alex a cliqué).
 4. Bricou prépare la modification. Le client valide l'aperçu avant toute mise en ligne, comme avant.
+
+## Bricou avec le MCP WordPress du site client (facultatif)
+
+Par défaut, Bricou modifie le site d'un client avec le connecteur (quelques outils, aperçu, accord du client, puis mise en ligne). Pour lui donner tous les outils du MCP du site (l'extension « Easy MCP AI » : pages, articles, menus, médias, CSS, réglages, historique…) :
+
+1. Sur le site du client, dans l'extension MCP, créer une clé (jeton) pour Bricou.
+2. Dans la fiche du client (Utilisateurs), section « Bricou : MCP WordPress du site » : coller l'adresse du MCP (`https://site-du-client.fr/wp-json/easy-mcp-ai/v1/mcp`) et la clé. Pour revenir au connecteur : « Retirer le MCP ».
+3. Une demande de modification suit alors ce circuit : Bricou modifie le site tout de suite avec les outils du MCP ; le client voit l'avant / l'après et un lien vers le résultat (jauge, étape « Visuel à valider ») et valide ; Alex reçoit le mail de validation (mis en ligne sans refus sous 30 minutes). Si le client dit non, si Alex refuse ou si la demande est annulée, Bricou remet le site comme avant avec le journal de ses actions (`_aled08_mcp_journal`) et l'historique du site ; si ce n'est pas possible, Alex reçoit un e-mail.
+4. Les outils qu'on ne peut pas défaire sont interdits par défaut (supprimer une extension ou un compte, mettre à jour, WP-CLI, rechercher-remplacer dans la base…). La liste est l'option `aled08_mcp_interdits` (un nom d'outil par ligne) ; la vider autorise tous les outils.
+
+Les fichiers PHP du thème restent en lecture seule dans le MCP : un texte écrit en dur dans le thème (le nom du site dans l'en-tête, par exemple) ne peut pas être changé par Bricou avec le MCP.

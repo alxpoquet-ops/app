@@ -369,6 +369,8 @@ function aled08e_lia_traiter($pid) {
     $infos = aled08e_lia_appel($uid, 'infos');
     if (is_wp_error($infos)) { $fin('pour_alex', 'Je n’arrive pas à joindre votre site pour le moment. Alex s’en occupe.', 'Connecteur injoignable : ' . $infos->get_error_message(), []); return; }
 
+    // le site du client a son MCP renseigné : Bricou travaille avec tous les outils du MCP (modifie tout de suite, le client valide ensuite)
+    if (function_exists('aled08e_mcp_config') && aled08e_mcp_config($uid) && !get_post_meta($pid, '_aled08_seo', true)) { aled08e_mcp_traiter($pid, $uid, $u, $p, $infos, $fin); return; }
     $nbPhotos = count(array_filter((array) get_post_meta($pid, '_aled08_photos', true))) ?: (get_post_thumbnail_id($pid) ? 1 : 0);
     $photo = $nbPhotos ? $nbPhotos . ' photo(s) jointe(s) à la demande (outil importer_image, numero de 1 à ' . $nbPhotos . ').' : 'Aucune photo jointe.';
     $messages = [['role' => 'user', 'content' => "Demande du client, envoyée le " . aled08e_date($p->post_date) . " :\n\n<demande>\n" . $p->post_content . "\n</demande>\n\n" . $photo]];
@@ -463,7 +465,7 @@ function aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $act
         update_post_meta($pid, '_aled08_statut', 'encours');
         update_post_meta($pid, '_aled08_lia_etat', 'a_confirmer');
         aled08e_lia_journal_add('Demande #' . $pid . ' préparée par Bricou, en attente de l’accord du client.');
-        if ($u) wp_mail($u->user_email, 'Bricou a préparé votre modification : à vous de voir', 'Bonjour ' . aled08e_prenom($u) . ",\n\n" . $msgClient . "\n\nRien n’est encore changé sur votre site. Regardez l’aperçu et confirmez dans votre espace :\n" . aled08e_url() . "#demandes\n\nÀ bientôt,\nAlex et sa petite bande\n", aled08e_mail_headers('"Les Minis Monstres" <' . aled08e_to() . '>'));
+        if ($u) wp_mail($u->user_email, 'Bricou a préparé votre modification : à vous de voir', 'Bonjour ' . aled08e_prenom($u) . ",\n\n" . $msgClient . (get_post_meta($pid, '_aled08_mcp', true) ? "\n\nC’est fait sur votre site. Regardez le résultat et validez dans votre espace (sinon, tout est remis comme avant) :\n" : "\n\nRien n’est encore changé sur votre site. Regardez l’aperçu et confirmez dans votre espace :\n") . aled08e_url() . "#demandes\n\nÀ bientôt,\nAlex et sa petite bande\n", aled08e_mail_headers('"Les Minis Monstres" <' . aled08e_to() . '>'));
     } else {
         // passée à Alex : les Jetons Bricou sont rendus, la demande rejoint les modifications d'Alex
         aled08e_jl_rendre($uid, 'demande:' . $pid);
@@ -480,6 +482,12 @@ function aled08e_lia_annuler($pid) {
     $p = get_post($pid);
     if (!$p) return new WP_Error('aled08_lia', 'Demande introuvable.');
     $uid = (int) $p->post_author;
+    if (function_exists('aled08e_mcp_annuler') && aled08e_mcp_annuler($pid)) { // fait avec le MCP : Bricou remet tout comme avant
+        update_post_meta($pid, '_aled08_lia_annule', current_time('mysql'));
+        update_post_meta($pid, '_aled08_a_verifier', 0);
+        aled08e_lia_journal_add('Demande #' . $pid . ' : Bricou remet le site comme avant (MCP).');
+        return 'Bricou remet le site comme avant, avec le journal de ses actions (quelques minutes).';
+    }
     $actions = (array) get_post_meta($pid, '_aled08_lia_actions', true);
     $faits = 0; $erreurs = [];
     // en commençant par la plus ancienne révision de chaque contenu (l'état d'avant Bricou)
@@ -681,6 +689,7 @@ function aled08e_lia_confirmer($pid, $oui, $commentaire = '') {
     $prevues = (array) get_post_meta($pid, '_aled08_lia_actions', true);
     if (!$oui) {
         aled08e_lia_appel($uid, 'abandonner', ['jeton' => $jeton]);
+        if (function_exists('aled08e_mcp_annuler')) aled08e_mcp_annuler($pid); // fait avec le MCP : Bricou remet le site comme avant
         aled08e_jl_rendre($uid, 'demande:' . $pid); // aperçu refusé : les Jetons Bricou sont rendus
         update_post_meta($pid, '_aled08_par', 'alex');
         update_post_meta($pid, '_aled08_lia_etat', 'refuse');
@@ -719,7 +728,8 @@ function aled08e_lia_publier($pid, $qui = 'auto') {
     $jeton = (string) get_post_meta($pid, '_aled08_lia_jeton', true);
     $prevues = (array) get_post_meta($pid, '_aled08_lia_actions', true);
     update_post_meta($pid, '_aled08_valide_par', $qui);
-    $r = aled08e_lia_appel($uid, 'appliquer', ['jeton' => $jeton]);
+    // fait avec le MCP : les changements sont déjà sur le site, il n'y a plus qu'à les garder
+    $r = get_post_meta($pid, '_aled08_mcp', true) ? ['ok' => true, 'faits' => []] : aled08e_lia_appel($uid, 'appliquer', ['jeton' => $jeton]);
     if (is_wp_error($r)) {
         aled08e_lia_journal_add('Demande #' . $pid . ' : mise en ligne impossible après accord : ' . $r->get_error_message());
         aled08e_jl_rendre($uid, 'demande:' . $pid); // Bricou n'a pas pu finir : les Jetons Bricou sont rendus
@@ -736,7 +746,7 @@ function aled08e_lia_publier($pid, $qui = 'auto') {
         $lib = ['contenu' => 'Page mise à jour : « ' . ($f['titre'] ?? '') . ' »', 'publier' => 'Actualité publiée : « ' . ($f['titre'] ?? '') . ' »', 'reglage' => 'Réglage « ' . ($f['titre'] ?? '') . ' » changé (avant : « ' . ($f['avant'] ?? '') . ' »)'];
         $faites[] = ['type' => $f['type'] === 'contenu' ? 'modifier' : $f['type'], 'id' => (int) ($f['id'] ?? 0), 'revision' => (int) ($f['revision_avant'] ?? 0), 'adresse' => (string) ($f['adresse'] ?? ''), 'detail' => $lib[$f['type']] ?? ''];
     }
-    foreach ($prevues as $a) if (($a['type'] ?? '') === 'image') $faites[] = $a;
+    foreach ($prevues as $a) if (($a['type'] ?? '') === 'image' || ($a['type'] ?? '') === 'mcp') $faites[] = $a;
     update_post_meta($pid, '_aled08_lia_prevues', $prevues);
     update_post_meta($pid, '_aled08_lia_actions', $faites);
     update_post_meta($pid, '_aled08_statut', 'faite');
@@ -790,6 +800,7 @@ add_action('admin_post_aled08e_valider', function () {
         $p = get_post($pid);
         wp_clear_scheduled_hook('aled08_valider', [$pid, 'auto']);
         aled08e_lia_appel((int) $p->post_author, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]);
+        if (function_exists('aled08e_mcp_annuler')) aled08e_mcp_annuler($pid);
         aled08e_jl_rendre((int) $p->post_author, 'demande:' . $pid);
         update_post_meta($pid, '_aled08_par', 'alex');
         update_post_meta($pid, '_aled08_lia_etat', 'pour_alex');
@@ -820,7 +831,7 @@ add_action('template_redirect', function () {
 function aled08e_lia_bloc_confirmation($p) {
     if (get_post_meta($p->ID, '_aled08_lia_etat', true) !== 'a_confirmer') return '';
     $actions = array_filter((array) get_post_meta($p->ID, '_aled08_lia_actions', true), function ($a) { return !empty($a['prepare']); });
-    $h = '<div class="lia-confirm"><p class="lia-confirm-h">' . aled08e_monster('bricou') . '<strong>Bricou a préparé votre modification. Rien n’est encore changé : regardez l’aperçu. Si c’est bon, je le vérifie et c’est en ligne.</strong></p><ul>';
+    $h = '<div class="lia-confirm"><p class="lia-confirm-h">' . aled08e_monster('bricou') . (get_post_meta($p->ID, '_aled08_mcp', true) ? '<strong>Bricou a fait votre modification : elle est déjà visible sur votre site. Regardez le résultat. Si c’est bon, je le vérifie et c’est validé. Sinon, tout est remis comme avant.</strong>' : '<strong>Bricou a préparé votre modification. Rien n’est encore changé : regardez l’aperçu. Si c’est bon, je le vérifie et c’est en ligne.</strong>') . '</p><ul>';
     foreach ($actions as $a) $h .= '<li><span>' . esc_html($a['detail']) . '</span>'
         . (isset($a['avant'], $a['apres']) ? '<div class="lia-diff"><div class="lia-diff-av"><small>Avant</small><p>' . esc_html($a['avant']) . '</p></div><span class="lia-diff-fl" aria-hidden="true">' . aled08e_icon('arrow-right') . '</span><div class="lia-diff-ap"><small>Après</small><p>' . esc_html($a['apres']) . '</p></div></div>' : '')
         . (!empty($a['alerte']) ? '<p class="esp-warn">' . esc_html($a['alerte']) . '</p>' : '')
