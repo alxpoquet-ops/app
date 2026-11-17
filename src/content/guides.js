@@ -3,9 +3,9 @@
 // aucun tiret long, aucun prix d'un concurrent nommé (seule la fourchette du marché de config.marche est citée),
 // aucun faux avis, et pas de phrase de 9 mots ou plus reprise d'une autre page.
 // Offre du 17 novembre 2026 : le Site Internet Professionnel (creation), une seule option à la commande (la boutique en
-// ligne, payée une fois), le Pack SEO commandé plus tard depuis l'espace client, puis « On s'occupe de tout » (deux
-// formules au mois, forfaits : Tranquillité et Évolution, modifications comprises sans limite) ou « Je m'en occupe
-// moi-même » (création seule, config.creationSeule : le code du site est remis au client).
+// ligne, payée une fois), le Pack SEO commandé plus tard depuis l'espace client, puis « On s'occupe de tout » (un seul
+// abonnement au mois, forfaits[0], qui comprend tout : modifications sans limite et une page SEO par semaine) ou « Je m'en
+// occupe moi-même » (création seule, config.creationSeule : le code du site est remis au client).
 // Alex fait chaque site, sa petite bande d'automatisations (config.bande) s'occupe du répétitif. On ne dit jamais « IA ».
 // Chaque mot technique est expliqué la première fois qu'il apparaît dans un guide.
 const cfg = require('../config');
@@ -16,15 +16,14 @@ const acompte = (p) => eur(Math.round(p * paiement.acompte) / 100);
 const reste = (p) => eur(p - Math.round(p * paiement.acompte) / 100);
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 
-// L'offre : un seul site (jusqu'à creation.pages pages), la boutique en option, le Pack SEO plus tard, deux formules au mois
-// ou la création seule.
-const tranquille = forfaits.find((f) => f.id === 'base'); // Tranquillité
-const evolution = forfaits.find((f) => f.id === 'evolution'); // Évolution
+// L'offre : un seul site (jusqu'à creation.pages pages), la boutique en option, le Pack SEO plus tard, un seul abonnement
+// au mois ou la création seule.
+const tranquille = forfaits.find((f) => f.id === 'base') || forfaits[0]; // l'abonnement (Tranquillité), le seul
 const packSeo = options.find((o) => o.id === 'packseo' && !o.retire);
 const prixBoutique = creation.prix + creation.boutique; // le site avec l'option boutique en ligne
-const annee = (f) => f.month * (12 - annuel.moisOfferts); // une formule payée à l'année
+const annee = (f) => f.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const durees = lissage.durees.join(' ou ');
-const restantes = creation.pages - creation.exemplePages; // l'exemple : 8 pages pour l'activité, 12 pour Google
+const restantes = creation.pages - creation.exemplePages; // l'exemple : 8 pages pour l'activité, 7 pour Google
 // La petite bande : prénom et métier (« Bricou, le constructeur »).
 const B = (id) => bande.find((b) => b.id === id);
 const qui = (id) => `${B(id).nom}, ${minus(B(id).role)}`;
@@ -64,7 +63,7 @@ C'est la vraie difficulté pour un restaurant : le plat du jour, la carte de sai
 
 Chez moi, vous ne touchez jamais au site. Vous envoyez la nouvelle carte depuis votre espace client, la page privée où vous faites vos demandes. ${qui('bricoleur')} de ma petite bande d'automatisations, prépare la mise à jour, et je la vérifie avant qu'elle parte en ligne.
 
-Ces changements sont compris dans votre formule au mois, sans limite. Avec la formule ${tranquille.name}, la nouvelle carte est en ligne sous ${tranquille.delai} au plus. Avec ${evolution.name}, vos demandes passent en priorité, en ${evolution.delai} en moyenne : c'est la plus confortable si votre carte bouge chaque semaine. Les deux sont présentées sur la page [tarifs](/tarifs/).
+Ces changements sont compris dans votre abonnement, sans limite. La nouvelle carte est en ligne en ${tranquille.delai} en moyenne, de quoi suivre une carte qui bouge chaque semaine. L'abonnement est présenté sur la page [tarifs](/tarifs/).
 
 ## Quel site choisir ?
 
@@ -118,7 +117,7 @@ Votre site doit rendre le rendez-vous facile, quelle que soit votre façon de tr
 - Vous utilisez **un agenda en ligne** : un bouton « Prendre rendez-vous » mène directement à votre agenda.
 - Vous préférez **être contactée par écrit** : un formulaire court, qui arrive dans votre boîte mail.
 
-Pas encore d'agenda en ligne ? Commencez avec le téléphone et le formulaire. Le jour où vous en adoptez un, demandez-moi d'ajouter le bouton : c'est une modification comme une autre, comprise dans votre formule au mois.
+Pas encore d'agenda en ligne ? Commencez avec le téléphone et le formulaire. Le jour où vous en adoptez un, demandez-moi d'ajouter le bouton : c'est une modification comme une autre, comprise dans votre abonnement.
 
 ## Ce qui fait venir de nouvelles clientes
 
@@ -173,9 +172,9 @@ Au démarrage, chaque euro compte. C'est pour cela que le paiement est découpé
 
 - **${acompte(creation.prix)} € à la commande**, soit ${paiement.acompte} % du prix.
 - **Le reste à la réception du site**, en une fois ou étalé sur ${durees} mois sans frais.
-- **${eur(tranquille.month)} € par mois** avec la formule ${tranquille.name}, qui démarre seulement quand vous recevez le site, sans engagement.
+- **${eur(tranquille.month)} € par mois** pour l'abonnement, qui démarre seulement quand vous recevez le site, sans engagement.
 
-Avec une formule, le nom de domaine, c'est-à-dire l'adresse de votre site, et l'hébergement, l'endroit où il reste accessible jour et nuit, sont offerts la première année, sauf si vous prenez la boutique en ligne. Ensuite, votre formule les prend en charge. Vous connaissez donc le coût exact avant de vous engager, sans devis à rallonge.
+Avec l'abonnement, le nom de domaine, c'est-à-dire l'adresse de votre site, et l'hébergement, l'endroit où il reste accessible jour et nuit, sont offerts la première année, sauf si vous prenez la boutique en ligne. Ensuite, l'abonnement les prend en charge. Vous connaissez donc le coût exact avant de vous engager, sans devis à rallonge.
 
 ## Les mentions obligatoires
 
@@ -187,7 +186,7 @@ C'est possible, et pour certains c'est le bon choix. Le guide [faire son site so
 
 ## Et après le lancement
 
-Votre activité va évoluer : nouvelles prestations, nouveaux tarifs, premières réalisations à montrer. Chaque changement se demande depuis votre espace client, et il reste compris dans votre formule, sans limite. Le jour où vous voulez accélérer, la formule ${evolution.name}, à ${eur(evolution.month)} € par mois, ajoute une page SEO chaque semaine.`,
+Votre activité va évoluer : nouvelles prestations, nouveaux tarifs, premières réalisations à montrer. Chaque changement se demande depuis votre espace client, et il reste compris dans votre abonnement, sans limite. En plus, l'abonnement ajoute une page SEO à votre site chaque semaine, pour toucher de nouveaux clients sur Google.`,
     faq: [
       { q: 'Le site est-il une dépense déductible ?', a: 'En micro-entreprise, vous ne déduisez pas vos frais un par un : l’administration applique un abattement forfaitaire sur votre chiffre d’affaires. Pour votre situation précise, le mieux est de poser la question à votre service des impôts ou à un comptable.' },
       { q: 'Puis-je commencer petit et agrandir le site plus tard ?', a: `Oui. Vous démarrez avec les pages dont vous avez besoin, et les autres travaillent pour Google en attendant. Le jour où une nouvelle prestation arrive, elle peut avoir sa page, dans la limite de vos ${creation.pages} pages.` },
@@ -239,9 +238,9 @@ Chez moi, tout est affiché avant la commande, et la page se lit dans l'ordre : 
 
 ### Le site : ${eur(creation.prix)} €, une seule fois
 
-Il compte jusqu'à ${creation.pages} pages, avec un design fait pour vous, l'affichage sur téléphone et ordinateur, les bases du SEO (ce qui aide votre site à être trouvé sur Google) et un accompagnement du début à la fin.
+Il compte jusqu'à ${creation.pages} pages, avec un design fait pour vous, l'affichage sur téléphone et ordinateur, un formulaire de contact et un accompagnement du début à la fin.
 
-Les pages que vous n'utilisez pas deviennent des pages SEO. Par exemple, vous utilisez ${creation.exemplePages} pages pour votre activité : les ${restantes} pages restantes servent à améliorer votre présence sur Google.
+Les pages que vous n'utilisez pas deviennent des pages SEO : chacune répond à une recherche de vos clients, pour que Google vous montre plus souvent. Par exemple, vous utilisez ${creation.exemplePages} pages pour votre activité : les ${restantes} pages restantes servent à améliorer votre présence sur Google.
 
 ### Une option à la commande, et une autre plus tard
 
@@ -252,26 +251,27 @@ Les deux se paient une seule fois.
 
 ### Qui met votre site en ligne ?
 
-**On s'occupe de tout**, avec une formule au mois. Je réserve votre nom de domaine à votre nom, j'installe le site et je le mets en ligne. Pour un site sans boutique, le nom de domaine et l'hébergement sont offerts la première année. La formule démarre à la réception du site, et elle est sans engagement :
+**On s'occupe de tout**, avec l'abonnement au mois. Je réserve votre nom de domaine à votre nom, j'installe le site et je le mets en ligne. Pour un site sans boutique, le nom de domaine et l'hébergement sont offerts la première année. L'abonnement démarre à la réception du site, et il est sans engagement. Pour ${eur(tranquille.month)} € par mois, il comprend tout :
 
-- **${tranquille.name}, ${eur(tranquille.month)} € par mois** : l'hébergement, le nom de domaine, les sauvegardes, la sécurité, la surveillance, la maintenance et vos modifications, faites sous ${tranquille.delai} au plus.
-- **${evolution.name}, ${eur(evolution.month)} € par mois** : tout ${tranquille.name}, avec vos demandes en priorité, un délai moyen de ${evolution.delai} et une page SEO de plus chaque semaine.
+- **L'entretien complet** : l'hébergement, le nom de domaine, les sauvegardes, la sécurité, la surveillance et la maintenance.
+- **Vos modifications**, sans limite, faites en ${tranquille.delai} en moyenne.
+- **Une page SEO de plus chaque semaine**, pour être trouvé sur davantage de recherches.
 
-Dans les deux cas, les modifications sont comprises, sans limite. Une refonte complète du site, ou une fonction nouvelle, se fait sur devis.
+Une refonte complète du site, ou une fonction nouvelle, se fait sur devis.
 
-**Je m'en occupe moi-même** : c'est la création seule, sans rien à payer chaque mois. Vous gardez votre nom de domaine et votre hébergement, ou vous les prenez où vous voulez. Quand le site est fini, je vous remets son code, avec une sauvegarde complète et une courte notice pour l'installer. L'entretien et les modifications ne sont pas compris, mais une formule peut s'ajouter plus tard.
+**Je m'en occupe moi-même** : c'est la création seule, sans rien à payer chaque mois. Vous gardez votre nom de domaine et votre hébergement, ou vous les prenez où vous voulez. Quand le site est fini, je vous remets son code, avec une sauvegarde complète et une courte notice pour l'installer. L'entretien et les modifications ne sont pas compris, mais l'abonnement peut s'ajouter plus tard.
 
-Côté paiement, vous versez ${paiement.acompte} % à la commande et le reste à la réception du site. Ce reste peut être étalé sur ${durees} mois sans frais, que vous preniez une formule ou non.
+Côté paiement, vous versez ${paiement.acompte} % à la commande et le reste à la réception du site. Ce reste peut être étalé sur ${durees} mois sans frais, que vous preniez l'abonnement ou non.
 
 ## Trois exemples sur la première année
 
-- **Un artisan avec la formule ${tranquille.name}** : ${eur(creation.prix)} € + 12 × ${eur(tranquille.month)} € = **${eur(creation.prix + 12 * tranquille.month)} €**.
-- **Un commerce avec la formule ${evolution.name}, qui ajoute ensuite le ${packSeo.name}** : ${eur(creation.prix)} € + ${eur(packSeo.price.once)} € + 12 × ${eur(evolution.month)} € = **${eur(creation.prix + packSeo.price.once + 12 * evolution.month)} €**.
-- **Un créateur avec une boutique en ligne et la formule ${tranquille.name}** : ${eur(prixBoutique)} € + 12 × ${eur(tranquille.month)} € = **${eur(prixBoutique + 12 * tranquille.month)} €**.
+- **Un artisan, avec l'abonnement payé chaque mois** : ${eur(creation.prix)} € + 12 × ${eur(tranquille.month)} € = **${eur(creation.prix + 12 * tranquille.month)} €**.
+- **Un commerce qui ajoute ensuite le ${packSeo.name}** : ${eur(creation.prix)} € + ${eur(packSeo.price.once)} € + 12 × ${eur(tranquille.month)} € = **${eur(creation.prix + packSeo.price.once + 12 * tranquille.month)} €**.
+- **Un créateur avec une boutique en ligne** : ${eur(prixBoutique)} € + 12 × ${eur(tranquille.month)} € = **${eur(prixBoutique + 12 * tranquille.month)} €**.
 
 En création seule, la première année se limite au prix du site : ${eur(creation.prix)} €, ou ${eur(prixBoutique)} € avec la boutique.
 
-Les années suivantes, il ne reste que la formule. Payée à l'année, elle vous offre ${annuel.moisOfferts} mois : ${eur(annee(tranquille))} € au lieu de ${eur(12 * tranquille.month)} € pour ${tranquille.name}, ${eur(annee(evolution))} € au lieu de ${eur(12 * evolution.month)} € pour ${evolution.name}.
+Les années suivantes, il ne reste que l'abonnement. Réglé à l'année, il coûte ${eur(annee(tranquille))} € au lieu de ${eur(12 * tranquille.month)} €, grâce aux ${annuel.moisOfferts} mois offerts.
 
 ## Pourquoi ces prix sont bas
 
@@ -279,7 +279,7 @@ Ce n'est pas un site au rabais. Fait à la main par un indépendant, un site vit
 
 ## Ce qui peut faire monter la note
 
-Soyons clairs sur ce qui n'est pas dans le prix de base : la boutique en ligne et le ${packSeo.name}, si vous les choisissez, et la formule ${evolution.name} si vous voulez la priorité. Une refonte complète ou une fonction nouvelle, comme un espace réservé à des membres, fait l'objet d'un devis. Rien d'autre ne s'ajoute.
+Soyons clairs sur ce qui n'est pas dans le prix du site : la boutique en ligne et le ${packSeo.name}, si vous les choisissez, et l'abonnement si vous me confiez la mise en ligne. Une refonte complète ou une fonction nouvelle, comme un espace réservé à des membres, fait l'objet d'un devis. Rien d'autre ne s'ajoute.
 
 Vous composez le tout sur la page [créer mon site](/creer-mon-site/), et le total s'affiche au fur et à mesure.`,
     faq: [
@@ -408,17 +408,17 @@ Confiez-le si votre temps est compté, si l'écran vous fatigue, ou si vous avez
 
 Mon service est né de ce constat. Vous ne construisez rien vous-même, mais vous gardez la main sur ce qui compte :
 
-- Le prix est fixe et connu d'avance : ${eur(creation.prix)} € pour le site, puis ${eur(tranquille.month)} € ou ${eur(evolution.month)} € par mois selon la formule choisie.
+- Le prix est fixe et connu d'avance : ${eur(creation.prix)} € pour le site, puis ${eur(tranquille.month)} € par mois pour l'abonnement.
 - Vous aimez quand même bricoler ? Avec la création seule, je vous remets le code du site, et vous l'installez chez votre hébergeur.
 - Vous demandez vos changements en une phrase depuis votre espace client, une page privée rien qu'à vous.
 - ${qui('bricoleur')} de ma petite bande, prépare chaque modification, et je la vérifie avant sa publication.
-- Les modifications sont comprises, sans limite, et en ligne sous ${tranquille.delai} au plus.
-- La formule au mois est sans engagement.
+- Les modifications sont comprises, sans limite, et en ligne en ${tranquille.delai} en moyenne.
+- L'abonnement est sans engagement.
 
 Pour voir à quoi cela ressemble avant de vous décider, [essayez la démo de l'espace client](/mon-espace/demo/). Et pour une vue d'ensemble des solutions, le [comparatif](/comparatif/) les met côte à côte.`,
     faq: [
       { q: 'J’ai commencé un site moi-même sans le finir, pouvez-vous le reprendre ?', a: 'Je repars d’un site neuf, mais rien n’est perdu : vos textes, vos photos et vos idées servent de base. Envoyez-moi l’adresse de ce que vous avez commencé, c’est un excellent point de départ.' },
-      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: `Oui, sans rien apprendre : vous décrivez le changement dans votre espace client, et il est fait pour vous. C’est compris dans les deux formules, sans limite. ${tranquille.name} le met en ligne sous ${tranquille.delai} au plus, ${evolution.name} en ${evolution.delai} en moyenne.` },
+      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: `Oui, sans rien apprendre : vous décrivez le changement dans votre espace client, et il est fait pour vous. C’est compris dans l’abonnement, sans limite de nombre.` },
       { q: 'Combien de temps faut-il pour faire un site seul ?', a: 'Cela dépend beaucoup de chacun. Le montage lui-même va assez vite. Ce qui prend du temps, ce sont les textes, le choix des photos et tous les petits réglages auxquels on ne pense pas au départ.' },
     ],
     voir: ['prix-site-internet', 'site-une-page-ou-site-vitrine', 'site-internet-auto-entrepreneur'],
@@ -476,7 +476,7 @@ Vous le gardez. Il suffit de l'indiquer à la commande, et je le relie à votre 
 
 ## Qui s'occupe du renouvellement ?
 
-C'est le piège classique : on oublie l'échéance, le nom expire, et le site disparaît du jour au lendemain. Si vous me confiez la mise en ligne, le nom de domaine est offert la première année (hors boutique en ligne). Ensuite, votre [formule au mois](/tarifs/) le prend en charge : il reste à votre nom, et je le renouvelle pour vous chaque année. Vous n'avez aucune date à surveiller.`,
+C'est le piège classique : on oublie l'échéance, le nom expire, et le site disparaît du jour au lendemain. Si vous me confiez la mise en ligne, le nom de domaine est offert la première année (hors boutique en ligne). Ensuite, votre [abonnement](/tarifs/) le prend en charge : il reste à votre nom, et je le renouvelle pour vous chaque année. Vous n'avez aucune date à surveiller.`,
     faq: [
       { q: 'Le nom que je voulais est déjà pris, que faire ?', a: 'Essayez une variante simple : ajouter votre ville, votre prénom ou votre métier. Évitez seulement de changer une lettre par rapport à un concurrent, cela crée de la confusion pour vos clients.' },
       { q: 'Dois-je prendre le .fr et le .com en même temps ?', a: 'Ce n’est pas nécessaire pour démarrer. Un seul nom bien choisi suffit à la grande majorité des petites entreprises.' },
@@ -532,7 +532,7 @@ Veillez justement à ce que le nom, l'adresse et le téléphone soient écrits *
 
 ## Ce que je fais pour vous
 
-Chaque site que je crée affiche une carte Google qui mène jusqu'à vous, et décrit votre activité dans un format que Google sait lire. Ce sont les bases du SEO, l'ensemble de ce qui aide un site à être trouvé sur Google, et elles sont comprises dans la création.
+Sur chaque site que je crée, votre nom, votre adresse et votre téléphone sont écrits comme sur votre fiche, et votre activité est décrite dans un format que Google sait lire. Cela fait partie du SEO, l'ensemble de ce qui aide un site à être trouvé sur Google.
 
 Pour aller plus loin, ${qui('etoile')} de ma petite bande, prépare des pages SEO sur les recherches de votre secteur, et je les relis. C'est ainsi que se construit votre [référencement local](/referencement-seo/), votre place sur Google près de chez vous.`,
     faq: [
@@ -593,7 +593,7 @@ Vendre en ligne à des particuliers impose quelques obligations : afficher des *
 ## Combien ça coûte
 
 - **Création de la boutique : ${eur(prixBoutique)} €**. C'est le prix du site, ${eur(creation.prix)} €, et ${eur(creation.boutique)} € pour l'option boutique en ligne : le catalogue, le panier, le paiement en ligne, la gestion des commandes et les e-mails automatiques. Vous réglez ${acompte(prixBoutique)} € à la commande et ${reste(prixBoutique)} € à la réception.
-- **Une formule au mois**, si vous me confiez la mise en ligne, la même que pour un site sans boutique : ${eur(tranquille.month)} € avec ${tranquille.name}, ou ${eur(evolution.month)} € avec ${evolution.name}. Elle garde votre boutique en ligne et en bon état : l'hébergement (l'endroit où elle reste accessible 24 h/24), son adresse, des copies de sécurité régulières et les vérifications techniques. Le détail est sur la page [tarifs](/tarifs/).
+- **L'abonnement**, si vous me confiez la mise en ligne, le même que pour un site sans boutique : ${eur(tranquille.month)} € par mois. Il garde votre boutique en ligne et en bon état : l'hébergement (l'endroit où elle reste accessible 24 h/24), son adresse, des copies de sécurité régulières et les vérifications techniques. Le détail est sur la page [tarifs](/tarifs/).
 
 Le service de paiement prélève de son côté une petite commission sur chaque vente. C'est le cas pour toutes les boutiques en ligne, quelle que soit la solution choisie.
 
@@ -601,7 +601,7 @@ Le service de paiement prélève de son côté une petite commission sur chaque 
 
 Une boutique sans visiteurs ne vend rien. Parlez-en à vos clients actuels, glissez l'adresse dans chaque colis et sur vos emballages, et pensez au [référencement](/referencement-seo/), votre place dans les résultats de recherche : chaque fiche produit bien écrite est une porte d'entrée depuis Google.`,
     faq: [
-      { q: 'Combien de produits puis-je vendre ?', a: 'Vous démarrez avec vos produits phares, mis en ligne avec vous. Ajouter ensuite un produit, avec sa photo et son texte, est une modification comprise dans votre formule. Pour un très grand catalogue dès le départ, on en parle avant : cela se fait sur devis.' },
+      { q: 'Combien de produits puis-je vendre ?', a: 'Vous démarrez avec vos produits phares, mis en ligne avec vous. Ajouter ensuite un produit, avec sa photo et son texte, est une modification comprise dans votre abonnement. Pour un très grand catalogue dès le départ, on en parle avant : cela se fait sur devis.' },
       { q: 'Faut-il un statut d’entreprise pour vendre en ligne ?', a: 'Oui. Vendre régulièrement, même de petites quantités, suppose une activité déclarée, par exemple en micro-entreprise. Renseignez-vous avant d’ouvrir : la démarche est rapide et se fait en ligne.' },
       { q: 'Puis-je garder mon magasin et ajouter une boutique en ligne ?', a: 'Oui, c’est même un très bon cas. La boutique ne voit pas vos ventes au comptoir : quand un article part en magasin, signalez-le depuis votre espace client, et il est retiré du site.' },
     ],

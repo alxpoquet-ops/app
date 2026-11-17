@@ -4,16 +4,17 @@ Ce guide explique, en français simple, comment fonctionne le site www.aled08.fr
 
 ## 1. L'offre, en bref (depuis le 17 novembre 2026)
 
-- **La page de commande, de haut en bas** : le site, l'option boutique, le choix « On s'occupe de tout » ou « Je m'en occupe moi-même », puis (seulement avec « On s'occupe de tout ») le nom de domaine et la formule, et enfin le total avec le paiement (une fois ou étalé) et le code promo.
-- **Le site** : « Site Internet Professionnel », 500 €, jusqu'à 15 pages. Design personnalisé, téléphone et ordinateur, formulaire de contact, carte Google, référencement de base, accompagnement personnalisé, les Minis Monstres. Les pages non utilisées deviennent des pages pour Google (SEO) : par exemple 8 pages pour l'activité, 12 pour Google.
+- **La page de commande, de haut en bas** : le site, l'option boutique, le choix « On s'occupe de tout » ou « Je m'en occupe moi-même », puis (seulement avec « On s'occupe de tout ») le nom de domaine, et enfin le total avec le paiement (une fois ou étalé) et le code promo. Il n'y a plus de formule à choisir : un seul abonnement.
+- **Le site** : « Site Internet Professionnel », 500 €, jusqu'à 15 pages. Design personnalisé, téléphone et ordinateur, formulaire de contact, accompagnement personnalisé, les Minis Monstres. La « carte Google » et le « référencement Google de base » ne sont plus annoncés (retirés le 17 novembre 2026) : ne les promettez pas. Les pages non utilisées deviennent des pages pour Google (SEO) : par exemple 8 pages pour l'activité, 7 pour Google.
 - **Une seule option à la commande** : Boutique en ligne 200 €, payée une fois (catalogue, panier, paiement en ligne, commandes, e-mails automatiques).
 - **Le Pack SEO, plus tard** : 25 € payé une fois, 10 pages SEO en plus. Il ne se choisit plus à la commande (dans `src/config.js`, l'option `packseo` a `quand: 'espace'`). Le client le commande quand il veut depuis son espace client, onglet « Mes demandes ». Le code promo ne s'y applique pas.
-- **« On s'occupe de tout » = une formule au mois, sans engagement.** Nom de domaine (choisi par le client à la commande, réservé à son nom) et hébergement offerts la première année, installation et mise en ligne, puis chaque mois sauvegardes, sécurité, surveillance, maintenance et modifications incluses. Deux formules : Tranquillité 10 € (modifications sous 72 heures au plus) et Évolution 20 € (tout Tranquillité, priorité, 12 à 24 heures en moyenne, une page SEO en plus chaque semaine). À l'année : 2 mois offerts. Le client change de formule lui-même dans « Abonnement et factures » (le prix change à l'échéance suivante).
-- **« Je m'en occupe moi-même » = la création seule (500 €, sans formule)** : rien au mois. Le client gère son nom de domaine et son hébergement (il peut déjà les avoir). Il paie le site comme les autres : acompte 25 %, puis le reste à la réception, en une fois ou en 6 ou 12 fois sans frais (engagement le temps du paiement). L'automate saute le domaine et l'hébergement : la commande passe directement à « Tout est prêt » et vous recevez l'e-mail « CRÉATION SEULE ». À la fin, remettez-lui le code du site : les fichiers et une sauvegarde complète, avec une petite notice d'installation. Il l'installe lui-même ou avec l'aide de son hébergeur, et peut suivre des tutoriels publics gratuits (les guides d'aide de son hébergeur, par exemple). Maintenance, sauvegardes, sécurité et modifications ne sont pas comprises. Il peut prendre une formule plus tard.
+- **« On s'occupe de tout » = l'abonnement, 10 € par mois, sans engagement.** Il n'y en a plus qu'un (nom interne « Tranquillité », `forfaits[0]`, id `base` dans `src/config.js`), et il comprend tout. Nom de domaine (choisi par le client à la commande, réservé à son nom) et hébergement offerts la première année (sauf avec la boutique en ligne), installation et mise en ligne, puis chaque mois sauvegardes, sécurité, surveillance, maintenance, modifications incluses sans limite (12 à 24 heures en moyenne) et une page SEO en plus chaque semaine. À l'année : 2 mois offerts (100 €). Sur le site, on dit « l'abonnement ».
+- **La formule Évolution (20 €) est retirée** depuis le 17 novembre 2026 : plus de choix entre deux formules, plus de « priorité », plus de changement de formule. Tout ce qu'elle apportait (12 à 24 heures en moyenne, une page SEO par semaine) est maintenant dans l'abonnement à 10 €.
+- **« Je m'en occupe moi-même » = la création seule (500 €, sans abonnement)** : rien au mois. Le client gère son nom de domaine et son hébergement (il peut déjà les avoir). Il paie le site comme les autres : acompte 25 %, puis le reste à la réception, en une fois ou en 6 ou 12 fois sans frais (engagement le temps du paiement). L'automate saute le domaine et l'hébergement : la commande passe directement à « Tout est prêt » et vous recevez l'e-mail « CRÉATION SEULE ». À la fin, remettez-lui le code du site : les fichiers et une sauvegarde complète, avec une petite notice d'installation. Il l'installe lui-même ou avec l'aide de son hébergeur, et peut suivre des tutoriels publics gratuits (les guides d'aide de son hébergeur, par exemple). Maintenance, sauvegardes, sécurité et modifications ne sont pas comprises. Il peut prendre l'abonnement plus tard.
 - **Modifications incluses, sans les compter.** Plus d'intervention par trimestre, plus d'intervention en plus à 5 €, plus d'énergie ni de limite de retouches. Le déroulé est dans la partie 9.
-- **Code promo ou parrainage** (l'offre événement est retirée du site) : une seule case, au total et sur la page Commander. Un code promo donne 20 % de remise sur la création (le site et la boutique, jamais la formule ni le Pack SEO). Vos codes se règlent dans ALED08 › Réglages › « Codes promo », un par ligne. Il n'y a plus de code par défaut : tant que la liste est vide, aucun code promo ne marche. Le code de parrainage d'un client marche dans la même case : il devient le parrain de la commande (un mois offert à chacun).
-- **Paiement de la création** : 25 % à la commande (site et boutique), le reste à la réception, en une fois ou en 6 ou 12 fois sans frais, avec une formule comme en création seule. Avec une formule et un paiement étalé, la formule est payée au mois. Parrainage : 1 mois offert pour vous deux. Deuxième site : 10 % de remise.
-- **Les anciens clients** gardent leurs options et extras tant qu'ils ne les retirent pas (ils les voient dans « Abonnement et factures », seulement pour les retirer). Leur abonnement devient la formule Tranquillité.
+- **Code promo ou parrainage** (l'offre événement est retirée du site) : une seule case, au total et sur la page Commander. Un code promo donne 20 % de remise sur la création (le site et la boutique, jamais l'abonnement ni le Pack SEO). Vos codes se règlent dans ALED08 › Réglages › « Codes promo », un par ligne. Il n'y a plus de code par défaut : tant que la liste est vide, aucun code promo ne marche. Le code de parrainage d'un client marche dans la même case : il devient le parrain de la commande (un mois offert à chacun).
+- **Paiement de la création** : 25 % à la commande (site et boutique), le reste à la réception, en une fois ou en 6 ou 12 fois sans frais, avec l'abonnement comme en création seule. Avec l'abonnement et un paiement étalé, l'abonnement est payé au mois. Parrainage : 1 mois offert pour vous deux. Deuxième site : 10 % de remise.
+- **Les anciens clients** gardent leurs options et extras tant qu'ils ne les retirent pas (ils les voient dans « Abonnement et factures », seulement pour les retirer). Un abonnement déjà en cours continue à son prix actuel (c'est ce que disent les CGV, article 7). Un client qui avait la formule Évolution est lu par l'extension comme l'abonnement unique, et son prix Stripe ne change pas tant que vous ne le modifiez pas.
 
 Les repères de prix du marché et la comparaison des assistants IA sont dans `docs/prix-et-ia-2026.md`.
 
@@ -35,9 +36,9 @@ Une pastille rouge sur le menu ALED08 indique le nombre de commandes à traiter.
 
 ## 3. Une commande, de A à Z
 
-Le paiement en deux temps : le client paie 25 % de la création à la commande (boutique en ligne comprise s'il l'a prise, rien d'autre : le Pack SEO se commande plus tard depuis l'espace client). À la réception du site (statut « En ligne »), il choisit dans son espace, onglet « Ma commande » : le reste en une fois, ou en 6 ou 12 fois sans frais (engagement le temps de payer). C'est vrai aussi en création seule. Le même paiement Stripe démarre sa formule, s'il en a une. Sans Stripe, ou s'il paie autrement, bouton « Reste payé (hors Stripe) » dans la fiche ; « Copier un lien de paiement du reste » donne un lien valable 24 heures.
+Le paiement en deux temps : le client paie 25 % de la création à la commande (boutique en ligne comprise s'il l'a prise, rien d'autre : le Pack SEO se commande plus tard depuis l'espace client). À la réception du site (statut « En ligne »), il choisit dans son espace, onglet « Ma commande » : le reste en une fois, ou en 6 ou 12 fois sans frais (engagement le temps de payer). C'est vrai aussi en création seule. Le même paiement Stripe démarre son abonnement, s'il en a un. Sans Stripe, ou s'il paie autrement, bouton « Reste payé (hors Stripe) » dans la fiche ; « Copier un lien de paiement du reste » donne un lien valable 24 heures.
 
-Le client ajoute ou retire ses extras quand il veut (« Abonnement et factures », dans Mon compte) : l'abonnement Stripe est mis à jour, le nouveau prix s'applique à l'échéance suivante, et vous recevez un e-mail.
+Un ancien client retire ses anciens extras quand il veut (« Abonnement et factures », dans Mon compte) : l'abonnement Stripe est mis à jour, le nouveau prix s'applique à l'échéance suivante, et vous recevez un e-mail. Aucun extra ne s'ajoute plus.
 
 
 ### Ce qui se passe tout seul
@@ -148,9 +149,9 @@ Faites tout d'abord en **mode test** (clés `sk_test_` et webhook créé en mode
 
 ### 5.5 Comment Stripe facture une commande
 
-- **À la commande** : l'acompte de 25 % (boutique comprise si elle est choisie), payé une fois. Le Pack SEO ne se prend plus à la commande : le client le commande plus tard depuis « Mes demandes », et il s'ajoute à sa prochaine facture Stripe (sans formule, vous le facturez à la main).
-- **À la réception** : le reste, en une fois, ou en 6 ou 12 fois sans frais (prix divisé par 6 ou 12, arrondi au centime inférieur). Avec une formule, tout est dans un seul abonnement Stripe : la formule et, s'il y a lieu, la ligne des mensualités du site. En création seule, l'abonnement ne porte que les mensualités, ou bien c'est un simple paiement si le reste est réglé en une fois.
-- **Fin du paiement en plusieurs fois** : l'extension compte les mensualités payées (« Lissage : 4 / 12 payées » dans la fiche et le tableau de bord). Après la dernière, la ligne des mensualités est retirée de l'abonnement : il ne reste que la formule, sans engagement. En création seule, l'abonnement entier s'arrête tout seul.
+- **À la commande** : l'acompte de 25 % (boutique comprise si elle est choisie), payé une fois. Le Pack SEO ne se prend plus à la commande : le client le commande plus tard depuis « Mes demandes », et il s'ajoute à sa prochaine facture Stripe (sans abonnement, vous le facturez à la main).
+- **À la réception** : le reste, en une fois, ou en 6 ou 12 fois sans frais (prix divisé par 6 ou 12, arrondi au centime inférieur). Avec l'abonnement, tout est dans un seul abonnement Stripe : la ligne de l'abonnement au mois et, s'il y a lieu, la ligne des mensualités du site. En création seule, l'abonnement ne porte que les mensualités, ou bien c'est un simple paiement si le reste est réglé en une fois.
+- **Fin du paiement en plusieurs fois** : l'extension compte les mensualités payées (« Lissage : 4 / 12 payées » dans la fiche et le tableau de bord). Après la dernière, la ligne des mensualités est retirée de l'abonnement : il ne reste que l'abonnement au mois, sans engagement. En création seule, l'abonnement entier s'arrête tout seul.
 - Les factures Stripe apparaissent dans l'espace client dès qu'elles sont payées.
 
 ## 6. Le portail client Stripe
@@ -159,7 +160,7 @@ Le bouton « Gérer mon paiement et mes factures » de l'espace client ouvre le 
 
 1. Stripe : **Paramètres › Facturation › Portail client**.
 2. Autorisez : **mettre à jour le moyen de paiement**, **consulter l'historique des factures**.
-3. N'autorisez PAS : annuler l'abonnement, changer d'offre, modifier la quantité. L'engagement pendant le paiement en plusieurs fois et les changements de forfait passent par vous (le client vous écrit, vous ajustez l'abonnement dans Stripe).
+3. N'autorisez PAS : annuler l'abonnement, changer d'offre, modifier la quantité. L'engagement pendant le paiement en plusieurs fois et les changements d'abonnement (passage du mois à l'année, par exemple) passent par vous (le client vous écrit, vous ajustez l'abonnement dans Stripe).
 4. Enregistrez. Le lien du portail est créé à chaque clic et expire en 5 minutes : il n'y a rien à copier.
 
 ## 7. Les factures : mention TVA et SIRET
@@ -190,9 +191,9 @@ Depuis le 17 novembre 2026, les modifications sont incluses et le client ne choi
 1. Le client écrit sa demande dans « Mes demandes » (avec des photos s'il veut).
 2. Bricou prépare la modification tout de suite, en tâche de fond, et un aperçu.
 3. Le client regarde l'aperçu et clique « Oui, c'est bon » (ou « Non, ce n'est pas ça » : la demande vous revient, avec son commentaire).
-4. Vous recevez l'e-mail « Modification à valider » avec deux liens : « Valider maintenant » ou « Refuser, je reprends la main ». Avec la formule Évolution, le sujet commence par PRIORITAIRE.
+4. Vous recevez l'e-mail « Modification à valider » avec deux liens : « Valider maintenant » ou « Refuser, je reprends la main ».
 5. Sans refus de votre part sous 30 minutes, la modification est mise en ligne toute seule, et le client reçoit « Votre modification est en ligne ».
-6. Si Bricou ne peut pas faire la demande (trop grande, floue, site pas relié), elle vous revient : vous la faites à la main, sous 72 heures (12 à 24 heures en moyenne pour Évolution).
+6. Si Bricou ne peut pas faire la demande (trop grande, floue, site pas relié), elle vous revient : vous la faites à la main. Le délai annoncé aux clients est de 12 à 24 heures en moyenne, pour tous.
 
 Dans la fiche d'une demande, l'état « en attente de votre validation » veut dire que le client a dit oui et que les 30 minutes courent.
 
@@ -200,7 +201,7 @@ Dans la fiche d'une demande, l'état « en attente de votre validation » veut d
 
 Quand le client choisit « Cerise, instantané », Cerise prépare la modification toute seule, en tâche de fond, en une à deux minutes. Rien ne change encore sur le site : le client reçoit un e-mail, ouvre « Voir l’aperçu » (sa vraie page, avec un bandeau « Aperçu »), puis clique « Oui, mettre en ligne » ou « Non, ce n’est pas ça ». Oui : c’est mis en ligne et vous recevez « Cerise a mis en ligne une modification à vérifier ». Non : la demande vous revient, avec son commentaire. L’aperçu reste valable 21 jours.
 
-Avec Alex, la réponse annoncée est sous 72 heures (sous 24 heures avec l'extra payé), et l'abonnement comprend une intervention par trimestre.
+Avec Alex, les modifications sont annoncées en 12 à 24 heures en moyenne, sans limite de nombre (plus d'intervention par trimestre ni d'extra « sous 24 heures »).
 
 Ce qu'elle sait faire : changer un texte (horaires, prix affiché, phrase), modifier le contenu ou le titre d'une page, publier une actualité, ajouter la photo jointe, changer le nom ou le slogan du site. Ce qu'elle ne fait jamais : supprimer, toucher aux extensions, au thème, aux comptes, aux prix d'une boutique, aux CGV ou mentions légales. Si la demande est floue ou risquée, elle ne touche à rien et vous la passe (e-mail « Cerise vous passe une demande »). Le jeton n'est alors pas compté : la demande devient une modification d'Alex.
 

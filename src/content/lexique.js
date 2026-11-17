@@ -6,11 +6,11 @@ const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const T = (id) => types.find((t) => t.id === id);
 const O = (id) => options.find((o) => o.id === id);
 const page = T('une-page');
-// L'offre unique : un seul abonnement, et des extras au mois (Suivi Google, Chiffres détaillés, Adresse e-mail pro).
+// L'offre unique : un seul abonnement (forfaits[0]), qui comprend tout, dont une page SEO par semaine. Les anciens extras
+// au mois (Suivi Google, Chiffres détaillés, Adresse e-mail pro) ne sont plus proposés depuis le 17 novembre 2026.
 // V2 (novembre 2026) : Alex fait chaque site, sa petite bande d'automatisations (des petits monstres) s'occupe du
 // répétitif. « Chez les Minis Monstres » reste : c'est le nom de la marque. Petites retouches et outils compris pour un usage normal.
 const abo = forfaits[0];
-const seo = O('seo'), stats = O('stats'), mail = O('mail');
 
 const PUBLIE = '2026-11-15';
 
@@ -105,7 +105,7 @@ Un traiteur partage un serveur bas de gamme avec des centaines d'autres sites. U
 
 ## Chez les Minis Monstres
 
-Je m'occupe du serveur pour vous. Avec l'abonnement, votre site tourne sur une machine de qualité qui tient les pics de visites. Et si vous êtes curieux de ce qui s'y passe, l'extra ${stats.name} vous montre vos visiteurs heure par heure. Le détail est sur la page des [tarifs](/tarifs/).`,
+Je m'occupe du serveur pour vous. Avec l'abonnement, votre site tourne sur une machine de qualité qui tient les pics de visites. Le détail est sur la page des [tarifs](/tarifs/).`,
     faq: [
       { q: 'Où se trouve physiquement le serveur de mon site ?', a: 'Dans un centre de données, chez un hébergeur. Pour un site qui s’adresse à des clients en France, il vaut mieux un serveur situé en Europe : les pages arrivent plus vite et les règles sur les données sont plus claires.' },
       { q: 'Mon site peut-il tomber en panne si le serveur s’arrête ?', a: 'Oui, c’est pour ça qu’un serveur doit être surveillé et entretenu. Un bon hébergeur répare vite, et une sauvegarde récente permet de tout remettre en place.' },
@@ -425,7 +425,7 @@ Une esthéticienne écrit sur son site « Bienvenue dans mon univers de douceur 
 
 ## Chez les Minis Monstres
 
-Chaque site part avec les bases du SEO. Avec l'extra ${seo.name}, à ${seo.price.month} € par mois, je vais plus loin : je choisis avec vous les mots que tapent vos clients et je travaille votre site chaque mois pour l'aider à monter. Tout est expliqué sur la page [référencement SEO](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
+Sur votre site, les pages que vous n'utilisez pas parmi les ${creation.pages} prévues deviennent des pages SEO, chacune écrite pour une recherche de vos clients. L'[abonnement](/tarifs/) en ajoute ensuite une nouvelle chaque semaine. Tout est expliqué sur la page [référencement SEO](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
     faq: [
       { q: 'Quelle différence entre SEO et publicité Google ?', a: 'La publicité vous place en haut des résultats tant que vous payez chaque clic. Le SEO vise les résultats gratuits : il demande du travail au départ, mais ne s’arrête pas le jour où vous cessez de payer.' },
       { q: 'Au bout de combien de temps voit-on des effets ?', a: 'Cela dépend de votre métier, de votre ville et de la concurrence. Il faut en général compter plusieurs mois avant de juger. C’est un travail de fond, pas un interrupteur.' },
@@ -473,7 +473,7 @@ Un électricien a déménagé son atelier dans la commune voisine. Sur son site,
 
 ## Chez les Minis Monstres
 
-Je suis installé dans les Ardennes et je travaille avec des entreprises de toute la France. Sur chaque site, je soigne la zone que vous couvrez, et avec l'extra ${seo.name}, je suis votre visibilité locale chaque mois. Plus de détails sur la page [référencement SEO](/referencement-seo/).`,
+Je suis installé dans les Ardennes et je travaille avec des entreprises de toute la France. Sur chaque site, je soigne la zone que vous couvrez, et vos pages SEO peuvent viser les communes où vous travaillez. Plus de détails sur la page [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Faut-il une adresse pour faire du référencement local ?', a: 'Une adresse aide, mais les entreprises qui se déplacent chez le client peuvent aussi définir une zone desservie sur leur fiche, sans afficher leur domicile.' },
       { q: 'Le site ou la fiche Google : lequel compte le plus ?', a: 'Les deux travaillent ensemble. La fiche vous place sur la carte, le site donne les détails et rassure. Une fiche qui renvoie vers un bon site est plus convaincante qu’une fiche seule.' },
@@ -521,7 +521,7 @@ Dans la [balise title](/lexique/balise-title/), dans le grand titre de la page, 
 
 ## Chez les Minis Monstres
 
-Avec l'extra ${seo.name}, le choix des mots-clés se fait ensemble : je vous propose les recherches qui comptent pour votre métier et votre zone, puis je les travaille page après page. La méthode complète est sur [référencement SEO](/referencement-seo/).`,
+Pour vos pages SEO, dont celle que l'abonnement ajoute chaque semaine, je choisis avec vous les recherches qui comptent pour votre métier et votre zone. La méthode complète est sur [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de mots-clés par page ?', a: 'Une page doit viser un sujet principal, avec son mot-clé et quelques variantes proches. Si vous voulez couvrir un autre sujet, mieux vaut lui donner sa propre page.' },
       { q: 'Faut-il viser les mots-clés les plus recherchés ?', a: 'Pas forcément. Pour une petite entreprise, des expressions plus précises, avec votre ville ou un service particulier, attirent souvent des visiteurs plus prêts à vous contacter.' },
@@ -571,7 +571,7 @@ Un menuisier a cinq pages, et toutes portent le même title : « Accueil ». Dan
 
 ## Chez les Minis Monstres
 
-J'écris le title de chaque page à la création, avec le bon [mot-clé](/lexique/mot-cle/) et votre nom. Il fait partie des bases du SEO, comprises pour chaque site. Pour la petite phrase qui s'affiche juste en dessous dans Google, voyez la [meta description](/lexique/meta-description/).`,
+J'écris le title de chaque page à la création, avec le bon [mot-clé](/lexique/mot-cle/) et votre nom. C'est l'un des premiers gestes du SEO. Pour la petite phrase qui s'affiche juste en dessous dans Google, voyez la [meta description](/lexique/meta-description/).`,
     faq: [
       { q: 'Le title et le titre de la page sont-ils la même chose ?', a: 'Pas tout à fait. Le title s’affiche dans Google et dans l’onglet, le grand titre s’affiche sur la page. Ils peuvent se ressembler, mais le title est souvent plus court et contient le nom de l’entreprise.' },
       { q: 'Changer un title peut-il changer ma place dans Google ?', a: 'Cela peut jouer, en bien ou en mal, et il faut quelques jours ou semaines pour que Google en tienne compte. Mieux vaut le modifier avec une raison claire, pas tous les quatre matins.' },
@@ -704,7 +704,7 @@ Pendant la fabrication d'un site, le prestataire ajoute une ligne qui interdit t
 
 ## Chez les Minis Monstres
 
-Je règle le robots.txt à la mise en ligne de votre site, et je vérifie qu'il laisse bien passer Google sur les pages qui comptent. C'est une petite partie des bases du SEO comprises dans l'[abonnement](/tarifs/). Pour la suite du parcours, lisez la page sur l'[indexation](/lexique/indexation/).`,
+Je règle le robots.txt à la mise en ligne de votre site, et je vérifie qu'il laisse bien passer Google sur les pages qui comptent. C'est un petit réglage, mais tout le reste du SEO en dépend. Pour la suite du parcours, lisez la page sur l'[indexation](/lexique/indexation/).`,
     faq: [
       { q: 'Mon site doit-il avoir un fichier robots.txt ?', a: 'Ce n’est pas obligatoire : sans lui, les robots considèrent qu’ils peuvent tout visiter. En avoir un, bien réglé, permet d’indiquer le sitemap et d’écarter les zones inutiles.' },
       { q: 'Peut-on bloquer les robots qui recopient les textes des sites ?', a: 'Certains de ces robots respectent des consignes données dans le robots.txt, d’autres non. C’est un choix à faire selon votre activité, en sachant que le fichier reste une demande et non une barrière.' },
@@ -754,7 +754,7 @@ Tapez dans Google site: suivi de votre adresse, sans espace, par exemple site:vo
 
 ## Chez les Minis Monstres
 
-À la mise en ligne, je déclare votre site à Google et je surveille que les pages importantes entrent bien dans l'index. Si vous prenez l'extra ${seo.name}, cette surveillance continue chaque mois, avec le reste du travail détaillé sur [référencement SEO](/referencement-seo/).`,
+À la mise en ligne, je déclare votre site à Google et je surveille que les pages importantes entrent bien dans l'index. La suite du travail est détaillée sur [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de temps faut-il pour qu’une page soit indexée ?', a: 'Cela varie de quelques jours à quelques semaines, selon la notoriété du site et la façon dont la page est reliée. Un sitemap déclaré et un lien depuis une page déjà connue aident à aller plus vite.' },
       { q: 'Peut-on demander à Google d’indexer une page ?', a: 'Oui, depuis la Search Console, avec l’outil d’inspection d’adresse. C’est une demande : Google reste libre de garder la page ou non.' },
@@ -807,7 +807,7 @@ Un apiculteur vend son miel sur les marchés. Il demande au site du marché de p
 
 ## Chez les Minis Monstres
 
-Avec l’extra ${seo.name}, les liens font partie du travail de chaque mois : je vous aide à repérer les liens locaux qui ont du sens pour vous, jamais des liens achetés pour tromper Google. La démarche complète est sur [référencement SEO](/referencement-seo/).`,
+Je n'achète jamais de liens pour tromper Google. Si vous travaillez avec des partenaires locaux, un lien de leur site vers le vôtre a du sens : pensez à le leur demander. La démarche complète est sur [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Les liens depuis les réseaux sociaux comptent-ils ?', a: 'Ils amènent des visiteurs, ce qui est déjà bien, mais Google leur accorde en général peu de poids pour le classement. Ils restent utiles pour faire connaître votre site.' },
       { q: 'Un mauvais lien peut-il me faire du tort ?', a: 'Un lien isolé venant d’un site douteux n’a en général pas d’effet, Google sait l’ignorer. Le risque apparaît quand on cherche à tromper avec des liens achetés ou fabriqués en masse.' },
@@ -855,7 +855,7 @@ Un vendeur de bois de chauffage découvre dans la Search Console qu'il apparaît
 
 ## Chez les Minis Monstres
 
-Je relie votre site à la Search Console dès la mise en ligne et je déclare le sitemap. Avec l'extra ${seo.name}, je m'en sers chaque mois pour suivre vos recherches et ajuster vos pages. Voyez aussi la définition de l'[indexation](/lexique/indexation/), et la page [référencement SEO](/referencement-seo/) pour la méthode.`,
+Je relie votre site à la Search Console dès la mise en ligne et je déclare le sitemap. Voyez aussi la définition de l'[indexation](/lexique/indexation/), et la page [référencement SEO](/referencement-seo/) pour la méthode.`,
     faq: [
       { q: 'La Search Console est-elle payante ?', a: 'Non, elle est gratuite pour tous les propriétaires de sites. Il suffit d’un compte Google et de prouver que le site est à vous.' },
       { q: 'Quelle différence avec un outil de statistiques ?', a: 'La Search Console montre ce qui se passe dans Google avant le clic. Un outil de statistiques montre ce que font les visiteurs une fois sur votre site, d’où qu’ils viennent.' },
@@ -1212,7 +1212,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 ## Chez les Minis Monstres
 
-C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'héberge votre site, et ${minus(gardien)}, un petit monstre que j'ai programmé, fait les mises à jour, garde le HTTPS et surveille que tout tourne. Je vérifie ce qu'il fait. Vos changements de contenu passent par l'espace client, où la bande fait les petites retouches en quelques minutes. Pour le reste, j'interviens moi-même une fois par ${abo.periode || 'mois'}, comme prévu dans l'abonnement. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+C'est le cœur de l'[abonnement](/tarifs/). Pour ${abo.month} € par mois, j'héberge votre site, et ${minus(gardien)}, un petit monstre que j'ai programmé, fait les mises à jour, garde le HTTPS et surveille que tout tourne. Je vérifie ce qu'il fait. Vos changements de contenu passent par l'espace client : ils sont compris sans limite, et en ligne en ${abo.delai} en moyenne. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'À quelle fréquence faut-il faire la maintenance ?', a: 'La surveillance doit être continue, et les mises à jour faites dès qu’elles sortent, surtout celles de sécurité. Les autres vérifications peuvent suivre un rythme régulier, par exemple chaque mois.' },
       { q: 'Puis-je faire la maintenance de mon site moi-même ?', a: 'C’est possible si vous avez le temps et les bases techniques. Le plus dur n’est pas de cliquer sur « mettre à jour », mais de savoir quoi faire quand une mise à jour casse quelque chose.' },
@@ -1352,7 +1352,7 @@ Un plaquiste répond aux demandes de devis depuis une adresse gratuite créée i
 
 ## Chez les Minis Monstres
 
-L'adresse e-mail pro est un extra de l'abonnement, à ${mail.price.month} € par mois : une adresse à votre nom de domaine, sur votre téléphone et votre ordinateur. Je fais les réglages pour que vos messages arrivent bien. Elle s'ajoute à votre site sur la page [créer mon site](/creer-mon-site/) ou plus tard depuis votre espace client, et elle se retire aussi simplement. Les messages de votre [formulaire de contact](/lexique/formulaire-de-contact/) peuvent y arriver directement.`,
+La boîte e-mail ne fait pas partie de l'offre. Votre nom de domaine reste à votre nom : vous pouvez y relier des adresses chez le fournisseur de messagerie de votre choix. Les messages de votre [formulaire de contact](/lexique/formulaire-de-contact/) peuvent y arriver directement.`,
     faq: [
       { q: 'Peut-on avoir plusieurs adresses avec le même nom de domaine ?', a: 'Oui, autant que nécessaire en général : une pour les contacts, une pour la facturation, une par personne. Chaque boîte peut avoir un coût selon le fournisseur.' },
       { q: 'Vais-je perdre mes anciens e-mails ?', a: 'Non. Vos anciens messages restent dans l’ancienne boîte. Vous pouvez aussi les transférer ou les garder en parallèle le temps de la transition.' },
@@ -1401,7 +1401,7 @@ Un loueur de vélos pense que ses clients sont surtout des touristes étrangers.
 
 ## Chez les Minis Monstres
 
-Avec l'extra ${stats.name}, à ${stats.price.month} € par mois, vous suivez votre site heure par heure : visiteurs, pages vues, provenance, ventes. Chaque mois, un rapport vous explique simplement ces chiffres. Tout est décrit sur la page des [tarifs](/tarifs/). Pour la partie qui se passe dans Google avant le clic, voyez la [Google Search Console](/lexique/google-search-console/).`,
+L'observatrice de ma petite bande suit les visites de votre site, et je regarde avec elle ce qui peut être amélioré. Pour la partie qui se passe dans Google avant le clic, voyez la [Google Search Console](/lexique/google-search-console/).`,
     faq: [
       { q: 'Les statistiques de visite sont-elles compatibles avec le RGPD ?', a: 'Cela dépend de l’outil et de ses réglages. Certains peuvent fonctionner sans consentement s’ils restent limités à la mesure d’audience, d’autres demandent l’accord du visiteur. La CNIL publie des repères à ce sujet.' },
       { q: 'Quelle différence avec la Search Console ?', a: 'La Search Console parle de votre présence dans Google : recherches, affichages, clics. Les statistiques de visite montrent ce que font les gens une fois arrivés, qu’ils viennent de Google ou d’ailleurs.' },
@@ -1448,7 +1448,7 @@ Le [plan du site](/lexique/sitemap/) aide Google à trouver les pages, mais il n
 
 ## Chez les Minis Monstres
 
-Sur un site vitrine, chaque page parle d'un sujet précis, et je les relie entre elles de façon logique. Avec l'extra ${seo.name}, je reprends ces liens chaque mois, à mesure que vos pages évoluent. La méthode est expliquée sur [référencement SEO](/referencement-seo/).`,
+Sur un site vitrine, chaque page parle d'un sujet précis, et je les relie entre elles de façon logique. Chaque nouvelle page, comme celle que l'abonnement ajoute chaque semaine, rejoint ce réseau de liens. La méthode est expliquée sur [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de liens internes mettre sur une page ?', a: 'Il n’y a pas de chiffre magique. Mettez ceux qui aident vraiment le lecteur à continuer. Sur une page de service, quelques liens bien placés suffisent en général.' },
       { q: 'Le menu compte-t-il comme lien interne ?', a: 'Oui. Les liens du menu et du pied de page sont des liens internes. Ceux placés dans le texte ont souvent plus de poids, parce qu’ils sont entourés de mots qui expliquent leur sujet.' },
