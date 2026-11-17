@@ -263,7 +263,7 @@ const BOUTIQUE = types.find((t) => t.id === 'boutique') || {};
 const MONSTRE_OPTION = { packseo: 'etoile', boutique: 'champi' };
 // La petite bande, en cartes : métier, missions et personnalité. complet : avec les missions (pages Équipe et Accueil).
 function bandeGrid({ complet = false, prix = true } = {}) {
-  const prixDe = (b) => (b.option === 'boutique' ? (prix ? `Avec la boutique en ligne, + ${euro(creation.boutique)}` : 'Avec la boutique en ligne') : b.compris ? 'Avec toutes les formules' : '');
+  const prixDe = (b) => (b.option === 'boutique' ? (prix ? `Avec la boutique en ligne, + ${euro(creation.boutique)}` : 'Avec la boutique en ligne') : b.compris ? 'Avec l’abonnement' : '');
   const art = (b) => (b.monstre === 'lia' ? monster('coucou') : petit(b.monstre));
   return `<div class="bande">${bande
     .map((b) => `<div class="bande-carte reveal${b.compris ? ' is-compris' : ''}"><span class="bande-art">${art(b)}</span><strong>${esc(b.nom)}<small>${esc(b.role)}</small></strong>${complet && b.missions ? `<ul class="bande-missions">${b.missions.map((m) => `<li>${esc(m)}</li>`).join('')}</ul><em class="bande-perso">${esc(b.perso)}</em>` : `<span class="bande-fait">${inline(b.court)}</span>`}<em class="bande-prix">${prixDe(b)}</em></div>`)
