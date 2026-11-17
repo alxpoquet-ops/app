@@ -1178,7 +1178,9 @@
       if (reglages.getAttribute('data-max')) champ.maxLength = +reglages.getAttribute('data-max');
       majJetons();
       try {
-        var ancien = JSON.parse(sessionStorage.getItem(cleFil) || '[]');
+        // dans l'espace client, la conversation est gardée côté serveur (elle ne disparaît plus quand on recharge la page)
+        var histo = reglages && reglages.getAttribute('data-histo');
+        var ancien = histo ? JSON.parse(histo) : JSON.parse(sessionStorage.getItem(cleFil) || '[]');
         ancien.forEach(function (m) { ecrire(m[1], m[0] === 'moi' ? 'moi' : 'lia'); });
         if (ancien.length) $$('[data-lia-liens="espace"]', flot).forEach(function (g) { g.hidden = true; });
       } catch (e) {}

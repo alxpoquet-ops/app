@@ -227,7 +227,12 @@ function aled08e_gauge_etape($p) {
     if (in_array($etat, ['en_cours', 'attente_alex', 'refuse', 'pour_alex'], true) || get_post_meta($p->ID, '_aled08_statut', true) === 'encours') return 2;
     return 1;
 }
-function aled08e_demandes_max() { return 3; }
+/* Demandes en même temps : une avec l'abonnement à 10 € (Mini), trois avec celui à 20 € (Maxi) */
+function aled08e_demandes_max($uid = 0) {
+    $uid = $uid ?: get_current_user_id();
+    $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
+    return (!empty($f['optimisation']) || aled08e_famille($uid)) ? 3 : 1;
+}
 /* Le visuel (aperçu sur le vrai site) préparé par Bricou pour une demande, s'il y en a un */
 function aled08e_gauge_apercu($p) {
     foreach ((array) get_post_meta($p->ID, '_aled08_lia_actions', true) as $a) if (is_array($a) && !empty($a['apercu'])) return (string) $a['apercu'];
@@ -235,6 +240,7 @@ function aled08e_gauge_apercu($p) {
 }
 /* La croix pour annuler, au bout de la jauge (mêmes règles que « Annuler la demande » dans l'historique) */
 function aled08e_gauge_croix($p) {
+    return ''; // les clients ne peuvent plus annuler une demande lancée
     if (!function_exists('aled08e_annulation_possible')) return '';
     $pourquoi = aled08e_annulation_possible($p);
     if ($pourquoi === 'deja') return '';
@@ -243,12 +249,12 @@ function aled08e_gauge_croix($p) {
         . '<input type="hidden" name="aled08e_annuler" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_annuler_' . $p->ID, '_aled08e_annul', true, false)
         . '<button class="gauge-x" type="submit" title="Annuler cette demande" aria-label="Annuler cette demande">' . aled08e_icon('x') . '</button></form>';
 }
-function aled08e_gauge_html($uid) {
+function aled08e_gauge_html_ancienne($uid) {
     $liste = aled08e_demandes_en_cours($uid);
     if (!$liste) return '<p class="gauge-vide">' . aled08e_icon('check') . '<span>Aucune demande en cours. Dites à Bricou ce que vous voulez changer : il s’en occupe.</span></p>';
     $etapes = ['Demande reçue', 'Prise en compte', 'Visuel à valider', 'Mise en ligne'];
     $h = '';
-    foreach (array_slice($liste, 0, aled08e_demandes_max()) as $p) {
+    foreach (array_slice($liste, 0, aled08e_demandes_max($uid)) as $p) {
         $n = aled08e_gauge_etape($p);
         $txt = trim(preg_replace('/\s+/u', ' ', $p->post_content));
         $apercu = in_array($n, [3, 4], true) ? aled08e_gauge_apercu($p) : '';
@@ -262,10 +268,12 @@ function aled08e_gauge_html($uid) {
             $h .= '<li class="' . ($i + 1 < $n ? 'is-fait' : ($i + 1 === $n ? 'is-en-cours' : '')) . '">' . $in . '</li>';
         }
         $h .= '</ol>' . aled08e_gauge_croix($p) . '</div>';
+        if (get_post_meta($p->ID, '_aled08_lia_etat', true) === 'question') $h .= '<p class="gauge-a">Bricou vous pose une question : <a href="#req-' . (int) $p->ID . '" data-gauge-vers="' . (int) $p->ID . '">répondre</a>, avec une capture d’écran si vous voulez.</p>';
         if ($n === 3) $h .= '<p class="gauge-a">À vous : ' . ($apercu ? '<a href="' . esc_url($apercu) . '" target="_blank" rel="noopener">voir le visuel</a>, puis ' : '') . 'dites si c’est bon dans l’historique, juste en dessous. Dès que vous validez, Bricou modifie.</p>';
         $h .= '</div>';
     }
-    if (count($liste) >= aled08e_demandes_max()) $h .= '<p class="gauge-max">Trois demandes à la fois : la suivante partira dès qu’une est terminée.</p>';
+    $max = aled08e_demandes_max($uid);
+    if (count($liste) >= $max) $h .= '<p class="gauge-max">' . ($max > 1 ? 'Trois demandes à la fois' : 'Une demande à la fois') . ' avec votre abonnement : la suivante partira dès que ' . ($max > 1 ? 'l’une est terminée.' : 'celle-ci est terminée.') . '</p>';
     return $h;
 }
 function aled08e_bande_haut_html($uid) {
@@ -279,4 +287,57 @@ function aled08e_bande_haut_html($uid) {
     $h = str_replace('<form class="cerise-form" data-cerise-form>', '<div class="dialogue" data-dialogue hidden aria-label="Conversation avec les Minis Monstres"></div><form class="cerise-form" data-cerise-form>', $h);
     foreach ($idees as $i) $h .= '<button type="button" data-cerise-idee>' . esc_html($i) . '</button>';
     return $h . '</div><div class="gauge-bloc" data-gauge aria-live="polite">' . aled08e_gauge_html($uid) . '</div></section>';
+}
+
+/* =========================================================================
+ *  La jauge des demandes (tout se fait depuis la jauge) : « Voir le visuel » ouvre le visuel dans une fenêtre, avec Oui / Non ;
+ *  la question de Bricou aussi. Rien à chercher plus bas dans la page.
+ * ========================================================================= */
+function aled08e_gauge_html($uid) {
+    $liste = aled08e_demandes_en_cours($uid);
+    if (!$liste) return '';
+    $etapes = ['Demande reçue', 'Prise en compte', 'Visuel à valider', 'Mise en ligne'];
+    $h = '';
+    foreach (array_slice($liste, 0, aled08e_demandes_max($uid)) as $p) {
+        $n = aled08e_gauge_etape($p);
+        $etat = (string) get_post_meta($p->ID, '_aled08_lia_etat', true);
+        $txt = trim(preg_replace('/\s+/u', ' ', $p->post_content));
+        $h .= '<div class="gauge"><p class="gauge-t"><strong>' . esc_html(mb_strlen($txt) > 70 ? mb_substr($txt, 0, 67) . '…' : $txt) . '</strong></p><ol class="gauge-etapes" style="--n:' . (int) $n . '">';
+        foreach ($etapes as $i => $e) {
+            $in = '<b>' . ($i + 1 < $n ? '✓' : $i + 1) . '</b><span>' . esc_html($e) . '</span>';
+            if ($i === 2 && $etat === 'a_confirmer') $in = '<button type="button" class="gauge-visuel" data-gauge-ouvrir="visuel-' . (int) $p->ID . '" title="Voir le visuel à valider"><s class="gauge-tache" aria-hidden="true"></s>' . $in . '</button>';
+            $h .= '<li class="' . ($i + 1 < $n ? 'is-fait' : ($i + 1 === $n ? 'is-en-cours' : '')) . '">' . $in . '</li>';
+        }
+        $h .= '</ol>';
+        if ($etat === 'a_confirmer') $h .= '<p class="gauge-a">Bricou a fini : regardez le visuel, puis dites si c’est bon.</p><button type="button" class="btn btn-primary btn-sm gauge-btn" data-gauge-ouvrir="visuel-' . (int) $p->ID . '">' . aled08e_icon('eye') . '<span>Voir le visuel</span></button>';
+        elseif ($etat === 'question') {
+            $q = preg_replace('/^Bricou : /u', '', (string) get_post_meta($p->ID, '_aled08_reponse', true));
+            $h .= '<p class="gauge-a"><b>Bricou vous pose une question :</b> ' . esc_html(mb_substr($q, 0, 220)) . '</p><button type="button" class="btn btn-primary btn-sm gauge-btn" data-gauge-ouvrir="question-' . (int) $p->ID . '">' . aled08e_icon('message-circle') . '<span>Répondre à Bricou</span></button>';
+        }
+        $h .= '</div>';
+    }
+    $max = aled08e_demandes_max($uid);
+    if (count($liste) >= $max) $h .= '<p class="gauge-max">' . ($max > 1 ? 'Trois demandes à la fois' : 'Une demande à la fois') . ' avec votre abonnement : la suivante partira dès que ' . ($max > 1 ? 'l’une est terminée.' : 'celle-ci est terminée.') . '</p>';
+    return $h;
+}
+/* Les fenêtres de la jauge : le visuel à valider (avant / après, aperçu, Oui / Non) et la question de Bricou */
+function aled08e_gauge_modals_html($uid) {
+    $h = '';
+    foreach (array_slice(aled08e_demandes_en_cours($uid), 0, aled08e_demandes_max($uid)) as $p) {
+        $etat = (string) get_post_meta($p->ID, '_aled08_lia_etat', true);
+        if ($etat === 'a_confirmer') {
+            $url = aled08e_gauge_apercu($p);
+            $h .= '<dialog class="visuel-modal" id="visuel-' . (int) $p->ID . '" aria-label="Le visuel à valider"><div class="visuel-tete"><strong>Voici la modification de Bricou</strong><button type="button" class="visuel-x" data-fermer aria-label="Fermer">' . aled08e_icon('x') . '</button></div>'
+                . ($url ? '<iframe class="visuel-cadre" data-src="' . esc_url($url) . '" title="Le site avec la modification" loading="lazy"></iframe><p class="visuel-lien"><a href="' . esc_url($url) . '" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a></p>' : '')
+                . aled08e_lia_bloc_confirmation($p) . '</dialog>';
+        } elseif ($etat === 'question') {
+            $q = preg_replace('/^Bricou : /u', '', (string) get_post_meta($p->ID, '_aled08_reponse', true));
+            $h .= '<dialog class="visuel-modal" id="question-' . (int) $p->ID . '" aria-label="La question de Bricou"><div class="visuel-tete"><strong>Bricou vous pose une question</strong><button type="button" class="visuel-x" data-fermer aria-label="Fermer">' . aled08e_icon('x') . '</button></div>'
+                . '<p class="visuel-question">' . nl2br(esc_html($q)) . '</p>' . aled08e_ech_bloc_question($p) . '</dialog>';
+        }
+    }
+    return $h;
+}
+function aled08e_gauge_zone_html($uid) {
+    return '<section class="gauge-zone" aria-label="Avancement de vos demandes"><div class="gauge-bloc" data-gauge aria-live="polite">' . aled08e_gauge_html($uid) . '</div><div data-gauge-modals>' . aled08e_gauge_modals_html($uid) . '</div></section>';
 }

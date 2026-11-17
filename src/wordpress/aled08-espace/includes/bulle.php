@@ -241,7 +241,7 @@ function aled08e_bulle_repondre($uid, $message) {
 add_action('wp_ajax_aled08e_bulle', function () {
     $uid = get_current_user_id();
     if (!$uid || !check_ajax_referer('aled08e_bulle', '_n', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
-    if (!empty($_POST['nouveau'])) { delete_transient('aled08_bulle_' . $uid); wp_send_json_success(['vide' => true]); }
+    if (!empty($_POST['nouveau'])) { delete_transient('aled08_bulle_' . $uid); delete_user_meta($uid, 'aled08_dialogue'); wp_send_json_success(['vide' => true]); }
     $msg = aled08e_jl_texte(is_scalar($_POST['message'] ?? '') ? wp_unslash($_POST['message'] ?? '') : '');
     $msg = trim(str_replace(['<', '>'], ['‹', '›'], $msg)); // pas de balise dans le message : il est placé entre balises
     $max = (int) aled08e_bulle_cfg()['max'];
@@ -254,6 +254,7 @@ add_action('wp_ajax_aled08e_bulle', function () {
     if ((int) $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, 0)', 'aled08_bulle_' . $wpdb->prefix . $uid)) !== 1) wp_send_json_error(['message' => 'Cerise est déjà en train de vous répondre. Attendez sa réponse.'], 429);
     $r = aled08e_bulle_repondre($uid, $msg);
     if (is_wp_error($r)) wp_send_json_error(['message' => $r->get_error_message(), 'solde' => $r->get_error_code() === 'aled08_jl_solde'], 400);
+    if (function_exists('aled08e_dialogue_ajouter')) { aled08e_dialogue_ajouter($uid, 'moi', $msg); aled08e_dialogue_ajouter($uid, 'lia', (string) ($r['reponse'] ?? '')); } // la conversation survit au rechargement de la page
     wp_send_json_success($r);
 });
 
@@ -266,5 +267,6 @@ function aled08e_bulle_html($uid) {
     return '<div hidden data-lia-chat="' . esc_attr($etat) . '" data-ajax="' . esc_url(admin_url('admin-ajax.php')) . '" data-nonce="' . esc_attr(wp_create_nonce('aled08e_bulle')) . '"'
         . ' data-prix="' . (int) aled08e_bulle_prix() . '" data-solde="' . (int) $e['solde'] . '" data-illimite="' . ($e['illimite'] ? '1' : '0') . '"'
         . (aled08e_energie_on() ? '' : ' data-sans-energie="1"')
+        . ' data-histo="' . esc_attr((string) wp_json_encode(array_values(aled08e_dialogue_lire($uid)), JSON_UNESCAPED_UNICODE)) . '"'
         . ' data-max="' . (int) aled08e_bulle_cfg()['max'] . '" data-prenom="' . esc_attr(aled08e_prenom($u)) . '" data-uid="' . (int) $uid . '"></div>';
 }
