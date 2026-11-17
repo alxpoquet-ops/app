@@ -275,7 +275,7 @@ Les années suivantes, il ne reste que la formule. Payée à l'année, elle vous
 
 ## Pourquoi ces prix sont bas
 
-Ce n'est pas un site au rabais. Fait à la main par une agence ou un indépendant, un site vitrine se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Le mien coûte ${marche.fois} fois moins, et la différence vient de la méthode. C'est moi qui conçois chaque site, mais j'ai pris le temps de programmer une petite bande de monstres qui s'occupe de ce qui revient d'un projet à l'autre. J'ai aussi des accès directs chez des hébergeurs français, sans intermédiaire à payer. Je relis, je corrige et je vérifie tout avant la mise en ligne. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille d'où vient l'écart, et [pourquoi les Minis Monstres](/pourquoi-les-minis-monstres/) présente ma méthode.
+Ce n'est pas un site au rabais. Fait à la main par un indépendant, un site vitrine de ${marche.pagesCompare} pages avec référencement se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €, et une agence demande plus. Le mien coûte ${marche.fois} fois moins, et la différence vient de la méthode. C'est moi qui conçois chaque site, mais j'ai pris le temps de programmer une petite bande de monstres qui s'occupe de ce qui revient d'un projet à l'autre. J'ai aussi des accès directs chez des hébergeurs français, sans intermédiaire à payer. Je relis, je corrige et je vérifie tout avant la mise en ligne. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille d'où vient l'écart, et [pourquoi les Minis Monstres](/pourquoi-les-minis-monstres/) présente ma méthode.
 
 ## Ce qui peut faire monter la note
 

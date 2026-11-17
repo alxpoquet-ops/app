@@ -101,7 +101,11 @@ const evenement = { remise: 20, lieux: ['une foire', 'un marché', 'un salon', '
 // par un indépendant (sources dans docs/prix-et-ia-2026.md). À relire une fois par an.
 // vitrine : site vitrine d'environ cinq pages. boutique : boutique en ligne simple. entretien : maintenance par mois.
 // bas : les offres à bas prix qui existent aussi (plus affichées sur le site depuis novembre 2026, gardées pour mémoire).
-const marche = { vitrineMin: 1500, vitrineMax: 3000, boutiqueMin: 2000, boutiqueMax: 6000, entretienMin: 60, entretienMax: 200, basMin: 400, basMax: 1300, fois: '4 à 5' };
+// Repères de marché pour comparer à prestation égale : un site vitrine de 10 pages AVEC référencement (SEO), en France,
+// en 2026. Indépendant : 1 500 à 5 000 € HT selon les sources, plus 60 à 200 € par page de texte écrit pour Google
+// et 200 à 500 € de réglages SEO ; on retient le cœur de la fourchette, 2 000 à 3 000 €. Agence : 3 000 à 12 000 €,
+// on retient 3 000 à 10 000 €. Sources consultées en novembre 2026 (guides de prix publiés par des prestataires).
+const marche = { pagesCompare: 10, agenceMin: 3000, agenceMax: 10000, vitrineMin: 2000, vitrineMax: 3000, boutiqueMin: 2000, boutiqueMax: 6000, entretienMin: 60, entretienMax: 200, basMin: 400, basMax: 1300, fois: '4 à 5' };
 
 // ---------------------------------------------------------------- types de site (même prix, sauf la boutique)
 const types = [

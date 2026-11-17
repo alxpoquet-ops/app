@@ -2231,3 +2231,5 @@ div.tool { cursor: default; }
 .o-cf .b-label { margin-top: 20px; }
 .o-cf .b-label + .cf-duo { margin-top: 22px; }
 .o-cf .cf-site + .b-label { margin-top: 22px; }
+
+.eco .eco-base { margin: -6px 0 14px; font-weight: 700; color: var(--ink); }

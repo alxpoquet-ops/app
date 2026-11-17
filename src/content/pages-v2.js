@@ -87,7 +87,7 @@ const pages = [
 
 Un site internet, c’est surtout du temps. Quand un indépendant le fait entièrement à la main, il y passe des jours, parfois des semaines : la maquette, la mise en page de chaque écran, les premiers textes, les réglages, les tests. Ce temps a un prix, et c’est lui qui fait la facture.
 
-D’après des repères publics relevés en France, un site vitrine fait par un indépendant coûte en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Son entretien revient souvent entre ${mille(marche.entretienMin)} et ${mille(marche.entretienMax)} € par mois. Ces prix ne sont pas exagérés : ils correspondent au travail fourni.
+D’après des repères publics relevés en France, un site vitrine de ${marche.pagesCompare} pages avec référencement, fait par un indépendant, coûte en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Son entretien revient souvent entre ${mille(marche.entretienMin)} et ${mille(marche.entretienMax)} € par mois. Ces prix ne sont pas exagérés : ils correspondent au travail fourni.
 
 Mon idée est différente. Je passe moins de temps sur ce qui se répète d’un site à l’autre, pour que les petites entreprises et les associations aient elles aussi un site pro, à un prix qu’elles peuvent se permettre.
 
@@ -129,7 +129,7 @@ Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, 
 
 ## Les repères du marché, honnêtement
 
-Face à un site vitrine fait par un indépendant, l’écart est souvent de ${marche.fois} fois.
+Face au même site de ${marche.pagesCompare} pages fait par un indépendant, l’écart est souvent de ${marche.fois} fois.
 
 La différence se joue alors sur ce qui vient avec : la vérification à la main, le suivi après la mise en ligne, et quelqu’un qui vous répond quand vous avez une question.
 

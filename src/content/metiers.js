@@ -100,7 +100,7 @@ Pour aller vite sans bâcler, j’ai programmé cette petite bande de monstres :
 
 ## Combien ça coûte
 
-Un site vitrine confié à un indépendant se paie en général entre ${marcheVitrine}. Le mien revient ${marche.fois} fois moins cher, sans rien enlever à l’essentiel : je gagne du temps sur la technique, jamais sur la relecture.
+Un site vitrine de ${marche.pagesCompare} pages avec référencement, confié à un indépendant, se paie en général entre ${marcheVitrine}. Le mien revient ${marche.fois} fois moins cher, sans rien enlever à l’essentiel : je gagne du temps sur la technique, jamais sur la relecture.
 
 La création coûte ${prix} €, pour ${pagesComprises} pages au plus. Vous versez ${acompte} à la commande, puis le reste à la réception, d’un coup ou en ${durees} fois sans frais. Avec une formule au mois, dès ${eur(tranquille.month)} € et sans engagement, le nom de domaine, l’adresse de votre site, et l’hébergement, qui le garde accessible jour et nuit, sont offerts la première année, sauf avec la boutique en ligne. La formule prend ensuite le relais avec vos modifications. Tout est détaillé sur la page [tarifs](/tarifs/).`,
     faq: [

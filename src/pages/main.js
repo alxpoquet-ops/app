@@ -564,7 +564,7 @@ Un horaire, un prix, une actualité : Bricou prépare le changement et un aperç
 
 ## ${marche.fois} fois moins cher, et sans tour de magie
 
-Un site vitrine commandé à un freelance coûte en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence demande souvent plus. C’est un ordre de grandeur, pas un devis : chaque prestataire a ses prix. Ici, un site vitrine coûte ${euro(creation.prix)}.
+Un site vitrine de ${marche.pagesCompare} pages avec référencement, commandé à un freelance, coûte en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence demande plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. C’est un ordre de grandeur, pas un devis : chaque prestataire a ses prix. Ici, un site vitrine coûte ${euro(creation.prix)}.
 
 La raison est simple. Pour un site vitrine ou une petite boutique, mes automatisations font en quelques heures ce qui prend des jours à la main. Je fais le reste et je contrôle le résultat, page par page. Ces jours en moins, c’est le prix en moins. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).
 
