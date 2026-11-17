@@ -2264,3 +2264,7 @@ a.client-url { text-decoration: none; }
 /* Boutons côte à côte ou empilés (téléphone) : un vrai espace entre eux */
 .more, .doc-more { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px; }
 .more.center, .doc-more.center { justify-content: center; }
+/* Réalisations : sites en cours de création */
+.client-encours { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; padding: 5px 12px; border-radius: 999px; background: var(--surface-2, rgba(255,255,255,.08)); color: var(--c-dd, var(--text)); font-weight: 800; font-size: .88rem; }
+.client-encours .ico { width: 15px; height: 15px; }
+.client-url.is-off { opacity: .7; cursor: default; }

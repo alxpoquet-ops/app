@@ -176,24 +176,6 @@ function estimeClient(c) {
   const creationPrix = creation.prix + supplement + opts.reduce((n, o) => n + o.price.once, 0);
   return { pages, produits, pack, packs, packsPrix, supplement, opts, formule, creationPrix, total: creationPrix + packsPrix };
 }
-const prixTxt = (n) => `${String(n).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} €`;
-function clientPrix(c) {
-  const e = estimeClient(c);
-  if (!e) return '';
-  const parts = [`${prixTxt(creation.prix)} le site`];
-  if (e.supplement) parts.push(`${prixTxt(e.supplement)} la boutique`);
-  e.opts.forEach((o) => parts.push(`${prixTxt(o.price.once)} ${o.name.toLowerCase()}`));
-  if (e.packs) parts.push(`${prixTxt(e.packsPrix)} pour ${e.packs === 1 ? 'un' : e.packs} ${esc(e.pack.name)}`);
-  const detail = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} et ${parts[parts.length - 1]}` : parts[0];
-  const f = e.formule;
-  const formuleTxt = f && (f.pageSeoSemaine || f.priorite) ? ' Les autres pages viennent de l’abonnement, qui en ajoute une chaque semaine.' : '';
-  return `<span class="client-prix"><span class="client-prix-t">Prix estimé au tarif actuel</span><b>${prixTxt(e.total)}</b><span class="client-prix-d">${detail}.${formuleTxt}</span></span>`;
-}
-// Le petit badge de la formule du client
-function clientFormule(c) {
-  const f = forfaits.find((x) => x.id === c.forfait);
-  return f ? `<span class="client-formule c-${f.color}">${icon('repeat')}Abonnement ${esc(f.name)}</span>` : '';
-}
 function clientPages(c) {
   const e = estimeClient(c);
   const n = e ? e.pages : pagesDe(c);
@@ -202,10 +184,13 @@ function clientPages(c) {
   const info = `<a class="client-i" href="${sections.seo.path}" aria-label="Pourquoi chaque page compte : le guide du référencement">${icon('info')}</a>`;
   return `<span class="client-pages"><span class="client-pages-n"><b>${n}</b> page${s_(n)}</span><span class="client-pages-porte">${n} porte${s_(n)} d’entrée potentielle${s_(n)} depuis Google${info}</span>${produits}</span>`;
 }
-function clientCards({ max = 0, desc = true, prix = true } = {}) {
-  const liste = max ? CLIENTS_EN_LIGNE.slice(0, max) : CLIENTS_EN_LIGNE;
+// Les sites en cours de création (pas notre propre site) : même carte, avec un badge « En cours » et sans lien
+const CLIENTS_EN_COURS = clients.filter((c) => c.enCreation && c.url && !c.url.startsWith('/'));
+function clientCards({ max = 0, desc = true, enCours = false } = {}) {
+  const enLigne = max ? CLIENTS_EN_LIGNE.slice(0, max) : CLIENTS_EN_LIGNE;
+  const liste = enCours ? enLigne.concat(CLIENTS_EN_COURS) : enLigne;
   return `<div class="client-cards">${liste
-    .map((c) => `<div class="client-card c-${c.color} reveal"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong>${prix ? clientFormule(c) : ''}${desc ? `<span class="client-desc">${inline(c.desc)}</span>` : ''}${clientPages(c)}${prix ? clientPrix(c) : ''}<a class="client-url" href="${c.url}" target="_blank" rel="noopener">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</a></div>`)
+    .map((c) => `<div class="client-card c-${c.color}${c.enCreation ? ' is-encours' : ''} reveal"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong>${c.enCreation ? `<span class="client-encours">${icon('clock')}En cours de création</span>` : ''}${desc && c.desc ? `<span class="client-desc">${inline(c.desc)}</span>` : ''}${c.enCreation ? '' : clientPages(c)}${c.enCreation ? `<span class="client-url is-off">${icon('globe')}${esc(c.domaine)}</span>` : `<a class="client-url" href="${c.url}" target="_blank" rel="noopener">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</a>`}</div>`)
     .join('')}</div>`;
 }
 
@@ -1261,7 +1246,6 @@ function confiancePage() {
   const crumbs = crumb('confiance');
   const total = CLIENTS_EN_LIGNE.reduce((n, c) => n + pagesDe(c), 0);
   const le = CLIENTS_EN_LIGNE.map((c) => (CLIENTS_PAGES[c.domaine] || {}).le || '').sort().pop();
-  const enCours = clients.filter((c) => c.enCreation && c.url && !c.url.includes('aled08'));
   const body = `${C.pageHero({
     section: 'confiance',
     h1: 'Nos réalisations',
@@ -1270,9 +1254,8 @@ function confiancePage() {
   })}
 <section class="section"><div class="container">
   ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages en ligne sur les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque page utile est une porte d’entrée de plus depuis Google.</span></p>` : ''}
-  ${clientCards()}
-  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille, Pack SEO compris. Ces clients ont l’abonnement, qui ajoute une page pour Google chaque semaine. Les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
-  ${enCours.length ? `<p class="center muted">En ce moment, je prépare aussi ${enCours.map((c) => esc(c.nom)).join(' et ')}.</p>` : ''}
+  ${clientCards({ enCours: true })}
+  <p class="small muted center">Les fiches produits ne comptent pas comme des pages. Les sites en ligne s’ouvrent dans un nouvel onglet.</p>
 </div></section>
 ${METIERS.length ? `<section class="section section-soft"><div class="container">
   <h2 class="section-title">Et pour votre métier ?</h2>
