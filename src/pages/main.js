@@ -173,7 +173,9 @@ function estimeClient(c) {
   const opts = (c.optionsCreation || []).map((id) => options.find((o) => o.id === id)).filter(Boolean);
   const supplement = t.supplement || 0;
   const total = creation.prix + supplement + plus * creation.pagePlus + opts.reduce((n, o) => n + o.price.once, 0);
-  return { total, pages, produits, seo, plus, supplement, opts };
+  // avec un code événement : la remise porte sur tout ce qui se paie une fois (site, boutique, options), pas sur la formule
+  const avecCode = Math.round(total * (100 - evenement.remise)) / 100;
+  return { total, avecCode, pages, produits, seo, plus, supplement, opts };
 }
 function clientPrix(c) {
   const e = estimeClient(c);
@@ -184,7 +186,8 @@ function clientPrix(c) {
   if (e.plus) parts.push(`${mille(e.plus * creation.pagePlus)} € pour ${e.plus} page${s_(e.plus)} en plus`);
   const detail = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} et ${parts[parts.length - 1]}` : parts[0];
   const compris = e.seo ? ` Les ${e.seo} pages pour Google sont comprises.` : '';
-  return `<span class="client-prix"><span class="client-prix-t">Prix estimé au tarif actuel</span><b>${mille(e.total)} €</b><span class="client-prix-d">${detail}, puis ${forfaits[0].month} € par mois.${compris}</span></span>`;
+  const code = String(e.avecCode).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return `<span class="client-prix"><span class="client-prix-t">Prix estimé au tarif actuel</span><b>${mille(e.total)} €</b><span class="client-prix-evt">${icon('ticket')}<span>Avec un code événement : <b>${code} €</b>, soit ${evenement.remise} % de moins</span></span><span class="client-prix-d">${detail}, puis ${forfaits[0].month} € par mois.${compris}</span></span>`;
 }
 function clientPages(c) {
   const e = estimeClient(c);
@@ -1264,7 +1267,7 @@ function confiancePage() {
 <section class="section"><div class="container">
   ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages en ligne sur les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque page utile est une porte d’entrée de plus depuis Google.</span></p>` : ''}
   ${clientCards()}
-  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille, d’après les pages en ligne. Les pages faites pour Google sont comprises, et les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
+  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille, d’après les pages en ligne. Avec un code événement (foire, marché, salon), la création coûte ${evenement.remise} % de moins, la formule au mois ne change pas. Les pages faites pour Google sont comprises, et les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
   ${enCours.length ? `<p class="center muted">En ce moment, je prépare aussi ${enCours.map((c) => esc(c.nom)).join(' et ')}.</p>` : ''}
 </div></section>
 ${METIERS.length ? `<section class="section section-soft"><div class="container">

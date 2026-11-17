@@ -2233,3 +2233,7 @@ div.tool { cursor: default; }
 .o-cf .cf-site + .b-label { margin-top: 22px; }
 
 .eco .eco-base { margin: -6px 0 14px; font-weight: 700; color: var(--ink); }
+
+.client-prix-evt { display: flex; gap: 6px; align-items: center; margin: 2px 0 2px; font-size: .9rem; font-weight: 800; color: var(--pink-dd); }
+.client-prix-evt .ico { width: 16px; height: 16px; flex: none; }
+.client-prix-evt b { font-size: 1.05rem; font-weight: 900; }
