@@ -169,7 +169,7 @@ const types = [
 const energieMois = 250;
 // ---------------------------------------------------------------- en pause
 // Novembre 2026 : l'énergie et les outils de l'espace client sont retirés pour l'instant, du site public comme de
-// l'espace client. Cerise (la bulle) et Bricou (les modifications) restent compris, sans énergie : les modifications
+// l'espace client. Cerise (la bulle et les demandes) reste comprise, sans énergie : les modifications
 // sont sans limite, la bulle garde limites.bulleJour messages par jour.
 // Pour tout remettre : outils et energie à true (les textes, l'onglet Outils et la page /outils/ reviennent).
 const enService = { outils: false, energie: false };
@@ -177,7 +177,7 @@ const limites = { bulleJour: 40 }; // messages par jour dans la bulle de Cerise 
 const enPause = !enService.energie;
 // Deux abonnements au mois, sans engagement (17 novembre 2026) : Mini (id 'base', 10 €) et Maxi (id 'evolution', 20 €).
 // illimite : modifications incluses, sans quota (quota et periode ne servent plus que pour les anciens comptes de l'extension).
-// delai : délai court des modifications (ex. « 7 jours ouvrés »). delaiTexte : la phrase complète après « Modifications ».
+// delai : délai court des modifications (ex. « 7 jours »). delaiTexte : la phrase complète après « Modifications ».
 // pageSeo : 'mois' ou 'semaine' (une page pour Google en plus). priorite : passe avant les autres.
 // optimisation : la bande surveille le site et propose des améliorations (Mirette, suggestions dans l'espace client).
 const forfaits = [
@@ -192,15 +192,16 @@ const forfaits = [
     pageSeo: 'mois',
     jetons: energieMois, // énergie (en pause)
     partage: false,
-    delai: '7 jours ouvrés',
-    delaiTexte: 'sous 7 jours ouvrés',
+    delai: '7 jours',
+    delaiTexte: 'faites par Alex sous 7 jours',
+    demandesMax: 1, // demandes en cours en même temps
     bulle: 'Votre site en ligne, protégé et à jour',
     modifs: 'modifications incluses et une page SEO par mois',
     conseil: false,
     tagline: 'Sans engagement',
     pitch: 'Votre site reste en ligne, protégé et à jour. Vos modifications sont incluses, et une nouvelle page pour Google s’ajoute chaque mois.',
-    main: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Maintenance technique', 'Modifications incluses', 'Une page SEO par mois', 'Délai habituel : jusqu’à 7 jours ouvrés', 'Tableau de bord : vos visiteurs et vos pages les plus vues'],
-    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site, à votre nom', 'Sauvegardes : une copie de sécurité de votre site', 'Sécurité : le petit cadenas HTTPS et les protections à jour', 'Maintenance technique : les vérifications qui gardent votre site en forme', 'Modifications incluses, traitées en 7 jours ouvrés au plus', 'Une page SEO en plus chaque mois, pour être trouvé sur plus de recherches Google', 'Tableau de bord : vos visiteurs, d’où ils arrivent et vos pages les plus vues'],
+    main: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Maintenance technique', 'Modifications incluses, faites par Alex sous 7 jours', 'Une demande à la fois', 'Une page SEO par mois', 'Tableau de bord : vos visiteurs et vos pages les plus vues'],
+    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site, à votre nom', 'Sauvegardes : une copie de sécurité de votre site', 'Sécurité : le petit cadenas HTTPS et les protections à jour', 'Maintenance technique : les vérifications qui gardent votre site en forme', 'Modifications incluses : Cerise vous aide à formuler votre demande, Alex la fait sous 7 jours', 'Une demande à la fois', 'Une page SEO en plus chaque mois, pour être trouvé sur plus de recherches Google', 'Tableau de bord : vos visiteurs, d’où ils arrivent et vos pages les plus vues'],
     features: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Maintenance technique', 'Modifications incluses', 'Une page SEO par mois'],
   },
   {
@@ -218,15 +219,16 @@ const forfaits = [
     jetons: energieMois,
     partage: false,
     delai: '48 heures',
-    delaiTexte: 'dans l’heure pour les petites, sous 48 h pour les grosses',
+    delaiTexte: 'faites par Alex sous 48 h',
+    demandesMax: 2, // demandes en cours en même temps
     bulle: 'Votre site qui grandit chaque semaine, avec la bande aux petits soins',
     modifs: 'modifications prioritaires, une page SEO optimisée par semaine et l’optimisation continue',
     conseil: true,
     tagline: 'Sans engagement',
-    pitch: 'Tout Mini, avec vos modifications en priorité, une page SEO optimisée chaque semaine, et la bande qui surveille votre site pour vous proposer des améliorations.',
-    main: ['Tout Mini', 'Modifications prioritaires', 'Petites modifications traitées dans l’heure : texte, photo, coordonnées, horaires, tarif', 'Grosses modifications sous 48 h', 'Une page SEO optimisée par semaine', 'Analyse régulière du site par Mirette', 'Suggestions d’amélioration par la bande', 'Optimisation continue de votre visibilité'],
-    details: ['Tout Mini', 'Modifications prioritaires : vos demandes passent en premier', 'Petites modifications traitées dans l’heure : un texte, une photo, vos coordonnées, vos horaires, un tarif', 'Grosses modifications sous 48 h', 'Une page SEO optimisée chaque semaine', 'Analyse régulière du site par Mirette, l’observatrice de la bande', 'Suggestions d’amélioration par la bande, dans votre espace client', 'Optimisation continue : les Minis Monstres surveillent votre site et proposent régulièrement des améliorations pour votre visibilité'],
-    features: ['Tout Mini', 'Modifications prioritaires', 'Petites modifications dans l’heure', 'Grosses modifications sous 48 h', 'Une page SEO optimisée par semaine', 'Optimisation continue'],
+    pitch: 'Tout Mini, avec vos modifications en priorité sous 48 h, deux demandes à la fois, une page SEO optimisée chaque semaine, et la bande qui surveille votre site pour vous proposer des améliorations.',
+    main: ['Tout Mini', 'Modifications prioritaires, faites par Alex sous 48 h', 'Deux demandes à la fois', 'Une page SEO optimisée par semaine', 'Analyse régulière du site par Mirette', 'Suggestions d’amélioration par la bande', 'Optimisation continue de votre visibilité'],
+    details: ['Tout Mini', 'Modifications prioritaires : vos demandes passent en premier, faites par Alex sous 48 h', 'Deux demandes à la fois', 'Une page SEO optimisée chaque semaine', 'Analyse régulière du site par Mirette, l’observatrice de la bande', 'Suggestions d’amélioration par la bande, dans votre espace client', 'Optimisation continue : les Minis Monstres surveillent votre site et proposent régulièrement des améliorations pour votre visibilité'],
+    features: ['Tout Mini', 'Modifications prioritaires sous 48 h', 'Deux demandes à la fois', 'Une page SEO optimisée par semaine', 'Optimisation continue'],
   },
 ];
 // L'optimisation continue de Maxi, expliquée (page Tarifs, documentation, espace client)
@@ -250,7 +252,7 @@ const annuel = { moisOfferts: 2 };
 // Le paiement en plusieurs fois se fait au mois : l'abonnement passe alors au mois.
 const lissage = { durees: [6, 12] };
 // Délai de réponse aux demandes de modification (le même pour tous).
-const delais = { reponse: '7 jours ouvrés', titan: '72 heures', urgent: '24 heures', evolution: '48 heures' };
+const delais = { reponse: '7 jours', titan: '72 heures', urgent: '24 heures', evolution: '48 heures' };
 
 // ---------------------------------------------------------------- options et extras
 // quand : 'creation' = payé une fois, à la création du site ; 'mois' = extra de l'abonnement, activable et désactivable.
@@ -280,7 +282,7 @@ const options = [
 // automatisations, dessinées en petits monstres (src/lib/bestiaire.js). Chacun s'occupe d'une tâche répétitive mais
 // utile, travaille en autonomie, et Alex vérifie tout ce qu'il fait. C'est ce qui permet un site 4 à 5 fois moins cher.
 // Sur le site public, on ne parle ni d'IA ni de jetons : seulement de ces petits monstres. Chacun a un prénom et UN rôle :
-// un seul pour la bulle (Cerise), un seul pour les modifications (Bricou), un par outil ou par option.
+// Cerise répond et prépare les demandes ; c'est Alex qui fait toutes les modifications (17 novembre 2026).
 // option : l'option au mois qui l'ajoute à votre abonnement. compris : dans l'abonnement de base.
 // outils : il aide aussi le client au quotidien, dans son espace (au service de tous).
 // 17 novembre 2026 : chaque monstre a un métier clair, ses missions et sa personnalité. Sur le site, on ne parle pas d'IA :
@@ -288,13 +290,12 @@ const options = [
 // compris : avec toutes les formules. option : 'boutique' (il arrive avec la boutique en ligne).
 // court / fait : une phrase courte et une phrase complète, reprises par les pages et les FAQ.
 const bandeTout = [
-  { id: 'support', nom: 'Cerise', monstre: 'lia', role: 'La secrétaire', compris: true, missions: ['Accueille vos demandes', 'Organise vos projets', 'Prépare les réponses', 'Vous accompagne pas à pas'], perso: 'Souriante et toujours là, elle n’oublie jamais personne.', court: 'Elle accueille vos demandes et vous accompagne.', fait: 'Elle accueille vos demandes, organise vos projets, prépare les réponses et vous accompagne pas à pas. C’est elle qui vous répond dans la petite bulle.' },
-  { id: 'bricoleur', nom: 'Bricou', monstre: 'bricou', role: 'Le constructeur', compris: true, missions: ['Construit votre site', 'Prépare vos modifications', 'Construit vos nouvelles pages'], perso: 'Minutieux, le casque vissé sur la tête, il mesure deux fois avant de poser une brique.', court: 'Il construit votre site et prépare vos modifications.', fait: 'Il construit votre site, prépare vos modifications avec un aperçu et construit vos nouvelles pages.' },
+  { id: 'support', nom: 'Cerise', monstre: 'lia', role: 'La secrétaire', compris: true, missions: ['Répond à vos questions', 'Vous aide à formuler vos demandes', 'Les transmet à Alex, bien claires', 'Vous accompagne pas à pas'], perso: 'Souriante et toujours là, elle n’oublie jamais personne.', court: 'Elle répond à vos questions et prépare vos demandes pour Alex.', fait: 'Elle répond à vos questions, vous aide à formuler clairement ce que vous voulez changer, vous le fait confirmer, puis le transmet à Alex, qui fait la modification.' },
   { id: 'ecrivain', nom: 'Plume', monstre: 'fantome', role: 'La rédactrice', compris: true, missions: ['Prépare vos contenus', 'Vous aide à écrire vos textes', 'Rend chaque phrase facile à lire'], perso: 'Rêveuse mais précise, elle cherche toujours le mot juste.', court: 'Elle prépare vos textes et les rend faciles à lire.', fait: 'Elle prépare vos contenus, vous aide à écrire vos textes et rend chaque phrase facile à lire.' },
   { id: 'organisateur', nom: 'Mochi', monstre: 'mochi', role: 'L’organisateur', compris: true, missions: ['Classe vos contenus', 'Organise vos pages', 'Garde tout bien rangé'], perso: 'Un peu maniaque, il adore quand chaque chose est à sa place.', court: 'Il classe vos contenus et garde tout bien rangé.', fait: 'Il classe vos contenus, organise vos pages et garde tout bien rangé, pour que vos visiteurs trouvent vite ce qu’ils cherchent.' },
   { id: 'gardien', nom: 'Pistache', monstre: 'dino', role: 'Le gardien', compris: true, missions: ['Fait les sauvegardes', 'Veille sur la sécurité', 'Surveille votre site jour et nuit', 'Fait la maintenance'], perso: 'Costaud et calme, il ne dort que d’un œil.', court: 'Il protège votre site, jour et nuit.', fait: 'Il fait les sauvegardes et la maintenance, veille sur la sécurité et surveille votre site jour et nuit.' },
   { id: 'observateur', nom: 'Mirette', monstre: 'gelee', role: 'L’observatrice', compris: true, missions: ['Surveille vos statistiques', 'Observe la vitesse de votre site', 'Repère ce qui peut être amélioré'], perso: 'Curieuse, elle ne quitte jamais ses jumelles.', court: 'Elle suit vos visites et repère ce qui peut être amélioré.', fait: 'Elle surveille vos statistiques, observe la vitesse de votre site et repère ce qui peut être amélioré.' },
-  { id: 'etoile', nom: 'Lumi', monstre: 'etoile', role: 'L’étoile de Google', compris: true, missions: ['Prépare vos pages SEO', 'Aide Google à comprendre votre site', 'Vous rend plus facile à trouver'], perso: 'Elle brille un peu plus fort chaque fois qu’un client vous trouve.', court: 'Elle prépare vos pages pour être trouvé sur Google.', fait: 'Elle prépare vos pages SEO et aide Google à comprendre votre site, pour que vos clients vous trouvent plus facilement.' },
+  { id: 'etoile', nom: 'Lumi', monstre: 'etoile', role: 'L’étoile de Google', compris: true, missions: ['Analyse votre site', 'Choisit les sujets de vos pages SEO', 'Aide Google à comprendre votre site'], perso: 'Elle brille un peu plus fort chaque fois qu’un client vous trouve.', court: 'Elle analyse votre site et choisit les sujets de vos pages pour Google.', fait: 'Elle analyse votre site et choisit les bons sujets de pages pour Google. Alex écrit et publie ces pages, pour que vos clients vous trouvent plus facilement.' },
   { id: 'vendeur', nom: 'Champi', monstre: 'champi', role: 'Le vendeur', option: 'boutique', missions: ['Range votre catalogue', 'Suit vos commandes', 'Envoie les e-mails à vos clients'], perso: 'Toujours aimable, il connaît chaque produit par cœur.', court: 'Il tient votre boutique en ligne.', fait: 'Avec la boutique en ligne, il range votre catalogue, suit vos commandes et envoie les e-mails à vos clients.' },
 ];
 const bande = bandeTout;
@@ -333,7 +334,7 @@ const aLaDemande = [
   { retire: true, id: 'page', name: 'Une page en plus', prix: creation.pagePlus, icon: 'file-text', desc: 'Une nouvelle page sur votre site, après sa mise en ligne. Je la prépare avec vos textes et vos photos, puis je la publie.' },
   { retire: true, id: 'point', name: 'Un point de 30 minutes ensemble', prix: 15, icon: 'phone', desc: 'Au téléphone ou en visio : on fait le tour de votre site, de vos résultats et de vos idées.' },
   // Le Pack SEO ne se choisit plus à la commande : le client le prend quand il veut, depuis son espace (onglet Mes demandes)
-  { id: 'packseo', name: 'Page SEO supplémentaire', prix: 5, icon: 'search-check', desc: 'Une page de plus, écrite pour une recherche que font vos clients sur Google : un service et une ville, une FAQ, votre métier, une page locale ou un guide. Lumi la prépare, je la relis, puis elle est mise en ligne.' },
+  { id: 'packseo', name: 'Page SEO supplémentaire', prix: 5, icon: 'search-check', desc: 'Une page de plus, écrite pour une recherche que font vos clients sur Google : un service et une ville, une FAQ, votre métier, une page locale ou un guide. Lumi en choisit le sujet, je l’écris et je la mets en ligne.' },
 ];
 // Boost : l'ancien nom de l'intervention d'Alex en plus (gardé pour l'extension WordPress et l'espace client).
 const boost = { prix: aLaDemande[0].prix };

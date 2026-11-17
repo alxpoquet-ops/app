@@ -109,8 +109,8 @@ function aled08e_alex_txt($uid, $f) {
     return ($q === 1 ? 'une intervention' : $q . ' interventions') . ' d’Alex par ' . aled08e_alex_periode($uid);
 }
 /* Les modifications sont incluses, sans limite (abonnements Mini et Maxi).
- * Le client écrit sa demande ; Bricou prépare la modification et un aperçu ; le client regarde l'aperçu ; Alex reçoit la
- * proposition et, sans refus de sa part sous 30 minutes, elle est mise en ligne (includes/lia.php). */
+ * Le client écrit sa demande ; Cerise la précise avec lui et la lui fait confirmer ; Alex la reçoit et fait la modification
+ * (includes/reformulation.php). Mini : sous 7 jours, une à la fois. Maxi : sous 48 h, deux à la fois. */
 function aled08e_modifs_illimitees($uid) { return !empty(aled08e_forfait(aled08e_meta($uid, 'forfait'))['illimite']); }
 function aled08e_modif_delai($f) { return (string) (($f['delai'] ?? '') ?: (aled08e_data()['delais']['reponse'] ?? '72 heures')); }
 /* Le délai en clair : la phrase de l'abonnement (« sous 7 jours ouvrés » avec Mini, « dans l'heure pour les petites, sous 48 h
@@ -171,6 +171,7 @@ require_once __DIR__ . '/includes/provision.php';
 require_once __DIR__ . '/includes/lia.php';
 require_once __DIR__ . '/includes/mcp.php';
 require_once __DIR__ . '/includes/echanges.php';
+require_once __DIR__ . '/includes/reformulation.php';
 require_once __DIR__ . '/includes/compte.php';
 require_once __DIR__ . '/includes/inscription.php';
 require_once __DIR__ . '/includes/changer.php';
@@ -376,18 +377,20 @@ function aled08e_annul_illimite($uid) {
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
     return !empty($f['optimisation']) || aled08e_famille($uid);
 }
-/* Le client peut annuler une demande en cours à tout moment, sans limite (croix de la jauge). Elle est aussi annulée toute seule
- * (aled08e_ech_en_retard, $auto) quand ni Bricou ni Alex n'a répondu sous 24 heures. */
+/* Le client peut annuler une demande tant qu'Alex ne l'a pas commencée (croix de la jauge). Elle est aussi annulée toute seule
+ * (aled08e_ech_en_retard, $auto) quand le client n'a pas répondu à Cerise pendant 7 jours. */
 function aled08e_annuler_demande($pid, $auto = false) {
     $p = get_post($pid);
     if (!$p || $p->post_type !== ALED08E_CPT) return new WP_Error('aled08_annul', 'Demande introuvable.');
     if (get_post_meta($pid, '_aled08_annulee_le', true)) return new WP_Error('aled08_annul', 'deja');
     if (!in_array(get_post_meta($pid, '_aled08_statut', true) ?: 'recue', ['recue', 'encours'], true)) return new WP_Error('aled08_annul', 'terminee'); // seule une demande en cours s'annule
+    if (!$auto && get_post_meta($pid, '_aled08_par', true) === 'alex' && get_post_meta($pid, '_aled08_statut', true) === 'encours') return new WP_Error('aled08_annul', 'commencee'); // Alex a commencé
     $uid = (int) $p->post_author;
     $etat = (string) get_post_meta($pid, '_aled08_lia_etat', true);
+    $chezAlex = get_post_meta($pid, '_aled08_par', true) === 'alex';
     $note = '';
     if (in_array($etat, ['a_confirmer', 'validation'], true) && function_exists('aled08e_lia_appel')) aled08e_lia_appel($uid, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]);
-    if (function_exists('aled08e_mcp_annuler')) aled08e_mcp_annuler($pid); // fait avec le MCP : Bricou remet le site comme avant (rien si aucune modification n'a été faite)
+    if (function_exists('aled08e_mcp_annuler')) aled08e_mcp_annuler($pid); // ancien circuit (MCP) : rien si aucune modification n'a été faite
     wp_clear_scheduled_hook('aled08_valider', [(int) $pid, 'auto']);
     wp_clear_scheduled_hook('aled08_lia_traiter', [(int) $pid]);
     if ($etat === 'fait' && function_exists('aled08e_lia_annuler')) $note = aled08e_lia_annuler($pid);
@@ -400,11 +403,16 @@ function aled08e_annuler_demande($pid, $auto = false) {
     if ($etat) update_post_meta($pid, '_aled08_lia_etat', 'annule');
     update_post_meta($pid, '_aled08_reponse', $resteEnLigne
         ? 'Demande annulée. Ce que les petits monstres avaient publié de nouveau reste en ligne : Alex le retire à la main. ' . (aled08e_energie_on() ? 'L’énergie de cette demande reste comptée.' : 'Elle reste comptée dans vos retouches du mois.')
-        : ($auto ? 'Cette demande n’a pas reçu de réponse sous 24 heures : elle est annulée et ne compte pas. Ce qui avait été modifié est remis comme avant. Vous pouvez la refaire.' : 'Demande annulée. Rien n’a été changé sur votre site, et elle ne compte pas. Vous pouvez en faire une autre quand vous voulez.'));
-    if (!$auto) return true; // annulée par le client : rien à signaler à Alex
+        : ($auto ? 'Cerise n’a pas eu de réponse pendant 7 jours : la demande est annulée et ne compte pas. Vous pouvez la refaire quand vous voulez.' : 'Demande annulée. Rien n’a été changé sur votre site, et elle ne compte pas. Vous pouvez en faire une autre quand vous voulez.'));
     $u = get_userdata($uid);
-    wp_mail(aled08e_to(), 'Demande annulée toute seule (24 h sans réponse) : probable bug', "Ni Bricou ni vous n'avez répondu sous 24 heures.\n\nClient : " . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n"
-        . ($note ? "\nCe que Bricou avait mis en ligne : " . $note . "\n" : '')
+    if (!$auto) {
+        // annulée par le client : Alex n'est prévenu que si elle était déjà chez lui
+        if ($chezAlex) wp_mail(aled08e_to(), 'Demande annulée par ' . ($u ? $u->display_name : 'le client'), "Le client a annulé cette demande avant que vous la commenciez : rien à faire.\n\n" . (trim((string) get_post_meta($pid, '_aled08_resume', true)) ?: $p->post_content) . "\n", aled08e_mail_headers());
+        return true;
+    }
+    if (!$chezAlex) return true; // sans réponse du client à Cerise : rien à signaler
+    wp_mail(aled08e_to(), 'Demande annulée toute seule', "Le client n'a pas répondu pendant 7 jours.\n\nClient : " . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n"
+        . ($note ? "\nNote : " . $note . "\n" : '')
         . (get_post_meta($pid, '_aled08_hors_forfait', true) ? "\nC'était une intervention d'Alex en plus (" . aled08e_boost_txt() . ") : à rembourser ou retirer de sa facture.\n" : '')
         . (aled08e_extras_demande($pid) ? "\nExtras payés à retirer de sa facture : " . aled08e_extras_demande_txt($pid) . "\n" : '')
         . "\nFiche : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
@@ -417,7 +425,7 @@ add_action('template_redirect', function () {
     $p = get_post($pid);
     $ok = $p && (int) $p->post_author === get_current_user_id() && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_aled08e_annul'] ?? '')), 'aled08e_annuler_' . $pid);
     $r = $ok ? aled08e_annuler_demande($pid) : new WP_Error('aled08_annul', 'erreur');
-    $m = !is_wp_error($r) ? 'annul_ok' : ($r->get_error_message() === 'quota' ? 'annul_quota' : ($r->get_error_message() === 'delai' ? 'annul_delai' : 'erreur'));
+    $m = !is_wp_error($r) ? 'annul_ok' : ($r->get_error_message() === 'quota' ? 'annul_quota' : ($r->get_error_message() === 'delai' ? 'annul_delai' : ($r->get_error_message() === 'commencee' ? 'annul_commencee' : 'erreur')));
     wp_safe_redirect(aled08e_url(['m' => $m]) . '#demandes', 303);
     exit;
 }, 4);
@@ -477,7 +485,7 @@ add_action('template_redirect', function () {
     $illimite = aled08e_modifs_illimitees($uid);
     if ($illimite && !$extra) $par = 'lia';
     // Cerise ne peut pas travailler pour ce client (clé Claude absente ou site pas encore relié) : la demande va à Alex, sans jeton
-    $attendu = ($par === 'lia' && !aled08e_lia_prete_pour($uid)) ? aled08e_lia_manque($uid) : '';
+    $attendu = ($par === 'lia' && !aled08e_cer_prete()) ? 'clé Claude ou kit absent : Cerise ne peut pas relire la demande' : '';
     if ($attendu !== '') $par = 'alex';
     // deux compteurs séparés : les modifications par Cerise (forfait + option Cerise +) et celles par Alex
     $famille = aled08e_famille($uid);
@@ -567,12 +575,12 @@ add_action('template_redirect', function () {
         . 'Site     : ' . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\n"
         . 'Délai    : réponse sous ' . $delai . ($urgent ? ' (URGENT)' : '') . ($over ? ' (INTERVENTION EN PLUS : ' . aled08e_boost_txt() . ', ' . (get_post_meta($pid, '_aled08_boost_facture', true) ? 'ajoutée à sa prochaine facture Stripe' : 'à facturer à la main') . ')' : '') . "\n"
         . ($payes ? 'Extras   : ' . aled08e_extras_demande_txt($pid) . "\n" : '')
-        . 'Par      : ' . ($par === 'lia' ? 'Bricou (instantané, avec aperçu à valider)' : 'Alex (modification à la main)' . ($attendu !== '' ? ' : Bricou n’a pas pu la prendre (' . $attendu . '). Elle sera relancée toute seule dès que c’est réglé.' : '')) . "\n"
+        . 'Par      : ' . ($par === 'lia' ? 'Cerise la relit avec le client, puis vous la transmet' : 'Alex' . ($attendu !== '' ? ' (Cerise n’a pas pu la relire : ' . $attendu . ')' : '')) . "\n"
         . ($photo ? "Photo    : $photo\n" : '')
         . "\nDemande :\n$txt\n\n"
         . 'Suivre et répondre : ' . admin_url('post.php?post=' . $pid . '&action=edit') . "\n";
     $sujet = ($urgent ? 'URGENT 24 h, ' : '') . ($extra === 'article' ? 'Article à écrire : ' : ($extra === 'point' ? 'Point avec Alex : ' : ($extra === 'packseo' ? 'Page SEO à préparer : ' : (!empty($_POST['aled08e_msg_id']) ? 'Suggestion acceptée : ' : 'Demande de modification : '))));
-    wp_mail(aled08e_to(), $sujet . $u->display_name, $corps, aled08e_mail_headers($u->display_name . ' <' . $u->user_email . '>'));
+    if ($par !== 'lia') wp_mail(aled08e_to(), $sujet . $u->display_name, $corps, aled08e_mail_headers($u->display_name . ' <' . $u->user_email . '>')); // avec Cerise, Alex reçoit la demande claire à la transmission
     do_action('aled08e_demande_creee', $pid, $par, $uid);
 
     $back($photoFail ? 'photo' : ($extra ? 'extra_ok' : ($over ? 'boost' : ($urgent ? 'urgent_ok' : 'ok'))));
@@ -605,7 +613,7 @@ function aled08e_client_box($post) {
     $jt = aled08e_jetons($f);
     if (aled08e_modifs_illimitees($u->ID)) echo '<p>Abonnement ' . esc_html($f['name']) . ' · modifications incluses' . (aled08e_priorite($u->ID) ? ' · prioritaire' : '') . '</p>';
     else echo '<p>Abonnement · Alex ' . (int) aled08e_count_alex($u->ID) . ' / ' . (int) $f['quota'] . ' ' . esc_html(aled08e_periode_ce($u->ID)) . ' · ' . (aled08e_energie_on() ? 'Énergie ' . (int) aled08e_jl_etat($u->ID, $f)['solde'] . ' restants (' . (int) aled08e_jl_mois($u->ID, $f) . ' par mois)' : 'Retouches de Bricou ' . (int) aled08e_jl_retouches_mois($u->ID) . ' / ' . aled08e_limite('bricouMois', 8) . ' ce mois-ci') . '</p>';
-    $par = get_post_meta($post->ID, '_aled08_par', true) === 'lia' ? 'Bricou (instantané, avec aperçu)' : 'Alex (à la main)';
+    $par = get_post_meta($post->ID, '_aled08_par', true) === 'lia' ? 'Cerise (relit la demande avec le client)' : 'Alex';
     echo '<p><strong>Demandée à : ' . esc_html($par) . '</strong></p>';
     echo '<p><a href="' . esc_url(get_edit_user_link($u->ID)) . '#aled08e">Fiche client</a></p>';
     if (has_post_thumbnail($post)) echo '<p>' . get_the_post_thumbnail($post, 'medium', ['style' => 'max-width:100%;height:auto;border-radius:8px']) . '</p>';
@@ -625,7 +633,7 @@ add_filter('manage_' . ALED08E_CPT . '_posts_columns', function ($c) {
     return ['cb' => $c['cb'] ?? '', 'title' => 'Demande', 'aled08_client' => 'Client', 'aled08_par' => 'Par', 'aled08_statut' => 'Statut', 'date' => 'Date'];
 });
 add_action('manage_' . ALED08E_CPT . '_posts_custom_column', function ($col, $pid) {
-    if ($col === 'aled08_par') echo get_post_meta($pid, '_aled08_par', true) === 'lia' ? '<strong>Bricou</strong>' : 'Alex';
+    if ($col === 'aled08_par') echo get_post_meta($pid, '_aled08_par', true) === 'lia' ? '<strong>Cerise</strong>' : 'Alex';
     if ($col === 'aled08_client') {
         $u = get_userdata(get_post_field('post_author', $pid));
         echo $u ? esc_html($u->display_name) : '';
@@ -659,7 +667,7 @@ function aled08e_fields() {
         'code' => ['Son code de parrainage', 'text', 'Créé automatiquement'],
         'mois_offerts' => ['Mois offerts à utiliser', 'text', '0'],
         'boutique' => ['Boutique en ligne', 'check', 'Oui : le client a une boutique (onglet Vacances, ventes dans le tableau de bord).'],
-        'famille' => ['Famille : modifications illimitées', 'check', 'Oui : modifications par Bricou et par Alex sans limite (affichées ∞ avec un cœur).'],
+        'famille' => ['Famille : modifications illimitées', 'check', 'Oui : modifications sans limite (affichées ∞ avec un cœur).'],
         'alex_mensuel' => ['Une intervention d’Alex chaque mois', 'check', 'Oui : client inscrit avant l’offre V2 (16 novembre 2026), il garde une intervention par mois. Sinon : une par trimestre.'],
         'offert' => ['Abonnement offert à vie', 'check', 'Oui : l’abonnement et ses extras sont gratuits pour ce client, pour toujours. Son compte n’est jamais supprimé automatiquement.'],
         'abonnement_manuel' => ['Abonnement actif hors Stripe', 'check', 'Oui : ce client paie autrement (virement, espèces). Son compte n’est jamais supprimé automatiquement.'],
@@ -1001,18 +1009,19 @@ function aled08e_dashboard() {
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
         'sans_formule' => ['esp-warn', 'Votre site n’a pas d’abonnement : les modifications ne sont pas comprises. Envie d’un abonnement ? Écrivez-moi, je m’en occupe.'],
-        'lia_refait' => ['esp-empty', 'Merci pour vos remarques : Bricou refait une autre version. Vous la voyez ici dans un instant.'],
-        'rep_ok' => ['esp-empty', 'Merci ! Bricou reprend votre demande avec votre réponse.'],
+        'lia_refait' => ['esp-empty', 'Merci pour vos précisions : Cerise reprend votre demande. Vous la voyez ici dans un instant.'],
+        'rep_ok' => ['esp-empty', 'Merci ! Cerise reprend votre demande avec votre réponse.'],
         'rep_vide' => ['esp-warn', 'Écrivez votre réponse ou joignez une capture d’écran, puis envoyez.'],
         'deux_max' => ['esp-warn', (aled08e_demandes_max($uid) > 1 ? 'Trois demandes sont déjà en cours' : 'Une demande est déjà en cours') . ' : c’est le maximum à la fois avec votre abonnement. Dès qu’' . (aled08e_demandes_max($uid) > 1 ? 'une' : 'elle') . ' est terminée, vous pourrez envoyer la suivante.'],
         'trop' => ['esp-warn', 'Vous avez envoyé beaucoup de demandes aujourd’hui. Écrivez-nous par le formulaire de contact si c’est pressé.'],
         'erreur' => ['esp-warn', 'L’envoi n’a pas abouti. Réessayez dans un instant.'],
-        'lia_oui' => ['esp-empty', 'Merci ! Votre modification est en ligne.'],
+        'lia_oui' => ['esp-empty', 'Merci pour vos précisions ! Cerise a transmis votre demande à Alex. Vous suivez l’avancement dans la jauge.'],
         'annul_ok' => ['esp-empty', 'Demande annulée. Elle ne compte pas dans vos interventions.'],
+        'annul_commencee' => ['esp-warn', 'Alex a déjà commencé cette demande : elle ne s’annule plus. Écrivez-lui si besoin, il vous répond vite.'],
         'annul_quota' => ['esp-warn', 'Les demandes lancées ne s’annulent plus.'],
         'annul_delai' => ['esp-warn', 'Les demandes lancées ne s’annulent plus.'],
-        'lia_non' => ['esp-empty', 'Merci pour vos remarques. L’équipe des Minis Monstres reprend votre demande avec soin.'],
-        'lia_erreur' => ['esp-warn', 'La mise en ligne automatique n’a pas abouti : l’équipe des Minis Monstres s’en occupe.'],
+        'lia_non' => ['esp-empty', 'Merci pour vos précisions. Cerise a transmis votre demande à Alex, avec toutes vos remarques.'],
+        'lia_erreur' => ['esp-warn', 'Cette demande a déjà été confirmée. Vous suivez son avancement dans la jauge.'],
     ];
     if (isset($msgs[$m])) $flash = '<p class="' . $msgs[$m][0] . '" role="status">' . esc_html($msgs[$m][1]) . '</p>';
     $flashForfait = '';
@@ -1140,14 +1149,14 @@ function aled08e_dashboard() {
           <h2 class="app-h">Mes demandes</h2>
           <?php echo $flash; // phpcs:ignore ?>
           <?php echo aled08e_gauge_zone_html($uid); // phpcs:ignore ?>
-          <section class="bricou-bloc" aria-label="Bricou, les modifications">
-          <div class="bricou-tete"><span class="bricou-art" aria-hidden="true"><?php echo aled08e_monster('bricou'); // phpcs:ignore ?></span><div><strong>Bricou fait vos modifications</strong><p>Dites ce que vous voulez changer, avec une photo si besoin. Bricou le fait, puis vous validez le visuel.</p></div></div>
+          <section class="bricou-bloc" aria-label="Votre demande de modification">
+          <div class="bricou-tete"><span class="bricou-art" aria-hidden="true"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?></span><div><strong>Une modification ? Dites-le à Cerise</strong><p>Écrivez ce que vous voulez changer, avec une photo si besoin. Cerise vous aide à bien le formuler, vous le fait vérifier, puis le transmet à Alex, qui fait la modification.</p></div></div>
           <?php if (aled08e_sans_formule($uid)) : ?><p class="esp-warn">Votre site n’a pas d’abonnement : les modifications ne sont pas comprises. Vous pouvez quand même commander une page SEO supplémentaire ci-dessous. Envie d’une formule ? Écrivez-moi, je m’en occupe.</p>
           <?php else : ?>
           <?php if ($illimite) : ?>
           <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. C’est compris dans votre formule, sans compter. Vous suivez l’avancement ici.</p>
-          <ol class="req-etapes"><li><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Vous faites votre demande</span></li><li><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>Bricou fait la modification</span></li><li><?php echo aled08e_icon('eye'); // phpcs:ignore ?><span>Vous validez le visuel</span></li><li><?php echo aled08e_icon('check'); // phpcs:ignore ?><span>C’est en ligne</span></li></ol>
-          <p class="app-note"><?php echo aled08e_icon('clock'); // phpcs:ignore ?>Délai : <?php echo esc_html(aled08e_delai_txt($f)); ?>. Si le visuel ne vous convient pas, dites-le : Bricou en refait une autre version.</p>
+          <ol class="req-etapes"><li><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Vous écrivez votre demande</span></li><li><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Cerise la précise avec vous</span></li><li><?php echo aled08e_icon('circle-check'); // phpcs:ignore ?><span>Vous la confirmez</span></li><li><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>Alex fait la modification</span></li></ol>
+          <p class="app-note"><?php echo aled08e_icon('clock'); // phpcs:ignore ?>Modifications <?php echo esc_html(aled08e_delai_txt($f)); ?>, à compter de votre confirmation. <?php echo (int) aled08e_demandes_max($uid) > 1 ? 'Deux demandes à la fois' : 'Une demande à la fois'; ?> avec votre abonnement.</p>
           <?php else : ?>
           <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. Je m’en occupe et vous suivez l’avancement ici. <?php echo esc_html('Dans votre abonnement : des petites retouches avec les petits monstres et ' . aled08e_alex_txt($uid, $f) . ', réponse sous ' . $delai . '.'); ?></p>
           <?php if ($left <= 0 && !$famille) : ?><p class="esp-warn">Votre intervention d’Alex <?php echo esc_html($periodeDu); ?> est utilisée. Besoin d’une de plus ? C’est <?php echo esc_html($boostTxt); ?>, faite par Alex, ajoutée à votre prochaine facture.</p><?php endif; ?>
@@ -1302,9 +1311,9 @@ function aled08e_req_item($p, $full = true) {
     $rep = get_post_meta($p->ID, '_aled08_reponse', true);
     $thumb = $full && has_post_thumbnail($p) ? get_the_post_thumbnail($p, 'thumbnail', ['class' => 'req-thumb', 'alt' => '']) : '';
     $text = $full ? $p->post_content : $p->post_title;
-    return '<li' . ($full ? ' id="req-' . (int) $p->ID . '"' : '') . '>' . $thumb . '<span><strong>' . nl2br(esc_html(mb_strlen($text) > 220 ? mb_substr($text, 0, 217) . '…' : $text)) . '</strong><small>' . (get_post_meta($p->ID, '_aled08_par', true) === 'lia' ? 'par Bricou, ' : 'par Alex, ') . 'envoyée le ' . esc_html(aled08e_date($p->post_date)) . '</small>'
-        . ($full && $rep ? (strpos($rep, 'Bricou : ') === 0
-            ? '<span class="req-reply req-bricou">' . aled08e_monster('bricou') . '<span><b>Bricou</b>' . nl2br(esc_html(substr($rep, strlen('Bricou : ')))) . '</span></span>'
+    return '<li' . ($full ? ' id="req-' . (int) $p->ID . '"' : '') . '>' . $thumb . '<span><strong>' . nl2br(esc_html(mb_strlen($text) > 220 ? mb_substr($text, 0, 217) . '…' : $text)) . '</strong><small>' . (get_post_meta($p->ID, '_aled08_par', true) === 'lia' ? 'avec Cerise, ' : 'pour Alex, ') . 'envoyée le ' . esc_html(aled08e_date($p->post_date)) . '</small>'
+        . ($full && $rep ? (preg_match('/^(Cerise|Bricou) : /u', $rep)
+            ? '<span class="req-reply req-bricou">' . aled08e_monster('mascotte') . '<span><b>Cerise</b>' . nl2br(esc_html(preg_replace('/^(Cerise|Bricou) : /u', '', $rep))) . '</span></span>'
             : '<span class="req-reply">' . nl2br(esc_html($rep)) . '</span>') : '') . '</span><em class="st ' . esc_attr($st[$s][1]) . '">' . esc_html($st[$s][0]) . '</em></li>';
 }
 /* Le contenu du suivi : la liste des demandes (30 dernières, la plus récente en haut) */
@@ -1500,7 +1509,7 @@ add_action('init', function () {
     $titre = 'Vos modifications sont incluses';
     wp_insert_post([
         'post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'post_title' => $titre,
-        'post_content' => 'Plus rien à compter : vos modifications sont comprises dans votre formule. Écrivez votre demande, Bricou prépare un aperçu, vous le regardez, je le vérifie, et c’est en ligne.'
+        'post_content' => 'Plus rien à compter : vos modifications sont comprises dans votre formule. Écrivez votre demande, Cerise vous aide à la formuler, puis je fais la modification.'
             . (($evo['id'] ?? '') === 'evolution' ? ' Besoin d’aller plus vite ? La formule ' . $evo['name'] . ', à ' . aled08e_euro_txt($evo['month']) . ' par mois, traite vos demandes en priorité et ajoute une page pour Google chaque semaine. Elle se choisit dans Mon compte.' : ''),
         'post_author' => $admins ? (int) $admins[0] : 0, 'post_date' => wp_date('Y-m-d H:i:s'),
     ]);

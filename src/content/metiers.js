@@ -4,11 +4,11 @@
 // avis ou chiffre inventé, et pas de phrase de 9 mots ou plus reprise d'une autre page.
 // Offre du 17 novembre 2026 : le Site Internet Professionnel (creation), une seule option à la commande (la boutique en
 // ligne, payée une fois), la Page SEO supplémentaire (options 'packseo', à l'unité) commandée plus tard depuis l'espace
-// client, puis deux abonnements au mois, sans engagement : Mini (id 'base' : modifications sous 7 jours ouvrés, une page
-// SEO par mois) et Maxi (id 'evolution' : petites modifications dans l'heure, grosses sous 48 h, une page SEO par
-// semaine, suggestions de la bande), ou la création seule (le code du site est remis au client).
+// client, puis deux abonnements au mois, sans engagement : Mini (id 'base' : modifications faites par Alex sous 7 jours,
+// une demande à la fois, une page SEO par mois) et Maxi (id 'evolution' : modifications prioritaires sous 48 h, deux
+// demandes à la fois, une page SEO par semaine, suggestions de la bande), ou la création seule (le code du site est remis au client).
 // Le prix bas vient de la petite bande d'Alex : ses automatisations, dessinées en petits monstres (config.bande).
-// Alex fait chaque site, la bande s'occupe du répétitif et Alex vérifie tout. On ne dit jamais « IA ».
+// Alex fait chaque site et toutes les modifications, la bande aide et s'occupe du répétitif. On ne dit jamais « IA ».
 // options : les conseils de la page (« Ce que je vous conseille »). Ids acceptés : 'packseo' (une page SEO à l'unité,
 // commandée plus tard depuis l'espace client : le texte le dit), 'boutique' (option payée une fois, à la commande),
 // 'base' (Mini, pour un site simple qui bouge peu) ou 'evolution' (Maxi, quand les changements sont fréquents ou que la
@@ -19,8 +19,8 @@ const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
 
-const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini : modifications sous 7 jours ouvrés, une page SEO par mois
-const maxi = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1]; // Maxi : petites modifications dans l'heure, une page SEO par semaine
+const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini : modifications par Alex sous 7 jours, une page SEO par mois
+const maxi = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1]; // Maxi : modifications par Alex sous 48 h, une page SEO par semaine
 const prix = eur(creation.prix); // le Site Internet Professionnel
 const prixBoutique = eur(creation.prix + creation.boutique); // le site avec l'option boutique en ligne
 const packSeo = options.find((o) => o.id === 'packseo' && !o.retire) || { name: 'Page SEO supplémentaire' }; // à l'unité, plus tard, depuis l'espace client
@@ -29,7 +29,7 @@ const durees = lissage.durees.join(' ou ');
 const acompte = `${paiement.acompte} %`;
 const marcheVitrine = `${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €`;
 const remise = `${evenement.remise} %`; // le code événement, sur la création du site
-// La petite bande : prénom et métier (« Bricou, le constructeur »).
+// La petite bande : prénom et métier (« Cerise, la secrétaire »).
 const B = (id) => bande.find((b) => b.id === id);
 const qui = (id) => `${B(id).nom}, ${minus(B(id).role)}`;
 
@@ -59,7 +59,7 @@ const metiers = [
       texte: 'Je n’ai pas encore d’artisan parmi mes réalisations. Pour vous donner une idée, voici comment je bâtirais le site d’un couvreur : un accueil avec sa zone et son numéro, une page par prestation (toiture neuve, réparation, zinguerie, démoussage), une galerie de chantiers et un formulaire de devis.',
     },
     options: [
-      { id: 'evolution', pourquoi: 'Chaque semaine, une page SEO sur une prestation ou une commune de votre secteur. Un tarif ou une photo envoyé depuis le chantier est en ligne dans l’heure.' },
+      { id: 'evolution', pourquoi: 'Chaque semaine, une page SEO sur une prestation ou une commune de votre secteur. Un tarif ou une photo envoyé depuis le chantier passe en priorité, en ligne sous 48 h.' },
       { id: 'packseo', pourquoi: 'Une page de plus sur un travail précis que l’on tape sur Google, comme le démoussage d’un toit ou la pose d’une fenêtre de toit. À commander à l’unité, plus tard, depuis votre espace client.' },
     ],
     body: `## Ce que votre client veut savoir en trente secondes
@@ -95,7 +95,7 @@ Pour être trouvé autour de chez vous, le site fait équipe avec votre [fiche G
 
 Vous n’avez ni le temps ni l’envie de gérer un site le soir, et c’est normal. Je rédige les textes avec vous après un court échange, je prépare la mise en page et je mets tout en ligne.
 
-Plus tard, un tarif change ou une nouvelle photo arrive ? Envoyez le changement depuis votre téléphone, dans votre espace client, votre page privée sur mon site. ${qui('bricoleur')} de ma petite bande, prépare la modification, je la vérifie, puis elle part en ligne. C’est compris dans votre abonnement, sans limite : sous ${mini.delai} au plus avec ${mini.name}, et dans l’heure avec ${maxi.name} pour un tarif ou une photo.
+Plus tard, un tarif change ou une nouvelle photo arrive ? Envoyez le changement depuis votre téléphone, dans votre espace client, votre page privée sur mon site. ${qui('support')} de ma petite bande, vous pose les bonnes questions, puis me transmet votre demande. Je fais la modification moi-même. C’est compris dans votre abonnement, sans limite : sous ${mini.delai} au plus avec ${mini.name}, et sous ${maxi.delai} avec ${maxi.name}.
 
 Pour aller vite sans bâcler, j’ai programmé cette petite bande de monstres : ils s’occupent de tout ce qui se répète d’un site à l’autre. Je garde pour moi la conception, puis la relecture de chaque page avant sa mise en ligne. C’est ce qui garde des délais courts et un prix doux.
 
@@ -282,7 +282,7 @@ Côté prix, la création coûte ${prix} € pour la galerie, et ${prixBoutique}
       texte: 'Aucun hébergement ne figure encore parmi mes réalisations. Pour des chambres d’hôtes, je proposerais un accueil avec la plus belle photo, une page pour les chambres et leurs tarifs, une page sur les environs, puis l’accès et une demande de séjour.',
     },
     options: [
-      { id: 'evolution', pourquoi: 'Vos tarifs de saison changent dans l’heure, une page sur les environs s’ajoute chaque semaine, et ma petite bande vous suggère des idées pour être mieux vu des voyageurs.' },
+      { id: 'evolution', pourquoi: 'Vos tarifs de saison passent en priorité, une page sur les environs s’ajoute chaque semaine, et ma petite bande vous suggère des idées pour être mieux vu des voyageurs.' },
       { id: 'packseo', pourquoi: 'Une page de plus sur une randonnée, une visite ou un village voisin, pour croiser la route des voyageurs qui préparent leurs vacances. Elle s’ajoute quand vous voulez, depuis votre espace client.' },
     ],
     body: `## Ce que le voyageur regarde avant de réserver
@@ -307,7 +307,7 @@ Concrètement, le voyageur remplit une demande de séjour : ses dates, le nombre
 
 ## Être trouvé par ceux qui préparent leur séjour
 
-Avant de choisir où dormir, beaucoup de voyageurs cherchent d’abord une région, une randonnée, un lieu à visiter. Votre site compte jusqu’à ${pagesComprises} pages, et celles qui ne servent pas à vos chambres deviennent des pages SEO, des pages écrites pour être trouvé sur Google. Une sur la boucle de randonnée qui part de chez vous, une sur le marché du dimanche, une sur le château voisin. ${qui('etoile')} de ma petite bande, les prépare, et je les relis.
+Avant de choisir où dormir, beaucoup de voyageurs cherchent d’abord une région, une randonnée, un lieu à visiter. Votre site compte jusqu’à ${pagesComprises} pages, et celles qui ne servent pas à vos chambres deviennent des pages SEO, des pages écrites pour être trouvé sur Google. Une sur la boucle de randonnée qui part de chez vous, une sur le marché du dimanche, une sur le château voisin. ${qui('etoile')} de ma petite bande, en choisit les sujets, et c’est moi qui les écris.
 
 ## Les avis et les règles à respecter
 
@@ -319,7 +319,7 @@ Dans le tourisme, les avis pèsent lourd. Publiez seulement de vrais commentaire
 
 La création coûte ${prix} €, avec jusqu’à ${pagesComprises} pages comprises. L’accueil, les chambres, les environs, les tarifs et le contact avec l’accès y tiennent sans peine. Il reste même de la place pour donner sa page à chaque gîte ou à chaque chambre, avec ses photos, sa capacité et ses prix.
 
-Ensuite, l’abonnement au mois, sans engagement, garde le site en ligne et à jour. Le nom de domaine, c’est-à-dire l’adresse du site, et l’hébergement, l’endroit où il reste accessible jour et nuit, sont offerts la première année (pas avec la boutique en ligne), puis pris en charge par l’abonnement. Un tarif d’été ou une date de fermeture ? Vous le demandez, ${B('bricoleur').nom} le prépare, je vérifie, et c’est en ligne. Les modifications sont comprises, sans limite. Avec ${maxi.name}, ce genre de petit changement est fait dans l’heure.`,
+Ensuite, l’abonnement au mois, sans engagement, garde le site en ligne et à jour. Le nom de domaine, c’est-à-dire l’adresse du site, et l’hébergement, l’endroit où il reste accessible jour et nuit, sont offerts la première année (pas avec la boutique en ligne), puis pris en charge par l’abonnement. Un tarif d’été ou une date de fermeture ? Vous le demandez à ${B('support').nom}, elle me le transmet, et je fais le changement. Les modifications sont comprises, sans limite. Avec ${maxi.name}, ce genre de changement est fait sous ${maxi.delai}.`,
     faq: [
       { q: 'Le site peut-il afficher mes disponibilités ?', a: 'Si vous tenez déjà un calendrier en ligne, le site peut y renvoyer. Sinon, la demande de séjour suffit souvent : vous gardez la main sur votre planning et vous confirmez chaque réservation vous-même.' },
       { q: 'J’ai deux gîtes sur le même terrain, faut-il deux sites ?', a: 'Non. Un seul site présente les deux, chacun sur sa page, avec ses photos et ses tarifs. Le voyageur compare d’un coup d’œil, et vous n’avez qu’un abonnement.' },
@@ -352,7 +352,7 @@ Ensuite, l’abonnement au mois, sans engagement, garde le site en ligne et à j
     },
     options: [
       { id: 'boutique', pourquoi: 'Vos clients commandent le soir ou le dimanche, paient en ligne et passent prendre leurs achats au comptoir.' },
-      { id: 'evolution', pourquoi: 'Une fermeture imprévue, des horaires d’été ou une promotion de dernière minute sont en ligne dans l’heure, sans supplément.' },
+      { id: 'evolution', pourquoi: 'Une fermeture imprévue, des horaires d’été ou une promotion de dernière minute passent en priorité, sans supplément.' },
     ],
     body: `## Ce que vos clients vérifient avant de venir
 
@@ -383,7 +383,7 @@ Commencez petit, avec vos produits les plus demandés, ceux qui se gardent et se
 
 Un commerce bouge tout le temps : les horaires d’été, la fermeture d’une semaine en août, la nouvelle gamme, le marché de Noël. Un site qui affiche encore les horaires de l’an dernier déçoit, et le client ne revient pas forcément.
 
-Avec votre abonnement, ces changements ne vous demandent qu’un message dans votre espace client, la page privée où vous suivez votre site. Ce sont des modifications, comprises sans limite : ${B('bricoleur').nom} les prépare, et je les vérifie avant leur mise en ligne. Avec ${maxi.name}, un horaire ou une fermeture est changé dans l’heure. Avec ${mini.name}, comptez ${mini.delai} au plus.
+Avec votre abonnement, ces changements ne vous demandent qu’un message dans votre espace client, la page privée où vous suivez votre site. Ce sont des modifications, comprises sans limite : ${B('support').nom} note bien votre demande, et je la fais à la main. Avec ${maxi.name}, un horaire ou une fermeture est changé sous ${maxi.delai}. Avec ${mini.name}, comptez ${mini.delai} au plus.
 
 ## Combien ça coûte
 
@@ -451,7 +451,7 @@ Pour les bénévoles, une page dédiée change beaucoup de choses. Dites précis
 
 C’est le problème classique : le membre qui avait fait le site s’en va, et plus personne ne sait le modifier. Ici, le site ne dépend d’aucun bénévole. Le président, la secrétaire ou le nouveau trésorier envoie sa demande depuis l’espace client, une page privée réservée à l’association, et je m’en occupe. Quand le bureau change, il suffit de transmettre l’accès.
 
-Une date, un horaire, le bilan de la dernière fête : chaque changement est une modification comprise dans l’abonnement, sans limite. ${qui('organisateur')} de ma petite bande, garde l’agenda dans l’ordre, et je vérifie chaque mise à jour avant sa publication.
+Une date, un horaire, le bilan de la dernière fête : chaque changement est une modification comprise dans l’abonnement, sans limite. C’est moi qui fais chaque mise à jour, et ${qui('organisateur')} de ma petite bande, m’aide à garder l’agenda bien rangé.
 
 ## Un budget qui se vote
 

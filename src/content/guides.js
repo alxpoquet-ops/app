@@ -5,8 +5,8 @@
 // Offre du 17 novembre 2026 : le Site Internet Professionnel (creation), une seule option à la commande (la boutique en
 // ligne, payée une fois), la Page SEO supplémentaire (options 'packseo', à l'unité) commandée plus tard depuis l'espace
 // client, puis « On s'occupe de tout » avec deux abonnements au mois, sans engagement : Mini (id 'base' : modifications
-// sous 7 jours ouvrés, une page SEO par mois) et Maxi (id 'evolution' : petites modifications dans l'heure, grosses sous
-// 48 h, une page SEO par semaine, suggestions de la bande), ou « Je m'en occupe moi-même » (création seule,
+// faites par Alex sous 7 jours, une demande à la fois, une page SEO par mois) et Maxi (id 'evolution' : modifications
+// prioritaires sous 48 h, deux demandes à la fois, une page SEO par semaine, suggestions de la bande), ou « Je m'en occupe moi-même » (création seule,
 // config.creationSeule : le code du site est remis au client).
 // Alex fait chaque site, sa petite bande d'automatisations (config.bande) s'occupe du répétitif. On ne dit jamais « IA ».
 // Chaque mot technique est expliqué la première fois qu'il apparaît dans un guide.
@@ -20,14 +20,14 @@ const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 
 // L'offre : un seul site (jusqu'à creation.pages pages), la boutique en option, des pages SEO à l'unité plus tard, deux
 // abonnements au mois (Mini et Maxi) ou la création seule.
-const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini : modifications sous 7 jours ouvrés, une page SEO par mois
-const maxi = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1]; // Maxi : modifications dans l'heure, une page SEO par semaine
+const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini : modifications par Alex sous 7 jours, une page SEO par mois
+const maxi = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1]; // Maxi : modifications par Alex sous 48 h, une page SEO par semaine
 const packSeo = options.find((o) => o.id === 'packseo' && !o.retire); // la Page SEO supplémentaire, à l'unité
 const prixBoutique = creation.prix + creation.boutique; // le site avec l'option boutique en ligne
 const annee = (f) => f.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const durees = lissage.durees.join(' ou ');
 const restantes = creation.pages - creation.exemplePages; // l'exemple : 8 pages pour l'activité, 7 pour Google
-// La petite bande : prénom et métier (« Bricou, le constructeur »).
+// La petite bande : prénom et métier (« Cerise, la secrétaire »). C'est Alex qui fait toutes les modifications.
 const B = (id) => bande.find((b) => b.id === id);
 const qui = (id) => `${B(id).nom}, ${minus(B(id).role)}`;
 
@@ -64,9 +64,9 @@ La bonne méthode est d'**écrire la carte en vrai texte** sur le site. Elle se 
 
 C'est la vraie difficulté pour un restaurant : le plat du jour, la carte de saison, les congés annuels. Un site qui affiche encore le menu de l'été en plein hiver donne une mauvaise image.
 
-Chez moi, vous ne touchez jamais au site. Vous envoyez la nouvelle carte depuis votre espace client, la page privée où vous faites vos demandes. ${qui('bricoleur')} de ma petite bande d'automatisations, prépare la mise à jour, et je la vérifie avant qu'elle parte en ligne.
+Chez moi, vous ne touchez jamais au site. Vous envoyez la nouvelle carte depuis votre espace client, la page privée où vous faites vos demandes. ${qui('support')} de ma petite bande d'automatisations, vérifie avec vous ce qui change. Puis c'est moi qui mets la carte à jour, à la main.
 
-Ces changements sont compris dans votre abonnement, sans limite. Avec ${mini.name}, la nouvelle carte est en ligne sous ${mini.delai} au plus. Si votre carte bouge chaque semaine, ${maxi.name} suit mieux le rythme : un plat, un prix ou un horaire changé est traité dans l'heure. Les deux abonnements sont présentés sur la page [tarifs](/tarifs/).
+Ces changements sont compris dans votre abonnement, sans limite. Avec ${mini.name}, la nouvelle carte est en ligne sous ${mini.delai} au plus. Si votre carte bouge chaque semaine, ${maxi.name} suit mieux le rythme : un plat, un prix ou un horaire changé est en ligne sous ${maxi.delai}, et vous pouvez envoyer deux demandes à la fois. Les deux abonnements sont présentés sur la page [tarifs](/tarifs/).
 
 ## Quel site choisir ?
 
@@ -257,7 +257,7 @@ Chacune se paie une seule fois.
 **On s'occupe de tout**, avec un abonnement au mois. Je réserve votre nom de domaine à votre nom, j'installe le site et je le mets en ligne. Pour un site sans boutique, le nom de domaine et l'hébergement sont offerts la première année. L'abonnement démarre à la réception du site, et il est sans engagement. Vous avez le choix entre deux abonnements :
 
 - **${mini.name}, ${eur(mini.month)} € par mois** : l'entretien complet (hébergement, nom de domaine, sauvegardes, sécurité, maintenance), vos modifications faites sous ${mini.delai} au plus, et une page SEO de plus chaque mois pour être trouvé sur davantage de recherches.
-- **${maxi.name}, ${eur(maxi.month)} € par mois** : tout ${mini.name}, avec vos modifications en priorité. Un texte, une photo ou un horaire est changé dans l'heure, une modification plus grosse est faite sous ${maxi.delai}. Une page SEO optimisée s'ajoute chaque semaine, et ma petite bande surveille votre site pour vous proposer des améliorations.
+- **${maxi.name}, ${eur(maxi.month)} € par mois** : tout ${mini.name}, avec vos modifications en priorité, faites sous ${maxi.delai}, et deux demandes en cours au lieu d'une. Une page SEO optimisée s'ajoute chaque semaine, et ma petite bande surveille votre site pour vous proposer des améliorations.
 
 Une refonte complète du site, ou une fonction nouvelle, se fait sur devis.
 
@@ -413,14 +413,14 @@ Mon service est né de ce constat. Vous ne construisez rien vous-même, mais vou
 - Le prix est fixe et connu d'avance : ${eur(creation.prix)} € pour le site, puis ${eur(mini.month)} € ou ${eur(maxi.month)} € par mois selon l'abonnement choisi.
 - Vous aimez quand même bricoler ? Avec la création seule, je vous remets le code du site, et vous l'installez chez votre hébergeur.
 - Vous demandez vos changements en une phrase depuis votre espace client, une page privée rien qu'à vous.
-- ${qui('bricoleur')} de ma petite bande, prépare chaque modification, et je la vérifie avant sa publication.
-- Les modifications sont comprises, sans limite : sous ${mini.delai} au plus avec ${mini.name}, dans l'heure pour les petites avec ${maxi.name}.
+- ${qui('support')} de ma petite bande, vous aide à décrire chaque changement, puis me le transmet. C'est moi qui le fais.
+- Les modifications sont comprises, sans limite : sous ${mini.delai} au plus avec ${mini.name}, sous ${maxi.delai} avec ${maxi.name}.
 - Les deux abonnements sont sans engagement.
 
 Pour voir à quoi cela ressemble avant de vous décider, [essayez la démo de l'espace client](/mon-espace/demo/). Et pour une vue d'ensemble des solutions, le [comparatif](/comparatif/) les met côte à côte.`,
     faq: [
       { q: 'J’ai commencé un site moi-même sans le finir, pouvez-vous le reprendre ?', a: 'Je repars d’un site neuf, mais rien n’est perdu : vos textes, vos photos et vos idées servent de base. Envoyez-moi l’adresse de ce que vous avez commencé, c’est un excellent point de départ.' },
-      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: `Oui, sans rien apprendre : vous décrivez le changement dans votre espace client, et il est fait pour vous. C’est compris dans l’abonnement, sans limite de nombre.` },
+      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: `Oui, sans rien apprendre : vous décrivez le changement dans votre espace client, et je le fais pour vous. C’est compris dans l’abonnement, sans limite de nombre.` },
       { q: 'Combien de temps faut-il pour faire un site seul ?', a: 'Cela dépend beaucoup de chacun. Le montage lui-même va assez vite. Ce qui prend du temps, ce sont les textes, le choix des photos et tous les petits réglages auxquels on ne pense pas au départ.' },
     ],
     voir: ['prix-site-internet', 'site-une-page-ou-site-vitrine', 'site-internet-auto-entrepreneur'],
@@ -536,7 +536,7 @@ Veillez justement à ce que le nom, l'adresse et le téléphone soient écrits *
 
 Sur chaque site que je crée, votre nom, votre adresse et votre téléphone sont écrits comme sur votre fiche, et votre activité est décrite dans un format que Google sait lire. Cela fait partie du SEO, l'ensemble de ce qui aide un site à être trouvé sur Google.
 
-Pour aller plus loin, ${qui('etoile')} de ma petite bande, prépare des pages SEO sur les recherches de votre secteur, et je les relis. C'est ainsi que se construit votre [référencement local](/referencement-seo/), votre place sur Google près de chez vous.`,
+Pour aller plus loin, ${qui('etoile')} de ma petite bande, repère les recherches de votre secteur et choisit les sujets des pages SEO. C'est moi qui les écris et les publie. C'est ainsi que se construit votre [référencement local](/referencement-seo/), votre place sur Google près de chez vous.`,
     faq: [
       { q: 'La fiche Google est-elle vraiment gratuite ?', a: 'Oui, sa création et sa gestion ne coûtent rien. Méfiez-vous des démarcheurs qui prétendent vous la vendre ou qui vous réclament un paiement pour la « maintenir en ligne ».' },
       { q: 'Je travaille de chez moi, dois-je afficher mon adresse ?', a: 'Non. Vous pouvez masquer votre adresse et indiquer seulement les communes où vous intervenez. Votre fiche apparaît alors sur les recherches de cette zone.' },

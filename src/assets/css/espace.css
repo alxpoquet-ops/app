@@ -695,3 +695,19 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .gauge-entete { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin: 0 0 8px; }
 .gauge-entete .gauge-t { margin: 0; min-width: 0; }
 .gauge-entete .gauge-x-form { margin: 0; flex: none; }
+
+/* 17 novembre 2026 : Cerise prépare la demande, Alex la fait */
+.cer-resume { padding: 14px 16px; border-radius: 16px; background: #fff; border: 2px dashed var(--lilac, #c9b6ff); color: var(--ink); line-height: 1.5; overflow-wrap: anywhere; }
+.ges-echeance { margin: 0; display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--ink); }
+.ges-echeance svg { width: 18px; height: 18px; flex: none; }
+.ges-afaire.is-bientot { box-shadow: inset 4px 0 0 #f5b84a; }
+.ges-afaire.is-retard { box-shadow: inset 4px 0 0 #e8607a; }
+.ges-afaire.is-retard .ges-echeance { color: #c23a58; }
+.ges-resume { margin: 0; font-weight: 800; font-size: 1.02rem; overflow-wrap: anywhere; }
+.ges-brief { display: grid; gap: 4px; padding: 12px 14px; border-radius: 14px; background: #fff; line-height: 1.5; overflow-wrap: anywhere; }
+.ges-brief small { color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: .03em; font-size: .72rem; }
+.ges-photos { display: flex; flex-wrap: wrap; gap: 8px; }
+.ges-details summary { cursor: pointer; font-weight: 800; color: var(--lilac-dd, #6b4fd6); }
+.ges-details[open] { display: grid; gap: 6px; }
+.ges-mini { padding: 10px 14px; }
+.ges-head { flex-wrap: wrap; }

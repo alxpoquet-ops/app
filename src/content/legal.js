@@ -36,7 +36,7 @@ const boutique = creation.prix + creation.boutique;
 const restantes = creation.pages - creation.exemplePages;
 const NOM_SITE = creation.nom || 'Site Internet Professionnel';
 const DATE_OFFRE = '17 novembre 2026'; // offre simplifiée : clause de transition (article 7)
-const VERIF = '30 minutes'; // sans refus d'Alex dans ce délai, la modification préparée est validée (article 12)
+// 17 novembre 2026 : Alex fait toutes les modifications à la main. Cerise aide le client à formuler sa demande (article 12).
 const lieux = liste(evenement.lieux, 'ou');
 const moisOffert = fidelite.parrainageMois === 1 ? 'un mois offert' : `${fidelite.parrainageMois} mois offerts`;
 const listeDelais = types.map((t) => `${t.id === 'boutique' ? 'une boutique en ligne' : t.id === 'une-page' ? 'une seule page' : 'un site de plusieurs pages'} : ${t.delai}`).join(', ');
@@ -58,13 +58,12 @@ const nbOptions = optionsCommande.length + 1; // la boutique en ligne comprise
 const NOMBRE = ['aucune', 'une', 'deux', 'trois', 'quatre', 'cinq'];
 // La petite bande, par prénom et par rôle. Ce que fait chacun est écrit ici pour les CGV.
 const ROLE_CGV = {
-  support: 'accueille les demandes, organise les projets, prépare les réponses et répond dans la bulle d’aide',
-  bricoleur: 'aide à construire les sites, prépare les modifications et construit les nouvelles pages',
+  support: 'répond dans la bulle d’aide, aide le client à formuler ses demandes de modification et les transmet à Alex',
   ecrivain: 'prépare les contenus, aide à rédiger les textes et améliore leur lisibilité',
   organisateur: 'classe les contenus et organise les pages',
   gardien: 'fait les sauvegardes et la maintenance, veille sur la sécurité et surveille le site',
   observateur: 'suit les statistiques et les performances du site, et repère ce qui peut être amélioré',
-  etoile: 'prépare les pages SEO',
+  etoile: 'analyse le site et choisit les sujets des pages SEO, qu’Alex écrit et publie',
   vendeur: 'range le catalogue, suit les commandes et envoie les e-mails aux acheteurs',
 };
 const presente = (b) => `- **${b.nom}, ${minus(b.role)}** : ${ROLE_CGV[b.id] || minus(b.court.replace(/\.$/, ''))}.`;
@@ -75,7 +74,7 @@ const bandeBoutique = bande
   .join(' ');
 const monstre = (id) => bande.find((b) => b.id === id) || { nom: '', role: '' };
 const cerise = monstre('support').nom;
-const bricou = monstre('bricoleur').nom;
+const lumi = monstre('etoile').nom;
 const mirette = monstre('observateur').nom;
 
 module.exports = [
@@ -156,7 +155,7 @@ Pour réserver le nom de domaine, je transmets vos coordonnées de titulaire (pr
 
 Votre compte est créé automatiquement à la commande, avec votre adresse e-mail. Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée.
 
-Certains petits monstres fonctionnent avec Claude, un service de la société Anthropic. C’est le cas de ${cerise}, qui vous répond dans la bulle d’aide, et de ${bricou}, qui prépare les modifications. Quand vous écrivez dans la bulle ou que vous demandez une modification, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude pour préparer la réponse ou l’aperçu. L’envoi passe par une liaison chiffrée, c’est-à-dire protégée contre les regards extérieurs. Ces éléments ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
+Certains petits monstres fonctionnent avec Claude, un service de la société Anthropic. C’est le cas de ${cerise}, qui vous répond dans la bulle d’aide et vous aide à formuler vos demandes de modification. Quand vous écrivez dans la bulle ou que vous demandez une modification, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude pour préparer la réponse ou le résumé de votre demande. L’envoi passe par une liaison chiffrée, c’est-à-dire protégée contre les regards extérieurs. Ces éléments ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
 
 Un compte sans aucune connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec les demandes et les photos qu’il contient. Un e-mail vous prévient 30 jours avant. Il suffit de vous connecter pour le conserver.
 
@@ -253,15 +252,15 @@ Le client qui confie la mise en ligne aux Minis Monstres choisit son abonnement 
 - **Les sauvegardes** : des copies de sécurité du site, faites régulièrement.
 - **La sécurité et la surveillance** : le site est protégé, et son bon fonctionnement est vérifié jour et nuit.
 - **La maintenance** : des contrôles techniques faits régulièrement, pour que le site reste en état de marche.
-- **Les modifications**, incluses sans limite de nombre. Le délai habituel de traitement va jusqu’à ${mini.delai} (article 12).
-- **Une page SEO par mois**, préparée par les Minis Monstres et ajoutée au site du client.
+- **Les modifications**, incluses sans limite de nombre et faites par Alex. Le client a une demande en cours à la fois. Le délai habituel de traitement va jusqu’à ${mini.delai} (article 12).
+- **Une page SEO par mois**, dont ${lumi}, l’étoile de Google de la petite bande, choisit le sujet. Alex l’écrit et l’ajoute au site du client.
 - **Le tableau de bord**, qui montre les visites du site et ses pages les plus vues.
 - **L’espace client**, avec la bulle d’aide (article 13).
 
 **L’abonnement ${maxi.name}, ${eur(maxi.month)} € par mois.** Il comprend tout ce que comprend l’abonnement ${mini.name}, avec en plus :
 
-- **Des modifications prioritaires** : les demandes du client sont traitées en priorité. En général, une petite modification (un texte, une photo, des coordonnées, des horaires, un tarif) est traitée dans l’heure, et une modification plus importante sous ${maxi.delai} (article 12).
-- **Une page SEO optimisée par semaine**, à la place de la page mensuelle, préparée par les Minis Monstres et ajoutée au site du client.
+- **Des modifications prioritaires** : les demandes du client sont traitées en priorité par Alex, en général sous ${maxi.delai}. Le client peut avoir deux demandes en cours à la fois (article 12).
+- **Une page SEO optimisée par semaine**, à la place de la page mensuelle. ${lumi} en choisit le sujet, Alex l’écrit et la publie.
 - **L’${minus(optimisation.titre)}** : ${mirette}, l’observatrice de la petite bande (article 15), analyse régulièrement le site. Les Minis Monstres proposent des améliorations pour sa visibilité, sous forme de suggestions affichées dans l’espace client. Le client choisit celles qu’il souhaite appliquer.
 
 Les délais de traitement indiqués pour chaque abonnement sont des délais habituels, donnés à titre indicatif. Ils ne constituent pas une garantie.
@@ -313,18 +312,19 @@ Le client fournit ses textes, photos et informations, ou les prépare avec les M
 **Déroulé.** Chaque modification suit les mêmes étapes :
 
 1. Le client fait sa demande dans son espace client.
-2. ${bricou}, le constructeur de la petite bande (article 15), prépare la modification.
-3. Un aperçu est créé : c’est une prévisualisation de la page modifiée, que le client peut regarder.
-4. Alex reçoit la proposition et la vérifie.
-5. Sans refus d’Alex dans les ${VERIF}, la proposition est validée.
-6. La modification est mise en ligne.
+2. ${cerise}, la secrétaire de la petite bande (article 15), l’aide à la formuler clairement et lui pose les questions utiles.
+3. Le client confirme la demande résumée par ${cerise}.
+4. La demande est transmise à Alex.
+5. Alex fait la modification à la main, puis la met en ligne.
 
-Si ${bricou} ne peut pas préparer la modification, Alex la fait à la main.
+Aucun petit monstre ne modifie le site. Le client peut annuler une demande tant qu’Alex ne l’a pas commencée.
+
+**Demandes en cours.** Avec ${mini.name}, le client a une demande en cours à la fois. Avec ${maxi.name}, il peut en avoir deux. La suivante peut être envoyée dès qu’une demande est terminée.
 
 **Délais.** Les délais ci-dessous sont des délais habituels, donnés à titre indicatif et sans garantie. Ils peuvent être plus longs pour une demande complexe ou incomplète.
 
 - **Avec ${mini.name}** : le délai habituel de traitement va jusqu’à ${mini.delai}.
-- **Avec ${maxi.name}** : les demandes sont prioritaires. Une petite modification (un texte, une photo, des coordonnées, des horaires, un tarif) est en général traitée dans l’heure. Une modification plus importante l’est en général sous ${maxi.delai}.
+- **Avec ${maxi.name}** : les demandes sont prioritaires. Le délai habituel de traitement va jusqu’à ${maxi.delai}.
 
 Une demande sur devis suit le délai indiqué dans le devis.
 
@@ -348,7 +348,7 @@ ${bandeComprise}
 
 ${bandeBoutique} Dans cet article, « les petits monstres » désigne l’ensemble de ces outils, bulle d’aide comprise.
 
-Les petits monstres sont des outils automatisés, dont certains reposent sur un système d’intelligence artificielle, qui peuvent se tromper. Alex vérifie chaque proposition de modification avant sa mise en ligne (article 12). Les textes et les conseils que donnent les outils sont des propositions : le client les relit et reste responsable de ce qu’il publie. Ces outils ne donnent pas de conseil juridique, médical ou comptable.
+Les petits monstres sont des outils automatisés, dont certains reposent sur un système d’intelligence artificielle, qui peuvent se tromper. Ils ne modifient pas le site : c’est Alex qui fait chaque modification (article 12). Les textes et les conseils que donnent les outils sont des propositions : le client les relit et reste responsable de ce qu’il publie. Ces outils ne donnent pas de conseil juridique, médical ou comptable.
 
 ## 16. Référencement
 

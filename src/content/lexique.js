@@ -6,9 +6,9 @@ const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const T = (id) => types.find((t) => t.id === id);
 const O = (id) => options.find((o) => o.id === id);
 const page = T('une-page');
-// L'offre (17 novembre 2026) : deux abonnements au mois, sans engagement. Mini (id 'base' : modifications sous 7 jours
-// ouvrés, une page SEO par mois) et Maxi (id 'evolution' : petites modifications dans l'heure, grosses sous 48 h, une page
-// SEO par semaine, suggestions de la bande). Des pages SEO en plus se commandent à l'unité depuis l'espace client.
+// L'offre (17 novembre 2026) : deux abonnements au mois, sans engagement. Mini (id 'base' : modifications faites par Alex
+// sous 7 jours, une demande à la fois, une page SEO par mois) et Maxi (id 'evolution' : modifications prioritaires sous
+// 48 h, deux demandes à la fois, une page SEO par semaine, suggestions de la bande). Des pages SEO en plus se commandent à l'unité depuis l'espace client.
 // Les anciens extras au mois (Suivi Google, Chiffres détaillés, Adresse e-mail pro) ne sont plus proposés.
 // V2 (novembre 2026) : Alex fait chaque site, sa petite bande d'automatisations (des petits monstres) s'occupe du
 // répétitif. « Chez les Minis Monstres » reste : c'est le nom de la marque. Petites retouches et outils compris pour un usage normal.
@@ -197,7 +197,7 @@ Un moniteur d'auto-école veut afficher ses nouvelles dates de stage code chaque
 
 ## Chez les Minis Monstres
 
-Vous n'avez pas à apprendre d'outil. Vous décrivez ce que vous voulez changer dans votre espace client, et c'est fait pour vous : par ma petite bande d'automatisations, en quelques minutes, pour une petite retouche avec un aperçu à valider, ou par moi pour les changements plus grands. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
+Vous n'avez pas à apprendre d'outil. Vous décrivez ce que vous voulez changer dans votre espace client, et c'est moi qui le fais pour vous, à la main. L'assistante de ma petite bande vous aide simplement à bien formuler la demande avant de me la transmettre. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
     faq: [
       { q: 'Un CMS est-il obligatoire pour avoir un site ?', a: 'Non. Un site peut être fait de simples fichiers, sans base de données. C’est même souvent plus rapide et plus sûr. Le CMS devient utile quand le contenu change souvent ou quand plusieurs personnes doivent publier.' },
       { q: 'Quel CMS choisir pour mon entreprise ?', a: 'Celui qui répond à votre besoin et que quelqu’un saura entretenir. Pour un site de présentation ou une petite boutique, les grands CMS connus ont l’avantage d’être bien suivis et de trouver facilement de l’aide.' },
@@ -1166,7 +1166,7 @@ Une créatrice de bijoux lance sa boutique en ligne et recopie les mentions lég
 
 ## Chez les Minis Monstres
 
-Je prévois une page de mentions légales sur chaque site et je vous indique les informations à me fournir. Le contenu juridique reste sous votre responsabilité, et mes petits monstres ne touchent jamais à ce type de texte : c'est moi qui m'en occupe quand il faut le modifier. Pour les données de vos visiteurs, voyez la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
+Je prévois une page de mentions légales sur chaque site et je vous indique les informations à me fournir. Le contenu juridique reste sous votre responsabilité, et mes petits monstres ne touchent pas à votre site, et encore moins à ce type de texte : c'est moi qui m'en occupe quand il faut le modifier. Pour les données de vos visiteurs, voyez la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
     faq: [
       { q: 'Que risque-t-on sans mentions légales ?', a: 'L’absence de mentions légales sur un site professionnel est un manquement qui peut être sanctionné. Surtout, c’est un signal négatif pour les visiteurs qui cherchent à vous identifier.' },
       { q: 'Où placer le lien vers les mentions légales ?', a: 'En bas de chaque page, dans le pied de site. Il doit être facile à trouver depuis n’importe quel endroit du site.' },
@@ -1215,7 +1215,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 ## Chez les Minis Monstres
 
-C'est le cœur de l'[abonnement](/tarifs/). Dès ${mini.month} € par mois, j'héberge votre site, et ${minus(gardien)}, un petit monstre que j'ai programmé, fait les mises à jour, garde le HTTPS et surveille que tout tourne. Je vérifie ce qu'il fait. Vos changements de contenu passent par l'espace client : ils sont compris sans limite, et faits sous ${mini.delai} au plus avec ${mini.name}. Avec ${maxi.name}, les petits changements sont en ligne dans l'heure. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+C'est le cœur de l'[abonnement](/tarifs/). Dès ${mini.month} € par mois, j'héberge votre site, et ${minus(gardien)}, un petit monstre que j'ai programmé, m'aide à suivre les mises à jour, garde un œil sur le HTTPS et surveille que tout tourne. Vos changements de contenu passent par l'espace client : ils sont compris sans limite, et faits sous ${mini.delai} au plus avec ${mini.name}. Avec ${maxi.name}, je les fais en priorité, sous ${maxi.delai}. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'À quelle fréquence faut-il faire la maintenance ?', a: 'La surveillance doit être continue, et les mises à jour faites dès qu’elles sortent, surtout celles de sécurité. Les autres vérifications peuvent suivre un rythme régulier, par exemple chaque mois.' },
       { q: 'Puis-je faire la maintenance de mon site moi-même ?', a: 'C’est possible si vous avez le temps et les bases techniques. Le plus dur n’est pas de cliquer sur « mettre à jour », mais de savoir quoi faire quand une mise à jour casse quelque chose.' },

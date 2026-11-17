@@ -16,7 +16,8 @@ function aled08e_msg_monstres() {
     return [
         'mirette' => ['gelee', 'Mirette', 'L’observatrice'],
         'lumi' => ['etoile', 'Lumi', 'L’étoile de Google'],
-        'bricou' => ['bricou', 'Bricou', 'Le constructeur'],
+        'bricou' => ['mascotte', 'Cerise', 'La secrétaire'], // Bricou n'existe plus : ses anciens petits mots sont signés Cerise
+        'cerise' => ['mascotte', 'Cerise', 'La secrétaire'],
         'plume' => ['fantome', 'Plume', 'La rédactrice'],
         'pistache' => ['dino', 'Pistache', 'Le gardien'],
         'mochi' => ['mochi', 'Mochi', 'L’organisateur'],
@@ -29,10 +30,10 @@ function aled08e_msg_ecartes($uid) { $v = get_user_meta($uid, 'aled08_msg_ecarte
 /* Les idées de saison : [mois (1 à 12), monstre, titre, texte, la demande envoyée si le client dit oui] */
 function aled08e_msg_saisons() {
     return [
-        [[11, 12], 'bricou', 'Vos horaires des fêtes', 'En décembre, beaucoup de visiteurs cherchent vos horaires des fêtes. Je peux ajouter un petit bandeau en haut de votre page d’accueil.', 'Ajouter un bandeau en haut de l’accueil avec nos horaires des fêtes de fin d’année. (Suggestion de Bricou : je vous donne les horaires en réponse.)'],
-        [[1], 'plume', 'Une page pour la nouvelle année', 'Janvier, c’est le bon moment pour présenter vos nouveautés ou vos tarifs de l’année. Je vous prépare une page ?', 'Préparer une page « Nos nouveautés de l’année » sur mon site. (Suggestion de Plume.)'],
-        [[3, 4], 'plume', 'Le printemps arrive', 'Les recherches de saison montent au printemps. Je peux écrire une page pour votre service le plus demandé à cette période.', 'Écrire une page de printemps pour notre service le plus demandé. (Suggestion de Plume : je précise le service en réponse.)'],
-        [[6, 7], 'bricou', 'Vos horaires d’été', 'Vous fermez ou changez vos horaires cet été ? Je peux les afficher clairement, avec un petit bandeau.', 'Afficher nos horaires d’été avec un bandeau en haut du site. (Suggestion de Bricou : je donne les dates en réponse.)'],
+        [[11, 12], 'cerise', 'Vos horaires des fêtes', 'En décembre, beaucoup de visiteurs cherchent vos horaires des fêtes. Alex peut ajouter un petit bandeau en haut de votre page d’accueil.', 'Ajouter un bandeau en haut de l’accueil avec nos horaires des fêtes de fin d’année. (Suggestion de Cerise : je vous donne les horaires en réponse.)'],
+        [[1], 'plume', 'Une page pour la nouvelle année', 'Janvier, c’est le bon moment pour présenter vos nouveautés ou vos tarifs de l’année. On vous prépare une page ?', 'Préparer une page « Nos nouveautés de l’année » sur mon site. (Suggestion de Plume.)'],
+        [[3, 4], 'plume', 'Le printemps arrive', 'Les recherches de saison montent au printemps. Une page pour votre service le plus demandé à cette période vous ferait trouver plus souvent.', 'Écrire une page de printemps pour notre service le plus demandé. (Suggestion de Plume : je précise le service en réponse.)'],
+        [[6, 7], 'cerise', 'Vos horaires d’été', 'Vous fermez ou changez vos horaires cet été ? Alex peut les afficher clairement, avec un petit bandeau.', 'Afficher nos horaires d’été avec un bandeau en haut du site. (Suggestion de Cerise : je donne les dates en réponse.)'],
         [[9], 'plume', 'La rentrée', 'À la rentrée, vos clients reviennent sur Google. Une page de conseils de rentrée peut vous faire trouver plus souvent.', 'Préparer une page de conseils de rentrée pour mes clients. (Suggestion de Plume.)'],
     ];
 }
@@ -193,7 +194,7 @@ add_action('init', function () {
     wp_insert_post([
         'post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'post_title' => $titre,
         'post_content' => $mini['name'] . ', à ' . aled08e_euro_txt($mini['month']) . ' par mois : votre site entretenu, vos modifications incluses ' . aled08e_delai_txt($mini) . ', et une page pour Google chaque mois.' . "\n"
-            . $maxi['name'] . ', à ' . aled08e_euro_txt($maxi['month']) . ' par mois : vos petites modifications faites dans l’heure, une page optimisée chaque semaine, et la bande qui surveille votre site pour vous proposer des idées, ici, dans vos petits mots.' . "\n"
+            . $maxi['name'] . ', à ' . aled08e_euro_txt($maxi['month']) . ' par mois : vos modifications en priorité sous 48 h, deux demandes à la fois, une page optimisée chaque semaine, et la bande qui surveille votre site pour vous proposer des idées, ici, dans vos petits mots.' . "\n"
             . 'Vous changez quand vous voulez, dans Mon compte. Et une page SEO en plus coûte maintenant ' . aled08e_euro_txt((float) (aled08e_a_la_demande('packseo')['prix'] ?? 5)) . ', dans Mes demandes.',
         'post_author' => $admins ? (int) $admins[0] : 0, 'post_date' => wp_date('Y-m-d H:i:s'),
     ]);
@@ -220,18 +221,19 @@ function aled08e_demandes_en_cours($uid) {
         'meta_query' => ['relation' => 'AND', ['key' => '_aled08_statut', 'value' => ['recue', 'encours'], 'compare' => 'IN'], ['key' => '_aled08_seo', 'compare' => 'NOT EXISTS']]]);
 }
 /* Où en est une demande : 1 reçue, 2 prise en compte, 3 visuel à valider, 4 validée (Bricou modifie) */
+/* Où en est une demande : 1 reçue (Cerise la relit), 2 précisée avec Cerise (question ou demande à vérifier), 3 chez Alex, 4 faite */
 function aled08e_gauge_etape($p) {
     $etat = (string) get_post_meta($p->ID, '_aled08_lia_etat', true);
-    if ($etat === 'validation') return 4;
-    if ($etat === 'a_confirmer') return 3;
-    if (in_array($etat, ['en_cours', 'attente_alex', 'refuse', 'pour_alex'], true) || get_post_meta($p->ID, '_aled08_statut', true) === 'encours') return 2;
+    if (in_array($etat, ['question', 'a_confirmer'], true)) return 2;
+    if (get_post_meta($p->ID, '_aled08_par', true) === 'alex' || in_array($etat, ['transmise', 'refuse', 'pour_alex'], true)) return 3;
     return 1;
 }
-/* Demandes en même temps : une avec l'abonnement à 10 € (Mini), trois avec celui à 20 € (Maxi) */
+/* Demandes en même temps : une avec l'abonnement à 10 € (Mini), deux avec celui à 20 € (Maxi) */
 function aled08e_demandes_max($uid = 0) {
     $uid = $uid ?: get_current_user_id();
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
-    return (!empty($f['optimisation']) || aled08e_famille($uid)) ? 3 : 1;
+    if (aled08e_famille($uid)) return 2;
+    return max(1, (int) ($f['demandesMax'] ?? (!empty($f['optimisation']) ? 2 : 1)));
 }
 /* Le visuel (aperçu sur le vrai site) préparé par Bricou pour une demande, s'il y en a un */
 function aled08e_gauge_apercu($p) {
@@ -293,7 +295,7 @@ function aled08e_bande_haut_html($uid) {
  *  La jauge des demandes (tout se fait depuis la jauge) : « Voir le visuel » ouvre le visuel dans une fenêtre, avec Oui / Non ;
  *  la question de Bricou aussi. Rien à chercher plus bas dans la page.
  * ========================================================================= */
-function aled08e_gauge_html($uid) {
+function aled08e_gauge_html_v2($uid) {
     $liste = aled08e_demandes_en_cours($uid);
     if (!$liste) return '';
     $etapes = ['Demande reçue', 'Prise en compte', 'Visuel à valider', 'Mise en ligne'];
@@ -321,7 +323,7 @@ function aled08e_gauge_html($uid) {
     return $h;
 }
 /* Les fenêtres de la jauge : le visuel à valider (avant / après, aperçu, Oui / Non) et la question de Bricou */
-function aled08e_gauge_modals_html($uid) {
+function aled08e_gauge_modals_html_v2($uid) {
     $h = '';
     foreach (array_slice(aled08e_demandes_en_cours($uid), 0, aled08e_demandes_max($uid)) as $p) {
         $etat = (string) get_post_meta($p->ID, '_aled08_lia_etat', true);
@@ -343,9 +345,72 @@ function aled08e_gauge_zone_html($uid) {
 }
 
 /* La croix pour annuler une demande en cours : à tout moment, sans limite. Rien n'a été changé sur le site avant la validation du visuel. */
-function aled08e_gauge_croix($p) {
+function aled08e_gauge_croix_v2($p) {
     if (get_post_meta($p->ID, '_aled08_annulee_le', true)) return '';
     return '<form class="gauge-x-form" method="post" action="' . esc_url(aled08e_url()) . '" onsubmit="return confirm(\'Annuler cette demande ? Rien ne sera changé sur votre site.\');">'
         . '<input type="hidden" name="aled08e_annuler" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_annuler_' . $p->ID, '_aled08e_annul', true, false)
         . '<button class="gauge-x" type="submit" title="Annuler cette demande" aria-label="Annuler cette demande">' . aled08e_icon('x') . '</button></form>';
+}
+
+
+/* =========================================================================
+ *  La jauge (17 novembre 2026) : Cerise prépare la demande avec le client, Alex fait la modification.
+ *  Étapes : Demande reçue · Précisée avec Cerise · Chez Alex · Faite. Tout se fait depuis la jauge (fenêtres).
+ * ========================================================================= */
+function aled08e_gauge_annulable($p) {
+    if (get_post_meta($p->ID, '_aled08_annulee_le', true)) return false;
+    // une demande s'annule tant qu'Alex ne l'a pas commencée
+    return !(get_post_meta($p->ID, '_aled08_par', true) === 'alex' && get_post_meta($p->ID, '_aled08_statut', true) === 'encours');
+}
+function aled08e_gauge_croix($p) {
+    if (!aled08e_gauge_annulable($p)) return '';
+    return '<form class="gauge-x-form" method="post" action="' . esc_url(aled08e_url()) . '" onsubmit="return confirm(\'Annuler cette demande ?\');">'
+        . '<input type="hidden" name="aled08e_annuler" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_annuler_' . $p->ID, '_aled08e_annul', true, false)
+        . '<button class="gauge-x" type="submit" title="Annuler cette demande" aria-label="Annuler cette demande">' . aled08e_icon('x') . '</button></form>';
+}
+function aled08e_gauge_html($uid) {
+    $liste = aled08e_demandes_en_cours($uid);
+    if (!$liste) return '';
+    $etapes = ['Demande reçue', 'Précisée avec Cerise', 'Chez Alex', 'Faite'];
+    $h = '';
+    foreach (array_slice($liste, 0, aled08e_demandes_max($uid)) as $p) {
+        $n = aled08e_gauge_etape($p);
+        $etat = (string) get_post_meta($p->ID, '_aled08_lia_etat', true);
+        $txt = trim(preg_replace('/\s+/u', ' ', $p->post_content));
+        $h .= '<div class="gauge"><div class="gauge-entete"><p class="gauge-t"><strong>' . esc_html(mb_strlen($txt) > 70 ? mb_substr($txt, 0, 67) . '…' : $txt) . '</strong></p>' . aled08e_gauge_croix($p) . '</div><ol class="gauge-etapes" style="--n:' . (int) $n . '">';
+        foreach ($etapes as $i => $e) {
+            $in = '<b>' . ($i + 1 < $n ? '✓' : $i + 1) . '</b><span>' . esc_html($e) . '</span>';
+            if ($i === 1 && $etat === 'a_confirmer') $in = '<button type="button" class="gauge-visuel" data-gauge-ouvrir="visuel-' . (int) $p->ID . '" title="Vérifier ma demande"><s class="gauge-tache" aria-hidden="true"></s>' . $in . '</button>';
+            if ($i === 1 && $etat === 'question') $in = '<button type="button" class="gauge-visuel" data-gauge-ouvrir="question-' . (int) $p->ID . '" title="Répondre à Cerise"><s class="gauge-tache" aria-hidden="true"></s>' . $in . '</button>';
+            $h .= '<li class="' . ($i + 1 < $n ? 'is-fait' : ($i + 1 === $n ? 'is-en-cours' : '')) . '">' . $in . '</li>';
+        }
+        $h .= '</ol>';
+        if ($etat === 'a_confirmer') $h .= '<p class="gauge-a">Cerise a préparé votre demande : vérifiez qu’elle dit bien ce que vous voulez.</p><button type="button" class="btn btn-primary btn-sm gauge-btn" data-gauge-ouvrir="visuel-' . (int) $p->ID . '">' . aled08e_icon('eye') . '<span>Vérifier ma demande</span></button>';
+        elseif ($etat === 'question') {
+            $q = preg_replace('/^(Cerise|Bricou) : /u', '', (string) get_post_meta($p->ID, '_aled08_reponse', true));
+            $h .= '<p class="gauge-a"><b>Cerise vous pose une question :</b> ' . esc_html(mb_substr($q, 0, 220)) . '</p><button type="button" class="btn btn-primary btn-sm gauge-btn" data-gauge-ouvrir="question-' . (int) $p->ID . '">' . aled08e_icon('message-circle') . '<span>Répondre à Cerise</span></button>';
+        } elseif ($n === 3) {
+            $ech = (int) get_post_meta($p->ID, '_aled08_echeance', true);
+            $h .= '<p class="gauge-a">' . (get_post_meta($p->ID, '_aled08_statut', true) === 'encours' ? 'Alex travaille sur votre demande' : 'Votre demande est chez Alex') . ($ech ? ' : c’est fait d’ici ' . esc_html(aled08e_cer_echeance_txt($ech)) . '.' : '.') . '</p>';
+        } else $h .= '<p class="gauge-a">Cerise relit votre demande…</p>';
+        $h .= '</div>';
+    }
+    $max = aled08e_demandes_max($uid);
+    if (count($liste) >= $max) $h .= '<p class="gauge-max">' . ($max > 1 ? 'Deux demandes à la fois' : 'Une demande à la fois') . ' avec votre abonnement : la suivante pourra partir dès que ' . ($max > 1 ? 'l’une est faite.' : 'celle-ci est faite.') . '</p>';
+    return $h;
+}
+function aled08e_gauge_modals_html($uid) {
+    $h = '';
+    foreach (array_slice(aled08e_demandes_en_cours($uid), 0, aled08e_demandes_max($uid)) as $p) {
+        $etat = (string) get_post_meta($p->ID, '_aled08_lia_etat', true);
+        if ($etat === 'a_confirmer') {
+            $h .= '<dialog class="visuel-modal" id="visuel-' . (int) $p->ID . '" aria-label="Votre demande à vérifier"><div class="visuel-tete"><strong>Votre demande, préparée par Cerise</strong><button type="button" class="visuel-x" data-fermer aria-label="Fermer">' . aled08e_icon('x') . '</button></div>'
+                . aled08e_lia_bloc_confirmation($p) . '</dialog>';
+        } elseif ($etat === 'question') {
+            $q = preg_replace('/^(Cerise|Bricou) : /u', '', (string) get_post_meta($p->ID, '_aled08_reponse', true));
+            $h .= '<dialog class="visuel-modal" id="question-' . (int) $p->ID . '" aria-label="La question de Cerise"><div class="visuel-tete"><strong>Cerise vous pose une question</strong><button type="button" class="visuel-x" data-fermer aria-label="Fermer">' . aled08e_icon('x') . '</button></div>'
+                . '<p class="visuel-question">' . nl2br(esc_html($q)) . '</p>' . aled08e_ech_bloc_question($p) . '</dialog>';
+        }
+    }
+    return $h;
 }

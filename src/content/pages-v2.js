@@ -5,8 +5,8 @@
 // Offre du 17 novembre 2026 : le Site Internet Professionnel (creation), une seule option à la commande (la boutique en
 // ligne, payée une fois), la Page SEO supplémentaire (options 'packseo', à l'unité) commandée plus tard depuis l'espace
 // client, puis « On s'occupe de tout » avec deux abonnements au mois, sans engagement : Mini (id 'base' : modifications
-// sous 7 jours ouvrés, une page SEO par mois) et Maxi (id 'evolution' : petites modifications dans l'heure, grosses sous
-// 48 h, une page SEO par semaine, optimisation continue par la bande), ou « Je m'en occupe moi-même » (création seule,
+// faites par Alex sous 7 jours, une demande à la fois, une page SEO par mois) et Maxi (id 'evolution' : modifications
+// prioritaires sous 48 h, deux demandes à la fois, une page SEO par semaine, optimisation continue par la bande), ou « Je m'en occupe moi-même » (création seule,
 // le code du site est remis au client), et le code événement (config.evenement). Chaque mot technique est expliqué la première fois qu'il apparaît sur une page.
 const { site, creation, types, forfaits, annuel, lissage, delais, options, paiement, marche, fidelite, clients, bande, evenement } = require('../config');
 
@@ -19,16 +19,15 @@ const ou = (l) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} ou ${l[l.length 
 // Délai de création indicatif, s'il est encore donné dans config.types (une-page, vitrine, boutique).
 const delai = (id) => ((types || []).find((t) => t.id === id) || {}).delai || '';
 
-const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini : modifications sous 7 jours ouvrés, une page SEO par mois
-const maxi = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1]; // Maxi : petites modifications dans l'heure, une page SEO par semaine
+const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini : modifications par Alex sous 7 jours, une demande à la fois
+const maxi = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1]; // Maxi : modifications par Alex sous 48 h, deux demandes à la fois
 const annee = (f) => f.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const durees = lissage.durees.join(' ou ');
 const packSeo = options.find((o) => o.id === 'packseo' && !o.retire); // la Page SEO supplémentaire, à l'unité
-// Alex vérifie chaque modification préparée par Bricou : sans refus de sa part dans ce délai, elle est validée.
-const VERIF = '30 minutes';
+// 17 novembre 2026 : c'est Alex qui fait toutes les modifications, à la main. Cerise prépare la demande avec le client.
 const lieux = ou(evenement.lieux); // une foire, un marché, un salon ou un événement professionnel
 
-// La petite bande : les automatisations d'Alex, dessinées en petits monstres. Prénom et métier : « Bricou, le constructeur ».
+// La petite bande : les automatisations d'Alex, dessinées en petits monstres. Prénom et métier : « Cerise, la secrétaire ».
 const B = (id) => bande.find((b) => b.id === id);
 const nomRole = (b) => `${b.nom}, ${minus(b.role)}`;
 const compris = bande.filter((b) => b.compris); // avec l'abonnement
@@ -36,23 +35,21 @@ const avecBoutique = bande.filter((b) => b.option === 'boutique'); // arrive ave
 // Ce que fait chaque petit monstre, écrit pour ces pages (différent des textes de config.bande), après « Prénom, rôle, ».
 // DIT : présentation de la bande (page Pourquoi les Minis Monstres). APRES : leur travail une fois le site en ligne (Accompagnement).
 const DIT = {
-  support: 'accueille chaque demande, la range au bon endroit et vous répond dans la petite bulle.',
-  bricoleur: 'monte la structure de votre site, puis prépare chacune de vos modifications.',
+  support: 'vous répond dans la petite bulle, vous aide à formuler chaque demande et me la transmet.',
   ecrivain: 'propose une première version de vos textes, que je reprends avec vous.',
   organisateur: 'classe vos pages et vos contenus, pour que vos visiteurs trouvent vite leur chemin.',
   gardien: 'garde des copies de sécurité de votre site, fait les vérifications techniques et le surveille jour et nuit.',
   observateur: 'regarde la vitesse de votre site et ses visites, et me signale ce qui peut s’améliorer.',
-  etoile: 'prépare les pages qui vous font trouver sur Google, et aide Google à comprendre ce que vous faites.',
+  etoile: 'analyse votre site et choisit les sujets des pages qui vous feront trouver sur Google. Je les écris ensuite.',
   vendeur: 'rejoint la bande avec la boutique en ligne : il tient votre catalogue et suit vos commandes.',
 };
 const APRES = {
-  support: 'reçoit votre demande dans votre espace client et s’assure qu’il ne manque rien.',
-  bricoleur: 'prépare la modification et crée l’aperçu que je vérifie.',
+  support: 'reçoit votre demande dans votre espace client, vous pose les questions utiles et s’assure qu’il ne manque rien avant de me la transmettre.',
   ecrivain: 'vous aide à tourner un nouveau texte quand les mots ne viennent pas.',
   organisateur: 'place chaque nouvelle page au bon endroit dans le menu.',
   gardien: 'lance les sauvegardes, fait la maintenance et veille sur la sécurité, de jour comme de nuit.',
   observateur: `suit les visites et la vitesse du site, et me dit ce qui mérite d’être amélioré. Avec ${maxi.name}, ses idées vous arrivent aussi en petits messages dans votre espace client.`,
-  etoile: `prépare vos pages SEO : une nouvelle chaque mois avec ${mini.name}, chaque semaine avec ${maxi.name}.`,
+  etoile: `choisit le sujet de chaque page SEO, que j’écris et publie : une nouvelle chaque mois avec ${mini.name}, chaque semaine avec ${maxi.name}.`,
   vendeur: 'suit les commandes de votre boutique et envoie les e-mails à vos clients.',
 };
 
@@ -101,8 +98,8 @@ Mon idée est différente. Je passe moins de temps sur ce qui se répète d’un
 
 Beaucoup d’étapes reviennent sur chaque projet, puis chaque mois une fois le site en ligne. La bande s’en charge, et je vérifie toujours ce qu’elle a fait. Ce qui me prenait des jours se fait maintenant en quelques heures.
 
-- **À la création** : ${nomRole(B('bricoleur'))}, monte une première mise en page, et ${nomRole(B('ecrivain'))}, prépare une base pour les textes. Je reprends ensuite tout avec vos mots.
-- **Après la mise en ligne** : ${nomRole(B('gardien'))}, s’occupe des sauvegardes, ces copies de sécurité de votre site, et de la maintenance, c’est-à-dire les vérifications techniques qui le gardent en état de marche. ${nomRole(B('support'))}, accueille vos demandes.
+- **À la création** : ${nomRole(B('ecrivain'))}, prépare une base pour les textes, et ${nomRole(B('organisateur'))}, aide à ranger les pages. Je monte le site et je reprends tout avec vos mots.
+- **Après la mise en ligne** : ${nomRole(B('gardien'))}, s’occupe des sauvegardes, ces copies de sécurité de votre site, et de la maintenance, c’est-à-dire les vérifications techniques qui le gardent en état de marche. ${nomRole(B('support'))}, accueille vos demandes et me les transmet.
 - **Pour vous** : rien à apprendre, rien à surveiller. Je gère tout, et vous n’avez aucun effort à fournir.
 ${delai('une-page') && delai('vitrine') ? `
 Résultat : une seule page est prête en ${delai('une-page')}, et un site de plusieurs pages en ${delai('vitrine')}.
@@ -119,7 +116,7 @@ Les petits monstres vont vite, mais ils ne décident de rien. C’est moi qui co
 - **Les tests sur téléphone** : je parcours le site sur plusieurs appareils, comme le feront vos clients.
 - **La vérification** : les liens, le formulaire, la vitesse d’affichage, les informations destinées à Google.
 - **La mise en ligne** : je relie votre nom de domaine, l’adresse de votre site, j’installe le cadenas qui protège vos visiteurs et je publie le site moi-même.
-- **Vos modifications** : chacune passe sous mes yeux avant d’être publiée, même quand ${B('bricoleur').nom} l’a préparée.
+- **Vos modifications** : c’est moi qui les fais, une par une, à la main.
 
 Votre site ne part en ligne qu’après être passé entre mes mains.
 
@@ -305,7 +302,7 @@ Ce qui aide ensuite : garder vos informations à jour, ajouter de temps en temps
 
 Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les autres, des mots répétés à l’excès, des liens achetés. Ils font souvent plus de mal que de bien, et le retard se rattrape ensuite difficilement.
 
-> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('etoile'))} de ma petite bande, prépare vos pages SEO, et je les relis une par une. Avec l’abonnement, une nouvelle page s’ajoute chaque mois en ${mini.name}, et chaque semaine en ${maxi.name}. Besoin d’une page de plus entre-temps ? Elle se commande depuis votre espace client quand vous le décidez, à ${eur(packSeo.price.once)} € la page. Tout est expliqué sur la page [référencement SEO](/referencement-seo/).`,
+> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('etoile'))} de ma petite bande, choisit les sujets de vos pages SEO, et je les écris une par une. Avec l’abonnement, une nouvelle page s’ajoute chaque mois en ${mini.name}, et chaque semaine en ${maxi.name}. Besoin d’une page de plus entre-temps ? Elle se commande depuis votre espace client quand vous le décidez, à ${eur(packSeo.price.once)} € la page. Tout est expliqué sur la page [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de temps pour apparaître sur Google ?', a: 'Sur le nom de votre entreprise, c’est en général rapide. Sur des recherches où beaucoup d’entreprises sont présentes, comptez plutôt plusieurs mois, avec un site soigné et des informations à jour.' },
       { q: 'Faut-il payer Google pour être bien placé ?', a: 'Non. Les résultats naturels ne s’achètent pas. Les annonces payantes existent, elles sont signalées comme sponsorisées, et elles disparaissent dès que vous arrêtez de payer.' },
@@ -331,7 +328,7 @@ Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les au
       { icon: 'user', t: 'Une vraie personne', d: 'C’est moi, Alex, qui lis vos messages et qui vous réponds.' },
       { icon: 'tag', t: 'Un prix affiché', d: 'Le même pour tous, sans devis et sans surprise.' },
       { icon: 'lock', t: 'Rien ne vous retient', d: 'Sans engagement, et l’adresse de votre site reste à votre nom.' },
-      { icon: 'workflow', t: 'Une petite bande', d: 'Des petits monstres font le répétitif, et votre facture baisse d’autant.' },
+      { icon: 'workflow', t: 'Une petite bande', d: 'Des petits monstres m’aident sur le répétitif, et votre facture baisse d’autant.' },
     ],
     body: `## Moi, Alex, un vrai interlocuteur
 
@@ -358,7 +355,7 @@ Ce sont des promesses simples, écrites ici pour que vous puissiez me les rappel
 - **Sans engagement** : l’abonnement s’arrête dès que vous le souhaitez. Seule exception, si vous payez le site en ${durees} fois, vous restez le temps du paiement.
 - **Le nom de domaine à votre nom** : l’adresse de votre site vous appartient, pas à moi.
 - **Vous repartez avec votre site** : si vous arrêtez, je vous remets une copie complète, et votre adresse vous suit.
-- **Rien en ligne sans vérification** : je contrôle votre site avant sa mise en ligne, puis chaque modification passe sous mes yeux avant d’être publiée.
+- **Rien en ligne sans vérification** : je contrôle votre site avant sa mise en ligne, et je fais moi-même chaque modification.
 - **Une réponse sous ${delais.reponse}** : vos questions sur votre site sont comprises dans l’abonnement.
 
 ## Ma petite bande
@@ -371,9 +368,9 @@ ${bande.map((b) => `- **${nomRole(b)}**, ${DIT[b.id] || `${minus(b.court)}`}`).j
 
 ${avecBoutique.length ? `À part ${et(avecBoutique.map((b) => b.nom))}, tous` : 'Tous'} travaillent pour votre site, sans supplément. Vous pouvez faire leur connaissance sur la page [notre équipe](/notre-equipe/).
 
-Une fois le site en ligne, vos demandes suivent toujours le même chemin : ${B('support').nom} les accueille, ${B('bricoleur').nom} prépare la modification, et je la vérifie avant sa publication. Le détail est sur la page [accompagnement](/accompagnement/).
+Une fois le site en ligne, vos demandes suivent toujours le même chemin : ${B('support').nom} les accueille, vous aide à les préciser, puis me les transmet. Ensuite, je fais la modification. Le détail est sur la page [accompagnement](/accompagnement/).
 
-Ces petits monstres ne décident pas à votre place. Ils ne peuvent ni supprimer une page, ni toucher aux réglages sensibles de votre site. Et ils ne me remplacent pas : je regarde ce qu’ils font, et c’est toujours moi qui réponds de votre site.
+Ces petits monstres ne décident pas à votre place. Ils ne modifient jamais votre site eux-mêmes : ils m’aident, préparent et surveillent. Et ils ne me remplacent pas : je regarde ce qu’ils font, et c’est toujours moi qui réponds de votre site.
 
 ## Ce que je fais bien, et ce que je ne fais pas
 
@@ -383,8 +380,8 @@ Pour une application sur mesure, un logiciel métier ou un catalogue de milliers
 
 Si mes prix restent doux, c’est grâce à cette petite bande, et à mes accès directs chez des hébergeurs français. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout.`,
     faq: [
-      { q: 'Est-ce que je parle à une vraie personne ?', a: `Oui. Les messages du formulaire de contact arrivent chez moi, et c’est moi qui réponds. Dans votre espace client, ${B('support').nom} accueille vos demandes et ${B('bricoleur').nom} prépare les modifications, mais chacune passe par moi avant d’être publiée.` },
-      { q: 'Et si un petit monstre se trompe ?', a: 'Cela peut arriver, comme avec tout outil. C’est pour cela que chaque modification crée d’abord un aperçu, que je vérifie avant la mise en ligne. Les petits monstres n’ont pas accès aux réglages sensibles, et je contrôle chaque site avant de le publier.' },
+      { q: 'Est-ce que je parle à une vraie personne ?', a: `Oui. Les messages du formulaire de contact arrivent chez moi, et c’est moi qui réponds. Dans votre espace client, ${B('support').nom} accueille vos demandes et vous aide à les formuler, puis c’est moi qui fais chaque modification.` },
+      { q: 'Et si un petit monstre se trompe ?', a: `Cela peut arriver, comme avec tout outil. C’est pour cela qu’aucun d’eux ne touche à votre site. ${B('support').nom} vous relit votre demande avant de me l’envoyer, vous la confirmez, et c’est moi qui la fais.` },
       { q: 'Et si je veux partir un jour ?', a: 'Vous partez librement. Le nom de domaine est déjà à votre nom, et je vous remets les fichiers de votre site pour le faire héberger ailleurs.' },
       { q: 'Faut-il habiter près de chez vous ?', a: `Non. Tout peut se faire à distance, par e-mail, au téléphone ou en visio, partout en France. Si vous êtes dans les ${dept}, on peut aussi se rencontrer.` },
     ],
@@ -405,7 +402,7 @@ Si mes prix restent doux, c’est grâce à cette petite bande, et à mes accès
     resume: 'Chaque mois, votre site entretenu et suivi.',
     points: [
       { icon: 'shield-check', t: 'Votre site entretenu', d: `${nomRole(B('gardien'))}, veille sur votre site et le garde en état de marche, jour et nuit.` },
-      { icon: 'pencil', t: 'Des modifications comprises', d: `Vous demandez, ${B('bricoleur').nom} prépare, je vérifie. Sans limite.` },
+      { icon: 'pencil', t: 'Des modifications comprises', d: `Vous demandez, ${B('support').nom} me transmet, je modifie. Sans limite.` },
       { icon: 'search-check', t: 'Des pages en plus', d: `Une nouvelle page pour Google chaque mois avec ${mini.name}, chaque semaine avec ${maxi.name}.` },
       { icon: 'handshake', t: 'Sans engagement', d: 'Vous arrêtez quand vous voulez et vous gardez votre adresse.' },
     ],
@@ -428,13 +425,13 @@ Votre site reste en ligne, protégé et à jour, sans que vous ayez à y penser.
 
 ### ${mini.name} : ${eur(mini.month)} € par mois, ou ${eur(annee(mini))} € à l’année
 
-Pour un site qui doit rester juste, sans courir. Vos modifications sont faites sous ${mini.delai} au plus, et une nouvelle page SEO rejoint votre site chaque mois.
+Pour un site qui doit rester juste, sans courir. Je fais vos modifications sous ${mini.delai} au plus, une demande à la fois, et une nouvelle page SEO rejoint votre site chaque mois.
 
 ### ${maxi.name} : ${eur(maxi.month)} € par mois, ou ${eur(annee(maxi))} € à l’année
 
 Tout ce que comprend ${mini.name}, pour un site qui bouge souvent ou qui doit gagner en visibilité.
 
-- **Vos modifications passent en premier.** Les petites, comme un texte, une photo, vos coordonnées, vos horaires ou un tarif, sont faites dans l’heure. Les plus grosses sont faites sous ${maxi.delai}.
+- **Vos modifications passent en premier.** Je les fais sous ${maxi.delai}, et vous pouvez avoir deux demandes en cours à la fois.
 - **Une page SEO optimisée chaque semaine**, au lieu d’une par mois.
 - **L’optimisation continue** : ${B('observateur').nom} analyse régulièrement votre site, et ma petite bande vous propose des améliorations pour votre visibilité. Elles arrivent en petits messages dans votre espace client.
 
@@ -445,11 +442,13 @@ La première année, le nom de domaine et l’hébergement sont offerts avec l�
 Un horaire qui change, une nouvelle photo, un texte à ajouter : pour moi, ce sont des modifications, et elles sont comprises dans l’abonnement, sans limite. Tout part de votre espace client, une page privée que vous ouvrez sur ordinateur comme sur téléphone.
 
 1. **Vous faites votre demande** en quelques mots, avec une photo si besoin.
-2. **${B('bricoleur').nom} prépare la modification**, et un aperçu est créé.
-3. **Je reçois la proposition et je la vérifie.**
-4. **Si je ne la refuse pas dans les ${VERIF}, elle est validée**, puis publiée.
+2. **${B('support').nom} vous pose les bonnes questions**, puis vous résume la demande.
+3. **Vous confirmez**, et elle me la transmet.
+4. **Je fais la modification moi-même**, puis je vous préviens.
 
-Avec ${mini.name}, comptez ${mini.delai} au plus entre votre demande et la mise en ligne. Avec ${maxi.name}, une petite modification part en ligne dans l’heure, et une grosse sous ${maxi.delai}. Seule une refonte complète du site, ou l’ajout d’une fonction nouvelle, passe par un devis : je vous dis d’abord ce que cela représente.
+Tant que je n’ai pas commencé, vous pouvez annuler votre demande depuis votre espace client.
+
+Avec ${mini.name}, comptez ${mini.delai} au plus entre votre demande et la mise en ligne. Avec ${maxi.name}, vos demandes passent en priorité, en ligne sous ${maxi.delai}. Seule une refonte complète du site, ou l’ajout d’une fonction nouvelle, passe par un devis : je vous dis d’abord ce que cela représente.
 
 Pour une question sur votre site, je vous réponds sous ${delais.reponse}. Et pour un renseignement rapide, ${B('support').nom} vous répond dans la bulle, en bas de votre espace client.
 
@@ -457,7 +456,7 @@ Pour une question sur votre site, je vous réponds sous ${delais.reponse}. Et po
 
 ## La petite bande, après la mise en ligne
 
-Une fois votre site publié, mes petits monstres prennent le relais sur tout ce qui se répète. Ce sont mes automatisations : chacun a sa tâche, travaille seul, et je vérifie ce qu’il fait. Ils sont compris dans l’abonnement :
+Une fois votre site publié, mes petits monstres prennent le relais sur tout ce qui se répète. Ce sont mes automatisations : chacun a sa tâche et m’aide, mais aucun ne modifie votre site. Ils sont compris dans l’abonnement :
 
 ${compris.map((b) => `- **${nomRole(b)}**, ${APRES[b.id] || minus(b.court)}`).join('\n')}
 ${avecBoutique.map((b) => `
@@ -472,8 +471,8 @@ Et après ? Votre nom de domaine est à votre nom, il reste donc à vous. Je vou
 Tous les prix sont réunis sur la page [tarifs](/tarifs/). Si vous parlez de moi autour de vous, le [parrainage](/fidelite/) offre ${fidelite.parrainageMois} mois d’abonnement à vous comme à la personne parrainée. Et un deuxième site profite de ${fidelite.remiseSecondSite} % de remise sur sa création.`,
     faq: [
       { q: 'Puis-je avoir un site sans abonnement ?', a: 'Oui, avec la création seule : en commandant, vous choisissez « Je m’en occupe moi-même ». Je vous remets alors le code de votre site, et vous l’installez chez votre hébergeur, seul ou avec son aide. Tant que votre site est hébergé chez moi, en revanche, l’abonnement est nécessaire : il couvre son adresse, son hébergement et son entretien.' },
-      { q: 'Combien de modifications puis-je demander ?', a: 'Autant qu’il vous en faut : elles sont comprises dans l’abonnement, sans limite. Seules une refonte complète ou une fonction nouvelle passent par un devis.' },
-      { q: 'En combien de temps ma demande est-elle traitée ?', a: `Cela dépend de votre abonnement. ${mini.name} : sous ${mini.delai} au plus. ${maxi.name} : dans l’heure pour un petit changement, sous ${maxi.delai} pour un plus gros. Je vous préviens par e-mail dès que la modification est en ligne.` },
+      { q: 'Combien de modifications puis-je demander ?', a: `Autant qu’il vous en faut : elles sont comprises dans l’abonnement, sans limite. Vous avez une demande en cours à la fois avec ${mini.name}, deux avec ${maxi.name}. Seules une refonte complète ou une fonction nouvelle passent par un devis.` },
+      { q: 'En combien de temps ma demande est-elle traitée ?', a: `Cela dépend de votre abonnement. ${mini.name} : sous ${mini.delai} au plus. ${maxi.name} : sous ${maxi.delai}, en priorité. Je vous préviens par e-mail dès que la modification est en ligne.` },
     ],
     voir: ['/tarifs/', '/mon-espace/demo/', '/pourquoi-les-minis-monstres/'],
     cta: { titre: 'Entre de bonnes mains', texte: 'Visitez la démo de l’espace client, ou composez votre site.' },

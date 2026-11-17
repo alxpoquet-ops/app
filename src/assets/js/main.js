@@ -58,31 +58,30 @@
     'rien': 'nothing',
     ' fois': ' instalments',
     'À la réception : le reste': 'On delivery: the rest',
-    'Aperçu prêt': 'Preview ready',
+    'Alex s’en occupe': 'Alex is on it',
     'En savoir plus': 'Learn more',
-    'Validée par Alex, votre modification est en ligne (démo)': 'Approved by Alex, your change is live (demo)',
+    'Alex a fait votre modification, elle est en ligne (démo)': 'Alex made your change, it is live (demo)',
     ", sans frais en plus.": ", with no extra fees.",
     'Votre site, avec boutique en ligne': 'Your website, with an online shop',
     'Votre site': 'Your website',
     'Fermer': 'Close',
     'Exemple : ': 'Example: ',
     'Exemple d’écran : le vôtre sera à vos couleurs.': 'Example screen: yours will be in your own colours.',
-    'Demande pour les petits monstres': 'Request for the little monsters',
+    'Votre demande pour Alex': 'Your request for Alex',
     'Les petits monstres': 'The little monsters',
-    'Demande pour Alex': 'Request for Alex',
     'Environ ': 'About ',
-    '. Vous verrez l’aperçu avant la mise en ligne.': '. You will see the preview before it goes live.',
-    'Faite à la main par Alex.': 'Done by hand by Alex.',
-    'Préparer ma demande': 'Prepare my request',
+    '. C’est Alex qui fera la modification.': '. Alex will make the change.',
+    'C’est bien ça ? Alex fera la modification lui-même.': 'Is that right? Alex will make the change himself.',
+    'Oui, c’est bien ça': 'Yes, that’s right',
     'Outil : ': 'Tool: ',
     ' à chaque lancement.': ' each time you use it.',
     'Sans énergie.': 'No energy needed.',
     'Ouvrir l’outil': 'Open the tool',
     'Dans votre espace : ': 'In your area: ',
     'Y aller': 'Go there',
-    'Non merci': 'No thanks',
-    'D’accord, je ne fais rien. Dites-moi si vous voulez autre chose.': 'All right, I won’t do anything. Tell me if you need something else.',
-    'C’est prêt dans « Mes demandes » : relisez, ajoutez une photo si vous voulez, puis envoyez.': 'It’s ready in “My requests”: read it, add a photo if you like, then send it.',
+    'Je corrige': 'Let me fix it',
+    'Pas de souci ! Dites-moi ce qu’il faut changer, et je reformule votre demande.': 'No problem! Tell me what to change and I will rephrase your request.',
+    'Merci pour vos précisions ! Votre demande est prête dans « Mes demandes ». Ajoutez une photo si vous voulez, puis envoyez : je transmets à Alex !': 'Thank you for the details! Your request is ready in “My requests”. Add a photo if you like, then send it: I will pass it on to Alex!',
     'Dans votre vrai espace, je vous réponds ici.': 'In your real client area, I answer you here.',
     'Cerise n’a pas pu répondre. Réessayez dans un instant.': 'Cerise couldn’t answer. Try again in a moment.',
     'La connexion a coupé. Réessayez dans un instant.': 'The connection dropped. Try again in a moment.',
@@ -112,8 +111,8 @@
     'La photo dépasse 8 Mo : choisissez-en une plus légère': 'The photo is over 8 MB: please choose a lighter one',
     'Envoi en cours…': 'Sending…', 'Nouvelle étape': 'New step', 'QR code vers votre site': 'QR code to your website', 'QR code téléchargé': 'QR code downloaded',
     'Vos modifications du mois sont utilisées : je vous recontacte pour en parler (démo)': 'You have used this month’s changes: I will get back to you to talk about it (demo)',
-    'envoyée à l’instant': 'sent just now', 'Reçue': 'Received', 'Ajouter une photo (facultatif)': 'Add a photo (optional)',
-    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'Demande envoyée': 'Request sent', 'Demande envoyée (démo)': 'Request sent (demo)', 'Vous avez utilisé vos petites retouches du mois (démo)': 'You have used your small edits for this month (demo)', 'Vous verrez l’aperçu avant la mise en ligne.': 'You will see the preview before it goes live.', 'd’énergie (démo)': 'energy (demo)', 'Il ne vous reste pas assez d’énergie pour cette demande (démo)': 'You do not have enough energy left for this request (demo)', 'En cours': 'In progress', 'Faite': 'Done',
+    'envoyée à l’instant': 'sent just now', 'Transmise à Alex': 'Sent to Alex', 'Ajouter une photo (facultatif)': 'Add a photo (optional)',
+    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'Demande envoyée': 'Request sent', 'Merci pour vos précisions, je transmets à Alex ! (démo)': 'Thank you for the details, I am passing it on to Alex! (demo)', 'Vous avez utilisé vos petites retouches du mois (démo)': 'You have used your small edits for this month (demo)', 'd’énergie (démo)': 'energy (demo)', 'Il ne vous reste pas assez d’énergie pour cette demande (démo)': 'You do not have enough energy left for this request (demo)', 'En cours': 'In progress', 'Faite': 'Done',
     'Votre modification est en ligne (démo)': 'Your change is live (demo)', ' choisi, à partir du mois prochain (démo)': ' chosen, from next month (demo)',
     'Option ajoutée': 'Option added', 'Option retirée': 'Option removed', ' (démo)': ' (demo)', 'à l’instant': 'just now',
     'Je souhaite payer le site en ': 'I would like to pay for the website in ', ' fois.': ' instalments.', 'Options choisies : ': 'Chosen options: ',
@@ -929,7 +928,8 @@
     };
 
     /* modifications restantes ce mois : le quota vient du forfait coché (data-jetons), deux demandes sont déjà faites dans la démo.
-       Énergie en pause (data-unite="retouches" sur la jauge) : la jauge compte les petites retouches de Bricou, une par demande. */
+       Énergie en pause (data-unite="retouches" sur la jauge) : la jauge compte les demandes, une par demande.
+       Depuis le 17 novembre 2026, c'est Alex qui fait chaque modification : la démo montre « Transmise à Alex », puis « Alex s'en occupe ». */
     var jaugeEl = $('[data-jauge]', app), parRetouche = !!jaugeEl && jaugeEl.getAttribute('data-unite') === 'retouches';
     var startPlan = $('input[name="app-plan"]:checked', app);
     var used = parRetouche ? 2 : 62;
@@ -956,17 +956,17 @@
       if (left < prix) { toast(tr(parRetouche ? 'Vous avez utilisé vos petites retouches du mois (démo)' : 'Il ne vous reste pas assez d’énergie pour cette demande (démo)')); return; }
       used += prix; left = Math.max(0, max - used); drawJauge();
       var li = d.createElement('li');
-      li.innerHTML = '<span><strong></strong><small>' + tr('envoyée à l’instant') + '</small></span><em class="st st-new">' + tr('Reçue') + '</em>';
+      li.innerHTML = '<span><strong></strong><small>' + tr('envoyée à l’instant') + '</small></span><em class="st st-new">' + tr('Transmise à Alex') + '</em>';
       li.querySelector('strong').textContent = text.length > 60 ? text.slice(0, 57) + '…' : text;
       list.insertBefore(li, list.firstChild);
       txt.value = ''; file.value = ''; fileName.textContent = tr('Ajouter une photo (facultatif)');
-      toast(sansJauge || parRetouche ? tr('Demande envoyée (démo)') : tr('Demande envoyée') + ' : ' + prix + ' ' + tr('d’énergie (démo)'));
+      toast(sansJauge || parRetouche ? tr('Merci pour vos précisions, je transmets à Alex ! (démo)') : tr('Demande envoyée') + ' : ' + prix + ' ' + tr('d’énergie (démo)'));
       var st = li.querySelector('.st');
-      setTimeout(function () { st.className = 'st st-doing'; st.textContent = tr(sansJauge ? 'Aperçu prêt' : 'En cours'); }, 2000);
+      setTimeout(function () { st.className = 'st st-doing'; st.textContent = tr(sansJauge ? 'Alex s’en occupe' : 'En cours'); }, 2000);
       setTimeout(function () {
         st.className = 'st st-done'; st.textContent = tr('Faite');
-        toast(tr(sansJauge ? 'Validée par Alex, votre modification est en ligne (démo)' : 'Votre modification est en ligne (démo)'));
-        addLog('check', 'Modification faite : ' + li.querySelector('strong').textContent);
+        toast(tr(sansJauge ? 'Alex a fait votre modification, elle est en ligne (démo)' : 'Votre modification est en ligne (démo)'));
+        addLog('check', 'Modification faite par Alex : ' + li.querySelector('strong').textContent);
       }, 4500);
     });
 
@@ -1009,7 +1009,7 @@
 
   /* ---------- la bulle de Cerise : en bas de l'écran, sur toutes les pages ----------
      Sur le site : quelques questions, avec la réponse tout de suite (écrite dans la page, sans IA).
-     Dans l'espace client : on écrit à Cerise, elle répond et prépare l'action, que le client valide d'un clic.
+     Dans l'espace client : on écrit à Cerise, elle répond, reformule la demande, le client la confirme et elle part chez Alex.
      Dans la démo : les mêmes gestes, avec des réponses d'exemple écrites dans la page. */
   var flot = $('[data-lia-flot]');
   if (flot) {
@@ -1059,16 +1059,16 @@
       if (oui) { fil.scrollTop = fil.scrollHeight; if (dial && champ && window.innerWidth > 720) champ.focus(); }
     };
 
-    /* la carte d'une action préparée par Cerise : le client valide, ou non */
+    /* la carte d'une demande reformulée par Cerise : le client confirme, ou non */
     var carte = function (a) {
       if (!a || !a.type || a.type === 'aucune') return;
       var titre, detail = '', petit = '', oui;
       if (a.type === 'demande') {
         var parLia = a.par === 'lia';
-        titre = tr(parLia ? 'Demande pour les petits monstres' : 'Demande pour Alex');
+        titre = tr('Votre demande pour Alex');
         detail = a.texte || '';
-        petit = parLia ? (sansEnergie ? tr('Vous verrez l’aperçu avant la mise en ligne.') : tr('Environ ') + jetonsTxt(a.jetons || 0) + tr('. Vous verrez l’aperçu avant la mise en ligne.')) : tr('Faite à la main par Alex.');
-        oui = tr('Préparer ma demande');
+        petit = parLia && !sansEnergie ? tr('Environ ') + jetonsTxt(a.jetons || 0) + tr('. C’est Alex qui fera la modification.') : tr('C’est bien ça ? Alex fera la modification lui-même.');
+        oui = tr('Oui, c’est bien ça');
       } else if (a.type === 'outil') {
         titre = tr('Outil : ') + tr(a.nom || '');
         petit = a.jetons > 0 ? jetonsTxt(a.jetons) + tr(' à chaque lancement.') : tr('Sans énergie.');
@@ -1084,12 +1084,12 @@
       if (petit) { var sm = d.createElement('small'); sm.textContent = petit; c.appendChild(sm); }
       var bs = d.createElement('div'); bs.className = 'lia-carte-btns';
       var bo = d.createElement('button'); bo.type = 'button'; bo.className = 'lia-oui'; bo.textContent = oui;
-      var bn = d.createElement('button'); bn.type = 'button'; bn.className = 'lia-non'; bn.textContent = tr('Non merci');
+      var bn = d.createElement('button'); bn.type = 'button'; bn.className = 'lia-non'; bn.textContent = tr('Je corrige');
       bs.appendChild(bo); bs.appendChild(bn); c.appendChild(bs);
       fil.appendChild(c);
       fil.scrollTop = fil.scrollHeight;
       var fini = function () { c.classList.add('is-fait'); bo.disabled = bn.disabled = true; };
-      bn.addEventListener('click', function () { fini(); ecrire(tr('D’accord, je ne fais rien. Dites-moi si vous voulez autre chose.'), 'lia'); });
+      bn.addEventListener('click', function () { fini(); ecrire(tr('Pas de souci ! Dites-moi ce qu’il faut changer, et je reformule votre demande.'), 'lia'); });
       bo.addEventListener('click', function () {
         fini();
         if (a.type === 'demande') {
@@ -1097,7 +1097,7 @@
           if (radio && !radio.disabled) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
           if (ta) { ta.value = a.texte || ''; ta.dispatchEvent(new Event('input', { bubbles: true })); }
           aller('demandes');
-          var m = tr('C’est prêt dans « Mes demandes » : relisez, ajoutez une photo si vous voulez, puis envoyez.');
+          var m = tr('Merci pour vos précisions ! Votre demande est prête dans « Mes demandes ». Ajoutez une photo si vous voulez, puis envoyez : je transmets à Alex !');
           ecrire(m, 'lia'); garder('lia', m);
           flotOuvrir(false);
           if (ta) setTimeout(function () { ta.scrollIntoView({ behavior: 'smooth', block: 'center' }); ta.focus(); }, 250);

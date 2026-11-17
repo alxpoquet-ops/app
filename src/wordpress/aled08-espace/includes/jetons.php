@@ -800,7 +800,7 @@ function aled08e_jl_profil($user) {
     if (!aled08e_energie_on()) {
         $cout = 0.0;
         foreach (aled08e_jl_journal($user->ID) as $l) if (($l['m'] ?? '') === wp_date('Y-m')) $cout += (float) ($l['c'] ?? 0);
-        echo '<h2>Cerise et Bricou</h2><table class="form-table" role="presentation"><tr><th>Ce mois-ci</th><td>' . (int) aled08e_jl_retouches_mois($user->ID) . ' modifications préparées par Bricou. Coût Claude (retouches et bulle) : ' . esc_html(number_format($cout / 100, 2, ',', ' ')) . ' €. L’énergie est en pause.</td></tr></table>';
+        echo '<h2>Cerise</h2><table class="form-table" role="presentation"><tr><th>Ce mois-ci</th><td>' . (int) aled08e_jl_retouches_mois($user->ID) . ' modifications préparées par Bricou. Coût Claude (retouches et bulle) : ' . esc_html(number_format($cout / 100, 2, ',', ' ')) . ' €. L’énergie est en pause.</td></tr></table>';
         return;
     }
     $e = aled08e_jl_etat($user->ID);
@@ -839,7 +839,7 @@ function aled08e_jl_bilan_html() {
     }
     $eur = function ($cts) { return esc_html(number_format($cts / 100, 2, ',', ' ')) . ' €'; };
     if (!aled08e_energie_on()) {
-        echo '<h2>Cerise et Bricou : le bilan du mois</h2>';
+        echo '<h2>Cerise : le bilan du mois</h2>';
         echo '<p>Rien n’est compté aux clients : les modifications sont incluses, et Cerise répond jusqu’à ' . aled08e_limite('bulleJour', 40) . ' messages par jour. Voici ce que Claude a coûté.</p>';
         if (!$lignes) { echo '<p><em>Rien ce mois-ci.</em></p>'; return; }
         echo '<table class="widefat striped" style="max-width:620px"><thead><tr><th>Client</th><th>Utilisations</th><th>Coût Claude</th></tr></thead><tbody>';

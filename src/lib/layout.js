@@ -213,14 +213,15 @@ ${liaFlot()}`;
 
 // ---------------------------------------------------------------- la bulle de Cerise
 // En bas de chaque page. Sur le site : Cerise répond tout de suite à quelques questions (réponses écrites ici, sans appel au modèle).
-// Dans l'espace client : on lui écrit, elle répond et prépare l'action à valider (voir main.js et includes/bulle.php).
+// Dans l'espace client : on lui écrit, elle répond, aide à formuler la demande, la fait confirmer puis la transmet à Alex
+// (voir main.js et includes/bulle.php). Aucun petit monstre ne modifie le site : c'est Alex qui fait les modifications.
 function liaFlot() {
   const eur = (n) => `${n} €`;
   const questions = [
-    ['C’est combien ?', `Votre site professionnel coûte ${eur(creation.prix)}, jusqu’à ${creation.pages} pages. Ensuite, l’abonnement s’occupe de tout : ${forfaits[0].name} à ${eur(forfaits[0].month)} par mois, avec vos modifications et une page pour Google chaque mois, ou ${forfaits[1].name} à ${eur(forfaits[1].month)}, avec vos petites modifications faites dans l’heure, une page chaque semaine et la bande qui surveille votre site. Vous avez déjà votre hébergement ? La création seule vous donne le code du site, sans abonnement.`, sections.forfaits.path, 'Voir les tarifs'],
-    ['Comment ça marche ?', 'Vous composez votre site en deux minutes, Alex le prépare avec sa petite bande, et vous validez l’aperçu avant la mise en ligne. Vous voyez le prix avant de commander.', sections.creer.path, 'Créer mon site'],
-    ['Qui fait mon site ?', 'Alex ! C’est lui qui conçoit votre site et qui vous répond. Moi, je suis la secrétaire de sa petite bande : chaque monstre a son métier, et Alex vérifie tout.', sections.equipe.path, 'Rencontrer la bande'],
-    ['Et pour changer mon site après ?', 'Vous écrivez votre demande dans votre espace client. Bricou prépare la modification et un aperçu, Alex la vérifie, et c’est en ligne. C’est compris dans votre abonnement.', sections.accompagnement.path, 'L’accompagnement'],
+    ['C’est combien ?', `Votre site professionnel coûte ${eur(creation.prix)}, jusqu’à ${creation.pages} pages. Ensuite, l’abonnement s’occupe de tout : ${forfaits[0].name} à ${eur(forfaits[0].month)} par mois, avec vos modifications et une page pour Google chaque mois, ou ${forfaits[1].name} à ${eur(forfaits[1].month)}, avec vos modifications en priorité sous 48 h, une page chaque semaine et la bande qui surveille votre site. Vous avez déjà votre hébergement ? La création seule vous donne le code du site, sans abonnement.`, sections.forfaits.path, 'Voir les tarifs'],
+    ['Comment ça marche ?', 'Vous composez votre site en deux minutes, et Alex le crée pour vous. Il vous le montre avant la mise en ligne, et vous lui dites ce qui doit changer. Vous voyez le prix avant de commander.', sections.creer.path, 'Créer mon site'],
+    ['Qui fait mon site ?', 'Alex ! C’est lui qui conçoit votre site et qui vous répond. Moi, je suis la secrétaire de sa petite bande. Les Minis Monstres vous aident, c’est Alex qui modifie votre site.', sections.equipe.path, 'Rencontrer la bande'],
+    ['Et pour changer mon site après ?', 'Écrivez-moi votre demande dans votre espace client. Je vous pose quelques questions pour bien comprendre, vous confirmez, et je transmets à Alex. C’est lui qui fait la modification, avec soin. C’est compris dans votre abonnement !', sections.accompagnement.path, 'L’accompagnement'],
   ];
   const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', enService.outils ? 'Comment avoir plus d’avis Google ?' : 'Comment se passe une modification ?', 'Que comprend mon abonnement ?'];
   return `<div class="lia-flot" data-lia-flot hidden>
@@ -246,7 +247,7 @@ function liaFlot() {
       <textarea id="lia-champ" rows="2" maxlength="${jetonsLia.bulle.max}" placeholder="Écrivez à Cerise…" required></textarea>
       <button type="submit" aria-label="Envoyer à Cerise">${icon('send')}</button>
     </form>
-    <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Cerise répond automatiquement et peut se tromper : rien ne change sans votre accord. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
+    <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Cerise répond automatiquement et peut se tromper. Elle ne touche pas à votre site : c’est Alex qui fait les modifications. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
   </div>
   <p class="lia-flot-coucou" hidden><strong>Je suis là pour vous aider !</strong><small>Cerise, la secrétaire de la bande</small></p>
   <button type="button" class="lia-flot-btn" aria-expanded="false" aria-controls="lia-panel"><span class="sr-only">Parler à Cerise</span>${monster('coucou')}</button>

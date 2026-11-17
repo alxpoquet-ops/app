@@ -35,7 +35,7 @@ const delaiTxt = (f) => f.delaiTexte || (f.delaiMoyen || f.priorite ? `en ${f.de
 // La liste d'un abonnement sans la ligne du délai (le délai a sa propre ligne sous la liste)
 const sansDelai = (arr) => arr.filter((x) => !/^Délai/.test(x));
 // La différence entre Mini et Maxi, en une phrase
-const DIFF_ABO = `Avec ${EVO.name}, vos demandes passent en premier : les petites modifications sont faites dans l’heure, les grosses sous 48 h. Vous avez une page SEO optimisée chaque semaine au lieu d’une par mois, et la bande surveille votre site pour vous proposer des améliorations.`;
+const DIFF_ABO = `Avec ${EVO.name}, vos demandes passent en premier : je fais vos modifications sous 48 h, et vous pouvez en envoyer deux à la fois. Vous avez une page SEO optimisée chaque semaine au lieu d’une par mois, et la bande surveille votre site pour vous proposer des améliorations.`;
 const optsCreation = options.filter((o) => o.quand === 'creation' && !o.retire);
 const optsMois = options.filter((o) => o.quand === 'mois' && !o.retire);
 
@@ -202,7 +202,7 @@ function formuleCarte(f, { compact = false } = {}) {
 function offre({ compact = false, choose = true } = {}) {
   const liste = (items) => `<ul class="plan-list">${items.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>`;
   return `<div class="offre reveal" id="offre">
-  <div class="offre-lia" aria-hidden="true">${petit('bricou')}${petit('etoile', { humeur: 'ravi' })}</div>
+  <div class="offre-lia" aria-hidden="true">${petit('mochi')}${petit('etoile', { humeur: 'ravi' })}</div>
   <div class="offre-cols">
     <article class="offre-col c-butter">
       <p class="offre-k"><span>1</span>Votre site</p>
@@ -291,19 +291,21 @@ function extrasDemande() { return ''; }
 function offreEvenement() { return ''; } // l'offre événement est retirée (17 novembre 2026)
 
 // ---------------------------------------------------------------- comment se passe une modification
+// 17 novembre 2026 : Cerise aide à formuler la demande, le client confirme, Alex fait la modification à la main.
+const CERISE = (bande.find((b) => b.id === 'support') || { nom: 'Cerise' }).nom;
 const ETAPES_MODIF = [
   ['message-circle', 'Vous faites votre demande', 'Dans votre espace client, avec vos mots, et une photo si besoin.'],
-  ['wrench', 'Bricou prépare la modification', 'Le constructeur de la bande s’en charge.'],
-  ['eye', 'Un aperçu est créé', 'Vous voyez le résultat avant tout le monde.'],
-  ['user-check', 'Je reçois la proposition', 'Je la vérifie moi-même.'],
-  ['clock', 'Sans refus de ma part sous 30 minutes, elle est validée', 'Pas d’attente inutile.'],
+  ['list-checks', `${CERISE} vous pose les bonnes questions`, 'Pour que la demande soit claire et complète.'],
+  ['clipboard-check', 'Vous confirmez la demande', `${CERISE} vous la résume, vous dites oui.`],
+  ['send', 'Elle est transmise à Alex', '« Merci pour vos précisions, je transmets à Alex ! »'],
+  ['user-check', 'Je fais la modification', 'Moi-même, à la main.'],
   ['circle-check', 'La modification est en ligne', 'Vos visiteurs voient la nouvelle version.'],
 ];
 function processusModif({ titre = true } = {}) {
   return `<!--commun--><div class="modif-etapes reveal">
   ${titre ? `<h3>${icon('repeat')}Comment se passe une modification</h3>` : ''}
   <ol>${ETAPES_MODIF.map(([ic, t, d], i) => `<li><span class="modif-n">${i + 1}</span><span class="modif-ico">${icon(ic)}</span><span><strong>${esc(t)}</strong><small>${esc(d)}</small></span></li>`).join('')}</ol>
-  <p class="modif-delai">${icon('timer')}<span>Délai : avec ${esc(ABO.name)}, ${esc(delaiTxt(ABO))}. Avec ${esc(EVO.name)}, ${esc(delaiTxt(EVO))}. Si une demande demande plus de travail, je la fais moi-même, à la main.</span></p>
+  <p class="modif-delai">${icon('timer')}<span>Délai : avec ${esc(ABO.name)}, sous ${esc(ABO.delai)}, une demande à la fois. Avec ${esc(EVO.name)}, sous 48 h, deux demandes à la fois. Vous pouvez annuler une demande tant que je ne l’ai pas commencée.</span></p>
 </div><!--/commun-->`;
 }
 
@@ -372,7 +374,7 @@ const cfListe = (items) => `<ul class="cf-liste">${items.map((x) => `<li>${icon(
 function siteCarte({ name = 'b-type', court = false } = {}) {
   return `<input type="hidden" name="${name}" value="vitrine" data-type-field>
   <div class="cf-site c-butter">
-    <span class="cf-art" aria-hidden="true">${petit('bricou', { humeur: 'ravi' })}</span>
+    <span class="cf-art" aria-hidden="true">${petit('fantome', { humeur: 'ravi' })}</span>
     <div class="cf-corps">
       <p class="cf-nom">Site Internet Professionnel</p>
       <p class="cf-prix"><b>${euro(creation.prix)}</b><small>une fois</small></p>

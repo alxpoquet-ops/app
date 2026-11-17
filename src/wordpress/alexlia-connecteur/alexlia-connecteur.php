@@ -116,6 +116,8 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'preparer': return alexlia_conn_preparer($args);
         case 'appliquer': return alexlia_conn_appliquer($args);
         case 'abandonner': return alexlia_conn_abandonner($args);
+        case 'ecran': return alexlia_conn_ecran($args);
+        case 'produits': return alexlia_conn_produits($args);
         case 'stats': return alexlia_conn_stats();
         case 'vacances_lire': return alexlia_vac_get();
         case 'vacances_regler': return alexlia_vac_regler($args);
@@ -335,7 +337,71 @@ function alexlia_conn_preparer($args) {
         return ['ok' => true, 'prepare' => true, 'apercu' => $apercu, 'visible_sur_le_site' => $visible,
             'note' => $visible === false ? 'ATTENTION : le nouveau texte n’apparaît toujours pas sur la page d’accueil : vérifiez que « ancien » est écrit exactement comme à l’écran, ou que le texte est sur une autre page.' : 'Le nouveau texte est visible dans l’aperçu.'];
     }
+    if ($op === 'produit_creer' || $op === 'produit_modifier') {
+        // la boutique : le produit n'existe pas (ou ne change pas) tant que le client n'a pas validé ; il est créé / modifié à l'accord (appliquer)
+        $champs = alexlia_conn_produit_champs($args, $op === 'produit_creer');
+        if (is_wp_error($champs)) return $champs;
+        if ($op === 'produit_modifier') {
+            $prod = wc_get_product((int) ($args['id'] ?? 0));
+            if (!$prod || !in_array($prod->get_type(), ['simple', 'variable', 'external'], true) || $prod->get_status() === 'trash') return new WP_Error('alexlia_introuvable', 'Produit introuvable.', ['status' => 404]);
+            $champs['id'] = $prod->get_id();
+            $champs['avant'] = ['nom' => $prod->get_name(), 'prix' => (string) $prod->get_regular_price()];
+        } elseif (function_exists('alexlia_mcp_compter') && !alexlia_mcp_compter('produits', 3)) return new WP_Error('alexlia_limite', 'Limite atteinte : trois produits créés par heure au plus.', ['status' => 429]);
+        $b['produits'][] = ['op' => $op === 'produit_creer' ? 'creer' : 'modifier'] + $champs;
+        alexlia_conn_brouillon_set($j, $b);
+        return ['ok' => true, 'prepare' => true, 'apercu' => '', 'note' => 'Préparé : le produit sera ' . ($op === 'produit_creer' ? 'créé dans la boutique' : 'modifié') . ' après l’accord du client (rien n’est en ligne avant).'];
+    }
     return new WP_Error('alexlia_args', 'Opération inconnue.', ['status' => 400]);
+}
+
+/* ---------- La boutique (WooCommerce) : produits ---------- */
+function alexlia_conn_produit_champs($a, $creation) {
+    if (!function_exists('wc_get_product') || !class_exists('WC_Product_Simple')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    $c = [];
+    if (isset($a['nom'])) { $c['nom'] = sanitize_text_field((string) $a['nom']); if ($c['nom'] === '' || mb_strlen($c['nom']) > 120) return new WP_Error('alexlia_args', 'Nom de produit vide ou trop long.', ['status' => 400]); }
+    if (isset($a['prix'])) {
+        $p = (float) str_replace(',', '.', preg_replace('/[^\d,.]/', '', (string) $a['prix']));
+        if ($p < 0.5 || $p > 5000) return new WP_Error('alexlia_args', 'Prix hors limites (entre 0,50 € et 5 000 €) : demandez le prix au client.', ['status' => 400]);
+        $c['prix'] = wc_format_decimal($p);
+    }
+    if (isset($a['prix_promo']) && $a['prix_promo'] !== '' && $a['prix_promo'] !== null) {
+        $p = (float) str_replace(',', '.', preg_replace('/[^\d,.]/', '', (string) $a['prix_promo']));
+        if ($p < 0.5 || $p > 5000) return new WP_Error('alexlia_args', 'Prix promo hors limites.', ['status' => 400]);
+        $c['prix_promo'] = wc_format_decimal($p);
+    }
+    if (isset($a['description'])) $c['description'] = mb_substr(alexlia_conn_propre((string) $a['description']), 0, 3000);
+    if (isset($a['en_stock'])) $c['en_stock'] = (bool) $a['en_stock'];
+    if (!empty($a['image_id']) && get_post_type((int) $a['image_id']) === 'attachment') $c['image_id'] = (int) $a['image_id'];
+    if (!empty($a['categorie']) && taxonomy_exists('product_cat')) {
+        $t = get_term_by('name', sanitize_text_field((string) $a['categorie']), 'product_cat');
+        if ($t) $c['categorie'] = (int) $t->term_id;
+    }
+    if ($creation && (empty($c['nom']) || empty($c['prix']))) return new WP_Error('alexlia_args', 'Nom et prix obligatoires pour créer un produit.', ['status' => 400]);
+    if (!$creation && count($c) < 1) return new WP_Error('alexlia_args', 'Rien à modifier.', ['status' => 400]);
+    return $c;
+}
+function alexlia_conn_produit_appliquer($pr) {
+    if (!function_exists('wc_get_product')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    if (($pr['op'] ?? '') === 'creer') { $p = new WC_Product_Simple(); $p->set_status('publish'); $p->set_catalog_visibility('visible'); }
+    else { $p = wc_get_product((int) ($pr['id'] ?? 0)); if (!$p) return new WP_Error('alexlia_introuvable', 'Produit introuvable.', ['status' => 404]); }
+    if (isset($pr['nom'])) $p->set_name($pr['nom']);
+    if (isset($pr['prix'])) $p->set_regular_price($pr['prix']);
+    if (isset($pr['prix_promo'])) $p->set_sale_price($pr['prix_promo']);
+    if (isset($pr['description'])) { $p->set_description($pr['description']); if (($pr['op'] ?? '') === 'creer') $p->set_short_description(wp_trim_words(wp_strip_all_tags($pr['description']), 30)); }
+    if (isset($pr['en_stock'])) $p->set_stock_status($pr['en_stock'] ? 'instock' : 'outofstock');
+    if (isset($pr['image_id'])) $p->set_image_id($pr['image_id']);
+    if (isset($pr['categorie'])) $p->set_category_ids([(int) $pr['categorie']]);
+    $id = $p->save();
+    alexlia_conn_journal((($pr['op'] ?? '') === 'creer' ? 'Produit créé' : 'Produit modifié') . ' après accord du client : « ' . $p->get_name() . ' » (' . $p->get_regular_price() . ' €).');
+    return ['id' => (int) $id, 'titre' => $p->get_name(), 'adresse' => get_permalink($id)];
+}
+function alexlia_conn_produits($args) {
+    if (!function_exists('wc_get_products')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    $q = ['limit' => 30, 'status' => ['publish', 'draft', 'private'], 'orderby' => 'date', 'order' => 'DESC'];
+    if (!empty($args['recherche'])) $q['s'] = sanitize_text_field((string) $args['recherche']);
+    $o = [];
+    foreach (wc_get_products($q) as $p) $o[] = ['id' => $p->get_id(), 'nom' => $p->get_name(), 'prix' => (string) $p->get_regular_price(), 'prix_promo' => (string) $p->get_sale_price(), 'statut' => $p->get_status(), 'en_stock' => $p->get_stock_status() === 'instock', 'adresse' => get_permalink($p->get_id())];
+    return ['produits' => $o];
 }
 
 function alexlia_conn_appliquer($args) {
@@ -364,6 +430,11 @@ function alexlia_conn_appliquer($args) {
         $r = alexlia_conn_reglage(['nom' => $nom, 'valeur' => $v]);
         if (is_wp_error($r)) return $r;
         $faits[] = ['type' => 'reglage', 'id' => 0, 'revision_avant' => 0, 'adresse' => '', 'titre' => $nom, 'avant' => $r['avant']];
+    }
+    foreach ((array) ($b['produits'] ?? []) as $pr) {
+        $r = alexlia_conn_produit_appliquer($pr);
+        if (is_wp_error($r)) return $r;
+        $faits[] = ['type' => 'produit', 'id' => $r['id'], 'revision_avant' => 0, 'adresse' => $r['adresse'], 'titre' => $r['titre']];
     }
     foreach ((array) ($b['affichages'] ?? []) as $a) alexlia_conn_affichage_ajouter($a['ancien'], $a['nouveau']);
     delete_transient('alexlia_ap_' . $j);
@@ -403,21 +474,50 @@ function alexlia_conn_affichages_appliquer($html, $liste) {
         if ($i % 2 === 1) continue;
         foreach ($liste as $a) {
             if (empty($a['ancien'])) continue;
-            $out = @preg_replace_callback(alexlia_conn_affichage_regex($a['ancien']), function () use ($a) { return esc_html((string) $a['nouveau']); }, $m);
+            // dans l'aperçu, le texte remplacé est entouré de repères, qui deviennent un surlignage dans le texte de la page (et disparaissent dans les balises et l'en-tête)
+            $out = @preg_replace_callback(alexlia_conn_affichage_regex($a['ancien']), function () use ($a) {
+                $t = esc_html((string) $a['nouveau']);
+                return !empty($a['marque']) ? "\u{E000}" . $t . "\u{E001}" : $t;
+            }, $m);
             if (is_string($out)) $m = $out;
         }
         $morceaux[$i] = $m;
     }
-    return implode('', $morceaux);
+    $html = implode('', $morceaux);
+    if (strpos($html, "\u{E000}") !== false) {
+        $net = function ($s) { return str_replace(["\u{E000}", "\u{E001}"], '', $s); };
+        $html = preg_replace_callback('/<head\b.*?<\/head>/is', function ($m) use ($net) { return $net($m[0]); }, $html);
+        $html = preg_replace_callback('/<[^>]*>/', function ($m) use ($net) { return $net($m[0]); }, $html); // jamais de surlignage à l'intérieur d'une balise (attributs)
+        $html = str_replace(["\u{E000}", "\u{E001}"], ['<mark class="alexlia-mod">', '</mark>'], $html);
+    }
+    return $html;
 }
 add_action('template_redirect', function () {
     if (is_admin() || wp_doing_ajax() || is_feed() || is_robots() || (defined('REST_REQUEST') && REST_REQUEST)) return;
     $liste = alexlia_conn_affichages();
     $b = alexlia_conn_apercu_actif();
-    if ($b && !empty($b['affichages'])) $liste = array_merge($liste, $b['affichages']);
+    if ($b && !empty($b['affichages'])) $liste = array_merge($liste, array_map(function ($a) { $a['marque'] = true; return $a; }, $b['affichages']));
     if (!$liste) return;
     ob_start(function ($h) use ($liste) { return (stripos($h, '<html') === false) ? $h : alexlia_conn_affichages_appliquer($h, $liste); });
 }, 0);
+
+/* Le texte affiché à l'écran sur une page du site (ce que voit le visiteur, thème compris), ligne par ligne : sert à retrouver un texte écrit par le thème */
+function alexlia_conn_ecran($args) {
+    $u = esc_url_raw((string) ($args['adresse'] ?? '')) ?: home_url('/');
+    if (wp_parse_url($u, PHP_URL_HOST) !== wp_parse_url(home_url('/'), PHP_URL_HOST)) return new WP_Error('alexlia_adresse', 'Adresse hors du site.', ['status' => 400]);
+    if (!empty($args['jeton']) && alexlia_conn_brouillon((string) $args['jeton'])) $u = alexlia_conn_apercu_url((string) $args['jeton'], $u);
+    $r = wp_remote_get(add_query_arg('alexlia_v', time(), $u), ['timeout' => 15, 'redirection' => 3, 'headers' => ['Cache-Control' => 'no-cache']]);
+    if (is_wp_error($r) || (int) wp_remote_retrieve_response_code($r) !== 200) return new WP_Error('alexlia_ecran', 'Page illisible.', ['status' => 502]);
+    $h = (string) wp_remote_retrieve_body($r);
+    $h = preg_replace('/<!--alexlia-ap-->.*?<!--\/alexlia-ap-->/s', '', $h);
+    $h = preg_replace('/<head\b.*?<\/head>|<script\b.*?<\/script>|<style\b.*?<\/style>|<noscript\b.*?<\/noscript>|<svg\b.*?<\/svg>/is', '', $h);
+    $h = preg_replace('/<(br|\/p|\/h[1-6]|\/li|\/div|\/section|\/header|\/footer|\/a|\/button|\/span|\/em)\b[^>]*>/i', "\n", $h);
+    $t = html_entity_decode(wp_strip_all_tags($h), ENT_QUOTES, 'UTF-8');
+    $lignes = [];
+    foreach (preg_split('/\R/u', $t) as $l) { $l = trim(preg_replace('/[ \t\x{00A0}]+/u', ' ', $l)); if ($l !== '' && mb_strlen($l) > 1) $lignes[] = $l; }
+    $txt = implode("\n", array_slice($lignes, 0, 400));
+    return ['adresse' => $u, 'texte' => mb_substr($txt, 0, 9000), 'tronque' => mb_strlen($txt) > 9000];
+}
 
 /* Le texte apparaît-il dans la page affichée (hors balises d'en-tête et hors encart d'aperçu) ? null si on n'a pas pu regarder */
 function alexlia_conn_texte_visible($url, $texte) {
@@ -463,6 +563,10 @@ add_action('init', function () {
         $changes[] = ['quoi' => $k === 'slogan' ? 'Slogan du site' : 'Nom du site (en haut du site, dans l’onglet du navigateur)', 'avant' => (string) get_option($opt), 'apres' => (string) $v];
     }
     foreach ((array) ($b['articles'] ?? []) as $a) $changes[] = ['quoi' => 'Nouvelle actualité', 'avant' => '', 'apres' => (string) $a['titre']];
+    foreach ((array) ($b['produits'] ?? []) as $pr) {
+        $txt = trim(($pr['nom'] ?? '') . (isset($pr['prix']) ? ', ' . $pr['prix'] . ' €' : '') . (isset($pr['prix_promo']) ? ' (promo ' . $pr['prix_promo'] . ' €)' : '') . (isset($pr['en_stock']) ? ($pr['en_stock'] ? ', en stock' : ', épuisé') : ''), ', ');
+        $changes[] = ($pr['op'] ?? '') === 'creer' ? ['quoi' => 'Nouveau produit dans la boutique', 'avant' => '', 'apres' => $txt] : ['quoi' => 'Produit modifié : « ' . ($pr['avant']['nom'] ?? '') . ' »', 'avant' => (string) ($pr['avant']['prix'] ?? '') . ' €', 'apres' => $txt];
+    }
     foreach ((array) ($b['affichages'] ?? []) as $a) if (empty($b['reglages']) || !in_array($a['nouveau'], array_values((array) $b['reglages']), true)) $changes[] = ['quoi' => 'Texte du thème, remplacé à l’écran', 'avant' => (string) $a['ancien'], 'apres' => (string) $a['nouveau']];
     add_filter('the_content', function ($c) use ($b, $article, $marques) {
         $id = get_the_ID();

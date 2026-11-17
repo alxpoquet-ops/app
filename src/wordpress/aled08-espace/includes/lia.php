@@ -121,6 +121,10 @@ function aled08e_lia_outils() {
         ['name' => 'publier_actualite', 'description' => 'Publie un nouvel article (actualité) sur le site du client, avec une image facultative déjà importée.', 'inputSchema' => $obj(['titre' => ['type' => 'string'], 'contenu' => ['type' => 'string', 'description' => 'HTML simple : paragraphes, listes, liens'], 'image_id' => ['type' => 'integer']], ['titre', 'contenu'])],
         ['name' => 'importer_image', 'description' => 'Importe dans la médiathèque du site du client la photo jointe à la demande. Renvoie l’id et la balise HTML de l’image.', 'inputSchema' => $obj(['numero' => ['type' => 'integer', 'description' => 'Numéro de la photo jointe à importer : 1 pour la première, 2 pour la deuxième, 3 pour la troisième. Par défaut 1.'], 'description' => ['type' => 'string', 'description' => 'Texte alternatif de l’image']])],
         ['name' => 'modifier_reglage', 'description' => 'Change le nom ou le slogan du site.', 'inputSchema' => $obj(['nom' => ['type' => 'string', 'enum' => ['nom', 'slogan']], 'valeur' => ['type' => 'string']], ['nom', 'valeur'])],
+        ['name' => 'lister_produits', 'description' => 'Liste les produits de la boutique en ligne du client (id, nom, prix, statut, stock). Pour retrouver un produit à modifier. Renvoie une erreur si le site n’a pas de boutique.', 'inputSchema' => $obj(['recherche' => ['type' => 'string', 'description' => 'Mot du nom du produit (facultatif)']])],
+        ['name' => 'creer_produit', 'description' => 'Prépare la création d’un nouveau produit dans la boutique. Le produit n’est créé et publié qu’après l’accord du client sur le visuel. Le prix est obligatoire : si le client ne le donne pas, pose-lui la question (« question »).', 'inputSchema' => $obj(['nom' => ['type' => 'string'], 'prix' => ['type' => 'string', 'description' => 'Prix en euros, ex. 35'], 'description' => ['type' => 'string', 'description' => 'Description courte en HTML simple (facultatif)'], 'categorie' => ['type' => 'string', 'description' => 'Nom d’une catégorie existante (facultatif)'], 'image_id' => ['type' => 'integer', 'description' => 'Image importée avec importer_image (facultatif)'], 'en_stock' => ['type' => 'boolean']], ['nom', 'prix'])],
+        ['name' => 'modifier_produit', 'description' => 'Prépare la modification d’un produit existant (prix, prix promo, nom, description, stock). Appliqué après l’accord du client.', 'inputSchema' => $obj(['id' => ['type' => 'integer'], 'nom' => ['type' => 'string'], 'prix' => ['type' => 'string'], 'prix_promo' => ['type' => 'string', 'description' => 'Prix soldé (vide pour le retirer)'], 'description' => ['type' => 'string'], 'en_stock' => ['type' => 'boolean']], ['id'])],
+        ['name' => 'lire_ecran', 'description' => 'Lit le texte tel qu’il s’affiche à l’écran sur la page d’accueil (ou une autre page du site), thème compris, une ligne par bloc de texte. À utiliser quand le client parle d’un texte qu’il voit (« la description sous le titre », « le texte en haut ») : tu y retrouves la phrase exacte, que tu recopies ensuite dans remplacer_affichage (ou remplacer_texte si elle est dans une page).', 'inputSchema' => $obj(['adresse' => ['type' => 'string', 'description' => 'Adresse de la page (facultatif : page d’accueil par défaut)']])],
         ['name' => 'remplacer_affichage', 'description' => 'Remplace à l’écran un texte que le thème du site écrit lui-même et qui n’est dans aucune page (accroche sous le titre, texte de l’en-tête ou du pied de page). « ancien » est le texte tel qu’il s’affiche, recopié exactement ; il est remplacé sur tout le site, dans l’aperçu puis après l’accord du client. Les textes des pages se changent avec remplacer_texte.', 'inputSchema' => $obj(['ancien' => ['type' => 'string', 'description' => 'Texte actuel, tel qu’affiché à l’écran'], 'nouveau' => ['type' => 'string', 'description' => 'Nouveau texte']], ['ancien', 'nouveau'])],
         ['name' => 'terminer', 'description' => 'À appeler une seule fois, à la fin. resultat = « fait » si la demande est entièrement préparée ; « question » si tu ne peux pas la faire sans deviner (message_client = ta question au client, une seule, simple ; tu peux lui demander une capture d’écran) ; « pour_alex » seulement si elle est contradictoire, juridique ou hors de tes outils (l’équipe reprend alors la main).', 'inputSchema' => $obj([
             'resultat' => ['type' => 'string', 'enum' => ['fait', 'pour_alex', 'question']],
@@ -143,6 +147,8 @@ function aled08e_lia_systeme($u, $infos) {
         . "- Tu ne peux ni supprimer une page, ni toucher aux extensions, au thème, aux prix d'une boutique en ligne ou aux comptes : si la demande l'exige, ne fais rien et termine avec « pour_alex ».\n"
         . "- Un client n'est pas du métier : il dit « titre », « nom du site », « page d'accueil » sans vocabulaire technique. Tu cherches toi-même ce qu'il veut dire, tu ne lui poses pas de question. Prends l'interprétation la plus probable et prépare-la : « titre principal », « nom du site » ou « nom de la boutique » = le nom du site (modifier_reglage « nom »), et si le même nom est aussi écrit dans le titre ou le texte de la page d'accueil, change-le là aussi avec remplacer_texte. Dans message_client, dis simplement ce que tu as compris et changé (« J'ai remplacé X par Y ») : le client regarde l'aperçu et dit non si ce n'est pas ça. Un doute sur une virgule, une majuscule ou un détail ne justifie jamais pour_alex.\n"
         . "- Après modifier_reglage, regarde le résultat : si « visible_sur_le_site » vaut false, le nom n'apparaît pas à l'écran (le thème l'écrit en dur). Le plus souvent le remplacement à l'écran est déjà fait pour toi (« remplacement_affichage » vaut true) : tu n'as rien de plus à faire. Sinon, lis la page d'accueil : si le texte y est écrit dans le contenu, change-le avec remplacer_texte ; sinon utilise remplacer_affichage.\n"
+        . "- La boutique : pour ajouter un produit, utilise creer_produit (nom, prix obligatoire ; si le client ne donne pas le prix, termine avec « question » pour le lui demander). Pour changer un prix, un stock ou une description, retrouve le produit avec lister_produits puis modifier_produit. Ces changements, comme les autres, ne sont faits qu'après l'accord du client sur le visuel. Une demande de produit n'est JAMAIS hors de tes outils.\\n"
+        . "- Quand le client parle d'un texte qu'il VOIT (« la description sous le titre », « le texte en haut de la page », « le slogan ») : commence par lire_ecran pour retrouver la phrase exacte affichée. Ne présume pas que c'est le slogan du site (réglage) : le texte visible sous le titre est le plus souvent un paragraphe du thème. Le texte du client dit ce qu'il voit, pas où c'est écrit.\n"
         . "- Un texte que le client voit à l'écran mais que tu ne trouves dans aucune page (accroche sous le titre, en-tête, pied de page) est écrit par le thème : ne passe jamais la demande à l'équipe pour cette raison. Utilise remplacer_affichage (ancien = le texte exactement tel qu'affiché, nouveau = le nouveau texte) ; il se voit dans l'aperçu, et c'est le client qui valide.\n"
         . "- Recopie le texte demandé tel que le client l'écrit, en corrigeant seulement les fautes évidentes de frappe (majuscule, espace, accent, « et » à la place de « & »). Si la demande contient une répétition qui ressemble à une faute de frappe (« Flore flore et chenilles »), garde la version qui a du sens (« Flore et chenilles ») et dis-le dans message_client.\n"
         . "- « pour_alex » seulement si la demande est contradictoire, juridique (CGV, mentions légales), hors de tes outils, ou si plusieurs pages différentes pourraient très bien convenir sans interprétation plus probable. Dans ce cas, message_client dit précisément ce qui bloque et ce qu'Alex va faire, jamais seulement « pas assez claire ».\n"
@@ -173,7 +179,7 @@ function aled08e_lia_executer($uid, $pid, $nom, $in, &$actions) {
     }
     $trop = function ($pourquoi) { return ['erreur' => $pourquoi . ' Budget de Bricou pour une demande : ' . aled08e_lia_budget_txt() . ' N’essaie pas autrement : termine avec « pour_alex » si la demande n’est pas entièrement faite, sinon avec « fait ».']; };
     $nouveauxMots = 0;
-    if (in_array($nom, ['remplacer_texte', 'modifier_contenu', 'publier_actualite', 'modifier_reglage', 'remplacer_affichage'], true)) {
+    if (in_array($nom, ['remplacer_texte', 'modifier_contenu', 'publier_actualite', 'modifier_reglage', 'remplacer_affichage', 'creer_produit', 'modifier_produit'], true)) {
         if ($nom === 'modifier_contenu' && isset($in['contenu'])) return $trop('Réécrire toute une page est trop gros pour Bricou.');
         $nouveauxMots = aled08e_lia_mots((string) ($in['nouveau'] ?? $in['contenu'] ?? $in['valeur'] ?? '') . ' ' . (string) ($in['titre'] ?? ''));
         if ($ecritures >= 4) return $trop('Trop de changements dans une seule demande.');
@@ -219,6 +225,15 @@ function aled08e_lia_executer($uid, $pid, $nom, $in, &$actions) {
             $prevu($r, 'reglage', 0, ($in['nom'] ?? '') === 'slogan' ? 'Slogan : « ' . mb_substr((string) ($in['valeur'] ?? ''), 0, 80) . ' »' : 'Nom du site : « ' . mb_substr((string) ($in['valeur'] ?? ''), 0, 80) . ' »');
             if ($actions && !is_wp_error($r)) { $k = array_key_last($actions); $actions[$k]['avant'] = mb_substr(html_entity_decode(wp_strip_all_tags((string) ($r['avant'] ?? '')), ENT_QUOTES, 'UTF-8'), 0, 220); $actions[$k]['apres'] = mb_substr((string) ($in['valeur'] ?? ''), 0, 220); if (!empty($r['remplacement_affichage'])) $actions[$k]['alerte'] = 'À savoir : le thème de votre site écrit ce nom lui-même. Il est donc aussi remplacé à l’écran (en-tête, pied de page…), vous le voyez dans l’aperçu.'; elseif (($r['visible_sur_le_site'] ?? null) === false) $actions[$k]['alerte'] = 'Attention : ce texte ne s’affiche pas sur la page, car le thème de votre site l’écrit lui-même. Ce réglage ne change que l’onglet du navigateur et Google. Alex s’occupe de la partie visible.'; }
             break;
+        case 'lister_produits': $r = aled08e_lia_appel($uid, 'produits', ['recherche' => (string) ($in['recherche'] ?? '')]); break;
+        case 'creer_produit':
+        case 'modifier_produit':
+            $creer = $nom === 'creer_produit';
+            $r = aled08e_lia_appel($uid, 'preparer', ['jeton' => $jeton, 'op' => $creer ? 'produit_creer' : 'produit_modifier'] + array_intersect_key($in, array_flip(['id', 'nom', 'prix', 'prix_promo', 'description', 'categorie', 'image_id', 'en_stock'])));
+            $prevu($r, 'produit', $creer ? 0 : ($in['id'] ?? 0), $creer ? 'Nouveau produit : « ' . mb_substr((string) ($in['nom'] ?? ''), 0, 80) . ' » à ' . (string) ($in['prix'] ?? '?') . ' €' : 'Produit modifié (n° ' . (int) ($in['id'] ?? 0) . ')' . (isset($in['prix']) ? ', nouveau prix : ' . $in['prix'] . ' €' : ''));
+            if ($actions && !is_wp_error($r)) { $k = array_key_last($actions); $actions[$k]['avant'] = $creer ? '' : 'Produit n° ' . (int) ($in['id'] ?? 0); $actions[$k]['apres'] = mb_substr(trim((string) ($in['nom'] ?? '') . (isset($in['prix']) ? ', ' . $in['prix'] . ' €' : '') . (isset($in['prix_promo']) ? ' (promo ' . $in['prix_promo'] . ' €)' : '') . (isset($in['description']) ? ' : ' . wp_strip_all_tags((string) $in['description']) : ''), ' ,:'), 0, 220); }
+            break;
+        case 'lire_ecran': $r = aled08e_lia_appel($uid, 'ecran', ['adresse' => (string) ($in['adresse'] ?? ''), 'jeton' => $jeton]); break;
         case 'remplacer_affichage':
             $r = aled08e_lia_appel($uid, 'preparer', ['jeton' => $jeton, 'op' => 'affichage', 'ancien' => (string) ($in['ancien'] ?? ''), 'nouveau' => (string) ($in['nouveau'] ?? '')]);
             $prevu($r, 'affichage', 0, 'Texte du site remplacé à l’écran : « ' . mb_substr((string) ($in['ancien'] ?? ''), 0, 70) . ' » devient « ' . mb_substr((string) ($in['nouveau'] ?? ''), 0, 70) . ' »');
@@ -239,11 +254,11 @@ function aled08e_lia_executer($uid, $pid, $nom, $in, &$actions) {
  * Alex a bien été prévenu, c'est un vrai délai pour qu'il puisse reprendre la main, pas une confirmation inventée. */
 const ALED08E_FEU_VERT_MIN = 30;
 add_action('aled08e_demande_creee', function ($pid, $par, $uid) {
-    if ($par !== 'lia' || !aled08e_lia_prete_pour($uid)) return;
-    // Offre du 17 novembre 2026 : Bricou prépare tout de suite. Alex valide après l'aperçu (aled08e_lia_confirmer).
-    if (function_exists('aled08e_modifs_illimitees') && aled08e_modifs_illimitees($uid)) {
+    if ($par !== 'lia' || !aled08e_cer_prete() || get_post_meta($pid, '_aled08_extra', true) || get_post_meta($pid, '_aled08_seo', true)) return;
+    // 17 novembre 2026 : Cerise relit la demande avec le client, puis la transmet à Alex (includes/reformulation.php).
+    if (true) {
         update_post_meta($pid, '_aled08_lia_etat', 'en_attente');
-        update_post_meta($pid, '_aled08_reponse', 'Bricou : J’ai bien reçu votre demande. Je prépare la modification et son aperçu.');
+        update_post_meta($pid, '_aled08_reponse', 'Cerise : Bonjour ! J’ai bien reçu votre demande. Je la relis et je reviens vers vous tout de suite.');
         wp_schedule_single_event(time(), 'aled08_lia_traiter', [(int) $pid]);
         if (function_exists('spawn_cron')) spawn_cron();
         return;
@@ -353,6 +368,7 @@ add_action('aled08_lia_traiter', 'aled08e_lia_traiter');
 
 function aled08e_lia_traiter($pid) {
     $pid = (int) $pid;
+    if (function_exists('aled08e_cer_traiter')) { aled08e_cer_traiter($pid); return; } // Cerise prépare, Alex modifie : Bricou ne modifie plus les sites
     $p = get_post($pid);
     if (!$p || $p->post_type !== ALED08E_CPT) return;
     if (get_post_meta($pid, '_aled08_annulee_le', true)) return; // annulée par le client avant que Bricou commence
@@ -559,13 +575,13 @@ function aled08e_lia_reglages_html() {
         . $ok($cle, 'Clé Claude enregistrée.', 'Il manque la clé Claude : collez-la ci-dessous. C’est la seule chose à faire.')
         . $ok($kit, 'Kit Anthropic installé (extension alexlia-sdk).', 'Kit Anthropic absent : installez et activez l’extension alexlia-sdk.')
         . $ok($cle && $kit, 'Cerise répond dans la bulle et dans « Écrire à Cerise », pour tous les clients.', 'Cerise attend la clé pour répondre dans la bulle.')
-        . $ok($relies > 0, 'Sites clients reliés : ' . $relies . ' sur ' . count($clients) . '. Bricou, Lumi et Mirette travaillent sur ces sites.', 'Aucun site client relié pour l’instant : Bricou, Lumi et Mirette travaillent seulement sur les sites reliés (fiche client, « Relier le site »).')
-        . $ok((bool) $next, 'Tâche du jour programmée (pages SEO de Lumi, analyse de Mirette) : prochain passage le ' . ($next ? wp_date('j F à H:i', $next) : '') . '.', 'Tâche du jour non programmée : rechargez cette page.')
+        . $ok($relies > 0, 'Sites clients reliés : ' . $relies . ' sur ' . count($clients) . '. Cerise, Lumi et Mirette peuvent lire ces sites (sans rien modifier).', 'Aucun site client relié pour l’instant : Cerise, Lumi et Mirette lisent seulement les sites reliés (fiche client, « Relier le site »). Sans lien, Cerise aide quand même à formuler les demandes.')
+        . $ok((bool) $next, 'Tâche du jour programmée (sujets de pages SEO de Lumi, analyse de Mirette) : prochain passage le ' . ($next ? wp_date('j F à H:i', $next) : '') . '.', 'Tâche du jour non programmée : rechargez cette page.')
         . '</ul></div>';
     echo '<table class="form-table" role="presentation">';
-    echo '<tr><th>Lumi : pages SEO automatiques</th><td><label><input type="checkbox" name="seo_auto" value="1"' . checked(get_option('aled08_seo_auto_pause') !== '1', true, false) . '> Écrire les pages de l’abonnement toutes seules (Mini : une par mois, Maxi : une par semaine). Vous relisez chaque page par e-mail : sans refus, elle est en ligne au bout de ' . (int) ALED08E_FEU_VERT_MIN . ' minutes.</label></td></tr>';
+    echo '<tr><th>Lumi : sujets des pages SEO</th><td><label><input type="checkbox" name="seo_auto" value="1"' . checked(get_option('aled08_seo_auto_pause') !== '1', true, false) . '> Lumi choisit le sujet des pages de l’abonnement (Mini : une par mois, Maxi : une par semaine) et vous l’envoie comme une demande à faire. C’est vous qui écrivez la page.</label></td></tr>';
     echo '<tr><th>Mirette : analyse de la semaine</th><td><label><input type="checkbox" name="mirette_auto" value="1"' . checked(get_option('aled08_mirette_pause') !== '1', true, false) . '> Écrire l’analyse et deux suggestions chaque semaine pour les clients Maxi (dans leurs petits mots).</label></td></tr>';
-    echo '<tr><th><label for="aled08e-bulle-mod">Modèle de Cerise et Mirette</label></th><td><input type="text" id="aled08e-bulle-mod" name="bulle_modele" class="regular-text" value="' . esc_attr(function_exists('aled08e_bulle_modele') ? aled08e_bulle_modele() : '') . '"><p class="description">Rapide et économique pour la bulle et l’analyse. Bricou et Lumi utilisent le modèle plus bas.</p></td></tr>';
+    echo '<tr><th><label for="aled08e-bulle-mod">Modèle de Cerise et Mirette</label></th><td><input type="text" id="aled08e-bulle-mod" name="bulle_modele" class="regular-text" value="' . esc_attr(function_exists('aled08e_bulle_modele') ? aled08e_bulle_modele() : '') . '"><p class="description">Rapide et économique : la bulle, l’analyse de Mirette et les sujets de Lumi. Cerise utilise le modèle plus bas pour préparer les demandes.</p></td></tr>';
     echo '<tr><th>Maintenant</th><td><button type="submit" name="lancer_bande" value="1" class="button">Lancer la bande maintenant</button><p class="description">Relance les demandes en attente chez Bricou et fait tout de suite le passage du jour de Lumi et Mirette.</p></td></tr>';
     echo '</table>';
     echo '<p>Bricou fait les demandes « par Bricou » toute seule sur le site du client, en quelques minutes, sans validation de votre part : seul le client valide l’aperçu. Il faut : une clé Claude, l’extension <code>alexlia-sdk</code> installée ici (kit officiel Anthropic), et l’extension <code>alexlia-connecteur</code> sur chaque site client, reliée dans la fiche du client.</p>';
@@ -702,6 +718,7 @@ add_action('admin_post_aled08e_lia', function () {
  *  L'accord du client : il a vu l'aperçu, il dit oui (mise en ligne) ou non (Alex reprend)
  * ========================================================================= */
 function aled08e_lia_confirmer($pid, $oui, $commentaire = '', $captures = []) {
+    if (function_exists('aled08e_cer_confirmer')) return aled08e_cer_confirmer($pid, $oui, $commentaire, $captures);
     $p = get_post($pid);
     if (!$p || get_post_meta($pid, '_aled08_lia_etat', true) !== 'a_confirmer') return new WP_Error('aled08_lia', 'Rien à confirmer.');
     update_post_meta($pid, '_aled08_lia_confirme_le', current_time('mysql')); // date de la réponse du client à l'aperçu (oui ou non)
@@ -770,7 +787,7 @@ function aled08e_lia_publier($pid, $qui = 'auto') {
     // ce qui a été mis en ligne, avec la révision gardée juste avant (pour pouvoir annuler)
     $faites = [];
     foreach ((array) ($r['faits'] ?? []) as $f) {
-        $lib = ['contenu' => 'Page mise à jour : « ' . ($f['titre'] ?? '') . ' »', 'publier' => 'Actualité publiée : « ' . ($f['titre'] ?? '') . ' »', 'reglage' => 'Réglage « ' . ($f['titre'] ?? '') . ' » changé (avant : « ' . ($f['avant'] ?? '') . ' »)'];
+        $lib = ['contenu' => 'Page mise à jour : « ' . ($f['titre'] ?? '') . ' »', 'publier' => 'Actualité publiée : « ' . ($f['titre'] ?? '') . ' »', 'reglage' => 'Réglage « ' . ($f['titre'] ?? '') . ' » changé (avant : « ' . ($f['avant'] ?? '') . ' »)', 'produit' => 'Boutique : produit « ' . ($f['titre'] ?? '') . ' » en ligne'];
         $faites[] = ['type' => $f['type'] === 'contenu' ? 'modifier' : $f['type'], 'id' => (int) ($f['id'] ?? 0), 'revision' => (int) ($f['revision_avant'] ?? 0), 'adresse' => (string) ($f['adresse'] ?? ''), 'detail' => $lib[$f['type']] ?? ''];
     }
     foreach ($prevues as $a) if (($a['type'] ?? '') === 'image' || ($a['type'] ?? '') === 'mcp') $faites[] = $a;
@@ -857,6 +874,7 @@ add_action('template_redirect', function () {
 
 /* Dans « Mes demandes » : l'aperçu préparé par Bricou, à valider */
 function aled08e_lia_bloc_confirmation($p) {
+    if (function_exists('aled08e_cer_bloc_confirmation')) return aled08e_cer_bloc_confirmation($p);
     if (get_post_meta($p->ID, '_aled08_lia_etat', true) !== 'a_confirmer') return '';
     $actions = array_filter((array) get_post_meta($p->ID, '_aled08_lia_actions', true), function ($a) { return !empty($a['prepare']); });
     $h = '<div class="lia-confirm"><p class="lia-confirm-h">' . aled08e_monster('bricou') . (get_post_meta($p->ID, '_aled08_mcp', true) ? '<strong>Bricou a fait votre modification : elle est déjà visible sur votre site. Regardez le résultat. Si c’est bon, validez. Sinon, dites-le : Bricou refait une autre version.</strong>' : '<strong>Bricou a préparé votre modification. Rien n’est encore changé : regardez l’aperçu. Si c’est bon, validez : c’est en ligne tout de suite.</strong>') . '</p><ul>';

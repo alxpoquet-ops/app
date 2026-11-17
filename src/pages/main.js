@@ -94,7 +94,7 @@ function home() {
       <span class="scene-m sm-1">${C.petit('mochi')}</span>
       <span class="scene-m sm-2">${C.petit('fantome', { humeur: 'ravi' })}</span>
       <span class="scene-m sm-3">${C.petit('gelee')}</span>
-      <span class="scene-m sm-4">${C.petit('bricou', { humeur: 'ravi' })}</span>
+      <span class="scene-m sm-4">${C.petit('dino', { humeur: 'ravi' })}</span>
       <span class="scene-m sm-5">${C.petit('etoile')}</span>
       <p class="hero-tag">${icon('sparkles')}Fait par moi, Alex, avec ma petite bande</p>
     </div>
@@ -212,7 +212,7 @@ function creerPage() {
   ${C.steps([
     { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % du site. Le reste vient à la réception, en une fois ou étalé.` },
     { t: 'Je vous écris sous 24 heures', d: 'Avec les questions utiles pour démarrer. Si on s’occupe de tout, je réserve aussi votre nom de domaine, à votre nom.' },
-    { t: 'Je crée votre site', d: 'Vous recevez un aperçu. Vous me dites ce qui change, je corrige.' },
+    { t: 'Je crée votre site', d: 'Je vous le montre avant la mise en ligne. Vous me dites ce qui change, je corrige.' },
     { t: 'Vous le recevez', d: `On le met en ligne et votre abonnement démarre. Ou, si vous gérez vous-même, je vous remets son code, prêt à installer.` },
   ])}
 </div></section>
@@ -259,10 +259,10 @@ function forfaitsPage() {
     <p>${esc(optimisation.texte)}</p>
     <ul class="list-check">
       <li><strong>Mirette analyse votre site</strong> chaque semaine, et vous résume vos visites en un coup d’œil.</li>
-      <li><strong>Bricou et Plume vous proposent des idées</strong> : un bandeau pour vos horaires de fêtes, une page pour une recherche qui monte.</li>
-      <li><strong>Vous dites oui en un clic</strong>, et c’est lancé. Les petites modifications sont faites dans l’heure.</li>
+      <li><strong>Mirette et Lumi vous proposent des idées</strong> : un bandeau pour vos horaires de fêtes, une page pour une recherche qui monte.</li>
+      <li><strong>Vous dites oui en un clic</strong>, et Cerise transmet l’idée à Alex. Je fais vos modifications en priorité, sous 48 h, deux demandes à la fois.</li>
     </ul>
-    <p class="muted">Avec ${esc(ABO.name)}, votre site reste entretenu et vos modifications sont faites ${esc(C.delaiTxt(ABO))}. Vous pouvez passer à ${esc(EVO.name)} quand vous voulez, depuis votre espace client.</p>
+    <p class="muted">Avec ${esc(ABO.name)}, votre site reste entretenu et vos modifications sont ${esc(C.delaiTxt(ABO))}, une demande à la fois. Vous pouvez passer à ${esc(EVO.name)} quand vous voulez, depuis votre espace client.</p>
   </div>
   <figure class="doc-fig doc-fig-flat reveal"><img src="/assets/img/doc/messages.webp" width="${IMG_MSGS[0]}" height="${IMG_MSGS[1]}" alt="Les petits mots de la bande dans l’espace client ${esc(EVO.name)}" loading="lazy" decoding="async"><figcaption>Dans votre espace client, les petits mots de la bande.</figcaption></figure>
 </div></section>
@@ -394,7 +394,7 @@ ${energieOutils()}
   <div class="reveal">
     <p class="kicker c-mint">${icon('message-circle')}Demande de modification</p>
     <h2>Une demande, et c’est fait</h2>
-    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. La petite bande prépare la retouche en 5 minutes, avec un aperçu : votre site ne change qu’après votre accord. Ou je m’en charge à la main, sous ${delais.reponse}, et je vérifie moi-même.</p>
+    <p>Un horaire, un prix, une photo, un nouveau produit ? Écrivez-le dans votre espace, avec une photo si besoin. Cerise vous aide à bien la formuler, vous la confirmez, et elle me la transmet. Je fais ensuite la modification à la main, sous ${delais.reponse}.</p>
     <ul class="list-check">
       <li>Vous suivez chaque demande : reçue, en cours, faite</li>
       <li>Avec moi : ${UNE_MODIF} ${PAR_PERIODE}, comprise dans l’abonnement</li>
@@ -568,7 +568,7 @@ function comparatifPage() {
 <section class="section"><div class="container container-narrow prose reveal">
   ${md(`## Des modifications rapides
 
-Un horaire, un prix, une actualité : Bricou prépare le changement et un aperçu, puis je le vérifie avant la mise en ligne. Les modifications sont comprises dans votre abonnement : ${C.delaiTxt(ABO)} avec ${ABO.name}, et avec ${EVO.name}, ${C.delaiTxt(EVO)}. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
+Un horaire, un prix, une actualité : Cerise note votre demande avec vous, puis c’est moi qui fais le changement. Les modifications sont comprises dans votre abonnement, sous ${ABO.delai} avec ${ABO.name} et sous 48 h avec ${EVO.name}. Dans une agence ou chez un freelance, la même demande passe souvent par un devis et un délai.
 
 ## ${marche.fois} fois moins cher, et sans tour de magie
 
@@ -864,8 +864,8 @@ const DEMO_QR = (() => {
 const DEMO_MSGS = [
   { m: 'gelee', nom: 'Mirette', role: 'L’observatrice', maxi: true, quand: 'ce matin', titre: 'Votre semaine en un coup d’œil', texte: 'Vos visites ont augmenté de 18 % cette semaine. La page « Nos gâteaux » est la plus vue.', vis: 'barres', data: [38, 52, 44, 61, 58, 74, 83] },
   { m: 'etoile', nom: 'Lumi', role: 'L’étoile de Google', quand: 'hier', titre: 'Nouvelle page en ligne', texte: 'Votre page « Gâteau d’anniversaire à Rethel » est en ligne. Google l’a déjà montrée 46 fois.', vis: 'google' },
-  { m: 'bricou', nom: 'Bricou', role: 'Le constructeur', maxi: true, quand: 'hier', titre: 'Une idée pour vos horaires', texte: 'En décembre, beaucoup de visiteurs cherchent vos horaires des fêtes. Je peux ajouter un bandeau en haut de l’accueil.', vis: 'bandeau', action: true },
-  { m: 'fantome', nom: 'Plume', role: 'La rédactrice', maxi: true, quand: 'lundi', titre: 'Idée de page', texte: 'Des gens cherchent « bûche de Noël Rethel ». Je prépare une page pour cette recherche ?', vis: 'idee', action: true },
+  { m: 'gelee', nom: 'Mirette', role: 'L’observatrice', maxi: true, quand: 'hier', titre: 'Une idée pour vos horaires', texte: 'En décembre, beaucoup de visiteurs cherchent vos horaires des fêtes. Un bandeau en haut de l’accueil les aiderait. Je le propose à Alex ?', vis: 'bandeau', action: true },
+  { m: 'etoile', nom: 'Lumi', role: 'L’étoile de Google', maxi: true, quand: 'lundi', titre: 'Idée de page', texte: 'Des gens cherchent « bûche de Noël Rethel ». C’est un bon sujet de page. Alex l’écrit pour vous ?', vis: 'idee', action: true },
   { m: 'dino', nom: 'Pistache', role: 'Le gardien', quand: 'cette nuit', titre: 'Tout va bien', texte: 'Sauvegarde faite, cadenas actif, site rapide. Je veille.', vis: 'voyants' },
 ];
 function msgVisuel(x) {
@@ -888,12 +888,12 @@ function bandeMessages() {
       <p class="msg-titre">${esc(x.titre)}</p>
       <p class="msg-txt">${esc(x.texte)}</p>
       ${msgVisuel(x)}
-      ${x.action ? `<p class="msg-actions"><button type="button" class="btn btn-primary btn-sm" data-toast-msg="C’est parti : Bricou s’en occupe (démo)">${icon('check')}<span>Oui, faites-le</span></button><button type="button" class="btn btn-light btn-sm" data-toast-msg="D’accord, on en reparle plus tard (démo)"><span>Plus tard</span></button></p>` : ''}
+      ${x.action ? `<p class="msg-actions"><button type="button" class="btn btn-primary btn-sm" data-toast-msg="Merci ! Cerise transmet votre demande à Alex (démo)">${icon('check')}<span>Oui, je veux bien</span></button><button type="button" class="btn btn-light btn-sm" data-toast-msg="D’accord, on en reparle plus tard (démo)"><span>Plus tard</span></button></p>` : ''}
     </div>
   </article>`).join('')}
   <article class="msg msg-teaser" data-seulement-mini hidden>
     <span class="msg-art">${C.petit('maxi', { humeur: 'ravi' })}</span>
-    <div class="msg-corps"><p class="msg-titre">Avec ${esc(EVO.name)}, la bande vous écrit chaque semaine</p><p class="msg-txt">${esc(optimisation.texte)} Mirette analyse votre site, et vos petites modifications sont faites dans l’heure.</p><p class="msg-actions"><button type="button" class="btn btn-light btn-sm" data-go="forfait">${icon('arrow-right')}<span>Voir ${esc(EVO.name)}</span></button></p></div>
+    <div class="msg-corps"><p class="msg-titre">Avec ${esc(EVO.name)}, la bande vous écrit chaque semaine</p><p class="msg-txt">${esc(optimisation.texte)} Mirette analyse votre site, et Alex fait vos modifications sous 48 h.</p><p class="msg-actions"><button type="button" class="btn btn-light btn-sm" data-go="forfait">${icon('arrow-right')}<span>Voir ${esc(EVO.name)}</span></button></p></div>
   </article>
 </div>`;
 }
@@ -913,12 +913,12 @@ function monEspacePage() {
   <div class="app" data-app>
     <div hidden data-lia-chat="demo" data-prix="${jetonsLia.bulle.jetons}" data-solde="${reste}" data-uid="demo"${ENERGIE ? '' : ' data-sans-energie="1"'}></div>
     <div hidden data-lia-demo>
-      <p data-mots="horaire,fermé,ferme,ouvert,ouvre,hours,closed,open" data-type="demande" data-par="lia" data-cout="31" data-texte="Sur la page Contact, changer les horaires : nous serons fermés le lundi 24 novembre.">C’est noté. J’ai préparé votre demande : il vous reste à la relire et à l’envoyer.</p>
-      <p data-mots="photo,image,picture" data-type="demande" data-par="lia" data-cout="41" data-texte="Sur la page d’accueil, remplacer la photo du haut par celle que je joins.">Bien sûr. J’ai préparé la demande : vous pourrez ajouter votre photo avant d’envoyer.</p>
+      <p data-mots="horaire,fermé,ferme,ouvert,ouvre,hours,closed,open" data-type="demande" data-par="lia" data-cout="31" data-texte="Sur la page Contact, changer les horaires : nous serons fermés le lundi 24 novembre.">C’est noté ! Si j’ai bien compris, vous voulez indiquer sur la page Contact que vous serez fermés le lundi 24 novembre. Voici votre demande, bien claire. C’est bien ça ?</p>
+      <p data-mots="photo,image,picture" data-type="demande" data-par="lia" data-cout="41" data-texte="Sur la page d’accueil, remplacer la photo du haut par celle que je joins.">Avec plaisir ! Vous voulez remplacer la grande photo en haut de l’accueil, c’est bien ça ? Vous pourrez joindre votre photo juste avant d’envoyer.</p>
       ${OUTILS_ON ? '<p data-mots="avis,google,review" data-type="outil" data-outil="lienavis" data-nom="Lien d’avis Google" data-cout="0">Le plus simple : donnez à vos clients un lien qui ouvre tout de suite la page pour laisser un avis. Un outil le prépare pour vous.</p>' : ''}
-      <p data-mots="combien,reste,limite,modification,comment,how,limit" data-type="onglet" data-onglet="demandes" data-nom="Mes demandes">Vos modifications sont incluses dans votre abonnement. Vous faites votre demande, Bricou prépare un aperçu, Alex le vérifie, et c’est en ligne.</p>
-      <p data-mots="boutique,vendre,nouvelle page,refaire,shop,sell" data-type="demande" data-par="alex" data-texte="Je voudrais ajouter une boutique en ligne à mon site. Pouvez-vous me dire comment faire ?">C’est une grande modification : c’est Alex qui s’en occupe. J’ai préparé votre message pour lui.</p>
-      <p data-defaut>Dans votre vrai espace, je réponds à votre question et je prépare ce que vous voulez changer. Essayez par exemple : changer mes horaires.</p>
+      <p data-mots="combien,reste,limite,modification,comment,how,limit" data-type="onglet" data-onglet="demandes" data-nom="Mes demandes">Vos modifications sont incluses dans votre abonnement. Vous me dites ce que vous voulez changer, je vous pose quelques questions, vous confirmez, et je transmets à Alex. C’est lui qui fait la modification. Tant qu’il ne l’a pas commencée, vous pouvez l’annuler.</p>
+      <p data-mots="boutique,vendre,nouvelle page,refaire,shop,sell" data-type="demande" data-par="alex" data-texte="Je voudrais ajouter une boutique en ligne à mon site. Pouvez-vous me dire comment faire ?">Quel beau projet ! Alex vous dira d’abord ce que cela représente. Voici votre message pour lui, c’est bien ça ?</p>
+      <p data-defaut>Dans votre vrai espace, je réponds à votre question, je vous aide à formuler ce que vous voulez changer, puis je transmets à Alex. Essayez par exemple : changer mes horaires.</p>
     </div>
     <div class="app-shell">
       <aside class="app-side">
@@ -942,7 +942,7 @@ function monEspacePage() {
           </div>
           ${bandeMessages()}
           <div class="cerise-box"><span aria-hidden="true">${monster('coucou')}</span><div>
-            <p>Écrire à Cerise<small>Une question, une modification ? Elle vous répond tout de suite et prépare votre demande.</small></p>
+            <p>Écrire à Cerise<small>Une question, une modification ? Elle vous répond tout de suite et prépare votre demande pour Alex.</small></p>
             <form class="cerise-form" data-cerise-form><input type="text" maxlength="600" placeholder="Ex. : nous serons fermés lundi" aria-label="Votre message à Cerise"><button class="btn btn-primary btn-sm" type="submit">${icon('send')}<span>Envoyer</span></button></form>
             <div class="cerise-ideas">${['Changer mes horaires', 'Ajouter une photo sur mon site', 'Une idée de page pour Google ?', 'Que comprend mon abonnement ?'].map((x) => `<button type="button" data-cerise-idee>${x}</button>`).join('')}</div>
           </div></div>
@@ -954,13 +954,13 @@ function monEspacePage() {
           <p class="app-sub">Dernières activités</p>
           <ul class="app-log" data-log>
             <li>${icon('check')}<span>Horaires d’été mis à jour</span><small>il y a 2 jours</small></li>
-            <li>${icon('file-text')}<span>Horaires d’hiver changés par Bricou</span><small>1er novembre</small></li>
+            <li>${icon('file-text')}<span>Horaires d’hiver changés par Alex</span><small>1er novembre</small></li>
           </ul>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
           <h2 class="app-h">Mes demandes</h2>
-          <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. Je m’en occupe et vous suivez l’avancement ici.</p>
+          <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. Je fais la modification moi-même, et vous suivez l’avancement ici. Avec Maxi, deux demandes à la fois, avec Mini, une seule.</p>
           <form class="req-form" data-req>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" rows="3" placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" accept="image/*" class="sr-only" data-req-file>${icon('image-plus')}<span data-req-file-name>Ajouter une photo (facultatif)</span></label>
@@ -1536,7 +1536,7 @@ const IMG_MSGS = (() => {
 function docPage() {
   const crumbs = crumb('documentation');
   const IMG = {
-    espace: [1668, 1071], demandes: [1668, 1286], chico: [1482, 1082], titan: [1482, 2697], messages: IMG_MSGS,
+    espace: [1572, 2116], demandes: [1572, 1784], chico: [1482, 1082], titan: [1482, 2697], messages: IMG_MSGS,
     boutique: [1482, 1823], vacances: [654, 650], 'site-dodedo': [1500, 938], 'site-flore': [1500, 938],
   };
   const fig = (k, alt, cap, cls = '') => `<figure class="doc-fig ${cls} reveal"><img src="/assets/img/doc/${k}.webp" width="${IMG[k][0]}" height="${IMG[k][1]}" alt="${esc(alt)}" loading="lazy" decoding="async"><figcaption>${cap}</figcaption></figure>`;
@@ -1544,13 +1544,13 @@ function docPage() {
   const seo = O('seo');
   const toc = [
     ['etapes', 'list-checks', 'Comment ça se passe'],
-    ['lia-alex', 'sparkles', 'Bricou et moi'],
+    ['lia-alex', 'sparkles', 'Cerise et moi'],
     ['questionnaire', 'clipboard-check', 'Le questionnaire de création'],
     ['sites', 'layout-template', 'Les sites'],
     ['prix', sections.forfaits.icon, 'Le prix'],
     ['espace', 'circle-user', 'L’espace client'],
     ['demandes', 'message-circle', 'Demander une modification'],
-    ENERGIE ? ['jetons', 'coins', 'L’énergie et les outils'] : ['jetons', 'sparkles', 'Cerise et Bricou'],
+    ENERGIE ? ['jetons', 'coins', 'L’énergie et les outils'] : ['jetons', 'sparkles', 'La petite bande'],
     ['tableau', 'gauge', 'Le tableau de bord'],
     ['messages', 'rocket', `Avec ${EVO.name} : les petits mots de la bande`],
     ['boutique', 'shopping-bag', 'La boutique en ligne'],
@@ -1605,11 +1605,11 @@ function docPage() {
 </div></section>
 
 <section class="section section-soft doc-sec" id="lia-alex"><div class="container container-narrow">
-  <p class="doc-kicker">2. Bricou et moi</p>
-  <h2>Deux pour s’occuper de votre site</h2>
+  <p class="doc-kicker">2. Cerise et moi</p>
+  <h2>Deux pour s’occuper de vos demandes</h2>
   <div class="doc-duo-qui">
-    <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${C.petit('bricou')}</span><h3>Bricou, le bricoleur de la bande</h3><p>Il fait les petites et moyennes modifications. Il me montre d’abord votre demande, puis vous laisse valider l’aperçu : rien ne change sans votre accord.</p></div>
-    <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${C.alexPortrait({ title: 'Alex' })}</span><h3>Moi, l’humain de la bande</h3><p>Je crée votre site, je fais les grandes modifications à la main, je vérifie et je réponds à vos questions. Ce que Bricou ne sait pas faire me revient.</p></div>
+    <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${monster('coucou')}</span><h3>Cerise, la secrétaire de la bande</h3><p>Elle répond à vos questions et vous aide à formuler vos demandes. Elle vous les fait relire, puis me les transmet. Elle ne touche jamais à votre site.</p></div>
+    <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${C.alexPortrait({ title: 'Alex' })}</span><h3>Moi, l’humain de la bande</h3><p>Je crée votre site et je fais toutes vos modifications, à la main. Je réponds aussi à vos questions quand Cerise ne sait pas.</p></div>
   </div>
   <p class="doc-more">${C.btn(sections.liaalex.path, 'btn-primary', 'sparkles', 'Pourquoi les Minis Monstres')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>
@@ -1651,7 +1651,7 @@ function docPage() {
     <div class="doc-type reveal"><strong>Le site</strong><b>${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une fois</span><p>Jusqu’à ${creation.pages} pages. Avec l’abonnement, nom de domaine et hébergement offerts la première année, sauf avec la boutique.</p></div>
     <div class="doc-type reveal"><strong>L’option</strong><b>+ ${euro(creation.boutique)}</b><span>${icon('plus')}Une fois, si vous voulez</span><p>Boutique en ligne : vendre sur votre site.${C.PACK_SEO ? ` Plus tard, depuis l’espace client : une page SEO en plus pour ${euro(C.PACK_SEO.price.once)}, autant que vous voulez.` : ''}</p></div>
     <div class="doc-type reveal"><strong>${esc(ABO.name)}</strong><b>${euro(ABO.month)}</b><span>${icon('repeat')}Par mois, sans engagement</span><p>Hébergement, sécurité, modifications incluses ${esc(C.delaiTxt(ABO))}, une page SEO par mois.</p></div>
-    <div class="doc-type reveal"><strong>${esc(EVO.name)}</strong><b>${euro(EVO.month)}</b><span>${icon('rocket')}Par mois, sans engagement</span><p>Tout ${esc(ABO.name)}, petites modifications dans l’heure, une page SEO par semaine, et la bande qui veille sur votre site. À l’année : ${annuel.moisOfferts} mois offerts.</p></div>
+    <div class="doc-type reveal"><strong>${esc(EVO.name)}</strong><b>${euro(EVO.month)}</b><span>${icon('rocket')}Par mois, sans engagement</span><p>Tout ${esc(ABO.name)}, modifications prioritaires sous 48 h, deux demandes à la fois, une page SEO par semaine, et la bande qui veille sur votre site. À l’année : ${annuel.moisOfferts} mois offerts.</p></div>
   </div>
   <div class="container-narrow">
     ${forfaits.map((x) => `<h3>Ce que comprend ${esc(x.name)}</h3><ul class="list-check">${x.details.map((d) => `<li>${inline(d)}</li>`).join('')}</ul>`).join('')}
@@ -1687,8 +1687,8 @@ function docPage() {
       <p>Vos modifications sont comprises dans votre abonnement, sans les compter. Voici comment ça se passe :</p>
       <ol class="doc-steps">${C.ETAPES_MODIF.map(([, t, d]) => `<li><strong>${esc(t)}.</strong> ${esc(d)}</li>`).join('')}</ol>
       <ul class="list-check">
-        <li>Si une demande demande plus de travail, je la fais moi-même, à la main.</li>
-        <li>Une demande peut être annulée gratuitement pendant 24 heures, 3 fois par mois.</li>
+        <li>Une demande en cours à la fois avec ${esc(ABO.name)}, deux avec ${esc(EVO.name)}.</li>
+        <li>Tant que je n’ai pas commencé votre demande, vous pouvez l’annuler d’un clic.</li>
       </ul>
       <p class="doc-more">${C.btn(sections.accompagnement.path, 'btn-light', sections.accompagnement.icon, 'L’accompagnement')}</p>
     </div>
@@ -1713,12 +1713,14 @@ ${ENERGIE ? `<section class="section doc-sec" id="jetons"><div class="container 
   </ul>
   <p class="doc-more">${C.btn(sections.espace.path, 'btn-light', 'toolbox', 'Voir tous les outils')}</p>
 </div></section>` : `<section class="section doc-sec" id="jetons"><div class="container container-narrow">
-  <p class="doc-kicker">8. Cerise et Bricou</p>
-  <h2>Deux petits monstres, à votre service</h2>
-  <p>Dans votre espace client, deux membres de ma petite bande vous aident chaque jour.</p>
+  <p class="doc-kicker">8. La petite bande</p>
+  <h2>Ils vous aident, je modifie</h2>
+  <p>Dans votre espace client, ma petite bande vous aide chaque jour. Les Minis Monstres vous aident, c’est moi qui modifie votre site.</p>
   <ul class="list-check">
-    <li><strong>Cerise</strong>, la secrétaire, répond à vos questions dans la bulle, en bas de l’écran, et prépare vos demandes. Jusqu’à ${limites.bulleJour} messages par jour.</li>
-    <li><strong>Bricou</strong>, le constructeur, prépare vos modifications et leur aperçu. Je les vérifie avant la mise en ligne.</li>
+    <li><strong>Cerise</strong>, la secrétaire, répond à vos questions dans la bulle, en bas de l’écran. Jusqu’à ${limites.bulleJour} messages par jour. Pour une modification, elle vous pose les bonnes questions, vous la fait confirmer, puis me la transmet.</li>
+    <li><strong>Lumi</strong>, l’étoile de Google, analyse votre site et choisit les sujets de vos pages SEO. Je les écris et je les publie.</li>
+    <li><strong>Mirette</strong>, l’observatrice, suit vos visites. Avec ${esc(EVO.name)}, elle vous suggère des améliorations.</li>
+    <li><strong>Pistache</strong>, le gardien, fait les sauvegardes et surveille votre site, jour et nuit.</li>
   </ul>
 </div></section>`}
 
@@ -1749,7 +1751,7 @@ ${ENERGIE ? `<section class="section doc-sec" id="jetons"><div class="container 
   <div class="container-narrow">
     <p class="doc-kicker">10. Avec ${esc(EVO.name)} : les petits mots de la bande</p>
     <h2>${esc(optimisation.titre)}</h2>
-    <p>${esc(optimisation.texte)} Dans votre espace client, chaque monstre vous laisse un petit mot, avec un visuel simple : Mirette résume votre semaine, Lumi vous montre votre nouvelle page sur Google, Bricou et Plume vous proposent une idée. Un clic sur « Oui, faites-le » et c’est lancé.</p>
+    <p>${esc(optimisation.texte)} Dans votre espace client, chaque monstre vous laisse un petit mot, avec un visuel simple : Mirette résume votre semaine et vous propose une idée, Lumi vous montre votre nouvelle page sur Google et un sujet pour la suivante. Un clic sur « Oui, je veux bien », et Cerise transmet la demande à Alex.</p>
   </div>
   ${fig('messages', 'Les petits mots de la bande dans l’espace client', `Dans l’espace client ${esc(EVO.name)} : l’analyse de la semaine par Mirette, la nouvelle page SEO, et les suggestions de la bande. Avec ${esc(ABO.name)}, vous gardez les messages de Lumi et de Pistache.`, 'doc-fig-flat')}
 </div></section>

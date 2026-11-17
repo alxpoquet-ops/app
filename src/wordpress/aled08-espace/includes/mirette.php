@@ -5,7 +5,7 @@
  * les chiffres du site (connecteur, action « stats » : visites sur 14 jours, pages les plus vues, provenance, recherches
  * Google si Search Console est relié) partent chez Claude, qui rend une analyse courte et deux suggestions concrètes.
  * Elles s'affichent dans « Les petits mots de la bande » (includes/messages.php). « Oui, faites-le » envoie la suggestion
- * comme une demande : Bricou la prépare, ou Lumi si c'est une page SEO. Modèle : celui de la bulle de Cerise (rapide).
+ * comme une demande : Cerise la précise avec le client, puis Alex la fait. Modèle : celui de la bulle de Cerise (rapide).
  */
 defined('ABSPATH') || exit;
 
@@ -48,7 +48,7 @@ function aled08e_mirette_systeme() {
         . "Tu reçois les chiffres de visite de son site. Tu écris pour le propriétaire, qui n'est pas du métier.\n\n"
         . "Rends :\n"
         . "- analyse : deux ou trois phrases simples sur la semaine écoulée comparée à la précédente, avec un ou deux chiffres parlants (visiteurs, page la plus vue, d'où viennent les visiteurs). Ton chaleureux et honnête : si c'est calme, dis-le simplement, sans dramatiser.\n"
-        . "- suggestions : une ou deux idées concrètes, faisables par la bande sur le site, tirées des chiffres. qui = « lumi » pour une nouvelle page pour Google, « plume » pour un texte à améliorer, « bricou » pour un petit changement sur une page (bandeau, bouton, information à mettre en avant). titre : quelques mots. texte : une ou deux phrases pour le client, en vouvoyant, qui disent pourquoi. demande : la consigne précise que la bande exécutera si le client dit oui, écrite comme une demande de modification.\n\n"
+        . "- suggestions : une ou deux idées concrètes, faisables sur le site (Alex les fait), tirées des chiffres. qui = « lumi » pour une nouvelle page pour Google, « plume » pour un texte à améliorer, « bricou » (signé Cerise) pour un petit changement sur une page (bandeau, bouton, information à mettre en avant). titre : quelques mots. texte : une ou deux phrases pour le client, en vouvoyant, qui disent pourquoi. demande : la consigne précise que la bande exécutera si le client dit oui, écrite comme une demande de modification.\n\n"
         . "Règles : n'invente aucun chiffre, n'utilise que ceux fournis. Pas de jargon. Pas de tiret long ni de point-virgule. Pas de promesse de résultat sur Google. Si les chiffres sont presque vides, dis que le site démarre et propose une page utile.";
 }
 
@@ -108,10 +108,4 @@ function aled08e_mirette_tourner() {
 }
 add_action('aled08_quotidien', 'aled08e_mirette_tourner', 45);
 
-/* Une suggestion de Lumi acceptée par le client : c'est une page SEO, Lumi l'écrit (au lieu de Bricou) */
-add_action('aled08e_demande_creee', function ($pid, $par, $uid) {
-    $id = sanitize_key(wp_unslash($_POST['aled08e_msg_id'] ?? ''));
-    if (strpos($id, 'ia-lumi-') !== 0 || $par !== 'lia') return;
-    update_post_meta($pid, '_aled08_seo', 1);
-    update_post_meta($pid, '_aled08_seo_source', 'suggestion');
-}, 5, 3);
+/* Une suggestion acceptée par le client devient une demande comme les autres : Cerise la précise avec lui, Alex la fait. */

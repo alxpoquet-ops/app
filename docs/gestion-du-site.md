@@ -190,74 +190,17 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 
 ## 9. Les demandes de modification
 
-Depuis le 17 novembre 2026, les modifications sont incluses et le client ne choisit plus « Bricou ou Alex ». Le déroulé :
+Depuis le 17 novembre 2026 (deuxième version) : **les Minis Monstres aident, c'est Alex qui modifie.** Aucun petit monstre ne touche au site d'un client.
 
-1. Le client écrit sa demande dans « Mes demandes » (avec des photos s'il veut).
-2. Bricou prépare la modification tout de suite, en tâche de fond, et un aperçu.
-3. Le client regarde l'aperçu et clique « Oui, c'est bon » (ou « Non, ce n'est pas ça » : la demande vous revient, avec son commentaire).
-4. Vous recevez l'e-mail « Modification à valider » avec deux liens : « Valider maintenant » ou « Refuser, je reprends la main ».
-5. Sans refus de votre part sous 30 minutes, la modification est mise en ligne toute seule, et le client reçoit « Votre modification est en ligne ».
-6. Si Bricou ne peut pas faire la demande (trop grande, floue, site pas relié), elle vous revient : vous la faites à la main. Le délai habituel annoncé aux clients dépend de l'abonnement : avec Mini, jusqu'à 7 jours ouvrés. Avec Maxi, les demandes passent en priorité : petites modifications dans l'heure, grosses sous 48 h.
-
-Dans la fiche d'une demande, l'état « en attente de votre validation » veut dire que le client a dit oui et que les 30 minutes courent.
-
-### Cerise, pour de vrai (Claude, d'Anthropic)
-
-Quand le client choisit « Cerise, instantané », Cerise prépare la modification toute seule, en tâche de fond, en une à deux minutes. Rien ne change encore sur le site : le client reçoit un e-mail, ouvre « Voir l’aperçu » (sa vraie page, avec un bandeau « Aperçu »), puis clique « Oui, mettre en ligne » ou « Non, ce n’est pas ça ». Oui : c’est mis en ligne et vous recevez « Cerise a mis en ligne une modification à vérifier ». Non : la demande vous revient, avec son commentaire. L’aperçu reste valable 21 jours.
-
-Avec Alex, les modifications sont sans limite de nombre (plus d'intervention par trimestre ni d'extra « sous 24 heures »). Délai habituel : jusqu'à 7 jours ouvrés avec Mini. Avec Maxi, dans l'heure pour les petites et sous 48 h pour les grosses.
-
-Ce qu'elle sait faire : changer un texte (horaires, prix affiché, phrase), modifier le contenu ou le titre d'une page, publier une actualité, ajouter la photo jointe, changer le nom ou le slogan du site. Ce qu'elle ne fait jamais : supprimer, toucher aux extensions, au thème, aux comptes, aux prix d'une boutique, aux CGV ou mentions légales. Si la demande est floue ou risquée, elle ne touche à rien et vous la passe (e-mail « Cerise vous passe une demande »). Le jeton n'est alors pas compté : la demande devient une modification d'Alex.
-
-À installer une fois :
-
-1. Une clé Claude : sur platform.claude.com, créez un compte, ajoutez un moyen de paiement (on paie à l'usage, quelques centimes par demande), puis API keys, Create key. Collez-la dans les Minis Monstres › Réglages, rubrique Cerise, ou mieux dans wp-config.php : `define('ALED08_ANTHROPIC_KEY', 'sk-ant-...');`. Bouton « Tester Cerise » pour vérifier.
-2. L'extension `alexlia-sdk.zip` (kit officiel Anthropic) sur les-minis-monstres.fr. Elle ne charge rien tant que Cerise ne travaille pas.
-
-Pour chaque client :
-
-1. Sur le site du client, installez `alexlia-connecteur.zip` (dans `wp-export/` après `python3 scripts/wp-export.py`).
-2. Dans la fiche du client sur les-minis-monstres.fr (Utilisateurs, le client, rubrique « Cerise : site relié ») : mettez l'adresse du site (en https), cochez « Créer la clé », enregistrez. Copiez la clé affichée.
-3. Sur le site du client, Réglages › Les Minis Monstres : collez la clé, enregistrez. De retour sur la fiche client, la ligne « Connexion » doit dire OK.
-
-Tant qu'un client n'est pas relié, ses demandes « par Cerise » arrivent chez vous par e-mail comme avant, et vous les faites à la main.
-
-Après le passage de Cerise, la fiche de la demande montre un encadré « Travail de Cerise » : la liste des changements avec un lien vers chaque page, sa note pour vous, et trois boutons :
-- « C'est bon, vérifié » ;
-- « Annuler les changements de Cerise » : chaque page est remise exactement comme avant (une révision est gardée avant chaque changement). Une actualité publiée ou un nom de site changé se défont à la main, l'encadré vous dit lesquels ;
-- « Relancer Cerise » si elle n'a pas pu finir.
-
-Sécurité : chaque échange avec le site client est signé avec la clé du client, valable 5 minutes et une seule fois. Sur le site client, la case « Pause » dans Réglages › Les Minis Monstres coupe Cerise tout de suite. Le journal des 100 derniers changements est sur la même page. Si le pare-feu de l'hébergeur bloque l'adresse `/wp-json/alexlia/v1/action`, demandez au support de l'autoriser.
-
-### Les Jetons Cerise et les outils
-
-Tout ce que fait Cerise se compte en **Jetons Cerise**. Un jeton vaut 1 centime. Les outils ne demandent qu'une chose : **votre clé Claude**, entrée une fois dans les Minis Monstres, Réglages, « Clé Claude ». Tant qu'elle manque, le tableau de bord de la gestion vous le rappelle, les outils où Cerise écrit sont grisés et les outils gratuits marchent.
-
-**Les 15 outils** (définis dans `src/content/outils-lia.js`, un seul fichier pour le site, la Documentation et l'espace client) :
-
-| Famille | Outils |
-|---|---|
-| Réseaux | Publier partout, Idées de publications |
-| Textes | Corriger un texte, Réécrire un texte, Traduire un texte, Répondre à un client, Fiche produit |
-| Photos | Annonce en image, Recadrer et alléger une photo, Conseils sur une photo, Recopier le texte d'une photo |
-| Mon site | Conseils pour ma page, QR code |
-| Avis | Répondre à un avis, Lien d'avis Google |
-
-Quatre sont gratuits parce qu'ils tournent dans le navigateur du client : Annonce en image (seuls les mots trouvés par Cerise coûtent des jetons), Recadrer et alléger une photo, QR code, Lien d'avis Google.
-
-**Les règles du compteur** (`includes/jetons.php`) :
-
-- **L'abonnement donne 100 jetons chaque mois** (`forfaits[0].jetons` dans `src/config.js`). Ils reviennent le 1er et ne se reportent pas. Au-delà, le client rachète des jetons à l'utilisation (1 € les 100). L'option Cerise + a été supprimée le 16 novembre 2026.
-- **Seulement si l'abonnement court** : abonnement Stripe actif, ou case « Abonnement actif hors Stripe », ou « Abonnement offert à vie », ou compte famille. Une commande pas encore payée ne donne aucun jeton. La fiche du client le dit quand c'est le cas.
-- **Un extra ajouté ou retiré en cours de mois** compte à partir du mois suivant, comme sa facture.
-- **Une modification par Cerise** coûte 30 jetons, plus 1 par tranche de 10 mots écrits, plus 10 par photo (`jetonsLia.modif`). Le prix s'affiche pendant que le client écrit. Si Cerise passe la demande à Alex, si la mise en ligne échoue, si le client refuse l'aperçu ou annule dans les 24 heures, les jetons sont rendus. Si Cerise n'est pas reliée au site du client, la demande va à Alex, sans jeton.
-- **Un outil** a un prix fixe (`jetons`) : ce qu'il coûte chez Claude (`coutCts`, en centimes) × 4, arrondi au-dessus. Pour une modification, c'est × 2. Les jetons sont comptés au lancement et rendus si Cerise ne rend rien d'utilisable (panne, réponse coupée, texte qui ne veut rien dire : Cerise répond alors « STOP » avec ce qu'il faut donner).
-- **Garde-fous** : un seul outil à la fois par client, 40 essais par heure, longueur de la réponse bornée par le prix de l'outil, texte trop long refusé (jamais coupé), page lue seulement sur le site du client.
-- **La recharge** : 100 jetons pour 1 €, 500 pour 5 €, 1000 pour 10 € (`jetonsLia.recharge`), 5000 jetons par mois au plus. Elle s'ajoute à la prochaine facture Stripe si le client a un abonnement mensuel actif, et les jetons arrivent tout de suite. Sinon vous recevez un e-mail : ajoutez les jetons dans sa fiche (« Jetons Cerise en plus ») et facturez-les.
-- **Publier partout** : publier son propre texte est gratuit ; « Cerise adapte mon texte » coûte des jetons. Le client relie Bluesky ou Mastodon lui-même, sans réglage de votre part. Facebook, Instagram et LinkedIn n'apparaissent dans « Mes réseaux » que si vous déclarez l'application chez le réseau (Réglages, « Publier sur les réseaux », marche à suivre sur place). Sans cela, le texte est copié et le réseau s'ouvre. Le code est dans `includes/reseaux.php`.
-- **Vérifier que vous vous y retrouvez** : Réglages, en bas, « Jetons Cerise : le bilan du mois ». Pour chaque client : les jetons comptés, leur valeur, ce que Claude a vraiment coûté, et ce qu'il reste. Si un outil coûte plus que prévu, montez son `coutCts` et son `jetons` dans `outils-lia.js` et relancez l'export.
-- **Changer de modèle** : Cerise et les outils utilisent le modèle réglé dans les Réglages (par défaut `claude-opus-5-5`). Avec `claude-sonnet-5-5`, le coût est divisé par deux, pour les mêmes prix en jetons.
-- **Confidentialité** : la politique de confidentialité dit que les textes, photos et adresses de page confiés à Cerise sont envoyés à Claude (Anthropic). Relisez ce passage, il vous engage.
+1. Le client écrit sa demande dans l'onglet « Demandes » (avec des photos s'il veut). La jauge apparaît : Demande reçue, Précisée avec Cerise, Chez Alex, Faite.
+2. Cerise relit la demande (elle peut lire le site relié, sans rien modifier). Si c'est flou, elle pose une question (deux au plus), le client répond depuis la jauge.
+3. Cerise reformule la demande clairement et la fait confirmer au client (« Vérifier ma demande » dans la jauge). Non : le client corrige, Cerise reprend (au deuxième « non », la demande part chez Alex avec les remarques).
+4. Oui : Cerise répond « Merci pour vos précisions ! Je transmets votre demande à Alex », et Alex reçoit un e-mail avec la demande claire, la demande d'origine, les photos, les échanges et l'échéance.
+5. Délais, à compter de la confirmation : **Mini (10 €) : sous 7 jours, une demande à la fois. Maxi (20 €) : sous 48 h, deux demandes à la fois, en priorité.**
+6. Dans « Mon espace », onglet « À faire » : les demandes chez Alex, Maxi d'abord puis par échéance (orange à moins de 24 h, rouge en retard). Boutons « Je commence » puis « C'est fait, prévenir le client ». Un rappel part la veille de l'échéance, et un autre si elle est dépassée.
+7. Le client peut annuler tant qu'Alex n'a pas cliqué « Je commence » (Alex est prévenu si la demande était déjà chez lui). Une demande qui attend le client plus de 7 jours est annulée toute seule. Si Cerise n'a pas pu relire une demande sous 24 h, elle part chez Alex telle quelle.
+8. Pages SEO : Lumi analyse le site (pages existantes, recherches Google) et choisit le sujet (titre, recherche visée, plan). Elle crée une demande « Page SEO » chez Alex, qui écrit et publie la page. Abonnement : une par mois (Mini), une par semaine (Maxi). Pack : un sujet par page, une échéance tous les trois jours.
+9. La recherche de prospects a été retirée du tableau de gestion.
 
 ## 10. Le parrainage
 
@@ -366,7 +309,7 @@ Dans l'espace client, le compteur s'appelle « énergie » (100 points par mois,
 3. Sans réponse en 30 minutes, Bricou se lance tout seul. Le client reçoit « Demande confirmée : Bricou s'en occupe » (ou « Alex a validé votre demande » si Alex a cliqué).
 4. Bricou prépare la modification. Le client valide l'aperçu avant toute mise en ligne, comme avant.
 
-## Bricou avec le MCP WordPress du site client (facultatif)
+## (Ancien) Bricou avec le MCP WordPress du site client : plus utilisé
 
 Par défaut, Bricou modifie le site d'un client avec le connecteur (quelques outils, aperçu, accord du client, puis mise en ligne). Pour lui donner tous les outils du MCP du site (l'extension « Easy MCP AI » : pages, articles, menus, médias, CSS, réglages, historique…) :
 
@@ -384,12 +327,6 @@ Avec le MCP, Bricou modifie le site AVANT la validation du client : c'est pourqu
 
 Le connecteur (extension « Les Minis Monstres : connecteur ») contient son propre serveur MCP (`/wp-json/alexlia/v1/mcp`, HTTP, réponses JSON). Pour un nouveau client : installer le connecteur et le relier comme avant (même clé de liaison) ; rien d'autre. L'espace client voit que le connecteur a le MCP (champ `mcp` de l'action « infos »), déduit la clé du MCP de la clé de liaison (HMAC, calcul à sens unique refait des deux côtés) et Bricou travaille avec ces outils : lister, lire, remplacer un texte, modifier, créer, importer une image, nom et slogan, `texte_visible`, `affichage_remplacer` (texte écrit en dur par le thème, remplacé à l'écran), CSS additionnel, révisions et `restaurer_revision`. Les changements sont faits tout de suite, le client valide ensuite (jauge, étape « à valider »), et tout est remis comme avant s'il refuse. Dans la fiche du client, une case permet de ne pas utiliser le MCP (retour à l'aperçu avant mise en ligne). Les champs « adresse et clé du MCP » ne servent que pour une autre extension MCP.
 
-## Le circuit d'une demande (tout est fait par les Minis Monstres ; Alex optimise et assiste)
+## Le circuit d'une demande
 
-1. Le client écrit sa demande dans l'onglet « Demandes » (bloc de Bricou, en haut). La jauge apparaît au-dessus : Demande reçue, Prise en compte, Visuel à valider, Mise en ligne. Une demande à la fois avec Mini (10 €), trois avec Maxi (20 €).
-2. Bricou prépare la modification dans un aperçu : le site du client n'est PAS touché avant la validation. Sur la jauge, « Voir le visuel » ouvre une fenêtre avec le site, l'avant / après et « Oui, c'est bon » / « Non, ce n'est pas ça » : rien à chercher plus bas.
-3. Oui : Bricou met la modification en ligne. Alex n'a rien à valider. Non : le client dit ce qui ne va pas (et peut joindre une capture d'écran), Bricou refait une autre version avec ces remarques. Au deuxième refus d'affilée, la demande passe à l'équipe : Alex reçoit un e-mail pour aider les petits monstres (rien n'a été changé sur le site).
-4. Si la demande est trop imprécise, Bricou pose une question (deux au plus par demande), parfois avec une demande de capture d'écran ; le client répond depuis la jauge.
-5. Le client peut annuler une demande en cours à tout moment, sans limite (croix de la jauge) : rien n'a été changé sur son site. Une demande sans réponse de Bricou sous 24 heures est annulée toute seule (c'est qu'un petit monstre a planté) : ce que Bricou avait modifié est remis comme avant et Alex reçoit un e-mail. Une demande qui attend le client (visuel ou question) est annulée au bout de 7 jours. Une demande confiée à Alex n'est pas annulée : il reçoit un rappel après 24 heures.
-6. Les pages SEO de Lumi sont mises en ligne tout de suite ; Alex reçoit un e-mail d'information.
-7. La conversation avec Cerise (la bulle, en bas) est gardée côté serveur : elle ne disparaît plus quand la page est rechargée.
+Voir la section 9 : Cerise prépare la demande avec le client, Alex fait la modification. Le circuit de Bricou (modifications par l'IA, aperçu, MCP) n'est plus utilisé.
