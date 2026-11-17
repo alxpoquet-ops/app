@@ -309,19 +309,21 @@ Puis dans WordPress :
 
 Ne touchez jamais aux fichiers de l'extension directement sur le serveur : la prochaine mise à jour les écraserait. Les changements se font dans `src/wordpress/aled08-espace/`, puis export.
 
-## 12 bis. Changer de domaine : de aled08.fr à les-minis-monstres.fr
+## 12 bis. Le site sur son propre nom : les-minis-monstres.fr
 
-Le site est prêt pour le nouveau nom (adresse dans `src/config.js`, `site.url`). Le jour du changement se fait dans cet ordre.
-Tant que les étapes 1 et 2 ne sont pas faites, **ne passez pas à l'étape 3** : le site cesserait de répondre.
+Le site des Minis Monstres vit sur **son propre WordPress**, à l'adresse `https://www.les-minis-monstres.fr`, entièrement séparé de aled08.fr (qui sera réutilisé pour un autre site). L'adresse du site est dans `src/config.js` (`site.url`).
 
-1. **Chez le registrar** (là où vous avez acheté le nom) : dans la zone DNS de `les-minis-monstres.fr`, un enregistrement A pour `@` et un pour `www`, qui pointent vers l'adresse du serveur actuel (celle de aled08.fr). Ou, plus simple : mettre les serveurs de noms de l'hébergeur. Comptez de quelques minutes à quelques heures.
-2. **Chez l'hébergeur** (o2switch) : ajouter `les-minis-monstres.fr` comme domaine alias de aled08.fr (même dossier), puis attendre le certificat HTTPS (AutoSSL). Vérifiez que `https://www.les-minis-monstres.fr` affiche bien le site.
-3. **Dans WordPress** : on remplace l'adresse du site (Réglages › Général, ou la commande de remplacement d'adresse), puis on remet en ligne le thème et l'import (les pages reprennent la nouvelle adresse dans leurs balises canonical et le plan du site). L'ancien nom renvoie alors (301) vers la même page du nouveau, sauf `wp-json`, `wp-admin` et le cron.
-4. **Stripe** : le webhook garde l'ancienne adresse jusqu'à ce que vous le changiez. Dans Stripe, Développeurs › Webhooks, remplacez par `https://www.les-minis-monstres.fr/wp-json/aled08/v1/stripe`. L'ancienne adresse continue de répondre en attendant.
-5. **E-mails** : les messages du site partent de l'adresse du nouveau nom. Vérifiez chez votre fournisseur d'e-mail que le domaine est autorisé à envoyer (SPF et DKIM), sinon ils iront dans les indésirables. Voir l'adresse de contact dans `src/config.js` (`email`).
-6. **Google Search Console** : ajoutez le nouveau site, puis utilisez « Changement d'adresse » depuis l'ancien. Envoyez le plan du site `https://www.les-minis-monstres.fr/wp-sitemap.xml`.
-7. **Sites clients** : l'extension « connecteur » (1.5.1) et la mention « Site fait par les Minis Monstres » pointent vers le nouveau nom. Les sites déjà installés gardent l'ancien lien, qui redirige : rien ne casse, vous mettez à jour au fil des visites.
-8. **Liens à vous** : fiches Google, réseaux sociaux, signature d'e-mail.
+**Installer (ou réinstaller) sur un WordPress neuf**
+1. Générez les fichiers : `node build.js` puis `python3 scripts/wp-export.py` (le dossier `wp-export/` est créé, il n'est pas dans git).
+2. Sur le WordPress du nouveau domaine : Extensions › Ajouter › Téléverser, choisissez **`minis-installeur.zip`**, installez, activez.
+3. L'installeur dépaquette tout seul le thème, l'espace client, le kit Claude, crée les pages et règle WordPress. Un message vert résume ce qui a été fait. Supprimez ensuite l'extension « installeur ».
+4. Entrez vos clés dans **Les Minis Monstres › Réglages** : Stripe (clé et webhook), Claude, OVH si vous l'utilisez, adresse e-mail.
+5. **Stripe** : dans Développeurs › Webhooks, l'adresse est `https://www.les-minis-monstres.fr/wp-json/aled08/v1/stripe`.
+6. **E-mails** : les messages partent de l'adresse du nouveau nom. Vérifiez chez votre fournisseur d'e-mail que le domaine peut envoyer (SPF et DKIM), sinon ils iront dans les indésirables.
+7. **Google Search Console** : ajoutez le nouveau site et envoyez `https://www.les-minis-monstres.fr/wp-sitemap.xml`.
+8. **Comptes clients** : les comptes de l'ancien WordPress ne sont pas recopiés. Recréez-les (Utilisateurs, rôle « client Minis Monstres ») ou faites-les se réinscrire.
+
+**Sites clients** : le connecteur (1.5.1) et la mention « Site fait par les Minis Monstres » pointent vers le nouveau nom. Les sites déjà installés gardent l'ancien lien tant que vous ne les mettez pas à jour.
 
 ## 13. Vérifications après la mise en ligne
 

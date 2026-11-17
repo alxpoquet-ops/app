@@ -688,6 +688,20 @@ def main():
                     full = os.path.join(d, f)
                     z.write(full, os.path.join(name, os.path.relpath(full, base)))
         print(name + '.zip', os.path.getsize(zp) // 1024, 'Ko')
+    # installeur : un seul fichier à téléverser sur un WordPress neuf, il installe tout le reste (thème, extensions, pages)
+    idir2 = os.path.join(OUT, 'minis-installeur')
+    shutil.copytree(os.path.join(ROOT, 'src', 'wordpress', 'minis-installeur'), idir2)
+    os.makedirs(os.path.join(idir2, 'pkg'), exist_ok=True)
+    paquets = [THEME, 'aled08-espace', 'aled08-import'] + (['alexlia-sdk'] if 'alexlia-sdk' in names else [])
+    for p in paquets:
+        shutil.copy(os.path.join(OUT, p + '.zip'), os.path.join(idir2, 'pkg', p + '.zip'))
+    zp = os.path.join(OUT, 'minis-installeur.zip')
+    with zipfile.ZipFile(zp, 'w', zipfile.ZIP_STORED) as z:
+        for d, _, files in os.walk(idir2):
+            for f in files:
+                full = os.path.join(d, f)
+                z.write(full, os.path.join('minis-installeur', os.path.relpath(full, idir2)))
+    print('minis-installeur.zip', os.path.getsize(zp) // 1024, 'Ko', '(avec :', ', '.join(paquets) + ')')
     kinds = {}
     for it in items:
         kinds[it['kind']] = kinds.get(it['kind'], 0) + 1

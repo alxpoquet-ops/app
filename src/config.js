@@ -14,9 +14,9 @@ const site = {
   name: 'Les Minis Monstres',
   baseline: 'Sites internet et SEO', // n'est plus affiché sous le logo
   legalName: 'Les Minis Monstres, nom commercial d’Alexandre Poquet EI', // raison sociale / nom commercial
-  // Novembre 2026 : le site passe de aled08.fr à les-minis-monstres.fr. L'ancien domaine renvoie (301) vers le nouveau,
-  // sauf les appels techniques (wp-json, paiements). Voir scripts/wp-export.py et docs/gestion-du-site.md (« Changer de domaine »).
-  ancienDomaine: 'aled08.fr',
+  // Novembre 2026 : le site a son propre WordPress sur les-minis-monstres.fr, entièrement séparé de aled08.fr (qui sera réutilisé
+  // pour un autre site). Installation : extension « installeur » (scripts/wp-export.py) et docs/gestion-du-site.md (« Changer de domaine »).
+  ancienDomaine: '', // vide : aled08.fr est séparé et sera réutilisé, aucune redirection
   owner: 'Alexandre Poquet',
 
   // Aucune coordonnée personnelle affichée : on écrit par le formulaire de contact (/contact/).
