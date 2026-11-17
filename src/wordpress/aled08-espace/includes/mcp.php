@@ -19,7 +19,9 @@ function aled08e_mcp_config($uid) {
     // MCP intégré au connecteur du site (version 2 et suivantes) : rien à saisir, la clé se déduit de la clé de liaison
     $lu = aled08e_meta($uid, 'lia_url');
     $ls = aled08e_meta($uid, 'lia_secret');
-    if ($lu !== '' && $ls !== '' && aled08e_meta($uid, 'mcp_natif') === '1' && aled08e_meta($uid, 'mcp_off') !== '1') {
+    // Éteint par défaut : avec le MCP, Bricou modifie le site AVANT la validation du client. Le circuit normal (aperçu, validation du client, puis mise en ligne)
+    // ne touche au site qu'après le « oui ». Pour réactiver le MCP du connecteur : option aled08_mcp_actif = 1.
+    if (get_option('aled08_mcp_actif') === '1' && $lu !== '' && $ls !== '' && aled08e_meta($uid, 'mcp_natif') === '1' && aled08e_meta($uid, 'mcp_off') !== '1') {
         $t = hash_hmac('sha256', 'alexlia-mcp-v1', $ls);
         return ['url' => untrailingslashit($lu) . '/wp-json/alexlia/v1/mcp?k=' . $t, 'token' => $t, 'natif' => true];
     }
@@ -97,10 +99,18 @@ function aled08e_mcp_texte($v) {
 }
 
 /* La boucle avec Claude et le MCP du site. Renvoie ['terminer' => array|null, 'journal' => [...], 'ecritures' => n, 'texte' => '', 'conso' => [...]] */
-function aled08e_mcp_boucle($uid, $systeme, $messages, $tours = 12) {
+function aled08e_mcp_boucle($uid, $systeme, $messages, $tours = 8) {
     $cfg = aled08e_mcp_config($uid);
     $configs = [];
     foreach (aled08e_mcp_interdits() as $nom) $configs[$nom] = ['enabled' => false];
+    $toolset = ['type' => 'mcp_toolset', 'mcpServerName' => 'site', 'cacheControl' => ['type' => 'ephemeral']];
+    if (empty($cfg['natif'])) {
+        // MCP d'une autre extension (saisi à la main) : seuls les outils de la liste autorisée sont ouverts, tous les autres sont fermés
+        $configs = [];
+        foreach (aled08e_mcp_autorises() as $nom) $configs[$nom] = ['enabled' => true];
+        $toolset['defaultConfig'] = ['enabled' => false];
+    }
+    $toolset['configs'] = $configs ?: new stdClass();
     $client = new \Anthropic\Client(apiKey: aled08e_lia_cle());
     $out = ['terminer' => null, 'journal' => [], 'ecritures' => 0, 'texte' => '', 'conso' => ['entree' => 0, 'sortie' => 0, 'cache_lu' => 0, 'cache_ecrit' => 0, 'appels' => 0]];
     $attente = [];
@@ -111,7 +121,7 @@ function aled08e_mcp_boucle($uid, $systeme, $messages, $tours = 12) {
             system: [['type' => 'text', 'text' => $systeme, 'cacheControl' => ['type' => 'ephemeral']]],
             messages: $messages,
             mcpServers: [['type' => 'url', 'name' => 'site', 'url' => $cfg['url'], 'authorizationToken' => $cfg['token']]],
-            tools: [aled08e_mcp_outil_terminer(), ['type' => 'mcp_toolset', 'mcpServerName' => 'site', 'cacheControl' => ['type' => 'ephemeral'], 'configs' => $configs ?: new stdClass()]],
+            tools: [aled08e_mcp_outil_terminer(), $toolset],
             outputConfig: ['effort' => 'medium'],
             betas: ['mcp-client-2025-11-20'],
         );
@@ -123,6 +133,8 @@ function aled08e_mcp_boucle($uid, $systeme, $messages, $tours = 12) {
             $out['conso']['cache_ecrit'] += (int) ($r->usage->cacheCreationInputTokens ?? 0);
         }
         if ($r->stopReason === 'refusal') { $out['texte'] = 'Claude a refusé la demande.'; break; }
+        // plafonds : un essai ne coûte pas plus d'un dollar et ne fait pas plus de 15 modifications ni 60 appels
+        if (aled08e_lia_cout($out['conso']) > aled08e_ech_budget_essai()) { $out['limite'] = 'budget'; break; }
         $messages[] = ['role' => 'assistant', 'content' => $r->content];
         // ce que Bricou a fait avec le MCP : un journal court, pour pouvoir tout remettre comme avant
         $texte = '';
@@ -145,6 +157,7 @@ function aled08e_mcp_boucle($uid, $systeme, $messages, $tours = 12) {
             }
         }
         $out['texte'] = $texte;
+        if ($out['ecritures'] > 15 || count($out['journal']) >= 60) { $out['limite'] = 'actions'; break; }
         if ($r->stopReason === 'pause_turn') continue;
         if ($r->stopReason !== 'tool_use') break;
         $results = [];
@@ -178,6 +191,14 @@ function aled08e_mcp_traiter($pid, $uid, $u, $p, $infos, $fin) {
     update_post_meta($pid, '_aled08_lia_conso', $r['conso']);
     $ancien = get_post_meta($pid, '_aled08_mcp_journal', true);
     update_post_meta($pid, '_aled08_mcp_journal', array_slice(array_merge(is_array($ancien) ? $ancien : [], $r['journal']), -150)); // tous les essais : tout se remet comme avant si le client refuse
+    aled08e_ech_cout_ajouter($uid, aled08e_lia_cout($r['conso'])); // plafond de coût du jour
+    if (!empty($r['limite'])) {
+        // Bricou s'est emballé (trop cher ou trop de modifications) : on s'arrête, tout est remis comme avant, l'équipe reprend la demande
+        aled08e_lia_journal_add('Demande #' . $pid . ' : Bricou arrêté (' . ($r['limite'] === 'budget' ? 'plafond de coût de l’essai atteint' : 'trop de modifications ou d’appels') . '), le site est remis comme avant.');
+        aled08e_mcp_annuler($pid);
+        $fin('pour_alex', 'Cette demande est plus grosse que prévu : l’équipe des Minis Monstres la reprend avec soin.', 'Bricou arrêté par un plafond (' . $r['limite'] . '). Ses modifications sont remises comme avant (voir le journal).', []);
+        return;
+    }
     $t = $r['terminer'];
     if ($t === null) { $fin($r['ecritures'] ? 'fait' : 'pour_alex', $r['ecritures'] ? 'Votre modification est faite : regardez le résultat et confirmez.' : 'Je transmets votre demande à l’équipe des Minis Monstres, qui s’en occupe.', 'Bricou s’est arrêtée sans conclure : ' . mb_substr($r['texte'], 0, 600), $r['ecritures'] ? [aled08e_mcp_action('Modification faite par Bricou', '', '', '')] : []); return; }
     $resultat = in_array($t['resultat'] ?? '', ['fait', 'question'], true) ? $t['resultat'] : 'pour_alex';
@@ -274,4 +295,17 @@ function aled08e_mcp_profil_save($uid) {
     update_user_meta($uid, 'aled08_mcp_url', $url);
     $tok = trim((string) wp_unslash($_POST['aled08e_mcp_token'] ?? ''));
     if ($tok !== '') update_user_meta($uid, 'aled08_mcp_token', preg_replace('/[^\x21-\x7E]/', '', $tok));
+}
+
+/* Un MCP d'une autre extension (saisi à la main dans la fiche) : seuls ces outils sont ouverts à Bricou (option aled08_mcp_autorises, un nom par ligne).
+ * Pas de suppression, pas de comptes, pas de réglages sensibles, pas de thème ni d'extensions. Le MCP du connecteur a ses propres garde-fous. */
+function aled08e_mcp_autorises_defaut() {
+    return implode("\n", ['wp_get_page', 'wp_get_post', 'wp_get_post_full', 'wp_get_post_blocks', 'wp_list_pages', 'wp_list_posts', 'wp_search', 'wp_search_posts', 'wp_get_site_settings', 'wp_get_media', 'wp_list_media',
+        'wp_list_menus', 'wp_get_menu', 'wp_list_menu_items', 'wp_get_active_theme', 'wp_list_revisions', 'wp_get_revision', 'wp_history_list', 'wp_history_get', 'wp_history_diff', 'wp_get_custom_css', 'wp_count_posts',
+        'wp_update_page', 'wp_update_post', 'wp_update_post_blocks', 'wp_replace_in_post', 'wp_create_page', 'wp_create_post', 'wp_upload_media_from_url', 'wp_update_media', 'wp_restore_revision', 'wp_history_apply', 'wp_update_menu_item']);
+}
+function aled08e_mcp_autorises() {
+    $o = get_option('aled08_mcp_autorises', null);
+    $txt = $o === null || trim((string) $o) === '' ? aled08e_mcp_autorises_defaut() : (string) $o;
+    return array_values(array_filter(array_map('trim', preg_split('/[\s,]+/', $txt))));
 }

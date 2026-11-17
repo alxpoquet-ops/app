@@ -239,7 +239,7 @@ function aled08e_gauge_apercu($p) {
     return '';
 }
 /* La croix pour annuler, au bout de la jauge (mêmes règles que « Annuler la demande » dans l'historique) */
-function aled08e_gauge_croix($p) {
+function aled08e_gauge_croix_ancienne($p) {
     return ''; // les clients ne peuvent plus annuler une demande lancée
     if (!function_exists('aled08e_annulation_possible')) return '';
     $pourquoi = aled08e_annulation_possible($p);
@@ -302,7 +302,7 @@ function aled08e_gauge_html($uid) {
         $n = aled08e_gauge_etape($p);
         $etat = (string) get_post_meta($p->ID, '_aled08_lia_etat', true);
         $txt = trim(preg_replace('/\s+/u', ' ', $p->post_content));
-        $h .= '<div class="gauge"><p class="gauge-t"><strong>' . esc_html(mb_strlen($txt) > 70 ? mb_substr($txt, 0, 67) . '…' : $txt) . '</strong></p><ol class="gauge-etapes" style="--n:' . (int) $n . '">';
+        $h .= '<div class="gauge"><div class="gauge-entete"><p class="gauge-t"><strong>' . esc_html(mb_strlen($txt) > 70 ? mb_substr($txt, 0, 67) . '…' : $txt) . '</strong></p>' . aled08e_gauge_croix($p) . '</div><ol class="gauge-etapes" style="--n:' . (int) $n . '">';
         foreach ($etapes as $i => $e) {
             $in = '<b>' . ($i + 1 < $n ? '✓' : $i + 1) . '</b><span>' . esc_html($e) . '</span>';
             if ($i === 2 && $etat === 'a_confirmer') $in = '<button type="button" class="gauge-visuel" data-gauge-ouvrir="visuel-' . (int) $p->ID . '" title="Voir le visuel à valider"><s class="gauge-tache" aria-hidden="true"></s>' . $in . '</button>';
@@ -340,4 +340,12 @@ function aled08e_gauge_modals_html($uid) {
 }
 function aled08e_gauge_zone_html($uid) {
     return '<section class="gauge-zone" aria-label="Avancement de vos demandes"><div class="gauge-bloc" data-gauge aria-live="polite">' . aled08e_gauge_html($uid) . '</div><div data-gauge-modals>' . aled08e_gauge_modals_html($uid) . '</div></section>';
+}
+
+/* La croix pour annuler une demande en cours : à tout moment, sans limite. Rien n'a été changé sur le site avant la validation du visuel. */
+function aled08e_gauge_croix($p) {
+    if (get_post_meta($p->ID, '_aled08_annulee_le', true)) return '';
+    return '<form class="gauge-x-form" method="post" action="' . esc_url(aled08e_url()) . '" onsubmit="return confirm(\'Annuler cette demande ? Rien ne sera changé sur votre site.\');">'
+        . '<input type="hidden" name="aled08e_annuler" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_annuler_' . $p->ID, '_aled08e_annul', true, false)
+        . '<button class="gauge-x" type="submit" title="Annuler cette demande" aria-label="Annuler cette demande">' . aled08e_icon('x') . '</button></form>';
 }

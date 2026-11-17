@@ -169,3 +169,14 @@ function aled08e_dialogue_html($uid) {
     foreach (aled08e_dialogue_lire($uid) as $m) $h .= '<p class="lia-msg is-' . ($m[0] === 'moi' ? 'moi' : 'lia') . '">' . esc_html($m[1]) . '</p>';
     return $h;
 }
+
+/* ---------- plafonds de coût : Bricou ne peut pas s'emballer ---------- */
+/* Une demande (un essai) : 1 $ au plus. Un client : 5 $ par jour. Réglables avec les options aled08_bricou_budget_essai et aled08_bricou_budget_jour. */
+function aled08e_ech_budget_essai() { return max(0.2, (float) get_option('aled08_bricou_budget_essai', 1.0)); }
+function aled08e_ech_budget_jour() { return max(1.0, (float) get_option('aled08_bricou_budget_jour', 5.0)); }
+function aled08e_ech_cout_jour($uid) { return (float) get_transient('aled08_cout_jour_' . (int) $uid . '_' . wp_date('Ymd')); }
+function aled08e_ech_cout_ajouter($uid, $dollars) {
+    $k = 'aled08_cout_jour_' . (int) $uid . '_' . wp_date('Ymd');
+    set_transient($k, (float) get_transient($k) + max(0, (float) $dollars), 2 * DAY_IN_SECONDS);
+}
+function aled08e_ech_budget_jour_ok($uid) { return aled08e_ech_cout_jour($uid) < aled08e_ech_budget_jour(); }

@@ -376,12 +376,13 @@ function aled08e_annul_illimite($uid) {
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
     return !empty($f['optimisation']) || aled08e_famille($uid);
 }
-/* Un client ne peut plus annuler une demande lancée. Elle est annulée toute seule (aled08e_ech_en_retard) quand ni Bricou ni Alex n'a répondu sous 24 heures ($auto). */
+/* Le client peut annuler une demande en cours à tout moment, sans limite (croix de la jauge). Elle est aussi annulée toute seule
+ * (aled08e_ech_en_retard, $auto) quand ni Bricou ni Alex n'a répondu sous 24 heures. */
 function aled08e_annuler_demande($pid, $auto = false) {
     $p = get_post($pid);
     if (!$p || $p->post_type !== ALED08E_CPT) return new WP_Error('aled08_annul', 'Demande introuvable.');
-    if (!$auto) return new WP_Error('aled08_annul', 'interdit');
     if (get_post_meta($pid, '_aled08_annulee_le', true)) return new WP_Error('aled08_annul', 'deja');
+    if (!in_array(get_post_meta($pid, '_aled08_statut', true) ?: 'recue', ['recue', 'encours'], true)) return new WP_Error('aled08_annul', 'terminee'); // seule une demande en cours s'annule
     $uid = (int) $p->post_author;
     $etat = (string) get_post_meta($pid, '_aled08_lia_etat', true);
     $note = '';
@@ -399,7 +400,8 @@ function aled08e_annuler_demande($pid, $auto = false) {
     if ($etat) update_post_meta($pid, '_aled08_lia_etat', 'annule');
     update_post_meta($pid, '_aled08_reponse', $resteEnLigne
         ? 'Demande annulée. Ce que les petits monstres avaient publié de nouveau reste en ligne : Alex le retire à la main. ' . (aled08e_energie_on() ? 'L’énergie de cette demande reste comptée.' : 'Elle reste comptée dans vos retouches du mois.')
-        : 'Cette demande n’a pas reçu de réponse sous 24 heures : elle est annulée et ne compte pas. Ce qui avait été modifié est remis comme avant. Vous pouvez la refaire.');
+        : ($auto ? 'Cette demande n’a pas reçu de réponse sous 24 heures : elle est annulée et ne compte pas. Ce qui avait été modifié est remis comme avant. Vous pouvez la refaire.' : 'Demande annulée. Rien n’a été changé sur votre site, et elle ne compte pas. Vous pouvez en faire une autre quand vous voulez.'));
+    if (!$auto) return true; // annulée par le client : rien à signaler à Alex
     $u = get_userdata($uid);
     wp_mail(aled08e_to(), 'Demande annulée toute seule (24 h sans réponse) : probable bug', "Ni Bricou ni vous n'avez répondu sous 24 heures.\n\nClient : " . ($u ? $u->display_name : '?') . "\nDemande : " . $p->post_content . "\n"
         . ($note ? "\nCe que Bricou avait mis en ligne : " . $note . "\n" : '')

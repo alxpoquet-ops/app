@@ -371,6 +371,8 @@ function aled08e_lia_traiter($pid) {
     $infos = aled08e_lia_appel($uid, 'infos');
     if (is_wp_error($infos)) { $fin('pour_alex', 'Je n’arrive pas à joindre votre site pour le moment. L’équipe des Minis Monstres s’en occupe.', 'Connecteur injoignable : ' . $infos->get_error_message(), []); return; }
 
+    // plafond de coût du jour par client : au-delà, la demande est reprise par l'équipe (pas de dépense sans limite)
+    if (!aled08e_ech_budget_jour_ok($uid)) { $fin('pour_alex', 'Les petits monstres ont beaucoup travaillé pour vous aujourd’hui : l’équipe des Minis Monstres reprend votre demande avec soin.', 'Plafond de coût du jour atteint pour ce client (' . round(aled08e_ech_cout_jour($uid), 2) . ' $).', []); return; }
     // le site du client a un MCP (celui du connecteur, ou celui saisi dans la fiche) : Bricou travaille avec tous ses outils (modifie tout de suite, le client valide ensuite)
     if (function_exists('aled08e_mcp_noter')) aled08e_mcp_noter($uid, $infos);
     if (function_exists('aled08e_mcp_config') && aled08e_mcp_config($uid) && !get_post_meta($pid, '_aled08_seo', true)) { aled08e_mcp_traiter($pid, $uid, $u, $p, $infos, $fin); return; }
@@ -400,6 +402,7 @@ function aled08e_lia_traiter($pid) {
                 $conso['cache_lu'] += (int) ($r->usage->cacheReadInputTokens ?? 0);
                 $conso['cache_ecrit'] += (int) ($r->usage->cacheCreationInputTokens ?? 0);
                 update_post_meta($pid, '_aled08_lia_conso', $conso);
+                if (aled08e_lia_cout($conso) > aled08e_ech_budget_essai()) { $resultat = ['pour_alex', 'Cette demande est plus grosse que prévu : l’équipe des Minis Monstres la reprend avec soin.', 'Bricou arrêté : plafond de coût d’un essai atteint.']; break; }
             }
             if ($r->stopReason === 'refusal') { $resultat = ['pour_alex', 'Je transmets votre demande à l’équipe des Minis Monstres, qui s’en occupe.', 'Claude a refusé la demande (' . ($r->stopDetails->category ?? 'sans catégorie') . ').']; break; }
             $messages[] = ['role' => 'assistant', 'content' => $r->content];
@@ -446,6 +449,7 @@ function aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $act
     }
     $conso = get_post_meta($pid, '_aled08_lia_conso', true);
     if (is_array($conso)) aled08e_jl_cout_noter($uid, 'demande:' . $pid, aled08e_jl_centimes(aled08e_lia_cout($conso))); // ce que la demande a vraiment coûté
+    if (is_array($conso) && get_post_meta($pid, '_aled08_mcp', true) !== '1') aled08e_ech_cout_ajouter($uid, aled08e_lia_cout($conso)); // plafond du jour (le circuit MCP compte le sien)
     update_post_meta($pid, '_aled08_lia_actions', $actions);
     update_post_meta($pid, '_aled08_lia_note', mb_substr((string) $noteAlex, 0, 2000));
     update_post_meta($pid, '_aled08_lia_le', current_time('mysql'));

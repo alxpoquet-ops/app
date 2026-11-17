@@ -377,16 +377,19 @@ Par défaut, Bricou modifie le site d'un client avec le connecteur (quelques out
 
 Les fichiers PHP du thème restent en lecture seule dans le MCP : un texte écrit en dur dans le thème (le nom du site dans l'en-tête, par exemple) ne peut pas être changé par Bricou avec le MCP.
 
-### MCP intégré au connecteur (version 2 et suivantes)
+### MCP intégré au connecteur (version 2 et suivantes) : ÉTEINT par défaut
+
+Avec le MCP, Bricou modifie le site AVANT la validation du client : c'est pourquoi il est éteint. Le circuit normal (aperçu, validation, puis mise en ligne) ne touche au site qu'après le « oui ». Réactivation : option `aled08_mcp_actif` = 1.
+
 
 Le connecteur (extension « Les Minis Monstres : connecteur ») contient son propre serveur MCP (`/wp-json/alexlia/v1/mcp`, HTTP, réponses JSON). Pour un nouveau client : installer le connecteur et le relier comme avant (même clé de liaison) ; rien d'autre. L'espace client voit que le connecteur a le MCP (champ `mcp` de l'action « infos »), déduit la clé du MCP de la clé de liaison (HMAC, calcul à sens unique refait des deux côtés) et Bricou travaille avec ces outils : lister, lire, remplacer un texte, modifier, créer, importer une image, nom et slogan, `texte_visible`, `affichage_remplacer` (texte écrit en dur par le thème, remplacé à l'écran), CSS additionnel, révisions et `restaurer_revision`. Les changements sont faits tout de suite, le client valide ensuite (jauge, étape « à valider »), et tout est remis comme avant s'il refuse. Dans la fiche du client, une case permet de ne pas utiliser le MCP (retour à l'aperçu avant mise en ligne). Les champs « adresse et clé du MCP » ne servent que pour une autre extension MCP.
 
 ## Le circuit d'une demande (tout est fait par les Minis Monstres ; Alex optimise et assiste)
 
 1. Le client écrit sa demande dans l'onglet « Demandes » (bloc de Bricou, en haut). La jauge apparaît au-dessus : Demande reçue, Prise en compte, Visuel à valider, Mise en ligne. Une demande à la fois avec Mini (10 €), trois avec Maxi (20 €).
-2. Bricou fait la modification (avec le MCP du connecteur : tout de suite sur le site). Sur la jauge, « Voir le visuel » ouvre une fenêtre avec le site, l'avant / après et « Oui, c'est bon » / « Non, ce n'est pas ça » : rien à chercher plus bas.
-3. Oui : c'est validé et en ligne. Alex n'a rien à valider. Non : le client dit ce qui ne va pas (et peut joindre une capture d'écran), Bricou refait une autre version avec ces remarques. Au deuxième refus d'affilée, la demande passe à l'équipe : Alex reçoit un e-mail pour aider les petits monstres, et le site est remis comme avant.
+2. Bricou prépare la modification dans un aperçu : le site du client n'est PAS touché avant la validation. Sur la jauge, « Voir le visuel » ouvre une fenêtre avec le site, l'avant / après et « Oui, c'est bon » / « Non, ce n'est pas ça » : rien à chercher plus bas.
+3. Oui : Bricou met la modification en ligne. Alex n'a rien à valider. Non : le client dit ce qui ne va pas (et peut joindre une capture d'écran), Bricou refait une autre version avec ces remarques. Au deuxième refus d'affilée, la demande passe à l'équipe : Alex reçoit un e-mail pour aider les petits monstres (rien n'a été changé sur le site).
 4. Si la demande est trop imprécise, Bricou pose une question (deux au plus par demande), parfois avec une demande de capture d'écran ; le client répond depuis la jauge.
-5. Les clients ne peuvent plus annuler une demande. Une demande sans réponse de Bricou sous 24 heures est annulée toute seule (c'est qu'un petit monstre a planté) : ce que Bricou avait modifié est remis comme avant et Alex reçoit un e-mail. Une demande qui attend le client (visuel ou question) est annulée au bout de 7 jours. Une demande confiée à Alex n'est pas annulée : il reçoit un rappel après 24 heures.
+5. Le client peut annuler une demande en cours à tout moment, sans limite (croix de la jauge) : rien n'a été changé sur son site. Une demande sans réponse de Bricou sous 24 heures est annulée toute seule (c'est qu'un petit monstre a planté) : ce que Bricou avait modifié est remis comme avant et Alex reçoit un e-mail. Une demande qui attend le client (visuel ou question) est annulée au bout de 7 jours. Une demande confiée à Alex n'est pas annulée : il reçoit un rappel après 24 heures.
 6. Les pages SEO de Lumi sont mises en ligne tout de suite ; Alex reçoit un e-mail d'information.
 7. La conversation avec Cerise (la bulle, en bas) est gardée côté serveur : elle ne disparaît plus quand la page est rechargée.

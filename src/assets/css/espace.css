@@ -690,3 +690,8 @@ dialog.visuel-modal::backdrop { background: rgba(18, 10, 38, .68); }
 .visuel-question { margin: 14px 18px; padding: 12px 14px; border-radius: 14px; background: #ffe3ee; color: #3a2442; }
 dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10px 18px 18px; }
 @media (max-width: 560px) { dialog.visuel-modal { width: 100vw; max-height: 100vh; border-radius: 0; } .bricou-art svg { width: 48px; height: 48px; } }
+
+/* Jauge : la croix d'annulation à droite du titre de la demande */
+.gauge-entete { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin: 0 0 8px; }
+.gauge-entete .gauge-t { margin: 0; min-width: 0; }
+.gauge-entete .gauge-x-form { margin: 0; flex: none; }

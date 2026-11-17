@@ -78,7 +78,8 @@ function alexlia_mcp_message($msg) {
         $outils = alexlia_mcp_outils();
         if (!isset($outils[$nom])) return $ko(-32602, 'Outil inconnu : ' . $nom);
         $args = is_array($p['arguments'] ?? null) ? $p['arguments'] : [];
-        $r = call_user_func($outils[$nom]['fn'], $args);
+        $limite = alexlia_mcp_limites($nom, $args); // garde-fous : quotas par heure, pas de page vidée, pas de CSS qui cache le site…
+        $r = is_wp_error($limite) ? $limite : call_user_func($outils[$nom]['fn'], $args);
         if (is_wp_error($r)) return $ok(['content' => [['type' => 'text', 'text' => $r->get_error_message()]], 'isError' => true]);
         return $ok(['content' => [['type' => 'text', 'text' => (string) wp_json_encode($r, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]], 'isError' => false]);
     }
@@ -97,7 +98,11 @@ function alexlia_mcp_outils() {
             return $i;
         }],
         'lister_contenus' => ['description' => 'Liste les pages et articles du site (id, type, titre, statut, adresse). À utiliser d’abord pour trouver la bonne page.', 'schema' => $s(['type' => ['type' => 'string', 'enum' => ['page', 'post', 'any']]]), 'fn' => 'alexlia_conn_lister'],
-        'lire_contenu' => ['description' => 'Lit le contenu complet d’une page ou d’un article (HTML et blocs WordPress), par son id. Toujours lire avant de modifier.', 'schema' => $s(['id' => $n('Identifiant')], ['id']), 'fn' => 'alexlia_conn_lire'],
+        'lire_contenu' => ['description' => 'Lit le contenu complet d’une page ou d’un article (HTML et blocs WordPress), par son id. Toujours lire avant de modifier.', 'schema' => $s(['id' => $n('Identifiant')], ['id']), 'fn' => function ($a) {
+            $r = alexlia_conn_lire($a);
+            if (is_array($r) && isset($r['contenu']) && mb_strlen($r['contenu']) > 25000) { $r['contenu'] = mb_substr($r['contenu'], 0, 25000); $r['tronque'] = true; } // une page très longue ne doit pas noyer Bricou (ni la facture)
+            return $r;
+        }],
         'remplacer_texte' => ['description' => 'Remplace un passage exact du contenu d’une page. « ancien » est copié tel quel depuis lire_contenu, balises comprises, assez long pour être unique. Renvoie revision_avant (pour restaurer).', 'schema' => $s(['id' => $n('Identifiant'), 'ancien' => $t('Passage exact à remplacer'), 'nouveau' => $t('Nouveau passage'), 'tous' => ['type' => 'boolean', 'description' => 'Remplacer toutes les occurrences']], ['id', 'ancien', 'nouveau']), 'fn' => 'alexlia_conn_remplacer'],
         'modifier_contenu' => ['description' => 'Remplace le titre et/ou tout le contenu d’une page ou d’un article. Garde la même structure de blocs WordPress que le contenu lu. Renvoie revision_avant.', 'schema' => $s(['id' => $n('Identifiant'), 'titre' => $t('Nouveau titre'), 'contenu' => $t('Nouveau contenu complet'), 'extrait' => $t('Nouvel extrait')], ['id']), 'fn' => 'alexlia_conn_modifier'],
         'creer_contenu' => ['description' => 'Crée une nouvelle page ou un nouvel article. Par défaut en brouillon ; statut « publish » pour le mettre en ligne tout de suite.', 'schema' => $s(['type' => ['type' => 'string', 'enum' => ['page', 'post']], 'titre' => $t('Titre'), 'contenu' => $t('Contenu en HTML simple'), 'statut' => ['type' => 'string', 'enum' => ['draft', 'publish']], 'image_id' => $n('Image à la une (id de la médiathèque)')], ['titre', 'contenu']), 'fn' => 'alexlia_mcp_creer'],
@@ -172,4 +177,69 @@ function alexlia_mcp_creer($a) {
     update_option('alexlia_mcp_crees', array_slice($crees, -50, null, true), false);
     alexlia_conn_journal('Contenu créé : « ' . $titre . ' ».');
     return ['ok' => true, 'id' => (int) $id, 'statut' => get_post_status($id), 'adresse' => get_permalink($id), 'pour_annuler' => 'retirer_contenu_cree avec cet id'];
+}
+
+/* =========================================================================
+ *  Garde-fous : Bricou ne peut ni vider le site, ni le défigurer, ni le noyer sous les modifications, ni s'emballer.
+ *  - aucun outil ne supprime quoi que ce soit (seul retirer_contenu_cree met à la corbeille une page que Bricou vient de créer) ;
+ *  - des quotas par heure (appels, écritures, créations, images) : au-delà, les outils répondent « limite atteinte » et Bricou s'arrête ;
+ *  - une page ne peut pas être réduite à presque rien, ni un CSS ;
+ *  - des tailles maximales sur tout ce qui est écrit ou lu ;
+ *  - un remplacement d'affichage ne peut pas viser un mot trop court ou trop courant.
+ * ========================================================================= */
+function alexlia_mcp_compter($cle, $max, $duree = 3600) {
+    $k = 'alexlia_q_' . $cle . '_' . (int) floor(time() / $duree);
+    $n = (int) get_transient($k);
+    if ($n >= $max) return false;
+    set_transient($k, $n + 1, $duree + 60);
+    return true;
+}
+function alexlia_mcp_taille_texte($html) { return mb_strlen(trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags((string) $html)))); }
+function alexlia_mcp_limites($nom, $a) {
+    $trop = function ($m) { return new WP_Error('alexlia_limite', $m); };
+    if (!alexlia_mcp_compter('appels', 150)) return $trop('Limite atteinte : trop d’appels cette heure sur ce site. Arrêtez-vous et terminez : l’équipe reprendra la demande.');
+    $ecriture = !in_array($nom, ['site_infos', 'lister_contenus', 'lire_contenu', 'lister_medias', 'texte_visible', 'css_lire', 'lister_revisions'], true);
+    if ($ecriture && !alexlia_mcp_compter('ecritures', 25)) return $trop('Limite atteinte : trop de modifications cette heure sur ce site. Arrêtez-vous et terminez : l’équipe reprendra la demande.');
+    switch ($nom) {
+        case 'lire_contenu': // les lectures lourdes comptent aussi (chaque page lue coûte des jetons)
+            if (!alexlia_mcp_compter('lectures', 40)) return $trop('Limite atteinte : trop de pages lues cette heure. Terminez avec ce que vous avez.');
+            break;
+        case 'modifier_contenu':
+            if (isset($a['contenu'])) {
+                $p = alexlia_conn_post($a['id'] ?? 0);
+                if ($p) {
+                    $avant = alexlia_mcp_taille_texte($p->post_content); $apres = alexlia_mcp_taille_texte($a['contenu']);
+                    if (strlen((string) $a['contenu']) > 150000) return $trop('Contenu trop long.');
+                    if ($avant > 300 && $apres < $avant * 0.3) return $trop('Refusé : ce changement viderait presque toute la page (' . $avant . ' → ' . $apres . ' caractères). Utilisez remplacer_texte pour un passage précis, ou terminez avec « question » ou « pour_alex ».');
+                }
+            }
+            if (isset($a['titre']) && (trim((string) $a['titre']) === '' || mb_strlen((string) $a['titre']) > 200)) return $trop('Titre vide ou trop long.');
+            break;
+        case 'remplacer_texte':
+            if (mb_strlen((string) ($a['ancien'] ?? '')) > 6000 || mb_strlen((string) ($a['nouveau'] ?? '')) > 20000) return $trop('Passage trop long : faites des remplacements plus courts.');
+            break;
+        case 'creer_contenu':
+            if (!alexlia_mcp_compter('creations', 3)) return $trop('Limite atteinte : trois pages créées par heure au plus.');
+            if (strlen((string) ($a['contenu'] ?? '')) > 80000) return $trop('Contenu trop long.');
+            break;
+        case 'importer_image':
+            if (!alexlia_mcp_compter('images', 6)) return $trop('Limite atteinte : six images par heure au plus.');
+            break;
+        case 'modifier_reglage':
+            if (mb_strlen((string) ($a['valeur'] ?? '')) > 120 || trim((string) ($a['valeur'] ?? '')) === '') return $trop('Valeur vide ou trop longue (120 caractères au plus).');
+            break;
+        case 'affichage_remplacer':
+            $anc = trim((string) ($a['ancien'] ?? ''));
+            if (mb_strlen($anc) < 4 || !preg_match('/\p{L}/u', $anc)) return $trop('Texte à remplacer trop court : visez le nom ou la phrase exacte, au moins 4 caractères.');
+            if (in_array(mb_strtolower($anc), ['the', 'les', 'des', 'une', 'pour', 'avec', 'dans', 'sur', 'nous', 'vous', 'bonjour', 'contact', 'accueil', 'menu'], true)) return $trop('Texte trop courant pour être remplacé partout.');
+            if (count(alexlia_conn_affichages()) >= 20) return $trop('Trop de remplacements déjà actifs sur ce site : l’équipe doit les regrouper.');
+            break;
+        case 'css_modifier':
+            $css = (string) ($a['css'] ?? '');
+            if (preg_match('/@import|expression\s*\(|behavior\s*:|javascript\s*:|<\/?style|<script|(?:html|body)\s*\{[^}]*display\s*:\s*none|(?:html|body)\s*\{[^}]*visibility\s*:\s*hidden|url\s*\(\s*[\'"]?https?:\/\/(?!' . preg_quote((string) wp_parse_url(home_url(), PHP_URL_HOST), '/') . ')/i', $css)) return $trop('CSS refusé : import externe, script, ou règle qui cacherait tout le site.');
+            $avant = strlen((string) wp_get_custom_css());
+            if ($avant > 200 && strlen($css) < $avant * 0.3) return $trop('Refusé : ce CSS supprimerait presque tout le CSS existant. Gardez l’existant et ne modifiez que ce qui est demandé.');
+            break;
+    }
+    return null;
 }
