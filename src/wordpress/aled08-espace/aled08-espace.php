@@ -1068,12 +1068,11 @@ function aled08e_dashboard() {
         </div>
         <?php endif; ?>
         
-        <?php echo aled08e_bande_haut_html($uid); // phpcs:ignore ?>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           <?php
           echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
           if ($cmd) echo aled08e_tab('commande', 'package', 'Ma commande'); // phpcs:ignore
-          echo aled08e_tab('demandes', 'clock', 'Historique') . aled08e_tab('tableau', 'gauge', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'shopping-bag', 'Ma boutique') : '') . (aled08e_outils_on() ? aled08e_tab('outils', 'toolbox', 'Outils') : '') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
+          echo aled08e_tab('demandes', 'message-circle', 'Demandes') . aled08e_tab('tableau', 'gauge', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'shopping-bag', 'Ma boutique') : '') . (aled08e_outils_on() ? aled08e_tab('outils', 'toolbox', 'Outils') : '') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -1121,8 +1120,9 @@ function aled08e_dashboard() {
         <?php endif; ?>
 
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
-          <h2 class="app-h">Historique de mes demandes</h2>
+          <h2 class="app-h">Mes demandes</h2>
           <?php echo $flash; // phpcs:ignore ?>
+          <?php echo aled08e_bande_haut_html($uid); // phpcs:ignore ?>
           <?php echo aled08e_suivi_html($uid); // phpcs:ignore ?>
           <details class="req-detail"<?php echo isset($_GET['m']) && $_GET['m'] !== 'ok' ? ' open' : ''; ?>><summary><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Faire une demande détaillée (photos, Alex à la main, extras)</span></summary>
           <?php if (aled08e_sans_formule($uid)) : ?><p class="esp-warn">Votre site n’a pas d’abonnement : les modifications ne sont pas comprises. Vous pouvez quand même commander une page SEO supplémentaire ci-dessous. Envie d’une formule ? Écrivez-moi, je m’en occupe.</p>
@@ -1314,7 +1314,7 @@ function aled08e_suivi_html($uid) {
     $nonce = wp_create_nonce('aled08e_suivi');
     $liste = aled08e_suivi_liste_html($uid);
     $h = '<section class="req-suivi" data-emp="' . md5($liste . aled08e_gauge_html($uid)) . '" data-suivi data-ajax="' . esc_url(admin_url('admin-ajax.php')) . '" data-nonce="' . esc_attr($nonce) . '" data-actif="' . (aled08e_suivi_actif($uid) ? '1' : '0') . '" aria-live="polite">'
-        . '<p class="app-sub">Mes demandes, de la plus récente à la plus ancienne<small class="req-live" data-suivi-live hidden>à jour</small></p><div data-suivi-liste>' . $liste . '</div></section>';
+        . '<p class="app-sub">Historique, de la plus récente à la plus ancienne<small class="req-live" data-suivi-live hidden>à jour</small></p><div data-suivi-liste>' . $liste . '</div></section>';
     $h .= <<<'JS'
 <script>
 (function(){

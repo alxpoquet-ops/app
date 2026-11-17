@@ -262,7 +262,7 @@ function aled08e_gauge_html($uid) {
             $h .= '<li class="' . ($i + 1 < $n ? 'is-fait' : ($i + 1 === $n ? 'is-en-cours' : '')) . '">' . $in . '</li>';
         }
         $h .= '</ol>' . aled08e_gauge_croix($p) . '</div>';
-        if ($n === 3) $h .= '<p class="gauge-a">À vous : ' . ($apercu ? '<a href="' . esc_url($apercu) . '" target="_blank" rel="noopener">voir le visuel</a>, puis ' : '') . 'dites si c’est bon dans « Historique ». Dès que vous validez, Bricou modifie.</p>';
+        if ($n === 3) $h .= '<p class="gauge-a">À vous : ' . ($apercu ? '<a href="' . esc_url($apercu) . '" target="_blank" rel="noopener">voir le visuel</a>, puis ' : '') . 'dites si c’est bon dans l’historique, juste en dessous. Dès que vous validez, Bricou modifie.</p>';
         $h .= '</div>';
     }
     if (count($liste) >= aled08e_demandes_max()) $h .= '<p class="gauge-max">Trois demandes à la fois : la suivante partira dès qu’une est terminée.</p>';
