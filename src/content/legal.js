@@ -200,7 +200,7 @@ Les prix sont en euros. La TVA n’est pas applicable (article 293 B du Code gé
 
 L’offre est la même pour tous les clients. Elle tient en deux parties : la création du site, payée une fois, puis le choix de la personne qui met le site en ligne et le fait vivre. Avec l’abonnement au mois, payé tant que le site est hébergé par les Minis Monstres, ils s’occupent de tout. En création seule, le client s’en occupe lui-même.
 
-**La création du site coûte ${eur(creation.prix)} €.** Ce prix correspond au « ${NOM_SITE} ». Il comprend jusqu’à ${creation.pages} pages, un design personnalisé, un affichage adapté au téléphone et à l’ordinateur, un formulaire de contact et un accompagnement personnalisé par Alex et les Minis Monstres.
+**La création du site coûte ${eur(creation.prix)} €.** Ce prix correspond au « ${NOM_SITE} ». Il comprend jusqu’à ${creation.pages} pages, un design personnalisé, un affichage adapté à tous les écrans, un formulaire de contact et un accompagnement personnalisé par Alex et les Minis Monstres.
 
 **Nom de domaine et hébergement.** Le nom de domaine est l’adresse du site. L’hébergement est le service qui garde le site accessible 24 h/24. Avec l’abonnement, les Minis Monstres installent et mettent en ligne le site, et les deux sont offerts la première année, sauf pour un site avec boutique en ligne. Ensuite, l’abonnement les prend en charge (article 6). En création seule, le client gère lui-même son nom de domaine et son hébergement.
 

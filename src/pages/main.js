@@ -104,7 +104,7 @@ function home() {
   <h2 class="section-title">L’offre en 30 secondes</h2>
   <p class="section-sub">Trois étapes, simples. Tous les prix sont sur la page Tarifs, sans devis.</p>
   <ol class="parcours">
-    <li class="parcours-etape c-butter reveal"><span class="parcours-n">1</span><p class="parcours-quoi">Je crée mon site</p><p class="parcours-d">Site Internet Professionnel : jusqu’à ${creation.pages} pages, design personnalisé, adapté au téléphone.</p></li>
+    <li class="parcours-etape c-butter reveal"><span class="parcours-n">1</span><p class="parcours-quoi">Je crée mon site</p><p class="parcours-d">Site Internet Professionnel : jusqu’à ${creation.pages} pages, design personnalisé, adapté à tous les écrans.</p></li>
     <li class="parcours-etape c-mint reveal"><span class="parcours-n">2</span><p class="parcours-quoi">J’ajoute une boutique, si je vends en ligne</p><p class="parcours-d">Catalogue, panier et paiement en ligne. C’est la seule option. Pour plus de pages sur Google, le ${esc(PACK.name)} se prend plus tard, depuis votre espace client.</p></li>
     <li class="parcours-etape c-lilac reveal"><span class="parcours-n">3</span><p class="parcours-quoi">Je choisis qui s’occupe de mon site</p><p class="parcours-d">Avec une formule, on gère le nom de domaine, l’hébergement et les modifications. Ou vous gérez vous-même, et je vous remets le code de votre site.</p></li>
   </ol>
@@ -433,7 +433,7 @@ function seoPage() {
   const EVO = C.EVO;
   // Les trois façons d'être plus visible : [couleur, humeur de Cerise, titre, prix, liste]
   const levels = [
-    ['pink', 'mascotte', 'Avec votre site', `Compris dans les ${euro(creation.prix)}`, ['Site rapide, sécurisé et adapté au téléphone', 'Titres, descriptions et données lues par Google', `Les pages non utilisées, sur les ${creation.pages}, deviennent des pages SEO`]],
+    ['pink', 'mascotte', 'Avec votre site', `Compris dans les ${euro(creation.prix)}`, ['Site rapide, sécurisé et adapté à tous les écrans', 'Titres, descriptions et données lues par Google', `Les pages non utilisées, sur les ${creation.pages}, deviennent des pages SEO`]],
     ['butter', 'clin', pack.name, `${euro(pack.price.once)} une fois, depuis votre espace client`, [`${pack.pages} pages SEO supplémentaires`, 'Chacune répond à une recherche de vos clients', 'Plus de chances d’apparaître sur Google']],
     ['lilac', 'pense', 'Avec l’abonnement', `${euro(ABO.month)} par mois, tout compris`, ['Une page SEO supplémentaire chaque semaine', 'Préparée par Lumi, relue par moi', 'Votre site grandit tout seul, semaine après semaine']],
   ];
@@ -477,7 +477,7 @@ Votre site peut garder **une seule page principale**, simple et claire, avec tou
 <section class="section"><div class="container">
   <h2 class="section-title">Ce que je fais pour votre visibilité</h2>
   <div class="feats feats-4">
-    <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur téléphone, avec les balises et les données que Google sait lire.</p></div>
+    <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur tous les écrans, avec les balises et les données que Google sait lire.</p></div>
     <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand vos clients cherchent près de chez vous.</p></div>
     <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec mes automatisations et relus par moi.</p></div>
     <div class="feat reveal">${icon('chart-line')}<h3>Une page de plus chaque semaine</h3><p>Avec l’abonnement, Lumi prépare une nouvelle page SEO chaque semaine, et je la vérifie avant sa mise en ligne.</p></div>

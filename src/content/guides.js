@@ -238,7 +238,7 @@ Chez moi, tout est affiché avant la commande, et la page se lit dans l'ordre : 
 
 ### Le site : ${eur(creation.prix)} €, une seule fois
 
-Il compte jusqu'à ${creation.pages} pages, avec un design fait pour vous, l'affichage sur téléphone et ordinateur, un formulaire de contact et un accompagnement du début à la fin.
+Il compte jusqu'à ${creation.pages} pages, avec un design fait pour vous, un affichage adapté à tous les écrans, un formulaire de contact et un accompagnement du début à la fin.
 
 Les pages que vous n'utilisez pas deviennent des pages SEO : chacune répond à une recherche de vos clients, pour que Google vous montre plus souvent. Par exemple, vous utilisez ${creation.exemplePages} pages pour votre activité : les ${restantes} pages restantes servent à améliorer votre présence sur Google.
 

@@ -138,7 +138,7 @@ La différence se joue alors sur ce qui vient avec : la vérification à la main
 
 Un prix plus bas ne veut pas dire un travail bâclé. Voici ce que vous gardez, quel que soit le site choisi :
 
-- **La qualité** : un site moderne, clair et rapide, pensé d’abord pour le téléphone.
+- **La qualité** : un site moderne, clair et rapide, adapté à tous les écrans.
 - **La sécurité** : le cadenas dans la barre d’adresse, la maintenance, les sauvegardes, un site surveillé jour et nuit.
 - **La visibilité** : chaque page est écrite et réglée pour que Google comprenne votre activité.
 - **Un vrai interlocuteur** : quand vous écrivez, c’est moi qui vous réponds, sous ${delais.reponse}.

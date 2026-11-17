@@ -122,7 +122,7 @@ const types = [
     qui: 'Pour démarrer, ou pour être simplement trouvé et joignable.',
     ideal: 'idéal pour démarrer, une carte de visite sur internet',
     pourQui: 'Pour vous si vous démarrez, si votre activité se présente en quelques lignes, ou si vous voulez surtout être trouvé et joignable. Par exemple : artisan, indépendant, association, événement.',
-    inclus: ['Une page en plusieurs parties', 'Formulaire de contact', 'Parfait sur téléphone', 'Bases du SEO'],
+    inclus: ['Une page en plusieurs parties', 'Formulaire de contact', 'Adapté à tous les écrans', 'Bases du SEO'],
   },
   {
     id: 'vitrine',

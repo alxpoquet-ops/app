@@ -283,7 +283,7 @@ Un paysagiste choisit un thème magnifique sur la démonstration : grandes vidé
 
 ## Chez les Minis Monstres
 
-Je ne vous fais pas choisir dans un catalogue. Je pars de votre métier, de vos couleurs et de vos photos pour faire un site qui vous ressemble, léger et lisible sur téléphone. Vous pouvez voir comment ça se passe sur la page [créer mon site](/creer-mon-site/). Pour la partie qui ajoute des fonctions, voyez la définition d'une [extension](/lexique/extension-plugin/).`,
+Je ne vous fais pas choisir dans un catalogue. Je pars de votre métier, de vos couleurs et de vos photos pour faire un site qui vous ressemble, léger et lisible sur tous les écrans. Vous pouvez voir comment ça se passe sur la page [créer mon site](/creer-mon-site/). Pour la partie qui ajoute des fonctions, voyez la définition d'une [extension](/lexique/extension-plugin/).`,
     faq: [
       { q: 'Changer de thème fait-il perdre le contenu ?', a: 'Non, les textes et les images restent en place. En revanche, la mise en page peut bouger, des blocs propres à l’ancien thème peuvent disparaître, et il faut tout revérifier page par page.' },
       { q: 'Un thème gratuit suffit-il ?', a: 'Parfois, oui, s’il est léger, bien noté et encore mis à jour. Le prix compte moins que la qualité du code et le sérieux de celui qui le maintient.' },
@@ -344,7 +344,7 @@ Les mises à jour des extensions font partie de l'[abonnement](/tarifs/). Je les
     resume: 'Un site qui s’adapte tout seul à l’écran : téléphone, tablette ou ordinateur.',
     h1: "Site responsive : c'est quoi, et pourquoi c'est indispensable ?",
     title: 'Site responsive : définition et bonnes pratiques | Les Minis Monstres',
-    description: 'Un site responsive change sa mise en page selon la taille de l’écran pour rester lisible sur téléphone. Pourquoi c’est vital pour un commerce ou un artisan.',
+    description: 'Un site responsive change sa mise en page selon la taille de l’écran pour rester lisible sur tous les supports. Pourquoi c’est vital pour un commerce ou un artisan.',
     lead: `Un site responsive réorganise ses blocs selon l'écran qui l'affiche : en colonnes sur un ordinateur, l'un sous l'autre sur un téléphone. On dit aussi site adaptatif. Le visiteur n'a jamais besoin de zoomer.`,
     body: `## La définition en une phrase
 
@@ -378,9 +378,9 @@ Un garagiste a un site fait il y a longtemps, pensé pour l'ordinateur. Sur tél
 
 ## Chez les Minis Monstres
 
-Tous les sites que je crée sont pensés d'abord pour le téléphone, puis élargis pour l'ordinateur. Le numéro est cliquable, le menu se replie proprement, et je teste sur plusieurs tailles d'écran avant la mise en ligne. Vous pouvez composer le vôtre et voir son prix sur [créer mon site](/creer-mon-site/). La vitesse sur mobile est expliquée à la page [temps de chargement](/lexique/temps-de-chargement/).`,
+Tous les sites que je crée s'adaptent à tous les écrans : téléphone, tablette et ordinateur. Le numéro est cliquable, le menu se replie proprement, et je teste sur plusieurs tailles d'écran avant la mise en ligne. Vous pouvez composer le vôtre et voir son prix sur [créer mon site](/creer-mon-site/). La vitesse sur mobile est expliquée à la page [temps de chargement](/lexique/temps-de-chargement/).`,
     faq: [
-      { q: 'Faut-il une application en plus d’un site responsive ?', a: 'Pour la plupart des petites entreprises, non. Un site bien adapté au téléphone suffit, et vos clients n’ont rien à installer pour vous trouver.' },
+      { q: 'Faut-il une application en plus d’un site responsive ?', a: 'Pour la plupart des petites entreprises, non. Un site bien adapté à tous les écrans suffit, et vos clients n’ont rien à installer pour vous trouver.' },
       { q: 'Comment savoir si mon site est responsive ?', a: 'Ouvrez-le sur un téléphone. Si vous devez zoomer pour lire ou si la page déborde sur le côté, il ne l’est pas, ou mal. Sur ordinateur, vous pouvez aussi réduire la largeur de la fenêtre et regarder si les blocs se réorganisent.' },
     ],
     voir: ['temps-de-chargement', 'page-d-accueil', 'theme-site'],
@@ -403,7 +403,7 @@ Google lit des milliards de pages et essaie de montrer les plus utiles pour chaq
 
 ## Les trois piliers
 
-- **La technique.** Un site rapide, sécurisé, lisible sur téléphone, que Google peut parcourir sans obstacle.
+- **La technique.** Un site rapide, sécurisé, lisible sur tous les écrans, que Google peut parcourir sans obstacle.
 - **Le contenu.** Des pages qui répondent vraiment aux questions de vos clients, avec les mots qu'ils utilisent.
 - **La réputation.** Des liens venant d'autres sites, des avis, une fiche d'établissement bien remplie : autant de signes que vous existez vraiment.
 

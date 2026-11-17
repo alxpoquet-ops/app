@@ -173,7 +173,7 @@ function payBox() {
 
 // ---------------------------------------------------------------- l'offre : le site, deux options, deux formules
 // Le site à 500 € : ce qui est compris (dans cet ordre, comme sur la page Tarifs)
-const INCLUS_SITE = [`Jusqu’à ${creation.pages} pages`, 'Design personnalisé', 'Adapté téléphone et ordinateur', 'Formulaire de contact', 'Accompagnement personnalisé', 'Les Minis Monstres pour vous aider'];
+const INCLUS_SITE = [`Jusqu’à ${creation.pages} pages`, 'Design personnalisé', 'Adapté à tous les écrans', 'Formulaire de contact', 'Accompagnement personnalisé', 'Les Minis Monstres pour vous aider'];
 // « On s'occupe de tout » (avec une formule) et « Je m'en occupe moi-même » (création seule, code fourni)
 const INCLUS_NOUS = ['Nom de domaine à votre nom', 'Hébergement', 'Installation et mise en ligne', 'Sauvegardes et sécurité', 'Surveillance et maintenance', 'Modifications incluses'];
 const INCLUS_MOI = ['Le code de votre site, prêt à installer', 'Une sauvegarde complète', 'Une petite notice d’installation'];
