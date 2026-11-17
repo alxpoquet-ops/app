@@ -210,3 +210,45 @@ function aled08e_cerise_box_html() {
     foreach ($idees as $i) $h .= '<button type="button" data-cerise-idee>' . esc_html($i) . '</button>';
     return $h . '</div></div></div>';
 }
+
+/* =========================================================================
+ *  Bricou et Cerise, toujours visibles en haut de l'espace client, avec la jauge des demandes en cours
+ * ========================================================================= */
+/* Les demandes qui avancent (deux au plus à la fois ; les pages de Lumi ne comptent pas) */
+function aled08e_demandes_en_cours($uid) {
+    return get_posts(['post_type' => ALED08E_CPT, 'author' => (int) $uid, 'post_status' => ['private', 'publish'], 'numberposts' => 10, 'orderby' => 'date', 'order' => 'ASC',
+        'meta_query' => ['relation' => 'AND', ['key' => '_aled08_statut', 'value' => ['recue', 'encours'], 'compare' => 'IN'], ['key' => '_aled08_seo', 'compare' => 'NOT EXISTS']]]);
+}
+/* Où en est une demande : 1 reçue, 2 prise en compte, 3 visuel à valider, 4 validée (Bricou modifie) */
+function aled08e_gauge_etape($p) {
+    $etat = (string) get_post_meta($p->ID, '_aled08_lia_etat', true);
+    if ($etat === 'validation') return 4;
+    if ($etat === 'a_confirmer') return 3;
+    if (in_array($etat, ['en_cours', 'attente_alex', 'refuse', 'pour_alex'], true) || get_post_meta($p->ID, '_aled08_statut', true) === 'encours') return 2;
+    return 1;
+}
+function aled08e_gauge_html($uid) {
+    $liste = aled08e_demandes_en_cours($uid);
+    if (!$liste) return '<p class="gauge-vide">' . aled08e_icon('check') . '<span>Aucune demande en cours. Dites à Bricou ce que vous voulez changer : il s’en occupe.</span></p>';
+    $etapes = ['Demande reçue', 'Prise en compte', 'Visuel à valider', 'Mise en ligne'];
+    $h = '';
+    foreach (array_slice($liste, 0, 2) as $p) {
+        $n = aled08e_gauge_etape($p);
+        $txt = trim(preg_replace('/\s+/u', ' ', $p->post_content));
+        $h .= '<div class="gauge"><p class="gauge-t"><strong>' . esc_html(mb_strlen($txt) > 70 ? mb_substr($txt, 0, 67) . '…' : $txt) . '</strong></p><ol class="gauge-etapes" style="--n:' . (int) $n . '">';
+        foreach ($etapes as $i => $e) $h .= '<li class="' . ($i + 1 < $n ? 'is-fait' : ($i + 1 === $n ? 'is-en-cours' : '')) . '"><b>' . ($i + 1 < $n ? '✓' : $i + 1) . '</b><span>' . esc_html($e) . '</span></li>';
+        $h .= '</ol>' . ($n === 3 ? '<p class="gauge-a">À vous : ouvrez l’aperçu dans « Historique » et dites si c’est bon. Dès que vous validez, Bricou modifie.</p>' : '') . '</div>';
+    }
+    if (count($liste) >= 2) $h .= '<p class="gauge-max">Deux demandes à la fois : la suivante partira dès qu’une est terminée.</p>';
+    return $h;
+}
+function aled08e_bande_haut_html($uid) {
+    $idees = ['Changer mes horaires', 'Ajouter une photo sur mon site', 'Une idée de page pour Google ?', 'Que comprend mon abonnement ?'];
+    $h = '<section class="bande-haut" aria-label="Bricou et Cerise">'
+        . '<div class="bande-haut-tete"><span class="bande-haut-art" aria-hidden="true">' . aled08e_monster('bricou') . aled08e_monster('mascotte') . '</span>'
+        . '<div><strong>Bricou et Cerise sont là pour vous</strong><p>Parlez-leur quand vous voulez, comme à des collègues. Cerise répond à vos questions, Bricou fait vos modifications.</p></div></div>'
+        . '<form class="cerise-form" data-cerise-form><input type="text" maxlength="600" placeholder="Ex. : nous serons fermés lundi, ou : que comprend mon abonnement ?" aria-label="Votre message à Bricou et Cerise"><button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('send') . '<span>Envoyer</span></button></form>'
+        . '<div class="cerise-ideas">';
+    foreach ($idees as $i) $h .= '<button type="button" data-cerise-idee>' . esc_html($i) . '</button>';
+    return $h . '</div><div class="gauge-bloc" data-gauge aria-live="polite">' . aled08e_gauge_html($uid) . '</div></section>';
+}

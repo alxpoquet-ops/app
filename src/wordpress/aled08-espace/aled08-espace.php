@@ -445,6 +445,8 @@ add_action('template_redirect', function () {
     // garde-fou : pas plus de 10 demandes par jour
     $today = new WP_Query(['post_type' => ALED08E_CPT, 'author' => $uid, 'post_status' => 'private', 'fields' => 'ids', 'posts_per_page' => 11, 'no_found_rows' => true, 'date_query' => [['after' => '24 hours ago']]]);
     if (count($today->posts) >= 10) $back('trop');
+    // deux demandes à la fois (les pages de Lumi ne comptent pas)
+    if (empty($_POST['extra']) && count(aled08e_demandes_en_cours($uid)) >= 2) $back('deux_max');
 
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
     // extra à la demande, payé à part : un article écrit et publié, ou un point de 30 minutes avec Alex
@@ -983,6 +985,7 @@ function aled08e_dashboard() {
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
         'sans_formule' => ['esp-warn', 'Votre site n’a pas d’abonnement : les modifications ne sont pas comprises. Envie d’un abonnement ? Écrivez-moi, je m’en occupe.'],
+        'deux_max' => ['esp-warn', 'Deux demandes sont déjà en cours : c’est le maximum à la fois. Dès que l’une est terminée (ou annulée), vous pourrez envoyer la suivante.'],
         'trop' => ['esp-warn', 'Vous avez envoyé beaucoup de demandes aujourd’hui. Écrivez-nous par le formulaire de contact si c’est pressé.'],
         'erreur' => ['esp-warn', 'L’envoi n’a pas abouti. Réessayez dans un instant.'],
         'lia_oui' => ['esp-empty', 'Merci ! Votre modification est en ligne.'],
@@ -1063,11 +1066,12 @@ function aled08e_dashboard() {
         </div>
         <?php endif; ?>
         
+        <?php echo aled08e_bande_haut_html($uid); // phpcs:ignore ?>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           <?php
           echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
           if ($cmd) echo aled08e_tab('commande', 'package', 'Ma commande'); // phpcs:ignore
-          echo aled08e_tab('demandes', 'message-circle', 'Mes demandes') . aled08e_tab('tableau', 'gauge', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'shopping-bag', 'Ma boutique') : '') . (aled08e_outils_on() ? aled08e_tab('outils', 'toolbox', 'Outils') : '') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
+          echo aled08e_tab('demandes', 'clock', 'Historique') . aled08e_tab('tableau', 'gauge', 'Tableau de bord') . (aled08e_est_boutique($uid) ? aled08e_tab('vacances', 'shopping-bag', 'Ma boutique') : '') . (aled08e_outils_on() ? aled08e_tab('outils', 'toolbox', 'Outils') : '') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -1095,7 +1099,6 @@ function aled08e_dashboard() {
           <p class="esp-warn">Votre site est en ligne : il reste <?php echo aled08e_euro($cmd['montants']['solde']); // phpcs:ignore ?> pour la création, en une fois ou en plusieurs fois, et votre abonnement démarre. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
           <?php endif; ?>
           <?php echo aled08e_messages_html($uid); // phpcs:ignore ?>
-          <?php echo aled08e_cerise_box_html(); // phpcs:ignore ?>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
             <button type="button" data-go="demandes"><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><strong>Demander une modification</strong><small>Je m’en occupe</small></button>
@@ -1116,9 +1119,10 @@ function aled08e_dashboard() {
         <?php endif; ?>
 
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
-          <h2 class="app-h">Mes demandes</h2>
+          <h2 class="app-h">Historique de mes demandes</h2>
           <?php echo $flash; // phpcs:ignore ?>
           <?php echo aled08e_suivi_html($uid); // phpcs:ignore ?>
+          <details class="req-detail"<?php echo isset($_GET['m']) && $_GET['m'] !== 'ok' ? ' open' : ''; ?>><summary><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Faire une demande détaillée (photos, Alex à la main, extras)</span></summary>
           <?php if (aled08e_sans_formule($uid)) : ?><p class="esp-warn">Votre site n’a pas d’abonnement : les modifications ne sont pas comprises. Vous pouvez quand même commander une page SEO supplémentaire ci-dessous. Envie d’une formule ? Écrivez-moi, je m’en occupe.</p>
           <?php else : ?>
           <?php if ($illimite) : ?>
@@ -1152,6 +1156,7 @@ function aled08e_dashboard() {
           </form>
           <?php endif; ?>
           <?php echo aled08e_a_la_demande_html($uid, $famille); // phpcs:ignore ?>
+          </details>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-tableau" aria-labelledby="tab-tableau" hidden>
@@ -1299,21 +1304,23 @@ add_action('wp_ajax_aled08e_suivi', function () {
     $uid = get_current_user_id();
     if (!$uid) wp_send_json_error(['etat' => 'session'], 403);
     $h = aled08e_suivi_liste_html($uid);
-    wp_send_json_success(['html' => $h, 'empreinte' => md5($h), 'actif' => aled08e_suivi_actif($uid)]);
+    $g = aled08e_gauge_html($uid);
+    wp_send_json_success(['html' => $h, 'gauge' => $g, 'empreinte' => md5($h . $g), 'actif' => aled08e_suivi_actif($uid)]);
 });
 /* Le bloc « Suivi » en haut de « Mes demandes », avec son rafraîchissement automatique (sans recharger la page) */
 function aled08e_suivi_html($uid) {
     $nonce = wp_create_nonce('aled08e_suivi');
     $liste = aled08e_suivi_liste_html($uid);
-    $h = '<section class="req-suivi" data-emp="' . md5($liste) . '" data-suivi data-ajax="' . esc_url(admin_url('admin-ajax.php')) . '" data-nonce="' . esc_attr($nonce) . '" data-actif="' . (aled08e_suivi_actif($uid) ? '1' : '0') . '" aria-live="polite">'
-        . '<p class="app-sub">Suivi de mes demandes<small class="req-live" data-suivi-live hidden>à jour</small></p><div data-suivi-liste>' . $liste . '</div></section>';
+    $h = '<section class="req-suivi" data-emp="' . md5($liste . aled08e_gauge_html($uid)) . '" data-suivi data-ajax="' . esc_url(admin_url('admin-ajax.php')) . '" data-nonce="' . esc_attr($nonce) . '" data-actif="' . (aled08e_suivi_actif($uid) ? '1' : '0') . '" aria-live="polite">'
+        . '<p class="app-sub">Mes demandes, de la plus récente à la plus ancienne<small class="req-live" data-suivi-live hidden>à jour</small></p><div data-suivi-liste>' . $liste . '</div></section>';
     $h .= <<<'JS'
 <script>
 (function(){
   var box=document.querySelector('[data-suivi]'); if(!box||!window.fetch) return;
   var liste=box.querySelector('[data-suivi-liste]'), badge=box.querySelector('[data-suivi-live]');
   var actif=box.getAttribute('data-actif')==='1', busy=false, timer=null; box._emp=box.getAttribute('data-emp');
-  function visible(){ var p=document.getElementById('t-demandes'); return !document.hidden && p && !p.hidden; }
+  var gauge=document.querySelector('[data-gauge]');
+  function visible(){ return !document.hidden; }
   function occupe(){ // on ne touche à rien si le client écrit ou ouvre un formulaire dans la liste
     var a=document.activeElement; if(a&&liste.contains(a)&&/^(TEXTAREA|INPUT|SELECT|BUTTON|SUMMARY)$/.test(a.tagName)) return true;
     return !!liste.querySelector('details[open]');
@@ -1329,7 +1336,7 @@ function aled08e_suivi_html($uid) {
         actif=!!j.data.actif;
         if(j.data.empreinte!==box._emp && !occupe()){
           box._emp=j.data.empreinte;
-          liste.innerHTML=j.data.html; if(badge){ badge.hidden=false; badge.textContent='mis à jour'; setTimeout(function(){ badge.hidden=true; },3000); }
+          liste.innerHTML=j.data.html; if(gauge&&j.data.gauge!==undefined) gauge.innerHTML=j.data.gauge; if(badge){ badge.hidden=false; badge.textContent='mis à jour'; setTimeout(function(){ badge.hidden=true; },3000); }
         }
       }
       planifier();

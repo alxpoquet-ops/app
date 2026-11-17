@@ -1,15 +1,15 @@
 <?php
 /**
- * Plugin Name: Alex & Co : connecteur
- * Description: À installer sur le site d'un client. Permet à Lia (l'IA d'Alex & Co) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 1.5.1
+ * Plugin Name: Les Minis Monstres : connecteur
+ * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
+ * Version: 1.6.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '1.5.1');
+define('ALEXLIA_CONN_VERSION', '1.6.0');
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Co (Réglages › Alex & Co)
@@ -37,21 +37,21 @@ function alexlia_conn_page() {
         echo '<div class="notice notice-success"><p>Réglages enregistrés.</p></div>';
     }
     $sec = alexlia_conn_secret();
-    echo '<div class="wrap"><h1>Alex &amp; Co : connecteur</h1>';
-    echo '<p>Ce connecteur permet à Lia de modifier ce site à la demande de son propriétaire, depuis son espace client Alex &amp; Co. Lia ne peut ni supprimer de page, ni toucher aux extensions, au thème ou aux comptes. Chaque changement garde une révision.</p>';
+    echo '<div class="wrap"><h1>Les Minis Monstres : connecteur</h1>';
+    echo '<p>Ce connecteur permet à Bricou de modifier ce site à la demande de son propriétaire, depuis son espace client Les Minis Monstres. Bricou ne peut ni supprimer de page, ni toucher aux extensions, au thème ou aux comptes. Chaque changement garde une révision.</p>';
     echo '<form method="post">';
     wp_nonce_field('alexlia_save', '_alexlia');
     echo '<table class="form-table" role="presentation">';
     echo '<tr><th><label for="alexlia-secret">Clé secrète</label></th><td>';
     if (defined('ALEXLIA_SECRET') && ALEXLIA_SECRET) echo '<p>Définie dans wp-config.php.</p>';
-    else echo '<input type="password" id="alexlia-secret" name="alexlia_secret" class="regular-text" autocomplete="off"><p class="description">' . ($sec ? 'Clé enregistrée, se termine par …' . esc_html(substr($sec, -4)) . '. Laissez vide pour ne rien changer.' : 'Collez ici la clé affichée dans la fiche du client, sur le site Alex &amp; Co.') . '</p>';
+    else echo '<input type="password" id="alexlia-secret" name="alexlia_secret" class="regular-text" autocomplete="off"><p class="description">' . ($sec ? 'Clé enregistrée, se termine par …' . esc_html(substr($sec, -4)) . '. Laissez vide pour ne rien changer.' : 'Collez ici la clé affichée dans la fiche du client, sur le site Les Minis Monstres.') . '</p>';
     echo '</td></tr>';
-    echo '<tr><th><label for="alexlia-source">Site Alex &amp; Co</label></th><td><input type="url" id="alexlia-source" name="alexlia_source" class="regular-text" value="' . esc_attr(alexlia_conn_source()) . '"><p class="description">Les images envoyées par le client ne sont importées que depuis cette adresse.</p></td></tr>';
+    echo '<tr><th><label for="alexlia-source">Site Les Minis Monstres</label></th><td><input type="url" id="alexlia-source" name="alexlia_source" class="regular-text" value="' . esc_attr(alexlia_conn_source()) . '"><p class="description">Les images envoyées par le client ne sont importées que depuis cette adresse.</p></td></tr>';
     echo '<tr><th>Pause</th><td><label><input type="checkbox" name="alexlia_pause" value="1"' . checked(get_option('alexlia_pause'), '1', false) . '> Mettre Lia en pause sur ce site (elle ne peut plus rien modifier)</label></td></tr>';
     echo '</table><p class="submit"><button class="button button-primary" type="submit">Enregistrer</button></p></form>';
     $j = get_option('alexlia_journal', []);
     if ($j) {
-        echo '<h2>Derniers changements faits par Lia</h2><ul>';
+        echo '<h2>Derniers changements faits par Bricou</h2><ul>';
         foreach (array_slice((array) $j, 0, 30) as $e) echo '<li><small>' . esc_html($e['date']) . '</small> ' . esc_html($e['texte']) . '</li>';
         echo '</ul>';
     }
@@ -234,7 +234,7 @@ function alexlia_conn_reglage($args) {
     alexlia_conn_journal('Réglage « ' . $nom . ' » changé.');
     return ['ok' => true, 'avant' => $avant];
 }
-/* Annuler : remettre une révision gardée avant un changement de Lia */
+/* Annuler : remettre une révision gardée avant un changement de Bricou */
 function alexlia_conn_restaurer($args) {
     $rid = (int) ($args['revision'] ?? 0);
     $rev = $rid ? wp_get_post_revision($rid) : null;
@@ -248,7 +248,7 @@ function alexlia_conn_restaurer($args) {
 }
 
 /* =========================================================================
- *  Aperçu avant mise en ligne : Lia prépare les changements dans un brouillon (jeton),
+ *  Aperçu avant mise en ligne : Bricou prépare les changements dans un brouillon (jeton),
  *  le client les voit sur son vrai site avec ?alexlia_apercu=jeton, puis confirme : « appliquer ».
  * ========================================================================= */
 function alexlia_conn_jeton_ok($j) { return is_string($j) && preg_match('/^[A-Za-z0-9]{24,64}$/', $j); }
@@ -359,10 +359,28 @@ add_action('init', function () {
     add_filter('wp_robots', function ($r) { $r['noindex'] = true; $r['nofollow'] = true; return $r; });
     $art = isset($_GET['alexlia_article']) ? (int) $_GET['alexlia_article'] : -1;
     $article = ($art >= 0 && isset($b['articles'][$art])) ? $b['articles'][$art] : null;
-    add_filter('the_content', function ($c) use ($b, $article) {
+    // ce qui change, calculé avant que les filtres de l'aperçu ne s'installent (valeurs d'origine)
+    $changes = [];
+    $marques = [];
+    foreach ((array) ($b['posts'] ?? []) as $pid => $d) {
+        $p = get_post((int) $pid);
+        if (!$p) continue;
+        if (isset($d['titre']) && $d['titre'] !== $p->post_title) $changes[] = ['quoi' => 'Titre de la page « ' . $p->post_title . ' »', 'avant' => $p->post_title, 'apres' => $d['titre']];
+        if (isset($d['contenu'])) {
+            $r = alexlia_conn_surligner($p->post_content, $d['contenu']);
+            if ($r) { $marques[(int) $pid] = $r['html']; $changes[] = ['quoi' => 'Texte de la page « ' . $p->post_title . ' »', 'avant' => $r['avant'], 'apres' => $r['apres']]; }
+        }
+    }
+    foreach ((array) ($b['reglages'] ?? []) as $k => $v) {
+        $opt = $k === 'slogan' ? 'blogdescription' : 'blogname';
+        $changes[] = ['quoi' => $k === 'slogan' ? 'Slogan du site' : 'Nom du site (en haut du site, dans l’onglet du navigateur)', 'avant' => (string) get_option($opt), 'apres' => (string) $v];
+    }
+    foreach ((array) ($b['articles'] ?? []) as $a) $changes[] = ['quoi' => 'Nouvelle actualité', 'avant' => '', 'apres' => (string) $a['titre']];
+    add_filter('the_content', function ($c) use ($b, $article, $marques) {
         $id = get_the_ID();
         if ($article && in_the_loop() && is_main_query()) return $article['contenu'] . ($article['image_id'] ? wp_get_attachment_image($article['image_id'], 'large') : '');
-        // le contenu prévu passe ensuite par les filtres habituels (blocs, paragraphes, codes courts)
+        // le contenu prévu passe ensuite par les filtres habituels (blocs, paragraphes, codes courts) ; ce qui change est surligné
+        if ($id && isset($marques[$id])) return $marques[$id];
         if ($id && isset($b['posts'][$id]['contenu'])) return $b['posts'][$id]['contenu'];
         return $c;
     }, 1);
@@ -379,10 +397,49 @@ add_action('init', function () {
         $last = get_posts(['post_type' => 'post', 'numberposts' => 1, 'fields' => 'ids']);
         if ($last) { $q->set('p', $last[0]); $q->set('post_type', 'post'); $q->is_home = false; $q->is_single = true; $q->is_singular = true; $q->is_front_page = false; }
     });
-    // un bandeau en haut : ce n'est qu'un aperçu
-    $bandeau = function () { echo '<div style="position:sticky;top:0;z-index:99999;background:#2E2A47;color:#fff;font:600 15px/1.4 system-ui,sans-serif;text-align:center;padding:10px 14px">Aperçu préparé par Lia : rien n’est encore en ligne. Confirmez dans votre espace Alex &amp; Co.</div>'; };
-    add_action('wp_body_open', $bandeau);
+    // un petit encart en bas de l'écran (il ne cache pas le site) : ce n'est qu'un aperçu, et il dit ce qui change
+    add_action('wp_footer', function () use ($changes) {
+        $li = '';
+        foreach ($changes as $c) {
+            $cut = function ($t) { $t = trim((string) $t); return mb_strlen($t) > 140 ? mb_substr($t, 0, 137) . '…' : $t; };
+            $li .= '<li style="margin:6px 0"><b>' . esc_html($c['quoi']) . '</b><br>'
+                . ($c['avant'] !== '' ? '<del style="opacity:.7">' . esc_html($cut($c['avant'])) . '</del> → ' : '')
+                . '<ins style="text-decoration:none;background:#ffe27a;color:#2E2A47;padding:0 4px;border-radius:4px">' . esc_html($cut($c['apres']) ?: '(retiré)') . '</ins></li>';
+        }
+        echo '<style>mark.alexlia-mod{background:#ffe27a;color:inherit;outline:2px solid #ff8fb3;outline-offset:2px;border-radius:3px;padding:0 2px}#alexlia-ap button{font:inherit;cursor:pointer;border:0;border-radius:999px;padding:5px 12px;background:#fff;color:#2E2A47;font-weight:700}</style>'
+            . '<div id="alexlia-ap" role="status" style="position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;max-width:620px;margin:0 auto;background:#2E2A47;color:#fff;border-radius:18px;box-shadow:0 8px 30px rgba(0,0,0,.3);font:500 14px/1.45 system-ui,sans-serif;padding:12px 16px">'
+            . '<div style="display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap"><span><b>Aperçu préparé par Bricou.</b> Rien n’est encore en ligne.</span><span style="display:flex;gap:6px"><button type="button" data-ap-liste aria-expanded="true">Ce qui change (' . count($changes) . ')</button><button type="button" data-ap-fermer aria-label="Masquer l’aperçu">×</button></span></div>'
+            . '<div data-ap-detail style="margin-top:8px;max-height:38vh;overflow:auto"><ul style="margin:0;padding:0;list-style:none">' . $li . '</ul><p style="margin:8px 0 0;opacity:.85">Le texte changé est surligné sur la page. Pour valider, retournez dans votre espace Les Minis Monstres.</p></div></div>'
+            . '<script>(function(){var b=document.getElementById("alexlia-ap");if(!b)return;var d=b.querySelector("[data-ap-detail]"),l=b.querySelector("[data-ap-liste]");l.addEventListener("click",function(){d.hidden=!d.hidden;l.setAttribute("aria-expanded",d.hidden?"false":"true");});b.querySelector("[data-ap-fermer]").addEventListener("click",function(){b.style.display="none";});var m=document.querySelector("mark.alexlia-mod");if(m)setTimeout(function(){m.scrollIntoView({block:"center",behavior:"smooth"});},400);})();</script>';
+    });
 });
+
+/* Le texte prévu, avec ce qui a changé entouré d'un surlignage (null si rien ne change) */
+function alexlia_conn_surligner($ancien, $nouveau) {
+    $a = (string) $ancien; $n = (string) $nouveau;
+    if ($a === $n) return null;
+    $la = strlen($a); $ln = strlen($n); $min = min($la, $ln);
+    $p = 0; while ($p < $min && $a[$p] === $n[$p]) $p++;
+    $s = 0; while ($s < $min - $p && $a[$la - 1 - $s] === $n[$ln - 1 - $s]) $s++;
+    // le début : on recule jusqu'au début d'un mot, hors d'une balise
+    $pre = substr($n, 0, $p);
+    $lt = strrpos($pre, '<'); $gt = strrpos($pre, '>');
+    if ($lt !== false && ($gt === false || $lt > $gt)) $p = $lt;
+    while ($p > 0 && !in_array($n[$p - 1], [' ', '>', "\n"], true)) $p--;
+    // la fin : on avance jusqu'à la fin du mot, hors d'une balise
+    $e = $ln - $s;
+    while ($e < $ln && !in_array($n[$e], [' ', '<', "\n"], true)) $e++;
+    $post = substr($n, $e);
+    $gt2 = strpos($post, '>'); $lt2 = strpos($post, '<');
+    if ($gt2 !== false && ($lt2 === false || $gt2 < $lt2)) $e += $gt2 + 1;
+    $ae = max($p, $la - ($ln - $e));
+    $milieu = substr($n, $p, $e - $p);
+    $marque = preg_replace_callback('/<[^>]*>|[^<]+/u', function ($m) {
+        return ($m[0][0] === '<' || trim($m[0]) === '') ? $m[0] : '<mark class="alexlia-mod">' . $m[0] . '</mark>';
+    }, $milieu);
+    $txt = function ($h) { return trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags($h))); };
+    return ['html' => substr($n, 0, $p) . $marque . substr($n, $e), 'avant' => $txt(substr($a, $p, $ae - $p)), 'apres' => $txt($milieu)];
+}
 
 
 /* =========================================================================

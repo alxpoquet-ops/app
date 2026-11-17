@@ -212,6 +212,7 @@ function aled08e_lia_executer($uid, $pid, $nom, $in, &$actions) {
         case 'modifier_reglage':
             $r = aled08e_lia_appel($uid, 'preparer', ['jeton' => $jeton, 'op' => 'reglage', 'nom' => (string) ($in['nom'] ?? ''), 'valeur' => (string) ($in['valeur'] ?? '')]);
             $prevu($r, 'reglage', 0, ($in['nom'] ?? '') === 'slogan' ? 'Slogan : « ' . mb_substr((string) ($in['valeur'] ?? ''), 0, 80) . ' »' : 'Nom du site : « ' . mb_substr((string) ($in['valeur'] ?? ''), 0, 80) . ' »');
+            if ($actions && !is_wp_error($r)) { $k = array_key_last($actions); $actions[$k]['avant'] = mb_substr(html_entity_decode(wp_strip_all_tags((string) ($r['avant'] ?? '')), ENT_QUOTES, 'UTF-8'), 0, 220); $actions[$k]['apres'] = mb_substr((string) ($in['valeur'] ?? ''), 0, 220); }
             break;
         default: $r = new WP_Error('aled08_lia', 'Outil inconnu.');
     }

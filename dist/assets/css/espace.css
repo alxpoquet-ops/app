@@ -588,3 +588,31 @@ a.app-card { text-decoration: none; color: inherit; }
 .req-suivi { margin: 0 0 22px; }
 .req-suivi .app-sub { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; }
 .req-live { font-size: .72rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; background: var(--mint, #d9f3e4); color: var(--ink, #3a3350); }
+
+/* Bricou et Cerise, toujours visibles au-dessus des onglets */
+.bande-haut { margin: 0 0 18px; padding: 16px 18px; border-radius: 24px; background: var(--pink); }
+.bande-haut-tete { display: flex; gap: 14px; align-items: center; margin: 0 0 12px; }
+.bande-haut-art { display: flex; flex: none; }
+.bande-haut-art svg { width: 56px; height: 56px; display: block; }
+.bande-haut-art svg + svg { margin-left: -14px; }
+.bande-haut-tete strong { display: block; color: var(--ink); font-size: 1.05rem; }
+.bande-haut-tete p { margin: 2px 0 0; color: var(--text); font-size: .92rem; }
+.bande-haut .gauge-bloc { margin-top: 14px; display: grid; gap: 10px; }
+.gauge { background: var(--card); border-radius: 16px; padding: 12px 14px; }
+.gauge-t { margin: 0 0 8px; font-size: .9rem; color: var(--ink); }
+.gauge-etapes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.gauge-etapes li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; font-size: .74rem; font-weight: 700; color: var(--muted, #8a84a0); }
+.gauge-etapes li::before { content: ""; position: absolute; top: 12px; left: -50%; width: 100%; height: 3px; background: var(--line); z-index: 0; }
+.gauge-etapes li:first-child::before { display: none; }
+.gauge-etapes li b { position: relative; z-index: 1; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--line); color: var(--text); font-size: .8rem; }
+.gauge-etapes li.is-fait b { background: var(--mint-dd, #4aa37a); color: #fff; }
+.gauge-etapes li.is-fait::before, .gauge-etapes li.is-en-cours::before { background: var(--mint-dd, #4aa37a); }
+.gauge-etapes li.is-en-cours b { background: var(--pink-dd, #d6457a); color: #fff; box-shadow: 0 0 0 4px rgba(214, 69, 122, .18); }
+.gauge-etapes li.is-en-cours { color: var(--ink); }
+.gauge-a, .gauge-max, .gauge-vide { margin: 8px 0 0; font-size: .84rem; color: var(--text); }
+.gauge-vide { display: flex; align-items: center; gap: 8px; margin: 0; background: var(--card); border-radius: 14px; padding: 10px 14px; }
+.gauge-vide svg { width: 18px; height: 18px; flex: none; }
+.req-detail { margin: 18px 0 8px; }
+.req-detail > summary { cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--ink); padding: 10px 0; }
+.req-detail > summary svg { width: 18px; height: 18px; }
+@media (max-width: 560px) { .gauge-etapes li { font-size: .68rem; } .bande-haut-art svg { width: 46px; height: 46px; } }
