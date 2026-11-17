@@ -448,7 +448,7 @@ add_action('admin_notices', function () {
         'hebergement_ok' => 'Domaine noté comme ajouté sur l’hébergement : l’automate attend le certificat HTTPS.', 'avancer' => 'Automate relancé.', 'passer' => 'Étape passée.', 'pret' => 'Hébergement marqué prêt : le client a reçu l’e-mail.', 'ovh_confirmer' => 'Achat OVH confirmé.', 'test_ovh' => 'Test OVH :', 'test_cpanel' => 'Test cPanel :',
         'en_ligne' => 'Site en ligne : le client a reçu l’e-mail.', 'solde_paye' => 'Solde noté comme payé.', 'annuler' => 'Commande annulée.', 'renvoyer_acces' => 'E-mail d’accès renvoyé au client.',
         'lien_solde' => 'Lien de paiement créé (valable 24 heures). Copiez-le et envoyez-le au client :', 'cpanel' => 'Réponse du cPanel (à tester une fois sur un domaine de test) :', 'note' => 'Note enregistrée.',
-        'reglages' => 'Réglages enregistrés.', 'test_lia' => 'Test de la clé Claude :', 'lia_ok' => 'Demande notée comme vérifiée.', 'lia_annule' => 'Changements de Bricou annulés :', 'lia_relance' => 'Cerise est relancée sur cette demande.', 'test' => 'Test de connexion Stripe :', 'erreur' => 'L’action n’a pas abouti.',
+        'reglages' => 'Réglages enregistrés.', 'bande' => 'La bande :', 'test_lia' => 'Test de la clé Claude :', 'lia_ok' => 'Demande notée comme vérifiée.', 'lia_annule' => 'Changements de Bricou annulés :', 'lia_relance' => 'Cerise est relancée sur cette demande.', 'test' => 'Test de connexion Stripe :', 'erreur' => 'L’action n’a pas abouti.',
     ];
     if (!isset($lib[$m])) return;
     $detail = get_transient('aled08e_msg_' . get_current_user_id());

@@ -181,6 +181,8 @@ require_once __DIR__ . '/includes/jetons.php';
 require_once __DIR__ . '/includes/reseaux.php';
 require_once __DIR__ . '/includes/bulle.php';
 require_once __DIR__ . '/includes/messages.php';
+require_once __DIR__ . '/includes/lumi.php';
+require_once __DIR__ . '/includes/mirette.php';
 
 /* =========================================================================
  *  Rôle « Client des Minis Monstres » et type de contenu « Demande »
@@ -423,7 +425,10 @@ function aled08e_famille($uid) { return aled08e_meta($uid, 'famille') === '1'; }
 /* Jetons Cerise du mois pour ce client : ceux du forfait, plus ceux de l'option Cerise + */
 function aled08e_jetons_user($uid, $f) { return aled08e_jl_mois($uid, $f); }
 /* Ce que Cerise peut faire dans une demande : nombre de mots selon le nombre d'images (0, 1, 2 ou 3 images) */
-function aled08e_lia_limites() { return ['mots' => [300, 200, 100, 40], 'images' => 3]; }
+function aled08e_lia_limites() {
+    if (!empty($GLOBALS['aled08e_lia_seo'])) return ['mots' => [900, 800, 700, 600], 'images' => 3]; // une page SEO de Lumi
+    return ['mots' => [300, 200, 100, 40], 'images' => 3];
+}
 
 add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08e_demande'])) return;
@@ -433,6 +438,7 @@ add_action('template_redirect', function () {
 
     $uid = get_current_user_id();
     $txt = trim(sanitize_textarea_field(wp_unslash($_POST['demande'] ?? '')));
+    if ($txt === '' && sanitize_key(wp_unslash($_POST['extra'] ?? '')) === 'packseo') $txt = 'Lumi choisit les sujets.';
     if ($txt === '') $back('vide');
     $txt = mb_substr($txt, 0, 4000);
 
@@ -481,6 +487,7 @@ add_action('template_redirect', function () {
     if ($over) { update_post_meta($pid, '_aled08_boost', 1); update_post_meta($pid, '_aled08_hors_forfait', 1); aled08e_boost_facturer($pid, $uid); }
     $payes = [];
     if ($extra) { update_post_meta($pid, '_aled08_extra', $extra); $payes[] = $extra; }
+    if ($extra === 'packseo') update_post_meta($pid, '_aled08_quantite', aled08e_seo_quantite(wp_unslash($_POST['quantite'] ?? 1)));
     if ($urgent) { update_post_meta($pid, '_aled08_urgent', 1); $payes[] = 'urgent'; }
     if ($payes) {
         update_post_meta($pid, '_aled08_extras', $payes);
@@ -534,7 +541,7 @@ add_action('template_redirect', function () {
 
     $u = wp_get_current_user();
     $delai = $urgent ? (aled08e_data()['delais']['urgent'] ?? '24 heures') : ($illimite ? aled08e_delai_txt($f) . (aled08e_priorite($uid) ? ' (PRIORITAIRE, ' . ($f['name'] ?? 'Maxi') . ')' : '') : aled08e_data()['delais']['reponse']);
-    $quoi = $extra === 'article' ? 'Article à écrire et publier' : ($extra === 'point' ? 'Point de 30 minutes avec Alex à caler' : ($extra === 'packseo' ? 'Page SEO supplémentaire commandée : une page pour Google à préparer' : (!empty($_POST['aled08e_msg_id']) ? 'Suggestion de la bande acceptée par le client' : 'Nouvelle demande de modification')));
+    $quoi = $extra === 'article' ? 'Article à écrire et publier' : ($extra === 'point' ? 'Point de 30 minutes avec Alex à caler' : ($extra === 'packseo' ? 'Pages SEO commandées : ' . max(1, (int) get_post_meta($pid, '_aled08_quantite', true)) . ' page(s) pour Google, préparées par Lumi si le site est relié' : (!empty($_POST['aled08e_msg_id']) ? 'Suggestion de la bande acceptée par le client' : 'Nouvelle demande de modification')));
     $corps = $quoi . "\n\n"
         . 'Client   : ' . $u->display_name . ' (' . $u->user_email . ")\n"
         . 'Site     : ' . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\n"
@@ -977,7 +984,7 @@ function aled08e_dashboard() {
         'boost' => ['esp-empty', 'Demande envoyée à Alex : c’est une intervention en plus, ' . $boostTxt . ' ajoutés à votre prochaine facture.'],
         'boost_accord' => ['esp-warn', 'Votre intervention d’Alex ' . $periodeDu . ' est utilisée. Cochez la case « une intervention en plus » (' . $boostTxt . ') pour envoyer cette demande.'],
         'urgent_ok' => ['esp-empty', 'Demande envoyée : Alex la traite sous ' . ($D['delais']['urgent'] ?? '24 heures') . ', du lundi au vendredi. Le supplément est ajouté à votre prochaine facture.'],
-        'extra_ok' => ['esp-empty', 'C’est commandé, merci ! Le prix est ajouté à votre prochaine facture, et Alex vous écrit sous ' . $D['delais']['reponse'] . '.'],
+        'extra_ok' => ['esp-empty', 'C’est commandé, merci ! Le prix est ajouté à votre prochaine facture. Vous suivez l’avancement ici.'],
         'extra_accord' => ['esp-warn', 'Cochez la case qui accepte le prix avant de commander.'],
         'lia_epuise' => ['esp-warn', 'Il ne vous reste pas assez d’énergie pour cette demande. Raccourcissez-la, redonnez de l’énergie dans l’onglet Outils, ou choisissez Alex.'],
         'lia_limite' => ['esp-warn', 'Vous avez utilisé vos ' . aled08e_limite('bricouMois', 8) . ' petites retouches du mois avec Bricou. Elles reviennent le 1er du mois. Pour celle-ci, choisissez Alex.'],
@@ -1096,6 +1103,7 @@ function aled08e_dashboard() {
           <p class="esp-warn">Votre site est en ligne : il reste <?php echo aled08e_euro($cmd['montants']['solde']); // phpcs:ignore ?> pour la création, en une fois ou en plusieurs fois, et votre abonnement démarre. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
           <?php endif; ?>
           <?php echo aled08e_messages_html($uid); // phpcs:ignore ?>
+          <?php echo aled08e_cerise_box_html(); // phpcs:ignore ?>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
             <button type="button" data-go="demandes"><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><strong>Demander une modification</strong><small>Je m’en occupe</small></button>
@@ -1257,7 +1265,8 @@ function aled08e_extras_demande_txt($pid) {
     $out = [];
     foreach (aled08e_extras_demande($pid) as $id) {
         $x = aled08e_a_la_demande($id, true);
-        if ($x) $out[] = $x['name'] . ' (' . aled08e_euro_txt($x['prix']) . ', ' . (get_post_meta($pid, '_aled08_extra_facture_' . $id, true) ? 'ajouté à sa prochaine facture Stripe' : 'à facturer à la main') . ')';
+        $q = max(1, (int) get_post_meta($pid, '_aled08_quantite', true));
+        if ($x) $out[] = ($q > 1 ? $q . ' × ' : '') . $x['name'] . ' (' . aled08e_euro_txt($x['prix'] * $q) . ', ' . (get_post_meta($pid, '_aled08_extra_facture_' . $id, true) ? 'ajouté à sa prochaine facture Stripe' : 'à facturer à la main') . ')';
     }
     return implode(', ', $out);
 }
@@ -1267,7 +1276,8 @@ function aled08e_extra_facturer($pid, $uid, $id) {
     $cus = aled08e_meta($uid, 'stripe_customer');
     if (aled08e_sans_formule($uid)) return false; // pas d'abonnement, donc pas de « prochaine facture » : Alex facture à la main
     if (!$x || (float) $x['prix'] <= 0 || !function_exists('aled08e_stripe_ready') || !aled08e_stripe_ready() || $cus === '') return false;
-    $r = aled08e_stripe_request('POST', '/v1/invoiceitems', ['customer' => $cus, 'amount' => (int) round((float) $x['prix'] * 100), 'currency' => 'eur', 'description' => $x['name'] . ' (demande n° ' . (int) $pid . ')'], 'extra_' . $id . '_' . (int) $pid, true);
+    $q = max(1, (int) get_post_meta($pid, '_aled08_quantite', true));
+    $r = aled08e_stripe_request('POST', '/v1/invoiceitems', ['customer' => $cus, 'amount' => (int) round((float) $x['prix'] * $q * 100), 'currency' => 'eur', 'description' => ($q > 1 ? $q . ' × ' : '') . $x['name'] . ' (demande n° ' . (int) $pid . ')'], 'extra_' . $id . '_' . (int) $pid, true);
     if (is_wp_error($r) || empty($r['id'])) return false;
     update_post_meta($pid, '_aled08_extra_facture_' . $id, (string) $r['id']);
     return true;
@@ -1280,7 +1290,7 @@ function aled08e_a_la_demande_html($uid, $famille) {
         'article' => ['Le sujet de l’article, et ce que vous voulez y dire', 'Ex. : nos conseils pour entretenir un parquet'],
         'page' => ['Ce que la nouvelle page doit présenter', 'Ex. : une page pour nos menus de groupe, avec les prix'],
         'point' => ['Vos disponibilités et le sujet du point', 'Ex. : mardi ou jeudi après 18 heures, pour parler de Google'],
-        'packseo' => ['La recherche visée : un service et une ville, une question, votre métier…', 'Ex. : plombier à Sedan, ou : prix d’un chauffe-eau'],
+        'packseo' => ['Des idées de sujets ? (facultatif, sinon Lumi choisit pour vous)', 'Ex. : plombier à Sedan, dépannage le dimanche, prix d’un chauffe-eau'],
     ];
     $cartes = '';
     foreach (['packseo', 'article', 'page', 'point'] as $id) {
@@ -1291,8 +1301,9 @@ function aled08e_a_la_demande_html($uid, $famille) {
             . '<input type="hidden" name="aled08e_demande" value="1"><input type="hidden" name="extra" value="' . esc_attr($id) . '">' . wp_nonce_field('aled08e_demande', '_aled08e', true, false)
             . '<p class="extra-tete"><span class="extra-ico">' . aled08e_icon($x['icon'] ?? 'plus') . '</span><strong>' . esc_html($x['name']) . '</strong><b>' . esc_html($prix) . '</b></p>'
             . '<p class="app-note">' . esc_html($x['desc'] ?? '') . '</p>'
-            . '<div class="field"><label for="extra-' . esc_attr($id) . '">' . esc_html($aide[$id][0]) . '</label><textarea id="extra-' . esc_attr($id) . '" name="demande" rows="2" maxlength="2000" required placeholder="' . esc_attr($aide[$id][1]) . '"></textarea></div>'
-            . '<label class="check"><input type="checkbox" name="extra_ok" value="1" required><span>' . ($famille ? 'Je commande, c’est offert pour moi' : 'J’accepte ' . esc_html(aled08e_euro_txt($x['prix'])) . ($sans ? ', je reçois la facture par e-mail' : ', ajoutés à ma prochaine facture')) . '</span></label>'
+            . ($id === 'packseo' ? aled08e_seo_quantites_html((float) $x['prix'], $famille) : '')
+            . '<div class="field"><label for="extra-' . esc_attr($id) . '">' . esc_html($aide[$id][0]) . '</label><textarea id="extra-' . esc_attr($id) . '" name="demande" rows="2" maxlength="2000" ' . ($id === 'packseo' ? '' : 'required ') . 'placeholder="' . esc_attr($aide[$id][1]) . '"></textarea></div>'
+            . '<label class="check"><input type="checkbox" name="extra_ok" value="1" required><span>' . ($famille ? 'Je commande, c’est offert pour moi' : ($id === 'packseo' ? 'J’accepte le prix choisi ci-dessus' : 'J’accepte ' . esc_html(aled08e_euro_txt($x['prix']))) . ($sans ? ', je reçois la facture par e-mail' : ', ajouté à ma prochaine facture')) . '</span></label>'
             . '<button class="btn btn-light" type="submit">' . aled08e_icon('send') . '<span>Commander</span></button></form>';
     }
     if ($cartes === '') return '';

@@ -53,9 +53,15 @@ function aled08e_msg_suggestions_alex($uid) {
 function aled08e_messages($uid) {
     $maxi = aled08e_msg_maxi($uid);
     $msgs = [];
-    // Mirette : l'analyse de la semaine (les chiffres déjà gardés, sinon rien)
+    // Mirette : l'analyse de la semaine écrite par Claude (includes/mirette.php), sinon calculée sur les chiffres déjà gardés
+    $ia = function_exists('aled08e_mirette_lire') ? aled08e_mirette_lire($uid) : [];
+    $iaFraiche = $maxi && !empty($ia['le']) && time() - (int) $ia['le'] < 10 * DAY_IN_SECONDS;
     $st = get_transient('aled08_stats_' . (int) $uid);
-    if ($maxi && is_array($st) && !empty($st['jours']) && is_array($st['jours'])) {
+    if ($iaFraiche) {
+        $vis = null;
+        if (is_array($st) && !empty($st['jours'])) $vis = ['type' => 'barres', 'data' => array_map(function ($x) { return (int) ($x['visiteurs'] ?? 0); }, array_slice(array_values($st['jours']), -7)), 'evol' => null];
+        $msgs[] = ['id' => 'mirette-ia-' . ($ia['semaine'] ?? ''), 'qui' => 'mirette', 'maxi' => true, 'quand' => 'cette semaine', 'titre' => 'Votre semaine en un coup d’œil', 'texte' => (string) $ia['analyse'], 'vis' => $vis];
+    } elseif ($maxi && is_array($st) && !empty($st['jours']) && is_array($st['jours'])) {
         $j = array_values($st['jours']);
         $n = count($j);
         $sem = array_slice($j, max(0, $n - 7));
@@ -84,6 +90,10 @@ function aled08e_messages($uid) {
             $msgs[] = ['id' => 'saison-' . $i . '-' . wp_date('Y'), 'qui' => $qui, 'maxi' => true, 'action' => true, 'quand' => 'ce mois-ci', 'titre' => $titre, 'texte' => $texte, 'demande' => $demande, 'vis' => $qui === 'bricou' ? ['type' => 'bandeau', 'mot' => $titre] : ['type' => 'idee', 'mot' => $titre]];
         }
         $msgs = array_merge($msgs, aled08e_msg_suggestions_alex($uid));
+        if ($iaFraiche) foreach ((array) ($ia['suggestions'] ?? []) as $x) {
+            $qui = in_array($x['qui'] ?? '', ['bricou', 'plume', 'lumi'], true) ? $x['qui'] : 'bricou';
+            $msgs[] = ['id' => 'ia-' . $qui . '-' . substr(md5(($ia['semaine'] ?? '') . $x['titre']), 0, 10), 'qui' => $qui, 'maxi' => true, 'action' => true, 'quand' => 'cette semaine', 'titre' => $x['titre'], 'texte' => $x['texte'], 'demande' => $x['demande'] . ' (Suggestion de la bande, acceptée par le client.)', 'vis' => ['type' => $qui === 'bricou' ? 'bandeau' : 'idee', 'mot' => $x['titre']]];
+        }
     }
     // Pistache : l'état du site
     $site = aled08e_meta($uid, 'site');
@@ -189,3 +199,14 @@ add_action('init', function () {
     ]);
     update_option('aled08_annonce_derniere', ['titre' => $titre, 'le' => current_time('mysql'), 'total' => function_exists('aled08e_annonces') ? count(aled08e_annonces(100)) : 1], false);
 }, 24);
+
+/* « Écrire à Cerise » : une case sur l'accueil. Le message part dans la bulle de Cerise (main.js), qui s'ouvre et répond. */
+function aled08e_cerise_box_html() {
+    $idees = ['Changer mes horaires', 'Ajouter une photo sur mon site', 'Une idée de page pour Google ?', 'Que comprend mon abonnement ?'];
+    $h = '<div class="cerise-box"><span aria-hidden="true">' . aled08e_monster('mascotte') . '</span><div>'
+        . '<p>Écrire à Cerise<small>Une question, une modification ? Elle vous répond tout de suite et prépare votre demande.</small></p>'
+        . '<form class="cerise-form" data-cerise-form><input type="text" maxlength="600" placeholder="Ex. : nous serons fermés lundi" aria-label="Votre message à Cerise"><button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('send') . '<span>Envoyer</span></button></form>'
+        . '<div class="cerise-ideas">';
+    foreach ($idees as $i) $h .= '<button type="button" data-cerise-idee>' . esc_html($i) . '</button>';
+    return $h . '</div></div></div>';
+}

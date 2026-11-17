@@ -561,3 +561,14 @@ a.app-card { text-decoration: none; color: inherit; }
 .req-etapes li .ico { flex: none; width: 18px; height: 18px; color: var(--lilac-dd); }
 @media (max-width: 760px) { .req-etapes { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 420px) { .req-etapes { grid-template-columns: 1fr; } }
+
+/* Pages SEO : une page, ou un pack de 5 ou 10 pages (onglet Mes demandes) */
+.esp-seo-q { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 10px 0 6px; }
+.esp-seo-q-choix { position: relative; cursor: pointer; }
+.esp-seo-q-choix input { position: absolute; opacity: 0; inset: 0; }
+.esp-seo-q-choix span { display: grid; gap: 2px; padding: 10px 12px; border-radius: 14px; background: var(--card); box-shadow: 0 0 0 1px var(--line) inset; text-align: center; }
+.esp-seo-q-choix strong { color: var(--ink); font-size: .92rem; }
+.esp-seo-q-choix small { color: var(--muted); font-weight: 700; }
+.esp-seo-q-choix input:checked + span { box-shadow: 0 0 0 2px var(--mint-dd) inset; background: var(--mint); }
+.esp-seo-q-choix input:focus-visible + span { outline: 2px solid var(--mint-dd); outline-offset: 2px; }
+@media (max-width: 520px) { .esp-seo-q { grid-template-columns: 1fr; } }

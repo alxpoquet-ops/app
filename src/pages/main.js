@@ -940,6 +940,11 @@ function monEspacePage() {
             <button type="button" class="app-card c-sky" data-go="visibilite"><span class="app-card-ico">${icon('chart-line')}</span><span><small>Sur 30 jours</small><strong>1 240 visiteurs</strong><span>Voir le tableau de bord</span></span></button>
           </div>
           ${bandeMessages()}
+          <div class="cerise-box"><span aria-hidden="true">${monster('coucou')}</span><div>
+            <p>Écrire à Cerise<small>Une question, une modification ? Elle vous répond tout de suite et prépare votre demande.</small></p>
+            <form class="cerise-form" data-cerise-form><input type="text" maxlength="600" placeholder="Ex. : nous serons fermés lundi" aria-label="Votre message à Cerise"><button class="btn btn-primary btn-sm" type="submit">${icon('send')}<span>Envoyer</span></button></form>
+            <div class="cerise-ideas">${['Changer mes horaires', 'Ajouter une photo sur mon site', 'Une idée de page pour Google ?', 'Que comprend mon abonnement ?'].map((x) => `<button type="button" data-cerise-idee>${x}</button>`).join('')}</div>
+          </div></div>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
             <button type="button" data-go="demandes">${icon('message-circle')}<strong>Demander une modification</strong><small>Je m’en occupe</small></button>

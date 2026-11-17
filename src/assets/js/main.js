@@ -1179,6 +1179,16 @@
         if (ancien.length) $$('[data-lia-liens="espace"]', flot).forEach(function (g) { g.hidden = true; });
       } catch (e) {}
       liaForm.addEventListener('submit', function (e) { e.preventDefault(); envoyer(champ.value); });
+      // « Écrire à Cerise », sur l'accueil de l'espace client : le message part dans la bulle, qui s'ouvre
+      var ceriseDire = function (texte) {
+        texte = (texte || '').trim();
+        flotOuvrir(true);
+        if (texte) envoyer(texte); else if (champ) champ.focus();
+      };
+      $$('[data-cerise-form]').forEach(function (fo) {
+        fo.addEventListener('submit', function (e) { e.preventDefault(); var i = $('input', fo); ceriseDire(i.value); i.value = ''; });
+      });
+      $$('[data-cerise-idee]').forEach(function (b) { b.addEventListener('click', function () { ceriseDire(b.textContent); }); });
       champ.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); envoyer(champ.value); } });
       $$('[data-lia-ex]', flot).forEach(function (b) { b.addEventListener('click', function () { champ.value = b.textContent.trim(); champ.focus(); }); });
       var nouveau = $('[data-lia-nouveau]', flot);
