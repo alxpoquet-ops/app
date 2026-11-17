@@ -655,3 +655,9 @@ a.app-card { text-decoration: none; color: inherit; }
 .dialogue[hidden] { display: none; }
 .dialogue .lia-fil { flex: none; min-height: 0; max-height: min(46vh, 320px); padding: 12px 12px 8px; }
 .dialogue .lia-msg { max-width: 92%; }
+
+/* Conversation : l'historique au-dessus de la zone de texte ; les bulles des Minis Monstres en rose clair */
+.dialogue { margin: 0 0 10px; }
+.dialogue .lia-msg.is-lia { background: #ffe3ee; color: #3a2442; }
+.dialogue .lia-msg.is-lia a { color: #c2336e; }
+.dialogue .lia-msg.is-err { background: #ffe9c7; color: #6b4a00; }

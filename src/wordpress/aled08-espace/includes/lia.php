@@ -369,7 +369,8 @@ function aled08e_lia_traiter($pid) {
     $infos = aled08e_lia_appel($uid, 'infos');
     if (is_wp_error($infos)) { $fin('pour_alex', 'Je n’arrive pas à joindre votre site pour le moment. Alex s’en occupe.', 'Connecteur injoignable : ' . $infos->get_error_message(), []); return; }
 
-    // le site du client a son MCP renseigné : Bricou travaille avec tous les outils du MCP (modifie tout de suite, le client valide ensuite)
+    // le site du client a un MCP (celui du connecteur, ou celui saisi dans la fiche) : Bricou travaille avec tous ses outils (modifie tout de suite, le client valide ensuite)
+    if (function_exists('aled08e_mcp_noter')) aled08e_mcp_noter($uid, $infos);
     if (function_exists('aled08e_mcp_config') && aled08e_mcp_config($uid) && !get_post_meta($pid, '_aled08_seo', true)) { aled08e_mcp_traiter($pid, $uid, $u, $p, $infos, $fin); return; }
     $nbPhotos = count(array_filter((array) get_post_meta($pid, '_aled08_photos', true))) ?: (get_post_thumbnail_id($pid) ? 1 : 0);
     $photo = $nbPhotos ? $nbPhotos . ' photo(s) jointe(s) à la demande (outil importer_image, numero de 1 à ' . $nbPhotos . ').' : 'Aucune photo jointe.';
@@ -606,6 +607,7 @@ function aled08e_lia_profil($user) {
     echo '<label><input type="checkbox" name="aled08e_lia_nouvelle" value="1"> ' . ($sec ? 'Créer une nouvelle clé (l’ancienne ne marchera plus)' : 'Créer la clé') . '</label></td></tr>';
     if ($url && $sec) {
         $t = aled08e_lia_appel($uid, 'infos');
+        if (!is_wp_error($t) && function_exists('aled08e_mcp_noter')) aled08e_mcp_noter($uid, $t);
         echo '<tr><th>Connexion</th><td>' . (is_wp_error($t) ? '<span style="color:#b32d2e">' . esc_html($t->get_error_message()) . '</span>' : 'OK : « ' . esc_html($t['nom'] ?? '') . ' », WordPress ' . esc_html($t['wordpress'] ?? '') . '.') . '</td></tr>';
     }
     echo '</table>';
@@ -853,7 +855,8 @@ function aled08e_lia_bloc_confirmation($p) {
 add_action('aled08_lia_test_liaison', function ($uid = 0) {
     $uid = (int) $uid;
     $r = aled08e_lia_appel($uid, 'infos', []);
-    $res = ['uid' => $uid, 'le' => current_time('mysql'), 'ok' => !is_wp_error($r), 'cle_claude' => aled08e_lia_cle() !== ''];
+    if (!is_wp_error($r) && function_exists('aled08e_mcp_noter')) aled08e_mcp_noter($uid, $r);
+    $res = ['uid' => $uid, 'le' => current_time('mysql'), 'ok' => !is_wp_error($r), 'cle_claude' => aled08e_lia_cle() !== '', 'mcp' => aled08e_meta($uid, 'mcp_natif') === '1'];
     if (is_wp_error($r)) $res['erreur'] = $r->get_error_message();
     else $res['site'] = array_intersect_key((array) $r, ['nom' => 1, 'url' => 1, 'connecteur' => 1, 'wordpress' => 1]);
     if (!is_wp_error($r) && function_exists('aled08e_stats_lire')) {
