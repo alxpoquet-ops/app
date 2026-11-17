@@ -72,13 +72,13 @@ function home() {
   const body = `<section class="hero">
   <div class="container hero-in">
     <div class="hero-text">
-      <h1>Votre site internet professionnel, <mark>${euro(creation.prix)}</mark></h1>
-      <p class="hero-lead">Je crée votre site avec ma petite bande de monstres. Ensuite, on s’en occupe chaque mois, à partir de ${euro(ABO.month)} : hébergement, sécurité, modifications. Vous, vous vous occupez de votre métier.</p>
+      <h1>Votre site internet professionnel, <mark>${marche.fois.replace(/ /g, '\u00a0')} fois moins cher</mark></h1>
+      <p class="hero-lead">Comparé à la concurrence, pour un site vitrine ou une petite boutique. Je conçois votre site moi-même, et mes petites automatisations, la bande des Minis Monstres, font tout ce qui se répète : c’est ça qui fait la différence. Vous, vous vous occupez de votre métier.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg btn-flaque')}${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</div>
       <ul class="hero-points">
         <li>${icon('check')}Jusqu’à ${creation.pages} pages</li>
-        <li>${icon('check')}Adresse et hébergement offerts la première année</li>
-        <li>${icon('check')}Modifications incluses</li>
+        <li>${icon('check')}Conçu par moi, Alex</li>
+        <li>${icon('check')}Prix affiché, sans devis</li>
       </ul>
     </div>
     <div class="hero-art hero-scene" aria-hidden="true">
@@ -102,11 +102,11 @@ function home() {
 
 <section class="section" id="en-bref"><div class="container">
   <h2 class="section-title">L’offre en 30 secondes</h2>
-  <p class="section-sub">Trois étapes, des prix affichés, rien de caché.</p>
+  <p class="section-sub">Trois étapes, simples. Tous les prix sont sur la page Tarifs, sans devis.</p>
   <ol class="parcours">
-    <li class="parcours-etape c-butter reveal"><span class="parcours-n">1</span><p class="parcours-quoi">Je crée mon site</p><p class="parcours-prix"><b>${euro(creation.prix)}</b><small>une fois</small></p><p class="parcours-d">Site Internet Professionnel : jusqu’à ${creation.pages} pages, design personnalisé, adapté au téléphone.</p></li>
-    <li class="parcours-etape c-mint reveal"><span class="parcours-n">2</span><p class="parcours-quoi">J’ajoute une boutique, si je vends en ligne</p><p class="parcours-prix"><span>Boutique en ligne <b>+ ${euro(creation.boutique)}</b></span></p><p class="parcours-d">C’est la seule option. Pour plus de pages sur Google, le ${esc(PACK.name)} se prend plus tard, depuis votre espace client.</p></li>
-    <li class="parcours-etape c-lilac reveal"><span class="parcours-n">3</span><p class="parcours-quoi">Je choisis qui s’occupe de mon site</p><p class="parcours-prix"><span>On s’occupe de tout <b>dès ${euro(ABO.month)}/mois</b></span><span>Je gère moi-même <b>${euro(0)}/mois</b></span></p><p class="parcours-d">Avec une formule, on gère le nom de domaine, l’hébergement et les modifications. Sinon, je vous remets le code de votre site.</p></li>
+    <li class="parcours-etape c-butter reveal"><span class="parcours-n">1</span><p class="parcours-quoi">Je crée mon site</p><p class="parcours-d">Site Internet Professionnel : jusqu’à ${creation.pages} pages, design personnalisé, adapté au téléphone.</p></li>
+    <li class="parcours-etape c-mint reveal"><span class="parcours-n">2</span><p class="parcours-quoi">J’ajoute une boutique, si je vends en ligne</p><p class="parcours-d">Catalogue, panier et paiement en ligne. C’est la seule option. Pour plus de pages sur Google, le ${esc(PACK.name)} se prend plus tard, depuis votre espace client.</p></li>
+    <li class="parcours-etape c-lilac reveal"><span class="parcours-n">3</span><p class="parcours-quoi">Je choisis qui s’occupe de mon site</p><p class="parcours-d">Avec une formule, on gère le nom de domaine, l’hébergement et les modifications. Ou vous gérez vous-même, et je vous remets le code de votre site.</p></li>
   </ol>
   <p class="center more">${C.btnCreer('btn-primary btn-lg')} ${C.btn(sections.forfaits.path, 'btn-light btn-lg', 'list-checks', 'Ce qui est inclus')}</p>
 </div></section>
@@ -114,11 +114,11 @@ function home() {
 <section class="section section-soft" id="qui-fait-quoi"><div class="container">
   <h2 class="section-title">Qui fait quoi ?</h2>
   <p class="section-sub">Moi, Alex, je conçois votre site et je vérifie tout. Ma petite bande de monstres s’occupe du reste, chacun son métier.</p>
-  ${C.bandeGrid()}
+  ${C.bandeGrid({ prix: false })}
   <p class="center more">${C.btn(sections.equipe.path, 'btn-light btn-flaque', sections.equipe.icon, 'Rencontrer la bande')}</p>
 </div></section>
 
-${C.offreEvenement()}
+${C.offreEvenement({ prix: false })}
 
 <section class="section">${C.deco('nuage', 'cote-droite')}<div class="container">
   <h2 class="section-title">Ce que vous y gagnez</h2>
@@ -126,12 +126,13 @@ ${C.offreEvenement()}
 </div></section>
 
 <section class="section section-soft c-butter">${C.deco('etoile', 'haut-gauche', 'ravi')}<div class="container">
-  <h2 class="section-title">Pourquoi des prix aussi abordables ?</h2>
-  <p class="section-sub">Ce n’est pas de la magie, c’est de l’organisation. J’ai pris le temps de bien m’organiser, et vous en profitez.</p>
-  <div class="feats feats-3">
+  <h2 class="section-title">Pourquoi ${marche.fois} fois moins cher ?</h2>
+  <p class="section-sub">Ce n’est pas de la magie. Ce sont mes petites automatisations qui font la différence, et vous en profitez.</p>
+  <div class="feats">
     <div class="feat reveal">${icon('sparkles')}<h3>Le répétitif est automatisé</h3><p>Sauvegardes, mises à jour, préparation des modifications : ce sont mes petits monstres qui s’en chargent. Ce temps-là, vous ne le payez pas.</p></div>
     <div class="feat reveal">${icon('server')}<h3>Pas d’intermédiaire</h3><p>J’ai des accès directs chez des hébergeurs français. Pas de revendeur au milieu, donc pas de marge en plus sur votre facture.</p></div>
     <div class="feat reveal">${icon('tag')}<h3>Un prix affiché, sans devis</h3><p>Le même prix pour tous, visible tout de suite. Pas de rendez-vous commercial à payer, pas de mauvaise surprise à la fin.</p></div>
+    <div class="feat reveal">${icon('scale')}<h3>Je ne remplace pas un développeur</h3><p>Une application sur mesure ou un logiciel pour votre métier, c’est le travail d’un développeur, et je vous le dirai honnêtement. Mon terrain, c’est le site qui présente votre activité ou vend vos produits.</p></div>
   </div>
   <p class="center more">${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>
@@ -139,8 +140,8 @@ ${C.offreEvenement()}
 ${C.ctaBand({ title: 'Les Minis Monstres s’occupent de votre site', text: 'Pendant que vous vous occupez de votre métier. Composez votre site en deux minutes, le prix s’affiche tout de suite.' })}`;
   return {
     path: '/',
-    title: `Site internet professionnel à ${creation.prix} € | Les Minis Monstres`,
-    description: `Votre site internet professionnel à ${creation.prix} €, jusqu’à ${creation.pages} pages, puis une formule dès ${ABO.month} € par mois avec les modifications incluses. Sans devis.`,
+    title: `Site internet professionnel, ${marche.fois} fois moins cher | Les Minis Monstres`,
+    description: `Votre site internet professionnel conçu par Alex, ${marche.fois} fois moins cher grâce à ses petites automatisations. Jusqu’à ${creation.pages} pages, sans devis.`,
     crumbs: [HOME],
     body,
     priority: 1,

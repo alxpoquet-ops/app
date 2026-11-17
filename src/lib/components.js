@@ -251,8 +251,8 @@ const BOUTIQUE = types.find((t) => t.id === 'boutique') || {};
 // Le petit monstre qui s'occupe de chaque option
 const MONSTRE_OPTION = { packseo: 'etoile', boutique: 'champi' };
 // La petite bande, en cartes : métier, missions et personnalité. complet : avec les missions (pages Équipe et Accueil).
-function bandeGrid({ complet = false } = {}) {
-  const prixDe = (b) => (b.option === 'boutique' ? `Avec la boutique en ligne, + ${euro(creation.boutique)}` : b.compris ? 'Avec toutes les formules' : '');
+function bandeGrid({ complet = false, prix = true } = {}) {
+  const prixDe = (b) => (b.option === 'boutique' ? (prix ? `Avec la boutique en ligne, + ${euro(creation.boutique)}` : 'Avec la boutique en ligne') : b.compris ? 'Avec toutes les formules' : '');
   const art = (b) => (b.monstre === 'lia' ? monster('coucou') : petit(b.monstre));
   return `<div class="bande">${bande
     .map((b) => `<div class="bande-carte reveal${b.compris ? ' is-compris' : ''}"><span class="bande-art">${art(b)}</span><strong>${esc(b.nom)}<small>${esc(b.role)}</small></strong>${complet && b.missions ? `<ul class="bande-missions">${b.missions.map((m) => `<li>${esc(m)}</li>`).join('')}</ul><em class="bande-perso">${esc(b.perso)}</em>` : `<span class="bande-fait">${inline(b.court)}</span>`}<em class="bande-prix">${prixDe(b)}</em></div>`)
@@ -271,7 +271,8 @@ function optionsCompact() {
 function extrasDemande() { return ''; }
 
 // ---------------------------------------------------------------- l'offre événement
-function offreEvenement() {
+// prix : false sur l'accueil (pas de prix affiché, seulement la remise en pourcentage)
+function offreEvenement({ prix = true } = {}) {
   const lieux = (evenement.lieux || []);
   // <!--commun--> : bloc repris tel quel sur plusieurs pages (scripts/check.js ne le compte pas comme contenu dupliqué)
   return `<!--commun--><section class="section section-evenement" id="offre-evenement"><div class="container">
@@ -280,7 +281,7 @@ function offreEvenement() {
     <div class="evenement-txt">
       <p class="kicker c-pink">${icon('ticket')}Offre événement</p>
       <h2>On s’est rencontrés ? <em>${evenement.remise} % de moins</em> sur votre site</h2>
-      <p>Si vous m’avez rencontré sur ${lieux.slice(0, -1).join(', ')} ou ${lieux[lieux.length - 1]}, vous avez reçu un code événement. Il vous donne <b>${evenement.remise} % de remise sur la création de votre site</b> : ${euro(creation.prix)} devient ${euro(creation.prix * (100 - evenement.remise) / 100)}.</p>
+      <p>Si vous m’avez rencontré sur ${lieux.slice(0, -1).join(', ')} ou ${lieux[lieux.length - 1]}, vous avez reçu un code événement. Il vous donne <b>${evenement.remise} % de remise sur la création de votre site</b>${prix ? ` : ${euro(creation.prix)} devient ${euro(creation.prix * (100 - evenement.remise) / 100)}` : ''}.</p>
       <p class="evenement-comment">${icon('info')}<span>Entrez votre code au moment de commander. La remise s’affiche tout de suite.</span></p>
       <p>${btnCreer('btn-primary')}</p>
     </div>
