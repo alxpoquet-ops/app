@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande, evenement, delais } = require('../config');
+const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande, evenement, delais, creationSeule } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
 const { petit, alexPortrait } = require('./bestiaire');
@@ -196,7 +196,7 @@ function offre({ compact = false, choose = true } = {}) {
       <p class="offre-titre">Site Internet Professionnel</p>
       <p class="offre-prix"><b>${euro(creation.prix)}</b><small>une fois</small></p>
       ${liste(compact ? INCLUS_SITE.slice(0, 6) : INCLUS_SITE)}
-      <p class="offre-seo">${icon('search-check')}<span>${compact ? `Les pages non utilisées deviennent des pages pour Google.` : PAGES_SEO}</span></p>
+      <!--commun--><p class="offre-seo">${icon('search-check')}<span>${compact ? `Les pages non utilisées deviennent des pages pour Google.` : PAGES_SEO}</span></p><!--/commun-->
     </article>
     <span class="offre-plus" aria-hidden="true">+</span>
     <article class="offre-col c-lilac">
@@ -270,7 +270,8 @@ function extrasDemande() { return ''; }
 // ---------------------------------------------------------------- l'offre événement
 function offreEvenement() {
   const lieux = (evenement.lieux || []);
-  return `<section class="section section-evenement" id="offre-evenement"><div class="container">
+  // <!--commun--> : bloc repris tel quel sur plusieurs pages (scripts/check.js ne le compte pas comme contenu dupliqué)
+  return `<!--commun--><section class="section section-evenement" id="offre-evenement"><div class="container">
   <div class="evenement reveal">
     <span class="evenement-art" aria-hidden="true">${monster('ravie')}</span>
     <div class="evenement-txt">
@@ -281,7 +282,7 @@ function offreEvenement() {
       <p>${btnCreer('btn-primary')}</p>
     </div>
   </div>
-</div></section>`;
+</div></section><!--/commun-->`;
 }
 
 // ---------------------------------------------------------------- comment se passe une modification
@@ -294,11 +295,11 @@ const ETAPES_MODIF = [
   ['circle-check', 'La modification est en ligne', 'Vos visiteurs voient la nouvelle version.'],
 ];
 function processusModif({ titre = true } = {}) {
-  return `<div class="modif-etapes reveal">
+  return `<!--commun--><div class="modif-etapes reveal">
   ${titre ? `<h3>${icon('repeat')}Comment se passe une modification</h3>` : ''}
   <ol>${ETAPES_MODIF.map(([ic, t, d], i) => `<li><span class="modif-n">${i + 1}</span><span class="modif-ico">${icon(ic)}</span><span><strong>${esc(t)}</strong><small>${esc(d)}</small></span></li>`).join('')}</ol>
   <p class="modif-delai">${icon('timer')}<span>Délai : ${ABO.delai} au plus avec ${esc(ABO.name)}, ${delais.evolution || EVO.delai} en moyenne avec ${esc(EVO.name)}. Si une demande demande plus de travail, je la fais moi-même, à la main.</span></p>
-</div>`;
+</div><!--/commun-->`;
 }
 
 // ---------------------------------------------------------------- choix partagés (configurateur et page Commander)
@@ -309,7 +310,7 @@ function priceData() {
       types: types.map((t) => ({ id: t.id, label: t.label, price: t.price, delai: t.delai })),
       lissage: lissage.durees,
       acompte: paiement.acompte,
-      forfaits: forfaits.map((f) => ({ id: f.id, name: f.name, month: f.month })),
+      forfaits: [...forfaits, ...(creationSeule ? [creationSeule] : [])].map((f) => ({ id: f.id, name: f.name, month: f.month })),
       options: options.filter((o) => !o.retire).map((o) => ({ id: o.id, name: o.name, once: o.price.once || 0, month: o.price.month || 0, types: o.types || null })),
       remise: evenement.remise,
       free: annuel.moisOfferts,
@@ -338,11 +339,24 @@ function typeChoices({ name = 'b-type', checked = 'vitrine' } = {}) {
 
 // Les deux formules : deux cartes à cocher (Tranquillité par défaut). Le nom du champ est celui attendu par le script et la commande.
 function forfaitChoices({ name = 'b-forfait' } = {}) {
+  const seule = creationSeule ? `<label class="b-choice b-seule c-${creationSeule.color}"><input type="radio" name="${name}" value="${creationSeule.id}" data-seule>
+        <span class="b-card b-formule"><strong>${esc(creationSeule.name)}</strong><span class="b-price">Sans formule</span>
+        <small>${esc(creationSeule.court)}</small><span class="b-check">${icon('check')}</span></span></label>` : '';
   return `<div class="b-choices b-formules">${forfaits
     .map((f, i) => `<label class="b-choice c-${f.color}"><input type="radio" name="${name}" value="${f.id}"${i === 0 ? ' checked' : ''}>
         <span class="b-card b-formule"><strong>${esc(f.name)}</strong><span class="b-price">${billed(f.month)}</span>
         <ul>${f.main.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul><span class="b-check">${icon('check')}</span></span></label>`)
-    .join('')}</div>`;
+    .join('')}${seule}</div>`;
+}
+// La création seule, expliquée en une carte (page Tarifs)
+function creationSeuleBox() {
+  if (!creationSeule) return '';
+  return `<div class="seule reveal" id="creation-seule">
+  <span class="seule-ico">${icon('code')}</span>
+  <div><h3>Vous avez déjà votre nom de domaine et votre hébergement ?</h3>
+  <p>Choisissez la <strong>création seule</strong> : vous payez seulement votre site, ${euro(creation.prix)}, sans formule au mois. Je vous remets le code de votre site, prêt à installer chez votre hébergeur. Vous l’installez vous-même, ou votre hébergeur le fait pour vous.</p>
+  <p class="seule-note">${icon('info')}<span>Sans formule, la maintenance et les modifications ne sont pas comprises. Vous pouvez prendre une formule plus tard, quand vous voulez.</span></p></div>
+</div>`;
 }
 
 // Cases « options » (une fois) et « extras » (au mois)
@@ -393,13 +407,13 @@ function configurator() {
       ${hint ? `<p class="b-hint">${hint}</p>` : ''}
       ${body}
     </fieldset>`;
-  const typeBody = `${siteChoice()}<p class="b-note b-note-seo">${icon('search-check')}${esc(PAGES_SEO)}</p>${optionChoices({ quand: 'creation' })}`;
-  const aboBody = `${forfaitChoices()}${billingSwitch()}<p class="b-note">${icon('info')}Votre formule démarre à la réception du site. Sans engagement : vous changez ou vous arrêtez quand vous voulez. <a href="${sections.forfaits.path}">Le détail des formules</a></p>`;
-  const payChoices = `<div class="b-seg" role="radiogroup" aria-label="Paiement du site">
+  const typeBody = `${siteChoice()}<!--commun--><p class="b-note b-note-seo">${icon('search-check')}${esc(PAGES_SEO)}</p><!--/commun-->${optionChoices({ quand: 'creation' })}`;
+  const aboBody = `${forfaitChoices()}<div data-avec-formule>${billingSwitch()}<p class="b-note">${icon('info')}Votre formule démarre à la réception du site. Sans engagement : vous changez ou vous arrêtez quand vous voulez. <a href="${sections.forfaits.path}">Le détail des formules</a></p></div><p class="b-note" data-seule-txt hidden>${icon('info')}Création seule : pas de formule au mois. Vous gardez votre nom de domaine et votre hébergement, et je vous remets le code de votre site.</p>`;
+  const payChoices = `<div data-avec-formule><div class="b-seg" role="radiogroup" aria-label="Paiement du site">
         <label><input type="radio" name="b-lisse" value="non" checked><span>En une fois</span></label>
         ${lissage.durees.map((n) => `<label><input type="radio" name="b-lisse" value="${n}"><span>En ${n} fois</span></label>`).join('')}
       </div>
-      <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Engagement le temps du paiement, et la formule se paie alors au mois.</p>
+      <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Engagement le temps du paiement, et la formule se paie alors au mois.</p></div>
       ${codeEvenementBox()}`;
   return `<div class="builder" data-builder="${priceData()}" data-billing-scope>
   <form class="b-steps" data-builder-form>
@@ -412,7 +426,7 @@ function configurator() {
     <p class="b-sum-title">Votre récapitulatif</p>
     <ul class="b-lines">
       <li><span data-sum="type">Site Internet Professionnel</span><b data-sum="type-price">${euro(creation.prix)}</b></li>
-      <li><span data-sum="domain">Nom de domaine à choisir</span><b>offert</b></li>
+      <li><span data-sum="domain">Nom de domaine à choisir</span><b data-sum="domain-prix">offert</b></li>
       <li><span data-sum="forfait">Formule ${esc(ABO.name)}</span><b data-sum="forfait-price">${euro(ABO.month)}/mois</b></li>
       <li data-sum-opts hidden><span>Options</span><b data-sum="opts">0 €</b></li>
       <li data-sum-remise hidden><span>Code événement (- ${evenement.remise} %)</span><b data-sum="remise">0 €</b></li>
@@ -509,7 +523,7 @@ module.exports = {
   unType,
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, EVO, optsCreation, optsMois, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
-  offreEvenement, processusModif, formuleCarte, codeEvenementBox, INCLUS_SITE, PAGES_SEO, PACK_SEO, BOUTIQUE_INCLUS, ETAPES_MODIF,
+  offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, INCLUS_SITE, PAGES_SEO, PACK_SEO, BOUTIQUE_INCLUS, ETAPES_MODIF,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
   petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };

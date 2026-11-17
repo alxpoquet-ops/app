@@ -92,6 +92,7 @@ function aled08e_cmd_reference() {
  *  $cfg : type, forfait, periode (mois|annee), lissage (0, ou nombre de mensualités : 6 ou 12), options (tableau d'ids)
  * ========================================================================= */
 function aled08e_cmd_forfait_existe($id) {
+    if (aled08e_est_seule($id)) return true;
     foreach (aled08e_data()['forfaits'] as $f) if ($f['id'] === $id) return true;
     return false;
 }
@@ -267,11 +268,11 @@ function aled08e_cmd_recap_txt($c) {
     elseif ($c['domaine_mien']) $dom = $c['domaine'] . ' (le client l’a déjà)';
     else $dom = $c['domaine'] . ' (à réserver au nom du client)';
     $pay = 'acompte de ' . aled08e_euro_txt($m['acompte']) . ' à la commande, puis à la réception du site : '
-        . ($c['lissage'] ? 'le reste en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais, ' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois (engagement de ' . (int) $m['lissage_total_echeances'] . ' mois), avec l’abonnement' : 'le reste en une fois, ' . aled08e_euro_txt($m['solde']) . ', et l’abonnement démarre');
+        . ($c['lissage'] ? 'le reste en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais, ' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois (engagement de ' . (int) $m['lissage_total_echeances'] . ' mois), avec l’abonnement' : 'le reste en une fois, ' . aled08e_euro_txt($m['solde']) . (aled08e_est_seule($c['forfait']) ? '' : ', et l’abonnement démarre'));
     return 'Référence : ' . $c['ref'] . "\n"
         . 'Site : ' . ($type ? $type['label'] : $c['type']) . ', création ' . aled08e_euro_txt($m['creation']) . ($type ? ' (délai habituel : ' . $type['delai'] . ')' : '') . "\n"
         . 'Nom de domaine : ' . $dom . "\n"
-        . 'Abonnement : ' . aled08e_euro_txt($m['mensuel_forfait']) . ' ' . $per . ($annee ? ' (' . (int) $D['moisOfferts'] . ' mois offerts)' : '') . "\n"
+        . (aled08e_est_seule($c['forfait']) ? "Formule : création seule, sans abonnement (le code du site est remis au client)\n" : 'Abonnement : ' . aled08e_euro_txt($m['mensuel_forfait']) . ' ' . $per . ($annee ? ' (' . (int) $D['moisOfferts'] . ' mois offerts)' : '') . "\n")
         . 'Options et extras : ' . ($opts ? implode(' ; ', $opts) : 'aucun') . "\n"
         . 'Paiement de la création : ' . $pay . "\n"
         . 'Montant du jour de la commande : ' . aled08e_euro_txt($m['total_jour']) . "\n";
@@ -379,6 +380,8 @@ function aled08e_cmd_traiter_post() {
     // code événement : vérifié ici, la remise est recalculée par le serveur
     $cfg['remise'] = ($cfg['code_evenement'] !== '' && aled08e_code_evenement_ok($cfg['code_evenement'])) ? aled08e_remise_evenement() : 0;
     if ($cfg['lissage']) $cfg['periode'] = 'mois'; // le site en plusieurs fois se paie avec un forfait au mois
+    // création seule : le client garde son nom de domaine et son hébergement, et paie le reste en une fois (pas d'abonnement)
+    if (aled08e_est_seule($cfg['forfait'])) { $cfg['domaine_mien'] = true; $cfg['lissage'] = 0; $cfg['periode'] = 'mois'; }
     $err = function ($code) use ($cfg) { aled08e_cmd_redirect_erreur($code, $cfg); };
     if ($cfg['code_evenement'] !== '' && !$cfg['remise']) $err('code');
 

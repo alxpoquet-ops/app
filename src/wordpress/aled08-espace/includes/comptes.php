@@ -61,7 +61,7 @@ function aled08e_compte_pour_commande($d) {
     $existing = get_user_by('email', $email);
     $options = (array) ($d['options'] ?? []);
     $metas = [
-        'forfait' => sanitize_key($d['forfait'] ?? ''),
+        'forfait' => aled08e_est_seule($d['forfait'] ?? '') ? '' : sanitize_key($d['forfait'] ?? ''), // création seule : pas de formule sur le compte
         'paiement' => ($d['periode'] ?? 'mois') === 'annee' ? 'annee' : 'mois',
     ] + aled08e_extras_metas($options) + [
         'site' => (!empty($d['domaine']) && empty($d['domaine_mien'])) ? 'https://' . $d['domaine'] : '',
@@ -105,7 +105,7 @@ function aled08e_compte_metas_commande($cmd) {
     $uid = (int) ($cmd['user'] ?? 0);
     if (!$uid || !get_userdata($uid)) return;
     $metas = [
-        'forfait' => sanitize_key($cmd['forfait'] ?? ''),
+        'forfait' => aled08e_est_seule($cmd['forfait'] ?? '') ? '' : sanitize_key($cmd['forfait'] ?? ''),
         'paiement' => ($cmd['periode'] ?? 'mois') === 'annee' ? 'annee' : 'mois',
     ] + aled08e_extras_metas((array) ($cmd['options'] ?? [])) + [
         'site' => (!empty($cmd['domaine']) && empty($cmd['domaine_mien'])) ? 'https://' . $cmd['domaine'] : '',

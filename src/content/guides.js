@@ -213,7 +213,7 @@ Un site internet, c'est un peu comme une voiture : il y a le prix d'achat, puis 
 **Ce que l'on paie chaque année ou chaque mois :**
 
 - **Le nom de domaine** : l'adresse de votre site, qui se loue à l'année.
-- **L'hébergement** : l'endroit où votre site reste accessible 24 h/24.
+- **L'hébergement** : le serveur qui garde votre site en ligne, jour et nuit.
 - **La maintenance** : les vérifications techniques régulières qui gardent le site en état de marche. Sans elle, un site finit par tomber en panne ou par se faire pirater.
 - **Les sauvegardes** : une copie de sécurité de votre site, pour repartir vite en cas de problème.
 - **Les modifications** : un horaire, un tarif, une photo. Elles sont souvent facturées à l'heure.

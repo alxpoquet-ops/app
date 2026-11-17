@@ -40,6 +40,8 @@ process.stdout.write(
     options: options.map((o) => ({ id: o.id, name: o.name, month: o.price.month || 0, once: o.price.once || 0, types: o.types || [], quand: o.quand || (o.price.month ? 'mois' : 'creation'), icon: o.icon || 'check', desc: o.desc || '', info: o.info || '', retire: !!o.retire })),
     // offre événement : remise en % sur la création, avec un code donné sur une foire, un marché ou un salon
     evenement: cfg.evenement || { remise: 20 },
+    // création seule : le client a son hébergement, il reçoit le code de son site (pas de formule, pas d'hébergement chez nous)
+    creationSeule: cfg.creationSeule ? { id: cfg.creationSeule.id, name: cfg.creationSeule.name, month: 0, quota: 0, periode: 'mois', jetons: 0, illimite: false, delai: '', main: cfg.creationSeule.main, seule: true } : null,
     creation: cfg.creation || { prix: 500, boutique: 200 },
     moisOfferts: annuel.moisOfferts,
     boost: boost.prix,

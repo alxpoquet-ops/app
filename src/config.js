@@ -216,6 +216,17 @@ const forfaits = [
     features: ['Tout le forfait Tranquillité', 'Modifications incluses', 'Priorité de traitement', 'Délai moyen entre 12 h et 24 h', 'Une page SEO supplémentaire chaque semaine'],
   },
 ];
+// Création seule : pour un client qui a déjà son nom de domaine et son hébergement. Il paie seulement la création,
+// sans formule au mois, et reçoit le code de son site (fichiers et sauvegarde), prêt à installer chez son hébergeur.
+// Pas de modifications ni de maintenance incluses : il peut prendre une formule plus tard. id 'sans' dans la commande.
+const creationSeule = {
+  id: 'sans',
+  name: 'Création seule',
+  month: 0,
+  color: 'peach',
+  court: 'J’ai déjà mon nom de domaine et mon hébergement : je reçois le code de mon site, prêt à installer.',
+  main: ['Votre site, payé une seule fois', 'Le code de votre site, prêt à installer', 'Vous l’installez vous-même, ou avec votre hébergeur', 'Sans maintenance ni modifications incluses'],
+};
 const annuel = { moisOfferts: 2 };
 // Prix du site payable en 6 ou 12 fois sans frais (engagement le temps du paiement ; sinon, aucun engagement).
 // Le paiement en plusieurs fois se fait au mois : l'abonnement passe alors au mois.
@@ -320,4 +331,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: '' },
 ];
 
-module.exports = { clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement };
+module.exports = { clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule };

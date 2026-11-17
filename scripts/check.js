@@ -82,6 +82,7 @@ for (const f of files) {
   if (noindex) continue;
   let main = html.match(/<main[^>]*>([\s\S]*)<\/main>/)?.[1] || '';
   main = main
+    .replace(/<!--commun-->[\s\S]*?<!--\/commun-->/g, '') // blocs communs repris sur plusieurs pages (offre événement, étapes d'une modification)
     .replace(/<section class="cta-band">[\s\S]*?<\/section>/g, '')
     .replace(/<aside class="aside-sticky"[\s\S]*?<\/aside>\s*<\/div><\/section>/g, '</div></section>')
     .replace(/<aside class="inline-cta[\s\S]*?<\/aside>/g, '')

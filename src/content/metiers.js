@@ -89,7 +89,7 @@ Pour être trouvé autour de chez vous, le site fait équipe avec votre [fiche G
 
 Vous n’avez ni le temps ni l’envie de gérer un site le soir, et c’est normal. Je rédige les textes avec vous après un court échange, je prépare la mise en page et je mets tout en ligne.
 
-Plus tard, un tarif change ou une nouvelle photo arrive ? Envoyez-la depuis votre téléphone, dans votre espace client. ${qui('bricoleur')} de ma petite bande, prépare la modification, je la vérifie, et elle est en ligne sous ${tranquille.delai} au plus. C’est compris dans votre formule au mois, sans limite.
+Plus tard, un tarif change ou une nouvelle photo arrive ? Envoyez le changement depuis votre téléphone, dans votre espace client, votre page privée sur mon site. ${qui('bricoleur')} de ma petite bande, prépare la modification, je la vérifie, et elle est en ligne sous ${tranquille.delai} au plus. C’est compris dans votre formule au mois, sans limite.
 
 Pour aller vite sans bâcler, j’ai programmé cette petite bande de monstres : ils s’occupent de tout ce qui se répète d’un site à l’autre. Je garde pour moi la conception, puis la relecture de chaque page avant sa mise en ligne. C’est ce qui garde des délais courts et un prix doux.
 
@@ -220,7 +220,7 @@ Pas besoin d’un studio pour de belles images. Une grande fenêtre, un fond uni
 
 Vous exposez sur des salons ou des marchés de créateurs ? Une petite page d’agenda dit où l’on peut voir votre travail en vrai.
 
-> Si nous nous sommes croisés sur l’un de ces marchés ou salons, gardez le code événement que vous avez reçu : il vous fait gagner ${remise} sur la création de votre site, au moment de commander.
+> Si nous nous sommes croisés sur l’un de ces marchés ou salons, gardez le code événement que vous avez reçu : à saisir au moment de commander, il vous fait gagner ${remise} sur la création de votre site.
 
 ## Raconter qui vous êtes
 
@@ -230,7 +230,7 @@ Photographes et illustrateurs, dites aussi ce que vous proposez concrètement : 
 
 ## Une galerie, ou une galerie et une boutique
 
-Deux formules, selon votre façon de vendre :
+Deux possibilités, selon votre façon de vendre :
 
 - **La galerie seule**, si vous vendez à l’atelier, sur les salons ou sur commande. Le site montre votre travail, et un formulaire reçoit les demandes.
 - **La galerie et la boutique**, si vous voulez vendre en ligne. Vos clients choisissent, paient par carte, et vous recevez la commande par e-mail.
@@ -381,7 +381,7 @@ Commencez petit, avec vos produits les plus demandés, ceux qui se gardent et se
 
 Un commerce bouge tout le temps : les horaires d’été, la fermeture d’une semaine en août, la nouvelle gamme, le marché de Noël. Un site qui affiche encore les horaires de l’an dernier déçoit, et le client ne revient pas forcément.
 
-Avec votre formule au mois, ces changements ne vous demandent qu’un message dans votre espace client. Ce sont des modifications, comprises sans limite : ${B('bricoleur').nom} les prépare, je les vérifie, et elles sont en ligne sous ${tranquille.delai} au plus. Avec ${evolution.name}, à ${eur(evolution.month)} € par mois, vos demandes passent en priorité.
+Avec votre formule au mois, ces changements ne vous demandent qu’un message dans votre espace client, la page privée où vous suivez votre site. Ce sont des modifications, comprises sans limite : ${B('bricoleur').nom} les prépare, je les vérifie, et elles sont en ligne sous ${tranquille.delai} au plus. Avec ${evolution.name}, à ${eur(evolution.month)} € par mois, vos demandes passent en priorité.
 
 > Nous nous sommes rencontrés sur un marché, une foire ou un salon ? Le code événement que vous avez reçu vous donne ${remise} de remise sur la création du site. Pensez à le saisir en commandant.
 

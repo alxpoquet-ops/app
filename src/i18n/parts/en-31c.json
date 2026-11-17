@@ -1,0 +1,7 @@
+{
+ "<span data-avec-formule>Votre formule démarre à la réception de votre site, pas avant. Le nom de domaine, lui, est réservé dès la commande.</span><span data-seule-txt hidden>Création seule : pas de formule au mois. À la réception, je vous remets le code de votre site.</span>": "<span data-avec-formule>Your plan starts when you receive your website, not before. The domain name is booked as soon as you order.</span><span data-seule-txt hidden>Website only: no monthly plan. On delivery, I hand you the code of your website.</span>",
+ "<span data-order=\"domain\">Nom de domaine à choisir</span><b data-order=\"domain-prix\">offert</b>": "<span data-order=\"domain\">Domain name to choose</span><b data-order=\"domain-prix\">free</b>",
+ "<span data-sum=\"domain\">Nom de domaine à choisir</span><b data-sum=\"domain-prix\">offert</b>": "<span data-sum=\"domain\">Domain name to choose</span><b data-sum=\"domain-prix\">free</b>",
+ "Création seule : pas de formule au mois. Vous gardez votre nom de domaine et votre hébergement, et je vous remets le code de votre site.": "Website only: no monthly plan. You keep your own domain name and hosting, and I give you the code of your website.",
+ "<strong>L’hébergement</strong> : le serveur qui garde votre site en ligne, jour et nuit.": "<strong>Hosting</strong>: the server that keeps your website online, day and night."
+}

@@ -2122,3 +2122,19 @@ div.tool { cursor: default; }
 .opt-pop small[hidden] { display: none; }
 .offre { max-width: 1120px; }
 .opt-carte h3 > span { min-width: 0; }
+
+/* Création seule : le client a déjà son nom de domaine et son hébergement, il reçoit le code de son site */
+.b-choice.b-seule { grid-column: 1 / -1; }
+.b-seule .b-card.b-formule { display: grid; grid-template-columns: auto auto minmax(0, 1fr); align-items: center; column-gap: 12px; }
+.b-seule .b-card.b-formule small { margin: 0; color: var(--text); font-weight: 600; line-height: 1.4; }
+.b-seule .b-price { font-size: .95rem; }
+@media (max-width: 560px) { .b-seule .b-card.b-formule { grid-template-columns: 1fr; row-gap: 4px; } }
+.seule { display: flex; gap: 18px; align-items: flex-start; max-width: 940px; margin: 26px auto 0; padding: 22px 24px; border-radius: var(--radius-lg); background: var(--peach); box-shadow: var(--shadow); }
+.seule-ico { display: grid; place-items: center; flex: none; width: 52px; height: 52px; border-radius: 16px; background: var(--card); color: var(--peach-dd); }
+.seule-ico .ico { width: 26px; height: 26px; }
+.seule h3 { margin: 0 0 8px; color: var(--ink); }
+.seule p { margin: 0 0 10px; color: var(--ink); line-height: 1.55; }
+.seule-note { display: flex; gap: 8px; align-items: flex-start; margin: 0; font-weight: 700; font-size: .92rem; }
+.seule-note .ico { flex: none; margin-top: 3px; color: var(--peach-dd); }
+@media (max-width: 600px) { .seule { flex-direction: column; padding: 20px 18px; } }
+.b-seule .b-card.b-formule { padding-right: 48px; }

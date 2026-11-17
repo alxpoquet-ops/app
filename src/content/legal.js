@@ -210,6 +210,8 @@ ${listeOptions}
 
 **Les formules au mois.** Le client choisit ${tranquille.name}, à ${eur(tranquille.month)} € par mois, ou ${evolution.name}, à ${eur(evolution.month)} € par mois (article 6). Payées à l’année, elles bénéficient de ${annuel.moisOfferts} mois offerts.
 
+**Création seule.** Un client qui a déjà son nom de domaine et son hébergement peut choisir la création seule. Il paie alors seulement la création du site, ${eur(creation.prix)} €, et ses options s’il en prend, sans formule au mois. Les Minis Monstres ne fournissent ni le nom de domaine ni l’hébergement. Une fois le site terminé et entièrement payé, Alex remet au client le code du site : ses fichiers et une sauvegarde complète, prêts à installer chez l’hébergeur du client. L’installation est faite par le client ou par son hébergeur. La maintenance, les sauvegardes, la sécurité et les modifications ne sont pas comprises. Le client peut prendre une formule plus tard.
+
 **Devis.** Une refonte complète du site ou une fonction nouvelle, comme une prise de rendez-vous, fait l’objet d’un devis. Le client l’accepte avant le début du travail.
 
 ## 4. Offre événement
@@ -226,7 +228,7 @@ Le prix de création se paie en deux temps.
 - **À la réception du site** : le reste, en une fois.
 - **Ou, à la réception, en ${durees} fois sans frais** : le reste est divisé en ${durees} mensualités, au choix du client. La formule est alors payée au mois. Chaque échéance est arrondie au centime inférieur : le total ne dépasse jamais le prix du site. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
 
-Le client choisit, au moment de la commande, de payer le reste en une fois ou en plusieurs fois.
+Le client choisit, au moment de la commande, de payer le reste en une fois ou en plusieurs fois. En création seule (article 3), le reste se paie en une fois.
 
 Exemple pour un site à ${eur(creation.prix)} €, sans code événement : le client paie ${eur(acompte(creation.prix))} € à la commande. À la réception, il paie ${eur(creation.prix - acompte(creation.prix))} € en une fois, ou ${lissage.durees.map((n) => `${eur(lisse(creation.prix, n))} € par mois pendant ${n} mois`).join(', ou ')}.
 

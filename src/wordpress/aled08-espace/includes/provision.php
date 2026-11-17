@@ -130,6 +130,14 @@ function aled08e_prov_mdp() { return wp_generate_password(16, false); }
  * ========================================================================= */
 function aled08e_prov_etape_domaine($c) {
     $cid = $c['id'];
+    if (aled08e_est_seule($c['forfait'])) {
+        // création seule : le client garde son nom de domaine et son hébergement. Rien à réserver ni à installer chez nous :
+        // on passe directement à la création. À la fin, Alex remet le code du site au client.
+        aled08e_prov_mail_owner($c, 'CRÉATION SEULE : commande ' . $c['ref'], 'La commande ' . $c['ref'] . ' (' . aled08e_cmd_nom($c) . ") est une création seule : le client a déjà son nom de domaine" . ($c['domaine'] ? ' (' . $c['domaine'] . ')' : '') . " et son hébergement.\n\nPas de domaine à réserver, pas d’hébergement à préparer, pas d’abonnement. Créez le site, puis remettez le code au client : les fichiers du site et une sauvegarde complète, avec une petite notice d’installation.\n\nFiche : " . aled08e_cmd_admin_url($cid) . "\n");
+        if (!aled08e_prov_set($cid, 'pret', 'création seule : le client a son nom de domaine et son hébergement')) return 'erreur';
+        aled08e_prov_mail_client_pret($c);
+        return 'ok';
+    }
     if (!$c['domaine']) {
         // pas de nom choisi : Les Minis Monstres le choisissent avec le client, l'automate attend le bouton « Domaine réservé »
         if (!get_post_meta($cid, '_aled08_prov_mail_domaine', true)) {
@@ -397,7 +405,10 @@ function aled08e_prov_mail_client_domaine($c) {
 }
 function aled08e_prov_mail_client_pret($c) {
     $delai = aled08e_cmd_delai_type($c);
-    $corps = 'Bonjour ' . $c['prenom'] . ",\n\nTout est prêt : votre nom de domaine, l’hébergement et le certificat de sécurité. Je commence la création de votre site" . ($delai ? ' (délai habituel : ' . $delai . ')' : '') . ".\n\nJe vous écris dès que j’ai besoin de vous (textes, photos, horaires). Vous suivez l’avancement ici : " . aled08e_url() . '#commande' . aled08e_prov_signature();
+    $debut = aled08e_est_seule($c['forfait'])
+        ? "Merci pour votre commande. Vous gardez votre nom de domaine et votre hébergement : quand votre site sera prêt, je vous remets son code, prêt à installer. Je commence la création de votre site"
+        : "Tout est prêt : votre nom de domaine, l’hébergement et le certificat de sécurité. Je commence la création de votre site";
+    $corps = 'Bonjour ' . $c['prenom'] . ",\n\n" . $debut . ($delai ? ' (délai habituel : ' . $delai . ')' : '') . ".\n\nJe vous écris dès que j’ai besoin de vous (textes, photos, horaires). Vous suivez l’avancement ici : " . aled08e_url() . '#commande' . aled08e_prov_signature();
     wp_mail($c['email'], 'Tout est prêt, je crée votre site', $corps, aled08e_mail_headers(aled08e_data()['name'] . ' <' . aled08e_to() . '>'));
 }
 function aled08e_prov_mail_client_dns($c) {

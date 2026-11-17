@@ -106,7 +106,7 @@ function home() {
   <ol class="parcours">
     <li class="parcours-etape c-butter reveal"><span class="parcours-n">1</span><p class="parcours-quoi">Je crée mon site</p><p class="parcours-prix"><b>${euro(creation.prix)}</b><small>une fois</small></p><p class="parcours-d">Site Internet Professionnel : jusqu’à ${creation.pages} pages, design personnalisé, mise en ligne.</p></li>
     <li class="parcours-etape c-mint reveal"><span class="parcours-n">2</span><p class="parcours-quoi">J’ajoute une option, si je veux</p><p class="parcours-prix"><span>${esc(PACK.name)} <b>+ ${euro(PACK.price.once)}</b></span><span>Boutique en ligne <b>+ ${euro(creation.boutique)}</b></span></p><p class="parcours-d">Plus de pages pour Google, ou une boutique pour vendre en ligne.</p></li>
-    <li class="parcours-etape c-lilac reveal"><span class="parcours-n">3</span><p class="parcours-quoi">Je choisis ma formule</p><p class="parcours-prix">${forfaits.map((f) => `<span>${esc(f.name)} <b>${euro(f.month)}/mois</b></span>`).join('')}</p><p class="parcours-d">On s’occupe de votre site chaque mois. Sans engagement.</p></li>
+    <li class="parcours-etape c-lilac reveal"><span class="parcours-n">3</span><p class="parcours-quoi">Je choisis ma formule</p><p class="parcours-prix">${forfaits.map((f) => `<span>${esc(f.name)} <b>${euro(f.month)}/mois</b></span>`).join('')}</p><p class="parcours-d">On s’occupe de votre site chaque mois. Sans engagement. Vous avez déjà votre hébergement ? <a href="${sections.forfaits.path}#creation-seule">Prenez la création seule</a>.</p></li>
   </ol>
   <p class="center more">${C.btnCreer('btn-primary btn-lg')} ${C.btn(sections.forfaits.path, 'btn-light btn-lg', 'list-checks', 'Ce qui est inclus')}</p>
 </div></section>
@@ -254,6 +254,7 @@ function forfaitsPage() {
   ${C.billingSwitch()}
   ${C.offre()}
   ${C.economie()}
+  ${C.creationSeuleBox()}
 </div></section>
 
 <section class="section section-soft" id="options"><div class="container">
@@ -648,6 +649,7 @@ function commanderPage() {
         ${C.optionChoices({ name: 'options[]', quand: 'creation' })}
         <p class="b-label">Ensuite, votre formule chaque mois</p>
         ${C.forfaitChoices({ name: 'forfait' })}
+        <div data-avec-formule>
         <p class="b-label">La formule est payée</p>
         <div class="b-seg" role="radiogroup" aria-label="Période de la formule">
           <label><input type="radio" name="periode" value="mois" checked><span>Au mois</span></label>
@@ -659,6 +661,7 @@ function commanderPage() {
           ${lissage.durees.map((n) => `<label><input type="radio" name="lissage" value="${n}"><span>En ${n} fois</span></label>`).join('')}
         </div>
         <p class="b-note" data-lisse-note hidden>${icon('info')}Sans frais. Vous vous engagez le temps du paiement, et la formule se règle alors chaque mois.</p>
+        </div>
         ${C.codeEvenementBox({ name: 'code_evenement' })}
         </div>
       </fieldset>
@@ -720,7 +723,7 @@ function commanderPage() {
         <p class="b-sum-title">Votre récapitulatif</p>
         <ul class="b-lines">
           <li><span data-order="type">Site Internet Professionnel</span><b data-order="type-price">${euro(t0.price)}</b></li>
-          <li><span data-order="domain">Nom de domaine à choisir</span><b>offert</b></li>
+          <li><span data-order="domain">Nom de domaine à choisir</span><b data-order="domain-prix">offert</b></li>
           <li><span data-order="forfait">${esc(f0.name)}</span><b data-order="forfait-price">${euro(f0.month)}/mois</b></li>
           <li data-order-opts hidden><span data-order="opts-label">Options</span><b data-order="opts">0 €</b></li>
         </ul>
@@ -729,11 +732,11 @@ function commanderPage() {
           <p><span data-order="next-label">À la réception : le reste, et votre formule</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month)}/mois</b></p>
           <p data-order-parrain hidden><span>Parrainage</span><b>${fidelite.parrainageMois} mois offert</b></p>
         </div>
-        <p class="b-sum-note">${icon('check')}Votre formule démarre à la réception de votre site, pas avant. Le nom de domaine, lui, est réservé dès la commande.</p>
+        <p class="b-sum-note">${icon('check')}<span data-avec-formule>Votre formule démarre à la réception de votre site, pas avant. Le nom de domaine, lui, est réservé dès la commande.</span><span data-seule-txt hidden>Création seule : pas de formule au mois. À la réception, je vous remets le code de votre site.</span></p>
       </div>
       <div class="o-next reveal">
         <h2 class="h3">${icon('list-checks')}Ce qui se passe ensuite</h2>
-        <ol>${nextSteps.map(([ic, t, d]) => `<li>${icon(ic)}<span><strong>${t}</strong><small>${d}</small></span></li>`).join('')}</ol>
+        <ol>${nextSteps.map(([ic, t, d]) => `<li${ic === 'globe' ? ' data-avec-formule' : ''}>${icon(ic)}<span><strong>${t}</strong><small>${d}</small></span></li>`).join('')}</ol>
         <p class="o-help">Une question avant de commander ? ${C.btnWa('btn-light btn-sm', 'Nous écrire')}</p>
       </div>
     </aside>

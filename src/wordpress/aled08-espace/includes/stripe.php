@@ -188,6 +188,8 @@ function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
     if (!$c) return new WP_Error('aled08_stripe', 'Commande inconnue.');
     if (!aled08e_cmd_reception_due($c)) return new WP_Error('aled08_stripe', 'Rien à régler pour cette commande.');
     $n = aled08e_cmd_lissage_n((string) $n);
+    $seule = aled08e_est_seule($c['forfait']);
+    if ($seule) $n = 0; // création seule : le reste en une fois, pas d'abonnement
     $D = aled08e_data();
     $m = aled08e_cmd_montants_reception($c, $n);
     $type = aled08e_type($c['type']);
@@ -201,7 +203,7 @@ function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
         return ['quantity' => 1, 'price_data' => ['currency' => 'eur', 'unit_amount' => aled08e_stripe_cents($euros), 'product_data' => ['name' => $name, 'metadata' => ['aled08' => $tag]]]];
     };
     $items = [];
-    $offert = $c['user'] && aled08e_meta($c['user'], 'offert') === '1';
+    $offert = $seule || ($c['user'] && aled08e_meta($c['user'], 'offert') === '1');
     if (!$offert) {
         $items[] = $recurring(aled08e_abo_nom($f) . ($annee ? ' (à l’année, ' . (int) $D['moisOfferts'] . ' mois offerts)' : ' (au mois)'), $m['mensuel_forfait'], 'forfait');
         foreach ($c['options'] as $oid) {
@@ -213,7 +215,7 @@ function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
     if ($n) $items[] = $recurring('Reste de la création en ' . $n . ' fois sans frais (' . $lib . ')', $m['lissage_mensualite'], 'lissage');
     else $items[] = $once('Reste de la création (' . (100 - (int) $D['acompte']) . ' %) : ' . $lib, $m['solde'], 'solde');
     $meta = ['reception' => (string) $cid, 'ref' => $c['ref'], 'lissage' => (string) $n];
-    $sansAbo = $offert && !$n; // forfait offert et reste en une fois : simple paiement
+    $sansAbo = $offert && !$n; // forfait offert (ou création seule) et reste en une fois : simple paiement
     $params = [
         'mode' => $sansAbo ? 'payment' : 'subscription',
         'locale' => 'fr',
@@ -590,7 +592,8 @@ function aled08e_stripe_on_reception($s) {
     }
     if ($c['user']) { update_user_meta($c['user'], 'aled08_paiement', $n ? 'mois' : ($c['periode'] === 'annee' ? 'annee' : 'mois')); }
     $quoi = $n ? 'reste en ' . $n . ' fois (' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois)' : 'reste payé en une fois (' . aled08e_euro_txt($m['solde']) . ')';
-    aled08e_cmd_journal($cid, 'Réception réglée par Stripe : ' . $quoi . ', abonnement démarré.');
-    aled08e_stripe_mail_owner('Réception réglée : commande ' . $c['ref'], 'Commande ' . $c['ref'] . ' (' . aled08e_cmd_nom($c) . ') : ' . $quoi . ". L’abonnement a démarré.\n\nFiche : " . aled08e_cmd_admin_url($cid) . "\n");
+    $seule = aled08e_est_seule($c['forfait']);
+    aled08e_cmd_journal($cid, 'Réception réglée par Stripe : ' . $quoi . ($seule ? ' (création seule, pas d’abonnement).' : ', abonnement démarré.'));
+    aled08e_stripe_mail_owner('Réception réglée : commande ' . $c['ref'], 'Commande ' . $c['ref'] . ' (' . aled08e_cmd_nom($c) . ') : ' . $quoi . ($seule ? ". Création seule : pas d’abonnement. Remettez le code du site au client (fichiers et sauvegarde complète).\n\nFiche : " : ". L’abonnement a démarré.\n\nFiche : ") . aled08e_cmd_admin_url($cid) . "\n");
     return $c['ref'] . ' : réception réglée (' . $quoi . ')';
 }

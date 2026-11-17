@@ -360,7 +360,7 @@ Ce sont des promesses simples, écrites ici pour que vous puissiez me les rappel
 
 ## Ma petite bande
 
-D’un site à l’autre, beaucoup de choses se ressemblent : la structure de départ, les réglages pour Google, l’affichage sur téléphone, les sauvegardes. Pour tout ce travail-là, j’ai programmé une petite bande de compagnons, mes automatisations, que j’ai dessinées en petits monstres mignons. Chacun a son métier. Ils travaillent seuls, vite et sans oubli, et c’est autant de temps que vous ne payez pas. La conception de votre site, elle, reste mon travail.
+D’un site à l’autre, beaucoup de choses se ressemblent : la structure de départ, les réglages pour Google, l’affichage sur téléphone, les copies de sécurité. Pour tout ce travail-là, j’ai programmé une petite bande de compagnons, mes automatisations, que j’ai dessinées en petits monstres mignons. Chacun a son métier. Ils travaillent seuls, vite et sans oubli, et c’est autant de temps que vous ne payez pas. La conception de votre site, elle, reste mon travail.
 
 Voici qui fait quoi :
 
@@ -401,7 +401,7 @@ Si mes prix restent doux, c’est grâce à cette petite bande, et à mes accès
     lead: 'Un site ne s’arrête pas le jour où il est publié. Chaque mois, je m’occupe de ce qui le fait tourner, et vous me demandez les changements quand vous en avez besoin.',
     resume: 'Chaque mois, votre site entretenu et suivi.',
     points: [
-      { icon: 'shield-check', t: 'Votre site entretenu', d: `${nomRole(B('gardien'))}, garde votre site en état de marche, jour et nuit.` },
+      { icon: 'shield-check', t: 'Votre site entretenu', d: `${nomRole(B('gardien'))}, veille sur votre site et le garde en état de marche, jour et nuit.` },
       { icon: 'pencil', t: 'Des modifications comprises', d: `Vous demandez, ${B('bricoleur').nom} prépare, je vérifie. Sans limite.` },
       { icon: 'layout-grid', t: 'Deux formules', d: `${tranquille.name} à ${eur(tranquille.month)} € ou ${evolution.name} à ${eur(evolution.month)} € par mois, au choix.` },
       { icon: 'handshake', t: 'Sans engagement', d: 'Vous arrêtez quand vous voulez et vous gardez votre adresse.' },
@@ -425,7 +425,7 @@ Ou ${eur(annee(tranquille))} € à l’année. Votre site reste en ligne, prot�
 
 Ou ${eur(annee(evolution))} € à l’année. Pour un site qui continue de grandir.
 
-- **Tout ce que comprend ${tranquille.name}**, modifications comprises.
+- **Tout ce qu’offre ${tranquille.name}**, modifications comprises.
 - **La priorité** : vos demandes passent avant les autres.
 - **Un délai plus court** : ${evolution.delai} en moyenne.
 - **Une page SEO de plus chaque semaine.** Une page SEO est écrite pour une recherche précise, afin que votre site soit plus facilement trouvé sur Google.
@@ -465,7 +465,7 @@ Tous les prix sont réunis sur la page [tarifs](/tarifs/). Si vous parlez de moi
     faq: [
       { q: 'Puis-je avoir un site sans formule au mois ?', a: 'Non, tant que votre site est hébergé chez moi. La formule couvre ce qui le fait vivre : son adresse, son hébergement et son entretien. Elle reste sans engagement.' },
       { q: 'Combien de modifications puis-je demander ?', a: 'Autant qu’il vous en faut : elles sont comprises dans les deux formules, sans limite. Seules une refonte complète ou une fonction nouvelle passent par un devis.' },
-      { q: 'En combien de temps ma demande est-elle traitée ?', a: `${tranquille.delai} au plus avec ${tranquille.name}. Avec ${evolution.name}, vos demandes passent en priorité, et le délai moyen tombe à ${evolution.delai}.` },
+      { q: 'En combien de temps ma demande est-elle traitée ?', a: `${tranquille.delai} au plus avec ${tranquille.name}. Avec ${evolution.name}, vos demandes passent en priorité, et le délai moyen est de ${evolution.delai}.` },
       { q: 'Puis-je changer de formule plus tard ?', a: `Oui. Vous passez de ${tranquille.name} à ${evolution.name}, ou l’inverse, quand vous voulez. Écrivez-moi depuis votre espace client, et la nouvelle formule compte à partir de la période suivante.` },
     ],
     voir: ['/tarifs/', '/mon-espace/demo/', '/pourquoi-les-minis-monstres/'],

@@ -124,6 +124,7 @@ function aled08e_bulle_contexte($uid) {
     $fo = [];
     foreach ((array) $D['forfaits'] as $x) $fo[] = $x['name'] . ' ' . aled08e_euro_txt($x['month']) . ' par mois (' . implode(', ', (array) ($x['main'] ?? [])) . ')';
     if (count($fo) > 1) $offre[] = 'Les deux formules, à changer quand on veut dans Mon compte : ' . implode(' ; ', $fo) . '.';
+    if (!empty($D['creationSeule'])) $offre[] = 'Création seule, pour qui a déjà son nom de domaine et son hébergement : le client paie seulement le site (' . aled08e_euro_txt($D['creation']['prix'] ?? 500) . '), sans formule, et Alex lui remet le code du site, prêt à installer. Maintenance et modifications non comprises.';
     $offre[] = 'Une modification : le client fait sa demande, Bricou prépare la modification et un aperçu, le client le regarde, puis Alex la vérifie avant la mise en ligne.';
     $rech = [];
     foreach ((array) $jl['recharge'] as $r) $rech[] = (int) $r['jetons'] . ' d’énergie pour ' . aled08e_euro_txt($r['prix']);
