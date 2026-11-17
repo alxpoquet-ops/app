@@ -275,6 +275,7 @@ function aled08e_bande_haut_html($uid) {
         . '<div><strong>Les Minis Monstres à votre service !</strong><p>Parlez-leur quand vous voulez, comme à des collègues : ils répondent à vos questions et font vos modifications.</p></div></div>'
         . '<form class="cerise-form" data-cerise-form><input type="text" maxlength="600" placeholder="Ex. : nous serons fermés lundi, ou : que comprend mon abonnement ?" aria-label="Votre message aux Minis Monstres"><button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('send') . '<span>Envoyer</span></button></form>'
         . '<div class="cerise-ideas">';
+    $h = str_replace('<div class="cerise-ideas">', '<div class="dialogue" data-dialogue hidden aria-label="Conversation avec les Minis Monstres"></div><div class="cerise-ideas">', $h);
     foreach ($idees as $i) $h .= '<button type="button" data-cerise-idee>' . esc_html($i) . '</button>';
     return $h . '</div><div class="gauge-bloc" data-gauge aria-live="polite">' . aled08e_gauge_html($uid) . '</div></section>';
 }

@@ -1167,7 +1167,11 @@
     /* mise en place selon l'endroit */
     $$('[data-lia-accueil]', flot).forEach(function (p) { p.hidden = p.getAttribute('data-lia-accueil') !== mode; });
     $$('[data-lia-liens]', flot).forEach(function (g) { g.hidden = g.getAttribute('data-lia-liens') !== (dial ? 'espace' : 'site') || (mode !== 'site' && !dial); });
+    var dialogue = null;
     if (dial) {
+      // dans l'espace client, la conversation s'affiche sous la barre « Les Minis Monstres à votre service » (plus de bulle flottante)
+      dialogue = mode === 'ok' ? $('[data-dialogue]') : null;
+      if (dialogue) { dialogue.appendChild(fil); dialogue.hidden = false; }
       liaForm.hidden = false; liaNote.hidden = false;
       var prixEl = $('[data-lia-prix]', flot);
       if (prixEl) prixEl.textContent = sansEnergie ? '' : jetonsTxt(prix) + tr(' par message.');
@@ -1182,6 +1186,7 @@
       // « Écrire à Cerise », sur l'accueil de l'espace client : le message part dans la bulle, qui s'ouvre
       var ceriseDire = function (texte) {
         texte = (texte || '').trim();
+        if (dialogue) { if (texte) envoyer(texte); return; }
         flotOuvrir(true);
         if (texte) envoyer(texte); else if (champ) champ.focus();
       };
@@ -1209,7 +1214,7 @@
         });
       });
     }
-    flot.hidden = false;
+    flot.hidden = !!dialogue; // la bulle flottante reste cachée quand la conversation est dans la page
     flotBtn.addEventListener('click', function () { flotOuvrir(flotPanel.hidden); });
     var flotX = $('.lia-flot-fermer', flot);
     if (flotX) flotX.addEventListener('click', function () { flotOuvrir(false); flotBtn.focus(); });

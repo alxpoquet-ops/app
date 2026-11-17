@@ -649,3 +649,9 @@ a.app-card { text-decoration: none; color: inherit; }
 /* La demande vers laquelle la jauge fait défiler la page */
 .reqs li.is-flash { animation: reqflash 2.4s ease-out; }
 @keyframes reqflash { 0% { box-shadow: 0 0 0 0 rgba(214, 69, 122, .6); } 30% { box-shadow: 0 0 0 8px rgba(214, 69, 122, .35); } 100% { box-shadow: 0 0 0 0 rgba(214, 69, 122, 0); } }
+
+/* La conversation avec les Minis Monstres, sous la barre d'écriture du bandeau */
+.dialogue { margin: 10px 0 0; background: var(--card); border-radius: 18px; }
+.dialogue[hidden] { display: none; }
+.dialogue .lia-fil { flex: none; min-height: 0; max-height: min(46vh, 320px); padding: 12px 12px 8px; }
+.dialogue .lia-msg { max-width: 92%; }
