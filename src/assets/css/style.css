@@ -2237,3 +2237,4 @@ div.tool { cursor: default; }
 .client-prix-evt { display: flex; gap: 6px; align-items: center; margin: 2px 0 2px; font-size: .9rem; font-weight: 800; color: var(--pink-dd); }
 .client-prix-evt .ico { width: 16px; height: 16px; flex: none; }
 .client-prix-evt b { font-size: 1.05rem; font-weight: 900; }
+.client-prix b s { font-size: 1.1rem; font-weight: 700; color: var(--muted); margin-right: 4px; }

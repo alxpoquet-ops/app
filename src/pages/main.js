@@ -158,44 +158,44 @@ const CLIENTS_EN_LIGNE = clients.filter((c) => !c.enCreation && c.url && !c.url.
 const pagesDe = (c) => (c.enCreation ? 0 : (CLIENTS_PAGES[c.domaine] || {}).pages || 0);
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1180 → 1 180
 const s_ = (n) => (n > 1 ? 's' : '');
-// Prix estimé d'un site client avec la grille actuelle : le prix unique, la boutique si c'en est une, 10 € par page
-// au-delà des pages comprises, et ses options payées une fois. Les fiches produits ne comptent pas comme des pages,
-// et les pages faites pour Google (clients[].seo dans config) sont comprises : elles ne sont pas comptées en plus.
-// C'est une estimation (ce que le site coûterait aujourd'hui), pas le prix payé par le client.
+// Prix estimé d'un site client avec la grille actuelle, code événement compris :
+// - la création : le site, la boutique si c'en est une, et ses options payées une fois, avec la remise du code événement ;
+// - les pages au-delà des pages comprises (creation.pages) : en Pack SEO, des lots de 10 pages payés une fois, sans remise
+//   (le Pack SEO se commande depuis l'espace client, le code événement ne s'y applique pas).
+// Les fiches produits ne comptent pas comme des pages. C'est une estimation, pas le prix payé par le client.
 function estimeClient(c) {
   const t = types.find((x) => x.id === c.type);
   const compte = CLIENTS_PAGES[c.domaine] || {};
   if (!t || !compte.pages) return null;
   const produits = compte.produits || 0;
   const pages = compte.pages - produits;
-  const seo = compte.seo || 0;
-  const plus = Math.max(0, pages - seo - creation.pages);
+  const plus = Math.max(0, pages - creation.pages);
+  const pack = C.PACK_SEO || { name: 'Pack SEO', price: { once: 25 }, pages: 10 };
+  const packs = plus ? Math.ceil(plus / (pack.pages || 10)) : 0;
+  const packsPrix = packs * pack.price.once;
   const opts = (c.optionsCreation || []).map((id) => options.find((o) => o.id === id)).filter(Boolean);
   const supplement = t.supplement || 0;
-  const total = creation.prix + supplement + plus * creation.pagePlus + opts.reduce((n, o) => n + o.price.once, 0);
-  // avec un code événement : la remise porte sur tout ce qui se paie une fois (site, boutique, options), pas sur la formule
-  const avecCode = Math.round(total * (100 - evenement.remise)) / 100;
-  return { total, avecCode, pages, produits, seo, plus, supplement, opts };
+  const creationPrix = creation.prix + supplement + opts.reduce((n, o) => n + o.price.once, 0);
+  const creationCode = Math.round(creationPrix * (100 - evenement.remise)) / 100;
+  return { pages, produits, plus, pack, packs, packsPrix, supplement, opts, creationPrix, creationCode, total: creationPrix + packsPrix, totalCode: creationCode + packsPrix };
 }
+const prixTxt = (n) => `${String(n).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} €`;
 function clientPrix(c) {
   const e = estimeClient(c);
   if (!e) return '';
-  const parts = [`${mille(creation.prix)} € le site`];
-  if (e.supplement) parts.push(`${mille(e.supplement)} € la boutique`);
-  e.opts.forEach((o) => parts.push(`${mille(o.price.once)} € ${o.name.toLowerCase()}`));
-  if (e.plus) parts.push(`${mille(e.plus * creation.pagePlus)} € pour ${e.plus} page${s_(e.plus)} en plus`);
-  const detail = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} et ${parts[parts.length - 1]}` : parts[0];
-  const compris = e.seo ? ` Les ${e.seo} pages pour Google sont comprises.` : '';
-  const code = String(e.avecCode).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-  return `<span class="client-prix"><span class="client-prix-t">Prix estimé au tarif actuel</span><b>${mille(e.total)} €</b><span class="client-prix-evt">${icon('ticket')}<span>Avec un code événement : <b>${code} €</b>, soit ${evenement.remise} % de moins</span></span><span class="client-prix-d">${detail}, puis ${forfaits[0].month} € par mois.${compris}</span></span>`;
+  const parts = [`${prixTxt(creation.prix)} le site`];
+  if (e.supplement) parts.push(`${prixTxt(e.supplement)} la boutique`);
+  e.opts.forEach((o) => parts.push(`${prixTxt(o.price.once)} ${o.name.toLowerCase()}`));
+  const creationTxt = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} et ${parts[parts.length - 1]}` : parts[0];
+  const pagesTxt = e.plus ? ` ${e.plus} page${s_(e.plus)} en plus des ${creation.pages} comprises : ${e.packs} ${esc(e.pack.name)} à ${prixTxt(e.pack.price.once)}, soit ${prixTxt(e.packsPrix)}.` : '';
+  return `<span class="client-prix"><span class="client-prix-t">Prix estimé avec un code événement</span><b><s>${prixTxt(e.total)}</s> ${prixTxt(e.totalCode)}</b><span class="client-prix-d">${creationTxt}, soit ${prixTxt(e.creationCode)} avec le code événement (- ${evenement.remise} %).${pagesTxt} Puis ${forfaits[0].month} € par mois.</span></span>`;
 }
 function clientPages(c) {
   const e = estimeClient(c);
   const n = e ? e.pages : pagesDe(c);
   if (!n) return '';
-  const seo = e && e.seo ? `, dont <b>${e.seo}</b> pour Google` : '';
-  const produits = e && e.produits ? `${seo ? ',' : ''} et <b>${e.produits}</b> produit${s_(e.produits)}` : '';
-  return `<span class="client-pages"><b>${n}</b> page${s_(n)}${seo}${produits}</span>`;
+  const produits = e && e.produits ? `, et <b>${e.produits}</b> produit${s_(e.produits)}` : '';
+  return `<span class="client-pages"><b>${n}</b> page${s_(n)}, autant de portes d’entrée depuis Google${produits}</span>`;
 }
 function clientCards({ max = 0, desc = true, prix = true } = {}) {
   const liste = max ? CLIENTS_EN_LIGNE.slice(0, max) : CLIENTS_EN_LIGNE;
@@ -1267,7 +1267,7 @@ function confiancePage() {
 <section class="section"><div class="container">
   ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages en ligne sur les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque page utile est une porte d’entrée de plus depuis Google.</span></p>` : ''}
   ${clientCards()}
-  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille, d’après les pages en ligne. Avec un code événement (foire, marché, salon), la création coûte ${evenement.remise} % de moins, la formule au mois ne change pas. Les pages faites pour Google sont comprises, et les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
+  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille, d’après les pages en ligne. Ils comptent le code événement (foire, marché, salon) : ${evenement.remise} % de moins sur la création, la formule au mois ne change pas. Au-delà des ${creation.pages} pages comprises, les pages en plus sont comptées en ${C.PACK_SEO ? esc(C.PACK_SEO.name) : 'Pack SEO'} (${C.PACK_SEO ? C.PACK_SEO.pages : 10} pages pour ${euro(C.PACK_SEO ? C.PACK_SEO.price.once : 25)}). Les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
   ${enCours.length ? `<p class="center muted">En ce moment, je prépare aussi ${enCours.map((c) => esc(c.nom)).join(' et ')}.</p>` : ''}
 </div></section>
 ${METIERS.length ? `<section class="section section-soft"><div class="container">
