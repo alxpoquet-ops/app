@@ -30,6 +30,36 @@ function aled08e_lia_sdk_present() { return class_exists('Anthropic\\Client') ||
 function aled08e_lia_prete_pour($uid) {
     return aled08e_lia_cle() !== '' && aled08e_lia_sdk_present() && aled08e_meta($uid, 'lia_url') !== '' && aled08e_meta($uid, 'lia_secret') !== '';
 }
+/* Ce qui manque pour que Bricou travaille pour ce client, en une phrase (vide si tout est prêt) */
+function aled08e_lia_manque($uid) {
+    $m = [];
+    if (aled08e_lia_cle() === '') $m[] = 'clé Claude non enregistrée';
+    if (!aled08e_lia_sdk_present()) $m[] = 'kit Claude absent';
+    if (aled08e_meta($uid, 'lia_url') === '' || aled08e_meta($uid, 'lia_secret') === '') $m[] = 'site du client non relié';
+    return implode(', ', $m);
+}
+/* Les demandes faites alors que Bricou n'était pas prêt : il les prend toutes seules dès que la clé, le kit ou la liaison sont là.
+ * Seulement les demandes de modification (ni extra payé, ni urgente, ni intervention en plus), des 30 derniers jours. */
+function aled08e_lia_rattraper() {
+    $ids = get_posts(['post_type' => ALED08E_CPT, 'post_status' => 'private', 'numberposts' => 50, 'fields' => 'ids', 'suppress_filters' => true,
+        'date_query' => [['after' => '30 days ago']],
+        'meta_query' => [['key' => '_aled08_statut', 'value' => 'recue'], ['key' => '_aled08_par', 'value' => 'alex'], ['key' => '_aled08_lia_etat', 'compare' => 'NOT EXISTS'],
+            ['key' => '_aled08_extra', 'compare' => 'NOT EXISTS'], ['key' => '_aled08_urgent', 'compare' => 'NOT EXISTS'], ['key' => '_aled08_boost', 'compare' => 'NOT EXISTS'], ['key' => '_aled08_annulee_le', 'compare' => 'NOT EXISTS']]]);
+    $n = 0;
+    foreach ($ids as $pid) {
+        $p = get_post($pid);
+        $uid = $p ? (int) $p->post_author : 0;
+        if (!$uid || !aled08e_lia_prete_pour($uid) || !aled08e_modifs_illimitees($uid)) continue;
+        update_post_meta($pid, '_aled08_par', 'lia');
+        delete_post_meta($pid, '_aled08_lia_attendu');
+        do_action('aled08e_demande_creee', $pid, 'lia', $uid);
+        aled08e_lia_journal_add('Demande #' . $pid . ' relancée : Bricou est prêt.');
+        $n++;
+    }
+    return $n;
+}
+add_action('aled08_lia_rattraper', 'aled08e_lia_rattraper');
+add_action('aled08_quotidien', 'aled08e_lia_rattraper', 35); // filet de sécurité : chaque jour
 function aled08e_lia_journal_add($texte) {
     $j = get_option('aled08_lia_journal', []);
     $j = is_array($j) ? $j : [];
@@ -154,6 +184,7 @@ function aled08e_lia_executer($uid, $pid, $nom, $in, &$actions) {
         case 'remplacer_texte':
             $r = aled08e_lia_appel($uid, 'preparer', ['jeton' => $jeton, 'op' => 'remplacer', 'id' => (int) ($in['id'] ?? 0), 'ancien' => (string) ($in['ancien'] ?? ''), 'nouveau' => (string) ($in['nouveau'] ?? ''), 'tous' => !empty($in['tous'])]);
             $prevu($r, 'remplacer', $in['id'] ?? 0, 'Texte changé : « ' . mb_substr(wp_strip_all_tags((string) ($in['ancien'] ?? '')), 0, 80) . ' » devient « ' . mb_substr(wp_strip_all_tags((string) ($in['nouveau'] ?? '')), 0, 80) . ' »');
+            if ($actions && !is_wp_error($r)) { $k = array_key_last($actions); $actions[$k]['avant'] = mb_substr(trim(wp_strip_all_tags((string) ($in['ancien'] ?? ''))), 0, 220); $actions[$k]['apres'] = mb_substr(trim(wp_strip_all_tags((string) ($in['nouveau'] ?? ''))), 0, 220); }
             break;
         case 'modifier_contenu':
             $args = ['jeton' => $jeton, 'op' => 'modifier', 'id' => (int) ($in['id'] ?? 0)];
@@ -502,7 +533,7 @@ function aled08e_lia_reglages_html() {
     echo '<tr><th>Lumi : pages SEO automatiques</th><td><label><input type="checkbox" name="seo_auto" value="1"' . checked(get_option('aled08_seo_auto_pause') !== '1', true, false) . '> Écrire les pages de l’abonnement toutes seules (Mini : une par mois, Maxi : une par semaine). Vous relisez chaque page par e-mail : sans refus, elle est en ligne au bout de ' . (int) ALED08E_FEU_VERT_MIN . ' minutes.</label></td></tr>';
     echo '<tr><th>Mirette : analyse de la semaine</th><td><label><input type="checkbox" name="mirette_auto" value="1"' . checked(get_option('aled08_mirette_pause') !== '1', true, false) . '> Écrire l’analyse et deux suggestions chaque semaine pour les clients Maxi (dans leurs petits mots).</label></td></tr>';
     echo '<tr><th><label for="aled08e-bulle-mod">Modèle de Cerise et Mirette</label></th><td><input type="text" id="aled08e-bulle-mod" name="bulle_modele" class="regular-text" value="' . esc_attr(function_exists('aled08e_bulle_modele') ? aled08e_bulle_modele() : '') . '"><p class="description">Rapide et économique pour la bulle et l’analyse. Bricou et Lumi utilisent le modèle plus bas.</p></td></tr>';
-    echo '<tr><th>Maintenant</th><td><button type="submit" name="lancer_bande" value="1" class="button">Lancer Lumi et Mirette maintenant</button><p class="description">Fait tout de suite le passage du jour (utile pour essayer).</p></td></tr>';
+    echo '<tr><th>Maintenant</th><td><button type="submit" name="lancer_bande" value="1" class="button">Lancer la bande maintenant</button><p class="description">Relance les demandes en attente chez Bricou et fait tout de suite le passage du jour de Lumi et Mirette.</p></td></tr>';
     echo '</table>';
     echo '<p>Bricou fait les demandes « par Bricou » toute seule sur le site du client, en quelques minutes, sans validation de votre part : seul le client valide l’aperçu. Il faut : une clé Claude, l’extension <code>alexlia-sdk</code> installée ici (kit officiel Anthropic), et l’extension <code>alexlia-connecteur</code> sur chaque site client, reliée dans la fiche du client.</p>';
     echo '<table class="form-table" role="presentation">';
@@ -528,6 +559,7 @@ function aled08e_lia_reglages_save($P) {
     if ($k !== '' && preg_match('/^sk-ant-[A-Za-z0-9_-]{20,}$/', $k)) aled08e_option_set('aled08_anthropic_key', $k);
     $m = sanitize_text_field((string) ($P['lia_modele'] ?? ''));
     if ($m !== '' && preg_match('/^claude-[a-z0-9.-]+$/', $m)) update_option('aled08_lia_modele', $m, false);
+    if ($k !== '') aled08e_lia_rattraper(); // une clé vient d'être enregistrée : les demandes en attente partent chez Bricou
     if (array_key_exists('bulle_modele', $P)) {
         $bm = sanitize_text_field((string) $P['bulle_modele']);
         if ($bm === '' || preg_match('/^claude-[a-z0-9.-]+$/', $bm)) update_option('aled08_bulle_modele', $bm, false);
@@ -535,9 +567,10 @@ function aled08e_lia_reglages_save($P) {
         update_option('aled08_mirette_pause', empty($P['mirette_auto']) ? '1' : '0', false);
     }
     if (!empty($P['lancer_bande'])) {
+        $relancees = aled08e_lia_rattraper();
         if (function_exists('aled08e_seo_auto_tourner')) aled08e_seo_auto_tourner();
         if (function_exists('aled08e_mirette_tourner')) aled08e_mirette_tourner();
-        set_transient('aled08e_msg_' . get_current_user_id(), 'Lumi et Mirette sont passés. Le détail est dans « Derniers travaux ».', 300);
+        set_transient('aled08e_msg_' . get_current_user_id(), 'Lumi et Mirette sont passés' . (!empty($relancees) ? ', ' . (int) $relancees . ' demande(s) relancée(s) chez Bricou' : '') . '. Le détail est dans « Derniers travaux ».', 300);
         return 'bande';
     }
     if (!empty($P['tester_lia'])) {
@@ -574,6 +607,7 @@ function aled08e_lia_profil_save($uid) {
     if ($url !== '' && wp_parse_url($url, PHP_URL_SCHEME) !== 'https') $url = '';
     update_user_meta($uid, 'aled08_lia_url', untrailingslashit($url));
     if (!empty($_POST['aled08e_lia_nouvelle'])) update_user_meta($uid, 'aled08_lia_secret', aled08e_lia_secret_nouveau());
+    aled08e_lia_rattraper();
 }
 add_action('personal_options_update', 'aled08e_lia_profil_save');
 add_action('edit_user_profile_update', 'aled08e_lia_profil_save');
@@ -783,7 +817,9 @@ function aled08e_lia_bloc_confirmation($p) {
     if (get_post_meta($p->ID, '_aled08_lia_etat', true) !== 'a_confirmer') return '';
     $actions = array_filter((array) get_post_meta($p->ID, '_aled08_lia_actions', true), function ($a) { return !empty($a['prepare']); });
     $h = '<div class="lia-confirm"><p class="lia-confirm-h">' . aled08e_monster('bricou') . '<strong>Bricou a préparé votre modification. Rien n’est encore changé : regardez l’aperçu. Si c’est bon, je le vérifie et c’est en ligne.</strong></p><ul>';
-    foreach ($actions as $a) $h .= '<li><span>' . esc_html($a['detail']) . '</span>' . (!empty($a['apercu']) ? ' <a class="btn btn-light btn-sm" href="' . esc_url($a['apercu']) . '" target="_blank" rel="noopener">' . aled08e_icon('globe') . '<span>Voir l’aperçu</span></a>' : '') . '</li>';
+    foreach ($actions as $a) $h .= '<li><span>' . esc_html($a['detail']) . '</span>'
+        . (isset($a['avant'], $a['apres']) ? '<div class="lia-diff"><div class="lia-diff-av"><small>Avant</small><p>' . esc_html($a['avant']) . '</p></div><span class="lia-diff-fl" aria-hidden="true">' . aled08e_icon('arrow-right') . '</span><div class="lia-diff-ap"><small>Après</small><p>' . esc_html($a['apres']) . '</p></div></div>' : '')
+        . (!empty($a['apercu']) ? ' <a class="btn btn-light btn-sm" href="' . esc_url($a['apercu']) . '" target="_blank" rel="noopener">' . aled08e_icon('globe') . '<span>Voir l’aperçu</span></a>' : '') . '</li>';
     $h .= '</ul><form method="post" action="' . esc_url(aled08e_url()) . '" class="lia-confirm-form">'
         . '<input type="hidden" name="aled08e_lia_confirmer" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_lia_confirmer_' . $p->ID, '_aled08e_lia', true, false)
         . '<button class="btn btn-primary" type="submit" name="reponse" value="oui">' . aled08e_icon('check') . '<span>Oui, c’est bon</span></button>'

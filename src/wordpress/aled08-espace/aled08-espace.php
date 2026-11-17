@@ -459,7 +459,8 @@ add_action('template_redirect', function () {
     $illimite = aled08e_modifs_illimitees($uid);
     if ($illimite && !$extra) $par = 'lia';
     // Cerise ne peut pas travailler pour ce client (clé Claude absente ou site pas encore relié) : la demande va à Alex, sans jeton
-    if ($par === 'lia' && !aled08e_lia_prete_pour($uid)) $par = 'alex';
+    $attendu = ($par === 'lia' && !aled08e_lia_prete_pour($uid)) ? aled08e_lia_manque($uid) : '';
+    if ($attendu !== '') $par = 'alex';
     // deux compteurs séparés : les modifications par Cerise (forfait + option Cerise +) et celles par Alex
     $famille = aled08e_famille($uid);
     // prix de la modification par Cerise, en Jetons Cerise : selon le nombre de mots écrits et de photos jointes
@@ -483,6 +484,7 @@ add_action('template_redirect', function () {
     if (is_wp_error($pid)) $back('erreur');
     update_post_meta($pid, '_aled08_statut', 'recue');
     update_post_meta($pid, '_aled08_par', $par);
+    if ($attendu !== '') update_post_meta($pid, '_aled08_lia_attendu', $attendu); // Bricou la prendra dès qu'il sera prêt (aled08e_lia_rattraper)
     if (aled08e_priorite($uid)) update_post_meta($pid, '_aled08_priorite', 1); // Maxi : passe en premier
     if ($over) { update_post_meta($pid, '_aled08_boost', 1); update_post_meta($pid, '_aled08_hors_forfait', 1); aled08e_boost_facturer($pid, $uid); }
     $payes = [];
@@ -547,7 +549,7 @@ add_action('template_redirect', function () {
         . 'Site     : ' . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\n"
         . 'Délai    : réponse sous ' . $delai . ($urgent ? ' (URGENT)' : '') . ($over ? ' (INTERVENTION EN PLUS : ' . aled08e_boost_txt() . ', ' . (get_post_meta($pid, '_aled08_boost_facture', true) ? 'ajoutée à sa prochaine facture Stripe' : 'à facturer à la main') . ')' : '') . "\n"
         . ($payes ? 'Extras   : ' . aled08e_extras_demande_txt($pid) . "\n" : '')
-        . 'Par      : ' . ($par === 'lia' ? 'Bricou (instantané, avec aperçu à valider)' : 'Alex (modification à la main)') . "\n"
+        . 'Par      : ' . ($par === 'lia' ? 'Bricou (instantané, avec aperçu à valider)' : 'Alex (modification à la main)' . ($attendu !== '' ? ' : Bricou n’a pas pu la prendre (' . $attendu . '). Elle sera relancée toute seule dès que c’est réglé.' : '')) . "\n"
         . ($photo ? "Photo    : $photo\n" : '')
         . "\nDemande :\n$txt\n\n"
         . 'Suivre et répondre : ' . admin_url('post.php?post=' . $pid . '&action=edit') . "\n";
