@@ -188,7 +188,7 @@ def extract():
     print(len(seen), 'morceaux à traduire,', sum(len(k) for k in seen), 'caractères')
 
 
-SITE = 'https://www.aled08.fr'
+SITE = 'https://www.les-minis-monstres.fr'
 PARTS = os.path.join(ROOT, 'src', 'i18n', 'parts')
 LEGAL = ('/mentions-legales/', '/conditions-generales/', '/politique-de-confidentialite/')
 GARDE_FR = ('/assets/', '/wp-', '/envoi.php', '/en/', '/en', '/feed', '/xmlrpc')

@@ -10,16 +10,17 @@
 
 const site = {
   // Domaine définitif (sans slash final). Sert aux balises canonical, au sitemap, à l'Open Graph.
-  url: 'https://www.aled08.fr',
+  url: 'https://www.les-minis-monstres.fr',
   name: 'Les Minis Monstres',
   baseline: 'Sites internet et SEO', // n'est plus affiché sous le logo
   legalName: 'Les Minis Monstres, nom commercial d’Alexandre Poquet EI', // raison sociale / nom commercial
-  // Le jour où le domaine les-minis-monstres.com est réservé et relié : changer url ci-dessus et rediriger aled08.fr.
-  futurDomaine: 'les-minis-monstres.com',
+  // Novembre 2026 : le site passe de aled08.fr à les-minis-monstres.fr. L'ancien domaine renvoie (301) vers le nouveau,
+  // sauf les appels techniques (wp-json, paiements). Voir scripts/wp-export.py et docs/gestion-du-site.md (« Changer de domaine »).
+  ancienDomaine: 'aled08.fr',
   owner: 'Alexandre Poquet',
 
   // Aucune coordonnée personnelle affichée : on écrit par le formulaire de contact (/contact/).
-  // Quand une adresse de support existe (ex. support@les-minis-monstres.com), la mettre ici : elle s'affichera.
+  // Quand une adresse de support existe (ex. support@les-minis-monstres.fr), la mettre ici : elle s'affichera.
   email: '',
   contactPath: '/contact/',
 
@@ -345,7 +346,7 @@ const boost = { prix: aLaDemande[0].prix };
 const clients = [
   { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', sitemap: 'https://www.floreetchenilles.fr/sitemap_index.xml', forfait: 'base', packsSeo: 2, type: 'boutique', optionsCreation: [], seo: ['/fleurs/', '/occasions/', '/conseils/', '/lexique/', '/guide/', '/fleurs-eternelles-ardennes/', '/livraison-fleurs-signy-l-abbaye/', '/artisan-fleuriste-signy-l-abbaye/'], genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Des fleurs éternelles en fil chenille, faites main à Signy-l’Abbaye, dans les Ardennes. La boutique ouvre très bientôt.' },
   { nom: 'Dodedo', domaine: 'dodedo.fr', url: 'https://dodedo.fr/', sitemap: 'https://www.dodedo.fr/sitemap.xml', forfait: 'base', packsSeo: 1, type: 'une-page', optionsCreation: [], seo: ['/comprendre/', '/conseils/'], genre: 'Site vitrine', icon: 'hand-heart', color: 'lilac', desc: 'Le site de Dominique Schneider, magnétiseur et barreur de feu. Une page d’accueil claire, entourée de pages de conseils pour être trouvé sur Google.' },
-  { nom: 'Les Minis Monstres', domaine: 'les-minis-monstres.com', url: '/', sitemap: 'https://www.aled08.fr/wp-sitemap.xml' /* à passer sur https://www.les-minis-monstres.com/wp-sitemap.xml au changement de domaine */, genre: 'Notre propre site', icon: 'sparkles', color: 'lilac', desc: 'Notre site à nous : on se fait confiance, alors on se met dedans aussi.' },
+  { nom: 'Les Minis Monstres', domaine: 'les-minis-monstres.fr', url: '/', sitemap: 'https://www.les-minis-monstres.fr/wp-sitemap.xml', genre: 'Notre propre site', icon: 'sparkles', color: 'lilac', desc: 'Notre site à nous : on se fait confiance, alors on se met dedans aussi.' },
   { nom: 'Les Notes du Temps', domaine: 'lesnotesdutemps.fr', url: 'https://www.lesnotesdutemps.fr/', sitemap: 'https://www.lesnotesdutemps.fr/sitemap.xml', forfait: 'base', genre: 'Site vitrine', icon: 'music', color: 'peach', enCreation: true, desc: 'Bientôt en ligne. Je vous le montre dès qu’il est prêt.' },
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: 'Le site d’un électricien dans les Ardennes. Il sera en ligne très bientôt.' },
 ];

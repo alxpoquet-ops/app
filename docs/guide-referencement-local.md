@@ -48,7 +48,7 @@ Le nom, l'adresse et le téléphone doivent être **strictement identiques parto
 ## 4. Déclarer le site à Google
 
 1. Ouvrez Google Search Console et ajoutez le site.
-2. Envoyez le plan du site : `https://www.aled08.fr/sitemap.xml`.
+2. Envoyez le plan du site : `https://www.les-minis-monstres.fr/sitemap.xml`.
 3. Après un mois, regardez l'onglet « Performances » : il indique sur quelles recherches le site apparaît.
 
 ## 5. Les recherches visées par le site

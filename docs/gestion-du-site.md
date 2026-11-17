@@ -1,6 +1,6 @@
 # Gérer le site ALED08 : le guide du propriétaire
 
-Ce guide explique, en français simple, comment fonctionne le site www.aled08.fr au quotidien : les commandes, les paiements, les noms de domaine, les comptes clients et les demandes de modification. Tout se passe dans WordPress, menu **ALED08** (le visage souriant, en haut à gauche).
+Ce guide explique, en français simple, comment fonctionne le site www.les-minis-monstres.fr au quotidien : les commandes, les paiements, les noms de domaine, les comptes clients et les demandes de modification. Tout se passe dans WordPress, menu **ALED08** (le visage souriant, en haut à gauche).
 
 ## 1. L'offre, en bref (depuis le 17 novembre 2026)
 
@@ -134,7 +134,7 @@ Les constantes passent avant les réglages de la page.
 Le webhook est la façon dont Stripe prévient le site qu'un paiement est confirmé. Sans lui, les commandes restent « En attente de paiement » même quand le client a payé.
 
 1. Dans Stripe : **Développeurs › Webhooks › Ajouter une destination** (ou « Ajouter un point de terminaison »).
-2. Adresse à appeler : `https://www.aled08.fr/wp-json/aled08/v1/stripe`
+2. Adresse à appeler : `https://www.les-minis-monstres.fr/wp-json/aled08/v1/stripe`
 3. Format des événements : **Snapshot** (l'objet complet est envoyé). Version d'API : **2026-10-28.endive**. Si Stripe propose « version du compte », choisissez explicitement cette version.
 4. Événements à cocher (7) :
    - `checkout.session.completed`
@@ -212,12 +212,12 @@ Ce qu'elle sait faire : changer un texte (horaires, prix affiché, phrase), modi
 À installer une fois :
 
 1. Une clé Claude : sur platform.claude.com, créez un compte, ajoutez un moyen de paiement (on paie à l'usage, quelques centimes par demande), puis API keys, Create key. Collez-la dans les Minis Monstres › Réglages, rubrique Cerise, ou mieux dans wp-config.php : `define('ALED08_ANTHROPIC_KEY', 'sk-ant-...');`. Bouton « Tester Cerise » pour vérifier.
-2. L'extension `alexlia-sdk.zip` (kit officiel Anthropic) sur aled08.fr. Elle ne charge rien tant que Cerise ne travaille pas.
+2. L'extension `alexlia-sdk.zip` (kit officiel Anthropic) sur les-minis-monstres.fr. Elle ne charge rien tant que Cerise ne travaille pas.
 
 Pour chaque client :
 
 1. Sur le site du client, installez `alexlia-connecteur.zip` (dans `wp-export/` après `python3 scripts/wp-export.py`).
-2. Dans la fiche du client sur aled08.fr (Utilisateurs, le client, rubrique « Cerise : site relié ») : mettez l'adresse du site (en https), cochez « Créer la clé », enregistrez. Copiez la clé affichée.
+2. Dans la fiche du client sur les-minis-monstres.fr (Utilisateurs, le client, rubrique « Cerise : site relié ») : mettez l'adresse du site (en https), cochez « Créer la clé », enregistrez. Copiez la clé affichée.
 3. Sur le site du client, Réglages › Les Minis Monstres : collez la clé, enregistrez. De retour sur la fiche client, la ligne « Connexion » doit dire OK.
 
 Tant qu'un client n'est pas relié, ses demandes « par Cerise » arrivent chez vous par e-mail comme avant, et vous les faites à la main.
@@ -261,7 +261,7 @@ Quatre sont gratuits parce qu'ils tournent dans le navigateur du client : Annonc
 
 ## 10. Le parrainage
 
-- Chaque client a un code (par exemple `LILA-7K2`) et un lien `https://www.aled08.fr/creer-mon-site/?parrain=LILA-7K2`, onglet Parrainage, avec un bouton WhatsApp.
+- Chaque client a un code (par exemple `LILA-7K2`) et un lien `https://www.les-minis-monstres.fr/creer-mon-site/?parrain=LILA-7K2`, onglet Parrainage, avec un bouton WhatsApp.
 - Le code suit le visiteur jusqu'à la commande (champ « Code de parrainage » de `/commander/`, prérempli). Vous le voyez dans l'e-mail de commande et dans la fiche.
 - Quand vous cliquez « Site en ligne », le parrain reçoit un e-mail et un mois offert est noté chez le parrain et chez le filleul (« Mois offerts à utiliser » dans leurs fiches). Pour l'appliquer, ajoutez un coupon ou un crédit dans Stripe sur l'abonnement concerné, puis remettez le compteur à zéro dans la fiche.
 
@@ -309,6 +309,20 @@ Puis dans WordPress :
 
 Ne touchez jamais aux fichiers de l'extension directement sur le serveur : la prochaine mise à jour les écraserait. Les changements se font dans `src/wordpress/aled08-espace/`, puis export.
 
+## 12 bis. Changer de domaine : de aled08.fr à les-minis-monstres.fr
+
+Le site est prêt pour le nouveau nom (adresse dans `src/config.js`, `site.url`). Le jour du changement se fait dans cet ordre.
+Tant que les étapes 1 et 2 ne sont pas faites, **ne passez pas à l'étape 3** : le site cesserait de répondre.
+
+1. **Chez le registrar** (là où vous avez acheté le nom) : dans la zone DNS de `les-minis-monstres.fr`, un enregistrement A pour `@` et un pour `www`, qui pointent vers l'adresse du serveur actuel (celle de aled08.fr). Ou, plus simple : mettre les serveurs de noms de l'hébergeur. Comptez de quelques minutes à quelques heures.
+2. **Chez l'hébergeur** (o2switch) : ajouter `les-minis-monstres.fr` comme domaine alias de aled08.fr (même dossier), puis attendre le certificat HTTPS (AutoSSL). Vérifiez que `https://www.les-minis-monstres.fr` affiche bien le site.
+3. **Dans WordPress** : on remplace l'adresse du site (Réglages › Général, ou la commande de remplacement d'adresse), puis on remet en ligne le thème et l'import (les pages reprennent la nouvelle adresse dans leurs balises canonical et le plan du site). L'ancien nom renvoie alors (301) vers la même page du nouveau, sauf `wp-json`, `wp-admin` et le cron.
+4. **Stripe** : le webhook garde l'ancienne adresse jusqu'à ce que vous le changiez. Dans Stripe, Développeurs › Webhooks, remplacez par `https://www.les-minis-monstres.fr/wp-json/aled08/v1/stripe`. L'ancienne adresse continue de répondre en attendant.
+5. **E-mails** : les messages du site partent de l'adresse du nouveau nom. Vérifiez chez votre fournisseur d'e-mail que le domaine est autorisé à envoyer (SPF et DKIM), sinon ils iront dans les indésirables. Voir l'adresse de contact dans `src/config.js` (`email`).
+6. **Google Search Console** : ajoutez le nouveau site, puis utilisez « Changement d'adresse » depuis l'ancien. Envoyez le plan du site `https://www.les-minis-monstres.fr/wp-sitemap.xml`.
+7. **Sites clients** : l'extension « connecteur » (1.5.1) et la mention « Site fait par les Minis Monstres » pointent vers le nouveau nom. Les sites déjà installés gardent l'ancien lien, qui redirige : rien ne casse, vous mettez à jour au fil des visites.
+8. **Liens à vous** : fiches Google, réseaux sociaux, signature d'e-mail.
+
 ## 13. Vérifications après la mise en ligne
 
 Faites cette liste une fois, en vrai, avec un téléphone et un ordinateur.
@@ -322,7 +336,7 @@ Faites cette liste une fois, en vrai, avec un téléphone et un ordinateur.
 - [ ] Stripe : le bouton « Gérer mon paiement et mes factures » ouvre le portail, sans possibilité d'annuler l'abonnement.
 - [ ] Stripe en mode réel : clés et webhook réels enregistrés, test de connexion « OK (mode réel) ». Une vraie commande à 5 € sur un compte à vous, puis remboursement depuis Stripe.
 - [ ] Le prélèvement SEPA, si activé : la commande reste « prélèvement en cours » puis passe à « Payée » quelques jours plus tard.
-- [ ] ALED08 › Tableau de bord : la tâche quotidienne est planifiée (date affichée). Si elle ne tourne pas (sites peu visités), ajoutez une tâche cron chez o2switch qui appelle `https://www.aled08.fr/wp-cron.php?doing_wp_cron` une fois par jour.
+- [ ] ALED08 › Tableau de bord : la tâche quotidienne est planifiée (date affichée). Si elle ne tourne pas (sites peu visités), ajoutez une tâche cron chez o2switch qui appelle `https://www.les-minis-monstres.fr/wp-cron.php?doing_wp_cron` une fois par jour.
 - [ ] Une demande de modification depuis l'espace de test, avec une photo : e-mail reçu, statut « Faite » envoie l'e-mail au client.
 - [ ] Le lien de parrainage préremplit le code sur `/commander/`.
 - [ ] `/comparatif-shopify/` redirige vers `/comparatif/` (301). Les anciennes adresses de l'électricien redirigent vers l'accueil.

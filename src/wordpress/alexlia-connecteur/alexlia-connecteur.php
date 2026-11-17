@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Alex & Co : connecteur
  * Description: À installer sur le site d'un client. Permet à Lia (l'IA d'Alex & Co) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 1.5.0
+ * Version: 1.5.1
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '1.5.0');
+define('ALEXLIA_CONN_VERSION', '1.5.1');
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Co (Réglages › Alex & Co)
@@ -20,7 +20,7 @@ function alexlia_conn_secret() {
 }
 function alexlia_conn_source() {
     // le site d'Alex & Co, seule origine acceptée pour les images à importer
-    return (string) get_option('alexlia_source', 'https://www.aled08.fr');
+    return (string) get_option('alexlia_source', 'https://www.les-minis-monstres.fr');
 }
 
 add_action('admin_menu', function () {
@@ -212,8 +212,10 @@ function alexlia_conn_publier($args) {
 /* Importer une image envoyée par le client (uniquement depuis le site Alex & Co) */
 function alexlia_conn_image($args) {
     $url = esc_url_raw((string) ($args['url'] ?? ''));
+    // le site des Minis Monstres, sous son nom actuel ou son ancien nom (aled08.fr) : les photos déjà envoyées gardent leur adresse
     $src = wp_parse_url(alexlia_conn_source(), PHP_URL_HOST);
-    if (!$url || wp_parse_url($url, PHP_URL_HOST) !== $src) return new WP_Error('alexlia_image', 'Image refusée : elle doit venir du site Alex & Co.', ['status' => 400]);
+    $ok = [$src, 'aled08.fr', 'www.aled08.fr'];
+    if (!$url || !in_array(wp_parse_url($url, PHP_URL_HOST), $ok, true)) return new WP_Error('alexlia_image', 'Image refusée : elle doit venir du site Alex & Co.', ['status' => 400]);
     require_once ABSPATH . 'wp-admin/includes/file.php';
     require_once ABSPATH . 'wp-admin/includes/media.php';
     require_once ABSPATH . 'wp-admin/includes/image.php';

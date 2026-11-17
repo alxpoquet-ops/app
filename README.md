@@ -60,7 +60,7 @@ npm run images    # régénère l'image de partage et les icônes (nécessite Pl
 2. Envoyez tout le contenu de `dist/` (y compris `.htaccess` et `envoi.php`) à la racine du site.
 3. Le formulaire passe par `envoi.php` (fonction `mail()` de PHP) : faites un envoi de test.
 
-### WordPress (www.aled08.fr)
+### WordPress (www.les-minis-monstres.fr)
 `node build.js && python3 scripts/wp-export.py` produit trois archives dans `wp-export/` :
 - `aled08.zip` : le thème (styles, en-tête, pied de page, formulaire de contact, redirections des anciennes adresses) ;
 - `aled08-import.zip` : extension d'import à usage unique (crée les pages à partir de `dist/`, à désactiver et supprimer après usage) ;

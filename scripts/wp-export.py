@@ -25,7 +25,10 @@ DIST = os.path.join(ROOT, 'dist')
 OUT = os.path.join(ROOT, 'wp-export')
 THEME = 'aled08'
 THEME_URI = '/wp-content/themes/' + THEME
-SITE = 'https://www.aled08.fr'
+def _config(expr):
+    return subprocess.run(['node', '-e', 'const c=require("./src/config.js");console.log(' + expr + ')'], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
+SITE = _config('c.site.url')  # le domaine du site vient de src/config.js (site.url)
+OLD_DOMAIN = _config('c.site.ancienDomaine || ""')  # l'ancien domaine, renvoyé vers le nouveau
 FORM_RECIPIENT = 'alx.poquet@gmail.com'
 # Anciennes adresses (ancien site d'électricien, anciennes pages du site ALED08) : redirigées vers l'accueil,
 # sauf cas particuliers. Les clés de OLD_TARGETS sont toujours redirigées, même absentes de wp-old-paths.txt.
@@ -208,7 +211,7 @@ def chrome(langue=''):
 # ------------------------------------------------------------------ fichiers PHP du thème
 STYLE_CSS = """/*
 Theme Name: Les Minis Monstres
-Theme URI: https://www.aled08.fr
+Theme URI: __SITE__
 Author: Les Minis Monstres
 Description: Thème sur mesure des Minis Monstres. Styles, en-tête, pied de page, formulaire de contact.
 Version: 2.0.0
@@ -300,6 +303,22 @@ add_action('template_redirect', function () {
     if ($path !== '/en' && strpos($path, '/en/') !== 0) return;
     $fr = '/' . ltrim(substr($path, 3), '/');
     wp_safe_redirect(home_url($fr), 301); exit;
+}, 0);
+
+/* Changement de domaine : l'ancien nom renvoie (301) vers la même page sur le nouveau. Rien ne bouge tant que le site s'appelle
+ * encore comme l'ancien domaine, et les appels techniques (wp-json, wp-admin, cron) ne sont jamais redirigés
+ * (le webhook Stripe et les connecteurs des sites clients continuent d'y répondre). */
+add_action('template_redirect', function () {
+    $anciens = array_filter(['__OLD__', 'www.__OLD__']);
+    if (count($anciens) < 2) return;
+    $hote = strtolower((string) ($_SERVER['HTTP_HOST'] ?? ''));
+    $actuel = strtolower((string) wp_parse_url(home_url(), PHP_URL_HOST));
+    if (!in_array($hote, $anciens, true) || in_array($actuel, $anciens, true)) return;
+    $methode = strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET'));
+    if ($methode !== 'GET' && $methode !== 'HEAD') return;
+    $uri = (string) ($_SERVER['REQUEST_URI'] ?? '/');
+    foreach (['/wp-json/', '/wp-admin', '/wp-login', '/wp-cron', '/xmlrpc', '/?rest_route='] as $debut) if (strpos($uri, $debut) === 0) return;
+    wp_redirect(home_url($uri), 301); exit;
 }, 0);
 
 /* Anciennes adresses : plan du site, et pages de l'ancien site d'électricien */
@@ -617,8 +636,8 @@ def main():
         write(os.path.join(tdir, 'parts', 'bottom-en.html'), bottom)
         write(os.path.join(tdir, 'parts', 'mobilebar-en.html'), bar)
         write(os.path.join(tdir, 'parts', '404-en.html'), notfound)
-    write(os.path.join(tdir, 'style.css'), STYLE_CSS)
-    write(os.path.join(tdir, 'functions.php'), FUNCTIONS_PHP.replace('__RECIPIENT__', FORM_RECIPIENT))
+    write(os.path.join(tdir, 'style.css'), STYLE_CSS.replace('__SITE__', SITE))
+    write(os.path.join(tdir, 'functions.php'), FUNCTIONS_PHP.replace('__RECIPIENT__', FORM_RECIPIENT).replace('__OLD__', OLD_DOMAIN))
     write(os.path.join(tdir, 'header.php'), HEADER_PHP)
     write(os.path.join(tdir, 'footer.php'), FOOTER_PHP)
     write(os.path.join(tdir, 'page.php'), PAGE_PHP)

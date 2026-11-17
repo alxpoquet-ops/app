@@ -7,7 +7,7 @@
 declare(strict_types=1);
 
 const DEST = '';
-const SITE = 'https://www.aled08.fr';
+const SITE = 'https://www.les-minis-monstres.fr';
 
 function back(string $path): void {
     header('Location: ' . $path, true, 303);

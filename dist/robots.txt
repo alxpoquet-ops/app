@@ -3,4 +3,4 @@ Allow: /
 Disallow: /merci/
 Disallow: /envoi.php
 
-Sitemap: https://www.aled08.fr/sitemap.xml
+Sitemap: https://www.les-minis-monstres.fr/sitemap.xml

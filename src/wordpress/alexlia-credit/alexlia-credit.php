@@ -8,7 +8,7 @@
  */
 defined('ABSPATH') || exit;
 
-if (!defined('ALEXLIA_CREDIT_URL')) define('ALEXLIA_CREDIT_URL', 'https://www.aled08.fr/');
+if (!defined('ALEXLIA_CREDIT_URL')) define('ALEXLIA_CREDIT_URL', 'https://www.les-minis-monstres.fr/');
 
 /* La mention : texte, logo (la tête d'Alex au casque de chantier) et lien, puis l'année. */
 function alexlia_credit_html() {
