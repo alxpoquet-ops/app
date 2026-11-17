@@ -225,14 +225,14 @@ function economie() {
   const w = (x) => `${Math.max(10, Math.round((x / mAgence) * 100))}%`;
   return `<div class="eco reveal">
   <h3>${icon('scale')}${marche.fois} fois moins cher, à site égal</h3>
-  <p class="eco-base">Pour comparer justement : un site vitrine de ${n} pages, avec son référencement sur Google.</p>
+  <p class="eco-base">Pour comparer justement : un site vitrine de ${n} pages, avec son référencement sur Google${n === creation.pages ? ', exactement ce que comprend le nôtre' : ''}.</p>
   <div class="eco-barres" role="img" aria-label="Un site vitrine de ${n} pages avec référencement coûte en général ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)} en agence, ${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)} chez un indépendant. Chez les Minis Monstres : ${euro(creation.prix)}.">
     <p class="eco-ligne"><span>Agence web</span><i style="width:${w(mAgence)}"></i><b>${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}</b></p>
     <p class="eco-ligne"><span>Indépendant</span><i style="width:${w(mInde)}"></i><b>${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)}</b></p>
     <p class="eco-ligne is-nous"><span>Chez les Minis Monstres</span><i style="width:${w(creation.prix)}"></i><b>${euro(creation.prix)}</b></p>
   </div>
   <p>Pas de secret : j’ai passé du temps à automatiser mon travail, et tout ce qui se répète se fait maintenant tout seul. Je conçois le site et je vérifie tout à la main. Vous ne payez pas des semaines de travail. Le prix est le même pour tout le monde, affiché ici, sans devis.</p>
-  <p class="eco-note">Nos repères : les prix publiés en France en 2026 pour un site vitrine de ${n} pages avec référencement, textes pour Google compris. Ce sont des moyennes : chaque devis est différent. Chez nous, ${creation.pages} pages au plus pour ${euro(creation.prix)}.</p>
+  <p class="eco-note">Nos repères : les prix publiés en France en 2026 pour un site vitrine de ${n} pages avec référencement, textes pour Google compris. Ce sont des moyennes : chaque devis est différent. Chez nous, ${creation.pages} pages au plus pour ${euro(creation.prix)}, référencement de base compris.</p>
 </div>`;
 }
 

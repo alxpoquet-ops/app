@@ -89,10 +89,10 @@ const sections = {
 // Création du site : 500 €, quel que soit le site (une page ou plusieurs). Une boutique en ligne : + 200 €.
 // Puis un abonnement obligatoire : 10 € par mois, sur lequel on ajoute ou on retire des extras quand on veut.
 // pages : pages comprises dans la création. pagePlus : prix d'une page en plus (payée une fois). pagesPlusMax : au-delà, on en parle.
-// Offre du 17 novembre 2026 : « Site Internet Professionnel », 500 €, jusqu'à 20 pages. Les pages que le client n'utilise pas
+// Offre du 17 novembre 2026 : « Site Internet Professionnel », 500 €, jusqu'à 15 pages (20 au tout début, ramené à 15 le jour même). Les pages que le client n'utilise pas
 // deviennent des pages pour Google (SEO). Deux options seulement : le Pack SEO et la boutique en ligne.
 // pagePlus et pagesPlusMax ne sont plus proposés (gardés pour les anciennes commandes de l'extension).
-const creation = { prix: 500, pages: 20, pagePlus: 10, pagesPlusMax: 0, boutique: 200, exemplePages: 8 };
+const creation = { prix: 500, pages: 15, pagePlus: 10, pagesPlusMax: 0, boutique: 200, exemplePages: 8 };
 // Offre événement : un code donné sur une foire, un marché, un salon ou un événement professionnel.
 // remise : en %, sur la création du site (site et options payés une fois). Les codes valables se règlent dans
 // l'extension WordPress (Réglages, « Codes événement ») : le serveur vérifie le code et recalcule le prix.
@@ -101,11 +101,12 @@ const evenement = { remise: 20, lieux: ['une foire', 'un marché', 'un salon', '
 // par un indépendant (sources dans docs/prix-et-ia-2026.md). À relire une fois par an.
 // vitrine : site vitrine d'environ cinq pages. boutique : boutique en ligne simple. entretien : maintenance par mois.
 // bas : les offres à bas prix qui existent aussi (plus affichées sur le site depuis novembre 2026, gardées pour mémoire).
-// Repères de marché pour comparer à prestation égale : un site vitrine de 10 pages AVEC référencement (SEO), en France,
-// en 2026. Indépendant : 1 500 à 5 000 € HT selon les sources, plus 60 à 200 € par page de texte écrit pour Google
-// et 200 à 500 € de réglages SEO ; on retient le cœur de la fourchette, 2 000 à 3 000 €. Agence : 3 000 à 12 000 €,
-// on retient 3 000 à 10 000 €. Sources consultées en novembre 2026 (guides de prix publiés par des prestataires).
-const marche = { pagesCompare: 10, agenceMin: 3000, agenceMax: 10000, vitrineMin: 2000, vitrineMax: 3000, boutiqueMin: 2000, boutiqueMax: 6000, entretienMin: 60, entretienMax: 200, basMin: 400, basMax: 1300, fois: '4 à 5' };
+// Repères de marché pour comparer à prestation égale : un site vitrine de 15 pages (autant que chez nous) AVEC
+// référencement (SEO), en France, en 2026. Indépendant : 1 500 à 5 000 € HT pour 10 pages selon les sources, plus
+// 60 à 200 € par page de texte écrit pour Google (900 à 3 000 € pour 15 pages) : on retient 2 500 à 4 000 €.
+// Agence : 3 000 à 12 000 € pour 5 à 10 pages, 5 500 à 8 000 € pour 15 à 25 pages, 150 à 400 € la page rédigée pour
+// Google : on retient 4 000 à 10 000 €. Sources consultées en novembre 2026 (guides de prix publiés par des prestataires).
+const marche = { pagesCompare: 15, agenceMin: 4000, agenceMax: 10000, vitrineMin: 2500, vitrineMax: 4000, boutiqueMin: 2000, boutiqueMax: 6000, entretienMin: 60, entretienMax: 200, basMin: 400, basMax: 1300, fois: '4 à 5' };
 
 // ---------------------------------------------------------------- types de site (même prix, sauf la boutique)
 const types = [
@@ -135,7 +136,7 @@ const types = [
     qui: 'Pour présenter plusieurs services. Le meilleur choix pour sortir sur Google.',
     ideal: 'idéal pour le référencement, avec une page par sujet',
     pourQui: 'Pour vous si vous proposez plusieurs services, ou si vous voulez bien sortir sur Google. Chaque page parle d’un sujet précis, et Google peut montrer chacune dans ses résultats : c’est le meilleur choix pour le référencement. Par exemple : entreprise, commerce, profession libérale.',
-    inclus: ['Jusqu’à 20 pages', 'Menu clair sur téléphone', 'Formulaire de contact', 'SEO de chaque page'],
+    inclus: [`Jusqu’à ${creation.pages} pages`, 'Menu clair sur téléphone', 'Formulaire de contact', 'SEO de chaque page'],
   },
   {
     id: 'boutique',
