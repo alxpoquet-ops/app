@@ -2257,3 +2257,7 @@ a.client-url { text-decoration: none; }
 .formules.is-solo { grid-template-columns: 1fr; }
 .cf-abo .cf-corps { padding-right: 120px; }
 @media (max-width: 720px) { .cf-abo .cf-corps { padding-right: 0; } }
+/* Carte boutique : ce que la boutique ajoute dans l'espace client, et la note sur le stock */
+.cf-bq-sous { display: flex; align-items: center; gap: 8px; margin: 12px 0 0; font-weight: 800; color: var(--text); }
+.cf-bq-sous .ico { width: 18px; height: 18px; color: var(--c-dd); }
+.cf-bq-note { display: block; margin-top: 10px; color: var(--muted); font-weight: 600; font-size: .9rem; line-height: 1.45; }

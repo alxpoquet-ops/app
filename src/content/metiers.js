@@ -389,7 +389,7 @@ La création coûte ${prix} € pour un site sans boutique, jusqu’à ${pagesCo
       { q: 'J’ai déjà une page sur les réseaux sociaux, ai-je besoin d’un site ?', a: 'Les deux se complètent. Sur les réseaux, vos horaires et vos produits se noient vite sous les publications, et tout le monde n’y a pas de compte. Le site garde l’essentiel au même endroit, à votre nom.' },
       { q: 'Comment fonctionne le retrait en magasin ?', a: 'Le client choisit ses produits, paie en ligne et coche le retrait au moment de valider. Vous recevez la commande par e-mail, vous la préparez, et il passe la prendre aux horaires que vous avez fixés.' },
       { q: 'Je suis producteur et je vends à la ferme, un site m’est-il utile ?', a: 'Oui. Le site indique vos jours de vente, vos produits de saison et le chemin jusqu’à la ferme. Avec la boutique, vos clients peuvent même réserver leur panier à l’avance, et vous savez combien en préparer.' },
-      { q: 'Le stock du magasin et celui du site sont-ils liés ?', a: 'Pas automatiquement. La boutique suit les commandes passées en ligne, mais elle ne voit pas vos ventes au comptoir. Quand un produit vient à manquer, signalez-le dans votre espace client, et il est marqué épuisé sur le site : c’est une modification comprise.' },
+      { q: 'Le stock du magasin et celui du site sont-ils liés ?', a: 'Non. La boutique n’enregistre pas de stock : vos produits sont présentés en images, sans compteur de quantités. Quand un produit vient à manquer, signalez-le dans votre espace client, et il est marqué épuisé sur le site : c’est une modification comprise.' },
     ],
     voir: ['/guides/creer-boutique-en-ligne/', '/realisations/', '/etre-visible-sur-google/'],
   },

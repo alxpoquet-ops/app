@@ -175,12 +175,15 @@ function payBox() {
 // Le site à 500 € : ce qui est compris (dans cet ordre, comme sur la page Tarifs)
 const INCLUS_SITE = [`Jusqu’à ${creation.pages} pages`, 'Design personnalisé', 'Adapté à tous les écrans', 'Formulaire de contact', 'Accompagnement personnalisé', 'Les Minis Monstres pour vous aider'];
 // « On s'occupe de tout » (avec une formule) et « Je m'en occupe moi-même » (création seule, code fourni)
-const INCLUS_NOUS = ['Nom de domaine à votre nom', 'Hébergement', 'Installation et mise en ligne', 'Sauvegardes et sécurité', 'Surveillance et maintenance', 'Modifications incluses'];
+const INCLUS_NOUS = ['Nom de domaine à votre nom', 'Hébergement', 'Installation et mise en ligne', 'Sauvegardes et sécurité', 'Surveillance et maintenance', 'Modifications incluses', 'Tableau de bord de vos visites'];
 const INCLUS_MOI = ['Le code de votre site, prêt à installer', 'Une sauvegarde complète', 'Une petite notice d’installation'];
 // Les pages non utilisées deviennent des pages pour Google : l'exemple chiffré
 const PAGES_SEO = `Les pages non utilisées peuvent être transformées en pages SEO pour améliorer votre visibilité sur Google. Par exemple : vous utilisez ${creation.exemplePages} pages pour votre activité, les ${creation.pages - creation.exemplePages} pages restantes servent à vous faire trouver sur Google.`;
 const PACK_SEO = options.find((o) => o.id === 'packseo' && !o.retire);
-const BOUTIQUE_INCLUS = ['Catalogue produits', 'Panier', 'Paiement en ligne', 'Gestion des commandes', 'E-mails automatiques'];
+const BOUTIQUE_INCLUS = ['Vos produits présentés en images', 'Panier et paiement en ligne', 'Achat sans créer de compte', 'Gestion des commandes', 'E-mails automatiques'];
+// Ce que la boutique ajoute dans l'espace client (extension WordPress : includes/boutique.php et vacances.php)
+const BOUTIQUE_ESPACE = ['Codes promo et soldes', 'Mode vacances', 'Bandeau d’annonce', 'Vos commandes dans le tableau de bord'];
+const BOUTIQUE_STOCK = 'Pas de stock à tenir : on ne compte pas les quantités, vos produits sont présentés en images. Un produit manque ? Il passe en épuisé.';
 // Une formule, en carte. compact : sans la liste complète.
 function formuleCarte(f, { compact = false } = {}) {
   return `<article class="formule c-${f.color}${f.priorite ? ' is-evo' : ''}">
@@ -270,7 +273,7 @@ function bandeGrid({ complet = false, prix = true } = {}) {
 function optionsCompact() {
   const carte = (id, nom, prix, texte, inclus, info) => `<article class="opt-carte reveal"><span class="opt-carte-art">${petit(MONSTRE_OPTION[id])}</span><div><h3><span>${nomI(nom, id, info)}</span><b>+ ${euro(prix)}</b></h3><p>${inline(texte)}</p><ul class="plan-list">${inclus.map((x) => `<li>${icon('check')}<span>${esc(x)}</span></li>`).join('')}</ul></div></article>`;
   return `<div class="opt-cartes">
-  ${carte('boutique', 'Boutique en ligne', creation.boutique, 'Vos clients achètent sur votre site, même quand vous êtes fermé. Vous recevez la commande et le paiement.', BOUTIQUE_INCLUS, BOUTIQUE.info)}
+  ${carte('boutique', 'Boutique en ligne', creation.boutique, 'Vos clients achètent sur votre site, même quand vous êtes fermé, sans créer de compte. Dans votre espace client, vous gérez vos codes promo, vos soldes et le mode vacances. Pas de stock à tenir : vos produits sont présentés en images.', BOUTIQUE_INCLUS, BOUTIQUE.info)}
   ${PACK_SEO ? carte('packseo', `${PACK_SEO.name}, plus tard`, PACK_SEO.price.once, 'Plus votre site a de pages utiles, plus il apparaît dans Google. Quand vous le voulez, après la mise en ligne, vous le commandez depuis votre espace client.', [`${PACK_SEO.pages} pages SEO supplémentaires`, 'Payé une fois, depuis votre espace client'], PACK_SEO.info) : ''}
 </div>
 <p class="opt-note">À la commande, la boutique est la seule option. Le ${PACK_SEO ? esc(PACK_SEO.name) : 'Pack SEO'} se prend plus tard, si vous en avez envie.</p>`;
@@ -383,7 +386,10 @@ function boutiqueCarte({ court = false } = {}) {
         <strong class="cf-nom">Oui, je veux vendre en ligne</strong>
         <span class="cf-prix"><b>+ ${euro(creation.boutique)}</b><small>une fois</small></span>
         <span class="cf-txt">Une boutique sur votre site : vos clients achètent même quand vous êtes fermé.</span>
-        ${court ? '' : cfListe(BOUTIQUE_INCLUS)}
+        ${court ? '' : `${cfListe(BOUTIQUE_INCLUS)}
+        <span class="cf-bq-sous">${icon('circle-user')}Dans votre espace client, en plus</span>
+        ${cfListe(BOUTIQUE_ESPACE)}
+        <span class="cf-bq-note">${esc(BOUTIQUE_STOCK)}</span>`}
       </span>
       <span class="cf-coche" aria-hidden="true">${icon('check')}</span>
     </span>
@@ -433,7 +439,7 @@ function formulesChoix({ name = 'b-forfait', court = false } = {}) {
     <div class="cf-corps">
       <p class="cf-nom">L’abonnement ${esc(f.name)}</p>
       <p class="cf-prix"><b>${euro(f.month)}</b><small>/mois, sans engagement</small></p>
-      ${court ? `<p class="cf-txt">${f.main.slice(0, 4).join(', ')}, et bien plus.</p>` : cfListe(f.main)}
+      ${court ? `<p class="cf-txt">${f.main.slice(0, 4).join(', ')}, et bien plus.</p>` : `<!--commun-->${cfListe(f.main)}<!--/commun-->`}
     </div>
     <span class="cf-badge">${icon('check')}Tout compris</span>
   </div>`;
@@ -625,7 +631,7 @@ module.exports = {
   unType,
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, EVO, UNIQUE, optsCreation, optsMois, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
-  offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PAGES_SEO, PACK_SEO, BOUTIQUE_INCLUS, ETAPES_MODIF,
+  offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PAGES_SEO, PACK_SEO, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
   petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };

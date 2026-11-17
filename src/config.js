@@ -196,7 +196,7 @@ const forfaits = [
     conseil: false,
     tagline: 'Sans engagement',
     pitch: 'Votre site reste en ligne, protégé et à jour. Vous demandez une modification, on s’en occupe, et une nouvelle page pour Google s’ajoute chaque semaine.',
-    main: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Surveillance', 'Maintenance', 'Modifications incluses, en 12 à 24 h en moyenne', 'Une page SEO en plus chaque semaine'],
+    main: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Surveillance', 'Maintenance', 'Modifications incluses, en 12 à 24 h en moyenne', 'Une page SEO en plus chaque semaine', 'Tableau de bord : vos visiteurs, d’où ils arrivent et vos pages les plus vues'],
     details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site, à votre nom', 'Sauvegardes : une copie de sécurité de votre site', 'Sécurité : le petit cadenas HTTPS et les protections à jour', 'Surveillance : on vérifie jour et nuit que votre site répond', 'Maintenance : les vérifications techniques qui gardent votre site en forme', 'Modifications incluses, en ligne en 12 à 24 heures en moyenne', 'Une page SEO en plus chaque semaine, pour être trouvé sur plus de recherches Google'],
     features: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Surveillance', 'Maintenance', 'Modifications incluses', 'Une page SEO chaque semaine'],
   },
