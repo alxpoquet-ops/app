@@ -309,7 +309,7 @@ function alexlia_conn_preparer($args) {
         $avant = (string) get_option($ok[$nom]);
         $remplace = false;
         // le thème écrit le nom lui-même : on remplace aussi l'ancien nom à l'écran (aperçu, puis site après l'accord du client)
-        if ($visible === false && $nom === 'nom' && $avant !== '' && $avant !== $b['reglages'][$nom]) {
+        if ($visible === false && $avant !== '' && $avant !== $b['reglages'][$nom]) { // nom ou slogan écrit en dur par le thème
             $b['affichages'] = array_values(array_filter((array) ($b['affichages'] ?? []), function ($a) use ($avant) { return ($a['ancien'] ?? '') !== $avant; }));
             $b['affichages'][] = ['ancien' => $avant, 'nouveau' => $b['reglages'][$nom]];
             alexlia_conn_brouillon_set($j, $b);
@@ -320,6 +320,20 @@ function alexlia_conn_preparer($args) {
         alexlia_conn_brouillon_set($j, $b);
         return ['ok' => true, 'prepare' => true, 'avant' => $avant, 'apercu' => $apercu, 'visible_sur_le_site' => $visible, 'remplacement_affichage' => $remplace,
             'note' => $visible === false ? 'ATTENTION : le nouveau texte ne s’affiche PAS sur la page d’accueil (le thème l’écrit en dur). Le réglage ne change que l’onglet du navigateur et le référencement.' : ($remplace ? 'Le thème écrit le nom en dur : l’ancien nom est aussi remplacé à l’écran par le nouveau, visible dans l’aperçu.' : '')];
+    }
+    if ($op === 'affichage') {
+        // un texte que le thème écrit lui-même (en-tête, accroche, pied de page…) : remplacé à l'écran dans l'aperçu, puis sur le site après l'accord du client
+        $anc = trim((string) ($args['ancien'] ?? '')); $nou = trim((string) ($args['nouveau'] ?? ''));
+        $limite = function_exists('alexlia_mcp_limites') ? alexlia_mcp_limites('affichage_remplacer', ['ancien' => $anc, 'nouveau' => $nou]) : null;
+        if (is_wp_error($limite)) return new WP_Error('alexlia_args', $limite->get_error_message(), ['status' => 400]);
+        if (mb_strlen($anc) < 4 || mb_strlen($anc) > 300 || $nou === '' || mb_strlen($nou) > 600 || $anc === $nou) return new WP_Error('alexlia_args', 'Textes manquants, trop courts ou trop longs.', ['status' => 400]);
+        $b['affichages'] = array_values(array_filter((array) ($b['affichages'] ?? []), function ($a) use ($anc) { return ($a['ancien'] ?? '') !== $anc; }));
+        $b['affichages'][] = ['ancien' => $anc, 'nouveau' => $nou];
+        alexlia_conn_brouillon_set($j, $b);
+        $apercu = alexlia_conn_apercu_url($j, home_url('/'));
+        $visible = alexlia_conn_texte_visible($apercu, $nou);
+        return ['ok' => true, 'prepare' => true, 'apercu' => $apercu, 'visible_sur_le_site' => $visible,
+            'note' => $visible === false ? 'ATTENTION : le nouveau texte n’apparaît toujours pas sur la page d’accueil : vérifiez que « ancien » est écrit exactement comme à l’écran, ou que le texte est sur une autre page.' : 'Le nouveau texte est visible dans l’aperçu.'];
     }
     return new WP_Error('alexlia_args', 'Opération inconnue.', ['status' => 400]);
 }
@@ -449,6 +463,7 @@ add_action('init', function () {
         $changes[] = ['quoi' => $k === 'slogan' ? 'Slogan du site' : 'Nom du site (en haut du site, dans l’onglet du navigateur)', 'avant' => (string) get_option($opt), 'apres' => (string) $v];
     }
     foreach ((array) ($b['articles'] ?? []) as $a) $changes[] = ['quoi' => 'Nouvelle actualité', 'avant' => '', 'apres' => (string) $a['titre']];
+    foreach ((array) ($b['affichages'] ?? []) as $a) if (empty($b['reglages']) || !in_array($a['nouveau'], array_values((array) $b['reglages']), true)) $changes[] = ['quoi' => 'Texte du thème, remplacé à l’écran', 'avant' => (string) $a['ancien'], 'apres' => (string) $a['nouveau']];
     add_filter('the_content', function ($c) use ($b, $article, $marques) {
         $id = get_the_ID();
         if ($article && in_the_loop() && is_main_query()) return $article['contenu'] . ($article['image_id'] ? wp_get_attachment_image($article['image_id'], 'large') : '');
