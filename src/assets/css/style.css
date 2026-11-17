@@ -2240,3 +2240,17 @@ div.tool { cursor: default; }
 .client-prix b s { font-size: 1.1rem; font-weight: 700; color: var(--muted); margin-right: 4px; }
 .client-formule { display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; margin: 2px 0 4px; padding: 4px 10px; border-radius: 999px; background: var(--c); color: var(--c-dd); font-size: .8rem; font-weight: 900; box-shadow: 0 0 0 1px var(--c-d) inset; }
 .client-formule .ico { width: 14px; height: 14px; }
+.client-pages { display: grid; gap: 2px; }
+.client-pages-n { font-weight: 800; color: var(--ink); }
+.client-pages-n b { font-size: 1.9rem; line-height: 1; color: var(--c-dd); margin-right: 4px; }
+.client-pages-porte { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 6px 12px; border-radius: 14px; background: var(--c); color: var(--ink); font-weight: 800; font-size: .95rem; }
+.client-pages-prod { color: var(--muted); font-weight: 700; font-size: .92rem; }
+.client-pages-prod b { color: var(--ink); }
+.client-i { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--card); color: var(--c-dd); box-shadow: 0 0 0 1px var(--c-d) inset; }
+.client-i .ico { width: 15px; height: 15px; }
+.client-i:hover, .client-i:focus-visible { background: var(--c-d); color: #16142A; }
+.client-card:hover { transform: none; }
+a.client-card:hover { transform: translateY(-3px); }
+.client-pages-porte { display: block; }
+.client-pages-porte .client-i { vertical-align: -6px; margin-left: 6px; }
+a.client-url { text-decoration: none; }

@@ -157,9 +157,9 @@ const CLIENTS_EN_LIGNE = clients.filter((c) => !c.enCreation && c.url && !c.url.
 const pagesDe = (c) => (c.enCreation ? 0 : (CLIENTS_PAGES[c.domaine] || {}).pages || 0);
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1180 → 1 180
 const s_ = (n) => (n > 1 ? 's' : '');
-// Prix estimé d'un site client avec la grille actuelle : la création (le site, la boutique si c'en est une, et ses options
-// payées une fois). Les pages en plus ne sont pas comptées : elles viennent de la formule du client (Évolution ajoute une
-// page pour Google chaque semaine) et, au plus, de quelques Pack SEO (clients[].packsSeo dans config), cités à part.
+// Prix estimé d'un site client avec la grille actuelle : la création (le site, la boutique si c'en est une, ses options
+// payées une fois) et ses Pack SEO (clients[].packsSeo dans config). Les autres pages en plus viennent de la formule du
+// client (Évolution ajoute une page pour Google chaque semaine) : elles ne coûtent rien de plus.
 // Les fiches produits ne comptent pas comme des pages. C'est une estimation, pas le prix payé par le client.
 function estimeClient(c) {
   const t = types.find((x) => x.id === c.type);
@@ -172,8 +172,9 @@ function estimeClient(c) {
   const opts = (c.optionsCreation || []).map((id) => options.find((o) => o.id === id)).filter(Boolean);
   const supplement = t.supplement || 0;
   const formule = forfaits.find((f) => f.id === c.forfait) || null;
+  const packsPrix = packs * pack.price.once;
   const creationPrix = creation.prix + supplement + opts.reduce((n, o) => n + o.price.once, 0);
-  return { pages, produits, pack, packs, packsPrix: packs * pack.price.once, supplement, opts, formule, creationPrix };
+  return { pages, produits, pack, packs, packsPrix, supplement, opts, formule, creationPrix, total: creationPrix + packsPrix };
 }
 const prixTxt = (n) => `${String(n).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} €`;
 function clientPrix(c) {
@@ -182,10 +183,11 @@ function clientPrix(c) {
   const parts = [`${prixTxt(creation.prix)} le site`];
   if (e.supplement) parts.push(`${prixTxt(e.supplement)} la boutique`);
   e.opts.forEach((o) => parts.push(`${prixTxt(o.price.once)} ${o.name.toLowerCase()}`));
-  const creationTxt = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} et ${parts[parts.length - 1]}` : parts[0];
+  if (e.packs) parts.push(`${prixTxt(e.packsPrix)} pour ${e.packs === 1 ? 'un' : e.packs} ${esc(e.pack.name)}`);
+  const detail = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} et ${parts[parts.length - 1]}` : parts[0];
   const f = e.formule;
-  const pagesTxt = f ? ` Les pages en plus viennent de la formule ${esc(f.name)}${f.pageSeoSemaine || f.priorite ? ', qui en ajoute une chaque semaine' : ''}${e.packs ? `, et ${e.packs === 1 ? 'd’un' : `de ${e.packs}`} ${esc(e.pack.name)} au plus (${prixTxt(e.packsPrix)})` : ''}.` : '';
-  return `<span class="client-prix"><span class="client-prix-t">Prix estimé au tarif actuel</span><b>${prixTxt(e.creationPrix)}</b><span class="client-prix-d">${creationTxt}.${pagesTxt}${f ? ` Puis ${f.month} € par mois.` : ''}</span></span>`;
+  const formuleTxt = f && (f.pageSeoSemaine || f.priorite) ? ` Les autres pages viennent de la formule ${esc(f.name)}, qui en ajoute une chaque semaine.` : '';
+  return `<span class="client-prix"><span class="client-prix-t">Prix estimé au tarif actuel</span><b>${prixTxt(e.total)}</b><span class="client-prix-d">${detail}.${formuleTxt}</span></span>`;
 }
 // Le petit badge de la formule du client
 function clientFormule(c) {
@@ -196,13 +198,14 @@ function clientPages(c) {
   const e = estimeClient(c);
   const n = e ? e.pages : pagesDe(c);
   if (!n) return '';
-  const produits = e && e.produits ? `, et <b>${e.produits}</b> produit${s_(e.produits)}` : '';
-  return `<span class="client-pages"><b>${n}</b> page${s_(n)}, autant de portes d’entrée depuis Google${produits}</span>`;
+  const produits = e && e.produits ? `<span class="client-pages-prod">et <b>${e.produits}</b> produit${s_(e.produits)} en vente</span>` : '';
+  const info = `<a class="client-i" href="${sections.seo.path}" aria-label="Pourquoi chaque page compte : le guide du référencement">${icon('info')}</a>`;
+  return `<span class="client-pages"><span class="client-pages-n"><b>${n}</b> page${s_(n)}</span><span class="client-pages-porte">${n} porte${s_(n)} d’entrée potentielle${s_(n)} depuis Google${info}</span>${produits}</span>`;
 }
 function clientCards({ max = 0, desc = true, prix = true } = {}) {
   const liste = max ? CLIENTS_EN_LIGNE.slice(0, max) : CLIENTS_EN_LIGNE;
   return `<div class="client-cards">${liste
-    .map((c) => `<a class="client-card c-${c.color} reveal" href="${c.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong>${prix ? clientFormule(c) : ''}${desc ? `<span class="client-desc">${inline(c.desc)}</span>` : ''}${clientPages(c)}${prix ? clientPrix(c) : ''}<span class="client-url">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</span></a>`)
+    .map((c) => `<div class="client-card c-${c.color} reveal"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong>${prix ? clientFormule(c) : ''}${desc ? `<span class="client-desc">${inline(c.desc)}</span>` : ''}${clientPages(c)}${prix ? clientPrix(c) : ''}<a class="client-url" href="${c.url}" target="_blank" rel="noopener">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</a></div>`)
     .join('')}</div>`;
 }
 
@@ -1268,7 +1271,7 @@ function confiancePage() {
 <section class="section"><div class="container">
   ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages en ligne sur les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque page utile est une porte d’entrée de plus depuis Google.</span></p>` : ''}
   ${clientCards()}
-  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille. Ces clients ont la formule ${esc(C.EVO.name)}, qui ajoute une page pour Google chaque semaine : leurs pages en plus en viennent, avec au plus un ou deux ${C.PACK_SEO ? esc(C.PACK_SEO.name) : 'Pack SEO'}. Les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
+  <p class="small muted center">Les prix sont des estimations : ce que coûterait chaque site aujourd’hui avec notre grille, Pack SEO compris. Ces clients ont la formule ${esc(C.EVO.name)}, qui ajoute une page pour Google chaque semaine. Les fiches produits ne comptent pas comme des pages. Ces sites s’ouvrent dans un nouvel onglet.</p>
   ${enCours.length ? `<p class="center muted">En ce moment, je prépare aussi ${enCours.map((c) => esc(c.nom)).join(' et ')}.</p>` : ''}
 </div></section>
 ${METIERS.length ? `<section class="section section-soft"><div class="container">
