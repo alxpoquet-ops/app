@@ -2369,3 +2369,7 @@ a.client-url { text-decoration: none; }
   .formules.is-solo .formule-art { top: 10px; right: 10px; width: 78px; }
   .formules.is-solo .formule-nom, .formules.is-solo .formule-prix, .formules.is-solo .formule-sans { padding-right: 84px; }
 }
+.sources { margin-top: 14px; padding: 12px 16px; border-radius: 16px; background: rgba(255, 255, 255, .06); font-size: .88rem; }
+.sources-titre { margin: 0 0 6px; }
+.sources ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.sources a { text-decoration: underline; overflow-wrap: anywhere; }

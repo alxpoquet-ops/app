@@ -987,7 +987,7 @@
       var p = $('input[name="app-plan"]:checked', app);
       var sum = p ? +p.getAttribute('data-month') : 0;
       $$('.app-opt input:checked', app).forEach(function (i) { sum += +i.getAttribute('data-month'); });
-      total.textContent = euro(sum);
+      if (total) total.textContent = euro(sum);
       if (p) {
         $('[data-app-plan-name]', app).textContent = p.getAttribute('data-name');
         $('[data-app-plan-price]', app).textContent = euro(+p.getAttribute('data-month')) + ' par mois';

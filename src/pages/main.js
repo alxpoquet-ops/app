@@ -73,7 +73,7 @@ function home() {
   <div class="container hero-in">
     <div class="hero-text">
       <h1>Votre site internet professionnel, <mark>${marche.fois.replace(/ /g, '\u00a0')} fois moins cher</mark></h1>
-      <p class="hero-lead">Comparé à la concurrence, pour un site vitrine ou une petite boutique. Je conçois votre site moi-même, et mes petites automatisations, la bande des Minis Monstres, font tout ce qui se répète : c’est ça qui fait la différence. Vous, vous vous occupez de votre métier.</p>
+      <p class="hero-lead">Comparé à un indépendant, pour un site vitrine de ${creation.pages} pages avec les bases du référencement (sources sur la page Tarifs). Je conçois votre site moi-même, et mes petites automatisations, la bande des Minis Monstres, font tout ce qui se répète : c’est ça qui fait la différence. Vous, vous vous occupez de votre métier.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg btn-flaque')}${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</div>
       <ul class="hero-points">
         <li>${icon('check')}${creation.pages} pages, tous supports</li>
@@ -140,7 +140,7 @@ ${C.ctaBand({ title: 'Les Minis Monstres s’occupent de votre site', text: 'Pen
   return {
     path: '/',
     title: `Site internet professionnel, ${marche.fois} fois moins cher | Les Minis Monstres`,
-    description: `Votre site internet professionnel conçu par Alex, ${marche.fois} fois moins cher grâce à ses petites automatisations. ${creation.pages} pages, sans devis.`,
+    description: `Votre site internet professionnel conçu par Alex, ${marche.fois} fois moins cher qu’un indépendant, grâce à ses petites automatisations. ${creation.pages} pages, sans devis.`,
     crumbs: [HOME],
     body,
     priority: 1,
@@ -447,7 +447,7 @@ function seoPage() {
   const levels = [
     ['pink', 'mascotte', 'Avec votre site', `Compris dans les ${euro(creation.prix)}`, ['Site rapide, sécurisé et adapté à tous les supports', 'Titres, descriptions et données lues par Google', `${creation.pages} pages pensées pour être comprises par Google`]],
     ['butter', 'clin', pack.name, `${euro(pack.price.once)} la page, depuis votre espace client`, ['Une page de plus, quand vous voulez', `Par exemple : ${(pack.exemples || []).join(', ').toLowerCase().replace('faq', 'FAQ')}`, 'Lumi choisit le sujet, Alex écrit la page']],
-    ['lilac', 'pense', 'Un rythme régulier', `Un extra au mois, sans engagement`, [`Une page chaque mois : ${euro(O('seomois').price.month)}/mois`, `Une page chaque semaine : ${euro(O('seosemaine').price.month)}/mois`, 'Lumi choisit les sujets, Alex écrit et publie']],
+    ['lilac', 'pense', 'Suivre et améliorer', `${O('mirette').name} : ${euro(O('mirette').price.month)}/mois, sans engagement`, ['Mirette surveille vos visites chaque semaine', 'La bande vous propose des améliorations', 'Vous choisissez, Alex les applique']],
   ];
   const body = `${C.pageHero({
     section: 'seo',
@@ -492,7 +492,7 @@ Votre site peut garder **une seule page principale**, simple et claire, avec tou
     <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur tous les supports, avec les balises et les données que Google sait lire.</p></div>
     <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand vos clients cherchent près de chez vous.</p></div>
     <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec mes automatisations et relus par moi.</p></div>
-    <div class="feat reveal">${icon('chart-line')}<h3>Une page de plus, chaque mois ou chaque semaine</h3><p>Avec l’extra « ${esc(O('seomois').name)} », Lumi choisit un sujet et j’écris la page. Pour aller plus vite, l’extra « ${esc(O('seosemaine').name)} ». Dans les deux cas, je la vérifie avant sa mise en ligne.</p></div>
+    <div class="feat reveal">${icon('chart-line')}<h3>Des pages à la carte, payées une fois</h3><p>Chaque page visibilité Google se commande à la page, seule ou en pack. Lumi choisit le sujet, j’écris la page, et je la vérifie avant sa mise en ligne.</p></div>
   </div>
 </div></section>
 
@@ -583,7 +583,9 @@ Un horaire, un prix, une actualité : Cerise note votre demande avec vous, puis 
 
 ## ${marche.fois} fois moins cher, et sans tour de magie
 
-Un site vitrine de ${marche.pagesCompare} pages avec référencement, commandé à un freelance, coûte en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence demande plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. C’est un ordre de grandeur, pas un devis : chaque prestataire a ses prix. Ici, un site de ${creation.pages} pages coûte ${euro(creation.prix)}, et les pages en plus se prennent à la carte.
+Un site vitrine de ${marche.pagesCompare} pages avec les bases du référencement, commandé à un freelance, coûte en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence demande plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. Ce sont des fourchettes publiées par des prestataires, à lire avec prudence : chaque devis est différent. Ici, un site de ${creation.pages} pages coûte ${euro(creation.prix)}, soit ${marche.fois} fois moins cher qu’un indépendant. Certains freelances vendent un site dès ${euro(C.INDEPENDANT_DES)}, et l’écart est alors d’environ ${C.ecartBas} fois. Les pages en plus se prennent à la carte.
+
+Pour l’entretien, l’abonnement à ${euro(ABO.month)} par mois comprend hébergement, nom de domaine, sauvegardes, sécurité, maintenance et modifications. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois, avec l’hébergement souvent en plus, soit de ${marche.entretienFois} fois moins cher chez moi.
 
 La raison est simple. Pour un site vitrine ou une petite boutique, mes automatisations font en quelques heures ce qui prend des jours à la main. Je fais le reste et je contrôle le résultat, page par page. Ces jours en moins, c’est le prix en moins. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).
 
@@ -594,6 +596,7 @@ Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut ap
 ## Quand je vous dirai d’aller ailleurs
 
 Une application sur mesure, un logiciel métier, un catalogue de milliers de produits : ces projets demandent une agence ou un développeur expérimenté. Je vous le dis dès le premier échange.`)}
+  ${C.sourcesMarche()}
 </div></section>
 
 ${f.html}
@@ -874,9 +877,9 @@ const DEMO_QR = (() => {
 // extra : le message n'apparaît que si l'extra correspondant est pris (analyse de Mirette, pages SEO de Lumi). L'extension WordPress fait les mêmes (includes/messages.php).
 const DEMO_MSGS = [
   { m: 'gelee', nom: 'Mirette', role: 'L’observatrice', extra: 'mirette', quand: 'ce matin', titre: 'Votre semaine en un coup d’œil', texte: 'Vos visites ont augmenté de 18 % cette semaine. La page « Nos gâteaux » est la plus vue.', vis: 'barres', data: [38, 52, 44, 61, 58, 74, 83] },
-  { m: 'etoile', nom: 'Lumi', role: 'L’étoile de Google', extra: 'seomois', quand: 'hier', titre: 'Nouvelle page en ligne', texte: 'Votre page « Gâteau d’anniversaire à Rethel » est en ligne. Google l’a déjà montrée 46 fois.', vis: 'google' },
+  { m: 'etoile', nom: 'Lumi', role: 'L’étoile de Google', quand: 'hier', titre: 'Nouvelle page en ligne', texte: 'Votre page « Gâteau d’anniversaire à Rethel » est en ligne. Google l’a déjà montrée 46 fois.', vis: 'google' },
   { m: 'gelee', nom: 'Mirette', role: 'L’observatrice', extra: 'mirette', quand: 'hier', titre: 'Une idée pour vos horaires', texte: 'En décembre, beaucoup de visiteurs cherchent vos horaires des fêtes. Un bandeau en haut de l’accueil les aiderait. Je le propose à Alex ?', vis: 'bandeau', action: true },
-  { m: 'etoile', nom: 'Lumi', role: 'L’étoile de Google', extra: 'seomois', quand: 'lundi', titre: 'Idée de page', texte: 'Des gens cherchent « bûche de Noël Rethel ». C’est un bon sujet de page. Alex l’écrit pour vous ?', vis: 'idee', action: true },
+  { m: 'etoile', nom: 'Lumi', role: 'L’étoile de Google', quand: 'lundi', titre: 'Idée de page', texte: 'Des gens cherchent « bûche de Noël Rethel ». C’est un bon sujet de page. Alex l’écrit pour vous ?', vis: 'idee', action: true },
   { m: 'dino', nom: 'Pistache', role: 'Le gardien', quand: 'cette nuit', titre: 'Tout va bien', texte: 'Sauvegarde faite, cadenas actif, site rapide. Je veille.', vis: 'voyants' },
 ];
 function msgVisuel(x) {
@@ -911,12 +914,11 @@ function bandeMessages() {
 
 function monEspacePage() {
   const tab = (id, ic, label, on) => `<button type="button" role="tab" id="tab-${id}" aria-controls="t-${id}" aria-selected="${on ? 'true' : 'false'}"${on ? '' : ' tabindex="-1"'} data-tab="${id}">${icon(ic)}<span>${label}</span></button>`;
-  // La cliente imaginaire a l'abonnement Mini et deux extras au mois (analyse de Mirette, une page SEO par mois) : on voit les petits mots de la bande.
-  // Elle peut retirer un extra pour voir les messages disparaître, ou en ajouter d'autres.
-  const extrasMois = C.EXTRAS_PAR_FAMILLE.filter((g) => g.id !== 'boutique').flatMap((g) => g.items).filter((x) => x.mois);
+  // La cliente imaginaire a l'abonnement Mini (10 € par mois) et un seul extra au mois, l'analyse de Mirette : on voit les petits mots de la bande.
+  // Elle peut retirer l'extra pour voir les messages de Mirette disparaître. Aucune somme mensuelle globale n'est affichée.
+  const extrasMois = C.EXTRAS_PAR_FAMILLE.filter((g) => g.id !== 'boutique').flatMap((g) => g.items).filter((x) => x.mois && x.id === 'mirette');
   const extrasUneFois = C.EXTRAS_PAR_FAMILLE.filter((g) => g.id !== 'boutique').flatMap((g) => g.items).filter((x) => x.fois);
-  const EXTRAS_ACTIFS = ['mirette', 'seomois'];
-  const total = ABO.month + extrasMois.filter((x) => EXTRAS_ACTIFS.includes(x.id)).reduce((n, x) => n + x.mois, 0);
+  const EXTRAS_ACTIFS = ['mirette'];
   const reste = 0;
   const body = `${C.pageHero({
     section: 'monespace',
@@ -1043,11 +1045,10 @@ function monEspacePage() {
           <p class="app-note">Un extra au mois s’ajoute ou se retire quand vous voulez, sans engagement. Essayez : retirez « ${esc(O('mirette').name)} », les messages de Mirette disparaissent de l’accueil.</p>
           <p class="app-sub">Les extras payés une fois</p>
           <div class="app-opts">${extrasUneFois.map((x) => `<div class="app-opt app-opt-once"><span class="app-opt-ico">${icon(x.icon)}</span><span class="app-opt-txt"><strong>${esc(x.name)}</strong><small>${C.prixExtra(x)}</small></span><button type="button" class="btn btn-light btn-sm" data-toast-msg="Ajouté à votre prochaine facture (démo)"><span>Ajouter</span></button></div>`).join('')}</div>
-          <p class="app-total"><span>Total chaque mois</span><b data-app-total>${euro(total)}</b></p>
           <p class="app-sub">Factures</p>
           <ul class="invoices">
-            <li><span>Novembre 2026</span><b>${euro(total)}</b><button type="button" class="link-btn" data-toast-msg="Facture téléchargée (démo)">PDF</button></li>
-            <li><span>Octobre 2026</span><b>${euro(total)}</b><button type="button" class="link-btn" data-toast-msg="Facture téléchargée (démo)">PDF</button></li>
+            <li><span>Novembre 2026</span><button type="button" class="link-btn" data-toast-msg="Facture téléchargée (démo)">PDF</button></li>
+            <li><span>Octobre 2026</span><button type="button" class="link-btn" data-toast-msg="Facture téléchargée (démo)">PDF</button></li>
           </ul>
           <p class="app-sub">Nom de domaine</p>
           <p class="app-domain">${icon('globe')}<span><strong>patisserie-lila.fr</strong><small>À votre nom, renouvelé automatiquement le 3 mars 2027</small></span></p>
@@ -1478,7 +1479,7 @@ function metierPage(m) {
   const crumbs = [...crumb('metiers'), { name: m.nom, path }];
   const f = C.faq(m.faq, 'Vos questions', 'faq-metier');
   const ex = m.exemple && m.exemple.client ? clients.find((c) => c.domaine.startsWith(m.exemple.client)) : null;
-  // Conseils d'une page métier : la boutique, l'abonnement (base) ou un extra (packseo, seomois, urgent…). Les anciennes options sont ignorées.
+  // Conseils d'une page métier : la boutique, l'abonnement (base) ou un extra (packseo, urgent…). Les anciennes options sont ignorées.
   const opts = (m.options || []).map((o) => {
     if (o.id === 'boutique') return { ic: 'shopping-bag', nom: 'Boutique en ligne', prix: `+ ${euro(creation.boutique)}, une fois`, pourquoi: o.pourquoi };
     const fo = forfaits.find((x) => x.id === o.id);
@@ -1815,7 +1816,7 @@ ${ENERGIE ? `<section class="section doc-sec" id="jetons"><div class="container 
 <section class="section section-soft doc-sec" id="seo"><div class="container container-narrow">
   <p class="doc-kicker">12. Le référencement (SEO)</p>
   <h2>Être trouvé sur Google</h2>
-  <p>Tous les sites partent avec de bonnes bases : des titres et des descriptions écrits pour Google, un plan du site, des pages rapides et lisibles sur téléphone. Avec les extras, le travail continue : « ${esc(O('seomois').name)} » à ${euro(O('seomois').price.month)} par mois, ou des pages à ${euro(C.PACK_SEO.price.once)} la page, seules ou en packs. Lumi choisit les sujets, j’écris les pages et je vous dis où vous en êtes.</p>
+  <p>Tous les sites partent avec de bonnes bases : des titres et des descriptions écrits pour Google, un plan du site, des pages rapides et lisibles sur téléphone. Avec les extras, le travail continue : des pages visibilité Google à ${euro(C.PACK_SEO.price.once)} la page, payées une fois, seules ou en packs. Lumi choisit les sujets, j’écris les pages et je vous dis où vous en êtes.</p>
   <div class="go-links">
     <a class="go-link c-${sections.seo.color}" href="${sections.seo.path}"><span class="type-ico">${icon(sections.seo.icon)}</span><strong>Le référencement en détail</strong>${icon('arrow-right')}</a>
     <a class="go-link c-${sections.guides.color}" href="${sections.guides.path}"><span class="type-ico">${icon(sections.guides.icon)}</span><strong>Les guides pratiques</strong>${icon('arrow-right')}</a>

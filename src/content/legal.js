@@ -52,7 +52,7 @@ const prixPacks = (x) => ((x.packs || []).filter((n) => n > 1).length ? `, seul 
 const extrasFois = aLaDemande.filter((x) => !x.retire).map((x) => `- **${x.name}, ${eur(x.prix)} €${x.unite ? ` ${x.unite === 'page' ? 'la page' : x.unite === 'article' ? 'l’article' : 'le produit'}` : ''}**, payé une fois${prixPacks(x)}.`).join('\n');
 const extrasMois = options.filter((o) => o.quand === 'mois' && !o.retire && o.price && o.price.month).map((o) => `- **${o.name}, ${eur(o.price.month)} € par mois**.`).join('\n');
 const extraMois = (id) => options.find((o) => o.id === id && o.quand === 'mois' && !o.retire) || { name: '', price: {} };
-const deux = extraMois('deux'), seomois = extraMois('seomois'), seosemaine = extraMois('seosemaine'), analyse = extraMois('mirette');
+const deux = extraMois('deux'), analyse = extraMois('mirette');
 const urgent = aLaDemande.find((x) => x.id === 'urgent') || { name: '' };
 const optionsCommande = options.filter((o) => o.quand === 'creation' && !o.retire && o.id !== 'packseo');
 const listeOptions = optionsCommande
@@ -364,7 +364,7 @@ Les petits monstres sont des outils automatisés, dont certains reposent sur un 
 
 ## 16. Visibilité Google (référencement)
 
-La visibilité Google, ou référencement (SEO), c’est le travail qui aide un site à être trouvé sur Google. Les pages visibilité Google commandées comme extras (article 3), seules, chaque mois ou chaque semaine, ouvrent le site à plus de recherches.
+La visibilité Google, ou référencement (SEO), c’est le travail qui aide un site à être trouvé sur Google. Les pages visibilité Google commandées comme extras (article 3), payées une fois, seules ou en packs, ouvrent le site à plus de recherches.
 
 Dans tous les cas, y compris pour l’extra « ${analyse.name} », la visibilité Google est une obligation de moyens : les Minis Monstres font de leur mieux et appliquent les bonnes pratiques, sans garantir une position donnée sur Google.
 

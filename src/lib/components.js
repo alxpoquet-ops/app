@@ -232,23 +232,37 @@ function offre({ compact = false, choose = true } = {}) {
 const forfaitMinis = () => offre({ compact: true });
 const forfaitCards = ({ choose = true } = {}) => offre({ choose });
 
-// Pourquoi c'est moins cher : la comparaison avec un site fait à la main, chiffres du marché à l'appui
+// Pourquoi c'est moins cher : la comparaison avec un site fait à la main, chiffres du marché à l'appui.
+// On compare ce qui est comparable (un site de marche.pagesCompare pages, comme le nôtre, avec les bases du référencement), on dit la vérité
+// et on cite les sources (marche.sources, consultées en novembre 2026). marche.fois et marche.entretienFois sont calculés dans config.js.
+const INDEPENDANT_DES = 800; // des indépendants existent dès ce prix : l'écart n'est alors que de INDEPENDANT_DES / creation.prix fois
+const ecartBas = String(Math.round((INDEPENDANT_DES / creation.prix) * 10) / 10).replace('.', ',');
+// Les sources, en vrais liens
+const nomSource = (x) => x.nom.replace(', ', ' : ');
+function sourcesMarche() {
+  const l = (marche.sources || []).map((x) => `<li><a href="${x.url}" target="_blank" rel="noopener">${esc(nomSource(x))}</a>.</li>`).join('');
+  return `<div class="sources" id="sources"><p class="sources-titre"><strong>Sources</strong>, consultées en novembre 2026 :</p><ul>${l}</ul></div>`;
+}
+// Les mêmes sources en markdown, pour les pages de contenu (les liens externes s'ouvrent dans un nouvel onglet)
+const sourcesMd = () => (marche.sources || []).map((x) => `- [${nomSource(x)}](${x.url}).`).join('\n');
+const sourcesInline = () => (marche.sources || []).map((x) => `[${nomSource(x)}](${x.url})`).join(', ');
 function economie() {
-  // à prestation égale : un site vitrine de 10 pages avec référencement. Les barres suivent le milieu de chaque fourchette.
-  const n = marche.pagesCompare || 10;
+  const n = marche.pagesCompare || creation.pages;
   const mAgence = (marche.agenceMin + marche.agenceMax) / 2;
   const mInde = (marche.vitrineMin + marche.vitrineMax) / 2;
-  const w = (x) => `${Math.max(10, Math.round((x / mAgence) * 100))}%`;
+  const w = (x) => `${Math.max(6, Math.round((x / mAgence) * 100))}%`;
   return `<div class="eco reveal">
-  <h3>${icon('scale')}${marche.fois} fois moins cher${n === creation.pages ? ', à site égal' : ''}</h3>
-  <p class="eco-base">Pour comparer : un site vitrine de ${n} pages, avec son référencement sur Google${n === creation.pages ? ', exactement ce que comprend le nôtre' : `. Le nôtre compte ${creation.pages} pages, et les pages en plus se prennent à la carte`}.</p>
+  <h3>${icon('scale')}${marche.fois} fois moins cher qu’un indépendant, à site comparable</h3>
+  <p class="eco-base">Pour comparer ce qui est comparable : un site vitrine de ${n} pages avec les bases du référencement${n === creation.pages ? ', comme le nôtre' : ''}.</p>
   <div class="eco-barres" role="img" aria-label="Un site vitrine de ${n} pages avec référencement coûte en général ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)} en agence, ${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)} chez un indépendant. Chez les Minis Monstres : ${euro(creation.prix)}.">
     <p class="eco-ligne"><span>Agence web</span><i style="width:${w(mAgence)}"></i><b>${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}</b></p>
     <p class="eco-ligne"><span>Indépendant</span><i style="width:${w(mInde)}"></i><b>${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)}</b></p>
     <p class="eco-ligne is-nous"><span>Chez les Minis Monstres</span><i style="width:${w(creation.prix)}"></i><b>${euro(creation.prix)}</b></p>
   </div>
-  <p>Pas de secret : j’ai passé du temps à automatiser mon travail, et tout ce qui se répète se fait maintenant tout seul. Je conçois le site et je vérifie tout à la main. Vous ne payez pas des semaines de travail. Le prix est le même pour tout le monde, affiché ici, sans devis.</p>
-  <p class="eco-note">Nos repères : les prix publiés en France en 2026 pour un site vitrine de ${n} pages avec référencement, textes pour Google compris. Ce sont des moyennes : chaque devis est différent. Chez nous, ${creation.pages} pages pour ${euro(creation.prix)}, référencement de base compris.</p>
+  <p>Pas de secret : j’ai passé du temps à automatiser mon travail, et tout ce qui se répète se fait maintenant tout seul. Je conçois le site et je vérifie tout à la main. Le prix est le même pour tout le monde, affiché ici, sans devis.</p>
+  <p><strong>Pour l’entretien</strong>, ${euro(ABO.month)} par mois comprennent l’hébergement, le nom de domaine, les sauvegardes, la sécurité, la maintenance et les modifications. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois, l’hébergement étant souvent en plus : c’est de ${marche.entretienFois} fois moins cher.</p>
+  <p class="eco-note">Soyons honnêtes. Ces fourchettes sont publiées par des prestataires, donc à lire avec prudence. Il existe des indépendants dès ${euro(INDEPENDANT_DES)}, et l’écart n’est alors que d’environ ${ecartBas} fois, ainsi que des offres à bas prix. Nos ${euro(creation.prix)} comprennent ce que comprend un site de ${creation.pages} pages comparable (design, formulaire de contact, bases du référencement), mais pas de pages de référencement en plus : elles se prennent à la carte.</p>
+  ${sourcesMarche()}
 </div>`;
 }
 
@@ -275,7 +289,7 @@ const MONSTRE_OPTION = { packseo: 'etoile', boutique: 'champi' };
 // La petite bande, en cartes : métier, missions et personnalité. complet : avec les missions (pages Équipe et Accueil).
 function bandeGrid({ complet = false, prix = true } = {}) {
   const extraDe = (b) => options.find((o) => o.id === b.option && !o.retire);
-  const prixDe = (b) => (b.option === 'boutique' ? (prix ? `Avec la boutique en ligne, + ${euro(creation.boutique)}` : 'Avec la boutique en ligne') : b.compris ? 'Avec l’abonnement' : extraDe(b) ? (b.option === 'seomois' ? 'Avec les extras pages visibilité Google' : `Avec l’extra « ${extraDe(b).name} »`) : '');
+  const prixDe = (b) => (b.option === 'boutique' ? (prix ? `Avec la boutique en ligne, + ${euro(creation.boutique)}` : 'Avec la boutique en ligne') : b.compris ? 'Avec l’abonnement' : extraDe(b) ? `Avec l’extra « ${extraDe(b).name} »` : '');
   const art = (b) => (b.monstre === 'lia' ? monster('coucou') : petit(b.monstre));
   return `<div class="bande">${bande
     .map((b) => `<div class="bande-carte reveal${b.compris ? ' is-compris' : ''}"><span class="bande-art">${art(b)}</span><strong>${esc(b.nom)}<small>${esc(b.role)}</small></strong>${complet && b.missions ? `<ul class="bande-missions">${b.missions.map((m) => `<li>${esc(m)}</li>`).join('')}</ul><em class="bande-perso">${esc(b.perso)}</em>` : `<span class="bande-fait">${inline(b.court)}</span>`}<em class="bande-prix">${prixDe(b)}</em></div>`)
@@ -656,7 +670,7 @@ module.exports = {
   lissageTxt,
   unType,
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
-  billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, DELAI_MODIF, optsCreation, optsMois, EXTRAS_PAR_FAMILLE, extrasListe, prixExtra, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
+  billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, sourcesMarche, sourcesMd, sourcesInline, ecartBas, INDEPENDANT_DES, ABO, DELAI_MODIF, optsCreation, optsMois, EXTRAS_PAR_FAMILLE, extrasListe, prixExtra, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
   offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, BOUTIQUE_ARTICLES, BOUTIQUE_PAIEMENT, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
   CERISE, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,

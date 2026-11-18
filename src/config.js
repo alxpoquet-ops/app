@@ -104,12 +104,34 @@ const evenement = { remise: 20, lieux: ['une foire', 'un marché', 'un salon', '
 // par un indépendant (sources dans docs/prix-et-ia-2026.md). À relire une fois par an.
 // vitrine : site vitrine d'environ cinq pages. boutique : boutique en ligne simple. entretien : maintenance par mois.
 // bas : les offres à bas prix qui existent aussi (plus affichées sur le site depuis novembre 2026, gardées pour mémoire).
-// Repères de marché pour comparer à prestation égale : un site vitrine de 15 pages (autant que chez nous) AVEC
-// référencement (SEO), en France, en 2026. Indépendant : 1 500 à 5 000 € HT pour 10 pages selon les sources, plus
-// 60 à 200 € par page de texte écrit pour Google (900 à 3 000 € pour 15 pages) : on retient 2 500 à 4 000 €.
-// Agence : 3 000 à 12 000 € pour 5 à 10 pages, 5 500 à 8 000 € pour 15 à 25 pages, 150 à 400 € la page rédigée pour
-// Google : on retient 4 000 à 10 000 €. Sources consultées en novembre 2026 (guides de prix publiés par des prestataires).
-const marche = { pagesCompare: 15, agenceMin: 4000, agenceMax: 10000, vitrineMin: 2500, vitrineMax: 4000, boutiqueMin: 2000, boutiqueMax: 6000, entretienMin: 60, entretienMax: 200, basMin: 400, basMax: 1300, fois: '4 à 5' };
+// Repères de marché pour comparer À PRESTATION ÉGALE (révisés le 18 novembre 2026) : un site vitrine de 5 pages (autant que chez nous) AVEC les bases du
+// référencement, en France, en 2026. On retient la fourchette la plus citée, pas la plus flatteuse :
+// - Indépendant : 1 500 à 3 000 € (un pack WordPress de 5 pages avec design adapté, formulaire et SEO de base). On trouve aussi des indépendants dès
+//   800 €, et des budgets de 4 000 € et plus : voir `bas` et la note affichée sur la page Tarifs.
+// - Agence : 3 000 à 8 000 € pour 5 à 10 pages (le haut de la fourchette publiée va à 12 000 €, médiane de 5 450 € chez les agences d'un baromètre).
+// - Entretien : 40 à 200 € par mois chez les prestataires consultés (de 500 à 2 000 € par an chez La Fabrique du Net, de 60 € à 450 € par mois en agence),
+//   hébergement souvent facturé à part (10 à 40 € par mois). Chez nous, 10 € par mois comprennent l'hébergement, le domaine, les sauvegardes, la
+//   sécurité, la maintenance et les modifications.
+// `fois` est CALCULÉ à partir de ces chiffres et du prix du site : si les chiffres changent, ou si le prix change, le texte du site suit.
+// Sources (consultées en novembre 2026) : liste `sources` ci-dessous, affichée sur la page Tarifs.
+const marche = {
+  pagesCompare: 5,
+  agenceMin: 3000, agenceMax: 8000,
+  vitrineMin: 1500, vitrineMax: 3000,
+  boutiqueMin: 2000, boutiqueMax: 6000,
+  entretienMin: 40, entretienMax: 200,
+  basMin: 400, basMax: 1300,
+  sources: [
+    { nom: 'La Fabrique du Net, tarifs moyens d’un site WordPress', url: 'https://www.lafabriquedunet.fr/creation-site-vitrine/articles/tarifs-moyens-creation-site-wordpress/' },
+    { nom: 'Fenxi, combien coûte un site internet en 2026', url: 'https://fenxi.fr/blog/combien-coute-site-internet-2026-prix-delais/' },
+    { nom: 'Plateya, coût de création d’un site internet en 2026', url: 'https://www.plateya.fr/blog/detail/cout-creation-site-internet-en-2026-guide-complet-des-prix-et-pieges-a-eviter' },
+    { nom: 'Kolonell, agence web ou freelance : comparatif des prix', url: 'https://kolonell.com/fr/blog/agence-web-vs-freelance-site-vitrine-comparatif-prix-2026' },
+    { nom: 'Kolonell, tarif mensuel d’une maintenance WordPress', url: 'https://kolonell.com/fr/blog/maintenance-site-wordpress-entreprise-tarif-mensuel-2026' },
+  ],
+};
+// le nombre de fois : le prix bas et le prix haut de l'indépendant, divisés par notre prix (arrondis), donc « 3 à 6 » aujourd'hui
+marche.fois = Math.round(marche.vitrineMin / creation.prix) + ' à ' + Math.round(marche.vitrineMax / creation.prix);
+// entretien : calculé plus bas, une fois le prix de l'abonnement connu (marche.entretienFois)
 
 // ---------------------------------------------------------------- types de site (même prix, sauf la boutique)
 const types = [
@@ -211,6 +233,7 @@ const forfaits = [
   },
 ];
 // Les anciens abonnements : plus proposés, mais un client qui en a un le garde (l'extension WordPress les lit ici).
+marche.entretienFois = Math.round(marche.entretienMin / forfaits[0].month) + ' à ' + Math.round(marche.entretienMax / forfaits[0].month);
 const forfaitsAnciens = [
   {
     id: 'evolution',
@@ -278,8 +301,8 @@ const options = [
   { id: 'assistant', badge: 'Nouveau', quand: 'mois', group: 'contact', name: 'Assistant Cerise sur votre site', icon: 'message-circle', price: { month: 15 }, court: 'Un assistant qui répond aux questions de vos visiteurs, à toute heure.', info: 'Un petit assistant sur votre site répond aux questions de vos visiteurs (horaires, prix, services, délais), à toute heure, en s’appuyant sur ce que dit votre site. Alex le règle pour votre activité et vérifie ses réponses. Pour ce que l’assistant ne sait pas, il renvoie vers votre formulaire de contact.', desc: 'Un assistant sur votre site qui répond aux questions de vos visiteurs, adapté à votre activité. Alex le règle et le vérifie.' },
   { id: 'deux', quand: 'mois', group: 'quotidien', name: 'Deux demandes à la fois', icon: 'layers', price: { month: 5 }, court: 'Deux demandes de modification en cours en même temps.', info: 'Avec l’abonnement, une demande de modification est en cours à la fois. Avec cet extra, vous pouvez en avoir deux en même temps, sans attendre que la première soit faite.', desc: 'Deux demandes de modification en cours en même temps, au lieu d’une.' },
   { id: 'mirette', quand: 'mois', group: 'trouve', name: 'Analyse de Mirette', icon: 'chart-line', price: { month: 5 }, court: 'Mirette surveille votre site et vous propose des améliorations.', info: 'Chaque semaine, Mirette regarde vos visites, vos pages les plus vues et ce que cherchent vos visiteurs, puis la bande vous propose des améliorations dans votre espace client. Vous choisissez celles qui vous plaisent, Alex les fait.', desc: 'Mirette analyse votre site chaque semaine et la bande vous propose des améliorations, dans votre espace client.' },
-  { id: 'seomois', quand: 'mois', group: 'trouve', name: 'Une page visibilité Google chaque mois', icon: 'search-check', price: { month: 15 }, court: 'Lumi choisit un sujet, Alex écrit la page, chaque mois.', info: 'Chaque mois, Lumi analyse votre site et choisit un sujet que cherchent vos clients sur Google. Alex écrit la page et la met en ligne : une porte de plus vers votre site. Plus votre site a de pages utiles, plus il a de chances d’apparaître.', desc: 'Chaque mois, Lumi choisit un sujet et Alex écrit une nouvelle page pour la visibilité de votre site sur Google, mise en ligne pour vous.' },
-  { id: 'seosemaine', quand: 'mois', group: 'trouve', name: 'Une page visibilité Google chaque semaine', icon: 'search-check', price: { month: 50 }, court: 'Lumi choisit un sujet, Alex écrit la page, chaque semaine.', info: 'Chaque semaine, Lumi choisit un sujet et Alex écrit la page et la met en ligne : une nouvelle porte vers votre site chaque semaine, pour ceux qui veulent avancer vite.', desc: 'Chaque semaine, Lumi choisit un sujet et Alex écrit une nouvelle page de visibilité Google.' },
+  { retire: true /* 18 novembre 2026 : une page se paie à la page, une fois (extra packseo) */, id: 'seomois', quand: 'mois', group: 'trouve', name: 'Une page visibilité Google chaque mois', icon: 'search-check', price: { month: 15 }, court: 'Lumi choisit un sujet, Alex écrit la page, chaque mois.', info: 'Chaque mois, Lumi analyse votre site et choisit un sujet que cherchent vos clients sur Google. Alex écrit la page et la met en ligne : une porte de plus vers votre site. Plus votre site a de pages utiles, plus il a de chances d’apparaître.', desc: 'Chaque mois, Lumi choisit un sujet et Alex écrit une nouvelle page pour la visibilité de votre site sur Google, mise en ligne pour vous.' },
+  { retire: true /* 18 novembre 2026 : une page se paie à la page, une fois (extra packseo) */, id: 'seosemaine', quand: 'mois', group: 'trouve', name: 'Une page visibilité Google chaque semaine', icon: 'search-check', price: { month: 50 }, court: 'Lumi choisit un sujet, Alex écrit la page, chaque semaine.', info: 'Chaque semaine, Lumi choisit un sujet et Alex écrit la page et la met en ligne : une nouvelle porte vers votre site chaque semaine, pour ceux qui veulent avancer vite.', desc: 'Chaque semaine, Lumi choisit un sujet et Alex écrit une nouvelle page de visibilité Google.' },
   { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'en', quand: 'creation', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 100 }, court: 'Avec un bouton pour changer de langue.', info: 'Chaque page existe aussi en anglais, relue à la main. Un bouton en haut du site passe d’une langue à l’autre, et Google peut montrer la version anglaise aux visiteurs étrangers.', desc: 'Votre site traduit en anglais et relu, avec un bouton pour changer de langue. Pour les touristes et les clients venus d’ailleurs.' },
   { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'rdv', quand: 'creation', group: 'site', name: 'Prise de rendez-vous', icon: 'calendar-check', price: { once: 100 }, court: 'Vos clients réservent un créneau en ligne.', info: 'Une page avec vos créneaux libres. Le client choisit son jour et son heure, reçoit une confirmation, et vous êtes prévenu par e-mail. Vous ouvrez et fermez les créneaux vous-même.', desc: 'Vos clients réservent un créneau sur votre site, selon vos disponibilités. Vous recevez un e-mail à chaque réservation.' },
   { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'reprise', quand: 'creation', group: 'site', name: 'Reprise de votre ancien site', icon: 'refresh-cw', price: { once: 100 }, court: 'On garde vos textes, photos et adresses.', info: 'Je récupère les textes, les photos et les adresses des pages de votre ancien site, et je les remets au propre. Les anciens liens mènent au bon endroit : vous gardez votre place sur Google.', desc: 'Vos textes, vos photos et vos adresses de pages repris de l’ancien site, pour garder votre place sur Google.' },
@@ -294,7 +317,7 @@ const options = [
 // ---------------------------------------------------------------- la petite bande : les automatisations d'Alex
 // Alex conçoit et fait chaque site lui-même. À côté, il a programmé une petite bande de compagnons : ce sont ses
 // automatisations, dessinées en petits monstres (src/lib/bestiaire.js). Chacun s'occupe d'une tâche répétitive mais
-// utile, travaille en autonomie, et Alex vérifie tout ce qu'il fait. C'est ce qui permet un site 4 à 5 fois moins cher.
+// utile, travaille en autonomie, et Alex vérifie tout ce qu'il fait. C'est ce qui permet un site 3 à 6 fois moins cher qu'un indépendant (voir `marche`).
 // Sur le site public, on ne parle ni d'IA ni de jetons : seulement de ces petits monstres. Chacun a un prénom et UN rôle :
 // Cerise répond et prépare les demandes ; c'est Alex qui fait toutes les modifications (17 novembre 2026).
 // option : l'extra qui l'ajoute à votre abonnement (id d'un extra de `options`, ou 'boutique'). compris : dans l'abonnement de base.
@@ -302,7 +325,7 @@ const options = [
 // outils : il aide aussi le client au quotidien, dans son espace (au service de tous).
 // 17 novembre 2026 : chaque monstre a un métier clair, ses missions et sa personnalité. Sur le site, on ne parle pas d'IA :
 // seulement de ces petits monstres. role : son métier. missions : ce qu'il fait pour le client. perso : son caractère.
-// compris : avec l'abonnement. option : l'extra qui l'apporte ('mirette', 'seomois') ou 'boutique' (il arrive avec la boutique en ligne).
+// compris : avec l'abonnement. option : l'extra qui l'apporte ('mirette', 'packseo') ou 'boutique' (il arrive avec la boutique en ligne).
 // court / fait : une phrase courte et une phrase complète, reprises par les pages et les FAQ.
 const bandeTout = [
   { id: 'support', nom: 'Cerise', monstre: 'lia', role: 'La secrétaire', compris: true, missions: ['Répond à vos questions', 'Vous aide à formuler vos demandes', 'Les transmet à Alex, bien claires', 'Vous accompagne pas à pas'], perso: 'Souriante et toujours là, elle n’oublie jamais personne.', court: 'Elle répond à vos questions et prépare vos demandes pour Alex.', fait: 'Elle répond à vos questions, vous aide à formuler clairement ce que vous voulez changer, vous le fait confirmer, puis le transmet à Alex, qui fait la modification.' },
@@ -310,7 +333,7 @@ const bandeTout = [
   { id: 'organisateur', nom: 'Mochi', monstre: 'mochi', role: 'L’organisateur', compris: true, missions: ['Classe vos contenus', 'Organise vos pages', 'Garde tout bien rangé'], perso: 'Un peu maniaque, il adore quand chaque chose est à sa place.', court: 'Il classe vos contenus et garde tout bien rangé.', fait: 'Il classe vos contenus, organise vos pages et garde tout bien rangé, pour que vos visiteurs trouvent vite ce qu’ils cherchent.' },
   { id: 'gardien', nom: 'Pistache', monstre: 'dino', role: 'Le gardien', compris: true, missions: ['Fait les sauvegardes', 'Veille sur la sécurité', 'Surveille votre site jour et nuit', 'Fait la maintenance'], perso: 'Costaud et calme, il ne dort que d’un œil.', court: 'Il protège votre site, jour et nuit.', fait: 'Il fait les sauvegardes et la maintenance, veille sur la sécurité et surveille votre site jour et nuit.' },
   { id: 'observateur', nom: 'Mirette', monstre: 'gelee', role: 'L’observatrice', option: 'mirette', missions: ['Surveille vos statistiques', 'Observe la vitesse de votre site', 'Repère ce qui peut être amélioré'], perso: 'Curieuse, elle ne quitte jamais ses jumelles.', court: 'Avec son extra, elle suit vos visites et repère ce qui peut être amélioré.', fait: 'Avec l’extra « Analyse de Mirette », elle surveille vos statistiques, observe la vitesse de votre site et repère ce qui peut être amélioré.' },
-  { id: 'etoile', nom: 'Lumi', monstre: 'etoile', role: 'L’étoile de Google', option: 'seomois', missions: ['Analyse votre site', 'Choisit les sujets de vos pages visibilité Google', 'Aide Google à comprendre votre site'], perso: 'Elle brille un peu plus fort chaque fois qu’un client vous trouve.', court: 'Avec les extras pages visibilité Google, elle choisit les sujets de vos pages.', fait: 'Avec les extras pages visibilité Google, elle analyse votre site et choisit les bons sujets de pages : chacune est une porte d’entrée de plus vers votre site. Alex écrit et publie ces pages, pour que vos clients vous trouvent plus facilement.' },
+  { id: 'etoile', nom: 'Lumi', monstre: 'etoile', role: 'L’étoile de Google', option: 'packseo', missions: ['Analyse votre site', 'Choisit les sujets de vos pages visibilité Google', 'Aide Google à comprendre votre site'], perso: 'Elle brille un peu plus fort chaque fois qu’un client vous trouve.', court: 'Avec les extras pages visibilité Google, elle choisit les sujets de vos pages.', fait: 'Avec les extras pages visibilité Google, elle analyse votre site et choisit les bons sujets de pages : chacune est une porte d’entrée de plus vers votre site. Alex écrit et publie ces pages, pour que vos clients vous trouvent plus facilement.' },
   { id: 'vendeur', nom: 'Champi', monstre: 'champi', role: 'Le vendeur', option: 'boutique', missions: ['Range votre catalogue', 'Suit vos commandes', 'Envoie les e-mails à vos clients'], perso: 'Toujours aimable, il connaît chaque produit par cœur.', court: 'Il tient votre boutique en ligne.', fait: 'Avec la boutique en ligne, il range votre catalogue, suit vos commandes et envoie les e-mails à vos clients.' },
 ];
 const bande = bandeTout;

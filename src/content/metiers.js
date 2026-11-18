@@ -9,7 +9,7 @@
 // Le prix bas vient de la petite bande d'Alex : ses automatisations, dessinées en petits monstres (config.bande).
 // Alex fait chaque site et toutes les modifications, la bande aide et s'occupe du répétitif. On ne dit jamais « IA ».
 // options : les conseils de la page (« Ce que je vous conseille »). Ids acceptés : 'boutique' (option payée une fois, à la commande),
-// 'base' (l'abonnement Mini), ou l'id d'un extra de config.js (aLaDemande ou options au mois : 'packseo', 'seomois', 'seosemaine', 'urgent',
+// 'base' (l'abonnement Mini), ou l'id d'un extra de config.js (aLaDemande ou options au mois : 'packseo', 'urgent',
 // 'mirette', 'deux', 'whatsapp', 'avis'…). Le prix affiché vient de config.js. Chaque « pourquoi » doit coller à ce qui est conseillé.
 // (Le code événement a été retiré le 17 novembre 2026 : un seul champ « code promo ou parrainage » à la commande.)
 const { creation, forfaits, options, paiement, lissage, annuel, marche, bande, evenement } = require('../config');
@@ -24,7 +24,6 @@ const prixBoutique = eur(creation.prix + creation.boutique); // le site avec l'o
 const packSeo = options.find((o) => o.id === 'packseo' && !o.retire) || { name: 'Page visibilité Google', price: { once: 0 } }; // à l'unité, plus tard, depuis l'espace client
 const pagesComprises = creation.pages; // pages comprises dans le site (d'autres pages se prennent en extras)
 const extraMois = (id) => (require('../config').options.find((o) => o.id === id && o.quand === 'mois' && !o.retire) || { name: '', price: {} });
-const seomois = extraMois('seomois'), seosemaine = extraMois('seosemaine');
 const durees = lissage.durees.join(' ou ');
 const acompte = `${paiement.acompte} %`;
 const marcheVitrine = `${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €`;
@@ -59,7 +58,6 @@ const metiers = [
       texte: 'Je n’ai pas encore d’artisan parmi mes réalisations. Pour vous donner une idée, voici comment je bâtirais le site d’un couvreur : un accueil avec sa zone et son numéro, une page par prestation (toiture neuve, réparation, zinguerie, démoussage), une galerie de chantiers et un formulaire de devis.',
     },
     options: [
-      { id: 'seosemaine', pourquoi: 'Chaque semaine, une page visibilité Google sur une prestation ou une commune de votre secteur : une porte d’entrée de plus vers votre site, sans que vous écriviez rien.' },
       { id: 'packseo', pourquoi: 'Une page de plus sur un travail précis que l’on tape sur Google, comme le démoussage d’un toit ou la pose d’une fenêtre de toit. À commander à l’unité, plus tard, depuis votre espace client.' },
     ],
     body: `## Ce que votre client veut savoir en trente secondes
@@ -101,7 +99,7 @@ Pour aller vite sans bâcler, j’ai programmé cette petite bande de monstres :
 
 ## Combien ça coûte
 
-Un site vitrine de ${marche.pagesCompare} pages avec référencement, confié à un indépendant, se paie en général entre ${marcheVitrine}. Le mien revient ${marche.fois} fois moins cher, sans rien enlever à l’essentiel : je gagne du temps sur la technique, jamais sur la relecture.
+Un site vitrine de ${marche.pagesCompare} pages avec référencement, confié à un indépendant, se paie en général entre ${marcheVitrine}. Le mien revient ${marche.fois} fois moins cher qu’un indépendant, d’après des fourchettes publiées par des prestataires (les [sources](/pourquoi-moins-cher/) sont citées), sans rien enlever à l’essentiel : je gagne du temps sur la technique, jamais sur la relecture.
 
 La création coûte ${prix} €, pour ${pagesComprises} pages. Vous versez ${acompte} à la commande, puis le reste à la réception, d’un coup ou en ${durees} fois sans frais. Avec l’abonnement ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement, le nom de domaine, l’adresse de votre site, est offert tant que l’abonnement est actif, et l’hébergement, qui le garde accessible jour et nuit, est compris. Il comprend aussi vos modifications. Tout est détaillé sur la page [tarifs](/tarifs/).`,
     faq: [
@@ -136,7 +134,6 @@ La création coûte ${prix} €, pour ${pagesComprises} pages. Vous versez ${aco
       texte: 'Une page principale pour présenter la pratique et donner envie de prendre contact, puis des pages de conseils qui répondent chacune à une question précise que l’on tape sur Google. C’est un bon modèle pour un praticien qui veut rester simple.',
     },
     options: [
-      { id: 'seomois', pourquoi: 'Une nouvelle page de conseils chaque mois, choisie par ma petite bande et écrite par moi : votre site gagne des lecteurs sans que vous ayez à écrire.' },
       { id: 'packseo', pourquoi: 'Une page de plus sur une question que l’on se pose avant de consulter pour la première fois. Elle se commande à l’unité, après coup, dans votre espace client.' },
     ],
     body: `## Ce qui aide à franchir le pas

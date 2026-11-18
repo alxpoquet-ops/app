@@ -10,6 +10,7 @@
 // Alex fait chaque site, sa petite bande d'automatisations (config.bande) s'occupe du répétitif. On ne dit jamais « IA ».
 // Chaque mot technique est expliqué la première fois qu'il apparaît dans un guide.
 const cfg = require('../config');
+const { sourcesMd, ecartBas, INDEPENDANT_DES } = require('../lib/components');
 const { forfaits, options, paiement, annuel, lissage, creation, marche, bande } = cfg;
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
@@ -21,7 +22,6 @@ const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement : modifications par Alex en 48 h au plus
 const packSeo = options.find((o) => o.id === 'packseo' && !o.retire); // la page visibilité Google, à l'unité ou en pack (extra)
 const extraMois = (id) => options.find((o) => o.id === id && o.quand === 'mois' && !o.retire) || { name: '', price: {} };
-const seomois = extraMois('seomois'), seosemaine = extraMois('seosemaine');
 const pageEnPlus = (cfg.aLaDemande || []).find((x) => x.id === 'page' && !x.retire) || { prix: creation.pagePlus };
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
 const prixBoutique = creation.prix + creation.boutique; // le site avec l'option boutique en ligne
@@ -189,7 +189,7 @@ C'est possible, et pour certains c'est le bon choix. Le guide [faire son site so
 
 ## Et après le lancement
 
-Votre activité va évoluer : nouvelles prestations, nouveaux tarifs, premières réalisations à montrer. Chaque changement se demande depuis votre espace client, et il reste compris dans votre abonnement, sans limite. Pour toucher de nouveaux clients sur Google, vous pouvez aussi prendre l'extra « ${seomois.name} », à ${eur(seomois.price.month)} € par mois, ou « ${seosemaine.name} », à ${eur(seosemaine.price.month)} € par mois.`,
+Votre activité va évoluer : nouvelles prestations, nouveaux tarifs, premières réalisations à montrer. Chaque changement se demande depuis votre espace client, et il reste compris dans votre abonnement, sans limite. Pour toucher de nouveaux clients sur Google, vous pouvez aussi commander des pages visibilité Google, à ${eur(packSeo.price.once)} € la page, payées une fois.`,
     faq: [
       { q: 'Le site est-il une dépense déductible ?', a: 'En micro-entreprise, vous ne déduisez pas vos frais un par un : l’administration applique un abattement forfaitaire sur votre chiffre d’affaires. Pour votre situation précise, le mieux est de poser la question à votre service des impôts ou à un comptable.' },
       { q: 'Puis-je commencer petit et agrandir le site plus tard ?', a: `Oui. Vous démarrez avec vos ${creation.pages} pages. Le jour où une nouvelle prestation arrive, elle peut avoir sa page, avec l'extra « Une page en plus », à ${eur(pageEnPlus.prix)} €.` },
@@ -258,7 +258,7 @@ Chacun se paie une seule fois.
 
 - **${mini.name}, ${eur(mini.month)} € par mois** : l'entretien complet (hébergement, nom de domaine, sauvegardes, sécurité, maintenance) et vos modifications, qui peuvent prendre ${delaiModif}, une demande à la fois.
 
-Tout le reste se prend à la carte, en extras : deux demandes à la fois, l'analyse de Mirette, une page visibilité Google chaque mois ou chaque semaine, une adresse e-mail professionnelle, et d'autres.
+Tout le reste se prend à la carte, en extras : deux demandes à la fois, l'analyse de Mirette, des pages visibilité Google à la page, une adresse e-mail professionnelle, et d'autres.
 
 Une refonte complète du site, ou une fonction nouvelle, se fait sur devis.
 
@@ -278,7 +278,13 @@ Les années suivantes, il ne reste que l'abonnement. Réglé à l'année, ${mini
 
 ## Pourquoi ces prix sont bas
 
-Ce n'est pas un site au rabais. Fait à la main par un indépendant, un site vitrine de ${marche.pagesCompare} pages avec référencement se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €, et une agence demande plus. Le mien coûte ${marche.fois} fois moins, et la différence vient de la méthode. C'est moi qui conçois chaque site, mais j'ai pris le temps de programmer une petite bande de monstres qui s'occupe de ce qui revient d'un projet à l'autre. J'ai aussi des accès directs chez des hébergeurs français, sans intermédiaire à payer. Je relis, je corrige et je vérifie tout avant la mise en ligne. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille d'où vient l'écart, et [pourquoi les Minis Monstres](/pourquoi-les-minis-monstres/) présente ma méthode.
+Ce n'est pas un site au rabais. Fait à la main par un indépendant, un site vitrine de ${marche.pagesCompare} pages avec les bases du référencement se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €, et une agence demande plus. Le mien coûte ${marche.fois} fois moins qu'un indépendant, et la différence vient de la méthode. C'est moi qui conçois chaque site, mais j'ai pris le temps de programmer une petite bande de monstres qui s'occupe de ce qui revient d'un projet à l'autre. J'ai aussi des accès directs chez des hébergeurs français, sans intermédiaire à payer. Je relis, je corrige et je vérifie tout avant la mise en ligne. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille d'où vient l'écart, et [pourquoi les Minis Monstres](/pourquoi-les-minis-monstres/) présente ma méthode.
+
+Soyons honnêtes : ces chiffres viennent de prestataires, donc prudence. Certains indépendants vendent un site dès ${eur(INDEPENDANT_DES)} €, et l'écart n'est alors que d'environ ${ecartBas} fois. Mes ${eur(creation.prix)} € comprennent ce que comprend un site de ${creation.pages} pages comparable (design, formulaire de contact, bases du référencement), mais pas de pages de référencement en plus, qui se prennent à la carte. Pour l'entretien, les prestataires consultés demandent ${eur(marche.entretienMin)} à ${eur(marche.entretienMax)} € par mois, hébergement souvent en plus, contre ${eur(mini.month)} € par mois ici, hébergement et nom de domaine compris.
+
+**Sources**, consultées en novembre 2026 :
+
+${sourcesMd()}
 
 ## Ce qui peut faire monter la note
 

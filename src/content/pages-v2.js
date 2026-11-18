@@ -20,8 +20,9 @@ const ou = (l) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} ou ${l[l.length 
 const delai = (id) => ((types || []).find((t) => t.id === id) || {}).delai || '';
 
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement : modifications par Alex en 48 h au plus, une demande à la fois
+const { sourcesMd, ecartBas, INDEPENDANT_DES } = require('../lib/components');
 const opt = (id) => options.find((o) => o.id === id && !o.retire);
-const seomois = opt('seomois'), seosemaine = opt('seosemaine'), mirette = opt('mirette'), deux = opt('deux');
+const mirette = opt('mirette'), deux = opt('deux');
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
 const annee = (f) => f.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const durees = lissage.durees.join(' ou ');
@@ -52,7 +53,7 @@ const APRES = {
   organisateur: 'place chaque nouvelle page au bon endroit dans le menu.',
   gardien: 'lance les sauvegardes, fait la maintenance et veille sur la sécurité, de jour comme de nuit.',
   observateur: `suit les visites et la vitesse du site, et me dit ce qui mérite d’être amélioré. Avec l’extra « ${mirette.name} », ses idées vous arrivent en petits messages dans votre espace client.`,
-  etoile: `choisit le sujet de chaque page visibilité Google, que j’écris et publie, si vous prenez l’extra « ${seomois.name} » ou « ${seosemaine.name} ».`,
+  etoile: `choisit le sujet de chaque page visibilité Google, que j’écris et publie, pour chaque page commandée avec l’extra « ${packSeo.name} ».`,
   vendeur: 'suit les commandes de votre boutique et envoie les e-mails à vos clients.',
 };
 
@@ -131,11 +132,17 @@ Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, 
 
 ## Les repères du marché, honnêtement
 
-Face au même site de ${marche.pagesCompare} pages fait par un indépendant, l’écart est souvent de ${marche.fois} fois.
+Face au même site de ${marche.pagesCompare} pages fait par un indépendant, l’écart est de ${marche.fois} fois, d’après les fourchettes publiées.
+
+Côté entretien, ${eur(mini.month)} € par mois comprennent l’hébergement, le nom de domaine, les sauvegardes, la sécurité, la maintenance et les modifications. Les prestataires consultés demandent ${eur(marche.entretienMin)} à ${eur(marche.entretienMax)} € par mois, l’hébergement étant souvent en plus : c’est de ${marche.entretienFois} fois moins cher.
 
 La différence se joue alors sur ce qui vient avec : la vérification à la main, le suivi après la mise en ligne, et quelqu’un qui vous répond quand vous avez une question.
 
-> Ces fourchettes sont des ordres de grandeur, relevés sur des pages publiques en novembre 2026. Chaque prestataire fixe ses prix, et un projet particulier peut coûter plus ou moins.
+> Soyons honnêtes : ces fourchettes viennent de prestataires, donc à lire avec prudence, et chacun fixe ses prix. Des indépendants proposent aussi un site dès ${eur(INDEPENDANT_DES)} €, et l’écart tombe alors à environ ${ecartBas} fois. Mes ${eur(creation.prix)} € comprennent ce que comprend un site de ${creation.pages} pages comparable : un design fait pour vous, un formulaire de contact et les bases du référencement. Les pages de référencement en plus ne sont pas comprises : elles se prennent à la carte.
+
+**Sources**, consultées en novembre 2026 :
+
+${sourcesMd()}
 
 ## Ce qui n’est pas sacrifié
 
@@ -305,7 +312,7 @@ Ce qui aide ensuite : garder vos informations à jour, ajouter de temps en temps
 
 Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les autres, des mots répétés à l’excès, des liens achetés. Ils font souvent plus de mal que de bien, et le retard se rattrape ensuite difficilement.
 
-> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('etoile'))} de ma petite bande, choisit les sujets de vos pages visibilité Google, et je les écris une par une. C’est un extra : « ${seomois.name} » à ${eur(seomois.price.month)} € par mois, ou « ${seosemaine.name} » à ${eur(seosemaine.price.month)} € par mois. Besoin d’une page de plus entre-temps ? Elle se commande depuis votre espace client quand vous le décidez, à ${eur(packSeo.price.once)} € la page. Tout est expliqué sur la page [référencement SEO](/referencement-seo/).`,
+> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('etoile'))} de ma petite bande, choisit les sujets de vos pages visibilité Google, et je les écris une par une. C’est un extra : elle se commande depuis votre espace client quand vous le décidez, à ${eur(packSeo.price.once)} € la page, payée une fois. Tout est expliqué sur la page [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de temps pour apparaître sur Google ?', a: 'Sur le nom de votre entreprise, c’est en général rapide. Sur des recherches où beaucoup d’entreprises sont présentes, comptez plutôt plusieurs mois, avec un site soigné et des informations à jour.' },
       { q: 'Faut-il payer Google pour être bien placé ?', a: 'Non. Les résultats naturels ne s’achètent pas. Les annonces payantes existent, elles sont signalées comme sponsorisées, et elles disparaissent dès que vous arrêtez de payer.' },
@@ -429,7 +436,7 @@ Votre site reste en ligne, protégé et à jour, sans que vous ayez à y penser.
 
 Pour aller plus loin, vous prenez un extra quand vous en avez besoin, depuis votre espace client. Il apparaît sur votre prochaine facture, et vous l’arrêtez quand vous voulez.
 
-- **Des pages visibilité Google en plus.** Chacune est écrite pour une recherche précise, comme une porte d’entrée de plus vers votre site. Seule ou en pack, ou chaque mois, ou chaque semaine.
+- **Des pages visibilité Google en plus.** Chacune est écrite pour une recherche précise, comme une porte d’entrée de plus vers votre site. Seule ou en pack, payée une fois.
 - **Deux demandes à la fois**, si vous avez beaucoup de changements à faire.
 - **L’analyse de ${B('observateur').nom}**, qui surveille votre site et vous propose des améliorations dans votre espace client.
 - **Et d’autres petits plus** : un article de blog, vos avis Google, un bouton WhatsApp, une adresse e-mail pro.
