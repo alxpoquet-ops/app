@@ -2363,3 +2363,4 @@ a.client-url { text-decoration: none; }
 .app-opt-once { cursor: default; }
 .app-opt-once .btn { white-space: nowrap; }
 .msg.is-extra { box-shadow: 0 0 0 1px var(--lilac-d, #6E5CC9) inset; }
+.opt-cartes { grid-template-columns: minmax(0, 1fr); max-width: 860px; margin-left: auto; margin-right: auto; }
