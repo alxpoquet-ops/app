@@ -228,7 +228,7 @@ function liaFlot() {
   <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Cerise, la secrétaire d’Alex" hidden>
     <div class="lia-tete">${monster('coucou')}<p><strong>Cerise</strong><small>La secrétaire de la petite bande</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Cerise">${icon('x')}</button></div>
     <div class="lia-fil" data-lia-fil aria-live="polite">
-      <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Cerise, de la petite bande d’Alex ! Choisissez une question, je vous réponds tout de suite.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Cerise, de la petite bande d’Alex ! Choisissez une question ou écrivez la vôtre, je vous réponds tout de suite.</p>
       <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Bonjour ! Dites-moi ce que vous voulez changer sur votre site, ou posez-moi une question.</p>
       <p class="lia-msg is-lia" data-lia-accueil="demo" hidden>Bonjour ! Ici, c’est une démonstration : écrivez-moi comme un client, je vous montre comment je réponds.</p>
       <p class="lia-msg is-lia" data-lia-accueil="attente" hidden>Bonjour ! Je ne suis pas encore branchée dans cet espace. En attendant, écrivez à Alex dans l’onglet Mes demandes.</p>
@@ -242,11 +242,12 @@ function liaFlot() {
     <div class="lia-puces" data-lia-liens="espace" hidden>
       ${exemples.map((e) => `<button type="button" data-lia-ex>${e}</button>`).join('')}
     </div>
-    <form class="lia-saisie" data-lia-form hidden>
+    <form class="lia-saisie" data-lia-form data-site-ajax="/wp-json/aled08/v1/bulle-site" hidden>
       <label class="sr-only" for="lia-champ">Votre message pour Cerise</label>
-      <textarea id="lia-champ" rows="2" maxlength="${jetonsLia.bulle.max}" placeholder="Écrivez à Cerise…" required></textarea>
+      <textarea id="lia-champ" rows="2" maxlength="${jetonsLia.bulle.max}" placeholder="Posez votre question à Cerise…" required></textarea>
       <button type="submit" aria-label="Envoyer à Cerise">${icon('send')}</button>
     </form>
+    <p class="lia-note" data-lia-note-site hidden>Cerise répond automatiquement et peut se tromper. Pour une demande précise, <a href="${C.contactUrl}">écrivez à Alex</a>.</p>
     <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Cerise répond automatiquement et peut se tromper. Elle ne touche pas à votre site : c’est Alex qui fait les modifications. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
   </div>
   <p class="lia-flot-coucou" hidden><strong>Je suis là pour vous aider !</strong><small>Cerise, la secrétaire de la bande</small></p>

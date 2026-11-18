@@ -183,6 +183,7 @@ require_once __DIR__ . '/includes/brief.php';
 require_once __DIR__ . '/includes/jetons.php';
 require_once __DIR__ . '/includes/reseaux.php';
 require_once __DIR__ . '/includes/bulle.php';
+require_once __DIR__ . '/includes/bulle-site.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
 require_once __DIR__ . '/includes/mirette.php';

@@ -330,3 +330,11 @@ Le connecteur (extension « Les Minis Monstres : connecteur ») contient son pro
 ## Le circuit d'une demande
 
 Voir la section 9 : Cerise prépare la demande avec le client, Alex fait la modification. Le circuit de Bricou (modifications par l'IA, aperçu, MCP) n'est plus utilisé.
+
+## La barre de discussion de Cerise pour tous les visiteurs
+
+Dans la bulle de Cerise, sur toutes les pages du site, un visiteur peut poser une question libre (prix, abonnements, délais, façon de travailler). Cerise répond avec les faits de l'offre (tirés de `data.json`) et peut proposer un lien vers une page. Elle ne peut rien modifier ni promettre.
+
+- Point d'entrée public : `POST /wp-json/aled08/v1/bulle-site` (`admin-ajax.php` n'est pas joignable par les visiteurs sur ce site). Code : `includes/bulle-site.php`.
+- Garde-fous : la demande doit venir d'une page du site ; 10 questions par heure et 30 par jour par visiteur (empreinte de l'adresse IP) ; 400 questions et 2 $ par jour pour tout le site (options `aled08_bulle_site_jour` et `aled08_bulle_site_budget`) ; question de 300 caractères au plus ; modèle rapide de la bulle (`aled08_bulle_modele`).
+- Aucune question n'est enregistrée : seul le coût du jour est compté. Sans clé Claude, la barre répond « écrivez à Alex ».

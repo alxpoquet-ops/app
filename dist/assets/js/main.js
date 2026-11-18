@@ -1208,13 +1208,48 @@
         champ.focus();
       });
     } else if (mode === 'site') {
+      var histoSite = []; // les derniers échanges, renvoyés à chaque question (le serveur n'en garde rien)
       $$('[data-lia-q]', flot).forEach(function (b) {
         b.addEventListener('click', function () {
           var r = $('[data-lia-r="' + b.getAttribute('data-lia-q') + '"]', flot);
           ecrire(b.textContent.trim(), 'moi');
           if (r) ecrire('', 'lia', r.innerHTML);
+          histoSite.push(['moi', b.textContent.trim()], ['lia', r ? r.textContent.replace(/\s+/g, ' ').trim() : '']);
         });
       });
+      // la barre de discussion : une question libre, Cerise répond avec ce qu'elle sait du site
+      var noteSite = $('[data-lia-note-site]', flot), ajaxSite = liaForm && liaForm.getAttribute('data-site-ajax');
+      if (liaForm && ajaxSite) {
+        liaForm.hidden = false; if (noteSite) noteSite.hidden = false;
+        champ.maxLength = 300;
+        var occupeSite = false;
+        var poserSite = function (q) {
+          q = (q || '').trim();
+          if (!q || occupeSite) return;
+          occupeSite = true;
+          var envoi = $('button', liaForm); envoi.disabled = true;
+          ecrire(q, 'moi'); champ.value = '';
+          $$('[data-lia-liens="site"]', flot).forEach(function (g) { g.hidden = true; }); // les questions toutes faites laissent la place à la conversation
+          var attenteSite = ecrire('', 'lia is-attente', '<i></i><i></i><i></i>');
+          var finiSite = function (txt, lien) {
+            attenteSite.remove(); occupeSite = false; envoi.disabled = false;
+            var p = ecrire(txt, lien === false ? 'err' : 'lia');
+            if (lien && lien.href) { var a = d.createElement('a'); a.href = lien.href; a.textContent = ' ' + lien.texte; p.appendChild(a); }
+            if (lien === false) { var c = d.createElement('a'); c.href = '/contact/'; c.textContent = ' Écrire à Alex'; p.appendChild(c); }
+          };
+          var fd = new FormData();
+          fd.append('message', q); fd.append('histo', JSON.stringify(histoSite.slice(-6)));
+          fetch(ajaxSite, { method: 'POST', body: fd, credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (j) {
+              if (j && j.success) { histoSite.push(['moi', q], ['lia', j.data.reponse]); finiSite(j.data.reponse, j.data.lien); }
+              else finiSite((j && j.data && j.data.message) || tr('Cerise n’a pas pu répondre. Réessayez dans un instant.'), false);
+            })
+            .catch(function () { finiSite(tr('Cerise n’est pas joignable pour le moment.'), false); });
+        };
+        liaForm.addEventListener('submit', function (e) { e.preventDefault(); poserSite(champ.value); });
+        champ.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); poserSite(champ.value); } });
+      }
     }
     flot.hidden = !!dialogue; // la bulle flottante reste cachée quand la conversation est dans la page
     flotBtn.addEventListener('click', function () { flotOuvrir(flotPanel.hidden); });
