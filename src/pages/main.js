@@ -1564,14 +1564,15 @@ function briefDetail(c) {
 }
 
 // Dimensions des captures de l'espace client (scripts/captures-espace.js écrit src/assets/img/doc/messages.webp)
-const IMG_MSGS = (() => {
-  try { const t = require('fs').readFileSync(require('path').join(__dirname, '../assets/img/doc/messages.json'), 'utf8'); return JSON.parse(t); } catch (e) { return [1600, 1700]; }
-})();
+const dimsDoc = (nom, defaut) => {
+  try { const t = require('fs').readFileSync(require('path').join(__dirname, `../assets/img/doc/${nom}.json`), 'utf8'); return JSON.parse(t); } catch (e) { return defaut; }
+};
+const IMG_MSGS = dimsDoc('messages', [1600, 1700]);
 // ====================================================================== DOCUMENTATION
 function docPage() {
   const crumbs = crumb('documentation');
   const IMG = {
-    espace: [1572, 2116], demandes: [1572, 1784], chico: [1482, 1082], titan: [1482, 2697], messages: IMG_MSGS,
+    espace: dimsDoc('espace', [1572, 2116]), demandes: dimsDoc('demandes', [1572, 1784]), chico: [1482, 1082], titan: [1482, 2697], messages: IMG_MSGS,
     boutique: [1482, 1823], vacances: [654, 650], 'site-dodedo': [1500, 938], 'site-flore': [1500, 938],
   };
   const fig = (k, alt, cap, cls = '') => `<figure class="doc-fig ${cls} reveal"><img src="/assets/img/doc/${k}.webp" width="${IMG[k][0]}" height="${IMG[k][1]}" alt="${esc(alt)}" loading="lazy" decoding="async"><figcaption>${cap}</figcaption></figure>`;
