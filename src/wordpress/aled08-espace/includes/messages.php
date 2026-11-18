@@ -24,7 +24,7 @@ function aled08e_msg_monstres() {
         'champi' => ['champi', 'Champi', 'Le vendeur'],
     ];
 }
-function aled08e_msg_maxi($uid) { return !empty(aled08e_forfait(aled08e_meta($uid, 'forfait'))['optimisation']) || aled08e_famille($uid); }
+function aled08e_msg_maxi($uid) { return aled08e_mirette_actif($uid); } // l'extra « Analyse de Mirette » (ou l'ancien Maxi)
 function aled08e_msg_ecartes($uid) { $v = get_user_meta($uid, 'aled08_msg_ecartes', true); return is_array($v) ? $v : []; }
 
 /* Les idées de saison : [mois (1 à 12), monstre, titre, texte, la demande envoyée si le client dit oui] */
@@ -101,10 +101,10 @@ function aled08e_messages($uid) {
     if ($site !== '') {
         $msgs[] = ['id' => 'pistache-' . wp_date('oW'), 'qui' => 'pistache', 'quand' => 'cette semaine', 'titre' => 'Je veille sur votre site', 'texte' => 'Sauvegardes, cadenas et surveillance : tout est en place. Si quelque chose ne va pas, Alex est prévenu.', 'vis' => ['type' => 'voyants', 'https' => stripos($site, 'https://') === 0]];
     }
-    // Mini : un mot pour présenter Maxi
+    // sans l'extra : un mot pour présenter l'analyse de Mirette
     if (!$maxi && !aled08e_sans_formule($uid)) {
-        $evo = aled08e_forfait('evolution');
-        if (($evo['id'] ?? '') === 'evolution') $msgs[] = ['id' => 'teaser-maxi', 'qui' => 'mirette', 'teaser' => true, 'titre' => 'Avec ' . $evo['name'] . ', la bande vous écrit chaque semaine', 'texte' => ((aled08e_data()['optimisation']['texte'] ?? '') ?: 'La bande surveille votre site et vous propose des améliorations.') . ' Vos petites modifications sont faites dans l’heure, pour ' . aled08e_euro_txt($evo['month']) . ' par mois.'];
+        $x = aled08e_option('mirette');
+        if ($x && empty($x['retire'])) $msgs[] = ['id' => 'teaser-mirette', 'qui' => 'mirette', 'teaser' => true, 'titre' => 'Je peux surveiller votre site chaque semaine', 'texte' => $x['desc'] . ' C’est un extra à ' . aled08e_euro_txt($x['month']) . ' par mois, que vous ajoutez ou retirez quand vous voulez, dans Abonnement et factures.'];
     }
     $ecartes = aled08e_msg_ecartes($uid);
     return array_values(array_filter($msgs, function ($x) use ($ecartes) { return !in_array($x['id'], $ecartes, true); }));
@@ -188,7 +188,7 @@ add_action('init', function () {
     update_option('aled08e_annonce_minimaxi', '1', false); // posé d'abord : deux visites en même temps ne publient pas deux fois
     $mini = aled08e_forfait('base');
     $maxi = aled08e_forfait('evolution');
-    if (($maxi['id'] ?? '') !== 'evolution') return;
+    if (($maxi['id'] ?? '') !== 'evolution' || count(aled08e_data()['forfaits']) < 2) return; // Maxi n'est plus proposé
     $admins = get_users(['role' => 'administrator', 'number' => 1, 'orderby' => 'ID', 'fields' => 'ids']);
     $titre = 'Deux abonnements : ' . $mini['name'] . ' et ' . $maxi['name'];
     wp_insert_post([
@@ -228,12 +228,12 @@ function aled08e_gauge_etape($p) {
     if (get_post_meta($p->ID, '_aled08_par', true) === 'alex' || in_array($etat, ['transmise', 'refuse', 'pour_alex'], true)) return 3;
     return 1;
 }
-/* Demandes en même temps : une avec l'abonnement à 10 € (Mini), deux avec celui à 20 € (Maxi) */
+/* Demandes en même temps : une avec l'abonnement (Mini), deux avec l'extra « Deux demandes à la fois » (ou l'ancien Maxi) */
 function aled08e_demandes_max($uid = 0) {
     $uid = $uid ?: get_current_user_id();
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
     if (aled08e_famille($uid)) return 2;
-    return max(1, (int) ($f['demandesMax'] ?? (!empty($f['optimisation']) ? 2 : 1)));
+    return max(1, (int) ($f['demandesMax'] ?? (!empty($f['optimisation']) ? 2 : 1))) + (aled08e_extra_actif($uid, 'deux') && empty($f['optimisation']) ? 1 : 0);
 }
 /* Le visuel (aperçu sur le vrai site) préparé par Bricou pour une demande, s'il y en a un */
 function aled08e_gauge_apercu($p) {

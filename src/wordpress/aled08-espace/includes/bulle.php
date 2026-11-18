@@ -126,7 +126,8 @@ function aled08e_bulle_contexte($uid) {
     if (count($fo) > 1) $offre[] = 'Les deux abonnements, à changer quand on veut dans Mon compte : ' . implode(' ; ', $fo) . '.';
     elseif (count($fo) === 1) $offre[] = 'Un seul abonnement, sans engagement, qui comprend tout : ' . $fo[0] . '.';
     if (!empty($D['creationSeule'])) $offre[] = 'Création seule, pour qui a déjà son nom de domaine et son hébergement : le client paie seulement le site (' . aled08e_euro_txt($D['creation']['prix'] ?? 500) . '), sans abonnement, et Alex lui remet le code du site, prêt à installer. Maintenance et modifications non comprises.';
-    $offre[] = 'Une modification : le client écrit sa demande (onglet Mes demandes). Cerise la relit, lui pose une question si besoin, la reformule clairement et la lui fait confirmer. Puis elle la transmet à Alex, qui fait la modification lui-même. Les petits monstres ne modifient jamais le site. Mini (10 € par mois) : une demande à la fois, faite sous 7 jours. Maxi (20 € par mois) : deux demandes à la fois, faites sous 48 heures, en priorité. Le client peut annuler une demande tant qu’Alex ne l’a pas commencée.';
+    $offre[] = 'Une modification : le client écrit sa demande (onglet Mes demandes). Cerise la relit, lui pose une question si besoin, la reformule clairement et la lui fait confirmer. Puis elle la transmet à Alex, qui fait la modification lui-même. Les petits monstres ne modifient jamais le site. Une modification prend 48 h au plus (24 h avec l’extra « Votre demande en 24 heures »), une demande à la fois (deux avec l’extra « Deux demandes à la fois »). Le client peut annuler une demande tant qu’Alex ne l’a pas commencée.';
+    $offre[] = 'Les extras : ' . aled08e_bulle_extras_txt() . ' Les extras payés une fois se commandent dans « Mes demandes » et s’ajoutent à la prochaine facture. Les extras au mois se choisissent dans « Abonnement et factures ». Alex fait chaque extra sous 7 jours au plus.';
     $rech = [];
     foreach ((array) $jl['recharge'] as $r) $rech[] = (int) $r['jetons'] . ' d’énergie pour ' . aled08e_euro_txt($r['prix']);
     if (!$pause) $offre[] = 'Redonner de l’énergie (onglet Outils) : ' . implode(', ', $rech) . '.';
@@ -269,4 +270,12 @@ function aled08e_bulle_html($uid) {
         . (aled08e_energie_on() ? '' : ' data-sans-energie="1"')
         . ' data-histo="' . esc_attr((string) wp_json_encode(array_values(aled08e_dialogue_lire($uid)), JSON_UNESCAPED_UNICODE)) . '"'
         . ' data-max="' . (int) aled08e_bulle_cfg()['max'] . '" data-prenom="' . esc_attr(aled08e_prenom($u)) . '" data-uid="' . (int) $uid . '"></div>';
+}
+
+/* Les extras avec leurs prix, en une phrase (payés une fois, puis au mois) */
+function aled08e_bulle_extras_txt() {
+    $u = []; $m = [];
+    foreach (aled08e_a_la_demande() as $x) $u[] = $x['name'] . ' ' . aled08e_euro_txt($x['prix']);
+    foreach (aled08e_changer_options_possibles(0) as $o) $m[] = $o['name'] . ' ' . aled08e_euro_txt($o['month']) . ' par mois';
+    return 'payés une fois : ' . implode(', ', $u) . '. Au mois : ' . implode(', ', $m) . '.';
 }

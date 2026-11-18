@@ -1,7 +1,7 @@
 <?php
 /**
- * Les Minis Monstres Espace client : Mirette, l'observatrice, écrit l'analyse de la semaine (abonnement Maxi).
- * Une fois par semaine (tâche quotidienne aled08_quotidien), pour chaque client Maxi dont le site est relié :
+ * Les Minis Monstres Espace client : Mirette, l'observatrice, écrit l'analyse de la semaine (extra « Analyse de Mirette », ou ancien abonnement Maxi).
+ * Une fois par semaine (tâche quotidienne aled08_quotidien), pour chaque client qui a l'extra Analyse de Mirette et dont le site est relié :
  * les chiffres du site (connecteur, action « stats » : visites sur 14 jours, pages les plus vues, provenance, recherches
  * Google si Search Console est relié) partent chez Claude, qui rend une analyse courte et deux suggestions concrètes.
  * Elles s'affichent dans « Les petits mots de la bande » (includes/messages.php). « Oui, faites-le » envoie la suggestion
@@ -10,8 +10,7 @@
 defined('ABSPATH') || exit;
 
 function aled08e_mirette_ok($uid) {
-    $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
-    return (!empty($f['optimisation']) || aled08e_famille($uid))
+    return aled08e_mirette_actif($uid)
         && function_exists('aled08e_lia_prete_pour') && aled08e_lia_prete_pour($uid)
         && function_exists('aled08e_jl_forfait_actif') && aled08e_jl_forfait_actif($uid);
 }
@@ -93,7 +92,7 @@ function aled08e_mirette_analyser($uid) {
     return true;
 }
 
-/* Chaque jour : les clients Maxi dont l'analyse a plus de 7 jours (5 au plus par jour, pour étaler) */
+/* Chaque jour : les clients avec l'extra Analyse de Mirette dont l'analyse a plus de 7 jours (5 au plus par jour, pour étaler) */
 function aled08e_mirette_tourner() {
     if (get_option('aled08_mirette_pause') === '1') return;
     $faits = 0;

@@ -175,11 +175,14 @@ const energieMois = 250;
 const enService = { outils: false, energie: false };
 const limites = { bulleJour: 40 }; // messages par jour dans la bulle de Cerise (les modifications sont sans limite)
 const enPause = !enService.energie;
-// Deux abonnements au mois, sans engagement (17 novembre 2026) : Mini (id 'base', 10 €) et Maxi (id 'evolution', 20 €).
+// Un seul abonnement : Mini, 10 € par mois, sans engagement (18 novembre 2026). Maxi est retiré : tout ce qu'il apportait se prend
+// maintenant en extra, depuis l'espace client (voir « extras » plus bas). Maxi (id 'evolution') reste défini dans `forfaitsAnciens`
+// pour les clients qui l'ont déjà : l'extension WordPress le connaît mais ne le propose plus.
 // illimite : modifications incluses, sans quota (quota et periode ne servent plus que pour les anciens comptes de l'extension).
-// delai : délai court des modifications (ex. « 7 jours »). delaiTexte : la phrase complète après « Modifications ».
-// pageSeo : 'mois' ou 'semaine' (une page pour Google en plus). priorite : passe avant les autres.
-// optimisation : la bande surveille le site et propose des améliorations (Mirette, suggestions dans l'espace client).
+// delai : délai des modifications (« 48 heures » : une modification peut prendre jusqu'à 48 h). delaiTexte : la phrase complète après « Modifications ».
+// priorite, pageSeo, optimisation : ne servent plus que pour l'ancien abonnement Maxi.
+// L'abonnement, c'est « maintenir le site » : hébergement, sauvegardes, sécurité, maintenance et modifications. Le nom de domaine est offert
+// tant que l'abonnement est actif. La création du site (500 €) est un autre achat, payé une fois.
 const forfaits = [
   {
     id: 'base',
@@ -189,21 +192,24 @@ const forfaits = [
     quota: 1,
     periode: 'trimestre',
     illimite: true,
-    pageSeo: 'mois',
+    pageSeo: '',
     jetons: energieMois, // énergie (en pause)
     partage: false,
-    delai: '7 jours',
-    delaiTexte: 'faites par Alex sous 7 jours',
-    demandesMax: 1, // demandes en cours en même temps
+    delai: '48 heures',
+    delaiTexte: 'faites par Alex en 48 h au plus',
+    demandesMax: 1, // demandes en cours en même temps (+ 1 avec l'extra « Deux demandes à la fois »)
     bulle: 'Votre site en ligne, protégé et à jour',
-    modifs: 'modifications incluses et une page SEO par mois',
+    modifs: 'modifications incluses, faites en 48 h au plus',
     conseil: false,
     tagline: 'Sans engagement',
-    pitch: 'Votre site reste en ligne, protégé et à jour. Vos modifications sont incluses, et une nouvelle page pour Google s’ajoute chaque mois.',
-    main: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Maintenance technique', 'Modifications incluses, faites par Alex sous 7 jours', 'Une demande à la fois', 'Une page SEO par mois', 'Tableau de bord : vos visiteurs et vos pages les plus vues'],
-    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site, à votre nom', 'Sauvegardes : une copie de sécurité de votre site', 'Sécurité : le petit cadenas HTTPS et les protections à jour', 'Maintenance technique : les vérifications qui gardent votre site en forme', 'Modifications incluses : Cerise vous aide à formuler votre demande, Alex la fait sous 7 jours', 'Une demande à la fois', 'Une page SEO en plus chaque mois, pour être trouvé sur plus de recherches Google', 'Tableau de bord : vos visiteurs, d’où ils arrivent et vos pages les plus vues'],
-    features: ['Hébergement', 'Nom de domaine', 'Sauvegardes', 'Sécurité', 'Maintenance technique', 'Modifications incluses', 'Une page SEO par mois'],
+    pitch: 'Votre site reste en ligne, protégé et à jour, et votre nom de domaine est offert tant que l’abonnement est actif. Vos modifications sont incluses : une modification peut prendre jusqu’à 48 h.',
+    main: ['Hébergement', 'Nom de domaine offert tant que l’abonnement est actif', 'Sauvegardes', 'Sécurité', 'Maintenance technique', 'Modifications incluses, faites par Alex en 48 h au plus', 'Une demande à la fois', 'Tableau de bord : vos visiteurs et vos pages les plus vues'],
+    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site, à votre nom, offerte tant que l’abonnement est actif', 'Sauvegardes : une copie de sécurité de votre site', 'Sécurité : le petit cadenas HTTPS et les protections à jour', 'Maintenance technique : les vérifications qui gardent votre site en forme', 'Modifications incluses : Cerise vous aide à formuler votre demande, Alex la fait en 48 h au plus', 'Une demande à la fois (deux avec l’extra « Deux demandes à la fois »)', 'Tableau de bord : vos visiteurs, d’où ils arrivent et vos pages les plus vues'],
+    features: ['Hébergement', 'Nom de domaine offert', 'Sauvegardes', 'Sécurité', 'Maintenance technique', 'Modifications incluses en 48 h au plus'],
   },
+];
+// Les anciens abonnements : plus proposés, mais un client qui en a un le garde (l'extension WordPress les lit ici).
+const forfaitsAnciens = [
   {
     id: 'evolution',
     name: 'Maxi',
@@ -219,16 +225,17 @@ const forfaits = [
     jetons: energieMois,
     partage: false,
     delai: '48 heures',
-    delaiTexte: 'faites par Alex sous 48 h',
-    demandesMax: 2, // demandes en cours en même temps
+    delaiTexte: 'faites par Alex en 48 h au plus',
+    demandesMax: 2,
     bulle: 'Votre site qui grandit chaque semaine, avec la bande aux petits soins',
     modifs: 'modifications prioritaires, une page SEO optimisée par semaine et l’optimisation continue',
     conseil: true,
     tagline: 'Sans engagement',
-    pitch: 'Tout Mini, avec vos modifications en priorité sous 48 h, deux demandes à la fois, une page SEO optimisée chaque semaine, et la bande qui surveille votre site pour vous proposer des améliorations.',
-    main: ['Tout Mini', 'Modifications prioritaires, faites par Alex sous 48 h', 'Deux demandes à la fois', 'Une page SEO optimisée par semaine', 'Analyse régulière du site par Mirette', 'Suggestions d’amélioration par la bande', 'Optimisation continue de votre visibilité'],
-    details: ['Tout Mini', 'Modifications prioritaires : vos demandes passent en premier, faites par Alex sous 48 h', 'Deux demandes à la fois', 'Une page SEO optimisée chaque semaine', 'Analyse régulière du site par Mirette, l’observatrice de la bande', 'Suggestions d’amélioration par la bande, dans votre espace client', 'Optimisation continue : les Minis Monstres surveillent votre site et proposent régulièrement des améliorations pour votre visibilité'],
-    features: ['Tout Mini', 'Modifications prioritaires sous 48 h', 'Deux demandes à la fois', 'Une page SEO optimisée par semaine', 'Optimisation continue'],
+    retire: true,
+    pitch: 'Tout Mini, avec vos modifications en priorité, deux demandes à la fois, une page SEO optimisée chaque semaine, et la bande qui surveille votre site.',
+    main: ['Tout Mini', 'Modifications prioritaires, faites par Alex en 48 h au plus', 'Deux demandes à la fois', 'Une page SEO optimisée par semaine', 'Analyse régulière du site par Mirette', 'Suggestions d’amélioration par la bande'],
+    details: [],
+    features: ['Tout Mini', 'Deux demandes à la fois', 'Une page SEO optimisée par semaine', 'Optimisation continue'],
   },
 ];
 // L'optimisation continue de Maxi, expliquée (page Tarifs, documentation, espace client)
@@ -252,7 +259,7 @@ const annuel = { moisOfferts: 2 };
 // Le paiement en plusieurs fois se fait au mois : l'abonnement passe alors au mois.
 const lissage = { durees: [6, 12] };
 // Délai de réponse aux demandes de modification (le même pour tous).
-const delais = { reponse: '7 jours', titan: '72 heures', urgent: '24 heures', evolution: '48 heures' };
+const delais = { reponse: '48 heures', titan: '72 heures', urgent: '24 heures', evolution: '48 heures' };
 
 // ---------------------------------------------------------------- options et extras
 // quand : 'creation' = payé une fois, à la création du site ; 'mois' = extra de l'abonnement, activable et désactivable.
@@ -266,15 +273,20 @@ const delais = { reponse: '7 jours', titan: '72 heures', urgent: '24 heures', ev
 // les ont déjà (l'extension les montre encore dans leur compte), mais ne sont plus proposés.
 const options = [
   { id: 'packseo', quand: 'espace' /* se commande depuis l'espace client, à l'unité (5 € la page, 17 novembre 2026) */, group: 'site', name: 'Page SEO supplémentaire', icon: 'search-check', price: { once: 5 }, pages: 1, exemples: ['Service + ville', 'FAQ', 'Métier', 'Page locale', 'Guide'], court: 'Une page SEO en plus, ou un pack de 5 ou 10 pages, pour être trouvé sur plus de recherches.', packs: [1, 5, 10], info: 'Une page de plus, écrite pour une recherche que font vos clients sur Google. Par exemple : un service et une ville, une FAQ, votre métier, une page locale ou un guide. Plus votre site a de pages utiles, plus il a de chances d’apparaître.', desc: 'Une page SEO en plus, à 5 €, ou un pack de 5 ou 10 pages. Par exemple : service + ville, FAQ, métier, page locale ou guide. Chaque page répond à une recherche que font vos clients sur Google.' },
+  { id: 'assistant', quand: 'mois', group: 'contact', name: 'Assistant Cerise sur votre site', icon: 'message-circle', price: { month: 15 }, court: 'Un assistant qui répond aux questions de vos visiteurs, à toute heure.', info: 'Un petit assistant sur votre site répond aux questions de vos visiteurs (horaires, prix, services, délais), à toute heure, en s’appuyant sur ce que dit votre site. Alex le règle pour votre activité et vérifie ses réponses. Pour ce que l’assistant ne sait pas, il renvoie vers votre formulaire de contact.', desc: 'Un assistant sur votre site qui répond aux questions de vos visiteurs, adapté à votre activité. Alex le règle et le vérifie.' },
+  { id: 'deux', quand: 'mois', group: 'quotidien', name: 'Deux demandes à la fois', icon: 'layers', price: { month: 5 }, court: 'Deux demandes de modification en cours en même temps.', info: 'Avec l’abonnement, une demande de modification est en cours à la fois. Avec cet extra, vous pouvez en avoir deux en même temps, sans attendre que la première soit faite.', desc: 'Deux demandes de modification en cours en même temps, au lieu d’une.' },
+  { id: 'mirette', quand: 'mois', group: 'trouve', name: 'Analyse de Mirette', icon: 'chart-line', price: { month: 5 }, court: 'Mirette surveille votre site et vous propose des améliorations.', info: 'Chaque semaine, Mirette regarde vos visites, vos pages les plus vues et ce que cherchent vos visiteurs, puis la bande vous propose des améliorations dans votre espace client. Vous choisissez celles qui vous plaisent, Alex les fait.', desc: 'Mirette analyse votre site chaque semaine et la bande vous propose des améliorations, dans votre espace client.' },
+  { id: 'seomois', quand: 'mois', group: 'trouve', name: 'Une page SEO chaque mois', icon: 'search-check', price: { month: 5 }, court: 'Lumi choisit un sujet, Alex écrit la page, chaque mois.', info: 'Chaque mois, Lumi analyse votre site et choisit un sujet que cherchent vos clients sur Google. Alex écrit la page et la met en ligne. Plus votre site a de pages utiles, plus il a de chances d’apparaître.', desc: 'Chaque mois, Lumi choisit un sujet et Alex écrit une nouvelle page pour Google, mise en ligne pour vous.' },
+  { id: 'seosemaine', quand: 'mois', group: 'trouve', name: 'Une page SEO chaque semaine', icon: 'search-check', price: { month: 18 }, court: 'Lumi choisit un sujet, Alex écrit la page, chaque semaine.', info: 'Chaque semaine, Lumi choisit un sujet pour Google et Alex écrit la page et la met en ligne. Pour les sites qui veulent monter vite.', desc: 'Chaque semaine, Lumi choisit un sujet et Alex écrit une nouvelle page pour Google.' },
   { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'en', quand: 'creation', group: 'site', name: 'Traduction en anglais', icon: 'languages', price: { once: 100 }, court: 'Avec un bouton pour changer de langue.', info: 'Chaque page existe aussi en anglais, relue à la main. Un bouton en haut du site passe d’une langue à l’autre, et Google peut montrer la version anglaise aux visiteurs étrangers.', desc: 'Votre site traduit en anglais et relu, avec un bouton pour changer de langue. Pour les touristes et les clients venus d’ailleurs.' },
   { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'rdv', quand: 'creation', group: 'site', name: 'Prise de rendez-vous', icon: 'calendar-check', price: { once: 100 }, court: 'Vos clients réservent un créneau en ligne.', info: 'Une page avec vos créneaux libres. Le client choisit son jour et son heure, reçoit une confirmation, et vous êtes prévenu par e-mail. Vous ouvrez et fermez les créneaux vous-même.', desc: 'Vos clients réservent un créneau sur votre site, selon vos disponibilités. Vous recevez un e-mail à chaque réservation.' },
   { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'reprise', quand: 'creation', group: 'site', name: 'Reprise de votre ancien site', icon: 'refresh-cw', price: { once: 100 }, court: 'On garde vos textes, photos et adresses.', info: 'Je récupère les textes, les photos et les adresses des pages de votre ancien site, et je les remets au propre. Les anciens liens mènent au bon endroit : vous gardez votre place sur Google.', desc: 'Vos textes, vos photos et vos adresses de pages repris de l’ancien site, pour garder votre place sur Google.' },
   { id: 'pages', retire: true /* remplacée par « 10 € la page en plus » (novembre 2026) : gardée pour les anciennes commandes */, quand: 'creation', group: 'site', name: 'Cinq pages de plus', icon: 'layers', price: { once: 100 }, types: ['vitrine', 'boutique'], court: 'Cinq pages en plus des cinq comprises.', info: 'Votre site passe de cinq à dix pages : une page par service, par produit phare ou par événement. Chaque page utile est une chance de plus d’être trouvé sur Google.', desc: 'Pour un site plus grand : cinq pages en plus des cinq comprises.' },
   { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'seo', quand: 'mois', group: 'site', name: 'Suivi Google', icon: 'search-check', price: { month: 10 }, court: 'Je travaille votre place sur Google, chaque mois.', info: 'Chaque mois, je suis les mots que tapent vos clients, je retouche vos pages pour les aider à monter sur Google, et vous recevez un rapport simple : votre place pour chaque mot et les visites venues de Google.', desc: 'Chaque mois, je regarde les mots que vos clients tapent, j’améliore vos pages pour Google et je vous montre où vous en êtes.' },
   { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'stats', quand: 'mois', group: 'site', name: 'Chiffres détaillés', icon: 'chart-line', price: { month: 5 }, court: 'Visiteurs, provenance et ventes, heure par heure.', info: 'Le tableau de bord complet : la courbe de vos visites, les appareils, d’où viennent vos visiteurs, vos ventes, et un rapport chaque mois.', desc: 'Votre site heure par heure : visiteurs, pages vues, provenance, ventes. Et un rapport simple chaque mois.' },
-  { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'mail', quand: 'mois', group: 'site', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, court: 'Une adresse comme contact@votreboite.fr.', info: 'Une vraie boîte à votre nom, comme contact@votreboite.fr, sur votre téléphone et votre ordinateur. Je la crée et je vous envoie les réglages.', desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
-  { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'stock', quand: 'mois', group: 'site', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, types: ['boutique'], court: 'Le stock se décompte à chaque vente.', info: 'Vous indiquez combien vous avez de chaque produit. Le stock baisse tout seul à chaque vente, le site affiche « Plus que 2 » quand il en reste peu, puis « Épuisé » à zéro.', desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
-  { retire: true /* retirée le 17 novembre 2026 : gardée pour les anciens clients */, id: 'comptes', quand: 'mois', group: 'site', name: 'Comptes clients', icon: 'users', price: { month: 5 }, types: ['boutique'], court: 'Vos clients gardent commandes, adresses et favoris.', info: 'Vos clients se créent un compte : ils retrouvent leurs commandes, leurs adresses et leurs produits favoris, et recommandent en un clic.', desc: 'Vos clients se créent un compte sur votre site : commandes passées, adresses et favoris gardés.' },
+  { id: 'mail', quand: 'mois', group: 'quotidien', name: 'Adresse e-mail pro', icon: 'at-sign', price: { month: 3 }, court: 'Une adresse comme contact@votreboite.fr.', info: 'Une vraie boîte à votre nom, comme contact@votreboite.fr, sur votre téléphone et votre ordinateur. Je la crée et je vous envoie les réglages.', desc: 'Une adresse comme contact@votreboite.fr, sur votre téléphone et votre ordinateur.' },
+  { id: 'stock', quand: 'mois', group: 'boutique', name: 'Gestion du stock', icon: 'warehouse', price: { month: 5 }, types: ['boutique'], court: 'Le stock se décompte à chaque vente.', info: 'Vous indiquez combien vous avez de chaque produit. Le stock baisse tout seul à chaque vente, le site affiche « Plus que 2 » quand il en reste peu, puis « Épuisé » à zéro.', desc: 'Le stock de votre commerce se décompte tout seul à chaque vente. Vous savez toujours ce qu’il reste.' },
+  { id: 'comptes', quand: 'mois', group: 'boutique', name: 'Comptes clients', icon: 'users', price: { month: 5 }, types: ['boutique'], court: 'Vos clients gardent commandes, adresses et favoris.', info: 'Vos clients se créent un compte : ils retrouvent leurs commandes, leurs adresses et leurs produits favoris, et recommandent en un clic.', desc: 'Vos clients se créent un compte sur votre site : commandes passées, adresses et favoris gardés.' },
 ];
 
 // ---------------------------------------------------------------- la petite bande : les automatisations d'Alex
@@ -329,12 +341,33 @@ const jetonsLia = {
 // Retirés le 17 novembre 2026 (offre simplifiée) : gardés pour les anciennes commandes de l'extension.
 const aLaDemande = [
   { retire: true, id: 'alex', name: 'Une intervention à la main en plus', prix: 5, icon: 'user-check', desc: 'Une modification que je fais à la main, en plus de celle du trimestre.' },
-  { retire: true, id: 'urgent', name: 'Votre demande sous 24 heures', prix: 5, icon: 'zap', desc: 'Votre demande passe avant les autres et elle est traitée sous 24 heures, du lundi au vendredi.' },
-  { retire: true, id: 'article', name: 'Un article écrit et publié', prix: 15, icon: 'pen-tool', desc: 'Vous donnez le sujet. Je prépare l’article, je le relis, je l’illustre et je le publie sur votre site.' },
-  { retire: true, id: 'page', name: 'Une page en plus', prix: creation.pagePlus, icon: 'file-text', desc: 'Une nouvelle page sur votre site, après sa mise en ligne. Je la prépare avec vos textes et vos photos, puis je la publie.' },
-  { retire: true, id: 'point', name: 'Un point de 30 minutes ensemble', prix: 15, icon: 'phone', desc: 'Au téléphone ou en visio : on fait le tour de votre site, de vos résultats et de vos idées.' },
-  // Le Pack SEO ne se choisit plus à la commande : le client le prend quand il veut, depuis son espace (onglet Mes demandes)
-  { id: 'packseo', name: 'Page SEO supplémentaire', prix: 5, icon: 'search-check', desc: 'Une page de plus, écrite pour une recherche que font vos clients sur Google : un service et une ville, une FAQ, votre métier, une page locale ou un guide. Lumi en choisit le sujet, je l’écris et je la mets en ligne.' },
+  // --- être trouvé sur Google
+  { id: 'packseo', groupe: 'trouve', name: 'Page SEO supplémentaire', prix: 5, icon: 'search-check', desc: 'Une page de plus, écrite pour une recherche que font vos clients sur Google : un service et une ville, une FAQ, votre métier, une page locale ou un guide. Lumi en choisit le sujet, j’écris la page et je la mets en ligne. À l’unité, ou en pack de 5 ou 10 pages.' },
+  { id: 'article', groupe: 'trouve', name: 'Article de blog écrit et publié', prix: 15, icon: 'pen-tool', desc: 'Vous donnez le sujet. J’écris l’article, je le relis, je l’illustre et je le publie sur votre site.' },
+  { id: 'avis', groupe: 'trouve', name: 'Vos avis Google sur votre site', prix: 40, icon: 'star', desc: 'Vos meilleurs avis Google s’affichent sur votre site, à jour tout seuls. Ça rassure vos futurs clients.' },
+  // --- plus de contacts
+  { id: 'rdv', groupe: 'contact', name: 'Prise de rendez-vous en ligne', prix: 100, icon: 'calendar-check', desc: 'Une page avec vos créneaux libres : vos clients choisissent leur jour et leur heure, reçoivent une confirmation, et vous êtes prévenu par e-mail.' },
+  { id: 'whatsapp', groupe: 'contact', name: 'Bouton WhatsApp et appel direct', prix: 20, icon: 'phone', desc: 'Un petit bouton sur chaque page pour vous écrire sur WhatsApp ou vous appeler en un clic, surtout depuis un téléphone.' },
+  { id: 'newsletter', groupe: 'contact', name: 'Inscription à votre lettre d’information', prix: 60, icon: 'mail', desc: 'Un formulaire d’inscription sur votre site et un modèle de lettre prêt à l’emploi, pour garder le contact avec vos clients.' },
+  // --- réseaux sociaux
+  { id: 'instagram', groupe: 'reseaux', name: 'Votre Instagram en direct sur le site', prix: 50, icon: 'camera', desc: 'Vos dernières publications Instagram s’affichent sur votre site et se mettent à jour toutes seules, dès que vous publiez.' },
+  // --- langues
+  { id: 'traduction', groupe: 'langue', name: 'Traduction du site en anglais', prix: 100, icon: 'languages', desc: 'Chaque page existe aussi en anglais, relue à la main, avec un bouton pour changer de langue. Utile pour vos visiteurs étrangers et pour Google.' },
+  // --- au quotidien
+  { id: 'page', groupe: 'quotidien', name: 'Une page en plus', prix: creation.pagePlus, icon: 'file-text', desc: 'Une nouvelle page sur votre site, après sa mise en ligne. Je la prépare avec vos textes et vos photos, puis je la publie.' },
+  { id: 'photos', groupe: 'quotidien', name: 'Vos photos retouchées et mises en ligne', prix: 25, icon: 'image-plus', desc: 'Vous m’envoyez vos photos (jusqu’à 20). Je les retouche, je les allège pour que le site reste rapide, et je les mets en ligne aux bons endroits.' },
+  { id: 'reprise', groupe: 'quotidien', name: 'Reprise de votre ancien site', prix: 100, icon: 'refresh-cw', desc: 'Je récupère les textes, les photos et les adresses de votre ancien site, je les remets au propre, et je mets en place les redirections pour ne pas perdre Google.' },
+  { id: 'urgent', groupe: 'quotidien', name: 'Votre demande en 24 heures', prix: 5, icon: 'zap', desc: 'Votre demande passe avant les autres et elle est faite en 24 heures, du lundi au vendredi.' },
+  { id: 'point', groupe: 'quotidien', name: 'Un point de 30 minutes ensemble', prix: 15, icon: 'phone', desc: 'Au téléphone ou en visio : on fait le tour de votre site, de vos résultats et de vos idées.' },
+];
+// Les familles d'extras, dans l'ordre où elles s'affichent (page Tarifs et espace client)
+const extrasGroupes = [
+  { id: 'trouve', nom: 'Être trouvé sur Google', icon: 'search-check' },
+  { id: 'contact', nom: 'Recevoir plus de contacts', icon: 'message-circle' },
+  { id: 'reseaux', nom: 'Réseaux sociaux', icon: 'camera' },
+  { id: 'langue', nom: 'Langues', icon: 'languages' },
+  { id: 'quotidien', nom: 'Au quotidien', icon: 'wrench' },
+  { id: 'boutique', nom: 'Pour les boutiques', icon: 'shopping-bag' },
 ];
 // Boost : l'ancien nom de l'intervention d'Alex en plus (gardé pour l'extension WordPress et l'espace client).
 const boost = { prix: aLaDemande[0].prix };
@@ -352,4 +385,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: 'Le site d’un électricien dans les Ardennes. Il sera en ligne très bientôt.' },
 ];
 
-module.exports = { optimisation, clients, site, sections, types, forfaits, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule };
+module.exports = { optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule };

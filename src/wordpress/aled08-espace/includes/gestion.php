@@ -171,7 +171,7 @@ function aled08e_gestion($u) {
           <h2 class="app-h">Bonjour <?php echo esc_html(aled08e_prenom($u)); ?> !</h2>
           <?php echo $flash; // phpcs:ignore ?>
           <?php
-          // chez Alex : les demandes transmises par Cerise (et les pages SEO de Lumi), les Maxi d'abord, puis par échéance
+          // chez Alex : les demandes transmises par Cerise (et les pages SEO de Lumi), les anciens Maxi d'abord, puis par échéance
           $aFaire = array_values(array_filter($demandes, function ($p) { return get_post_meta($p->ID, '_aled08_par', true) !== 'lia'; }));
           $chezCerise = array_values(array_filter($demandes, function ($p) { return get_post_meta($p->ID, '_aled08_par', true) === 'lia'; }));
           $ech = function ($p) { return (int) get_post_meta($p->ID, '_aled08_echeance', true) ?: strtotime($p->post_date_gmt . ' UTC') + 7 * DAY_IN_SECONDS; };
@@ -187,7 +187,7 @@ function aled08e_gestion($u) {
             <div class="app-card c-lilac"><span class="app-card-ico"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?></span><span><small>En préparation avec Cerise</small><strong><?php echo count($chezCerise); ?></strong></span></div>
             <button type="button" class="app-card c-mint" data-go="commandes"><span class="app-card-ico"><?php echo aled08e_icon('package'); // phpcs:ignore ?></span><span><small>Commandes en cours</small><strong><?php echo count($cmdsVivantes); ?></strong></span></button>
           </div>
-          <p class="app-note">Le circuit : le client écrit, Cerise précise la demande avec lui et la lui fait confirmer, puis elle vous l’envoie ici (et par e-mail). Vous faites la modification. Mini : sous 7 jours, une demande à la fois. Maxi : sous 48 h, deux à la fois, en premier dans la liste. Le client peut annuler tant que vous n’avez pas cliqué « Je commence ».</p>
+          <p class="app-note">Le circuit : le client écrit, Cerise précise la demande avec lui et la lui fait confirmer, puis elle vous l’envoie ici (et par e-mail). Vous faites la modification. Une modification : 48 h au plus (24 h si le client a coché « en 24 heures »), une demande à la fois, deux avec l’extra « Deux demandes à la fois ». Un extra commandé : 7 jours. Le client peut annuler tant que vous n’avez pas cliqué « Je commence ».</p>
 
           <p class="app-sub"><?php echo aled08e_icon('wrench'); // phpcs:ignore ?> À faire, dans l’ordre</p>
           <?php if (!$aFaire) : ?>
@@ -211,7 +211,7 @@ function aled08e_gestion($u) {
                 ?>
             <li class="ges-item ges-afaire<?php echo $retard ? ' is-retard' : ($reste < DAY_IN_SECONDS ? ' is-bientot' : ''); ?>">
               <div class="ges-head"><strong><?php echo esc_html($c ? $c->display_name : 'Client supprimé'); ?></strong>
-                <?php if (get_post_meta($p->ID, '_aled08_priorite', true)) : ?><em class="st st-new">Maxi · prioritaire</em><?php endif; ?>
+                <?php if (get_post_meta($p->ID, '_aled08_priorite', true)) : ?><em class="st st-new">Ancien Maxi · prioritaire</em><?php endif; ?>
                 <?php if ($seo) : ?><em class="st st-doing">Page SEO</em><?php endif; ?>
                 <em class="st <?php echo esc_attr($st[$s][1] ?? 'st-new'); ?>"><?php echo esc_html($s === 'encours' ? 'Commencée' : 'À commencer'); ?></em></div>
               <p class="ges-echeance"><?php echo aled08e_icon('clock'); // phpcs:ignore ?><span><?php echo $retard ? '<b>En retard</b> : c’était à faire avant le ' : 'À faire avant le '; ?><?php echo esc_html(wp_date('l j F à G\hi', $e)); ?></span></p>

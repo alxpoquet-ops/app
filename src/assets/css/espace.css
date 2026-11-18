@@ -711,3 +711,15 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .ges-details[open] { display: grid; gap: 6px; }
 .ges-mini { padding: 10px 14px; }
 .ges-head { flex-wrap: wrap; }
+
+/* 18 novembre 2026 : les extras par famille */
+.extra-famille { display: flex; align-items: center; gap: 8px; margin: 18px 0 8px; font-weight: 800; color: var(--ink); }
+.extra-famille svg { width: 20px; height: 20px; }
+.extra-carte { background: var(--soft); border-radius: 18px; padding: 0; overflow: hidden; }
+.extra-carte > summary { list-style: none; display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; }
+.extra-carte > summary::-webkit-details-marker { display: none; }
+.extra-carte > summary strong { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.extra-carte > summary b { flex: none; }
+.extra-carte[open] > summary { border-bottom: 2px solid var(--line); }
+.extra-carte > form { padding: 12px 14px 14px; display: grid; gap: 10px; }
+.esp-changer-groupe { margin: 12px 0 4px; font-weight: 800; color: var(--muted); font-size: .88rem; text-transform: uppercase; letter-spacing: .03em; }

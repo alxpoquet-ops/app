@@ -31,8 +31,13 @@ function aled08e_bsite_faits() {
     foreach ((array) ($D['forfaits'] ?? []) as $x) $f[] = 'Abonnement ' . $x['name'] . ' : ' . aled08e_euro_txt($x['month']) . ' par mois, sans engagement. Il comprend : ' . implode(', ', (array) ($x['main'] ?? [])) . '.';
     $f[] = 'À l’année, ' . (int) ($D['moisOfferts'] ?? 0) . ' mois sont offerts.';
     if (!empty($D['creationSeule'])) $f[] = 'Création seule : pour qui a déjà son nom de domaine et son hébergement, on ne paie que le site, sans abonnement, et Alex remet le code du site. Maintenance et modifications non comprises.';
-    $f[] = 'Une modification : le client écrit sa demande dans son espace client, Cerise lui pose des questions si besoin, la reformule et la lui fait confirmer, puis la transmet à Alex qui la fait. Mini : sous 7 jours, une demande à la fois. Maxi : sous 48 h, deux demandes à la fois, en priorité. Une demande s’annule tant qu’Alex ne l’a pas commencée.';
-    $f[] = 'Alex répond aux messages sous ' . ($D['delais']['reponse'] ?? '7 jours') . '. Pour lui écrire : page Contact.';
+    $f[] = 'Une modification : le client écrit sa demande dans son espace client, Cerise lui pose des questions si besoin, la reformule et la lui fait confirmer, puis la transmet à Alex qui la fait. Une modification peut prendre jusqu’à 48 h. Une demande à la fois (deux avec un extra). Une demande s’annule tant qu’Alex ne l’a pas commencée.';
+    $f[] = 'Le nom de domaine est offert tant que l’abonnement est actif.';
+    $u = []; $m = [];
+    foreach (aled08e_a_la_demande() as $x) if ($x['id'] !== 'urgent') $u[] = $x['name'] . ' ' . aled08e_euro_txt($x['prix']);
+    foreach ((array) ($D['options'] ?? []) as $o) if (empty($o['retire']) && (float) $o['month'] > 0) $m[] = $o['name'] . ' ' . aled08e_euro_txt($o['month']) . ' par mois';
+    $f[] = 'Extras, à la carte depuis l’espace client, sans engagement, ajoutés à la facture. Payés une fois : ' . implode(', ', $u) . '. Au mois : ' . implode(', ', $m) . '.';
+    $f[] = 'Alex répond aux messages en général dans la journée. Pour lui écrire : page Contact.';
     return implode("\n", $f);
 }
 

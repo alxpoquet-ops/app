@@ -112,7 +112,7 @@ function aled08e_info_btn($id, $nom, $texte) {
     return '<button type="button" class="opt-i" data-titre="' . esc_attr($nom) . '" data-info="' . esc_attr($texte) . '"' . $img . ' aria-label="' . esc_attr('Voir ce que ça ajoute : ' . $nom) . '">' . aled08e_icon('info') . '</button>';
 }
 
-/* Le formulaire, dans « Abonnement et factures » : changer d'abonnement (Mini ou Maxi), et retirer un ancien extra */
+/* Le formulaire, dans « Abonnement et factures » : ajouter ou retirer des extras au mois, par famille */
 function aled08e_changer_html($uid) {
     $opts = aled08e_changer_options_possibles($uid);
     $forfaits = (array) aled08e_data()['forfaits'];
@@ -130,9 +130,14 @@ function aled08e_changer_html($uid) {
     } else {
         $h .= '<input type="hidden" name="forfait" value="' . esc_attr($actuel) . '">';
     }
-    if ($opts) $h .= '<p class="app-sub">Vos anciens extras</p>';
+    if ($opts) $h .= '<p class="app-sub">Les extras au mois</p><p class="app-note">Cochez ce qui vous intéresse : c’est ajouté à votre abonnement, et vous pouvez le retirer quand vous voulez. Les extras payés une fois se commandent dans « Mes demandes ».</p>';
+    $ordre = array_flip(array_column((array) (aled08e_data()['extrasGroupes'] ?? []), 'id'));
+    usort($opts, function ($a, $b) use ($ordre) { return ($ordre[$a['group'] ?? ''] ?? 99) <=> ($ordre[$b['group'] ?? ''] ?? 99); });
+    $noms = array_column((array) (aled08e_data()['extrasGroupes'] ?? []), 'nom', 'id');
     $h .= '<div class="esp-changer-list">';
+    $groupe = null;
     foreach ($opts as $o) {
+        if (($o['group'] ?? '') !== $groupe) { $groupe = $o['group'] ?? ''; if (isset($noms[$groupe])) $h .= '<p class="esp-changer-groupe">' . esc_html($noms[$groupe]) . '</p>'; }
         $h .= '<label class="esp-reste"><input type="checkbox" name="options[]" value="' . esc_attr($o['id']) . '"' . checked(aled08e_meta($uid, $o['id']), '1', false) . '><span><strong>' . esc_html($o['name']) . ' · ' . aled08e_euro($o['month'] * $mult) . ' ' . ($annuel ? 'par an' : 'par mois') . aled08e_info_btn($o['id'], $o['name'], $o['info'] ?? '') . '</strong>'
             . (!empty($o['desc']) ? '<small>' . esc_html($o['desc']) . '</small>' : '') . '</span></label>';
     }

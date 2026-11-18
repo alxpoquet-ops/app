@@ -147,7 +147,7 @@ function aled08e_ech_en_retard() {
             if ($age >= ALED08E_SANS_REPONSE_H * HOUR_IN_SECONDS && function_exists('aled08e_cer_transmettre')) aled08e_cer_transmettre($pid, 'Cerise n’a pas pu relire cette demande (24 h sans réponse) : elle vous arrive telle que le client l’a écrite.');
             continue;
         }
-        // chez Alex : un rappel la veille de l'échéance (Mini : 7 jours, Maxi : 48 h), puis un autre si elle est dépassée
+        // chez Alex : un rappel la veille de l'échéance (48 h au plus, 7 jours pour un extra), puis un autre si elle est dépassée
         $ech = (int) get_post_meta($pid, '_aled08_echeance', true);
         if (!$ech) continue;
         $u = get_userdata((int) $p->post_author);

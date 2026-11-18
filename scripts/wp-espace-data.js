@@ -35,11 +35,13 @@ process.stdout.write(
     limites: cfg.limites || { bricouMois: 8, bulleJour: 40 },
     outilsLia: require('../src/content/outils-lia').outils,
     forfaits: forfaits.map((f) => ({ id: f.id, name: f.name, month: f.month, quota: f.quota || QUOTA[f.id] || 1, periode: f.periode || 'mois', jetons: f.jetons === undefined ? 1 : f.jetons, partage: !!f.partage, modifs: f.modifs, color: f.color, tagline: f.tagline, illimite: !!f.illimite, priorite: !!f.priorite, delai: f.delai || '', pageSeoSemaine: !!f.pageSeoSemaine, delaiMoyen: !!f.delaiMoyen, delaiTexte: f.delaiTexte || '', demandesMax: f.demandesMax || 1, pageSeo: f.pageSeo || (f.pageSeoSemaine ? 'semaine' : ''), optimisation: !!f.optimisation, main: f.main || [] })),
+    forfaitsAnciens: (cfg.forfaitsAnciens || []).map((f) => ({ id: f.id, name: f.name, month: f.month, quota: f.quota || QUOTA[f.id] || 1, periode: f.periode || 'mois', jetons: f.jetons === undefined ? 1 : f.jetons, partage: !!f.partage, modifs: f.modifs, color: f.color, tagline: f.tagline, illimite: !!f.illimite, priorite: !!f.priorite, delai: f.delai || '', pageSeoSemaine: !!f.pageSeoSemaine, delaiMoyen: !!f.delaiMoyen, delaiTexte: f.delaiTexte || '', demandesMax: f.demandesMax || 1, pageSeo: f.pageSeo || (f.pageSeoSemaine ? 'semaine' : ''), optimisation: !!f.optimisation, main: f.main || [] })),
+    extrasGroupes: cfg.extrasGroupes || [],
     optimisation: cfg.optimisation || null,
     types: types.map((t) => ({ id: t.id, name: t.name, label: t.label, price: t.price, delai: t.delai })),
     // quand : 'creation' (payée une fois, à la commande) ou 'mois' (extra de l'abonnement, à ajouter ou retirer)
     // retire : option ou extra qui n'est plus proposé (offre du 17 novembre 2026), gardé pour les clients qui l'ont déjà
-    options: options.map((o) => ({ id: o.id, name: o.name, month: o.price.month || 0, once: o.price.once || 0, types: o.types || [], quand: o.quand || (o.price.month ? 'mois' : 'creation'), icon: o.icon || 'check', desc: o.desc || '', info: o.info || '', retire: !!o.retire })),
+    options: options.map((o) => ({ id: o.id, name: o.name, month: o.price.month || 0, once: o.price.once || 0, types: o.types || [], quand: o.quand || (o.price.month ? 'mois' : 'creation'), icon: o.icon || 'check', desc: o.desc || '', info: o.info || '', retire: !!o.retire, group: o.group || '' })),
     // offre événement : remise en % sur la création, avec un code donné sur une foire, un marché ou un salon
     evenement: cfg.evenement || { remise: 20 },
     // création seule : le client a son hébergement, il reçoit le code de son site (pas de formule, pas d'hébergement chez nous)
@@ -48,14 +50,14 @@ process.stdout.write(
     moisOfferts: annuel.moisOfferts,
     boost: boost.prix,
     // extras à la demande, payés une fois (commandés depuis l'espace client, ajoutés à la prochaine facture)
-    aLaDemande: (cfg.aLaDemande || []).map((x) => ({ id: x.id, name: x.name, prix: x.prix, icon: x.icon, desc: x.desc, retire: !!x.retire })),
+    aLaDemande: (cfg.aLaDemande || []).map((x) => ({ id: x.id, name: x.name, prix: x.prix, icon: x.icon, desc: x.desc, groupe: x.groupe || '', retire: !!x.retire })),
     lissageDurees: lissage.durees || [6, 12],
     acompte: paiement.acompte || 25,
     delais: { reponse: delais.reponse || '72 heures', titan: delais.titan || delais.reponse || '72 heures', urgent: delais.urgent || '24 heures' },
     parrainageMois: fidelite.parrainageMois,
     remiseSecondSite: fidelite.remiseSecondSite || 0,
       // les icônes de l'espace client, plus celles des outils de Cerise (lues dans leur définition)
-    icons: Object.fromEntries([...new Set([...ICONS, ...require('../src/content/outils-lia').outils.map((o) => o.icon), ...options.map((o) => o.icon).filter(Boolean), ...(cfg.aLaDemande || []).map((x) => x.icon)])].map((n) => [n, icon(n)])),
+    icons: Object.fromEntries([...new Set([...ICONS, ...require('../src/content/outils-lia').outils.map((o) => o.icon), ...options.map((o) => o.icon).filter(Boolean), ...(cfg.aLaDemande || []).map((x) => x.icon), ...(cfg.extrasGroupes || []).map((g) => g.icon)])].map((n) => [n, icon(n)])),
     // Cerise (une humeur par dessin, mascotte = bonjour) et Alex, le petit monstre à lunettes
     // Cerise (une humeur par dessin), Alex en portrait, et la petite bande (Bricou fait les modifications)
     monsters: Object.fromEntries([

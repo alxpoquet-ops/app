@@ -6,7 +6,7 @@
  *    (une capture d'écran peut aider). Elle n'écrit rien sur le site.
  * 3. Elle rédige la demande, claire et précise, et la montre au client : « C'est bien ça ? ».
  * 4. Oui : « Merci pour vos précisions, je transmets à Alex ! ». Alex reçoit un e-mail avec la demande claire, la demande
- *    d'origine, les photos et la date limite (7 jours avec Mini, 48 h avec Maxi). Non : Cerise reprend avec les remarques ;
+ *    d'origine, les photos et la date limite (48 h au plus). Non : Cerise reprend avec les remarques ;
  *    au deuxième « non », la demande part chez Alex telle quelle, avec toutes les précisions.
  * 5. Alex fait la modification et la marque « faite » dans sa gestion : le client est prévenu.
  * Le circuit de Bricou (modifications par l'IA) n'est plus utilisé : includes/lia.php renvoie ici.
@@ -16,8 +16,8 @@ defined('ABSPATH') || exit;
 /* Cerise peut préparer les demandes : il suffit de la clé Claude et du kit (le site relié n'est pas obligatoire) */
 function aled08e_cer_prete() { return function_exists('aled08e_lia_cle') && aled08e_lia_cle() !== '' && aled08e_lia_sdk_present(); }
 function aled08e_cer_maxi($uid) { $f = aled08e_forfait(aled08e_meta($uid, 'forfait')); return !empty($f['priorite']) || !empty($f['optimisation']); }
-/* Le délai d'Alex : 48 heures avec Maxi, 7 jours avec Mini */
-function aled08e_cer_delai($uid) { return aled08e_cer_maxi($uid) ? 2 * DAY_IN_SECONDS : 7 * DAY_IN_SECONDS; }
+/* Le délai d'Alex : 48 heures au plus (24 heures avec l'extra « Votre demande en 24 heures », cochée sur la demande) */
+function aled08e_cer_delai($uid, $pid = 0) { return $pid && get_post_meta($pid, '_aled08_urgent', true) ? DAY_IN_SECONDS : 2 * DAY_IN_SECONDS; }
 function aled08e_cer_echeance_txt($ts) { return $ts ? wp_date('l j F', (int) $ts) . (((int) $ts - time()) < 3 * DAY_IN_SECONDS ? ' à ' . wp_date('G\hi', (int) $ts) : '') : ''; }
 
 /* Les outils de Cerise : seulement de la lecture (elle regarde le site pour bien comprendre), et « terminer » */
@@ -120,7 +120,7 @@ function aled08e_cer_transmettre($pid, $note = '') {
     if (!$p) return;
     $uid = (int) $p->post_author;
     $u = get_userdata($uid);
-    $ech = time() + aled08e_cer_delai($uid);
+    $ech = time() + aled08e_cer_delai($uid, $pid);
     aled08e_lia_appel($uid, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]); // un ancien aperçu de Bricou n'a plus lieu d'être
     update_post_meta($pid, '_aled08_par', 'alex');
     update_post_meta($pid, '_aled08_statut', 'recue');

@@ -1,7 +1,7 @@
 <?php
 /**
  * Les Minis Monstres Espace client : Lumi, l'étoile de Google, analyse le site et choisit les sujets des pages SEO.
- * - Les pages de l'abonnement : une par mois avec Mini, une par semaine avec Maxi (tâche quotidienne aled08_quotidien).
+ * - Les pages des extras « chaque mois » et « chaque semaine » (tâche quotidienne aled08_quotidien).
  * - Les pages SEO supplémentaires commandées dans « Mes demandes » : à l'unité ou en pack (1, 5 ou 10 pages).
  * Pour chaque page, Lumi lit la liste des pages du site (connecteur) et les recherches Google, puis choisit un sujet utile
  * et pas encore traité. Elle crée une demande pour Alex (titre, recherche visée, pourquoi, plan) : c'est Alex qui écrit la page
@@ -119,15 +119,14 @@ add_action('aled08e_demande_creee', function ($pid, $par, $uid) {
     update_post_meta($pid, '_aled08_reponse', 'Merci ! Lumi a choisi ' . ($n > 1 ? 'les sujets de vos ' . $n . ' pages' : 'le sujet de votre page') . ', et Alex ' . ($n > 1 ? 'les écrit' : 'l’écrit') . '. Vous les voyez arriver dans vos demandes.');
 }, 20, 3);
 
-/* Chaque jour : les pages de l'abonnement (Mini : une par mois, Maxi : une par semaine) */
+/* Chaque jour : les pages SEO des extras « Une page SEO chaque mois » et « chaque semaine » */
 function aled08e_seo_auto_tourner() {
     if (get_option('aled08_seo_auto_pause') === '1') return;
     $clients = get_users(['role' => ALED08E_ROLE, 'fields' => 'ID', 'number' => 500]);
     foreach ($clients as $uid) {
         $uid = (int) $uid;
-        $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
-        $rythme = (string) ($f['pageSeo'] ?? '');
-        if ($rythme === '' || empty($f['illimite'])) continue;
+        $rythme = aled08e_seo_rythme($uid);
+        if ($rythme === '') continue;
         if (!aled08e_seo_auto_possible($uid) || !(function_exists('aled08e_jl_forfait_actif') && aled08e_jl_forfait_actif($uid))) continue;
         $dernier = (int) get_user_meta($uid, 'aled08_seo_auto_le', true);
         $ecart = $rythme === 'semaine' ? 7 * DAY_IN_SECONDS : 30 * DAY_IN_SECONDS;
