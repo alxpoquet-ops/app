@@ -4,16 +4,15 @@
 // dans une réponse. Aucun tiret long, aucun point-virgule, aucun prix d'un concurrent nommé (seule la fourchette
 // du marché de config.marche est citée), et pas de phrase de 9 mots ou plus reprise d'une autre réponse ou d'une page
 // (scripts/check.js). Les phrases longues de config.js (pitch, desc, info, fait…) ne sont pas recopiées ici.
-// Offre du 17 novembre 2026 : le Site Internet Professionnel à prix fixe (jusqu'à creation.pages pages), une seule option
-// à la commande (la boutique en ligne, payée une fois), les pages SEO supplémentaires commandées plus tard depuis l'espace
-// client (options packseo, prix à la page), puis le choix « On s'occupe de tout » (un abonnement au mois sans engagement,
-// au choix : Mini, id 'base', modifications faites par Alex sous 7 jours, une demande à la fois et une page SEO par mois, ou Maxi,
-// id 'evolution', modifications prioritaires sous 48 h, deux demandes à la fois, une page SEO par semaine et l'optimisation continue de config.optimisation)
-// ou « Je m'en occupe moi-même » (création seule, le code du site est remis au client). On change d'abonnement quand on
-// veut, à partir du mois suivant. La petite bande (config.bande) : les automatisations d'Alex, présentées
+// Offre du 18 novembre 2026 : le Site Internet Professionnel à prix fixe (creation.pages pages, adapté à tous les supports), une seule
+// option à la commande (la boutique en ligne, payée une fois, avec creation.boutiqueProduits produits), puis le choix « On s'occupe de tout »
+// (un seul abonnement au mois sans engagement : Mini, id 'base', modifications faites par Alex en 48 h au plus, une demande à la fois, nom de domaine
+// offert tant que l'abonnement est actif) ou « Je m'en occupe moi-même » (création seule, le code du site est remis au client). Tout le reste
+// (pages en plus, pages SEO, article de blog, produits en plus, analyse de Mirette, deux demandes à la fois…) se prend en extra depuis l'espace client
+// (config.aLaDemande et options au mois). La petite bande (config.bande) : les automatisations d'Alex, présentées
 // par leur prénom. On n'écrit jamais « IA » ici.
 const cfg = require('../config');
-const { forfaits, annuel, lissage, options, paiement, fidelite, creation, marche, bande, evenement, limites, optimisation } = cfg;
+const { forfaits, annuel, lissage, options, paiement, fidelite, creation, marche, bande, evenement, limites, aLaDemande } = cfg;
 
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
@@ -26,17 +25,21 @@ const acompte = (prix) => Math.round(prix * paiement.acompte) / 100;
 // Mensualité du lissage, arrondie au centime inférieur (même règle que le serveur).
 const lisse = (prix, n = LN) => Math.floor(((prix - acompte(prix)) / n) * 100) / 100; // mensualité du reste, après l’acompte
 
-// Deux abonnements depuis le 17 novembre 2026 : Mini (id 'base') et Maxi (id 'evolution').
+// Un seul abonnement depuis le 18 novembre 2026 : Mini (id 'base'). Maxi est retiré.
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0];
-const maxi = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1];
 const parAn = (f) => f.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
-const optiNom = minus(optimisation.titre); // « optimisation continue »
+const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
+// Les extras (config.js) : ceux payés une fois (aLaDemande) et ceux au mois (options)
+const extra = (id) => aLaDemande.find((x) => x.id === id && !x.retire) || {};
+const extraMois = (id) => options.find((o) => o.id === id && o.quand === 'mois' && !o.retire) || { price: {} };
+const seomois = extraMois('seomois'), seosemaine = extraMois('seosemaine'), analyse = extraMois('mirette'), deux = extraMois('deux'), stock = extraMois('stock');
+const articleBlog = extra('article'), pageEnPlus = extra('page'), produitsPlus = extra('produits');
+const packsDe = (x) => liste((x.packs || []).filter((n) => n > 1), 'ou'); // « 5 ou 10 »
 // La page SEO supplémentaire (config.options, id 'packseo') ne se choisit pas à la commande : elle se commande plus tard,
 // à l'unité, depuis l'espace client (quand: 'espace'). La seule option à la commande est la boutique en ligne.
 const packSeo = options.find((o) => o.id === 'packseo' && !o.retire) || { name: 'Page SEO supplémentaire', price: { once: 5 }, pages: 1 };
 const prixPage = eur(packSeo.price.once); // prix d'une page SEO supplémentaire
 const boutique = creation.prix + creation.boutique;
-const restantes = creation.pages - creation.exemplePages; // l'exemple : 8 pages utilisées, 7 pour Google
 const NOM_SITE = creation.nom || 'Site Internet Professionnel';
 const lieux = liste(evenement.lieux, 'ou');
 const moisOffert = fidelite.parrainageMois === 1 ? 'un mois offert' : `${fidelite.parrainageMois} mois offerts`;
@@ -61,6 +64,7 @@ const MISSION = {
 const mission = (b) => MISSION[b.id] || minus(b.court.replace(/\.$/, ''));
 const presente = (b) => `${b.nom} (${minus(b.role)}) ${mission(b)}`;
 const bandeComprise = liste(bande.filter((b) => b.compris).map(presente));
+const bandeExtras = bande.filter((b) => b.option && b.option !== 'boutique').map((b) => `${b.nom} (${minus(b.role)}) ${mission(b)} avec ${b.option === 'seomois' ? 'les extras pages SEO' : `l’extra « ${analyse.name} »`}.`).join(' ');
 const bandeBoutique = bande.filter((b) => b.option === 'boutique').map((b) => `${b.nom} (${minus(b.role)}) arrive avec la boutique en ligne.`).join(' ');
 
 module.exports = {
