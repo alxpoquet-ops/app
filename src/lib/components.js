@@ -184,7 +184,9 @@ const PACK_SEO = options.find((o) => o.id === 'packseo' && !o.retire);
 const prixPageSeo = PACK_SEO ? PACK_SEO.price.once : 5;
 const packsSeo = PACK_SEO && PACK_SEO.packs ? PACK_SEO.packs.filter((n) => n > 1).join(' ou ') : '5 ou 10';
 const PLUS_DE_PAGES = `Besoin de plus de pages, ou d’être trouvé sur plus de recherches ? Une page en plus coûte ${euro(creation.pagePlus)}, et une page SEO ${euro(prixPageSeo)}, seule ou en packs de ${packsSeo}. Ce sont des extras, qui se prennent plus tard depuis votre espace client.`;
-const BOUTIQUE_INCLUS = [`${creation.boutiqueProduits} produits en vente, présentés en images`, 'Panier et paiement en ligne', 'Achat sans créer de compte', 'Gestion des commandes', 'E-mails automatiques'];
+// Les articles de la boutique : le client les ajoute lui-même dans l'onglet « Ma boutique » de son espace client, dans des emplacements.
+const BOUTIQUE_ARTICLES = `Vous ajoutez vos articles vous-même depuis votre espace client : photo, description, prix. ${creation.boutiqueProduits} emplacements sont compris, puis ${euro(creation.boutiqueSlot)} l’emplacement, à vous pour toujours.`;
+const BOUTIQUE_INCLUS = [`${creation.boutiqueProduits} emplacements d’articles compris`, 'Panier et paiement en ligne', 'Achat sans créer de compte', 'Gestion des commandes', 'E-mails automatiques'];
 // Ce que la boutique ajoute dans l'espace client (extension WordPress : includes/boutique.php et vacances.php)
 const BOUTIQUE_ESPACE = ['Codes promo et soldes', 'Mode vacances', 'Bandeau d’annonce', 'Vos commandes dans le tableau de bord'];
 const BOUTIQUE_STOCK = 'Par défaut, pas de stock à tenir : on ne compte pas les quantités, et un produit qui manque passe en épuisé. L’extra « Gestion du stock » décompte le stock à chaque vente.';
@@ -280,7 +282,7 @@ function bandeGrid({ complet = false, prix = true } = {}) {
 // La boutique en ligne, la seule option à la commande, expliquée simplement
 function optionsCompact() {
   return `<div class="opt-cartes">
-  <article class="opt-carte reveal"><span class="opt-carte-art">${petit(MONSTRE_OPTION.boutique)}</span><div><h3><span>${nomI('Boutique en ligne', 'boutique', BOUTIQUE.info)}</span><b>+ ${euro(creation.boutique)}</b></h3><p>Vos clients achètent sur votre site, même quand vous êtes fermé, sans créer de compte. La boutique comprend ${creation.boutiqueProduits} produits : pour en vendre davantage, des packs de produits se prennent en extra. Dans votre espace client, vous gérez vos codes promo, vos soldes et le mode vacances.</p><ul class="plan-list">${BOUTIQUE_INCLUS.map((x) => `<li>${icon('check')}<span>${esc(x)}</span></li>`).join('')}</ul></div></article>
+  <article class="opt-carte reveal"><span class="opt-carte-art">${petit(MONSTRE_OPTION.boutique)}</span><div><h3><span>${nomI('Boutique en ligne', 'boutique', BOUTIQUE.info)}</span><b>+ ${euro(creation.boutique)}</b></h3><p>Vos clients achètent sur votre site, même quand vous êtes fermé, sans créer de compte. ${BOUTIQUE_ARTICLES} Dans votre espace client, vous gérez vos codes promo, vos soldes et le mode vacances.</p><ul class="plan-list">${BOUTIQUE_INCLUS.map((x) => `<li>${icon('check')}<span>${esc(x)}</span></li>`).join('')}</ul></div></article>
 </div>
 <p class="opt-note">La boutique en ligne est la seule option à la commande, payée une fois. Tout le reste se prend plus tard, comme extra.</p>`;
 }
@@ -420,7 +422,7 @@ function boutiqueCarte({ court = false } = {}) {
       <span class="cf-corps">
         <strong class="cf-nom">Oui, je veux vendre en ligne</strong>
         <span class="cf-prix"><b>+ ${euro(creation.boutique)}</b><small>une fois</small></span>
-        <span class="cf-txt">Une boutique sur votre site, avec ${creation.boutiqueProduits} produits : vos clients achètent même quand vous êtes fermé.</span>
+        <span class="cf-txt">Une boutique sur votre site, avec ${creation.boutiqueProduits} emplacements d’articles : vos clients achètent même quand vous êtes fermé.</span>
         ${court ? '' : `${cfListe(BOUTIQUE_INCLUS)}
         <span class="cf-bq-sous">${icon('circle-user')}Dans votre espace client, en plus</span>
         ${cfListe(BOUTIQUE_ESPACE)}
@@ -652,7 +654,7 @@ module.exports = {
   unType,
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, DELAI_MODIF, optsCreation, optsMois, EXTRAS_PAR_FAMILLE, extrasListe, prixExtra, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
-  offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
+  offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, BOUTIQUE_ARTICLES, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
   CERISE, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };
