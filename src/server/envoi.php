@@ -36,7 +36,9 @@ if ($t > 0 && (microtime(true) * 1000 - $t) < 3000) { back('/merci/'); }
 $nom       = oneLine(field('nom', 120));
 $email     = oneLine(field('email', 150));
 $telephone = oneLine(field('telephone', 30));
-$type      = oneLine(field('type', 80));
+$motif     = oneLine(field('motif', 40));
+$simple    = $motif === 'Contact simple';
+$type      = $simple ? '' : oneLine(field('type', 80));
 $forfait   = oneLine(field('forfait', 40));
 $paiement  = oneLine(field('paiement', 40));
 $domaine   = oneLine(field('domaine', 120));
@@ -44,21 +46,23 @@ $parrain   = strtoupper(preg_replace('/[^A-Za-z0-9-]/', '', field('parrain', 20)
 $message   = field('message', 5000);
 $consent   = field('consentement', 5);
 
-if ($nom === '' || $message === '' || $type === '' || $consent !== 'oui') { back($errorUrl); }
+if ($nom === '' || $message === '' || $motif === '' || (!$simple && $type === '') || $consent !== 'oui') { back($errorUrl); }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) { back($errorUrl); }
 if ($telephone !== '' && !preg_match('/^[0-9 +().-]{6,20}$/', $telephone)) { $telephone = 'invalide : ' . $telephone; }
 
-$sujet = 'Demande : ' . $type . ($forfait && $forfait !== 'Je ne sais pas encore' ? ', forfait ' . $forfait : '') . ' (' . $nom . ')';
+$sujet = $simple ? 'Contact : message de ' . $nom
+    : 'Demande (' . $motif . ') : ' . $type . ($forfait && $forfait !== 'Je ne sais pas encore' ? ', forfait ' . $forfait : '') . ' (' . $nom . ')';
 
-$corps = "Nouvelle demande reçue depuis le site " . SITE . "\n\n"
+$corps = ($simple ? "Message reçu depuis le site " : "Nouvelle demande reçue depuis le site ") . SITE . "\n\n"
     . "Nom         : $nom\n"
     . "E-mail      : $email\n"
     . "Téléphone   : " . ($telephone ?: 'non renseigné') . "\n"
-    . "Site        : $type\n"
-    . "Forfait     : " . ($forfait ?: 'non précisé') . "\n"
-    . "Paiement    : " . ($paiement ?: 'non précisé') . "\n"
-    . "Domaine     : " . ($domaine ?: 'non précisé') . "\n"
-    . ($parrain ? "Parrainage  : $parrain\n" : '')
+    . "Demande     : " . ($simple ? 'juste un contact, sans projet de site' : $motif) . "\n"
+    . ($simple ? '' : "Site        : $type\n"
+        . "Forfait     : " . ($forfait ?: 'non précisé') . "\n"
+        . "Paiement    : " . ($paiement ?: 'non précisé') . "\n"
+        . "Domaine     : " . ($domaine ?: 'non précisé') . "\n")
+    . ($parrain && !$simple ? "Parrainage  : $parrain\n" : '')
     . "\nMessage :\n$message\n\n"
     . "---\nConsentement RGPD : oui, le " . date('d/m/Y H:i') . "\n";
 

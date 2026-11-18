@@ -378,7 +378,9 @@ add_action('template_redirect', function () {
     $nom = aled08_line(aled08_field('nom', 120));
     $email = aled08_line(aled08_field('email', 150));
     $tel = aled08_line(aled08_field('telephone', 30));
-    $type = aled08_line(aled08_field('type', 80));
+    $motif = aled08_line(aled08_field('motif', 40));
+    $simple = $motif === 'Contact simple';
+    $type = $simple ? '' : aled08_line(aled08_field('type', 80));
     $forfait = aled08_line(aled08_field('forfait', 40));
     $paiement = aled08_line(aled08_field('paiement', 40));
     $domaine = aled08_line(aled08_field('domaine', 120));
@@ -386,21 +388,23 @@ add_action('template_redirect', function () {
     $message = aled08_field('message', 5000);
     $consent = aled08_field('consentement', 5);
 
-    if ($nom === '' || $message === '' || $type === '' || $consent !== 'oui') { wp_safe_redirect($error, 303); exit; }
+    if ($nom === '' || $message === '' || $motif === '' || (!$simple && $type === '') || $consent !== 'oui') { wp_safe_redirect($error, 303); exit; }
     if (!is_email($email)) { wp_safe_redirect($error, 303); exit; }
     if ($tel !== '' && !preg_match('/^[0-9 +().-]{6,20}$/', $tel)) $tel = 'invalide : ' . $tel;
 
     $parrainInfo = $parrain ? apply_filters('aled08_parrain_info', '', $parrain, $nom) : '';
-    $sujet = 'Demande : ' . $type . ($forfait && $forfait !== 'Je ne sais pas encore' ? ', forfait ' . $forfait : '') . ' (' . $nom . ')';
-    $corps = "Nouvelle demande reçue depuis le site " . home_url('/') . "\n\n"
+    $sujet = $simple ? 'Contact : message de ' . $nom
+        : 'Demande (' . ($motif ?: 'site') . ') : ' . $type . ($forfait && $forfait !== 'Je ne sais pas encore' ? ', forfait ' . $forfait : '') . ' (' . $nom . ')';
+    $corps = ($simple ? "Message reçu depuis le site " : "Nouvelle demande reçue depuis le site ") . home_url('/') . "\n\n"
         . "Nom         : $nom\n"
         . "E-mail      : $email\n"
         . 'Téléphone   : ' . ($tel ?: 'non renseigné') . "\n"
-        . "Site        : $type\n"
-        . 'Forfait     : ' . ($forfait ?: 'non précisé') . "\n"
-        . 'Paiement    : ' . ($paiement ?: 'non précisé') . "\n"
-        . 'Domaine     : ' . ($domaine ?: 'non précisé') . "\n"
-        . ($parrain ? "Parrainage  : $parrain" . ($parrainInfo ? " ($parrainInfo)" : '') . "\n" : '')
+        . "Demande     : " . ($simple ? 'juste un contact, sans projet de site' : $motif) . "\n"
+        . ($simple ? '' : "Site        : $type\n")
+        . ($simple ? '' : 'Forfait     : ' . ($forfait ?: 'non précisé') . "\n"
+            . 'Paiement    : ' . ($paiement ?: 'non précisé') . "\n"
+            . 'Domaine     : ' . ($domaine ?: 'non précisé') . "\n")
+        . ($parrain && !$simple ? "Parrainage  : $parrain" . ($parrainInfo ? " ($parrainInfo)" : '') . "\n" : '')
         . "\nMessage :\n$message\n\n---\nConsentement RGPD : oui, le " . wp_date('d/m/Y H:i') . "\n";
     $headers = ['Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $nom . ' <' . $email . '>'];
 

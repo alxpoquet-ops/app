@@ -1384,6 +1384,20 @@
     var t = f.querySelector('input[name="_t"]'); if (t) t.value = Date.now();
     var p = new URLSearchParams(location.search);
     var pick = function (sel, v) { if (!sel || !v) return; $$('option', sel).forEach(function (o) { if (o.value === v) sel.value = v; }); };
+    /* « Votre demande » : un site (devis, information) ou juste me contacter. Pour « juste contacter », on cache ce qui parle du site. */
+    var motif = f.querySelector('select[name="motif"]');
+    if (motif) {
+      var siteOnly = $$('[data-site-only]', f), typeSel = f.querySelector('select[name="type"]'), msgBox = f.querySelector('textarea[name="message"]');
+      var venuDuSite = p.get('type') || p.get('forfait') || p.get('options') || p.get('domaine') || p.get('paiement') || p.get('lissage') || p.get('parrain');
+      pick(motif, p.get('motif') || (venuDuSite ? 'Site : un devis précis' : ''));
+      var majMotif = function () {
+        var simple = motif.value === 'Contact simple';
+        siteOnly.forEach(function (z) { z.hidden = simple; $$('input,select', z).forEach(function (i) { i.disabled = simple; }); });
+        if (typeSel) typeSel.required = !simple;
+        if (msgBox) msgBox.placeholder = msgBox.getAttribute(simple ? 'data-ph-contact' : 'data-ph-site') || msgBox.placeholder;
+      };
+      motif.addEventListener('change', majMotif); majMotif();
+    }
     pick(f.querySelector('select[name="type"]'), p.get('type'));
     pick(f.querySelector('select[name="forfait"]'), p.get('forfait'));
     var pay = p.get('paiement');

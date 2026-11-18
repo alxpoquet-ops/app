@@ -1116,12 +1116,12 @@ function contactPage() {
   const body = `${C.pageHero({
     section: 'contact',
     h1: 'Contact : une question, un projet ?',
-    lead: `Écrivez-moi. Je vous réponds rapidement, en général dans la journée. Les prix sont déjà affichés : ${euro(creation.prix)} le site, puis ${euro(ABO.month)} par mois. Vous n’avez pas de devis à demander.`,
+    lead: `Écrivez-moi, pour un site ou simplement pour me contacter. Je vous réponds rapidement, en général dans la journée. Les prix sont déjà affichés : ${euro(creation.prix)} le site, puis ${euro(ABO.month)} par mois. Vous n’avez pas de devis à demander.`,
     crumbs,
   })}
 <section class="section"><div class="container contact-grid">
   <div class="form-card" id="devis">
-    <h2 class="h3">Votre demande</h2>
+    <h2 class="h3">Votre message</h2>
     <form class="form" method="post" action="${site.formAction}" data-form novalidate>
       ${formHidden()}
       <p class="form-alert" data-form-error hidden>L’envoi n’a pas abouti. Vérifiez les champs obligatoires, puis réessayez.</p>
@@ -1131,21 +1131,36 @@ function contactPage() {
       </div>
       <div class="form-row">
         <div class="field"><label for="c-tel">Téléphone <span class="opt">(facultatif)</span></label><input id="c-tel" name="telephone" type="tel" autocomplete="tel"></div>
-        <div class="field"><label for="c-type">Votre site <span class="req">*</span></label>
-          <select id="c-type" name="type" required><option value="">Choisir…</option>${types.map((t) => opt(t.label)).join('')}${opt('Je ne sais pas encore')}${opt('Autre projet')}</select></div>
+        <div class="field"><label for="c-motif">Votre demande <span class="req">*</span></label>
+          <select id="c-motif" name="motif" required data-motif><option value="">Choisir…</option>
+            <optgroup label="Un site internet">
+              <option value="Site : un devis précis">Un site : j’ai un projet précis, je veux un devis</option>
+              <option value="Site : une information">Un site : j’ai une question ou je veux une information</option>
+              <option value="Site : je ne sais pas encore">Un site : je ne sais pas encore, je veux en parler</option>
+            </optgroup>
+            <optgroup label="Autre chose">
+              <option value="Contact simple">Juste vous contacter, sans projet de site</option>
+            </optgroup>
+          </select></div>
       </div>
-      <div class="form-row">
-        <div class="field"><label for="c-domaine">Nom de domaine <span class="opt">(facultatif)</span></label><input id="c-domaine" name="domaine" type="text" autocomplete="off" placeholder="mon-entreprise.fr"></div>
-        <div class="field"><label for="c-parrain">Code de parrainage <span class="opt">(facultatif)</span></label><input id="c-parrain" name="parrain" type="text" autocomplete="off" maxlength="20" placeholder="Ex. : LILA-7K2"></div>
-      </div>
-      <div class="field"><span class="label">Paiement de l’abonnement</span>
-        <div class="radio-group">
-          <label><input type="radio" name="paiement" value="Au mois"> Au mois</label>
-          <label><input type="radio" name="paiement" value="À l’année"> À l’année</label>
-          <label><input type="radio" name="paiement" value="Je ne sais pas encore" checked> Je ne sais pas encore</label>
+      <div data-site-only>
+        <div class="form-row">
+          <div class="field"><label for="c-type">Votre site <span class="req">*</span></label>
+            <select id="c-type" name="type" required><option value="">Choisir…</option>${types.map((t) => opt(t.label)).join('')}${opt('Je ne sais pas encore')}${opt('Autre projet')}</select></div>
+          <div class="field"><label for="c-domaine">Nom de domaine <span class="opt">(facultatif)</span></label><input id="c-domaine" name="domaine" type="text" autocomplete="off" placeholder="mon-entreprise.fr"></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label for="c-parrain">Code de parrainage <span class="opt">(facultatif)</span></label><input id="c-parrain" name="parrain" type="text" autocomplete="off" maxlength="20" placeholder="Ex. : LILA-7K2"></div>
+        </div>
+        <div class="field"><span class="label">Paiement de l’abonnement</span>
+          <div class="radio-group">
+            <label><input type="radio" name="paiement" value="Au mois"> Au mois</label>
+            <label><input type="radio" name="paiement" value="À l’année"> À l’année</label>
+            <label><input type="radio" name="paiement" value="Je ne sais pas encore" checked> Je ne sais pas encore</label>
+          </div>
         </div>
       </div>
-      <div class="field"><label for="c-message">Votre message <span class="req">*</span></label><textarea id="c-message" name="message" required minlength="10" placeholder="Votre activité, ce que vous attendez, un site que vous aimez…"></textarea></div>
+      <div class="field"><label for="c-message">Votre message <span class="req">*</span></label><textarea id="c-message" name="message" required minlength="10" placeholder="Votre activité, ce que vous attendez, un site que vous aimez…" data-ph-site="Votre activité, ce que vous attendez, un site que vous aimez…" data-ph-contact="Dites-moi tout : une question, une idée, un coup de main, ou simplement bonjour…"></textarea></div>
       <label class="check"><input type="checkbox" name="consentement" value="oui" required><span>J’accepte que mes informations servent à me répondre. <a href="/politique-de-confidentialite/">En savoir plus</a></span></label>
       <button class="btn btn-primary btn-lg" type="submit">${icon('send')}<span>Envoyer ma demande</span></button>
     </form>
