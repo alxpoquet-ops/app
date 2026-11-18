@@ -352,3 +352,16 @@ Avec l'option boutique (200 €), le client a un onglet « Ma boutique » (`incl
 5. **Promos et soldes** : codes promo, soldes rapides, bandeau d'annonce et vacances (comme avant).
 
 **Après chaque nouvelle version du connecteur, il faut le réinstaller sur chaque site client** (Flore et Chenilles en premier) : sans cela, ces rubriques affichent « L'extension de votre site doit être mise à jour ».
+
+## Paiement direct par carte (18 novembre 2026)
+
+- **Extras payés une fois** (page visibilité Google, article, rendez-vous…) et case « en 24 heures » : le client paie sur la page sécurisée de Stripe au moment de commander. La demande reste en brouillon jusqu'au paiement, puis elle part chez vous (e-mail « PAYÉ PAR CARTE »), Cerise et Lumi prennent le relais. Code : `includes/paiement-direct.php`. Le paiement est confirmé au retour du client et par le webhook (événement `checkout.session.completed`, déjà branché), une seule fois.
+- **Emplacements d'articles** : payés par carte, débloqués dès le paiement.
+- **Extras au mois** : à l'ajout, la part du mois en cours est facturée et prélevée tout de suite (Stripe, `always_invoice`), puis l'extra suit l'abonnement. Un extra retiré n'est plus facturé à partir de la période suivante (pas de remboursement du mois en cours).
+- Sans clés Stripe, l'ancien fonctionnement reste : vous recevez un e-mail « à facturer à la main ».
+
+## Stripe et PayPal sur le site du client
+
+- Dans « Ma boutique › Paiements », le client clique « Installer Stripe » ou « Installer PayPal » : le connecteur (2.4.0) installe l'extension officielle depuis le répertoire WordPress et l'active, en laissant le moyen de paiement **éteint** tant qu'il n'est pas réglé.
+- Stripe : le client colle ses clés (vérifiées auprès de Stripe) et coche « Je propose ce moyen de paiement ». PayPal : il connecte son compte PayPal depuis les réglages de son site (lien fourni), ou vous le demande.
+- Chez Flore et Chenilles, les deux extensions sont déjà installées et activées (Stripe éteint, PayPal pas encore connecté).
