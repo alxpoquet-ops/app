@@ -1,5 +1,5 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, sections, types, forfaits, creation, jetonsLia, marche, enService } = require('../config');
+const { site, sections, types, forfaits, creation, jetonsLia, marche, enService, lissage } = require('../config');
 let METIERS = [];
 try { METIERS = require('../content/metiers').metiers; } catch (e) { /* pas encore écrit */ }
 const { icon } = require('./icons');
@@ -50,7 +50,7 @@ function businessSchema() {
     name: site.name,
     slogan: `Votre site internet à ${creation.prix} €, le même prix pour tous`,
     description:
-      `Création de sites internet à prix unique, ${creation.prix} € (une page ou site vitrine, boutique en ligne en option), puis un abonnement à ${ABO.month} € par mois : nom de domaine, hébergement, mises à jour, modifications et bases du SEO. Tout se fait en ligne, pour des clients partout en France.`,
+      `Création de sites internet à prix unique, ${creation.prix} € (${creation.pages} pages, boutique en ligne en option), puis un abonnement à ${ABO.month} € par mois : nom de domaine offert tant qu’il est actif, hébergement, sauvegardes, sécurité, modifications incluses. Des extras se prennent à la carte. Tout se fait en ligne, pour des clients partout en France.`,
     url: site.url + '/',
     ...(site.email ? { email: site.email } : {}),
     image: site.url + '/assets/img/og-image.png',
@@ -218,10 +218,10 @@ ${liaFlot()}`;
 function liaFlot() {
   const eur = (n) => `${n} €`;
   const questions = [
-    ['C’est combien ?', `Votre site professionnel coûte ${eur(creation.prix)}, jusqu’à ${creation.pages} pages. Ensuite, l’abonnement s’occupe de tout : ${forfaits[0].name} à ${eur(forfaits[0].month)} par mois, avec vos modifications et une page pour Google chaque mois, ou ${forfaits[1].name} à ${eur(forfaits[1].month)}, avec vos modifications en priorité sous 48 h, une page chaque semaine et la bande qui surveille votre site. Vous avez déjà votre hébergement ? La création seule vous donne le code du site, sans abonnement.`, sections.forfaits.path, 'Voir les tarifs'],
+    ['C’est combien ?', `Votre site professionnel coûte ${eur(creation.prix)} une seule fois, pour ${creation.pages} pages adaptées à l’ordinateur, à la tablette et au téléphone. Vous pouvez le payer en ${lissage.durees.join(' ou ')} fois sans frais. Ensuite, pour le maintenir, l’abonnement ${ABO.name} coûte ${eur(ABO.month)} par mois, sans engagement : hébergement, sauvegardes, sécurité, modifications incluses, et nom de domaine offert tant que l’abonnement est actif. Les extras se prennent à la carte, depuis votre espace client. Vous avez déjà votre hébergement ? La création seule vous donne le code du site, sans abonnement.`, sections.forfaits.path, 'Voir les tarifs'],
     ['Comment ça marche ?', 'Vous composez votre site en deux minutes, et Alex le crée pour vous. Il vous le montre avant la mise en ligne, et vous lui dites ce qui doit changer. Vous voyez le prix avant de commander.', sections.creer.path, 'Créer mon site'],
     ['Qui fait mon site ?', 'Alex ! C’est lui qui conçoit votre site et qui vous répond. Moi, je suis la secrétaire de sa petite bande. Les Minis Monstres vous aident, c’est Alex qui modifie votre site.', sections.equipe.path, 'Rencontrer la bande'],
-    ['Et pour changer mon site après ?', 'Écrivez-moi votre demande dans votre espace client. Je vous pose quelques questions pour bien comprendre, vous confirmez, et je transmets à Alex. C’est lui qui fait la modification, avec soin. C’est compris dans votre abonnement !', sections.accompagnement.path, 'L’accompagnement'],
+    ['Et pour changer mon site après ?', 'Écrivez-moi votre demande dans votre espace client. Je vous pose quelques questions pour bien comprendre, vous confirmez, et je transmets à Alex. C’est lui qui fait la modification, avec soin, et elle peut prendre jusqu’à 48 h. C’est compris dans votre abonnement !', sections.accompagnement.path, 'L’accompagnement'],
   ];
   const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', enService.outils ? 'Comment avoir plus d’avis Google ?' : 'Comment se passe une modification ?', 'Que comprend mon abonnement ?'];
   return `<div class="lia-flot" data-lia-flot hidden>

@@ -832,6 +832,14 @@
       });
     });
     $$('[data-go]', app).forEach(function (b) { b.addEventListener('click', function () { show(b.getAttribute('data-go')); }); });
+    // onglet Extras : le filtre par famille
+    $$('[data-ex-filtre]', app).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var fam = b.getAttribute('data-ex-filtre');
+        $$('[data-ex-filtre]', app).forEach(function (x) { x.classList.toggle('is-on', x === b); });
+        $$('[data-ex-groupe]', app).forEach(function (g) { g.hidden = fam !== 'tous' && g.getAttribute('data-ex-groupe') !== fam; });
+      });
+    });
     var startTab = (new URLSearchParams(location.search).get('outil') || location.hash.slice(1) || '').replace(/[^a-z]/g, '');
     if (startTab && $('[data-tab="' + alias(startTab) + '"]', app)) show(startTab);
   }

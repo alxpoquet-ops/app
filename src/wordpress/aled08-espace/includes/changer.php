@@ -74,7 +74,8 @@ function aled08e_stripe_changer_abonnement($uid, $forfaitId, $optIds) {
 
 add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08e_changer'])) return;
-    $back = function ($m) { wp_safe_redirect(aled08e_url(['m' => $m]) . '#forfait', 303); exit; };
+    $retour = (($_POST['retour'] ?? '') === 'extras') ? '#extras' : '#forfait';
+    $back = function ($m) use ($retour) { wp_safe_redirect(aled08e_url(['m' => $m]) . $retour, 303); exit; };
     if (!is_user_logged_in()) { wp_safe_redirect(aled08e_url(), 303); exit; }
     if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_aled08e_changer'] ?? '')), 'aled08e_changer')) $back('changer_erreur');
     $uid = get_current_user_id();

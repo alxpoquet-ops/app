@@ -175,17 +175,19 @@ function payBox() {
 
 // ---------------------------------------------------------------- l'offre : le site, deux options, deux formules
 // Le site à 500 € : ce qui est compris (dans cet ordre, comme sur la page Tarifs)
-const INCLUS_SITE = [`Jusqu’à ${creation.pages} pages`, 'Design personnalisé', 'Adapté à tous les écrans', 'Formulaire de contact', 'Accompagnement personnalisé', 'Les Minis Monstres pour vous aider'];
+const INCLUS_SITE = [`${creation.pages} pages`, 'Design personnalisé', 'Adapté à tous les supports : ordinateur, tablette, téléphone', 'Formulaire de contact', 'Accompagnement personnalisé', 'Les Minis Monstres pour vous aider'];
 // « On s'occupe de tout » (avec une formule) et « Je m'en occupe moi-même » (création seule, code fourni)
 const INCLUS_NOUS = ['Nom de domaine à votre nom, offert tant que l’abonnement est actif', 'Hébergement', 'Installation et mise en ligne', 'Sauvegardes et sécurité', 'Maintenance technique', 'Modifications incluses', 'Tableau de bord de vos visites'];
 const INCLUS_MOI = ['Le code de votre site, prêt à installer', 'Une sauvegarde complète', 'Une petite notice d’installation'];
-// Les pages non utilisées deviennent des pages pour Google : l'exemple chiffré
-const PAGES_SEO = `Les pages non utilisées peuvent être transformées en pages SEO pour améliorer votre visibilité sur Google. Par exemple : vous utilisez ${creation.exemplePages} pages pour votre activité, les ${creation.pages - creation.exemplePages} pages restantes servent à vous faire trouver sur Google.`;
+// Le site compte creation.pages pages : pour en avoir plus, ou être trouvé sur plus de recherches, on prend des extras (depuis l'espace client)
 const PACK_SEO = options.find((o) => o.id === 'packseo' && !o.retire);
-const BOUTIQUE_INCLUS = ['Vos produits présentés en images', 'Panier et paiement en ligne', 'Achat sans créer de compte', 'Gestion des commandes', 'E-mails automatiques'];
+const prixPageSeo = PACK_SEO ? PACK_SEO.price.once : 5;
+const packsSeo = PACK_SEO && PACK_SEO.packs ? PACK_SEO.packs.filter((n) => n > 1).join(' ou ') : '5 ou 10';
+const PLUS_DE_PAGES = `Besoin de plus de pages, ou d’être trouvé sur plus de recherches ? Une page en plus coûte ${euro(creation.pagePlus)}, et une page SEO ${euro(prixPageSeo)}, seule ou en packs de ${packsSeo}. Ce sont des extras, qui se prennent plus tard depuis votre espace client.`;
+const BOUTIQUE_INCLUS = [`${creation.boutiqueProduits} produits en vente, présentés en images`, 'Panier et paiement en ligne', 'Achat sans créer de compte', 'Gestion des commandes', 'E-mails automatiques'];
 // Ce que la boutique ajoute dans l'espace client (extension WordPress : includes/boutique.php et vacances.php)
 const BOUTIQUE_ESPACE = ['Codes promo et soldes', 'Mode vacances', 'Bandeau d’annonce', 'Vos commandes dans le tableau de bord'];
-const BOUTIQUE_STOCK = 'Pas de stock à tenir : on ne compte pas les quantités, vos produits sont présentés en images. Un produit manque ? Il passe en épuisé.';
+const BOUTIQUE_STOCK = 'Par défaut, pas de stock à tenir : on ne compte pas les quantités, et un produit qui manque passe en épuisé. L’extra « Gestion du stock » décompte le stock à chaque vente.';
 // Une formule, en carte. compact : sans la liste complète.
 function formuleCarte(f, { compact = false } = {}) {
   // L'abonnement unique a pour mascotte le monstre Maxi
@@ -209,7 +211,7 @@ function offre({ compact = false, choose = true } = {}) {
       <p class="offre-prix"><b>${euro(creation.prix)}</b><small>une seule fois</small></p>
       ${liste(compact ? INCLUS_SITE.slice(0, 6) : INCLUS_SITE)}
       <p class="offre-sous">Payable en ${lissageTxt} fois sans frais. Boutique en ligne : + ${euro(creation.boutique)}.</p>
-      <!--commun--><p class="offre-seo">${icon('search-check')}<span>${compact ? `Les pages non utilisées deviennent des pages pour Google.` : PAGES_SEO}</span></p><!--/commun-->
+      <!--commun--><p class="offre-seo">${icon('search-check')}<span>${compact ? `Besoin de plus de pages ? Elles se prennent en extra.` : PLUS_DE_PAGES}</span></p><!--/commun-->
     </article>
     <span class="offre-plus offre-puis" aria-hidden="true">puis</span>
     <article class="offre-col c-lilac" id="le-maintenir">
@@ -234,15 +236,15 @@ function economie() {
   const mInde = (marche.vitrineMin + marche.vitrineMax) / 2;
   const w = (x) => `${Math.max(10, Math.round((x / mAgence) * 100))}%`;
   return `<div class="eco reveal">
-  <h3>${icon('scale')}${marche.fois} fois moins cher, à site égal</h3>
-  <p class="eco-base">Pour comparer justement : un site vitrine de ${n} pages, avec son référencement sur Google${n === creation.pages ? ', exactement ce que comprend le nôtre' : ''}.</p>
+  <h3>${icon('scale')}${marche.fois} fois moins cher${n === creation.pages ? ', à site égal' : ''}</h3>
+  <p class="eco-base">Pour comparer : un site vitrine de ${n} pages, avec son référencement sur Google${n === creation.pages ? ', exactement ce que comprend le nôtre' : `. Le nôtre compte ${creation.pages} pages, et les pages en plus se prennent à la carte`}.</p>
   <div class="eco-barres" role="img" aria-label="Un site vitrine de ${n} pages avec référencement coûte en général ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)} en agence, ${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)} chez un indépendant. Chez les Minis Monstres : ${euro(creation.prix)}.">
     <p class="eco-ligne"><span>Agence web</span><i style="width:${w(mAgence)}"></i><b>${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}</b></p>
     <p class="eco-ligne"><span>Indépendant</span><i style="width:${w(mInde)}"></i><b>${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)}</b></p>
     <p class="eco-ligne is-nous"><span>Chez les Minis Monstres</span><i style="width:${w(creation.prix)}"></i><b>${euro(creation.prix)}</b></p>
   </div>
   <p>Pas de secret : j’ai passé du temps à automatiser mon travail, et tout ce qui se répète se fait maintenant tout seul. Je conçois le site et je vérifie tout à la main. Vous ne payez pas des semaines de travail. Le prix est le même pour tout le monde, affiché ici, sans devis.</p>
-  <p class="eco-note">Nos repères : les prix publiés en France en 2026 pour un site vitrine de ${n} pages avec référencement, textes pour Google compris. Ce sont des moyennes : chaque devis est différent. Chez nous, ${creation.pages} pages au plus pour ${euro(creation.prix)}, référencement de base compris.</p>
+  <p class="eco-note">Nos repères : les prix publiés en France en 2026 pour un site vitrine de ${n} pages avec référencement, textes pour Google compris. Ce sont des moyennes : chaque devis est différent. Chez nous, ${creation.pages} pages pour ${euro(creation.prix)}, référencement de base compris.</p>
 </div>`;
 }
 
@@ -268,7 +270,8 @@ const BOUTIQUE = types.find((t) => t.id === 'boutique') || {};
 const MONSTRE_OPTION = { packseo: 'etoile', boutique: 'champi' };
 // La petite bande, en cartes : métier, missions et personnalité. complet : avec les missions (pages Équipe et Accueil).
 function bandeGrid({ complet = false, prix = true } = {}) {
-  const prixDe = (b) => (b.option === 'boutique' ? (prix ? `Avec la boutique en ligne, + ${euro(creation.boutique)}` : 'Avec la boutique en ligne') : b.compris ? 'Avec l’abonnement' : '');
+  const extraDe = (b) => options.find((o) => o.id === b.option && !o.retire);
+  const prixDe = (b) => (b.option === 'boutique' ? (prix ? `Avec la boutique en ligne, + ${euro(creation.boutique)}` : 'Avec la boutique en ligne') : b.compris ? 'Avec l’abonnement' : extraDe(b) ? (b.option === 'seomois' ? 'Avec les extras pages SEO' : `Avec l’extra « ${extraDe(b).name} »`) : '');
   const art = (b) => (b.monstre === 'lia' ? monster('coucou') : petit(b.monstre));
   return `<div class="bande">${bande
     .map((b) => `<div class="bande-carte reveal${b.compris ? ' is-compris' : ''}"><span class="bande-art">${art(b)}</span><strong>${esc(b.nom)}<small>${esc(b.role)}</small></strong>${complet && b.missions ? `<ul class="bande-missions">${b.missions.map((m) => `<li>${esc(m)}</li>`).join('')}</ul><em class="bande-perso">${esc(b.perso)}</em>` : `<span class="bande-fait">${inline(b.court)}</span>`}<em class="bande-prix">${prixDe(b)}</em></div>`)
@@ -277,7 +280,7 @@ function bandeGrid({ complet = false, prix = true } = {}) {
 // La boutique en ligne, la seule option à la commande, expliquée simplement
 function optionsCompact() {
   return `<div class="opt-cartes">
-  <article class="opt-carte reveal"><span class="opt-carte-art">${petit(MONSTRE_OPTION.boutique)}</span><div><h3><span>${nomI('Boutique en ligne', 'boutique', BOUTIQUE.info)}</span><b>+ ${euro(creation.boutique)}</b></h3><p>Vos clients achètent sur votre site, même quand vous êtes fermé, sans créer de compte. Dans votre espace client, vous gérez vos codes promo, vos soldes et le mode vacances. Pas de stock à tenir : vos produits sont présentés en images.</p><ul class="plan-list">${BOUTIQUE_INCLUS.map((x) => `<li>${icon('check')}<span>${esc(x)}</span></li>`).join('')}</ul></div></article>
+  <article class="opt-carte reveal"><span class="opt-carte-art">${petit(MONSTRE_OPTION.boutique)}</span><div><h3><span>${nomI('Boutique en ligne', 'boutique', BOUTIQUE.info)}</span><b>+ ${euro(creation.boutique)}</b></h3><p>Vos clients achètent sur votre site, même quand vous êtes fermé, sans créer de compte. La boutique comprend ${creation.boutiqueProduits} produits : pour en vendre davantage, des packs de produits se prennent en extra. Dans votre espace client, vous gérez vos codes promo, vos soldes et le mode vacances.</p><ul class="plan-list">${BOUTIQUE_INCLUS.map((x) => `<li>${icon('check')}<span>${esc(x)}</span></li>`).join('')}</ul></div></article>
 </div>
 <p class="opt-note">La boutique en ligne est la seule option à la commande, payée une fois. Tout le reste se prend plus tard, comme extra.</p>`;
 }
@@ -289,21 +292,24 @@ function extrasDemande() { return ''; }
 // regroupés par famille (extrasGroupes). Le champ `groupe` des premiers et `group` des seconds dit la famille.
 const EXTRAS_UNE_FOIS = aLaDemande.filter((x) => !x.retire);
 const EXTRAS_MOIS = options.filter((o) => o.quand === 'mois' && !o.retire && o.price && o.price.month);
+const UNITE = { page: 'la page', article: 'l’article', produit: 'le produit' };
+const listeDe = (l) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} ou ${l[l.length - 1]}` : l.join(''));
 const EXTRAS_PAR_FAMILLE = extrasGroupes
   .map((g) => ({
     ...g,
     items: [
-      ...EXTRAS_UNE_FOIS.filter((x) => x.groupe === g.id).map((x) => ({ id: x.id, name: x.name, icon: x.icon, desc: x.desc, fois: x.prix, mois: 0 })),
-      ...EXTRAS_MOIS.filter((o) => o.group === g.id).map((o) => ({ id: o.id, name: o.name, icon: o.icon, desc: o.desc || o.court, fois: 0, mois: o.price.month })),
+      ...EXTRAS_UNE_FOIS.filter((x) => x.groupe === g.id).map((x) => ({ id: x.id, name: x.name, icon: x.icon, desc: x.court || x.desc, fois: x.prix, mois: 0, packs: x.packs || null, unite: x.unite || '', badge: x.badge || '' })),
+      ...EXTRAS_MOIS.filter((o) => o.group === g.id).map((o) => ({ id: o.id, name: o.name, icon: o.icon, desc: o.court || o.desc, fois: 0, mois: o.price.month, packs: null, unite: '', badge: o.badge || '' })),
     ],
   }))
   .filter((g) => g.items.length);
-// « 15 € une fois » ou « 5 €/mois »
-const prixExtra = (x) => (x.mois ? `${euro(x.mois)}/mois` : `${euro(x.fois)} une fois`);
-const prixExtraHtml = (x) => (x.mois ? `<b>${euro(x.mois)}</b><small>/mois</small>` : `<b>${euro(x.fois)}</b><small>une fois</small>`);
+// « 15 € une fois », « 5 €/mois », ou « à partir de 5 € la page » quand il existe des packs
+const prixExtra = (x) => (x.mois ? `${euro(x.mois)}/mois` : x.packs ? `à partir de ${euro(x.fois)} ${UNITE[x.unite] || ''}`.trim() : `${euro(x.fois)} une fois`);
+const prixExtraHtml = (x) => (x.mois ? `<b>${euro(x.mois)}</b><small>/mois</small>` : x.packs ? `<small>à partir de</small><b>${euro(x.fois)}</b><small>${UNITE[x.unite] || 'une fois'}</small>` : `<b>${euro(x.fois)}</b><small>une fois</small>`);
+const packsTxt = (x) => { const l = (x.packs || []).filter((n) => n > 1); return l.length ? `Packs de ${listeDe(l)}` : ''; };
 function extrasListe() {
   return `<div class="opt-groups extras">${EXTRAS_PAR_FAMILLE.map((g) => `<div class="opt-group extras-groupe reveal"><h3>${icon(g.icon)}<span>${esc(g.nom)}</span></h3><ul>${g.items
-    .map((x) => `<li><span class="opt-ico">${icon(x.icon)}</span><span class="opt-txt"><strong>${esc(x.name)}</strong><small>${inline(x.desc)}</small></span><span class="opt-price">${prixExtraHtml(x)}</span></li>`)
+    .map((x) => `<li><span class="opt-ico">${icon(x.icon)}</span><span class="opt-txt"><strong>${esc(x.name)}${x.badge ? ` <em class="extra-badge">${esc(x.badge)}</em>` : ''}</strong><small>${inline(x.desc)}</small>${packsTxt(x) ? `<small class="extra-packs">${packsTxt(x)}</small>` : ''}</span><span class="opt-price">${prixExtraHtml(x)}</span></li>`)
     .join('')}</ul></div>`).join('')}</div>
 <p class="opt-note extras-note">${icon('circle-user')}<span>Tout se prend depuis votre espace client, quand vous en avez besoin, sans engagement. Un extra payé une fois s’ajoute à votre prochaine facture. Un extra au mois se coupe quand vous voulez.</span></p>`;
 }
@@ -355,7 +361,7 @@ function priceData() {
 // (une case data-boutique ; main.js met alors « boutique » dans le champ caché du type de site).
 function siteChoice({ name = 'b-type' } = {}) {
   return `<input type="hidden" name="${name}" value="vitrine" data-type-field>
-  <div class="b-choices b-solo"><div class="b-choice c-butter"><span class="b-card is-on"><span class="type-ico">${icon('layout-grid')}</span><span class="b-solo-txt"><strong>Site Internet Professionnel</strong><small>Jusqu’à ${creation.pages} pages, design personnalisé</small></span><span class="b-price">${euro(creation.prix)}</span><span class="b-check">${icon('check')}</span></span></div></div>`;
+  <div class="b-choices b-solo"><div class="b-choice c-butter"><span class="b-card is-on"><span class="type-ico">${icon('layout-grid')}</span><span class="b-solo-txt"><strong>Site Internet Professionnel</strong><small>${creation.pages} pages, design personnalisé</small></span><span class="b-price">${euro(creation.prix)}</span><span class="b-check">${icon('check')}</span></span></div></div>`;
 }
 function typeChoices({ name = 'b-type', checked = 'vitrine' } = {}) {
   return `<div class="b-choices b-types">${types
@@ -414,7 +420,7 @@ function boutiqueCarte({ court = false } = {}) {
       <span class="cf-corps">
         <strong class="cf-nom">Oui, je veux vendre en ligne</strong>
         <span class="cf-prix"><b>+ ${euro(creation.boutique)}</b><small>une fois</small></span>
-        <span class="cf-txt">Une boutique sur votre site : vos clients achètent même quand vous êtes fermé.</span>
+        <span class="cf-txt">Une boutique sur votre site, avec ${creation.boutiqueProduits} produits : vos clients achètent même quand vous êtes fermé.</span>
         ${court ? '' : `${cfListe(BOUTIQUE_INCLUS)}
         <span class="cf-bq-sous">${icon('circle-user')}Dans votre espace client, en plus</span>
         ${cfListe(BOUTIQUE_ESPACE)}
@@ -484,7 +490,7 @@ function paiementChoix({ name = 'b-lisse', une = 'non' } = {}) {
 // Pages en plus : un compteur (0 à pagesPlusMax), payé une fois. name : le champ envoyé avec la commande.
 function pagesPlusBox({ name = '' } = {}) {
   return `<div class="b-pages" data-pages-box>
-  <span class="b-pages-txt"><strong>Pages en plus</strong><small>${creation.pages} pages sont comprises. Au-delà, ${euro(creation.pagePlus)} la page. Les pages pour Google ne comptent pas.</small></span>
+  <span class="b-pages-txt"><strong>Pages en plus</strong><small>${creation.pages} pages sont comprises. Au-delà, ${euro(creation.pagePlus)} la page.</small></span>
   <span class="b-pages-ctrl"><button type="button" class="b-pp" data-pp-step="-1" aria-label="Une page de moins">${icon('minus')}</button><input type="number" min="0" max="${creation.pagesPlusMax}" step="1" value="0" inputmode="numeric"${name ? ` name="${name}"` : ''} data-pages-plus aria-label="Nombre de pages en plus"><button type="button" class="b-pp" data-pp-step="1" aria-label="Une page de plus">${icon('plus')}</button></span>
   <span class="b-pages-prix" data-pp-prix>0 €</span>
 </div>`;
@@ -535,8 +541,8 @@ function configurator() {
   const partie = (couleur, titre, texte, attrs = '') => `<div class="cf-partie c-${couleur}"${attrs}><p class="cf-partie-titre">${titre}</p><p class="cf-partie-txt">${texte}</p></div>`;
   return `<div class="builder cf" data-builder="${priceData()}" data-billing-scope>
   <form class="cf-form" data-builder-form>
-    ${partie('butter', 'Créer le site', `${euro(creation.prix)} une seule fois, jusqu’à ${creation.pages} pages, payable en ${lissageTxt} fois sans frais.`)}
-    ${etape('Votre site', `Un seul site, un seul prix. Tout ceci est compris.`, `${siteCarte()}<!--commun--><p class="cf-info c-butter">${icon('search-check')}<span>${esc(PAGES_SEO)}</span></p><!--/commun-->`)}
+    ${partie('butter', 'Créer le site', `${euro(creation.prix)} une seule fois, ${creation.pages} pages, payable en ${lissageTxt} fois sans frais.`)}
+    ${etape('Votre site', `Un seul site, un seul prix. Tout ceci est compris.`, `${siteCarte()}<!--commun--><p class="cf-info c-butter">${icon('search-check')}<span>${esc(PLUS_DE_PAGES)}</span></p><!--/commun-->`)}
     ${etape('Vous voulez vendre en ligne ?', 'C’est la seule option à la commande. Cochez-la si vous voulez une boutique, sinon passez à la suite.', boutiqueCarte())}
     ${partie('lilac', 'Le maintenir', `L’abonnement ${ABO.name}, ${euro(ABO.month)} par mois, sans engagement : on garde votre site en ligne, protégé et à jour, et le nom de domaine est offert tant qu’il est actif. Vous pouvez aussi tout gérer vous-même.`)}
     ${etape('Qui s’occupe de la mise en ligne ?', 'Le nom de domaine (l’adresse de votre site), l’hébergement et l’installation : on s’en charge, ou vous le faites vous-même.', gestionChoix())}
@@ -629,7 +635,7 @@ function comparatifTable() {
     ['Délai', `${types[1].delai} pour un site, ${types[2].delai} pour une boutique`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
     ['Modifications', `Incluses dans l’abonnement, une modification peut prendre ${DELAI_MODIF}`, 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
-    ['SEO (être trouvé sur Google)', `Les pages non utilisées deviennent des pages pour Google. D’autres pages se prennent à la carte, ${euro(PACK_SEO ? PACK_SEO.price.once : 5)} la page`, 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
+    ['SEO (être trouvé sur Google)', `Le site compte ${creation.pages} pages. D’autres pages pour Google se prennent à la carte, ${euro(prixPageSeo)} la page`, 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
     ['Engagement', `Aucun. Seulement le temps du paiement si le reste est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
@@ -646,7 +652,7 @@ module.exports = {
   unType,
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, DELAI_MODIF, optsCreation, optsMois, EXTRAS_PAR_FAMILLE, extrasListe, prixExtra, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
-  offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PAGES_SEO, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
+  offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
-  petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
+  CERISE, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };
