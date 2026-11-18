@@ -340,3 +340,15 @@ Dans la bulle de Cerise, sur toutes les pages du site, un visiteur peut poser un
 - Point d'entrée public : `POST /wp-json/aled08/v1/bulle-site` (`admin-ajax.php` n'est pas joignable par les visiteurs sur ce site). Code : `includes/bulle-site.php`.
 - Garde-fous : la demande doit venir d'une page du site ; 10 questions par heure et 30 par jour par visiteur (empreinte de l'adresse IP) ; 400 questions et 2 $ par jour pour tout le site (options `aled08_bulle_site_jour` et `aled08_bulle_site_budget`) ; question de 300 caractères au plus ; modèle rapide de la bulle (`aled08_bulle_modele`).
 - Aucune question n'est enregistrée : seul le coût du jour est compté. Sans clé Claude, la barre répond « écrivez à Alex ».
+
+## Ma boutique : le client gère tout (18 novembre 2026)
+
+Avec l'option boutique (200 €), le client a un onglet « Ma boutique » (`includes/boutique.php`, `articles.php`, `boutique-gestion.php`) avec cinq rubriques :
+
+1. **Mes articles** : 5 emplacements compris (`creation.boutiqueProduits`), le client remplit lui-même un emplacement (photo, description, prix) et l'article est créé tout de suite dans la boutique de son site (connecteur 2.1.0, `article_poser`). Chaque emplacement en plus coûte 2 € (`creation.boutiqueSlot`), une fois, pour toujours : prix ajouté à sa prochaine facture Stripe, et vous recevez un e-mail (« à facturer à la main » si Stripe n'est pas prêt). Si le site n'est pas relié, l'article vous arrive par e-mail à mettre en ligne.
+2. **Mes prix** : prix, promo, en vente, en stock de chaque produit simple (connecteur 2.2.0, `catalogue` et `produit_regler`). Les anciennes valeurs restent dans le journal du connecteur. Les produits à variantes se règlent avec vous.
+3. **Paiements** : Stripe (clés publiable et secrète, mode test ou réel, vérifiées auprès de Stripe avant d'être gardées), PayPal (connexion à faire une fois, avec vous ou depuis le site), virement (IBAN), chèque, paiement à la livraison, et tout autre moyen déjà installé. « Un autre moyen » (Mollie, Payplug, Alma…) : le client le demande, vous le branchez. **Les clés de paiement partent directement sur le site du client (HTTPS obligatoire) : elles ne sont ni gardées, ni journalisées, ni réaffichées.** Stripe et PayPal demandent l'extension de paiement WooCommerce correspondante sur le site du client (vous l'installez).
+4. **Commandes** : les 15 dernières, en lecture seule.
+5. **Promos et soldes** : codes promo, soldes rapides, bandeau d'annonce et vacances (comme avant).
+
+**Après chaque nouvelle version du connecteur, il faut le réinstaller sur chaque site client** (Flore et Chenilles en premier) : sans cela, ces rubriques affichent « L'extension de votre site doit être mise à jour ».

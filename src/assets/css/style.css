@@ -2333,3 +2333,33 @@ a.client-url { text-decoration: none; }
 .maxi-art { display: block; width: 130px; margin: 0 0 6px -8px; }
 .maxi-art .petit { display: block; width: 100%; height: auto; }
 .formule.is-evo .formule-tag { right: auto; left: 14px; }
+
+/* 18 novembre 2026 : créer le site / le maintenir, un seul abonnement, les extras */
+.offre-plus.offre-puis { width: auto; height: auto; padding: 6px 14px; border-radius: 999px; font-size: .95rem; letter-spacing: .02em; }
+.formules.is-solo { max-width: 460px; margin-left: auto; margin-right: auto; }
+.formules.is-solo .formule { padding-top: 26px; }
+.formules.is-solo .formule-art { top: -46px; right: 8px; width: 96px; }
+.formule-prix { flex-wrap: wrap; }
+.formule-sans { margin: -4px 0 10px; font-weight: 800; color: var(--c-dd); font-size: .9rem; }
+.cf-partie { margin: 34px 0 6px; padding: 16px 20px; border-radius: 22px; background: var(--c); box-shadow: 0 0 0 2px var(--c-d) inset; }
+.cf-partie:first-child { margin-top: 0; }
+.cf-partie-titre { margin: 0 0 4px; font-size: 1.35rem; font-weight: 900; color: var(--ink); }
+.cf-partie-txt { margin: 0; font-weight: 700; color: var(--text); line-height: 1.5; }
+.cf-abo .cf-art.cf-art-maxi { width: 112px; margin: -10px 0 -6px -6px; flex: none; }
+.cf-abo .cf-corps { padding-right: 130px; }
+@media (max-width: 720px) { .cf-abo .cf-corps { padding-right: 0; } }
+.cf-bq-note { display: block; margin-top: 8px; }
+.extras .opt-price { display: grid; justify-items: end; text-align: right; line-height: 1.15; }
+.extras .opt-price b { font-size: 1.05rem; }
+.extras .opt-price small { font-size: .74rem; font-weight: 800; color: var(--muted); }
+.extras .opt-group h3 { font-size: 1.1rem; }
+.extras-groupe li { align-items: start; }
+.extra-packs { color: var(--lilac-dd) !important; font-weight: 800; }
+.extra-badge { font-style: normal; margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: var(--butter); color: var(--butter-dd); font-size: .7rem; font-weight: 900; vertical-align: 2px; }
+.extras-note { display: flex; gap: 10px; align-items: flex-start; max-width: 760px; margin: 22px auto 0; text-align: left; }
+.extras-note .ico { flex: none; margin-top: 3px; }
+.modif-bloc { margin-top: 26px; }
+.app-plans.is-solo { grid-template-columns: minmax(0, 360px); justify-content: center; }
+.app-opt-once { cursor: default; }
+.app-opt-once .btn { white-space: nowrap; }
+.msg.is-extra { box-shadow: 0 0 0 1px var(--lilac-d, #6E5CC9) inset; }

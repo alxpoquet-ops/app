@@ -452,7 +452,7 @@
     initBoutique(box);
     var setText = function (key, text) { $$('[data-sum="' + key + '"]', box).forEach(function (el) { el.textContent = text; }); };
     var params = new URLSearchParams(location.search);
-    // préremplissage : ?forfait=sans (je m'en occupe moi-même), ?forfait=evolution, ?gestion=moi…
+    // préremplissage : ?forfait=sans (je m'en occupe moi-même), ?gestion=moi…
     var pf = slug(params.get('forfait') || '');
     if (pf === 'sans' || slug(params.get('gestion') || '') === 'moi') { var gm = $('input[name="b-gestion"][value="moi"]', box); if (gm) gm.checked = true; }
     else if (pf) { var fr = $('input[name="b-forfait"][value="' + pf + '"]', box); if (fr) fr.checked = true; }
@@ -993,11 +993,15 @@
         $('[data-app-plan-price]', app).textContent = euro(+p.getAttribute('data-month')) + ' par mois';
         var m = mtpl && mtpl.content.querySelector('[data-m="' + p.value + '"]');
         if (m) $('[data-app-plan-art]', app).innerHTML = m.innerHTML;
-        // les petits mots réservés à Maxi (analyse de Mirette, suggestions) ; avec Mini, un message qui présente Maxi
-        var maxi = p.value === 'evolution';
-        $$('[data-seulement-maxi]', app).forEach(function (e) { e.hidden = !maxi; });
-        $$('[data-seulement-mini]', app).forEach(function (e) { e.hidden = maxi; });
       }
+      // les petits mots de la bande qui dépendent d'un extra (analyse de Mirette, pages de Lumi) : ils apparaissent si l'extra est pris
+      $$('[data-extra]', app).forEach(function (e) {
+        var c = $('.app-opt input[value="' + e.getAttribute('data-extra') + '"]', app);
+        e.hidden = !(c && c.checked);
+      });
+      // sans l'extra d'analyse, un message propose de le prendre
+      var mir = $('.app-opt input[value="mirette"]', app);
+      $$('[data-extra-teaser]', app).forEach(function (e) { e.hidden = !!(mir && mir.checked); });
     };
     $$('input[name="app-plan"]', app).forEach(function (r) {
       r.addEventListener('change', function () {
@@ -1009,7 +1013,7 @@
     $$('.app-opt input', app).forEach(function (c) {
       c.addEventListener('change', function () {
         recompute();
-        toast(tr(c.checked ? 'Option ajoutée' : 'Option retirée') + tr(' (démo)'));
+        toast(tr(c.checked ? 'Extra ajouté' : 'Extra retiré') + tr(' (démo)'));
       });
     });
     recompute();

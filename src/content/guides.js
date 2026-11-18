@@ -66,7 +66,7 @@ C'est la vraie difficulté pour un restaurant : le plat du jour, la carte de sai
 
 Chez moi, vous ne touchez jamais au site. Vous envoyez la nouvelle carte depuis votre espace client, la page privée où vous faites vos demandes. ${qui('support')} de ma petite bande d'automatisations, vérifie avec vous ce qui change. Puis c'est moi qui mets la carte à jour, à la main.
 
-Ces changements sont compris dans votre abonnement, sans limite. La nouvelle carte est en ligne ${delaiModif} après votre demande. Si votre carte bouge chaque semaine, l’extra « ${(options.find((o) => o.id === 'deux' && !o.retire) || {}).name} » permet d’avoir deux demandes en cours à la fois. L’abonnement et les extras sont présentés sur la page [tarifs](/tarifs/).
+Ces changements sont compris dans votre abonnement, sans limite. La nouvelle carte est en ligne ${delaiModif} après votre demande. Si votre carte bouge chaque semaine, l’extra « ${(options.find((o) => o.id === 'deux' && !o.retire) || {}).name} » permet d’avoir deux demandes en cours à la fois. Les tarifs et les extras sont présentés sur la page [tarifs](/tarifs/).
 
 ## Quel site choisir ?
 
@@ -247,14 +247,14 @@ Le site ne grossit pas tout seul : pour plus de pages, ou pour être trouvé sur
 
 ### Une option à la commande, des extras ensuite
 
-- **La boutique en ligne, ${eur(creation.boutique)} €** : un panier, le paiement en ligne, la gestion des commandes et des e-mails envoyés tout seuls à vos clients. Vous ajoutez vos articles vous-même depuis votre espace client : photo, description, prix. ${creation.boutiqueProduits} emplacements sont compris, puis ${eur(creation.boutiqueSlot)} € l'emplacement, à vous pour toujours. C'est la seule option à choisir en commandant.
+- **La boutique en ligne, ${eur(creation.boutique)} €** : un panier, le paiement en ligne, la gestion des commandes et des e-mails envoyés tout seuls à vos clients. Vous remplissez vous-même votre catalogue depuis votre espace client, avec une photo, une description et un prix pour chaque article. ${creation.boutiqueProduits} emplacements sont inclus, puis ${eur(creation.boutiqueSlot)} € par emplacement supplémentaire, acquis définitivement. C'est la seule option à choisir en commandant.
 - **Une ${minus(packSeo.name)}, ${eur(packSeo.price.once)} € la page** : une page pensée pour une recherche que font vos clients, comme un service et une ville, une question fréquente ou un guide. Vous la commandez après coup, depuis votre espace client, seule ou en pack.
 
 Chacun se paie une seule fois.
 
 ### Qui met votre site en ligne ?
 
-**On s'occupe de tout**, avec un abonnement au mois. Je réserve votre nom de domaine à votre nom, j'installe le site et je le mets en ligne. Le nom de domaine est offert tant que l'abonnement est actif. L'abonnement démarre à la réception du site, et il est sans engagement. Il n'y en a qu'un :
+**On s'occupe de tout**, avec un abonnement au mois. Je réserve votre nom de domaine à votre nom, j'installe le site et je le mets en ligne. Le nom de domaine reste offert tant que l'abonnement dure. L'abonnement démarre à la réception du site, et il est sans engagement. Il n'y en a qu'un :
 
 - **${mini.name}, ${eur(mini.month)} € par mois** : l'entretien complet (hébergement, nom de domaine, sauvegardes, sécurité, maintenance) et vos modifications, qui peuvent prendre ${delaiModif}, une demande à la fois.
 
@@ -570,11 +570,11 @@ En ligne, le client ne peut ni toucher ni essayer. Vos photos et vos textes font
 - **Les photos** : fond neutre, lumière du jour, plusieurs angles, et une photo qui montre la taille réelle de l'objet.
 - **La description** : matière, dimensions, entretien, et surtout à quoi sert le produit et pour qui.
 
-Vous m'envoyez les photos et quelques notes. ${qui('ecrivain')} de ma petite bande, en tire une première fiche pour chaque produit. Je relis tout, puis je vous montre le résultat.
+Dans l'onglet « Ma boutique » de votre espace client, vous saisissez vous-même chaque article : une photo, une description, un prix. Vos prix et vos promotions se règlent au même endroit. Un texte vous résiste ? ${qui('ecrivain')} de ma petite bande, peut vous aider à le formuler.
 
 ## Étape 3 : le paiement
 
-Le paiement par carte sécurisé est compris dans la boutique. L'argent arrive sur votre compte bancaire, et le client reçoit une confirmation par e-mail. Vous n'avez jamais accès aux numéros de carte : tout passe par un service de paiement spécialisé.
+Vous choisissez vous-même comment vos clients vous paient : par carte avec Stripe, avec PayPal, par virement, par chèque, à la livraison, ou avec un autre moyen que je branche pour vous. Stripe et PayPal fonctionnent avec une extension de paiement installée sur votre site, que j'installe si besoin. Les clés de votre compte de paiement restent enregistrées sur votre site à vous, pas chez moi. Le client reçoit une confirmation par e-mail, et vous n'avez jamais accès aux numéros de carte : tout passe par le service de paiement.
 
 À chaque vente, ${qui('vendeur')} qui arrive avec la boutique, vous prévient, suit la commande et envoie au client les e-mails qui le tiennent au courant.
 
@@ -604,7 +604,7 @@ Le service de paiement prélève de son côté une petite commission sur chaque 
 
 Une boutique sans visiteurs ne vend rien. Parlez-en à vos clients actuels, glissez l'adresse dans chaque colis et sur vos emballages, et pensez au [référencement](/referencement-seo/), votre place dans les résultats de recherche : chaque fiche produit bien écrite est une porte d'entrée depuis Google.`,
     faq: [
-      { q: 'Combien de produits puis-je vendre ?', a: `Vous ajoutez vos articles vous-même depuis votre espace client : une photo, une description, un prix. ${creation.boutiqueProduits} emplacements sont compris, puis ${eur(creation.boutiqueSlot)} € l'emplacement en plus, payé une fois et à vous pour toujours. Pour un très grand catalogue dès le départ, on en parle avant : cela se fait sur devis.` },
+      { q: 'Combien de produits puis-je vendre ?', a: `Chaque article demande une photo, une description et un prix, que vous saisissez dans votre espace client. Les ${creation.boutiqueProduits} premiers emplacements sont compris, les suivants coûtent ${eur(creation.boutiqueSlot)} € chacun, une seule fois. Pour un très grand catalogue dès le départ, on en parle avant : cela se fait sur devis.` },
       { q: 'Faut-il un statut d’entreprise pour vendre en ligne ?', a: 'Oui. Vendre régulièrement, même de petites quantités, suppose une activité déclarée, par exemple en micro-entreprise. Renseignez-vous avant d’ouvrir : la démarche est rapide et se fait en ligne.' },
       { q: 'Puis-je garder mon magasin et ajouter une boutique en ligne ?', a: 'Oui, c’est même un très bon cas. La boutique ne voit pas vos ventes au comptoir : quand un article part en magasin, signalez-le depuis votre espace client, et il est retiré du site.' },
     ],

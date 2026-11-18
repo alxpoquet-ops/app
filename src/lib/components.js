@@ -183,12 +183,14 @@ const INCLUS_MOI = ['Le code de votre site, prêt à installer', 'Une sauvegarde
 const PACK_SEO = options.find((o) => o.id === 'packseo' && !o.retire);
 const prixPageSeo = PACK_SEO ? PACK_SEO.price.once : 5;
 const packsSeo = PACK_SEO && PACK_SEO.packs ? PACK_SEO.packs.filter((n) => n > 1).join(' ou ') : '5 ou 10';
-const PLUS_DE_PAGES = `Besoin de plus de pages, ou d’être trouvé sur plus de recherches ? Une page en plus coûte ${euro(creation.pagePlus)}, et une page SEO ${euro(prixPageSeo)}, seule ou en packs de ${packsSeo}. Ce sont des extras, qui se prennent plus tard depuis votre espace client.`;
+const PLUS_DE_PAGES = `Besoin de plus de pages, ou d’être trouvé sur plus de recherches ? Une page en plus coûte ${euro(creation.pagePlus)}, et une page visibilité Google ${euro(prixPageSeo)}, seule ou en packs de ${packsSeo}. Ce sont des extras, qui se prennent plus tard depuis votre espace client.`;
 // Les articles de la boutique : le client les ajoute lui-même dans l'onglet « Ma boutique » de son espace client, dans des emplacements.
 const BOUTIQUE_ARTICLES = `Vous ajoutez vos articles vous-même depuis votre espace client : photo, description, prix. ${creation.boutiqueProduits} emplacements sont compris, puis ${euro(creation.boutiqueSlot)} l’emplacement, à vous pour toujours.`;
 const BOUTIQUE_INCLUS = [`${creation.boutiqueProduits} emplacements d’articles compris`, 'Panier et paiement en ligne', 'Achat sans créer de compte', 'Gestion des commandes', 'E-mails automatiques'];
 // Ce que la boutique ajoute dans l'espace client (extension WordPress : includes/boutique.php et vacances.php)
-const BOUTIQUE_ESPACE = ['Codes promo et soldes', 'Mode vacances', 'Bandeau d’annonce', 'Vos commandes dans le tableau de bord'];
+const BOUTIQUE_ESPACE = ['Vos articles : photo, description, prix', 'Vos prix et vos promotions', 'Vos moyens de paiement', 'Le suivi de vos commandes'];
+// Les moyens de paiement de la boutique : choisis par le client, ses clés restent sur son propre site
+const BOUTIQUE_PAIEMENT = 'Vous choisissez comment on vous paie : Stripe, PayPal, virement, chèque, paiement à la livraison, ou un autre moyen qu’Alex branche. Stripe et PayPal fonctionnent avec une extension de paiement installée sur votre site, qu’Alex installe si besoin. Vos clés de paiement sont enregistrées sur votre propre site, jamais chez nous.';
 const BOUTIQUE_STOCK = 'Par défaut, pas de stock à tenir : on ne compte pas les quantités, et un produit qui manque passe en épuisé. L’extra « Gestion du stock » décompte le stock à chaque vente.';
 // Une formule, en carte. compact : sans la liste complète.
 function formuleCarte(f, { compact = false } = {}) {
@@ -196,7 +198,7 @@ function formuleCarte(f, { compact = false } = {}) {
   return `<article class="formule c-${f.color}">
     <span class="formule-art" aria-hidden="true">${petit('maxi')}</span>
     <p class="formule-nom">${esc(f.name)}</p>
-    <p class="formule-prix"><b>${euro(f.month)}</b><small>/mois, sans engagement</small></p>
+    <p class="formule-prix">${billed(f.month)}</p><p class="formule-sans">Sans engagement</p>
     <ul class="plan-list">${(compact ? sansDelai(f.main).slice(0, 5) : sansDelai(f.main)).map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>
   </article>`;
 }
@@ -273,7 +275,7 @@ const MONSTRE_OPTION = { packseo: 'etoile', boutique: 'champi' };
 // La petite bande, en cartes : métier, missions et personnalité. complet : avec les missions (pages Équipe et Accueil).
 function bandeGrid({ complet = false, prix = true } = {}) {
   const extraDe = (b) => options.find((o) => o.id === b.option && !o.retire);
-  const prixDe = (b) => (b.option === 'boutique' ? (prix ? `Avec la boutique en ligne, + ${euro(creation.boutique)}` : 'Avec la boutique en ligne') : b.compris ? 'Avec l’abonnement' : extraDe(b) ? (b.option === 'seomois' ? 'Avec les extras pages SEO' : `Avec l’extra « ${extraDe(b).name} »`) : '');
+  const prixDe = (b) => (b.option === 'boutique' ? (prix ? `Avec la boutique en ligne, + ${euro(creation.boutique)}` : 'Avec la boutique en ligne') : b.compris ? 'Avec l’abonnement' : extraDe(b) ? (b.option === 'seomois' ? 'Avec les extras pages visibilité Google' : `Avec l’extra « ${extraDe(b).name} »`) : '');
   const art = (b) => (b.monstre === 'lia' ? monster('coucou') : petit(b.monstre));
   return `<div class="bande">${bande
     .map((b) => `<div class="bande-carte reveal${b.compris ? ' is-compris' : ''}"><span class="bande-art">${art(b)}</span><strong>${esc(b.nom)}<small>${esc(b.role)}</small></strong>${complet && b.missions ? `<ul class="bande-missions">${b.missions.map((m) => `<li>${esc(m)}</li>`).join('')}</ul><em class="bande-perso">${esc(b.perso)}</em>` : `<span class="bande-fait">${inline(b.court)}</span>`}<em class="bande-prix">${prixDe(b)}</em></div>`)
@@ -282,7 +284,7 @@ function bandeGrid({ complet = false, prix = true } = {}) {
 // La boutique en ligne, la seule option à la commande, expliquée simplement
 function optionsCompact() {
   return `<div class="opt-cartes">
-  <article class="opt-carte reveal"><span class="opt-carte-art">${petit(MONSTRE_OPTION.boutique)}</span><div><h3><span>${nomI('Boutique en ligne', 'boutique', BOUTIQUE.info)}</span><b>+ ${euro(creation.boutique)}</b></h3><p>Vos clients achètent sur votre site, même quand vous êtes fermé, sans créer de compte. ${BOUTIQUE_ARTICLES} Dans votre espace client, vous gérez vos codes promo, vos soldes et le mode vacances.</p><ul class="plan-list">${BOUTIQUE_INCLUS.map((x) => `<li>${icon('check')}<span>${esc(x)}</span></li>`).join('')}</ul></div></article>
+  <article class="opt-carte reveal"><span class="opt-carte-art">${petit(MONSTRE_OPTION.boutique)}</span><div><h3><span>${nomI('Boutique en ligne', 'boutique', BOUTIQUE.info)}</span><b>+ ${euro(creation.boutique)}</b></h3><p>Vos clients achètent sur votre site, même quand vous êtes fermé, sans créer de compte. Vous gérez tout vous-même depuis l’onglet « Ma boutique » de votre espace client : vos articles, vos prix et vos promotions, vos moyens de paiement et le suivi de vos commandes. ${BOUTIQUE_ARTICLES} Côté paiement, le choix est large : Stripe, PayPal, virement, chèque, paiement à la livraison, ou un autre moyen branché par Alex. La boutique est un outil : elle ne promet aucune vente.</p><ul class="plan-list">${BOUTIQUE_INCLUS.map((x) => `<li>${icon('check')}<span>${esc(x)}</span></li>`).join('')}</ul></div></article>
 </div>
 <p class="opt-note">La boutique en ligne est la seule option à la commande, payée une fois. Tout le reste se prend plus tard, comme extra.</p>`;
 }
@@ -426,6 +428,7 @@ function boutiqueCarte({ court = false } = {}) {
         ${court ? '' : `${cfListe(BOUTIQUE_INCLUS)}
         <span class="cf-bq-sous">${icon('circle-user')}Dans votre espace client, en plus</span>
         ${cfListe(BOUTIQUE_ESPACE)}
+        <span class="cf-bq-note">${esc(BOUTIQUE_PAIEMENT)}</span>
         <span class="cf-bq-note">${esc(BOUTIQUE_STOCK)}</span>`}
       </span>
       <span class="cf-coche" aria-hidden="true">${icon('check')}</span>
@@ -443,7 +446,7 @@ function gestionChoix({ name = 'b-gestion', court = false } = {}) {
         <span class="cf-corps">
           <strong class="cf-nom">On s’occupe de tout</strong>
           <span class="cf-prix"><b>${euro(ABO.month)}</b><small>/mois, sans engagement</small></span>
-          <span class="cf-txt">Je réserve votre nom de domaine, j’installe votre site chez nous, puis on veille sur lui chaque mois. Le nom de domaine est offert tant que l’abonnement est actif.</span>
+          <span class="cf-txt">Je réserve votre nom de domaine, j’installe votre site chez nous, puis on veille sur lui chaque mois. Votre nom de domaine est gratuit tant que l’abonnement est actif.</span>
           ${court ? '' : cfListe(INCLUS_NOUS)}
         </span>
         <span class="cf-coche" aria-hidden="true">${icon('check')}</span>
@@ -628,7 +631,7 @@ function statsCard() {
 // Sans chiffres pour les autres solutions (fourchettes sourcées ajoutées plus tard), sans nommer de marque.
 function comparatifTable() {
   const cols = ['Les Minis Monstres', 'Agence web', 'Freelance', 'Plateforme à faire soi-même'];
-  const prixCreation = `${euro(creation.prix)}, le même prix pour tous. Boutique en ligne : + ${euro(creation.boutique)}`;
+  const prixCreation = `${euro(creation.prix)}, le même prix pour tous. Boutique en ligne : + ${euro(creation.boutique)}, avec ${creation.boutiqueProduits} emplacements d’articles que vous remplissez vous-même`;
   const prixMois = `${ABO.name} ${euro(ABO.month)} par mois, nom de domaine, hébergement et modifications compris`;
   const rows = [
     ['Qui fait le travail', 'Je conçois votre site. Mes automatisations s’occupent des tâches répétitives.', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
@@ -637,7 +640,7 @@ function comparatifTable() {
     ['Délai', `${types[1].delai} pour un site, ${types[2].delai} pour une boutique`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
     ['Modifications', `Incluses dans l’abonnement, une modification peut prendre ${DELAI_MODIF}`, 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
-    ['SEO (être trouvé sur Google)', `Le site compte ${creation.pages} pages. D’autres pages pour Google se prennent à la carte, ${euro(prixPageSeo)} la page`, 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
+    ['Visibilité Google (être trouvé)', `Le site compte ${creation.pages} pages. D’autres pages pour Google se prennent à la carte, ${euro(prixPageSeo)} la page`, 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
     ['Engagement', `Aucun. Seulement le temps du paiement si le reste est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
@@ -654,7 +657,7 @@ module.exports = {
   unType,
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, ABO, DELAI_MODIF, optsCreation, optsMois, EXTRAS_PAR_FAMILLE, extrasListe, prixExtra, prixType, optPrice, optionsCompact, extrasDemande, priceData, typeChoices, forfaitChoices, optionChoices, domainBox,
-  offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, BOUTIQUE_ARTICLES, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
+  offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, BOUTIQUE_ARTICLES, BOUTIQUE_PAIEMENT, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
   CERISE, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };

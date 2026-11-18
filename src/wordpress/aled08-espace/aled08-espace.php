@@ -196,6 +196,7 @@ require_once __DIR__ . '/includes/bulle.php';
 require_once __DIR__ . '/includes/bulle-site.php';
 require_once __DIR__ . '/includes/extras.php';
 require_once __DIR__ . '/includes/articles.php';
+require_once __DIR__ . '/includes/boutique-gestion.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
 require_once __DIR__ . '/includes/mirette.php';

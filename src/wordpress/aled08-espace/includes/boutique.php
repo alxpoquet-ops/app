@@ -27,7 +27,7 @@ add_action('template_redirect', function () {
     $uid = get_current_user_id();
     $back = function ($ok, $texte) use ($uid) {
         if ($uid) set_transient('aled08_bq_flash_' . $uid, [$ok, $texte], 120);
-        wp_safe_redirect(aled08e_url() . '#vacances', 303); exit;
+        wp_safe_redirect(aled08e_url(['sub' => 'promos']) . '#vacances', 303); exit;
     };
     if (!$uid) { wp_safe_redirect(aled08e_url(), 303); exit; }
     if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_aled08e_bq'] ?? '')), 'aled08e_bq')) $back(false, 'La page avait expiré. Réessayez.');
@@ -85,9 +85,13 @@ function aled08e_boutique_html($uid) {
     ob_start();
     ?>
 <h2 class="app-h">Ma boutique</h2>
-<?php echo aled08e_articles_html($uid); // phpcs:ignore ?>
-<p class="app-sub">Vos outils de vente</p>
-<p class="app-p">Des petits outils à régler vous-même en quelques secondes. Ils ne comptent pas dans vos modifications.</p>
+<?php $sub = aled08e_bg_sub(); echo aled08e_bg_flash_html($uid) . aled08e_bg_nav($sub); // phpcs:ignore ?>
+<?php if ($sub === 'articles') : echo aled08e_articles_html($uid); // phpcs:ignore
+elseif ($sub === 'prix') : echo aled08e_bg_prix_html($uid); // phpcs:ignore
+elseif ($sub === 'paiements') : echo aled08e_bg_paiements_html($uid); // phpcs:ignore
+elseif ($sub === 'commandes') : echo aled08e_bg_commandes_html($uid); // phpcs:ignore
+else : ?>
+<p class="app-p">Des petits outils de vente à régler vous-même en quelques secondes. Ils ne comptent pas dans vos modifications.</p>
 <?php if ($flash) echo '<p class="' . ($flash[0] ? 'esp-empty' : 'esp-warn') . '" role="status">' . esc_html($flash[1]) . '</p>'; ?>
 <?php if (($b['etat'] ?? '') !== 'ok') :
     $msg = ['non_relie' => 'Votre boutique n’est pas encore reliée à votre espace. Alex s’en occupe.', 'connecteur_ancien' => 'L’extension de votre site doit être mise à jour pour ces outils. Alex s’en occupe.', 'sans_boutique' => 'Aucune boutique WooCommerce n’a été trouvée sur votre site.'][$b['etat'] ?? ''] ?? 'Votre site ne répond pas pour le moment. Rechargez la page dans un instant.'; ?>
@@ -172,6 +176,7 @@ function aled08e_boutique_html($uid) {
 <div class="bq-vac" id="bq-vacances">
   <?php echo aled08e_vacances_html($uid); // phpcs:ignore ?>
 </div>
+<?php endif; // fin des rubriques de la boutique ?>
     <?php
     return ob_get_clean();
 }

@@ -867,3 +867,45 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
   .art-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .art-debloque { grid-template-columns: 1fr; }
 }
+
+/* ======================================================================
+   Ma boutique : prix, paiements, commandes (18 novembre 2026)
+   ====================================================================== */
+.ex-filtre a { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; background: var(--soft); color: var(--ink); font: 800 .88rem var(--font); text-decoration: none; box-shadow: 0 0 0 2px var(--line) inset; transition: background-color .15s, box-shadow .15s; }
+.ex-filtre a svg { width: 16px; height: 16px; }
+.ex-filtre a:hover { box-shadow: 0 0 0 2px var(--lilac-d) inset; }
+.ex-filtre a.is-on { background: var(--lilac); color: var(--lilac-dd); box-shadow: 0 0 0 2px var(--lilac-d) inset; }
+.bg-titre { margin: 4px 0 6px; font-size: 1.15rem; color: var(--ink); }
+.bg-liste { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 10px; }
+.bg-ligne { display: grid; grid-template-columns: 56px minmax(0, 1fr) 110px 110px auto; gap: 10px 12px; align-items: center; padding: 10px 14px; border-radius: 20px; background: var(--soft); }
+.bg-ligne.is-fixe { grid-template-columns: 56px minmax(0, 1fr) auto; }
+.bg-vignette { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 14px; background: var(--peach); color: var(--peach-dd); overflow: hidden; }
+.bg-vignette img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bg-vignette svg { width: 24px; height: 24px; }
+.bg-nom { display: grid; gap: 2px; min-width: 0; }
+.bg-nom strong { color: var(--ink); overflow-wrap: anywhere; line-height: 1.25; }
+.bg-nom small { color: var(--muted); font-weight: 700; }
+.bg-champ { display: grid; gap: 3px; font-size: .78rem; color: var(--muted); font-weight: 800; }
+.bg-champ input { width: 100%; min-height: 40px; padding: 8px 10px; border: 2px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); font: inherit; font-size: .98rem; }
+.bg-champ input:focus { outline: none; border-color: var(--pink-d); }
+.bg-cases { display: grid; gap: 4px; font-size: .86rem; font-weight: 700; color: var(--text); }
+.bg-cases label { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.bg-fixe { color: var(--muted); font-size: .86rem; font-weight: 700; }
+.bg-pages { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; }
+.bg-pages .is-on { background: var(--lilac); color: var(--lilac-dd); }
+.bg-paiements { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; align-items: start; }
+.bg-pay .bg-pf { display: grid; gap: 10px; }
+.bg-pay .ges-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.ex-badge-off { background: var(--soft); color: var(--muted); }
+.bg-commandes { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 8px; }
+.bg-commandes li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 18px; background: var(--soft); }
+.bg-num { padding: 4px 10px; border-radius: 999px; background: var(--lilac); color: var(--lilac-dd); font-weight: 800; }
+.bg-cmd { display: grid; min-width: 0; }
+.bg-cmd small { color: var(--muted); font-weight: 700; }
+@media (max-width: 720px) {
+  .bg-ligne { grid-template-columns: 56px minmax(0, 1fr); }
+  .bg-ligne .bg-champ, .bg-ligne .bg-cases { grid-column: 1 / -1; }
+  .bg-paiements { grid-template-columns: 1fr; }
+  .bg-commandes li { grid-template-columns: auto minmax(0, 1fr); }
+  .bg-commandes li em, .bg-commandes li b { grid-column: 2; }
+}

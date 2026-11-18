@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.1.0
+ * Version: 2.2.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.1.0');
+define('ALEXLIA_CONN_VERSION', '2.2.0');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 
 /* =========================================================================
@@ -120,6 +120,11 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'produits': return alexlia_conn_produits($args);
         case 'article_poser': return alexlia_conn_article_poser($args);
         case 'article_retirer': return alexlia_conn_article_retirer($args);
+        case 'catalogue': return alexlia_bg_catalogue($args);
+        case 'produit_regler': return alexlia_bg_produit_regler($args);
+        case 'paiements_lire': return alexlia_bg_paiements_lire();
+        case 'paiement_regler': return alexlia_bg_paiement_regler($args);
+        case 'commandes_lire': return alexlia_bg_commandes_lire();
         case 'stats': return alexlia_conn_stats();
         case 'vacances_lire': return alexlia_vac_get();
         case 'vacances_regler': return alexlia_vac_regler($args);
@@ -397,6 +402,144 @@ function alexlia_conn_produit_appliquer($pr) {
     alexlia_conn_journal((($pr['op'] ?? '') === 'creer' ? 'Produit créé' : 'Produit modifié') . ' après accord du client : « ' . $p->get_name() . ' » (' . $p->get_regular_price() . ' €).');
     return ['id' => (int) $id, 'titre' => $p->get_name(), 'adresse' => get_permalink($id)];
 }
+
+/* =========================================================================
+ *  Ma boutique : le client gère tout depuis son espace (18 novembre 2026)
+ *  Les prix et la mise en vente de ses produits, ses moyens de paiement (Stripe, PayPal, virement, chèque, paiement à la livraison)
+ *  et ses commandes. Les clés de paiement ne sont jamais renvoyées à l'espace client ni écrites dans le journal.
+ * ========================================================================= */
+/* Le catalogue : les produits de la boutique (30 par page), avec leur prix actuel */
+function alexlia_bg_catalogue($a) {
+    if (!function_exists('wc_get_products')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    $page = max(1, (int) ($a['page'] ?? 1));
+    $r = wc_get_products(['limit' => 30, 'page' => $page, 'paginate' => true, 'status' => ['publish', 'draft', 'private'], 'orderby' => 'date', 'order' => 'DESC', 'type' => ['simple', 'variable', 'external', 'grouped']]);
+    $o = [];
+    foreach ($r->products as $p) {
+        $img = $p->get_image_id() ? wp_get_attachment_image_url($p->get_image_id(), 'thumbnail') : '';
+        $o[] = ['id' => $p->get_id(), 'nom' => $p->get_name(), 'type' => $p->get_type(), 'prix' => (string) $p->get_regular_price(), 'prix_promo' => (string) $p->get_sale_price(), 'statut' => $p->get_status(),
+            'en_stock' => $p->get_stock_status() === 'instock', 'image' => (string) $img, 'adresse' => (string) get_permalink($p->get_id()), 'modifiable' => $p->get_type() === 'simple'];
+    }
+    return ['produits' => $o, 'total' => (int) $r->total, 'pages' => (int) $r->max_num_pages, 'devise' => get_woocommerce_currency()];
+}
+/* Le prix, la promo, le stock et la mise en vente d'un produit simple. Une trace des anciennes valeurs reste dans le journal. */
+function alexlia_bg_produit_regler($a) {
+    if (!function_exists('wc_get_product')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    if (function_exists('alexlia_mcp_compter') && !alexlia_mcp_compter('prix_client', 60)) return new WP_Error('alexlia_limite', 'Trop de changements en une heure : réessayez plus tard.', ['status' => 429]);
+    $p = wc_get_product((int) ($a['id'] ?? 0));
+    if (!$p || $p->get_type() !== 'simple' || $p->get_status() === 'trash') return new WP_Error('alexlia_introuvable', 'Produit introuvable (seuls les produits simples se règlent ici).', ['status' => 404]);
+    $avant = $p->get_regular_price() . ' €' . ($p->get_sale_price() !== '' ? ' (promo ' . $p->get_sale_price() . ' €)' : '') . ', ' . $p->get_status() . ', ' . $p->get_stock_status();
+    $nb = function ($v) { return (float) str_replace(',', '.', preg_replace('/[^\d,.]/', '', (string) $v)); };
+    if (isset($a['prix'])) {
+        $v = $nb($a['prix']);
+        if ($v < 0.5 || $v > 5000) return new WP_Error('alexlia_args', 'Prix hors limites (entre 0,50 € et 5 000 €).', ['status' => 400]);
+        $p->set_regular_price(wc_format_decimal($v));
+    }
+    if (array_key_exists('prix_promo', $a)) {
+        if ($a['prix_promo'] === '' || $a['prix_promo'] === null) $p->set_sale_price('');
+        else {
+            $v = $nb($a['prix_promo']);
+            if ($v < 0.5 || $v >= (float) $p->get_regular_price()) return new WP_Error('alexlia_args', 'Le prix promo doit être plus bas que le prix normal.', ['status' => 400]);
+            $p->set_sale_price(wc_format_decimal($v));
+        }
+    }
+    if (isset($a['en_stock'])) $p->set_stock_status(!empty($a['en_stock']) ? 'instock' : 'outofstock');
+    if (isset($a['statut']) && in_array($a['statut'], ['publish', 'draft'], true)) $p->set_status($a['statut']);
+    $p->save();
+    alexlia_conn_journal('Produit réglé par le client depuis son espace : « ' . $p->get_name() . ' ». Avant : ' . $avant . '.');
+    return ['ok' => true, 'id' => $p->get_id()];
+}
+/* Les moyens de paiement : ceux de WooCommerce, ce qu'on sait régler depuis l'espace, et ce qui est installé */
+function alexlia_bg_gateways_connus() {
+    return [
+        'stripe' => ['plugin' => 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php', 'nom' => 'Carte bancaire (Stripe)'],
+        'ppcp-gateway' => ['plugin' => 'woocommerce-paypal-payments/woocommerce-paypal-payments.php', 'nom' => 'PayPal'],
+        'bacs' => ['plugin' => '', 'nom' => 'Virement bancaire'],
+        'cheque' => ['plugin' => '', 'nom' => 'Chèque'],
+        'cod' => ['plugin' => '', 'nom' => 'Paiement à la livraison'],
+    ];
+}
+function alexlia_bg_paiements_lire() {
+    if (!function_exists('WC')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    require_once ABSPATH . 'wp-admin/includes/plugin.php';
+    $connus = alexlia_bg_gateways_connus();
+    $out = [];
+    $presentes = WC()->payment_gateways() ? WC()->payment_gateways()->payment_gateways() : [];
+    foreach ($connus as $id => $c) {
+        $installe = $c['plugin'] === '' || is_plugin_active($c['plugin']) || isset($presentes[$id]);
+        $g = $presentes[$id] ?? null;
+        $set = get_option('woocommerce_' . $id . '_settings', []);
+        $set = is_array($set) ? $set : [];
+        $ligne = ['id' => $id, 'nom' => $c['nom'], 'installe' => (bool) $installe, 'actif' => $g ? $g->enabled === 'yes' : (($set['enabled'] ?? '') === 'yes'), 'config_url' => admin_url('admin.php?page=wc-settings&tab=checkout&section=' . $id)];
+        if ($id === 'stripe') {
+            $test = ($set['testmode'] ?? 'no') === 'yes';
+            $ligne['mode'] = $test ? 'test' : 'reel';
+            $ligne['cles'] = $test ? (!empty($set['test_publishable_key']) && !empty($set['test_secret_key'])) : (!empty($set['publishable_key']) && !empty($set['secret_key']));
+        } elseif ($id === 'bacs') {
+            $cptes = get_option('woocommerce_bacs_accounts', []);
+            $c0 = is_array($cptes) && $cptes ? $cptes[0] : [];
+            $ligne['compte'] = ['titulaire' => (string) ($c0['account_name'] ?? ''), 'banque' => (string) ($c0['bank_name'] ?? ''), 'iban' => (string) ($c0['iban'] ?? ''), 'bic' => (string) ($c0['bic'] ?? '')];
+        } elseif ($id === 'cheque') {
+            $ligne['instructions'] = (string) ($set['instructions'] ?? '');
+        }
+        $out[] = $ligne;
+    }
+    $autres = [];
+    foreach ($presentes as $id => $g) if (!isset($connus[$id])) $autres[] = ['id' => $id, 'nom' => wp_strip_all_tags($g->get_method_title() ?: $g->title), 'actif' => $g->enabled === 'yes', 'config_url' => admin_url('admin.php?page=wc-settings&tab=checkout&section=' . $id)];
+    return ['paiements' => $out, 'autres' => $autres, 'devise' => get_woocommerce_currency()];
+}
+function alexlia_bg_paiement_regler($a) {
+    if (!function_exists('WC')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    if (function_exists('alexlia_mcp_compter') && !alexlia_mcp_compter('paiement_client', 20)) return new WP_Error('alexlia_limite', 'Trop de changements en une heure : réessayez plus tard.', ['status' => 429]);
+    require_once ABSPATH . 'wp-admin/includes/plugin.php';
+    $id = sanitize_key((string) ($a['id'] ?? ''));
+    $connus = alexlia_bg_gateways_connus();
+    $presentes = WC()->payment_gateways() ? WC()->payment_gateways()->payment_gateways() : [];
+    if (!isset($connus[$id]) && !isset($presentes[$id])) return new WP_Error('alexlia_introuvable', 'Moyen de paiement inconnu.', ['status' => 404]);
+    if (isset($connus[$id]) && $connus[$id]['plugin'] !== '' && !is_plugin_active($connus[$id]['plugin']) && !isset($presentes[$id])) return new WP_Error('alexlia_args', 'Ce moyen de paiement n’est pas encore installé sur votre site : Alex peut l’installer.', ['status' => 400]);
+    $cle = 'woocommerce_' . $id . '_settings';
+    $set = get_option($cle, []);
+    $set = is_array($set) ? $set : [];
+    $actif = !empty($a['actif']);
+    $note = [];
+    if ($id === 'stripe' && !empty($a['cles']) && is_array($a['cles'])) {
+        $pk = trim((string) ($a['cles']['publiable'] ?? '')); $sk = trim((string) ($a['cles']['secrete'] ?? ''));
+        $test = !empty($a['cles']['test']);
+        if ($pk !== '' || $sk !== '') {
+            if (!preg_match('/^pk_(test|live)_[A-Za-z0-9]{10,}$/', $pk) || !preg_match('/^(sk|rk)_(test|live)_[A-Za-z0-9]{10,}$/', $sk)) return new WP_Error('alexlia_args', 'Les clés Stripe n’ont pas le bon format (elles commencent par pk_ et sk_).', ['status' => 400]);
+            if ((strpos($pk, '_test_') !== false) !== $test || (strpos($sk, '_test_') !== false) !== $test) return new WP_Error('alexlia_args', $test ? 'Pour le mode test, utilisez des clés de test (pk_test_ et sk_test_).' : 'Pour le mode réel, utilisez des clés réelles (pk_live_ et sk_live_).', ['status' => 400]);
+            // on vérifie la clé secrète auprès de Stripe avant de la garder
+            $r = wp_remote_get('https://api.stripe.com/v1/balance', ['timeout' => 15, 'headers' => ['Authorization' => 'Bearer ' . $sk]]);
+            if (is_wp_error($r) || (int) wp_remote_retrieve_response_code($r) === 401) return new WP_Error('alexlia_args', 'Stripe n’accepte pas cette clé secrète : vérifiez-la dans votre compte Stripe.', ['status' => 400]);
+            $set['testmode'] = $test ? 'yes' : 'no';
+            $set[$test ? 'test_publishable_key' : 'publishable_key'] = $pk;
+            $set[$test ? 'test_secret_key' : 'secret_key'] = $sk;
+            $note[] = 'clés enregistrées (' . ($test ? 'test' : 'réel') . ')';
+        }
+    }
+    if ($id === 'bacs' && !empty($a['compte']) && is_array($a['compte'])) {
+        $iban = strtoupper(preg_replace('/\s+/', '', (string) ($a['compte']['iban'] ?? '')));
+        if ($iban !== '' && !preg_match('/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/', $iban)) return new WP_Error('alexlia_args', 'L’IBAN n’a pas le bon format.', ['status' => 400]);
+        update_option('woocommerce_bacs_accounts', [['account_name' => sanitize_text_field((string) ($a['compte']['titulaire'] ?? '')), 'account_number' => '', 'sort_code' => '', 'bank_name' => sanitize_text_field((string) ($a['compte']['banque'] ?? '')), 'iban' => $iban, 'bic' => strtoupper(sanitize_text_field((string) ($a['compte']['bic'] ?? '')))]]);
+        $note[] = 'coordonnées bancaires enregistrées';
+    }
+    if ($id === 'cheque' && isset($a['instructions'])) { $set['instructions'] = sanitize_textarea_field((string) $a['instructions']); $note[] = 'instructions enregistrées'; }
+    $set['enabled'] = $actif ? 'yes' : 'no';
+    update_option($cle, $set);
+    alexlia_conn_journal('Moyen de paiement « ' . $id . ' » réglé par le client depuis son espace : ' . ($actif ? 'activé' : 'désactivé') . ($note ? ', ' . implode(', ', $note) : '') . '.');
+    return ['ok' => true];
+}
+/* Les dernières commandes (lecture seule) */
+function alexlia_bg_commandes_lire() {
+    if (!function_exists('wc_get_orders')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    $o = [];
+    foreach (wc_get_orders(['limit' => 15, 'orderby' => 'date', 'order' => 'DESC', 'type' => 'shop_order']) as $c) {
+        $o[] = ['numero' => (string) $c->get_order_number(), 'date' => $c->get_date_created() ? $c->get_date_created()->date('Y-m-d H:i') : '', 'statut' => wc_get_order_status_name($c->get_status()), 'statut_id' => $c->get_status(),
+            'total' => (string) $c->get_total(), 'client' => trim($c->get_billing_first_name() . ' ' . mb_substr($c->get_billing_last_name(), 0, 1) . '.'), 'articles' => (int) $c->get_item_count(), 'adresse' => $c->get_edit_order_url()];
+    }
+    $hpos = class_exists('\\Automattic\\WooCommerce\\Utilities\\OrderUtil') && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+    return ['commandes' => $o, 'devise' => get_woocommerce_currency(), 'liste' => $hpos ? admin_url('admin.php?page=wc-orders') : admin_url('edit.php?post_type=shop_order')];
+}
+
 /* Les articles du client (18 novembre 2026) : le client remplit un emplacement dans son espace client (photo, description, prix) et
  * l'article est créé tout de suite dans la boutique. Seuls les articles posés par ce moyen (méta _alexlia_article_client) peuvent
  * être modifiés ou retirés ici : le reste de la boutique n'est jamais touché. Un article retiré passe à la corbeille (récupérable). */

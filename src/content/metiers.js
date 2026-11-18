@@ -387,7 +387,7 @@ Avec votre abonnement, ces changements ne vous demandent qu’un message dans vo
 
 ## Combien ça coûte
 
-La création coûte ${prix} € pour un site sans boutique, de ${pagesComprises} pages, et ${prixBoutique} € avec la boutique en ligne. Pour comparer, un site de ce genre fait par un indépendant demande souvent entre ${marcheVitrine}. Vous versez ${acompte} à la commande et le reste à la réception, en une fois ou en ${durees} mensualités sans frais. L’abonnement ${mini.name} et les extras sont détaillés sur la page [tarifs](/tarifs/).`,
+La création coûte ${prix} € pour un site sans boutique, de ${pagesComprises} pages, et ${prixBoutique} € avec la boutique en ligne. Pour comparer, un site de ce genre fait par un indépendant demande souvent entre ${marcheVitrine}. Vous versez ${acompte} à la commande et le reste à la réception, en une fois ou en ${durees} mensualités sans frais. Les tarifs, avec les extras possibles, sont détaillés sur la page [tarifs](/tarifs/).`,
     faq: [
       { q: 'J’ai déjà une page sur les réseaux sociaux, ai-je besoin d’un site ?', a: 'Les deux se complètent. Sur les réseaux, vos horaires et vos produits se noient vite sous les publications, et tout le monde n’y a pas de compte. Le site garde l’essentiel au même endroit, à votre nom.' },
       { q: 'Comment fonctionne le retrait en magasin ?', a: 'Le client choisit ses produits, paie en ligne et coche le retrait au moment de valider. Vous recevez la commande par e-mail, vous la préparez, et il passe la prendre aux horaires que vous avez fixés.' },

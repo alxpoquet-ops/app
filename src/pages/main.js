@@ -64,7 +64,7 @@ function formHidden() {
 // ce que vous y gagnez, comment ça se passe, et le prix en clair. Cerise apparaît une fois, comme l'assistante d'Alex.
 function home() {
   const gains = [
-    ['search-check', 'Être trouvé sur Google', 'Votre site est préparé pour Google dès le premier jour. Pour être trouvé sur plus de recherches, des pages SEO se prennent à la carte, quand vous le voulez.'],
+    ['search-check', 'Être trouvé sur Google', 'Votre site est préparé pour Google dès le premier jour. Pour être trouvé sur plus de recherches, des pages visibilité Google se prennent à la carte, quand vous le voulez.'],
     ['shield-check', 'Ne plus vous occuper de rien', 'Adresse du site, hébergement, sauvegardes, sécurité : on s’en charge. Vous, vous faites votre métier.'],
     ['repeat', 'Changer votre site quand vous voulez', 'Vous demandez une modification, et c’est Alex qui la fait. Elle est comprise dans votre abonnement, et elle peut prendre jusqu’à 48 h.'],
     ['message-circle', 'Parler à une vraie personne', 'Une question ? Vous m’écrivez, et c’est moi qui vous réponds.'],
@@ -105,7 +105,7 @@ function home() {
   <p class="section-sub">Trois étapes, simples. Tous les prix sont sur la page Tarifs, sans devis.</p>
   <ol class="parcours">
     <li class="parcours-etape c-butter reveal"><span class="parcours-n">1</span><p class="parcours-quoi">Je crée mon site</p><p class="parcours-d">Site Internet Professionnel : ${euro(creation.prix)} une seule fois, ${creation.pages} pages adaptées à l’ordinateur, à la tablette et au téléphone, design personnalisé, payable en ${C.lissageTxt} fois sans frais.</p></li>
-    <li class="parcours-etape c-mint reveal"><span class="parcours-n">2</span><p class="parcours-quoi">J’ajoute une boutique, si je vends en ligne</p><p class="parcours-d">Pour ${euro(creation.boutique)} de plus : ${creation.boutiqueProduits} produits en images, panier et paiement en ligne, achat sans compte. C’est la seule option à la commande : le reste se prend plus tard, à la carte, depuis votre espace client.</p></li>
+    <li class="parcours-etape c-mint reveal"><span class="parcours-n">2</span><p class="parcours-quoi">J’ajoute une boutique, si je vends en ligne</p><p class="parcours-d">Pour ${euro(creation.boutique)} de plus : panier, paiement en ligne, achat sans compte, et ${creation.boutiqueProduits} emplacements d’articles que vous remplissez vous-même, puis ${euro(creation.boutiqueSlot)} l’emplacement. C’est la seule option à la commande : le reste se prend plus tard, à la carte, depuis votre espace client.</p></li>
     <li class="parcours-etape c-lilac reveal"><span class="parcours-n">3</span><p class="parcours-quoi">Je le fais maintenir, ou je m’en occupe</p><p class="parcours-d">Avec l’abonnement, ${euro(ABO.month)} par mois sans engagement : hébergement, sauvegardes, sécurité, modifications, et nom de domaine offert tant qu’il est actif. Ou vous gérez vous-même, et je vous remets le code de votre site.</p></li>
   </ol>
   <p class="center more">${C.btnCreer('btn-primary btn-lg')} ${C.btn(sections.forfaits.path, 'btn-light btn-lg', 'list-checks', 'Ce qui est inclus')}</p>
@@ -277,7 +277,7 @@ function forfaitsPage() {
     </div>
     <div class="jetons-box reveal" id="modifications">
       <h3>${icon('repeat')}Vos modifications, incluses</h3>
-      <p>Vous demandez, ${esc(C.CERISE)} vous aide à formuler votre demande, et c’est moi, Alex, qui fais la modification. Une modification peut prendre ${C.DELAI_MODIF}, et vous avez une demande à la fois.</p>
+      <p>Vous demandez, ${esc(C.CERISE)} vous aide à formuler votre demande, et c’est moi, Alex, qui fais la modification. Chaque modification peut prendre ${C.DELAI_MODIF}, avec une seule demande en cours à la fois.</p>
       <p>Une seconde demande en même temps ? Elle se prend en extra, plus bas. Tant que je n’ai pas commencé, vous pouvez annuler une demande.</p>
     </div>
   </div>
@@ -489,7 +489,7 @@ Votre site peut garder **une seule page principale**, simple et claire, avec tou
 <section class="section"><div class="container">
   <h2 class="section-title">Ce que je fais pour votre visibilité</h2>
   <div class="feats feats-4">
-    <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur tous les écrans, avec les balises et les données que Google sait lire.</p></div>
+    <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur tous les supports, avec les balises et les données que Google sait lire.</p></div>
     <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand vos clients cherchent près de chez vous.</p></div>
     <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Articles et pages qui répondent aux vraies questions de vos clients, préparés avec mes automatisations et relus par moi.</p></div>
     <div class="feat reveal">${icon('chart-line')}<h3>Une page de plus, chaque mois ou chaque semaine</h3><p>Avec l’extra « ${esc(O('seomois').name)} », Lumi choisit un sujet et j’écris la page. Pour aller plus vite, l’extra « ${esc(O('seosemaine').name)} ». Dans les deux cas, je la vérifie avant sa mise en ligne.</p></div>
@@ -932,7 +932,7 @@ function monEspacePage() {
       <p data-mots="photo,image,picture" data-type="demande" data-par="lia" data-cout="41" data-texte="Sur la page d’accueil, remplacer la photo du haut par celle que je joins.">Avec plaisir ! Vous voulez remplacer la grande photo en haut de l’accueil, c’est bien ça ? Vous pourrez joindre votre photo juste avant d’envoyer.</p>
       ${OUTILS_ON ? '<p data-mots="avis,google,review" data-type="outil" data-outil="lienavis" data-nom="Lien d’avis Google" data-cout="0">Le plus simple : donnez à vos clients un lien qui ouvre tout de suite la page pour laisser un avis. Un outil le prépare pour vous.</p>' : ''}
       <p data-mots="combien,reste,limite,modification,comment,how,limit" data-type="onglet" data-onglet="demandes" data-nom="Mes demandes">Vos modifications sont incluses dans votre abonnement. Vous me dites ce que vous voulez changer, je vous pose quelques questions, vous confirmez, et je transmets à Alex. C’est lui qui fait la modification, en 48 h au plus. Tant qu’il ne l’a pas commencée, vous pouvez l’annuler.</p>
-      <p data-mots="boutique,vendre,nouvelle page,refaire,shop,sell" data-type="demande" data-par="alex" data-texte="Je voudrais ajouter une boutique en ligne à mon site. Pouvez-vous me dire comment faire ?">Quel beau projet ! Alex vous dira d’abord ce que cela représente. Voici votre message pour lui, c’est bien ça ?</p>
+      <p data-mots="boutique,vendre,nouvelle page,refaire,shop,sell" data-type="demande" data-par="alex" data-texte="Je voudrais ajouter une boutique en ligne à mon site. Pouvez-vous me dire comment faire ?">Quel beau projet ! Avec l’option boutique, vous ajoutez vos articles vous-même dans l’onglet « Ma boutique » : ${creation.boutiqueProduits} emplacements sont compris, puis ${euro(creation.boutiqueSlot)} l’emplacement. Alex vous dira d’abord ce que cela représente. Voici votre message pour lui, c’est bien ça ?</p>
       <p data-defaut>Dans votre vrai espace, je réponds à votre question, je vous aide à formuler ce que vous voulez changer, puis je transmets à Alex. Essayez par exemple : changer mes horaires.</p>
     </div>
     <div class="app-shell">
@@ -1607,7 +1607,7 @@ function docPage() {
     ['house', 'Accueil', 'votre abonnement, votre site, vos dernières activités.'],
     ['package', 'Ma commande', 'le suivi de la création de votre site, étape par étape.'],
     ['message-circle', 'Mes demandes', 'vous écrivez ce qu’il faut changer, et vous suivez où ça en est.'],
-    ['shopping-bag', 'Ma boutique', 'codes promo, soldes, bandeau et mode vacances (boutiques en ligne).'],
+    ['shopping-bag', 'Ma boutique', 'vos articles, vos prix et promotions, vos moyens de paiement et le suivi de vos commandes (boutiques en ligne).'],
     ['gift', 'Parrainage', 'votre code à partager, et les mois offerts gagnés.'],
     ['circle-user', 'Mon compte', 'vos coordonnées, votre mot de passe, votre abonnement et vos factures.'],
   ];
@@ -1663,7 +1663,7 @@ function docPage() {
   <div class="container-narrow">
     <p class="doc-kicker">4. Les sites</p>
     <h2>Un seul prix, ${creation.pages} pages</h2>
-    <p>Le site compte ${creation.pages} pages et coûte ${euro(creation.prix)}, adapté à tous les supports : ordinateur, tablette et téléphone. Le prix ne change pas en cours de route. ${esc(C.PLUS_DE_PAGES)} La boutique en ligne ajoute ${euro(creation.boutique)} et comprend ${creation.boutiqueProduits} produits.</p>
+    <p>Le site compte ${creation.pages} pages et coûte ${euro(creation.prix)}, adapté à tous les supports : ordinateur, tablette et téléphone. Le prix ne change pas en cours de route. ${esc(C.PLUS_DE_PAGES)} La boutique en ligne ajoute ${euro(creation.boutique)} et comprend ${creation.boutiqueProduits} emplacements d’articles.</p>
   </div>
   <div class="doc-types">
     ${[[une, 'Pour être présent sur internet sans complication : tout tient sur une page qu’on fait défiler.'], [vit, 'Pour présenter une activité en détail, avec une page par sujet et un menu.'], [bou, 'Pour vendre en ligne : paiement par carte, suivi des commandes, et les outils de la boutique.']].map(([t, d]) => `<div class="doc-type reveal"><strong>${esc(t.label)}</strong><b>${C.prixType(t)}</b><span>${icon('clock')}${esc(t.delai)}</span><p>${d}</p></div>`).join('')}
@@ -1683,7 +1683,7 @@ function docPage() {
   </div>
   <div class="doc-types">
     <div class="doc-type reveal"><strong>Créer le site</strong><b>${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une seule fois</span><p>${creation.pages} pages, adaptées à l’ordinateur, à la tablette et au téléphone. Payable en ${lissage.durees.join(' ou ')} fois sans frais.</p></div>
-    <div class="doc-type reveal"><strong>L’option boutique</strong><b>+ ${euro(creation.boutique)}</b><span>${icon('plus')}Une fois, si vous voulez</span><p>Vendre sur votre site, avec ${creation.boutiqueProduits} produits. Des produits en plus se prennent en extra.</p></div>
+    <div class="doc-type reveal"><strong>L’option boutique</strong><b>+ ${euro(creation.boutique)}</b><span>${icon('plus')}Une fois, si vous voulez</span><p>Vendre sur votre site : vous ajoutez vos articles vous-même, ${creation.boutiqueProduits} emplacements sont compris, puis ${euro(creation.boutiqueSlot)} l’emplacement.</p></div>
     <div class="doc-type reveal"><strong>Le maintenir : ${esc(ABO.name)}</strong><b>${euro(ABO.month)}</b><span>${icon('repeat')}Par mois, sans engagement</span><p>Hébergement, sauvegardes, sécurité, modifications incluses, et nom de domaine offert tant que l’abonnement est actif. À l’année : ${annuel.moisOfferts} mois offerts.</p></div>
     <div class="doc-type reveal"><strong>Les extras</strong><b>à la carte</b><span>${icon('sparkles')}Une fois ou au mois</span><p>Pages pour Google, article de blog, assistant sur votre site, e-mail pro… Depuis votre espace client, sans engagement.</p></div>
   </div>
@@ -1692,7 +1692,7 @@ function docPage() {
   </div>
   <div class="doc-cards3">
     <div class="doc-mini reveal"><strong>${icon('wrench')}Modifications incluses</strong><p>Comprises dans l’abonnement, sans les compter. Une modification peut prendre ${C.DELAI_MODIF}.</p></div>
-    <div class="doc-mini reveal"><strong>${icon('search-check')}Pages pour Google</strong><p>Pour être trouvé sur plus de recherches, les pages SEO se prennent à la carte, seules ou en packs.</p></div>
+    <div class="doc-mini reveal"><strong>${icon('search-check')}Pages pour Google</strong><p>Pour être trouvé sur plus de recherches, les pages visibilité Google se prennent à la carte, seules ou en packs.</p></div>
     <div class="doc-mini reveal"><strong>${icon('ticket')}Code promo ou parrainage</strong><p>Une seule case, en bas de la page. Un code promo réduit le prix de la création. Un code de parrainage offre ${fidelite.parrainageMois} mois d’abonnement à chacun.</p></div>
   </div>
   <p class="doc-more center">${C.btn(sections.forfaits.path, 'btn-light', sections.forfaits.icon, 'La page des tarifs')}</p>
@@ -1752,7 +1752,7 @@ ${ENERGIE ? `<section class="section doc-sec" id="jetons"><div class="container 
   <p>Dans votre espace client, ma petite bande vous aide chaque jour. Les Minis Monstres vous aident, c’est moi qui modifie votre site.</p>
   <ul class="list-check">
     <li><strong>Cerise</strong>, la secrétaire, répond à vos questions dans la bulle, en bas de l’écran. Jusqu’à ${limites.bulleJour} messages par jour. Pour une modification, elle vous pose les bonnes questions, vous la fait confirmer, puis me la transmet.</li>
-    <li><strong>Lumi</strong>, l’étoile de Google, choisit les sujets de vos pages SEO, quand vous prenez ces extras. Je les écris et je les publie.</li>
+    <li><strong>Lumi</strong>, l’étoile de Google, choisit les sujets de vos pages visibilité Google, quand vous prenez ces extras. Je les écris et je les publie.</li>
     <li><strong>Mirette</strong>, l’observatrice, suit vos visites. Avec l’extra « ${esc(O('mirette').name)} », elle vous propose des améliorations.</li>
     <li><strong>Pistache</strong>, le gardien, fait les sauvegardes et surveille votre site, jour et nuit.</li>
   </ul>
@@ -1787,7 +1787,7 @@ ${ENERGIE ? `<section class="section doc-sec" id="jetons"><div class="container 
     <h2>Un petit plus, quand vous en avez besoin</h2>
     <p>Les extras se prennent à la carte, depuis votre espace client, sans engagement. Un extra payé une fois s’ajoute à votre prochaine facture. Un extra au mois se coupe quand vous voulez. Avec l’extra « ${esc(O('mirette').name)} », chaque monstre vous laisse un petit mot dans votre espace : Mirette résume votre semaine et vous propose une idée, et un clic sur « Oui, je veux bien » transmet la demande à Alex.</p>
   </div>
-  ${fig('messages', 'Les petits mots de la bande dans l’espace client', `Dans l’espace client, avec l’extra « ${esc(O('mirette').name)} » : l’analyse de la semaine par Mirette, la nouvelle page SEO, et les idées de la bande.`, 'doc-fig-flat')}
+  ${fig('messages', 'Les petits mots de la bande dans l’espace client', `Dans l’espace client, avec l’extra « ${esc(O('mirette').name)} » : l’analyse de la semaine par Mirette, la nouvelle page visibilité Google, et les idées de la bande.`, 'doc-fig-flat')}
   <p class="doc-more center">${C.btn(sections.forfaits.path + '#extras', 'btn-light', 'plus', 'Voir tous les extras')}</p>
 </div></section>
 
@@ -1795,10 +1795,12 @@ ${ENERGIE ? `<section class="section doc-sec" id="jetons"><div class="container 
   <div class="container-narrow">
     <p class="doc-kicker">11. La boutique en ligne</p>
     <h2>Vos outils de vente, réglés en quelques secondes</h2>
-    <p>Dans l’onglet « Ma boutique », vous gérez vous-même vos petites opérations, en quelques secondes.</p>
+    <p>Dans l’onglet « Ma boutique », vous gérez tout vous-même : vos articles, vos prix, vos promotions, vos moyens de paiement et vos commandes. ${esc(C.BOUTIQUE_ARTICLES)}</p>
   </div>
   <div class="doc-split">
     <ul class="doc-tools">
+      <li>${icon('image-plus')}<span><strong>Vos articles</strong>Une photo, une description et un prix par article, dans les emplacements de votre boutique.</span></li>
+      <li>${icon('credit-card')}<span><strong>Vos moyens de paiement</strong>Stripe, PayPal, virement, chèque, paiement à la livraison, ou un autre moyen qu’Alex branche. Vos clés de paiement restent sur votre propre site.</span></li>
       <li>${icon('badge-percent')}<span><strong>Codes promo</strong>En % ou en €, ou la livraison offerte. Date de fin, commande minimum, nombre d’utilisations : tout se règle en un formulaire.</span></li>
       <li>${icon('tag')}<span><strong>Soldes rapides</strong>De -5 à -70 % sur toute la boutique ou une catégorie. Les prix barrés apparaissent seuls et disparaissent à la date de fin.</span></li>
       <li>${icon('megaphone')}<span><strong>Bandeau d’annonce</strong>Une phrase en haut du site, en quatre couleurs au choix.</span></li>

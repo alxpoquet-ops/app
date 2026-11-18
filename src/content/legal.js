@@ -29,7 +29,7 @@ const acompte = (prix) => Math.round(prix * paiement.acompte) / 100;
 const lisse = (prix, n) => Math.floor(((prix - acompte(prix)) / n) * 100) / 100; // échéance arrondie au centime inférieur
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // abonnement Mini
 const parAn = (f) => f.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
-const packSeo = options.find((o) => o.id === 'packseo' && !o.retire) || { name: 'Page SEO optimisée', price: { once: 0 }, pages: 1 };
+const packSeo = options.find((o) => o.id === 'packseo' && !o.retire) || { name: 'Page visibilité Google', price: { once: 0 }, pages: 1 };
 const boutique = creation.prix + creation.boutique;
 const NOM_SITE = creation.nom || 'Site Internet Professionnel';
 const DATE_OFFRE = '18 novembre 2026'; // offre simplifiée : clause de transition (article 7)
@@ -221,6 +221,8 @@ L’offre est la même pour tous les clients. Elle tient en deux parties : la cr
 
 ${listeOptions}
 
+**Gestion de la boutique en ligne.** Avec la boutique, le client gère tout lui-même depuis l’onglet « Ma boutique » de son espace client : ses articles, ses prix et ses promotions, ses moyens de paiement (Stripe, PayPal, virement, chèque, paiement à la livraison, ou un autre moyen qu’Alex branche) et le suivi de ses commandes. Stripe et PayPal fonctionnent avec une extension de paiement installée sur le site du client, qu’Alex installe si besoin. Les clés de paiement du client sont enregistrées sur son propre site, jamais chez les Minis Monstres. Les Minis Monstres ne promettent ni un volume de ventes ni un résultat.
+
 **Les extras.** Les extras sont des services à la carte, que le client commande plus tard, depuis son espace client, quand il en a besoin. Ils ne se choisissent pas à la commande. Un extra payé une fois s’ajoute à la prochaine facture. Un extra au mois s’ajoute à l’abonnement, sans engagement : le client le retire quand il veut, et le changement compte à partir du mois suivant. Un extra n’est jamais renouvelé sans que le client l’ait demandé. Les extras proposés sont les suivants.
 
 Payés une fois :
@@ -276,7 +278,7 @@ Tout le reste se prend en extra (article 3) : pages visibilité Google, article 
 
 Le délai de traitement des modifications est un délai habituel, donné à titre indicatif. Il ne constitue pas une garantie.
 
-Le nom de domaine est offert tant que l’abonnement est actif. L’hébergement est compris. L’installation et la mise en ligne du site sont toujours comprises (article 3).
+Tant que l’abonnement est actif, le nom de domaine est offert et l’hébergement est compris. L’installation et la mise en ligne du site sont toujours comprises (article 3).
 
 **Paiement.** L’abonnement est prélevé d’avance, chaque mois ou chaque année, selon le choix du client. À l’année, le client paie ${12 - annuel.moisOfferts} mois sur 12, soit ${annuel.moisOfferts} mois offerts : ${eur(parAn(mini))} € par an pour ${mini.name}. Le client peut passer du mois à l’année, ou de l’année au mois, au renouvellement.
 

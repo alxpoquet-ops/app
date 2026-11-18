@@ -3,7 +3,7 @@
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de src/config.js),
 // aucun chiffre sans source, et pas de phrase de 9 mots ou plus reprise d'une autre page.
 // Offre du 17 novembre 2026 : le Site Internet Professionnel (creation), une seule option à la commande (la boutique en
-// ligne, payée une fois), la Page SEO supplémentaire (options 'packseo', à l'unité) commandée plus tard depuis l'espace
+// ligne, payée une fois), la page visibilité Google (options 'packseo', à l'unité) commandée plus tard depuis l'espace
 // client, puis « On s'occupe de tout » avec un seul abonnement au mois, sans engagement : Mini (id 'base' : modifications
 // faites par Alex en 48 h au plus, une demande à la fois, nom de domaine offert tant que l'abonnement est actif). Maxi est retiré :
 // ses avantages se prennent en extras (config.aLaDemande et options au mois). Ou « Je m'en occupe moi-même » (création seule,
@@ -25,7 +25,7 @@ const seomois = opt('seomois'), seosemaine = opt('seosemaine'), mirette = opt('m
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
 const annee = (f) => f.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const durees = lissage.durees.join(' ou ');
-const packSeo = options.find((o) => o.id === 'packseo' && !o.retire); // la Page SEO supplémentaire, à l'unité
+const packSeo = options.find((o) => o.id === 'packseo' && !o.retire); // la page visibilité Google, à l'unité
 // 17 novembre 2026 : c'est Alex qui fait toutes les modifications, à la main. Cerise prépare la demande avec le client.
 const lieux = ou(evenement.lieux); // une foire, un marché, un salon ou un événement professionnel
 
@@ -43,7 +43,7 @@ const DIT = {
   organisateur: 'classe vos pages et vos contenus, pour que vos visiteurs trouvent vite leur chemin.',
   gardien: 'garde des copies de sécurité de votre site, fait les vérifications techniques et le surveille jour et nuit.',
   observateur: 'regarde la vitesse de votre site et ses visites, et me signale ce qui peut s’améliorer.',
-  etoile: 'choisit les sujets des pages qui vous feront trouver sur Google, avec les extras SEO. Je les écris ensuite.',
+  etoile: 'choisit les sujets des pages qui vous feront trouver sur Google, avec les extras visibilité Google. Je les écris ensuite.',
   vendeur: 'rejoint la bande avec la boutique en ligne : il tient votre catalogue et suit vos commandes.',
 };
 const APRES = {
@@ -52,7 +52,7 @@ const APRES = {
   organisateur: 'place chaque nouvelle page au bon endroit dans le menu.',
   gardien: 'lance les sauvegardes, fait la maintenance et veille sur la sécurité, de jour comme de nuit.',
   observateur: `suit les visites et la vitesse du site, et me dit ce qui mérite d’être amélioré. Avec l’extra « ${mirette.name} », ses idées vous arrivent en petits messages dans votre espace client.`,
-  etoile: `choisit le sujet de chaque page SEO, que j’écris et publie, si vous prenez l’extra « ${seomois.name} » ou « ${seosemaine.name} ».`,
+  etoile: `choisit le sujet de chaque page visibilité Google, que j’écris et publie, si vous prenez l’extra « ${seomois.name} » ou « ${seosemaine.name} ».`,
   vendeur: 'suit les commandes de votre boutique et envoie les e-mails à vos clients.',
 };
 
@@ -125,7 +125,7 @@ Votre site ne part en ligne qu’après être passé entre mes mains.
 
 ## Un prix affiché, sans devis
 
-Chez beaucoup de prestataires, il faut demander un devis, attendre, puis comparer. Ici, le prix est écrit sur le site et il est le même pour tout le monde : ${eur(creation.prix)} € le site, de ${creation.pages} pages. À la commande, une seule option, payée une fois : la boutique en ligne à ${eur(creation.boutique)} €, avec ${creation.boutiqueProduits} produits. Plus tard, depuis votre espace client, vous pouvez ajouter des extras, comme des pages faites pour être trouvé sur Google (c’est ce qu’on appelle le SEO), à ${eur(packSeo.price.once)} € la page.
+Chez beaucoup de prestataires, il faut demander un devis, attendre, puis comparer. Ici, le prix est écrit sur le site et il est le même pour tout le monde : ${eur(creation.prix)} € le site, de ${creation.pages} pages. À la commande, une seule option, payée une fois : la boutique en ligne à ${eur(creation.boutique)} €, avec ${creation.boutiqueProduits} emplacements d’articles que vous remplissez vous-même, puis ${eur(creation.boutiqueSlot)} € l’emplacement en plus. Plus tard, depuis votre espace client, vous pouvez ajouter des extras, comme des pages visibilité Google (c’est ce qu’on appelle le SEO), à ${eur(packSeo.price.once)} € la page.
 
 Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, en une fois ou en ${durees} fois sans frais. Pour la suite, vous choisissez. Un abonnement sans engagement fait vivre le site : ${mini.name} à ${eur(mini.month)} € par mois, avec vos modifications incluses. Ou bien la création seule : je vous remets le code du site, et vous l’installez vous-même. Le détail complet est sur la page [tarifs](/tarifs/).
 
@@ -141,7 +141,7 @@ La différence se joue alors sur ce qui vient avec : la vérification à la main
 
 Un prix plus bas ne veut pas dire un travail bâclé. Voici ce que vous gardez, quel que soit le site choisi :
 
-- **La qualité** : un site moderne, clair et rapide, adapté à tous les écrans.
+- **La qualité** : un site moderne, clair et rapide, adapté à tous les supports.
 - **La sécurité** : le cadenas dans la barre d’adresse, la maintenance, les sauvegardes, un site surveillé jour et nuit.
 - **La visibilité** : chaque page est écrite et réglée pour que Google comprenne votre activité.
 - **Un vrai interlocuteur** : quand vous écrivez, c’est moi qui vous réponds, en général dans la journée.
@@ -151,7 +151,7 @@ Et si votre projet dépasse ce que je sais bien faire, comme une application sur
     faq: [
       { q: 'Moins cher, ça veut dire moins bien ?', a: 'Non. Le prix baisse parce que je passe moins de temps sur ce qui se répète, pas parce que je saute des étapes. Chaque site est relu, testé sur téléphone et vérifié avant d’être publié.' },
       { q: 'Mon site est-il fait automatiquement ?', a: 'Non. C’est moi qui conçois et fais votre site. Ma petite bande s’occupe seulement de ce qui se répète : une mise en page de base, des premiers textes, des réglages. Je reprends ensuite tout à la main, je fais les choix avec vous et je publie le site moi-même.' },
-      { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. Le site coûte ${eur(creation.prix)} €, puis l’abonnement, à ${eur(mini.month)} € par mois, si vous me confiez la mise en ligne. La boutique en ligne et les extras, comme les pages SEO supplémentaires, sont facultatifs, et leur prix est affiché sur le site.` },
+      { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. Le site coûte ${eur(creation.prix)} €, puis l’abonnement, à ${eur(mini.month)} € par mois, si vous me confiez la mise en ligne. La boutique en ligne et les extras, comme les pages visibilité Google, sont facultatifs, et leur prix est affiché sur le site.` },
       { q: 'Pourquoi n’y a-t-il pas de devis ?', a: 'Parce que la plupart des sites d’indépendants, d’artisans, de commerces ou d’associations se construisent de la même façon. Un prix fixe est plus simple pour vous comme pour moi. Pour un projet hors norme, je vous le dis franchement.' },
     ],
     voir: ['/tarifs/', '/pourquoi-les-minis-monstres/', '/comparatif/'],
@@ -281,7 +281,7 @@ Sur chaque page, Google doit comprendre en un coup d’œil ce que vous faites, 
 
 Reliez aussi vos pages entre elles : de l’accueil vers chaque service, et de chaque service vers le contact. Le visiteur trouve son chemin sans chercher, et Google comprend mieux comment votre site est organisé.
 
-Chez moi, le site compte ${creation.pages} pages. Pour être trouvé sur plus de recherches, on peut ajouter des pages SEO : chacune répond à une recherche précise. C’est un extra, que vous prenez quand vous le voulez.
+Chez moi, le site compte ${creation.pages} pages. Pour être trouvé sur plus de recherches, on peut ajouter des pages visibilité Google (le SEO) : chacune répond à une recherche précise. C’est un extra, que vous prenez quand vous le voulez.
 
 ## Les mots de vos clients, pas ceux du métier
 
@@ -305,7 +305,7 @@ Ce qui aide ensuite : garder vos informations à jour, ajouter de temps en temps
 
 Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les autres, des mots répétés à l’excès, des liens achetés. Ils font souvent plus de mal que de bien, et le retard se rattrape ensuite difficilement.
 
-> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('etoile'))} de ma petite bande, choisit les sujets de vos pages SEO, et je les écris une par une. C’est un extra : « ${seomois.name} » à ${eur(seomois.price.month)} € par mois, ou « ${seosemaine.name} » à ${eur(seosemaine.price.month)} € par mois. Besoin d’une page de plus entre-temps ? Elle se commande depuis votre espace client quand vous le décidez, à ${eur(packSeo.price.once)} € la page. Tout est expliqué sur la page [référencement SEO](/referencement-seo/).`,
+> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('etoile'))} de ma petite bande, choisit les sujets de vos pages visibilité Google, et je les écris une par une. C’est un extra : « ${seomois.name} » à ${eur(seomois.price.month)} € par mois, ou « ${seosemaine.name} » à ${eur(seosemaine.price.month)} € par mois. Besoin d’une page de plus entre-temps ? Elle se commande depuis votre espace client quand vous le décidez, à ${eur(packSeo.price.once)} € la page. Tout est expliqué sur la page [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de temps pour apparaître sur Google ?', a: 'Sur le nom de votre entreprise, c’est en général rapide. Sur des recherches où beaucoup d’entreprises sont présentes, comptez plutôt plusieurs mois, avec un site soigné et des informations à jour.' },
       { q: 'Faut-il payer Google pour être bien placé ?', a: 'Non. Les résultats naturels ne s’achètent pas. Les annonces payantes existent, elles sont signalées comme sponsorisées, et elles disparaissent dès que vous arrêtez de payer.' },
@@ -427,14 +427,14 @@ Votre site reste en ligne, protégé et à jour, sans que vous ayez à y penser.
 
 ### Les extras, à la carte
 
-Pour aller plus loin, vous prenez un extra quand vous en avez besoin, depuis votre espace client. Il s’ajoute à votre prochaine facture, payé une fois ou au mois, sans engagement.
+Pour aller plus loin, vous prenez un extra quand vous en avez besoin, depuis votre espace client. Il apparaît sur votre prochaine facture, et vous l’arrêtez quand vous voulez.
 
-- **Des pages SEO en plus.** Une page SEO est écrite pour une recherche précise, afin que votre site soit plus facilement trouvé sur Google. Seule ou en pack, ou chaque mois, ou chaque semaine.
+- **Des pages visibilité Google en plus.** Chacune est écrite pour une recherche précise, comme une porte d’entrée de plus vers votre site. Seule ou en pack, ou chaque mois, ou chaque semaine.
 - **Deux demandes à la fois**, si vous avez beaucoup de changements à faire.
 - **L’analyse de ${B('observateur').nom}**, qui surveille votre site et vous propose des améliorations dans votre espace client.
 - **Et d’autres petits plus** : un article de blog, vos avis Google, un bouton WhatsApp, une adresse e-mail pro.
 
-Tous les extras et leurs prix sont sur la page [tarifs](/tarifs/#extras).
+Retrouvez tous les extras, avec leurs prix, dans la section « Les extras » de la page [tarifs](/tarifs/#extras).
 
 ## Demander une modification
 
@@ -447,7 +447,7 @@ Un horaire qui change, une nouvelle photo, un texte à ajouter : pour moi, ce so
 
 Tant que je n’ai pas commencé, vous pouvez annuler votre demande depuis votre espace client.
 
-Comptez ${mini.delai} au plus entre votre demande et la mise en ligne. Seule une refonte complète du site, ou l’ajout d’une fonction nouvelle, passe par un devis : je vous dis d’abord ce que cela représente.
+Entre votre demande et la mise en ligne, il peut se passer ${mini.delai} au plus. Seule une refonte complète du site, ou l’ajout d’une fonction nouvelle, passe par un devis : je vous dis d’abord ce que cela représente.
 
 Pour une question sur votre site, je vous réponds en général dans la journée. Et pour un renseignement rapide, ${B('support').nom} vous répond dans la bulle, en bas de votre espace client.
 
@@ -525,7 +525,7 @@ Pour une entreprise locale, tout ne se joue pas face à la France entière. Tout
 
 Pensez aussi aux mots que les gens emploient vraiment. Beaucoup disent « Charleville » plutôt que « Charleville-Mézières ». Pour un gîte, la vallée de la Meuse ou la forêt des Ardennes parlent souvent plus qu’un simple nom de commune. Glissez ces mots naturellement dans vos textes, sans les répéter à chaque ligne.
 
-Votre site compte ${creation.pages} pages, et des pages SEO supplémentaires peuvent s’y ajouter, écrites pour qu’on vous trouve sur Google. Pour un couvreur de Rethel, l’une peut parler de la réparation d’ardoises, une autre du démoussage. Chacune répond à une vraie recherche d’ici.
+Votre site compte ${creation.pages} pages, et des pages visibilité Google peuvent s’y ajouter, écrites pour qu’on vous trouve sur Google. Pour un couvreur de Rethel, l’une peut parler de la réparation d’ardoises, une autre du démoussage. Chacune répond à une vraie recherche d’ici.
 
 > Pas de pages en série pour chaque village. Une page vraie et utile vaut mieux que vingt copies où seul le nom de la commune change. Google le repère, et vos clients aussi.
 
