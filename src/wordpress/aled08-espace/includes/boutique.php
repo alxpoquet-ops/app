@@ -85,7 +85,9 @@ function aled08e_boutique_html($uid) {
     ob_start();
     ?>
 <h2 class="app-h">Ma boutique</h2>
-<p class="app-p">Vos petits outils de vente, à régler vous-même en quelques secondes. Ils ne comptent pas dans vos modifications.</p>
+<?php echo aled08e_articles_html($uid); // phpcs:ignore ?>
+<p class="app-sub">Vos outils de vente</p>
+<p class="app-p">Des petits outils à régler vous-même en quelques secondes. Ils ne comptent pas dans vos modifications.</p>
 <?php if ($flash) echo '<p class="' . ($flash[0] ? 'esp-empty' : 'esp-warn') . '" role="status">' . esc_html($flash[1]) . '</p>'; ?>
 <?php if (($b['etat'] ?? '') !== 'ok') :
     $msg = ['non_relie' => 'Votre boutique n’est pas encore reliée à votre espace. Alex s’en occupe.', 'connecteur_ancien' => 'L’extension de votre site doit être mise à jour pour ces outils. Alex s’en occupe.', 'sans_boutique' => 'Aucune boutique WooCommerce n’a été trouvée sur votre site.'][$b['etat'] ?? ''] ?? 'Votre site ne répond pas pour le moment. Rechargez la page dans un instant.'; ?>

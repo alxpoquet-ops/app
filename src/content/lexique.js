@@ -6,14 +6,14 @@ const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const T = (id) => types.find((t) => t.id === id);
 const O = (id) => options.find((o) => o.id === id);
 const page = T('une-page');
-// L'offre (17 novembre 2026) : deux abonnements au mois, sans engagement. Mini (id 'base' : modifications faites par Alex
-// sous 7 jours, une demande à la fois, une page SEO par mois) et Maxi (id 'evolution' : modifications prioritaires sous
-// 48 h, deux demandes à la fois, une page SEO par semaine, suggestions de la bande). Des pages SEO en plus se commandent à l'unité depuis l'espace client.
-// Les anciens extras au mois (Suivi Google, Chiffres détaillés, Adresse e-mail pro) ne sont plus proposés.
+// L'offre (18 novembre 2026) : un seul abonnement au mois, sans engagement : Mini (id 'base' : modifications faites par Alex en 48 h au plus,
+// une demande à la fois, nom de domaine offert tant que l'abonnement est actif). Maxi est retiré. Des pages visibilité Google (SEO) en plus et
+// tout le reste se prennent en extras depuis l'espace client (config.aLaDemande et options au mois).
 // V2 (novembre 2026) : Alex fait chaque site, sa petite bande d'automatisations (des petits monstres) s'occupe du
 // répétitif. « Chez les Minis Monstres » reste : c'est le nom de la marque. Petites retouches et outils compris pour un usage normal.
-const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini
-const maxi = forfaits.find((f) => f.id === 'evolution') || forfaits[forfaits.length - 1]; // Maxi
+const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement
+const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
+const packSeo = options.find((o) => o.id === 'packseo' && !o.retire) || { price: { once: 0 } };
 
 const PUBLIE = '2026-11-15';
 
@@ -428,7 +428,7 @@ Une esthéticienne écrit sur son site « Bienvenue dans mon univers de douceur 
 
 ## Chez les Minis Monstres
 
-Sur votre site, les pages que vous n'utilisez pas parmi les ${creation.pages} prévues deviennent des pages SEO, chacune écrite pour une recherche de vos clients. L'[abonnement](/tarifs/) en ajoute ensuite une nouvelle chaque mois avec ${mini.name}, ou chaque semaine avec ${maxi.name}. Tout est expliqué sur la page [référencement SEO](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
+Votre site compte ${creation.pages} pages. Pour être trouvé sur plus de recherches, vous pouvez ajouter des pages visibilité Google (des pages SEO), chacune écrite pour une recherche de vos clients. Elles se prennent en extra, depuis votre espace client, à ${packSeo.price.once} € la page. Tout est expliqué sur la page [référencement SEO](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
     faq: [
       { q: 'Quelle différence entre SEO et publicité Google ?', a: 'La publicité vous place en haut des résultats tant que vous payez chaque clic. Le SEO vise les résultats gratuits : il demande du travail au départ, mais ne s’arrête pas le jour où vous cessez de payer.' },
       { q: 'Au bout de combien de temps voit-on des effets ?', a: 'Cela dépend de votre métier, de votre ville et de la concurrence. Il faut en général compter plusieurs mois avant de juger. C’est un travail de fond, pas un interrupteur.' },
@@ -476,7 +476,7 @@ Un électricien a déménagé son atelier dans la commune voisine. Sur son site,
 
 ## Chez les Minis Monstres
 
-Je suis installé dans les Ardennes et je travaille avec des entreprises de toute la France. Sur chaque site, je soigne la zone que vous couvrez, et vos pages SEO peuvent viser les communes où vous travaillez. Plus de détails sur la page [référencement SEO](/referencement-seo/).`,
+Je suis installé dans les Ardennes et je travaille avec des entreprises de toute la France. Sur chaque site, je soigne la zone que vous couvrez, et vos pages visibilité Google peuvent viser les communes où vous travaillez. Plus de détails sur la page [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Faut-il une adresse pour faire du référencement local ?', a: 'Une adresse aide, mais les entreprises qui se déplacent chez le client peuvent aussi définir une zone desservie sur leur fiche, sans afficher leur domicile.' },
       { q: 'Le site ou la fiche Google : lequel compte le plus ?', a: 'Les deux travaillent ensemble. La fiche vous place sur la carte, le site donne les détails et rassure. Une fiche qui renvoie vers un bon site est plus convaincante qu’une fiche seule.' },
@@ -524,7 +524,7 @@ Dans la [balise title](/lexique/balise-title/), dans le grand titre de la page, 
 
 ## Chez les Minis Monstres
 
-Pour vos pages SEO, y compris celles que l'abonnement ajoute au fil du temps, je choisis avec vous les recherches qui comptent pour votre métier et votre zone. La méthode complète est sur [référencement SEO](/referencement-seo/).`,
+Pour vos pages visibilité Google, y compris celles que vous ajoutez au fil du temps, je choisis avec vous les recherches qui comptent pour votre métier et votre zone. La méthode complète est sur [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de mots-clés par page ?', a: 'Une page doit viser un sujet principal, avec son mot-clé et quelques variantes proches. Si vous voulez couvrir un autre sujet, mieux vaut lui donner sa propre page.' },
       { q: 'Faut-il viser les mots-clés les plus recherchés ?', a: 'Pas forcément. Pour une petite entreprise, des expressions plus précises, avec votre ville ou un service particulier, attirent souvent des visiteurs plus prêts à vous contacter.' },
@@ -962,7 +962,7 @@ Un salon de toilettage distribue des cartes chez les vétérinaires du coin, ave
 
 ## Chez les Minis Monstres
 
-Un site d'une seule page peut faire office de landing page pour lancer une activité ou un événement. Il coûte ${page.price} €, le même prix qu'un site plus grand, jusqu'à ${creation.pages} pages. Le prix et les options sont détaillés sur [créer mon site](/creer-mon-site/). Le bouton qui fait agir est détaillé à la page [call to action](/lexique/call-to-action/).`,
+Un site d'une seule page peut faire office de landing page pour lancer une activité ou un événement. Il coûte ${page.price} €, le même prix qu'un site de plusieurs pages, dans la limite de ${creation.pages} pages. Le prix et les options sont détaillés sur [créer mon site](/creer-mon-site/). Le bouton qui fait agir est détaillé à la page [call to action](/lexique/call-to-action/).`,
     faq: [
       { q: 'Quelle différence entre landing page et page d’accueil ?', a: 'La page d’accueil présente toute l’entreprise et oriente vers le reste du site. La landing page parle d’une seule offre et vise une seule action.' },
       { q: 'Faut-il faire de la publicité pour avoir une landing page ?', a: 'Non. Elle peut aussi recevoir des visiteurs depuis un e-mail, un QR code, un post sur les réseaux ou une carte de visite. Ce qui compte, c’est qu’ils arrivent avec une attente précise.' },
@@ -1215,7 +1215,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 ## Chez les Minis Monstres
 
-C'est le cœur de l'[abonnement](/tarifs/). Dès ${mini.month} € par mois, j'héberge votre site, et ${minus(gardien)}, un petit monstre que j'ai programmé, m'aide à suivre les mises à jour, garde un œil sur le HTTPS et surveille que tout tourne. Vos changements de contenu passent par l'espace client : ils sont compris sans limite, et faits sous ${mini.delai} au plus avec ${mini.name}. Avec ${maxi.name}, je les fais en priorité, sous ${maxi.delai}. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+C'est le cœur de l'[abonnement](/tarifs/). Dès ${mini.month} € par mois, j'héberge votre site, et ${minus(gardien)}, un petit monstre que j'ai programmé, m'aide à suivre les mises à jour, garde un œil sur le HTTPS et surveille que tout tourne. Vos changements de contenu passent par l'espace client : ils sont compris sans limite, et une modification peut prendre ${delaiModif}. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'À quelle fréquence faut-il faire la maintenance ?', a: 'La surveillance doit être continue, et les mises à jour faites dès qu’elles sortent, surtout celles de sécurité. Les autres vérifications peuvent suivre un rythme régulier, par exemple chaque mois.' },
       { q: 'Puis-je faire la maintenance de mon site moi-même ?', a: 'C’est possible si vous avez le temps et les bases techniques. Le plus dur n’est pas de cliquer sur « mettre à jour », mais de savoir quoi faire quand une mise à jour casse quelque chose.' },
@@ -1451,7 +1451,7 @@ Le [plan du site](/lexique/sitemap/) aide Google à trouver les pages, mais il n
 
 ## Chez les Minis Monstres
 
-Sur un site vitrine, chaque page parle d'un sujet précis, et je les relie entre elles de façon logique. Chaque nouvelle page, comme celles que l'abonnement ajoute chaque mois ou chaque semaine selon l’abonnement, rejoint ce réseau de liens. La méthode est expliquée sur [référencement SEO](/referencement-seo/).`,
+Sur un site vitrine, chaque page parle d'un sujet précis, et je les relie entre elles de façon logique. Chaque nouvelle page, comme celles que vous ajoutez avec les extras, rejoint ce réseau de liens. La méthode est expliquée sur [référencement SEO](/referencement-seo/).`,
     faq: [
       { q: 'Combien de liens internes mettre sur une page ?', a: 'Il n’y a pas de chiffre magique. Mettez ceux qui aident vraiment le lecteur à continuer. Sur une page de service, quelques liens bien placés suffisent en général.' },
       { q: 'Le menu compte-t-il comme lien interne ?', a: 'Oui. Les liens du menu et du pied de page sont des liens internes. Ceux placés dans le texte ont souvent plus de poids, parce qu’ils sont entourés de mots qui expliquent leur sujet.' },

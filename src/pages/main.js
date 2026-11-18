@@ -1478,13 +1478,13 @@ function metierPage(m) {
   const crumbs = [...crumb('metiers'), { name: m.nom, path }];
   const f = C.faq(m.faq, 'Vos questions', 'faq-metier');
   const ex = m.exemple && m.exemple.client ? clients.find((c) => c.domaine.startsWith(m.exemple.client)) : null;
-  // Conseils d'une page métier : une option (packseo, boutique) ou une formule (base, evolution). Les anciennes options sont ignorées.
+  // Conseils d'une page métier : la boutique, l'abonnement (base) ou un extra (packseo, seomois, urgent…). Les anciennes options sont ignorées.
   const opts = (m.options || []).map((o) => {
     if (o.id === 'boutique') return { ic: 'shopping-bag', nom: 'Boutique en ligne', prix: `+ ${euro(creation.boutique)}, une fois`, pourquoi: o.pourquoi };
     const fo = forfaits.find((x) => x.id === o.id);
     if (fo) return { ic: 'repeat', nom: `L’abonnement ${fo.name}`, prix: `${euro(fo.month)} par mois, tout compris`, pourquoi: o.pourquoi };
-    const opt = options.find((x) => x.id === o.id && !x.retire);
-    if (opt) return { ic: opt.icon, nom: opt.name, prix: opt.quand === 'espace' ? `+ ${euro(opt.price.once)}, plus tard` : `+ ${euro(opt.price.once)}, une fois`, pourquoi: o.pourquoi };
+    const ext = C.EXTRAS_PAR_FAMILLE.flatMap((g) => g.items).find((x) => x.id === o.id);
+    if (ext) return { ic: ext.icon, nom: ext.name, prix: `${C.prixExtra(ext)}, extra`, pourquoi: o.pourquoi };
     return null;
   }).filter(Boolean);
   const body = `${C.pageHero({ section: 'metiers', h1: m.h1, lead: m.lead, crumbs, mascot: MONSTRE_METIER[m.slug] })}

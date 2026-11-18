@@ -1,15 +1,15 @@
 <?php
 /**
- * Les Minis Monstres Espace client : Lumi, l'étoile de Google, analyse le site et choisit les sujets des pages SEO.
+ * Les Minis Monstres Espace client : Lumi, l'étoile de Google, analyse le site et choisit les sujets des pages visibilité Google.
  * - Les pages des extras « chaque mois » et « chaque semaine » (tâche quotidienne aled08_quotidien).
- * - Les pages SEO supplémentaires commandées dans « Mes demandes » : à l'unité ou en pack (1, 5 ou 10 pages).
+ * - Les pages visibilité Google en plus commandées dans « Mes demandes » : à l'unité ou en pack (1, 5 ou 10 pages).
  * Pour chaque page, Lumi lit la liste des pages du site (connecteur) et les recherches Google, puis choisit un sujet utile
  * et pas encore traité. Elle crée une demande pour Alex (titre, recherche visée, pourquoi, plan) : c'est Alex qui écrit la page
  * et la met en ligne. Sans clé Claude, la demande part quand même chez Alex, avec « sujet à choisir ».
  */
 defined('ABSPATH') || exit;
 
-/* Les packs proposés : nombre de pages, au prix de la page SEO supplémentaire */
+/* Les packs proposés : nombre de pages, au prix de la page visibilité Google en plus */
 function aled08e_seo_quantites() { return [1, 5, 10]; }
 function aled08e_seo_quantite($v) { $v = (int) $v; return in_array($v, aled08e_seo_quantites(), true) ? $v : 1; }
 function aled08e_seo_quantites_html($prix, $famille) {
@@ -21,7 +21,7 @@ function aled08e_seo_quantites_html($prix, $famille) {
     return $h . '</div><p class="app-note">Lumi analyse votre site et choisit les sujets. Alex écrit chaque page et la met en ligne. Vous les voyez arriver ici, une par une.</p>';
 }
 
-/* Les pages SEO partent toujours chez Alex : Lumi n'est qu'une aide pour choisir le sujet */
+/* Les pages visibilité Google partent toujours chez Alex : Lumi n'est qu'une aide pour choisir le sujet */
 function aled08e_seo_auto_possible($uid) { return true; }
 
 /* Lumi choisit $n sujets de pages pour ce client (une seule question à Claude, modèle rapide). Retourne une liste, vide si impossible. */
@@ -77,15 +77,15 @@ function aled08e_lumi_sujets($uid, $n = 1, $idees = '') {
     return array_slice($out, 0, $n);
 }
 
-/* Une page SEO pour Alex : une demande « Page SEO » avec le sujet choisi par Lumi ($sujet vide : sujet à choisir) */
+/* Une page visibilité Google pour Alex : une demande « Page visibilité Google » avec le sujet choisi par Lumi ($sujet vide : sujet à choisir) */
 function aled08e_seo_auto_creer($uid, $source, $idees = '', $parent = 0, $sujet = null, $rang = 0) {
     if ($sujet === null) { $l = aled08e_lumi_sujets($uid, 1, $idees); $sujet = $l[0] ?? []; }
     $titre = !empty($sujet['titre']) ? $sujet['titre'] : 'sujet à choisir';
     $brief = !empty($sujet['titre'])
         ? 'Titre : ' . $sujet['titre'] . "\nRecherche visée : " . $sujet['recherche'] . "\nPourquoi : " . $sujet['pourquoi'] . ($sujet['plan'] ? "\nPlan proposé :\n- " . implode("\n- ", $sujet['plan']) : '')
         : 'Lumi n’a pas pu choisir le sujet : à choisir par Alex.' . (trim($idees) !== '' ? "\nIdées du client : " . trim($idees) : '');
-    $texte = 'Page SEO ' . ($source === 'pack' ? 'commandée par le client' : 'de l’abonnement') . ' : sujet proposé par Lumi, à écrire et mettre en ligne par Alex.';
-    $pid = wp_insert_post(['post_type' => ALED08E_CPT, 'post_status' => 'private', 'post_author' => (int) $uid, 'post_title' => 'Page SEO : ' . $titre, 'post_content' => $texte, 'comment_status' => 'closed', 'ping_status' => 'closed'], true);
+    $texte = 'Page visibilité Google ' . ($source === 'pack' ? 'commandée par le client' : 'de l’abonnement') . ' : sujet proposé par Lumi, à écrire et mettre en ligne par Alex.';
+    $pid = wp_insert_post(['post_type' => ALED08E_CPT, 'post_status' => 'private', 'post_author' => (int) $uid, 'post_title' => 'Page visibilité Google : ' . $titre, 'post_content' => $texte, 'comment_status' => 'closed', 'ping_status' => 'closed'], true);
     if (is_wp_error($pid)) return 0;
     $ech = time() + 7 * DAY_IN_SECONDS + (int) $rang * 3 * DAY_IN_SECONDS; // un pack : une page tous les trois jours
     update_post_meta($pid, '_aled08_statut', 'recue');
@@ -100,9 +100,9 @@ function aled08e_seo_auto_creer($uid, $source, $idees = '', $parent = 0, $sujet 
     update_post_meta($pid, '_aled08_reponse', 'Lumi a choisi le sujet de cette page' . (!empty($sujet['titre']) ? ' : « ' . $titre . ' »' : '') . '. Alex l’écrit et la met en ligne d’ici ' . aled08e_cer_echeance_txt($ech) . '.');
     if ($parent) update_post_meta($pid, '_aled08_seo_parent', (int) $parent);
     if (function_exists('aled08e_cer_maxi') && aled08e_cer_maxi($uid)) update_post_meta($pid, '_aled08_priorite', 1);
-    aled08e_lia_journal_add('Lumi : sujet de page SEO pour ' . (($u = get_userdata($uid)) ? $u->display_name : '#' . $uid) . ' : ' . $titre . '.');
+    aled08e_lia_journal_add('Lumi : sujet de page visibilité Google pour ' . (($u = get_userdata($uid)) ? $u->display_name : '#' . $uid) . ' : ' . $titre . '.');
     $u = get_userdata($uid);
-    wp_mail(aled08e_to(), 'Page SEO à écrire avant le ' . wp_date('j/m', $ech) . ' : ' . ($u ? $u->display_name : '?'),
+    wp_mail(aled08e_to(), 'Page visibilité Google à écrire avant le ' . wp_date('j/m', $ech) . ' : ' . ($u ? $u->display_name : '?'),
         'Client : ' . ($u ? $u->display_name : '?') . "\nSite : " . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\nÀ mettre en ligne avant le : " . wp_date('l j F', $ech) . "\n\nLE SUJET (choisi par Lumi) :\n" . $brief . "\n\nVotre tableau : " . aled08e_url(['onglet' => 'accueil']) . "\n", aled08e_mail_headers());
     return (int) $pid;
 }
@@ -119,7 +119,7 @@ add_action('aled08e_demande_creee', function ($pid, $par, $uid) {
     update_post_meta($pid, '_aled08_reponse', 'Merci ! Lumi a choisi ' . ($n > 1 ? 'les sujets de vos ' . $n . ' pages' : 'le sujet de votre page') . ', et Alex ' . ($n > 1 ? 'les écrit' : 'l’écrit') . '. Vous les voyez arriver dans vos demandes.');
 }, 20, 3);
 
-/* Chaque jour : les pages SEO des extras « Une page SEO chaque mois » et « chaque semaine » */
+/* Chaque jour : les pages visibilité Google des extras « Une page visibilité Google chaque mois » et « chaque semaine » */
 function aled08e_seo_auto_tourner() {
     if (get_option('aled08_seo_auto_pause') === '1') return;
     $clients = get_users(['role' => ALED08E_ROLE, 'fields' => 'ID', 'number' => 500]);

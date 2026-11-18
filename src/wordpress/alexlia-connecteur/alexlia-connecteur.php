@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.0.0
+ * Version: 2.1.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.0.0');
+define('ALEXLIA_CONN_VERSION', '2.1.0');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 
 /* =========================================================================
@@ -118,6 +118,8 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'abandonner': return alexlia_conn_abandonner($args);
         case 'ecran': return alexlia_conn_ecran($args);
         case 'produits': return alexlia_conn_produits($args);
+        case 'article_poser': return alexlia_conn_article_poser($args);
+        case 'article_retirer': return alexlia_conn_article_retirer($args);
         case 'stats': return alexlia_conn_stats();
         case 'vacances_lire': return alexlia_vac_get();
         case 'vacances_regler': return alexlia_vac_regler($args);
@@ -394,6 +396,58 @@ function alexlia_conn_produit_appliquer($pr) {
     $id = $p->save();
     alexlia_conn_journal((($pr['op'] ?? '') === 'creer' ? 'Produit créé' : 'Produit modifié') . ' après accord du client : « ' . $p->get_name() . ' » (' . $p->get_regular_price() . ' €).');
     return ['id' => (int) $id, 'titre' => $p->get_name(), 'adresse' => get_permalink($id)];
+}
+/* Les articles du client (18 novembre 2026) : le client remplit un emplacement dans son espace client (photo, description, prix) et
+ * l'article est créé tout de suite dans la boutique. Seuls les articles posés par ce moyen (méta _alexlia_article_client) peuvent
+ * être modifiés ou retirés ici : le reste de la boutique n'est jamais touché. Un article retiré passe à la corbeille (récupérable). */
+function alexlia_conn_article_image($url) {
+    $url = esc_url_raw((string) $url, ['https']);
+    if ($url === '') return 0;
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    require_once ABSPATH . 'wp-admin/includes/media.php';
+    require_once ABSPATH . 'wp-admin/includes/image.php';
+    $tmp = download_url($url, 30);
+    if (is_wp_error($tmp)) return 0;
+    $taille = @filesize($tmp);
+    $type = wp_check_filetype_and_ext($tmp, basename(wp_parse_url($url, PHP_URL_PATH) ?: 'photo.jpg'));
+    if (!$taille || $taille > 8 * MB_IN_BYTES || !in_array($type['type'] ?? '', ['image/jpeg', 'image/png', 'image/webp'], true)) { @unlink($tmp); return 0; }
+    $nom = sanitize_file_name(basename(wp_parse_url($url, PHP_URL_PATH) ?: 'photo.jpg'));
+    $id = media_handle_sideload(['name' => $nom, 'tmp_name' => $tmp], 0);
+    if (is_wp_error($id)) { @unlink($tmp); return 0; }
+    return (int) $id;
+}
+function alexlia_conn_article_poser($args) {
+    if (!function_exists('wc_get_product') || !class_exists('WC_Product_Simple')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    $id = (int) ($args['id'] ?? 0);
+    $champs = alexlia_conn_produit_champs($args, !$id);
+    if (is_wp_error($champs)) return $champs;
+    if ($id) {
+        $p = wc_get_product($id);
+        if (!$p || $p->get_meta('_alexlia_article_client') !== '1' || $p->get_status() === 'trash') return new WP_Error('alexlia_introuvable', 'Cet article n’a pas été posé depuis l’espace client : il ne peut pas être modifié ici.', ['status' => 404]);
+    } else {
+        if (function_exists('alexlia_mcp_compter') && !alexlia_mcp_compter('articles_client', 30)) return new WP_Error('alexlia_limite', 'Trop d’articles posés en une heure : réessayez plus tard.', ['status' => 429]);
+        $p = new WC_Product_Simple();
+        $p->set_status('publish');
+        $p->set_catalog_visibility('visible');
+        $p->update_meta_data('_alexlia_article_client', '1');
+    }
+    if (isset($champs['nom'])) $p->set_name($champs['nom']);
+    if (isset($champs['prix'])) $p->set_regular_price($champs['prix']);
+    if (isset($champs['description'])) { $p->set_description($champs['description']); $p->set_short_description(wp_trim_words(wp_strip_all_tags($champs['description']), 30)); }
+    if (!empty($args['image_url'])) { $img = alexlia_conn_article_image($args['image_url']); if ($img) $p->set_image_id($img); elseif (!$id) return new WP_Error('alexlia_image', 'La photo n’a pas pu être récupérée (JPG, PNG ou WEBP, 8 Mo au plus).', ['status' => 400]); }
+    $p->set_stock_status('instock');
+    $nouvelId = $p->save();
+    alexlia_conn_journal(($id ? 'Article modifié' : 'Article posé') . ' par le client depuis son espace : « ' . $p->get_name() . ' » (' . $p->get_regular_price() . ' €).');
+    return ['id' => (int) $nouvelId, 'titre' => $p->get_name(), 'adresse' => get_permalink($nouvelId), 'image' => (int) $p->get_image_id()];
+}
+function alexlia_conn_article_retirer($args) {
+    if (!function_exists('wc_get_product')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    $p = wc_get_product((int) ($args['id'] ?? 0));
+    if (!$p || $p->get_meta('_alexlia_article_client') !== '1') return new WP_Error('alexlia_introuvable', 'Cet article n’a pas été posé depuis l’espace client : il ne peut pas être retiré ici.', ['status' => 404]);
+    $nom = $p->get_name();
+    $p->delete(false); // corbeille : récupérable
+    alexlia_conn_journal('Article retiré par le client depuis son espace (mis à la corbeille) : « ' . $nom . ' ».');
+    return ['ok' => true];
 }
 function alexlia_conn_produits($args) {
     if (!function_exists('wc_get_products')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);

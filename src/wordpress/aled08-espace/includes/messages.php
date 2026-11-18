@@ -5,7 +5,7 @@
  * - Mirette (Maxi) : l'analyse de la semaine, lue dans les chiffres du site (stats.php, gardés une heure, jamais d'appel ici).
  * - Bricou et Plume (Maxi) : les idées de saison (une liste écrite ici, sans appel au modèle), et les suggestions qu'Alex
  *   écrit dans la fiche du client (champ « Suggestions de la bande »). « Oui, faites-le » envoie une demande de modification.
- * - Lumi : la dernière page SEO mise en ligne (demande faite avec le préfixe « Page SEO »), pour tous.
+ * - Lumi : la dernière page visibilité Google mise en ligne (demande faite avec le préfixe « Page visibilité Google »), pour tous.
  * - Pistache : l'état du site (en ligne, cadenas), pour tous.
  * Avec Mini, un dernier mot présente Maxi. Le client peut écarter un message (« Plus tard ») : il ne revient pas.
  */
@@ -77,10 +77,10 @@ function aled08e_messages($uid) {
         $txt = $s1 . ' visiteur' . ($s1 > 1 ? 's' : '') . ' cette semaine' . ($s0 > 0 ? ($evol >= 0 ? ', ' . $evol . ' % de plus que la semaine d’avant.' : ', un peu moins que la semaine d’avant. C’est souvent passager.') : '.') . ($top !== '' ? ' La page la plus vue : ' . $top . '.' : '');
         $msgs[] = ['id' => 'mirette-' . wp_date('oW'), 'qui' => 'mirette', 'maxi' => true, 'quand' => 'cette semaine', 'titre' => 'Votre semaine en un coup d’œil', 'texte' => $txt, 'vis' => ['type' => 'barres', 'data' => array_map(function ($x) { return (int) ($x['visiteurs'] ?? 0); }, $sem), 'evol' => $s0 > 0 ? $evol : null]];
     }
-    // Lumi : la dernière page SEO mise en ligne (une demande « Page SEO » terminée)
-    $seo = get_posts(['post_type' => ALED08E_CPT, 'author' => $uid, 'post_status' => 'private', 'numberposts' => 1, 'orderby' => 'modified', 's' => 'Page SEO', 'meta_query' => [['key' => '_aled08_statut', 'value' => 'faite']], 'suppress_filters' => true]);
+    // Lumi : la dernière page visibilité Google mise en ligne (une demande « Page visibilité Google » terminée)
+    $seo = get_posts(['post_type' => ALED08E_CPT, 'author' => $uid, 'post_status' => 'private', 'numberposts' => 1, 'orderby' => 'modified', 'meta_query' => [['key' => '_aled08_statut', 'value' => 'faite'], ['key' => '_aled08_seo', 'value' => '1']], 'suppress_filters' => true]);
     if ($seo) {
-        $t = trim(preg_replace('/^Page SEO\s*:\s*/u', '', $seo[0]->post_title));
+        $t = trim(preg_replace('/^Page (SEO|visibilité Google)\s*:\s*/u', '', $seo[0]->post_title));
         $msgs[] = ['id' => 'lumi-' . $seo[0]->ID, 'qui' => 'lumi', 'quand' => aled08e_date($seo[0]->post_modified), 'titre' => 'Nouvelle page en ligne', 'texte' => 'Votre page « ' . $t . ' » est en ligne. Google va la découvrir dans les prochains jours.', 'vis' => ['type' => 'google', 'titre' => $t, 'site' => preg_replace('#^https?://#', '', rtrim(aled08e_meta($uid, 'site'), '/'))]];
     }
     // Bricou et Plume : les idées de saison et les suggestions d'Alex (Maxi)
@@ -195,7 +195,7 @@ add_action('init', function () {
         'post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'post_title' => $titre,
         'post_content' => $mini['name'] . ', à ' . aled08e_euro_txt($mini['month']) . ' par mois : votre site entretenu, vos modifications incluses ' . aled08e_delai_txt($mini) . ', et une page pour Google chaque mois.' . "\n"
             . $maxi['name'] . ', à ' . aled08e_euro_txt($maxi['month']) . ' par mois : vos modifications en priorité sous 48 h, deux demandes à la fois, une page optimisée chaque semaine, et la bande qui surveille votre site pour vous proposer des idées, ici, dans vos petits mots.' . "\n"
-            . 'Vous changez quand vous voulez, dans Mon compte. Et une page SEO en plus coûte maintenant ' . aled08e_euro_txt((float) (aled08e_a_la_demande('packseo')['prix'] ?? 5)) . ', dans Mes demandes.',
+            . 'Vous changez quand vous voulez, dans Mon compte. Et une page visibilité Google en plus coûte maintenant ' . aled08e_euro_txt((float) (aled08e_a_la_demande('packseo')['prix'] ?? 5)) . ', dans Mes demandes.',
         'post_author' => $admins ? (int) $admins[0] : 0, 'post_date' => wp_date('Y-m-d H:i:s'),
     ]);
     update_option('aled08_annonce_derniere', ['titre' => $titre, 'le' => current_time('mysql'), 'total' => function_exists('aled08e_annonces') ? count(aled08e_annonces(100)) : 1], false);

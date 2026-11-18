@@ -15,6 +15,7 @@ const delais = cfg.delais || { reponse: '72 heures', titan: '72 heures' };
 const QUOTA = { base: 1 };
 
 const ICONS = [
+  'key-round', 'shopping-bag', 'image-plus', 'plus', 'pencil', 'info', 'clock', 'sparkles', 'circle-check',
   'megaphone', 'search', 'lock', 'zap', 'scale',
   'house', 'message-circle', 'chart-line', 'qr-code', 'heart', 'gift', 'users', 'receipt', 'check', 'send', 'image-plus', 'download',
   'star', 'globe', 'log-out', 'whatsapp', 'pencil', 'circle-user', 'history', 'file-text', 'arrow-right', 'link', 'hourglass', 'sparkles',
