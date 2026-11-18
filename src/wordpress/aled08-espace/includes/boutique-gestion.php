@@ -78,7 +78,18 @@ add_action('template_redirect', function () {
         $retour(true, !empty($P['actif']) ? 'C’est enregistré : ce moyen de paiement est actif sur votre boutique.' : 'C’est enregistré : ce moyen de paiement est désactivé.');
     }
 
-    // --- un autre moyen de paiement, ou l'installation de Stripe / PayPal : Alex s'en occupe
+    // --- installer l'extension officielle Stripe ou PayPal sur le site du client
+    if ($op === 'installer') {
+        $id = sanitize_key((string) ($P['id'] ?? ''));
+        if (!in_array($id, ['stripe', 'ppcp-gateway'], true)) $retour(false, 'Ce moyen de paiement ne s’installe pas d’ici.');
+        @set_time_limit(180);
+        $r = aled08e_bg_appel($uid, 'paiement_installer', ['id' => $id]);
+        if (!is_array($r)) $retour(false, aled08e_bg_message_etat($r));
+        wp_mail(aled08e_to(), 'Extension de paiement installée : ' . $u->display_name, $u->display_name . ' a installé l’extension « ' . $id . ' » sur sa boutique depuis son espace.' . "\n", aled08e_mail_headers());
+        $retour(true, $id === 'stripe' ? 'Stripe est installé ! Il ne reste qu’à coller vos clés ci-dessous, puis à cocher « Je propose ce moyen de paiement ».' : 'PayPal est installé ! Il ne reste qu’à connecter votre compte PayPal (bouton ci-dessous).');
+    }
+
+    // --- un autre moyen de paiement : Alex s'en occupe
     if ($op === 'demander') {
         $quoi = trim(sanitize_textarea_field((string) ($P['quoi'] ?? '')));
         if ($quoi === '') $retour(false, 'Dites-moi en quelques mots ce que vous voulez brancher.');
@@ -147,8 +158,8 @@ function aled08e_bg_paiements_html($uid) {
         $etat = !$g['installe'] ? '<em class="ex-badge">Pas installé</em>' : ($g['actif'] ? '<em class="ex-badge ex-badge-actif">' . aled08e_icon('check') . 'Actif</em>' : '<em class="ex-badge ex-badge-off">Inactif</em>');
         $corps = '';
         if (!$g['installe']) {
-            $corps = '<p class="app-note">Ce moyen de paiement n’est pas encore installé sur votre site. Alex l’installe et le branche avec vous.</p>'
-                . '<form method="post" action="' . $act . '">' . $nonce . '<input type="hidden" name="aled08e_bg" value="demander"><input type="hidden" name="quoi" value="Installer et brancher : ' . esc_attr($g['nom']) . '"><button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('send') . '<span>Demander à Alex</span></button></form>';
+            $corps = '<p class="app-note">L’extension officielle de ' . esc_html($id === 'stripe' ? 'Stripe' : 'PayPal') . ' n’est pas encore sur votre site. Installez-la en un clic : elle reste éteinte tant que vous ne l’avez pas réglée.</p>'
+                . '<form method="post" action="' . $act . '" onsubmit="this.querySelector(\'button\').disabled=true;this.querySelector(\'button span\').textContent=\'Installation… (une minute)\';">' . $nonce . '<input type="hidden" name="aled08e_bg" value="installer"><input type="hidden" name="id" value="' . esc_attr($id) . '"><button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('download') . '<span>Installer ' . esc_html($id === 'stripe' ? 'Stripe' : 'PayPal') . '</span></button></form>';
         } elseif ($id === 'ppcp-gateway') {
             $corps = '<p class="app-note">PayPal se connecte avec votre compte PayPal : c’est un petit parcours à faire une fois. Alex peut le faire avec vous, ou vous le faites depuis votre site.</p>'
                 . '<div class="ges-actions"><a class="btn btn-light btn-sm" href="' . esc_url($g['config_url']) . '" target="_blank" rel="noopener">' . aled08e_icon('link') . '<span>Ouvrir les réglages PayPal</span></a>'

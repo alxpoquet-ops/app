@@ -124,6 +124,12 @@ add_action('template_redirect', function () {
         if (!in_array($q, [1, 5, 10], true)) $q = 1;
         if (empty($P['accord'])) $retour(false, 'Cochez la case qui accepte le prix avant de débloquer.');
         $total = aled08e_art_prix() * $q;
+        // payé tout de suite par carte : les emplacements sont débloqués dès le paiement (includes/paiement-direct.php)
+        if (!aled08e_famille($uid) && aled08e_pd_pret()) {
+            $url = aled08e_pd_session($uid, [['Emplacement d’article en plus pour votre boutique', aled08e_art_prix(), $q]], ['type' => 'emplacements', 'quantite' => $q], 'vacances', 'articles');
+            if (!is_wp_error($url)) { wp_redirect($url, 303); exit; }
+            $retour(false, 'Le paiement n’a pas pu s’ouvrir. Réessayez dans un instant.');
+        }
         $facture = false;
         if (!aled08e_famille($uid)) {
             $cus = aled08e_meta($uid, 'stripe_customer');
@@ -179,6 +185,7 @@ function aled08e_articles_html($uid) {
         . '<div class="art-hero-txt"><h3>Vos articles</h3><p>Une photo, une description, un prix : votre article est en ligne tout de suite.</p></div>'
         . '<p class="art-compteur"><b>' . (int) $libres . '</b><small>emplacement' . ($libres > 1 ? 's' : '') . ' libre' . ($libres > 1 ? 's' : '') . ' sur ' . (int) $total . '</small></p></div>';
     if ($flash) $h .= '<p class="' . ($flash[0] ? 'esp-empty' : 'esp-warn') . '" role="status">' . esc_html($flash[1]) . '</p>';
+    $h .= aled08e_pd_flash_html();
     if ($prods === null && aled08e_art_pret($uid)) $h .= '<p class="esp-warn">Votre boutique ne répond pas pour le moment : vos produits s’afficheront ici dès qu’elle répond. Rechargez la page dans un instant.</p>';
     if (!aled08e_art_pret($uid)) $h .= '<p class="app-note">' . aled08e_icon('info') . ' Votre boutique n’est pas encore reliée à votre espace : vos articles sont gardés ici et Alex les met en ligne pour vous.</p>';
 
@@ -212,7 +219,7 @@ function aled08e_articles_html($uid) {
     $h .= '<div class="art-debloque"><div class="art-debloque-txt"><strong>' . aled08e_icon('sparkles') . 'Besoin de plus de place ?</strong><p>Chaque emplacement en plus coûte <b>' . esc_html(aled08e_euro_txt($prix)) . '</b>, payé une seule fois. Il est à vous pour toujours : si vous retirez un article, la place reste libre.</p></div>'
         . '<form class="art-debloque-form" method="post" action="' . $act . '">' . $nonce . '<input type="hidden" name="aled08e_article" value="debloquer"><div class="esp-seo-q" role="radiogroup" aria-label="Combien d’emplacements ?">';
     foreach ([1, 5, 10] as $i => $q) $h .= '<label class="esp-seo-q-choix"><input type="radio" name="quantite" value="' . $q . '"' . ($i === 0 ? ' checked' : '') . '><span><strong>+' . $q . '</strong><small>' . esc_html($famille ? 'offert' : aled08e_euro_txt($prix * $q)) . '</small></span></label>';
-    $h .= '</div><label class="check"><input type="checkbox" name="accord" value="1" required><span>' . ($famille ? 'Je débloque, c’est offert pour moi' : 'J’accepte le prix choisi, ajouté à ma prochaine facture') . '</span></label>'
-        . '<button class="btn btn-primary" type="submit">' . aled08e_icon('key-round') . '<span>Débloquer</span></button></form></div>';
+    $h .= '</div><label class="check"><input type="checkbox" name="accord" value="1" required><span>' . ($famille ? 'Je débloque, c’est offert pour moi' : (aled08e_pd_pret() ? 'J’accepte le prix choisi, je paie par carte à l’étape suivante' : 'J’accepte le prix choisi, Alex m’envoie la facture')) . '</span></label>'
+        . '<button class="btn btn-primary" type="submit">' . aled08e_icon('credit-card') . '<span>' . ($famille ? 'Débloquer' : 'Payer et débloquer') . '</span></button></form></div>';
     return $h . '</section>';
 }

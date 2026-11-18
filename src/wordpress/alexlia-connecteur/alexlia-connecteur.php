@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.3.0
+ * Version: 2.4.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.3.0');
+define('ALEXLIA_CONN_VERSION', '2.4.0');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 
 /* =========================================================================
@@ -124,6 +124,7 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'produit_regler': return alexlia_bg_produit_regler($args);
         case 'paiements_lire': return alexlia_bg_paiements_lire();
         case 'paiement_regler': return alexlia_bg_paiement_regler($args);
+        case 'paiement_installer': return alexlia_bg_paiement_installer($args);
         case 'commandes_lire': return alexlia_bg_commandes_lire();
         case 'stats': return alexlia_conn_stats();
         case 'vacances_lire': return alexlia_vac_get();
@@ -528,6 +529,40 @@ function alexlia_bg_paiement_regler($a) {
     update_option($cle, $set);
     alexlia_conn_journal('Moyen de paiement « ' . $id . ' » réglé par le client depuis son espace : ' . ($actif ? 'activé' : 'désactivé') . ($note ? ', ' . implode(', ', $note) : '') . '.');
     return ['ok' => true];
+}
+/* Installer l'extension de paiement officielle (Stripe ou PayPal) depuis le répertoire WordPress, puis l'activer.
+ * Le moyen de paiement reste DÉSACTIVÉ tant que le client ne l'a pas réglé (clés Stripe, ou connexion PayPal). */
+function alexlia_bg_paiement_installer($a) {
+    if (!function_exists('WC')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    if (function_exists('alexlia_mcp_compter') && !alexlia_mcp_compter('paiement_installer', 4)) return new WP_Error('alexlia_limite', 'Trop d’installations en une heure : réessayez plus tard.', ['status' => 429]);
+    $id = sanitize_key((string) ($a['id'] ?? ''));
+    $slugs = ['stripe' => 'woocommerce-gateway-stripe', 'ppcp-gateway' => 'woocommerce-paypal-payments'];
+    if (!isset($slugs[$id])) return new WP_Error('alexlia_args', 'Seules les extensions Stripe et PayPal s’installent ici.', ['status' => 400]);
+    $connus = alexlia_bg_gateways_connus();
+    $fichier = $connus[$id]['plugin'];
+    require_once ABSPATH . 'wp-admin/includes/plugin.php';
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    require_once ABSPATH . 'wp-admin/includes/misc.php';
+    require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+    require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+    if (defined('DISALLOW_FILE_MODS') && DISALLOW_FILE_MODS) return new WP_Error('alexlia_args', 'Ce site interdit l’installation d’extensions : Alex s’en occupe.', ['status' => 400]);
+    if (!file_exists(WP_PLUGIN_DIR . '/' . $fichier)) {
+        $api = plugins_api('plugin_information', ['slug' => $slugs[$id], 'fields' => ['sections' => false]]);
+        if (is_wp_error($api) || empty($api->download_link)) return new WP_Error('alexlia_args', 'L’extension n’a pas pu être trouvée. Réessayez plus tard.', ['status' => 502]);
+        $up = new Plugin_Upgrader(new WP_Ajax_Upgrader_Skin());
+        $r = $up->install($api->download_link);
+        if (is_wp_error($r) || !$r) return new WP_Error('alexlia_args', 'L’installation n’a pas abouti' . (is_wp_error($r) ? ' : ' . $r->get_error_message() : '') . '.', ['status' => 502]);
+    }
+    if (!is_plugin_active($fichier)) {
+        $r = activate_plugin($fichier);
+        if (is_wp_error($r)) return new WP_Error('alexlia_args', 'L’extension est installée mais n’a pas pu être activée : ' . $r->get_error_message(), ['status' => 502]);
+    }
+    // le moyen de paiement reste éteint tant qu'il n'est pas réglé
+    $cle = 'woocommerce_' . $id . '_settings';
+    $set = get_option($cle, []);
+    if (!is_array($set) || !isset($set['enabled'])) { $set = is_array($set) ? $set : []; $set['enabled'] = 'no'; update_option($cle, $set); }
+    alexlia_conn_journal('Extension de paiement installée par le client depuis son espace : ' . $slugs[$id] . '.');
+    return ['ok' => true, 'config_url' => admin_url('admin.php?page=wc-settings&tab=checkout&section=' . $id)];
 }
 /* Les dernières commandes (lecture seule) */
 function alexlia_bg_commandes_lire() {

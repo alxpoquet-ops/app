@@ -44,6 +44,7 @@ function aled08e_stripe_changer_abonnement($uid, $forfaitId, $optIds) {
     };
     $f = aled08e_forfait($forfaitId);
     $forfaitFait = false;
+    $gardes = [];
     foreach ($items as $it) {
         $tag = $it['price']['product']['metadata']['aled08'] ?? '';
         if ($tag === 'forfait') {
@@ -53,20 +54,27 @@ function aled08e_stripe_changer_abonnement($uid, $forfaitId, $optIds) {
             if (is_wp_error($r)) return $r;
             $forfaitFait = true;
         } elseif ($tag === 'option') {
+            // un extra qui reste : on n'y touche pas (pas de double facture) ; un extra retiré : supprimé, sans remboursement du mois en cours
+            $nom = (string) ($it['price']['product']['name'] ?? '');
+            $garde = false;
+            foreach ($optIds as $oid) { $o = aled08e_option($oid); if ($o && $nom === 'Option : ' . $o['name'] && !in_array($oid, $gardes, true)) { $gardes[] = $oid; $garde = true; break; } }
+            if ($garde) continue;
             $r = aled08e_stripe_request('DELETE', '/v1/subscription_items/' . rawurlencode($it['id']), ['proration_behavior' => 'none']);
             if (is_wp_error($r)) return $r;
         }
     }
-    $ajout = function ($nom, $tag, $euros) use ($sub, $produit, $prix) {
+    // un nouvel extra : la part du mois (ou de l'année) en cours est facturée et prélevée tout de suite (always_invoice)
+    $ajout = function ($nom, $tag, $euros, $tout_de_suite = false) use ($sub, $produit, $prix) {
         $pid = $produit($nom, $tag);
         if (is_wp_error($pid)) return $pid;
-        return aled08e_stripe_request('POST', '/v1/subscription_items', ['subscription' => $sub, 'price_data' => $prix($pid, $euros), 'proration_behavior' => 'none']);
+        return aled08e_stripe_request('POST', '/v1/subscription_items', ['subscription' => $sub, 'price_data' => $prix($pid, $euros), 'proration_behavior' => $tout_de_suite ? 'always_invoice' : 'none']);
     };
     if (!$forfaitFait) { $r = $ajout(aled08e_abo_nom($f), 'forfait', $f['month'] * $mult); if (is_wp_error($r)) return $r; }
     foreach ($optIds as $oid) {
+        if (in_array($oid, $gardes, true)) continue;
         $o = aled08e_option($oid);
         if (!$o || $o['month'] <= 0) continue;
-        $r = $ajout('Option : ' . $o['name'], 'option', $o['month'] * $mult);
+        $r = $ajout('Option : ' . $o['name'], 'option', $o['month'] * $mult, true);
         if (is_wp_error($r)) return $r;
     }
     return 'stripe';

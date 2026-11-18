@@ -349,6 +349,7 @@ function aled08e_stripe_traiter_event($event) {
 
 /* Session de paiement terminée : commande payée (abonnement) ou solde payé (paiement) */
 function aled08e_stripe_on_checkout($s) {
+    if (!empty($s['metadata']['aled08_direct']) && function_exists('aled08e_pd_on_paye')) return aled08e_pd_on_paye($s); // extra, emplacements : payés tout de suite
     if (!empty($s['metadata']['reception'])) return aled08e_stripe_on_reception($s);
     if (($s['mode'] ?? '') === 'payment' && !empty($s['metadata']['solde'])) {
         $cid = (int) ($s['metadata']['solde'] ?? 0);

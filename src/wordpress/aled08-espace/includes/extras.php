@@ -84,9 +84,9 @@ function aled08e_ex_carte_unique($x, $uid, $famille, $sans) {
         . '<p class="app-note">' . esc_html($x['desc'] ?? '') . '</p>'
         . aled08e_extra_packs_html($x, $famille)
         . '<div class="field"><label for="extra-' . esc_attr($id) . '">' . esc_html($q[0]) . '</label><textarea id="extra-' . esc_attr($id) . '" name="demande" rows="2" maxlength="2000" ' . ($id === 'packseo' ? '' : 'required ') . 'placeholder="' . esc_attr($q[1]) . '"></textarea></div>'
-        . '<label class="check"><input type="checkbox" name="extra_ok" value="1" required><span>' . esc_html($accord) . ($famille ? '' : ($sans ? ', je reçois la facture par e-mail' : ', ajouté à ma prochaine facture')) . '</span></label>'
+        . '<label class="check"><input type="checkbox" name="extra_ok" value="1" required><span>' . esc_html($accord) . ($famille ? '' : (aled08e_pd_pret() ? ', je paie par carte à l’étape suivante' : ', je reçois la facture par e-mail')) . '</span></label>'
         . '<p class="ex-delai">' . aled08e_icon('clock') . '<span>Alex s’en occupe sous 7 jours au plus et vous prévient dès que c’est fait.</span></p>'
-        . '<button class="btn btn-primary" type="submit">' . aled08e_icon('send') . '<span>Commander</span></button></form></details>'
+        . '<button class="btn btn-primary" type="submit">' . aled08e_icon('credit-card') . '<span>' . ($famille ? 'Commander' : 'Commander et payer') . '</span></button></form></details>'
         . '</article>';
 }
 
@@ -102,8 +102,8 @@ function aled08e_ex_carte_mois($o, $uid, $actifs, $mult, $per) {
     foreach ($voulus as $v) $form .= '<input type="hidden" name="options[]" value="' . esc_attr($v) . '">';
     $form .= $actif
         ? '<button class="btn btn-light btn-sm" type="submit">' . aled08e_icon('x') . '<span>Retirer de mon abonnement</span></button>'
-        : '<button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('plus') . '<span>Ajouter à mon abonnement</span></button>';
-    $form .= '</form>';
+        : '<button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('plus') . '<span>Ajouter et payer</span></button>';
+    $form .= '</form>' . ($actif ? '' : '<p class="ex-delai">' . aled08e_icon('credit-card') . '<span>La part du mois en cours est payée tout de suite, puis c’est avec votre abonnement.</span></p>');
     return '<article class="ex-carte ex-mois c-' . aled08e_ex_couleur($o['group'] ?? '') . ($actif ? ' is-actif' : '') . '" id="ex-' . esc_attr($id) . '">'
         . '<header class="ex-tete"><span class="ex-ico">' . aled08e_icon($o['icon'] ?? 'plus') . '</span><div class="ex-nom"><strong>' . esc_html($o['name']) . '</strong>' . $badge . '</div>'
         . '<span class="ex-prix"><b>' . esc_html(aled08e_euro_txt($o['month'] * $mult)) . '</b><small>' . esc_html($per) . '</small></span></header>'
@@ -127,8 +127,8 @@ function aled08e_extras_html($uid, $famille, $flash = '') {
     if (!$sans) foreach ($possibles as $o) $mois[$o['group'] ?? 'quotidien'][] = $o;
 
     $h = '<section class="ex-hero"><span class="ex-hero-art" aria-hidden="true">' . aled08e_monster('mascotte') . '</span><div class="ex-hero-txt"><h3>Un petit plus pour votre site ?</h3>'
-        . '<p>Choisissez à la carte, quand vous en avez besoin. Alex s’en occupe, et tout s’ajoute à votre facture : rien à payer si vous ne prenez rien.</p></div>'
-        . '<ul class="ex-garanties"><li>' . aled08e_icon('circle-check') . '<span>Sans engagement</span></li><li>' . aled08e_icon('wrench') . '<span>Fait par Alex</span></li><li>' . aled08e_icon('clock') . '<span>Sous 7 jours au plus</span></li></ul></section>';
+        . '<p>Choisissez à la carte, quand vous en avez besoin. Vous payez par carte au moment de commander, et Alex s’en occupe.</p></div>'
+        . '<ul class="ex-garanties"><li>' . aled08e_icon('circle-check') . '<span>Paiement sécurisé par carte</span></li><li>' . aled08e_icon('wrench') . '<span>Fait par Alex</span></li><li>' . aled08e_icon('clock') . '<span>Sous 7 jours au plus</span></li></ul></section>';
 
     if ($flash) $h .= $flash;
     if ($actifs) {

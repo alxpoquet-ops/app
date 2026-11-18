@@ -197,6 +197,7 @@ require_once __DIR__ . '/includes/bulle-site.php';
 require_once __DIR__ . '/includes/extras.php';
 require_once __DIR__ . '/includes/articles.php';
 require_once __DIR__ . '/includes/boutique-gestion.php';
+require_once __DIR__ . '/includes/paiement-direct.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
 require_once __DIR__ . '/includes/mirette.php';
@@ -538,9 +539,11 @@ add_action('template_redirect', function () {
     if ($urgent) update_post_meta($pid, '_aled08_urgent', 1); // la date limite passera à 24 h quand Cerise l'aura transmise
     if ($extra && $xInfo && !empty($xInfo['packs'])) update_post_meta($pid, '_aled08_quantite', aled08e_extra_quantite($xInfo, wp_unslash($_POST['quantite'] ?? 0)));
     if ($urgent) { update_post_meta($pid, '_aled08_urgent', 1); $payes[] = 'urgent'; }
+    // payé tout de suite par carte (Stripe) : la demande reste en brouillon jusqu'au paiement ; sans Stripe, Alex facture à la main
+    $aPayer = $payes && !$famille && aled08e_pd_pret();
     if ($payes) {
         update_post_meta($pid, '_aled08_extras', $payes);
-        if (!$famille) foreach ($payes as $x) aled08e_extra_facturer($pid, $uid, $x);
+        if (!$famille && !$aPayer) foreach ($payes as $x) aled08e_extra_facturer($pid, $uid, $x);
     }
 
     $photo = '';
@@ -603,6 +606,25 @@ add_action('template_redirect', function () {
         . "\nDemande :\n$txt\n\n"
         . 'Suivre et répondre : ' . admin_url('post.php?post=' . $pid . '&action=edit') . "\n";
     $sujet = ($urgent ? 'URGENT 24 h, ' : '') . ($extra === 'packseo' ? 'Page visibilité Google à préparer : ' : ($xInfo ? 'Extra à faire (' . $xInfo['name'] . ') : ' : (!empty($_POST['aled08e_msg_id']) ? 'Suggestion acceptée : ' : 'Demande de modification : ')));
+    if ($aPayer) {
+        // la page de paiement : ce qui est payé, au bon prix (avec la quantité d'un pack)
+        $lignes = [];
+        foreach ($payes as $x) {
+            $xi = aled08e_a_la_demande($x, true);
+            if (!$xi) continue;
+            $q = $x === $extra ? max(1, (int) get_post_meta($pid, '_aled08_quantite', true)) : 1;
+            $lignes[] = [$xi['name'], (float) $xi['prix'], $q];
+        }
+        update_post_meta($pid, '_aled08_differe', ['sujet' => $sujet . $u->display_name, 'corps' => $corps, 'from' => $u->display_name . ' <' . $u->user_email . '>', 'par' => $par]);
+        wp_update_post(['ID' => $pid, 'post_status' => 'draft']);
+        $url = $lignes ? aled08e_pd_session($uid, $lignes, ['type' => 'demande', 'demande' => (int) $pid], $extra ? 'extras' : 'demandes') : new WP_Error('aled08_pd', 'rien à payer');
+        if (!is_wp_error($url)) { wp_redirect($url, 303); exit; }
+        // Stripe ne répond pas : la demande part quand même, Alex facture à la main
+        wp_update_post(['ID' => $pid, 'post_status' => 'private']);
+        delete_post_meta($pid, '_aled08_differe');
+        foreach ($payes as $x) aled08e_extra_facturer($pid, $uid, $x);
+        $corps .= "\n(Le paiement par carte n'a pas pu s'ouvrir : " . $url->get_error_message() . ". À FACTURER À LA MAIN.)\n";
+    }
     if ($par !== 'lia') wp_mail(aled08e_to(), $sujet . $u->display_name, $corps, aled08e_mail_headers($u->display_name . ' <' . $u->user_email . '>')); // avec Cerise, Alex reçoit la demande claire à la transmission
     do_action('aled08e_demande_creee', $pid, $par, $uid);
 
@@ -1020,13 +1042,13 @@ function aled08e_dashboard() {
     $m = isset($_GET['m']) ? sanitize_key(wp_unslash($_GET['m'])) : '';
     $msgs = [
         'ok' => ['esp-empty', 'Demande envoyée, merci ! Elle est bien arrivée, et vous suivez son avancement juste en dessous.'],
-        'changer_ok' => ['esp-empty', 'C’est enregistré : vos extras changent à votre prochaine échéance.' . (aled08e_energie_on() ? ' Votre énergie change le 1er du mois prochain.' : '')],
+        'changer_ok' => ['esp-empty', 'C’est enregistré ! Un extra ajouté est actif tout de suite : la part du mois en cours est payée maintenant par carte, puis il suit votre abonnement. Un extra retiré n’est plus facturé.'],
         'changer_rien' => ['esp-empty', 'Rien n’a changé : ce sont déjà vos extras.'],
         'changer_erreur' => ['esp-warn', 'Le changement n’a pas pu se faire tout seul : Alex est prévenu et s’en occupe.'],
         'boost' => ['esp-empty', 'Demande envoyée à Alex : c’est une intervention en plus, ' . $boostTxt . ' ajoutés à votre prochaine facture.'],
         'boost_accord' => ['esp-warn', 'Votre intervention d’Alex ' . $periodeDu . ' est utilisée. Cochez la case « une intervention en plus » (' . $boostTxt . ') pour envoyer cette demande.'],
         'urgent_ok' => ['esp-empty', 'Demande envoyée : Alex la traite sous ' . ($D['delais']['urgent'] ?? '24 heures') . ', du lundi au vendredi. Le supplément est ajouté à votre prochaine facture.'],
-        'extra_ok' => ['esp-empty', 'C’est commandé, merci ! Le prix est ajouté à votre prochaine facture. Vous suivez l’avancement ici.'],
+        'extra_ok' => ['esp-empty', 'C’est commandé, merci ! Alex s’en occupe. Vous suivez l’avancement dans vos demandes.'],
         'extra_accord' => ['esp-warn', 'Cochez la case qui accepte le prix avant de commander.'],
         'lia_epuise' => ['esp-warn', 'Il ne vous reste pas assez d’énergie pour cette demande. Raccourcissez-la, redonnez de l’énergie dans l’onglet Outils, ou choisissez Alex.'],
         'lia_limite' => ['esp-warn', 'Vous avez utilisé vos ' . aled08e_limite('bricouMois', 8) . ' petites retouches du mois avec Bricou. Elles reviennent le 1er du mois. Pour celle-ci, choisissez Alex.'],
@@ -1159,7 +1181,7 @@ function aled08e_dashboard() {
 
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
           <h2 class="app-h">Mes demandes</h2>
-          <?php echo $flash; // phpcs:ignore ?>
+          <?php echo aled08e_pd_flash_html() . $flash; // phpcs:ignore ?>
           <?php echo aled08e_gauge_zone_html($uid); // phpcs:ignore ?>
           <section class="bricou-bloc" aria-label="Votre demande de modification">
           <div class="bricou-tete"><span class="bricou-art" aria-hidden="true"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?></span><div><strong>Une modification ? Dites-le à Cerise</strong><p>Écrivez ce que vous voulez changer, avec une photo si besoin. Cerise vous aide à bien le formuler, vous le fait vérifier, puis le transmet à Alex, qui fait la modification.</p></div></div>
@@ -1174,7 +1196,7 @@ function aled08e_dashboard() {
             <input type="hidden" name="aled08e_demande" value="1">
             <?php wp_nonce_field('aled08e_demande', '_aled08e'); ?>
             <input type="hidden" name="par" value="lia" data-par>
-            <?php $xUrg = aled08e_a_la_demande('urgent'); if ($xUrg && !$famille) : ?><label class="check"><input type="checkbox" name="urgent" value="1"><span>Je la veux sous <?php echo esc_html($D['delais']['urgent'] ?? '24 heures'); ?>, du lundi au vendredi (<?php echo esc_html(aled08e_euro_txt($xUrg['prix'])); ?> ajoutés à ma prochaine facture)</span></label><?php endif; ?>
+            <?php $xUrg = aled08e_a_la_demande('urgent'); if ($xUrg && !$famille) : ?><label class="check"><input type="checkbox" name="urgent" value="1"><span>Je la veux sous <?php echo esc_html($D['delais']['urgent'] ?? '24 heures'); ?>, du lundi au vendredi (<?php echo esc_html(aled08e_euro_txt($xUrg['prix'])); ?>, payés par carte en envoyant la demande)</span></label><?php endif; ?>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" name="demande" rows="4" maxlength="4000" required placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" name="photos[]" accept="image/*" multiple class="sr-only" data-req-file><?php echo aled08e_icon('image-plus'); // phpcs:ignore ?><span data-req-file-name>Ajouter jusqu’à 3 photos (facultatif)</span></label>
             <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Envoyer ma demande</span></button>
@@ -1187,7 +1209,7 @@ function aled08e_dashboard() {
 
         <div class="app-panel" role="tabpanel" id="t-extras" aria-labelledby="tab-extras" hidden>
           <h2 class="app-h">Les extras</h2>
-          <?php echo aled08e_extras_html($uid, $famille, $flash . $flashForfait); // phpcs:ignore ?>
+          <?php echo aled08e_extras_html($uid, $famille, aled08e_pd_flash_html() . $flash . $flashForfait); // phpcs:ignore ?>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-tableau" aria-labelledby="tab-tableau" hidden>
