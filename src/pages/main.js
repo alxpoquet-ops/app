@@ -58,14 +58,37 @@ function formHidden() {
 // ====================================================================== ACCUEIL
 // La phrase principale d'abord (config.phrase), puis le positionnement (un site, un but), les prix en clair,
 // la bande, et pourquoi c'est moins cher. Peu de blocs : la plupart des visiteurs sont sur téléphone.
+// La vitrine de l'accueil : une petite boutique (store rayé, enseigne, vitre éclairée) et un repère de carte au-dessus : on la voit, on la trouve.
+function vitrineSvg() {
+  const etoile = (x, y, k) => `<path class="vit-etoile" style="animation-delay:${k * 0.7}s" transform="translate(${x} ${y})" d="M0-11l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FFE07A"/>`;
+  return `<svg class="vitrine" viewBox="0 0 360 300" aria-hidden="true" focusable="false">
+  <defs><radialGradient id="vit-lueur" cx="50%" cy="55%" r="60%"><stop offset="0" stop-color="#FFE9A8" stop-opacity=".5"/><stop offset="1" stop-color="#FFE9A8" stop-opacity="0"/></radialGradient>
+  <linearGradient id="vit-vitre" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF8D9"/><stop offset="1" stop-color="#FFE07A"/></linearGradient></defs>
+  <ellipse cx="170" cy="180" rx="175" ry="125" fill="url(#vit-lueur)"/>
+  <ellipse cx="180" cy="284" rx="150" ry="11" fill="#000" opacity=".28"/>
+  <rect x="50" y="80" width="260" height="204" rx="22" fill="#FFFDF9"/>
+  <rect x="50" y="250" width="260" height="34" rx="14" fill="#EDE6FB"/>
+  <rect x="84" y="50" width="192" height="46" rx="16" fill="#B9A6FF"/>
+  <rect x="108" y="67" width="96" height="12" rx="6" fill="#2E2A47"/><rect x="214" y="67" width="38" height="12" rx="6" fill="#FFFDF9" opacity=".85"/>
+  <rect x="74" y="152" width="142" height="104" rx="14" fill="url(#vit-vitre)"/>
+  <path d="M90 164h22l-30 52v-44a8 8 0 0 1 8-8z" fill="#fff" opacity=".45"/>
+  <rect x="66" y="252" width="158" height="12" rx="6" fill="#D9CFF5"/>
+  <rect x="236" y="152" width="56" height="132" rx="12" fill="#7EDDB5"/>
+  <rect x="246" y="164" width="36" height="48" rx="8" fill="#DDF7EC"/>
+  <circle cx="248" cy="228" r="4.500" fill="#2E2A47"/>
+  <rect x="36" y="96" width="288" height="12" rx="6" fill="#FF8FB8"/>
+  <path d="M40 104h40v28a20 20 0 0 1-40 0z" fill="#FF9EC4"/><path d="M80 104h40v28a20 20 0 0 1-40 0z" fill="#FFF1F6"/><path d="M120 104h40v28a20 20 0 0 1-40 0z" fill="#FF9EC4"/><path d="M160 104h40v28a20 20 0 0 1-40 0z" fill="#FFF1F6"/><path d="M200 104h40v28a20 20 0 0 1-40 0z" fill="#FF9EC4"/><path d="M240 104h40v28a20 20 0 0 1-40 0z" fill="#FFF1F6"/><path d="M280 104h40v28a20 20 0 0 1-40 0z" fill="#FF9EC4"/>
+  <g class="vit-pin"><path d="M300 0c-17 0-30 13-30 29 0 21 30 46 30 46s30-25 30-46c0-16-13-29-30-29z" fill="#FF8FB8"/><circle cx="300" cy="29" r="11" fill="#FFFDF9"/></g>
+  ${etoile(28, 60, 0)}${etoile(238, 22, 1)}${etoile(340, 120, 2)}
+</svg>`.replace('.500', '.5');
+}
 function home() {
-  const titre = C.phrase.titre.replace('une rue où personne ne passe', '<mark>une rue où personne ne passe</mark>');
   const art = (b) => (b.monstre === 'lia' ? monster('coucou') : C.petit(b.monstre));
   const body = `<section class="hero">
   <div class="container hero-in">
     <div class="hero-text">
-      <h1>${titre}</h1>
-      <p class="hero-lead">${esc(C.phrase.suite)} Notre métier, c’est de vous rendre visible.</p>
+      <h1>Sans site internet, votre vitrine est dans <mark>une rue où personne ne passe</mark>.</h1>
+      <p class="hero-lead">Un site vous rend visible. C’est notre métier.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</div>
       <ul class="hero-points">
         <li>${icon('check')}Dès ${euro(creation.prix)}, prix affichés</li>
@@ -73,23 +96,19 @@ function home() {
         <li>${icon('check')}Quelqu’un qui vous répond</li>
       </ul>
     </div>
-    <div class="hero-art hero-scene" aria-hidden="true">
-      <div class="scene-site">
-        <p class="scene-bar"><i></i><i></i><i></i><span></span></p>
-        <div class="scene-page">
-          <b class="sc-t"></b><b class="sc-t sc-t2"></b><b class="sc-l"></b><b class="sc-l sc-l2"></b>
-          <span class="sc-btn"></span>
-          <div class="sc-cards"><i></i><i></i><i></i></div>
-        </div>
-      </div>
-      <span class="scene-m sm-1">${C.petit('mochi')}</span>
-      <span class="scene-m sm-2">${C.petit('fantome', { humeur: 'ravi' })}</span>
-      <span class="scene-m sm-3">${C.petit('gelee')}</span>
-      <span class="scene-m sm-4">${C.petit('bricou', { humeur: 'ravi' })}</span>
+    <div class="hero-art hero-vitrine" aria-hidden="true">
+      ${vitrineSvg()}
+      <span class="vit-m vit-m1">${C.petit('gelee', { humeur: 'ravi' })}</span>
+      <span class="vit-m vit-m2">${C.petit('bricou', { humeur: 'ravi' })}</span>
+      <span class="vit-m vit-m3">${monster('coucou')}</span>
       <p class="hero-tag">${icon('sparkles')}Fait par Alex et les Minis Monstres</p>
     </div>
   </div>
 </section>
+
+<section class="section section-citation"><div class="container">
+  <blockquote class="citation reveal"><p>« ${esc(C.phrase.titre)} »</p><p class="citation-suite">${esc(C.phrase.suite)} Nous, on est là pour ça.</p></blockquote>
+</div></section>
 
 <section class="section" id="prix"><div class="container">
   <h2 class="section-title">Trois sites pour être visible</h2>
@@ -99,7 +118,7 @@ function home() {
 
 <section class="section section-soft" id="visible"><div class="container">
   <h2 class="section-title">Notre métier : vous rendre visible</h2>
-  <p class="section-sub">Un site internet, c’est votre vitrine dans une rue où l’on passe.</p>
+  <p class="section-sub">Une vitrine, oui, mais dans une rue où l’on passe.</p>
   <div class="feats feats-3 feats-courts">
     <div class="feat reveal">${icon('search-check')}<h3>Un site que Google comprend</h3><p>Des pages claires et rapides, lisibles sur téléphone. Google sait ce que vous faites, et où.</p></div>
     <div class="feat reveal">${icon('tag')}<h3>Des prix affichés</h3><p>Pas de devis, pas de rendez-vous commercial. Le prix est le même pour tout le monde.</p></div>
@@ -594,7 +613,6 @@ function commanderPage() {
           ${field('ville', 'Ville', 'type="text" autocomplete="address-level2" maxlength="100"')}
         </div>
         <div class="field"><label for="o-message">Votre projet <span class="opt">(facultatif)</span></label><textarea id="o-message" name="message" maxlength="5000" placeholder="Votre activité, vos idées, un site que vous aimez…"></textarea></div>
-        <input type="hidden" name="parrain" value="">
         </div>
       </fieldset>
 

@@ -10,7 +10,7 @@ const GLOSSAIRE = require('../src/content/glossaire');
 const SAUTE = new Set(['a', 'button', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'script', 'style', 'svg', 'textarea', 'code', 'pre', 'title', 'label', 'option', 'select', 'summary', 'figcaption', 'nav', 'template', 'noscript', 'small', 'em', 'b', 'strong', 'dt', 'th', 'legend']);
 const VIDES = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'ellipse', 'use', 'stop']);
 // Des blocs entiers où un « ? » gênerait (récapitulatifs de prix, formulaires, démo de l'espace client, cartes cliquables)
-const CLASSES_SAUTEES = /\b(b-sum|o-sum|o-form|b-steps|app|app-shell|lia-flot|client-card|guide-card|promo|type-card|doc-toc|cmp|terme|plan-list|cf-liste|site-carte|formule|posi|deroulant-titre)\b/;
+const CLASSES_SAUTEES = /\b(b-sum|o-sum|o-form|b-steps|app|app-shell|lia-flot|client-card|guide-card|promo|type-card|doc-toc|cmp|terme|plan-list|cf-liste|site-carte|formule|posi|deroulant-titre|builder|presente)\b/;
 
 // Les mots qui font partie de l'expression quand ils suivent un mot du glossaire (« maintenance technique », « référencement local renforcé »)
 const SUITE_ADJ = /^(?:[  ](?:techniques?|locale?|locaux|naturels?|renforcée?s?|web|internet|automatiques?|sécurisée?s?|mutualisée?s?|gratuite?s?|payante?s?|structurées?|de base))+(?![\p{L}\p{N}-])/iu;

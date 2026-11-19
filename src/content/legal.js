@@ -4,7 +4,7 @@
 // Règles : aucun tiret long, aucun point-virgule, phrases courtes, rien d'invérifiable. Chaque terme technique est
 // expliqué la première fois qu'il apparaît dans un article. Le nom de marque vient de site.name.
 const cfg = require('../config');
-const { site, annuel, paiement, fidelite, forfaits, lissage, types, creation, bande, limites, aLaDemande, creationSeule } = cfg;
+const { site, paiement, fidelite, forfaits, lissage, types, creation, bande, limites, aLaDemande, creationSeule } = cfg;
 const L = site.legal;
 const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
@@ -32,7 +32,6 @@ const T = (id) => types.find((t) => t.id === id) || {};
 const ESS = T('une-page'), VIS = T('vitrine'), BOU = T('boutique'); // les trois sites
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // abonnement Mini, facultatif
 const AUTO = creationSeule.name; // sans abonnement : Autonomie
-const parAn = (f) => f.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const DATE_OFFRE = '19 novembre 2026'; // nouvelle offre : clause de transition (article 7)
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
 const listeDelais = types.map((t) => `${t.name} : ${t.delai}`).join(', ');
@@ -219,7 +218,7 @@ La ${minus(pageGoogle.name)} se commande depuis l’espace client. Elle est pay�
 
 **La formule ${AUTO}, ${eur(creationSeule.month)} € par mois.** Le client paie seulement son site, sans abonnement. Il gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. Les Minis Monstres ne fournissent ni hébergement ni nom de domaine. Une fois le site validé et le reste réglé, ou son paiement en plusieurs fois mis en place, le client reçoit l’export de son site, avec une courte notice d’installation. Il fait l’installation lui-même, ou avec l’aide de son hébergeur. La maintenance, la sécurité et les modifications ne sont pas comprises. Le client peut prendre l’abonnement ${mini.name} plus tard.
 
-**L’abonnement ${mini.name}, ${eur(mini.month)} € par mois.** Les Minis Monstres installent le site, le mettent en ligne et le font vivre (article 6). Payé à l’année, l’abonnement bénéficie de ${annuel.moisOfferts} mois offerts.
+**L’abonnement ${mini.name}, ${eur(mini.month)} € par mois.** Les Minis Monstres installent le site, le mettent en ligne et le font vivre (article 6).
 
 **Devis.** Une refonte complète du site, une traduction ou une fonction nouvelle, comme une prise de rendez-vous, fait l’objet d’un devis. Le client l’accepte avant le début du travail.
 
@@ -260,7 +259,7 @@ L’abonnement ${mini.name} est facultatif. Le client peut le prendre au moment 
 
 Le délai de traitement des modifications est un délai habituel, donné à titre indicatif. Il ne constitue pas une garantie.
 
-**Paiement.** L’abonnement est prélevé d’avance, chaque mois ou chaque année, selon le choix du client. À l’année, le client paie ${12 - annuel.moisOfferts} mois sur 12, soit ${annuel.moisOfferts} mois offerts : ${eur(parAn(mini))} € par an pour ${mini.name}. Le client peut passer du mois à l’année, ou de l’année au mois, au renouvellement.
+**Paiement.** L’abonnement est prélevé d’avance, chaque mois : ${eur(mini.month)} € par mois pour ${mini.name}.
 
 Les paiements sont confiés à Stripe, le prestataire de paiement en ligne, par carte bancaire ou par prélèvement SEPA, c’est-à-dire directement sur le compte bancaire. Les Minis Monstres ne voient pas et ne conservent pas les données bancaires. Chaque facture est envoyée par e-mail et reste disponible dans l’espace client.
 

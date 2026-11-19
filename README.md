@@ -3,7 +3,7 @@
 Site des **Minis Monstres** (agence web d'Alex) : des sites internet à petit prix, pensés pour Google, avec un espace client pour demander ses modifications.
 
 - **Trois sites, payés une fois** (offre du 19 novembre 2026) : 👾 Site Essentiel 500 € (une page, « Exister sur internet »), 🚀 Site Visibilité 750 € (jusqu'à 20 pages, « Être trouvé sur Google »), 🛒 Site Boutique 1 200 € (« Vendre sur internet »). Acompte de 25 % à la commande, le reste à la réception, en une fois ou en 6 ou 12 fois sans frais. Révisions illimitées jusqu'à validation, export du site possible.
-- **Ensuite, au choix, sans abonnement imposé** : ⚪ Autonomie, 0 € par mois (le client gère hébergement, nom de domaine, sauvegardes et mises à jour, et reçoit l'export de son site), ou 🔵 Mini, 10 € par mois sans engagement (hébergement, nom de domaine, sauvegardes automatiques, sécurité, maintenance technique, espace client, modifications incluses en 48 h au plus, une demande à la fois). À l'année : 2 mois offerts.
+- **Ensuite, au choix, sans abonnement imposé** : ⚪ Autonomie, 0 € par mois (le client gère hébergement, nom de domaine, sauvegardes et mises à jour, et reçoit l'export de son site), ou 🔵 Mini, 10 € par mois sans engagement (hébergement, nom de domaine, sauvegardes automatiques, sécurité, maintenance technique, espace client, modifications incluses en 48 h au plus, une demande à la fois).
 - **Trois extras** : 📈 page de visibilité Google, 15 € la page, payée une fois par carte depuis l'espace client ; 🌍 traduction anglaise, sur devis ; ⚙️ fonctionnalité spécifique, sur devis.
 - **Comparaison honnête** : `marche.fois` vaut « 2 à 4 » (site vitrine de cinq pages chez un indépendant, 1 500 à 3 000 €, face au Site Visibilité à 750 €).
 - **Il n'y a plus** d'option à la création, d'extra au mois ni de lot d'articles payant pour la boutique : le client gère son catalogue librement.
@@ -18,7 +18,7 @@ Site **statique**, rapide, sans base de données : un petit générateur Node.js
 | Rubrique | Adresse | Contenu |
 |---|---|---|
 | Accueil | `/` | Phrase principale, les trois sites, Autonomie ou Mini, espace client, visibilité Google |
-| Créer mon site | `/creer-mon-site/` | **Configurateur** : choix du site, Autonomie ou Mini, nom de domaine vérifié en direct, au mois ou à l'année, récapitulatif |
+| Créer mon site | `/creer-mon-site/` | **Configurateur** : choix du site, Autonomie ou Mini, nom de domaine vérifié en direct, récapitulatif |
 | Tarifs | `/tarifs/` | Les trois sites (500, 750, 1 200 €), Autonomie ou Mini (10 € par mois), les trois extras, la comparaison avec le marché |
 | Nos outils | `/nos-outils/` | Demandes de modification (Cerise précise, Bricou fait) ; outils gratuits (QR code, lien d'avis, factures) |
 | Mon espace (démo) | `/mon-espace/` | Démo de l'espace client : onglets Accueil, Demandes, Extras, Ma boutique, Mon compte |
@@ -30,7 +30,7 @@ Chaque rubrique a sa couleur pastel (menu, pastille en haut de page) pour qu'on 
 
 ## Où changer les prix
 
-Tout est dans **`src/config.js`** : `types` (les trois sites et leurs prix), `creation` (prix et nombre de pages), `forfaits` (Mini), `creationSeule` (Autonomie), `aLaDemande` (extras), `annuel` (mois offerts), `fidelite`, `paiement`, `marche` (repères du marché), `bande`, `phrase`. Le site, le configurateur et les données structurées se mettent à jour au prochain `npm run build`.
+Tout est dans **`src/config.js`** : `types` (les trois sites et leurs prix), `creation` (prix et nombre de pages), `forfaits` (Mini), `creationSeule` (Autonomie), `aLaDemande` (extras), `fidelite`, `paiement`, `marche` (repères du marché), `bande`, `phrase`. Le site, le configurateur et les données structurées se mettent à jour au prochain `npm run build`.
 
 L'espace client est ouvert sur `/mon-espace/` (WordPress, extension « ALED08 Espace client »). Le mode d'emploi complet du propriétaire (commandes, Stripe, noms de domaine, comptes automatiques) est dans `docs/gestion-du-site.md`.
 
@@ -79,7 +79,7 @@ Le guide du propriétaire : `docs/gestion-du-site.md`.
 | `src/lib/components.js` | Cartes des forfaits, configurateur, maquettes de l'espace client, comparatif |
 | `src/lib/monsters.js` | Les mascottes (Cerise en cinq humeurs, Alex à lunettes), en SVG dessiné à la main, et le logo |
 | `src/assets/css/style.css` | Le design (couleurs pastel dans `:root`) |
-| `src/assets/js/main.js` | Menu, au mois ou à l'année, configurateur, vérification du nom de domaine, formulaire |
+| `src/assets/js/main.js` | Menu, configurateur, vérification du nom de domaine, formulaire |
 
 ## Structure
 

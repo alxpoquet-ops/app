@@ -14,7 +14,7 @@
 // 'base' (l'abonnement Mini), ou l'id d'un extra de config.aLaDemande encore proposé ('packseo', 'anglais', 'specifique').
 // Le prix affiché vient de config.js. Chaque « pourquoi » doit coller à ce qui est conseillé.
 // (Le code événement a été retiré le 17 novembre 2026 : un seul champ « Code promo » à la commande ; le parrainage est retiré.)
-const { creation, forfaits, paiement, lissage, annuel, marche, bande, evenement, types, creationSeule } = require('../config');
+const { creation, forfaits, paiement, lissage, marche, bande, evenement, types, creationSeule } = require('../config');
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
@@ -483,7 +483,7 @@ Avec l’abonnement ${mini.name}, le président, la secrétaire ou le trésorier
 ## Un budget qui se vote
 
 - **Le site** : ${prix} € pour un ${ESS.name}, avec ${acompte} à la commande et le reste à la réception, ou étalé sur ${durees} mois sans frais.
-- **Ensuite, au choix** : ${AUTO}, si un bénévole gère le site, ou ${mini.name}, à ${eur(mini.month)} € par mois ou ${eur(mini.month * (12 - annuel.moisOfferts))} € à l’année, sans engagement.
+- **Ensuite, au choix** : ${AUTO}, si un bénévole gère le site, ou ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
 
 Pour la plupart des associations, une page suffit, sans aucun extra. Avec plusieurs sections, comme le foot, la gym et la randonnée, chacune peut avoir sa page grâce au ${VIS.name}, à ${prixVis} €.
 

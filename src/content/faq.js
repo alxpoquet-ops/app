@@ -14,7 +14,7 @@
 // Tour global du 19 novembre 2026 : questions regroupées (59 → 44), même ordre que l'offre (le site, puis Autonomie ou Mini,
 // enfin les extras), « visibilité sur Google » plutôt que « référencement », « modification » plutôt que « retouche ».
 const cfg = require('../config');
-const { forfaits, annuel, lissage, paiement, fidelite, creation, marche, bande, limites, aLaDemande, types, creationSeule } = cfg;
+const { forfaits, lissage, paiement, fidelite, creation, marche, bande, limites, aLaDemande, types, creationSeule } = cfg;
 
 const { sourcesInline, INDEPENDANT_DES: INDEP } = require('../lib/components');
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
@@ -34,7 +34,6 @@ const ESS = T('une-page'), VIS = T('vitrine'), BOU = T('boutique');
 // Un seul abonnement, facultatif : Mini (id 'base'). Sans abonnement : Autonomie (config.creationSeule).
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0];
 const AUTO = creationSeule.name;
-const parAn = (f) => f.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
 // Les extras encore proposés (config.aLaDemande, non retirés).
 const extra = (id) => aLaDemande.find((x) => x.id === id && !x.retire) || {};
@@ -85,7 +84,7 @@ module.exports = {
     { q: 'Quels sont les extras ?', a: `Il y en a trois, jamais imposés. La ${minus(pageGoogle.name)}, à ${prixPage} € la page, se commande dans votre espace client et se paie une fois, par carte. La ${minus(anglais.name)} et la ${minus(specifique.name)}, par exemple une prise de rendez-vous, se font sur devis.` },
     { q: 'Les modifications sont-elles limitées ?', a: `Non, pas avec ${mini.name} : vous en demandez autant que vous voulez, une à la fois, et chacune peut prendre ${delaiModif}. Un texte, des photos, un horaire, une page à corriger : ce sont des modifications. Une nouvelle page pour Google, une traduction ou une refonte complète sont des extras ou un devis.` },
     { q: 'Le nom de domaine et l’hébergement sont-ils compris ?', a: `Oui, avec l’abonnement ${mini.name}, tant qu’il est actif. Le nom de domaine, comme votre-nom.fr, est réservé à votre nom. Vous avez déjà les vôtres ? Choisissez ${AUTO}, et vous les gardez.` },
-    { q: 'Au mois ou à l’année ?', a: `Comme vous préférez. À l’année, ${annuel.moisOfferts} mois sont offerts : ${mini.name} revient à ${eur(parAn(mini))} € par an au lieu de ${eur(12 * mini.month)} €.` },
+    { q: 'Comment se paie l’abonnement ?', a: `Au mois : ${eur(mini.month)} € par mois, sans engagement. Il démarre à la réception de votre site et s’arrête quand vous le décidez.` },
     { q: 'J’ai un code promo. Où le mettre ?', a: 'Dans la case « Code promo », juste au-dessus du bouton Commander. Il réduit le prix du site, jamais celui de l’abonnement ni des extras.' },
     { q: 'Et pour une boutique en ligne ?', a: `C’est le ${BOU.name}, à ${mille(BOU.price)} € payés une fois : tout le ${VIS.name}, avec le panier et le paiement en ligne sécurisé. Nous configurons la boutique, puis vous gérez vos produits, vos prix et vos commandes depuis votre espace client, sans limite d’articles.` },
     { q: `Pourquoi est-ce ${marche.fois} fois moins cher qu’un site vitrine classique ?`, a: `Parce que notre méthode est rodée et que les Minis Monstres se chargent de ce qui se répète. Chez un indépendant, un site vitrine de ${marche.pagesCompare} pages coûte en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €, contre ${eur(VIS.price)} € pour notre ${VIS.name}. Ces fourchettes viennent de prestataires, donc prudence : des indépendants existent dès ${eur(INDEP)} €. Sources consultées en novembre 2026 : ${sourcesInline()}.` },

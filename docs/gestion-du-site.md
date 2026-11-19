@@ -167,7 +167,7 @@ Le bouton « Gérer mon paiement et mes factures » de l'espace client ouvre le 
 
 1. Stripe : **Paramètres › Facturation › Portail client**.
 2. Autorisez : **mettre à jour le moyen de paiement**, **consulter l'historique des factures**.
-3. N'autorisez PAS : annuler l'abonnement, changer d'offre, modifier la quantité. L'engagement pendant le paiement en plusieurs fois et les changements d'abonnement (passage du mois à l'année) passent par vous (le client vous écrit, vous ajustez l'abonnement dans Stripe).
+3. N'autorisez PAS : annuler l'abonnement, changer d'offre, modifier la quantité. L'engagement pendant le paiement en plusieurs fois et les changements d'abonnement passent par vous (le client vous écrit, vous ajustez l'abonnement dans Stripe).
 4. Enregistrez. Le lien du portail est créé à chaque clic et expire en 5 minutes : il n'y a rien à copier.
 
 ## 7. Les factures : mention TVA et SIRET

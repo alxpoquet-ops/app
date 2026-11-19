@@ -13,7 +13,7 @@
 // Fil rouge : un site internet rend visible. Guides courts, pensés pour le téléphone.
 const cfg = require('../config');
 const { sourcesMd, INDEPENDANT_DES } = require('../lib/components');
-const { forfaits, paiement, annuel, lissage, creation, marche, bande, types, creationSeule, aLaDemande } = cfg;
+const { forfaits, paiement, lissage, creation, marche, bande, types, creationSeule, aLaDemande } = cfg;
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
 const acompte = (p) => eur(Math.round(p * paiement.acompte) / 100);
@@ -28,7 +28,6 @@ const AUTO = creationSeule.name; // sans abonnement
 const pageGoogle = aLaDemande.find((x) => x.id === 'packseo' && !x.retire) || { name: 'Page de visibilité Google', prix: 0 };
 const prixPage = eur(pageGoogle.prix); // la page de visibilité Google, payée une fois
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
-const annee = (f) => f.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const durees = lissage.durees.join(' ou ');
 // La petite bande : prénom et métier (« Cerise, la secrétaire »).
 const B = (id) => bande.find((b) => b.id === id);
@@ -280,7 +279,7 @@ Côté paiement, vous versez ${paiement.acompte} % à la commande et le reste à
 - **Un commerce avec un ${VIS.name} et ${mini.name}** : ${eur(VIS.price)} € + 12 × ${eur(mini.month)} € = **${eur(VIS.price + 12 * mini.month)} €**.
 - **Un créateur avec un ${BOU.name} et ${mini.name}** : ${mille(BOU.price)} € + 12 × ${eur(mini.month)} € = **${mille(BOU.price + 12 * mini.month)} €**.
 
-Les années suivantes, il ne reste que l'abonnement. Réglé à l'année, ${mini.name} coûte ${eur(annee(mini))} € au lieu de ${eur(12 * mini.month)} €, grâce aux ${annuel.moisOfferts} mois offerts.
+Les années suivantes, il ne reste que l'abonnement : ${eur(mini.month)} € par mois avec ${mini.name}, sans engagement.
 
 ## Pourquoi ces prix sont bas
 

@@ -11,7 +11,7 @@
 // vouvoiement, « site internet », « visibilité sur Google » plutôt que « référencement », « modification » plutôt que « retouche ».
 // Ordre de l'offre, toujours le même : le site (payé une fois), puis Autonomie ou Mini, enfin les extras.
 // Fil rouge : un site internet rend visible, et notre métier est d'apporter cette visibilité. Pages courtes, pensées pour le téléphone.
-const { site, creation, types, forfaits, annuel, lissage, paiement, marche, fidelite, clients, bande, creationSeule, aLaDemande } = require('../config');
+const { site, creation, types, forfaits, lissage, paiement, marche, fidelite, clients, bande, creationSeule, aLaDemande } = require('../config');
 
 // helpers
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
@@ -401,7 +401,7 @@ Et pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourq
 Une fois le site créé, vous choisissez qui le fait vivre.
 
 - **${AUTO}, ${eur(creationSeule.month)} € par mois** : vous recevez votre site prêt à installer. L’hébergement, le nom de domaine, les sauvegardes et les mises à jour sont à votre charge.
-- **${mini.name}, ${eur(mini.month)} € par mois** : nous nous occupons de tout. L’abonnement démarre à la réception du site, sans engagement. Payé à l’année, il vous offre ${annuel.moisOfferts} mois.
+- **${mini.name}, ${eur(mini.month)} € par mois** : nous nous occupons de tout. L’abonnement démarre à la réception du site, sans engagement.
 
 ## Ce que comprend l’abonnement ${mini.name}
 

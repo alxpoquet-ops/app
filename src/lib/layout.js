@@ -218,8 +218,8 @@ function liaFlot() {
       <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Cerise, de la bande des Minis Monstres ! Ici, on crée des sites internet pour vous rendre visible. Choisissez une question ou écrivez la vôtre.</p>
       <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Bonjour ! Dites-moi ce que vous voulez changer sur votre site, ou posez-moi une question.</p>
       <p class="lia-msg is-lia" data-lia-accueil="demo" hidden>Bonjour ! Ici, c’est une démonstration : écrivez-moi comme un client, je vous montre comment je réponds.</p>
-      <p class="lia-msg is-lia" data-lia-accueil="attente" hidden>Bonjour ! Je ne suis pas encore branchée dans cet espace. En attendant, écrivez votre demande dans l’onglet Mes demandes.</p>
-      <p class="lia-msg is-lia" data-lia-accueil="abonnement" hidden>Bonjour ! Je vous réponds ici avec ${ABO.name}, dès qu’il a démarré. En attendant, écrivez votre demande dans l’onglet Mes demandes.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="attente" hidden>Bonjour ! Je ne suis pas encore branchée dans cet espace. En attendant, écrivez votre demande dans l’onglet Demandes.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="abonnement" hidden>Bonjour ! Je vous réponds ici avec ${ABO.name}, dès qu’il a démarré. En attendant, écrivez votre demande dans l’onglet Demandes.</p>
     </div>
     <div class="lia-puces" data-lia-liens="site">
       ${questions.map(([q], i) => `<button type="button" data-lia-q="${i}">${q}</button>`).join('')}
