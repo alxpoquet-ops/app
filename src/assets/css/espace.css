@@ -1056,3 +1056,14 @@ button.is-confirmer.is-confirmer, .btn.is-confirmer.is-confirmer, .req-annul .li
 .art-coche input { width: 22px; height: 22px; margin: 0; accent-color: #FF8EBF; cursor: pointer; }
 .art-carte.est-coche { box-shadow: 0 0 0 3px var(--pink-d) inset, var(--shadow-sm); }
 .art-carte.est-coche .art-coche { background: var(--pink); }
+
+/* Les menus de l'espace client : pas de mot coupé. Le point n'apparaît que s'il y a la place (ordinateur) */
+.bg-nav a.bg-lien.is-on::after { display: none; }
+.bg-nav a.bg-lien span { overflow-wrap: normal; word-break: keep-all; hyphens: none; }
+.app-side .app-tabs button span { overflow-wrap: normal; word-break: keep-all; hyphens: none; }
+@media (max-width: 899px) {
+  .app-side .app-tabs button[aria-selected="true"]::after { display: none; }
+  .bg-nav a.bg-lien { padding: 10px 8px; gap: 7px; font-size: .92rem; letter-spacing: -.01em; }
+}
+@media (max-width: 380px) { .bg-nav a.bg-lien { font-size: .84rem; gap: 6px; } .bg-nav a.bg-lien svg { width: 17px; height: 17px; } }
+@media (min-width: 760px) { .bg-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
