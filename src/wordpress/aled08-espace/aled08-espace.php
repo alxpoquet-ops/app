@@ -455,7 +455,7 @@ function aled08e_annulation_html($p) {
     if ($pourquoi === 'quota') return '<span class="req-annul-info">Vous avez utilisé vos 3 annulations du mois. Pour annuler celle-ci, <a href="' . esc_url(home_url('/contact/')) . '">écrivez à Alex</a>.</span>';
     $illim = aled08e_annul_illimite((int) $p->post_author);
     $reste = ALED08E_ANNUL_MOIS - aled08e_annulations_mois($p->post_author);
-    return '<form method="post" action="' . esc_url(aled08e_url()) . '" class="req-annul" onsubmit="return confirm(\'Annuler cette demande ? Elle ne comptera pas dans vos interventions.\');">'
+    return '<form method="post" action="' . esc_url(aled08e_url()) . '" class="req-annul" data-confirmer>'
         . '<input type="hidden" name="aled08e_annuler" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_annuler_' . $p->ID, '_aled08e_annul', true, false)
         . '<button class="link-btn" type="submit">' . aled08e_icon('x') . 'Annuler la demande</button><small>' . ($illim ? 'annulations illimitées, à tout moment' : 'gratuit pendant 24 heures, encore ' . (int) $reste . ' ce mois-ci') . '</small></form>';
 }

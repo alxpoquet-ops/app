@@ -244,7 +244,7 @@ function aled08e_articles_html($uid) {
         if ($cats) {
             $h .= '<ul class="art-cat-liste">';
             foreach ($cats as $c) $h .= '<li><span><strong>' . esc_html($c['nom']) . '</strong><small>' . (int) $c['nombre'] . ' article' . ((int) $c['nombre'] > 1 ? 's' : '') . '</small></span>'
-                . '<form method="post" action="' . $act . '" onsubmit="return confirm(\'Supprimer cette catégorie ? Ses articles sont gardés.\');">' . $nonce . '<input type="hidden" name="aled08e_article" value="categorie_retirer"><input type="hidden" name="depuis" value="articles"><input type="hidden" name="id_categorie" value="' . (int) $c['id'] . '"><button class="btn btn-light btn-sm" type="submit">' . aled08e_icon('x') . '<span>Supprimer</span></button></form></li>';
+                . '<form method="post" action="' . $act . '" data-confirmer>' . $nonce . '<input type="hidden" name="aled08e_article" value="categorie_retirer"><input type="hidden" name="depuis" value="articles"><input type="hidden" name="id_categorie" value="' . (int) $c['id'] . '"><button class="btn btn-light btn-sm" type="submit">' . aled08e_icon('x') . '<span>Supprimer</span></button></form></li>';
             $h .= '</ul>';
         }
         $h .= '</details>';
@@ -259,7 +259,7 @@ function aled08e_articles_html($uid) {
                 . '<div class="art-corps"><strong>' . esc_html($a['nom']) . '</strong>' . ($a['prix'] !== '' ? '<b class="art-prix">' . (!empty($a['a_partir']) ? '<small>dès </small>' : '') . esc_html(number_format((float) $a['prix'], 2, ',', ' ')) . ' €</b>' : '<b class="art-prix art-prix-sans">Sans prix</b>') . $etat . (function () use ($a, $nomsCats) { $l = []; foreach ((array) ($a['categories'] ?? []) as $cid) if (isset($nomsCats[(int) $cid])) $l[] = '<em class="art-cat-tag">' . esc_html($nomsCats[(int) $cid]) . '</em>'; return $l ? '<span class="art-cat-tags">' . implode('', $l) . '</span>' : ''; })() . '</div>';
             if ($a['modifiable']) {
                 $h .= '<details class="art-edit"><summary>' . aled08e_icon('pencil') . '<span>Modifier</span></summary>' . aled08e_art_form($nonce, $act, 'e' . $k, $a, $cats)
-                    . '<form class="art-retirer" method="post" action="' . $act . '" onsubmit="return confirm(\'Retirer cet article de votre boutique ?\');">' . $nonce . '<input type="hidden" name="aled08e_article" value="retirer">' . $cible . '<button class="link-btn" type="submit">' . aled08e_icon('x') . 'Retirer cet article</button></form></details>';
+                    . '<form class="art-retirer" method="post" action="' . $act . '" data-confirmer>' . $nonce . '<input type="hidden" name="aled08e_article" value="retirer">' . $cible . '<button class="link-btn" type="submit">' . aled08e_icon('x') . 'Retirer cet article</button></form></details>';
             } else {
                 $h .= '<p class="art-note">Produit à variantes : faites une demande, on le règle avec vous.</p>';
             }
@@ -295,7 +295,7 @@ function aled08e_art_categories_html($uid) {
     if ($cats) {
         $h .= '<p class="app-sub">Vos catégories</p><ul class="art-cat-liste">';
         foreach ($cats as $c) $h .= '<li><span><strong>' . esc_html($c['nom']) . '</strong><small>' . (int) $c['nombre'] . ' article' . ((int) $c['nombre'] > 1 ? 's' : '') . '</small></span>'
-            . '<form method="post" action="' . $act . '" onsubmit="return confirm(\'Supprimer cette catégorie ? Ses articles sont gardés.\');">' . $nonce . '<input type="hidden" name="aled08e_article" value="categorie_retirer"><input type="hidden" name="id_categorie" value="' . (int) $c['id'] . '"><button class="btn btn-light btn-sm" type="submit">' . aled08e_icon('x') . '<span>Supprimer</span></button></form></li>';
+            . '<form method="post" action="' . $act . '" data-confirmer>' . $nonce . '<input type="hidden" name="aled08e_article" value="categorie_retirer"><input type="hidden" name="id_categorie" value="' . (int) $c['id'] . '"><button class="btn btn-light btn-sm" type="submit">' . aled08e_icon('x') . '<span>Supprimer</span></button></form></li>';
         $h .= '</ul>';
     } else $h .= '<p class="esp-empty">Pas encore de catégorie. Créez la première juste au-dessus.</p>';
     return $h . '<p class="app-note">Pour ranger un article dans une catégorie : rubrique « Mes articles », bouton « Modifier », puis cochez sa catégorie.</p>';

@@ -792,6 +792,23 @@
     });
     var startTab = (new URLSearchParams(location.search).get('outil') || location.hash.slice(1) || '').replace(/[^a-z]/g, '');
     if (startTab && $('[data-tab="' + alias(startTab) + '"]', app)) show(startTab);
+    // les rubriques de la boutique : on reste au même endroit de la page après le changement
+    $$('.bg-nav a.bg-lien', app).forEach(function (l) { l.addEventListener('click', function () { try { sessionStorage.setItem('aled08-y', String(window.scrollY)); } catch (e) {} }); });
+    try {
+      var y = sessionStorage.getItem('aled08-y');
+      if (y !== null) { sessionStorage.removeItem('aled08-y'); if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; var poser = function () { window.scrollTo(0, parseInt(y, 10) || 0); }; poser(); setTimeout(poser, 60); window.addEventListener('load', poser); }
+    } catch (e) {}
+    // supprimer, retirer, annuler : le bouton devient « Confirmer », un second appui valide
+    $$('form[data-confirmer]', app).forEach(function (f) {
+      f.addEventListener('submit', function (e) {
+        if (f._ok) return;
+        e.preventDefault();
+        var b = $('button[type=submit]', f); if (!b) return;
+        var avant = b.innerHTML;
+        f._ok = true; b.classList.add('is-confirmer'); b.innerHTML = '<span>Confirmer</span>';
+        setTimeout(function () { f._ok = false; b.classList.remove('is-confirmer'); b.innerHTML = avant; }, 4000);
+      });
+    });
   }
 
   function copyButtons(app, toast) {

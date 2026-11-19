@@ -129,7 +129,7 @@ else : ?>
       <li class="<?php echo $p['expire'] ? 'is-fini' : ''; ?>">
         <span class="bq-code"><?php echo esc_html($p['code']); ?></span>
         <span class="bq-det"><?php echo esc_html(implode(' · ', $det)); ?><small><?php echo $p['expire'] ? 'Terminé' : esc_html('Utilisé ' . (int) $p['utilise'] . ' fois' . ($p['limite'] ? ' sur ' . (int) $p['limite'] : '')); ?></small></span>
-        <form method="post" action="<?php echo esc_url(aled08e_url()); ?>" onsubmit="return confirm('Supprimer le code <?php echo esc_js($p['code']); ?> ?')"><?php echo $nonce; // phpcs:ignore ?><input type="hidden" name="id" value="<?php echo (int) $p['id']; ?>"><button class="bq-x" type="submit" name="aled08e_bq" value="promo_supprimer" aria-label="Supprimer le code <?php echo esc_attr($p['code']); ?>"><?php echo aled08e_icon('x'); // phpcs:ignore ?></button></form>
+        <form method="post" action="<?php echo esc_url(aled08e_url()); ?>" data-confirmer><?php echo $nonce; // phpcs:ignore ?><input type="hidden" name="id" value="<?php echo (int) $p['id']; ?>"><button class="bq-x" type="submit" name="aled08e_bq" value="promo_supprimer" aria-label="Supprimer le code <?php echo esc_attr($p['code']); ?>"><?php echo aled08e_icon('x'); // phpcs:ignore ?></button></form>
       </li>
       <?php endforeach; ?>
     </ul>

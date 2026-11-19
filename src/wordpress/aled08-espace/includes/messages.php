@@ -247,7 +247,7 @@ function aled08e_gauge_croix_ancienne($p) {
     $pourquoi = aled08e_annulation_possible($p);
     if ($pourquoi === 'deja') return '';
     if ($pourquoi !== '') return '<a class="gauge-x is-off" href="' . esc_url(home_url('/contact/')) . '" title="' . esc_attr($pourquoi === 'quota' ? 'Vos 3 annulations du mois sont utilisées : écrivez à Alex' : 'Après 24 heures, écrivez à Alex pour annuler') . '" aria-label="Annuler : écrire à Alex">' . aled08e_icon('x') . '</a>';
-    return '<form class="gauge-x-form" method="post" action="' . esc_url(aled08e_url()) . '" onsubmit="return confirm(\'Annuler cette demande ? Elle ne comptera pas dans vos interventions.\');">'
+    return '<form class="gauge-x-form" method="post" action="' . esc_url(aled08e_url()) . '" data-confirmer>'
         . '<input type="hidden" name="aled08e_annuler" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_annuler_' . $p->ID, '_aled08e_annul', true, false)
         . '<button class="gauge-x" type="submit" title="Annuler cette demande" aria-label="Annuler cette demande">' . aled08e_icon('x') . '</button></form>';
 }
@@ -347,7 +347,7 @@ function aled08e_gauge_zone_html($uid) {
 /* La croix pour annuler une demande en cours : à tout moment, sans limite. Rien n'a été changé sur le site avant la validation du visuel. */
 function aled08e_gauge_croix_v2($p) {
     if (get_post_meta($p->ID, '_aled08_annulee_le', true)) return '';
-    return '<form class="gauge-x-form" method="post" action="' . esc_url(aled08e_url()) . '" onsubmit="return confirm(\'Annuler cette demande ? Rien ne sera changé sur votre site.\');">'
+    return '<form class="gauge-x-form" method="post" action="' . esc_url(aled08e_url()) . '" data-confirmer>'
         . '<input type="hidden" name="aled08e_annuler" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_annuler_' . $p->ID, '_aled08e_annul', true, false)
         . '<button class="gauge-x" type="submit" title="Annuler cette demande" aria-label="Annuler cette demande">' . aled08e_icon('x') . '</button></form>';
 }
@@ -364,7 +364,7 @@ function aled08e_gauge_annulable($p) {
 }
 function aled08e_gauge_croix($p) {
     if (!aled08e_gauge_annulable($p)) return '';
-    return '<form class="gauge-x-form" method="post" action="' . esc_url(aled08e_url()) . '" onsubmit="return confirm(\'Annuler cette demande ?\');">'
+    return '<form class="gauge-x-form" method="post" action="' . esc_url(aled08e_url()) . '" data-confirmer>'
         . '<input type="hidden" name="aled08e_annuler" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_annuler_' . $p->ID, '_aled08e_annul', true, false)
         . '<button class="gauge-x" type="submit" title="Annuler cette demande" aria-label="Annuler cette demande">' . aled08e_icon('x') . '</button></form>';
 }
