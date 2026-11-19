@@ -10,7 +10,10 @@ const GLOSSAIRE = require('../src/content/glossaire');
 const SAUTE = new Set(['a', 'button', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'script', 'style', 'svg', 'textarea', 'code', 'pre', 'title', 'label', 'option', 'select', 'summary', 'figcaption', 'nav', 'template', 'noscript', 'small', 'em', 'b', 'strong', 'dt', 'th', 'legend']);
 const VIDES = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'ellipse', 'use', 'stop']);
 // Des blocs entiers où un « ? » gênerait (récapitulatifs de prix, formulaires, démo de l'espace client, cartes cliquables)
-const CLASSES_SAUTEES = /\b(b-sum|o-sum|o-form|b-steps|app|app-shell|lia-flot|client-card|guide-card|promo|type-card|doc-toc|cmp|terme)\b/;
+const CLASSES_SAUTEES = /\b(b-sum|o-sum|o-form|b-steps|app|app-shell|lia-flot|client-card|guide-card|promo|type-card|doc-toc|cmp|terme|plan-list|cf-liste|site-carte|formule|posi|deroulant-titre)\b/;
+
+// Les mots qui font partie de l'expression quand ils suivent un mot du glossaire (« maintenance technique », « référencement local renforcé »)
+const SUITE_ADJ = /^(?:[  ](?:techniques?|locale?|locaux|naturels?|renforcée?s?|web|internet|automatiques?|sécurisée?s?|mutualisée?s?|gratuite?s?|payante?s?|structurées?|de base))+(?![\p{L}\p{N}-])/iu;
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -65,8 +68,20 @@ function traiterMain(html, en, sauter) {
       const mm = x.re.exec(texte);
       if (!mm) continue;
       x.fait = true;
-      const fin = mm.index + mm[0].length;
-      texte = `${texte.slice(0, mm.index)}<span class="terme">${mm[0]}${bouton(x.t, en)}</span>${texte.slice(fin)}`;
+      // Le « ? » se place toujours À LA FIN de l'expression, jamais au milieu (« Maintenance technique ? », pas « Maintenance ? technique ») :
+      // après les adjectifs qui suivent le mot, ou en fin de ligne quand il ne reste qu'un ou deux mots avant la ponctuation.
+      let fin = mm.index + mm[0].length;
+      const suite = texte.slice(fin);
+      const adj = suite.match(SUITE_ADJ);
+      if (adj) fin += adj[0].length;
+      else {
+        const court = suite.match(/^((?:[  ][\p{L}\p{N}’'-]+){1,2})\s*(?=$|[.,;:!?()«»…])/u);
+        if (court && !/^[  ](et|ou|de|du|des|à|au|aux|en|est|sont|qui|que|pour|par|sur|avec|sans|c’est|se|ne|a|ont|reste|restent|étant|comme)\b/iu.test(court[1])) fin += court[1].length;
+      }
+      // seul le dernier mot reste collé au « ? » (pas de retour à la ligne entre les deux)
+      const expr = texte.slice(mm.index, fin);
+      const k = Math.max(expr.lastIndexOf(' '), expr.lastIndexOf(' '), expr.lastIndexOf(' '));
+      texte = `${texte.slice(0, mm.index)}${expr.slice(0, k + 1)}<span class="terme">${expr.slice(k + 1)}${bouton(x.t, en)}</span>${texte.slice(fin)}`;
       // le reste du texte, après l'ajout, ne doit pas être relu pour ce même mot : il a été marqué « fait »
     }
     out += texte;

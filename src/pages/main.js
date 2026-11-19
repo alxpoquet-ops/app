@@ -43,14 +43,13 @@ const T = (id) => types.find((t) => t.id === id);
 const round2 = (n) => Math.round(n * 100) / 100;
 // L'abonnement à l'année, et « une modification » (par Alex, chaque mois) écrit en toutes lettres
 const ABO_AN = C.year(ABO.month);
-const UNE_MODIF = ABO.quota === 1 ? 'une intervention' : `${ABO.quota} interventions`;
 // « par trimestre » (V2) ou « par mois »
 const PAR_PERIODE = ABO.periode === 'trimestre' ? 'par trimestre' : 'par mois';
 // Texte des appels à l'action de bas de page
-const CTA_TEXTE = 'Choisissez votre site en deux minutes. Vous voyez le prix tout de suite, et vous commandez quand vous êtes prêt.';
+const CTA_TEXTE = 'Un site internet vous rend visible, et c’est notre métier. Choisissez le vôtre en deux minutes : vous voyez le prix tout de suite.';
 // Champs cachés communs aux formulaires : horodatage anti-robot et champ piège.
 function formHidden() {
-  return `<input type="hidden" name="_t" value=""><div class="hp" aria-hidden="true"><label>Site web <input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>`;
+  return `<input type="hidden" name="_t" value=""><div class="hp" aria-hidden="true"><label>Ne pas remplir <input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>`;
 }
 
 // ====================================================================== ACCUEIL
@@ -58,12 +57,13 @@ function formHidden() {
 // la bande, et pourquoi c'est moins cher. Peu de blocs : la plupart des visiteurs sont sur téléphone.
 function home() {
   const titre = C.phrase.titre.replace('une rue où personne ne passe', '<mark>une rue où personne ne passe</mark>');
+  const art = (b) => (b.monstre === 'lia' ? monster('coucou') : C.petit(b.monstre));
   const body = `<section class="hero">
   <div class="container hero-in">
     <div class="hero-text">
       <h1>${titre}</h1>
-      <p class="hero-lead">${esc(C.phrase.suite)}</p>
-      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg btn-flaque')}${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</div>
+      <p class="hero-lead">${esc(C.phrase.suite)} Notre métier, c’est de vous rendre visible.</p>
+      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</div>
       <ul class="hero-points">
         <li>${icon('check')}Dès ${euro(creation.prix)}, prix affichés</li>
         <li>${icon('check')}Aucune obligation d’abonnement</li>
@@ -88,41 +88,36 @@ function home() {
   </div>
 </section>
 
-<section class="section" id="en-bref"><div class="container">
-  <h2 class="section-title">Trois sites, trois buts</h2>
-  <p class="section-sub">Choisissez celui qui vous ressemble. Le prix est affiché, le même pour tous.</p>
-  ${commun(C.positionnement())}
-</div></section>
-
-<section class="section section-soft" id="prix"><div class="container">
-  <h2 class="section-title">Les prix, en clair</h2>
-  <p class="section-sub">Votre site se paie une seule fois. Ensuite, c’est vous qui choisissez : ${euro(AUTO.month)} ou ${euro(ABO.month)} par mois.</p>
+<section class="section" id="prix"><div class="container">
+  <h2 class="section-title">Trois sites pour être visible</h2>
+  <p class="section-sub">D’abord votre site, payé une fois. Ensuite, ${esc(AUTO.name)} à ${euro(AUTO.month)} ou ${esc(ABO.name)} à ${euro(ABO.month)} par mois.</p>
   ${commun(C.offre({ compact: true }))}
 </div></section>
 
-<section class="section" id="qui-fait-quoi"><div class="container">
-  <h2 class="section-title">Qui fait quoi ?</h2>
-  <p class="section-sub">Alex conçoit votre site et vérifie tout. Les Minis Monstres l’aident, chacun son métier.</p>
-  ${C.bandeGrid({ prix: false })}
-  <p class="center more">${C.btn(sections.equipe.path, 'btn-light btn-flaque', sections.equipe.icon, 'Rencontrer la bande')}</p>
-</div></section>
-
-<section class="section section-soft c-butter">${C.deco('etoile', 'haut-gauche', 'ravi')}<div class="container">
-  <h2 class="section-title">Pourquoi c’est moins cher ?</h2>
-  <p class="section-sub">Pas de magie. Trois choses simples.</p>
-  <div class="feats feats-3">
-    <div class="feat reveal">${icon('list-checks')}<h3>Une méthode rodée</h3><p>On fait le même travail soigné pour chaque site. On sait où on va, donc on va vite.</p></div>
+<section class="section section-soft" id="visible"><div class="container">
+  <h2 class="section-title">Notre métier : vous rendre visible</h2>
+  <p class="section-sub">Un site internet, c’est votre vitrine dans une rue où l’on passe.</p>
+  <div class="feats feats-3 feats-courts">
+    <div class="feat reveal">${icon('search-check')}<h3>Un site que Google comprend</h3><p>Des pages claires et rapides, lisibles sur téléphone. Google sait ce que vous faites, et où.</p></div>
     <div class="feat reveal">${icon('tag')}<h3>Des prix affichés</h3><p>Pas de devis, pas de rendez-vous commercial. Le prix est le même pour tout le monde.</p></div>
     <div class="feat reveal">${icon('message-circle')}<h3>Quelqu’un qui répond</h3><p>Une question ? Vous écrivez, et on vous répond. Pas de standard, pas d’attente.</p></div>
   </div>
-  <p class="center more">${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
+  <p class="center more">${C.btn(sections.seo.path, 'btn-light', sections.seo.icon, 'Comment on vous rend visible')}</p>
+</div></section>
+
+<section class="section" id="qui-fait-quoi"><div class="container">
+  <h2 class="section-title">Alex et la bande</h2>
+  <p class="section-sub">Alex conçoit votre site et vérifie tout. Les Minis Monstres l’aident, chacun son métier.</p>
+  <ul class="bande-courte reveal">${bande.map((b) => `<li><span class="bande-courte-art" aria-hidden="true">${art(b)}</span><strong>${esc(b.nom)}</strong><small>${esc(b.role)}</small></li>`).join('')}</ul>
+  <p class="center more">${C.btn(sections.equipe.path, 'btn-light', sections.equipe.icon, 'Rencontrer la bande')}</p>
 </div></section>
 
 ${C.ctaBand({ title: 'On ouvre votre vitrine sur internet ?', text: 'Choisissez votre site en deux minutes. Le prix s’affiche tout de suite.' })}`;
   return {
     path: '/',
-    title: `Sites internet dès ${creation.prix} €, prix affichés | Les Minis Monstres`,
-    description: `Un site pour exister sur internet, être trouvé sur Google ou vendre en ligne : ${types.map((t) => euro(t.price)).join(', ')}, payé une fois. Abonnement au choix, jamais imposé.`,
+    bodyClass: 'page-accueil',
+    title: `Un site internet pour être visible, dès ${creation.prix} € | Les Minis Monstres`,
+    description: `Sans site internet, personne ne passe devant votre vitrine. On vous rend visible : ${types.map((t) => `${t.name} ${euro(t.price)}`).join(', ')}, payé une fois.`,
     crumbs: [HOME],
     body,
     priority: 1,
@@ -162,7 +157,7 @@ function clientPages(c) {
   const n = e ? e.pages : pagesDe(c);
   if (!n) return '';
   const produits = e && e.produits ? `<span class="client-pages-prod">et <b>${e.produits}</b> produit${s_(e.produits)} en vente</span>` : '';
-  const info = `<a class="client-i" href="${sections.seo.path}" aria-label="Pourquoi chaque page compte : le guide du référencement">${icon('info')}</a>`;
+  const info = `<a class="client-i" href="${sections.seo.path}" aria-label="Pourquoi chaque page compte : être trouvé sur Google">${icon('info')}</a>`;
   return `<span class="client-pages"><span class="client-pages-n"><b>${n}</b> page${s_(n)}</span><span class="client-pages-porte">${n} porte${s_(n)} d’entrée potentielle${s_(n)} depuis Google${info}</span>${produits}</span>`;
 }
 // Les sites en cours de création (pas notre propre site) : même carte, avec un badge « En cours » et sans lien
@@ -182,7 +177,7 @@ function creerPage() {
   const body = `${C.pageHero({
     section: 'creer',
     h1: 'Choisissez votre site en deux minutes',
-    lead: `D’abord votre site, payé une seule fois : ${types.map((t) => `${t.name} ${euro(t.price)}`).join(', ')}. Ensuite, qui s’en occupe : nous, avec ${ABO.name} à ${euro(ABO.month)} par mois, ou vous, avec ${AUTO.name} à ${euro(AUTO.month)}. Le total s’affiche en bas.`,
+    lead: `Trois façons d’être visible. D’abord votre site, payé une seule fois. Ensuite, ${AUTO.name} ou ${ABO.name}. Le total s’affiche en bas.`,
     crumbs,
   })}
 <section class="section section-builder"><div class="container">${C.configurator()}</div></section>
@@ -191,9 +186,9 @@ function creerPage() {
   <h2 class="section-title">Et ensuite ?</h2>
   ${C.steps([
     { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % du site. Le reste vient à la réception, en une fois ou étalé.` },
-    { t: 'On s’appelle', d: 'Un rendez-vous téléphonique pour découvrir votre activité et ce que vous attendez de votre site.' },
-    { t: 'Votre site est créé', d: 'Vous le voyez avant la mise en ligne. Vous dites ce qui doit changer, autant de fois qu’il le faut, jusqu’à ce qu’il vous plaise.' },
-    { t: 'Il est mis en ligne', d: `Avec ${ABO.name}, on s’occupe de tout. Avec ${AUTO.name}, je vous remets votre site, prêt à installer chez votre hébergeur.` },
+    { t: 'On s’appelle', d: 'Un rendez-vous téléphonique pour découvrir votre activité.' },
+    { t: 'Votre site est créé', d: 'Vous le voyez avant la mise en ligne, et vous dites ce qui doit changer, jusqu’à ce qu’il vous plaise.' },
+    { t: 'Il est mis en ligne', d: `Avec ${ABO.name}, on s’occupe de tout. Avec ${AUTO.name}, on vous remet votre site, prêt à installer chez votre hébergeur.` },
   ])}
 </div></section>
 
@@ -203,8 +198,8 @@ ${f.html}`;
     section: 'creer',
     bodyClass: 'page-creer',
     noMobileBar: true,
-    title: 'Créer mon site : choisissez-le en deux minutes | Les Minis Monstres',
-    description: `Choisissez votre site : ${ESS.name} ${creation.prix} €, ${VIS.name} ${creation.visibilite} € ou ${BOU.name} ${euro(creation.boutiquePrix)}. Puis ${AUTO.month} € ou ${ABO.month} € par mois. Le total s’affiche tout de suite.`,
+    title: 'Créer mon site internet et devenir visible | Les Minis Monstres',
+    description: `Devenez visible en deux minutes : ${ESS.name} ${creation.prix} €, ${VIS.name} ${creation.visibilite} € ou ${BOU.name} ${euro(creation.boutiquePrix)}. Puis ${AUTO.name} ou ${ABO.name}. Le total s’affiche tout de suite.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -220,87 +215,66 @@ function forfaitsPage() {
   const f = C.faq(FAQ.forfaits || FAQ.tarifs || [], 'Vos questions sur les tarifs', 'faq-tarifs');
   const body = `${C.pageHero({
     section: 'forfaits',
-    h1: `Tarifs : trois sites, dès ${euro(creation.prix)}`,
-    lead: `Des prix affichés, les mêmes pour tous, sans devis. Votre site se paie une seule fois. Ensuite, c’est vous qui choisissez : ${AUTO.name} à ${euro(AUTO.month)}, ou ${ABO.name} à ${euro(ABO.month)} par mois.`,
+    h1: `Tarifs : être visible, dès ${euro(creation.prix)}`,
+    lead: `Des prix affichés, les mêmes pour tous. D’abord votre site, payé une seule fois. Ensuite, ${AUTO.name} à ${euro(AUTO.month)} ou ${ABO.name} à ${euro(ABO.month)} par mois. Enfin, les extras, si vous en avez besoin.`,
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
   <h2 class="section-title">Un site, un but, un prix</h2>
-  ${commun(C.positionnement())}
+  <p class="section-sub">Exister sur internet, être trouvé sur Google ou vendre sur internet : à vous de choisir.</p>
   ${C.billingSwitch()}
   ${commun(C.offre())}
+</div></section>
+
+<section class="section section-soft" id="extras"><div class="container">
+  <h2 class="section-title">Enfin, les extras</h2>
+  <p class="section-sub">Trois extras, pas plus. Vous les demandez depuis votre espace client, quand vous en avez besoin.</p>
+  ${C.extrasListe()}
+  <p class="center more">${C.btn(site.espaceClient.demo, 'btn-light', 'eye', 'Voir l’espace client en démo')}</p>
+</div></section>
+
+<section class="section" id="detail"><div class="container container-narrow">
+  <h2 class="section-title">Le détail, si vous le voulez</h2>
+  <p class="section-sub">Touchez une ligne pour l’ouvrir.</p>
+  ${C.deroulants([
+    C.deroulant(`Ce que comprend ${esc(ABO.name)}, ligne par ligne`, `<ul class="list-check">${ABO.details.map((d) => `<li>${inline(d)}</li>`).join('')}</ul>`, { id: 'maintenir', ico: 'shield-check' }),
+    C.deroulant(`Une modification avec ${esc(ABO.name)}, comment ça se passe ?`, `<p>Vous écrivez votre demande dans votre espace client. ${esc(C.CERISE)} vous aide à la formuler, et la modification est faite pour vous.</p>${C.processusModif({ titre: false })}`, { id: 'modifications', ico: 'repeat' }),
+    C.deroulant(`${esc(AUTO.name)} : vous préférez tout gérer vous-même ?`, commun(C.creationSeuleBox()), { id: 'creation-seule', ico: 'download' }),
+    C.deroulant(`Le ${esc(BOU.name)}, pour vendre sur internet`, C.optionsCompact(), { id: 'boutique', ico: 'shopping-bag' }),
+    C.deroulant('Comment payer ?', C.payBox(), { id: 'payer', ico: 'calendar-check' }),
+    C.deroulant(`Et si vous arrêtez ${esc(ABO.name)} ?`, `<ul class="list-check">
+      <li><strong>Quand vous voulez</strong> : un message suffit, ou le bouton de votre espace client. ${esc(ABO.name)} s’arrête à la fin de la période déjà payée.</li>
+      <li><strong>Votre nom de domaine reste à vous</strong> : il est à votre nom, et vous le transférez où vous voulez.</li>
+      <li><strong>Vous repartez avec votre site</strong> : son export est possible, pour le faire héberger ailleurs.</li>
+      <li><strong>Un seul engagement</strong> : si vous payez votre site en ${C.lissageTxt} fois, vous vous engagez le temps de ce paiement.</li>
+    </ul>`, { id: 'arreter', ico: 'log-out' }),
+  ])}
 </div></section>
 
 <section class="section section-soft" id="comparer"><div class="container">
   <h2 class="section-title">Et ailleurs, ça coûte combien ?</h2>
   <p class="section-sub">Une comparaison honnête, avec les sources.</p>
   ${C.economie()}
-</div></section>
-
-<section class="section" id="boutique"><div class="container">
-  <h2 class="section-title">Le ${esc(BOU.name)}, pour vendre sur internet</h2>
-  <p class="section-sub">Une boutique complète, et vous gérez votre catalogue vous-même. Pas de limite d’articles.</p>
-  ${C.optionsCompact()}
-</div></section>
-
-<section class="section section-soft" id="maintenir"><div class="container">
-  <h2 class="section-title">Ensuite : ${esc(AUTO.name)} ou ${esc(ABO.name)}</h2>
-  <p class="section-sub">Aucun abonnement n’est imposé. Vous gérez tout vous-même, ou on s’occupe de tout pour ${euro(ABO.month)} par mois, sans engagement.</p>
-  ${commun(C.creationSeuleBox())}
-  <div class="duo">
-    <div class="jetons-box reveal">
-      <h3>${icon('shield-check')}Ce que comprend ${esc(ABO.name)}</h3>
-      <ul class="list-check">${ABO.details.map((d) => `<li>${inline(d)}</li>`).join('')}</ul>
-    </div>
-    <div class="jetons-box reveal" id="modifications">
-      <h3>${icon('repeat')}Vos modifications, avec ${esc(ABO.name)}</h3>
-      <p>Vous écrivez votre demande dans votre espace client. ${esc(C.CERISE)} vous aide à la formuler, et la modification est faite pour vous.</p>
-      <p>Une modification peut prendre ${C.DELAI_MODIF}. Une demande à la fois.</p>
-    </div>
+  <div class="duo promos">
+    <a class="promo c-butter reveal" href="${sections.comparatif.path}">
+      <span class="promo-ico">${icon('scale')}</span>
+      <span class="promo-text"><strong>Et par rapport aux autres solutions ?</strong><span>Agence, indépendant, plateforme : la comparaison, ligne par ligne.</span></span>
+      <span class="promo-go">${icon('arrow-right')}</span>
+    </a>
+    <a class="promo c-pink reveal" href="${sections.fidelite.path}">
+      <span class="promo-ico">${icon('gift')}</span>
+      <span class="promo-text"><strong>Parrainez, et gagnez un mois</strong><span>Un mois de ${esc(ABO.name)} offert, pour vous comme pour votre filleul.</span></span>
+      <span class="promo-go">${icon('arrow-right')}</span>
+    </a>
   </div>
-  <div class="modif-bloc">${C.processusModif({ titre: false })}</div>
-</div></section>
-
-<section class="section" id="extras"><div class="container">
-  <h2 class="section-title">Les extras</h2>
-  <p class="section-sub">Trois extras, pas plus. Vous les demandez depuis votre espace client, quand vous en avez besoin.</p>
-  ${C.extrasListe()}
-  <p class="center more">${C.btn(site.espaceClient.demo, 'btn-light', 'eye', 'Voir l’espace client en démo')}</p>
-</div></section>
-
-<section class="section section-soft"><div class="container">
-  <h2 class="section-title">Payer, et arrêter si vous le voulez</h2>
-  ${C.payBox()}
-  <div class="jetons-box reveal">
-    <h3>${icon('log-out')}Et si vous arrêtez ${esc(ABO.name)} ?</h3>
-    <ul class="list-check">
-      <li><strong>Quand vous voulez</strong> : un message suffit, ou le bouton de votre espace client. ${esc(ABO.name)} s’arrête à la fin de la période déjà payée.</li>
-      <li><strong>Votre nom de domaine reste à vous</strong> : il est à votre nom, et vous le transférez où vous voulez.</li>
-      <li><strong>Vous repartez avec votre site</strong> : son export est possible, pour le faire héberger ailleurs.</li>
-      <li><strong>Un seul engagement</strong> : si vous payez votre site en ${C.lissageTxt} fois, vous vous engagez le temps de ce paiement.</li>
-    </ul>
-  </div>
-</div></section>
-
-<section class="section"><div class="container duo">
-  <a class="promo c-butter reveal" href="${sections.comparatif.path}">
-    <span class="promo-ico">${icon('scale')}</span>
-    <span class="promo-text"><strong>Et par rapport aux autres solutions ?</strong><span>Agence, freelance, plateforme : la comparaison, ligne par ligne.</span></span>
-    <span class="promo-go">${icon('arrow-right')}</span>
-  </a>
-  <a class="promo c-pink reveal" href="${sections.fidelite.path}">
-    <span class="promo-ico">${icon('gift')}</span>
-    <span class="promo-text"><strong>Parrainez, et gagnez un mois</strong><span>Un mois de ${esc(ABO.name)} offert, pour vous comme pour votre filleul.</span></span>
-    <span class="promo-go">${icon('arrow-right')}</span>
-  </a>
 </div></section>
 
 ${f.html}
-${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Choisissez votre site en deux minutes : le total s’affiche avant de commander.' })}`;
+${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Il ne reste qu’à devenir visible. Choisissez votre site en deux minutes : le total s’affiche avant de commander.' })}`;
   return {
     path: sections.forfaits.path,
     section: 'forfaits',
-    title: `Tarifs : sites internet dès ${creation.prix} €, sans devis | Les Minis Monstres`,
+    title: `Tarifs : un site internet pour être visible, dès ${creation.prix} € | Les Minis Monstres`,
     description: `${ESS.name} ${creation.prix} €, ${VIS.name} ${creation.visibilite} €, ${BOU.name} ${euro(creation.boutiquePrix)}, payés une fois. Ensuite, ${AUTO.name} à ${AUTO.month} € ou ${ABO.name} à ${ABO.month} € par mois, sans engagement.`,
     crumbs,
     body,
@@ -374,7 +348,7 @@ ${C.ctaBand({ title: 'Envie d’essayer les outils ?', text: `Créez votre site 
 // ====================================================================== SEO
 function seoPage() {
   const crumbs = crumb('seo');
-  const f = C.faq(FAQ.seo, 'Vos questions sur le SEO', 'faq-seo');
+  const f = C.faq(FAQ.seo, 'Vos questions sur la visibilité Google', 'faq-seo');
   const pack = PAGE_GOOGLE;
 
   // Les trois façons d'être plus visible : [couleur, monstre, titre, prix, liste]
@@ -385,87 +359,73 @@ function seoPage() {
   ];
   const body = `${C.pageHero({
     section: 'seo',
-    h1: 'Référencement SEO : être trouvé sur Google',
-    lead: 'Le SEO, c’est tout ce qui aide Google à trouver votre site et à le faire monter en haut des résultats. Plus il est haut, plus on clique dessus. Je vous explique simplement.',
+    h1: 'Être trouvé sur Google : votre visibilité, c’est notre métier',
+    lead: 'Un site que personne ne trouve, c’est une vitrine dans une rue vide. On construit le vôtre pour que Google le comprenne et le montre à vos futurs clients.',
     crumbs,
   })}
 <section class="section"><div class="container container-narrow prose reveal">
-  ${md(`## Le SEO, c’est quoi ?
+  ${md(`## Être visible, ça veut dire quoi ?
 
-Quand quelqu’un cherche quelque chose sur Google, il tape quelques mots. Google lui montre alors une liste de sites, du premier au dernier. Presque tout le monde clique sur les premiers. Très peu de gens vont voir la deuxième page.
+Quand quelqu’un cherche quelque chose sur Google, il tape quelques mots. Google lui montre une liste de sites, et presque tout le monde clique sur les premiers.
 
-Le SEO (on dit aussi « référencement naturel »), c’est l’ensemble des réglages qui permettent à Google de **trouver votre site**, de **comprendre ce que vous faites** et de le **montrer le plus haut possible**. C’est gratuit pour chaque clic : ce n’est pas de la publicité.
+Être visible, c’est aider Google à **trouver votre site**, à **comprendre ce que vous faites** et à le **montrer à ceux qui vous cherchent**. On appelle aussi cela le référencement (ou SEO). Ce n’est pas de la publicité : vous ne payez pas chaque clic.
 
 ## Un exemple
 
 Vous êtes fleuriste à Reims. Une cliente tape « fleuriste Reims » sur Google.
 
-- Sans SEO, votre site existe, mais Google le range en page 3. Personne ne le voit.
-- Avec du SEO, Google comprend que vous êtes fleuriste, à Reims, avec vos horaires et vos avis. Votre site remonte dans les premiers résultats, et la cliente vous appelle.
-
-## Ce que ça vous rapporte
-
-Plus de visites, plus d’appels, plus de ventes, sans payer chaque clic. Le SEO se travaille dans le temps : les premiers résultats arrivent en quelques semaines, puis ça progresse.
-
-## Des pages utiles, pas des pages pour rien
-
-Une grande partie du SEO, c’est de **créer des pages qui renvoient vers votre site**. Chaque page répond à une recherche précise de vos clients, par exemple « bouquet de mariage Reims » ou « livraison de fleurs Épernay ». Elle explique, elle aide, et elle mène vers votre page principale ou votre contact.
-
-Ce ne sont **pas des pages inutiles** remplies de mots-clés : Google les repère et les met de côté. Une page n’est créée que si elle sert vraiment à quelqu’un.
-
-## Une seule page principale, c’est possible
-
-Votre site peut garder **une seule page principale**, simple et claire, avec tout ce que vous faites. À côté, on ajoute **une série de pages pour le référencement**, chacune sur un sujet précis. Vos visiteurs voient un site simple, et Google trouve plus de bonnes raisons de vous montrer.
-
-> Ce site applique la même méthode. Ses [guides](/guides/) répondent chacun à une question précise : le prix d’un site, le choix d’un nom de domaine, la fiche Google, et d’autres.`)}
+- Sans ce travail, votre site existe, mais Google le range en page 3. Personne ne le voit.
+- Avec ce travail, Google comprend que vous êtes fleuriste, à Reims, avec vos horaires et vos avis. Votre site a de vraies chances de remonter, et la cliente vous appelle.`)}
 </div></section>
 
-<section class="section"><div class="container">
-  <h2 class="section-title">Ce que je fais pour votre visibilité</h2>
-  <div class="feats feats-4">
-    <div class="feat reveal">${icon('zap')}<h3>Les bases techniques</h3><p>Un site rapide, sécurisé, parfait sur tous les supports, avec les balises et les données que Google sait lire.</p></div>
-    <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand vos clients cherchent près de chez vous.</p></div>
+<section class="section section-soft"><div class="container">
+  <h2 class="section-title">Ce qu’on fait pour votre visibilité</h2>
+  <div class="feats feats-4 feats-courts">
+    <div class="feat reveal">${icon('zap')}<h3>Des bases solides</h3><p>Un site rapide, sécurisé, lisible sur téléphone, que Google sait lire.</p></div>
+    <div class="feat reveal">${icon('map-pin')}<h3>Le référencement local</h3><p>Fiche Google, pages pour vos villes, avis clients : pour sortir quand on cherche près de chez vous.</p></div>
     <div class="feat reveal">${icon('pen-tool')}<h3>Des contenus utiles</h3><p>Des pages qui répondent aux vraies questions de vos clients, écrites avec soin et relues.</p></div>
     <div class="feat reveal">${icon('chart-line')}<h3>Des pages en plus, payées une fois</h3><p>Une page de visibilité Google coûte ${euro(pack.price.once)}. Mirette prépare le sujet avec vous, et la page est vérifiée avant sa mise en ligne.</p></div>
   </div>
 </div></section>
 
-<section class="section"><div class="container split">
-  <div class="reveal">
-    <h2>Ma méthode, concrètement</h2>
-    <p>Voici ce que je fais sur chaque site, sans exception. C’est le socle qui permet ensuite de gagner des places.</p>
-    <p class="proof">${icon('badge-check')}<span>Ce site est construit exactement comme ça : rapide, sans publicité, et chaque page décrit à Google qui je suis et ce que je propose.</span></p>
-  </div>
-  <ul class="checklist reveal">
-    <li>Des pages qui s’affichent vite, mesurées avec les outils de Google</li>
-    <li>Un titre et une description écrits pour chaque page</li>
-    <li>Des données structurées pour que Google comprenne votre activité, vos prix et vos horaires</li>
-    <li>Un plan du site déclaré à Google, des adresses propres</li>
-    <li>Des liens bien pensés entre vos pages</li>
-    <li>Le site déclaré dans Google Search Console dès la mise en ligne</li>
-    <li>Une fiche Google, des avis, les mêmes infos partout</li>
-    <li>Des contenus qui répondent aux questions de vos clients</li>
-  </ul>
-</div></section>
-
-<section class="section section-soft"><div class="container">
+<section class="section"><div class="container">
   <h2 class="section-title">Trois façons d’être plus visible</h2>
   <div class="seo-levels">${levels
     .map(
       ([c, m, t, prix, list]) => `<div class="seo-level c-${c} reveal"><span class="seo-art">${C.petit(m)}</span><p class="seo-name">${esc(t)}<small>${prix}</small></p><ul class="list-check">${list.map((x) => `<li>${inline(x)}</li>`).join('')}</ul></div>`
     )
     .join('')}</div>
-  <p class="source">Tous les prix sont sur la page <a href="${sections.forfaits.path}">tarifs</a>.</p>
+  <p class="center more">${C.btn(sections.forfaits.path, 'btn-light', sections.forfaits.icon, 'Voir les tarifs')}</p>
 </div></section>
 
-<section class="section"><div class="container container-narrow prose reveal">
-  ${md(`## Ce que je ne promets pas
+<section class="section section-soft"><div class="container container-narrow">
+  <h2 class="section-title">Pour aller plus loin</h2>
+  ${C.deroulants([
+    C.deroulant('Notre méthode, point par point', `<p>Voici ce qu’on fait sur chaque site, sans exception. C’est le socle qui permet ensuite de gagner des places.</p>
+  <ul class="list-check">
+    <li>Des pages qui s’affichent vite, mesurées avec les outils de Google</li>
+    <li>Un titre et une description écrits pour chaque page</li>
+    <li>Des informations bien rangées, pour que Google comprenne votre activité, vos prix et vos horaires</li>
+    <li>Un plan du site déclaré à Google, des adresses propres</li>
+    <li>Des liens bien pensés entre vos pages</li>
+    <li>Le site déclaré à Google dès la mise en ligne</li>
+    <li>Une fiche Google, des avis, les mêmes infos partout</li>
+    <li>Des contenus qui répondent aux questions de vos clients</li>
+  </ul>
+  <p class="proof">${icon('badge-check')}<span>Ce site est construit exactement comme ça : rapide, sans publicité, et chaque page décrit à Google qui on est et ce qu’on propose.</span></p>`, { ico: 'list-checks', ordi: true }),
+    C.deroulant('Des pages utiles, pas des pages pour rien', md(`Une grande partie du travail, c’est de **créer des pages qui mènent vers votre site**. Chaque page répond à une recherche précise de vos clients, par exemple « bouquet de mariage Reims » ou « livraison de fleurs Épernay ». Elle explique, elle aide, et elle mène vers votre page principale ou votre contact.
 
-Personne ne peut garantir la première place sur Google. Méfiez-vous de ceux qui le font.
+Ce ne sont **pas des pages inutiles** remplies de mots-clés : Google les repère et les met de côté. Une page n’est créée que si elle sert vraiment à quelqu’un.
 
-Les premiers résultats arrivent en général en quelques semaines, parfois quelques mois pour les recherches les plus disputées.
+Votre site peut garder **une seule page principale**, simple et claire. À côté, on ajoute des pages de visibilité Google, chacune sur un sujet précis. Vos visiteurs voient un site simple, et Google trouve plus de bonnes raisons de vous montrer.
 
-Je ne publie pas des centaines de pages vides pour gonfler votre site : Google les repère et les pénalise. Je préfère peu de contenus, mais vraiment utiles à vos clients.`)}
+Ce site applique la même méthode. Ses [guides](/guides/) répondent chacun à une question précise : le prix d’un site, le choix d’un nom de domaine, la fiche Google, et d’autres.`), { ico: 'file-text' }),
+    C.deroulant('Ce qu’on ne promet pas', md(`Personne ne peut garantir la première place sur Google. Méfiez-vous de ceux qui le font.
+
+Les premiers effets arrivent en général en quelques semaines, parfois quelques mois pour les recherches les plus disputées.
+
+On ne publie pas des centaines de pages vides pour gonfler votre site : Google les repère et les pénalise. On préfère peu de contenus, mais vraiment utiles à vos clients.`), { ico: 'shield-check', ordi: true }),
+  ])}
 </div></section>
 
 ${f.html}
@@ -473,8 +433,8 @@ ${C.ctaBand({ title: 'Être trouvé, ça commence ici', text: `Les bases sont co
   return {
     path: sections.seo.path,
     section: 'seo',
-    title: 'Référencement SEO : être trouvé sur Google | Les Minis Monstres',
-    description: `Le SEO, c’est ce qui aide votre site à être trouvé sur Google. Bases comprises dans chaque site, puis des pages de visibilité Google à ${euro(pack.price.once)} la page.`,
+    title: 'Être trouvé sur Google : la visibilité, notre métier | Les Minis Monstres',
+    description: `Un site internet sert à être visible. Les bases pour être trouvé sur Google sont comprises dans chaque site, puis une page de visibilité Google coûte ${euro(pack.price.once)}.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -487,52 +447,41 @@ function comparatifPage() {
   const crumbs = crumb('comparatif');
   const f = C.faq(FAQ.comparatif || [], 'Vos questions sur le comparatif', 'faq-comparatif');
   const who = [
-    ['butter', 'building-2', 'L’agence web', 'Une équipe complète : chef de projet, graphiste, développeur. Idéale pour un gros projet avec un budget à la hauteur. Le prix et le délai dépendent du devis.'],
-    ['sky', 'user', 'Le freelance', 'Une personne qui fait tout. La qualité dépend beaucoup de qui vous choisissez. Les modifications et le suivi se font souvent au devis.'],
-    ['lilac', 'mouse-pointer-click', 'La plateforme à faire soi-même', 'Vous construisez votre site à partir de modèles, pour un abonnement mensuel. C’est vous qui faites le travail, les mises à jour et le référencement.'],
-    ['mint', 'sparkles', 'Les Minis Monstres', `Des prix affichés, dès ${euro(creation.prix)}, et quelqu’un qui répond. On crée votre site pour vous, avec une méthode rodée. Pour les très gros projets, on vous oriente vers une agence.`],
+    ['butter', 'building-2', 'L’agence', 'Une équipe complète, idéale pour un gros projet avec un budget à la hauteur. Le prix et le délai dépendent du devis.'],
+    ['sky', 'user', 'L’indépendant', 'Une personne qui fait tout. La qualité dépend beaucoup de qui vous choisissez, et le suivi se fait souvent au devis.'],
+    ['lilac', 'mouse-pointer-click', 'La plateforme à faire soi-même', 'Vous construisez votre site à partir de modèles. C’est vous qui faites le travail, les mises à jour et la visibilité sur Google.'],
+    ['mint', 'sparkles', 'Les Minis Monstres', `Des prix affichés, dès ${euro(creation.prix)}, et quelqu’un qui répond. On crée votre site pour vous, et on le rend visible.`],
   ];
   const body = `${C.pageHero({
     section: 'comparatif',
     h1: 'Les Minis Monstres et les autres solutions',
-    lead: 'Agence web, freelance ou plateforme à faire soi-même : chaque solution a sa place. Chez les Minis Monstres, trois choses comptent : une méthode rodée, des prix affichés, quelqu’un qui répond.',
+    lead: 'Agence, indépendant ou plateforme à faire soi-même : chaque solution a sa place. La nôtre : vous rendre visible sur internet, avec des prix affichés et quelqu’un qui répond.',
     crumbs,
   })}
 <section class="section"><div class="container">
   ${C.comparatifTable()}
-  <p class="source">Les prix des autres solutions dépendent du prestataire et du projet : le tableau ne les chiffre pas. Les prix des Minis Monstres sont ceux de la page <a href="${sections.forfaits.path}">tarifs</a>.</p>
+  <p class="source">Les prix des autres solutions dépendent du prestataire et du projet : le tableau ne les chiffre pas. Nos prix sont ceux de la page <a href="${sections.forfaits.path}">tarifs</a>.</p>
 </div></section>
 
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Pour qui, chaque solution ?</h2>
-  <div class="feats">${who
+  <div class="feats feats-courts">${who
     .map(([c, ic, t, d]) => `<div class="feat who c-${c} reveal">${icon(ic)}<h3>${t}</h3><p>${d}</p></div>`)
     .join('')}</div>
 </div></section>
 
-<section class="section"><div class="container container-narrow prose reveal">
-  ${md(`## ${marche.fois} fois moins cher qu’un freelance, sans tour de magie
+<section class="section"><div class="container container-narrow">
+  <h2 class="section-title">${marche.fois} fois moins cher qu’un indépendant, sans tour de magie</h2>
+  <p class="section-sub">Pour un site de quelques pages, pensé pour être trouvé sur Google.</p>
+  ${C.deroulants([
+    C.deroulant('Les prix, côte à côte', md(`Un indépendant demande en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence, plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. Notre ${VIS.name} coûte ${euro(VIS.price)}.
 
-Pour un petit site vitrine avec les bases du référencement, un freelance demande en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence, plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. Notre ${VIS.name} coûte ${euro(VIS.price)}.
-
-Soyons honnêtes : ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains freelances vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois.
-
-## Pourquoi ce prix
-
-Une méthode rodée, des outils préparés à l’avance, et pas de bureaux à payer. Les prix sont affichés : pas de rendez-vous commercial, pas de devis à attendre. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).
-
-## L’entretien : à vous de choisir
-
-Avec ${AUTO.name}, vous gérez tout vous-même, pour ${euro(AUTO.month)} par mois. Avec ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, le nom de domaine, les sauvegardes, la sécurité, la maintenance et les modifications. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois pour l’entretien d’un site.
-
-## Ce que vous ne faites pas vous-même
-
-Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, écrire pour Google. Ici, vous dites ce que vous voulez, et votre site est fait pour vous. Vous gardez votre temps pour votre métier.
-
-## Quand on vous dira d’aller ailleurs
-
-Une application sur mesure, un logiciel métier, un catalogue de milliers de produits : ces projets demandent une agence ou un développeur. On vous le dit dès le premier échange.`)}
-  ${C.sourcesMarche()}
+Soyons honnêtes : ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois.`) + C.sourcesMarche(), { ico: 'scale', ouvert: true }),
+    C.deroulant('Pourquoi ce prix ?', md(`Une méthode rodée, des outils préparés à l’avance, et pas de bureaux à payer. Les prix sont affichés : pas de rendez-vous commercial, pas de devis à attendre. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank' }),
+    C.deroulant('Et l’entretien, chaque mois ?', md(`Avec ${AUTO.name}, vous gérez tout vous-même, pour ${euro(AUTO.month)} par mois. Avec ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, le nom de domaine, les sauvegardes, la sécurité, la maintenance et les modifications. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois pour l’entretien d’un site.`), { ico: 'repeat' }),
+    C.deroulant('Ce que vous ne faites pas vous-même', md(`Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, écrire pour Google. Ici, vous dites ce que vous voulez, et votre site est fait pour vous. Vous gardez votre temps pour votre métier.`), { ico: 'clock' }),
+    C.deroulant('Quand on vous dira d’aller ailleurs', md(`Une application sur mesure, un logiciel métier, un catalogue de milliers de produits : ces projets demandent une agence ou un développeur. On vous le dit dès le premier échange.`), { ico: 'arrow-right' }),
+  ])}
 </div></section>
 
 ${f.html}
@@ -541,7 +490,7 @@ ${C.ctaBand({ title: 'On regarde votre projet ?', text: 'Choisissez votre site e
     path: sections.comparatif.path,
     section: 'comparatif',
     title: 'Comparatif : agence web, freelance, plateforme | Les Minis Monstres',
-    description: 'Agence web, freelance ou plateforme à faire soi-même : qui fait le travail, les prix, les délais, les modifications et la visibilité Google, comparés simplement.',
+    description: 'Agence web, freelance ou plateforme à faire soi-même : qui fait le travail, les prix, les délais, les modifications et la visibilité sur Google, comparés simplement.',
     crumbs,
     body,
     schema: [f.schema],
@@ -556,11 +505,11 @@ const ORDER_ERRORS = {
   champs: 'Il manque une information. Vérifiez les champs marqués d’une étoile.',
   email: 'Cette adresse e-mail ne semble pas valide. Vérifiez-la, s’il vous plaît.',
   domaine: 'Indiquez le nom de domaine souhaité, ou cochez « J’ai déjà un nom de domaine ».',
-  code: 'Ce code promo ou de parrainage n’est pas reconnu. Vérifiez-le, ou laissez la case vide : vous pourrez m’écrire ensuite.',
+  code: 'Ce code promo ou de parrainage n’est pas reconnu. Vérifiez-le, ou laissez la case vide : vous pourrez nous écrire ensuite.',
   cgv: 'Pour commander, il faut accepter les conditions générales de vente.',
   demarrage: 'Pour commander, il faut accepter que la création commence tout de suite.',
   engagement: 'Pour payer le reste en plusieurs fois, il faut accepter l’engagement le temps du paiement.',
-  paiement: 'Le paiement n’a pas abouti. Votre commande est gardée : vous pouvez réessayer, ou m’écrire.',
+  paiement: 'Le paiement n’a pas abouti. Votre commande est gardée : vous pouvez réessayer, ou nous écrire.',
   robot: 'L’envoi a été bloqué par la protection contre les robots. Attendez quelques secondes et réessayez.',
   annule: 'Le paiement a été annulé. Rien n’a été débité : vous pouvez reprendre quand vous voulez.',
   inconnu: 'Quelque chose n’a pas fonctionné. Réessayez, ou écrivez-nous par le formulaire de contact : on finalise la commande avec vous.',
@@ -609,9 +558,8 @@ function commanderPage() {
         <p class="b-label">Qui s’occupe de votre site ?</p>
         ${C.gestionChoix({ name: 'gestion', court: true })}
         <div data-avec-formule>
-        <p class="b-label">Votre formule</p>
-        ${C.formulesChoix({ name: 'forfait', court: true })}
-        <p class="b-label">${esc(ABO.name)} se paie</p>
+        ${C.formulesChoix({ name: 'forfait', court: 'sans-carte' })}
+        <p class="b-label">L’abonnement ${esc(ABO.name)} se paie</p>
         <div class="b-seg" role="radiogroup" aria-label="Période de paiement de ${esc(ABO.name)}">
           <label><input type="radio" name="periode" value="mois" checked><span>Au mois</span></label>
           <label><input type="radio" name="periode" value="annee"><span>À l’année <em>${annuel.moisOfferts} mois offerts</em></span></label>
@@ -624,7 +572,7 @@ function commanderPage() {
       <fieldset class="o-card" data-avec-formule>
         <legend><span class="b-n">${icon('globe')}</span><span class="b-t">Votre nom de domaine</span></legend>
         <div class="o-in">
-        <p class="b-hint">Le nom de domaine, c’est l’adresse de votre site. Il est compris avec ${esc(ABO.name)}, et il reste à votre nom. On vérifie qu’il est libre, puis on le réserve à la commande.</p>
+        <p class="b-hint">Le nom de domaine, c’est l’adresse de votre site. Il est compris avec ${esc(ABO.name)}, et il reste à votre nom. On le réserve à la commande.</p>
         ${C.domainBox({ prefix: 'o', ownName: 'domaine_mien' })}
         </div>
       </fieldset>
@@ -692,7 +640,7 @@ function commanderPage() {
           <p><span data-order="next-label">À la réception : le reste, et votre abonnement</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month)}/mois</b></p>
           <p data-order-parrain hidden><span>Parrainage</span><b>${fidelite.parrainageMois} mois offert</b></p>
         </div>
-        <p class="b-sum-note">${icon('check')}<span data-avec-formule>Votre abonnement démarre à la réception de votre site, pas avant. Le nom de domaine, lui, est réservé dès la commande.</span><span data-seule-txt hidden>${esc(AUTO.name)} : pas d’abonnement. À la réception, je vous remets votre site, prêt à installer.</span></p>
+        <p class="b-sum-note">${icon('check')}<span data-avec-formule>Votre abonnement démarre à la réception de votre site, pas avant. Le nom de domaine, lui, est réservé dès la commande.</span><span data-seule-txt hidden>${esc(AUTO.name)} : pas d’abonnement. À la réception, on vous remet votre site, prêt à installer.</span></p>
       </div>
       <div class="o-next reveal">
         <h2 class="h3">${icon('list-checks')}Ce qui se passe ensuite</h2>
@@ -709,7 +657,7 @@ function commanderPage() {
     noindex: true,
     noMobileBar: true,
     title: 'Votre commande | Les Minis Monstres',
-    description: 'Vérifiez votre site et votre formule, donnez vos coordonnées et payez en ligne en toute sécurité. Aujourd’hui, vous réglez seulement l’acompte.',
+    description: 'Vérifiez votre site, choisissez Autonomie ou Mini, donnez vos coordonnées et payez en ligne en toute sécurité. Aujourd’hui, vous réglez seulement l’acompte.',
     crumbs,
     body,
   };
@@ -729,7 +677,7 @@ function confirmationPage() {
   <div class="confirm reveal">
     <p class="confirm-ref" data-ref-box hidden>${icon('receipt')}<span>Référence de votre commande : <b data-ref></b></span></p>
     <p class="confirm-msg" data-confirm-paid>${icon('circle-check')}<span>Votre paiement est enregistré. La facture arrive par e-mail, et vous la retrouvez dans votre espace client.</span></p>
-    <p class="confirm-msg is-wait" data-confirm-wait hidden>${icon('hourglass')}<span>Je vous envoie le lien de paiement sous 24 heures. Votre commande est gardée : rien à faire de votre côté pour l’instant.</span></p>
+    <p class="confirm-msg is-wait" data-confirm-wait hidden>${icon('hourglass')}<span>On vous envoie le lien de paiement sous 24 heures. Votre commande est gardée : rien à faire de votre côté pour l’instant.</span></p>
     <h2 class="h3">Les prochaines étapes</h2>
     ${C.steps([
       { t: 'On vous écrit sous 24 heures', d: 'Pour fixer le rendez-vous téléphonique de découverte.' },
@@ -936,23 +884,30 @@ function monEspacePage() {
 
         <div class="app-panel" role="tabpanel" id="t-boutique" aria-labelledby="tab-boutique" hidden>
           <h2 class="app-h">Ma boutique</h2>
-          <div class="app-lock">${icon('lock')}<div><strong>Option verrouillée</strong><p>Cet onglet s’ouvre avec le ${esc(BOU.name)}. Pâtisserie Lila a un ${esc(VIS.name)} : pour vendre en ligne, elle peut passer au ${esc(BOU.name)}.</p><button type="button" class="btn btn-light btn-sm" data-toast-msg="Demande envoyée : on vous répond avec un prix (démo)"><span>Passer au ${esc(BOU.name)}</span></button></div></div>
+          <div class="app-lock">${icon('lock')}<div><strong>Onglet verrouillé</strong><p>Cet onglet s’ouvre avec le ${esc(BOU.name)}. Pâtisserie Lila a un ${esc(VIS.name)} : pour vendre en ligne, elle peut passer au ${esc(BOU.name)}.</p><button type="button" class="btn btn-light btn-sm" data-toast-msg="Demande envoyée : on vous répond avec un prix (démo)"><span>Passer au ${esc(BOU.name)}</span></button></div></div>
           <p class="app-p">Avec le ${esc(BOU.name)}, voici ce que vous gérez ici, vous-même. Autant d’articles que vous voulez.</p>
           <p class="app-sub">${icon('image-plus')}Vos articles et vos prix</p>
           <ul class="ranks ranks-pages">${articles.map(([n, p]) => `<li><span>${n}</span><b>${p}</b></li>`).join('')}</ul>
           <p class="app-note">Pour chaque article : une photo, une description, un prix. Vous ajoutez, changez ou retirez un article quand vous voulez.</p>
           <p class="app-sub">${icon('credit-card')}Vos paiements</p>
           <ul class="reqs">
-            <li><span><strong>Carte bancaire (Stripe)</strong><small>paiement en ligne sécurisé</small></span><em class="st st-done">Actif</em></li>
+            <li><span><strong>Stripe (carte bancaire)</strong><small>paiement en ligne sécurisé</small></span><em class="st st-done">Actif</em></li>
             <li><span><strong>PayPal</strong><small>s’installe en un clic</small></span><em class="st st-new">Pas installé</em></li>
-            <li><span><strong>Virement ou chèque</strong><small>si vous préférez</small></span><em class="st st-done">Actif</em></li>
+            <li><span><strong>Virement</strong><small>votre client reçoit vos coordonnées bancaires</small></span><em class="st st-done">Actif</em></li>
+            <li><span><strong>Chèque</strong><small>si vous préférez</small></span><em class="st st-done">Actif</em></li>
           </ul>
-          <p class="app-sub">${icon('package')}Vos commandes</p>
+          <p class="app-sub">${icon('package')}Livraison</p>
           <ul class="reqs">
-            <li><span><strong>Commande n° 1042</strong><small>Gâteau d’anniversaire, 8 parts · 32 €</small></span><em class="st st-doing">À préparer</em></li>
-            <li><span><strong>Commande n° 1041</strong><small>6 éclairs au chocolat · 19,20 €</small></span><em class="st st-done">Remise</em></li>
+            <li><span><strong>Livraison à prix fixe</strong><small>5,90 € par commande</small></span><em class="st st-done">Actif</em></li>
+            <li><span><strong>Livraison gratuite</strong><small>à partir de 50 € d’achat</small></span><em class="st st-done">Actif</em></li>
+            <li><span><strong>Retrait sur place</strong><small>gratuit : votre client vient chercher sa commande</small></span><em class="st st-done">Actif</em></li>
           </ul>
-          <p class="app-note">Vous recevez un e-mail à chaque commande, et votre client aussi. Exemple inventé, pour la démo.</p>
+          <p class="app-sub">${icon('clipboard-check')}Vos commandes</p>
+          <ul class="reqs demo-commandes">
+            <li><span><strong>Commande n° 1042</strong><small>Gâteau d’anniversaire, 8 parts · 32 €</small></span><em class="st st-new">Payée</em><span class="demo-cmd-btns"><button type="button" class="btn btn-light btn-sm" data-toast-msg="Commande n° 1042 : en préparation (démo)">${icon('clock')}<span>Je la prépare</span></button><button type="button" class="btn btn-primary btn-sm" data-toast-msg="Commande n° 1042 : expédiée ou remise, votre client est prévenu (démo)">${icon('check')}<span>Expédiée ou remise</span></button></span></li>
+            <li><span><strong>Commande n° 1041</strong><small>6 éclairs au chocolat · 19,20 €</small></span><em class="st st-done">Expédiée ou remise</em></li>
+          </ul>
+          <p class="app-note">Quand vous marquez une commande « Expédiée ou remise », votre client reçoit un e-mail. Exemple inventé, pour la démo.</p>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-forfait" aria-labelledby="tab-forfait" hidden>
@@ -976,7 +931,7 @@ function monEspacePage() {
   </div>
 </div></section>
 
-${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : vous envoyez vos demandes, on s’occupe du reste.' })}`;
+${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : on vous rend visible, vous envoyez vos demandes, et on s’occupe du reste.' })}`;
   return {
     path: '/mon-espace/demo/',
     section: 'monespace',
@@ -1051,7 +1006,7 @@ function contactPage() {
   const body = `${C.pageHero({
     section: 'contact',
     h1: 'Contact : une question, un projet ?',
-    lead: `Écrivez-nous, pour un site ou pour une simple question. On vous répond vite, en général dans la journée. Les prix sont déjà affichés : dès ${euro(creation.prix)} le site, puis ${euro(AUTO.month)} ou ${euro(ABO.month)} par mois, au choix.`,
+    lead: 'Envie d’être enfin visible sur internet, ou juste une question ? Écrivez-nous : on vous répond vite, en général dans la journée.',
     crumbs,
   })}
 <section class="section"><div class="container contact-grid">
@@ -1066,18 +1021,15 @@ function contactPage() {
       </div>
       <div class="form-row">
         <div class="field"><label for="c-tel">Téléphone <span class="opt">(facultatif)</span></label><input id="c-tel" name="telephone" type="tel" autocomplete="tel"></div>
-        <div class="field"><label for="c-motif">Votre demande <span class="req">*</span></label>
-          <select id="c-motif" name="motif" required data-motif><option value="">Choisir…</option>
-            <optgroup label="Un site internet">
-              <option value="Site : un devis précis">Un site : j’ai un projet précis</option>
-              <option value="Site : une information">Un site : j’ai une question ou je veux une information</option>
-              <option value="Site : je ne sais pas encore">Un site : je ne sais pas encore, je veux en parler</option>
-            </optgroup>
-            <optgroup label="Autre chose">
-              <option value="Contact simple">Juste vous contacter, sans projet de site</option>
-            </optgroup>
-          </select></div>
       </div>
+      <fieldset class="field field-motif"><legend class="label">Votre demande <span class="req">*</span></legend>
+        <div class="radio-group radio-cartes" data-motif>
+          <label><input type="radio" name="motif" value="Site : un devis précis" required> Un site : j’ai un projet précis</label>
+          <label><input type="radio" name="motif" value="Site : une information"> Un site : j’ai une question</label>
+          <label><input type="radio" name="motif" value="Site : je ne sais pas encore"> Un site : je veux en parler</label>
+          <label><input type="radio" name="motif" value="Contact simple"> Juste vous contacter</label>
+        </div>
+      </fieldset>
       <div data-site-only>
         <div class="form-row">
           <div class="field"><label for="c-type">Votre site <span class="req">*</span></label>
@@ -1095,7 +1047,7 @@ function contactPage() {
           </div>
         </div>
       </div>
-      <div class="field"><label for="c-message">Votre message <span class="req">*</span></label><textarea id="c-message" name="message" required minlength="10" placeholder="Votre activité, ce que vous attendez, un site que vous aimez…" data-ph-site="Votre activité, ce que vous attendez, un site que vous aimez…" data-ph-contact="Dites-moi tout : une question, une idée, un coup de main, ou simplement bonjour…"></textarea></div>
+      <div class="field"><label for="c-message">Votre message <span class="req">*</span></label><textarea id="c-message" name="message" required minlength="10" placeholder="Votre activité, ce que vous attendez, un site que vous aimez…" data-ph-site="Votre activité, ce que vous attendez, un site que vous aimez…" data-ph-contact="Dites-nous tout : une question, une idée, un coup de main, ou simplement bonjour…"></textarea></div>
       <label class="check"><input type="checkbox" name="consentement" value="oui" required><span>J’accepte que mes informations servent à me répondre. <a href="/politique-de-confidentialite/">En savoir plus</a></span></label>
       <button class="btn btn-primary btn-lg" type="submit">${icon('send')}<span>Envoyer ma demande</span></button>
     </form>
@@ -1103,7 +1055,7 @@ function contactPage() {
   <aside class="contact-side">
     ${site.email ? `<a class="contact-card" href="mailto:${site.email}">${icon('mail')}<div><strong>${site.email}</strong><span>Pour envoyer des documents.</span></div></a>` : ''}
     <a class="contact-card c-mint" href="/mon-espace/">${icon('circle-user')}<div><strong>Déjà client ?</strong><span>Vos demandes de modification se font depuis votre espace client.</span></div></a>
-    <a class="contact-card c-pink" href="${sections.creer.path}">${icon('wand-sparkles')}<div><strong>Créer mon site</strong><span>Choisissez votre site et voyez le prix tout de suite.</span></div></a>
+    <a class="contact-card c-pink" href="${sections.creer.path}">${icon('wand-sparkles')}<div><strong>Créer mon site</strong><span>Choisissez le site qui vous rendra visible. Le prix s’affiche tout de suite.</span></div></a>
     <a class="contact-card" href="${sections.forfaits.path}">${icon(sections.forfaits.icon)}<div><strong>Voir les tarifs</strong><span>Trois sites, dès ${euro(creation.prix)}. Puis ${euro(AUTO.month)} ou ${euro(ABO.month)} par mois, au choix.</span></div></a>
     <p class="contact-note">${icon('map-pin')}<span>Tout se fait en ligne et par téléphone : la commande, les échanges, le suivi. Pour des clients partout en France.</span></p>
   </aside>
@@ -1111,8 +1063,9 @@ function contactPage() {
   return {
     path: '/contact/',
     section: 'contact',
-    title: 'Contact : posez votre question | Les Minis Monstres',
-    description: 'Une question, un projet de site ou de boutique en ligne ? Écrivez-nous par le formulaire. Quelqu’un vous répond, en général dans la journée.',
+    noMobileBar: true,
+    title: 'Contact : parlons de votre visibilité | Les Minis Monstres',
+    description: 'Une question, l’envie d’être visible avec un site internet ou une boutique en ligne ? Écrivez-nous par le formulaire. On vous répond, en général dans la journée.',
     crumbs,
     body,
     priority: 0.8,
@@ -1127,7 +1080,7 @@ function guidesHub() {
   const body = `${C.pageHero({
     section: 'guides',
     h1: 'Guides : tout comprendre avant de créer votre site',
-    lead: 'Des explications simples, écrites pour ceux qui n’y connaissent rien. Pas de jargon, pas de blabla : ce qu’il faut savoir, et rien d’autre.',
+    lead: 'Des explications simples pour créer votre site et devenir visible. Pas de jargon, pas de blabla : ce qu’il faut savoir, et rien d’autre.',
     crumbs,
   })}
 ${GUIDES.groupes
@@ -1139,7 +1092,7 @@ ${GUIDES.groupes
 </div></section>`
   )
   .join('\n')}
-${C.ctaBand({ title: 'Vous avez votre réponse ?', text: 'Choisissez votre site en deux minutes : le prix s’affiche avant de commander.' })}`;
+${C.ctaBand({ title: 'Vous avez votre réponse ?', text: 'Il ne manque que votre vitrine sur internet. Choisissez votre site en deux minutes : le prix s’affiche avant de commander.' })}`;
   return {
     path: '/guides/',
     section: 'guides',
@@ -1200,8 +1153,8 @@ function lexiqueHub() {
   const lettres = [...new Set(tri.map((t) => t.nom[0].toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '')))];
   const body = `${C.pageHero({
     section: 'lexique',
-    h1: 'Lexique du web : les mots d’internet expliqués simplement',
-    lead: 'Nom de domaine, hébergement, SEO, HTTPS… Vous entendez ces mots sans savoir ce qu’ils veulent dire ? Chaque page explique un mot, avec un exemple concret.',
+    h1: 'Lexique : les mots d’internet expliqués simplement',
+    lead: 'Nom de domaine, hébergement, référencement… Vous entendez ces mots sans savoir ce qu’ils veulent dire ? Chaque page explique un mot, avec un exemple concret.',
     crumbs,
   })}
 <section class="section"><div class="container">
@@ -1215,11 +1168,11 @@ ${C.ctaBand({ title: 'Plus besoin de tout savoir', text: 'On peut s’occuper de
   return {
     path: '/lexique/',
     section: 'lexique',
-    title: 'Lexique du web : les mots d’internet expliqués | Les Minis Monstres',
-    description: 'Nom de domaine, hébergement, SEO, HTTPS, responsive, CMS : les mots du web expliqués simplement, avec un exemple concret pour chacun. Sans jargon.',
+    title: 'Lexique : les mots d’internet expliqués simplement | Les Minis Monstres',
+    description: 'Nom de domaine, hébergement, référencement, cadenas de sécurité : les mots d’internet expliqués simplement, avec un exemple concret pour chacun. Sans jargon.',
     crumbs,
     body,
-    schema: [{ '@type': 'DefinedTermSet', '@id': site.url + '/lexique/#lexique', name: 'Lexique du web', hasDefinedTerm: LEXIQUE.termes.map((t) => ({ '@type': 'DefinedTerm', name: t.nom, url: site.url + '/lexique/' + t.slug + '/' })) }],
+    schema: [{ '@type': 'DefinedTermSet', '@id': site.url + '/lexique/#lexique', name: 'Lexique d’internet', hasDefinedTerm: LEXIQUE.termes.map((t) => ({ '@type': 'DefinedTerm', name: t.nom, url: site.url + '/lexique/' + t.slug + '/' })) }],
     priority: 0.7,
   };
 }
@@ -1273,7 +1226,7 @@ ${METIERS.length ? `<section class="section section-soft"><div class="container"
   <p class="section-sub">Ce qu’un site doit montrer change d’un métier à l’autre. Voici ce qu’on prévoit pour le vôtre.</p>
   ${metierCards()}
 </div></section>` : ''}
-${C.ctaBand({ title: 'Le prochain, c’est le vôtre ?', text: `Choisissez votre site en deux minutes. Les prix sont affichés, les mêmes pour tous : dès ${euro(creation.prix)}.` })}`;
+${C.ctaBand({ title: 'Le prochain site visible, c’est le vôtre ?', text: `Choisissez votre site en deux minutes. Les prix sont affichés, les mêmes pour tous : dès ${euro(creation.prix)}.` })}`;
   return {
     path: sections.confiance.path,
     section: 'confiance',
@@ -1292,11 +1245,11 @@ function equipePage() {
   const body = `${C.pageHero({
     section: 'equipe',
     h1: 'Notre équipe : Alex et les Minis Monstres',
-    lead: 'Alex conçoit votre site et vérifie tout. Avec lui, cinq petits monstres, chacun son métier.',
+    lead: 'Alex conçoit votre site et vérifie tout. Avec lui, cinq petits monstres, chacun son métier. Leur but commun : vous rendre visible.',
     crumbs,
   })}
 <section class="section section-bande" id="bande"><div class="container">
-  <div class="alex-bulle reveal"><span class="alex-art">${C.alexPortrait({ title: 'Alex' })}</span><p><strong>Moi, c’est Alex.</strong> Je conçois votre site, je vérifie tout et je reste votre interlocuteur. Avec moi, les Minis Monstres : ${bande.map((b) => b.nom).join(', ').replace(/, ([^,]*)$/, ' et $1')}. Rien ne part en ligne sans mon accord.</p></div>
+  <div class="alex-bulle reveal"><span class="alex-art">${C.alexPortrait({ title: 'Alex' })}</span><p><strong>Moi, c’est Alex.</strong> Je conçois votre site pour qu’il vous rende visible, je vérifie tout et je reste votre interlocuteur. Avec moi, les Minis Monstres : ${bande.map((b) => b.nom).join(', ').replace(/, ([^,]*)$/, ' et $1')}. Rien ne part en ligne sans mon accord.</p></div>
   ${C.bandeGrid({ complet: true })}
 </div></section>
 
@@ -1314,7 +1267,7 @@ function equipePage() {
   <h2 class="section-title">Une modification, du début à la fin</h2>
   ${C.processusModif({ titre: false })}
 </div></section>
-${C.ctaBand({ title: 'On s’occupe de votre site ?', text: 'Choisissez-le en deux minutes, le prix s’affiche tout de suite. Ou écrivez-nous pour en parler.' })}`;
+${C.ctaBand({ title: 'On s’occupe de votre visibilité ?', text: 'Choisissez votre site en deux minutes, le prix s’affiche tout de suite. Ou écrivez-nous pour en parler.' })}`;
   return {
     path: sections.equipe.path,
     section: 'equipe',
@@ -1332,12 +1285,12 @@ function metiersHub() {
   const body = `${C.pageHero({
     section: 'metiers',
     h1: 'Un site internet pensé pour votre métier',
-    lead: 'Un artisan, une sophrologue, un gîte ou une association n’ont pas les mêmes clients. Choisissez votre activité : je vous montre ce que votre site doit faire pour vous.',
+    lead: 'Un artisan, une sophrologue, un gîte ou une association n’ont pas les mêmes clients. Choisissez votre activité : on vous montre ce que votre site doit faire pour être visible.',
     crumbs,
   })}
 <section class="section"><div class="container">
   ${metierCards()}
-  <p class="center muted">Votre métier n’est pas dans la liste ? Les <a href="/guides/">guides</a> parlent aussi des restaurants, des instituts et des auto-entrepreneurs. Et vous pouvez <a href="${C.contactUrl}">m’écrire</a>.</p>
+  <p class="center muted">Votre métier n’est pas dans la liste ? Les <a href="/guides/">guides</a> parlent aussi des restaurants, des instituts et des auto-entrepreneurs. Et vous pouvez <a href="${C.contactUrl}">nous écrire</a>.</p>
 </div></section>
 ${C.ctaBand({ text: CTA_TEXTE })}`;
   return {
@@ -1387,7 +1340,7 @@ const articleSchema = (path, h1, description, date) => ({
 });
 
 // Le petit monstre de chaque métier, dans le haut de sa page
-const MONSTRE_METIER = { 'site-internet-artisan': 'dino', 'site-internet-therapeute': 'nuage', 'site-internet-createur-artiste': 'champi', 'site-internet-gite-chambre-hotes': 'chaton', 'site-internet-commercant': 'mochi', 'site-internet-association': 'etoile' };
+const MONSTRE_METIER = { 'site-internet-artisan': 'dino', 'site-internet-therapeute': 'nuage', 'site-internet-createur-artiste': 'fantome', 'site-internet-gite-chambre-hotes': 'chaton', 'site-internet-commercant': 'mochi', 'site-internet-association': 'etoile' };
 function metierPage(m) {
   const path = `/${m.slug}/`;
   const crumbs = [...crumb('metiers'), { name: m.nom, path }];
@@ -1420,7 +1373,7 @@ ${ex || opts.length ? `<section class="section"><div class="container">
 </div></section>` : ''}
 ${f.html}
 ${voirCards(m.voir || [])}
-${C.ctaBand({ title: `On crée votre site ?`, text: `Choisissez votre site en deux minutes : dès ${euro(creation.prix)}, prix affichés. Ou écrivez-nous pour en parler d’abord.` })}`;
+${C.ctaBand({ title: 'On vous rend visible ?', text: `Choisissez votre site en deux minutes : dès ${euro(creation.prix)}, prix affichés. Ou écrivez-nous pour en parler d’abord.` })}`;
   return {
     path,
     section: 'metiers',
@@ -1450,7 +1403,7 @@ ${p.points && p.points.length ? `<section class="section"><div class="container"
 </div></section>
 ${f.html}
 ${voirCards(p.voir || [])}
-${C.ctaBand({ title: (p.cta && p.cta.titre) || 'On crée votre site ?', text: (p.cta && p.cta.texte) || CTA_TEXTE })}`;
+${C.ctaBand({ title: (p.cta && p.cta.titre) || 'On vous rend visible ?', text: (p.cta && p.cta.texte) || CTA_TEXTE })}`;
   return {
     path: p.path,
     section: k || 'guides',
@@ -1492,7 +1445,9 @@ function docPage() {
     boutique: [1482, 1823], vacances: [654, 650], 'site-dodedo': [1500, 938], 'site-flore': [1500, 938],
   };
   const fig = (k, alt, cap, cls = '') => `<figure class="doc-fig ${cls} reveal"><img src="/assets/img/doc/${k}.webp" width="${IMG[k][0]}" height="${IMG[k][1]}" alt="${esc(alt)}" loading="lazy" decoding="async"><figcaption>${cap}</figcaption></figure>`;
-  const toc = [
+  // un chapitre : son titre (toujours visible) et son contenu, replié. Le premier est ouvert.
+  const chap = (id, titre, html) => C.deroulant(titre, html, { id, ouvert: id === 'etapes', cls: 'doc-chap' });
+  const toc_ = [
     ['etapes', 'list-checks', 'Comment ça se passe'],
     ['lia-alex', 'sparkles', 'Cerise et moi'],
     ['questionnaire', 'clipboard-check', 'Le questionnaire de création'],
@@ -1520,19 +1475,12 @@ function docPage() {
   const body = `${C.pageHero({
     section: 'documentation',
     h1: 'Documentation : tout comprendre, en images',
-    lead: 'Comment on crée votre site, ce que vous payez et à quoi ressemble votre espace client. Les captures sont des exemples, avec des chiffres inventés.',
+    lead: 'Comment on crée votre site, ce que vous payez et à quoi ressemble votre espace client. Touchez un chapitre pour l’ouvrir.',
     crumbs,
     mascot: 'pense',
   })}
-<section class="section section-tight"><div class="container">
-  <nav class="doc-toc reveal" aria-label="Sommaire de la documentation">
-    ${toc.map(([id, ic, t], i) => `<a href="#${id}"><span class="doc-num">${i + 1}</span>${icon(ic)}<span>${t}</span></a>`).join('')}
-  </nav>
-</div></section>
-
-<section class="section doc-sec" id="etapes"><div class="container container-narrow">
-  <p class="doc-kicker">1. Comment ça se passe</p>
-  <h2>De la commande à la mise en ligne</h2>
+<section class="section section-tight"><div class="container"><div class="faq deroulants doc-chapitres">
+${chap('etapes', `1. Comment ça se passe`, `  <h2>De la commande à la mise en ligne</h2>
   <ol class="doc-steps">
     <li><strong>Vous choisissez votre site.</strong> ${types.map((t) => esc(t.name)).join(', ')} : le prix total s’affiche avant de commander.</li>
     <li><strong>Vous réglez un acompte de ${paiement.acompte} %.</strong> C’est le signal de départ.</li>
@@ -1542,35 +1490,26 @@ function docPage() {
     <li><strong>Vous recevez votre site et payez le reste.</strong> En une fois, ou en ${C.lissageTxt} fois sans frais.</li>
     <li><strong>Ensuite, vous choisissez.</strong> ${esc(ABO.name)}, ${euro(ABO.month)} par mois : on s’occupe de tout. Ou ${esc(AUTO.name)}, ${euro(AUTO.month)} : vous gérez tout vous-même.</li>
   </ol>
-  <p class="doc-more">${C.btn(sections.creer.path, 'btn-primary', 'wand-sparkles', 'Choisir mon site')}</p>
-</div></section>
+  <p class="doc-more">${C.btnCreer('btn-primary')}</p>`)}
 
-<section class="section section-soft doc-sec" id="lia-alex"><div class="container container-narrow">
-  <p class="doc-kicker">2. Cerise et moi</p>
-  <h2>Deux pour s’occuper de vos demandes</h2>
+${chap('lia-alex', `2. Cerise et Alex`, `  <h2>Deux pour s’occuper de vos demandes</h2>
   <div class="doc-duo-qui">
     <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${monster('coucou')}</span><h3>Cerise, la secrétaire de la bande</h3><p>Elle répond à vos questions et vous aide à formuler vos demandes. Elle vous les fait relire, puis les transmet.</p></div>
-    <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${C.alexPortrait({ title: 'Alex' })}</span><h3>Moi, Alex</h3><p>Je conçois votre site et je vérifie tout. Je réponds aussi à vos questions quand Cerise ne sait pas.</p></div>
+    <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${C.alexPortrait({ title: 'Alex' })}</span><h3>Alex</h3><p>Il conçoit votre site et vérifie tout. Il répond aussi à vos questions quand Cerise ne sait pas.</p></div>
   </div>
-  <p class="doc-more">${C.btn(sections.equipe.path, 'btn-primary', sections.equipe.icon, 'Rencontrer la bande')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
-</div></section>
+  <p class="doc-more">${C.btn(sections.equipe.path, 'btn-primary', sections.equipe.icon, 'Rencontrer la bande')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>`)}
 
-<section class="section doc-sec" id="questionnaire"><div class="container container-narrow">
-  <p class="doc-kicker">3. Le questionnaire de création</p>
-  <h2>Ce qu’on vous demande pour créer votre site</h2>
+${chap('questionnaire', `3. Le questionnaire de création`, `  <h2>Ce qu’on vous demande pour créer votre site</h2>
   <p>Après votre commande, un questionnaire vous attend dans l’onglet « Ma commande ». Il est déjà prérempli avec vos coordonnées. Vous pouvez modifier vos réponses tant que le site n’est pas en ligne.</p>
   <div class="doc-brief">
     ${types.map((t, k) => `<details class="doc-brief-type"${k === 0 ? ' open' : ''}><summary>${icon(t.icon)}Pour un ${esc(t.name)}</summary>
       <ol class="doc-brief-sections">${BRIEF.pour(t.id).map((sec) => `<li><strong>${icon(sec.icon)}${esc(sec.titre)}</strong><ul>${sec.champs.map((c) => `<li><span>${esc(c.label)}${c.requis ? ' <em class="doc-req">à remplir</em>' : ''}</span>${briefDetail(c)}</li>`).join('')}</ul></li>`).join('')}</ol>
     </details>`).join('')}
-  </div>
-</div></section>
+  </div>`)}
 
-<section class="section section-soft doc-sec" id="sites"><div class="container">
-  <div class="container-narrow">
-    <p class="doc-kicker">4. Les trois sites</p>
+${chap('sites', `4. Les trois sites`, `  <div class="container-narrow">
     <h2>Un site, un but, un prix</h2>
-    <p>Chaque site se paie une seule fois. Le prix ne change pas en cours de route. ${esc(C.PLUS_DE_PAGES)}</p>
+    <p>Chaque site vous rend visible à sa façon, et se paie une seule fois. Le prix ne change pas en cours de route. ${esc(C.PLUS_DE_PAGES)}</p>
   </div>
   <div class="doc-types">
     ${types.map((t) => `<div class="doc-type reveal"><strong>${esc(t.name)}</strong><b>${C.prixType(t)}</b><span>${icon('clock')}${esc(t.delai)}</span><p><strong>${esc(t.but)}.</strong> ${esc(t.pitch)}</p></div>`).join('')}
@@ -1579,12 +1518,9 @@ function docPage() {
     ${fig('site-dodedo', 'Page d’accueil du site Dodedo', 'Un vrai site client : <a href="https://www.dodedo.fr/" target="_blank" rel="noopener">dodedo.fr</a>.')}
     ${fig('site-flore', 'Aperçu du site Flore & Chenilles', 'Un autre site client : <a href="https://www.floreetchenilles.fr/" target="_blank" rel="noopener">floreetchenilles.fr</a>.')}
   </div>
-  <p class="doc-more center">${C.btn(sections.confiance.path, 'btn-light', 'handshake', 'Voir les sites de nos clients')}</p>
-</div></section>
+  <p class="doc-more center">${C.btn(sections.confiance.path, 'btn-light', 'handshake', 'Voir les sites de nos clients')}</p>`)}
 
-<section class="section doc-sec" id="prix"><div class="container">
-  <div class="container-narrow">
-    <p class="doc-kicker">5. Le prix</p>
+${chap('prix', `5. Le prix`, `  <div class="container-narrow">
     <h2>Le site une fois, puis ${euro(AUTO.month)} ou ${euro(ABO.month)} par mois</h2>
     <p>Les prix sont les mêmes pour tous. Vous payez votre site une fois. Ensuite, c’est vous qui choisissez, sans obligation d’abonnement.</p>
   </div>
@@ -1602,28 +1538,22 @@ function docPage() {
     <div class="doc-mini reveal"><strong>${icon('search-check')}Page de visibilité Google</strong><p>${euro(PRIX_PAGE)} la page, payée une fois, par carte, depuis votre espace client.</p></div>
     <div class="doc-mini reveal"><strong>${icon('ticket')}Code promo ou parrainage</strong><p>Une seule case, à la commande. Un code de parrainage offre ${fidelite.parrainageMois} mois de ${esc(ABO.name)} à chacun.</p></div>
   </div>
-  <p class="doc-more center">${C.btn(sections.forfaits.path, 'btn-light', sections.forfaits.icon, 'La page des tarifs')}</p>
-</div></section>
+  <p class="doc-more center">${C.btn(sections.forfaits.path, 'btn-light', sections.forfaits.icon, 'Voir les tarifs')}</p>`)}
 
-<section class="section section-soft doc-sec" id="espace"><div class="container">
-  <div class="doc-split">
+${chap('espace', `6. L’espace client`, `  <div class="doc-split">
     <div>
-      <p class="doc-kicker">6. L’espace client</p>
       <h2>Tout votre site, au même endroit</h2>
       <p>Chaque client a son espace, sur téléphone comme sur ordinateur.</p>
       <ul class="doc-tabs">${tabs.map(([ic, t, d]) => `<li>${icon(ic)}<span><strong>${t}</strong> : ${d}</span></li>`).join('')}</ul>
-      <p class="doc-note">Sans ${esc(BOU.name)}, l’onglet « Ma boutique » affiche « Option verrouillée ».</p>
+      <p class="doc-note">Sans ${esc(BOU.name)}, l’onglet « Ma boutique » reste verrouillé.</p>
     </div>
     ${fig('espace', 'L’espace client : les onglets et la page d’accueil', 'L’accueil de l’espace client (exemple : « Pâtisserie Lila », une cliente imaginaire).')}
   </div>
-  <p class="doc-more">${C.btn('/mon-espace/demo/', 'btn-light', 'eye', 'Essayer la démo')}</p>
-</div></section>
+  <p class="doc-more">${C.btn('/mon-espace/demo/', 'btn-light', 'eye', 'Essayer la démo')}</p>`)}
 
-<section class="section doc-sec" id="demandes"><div class="container">
-  <div class="doc-split doc-split-rev">
+${chap('demandes', `7. Demander une modification`, `  <div class="doc-split doc-split-rev">
     ${fig('demandes', 'L’onglet Mes demandes', 'L’onglet « Mes demandes » : on écrit, on ajoute une photo si besoin, on suit l’avancement.')}
     <div>
-      <p class="doc-kicker">7. Demander une modification</p>
       <h2>Vous demandez, on s’en charge</h2>
       <p>Avec ${esc(ABO.name)}, vos modifications sont incluses. Voici comment ça se passe :</p>
       <ol class="doc-steps">${C.ETAPES_MODIF.map(([, t, d]) => `<li><strong>${esc(t)}.</strong> ${esc(d)}</li>`).join('')}</ol>
@@ -1633,22 +1563,16 @@ function docPage() {
       </ul>
       <p class="doc-more">${C.btn(sections.accompagnement.path, 'btn-light', sections.accompagnement.icon, 'L’accompagnement')}</p>
     </div>
-  </div>
-</div></section>
+  </div>`)}
 
-<section class="section doc-sec" id="jetons"><div class="container container-narrow">
-  <p class="doc-kicker">8. La petite bande</p>
-  <h2>Cinq Minis Monstres, chacun son métier</h2>
+${chap('jetons', `8. La petite bande`, `  <h2>Cinq Minis Monstres, chacun son métier</h2>
   <ul class="list-check">
     ${bande.map((b) => `<li><strong>${esc(b.nom)}</strong>, ${esc(b.role.toLowerCase())}. ${esc(b.court)}</li>`).join('')}
   </ul>
   <p>Cerise répond dans la bulle, en bas de l’écran, jusqu’à ${limites.bulleJour} messages par jour.</p>
-  <p class="doc-more">${C.btn(sections.equipe.path, 'btn-light', sections.equipe.icon, 'Notre équipe')}</p>
-</div></section>
+  <p class="doc-more">${C.btn(sections.equipe.path, 'btn-light', sections.equipe.icon, 'Notre équipe')}</p>`)}
 
-<section class="section section-soft doc-sec" id="tableau"><div class="container">
-  <div class="container-narrow">
-    <p class="doc-kicker">9. Mon site : vos chiffres</p>
+${chap('tableau', `9. Mon site : vos chiffres`, `  <div class="container-narrow">
     <h2>Vos visites et l’état de votre site</h2>
     <p>Dans l’onglet « Mon site », vous voyez vos visiteurs et la santé de votre site. Les visites sont comptées sans cookie et sans donnée personnelle.</p>
   </div>
@@ -1665,12 +1589,9 @@ function docPage() {
   <ul class="doc-legend reveal">
     <li><span class="doc-dot ok"></span><span><strong>Voyants</strong> : site en ligne, cadenas HTTPS, vitesse. Vert, tout va bien.</span></li>
     <li><span class="doc-dot"></span><span><strong>Provenance</strong> : Google, accès direct, réseaux sociaux ou autres sites.</span></li>
-  </ul>
-</div></section>
+  </ul>`)}
 
-<section class="section section-soft doc-sec" id="messages"><div class="container">
-  <div class="container-narrow">
-    <p class="doc-kicker">10. Les extras</p>
+${chap('messages', `10. Les extras`, `  <div class="container-narrow">
     <h2>Trois extras, quand vous en avez besoin</h2>
     <ul class="list-check">
       ${C.EXTRAS_PAR_FAMILLE.flatMap((g) => g.items).map((x) => `<li><strong>${esc(x.name)}</strong>, ${x.devis ? 'sur devis' : `${euro(x.fois)} la page, payée une fois, par carte`}. ${inline(x.desc)}</li>`).join('')}
@@ -1678,12 +1599,9 @@ function docPage() {
     <p>Tout se demande depuis l’onglet « Extras » de votre espace client.</p>
   </div>
   ${fig('messages', 'Les petits mots de la bande dans l’espace client', 'Dans l’espace client : les petits mots de la bande (exemple).', 'doc-fig-flat')}
-  <p class="doc-more center">${C.btn(sections.forfaits.path + '#extras', 'btn-light', 'plus', 'Voir les extras')}</p>
-</div></section>
+  <p class="doc-more center">${C.btn(sections.forfaits.path + '#extras', 'btn-light', 'plus', 'Voir les extras')}</p>`)}
 
-<section class="section doc-sec" id="boutique"><div class="container">
-  <div class="container-narrow">
-    <p class="doc-kicker">11. Le ${esc(BOU.name)}</p>
+${chap('boutique', `11. Le ${esc(BOU.name)}`, `  <div class="container-narrow">
     <h2>Votre boutique, gérée par vous</h2>
     <p>Dans l’onglet « Ma boutique », vous gérez vos articles, vos prix, vos paiements et vos commandes. ${esc(C.BOUTIQUE_ARTICLES)}</p>
   </div>
@@ -1691,31 +1609,26 @@ function docPage() {
     <ul class="doc-tools">
       <li>${icon('image-plus')}<span><strong>Vos articles</strong>Une photo, une description et un prix par article. Pas de limite d’articles.</span></li>
       <li>${icon('credit-card')}<span><strong>Vos moyens de paiement</strong>Stripe, PayPal, virement, chèque ou paiement à la livraison. Vos clés de paiement restent sur votre propre site.</span></li>
-      <li>${icon('package')}<span><strong>Vos commandes</strong>Vous recevez un e-mail à chaque commande, et vous suivez tout au même endroit.</span></li>
+      <li>${icon('package')}<span><strong>La livraison</strong>À prix fixe, gratuite à partir d’un montant, ou retrait sur place.</span></li>
+      <li>${icon('package')}<span><strong>Vos commandes</strong>Vous recevez un e-mail à chaque commande. Deux boutons : « Je la prépare », puis « Expédiée ou remise ».</span></li>
       <li>${icon('badge-percent')}<span><strong>Codes promo et soldes</strong>En % ou en €, avec une date de fin. Les prix barrés apparaissent seuls.</span></li>
       <li>${icon('megaphone')}<span><strong>Bandeau d’annonce</strong>Une phrase en haut du site, en quatre couleurs au choix.</span></li>
       <li>${icon('sun')}<span><strong>Mode vacances</strong>Boutique fermée, ou commandes acceptées avec expédition au retour.</span></li>
     </ul>
     ${fig('vacances', 'Aperçu du mode vacances', 'L’aperçu du mode vacances, tel qu’il s’affiche pendant que vous remplissez le formulaire.', 'doc-fig-small')}
   </div>
-  ${fig('boutique', 'L’onglet Ma boutique', 'L’onglet « Ma boutique » : codes promo, soldes rapides et bandeau (exemple).', 'doc-fig-wide')}
-</div></section>
+  ${fig('boutique', 'L’onglet Ma boutique', 'L’onglet « Ma boutique » : codes promo, soldes rapides et bandeau (exemple).', 'doc-fig-wide')}`)}
 
-<section class="section section-soft doc-sec" id="seo"><div class="container container-narrow">
-  <p class="doc-kicker">12. Être trouvé sur Google</p>
-  <h2>La visibilité Google, pas à pas</h2>
+${chap('seo', `12. Être trouvé sur Google`, `  <h2>La visibilité Google, pas à pas</h2>
   <p>Tous les sites partent avec de bonnes bases : des pages rapides, lisibles sur téléphone, avec un titre et une description pour Google. Le ${esc(VIS.name)} va plus loin : jusqu’à ${creation.pages} pages, des pages de visibilité Google intégrées et le référencement local renforcé. Ensuite, chaque page de visibilité Google en plus coûte ${euro(PRIX_PAGE)}, payée une fois.</p>
   <div class="go-links">
-    <a class="go-link c-${sections.seo.color}" href="${sections.seo.path}"><span class="type-ico">${icon(sections.seo.icon)}</span><strong>Le référencement en détail</strong>${icon('arrow-right')}</a>
+    <a class="go-link c-${sections.seo.color}" href="${sections.seo.path}"><span class="type-ico">${icon(sections.seo.icon)}</span><strong>Être trouvé sur Google, en détail</strong>${icon('arrow-right')}</a>
     <a class="go-link c-${sections.guides.color}" href="${sections.guides.path}"><span class="type-ico">${icon(sections.guides.icon)}</span><strong>Les guides pratiques</strong>${icon('arrow-right')}</a>
-    ${LEXIQUE.termes.length ? `<a class="go-link c-${sections.lexique.color}" href="${sections.lexique.path}"><span class="type-ico">${icon(sections.lexique.icon)}</span><strong>Le lexique du web</strong>${icon('arrow-right')}</a>` : ''}
+    ${LEXIQUE.termes.length ? `<a class="go-link c-${sections.lexique.color}" href="${sections.lexique.path}"><span class="type-ico">${icon(sections.lexique.icon)}</span><strong>Le lexique</strong>${icon('arrow-right')}</a>` : ''}
     <a class="go-link c-${sections.confiance.color}" href="${sections.confiance.path}"><span class="type-ico">${icon(sections.confiance.icon)}</span><strong>Les pages créées pour nos clients</strong>${icon('arrow-right')}</a>
-  </div>
-</div></section>
+  </div>`)}
 
-<section class="section doc-sec" id="paiement"><div class="container container-narrow">
-  <p class="doc-kicker">13. Paiement et fidélité</p>
-  <h2>Payer simplement, et être remercié</h2>
+${chap('paiement', `13. Paiement et fidélité`, `  <h2>Payer simplement, et être remercié</h2>
   <ul class="list-check">
     <li>Acompte de ${paiement.acompte} % à la commande, le reste à la réception du site, en une fois ou en ${C.lissageTxt} fois sans frais.</li>
     <li>${esc(ABO.name)} se paie au mois, ou à l’année avec ${annuel.moisOfferts} mois offerts. Sans engagement.</li>
@@ -1723,8 +1636,8 @@ function docPage() {
     <li>Parrainage : quand le site d’un filleul est en ligne, vous recevez chacun ${fidelite.parrainageMois} mois de ${esc(ABO.name)} offert.</li>
     <li>Un deuxième site : ${fidelite.remiseSecondSite} % de remise sur sa création.</li>
   </ul>
-  <p class="doc-more">${C.btn(sections.fidelite.path, 'btn-light', 'gift', 'La fidélité')} ${C.btn('/faq/', 'btn-light', 'circle-help', 'Questions fréquentes')}</p>
-</div></section>
+  <p class="doc-more">${C.btn(sections.fidelite.path, 'btn-light', 'gift', 'La fidélité')} ${C.btn('/faq/', 'btn-light', 'circle-help', 'Questions fréquentes')}</p>`)}
+</div></div></section>
 ${C.ctaBand({ title: 'Une question qui n’est pas ici ?', text: 'Écrivez-nous : on vous répond, et on complète cette page.' })}`;
   return {
     path: sections.documentation.path,
@@ -1746,13 +1659,13 @@ function faqPage() {
     ['La commande', FAQ.commande || [], 'commander'],
     ['Les tarifs et l’abonnement', FAQ.forfaits || FAQ.tarifs || [], 'forfaits'],
     ['Votre espace client', FAQ.espace, 'espace'],
-    ['Le référencement', FAQ.seo, 'seo'],
-    ['Ma méthode', FAQ.methode, 'methode'],
+    ['Être trouvé sur Google', FAQ.seo, 'seo'],
+    ['Notre méthode', FAQ.methode, 'methode'],
     ['Le comparatif', FAQ.comparatif || [], 'comparatif'],
     ['La fidélité', FAQ.fidelite, 'fidelite'],
   ].filter((g) => g[1] && g[1].length);
   const all = groups.flatMap((g) => g[1]);
-  const body = `${C.pageHero({ h1: 'Questions fréquentes', lead: 'Les réponses aux questions qu’on me pose le plus souvent. Il en manque une ? Écrivez-moi.', crumbs })}
+  const body = `${C.pageHero({ h1: 'Questions fréquentes', lead: 'Les réponses aux questions qu’on nous pose le plus souvent. Il en manque une ? Écrivez-nous.', crumbs })}
 <section class="section"><div class="container container-narrow">
   ${groups
     .map(([t, items, k]) => `<div class="faq-group c-${sections[k].color}"><h2>${icon(sections[k].icon)}${t}</h2><div class="faq">${items.map(C.faqItem).join('')}</div></div>`)
@@ -1761,8 +1674,8 @@ function faqPage() {
 ${C.ctaBand({ text: CTA_TEXTE })}`;
   return {
     path: '/faq/',
-    title: 'Questions fréquentes : création, tarifs, SEO | Les Minis Monstres',
-    description: 'Toutes les réponses sur la création de votre site, la commande en ligne, les tarifs et l’abonnement, l’espace client, le référencement et le parrainage.',
+    title: 'Questions fréquentes : création, tarifs, visibilité | Les Minis Monstres',
+    description: 'Toutes les réponses sur la création de votre site, la commande en ligne, les tarifs et l’abonnement Mini, l’espace client, la visibilité sur Google et le parrainage.',
     crumbs,
     body,
     schema: [C.faqSchema(all)],
@@ -1821,9 +1734,9 @@ function merci() {
     path: '/merci/',
     noindex: true,
     title: 'Demande envoyée | Les Minis Monstres',
-    description: 'Votre demande a bien été envoyée aux Minis Monstres. Je vous réponds rapidement, en général dans la journée, avec un récapitulatif clair.',
-    body: `${C.pageHero({ h1: 'Merci, votre demande est bien partie !', lead: 'Je vous réponds rapidement, en général dans la journée. Pensez à regarder vos e-mails, et vos indésirables.', mascot: 'mascotte' })}
-<section class="section"><div class="container center"><div class="hero-ctas centered">${C.btnWa('btn-light btn-lg')}${C.btn('/', 'btn-light btn-lg', 'arrow-right', 'Retour à l’accueil')}</div></div></section>`,
+    description: 'Votre demande a bien été envoyée aux Minis Monstres. On vous répond rapidement, en général dans la journée, avec un récapitulatif clair.',
+    body: `${C.pageHero({ h1: 'Merci, votre demande est bien partie !', lead: 'On vous répond rapidement, en général dans la journée. Pensez à regarder vos e-mails, et vos indésirables.', mascot: 'mascotte' })}
+<section class="section"><div class="container center"><div class="hero-ctas centered">${C.btn('/', 'btn-primary btn-lg', 'arrow-right', 'Retour à l’accueil')}${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</div></div></section>`,
   };
 }
 
@@ -1833,7 +1746,7 @@ function notFound() {
     file: '404.html',
     noindex: true,
     title: 'Page introuvable | Les Minis Monstres',
-    description: 'Cette page n’existe pas ou a été déplacée. Retrouvez la création de site, les tarifs, l’espace client et le référencement depuis l’accueil.',
+    description: 'Cette page n’existe pas ou a été déplacée. Retrouvez la création de site, les tarifs, l’espace client et la visibilité sur Google depuis l’accueil.',
     body: `${C.pageHero({ h1: 'Oups, cette page s’est perdue', lead: 'Elle a peut-être été déplacée. Voici où aller :', mascot: 'triste' })}
 <section class="section"><div class="container"><div class="go-links">${['creer', 'forfaits', 'seo', 'contact']
       .map((k) => `<a class="go-link c-${sections[k].color}" href="${sections[k].path}"><span class="type-ico">${icon(sections[k].icon)}</span><strong>${sections[k].label}</strong>${icon('arrow-right')}</a>`)

@@ -1132,7 +1132,7 @@ function aled08e_dashboard() {
           <?php
           echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
           if ($cmd) echo aled08e_tab('commande', 'package', 'Ma commande'); // phpcs:ignore
-          echo aled08e_tab('demandes', 'message-circle', 'Demandes') . aled08e_tab('extras', 'sparkles', 'Extras') . aled08e_tab('tableau', 'gauge', 'Mon site') . aled08e_tab('vacances', aled08e_est_boutique($uid) ? 'shopping-bag' : 'lock', 'Ma boutique') . (aled08e_outils_on() ? aled08e_tab('outils', 'toolbox', 'Outils') : '') . aled08e_tab('parrainage', 'gift', 'Parrainage') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
+          echo aled08e_tab('demandes', 'message-circle', 'Demandes') . aled08e_tab('extras', 'sparkles', 'Extras') . aled08e_tab('vacances', aled08e_est_boutique($uid) ? 'shopping-bag' : 'lock', 'Ma boutique') . (aled08e_outils_on() ? aled08e_tab('outils', 'toolbox', 'Outils') : '') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -1149,7 +1149,6 @@ function aled08e_dashboard() {
             <?php else : ?>
             <div class="app-card c-mint"><span class="app-card-ico"><?php echo aled08e_icon('globe'); // phpcs:ignore ?></span><span><small>Votre site</small><strong><?php echo esc_html($host ?: 'En préparation'); ?></strong><span class="<?php echo $siteOk ? 'dot-ok' : ''; ?>"><?php echo esc_html($siteEtat); ?></span></span></div>
             <?php endif; ?>
-            <button type="button" class="app-card c-pink" data-go="parrainage"><span class="app-card-ico"><?php echo aled08e_icon('gift'); // phpcs:ignore ?></span><span><small>Parrainage</small><strong><?php echo esc_html($code); ?></strong><span><?php echo (int) count($filleuls); ?> filleul<?php echo count($filleuls) > 1 ? 's' : ''; ?> en ligne</span></span></button>
           </div>
           <?php if ($cmd && $cmd['statut'] !== 'annulee' && $cmd['statut'] !== 'en_ligne' && (aled08e_brief_le($cmd['id']) === '' || get_post_meta($cmd['id'], '_aled08_brief_brouillon', true))) : ?>
           <p class="esp-warn bf-rappel"><?php echo aled08e_icon('clipboard-check'); // phpcs:ignore ?><span><b>À faire :</b> votre questionnaire de création attend vos réponses. C’est lui qui lance la création de votre site.</span> <button type="button" class="link-btn" data-go="commande">Le remplir</button></p>
@@ -1162,9 +1161,8 @@ function aled08e_dashboard() {
           <?php echo aled08e_messages_html($uid); // phpcs:ignore ?>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
-            <button type="button" data-go="demandes"><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><strong>Demander une modification</strong><small>Je m’en occupe</small></button>
-            <button type="button" data-go="extras"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><strong>Ajouter un extra</strong><small>Pages de visibilité Google, articles, rendez-vous…</small></button>
-            <button type="button" data-go="parrainage"><?php echo aled08e_icon('gift'); // phpcs:ignore ?><strong>Parrainer un proche</strong><small>Un mois offert chacun</small></button>
+            <button type="button" data-go="demandes"><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><strong>Demander une modification</strong><small>Bricou s’en occupe</small></button>
+            <button type="button" data-go="extras"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><strong>Ajouter un extra</strong><small>Pépite vous montre les petits plus</small></button>
           </div>
           <?php echo aled08e_extras_accueil_html($uid, $famille); // phpcs:ignore ?>
           <p class="app-sub">Dernières demandes</p>
@@ -1186,13 +1184,11 @@ function aled08e_dashboard() {
           <?php echo aled08e_pd_flash_html() . $flash; // phpcs:ignore ?>
           <?php echo aled08e_gauge_zone_html($uid); // phpcs:ignore ?>
           <section class="bricou-bloc" aria-label="Votre demande de modification">
-          <div class="bricou-tete"><span class="bricou-art" aria-hidden="true"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?></span><div><strong>Une modification ? Dites-le à Cerise</strong><p>Écrivez ce que vous voulez changer, avec une photo si besoin. Cerise vous aide à bien le formuler, vous le fait vérifier, puis le transmet. La modification est faite en 48 h au plus.</p></div></div>
+          <div class="bricou-tete"><span class="bricou-art" aria-hidden="true"><?php echo aled08e_monster('bricou'); // phpcs:ignore ?></span><div><strong>Une modification ? Bricou s’en occupe</strong><p>Dites ce que vous voulez changer. C’est fait en 48 h au plus.</p></div></div>
           <?php if (aled08e_sans_formule($uid)) : ?><?php echo aled08e_autonomie_html($uid); // phpcs:ignore ?>
           <?php else : ?>
           <?php if ($illimite) : ?>
-          <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. C’est compris dans votre abonnement Mini. Vous suivez l’avancement ici.</p>
-          <ol class="req-etapes"><li><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Vous écrivez votre demande</span></li><li><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Cerise la précise avec vous</span></li><li><?php echo aled08e_icon('circle-check'); // phpcs:ignore ?><span>Vous la confirmez</span></li><li><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>La modification est faite</span></li></ol>
-          <p class="app-note"><?php echo aled08e_icon('clock'); // phpcs:ignore ?>Modifications <?php echo esc_html(aled08e_delai_txt($f)); ?>, à compter de votre confirmation. <?php echo (int) aled08e_demandes_max($uid) > 1 ? 'Deux demandes à la fois' : 'Une demande à la fois'; ?> avec votre abonnement.</p>
+          <ol class="req-etapes"><li><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Vous écrivez votre demande</span></li><li><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Cerise vous aide à la préciser</span></li><li><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>Bricou fait la modification</span></li></ol>
           <?php endif; ?>
           <form class="req-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(aled08e_url()); ?>" data-req-real>
             <input type="hidden" name="aled08e_demande" value="1">
@@ -1214,6 +1210,7 @@ function aled08e_dashboard() {
           <?php echo aled08e_extras_html($uid, $famille, aled08e_pd_flash_html() . $flash . $flashForfait); // phpcs:ignore ?>
         </div>
 
+        <?php if (false) : // retiré le 19 novembre 2026 (tableau) ?>
         <div class="app-panel" role="tabpanel" id="t-tableau" aria-labelledby="tab-tableau" hidden>
           <h2 class="app-h">Mon site</h2>
           <?php echo aled08e_stats_html($uid); // phpcs:ignore ?>
@@ -1232,6 +1229,8 @@ function aled08e_dashboard() {
           <?php echo aled08e_jl_onglet_html($uid, $f, $site, $host, $avis); // phpcs:ignore ?>
         </div><?php endif; ?>
 
+        <?php endif; ?>
+        <?php if (false) : // retiré le 19 novembre 2026 (parrainage) ?>
         <div class="app-panel" role="tabpanel" id="t-parrainage" aria-labelledby="tab-parrainage" hidden>
           <h2 class="app-h">Parrainage</h2>
           <p class="app-p">Un proche fait créer son site avec votre lien ou votre code : quand il est en ligne, vous recevez chacun <?php echo esc_html(aled08e_mois_txt($D['parrainageMois'])); ?> d’abonnement offert.</p>
@@ -1254,6 +1253,7 @@ function aled08e_dashboard() {
           <?php if ($moisDispo > 0) : ?><p class="esp-empty">Mois offerts à utiliser sur votre abonnement : <?php echo (int) $moisDispo; ?>.</p><?php endif; ?>
         </div>
 
+        <?php endif; ?>
         <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
           <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>
           <section class="compte-forfait" id="forfait-bloc">

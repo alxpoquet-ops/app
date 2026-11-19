@@ -1275,8 +1275,21 @@
     var dejaVue = false;
     try { dejaVue = sessionStorage.getItem('lia_vue') === '1'; } catch (e) {}
     if (coucou && !dejaVue) {
-      // « Je suis là pour vous aider ! » : il apparaît au bout de 2 secondes et reste là tant que la bulle n'a pas été ouverte
-      setTimeout(function () { if (flotPanel.hidden) coucou.hidden = false; }, 2000);
+      // « Je suis là pour vous aider ! » : il apparaît au bout de 2 secondes, puis s'efface tout seul après quelques secondes
+      // ou dès qu'on fait défiler la page, pour ne rien cacher. La bulle ronde, elle, reste.
+      var coucouFini = false;
+      var rangerCoucou = function () {
+        if (coucouFini) return;
+        coucouFini = true; coucou.hidden = true;
+        window.removeEventListener('scroll', rangerCoucou);
+        try { sessionStorage.setItem('lia_vue', '1'); } catch (e) {}
+      };
+      setTimeout(function () {
+        if (coucouFini || !flotPanel.hidden || window.pageYOffset > 80) return;
+        coucou.hidden = false;
+        window.addEventListener('scroll', rangerCoucou, { passive: true });
+        setTimeout(rangerCoucou, 6000);
+      }, 2000);
       coucou.addEventListener('click', function () { flotOuvrir(true); });
     }
   }
@@ -1393,17 +1406,47 @@
     window.addEventListener('resize', placer);
   })();
 
+  /* ---------- menus déroulants : un lien vers une ancre ouvre le déroulant qui la contient ---------- */
+  (function () {
+    var ouvrir = function () {
+      var id = decodeURIComponent((location.hash || '').slice(1));
+      if (!id) return;
+      var el = d.getElementById(id);
+      if (!el) return;
+      var det = el.closest ? el.closest('details') : null, fait = false;
+      while (det) { if (!det.open) { det.open = true; fait = true; } det = det.parentElement && det.parentElement.closest ? det.parentElement.closest('details') : null; }
+      if (fait && el.scrollIntoView) el.scrollIntoView();
+    };
+    ouvrir();
+    window.addEventListener('hashchange', ouvrir);
+  })();
+
+  /* ---------- barre du bas (téléphone) : cachée tant que les boutons du haut de page sont à l'écran ---------- */
+  (function () {
+    var bar = $('.mobile-bar'), ctas = $('.hero-ctas');
+    if (!bar || !ctas || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { bar.classList.toggle('is-hidden', en.isIntersecting); });
+    }).observe(ctas);
+  })();
+
   /* ---------- formulaire de contact ---------- */
   $$('form[data-form]').forEach(function (f) {
     var t = f.querySelector('input[name="_t"]'); if (t) t.value = Date.now();
     var p = new URLSearchParams(location.search);
     var pick = function (sel, v) { if (!sel || !v) return; $$('option', sel).forEach(function (o) { if (o.value === v) sel.value = v; }); };
     /* « Votre demande » : un site (devis, information) ou juste me contacter. Pour « juste contacter », on cache ce qui parle du site. */
-    var motif = f.querySelector('select[name="motif"]');
+    /* Ce sont de grosses cases à choisir (boutons radio) ; un ancien <select> marche encore. */
+    var motifSel = f.querySelector('select[name="motif"]'), motifRadios = $$('input[type="radio"][name="motif"]', f);
+    var motif = motifSel || (motifRadios.length ? {
+      get value() { var c = motifRadios.filter(function (r) { return r.checked; })[0]; return c ? c.value : ''; },
+      addEventListener: function (ev, fn) { motifRadios.forEach(function (r) { r.addEventListener(ev, fn); }); }
+    } : null);
     if (motif) {
+      var pickMotif = function (v) { if (!v) return; if (motifSel) pick(motifSel, v); else motifRadios.forEach(function (r) { if (r.value === v) r.checked = true; }); };
       var siteOnly = $$('[data-site-only]', f), typeSel = f.querySelector('select[name="type"]'), msgBox = f.querySelector('textarea[name="message"]');
       var venuDuSite = p.get('type') || p.get('forfait') || p.get('options') || p.get('domaine') || p.get('paiement') || p.get('lissage') || p.get('parrain');
-      pick(motif, p.get('motif') || (venuDuSite ? 'Site : un devis précis' : ''));
+      pickMotif(p.get('motif') || (venuDuSite ? 'Site : un devis précis' : ''));
       var majMotif = function () {
         var simple = motif.value === 'Contact simple';
         siteOnly.forEach(function (z) { z.hidden = simple; $$('input,select', z).forEach(function (i) { i.disabled = simple; }); });

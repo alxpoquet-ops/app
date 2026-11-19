@@ -8,6 +8,9 @@
 // Trois extras seulement : la page de visibilité Google (payée une fois, par carte, depuis l'espace client), la traduction
 // anglaise et la fonctionnalité spécifique (sur devis). La petite bande (config.bande) compte cinq Minis Monstres.
 // Chaque mot technique est expliqué la première fois qu'il apparaît dans un guide.
+// Ton (tour global du 19 novembre 2026) : « nous / on », Alex nommé quand c'est utile (jamais « je »), vouvoiement, « site internet »,
+// « visibilité sur Google » plutôt que « référencement », « modification ». Ordre de l'offre : le site, puis Autonomie ou Mini, enfin les extras.
+// Fil rouge : un site internet rend visible. Guides courts, pensés pour le téléphone.
 const cfg = require('../config');
 const { sourcesMd, INDEPENDANT_DES } = require('../lib/components');
 const { forfaits, paiement, annuel, lissage, creation, marche, bande, types, creationSeule, aLaDemande } = cfg;
@@ -45,7 +48,11 @@ const guides = [
     title: 'Site internet pour restaurant : carte et horaires | Les Minis Monstres',
     description: 'Ce que les clients cherchent sur le site d’un restaurant : la carte, les horaires, l’adresse et un moyen de réserver. Comment le faire simplement, à prix fixe.',
     lead: 'Avant de pousser votre porte, un client veut savoir trois choses : ce qu’on mange, à quel prix, et si vous êtes ouvert ce soir. Votre site doit répondre en dix secondes.',
-    body: `## Ce que vos clients cherchent vraiment
+    body: `## Être dans la liste quand on a faim
+
+Celui qui cherche où manger choisit parmi les restaurants qu’il voit sur son téléphone. Un site internet, avec votre fiche Google, vous met dans cette liste.
+
+## Ce que vos clients cherchent vraiment
 
 Quelqu'un qui tape le nom de votre restaurant est presque toujours sur son téléphone, souvent dans la rue ou en voiture. Il ne lit pas de longs textes. Il veut :
 
@@ -64,17 +71,15 @@ La bonne méthode est d'**écrire la carte en vrai texte** sur le site. Elle se 
 
 C'est la vraie difficulté pour un restaurant : le plat du jour, la carte de saison, les congés annuels. Un site qui affiche encore le menu de l'été en plein hiver donne une mauvaise image.
 
-Avec l’abonnement ${mini.name}, vous ne touchez jamais au site. Vous envoyez la nouvelle carte depuis votre espace client, la page privée où vous faites vos demandes. ${qui('support')} de ma petite bande, vérifie avec vous ce qui change. Puis la carte est mise à jour pour vous.
+Avec l’abonnement ${mini.name}, vous ne touchez jamais au site. Vous envoyez la nouvelle carte depuis votre espace client, la page privée où vous faites vos demandes. ${qui('support')} de notre petite bande, vérifie avec vous ce qui change. Puis la carte est mise à jour pour vous.
 
-Ces changements sont compris dans l’abonnement. La nouvelle carte est en ligne ${delaiModif} après votre demande, et vous envoyez une demande à la fois. Vous préférez tout gérer seul ? La formule ${AUTO} existe aussi, sans rien à payer chaque mois. Les deux sont présentées sur la page [tarifs](/tarifs/).
+Ces changements sont compris dans l’abonnement, et la nouvelle carte est en ligne ${delaiModif} après votre demande. Vous préférez tout gérer seul ? La formule ${AUTO} existe aussi. Les deux sont présentées sur la page [tarifs](/tarifs/).
 
 ## Quel site choisir ?
 
 Une seule page bien faite convient à beaucoup de restaurants : une belle photo de la salle, la carte, les horaires, le plan, le contact. Tout se fait défiler d’un doigt. C’est le ${ESS.name}, à ${eur(ESS.price)} €.
 
-Plusieurs pages deviennent utiles si vous avez plusieurs activités à présenter : traiteur, privatisation de salle, vente à emporter, chambres. Chacune mérite alors sa propre page.
-
-Il vous faut alors le ${VIS.name}, à ${eur(VIS.price)} €, qui compte jusqu’à ${creation.pages} pages. Des pages de visibilité Google y sont intégrées : elles sont écrites pour que l’on vous trouve plus facilement sur Google, sur des recherches comme « menu du midi » ou « repas de groupe » suivies du nom de votre ville.
+Vous avez plusieurs activités, comme le traiteur, la privatisation de salle ou la vente à emporter ? Prenez le ${VIS.name}, à ${eur(VIS.price)} €, qui compte jusqu’à ${creation.pages} pages. Ses pages de visibilité Google aident à vous faire trouver sur des recherches comme « menu du midi » ou « repas de groupe », suivies du nom de votre ville.
 
 ## Ne négligez pas les photos
 
@@ -84,7 +89,7 @@ Deux ou trois photos lumineuses de vos plats et de votre salle font plus que n'i
 
 Les horaires que Google affiche viennent de votre fiche d'établissement. Si elle est fausse, le client se déplace pour rien. Le guide sur la [fiche Google](/guides/fiche-google-entreprise/) explique comment la tenir à jour.`,
     faq: [
-      { q: 'Puis-je changer ma carte moi-même ?', a: 'Vous n’avez pas besoin de toucher au site. Écrivez la nouvelle carte, ou envoyez une photo de votre ardoise, depuis votre espace client. La page est préparée pour vous, je la vérifie, puis elle est publiée.' },
+      { q: 'Puis-je changer ma carte moi-même ?', a: 'Vous n’avez pas besoin de toucher au site. Écrivez la nouvelle carte, ou envoyez une photo de votre ardoise, depuis votre espace client. La page est préparée pour vous, Alex la vérifie, puis elle est publiée.' },
       { q: 'Mon restaurant a déjà une page sur les réseaux sociaux, est-ce suffisant ?', a: 'C’est un bon complément, mais une personne sans compte ne voit pas toujours votre page, et la carte y est vite enterrée sous les publications. Un site garde les informations essentielles toujours au même endroit.' },
       { q: 'Peut-on réserver une table depuis le site ?', a: 'Oui : par un bouton d’appel, par un formulaire qui arrive dans votre boîte mail, ou par un lien vers l’outil de réservation que vous utilisez déjà.' },
     ],
@@ -100,7 +105,11 @@ Les horaires que Google affiche viennent de votre fiche d'établissement. Si ell
     title: 'Site internet pour coiffeur ou institut de beauté | Les Minis Monstres',
     description: 'Tarifs clairs, photos de vos réalisations, horaires et prise de rendez-vous : ce qu’il faut sur le site d’un salon de coiffure ou d’un institut de beauté.',
     lead: 'Une nouvelle cliente compare deux ou trois salons avant de choisir. Elle regarde les tarifs, les photos et la facilité à prendre rendez-vous. Le salon qui montre tout ça clairement a une longueur d’avance.',
-    body: `## Les tarifs d'abord
+    body: `## Le salon que l’on trouve a une longueur d’avance
+
+Un salon sans site internet ne se compare pas : on ne le voit pas. Voici ce qu’il faut montrer une fois que l’on vous a trouvé.
+
+## Les tarifs d'abord
 
 C'est la première chose que l'on cherche, et la première chose que beaucoup de salons cachent. Une grille de tarifs claire évite les appels « juste pour un prix » et rassure : personne n'aime découvrir le montant à la caisse.
 
@@ -126,7 +135,7 @@ Pas encore d’agenda en ligne ? Commencez avec le téléphone et le formulaire.
 
 Une cliente qui vient d'emménager tape « coiffeur » suivi du nom de son quartier ou de sa ville. Pour apparaître, deux choses comptent : votre [fiche Google](/guides/fiche-google-entreprise/) avec de vrais avis, et un site qui dit clairement où vous êtes et ce que vous faites.
 
-Votre site peut aller plus loin. Le ${VIS.name} compte jusqu’à ${creation.pages} pages, pensées pour Google. Pour que l’on vous trouve sur encore plus de recherches, vous pouvez commander des pages de visibilité Google depuis votre espace client, à ${prixPage} € la page. Chacune vise une recherche précise, comme « balayage », « soin du visage » ou « coiffeur à domicile », et ouvre une porte d’entrée de plus vers votre site. C’est ainsi que se travaille votre [référencement](/referencement-seo/), c’est-à-dire votre place dans les résultats de Google.
+Votre site peut aller plus loin. Le ${VIS.name} compte jusqu’à ${creation.pages} pages, pensées pour Google. Plus tard, vous pouvez commander des pages de visibilité Google depuis votre espace client, à ${prixPage} € la page. Chacune vise une recherche précise, comme « balayage » ou « coiffeur à domicile ». Votre [visibilité sur Google](/referencement-seo/) grandit ainsi page après page.
 
 ## Quel site pour un salon ?
 
@@ -138,7 +147,7 @@ Si vous avez plusieurs univers (coiffure, esthétique, onglerie, vente de produi
 
 Un salon change souvent ses horaires : nocturne, fermeture exceptionnelle, vacances. Vous l'indiquez dans votre espace client, et le site est à jour sans que vous ayez à apprendre quoi que ce soit.`,
     faq: [
-      { q: 'Faut-il afficher tous mes tarifs sur le site ?', a: 'Je vous le conseille. Les prestations dont le prix dépend de la longueur ou du travail peuvent être indiquées avec un « à partir de ». Ce qui compte, c’est que la cliente ait un ordre d’idée avant de venir.' },
+      { q: 'Faut-il afficher tous mes tarifs sur le site ?', a: 'Nous vous le conseillons. Les prestations dont le prix dépend de la longueur ou du travail peuvent être indiquées avec un « à partir de ». Ce qui compte, c’est que la cliente ait un ordre d’idée avant de venir.' },
       { q: 'Je travaille seule à domicile, un site est-il utile ?', a: 'Oui, peut-être encore plus : sans vitrine dans la rue, votre site et votre fiche Google sont le seul endroit où l’on peut vous découvrir. Une seule page suffit largement pour commencer.' },
       { q: 'Puis-je relier mon agenda de rendez-vous en ligne ?', a: 'Oui. Si vous utilisez déjà un service de prise de rendez-vous, le bouton du site y mène directement. Sinon, un bouton d’appel et un formulaire font très bien l’affaire en attendant.' },
     ],
@@ -157,6 +166,8 @@ Un salon change souvent ses horaires : nocturne, fermeture exceptionnelle, vacan
     body: `## Pourquoi un site dès le début
 
 Vos premiers clients ne vous connaissent pas. Avant de vous confier quelque chose, ils vérifient que vous existez vraiment. Un site à votre nom change la façon dont on vous regarde : vous n'êtes plus « quelqu'un qui fait ça à côté », vous êtes une entreprise.
+
+Et surtout, on peut enfin vous trouver. Sans site internet, une activité qui démarre reste invisible pour tous ceux qui ne vous connaissent pas encore.
 
 ## Par quoi commencer
 
@@ -177,11 +188,11 @@ Au démarrage, chaque euro compte. C'est pour cela que le paiement est découpé
 - **Le reste à la réception du site**, en une fois ou étalé sur ${durees} mois sans frais.
 - **Ensuite, c’est vous qui choisissez** : ${eur(creationSeule.month)} € par mois avec la formule ${AUTO}, où vous gérez tout vous-même, ou ${eur(mini.month)} € par mois avec l’abonnement ${mini.name}, sans engagement.
 
-Avec ${mini.name}, le nom de domaine, c’est-à-dire l’adresse de votre site, et l’hébergement, l’endroit où il reste accessible jour et nuit, sont compris. Vous connaissez donc le coût exact avant de vous engager, sans devis à rallonge.
+Avec ${mini.name}, le nom de domaine (l’adresse de votre site) et l’hébergement, l’endroit où il reste accessible jour et nuit, sont compris. Vous connaissez donc le coût exact avant de vous engager, sans devis à rallonge.
 
 ## Les mentions obligatoires
 
-Un site professionnel doit afficher des mentions légales : votre nom, votre numéro SIRET, un moyen de contact et le nom de l'hébergeur. Ce n'est pas compliqué, mais c'est obligatoire. Je vous indique quoi fournir, et la page est prête à la mise en ligne.
+Un site professionnel doit afficher des mentions légales : votre nom, votre numéro SIRET, un moyen de contact et le nom de l'hébergeur. Ce n'est pas compliqué, mais c'est obligatoire. Nous vous indiquons quoi fournir, et la page est prête à la mise en ligne.
 
 ## Faire le site soi-même ?
 
@@ -192,7 +203,7 @@ C'est possible, et pour certains c'est le bon choix. Le guide [faire son site so
 Votre activité va évoluer : nouvelles prestations, nouveaux tarifs, premières réalisations à montrer. Avec ${mini.name}, chaque changement se demande depuis votre espace client, et il est inclus. Pour toucher de nouveaux clients sur Google, vous pouvez aussi commander des pages de visibilité Google, à ${prixPage} € la page, payées une fois.`,
     faq: [
       { q: 'Le site est-il une dépense déductible ?', a: 'En micro-entreprise, vous ne déduisez pas vos frais un par un : l’administration applique un abattement forfaitaire sur votre chiffre d’affaires. Pour votre situation précise, le mieux est de poser la question à votre service des impôts ou à un comptable.' },
-      { q: 'Puis-je commencer petit et agrandir le site plus tard ?', a: `Oui. Vous démarrez avec un ${ESS.name}. Le jour où une page ne suffit plus, écrivez-moi : vos textes et vos photos sont repris pour passer au ${VIS.name}.` },
+      { q: 'Puis-je commencer petit et agrandir le site plus tard ?', a: `Oui. Vous démarrez avec un ${ESS.name}. Le jour où une page ne suffit plus, écrivez-nous : vos textes et vos photos sont repris pour passer au ${VIS.name}.` },
       { q: 'Dois-je déjà avoir mon numéro SIRET pour commander ?', a: 'Non, vous pouvez commander pendant vos démarches. Le SIRET sera ajouté dans les mentions légales dès que vous l’aurez reçu.' },
     ],
     voir: ['creer-son-site-soi-meme-ou-le-faire-faire', 'choisir-nom-de-domaine', 'prix-site-internet'],
@@ -208,7 +219,7 @@ Votre activité va évoluer : nouvelles prestations, nouveaux tarifs, premières
     h1: 'Combien coûte un site internet ? Le vrai prix, sans surprise',
     title: 'Combien coûte un site internet ? Le vrai prix | Les Minis Monstres',
     description: 'Création, nom de domaine, hébergement, mises à jour, modifications : tout ce qui compose le prix d’un site internet, avec des exemples chiffrés sur un an.',
-    lead: 'Le prix d’un site ne s’arrête pas à sa création. Il y a ce que l’on paie une fois, et ce que l’on paie tant que le site existe. Voici comment tout additionner avant de signer.',
+    lead: 'Un site internet sert à être visible, et cela a un prix. Mais ce prix ne s’arrête pas à la création. Il y a ce que l’on paie une fois, et ce que l’on paie tant que le site existe. Voici comment tout additionner avant de signer.',
     body: `## Les deux parties du prix
 
 Un site internet, c'est un peu comme une voiture : il y a le prix d'achat, puis l'assurance, le carburant et l'entretien. Beaucoup de mauvaises surprises viennent du fait qu'on ne regarde que le premier chiffre.
@@ -235,62 +246,51 @@ Quel que soit le prestataire, demandez toujours :
 
 Un devis qui ne répond pas à ces cinq questions n'est pas complet.
 
-## Mes prix, entièrement
+## Nos prix, dans l’ordre
 
-Chez moi, tout est affiché avant la commande, et la page se lit dans l’ordre : le site que vous choisissez, puis la façon de le faire vivre.
+Chez nous, tout est affiché avant la commande, toujours dans le même ordre.
 
-### Trois sites, payés une seule fois
+### 1. Le site, payé une seule fois
 
-- **${ESS.name}, ${eur(ESS.price)} €** : une seule page, dessinée pour votre activité, lisible sur téléphone et sur ordinateur, avec un formulaire de contact. Pour exister sur internet.
-- **${VIS.name}, ${eur(VIS.price)} €** : tout le précédent, avec jusqu’à ${creation.pages} pages, des pages de visibilité Google intégrées, une FAQ et un référencement local renforcé. Pour être trouvé sur Google.
-- **${BOU.name}, ${mille(BOU.price)} €** : tout le précédent, avec une boutique complète, un panier et le paiement en ligne sécurisé. Pour vendre sur internet.
+- **${ESS.name}, ${eur(ESS.price)} €** : une page, pour exister sur internet.
+- **${VIS.name}, ${eur(VIS.price)} €** : jusqu’à ${creation.pages} pages, pour être trouvé sur Google.
+- **${BOU.name}, ${mille(BOU.price)} €** : une boutique complète, pour vendre sur internet.
 
-Chaque site commence par un rendez-vous téléphonique. Les retouches sont illimitées jusqu’à ce que vous validiez le site, et l’export du site reste possible : vous pouvez toujours repartir avec.
+Chaque site reprend tout ce que contient le précédent. Vos modifications sont illimitées jusqu’à ce que vous validiez le site.
 
-### Trois extras, seulement si vous en avez besoin
+### 2. Ensuite : ${AUTO} ou ${mini.name}
 
-- **Une ${minus(pageGoogle.name)}, ${prixPage} € la page** : une page pensée pour une recherche que font vos clients, comme un service et une ville. Vous la commandez depuis votre espace client et vous la payez par carte sur le moment, une seule fois.
+- **${AUTO}, ${eur(creationSeule.month)} € par mois** : vous recevez l’export du site, une copie complète avec une courte notice. L’hébergement, le nom de domaine, les sauvegardes et les mises à jour sont à votre charge.
+- **${mini.name}, ${eur(mini.month)} € par mois**, sans engagement : nous gardons le site en ligne, protégé et à jour, nom de domaine compris. Vos modifications sont incluses, une demande à la fois, et peuvent prendre ${delaiModif}.
+
+L’abonnement est facultatif, et il démarre à la réception du site.
+
+### 3. Les extras, seulement si besoin
+
+- **Une ${minus(pageGoogle.name)}, ${prixPage} € la page**, payée une fois, par carte, depuis votre espace client.
 - **Une traduction anglaise ou une fonctionnalité spécifique** : sur devis, gratuit et sans engagement.
 
-Rien d’autre n’est vendu en plus.
+Rien d’autre n’est vendu en plus. Une refonte complète du site se fait sur devis.
 
-### Ensuite : ${AUTO} ou ${mini.name}
-
-**${mini.name}, ${eur(mini.month)} € par mois.** Je réserve votre nom de domaine à votre nom, j’installe le site et je le mets en ligne. L’abonnement démarre à la réception du site, et il est sans engagement. Il comprend :
-
-- l’entretien complet (hébergement, nom de domaine, sauvegardes automatiques, sécurité, maintenance technique), votre espace client et vos modifications, qui peuvent prendre ${delaiModif}, une demande à la fois.
-
-Il n’y a qu’un abonnement, et vous n’êtes pas tenu de le prendre.
-
-Une refonte complète du site, ou une fonction nouvelle, se fait sur devis.
-
-**${AUTO}, ${eur(creationSeule.month)} € par mois.** Vous gérez tout vous-même : votre hébergement, votre nom de domaine, vos sauvegardes et vos mises à jour. Quand le site est validé, je vous remets son export, avec une sauvegarde complète et une courte notice pour l’installer. Les modifications ne sont pas comprises, mais ${mini.name} peut s’ajouter plus tard.
-
-Côté paiement, vous versez ${paiement.acompte} % à la commande et le reste à la réception du site. Ce reste peut être étalé sur ${durees} mois sans frais, que vous preniez l'abonnement ou non.
+Côté paiement, vous versez ${paiement.acompte} % à la commande et le reste à la réception du site, en une fois ou étalé sur ${durees} mois sans frais.
 
 ## Trois exemples sur la première année
 
-- **Un artisan avec un ${ESS.name}, en ${AUTO}** : ${eur(ESS.price)} €, et rien d’autre de ma part. Son hébergement et son nom de domaine sont à sa charge.
+- **Un artisan avec un ${ESS.name}, en ${AUTO}** : ${eur(ESS.price)} €. Son hébergement et son nom de domaine sont à sa charge.
 - **Un commerce avec un ${VIS.name} et ${mini.name}** : ${eur(VIS.price)} € + 12 × ${eur(mini.month)} € = **${eur(VIS.price + 12 * mini.month)} €**.
 - **Un créateur avec un ${BOU.name} et ${mini.name}** : ${mille(BOU.price)} € + 12 × ${eur(mini.month)} € = **${mille(BOU.price + 12 * mini.month)} €**.
-
-Une page de visibilité Google ajoutée en cours d’année compte pour ${prixPage} € de plus, une fois.
 
 Les années suivantes, il ne reste que l'abonnement. Réglé à l'année, ${mini.name} coûte ${eur(annee(mini))} € au lieu de ${eur(12 * mini.month)} €, grâce aux ${annuel.moisOfferts} mois offerts.
 
 ## Pourquoi ces prix sont bas
 
-Ce n’est pas un site au rabais. Chez un indépendant, un site vitrine de ${marche.pagesCompare} pages avec les bases du référencement se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €, et une agence demande plus. Mon ${VIS.name}, à ${eur(VIS.price)} €, coûte donc ${marche.fois} fois moins, et la différence vient de la méthode. C’est moi qui conçois chaque site, avec les Minis Monstres pour tout ce qui revient d’un projet à l’autre. J’ai aussi des accès directs chez des hébergeurs français, sans intermédiaire à payer. Je relis, je corrige et je vérifie tout avant la mise en ligne. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille d’où vient l’écart, et [pourquoi les Minis Monstres](/pourquoi-les-minis-monstres/) présente ma méthode.
+Chez un indépendant, un site vitrine de ${marche.pagesCompare} pages se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Notre ${VIS.name}, à ${eur(VIS.price)} €, coûte donc ${marche.fois} fois moins.
 
-Soyons honnêtes : ces chiffres viennent de prestataires, donc prudence. Certains indépendants vendent un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors très faible. Pour l’entretien, les prestataires consultés demandent ${eur(marche.entretienMin)} à ${eur(marche.entretienMax)} € par mois, hébergement souvent en plus, contre ${eur(mini.month)} € par mois ici, hébergement et nom de domaine compris.
+La différence vient de la méthode : Alex conçoit et vérifie chaque site, et les Minis Monstres se chargent de ce qui revient d’un projet à l’autre.
 
-**Sources**, consultées en novembre 2026 :
+Soyons honnêtes : ces chiffres viennent de prestataires, donc prudence. Certains indépendants vendent un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors très faible. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout, sources comprises.
 
-${sourcesMd()}
-
-## Ce qui peut faire monter la note
-
-Soyons clairs sur ce qui n’est pas dans le prix du site : les extras, si vous en prenez, et l’abonnement ${mini.name} si vous le choisissez. Une refonte complète ou une fonction nouvelle, comme un espace réservé à des membres, fait l’objet d’un devis. Rien d’autre ne s’ajoute.
+> Le bon calcul ne s’arrête pas au prix. Une activité que personne ne trouve sur internet a aussi un coût : celui des clients qui vont ailleurs.
 
 Vous composez le tout sur la page [créer mon site](/creer-mon-site/), et le total s'affiche au fur et à mesure.`,
     faq: [
@@ -309,14 +309,14 @@ Vous composez le tout sur la page [créer mon site](/creer-mon-site/), et le tot
     h1: 'Site une page ou site vitrine : lequel choisir ?',
     title: 'Site une page ou site vitrine : lequel choisir ? | Les Minis Monstres',
     description: 'La différence entre un site une page et un site vitrine, expliquée simplement, avec un test en trois questions pour choisir celui qui convient à votre activité.',
-    lead: 'C’est la première question que l’on me pose. La réponse dépend peu de votre budget. Elle dépend surtout de ce que vous avez à dire, et de la façon dont vos clients vous cherchent.',
+    lead: 'C’est la première question que l’on nous pose. La réponse dépend peu de votre budget. Elle dépend surtout de ce que vous avez à dire, et de la façon dont vos clients vous cherchent.',
     body: `## La différence en une image
 
 Un **site une page**, c'est une grande affiche. Tout est au même endroit : on fait défiler vers le bas et l'on découvre qui vous êtes, ce que vous faites, vos tarifs, puis comment vous joindre.
 
 Un **site vitrine**, c'est un petit livret. Il y a une couverture (l'accueil), puis une page par chapitre : vos services, vos tarifs, votre histoire, le contact. On passe de l'une à l'autre par le menu.
 
-Chez moi, l’affiche s’appelle le ${ESS.name} et coûte ${eur(ESS.price)} €. Le livret s’appelle le ${VIS.name} : ${eur(VIS.price)} €, pour ${creation.pages} pages au maximum. L’écart de prix est faible. Choisissez donc d’abord selon votre activité.
+Chez nous, l’affiche s’appelle le ${ESS.name} : ${eur(ESS.price)} €, pour exister sur internet. Le livret s’appelle le ${VIS.name} : ${eur(VIS.price)} €, jusqu’à ${creation.pages} pages, pour être trouvé sur Google. L’écart de prix est faible. Choisissez donc d’abord selon votre activité.
 
 ## Quand le site une page suffit
 
@@ -336,9 +336,9 @@ Le site vitrine devient préférable si :
 - Vous voulez que des inconnus vous trouvent **par ce que vous faites**, pas seulement par votre nom.
 - Vous avez besoin de **place** pour expliquer, montrer des réalisations ou détailler vos tarifs.
 
-## Pourquoi le site vitrine aide le référencement
+## Pourquoi plusieurs pages vous rendent plus visible
 
-Le référencement, c'est votre place dans les résultats de Google. Et Google ne classe pas des sites, il classe des pages. Chaque page est évaluée pour un sujet précis.
+Google ne classe pas des sites, il classe des pages. Chaque page est évaluée pour un sujet précis.
 
 Prenons un paysagiste. Sur un site une page, tout est mélangé : tonte, élagage, création de jardin, clôtures. Google comprend que c'est un paysagiste, mais aucune partie n'est assez développée pour sortir sur « élagage » dans sa ville.
 
@@ -358,9 +358,9 @@ Ce n’est pas grave. On peut commencer avec une page et passer au site de plusi
 
 Elle répond à un autre besoin : encaisser des commandes sur le site. C’est le ${BOU.name}, qui reprend tout le ${VIS.name}. Si vous voulez vendre des produits, lisez le guide pour [créer une boutique en ligne](/guides/creer-boutique-en-ligne/).`,
     faq: [
-      { q: 'Combien de pages contient un site vitrine ?', a: `Chez moi, le ${VIS.name} va jusqu’à ${creation.pages} pages. On y trouve en général l’accueil, les services, les tarifs, une présentation, une FAQ et le contact. Une fois le site en ligne, une page de visibilité Google de plus coûte ${prixPage} €, commandée depuis votre espace client.` },
+      { q: 'Combien de pages contient un site vitrine ?', a: `Chez nous, le ${VIS.name} va jusqu’à ${creation.pages} pages. On y trouve en général l’accueil, les services, les tarifs, une présentation, une FAQ et le contact. Une fois le site en ligne, une page de visibilité Google de plus coûte ${prixPage} €, commandée depuis votre espace client.` },
       { q: 'Un site une page peut-il sortir sur Google ?', a: 'Oui, surtout sur votre nom et sur votre métier dans votre ville. Il est simplement moins armé qu’un site vitrine pour les recherches portant sur un service précis.' },
-      { q: 'Peut-on transformer un site une page en site vitrine plus tard ?', a: 'Oui. Les textes et les photos existants sont repris, et les nouvelles pages viennent s’y ajouter. Écrivez-moi quand le besoin se présente, je vous dis ce que cela représente.' },
+      { q: 'Peut-on transformer un site une page en site vitrine plus tard ?', a: 'Oui. Les textes et les photos existants sont repris, et les nouvelles pages viennent s’y ajouter. Écrivez-nous quand le besoin se présente, et nous vous disons ce que cela représente.' },
     ],
     voir: ['prix-site-internet', 'fiche-google-entreprise', 'creer-boutique-en-ligne'],
   },
@@ -388,12 +388,12 @@ Des outils en ligne permettent aujourd'hui de monter un site sans écrire une li
 
 - **Le temps.** Comptez plusieurs soirées pour un premier résultat, puis du temps à chaque changement.
 - **La page blanche.** L'outil fournit la forme, pas le fond. Écrire des textes clairs est la partie la plus difficile, et personne ne la fait à votre place.
-- **Le référencement**, c'est-à-dire votre place sur Google. Un site publié n'est pas un site trouvé. Les réglages qui aident Google demandent de s'y connaître un peu.
+- **La visibilité.** Un site publié n'est pas un site trouvé. Les réglages qui aident Google demandent de s'y connaître un peu.
 - **L'abonnement.** Ces outils se paient chaque mois, et le tarif augmente souvent avec les fonctions dont on a besoin.
 
 ## Le faire faire
 
-Vous confiez le travail à quelqu'un dont c'est le métier : agence, indépendant, ou un service comme le mien.
+Vous confiez le travail à quelqu'un dont c'est le métier : agence, indépendant, ou un service comme le nôtre.
 
 **Les avantages :**
 
@@ -413,22 +413,23 @@ Honnêtement, faites-le vous-même si vous aimez bidouiller, si vous avez du tem
 
 ## Pour qui il vaut mieux déléguer
 
-Confiez-le si votre temps est compté, si l'écran vous fatigue, ou si vous avez déjà un site commencé il y a des mois et jamais terminé. C'est le cas le plus fréquent que je rencontre.
+Confiez-le si votre temps est compté, si l'écran vous fatigue, ou si vous avez déjà un site commencé il y a des mois et jamais terminé. C'est le cas le plus fréquent que nous rencontrons.
 
 ## Une troisième voie
 
-Mon service est né de ce constat. Vous ne construisez rien vous-même, mais vous gardez la main sur ce qui compte :
+Notre service est né de ce constat. Vous ne construisez rien vous-même, mais vous gardez la main sur ce qui compte :
 
+- Le site est pensé pour être trouvé : c’est notre métier.
 - Le prix est fixe et connu d’avance : ${eur(ESS.price)} €, ${eur(VIS.price)} € ou ${mille(BOU.price)} € selon le site, payés une fois.
-- Vous aimez quand même bricoler ? Avec la formule ${AUTO}, je vous remets l’export du site, et vous l’installez chez votre hébergeur, sans abonnement.
+- Vous aimez quand même bricoler ? Avec la formule ${AUTO}, vous recevez l’export du site (une copie complète) et vous l’installez chez votre hébergeur, sans abonnement.
 - Vous préférez ne rien gérer ? Avec ${mini.name}, à ${eur(mini.month)} € par mois, vous demandez vos changements en une phrase depuis votre espace client, une page privée rien qu’à vous.
-- ${qui('support')} de ma petite bande, vous aide à décrire chaque changement, puis le transmet.
+- ${qui('support')} de notre petite bande, vous aide à décrire chaque changement, puis le transmet.
 - Les modifications sont alors incluses : une modification peut prendre ${delaiModif}.
 - L'abonnement est sans engagement.
 
 Pour voir à quoi cela ressemble avant de vous décider, [essayez la démo de l'espace client](/mon-espace/demo/). Et pour une vue d'ensemble des solutions, le [comparatif](/comparatif/) les met côte à côte.`,
     faq: [
-      { q: 'J’ai commencé un site moi-même sans le finir, pouvez-vous le reprendre ?', a: 'Je repars d’un site neuf, mais rien n’est perdu : vos textes, vos photos et vos idées servent de base. Envoyez-moi l’adresse de ce que vous avez commencé, c’est un excellent point de départ.' },
+      { q: 'J’ai commencé un site moi-même sans le finir, pouvez-vous le reprendre ?', a: 'Nous repartons d’un site neuf, mais rien n’est perdu : vos textes, vos photos et vos idées servent de base. Envoyez-nous l’adresse de ce que vous avez commencé, c’est un excellent point de départ.' },
       { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: `Oui. Avec ${mini.name}, vous décrivez le changement dans votre espace client, et il est fait pour vous, sans rien apprendre. Avec ${AUTO}, le site est chez vous : vous le modifiez vous-même, comme vous voulez.` },
       { q: 'Combien de temps faut-il pour faire un site seul ?', a: 'Cela dépend beaucoup de chacun. Le montage lui-même va assez vite. Ce qui prend du temps, ce sont les textes, le choix des photos et tous les petits réglages auxquels on ne pense pas au départ.' },
     ],
@@ -443,7 +444,7 @@ Pour voir à quoi cela ressemble avant de vous décider, [essayez la démo de l'
     h1: 'Nom de domaine : comment bien choisir l’adresse de son site',
     title: 'Nom de domaine : comment bien choisir le sien | Les Minis Monstres',
     description: 'Un nom de domaine, c’est l’adresse de votre site. Les règles simples pour le choisir court, clair, facile à dicter, et vérifier tout de suite s’il est libre.',
-    lead: 'Le nom de domaine est ce que l’on tape pour arriver chez vous, par exemple « maboulangerie.fr ». Il figurera sur vos cartes, votre camionnette et vos factures. Autant bien le choisir.',
+    lead: 'Le nom de domaine est ce que l’on tape pour arriver chez vous, par exemple « maboulangerie.fr ». Il figurera sur vos cartes, votre camionnette et vos factures. C’est par lui que l’on vous trouve : autant bien le choisir.',
     body: `## Un nom de domaine, c'est quoi ?
 
 C'est l'adresse de votre site sur internet. Elle a deux parties :
@@ -466,7 +467,7 @@ Un nom de domaine ne s'achète pas pour toujours. Il se **loue à l'année**, et
 
 « plombier-sedan.fr » peut sembler malin pour Google. En réalité, le nom de domaine pèse peu dans le classement aujourd'hui. Le contenu de vos pages compte bien davantage.
 
-Mon conseil : prenez le nom de votre entreprise. Si ce nom est très courant et déjà pris, ajouter votre ville est une bonne solution de secours.
+Notre conseil : prenez le nom de votre entreprise. Si ce nom est très courant et déjà pris, ajouter votre ville est une bonne solution de secours.
 
 ## Quelle extension choisir : .fr ou .com ?
 
@@ -483,11 +484,11 @@ Avant de vous attacher à un nom, vérifiez deux choses :
 
 ## Et si j'ai déjà un nom de domaine ?
 
-Vous le gardez. Il suffit de l’indiquer à la commande, et je le relie à votre nouveau site. Vous avez aussi votre hébergement ? Choisissez la formule ${AUTO} : vous recevez l’export de votre site, à installer chez votre hébergeur.
+Vous le gardez. Il suffit de l’indiquer à la commande, et nous le relions à votre nouveau site. Vous avez aussi votre hébergement ? Choisissez la formule ${AUTO} : vous recevez l’export de votre site, à installer chez votre hébergeur.
 
 ## Qui s'occupe du renouvellement ?
 
-C’est le piège classique : on oublie l’échéance, le nom expire, et le site disparaît du jour au lendemain. Avec l’[abonnement](/tarifs/) ${mini.name}, le nom de domaine est compris : il reste à votre nom, et je le renouvelle pour vous chaque année. Vous n’avez aucune date à surveiller. En ${AUTO}, notez bien la date : le renouvellement est à votre charge.`,
+C’est le piège classique : on oublie l’échéance, le nom expire, et le site disparaît du jour au lendemain. Avec l’[abonnement](/tarifs/) ${mini.name}, le nom de domaine est compris : il reste à votre nom, et nous le renouvelons pour vous chaque année. Vous n’avez aucune date à surveiller. En ${AUTO}, notez bien la date : le renouvellement est à votre charge.`,
     faq: [
       { q: 'Le nom que je voulais est déjà pris, que faire ?', a: 'Essayez une variante simple : ajouter votre ville, votre prénom ou votre métier. Évitez seulement de changer une lettre par rapport à un concurrent, cela crée de la confusion pour vos clients.' },
       { q: 'Dois-je prendre le .fr et le .com en même temps ?', a: 'Ce n’est pas nécessaire pour démarrer. Un seul nom bien choisi suffit à la grande majorité des petites entreprises.' },
@@ -507,6 +508,8 @@ C’est le piège classique : on oublie l’échéance, le nom expire, et le sit
     lead: 'Quand vous cherchez un commerce sur Google, un encadré apparaît avec une carte, des horaires, des photos et des étoiles. C’est une fiche d’établissement. La vôtre est gratuite, et c’est souvent elle que l’on voit en premier.',
     body: `## À quoi sert cette fiche
 
+C’est le premier pas, gratuit, pour être visible près de chez vous.
+
 La fiche d'établissement Google (on l'appelait avant « Google My Business ») est votre carte de visite sur Google et sur Google Maps. Elle affiche votre nom, votre adresse, vos horaires, votre téléphone, vos photos, vos avis et un lien vers votre site.
 
 Elle joue surtout pour les recherches de proximité : « boulangerie ouverte », « garagiste près de moi », « fleuriste » suivi d'une ville. Sur ces recherches, Google montre d'abord une carte avec trois établissements. Sans fiche, vous ne pouvez pas en faire partie.
@@ -516,7 +519,7 @@ Elle joue surtout pour les recherches de proximité : « boulangerie ouverte »,
 1. Cherchez « fiche d'établissement Google » et connectez-vous avec un compte Google.
 2. Tapez le nom de votre entreprise. Si une fiche existe déjà, demandez à en devenir le propriétaire au lieu d'en créer une deuxième.
 3. Choisissez votre **catégorie** avec soin : c'est elle qui décide sur quelles recherches vous sortez.
-4. Indiquez votre adresse, ou votre zone d'intervention si vous vous déplacez chez vos clients.
+4. Indiquez votre adresse, ou la zone où vous vous déplacez si vous allez chez vos clients.
 5. Google vérifie ensuite que l'établissement existe bien, par un code ou une courte vidéo selon les cas.
 
 ## Les cinq choses à bien remplir
@@ -541,11 +544,11 @@ La fiche dit **où** vous êtes et **quand** vous êtes ouvert. Le site explique
 
 Veillez justement à ce que le nom, l'adresse et le téléphone soient écrits **exactement de la même façon** sur la fiche, sur le site et partout ailleurs.
 
-## Ce que je fais pour vous
+## Ce que nous faisons pour vous
 
-Sur chaque site que je crée, votre nom, votre adresse et votre téléphone sont écrits comme sur votre fiche, et votre activité est décrite dans un format que Google sait lire. Cela fait partie du référencement, l’ensemble de ce qui aide un site à être trouvé sur Google.
+Sur chaque site que nous créons, votre nom, votre adresse et votre téléphone sont écrits comme sur votre fiche, et votre activité est décrite dans un format que Google sait lire.
 
-Pour aller plus loin, ${qui('observateur')} de ma petite bande, repère les recherches de votre secteur et prépare vos pages de visibilité Google. Le ${VIS.name} en contient dès le départ, et vous pouvez en commander d’autres quand vous le voulez. C’est ainsi que se construit votre [référencement local](/referencement-seo/), votre place sur Google près de chez vous.`,
+Pour aller plus loin, ${qui('observateur')} de notre petite bande, repère les recherches de votre secteur et prépare vos pages de visibilité Google. Le ${VIS.name} en contient dès le départ, et vous pouvez en commander d’autres quand vous le voulez. La fiche et le site travaillent alors ensemble pour votre [visibilité sur Google](/referencement-seo/), près de chez vous.`,
     faq: [
       { q: 'La fiche Google est-elle vraiment gratuite ?', a: 'Oui, sa création et sa gestion ne coûtent rien. Méfiez-vous des démarcheurs qui prétendent vous la vendre ou qui vous réclament un paiement pour la « maintenir en ligne ».' },
       { q: 'Je travaille de chez moi, dois-je afficher mon adresse ?', a: 'Non. Vous pouvez masquer votre adresse et indiquer seulement les communes où vous intervenez. Votre fiche apparaît alors sur les recherches de cette zone.' },
@@ -578,13 +581,13 @@ En ligne, le client ne peut ni toucher ni essayer. Vos photos et vos textes font
 - **Les photos** : fond neutre, lumière du jour, plusieurs angles, et une photo qui montre la taille réelle de l'objet.
 - **La description** : matière, dimensions, entretien, et surtout à quoi sert le produit et pour qui.
 
-Dans l’onglet « Ma boutique » de votre espace client, vous saisissez vous-même chaque article : une photo, une description, un prix. Vos prix et vos promotions se règlent au même endroit, et le nombre d’articles n’est pas limité. Un texte vous résiste ? ${qui('ecrivain')} de ma petite bande, peut vous aider à le formuler.
+Dans l’onglet « Ma boutique » de votre espace client, vous saisissez vous-même chaque article : une photo, une description, un prix. Vos prix et vos promotions se règlent au même endroit, et le nombre d’articles n’est pas limité. Un texte vous résiste ? ${qui('ecrivain')} de notre petite bande, peut vous aider à le formuler.
 
 ## Étape 3 : le paiement
 
-Vous choisissez comment vos clients vous paient : par carte avec Stripe, ou avec PayPal. Vous installez vous-même ces moyens de paiement depuis votre espace client, en quelques étapes guidées. Les clés de votre compte de paiement restent enregistrées sur votre site à vous, pas chez moi. Le client reçoit une confirmation par e-mail, et vous n’avez jamais accès aux numéros de carte : tout passe par le service de paiement.
+Vous choisissez comment vos clients vous paient : par carte avec Stripe, ou avec PayPal. Vous installez vous-même ces moyens de paiement depuis votre espace client, en quelques étapes guidées. Vous n’avez jamais accès aux numéros de carte : tout passe par le service de paiement.
 
-À chaque vente, vous êtes prévenu par e-mail, et votre client reçoit tout seul les messages qui le tiennent au courant. ${qui('organisateur')} de la bande, garde vos produits et vos commandes bien rangés.
+À chaque vente, vous êtes prévenu par e-mail, et votre client reçoit tout seul les messages qui le tiennent au courant.
 
 ## Étape 4 : la livraison
 
@@ -603,14 +606,14 @@ Vendre en ligne à des particuliers impose quelques obligations : afficher des *
 
 ## Combien ça coûte
 
-- **Le ${BOU.name} : ${mille(BOU.price)} €**, payés une fois. Il reprend tout le ${VIS.name} et ajoute la boutique complète : le catalogue, le panier, le paiement en ligne sécurisé, la gestion des commandes et les e-mails automatiques. Je configure la boutique, puis vous gérez votre catalogue en toute liberté. Vous réglez ${acompte(BOU.price)} € à la commande et ${reste(BOU.price)} € à la réception.
-- **Ensuite, ${AUTO} ou ${mini.name}.** En ${AUTO}, vous hébergez la boutique vous-même, sans rien me payer chaque mois. Avec ${mini.name}, à ${eur(mini.month)} € par mois, je garde votre boutique en ligne et en bon état : l’hébergement (l’endroit où elle reste accessible 24 h/24), son adresse, des copies de sécurité régulières et les vérifications techniques. Le détail est sur la page [tarifs](/tarifs/).
+- **Le ${BOU.name} : ${mille(BOU.price)} €**, payés une fois. Il reprend tout le ${VIS.name} et ajoute la boutique complète : le catalogue, le panier, le paiement en ligne sécurisé, la gestion des commandes et les e-mails automatiques. Nous configurons la boutique, puis vous gérez votre catalogue en toute liberté. Vous réglez ${acompte(BOU.price)} € à la commande et ${reste(BOU.price)} € à la réception.
+- **Ensuite, ${AUTO} ou ${mini.name}.** En ${AUTO}, vous hébergez la boutique vous-même, sans rien nous payer chaque mois. Avec ${mini.name}, à ${eur(mini.month)} € par mois, nous gardons votre boutique en ligne et en bon état : l’hébergement (l’endroit où elle reste accessible 24 h/24), son adresse, des copies de sécurité régulières et les vérifications techniques. Le détail est sur la page [tarifs](/tarifs/).
 
 Le service de paiement prélève de son côté une petite commission sur chaque vente. C'est le cas pour toutes les boutiques en ligne, quelle que soit la solution choisie.
 
 ## Étape 6 : faire venir des visiteurs
 
-Une boutique sans visiteurs ne vend rien. Parlez-en à vos clients actuels, glissez l'adresse dans chaque colis et sur vos emballages, et pensez au [référencement](/referencement-seo/), votre place dans les résultats de recherche : chaque fiche produit bien écrite est une porte d'entrée depuis Google.`,
+Une boutique sans visiteurs ne vend rien : elle doit d’abord être vue. Parlez-en à vos clients actuels, glissez l'adresse dans chaque colis et sur vos emballages, et pensez à votre [visibilité sur Google](/referencement-seo/) : chaque fiche produit bien écrite est une porte d'entrée de plus.`,
     faq: [
       { q: 'Combien de produits puis-je vendre ?', a: `Autant que vous voulez. Chaque article demande une photo, une description et un prix, que vous saisissez dans votre espace client. Vous ajoutez, modifiez et retirez vos produits librement, sans supplément.` },
       { q: 'Faut-il un statut d’entreprise pour vendre en ligne ?', a: 'Oui. Vendre régulièrement, même de petites quantités, suppose une activité déclarée, par exemple en micro-entreprise. Renseignez-vous avant d’ouvrir : la démarche est rapide et se fait en ligne.' },

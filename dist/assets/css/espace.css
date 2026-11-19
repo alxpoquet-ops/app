@@ -955,3 +955,14 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .bg-cmd-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
 .bg-cmd-actions .btn { flex: 1 1 140px; justify-content: center; min-height: 44px; }
 @media (min-width: 760px) { .bg-livraison .btn { width: auto; } }
+/* 19 novembre 2026 : Bricou en grand dans « Mes demandes », et le sous-menu de la boutique bien visible */
+.bricou-tete { gap: 16px; }
+.bricou-art svg { width: 96px; height: 96px; }
+.bricou-tete strong { font-size: 1.2rem; line-height: 1.25; }
+.bricou-tete p { font-size: 1rem; }
+@media (max-width: 560px) { .bricou-art svg { width: 84px; height: 84px; } }
+.bg-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 6px 0 20px; padding: 10px; border-radius: 24px; background: var(--soft); }
+.bg-nav a.bg-lien { justify-content: flex-start; gap: 10px; min-height: 54px; padding: 10px 14px; border-radius: 16px; background: var(--card); color: var(--ink); font-size: 1rem; font-weight: 900; box-shadow: 0 0 0 2px var(--line) inset; }
+.bg-nav a.bg-lien svg { width: 22px; height: 22px; flex: none; color: var(--pink-dd); }
+.bg-nav a.bg-lien.is-on { background: var(--pink); color: var(--ink); box-shadow: 0 0 0 3px var(--pink-d) inset; }
+@media (min-width: 760px) { .bg-nav { grid-template-columns: repeat(6, minmax(0, 1fr)); } .bg-nav a.bg-lien { justify-content: center; } }

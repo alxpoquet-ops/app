@@ -352,6 +352,7 @@ const bandeTout = [
   { id: 'ecrivain', nom: 'Plume', emoji: '✍️', monstre: 'fantome', role: 'La rédactrice', compris: true, missions: ['Prépare vos contenus', 'Vous aide à écrire vos textes', 'Rend chaque phrase facile à lire'], perso: 'Rêveuse mais précise, elle cherche toujours le mot juste.', court: 'Elle écrit et soigne vos textes.' },
   { id: 'observateur', nom: 'Mirette', emoji: '👀', monstre: 'gelee', role: 'La spécialiste visibilité', compris: true, missions: ['Prépare vos pages de visibilité Google', 'Aide Google à comprendre votre activité', 'Soigne votre référencement local'], perso: 'Curieuse, elle ne quitte jamais Google des yeux.', court: 'Elle vous aide à être trouvé sur Google.' },
   { id: 'organisateur', nom: 'Mochi', emoji: '📦', monstre: 'mochi', role: 'L’organisateur', compris: true, missions: ['Classe vos contenus', 'Organise vos pages', 'Range votre boutique et vos commandes'], perso: 'Un peu maniaque, il adore quand chaque chose est à sa place.', court: 'Il range vos pages, vos produits et vos commandes.' },
+  { id: 'extras', nom: 'Pépite', emoji: '✨', monstre: 'etoile', role: 'La spécialiste des extras', compris: true, missions: ['Présente les extras', 'Prépare vos devis', 'Suit vos commandes d’extras'], perso: 'Pétillante, elle a toujours une bonne idée pour aller plus loin.', court: 'Elle s’occupe de vos extras et de vos devis.' },
 ];
 const bande = bandeTout;
 

@@ -145,9 +145,9 @@ function aled08e_extras_html($uid, $famille, $flash = '') {
     foreach (aled08e_a_la_demande() as $x) if ($x['id'] !== 'urgent' && aled08e_ex_pour_moi($x, $uid)) $unique[$x['groupe'] ?? 'quotidien'][] = $x;
     if (!$sans) foreach ($possibles as $o) $mois[$o['group'] ?? 'quotidien'][] = $o;
 
-    $h = '<section class="ex-hero"><span class="ex-hero-art" aria-hidden="true">' . aled08e_monster('mascotte') . '</span><div class="ex-hero-txt"><h3>Un petit plus pour votre site ?</h3>'
-        . '<p>Choisissez quand vous en avez besoin. Une page se paie par carte au moment de la commander. Pour le reste, vous demandez un devis, gratuit.</p></div>'
-        . '<ul class="ex-garanties"><li>' . aled08e_icon('circle-check') . '<span>Paiement sécurisé par carte</span></li><li>' . aled08e_icon('wrench') . '<span>Fait par les Minis Monstres</span></li><li>' . aled08e_icon('clock') . '<span>Sous 7 jours au plus</span></li></ul></section>';
+    $h = '<section class="ex-hero"><span class="ex-hero-art" aria-hidden="true">' . aled08e_monster('etoile') . '</span><div class="ex-hero-txt"><h3>Un petit plus ? Pépite s’en occupe</h3>'
+        . '<p>La page se paie par carte. Le reste est sur devis, gratuit.</p></div>'
+        . '<ul class="ex-garanties"><li>' . aled08e_icon('circle-check') . '<span>Paiement sécurisé par carte</span></li><li>' . aled08e_icon('wrench') . '<span>Suivi par Pépite</span></li><li>' . aled08e_icon('clock') . '<span>Sous 7 jours au plus</span></li></ul></section>';
 
     if ($flash) $h .= $flash;
     if ($actifs) {
