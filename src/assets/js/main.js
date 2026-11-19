@@ -83,7 +83,7 @@
     'Y aller': 'Go there',
     'Je corrige': 'Let me fix it',
     'Pas de souci ! Dites-moi ce qu’il faut changer, et je reformule votre demande.': 'No problem! Tell me what to change and I will rephrase your request.',
-    'Merci pour vos précisions ! Votre demande est prête dans « Mes demandes ». Ajoutez une photo si vous voulez, puis envoyez : je transmets à Alex !': 'Thank you for the details! Your request is ready in “My requests”. Add a photo if you like, then send it: I will pass it on to Alex!',
+    'Merci pour vos précisions ! Votre demande est prête dans « Mes demandes ». Ajoutez une photo si vous voulez, puis envoyez : je transmets à Bricou !': 'Thank you for the details! Your request is ready in “My requests”. Add a photo if you like, then send it: I will pass it on to Alex!',
     'Dans votre vrai espace, je vous réponds ici.': 'In your real client area, I answer you here.',
     'Cerise n’a pas pu répondre. Réessayez dans un instant.': 'Cerise couldn’t answer. Try again in a moment.',
     'La connexion a coupé. Réessayez dans un instant.': 'The connection dropped. Try again in a moment.',
@@ -113,8 +113,8 @@
     'La photo dépasse 8 Mo : choisissez-en une plus légère': 'The photo is over 8 MB: please choose a lighter one',
     'Envoi en cours…': 'Sending…', 'Nouvelle étape': 'New step', 'QR code vers votre site': 'QR code to your website', 'QR code téléchargé': 'QR code downloaded',
     'Vos modifications du mois sont utilisées : je vous recontacte pour en parler (démo)': 'You have used this month’s changes: I will get back to you to talk about it (demo)',
-    'envoyée à l’instant': 'sent just now', 'Transmise à Alex': 'Sent to Alex', 'Ajouter une photo (facultatif)': 'Add a photo (optional)',
-    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'Demande envoyée': 'Request sent', 'Merci pour vos précisions, je transmets à Alex ! (démo)': 'Thank you for the details, I am passing it on to Alex! (demo)', 'Vous avez utilisé vos petites retouches du mois (démo)': 'You have used your small edits for this month (demo)', 'd’énergie (démo)': 'energy (demo)', 'Il ne vous reste pas assez d’énergie pour cette demande (démo)': 'You do not have enough energy left for this request (demo)', 'En cours': 'In progress', 'Faite': 'Done',
+    'envoyée à l’instant': 'sent just now', 'Transmise à Bricou': 'Sent to Alex', 'Ajouter une photo (facultatif)': 'Add a photo (optional)',
+    'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'Demande envoyée': 'Request sent', 'Merci pour vos précisions, je transmets à Bricou ! (démo)': 'Thank you for the details, I am passing it on to Alex! (demo)', 'Vous avez utilisé vos petites retouches du mois (démo)': 'You have used your small edits for this month (demo)', 'd’énergie (démo)': 'energy (demo)', 'Il ne vous reste pas assez d’énergie pour cette demande (démo)': 'You do not have enough energy left for this request (demo)', 'En cours': 'In progress', 'Faite': 'Done',
     'Votre modification est en ligne (démo)': 'Your change is live (demo)', ' choisi, à partir du mois prochain (démo)': ' chosen, from next month (demo)',
     'Option ajoutée': 'Option added', 'Option retirée': 'Option removed', ' (démo)': ' (demo)', 'à l’instant': 'just now',
     'Je souhaite payer le site en ': 'I would like to pay for the website in ', ' fois.': ' instalments.', 'Options choisies : ': 'Chosen options: ',
@@ -970,7 +970,7 @@
       li.querySelector('strong').textContent = text.length > 60 ? text.slice(0, 57) + '…' : text;
       list.insertBefore(li, list.firstChild);
       txt.value = ''; file.value = ''; fileName.textContent = tr('Ajouter une photo (facultatif)');
-      toast(sansJauge || parRetouche ? tr('Merci pour vos précisions, je transmets à Alex ! (démo)') : tr('Demande envoyée') + ' : ' + prix + ' ' + tr('d’énergie (démo)'));
+      toast(sansJauge || parRetouche ? tr('Merci pour vos précisions, je transmets à Bricou ! (démo)') : tr('Demande envoyée') + ' : ' + prix + ' ' + tr('d’énergie (démo)'));
       var st = li.querySelector('.st');
       setTimeout(function () { st.className = 'st st-doing'; st.textContent = tr(sansJauge ? 'Alex s’en occupe' : 'En cours'); }, 2000);
       setTimeout(function () {
@@ -1111,7 +1111,7 @@
           if (radio && !radio.disabled) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
           if (ta) { ta.value = a.texte || ''; ta.dispatchEvent(new Event('input', { bubbles: true })); }
           aller('demandes');
-          var m = tr('Merci pour vos précisions ! Votre demande est prête dans « Mes demandes ». Ajoutez une photo si vous voulez, puis envoyez : je transmets à Alex !');
+          var m = tr('Merci pour vos précisions ! Votre demande est prête dans « Mes demandes ». Ajoutez une photo si vous voulez, puis envoyez : je transmets à Bricou !');
           ecrire(m, 'lia'); garder('lia', m);
           flotOuvrir(false);
           if (ta) setTimeout(function () { ta.scrollIntoView({ behavior: 'smooth', block: 'center' }); ta.focus(); }, 250);
@@ -1249,7 +1249,7 @@
             attenteSite.remove(); occupeSite = false; envoi.disabled = false;
             var p = ecrire(txt, lien === false ? 'err' : 'lia');
             if (lien && lien.href) { var a = d.createElement('a'); a.href = lien.href; a.textContent = ' ' + lien.texte; p.appendChild(a); }
-            if (lien === false) { var c = d.createElement('a'); c.href = '/contact/'; c.textContent = ' Écrire à Alex'; p.appendChild(c); }
+            if (lien === false) { var c = d.createElement('a'); c.href = '/contact/'; c.textContent = ' Nous écrire'; p.appendChild(c); }
           };
           var fd = new FormData();
           fd.append('message', q); fd.append('histo', JSON.stringify(histoSite.slice(-6)));

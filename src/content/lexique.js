@@ -9,6 +9,8 @@ const vis = T('vitrine'); // le Site Visibilité
 // (config.creationSeule, sans abonnement, export du site remis au client) ou Mini (au mois, sans engagement, facultatif :
 // modifications incluses, une demande à la fois). Une page de visibilité Google en plus se prend en extra depuis l'espace client,
 // payée une fois par carte. « Chez les Minis Monstres » reste : c'est le nom de la marque.
+// Ton (tour global du 19 novembre 2026) : « nous / on », Alex nommé quand c'est utile (jamais « je »). Les mots techniques (SEO, CMS,
+// responsive, extension…) ne sont définis qu'ici, en mots simples ; les liens vers /referencement-seo/ s'appellent « visibilité sur Google ».
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement
 const AUTO = creationSeule.name; // sans abonnement
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
@@ -60,10 +62,10 @@ Une fleuriste prend un hébergement très bon marché pour son site. Tout va bie
 
 ## Chez les Minis Monstres
 
-Avec l'[abonnement](/tarifs/) ${mini.name}, je ne vous demande pas de chercher un hébergeur : l'hébergement est compris, sur un serveur de qualité, quel que soit votre site. Vous n'avez ni facture à part ni réglage à faire. Avec la formule ${AUTO}, vous choisissez votre hébergeur et vous y installez l'export de votre site. Pour comprendre ce qu'est la machine elle-même, lisez la définition du [serveur](/lexique/serveur-web/).`,
+Avec l'[abonnement](/tarifs/) ${mini.name}, vous n'avez pas à chercher un hébergeur : l'hébergement est compris, sur un serveur de qualité, quel que soit votre site. Vous n'avez ni facture à part ni réglage à faire. Avec la formule ${AUTO}, vous choisissez votre hébergeur et vous y installez l'export de votre site. Pour comprendre ce qu'est la machine elle-même, lisez la définition du [serveur](/lexique/serveur-web/).`,
     faq: [
       { q: 'Peut-on avoir un site sans hébergement ?', a: 'Non. Un site doit être posé quelque part pour être visible. Certaines plateformes intègrent l’hébergement dans leur abonnement, mais il existe toujours, même quand on ne le voit pas.' },
-      { q: 'Combien coûte un hébergement ?', a: `Les prix varient beaucoup selon la puissance et le service. Chez moi, il est compris dans l’abonnement ${mini.name}, à ${mini.month} € par mois, qui couvre aussi votre nom de domaine et l’entretien du site.` },
+      { q: 'Combien coûte un hébergement ?', a: `Les prix varient beaucoup selon la puissance et le service. Chez nous, il est compris dans l’abonnement ${mini.name}, à ${mini.month} € par mois, qui couvre aussi votre nom de domaine et l’entretien du site.` },
       { q: 'Puis-je changer d’hébergeur plus tard ?', a: 'Oui. On copie les fichiers du site chez le nouvel hébergeur, puis on fait pointer le nom de domaine vers lui. Bien fait, le changement passe inaperçu pour vos visiteurs.' },
     ],
     voir: ['serveur-web', 'maintenance-site', 'sauvegarde-site'],
@@ -109,7 +111,7 @@ Un traiteur partage un serveur bas de gamme avec des centaines d'autres sites. U
 
 ## Chez les Minis Monstres
 
-Avec l'abonnement ${mini.name}, je m'occupe du serveur pour vous : votre site tourne sur une machine de qualité qui tient les pics de visites. Le détail est sur la page des [tarifs](/tarifs/).`,
+Avec l'abonnement ${mini.name}, nous nous occupons du serveur pour vous : votre site tourne sur une machine de qualité qui tient les pics de visites. Le détail est sur la page des [tarifs](/tarifs/).`,
     faq: [
       { q: 'Où se trouve physiquement le serveur de mon site ?', a: 'Dans un centre de données, chez un hébergeur. Pour un site qui s’adresse à des clients en France, il vaut mieux un serveur situé en Europe : les pages arrivent plus vite et les règles sur les données sont plus claires.' },
       { q: 'Mon site peut-il tomber en panne si le serveur s’arrête ?', a: 'Oui, c’est pour ça qu’un serveur doit être surveillé et entretenu. Un bon hébergeur répare vite, et une sauvegarde récente permet de tout remettre en place.' },
@@ -155,7 +157,7 @@ Une couturière ouvre son site sur son téléphone pour le montrer à une client
 
 ## Chez les Minis Monstres
 
-Le HTTPS est compris dans l'[abonnement](/tarifs/) ${mini.name}, pour chaque site. Je pose le certificat à la mise en ligne et il se renouvelle tout seul. Vous n'avez pas à y penser. Pour voir ce que contient le reste de l'entretien, lisez la page sur la [maintenance de site](/lexique/maintenance-site/).`,
+Le HTTPS est compris dans l'[abonnement](/tarifs/) ${mini.name}, pour chaque site. Nous posons le certificat à la mise en ligne et il se renouvelle tout seul. Vous n'avez pas à y penser. Pour voir ce que contient le reste de l'entretien, lisez la page sur la [maintenance de site](/lexique/maintenance-site/).`,
     faq: [
       { q: 'Le certificat SSL est-il payant ?', a: 'Il existe des certificats gratuits, reconnus par tous les navigateurs, qui conviennent très bien à un site d’entreprise. Les certificats payants servent surtout aux très grandes structures. Ce qui compte, c’est qu’il soit posé correctement et renouvelé à temps.' },
       { q: 'Comment savoir si mon site est en HTTPS ?', a: 'Ouvrez-le et regardez la barre d’adresse. Un cadenas ou une icône de réglages à gauche de l’adresse veut dire que c’est bon. La mention « Non sécurisé » veut dire qu’il manque le certificat.' },
@@ -198,7 +200,7 @@ Un moniteur d'auto-école veut afficher ses nouvelles dates de stage code chaque
 
 ## Chez les Minis Monstres
 
-Vous n'avez pas à apprendre d'outil. Avec l'abonnement ${mini.name}, vous décrivez ce que vous voulez changer dans votre espace client, et c'est fait pour vous. ${cerise}, la secrétaire de ma petite bande, vous aide à bien formuler la demande avant de la transmettre. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
+Vous n'avez pas à apprendre d'outil. Avec l'abonnement ${mini.name}, vous décrivez ce que vous voulez changer dans votre espace client, et c'est fait pour vous. ${cerise}, la secrétaire de notre petite bande, vous aide à bien formuler la demande avant de la transmettre. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
     faq: [
       { q: 'Un CMS est-il obligatoire pour avoir un site ?', a: 'Non. Un site peut être fait de simples fichiers, sans base de données. C’est même souvent plus rapide et plus sûr. Le CMS devient utile quand le contenu change souvent ou quand plusieurs personnes doivent publier.' },
       { q: 'Quel CMS choisir pour mon entreprise ?', a: 'Celui qui répond à votre besoin et que quelqu’un saura entretenir. Pour un site de présentation ou une petite boutique, les grands CMS connus ont l’avantage d’être bien suivis et de trouver facilement de l’aide.' },
@@ -241,7 +243,7 @@ Une éleveuse de chèvres crée son site WordPress seule, un week-end, avec un t
 
 ## Chez les Minis Monstres
 
-Que votre site soit sur WordPress ou non, la question pour vous reste la même : qui s'en occupe ? Avec l'[abonnement](/tarifs/) ${mini.name}, je fais les mises à jour des extensions pour vous et je surveille que tout tourne. Avec la formule ${AUTO}, ces mises à jour vous reviennent. Si vous hésitez entre faire seul ou déléguer, le guide [créer son site soi-même ou le faire faire](/guides/creer-son-site-soi-meme-ou-le-faire-faire/) vous aide à trancher.`,
+Que votre site soit sur WordPress ou non, la question pour vous reste la même : qui s'en occupe ? Avec l'[abonnement](/tarifs/) ${mini.name}, nous faisons les mises à jour des extensions pour vous et nous surveillons que tout tourne. Avec la formule ${AUTO}, ces mises à jour vous reviennent. Si vous hésitez entre faire seul ou déléguer, le guide [créer son site soi-même ou le faire faire](/guides/creer-son-site-soi-meme-ou-le-faire-faire/) vous aide à trancher.`,
     faq: [
       { q: 'WordPress est-il sûr ?', a: 'Oui, s’il est tenu à jour. La plupart des piratages viennent d’une version ancienne, d’une extension abandonnée ou d’un mot de passe trop simple, pas du logiciel lui-même.' },
       { q: 'Peut-on vendre en ligne avec WordPress ?', a: 'Oui, grâce à des extensions de commerce qui ajoutent un panier, le paiement par carte et la gestion des commandes. Il faut alors être encore plus attentif aux mises à jour et à la sécurité.' },
@@ -280,14 +282,14 @@ Un paysagiste choisit un thème magnifique sur la démonstration : grandes vidé
 
 - **Choisir sur la démonstration.** Elle est remplie d'images parfaites et de textes courts. Votre contenu réel n'aura pas cette allure.
 - **Prendre un thème « tout-en-un ».** Il charge des dizaines de fonctions dont vous n'utiliserez qu'une petite partie.
-- **Modifier le thème directement.** À la prochaine mise à jour du thème, les retouches disparaissent. On passe par un thème enfant, une copie qui garde vos changements.
+- **Modifier le thème directement.** À la prochaine mise à jour du thème, vos changements disparaissent. On passe par un thème enfant, une copie qui garde vos changements.
 - **Oublier de tester sur mobile.** La plupart de vos visiteurs viendront d'un téléphone.
 
 !> Un thème acheté une fois peut cesser d'être suivi par son auteur. Vérifiez qu'il reçoit encore des mises à jour avant de vous engager.
 
 ## Chez les Minis Monstres
 
-Je ne vous fais pas choisir dans un catalogue. Je pars de votre métier, de vos couleurs et de vos photos pour faire un site qui vous ressemble, léger et lisible sur tous les écrans. Vous pouvez voir comment ça se passe sur la page [créer mon site](/creer-mon-site/). Pour la partie qui ajoute des fonctions, voyez la définition d'une [extension](/lexique/extension-plugin/).`,
+Nous ne vous faisons pas choisir dans un catalogue. Nous partons de votre métier, de vos couleurs et de vos photos pour faire un site qui vous ressemble, léger et lisible sur tous les écrans. Vous pouvez voir comment ça se passe sur la page [créer mon site](/creer-mon-site/). Pour la partie qui ajoute des fonctions, voyez la définition d'une [extension](/lexique/extension-plugin/).`,
     faq: [
       { q: 'Changer de thème fait-il perdre le contenu ?', a: 'Non, les textes et les images restent en place. En revanche, la mise en page peut bouger, des blocs propres à l’ancien thème peuvent disparaître, et il faut tout revérifier page par page.' },
       { q: 'Un thème gratuit suffit-il ?', a: 'Parfois, oui, s’il est léger, bien noté et encore mis à jour. Le prix compte moins que la qualité du code et le sérieux de celui qui le maintient.' },
@@ -334,7 +336,7 @@ Un ostéopathe installe une extension de rendez-vous, une de galerie, une pour l
 
 ## Chez les Minis Monstres
 
-Les mises à jour des extensions font partie de l'[abonnement](/tarifs/) ${mini.name}. Je les fais pour vous et je vérifie que le site tient debout ensuite. Vous gardez un site léger, sans module inutile. Pour savoir comment on revient en arrière quand quelque chose casse, lisez la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+Les mises à jour des extensions font partie de l'[abonnement](/tarifs/) ${mini.name}. Nous les faisons pour vous et nous vérifions que le site tient debout ensuite. Vous gardez un site léger, sans module inutile. Pour savoir comment on revient en arrière quand quelque chose casse, lisez la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'Combien d’extensions faut-il sur un site ?', a: 'Il n’y a pas de bon nombre. La règle est simple : uniquement celles dont vous avez besoin, chacune choisie avec soin. Un petit site bien fait en a souvent peu.' },
       { q: 'Les extensions gratuites sont-elles dangereuses ?', a: 'Pas forcément. Beaucoup sont excellentes et suivies par des équipes sérieuses. Le danger vient surtout des extensions plus mises à jour, gratuites ou payantes.' },
@@ -382,7 +384,7 @@ Un garagiste a un site fait il y a longtemps, pensé pour l'ordinateur. Sur tél
 
 ## Chez les Minis Monstres
 
-Tous les sites que je crée s'adaptent à tous les écrans : téléphone, tablette et ordinateur. Le numéro est cliquable, le menu se replie proprement, et je teste sur plusieurs tailles d'écran avant la mise en ligne. Vous pouvez composer le vôtre et voir son prix sur [créer mon site](/creer-mon-site/). La vitesse sur mobile est expliquée à la page [temps de chargement](/lexique/temps-de-chargement/).`,
+Tous les sites que nous créons s'adaptent à tous les écrans : téléphone, tablette et ordinateur. Le numéro est cliquable, le menu se replie proprement, et Alex teste sur plusieurs tailles d'écran avant la mise en ligne. Vous pouvez composer le vôtre et voir son prix sur [créer mon site](/creer-mon-site/). La vitesse sur mobile est expliquée à la page [temps de chargement](/lexique/temps-de-chargement/).`,
     faq: [
       { q: 'Faut-il une application en plus d’un site responsive ?', a: 'Pour la plupart des petites entreprises, non. Un site bien adapté à tous les écrans suffit, et vos clients n’ont rien à installer pour vous trouver.' },
       { q: 'Comment savoir si mon site est responsive ?', a: 'Ouvrez-le sur un téléphone. Si vous devez zoomer pour lire ou si la page déborde sur le côté, il ne l’est pas, ou mal. Sur ordinateur, vous pouvez aussi réduire la largeur de la fenêtre et regarder si les blocs se réorganisent.' },
@@ -429,7 +431,9 @@ Une esthéticienne écrit sur son site « Bienvenue dans mon univers de douceur 
 
 ## Chez les Minis Monstres
 
-Le ${vis.name} compte jusqu'à ${creation.pages} pages, avec des pages de visibilité Google intégrées. Pour être trouvé sur plus de recherches, vous pouvez en ajouter, chacune écrite pour une recherche de vos clients. Elles se prennent en extra, depuis votre espace client, à ${prixPage} € la page, payée une fois. Tout est expliqué sur la page [référencement SEO](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
+Derrière ce mot technique, il y a une idée simple : être visible. C'est le cœur de notre métier.
+
+Le ${vis.name} compte jusqu'à ${creation.pages} pages, avec des pages de visibilité Google intégrées. Pour être trouvé sur plus de recherches, vous pouvez en ajouter, chacune écrite pour une recherche de vos clients. Elles se prennent en extra, depuis votre espace client, à ${prixPage} € la page, payée une fois. Tout est expliqué sur la page [visibilité sur Google](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
     faq: [
       { q: 'Quelle différence entre SEO et publicité Google ?', a: 'La publicité vous place en haut des résultats tant que vous payez chaque clic. Le SEO vise les résultats gratuits : il demande du travail au départ, mais ne s’arrête pas le jour où vous cessez de payer.' },
       { q: 'Au bout de combien de temps voit-on des effets ?', a: 'Cela dépend de votre métier, de votre ville et de la concurrence. Il faut en général compter plusieurs mois avant de juger. C’est un travail de fond, pas un interrupteur.' },
@@ -477,7 +481,7 @@ Un électricien a déménagé son atelier dans la commune voisine. Sur son site,
 
 ## Chez les Minis Monstres
 
-Je suis installé dans les Ardennes et je travaille avec des entreprises de toute la France. Sur chaque site, je soigne la zone que vous couvrez, et vos pages de visibilité Google peuvent viser les communes où vous travaillez. Plus de détails sur la page [référencement SEO](/referencement-seo/).`,
+Les Minis Monstres sont installés dans les Ardennes et travaillent avec des entreprises de toute la France. Sur chaque site, nous soignons la zone que vous couvrez, et vos pages de visibilité Google peuvent viser les communes où vous travaillez. Plus de détails sur la page [visibilité sur Google](/referencement-seo/).`,
     faq: [
       { q: 'Faut-il une adresse pour faire du référencement local ?', a: 'Une adresse aide, mais les entreprises qui se déplacent chez le client peuvent aussi définir une zone desservie sur leur fiche, sans afficher leur domicile.' },
       { q: 'Le site ou la fiche Google : lequel compte le plus ?', a: 'Les deux travaillent ensemble. La fiche vous place sur la carte, le site donne les détails et rassure. Une fiche qui renvoie vers un bon site est plus convaincante qu’une fiche seule.' },
@@ -525,7 +529,7 @@ Dans la [balise title](/lexique/balise-title/), dans le grand titre de la page, 
 
 ## Chez les Minis Monstres
 
-Pour vos pages de visibilité Google, y compris celles que vous ajoutez au fil du temps, ${mirette} et moi choisissons avec vous les recherches qui comptent pour votre métier et votre zone. La méthode complète est sur [référencement SEO](/referencement-seo/).`,
+Pour vos pages de visibilité Google, y compris celles que vous ajoutez au fil du temps, ${mirette} choisit avec vous les recherches qui comptent pour votre métier et votre zone. La méthode complète est sur [visibilité sur Google](/referencement-seo/).`,
     faq: [
       { q: 'Combien de mots-clés par page ?', a: 'Une page doit viser un sujet principal, avec son mot-clé et quelques variantes proches. Si vous voulez couvrir un autre sujet, mieux vaut lui donner sa propre page.' },
       { q: 'Faut-il viser les mots-clés les plus recherchés ?', a: 'Pas forcément. Pour une petite entreprise, des expressions plus précises, avec votre ville ou un service particulier, attirent souvent des visiteurs plus prêts à vous contacter.' },
@@ -623,7 +627,7 @@ Deux pizzerias sortent l'une sous l'autre. La première affiche un morceau de te
 
 ## Chez les Minis Monstres
 
-À la création, j'écris une meta description pour chaque page de votre site, en pensant à ce que votre client cherche. Si votre offre change, vous me le dites depuis votre espace client et je l'adapte. Pour le titre qui l'accompagne, lisez la page [balise title](/lexique/balise-title/), et pour la vue d'ensemble, celle sur le [référencement naturel](/lexique/referencement-naturel-seo/).`,
+À la création, nous écrivons une meta description pour chaque page de votre site, en pensant à ce que votre client cherche. Si votre offre change, vous le dites depuis votre espace client et elle est adaptée. Pour le titre qui l'accompagne, lisez la page [balise title](/lexique/balise-title/), et pour la vue d'ensemble, celle sur le [référencement naturel](/lexique/referencement-naturel-seo/).`,
     faq: [
       { q: 'Google affiche-t-il toujours ma meta description ?', a: 'Non. Il la remplace parfois par un extrait de la page qu’il juge plus proche de la recherche. Une description claire et fidèle au contenu reste tout de même la meilleure façon de garder la main.' },
       { q: 'Est-ce grave si mes pages n’en ont pas ?', a: 'Le site fonctionne sans, mais vous laissez Google choisir le texte à votre place. Pour les pages importantes, ça vaut vraiment la peine d’en écrire une.' },
@@ -667,7 +671,7 @@ Une librairie ajoute une page pour chaque rencontre d'auteur. Ces pages ne sont 
 
 ## Chez les Minis Monstres
 
-Chaque site que je mets en ligne a son sitemap, qui se met à jour quand une page est ajoutée ou retirée. Je le déclare à Google pour vous. Pour comprendre la suite, quand Google range vos pages dans son catalogue, lisez la définition de l'[indexation](/lexique/indexation/). Le fichier qui guide les robots est expliqué sur la page [robots.txt](/lexique/robots-txt/).`,
+Chaque site que nous mettons en ligne a son sitemap, qui se met à jour quand une page est ajoutée ou retirée. Nous le déclarons à Google pour vous. Pour comprendre la suite, quand Google range vos pages dans son catalogue, lisez la définition de l'[indexation](/lexique/indexation/). Le fichier qui guide les robots est expliqué sur la page [robots.txt](/lexique/robots-txt/).`,
     faq: [
       { q: 'Où se trouve le sitemap d’un site ?', a: 'En général à une adresse comme votresite.fr/sitemap.xml, ou dans un fichier d’index qui regroupe plusieurs plans. Le fichier robots.txt indique souvent son emplacement.' },
       { q: 'Un petit site a-t-il vraiment besoin d’un sitemap ?', a: 'Il n’est pas indispensable si toutes les pages sont bien reliées entre elles, mais il ne coûte rien et facilite le suivi dans la Search Console. Autant l’avoir.' },
@@ -708,7 +712,7 @@ Pendant la fabrication d'un site, le prestataire ajoute une ligne qui interdit t
 
 ## Chez les Minis Monstres
 
-Je règle le robots.txt à la mise en ligne de votre site, et je vérifie qu'il laisse bien passer Google sur les pages qui comptent. C'est un petit réglage, mais tout le reste du SEO en dépend. Pour la suite du parcours, lisez la page sur l'[indexation](/lexique/indexation/).`,
+Nous réglons le robots.txt à la mise en ligne de votre site, et nous vérifions qu'il laisse bien passer Google sur les pages qui comptent. C'est un petit réglage, mais toute votre visibilité sur Google en dépend. Pour la suite du parcours, lisez la page sur l'[indexation](/lexique/indexation/).`,
     faq: [
       { q: 'Mon site doit-il avoir un fichier robots.txt ?', a: 'Ce n’est pas obligatoire : sans lui, les robots considèrent qu’ils peuvent tout visiter. En avoir un, bien réglé, permet d’indiquer le sitemap et d’écarter les zones inutiles.' },
       { q: 'Peut-on bloquer les robots qui recopient les textes des sites ?', a: 'Certains de ces robots respectent des consignes données dans le robots.txt, d’autres non. C’est un choix à faire selon votre activité, en sachant que le fichier reste une demande et non une barrière.' },
@@ -758,7 +762,7 @@ Tapez dans Google site: suivi de votre adresse, sans espace, par exemple site:vo
 
 ## Chez les Minis Monstres
 
-À la mise en ligne, je déclare votre site à Google et je surveille que les pages importantes entrent bien dans l'index. La suite du travail est détaillée sur [référencement SEO](/referencement-seo/).`,
+À la mise en ligne, nous déclarons votre site à Google et nous surveillons que les pages importantes entrent bien dans l'index. La suite du travail est détaillée sur [visibilité sur Google](/referencement-seo/).`,
     faq: [
       { q: 'Combien de temps faut-il pour qu’une page soit indexée ?', a: 'Cela varie de quelques jours à quelques semaines, selon la notoriété du site et la façon dont la page est reliée. Un sitemap déclaré et un lien depuis une page déjà connue aident à aller plus vite.' },
       { q: 'Peut-on demander à Google d’indexer une page ?', a: 'Oui, depuis la Search Console, avec l’outil d’inspection d’adresse. C’est une demande : Google reste libre de garder la page ou non.' },
@@ -811,7 +815,7 @@ Un apiculteur vend son miel sur les marchés. Il demande au site du marché de p
 
 ## Chez les Minis Monstres
 
-Je n'achète jamais de liens pour tromper Google. Si vous travaillez avec des partenaires locaux, un lien de leur site vers le vôtre a du sens : pensez à le leur demander. La démarche complète est sur [référencement SEO](/referencement-seo/).`,
+Nous n'achetons jamais de liens pour tromper Google. Si vous travaillez avec des partenaires locaux, un lien de leur site vers le vôtre a du sens : pensez à le leur demander. La démarche complète est sur [visibilité sur Google](/referencement-seo/).`,
     faq: [
       { q: 'Les liens depuis les réseaux sociaux comptent-ils ?', a: 'Ils amènent des visiteurs, ce qui est déjà bien, mais Google leur accorde en général peu de poids pour le classement. Ils restent utiles pour faire connaître votre site.' },
       { q: 'Un mauvais lien peut-il me faire du tort ?', a: 'Un lien isolé venant d’un site douteux n’a en général pas d’effet, Google sait l’ignorer. Le risque apparaît quand on cherche à tromper avec des liens achetés ou fabriqués en masse.' },
@@ -859,7 +863,7 @@ Un vendeur de bois de chauffage découvre dans la Search Console qu'il apparaît
 
 ## Chez les Minis Monstres
 
-Je relie votre site à la Search Console dès la mise en ligne et je déclare le sitemap. Voyez aussi la définition de l'[indexation](/lexique/indexation/), et la page [référencement SEO](/referencement-seo/) pour la méthode.`,
+Nous relions votre site à la Search Console dès la mise en ligne et nous déclarons le sitemap. Voyez aussi la définition de l'[indexation](/lexique/indexation/), et la page [visibilité sur Google](/referencement-seo/) pour la méthode.`,
     faq: [
       { q: 'La Search Console est-elle payante ?', a: 'Non, elle est gratuite pour tous les propriétaires de sites. Il suffit d’un compte Google et de prouver que le site est à vous.' },
       { q: 'Quelle différence avec un outil de statistiques ?', a: 'La Search Console montre ce qui se passe dans Google avant le clic. Un outil de statistiques montre ce que font les visiteurs une fois sur votre site, d’où qu’ils viennent.' },
@@ -915,7 +919,7 @@ Une agence de voyages locale ouvre son site sur un diaporama de plages, avec la 
 
 ## Chez les Minis Monstres
 
-Je construis la page d'accueil autour de ce que vos clients viennent chercher, avec un bouton d'appel visible sur téléphone. Le parcours de création est expliqué sur [créer mon site](/creer-mon-site/). Pour une page pensée autour d'une seule offre, voyez la [landing page](/lexique/landing-page/).`,
+Nous construisons la page d'accueil autour de ce que vos clients viennent chercher, avec un bouton d'appel visible sur téléphone. Le parcours de création est expliqué sur [créer mon site](/creer-mon-site/). Pour une page pensée autour d'une seule offre, voyez la [landing page](/lexique/landing-page/).`,
     faq: [
       { q: 'La page d’accueil doit-elle être longue ?', a: 'Elle doit être aussi longue que nécessaire, pas plus. L’important est que l’essentiel soit visible tout de suite et que chaque partie mène quelque part.' },
       { q: 'Faut-il mettre des actualités sur la page d’accueil ?', a: 'Seulement si vous les tenez à jour. Une actualité vieille de deux ans en page d’accueil donne l’impression d’une entreprise fermée.' },
@@ -1016,7 +1020,7 @@ Un couvreur a un site joli et complet. Tout en bas, en petit, une ligne : « Pou
 
 ## Chez les Minis Monstres
 
-Sur chaque site, je place un appel à l'action clair, adapté à votre métier : appel direct pour un dépanneur, réservation pour un restaurant, ajout au panier pour une boutique. Vous pouvez en voir le principe sur [créer mon site](/creer-mon-site/). Ce qui se passe après le clic est expliqué à la page [formulaire de contact](/lexique/formulaire-de-contact/).`,
+Sur chaque site, nous plaçons un appel à l'action clair, adapté à votre métier : appel direct pour un dépanneur, réservation pour un restaurant, ajout au panier pour une boutique. Vous pouvez en voir le principe sur [créer mon site](/creer-mon-site/). Ce qui se passe après le clic est expliqué à la page [formulaire de contact](/lexique/formulaire-de-contact/).`,
     faq: [
       { q: 'Un numéro de téléphone peut-il servir d’appel à l’action ?', a: 'Oui, s’il est cliquable sur téléphone et bien mis en valeur. Pour beaucoup d’artisans et de commerces de proximité, c’est même le plus efficace.' },
       { q: 'Quelle couleur choisir pour un bouton ?', a: 'Une couleur qui ressort bien sur le fond et qui reste dans l’esprit de votre site. Le plus important est le contraste et la cohérence : le même style pour toutes les actions principales.' },
@@ -1067,7 +1071,7 @@ Un photographe de mariage reçoit des messages du genre « Bonjour, c'est combie
 
 ## Chez les Minis Monstres
 
-Chaque site que je livre a son formulaire, relié à votre messagerie. Je le teste avant la mise en ligne et il tourne sur une connexion protégée en HTTPS. Tout ce que comprend l'abonnement ${mini.name} est listé sur la page des [tarifs](/tarifs/). Les règles sur les données personnelles sont résumées à la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
+Chaque site que nous livrons a son formulaire, relié à votre messagerie. Alex le teste avant la mise en ligne et il tourne sur une connexion protégée en HTTPS. Tout ce que comprend l'abonnement ${mini.name} est listé sur la page des [tarifs](/tarifs/). Les règles sur les données personnelles sont résumées à la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
     faq: [
       { q: 'Où arrivent les messages du formulaire ?', a: 'Dans la boîte mail de votre choix. Il peut s’agir de votre adresse habituelle ou d’une adresse professionnelle à votre nom de domaine.' },
       { q: 'Pourquoi je reçois des messages publicitaires par mon formulaire ?', a: 'Des robots remplissent automatiquement les formulaires trouvés sur internet. Une protection bien réglée en bloque la plus grande partie, sans gêner vos vrais clients.' },
@@ -1115,7 +1119,7 @@ La CNIL est l'autorité française qui veille au respect de ces règles. Son sit
 
 ## Chez les Minis Monstres
 
-Je construis des sites sobres, sans traceurs inutiles, en HTTPS, avec un formulaire qui ne demande que l'essentiel. Si votre site a besoin d'un bandeau de consentement, je le mets en place. La page sur les [mentions légales](/lexique/mentions-legales/) complète ce sujet, et vous pouvez me poser vos questions sur la page [contact](/contact/).`,
+Nous construisons des sites sobres, sans traceurs inutiles, en HTTPS, avec un formulaire qui ne demande que l'essentiel. Si votre site a besoin d'un bandeau de consentement, nous le mettons en place. La page sur les [mentions légales](/lexique/mentions-legales/) complète ce sujet, et vous pouvez nous poser vos questions sur la page [contact](/contact/).`,
     faq: [
       { q: 'Mon site doit-il forcément avoir un bandeau cookies ?', a: 'Seulement s’il dépose des cookies qui demandent un accord, comme ceux de publicité ou certains outils de mesure. Un site qui n’utilise que des cookies indispensables peut s’en passer.' },
       { q: 'Le RGPD concerne-t-il les auto-entrepreneurs ?', a: 'Oui. La taille de l’entreprise ne change pas le principe : dès que vous recueillez des données sur des personnes, vous devez les traiter avec soin et expliquer ce que vous en faites.' },
@@ -1167,7 +1171,7 @@ Une créatrice de bijoux lance sa boutique en ligne et recopie les mentions lég
 
 ## Chez les Minis Monstres
 
-Je prévois une page de mentions légales sur chaque site et je vous indique les informations à me fournir. Le contenu juridique reste sous votre responsabilité. Quand il faut modifier ce type de texte, je m'en occupe moi-même. Pour les données de vos visiteurs, voyez la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
+Nous prévoyons une page de mentions légales sur chaque site et nous vous indiquons les informations à fournir. Le contenu juridique reste sous votre responsabilité. Quand il faut modifier ce type de texte, Alex s'en occupe lui-même. Pour les données de vos visiteurs, voyez la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
     faq: [
       { q: 'Que risque-t-on sans mentions légales ?', a: 'L’absence de mentions légales sur un site professionnel est un manquement qui peut être sanctionné. Surtout, c’est un signal négatif pour les visiteurs qui cherchent à vous identifier.' },
       { q: 'Où placer le lien vers les mentions légales ?', a: 'En bas de chaque page, dans le pied de site. Il doit être facile à trouver depuis n’importe quel endroit du site.' },
@@ -1216,7 +1220,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 ## Chez les Minis Monstres
 
-C'est le cœur de l'[abonnement](/tarifs/) ${mini.name}. Pour ${mini.month} € par mois, j'héberge votre site, je suis les mises à jour, je garde un œil sur le HTTPS et je vérifie que tout tourne. Vos changements de contenu passent par l'espace client : ils sont inclus, et une modification peut prendre ${delaiModif}. Avec la formule ${AUTO}, cet entretien est à votre charge. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+C'est le cœur de l'[abonnement](/tarifs/) ${mini.name}. Pour ${mini.month} € par mois, nous hébergeons votre site, nous suivons les mises à jour, nous gardons un œil sur le HTTPS et nous vérifions que tout tourne. Vos changements de contenu passent par l'espace client : ils sont inclus, et une modification peut prendre ${delaiModif}. Avec la formule ${AUTO}, cet entretien est à votre charge. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'À quelle fréquence faut-il faire la maintenance ?', a: 'La surveillance doit être continue, et les mises à jour faites dès qu’elles sortent, surtout celles de sécurité. Les autres vérifications peuvent suivre un rythme régulier, par exemple chaque mois.' },
       { q: 'Puis-je faire la maintenance de mon site moi-même ?', a: 'C’est possible si vous avez le temps et les bases techniques. Le plus dur n’est pas de cliquer sur « mettre à jour », mais de savoir quoi faire quand une mise à jour casse quelque chose.' },
@@ -1267,10 +1271,10 @@ Une épicerie fine supprime par erreur la page de ses paniers garnis, la plus vi
 
 ## Chez les Minis Monstres
 
-Les sauvegardes automatiques font partie de l'entretien compris dans l'[abonnement](/tarifs/) ${mini.name}. Elles se font toutes seules, et je m'en sers si quelque chose doit être remis en place. Vous n'avez rien à régler. Avec la formule ${AUTO}, pensez à les prévoir chez votre hébergeur. Pour le reste de l'entretien, voyez la page [maintenance de site](/lexique/maintenance-site/).`,
+Les sauvegardes automatiques font partie de l'entretien compris dans l'[abonnement](/tarifs/) ${mini.name}. Elles se font toutes seules, et elles servent si quelque chose doit être remis en place. Vous n'avez rien à régler. Avec la formule ${AUTO}, pensez à les prévoir chez votre hébergeur. Pour le reste de l'entretien, voyez la page [maintenance de site](/lexique/maintenance-site/).`,
     faq: [
       { q: 'Combien de temps faut-il garder les sauvegardes ?', a: 'Assez longtemps pour revenir avant un problème qui serait passé inaperçu quelques jours. Garder plusieurs copies d’âges différents est plus sûr qu’une seule copie très récente.' },
-      { q: 'Puis-je récupérer une copie de mon site ?', a: 'Oui. Votre site vous appartient : si vous changez de prestataire, je vous transmets ses fichiers.' },
+      { q: 'Puis-je récupérer une copie de mon site ?', a: 'Oui. Votre site vous appartient : si vous changez de prestataire, vous recevez son export, une copie complète de ses fichiers.' },
     ],
     voir: ['maintenance-site', 'hebergement-web', 'extension-plugin'],
   },
@@ -1314,7 +1318,7 @@ Ouvrez votre site sur votre téléphone, en 4G plutôt qu'en wifi. C'est le test
 
 ## Chez les Minis Monstres
 
-Je fais des sites légers : images allégées, peu de modules, code propre. Votre site tourne sur un serveur de qualité, qui tient bon quand il y a du monde. L'hébergement fait partie de l'abonnement ${mini.name}, décrit sur la page des [tarifs](/tarifs/). Pour comprendre le rôle de la machine, voyez la définition du [serveur web](/lexique/serveur-web/).`,
+Nous faisons des sites légers : images allégées, peu de modules, code propre. Votre site tourne sur un serveur de qualité, qui tient bon quand il y a du monde. L'hébergement fait partie de l'abonnement ${mini.name}, décrit sur la page des [tarifs](/tarifs/). Pour comprendre le rôle de la machine, voyez la définition du [serveur web](/lexique/serveur-web/).`,
     faq: [
       { q: 'Quel est un bon temps de chargement ?', a: 'Le plus court possible. Une page dont le contenu principal apparaît en un clin d’œil sur téléphone donne une bonne impression. Au-delà de quelques secondes d’attente, beaucoup de visiteurs abandonnent.' },
       { q: 'Un site rapide sur mon ordinateur l’est-il aussi pour mes clients ?', a: 'Pas forcément. Votre ordinateur a peut-être déjà gardé les fichiers en mémoire et profite d’une bonne connexion. Testez depuis un téléphone, en données mobiles, et si possible depuis un autre appareil que le vôtre.' },
@@ -1405,7 +1409,7 @@ Un loueur de vélos pense que ses clients sont surtout des touristes étrangers.
 
 ## Chez les Minis Monstres
 
-Avec l'abonnement ${mini.name}, votre espace client montre vos visites jour par jour et vos pages les plus vues. Pour la partie qui se passe dans Google avant le clic, voyez la [Google Search Console](/lexique/google-search-console/).`,
+Nos sites ne posent aucun traceur publicitaire. Si vous voulez suivre vos visites, dites-le-nous : nous vous indiquons un outil simple et respectueux de vos visiteurs. Pour la partie qui se passe dans Google avant le clic, voyez la [Google Search Console](/lexique/google-search-console/).`,
     faq: [
       { q: 'Les statistiques de visite sont-elles compatibles avec le RGPD ?', a: 'Cela dépend de l’outil et de ses réglages. Certains peuvent fonctionner sans consentement s’ils restent limités à la mesure d’audience, d’autres demandent l’accord du visiteur. La CNIL publie des repères à ce sujet.' },
       { q: 'Quelle différence avec la Search Console ?', a: 'La Search Console parle de votre présence dans Google : recherches, affichages, clics. Les statistiques de visite montrent ce que font les gens une fois arrivés, qu’ils viennent de Google ou d’ailleurs.' },
@@ -1452,7 +1456,7 @@ Le [plan du site](/lexique/sitemap/) aide Google à trouver les pages, mais il n
 
 ## Chez les Minis Monstres
 
-Sur un site vitrine, chaque page parle d'un sujet précis, et je les relie entre elles de façon logique. Chaque nouvelle page, comme une page de visibilité Google commandée en extra, rejoint ce réseau de liens. La méthode est expliquée sur [référencement SEO](/referencement-seo/).`,
+Sur un site vitrine, chaque page parle d'un sujet précis, et nous les relions entre elles de façon logique. Chaque nouvelle page, comme une page de visibilité Google commandée en extra, rejoint ce réseau de liens. La méthode est expliquée sur [visibilité sur Google](/referencement-seo/).`,
     faq: [
       { q: 'Combien de liens internes mettre sur une page ?', a: 'Il n’y a pas de chiffre magique. Mettez ceux qui aident vraiment le lecteur à continuer. Sur une page de service, quelques liens bien placés suffisent en général.' },
       { q: 'Le menu compte-t-il comme lien interne ?', a: 'Oui. Les liens du menu et du pied de page sont des liens internes. Ceux placés dans le texte ont souvent plus de poids, parce qu’ils sont entourés de mots qui expliquent leur sujet.' },

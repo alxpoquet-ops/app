@@ -64,7 +64,7 @@ const sections = {
   creer: { path: '/creer-mon-site/', label: 'Créer mon site', color: 'mint', icon: 'wand-sparkles' },
   forfaits: { path: '/tarifs/', label: 'Tarifs', color: 'lilac', icon: 'tag' },
   espace: { path: '/outils/', label: 'Outils', color: 'sky', icon: 'toolbox' },
-  seo: { path: '/referencement-seo/', label: 'SEO', color: 'butter', icon: 'search-check' },
+  seo: { path: '/referencement-seo/', label: 'Visibilité Google', color: 'butter', icon: 'search-check' },
   contact: { path: '/contact/', label: 'Contact', color: 'peach', icon: 'message-circle' },
   // V2 (novembre 2026) : « Ils nous ont fait confiance » devient Réalisations, « Cerise et Alex » devient Pourquoi les Minis Monstres,
   // « Ma méthode » devient Pourquoi moins cher. Les anciennes adresses sont redirigées (scripts/wp-export.py).

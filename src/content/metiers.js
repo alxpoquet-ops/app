@@ -6,14 +6,14 @@
 // puis Autonomie (config.creationSeule, sans abonnement, export du site remis au client) ou Mini (config.forfaits[0], au mois,
 // sans engagement, modifications incluses, une demande à la fois). L'abonnement est facultatif. Trois extras : la page de
 // visibilité Google (payée une fois, par carte), la traduction anglaise et la fonctionnalité spécifique (sur devis).
-// La petite bande (config.bande) compte cinq Minis Monstres.
+// La petite bande (config.bande) compte six Minis Monstres.
 // Ton (tour global du 19 novembre 2026) : « nous / on », Alex nommé quand c'est utile (jamais « je »), vouvoiement, « site internet »,
 // « modification ». Chaque page ouvre sur la visibilité (un site rend visible, c'est notre métier) et garde l'ordre de l'offre :
 // le site, puis Autonomie ou Mini, enfin les extras. Pages courtes, pensées pour le téléphone.
 // options : les conseils de la page (« Ce qu’on vous conseille »). Ids acceptés : 'boutique' (le Site Boutique),
 // 'base' (l'abonnement Mini), ou l'id d'un extra de config.aLaDemande encore proposé ('packseo', 'anglais', 'specifique').
 // Le prix affiché vient de config.js. Chaque « pourquoi » doit coller à ce qui est conseillé.
-// (Le code événement a été retiré le 17 novembre 2026 : un seul champ « code promo ou parrainage » à la commande.)
+// (Le code événement a été retiré le 17 novembre 2026 : un seul champ « Code promo » à la commande ; le parrainage est retiré.)
 const { creation, forfaits, paiement, lissage, annuel, marche, bande, evenement, types, creationSeule } = require('../config');
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));

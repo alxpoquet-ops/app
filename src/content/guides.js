@@ -6,7 +6,7 @@
 // puis deux façons de faire vivre le site : Autonomie (config.creationSeule, sans abonnement, export du site remis au client)
 // ou Mini (config.forfaits[0], au mois, sans engagement, modifications incluses, une demande à la fois). L'abonnement est facultatif.
 // Trois extras seulement : la page de visibilité Google (payée une fois, par carte, depuis l'espace client), la traduction
-// anglaise et la fonctionnalité spécifique (sur devis). La petite bande (config.bande) compte cinq Minis Monstres.
+// anglaise et la fonctionnalité spécifique (sur devis). La petite bande (config.bande) compte six Minis Monstres.
 // Chaque mot technique est expliqué la première fois qu'il apparaît dans un guide.
 // Ton (tour global du 19 novembre 2026) : « nous / on », Alex nommé quand c'est utile (jamais « je »), vouvoiement, « site internet »,
 // « visibilité sur Google » plutôt que « référencement », « modification ». Ordre de l'offre : le site, puis Autonomie ou Mini, enfin les extras.

@@ -30,7 +30,7 @@ const prixPage = eur(pageGoogle.prix); // la page de visibilité Google, payée 
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
 const durees = lissage.durees.join(' ou ');
 
-// La petite bande : cinq Minis Monstres. Prénom et métier : « Cerise, la secrétaire ».
+// La petite bande : six Minis Monstres (Pépite, la spécialiste des extras, depuis le 19 novembre 2026). Prénom et métier : « Cerise, la secrétaire ».
 const B = (id) => bande.find((b) => b.id === id);
 const nomRole = (b) => `${b.nom}, ${minus(b.role)}`;
 // Ce que fait chaque petit monstre, écrit pour ces pages (différent des textes de config.bande), après « Prénom, rôle, ».
@@ -41,13 +41,15 @@ const DIT = {
   ecrivain: 'propose une première version de vos textes, qu’Alex reprend avec vous.',
   observateur: 'prépare les pages qui vous feront trouver sur Google, près de chez vous.',
   organisateur: 'classe vos pages et vos contenus, pour que vos visiteurs trouvent vite leur chemin.',
+  extras: 'vous présente les trois extras et prépare votre devis quand il en faut un.',
 };
 const APRES = {
   support: 'reçoit votre demande dans votre espace client, vous pose les questions utiles et s’assure qu’il ne manque rien avant de la transmettre.',
-  constructeur: 'réalise le changement demandé et vérifie que rien d’autre n’a bougé.',
+  constructeur: 'fait la modification demandée et vérifie que rien d’autre n’a bougé.',
   ecrivain: 'vous aide à tourner un nouveau texte quand les mots ne viennent pas.',
   observateur: 'prépare chaque page de visibilité Google que vous commandez en plus.',
   organisateur: 'place chaque nouveauté au bon endroit, et garde votre boutique en ordre si vous en avez une.',
+  extras: 'vous guide dans l’onglet Extras de votre espace client, et chiffre une traduction ou une fonctionnalité spécifique.',
 };
 
 const ville = site.address.city.replace(/'/g, '’');
@@ -294,7 +296,7 @@ Ce qui aide ensuite : garder vos informations à jour, ajouter de temps en temps
 
 Méfiez-vous des raccourcis : pages copiées, mots répétés à l’excès, liens achetés. Ils font souvent plus de mal que de bien.
 
-> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('observateur'))} de notre petite bande, prépare vos pages de visibilité Google. Chaque page de plus se commande depuis votre espace client, à ${prixPage} € la page, payée une fois. Tout est expliqué sur la page [visibilité sur Google](/referencement-seo/).`,
+> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('observateur'))} de notre petite bande, prépare vos pages de visibilité Google. Chaque page de plus se commande depuis votre espace client, à ${prixPage} € la page, payée une fois. Pour aller plus loin, voyez la page [visibilité sur Google](/referencement-seo/).`,
     faq: [
       { q: 'Combien de temps pour apparaître sur Google ?', a: 'Sur le nom de votre entreprise, c’est en général rapide. Sur des recherches où beaucoup d’entreprises sont présentes, comptez plutôt plusieurs mois.' },
       { q: 'Faut-il payer Google pour être bien placé ?', a: 'Non. Les résultats naturels ne s’achètent pas. Les annonces payantes existent, elles sont signalées comme sponsorisées, et elles disparaissent dès que vous arrêtez de payer.' },
@@ -312,15 +314,15 @@ Méfiez-vous des raccourcis : pages copiées, mots répétés à l’excès, lie
     icon: 'heart-handshake',
     color: 'pink',
     title: 'Pourquoi choisir les Minis Monstres : nos engagements | Les Minis Monstres',
-    description: 'Notre métier : rendre votre activité visible sur internet. Alex conçoit votre site, cinq Minis Monstres l’aident, les prix sont affichés et rien ne vous retient.',
+    description: 'Notre métier : rendre votre activité visible sur internet. Alex conçoit votre site, six Minis Monstres l’aident, les prix sont affichés et rien ne vous retient.',
     h1: 'Pourquoi choisir les Minis Monstres ?',
-    lead: 'Parce que notre métier tient en une phrase : rendre votre activité visible sur internet, simplement. Derrière ce site, il y a Alex, qui conçoit votre site et vous répond, et une petite bande de cinq monstres qui l’aide.',
+    lead: 'Parce que notre métier tient en une phrase : rendre votre activité visible sur internet, simplement. Derrière ce site, il y a Alex, qui conçoit votre site et vous répond, et une petite bande de six monstres qui l’aide.',
     resume: 'Une vraie personne, des engagements écrits.',
     points: [
       { icon: 'user', t: 'Une vraie personne', d: 'Alex lit vos messages et vous répond.' },
       { icon: 'tag', t: 'Un prix affiché', d: 'Le même pour tous, sans devis et sans surprise.' },
       { icon: 'lock', t: 'Rien ne vous retient', d: 'Aucun abonnement imposé, et l’adresse de votre site reste à votre nom.' },
-      { icon: 'workflow', t: 'Une petite bande', d: 'Cinq petits monstres se chargent du répétitif, et votre facture baisse d’autant.' },
+      { icon: 'workflow', t: 'Une petite bande', d: 'Six petits monstres se chargent du répétitif, et votre facture baisse d’autant.' },
     ],
     body: `## Notre métier : vous rendre visible
 
@@ -354,7 +356,7 @@ Vos questions avant la commande ne vous engagent à rien. Si notre offre ne corr
 
 ## La petite bande
 
-D’un site à l’autre, beaucoup de choses se ressemblent. Pour ce travail-là, Alex s’appuie sur cinq compagnons, dessinés en petits monstres. Ils travaillent vite et sans oubli, et c’est autant de temps que vous ne payez pas.
+D’un site à l’autre, beaucoup de choses se ressemblent. Pour ce travail-là, Alex s’appuie sur six compagnons, dessinés en petits monstres. Ils travaillent vite et sans oubli, et c’est autant de temps que vous ne payez pas.
 
 ${bande.map((b) => `- **${nomRole(b)}**, ${DIT[b.id] || `${minus(b.court)}`}`).join('\n')}
 
@@ -390,7 +392,7 @@ Et pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourq
     resume: 'Chaque mois, votre site entretenu et suivi.',
     points: [
       { icon: 'shield-check', t: 'Votre site entretenu', d: 'Hébergement, sauvegardes automatiques, sécurité et maintenance technique : tout est fait pour vous.' },
-      { icon: 'pencil', t: 'Des modifications incluses', d: `Vous demandez, ${B('support').nom} transmet, et c’est fait en 48 h au plus.` },
+      { icon: 'pencil', t: 'Des modifications incluses', d: `Vous demandez, ${B('support').nom} vous aide à préciser, ${B('constructeur').nom} fait la modification, en ${mini.delai.replace(/ heures?$/, ' h')} au plus.` },
       { icon: 'search-check', t: 'Trois extras, pas plus', d: 'Une page de visibilité Google, une traduction anglaise, une fonctionnalité spécifique : seulement si vous en avez besoin.' },
       { icon: 'handshake', t: 'Sans engagement', d: 'Vous arrêtez quand vous voulez et vous gardez votre adresse.' },
     ],
@@ -411,16 +413,16 @@ Votre site reste en ligne, protégé et à jour, donc visible, sans que vous aye
 - **La sécurité** : des protections tenues à jour.
 - **La maintenance technique** : des vérifications régulières, pour que tout reste en état de marche.
 - **Vos modifications**, incluses. Une modification peut prendre ${delaiModif}, une demande à la fois.
-- **Votre espace client**, où vous faites vos demandes et suivez vos visiteurs.
+- **Votre espace client**, où vous faites vos demandes et commandez vos extras.
 
 ## Demander une modification
 
 Un horaire qui change, une nouvelle photo, un texte à ajouter : tout part de votre espace client, une page privée que vous ouvrez aussi sur téléphone.
 
 1. **Vous faites votre demande** en quelques mots, avec une photo si besoin.
-2. **${B('support').nom} vous pose les bonnes questions**, puis vous résume la demande.
+2. **${B('support').nom} vous aide à la préciser**, puis vous la résume.
 3. **Vous confirmez**, et elle la transmet.
-4. **La modification est faite**, Alex la contrôle, puis vous êtes prévenu.
+4. **${B('constructeur').nom} fait la modification**, en ${mini.delai} au plus, et vous êtes prévenu.
 
 Tant que le travail n’a pas commencé, vous pouvez annuler votre demande. Seule une refonte complète, ou l’ajout d’une fonction nouvelle, passe par un devis.
 
@@ -438,7 +440,7 @@ Les extras sont détaillés sur la page [tarifs](/tarifs/#extras).
 
 ## La petite bande, après la mise en ligne
 
-Avec l’abonnement ${mini.name}, les cinq petits monstres continuent de travailler pour vous :
+Avec l’abonnement ${mini.name}, les six petits monstres continuent de travailler pour vous :
 
 ${bande.map((b) => `- **${nomRole(b)}**, ${APRES[b.id] || minus(b.court)}`).join('\n')}
 
@@ -448,7 +450,7 @@ Vous arrêtez quand vous voulez, et l’abonnement prend fin à la fin de la pé
 
 Votre nom de domaine reste à vous, et nous vous remettons l’export de votre site, pour le faire héberger où vous voulez. Vous ne perdez ni votre adresse, ni le travail déjà fait.
 
-Vous parlez de nous autour de vous ? Le [parrainage](/fidelite/) offre ${fidelite.parrainageMois} mois d’abonnement à vous comme à la personne parrainée.`,
+Vous revenez pour un deuxième site ? Il profite de ${fidelite.remiseSecondSite} % de remise sur sa création.`,
     faq: [
       { q: 'Puis-je avoir un site sans abonnement ?', a: `Oui, avec la formule ${AUTO}, à choisir en commandant. Vous recevez l’export de votre site et vous l’installez chez votre hébergeur. Tant que le site est hébergé chez nous, l’abonnement ${mini.name} est nécessaire.` },
       { q: 'Combien de modifications puis-je demander ?', a: `Autant qu’il vous en faut, une demande à la fois : elles sont incluses dans l’abonnement ${mini.name}.` },

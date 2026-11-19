@@ -7,7 +7,7 @@ Site des **Minis Monstres** (agence web d'Alex) : des sites internet à petit pr
 - **Trois extras** : 📈 page de visibilité Google, 15 € la page, payée une fois par carte depuis l'espace client ; 🌍 traduction anglaise, sur devis ; ⚙️ fonctionnalité spécifique, sur devis.
 - **Comparaison honnête** : `marche.fois` vaut « 2 à 4 » (site vitrine de cinq pages chez un indépendant, 1 500 à 3 000 €, face au Site Visibilité à 750 €).
 - **Il n'y a plus** d'option à la création, d'extra au mois ni de lot d'articles payant pour la boutique : le client gère son catalogue librement.
-- **La bande** (cinq monstres, `bande` dans `src/config.js`) : 🍒 Cerise, la secrétaire ; 🔧 Bricou, le constructeur ; ✍️ Plume, la rédactrice ; 👀 Mirette, la spécialiste visibilité ; 📦 Mochi, l'organisateur. Cerise suit le visiteur dans une bulle, en bas de chaque page.
+- **La bande** (six monstres, `bande` dans `src/config.js`) : 🍒 Cerise, la secrétaire ; 🔧 Bricou, le constructeur ; ✍️ Plume, la rédactrice ; 👀 Mirette, la spécialiste visibilité ; 📦 Mochi, l'organisateur ; Pépite, la spécialiste des extras. Cerise aide à préciser chaque demande, Bricou fait la modification, Alex conçoit et contrôle. Cerise suit le visiteur dans une bulle, en bas de chaque page.
 
 Site **statique**, rapide, sans base de données : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans `dist/`.
 
@@ -20,11 +20,11 @@ Site **statique**, rapide, sans base de données : un petit générateur Node.js
 | Accueil | `/` | Phrase principale, les trois sites, Autonomie ou Mini, espace client, visibilité Google |
 | Créer mon site | `/creer-mon-site/` | **Configurateur** : choix du site, Autonomie ou Mini, nom de domaine vérifié en direct, au mois ou à l'année, récapitulatif |
 | Tarifs | `/tarifs/` | Les trois sites (500, 750, 1 200 €), Autonomie ou Mini (10 € par mois), les trois extras, la comparaison avec le marché |
-| Nos outils | `/nos-outils/` | Demandes de modification gérées par moi ; outils gratuits (tableau de bord, QR code, lien d'avis, factures) |
-| Mon espace (démo) | `/mon-espace/` | Démo : demandes et suivi, tableau de bord, QR code, lien d'avis, forfait et factures |
-| SEO | `/referencement-seo/` | Ce que je fais, le SEO dans chaque forfait, ce que je ne promets pas |
+| Nos outils | `/nos-outils/` | Demandes de modification (Cerise précise, Bricou fait) ; outils gratuits (QR code, lien d'avis, factures) |
+| Mon espace (démo) | `/mon-espace/` | Démo de l'espace client : onglets Accueil, Demandes, Extras, Ma boutique, Mon compte |
+| Visibilité sur Google | `/referencement-seo/` | Ce que nous faisons pour rendre un site visible, la page de visibilité Google, ce que nous ne promettons pas |
 | Comparatif Shopify | `/comparatif-shopify/` | Shopify Basic ligne par ligne, et le coût sur un an |
-| Autres | | Fidélité, Ma méthode, Contact, page Ardennes, FAQ, pages légales, plan du site, merci, 404 |
+| Autres | | Fidélité (remise sur un deuxième site, plus de parrainage), Notre méthode, Contact, page Ardennes, FAQ, pages légales, plan du site, merci, 404 |
 
 Chaque rubrique a sa couleur pastel (menu, pastille en haut de page) pour qu'on sache toujours où l'on est.
 

@@ -18,8 +18,8 @@ Ce guide explique, en français simple, comment fonctionne le site www.les-minis
   - 🌍 **Traduction anglaise** : sur devis.
   - ⚙️ **Fonctionnalité spécifique** : sur devis.
   - Tous les anciens extras sont retirés de la vente (`retire: true`), y compris les extras au mois et les lots d'articles de la boutique.
-- **Code promo ou parrainage** : une seule case, au total et sur la page Commander. Un code promo donne une remise sur la création (jamais sur l'abonnement ni sur les extras). Vos codes se règlent dans ALED08 › Réglages › « Codes promo », un par ligne.
-- **Paiement de la création** : 25 % à la commande, le reste à la réception, en une fois ou en 6 ou 12 fois sans frais (engagement le temps du paiement), avec Mini comme en Autonomie. Parrainage : 1 mois offert pour vous deux. Deuxième site : 10 % de remise.
+- **Code promo** : une seule case, au total et sur la page Commander. Un code promo donne une remise sur la création (jamais sur l'abonnement ni sur les extras). Vos codes se règlent dans ALED08 › Réglages › « Codes promo », un par ligne.
+- **Paiement de la création** : 25 % à la commande, le reste à la réception, en une fois ou en 6 ou 12 fois sans frais (engagement le temps du paiement), avec Mini comme en Autonomie. Deuxième site : 10 % de remise. Le parrainage est retiré du site (19 novembre 2026).
 - **Comparaison honnête** (`marche` dans `src/config.js`) : un site vitrine de cinq pages (`marche.pagesCompare`) chez un indépendant coûte 1 500 à 3 000 €, notre Site Visibilité 750 €, soit « 2 à 4 » fois moins (`marche.fois`). Ne jamais annoncer plus.
 - **Les anciens clients** gardent l'abonnement, les options et les extras qu'ils ont déjà, aux mêmes conditions, tant qu'ils ne les retirent pas (CGV, article 7). Rien n'est changé dans Stripe tout seul.
 
@@ -66,7 +66,7 @@ Les boutons sont dans la colonne de droite. Chaque clic est noté dans le journa
 | Marquer payée (hors Stripe) | Le client a payé par virement, espèces, ou par un lien envoyé à la main | Statut « Payée », e-mail au client |
 | Domaine réservé | Vous avez commandé le nom de domaine chez o2switch | Le rappel quotidien s'arrête |
 | Création en cours | Vous commencez le site | Le client voit « Création » dans sa frise |
-| Site en ligne | Le site est en ligne | E-mail au client, avec le solde à payer s'il y en a un ; le parrain reçoit son mois offert |
+| Site en ligne | Le site est en ligne | E-mail au client, avec le solde à payer s'il y en a un |
 | Solde payé (hors Stripe) | Le solde a été réglé autrement | Le solde est noté payé |
 | Copier un lien de paiement du solde | Stripe activé, solde dû | Un lien de paiement valable 24 heures, à envoyer au client |
 | Renvoyer l'e-mail d'accès à l'espace | Le client ne retrouve pas l'e-mail | Nouveau lien pour choisir le mot de passe (le mot de passe actuel n'est pas changé) |
@@ -193,7 +193,7 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 
 ## 9. Les demandes de modification
 
-Offre du 19 novembre 2026 : les modifications sont incluses dans l'abonnement Mini, demandées depuis l'espace client, une demande à la fois, 48 h au plus. Le déroulé ci-dessous décrit l'extension telle qu'elle fonctionne : Cerise prépare la demande, puis elle arrive dans la liste « À faire ».
+Offre du 19 novembre 2026 : les modifications sont incluses dans l'abonnement Mini, demandées depuis l'espace client, une demande à la fois, 48 h au plus. Sur le site public, la phrase est toujours la même : le client écrit sa demande, Cerise l'aide à la préciser, Bricou fait la modification ; Alex conçoit et contrôle. Le déroulé ci-dessous décrit l'extension telle qu'elle fonctionne : Cerise prépare la demande, puis elle arrive dans la liste « À faire ».
 
 1. Le client écrit sa demande dans l'onglet « Demandes » (avec des photos s'il veut). La jauge apparaît : Demande reçue, Précisée avec Cerise, Chez Alex, Faite.
 2. Cerise relit la demande (elle peut lire le site relié, sans rien modifier). Si c'est flou, elle pose une question (deux au plus), le client répond depuis la jauge.
@@ -205,7 +205,9 @@ Offre du 19 novembre 2026 : les modifications sont incluses dans l'abonnement Mi
 8. Pages de visibilité Google : le client commande une page (15 €, payée par carte), Mirette en prépare le sujet (titre, recherche visée, plan), puis la page est écrite et intégrée au site. Il n'y a plus de page automatique chaque mois ou chaque semaine.
 9. La recherche de prospects a été retirée du tableau de gestion.
 
-## 10. Le parrainage
+## 10. Le parrainage (retiré du site public)
+
+Le parrainage n'est plus proposé depuis le 19 novembre 2026 : le site, les FAQ et les CGV n'en parlent plus, et la case de la commande s'appelle « Code promo ». Les points ci-dessous décrivent le mécanisme qui existait dans l'extension, à garder seulement comme mémoire tant qu'il n'en est pas retiré.
 
 - Chaque client a un code (par exemple `LILA-7K2`) et un lien `https://www.les-minis-monstres.fr/creer-mon-site/?parrain=LILA-7K2`, onglet Parrainage, avec un bouton WhatsApp.
 - Le code suit le visiteur jusqu'à la commande (champ « Code de parrainage » de `/commander/`, prérempli). Vous le voyez dans l'e-mail de commande et dans la fiche.
@@ -286,7 +288,7 @@ Faites cette liste une fois, en vrai, avec un téléphone et un ordinateur.
 - [ ] Le prélèvement SEPA, si activé : la commande reste « prélèvement en cours » puis passe à « Payée » quelques jours plus tard.
 - [ ] ALED08 › Tableau de bord : la tâche quotidienne est planifiée (date affichée). Si elle ne tourne pas (sites peu visités), ajoutez une tâche cron chez o2switch qui appelle `https://www.les-minis-monstres.fr/wp-cron.php?doing_wp_cron` une fois par jour.
 - [ ] Une demande de modification depuis l'espace de test, avec une photo : e-mail reçu, statut « Faite » envoie l'e-mail au client.
-- [ ] Le lien de parrainage préremplit le code sur `/commander/`.
+- [ ] La case « Code promo » de `/commander/` accepte un code valide et refuse les autres (plus de parrainage).
 - [ ] `/comparatif-shopify/` redirige vers `/comparatif/` (301). Les anciennes adresses de l'électricien redirigent vers l'accueil.
 - [ ] Les pages `/commander/`, `/commande-confirmee/` et `/mon-espace/` ne sont pas dans le plan du site et portent `noindex`.
 - [ ] Supprimez la commande de test (Commandes › Corbeille) et le compte de test, ou gardez-les si vous voulez des exemples.
@@ -294,13 +296,14 @@ Faites cette liste une fois, en vrai, avec un téléphone et un ordinateur.
 
 ## La petite bande (19 novembre 2026)
 
-Le site public parle des Minis Monstres, jamais de la technique qui les fait tourner. La bande compte cinq monstres (`bande` dans `src/config.js`, dessins dans `src/lib/bestiaire.js`), chacun avec un prénom et un rôle :
+Le site public parle des Minis Monstres, jamais de la technique qui les fait tourner. La bande compte six monstres (`bande` dans `src/config.js`, dessins dans `src/lib/bestiaire.js`), chacun avec un prénom et un rôle :
 
 - 🍒 **Cerise**, la secrétaire : répond aux questions et prend les demandes (bulle d'aide et espace client).
 - 🔧 **Bricou**, le constructeur : construit le site et fait les modifications.
 - ✍️ **Plume**, la rédactrice : prépare et soigne les textes.
-- 👀 **Mirette**, la spécialiste visibilité : pages de visibilité Google et référencement local.
+- 👀 **Mirette**, la spécialiste visibilité : pages de visibilité Google et visibilité près de chez le client.
 - 📦 **Mochi**, l'organisateur : pages, produits et commandes bien rangés.
+- **Pépite**, la spécialiste des extras : présente les extras et prépare les devis.
 
 Les autres monstres n'existent plus sur le site public. Il n'y a plus de compteur de points dans l'offre.
 

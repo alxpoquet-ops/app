@@ -300,7 +300,7 @@ function infoBtn(id, nom, texte) {
 const BOUTIQUE = types.find((t) => t.id === 'boutique') || {};
 // Le petit monstre qui s'occupe de chaque option
 const MONSTRE_OPTION = { packseo: 'gelee', boutique: 'mochi' };
-// La petite bande, en cartes : métier, missions et personnalité. complet : avec les missions (pages Équipe et Accueil).
+// La petite bande (six monstres), en cartes : métier, missions et personnalité. complet : avec les missions (pages Équipe et Accueil).
 function bandeGrid({ complet = false, prix = true } = {}) {
   const prixDe = () => '';
   const art = (b) => (b.monstre === 'lia' ? monster('coucou') : petit(b.monstre));
@@ -351,19 +351,22 @@ function offreEvenement() { return ''; } // l'offre événement est retirée (17
 // ---------------------------------------------------------------- comment se passe une modification
 // 17 novembre 2026 : Cerise aide à formuler la demande, le client confirme, Alex fait la modification à la main.
 const CERISE = (bande.find((b) => b.id === 'support') || { nom: 'Cerise' }).nom;
+const BRICOU = (bande.find((b) => b.id === 'constructeur') || { nom: 'Bricou' }).nom;
+const PEPITE = (bande.find((b) => b.id === 'extras') || { nom: 'Pépite' }).nom;
 const ETAPES_MODIF = [
-  ['message-circle', 'Vous faites votre demande', 'Dans votre espace client, avec vos mots, et une photo si besoin.'],
-  ['list-checks', `${CERISE} vous pose les bonnes questions`, 'Pour que la demande soit claire et complète.'],
-  ['clipboard-check', 'Vous confirmez la demande', `${CERISE} vous la résume, vous dites oui.`],
-  ['send', 'Elle est transmise', '« Merci pour vos précisions, je transmets ! »'],
-  ['user-check', 'La modification est faite', 'À la main, avec soin.'],
-  ['circle-check', 'La modification est en ligne', 'Vos visiteurs voient la nouvelle version.'],
+  ['message-circle', 'Vous écrivez votre demande', 'Dans votre espace client, avec vos mots, et une photo si besoin.'],
+  ['list-checks', `${CERISE} vous aide à la préciser`, 'Elle pose les bonnes questions, vous la résume, et vous dites oui.'],
+  ['wrench', `${BRICOU} fait la modification`, `En ${ABO.delai.replace(/ heures?$/, ' h')} au plus. Vos visiteurs voient la nouvelle version.`],
 ];
+// Un petit monstre qui présente un bloc (Pépite et les extras, Bricou et les modifications)
+function presente(monstre, html, { humeur } = {}) {
+  return `<div class="presente reveal"><span class="presente-art" aria-hidden="true">${petit(monstre, { humeur })}</span><p>${html}</p></div>`;
+}
 function processusModif({ titre = true } = {}) {
   return `<!--commun--><div class="modif-etapes reveal">
   ${titre ? `<h3>${icon('repeat')}Comment se passe une modification</h3>` : ''}
   <ol>${ETAPES_MODIF.map(([ic, t, d], i) => `<li><span class="modif-n">${i + 1}</span><span class="modif-ico">${icon(ic)}</span><span><strong>${esc(t)}</strong><small>${esc(d)}</small></span></li>`).join('')}</ol>
-  <p class="modif-delai">${icon('timer')}<span>Une modification peut prendre ${DELAI_MODIF}, une demande à la fois. Vous pouvez annuler une demande tant qu’elle n’est pas commencée.</span></p>
+  <p class="modif-delai">${icon('timer')}<span>Une demande à la fois. Vous pouvez annuler une demande tant qu’elle n’est pas commencée.</span></p>
 </div><!--/commun-->`;
 }
 
@@ -486,7 +489,7 @@ function optionChoices() { return ''; }
 // Le code événement (foire, marché, salon) : -20 % sur la création. Vérifié par le serveur à la commande.
 function codeEvenementBox({ name = '' } = {}) {
   return `<div class="b-code" data-code-box>
-  <label for="${name || 'b-code'}"><strong>${icon('ticket')}Code promo ou parrainage</strong><small>Vous avez un code promo, ou le code d’un client qui vous a recommandé ? Entrez-le ici.</small></label>
+  <label for="${name || 'b-code'}"><strong>${icon('ticket')}Code promo</strong><small>Vous avez un code promo ? Entrez-le ici.</small></label>
   <input id="${name || 'b-code'}" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" placeholder="Votre code (facultatif)"${name ? ` name="${name}"` : ''} data-code-evenement>
   <p class="b-code-etat" data-code-etat aria-live="polite"></p>
 </div>`;
@@ -544,7 +547,6 @@ function configurator() {
         <p class="cf-auj"><span data-sum="today-label">Aujourd’hui, l’acompte de ${paiement.acompte} %</span><b data-sum="today">${euro(acompte0)}</b></p>
         <p><span data-sum="reste-label">À la réception du site, le reste</span><b data-sum="reste">${euro(P0 - acompte0)}</b></p>
         <p><span data-sum="recur-label">Puis votre abonnement, chaque mois</span><b data-sum="recur">${euro(ABO.month)}/mois</b></p>
-        <p data-sum-parrain hidden><span>Parrainage</span><b>${fidelite.parrainageMois} mois offert</b></p>
       </div>
       <p class="cf-detail" data-sum="detail">Prix total du site : ${euro(P0)}.</p>
       <div class="cf-actions">
@@ -610,7 +612,7 @@ function comparatifTable() {
   const prixCreation = `${types.map((t) => `${t.name} ${euro(t.price)}`).join(', ')}. Les prix sont affichés, les mêmes pour tous`;
   const prixMois = `${creationSeule.name} : ${euro(0)}. Ou ${ABO.name} : ${euro(ABO.month)} par mois, nom de domaine, hébergement et modifications compris`;
   const rows = [
-    ['Qui fait le travail', 'Alex et les Minis Monstres, du premier appel à la mise en ligne.', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
+    ['Qui fait le travail', 'Alex et les Minis Monstres, du premier appel à la mise en ligne', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
     ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
     ['Prix chaque mois', prixMois, 'Contrat de maintenance, sur devis', 'Selon le prestataire, souvent en option', 'Abonnement mensuel, plus les applications en option'],
     ['Délai', `${types[0].delai} pour un ${types[0].name}, ${types[1].delai} pour un ${types[1].name}, ${types[2].delai} pour un ${types[2].name}`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
@@ -620,7 +622,9 @@ function comparatifTable() {
     ['Engagement', `Aucun, et aucune obligation d’abonnement. Seulement le temps du paiement si le reste est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
-  return `<div class="cmp cmp-4 reveal" role="table" aria-label="Les Minis Monstres comparé à une agence web, un freelance et une plateforme à faire soi-même">
+  // Sur téléphone : une carte par ligne, notre réponse visible, les trois autres dans un petit déroulant
+  const mobile = `<div class="cmp-mobile">${rows.map(([l, nous, ...autres]) => `<div class="cmp-m reveal"><p class="cmp-m-l">${esc(l)}</p><p class="cmp-m-nous"><small>${esc(cols[0])}</small>${esc(nous)}</p><details class="liste-plus"><summary><span>Et ailleurs ?</span>${icon('chevron-down')}</summary><ul class="cmp-m-autres">${autres.map((a, i) => `<li><small>${esc(cols[i + 1])}</small>${esc(a)}</li>`).join('')}</ul></details></div>`).join('')}</div>`;
+  return `${mobile}<div class="cmp cmp-4 reveal" role="table" aria-label="Les Minis Monstres comparés à une agence, un indépendant et une plateforme à faire soi-même">
   <div class="cmp-head" role="row"><span role="columnheader"></span>${cols.map((c, i) => `<span role="columnheader" class="cmp-cell${i === 0 ? ' cmp-me' : ''}">${i === 0 ? petit('mochi') : ''}${esc(c)}</span>`).join('')}</div>
   ${rows.map(([l, ...cells]) => `<div class="cmp-row" role="row"><span class="cmp-label" role="rowheader">${esc(l)}</span>${cells.map(cell).join('')}</div>`).join('')}
 </div>`;
@@ -636,5 +640,5 @@ module.exports = {
   offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, BOUTIQUE_ARTICLES, BOUTIQUE_PAIEMENT, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
   siteOffreCarte, positionnement, ESSENTIEL, VISIBILITE, BOUTIQUE_T, revisionsNote, phrase,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
-  CERISE, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
+  CERISE, BRICOU, PEPITE, presente, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };

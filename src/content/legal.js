@@ -11,7 +11,7 @@ const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.add
 const UPDATED = '2026-11-15'; // mentions légales
 const UPDATED_CONF = '2026-11-19'; // politique de confidentialité : offre du 19 novembre 2026 (trois sites, abonnement facultatif, paiement des extras par carte)
 const UPDATED_CGV = '2026-11-19'; // conditions générales : offre du 19 novembre 2026
-// La petite bande (config.bande) : cinq Minis Monstres, présentés par leur prénom et leur rôle.
+// La petite bande (config.bande) : six Minis Monstres, présentés par leur prénom et leur rôle. Le parrainage est retiré (19 novembre 2026).
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
 // (règlement européen sur ces systèmes, obligation de transparence). La politique de confidentialité nomme le fournisseur.
 
@@ -35,7 +35,6 @@ const AUTO = creationSeule.name; // sans abonnement : Autonomie
 const parAn = (f) => f.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const DATE_OFFRE = '19 novembre 2026'; // nouvelle offre : clause de transition (article 7)
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
-const moisOffert = fidelite.parrainageMois === 1 ? 'un mois offert' : `${fidelite.parrainageMois} mois offerts`;
 const listeDelais = types.map((t) => `${t.name} : ${t.delai}`).join(', ');
 const tvaMention = L.tva || 'non applicable, art. 293 B du CGI';
 // Ce que comprend chaque site : la liste vient de config.types (inclus), l'astérisque des révisions est expliqué à l'article 11.
@@ -55,6 +54,7 @@ const ROLE_CGV = {
   ecrivain: 'prépare les contenus, aide à rédiger les textes et améliore leur lisibilité',
   observateur: 'prépare les pages de visibilité Google et soigne le référencement local',
   organisateur: 'classe les contenus, organise les pages et range la boutique et ses commandes',
+  extras: 'présente les extras et prépare les devis',
 };
 const presente = (b) => `- **${b.nom}, ${minus(b.role)}** : ${ROLE_CGV[b.id] || minus(b.court.replace(/\.$/, ''))}.`;
 const laBande = bande.map(presente).join('\n');
@@ -118,7 +118,7 @@ ${site.owner}, Les Minis Monstres, ${addr}. Contact : ${contact}.
 ## 2. Les données que je collecte
 
 - **Demande de contact ou de devis** : votre nom, votre e-mail, votre téléphone si vous le donnez, vos choix (site, abonnement, nom de domaine) et votre message.
-- **Commande en ligne** : prénom, nom, e-mail, téléphone, adresse postale, nom de votre activité, vos choix, le nom de domaine souhaité, votre message et un éventuel code promo ou de parrainage. L’adresse postale sert à la facture et à la réservation du nom de domaine.
+- **Commande en ligne** : prénom, nom, e-mail, téléphone, adresse postale, nom de votre activité, vos choix, le nom de domaine souhaité, votre message et un éventuel code promo. L’adresse postale sert à la facture et à la réservation du nom de domaine.
 - **Espace client** : vos identifiants, vos demandes de modification (texte et photos), vos messages dans la bulle d’aide et la date de votre dernière connexion.
 - **Paiement** : je ne reçois jamais votre numéro de carte ni votre IBAN (voir le point 4).
 
@@ -158,7 +158,6 @@ Vos données sont destinées aux Minis Monstres uniquement. Elles transitent par
 
 Ce site n’utilise aucun traceur publicitaire ni outil de mesure d’audience. Il ne pose aucun cookie, ce petit fichier qu’un site range dans votre navigateur, tant que vous n’êtes pas connecté à votre espace client.
 
-- Si vous arrivez par un lien de parrainage, le code du parrain est gardé 60 jours dans le stockage local de votre navigateur, une petite mémoire propre à chaque site, pour le préremplir dans le formulaire de commande. Il n’est envoyé qu’avec votre commande.
 - Quand vous vous connectez à l’espace client, un cookie de connexion est posé. Il est nécessaire au service et sert uniquement à vous garder connecté.
 
 ## 10. Vos droits
@@ -178,7 +177,7 @@ Ces conditions s’appliquent à toute commande passée auprès des Minis Monstr
 
 ## 2. Commande en ligne
 
-La commande se passe sur le site, en trois étapes : le choix du site, les coordonnées, puis le paiement sécurisé. Le client choisit d’abord son site parmi les trois proposés (article 3). Il choisit ensuite la façon de le faire vivre : la formule ${AUTO}, sans abonnement, ou l’abonnement ${mini.name}, au mois. Avec ${mini.name}, il choisit aussi son nom de domaine. Le total s’affiche en dernier, avec le choix de payer le reste en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants. S’il a un code promo (article 4) ou un code de parrainage (article 17), il le saisit dans la case « Code promo ou parrainage » avant de commander.
+La commande se passe sur le site, en trois étapes : le choix du site, les coordonnées, puis le paiement sécurisé. Le client choisit d’abord son site parmi les trois proposés (article 3). Il choisit ensuite la façon de le faire vivre : la formule ${AUTO}, sans abonnement, ou l’abonnement ${mini.name}, au mois. Avec ${mini.name}, il choisit aussi son nom de domaine. Le total s’affiche en dernier, avec le choix de payer le reste en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants. S’il a un code promo (article 4), il le saisit dans la case « Code promo » avant de commander.
 
 En cliquant sur « Commander et payer », le client accepte ces conditions et passe une commande ferme. Il reçoit aussitôt un e-mail de confirmation avec une référence de commande, à rappeler dans les échanges.
 
@@ -255,7 +254,7 @@ L’abonnement ${mini.name} est facultatif. Le client peut le prendre au moment 
 - **Les sauvegardes automatiques** : des copies de sécurité du site, faites régulièrement.
 - **La sécurité** : le site est protégé contre les attaques.
 - **La maintenance technique** : des contrôles et des mises à jour faits régulièrement, pour que le site reste en état de marche.
-- **L’espace client**, avec la bulle d’aide (article 13) et le tableau de bord, qui montre les visites du site et ses pages les plus vues.
+- **L’espace client**, avec la bulle d’aide (article 13).
 - **Les Minis Monstres au service du client** : une question posée reçoit une réponse.
 - **Les modifications**, incluses et demandées directement depuis l’espace client. Le client a une demande en cours à la fois. Une modification peut prendre ${delaiModif} (article 12).
 
@@ -309,7 +308,7 @@ Le client voit son site avant la mise en ligne. Il peut demander des révisions 
 2. ${cerise}, la secrétaire de la petite bande (article 15), l’aide à la formuler clairement et lui pose les questions utiles.
 3. Le client confirme la demande résumée par ${cerise}.
 4. La demande est transmise.
-5. La modification est réalisée, contrôlée par Alex, puis mise en ligne.
+5. ${monstre('constructeur').nom}, le constructeur de la petite bande, réalise la modification, puis elle est mise en ligne.
 
 Le client peut annuler une demande tant qu’elle n’est pas commencée.
 
@@ -321,7 +320,7 @@ Une demande sur devis suit le délai indiqué dans le devis.
 
 ## 13. Espace client et compte
 
-Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. C’est sa page personnelle, protégée par un mot de passe. Il y suit sa commande et ses factures, et il y trouve son lien de parrainage. Avec l’abonnement ${mini.name}, il y fait ses demandes de modification et y gère son abonnement. C’est aussi là qu’il commande une ${minus(pageGoogle.name)} (article 3), et, avec le ${BOU.name}, qu’il gère son catalogue dans l’onglet « Ma boutique ». La bulle d’aide de ${cerise} y répond à ses questions, dans la limite de ${limites.bulleJour} messages par jour. Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
+Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. C’est sa page personnelle, protégée par un mot de passe. Il y suit sa commande et ses factures. Avec l’abonnement ${mini.name}, il y fait ses demandes de modification et y gère son abonnement. C’est aussi là qu’il commande une ${minus(pageGoogle.name)} (article 3), et, avec le ${BOU.name}, qu’il gère son catalogue dans l’onglet « Ma boutique ». La bulle d’aide de ${cerise} y répond à ses questions, dans la limite de ${limites.bulleJour} messages par jour. Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
 
 Un compte sans connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec ses demandes et ses photos. Le client est prévenu par e-mail 30 jours avant. Une connexion suffit pour annuler la suppression. Les factures sont conservées en dehors du compte, le temps prévu par la loi.
 
@@ -333,7 +332,7 @@ Le client garantit qu’il a le droit d’utiliser les textes, images, logos et 
 
 Avec l’abonnement ${mini.name}, chaque version du site est conservée et peut être restaurée sur demande.
 
-Alex conçoit chaque site et en contrôle la réalisation. Il s’appuie sur des outils qu’il a mis au point, présentés sur le site comme une petite bande de cinq Minis Monstres :
+Alex conçoit chaque site et en contrôle la réalisation. Il s’appuie sur des outils qu’il a mis au point, présentés sur le site comme une petite bande de six Minis Monstres :
 
 ${laBande}
 
@@ -347,9 +346,9 @@ La visibilité Google, ou référencement, c’est le travail qui aide un site �
 
 Dans tous les cas, la visibilité Google est une obligation de moyens : les Minis Monstres font de leur mieux et appliquent les bonnes pratiques, sans garantir une position donnée sur Google.
 
-## 17. Parrainage et fidélité
+## 17. Fidélité
 
-Chaque client dispose d’un lien et d’un code de parrainage dans son espace client. Quand le site d’un filleul est en ligne, le parrain et le filleul reçoivent chacun ${moisOffert} sur leur abonnement, crédité sur la facture suivante. Un deuxième site commandé par le même client bénéficie de ${fidelite.remiseSecondSite} % de remise sur la création. Ces avantages ne sont pas convertibles en argent.
+Un deuxième site commandé par le même client bénéficie de ${fidelite.remiseSecondSite} % de remise sur la création. Cet avantage n’est pas convertible en argent.
 
 ## 18. Responsabilité
 
