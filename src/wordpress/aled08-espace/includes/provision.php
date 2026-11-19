@@ -263,6 +263,8 @@ function aled08e_prov_etape_dns_email($c) {
 function aled08e_prov_etape_ssl($c) {
     $cid = $c['id'];
     if (aled08e_prov_https_ok($c['domaine'])) {
+        // o2switch : WordPress et l'extension du type commandé se posent tout seuls, en plusieurs passages
+        if (function_exists('aled08e_pose_avancer') && aled08e_pose_avancer($c) === 'attente') return 'attente';
         aled08e_prov_mail_client_pret($c);
         aled08e_prov_mail_owner($c, 'Tout est prêt : ' . $c['domaine'], 'Le domaine ' . $c['domaine'] . ' de la commande ' . $c['ref'] . " répond en HTTPS. L’hébergement est prêt : à vous de créer le site, puis cliquez « Site en ligne » dans la fiche :\n" . aled08e_cmd_admin_url($cid) . (get_post_meta($cid, '_aled08_wp_admin', true) ? "\n\nWordPress a été installé automatiquement : identifiants dans la fiche (note interne)." : ''));
         return aled08e_prov_set($cid, 'pret', 'HTTPS actif') ? 'ok' : 'erreur';

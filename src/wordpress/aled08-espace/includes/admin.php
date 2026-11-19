@@ -542,7 +542,8 @@ function aled08e_admin_reglages() {
     if (aled08e_cpanel_ok()) echo '<button type="submit" name="tester_cpanel" value="1" class="button">Tester cPanel</button>';
     echo '<p class="description">Enregistrez d’abord les clés, puis testez.</p></td></tr>';
     echo '</table>';
-    echo '<h3>cPanel o2switch (secours)</h3>';
+    echo '<h3>cPanel o2switch</h3>';
+    echo '<p><label><input type="checkbox" name="pose_auto" value="1"' . checked(function_exists('aled08e_pose_auto') && aled08e_pose_auto(), true, false) . '> Poser le site tout seul sur o2switch : WordPress, l’extension du type commandé, le lien avec l’espace client</label></p>';
     if (aled08e_cpanel_ok()) echo '<p>Configuré dans wp-config.php : hôte <code>' . esc_html(ALED08_CPANEL_HOST) . '</code>, utilisateur <code>' . esc_html(ALED08_CPANEL_USER) . '</code>, domaine principal <code>' . esc_html(ALED08_CPANEL_MAIN_DOMAIN) . '</code>. Le jeton n’est jamais enregistré en base de données.</p>';
     else echo '<p>Non configuré. Pour l’utiliser, ajoutez dans wp-config.php les constantes <code>ALED08_CPANEL_HOST</code>, <code>ALED08_CPANEL_USER</code>, <code>ALED08_CPANEL_TOKEN</code> et <code>ALED08_CPANEL_MAIN_DOMAIN</code> (voir le guide). Note : o2switch a désactivé temporairement la création de jetons (novembre 2026).</p>';
 
@@ -583,6 +584,7 @@ add_action('admin_post_aled08e_reglages', function () {
     update_option('aled08_hebergeur', in_array($heb, ['auto', 'ovh', 'cpanel', 'manuel'], true) ? $heb : 'auto', false);
     update_option('aled08_ovh_essai', !empty($P['ovh_essai']) ? '1' : '0', false);
     update_option('aled08_ovh_wp', !empty($P['ovh_wp']) ? '1' : '0', false);
+    update_option('aled08_pose_auto', !empty($P['pose_auto']) ? '1' : '0', false);
     aled08e_rs_reglages_save($P);
     $msg = aled08e_lia_reglages_save($P) ?: 'reglages';
     if (!empty($P['tester_ovh'])) {

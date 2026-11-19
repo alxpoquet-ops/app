@@ -37,3 +37,16 @@ Relancer l'installation ne casse rien : ce qui existe déjà est gardé.
 ## D'où elles viennent
 
 Le code est dans `src/wordpress/minis-site/`. Les trois archives sont refabriquées par `python3 scripts/wp-export.py --sans-sdk`, qui les recopie ici avec la dernière version du connecteur.
+
+## La pose toute seule sur o2switch
+
+Quand le jeton cPanel d'o2switch est réglé sur les-minis-monstres.fr, plus besoin de mettre l'extension à la main : après une commande, le nom de domaine est acheté chez OVH et pointé vers o2switch, puis le site se pose tout seul.
+
+1. Le domaine est ajouté sur l'hébergement o2switch, avec le https.
+2. Une base de données est créée, WordPress est installé en français.
+3. L'extension du type commandé se pose et déroule son installation.
+4. Le site se relie à l'espace client, et le fichier de pose s'efface.
+
+Les identifiants du WordPress sont rangés dans la note interne de la commande. Si une étape échoue quatre fois, la pose s'arrête, Alex reçoit un e-mail, et il reste la méthode à la main ci-dessus.
+
+Le code : `src/wordpress/aled08-espace/includes/pose.php` et `src/wordpress/aled08-espace/pose/minis-pose.php`. Réglage : Les Minis Monstres › Réglages, case « Poser le site tout seul sur o2switch ».
