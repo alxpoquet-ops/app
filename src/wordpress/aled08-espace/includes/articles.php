@@ -218,7 +218,6 @@ function aled08e_articles_html($uid) {
         $h .= '<p class="esp-empty">Pas encore d’article. Ajoutez le premier : il sera en ligne dans votre boutique tout de suite.</p>';
     }
 
-    $h .= '<p class="art-astuce">' . aled08e_icon('camera') . '<span><strong>L’astuce de Mochi :</strong> prenez de belles photos de vos articles, à la lumière du jour, et parlez-en sur votre Instagram avec le lien de votre boutique. C’est la meilleure publicité.</span></p>';
     // débloquer des emplacements (anciennes offres seulement)
     if ($libre) return $h . '</section>';
     $h .= '<div class="art-debloque"><div class="art-debloque-txt"><strong>' . aled08e_icon('sparkles') . 'Besoin de plus de place ?</strong><p>Chaque emplacement en plus coûte <b>' . esc_html(aled08e_euro_txt($prix)) . '</b>, payé une seule fois. Il est à vous pour toujours : si vous retirez un article, la place reste libre.</p></div>'
