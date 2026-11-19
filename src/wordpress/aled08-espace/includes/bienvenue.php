@@ -84,9 +84,10 @@ function aled08e_bienvenue_texte($u, $mdp) {
         . "\n\nVotre offre : " . (aled08e_est_boutique($uid) ? 'Site Boutique' : 'votre site') . ', avec le forfait ' . ($f['name'] ?? 'Mini') . ', nom de domaine compris (' . aled08e_euro_txt((float) ($f['month'] ?? 10) + $dom) . " par mois, sans engagement).\n\nUne question ? Répondez à cet e-mail.\n\nÀ très vite,\nAlex et les Minis Monstres\n";
 }
 
-function aled08e_bienvenue_envoyer($uid, $mdp) {
+function aled08e_bienvenue_envoyer($uid, $mdp, $vers = '') {
     $u = get_userdata((int) $uid);
     if (!$u || !is_email($u->user_email)) return false;
+    $vers = is_email($vers) ? $vers : $u->user_email; // une copie pour Alex : même e-mail, autre destinataire
     $from = aled08e_bienvenue_expediteur();
     $texte = aled08e_bienvenue_texte($u, $mdp);
     $alt = function ($phpmailer) use ($texte) { $phpmailer->AltBody = $texte; };
@@ -95,7 +96,7 @@ function aled08e_bienvenue_envoyer($uid, $mdp) {
     add_action('phpmailer_init', $alt);
     add_filter('wp_mail_from', $adr, 99);
     add_filter('wp_mail_from_name', $nom, 99);
-    $ok = wp_mail($u->user_email, 'Bienvenue chez les Minis Monstres, ' . aled08e_prenom($u) . ' !', aled08e_bienvenue_html($u, $mdp), ['Content-Type: text/html; charset=UTF-8', 'Reply-To: "Les Minis Monstres" <' . $from . '>']);
+    $ok = wp_mail($vers, 'Bienvenue chez les Minis Monstres, ' . aled08e_prenom($u) . ' !', aled08e_bienvenue_html($u, $mdp), ['Content-Type: text/html; charset=UTF-8', 'Reply-To: "Les Minis Monstres" <' . $from . '>']);
     remove_action('phpmailer_init', $alt);
     remove_filter('wp_mail_from', $adr, 99);
     remove_filter('wp_mail_from_name', $nom, 99);
@@ -119,6 +120,6 @@ add_action('init', function () {
     $uid = (int) $n['uid'];
     $res = ['uid' => $uid, 'le' => wp_date('Y-m-d H:i:s')];
     if (!empty($n['vider'])) $res['demandes_retirees'] = aled08e_demandes_vider($uid);
-    $res['mail'] = !empty($n['mdp']) ? aled08e_bienvenue_envoyer($uid, (string) $n['mdp']) : null;
+    $res['mail'] = !empty($n['mdp']) ? aled08e_bienvenue_envoyer($uid, (string) $n['mdp'], (string) ($n['vers'] ?? '')) : null;
     update_option('aled08e_bienvenue_resultat', $res, false);
 }, 40);
