@@ -2373,3 +2373,83 @@ a.client-url { text-decoration: none; }
 .sources-titre { margin: 0 0 6px; }
 .sources ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
 .sources a { text-decoration: underline; overflow-wrap: anywhere; }
+
+/* ============================================================
+   OFFRE FINALE : trois sites (Essentiel, Visibilité, Boutique), puis Autonomie ou Mini.
+   Pensé d'abord pour le téléphone : une colonne, gros prix, gros boutons. Trois colonnes sur ordinateur.
+   ============================================================ */
+.offre.offre-finale { max-width: 1120px; padding: 22px 14px 18px; }
+.offre-finale > .offre-k { margin: 6px 0 18px; font-size: 1.12rem; color: var(--ink); }
+.offre-finale > .offre-k span { background: var(--lilac); color: var(--lilac-dd); flex: none; }
+.offre-finale > .offre-k ~ .offre-k { margin-top: 30px; }
+.offre-finale > .offre-sous { display: flex; gap: 8px; align-items: flex-start; margin: 14px 0 0; color: var(--text); font-weight: 600; font-size: .95rem; }
+.offre-finale > .offre-sous .ico { flex: none; margin-top: 3px; color: var(--lilac-dd); }
+.offre-note { margin: 10px 0 0; font-size: .86rem; line-height: 1.5; color: var(--muted); }
+.site-cartes { display: grid; grid-template-columns: 1fr; gap: 26px; }
+.site-carte { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 22px 18px 18px; border-radius: 26px; background: var(--c); }
+.site-carte.is-vedette { box-shadow: 0 0 0 3px var(--c-d) inset; }
+.site-tag { position: absolute; top: -13px; left: 18px; padding: 4px 12px; border-radius: 999px; background: var(--c-d); color: #16142A; font-weight: 900; font-size: .8rem; }
+.site-art { position: absolute; top: -18px; right: 10px; width: 78px; pointer-events: none; }
+.site-art .petit { display: block; width: 100%; height: auto; }
+.site-nom { margin: 0; padding-right: 84px; font-size: 1.35rem; font-weight: 900; color: var(--ink); line-height: 1.2; }
+.site-but { display: flex; gap: 6px; align-items: center; margin: 4px 0 10px; padding-right: 84px; font-weight: 800; color: var(--c-dd); }
+.site-but .ico { width: 16px; height: 16px; flex: none; }
+.site-prix { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin: 0 0 12px; }
+.site-prix b { font-size: 2.6rem; line-height: 1; font-weight: 900; color: var(--ink); white-space: nowrap; }
+.site-prix small { font-weight: 800; color: var(--c-dd); }
+.site-carte .plan-list { margin: 0 0 14px; }
+.site-carte .plan-list li { color: var(--ink); font-size: .95rem; }
+.site-carte .plan-list .ico { background: var(--card); }
+.site-plus { margin: -4px 0 12px; font-weight: 700; font-size: .92rem; }
+.site-plus a { text-decoration: underline; }
+.site-go { margin: auto 0 0; }
+.site-go .btn { width: 100%; justify-content: center; min-height: 50px; }
+.formules.is-duo { grid-template-columns: 1fr; gap: 22px; margin: 0; }
+.formules.is-duo .formule { padding: 20px 18px 16px; background: var(--c); box-shadow: none; border-radius: 26px; }
+.formules.is-duo .formule.is-mini { box-shadow: 0 0 0 3px var(--c-d) inset; }
+.formules.is-duo .formule-art { top: -16px; right: 10px; width: 74px; }
+.formules.is-duo .formule-nom { font-size: 1.3rem; padding-right: 84px; }
+.formules.is-duo .formule-prix b { font-size: 2.3rem; }
+.formules.is-duo .formule-prix small { color: var(--c-dd); }
+.formules.is-duo .formule-sans { margin: 0 0 12px; padding-right: 0; }
+.formules.is-duo .formule .plan-list li { font-size: .95rem; color: var(--ink); }
+.formules.is-duo .formule .plan-list .ico { background: var(--card); }
+@media (min-width: 620px) { .formules.is-duo { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) {
+  .offre.offre-finale { padding: 32px 28px 26px; }
+  .site-cartes { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .site-carte { padding: 26px 22px 22px; }
+}
+/* le positionnement : chaque site a son but */
+.posi { list-style: none; margin: 0 auto; padding: 0; max-width: 760px; display: grid; gap: 10px; }
+.posi a { display: grid; grid-template-columns: 46px minmax(0, auto) 18px minmax(0, 1fr); gap: 10px; align-items: center; padding: 10px 16px 10px 10px; border-radius: 20px; background: var(--c); color: var(--ink); text-decoration: none; font-weight: 800; min-height: 60px; }
+.posi-art .petit { display: block; width: 46px; height: auto; }
+.posi strong { font-weight: 900; }
+.posi .ico { width: 18px; height: 18px; color: var(--c-dd); }
+.posi em { font-style: normal; color: var(--c-dd); font-weight: 800; }
+@media (max-width: 420px) {
+  .posi a { grid-template-columns: 42px minmax(0, 1fr); row-gap: 0; }
+  .posi a > .ico { display: none; }
+  .posi-art { grid-row: span 2; }
+  .posi em { grid-column: 2; font-size: .95rem; }
+}
+/* le parcours de commande : trois sites à choisir */
+.cf-trio { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.cf-trio .cf-carte { flex-direction: column; gap: 10px; padding: 26px 18px 18px; }
+.cf-trio .cf-art { position: absolute; top: 14px; right: 58px; width: 58px; }
+.cf-trio .cf-corps { padding-right: 0; }
+.cf-trio .cf-nom { padding-right: 120px; }
+.cf-trio .cf-liste { grid-template-columns: 1fr; }
+.cf-but { font-weight: 800; color: var(--c-dd); }
+@media (min-width: 900px) { .cf-trio { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+/* les extras : trois cartes */
+.extras-cartes { display: grid; grid-template-columns: 1fr; gap: 14px; max-width: 1000px; margin: 0 auto; }
+.extra-carte { display: flex; flex-direction: column; gap: 6px; padding: 20px 18px; border-radius: 24px; background: var(--card); box-shadow: var(--shadow-sm); }
+.extra-carte .opt-ico { margin-bottom: 4px; }
+.extra-carte h3 { margin: 0; font-size: 1.12rem; color: var(--ink); }
+.extra-prix { display: flex; align-items: baseline; gap: 6px; margin: 0; }
+.extra-prix b { font-size: 1.6rem; font-weight: 900; color: var(--ink); }
+.extra-prix small { font-weight: 800; color: var(--muted); }
+.extra-carte > p { margin: 0; color: var(--text); line-height: 1.5; }
+.extra-carte .plan-list { margin: 6px 0 0; }
+@media (min-width: 760px) { .extras-cartes { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

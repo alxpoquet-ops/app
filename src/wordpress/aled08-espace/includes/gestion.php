@@ -171,7 +171,7 @@ function aled08e_gestion($u) {
           <h2 class="app-h">Bonjour <?php echo esc_html(aled08e_prenom($u)); ?> !</h2>
           <?php echo $flash; // phpcs:ignore ?>
           <?php
-          // chez Alex : les demandes transmises par Cerise (et les pages visibilité Google de Lumi), les anciens Maxi d'abord, puis par échéance
+          // chez Alex : les demandes transmises par Cerise (et les pages de visibilité Google de Lumi), les anciens Maxi d'abord, puis par échéance
           $aFaire = array_values(array_filter($demandes, function ($p) { return get_post_meta($p->ID, '_aled08_par', true) !== 'lia'; }));
           $chezCerise = array_values(array_filter($demandes, function ($p) { return get_post_meta($p->ID, '_aled08_par', true) === 'lia'; }));
           $ech = function ($p) { return (int) get_post_meta($p->ID, '_aled08_echeance', true) ?: strtotime($p->post_date_gmt . ' UTC') + 7 * DAY_IN_SECONDS; };
@@ -212,7 +212,7 @@ function aled08e_gestion($u) {
             <li class="ges-item ges-afaire<?php echo $retard ? ' is-retard' : ($reste < DAY_IN_SECONDS ? ' is-bientot' : ''); ?>">
               <div class="ges-head"><strong><?php echo esc_html($c ? $c->display_name : 'Client supprimé'); ?></strong>
                 <?php if (get_post_meta($p->ID, '_aled08_priorite', true)) : ?><em class="st st-new">Ancien Maxi · prioritaire</em><?php endif; ?>
-                <?php if ($seo) : ?><em class="st st-doing">Page visibilité Google</em><?php endif; ?>
+                <?php if ($seo) : ?><em class="st st-doing">Page de visibilité Google</em><?php endif; ?>
                 <em class="st <?php echo esc_attr($st[$s][1] ?? 'st-new'); ?>"><?php echo esc_html($s === 'encours' ? 'Commencée' : 'À commencer'); ?></em></div>
               <p class="ges-echeance"><?php echo aled08e_icon('clock'); // phpcs:ignore ?><span><?php echo $retard ? '<b>En retard</b> : c’était à faire avant le ' : 'À faire avant le '; ?><?php echo esc_html(wp_date('l j F à G\hi', $e)); ?></span></p>
               <?php if ($resume !== '') : ?><p class="ges-resume"><?php echo esc_html($resume); ?></p><?php endif; ?>
@@ -300,7 +300,7 @@ function aled08e_gestion($u) {
                 $seo = (bool) get_post_meta($d->ID, '_aled08_seo', true);
                 ?>
             <li class="ges-item" data-ges-text="<?php echo esc_attr(mb_strtolower(($cl ? $cl->display_name : '') . ' ' . ($et ? $et[0] : '') . ' ' . ($st[$sd][0] ?? '') . ($seo ? ' page seo' : '') . ($annulee ? ' annulée' : ''))); ?>">
-              <div class="ges-head"><strong><?php echo esc_html($cl ? $cl->display_name : 'Client supprimé'); ?></strong><?php if ($seo) : ?><em class="st st-doing">Page visibilité Google</em><?php endif; ?><em class="st <?php echo esc_attr($et ? $et[1] : ($st[$sd][1] ?? 'st-new')); ?>"><?php echo esc_html($et ? $et[0] : ($st[$sd][0] ?? $sd)); ?></em></div>
+              <div class="ges-head"><strong><?php echo esc_html($cl ? $cl->display_name : 'Client supprimé'); ?></strong><?php if ($seo) : ?><em class="st st-doing">Page de visibilité Google</em><?php endif; ?><em class="st <?php echo esc_attr($et ? $et[1] : ($st[$sd][1] ?? 'st-new')); ?>"><?php echo esc_html($et ? $et[0] : ($st[$sd][0] ?? $sd)); ?></em></div>
               <p class="ges-meta">Le <?php echo esc_html(aled08e_date($d->post_date)); ?><?php if ($faite) echo ' · faite le ' . esc_html(aled08e_date($faite)); ?><?php if ($annulee) echo ' · annulée le ' . esc_html(aled08e_date($annulee)); ?></p>
               <p class="ges-text"><?php echo esc_html(mb_strlen($txt) > 260 ? mb_substr($txt, 0, 257) . '…' : $txt); ?></p>
               <div class="ges-actions"><a class="btn btn-light btn-sm" href="<?php echo esc_url(admin_url('post.php?post=' . (int) $d->ID . '&action=edit')); ?>"><?php echo aled08e_icon('pencil'); // phpcs:ignore ?><span>Ouvrir la demande</span></a></div>

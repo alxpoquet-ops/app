@@ -39,7 +39,7 @@ process.stdout.write(
     forfaitsAnciens: (cfg.forfaitsAnciens || []).map((f) => ({ id: f.id, name: f.name, month: f.month, quota: f.quota || QUOTA[f.id] || 1, periode: f.periode || 'mois', jetons: f.jetons === undefined ? 1 : f.jetons, partage: !!f.partage, modifs: f.modifs, color: f.color, tagline: f.tagline, illimite: !!f.illimite, priorite: !!f.priorite, delai: f.delai || '', pageSeoSemaine: !!f.pageSeoSemaine, delaiMoyen: !!f.delaiMoyen, delaiTexte: f.delaiTexte || '', demandesMax: f.demandesMax || 1, pageSeo: f.pageSeo || (f.pageSeoSemaine ? 'semaine' : ''), optimisation: !!f.optimisation, main: f.main || [] })),
     extrasGroupes: cfg.extrasGroupes || [],
     optimisation: cfg.optimisation || null,
-    types: types.map((t) => ({ id: t.id, name: t.name, label: t.label, price: t.price, delai: t.delai })),
+    types: types.map((t) => ({ id: t.id, name: t.name, label: t.label, price: t.price, delai: t.delai, but: t.but || '', inclus: t.inclus || [] })),
     // quand : 'creation' (payée une fois, à la commande) ou 'mois' (extra de l'abonnement, à ajouter ou retirer)
     // retire : option ou extra qui n'est plus proposé (offre du 17 novembre 2026), gardé pour les clients qui l'ont déjà
     options: options.map((o) => ({ id: o.id, name: o.name, month: o.price.month || 0, once: o.price.once || 0, types: o.types || [], quand: o.quand || (o.price.month ? 'mois' : 'creation'), icon: o.icon || 'check', desc: o.desc || '', info: o.info || '', retire: !!o.retire, group: o.group || '', court: o.court || '', badge: o.badge || '' })),
@@ -51,7 +51,7 @@ process.stdout.write(
     moisOfferts: annuel.moisOfferts,
     boost: boost.prix,
     // extras à la demande, payés une fois (commandés depuis l'espace client, ajoutés à la prochaine facture)
-    aLaDemande: (cfg.aLaDemande || []).map((x) => ({ id: x.id, name: x.name, prix: x.prix, icon: x.icon, desc: x.desc, court: x.court || '', groupe: x.groupe || '', packs: x.packs || [], unite: x.unite || '', types: x.types || [], badge: x.badge || '', retire: !!x.retire })),
+    aLaDemande: (cfg.aLaDemande || []).map((x) => ({ id: x.id, name: x.name, prix: x.prix, icon: x.icon, desc: x.desc, court: x.court || '', groupe: x.groupe || '', packs: x.packs || [], unite: x.unite || '', types: x.types || [], badge: x.badge || '', retire: !!x.retire, devis: !!x.devis, inclus: x.inclus || [] })),
     lissageDurees: lissage.durees || [6, 12],
     acompte: paiement.acompte || 25,
     delais: { reponse: delais.reponse || '72 heures', titan: delais.titan || delais.reponse || '72 heures', urgent: delais.urgent || '24 heures' },

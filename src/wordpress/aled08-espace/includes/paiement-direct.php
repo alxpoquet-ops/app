@@ -1,7 +1,7 @@
 <?php
 /**
  * Les Minis Monstres Espace client : le client paie tout de suite ce qu'il commande (18 novembre 2026).
- * - Un extra payé une fois (page visibilité Google, article, prise de rendez-vous…) ou la case « en 24 heures » : la demande est
+ * - Un extra payé une fois (page de visibilité Google, article, prise de rendez-vous…) ou la case « en 24 heures » : la demande est
  *   gardée en brouillon, le client paie sur la page sécurisée de Stripe, puis la demande part chez Alex (e-mail, Cerise, Lumi).
  * - Des emplacements d'articles en plus : débloqués dès que le paiement est reçu.
  * - Un extra au mois : la part du mois en cours est facturée et prélevée tout de suite (Stripe, proration « always_invoice »),

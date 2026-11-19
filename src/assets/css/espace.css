@@ -923,3 +923,28 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
   .bg-commandes li em, .bg-commandes li b { grid-column: 2; }
 }
 .art-debloque .esp-seo-q { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+
+/* ---- Offre finale : la boutique verrouillée (sans Site Boutique), et ce que comprend un extra ---- */
+.verrou { position: relative; display: grid; gap: 12px; max-width: 620px; margin: 8px auto 0; padding: 26px 20px 22px; border-radius: 28px; background: var(--pink); color: var(--ink); box-shadow: 0 0 0 2px var(--pink-d) inset; }
+.verrou-art { position: absolute; top: -26px; right: 14px; width: 84px; pointer-events: none; opacity: .95; }
+.verrou-art svg { display: block; width: 100%; height: auto; }
+.verrou-tag { display: inline-flex; align-items: center; gap: 8px; justify-self: start; margin: 0; padding: 6px 14px; border-radius: 999px; background: var(--card); color: var(--pink-dd); font-weight: 900; font-size: .9rem; }
+.verrou-tag .ico { width: 16px; height: 16px; }
+.verrou h3 { margin: 0; padding-right: 90px; font-size: 1.25rem; line-height: 1.25; color: var(--ink); }
+.verrou > p { margin: 0; line-height: 1.5; font-weight: 600; }
+.verrou-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.verrou-liste li { display: flex; gap: 10px; align-items: flex-start; font-weight: 700; }
+.verrou-liste .ico { flex: none; width: 20px; height: 20px; margin-top: 2px; color: var(--pink-dd); }
+.verrou .btn { width: 100%; justify-content: center; min-height: 52px; }
+.verrou-note { font-size: .88rem; opacity: .85; text-align: center; }
+.ex-inclus { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.ex-inclus li { display: flex; gap: 8px; align-items: flex-start; font-weight: 700; font-size: .92rem; }
+.ex-inclus .ico { flex: none; width: 18px; height: 18px; margin-top: 1px; color: var(--c-dd, currentColor); }
+.ex-grille-peu { grid-template-columns: 1fr; max-width: 980px; margin-top: 14px; }
+@media (min-width: 760px) { .ex-grille-peu { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.ex-devis .ex-prix b { font-size: 1.1rem; }
+.verrou-mini { background: var(--mint); box-shadow: 0 0 0 2px var(--mint-d) inset; margin-bottom: 18px; }
+.verrou-mini .verrou-tag, .verrou-mini .verrou-liste .ico { color: var(--mint-dd); }
+.verrou > * { min-width: 0; }
+.verrou .btn { white-space: normal; text-align: center; height: auto; padding-top: 12px; padding-bottom: 12px; }
+.verrou .btn span { min-width: 0; }

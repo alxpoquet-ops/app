@@ -26,17 +26,18 @@ function aled08e_bsite_faits() {
     $D = aled08e_data();
     $c = (array) ($D['creation'] ?? []);
     $f = [];
-    $f[] = 'Les Minis Monstres : un petit studio français qui crée des sites internet pour les commerçants, artisans et associations. C’est Alex qui conçoit les sites, qui les met en ligne et qui fait toutes les modifications. Les petits monstres (Cerise, Lumi, Mirette, etc.) l’aident mais ne modifient jamais un site.';
-    $f[] = 'Création du site : ' . aled08e_euro_txt($c['prix'] ?? 500) . ', jusqu’à ' . (int) ($c['pages'] ?? 15) . ' pages. Boutique en ligne : ' . aled08e_euro_txt($c['boutique'] ?? 200) . ' de plus. Le visiteur compose son site en deux minutes sur la page « Créer mon site » et voit le prix avant de commander. Alex montre le site avant la mise en ligne.';
-    foreach ((array) ($D['forfaits'] ?? []) as $x) $f[] = 'Abonnement ' . $x['name'] . ' : ' . aled08e_euro_txt($x['month']) . ' par mois, sans engagement. Il comprend : ' . implode(', ', (array) ($x['main'] ?? [])) . '.';
+    $f[] = 'Les Minis Monstres : un petit studio français qui crée des sites internet pour les commerçants, artisans et associations. C’est Alex qui conçoit les sites et qui les met en ligne. La bande : Cerise la secrétaire, Bricou le constructeur, Plume la rédactrice, Mirette la spécialiste visibilité, Mochi l’organisateur.';
+    $f[] = 'Phrase clé : avoir une activité sans site internet, c’est comme posséder une magnifique vitrine dans une rue où personne ne passe.';
+    foreach ((array) ($D['types'] ?? []) as $t) $f[] = $t['name'] . ' : ' . aled08e_euro_txt($t['price']) . ', payé une seule fois' . (!empty($t['but']) ? ' (pour ' . mb_strtolower($t['but']) . ')' : '') . '. Il comprend : ' . implode(', ', (array) ($t['inclus'] ?? [])) . '.';
+    $f[] = 'Le visiteur choisit son site sur la page « Créer mon site » et voit le prix avant de commander. Paiement : ' . (int) ($D['acompte'] ?? 25) . ' % à la commande, le reste à la réception du site, en une fois ou en plusieurs fois sans frais. Les révisions sont illimitées jusqu’à la validation finale du site. L’export du site est possible.';
+    $f[] = 'Ensuite, deux choix, sans obligation d’abonnement. Autonomie, 0 € par mois : le client gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour.';
+    foreach ((array) ($D['forfaits'] ?? []) as $x) $f[] = 'Ou l’abonnement ' . $x['name'] . ' : ' . aled08e_euro_txt($x['month']) . ' par mois, sans engagement. Il comprend : ' . implode(', ', (array) ($x['main'] ?? [])) . '.';
     $f[] = 'À l’année, ' . (int) ($D['moisOfferts'] ?? 0) . ' mois sont offerts.';
-    if (!empty($D['creationSeule'])) $f[] = 'Création seule : pour qui a déjà son nom de domaine et son hébergement, on ne paie que le site, sans abonnement, et Alex remet le code du site. Maintenance et modifications non comprises.';
-    $f[] = 'Une modification : le client écrit sa demande dans son espace client, Cerise lui pose des questions si besoin, la reformule et la lui fait confirmer, puis la transmet à Alex qui la fait. Une modification peut prendre jusqu’à 48 h. Une demande à la fois (deux avec un extra). Une demande s’annule tant qu’Alex ne l’a pas commencée.';
-    $f[] = 'Le nom de domaine est offert tant que l’abonnement est actif.';
-    $u = []; $m = [];
-    foreach (aled08e_a_la_demande() as $x) if ($x['id'] !== 'urgent') $u[] = $x['name'] . ' ' . aled08e_euro_txt($x['prix']);
-    foreach ((array) ($D['options'] ?? []) as $o) if (empty($o['retire']) && (float) $o['month'] > 0) $m[] = $o['name'] . ' ' . aled08e_euro_txt($o['month']) . ' par mois';
-    $f[] = 'Extras, à la carte depuis l’espace client, sans engagement, ajoutés à la facture. Payés une fois : ' . implode(', ', $u) . '. Au mois : ' . implode(', ', $m) . '.';
+    $f[] = 'Une modification (avec Mini) : le client écrit sa demande dans son espace client, Cerise l’aide à la formuler, puis elle est faite. Une modification peut prendre jusqu’à 48 h, une demande à la fois.';
+    $u = [];
+    foreach (aled08e_a_la_demande() as $x) if ($x['id'] !== 'urgent') $u[] = $x['name'] . ' : ' . (!empty($x['devis']) ? 'sur devis' : aled08e_euro_txt($x['prix']) . ', payé une fois par carte');
+    $f[] = 'Extras, depuis l’espace client : ' . implode(' ; ', $u) . '.';
+    $f[] = 'Le Site Boutique ouvre l’onglet « Ma boutique » de l’espace client : le client y gère lui-même ses articles, ses prix, ses moyens de paiement (Stripe, PayPal) et ses commandes.';
     $f[] = 'Alex répond aux messages en général dans la journée. Pour lui écrire : page Contact.';
     return implode("\n", $f);
 }

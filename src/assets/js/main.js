@@ -35,6 +35,8 @@
     'Évolution': 'Growth',
     'Pack SEO': 'SEO pack',
     'Création seule': 'Website only',
+    'Autonomie': 'On your own',
+    'compris': 'included',
     'le vôtre': 'yours',
     'Code de parrainage reconnu : un mois d’abonnement offert, à vous comme à votre parrain.': 'Referral code recognised: one month of your plan free, for you and for your referrer.',
     'Code promo valable : la remise est appliquée.': 'Valid promo code: the discount is applied.',
@@ -216,16 +218,16 @@
     });
   };
 
-  /* la boutique en ligne : une case parmi ce qui se paie une fois ; elle règle le type de site (champ caché) */
+  /* les trois sites (Essentiel, Visibilité, Boutique) : des boutons radio ; ?type=... dans l'adresse coche le bon */
   var initBoutique = function (scope) {
-    var c = $('[data-boutique]', scope), f = $('[data-type-field]', scope);
-    if (!c || !f) return;
-    if (/^boutique/.test(slug(new URLSearchParams(location.search).get('type') || ''))) c.checked = true;
-    var maj = function () { f.value = c.checked ? 'boutique' : 'vitrine'; };
-    c.addEventListener('change', maj); // avant le recalcul des prix (l'événement remonte ensuite au formulaire)
-    maj();
+    var box = $('[data-type-choix]', scope);
+    if (!box) return;
+    var q = slug(new URLSearchParams(location.search).get('type') || '');
+    var id = /^boutique/.test(q) ? 'boutique' : /^(une-page|essentiel)/.test(q) ? 'une-page' : /^(vitrine|visibilite)/.test(q) ? 'vitrine' : '';
+    var r = id && $('input[value="' + id + '"]', box);
+    if (r) r.checked = true;
   };
-  var siteNom = function (t) { return tr(t.id === 'boutique' ? 'Site Internet Professionnel, avec boutique' : 'Site Internet Professionnel'); };
+  var siteNom = function (t) { return tr(t.label || t.name || 'Site'); };
   /* ---------- la case « Code promo ou parrainage » : vérifiée par le serveur ----------
      ok : true (code valable), false (inconnu), null (pas encore vérifié, ou vérification impossible ici)
      type : 'promo' (remise sur la création) ou 'parrain' (le code d'un client : un mois offert à chacun) */
@@ -470,7 +472,7 @@
     function update(ev) {
       var t = find(data.types, val('b-type')) || find(data.types, 'vitrine') || data.types[0];
       var seule = val('b-gestion') === 'moi'; // création seule : pas de formule, le code du site est remis
-      var f = seule ? (find(data.forfaits, 'sans') || { id: 'sans', name: 'Création seule', month: 0 }) : (find(data.forfaits, val('b-forfait')) || data.forfaits[0]);
+      var f = seule ? (find(data.forfaits, 'sans') || { id: 'sans', name: 'Autonomie', month: 0 }) : (find(data.forfaits, val('b-forfait')) || data.forfaits[0]);
       // le client garde son nom de domaine : on le note, et on le remet comme avant s'il revient à « on s'occupe de tout »
       if (seule && !domain.own()) { autoOwn = true; domain.setOwn(true); return; }
       if (!seule && autoOwn) { autoOwn = false; domain.setOwn(false); return; }
@@ -489,8 +491,8 @@
       var per = tr(annual ? '/an' : '/mois');
       setText('type', siteNom(t));
       setText('type-price', euro(t.price));
-      setText('domain-prix', t.id === 'boutique' ? tr('avec l’abonnement') : tr('offert')); // pas offert avec la boutique
-      setText('forfait', seule ? tr('Je m’en occupe moi-même') : tr('Abonnement ') + planName(f.name));
+      setText('domain-prix', tr('compris'));
+      setText('forfait', seule ? tr('Autonomie') : tr('Abonnement ') + planName(f.name));
       setText('forfait-price', seule ? tr('sans abonnement') : euro(f.month * mult) + per);
       var dom = domain.get(), domText = '';
       if (domain.own()) domText = tr('Mon nom de domaine actuel');
@@ -520,7 +522,7 @@
       var bar = $('[data-sum="bar"]', box);
       if (bar) bar.innerHTML = '<b>' + euro(prixSite) + '</b>' + (seule ? tr(', sans abonnement') : tr(' puis ') + '<b>' + euro(recur) + per + '</b>');
       // Lien « Poser une question » (formulaire de contact, en clair)
-      var q = { type: t.id === 'boutique' ? 'Site avec boutique en ligne' : 'Site', forfait: seule ? 'Je m’en occupe moi-même (création seule)' : f.name, paiement: seule ? '' : annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: seule ? '' : domText, options: '', parrain: parrain };
+      var q = { type: t.label, forfait: seule ? 'Autonomie (je gère tout moi-même)' : f.name, paiement: seule ? '' : annual ? 'À l’année' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: seule ? '' : domText, options: '', parrain: parrain };
       $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
       // Lien « Commander » : paramètres exacts attendus par /commander/
       var estParrain = code.ok && code.type === 'parrain';
@@ -625,7 +627,7 @@
     function update(fromUser, ev) {
       var t = find(data.types, val('type')) || find(data.types, 'vitrine') || data.types[0];
       var seule = val('gestion') === 'moi'; // création seule : pas de formule, le code du site est remis
-      var f = seule ? (find(data.forfaits, 'sans') || { id: 'sans', name: 'Création seule', month: 0 }) : (find(data.forfaits, val('forfait')) || data.forfaits[0]);
+      var f = seule ? (find(data.forfaits, 'sans') || { id: 'sans', name: 'Autonomie', month: 0 }) : (find(data.forfaits, val('forfait')) || data.forfaits[0]);
       if (seule && !domain.own()) { autoOwn = true; domain.setOwn(true); return; }
       if (!seule && autoOwn) { autoOwn = false; domain.setOwn(false); return; }
       filterOpts(form, t.id);
@@ -666,7 +668,7 @@
       var forfaitFirst = f.month * mult;
       $$('[data-avec-formule]', root).forEach(function (e) { e.hidden = seule; });
       $$('[data-seule-txt]', root).forEach(function (e) { e.hidden = !seule; });
-      setText('domain-prix', t.id === 'boutique' ? tr('avec l’abonnement') : tr('offert')); // pas offert avec la boutique
+      setText('domain-prix', tr('compris'));
       // chaque façon de payer, en clair
       setText('p-0', euro(acompte) + tr(' aujourd’hui, puis ') + euro(solde) + tr(' à la réception'));
       (data.lissage || []).forEach(function (n) { setText('p-' + n, euro(acompte) + tr(' aujourd’hui, puis ') + euro(floor2(solde / n)) + tr(' par mois pendant ') + n + tr(' mois')); });
@@ -706,7 +708,7 @@
       /* récapitulatif latéral */
       setText('type', siteNom(t));
       setText('type-price', euro(prixSite));
-      setText('forfait', seule ? tr('Je m’en occupe moi-même') : tr('Abonnement ') + planName(f.name));
+      setText('forfait', seule ? tr('Autonomie') : tr('Abonnement ') + planName(f.name));
       setText('forfait-price', seule ? tr('sans abonnement') : euro(forfaitFirst) + per);
       setText('delai', tr(t.delai));
       var optLine = $('[data-order-opts]', root);

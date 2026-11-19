@@ -2,28 +2,29 @@
 // Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160, aucun tiret long
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de config.js), aucun client,
 // avis ou chiffre inventé, et pas de phrase de 9 mots ou plus reprise d'une autre page.
-// Offre du 18 novembre 2026 : le Site Internet Professionnel (creation, creation.pages pages), une seule option à la commande (la boutique en
-// ligne, payée une fois, avec des emplacements d'articles), un seul abonnement au mois, sans engagement : Mini (id 'base' : modifications
-// faites par Alex en 48 h au plus, une demande à la fois, nom de domaine offert tant que l'abonnement est actif), ou la création seule (le code
-// du site est remis au client). Maxi est retiré : tout le reste se prend en extras depuis l'espace client (config.aLaDemande et options au mois).
-// Le prix bas vient de la petite bande d'Alex : ses automatisations, dessinées en petits monstres (config.bande).
-// Alex fait chaque site et toutes les modifications, la bande aide et s'occupe du répétitif. On ne dit jamais « IA ».
-// options : les conseils de la page (« Ce que je vous conseille »). Ids acceptés : 'boutique' (option payée une fois, à la commande),
-// 'base' (l'abonnement Mini), ou l'id d'un extra de config.js (aLaDemande ou options au mois : 'packseo', 'urgent',
-// 'mirette', 'deux', 'whatsapp', 'avis'…). Le prix affiché vient de config.js. Chaque « pourquoi » doit coller à ce qui est conseillé.
+// Offre du 19 novembre 2026 : trois sites payés une fois (config.types : Site Essentiel, Site Visibilité, Site Boutique),
+// puis Autonomie (config.creationSeule, sans abonnement, export du site remis au client) ou Mini (config.forfaits[0], au mois,
+// sans engagement, modifications incluses, une demande à la fois). L'abonnement est facultatif. Trois extras : la page de
+// visibilité Google (payée une fois, par carte), la traduction anglaise et la fonctionnalité spécifique (sur devis).
+// La petite bande (config.bande) compte cinq Minis Monstres.
+// options : les conseils de la page (« Ce que je vous conseille »). Ids acceptés : 'boutique' (le Site Boutique),
+// 'base' (l'abonnement Mini), ou l'id d'un extra de config.aLaDemande encore proposé ('packseo', 'anglais', 'specifique').
+// Le prix affiché vient de config.js. Chaque « pourquoi » doit coller à ce qui est conseillé.
 // (Le code événement a été retiré le 17 novembre 2026 : un seul champ « code promo ou parrainage » à la commande.)
-const { creation, forfaits, options, paiement, lissage, annuel, marche, bande, evenement } = require('../config');
+const { creation, forfaits, paiement, lissage, annuel, marche, bande, evenement, types, creationSeule } = require('../config');
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
 
-const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement : modifications par Alex en 48 h au plus
+const T = (id) => types.find((t) => t.id === id) || {};
+const ESS = T('une-page'), VIS = T('vitrine'), BOU = T('boutique'); // les trois sites
+const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement, facultatif
+const AUTO = creationSeule.name; // sans abonnement
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
-const prix = eur(creation.prix); // le Site Internet Professionnel
-const prixBoutique = eur(creation.prix + creation.boutique); // le site avec l'option boutique en ligne
-const packSeo = options.find((o) => o.id === 'packseo' && !o.retire) || { name: 'Page visibilité Google', price: { once: 0 } }; // à l'unité, plus tard, depuis l'espace client
-const pagesComprises = creation.pages; // pages comprises dans le site (d'autres pages se prennent en extras)
-const extraMois = (id) => (require('../config').options.find((o) => o.id === id && o.quand === 'mois' && !o.retire) || { name: '', price: {} });
+const prix = eur(ESS.price); // le Site Essentiel
+const prixVis = eur(VIS.price); // le Site Visibilité
+const prixBoutique = mille(BOU.price); // le Site Boutique
+const pagesComprises = creation.pages; // nombre maximal de pages du Site Visibilité
 const durees = lissage.durees.join(' ou ');
 const acompte = `${paiement.acompte} %`;
 const marcheVitrine = `${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €`;
@@ -45,7 +46,7 @@ const metiers = [
     title: 'Site internet pour artisan : être trouvé et rassurer | Les Minis Monstres',
     description: 'Plombier, électricien, maçon, couvreur : un site clair pour être trouvé dans votre secteur, montrer vos chantiers et recevoir des demandes de devis.',
     h1: 'Site internet pour artisan : vos chantiers en vitrine, vos devis en direct',
-    lead: 'Vos futurs clients tapent votre métier et leur commune sur leur téléphone, puis appellent celui qui leur inspire confiance. Je crée le site qui vous fait trouver et qui montre votre travail, puis je m’occupe de tout.',
+    lead: 'Vos futurs clients tapent votre métier et leur commune sur leur téléphone, puis appellent celui qui leur inspire confiance. Je crée le site qui vous fait trouver et qui montre votre travail. Ensuite, vous le gérez seul ou vous me le confiez.',
     resume: 'Vos chantiers en photos, des devis en direct.',
     besoins: [
       { icon: 'map-pin', t: 'Être trouvé dans votre secteur', d: 'Votre métier et les communes où vous intervenez sont écrits noir sur blanc, là où Google et vos clients les cherchent.' },
@@ -58,7 +59,7 @@ const metiers = [
       texte: 'Je n’ai pas encore d’artisan parmi mes réalisations. Pour vous donner une idée, voici comment je bâtirais le site d’un couvreur : un accueil avec sa zone et son numéro, une page par prestation (toiture neuve, réparation, zinguerie, démoussage), une galerie de chantiers et un formulaire de devis.',
     },
     options: [
-      { id: 'packseo', pourquoi: 'Une page de plus sur un travail précis que l’on tape sur Google, comme le démoussage d’un toit ou la pose d’une fenêtre de toit. À commander à l’unité, plus tard, depuis votre espace client.' },
+      { id: 'packseo', pourquoi: 'Une page de plus sur un travail précis que l’on tape sur Google, comme le démoussage d’un toit ou la pose d’une fenêtre de toit. À commander plus tard, depuis votre espace client, et à régler par carte, une seule fois.' },
     ],
     body: `## Ce que votre client veut savoir en trente secondes
 
@@ -85,7 +86,7 @@ Les photos de chantiers restent votre meilleur argument. Prenez l’habitude de 
 
 Si vous faites un seul métier, quelques pages bien construites suffisent pour démarrer. Si vous proposez plusieurs prestations, par exemple plomberie, chauffage et salle de bain clé en main, chacune mérite sa page. Celui qui cherche « installation pompe à chaleur » tombe alors sur la page qui en parle, et pas sur un texte fourre-tout. Le guide [une page ou un site vitrine](/guides/site-une-page-ou-site-vitrine/) vous aide à trancher.
 
-Le site compte ${pagesComprises} pages, de quoi présenter vos principales prestations. Pour plus de recherches, des pages visibilité Google s’ajoutent à la carte, des pages écrites pour vous faire trouver sur Google, sur des recherches comme « recherche de fuite » ou « remplacement de ballon d’eau chaude » dans votre secteur.
+Le ${VIS.name} compte jusqu’à ${pagesComprises} pages, de quoi présenter chacune de vos prestations. Des pages de visibilité Google y sont intégrées : elles sont écrites pour vous faire trouver sur Google, sur des recherches comme « recherche de fuite » ou « remplacement de ballon d’eau chaude » dans votre secteur.
 
 Pour être trouvé autour de chez vous, le site fait équipe avec votre [fiche Google](/guides/fiche-google-entreprise/). La fiche vous place sur la carte, le site achève de convaincre. Les deux doivent afficher exactement les mêmes coordonnées.
 
@@ -93,19 +94,19 @@ Pour être trouvé autour de chez vous, le site fait équipe avec votre [fiche G
 
 Vous n’avez ni le temps ni l’envie de gérer un site le soir, et c’est normal. Je rédige les textes avec vous après un court échange, je prépare la mise en page et je mets tout en ligne.
 
-Plus tard, un tarif change ou une nouvelle photo arrive ? Envoyez le changement depuis votre téléphone, dans votre espace client, votre page privée sur mon site. ${qui('support')} de ma petite bande, vous pose les bonnes questions, puis me transmet votre demande. Je fais la modification moi-même. C’est compris dans votre abonnement, sans limite : une modification peut prendre ${delaiModif}.
+Plus tard, un tarif change ou une nouvelle photo arrive ? Avec l’abonnement ${mini.name}, envoyez le changement depuis votre téléphone, dans votre espace client, votre page privée sur mon site. ${qui('support')} de ma petite bande, vous pose les bonnes questions, puis transmet votre demande. La modification est incluse : elle peut prendre ${delaiModif}.
 
 Pour aller vite sans bâcler, j’ai programmé cette petite bande de monstres : ils s’occupent de tout ce qui se répète d’un site à l’autre. Je garde pour moi la conception, puis la relecture de chaque page avant sa mise en ligne. C’est ce qui garde des délais courts et un prix doux.
 
 ## Combien ça coûte
 
-Un site vitrine de ${marche.pagesCompare} pages avec référencement, confié à un indépendant, se paie en général entre ${marcheVitrine}. Le mien revient ${marche.fois} fois moins cher qu’un indépendant, d’après des fourchettes publiées par des prestataires (les [sources](/pourquoi-moins-cher/) sont citées), sans rien enlever à l’essentiel : je gagne du temps sur la technique, jamais sur la relecture.
+Un site vitrine de ${marche.pagesCompare} pages avec référencement, confié à un indépendant, se paie en général entre ${marcheVitrine}. Mon ${VIS.name}, à ${prixVis} €, revient ${marche.fois} fois moins cher, d’après des fourchettes publiées par des prestataires (les [sources](/pourquoi-moins-cher/) sont citées), sans rien enlever à l’essentiel : je gagne du temps sur la technique, jamais sur la relecture.
 
-La création coûte ${prix} €, pour ${pagesComprises} pages. Vous versez ${acompte} à la commande, puis le reste à la réception, d’un coup ou en ${durees} fois sans frais. Avec l’abonnement ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement, le nom de domaine, l’adresse de votre site, est offert tant que l’abonnement est actif, et l’hébergement, qui le garde accessible jour et nuit, est compris. Il comprend aussi vos modifications. Tout est détaillé sur la page [tarifs](/tarifs/).`,
+Le ${ESS.name}, sur une page, coûte ${prix} €. Le ${VIS.name}, jusqu’à ${pagesComprises} pages, coûte ${prixVis} €. Vous versez ${acompte} à la commande, puis le reste à la réception, d’un coup ou en ${durees} fois sans frais. Ensuite, deux chemins. En ${AUTO}, vous gérez votre site vous-même, sans abonnement. Avec ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement, le nom de domaine, l’adresse de votre site, et l’hébergement, qui le garde accessible jour et nuit, sont compris, comme vos modifications. Tout est détaillé sur la page [tarifs](/tarifs/).`,
     faq: [
-      { q: 'Combien coûte un site internet pour un artisan ?', a: `La création coûte ${prix} €, que votre site compte une seule page ou ${pagesComprises}. Ensuite, l’abonnement garde le site en ligne, entretenu et à jour, pour ${eur(mini.month)} € par mois (${mini.name}). Vous connaissez le total avant de commander.` },
+      { q: 'Combien coûte un site internet pour un artisan ?', a: `${prix} € pour un ${ESS.name}, sur une seule page, ou ${prixVis} € pour un ${VIS.name}, qui va jusqu’à ${pagesComprises} pages. Ensuite, vous choisissez : ${AUTO}, sans rien payer chaque mois, ou ${mini.name}, qui garde le site en ligne, entretenu et à jour pour ${eur(mini.month)} € par mois. Vous connaissez le total avant de commander.` },
       { q: 'Je travaille sur une grande zone, comment être trouvé partout ?', a: 'Citez les principales communes où vous intervenez, sans en aligner des dizaines. Une liste honnête sur le site, et une zone d’intervention bien réglée sur votre fiche Google, valent mieux qu’une page par village.' },
-      { q: 'Je n’ai presque pas de photos de chantier, est-ce un problème ?', a: 'Non. On démarre avec ce que vous avez, même deux clichés pris au téléphone. Le site s’étoffe ensuite chantier après chantier : vous m’envoyez les photos, je les ajoute.' },
+      { q: 'Je n’ai presque pas de photos de chantier, est-ce un problème ?', a: 'Non. On démarre avec ce que vous avez, même deux clichés pris au téléphone. Le site s’étoffe ensuite chantier après chantier, au rythme de vos nouvelles photos.' },
       { q: 'J’ai déjà un vieux site, faut-il tout recommencer ?', a: 'Le nouveau site est fait à neuf, mais rien n’est perdu : vos textes et vos photos servent de base. Si vous avez déjà un nom de domaine, vous le gardez, et je le relie au nouveau site.' },
     ],
     voir: ['/guides/fiche-google-entreprise/', '/guides/site-une-page-ou-site-vitrine/', '/etre-visible-sur-google/'],
@@ -134,7 +135,7 @@ La création coûte ${prix} €, pour ${pagesComprises} pages. Vous versez ${aco
       texte: 'Une page principale pour présenter la pratique et donner envie de prendre contact, puis des pages de conseils qui répondent chacune à une question précise que l’on tape sur Google. C’est un bon modèle pour un praticien qui veut rester simple.',
     },
     options: [
-      { id: 'packseo', pourquoi: 'Une page de plus sur une question que l’on se pose avant de consulter pour la première fois. Elle se commande à l’unité, après coup, dans votre espace client.' },
+      { id: 'packseo', pourquoi: 'Une page de plus sur une question que l’on se pose avant de consulter pour la première fois. Elle se commande après coup, dans votre espace client, et se paie une fois.' },
     ],
     body: `## Ce qui aide à franchir le pas
 
@@ -165,7 +166,7 @@ Voici les repères que j’applique quand j’écris vos textes avec vous :
 
 Pour une seule pratique, une page bien construite fait l’affaire : présentation, séance, tarifs, accès, contact. Avec plusieurs pratiques, sophrologie et ateliers de relaxation par exemple, chacune peut avoir sa page. Quelqu’un qui tape « réflexologie plantaire » et le nom de sa ville tombe alors sur la page qui en parle vraiment.
 
-Les pages de conseils sont une autre piste, à petits pas. Comment se passe une première séance de réflexologie, trois exercices de respiration à faire chez soi : chaque page répond à une vraie question et ouvre une porte de plus vers vous. On les appelle des pages visibilité Google, car elles aident votre site à être trouvé sur Google. Elles se prennent à la carte, en plus des ${pagesComprises} pages comprises. C’est le choix fait pour le site d’un magnétiseur que vous pouvez découvrir parmi mes [réalisations](/realisations/).
+Les pages de conseils sont une autre piste, à petits pas. Comment se passe une première séance de réflexologie, trois exercices de respiration à faire chez soi : chaque page répond à une vraie question et ouvre une porte de plus vers vous. On les appelle des pages de visibilité Google, car elles aident votre site à être trouvé sur Google. Le ${VIS.name} en contient déjà, et d’autres se commandent à la carte. C’est le choix fait pour le site d’un magnétiseur que vous pouvez découvrir parmi mes [réalisations](/realisations/).
 
 ## Vous accompagnez, je m’occupe du site
 
@@ -173,9 +174,9 @@ Vous n’avez pas à écrire seul. Racontez-moi votre pratique avec vos mots, au
 
 ## Le prix
 
-La création coûte ${prix} €, pour une seule page comme pour une page par pratique, ${pagesComprises} pages. Vous avez déjà un agenda en ligne ? Un bouton du site y mène, sans rien payer de plus.
+Pour une seule page, c’est le ${ESS.name}, à ${prix} €. Pour une page par pratique, c’est le ${VIS.name}, à ${prixVis} €, avec ${pagesComprises} pages au plus. Vous avez déjà un agenda en ligne ? Un bouton du site y mène, sans rien payer de plus.
 
-Ensuite, l’abonnement ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement, garde votre site en ligne et à jour. Vos horaires ou vos tarifs bougent ? Vous le demandez, et une modification peut prendre ${delaiModif} : elles sont comprises, sans limite. L’abonnement et les extras sont présentés sur la page [tarifs](/tarifs/).`,
+Ensuite, l’abonnement ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement, garde votre site en ligne et à jour. Vos horaires ou vos tarifs bougent ? Vous le demandez, et une modification peut prendre ${delaiModif} : elles sont incluses. Vous préférez tout gérer seul ? Prenez la formule ${AUTO}. Les deux sont présentées sur la page [tarifs](/tarifs/).`,
     faq: [
       { q: 'Ai-je le droit de parler des bienfaits de ma pratique ?', a: 'Oui, avec mesure. Décrivez ce que la personne peut ressentir, la détente, un moment pour soi, sans annoncer de résultat sur une maladie. Si une phrase vous fait douter, je vous en propose une version plus prudente.' },
       { q: 'Dois-je afficher le prix de mes séances ?', a: 'Je vous le conseille. Quelqu’un qui hésite déjà n’osera pas écrire pour demander combien ça coûte. Le prix et la durée de chaque séance, bien visibles, enlèvent ce frein.' },
@@ -208,8 +209,8 @@ Ensuite, l’abonnement ${mini.name}, à ${eur(mini.month)} € par mois et sans
       texte: 'Ici, tout est fait main, pièce par pièce. Le site laisse toute la place aux créations, et la boutique en ligne, qui ouvre très bientôt, permettra de les commander sans passer par l’atelier.',
     },
     options: [
-      { id: 'boutique', pourquoi: 'Vos pièces se choisissent, se paient en ligne et partent vers leur acheteur, même quand l’atelier est fermé.' },
-      { id: 'packseo', pourquoi: 'Une page de plus sur une technique ou une matière, là où les amateurs commencent leurs recherches. Vous la commandez à l’unité, une fois le site lancé.' },
+      { id: 'boutique', pourquoi: `Avec le ${BOU.name}, vos pièces se choisissent, se paient en ligne et partent vers leur acheteur, même quand l’atelier est fermé.` },
+      { id: 'packseo', pourquoi: 'Une page de plus sur une technique ou une matière, là où les amateurs commencent leurs recherches. Vous la commandez une fois le site lancé, et vous la payez en une fois.' },
     ],
     body: `## Votre travail d’abord
 
@@ -234,7 +235,7 @@ Deux possibilités, selon votre façon de vendre :
 - **La galerie seule**, si vous vendez à l’atelier, sur les salons ou sur commande. Le site montre votre travail, et un formulaire reçoit les demandes.
 - **La galerie et la boutique**, si vous voulez vendre en ligne. Vos clients choisissent, paient par carte, et vous recevez la commande par e-mail.
 
-Avec la boutique arrive ${qui('vendeur')} de ma petite bande : c’est lui qui tient le catalogue à jour, garde un œil sur chaque commande et prévient vos acheteurs par e-mail.
+Avec la boutique, vous gérez votre catalogue vous-même, sans limite de pièces. ${qui('organisateur')} de ma petite bande, range vos produits et vos commandes, et vos acheteurs sont prévenus par e-mail à chaque étape.
 
 La boutique est livrée avec un modèle de conditions de vente que nous complétons ensemble, avec vos frais d’envoi et vos délais de fabrication.
 
@@ -246,12 +247,12 @@ Le guide pour [créer une boutique en ligne](/guides/creer-boutique-en-ligne/) d
 
 Vous m’envoyez vos photos et quelques notes sur chaque pièce. La partie répétitive revient à ma bande de petits monstres : les fiches se préparent à partir de vos notes, en bien moins de temps qu’à la main. Je reprends ensuite chaque texte pour qu’il sonne comme vous, et je vérifie chaque page avant la mise en ligne.
 
-Côté prix, la création coûte ${prix} € pour la galerie, et ${prixBoutique} € avec la boutique. Vous réglez ${acompte} en commandant, puis le solde à la réception, en une fois ou en ${durees} fois sans frais. Ensuite, l’abonnement garde le site en ligne et à jour pour ${eur(mini.month)} € par mois avec ${mini.name}, sans engagement, avec une copie de sécurité faite régulièrement. Une nouvelle collection à ajouter ? Envoyez-la-moi : c’est une modification, comprise dans votre abonnement.`,
+Côté prix, le ${VIS.name} coûte ${prixVis} € pour la galerie, et le ${BOU.name} ${prixBoutique} € pour vendre en ligne. Vous réglez ${acompte} en commandant, puis le solde à la réception, en une fois ou en ${durees} fois sans frais. Ensuite, si vous le voulez, l’abonnement garde le site en ligne et à jour pour ${eur(mini.month)} € par mois avec ${mini.name}, sans engagement, avec une copie de sécurité faite régulièrement. Une nouvelle collection à présenter ? C’est une modification, incluse dans cet abonnement.`,
     faq: [
       { q: 'Faut-il un statut pour vendre ses créations en ligne ?', a: 'Oui, dès que vous vendez de façon régulière. La micro-entreprise est la solution la plus courante pour démarrer. Les artistes auteurs ont un régime à part : renseignez-vous auprès de l’Urssaf avant d’ouvrir la boutique.' },
       { q: 'Mes photos sont-elles protégées une fois en ligne ?', a: 'Vos œuvres et vos photos restent à vous : le droit d’auteur s’applique sans aucune démarche. Je publie des images assez grandes pour être belles à l’écran, sans mettre en ligne vos fichiers en pleine qualité.' },
       { q: 'Je vends déjà sur une place de marché, un site est-il utile ?', a: 'Oui, les deux se complètent. La place de marché amène du passage. Votre site, lui, porte votre nom, sans concurrent affiché à côté, et vous y renvoyez depuis vos cartes, vos salons et vos réseaux.' },
-      { q: 'Combien coûte un site avec boutique pour un créateur ?', a: `La création coûte ${prixBoutique} € avec la boutique : ${prix} € pour le site, et ${eur(creation.boutique)} € pour le panier, le paiement en ligne et le suivi des commandes, avec ${creation.boutiqueProduits} emplacements d’articles que vous remplissez vous-même. Le prix de l’abonnement ne change pas avec la boutique : ${eur(mini.month)} € par mois avec ${mini.name}.` },
+      { q: 'Combien coûte un site avec boutique pour un créateur ?', a: `Le ${BOU.name} coûte ${prixBoutique} €, payés une fois. Il comprend le site, le panier, le paiement en ligne sécurisé et le suivi des commandes. Vous ajoutez vos pièces vous-même, autant que vous voulez. Ensuite, c’est ${AUTO}, sans abonnement, ou ${mini.name} à ${eur(mini.month)} € par mois.` },
     ],
     voir: ['/guides/creer-boutique-en-ligne/', '/realisations/', '/tarifs/'],
   },
@@ -279,7 +280,7 @@ Côté prix, la création coûte ${prix} € pour la galerie, et ${prixBoutique}
       texte: 'Aucun hébergement ne figure encore parmi mes réalisations. Pour des chambres d’hôtes, je proposerais un accueil avec la plus belle photo, une page pour les chambres et leurs tarifs, une page sur les environs, puis l’accès et une demande de séjour.',
     },
     options: [
-      { id: 'mirette', pourquoi: 'Mirette suit vos visites chaque semaine et vous propose des idées pour être mieux vu des voyageurs, que vous choisissez d’appliquer ou non.' },
+      { id: 'anglais', pourquoi: 'Vos voyageurs étrangers lisent vos pages dans leur langue, avec un bouton pour passer du français à l’anglais. Le prix dépend du nombre de pages : demandez un devis.' },
       { id: 'packseo', pourquoi: 'Une page de plus sur une randonnée, une visite ou un village voisin, pour croiser la route des voyageurs qui préparent leurs vacances. Elle s’ajoute quand vous voulez, depuis votre espace client.' },
     ],
     body: `## Ce que le voyageur regarde avant de réserver
@@ -304,7 +305,7 @@ Concrètement, le voyageur remplit une demande de séjour : ses dates, le nombre
 
 ## Être trouvé par ceux qui préparent leur séjour
 
-Avant de choisir où dormir, beaucoup de voyageurs cherchent d’abord une région, une randonnée, un lieu à visiter. Votre site compte ${pagesComprises} pages, et des pages visibilité Google peuvent s’y ajouter, des pages écrites pour être trouvé sur Google. Une sur la boucle de randonnée qui part de chez vous, une sur le marché du dimanche, une sur le château voisin. ${qui('etoile')} de ma petite bande, en choisit les sujets, et c’est moi qui les écris.
+Avant de choisir où dormir, beaucoup de voyageurs cherchent d’abord une région, une randonnée, un lieu à visiter. Le ${VIS.name} compte jusqu’à ${pagesComprises} pages, dont des pages de visibilité Google, écrites pour être trouvé sur Google. Une sur la boucle de randonnée qui part de chez vous, une sur le marché du dimanche, une sur le château voisin. ${qui('observateur')} de ma petite bande, en prépare les sujets avec vous.
 
 ## Les avis et les règles à respecter
 
@@ -314,13 +315,13 @@ Dans le tourisme, les avis pèsent lourd. Publiez seulement de vrais commentaire
 
 ## Le prix, et qui s’en occupe
 
-La création coûte ${prix} €, avec ${pagesComprises} pages comprises. L’accueil, les chambres, les environs, les tarifs et le contact avec l’accès y tiennent sans peine. Si chaque gîte ou chaque chambre veut sa page, avec ses photos, sa capacité et ses prix, une page en plus se prend à la carte.
+Le ${VIS.name} coûte ${prixVis} €, avec ${pagesComprises} pages au maximum. L’accueil, les chambres, les environs, les tarifs et le contact avec l’accès y tiennent sans peine, et chaque gîte ou chaque chambre peut avoir sa page, avec ses photos, sa capacité et ses prix. Pour un seul hébergement, le ${ESS.name}, à ${prix} €, peut suffire.
 
-Ensuite, l’abonnement au mois, sans engagement, garde le site en ligne et à jour. Le nom de domaine, c’est-à-dire l’adresse du site, est offert tant que l’abonnement est actif, et l’hébergement, l’endroit où le site reste accessible jour et nuit, est compris. Un tarif d’été ou une date de fermeture ? Vous le demandez à ${B('support').nom}, elle me le transmet, et je fais le changement. Les modifications sont comprises, sans limite : ce genre de changement peut prendre ${delaiModif}.`,
+Ensuite, l’abonnement ${mini.name}, au mois et sans engagement, garde le site en ligne et à jour. Le nom de domaine, c’est-à-dire l’adresse du site, et l’hébergement, l’endroit où le site reste accessible jour et nuit, sont compris. Un tarif d’été ou une date de fermeture ? Vous le demandez à ${B('support').nom}, et le changement est fait pour vous. Ce genre de modification est inclus et peut prendre ${delaiModif}. Sans abonnement, en ${AUTO}, vous faites ces changements vous-même.`,
     faq: [
       { q: 'Le site peut-il afficher mes disponibilités ?', a: 'Si vous tenez déjà un calendrier en ligne, le site peut y renvoyer. Sinon, la demande de séjour suffit souvent : vous gardez la main sur votre planning et vous confirmez chaque réservation vous-même.' },
-      { q: 'J’ai deux gîtes sur le même terrain, faut-il deux sites ?', a: 'Non. Un seul site présente les deux, chacun sur sa page, avec ses photos et ses tarifs. Le voyageur compare d’un coup d’œil, et vous n’avez qu’un abonnement.' },
-      { q: 'Combien coûte un site pour un gîte ?', a: `La création coûte ${prix} €, pour ${pagesComprises} pages. Ensuite, l’abonnement coûte ${eur(mini.month)} € par mois, sans engagement, et le site peut se régler en ${durees} fois sans frais.` },
+      { q: 'J’ai deux gîtes sur le même terrain, faut-il deux sites ?', a: 'Non. Un seul site présente les deux, chacun sur sa page, avec ses photos et ses tarifs. Le voyageur compare d’un coup d’œil, et vous n’avez qu’un site à faire vivre.' },
+      { q: 'Combien coûte un site pour un gîte ?', a: `${prixVis} € pour un ${VIS.name}, jusqu’à ${pagesComprises} pages, ou ${prix} € pour un ${ESS.name}. Le site peut se régler en ${durees} fois sans frais. Ensuite, l’abonnement ${mini.name} coûte ${eur(mini.month)} € par mois, sans engagement, et vous pouvez vous en passer.` },
     ],
     voir: ['/guides/fiche-google-entreprise/', '/tarifs/', '/guides/choisir-nom-de-domaine/'],
   },
@@ -335,7 +336,7 @@ Ensuite, l’abonnement au mois, sans engagement, garde le site en ligne et à j
     title: 'Site internet pour commerçant et producteur local | Les Minis Monstres',
     description: 'Horaires à jour, fiche Google, vitrine de vos produits et, si vous le voulez, boutique en ligne avec retrait en magasin : un site simple pour votre commerce.',
     h1: 'Site internet pour commerçant : votre vitrine ouverte jour et nuit',
-    lead: 'Avant de passer la porte, vos clients vérifient vos horaires et regardent ce que vous vendez, depuis leur téléphone. Je crée un site qui leur répond sans détour, et je le tiens à jour pour vous.',
+    lead: 'Avant de passer la porte, vos clients vérifient vos horaires et regardent ce que vous vendez, depuis leur téléphone. Je crée un site qui leur répond sans détour, et je peux le tenir à jour pour vous.',
     resume: 'Horaires, vitrine en ligne, retrait en magasin.',
     besoins: [
       { icon: 'clock', t: 'Des horaires toujours justes', d: 'Jours fériés, congés, nocturnes : le client sait si vous êtes ouvert avant de prendre sa voiture.' },
@@ -348,8 +349,8 @@ Ensuite, l’abonnement au mois, sans engagement, garde le site en ligne et à j
       texte: 'Une petite entreprise de village qui ouvre sa boutique en ligne : bientôt, les commandes pourront arriver à toute heure, de clients qui habitent bien plus loin que la commune.',
     },
     options: [
-      { id: 'boutique', pourquoi: 'Vos clients commandent le soir ou le dimanche, paient en ligne et passent prendre leurs achats au comptoir.' },
-      { id: 'urgent', pourquoi: 'Une fermeture imprévue ou une promotion de dernière minute ? Votre demande passe avant les autres et se fait en 24 heures, du lundi au vendredi.' },
+      { id: 'boutique', pourquoi: `Avec le ${BOU.name}, vos clients commandent le soir ou le dimanche, paient en ligne et passent prendre leurs achats au comptoir.` },
+      { id: 'base', pourquoi: `Une fermeture imprévue ou une promotion à annoncer ? Vous l’écrivez dans votre espace client, et le site est mis à jour pour vous, en ${mini.delai} au plus.` },
     ],
     body: `## Ce que vos clients vérifient avant de venir
 
@@ -370,21 +371,21 @@ Pour un commerce de proximité, la [fiche Google](/guides/fiche-google-entrepris
 
 ## Vendre en ligne, retirer en magasin
 
-Vendre en ligne n’a rien d’obligatoire. Un site qui montre vos rayons, vos arrivages et vos spécialités donne déjà une bonne raison de passer.
+Vendre en ligne n’est pas un passage imposé. Un site qui montre vos rayons, vos arrivages et vos spécialités donne déjà une bonne raison de passer.
 
-Pour aller plus loin, l’option boutique en ligne, à ${eur(creation.boutique)} € payés une fois, permet à vos clients de commander à toute heure. Ils paient sur le site, puis choisissent la livraison ou le retrait au magasin. Le retrait évite les frais de port, et votre client en profite parfois pour découvrir autre chose dans vos rayons. Pour un producteur, c’est aussi une façon simple de prendre les commandes de paniers ou de colis, sans noter chaque demande au téléphone.
+Pour aller plus loin, le ${BOU.name}, à ${prixBoutique} € payés une fois, permet à vos clients de commander à toute heure. Ils paient sur le site, puis choisissent la livraison ou le retrait au magasin. Le retrait évite les frais de port, et votre client en profite parfois pour découvrir autre chose dans vos rayons. Pour un producteur, c’est aussi une façon simple de prendre les commandes de paniers ou de colis, sans noter chaque demande au téléphone.
 
-Commencez petit, avec vos produits les plus demandés, ceux qui se gardent et se transportent bien. ${qui('vendeur')} de ma petite bande, s’occupe ensuite du catalogue et des commandes. Le guide pour [créer une boutique en ligne](/guides/creer-boutique-en-ligne/) explique le paiement, la livraison et les règles de vente.
+Commencez petit, avec vos produits les plus demandés, ceux qui se gardent et se transportent bien. Vous complétez ensuite votre catalogue à votre rythme, depuis votre espace client, et ${qui('organisateur')} de ma petite bande, vous aide à garder produits et commandes en ordre. Le guide pour [créer une boutique en ligne](/guides/creer-boutique-en-ligne/) explique le paiement, la livraison et les règles de vente.
 
 ## Un site qui suit la vie du magasin
 
 Un commerce bouge tout le temps : les horaires d’été, la fermeture d’une semaine en août, la nouvelle gamme, le marché de Noël. Un site qui affiche encore les horaires de l’an dernier déçoit, et le client ne revient pas forcément.
 
-Avec votre abonnement, ces changements ne vous demandent qu’un message dans votre espace client, la page privée où vous suivez votre site. Ce sont des modifications, comprises sans limite : ${B('support').nom} note bien votre demande, et je la fais à la main. Comptez ${mini.delai} au plus entre votre demande et la mise en ligne.
+Avec l’abonnement ${mini.name}, ces changements ne vous demandent qu’un message dans votre espace client, la page privée où vous suivez votre site. Ce sont des modifications, incluses : ${B('support').nom} note bien votre demande, et elle est faite pour vous. Comptez ${mini.delai} au plus entre votre demande et la mise en ligne.
 
 ## Combien ça coûte
 
-La création coûte ${prix} € pour un site sans boutique, de ${pagesComprises} pages, et ${prixBoutique} € avec la boutique en ligne. Pour comparer, un site de ce genre fait par un indépendant demande souvent entre ${marcheVitrine}. Vous versez ${acompte} à la commande et le reste à la réception, en une fois ou en ${durees} mensualités sans frais. Les tarifs, avec les extras possibles, sont détaillés sur la page [tarifs](/tarifs/).`,
+Le ${VIS.name}, sans boutique, coûte ${prixVis} € pour ${pagesComprises} pages au plus, et le ${BOU.name} ${prixBoutique} €. Pour comparer, un site vitrine fait par un indépendant demande souvent entre ${marcheVitrine}. Vous versez ${acompte} à la commande et le reste à la réception, en une fois ou en ${durees} mensualités sans frais. Les tarifs, avec les extras possibles, sont détaillés sur la page [tarifs](/tarifs/).`,
     faq: [
       { q: 'J’ai déjà une page sur les réseaux sociaux, ai-je besoin d’un site ?', a: 'Les deux se complètent. Sur les réseaux, vos horaires et vos produits se noient vite sous les publications, et tout le monde n’y a pas de compte. Le site garde l’essentiel au même endroit, à votre nom.' },
       { q: 'Comment fonctionne le retrait en magasin ?', a: 'Le client choisit ses produits, paie en ligne et coche le retrait au moment de valider. Vous recevez la commande par e-mail, vous la préparez, et il passe la prendre aux horaires que vous avez fixés.' },
@@ -410,14 +411,14 @@ La création coûte ${prix} € pour un site sans boutique, de ${pagesComprises}
       { icon: 'calendar', t: 'Un agenda toujours à jour', d: 'Assemblée générale, tournoi, brocante, répétition : les dates sont au même endroit pour tout le monde.' },
       { icon: 'user-check', t: 'Des adhésions plus simples', d: 'Tarifs, bulletin à télécharger ou lien vers votre outil d’inscription : rejoindre l’association devient facile.' },
       { icon: 'heart-handshake', t: 'Trouver des bénévoles', d: 'Une page dit clairement où vous avez besoin de bras et comment proposer son aide.' },
-      { icon: 'piggy-bank', t: 'Un budget facile à voter', d: 'Un prix de création connu d’avance et un petit abonnement au mois, sans surprise pour le trésorier.' },
+      { icon: 'piggy-bank', t: 'Un budget facile à voter', d: 'Un prix de création connu d’avance, et un petit abonnement au mois si le bureau le souhaite, sans surprise pour le trésorier.' },
     ],
     exemple: {
       client: null,
       texte: 'Pas encore d’association parmi mes réalisations. Pour un comité des fêtes, je proposerais une seule page : qui vous êtes, l’agenda de l’année, les photos de la dernière fête, comment devenir bénévole, et un formulaire qui arrive dans la boîte de l’association.',
     },
     options: [
-      { id: 'base', pourquoi: `Il fait vivre le site sans effort pour le bureau. Chaque date de l’agenda est mise à jour sans compter, en ${mini.delai} au plus : envoyez-la un peu en avance.` },
+      { id: 'base', pourquoi: `Il fait vivre le site sans effort pour le bureau. Chaque date de l’agenda est mise à jour pour vous, en ${mini.delai} au plus : envoyez-la un peu en avance.` },
     ],
     body: `## Ce qu’un futur membre cherche
 
@@ -446,18 +447,18 @@ Pour les bénévoles, une page dédiée change beaucoup de choses. Dites précis
 
 ## Un site qui ne repose sur personne
 
-C’est le problème classique : le membre qui avait fait le site s’en va, et plus personne ne sait le modifier. Ici, le site ne dépend d’aucun bénévole. Le président, la secrétaire ou le nouveau trésorier envoie sa demande depuis l’espace client, une page privée réservée à l’association, et je m’en occupe. Quand le bureau change, il suffit de transmettre l’accès.
+C’est le problème classique : le membre qui avait fait le site s’en va, et plus personne ne sait le modifier. Avec l’abonnement ${mini.name}, le site ne dépend d’aucun bénévole. Le président, la secrétaire ou le nouveau trésorier envoie sa demande depuis l’espace client, une page privée réservée à l’association, et tout est fait pour vous. Quand le bureau change, il suffit de transmettre l’accès.
 
-Une date, un horaire, le bilan de la dernière fête : chaque changement est une modification comprise dans l’abonnement, sans limite. C’est moi qui fais chaque mise à jour, et ${qui('organisateur')} de ma petite bande, m’aide à garder l’agenda bien rangé.
+Une date, un horaire, le bilan de la dernière fête : chaque changement est une modification incluse dans l’abonnement. ${qui('organisateur')} de ma petite bande, aide à garder l’agenda bien rangé.
 
 ## Un budget qui se vote
 
-- **La création** : ${prix} €, avec ${acompte} à la commande et le reste à la réception, ou étalé sur ${durees} mois sans frais.
-- **L’abonnement ${mini.name}** : ${eur(mini.month)} € par mois, ou ${eur(mini.month * (12 - annuel.moisOfferts))} € à l’année avec ${annuel.moisOfferts} mois offerts, sans engagement. Il couvre l’hébergement (l’endroit où le site reste accessible 24 h/24), son adresse, des copies de sécurité régulières, son entretien technique et vos modifications.
+- **La création** : ${prix} € pour un ${ESS.name}, avec ${acompte} à la commande et le reste à la réception, ou étalé sur ${durees} mois sans frais.
+- **L’abonnement ${mini.name}, facultatif** : ${eur(mini.month)} € par mois, ou ${eur(mini.month * (12 - annuel.moisOfferts))} € à l’année avec ${annuel.moisOfferts} mois offerts, sans engagement. Il couvre l’hébergement (l’endroit où le site reste accessible 24 h/24), son adresse, des copies de sécurité régulières, son entretien technique et vos modifications.
 
-Pour la plupart des associations, une page suffit, sans aucune option. Si vous avez plusieurs sections, comme le foot, la gym et la randonnée, chacune peut avoir sa page, avec ${pagesComprises} pages comprises dans le prix de création. Une adresse de site au nom de l’association, ce qu’on appelle un nom de domaine, fait aussi sérieux sur un dossier de subvention : le guide pour [choisir un nom de domaine](/guides/choisir-nom-de-domaine/) vous aide à le trouver.`,
+Pour la plupart des associations, une page suffit, sans aucun extra. Si vous avez plusieurs sections, comme le foot, la gym et la randonnée, chacune peut avoir sa page avec le ${VIS.name}, à ${prixVis} €. Une adresse de site au nom de l’association, ce qu’on appelle un nom de domaine, fait aussi sérieux sur un dossier de subvention : le guide pour [choisir un nom de domaine](/guides/choisir-nom-de-domaine/) vous aide à le trouver.`,
     faq: [
-      { q: 'Notre budget est très serré, que faut-il prévoir ?', a: `Le site coûte ${prix} €, une seule fois, puis ${eur(mini.month)} € par mois pour l’abonnement ${mini.name}. Le prix du site peut s’étaler sur ${durees} mois. La boutique en ligne et les extras restent facultatifs, et la plupart des associations s’en passent très bien.` },
+      { q: 'Notre budget est très serré, que faut-il prévoir ?', a: `Le ${ESS.name} coûte ${prix} €, une seule fois, et son prix peut s’étaler sur ${durees} mois. Ensuite, soit un bénévole gère le site en ${AUTO}, sans rien payer chaque mois, soit vous prenez ${mini.name}, à ${eur(mini.month)} € par mois. Les extras restent facultatifs, et la plupart des associations s’en passent très bien.` },
       { q: 'Qui peut demander des changements sur le site ?', a: 'Le bureau décide qui reçoit les codes de l’espace client. À chaque changement d’équipe, il suffit de mettre à jour l’adresse e-mail et le mot de passe du compte, et le site continue sans interruption.' },
       { q: 'Peut-on recevoir des dons ou des adhésions en ligne ?', a: 'Oui, par un bouton qui mène vers le service de paiement que vous utilisez déjà pour vos cotisations. Si vous n’en avez pas, un bulletin à télécharger et un contact par e-mail suffisent pour commencer.' },
       { q: 'Le site peut-il servir pour un événement, comme un festival ?', a: 'Oui. Une page dédiée présente le programme, les horaires, l’accès et les partenaires. Après l’événement, elle reste en ligne avec les photos, et on la met à jour pour l’édition suivante.' },

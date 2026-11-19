@@ -17,7 +17,9 @@ function aled08e_art_prix() { return (float) (aled08e_data()['creation']['boutiq
 function aled08e_art_achetes($uid) { return (int) get_user_meta($uid, 'aled08_slots_achetes', true); }
 /* Les emplacements de départ : ceux compris, ou plus si la boutique avait déjà plus de produits (méta posée à la première lecture) */
 function aled08e_art_base($uid) { return max(aled08e_art_inclus(), (int) get_user_meta($uid, 'aled08_slots_base', true)); }
-function aled08e_art_total($uid) { return aled08e_art_base($uid) + aled08e_art_achetes($uid) + (aled08e_famille($uid) ? 100 : 0); }
+// Offre finale : le Site Boutique n'a plus d'emplacements comptés (boutiqueSlot à 0) : le catalogue est libre.
+function aled08e_art_libre() { return aled08e_art_prix() <= 0; }
+function aled08e_art_total($uid) { return aled08e_art_libre() ? 100000 : aled08e_art_base($uid) + aled08e_art_achetes($uid) + (aled08e_famille($uid) ? 100 : 0); }
 function aled08e_art_liste($uid) { $l = get_user_meta($uid, 'aled08_articles', true); return is_array($l) ? array_values($l) : []; }
 function aled08e_art_flash($uid, $ok, $texte) { set_transient('aled08_art_flash_' . (int) $uid, [$ok, $texte], 120); }
 function aled08e_art_pret($uid) { return aled08e_meta($uid, 'lia_url') !== '' && aled08e_meta($uid, 'lia_secret') !== ''; }
@@ -179,26 +181,27 @@ function aled08e_articles_html($uid) {
     $total = aled08e_art_total($uid);
     $pris = count($arts);
     $libres = max(0, $total - $pris);
+    $libre = aled08e_art_libre();
 
     $h = '<section class="art-zone" aria-label="Vos articles">';
-    $h .= '<div class="art-hero"><span class="art-hero-art" aria-hidden="true">' . aled08e_monster('champi') . '</span>'
+    $h .= '<div class="art-hero"><span class="art-hero-art" aria-hidden="true">' . aled08e_monster('mochi') . '</span>'
         . '<div class="art-hero-txt"><h3>Vos articles</h3><p>Une photo, une description, un prix : votre article est en ligne tout de suite.</p></div>'
-        . '<p class="art-compteur"><b>' . (int) $libres . '</b><small>emplacement' . ($libres > 1 ? 's' : '') . ' libre' . ($libres > 1 ? 's' : '') . ' sur ' . (int) $total . '</small></p></div>';
+        . ($libre ? '<p class="art-compteur"><b>' . (int) $pris . '</b><small>article' . ($pris > 1 ? 's' : '') . '</small></p></div>' : '<p class="art-compteur"><b>' . (int) $libres . '</b><small>emplacement' . ($libres > 1 ? 's' : '') . ' libre' . ($libres > 1 ? 's' : '') . ' sur ' . (int) $total . '</small></p></div>');
     if ($flash) $h .= '<p class="' . ($flash[0] ? 'esp-empty' : 'esp-warn') . '" role="status">' . esc_html($flash[1]) . '</p>';
     $h .= aled08e_pd_flash_html();
     if ($prods === null && aled08e_art_pret($uid)) $h .= '<p class="esp-warn">Votre boutique ne répond pas pour le moment : vos produits s’afficheront ici dès qu’elle répond. Rechargez la page dans un instant.</p>';
-    if (!aled08e_art_pret($uid)) $h .= '<p class="app-note">' . aled08e_icon('info') . ' Votre boutique n’est pas encore reliée à votre espace : vos articles sont gardés ici et Alex les met en ligne pour vous.</p>';
+    if (!aled08e_art_pret($uid)) $h .= '<p class="app-note">' . aled08e_icon('info') . ' Votre boutique n’est pas encore reliée à votre espace : vos articles sont gardés ici et mis en ligne pour vous.</p>';
 
     // ajouter un article : en premier, bien visible
     if ($libres > 0) {
-        $h .= '<details class="art-ajouter"><summary><span class="art-plus">' . aled08e_icon('plus') . '</span><span><strong>Ajouter un article</strong><small>' . (int) $libres . ' emplacement' . ($libres > 1 ? 's' : '') . ' libre' . ($libres > 1 ? 's' : '') . '</small></span></summary>'
+        $h .= '<details class="art-ajouter"><summary><span class="art-plus">' . aled08e_icon('plus') . '</span><span><strong>Ajouter un article</strong><small>' . ($libre ? 'Autant que vous voulez' : (int) $libres . ' emplacement' . ($libres > 1 ? 's' : '') . ' libre' . ($libres > 1 ? 's' : '')) . '</small></span></summary>'
             . aled08e_art_form($nonce, $act, 'nouveau') . '</details>';
     }
 
     if ($arts) {
         $h .= '<ul class="art-grille">';
         foreach ($arts as $k => $a) {
-            $etat = $a['statut'] === 'en_ligne' ? '<span class="art-statut is-ok">' . aled08e_icon('check') . 'En ligne</span>' : ($a['statut'] === 'attente' ? '<span class="art-statut is-attente">' . aled08e_icon('clock') . 'Alex le met en ligne</span>' : '<span class="art-statut is-off">Hors vente</span>');
+            $etat = $a['statut'] === 'en_ligne' ? '<span class="art-statut is-ok">' . aled08e_icon('check') . 'En ligne</span>' : ($a['statut'] === 'attente' ? '<span class="art-statut is-attente">' . aled08e_icon('clock') . 'Bientôt en ligne</span>' : '<span class="art-statut is-off">Hors vente</span>');
             $cible = !empty($a['pid']) ? '<input type="hidden" name="pid" value="' . (int) $a['pid'] . '">' : '<input type="hidden" name="idx" value="' . (int) $a['idx'] . '">';
             $h .= '<li class="art-carte"><div class="art-img">' . ($a['img'] ? '<img src="' . esc_url($a['img']) . '" alt="" loading="lazy">' : aled08e_icon('shopping-bag')) . '</div>'
                 . '<div class="art-corps"><strong>' . esc_html($a['nom']) . '</strong>' . ($a['prix'] !== '' ? '<b class="art-prix">' . esc_html(number_format((float) $a['prix'], 2, ',', ' ')) . ' €</b>' : '') . $etat . '</div>';
@@ -206,7 +209,7 @@ function aled08e_articles_html($uid) {
                 $h .= '<details class="art-edit"><summary>' . aled08e_icon('pencil') . '<span>Modifier</span></summary>' . aled08e_art_form($nonce, $act, 'e' . $k, $a)
                     . '<form class="art-retirer" method="post" action="' . $act . '" onsubmit="return confirm(\'Retirer cet article de votre boutique ?\');">' . $nonce . '<input type="hidden" name="aled08e_article" value="retirer">' . $cible . '<button class="link-btn" type="submit">' . aled08e_icon('x') . 'Retirer cet article</button></form></details>';
             } else {
-                $h .= '<p class="art-note">Produit à variantes : Alex le règle avec vous.</p>';
+                $h .= '<p class="art-note">Produit à variantes : faites une demande, on le règle avec vous.</p>';
             }
             $h .= '</li>';
         }
@@ -215,7 +218,8 @@ function aled08e_articles_html($uid) {
         $h .= '<p class="esp-empty">Pas encore d’article. Ajoutez le premier : il sera en ligne dans votre boutique tout de suite.</p>';
     }
 
-    // débloquer des emplacements
+    // débloquer des emplacements (anciennes offres seulement)
+    if ($libre) return $h . '</section>';
     $h .= '<div class="art-debloque"><div class="art-debloque-txt"><strong>' . aled08e_icon('sparkles') . 'Besoin de plus de place ?</strong><p>Chaque emplacement en plus coûte <b>' . esc_html(aled08e_euro_txt($prix)) . '</b>, payé une seule fois. Il est à vous pour toujours : si vous retirez un article, la place reste libre.</p></div>'
         . '<form class="art-debloque-form" method="post" action="' . $act . '">' . $nonce . '<input type="hidden" name="aled08e_article" value="debloquer"><div class="esp-seo-q" role="radiogroup" aria-label="Combien d’emplacements ?">';
     foreach ([1, 5, 10] as $i => $q) $h .= '<label class="esp-seo-q-choix"><input type="radio" name="quantite" value="' . $q . '"' . ($i === 0 ? ' checked' : '') . '><span><strong>+' . $q . '</strong><small>' . esc_html($famille ? 'offert' : aled08e_euro_txt($prix * $q)) . '</small></span></label>';

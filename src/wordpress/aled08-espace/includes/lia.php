@@ -376,7 +376,7 @@ function aled08e_lia_traiter($pid) {
     set_transient('aled08_lia_' . $pid, 1, 15 * MINUTE_IN_SECONDS);
     $uid = (int) $p->post_author;
     $u = get_userdata($uid);
-    // une page visibilité Google de Lumi (includes/lumi.php) : ses consignes, et un budget de mots fait pour une page entière
+    // une page de visibilité Google de Mirette (includes/lumi.php) : ses consignes, et un budget de mots fait pour une page entière
     $GLOBALS['aled08e_lia_seo'] = (bool) get_post_meta($pid, '_aled08_seo', true);
     $fin = function ($res, $msgClient, $noteAlex, $actions) use ($pid, $uid, $u, $p) {
         aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $actions);
@@ -488,13 +488,13 @@ function aled08e_lia_finir($pid, $uid, $u, $p, $res, $msgClient, $noteAlex, $act
     foreach ($actions as $a) $liste .= '- ' . $a['detail'] . ($a['adresse'] ? ' (' . $a['adresse'] . ')' : '') . "\n";
     $prepares = array_filter($actions, function ($a) { return !empty($a['prepare']); });
     if ($res === 'fait' && $prepares && get_post_meta($pid, '_aled08_seo', true)) {
-        // page visibilité Google de Lumi : pas d'aperçu à valider par le client, elle est mise en ligne tout de suite par les Minis Monstres
+        // page de visibilité Google de Mirette : pas d'aperçu à valider par le client, elle est mise en ligne tout de suite par les Minis Monstres
         update_post_meta($pid, '_aled08_statut', 'encours');
         update_post_meta($pid, '_aled08_lia_etat', 'a_confirmer');
         $r = aled08e_lia_publier($pid, 'client');
-        update_post_meta($pid, '_aled08_reponse', 'Lumi : ' . mb_substr($msgClient, 0, 600) . ' Elle est en ligne.');
-        aled08e_lia_journal_add('Page visibilité Google #' . $pid . ' écrite par Lumi et mise en ligne.');
-        wp_mail(aled08e_to(), 'Lumi a mis une page en ligne : ' . ($u ? $u->display_name : '?'), "Information, rien à valider :\n" . $liste . "\nPour optimiser : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
+        update_post_meta($pid, '_aled08_reponse', 'Mirette : ' . mb_substr($msgClient, 0, 600) . ' Elle est en ligne.');
+        aled08e_lia_journal_add('Page de visibilité Google #' . $pid . ' écrite par Mirette et mise en ligne.');
+        wp_mail(aled08e_to(), 'Mirette a mis une page en ligne : ' . ($u ? $u->display_name : '?'), "Information, rien à valider :\n" . $liste . "\nPour optimiser : " . admin_url('post.php?post=' . $pid . '&action=edit') . "\n", aled08e_mail_headers());
         return;
     }
     if ($res === 'fait' && $prepares) {
@@ -575,14 +575,14 @@ function aled08e_lia_reglages_html() {
         . $ok($cle, 'Clé Claude enregistrée.', 'Il manque la clé Claude : collez-la ci-dessous. C’est la seule chose à faire.')
         . $ok($kit, 'Kit Anthropic installé (extension alexlia-sdk).', 'Kit Anthropic absent : installez et activez l’extension alexlia-sdk.')
         . $ok($cle && $kit, 'Cerise répond dans la bulle et dans « Écrire à Cerise », pour tous les clients.', 'Cerise attend la clé pour répondre dans la bulle.')
-        . $ok($relies > 0, 'Sites clients reliés : ' . $relies . ' sur ' . count($clients) . '. Cerise, Lumi et Mirette peuvent lire ces sites (sans rien modifier).', 'Aucun site client relié pour l’instant : Cerise, Lumi et Mirette lisent seulement les sites reliés (fiche client, « Relier le site »). Sans lien, Cerise aide quand même à formuler les demandes.')
-        . $ok((bool) $next, 'Tâche du jour programmée (sujets de pages visibilité Google de Lumi, analyse de Mirette) : prochain passage le ' . ($next ? wp_date('j F à H:i', $next) : '') . '.', 'Tâche du jour non programmée : rechargez cette page.')
+        . $ok($relies > 0, 'Sites clients reliés : ' . $relies . ' sur ' . count($clients) . '. Cerise et Mirette peuvent lire ces sites (sans rien modifier).', 'Aucun site client relié pour l’instant : Cerise et Mirette lisent seulement les sites reliés (fiche client, « Relier le site »). Sans lien, Cerise aide quand même à formuler les demandes.')
+        . $ok((bool) $next, 'Tâche du jour programmée (sujets de pages de visibilité Google et analyse de Mirette) : prochain passage le ' . ($next ? wp_date('j F à H:i', $next) : '') . '.', 'Tâche du jour non programmée : rechargez cette page.')
         . '</ul></div>';
     echo '<table class="form-table" role="presentation">';
-    echo '<tr><th>Lumi : sujets des pages visibilité Google</th><td><label><input type="checkbox" name="seo_auto" value="1"' . checked(get_option('aled08_seo_auto_pause') !== '1', true, false) . '> Lumi choisit le sujet des pages de l’abonnement (Mini : une par mois, Maxi : une par semaine) et vous l’envoie comme une demande à faire. C’est vous qui écrivez la page.</label></td></tr>';
+    echo '<tr><th>Mirette : sujets des pages de visibilité Google</th><td><label><input type="checkbox" name="seo_auto" value="1"' . checked(get_option('aled08_seo_auto_pause') !== '1', true, false) . '> Mirette choisit le sujet des pages de l’abonnement (Mini : une par mois, Maxi : une par semaine) et vous l’envoie comme une demande à faire. C’est vous qui écrivez la page.</label></td></tr>';
     echo '<tr><th>Mirette : analyse de la semaine</th><td><label><input type="checkbox" name="mirette_auto" value="1"' . checked(get_option('aled08_mirette_pause') !== '1', true, false) . '> Écrire l’analyse et deux suggestions chaque semaine pour les clients Maxi (dans leurs petits mots).</label></td></tr>';
-    echo '<tr><th><label for="aled08e-bulle-mod">Modèle de Cerise et Mirette</label></th><td><input type="text" id="aled08e-bulle-mod" name="bulle_modele" class="regular-text" value="' . esc_attr(function_exists('aled08e_bulle_modele') ? aled08e_bulle_modele() : '') . '"><p class="description">Rapide et économique : la bulle, l’analyse de Mirette et les sujets de Lumi. Cerise utilise le modèle plus bas pour préparer les demandes.</p></td></tr>';
-    echo '<tr><th>Maintenant</th><td><button type="submit" name="lancer_bande" value="1" class="button">Lancer la bande maintenant</button><p class="description">Relance les demandes en attente chez Bricou et fait tout de suite le passage du jour de Lumi et Mirette.</p></td></tr>';
+    echo '<tr><th><label for="aled08e-bulle-mod">Modèle de Cerise et Mirette</label></th><td><input type="text" id="aled08e-bulle-mod" name="bulle_modele" class="regular-text" value="' . esc_attr(function_exists('aled08e_bulle_modele') ? aled08e_bulle_modele() : '') . '"><p class="description">Rapide et économique : la bulle, l’analyse de Mirette et les sujets de Mirette. Cerise utilise le modèle plus bas pour préparer les demandes.</p></td></tr>';
+    echo '<tr><th>Maintenant</th><td><button type="submit" name="lancer_bande" value="1" class="button">Lancer la bande maintenant</button><p class="description">Relance les demandes en attente chez Bricou et fait tout de suite le passage du jour de Mirette et Mirette.</p></td></tr>';
     echo '</table>';
     echo '<p>Bricou fait les demandes « par Bricou » toute seule sur le site du client, en quelques minutes, sans validation de votre part : seul le client valide l’aperçu. Il faut : une clé Claude, l’extension <code>alexlia-sdk</code> installée ici (kit officiel Anthropic), et l’extension <code>alexlia-connecteur</code> sur chaque site client, reliée dans la fiche du client.</p>';
     echo '<table class="form-table" role="presentation">';
@@ -619,7 +619,7 @@ function aled08e_lia_reglages_save($P) {
         $relancees = aled08e_lia_rattraper();
         if (function_exists('aled08e_seo_auto_tourner')) aled08e_seo_auto_tourner();
         if (function_exists('aled08e_mirette_tourner')) aled08e_mirette_tourner();
-        set_transient('aled08e_msg_' . get_current_user_id(), 'Lumi et Mirette sont passés' . (!empty($relancees) ? ', ' . (int) $relancees . ' demande(s) relancée(s) chez Bricou' : '') . '. Le détail est dans « Derniers travaux ».', 300);
+        set_transient('aled08e_msg_' . get_current_user_id(), 'Mirette est passée' . (!empty($relancees) ? ', ' . (int) $relancees . ' demande(s) relancée(s) chez Bricou' : '') . '. Le détail est dans « Derniers travaux ».', 300);
         return 'bande';
     }
     if (!empty($P['tester_lia'])) {
@@ -813,7 +813,7 @@ function aled08e_validation_mail_alex($pid, $u, $p, $prevues) {
     wp_mail(aled08e_to(), ($prio ? 'PRIORITAIRE, ' : '') . 'Modification à valider (en ligne dans ' . ALED08E_FEU_VERT_MIN . ' min) : ' . ($u ? $u->display_name : '?'),
         'Client : ' . ($u ? $u->display_name . ' (' . $u->user_email . ')' : '?') . "\n"
         . "Demande :\n" . ($p ? $p->post_content : '') . "\n\n"
-        . (get_post_meta($pid, '_aled08_seo', true) ? "Page SEO écrite par Lumi (" . (get_post_meta($pid, '_aled08_seo_source', true) === 'pack' ? 'commandée par le client' : 'de l’abonnement') . "). Note de Lumi : " . get_post_meta($pid, '_aled08_lia_note', true) . "\n" : "Ce que Bricou a préparé (le client a vu l’aperçu et dit oui) :\n") . implode("\n", array_map(function ($a) { return '- ' . ($a['detail'] ?? '') . (!empty($a['apercu']) ? ' : ' . $a['apercu'] : ''); }, $prevues)) . "\n\n"
+        . (get_post_meta($pid, '_aled08_seo', true) ? "Page SEO écrite par Mirette (" . (get_post_meta($pid, '_aled08_seo_source', true) === 'pack' ? 'commandée par le client' : 'de l’abonnement') . "). Note de Mirette : " . get_post_meta($pid, '_aled08_lia_note', true) . "\n" : "Ce que Bricou a préparé (le client a vu l’aperçu et dit oui) :\n") . implode("\n", array_map(function ($a) { return '- ' . ($a['detail'] ?? '') . (!empty($a['apercu']) ? ' : ' . $a['apercu'] : ''); }, $prevues)) . "\n\n"
         . 'Sans refus de votre part, c’est mis en ligne dans ' . ALED08E_FEU_VERT_MIN . " minutes.\n\n"
         . 'Valider maintenant : ' . $lien('ok') . "\n"
         . 'Refuser, je reprends la main : ' . $lien('non') . "\n\n"

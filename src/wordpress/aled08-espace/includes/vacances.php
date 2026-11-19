@@ -135,3 +135,51 @@ function aled08e_vacances_html($uid) {
     <?php
     return ob_get_clean();
 }
+
+/* Sans Site Boutique : l'onglet « Ma boutique » est là, mais verrouillé. Il dit ce qu'il débloque, et comment l'ouvrir. */
+function aled08e_boutique_verrou_html($uid) {
+    $D = aled08e_data();
+    $t = null;
+    foreach ((array) ($D['types'] ?? []) as $x) if (($x['id'] ?? '') === 'boutique') $t = $x;
+    $nom = $t['name'] ?? 'Site Boutique';
+    $points = ['Vos articles : photo, description, prix', 'Vos prix et vos promotions', 'Vos moyens de paiement (Stripe, PayPal, virement…)', 'Le suivi de vos commandes'];
+    $h = '<h2 class="app-h">Ma boutique</h2>'
+        . '<section class="verrou" aria-label="Option verrouillée">'
+        . '<span class="verrou-art" aria-hidden="true">' . aled08e_monster('mochi') . '</span>'
+        . '<p class="verrou-tag">' . aled08e_icon('lock') . '<span>Option verrouillée</span></p>'
+        . '<h3>Cette partie s’ouvre avec le ' . esc_html($nom) . '</h3>'
+        . '<p>Vous n’avez pas de boutique en ligne sur votre site pour le moment. Avec le ' . esc_html($nom) . ', vous gérez tout ici, vous-même, depuis votre téléphone :</p>'
+        . '<ul class="verrou-liste">';
+    foreach ($points as $l) $h .= '<li>' . aled08e_icon('check') . '<span>' . esc_html($l) . '</span></li>';
+    $h .= '</ul>';
+    if (aled08e_a_la_demande('specifique')) {
+        $h .= '<form method="post" action="' . esc_url(aled08e_url()) . '">'
+            . '<input type="hidden" name="aled08e_demande" value="1"><input type="hidden" name="extra" value="specifique"><input type="hidden" name="extra_ok" value="1">' . wp_nonce_field('aled08e_demande', '_aled08e', true, false)
+            . '<input type="hidden" name="demande" value="Je voudrais ajouter une boutique en ligne à mon site (passer au ' . esc_attr($nom) . '). Pouvez-vous me dire le prix ?">'
+            . '<button class="btn btn-primary" type="submit">' . aled08e_icon('key-round') . '<span>Débloquer ma boutique : demander le prix</span></button></form>'
+            . '<p class="verrou-note">Gratuit et sans engagement : vous recevez un prix, et vous décidez.</p>';
+    } else {
+        $h .= '<p><a class="btn btn-primary" href="' . esc_url(home_url('/contact/')) . '">' . aled08e_icon('message-circle') . '<span>Nous écrire pour débloquer la boutique</span></a></p>';
+    }
+    return $h . '</section>';
+}
+
+/* Client en Autonomie (sans abonnement) : ce qu'il peut faire ici, et un bouton pour passer à Mini */
+function aled08e_autonomie_html($uid) {
+    $f = aled08e_data()['forfaits'][0] ?? ['name' => 'Mini', 'month' => 10, 'main' => []];
+    $h = '<section class="verrou verrou-mini" aria-label="Modifications verrouillées">'
+        . '<span class="verrou-art" aria-hidden="true">' . aled08e_monster('maxi') . '</span>'
+        . '<p class="verrou-tag">' . aled08e_icon('lock') . '<span>Option verrouillée</span></p>'
+        . '<h3>Les modifications s’ouvrent avec ' . esc_html($f['name']) . '</h3>'
+        . '<p>Vous êtes en Autonomie : vous gérez votre site vous-même. Avec ' . esc_html($f['name']) . ', ' . esc_html(aled08e_euro_txt($f['month'])) . ' par mois sans engagement, on s’occupe de tout :</p><ul class="verrou-liste">';
+    foreach (array_slice((array) ($f['main'] ?? []), 0, 9) as $l) $h .= '<li>' . aled08e_icon('check') . '<span>' . esc_html($l) . '</span></li>';
+    $h .= '</ul>';
+    if (aled08e_a_la_demande('specifique')) {
+        $h .= '<form method="post" action="' . esc_url(aled08e_url()) . '">'
+            . '<input type="hidden" name="aled08e_demande" value="1"><input type="hidden" name="extra" value="specifique"><input type="hidden" name="extra_ok" value="1">' . wp_nonce_field('aled08e_demande', '_aled08e', true, false)
+            . '<input type="hidden" name="demande" value="Je voudrais passer à l’abonnement ' . esc_attr($f['name']) . ' (' . esc_attr(aled08e_euro_txt($f['month'])) . ' par mois). Pouvez-vous reprendre mon site ?">'
+            . '<button class="btn btn-primary" type="submit">' . aled08e_icon('key-round') . '<span>Je veux passer à ' . esc_html($f['name']) . '</span></button></form>'
+            . '<p class="verrou-note">On vous répond sous 48 h pour reprendre votre site. Les extras restent ouverts dans l’onglet Extras.</p>';
+    }
+    return $h . '</section>';
+}
