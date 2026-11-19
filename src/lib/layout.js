@@ -1,5 +1,5 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, sections, types, forfaits, creation, jetonsLia, marche, enService, lissage } = require('../config');
+const { site, sections, types, forfaits, creation, jetonsLia, enService, lissage, creationSeule } = require('../config');
 let METIERS = [];
 try { METIERS = require('../content/metiers').metiers; } catch (e) { /* pas encore écrit */ }
 const { icon } = require('./icons');
@@ -17,8 +17,10 @@ const brandName = '<span class="brand-pre">Les Minis</span> <span class="brand-c
 const { esc, typo } = require('./md');
 const C = require('./components');
 
-// L'offre unique : le site à prix unique, puis un seul abonnement
+// L'offre finale : trois sites payés une fois (config.types), puis Autonomie (0 € par mois) ou Mini (10 € par mois, sans engagement)
 const ABO = forfaits[0];
+const AUTO = creationSeule;
+const PRIX_SITES = types.map((t) => `${t.name} ${C.euro(t.price)}`).join(', ');
 
 const assetsVersion = { css: '1', js: '1' };
 function setAssetVersion(v) { Object.assign(assetsVersion, v); }
@@ -28,13 +30,13 @@ function businessSchema() {
   const offers = [
     ...types.map((t) => ({
       '@type': 'Offer',
-      name: 'Création : ' + t.label,
+      name: t.name + ' : ' + t.but.toLowerCase(),
       price: t.price,
       priceCurrency: 'EUR',
       description: t.pitch.replace(/’/g, "'"),
       url: site.url + C.creerUrl({ type: t.id }),
     })),
-    // L'abonnement : un seul, le même pour tous les sites
+    // Mini : le seul abonnement, jamais imposé (Autonomie : 0 € par mois, le client gère tout)
     ...forfaits.map((f) => ({
       '@type': 'Offer',
       name: f.name + ' mensuel',
@@ -48,9 +50,9 @@ function businessSchema() {
     '@type': 'ProfessionalService',
     '@id': site.url + '/#entreprise',
     name: site.name,
-    slogan: `Votre site internet à ${creation.prix} €, le même prix pour tous`,
+    slogan: `Sites internet dès ${creation.prix} €, prix affichés`,
     description:
-      `Création de sites internet à prix unique, ${creation.prix} € (${creation.pages} pages, boutique en ligne en option), puis un abonnement à ${ABO.month} € par mois : nom de domaine offert tant qu’il est actif, hébergement, sauvegardes, sécurité, modifications incluses. Des extras se prennent à la carte. Tout se fait en ligne, pour des clients partout en France.`,
+      `Création de sites internet pour artisans et commerçants, payés une fois : ${PRIX_SITES}. Ensuite, au choix : ${AUTO.name} à ${AUTO.month} € par mois, ou ${ABO.name} à ${ABO.month} € par mois sans engagement (hébergement, nom de domaine, sauvegardes, sécurité, maintenance, modifications). Tout se fait en ligne, pour des clients partout en France.`,
     url: site.url + '/',
     ...(site.email ? { email: site.email } : {}),
     image: site.url + '/assets/img/og-image.png',
@@ -62,8 +64,8 @@ function businessSchema() {
       addressCountry: site.address.country,
     },
     areaServed: [{ '@type': 'Country', name: 'France' }],
-    hasOfferCatalog: { '@type': 'OfferCatalog', name: 'Sites internet et abonnement', itemListElement: offers },
-    knowsAbout: ['Création de site internet', 'Site vitrine', 'Boutique en ligne', 'Référencement naturel (SEO)', 'Référencement local', 'Intelligence artificielle'],
+    hasOfferCatalog: { '@type': 'OfferCatalog', name: 'Sites internet et abonnement Mini', itemListElement: offers },
+    knowsAbout: ['Création de site internet', 'Site vitrine', 'Boutique en ligne', 'Référencement naturel (SEO)', 'Référencement local', 'Visibilité sur Google'],
   };
   const sameAs = Object.values(site.social).filter(Boolean);
   if (sameAs.length) b.sameAs = sameAs;
@@ -103,9 +105,9 @@ function graph(p) {
 // Outils en pause (config enService) : l'onglet Outils disparaît du menu.
 const NAV = ['equipe', 'accompagnement', 'forfaits', 'espace', 'confiance', 'contact'].filter((k) => k !== 'espace' || enService.outils);
 const NAV_DESC = {
-  equipe: 'Ma petite bande et moi',
+  equipe: 'Alex et les Minis Monstres',
   accompagnement: 'Après la mise en ligne',
-  forfaits: 'Tout compris, voir nos tarifs',
+  forfaits: `Trois sites, dès ${creation.prix} €`,
   espace: 'Des outils pour vous aider',
   confiance: 'Des sites à visiter',
   contact: 'Une question, un projet ?',
@@ -139,13 +141,13 @@ function header(currentPath) {
 // ---------------------------------------------------------------- pied de page
 function footer(p) {
   // la petite famille, assise sur le bord du pied de page
-  const parade = ['champi', 'mochi', 'fantome', 'gelee', 'chaton', 'nuage', 'dino', 'etoile'];
+  const parade = ['bricou', 'mochi', 'fantome', 'gelee', 'chaton', 'nuage', 'dino', 'etoile'];
   return `<footer class="site-footer">
   <div class="parade" aria-hidden="true">${parade.map((n, i) => `<span class="parade-m pm-${i}">${petit(n, { humeur: i % 3 === 1 ? 'ravi' : 'content' })}</span>`).join('')}</div>
   <div class="container footer-grid">
     <div class="footer-brand">
       <a class="brand" href="/">${logoMark({ id: 'lgf' })}<span class="brand-text"><strong>${brandName}</strong></span></a>
-      <p>Des sites internet professionnels, simples et faits pour être trouvés sur Google. Je conçois votre site et je reste à vos côtés, mes automatisations font le reste. Depuis les Ardennes, pour des clients partout en France.</p>
+      <p>Des sites internet simples, faits pour être trouvés sur Google. Une méthode rodée, des prix affichés, quelqu’un qui vous répond. Depuis les Ardennes, pour des clients partout en France.</p>
       <ul class="footer-contact">
         <li><a href="${C.contactUrl}">${icon('message-circle')}Nous écrire</a></li>
         ${site.email ? `<li><a href="mailto:${site.email}">${icon('mail')}${site.email}</a></li>` : ''}
@@ -155,9 +157,8 @@ function footer(p) {
       <h2 class="footer-title">Votre site</h2>
       <ul class="footer-links">
         <li><a href="${sections.creer.path}">Créer mon site</a></li>
-        <li><a href="${C.creerUrl()}">Site Internet Professionnel</a></li>
-        <li><a href="${C.creerUrl({ type: 'boutique' })}">Avec une boutique en ligne</a></li>
-        <li><a href="${sections.forfaits.path}">Tarifs : ${marche.fois} fois moins cher</a></li>
+        ${types.map((t) => `<li><a href="${C.creerUrl({ type: t.id })}">${t.name}, ${C.euro(t.price)}</a></li>`).join('\n        ')}
+        <li><a href="${sections.forfaits.path}">Tarifs : dès ${creation.prix} €</a></li>
       </ul>
     </div>
     <div>
@@ -195,7 +196,7 @@ function footer(p) {
     </div>
   </div>
   <div class="footer-bottom"><div class="container footer-bottom-in">
-    <p>© ${new Date().getFullYear()} ${site.name}. Sites internet et SEO.</p>
+    <p>© ${new Date().getFullYear()} ${site.name}. Sites internet pour artisans et commerçants.</p>
     <ul>
       <li><a href="/mentions-legales/">Mentions légales</a></li>
       <li><a href="/politique-de-confidentialite/">Confidentialité</a></li>
@@ -216,14 +217,14 @@ ${liaFlot()}`;
 // Dans l'espace client : on lui écrit, elle répond, aide à formuler la demande, la fait confirmer puis la transmet à Alex
 // (voir main.js et includes/bulle.php). Aucun petit monstre ne modifie le site : c'est Alex qui fait les modifications.
 function liaFlot() {
-  const eur = (n) => `${n} €`;
+  const eur = C.euro;
   const questions = [
-    ['C’est combien ?', `Votre site professionnel coûte ${eur(creation.prix)} une seule fois, pour ${creation.pages} pages adaptées à l’ordinateur, à la tablette et au téléphone. Vous pouvez le payer en ${lissage.durees.join(' ou ')} fois sans frais. Ensuite, pour le maintenir, l’abonnement ${ABO.name} coûte ${eur(ABO.month)} par mois, sans engagement : hébergement, sauvegardes, sécurité, modifications incluses, et nom de domaine offert tant que l’abonnement est actif. Les extras se prennent à la carte, depuis votre espace client. Vous avez déjà votre hébergement ? La création seule vous donne le code du site, sans abonnement.`, sections.forfaits.path, 'Voir les tarifs'],
-    ['Comment ça marche ?', 'Vous composez votre site en deux minutes, et Alex le crée pour vous. Il vous le montre avant la mise en ligne, et vous lui dites ce qui doit changer. Vous voyez le prix avant de commander.', sections.creer.path, 'Créer mon site'],
-    ['Qui fait mon site ?', 'Alex ! C’est lui qui conçoit votre site et qui vous répond. Moi, je suis la secrétaire de sa petite bande. Les Minis Monstres vous aident, c’est Alex qui modifie votre site.', sections.equipe.path, 'Rencontrer la bande'],
-    ['Et pour changer mon site après ?', 'Écrivez-moi votre demande dans votre espace client. Je vous pose quelques questions pour bien comprendre, vous confirmez, et je transmets à Alex. C’est lui qui fait la modification, avec soin, et elle peut prendre jusqu’à 48 h. C’est compris dans votre abonnement !', sections.accompagnement.path, 'L’accompagnement'],
+    ['C’est combien ?', `Trois sites, payés une seule fois : ${types.map((t) => `${t.name} ${eur(t.price)}`).join(', ')}. Payable en ${lissage.durees.join(' ou ')} fois sans frais. Ensuite, vous choisissez : ${AUTO.name}, ${eur(AUTO.month)} par mois, vous gérez tout vous-même. Ou ${ABO.name}, ${eur(ABO.month)} par mois sans engagement, on s’occupe de tout.`, sections.forfaits.path, 'Voir les tarifs'],
+    ['Quel site choisir ?', `${types.map((t) => `${t.name} : ${t.but.toLowerCase()}`).join('. ')}. Vous hésitez ? Écrivez-nous, on vous aide à choisir.`, sections.creer.path, 'Créer mon site'],
+    ['Qui fait mon site ?', 'Alex conçoit votre site et vérifie tout. Moi, je suis la secrétaire de sa petite bande : je réponds à vos questions et je prends vos demandes.', sections.equipe.path, 'Rencontrer la bande'],
+    ['Et pour changer mon site après ?', `Avec ${ABO.name}, vos modifications sont incluses. Vous écrivez votre demande dans votre espace client, je vous aide à la formuler, et elle est faite pour vous. Elle peut prendre ${C.DELAI_MODIF}.`, sections.accompagnement.path, 'L’accompagnement'],
   ];
-  const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', enService.outils ? 'Comment avoir plus d’avis Google ?' : 'Comment se passe une modification ?', 'Que comprend mon abonnement ?'];
+  const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', enService.outils ? 'Comment avoir plus d’avis Google ?' : 'Comment se passe une modification ?', `Que comprend ${ABO.name} ?`];
   return `<div class="lia-flot" data-lia-flot hidden>
   <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Cerise, la secrétaire d’Alex" hidden>
     <div class="lia-tete">${monster('coucou')}<p><strong>Cerise</strong><small>La secrétaire de la petite bande</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Cerise">${icon('x')}</button></div>
@@ -232,7 +233,7 @@ function liaFlot() {
       <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Bonjour ! Dites-moi ce que vous voulez changer sur votre site, ou posez-moi une question.</p>
       <p class="lia-msg is-lia" data-lia-accueil="demo" hidden>Bonjour ! Ici, c’est une démonstration : écrivez-moi comme un client, je vous montre comment je réponds.</p>
       <p class="lia-msg is-lia" data-lia-accueil="attente" hidden>Bonjour ! Je ne suis pas encore branchée dans cet espace. En attendant, écrivez à Alex dans l’onglet Mes demandes.</p>
-      <p class="lia-msg is-lia" data-lia-accueil="abonnement" hidden>Bonjour ! Je vous réponds ici dès que votre abonnement a démarré. En attendant, écrivez à Alex dans l’onglet Mes demandes.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="abonnement" hidden>Bonjour ! Je vous réponds ici avec ${ABO.name}, dès qu’il a démarré. En attendant, écrivez à Alex dans l’onglet Mes demandes.</p>
     </div>
     <div class="lia-puces" data-lia-liens="site">
       ${questions.map(([q], i) => `<button type="button" data-lia-q="${i}">${q}</button>`).join('')}
@@ -248,7 +249,7 @@ function liaFlot() {
       <button type="submit" aria-label="Envoyer à Cerise">${icon('send')}</button>
     </form>
     <p class="lia-note" data-lia-note-site hidden>Cerise répond automatiquement et peut se tromper. Pour une demande précise, <a href="${C.contactUrl}">écrivez à Alex</a>.</p>
-    <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Cerise répond automatiquement et peut se tromper. Elle ne touche pas à votre site : c’est Alex qui fait les modifications. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
+    <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Cerise répond automatiquement et peut se tromper. Elle ne touche pas à votre site : elle transmet votre demande. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
   </div>
   <p class="lia-flot-coucou" hidden><strong>Je suis là pour vous aider !</strong><small>Cerise, la secrétaire de la bande</small></p>
   <button type="button" class="lia-flot-btn" aria-expanded="false" aria-controls="lia-panel"><span class="sr-only">Parler à Cerise</span>${monster('coucou')}</button>
@@ -290,7 +291,7 @@ function page(p) {
 <meta property="og:image" content="${ogImage}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="${esc(`${site.name} : votre site internet tout compris, ${marche.fois} fois moins cher`)}">
+<meta property="og:image:alt" content="${esc(`${site.name} : sites internet dès ${creation.prix} €, prix affichés`)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(titreCourt(p.title))}">
 <meta name="twitter:description" content="${esc(p.description)}">

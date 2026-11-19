@@ -1,13 +1,13 @@
 # ALED08 : site internet
 
-Site d'**ALED08** : des sites internet à petit prix, pensés pour Google, avec un espace client pour les modifier grâce à l'IA.
+Site des **Minis Monstres** (agence web d'Alex) : des sites internet à petit prix, pensés pour Google, avec un espace client pour demander ses modifications.
 
-- **Une seule offre** : le site à 500 €, quel que soit le site. Boutique en ligne : + 200 €. En une fois, ou en 6 ou 12 fois sans frais.
-- **Un abonnement obligatoire, sans engagement** : 10 € par mois (nom de domaine, hébergement, mises à jour, suivi, support, 100 jetons par mois pour les outils et les retouches avec Cerise, rachetables à l'utilisation, et une intervention d'Alex par trimestre). À l'année : 2 mois offerts.
-- **Extras à la demande, payés une fois** : intervention d'Alex en plus 5 €, demande sous 24 heures 5 €, article écrit et publié 15 €, point de 30 minutes avec Alex 15 €.
-- **Options à la création** (une fois) : anglais, prise de rendez-vous, reprise de l'ancien site, cinq pages de plus, 100 € chacune.
-- **Extras au mois**, à ajouter ou retirer quand on veut : Suivi Google 10 €, chiffres détaillés 5 €, e-mail pro 3 €, et pour une boutique gestion du stock 5 € et comptes clients 5 €.
-- **Les mascottes** : Cerise, un joli petit monstre rose (c'est l'IA), et Alex, un petit monstre à lunettes (c'est l'humain). Dessins dans `src/lib/monsters.js`. Cerise suit le visiteur dans une bulle, en bas de chaque page.
+- **Trois sites, payés une fois** (offre du 19 novembre 2026) : 👾 Site Essentiel 500 € (une page, « Exister sur internet »), 🚀 Site Visibilité 750 € (jusqu'à 20 pages, « Être trouvé sur Google »), 🛒 Site Boutique 1 200 € (« Vendre sur internet »). Acompte de 25 % à la commande, le reste à la réception, en une fois ou en 6 ou 12 fois sans frais. Révisions illimitées jusqu'à validation, export du site possible.
+- **Ensuite, au choix, sans abonnement imposé** : ⚪ Autonomie, 0 € par mois (le client gère hébergement, nom de domaine, sauvegardes et mises à jour, et reçoit l'export de son site), ou 🔵 Mini, 10 € par mois sans engagement (hébergement, nom de domaine, sauvegardes automatiques, sécurité, maintenance technique, espace client, modifications incluses en 48 h au plus, une demande à la fois). À l'année : 2 mois offerts.
+- **Trois extras** : 📈 page de visibilité Google, 15 € la page, payée une fois par carte depuis l'espace client ; 🌍 traduction anglaise, sur devis ; ⚙️ fonctionnalité spécifique, sur devis.
+- **Comparaison honnête** : `marche.fois` vaut « 2 à 4 » (site vitrine de cinq pages chez un indépendant, 1 500 à 3 000 €, face au Site Visibilité à 750 €).
+- **Il n'y a plus** d'option à la création, d'extra au mois ni de lot d'articles payant pour la boutique : le client gère son catalogue librement.
+- **La bande** (cinq monstres, `bande` dans `src/config.js`) : 🍒 Cerise, la secrétaire ; 🔧 Bricou, le constructeur ; ✍️ Plume, la rédactrice ; 👀 Mirette, la spécialiste visibilité ; 📦 Mochi, l'organisateur. Cerise suit le visiteur dans une bulle, en bas de chaque page.
 
 Site **statique**, rapide, sans base de données : un petit générateur Node.js (sans aucune dépendance) produit toutes les pages HTML dans `dist/`.
 
@@ -17,9 +17,9 @@ Site **statique**, rapide, sans base de données : un petit générateur Node.js
 
 | Rubrique | Adresse | Contenu |
 |---|---|---|
-| Accueil | `/` | Promesse, types de site, forfaits, espace client, SEO, comparaison avec Shopify |
-| Créer mon site | `/creer-mon-site/` | **Configurateur** : type de site, nom de domaine vérifié en direct, forfait, au mois ou à l'année, options, récapitulatif |
-| Tarifs | `/tarifs/` | L'offre unique : 500 € le site, 10 € par mois, les options, les extras, les Jetons Cerise, la comparaison avec le marché |
+| Accueil | `/` | Phrase principale, les trois sites, Autonomie ou Mini, espace client, visibilité Google |
+| Créer mon site | `/creer-mon-site/` | **Configurateur** : choix du site, Autonomie ou Mini, nom de domaine vérifié en direct, au mois ou à l'année, récapitulatif |
+| Tarifs | `/tarifs/` | Les trois sites (500, 750, 1 200 €), Autonomie ou Mini (10 € par mois), les trois extras, la comparaison avec le marché |
 | Nos outils | `/nos-outils/` | Demandes de modification gérées par moi ; outils gratuits (tableau de bord, QR code, lien d'avis, factures) |
 | Mon espace (démo) | `/mon-espace/` | Démo : demandes et suivi, tableau de bord, QR code, lien d'avis, forfait et factures |
 | SEO | `/referencement-seo/` | Ce que je fais, le SEO dans chaque forfait, ce que je ne promets pas |
@@ -30,7 +30,7 @@ Chaque rubrique a sa couleur pastel (menu, pastille en haut de page) pour qu'on 
 
 ## Où changer les prix
 
-Tout est dans **`src/config.js`** : `types` (prix de création), `entretien`, `forfaits` (supplément et jetons), `jetons` (recharge), `annuel` (mois offerts), `options`, `fidelite`, `paiement`, `shopify` (prix relevés pour le comparatif, avec la date). Le site, le configurateur et les données structurées se mettent à jour au prochain `npm run build`.
+Tout est dans **`src/config.js`** : `types` (les trois sites et leurs prix), `creation` (prix et nombre de pages), `forfaits` (Mini), `creationSeule` (Autonomie), `aLaDemande` (extras), `annuel` (mois offerts), `fidelite`, `paiement`, `marche` (repères du marché), `bande`, `phrase`. Le site, le configurateur et les données structurées se mettent à jour au prochain `npm run build`.
 
 L'espace client est ouvert sur `/mon-espace/` (WordPress, extension « ALED08 Espace client »). Le mode d'emploi complet du propriétaire (commandes, Stripe, noms de domaine, comptes automatiques) est dans `docs/gestion-du-site.md`.
 

@@ -246,7 +246,7 @@ function forfaitsPage() {
 <section class="section section-soft" id="maintenir"><div class="container">
   <h2 class="section-title">Ensuite : ${esc(AUTO.name)} ou ${esc(ABO.name)}</h2>
   <p class="section-sub">Aucun abonnement n’est imposé. Vous gérez tout vous-même, ou on s’occupe de tout pour ${euro(ABO.month)} par mois, sans engagement.</p>
-  ${C.creationSeuleBox()}
+  ${commun(C.creationSeuleBox())}
   <div class="duo">
     <div class="jetons-box reveal">
       <h3>${icon('shield-check')}Ce que comprend ${esc(ABO.name)}</h3>
@@ -1319,7 +1319,7 @@ ${C.ctaBand({ title: 'On s’occupe de votre site ?', text: 'Choisissez-le en de
     path: sections.equipe.path,
     section: 'equipe',
     title: 'Notre équipe : Alex et sa petite bande | Les Minis Monstres',
-    description: `Alex conçoit chaque site et vérifie tout. Avec lui, cinq petits monstres : ${bande.map((b) => `${b.nom} ${b.role.toLowerCase()}`).join(', ')}.`,
+    description: `Alex conçoit chaque site et vérifie tout. Avec lui, cinq petits monstres, chacun son métier : ${bande.map((b) => b.nom).join(', ')}. Faites connaissance.`,
     crumbs,
     body,
     priority: 0.7,

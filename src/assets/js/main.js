@@ -966,7 +966,7 @@
       if (left < prix) { toast(tr(parRetouche ? 'Vous avez utilisé vos petites retouches du mois (démo)' : 'Il ne vous reste pas assez d’énergie pour cette demande (démo)')); return; }
       used += prix; left = Math.max(0, max - used); drawJauge();
       var li = d.createElement('li');
-      li.innerHTML = '<span><strong></strong><small>' + tr('envoyée à l’instant') + '</small></span><em class="st st-new">' + tr('Transmise à Alex') + '</em>';
+      li.innerHTML = '<span><strong></strong><small>' + tr('envoyée à l’instant') + '</small></span><em class="st st-new">' + tr('Transmise') + '</em>';
       li.querySelector('strong').textContent = text.length > 60 ? text.slice(0, 57) + '…' : text;
       list.insertBefore(li, list.firstChild);
       txt.value = ''; file.value = ''; fileName.textContent = tr('Ajouter une photo (facultatif)');
@@ -976,7 +976,7 @@
       setTimeout(function () {
         st.className = 'st st-done'; st.textContent = tr('Faite');
         toast(tr(sansJauge ? 'Alex a fait votre modification, elle est en ligne (démo)' : 'Votre modification est en ligne (démo)'));
-        addLog('check', 'Modification faite par Alex : ' + li.querySelector('strong').textContent);
+        addLog('check', 'Modification faite : ' + li.querySelector('strong').textContent);
       }, 4500);
     });
 

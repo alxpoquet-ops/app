@@ -76,8 +76,8 @@ write(
   'site.webmanifest',
   JSON.stringify(
     {
-      name: 'Alex & Lia, sites internet et SEO',
-      short_name: 'Alex & Lia',
+      name: 'Les Minis Monstres, sites internet',
+      short_name: 'Minis Monstres',
       start_url: '/',
       display: 'standalone',
       background_color: '#16142A',

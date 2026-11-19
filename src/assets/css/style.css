@@ -2453,3 +2453,9 @@ a.client-url { text-decoration: none; }
 .extra-carte > p { margin: 0; color: var(--text); line-height: 1.5; }
 .extra-carte .plan-list { margin: 6px 0 0; }
 @media (min-width: 760px) { .extras-cartes { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* démo de l'espace client : le bloc « Option verrouillée » */
+.app-lock { display: flex; gap: 12px; align-items: flex-start; padding: 16px; margin: 0 0 16px; border-radius: 20px; background: var(--pink); color: var(--ink); box-shadow: 0 0 0 2px var(--pink-d) inset; }
+.app-lock > .ico { flex: none; width: 26px; height: 26px; margin-top: 2px; color: var(--pink-dd); }
+.app-lock strong { display: block; font-weight: 900; }
+.app-lock p { margin: 4px 0 10px; line-height: 1.45; font-weight: 600; }
+.app-lock .btn { white-space: normal; }

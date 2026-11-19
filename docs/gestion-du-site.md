@@ -2,27 +2,28 @@
 
 Ce guide explique, en français simple, comment fonctionne le site www.les-minis-monstres.fr au quotidien : les commandes, les paiements, les noms de domaine, les comptes clients et les demandes de modification. Tout se passe dans WordPress, menu **ALED08** (le visage souriant, en haut à gauche).
 
-## 1. L'offre, en bref (mise à jour le 18 novembre 2026 : un seul abonnement, et des extras à la carte)
+## 1. L'offre, en bref (offre finale du 19 novembre 2026)
 
-- **La page de commande, de haut en bas** : le site, l'option boutique, le choix « On s'occupe de tout » ou « Je m'en occupe moi-même », puis (seulement avec « On s'occupe de tout ») l'abonnement Mini et le nom de domaine, et enfin le total avec le paiement (une fois ou étalé) et le code promo.
-- **Le site** : « Site Internet Professionnel », 500 €, jusqu'à 15 pages. Design personnalisé, adapté à tous les écrans, formulaire de contact, accompagnement personnalisé, les Minis Monstres. La « carte Google » et le « référencement Google de base » ne sont plus annoncés (retirés le 17 novembre 2026) : ne les promettez pas. Les pages non utilisées deviennent des pages pour Google (SEO) : par exemple 8 pages pour l'activité, 7 pour Google.
-- **Une seule option à la commande** : Boutique en ligne 200 €, payée une fois (catalogue, panier, paiement en ligne, commandes, e-mails automatiques).
-- **Les pages SEO supplémentaires, plus tard** : « Page SEO optimisée », 15 € la page, payée une fois. Par exemple : service + ville, FAQ, métier, page locale, guide. Elle ne se choisit pas à la commande (dans `src/config.js`, l'option `packseo` a `quand: 'espace'`, `price.once: 5`, `pages: 1`). Le client la commande quand il veut, une page à la fois, depuis son espace client, onglet « Mes demandes ». Lumi la prépare, je la relis, puis elle est mise en ligne. Le code promo ne s'y applique pas. L'ancien Pack SEO à 25 € (10 pages) n'existe plus.
-- **Deux achats bien séparés : créer le site, puis le maintenir.** Créer : 500 € une fois (boutique : + 200 €). Maintenir : l'abonnement **Mini, 10 € par mois, sans engagement** (id `base`, `forfaits` dans `src/config.js`), le seul qui existe depuis le 18 novembre 2026. **Maxi n'est plus proposé.**
-  - Mini comprend : hébergement, **nom de domaine offert tant que l'abonnement est actif**, installation et mise en ligne, sauvegardes, sécurité, maintenance technique, tableau de bord, et les modifications incluses. **Une modification peut prendre jusqu'à 48 h** (délai habituel, pas une garantie : les CGV le disent). Une demande à la fois. Son dessin est le monstre « Maxi ».
-  - **Tout le reste se prend en extra, depuis l'espace client**, sans engagement (liste dans `src/config.js` : `aLaDemande` pour les extras payés une fois, `options` avec `price.month` pour les extras au mois, regroupés par `extrasGroupes`). Les extras payés une fois se commandent dans « Mes demandes » et s'ajoutent à la prochaine facture Stripe, Alex les fait sous 7 jours. Les extras au mois se cochent dans « Abonnement et factures » (ligne d'abonnement Stripe en plus).
-  - **Extras payés une fois** : page SEO optimisée 15 € (packs 1, 5, 10), article 15 €, avis Google sur le site 40 €, prise de rendez-vous 100 €, bouton WhatsApp 20 €, lettre d'information 60 €, Instagram en direct 50 €, traduction en anglais 100 €, page en plus 10 €, photos retouchées 25 €, reprise de l'ancien site 100 €, point de 30 minutes 15 €, et « demande en 24 heures » 5 € (case à cocher sur une demande de modification). **Au mois** : assistant Cerise sur le site 15 €, deux demandes à la fois 5 €, analyse de Mirette 5 €, une page SEO optimisée chaque mois 15 €, chaque semaine 50 €, e-mail pro 3 €, gestion du stock et comptes clients (boutiques) 5 € chacun. **Ces prix sont des propositions : on les change dans `config.js`.**
-  - Certains extras sont des services qu'Alex installe à la main à la demande (Instagram, avis Google, rendez-vous, WhatsApp, lettre d'information, assistant sur le site, traduction). L'espace client les vend et vous prévient par e-mail, il ne les installe pas tout seul. L'assistant Cerise sur le site d'un client n'est pas encore automatisé (la barre de Cerise du site Les Minis Monstres, `includes/bulle-site.php`, en est le modèle).
-  - **Ce qui dépend d'un extra dans l'extension** : l'analyse de Mirette (`aled08e_mirette_actif`), les pages SEO automatiques de Lumi (`aled08e_seo_rythme`, extras `seomois` et `seosemaine`), deux demandes à la fois (`aled08e_demandes_max`).
-  - **L'ancien Maxi** (`forfaitsAnciens` dans `config.js`) : un client qui l'a déjà le garde (priorité, deux demandes, page SEO chaque semaine, analyse de Mirette), sa fiche l'affiche « ancien, plus proposé ». Rien n'est changé dans Stripe tout seul : si vous voulez le passer à Mini plus des extras, changez-le à la main (fiche client et abonnement Stripe).
-  - **Changer d'abonnement** n'existe plus (un seul abonnement) : le client ajoute ou retire des extras au mois quand il veut.
-- **« Je m'en occupe moi-même » = la création seule (500 €, sans abonnement)** : rien au mois. Le client gère son nom de domaine et son hébergement (il peut déjà les avoir). Il paie le site comme les autres : acompte 25 %, puis le reste à la réception, en une fois ou en 6 ou 12 fois sans frais (engagement le temps du paiement). L'automate saute le domaine et l'hébergement : la commande passe directement à « Tout est prêt » et vous recevez l'e-mail « CRÉATION SEULE ». À la fin, remettez-lui le code du site : les fichiers et une sauvegarde complète, avec une petite notice d'installation. Il l'installe lui-même ou avec l'aide de son hébergeur, et peut suivre des tutoriels publics gratuits (les guides d'aide de son hébergeur, par exemple). Maintenance, sauvegardes, sécurité et modifications ne sont pas comprises. Il peut prendre un abonnement (Mini ou Maxi) plus tard.
-- **Modifications incluses, sans les compter.** Plus d'intervention par trimestre, plus d'intervention en plus à 5 €, plus d'énergie ni de limite de retouches. Le déroulé est dans la partie 9.
-- **Code promo ou parrainage** (l'offre événement est retirée du site) : une seule case, au total et sur la page Commander. Un code promo donne 20 % de remise sur la création (le site et la boutique, jamais l'abonnement ni les pages SEO supplémentaires). Vos codes se règlent dans ALED08 › Réglages › « Codes promo », un par ligne. Il n'y a plus de code par défaut : tant que la liste est vide, aucun code promo ne marche. Le code de parrainage d'un client marche dans la même case : il devient le parrain de la commande (un mois offert à chacun).
-- **Paiement de la création** : 25 % à la commande (site et boutique), le reste à la réception, en une fois ou en 6 ou 12 fois sans frais, avec l'abonnement comme en création seule. Avec l'abonnement et un paiement étalé, l'abonnement est payé au mois. Parrainage : 1 mois offert pour vous deux. Deuxième site : 10 % de remise.
-- **Les anciens clients** gardent leurs options et extras tant qu'ils ne les retirent pas (ils les voient dans « Abonnement et factures », seulement pour les retirer). Un abonnement déjà en cours continue à son prix actuel (c'est ce que disent les CGV, article 7). Un client qui avait l'ancienne formule à 20 € (id `evolution`) est maintenant lu par l'extension comme Maxi, et un client à 10 € (id `base`) comme Mini. Leur prix Stripe ne change pas tant que vous ne le modifiez pas.
+- **La page de commande, de haut en bas** : le choix du site, puis la façon de le faire vivre (Autonomie ou Mini), le nom de domaine avec Mini, et enfin le total avec le paiement (une fois ou étalé) et le code promo.
+- **Trois sites, payés une fois** (`types` dans `src/config.js`) :
+  - 👾 **Site Essentiel, 500 €** (id `une-page`, `creation.prix`) : site One Page personnalisé, design adapté à l'activité, compatible téléphone et ordinateur, formulaire de contact, rendez-vous téléphonique de découverte, révisions illimitées jusqu'à validation finale, mise en ligne complète, export du site possible. « Exister sur internet ».
+  - 🚀 **Site Visibilité, 750 €** (id `vitrine`, `creation.visibilite`) : tout le Site Essentiel, jusqu'à 20 pages (`creation.pages`), pages de visibilité Google intégrées, FAQ personnalisée, référencement local renforcé, structure optimisée pour Google. « Être trouvé sur Google ».
+  - 🛒 **Site Boutique, 1 200 €** (id `boutique`, `creation.boutiquePrix`) : tout le Site Visibilité, boutique complète, panier, paiement en ligne sécurisé, gestion des produits et des commandes, e-mails automatiques, configuration complète, catalogue géré librement par le client, sans limite d'articles. « Vendre sur internet ».
+- **Révisions** (`config.revisionsNote`) : illimitées sur le site commandé, jusqu'à ce que le client le valide. Après la mise en ligne, les modifications passent par l'abonnement Mini.
+- **Ensuite, deux façons de faire vivre le site. L'abonnement est facultatif.**
+  - ⚪ **Autonomie, 0 € par mois** (`config.creationSeule`, id `sans`) : le client gère son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. On lui remet l'export de son site, prêt à installer. L'automate saute le domaine et l'hébergement.
+  - 🔵 **Mini, 10 € par mois, sans engagement** (`config.forfaits[0]`, id `base`) : hébergement, nom de domaine, sauvegardes automatiques, sécurité, maintenance technique, espace client, les Minis Monstres à votre service, modifications incluses demandées depuis l'espace client. **Une modification peut prendre jusqu'à 48 h** (délai habituel, pas une garantie : les CGV le disent), une demande à la fois. C'est le seul abonnement.
+- **Trois extras seulement** (`aLaDemande` non retirés dans `src/config.js`) :
+  - 📈 **Page de visibilité Google, 15 € la page, payée une fois** : nouvelle page optimisée pour Google, intégrée au site, référencement local soigné. Commandée et payée par carte tout de suite depuis l'espace client.
+  - 🌍 **Traduction anglaise** : sur devis.
+  - ⚙️ **Fonctionnalité spécifique** : sur devis.
+  - Tous les anciens extras sont retirés de la vente (`retire: true`), y compris les extras au mois et les lots d'articles de la boutique.
+- **Code promo ou parrainage** : une seule case, au total et sur la page Commander. Un code promo donne une remise sur la création (jamais sur l'abonnement ni sur les extras). Vos codes se règlent dans ALED08 › Réglages › « Codes promo », un par ligne.
+- **Paiement de la création** : 25 % à la commande, le reste à la réception, en une fois ou en 6 ou 12 fois sans frais (engagement le temps du paiement), avec Mini comme en Autonomie. Parrainage : 1 mois offert pour vous deux. Deuxième site : 10 % de remise.
+- **Comparaison honnête** (`marche` dans `src/config.js`) : un site vitrine de cinq pages (`marche.pagesCompare`) chez un indépendant coûte 1 500 à 3 000 €, notre Site Visibilité 750 €, soit « 2 à 4 » fois moins (`marche.fois`). Ne jamais annoncer plus.
+- **Les anciens clients** gardent l'abonnement, les options et les extras qu'ils ont déjà, aux mêmes conditions, tant qu'ils ne les retirent pas (CGV, article 7). Rien n'est changé dans Stripe tout seul.
 
-Les repères de prix du marché et la comparaison des assistants IA sont dans `docs/prix-et-ia-2026.md`.
+Les repères de prix du marché et la comparaison des assistants sont dans `docs/prix-et-ia-2026.md`.
 
 Tous les prix viennent d'un seul fichier, `src/config.js`. Si un prix change, on relance `node build.js && python3 scripts/wp-export.py` et on réinstalle le thème et l'extension (voir la partie 12). L'extension lit ses prix dans son fichier `data.json`, fabriqué à ce moment-là.
 
@@ -42,9 +43,9 @@ Une pastille rouge sur le menu ALED08 indique le nombre de commandes à traiter.
 
 ## 3. Une commande, de A à Z
 
-Le paiement en deux temps : le client paie 25 % de la création à la commande (boutique en ligne comprise s'il l'a prise, rien d'autre : les pages SEO supplémentaires se commandent plus tard depuis l'espace client). À la réception du site (statut « En ligne »), il choisit dans son espace, onglet « Ma commande » : le reste en une fois, ou en 6 ou 12 fois sans frais (engagement le temps de payer). C'est vrai aussi en création seule. Le même paiement Stripe démarre son abonnement, s'il en a un. Sans Stripe, ou s'il paie autrement, bouton « Reste payé (hors Stripe) » dans la fiche ; « Copier un lien de paiement du reste » donne un lien valable 24 heures.
+Le paiement en deux temps : le client paie 25 % de la création à la commande (25 % du prix du site choisi, rien d'autre : les pages de visibilité Google se commandent plus tard depuis l'espace client). À la réception du site (statut « En ligne »), il choisit dans son espace, onglet « Ma commande » : le reste en une fois, ou en 6 ou 12 fois sans frais (engagement le temps de payer). C'est vrai aussi en Autonomie. Le même paiement Stripe démarre son abonnement, s'il en a un. Sans Stripe, ou s'il paie autrement, bouton « Reste payé (hors Stripe) » dans la fiche ; « Copier un lien de paiement du reste » donne un lien valable 24 heures.
 
-Un ancien client retire ses anciens extras quand il veut (« Abonnement et factures », dans Mon compte) : l'abonnement Stripe est mis à jour, le nouveau prix s'applique à l'échéance suivante, et vous recevez un e-mail. Aucun extra ne s'ajoute plus.
+Un ancien client retire ses anciens extras quand il veut (« Abonnement et factures », dans Mon compte) : l'abonnement Stripe est mis à jour, le nouveau prix s'applique à l'échéance suivante, et vous recevez un e-mail. Les anciens extras ne sont plus vendus.
 
 
 ### Ce qui se passe tout seul
@@ -155,9 +156,9 @@ Faites tout d'abord en **mode test** (clés `sk_test_` et webhook créé en mode
 
 ### 5.5 Comment Stripe facture une commande
 
-- **À la commande** : l'acompte de 25 % (boutique comprise si elle est choisie), payé une fois. Les pages SEO optimisées (15 € la page) ne se prennent pas à la commande : le client les commande plus tard depuis « Mes demandes », et chacune s'ajoute à sa prochaine facture Stripe (sans abonnement, vous la facturez à la main).
-- **À la réception** : le reste, en une fois, ou en 6 ou 12 fois sans frais (prix divisé par 6 ou 12, arrondi au centime inférieur). Avec l'abonnement, tout est dans un seul abonnement Stripe : la ligne de l'abonnement au mois et, s'il y a lieu, la ligne des mensualités du site. En création seule, l'abonnement ne porte que les mensualités, ou bien c'est un simple paiement si le reste est réglé en une fois.
-- **Fin du paiement en plusieurs fois** : l'extension compte les mensualités payées (« Lissage : 4 / 12 payées » dans la fiche et le tableau de bord). Après la dernière, la ligne des mensualités est retirée de l'abonnement : il ne reste que l'abonnement au mois, sans engagement. En création seule, l'abonnement entier s'arrête tout seul.
+- **À la commande** : l'acompte de 25 % du site choisi (Site Essentiel, Site Visibilité ou Site Boutique), payé une fois. Les pages de visibilité Google (15 € la page) ne se prennent pas à la commande : le client les commande plus tard depuis son espace client et les paie par carte tout de suite (voir « Paiement direct par carte »).
+- **À la réception** : le reste, en une fois, ou en 6 ou 12 fois sans frais (prix divisé par 6 ou 12, arrondi au centime inférieur). Avec l'abonnement, tout est dans un seul abonnement Stripe : la ligne de l'abonnement au mois et, s'il y a lieu, la ligne des mensualités du site. En Autonomie (sans abonnement), l'abonnement ne porte que les mensualités, ou bien c'est un simple paiement si le reste est réglé en une fois.
+- **Fin du paiement en plusieurs fois** : l'extension compte les mensualités payées (« Lissage : 4 / 12 payées » dans la fiche et le tableau de bord). Après la dernière, la ligne des mensualités est retirée de l'abonnement : il ne reste que l'abonnement au mois, sans engagement. En Autonomie, l'abonnement entier s'arrête tout seul.
 - Les factures Stripe apparaissent dans l'espace client dès qu'elles sont payées.
 
 ## 6. Le portail client Stripe
@@ -166,7 +167,7 @@ Le bouton « Gérer mon paiement et mes factures » de l'espace client ouvre le 
 
 1. Stripe : **Paramètres › Facturation › Portail client**.
 2. Autorisez : **mettre à jour le moyen de paiement**, **consulter l'historique des factures**.
-3. N'autorisez PAS : annuler l'abonnement, changer d'offre, modifier la quantité. L'engagement pendant le paiement en plusieurs fois et les changements d'abonnement (passage de Mini à Maxi ou l'inverse, à partir du mois suivant, ou passage du mois à l'année) passent par vous (le client vous écrit, vous ajustez l'abonnement dans Stripe).
+3. N'autorisez PAS : annuler l'abonnement, changer d'offre, modifier la quantité. L'engagement pendant le paiement en plusieurs fois et les changements d'abonnement (passage du mois à l'année) passent par vous (le client vous écrit, vous ajustez l'abonnement dans Stripe).
 4. Enregistrez. Le lien du portail est créé à chaque clic et expire en 5 minutes : il n'y a rien à copier.
 
 ## 7. Les factures : mention TVA et SIRET
@@ -192,16 +193,16 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 
 ## 9. Les demandes de modification
 
-Depuis le 17 novembre 2026 (deuxième version) : **les Minis Monstres aident, c'est Alex qui modifie.** Aucun petit monstre ne touche au site d'un client.
+Offre du 19 novembre 2026 : les modifications sont incluses dans l'abonnement Mini, demandées depuis l'espace client, une demande à la fois, 48 h au plus. Le déroulé ci-dessous décrit l'extension telle qu'elle fonctionne : Cerise prépare la demande, puis elle arrive dans la liste « À faire ».
 
 1. Le client écrit sa demande dans l'onglet « Demandes » (avec des photos s'il veut). La jauge apparaît : Demande reçue, Précisée avec Cerise, Chez Alex, Faite.
 2. Cerise relit la demande (elle peut lire le site relié, sans rien modifier). Si c'est flou, elle pose une question (deux au plus), le client répond depuis la jauge.
 3. Cerise reformule la demande clairement et la fait confirmer au client (« Vérifier ma demande » dans la jauge). Non : le client corrige, Cerise reprend (au deuxième « non », la demande part chez Alex avec les remarques).
 4. Oui : Cerise répond « Merci pour vos précisions ! Je transmets votre demande à Alex », et Alex reçoit un e-mail avec la demande claire, la demande d'origine, les photos, les échanges et l'échéance.
-5. Délais, à compter de la confirmation : **48 h au plus** (24 h si le client a coché « Votre demande en 24 heures », 5 €), une demande à la fois (deux avec l'extra « Deux demandes à la fois »). Un extra commandé : sous 7 jours.
-6. Dans « Mon espace », onglet « À faire » : les demandes chez Alex, les anciens Maxi d'abord puis par échéance (orange à moins de 24 h, rouge en retard). Boutons « Je commence » puis « C'est fait, prévenir le client ». Un rappel part la veille de l'échéance, et un autre si elle est dépassée.
+5. Délais, à compter de la confirmation : **48 h au plus**, une demande à la fois. L'extra « demande en 24 heures » et l'extra « Deux demandes à la fois » n'existent plus.
+6. Dans « Mon espace », onglet « À faire » : les demandes chez Alex, par échéance (orange à moins de 24 h, rouge en retard). Boutons « Je commence » puis « C'est fait, prévenir le client ». Un rappel part la veille de l'échéance, et un autre si elle est dépassée.
 7. Le client peut annuler tant qu'Alex n'a pas cliqué « Je commence » (Alex est prévenu si la demande était déjà chez lui). Une demande qui attend le client plus de 7 jours est annulée toute seule. Si Cerise n'a pas pu relire une demande sous 24 h, elle part chez Alex telle quelle.
-8. Pages SEO : Lumi analyse le site (pages existantes, recherches Google) et choisit le sujet (titre, recherche visée, plan). Elle crée une demande « Page SEO » chez Alex, qui écrit et publie la page. Extras : une page SEO chaque mois, ou chaque semaine. Pack : un sujet par page, une échéance tous les trois jours.
+8. Pages de visibilité Google : le client commande une page (15 €, payée par carte), Mirette en prépare le sujet (titre, recherche visée, plan), puis la page est écrite et intégrée au site. Il n'y a plus de page automatique chaque mois ou chaque semaine.
 9. La recherche de prospects a été retirée du tableau de gestion.
 
 ## 10. Le parrainage
@@ -291,23 +292,22 @@ Faites cette liste une fois, en vrai, avec un téléphone et un ordinateur.
 - [ ] Supprimez la commande de test (Commandes › Corbeille) et le compte de test, ou gardez-les si vous voulez des exemples.
 - [ ] Mentions légales et CGV à jour : SIRET quand il arrive, médiateur de la consommation.
 
-## La petite bande (novembre 2026)
+## La petite bande (19 novembre 2026)
 
-Le site public ne parle ni d'IA ni de jetons. Alex conçoit et fait les sites. À côté, ses automatisations sont dessinées en petits monstres (`src/lib/bestiaire.js`), chacun avec un prénom et un seul rôle (`bande` dans `src/config.js`) :
+Le site public parle des Minis Monstres, jamais de la technique qui les fait tourner. La bande compte cinq monstres (`bande` dans `src/config.js`, dessins dans `src/lib/bestiaire.js`), chacun avec un prénom et un rôle :
 
-- **Cerise** : l'assistante de la bulle d'aide (et les questions dans l'espace client).
-- **Mochi** : le gardien (mises à jour, sauvegardes, surveillance), compris dans l'abonnement.
-- **Bricou** : le bricoleur, qui fait les modifications demandées par le client.
-- **Plume** (textes, avis) et **Pouf** (réseaux, photos) : les outils de l'espace client.
-- Un monstre par option au mois : **Lumi** (Suivi Google), **Mirette** (Chiffres détaillés), **Minou** (e-mail pro), **Pistache** (stock), **Champi** (comptes clients).
-- **Alex** a son portrait (`alexPortrait()`).
+- 🍒 **Cerise**, la secrétaire : répond aux questions et prend les demandes (bulle d'aide et espace client).
+- 🔧 **Bricou**, le constructeur : construit le site et fait les modifications.
+- ✍️ **Plume**, la rédactrice : prépare et soigne les textes.
+- 👀 **Mirette**, la spécialiste visibilité : pages de visibilité Google et référencement local.
+- 📦 **Mochi**, l'organisateur : pages, produits et commandes bien rangés.
 
-Dans l'espace client, le compteur s'appelle « énergie » (100 points par mois, recharge 1 € les 100).
+Les autres monstres n'existent plus sur le site public. Il n'y a plus de compteur de points dans l'offre.
 
-### Une demande pour Bricou
+### Une demande pour Bricou (ancien circuit, éteint)
 
 1. Le client choisit Bricou : sa demande passe à l'état « attente_alex ». Bricou lui écrit « Je la montre à Alex, et je m'y mets dans 30 minutes au plus tard ».
-2. Alex reçoit un e-mail avec deux liens (il doit être connecté en administrateur) : **Laisser Bricou faire maintenant**, ou **Je m'en occupe moi-même** (l'énergie du client lui est rendue).
+2. Alex reçoit un e-mail avec deux liens (il doit être connecté en administrateur) : **Laisser Bricou faire maintenant**, ou **Je m'en occupe moi-même**.
 3. Sans réponse en 30 minutes, Bricou se lance tout seul. Le client reçoit « Demande confirmée : Bricou s'en occupe » (ou « Alex a validé votre demande » si Alex a cliqué).
 4. Bricou prépare la modification. Le client valide l'aperçu avant toute mise en ligne, comme avant.
 
@@ -331,7 +331,7 @@ Le connecteur (extension « Les Minis Monstres : connecteur ») contient son pro
 
 ## Le circuit d'une demande
 
-Voir la section 9 : Cerise prépare la demande avec le client, Alex fait la modification. Le circuit de Bricou (modifications par l'IA, aperçu, MCP) n'est plus utilisé.
+Voir la section 9 : Cerise prépare la demande avec le client, puis la modification est faite et contrôlée. L'ancien circuit de Bricou (aperçu, MCP) n'est plus utilisé.
 
 ## La barre de discussion de Cerise pour tous les visiteurs
 
@@ -341,23 +341,23 @@ Dans la bulle de Cerise, sur toutes les pages du site, un visiteur peut poser un
 - Garde-fous : la demande doit venir d'une page du site ; 10 questions par heure et 30 par jour par visiteur (empreinte de l'adresse IP) ; 400 questions et 2 $ par jour pour tout le site (options `aled08_bulle_site_jour` et `aled08_bulle_site_budget`) ; question de 300 caractères au plus ; modèle rapide de la bulle (`aled08_bulle_modele`).
 - Aucune question n'est enregistrée : seul le coût du jour est compté. Sans clé Claude, la barre répond « écrivez à Alex ».
 
-## Ma boutique : le client gère tout (18 novembre 2026)
+## Ma boutique : le client gère tout (19 novembre 2026)
 
-Avec l'option boutique (200 €), le client a un onglet « Ma boutique » (`includes/boutique.php`, `articles.php`, `boutique-gestion.php`) avec cinq rubriques :
+Avec le Site Boutique (1 200 €), le client a un onglet « Ma boutique » (`includes/boutique.php`, `articles.php`, `boutique-gestion.php`) avec cinq rubriques :
 
-1. **Mes articles** : 5 emplacements compris (`creation.boutiqueProduits`), le client remplit lui-même un emplacement (photo, description, prix) et l'article est créé tout de suite dans la boutique de son site (connecteur 2.1.0, `article_poser`). Chaque emplacement en plus coûte 2 € (`creation.boutiqueSlot`), une fois, pour toujours : prix ajouté à sa prochaine facture Stripe, et vous recevez un e-mail (« à facturer à la main » si Stripe n'est pas prêt). Si le site n'est pas relié, l'article vous arrive par e-mail à mettre en ligne.
+1. **Mes articles** : le client gère son catalogue librement, sans limite d'articles (les anciens lots d'articles payants n'existent plus). Il saisit lui-même chaque article (photo, description, prix), créé tout de suite dans la boutique de son site (connecteur 2.1.0, `article_poser`). Si le site n'est pas relié, l'article vous arrive par e-mail à mettre en ligne.
 2. **Mes prix** : prix, promo, en vente, en stock de chaque produit simple (connecteur 2.2.0, `catalogue` et `produit_regler`). Les anciennes valeurs restent dans le journal du connecteur. Les produits à variantes se règlent avec vous.
-3. **Paiements** : Stripe (clés publiable et secrète, mode test ou réel, vérifiées auprès de Stripe avant d'être gardées), PayPal (connexion à faire une fois, avec vous ou depuis le site), virement (IBAN), chèque, paiement à la livraison, et tout autre moyen déjà installé. « Un autre moyen » (Mollie, Payplug, Alma…) : le client le demande, vous le branchez. **Les clés de paiement partent directement sur le site du client (HTTPS obligatoire) : elles ne sont ni gardées, ni journalisées, ni réaffichées.** Stripe et PayPal demandent l'extension de paiement WooCommerce correspondante sur le site du client (vous l'installez).
+3. **Paiements** : le client installe lui-même Stripe ou PayPal depuis son espace client (voir « Stripe et PayPal sur le site du client »). **Les clés de paiement partent directement sur le site du client, en HTTPS : elles ne sont ni gardées, ni journalisées, ni réaffichées.**
 4. **Commandes** : les 15 dernières, en lecture seule.
 5. **Promos et soldes** : codes promo, soldes rapides, bandeau d'annonce et vacances (comme avant).
 
 **Après chaque nouvelle version du connecteur, il faut le réinstaller sur chaque site client** (Flore et Chenilles en premier) : sans cela, ces rubriques affichent « L'extension de votre site doit être mise à jour ».
 
-## Paiement direct par carte (18 novembre 2026)
+## Paiement direct par carte (19 novembre 2026)
 
-- **Extras payés une fois** (page visibilité Google, article, rendez-vous…) et case « en 24 heures » : le client paie sur la page sécurisée de Stripe au moment de commander. La demande reste en brouillon jusqu'au paiement, puis elle part chez vous (e-mail « PAYÉ PAR CARTE »), Cerise et Lumi prennent le relais. Code : `includes/paiement-direct.php`. Le paiement est confirmé au retour du client et par le webhook (événement `checkout.session.completed`, déjà branché), une seule fois.
-- **Emplacements d'articles** : payés par carte, débloqués dès le paiement.
-- **Extras au mois** : à l'ajout, la part du mois en cours est facturée et prélevée tout de suite (Stripe, `always_invoice`), puis l'extra suit l'abonnement. Un extra retiré n'est plus facturé à partir de la période suivante (pas de remboursement du mois en cours).
+- **Page de visibilité Google** (15 € la page, le seul extra à prix fixe) : le client paie sur la page sécurisée de Stripe au moment de commander, depuis son espace client. La demande reste en brouillon jusqu'au paiement, puis elle part chez vous (e-mail « PAYÉ PAR CARTE »), et Cerise et Mirette prennent le relais. Rien n'est reporté sur une facture suivante. Code : `includes/paiement-direct.php`. Le paiement est confirmé au retour du client et par le webhook (événement `checkout.session.completed`, déjà branché), une seule fois.
+- **Traduction anglaise et fonctionnalité spécifique** : sur devis. Vous répondez au client avec un prix, il accepte avant le début du travail.
+- Il n'y a plus d'extra au mois.
 - Sans clés Stripe, l'ancien fonctionnement reste : vous recevez un e-mail « à facturer à la main ».
 
 ## Stripe et PayPal sur le site du client
