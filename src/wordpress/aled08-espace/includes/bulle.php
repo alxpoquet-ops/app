@@ -109,15 +109,15 @@ function aled08e_bulle_contexte($uid) {
     elseif (!$pause) $compte[] = $famille ? 'Énergie des petits monstres : sans limite' : 'Points d’énergie restants : ' . (int) $e['solde'] . ' (' . (int) $e['mois'] . ' donnés chaque mois, ils reviennent le 1er)';
     if (function_exists('aled08e_modifs_illimitees') && aled08e_modifs_illimitees($uid)) $compte[] = 'Abonnement : ' . $f['name'] . ', modifications incluses' . (aled08e_priorite($uid) ? ', prioritaires' : '');
     elseif (!$famille) $compte[] = 'Interventions d’Alex restantes ' . aled08e_periode_ce($uid) . ' : ' . max(0, (int) $f['quota'] - (int) aled08e_count_alex($uid)) . ' sur ' . (int) $f['quota'];
-    $compte[] = 'Demandes en même temps avec cet abonnement : ' . (int) aled08e_demandes_max($uid) . '. Délai des modifications : ' . aled08e_delai_txt($f) . ', à compter de la confirmation de la demande.';
+    $compte[] = 'Demandes en même temps avec cet abonnement : ' . (int) aled08e_demandes_max($uid) . '. Aucun délai n’est annoncé pour les modifications.';
 
     $offre = [];
-    $offre[] = 'Forfait ' . $f['name'] . ' : ' . aled08e_euro_txt($f['month']) . ' par mois, sans engagement. Il comprend : ' . implode(', ', (array) ($f['main'] ?? [])) . '. Bricou fait les modifications, en 48 h au plus.';
+    $offre[] = 'Forfait ' . $f['name'] . ' : ' . aled08e_euro_txt($f['month']) . ' par mois, sans engagement. Il comprend : ' . implode(', ', (array) ($f['main'] ?? [])) . '. Bricou clarifie les demandes de modification, puis Alex fait la modification. Aucun délai n’est annoncé.';
     if ($pause) $offre[] = 'Les messages dans cette bulle sont compris, jusqu’à ' . (int) aled08e_bulle_cfg()['parJour'] . ' par jour.';
     else $offre[] = '100 d’énergie = 1 €. Un message dans cette bulle : ' . aled08e_jl_txt(aled08e_bulle_prix()) . '.';
     if ($pause && $retMax) $offre[] = 'Une petite retouche du site par Alex : comprise, jusqu’à ' . $retMax . ' par mois.';
-    elseif ($pause) $offre[] = 'Les modifications du site sont incluses, sans limite. Délai : ' . aled08e_delai_txt($f) . '.' . ' Une refonte complète ou une fonction nouvelle se fait sur devis.';
-    else $offre[] = 'Une modification du site par les petits monstres : ' . (int) $jl['modif']['base'] . ' d’énergie, plus 1 par tranche de ' . (int) $jl['modif']['mots'] . ' mots écrits et ' . (int) $jl['modif']['image'] . ' par photo. Ils montrent toujours un aperçu de la page : rien ne change sans l’accord du client.';
+    elseif ($pause) $offre[] = 'Les modifications du site sont incluses, sans limite. Aucun délai n’est annoncé.' . ' Une refonte complète ou une fonction nouvelle se fait sur devis.';
+    $offre[] = 'Une modification (avec le forfait Mini) : le client écrit sa demande dans l’onglet Demandes de son espace client. Bricou la clarifie avec lui (une question si besoin, puis un résumé à confirmer) et l’envoie à Alex. C’est Alex qui fait la modification. Une demande à la fois. Ne donne jamais de délai.';
     $ald = [];
     foreach (aled08e_a_la_demande() as $x) if ($x['id'] !== 'urgent') $ald[] = $x['name'] . ' : ' . (!empty($x['devis']) ? 'sur devis (gratuit, sans engagement)' : aled08e_euro_txt($x['prix']) . ', payé une fois par carte au moment de commander');
     if ($ald) $offre[] = 'Les extras, dans l’onglet Extras : ' . implode(' ; ', $ald) . '.';
@@ -128,7 +128,7 @@ function aled08e_bulle_contexte($uid) {
     if (!empty($D['domainePrix'])) $offre[] = 'Nom de domaine (l’adresse du site) avec le forfait Mini : si le client a déjà le sien, le forfait reste à 10 € par mois. S’il n’en a pas, on le lui fournit pour ' . aled08e_euro_txt($D['domainePrix']) . ' de plus par mois, soit 12 € par mois en tout.';
     if (!empty($D['creationSeule'])) $offre[] = 'Autonomie, 0 € par mois : le client gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. Maintenance et modifications non comprises. Il peut passer à Mini quand il veut, depuis l’onglet Demandes.';
     $offre[] = 'Les trois sites : ' . implode(' ; ', array_map(function ($t) { return $t['name'] . ' ' . aled08e_euro_txt($t['price']); }, (array) ($D['types'] ?? []))) . '. Le Site Boutique ouvre l’onglet « Ma boutique » : le client y gère lui-même ses articles, ses prix, ses moyens de paiement (Stripe, PayPal) et ses commandes. Sans Site Boutique, cet onglet est verrouillé, avec un bouton pour demander le prix.';
-    $offre[] = 'Une modification : le client écrit sa demande (onglet Demandes). Cerise la relit, lui pose une question si besoin, la reformule clairement et la lui fait confirmer, puis la transmet. La modification est faite à la main. Une modification prend 48 h au plus, une demande à la fois. Une demande s’annule tant qu’elle n’est pas commencée.';
+    $offre[] = 'Une modification (avec le forfait Mini) : le client écrit sa demande dans l’onglet Demandes de son espace client. Bricou la clarifie avec lui (une question si besoin, puis un résumé à confirmer) et l’envoie à Alex. C’est Alex qui fait la modification. Une demande à la fois. Ne donne jamais de délai.';
     $rech = [];
     foreach ((array) $jl['recharge'] as $r) $rech[] = (int) $r['jetons'] . ' d’énergie pour ' . aled08e_euro_txt($r['prix']);
     if (!$pause) $offre[] = 'Redonner de l’énergie (onglet Outils) : ' . implode(', ', $rech) . '.';

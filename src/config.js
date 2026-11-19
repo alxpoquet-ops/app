@@ -239,16 +239,16 @@ const forfaits = [
     pageSeo: '',
     jetons: energieMois, // énergie (en pause)
     partage: false,
-    delai: '48 heures',
-    delaiTexte: 'faites en 48 h au plus',
+    delai: '',
+    delaiTexte: 'faites par Alex', // 19 novembre 2026 : aucun délai annoncé
     demandesMax: 1,
     bulle: 'Votre site en ligne, protégé et à jour',
-    modifs: 'modifications incluses, faites en 48 h au plus',
+    modifs: 'modifications incluses',
     conseil: false,
     tagline: 'Sans engagement',
     pitch: 'On s’occupe de tout : votre site reste en ligne, protégé et à jour. Vos modifications sont incluses, et vous les demandez directement depuis votre espace client. Pas encore de nom de domaine ? On vous le fournit pour 2 € de plus par mois.',
     main: ['Modifications incluses', 'Hébergement', 'Les Minis Monstres à votre service', 'Sauvegardes automatiques', 'Sécurité', 'Maintenance technique', 'Espace client', 'Demandes de modification directement depuis votre espace client', 'Nom de domaine fourni si vous n’en avez pas : + 2 € par mois'],
-    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site. Vous avez le vôtre : rien à ajouter. Vous n’en avez pas : on vous le fournit, à votre nom, pour 2 € de plus par mois', 'Sauvegardes automatiques : une copie de sécurité de votre site, faite toute seule', 'Sécurité : le petit cadenas et la protection contre les attaques', 'Maintenance technique : votre site reste à jour', 'Espace client : tout se gère au même endroit, depuis votre téléphone', 'Les Minis Monstres à votre service : une question, et on vous répond', 'Modifications incluses : une modification peut prendre jusqu’à 48 h, une demande à la fois', 'Vos demandes se font directement depuis votre espace client'],
+    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site. Vous avez le vôtre : rien à ajouter. Vous n’en avez pas : on vous le fournit, à votre nom, pour 2 € de plus par mois', 'Sauvegardes automatiques : une copie de sécurité de votre site, faite toute seule', 'Sécurité : le petit cadenas et la protection contre les attaques', 'Maintenance technique : votre site reste à jour', 'Espace client : tout se gère au même endroit, depuis votre téléphone', 'Les Minis Monstres à votre service : une question, et on vous répond', 'Modifications incluses : Bricou clarifie votre demande, Alex fait la modification, une demande à la fois', 'Vos demandes se font directement depuis votre espace client'],
     features: ['Modifications incluses', 'Hébergement', 'Sauvegardes automatiques', 'Sécurité', 'Maintenance technique'],
   },
 ];
@@ -270,7 +270,7 @@ const forfaitsAnciens = [
     jetons: energieMois,
     partage: false,
     delai: '48 heures',
-    delaiTexte: 'faites par Alex en 48 h au plus',
+    delaiTexte: 'faites par Alex',
     demandesMax: 2,
     bulle: 'Votre site qui grandit chaque semaine, avec la bande aux petits soins',
     modifs: 'modifications prioritaires, une page SEO optimisée par semaine et l’optimisation continue',
@@ -278,7 +278,7 @@ const forfaitsAnciens = [
     tagline: 'Sans engagement',
     retire: true,
     pitch: 'Tout Mini, avec vos modifications en priorité, deux demandes à la fois, une page SEO optimisée chaque semaine, et la bande qui surveille votre site.',
-    main: ['Tout Mini', 'Modifications prioritaires, faites par Alex en 48 h au plus', 'Deux demandes à la fois', 'Une page SEO optimisée par semaine', 'Analyse régulière du site par Mirette', 'Suggestions d’amélioration par la bande'],
+    main: ['Tout Mini', 'Modifications prioritaires, faites par Alex', 'Deux demandes à la fois', 'Une page SEO optimisée par semaine', 'Analyse régulière du site par Mirette', 'Suggestions d’amélioration par la bande'],
     details: [],
     features: ['Tout Mini', 'Deux demandes à la fois', 'Une page SEO optimisée par semaine', 'Optimisation continue'],
   },
@@ -349,8 +349,8 @@ const options = [
 // compris : avec l'abonnement. option : l'extra qui l'apporte ('mirette', 'packseo') ou 'boutique' (il arrive avec la boutique en ligne).
 // court / fait : une phrase courte et une phrase complète, reprises par les pages et les FAQ.
 const bandeTout = [
-  { id: 'support', nom: 'Cerise', emoji: '🍒', monstre: 'lia', role: 'La secrétaire', compris: true, missions: ['Répond à vos questions', 'Vous aide à formuler vos demandes', 'Les transmet, bien claires', 'Vous accompagne pas à pas'], perso: 'Souriante et toujours disponible, elle ne laisse jamais une question sans réponse.', court: 'Elle répond à vos questions et prend vos demandes.' },
-  { id: 'constructeur', nom: 'Bricou', emoji: '🔧', monstre: 'bricou', role: 'Le constructeur', compris: true, missions: ['Construit votre site', 'Fait vos modifications', 'Veille à ce que tout fonctionne'], perso: 'Toujours un outil à la main, il aime le travail bien fini.', court: 'Il construit votre site et fait vos modifications.' },
+  { id: 'support', nom: 'Cerise', emoji: '🍒', monstre: 'lia', role: 'La secrétaire', compris: true, missions: ['Répond à vos questions', 'Vous guide sur le site', 'Vous accompagne pas à pas'], perso: 'Souriante et toujours disponible, elle ne laisse jamais une question sans réponse.', court: 'Elle répond à vos questions, à toute heure.' },
+  { id: 'constructeur', nom: 'Bricou', emoji: '🔧', monstre: 'bricou', role: 'Le constructeur', compris: true, missions: ['Prend vos demandes de modification', 'Les clarifie avec vous', 'Les transmet à Alex, bien claires'], perso: 'Toujours un outil à la main, il aime le travail bien préparé.', court: 'Il prépare vos demandes de modification pour Alex.' },
   { id: 'ecrivain', nom: 'Plume', emoji: '✍️', monstre: 'fantome', role: 'La rédactrice', compris: true, missions: ['Prépare vos contenus', 'Vous aide à écrire vos textes', 'Rend chaque phrase facile à lire'], perso: 'Rêveuse mais précise, elle cherche toujours le mot juste.', court: 'Elle écrit et soigne vos textes.' },
   { id: 'observateur', nom: 'Mirette', emoji: '👀', monstre: 'gelee', role: 'La spécialiste visibilité', compris: true, missions: ['Prépare vos pages de visibilité Google', 'Aide Google à comprendre votre activité', 'Soigne votre référencement local'], perso: 'Curieuse, elle ne quitte jamais Google des yeux.', court: 'Elle vous aide à être trouvé sur Google.' },
   { id: 'organisateur', nom: 'Mochi', emoji: '📦', monstre: 'mochi', role: 'L’organisateur', compris: true, missions: ['Classe vos contenus', 'Organise vos pages', 'Range votre boutique et vos commandes'], perso: 'Un peu maniaque, il adore quand chaque chose est à sa place.', court: 'Il range vos pages, vos produits et vos commandes.' },

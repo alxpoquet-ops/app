@@ -34,7 +34,7 @@ function aled08e_bsite_faits() {
     foreach ((array) ($D['forfaits'] ?? []) as $x) $f[] = 'Ou le forfait ' . $x['name'] . ' : ' . aled08e_euro_txt($x['month']) . ' par mois, sans engagement. Il comprend : ' . implode(', ', (array) ($x['main'] ?? [])) . '.';
     // plus de réduction à l'année (19 novembre 2026)
     if (!empty($D['domainePrix'])) $f[] = 'Nom de domaine (l’adresse du site) avec le forfait Mini : si le client a déjà le sien, le forfait reste à 10 € par mois. S’il n’en a pas, on le lui fournit pour ' . aled08e_euro_txt($D['domainePrix']) . ' de plus par mois, soit 12 € par mois en tout.';
-    $f[] = 'Une modification (avec le forfait Mini) : le client écrit sa demande dans son espace client, Cerise l’aide à la formuler, puis elle est faite. Une modification peut prendre jusqu’à 48 h, une demande à la fois.';
+    $f[] = 'Une modification (avec le forfait Mini) : le client écrit sa demande dans l’onglet Demandes de son espace client. Bricou la clarifie avec lui (une question si besoin, puis un résumé à confirmer) et l’envoie à Alex. C’est Alex qui fait la modification. Une demande à la fois. Ne donne jamais de délai.';
     $u = [];
     foreach (aled08e_a_la_demande() as $x) if ($x['id'] !== 'urgent') $u[] = $x['name'] . ' : ' . (!empty($x['devis']) ? 'sur devis' : aled08e_euro_txt($x['prix']) . ', payé une fois par carte');
     $f[] = 'Extras, depuis l’espace client : ' . implode(' ; ', $u) . '.';

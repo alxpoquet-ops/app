@@ -418,7 +418,7 @@ function aled08e_annuler_demande($pid, $auto = false) {
     if ($etat) update_post_meta($pid, '_aled08_lia_etat', 'annule');
     update_post_meta($pid, '_aled08_reponse', $resteEnLigne
         ? 'Demande annulée. Ce que les petits monstres avaient publié de nouveau reste en ligne : Alex le retire à la main. ' . (aled08e_energie_on() ? 'L’énergie de cette demande reste comptée.' : 'Elle reste comptée dans vos retouches du mois.')
-        : ($auto ? 'Cerise n’a pas eu de réponse pendant 7 jours : la demande est annulée et ne compte pas. Vous pouvez la refaire quand vous voulez.' : 'Demande annulée. Rien n’a été changé sur votre site, et elle ne compte pas. Vous pouvez en faire une autre quand vous voulez.'));
+        : ($auto ? 'Bricou n’a pas eu de réponse pendant 7 jours : la demande est annulée et ne compte pas. Vous pouvez la refaire quand vous voulez.' : 'Demande annulée. Rien n’a été changé sur votre site, et elle ne compte pas. Vous pouvez en faire une autre quand vous voulez.'));
     $u = get_userdata($uid);
     if (!$auto) {
         // annulée par le client : Alex n'est prévenu que si elle était déjà chez lui
@@ -1055,18 +1055,18 @@ function aled08e_dashboard() {
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
         'sans_formule' => ['esp-warn', 'Vous êtes en Autonomie : les modifications ne sont pas comprises. Avec le forfait Mini, elles le sont : le bouton est juste en dessous.'],
-        'lia_refait' => ['esp-empty', 'Merci pour vos précisions : Cerise reprend votre demande. Vous la voyez ici dans un instant.'],
-        'rep_ok' => ['esp-empty', 'Merci ! Cerise reprend votre demande avec votre réponse.'],
+        'lia_refait' => ['esp-empty', 'Merci pour vos précisions : Bricou reprend votre demande. Vous la voyez ici dans un instant.'],
+        'rep_ok' => ['esp-empty', 'Merci ! Bricou reprend votre demande avec votre réponse.'],
         'rep_vide' => ['esp-warn', 'Écrivez votre réponse ou joignez une capture d’écran, puis envoyez.'],
         'deux_max' => ['esp-warn', (aled08e_demandes_max($uid) > 1 ? 'Deux demandes sont déjà en cours' : 'Une demande est déjà en cours') . ' : c’est le maximum à la fois avec votre abonnement. Dès qu’' . (aled08e_demandes_max($uid) > 1 ? 'une' : 'elle') . ' est terminée, vous pourrez envoyer la suivante.'],
         'trop' => ['esp-warn', 'Vous avez envoyé beaucoup de demandes aujourd’hui. Écrivez-nous par le formulaire de contact si c’est pressé.'],
         'erreur' => ['esp-warn', 'L’envoi n’a pas abouti. Réessayez dans un instant.'],
-        'lia_oui' => ['esp-empty', 'Merci pour vos précisions ! Cerise a transmis votre demande. Vous suivez l’avancement dans la jauge.'],
+        'lia_oui' => ['esp-empty', 'Merci pour vos précisions ! Bricou a transmis votre demande à Alex. Vous suivez l’avancement dans la jauge.'],
         'annul_ok' => ['esp-empty', 'Demande annulée. Elle ne compte pas dans vos interventions.'],
         'annul_commencee' => ['esp-warn', 'Cette demande est déjà commencée : elle ne s’annule plus. Écrivez-nous si besoin, on vous répond vite.'],
         'annul_quota' => ['esp-warn', 'Les demandes lancées ne s’annulent plus.'],
         'annul_delai' => ['esp-warn', 'Les demandes lancées ne s’annulent plus.'],
-        'lia_non' => ['esp-empty', 'Merci pour vos précisions. Cerise a transmis votre demande, avec toutes vos remarques.'],
+        'lia_non' => ['esp-empty', 'Merci pour vos précisions. Bricou a transmis votre demande à Alex, avec toutes vos remarques.'],
         'lia_erreur' => ['esp-warn', 'Cette demande a déjà été confirmée. Vous suivez son avancement dans la jauge.'],
     ];
     if (isset($msgs[$m])) $flash = '<p class="' . $msgs[$m][0] . '" role="status">' . esc_html($msgs[$m][1]) . '</p>';
@@ -1160,7 +1160,7 @@ function aled08e_dashboard() {
           <?php echo aled08e_messages_html($uid); // phpcs:ignore ?>
           <p class="app-sub">Que voulez-vous faire ?</p>
           <div class="app-actions">
-            <button type="button" data-go="demandes"><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><strong>Demander une modification</strong><small>Bricou s’en occupe</small></button>
+            <button type="button" data-go="demandes"><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><strong>Demander une modification</strong><small>Bricou prépare, Alex modifie</small></button>
             <button type="button" data-go="extras"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><strong>Ajouter un extra</strong><small>Pépite vous montre les petits plus</small></button>
           </div>
           <?php echo aled08e_extras_accueil_html($uid, $famille); // phpcs:ignore ?>
@@ -1183,11 +1183,11 @@ function aled08e_dashboard() {
           <?php echo aled08e_pd_flash_html() . $flash; // phpcs:ignore ?>
           <?php echo aled08e_gauge_zone_html($uid); // phpcs:ignore ?>
           <section class="bricou-bloc" aria-label="Votre demande de modification">
-          <div class="bricou-tete"><span class="bricou-art" aria-hidden="true"><?php echo aled08e_monster('bricou'); // phpcs:ignore ?></span><div><strong>Une modification ? Bricou s’en occupe</strong><p>Dites ce que vous voulez changer. C’est fait en 48 h au plus.</p></div></div>
+          <div class="bricou-tete"><span class="bricou-art" aria-hidden="true"><?php echo aled08e_monster('bricou'); // phpcs:ignore ?></span><div><strong>Une modification ? Dites-le à Bricou</strong><p>Il prépare votre demande, puis Alex fait la modification.</p></div></div>
           <?php if (aled08e_sans_formule($uid)) : ?><?php echo aled08e_autonomie_html($uid); // phpcs:ignore ?>
           <?php else : ?>
           <?php if ($illimite) : ?>
-          <ol class="req-etapes"><li><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Vous écrivez votre demande</span></li><li><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Cerise vous aide à la préciser</span></li><li><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>Bricou fait la modification</span></li></ol>
+          <ol class="req-etapes"><li><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Vous écrivez votre demande</span></li><li><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Bricou la clarifie avec vous</span></li><li><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>Alex fait la modification</span></li></ol>
           <?php endif; ?>
           <form class="req-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(aled08e_url()); ?>" data-req-real>
             <input type="hidden" name="aled08e_demande" value="1">
@@ -1336,7 +1336,7 @@ function aled08e_req_item($p, $full = true) {
     $text = $full ? $p->post_content : $p->post_title;
     return '<li' . ($full ? ' id="req-' . (int) $p->ID . '"' : '') . '>' . $thumb . '<span><strong>' . nl2br(esc_html(mb_strlen($text) > 220 ? mb_substr($text, 0, 217) . '…' : $text)) . '</strong><small>' . (get_post_meta($p->ID, '_aled08_par', true) === 'lia' ? 'avec Cerise, ' : 'pour Alex, ') . 'envoyée le ' . esc_html(aled08e_date($p->post_date)) . '</small>'
         . ($full && $rep ? (preg_match('/^(Cerise|Bricou) : /u', $rep)
-            ? '<span class="req-reply req-bricou">' . aled08e_monster('mascotte') . '<span><b>Cerise</b>' . nl2br(esc_html(preg_replace('/^(Cerise|Bricou) : /u', '', $rep))) . '</span></span>'
+            ? '<span class="req-reply req-bricou">' . aled08e_monster('bricou') . '<span><b>Bricou</b>' . nl2br(esc_html(preg_replace('/^(Cerise|Bricou) : /u', '', $rep))) . '</span></span>'
             : '<span class="req-reply">' . nl2br(esc_html($rep)) . '</span>') : '') . '</span><em class="st ' . esc_attr($st[$s][1]) . '">' . esc_html($st[$s][0]) . '</em></li>';
 }
 /* Le contenu du suivi : la liste des demandes (30 dernières, la plus récente en haut) */

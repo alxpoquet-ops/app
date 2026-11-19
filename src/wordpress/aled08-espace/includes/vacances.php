@@ -179,7 +179,7 @@ function aled08e_autonomie_html($uid) {
             . '<input type="hidden" name="aled08e_demande" value="1"><input type="hidden" name="extra" value="specifique"><input type="hidden" name="extra_ok" value="1">' . wp_nonce_field('aled08e_demande', '_aled08e', true, false)
             . '<input type="hidden" name="demande" value="Je voudrais passer au forfait ' . esc_attr($f['name']) . ' (' . esc_attr(aled08e_euro_txt($f['month'])) . ' par mois). Pouvez-vous reprendre mon site ?">'
             . '<button class="btn btn-primary" type="submit">' . aled08e_icon('key-round') . '<span>Je veux le forfait ' . esc_html($f['name']) . '</span></button></form>'
-            . '<p class="verrou-note">On vous répond sous 48 h pour reprendre votre site. Les extras restent ouverts dans l’onglet Extras.</p>';
+            . '<p class="verrou-note">On vous répond vite pour reprendre votre site. Les extras restent ouverts dans l’onglet Extras.</p>';
     }
     return $h . '</section>';
 }

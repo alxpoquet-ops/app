@@ -1,7 +1,7 @@
 <?php
 /**
  * Les Minis Monstres Espace client : les échanges entre le client et Cerise autour d'une demande.
- * - Cerise pose une question (ou demande une capture d'écran) au lieu de deviner : le client répond dans la jauge.
+ * - Bricou pose une question (ou demande une capture d'écran) au lieu de deviner : le client répond dans la jauge.
  * - Le client confirme la demande reformulée par Cerise ; elle part alors chez Alex, qui fait la modification (includes/reformulation.php).
  * - Une demande que Cerise n'a pas pu relire sous 24 heures part chez Alex telle quelle ; Alex est prévenu si son délai approche.
  * - La conversation avec les Minis Monstres est gardée côté serveur : elle ne disparaît plus quand on recharge la page.
@@ -70,7 +70,7 @@ function aled08e_ech_relancer($pid) {
     if (function_exists('spawn_cron')) spawn_cron();
 }
 
-/* ---------- Cerise pose une question ---------- */
+/* ---------- Bricou pose une question ---------- */
 function aled08e_ech_question($pid, $uid, $u, $question) {
     $question = trim((string) $question) ?: 'Pouvez-vous préciser votre demande, ou joindre une capture d’écran de ce que vous voulez changer ?';
     $n = (int) get_post_meta($pid, '_aled08_lia_questions', true) + 1;
@@ -79,10 +79,10 @@ function aled08e_ech_question($pid, $uid, $u, $question) {
     aled08e_lia_appel($uid, 'abandonner', ['jeton' => (string) get_post_meta($pid, '_aled08_lia_jeton', true)]); // un aperçu préparé avant la question n'a plus lieu d'être
     update_post_meta($pid, '_aled08_statut', 'encours');
     update_post_meta($pid, '_aled08_lia_etat', 'question');
-    update_post_meta($pid, '_aled08_reponse', 'Cerise : ' . mb_substr($question, 0, 900));
+    update_post_meta($pid, '_aled08_reponse', 'Bricou : ' . mb_substr($question, 0, 900));
     aled08e_ech_activite($pid);
-    aled08e_lia_journal_add('Demande #' . $pid . ' : Cerise pose une question au client.');
-    if ($u) wp_mail($u->user_email, 'Cerise a une petite question sur votre demande', 'Bonjour ' . aled08e_prenom($u) . ",\n\nPour qu’Alex fasse exactement ce que vous voulez, j’ai une petite question :\n\n" . $question . "\n\nVous pouvez me répondre dans votre espace (et joindre une capture d’écran si c’est plus simple) :\n" . aled08e_url() . "#demandes\n\nMerci beaucoup,\nCerise, des Minis Monstres\n", aled08e_mail_headers('"Les Minis Monstres" <' . aled08e_to() . '>'));
+    aled08e_lia_journal_add('Demande #' . $pid . ' : Bricou pose une question au client.');
+    if ($u) wp_mail($u->user_email, 'Bricou a une petite question sur votre demande', 'Bonjour ' . aled08e_prenom($u) . ",\n\nPour qu’Alex fasse exactement ce que vous voulez, j’ai une petite question :\n\n" . $question . "\n\nVous pouvez me répondre dans votre espace (et joindre une capture d’écran si c’est plus simple) :\n" . aled08e_url() . "#demandes\n\nMerci beaucoup,\nCerise, des Minis Monstres\n", aled08e_mail_headers('"Les Minis Monstres" <' . aled08e_to() . '>'));
 }
 
 /* Le client répond à la question de Cerise */
@@ -100,7 +100,7 @@ add_action('template_redirect', function () {
         if ($texte === '' && !$photos) $m = 'rep_vide';
         else {
             aled08e_ech_noter($pid, 'reponse', $texte, $photos);
-            update_post_meta($pid, '_aled08_reponse', 'Cerise : Merci pour votre réponse ! Je relis votre demande avec.');
+            update_post_meta($pid, '_aled08_reponse', 'Bricou : Merci pour votre réponse ! Je relis votre demande avec.');
             aled08e_ech_relancer($pid);
             $m = 'rep_ok';
         }
@@ -114,9 +114,9 @@ function aled08e_ech_bloc_question($p) {
     if (get_post_meta($p->ID, '_aled08_lia_etat', true) !== 'question') return '';
     return '<form method="post" enctype="multipart/form-data" action="' . esc_url(aled08e_url()) . '" class="lia-confirm-form lia-reponse">'
         . '<input type="hidden" name="aled08e_lia_repondre" value="' . (int) $p->ID . '">' . wp_nonce_field('aled08e_lia_repondre_' . $p->ID, '_aled08e_rep', true, false)
-        . '<div class="field"><label for="lia-r-' . (int) $p->ID . '">Votre réponse à Cerise</label><textarea id="lia-r-' . (int) $p->ID . '" name="reponse" rows="3" maxlength="2000" placeholder="Écrivez votre réponse…"></textarea></div>'
+        . '<div class="field"><label for="lia-r-' . (int) $p->ID . '">Votre réponse à Bricou</label><textarea id="lia-r-' . (int) $p->ID . '" name="reponse" rows="3" maxlength="2000" placeholder="Écrivez votre réponse…"></textarea></div>'
         . '<label class="req-photo"><input type="file" name="captures[]" accept="image/*" multiple class="sr-only">' . aled08e_icon('image-plus') . '<span>Joindre une capture d’écran (facultatif)</span></label>'
-        . '<button class="btn btn-primary" type="submit">' . aled08e_icon('send') . '<span>Répondre à Cerise</span></button></form>';
+        . '<button class="btn btn-primary" type="submit">' . aled08e_icon('send') . '<span>Répondre à Bricou</span></button></form>';
 }
 
 /* ---------- les demandes en retard (toutes les heures) ---------- */
@@ -144,7 +144,7 @@ function aled08e_ech_en_retard() {
         }
         if (get_post_meta($pid, '_aled08_par', true) === 'lia') {
             // Cerise n'a pas pu relire la demande (quelque chose a planté) : elle part chez Alex telle quelle, le client n'attend pas pour rien
-            if ($age >= ALED08E_SANS_REPONSE_H * HOUR_IN_SECONDS && function_exists('aled08e_cer_transmettre')) aled08e_cer_transmettre($pid, 'Cerise n’a pas pu relire cette demande (24 h sans réponse) : elle vous arrive telle que le client l’a écrite.');
+            if ($age >= ALED08E_SANS_REPONSE_H * HOUR_IN_SECONDS && function_exists('aled08e_cer_transmettre')) aled08e_cer_transmettre($pid, 'Bricou n’a pas pu relire cette demande (24 h sans réponse) : elle vous arrive telle que le client l’a écrite.');
             continue;
         }
         // chez Alex : un rappel la veille de l'échéance (48 h au plus, 7 jours pour un extra), puis un autre si elle est dépassée
