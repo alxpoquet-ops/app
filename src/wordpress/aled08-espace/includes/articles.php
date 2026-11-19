@@ -55,7 +55,7 @@ function aled08e_art_categories($uid, $frais = false) {
 add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08e_article'])) return;
     $uid = get_current_user_id();
-    $retour = function ($ok, $texte) use ($uid) { $vers = in_array(sanitize_key((string) wp_unslash($_POST['aled08e_article'] ?? '')), ['categorie', 'categorie_retirer'], true) ? 'categories' : 'articles'; if ($uid) aled08e_art_flash($uid, $ok, $texte); delete_transient('aled08_art_cat_' . (int) $uid); delete_transient('aled08_art_cats_' . (int) $uid); wp_safe_redirect(aled08e_url(['sub' => $vers]) . '#vacances', 303); exit; };
+    $retour = function ($ok, $texte) use ($uid) { $vers = in_array(sanitize_key((string) wp_unslash($_POST['aled08e_article'] ?? '')), ['categorie', 'categorie_retirer'], true) && sanitize_key((string) wp_unslash($_POST['depuis'] ?? '')) !== 'articles' ? 'categories' : 'articles'; if ($uid) aled08e_art_flash($uid, $ok, $texte); delete_transient('aled08_art_cat_' . (int) $uid); delete_transient('aled08_art_cats_' . (int) $uid); wp_safe_redirect(aled08e_url(['sub' => $vers]) . '#vacances', 303); exit; };
     if (!$uid) { wp_safe_redirect(aled08e_url(), 303); exit; }
     if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_aled08e_art'] ?? '')), 'aled08e_art')) $retour(false, 'La page avait expiré. Réessayez.');
     if (!aled08e_est_boutique($uid)) $retour(false, 'Les emplacements d’articles sont réservés aux boutiques en ligne.');
@@ -236,6 +236,20 @@ function aled08e_articles_html($uid) {
             . aled08e_art_form($nonce, $act, 'nouveau', null, $cats) . '</details>';
     }
 
+    // créer une catégorie : juste sous « Ajouter un article », bien visible
+    if (aled08e_art_pret($uid)) {
+        $h .= '<details class="art-ajouter art-ajouter-cat"><summary><span class="art-plus">' . aled08e_icon('tag') . '</span><span><strong>Créer une catégorie</strong><small>' . ($cats ? count($cats) . ' catégorie' . (count($cats) > 1 ? 's' : '') . ' pour ranger vos articles' : 'Pour ranger vos articles : bouquets, cadeaux…') . '</small></span></summary>'
+            . '<form class="art-cat-form" method="post" action="' . $act . '">' . $nonce . '<input type="hidden" name="aled08e_article" value="categorie"><input type="hidden" name="depuis" value="articles"><div class="field"><label for="art-cat-nom-a">Le nom de la catégorie</label><input id="art-cat-nom-a" name="nom_categorie" type="text" maxlength="60" required placeholder="Ex. : Bouquets"></div>'
+            . '<button class="btn btn-primary" type="submit">' . aled08e_icon('plus') . '<span>Créer la catégorie</span></button></form>';
+        if ($cats) {
+            $h .= '<ul class="art-cat-liste">';
+            foreach ($cats as $c) $h .= '<li><span><strong>' . esc_html($c['nom']) . '</strong><small>' . (int) $c['nombre'] . ' article' . ((int) $c['nombre'] > 1 ? 's' : '') . '</small></span>'
+                . '<form method="post" action="' . $act . '" onsubmit="return confirm(\'Supprimer cette catégorie ? Ses articles sont gardés.\');">' . $nonce . '<input type="hidden" name="aled08e_article" value="categorie_retirer"><input type="hidden" name="depuis" value="articles"><input type="hidden" name="id_categorie" value="' . (int) $c['id'] . '"><button class="btn btn-light btn-sm" type="submit">' . aled08e_icon('x') . '<span>Supprimer</span></button></form></li>';
+            $h .= '</ul>';
+        }
+        $h .= '</details>';
+    }
+
     if ($arts) {
         $h .= '<ul class="art-grille">';
         foreach ($arts as $k => $a) {
@@ -256,7 +270,6 @@ function aled08e_articles_html($uid) {
         $h .= '<p class="esp-empty">Pas encore d’article. Ajoutez le premier : il sera en ligne dans votre boutique tout de suite.</p>';
     }
 
-    if (aled08e_art_pret($uid)) $h .= '<p class="art-vers-cats">' . aled08e_icon('tag') . '<span>Pour ranger vos articles : </span><a class="btn btn-light btn-sm" href="' . esc_url(aled08e_url(['sub' => 'categories']) . '#vacances') . '">Gérer mes catégories</a></p>';
     // débloquer des emplacements (anciennes offres seulement)
     if ($libre) return $h . '</section>';
     $h .= '<div class="art-debloque"><div class="art-debloque-txt"><strong>' . aled08e_icon('sparkles') . 'Besoin de plus de place ?</strong><p>Chaque emplacement en plus coûte <b>' . esc_html(aled08e_euro_txt($prix)) . '</b>, payé une seule fois. Il est à vous pour toujours : si vous retirez un article, la place reste libre.</p></div>'

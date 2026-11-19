@@ -1027,3 +1027,8 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .art-vers-cats svg { width: 20px; height: 20px; flex: none; color: var(--lilac-dd); }
 .art-cat-nouvelle { padding: 16px; border-radius: 22px; background: var(--soft); margin-bottom: 16px; }
 .art-cat-nouvelle input { width: 100%; box-sizing: border-box; }
+/* « Créer une catégorie », dans Mes articles */
+.art-ajouter-cat { margin-top: 12px; }
+.art-ajouter-cat .art-cat-form { padding: 14px 0 4px; }
+.art-ajouter-cat .art-cat-form input { width: 100%; box-sizing: border-box; }
+.art-ajouter-cat .art-cat-liste { margin-bottom: 4px; }
