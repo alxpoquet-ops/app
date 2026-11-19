@@ -706,6 +706,39 @@ def main():
                 full = os.path.join(d, f)
                 z.write(full, os.path.join('minis-installeur', os.path.relpath(full, idir2)))
     print('minis-installeur.zip', os.path.getsize(zp) // 1024, 'Ko', '(avec :', ', '.join(paquets) + ')')
+    # une extension d'installation par type de site client : on la met, on l'active, il ne reste que le visuel
+    src_ms = os.path.join(ROOT, 'src', 'wordpress', 'minis-site')
+    garde = os.path.join(ROOT, 'extensions')
+    os.makedirs(garde, exist_ok=True)
+    for typ, nom in [('essentiel', 'Site Essentiel'), ('visibilite', 'Site Visibilité'), ('boutique', 'Site Boutique')]:
+        dossier = 'minis-site-' + typ
+        dd = os.path.join(OUT, dossier)
+        os.makedirs(os.path.join(dd, 'pkg'))
+        code = open(os.path.join(src_ms, 'minis-site.php'), encoding='utf-8').read()
+        assert "define('MINIS_SITE_TYPE', 'boutique');" in code and 'installation du Site Boutique' in code
+        code = code.replace("define('MINIS_SITE_TYPE', 'boutique');", "define('MINIS_SITE_TYPE', '" + typ + "');").replace('installation du Site Boutique', 'installation du ' + nom)
+        open(os.path.join(dd, dossier + '.php'), 'w', encoding='utf-8').write(code)
+        shutil.copy(os.path.join(src_ms, 'contenu.php'), os.path.join(dd, 'contenu.php'))
+        shutil.copy(os.path.join(OUT, 'alexlia-connecteur.zip'), os.path.join(dd, 'pkg', 'alexlia-connecteur.zip'))
+        with zipfile.ZipFile(os.path.join(dd, 'pkg', 'alexlia-credit.zip'), 'w', zipfile.ZIP_DEFLATED) as z:
+            base = os.path.join(ROOT, 'src', 'wordpress', 'alexlia-credit')
+            for d, _, files in sorted(os.walk(base)):
+                for f in sorted(files):
+                    zi = zipfile.ZipInfo(os.path.join('alexlia-credit', os.path.relpath(os.path.join(d, f), base)), date_time=(2026, 1, 1, 0, 0, 0))
+                    zi.compress_type = zipfile.ZIP_DEFLATED
+                    zi.external_attr = 0o644 << 16
+                    z.writestr(zi, open(os.path.join(d, f), 'rb').read())
+        zp = os.path.join(OUT, dossier + '.zip')
+        with zipfile.ZipFile(zp, 'w', zipfile.ZIP_DEFLATED) as z:
+            for d, _, files in sorted(os.walk(dd)):
+                for f in sorted(files):
+                    full = os.path.join(d, f)
+                    zi = zipfile.ZipInfo(os.path.join(dossier, os.path.relpath(full, dd)), date_time=(2026, 1, 1, 0, 0, 0))
+                    zi.compress_type = zipfile.ZIP_STORED if f.endswith('.zip') else zipfile.ZIP_DEFLATED
+                    zi.external_attr = 0o644 << 16
+                    z.writestr(zi, open(full, 'rb').read())
+        shutil.copy(zp, os.path.join(garde, dossier + '.zip'))
+        print(dossier + '.zip', os.path.getsize(zp) // 1024, 'Ko')
     kinds = {}
     for it in items:
         kinds[it['kind']] = kinds.get(it['kind'], 0) + 1
