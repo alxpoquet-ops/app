@@ -112,7 +112,7 @@ function aled08e_bulle_contexte($uid) {
     $compte[] = 'Demandes en même temps avec cet abonnement : ' . (int) aled08e_demandes_max($uid) . '. Délai des modifications : ' . aled08e_delai_txt($f) . ', à compter de la confirmation de la demande.';
 
     $offre = [];
-    $offre[] = 'Abonnement ' . $f['name'] . ' : ' . aled08e_euro_txt($f['month']) . ' par mois (nom de domaine, hébergement, sauvegardes, sécurité, surveillance, maintenance, support, ' . ($pause ? ($retMax ? 'jusqu’à ' . $retMax . ' petites retouches par mois' : 'Cerise dans la bulle') : (int) $f['jetons'] . ' d’énergie chaque mois') . ' et ' . aled08e_alex_txt($uid, $f) . '). Sans engagement. À l’année : ' . (int) $D['moisOfferts'] . ' mois offerts.';
+    $offre[] = 'Abonnement ' . $f['name'] . ' : ' . aled08e_euro_txt($f['month']) . ' par mois, sans engagement. Il comprend : ' . implode(', ', (array) ($f['main'] ?? [])) . '. Bricou fait les modifications, en 48 h au plus.';
     if ($pause) $offre[] = 'Les messages dans cette bulle sont compris, jusqu’à ' . (int) aled08e_bulle_cfg()['parJour'] . ' par jour.';
     else $offre[] = '100 d’énergie = 1 €. Un message dans cette bulle : ' . aled08e_jl_txt(aled08e_bulle_prix()) . '.';
     if ($pause && $retMax) $offre[] = 'Une petite retouche du site par Alex : comprise, jusqu’à ' . $retMax . ' par mois.';

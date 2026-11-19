@@ -371,7 +371,7 @@ function aled08e_cmd_traiter_post() {
     $cfg = [
         'type' => $typeIn,
         'forfait' => sanitize_key($get('forfait', 30)),
-        'periode' => $get('periode', 10) === 'annee' ? 'annee' : 'mois',
+        'periode' => 'mois', // le paiement à l'année n'est plus proposé (19 novembre 2026)
         'lissage' => aled08e_cmd_lissage_n($get('lissage', 5)),
         'options' => array_values(array_unique($options)),
         'pages_plus' => aled08e_cmd_pages_plus($get('pages_plus', 4)),

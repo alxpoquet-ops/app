@@ -48,7 +48,7 @@ function aled08e_stripe_changer_abonnement($uid, $forfaitId, $optIds) {
     foreach ($items as $it) {
         $tag = $it['price']['product']['metadata']['aled08'] ?? '';
         if ($tag === 'forfait') {
-            $pid = $produit(aled08e_abo_nom($f) . ($interval === 'year' ? ' (à l’année, ' . (int) $D['moisOfferts'] . ' mois offerts)' : ' (au mois)'), 'forfait');
+            $pid = $produit(aled08e_abo_nom($f) . ($interval === 'year' ? ' (à l’année)' : ' (au mois)'), 'forfait');
             if (is_wp_error($pid)) return $pid;
             $r = aled08e_stripe_request('POST', '/v1/subscription_items/' . rawurlencode($it['id']), ['price_data' => $prix($pid, $f['month'] * $mult), 'proration_behavior' => 'none']);
             if (is_wp_error($r)) return $r;

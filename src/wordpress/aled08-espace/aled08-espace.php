@@ -1266,7 +1266,7 @@ function aled08e_dashboard() {
           <?php endforeach; ?>
           <?php endif; ?>
           <p class="app-total"><span>Total <?php echo $annuel ? 'chaque année' : 'chaque mois'; ?></span><b><?php echo aled08e_euro($total); // phpcs:ignore ?></b></p>
-          <?php if ($annuel) : ?><p class="app-note">Vous payez à l’année : <?php echo (int) $D['moisOfferts']; ?> mois offerts.</p><?php endif; ?>
+          <?php if ($annuel) : ?><p class="app-note">Vous payez à l’année.</p><?php endif; ?>
           <?php if ($cmd && $cmd['lissage'] && $cmd['lissage_paye'] < $cmd['montants']['lissage_total_echeances']) : ?><p class="app-note">Et la création de votre site, lissée : <?php echo aled08e_euro($cmd['montants']['lissage_mensualite']) . ' ' . esc_html($cmd['periode'] === 'annee' ? 'par an' : 'par mois'); // phpcs:ignore ?>, <?php echo (int) $cmd['lissage_paye']; ?> / <?php echo (int) $cmd['montants']['lissage_total_echeances']; ?> échéances payées.</p><?php endif; ?>
           <?php if ($abo === 'past_due') : ?><p class="esp-warn">Votre dernier paiement n’a pas abouti. Mettez à jour votre moyen de paiement ci-dessous, ou écrivez-moi.</p><?php endif; ?>
           <div class="esp-actions">

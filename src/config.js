@@ -298,7 +298,7 @@ const creationSeule = {
   court: 'Vous gérez tout vous-même : je vous remets votre site, prêt à installer chez votre hébergeur.',
   main: ['Aucune obligation d’abonnement', 'Vous gérez votre hébergement', 'Vous gérez votre nom de domaine', 'Vous gérez vos sauvegardes', 'Vous gérez vos mises à jour'],
 };
-const annuel = { moisOfferts: 2 };
+const annuel = { moisOfferts: 0 }; // 19 novembre 2026 : plus de réduction à l'année (le paiement à l'année n'est plus proposé)
 // Prix du site payable en 6 ou 12 fois sans frais (engagement le temps du paiement ; sinon, aucun engagement).
 // Le paiement en plusieurs fois se fait au mois : l'abonnement passe alors au mois.
 const lissage = { durees: [6, 12] };
