@@ -534,7 +534,7 @@ function aled08e_cmd_parrainage_en_ligne($cmd) {
     }
     $corps = 'Bonjour ' . aled08e_prenom($p) . ",\n\n"
         . 'Bonne nouvelle : ' . $cmd['prenom'] . ' a créé son site grâce à vous. Vous recevez ' . aled08e_mois_txt($mois) . " d’abonnement offert, merci !\n\n"
-        . "Vos parrainages sont dans votre espace client :\n" . aled08e_url() . "#parrainage\n\nÀ bientôt,\nAlex et sa petite bande\n";
+        . "Vos parrainages sont dans votre espace client :\n" . aled08e_url() . "#parrainage\n\nÀ bientôt,\nAlex et les Minis Monstres\n";
     wp_mail($p->user_email, 'Votre parrainage : un mois offert', $corps, aled08e_mail_headers());
     aled08e_cmd_journal($cmd['id'], 'Parrainage : ' . aled08e_mois_txt($mois) . ' offert au parrain ' . $p->display_name . ' et au client.');
 }
@@ -567,7 +567,7 @@ function aled08e_cmd_mail_client_nouvelle($c, $compte, $stripe) {
         . ($compte['cree']
             ? "   Un autre e-mail arrive avec le lien pour choisir votre mot de passe.\n\n"
             : "   Vous avez déjà un compte : connectez-vous avec votre mot de passe habituel.\n\n")
-        . "Une question ? Répondez à cet e-mail.\n\nÀ bientôt,\nAlex et sa petite bande\n";
+        . "Une question ? Répondez à cet e-mail.\n\nÀ bientôt,\nAlex et les Minis Monstres\n";
     wp_mail($c['email'], 'Votre commande ' . $c['ref'] . ' est bien reçue', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
 }
 function aled08e_cmd_mail_client_payee($c) {
@@ -580,7 +580,7 @@ function aled08e_cmd_mail_client_payee($c) {
         . ($c['domaine'] && !$c['domaine_mien'] ? '1. Je réserve le nom de domaine ' . $c['domaine'] . " à votre nom.\n" : "1. Je prépare l’hébergement de votre site.\n")
         . "2. Vous remplissez votre questionnaire de création dans votre espace client (une dizaine de minutes) : couleurs, ambiance, photos, prix ou produits. C’est lui qui lance la création : " . aled08e_url() . "#commande\n"
         . '3. Je crée votre site' . ($delai ? ' (délai habituel : ' . $delai . ', à partir de vos réponses)' : '') . ", et vous suivez l’avancement dans votre espace client.\n\n"
-        . "À bientôt,\nAlex et sa petite bande\n";
+        . "À bientôt,\nAlex et les Minis Monstres\n";
     wp_mail($c['email'], 'Votre acompte pour la commande ' . $c['ref'] . ' est reçu', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
 }
 function aled08e_cmd_mail_owner_payee($c) {

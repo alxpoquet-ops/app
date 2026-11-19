@@ -293,7 +293,7 @@ add_filter('wp_new_user_notification_email', function ($email, $user) {
         . "Pour choisir votre mot de passe, ouvrez ce lien :\n" . $link . "\n\n"
         . "Ensuite, connectez-vous ici :\n" . aled08e_url() . "\n"
         . 'Votre identifiant : ' . $user->user_login . " (ou votre adresse e-mail)\n\n"
-        . "À bientôt,\nAlex et sa petite bande\n";
+        . "À bientôt,\nAlex et les Minis Monstres\n";
     $email['headers'] = 'Content-Type: text/plain; charset=UTF-8';
     return $email;
 }, 10, 2);
@@ -807,7 +807,7 @@ function aled08e_profile_save($uid) {
             $m = (int) aled08e_data()['parrainageMois'];
             $corps = 'Bonjour ' . aled08e_prenom($p) . ",\n\n"
                 . 'Bonne nouvelle : ' . aled08e_prenom($u) . ' a créé son site grâce à vous. Vous recevez ' . aled08e_mois_txt($m) . " d’abonnement offert, merci !\n\n"
-                . "Vos parrainages sont dans votre espace client :\n" . aled08e_url() . "#parrainage\n\nÀ bientôt,\nAlex et sa petite bande\n";
+                . "Vos parrainages sont dans votre espace client :\n" . aled08e_url() . "#parrainage\n\nÀ bientôt,\nAlex et les Minis Monstres\n";
             wp_mail($p->user_email, 'Votre parrainage : un mois offert', $corps, aled08e_mail_headers());
         }
     }
@@ -1045,7 +1045,7 @@ function aled08e_dashboard() {
         'ok' => ['esp-empty', 'Demande envoyée, merci ! Elle est bien arrivée, et vous suivez son avancement juste en dessous.'],
         'changer_ok' => ['esp-empty', 'C’est enregistré ! Un extra ajouté est actif tout de suite : la part du mois en cours est payée maintenant par carte, puis il suit votre abonnement. Un extra retiré n’est plus facturé.'],
         'changer_rien' => ['esp-empty', 'Rien n’a changé : ce sont déjà vos extras.'],
-        'changer_erreur' => ['esp-warn', 'Le changement n’a pas pu se faire tout seul : Alex est prévenu et s’en occupe.'],
+        'changer_erreur' => ['esp-warn', 'Le changement n’a pas pu se faire tout seul : nous sommes prévenus et on s’en occupe.'],
         'boost' => ['esp-empty', 'Demande envoyée à Alex : c’est une intervention en plus, ' . $boostTxt . ' ajoutés à votre prochaine facture.'],
         'boost_accord' => ['esp-warn', 'Votre intervention d’Alex ' . $periodeDu . ' est utilisée. Cochez la case « une intervention en plus » (' . $boostTxt . ') pour envoyer cette demande.'],
         'urgent_ok' => ['esp-empty', 'Demande envoyée : Alex la traite sous ' . ($D['delais']['urgent'] ?? '24 heures') . ', du lundi au vendredi. Le supplément est ajouté à votre prochaine facture.'],
@@ -1063,12 +1063,12 @@ function aled08e_dashboard() {
         'deux_max' => ['esp-warn', (aled08e_demandes_max($uid) > 1 ? 'Deux demandes sont déjà en cours' : 'Une demande est déjà en cours') . ' : c’est le maximum à la fois avec votre abonnement. Dès qu’' . (aled08e_demandes_max($uid) > 1 ? 'une' : 'elle') . ' est terminée, vous pourrez envoyer la suivante.'],
         'trop' => ['esp-warn', 'Vous avez envoyé beaucoup de demandes aujourd’hui. Écrivez-nous par le formulaire de contact si c’est pressé.'],
         'erreur' => ['esp-warn', 'L’envoi n’a pas abouti. Réessayez dans un instant.'],
-        'lia_oui' => ['esp-empty', 'Merci pour vos précisions ! Cerise a transmis votre demande à Alex. Vous suivez l’avancement dans la jauge.'],
+        'lia_oui' => ['esp-empty', 'Merci pour vos précisions ! Cerise a transmis votre demande. Vous suivez l’avancement dans la jauge.'],
         'annul_ok' => ['esp-empty', 'Demande annulée. Elle ne compte pas dans vos interventions.'],
-        'annul_commencee' => ['esp-warn', 'Alex a déjà commencé cette demande : elle ne s’annule plus. Écrivez-lui si besoin, il vous répond vite.'],
+        'annul_commencee' => ['esp-warn', 'Cette demande est déjà commencée : elle ne s’annule plus. Écrivez-nous si besoin, on vous répond vite.'],
         'annul_quota' => ['esp-warn', 'Les demandes lancées ne s’annulent plus.'],
         'annul_delai' => ['esp-warn', 'Les demandes lancées ne s’annulent plus.'],
-        'lia_non' => ['esp-empty', 'Merci pour vos précisions. Cerise a transmis votre demande à Alex, avec toutes vos remarques.'],
+        'lia_non' => ['esp-empty', 'Merci pour vos précisions. Cerise a transmis votre demande, avec toutes vos remarques.'],
         'lia_erreur' => ['esp-warn', 'Cette demande a déjà été confirmée. Vous suivez son avancement dans la jauge.'],
     ];
     if (isset($msgs[$m])) $flash = '<p class="' . $msgs[$m][0] . '" role="status">' . esc_html($msgs[$m][1]) . '</p>';
@@ -1186,12 +1186,12 @@ function aled08e_dashboard() {
           <?php echo aled08e_pd_flash_html() . $flash; // phpcs:ignore ?>
           <?php echo aled08e_gauge_zone_html($uid); // phpcs:ignore ?>
           <section class="bricou-bloc" aria-label="Votre demande de modification">
-          <div class="bricou-tete"><span class="bricou-art" aria-hidden="true"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?></span><div><strong>Une modification ? Dites-le à Cerise</strong><p>Écrivez ce que vous voulez changer, avec une photo si besoin. Cerise vous aide à bien le formuler, vous le fait vérifier, puis le transmet à Alex, qui fait la modification.</p></div></div>
+          <div class="bricou-tete"><span class="bricou-art" aria-hidden="true"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?></span><div><strong>Une modification ? Dites-le à Cerise</strong><p>Écrivez ce que vous voulez changer, avec une photo si besoin. Cerise vous aide à bien le formuler, vous le fait vérifier, puis le transmet. La modification est faite en 48 h au plus.</p></div></div>
           <?php if (aled08e_sans_formule($uid)) : ?><?php echo aled08e_autonomie_html($uid); // phpcs:ignore ?>
           <?php else : ?>
           <?php if ($illimite) : ?>
-          <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. C’est compris dans votre formule, sans compter. Vous suivez l’avancement ici.</p>
-          <ol class="req-etapes"><li><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Vous écrivez votre demande</span></li><li><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Cerise la précise avec vous</span></li><li><?php echo aled08e_icon('circle-check'); // phpcs:ignore ?><span>Vous la confirmez</span></li><li><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>Alex fait la modification</span></li></ol>
+          <p class="app-p">Écrivez ce que vous voulez changer, avec une photo si besoin. C’est compris dans votre abonnement Mini. Vous suivez l’avancement ici.</p>
+          <ol class="req-etapes"><li><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Vous écrivez votre demande</span></li><li><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Cerise la précise avec vous</span></li><li><?php echo aled08e_icon('circle-check'); // phpcs:ignore ?><span>Vous la confirmez</span></li><li><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>La modification est faite</span></li></ol>
           <p class="app-note"><?php echo aled08e_icon('clock'); // phpcs:ignore ?>Modifications <?php echo esc_html(aled08e_delai_txt($f)); ?>, à compter de votre confirmation. <?php echo (int) aled08e_demandes_max($uid) > 1 ? 'Deux demandes à la fois' : 'Une demande à la fois'; ?> avec votre abonnement.</p>
           <?php endif; ?>
           <form class="req-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(aled08e_url()); ?>" data-req-real>

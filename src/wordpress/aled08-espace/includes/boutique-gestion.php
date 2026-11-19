@@ -24,8 +24,8 @@ function aled08e_bg_appel($uid, $action, $args = []) {
     return $r;
 }
 function aled08e_bg_message_etat($r) {
-    if ($r === 'non_relie') return 'Votre boutique n’est pas encore reliée à votre espace. Alex s’en occupe.';
-    if ($r === 'connecteur_ancien') return 'L’extension de votre site doit être mise à jour pour ces réglages. Alex s’en occupe.';
+    if ($r === 'non_relie') return 'Votre boutique n’est pas encore reliée à votre espace. On s’en occupe.';
+    if ($r === 'connecteur_ancien') return 'L’extension de votre site doit être mise à jour pour ces réglages. On s’en occupe.';
     return is_wp_error($r) ? $r->get_error_message() : 'Votre site ne répond pas pour le moment. Rechargez la page dans un instant.';
 }
 
@@ -65,7 +65,7 @@ add_action('template_redirect', function () {
         $args = ['id' => $id, 'actif' => !empty($P['actif'])];
         $cles = false;
         if ($id === 'stripe' && (trim((string) ($P['pk'] ?? '')) !== '' || trim((string) ($P['sk'] ?? '')) !== '')) {
-            if (strpos(aled08e_meta($uid, 'lia_url'), 'https://') !== 0) $retour(false, 'Pour votre sécurité, les clés de paiement ne partent que vers un site en HTTPS. Alex s’en occupe.');
+            if (strpos(aled08e_meta($uid, 'lia_url'), 'https://') !== 0) $retour(false, 'Pour votre sécurité, les clés de paiement ne partent que vers un site en HTTPS. On s’en occupe.');
             $args['cles'] = ['publiable' => trim((string) ($P['pk'] ?? '')), 'secrete' => trim((string) ($P['sk'] ?? '')), 'test' => ($P['mode'] ?? '') === 'test'];
             $cles = true;
         }
@@ -106,9 +106,9 @@ add_action('template_redirect', function () {
     // --- un autre moyen de paiement : Alex s'en occupe
     if ($op === 'demander') {
         $quoi = trim(sanitize_textarea_field((string) ($P['quoi'] ?? '')));
-        if ($quoi === '') $retour(false, 'Dites-moi en quelques mots ce que vous voulez brancher.');
+        if ($quoi === '') $retour(false, 'Dites-nous en quelques mots ce que vous voulez brancher.');
         wp_mail(aled08e_to(), 'Boutique : moyen de paiement à brancher : ' . $u->display_name, 'Client : ' . $u->display_name . ' (' . $u->user_email . ")\nSite : " . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\n\nIl veut :\n" . mb_substr($quoi, 0, 1000) . "\n", aled08e_mail_headers($u->display_name . ' <' . $u->user_email . '>'));
-        $retour(true, 'C’est envoyé à Alex : il branche ce moyen de paiement sur votre boutique et vous prévient dès que c’est prêt.');
+        $retour(true, 'C’est envoyé : on branche ce moyen de paiement sur votre boutique et on vous prévient dès que c’est prêt.');
     }
     $retour(false, 'Ça n’a pas marché. Réessayez.');
 }, 5);
@@ -141,7 +141,7 @@ function aled08e_bg_prix_html($uid) {
         $vente = $p['statut'] === 'publish';
         $h .= '<li class="bg-ligne' . ($p['modifiable'] ? '' : ' is-fixe') . '"><span class="bg-vignette">' . (!empty($p['image']) ? '<img src="' . esc_url($p['image']) . '" alt="" loading="lazy">' : aled08e_icon('shopping-bag')) . '</span>'
             . '<span class="bg-nom"><strong>' . esc_html($p['nom']) . '</strong><small>' . ($vente ? 'En vente' : 'Hors vente') . '</small></span>';
-        if (!$p['modifiable']) { $h .= '<span class="bg-fixe">Plusieurs variantes : demandez à Alex de les régler.</span></li>'; continue; }
+        if (!$p['modifiable']) { $h .= '<span class="bg-fixe">Plusieurs variantes : faites une demande, on les règle avec vous.</span></li>'; continue; }
         $n = 'p[' . $id . ']';
         $h .= '<label class="bg-champ"><span>Prix (' . esc_html($dev) . ')</span><input type="text" inputmode="decimal" name="' . $n . '[prix]" value="' . esc_attr(str_replace('.', ',', (string) $p['prix'])) . '"></label>'
             . '<label class="bg-champ"><span>Promo (' . esc_html($dev) . ')</span><input type="text" inputmode="decimal" name="' . $n . '[promo]" value="' . esc_attr(str_replace('.', ',', (string) $p['prix_promo'])) . '" placeholder="aucune"></label>'
@@ -175,9 +175,9 @@ function aled08e_bg_paiements_html($uid) {
             $corps = '<p class="app-note">L’extension officielle de ' . esc_html($id === 'stripe' ? 'Stripe' : 'PayPal') . ' n’est pas encore sur votre site. Installez-la en un clic : elle reste éteinte tant que vous ne l’avez pas réglée.</p>'
                 . '<form method="post" action="' . $act . '" onsubmit="this.querySelector(\'button\').disabled=true;this.querySelector(\'button span\').textContent=\'Installation… (une minute)\';">' . $nonce . '<input type="hidden" name="aled08e_bg" value="installer"><input type="hidden" name="id" value="' . esc_attr($id) . '"><button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('download') . '<span>Installer ' . esc_html($id === 'stripe' ? 'Stripe' : 'PayPal') . '</span></button></form>';
         } elseif ($id === 'ppcp-gateway') {
-            $corps = '<p class="app-note">PayPal se connecte avec votre compte PayPal : c’est un petit parcours à faire une fois. Alex peut le faire avec vous, ou vous le faites depuis votre site.</p>'
+            $corps = '<p class="app-note">PayPal se connecte avec votre compte PayPal : c’est un petit parcours à faire une fois. On peut le faire avec vous, ou vous le faites depuis votre site.</p>'
                 . '<div class="ges-actions"><a class="btn btn-light btn-sm" href="' . esc_url($g['config_url']) . '" target="_blank" rel="noopener">' . aled08e_icon('link') . '<span>Ouvrir les réglages PayPal</span></a>'
-                . '<form method="post" action="' . $act . '">' . $nonce . '<input type="hidden" name="aled08e_bg" value="demander"><input type="hidden" name="quoi" value="Brancher PayPal avec moi"><button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('send') . '<span>Demander à Alex</span></button></form></div>'
+                . '<form method="post" action="' . $act . '">' . $nonce . '<input type="hidden" name="aled08e_bg" value="demander"><input type="hidden" name="quoi" value="Brancher PayPal avec moi"><button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('send') . '<span>Demander de l’aide</span></button></form></div>'
                 . '<form class="bg-pf" method="post" action="' . $act . '">' . $nonce . '<input type="hidden" name="aled08e_bg" value="paiement"><input type="hidden" name="id" value="' . esc_attr($id) . '"><label class="check"><input type="checkbox" name="actif" value="1"' . ($g['actif'] ? ' checked' : '') . '><span>PayPal est proposé à mes clients</span></label><button class="btn btn-light btn-sm" type="submit">' . aled08e_icon('check') . '<span>Enregistrer</span></button></form>';
         } else {
             $c = '<label class="check"><input type="checkbox" name="actif" value="1"' . ($g['actif'] ? ' checked' : '') . '><span>Je propose ce moyen de paiement à mes clients</span></label>';
@@ -203,8 +203,8 @@ function aled08e_bg_paiements_html($uid) {
             . '<p class="app-note"><a href="' . esc_url($g['config_url']) . '" target="_blank" rel="noopener">Ouvrir ses réglages sur mon site</a></p></article>';
     }
     $h .= '<article class="ex-carte bg-pay c-peach"><header class="ex-tete"><span class="ex-ico">' . aled08e_icon('plus') . '</span><div class="ex-nom"><strong>Un autre moyen de paiement ?</strong></div></header>'
-        . '<p class="ex-court">Mollie, Payplug, SumUp, Alma, Apple Pay, paiement en plusieurs fois… Dites-moi lequel : Alex le branche sur votre boutique.</p>'
-        . '<form method="post" action="' . $act . '" class="bg-pf">' . $nonce . '<input type="hidden" name="aled08e_bg" value="demander"><div class="field"><label for="bq-autre">Ce que vous voulez brancher</label><textarea id="bq-autre" name="quoi" rows="2" maxlength="1000" required placeholder="Ex. : payer en 3 fois avec Alma"></textarea></div><button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('send') . '<span>Demander à Alex</span></button></form></article>';
+        . '<p class="ex-court">Mollie, Payplug, SumUp, Alma, Apple Pay, paiement en plusieurs fois… Dites-nous lequel : on le branche sur votre boutique.</p>'
+        . '<form method="post" action="' . $act . '" class="bg-pf">' . $nonce . '<input type="hidden" name="aled08e_bg" value="demander"><div class="field"><label for="bq-autre">Ce que vous voulez brancher</label><textarea id="bq-autre" name="quoi" rows="2" maxlength="1000" required placeholder="Ex. : payer en 3 fois avec Alma"></textarea></div><button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('send') . '<span>Demander de l’aide</span></button></form></article>';
     return $h . '</div>';
 }
 

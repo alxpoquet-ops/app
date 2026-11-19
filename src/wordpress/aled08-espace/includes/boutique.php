@@ -68,7 +68,7 @@ add_action('template_redirect', function () {
             $back(false, 'Action inconnue.');
     }
     $r = aled08e_lia_appel($uid, $op, $args);
-    if (is_wp_error($r)) $back(false, (int) ($r->get_error_data()['code'] ?? 0) === 400 && strpos($r->get_error_message(), 'Action inconnue') !== false ? 'L’extension de votre site doit être mise à jour. Alex s’en occupe.' : $r->get_error_message());
+    if (is_wp_error($r)) $back(false, (int) ($r->get_error_data()['code'] ?? 0) === 400 && strpos($r->get_error_message(), 'Action inconnue') !== false ? 'L’extension de votre site doit être mise à jour. On s’en occupe.' : $r->get_error_message());
     $r['etat'] = 'ok';
     set_transient('aled08_bq_' . $uid, $r, 10 * MINUTE_IN_SECONDS);
     $back(true, $ok);
@@ -95,7 +95,7 @@ else : ?>
 <p class="app-p">Des petits outils de vente à régler vous-même en quelques secondes. Ils ne comptent pas dans vos modifications.</p>
 <?php if ($flash) echo '<p class="' . ($flash[0] ? 'esp-empty' : 'esp-warn') . '" role="status">' . esc_html($flash[1]) . '</p>'; ?>
 <?php if (($b['etat'] ?? '') !== 'ok') :
-    $msg = ['non_relie' => 'Votre boutique n’est pas encore reliée à votre espace. Alex s’en occupe.', 'connecteur_ancien' => 'L’extension de votre site doit être mise à jour pour ces outils. Alex s’en occupe.', 'sans_boutique' => 'Aucune boutique WooCommerce n’a été trouvée sur votre site.'][$b['etat'] ?? ''] ?? 'Votre site ne répond pas pour le moment. Rechargez la page dans un instant.'; ?>
+    $msg = ['non_relie' => 'Votre boutique n’est pas encore reliée à votre espace. On s’en occupe.', 'connecteur_ancien' => 'L’extension de votre site doit être mise à jour pour ces outils. On s’en occupe.', 'sans_boutique' => 'Aucune boutique WooCommerce n’a été trouvée sur votre site.'][$b['etat'] ?? ''] ?? 'Votre site ne répond pas pour le moment. Rechargez la page dans un instant.'; ?>
 <p class="esp-warn"><?php echo esc_html($msg); ?></p>
 <?php else :
     $so = $b['soldes']; $ba = $b['bandeau']; ?>

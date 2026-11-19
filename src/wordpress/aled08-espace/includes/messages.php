@@ -30,10 +30,10 @@ function aled08e_msg_ecartes($uid) { $v = get_user_meta($uid, 'aled08_msg_ecarte
 /* Les idées de saison : [mois (1 à 12), monstre, titre, texte, la demande envoyée si le client dit oui] */
 function aled08e_msg_saisons() {
     return [
-        [[11, 12], 'cerise', 'Vos horaires des fêtes', 'En décembre, beaucoup de visiteurs cherchent vos horaires des fêtes. Alex peut ajouter un petit bandeau en haut de votre page d’accueil.', 'Ajouter un bandeau en haut de l’accueil avec nos horaires des fêtes de fin d’année. (Suggestion de Cerise : je vous donne les horaires en réponse.)'],
+        [[11, 12], 'cerise', 'Vos horaires des fêtes', 'En décembre, beaucoup de visiteurs cherchent vos horaires des fêtes. On peut ajouter un petit bandeau en haut de votre page d’accueil.', 'Ajouter un bandeau en haut de l’accueil avec nos horaires des fêtes de fin d’année. (Suggestion de Cerise : je vous donne les horaires en réponse.)'],
         [[1], 'plume', 'Une page pour la nouvelle année', 'Janvier, c’est le bon moment pour présenter vos nouveautés ou vos tarifs de l’année. On vous prépare une page ?', 'Préparer une page « Nos nouveautés de l’année » sur mon site. (Suggestion de Plume.)'],
         [[3, 4], 'plume', 'Le printemps arrive', 'Les recherches de saison montent au printemps. Une page pour votre service le plus demandé à cette période vous ferait trouver plus souvent.', 'Écrire une page de printemps pour notre service le plus demandé. (Suggestion de Plume : je précise le service en réponse.)'],
-        [[6, 7], 'cerise', 'Vos horaires d’été', 'Vous fermez ou changez vos horaires cet été ? Alex peut les afficher clairement, avec un petit bandeau.', 'Afficher nos horaires d’été avec un bandeau en haut du site. (Suggestion de Cerise : je donne les dates en réponse.)'],
+        [[6, 7], 'cerise', 'Vos horaires d’été', 'Vous fermez ou changez vos horaires cet été ? On peut les afficher clairement, avec un petit bandeau.', 'Afficher nos horaires d’été avec un bandeau en haut du site. (Suggestion de Cerise : je donne les dates en réponse.)'],
         [[9], 'plume', 'La rentrée', 'À la rentrée, vos clients reviennent sur Google. Une page de conseils de rentrée peut vous faire trouver plus souvent.', 'Préparer une page de conseils de rentrée pour mes clients. (Suggestion de Plume.)'],
     ];
 }
@@ -371,7 +371,7 @@ function aled08e_gauge_croix($p) {
 function aled08e_gauge_html($uid) {
     $liste = aled08e_demandes_en_cours($uid);
     if (!$liste) return '';
-    $etapes = ['Demande reçue', 'Précisée avec Cerise', 'Chez Alex', 'Faite'];
+    $etapes = ['Demande reçue', 'Précisée avec Cerise', 'En cours', 'Faite'];
     $h = '';
     foreach (array_slice($liste, 0, aled08e_demandes_max($uid)) as $p) {
         $n = aled08e_gauge_etape($p);
@@ -391,7 +391,7 @@ function aled08e_gauge_html($uid) {
             $h .= '<p class="gauge-a"><b>Cerise vous pose une question :</b> ' . esc_html(mb_substr($q, 0, 220)) . '</p><button type="button" class="btn btn-primary btn-sm gauge-btn" data-gauge-ouvrir="question-' . (int) $p->ID . '">' . aled08e_icon('message-circle') . '<span>Répondre à Cerise</span></button>';
         } elseif ($n === 3) {
             $ech = (int) get_post_meta($p->ID, '_aled08_echeance', true);
-            $h .= '<p class="gauge-a">' . (get_post_meta($p->ID, '_aled08_statut', true) === 'encours' ? 'Alex travaille sur votre demande' : 'Votre demande est chez Alex') . ($ech ? ' : c’est fait d’ici ' . esc_html(aled08e_cer_echeance_txt($ech)) . '.' : '.') . '</p>';
+            $h .= '<p class="gauge-a">' . (get_post_meta($p->ID, '_aled08_statut', true) === 'encours' ? 'On travaille sur votre demande' : 'Votre demande est bien arrivée') . ($ech ? ' : c’est fait d’ici ' . esc_html(aled08e_cer_echeance_txt($ech)) . '.' : '.') . '</p>';
         } else $h .= '<p class="gauge-a">Cerise relit votre demande…</p>';
         $h .= '</div>';
     }

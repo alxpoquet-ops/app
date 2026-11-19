@@ -800,7 +800,7 @@ function aled08e_lia_publier($pid, $qui = 'auto') {
     $liste = implode("\n", array_map(function ($a) { return '- ' . $a['detail'] . ($a['adresse'] ? ' (' . $a['adresse'] . ')' : ''); }, $faites));
     aled08e_lia_journal_add('Demande #' . $pid . ' mise en ligne par Bricou après accord du client (' . count($faites) . ' changement(s)).');
     // pas de validation par Alex : la modification est directe ; elle apparaît dans son récapitulatif des demandes
-    if ($qui !== 'client' && $u) wp_mail($u->user_email, 'Votre modification est en ligne', 'Bonjour ' . aled08e_prenom($u) . ",\n\nVotre modification est en ligne :\n" . $liste . "\n\nVotre demande : " . $p->post_content . "\n\nÀ bientôt,\nAlex et sa petite bande\n", aled08e_mail_headers('"Les Minis Monstres" <' . aled08e_to() . '>'));
+    if ($qui !== 'client' && $u) wp_mail($u->user_email, 'Votre modification est en ligne', 'Bonjour ' . aled08e_prenom($u) . ",\n\nVotre modification est en ligne :\n" . $liste . "\n\nVotre demande : " . $p->post_content . "\n\nÀ bientôt,\nAlex et les Minis Monstres\n", aled08e_mail_headers('"Les Minis Monstres" <' . aled08e_to() . '>'));
     return 'oui';
 }
 

@@ -61,7 +61,7 @@ function aled08e_vacances_html($uid) {
         'actif' => ['esp-empty', 'C’est enregistré : le mode vacances est programmé sur votre boutique.'],
         'arrete' => ['esp-empty', 'Le mode vacances est arrêté : votre boutique fonctionne normalement.'],
         'dates' => ['esp-warn', 'La date de retour est avant la date de départ.'],
-        'injoignable' => ['esp-warn', 'Votre site n’a pas répondu : rien n’a changé. Réessayez dans un instant, ou écrivez à Alex.'],
+        'injoignable' => ['esp-warn', 'Votre site n’a pas répondu : rien n’a changé. Réessayez dans un instant, ou écrivez-nous.'],
         'erreur' => ['esp-warn', 'Ça n’a pas marché. Rechargez la page et réessayez.'],
     ];
     $fr = function ($d) { return $d ? wp_date('j F Y', strtotime($d . ' 12:00')) : ''; };

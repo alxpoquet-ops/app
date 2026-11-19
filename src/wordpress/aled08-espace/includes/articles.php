@@ -100,7 +100,7 @@ add_action('template_redirect', function () {
             update_user_meta($uid, 'aled08_articles', array_values($liste));
         }
         wp_mail(aled08e_to(), 'Article à mettre en ligne : ' . $u->display_name, 'Client : ' . $u->display_name . ' (' . $u->user_email . ")\nSite : " . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\nRaison : " . $why . "\n\nArticle : " . $nom . ($pid ? ' (produit n° ' . $pid . ' à modifier)' : '') . "\nPrix : " . $prix . " €\nDescription :\n" . $desc . "\n" . ($aid ? 'Photo : ' . wp_get_attachment_url($aid) . "\n" : ''), aled08e_mail_headers($u->display_name . ' <' . $u->user_email . '>'));
-        $retour(true, 'Votre article est enregistré : Alex le met en ligne dans les prochaines heures.');
+        $retour(true, 'Votre article est enregistré : il sera en ligne dans les prochaines heures.');
     }
 
     if ($op === 'retirer') {
@@ -109,7 +109,7 @@ add_action('template_redirect', function () {
             $r = $pret ? aled08e_lia_appel($uid, 'article_retirer', ['id' => $pid]) : new WP_Error('aled08_art', 'site pas relié');
             if (is_wp_error($r)) {
                 wp_mail(aled08e_to(), 'Article à retirer : ' . $u->display_name, 'Le client veut retirer le produit n° ' . $pid . " de sa boutique, mais le site n'a pas pu le faire : " . $r->get_error_message() . "\n", aled08e_mail_headers());
-                $retour(true, 'C’est noté : Alex retire cet article de votre boutique.');
+                $retour(true, 'C’est noté : cet article va être retiré de votre boutique.');
             }
             $retour(true, 'Votre article est retiré (il reste récupérable quelques jours). Votre emplacement est libre.');
         }

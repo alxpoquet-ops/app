@@ -81,7 +81,7 @@ function aled08e_bsite_ajax() {
     $msg = aled08e_jl_texte(is_scalar($_POST['message'] ?? '') ? wp_unslash($_POST['message']) : '');
     $msg = trim(str_replace(['<', '>'], ['‹', '›'], $msg));
     if ($msg === '') $non('Écrivez votre question, puis envoyez.');
-    if (mb_strlen($msg) > 300) $non('Votre question fait ' . mb_strlen($msg) . ' caractères : la bulle en prend 300. Faites plus court, ou écrivez à Alex.');
+    if (mb_strlen($msg) > 300) $non('Votre question fait ' . mb_strlen($msg) . ' caractères : la bulle en prend 300. Faites plus court, ou écrivez-nous.');
     // limites : par visiteur, puis pour tout le site
     $ip = hash('sha256', (string) ($_SERVER['REMOTE_ADDR'] ?? '?') . wp_salt('auth'));
     $kh = 'aled08_bsite_h_' . substr($ip, 0, 20) . '_' . wp_date('YmdH');
@@ -124,7 +124,7 @@ function aled08e_bsite_ajax() {
         );
     } catch (\Throwable $e) {
         aled08e_lia_journal_add('Cerise (visiteurs du site) : erreur Claude : ' . $e->getMessage());
-        $non('Cerise n’a pas pu répondre cette fois. Réessayez dans un instant, ou écrivez à Alex.', 502);
+        $non('Cerise n’a pas pu répondre cette fois. Réessayez dans un instant, ou écrivez-nous.', 502);
     }
     if (isset($r->usage)) aled08e_bsite_cout_jour(((int) ($r->usage->inputTokens ?? 0) * $t['entree'] + (int) ($r->usage->outputTokens ?? 0) * $t['sortie']) / 1000000);
     $brut = '';

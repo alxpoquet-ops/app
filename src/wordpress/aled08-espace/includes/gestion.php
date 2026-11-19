@@ -72,7 +72,7 @@ function aled08e_demande_marquer($pid, $new, $rep = null) {
                 . "Votre demande est faite et en ligne :\n« " . $post->post_title . " »\n\n"
                 . ($rep ? $rep . "\n\n" : '')
                 . "Vous retrouvez le suivi de vos demandes dans votre espace client :\n" . aled08e_url() . "#demandes\n\n"
-                . "À bientôt,\nAlex et sa petite bande\n";
+                . "À bientôt,\nAlex et les Minis Monstres\n";
             wp_mail($u->user_email, 'Votre modification est en ligne', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
         }
     }

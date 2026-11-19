@@ -155,7 +155,7 @@ function aled08e_stats_html($uid) {
     if (!cles.length) { n.innerHTML = '<p class="live-vide">Les pages les plus vues s’afficheront ici.</p>'; return; }
     cles.forEach(function (k) { var d = document.createElement('div'); d.className = 'pb'; d.innerHTML = '<span class="pb-l"></span><span class="pb-v"></span><span class="pb-b"><i style="width:' + Math.round(obj[k] / max * 100) + '%"></i></span>'; d.children[0].textContent = k === '/' ? 'Accueil' : decodeURIComponent(k); d.children[1].textContent = nf(obj[k]); n.appendChild(d); });
   }
-  var GMSG = { non_relie: 'Vos recherches Google s’afficheront ici dès que Google Search Console sera relié à votre site. Alex s’en occupe.', sans_rank_math: 'Vos recherches Google s’afficheront ici dès que Google Search Console sera relié à votre site. Alex s’en occupe.', vide: 'Google n’a pas encore envoyé de chiffres. Ça prend souvent quelques jours après la liaison.', format_inconnu: 'Les recherches Google ne sont pas lisibles pour le moment. Alex regarde.' };
+  var GMSG = { non_relie: 'Vos recherches Google s’afficheront ici dès que Google Search Console sera relié à votre site. On s’en occupe.', sans_rank_math: 'Vos recherches Google s’afficheront ici dès que Google Search Console sera relié à votre site. On s’en occupe.', vide: 'Google n’a pas encore envoyé de chiffres. Ça prend souvent quelques jours après la liaison.', format_inconnu: 'Les recherches Google ne sont pas lisibles pour le moment. Alex regarde.' };
   function recherches(n, g) {
     if (!n) return; vider(n);
     if (!g || g.etat !== 'ok' || !(g.recherches || []).length) { var p = document.createElement('p'); p.className = 'live-vide'; p.textContent = GMSG[(g || {}).etat] || GMSG.non_relie; n.appendChild(p); return; }
@@ -227,7 +227,7 @@ function aled08e_stats_html($uid) {
   }
   afficher(vide); voyants({ etat: 'attente' });
   var msg = $('[data-live-msg]'), maj = $('[data-live-maj]'), dernier = 0, minuteur = null;
-  var MSG = { non_relie: 'Votre site n’est pas encore relié à votre espace. Alex s’en occupe : les chiffres apparaîtront ici dès que c’est fait.', connecteur_ancien: 'L’extension de votre site doit être mise à jour pour afficher les chiffres. Alex s’en occupe.', injoignable: 'Votre site ne répond pas pour le moment. Nouvel essai dans une heure, ou rechargez la page.' };
+  var MSG = { non_relie: 'Votre site n’est pas encore relié à votre espace. Alex s’en occupe : les chiffres apparaîtront ici dès que c’est fait.', connecteur_ancien: 'L’extension de votre site doit être mise à jour pour afficher les chiffres. On s’en occupe.', injoignable: 'Votre site ne répond pas pour le moment. Nouvel essai dans une heure, ou rechargez la page.' };
   function charger() {
     if (document.hidden) return;
     var f = new FormData(); f.append('action', 'aled08e_stats'); f.append('_n', box.getAttribute('data-nonce'));

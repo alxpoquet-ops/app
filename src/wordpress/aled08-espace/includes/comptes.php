@@ -217,7 +217,7 @@ function aled08e_comptes_nettoyage() {
                 . "Votre espace client des Minis Monstres n’a pas été ouvert depuis près d’un an, et aucun abonnement n’est en cours.\n"
                 . "Sans connexion de votre part, votre compte et ses données seront supprimés le " . $date . ".\n\n"
                 . "Pour le garder, il suffit de vous connecter une fois :\n" . aled08e_url() . "\n\n"
-                . "Une question ? Répondez à cet e-mail.\n\nÀ bientôt,\nAlex et sa petite bande\n";
+                . "Une question ? Répondez à cet e-mail.\n\nÀ bientôt,\nAlex et les Minis Monstres\n";
             wp_mail($u->user_email, 'Votre espace client des Minis Monstres : une connexion avant le ' . $date . ' pour le garder', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
             update_user_meta($u->ID, 'aled08_avertissement_suppression', current_time('mysql'));
             aled08e_comptes_journal_add('Avertissement envoyé à ' . $nom . ' : suppression le ' . $date . ($last <= strtotime('-12 months') ? ' (compte déjà inactif depuis plus de 12 mois)' : '') . '.');
