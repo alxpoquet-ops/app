@@ -2722,3 +2722,46 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .formule-plus { margin: -6px 0 12px; font-size: .9rem; font-weight: 700; line-height: 1.35; color: var(--ink); opacity: .9; }
 .offre.is-compact .formule-plus { margin: 6px 0 0; font-size: .82rem; }
 .cf-duo .cf-but { font-size: .92rem; line-height: 1.35; }
+
+/* ---------- démo, Ma boutique : le sous-menu tient à 360 px, et les articles en vraies cartes ---------- */
+.offre.is-compact .formule-nom { font-size: 1.02rem; padding-right: 36px; }
+.offre.is-compact .formule-art { width: 40px; right: 4px; }
+.bq-menu label { min-width: 0; }
+.bq-menu label span { min-width: 0; }
+.art-ajout { margin: 0 0 12px; }
+.art-cartes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: start; }
+.art-carte { border-radius: 20px; background: var(--soft); min-width: 0; }
+.art-carte[open] { box-shadow: 0 0 0 2px var(--pink-d) inset; }
+.art-carte > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px; }
+.art-carte > summary::-webkit-details-marker { display: none; }
+.art-carte > summary:focus-visible { outline: 3px solid var(--lilac-d); outline-offset: 2px; border-radius: 20px; }
+.art-vignette { display: block; width: 64px; height: 64px; flex: none; }
+.art-vignette svg { display: block; width: 100%; height: 100%; }
+.art-txt { display: grid; gap: 2px; justify-items: start; min-width: 0; }
+.art-txt strong { color: var(--ink); font-weight: 900; line-height: 1.25; overflow-wrap: anywhere; }
+.art-txt b { color: var(--ink); font-weight: 900; font-size: 1.1rem; }
+.art-txt .st { font-style: normal; }
+.art-modifier { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; border-radius: 999px; background: var(--card); color: var(--ink); font-weight: 800; font-size: .88rem; box-shadow: 0 0 0 2px var(--line) inset; }
+.art-modifier .ico { width: 16px; height: 16px; }
+.art-carte[open] .art-modifier { background: var(--pink); box-shadow: 0 0 0 2px var(--pink-d) inset; }
+.art-form { display: grid; gap: 12px; padding: 4px 12px 14px; }
+.art-form .field { margin: 0; }
+.art-photo { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 16px; border: 2px dashed var(--line); }
+.art-photo .art-vignette { width: 84px; height: 84px; }
+.art-prix input { max-width: 140px; }
+.art-form > .btn { justify-self: start; }
+@media (max-width: 720px) {
+  .bq-menu { gap: 6px; }
+  .bq-menu label { gap: 8px; padding: 8px 10px; font-size: .95rem; }
+  .bq-menu label .ico { width: 28px; height: 28px; padding: 6px; }
+  .art-cartes { grid-template-columns: minmax(0, 1fr); }
+  .art-carte > summary { grid-template-columns: 56px minmax(0, 1fr) auto; gap: 10px; }
+  .art-carte > summary .art-vignette { width: 56px; height: 56px; }
+  .art-modifier span { display: none; }
+  .art-modifier { padding: 0; width: 40px; justify-content: center; }
+  .art-form > .btn { justify-self: stretch; }
+}
+@media (max-width: 380px) { .bq-menu label { font-size: .9rem; padding: 8px; gap: 6px; } .bq-menu label .ico { width: 26px; height: 26px; padding: 5px; } }
+.art-form, .art-form .field { min-width: 0; }
+.art-form input, .art-form textarea { width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0; }
+.art-photo { min-width: 0; flex-wrap: wrap; }

@@ -782,7 +782,30 @@ function monEspacePage() {
   const extraBtn = (x) => (x.devis
     ? `<button type="button" class="btn btn-light btn-sm" data-toast-msg="Demande de devis envoyée : on vous répond avec un prix (démo)"><span>Demander un devis</span></button>`
     : `<button type="button" class="btn btn-primary btn-sm" data-toast-msg="Paiement par carte, tout de suite : ${euro(x.fois)} (démo)"><span>Commander</span></button>`);
-  const articles = [['Tarte aux fraises', '4,50 €'], ['Éclair au chocolat', '3,20 €'], ['Gâteau d’anniversaire, 8 parts', '32 €']];
+  // Les articles de la démo : [nom, prix, dessin, description]. Les vignettes sont de petits dessins pastel, sans image externe.
+  const articles = [
+    ['Tarte aux fraises', '4,50 €', 'tarte', 'Une pâte sablée, une crème légère et des fraises fraîches. À la part, à emporter.'],
+    ['Éclair au chocolat', '3,20 €', 'eclair', 'Pâte à choux, crème au chocolat noir et glaçage brillant.'],
+    ['Gâteau d’anniversaire, 8 parts', '32 €', 'gateau', 'Génoise, crème vanille et fruits rouges. À commander 48 h à l’avance.'],
+  ];
+  const VIGNETTE = {
+    tarte: '<rect width="64" height="64" rx="14" fill="#FFE8F1"/><ellipse cx="32" cy="42" rx="22" ry="9" fill="#F3C98B"/><path d="M10 42c0-9 10-15 22-15s22 6 22 15z" fill="#FFF6CF"/><circle cx="22" cy="34" r="5" fill="#FF6F91"/><circle cx="32" cy="30" r="5" fill="#FF8FA9"/><circle cx="42" cy="34" r="5" fill="#FF6F91"/><circle cx="27" cy="39" r="4" fill="#FF8FA9"/><circle cx="37" cy="39" r="4" fill="#FF6F91"/><path d="M31 25l1-3 1 3z" fill="#7EDDB5"/>',
+    eclair: '<rect width="64" height="64" rx="14" fill="#DDF0FF"/><rect x="9" y="30" width="46" height="16" rx="8" fill="#F3C98B"/><path d="M11 34a8 8 0 0 1 8-8h26a8 8 0 0 1 8 8v1H11z" fill="#7A4B3A"/><path d="M18 30h14" stroke="#B98A75" stroke-width="2.500" stroke-linecap="round"/><rect x="12" y="38" width="40" height="3" rx="1.500" fill="#FFF6CF"/>',
+    gateau: '<rect width="64" height="64" rx="14" fill="#EEE7FF"/><rect x="13" y="34" width="38" height="16" rx="5" fill="#FFD9E6"/><rect x="18" y="24" width="28" height="12" rx="5" fill="#FFF6CF"/><path d="M13 40c5 4 8-3 13 0s8-3 12 0 8-3 13 0" fill="none" stroke="#FF8FB8" stroke-width="3" stroke-linecap="round"/><rect x="30.500" y="13" width="3" height="11" rx="1.500" fill="#B9A6FF"/><path d="M32 6c3 3 2 6 0 7-2-1-3-4 0-7z" fill="#FFD45E"/>',
+  };
+  const vignette = (k) => `<svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">${VIGNETTE[k].replace(/\.500/g, '.5')}</svg>`;
+  // Une carte d'article, comme dans le vrai espace client : fermée, on voit la vignette, le nom, le prix et « En ligne » ;
+  // ouverte (« Modifier »), on voit le formulaire rempli : photo, nom, description, prix.
+  const articleCarte = ([nom, prix, dessin, desc], i) => `<details class="art-carte"${i === 0 ? ' open' : ''}>
+                <summary><span class="art-vignette">${vignette(dessin)}</span><span class="art-txt"><strong>${nom}</strong><b>${prix}</b><em class="st st-done">En ligne</em></span><span class="art-modifier">${icon('pen-tool')}<span>Modifier</span></span></summary>
+                <div class="art-form">
+                  <div class="art-photo"><span class="art-vignette">${vignette(dessin)}</span><button type="button" class="btn btn-light btn-sm" data-toast-msg="Dans votre vrai espace : choisissez une photo sur votre téléphone (démo)">${icon('image-plus')}<span>Changer la photo</span></button></div>
+                  <div class="field"><label for="art-nom-${i}">Nom</label><input id="art-nom-${i}" type="text" value="${nom}" maxlength="80"></div>
+                  <div class="field"><label for="art-desc-${i}">Description</label><textarea id="art-desc-${i}" rows="3" maxlength="400">${desc}</textarea></div>
+                  <div class="field art-prix"><label for="art-prix-${i}">Prix (en €)</label><input id="art-prix-${i}" type="text" inputmode="decimal" value="${prix.replace(' €', '')}" maxlength="10"></div>
+                  <button type="button" class="btn btn-primary" data-toast-msg="Enregistré (démo)">${icon('check')}<span>Enregistrer</span></button>
+                </div>
+              </details>`;
   // Le sous-menu de « Ma boutique », comme dans le vrai espace client
   const BQ = [['articles', 'shopping-bag', 'Mes articles'], ['prix', 'tag', 'Mes prix'], ['paiements', 'credit-card', 'Paiements'], ['livraison', 'package', 'Livraison'], ['commandes', 'clipboard-check', 'Commandes'], ['promos', 'badge-percent', 'Promos']];
   const body = `${C.pageHero({
@@ -864,8 +887,9 @@ function monEspacePage() {
             ${BQ.map(([id], i) => `<input type="radio" name="bq" id="bq-${id}" class="bq-r"${i === 0 ? ' checked' : ''}>`).join('')}
             <div class="bq-menu" role="group" aria-label="Les rubriques de Ma boutique">${BQ.map(([id, ic, nom]) => `<label for="bq-${id}">${icon(ic)}<span>${nom}</span></label>`).join('')}</div>
             <div class="bq-panel" data-bq="articles">
-              <ul class="ranks ranks-pages">${articles.map(([n]) => `<li><span>${n}</span><b>En vente</b></li>`).join('')}</ul>
-              <p class="app-note">Pour chaque article : une photo, une description, un prix. Autant d’articles que vous voulez.</p>
+              <p class="art-ajout"><button type="button" class="btn btn-primary btn-sm" data-toast-msg="Nouvel article : une photo, un nom, une description, un prix (démo)">${icon('plus')}<span>Ajouter un article</span></button></p>
+              <div class="art-cartes">${articles.map(articleCarte).join('')}</div>
+              <p class="app-note">Pour chaque article : une photo, un nom, une description, un prix. Autant d’articles que vous voulez.</p>
             </div>
             <div class="bq-panel" data-bq="prix">
               <ul class="ranks ranks-pages">${articles.map(([n, pr]) => `<li><span>${n}</span><b>${pr}</b></li>`).join('')}</ul>
