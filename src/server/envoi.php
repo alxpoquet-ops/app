@@ -42,7 +42,6 @@ $type      = $simple ? '' : oneLine(field('type', 80));
 $forfait   = oneLine(field('forfait', 40));
 $paiement  = oneLine(field('paiement', 40));
 $domaine   = oneLine(field('domaine', 120));
-$parrain   = strtoupper(preg_replace('/[^A-Za-z0-9-]/', '', field('parrain', 20)));
 $message   = field('message', 5000);
 $consent   = field('consentement', 5);
 
@@ -62,7 +61,6 @@ $corps = ($simple ? "Message reçu depuis le site " : "Nouvelle demande reçue d
         . "Forfait     : " . ($forfait ?: 'non précisé') . "\n"
         . "Paiement    : " . ($paiement ?: 'non précisé') . "\n"
         . "Domaine     : " . ($domaine ?: 'non précisé') . "\n")
-    . ($parrain && !$simple ? "Parrainage  : $parrain\n" : '')
     . "\nMessage :\n$message\n\n"
     . "---\nConsentement RGPD : oui, le " . date('d/m/Y H:i') . "\n";
 

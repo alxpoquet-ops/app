@@ -1636,7 +1636,7 @@ ${C.ctaBand({ text: CTA_TEXTE })}`;
   return {
     path: '/faq/',
     title: 'Questions fréquentes : création, tarifs, visibilité | Les Minis Monstres',
-    description: 'Toutes les réponses sur la création de votre site, la commande en ligne, les tarifs et le forfait Mini, l’espace client, la visibilité sur Google et le parrainage.',
+    description: 'Toutes les réponses sur la création de votre site, la commande en ligne, les tarifs et le forfait Mini, l’espace client et la visibilité sur Google.',
     crumbs,
     body,
     schema: [C.faqSchema(all)],
