@@ -2714,3 +2714,6 @@ a.client-url { text-decoration: none; }
 main > .section.section-citation + .section { padding-top: 48px; }
 @media (min-width: 1181px) { .footer-grid { grid-template-columns: 1.5fr repeat(5, minmax(0, 1fr)); gap: 22px; } }
 @media (max-width: 720px) { main > .section.section-citation + .section { padding-top: 34px; } }
+
+.perks.perks-1 { grid-template-columns: minmax(0, 1fr); max-width: 520px; margin: 0 auto; }
+@media (max-width: 720px) { .cf-duo .cf-nom { padding-right: 98px; font-size: 1.14rem; } }

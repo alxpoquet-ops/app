@@ -38,8 +38,7 @@ const optsCreation = options.filter((o) => o.quand === 'creation' && !o.retire);
 const optsMois = options.filter((o) => o.quand === 'mois' && !o.retire);
 
 // Prix affiché au mois ou à l'année : le sélecteur (JS) montre l'un ou l'autre
-const billed = (month) =>
-  `<span class="p-month"><b>${euro(month)}</b><small>/mois</small></span><span class="p-year"><b>${euro(year(month))}</b><small>/an</small></span>`;
+const billed = (month) => `<b>${euro(month)}</b><small>/mois</small>`;
 
 // ---------------------------------------------------------------- boutons
 function btn(href, cls, ico, text, extra = '') {
@@ -124,12 +123,8 @@ function ctaBand({ title = 'On vous rend visible ?', text = 'Un site internet, c
 }
 
 // ---------------------------------------------------------------- sélecteur au mois / à l'année
-function billingSwitch() {
-  return `<div class="billing-switch" role="group" aria-label="Façon de payer" data-billing-switch>
-  <button type="button" class="is-on" data-billing="mensuel" aria-pressed="true">Au mois</button>
-  <button type="button" data-billing="annuel" aria-pressed="false">À l’année <em>${annuel.moisOfferts} mois offerts</em></button>
-</div>`;
-}
+// Le paiement à l'année n'est plus proposé (novembre 2026) : Mini se paie au mois, sans engagement.
+function billingSwitch() { return ''; }
 
 // Annotation au crayon : « Cerise » écrit à la main, et une flèche qui fait un looping avant de pointer la mascotte
 function flecheLia() {
@@ -179,7 +174,7 @@ function payBox() {
   return `<ul class="list-check">
     <li><strong>À la commande</strong> : ${paiement.acompte} % du site, soit ${euro(acompteDe(creation.prix))} pour un ${ESSENTIEL.name} à ${euro(creation.prix)}.</li>
     <li><strong>À la réception du site</strong> : le reste en une fois (${euro(creation.prix - acompteDe(creation.prix))}), ou en ${lissageTxt} fois sans frais, par exemple ${euro(lisse(creation.prix))} par mois pendant ${LMAX} mois.</li>
-    <li><strong>Ensuite</strong> : ${creationSeule.name}, ${euro(0)} par mois, vous gérez tout vous-même. Ou ${ABO.name}, ${euro(ABO.month)} par mois, sans engagement : on s’occupe de tout. À l’année, ${annuel.moisOfferts} mois offerts.</li>
+    <li><strong>Ensuite</strong> : ${creationSeule.name}, ${euro(0)} par mois, vous gérez tout vous-même. Ou ${ABO.name}, ${euro(ABO.month)} par mois, sans engagement : on s’occupe de tout.</li>
   </ul>`;
 }
 
@@ -227,13 +222,13 @@ function formuleCarte(f, { compact = false } = {}) {
 // Deux choses bien séparées : « Créer le site » (une seule fois) et « Le faire vivre » (Autonomie ou Mini).
 function offre({ compact = false, choose = true } = {}) {
   return `<div class="offre offre-finale${compact ? ' is-compact' : ''}" id="offre">
-  <p class="offre-k"><span>1</span>D’abord votre site, payé une seule fois</p>
+  <p class="offre-k"><span>1</span>Créer votre site : payez une seule fois</p>
   <div class="site-cartes">${types.map((t) => siteOffreCarte(t, { compact, choose })).join('')}</div>
   <p class="offre-sous">${icon('calendar-check')}<span>${paiement.acompte} % à la commande, le reste à la réception. Payable en ${lissageTxt} fois sans frais.</span></p>
   ${compact ? '' : `<p class="offre-note">${esc(revisionsNote)}</p>`}
   <p class="offre-k"><span>2</span>Ensuite, ${esc(creationSeule.name)} ou ${esc(ABO.name)}</p>
   <div class="formules is-duo">${[creationSeule, ...forfaits].map((f) => formuleCarte(f, { compact })).join('')}</div>
-  <p class="offre-sous">${icon('heart-handshake')}<span>Aucune obligation d’abonnement. ${ABO.name} est sans engagement${compact ? '' : `, et à l’année, ${annuel.moisOfferts} mois sont offerts`}.</span></p>
+  <p class="offre-sous">${icon('heart-handshake')}<span>Aucune obligation d’abonnement. ${ABO.name} : ${euro(ABO.month)} par mois, sans engagement.</span></p>
   ${choose ? `<p class="offre-go">${btnCreer('btn-primary btn-lg')}${compact ? btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs') : ''}</p>` : ''}
 </div>`;
 }
@@ -526,12 +521,12 @@ function configurator() {
   const partie = (couleur, titre, texte, attrs = '') => `<div class="cf-partie c-${couleur}"${attrs}><p class="cf-partie-titre">${titre}</p><p class="cf-partie-txt">${texte}</p></div>`;
   return `<div class="builder cf" data-builder="${priceData()}" data-billing-scope>
   <form class="cf-form" data-builder-form>
-    ${partie('butter', 'D’abord votre site', `Payé une seule fois, ou en ${lissageTxt} fois sans frais.`)}
+    ${partie('butter', 'Créer votre site : payez une seule fois', `Ou en ${lissageTxt} fois sans frais, si vous préférez.`)}
     ${etape('Quel site voulez-vous ?', 'Exister sur internet, être trouvé sur Google, ou vendre sur internet.', `${siteCarte()}<p class="cf-info c-butter">${icon('info')}<span>${esc(revisionsNote)}</span></p>`)}
     ${partie('lilac', `Ensuite, ${esc(creationSeule.name)} ou ${esc(ABO.name)}`, 'Aucune obligation d’abonnement : c’est vous qui choisissez.')}
     ${etape('Qui s’occupe de votre site ?', 'L’hébergement, le nom de domaine, les sauvegardes et les mises à jour : on s’en charge, ou vous le faites vous-même.', gestionChoix())}
     ${etape('Votre nom de domaine', 'C’est l’adresse de votre site, par exemple mon-entreprise.fr. On la réserve à votre nom. Elle est comprise dans l’abonnement.', domainBox(), ' data-avec-formule')}
-    ${etape(`L’abonnement ${esc(ABO.name)} : au mois ou à l’année ?`, 'Il démarre à la réception du site. Sans engagement : vous l’arrêtez quand vous voulez.', `${formulesChoix({ court: 'sans-carte' })}<div class="cf-periode">${billingSwitch()}</div><p class="cf-plus-tard">${icon('plus')}<span>Les extras (page de visibilité Google, traduction anglaise, fonctionnalité spécifique) se demandent plus tard, depuis votre espace client. <a href="${sections.forfaits.path}#extras">Voir les extras</a></span></p>`, ' data-avec-formule')}
+    ${etape(`L’abonnement ${esc(ABO.name)}`, `${euro(ABO.month)} par mois, sans engagement. Il démarre à la réception du site, et vous l’arrêtez quand vous voulez.`, `${formulesChoix({ court: 'sans-carte' })}<p class="cf-plus-tard">${icon('plus')}<span>Les extras (page de visibilité Google, traduction anglaise, fonctionnalité spécifique) se demandent plus tard, depuis votre espace client. <a href="${sections.forfaits.path}#extras">Voir les extras</a></span></p>`, ' data-avec-formule')}
     <section class="cf-etape cf-total b-sum" id="cf-total" aria-live="polite">
       <h2 class="cf-titre"><span class="cf-n" aria-hidden="true"></span>Votre total</h2>
       <ul class="cf-lignes">

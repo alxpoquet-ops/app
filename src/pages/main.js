@@ -45,7 +45,6 @@ const round2 = (n) => Math.round(n * 100) / 100;
 const NB_BANDE = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit'][bande.length] || String(bande.length);
 const Maj = (x) => x[0].toUpperCase() + x.slice(1);
 // L'abonnement à l'année, et « une modification » (par Alex, chaque mois) écrit en toutes lettres
-const ABO_AN = C.year(ABO.month);
 // « par trimestre » (V2) ou « par mois »
 const PAR_PERIODE = ABO.periode === 'trimestre' ? 'par trimestre' : 'par mois';
 // Texte des appels à l'action de bas de page
@@ -112,7 +111,7 @@ function home() {
 
 <section class="section" id="prix"><div class="container">
   <h2 class="section-title">Trois sites pour être visible</h2>
-  <p class="section-sub">D’abord votre site, payé une fois. Ensuite, ${esc(AUTO.name)} ou ${esc(ABO.name)} : c’est vous qui choisissez.</p>
+  <p class="section-sub">Créez votre site : payez une seule fois. Ensuite, ${esc(AUTO.name)} ou ${esc(ABO.name)}, à vous de choisir.</p>
   ${commun(C.offre({ compact: true }))}
 </div></section>
 
@@ -199,7 +198,7 @@ function creerPage() {
   const body = `${C.pageHero({
     section: 'creer',
     h1: 'Choisissez votre site en deux minutes',
-    lead: `Trois façons d’être visible. D’abord votre site, payé une seule fois. Ensuite, ${AUTO.name} ou ${ABO.name}. Le total s’affiche en bas.`,
+    lead: `Trois façons d’être visible. Créez votre site : payez une seule fois. Ensuite, ${AUTO.name} ou ${ABO.name}. Le total s’affiche en bas.`,
     crumbs,
   })}
 <section class="section section-builder"><div class="container">${C.configurator()}</div></section>
@@ -238,13 +237,12 @@ function forfaitsPage() {
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: `Tarifs : être visible, dès ${euro(creation.prix)}`,
-    lead: `Des prix affichés, les mêmes pour tous. D’abord votre site, payé une seule fois. Ensuite, ${AUTO.name} à ${euro(AUTO.month)} ou ${ABO.name} à ${euro(ABO.month)} par mois. Enfin, les extras, si vous en avez besoin.`,
+    lead: `Des prix affichés, les mêmes pour tous. Créez votre site : payez une seule fois. Ensuite, ${AUTO.name} à ${euro(AUTO.month)} ou ${ABO.name} à ${euro(ABO.month)} par mois. Enfin, les extras, si vous en avez besoin.`,
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
   <h2 class="section-title">Un site, un but, un prix</h2>
   <p class="section-sub">Exister sur internet, être trouvé sur Google ou vendre sur internet : à vous de choisir.</p>
-  ${C.billingSwitch()}
   ${commun(C.offre())}
 </div></section>
 
@@ -576,11 +574,7 @@ function commanderPage() {
         ${C.gestionChoix({ name: 'gestion', court: true })}
         <div data-avec-formule>
         ${C.formulesChoix({ name: 'forfait', court: 'sans-carte' })}
-        <p class="b-label">L’abonnement ${esc(ABO.name)} se paie</p>
-        <div class="b-seg" role="radiogroup" aria-label="Période de paiement de ${esc(ABO.name)}">
-          <label><input type="radio" name="periode" value="mois" checked><span>Au mois</span></label>
-          <label><input type="radio" name="periode" value="annee"><span>À l’année <em>${annuel.moisOfferts} mois offerts</em></span></label>
-        </div>
+        <input type="hidden" name="periode" value="mois">
         </div>
         </div>
         </div>
@@ -719,16 +713,15 @@ function fidelitePage() {
   const crumbs = crumb('fidelite');
   const perks = [
     ['butter', 'badge-percent', 'Deuxième site', `${fidelite.remiseSecondSite} % sur la création`, `Un deuxième site ? Sa création coûte ${fidelite.remiseSecondSite} % de moins, quel que soit le site. Par exemple, un ${ESS.name} à ${euro(ESS.price * (100 - fidelite.remiseSecondSite) / 100)} au lieu de ${euro(ESS.price)}.`],
-    ['mint', 'calendar-check', 'À l’année', `${annuel.moisOfferts} mois offerts`, `En payant ${ABO.name} à l’année, vous réglez ${12 - annuel.moisOfferts} mois sur 12 : ${euro(ABO_AN)} au lieu de ${euro(ABO.month * 12)}.`],
   ];
   const body = `${C.pageHero({
     section: 'fidelite',
     h1: 'Fidélité : merci de nous faire confiance',
-    lead: 'Deux petits avantages, simples et affichés.',
+    lead: 'Un petit avantage, simple et affiché.',
     crumbs,
   })}
 <section class="section"><div class="container">
-  <div class="perks perks-2">${perks
+  <div class="perks perks-1">${perks
     .map(([c, ic, t, big, d]) => `<article class="perk c-${c} reveal"><span class="perk-ico">${icon(ic)}</span><p class="perk-kind">${t}</p><h2>${big}</h2><p>${d}</p></article>`)
     .join('')}</div>
   <p class="center more">${C.btn(sections.forfaits.path, 'btn-light', sections.forfaits.icon, 'Voir les tarifs')}</p>
@@ -739,7 +732,7 @@ ${C.ctaBand()}`;
     section: 'fidelite',
     noindex: true, // plus de parrainage : la page reste à son adresse, très courte, sans lien depuis le site
     title: 'Fidélité : un deuxième site à prix réduit | Les Minis Monstres',
-    description: `${fidelite.remiseSecondSite} % de remise sur la création d’un deuxième site, et ${annuel.moisOfferts} mois offerts en payant ${ABO.name} à l’année. Deux avantages simples, affichés.`,
+    description: `Vous avez déjà un site chez les Minis Monstres ? La création d’un deuxième site coûte ${fidelite.remiseSecondSite} % de moins, quel que soit le site choisi.`,
     crumbs,
     body,
     priority: 0.3,
@@ -1036,13 +1029,6 @@ function contactPage() {
           <div class="field"><label for="c-type">Votre site <span class="req">*</span></label>
             <select id="c-type" name="type" required><option value="">Choisir…</option>${types.map((t) => opt(t.label)).join('')}${opt('Je ne sais pas encore')}${opt('Autre projet')}</select></div>
           <div class="field"><label for="c-domaine">Nom de domaine <span class="opt">(facultatif)</span></label><input id="c-domaine" name="domaine" type="text" autocomplete="off" placeholder="mon-entreprise.fr"></div>
-        </div>
-        <div class="field"><span class="label">Si vous prenez ${esc(ABO.name)}, vous le payez</span>
-          <div class="radio-group">
-            <label><input type="radio" name="paiement" value="Au mois"> Au mois</label>
-            <label><input type="radio" name="paiement" value="À l’année"> À l’année</label>
-            <label><input type="radio" name="paiement" value="Je ne sais pas encore" checked> Je ne sais pas encore</label>
-          </div>
         </div>
       </div>
       <div class="field"><label for="c-message">Votre message <span class="req">*</span></label><textarea id="c-message" name="message" required minlength="10" placeholder="Votre activité, ce que vous attendez, un site que vous aimez…" data-ph-site="Votre activité, ce que vous attendez, un site que vous aimez…" data-ph-contact="Dites-nous tout : une question, une idée, un coup de main, ou simplement bonjour…"></textarea></div>
@@ -1523,7 +1509,7 @@ ${chap('prix', `5. Le prix`, `  <div class="container-narrow">
   <div class="doc-types">
     <div class="doc-type reveal"><strong>Créer le site</strong><b>dès ${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une seule fois</span><p>${types.map((t) => `${esc(t.name)} ${euro(t.price)}`).join(', ')}. Payable en ${C.lissageTxt} fois sans frais.</p></div>
     <div class="doc-type reveal"><strong>${esc(AUTO.name)}</strong><b>${euro(AUTO.month)}</b><span>${icon('download')}Par mois</span><p>Vous gérez votre hébergement, votre nom de domaine, vos sauvegardes et vos mises à jour.</p></div>
-    <div class="doc-type reveal"><strong>${esc(ABO.name)}</strong><b>${euro(ABO.month)}</b><span>${icon('repeat')}Par mois, sans engagement</span><p>On s’occupe de tout, modifications incluses. À l’année : ${annuel.moisOfferts} mois offerts.</p></div>
+    <div class="doc-type reveal"><strong>${esc(ABO.name)}</strong><b>${euro(ABO.month)}</b><span>${icon('repeat')}Par mois, sans engagement</span><p>On s’occupe de tout, modifications incluses.</p></div>
     <div class="doc-type reveal"><strong>Les extras</strong><b>${euro(PRIX_PAGE)} la page</b><span>${icon('sparkles')}Ou sur devis</span><p>Page de visibilité Google, traduction anglaise, fonctionnalité spécifique. Depuis votre espace client.</p></div>
   </div>
   <div class="container-narrow">
@@ -1608,7 +1594,7 @@ ${chap('seo', `11. Être trouvé sur Google`, `  <h2>La visibilité Google, pas 
 ${chap('paiement', `12. Paiement`, `  <h2>Payer simplement</h2>
   <ul class="list-check">
     <li>Acompte de ${paiement.acompte} % à la commande, le reste à la réception du site, en une fois ou en ${C.lissageTxt} fois sans frais.</li>
-    <li>${esc(ABO.name)} se paie au mois, ou à l’année avec ${annuel.moisOfferts} mois offerts. Sans engagement.</li>
+    <li>${esc(ABO.name)} se paie au mois, sans engagement.</li>
     <li>Une page de visibilité Google se paie par carte, au moment de la commander.</li>
     <li>Un deuxième site : ${fidelite.remiseSecondSite} % de remise sur sa création.</li>
   </ul>
