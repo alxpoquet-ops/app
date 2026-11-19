@@ -88,7 +88,7 @@ function home() {
     <div class="hero-text">
       <p class="hero-sur">${icon('store')}Sites internet pour artisans et commerçants</p>
       <h1>Votre activité mérite <mark>d’être vue</mark>.</h1>
-      <p class="hero-lead">Sans site internet, c’est une belle vitrine dans une rue où personne ne passe. On crée le vôtre, et on vous rend visible.</p>
+      <p class="hero-lead">Sans site internet, c’est une belle vitrine, mais dans une rue où personne ne passe. On crée le vôtre, et on vous rend visible.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}<a class="hero-lien" href="${sections.forfaits.path}">Voir les tarifs${icon('arrow-right')}</a></div>
       <ul class="hero-points">
         <li>${icon('check')}Prix affichés</li>
