@@ -52,7 +52,7 @@ function businessSchema() {
     name: site.name,
     slogan: `Un site internet pour être visible, dès ${creation.prix} €`,
     description:
-      `Un site internet rend votre activité visible : on crée le vôtre. Sites pour artisans, commerçants et associations, payés une fois : ${PRIX_SITES}. Ensuite, au choix : ${AUTO.name} à ${AUTO.month} € par mois, ou le forfait ${ABO.name} à ${ABO.month} € par mois sans engagement (hébergement, nom de domaine, sauvegardes, sécurité, maintenance, modifications). Tout se fait en ligne, pour des clients partout en France.`,
+      `Un site internet rend votre activité visible : on crée le vôtre. Sites pour artisans, commerçants et associations, payés une fois : ${PRIX_SITES}. Ensuite, au choix : ${AUTO.name} à ${AUTO.month} € par mois, ou le forfait ${ABO.name} à ${ABO.month} € par mois sans engagement (hébergement, sauvegardes, sécurité, maintenance, modifications), ou ${ABO.month + (ABO.domaine || 0)} € par mois si on vous fournit le nom de domaine. Tout se fait en ligne, pour des clients partout en France.`,
     url: site.url + '/',
     ...(site.email ? { email: site.email } : {}),
     image: site.url + '/assets/img/og-image.png',
@@ -205,7 +205,7 @@ function liaFlot() {
   const eur = C.euro;
   const questions = [
     ['À quoi sert un site ?', 'À être visible. Sans site internet, votre activité est comme une belle vitrine dans une rue où personne ne passe. Avec un site, vos futurs clients vous trouvent, sur Google comme sur leur téléphone. Nous rendre visibles nos clients, c’est notre métier.', sections.seo.path, 'Être trouvé sur Google'],
-    ['C’est combien ?', `Créez votre site : payez une seule fois. ${types.map((t) => `${t.name} ${eur(t.price)}`).join(', ')}. Payable en ${lissage.durees.join(' ou ')} fois sans frais. Ensuite, vous choisissez : ${AUTO.name}, ${eur(AUTO.month)} par mois, vous gérez tout vous-même. Ou le forfait ${ABO.name}, ${eur(ABO.month)} par mois sans engagement, on s’occupe de tout. Enfin, trois extras, si vous en avez besoin.`, sections.forfaits.path, 'Voir les tarifs'],
+    ['C’est combien ?', `Créez votre site : payez une seule fois. ${types.map((t) => `${t.name} ${eur(t.price)}`).join(', ')}. Payable en ${lissage.durees.join(' ou ')} fois sans frais. Ensuite, vous choisissez : ${AUTO.name}, ${eur(AUTO.month)} par mois, vous gérez tout vous-même. Ou le forfait ${ABO.name}, ${eur(ABO.month)} par mois sans engagement, on s’occupe de tout (${eur(ABO.month + (ABO.domaine || 0))} si on vous fournit le nom de domaine). Enfin, trois extras, si vous en avez besoin.`, sections.forfaits.path, 'Voir les tarifs'],
     ['Quel site choisir ?', `${types.map((t) => `${t.name} : ${t.but.toLowerCase()}`).join('. ')}. Vous hésitez ? Écrivez-nous, on vous aide à choisir.`, sections.creer.path, 'Créer mon site'],
     ['Qui fait mon site ?', 'Alex conçoit votre site et vérifie tout. Moi, je suis la secrétaire de sa petite bande : je réponds à vos questions et je prends vos demandes.', sections.equipe.path, 'Rencontrer la bande'],
     ['Et pour changer mon site après ?', `Avec le forfait ${ABO.name}, vos modifications sont incluses. Vous écrivez votre demande dans votre espace client, je vous aide à la préciser, et ${C.BRICOU} fait la modification, en 48 h au plus.`, sections.accompagnement.path, 'L’accompagnement'],

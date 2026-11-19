@@ -820,7 +820,7 @@ function monEspacePage() {
           <h2 class="app-h">Bonjour Lila !</h2>
           <div class="app-cards">
             <button type="button" class="app-card c-${VIS.color}" data-go="forfait"><span class="app-card-art">${C.petit(VIS.monstre)}</span><span><small>Votre site</small><strong>${esc(VIS.name)}</strong><span class="dot-ok">En ligne</span></span></button>
-            <button type="button" class="app-card c-${ABO.color}" data-go="forfait"><span class="app-card-art">${C.petit('maxi')}</span><span><small>Votre forfait</small><strong>Forfait ${esc(ABO.name)}</strong><span>${euro(ABO.month)} par mois, sans engagement</span></span></button>
+            <button type="button" class="app-card c-${ABO.color}" data-go="forfait"><span class="app-card-art">${C.petit('maxi')}</span><span><small>Votre forfait</small><strong>Forfait ${esc(ABO.name)}</strong><span>${euro(ABO.month + C.DOM)} par mois, nom de domaine fourni</span></span></button>
             <button type="button" class="app-card c-sky" data-go="extras"><span class="app-card-ico">${icon('sparkles')}</span><span><small>Envie d’aller plus loin ?</small><strong>Les extras</strong><span>Voir les trois extras</span></span></button>
           </div>
           ${bandeMessages()}
@@ -907,7 +907,7 @@ function monEspacePage() {
         <div class="app-panel" role="tabpanel" id="t-forfait" aria-labelledby="tab-forfait" hidden>
           <h2 class="app-h">Mon compte</h2>
           <p class="app-sub">Votre forfait</p>
-          <p class="app-domain">${icon('shield-check')}<span><strong>Le forfait ${esc(ABO.name)}, ${euro(ABO.month)} par mois</strong><small>Sans engagement. Hébergement, sauvegardes, sécurité, maintenance et modifications.</small></span></p>
+          <p class="app-domain">${icon('shield-check')}<span><strong>Le forfait ${esc(ABO.name)}, ${euro(ABO.month + C.DOM)} par mois</strong><small>${euro(ABO.month)} pour le forfait, et ${euro(C.DOM)} pour le nom de domaine qu’on vous fournit. Sans engagement.</small></span></p>
           <p class="app-note">Vous préférez tout gérer vous-même ? Vous passez en ${esc(AUTO.name)} quand vous voulez : ${euro(AUTO.month)} par mois, et vous repartez avec votre site.</p>
           <p class="app-sub">Factures</p>
           <ul class="invoices">
@@ -915,7 +915,7 @@ function monEspacePage() {
             <li><span>Octobre 2026</span><button type="button" class="link-btn" data-toast-msg="Facture téléchargée (démo)">PDF</button></li>
           </ul>
           <p class="app-sub">Nom de domaine</p>
-          <p class="app-domain">${icon('globe')}<span><strong>patisserie-lila.fr</strong><small>À votre nom, compris avec le forfait ${esc(ABO.name)}</small></span></p>
+          <p class="app-domain">${icon('globe')}<span><strong>patisserie-lila.fr</strong><small>À votre nom, fourni avec le forfait ${esc(ABO.name)} : ${euro(C.DOM)} par mois</small></span></p>
         </div>
 
       </div>
