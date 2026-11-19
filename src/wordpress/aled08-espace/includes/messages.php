@@ -138,7 +138,7 @@ function aled08e_messages_html($uid) {
     $M = aled08e_msg_monstres();
     $evo = aled08e_forfait('evolution');
     $h = '<div class="msgs" id="messages"><p class="app-sub">Les petits mots de la bande</p>';
-    foreach (array_slice($msgs, 0, 5) as $x) {
+    foreach (array_slice($msgs, 0, 2) as $x) {
         $qui = $M[$x['qui']] ?? $M['bricou'];
         $plusTard = '<form method="post" action="' . esc_url(aled08e_url()) . '#messages" class="msg-form"><input type="hidden" name="aled08e_msg" value="ecarter"><input type="hidden" name="id" value="' . esc_attr($x['id']) . '">' . wp_nonce_field('aled08e_msg', '_aled08e_msg', true, false) . '<button class="btn btn-light btn-sm" type="submit"><span>' . (!empty($x['action']) ? 'Plus tard' : 'Merci, c’est noté') . '</span></button></form>';
         if (!empty($x['teaser'])) {
@@ -147,13 +147,13 @@ function aled08e_messages_html($uid) {
         }
         $oui = '';
         if (!empty($x['action'])) {
-            $oui = '<form method="post" action="' . esc_url(aled08e_url()) . '" class="msg-form"><input type="hidden" name="aled08e_demande" value="1"><input type="hidden" name="aled08e_msg_id" value="' . esc_attr($x['id']) . '"><input type="hidden" name="demande" value="' . esc_attr($x['demande']) . '">' . wp_nonce_field('aled08e_demande', '_aled08e', true, false) . '<button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('check') . '<span>Oui, faites-le</span></button></form>';
+            $oui = '<form method="post" action="' . esc_url(aled08e_url()) . '" class="msg-form"><input type="hidden" name="aled08e_demande" value="1"><input type="hidden" name="aled08e_msg_id" value="' . esc_attr($x['id']) . '"><input type="hidden" name="demande" value="' . esc_attr($x['demande']) . '">' . wp_nonce_field('aled08e_demande', '_aled08e', true, false) . '<button class="btn btn-primary btn-sm" type="submit">' . aled08e_icon('check') . '<span>Oui, je veux bien</span></button></form>';
         }
         $h .= '<article class="msg' . (!empty($x['maxi']) ? ' is-maxi' : '') . '"><span class="msg-art">' . aled08e_monster($qui[0]) . '</span><div class="msg-corps">'
-            . '<p class="msg-qui"><strong>' . esc_html($qui[1]) . '</strong><small>' . esc_html($qui[2] . (!empty($x['quand']) ? ' · ' . $x['quand'] : '')) . '</small>' . (!empty($x['maxi']) && !empty($evo['name']) ? '<em class="msg-tag">' . esc_html($evo['name']) . '</em>' : '') . '</p>'
+            . '<p class="msg-qui"><strong>' . esc_html($qui[1]) . '</strong><small>' . esc_html($qui[2] . (!empty($x['quand']) ? ' · ' . $x['quand'] : '')) . '</small>' . '</p>'
             . '<p class="msg-titre">' . esc_html($x['titre']) . '</p><p class="msg-txt">' . esc_html($x['texte']) . '</p>'
             . aled08e_msg_visuel($x['vis'] ?? null)
-            . '<p class="msg-actions">' . $oui . $plusTard . '</p></div></article>';
+            . '<div class="msg-actions">' . $oui . $plusTard . '</div></div></article>';
     }
     return $h . '</div>';
 }

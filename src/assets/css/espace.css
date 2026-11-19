@@ -969,3 +969,17 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .bg-nav a.bg-lien { min-width: 0; font-size: .95rem; padding: 10px 10px; gap: 8px; }
 .bg-nav a.bg-lien span { min-width: 0; overflow-wrap: anywhere; }
 @media (max-width: 380px) { .bg-nav a.bg-lien { font-size: .88rem; } .bg-nav a.bg-lien svg { width: 18px; height: 18px; } }
+/* Les petits mots de la bande : des boutons bien séparés */
+.msg-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 14px 0 0; }
+.msg-actions .msg-form { margin: 0; }
+.msg-actions .btn { min-height: 46px; }
+/* Accueil de l'espace client : trois grandes actions, simples */
+.acc-intro { margin: -4px 0 14px; }
+.acc-actions { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 0 0 18px; }
+.acc-action { display: grid; grid-template-columns: 64px minmax(0, 1fr); column-gap: 14px; align-items: center; text-align: left; padding: 14px 16px; border: 0; border-radius: 24px; background: var(--c, var(--soft)); color: var(--ink); font: inherit; cursor: pointer; min-height: 84px; transition: transform .15s; }
+.acc-action:hover { transform: translateY(-2px); }
+.acc-art { grid-row: span 2; width: 64px; }
+.acc-art svg { display: block; width: 100%; height: auto; }
+.acc-action strong { align-self: end; font-size: 1.12rem; font-weight: 900; line-height: 1.2; }
+.acc-action small { align-self: start; font-size: .92rem; font-weight: 700; color: var(--c-dd, var(--text)); }
+@media (min-width: 760px) { .acc-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

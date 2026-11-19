@@ -50,7 +50,8 @@ function aled08e_est_seule($id) { return $id === 'sans' && !empty(aled08e_data()
 function aled08e_forfait($id) {
     if (aled08e_est_seule($id)) return aled08e_data()['creationSeule'] + ['month' => 0, 'quota' => 0, 'periode' => '', 'jetons' => 0, 'modifs' => 'sans abonnement : maintenance et modifications non comprises', 'tagline' => '', 'illimite' => false, 'main' => []];
     foreach (aled08e_data()['forfaits'] as $f) if ($f['id'] === $id) return $f;
-    foreach ((array) (aled08e_data()['forfaitsAnciens'] ?? []) as $f) if ($f['id'] === $id) return $f; // un ancien abonnement (Maxi) : plus proposé, gardé pour ceux qui l'ont
+    // un ancien abonnement (Maxi, 20 €) n'existe plus : ceux qui l'avaient sont au forfait Mini (19 novembre 2026)
+    foreach ((array) (aled08e_data()['forfaitsAnciens'] ?? []) as $f) if ($f['id'] === $id && !empty(aled08e_data()['forfaits'][0])) return aled08e_data()['forfaits'][0];
     $all = aled08e_data()['forfaits'];
     return $all ? $all[0] : ['id' => 'base', 'name' => 'Abonnement', 'month' => 10, 'quota' => 1, 'periode' => 'trimestre', 'jetons' => 250, 'modifs' => 'les petites retouches et les outils de la bande, et une intervention d’Alex par trimestre', 'color' => 'pink', 'tagline' => ''];
 }
@@ -1140,15 +1141,7 @@ function aled08e_dashboard() {
 
         <div class="app-panel" role="tabpanel" id="t-accueil" aria-labelledby="tab-accueil">
           <h2 class="app-h">Bonjour <?php echo esc_html($prenom); ?> !</h2>
-          <?php echo aled08e_annonces_html(); // phpcs:ignore ?>
-          <div class="app-cards">
-            <button type="button" class="app-card c-<?php echo esc_attr($f['color']); ?>" data-go="forfait"><span class="app-card-art"><?php echo aled08e_monster(($f['id'] ?? '') === 'evolution' ? 'maxi' : 'clin'); // phpcs:ignore ?></span><span><small>Votre abonnement</small><strong><?php echo esc_html($f['name'] ?? 'Abonnement'); ?></strong><span><?php echo ($offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . ($optsMois ? 'avec ' . count($optsMois) . ' extra' . (count($optsMois) > 1 ? 's' : '') : 'tout compris'); // phpcs:ignore ?></span></span></button>
-            <?php if ($cmd) : ?>
-            <button type="button" class="app-card c-mint" data-go="commande"><span class="app-card-ico"><?php echo aled08e_icon('globe'); // phpcs:ignore ?></span><span><small>Votre site</small><strong><?php echo esc_html($host ?: 'En préparation'); ?></strong><span class="<?php echo $siteOk ? 'dot-ok' : ''; ?>"><?php echo esc_html($siteEtat); ?></span></span></button>
-            <?php else : ?>
-            <div class="app-card c-mint"><span class="app-card-ico"><?php echo aled08e_icon('globe'); // phpcs:ignore ?></span><span><small>Votre site</small><strong><?php echo esc_html($host ?: 'En préparation'); ?></strong><span class="<?php echo $siteOk ? 'dot-ok' : ''; ?>"><?php echo esc_html($siteEtat); ?></span></span></div>
-            <?php endif; ?>
-          </div>
+          <p class="app-p acc-intro">Que voulez-vous faire aujourd’hui ?</p>
           <?php if ($cmd && $cmd['statut'] !== 'annulee' && $cmd['statut'] !== 'en_ligne' && (aled08e_brief_le($cmd['id']) === '' || get_post_meta($cmd['id'], '_aled08_brief_brouillon', true))) : ?>
           <p class="esp-warn bf-rappel"><?php echo aled08e_icon('clipboard-check'); // phpcs:ignore ?><span><b>À faire :</b> votre questionnaire de création attend vos réponses. C’est lui qui lance la création de votre site.</span> <button type="button" class="link-btn" data-go="commande">Le remplir</button></p>
           <?php endif; ?>
@@ -1157,19 +1150,27 @@ function aled08e_dashboard() {
           <?php elseif ($cmd && aled08e_cmd_reception_due($cmd)) : ?>
           <p class="esp-warn">Votre site est en ligne : il reste <?php echo aled08e_euro($cmd['montants']['solde']); // phpcs:ignore ?> pour la création, en une fois ou en plusieurs fois, et votre abonnement démarre. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
           <?php endif; ?>
-          <?php echo aled08e_messages_html($uid); // phpcs:ignore ?>
-          <p class="app-sub">Que voulez-vous faire ?</p>
-          <div class="app-actions">
-            <button type="button" data-go="demandes"><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><strong>Demander une modification</strong><small>Bricou prépare, Alex modifie</small></button>
-            <button type="button" data-go="extras"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><strong>Ajouter un extra</strong><small>Pépite vous montre les petits plus</small></button>
+          <div class="acc-actions">
+            <button type="button" class="acc-action c-sky" data-go="demandes"><span class="acc-art" aria-hidden="true"><?php echo aled08e_monster('bricou'); // phpcs:ignore ?></span><strong>Demander une modification</strong><small>Bricou prépare, Alex modifie</small></button>
+            <button type="button" class="acc-action c-butter" data-go="extras"><span class="acc-art" aria-hidden="true"><?php echo aled08e_monster('etoile'); // phpcs:ignore ?></span><strong>Ajouter un extra</strong><small>Pépite vous montre les petits plus</small></button>
+            <button type="button" class="acc-action c-pink" data-go="vacances"><span class="acc-art" aria-hidden="true"><?php echo aled08e_monster('mochi'); // phpcs:ignore ?></span><strong>Ma boutique</strong><small><?php echo aled08e_est_boutique($uid) ? 'Articles, prix, paiements, commandes' : 'Option verrouillée : voir comment l’ouvrir'; ?></small></button>
           </div>
-          <?php echo aled08e_extras_accueil_html($uid, $famille); // phpcs:ignore ?>
+          <div class="app-cards">
+            <button type="button" class="app-card c-<?php echo esc_attr($f['color']); ?>" data-go="forfait"><span class="app-card-art"><?php echo aled08e_monster(($f['id'] ?? '') === 'evolution' ? 'maxi' : 'clin'); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($f['name'] ?? 'Abonnement'); ?></strong><span><?php echo ($offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . ($optsMois ? 'avec ' . count($optsMois) . ' extra' . (count($optsMois) > 1 ? 's' : '') : 'tout compris'); // phpcs:ignore ?></span></span></button>
+            <?php if ($cmd) : ?>
+            <button type="button" class="app-card c-mint" data-go="commande"><span class="app-card-ico"><?php echo aled08e_icon('globe'); // phpcs:ignore ?></span><span><small>Votre site</small><strong><?php echo esc_html($host ?: 'En préparation'); ?></strong><span class="<?php echo $siteOk ? 'dot-ok' : ''; ?>"><?php echo esc_html($siteEtat); ?></span></span></button>
+            <?php else : ?>
+            <div class="app-card c-mint"><span class="app-card-ico"><?php echo aled08e_icon('globe'); // phpcs:ignore ?></span><span><small>Votre site</small><strong><?php echo esc_html($host ?: 'En préparation'); ?></strong><span class="<?php echo $siteOk ? 'dot-ok' : ''; ?>"><?php echo esc_html($siteEtat); ?></span></span></div>
+            <?php endif; ?>
+          </div>
+          <?php echo aled08e_messages_html($uid); // phpcs:ignore ?>
           <p class="app-sub">Dernières demandes</p>
           <?php if ($reqs) : ?>
           <ul class="reqs"><?php foreach (array_slice($reqs, 0, 3) as $p) echo $reqItem($p, false); // phpcs:ignore ?></ul>
           <?php else : ?>
           <p class="esp-empty">Aucune demande pour le moment. Un horaire, un prix, une photo à changer ? Écrivez-le dans « Mes demandes ».</p>
           <?php endif; ?>
+          <?php echo aled08e_annonces_html(2); // phpcs:ignore ?>
         </div>
 
         <?php if ($cmd) : ?>
@@ -1199,7 +1200,6 @@ function aled08e_dashboard() {
             <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('send'); // phpcs:ignore ?><span>Envoyer ma demande</span></button>
           </form>
           <?php endif; ?>
-          <p class="ex-renvoi"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Besoin de plus qu’une modification ? Une page de visibilité Google, un article, une prise de rendez-vous, Instagram sur votre site…</span> <button type="button" class="btn btn-light btn-sm" data-go="extras">Voir les extras</button></p>
           </section>
           <?php echo aled08e_suivi_html($uid); // phpcs:ignore ?>
         </div>
@@ -1256,10 +1256,10 @@ function aled08e_dashboard() {
         <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
           <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>
           <section class="compte-forfait" id="forfait-bloc">
-          <h2 class="app-h">Abonnement et factures</h2>
+          <h2 class="app-h">Mon forfait et mes factures</h2>
           <?php echo $flashForfait; // phpcs:ignore ?>
-          <div class="app-card c-<?php echo esc_attr($f['color']); ?>"><span class="app-card-art"><?php echo aled08e_monster(($f['id'] ?? '') === 'evolution' ? 'maxi' : 'ravie'); // phpcs:ignore ?></span><span><small>Votre abonnement <?php echo esc_html($f['name'] ?? ''); ?></small><strong>Nom de domaine, hébergement, suivi</strong><span><?php echo ($offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . esc_html($f['modifs']); // phpcs:ignore ?></span></span></div>
-          <?php if ($offert) : ?><p class="app-note">Votre abonnement est offert, à vie. Merci de votre confiance !</p><?php endif; ?>
+          <div class="app-card c-<?php echo esc_attr($f['color']); ?>"><span class="app-card-art"><?php echo aled08e_monster(($f['id'] ?? '') === 'evolution' ? 'maxi' : 'ravie'); // phpcs:ignore ?></span><span><small>Votre forfait <?php echo esc_html($f['name'] ?? ''); ?></small><strong>Hébergement, sécurité, modifications</strong><span><?php echo ($offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . esc_html($f['modifs']); // phpcs:ignore ?></span></span></div>
+          <?php if ($offert) : ?><p class="app-note">Votre forfait est offert, à vie. Merci de votre confiance !</p><?php endif; ?>
           <?php if ($optsMois) : ?>
           <p class="app-sub">Vos extras</p>
           <?php foreach ($optsMois as $o) : ?>
@@ -1269,7 +1269,7 @@ function aled08e_dashboard() {
           <p class="app-total"><span>Total <?php echo $annuel ? 'chaque année' : 'chaque mois'; ?></span><b><?php echo aled08e_euro($total); // phpcs:ignore ?></b></p>
           <?php if ($annuel) : ?><p class="app-note">Vous payez à l’année.</p><?php endif; ?>
           <?php if ($cmd && $cmd['lissage'] && $cmd['lissage_paye'] < $cmd['montants']['lissage_total_echeances']) : ?><p class="app-note">Et la création de votre site, lissée : <?php echo aled08e_euro($cmd['montants']['lissage_mensualite']) . ' ' . esc_html($cmd['periode'] === 'annee' ? 'par an' : 'par mois'); // phpcs:ignore ?>, <?php echo (int) $cmd['lissage_paye']; ?> / <?php echo (int) $cmd['montants']['lissage_total_echeances']; ?> échéances payées.</p><?php endif; ?>
-          <?php if ($abo === 'past_due') : ?><p class="esp-warn">Votre dernier paiement n’a pas abouti. Mettez à jour votre moyen de paiement ci-dessous, ou écrivez-moi.</p><?php endif; ?>
+          <?php if ($abo === 'past_due') : ?><p class="esp-warn">Votre dernier paiement n’a pas abouti. Mettez à jour votre moyen de paiement ci-dessous, ou écrivez-nous.</p><?php endif; ?>
           <div class="esp-actions">
             <?php if ($portail) : ?>
             <form method="post" action="<?php echo esc_url(aled08e_url()); ?>">

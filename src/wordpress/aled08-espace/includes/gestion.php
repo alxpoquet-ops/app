@@ -443,3 +443,12 @@ add_action('aled08_annonce_publier', function () {
     wp_insert_post(['post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'post_title' => mb_substr($titre, 0, 120), 'post_content' => mb_substr(sanitize_textarea_field((string) ($a['texte'] ?? '')), 0, 1500), 'post_author' => $admins ? (int) $admins[0] : 0]);
     update_option('aled08_annonce_derniere', ['titre' => $titre, 'le' => current_time('mysql'), 'total' => count(aled08e_annonces(100))], false);
 });
+
+/* Offre finale (19 novembre 2026) : les anciennes « Dernières infos » parlaient de Maxi, de l'énergie ou d'anciens prix.
+ * On les retire une seule fois (corbeille, récupérables). Les infos écrites ensuite ne sont pas touchées. */
+add_action('init', function () {
+    if (get_option('aled08e_annonces_purge_1119') === '1' || !post_type_exists(ALED08E_CPT_ANNONCE)) return;
+    $vieilles = get_posts(['post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'any', 'numberposts' => 200, 'fields' => 'ids', 'date_query' => [['before' => '2026-11-19 23:59:59', 'inclusive' => true]]]);
+    foreach ($vieilles as $id) wp_trash_post((int) $id);
+    update_option('aled08e_annonces_purge_1119', '1', false);
+}, 30);
