@@ -372,8 +372,8 @@ Pour une application sur mesure, un logiciel métier ou un catalogue de milliers
 
 Et pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourquoi-moins-cher/).`,
     faq: [
-      { q: 'Est-ce que je parle à une vraie personne ?', a: `Oui. Les messages du formulaire de contact arrivent chez Alex, et c’est lui qui répond. Dans votre espace client, ${B('support').nom} accueille vos demandes et vous aide à les formuler.` },
-      { q: 'Et si un petit monstre se trompe ?', a: `Cela peut arriver, comme avec tout outil. C’est pour cela qu’Alex contrôle leur travail. ${B('support').nom} vous relit aussi votre demande avant de la transmettre, et vous la confirmez.` },
+      { q: 'Est-ce que je parle à une vraie personne ?', a: `Oui. Les messages du formulaire de contact arrivent chez Alex, et c’est lui qui répond. Dans votre espace client, ${B('constructeur').nom} prépare vos demandes de modification avec vous, et c’est encore Alex qui les fait.` },
+      { q: 'Et si un petit monstre se trompe ?', a: `Cela peut arriver, comme avec tout outil. C’est pour cela qu’Alex contrôle leur travail. ${B('constructeur').nom} vous relit aussi votre demande avant de l’envoyer à Alex, et vous la confirmez.` },
       { q: 'Et si je veux partir un jour ?', a: 'Vous partez librement. Le nom de domaine est déjà à votre nom, et vous recevez l’export de votre site pour le faire héberger ailleurs.' },
       { q: 'Faut-il habiter près de chez vous ?', a: `Non. Tout peut se faire à distance, par e-mail, au téléphone ou en visio, partout en France. Si vous êtes dans les ${dept}, on peut aussi se rencontrer.` },
     ],
@@ -394,7 +394,7 @@ Et pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourq
     resume: 'Chaque mois, votre site entretenu et suivi.',
     points: [
       { icon: 'shield-check', t: 'Votre site entretenu', d: 'Hébergement, sauvegardes automatiques, sécurité et maintenance technique : tout est fait pour vous.' },
-      { icon: 'pencil', t: 'Des modifications incluses', d: `Vous demandez, ${B('support').nom} vous aide à préciser, ${B('constructeur').nom} fait la modification, en ${mini.delai.replace(/ heures?$/, ' h')} au plus.` },
+      { icon: 'pencil', t: 'Des modifications incluses', d: `Vous demandez, ${B('constructeur').nom} clarifie avec vous, et Alex fait la modification.` },
       { icon: 'search-check', t: 'Trois extras, pas plus', d: 'Une page de visibilité Google, une traduction anglaise, une fonctionnalité spécifique : seulement si vous en avez besoin.' },
       { icon: 'handshake', t: 'Sans engagement', d: 'Vous arrêtez quand vous voulez et vous gardez votre adresse.' },
     ],
@@ -413,7 +413,7 @@ Votre site reste en ligne, protégé et à jour, donc visible, sans que vous aye
 - **Les sauvegardes automatiques** : une copie de sécurité, faite régulièrement.
 - **La sécurité** : des protections tenues à jour.
 - **La maintenance technique** : des vérifications régulières, pour que tout reste en état de marche.
-- **Vos modifications**, incluses. Une modification peut prendre ${delaiModif}, une demande à la fois.
+- **Vos modifications**, incluses, une demande à la fois.
 - **Votre espace client**, où vous faites vos demandes et commandez vos extras.
 
 Et le nom de domaine, l’adresse de votre site ? Vous en avez déjà un : le forfait reste à ${eur(mini.month)} € par mois. Vous n’en avez pas : nous le réservons à votre nom, et le forfait passe à ${eur(avecDom)} € par mois (${eur(dom)} € de plus).
@@ -423,9 +423,9 @@ Et le nom de domaine, l’adresse de votre site ? Vous en avez déjà un : le fo
 Un horaire qui change, une nouvelle photo, un texte à ajouter : tout part de votre espace client, une page privée que vous ouvrez aussi sur téléphone.
 
 1. **Vous faites votre demande** en quelques mots, avec une photo si besoin.
-2. **${B('support').nom} vous aide à la préciser**, puis vous la résume.
-3. **Vous confirmez**, et elle la transmet.
-4. **${B('constructeur').nom} fait la modification**, en ${mini.delai} au plus, et vous êtes prévenu.
+2. **${B('constructeur').nom} la clarifie avec vous**, puis vous la résume.
+3. **Vous confirmez**, et il l’envoie à Alex.
+4. **Alex fait la modification**, et vous êtes prévenu.
 
 Tant que le travail n’a pas commencé, vous pouvez annuler votre demande. Seule une refonte complète, ou l’ajout d’une fonction nouvelle, passe par un devis.
 
@@ -457,7 +457,7 @@ Vous revenez pour un deuxième site ? Il profite de ${fidelite.remiseSecondSite}
     faq: [
       { q: 'Puis-je avoir un site sans abonnement ?', a: `Oui, avec la formule ${AUTO}, à choisir en commandant. Vous recevez l’export de votre site et vous l’installez chez votre hébergeur. Tant que le site est hébergé chez nous, le forfait ${mini.name} est nécessaire.` },
       { q: 'Combien de modifications puis-je demander ?', a: `Autant qu’il vous en faut, une demande à la fois : elles sont incluses dans le forfait ${mini.name}.` },
-      { q: 'En combien de temps ma demande est-elle traitée ?', a: `Une modification peut prendre ${delaiModif}. Vous êtes prévenu par e-mail dès qu’elle est en ligne.` },
+      { q: 'Comment savoir où en est ma demande ?', a: `Vous la suivez dans votre espace client, étape par étape. Vous êtes prévenu par e-mail dès qu’elle est en ligne.` },
     ],
     voir: ['/tarifs/', '/mon-espace/demo/', '/pourquoi-les-minis-monstres/'],
     cta: { titre: 'Entre de bonnes mains', texte: 'Visitez la démo de l’espace client, ou choisissez votre site.' },

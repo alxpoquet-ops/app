@@ -67,7 +67,7 @@ function aled08e_bulle_systeme() {
         . "Présente-toi comme l'assistante autonome d'Alex, qui automatise les tâches répétitives. Tu fais partie de la petite bande de petits monstres qu'Alex a programmés : ce sont ses automatisations. " . (aled08e_energie_on() ? "Les outils et les petites modifications utilisent l'énergie des petits monstres, comptée avec un simple nombre : dis « 30 d'énergie », jamais « points » ni « jetons ». " : "Il n'y a aucune énergie à compter : les modifications sont comprises dans l'abonnement et faites par Alex. Les outils de l'espace client sont en pause pour l'instant : n'en propose aucun. ") . "Si le client te demande si tu es une intelligence artificielle ou un humain, réponds honnêtement : tu es un assistant automatique, et Alex reprend tout ce qui demande un humain.\n\n"
         . "Ton rôle : répondre à ses questions, et préparer ce qu'il veut faire. Tu ne fais jamais l'action toi-même : tu la proposes dans le champ « action », et le client la valide ensuite d'un clic dans son espace.\n\n"
         . "Comment répondre :\n"
-        . "- En français simple, avec des mots de tous les jours, sans jargon. Une à quatre phrases courtes. Vouvoie le client. Pas de tiret long, pas d'émoji, pas de liste à puces, pas de mise en forme.\n"
+        . "- En français simple, avec des mots de tous les jours, sans jargon. Ton joyeux, chaleureux et complice, comme quand on parle à quelqu'un de la famille. Tutoie toujours le client (jamais de « vous »). Un petit mot gai est bienvenu (« Coucou », « Avec plaisir »), sans en faire trop. Une à quatre phrases courtes. Pas de tiret long, pas d'émoji, pas de liste à puces, pas de mise en forme.\n"
         . "- Si le client écrit dans une autre langue, réponds dans sa langue.\n"
         . "- Utilise seulement les faits des balises compte et offre. N'invente ni prix, ni délai, ni chiffre. Si tu ne sais pas, dis-le et propose de demander à Alex.\n"
         . "- Tu ne vois pas son site et tu ne lis ni Google ni les réseaux sociaux : ne dis jamais que tu l'as fait." . (aled08e_outils_on() ? " Pour faire lire une page, il y a l'outil « Conseils pour ma page »." : '') . "\n"
@@ -242,7 +242,7 @@ function aled08e_bulle_repondre($uid, $message) {
 
 add_action('wp_ajax_aled08e_bulle', function () {
     $uid = get_current_user_id();
-    if (!$uid || !check_ajax_referer('aled08e_bulle', '_n', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
+    if (!$uid || !check_ajax_referer('aled08e_bulle', '_n', false)) wp_send_json_error(['message' => 'La page avait expiré. Recharge-la, puis réessaie.'], 403);
     if (!empty($_POST['nouveau'])) { delete_transient('aled08_bulle_' . $uid); delete_user_meta($uid, 'aled08_dialogue'); wp_send_json_success(['vide' => true]); }
     $msg = aled08e_jl_texte(is_scalar($_POST['message'] ?? '') ? wp_unslash($_POST['message'] ?? '') : '');
     $msg = trim(str_replace(['<', '>'], ['‹', '›'], $msg)); // pas de balise dans le message : il est placé entre balises
@@ -250,7 +250,7 @@ add_action('wp_ajax_aled08e_bulle', function () {
     if ($msg === '') wp_send_json_error(['message' => 'Écrivez votre message, puis envoyez.'], 400);
     if (mb_strlen($msg) > $max) wp_send_json_error(['message' => 'Votre message fait ' . mb_strlen($msg) . ' caractères. La bulle en prend ' . $max . ' : faites plus court, ou passez par l’onglet Mes demandes.'], 400);
     if (!aled08e_famille($uid) && !aled08e_jl_forfait_actif($uid)) wp_send_json_error(['message' => 'Cerise vous répond ici dès que votre abonnement a démarré. En attendant, écrivez à Alex par l’onglet Mes demandes.'], 400);
-    if (!aled08e_bulle_quota($uid)) wp_send_json_error(['message' => 'Vous avez beaucoup écrit à Cerise aujourd’hui. Revenez demain, ou passez par l’onglet Mes demandes.'], 429);
+    if (!aled08e_bulle_quota($uid)) wp_send_json_error(['message' => 'On a beaucoup papoté aujourd’hui ! Reviens demain, ou passe par l’onglet Demandes.'], 429);
     // un seul message à la fois par client (le verrou tombe tout seul à la fin de la requête)
     global $wpdb;
     if ((int) $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, 0)', 'aled08_bulle_' . $wpdb->prefix . $uid)) !== 1) wp_send_json_error(['message' => 'Cerise est déjà en train de vous répondre. Attendez sa réponse.'], 429);

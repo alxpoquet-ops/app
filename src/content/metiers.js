@@ -99,7 +99,7 @@ Le site fait équipe avec votre [fiche Google](/guides/fiche-google-entreprise/)
 
 Vous n’avez ni le temps ni l’envie de gérer un site le soir, et c’est normal. Nous écrivons les textes avec vous après un court échange, puis nous mettons tout en ligne.
 
-Un tarif change, une nouvelle photo arrive ? Avec le forfait ${mini.name}, envoyez le changement depuis votre téléphone, dans votre espace client. ${qui('support')} de notre petite bande, vous pose les bonnes questions, puis transmet. La modification est incluse et peut prendre ${delaiModif}.
+Un tarif change, une nouvelle photo arrive ? Avec le forfait ${mini.name}, envoyez le changement depuis votre téléphone, dans votre espace client. ${qui('constructeur')} de notre petite bande, clarifie votre demande avec vous, puis l’envoie à Alex, qui fait la modification. Elle est incluse.
 
 ## Combien ça coûte
 
@@ -335,7 +335,7 @@ Publiez seulement de vrais commentaires de vos hôtes, avec leur accord, ou renv
 - **Le site** : ${prixVis} € pour le ${VIS.name}, où chaque gîte ou chaque chambre peut avoir sa page. Pour un seul hébergement, le ${ESS.name}, à ${prix} €, peut suffire.
 - **Ensuite** : en ${AUTO}, vous faites vos changements vous-même. Avec le forfait ${mini.name}, au mois et sans engagement, ils sont faits pour vous.
 
-Un tarif d’été ou une date de fermeture ? Avec le forfait ${mini.name}, vous le demandez à ${B('support').nom}. Ce genre de modification est inclus et peut prendre ${delaiModif}.`,
+Un tarif d’été ou une date de fermeture ? Avec le forfait ${mini.name}, vous le demandez à ${B('constructeur').nom}, qui prépare votre demande pour Alex. Ce genre de modification est inclus.`,
     faq: [
       { q: 'Le site peut-il afficher mes disponibilités ?', a: 'Si vous tenez déjà un calendrier en ligne, le site peut y renvoyer. Sinon, la demande de séjour suffit souvent : vous gardez la main sur votre planning.' },
       { q: 'J’ai deux gîtes sur le même terrain, faut-il deux sites ?', a: 'Non. Un seul site présente les deux, chacun sur sa page, avec ses photos et ses tarifs. Vous n’avez qu’un site à faire vivre.' },
@@ -368,7 +368,7 @@ Un tarif d’été ou une date de fermeture ? Avec le forfait ${mini.name}, vous
     },
     options: [
       { id: 'boutique', pourquoi: `Avec le ${BOU.name}, vos clients commandent le soir ou le dimanche, paient en ligne et passent prendre leurs achats au comptoir.` },
-      { id: 'base', pourquoi: `Une fermeture imprévue ou une promotion à annoncer ? Vous l’écrivez dans votre espace client, et le site est mis à jour pour vous, en ${mini.delai} au plus.` },
+      { id: 'base', pourquoi: `Une fermeture imprévue ou une promotion à annoncer ? Vous l’écrivez dans votre espace client, et le site est mis à jour pour vous.` },
     ],
     body: `## Une deuxième vitrine, dans la rue où tout le monde passe
 
@@ -403,7 +403,7 @@ Commencez petit, avec vos produits les plus demandés. Vous complétez ensuite v
 
 Horaires d’été, fermeture en août, nouvelle gamme, marché de Noël : un commerce bouge tout le temps. Un site qui affiche encore les horaires de l’an dernier déçoit.
 
-Avec le forfait ${mini.name}, ces changements ne vous demandent qu’un message dans votre espace client. Ce sont des modifications incluses : ${B('support').nom} note votre demande, et elle est faite pour vous, en ${mini.delai} au plus.
+Avec le forfait ${mini.name}, ces changements ne vous demandent qu’un message dans votre espace client. Ce sont des modifications incluses : ${B('constructeur').nom} prépare votre demande, et Alex s’en charge.
 
 ## Combien ça coûte
 
@@ -443,7 +443,7 @@ Vous versez ${acompte} à la commande et le reste à la réception, en une fois 
       texte: 'Pas encore d’association parmi nos réalisations. Pour un comité des fêtes, nous proposerions une seule page : qui vous êtes, l’agenda de l’année, les photos de la dernière fête, comment devenir bénévole, et un formulaire qui arrive dans la boîte de l’association.',
     },
     options: [
-      { id: 'base', pourquoi: `Il fait vivre le site sans effort pour le bureau. Chaque date de l’agenda est mise à jour pour vous, en ${mini.delai} au plus : envoyez-la un peu en avance.` },
+      { id: 'base', pourquoi: `Il fait vivre le site sans effort pour le bureau. Chaque date de l’agenda est mise à jour pour vous : envoyez-la un peu en avance.` },
     ],
     body: `## Une association que l’on voit, on la rejoint
 

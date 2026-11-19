@@ -48,7 +48,7 @@ function aled08e_bsite_systeme() {
     foreach (aled08e_bsite_liens() as $u => $l) $liens[] = $u . ' : ' . $l;
     return "Tu es Cerise, la secrétaire de la petite bande des Minis Monstres, un petit studio français de création de sites internet. Tu réponds aux visiteurs du site, avant qu'ils soient clients.\n\n"
         . "Règles :\n"
-        . "- Français simple, mots de tous les jours, ton chaleureux et gentil. Vouvoie. Une à quatre phrases courtes. Pas de liste à puces, pas de mise en forme, pas d'émoji, pas de tiret long.\n"
+        . "- Français simple, mots de tous les jours, ton joyeux, chaleureux et complice, comme quand on parle à quelqu'un de la famille. Tutoie toujours le visiteur (jamais de « vous »). Un petit mot gai est bienvenu (« Coucou », « Avec plaisir », « Super question »), sans en faire trop. Une à quatre phrases courtes. Pas de liste à puces, pas de mise en forme, pas d'émoji, pas de tiret long.\n"
         . "- Si le visiteur écrit dans une autre langue, réponds dans sa langue.\n"
         . "- Utilise seulement les faits de la balise faits. N'invente ni prix, ni délai, ni garantie, ni promesse de résultat. Si tu ne sais pas ou si c'est un cas particulier (devis, refonte, besoin précis), dis-le simplement et propose d'écrire à Alex avec le lien /contact/.\n"
         . "- Tu es un assistant automatique, et tu le dis honnêtement si on te le demande. Tu ne peux rien modifier, rien commander, rien promettre au nom d'Alex.\n"
@@ -78,22 +78,22 @@ function aled08e_bsite_ajax() {
     $o = (string) ($_SERVER['HTTP_ORIGIN'] ?? ($_SERVER['HTTP_REFERER'] ?? ''));
     $oh = $o !== '' ? wp_parse_url($o, PHP_URL_HOST) : '';
     if (!$oh || preg_replace('/^www\./', '', $oh) !== preg_replace('/^www\./', '', (string) $h)) $non('Cerise répond depuis les pages du site.', 403);
-    if (!function_exists('aled08e_cer_prete') || !aled08e_cer_prete() || !aled08e_lia_sdk()) $non('Cerise n’est pas encore branchée. Écrivez directement à Alex : c’est lui qui vous répondra.');
+    if (!function_exists('aled08e_cer_prete') || !aled08e_cer_prete() || !aled08e_lia_sdk()) $non('Je ne suis pas encore branchée. Écris directement à Alex : c’est lui qui te répondra.');
     $msg = aled08e_jl_texte(is_scalar($_POST['message'] ?? '') ? wp_unslash($_POST['message']) : '');
     $msg = trim(str_replace(['<', '>'], ['‹', '›'], $msg));
     if ($msg === '') $non('Écrivez votre question, puis envoyez.');
-    if (mb_strlen($msg) > 300) $non('Votre question fait ' . mb_strlen($msg) . ' caractères : la bulle en prend 300. Faites plus court, ou écrivez-nous.');
+    if (mb_strlen($msg) > 300) $non('Ta question fait ' . mb_strlen($msg) . ' caractères : la bulle en prend 300. Fais plus court, ou écris-nous.');
     // limites : par visiteur, puis pour tout le site
     $ip = hash('sha256', (string) ($_SERVER['REMOTE_ADDR'] ?? '?') . wp_salt('auth'));
     $kh = 'aled08_bsite_h_' . substr($ip, 0, 20) . '_' . wp_date('YmdH');
     $kj = 'aled08_bsite_j_' . substr($ip, 0, 20) . '_' . wp_date('Ymd');
     $nh = (int) get_transient($kh); $nj = (int) get_transient($kj);
-    if ($nh >= 10 || $nj >= 30) $non('Vous avez beaucoup écrit à Cerise. Pour continuer, écrivez directement à Alex.', 429);
+    if ($nh >= 10 || $nj >= 30) $non('On a beaucoup papoté ! Pour continuer, écris directement à Alex.', 429);
     $kg = 'aled08_bsite_g_' . wp_date('Ymd');
     $ng = (int) get_transient($kg);
     $max = max(20, (int) get_option('aled08_bulle_site_jour', 400));
     $budget = max(0.2, (float) get_option('aled08_bulle_site_budget', 2.0));
-    if ($ng >= $max || aled08e_bsite_cout_jour() >= $budget) $non('Cerise se repose pour aujourd’hui. Écrivez à Alex, il vous répond avec plaisir.', 429);
+    if ($ng >= $max || aled08e_bsite_cout_jour() >= $budget) $non('Je me repose pour aujourd’hui. Écris à Alex, il te répond avec plaisir.', 429);
     set_transient($kh, $nh + 1, HOUR_IN_SECONDS); set_transient($kj, $nj + 1, DAY_IN_SECONDS); set_transient($kg, $ng + 1, DAY_IN_SECONDS);
 
     // les derniers échanges (au plus 3 questions et 3 réponses), renvoyés par le navigateur : ils ne sont jamais gardés ici
@@ -125,14 +125,14 @@ function aled08e_bsite_ajax() {
         );
     } catch (\Throwable $e) {
         aled08e_lia_journal_add('Cerise (visiteurs du site) : erreur Claude : ' . $e->getMessage());
-        $non('Cerise n’a pas pu répondre cette fois. Réessayez dans un instant, ou écrivez-nous.', 502);
+        $non('Oups, je n’ai pas pu répondre cette fois. Réessaie dans un instant, ou écris-nous.', 502);
     }
     if (isset($r->usage)) aled08e_bsite_cout_jour(((int) ($r->usage->inputTokens ?? 0) * $t['entree'] + (int) ($r->usage->outputTokens ?? 0) * $t['sortie']) / 1000000);
     $brut = '';
     foreach ($r->content as $b) if ($b->type === 'text') $brut .= $b->text;
     $d = preg_match('/\{.*\}/s', $brut, $m) ? json_decode($m[0], true) : null;
     $rep = is_array($d) ? trim(wp_strip_all_tags((string) ($d['reponse'] ?? ''))) : '';
-    if (($r->stopReason ?? '') === 'refusal' || $rep === '') $non('Cerise ne peut pas répondre à cette question. Écrivez à Alex, il vous répondra.', 502);
+    if (($r->stopReason ?? '') === 'refusal' || $rep === '') $non('Je ne peux pas répondre à cette question. Écris à Alex, il te répondra.', 502);
     $liens = aled08e_bsite_liens();
     $lien = (string) ($d['lien'] ?? '');
     aled08e_bsite_fin(true, ['reponse' => mb_substr($rep, 0, 900), 'lien' => isset($liens[$lien]) ? ['href' => $lien, 'texte' => $liens[$lien]] : null]);

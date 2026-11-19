@@ -50,8 +50,8 @@ const listeExtras = extras
   .join('\n');
 // La petite bande, par prénom et par rôle. Ce que fait chacun est écrit ici pour les CGV.
 const ROLE_CGV = {
-  support: 'répond dans la bulle d’aide, aide le client à formuler ses demandes de modification et les transmet',
-  constructeur: 'monte le site, réalise les modifications et vérifie que tout fonctionne',
+  support: 'répond aux questions dans la bulle d’aide',
+  constructeur: 'aide le client à formuler ses demandes de modification et les transmet à Alexandre Poquet',
   ecrivain: 'prépare les contenus, aide à rédiger les textes et améliore leur lisibilité',
   observateur: 'prépare les pages de visibilité Google et soigne le référencement local',
   organisateur: 'classe les contenus, organise les pages et range la boutique et ses commandes',
@@ -141,7 +141,7 @@ Pour réserver le nom de domaine, je transmets vos coordonnées de titulaire (pr
 
 Votre compte est créé automatiquement à la commande, avec votre adresse e-mail. Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée.
 
-Certains petits monstres fonctionnent avec Claude, un service de la société Anthropic. C’est le cas de ${cerise}, qui vous répond dans la bulle d’aide et vous aide à formuler vos demandes de modification. Quand vous écrivez dans la bulle ou que vous demandez une modification, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude pour préparer la réponse ou le résumé de votre demande. L’envoi passe par une liaison chiffrée, c’est-à-dire protégée contre les regards extérieurs. Ces éléments ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
+Certains petits monstres fonctionnent avec Claude, un service de la société Anthropic. C’est le cas de ${cerise}, qui vous répond dans la bulle d’aide, et de ${monstre('constructeur').nom}, qui vous aide à formuler vos demandes de modification. Quand vous écrivez dans la bulle ou que vous demandez une modification, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude pour préparer la réponse ou le résumé de votre demande. L’envoi passe par une liaison chiffrée, c’est-à-dire protégée contre les regards extérieurs. Ces éléments ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
 
 Un compte sans aucune connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec les demandes et les photos qu’il contient. Un e-mail vous prévient 30 jours avant. Il suffit de vous connecter pour le conserver.
 
@@ -256,7 +256,7 @@ Le forfait ${mini.name} est facultatif. Le client peut le prendre au moment de l
 - **La maintenance technique** : des contrôles et des mises à jour faits régulièrement, pour que le site reste en état de marche.
 - **L’espace client**, avec la bulle d’aide (article 13).
 - **Les Minis Monstres au service du client** : une question posée reçoit une réponse.
-- **Les modifications**, incluses et demandées directement depuis l’espace client. Le client a une demande en cours à la fois. Une modification peut prendre ${delaiModif} (article 12).
+- **Les modifications**, incluses et demandées directement depuis l’espace client. Le client a une demande en cours à la fois (article 12).
 
 Le délai de traitement des modifications est un délai habituel, donné à titre indicatif. Il ne constitue pas une garantie.
 
@@ -305,16 +305,16 @@ Le client voit son site avant la mise en ligne. Il peut demander des révisions 
 **Déroulé.** Chaque modification suit les mêmes étapes :
 
 1. Le client fait sa demande dans son espace client.
-2. ${cerise}, la secrétaire de la petite bande (article 15), l’aide à la formuler clairement et lui pose les questions utiles.
-3. Le client confirme la demande résumée par ${cerise}.
-4. La demande est transmise.
-5. ${monstre('constructeur').nom}, le constructeur de la petite bande, réalise la modification, puis elle est mise en ligne.
+2. ${monstre('constructeur').nom}, un petit monstre de la bande (article 15), l’aide à la formuler clairement et lui pose les questions utiles.
+3. Le client confirme la demande résumée par ${monstre('constructeur').nom}.
+4. La demande est transmise à Alexandre Poquet.
+5. Alexandre Poquet réalise la modification, puis elle est mise en ligne.
 
 Le client peut annuler une demande tant qu’elle n’est pas commencée.
 
 **Demandes en cours.** Le client a une demande en cours à la fois. La suivante peut être envoyée dès qu’une demande est terminée.
 
-**Délai.** Une modification peut prendre ${delaiModif}. C’est un délai habituel, donné à titre indicatif et sans garantie. Il peut être plus long pour une demande complexe ou incomplète.
+**Délai.** Aucun délai fixe n’est garanti pour une modification. Chaque demande est traitée dans un délai raisonnable, qui dépend de sa complexité et des éléments fournis par le client. Le client suit l’avancement dans son espace client.
 
 Une demande sur devis suit le délai indiqué dans le devis.
 

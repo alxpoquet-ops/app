@@ -10,7 +10,7 @@
 // L'abonnement est facultatif. Trois extras seulement (config.aLaDemande non retirés) : la page de visibilité Google,
 // payée une fois par carte depuis l'espace client, la traduction anglaise et la fonctionnalité spécifique, sur devis.
 // La petite bande (config.bande) compte six Minis Monstres, présentés par leur prénom (Pépite, la spécialiste des extras, depuis le 19 novembre 2026).
-// Le parrainage est retiré du site (seule la remise sur un deuxième site reste). C'est Bricou qui fait les modifications ; Alex conçoit et contrôle.
+// Le parrainage est retiré du site (seule la remise sur un deuxième site reste). Bricou clarifie les demandes de modification et les envoie à Alex, qui fait la modification. Aucun délai n'est annoncé.
 // Tour global du 19 novembre 2026 : questions regroupées (59 → 44), même ordre que l'offre (le site, puis Autonomie ou Mini,
 // enfin les extras), « visibilité sur Google » plutôt que « référencement », « modification » plutôt que « retouche ».
 const cfg = require('../config');
@@ -51,8 +51,8 @@ const mirette = monstre('observateur').nom;
 const mochi = monstre('organisateur').nom;
 // Ce que fait chacun, en quelques mots (écrit ici pour la FAQ, différent des phrases de config.js).
 const MISSION = {
-  support: 'répond à vos questions et note vos demandes',
-  constructeur: 'monte votre site et fait vos modifications',
+  support: 'répond à vos questions',
+  constructeur: 'prépare vos demandes de modification pour Alex',
   ecrivain: 'aide à écrire vos textes',
   observateur: 'prépare vos pages pour Google',
   organisateur: 'range vos pages, vos produits et vos commandes',
@@ -84,7 +84,7 @@ module.exports = {
     { q: `Que comprend le forfait ${mini.name} ?`, a: `Tout ce qui garde votre site en ligne et à jour : l’hébergement (l’endroit où votre site reste accessible jour et nuit), les sauvegardes automatiques, la sécurité et la maintenance technique. Vos modifications sont incluses, une demande à la fois, depuis votre espace client. Il coûte ${eur(mini.month)} € par mois, sans engagement, ou ${eur(avecDom)} € si nous fournissons le nom de domaine.` },
     { q: `C’est quoi, la formule ${AUTO} ?`, a: `C’est le site sans abonnement : ${eur(creationSeule.month)} € par mois. Une fois le site validé, vous recevez son export, une copie complète avec une courte notice, à installer chez l’hébergeur de votre choix. L’hébergement, le nom de domaine, les sauvegardes et les mises à jour sont alors à votre charge.` },
     { q: 'Quels sont les extras ?', a: `Il y en a trois, jamais imposés. La ${minus(pageGoogle.name)}, à ${prixPage} € la page, se commande dans votre espace client et se paie une fois, par carte. La ${minus(anglais.name)} et la ${minus(specifique.name)}, par exemple une prise de rendez-vous, se font sur devis.` },
-    { q: 'Les modifications sont-elles limitées ?', a: `Non, pas avec le forfait ${mini.name} : vous en demandez autant que vous voulez, une à la fois, et chacune peut prendre ${delaiModif}. Un texte, des photos, un horaire, une page à corriger : ce sont des modifications. Une nouvelle page pour Google, une traduction ou une refonte complète sont des extras ou un devis.` },
+    { q: 'Les modifications sont-elles limitées ?', a: `Non, pas avec le forfait ${mini.name} : vous en demandez autant que vous voulez, une à la fois. Un texte, des photos, un horaire, une page à corriger : ce sont des modifications. Une nouvelle page pour Google, une traduction ou une refonte complète sont des extras ou un devis.` },
     { q: 'Le nom de domaine est-il compris ?', a: `Vous avez déjà un nom de domaine (l’adresse de votre site) ? Le forfait ${mini.name} reste à ${eur(mini.month)} € par mois. Vous n’en avez pas ? On vous le fournit, à votre nom, pour ${eur(dom)} € de plus par mois, soit ${eur(avecDom)} €. L’hébergement, lui, est toujours compris.` },
     { q: 'Comment se paie l’abonnement ?', a: `Au mois : ${eur(mini.month)} € par mois, sans engagement. Il démarre à la réception de votre site et s’arrête quand vous le décidez.` },
     { q: 'J’ai un code promo. Où le mettre ?', a: 'Dans la case « Code promo », juste au-dessus du bouton Commander. Il réduit le prix du site, jamais celui de l’abonnement ni des extras.' },
@@ -93,8 +93,8 @@ module.exports = {
     { q: 'Y a-t-il des frais cachés ?', a: `Non. Le récapitulatif de commande montre tout : le site choisi, et le forfait ${mini.name} si vous le prenez. Un devis n’arrive que si vous le demandez, et vous l’acceptez ou non avant le début du travail.` },
   ],
   espace: [
-    { q: 'Comment se passe une modification ?', a: `Vous écrivez votre demande dans votre espace client. ${cerise}, la secrétaire de la bande, vous aide à la préciser, puis ${bricou}, le constructeur, fait la modification. Vous êtes prévenu quand c’est en ligne.` },
-    { q: 'En combien de temps est-ce fait ?', a: `Une modification peut prendre ${delaiModif}. Vous avez une seule demande en cours à la fois : dès qu’elle est terminée, vous envoyez la suivante.` },
+    { q: 'Comment se passe une modification ?', a: `Vous écrivez votre demande dans votre espace client. ${bricou}, le constructeur de la bande, la clarifie avec vous et l’envoie à Alex, qui fait la modification. Vous êtes prévenu quand c’est en ligne.` },
+    { q: 'Comment suivre ma demande ?', a: `Vous la suivez dans votre espace client, étape par étape, et vous êtes prévenu dès qu’elle est faite. Vous avez une seule demande en cours à la fois : dès qu’elle est terminée, vous envoyez la suivante.` },
     { q: 'Puis-je annuler une demande ?', a: 'Oui, tant qu’elle n’est pas commencée : un bouton Annuler s’affiche à côté de la demande. Une fois le travail lancé, écrivez-nous.' },
     { q: 'Que trouve-t-on dans l’espace client ?', a: `Les onglets Accueil, Demandes, Extras et Mon compte, plus Ma boutique avec le ${BOU.name}. Vous y demandez vos modifications, vous commandez un extra et vous retrouvez vos factures. ${cerise} vous y répond aussi dans la bulle en bas de l’écran, jusqu’à ${limites.bulleJour} messages par jour.` },
     { q: 'Comment est créé mon compte ?', a: 'Tout seul, dès que votre commande est validée. Vous recevez un e-mail avec un lien pour choisir votre mot de passe. Vous pouvez aussi le créer avant, sans rien commander, sur la page Mon espace.' },
@@ -109,7 +109,7 @@ module.exports = {
   ],
   methode: [
     { q: 'Qui sont les petits monstres ?', a: `Ce sont les six personnages de notre petite bande, chacun avec son rôle. ${bandeComprise}.` },
-    { q: 'Qui construit mon site ?', a: `Alex, la personne derrière les Minis Monstres, conçoit votre site et fait les choix avec vous. Les petits monstres l’aident sur ce qui se répète, ${bricou} fait ensuite vos modifications, et Alex contrôle le tout. Rien ne part en ligne sans son accord, ni sans le vôtre.` },
+    { q: 'Qui construit mon site ?', a: `Alex, la personne derrière les Minis Monstres, conçoit votre site et fait les choix avec vous. Les petits monstres l’aident sur ce qui se répète, ${bricou} prépare ensuite vos demandes de modification pour Alex, et Alex contrôle le tout. Rien ne part en ligne sans son accord, ni sans le vôtre.` },
     { q: 'Mes clients verront-ils comment mon site a été fait ?', a: 'Non, rien ne le signale sur votre site. Ils voient un site propre et rapide, à votre nom. De notre côté, nous préférons vous dire comment nous travaillons : vous savez ce que vous achetez.' },
   ],
   comparatif: [

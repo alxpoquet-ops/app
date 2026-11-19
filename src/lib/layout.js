@@ -204,22 +204,22 @@ ${liaFlot()}`;
 function liaFlot() {
   const eur = C.euro;
   const questions = [
-    ['À quoi sert un site ?', 'À être visible. Sans site internet, votre activité est comme une belle vitrine dans une rue où personne ne passe. Avec un site, vos futurs clients vous trouvent, sur Google comme sur leur téléphone. Nous rendre visibles nos clients, c’est notre métier.', sections.seo.path, 'Être trouvé sur Google'],
-    ['C’est combien ?', `Créez votre site : payez une seule fois. ${types.map((t) => `${t.name} ${eur(t.price)}`).join(', ')}. Payable en ${lissage.durees.join(' ou ')} fois sans frais. Ensuite, vous choisissez : ${AUTO.name}, ${eur(AUTO.month)} par mois, vous gérez tout vous-même. Ou le forfait ${ABO.name}, ${eur(ABO.month)} par mois sans engagement, on s’occupe de tout (${eur(ABO.month + (ABO.domaine || 0))} si on vous fournit le nom de domaine). Enfin, trois extras, si vous en avez besoin.`, sections.forfaits.path, 'Voir les tarifs'],
-    ['Quel site choisir ?', `${types.map((t) => `${t.name} : ${t.but.toLowerCase()}`).join('. ')}. Vous hésitez ? Écrivez-nous, on vous aide à choisir.`, sections.creer.path, 'Créer mon site'],
-    ['Qui fait mon site ?', 'Alex conçoit votre site et vérifie tout. Moi, je suis la secrétaire de sa petite bande : je réponds à vos questions et je prends vos demandes.', sections.equipe.path, 'Rencontrer la bande'],
-    ['Et pour changer mon site après ?', `Avec le forfait ${ABO.name}, vos modifications sont incluses. Vous écrivez votre demande dans votre espace client, je vous aide à la préciser, et ${C.BRICOU} fait la modification, en 48 h au plus.`, sections.accompagnement.path, 'L’accompagnement'],
+    ['À quoi sert un site ?', 'À être visible, tout simplement ! Sans site internet, ton activité est comme une jolie vitrine dans une rue où personne ne passe. Avec un site, tes futurs clients te trouvent, sur Google comme sur leur téléphone. Te rendre visible, c’est notre métier à nous, la petite bande !', sections.seo.path, 'Être trouvé sur Google'],
+    ['C’est combien ?', `Bonne nouvelle : tu paies ton site une seule fois ! ${types.map((t) => `${t.name} ${eur(t.price)}`).join(', ')}. Tu peux payer en ${lissage.durees.join(' ou ')} fois sans frais. Ensuite, c’est toi qui choisis : ${AUTO.name}, ${eur(AUTO.month)} par mois, tu gères tout toi-même. Ou le forfait ${ABO.name}, ${eur(ABO.month)} par mois sans engagement, et on s’occupe de tout (${eur(ABO.month + (ABO.domaine || 0))} si on te fournit le nom de domaine).`, sections.forfaits.path, 'Voir les tarifs'],
+    ['Quel site choisir ?', `Facile ! ${types.map((t) => `${t.name} : ${t.but.toLowerCase()}`).join('. ')}. Tu hésites ? Écris-nous, on choisit ensemble, promis.`, sections.creer.path, 'Créer mon site'],
+    ['Qui fait mon site ?', 'C’est Alex ! Il conçoit ton site et vérifie tout. Et nous, sa petite bande, on l’aide chacun à notre façon. Moi, je suis Cerise : je réponds à tes questions avec le sourire.', sections.equipe.path, 'Rencontrer la bande'],
+    ['Et pour changer mon site après ?', `Avec le forfait ${ABO.name}, tes modifications sont incluses, youpi ! Tu écris ta demande dans ton espace client, ${C.BRICOU} la clarifie avec toi, et Alex fait la modification.`, sections.accompagnement.path, 'L’accompagnement'],
   ];
-  const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', enService.outils ? 'Comment avoir plus d’avis Google ?' : 'Comment se passe une modification ?', `Que comprend le forfait ${ABO.name} ?`];
+  const exemples = ['Comment demander une modification ?', 'Où sont mes factures ?', enService.outils ? 'Comment avoir plus d’avis Google ?' : 'Comment marche ma boutique ?', `Que comprend le forfait ${ABO.name} ?`];
   return `<div class="lia-flot" data-lia-flot hidden>
   <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Cerise, la secrétaire de la bande" hidden>
     <div class="lia-tete">${monster('coucou')}<p><strong>Cerise</strong><small>La secrétaire de la bande</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Cerise">${icon('x')}</button></div>
     <div class="lia-fil" data-lia-fil aria-live="polite">
-      <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Cerise, de la bande des Minis Monstres ! Ici, on crée des sites internet pour vous rendre visible. Choisissez une question ou écrivez la vôtre.</p>
-      <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Bonjour ! Dites-moi ce que vous voulez changer sur votre site, ou posez-moi une question.</p>
-      <p class="lia-msg is-lia" data-lia-accueil="demo" hidden>Bonjour ! Ici, c’est une démonstration : écrivez-moi comme un client, je vous montre comment je réponds.</p>
-      <p class="lia-msg is-lia" data-lia-accueil="attente" hidden>Bonjour ! Je ne suis pas encore branchée dans cet espace. En attendant, écrivez votre demande dans l’onglet Demandes.</p>
-      <p class="lia-msg is-lia" data-lia-accueil="abonnement" hidden>Bonjour ! Je vous réponds ici avec le forfait ${ABO.name}, dès qu’il a démarré. En attendant, écrivez votre demande dans l’onglet Demandes.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="site">Coucou, moi c’est Cerise, de la bande des Minis Monstres ! Ici, on est une petite famille, et on crée des sites internet pour te rendre visible. Choisis une question, ou écris-moi la tienne !</p>
+      <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Coucou ! Une question sur ton site ou ton espace ? Je suis là. Et pour une modification, c’est Bricou qui t’attend dans l’onglet Demandes !</p>
+      <p class="lia-msg is-lia" data-lia-accueil="demo" hidden>Coucou ! Ici, c’est une démonstration : écris-moi comme un client, je te montre comment je réponds.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="attente" hidden>Coucou ! Je ne suis pas encore branchée dans cet espace. En attendant, écris ta demande dans l’onglet Demandes.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="abonnement" hidden>Coucou ! Je te réponds ici avec le forfait ${ABO.name}, dès qu’il a démarré. En attendant, écris ta demande dans l’onglet Demandes.</p>
     </div>
     <div class="lia-puces" data-lia-liens="site">
       ${questions.map(([q], i) => `<button type="button" data-lia-q="${i}">${q}</button>`).join('')}
@@ -230,14 +230,14 @@ function liaFlot() {
       ${exemples.map((e) => `<button type="button" data-lia-ex>${e}</button>`).join('')}
     </div>
     <form class="lia-saisie" data-lia-form data-site-ajax="/wp-json/aled08/v1/bulle-site" hidden>
-      <label class="sr-only" for="lia-champ">Votre message pour Cerise</label>
-      <textarea id="lia-champ" rows="2" maxlength="${jetonsLia.bulle.max}" placeholder="Posez votre question à Cerise…" required></textarea>
+      <label class="sr-only" for="lia-champ">Ton message pour Cerise</label>
+      <textarea id="lia-champ" rows="2" maxlength="${jetonsLia.bulle.max}" placeholder="Pose ta question à Cerise…" required></textarea>
       <button type="submit" aria-label="Envoyer à Cerise">${icon('send')}</button>
     </form>
     <p class="lia-note" data-lia-note-site hidden>Cerise répond automatiquement et peut se tromper. Pour une demande précise, <a href="${C.contactUrl}">écrivez-nous</a>.</p>
-    <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Cerise répond automatiquement et peut se tromper. Elle ne touche pas à votre site : elle transmet votre demande. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
+    <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Cerise répond automatiquement et peut se tromper. Elle ne touche pas à ton site. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
   </div>
-  <p class="lia-flot-coucou" hidden><strong>Je suis là pour vous aider !</strong><small>Cerise, la secrétaire de la bande</small></p>
+  <p class="lia-flot-coucou" hidden><strong>Coucou, je suis là pour toi !</strong><small>Cerise, la secrétaire de la bande</small></p>
   <button type="button" class="lia-flot-btn" aria-expanded="false" aria-controls="lia-panel"><span class="sr-only">Parler à Cerise</span>${monster('coucou')}</button>
 </div>`;
 }

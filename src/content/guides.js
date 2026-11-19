@@ -72,9 +72,9 @@ La bonne méthode est d'**écrire la carte en vrai texte** sur le site. Elle se 
 
 C'est la vraie difficulté pour un restaurant : le plat du jour, la carte de saison, les congés annuels. Un site qui affiche encore le menu de l'été en plein hiver donne une mauvaise image.
 
-Avec le forfait ${mini.name}, vous ne touchez jamais au site. Vous envoyez la nouvelle carte depuis votre espace client, la page privée où vous faites vos demandes. ${qui('support')} de notre petite bande, vérifie avec vous ce qui change. Puis la carte est mise à jour pour vous.
+Avec le forfait ${mini.name}, vous ne touchez jamais au site. Vous envoyez la nouvelle carte depuis votre espace client, la page privée où vous faites vos demandes. ${qui('constructeur')} de notre petite bande, vérifie avec vous ce qui change. Puis Alex met la carte à jour.
 
-Ces changements sont compris dans l’abonnement, et la nouvelle carte est en ligne ${delaiModif} après votre demande. Vous préférez tout gérer seul ? La formule ${AUTO} existe aussi. Les deux sont présentées sur la page [tarifs](/tarifs/).
+Ces changements sont compris dans le forfait : vous envoyez votre demande, et vous êtes prévenu dès que la nouvelle carte est en ligne. Vous préférez tout gérer seul ? La formule ${AUTO} existe aussi. Les deux sont présentées sur la page [tarifs](/tarifs/).
 
 ## Quel site choisir ?
 
@@ -262,7 +262,7 @@ Chaque site reprend tout ce que contient le précédent. Vos modifications sont 
 ### 2. Ensuite : ${AUTO} ou Forfait ${mini.name}
 
 - **${AUTO}, ${eur(creationSeule.month)} € par mois** : vous recevez l’export du site, une copie complète avec une courte notice. L’hébergement, le nom de domaine, les sauvegardes et les mises à jour sont à votre charge.
-- **Forfait ${mini.name}, ${eur(mini.month)} € par mois**, sans engagement : nous gardons le site en ligne, protégé et à jour. Vos modifications sont incluses, une demande à la fois, et peuvent prendre ${delaiModif}.
+- **Forfait ${mini.name}, ${eur(mini.month)} € par mois**, sans engagement : nous gardons le site en ligne, protégé et à jour. Vos modifications sont incluses, une demande à la fois.
 
 Vous avez déjà un nom de domaine ? Le forfait reste à ${eur(mini.month)} € par mois. Vous n’en avez pas ? Il est fourni à votre nom pour ${eur(dom)} € de plus, soit ${eur(avecDom)} € par mois.
 
@@ -428,8 +428,8 @@ Notre service est né de ce constat. Vous ne construisez rien vous-même, mais v
 - Le prix est fixe et connu d’avance : ${eur(ESS.price)} €, ${eur(VIS.price)} € ou ${mille(BOU.price)} € selon le site, payés une fois.
 - Vous aimez quand même bricoler ? Avec la formule ${AUTO}, vous recevez l’export du site (une copie complète) et vous l’installez chez votre hébergeur, sans abonnement.
 - Vous préférez ne rien gérer ? Avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois, vous demandez vos changements en une phrase depuis votre espace client, une page privée rien qu’à vous.
-- ${qui('support')} de notre petite bande, vous aide à décrire chaque changement, puis le transmet.
-- Les modifications sont alors incluses : une modification peut prendre ${delaiModif}.
+- ${qui('constructeur')} de notre petite bande, clarifie chaque changement avec vous, puis l’envoie à Alex.
+- Les modifications sont alors incluses, une demande à la fois.
 - L'abonnement est sans engagement.
 
 Pour voir à quoi cela ressemble avant de vous décider, [essayez la démo de l'espace client](/mon-espace/demo/). Et pour une vue d'ensemble des solutions, le [comparatif](/comparatif/) les met côte à côte.`,

@@ -112,7 +112,7 @@
     'La photo dépasse 8 Mo : choisissez-en une plus légère': 'The photo is over 8 MB: please choose a lighter one',
     'Envoi en cours…': 'Sending…', 'Nouvelle étape': 'New step', 'QR code vers votre site': 'QR code to your website', 'QR code téléchargé': 'QR code downloaded',
     'Vos modifications du mois sont utilisées : je vous recontacte pour en parler (démo)': 'You have used this month’s changes: I will get back to you to talk about it (demo)',
-    'envoyée à l’instant': 'sent just now', 'Transmise à Bricou': 'Sent to Alex', 'Ajouter une photo (facultatif)': 'Add a photo (optional)',
+    'envoyée à l’instant': 'sent just now', 'Transmise à Alex': 'Sent to Alex', 'Ajouter une photo (facultatif)': 'Add a photo (optional)',
     'Demande envoyée : je m’en occupe (démo)': 'Request sent: I am on it (demo)', 'Demande envoyée': 'Request sent', 'Merci pour vos précisions, je transmets à Bricou ! (démo)': 'Thank you for the details, I am passing it on to Alex! (demo)', 'Vous avez utilisé vos petites retouches du mois (démo)': 'You have used your small edits for this month (demo)', 'd’énergie (démo)': 'energy (demo)', 'Il ne vous reste pas assez d’énergie pour cette demande (démo)': 'You do not have enough energy left for this request (demo)', 'En cours': 'In progress', 'Faite': 'Done',
     'Votre modification est en ligne (démo)': 'Your change is live (demo)', ' choisi, à partir du mois prochain (démo)': ' chosen, from next month (demo)',
     'Option ajoutée': 'Option added', 'Option retirée': 'Option removed', ' (démo)': ' (demo)', 'à l’instant': 'just now',
@@ -914,7 +914,7 @@
       if (left < prix) { toast(tr(parRetouche ? 'Vous avez utilisé vos petites retouches du mois (démo)' : 'Il ne vous reste pas assez d’énergie pour cette demande (démo)')); return; }
       used += prix; left = Math.max(0, max - used); drawJauge();
       var li = d.createElement('li');
-      li.innerHTML = '<span><strong></strong><small>' + tr('envoyée à l’instant') + '</small></span><em class="st st-new">' + tr('Transmise') + '</em>';
+      li.innerHTML = '<span><strong></strong><small>' + tr('envoyée à l’instant') + '</small></span><em class="st st-new">' + tr('Transmise à Alex') + '</em>';
       li.querySelector('strong').textContent = text.length > 60 ? text.slice(0, 57) + '…' : text;
       list.insertBefore(li, list.firstChild);
       txt.value = ''; file.value = ''; fileName.textContent = tr('Ajouter une photo (facultatif)');
@@ -924,7 +924,7 @@
       setTimeout(function () {
         st.className = 'st st-done'; st.textContent = tr('Faite');
         toast(tr(sansJauge ? 'Alex a fait votre modification, elle est en ligne (démo)' : 'Votre modification est en ligne (démo)'));
-        addLog('check', 'Modification faite : ' + li.querySelector('strong').textContent);
+        addLog('check', 'Modification faite par Alex : ' + li.querySelector('strong').textContent);
       }, 4500);
     });
 
@@ -1036,7 +1036,7 @@
         petit = a.jetons > 0 ? jetonsTxt(a.jetons) + tr(' à chaque lancement.') : tr('Sans énergie.');
         oui = tr('Ouvrir l’outil');
       } else if (a.type === 'onglet') {
-        titre = tr('Dans votre espace : ') + tr(a.nom || '');
+        titre = tr('Dans ton espace : ') + tr(a.nom || '');
         oui = tr('Y aller');
       } else return;
       var c = d.createElement('div');
@@ -1051,7 +1051,7 @@
       fil.appendChild(c);
       fil.scrollTop = fil.scrollHeight;
       var fini = function () { c.classList.add('is-fait'); bo.disabled = bn.disabled = true; };
-      bn.addEventListener('click', function () { fini(); ecrire(tr('Pas de souci ! Dites-moi ce qu’il faut changer, et je reformule votre demande.'), 'lia'); });
+      bn.addEventListener('click', function () { fini(); ecrire(tr('Pas de souci ! Dis-moi ce qu’il faut changer, et je reprends ta demande.'), 'lia'); });
       bo.addEventListener('click', function () {
         fini();
         if (a.type === 'demande') {
@@ -1059,7 +1059,7 @@
           if (radio && !radio.disabled) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
           if (ta) { ta.value = a.texte || ''; ta.dispatchEvent(new Event('input', { bubbles: true })); }
           aller('demandes');
-          var m = tr('Merci pour vos précisions ! Votre demande est prête dans « Demandes ». Ajoutez une photo si vous voulez, puis envoyez : je transmets à Bricou !');
+          var m = tr('Merci ! Ta demande est prête dans « Demandes ». Ajoute une photo si tu veux, puis envoie : Bricou la prépare pour Alex !');
           ecrire(m, 'lia'); garder('lia', m);
           flotOuvrir(false);
           if (ta) setTimeout(function () { ta.scrollIntoView({ behavior: 'smooth', block: 'center' }); ta.focus(); }, 250);
@@ -1084,7 +1084,7 @@
         ex.forEach(function (e) { if (!choix && e.getAttribute('data-mots').split(',').some(function (m) { return m && bas.indexOf(m) > -1; })) choix = e; });
         choix = choix || $('[data-lia-demo] [data-defaut]');
         setTimeout(function () {
-          if (!choix) return fait({ reponse: tr('Dans votre vrai espace, je vous réponds ici.'), action: { type: 'aucune' }, solde: solde });
+          if (!choix) return fait({ reponse: tr('Dans ton vrai espace, je te réponds ici.'), action: { type: 'aucune' }, solde: solde });
           var g = function (n) { return choix.getAttribute('data-' + n) || ''; };
           fait({ reponse: choix.textContent.trim(), solde: sansEnergie ? solde : Math.max(0, solde - prix), action: { type: g('type') || 'aucune', par: g('par'), texte: g('texte'), jetons: +g('cout') || 0, outil: g('outil'), nom: g('nom'), onglet: g('onglet') } });
         }, 700);
@@ -1096,8 +1096,8 @@
       fd.append('message', message);
       fetch(reglages.getAttribute('data-ajax'), { method: 'POST', body: fd, credentials: 'same-origin' })
         .then(function (r) { return r.json(); })
-        .then(function (j) { if (j && j.success) fait(j.data); else fait(null, (j && j.data && j.data.message) || tr('Cerise n’a pas pu répondre. Réessayez dans un instant.'), j && j.data && j.data.solde); })
-        .catch(function () { fait(null, tr('La connexion a coupé. Réessayez dans un instant.')); });
+        .then(function (j) { if (j && j.success) fait(j.data); else fait(null, (j && j.data && j.data.message) || tr('Oups, je n’ai pas pu répondre. Réessaie dans un instant.'), j && j.data && j.data.solde); })
+        .catch(function () { fait(null, tr('La connexion a coupé. Réessaie dans un instant.')); });
     };
     var occupe = false;
     var envoyer = function (message) {
@@ -1205,7 +1205,7 @@
             .then(function (r) { return r.json(); })
             .then(function (j) {
               if (j && j.success) { histoSite.push(['moi', q], ['lia', j.data.reponse]); finiSite(j.data.reponse, j.data.lien); }
-              else finiSite((j && j.data && j.data.message) || tr('Cerise n’a pas pu répondre. Réessayez dans un instant.'), false);
+              else finiSite((j && j.data && j.data.message) || tr('Oups, je n’ai pas pu répondre. Réessaie dans un instant.'), false);
             })
             .catch(function () { finiSite(tr('Cerise n’est pas joignable pour le moment.'), false); });
         };

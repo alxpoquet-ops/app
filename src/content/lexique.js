@@ -1221,7 +1221,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 ## Chez les Minis Monstres
 
-C'est le cœur du [forfait](/tarifs/) ${mini.name}. Pour ${mini.month} € par mois, nous hébergeons votre site, nous suivons les mises à jour, nous gardons un œil sur le HTTPS et nous vérifions que tout tourne. Vos changements de contenu passent par l'espace client : ils sont inclus, et une modification peut prendre ${delaiModif}. Avec la formule ${AUTO}, cet entretien est à votre charge. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+C'est le cœur du [forfait](/tarifs/) ${mini.name}. Pour ${mini.month} € par mois, nous hébergeons votre site, nous suivons les mises à jour, nous gardons un œil sur le HTTPS et nous vérifions que tout tourne. Vos changements de contenu passent par l'espace client : ils sont inclus. Avec la formule ${AUTO}, cet entretien est à votre charge. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'À quelle fréquence faut-il faire la maintenance ?', a: 'La surveillance doit être continue, et les mises à jour faites dès qu’elles sortent, surtout celles de sécurité. Les autres vérifications peuvent suivre un rythme régulier, par exemple chaque mois.' },
       { q: 'Puis-je faire la maintenance de mon site moi-même ?', a: 'C’est possible si vous avez le temps et les bases techniques. Le plus dur n’est pas de cliquer sur « mettre à jour », mais de savoir quoi faire quand une mise à jour casse quelque chose.' },

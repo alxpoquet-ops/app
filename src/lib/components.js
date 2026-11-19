@@ -33,11 +33,11 @@ const ABO = forfaits[0]; // Mini : le seul abonnement (Maxi est retiré, voir fo
 const DOM = ABO.domaine || 0;
 const DOMAINE_REGLE = `Vous avez déjà un nom de domaine ? ${euro(ABO.month)} par mois. Vous n’en avez pas ? On vous le fournit : ${euro(ABO.month + DOM)} par mois.`;
 const DOMAINE_PLUS = `+ ${euro(DOM)} par mois si on vous fournit le nom de domaine`;
-const delaiTxt = (f) => f.delaiTexte || `en ${f.delai} au plus`;
+const delaiTxt = (f) => f.delaiTexte || '';
 // La liste d'un abonnement sans la ligne du délai (le délai a sa propre ligne sous la liste)
 const sansDelai = (arr) => arr.filter((x) => !/^Délai/.test(x));
-// Le délai d'une modification, en toutes lettres (une modification peut prendre jusqu'à 48 h)
-const DELAI_MODIF = `jusqu’à ${ABO.delai.replace(/ heures?$/, ' h')}`;
+// 19 novembre 2026 : plus aucun délai annoncé pour une modification (gardé vide pour les pages qui l'appellent encore)
+const DELAI_MODIF = '';
 const optsCreation = options.filter((o) => o.quand === 'creation' && !o.retire);
 const optsMois = options.filter((o) => o.quand === 'mois' && !o.retire);
 
@@ -354,8 +354,8 @@ const BRICOU = (bande.find((b) => b.id === 'constructeur') || { nom: 'Bricou' })
 const PEPITE = (bande.find((b) => b.id === 'extras') || { nom: 'Pépite' }).nom;
 const ETAPES_MODIF = [
   ['message-circle', 'Vous écrivez votre demande', 'Dans votre espace client, avec vos mots, et une photo si besoin.'],
-  ['list-checks', `${CERISE} vous aide à la préciser`, 'Elle pose les bonnes questions, vous la résume, et vous dites oui.'],
-  ['wrench', `${BRICOU} fait la modification`, `En ${ABO.delai.replace(/ heures?$/, ' h')} au plus. Vos visiteurs voient la nouvelle version.`],
+  ['list-checks', `${BRICOU} la clarifie avec vous`, 'Il pose les bonnes questions, vous la résume, et vous dites oui.'],
+  ['wrench', 'Alex fait la modification', 'Bricou lui envoie votre demande, bien claire. Vos visiteurs voient ensuite la nouvelle version.'],
 ];
 // Un petit monstre qui présente un bloc (Pépite et les extras, Bricou et les modifications)
 function presente(monstre, html, { humeur } = {}) {

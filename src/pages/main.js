@@ -86,13 +86,14 @@ function home() {
   const body = `<section class="hero">
   <div class="container hero-in">
     <div class="hero-text">
-      <h1>Sans site internet, votre vitrine est dans <mark>une rue où personne ne passe</mark>.</h1>
-      <p class="hero-lead">Un site vous rend visible. C’est notre métier.</p>
-      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</div>
+      <p class="hero-sur">${icon('store')}Sites internet pour artisans et commerçants</p>
+      <h1>Votre activité mérite <mark>d’être vue</mark>.</h1>
+      <p class="hero-lead">Sans site internet, c’est une belle vitrine dans une rue où personne ne passe. On crée le vôtre, et on vous rend visible.</p>
+      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}<a class="hero-lien" href="${sections.forfaits.path}">Voir les tarifs, dès ${euro(creation.prix)}${icon('arrow-right')}</a></div>
       <ul class="hero-points">
-        <li>${icon('check')}Dès ${euro(creation.prix)}, prix affichés</li>
-        <li>${icon('check')}Aucune obligation d’abonnement</li>
-        <li>${icon('check')}Quelqu’un qui vous répond</li>
+        <li>${icon('check')}Prix affichés</li>
+        <li>${icon('check')}Sans abonnement obligatoire</li>
+        <li>${icon('check')}On vous répond</li>
       </ul>
     </div>
     <div class="hero-art hero-vitrine" aria-hidden="true">
@@ -100,14 +101,9 @@ function home() {
       <span class="vit-m vit-m1">${C.petit('gelee', { humeur: 'ravi' })}</span>
       <span class="vit-m vit-m2">${C.petit('bricou', { humeur: 'ravi' })}</span>
       <span class="vit-m vit-m3">${monster('coucou')}</span>
-      <p class="hero-tag">${icon('sparkles')}Fait par Alex et les Minis Monstres</p>
     </div>
   </div>
 </section>
-
-<section class="section section-citation"><div class="container">
-  <blockquote class="citation reveal"><p>« ${esc(C.phrase.titre)} »</p><p class="citation-suite">${esc(C.phrase.suite)} Nous, on est là pour ça.</p></blockquote>
-</div></section>
 
 <section class="section" id="prix"><div class="container">
   <h2 class="section-title">Trois sites pour être visible</h2>
@@ -742,7 +738,7 @@ ${C.ctaBand()}`;
 // Les petits mots de la bande, dans l'espace client : un monstre, un message court et un petit visuel.
 // Les monstres viennent de config.bande (prénom, métier, dessin).
 const DEMO_MSGS = [
-  { qui: 'Cerise', quand: 'ce matin', titre: 'Votre demande est transmise', texte: '« Fermé le lundi 24 novembre » : c’est noté, Bricou s’en occupe.' },
+  { qui: 'Bricou', quand: 'ce matin', titre: 'Votre demande est chez Alex', texte: '« Fermé le lundi 24 novembre » : c’est clair, je l’ai envoyée à Alex.' },
   { qui: 'Bricou', quand: 'hier', titre: 'Modification en ligne', texte: 'Vos horaires d’été sont à jour sur la page Contact.', vis: 'voyants' },
   { qui: 'Mirette', quand: 'lundi', titre: 'Votre page de visibilité Google est en ligne', texte: '« Gâteau d’anniversaire à Rethel » est intégrée à votre site.', vis: 'google' },
 ];
@@ -773,7 +769,7 @@ function bandeMessages() {
 }
 
 // La démo de l'espace client : « Pâtisserie Lila », une cliente imaginaire, avec un Site Visibilité et Mini.
-// Onglets : Accueil, Demandes (Bricou fait les modifications), Extras (présentés par Pépite), Ma boutique (verrouillé sans Site Boutique,
+// Onglets : Accueil, Demandes (Bricou clarifie la demande, Alex fait la modification), Extras (présentés par Pépite), Ma boutique (verrouillé sans Site Boutique,
 // avec son sous-menu en gros boutons : cases radio et CSS, sans script), Mon compte. Plus d'onglet « Mon site » ni de parrainage.
 // Les attributs data-* sont ceux que lit src/assets/js/main.js (data-tab, data-go, data-req, data-reqs, data-log, data-toast-msg…).
 function monEspacePage() {
@@ -818,12 +814,12 @@ function monEspacePage() {
   <div class="app" data-app>
     <div hidden data-lia-chat="demo" data-prix="${jetonsLia.bulle.jetons}" data-solde="0" data-uid="demo" data-sans-energie="1"></div>
     <div hidden data-lia-demo>
-      <p data-mots="horaire,fermé,ferme,ouvert,ouvre,hours,closed,open" data-type="demande" data-par="lia" data-cout="0" data-texte="Sur la page Contact, changer les horaires : nous serons fermés le lundi 24 novembre.">C’est noté ! Si j’ai bien compris, vous voulez indiquer sur la page Contact que vous serez fermés le lundi 24 novembre. Voici votre demande, bien claire. C’est bien ça ?</p>
-      <p data-mots="photo,image,picture" data-type="demande" data-par="lia" data-cout="0" data-texte="Sur la page d’accueil, remplacer la photo du haut par celle que je joins.">Avec plaisir ! Vous voulez remplacer la grande photo en haut de l’accueil, c’est bien ça ? Vous pourrez joindre votre photo juste avant d’envoyer.</p>
-      <p data-mots="google,visibilité,visibilite,extra,traduction,anglais" data-type="onglet" data-onglet="extras" data-nom="Extras">Une page de visibilité Google coûte ${euro(PRIX_PAGE)}, payée une fois, par carte. La traduction anglaise et les fonctionnalités spécifiques sont sur devis. Tout se demande dans l’onglet Extras.</p>
-      <p data-mots="combien,reste,limite,modification,comment,how,limit" data-type="onglet" data-onglet="demandes" data-nom="Demandes">Avec le forfait ${esc(ABO.name)}, vos modifications sont incluses. Vous me dites ce que vous voulez changer, je vous aide à préciser, vous confirmez, et ${esc(C.BRICOU)} fait la modification, en 48 h au plus. Une demande à la fois.</p>
-      <p data-mots="boutique,vendre,panier,shop,sell" data-type="demande" data-par="alex" data-texte="Je voudrais vendre en ligne. Pouvez-vous me dire comment passer au ${esc(BOU.name)} ?">Quel beau projet ! Pour vendre en ligne, il faut le ${esc(BOU.name)} : une boutique complète, un panier et le paiement sécurisé. Vous gérez votre catalogue vous-même, sans limite d’articles. Voici votre message, c’est bien ça ?</p>
-      <p data-defaut>Dans votre vrai espace, je réponds à votre question, je vous aide à formuler ce que vous voulez changer, puis je transmets. Essayez par exemple : changer mes horaires.</p>
+      <p data-mots="horaire,fermé,ferme,ouvert,ouvre,hours,closed,open" data-type="demande" data-par="lia" data-cout="0" data-texte="Sur la page Contact, changer les horaires : nous serons fermés le lundi 24 novembre.">Coucou ! Pour changer tes horaires, c’est Bricou qu’il te faut : écris-lui dans l’onglet Demandes, il prépare tout pour Alex. Je t’ai mis ta phrase juste ici, c’est bien ça ?</p>
+      <p data-mots="photo,image,picture" data-type="demande" data-par="lia" data-cout="0" data-texte="Sur la page d’accueil, remplacer la photo du haut par celle que je joins.">Avec plaisir ! Une nouvelle photo en haut de l’accueil, bonne idée. Tu pourras la joindre juste avant d’envoyer ta demande à Bricou.</p>
+      <p data-mots="google,visibilité,visibilite,extra,traduction,anglais" data-type="onglet" data-onglet="extras" data-nom="Extras">Super question ! Une page de visibilité Google coûte ${euro(PRIX_PAGE)}, payée une fois, par carte. La traduction anglaise et les fonctionnalités spécifiques sont sur devis. Pépite t’attend dans l’onglet Extras !</p>
+      <p data-mots="combien,reste,limite,modification,comment,how,limit" data-type="onglet" data-onglet="demandes" data-nom="Demandes">Avec le forfait ${esc(ABO.name)}, tes modifications sont incluses. Tu écris ce que tu veux changer, ${esc(C.BRICOU)} clarifie ta demande avec toi, puis il l’envoie à Alex, qui fait la modification. Une demande à la fois.</p>
+      <p data-mots="boutique,vendre,panier,shop,sell" data-type="demande" data-par="alex" data-texte="Je voudrais vendre en ligne. Pouvez-vous me dire comment passer au ${esc(BOU.name)} ?">Oh, quel beau projet ! Pour vendre en ligne, il te faut le ${esc(BOU.name)} : une boutique complète, un panier et le paiement sécurisé. Tu gères ton catalogue toi-même, sans limite d’articles. Voici ton message, c’est bien ça ?</p>
+      <p data-defaut>Coucou ! Dans ton vrai espace, je réponds à tes questions et je te guide. Essaie par exemple : changer mes horaires.</p>
     </div>
     <div class="app-shell">
       <aside class="app-side">
@@ -861,7 +857,7 @@ function monEspacePage() {
 
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
           <h2 class="app-h">Demandes</h2>
-          <div class="demo-bricou"><span aria-hidden="true">${C.petit('bricou', { humeur: 'ravi' })}</span><p><strong>${esc(C.BRICOU)} fait vos modifications</strong><small>En 48 h au plus. Une demande à la fois.</small></p></div>
+          <div class="demo-bricou"><span aria-hidden="true">${C.petit('bricou', { humeur: 'ravi' })}</span><p><strong>Une modification ? Dites-le à ${esc(C.BRICOU)}</strong><small>Il prépare votre demande, puis Alex fait la modification.</small></p></div>
           <form class="req-form" data-req>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" rows="3" placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" accept="image/*" class="sr-only" data-req-file>${icon('image-plus')}<span data-req-file-name>Ajouter une photo (facultatif)</span></label>
@@ -1266,7 +1262,7 @@ function equipePage() {
   <div class="feats feats-3">
     <div class="feat reveal">${icon('list-checks')}<h3>Une méthode rodée</h3><p>Un appel pour vous connaître, puis votre site est construit étape par étape. Vous le voyez avant la mise en ligne.</p></div>
     <div class="feat reveal">${icon('tag')}<h3>Des prix affichés</h3><p>Les mêmes pour tout le monde, sans devis. Vous savez ce que vous payez avant de commander.</p></div>
-    <div class="feat reveal">${icon('message-circle')}<h3>Quelqu’un qui répond</h3><p>${esc(C.CERISE)} prend vos questions et vos demandes, ${esc(C.BRICOU)} fait vos modifications. Derrière, Alex relit tout.</p></div>
+    <div class="feat reveal">${icon('message-circle')}<h3>Quelqu’un qui répond</h3><p>${esc(C.CERISE)} répond à vos questions, ${esc(C.BRICOU)} prépare vos demandes, et Alex fait vos modifications.</p></div>
   </div>
   <p class="center more">${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>
 </div></section>
@@ -1473,7 +1469,7 @@ function docPage() {
   const tabs = [
     ['house', 'Accueil', 'votre site, votre formule et les petits mots de la bande.'],
     ['package', 'Ma commande', 'le suivi de la création de votre site, étape par étape.'],
-    ['message-circle', 'Demandes', `vous écrivez ce qu’il faut changer, ${C.BRICOU} fait la modification, et vous suivez où ça en est.`],
+    ['message-circle', 'Demandes', `vous écrivez ce qu’il faut changer, ${C.BRICOU} clarifie votre demande, Alex fait la modification, et vous suivez où ça en est.`],
     ['sparkles', 'Extras', `les trois extras, présentés par ${C.PEPITE} : page de visibilité Google, traduction anglaise, fonctionnalité spécifique.`],
     ['shopping-bag', 'Ma boutique', `vos articles, vos prix, vos paiements, la livraison, vos commandes et vos promos. Il s’ouvre avec le ${BOU.name}.`],
     ['circle-user', 'Mon compte', 'vos coordonnées, votre mot de passe, votre formule et vos factures.'],
@@ -1564,7 +1560,7 @@ ${chap('demandes', `7. Demander une modification`, `  <div class="doc-split doc-
       <p>Avec le forfait ${esc(ABO.name)}, vos modifications sont incluses. Voici comment ça se passe :</p>
       <ol class="doc-steps">${C.ETAPES_MODIF.map(([, t, d]) => `<li><strong>${esc(t)}.</strong> ${esc(d)}</li>`).join('')}</ol>
       <ul class="list-check">
-        <li>Une modification peut prendre ${C.DELAI_MODIF}, une demande à la fois.</li>
+        <li>${esc(C.BRICOU)} clarifie votre demande, Alex fait la modification. Une demande à la fois.</li>
         <li>Tant que votre demande n’est pas commencée, vous pouvez l’annuler d’un clic.</li>
       </ul>
       <p class="doc-more">${C.btn(sections.accompagnement.path, 'btn-light', sections.accompagnement.icon, 'L’accompagnement')}</p>

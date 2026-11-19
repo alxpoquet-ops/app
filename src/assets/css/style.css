@@ -2765,3 +2765,28 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .art-form, .art-form .field { min-width: 0; }
 .art-form input, .art-form textarea { width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0; }
 .art-photo { min-width: 0; flex-wrap: wrap; }
+
+/* Accueil, premier écran (19 novembre 2026) : une accroche courte, la vitrine, un seul gros bouton. Rangé, d'abord pour le téléphone. */
+.hero-sur { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 14px; padding: 6px 14px; border-radius: 999px; background: var(--card); color: var(--lilac-dd); font-weight: 800; font-size: .88rem; box-shadow: var(--shadow-sm); }
+.hero-sur .ico { width: 16px; height: 16px; }
+.page-accueil .hero h1 { font-size: clamp(2.2rem, 5.2vw, 4rem); line-height: 1.08; margin-bottom: 14px; }
+.page-accueil .hero-lead { font-size: 1.2rem; font-weight: 600; max-width: 30em; }
+.page-accueil .hero-ctas { align-items: center; gap: 18px; }
+.hero-lien { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: var(--ink); text-decoration: underline; text-underline-offset: 4px; min-height: 44px; }
+.hero-lien .ico { width: 18px; height: 18px; }
+.page-accueil .hero-points { margin-top: 20px; gap: 8px; }
+.page-accueil .hero-points li { padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, .06); font-size: .88rem; }
+.page-accueil .hero-art.hero-vitrine { margin-bottom: 0; }
+@media (max-width: 720px) {
+  .page-accueil .hero-in { display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 18px 18px 30px; text-align: center; }
+  .page-accueil .hero-text { display: contents; }
+  .page-accueil .hero-sur { order: 1; align-self: center; margin-bottom: 12px; font-size: .8rem; }
+  .page-accueil .hero h1 { order: 2; font-size: 2.15rem; line-height: 1.1; margin: 0 0 10px; }
+  .page-accueil .hero-lead { order: 3; font-size: 1.02rem; font-weight: 600; margin: 0 auto; max-width: 21em; }
+  .page-accueil .hero-art.hero-vitrine { order: 4; width: min(200px, 54vw); margin: 14px auto 6px; }
+  .page-accueil .hero-ctas { order: 5; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .page-accueil .hero-ctas .btn { width: 100%; min-height: 54px; }
+  .page-accueil .hero-points { order: 6; flex-direction: row; flex-wrap: wrap; justify-content: center; margin-top: 12px; gap: 6px; }
+  .page-accueil .hero-points li { font-size: .8rem; padding: 5px 10px; }
+}
+@media (max-width: 380px) { .page-accueil .hero h1 { font-size: 1.9rem; } }
