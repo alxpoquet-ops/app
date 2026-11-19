@@ -4,22 +4,22 @@ Ce guide explique, en français simple, comment fonctionne le site www.les-minis
 
 ## 1. L'offre, en bref (offre finale du 19 novembre 2026)
 
-- **La page de commande, de haut en bas** : le choix du site, puis la façon de le faire vivre (Autonomie ou Mini), le nom de domaine avec Mini, et enfin le total avec le paiement (une fois ou étalé) et le code promo.
+- **La page de commande, de haut en bas** : le choix du site, puis la façon de le faire vivre (Autonomie ou Forfait Mini), le nom de domaine avec le forfait Mini, et enfin le total avec le paiement (une fois ou étalé) et le code promo.
 - **Trois sites, payés une fois** (`types` dans `src/config.js`) :
   - 👾 **Site Essentiel, 500 €** (id `une-page`, `creation.prix`) : site One Page personnalisé, design adapté à l'activité, compatible téléphone et ordinateur, formulaire de contact, rendez-vous téléphonique de découverte, révisions illimitées jusqu'à validation finale, mise en ligne complète, export du site possible. « Exister sur internet ».
   - 🚀 **Site Visibilité, 750 €** (id `vitrine`, `creation.visibilite`) : tout le Site Essentiel, jusqu'à 20 pages (`creation.pages`), pages de visibilité Google intégrées, FAQ personnalisée, référencement local renforcé, structure optimisée pour Google. « Être trouvé sur Google ».
   - 🛒 **Site Boutique, 1 200 €** (id `boutique`, `creation.boutiquePrix`) : tout le Site Visibilité, boutique complète, panier, paiement en ligne sécurisé, gestion des produits et des commandes, e-mails automatiques, configuration complète, catalogue géré librement par le client, sans limite d'articles. « Vendre sur internet ».
-- **Révisions** (`config.revisionsNote`) : illimitées sur le site commandé, jusqu'à ce que le client le valide. Après la mise en ligne, les modifications passent par l'abonnement Mini.
+- **Révisions** (`config.revisionsNote`) : illimitées sur le site commandé, jusqu'à ce que le client le valide. Après la mise en ligne, les modifications passent par le forfait Mini.
 - **Ensuite, deux façons de faire vivre le site. L'abonnement est facultatif.**
   - ⚪ **Autonomie, 0 € par mois** (`config.creationSeule`, id `sans`) : le client gère son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. On lui remet l'export de son site, prêt à installer. L'automate saute le domaine et l'hébergement.
-  - 🔵 **Mini, 10 € par mois, sans engagement** (`config.forfaits[0]`, id `base`) : hébergement, nom de domaine, sauvegardes automatiques, sécurité, maintenance technique, espace client, les Minis Monstres à votre service, modifications incluses demandées depuis l'espace client. **Une modification peut prendre jusqu'à 48 h** (délai habituel, pas une garantie : les CGV le disent), une demande à la fois. C'est le seul abonnement.
+  - 🔵 **le forfait Mini, 10 € par mois, sans engagement** (`config.forfaits[0]`, id `base`) : hébergement, nom de domaine, sauvegardes automatiques, sécurité, maintenance technique, espace client, les Minis Monstres à votre service, modifications incluses demandées depuis l'espace client. **Une modification peut prendre jusqu'à 48 h** (délai habituel, pas une garantie : les CGV le disent), une demande à la fois. C'est le seul abonnement.
 - **Trois extras seulement** (`aLaDemande` non retirés dans `src/config.js`) :
   - 📈 **Page de visibilité Google, 15 € la page, payée une fois** : nouvelle page optimisée pour Google, intégrée au site, référencement local soigné. Commandée et payée par carte tout de suite depuis l'espace client.
   - 🌍 **Traduction anglaise** : sur devis.
   - ⚙️ **Fonctionnalité spécifique** : sur devis.
   - Tous les anciens extras sont retirés de la vente (`retire: true`), y compris les extras au mois et les lots d'articles de la boutique.
 - **Code promo** : une seule case, au total et sur la page Commander. Un code promo donne une remise sur la création (jamais sur l'abonnement ni sur les extras). Vos codes se règlent dans ALED08 › Réglages › « Codes promo », un par ligne.
-- **Paiement de la création** : 25 % à la commande, le reste à la réception, en une fois ou en 6 ou 12 fois sans frais (engagement le temps du paiement), avec Mini comme en Autonomie. Deuxième site : 10 % de remise. Le parrainage est retiré du site (19 novembre 2026).
+- **Paiement de la création** : 25 % à la commande, le reste à la réception, en une fois ou en 6 ou 12 fois sans frais (engagement le temps du paiement), avec le forfait Mini comme en Autonomie. Deuxième site : 10 % de remise. Le parrainage est retiré du site (19 novembre 2026).
 - **Comparaison honnête** (`marche` dans `src/config.js`) : un site vitrine de cinq pages (`marche.pagesCompare`) chez un indépendant coûte 1 500 à 3 000 €, notre Site Visibilité 750 €, soit « 2 à 4 » fois moins (`marche.fois`). Ne jamais annoncer plus.
 - **Les anciens clients** gardent l'abonnement, les options et les extras qu'ils ont déjà, aux mêmes conditions, tant qu'ils ne les retirent pas (CGV, article 7). Rien n'est changé dans Stripe tout seul.
 
@@ -193,7 +193,7 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 
 ## 9. Les demandes de modification
 
-Offre du 19 novembre 2026 : les modifications sont incluses dans l'abonnement Mini, demandées depuis l'espace client, une demande à la fois, 48 h au plus. Sur le site public, la phrase est toujours la même : le client écrit sa demande, Cerise l'aide à la préciser, Bricou fait la modification ; Alex conçoit et contrôle. Le déroulé ci-dessous décrit l'extension telle qu'elle fonctionne : Cerise prépare la demande, puis elle arrive dans la liste « À faire ».
+Offre du 19 novembre 2026 : les modifications sont incluses dans le forfait Mini, demandées depuis l'espace client, une demande à la fois, 48 h au plus. Sur le site public, la phrase est toujours la même : le client écrit sa demande, Cerise l'aide à la préciser, Bricou fait la modification ; Alex conçoit et contrôle. Le déroulé ci-dessous décrit l'extension telle qu'elle fonctionne : Cerise prépare la demande, puis elle arrive dans la liste « À faire ».
 
 1. Le client écrit sa demande dans l'onglet « Demandes » (avec des photos s'il veut). La jauge apparaît : Demande reçue, Précisée avec Cerise, Chez Alex, Faite.
 2. Cerise relit la demande (elle peut lire le site relié, sans rien modifier). Si c'est flou, elle pose une question (deux au plus), le client répond depuis la jauge.

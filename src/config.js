@@ -196,7 +196,7 @@ const types = [
   },
 ];
 // La petite étoile des « révisions illimitées »
-const revisionsNote = '* Les révisions portent sur le site commandé (textes, photos, couleurs, mise en page), jusqu’à ce que vous le validiez. Après la mise en ligne, les modifications passent par l’abonnement Mini.';
+const revisionsNote = '* Les révisions portent sur le site commandé (textes, photos, couleurs, mise en page), jusqu’à ce que vous le validiez. Après la mise en ligne, les modifications passent par le forfait Mini.';
 
 // ---------------------------------------------------------------- l'abonnement de base (un seul, obligatoire)
 // En paiement annuel : 2 mois offerts.

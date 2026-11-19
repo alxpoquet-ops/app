@@ -99,18 +99,18 @@ Le site fait équipe avec votre [fiche Google](/guides/fiche-google-entreprise/)
 
 Vous n’avez ni le temps ni l’envie de gérer un site le soir, et c’est normal. Nous écrivons les textes avec vous après un court échange, puis nous mettons tout en ligne.
 
-Un tarif change, une nouvelle photo arrive ? Avec l’abonnement ${mini.name}, envoyez le changement depuis votre téléphone, dans votre espace client. ${qui('support')} de notre petite bande, vous pose les bonnes questions, puis transmet. La modification est incluse et peut prendre ${delaiModif}.
+Un tarif change, une nouvelle photo arrive ? Avec le forfait ${mini.name}, envoyez le changement depuis votre téléphone, dans votre espace client. ${qui('support')} de notre petite bande, vous pose les bonnes questions, puis transmet. La modification est incluse et peut prendre ${delaiModif}.
 
 ## Combien ça coûte
 
 - **Le site, payé une fois** : ${prix} € pour le ${ESS.name}, ${prixVis} € pour le ${VIS.name}.
-- **Ensuite** : ${AUTO}, sans abonnement, ou ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement.
+- **Ensuite** : ${AUTO}, sans abonnement, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement.
 
 Vous versez ${acompte} à la commande, puis le reste à la réception, d’un coup ou en ${durees} fois sans frais.
 
 Pour comparer, un site vitrine de ${marche.pagesCompare} pages confié à un indépendant se paie en général entre ${marcheVitrine}, d’après des fourchettes publiées par des prestataires (les [sources](/pourquoi-moins-cher/) sont citées). Tout est détaillé sur la page [tarifs](/tarifs/).`,
     faq: [
-      { q: 'Combien coûte un site internet pour un artisan ?', a: `${prix} € pour un ${ESS.name}, sur une seule page, ou ${prixVis} € pour un ${VIS.name}, jusqu’à ${pagesComprises} pages. Ensuite, c’est ${AUTO}, sans rien payer chaque mois, ou ${mini.name}, à ${eur(mini.month)} € par mois.` },
+      { q: 'Combien coûte un site internet pour un artisan ?', a: `${prix} € pour un ${ESS.name}, sur une seule page, ou ${prixVis} € pour un ${VIS.name}, jusqu’à ${pagesComprises} pages. Ensuite, c’est ${AUTO}, sans rien payer chaque mois, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois.` },
       { q: 'Je travaille sur une grande zone, comment être trouvé partout ?', a: 'Citez les principales communes où vous travaillez, sans en aligner des dizaines. Une liste honnête sur le site, et une zone bien réglée sur votre fiche Google, valent mieux qu’une page par village.' },
       { q: 'Je n’ai presque pas de photos de chantier, est-ce un problème ?', a: 'Non. On démarre avec ce que vous avez, même deux clichés pris au téléphone. Le site s’étoffe ensuite chantier après chantier.' },
       { q: 'J’ai déjà un vieux site, faut-il tout recommencer ?', a: 'Le nouveau site est fait à neuf, mais vos textes et vos photos servent de base. Si vous avez déjà un nom de domaine, vous le gardez, et nous le relions au nouveau site.' },
@@ -184,9 +184,9 @@ Alex relit ensuite chaque phrase avec vous, surtout les plus délicates. Rien ne
 ## Le prix
 
 - **Le site** : le ${ESS.name}, à ${prix} €, pour une seule page. Le ${VIS.name}, à ${prixVis} €, pour une page par pratique, avec ${pagesComprises} pages au plus.
-- **Ensuite** : la formule ${AUTO} si vous gérez tout seul, ou l’abonnement ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement.
+- **Ensuite** : la formule ${AUTO} si vous gérez tout seul, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement.
 
-Avec ${mini.name}, vos horaires ou vos tarifs bougent ? Vous le demandez, et c’est fait pour vous. Vous avez déjà un agenda en ligne ? Un bouton du site y mène, sans rien payer de plus. Les deux formules sont présentées sur la page [tarifs](/tarifs/).`,
+Avec le forfait ${mini.name}, vos horaires ou vos tarifs bougent ? Vous le demandez, et c’est fait pour vous. Vous avez déjà un agenda en ligne ? Un bouton du site y mène, sans rien payer de plus. Les deux formules sont présentées sur la page [tarifs](/tarifs/).`,
     faq: [
       { q: 'Ai-je le droit de parler des bienfaits de ma pratique ?', a: 'Oui, avec mesure. Décrivez ce que la personne peut ressentir, la détente, un moment pour soi, sans annoncer de résultat sur une maladie. Si une phrase vous fait douter, nous vous proposons une version plus prudente.' },
       { q: 'Dois-je afficher le prix de mes séances ?', a: 'Nous vous le conseillons. Quelqu’un qui hésite déjà n’osera pas écrire pour demander combien ça coûte. Le prix et la durée, bien visibles, enlèvent ce frein.' },
@@ -258,9 +258,9 @@ Vous nous envoyez vos photos et quelques notes sur chaque pièce. La petite band
 ## Le prix
 
 - **Le site, payé une fois** : ${prixVis} € le ${VIS.name} pour la galerie, ${prixBoutique} € le ${BOU.name} pour vendre en ligne.
-- **Ensuite** : ${AUTO} ou ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
+- **Ensuite** : ${AUTO} ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
 
-Vous réglez ${acompte} en commandant, puis le solde à la réception, en une fois ou en ${durees} fois sans frais. Une nouvelle collection à présenter ? Avec ${mini.name}, c’est une modification incluse.`,
+Vous réglez ${acompte} en commandant, puis le solde à la réception, en une fois ou en ${durees} fois sans frais. Une nouvelle collection à présenter ? Avec le forfait ${mini.name}, c’est une modification incluse.`,
     faq: [
       { q: 'Faut-il un statut pour vendre ses créations en ligne ?', a: 'Oui, dès que vous vendez de façon régulière. La micro-entreprise est la solution la plus courante pour démarrer. Les artistes auteurs ont un régime à part : renseignez-vous auprès de l’Urssaf avant d’ouvrir la boutique.' },
       { q: 'Mes photos sont-elles protégées une fois en ligne ?', a: 'Vos œuvres et vos photos restent à vous : le droit d’auteur s’applique sans aucune démarche. Nous publions des images assez grandes pour être belles à l’écran, sans mettre en ligne vos fichiers en pleine qualité.' },
@@ -333,13 +333,13 @@ Publiez seulement de vrais commentaires de vos hôtes, avec leur accord, ou renv
 ## Le prix, et qui s’en occupe
 
 - **Le site** : ${prixVis} € pour le ${VIS.name}, où chaque gîte ou chaque chambre peut avoir sa page. Pour un seul hébergement, le ${ESS.name}, à ${prix} €, peut suffire.
-- **Ensuite** : en ${AUTO}, vous faites vos changements vous-même. Avec l’abonnement ${mini.name}, au mois et sans engagement, ils sont faits pour vous.
+- **Ensuite** : en ${AUTO}, vous faites vos changements vous-même. Avec le forfait ${mini.name}, au mois et sans engagement, ils sont faits pour vous.
 
-Un tarif d’été ou une date de fermeture ? Avec ${mini.name}, vous le demandez à ${B('support').nom}. Ce genre de modification est inclus et peut prendre ${delaiModif}.`,
+Un tarif d’été ou une date de fermeture ? Avec le forfait ${mini.name}, vous le demandez à ${B('support').nom}. Ce genre de modification est inclus et peut prendre ${delaiModif}.`,
     faq: [
       { q: 'Le site peut-il afficher mes disponibilités ?', a: 'Si vous tenez déjà un calendrier en ligne, le site peut y renvoyer. Sinon, la demande de séjour suffit souvent : vous gardez la main sur votre planning.' },
       { q: 'J’ai deux gîtes sur le même terrain, faut-il deux sites ?', a: 'Non. Un seul site présente les deux, chacun sur sa page, avec ses photos et ses tarifs. Vous n’avez qu’un site à faire vivre.' },
-      { q: 'Combien coûte un site pour un gîte ?', a: `${prixVis} € pour un ${VIS.name}, jusqu’à ${pagesComprises} pages, ou ${prix} € pour un ${ESS.name}. Le site peut se régler en ${durees} fois sans frais. L’abonnement ${mini.name}, à ${eur(mini.month)} € par mois, reste facultatif.` },
+      { q: 'Combien coûte un site pour un gîte ?', a: `${prixVis} € pour un ${VIS.name}, jusqu’à ${pagesComprises} pages, ou ${prix} € pour un ${ESS.name}. Le site peut se régler en ${durees} fois sans frais. Le forfait ${mini.name}, à ${eur(mini.month)} € par mois, reste facultatif.` },
     ],
     voir: ['/guides/fiche-google-entreprise/', '/tarifs/', '/guides/choisir-nom-de-domaine/'],
   },
@@ -403,12 +403,12 @@ Commencez petit, avec vos produits les plus demandés. Vous complétez ensuite v
 
 Horaires d’été, fermeture en août, nouvelle gamme, marché de Noël : un commerce bouge tout le temps. Un site qui affiche encore les horaires de l’an dernier déçoit.
 
-Avec l’abonnement ${mini.name}, ces changements ne vous demandent qu’un message dans votre espace client. Ce sont des modifications incluses : ${B('support').nom} note votre demande, et elle est faite pour vous, en ${mini.delai} au plus.
+Avec le forfait ${mini.name}, ces changements ne vous demandent qu’un message dans votre espace client. Ce sont des modifications incluses : ${B('support').nom} note votre demande, et elle est faite pour vous, en ${mini.delai} au plus.
 
 ## Combien ça coûte
 
 - **Le site, une seule fois** : ${prixVis} € le ${VIS.name}, sans boutique, ou ${prixBoutique} € le ${BOU.name}.
-- **Puis** : ${AUTO}, où vous gérez tout, ou ${mini.name}, pour ${eur(mini.month)} € par mois.
+- **Puis** : ${AUTO}, où vous gérez tout, ou le forfait ${mini.name}, pour ${eur(mini.month)} € par mois.
 
 Vous versez ${acompte} à la commande et le reste à la réception, en une fois ou en ${durees} mensualités sans frais. Les extras possibles sont détaillés sur la page [tarifs](/tarifs/).`,
     faq: [
@@ -478,18 +478,18 @@ Pour les bénévoles, dites précisément ce dont vous avez besoin : tenir la bu
 
 C’est le problème classique : le membre qui avait fait le site s’en va, et plus personne ne sait le modifier.
 
-Avec l’abonnement ${mini.name}, le président, la secrétaire ou le trésorier envoie sa demande depuis l’espace client, une page privée réservée à l’association. Tout est fait pour vous. Quand le bureau change, il suffit de transmettre l’accès.
+Avec le forfait ${mini.name}, le président, la secrétaire ou le trésorier envoie sa demande depuis l’espace client, une page privée réservée à l’association. Tout est fait pour vous. Quand le bureau change, il suffit de transmettre l’accès.
 
 ## Un budget qui se vote
 
 - **Le site** : ${prix} € pour un ${ESS.name}, avec ${acompte} à la commande et le reste à la réception, ou étalé sur ${durees} mois sans frais.
-- **Ensuite, au choix** : ${AUTO}, si un bénévole gère le site, ou ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
+- **Ensuite, au choix** : ${AUTO}, si un bénévole gère le site, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
 
 Pour la plupart des associations, une page suffit, sans aucun extra. Avec plusieurs sections, comme le foot, la gym et la randonnée, chacune peut avoir sa page grâce au ${VIS.name}, à ${prixVis} €.
 
 Une adresse de site au nom de l’association fait aussi sérieux sur un dossier de subvention. Le guide pour [choisir un nom de domaine](/guides/choisir-nom-de-domaine/) vous aide à la trouver.`,
     faq: [
-      { q: 'Notre budget est très serré, que faut-il prévoir ?', a: `Le ${ESS.name} coûte ${prix} €, une seule fois, et peut s’étaler sur ${durees} mois. Ensuite, soit un bénévole gère le site en ${AUTO}, sans rien payer chaque mois, soit vous prenez ${mini.name}, à ${eur(mini.month)} € par mois.` },
+      { q: 'Notre budget est très serré, que faut-il prévoir ?', a: `Le ${ESS.name} coûte ${prix} €, une seule fois, et peut s’étaler sur ${durees} mois. Ensuite, soit un bénévole gère le site en ${AUTO}, sans rien payer chaque mois, soit vous prenez le forfait ${mini.name}, à ${eur(mini.month)} € par mois.` },
       { q: 'Qui peut demander des changements sur le site ?', a: 'Le bureau décide qui reçoit les codes de l’espace client. À chaque changement d’équipe, il suffit de mettre à jour l’adresse e-mail et le mot de passe du compte.' },
       { q: 'Peut-on recevoir des dons ou des adhésions en ligne ?', a: 'Oui, par un bouton qui mène vers le service de paiement que vous utilisez déjà pour vos cotisations. Sinon, un bulletin à télécharger suffit pour commencer.' },
       { q: 'Le site peut-il servir pour un événement, comme un festival ?', a: 'Oui. Une page dédiée présente le programme, les horaires, l’accès et les partenaires. Après l’événement, elle reste en ligne avec les photos.' },

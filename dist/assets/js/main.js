@@ -15,8 +15,8 @@
     "Puis, dès la réception, pendant ": "Then, from delivery, for ",
     " mois": " months",
     "À la réception du site : le reste": "When the website is delivered: the rest",
-    "Et l’abonnement, chaque année": "And the subscription, every year",
-    "Et l’abonnement, chaque mois": "And the subscription, every month",
+    "Et le forfait, chaque année": "And the subscription, every year",
+    "Et le forfait, chaque mois": "And the subscription, every month",
     "Prix total du site : ": "Total price of the website: ",
     'Site Internet Professionnel, avec boutique': 'Professional Website, with an online shop',
     'Site Internet Professionnel': 'Professional Website',
@@ -24,13 +24,13 @@
     'Le code sera vérifié au moment de commander.': 'The code will be checked when you order.',
     'Code valable : la remise est appliquée.': 'Valid code: the discount is applied.',
     'Ce code n’est pas reconnu. Vérifiez-le, ou écrivez-nous.': 'This code is not recognised. Check it, or write to me.',
-    'Et votre abonnement, chaque année': 'And your plan, every year',
-    'Et votre abonnement, chaque mois': 'And your plan, every month',
+    'Et votre forfait, chaque année': 'And your plan, every year',
+    'Et votre forfait, chaque mois': 'And your plan, every month',
     ' + abonnement': ' + plan',
     'Code promo : ': 'Promo code: ',
     ' % de remise sur la création, déjà déduits': '% off the website, already deducted',
-    ' fois, et votre abonnement': ' instalments, and your plan',
-    'À la réception : le reste, et votre abonnement': 'On delivery: the rest, and your plan',
+    ' fois, et votre forfait': ' instalments, and your plan',
+    'À la réception : le reste, et votre forfait': 'On delivery: the rest, and your plan',
     'Tranquillité': 'Peace of mind',
     'Évolution': 'Growth',
     'Pack SEO': 'SEO pack',
@@ -48,12 +48,12 @@
     ' par mois pendant ': ' a month for ',
     'Aujourd’hui, l’acompte de ': 'Today, the deposit of ',
     'À la réception du site, le reste': 'On delivery, the rest',
-    'Puis votre abonnement, chaque année': 'Then your plan, every year',
-    'Puis votre abonnement, chaque mois': 'Then your plan, every month',
+    'Puis votre forfait, chaque année': 'Then your plan, every year',
+    'Puis votre forfait, chaque mois': 'Then your plan, every month',
     ', sans abonnement': ', no plan',
     ' puis ': ' then ',
     'offert': 'free',
-    'avec l’abonnement': 'with the plan',
+    'avec le forfait': 'with the plan',
     'sans abonnement': 'no plan',
     'Ensuite, chaque mois': 'Then, every month',
     'rien': 'nothing',
@@ -105,8 +105,8 @@
     'Création, une fois': 'Creation, one-off', 'Abonnement, dès la réception, par ': 'Subscription, from delivery, per ', 'Abonnement': 'Subscription',
     'Aujourd’hui ': 'Today ', ', à la réception ': ', on delivery ', ' + abonnement': ' + subscription',
     'Au mois': 'Monthly', 'Acompte de ': 'Deposit of ', ' % sur la création (': '% of the creation (',
-    'À la réception : le reste en ': 'On delivery: the rest in ', ' fois, et l’abonnement': ' instalments, and the subscription',
-    'À la réception : le reste, et l’abonnement': 'On delivery: the rest, and the subscription', ' options': ' options', 'Options': 'Options', ' pages en plus': ' extra pages', ' page en plus': ' extra page',
+    'À la réception : le reste en ': 'On delivery: the rest in ', ' fois, et le forfait': ' instalments, and the subscription',
+    'À la réception : le reste, et le forfait': 'On delivery: the rest, and the subscription', ' options': ' options', 'Options': 'Options', ' pages en plus': ' extra pages', ' page en plus': ' extra page',
     'Un instant, je prépare le paiement…': 'One moment, I am preparing the payment…', 'Lien copié, prêt à envoyer': 'Link copied, ready to send',
     'Écrivez votre demande en quelques mots': 'Write your request in a few words',
     'La photo dépasse 8 Mo : choisissez-en une plus légère': 'The photo is over 8 MB: please choose a lighter one',
@@ -281,7 +281,7 @@
     reveals.forEach(function (el) { el.classList.add('is-visible'); });
   }
 
-  /* Le paiement à l'année n'est plus proposé : l'abonnement Mini se paie au mois, sans engagement. */
+  /* Le paiement à l'année n'est plus proposé : le forfait Mini se paie au mois, sans engagement. */
 
   /* ---------- nom de domaine : saisie et vérification RDAP (configurateur et commande) ---------- */
   var RDAP = {
@@ -456,7 +456,7 @@
       setText('type', siteNom(t));
       setText('type-price', euro(t.price));
       setText('domain-prix', tr('compris'));
-      setText('forfait', seule ? tr('Autonomie') : tr('Abonnement ') + planName(f.name));
+      setText('forfait', seule ? tr('Autonomie') : tr('Forfait ') + planName(f.name));
       setText('forfait-price', seule ? tr('sans abonnement') : euro(f.month * mult) + per);
       var dom = domain.get(), domText = '';
       if (domain.own()) domText = tr('Mon nom de domaine actuel');
@@ -480,7 +480,7 @@
       setText('today', euro(acompte));
       setText('reste-label', lisse ? tr('Puis, dès la réception, pendant ') + lisseN + tr(' mois') : tr('À la réception du site, le reste'));
       setText('reste', lisse ? euro(lisseAmt) + tr('/mois') : euro(reste));
-      setText('recur-label', seule ? tr('Ensuite, chaque mois') : annual ? tr('Puis votre abonnement, chaque année') : tr('Puis votre abonnement, chaque mois'));
+      setText('recur-label', seule ? tr('Ensuite, chaque mois') : annual ? tr('Puis votre forfait, chaque année') : tr('Puis votre forfait, chaque mois'));
       setText('recur', seule ? tr('rien') : euro(recur) + per);
       setText('detail', tr('Prix total du site : ') + euro(prixSite) + (lisse ? tr(', sans frais en plus.') : '.'));
       var bar = $('[data-sum="bar"]', box);
@@ -634,7 +634,7 @@
       setText('today', euro(today));
       setText('btn', euro(today));
       setText('next', seule ? (lisse ? euro(lisseAmt) + ' × ' + lisseN : euro(solde)) : lisse ? euro(lisseAmt) + ' × ' + lisseN + ' + ' + euro(next) + per : euro(solde) + ' + ' + euro(next) + per);
-      setText('next-label', seule ? (lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois') : tr('À la réception : le reste')) : lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois, et votre abonnement') : tr('À la réception : le reste, et votre abonnement'));
+      setText('next-label', seule ? (lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois') : tr('À la réception : le reste')) : lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois, et votre forfait') : tr('À la réception : le reste, et votre forfait'));
       if ($('[data-order="solde"]', root)) setText('solde', euro(solde));
       setText('lisse', euro(lisseAmt));
       setText('lisse-per', perUnit);
@@ -656,7 +656,7 @@
       /* récapitulatif latéral */
       setText('type', siteNom(t));
       setText('type-price', euro(prixSite));
-      setText('forfait', seule ? tr('Autonomie') : tr('Abonnement ') + planName(f.name));
+      setText('forfait', seule ? tr('Autonomie') : tr('Forfait ') + planName(f.name));
       setText('forfait-price', seule ? tr('sans abonnement') : euro(forfaitFirst) + per);
       setText('delai', tr(t.delai));
       var optLine = $('[data-order-opts]', root);

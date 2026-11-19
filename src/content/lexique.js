@@ -62,10 +62,10 @@ Une fleuriste prend un hébergement très bon marché pour son site. Tout va bie
 
 ## Chez les Minis Monstres
 
-Avec l'[abonnement](/tarifs/) ${mini.name}, vous n'avez pas à chercher un hébergeur : l'hébergement est compris, sur un serveur de qualité, quel que soit votre site. Vous n'avez ni facture à part ni réglage à faire. Avec la formule ${AUTO}, vous choisissez votre hébergeur et vous y installez l'export de votre site. Pour comprendre ce qu'est la machine elle-même, lisez la définition du [serveur](/lexique/serveur-web/).`,
+Avec le [forfait](/tarifs/) ${mini.name}, vous n'avez pas à chercher un hébergeur : l'hébergement est compris, sur un serveur de qualité, quel que soit votre site. Vous n'avez ni facture à part ni réglage à faire. Avec la formule ${AUTO}, vous choisissez votre hébergeur et vous y installez l'export de votre site. Pour comprendre ce qu'est la machine elle-même, lisez la définition du [serveur](/lexique/serveur-web/).`,
     faq: [
       { q: 'Peut-on avoir un site sans hébergement ?', a: 'Non. Un site doit être posé quelque part pour être visible. Certaines plateformes intègrent l’hébergement dans leur abonnement, mais il existe toujours, même quand on ne le voit pas.' },
-      { q: 'Combien coûte un hébergement ?', a: `Les prix varient beaucoup selon la puissance et le service. Chez nous, il est compris dans l’abonnement ${mini.name}, à ${mini.month} € par mois, qui couvre aussi votre nom de domaine et l’entretien du site.` },
+      { q: 'Combien coûte un hébergement ?', a: `Les prix varient beaucoup selon la puissance et le service. Chez nous, il est compris dans le forfait ${mini.name}, à ${mini.month} € par mois, qui couvre aussi votre nom de domaine et l’entretien du site.` },
       { q: 'Puis-je changer d’hébergeur plus tard ?', a: 'Oui. On copie les fichiers du site chez le nouvel hébergeur, puis on fait pointer le nom de domaine vers lui. Bien fait, le changement passe inaperçu pour vos visiteurs.' },
     ],
     voir: ['serveur-web', 'maintenance-site', 'sauvegarde-site'],
@@ -111,7 +111,7 @@ Un traiteur partage un serveur bas de gamme avec des centaines d'autres sites. U
 
 ## Chez les Minis Monstres
 
-Avec l'abonnement ${mini.name}, nous nous occupons du serveur pour vous : votre site tourne sur une machine de qualité qui tient les pics de visites. Le détail est sur la page des [tarifs](/tarifs/).`,
+Avec le forfait ${mini.name}, nous nous occupons du serveur pour vous : votre site tourne sur une machine de qualité qui tient les pics de visites. Le détail est sur la page des [tarifs](/tarifs/).`,
     faq: [
       { q: 'Où se trouve physiquement le serveur de mon site ?', a: 'Dans un centre de données, chez un hébergeur. Pour un site qui s’adresse à des clients en France, il vaut mieux un serveur situé en Europe : les pages arrivent plus vite et les règles sur les données sont plus claires.' },
       { q: 'Mon site peut-il tomber en panne si le serveur s’arrête ?', a: 'Oui, c’est pour ça qu’un serveur doit être surveillé et entretenu. Un bon hébergeur répare vite, et une sauvegarde récente permet de tout remettre en place.' },
@@ -157,7 +157,7 @@ Une couturière ouvre son site sur son téléphone pour le montrer à une client
 
 ## Chez les Minis Monstres
 
-Le HTTPS est compris dans l'[abonnement](/tarifs/) ${mini.name}, pour chaque site. Nous posons le certificat à la mise en ligne et il se renouvelle tout seul. Vous n'avez pas à y penser. Pour voir ce que contient le reste de l'entretien, lisez la page sur la [maintenance de site](/lexique/maintenance-site/).`,
+Le HTTPS est compris dans le [forfait](/tarifs/) ${mini.name}, pour chaque site. Nous posons le certificat à la mise en ligne et il se renouvelle tout seul. Vous n'avez pas à y penser. Pour voir ce que contient le reste de l'entretien, lisez la page sur la [maintenance de site](/lexique/maintenance-site/).`,
     faq: [
       { q: 'Le certificat SSL est-il payant ?', a: 'Il existe des certificats gratuits, reconnus par tous les navigateurs, qui conviennent très bien à un site d’entreprise. Les certificats payants servent surtout aux très grandes structures. Ce qui compte, c’est qu’il soit posé correctement et renouvelé à temps.' },
       { q: 'Comment savoir si mon site est en HTTPS ?', a: 'Ouvrez-le et regardez la barre d’adresse. Un cadenas ou une icône de réglages à gauche de l’adresse veut dire que c’est bon. La mention « Non sécurisé » veut dire qu’il manque le certificat.' },
@@ -200,7 +200,7 @@ Un moniteur d'auto-école veut afficher ses nouvelles dates de stage code chaque
 
 ## Chez les Minis Monstres
 
-Vous n'avez pas à apprendre d'outil. Avec l'abonnement ${mini.name}, vous décrivez ce que vous voulez changer dans votre espace client, et c'est fait pour vous. ${cerise}, la secrétaire de notre petite bande, vous aide à bien formuler la demande avant de la transmettre. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
+Vous n'avez pas à apprendre d'outil. Avec le forfait ${mini.name}, vous décrivez ce que vous voulez changer dans votre espace client, et c'est fait pour vous. ${cerise}, la secrétaire de notre petite bande, vous aide à bien formuler la demande avant de la transmettre. Le fonctionnement est expliqué dans la [documentation](/documentation/). Pour le CMS le plus répandu, voyez la définition de [WordPress](/lexique/wordpress/).`,
     faq: [
       { q: 'Un CMS est-il obligatoire pour avoir un site ?', a: 'Non. Un site peut être fait de simples fichiers, sans base de données. C’est même souvent plus rapide et plus sûr. Le CMS devient utile quand le contenu change souvent ou quand plusieurs personnes doivent publier.' },
       { q: 'Quel CMS choisir pour mon entreprise ?', a: 'Celui qui répond à votre besoin et que quelqu’un saura entretenir. Pour un site de présentation ou une petite boutique, les grands CMS connus ont l’avantage d’être bien suivis et de trouver facilement de l’aide.' },
@@ -243,7 +243,7 @@ Une éleveuse de chèvres crée son site WordPress seule, un week-end, avec un t
 
 ## Chez les Minis Monstres
 
-Que votre site soit sur WordPress ou non, la question pour vous reste la même : qui s'en occupe ? Avec l'[abonnement](/tarifs/) ${mini.name}, nous faisons les mises à jour des extensions pour vous et nous surveillons que tout tourne. Avec la formule ${AUTO}, ces mises à jour vous reviennent. Si vous hésitez entre faire seul ou déléguer, le guide [créer son site soi-même ou le faire faire](/guides/creer-son-site-soi-meme-ou-le-faire-faire/) vous aide à trancher.`,
+Que votre site soit sur WordPress ou non, la question pour vous reste la même : qui s'en occupe ? Avec le [forfait](/tarifs/) ${mini.name}, nous faisons les mises à jour des extensions pour vous et nous surveillons que tout tourne. Avec la formule ${AUTO}, ces mises à jour vous reviennent. Si vous hésitez entre faire seul ou déléguer, le guide [créer son site soi-même ou le faire faire](/guides/creer-son-site-soi-meme-ou-le-faire-faire/) vous aide à trancher.`,
     faq: [
       { q: 'WordPress est-il sûr ?', a: 'Oui, s’il est tenu à jour. La plupart des piratages viennent d’une version ancienne, d’une extension abandonnée ou d’un mot de passe trop simple, pas du logiciel lui-même.' },
       { q: 'Peut-on vendre en ligne avec WordPress ?', a: 'Oui, grâce à des extensions de commerce qui ajoutent un panier, le paiement par carte et la gestion des commandes. Il faut alors être encore plus attentif aux mises à jour et à la sécurité.' },
@@ -336,7 +336,7 @@ Un ostéopathe installe une extension de rendez-vous, une de galerie, une pour l
 
 ## Chez les Minis Monstres
 
-Les mises à jour des extensions font partie de l'[abonnement](/tarifs/) ${mini.name}. Nous les faisons pour vous et nous vérifions que le site tient debout ensuite. Vous gardez un site léger, sans module inutile. Pour savoir comment on revient en arrière quand quelque chose casse, lisez la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+Les mises à jour des extensions font partie du [forfait](/tarifs/) ${mini.name}. Nous les faisons pour vous et nous vérifions que le site tient debout ensuite. Vous gardez un site léger, sans module inutile. Pour savoir comment on revient en arrière quand quelque chose casse, lisez la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'Combien d’extensions faut-il sur un site ?', a: 'Il n’y a pas de bon nombre. La règle est simple : uniquement celles dont vous avez besoin, chacune choisie avec soin. Un petit site bien fait en a souvent peu.' },
       { q: 'Les extensions gratuites sont-elles dangereuses ?', a: 'Pas forcément. Beaucoup sont excellentes et suivies par des équipes sérieuses. Le danger vient surtout des extensions plus mises à jour, gratuites ou payantes.' },
@@ -1071,7 +1071,7 @@ Un photographe de mariage reçoit des messages du genre « Bonjour, c'est combie
 
 ## Chez les Minis Monstres
 
-Chaque site que nous livrons a son formulaire, relié à votre messagerie. Alex le teste avant la mise en ligne et il tourne sur une connexion protégée en HTTPS. Tout ce que comprend l'abonnement ${mini.name} est listé sur la page des [tarifs](/tarifs/). Les règles sur les données personnelles sont résumées à la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
+Chaque site que nous livrons a son formulaire, relié à votre messagerie. Alex le teste avant la mise en ligne et il tourne sur une connexion protégée en HTTPS. Tout ce que comprend le forfait ${mini.name} est listé sur la page des [tarifs](/tarifs/). Les règles sur les données personnelles sont résumées à la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
     faq: [
       { q: 'Où arrivent les messages du formulaire ?', a: 'Dans la boîte mail de votre choix. Il peut s’agir de votre adresse habituelle ou d’une adresse professionnelle à votre nom de domaine.' },
       { q: 'Pourquoi je reçois des messages publicitaires par mon formulaire ?', a: 'Des robots remplissent automatiquement les formulaires trouvés sur internet. Une protection bien réglée en bloque la plus grande partie, sans gêner vos vrais clients.' },
@@ -1220,7 +1220,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 ## Chez les Minis Monstres
 
-C'est le cœur de l'[abonnement](/tarifs/) ${mini.name}. Pour ${mini.month} € par mois, nous hébergeons votre site, nous suivons les mises à jour, nous gardons un œil sur le HTTPS et nous vérifions que tout tourne. Vos changements de contenu passent par l'espace client : ils sont inclus, et une modification peut prendre ${delaiModif}. Avec la formule ${AUTO}, cet entretien est à votre charge. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+C'est le cœur du [forfait](/tarifs/) ${mini.name}. Pour ${mini.month} € par mois, nous hébergeons votre site, nous suivons les mises à jour, nous gardons un œil sur le HTTPS et nous vérifions que tout tourne. Vos changements de contenu passent par l'espace client : ils sont inclus, et une modification peut prendre ${delaiModif}. Avec la formule ${AUTO}, cet entretien est à votre charge. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'À quelle fréquence faut-il faire la maintenance ?', a: 'La surveillance doit être continue, et les mises à jour faites dès qu’elles sortent, surtout celles de sécurité. Les autres vérifications peuvent suivre un rythme régulier, par exemple chaque mois.' },
       { q: 'Puis-je faire la maintenance de mon site moi-même ?', a: 'C’est possible si vous avez le temps et les bases techniques. Le plus dur n’est pas de cliquer sur « mettre à jour », mais de savoir quoi faire quand une mise à jour casse quelque chose.' },
@@ -1271,7 +1271,7 @@ Une épicerie fine supprime par erreur la page de ses paniers garnis, la plus vi
 
 ## Chez les Minis Monstres
 
-Les sauvegardes automatiques font partie de l'entretien compris dans l'[abonnement](/tarifs/) ${mini.name}. Elles se font toutes seules, et elles servent si quelque chose doit être remis en place. Vous n'avez rien à régler. Avec la formule ${AUTO}, pensez à les prévoir chez votre hébergeur. Pour le reste de l'entretien, voyez la page [maintenance de site](/lexique/maintenance-site/).`,
+Les sauvegardes automatiques font partie de l'entretien compris dans le [forfait](/tarifs/) ${mini.name}. Elles se font toutes seules, et elles servent si quelque chose doit être remis en place. Vous n'avez rien à régler. Avec la formule ${AUTO}, pensez à les prévoir chez votre hébergeur. Pour le reste de l'entretien, voyez la page [maintenance de site](/lexique/maintenance-site/).`,
     faq: [
       { q: 'Combien de temps faut-il garder les sauvegardes ?', a: 'Assez longtemps pour revenir avant un problème qui serait passé inaperçu quelques jours. Garder plusieurs copies d’âges différents est plus sûr qu’une seule copie très récente.' },
       { q: 'Puis-je récupérer une copie de mon site ?', a: 'Oui. Votre site vous appartient : si vous changez de prestataire, vous recevez son export, une copie complète de ses fichiers.' },
@@ -1318,7 +1318,7 @@ Ouvrez votre site sur votre téléphone, en 4G plutôt qu'en wifi. C'est le test
 
 ## Chez les Minis Monstres
 
-Nous faisons des sites légers : images allégées, peu de modules, code propre. Votre site tourne sur un serveur de qualité, qui tient bon quand il y a du monde. L'hébergement fait partie de l'abonnement ${mini.name}, décrit sur la page des [tarifs](/tarifs/). Pour comprendre le rôle de la machine, voyez la définition du [serveur web](/lexique/serveur-web/).`,
+Nous faisons des sites légers : images allégées, peu de modules, code propre. Votre site tourne sur un serveur de qualité, qui tient bon quand il y a du monde. L'hébergement fait partie du forfait ${mini.name}, décrit sur la page des [tarifs](/tarifs/). Pour comprendre le rôle de la machine, voyez la définition du [serveur web](/lexique/serveur-web/).`,
     faq: [
       { q: 'Quel est un bon temps de chargement ?', a: 'Le plus court possible. Une page dont le contenu principal apparaît en un clin d’œil sur téléphone donne une bonne impression. Au-delà de quelques secondes d’attente, beaucoup de visiteurs abandonnent.' },
       { q: 'Un site rapide sur mon ordinateur l’est-il aussi pour mes clients ?', a: 'Pas forcément. Votre ordinateur a peut-être déjà gardé les fichiers en mémoire et profite d’une bonne connexion. Testez depuis un téléphone, en données mobiles, et si possible depuis un autre appareil que le vôtre.' },

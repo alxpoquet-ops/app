@@ -52,7 +52,7 @@ function businessSchema() {
     name: site.name,
     slogan: `Un site internet pour être visible, dès ${creation.prix} €`,
     description:
-      `Un site internet rend votre activité visible : on crée le vôtre. Sites pour artisans, commerçants et associations, payés une fois : ${PRIX_SITES}. Ensuite, au choix : ${AUTO.name} à ${AUTO.month} € par mois, ou ${ABO.name} à ${ABO.month} € par mois sans engagement (hébergement, nom de domaine, sauvegardes, sécurité, maintenance, modifications). Tout se fait en ligne, pour des clients partout en France.`,
+      `Un site internet rend votre activité visible : on crée le vôtre. Sites pour artisans, commerçants et associations, payés une fois : ${PRIX_SITES}. Ensuite, au choix : ${AUTO.name} à ${AUTO.month} € par mois, ou le forfait ${ABO.name} à ${ABO.month} € par mois sans engagement (hébergement, nom de domaine, sauvegardes, sécurité, maintenance, modifications). Tout se fait en ligne, pour des clients partout en France.`,
     url: site.url + '/',
     ...(site.email ? { email: site.email } : {}),
     image: site.url + '/assets/img/og-image.png',
@@ -64,7 +64,7 @@ function businessSchema() {
       addressCountry: site.address.country,
     },
     areaServed: [{ '@type': 'Country', name: 'France' }],
-    hasOfferCatalog: { '@type': 'OfferCatalog', name: 'Sites internet et abonnement Mini', itemListElement: offers },
+    hasOfferCatalog: { '@type': 'OfferCatalog', name: 'Sites internet et forfait Mini', itemListElement: offers },
     knowsAbout: ['Création de site internet', 'Site vitrine', 'Boutique en ligne', 'Visibilité sur Google', 'Référencement local'],
   };
   const sameAs = Object.values(site.social).filter(Boolean);
@@ -205,12 +205,12 @@ function liaFlot() {
   const eur = C.euro;
   const questions = [
     ['À quoi sert un site ?', 'À être visible. Sans site internet, votre activité est comme une belle vitrine dans une rue où personne ne passe. Avec un site, vos futurs clients vous trouvent, sur Google comme sur leur téléphone. Nous rendre visibles nos clients, c’est notre métier.', sections.seo.path, 'Être trouvé sur Google'],
-    ['C’est combien ?', `Créez votre site : payez une seule fois. ${types.map((t) => `${t.name} ${eur(t.price)}`).join(', ')}. Payable en ${lissage.durees.join(' ou ')} fois sans frais. Ensuite, vous choisissez : ${AUTO.name}, ${eur(AUTO.month)} par mois, vous gérez tout vous-même. Ou ${ABO.name}, ${eur(ABO.month)} par mois sans engagement, on s’occupe de tout. Enfin, trois extras, si vous en avez besoin.`, sections.forfaits.path, 'Voir les tarifs'],
+    ['C’est combien ?', `Créez votre site : payez une seule fois. ${types.map((t) => `${t.name} ${eur(t.price)}`).join(', ')}. Payable en ${lissage.durees.join(' ou ')} fois sans frais. Ensuite, vous choisissez : ${AUTO.name}, ${eur(AUTO.month)} par mois, vous gérez tout vous-même. Ou le forfait ${ABO.name}, ${eur(ABO.month)} par mois sans engagement, on s’occupe de tout. Enfin, trois extras, si vous en avez besoin.`, sections.forfaits.path, 'Voir les tarifs'],
     ['Quel site choisir ?', `${types.map((t) => `${t.name} : ${t.but.toLowerCase()}`).join('. ')}. Vous hésitez ? Écrivez-nous, on vous aide à choisir.`, sections.creer.path, 'Créer mon site'],
     ['Qui fait mon site ?', 'Alex conçoit votre site et vérifie tout. Moi, je suis la secrétaire de sa petite bande : je réponds à vos questions et je prends vos demandes.', sections.equipe.path, 'Rencontrer la bande'],
-    ['Et pour changer mon site après ?', `Avec ${ABO.name}, vos modifications sont incluses. Vous écrivez votre demande dans votre espace client, je vous aide à la préciser, et ${C.BRICOU} fait la modification, en 48 h au plus.`, sections.accompagnement.path, 'L’accompagnement'],
+    ['Et pour changer mon site après ?', `Avec le forfait ${ABO.name}, vos modifications sont incluses. Vous écrivez votre demande dans votre espace client, je vous aide à la préciser, et ${C.BRICOU} fait la modification, en 48 h au plus.`, sections.accompagnement.path, 'L’accompagnement'],
   ];
-  const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', enService.outils ? 'Comment avoir plus d’avis Google ?' : 'Comment se passe une modification ?', `Que comprend ${ABO.name} ?`];
+  const exemples = ['Changer mes horaires', 'Ajouter une photo sur ma page d’accueil', enService.outils ? 'Comment avoir plus d’avis Google ?' : 'Comment se passe une modification ?', `Que comprend le forfait ${ABO.name} ?`];
   return `<div class="lia-flot" data-lia-flot hidden>
   <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Cerise, la secrétaire de la bande" hidden>
     <div class="lia-tete">${monster('coucou')}<p><strong>Cerise</strong><small>La secrétaire de la bande</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Cerise">${icon('x')}</button></div>
@@ -219,7 +219,7 @@ function liaFlot() {
       <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Bonjour ! Dites-moi ce que vous voulez changer sur votre site, ou posez-moi une question.</p>
       <p class="lia-msg is-lia" data-lia-accueil="demo" hidden>Bonjour ! Ici, c’est une démonstration : écrivez-moi comme un client, je vous montre comment je réponds.</p>
       <p class="lia-msg is-lia" data-lia-accueil="attente" hidden>Bonjour ! Je ne suis pas encore branchée dans cet espace. En attendant, écrivez votre demande dans l’onglet Demandes.</p>
-      <p class="lia-msg is-lia" data-lia-accueil="abonnement" hidden>Bonjour ! Je vous réponds ici avec ${ABO.name}, dès qu’il a démarré. En attendant, écrivez votre demande dans l’onglet Demandes.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="abonnement" hidden>Bonjour ! Je vous réponds ici avec le forfait ${ABO.name}, dès qu’il a démarré. En attendant, écrivez votre demande dans l’onglet Demandes.</p>
     </div>
     <div class="lia-puces" data-lia-liens="site">
       ${questions.map(([q], i) => `<button type="button" data-lia-q="${i}">${q}</button>`).join('')}

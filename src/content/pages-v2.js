@@ -120,7 +120,7 @@ Aucun site ne part en ligne sans ce contrôle.
 Pas de devis à attendre. Tout se lit dans le même ordre.
 
 1. **D’abord le site, payé une fois** : ${eur(ESS.price)} € le ${ESS.name} pour exister sur internet, ${eur(VIS.price)} € le ${VIS.name} pour être trouvé sur Google, ${mille(BOU.price)} € le ${BOU.name} pour vendre sur internet.
-2. **Ensuite, ${AUTO} ou ${mini.name}** : vous gérez le site vous-même sans rien payer chaque mois, ou nous nous en occupons pour ${eur(mini.month)} € par mois, sans engagement.
+2. **Ensuite, ${AUTO} ou Forfait ${mini.name}** : vous gérez le site vous-même sans rien payer chaque mois, ou nous nous en occupons pour ${eur(mini.month)} € par mois, sans engagement.
 3. **Enfin, les extras, si besoin** : une ${minus(pageGoogle.name)} à ${prixPage} €, une traduction anglaise ou une fonctionnalité spécifique sur devis.
 
 Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, en une fois ou en ${durees} fois sans frais. Le détail est sur la page [tarifs](/tarifs/).
@@ -129,7 +129,7 @@ Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, 
 
 Face à un site vitrine de ${marche.pagesCompare} pages fait par un indépendant, notre ${VIS.name} à ${eur(VIS.price)} € coûte ${marche.fois} fois moins, d’après les fourchettes publiées.
 
-Côté entretien, les prestataires consultés demandent ${eur(marche.entretienMin)} à ${eur(marche.entretienMax)} € par mois, l’hébergement étant souvent en plus. L’abonnement ${mini.name} coûte ${eur(mini.month)} € par mois, hébergement, nom de domaine et modifications compris : c’est de ${marche.entretienFois} fois moins cher.
+Côté entretien, les prestataires consultés demandent ${eur(marche.entretienMin)} à ${eur(marche.entretienMax)} € par mois, l’hébergement étant souvent en plus. Le forfait ${mini.name} coûte ${eur(mini.month)} € par mois, hébergement, nom de domaine et modifications compris : c’est de ${marche.entretienFois} fois moins cher.
 
 > Soyons honnêtes : ces fourchettes viennent de prestataires, donc à lire avec prudence, et chacun fixe ses prix. Des indépendants proposent aussi un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors presque nul.
 
@@ -140,7 +140,7 @@ ${sourcesMd()}
 ## Ce qui n’est pas sacrifié
 
 - **La qualité** : un site moderne, clair et rapide, lisible sur téléphone comme sur ordinateur.
-- **La sécurité** : avec ${mini.name}, le cadenas dans la barre d’adresse, la maintenance technique et les sauvegardes automatiques.
+- **La sécurité** : avec le forfait ${mini.name}, le cadenas dans la barre d’adresse, la maintenance technique et les sauvegardes automatiques.
 - **La visibilité** : chaque page est écrite et réglée pour que Google comprenne votre activité.
 - **Une vraie personne** : quand vous écrivez, Alex vous répond, en général dans la journée.
 - **Votre liberté** : le nom de domaine (l’adresse de votre site) est à votre nom, et l’abonnement n’est pas imposé.
@@ -149,7 +149,7 @@ Votre projet dépasse ce que nous savons bien faire, comme une application sur m
     faq: [
       { q: 'Moins cher, ça veut dire moins bien ?', a: 'Non. Le prix baisse parce que nous passons moins de temps sur ce qui se répète, pas parce que nous sautons des étapes. Chaque site est relu, testé sur téléphone et vérifié avant d’être publié.' },
       { q: 'Mon site est-il fait à la chaîne ?', a: 'Non. Alex conçoit votre site et fait les choix avec vous. La petite bande prépare seulement ce qui se répète, et rien n’est publié sans votre validation.' },
-      { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. Vous payez le site choisi, puis ${eur(mini.month)} € par mois seulement si vous prenez l’abonnement ${mini.name}. Les extras sont facultatifs, et leur prix est affiché.` },
+      { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. Vous payez le site choisi, puis ${eur(mini.month)} € par mois seulement si vous prenez le forfait ${mini.name}. Les extras sont facultatifs, et leur prix est affiché.` },
       { q: 'Pourquoi n’y a-t-il pas de devis ?', a: 'Parce que la plupart des sites d’artisans, de commerces ou d’associations se construisent de la même façon. Un prix fixe est plus simple pour tout le monde.' },
     ],
     voir: ['/tarifs/', '/pourquoi-les-minis-monstres/', '/comparatif/'],
@@ -219,13 +219,13 @@ Chez nous, chaque site a un but précis.
 - **${VIS.name}, ${eur(VIS.price)} €** : être trouvé sur Google.
 - **${BOU.name}, ${mille(BOU.price)} €** : vendre sur internet.
 
-Ensuite, vous gérez votre site vous-même avec la formule ${AUTO}, ou nous nous en occupons avec l’abonnement ${mini.name}, à ${eur(mini.month)} € par mois. Les prix sont détaillés sur la page [tarifs](/tarifs/).
+Ensuite, vous gérez votre site vous-même avec la formule ${AUTO}, ou nous nous en occupons avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois. Les prix sont détaillés sur la page [tarifs](/tarifs/).
 
 > Vous hésitez entre une page et plusieurs ? Le guide [site une page ou site vitrine](/guides/site-une-page-ou-site-vitrine/) vous aide à choisir.`,
     faq: [
       { q: 'Ma page Facebook ne suffit pas ?', a: 'Elle suffit pour garder le contact avec vos abonnés. Pour être trouvé par quelqu’un qui ne vous connaît pas encore, un site internet fait mieux. Les deux vont très bien ensemble.' },
       { q: 'J’ai déjà une fiche Google, à quoi bon un site ?', a: 'La fiche indique votre adresse, vos horaires et vos avis. Le site raconte ce que vous faites, et pourquoi vous choisir. Une fiche reliée à un vrai site inspire aussi davantage confiance.' },
-      { q: 'Un site, c’est compliqué à tenir à jour ?', a: `Pas si quelqu’un s’en charge pour vous. Avec l’abonnement ${mini.name}, vous envoyez vos changements depuis votre espace client, et ils sont faits pour vous.` },
+      { q: 'Un site, c’est compliqué à tenir à jour ?', a: `Pas si quelqu’un s’en charge pour vous. Avec le forfait ${mini.name}, vous envoyez vos changements depuis votre espace client, et ils sont faits pour vous.` },
       { q: 'Quel site choisir pour commencer ?', a: `Le ${ESS.name} pour exister et être joignable. Le ${VIS.name} si vous comptez sur Google pour trouver des clients. Le ${BOU.name} si vous voulez vendre en ligne.` },
     ],
     voir: ['/etre-visible-sur-google/', '/guides/site-une-page-ou-site-vitrine/', '/metiers/'],
@@ -343,12 +343,12 @@ Vos questions avant la commande ne vous engagent à rien. Si notre offre ne corr
 1. **On échange** : vous nous dites ce que vous faites, pour qui, et ce que vous attendez du site.
 2. **Alex conçoit votre site** : la structure, les pages, le style. La petite bande prend en charge ce qui se répète.
 3. **Alex vérifie, et vous validez** : tout est relu et testé sur plusieurs appareils. Vos modifications sont illimitées jusqu’à la validation.
-4. **Le site part en ligne** : avec ${mini.name}, nous l’hébergeons et restons là pour vos modifications. En ${AUTO}, vous recevez l’export du site, une copie complète prête à installer.
+4. **Le site part en ligne** : avec le forfait ${mini.name}, nous l’hébergeons et restons là pour vos modifications. En ${AUTO}, vous recevez l’export du site, une copie complète prête à installer.
 
 ## Nos engagements
 
 - **Un prix affiché** : ${eur(ESS.price)}, ${eur(VIS.price)} ou ${mille(BOU.price)} € selon le site, le même pour tout le monde.
-- **Aucun abonnement imposé** : ${mini.name} est facultatif et sans engagement. Seule exception, si vous payez le site en ${durees} fois, vous restez le temps du paiement.
+- **Aucun abonnement imposé** : le forfait ${mini.name} est facultatif et sans engagement. Seule exception, si vous payez le site en ${durees} fois, vous restez le temps du paiement.
 - **Le nom de domaine à votre nom** : l’adresse de votre site vous appartient.
 - **Vous repartez avec votre site** : l’export reste possible à tout moment.
 - **Rien en ligne sans vérification** : Alex contrôle votre site, et vous le validez.
@@ -386,7 +386,7 @@ Et pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourq
     icon: 'life-buoy',
     color: 'mint',
     title: 'Accompagnement après la mise en ligne du site | Les Minis Monstres',
-    description: `L’abonnement ${mini.name}, facultatif et sans engagement, ${eur(mini.month)} € par mois : votre site reste visible, hébergé, entretenu, avec nom de domaine et modifications inclus.`,
+    description: `Le forfait ${mini.name}, facultatif et sans engagement, ${eur(mini.month)} € par mois : votre site reste visible, hébergé, entretenu, avec nom de domaine et modifications inclus.`,
     h1: 'Accompagnement : ce qui se passe après la mise en ligne',
     lead: 'Un site ne reste visible que s’il reste en ligne et à jour. Vous pouvez le gérer seul, ou nous le confier : nous nous occupons alors de ce qui le fait tourner, et vous demandez vos changements quand vous en avez besoin.',
     resume: 'Chaque mois, votre site entretenu et suivi.',
@@ -396,14 +396,14 @@ Et pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourq
       { icon: 'search-check', t: 'Trois extras, pas plus', d: 'Une page de visibilité Google, une traduction anglaise, une fonctionnalité spécifique : seulement si vous en avez besoin.' },
       { icon: 'handshake', t: 'Sans engagement', d: 'Vous arrêtez quand vous voulez et vous gardez votre adresse.' },
     ],
-    body: `## Après le site : ${AUTO} ou ${mini.name}
+    body: `## Après le site : ${AUTO} ou le forfait ${mini.name}
 
 Une fois le site créé, vous choisissez qui le fait vivre.
 
 - **${AUTO}, ${eur(creationSeule.month)} € par mois** : vous recevez votre site prêt à installer. L’hébergement, le nom de domaine, les sauvegardes et les mises à jour sont à votre charge.
-- **${mini.name}, ${eur(mini.month)} € par mois** : nous nous occupons de tout. L’abonnement démarre à la réception du site, sans engagement.
+- **Forfait ${mini.name}, ${eur(mini.month)} € par mois** : nous nous occupons de tout. L’abonnement démarre à la réception du site, sans engagement.
 
-## Ce que comprend l’abonnement ${mini.name}
+## Ce que comprend le forfait ${mini.name}
 
 Votre site reste en ligne, protégé et à jour, donc visible, sans que vous ayez à y penser.
 
@@ -440,7 +440,7 @@ Les extras sont détaillés sur la page [tarifs](/tarifs/#extras).
 
 ## La petite bande, après la mise en ligne
 
-Avec l’abonnement ${mini.name}, les six petits monstres continuent de travailler pour vous :
+Avec le forfait ${mini.name}, les six petits monstres continuent de travailler pour vous :
 
 ${bande.map((b) => `- **${nomRole(b)}**, ${APRES[b.id] || minus(b.court)}`).join('\n')}
 
@@ -452,8 +452,8 @@ Votre nom de domaine reste à vous, et nous vous remettons l’export de votre s
 
 Vous revenez pour un deuxième site ? Il profite de ${fidelite.remiseSecondSite} % de remise sur sa création.`,
     faq: [
-      { q: 'Puis-je avoir un site sans abonnement ?', a: `Oui, avec la formule ${AUTO}, à choisir en commandant. Vous recevez l’export de votre site et vous l’installez chez votre hébergeur. Tant que le site est hébergé chez nous, l’abonnement ${mini.name} est nécessaire.` },
-      { q: 'Combien de modifications puis-je demander ?', a: `Autant qu’il vous en faut, une demande à la fois : elles sont incluses dans l’abonnement ${mini.name}.` },
+      { q: 'Puis-je avoir un site sans abonnement ?', a: `Oui, avec la formule ${AUTO}, à choisir en commandant. Vous recevez l’export de votre site et vous l’installez chez votre hébergeur. Tant que le site est hébergé chez nous, le forfait ${mini.name} est nécessaire.` },
+      { q: 'Combien de modifications puis-je demander ?', a: `Autant qu’il vous en faut, une demande à la fois : elles sont incluses dans le forfait ${mini.name}.` },
       { q: 'En combien de temps ma demande est-elle traitée ?', a: `Une modification peut prendre ${delaiModif}. Vous êtes prévenu par e-mail dès qu’elle est en ligne.` },
     ],
     voir: ['/tarifs/', '/mon-espace/demo/', '/pourquoi-les-minis-monstres/'],
@@ -488,7 +488,7 @@ Artisans, commerçants, gîtes, associations : beaucoup d’activités d’ici f
 - **En rendez-vous**, à Charleville-Mézières, Sedan, Rethel, ${ville} ou dans un village autour : on regarde ensemble ce que vous faites, vos photos et vos idées.
 - **À distance** : vous nous écrivez ou on s’appelle, puis vous suivez tout depuis votre espace client.
 
-Dans les deux cas, le tarif ne change pas : ${eur(ESS.price)} € pour le ${ESS.name}, ${eur(VIS.price)} € pour le ${VIS.name}, ${mille(BOU.price)} € pour le ${BOU.name}. Ensuite, c’est ${AUTO}, sans abonnement, ou ${mini.name}, à ${eur(mini.month)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
+Dans les deux cas, le tarif ne change pas : ${eur(ESS.price)} € pour le ${ESS.name}, ${eur(VIS.price)} € pour le ${VIS.name}, ${mille(BOU.price)} € pour le ${BOU.name}. Ensuite, c’est ${AUTO}, sans abonnement, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
 
 ## Être trouvé près de chez vous
 

@@ -172,11 +172,11 @@ Vous pouvez demander l’accès à vos données, leur correction, leur suppressi
     updated: UPDATED_CGV,
     body: `## 1. Objet
 
-Ces conditions s’appliquent à toute commande passée auprès des Minis Monstres : création d’un site internet, abonnement au mois, extras et services liés. Elles complètent le récapitulatif de commande, qui précise le site choisi, la formule retenue pour la suite (${AUTO} ou ${mini.name}) et les prix.
+Ces conditions s’appliquent à toute commande passée auprès des Minis Monstres : création d’un site internet, abonnement au mois, extras et services liés. Elles complètent le récapitulatif de commande, qui précise le site choisi, la formule retenue pour la suite (${AUTO} ou le forfait ${mini.name}) et les prix.
 
 ## 2. Commande en ligne
 
-La commande se passe sur le site, en trois étapes : le choix du site, les coordonnées, puis le paiement sécurisé. Le client choisit d’abord son site parmi les trois proposés (article 3). Il choisit ensuite la façon de le faire vivre : la formule ${AUTO}, sans abonnement, ou l’abonnement ${mini.name}, au mois. Avec ${mini.name}, il choisit aussi son nom de domaine. Le total s’affiche en dernier, avec le choix de payer le reste en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants. S’il a un code promo (article 4), il le saisit dans la case « Code promo » avant de commander.
+La commande se passe sur le site, en trois étapes : le choix du site, les coordonnées, puis le paiement sécurisé. Le client choisit d’abord son site parmi les trois proposés (article 3). Il choisit ensuite la façon de le faire vivre : la formule ${AUTO}, sans abonnement, ou le forfait ${mini.name}, au mois. Avec le forfait ${mini.name}, il choisit aussi son nom de domaine. Le total s’affiche en dernier, avec le choix de payer le reste en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants. S’il a un code promo (article 4), il le saisit dans la case « Code promo » avant de commander.
 
 En cliquant sur « Commander et payer », le client accepte ces conditions et passe une commande ferme. Il reçoit aussitôt un e-mail de confirmation avec une référence de commande, à rappeler dans les échanges.
 
@@ -186,7 +186,7 @@ Une commande peut aussi être passée par e-mail ou par message. Elle est alors 
 
 Les prix sont en euros. La TVA n’est pas applicable (article 293 B du Code général des impôts) tant que l’entreprise bénéficie de la franchise de TVA. Si cette situation change, les prix affichés sont mis à jour. Les commandes déjà passées gardent leur prix.
 
-L’offre est la même pour tous les clients. Elle tient en deux parties : la création du site, payée une fois, puis la façon de le faire vivre. Le client choisit entre la formule ${AUTO}, sans abonnement, et l’abonnement ${mini.name}. L’abonnement est facultatif.
+L’offre est la même pour tous les clients. Elle tient en deux parties : la création du site, payée une fois, puis la façon de le faire vivre. Le client choisit entre la formule ${AUTO}, sans abonnement, et le forfait ${mini.name}. L’abonnement est facultatif.
 
 **Les trois sites.** Chaque site se paie une seule fois.
 
@@ -202,7 +202,7 @@ ${inclusDe(VIS)}
 
 ${inclusDe(BOU)}
 
-**Révisions.** Les révisions sont illimitées jusqu’à la validation finale du site par le client. Elles portent sur le site commandé : ses textes, ses photos, ses couleurs et sa mise en page. Elles ne permettent pas de changer de site ni d’ajouter ce qui n’a pas été commandé. Après la mise en ligne, les changements passent par l’abonnement ${mini.name} (article 12).
+**Révisions.** Les révisions sont illimitées jusqu’à la validation finale du site par le client. Elles portent sur le site commandé : ses textes, ses photos, ses couleurs et sa mise en page. Elles ne permettent pas de changer de site ni d’ajouter ce qui n’a pas été commandé. Après la mise en ligne, les changements passent par le forfait ${mini.name} (article 12).
 
 **Export du site.** L’export est possible pour les trois sites. Il s’agit d’une copie complète du site, avec ses fichiers et une sauvegarde, prête à installer chez un hébergeur. Le client la reçoit avec la formule ${AUTO}, et à la fin de son abonnement s’il en a un (article 8).
 
@@ -216,9 +216,9 @@ ${listeExtras}
 
 La ${minus(pageGoogle.name)} se commande depuis l’espace client. Elle est payée par carte bancaire au moment de la commande, en une seule fois. Elle n’est jamais facturée au mois. Les extras sur devis sont réalisés après l’accord écrit du client sur le prix.
 
-**La formule ${AUTO}, ${eur(creationSeule.month)} € par mois.** Le client paie seulement son site, sans abonnement. Il gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. Les Minis Monstres ne fournissent ni hébergement ni nom de domaine. Une fois le site validé et le reste réglé, ou son paiement en plusieurs fois mis en place, le client reçoit l’export de son site, avec une courte notice d’installation. Il fait l’installation lui-même, ou avec l’aide de son hébergeur. La maintenance, la sécurité et les modifications ne sont pas comprises. Le client peut prendre l’abonnement ${mini.name} plus tard.
+**La formule ${AUTO}, ${eur(creationSeule.month)} € par mois.** Le client paie seulement son site, sans abonnement. Il gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. Les Minis Monstres ne fournissent ni hébergement ni nom de domaine. Une fois le site validé et le reste réglé, ou son paiement en plusieurs fois mis en place, le client reçoit l’export de son site, avec une courte notice d’installation. Il fait l’installation lui-même, ou avec l’aide de son hébergeur. La maintenance, la sécurité et les modifications ne sont pas comprises. Le client peut prendre le forfait ${mini.name} plus tard.
 
-**L’abonnement ${mini.name}, ${eur(mini.month)} € par mois.** Les Minis Monstres installent le site, le mettent en ligne et le font vivre (article 6).
+**Le forfait ${mini.name}, ${eur(mini.month)} € par mois.** Les Minis Monstres installent le site, le mettent en ligne et le font vivre (article 6).
 
 **Devis.** Une refonte complète du site, une traduction ou une fonction nouvelle, comme une prise de rendez-vous, fait l’objet d’un devis. Le client l’accepte avant le début du travail.
 
@@ -236,7 +236,7 @@ Le prix de création se paie en deux temps.
 - **À la réception du site** : le reste, en une fois.
 - **Ou, à la réception, en ${durees} fois sans frais** : le reste est divisé en ${durees} mensualités, au choix du client. Chaque échéance est arrondie au centime inférieur : le total ne dépasse jamais le prix du site. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
 
-Le client choisit, au moment de la commande, de payer le reste en une fois ou en plusieurs fois. Ce choix est ouvert avec ${mini.name} comme avec ${AUTO} (article 3).
+Le client choisit, au moment de la commande, de payer le reste en une fois ou en plusieurs fois. Ce choix est ouvert avec le forfait ${mini.name} comme avec ${AUTO} (article 3).
 
 Exemple pour un ${VIS.name} à ${eur(VIS.price)} €, sans code promo : le client paie ${eur(acompte(VIS.price))} € à la commande. À la réception, il paie ${eur(VIS.price - acompte(VIS.price))} € en une fois, ou ${lissage.durees.map((n) => `${eur(lisse(VIS.price, n))} € par mois pendant ${n} mois`).join(', ou ')}.
 
@@ -244,9 +244,9 @@ Les extras ne suivent pas cette règle : la ${minus(pageGoogle.name)} est payée
 
 ## 6. L’abonnement
 
-L’abonnement ${mini.name} est facultatif. Le client peut le prendre au moment de la commande, avec son nom de domaine, ou plus tard. C’est le seul abonnement proposé. Il démarre à la réception du site. Il est sans engagement (article 8).
+Le forfait ${mini.name} est facultatif. Le client peut le prendre au moment de la commande, avec son nom de domaine, ou plus tard. C’est le seul abonnement proposé. Il démarre à la réception du site. Il est sans engagement (article 8).
 
-**L’abonnement ${mini.name}, ${eur(mini.month)} € par mois.** Il comprend :
+**Le forfait ${mini.name}, ${eur(mini.month)} € par mois.** Il comprend :
 
 - **L’hébergement** : le site reste accessible 24 h/24, avec le HTTPS, le petit cadenas qui protège les échanges avec les visiteurs.
 - **Le nom de domaine**, c’est-à-dire l’adresse du site, enregistré au nom du client et compris tant que l’abonnement est actif (article 10).
@@ -259,7 +259,7 @@ L’abonnement ${mini.name} est facultatif. Le client peut le prendre au moment 
 
 Le délai de traitement des modifications est un délai habituel, donné à titre indicatif. Il ne constitue pas une garantie.
 
-**Paiement.** L’abonnement est prélevé d’avance, chaque mois : ${eur(mini.month)} € par mois pour ${mini.name}.
+**Paiement.** L’abonnement est prélevé d’avance, chaque mois : ${eur(mini.month)} € par mois pour le forfait ${mini.name}.
 
 Les paiements sont confiés à Stripe, le prestataire de paiement en ligne, par carte bancaire ou par prélèvement SEPA, c’est-à-dire directement sur le compte bancaire. Les Minis Monstres ne voient pas et ne conservent pas les données bancaires. Chaque facture est envoyée par e-mail et reste disponible dans l’espace client.
 
@@ -285,7 +285,7 @@ En commandant, le client demande expressément, en cochant la case prévue, que 
 
 ## 10. Nom de domaine
 
-Le nom de domaine est l’adresse du site sur internet. Le client en est le titulaire. Avec l’abonnement ${mini.name}, les Minis Monstres y figurent comme contact technique, pour pouvoir le gérer. Le nom est réservé après le premier paiement, s’il est encore disponible à ce moment-là.
+Le nom de domaine est l’adresse du site sur internet. Le client en est le titulaire. Avec le forfait ${mini.name}, les Minis Monstres y figurent comme contact technique, pour pouvoir le gérer. Le nom est réservé après le premier paiement, s’il est encore disponible à ce moment-là.
 
 Avec l’abonnement, un nom de domaine standard en .fr, .com, .net ou .org est compris tant que l’abonnement est actif : son renouvellement annuel ne coûte rien de plus. Les autres extensions et les noms dits « premium », vendus plus cher par les registres (les organismes qui gèrent chaque extension), font l’objet d’un devis.
 
@@ -299,7 +299,7 @@ Le client voit son site avant la mise en ligne. Il peut demander des révisions 
 
 ## 12. Modifications
 
-**Ce qui est inclus.** Les modifications sont incluses dans l’abonnement ${mini.name}. Une modification est un changement demandé sur le site déjà en ligne : ajouter ou changer un texte ou des photos, mettre à jour une information. Ajouter une ${minus(pageGoogle.name)} n’en est pas une : c’est un extra (article 3). Une refonte complète fait l’objet d’un devis. Sans abonnement, le client fait lui-même ses modifications.
+**Ce qui est inclus.** Les modifications sont incluses dans le forfait ${mini.name}. Une modification est un changement demandé sur le site déjà en ligne : ajouter ou changer un texte ou des photos, mettre à jour une information. Ajouter une ${minus(pageGoogle.name)} n’en est pas une : c’est un extra (article 3). Une refonte complète fait l’objet d’un devis. Sans abonnement, le client fait lui-même ses modifications.
 
 **Déroulé.** Chaque modification suit les mêmes étapes :
 
@@ -319,7 +319,7 @@ Une demande sur devis suit le délai indiqué dans le devis.
 
 ## 13. Espace client et compte
 
-Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. C’est sa page personnelle, protégée par un mot de passe. Il y suit sa commande et ses factures. Avec l’abonnement ${mini.name}, il y fait ses demandes de modification et y gère son abonnement. C’est aussi là qu’il commande une ${minus(pageGoogle.name)} (article 3), et, avec le ${BOU.name}, qu’il gère son catalogue dans l’onglet « Ma boutique ». La bulle d’aide de ${cerise} y répond à ses questions, dans la limite de ${limites.bulleJour} messages par jour. Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
+Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. C’est sa page personnelle, protégée par un mot de passe. Il y suit sa commande et ses factures. Avec le forfait ${mini.name}, il y fait ses demandes de modification et y gère son abonnement. C’est aussi là qu’il commande une ${minus(pageGoogle.name)} (article 3), et, avec le ${BOU.name}, qu’il gère son catalogue dans l’onglet « Ma boutique ». La bulle d’aide de ${cerise} y répond à ses questions, dans la limite de ${limites.bulleJour} messages par jour. Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
 
 Un compte sans connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec ses demandes et ses photos. Le client est prévenu par e-mail 30 jours avant. Une connexion suffit pour annuler la suppression. Les factures sont conservées en dehors du compte, le temps prévu par la loi.
 
@@ -329,7 +329,7 @@ Le client garantit qu’il a le droit d’utiliser les textes, images, logos et 
 
 ## 15. Versions et outils automatisés
 
-Avec l’abonnement ${mini.name}, chaque version du site est conservée et peut être restaurée sur demande.
+Avec le forfait ${mini.name}, chaque version du site est conservée et peut être restaurée sur demande.
 
 Alex conçoit chaque site et en contrôle la réalisation. Il s’appuie sur des outils qu’il a mis au point, présentés sur le site comme une petite bande de six Minis Monstres :
 
