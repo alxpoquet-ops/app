@@ -1022,7 +1022,7 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .art-cat-form { display: grid; gap: 10px; margin-top: 10px; }
 .art-cat-form .btn { justify-content: center; min-height: 48px; }
 /* Ma boutique : la rubrique « Catégories » (sept rubriques au menu) */
-@media (min-width: 760px) { .bg-nav { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+@media (min-width: 760px) { .bg-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 .art-vers-cats { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 14px 0 0; font-weight: 700; }
 .art-vers-cats svg { width: 20px; height: 20px; flex: none; color: var(--lilac-dd); }
 .art-cat-nouvelle { padding: 16px; border-radius: 22px; background: var(--soft); margin-bottom: 16px; }
@@ -1041,3 +1041,4 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 
 /* Le bouton qui demande confirmation : il change de couleur et dit « Confirmer » */
 button.is-confirmer.is-confirmer, .btn.is-confirmer.is-confirmer, .req-annul .link-btn.is-confirmer, .bq-x.is-confirmer.is-confirmer { width: auto; min-width: 0; padding: 8px 14px; border-radius: 999px; background: var(--pink); color: var(--ink); font-weight: 900; box-shadow: 0 0 0 2px var(--pink-d) inset; text-decoration: none; }
+@media (max-width: 759px) { .bg-nav a.bg-lien:last-child:nth-child(odd) { grid-column: 1 / -1; justify-content: center; } }
