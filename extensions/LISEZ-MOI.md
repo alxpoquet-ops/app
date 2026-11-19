@@ -12,7 +12,17 @@ Une extension par type de site. On la met sur le WordPress tout neuf du client, 
 
 1. Dans le WordPress du client : Extensions › Ajouter › Téléverser, choisir le fichier, installer, activer.
 2. La page « Minis Monstres » s'ouvre et fait tout, étape par étape. Chaque ligne passe au vert.
-3. Suivre « Ce qu'il reste à faire » en bas de cette page : le visuel, puis la clé du site à coller dans la fiche du client.
+3. Suivre « Ce qu'il reste à faire » en bas de cette page : le visuel.
+
+## Le lien avec l'espace client se fait tout seul
+
+À la fin de l'installation, le site envoie son adresse et sa clé à les-minis-monstres.fr, qui le rappelle pour vérifier que c'est bien lui.
+
+- Si une fiche client porte déjà cette adresse (c'est le cas après une commande avec nom de domaine), le site est relié aussitôt.
+- Sinon il attend : dès que l'adresse est mise dans la fiche du client, il est relié, sans clé à recopier.
+- Sur une adresse provisoire ou sans https, le lien ne se fait pas : relancer l'installation une fois le site sur son adresse définitive.
+
+Un e-mail prévient Alex dans les deux premiers cas.
 
 ## Ce que chaque extension fait, dans les trois cas
 

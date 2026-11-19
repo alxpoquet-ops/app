@@ -200,6 +200,7 @@ require_once __DIR__ . '/includes/articles.php';
 require_once __DIR__ . '/includes/boutique-gestion.php';
 require_once __DIR__ . '/includes/paiement-direct.php';
 require_once __DIR__ . '/includes/bienvenue.php';
+require_once __DIR__ . '/includes/relier.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
 require_once __DIR__ . '/includes/mirette.php';

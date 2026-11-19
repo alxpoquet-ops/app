@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Les Minis Monstres : installation du Site Boutique
  * Description: À mettre sur le WordPress tout neuf d'un client. À l'activation, tout se prépare tout seul : réglages, extensions, pages, menu, lien avec l'espace client. Il ne reste que le visuel.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Requires at least: 6.4
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Une seule de ces trois extensions sert par site. */
 if (defined('MINIS_SITE_TYPE')) return;
 define('MINIS_SITE_TYPE', 'boutique');
-define('MINIS_SITE_VERSION', '1.0.0');
+define('MINIS_SITE_VERSION', '1.1.0');
 define('MINIS_SITE_FICHIER', __FILE__);
 
 require_once __DIR__ . '/contenu.php';
@@ -61,6 +61,7 @@ function minis_site_etapes() {
     if (minis_site_boutique()) $e['boutique'] = 'Les réglages de la boutique';
     $e['pages'] = 'Les pages du site';
     $e['menu'] = 'Le menu';
+    $e['relier'] = 'Le lien avec l’espace client';
     $e['fin'] = 'Les dernières vérifications';
     return $e;
 }
@@ -124,6 +125,7 @@ function minis_site_faire($id) {
     if ($id === 'pages') return minis_site_e_pages();
     if ($id === 'boutique') return minis_site_e_boutique();
     if ($id === 'menu') return minis_site_e_menu();
+    if ($id === 'relier') return minis_site_e_relier();
     if ($id === 'fin') return minis_site_e_fin();
     return [false, 'Étape inconnue.'];
 }
@@ -334,7 +336,26 @@ function minis_site_e_menu() {
     return [true, count($liens) . ' liens dans « ' . $nom . ' ».'];
 }
 
-/* ---------- 9. la fin ---------- */
+/* ---------- 9. le lien avec l'espace client : le site donne son adresse et sa clé aux Minis Monstres, qui le rappellent pour vérifier ---------- */
+function minis_site_e_relier() {
+    $cle = defined('ALEXLIA_SECRET') && ALEXLIA_SECRET ? (string) ALEXLIA_SECRET : (string) get_option('alexlia_secret', '');
+    if ($cle === '') return [false, 'Le connecteur n’a pas de clé : relancez l’installation.'];
+    $url = home_url('/');
+    $plus_tard = 'Le lien se fera quand le site sera sur son adresse définitive, en https : il suffira de relancer l’installation.';
+    if (wp_parse_url($url, PHP_URL_SCHEME) !== 'https') { update_option('minis_site_relie', 'plus_tard', false); return [true, $plus_tard]; }
+    $source = function_exists('alexlia_conn_source') ? alexlia_conn_source() : 'https://www.les-minis-monstres.fr';
+    $r = wp_remote_post(untrailingslashit($source) . '/wp-json/aled08/v1/relier', ['timeout' => 45, 'headers' => ['Content-Type' => 'application/json'], 'body' => wp_json_encode(['url' => $url, 'cle' => $cle])]);
+    if (is_wp_error($r)) return [false, 'Les Minis Monstres ne répondent pas : ' . $r->get_error_message() . ' Relancez dans un instant.'];
+    $d = json_decode((string) wp_remote_retrieve_body($r), true);
+    $etat = is_array($d) ? (string) ($d['etat'] ?? '') : '';
+    update_option('minis_site_relie', $etat, false);
+    if ($etat === 'relie') return [true, 'Le site est relié à l’espace client. Rien à recopier.'];
+    if ($etat === 'attente') return [true, 'Le site s’est présenté aux Minis Monstres. Il sera relié tout seul dès que la fiche du client portera cette adresse.'];
+    if ($etat === 'injoignable') { update_option('minis_site_relie', 'plus_tard', false); return [true, 'Les Minis Monstres n’ont pas réussi à joindre ce site depuis l’extérieur. ' . $plus_tard]; }
+    return [false, 'Le lien n’a pas pu se faire (' . ($etat ?: 'réponse ' . (int) wp_remote_retrieve_response_code($r)) . '). Relancez dans un instant.'];
+}
+
+/* ---------- 10. la fin ---------- */
 function minis_site_e_fin() {
     $rate = [];
     foreach (minis_site_etat() as $id => $e) if ($id !== 'fin' && empty($e['ok'])) $rate[] = minis_site_etapes()[$id] ?? $id;
@@ -407,11 +428,15 @@ function minis_site_page() {
     <h2>Ce qu’il reste à faire</h2>
     <ol class="ms-suite">
       <li><strong>Le visuel.</strong> Le thème, les couleurs, les photos, et les textes entre crochets [comme ceci] à remplacer dans <a href="<?php echo esc_url(admin_url('edit.php?post_type=page')); ?>">les pages</a>.</li>
-      <li><strong>Relier le site à l’espace client.</strong> Dans la fiche du client sur les-minis-monstres.fr, collez l’adresse du site et sa clé.
-        <div class="ms-cle"><input type="text" readonly value="<?php echo esc_attr(home_url('/')); ?>" onclick="this.select()" aria-label="Adresse du site"></div>
-        <?php if ($cle !== '') : ?><div class="ms-cle"><input type="password" readonly id="ms-cle" value="<?php echo esc_attr($cle); ?>" aria-label="Clé du site"><button type="button" class="button" onclick="var c=document.getElementById('ms-cle');c.type='text';c.select();try{navigator.clipboard.writeText(c.value);this.textContent='Copiée';}catch(e){}">Copier la clé</button></div>
-        <?php else : ?><p class="description">La clé apparaît ici une fois le connecteur installé.</p><?php endif; ?>
-      </li>
+      <?php $rel = (string) get_option('minis_site_relie'); if ($rel === 'relie') : ?>
+      <li><strong>Le lien avec l’espace client : c’est fait.</strong> Le site s’est relié tout seul.</li>
+      <?php elseif ($rel === 'attente') : ?>
+      <li><strong>Le lien avec l’espace client.</strong> Le site s’est présenté tout seul. Mettez juste son adresse dans la fiche du client sur les-minis-monstres.fr : il se relie à ce moment-là, sans clé à recopier.
+        <div class="ms-cle"><input type="text" readonly value="<?php echo esc_attr(home_url('/')); ?>" onclick="this.select()" aria-label="Adresse du site"></div></li>
+      <?php else : ?>
+      <li><strong>Le lien avec l’espace client.</strong> Il se fait tout seul quand le site est sur son adresse définitive, en https : relancez alors l’installation. En secours, vous pouvez coller cette clé dans la fiche du client.
+        <?php if ($cle !== '') : ?><div class="ms-cle"><input type="password" readonly id="ms-cle" value="<?php echo esc_attr($cle); ?>" aria-label="Clé du site"><button type="button" class="button" onclick="var c=document.getElementById('ms-cle');c.type='text';c.select();try{navigator.clipboard.writeText(c.value);this.textContent='Copiée';}catch(e){}">Copier la clé</button></div><?php endif; ?></li>
+      <?php endif; ?>
       <li><strong>Brancher Claude.</strong> Dans <em>Easy MCP AI</em>, reliez le site à Claude pour travailler dessus par la discussion.</li>
       <li><strong>Les mentions légales.</strong> Complétez le nom, l’adresse et le numéro SIRET du client<?php echo minis_site_boutique() ? ', et les conditions générales de vente' : ''; ?>.</li>
       <?php if (minis_site_boutique()) : ?><li><strong>La boutique.</strong> Reliez Stripe ou PayPal au compte du client (WooCommerce › Réglages › Paiements). Tant qu’aucun paiement n’est relié, les articles s’affichent sans panier. Les articles, les catégories et la livraison se règlent ensuite depuis l’espace client.</li><?php endif; ?>
