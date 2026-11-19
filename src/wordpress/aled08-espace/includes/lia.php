@@ -641,6 +641,7 @@ function aled08e_lia_profil($user) {
     echo '<tr><th>Clé du connecteur</th><td>';
     if ($sec) echo '<input type="text" readonly class="regular-text code" value="' . esc_attr($sec) . '" onclick="this.select()"><br>';
     echo '<label><input type="checkbox" name="aled08e_lia_nouvelle" value="1"> ' . ($sec ? 'Créer une nouvelle clé (l’ancienne ne marchera plus)' : 'Créer la clé') . '</label></td></tr>';
+    echo '<tr><th><label for="aled08e-lia-collee">Ou coller la clé du site</label></th><td><input type="text" id="aled08e-lia-collee" name="aled08e_lia_collee" class="regular-text code" value="" autocomplete="off"><p class="description">La clé affichée par l’extension d’installation, sur le site du client (menu « Minis Monstres »). Elle remplace celle d’ici.</p></td></tr>';
     if ($url && $sec) {
         $t = aled08e_lia_appel($uid, 'infos');
         if (!is_wp_error($t) && function_exists('aled08e_mcp_noter')) aled08e_mcp_noter($uid, $t);
@@ -657,6 +658,9 @@ function aled08e_lia_profil_save($uid) {
     if ($url !== '' && wp_parse_url($url, PHP_URL_SCHEME) !== 'https') $url = '';
     update_user_meta($uid, 'aled08_lia_url', untrailingslashit($url));
     if (!empty($_POST['aled08e_lia_nouvelle'])) update_user_meta($uid, 'aled08_lia_secret', aled08e_lia_secret_nouveau());
+    // la clé créée sur le site du client par l'extension d'installation : on la colle ici, rien à recopier là-bas
+    $collee = preg_replace('/[^A-Za-z0-9]/', '', (string) wp_unslash($_POST['aled08e_lia_collee'] ?? ''));
+    if (strlen($collee) >= 32 && strlen($collee) <= 128) update_user_meta($uid, 'aled08_lia_secret', $collee);
     aled08e_lia_rattraper();
 }
 add_action('personal_options_update', 'aled08e_lia_profil_save');
