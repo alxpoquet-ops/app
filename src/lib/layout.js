@@ -159,7 +159,7 @@ function footer(p) {
       </ul>
     </div>
     ${col('Votre site', `<li><a href="${sections.creer.path}">Créer mon site</a></li>
-        ${types.map((t) => `<li><a href="${C.creerUrl({ type: t.id })}">${t.name}, ${C.euro(t.price)}</a></li>`).join('\n        ')}
+        ${types.map((t) => `<li><a href="${C.creerUrl({ type: t.id })}">${t.name}</a></li>`).join('\n        ')}
         <li><a href="${sections.forfaits.path}">Voir les tarifs</a></li>`)}
     ${col('Être visible', `<li><a href="/pourquoi-un-site-internet/">Pourquoi avoir un site internet ?</a></li>
         <li><a href="/etre-visible-sur-google/">Être visible sur Google</a></li>

@@ -89,7 +89,7 @@ function home() {
       <p class="hero-sur">${icon('store')}Sites internet pour artisans et commerçants</p>
       <h1>Votre activité mérite <mark>d’être vue</mark>.</h1>
       <p class="hero-lead">Sans site internet, c’est une belle vitrine dans une rue où personne ne passe. On crée le vôtre, et on vous rend visible.</p>
-      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}<a class="hero-lien" href="${sections.forfaits.path}">Voir les tarifs, dès ${euro(creation.prix)}${icon('arrow-right')}</a></div>
+      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}<a class="hero-lien" href="${sections.forfaits.path}">Voir les tarifs${icon('arrow-right')}</a></div>
       <ul class="hero-points">
         <li>${icon('check')}Prix affichés</li>
         <li>${icon('check')}Sans abonnement obligatoire</li>
@@ -105,10 +105,11 @@ function home() {
   </div>
 </section>
 
-<section class="section" id="prix"><div class="container">
+<section class="section" id="sites"><div class="container">
   <h2 class="section-title">Trois sites pour être visible</h2>
-  <p class="section-sub">Créez votre site : payez une seule fois. Ensuite, ${esc(AUTO.name)} ou le forfait ${esc(ABO.name)}, à vous de choisir.</p>
-  ${commun(C.offre({ compact: true }))}
+  <p class="section-sub">À chacun son but. Choisissez celui qui vous ressemble.</p>
+  ${C.positionnement()}
+  <p class="center more">${C.btn(sections.forfaits.path, 'btn-primary btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</p>
 </div></section>
 
 <section class="section section-soft" id="visible"><div class="container">
@@ -133,8 +134,8 @@ ${C.ctaBand({ title: 'On ouvre votre vitrine sur internet ?', text: 'Choisissez 
   return {
     path: '/',
     bodyClass: 'page-accueil',
-    title: `Un site internet pour être visible, dès ${creation.prix} € | Les Minis Monstres`,
-    description: `Sans site internet, personne ne passe devant votre vitrine. On vous rend visible : ${types.map((t) => `${t.name} ${euro(t.price)}`).join(', ')}, payé une fois.`,
+    title: 'Un site internet pour être visible | Les Minis Monstres',
+    description: 'Sans site internet, personne ne passe devant votre vitrine. On crée le vôtre pour exister sur internet, être trouvé sur Google ou vendre en ligne.',
     crumbs: [HOME],
     body,
     priority: 1,
