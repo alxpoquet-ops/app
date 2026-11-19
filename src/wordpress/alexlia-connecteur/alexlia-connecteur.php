@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.6.0
+ * Version: 2.7.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.6.0');
+define('ALEXLIA_CONN_VERSION', '2.7.0');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 
 /* =========================================================================
@@ -126,6 +126,8 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'paiement_regler': return alexlia_bg_paiement_regler($args);
         case 'paiement_installer': return alexlia_bg_paiement_installer($args);
         case 'commandes_lire': return alexlia_bg_commandes_lire();
+        case 'vente_lire': return alexlia_vitrine_lire();
+        case 'vente_regler': return alexlia_vitrine_regler($args);
         case 'commande_statut': return alexlia_bg_commande_statut($args);
         case 'livraison_lire': return alexlia_bg_livraison_lire();
         case 'livraison_regler': return alexlia_bg_livraison_regler($args);
@@ -1292,3 +1294,63 @@ add_action('init', function () {
         add_action('wp_footer', function () use ($bandeau) { ob_start(); $bandeau(); $h = ob_get_clean(); if ($h) echo '<script>(function(){var d=document.createElement("div");d.innerHTML=' . wp_json_encode($h) . ';document.body.insertBefore(d.firstChild,document.body.firstChild);})();</script>'; }, 2);
     }
 });
+
+/* ---------- Boutique en vitrine (2.7.0) ----------
+ * Le client peut couper la vente en ligne depuis son espace : la boutique devient une vitrine (les articles se regardent, sans panier
+ * ni paiement), et chaque article renvoie vers le formulaire de contact. C'est aussi ce qui se passe, tout seul, tant qu'aucun moyen
+ * de paiement n'est activé. On s'appuie sur WooCommerce : un article « non achetable » n'a plus de bouton d'achat. */
+function alexlia_vitrine_contact_url() {
+    $u = (string) get_option('alexlia_vitrine_contact', '');
+    if ($u !== '') return $u;
+    foreach (['contact', 'nous-contacter', 'contactez-nous', 'me-contacter'] as $slug) { $pg = get_page_by_path($slug); if ($pg && $pg->post_status === 'publish') return (string) get_permalink($pg); }
+    return home_url('/contact/');
+}
+function alexlia_vitrine_moyens() {
+    static $n = null;
+    if ($n !== null) return $n;
+    $n = 0;
+    if (!function_exists('WC') || !WC()->payment_gateways()) return $n;
+    foreach (WC()->payment_gateways()->payment_gateways() as $g) if (isset($g->enabled) && $g->enabled === 'yes') $n++;
+    return $n;
+}
+/* La boutique est-elle en vitrine ? (vente coupée par le client, ou aucun moyen de paiement activé) */
+function alexlia_vitrine_active() {
+    if (!function_exists('WC')) return false;
+    if (get_option('alexlia_vente', 'on') === 'off') return true;
+    return did_action('wp_loaded') ? alexlia_vitrine_moyens() === 0 : false;
+}
+function alexlia_vitrine_lire() {
+    if (!function_exists('WC')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    $moyens = alexlia_vitrine_moyens();
+    $voulue = get_option('alexlia_vente', 'on') !== 'off';
+    return ['vente' => $voulue, 'moyens' => $moyens, 'vitrine' => !$voulue || $moyens === 0, 'contact' => alexlia_vitrine_contact_url()];
+}
+function alexlia_vitrine_regler($a) {
+    if (!function_exists('WC')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    update_option('alexlia_vente', !empty($a['vente']) ? 'on' : 'off');
+    alexlia_conn_journal(!empty($a['vente']) ? 'Vente en ligne activée par le client depuis son espace.' : 'Vente en ligne coupée par le client depuis son espace : la boutique est en vitrine.');
+    return alexlia_vitrine_lire();
+}
+add_action('wp_loaded', function () {
+    if (is_admin() || !function_exists('WC') || !alexlia_vitrine_active()) return;
+    add_filter('woocommerce_is_purchasable', '__return_false', 99);
+    add_filter('woocommerce_variation_is_purchasable', '__return_false', 99);
+    add_filter('woocommerce_product_add_to_cart_text', function () { return 'Voir l’article'; }, 99);
+    // sur la page d'un article : un bouton vers le formulaire de contact, à la place du panier
+    add_action('woocommerce_single_product_summary', function () {
+        global $product;
+        $nom = is_object($product) ? $product->get_name() : '';
+        $url = add_query_arg('article', rawurlencode($nom), alexlia_vitrine_contact_url());
+        echo '<p class="alexlia-vitrine"><a class="button alt" href="' . esc_url($url) . '">Nous contacter pour cet article</a></p>';
+    }, 31);
+    // le panier et la page de paiement n'ont plus lieu d'être : retour à la boutique
+    add_action('template_redirect', function () {
+        if (function_exists('is_cart') && (is_cart() || is_checkout()) && !is_wc_endpoint_url('order-received') && !is_wc_endpoint_url('order-pay')) {
+            wp_safe_redirect(function_exists('wc_get_page_permalink') ? wc_get_page_permalink('shop') : home_url('/'), 302);
+            exit;
+        }
+    });
+    // les liens et l'icône du panier dans le menu : cachés
+    add_action('wp_head', function () { echo '<style>.cart-contents,.site-header-cart,.wc-block-mini-cart,.widget_shopping_cart,a[href*="/panier"],a[href*="/cart"]{display:none!important}</style>'; });
+}, 20);
+

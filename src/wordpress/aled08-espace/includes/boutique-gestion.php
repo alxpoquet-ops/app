@@ -89,6 +89,13 @@ add_action('template_redirect', function () {
         $retour(true, $id === 'stripe' ? 'Stripe est installé ! Il ne reste qu’à coller vos clés ci-dessous, puis à cocher « Je propose ce moyen de paiement ».' : 'PayPal est installé ! Il ne reste qu’à connecter votre compte PayPal (bouton ci-dessous).');
     }
 
+    // --- la vente en ligne : activée, ou coupée (la boutique devient une vitrine, sans panier)
+    if ($op === 'vente') {
+        $on = !empty($P['vente']);
+        $r = aled08e_bg_appel($uid, 'vente_regler', ['vente' => $on ? 1 : 0]);
+        if (!is_array($r)) $retour(false, aled08e_bg_message_etat($r));
+        $retour(true, $on ? (empty($r['moyens']) ? 'La vente est activée. Il manque encore un moyen de paiement : en attendant, vos articles renvoient vers votre formulaire de contact.' : 'La vente en ligne est activée : vos clients peuvent commander.') : 'La vente en ligne est coupée : votre boutique est en vitrine, sans panier. Vos articles renvoient vers votre formulaire de contact.');
+    }
     // --- la livraison (modes d'expédition de WooCommerce)
     if ($op === 'livraison') {
         $r = aled08e_bg_appel($uid, 'livraison_regler', ['forfait' => !empty($P['forfait']), 'forfait_prix' => (string) ($P['forfait_prix'] ?? ''), 'gratuit' => !empty($P['gratuit']), 'gratuit_minimum' => (string) ($P['gratuit_minimum'] ?? ''), 'retrait' => !empty($P['retrait'])]);
@@ -165,6 +172,15 @@ function aled08e_bg_paiements_html($uid) {
     if (!is_array($r)) return $h . '<p class="esp-warn">' . esc_html(aled08e_bg_message_etat($r)) . '</p>';
     $nonce = wp_nonce_field('aled08e_bg', '_aled08e_bg', true, false);
     $act = esc_url(aled08e_url());
+    // la vente en ligne : un interrupteur, tout en haut
+    $v = aled08e_bg_appel($uid, 'vente_lire');
+    if (is_array($v)) {
+        $on = !empty($v['vente']);
+        $etat = !$on ? ['Vitrine', 'Vos articles se regardent, sans panier ni paiement. Chaque article renvoie vers votre formulaire de contact.'] : (empty($v['moyens']) ? ['Vitrine, en attendant', 'Aucun moyen de paiement n’est encore activé : vos articles renvoient vers votre formulaire de contact. Activez-en un ci-dessous pour vendre.'] : ['Vente en ligne', 'Vos clients mettent au panier et paient sur votre boutique.']);
+        $h .= '<div class="bg-vente' . ($on && !empty($v['moyens']) ? ' is-on' : '') . '"><div class="bg-vente-txt"><strong>' . aled08e_icon($on && !empty($v['moyens']) ? 'shopping-bag' : 'eye') . esc_html($etat[0]) . '</strong><p>' . esc_html($etat[1]) . '</p></div>'
+            . '<form method="post" action="' . $act . '">' . $nonce . '<input type="hidden" name="aled08e_bg" value="vente">' . ($on ? '' : '<input type="hidden" name="vente" value="1">')
+            . '<button class="btn ' . ($on ? 'btn-light' : 'btn-primary') . '" type="submit">' . aled08e_icon($on ? 'eye' : 'shopping-bag') . '<span>' . ($on ? 'Passer en vitrine (sans vente)' : 'Activer la vente en ligne') . '</span></button></form></div>';
+    }
     $icones = ['stripe' => 'credit-card', 'ppcp-gateway' => 'badge-euro', 'bacs' => 'receipt', 'cheque' => 'pencil', 'cod' => 'package'];
     $h .= '<div class="bg-paiements">';
     foreach ($r['paiements'] as $g) {

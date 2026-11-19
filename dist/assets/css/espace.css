@@ -989,3 +989,11 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .art-prix-sans { font-size: .9rem; opacity: .75; font-weight: 800; }
 .art-prix small { font-weight: 700; font-size: .78em; }
 .art-form input:disabled { opacity: .45; }
+/* Ma boutique, Paiements : l'interrupteur « vente en ligne » ou « vitrine » */
+.bg-vente { display: grid; gap: 12px; margin: 0 0 18px; padding: 16px; border-radius: 22px; background: var(--butter); color: var(--ink); box-shadow: 0 0 0 2px var(--butter-d) inset; }
+.bg-vente.is-on { background: var(--mint); box-shadow: 0 0 0 2px var(--mint-d) inset; }
+.bg-vente-txt strong { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: 900; }
+.bg-vente-txt strong svg { width: 22px; height: 22px; flex: none; }
+.bg-vente-txt p { margin: 6px 0 0; line-height: 1.45; font-weight: 600; }
+.bg-vente .btn { width: 100%; justify-content: center; min-height: 50px; white-space: normal; }
+@media (min-width: 760px) { .bg-vente { grid-template-columns: minmax(0, 1fr) auto; align-items: center; } .bg-vente .btn { width: auto; } }
