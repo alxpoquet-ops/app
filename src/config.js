@@ -154,7 +154,7 @@ const types = [
     qui: 'Pour exister sur internet et être joignable.',
     ideal: 'idéal pour démarrer, une carte de visite sur internet',
     pourQui: 'Pour vous si vous démarrez, ou si votre activité se présente en quelques lignes. Par exemple : artisan, indépendant, association, événement.',
-    inclus: ['Site internet One Page personnalisé', 'Design adapté à votre activité', 'Compatible téléphone et ordinateur', 'Formulaire de contact', 'Rendez-vous téléphonique de découverte', 'Révisions illimitées jusqu’à validation finale du site*', 'Mise en ligne complète', 'Export du site possible'],
+    inclus: ['Site internet One Page personnalisé', 'Design adapté à votre activité', 'Compatible téléphone et ordinateur', 'Révisions illimitées jusqu’à validation finale du site*', 'Mise en ligne complète', 'Formulaire de contact', 'Rendez-vous téléphonique de découverte', 'Export du site possible'],
   },
   {
     id: 'vitrine',
@@ -173,7 +173,7 @@ const types = [
     qui: 'Pour être trouvé sur Google par les clients de votre secteur.',
     ideal: 'idéal pour être trouvé sur Google, avec une page par sujet',
     pourQui: 'Pour vous si vous proposez plusieurs services, ou si vous voulez être trouvé sur Google. Chaque page parle d’un sujet précis, et Google peut montrer chacune dans ses résultats. Par exemple : entreprise, commerce, profession libérale.',
-    inclus: ['Tout le contenu du Site Essentiel', `Jusqu’à ${creation.pages} pages`, 'Pages de visibilité Google intégrées', 'FAQ personnalisée', 'Référencement local renforcé', 'Structure optimisée pour Google', 'Export du site possible'],
+    inclus: ['Tout le contenu du Site Essentiel', `Jusqu’à ${creation.pages} pages`, 'Pages de visibilité Google intégrées', 'Référencement local renforcé', 'Structure optimisée pour Google', 'FAQ personnalisée', 'Export du site possible'],
   },
   {
     id: 'boutique',
@@ -192,7 +192,7 @@ const types = [
     qui: 'Pour vendre vos produits et vos services sur internet.',
     ideal: 'idéal pour vendre, avec le paiement en ligne',
     pourQui: 'Pour vous si vous voulez vendre vos produits ou vos services en ligne, même quand votre boutique est fermée. Par exemple : créateur, commerçant, producteur.',
-    inclus: ['Tout le contenu du Site Visibilité', 'Boutique en ligne complète', 'Panier d’achat', 'Paiement en ligne sécurisé', 'Gestion des produits', 'Gestion des commandes', 'E-mails automatiques clients', 'Configuration complète de la boutique', 'Vente de produits et services', 'Gestion autonome du catalogue', 'Export du site possible'],
+    inclus: ['Tout le contenu du Site Visibilité', 'Boutique en ligne complète', 'Paiement en ligne sécurisé', 'Vente de produits et services', 'Gestion autonome du catalogue', 'Panier d’achat', 'Gestion des commandes', 'Gestion des produits', 'E-mails automatiques clients', 'Configuration complète de la boutique', 'Export du site possible'],
   },
 ];
 // La petite étoile des « révisions illimitées »
@@ -245,9 +245,9 @@ const forfaits = [
     conseil: false,
     tagline: 'Sans engagement',
     pitch: 'On s’occupe de tout : votre site reste en ligne, protégé et à jour, avec votre nom de domaine. Vos modifications sont incluses, et vous les demandez directement depuis votre espace client.',
-    main: ['Hébergement', 'Nom de domaine', 'Sauvegardes automatiques', 'Sécurité', 'Maintenance technique', 'Espace client', 'Les Minis Monstres à votre service', 'Modifications incluses', 'Demandes de modification directement depuis votre espace client'],
+    main: ['Modifications incluses', 'Hébergement', 'Nom de domaine', 'Les Minis Monstres à votre service', 'Sauvegardes automatiques', 'Sécurité', 'Maintenance technique', 'Espace client', 'Demandes de modification directement depuis votre espace client'],
     details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site, à votre nom, comprise tant que l’abonnement est actif', 'Sauvegardes automatiques : une copie de sécurité de votre site, faite toute seule', 'Sécurité : le petit cadenas et la protection contre les attaques', 'Maintenance technique : votre site reste à jour', 'Espace client : tout se gère au même endroit, depuis votre téléphone', 'Les Minis Monstres à votre service : une question, et on vous répond', 'Modifications incluses : une modification peut prendre jusqu’à 48 h, une demande à la fois', 'Vos demandes se font directement depuis votre espace client'],
-    features: ['Hébergement', 'Nom de domaine', 'Sauvegardes automatiques', 'Sécurité', 'Maintenance technique', 'Modifications incluses'],
+    features: ['Modifications incluses', 'Hébergement', 'Nom de domaine', 'Sauvegardes automatiques', 'Sécurité', 'Maintenance technique'],
   },
 ];
 // Les anciens abonnements : plus proposés, mais un client qui en a un le garde (l'extension WordPress les lit ici).
@@ -296,7 +296,7 @@ const creationSeule = {
   month: 0,
   color: 'peach',
   court: 'Vous gérez tout vous-même : je vous remets votre site, prêt à installer chez votre hébergeur.',
-  main: ['Vous gérez votre hébergement', 'Vous gérez votre nom de domaine', 'Vous gérez vos sauvegardes', 'Vous gérez vos mises à jour', 'Aucune obligation d’abonnement'],
+  main: ['Aucune obligation d’abonnement', 'Vous gérez votre hébergement', 'Vous gérez votre nom de domaine', 'Vous gérez vos sauvegardes', 'Vous gérez vos mises à jour'],
 };
 const annuel = { moisOfferts: 2 };
 // Prix du site payable en 6 ou 12 fois sans frais (engagement le temps du paiement ; sinon, aucun engagement).
