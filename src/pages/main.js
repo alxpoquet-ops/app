@@ -195,7 +195,7 @@ function creerPage() {
   const body = `${C.pageHero({
     section: 'creer',
     h1: 'Choisissez votre site en deux minutes',
-    lead: `Trois façons d’être visible. Créez votre site : payez une seule fois. Ensuite, ${AUTO.name} ou le forfait ${ABO.name}. Le total s’affiche en bas.`,
+    lead: `Trois façons d’être visible. Créez votre site : payez une seule fois. Ensuite, le forfait ${AUTO.name} ou le forfait ${ABO.name}. Le total s’affiche en bas.`,
     crumbs,
   })}
 <section class="section section-builder"><div class="container">${C.configurator()}</div></section>
@@ -206,7 +206,7 @@ function creerPage() {
     { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % du site. Le reste vient à la réception, en une fois ou étalé.` },
     { t: 'On s’appelle', d: 'Un rendez-vous téléphonique pour découvrir votre activité.' },
     { t: 'Votre site est créé', d: 'Vous le voyez avant la mise en ligne, et vous dites ce qui doit changer, jusqu’à ce qu’il vous plaise.' },
-    { t: 'Il est mis en ligne', d: `Avec le forfait ${ABO.name}, on s’occupe de tout. Avec ${AUTO.name}, on vous remet votre site, prêt à installer chez votre hébergeur.` },
+    { t: 'Il est mis en ligne', d: `Avec le forfait ${ABO.name}, on s’occupe de tout. Avec le forfait ${AUTO.name}, on vous remet votre site, prêt à installer chez votre hébergeur.` },
   ])}
 </div></section>
 
@@ -217,7 +217,7 @@ ${f.html}`;
     bodyClass: 'page-creer',
     noMobileBar: true,
     title: 'Créer mon site internet et devenir visible | Les Minis Monstres',
-    description: `Devenez visible : ${ESS.name} ${creation.prix} €, ${VIS.name} ${creation.visibilite} € ou ${BOU.name} ${euro(creation.boutiquePrix)}. Puis ${AUTO.name} ou le forfait ${ABO.name}. Le total s’affiche tout de suite.`,
+    description: `Devenez visible : ${ESS.name} ${creation.prix} €, ${VIS.name} ${creation.visibilite} € ou ${BOU.name} ${euro(creation.boutiquePrix)}. Puis forfait ${AUTO.name} ou forfait ${ABO.name}. Le total s’affiche tout de suite.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -234,7 +234,7 @@ function forfaitsPage() {
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: `Tarifs : être visible, dès ${euro(creation.prix)}`,
-    lead: `Des prix affichés, les mêmes pour tous. Créez votre site : payez une seule fois. Ensuite, ${AUTO.name} à ${euro(AUTO.month)} ou le forfait ${ABO.name} à ${euro(ABO.month)} par mois. Enfin, les extras, si vous en avez besoin.`,
+    lead: `Des prix affichés, les mêmes pour tous. Créez votre site : payez une seule fois. Ensuite, le **forfait ${AUTO.name}** à ${euro(AUTO.month)} ou le **forfait ${ABO.name}** à ${euro(ABO.month)} par mois. Enfin, les extras, si vous en avez besoin.`,
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
@@ -256,7 +256,7 @@ function forfaitsPage() {
   ${C.deroulants([
     C.deroulant(`Ce que comprend le forfait ${esc(ABO.name)}, ligne par ligne`, `<ul class="list-check">${ABO.details.map((d) => `<li>${inline(d)}</li>`).join('')}</ul>`, { id: 'maintenir', ico: 'shield-check' }),
     C.deroulant(`Une modification avec le forfait ${esc(ABO.name)}, comment ça se passe ?`, `<p>Vous écrivez votre demande dans votre espace client. ${esc(C.CERISE)} vous aide à la formuler, et la modification est faite pour vous.</p>${C.processusModif({ titre: false })}`, { id: 'modifications', ico: 'repeat' }),
-    C.deroulant(`${esc(AUTO.name)} : vous préférez tout gérer vous-même ?`, commun(C.creationSeuleBox()), { id: 'creation-seule', ico: 'download' }),
+    C.deroulant(`Forfait ${esc(AUTO.name)} : vous préférez tout gérer vous-même ?`, commun(C.creationSeuleBox()), { id: 'creation-seule', ico: 'download' }),
     C.deroulant(`Le ${esc(BOU.name)}, pour vendre sur internet`, C.optionsCompact(), { id: 'boutique', ico: 'shopping-bag' }),
     C.deroulant('Comment payer ?', C.payBox(), { id: 'payer', ico: 'calendar-check' }),
     C.deroulant(`Et si vous arrêtez le forfait ${esc(ABO.name)} ?`, `<ul class="list-check">
@@ -287,7 +287,7 @@ ${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Il ne reste qu’à deven
     path: sections.forfaits.path,
     section: 'forfaits',
     title: `Tarifs : un site internet pour être visible, dès ${creation.prix} € | Les Minis Monstres`,
-    description: `${ESS.name} ${creation.prix} €, ${VIS.name} ${creation.visibilite} €, ${BOU.name} ${euro(creation.boutiquePrix)}, payés une fois. Ensuite, ${AUTO.name} à ${AUTO.month} € ou le forfait ${ABO.name} à ${ABO.month} € par mois, sans engagement.`,
+    description: `${ESS.name} ${creation.prix} €, ${VIS.name} ${creation.visibilite} €, ${BOU.name} ${euro(creation.boutiquePrix)}, payés une fois. Puis forfait ${AUTO.name} à ${AUTO.month} € ou forfait ${ABO.name} à ${ABO.month} € par mois.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -490,7 +490,7 @@ function comparatifPage() {
 
 Soyons honnêtes : ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois.`) + C.sourcesMarche(), { ico: 'scale', ouvert: true }),
     C.deroulant('Pourquoi ce prix ?', md(`Une méthode rodée, des outils préparés à l’avance, et pas de bureaux à payer. Les prix sont affichés : pas de rendez-vous commercial, pas de devis à attendre. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank' }),
-    C.deroulant('Et l’entretien, chaque mois ?', md(`Avec ${AUTO.name}, vous gérez tout vous-même, pour ${euro(AUTO.month)} par mois. Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications. Pas de nom de domaine ? On vous le fournit pour ${euro(C.DOM)} de plus par mois. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois pour l’entretien d’un site.`), { ico: 'repeat' }),
+    C.deroulant('Et l’entretien, chaque mois ?', md(`Avec le forfait ${AUTO.name}, vous gérez tout vous-même, pour ${euro(AUTO.month)} par mois. Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications. Pas de nom de domaine ? On vous le fournit pour ${euro(C.DOM)} de plus par mois. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois pour l’entretien d’un site.`), { ico: 'repeat' }),
     C.deroulant('Ce que vous ne faites pas vous-même', md(`Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, écrire pour Google. Ici, vous dites ce que vous voulez, et votre site est fait pour vous. Vous gardez votre temps pour votre métier.`), { ico: 'clock' }),
     C.deroulant('Quand on vous dira d’aller ailleurs', md(`Une application sur mesure, un logiciel métier, un catalogue de milliers de produits : ces projets demandent une agence ou un développeur. On vous le dit dès le premier échange.`), { ico: 'arrow-right' }),
   ])}
@@ -646,7 +646,7 @@ function commanderPage() {
           <p><span>Aujourd’hui</span><b data-order="today">${euro(today0)}</b></p>
           <p><span data-order="next-label">À la réception : le reste, et votre forfait</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month + C.DOM)}/mois</b></p>
         </div>
-        <p class="b-sum-note">${icon('check')}<span data-avec-formule>Votre forfait démarre à la réception de votre site, pas avant. Si on vous fournit le nom de domaine, il est réservé dès la commande.</span><span data-seule-txt hidden>${esc(AUTO.name)} : pas d’abonnement. À la réception, on vous remet votre site, prêt à installer.</span></p>
+        <p class="b-sum-note">${icon('check')}<span data-avec-formule>Votre forfait démarre à la réception de votre site, pas avant. Si on vous fournit le nom de domaine, il est réservé dès la commande.</span><span data-seule-txt hidden>Forfait ${esc(AUTO.name)} : pas d’abonnement. À la réception, on vous remet votre site, prêt à installer.</span></p>
       </div>
       <div class="o-next reveal">
         <h2 class="h3">${icon('list-checks')}Ce qui se passe ensuite</h2>
@@ -663,7 +663,7 @@ function commanderPage() {
     noindex: true,
     noMobileBar: true,
     title: 'Votre commande | Les Minis Monstres',
-    description: 'Vérifiez votre site, choisissez Autonomie ou Mini, donnez vos coordonnées et payez en ligne en toute sécurité. Aujourd’hui, vous réglez seulement l’acompte.',
+    description: 'Vérifiez votre site, choisissez le forfait Autonome ou le forfait Mini, donnez vos coordonnées et payez en ligne en toute sécurité. Aujourd’hui, vous réglez seulement l’acompte.',
     crumbs,
     body,
   };
@@ -930,7 +930,7 @@ function monEspacePage() {
           <h2 class="app-h">Mon compte</h2>
           <p class="app-sub">Votre forfait</p>
           <p class="app-domain">${icon('shield-check')}<span><strong>Le forfait ${esc(ABO.name)}, ${euro(ABO.month + C.DOM)} par mois</strong><small>${euro(ABO.month)} pour le forfait, et ${euro(C.DOM)} pour le nom de domaine qu’on vous fournit. Sans engagement.</small></span></p>
-          <p class="app-note">Vous préférez tout gérer vous-même ? Vous passez en ${esc(AUTO.name)} quand vous voulez : ${euro(AUTO.month)} par mois, et vous repartez avec votre site.</p>
+          <p class="app-note">Vous préférez tout gérer vous-même ? Vous passez au forfait ${esc(AUTO.name)} quand vous voulez : ${euro(AUTO.month)} par mois, et vous repartez avec votre site.</p>
           <p class="app-sub">Factures</p>
           <ul class="invoices">
             <li><span>Novembre 2026</span><button type="button" class="link-btn" data-toast-msg="Facture téléchargée (démo)">PDF</button></li>
@@ -1492,7 +1492,7 @@ ${chap('etapes', `1. Comment ça se passe`, `  <h2>De la commande à la mise en 
     <li><strong>Vous remplissez le questionnaire de création.</strong> Dans votre espace client : couleurs, ambiance, photos, prix ou produits.</li>
     <li><strong>Votre site est créé.</strong> Vous demandez des changements autant de fois qu’il le faut, jusqu’à ce que vous le validiez.</li>
     <li><strong>Vous recevez votre site et payez le reste.</strong> En une fois, ou en ${C.lissageTxt} fois sans frais.</li>
-    <li><strong>Ensuite, vous choisissez.</strong> Le forfait ${esc(ABO.name)}, ${euro(ABO.month)} par mois : on s’occupe de tout. Ou ${esc(AUTO.name)}, ${euro(AUTO.month)} : vous gérez tout vous-même.</li>
+    <li><strong>Ensuite, vous choisissez.</strong> Le forfait ${esc(ABO.name)}, ${euro(ABO.month)} par mois : on s’occupe de tout. Ou le forfait ${esc(AUTO.name)}, ${euro(AUTO.month)} : vous gérez tout vous-même.</li>
   </ol>
   <p class="doc-more">${C.btnCreer('btn-primary')}</p>`)}
 
@@ -1530,7 +1530,7 @@ ${chap('prix', `5. Le prix`, `  <div class="container-narrow">
   </div>
   <div class="doc-types">
     <div class="doc-type reveal"><strong>Créer le site</strong><b>dès ${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une seule fois</span><p>${types.map((t) => `${esc(t.name)} ${euro(t.price)}`).join(', ')}. Payable en ${C.lissageTxt} fois sans frais.</p></div>
-    <div class="doc-type reveal"><strong>${esc(AUTO.name)}</strong><b>${euro(AUTO.month)}</b><span>${icon('download')}Par mois</span><p>Vous gérez votre hébergement, votre nom de domaine, vos sauvegardes et vos mises à jour.</p></div>
+    <div class="doc-type reveal"><strong>Forfait ${esc(AUTO.name)}</strong><b>${euro(AUTO.month)}</b><span>${icon('download')}Par mois</span><p>Vous gérez votre hébergement, votre nom de domaine, vos sauvegardes et vos mises à jour.</p></div>
     <div class="doc-type reveal"><strong>Forfait ${esc(ABO.name)}</strong><b>${euro(ABO.month)}</b><span>${icon('repeat')}Par mois, sans engagement</span><p>On s’occupe de tout, modifications incluses.</p></div>
     <div class="doc-type reveal"><strong>Les extras</strong><b>${euro(PRIX_PAGE)} la page</b><span>${icon('sparkles')}Ou sur devis</span><p>Page de visibilité Google, traduction anglaise, fonctionnalité spécifique. Depuis votre espace client.</p></div>
   </div>
@@ -1628,7 +1628,7 @@ ${C.ctaBand({ title: 'Une question qui n’est pas ici ?', text: 'Écrivez-nous 
     section: 'documentation',
     title: 'Documentation : tout comprendre en images | Les Minis Monstres',
     noindex: true, // V2 : la documentation est pour les clients
-    description: 'Tout comprendre en images : les trois sites, le prix, Autonomie ou Mini, les modifications, l’espace client, les extras et le Site Boutique.',
+    description: 'Tout comprendre en images : les trois sites, le prix, le forfait Autonome ou le forfait Mini, les modifications, l’espace client, les extras et le Site Boutique.',
     crumbs,
     body,
     priority: 0.7,

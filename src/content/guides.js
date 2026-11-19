@@ -74,7 +74,7 @@ C'est la vraie difficulté pour un restaurant : le plat du jour, la carte de sai
 
 Avec le forfait ${mini.name}, vous ne touchez jamais au site. Vous envoyez la nouvelle carte depuis votre espace client, la page privée où vous faites vos demandes. ${qui('constructeur')} de notre petite bande, vérifie avec vous ce qui change. Puis Alex met la carte à jour.
 
-Ces changements sont compris dans le forfait : vous envoyez votre demande, et vous êtes prévenu dès que la nouvelle carte est en ligne. Vous préférez tout gérer seul ? La formule ${AUTO} existe aussi. Les deux sont présentées sur la page [tarifs](/tarifs/).
+Ces changements sont compris dans le forfait : vous envoyez votre demande, et vous êtes prévenu dès que la nouvelle carte est en ligne. Vous préférez tout gérer seul ? Le forfait ${AUTO} existe aussi. Les deux sont présentées sur la page [tarifs](/tarifs/).
 
 ## Quel site choisir ?
 
@@ -187,7 +187,7 @@ Au démarrage, chaque euro compte. C'est pour cela que le paiement est découpé
 
 - **${acompte(ESS.price)} € à la commande** pour un ${ESS.name}, soit ${paiement.acompte} % du prix.
 - **Le reste à la réception du site**, en une fois ou étalé sur ${durees} mois sans frais.
-- **Ensuite, c’est vous qui choisissez** : ${eur(creationSeule.month)} € par mois avec la formule ${AUTO}, où vous gérez tout vous-même, ou ${eur(mini.month)} € par mois avec le forfait ${mini.name}, sans engagement.
+- **Ensuite, c’est vous qui choisissez** : ${eur(creationSeule.month)} € par mois avec le forfait ${AUTO}, où vous gérez tout vous-même, ou ${eur(mini.month)} € par mois avec le forfait ${mini.name}, sans engagement.
 
 Avec le forfait ${mini.name}, l’hébergement, l’endroit où votre site reste accessible jour et nuit, est compris. Pas encore de nom de domaine (l’adresse de votre site) ? Nous le fournissons pour ${eur(dom)} € de plus par mois. Vous connaissez donc le coût exact avant de vous engager, sans devis à rallonge.
 
@@ -259,9 +259,9 @@ Chez nous, tout est affiché avant la commande, toujours dans le même ordre.
 
 Chaque site reprend tout ce que contient le précédent. Vos modifications sont illimitées jusqu’à ce que vous validiez le site.
 
-### 2. Ensuite : ${AUTO} ou Forfait ${mini.name}
+### 2. Ensuite : Forfait ${AUTO} ou Forfait ${mini.name}
 
-- **${AUTO}, ${eur(creationSeule.month)} € par mois** : vous recevez l’export du site, une copie complète avec une courte notice. L’hébergement, le nom de domaine, les sauvegardes et les mises à jour sont à votre charge.
+- **Forfait ${AUTO}, ${eur(creationSeule.month)} € par mois** : vous recevez l’export du site, une copie complète avec une courte notice. L’hébergement, le nom de domaine, les sauvegardes et les mises à jour sont à votre charge.
 - **Forfait ${mini.name}, ${eur(mini.month)} € par mois**, sans engagement : nous gardons le site en ligne, protégé et à jour. Vos modifications sont incluses, une demande à la fois.
 
 Vous avez déjà un nom de domaine ? Le forfait reste à ${eur(mini.month)} € par mois. Vous n’en avez pas ? Il est fourni à votre nom pour ${eur(dom)} € de plus, soit ${eur(avecDom)} € par mois.
@@ -279,7 +279,7 @@ Côté paiement, vous versez ${paiement.acompte} % à la commande et le reste à
 
 ## Trois exemples sur la première année
 
-- **Un artisan avec un ${ESS.name}, en ${AUTO}** : ${eur(ESS.price)} €. Son hébergement et son nom de domaine sont à sa charge.
+- **Un artisan avec un ${ESS.name}, avec le forfait ${AUTO}** : ${eur(ESS.price)} €. Son hébergement et son nom de domaine sont à sa charge.
 - **Un commerce avec un ${VIS.name} et le forfait ${mini.name}** : ${eur(VIS.price)} € + 12 × ${eur(mini.month)} € = **${eur(VIS.price + 12 * mini.month)} €**.
 - **Un créateur avec un ${BOU.name} et le forfait ${mini.name}** : ${mille(BOU.price)} € + 12 × ${eur(mini.month)} € = **${mille(BOU.price + 12 * mini.month)} €**.
 
@@ -426,7 +426,7 @@ Notre service est né de ce constat. Vous ne construisez rien vous-même, mais v
 
 - Le site est pensé pour être trouvé : c’est notre métier.
 - Le prix est fixe et connu d’avance : ${eur(ESS.price)} €, ${eur(VIS.price)} € ou ${mille(BOU.price)} € selon le site, payés une fois.
-- Vous aimez quand même bricoler ? Avec la formule ${AUTO}, vous recevez l’export du site (une copie complète) et vous l’installez chez votre hébergeur, sans abonnement.
+- Vous aimez quand même bricoler ? Avec le forfait ${AUTO}, vous recevez l’export du site (une copie complète) et vous l’installez chez votre hébergeur, sans abonnement.
 - Vous préférez ne rien gérer ? Avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois, vous demandez vos changements en une phrase depuis votre espace client, une page privée rien qu’à vous.
 - ${qui('constructeur')} de notre petite bande, clarifie chaque changement avec vous, puis l’envoie à Alex.
 - Les modifications sont alors incluses, une demande à la fois.
@@ -435,7 +435,7 @@ Notre service est né de ce constat. Vous ne construisez rien vous-même, mais v
 Pour voir à quoi cela ressemble avant de vous décider, [essayez la démo de l'espace client](/mon-espace/demo/). Et pour une vue d'ensemble des solutions, le [comparatif](/comparatif/) les met côte à côte.`,
     faq: [
       { q: 'J’ai commencé un site moi-même sans le finir, pouvez-vous le reprendre ?', a: 'Nous repartons d’un site neuf, mais rien n’est perdu : vos textes, vos photos et vos idées servent de base. Envoyez-nous l’adresse de ce que vous avez commencé, c’est un excellent point de départ.' },
-      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: `Oui. Avec le forfait ${mini.name}, vous décrivez le changement dans votre espace client, et il est fait pour vous, sans rien apprendre. Avec ${AUTO}, le site est chez vous : vous le modifiez vous-même, comme vous voulez.` },
+      { q: 'Si je fais faire mon site, est-ce que je peux encore le modifier ?', a: `Oui. Avec le forfait ${mini.name}, vous décrivez le changement dans votre espace client, et il est fait pour vous, sans rien apprendre. Avec le forfait ${AUTO}, le site est chez vous : vous le modifiez vous-même, comme vous voulez.` },
       { q: 'Combien de temps faut-il pour faire un site seul ?', a: 'Cela dépend beaucoup de chacun. Le montage lui-même va assez vite. Ce qui prend du temps, ce sont les textes, le choix des photos et tous les petits réglages auxquels on ne pense pas au départ.' },
     ],
     voir: ['prix-site-internet', 'site-une-page-ou-site-vitrine', 'site-internet-auto-entrepreneur'],
@@ -489,11 +489,11 @@ Avant de vous attacher à un nom, vérifiez deux choses :
 
 ## Et si j'ai déjà un nom de domaine ?
 
-Vous le gardez, et le forfait ${mini.name} reste à ${eur(mini.month)} € par mois. Il suffit de l’indiquer à la commande, et nous le relions à votre nouveau site. Vous avez aussi votre hébergement ? Choisissez la formule ${AUTO} : vous recevez l’export de votre site, à installer chez votre hébergeur.
+Vous le gardez, et le forfait ${mini.name} reste à ${eur(mini.month)} € par mois. Il suffit de l’indiquer à la commande, et nous le relions à votre nouveau site. Vous avez aussi votre hébergement ? Choisissez le forfait ${AUTO} : vous recevez l’export de votre site, à installer chez votre hébergeur.
 
 ## Qui s'occupe du renouvellement ?
 
-C’est le piège classique : on oublie l’échéance, le nom expire, et le site disparaît du jour au lendemain. Avec le [forfait](/tarifs/) ${mini.name}, nous pouvons fournir votre nom de domaine pour ${eur(dom)} € de plus par mois, soit ${eur(avecDom)} € : il est à votre nom, et nous le renouvelons pour vous chaque année. Vous n’avez aucune date à surveiller. Si vous gardez le vôtre, le forfait reste à ${eur(mini.month)} € et le renouvellement reste chez vous. En ${AUTO}, notez bien la date : le renouvellement est à votre charge.`,
+C’est le piège classique : on oublie l’échéance, le nom expire, et le site disparaît du jour au lendemain. Avec le [forfait](/tarifs/) ${mini.name}, nous pouvons fournir votre nom de domaine pour ${eur(dom)} € de plus par mois, soit ${eur(avecDom)} € : il est à votre nom, et nous le renouvelons pour vous chaque année. Vous n’avez aucune date à surveiller. Si vous gardez le vôtre, le forfait reste à ${eur(mini.month)} € et le renouvellement reste chez vous. Avec le forfait ${AUTO}, notez bien la date : le renouvellement est à votre charge.`,
     faq: [
       { q: 'Le nom que je voulais est déjà pris, que faire ?', a: 'Essayez une variante simple : ajouter votre ville, votre prénom ou votre métier. Évitez seulement de changer une lettre par rapport à un concurrent, cela crée de la confusion pour vos clients.' },
       { q: 'Dois-je prendre le .fr et le .com en même temps ?', a: 'Ce n’est pas nécessaire pour démarrer. Un seul nom bien choisi suffit à la grande majorité des petites entreprises.' },
@@ -612,7 +612,7 @@ Vendre en ligne à des particuliers impose quelques obligations : afficher des *
 ## Combien ça coûte
 
 - **Le ${BOU.name} : ${mille(BOU.price)} €**, payés une fois. Il reprend tout le ${VIS.name} et ajoute la boutique complète : le catalogue, le panier, le paiement en ligne sécurisé, la gestion des commandes et les e-mails automatiques. Nous configurons la boutique, puis vous gérez votre catalogue en toute liberté. Vous réglez ${acompte(BOU.price)} € à la commande et ${reste(BOU.price)} € à la réception.
-- **Ensuite, ${AUTO} ou Forfait ${mini.name}.** En ${AUTO}, vous hébergez la boutique vous-même, sans rien nous payer chaque mois. Avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois, nous gardons votre boutique en ligne et en bon état : l’hébergement (l’endroit où elle reste accessible 24 h/24), des copies de sécurité régulières et les vérifications techniques. Le nom de domaine, si nous le fournissons, ajoute ${eur(dom)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
+- **Ensuite, Forfait ${AUTO} ou Forfait ${mini.name}.** Avec le forfait ${AUTO}, vous hébergez la boutique vous-même, sans rien nous payer chaque mois. Avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois, nous gardons votre boutique en ligne et en bon état : l’hébergement (l’endroit où elle reste accessible 24 h/24), des copies de sécurité régulières et les vérifications techniques. Le nom de domaine, si nous le fournissons, ajoute ${eur(dom)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
 
 Le service de paiement prélève de son côté une petite commission sur chaque vente. C'est le cas pour toutes les boutiques en ligne, quelle que soit la solution choisie.
 

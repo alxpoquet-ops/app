@@ -30,7 +30,7 @@ function aled08e_bsite_faits() {
     $f[] = 'Phrase clé : avoir une activité sans site internet, c’est comme posséder une magnifique vitrine dans une rue où personne ne passe.';
     foreach ((array) ($D['types'] ?? []) as $t) $f[] = $t['name'] . ' : ' . aled08e_euro_txt($t['price']) . ', payé une seule fois' . (!empty($t['but']) ? ' (pour ' . mb_strtolower($t['but']) . ')' : '') . '. Il comprend : ' . implode(', ', (array) ($t['inclus'] ?? [])) . '.';
     $f[] = 'Le visiteur choisit son site sur la page « Créer mon site » et voit le prix avant de commander. Paiement : ' . (int) ($D['acompte'] ?? 25) . ' % à la commande, le reste à la réception du site, en une fois ou en plusieurs fois sans frais. Les révisions sont illimitées jusqu’à la validation finale du site. L’export du site est possible.';
-    $f[] = 'Ensuite, deux choix, sans obligation d’abonnement. Autonomie, 0 € par mois : le client gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour.';
+    $f[] = 'Ensuite, deux choix, sans obligation d’abonnement. Forfait Autonome, 0 € par mois : le client gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour.';
     foreach ((array) ($D['forfaits'] ?? []) as $x) $f[] = 'Ou le forfait ' . $x['name'] . ' : ' . aled08e_euro_txt($x['month']) . ' par mois, sans engagement. Il comprend : ' . implode(', ', (array) ($x['main'] ?? [])) . '.';
     // plus de réduction à l'année (19 novembre 2026)
     if (!empty($D['domainePrix'])) $f[] = 'Nom de domaine (l’adresse du site) avec le forfait Mini : si le client a déjà le sien, le forfait reste à 10 € par mois. S’il n’en a pas, on le lui fournit pour ' . aled08e_euro_txt($D['domainePrix']) . ' de plus par mois, soit 12 € par mois en tout.';

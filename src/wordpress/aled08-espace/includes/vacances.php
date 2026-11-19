@@ -171,7 +171,7 @@ function aled08e_autonomie_html($uid) {
         . '<span class="verrou-art" aria-hidden="true">' . aled08e_monster('maxi') . '</span>'
         . '<p class="verrou-tag">' . aled08e_icon('lock') . '<span>Option verrouillée</span></p>'
         . '<h3>Les modifications s’ouvrent avec le forfait ' . esc_html($f['name']) . '</h3>'
-        . '<p>Vous êtes en Autonomie : vous gérez votre site vous-même. Avec le forfait ' . esc_html($f['name']) . ', ' . esc_html(aled08e_euro_txt($f['month'])) . ' par mois sans engagement, on s’occupe de tout :</p><ul class="verrou-liste">';
+        . '<p>Vous avez le forfait Autonome : vous gérez votre site vous-même. Avec le forfait ' . esc_html($f['name']) . ', ' . esc_html(aled08e_euro_txt($f['month'])) . ' par mois sans engagement, on s’occupe de tout :</p><ul class="verrou-liste">';
     foreach (array_slice((array) ($f['main'] ?? []), 0, 9) as $l) $h .= '<li>' . aled08e_icon('check') . '<span>' . esc_html($l) . '</span></li>';
     $h .= '</ul>';
     if (aled08e_a_la_demande('specifique')) {

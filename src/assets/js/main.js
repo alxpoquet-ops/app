@@ -36,6 +36,7 @@
     'Pack SEO': 'SEO pack',
     'Création seule': 'Website only',
     'Autonomie': 'On your own',
+    'Forfait Autonome': 'On your own',
     'compris': 'included',
     'le vôtre': 'yours',
     'Code promo valable : la remise est appliquée.': 'Valid promo code: the discount is applied.',
@@ -441,7 +442,7 @@
     function update(ev) {
       var t = find(data.types, val('b-type')) || find(data.types, 'vitrine') || data.types[0];
       var seule = val('b-gestion') === 'moi'; // création seule : pas de formule, le code du site est remis
-      var f = seule ? (find(data.forfaits, 'sans') || { id: 'sans', name: 'Autonomie', month: 0 }) : (find(data.forfaits, val('b-forfait')) || data.forfaits[0]);
+      var f = seule ? (find(data.forfaits, 'sans') || { id: 'sans', name: 'Autonome', month: 0 }) : (find(data.forfaits, val('b-forfait')) || data.forfaits[0]);
       // le client garde son nom de domaine : on le note, et on le remet comme avant s'il revient à « on s'occupe de tout »
       if (seule && !domain.own()) { autoOwn = true; domain.setOwn(true); return; }
       if (!seule && autoOwn) { autoOwn = false; domain.setOwn(false); return; }
@@ -457,7 +458,7 @@
       setText('type-price', euro(t.price));
       // Forfait Mini : 10 € par mois avec le nom de domaine du client ; s'il n'en a pas, on le fournit pour data.domaine € de plus par mois
       var domPlus = (!seule && !domain.own()) ? (data.domaine || 0) : 0;
-      setText('forfait', seule ? tr('Autonomie') : tr('Forfait ') + planName(f.name));
+      setText('forfait', seule ? tr('Forfait Autonome') : tr('Forfait ') + planName(f.name));
       setText('forfait-price', seule ? tr('sans abonnement') : euro(f.month * mult) + per);
       var dom = domain.get(), domText = '';
       if (domain.own()) domText = tr('Mon nom de domaine actuel');
@@ -488,7 +489,7 @@
       var bar = $('[data-sum="bar"]', box);
       if (bar) bar.innerHTML = '<b>' + euro(prixSite) + '</b>' + (seule ? tr(', sans abonnement') : tr(' puis ') + '<b>' + euro(recur) + per + '</b>');
       // Lien « Poser une question » (formulaire de contact, en clair)
-      var q = { type: t.label, forfait: seule ? 'Autonomie (je gère tout moi-même)' : f.name, paiement: seule ? '' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: seule ? '' : domText, options: '' };
+      var q = { type: t.label, forfait: seule ? 'Forfait Autonome (je gère tout moi-même)' : f.name, paiement: seule ? '' : 'Au mois', lissage: lisse ? String(lisseN) : '', domaine: seule ? '' : domText, options: '' };
       $$('[data-sum-go]', box).forEach(function (a) { a.setAttribute('href', withParams(a.getAttribute('href'), q)); });
       // Lien « Commander » : paramètres exacts attendus par /commander/
       var o = { type: t.id, forfait: f.id, periode: annual ? 'annee' : 'mois', lissage: lisse ? String(lisseN) : '', domaine: seule ? '' : domain.full(), domaine_statut: domain.statut(), options: '', pages_plus: '', code: code.code && code.ok !== false ? code.code : '' };
@@ -583,7 +584,7 @@
     function update(fromUser, ev) {
       var t = find(data.types, val('type')) || find(data.types, 'vitrine') || data.types[0];
       var seule = val('gestion') === 'moi'; // création seule : pas de formule, le code du site est remis
-      var f = seule ? (find(data.forfaits, 'sans') || { id: 'sans', name: 'Autonomie', month: 0 }) : (find(data.forfaits, val('forfait')) || data.forfaits[0]);
+      var f = seule ? (find(data.forfaits, 'sans') || { id: 'sans', name: 'Autonome', month: 0 }) : (find(data.forfaits, val('forfait')) || data.forfaits[0]);
       if (seule && !domain.own()) { autoOwn = true; domain.setOwn(true); return; }
       if (!seule && autoOwn) { autoOwn = false; domain.setOwn(false); return; }
       filterOpts(form, t.id);
@@ -660,7 +661,7 @@
       /* récapitulatif latéral */
       setText('type', siteNom(t));
       setText('type-price', euro(prixSite));
-      setText('forfait', seule ? tr('Autonomie') : tr('Forfait ') + planName(f.name));
+      setText('forfait', seule ? tr('Forfait Autonome') : tr('Forfait ') + planName(f.name));
       setText('forfait-price', seule ? tr('sans abonnement') : euro(forfaitFirst) + per);
       setText('delai', tr(t.delai));
       var optLine = $('[data-order-opts]', root);

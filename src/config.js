@@ -293,7 +293,7 @@ const optimisation = {
 // Pas de modifications ni de maintenance incluses : il peut prendre une formule plus tard. id 'sans' dans la commande.
 const creationSeule = {
   id: 'sans',
-  name: 'Autonomie',
+  name: 'Autonome',
   emoji: '⚪',
   month: 0,
   color: 'peach',

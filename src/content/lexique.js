@@ -63,7 +63,7 @@ Une fleuriste prend un hébergement très bon marché pour son site. Tout va bie
 
 ## Chez les Minis Monstres
 
-Avec le [forfait](/tarifs/) ${mini.name}, vous n'avez pas à chercher un hébergeur : l'hébergement est compris, sur un serveur de qualité, quel que soit votre site. Vous n'avez ni facture à part ni réglage à faire. Avec la formule ${AUTO}, vous choisissez votre hébergeur et vous y installez l'export de votre site. Pour comprendre ce qu'est la machine elle-même, lisez la définition du [serveur](/lexique/serveur-web/).`,
+Avec le [forfait](/tarifs/) ${mini.name}, vous n'avez pas à chercher un hébergeur : l'hébergement est compris, sur un serveur de qualité, quel que soit votre site. Vous n'avez ni facture à part ni réglage à faire. Avec le forfait ${AUTO}, vous choisissez votre hébergeur et vous y installez l'export de votre site. Pour comprendre ce qu'est la machine elle-même, lisez la définition du [serveur](/lexique/serveur-web/).`,
     faq: [
       { q: 'Peut-on avoir un site sans hébergement ?', a: 'Non. Un site doit être posé quelque part pour être visible. Certaines plateformes intègrent l’hébergement dans leur abonnement, mais il existe toujours, même quand on ne le voit pas.' },
       { q: 'Combien coûte un hébergement ?', a: `Les prix varient beaucoup selon la puissance et le service. Chez nous, il est compris dans le forfait ${mini.name}, à ${mini.month} € par mois, qui couvre aussi l’entretien du site. Le nom de domaine, si nous le fournissons, coûte ${dom} € de plus par mois.` },
@@ -244,7 +244,7 @@ Une éleveuse de chèvres crée son site WordPress seule, un week-end, avec un t
 
 ## Chez les Minis Monstres
 
-Que votre site soit sur WordPress ou non, la question pour vous reste la même : qui s'en occupe ? Avec le [forfait](/tarifs/) ${mini.name}, nous faisons les mises à jour des extensions pour vous et nous surveillons que tout tourne. Avec la formule ${AUTO}, ces mises à jour vous reviennent. Si vous hésitez entre faire seul ou déléguer, le guide [créer son site soi-même ou le faire faire](/guides/creer-son-site-soi-meme-ou-le-faire-faire/) vous aide à trancher.`,
+Que votre site soit sur WordPress ou non, la question pour vous reste la même : qui s'en occupe ? Avec le [forfait](/tarifs/) ${mini.name}, nous faisons les mises à jour des extensions pour vous et nous surveillons que tout tourne. Avec le forfait ${AUTO}, ces mises à jour vous reviennent. Si vous hésitez entre faire seul ou déléguer, le guide [créer son site soi-même ou le faire faire](/guides/creer-son-site-soi-meme-ou-le-faire-faire/) vous aide à trancher.`,
     faq: [
       { q: 'WordPress est-il sûr ?', a: 'Oui, s’il est tenu à jour. La plupart des piratages viennent d’une version ancienne, d’une extension abandonnée ou d’un mot de passe trop simple, pas du logiciel lui-même.' },
       { q: 'Peut-on vendre en ligne avec WordPress ?', a: 'Oui, grâce à des extensions de commerce qui ajoutent un panier, le paiement par carte et la gestion des commandes. Il faut alors être encore plus attentif aux mises à jour et à la sécurité.' },
@@ -1221,7 +1221,7 @@ Un gîte rural a un site fait il y a quelques années par un neveu. Personne n'y
 
 ## Chez les Minis Monstres
 
-C'est le cœur du [forfait](/tarifs/) ${mini.name}. Pour ${mini.month} € par mois, nous hébergeons votre site, nous suivons les mises à jour, nous gardons un œil sur le HTTPS et nous vérifions que tout tourne. Vos changements de contenu passent par l'espace client : ils sont inclus. Avec la formule ${AUTO}, cet entretien est à votre charge. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+C'est le cœur du [forfait](/tarifs/) ${mini.name}. Pour ${mini.month} € par mois, nous hébergeons votre site, nous suivons les mises à jour, nous gardons un œil sur le HTTPS et nous vérifions que tout tourne. Vos changements de contenu passent par l'espace client : ils sont inclus. Avec le forfait ${AUTO}, cet entretien est à votre charge. Voyez aussi la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'À quelle fréquence faut-il faire la maintenance ?', a: 'La surveillance doit être continue, et les mises à jour faites dès qu’elles sortent, surtout celles de sécurité. Les autres vérifications peuvent suivre un rythme régulier, par exemple chaque mois.' },
       { q: 'Puis-je faire la maintenance de mon site moi-même ?', a: 'C’est possible si vous avez le temps et les bases techniques. Le plus dur n’est pas de cliquer sur « mettre à jour », mais de savoir quoi faire quand une mise à jour casse quelque chose.' },
@@ -1272,7 +1272,7 @@ Une épicerie fine supprime par erreur la page de ses paniers garnis, la plus vi
 
 ## Chez les Minis Monstres
 
-Les sauvegardes automatiques font partie de l'entretien compris dans le [forfait](/tarifs/) ${mini.name}. Elles se font toutes seules, et elles servent si quelque chose doit être remis en place. Vous n'avez rien à régler. Avec la formule ${AUTO}, pensez à les prévoir chez votre hébergeur. Pour le reste de l'entretien, voyez la page [maintenance de site](/lexique/maintenance-site/).`,
+Les sauvegardes automatiques font partie de l'entretien compris dans le [forfait](/tarifs/) ${mini.name}. Elles se font toutes seules, et elles servent si quelque chose doit être remis en place. Vous n'avez rien à régler. Avec le forfait ${AUTO}, pensez à les prévoir chez votre hébergeur. Pour le reste de l'entretien, voyez la page [maintenance de site](/lexique/maintenance-site/).`,
     faq: [
       { q: 'Combien de temps faut-il garder les sauvegardes ?', a: 'Assez longtemps pour revenir avant un problème qui serait passé inaperçu quelques jours. Garder plusieurs copies d’âges différents est plus sûr qu’une seule copie très récente.' },
       { q: 'Puis-je récupérer une copie de mon site ?', a: 'Oui. Votre site vous appartient : si vous changez de prestataire, vous recevez son export, une copie complète de ses fichiers.' },

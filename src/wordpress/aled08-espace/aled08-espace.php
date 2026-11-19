@@ -935,7 +935,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
           <dl class="esp-grid">
             <div><dt>Type de site</dt><dd><?php echo esc_html($type ? $type['label'] : $cmd['type']); ?><small><?php echo aled08e_euro($m['creation']); // phpcs:ignore ?> de création</small></dd></div>
             <div><dt>Nom de domaine</dt><dd><?php echo esc_html($cmd['domaine'] ?: 'À choisir'); ?><small><?php echo esc_html(aled08e_cmd_domaine_libelle_client($cmd)); ?></small></dd></div>
-            <?php if ($seule) : ?><div><dt>Formule</dt><dd>Autonomie<small>Sans abonnement : vous gardez votre nom de domaine et votre hébergement, je vous remets le code du site</small></dd></div>
+            <?php if ($seule) : ?><div><dt>Formule</dt><dd>Forfait Autonome<small>Sans abonnement : vous gardez votre nom de domaine et votre hébergement, je vous remets le code du site</small></dd></div>
             <?php else : ?><div><dt>Abonnement</dt><dd><?php echo aled08e_euro($m['mensuel_forfait']) . ' ' . esc_html($per); // phpcs:ignore ?><small>Nom de domaine, hébergement, suivi, <?php echo aled08e_energie_on() ? 'énergie des petits monstres' : 'modifications incluses'; ?></small></dd></div><?php endif; ?>
             <div><dt>Options</dt><dd><?php echo $opts ? esc_html(implode(', ', $opts)) : 'Aucune'; ?></dd></div>
           </dl>
@@ -1058,7 +1058,7 @@ function aled08e_dashboard() {
         'lia_limite' => ['esp-warn', 'Vous avez utilisé vos ' . aled08e_limite('bricouMois', 8) . ' petites retouches du mois avec Bricou. Elles reviennent le 1er du mois. Pour celle-ci, choisissez Alex.'],
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
-        'sans_formule' => ['esp-warn', 'Vous êtes en Autonomie : les modifications ne sont pas comprises. Avec le forfait Mini, elles le sont : le bouton est juste en dessous.'],
+        'sans_formule' => ['esp-warn', 'Vous avez le forfait Autonome : les modifications ne sont pas comprises. Avec le forfait Mini, elles le sont : le bouton est juste en dessous.'],
         'lia_refait' => ['esp-empty', 'Merci pour vos précisions : Bricou reprend votre demande. Vous la voyez ici dans un instant.'],
         'rep_ok' => ['esp-empty', 'Merci ! Bricou reprend votre demande avec votre réponse.'],
         'rep_vide' => ['esp-warn', 'Écrivez votre réponse ou joignez une capture d’écran, puis envoyez.'],

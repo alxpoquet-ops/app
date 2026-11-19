@@ -122,7 +122,7 @@ Aucun site ne part en ligne sans ce contrôle.
 Pas de devis à attendre. Tout se lit dans le même ordre.
 
 1. **D’abord le site, payé une fois** : ${eur(ESS.price)} € le ${ESS.name} pour exister sur internet, ${eur(VIS.price)} € le ${VIS.name} pour être trouvé sur Google, ${mille(BOU.price)} € le ${BOU.name} pour vendre sur internet.
-2. **Ensuite, ${AUTO} ou Forfait ${mini.name}** : vous gérez le site vous-même sans rien payer chaque mois, ou nous nous en occupons pour ${eur(mini.month)} € par mois, sans engagement.
+2. **Ensuite, Forfait ${AUTO} ou Forfait ${mini.name}** : vous gérez le site vous-même sans rien payer chaque mois, ou nous nous en occupons pour ${eur(mini.month)} € par mois, sans engagement.
 3. **Enfin, les extras, si besoin** : une ${minus(pageGoogle.name)} à ${prixPage} €, une traduction anglaise ou une fonctionnalité spécifique sur devis.
 
 Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, en une fois ou en ${durees} fois sans frais. Le détail est sur la page [tarifs](/tarifs/).
@@ -221,7 +221,7 @@ Chez nous, chaque site a un but précis.
 - **${VIS.name}, ${eur(VIS.price)} €** : être trouvé sur Google.
 - **${BOU.name}, ${mille(BOU.price)} €** : vendre sur internet.
 
-Ensuite, vous gérez votre site vous-même avec la formule ${AUTO}, ou nous nous en occupons avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois. Les prix sont détaillés sur la page [tarifs](/tarifs/).
+Ensuite, vous gérez votre site vous-même avec le forfait ${AUTO}, ou nous nous en occupons avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois. Les prix sont détaillés sur la page [tarifs](/tarifs/).
 
 > Vous hésitez entre une page et plusieurs ? Le guide [site une page ou site vitrine](/guides/site-une-page-ou-site-vitrine/) vous aide à choisir.`,
     faq: [
@@ -345,7 +345,7 @@ Vos questions avant la commande ne vous engagent à rien. Si notre offre ne corr
 1. **On échange** : vous nous dites ce que vous faites, pour qui, et ce que vous attendez du site.
 2. **Alex conçoit votre site** : la structure, les pages, le style. La petite bande prend en charge ce qui se répète.
 3. **Alex vérifie, et vous validez** : tout est relu et testé sur plusieurs appareils. Vos modifications sont illimitées jusqu’à la validation.
-4. **Le site part en ligne** : avec le forfait ${mini.name}, nous l’hébergeons et restons là pour vos modifications. En ${AUTO}, vous recevez l’export du site, une copie complète prête à installer.
+4. **Le site part en ligne** : avec le forfait ${mini.name}, nous l’hébergeons et restons là pour vos modifications. Avec le forfait ${AUTO}, vous recevez l’export du site, une copie complète prête à installer.
 
 ## Nos engagements
 
@@ -398,11 +398,11 @@ Et pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourq
       { icon: 'search-check', t: 'Trois extras, pas plus', d: 'Une page de visibilité Google, une traduction anglaise, une fonctionnalité spécifique : seulement si vous en avez besoin.' },
       { icon: 'handshake', t: 'Sans engagement', d: 'Vous arrêtez quand vous voulez et vous gardez votre adresse.' },
     ],
-    body: `## Après le site : ${AUTO} ou le forfait ${mini.name}
+    body: `## Après le site : le forfait ${AUTO} ou le forfait ${mini.name}
 
 Une fois le site créé, vous choisissez qui le fait vivre.
 
-- **${AUTO}, ${eur(creationSeule.month)} € par mois** : vous recevez votre site prêt à installer. L’hébergement, le nom de domaine, les sauvegardes et les mises à jour sont à votre charge.
+- **Forfait ${AUTO}, ${eur(creationSeule.month)} € par mois** : vous recevez votre site prêt à installer. L’hébergement, le nom de domaine, les sauvegardes et les mises à jour sont à votre charge.
 - **Forfait ${mini.name}, ${eur(mini.month)} € par mois** : nous nous occupons de tout. L’abonnement démarre à la réception du site, sans engagement.
 
 ## Ce que comprend le forfait ${mini.name}
@@ -455,7 +455,7 @@ Votre nom de domaine reste à vous, et nous vous remettons l’export de votre s
 
 Vous revenez pour un deuxième site ? Il profite de ${fidelite.remiseSecondSite} % de remise sur sa création.`,
     faq: [
-      { q: 'Puis-je avoir un site sans abonnement ?', a: `Oui, avec la formule ${AUTO}, à choisir en commandant. Vous recevez l’export de votre site et vous l’installez chez votre hébergeur. Tant que le site est hébergé chez nous, le forfait ${mini.name} est nécessaire.` },
+      { q: 'Puis-je avoir un site sans abonnement ?', a: `Oui, avec le forfait ${AUTO}, à choisir en commandant. Vous recevez l’export de votre site et vous l’installez chez votre hébergeur. Tant que le site est hébergé chez nous, le forfait ${mini.name} est nécessaire.` },
       { q: 'Combien de modifications puis-je demander ?', a: `Autant qu’il vous en faut, une demande à la fois : elles sont incluses dans le forfait ${mini.name}.` },
       { q: 'Comment savoir où en est ma demande ?', a: `Vous la suivez dans votre espace client, étape par étape. Vous êtes prévenu par e-mail dès qu’elle est en ligne.` },
     ],
@@ -491,7 +491,7 @@ Artisans, commerçants, gîtes, associations : beaucoup d’activités d’ici f
 - **En rendez-vous**, à Charleville-Mézières, Sedan, Rethel, ${ville} ou dans un village autour : on regarde ensemble ce que vous faites, vos photos et vos idées.
 - **À distance** : vous nous écrivez ou on s’appelle, puis vous suivez tout depuis votre espace client.
 
-Dans les deux cas, le tarif ne change pas : ${eur(ESS.price)} € pour le ${ESS.name}, ${eur(VIS.price)} € pour le ${VIS.name}, ${mille(BOU.price)} € pour le ${BOU.name}. Ensuite, c’est ${AUTO}, sans abonnement, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
+Dans les deux cas, le tarif ne change pas : ${eur(ESS.price)} € pour le ${ESS.name}, ${eur(VIS.price)} € pour le ${VIS.name}, ${mille(BOU.price)} € pour le ${BOU.name}. Ensuite, c’est le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
 
 ## Être trouvé près de chez vous
 
