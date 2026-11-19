@@ -157,6 +157,7 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
 .nav-link[aria-current] { background: var(--c); color: var(--c-dd); }
 .nav-link[aria-current] .ico { color: var(--c-dd); }
 .nav-txt small, .nav-link > .ico:last-child:not(:first-child) { display: none; }
+.nav-mimi { display: none; }
 .nav-creer small { display: block; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
 .burger { display: none; width: 46px; height: 46px; border: 0; background: var(--card); border-radius: 50%; cursor: pointer; padding: 0 13px; flex-direction: column; justify-content: center; gap: 5px; box-shadow: 0 0 0 2px var(--edge) inset; }
@@ -738,6 +739,10 @@ mark { color: inherit; background: linear-gradient(transparent 56%, #BFF0DA 56% 
   .nav-list { flex: 1; flex-direction: column; align-items: stretch; gap: 10px; }
   .nav-link { gap: 14px; padding: 12px 14px; font-size: 1.1rem; background: var(--card); border-radius: 22px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .04) inset, var(--shadow-sm); white-space: normal; }
   .nav-link .ico { flex: none; width: 44px; height: 44px; padding: 10px; border-radius: 14px; background: var(--c); color: var(--c-dd); }
+  .nav-link .nav-mimi { display: grid; place-items: center; flex: none; width: 52px; height: 52px; border-radius: 18px; background: var(--c); box-shadow: 0 0 0 2px var(--c-d) inset; }
+  .nav-link .nav-mimi .petit { width: 42px; height: 42px; transition: transform .25s; }
+  .nav-link:hover .nav-mimi .petit, .nav-link:active .nav-mimi .petit { transform: translateY(-2px) rotate(-6deg) scale(1.08); }
+  .nav-link .nav-mimi + .ico { display: none; }
   .nav-link > .ico:last-child:not(:first-child) { display: block; width: 22px; height: 22px; padding: 0; margin-left: auto; background: none; color: var(--muted); transition: transform .2s; }
   .nav-link:hover > .ico:last-child, .nav-link:active > .ico:last-child { transform: translateX(3px); color: var(--c-d); }
   .nav-txt { display: grid; gap: 1px; line-height: 1.2; }
