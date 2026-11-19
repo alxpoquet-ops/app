@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Flore & Chenilles : mode vitrine
  * Description: Le site présente les compositions sans prix ni paiement. Les visiteurs ajoutent leurs coups de cœur à leur sélection et envoient une demande de réservation, qui arrive par e-mail. Le compositeur « Votre bouquet à vous » est retiré. Désactiver l'extension remet la boutique comme avant.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('FV_VERSION', '1.0.3');
+define('FV_VERSION', '1.0.4');
 
 /* Adresse qui reçoit les demandes : celle des réglages de la boutique, sinon celle du site */
 function fv_destinataire() {
@@ -19,6 +19,8 @@ function fv_destinataire() {
     }
     return get_option('admin_email');
 }
+/* Le connecteur des Minis Monstres a son propre bouton « Nous contacter » en vitrine : ici, c'est le formulaire de réservation qui le remplace */
+add_filter('alexlia_vitrine_bouton', '__return_false');
 function fv_front() { return !is_admin() && !wp_doing_ajax(); }
 
 /* =========================================================================

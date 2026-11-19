@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.8.0
+ * Version: 2.8.1
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.8.0');
+define('ALEXLIA_CONN_VERSION', '2.8.1');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 
 /* =========================================================================
@@ -1307,7 +1307,7 @@ function alexlia_vitrine_contact_url() {
     $u = (string) get_option('alexlia_vitrine_contact', '');
     if ($u !== '') return $u;
     foreach (['contact', 'nous-contacter', 'contactez-nous', 'me-contacter'] as $slug) { $pg = get_page_by_path($slug); if ($pg && $pg->post_status === 'publish') return (string) get_permalink($pg); }
-    return home_url('/contact/');
+    return home_url('/#contact');
 }
 function alexlia_vitrine_moyens() {
     static $n = null;
@@ -1341,7 +1341,8 @@ add_action('wp_loaded', function () {
     add_filter('woocommerce_variation_is_purchasable', '__return_false', 99);
     add_filter('woocommerce_product_add_to_cart_text', function () { return 'Voir l’article'; }, 99);
     // sur la page d'un article : un bouton vers le formulaire de contact, à la place du panier
-    add_action('woocommerce_single_product_summary', function () {
+    // un site qui a déjà son propre formulaire de réservation peut retirer ce bouton (filtre alexlia_vitrine_bouton)
+    if (apply_filters('alexlia_vitrine_bouton', true)) add_action('woocommerce_single_product_summary', function () {
         global $product;
         $nom = is_object($product) ? $product->get_name() : '';
         $url = add_query_arg('article', rawurlencode($nom), alexlia_vitrine_contact_url());
