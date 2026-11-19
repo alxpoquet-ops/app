@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Robots.txt : définition simple et erreurs à éviter | Minis Monstres</title>
+<meta name="description" content="Le fichier robots.txt donne des consignes aux robots qui visitent votre site, comme celui de Google. À quoi il sert, et la petite erreur qui peut tout bloquer.">
+<link rel="canonical" href="https://www.les-minis-monstres.fr/lexique/robots-txt/">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="author" content="Les Minis Monstres">
+<meta name="theme-color" content="#16142A">
+<meta name="format-detection" content="telephone=no">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Les Minis Monstres">
+<meta property="og:title" content="Robots.txt : définition simple et erreurs à éviter | Minis Monstres">
+<meta property="og:description" content="Le fichier robots.txt donne des consignes aux robots qui visitent votre site, comme celui de Google. À quoi il sert, et la petite erreur qui peut tout bloquer.">
+<meta property="og:url" content="https://www.les-minis-monstres.fr/lexique/robots-txt/">
+<meta property="og:image" content="https://www.les-minis-monstres.fr/assets/img/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Les Minis Monstres : votre site internet tout compris, 2 à 4 fois moins cher">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Robots.txt : définition simple et erreurs à éviter | Minis Monstres">
+<meta name="twitter:description" content="Le fichier robots.txt donne des consignes aux robots qui visitent votre site, comme celui de Google. À quoi il sert, et la petite erreur qui peut tout bloquer.">
+<meta name="twitter:image" content="https://www.les-minis-monstres.fr/assets/img/og-image.png">
+<link rel="preload" href="/assets/fonts/jakarta-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/style.css?v=083604c3">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"ProfessionalService","@id":"https://www.les-minis-monstres.fr/#entreprise","name":"Les Minis Monstres","slogan":"Votre site internet à 500 €, le même prix pour tous","description":"Création de sites internet à prix unique, 500 € (20 pages, boutique en ligne en option), puis un abonnement à 10 € par mois : nom de domaine offert tant qu’il est actif, hébergement, sauvegardes, sécurité, modifications incluses. Des extras se prennent à la carte. Tout se fait en ligne, pour des clients partout en France.","url":"https://www.les-minis-monstres.fr/","image":"https://www.les-minis-monstres.fr/assets/img/og-image.png","logo":"https://www.les-minis-monstres.fr/assets/img/logo-512.png","priceRange":"€","currenciesAccepted":"EUR","address":{"@type":"PostalAddress","addressCountry":"FR"},"areaServed":[{"@type":"Country","name":"France"}],"hasOfferCatalog":{"@type":"OfferCatalog","name":"Sites internet et abonnement","itemListElement":[{"@type":"Offer","name":"Création : Site Essentiel","price":500,"priceCurrency":"EUR","description":"Un site d'une seule page, à votre image : qui vous êtes, ce que vous faites, comment vous joindre.","url":"https://www.les-minis-monstres.fr/creer-mon-site/?type=une-page"},{"@type":"Offer","name":"Création : Site Visibilité","price":750,"priceCurrency":"EUR","description":"Jusqu'à 20 pages, pensées pour que Google comprenne votre activité et vous montre près de chez vous.","url":"https://www.les-minis-monstres.fr/creer-mon-site/?type=vitrine"},{"@type":"Offer","name":"Création : Site Boutique","price":1200,"priceCurrency":"EUR","description":"Un magasin sur internet : vos clients choisissent, paient en ligne sur votre site, et vous recevez la commande.","url":"https://www.les-minis-monstres.fr/creer-mon-site/?type=boutique"},{"@type":"Offer","name":"Mini mensuel","priceCurrency":"EUR","priceSpecification":{"@type":"UnitPriceSpecification","price":10,"priceCurrency":"EUR","unitCode":"MON","referenceQuantity":{"@type":"QuantitativeValue","value":1,"unitCode":"MON"}},"description":"On s'occupe de tout : votre site reste en ligne, protégé et à jour, avec votre nom de domaine. Vos modifications sont incluses, et vous les demandez directement depuis votre espace client.","url":"https://www.les-minis-monstres.fr/tarifs/#offre"}]},"knowsAbout":["Création de site internet","Site vitrine","Boutique en ligne","Référencement naturel (SEO)","Référencement local","Intelligence artificielle"]},{"@type":"WebSite","@id":"https://www.les-minis-monstres.fr/#site","url":"https://www.les-minis-monstres.fr/","name":"Les Minis Monstres","inLanguage":"fr-FR","publisher":{"@id":"https://www.les-minis-monstres.fr/#entreprise"}},{"@type":"BreadcrumbList","@id":"https://www.les-minis-monstres.fr/lexique/robots-txt/#ariane","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://www.les-minis-monstres.fr/"},{"@type":"ListItem","position":2,"name":"Lexique","item":"https://www.les-minis-monstres.fr/lexique/"},{"@type":"ListItem","position":3,"name":"Fichier robots.txt","item":"https://www.les-minis-monstres.fr/lexique/robots-txt/"}]},{"@type":"WebPage","@id":"https://www.les-minis-monstres.fr/lexique/robots-txt/#page","url":"https://www.les-minis-monstres.fr/lexique/robots-txt/","name":"Robots.txt : définition simple et erreurs à éviter | Les Minis Monstres","description":"Le fichier robots.txt donne des consignes aux robots qui visitent votre site, comme celui de Google. À quoi il sert, et la petite erreur qui peut tout bloquer.","inLanguage":"fr-FR","isPartOf":{"@id":"https://www.les-minis-monstres.fr/#site"},"about":{"@id":"https://www.les-minis-monstres.fr/#entreprise"},"breadcrumb":{"@id":"https://www.les-minis-monstres.fr/lexique/robots-txt/#ariane"}},{"@type":"DefinedTerm","@id":"https://www.les-minis-monstres.fr/lexique/robots-txt/#terme","name":"Fichier robots.txt","description":"Le fichier robots.txt donne des consignes aux robots qui visitent votre site, comme celui de Google. À quoi il sert, et la petite erreur qui peut tout bloquer.","inDefinedTermSet":"https://www.les-minis-monstres.fr/lexique/#lexique"},{"@type":"Article","@id":"https://www.les-minis-monstres.fr/lexique/robots-txt/#article","headline":"Robots.txt : c'est quoi, ce fichier pour les moteurs de recherche ?","description":"Le fichier robots.txt donne des consignes aux robots qui visitent votre site, comme celui de Google. À quoi il sert, et la petite erreur qui peut tout bloquer.","inLanguage":"fr-FR","datePublished":"2026-11-15","dateModified":"2026-11-15","author":{"@id":"https://www.les-minis-monstres.fr/#entreprise"},"publisher":{"@id":"https://www.les-minis-monstres.fr/#entreprise"},"image":"https://www.les-minis-monstres.fr/assets/img/og-image.png","mainEntityOfPage":{"@id":"https://www.les-minis-monstres.fr/lexique/robots-txt/#page"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Mon site doit-il avoir un fichier robots.txt ?","acceptedAnswer":{"@type":"Answer","text":"Ce n’est pas obligatoire : sans lui, les robots considèrent qu’ils peuvent tout visiter. En avoir un, bien réglé, permet d’indiquer le sitemap et d’écarter les zones inutiles."}},{"@type":"Question","name":"Peut-on bloquer les robots qui recopient les textes des sites ?","acceptedAnswer":{"@type":"Answer","text":"Certains de ces robots respectent des consignes données dans le robots.txt, d’autres non. C’est un choix à faire selon votre activité, en sachant que le fichier reste une demande et non une barrière."}}]}]}</script>
+<script>(function(h){h.classList.add('js');var d=new Date(),n=(d.getMonth()+1)*100+d.getDate(),q=/[?&]noel=([01])/.exec(location.search);if(q?q[1]==='1':(n>=1115||n<=106))h.classList.add('noel')})(document.documentElement)</script>
+</head>
+<body class="c-mint">
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="site-header">
+  <div class="container header-in">
+    <a class="brand" href="/" aria-label="Les Minis Monstres, accueil"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+<g fill="#fff" stroke="#fff" stroke-width="7" stroke-linejoin="round"><path d="M8 44C8 27 18 17 32 17S56 27 56 44C56 54 48 59 32 59S8 54 8 44Z"/><path d="M12 27C13 14 21 6 32 6S51 14 52 27Z"/><rect x="7" y="24" width="50" height="7" rx="3.5"/></g>
+<path d="M8 44C8 27 18 17 32 17S56 27 56 44C56 54 48 59 32 59S8 54 8 44Z" fill="#BCC8FF" stroke="#4F5FC4" stroke-width="2.2"/>
+<path d="M14 42c1-5 3-8 6-9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+<path d="M12 27C13 14 21 6 32 6S51 14 52 27Z" fill="#fff" stroke="#7D87BE" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M32 8V25" stroke="#DCE1F7" stroke-width="3.4" stroke-linecap="round"/>
+<rect x="7" y="24" width="50" height="7" rx="3.5" fill="#F1F3FF" stroke="#7D87BE" stroke-width="2.2"/>
+<path d="M22 11.2l1.1 2.9 3.1.2-2.4 1.9.8 3-2.6-1.7-2.6 1.7.8-3-2.4-1.9 3.1-.2Z" fill="#FFC23D" stroke="#C99A00" stroke-width="1" stroke-linejoin="round"/>
+<ellipse cx="23" cy="40" rx="2.6" ry="3.2" fill="#2E2A47"/><circle cx="24" cy="38.7" r="1.05" fill="#fff"/><ellipse cx="41" cy="40" rx="2.6" ry="3.2" fill="#2E2A47"/><circle cx="42" cy="38.7" r="1.05" fill="#fff"/>
+<g fill="rgba(255,255,255,.22)" stroke="#2E2A47" stroke-width="2.3" stroke-linejoin="round"><rect x="15" y="33.5" width="16" height="13" rx="4"/><rect x="33" y="33.5" width="16" height="13" rx="4"/></g>
+<path d="M31 38.5q1-1.4 2 0M15 37l-4.5-1.2M49 37l4.5-1.2" fill="none" stroke="#2E2A47" stroke-width="2" stroke-linecap="round"/>
+<ellipse cx="13.5" cy="50" rx="3.6" ry="2.1" fill="#FF7FAE" opacity=".65"/><ellipse cx="50.5" cy="50" rx="3.6" ry="2.1" fill="#FF7FAE" opacity=".65"/>
+<path d="M28 51q2 2.6 4 0q2 2.6 4 0" fill="none" stroke="#2E2A47" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-text"><strong><span class="brand-pre">Les Minis</span> <span class="brand-co">Monstres</span></strong></span></a>
+    <nav class="nav" id="nav" aria-label="Navigation principale">
+      <ul class="nav-list">
+        <li><a class="nav-link c-lilac" href="/notre-equipe/"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg><span class="nav-txt">Notre équipe<small>Ma petite bande et moi</small></span><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6" /></svg></a></li><li><a class="nav-link c-mint" href="/accompagnement/"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" /><path d="m4.93 4.93 4.24 4.24" /><path d="m14.83 9.17 4.24-4.24" /><path d="m14.83 14.83 4.24 4.24" /><path d="m9.17 14.83-4.24 4.24" /><circle cx="12" cy="12" r="4" /></svg><span class="nav-txt">Accompagnement<small>Après la mise en ligne</small></span><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6" /></svg></a></li><li><a class="nav-link c-lilac" href="/tarifs/"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" /><circle cx="7.5" cy="7.5" r=".5" fill="currentColor" /></svg><span class="nav-txt">Tarifs<small>Tout compris, voir nos tarifs</small></span><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6" /></svg></a></li><li><a class="nav-link c-butter" href="/realisations/"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg><span class="nav-txt">Réalisations<small>Des sites à visiter</small></span><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6" /></svg></a></li><li><a class="nav-link c-peach" href="/contact/"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" /></svg><span class="nav-txt">Contact<small>Une question, un projet ?</small></span><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6" /></svg></a></li>
+        <li class="nav-creer"><span class="nav-creer-art" aria-hidden="true"><svg class="petit petit-mochi" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="p-ombre" cx="60" cy="112" rx="34" ry="4.5" fill="#2E2A47" opacity=".12"/><g class="p-bob">
+<path d="M42 46l-4-12 12 7ZM78 46l4-12-12 7Z" fill="#FFE07A" stroke="#C99A00" stroke-width="2.4" stroke-linejoin="round"/>
+<ellipse cx="44" cy="107" rx="9" ry="5" fill="#FFC4AC" stroke="#C2603F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="76" cy="107" rx="9" ry="5" fill="#FFC4AC" stroke="#C2603F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 92C20 60 38 40 60 40S100 60 100 92C100 104 90 108 60 108S20 104 20 92Z" fill="#FFC4AC" stroke="#C2603F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="60" cy="96" rx="22" ry="8" fill="#FFE3D6"/>
+<path d="M33 66c4-9 11-14 19-16" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+<g class="p-cligne"><path d="M39.125 78.5q6.875 -10 13.75 0" fill="none" stroke="#2E2A47" stroke-width="3.75" stroke-linecap="round"/><path d="M67.125 78.5q6.875 -10 13.75 0" fill="none" stroke="#2E2A47" stroke-width="3.75" stroke-linecap="round"/></g><ellipse cx="35" cy="88" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><ellipse cx="85" cy="88" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><path d="M55 87q2.5 3.4 5 0q2.5 3.4 5 0" fill="none" stroke="#2E2A47" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</g></svg></span><a class="btn btn-primary btn-lg" href="/creer-mon-site/"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72" /><path d="m14 7 3 3" /><path d="M5 6v4" /><path d="M19 14v4" /><path d="M10 2v2" /><path d="M7 8H3" /><path d="M21 16h-4" /><path d="M11 3H9" /></svg><span>Créer mon site</span></a><small>Le prix s’affiche tout de suite, sans devis.</small></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn-espace" href="/mon-espace/"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="10" r="3" /><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" /></svg><span>Mon espace</span></a>
+      <a class="btn btn-primary btn-sm btn-creer" href="/creer-mon-site/"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72" /><path d="m14 7 3 3" /><path d="M5 6v4" /><path d="M19 14v4" /><path d="M10 2v2" /><path d="M7 8H3" /><path d="M21 16h-4" /><path d="M11 3H9" /></svg><span>Créer mon site</span></a>
+      <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main id="contenu">
+<section class="page-hero c-mint">
+  <div class="container page-hero-in has-mascot">
+    <div class="page-hero-text">
+      <nav class="crumbs" aria-label="Vous êtes ici"><ol><li><a href="/">Accueil</a></li><li><a href="/lexique/">Lexique</a></li><li aria-current="page">Fichier robots.txt</li></ol></nav>
+      <p class="where"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 5v16" /><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z" /></svg><span>Lexique</span></p>
+      <h1>Robots.txt : c’est quoi, ce fichier pour les moteurs de recherche ?</h1>
+      <p class="lead">Le robots.txt est un fichier texte posé à la racine d’un site, qui indique aux robots des moteurs de recherche les parties qu’ils peuvent visiter et celles à laisser de côté. C’est un panneau à l’entrée, pas une serrure.</p>
+      
+    </div>
+    <div class="page-hero-art" aria-hidden="true"><svg class="petit petit-champi" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="p-ombre" cx="60" cy="112" rx="28" ry="4.5" fill="#2E2A47" opacity=".12"/><g class="p-bob">
+<path d="M36 64C35 88 40 106 60 106S85 88 84 64Z" fill="#FFF4EA" stroke="#C24A80" stroke-width="3" stroke-linejoin="round"/>
+<path d="M14 62C14 34 36 20 60 20S106 34 106 62C106 68 100 71 94 69 80 64 40 64 26 69 20 71 14 68 14 62Z" fill="#FF9EC4" stroke="#C24A80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="40" cy="40" r="6" fill="#fff"/><circle cx="64" cy="31" r="4.5" fill="#fff"/><circle cx="84" cy="46" r="5.5" fill="#fff"/><circle cx="26" cy="56" r="3.5" fill="#fff"/><circle cx="96" cy="58" r="3" fill="#fff"/>
+<g class="p-cligne"><ellipse cx="49" cy="82" rx="5.6160000000000005" ry="6.912000000000001" fill="#2E2A47"/><circle cx="50.944" cy="79.516" r="2.3760000000000003" fill="#fff"/><circle cx="47.164" cy="84.592" r="1.026" fill="#fff"/><ellipse cx="71" cy="82" rx="5.6160000000000005" ry="6.912000000000001" fill="#2E2A47"/><circle cx="72.944" cy="79.516" r="2.3760000000000003" fill="#fff"/><circle cx="69.164" cy="84.592" r="1.026" fill="#fff"/></g><ellipse cx="41" cy="93" rx="5.1" ry="2.8899999999999997" fill="#FF8FB8" opacity=".6"/><ellipse cx="79" cy="93" rx="5.1" ry="2.8899999999999997" fill="#FF8FB8" opacity=".6"/><path d="M55 93q2.5 3.4 5 0q2.5 3.4 5 0" fill="none" stroke="#2E2A47" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</g></svg></div>
+  </div>
+</section>
+<section class="section"><div class="container container-narrow prose reveal">
+  <h2 id="la-definition-en-une-phrase">La définition en une phrase</h2>
+<p>Google, Bing et d’autres services envoient des <strong>robots</strong>, des programmes qui parcourent les sites pour les lire. Avant d’entrer, un robot poli regarde d’abord le fichier <strong>robots.txt</strong>, à l’adresse votresite.fr/robots.txt. Il y trouve des consignes simples, du genre « ce dossier, n’y va pas ».</p>
+<p>Le fichier peut aussi indiquer où se trouve le <a href="/lexique/sitemap/">sitemap</a>, le plan des pages à découvrir.</p>
+<h2 id="a-quoi-ca-sert-pour-une-petite-entreprise">À quoi ça sert pour une petite entreprise</h2>
+<p>Sur un petit site, le robots.txt sert surtout à éviter que les robots perdent leur temps dans des zones sans intérêt : l’administration, les pages de recherche interne, les paniers d’achat, les fichiers techniques. Les robots se concentrent ainsi sur vos vraies pages.</p>
+<h2 id="un-exemple-de-la-vie-reelle">Un exemple de la vie réelle</h2>
+<p>Pendant la fabrication d’un site, le prestataire ajoute une ligne qui interdit tout aux robots, pour que le chantier ne soit pas visible. Le site est mis en ligne, mais personne ne retire la ligne. Des mois plus tard, le gérant s’étonne de ne jamais apparaître dans Google. Une seule ligne oubliée bloquait tout.</p>
+<h2 id="ce-qu-il-faut-savoir">Ce qu’il faut savoir</h2>
+<ul class="list-check"><li><strong>Ce n’est pas une protection.</strong> Le fichier est public, n’importe qui peut le lire, et les robots malveillants l’ignorent. Une page secrète doit être protégée par un mot de passe.</li><li><strong>Bloquer une page n’est pas la retirer de Google.</strong> Une adresse bloquée peut encore apparaître si d’autres sites pointent vers elle. Pour la faire disparaître, il faut une consigne « noindex » sur la page elle-même.</li><li><strong>Une petite faute peut avoir de gros effets.</strong> Une barre oblique de trop, et c’est tout le site qui est fermé aux robots.</li><li><strong>Ne bloquez pas les fichiers de style</strong>, sans quoi Google voit votre site comme une page sans mise en forme.</li></ul>
+<aside class="callout callout-warn"><p>Si votre site n’apparaît pas du tout dans Google après plusieurs semaines, le robots.txt fait partie des premières choses à vérifier.</p></aside>
+<h2 id="chez-les-minis-monstres">Chez les Minis Monstres</h2>
+<p>Je règle le robots.txt à la mise en ligne de votre site, et je vérifie qu’il laisse bien passer Google sur les pages qui comptent. C’est un petit réglage, mais tout le reste du SEO en dépend. Pour la suite du parcours, lisez la page sur l'<a href="/lexique/indexation/">indexation</a>.</p>
+</div></section>
+<section class="section" id="faq-lexique"><div class="container container-narrow">
+  <h2 class="section-title">Vos questions</h2>
+  <div class="faq"><details class="faq-item"><summary>Mon site doit-il avoir un fichier robots.txt ?<svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" /></svg></summary><div class="faq-a"><p>Ce n’est pas obligatoire : sans lui, les robots considèrent qu’ils peuvent tout visiter. En avoir un, bien réglé, permet d’indiquer le sitemap et d’écarter les zones inutiles.</p></div></details><details class="faq-item"><summary>Peut-on bloquer les robots qui recopient les textes des sites ?<svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" /></svg></summary><div class="faq-a"><p>Certains de ces robots respectent des consignes données dans le robots.txt, d’autres non. C’est un choix à faire selon votre activité, en sachant que le fichier reste une demande et non une barrière.</p></div></details></div>
+</div></section>
+<nav class="related" aria-label="À lire aussi"><div class="container"><h2 class="section-title">À lire aussi</h2><div class="guide-cards"><a class="guide-card reveal" href="/lexique/sitemap/"><span class="type-ico"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" /><path d="M15 5.764v15" /><path d="M9 3.236v15" /></svg></span><span class="guide-card-text"><strong>Plan du site (sitemap)</strong><span>La liste de toutes les pages de votre site, préparée pour que Google n’en oublie aucune.</span></span><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a><a class="guide-card reveal" href="/lexique/indexation/"><span class="type-ico"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m8 11 2 2 4-4" /><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg></span><span class="guide-card-text"><strong>Indexation</strong><span>Le moment où Google range une page dans son catalogue, pour pouvoir la montrer ensuite.</span></span><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a><a class="guide-card reveal" href="/lexique/google-search-console/"><span class="type-ico"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="m19 9-5 5-4-4-3 3" /></svg></span><span class="guide-card-text"><strong>Google Search Console</strong><span>L’outil gratuit de Google pour voir comment votre site apparaît dans ses résultats.</span></span><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></a></div><p class="center"><a class="link-more" href="/lexique/">Tout le lexique</a></p></div></nav>
+<section class="cta-band"><div class="container">
+  <div class="cta-box reveal">
+    <div class="cta-art cta-duo" aria-hidden="true"><svg class="petit petit-mochi" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="p-ombre" cx="60" cy="112" rx="34" ry="4.5" fill="#2E2A47" opacity=".12"/><g class="p-bob">
+<path d="M42 46l-4-12 12 7ZM78 46l4-12-12 7Z" fill="#FFE07A" stroke="#C99A00" stroke-width="2.4" stroke-linejoin="round"/>
+<ellipse cx="44" cy="107" rx="9" ry="5" fill="#FFC4AC" stroke="#C2603F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="76" cy="107" rx="9" ry="5" fill="#FFC4AC" stroke="#C2603F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 92C20 60 38 40 60 40S100 60 100 92C100 104 90 108 60 108S20 104 20 92Z" fill="#FFC4AC" stroke="#C2603F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="60" cy="96" rx="22" ry="8" fill="#FFE3D6"/>
+<path d="M33 66c4-9 11-14 19-16" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+<g class="p-cligne"><ellipse cx="46" cy="76" rx="6.5" ry="8" fill="#2E2A47"/><circle cx="48.25" cy="73.125" r="2.75" fill="#fff"/><circle cx="43.875" cy="79" r="1.1875" fill="#fff"/><ellipse cx="74" cy="76" rx="6.5" ry="8" fill="#2E2A47"/><circle cx="76.25" cy="73.125" r="2.75" fill="#fff"/><circle cx="71.875" cy="79" r="1.1875" fill="#fff"/></g><ellipse cx="35" cy="88" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><ellipse cx="85" cy="88" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><path d="M55 87q2.5 3.4 5 0q2.5 3.4 5 0" fill="none" stroke="#2E2A47" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</g></svg><svg class="petit petit-fantome" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="p-ombre" cx="60" cy="112" rx="26" ry="4.5" fill="#2E2A47" opacity=".12"/><g class="p-bob">
+<path class="p-salut" d="M31 70c-9-2-13-10-9-14 4-3 9 1 11 7" fill="#DCD2FF" stroke="#6E54D6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M89 70c9-2 13-10 9-14-4-3-9 1-11 7" fill="#DCD2FF" stroke="#6E54D6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30 100V64C30 41 44 28 60 28S90 41 90 64V100c-5 6-10 6-15 0-5 6-10 6-15 0-5 6-10 6-15 0-5 6-10 6-15 0Z" fill="#DCD2FF" stroke="#6E54D6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M40 52c3-9 9-14 16-15" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+<g class="p-cligne"><path d="M42.675 64.3q6.324999999999999 -9.2 12.649999999999999 0" fill="none" stroke="#2E2A47" stroke-width="3.4499999999999997" stroke-linecap="round"/><path d="M64.675 64.3q6.324999999999999 -9.2 12.649999999999999 0" fill="none" stroke="#2E2A47" stroke-width="3.4499999999999997" stroke-linecap="round"/></g><ellipse cx="41" cy="73" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><ellipse cx="79" cy="73" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><path d="M55.5 73.5q4.5 9 9 0Z" fill="#8A2C52" stroke="#2E2A47" stroke-width="2.2" stroke-linejoin="round"/><path d="M58 77.6q2 1.4 4 0" fill="none" stroke="#FF8FB8" stroke-width="1.8" stroke-linecap="round"/>
+</g></svg></div>
+    <div class="cta-text"><h2>On crée votre site ?</h2><p>Choisissez votre site en deux minutes. Vous voyez le prix tout de suite, et vous commandez quand vous êtes prêt.</p></div>
+    <div class="cta-actions"><a class="btn btn-primary btn-lg" href="/creer-mon-site/"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72" /><path d="m14 7 3 3" /><path d="M5 6v4" /><path d="M19 14v4" /><path d="M10 2v2" /><path d="M7 8H3" /><path d="M21 16h-4" /><path d="M11 3H9" /></svg><span>Créer mon site</span></a><a class="btn btn-light btn-lg" href="/contact/"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" /></svg><span>Nous écrire</span></a></div>
+  </div>
+</div></section>
+</main>
+<footer class="site-footer">
+  <div class="parade" aria-hidden="true"><span class="parade-m pm-0"><svg class="petit petit-champi" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="p-ombre" cx="60" cy="112" rx="28" ry="4.5" fill="#2E2A47" opacity=".12"/><g class="p-bob">
+<path d="M36 64C35 88 40 106 60 106S85 88 84 64Z" fill="#FFF4EA" stroke="#C24A80" stroke-width="3" stroke-linejoin="round"/>
+<path d="M14 62C14 34 36 20 60 20S106 34 106 62C106 68 100 71 94 69 80 64 40 64 26 69 20 71 14 68 14 62Z" fill="#FF9EC4" stroke="#C24A80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="40" cy="40" r="6" fill="#fff"/><circle cx="64" cy="31" r="4.5" fill="#fff"/><circle cx="84" cy="46" r="5.5" fill="#fff"/><circle cx="26" cy="56" r="3.5" fill="#fff"/><circle cx="96" cy="58" r="3" fill="#fff"/>
+<g class="p-cligne"><ellipse cx="49" cy="82" rx="5.6160000000000005" ry="6.912000000000001" fill="#2E2A47"/><circle cx="50.944" cy="79.516" r="2.3760000000000003" fill="#fff"/><circle cx="47.164" cy="84.592" r="1.026" fill="#fff"/><ellipse cx="71" cy="82" rx="5.6160000000000005" ry="6.912000000000001" fill="#2E2A47"/><circle cx="72.944" cy="79.516" r="2.3760000000000003" fill="#fff"/><circle cx="69.164" cy="84.592" r="1.026" fill="#fff"/></g><ellipse cx="41" cy="93" rx="5.1" ry="2.8899999999999997" fill="#FF8FB8" opacity=".6"/><ellipse cx="79" cy="93" rx="5.1" ry="2.8899999999999997" fill="#FF8FB8" opacity=".6"/><path d="M55 93q2.5 3.4 5 0q2.5 3.4 5 0" fill="none" stroke="#2E2A47" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</g></svg></span><span class="parade-m pm-1"><svg class="petit petit-mochi" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="p-ombre" cx="60" cy="112" rx="34" ry="4.5" fill="#2E2A47" opacity=".12"/><g class="p-bob">
+<path d="M42 46l-4-12 12 7ZM78 46l4-12-12 7Z" fill="#FFE07A" stroke="#C99A00" stroke-width="2.4" stroke-linejoin="round"/>
+<ellipse cx="44" cy="107" rx="9" ry="5" fill="#FFC4AC" stroke="#C2603F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="76" cy="107" rx="9" ry="5" fill="#FFC4AC" stroke="#C2603F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 92C20 60 38 40 60 40S100 60 100 92C100 104 90 108 60 108S20 104 20 92Z" fill="#FFC4AC" stroke="#C2603F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="60" cy="96" rx="22" ry="8" fill="#FFE3D6"/>
+<path d="M33 66c4-9 11-14 19-16" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+<g class="p-cligne"><path d="M39.125 78.5q6.875 -10 13.75 0" fill="none" stroke="#2E2A47" stroke-width="3.75" stroke-linecap="round"/><path d="M67.125 78.5q6.875 -10 13.75 0" fill="none" stroke="#2E2A47" stroke-width="3.75" stroke-linecap="round"/></g><ellipse cx="35" cy="88" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><ellipse cx="85" cy="88" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><path d="M55 87q2.5 3.4 5 0q2.5 3.4 5 0" fill="none" stroke="#2E2A47" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</g></svg></span><span class="parade-m pm-2"><svg class="petit petit-fantome" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="p-ombre" cx="60" cy="112" rx="26" ry="4.5" fill="#2E2A47" opacity=".12"/><g class="p-bob">
+<path class="p-salut" d="M31 70c-9-2-13-10-9-14 4-3 9 1 11 7" fill="#DCD2FF" stroke="#6E54D6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M89 70c9-2 13-10 9-14-4-3-9 1-11 7" fill="#DCD2FF" stroke="#6E54D6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M30 100V64C30 41 44 28 60 28S90 41 90 64V100c-5 6-10 6-15 0-5 6-10 6-15 0-5 6-10 6-15 0-5 6-10 6-15 0Z" fill="#DCD2FF" stroke="#6E54D6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M40 52c3-9 9-14 16-15" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+<g class="p-cligne"><ellipse cx="49" cy="62" rx="5.9799999999999995" ry="7.359999999999999" fill="#2E2A47"/><circle cx="51.07" cy="59.355000000000004" r="2.53" fill="#fff"/><circle cx="47.045" cy="64.76" r="1.0924999999999998" fill="#fff"/><ellipse cx="71" cy="62" rx="5.9799999999999995" ry="7.359999999999999" fill="#2E2A47"/><circle cx="73.07" cy="59.355000000000004" r="2.53" fill="#fff"/><circle cx="69.045" cy="64.76" r="1.0924999999999998" fill="#fff"/></g><ellipse cx="41" cy="73" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><ellipse cx="79" cy="73" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><path d="M55.5 73.5q4.5 9 9 0Z" fill="#8A2C52" stroke="#2E2A47" stroke-width="2.2" stroke-linejoin="round"/><path d="M58 77.6q2 1.4 4 0" fill="none" stroke="#FF8FB8" stroke-width="1.8" stroke-linecap="round"/>
+</g></svg></span><span class="parade-m pm-3"><svg class="petit petit-gelee" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="p-ombre" cx="60" cy="112" rx="32" ry="4.5" fill="#2E2A47" opacity=".12"/><g class="p-bob">
+<path d="M60 44C60 34 62 26 67 21" fill="none" stroke="#2E9A71" stroke-width="3" stroke-linecap="round"/>
+<path d="M67 21c-6-8-15-2-10 4l10 8 10-8c5-6-4-12-10-4Z" fill="#FF8FB8" stroke="#C24A80" stroke-width="2.2" stroke-linejoin="round" transform="translate(0 -6)"/>
+<path d="M24 98C24 62 40 44 60 44S96 62 96 98C96 104 91 106 87 102 83 98 79 106 73 104 67 102 65 108 59 106 53 104 51 99 45 102 39 106 31 106 24 98Z" fill="#A9EFD4" stroke="#2E9A71" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M34 72c3-10 10-17 19-19" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+<g class="p-cligne"><circle cx="60" cy="72" r="13" fill="#fff" stroke="#2E9A71" stroke-width="2.6"/><ellipse cx="60" cy="73" rx="6.760000000000001" ry="8.32" fill="#2E2A47"/><circle cx="62.34" cy="70.01" r="2.8600000000000003" fill="#fff"/><circle cx="57.79" cy="76.12" r="1.2349999999999999" fill="#fff"/></g>
+<ellipse cx="38" cy="86" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><ellipse cx="82" cy="86" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><path d="M55 92q5 5 10 0" fill="none" stroke="#2E2A47" stroke-width="2.6" stroke-linecap="round"/><path d="M57.8 93.9l1.3 2.8 1.5-2.5Z" fill="#fff" stroke="#2E2A47" stroke-width="1.1" stroke-linejoin="round"/>
+</g></svg></span><span class="parade-m pm-4"><svg class="petit petit-chaton" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="p-ombre" cx="60" cy="112" rx="30" ry="4.5" fill="#2E2A47" opacity=".12"/><g class="p-bob">
+<path d="M28 58L30 30 50 46ZM92 58L90 30 70 46Z" fill="#FFE59A" stroke="#B98A10" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M33 50l1-12 9 8ZM87 50l-1-12-9 8Z" fill="#FF8FB8" opacity=".7"/>
+<path d="M24 80C24 56 40 44 60 44S96 56 96 80V92C96 103 88 108 78 108H42C32 108 24 103 24 92Z" fill="#FFE59A" stroke="#B98A10" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="60" cy="98" rx="20" ry="7" fill="#FFF4CF"/>
+<path d="M33 66c3-8 9-12 16-13" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+<g class="p-cligne"><path d="M39.29 76.44q6.71 -9.76 13.42 0" fill="none" stroke="#2E2A47" stroke-width="3.66" stroke-linecap="round"/><path d="M67.29 76.44q6.71 -9.76 13.42 0" fill="none" stroke="#2E2A47" stroke-width="3.66" stroke-linecap="round"/></g><ellipse cx="36" cy="85" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><ellipse cx="84" cy="85" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/>
+<path d="M55.5 81.5h9l-4.5 4Z" fill="#FF8FB8" stroke="#2E2A47" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M55 87q2.5 3.4 5 0q2.5 3.4 5 0" fill="none" stroke="#2E2A47" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M27 79l-11-2M27 85l-11 2M93 79l11-2M93 85l11 2" stroke="#B98A10" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+</g></svg></span><span class="parade-m pm-5"><svg class="petit petit-nuage" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="p-ombre" cx="60" cy="112" rx="36" ry="4.5" fill="#2E2A47" opacity=".12"/><g class="p-bob">
+<path d="M28 100C14 100 12 82 25 78 22 63 39 54 50 62 54 47 75 45 81 60 93 55 106 66 99 79 110 83 108 100 95 100Z" fill="#C4E4FF" stroke="#3D84C9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="62" cy="93" rx="26" ry="5.5" fill="#E9F5FF"/>
+<path d="M33 72c1-5 5-8 10-8" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+<g class="p-cligne"><ellipse cx="49" cy="80" rx="5.824000000000001" ry="7.168000000000001" fill="#2E2A47"/><circle cx="51.016" cy="77.424" r="2.4640000000000004" fill="#fff"/><circle cx="47.096" cy="82.688" r="1.064" fill="#fff"/><ellipse cx="74" cy="80" rx="5.824000000000001" ry="7.168000000000001" fill="#2E2A47"/><circle cx="76.016" cy="77.424" r="2.4640000000000004" fill="#fff"/><circle cx="72.096" cy="82.688" r="1.064" fill="#fff"/></g><ellipse cx="39" cy="90" rx="5.4" ry="3.06" fill="#FF8FB8" opacity=".6"/><ellipse cx="84" cy="90" rx="5.4" ry="3.06" fill="#FF8FB8" opacity=".6"/><path d="M57.5 89q4 4.5 8 0" fill="none" stroke="#2E2A47" stroke-width="2.6" stroke-linecap="round"/>
+</g></svg></span><span class="parade-m pm-6"><svg class="petit petit-dino" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="p-ombre" cx="60" cy="112" rx="32" ry="4.5" fill="#2E2A47" opacity=".12"/><g class="p-bob">
+<path d="M40 50l2-14 10 9ZM56 44l4-15 8 13ZM73 46l8-12 4 15Z" fill="#FFB38A" stroke="#C2603F" stroke-width="2.4" stroke-linejoin="round"/>
+<ellipse cx="45" cy="107" rx="9" ry="5" fill="#BDEFAA" stroke="#4E9A3A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="75" cy="107" rx="9" ry="5" fill="#BDEFAA" stroke="#4E9A3A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22 88C22 60 38 44 60 44S98 60 98 88C98 103 88 108 60 108S22 103 22 88Z" fill="#BDEFAA" stroke="#4E9A3A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="60" cy="94" rx="21" ry="10" fill="#E6FADD"/>
+<path class="p-salut" d="M27 86c-9 1-13-6-9-10 3-3 8-1 10 3" fill="#BDEFAA" stroke="#4E9A3A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M34 66c3-8 9-13 17-14" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+<g class="p-cligne"><ellipse cx="47" cy="72" rx="6.344" ry="7.808" fill="#2E2A47"/><circle cx="49.196" cy="69.194" r="2.684" fill="#fff"/><circle cx="44.926" cy="74.928" r="1.159" fill="#fff"/><ellipse cx="73" cy="72" rx="6.344" ry="7.808" fill="#2E2A47"/><circle cx="75.196" cy="69.194" r="2.684" fill="#fff"/><circle cx="70.926" cy="74.928" r="1.159" fill="#fff"/></g><ellipse cx="36" cy="83" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><ellipse cx="84" cy="83" rx="6" ry="3.4" fill="#FF8FB8" opacity=".6"/><path d="M55 84q5 5 10 0" fill="none" stroke="#2E2A47" stroke-width="2.6" stroke-linecap="round"/><path d="M57.8 85.9l1.3 2.8 1.5-2.5Z" fill="#fff" stroke="#2E2A47" stroke-width="1.1" stroke-linejoin="round"/>
+</g></svg></span><span class="parade-m pm-7"><svg class="petit petit-etoile" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="p-ombre" cx="60" cy="110" rx="24" ry="4.5" fill="#2E2A47" opacity=".12"/><g class="p-bob">
+<path d="M57.3 27.9Q60.0 22.0 62.7 27.9L70.9 45.8Q72.3 49.0 75.9 49.4L95.4 51.7Q101.8 52.4 97.0 56.8L82.6 70.1Q80.0 72.5 80.7 76.0L84.6 95.2Q85.9 101.6 80.2 98.4L63.1 88.8Q60.0 87.0 56.9 88.8L39.8 98.4Q34.1 101.6 35.4 95.2L39.3 76.0Q40.0 72.5 37.4 70.1L23.0 56.8Q18.2 52.4 24.6 51.7L44.1 49.4Q47.7 49.0 49.1 45.8Z" fill="#FFE07A" stroke="#C99A00" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M47 56c2-4 4-7 7-8" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+<g class="p-cligne"><path d="M45.775 65.9q5.225 -7.6 10.45 0" fill="none" stroke="#2E2A47" stroke-width="2.8499999999999996" stroke-linecap="round"/><path d="M63.775 65.9q5.225 -7.6 10.45 0" fill="none" stroke="#2E2A47" stroke-width="2.8499999999999996" stroke-linecap="round"/></g><ellipse cx="44" cy="73" rx="4.800000000000001" ry="2.72" fill="#FF8FB8" opacity=".6"/><ellipse cx="76" cy="73" rx="4.800000000000001" ry="2.72" fill="#FF8FB8" opacity=".6"/><path d="M56 72q4 4.5 8 0" fill="none" stroke="#2E2A47" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M100 24q1.2000000000000002 4.800000000000001 6 6q-4.800000000000001 1.2000000000000002 -6 6q-1.2000000000000002 -4.800000000000001 -6 -6q4.800000000000001 -1.2000000000000002 6 -6Z" fill="#FFE07A"/><path d="M18 30q0.8 3.2 4 4q-3.2 0.8 -4 4q-0.8 -3.2 -4 -4q3.2 -0.8 4 -4Z" fill="#FFB3D1"/>
+</g></svg></span></div>
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="/"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+<g fill="#fff" stroke="#fff" stroke-width="7" stroke-linejoin="round"><path d="M8 44C8 27 18 17 32 17S56 27 56 44C56 54 48 59 32 59S8 54 8 44Z"/><path d="M12 27C13 14 21 6 32 6S51 14 52 27Z"/><rect x="7" y="24" width="50" height="7" rx="3.5"/></g>
+<path d="M8 44C8 27 18 17 32 17S56 27 56 44C56 54 48 59 32 59S8 54 8 44Z" fill="#BCC8FF" stroke="#4F5FC4" stroke-width="2.2"/>
+<path d="M14 42c1-5 3-8 6-9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+<path d="M12 27C13 14 21 6 32 6S51 14 52 27Z" fill="#fff" stroke="#7D87BE" stroke-width="2.2" stroke-linejoin="round"/>
+<path d="M32 8V25" stroke="#DCE1F7" stroke-width="3.4" stroke-linecap="round"/>
+<rect x="7" y="24" width="50" height="7" rx="3.5" fill="#F1F3FF" stroke="#7D87BE" stroke-width="2.2"/>
+<path d="M22 11.2l1.1 2.9 3.1.2-2.4 1.9.8 3-2.6-1.7-2.6 1.7.8-3-2.4-1.9 3.1-.2Z" fill="#FFC23D" stroke="#C99A00" stroke-width="1" stroke-linejoin="round"/>
+<ellipse cx="23" cy="40" rx="2.6" ry="3.2" fill="#2E2A47"/><circle cx="24" cy="38.7" r="1.05" fill="#fff"/><ellipse cx="41" cy="40" rx="2.6" ry="3.2" fill="#2E2A47"/><circle cx="42" cy="38.7" r="1.05" fill="#fff"/>
+<g fill="rgba(255,255,255,.22)" stroke="#2E2A47" stroke-width="2.3" stroke-linejoin="round"><rect x="15" y="33.5" width="16" height="13" rx="4"/><rect x="33" y="33.5" width="16" height="13" rx="4"/></g>
+<path d="M31 38.5q1-1.4 2 0M15 37l-4.5-1.2M49 37l4.5-1.2" fill="none" stroke="#2E2A47" stroke-width="2" stroke-linecap="round"/>
+<ellipse cx="13.5" cy="50" rx="3.6" ry="2.1" fill="#FF7FAE" opacity=".65"/><ellipse cx="50.5" cy="50" rx="3.6" ry="2.1" fill="#FF7FAE" opacity=".65"/>
+<path d="M28 51q2 2.6 4 0q2 2.6 4 0" fill="none" stroke="#2E2A47" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="brand-text"><strong><span class="brand-pre">Les Minis</span> <span class="brand-co">Monstres</span></strong></span></a>
+      <p>Des sites internet professionnels, simples et faits pour être trouvés sur Google. Je conçois votre site et je reste à vos côtés, mes automatisations font le reste. Depuis les Ardennes, pour des clients partout en France.</p>
+      <ul class="footer-contact">
+        <li><a href="/contact/"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" /></svg>Nous écrire</a></li>
+        
+      </ul>
+    </div>
+    <div>
+      <h2 class="footer-title">Votre site</h2>
+      <ul class="footer-links">
+        <li><a href="/creer-mon-site/">Créer mon site</a></li>
+        <li><a href="/creer-mon-site/">Site Internet Professionnel</a></li>
+        <li><a href="/creer-mon-site/?type=boutique">Avec une boutique en ligne</a></li>
+        <li><a href="/tarifs/">Tarifs : 2 à 4 fois moins cher</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="footer-title">Votre métier</h2>
+      <ul class="footer-links">
+        <li><a href="/site-internet-artisan/">Artisans</a></li><li><a href="/site-internet-therapeute/">Bien-être et thérapeutes</a></li><li><a href="/site-internet-createur-artiste/">Créateurs et artistes</a></li><li><a href="/site-internet-gite-chambre-hotes/">Hébergements touristiques</a></li><li><a href="/site-internet-commercant/">Commerçants</a></li><li><a href="/site-internet-association/">Associations</a></li>
+        <li><a href="/creation-site-internet-ardennes/">Création de site dans les Ardennes</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="footer-title">Bon à savoir</h2>
+      <ul class="footer-links">
+        <li><a href="/pourquoi-un-site-internet/">Pourquoi avoir un site internet ?</a></li>
+        <li><a href="/etre-visible-sur-google/">Être visible sur Google</a></li>
+        <li><a href="/referencement-seo/">Référencement SEO</a></li>
+        <li><a href="/guides/">Guides pour créer son site</a></li>
+        <li><a href="/lexique/">Lexique du web</a></li>
+        <li><a href="/comparatif/">Les Minis Monstres et les autres solutions</a></li>
+        <li><a href="/fidelite/">Fidélité et parrainage</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="footer-title">Infos</h2>
+      <ul class="footer-links">
+        <li><a href="/pourquoi-les-minis-monstres/">Pourquoi les Minis Monstres ?</a></li>
+        <li><a href="/pourquoi-moins-cher/">Pourquoi c’est moins cher</a></li>
+        <li><a href="/realisations/">Réalisations</a></li>
+        <li><a href="/accompagnement/">Accompagnement</a></li>
+        <li><a href="/faq/">Questions fréquentes</a></li>
+        <li><a href="/mon-espace/demo/">Essayer l’espace client</a></li>
+        
+        <li><a href="/documentation/">Documentation client</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom"><div class="container footer-bottom-in">
+    <p>© 2026 Les Minis Monstres. Sites internet et SEO.</p>
+    <ul>
+      <li><a href="/mentions-legales/">Mentions légales</a></li>
+      <li><a href="/politique-de-confidentialite/">Confidentialité</a></li>
+      <li><a href="/conditions-generales/">Conditions générales</a></li>
+      <li><a href="/plan-du-site/">Plan du site</a></li>
+    </ul>
+  </div></div>
+</footer>
+<nav class="mobile-bar" aria-label="Accès rapide">
+  <a href="/contact/" class="mb-wa"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" /></svg><span>Nous écrire</span></a>
+  <a href="/creer-mon-site/" class="mb-creer"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72" /><path d="m14 7 3 3" /><path d="M5 6v4" /><path d="M19 14v4" /><path d="M10 2v2" /><path d="M7 8H3" /><path d="M21 16h-4" /><path d="M11 3H9" /></svg><span>Créer mon site</span></a>
+</nav>
+<div class="lia-flot" data-lia-flot hidden>
+  <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Cerise, la secrétaire d’Alex" hidden>
+    <div class="lia-tete"><svg class="monster monster-lia monster-coucou" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="m-shadow" cx="60" cy="112" rx="31" ry="4.5" fill="#2E2A47" opacity=".12"/>
+<g class="m-bob">
+<ellipse cx="45" cy="107" rx="9" ry="5" fill="#FFA9B6" stroke="#C8435E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="75" cy="107" rx="9" ry="5" fill="#FFA9B6" stroke="#C8435E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22 88C22 60 38 44 60 44S98 60 98 88C98 103 88 108 60 108S22 103 22 88Z" fill="#FFA9B6" stroke="#C8435E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="60" cy="96" rx="21" ry="9" fill="#FFE3E8"/>
+<path d="M34 64c3-8 9-13 17-14" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+<g class="m-arceau"><path d="M22 70C21 47 38 34 60 34S99 47 98 70" fill="none" stroke="#5B4BC4" stroke-width="7" stroke-linecap="round"/><path d="M22 70C21 47 38 34 60 34S99 47 98 70" fill="none" stroke="#8C7BEA" stroke-width="3.4" stroke-linecap="round"/>
+<path d="M41 39c-1 4-3 7-5 9M41 39c1 4 2 7 5 9" fill="none" stroke="#3E9A55" stroke-width="1.6" stroke-linecap="round"/><path d="M41 39c3-3 6-3 8-1-3 2-5 2-8 1Z" fill="#6BCB77"/>
+<circle cx="35.5" cy="50" r="3.6" fill="#E8435A" stroke="#A62238" stroke-width="1.5"/><circle cx="46.5" cy="50" r="3.6" fill="#E8435A" stroke="#A62238" stroke-width="1.5"/><circle cx="34.5" cy="48.8" r="1" fill="#fff"/><circle cx="45.5" cy="48.8" r="1" fill="#fff"/></g>
+
+<path class="m-wave" d="M27 90c-9-1-13-9-8-12 4-2 8 1 10 5" fill="#FFA9B6" stroke="#C8435E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<g class="m-eyes"><g class="m-look"><ellipse cx="47" cy="75" rx="6" ry="7.4" fill="#2E2A47"/><circle cx="49.1" cy="72.3" r="2.5" fill="#fff"/><circle cx="45" cy="77.8" r="1.1" fill="#fff"/></g><g class="m-look"><ellipse cx="73" cy="75" rx="6" ry="7.4" fill="#2E2A47"/><circle cx="75.1" cy="72.3" r="2.5" fill="#fff"/><circle cx="71" cy="77.8" r="1.1" fill="#fff"/></g></g>
+<ellipse cx="35" cy="84" rx="6" ry="3.4" fill="#FF6F91" opacity=".55"/><ellipse cx="85" cy="84" rx="6" ry="3.4" fill="#FF6F91" opacity=".55"/>
+<path d="M54 87q3 4 6 0q3 4 6 0" fill="none" stroke="#2E2A47" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+
+<rect x="13" y="58" width="13" height="21" rx="6.5" fill="#8C7BEA" stroke="#5B4BC4" stroke-width="2.6"/><rect x="16.5" y="62" width="6" height="13" rx="3" fill="#C9C0FF"/><rect x="94" y="58" width="13" height="21" rx="6.5" fill="#8C7BEA" stroke="#5B4BC4" stroke-width="2.6"/><rect x="97.5" y="62" width="6" height="13" rx="3" fill="#C9C0FF"/>
+<path d="M100 79c0 12-8 17-18 15" fill="none" stroke="#5B4BC4" stroke-width="3" stroke-linecap="round"/>
+<path d="M79.5 91.5c.3-2.4 1.6-4 3.8-4.6" fill="none" stroke="#3E9A55" stroke-width="1.6" stroke-linecap="round"/>
+<circle cx="79" cy="95.5" r="4.4" fill="#E8435A" stroke="#A62238" stroke-width="1.8"/><circle cx="77.6" cy="94" r="1.3" fill="#fff"/>
+<path d="M94 96c8 2 12-4 9-8-3-3-7-1-9 2" fill="#FFA9B6" stroke="#C8435E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<g class="m-noel" display="none"><g transform="translate(0 7) scale(.75)"><g transform="rotate(-6 80 54)">
+<path d="M38 52C38 30 56 12 82 9C100 7 118 13 127 28L119 34C114 25 107 21 99 22C108 30 116 40 122 52Z" fill="#EF4B5F" stroke="#A3263A" stroke-width="3" stroke-linejoin="round"/>
+<path d="M99 22C108 30 116 40 122 52H111C107 41 102 31 95 24Z" fill="#B72C42" opacity=".35"/>
+<path d="M50 40C56 26 68 17 82 14" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".45"/>
+<circle cx="125" cy="33" r="8.5" fill="#fff" stroke="#D2CBE6" stroke-width="2.6"/><circle cx="122" cy="30" r="2.4" fill="#EDE8F7"/>
+<rect x="32" y="46" width="96" height="17" rx="8.5" fill="#fff" stroke="#D2CBE6" stroke-width="2.6"/>
+<circle cx="46" cy="54" r="2.2" fill="#EDE8F7"/><circle cx="62" cy="51" r="1.8" fill="#EDE8F7"/><circle cx="78" cy="56" r="2.2" fill="#EDE8F7"/><circle cx="96" cy="52" r="1.8" fill="#EDE8F7"/><circle cx="112" cy="55" r="2.2" fill="#EDE8F7"/>
+</g></g></g>
+</g></svg><p><strong>Cerise</strong><small>La secrétaire de la petite bande</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Cerise"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg></button></div>
+    <div class="lia-fil" data-lia-fil aria-live="polite">
+      <p class="lia-msg is-lia" data-lia-accueil="site">Bonjour, moi c’est Cerise, de la petite bande d’Alex ! Choisissez une question ou écrivez la vôtre, je vous réponds tout de suite.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Bonjour ! Dites-moi ce que vous voulez changer sur votre site, ou posez-moi une question.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="demo" hidden>Bonjour ! Ici, c’est une démonstration : écrivez-moi comme un client, je vous montre comment je réponds.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="attente" hidden>Bonjour ! Je ne suis pas encore branchée dans cet espace. En attendant, écrivez à Alex dans l’onglet Mes demandes.</p>
+      <p class="lia-msg is-lia" data-lia-accueil="abonnement" hidden>Bonjour ! Je vous réponds ici dès que votre abonnement a démarré. En attendant, écrivez à Alex dans l’onglet Mes demandes.</p>
+    </div>
+    <div class="lia-puces" data-lia-liens="site">
+      <button type="button" data-lia-q="0">C’est combien ?</button><button type="button" data-lia-q="1">Comment ça marche ?</button><button type="button" data-lia-q="2">Qui fait mon site ?</button><button type="button" data-lia-q="3">Et pour changer mon site après ?</button>
+      <a href="/contact/">Écrire à Alex</a>
+    </div>
+    <div hidden><p data-lia-r="0">Votre site professionnel coûte 500 € une seule fois, pour 20 pages adaptées à l’ordinateur, à la tablette et au téléphone. Vous pouvez le payer en 6 ou 12 fois sans frais. Ensuite, pour le maintenir, l’abonnement Mini coûte 10 € par mois, sans engagement : hébergement, sauvegardes, sécurité, modifications incluses, et nom de domaine offert tant que l’abonnement est actif. Les extras se prennent à la carte, depuis votre espace client. Vous avez déjà votre hébergement ? La création seule vous donne le code du site, sans abonnement. <a href="/tarifs/">Voir les tarifs</a></p><p data-lia-r="1">Vous composez votre site en deux minutes, et Alex le crée pour vous. Il vous le montre avant la mise en ligne, et vous lui dites ce qui doit changer. Vous voyez le prix avant de commander. <a href="/creer-mon-site/">Créer mon site</a></p><p data-lia-r="2">Alex ! C’est lui qui conçoit votre site et qui vous répond. Moi, je suis la secrétaire de sa petite bande. Les Minis Monstres vous aident, c’est Alex qui modifie votre site. <a href="/notre-equipe/">Rencontrer la bande</a></p><p data-lia-r="3">Écrivez-moi votre demande dans votre espace client. Je vous pose quelques questions pour bien comprendre, vous confirmez, et je transmets à Alex. C’est lui qui fait la modification, avec soin, et elle peut prendre jusqu’à 48 h. C’est compris dans votre abonnement ! <a href="/accompagnement/">L’accompagnement</a></p></div>
+    <div class="lia-puces" data-lia-liens="espace" hidden>
+      <button type="button" data-lia-ex>Changer mes horaires</button><button type="button" data-lia-ex>Ajouter une photo sur ma page d’accueil</button><button type="button" data-lia-ex>Comment se passe une modification ?</button><button type="button" data-lia-ex>Que comprend mon abonnement ?</button>
+    </div>
+    <form class="lia-saisie" data-lia-form data-site-ajax="/wp-json/aled08/v1/bulle-site" hidden>
+      <label class="sr-only" for="lia-champ">Votre message pour Cerise</label>
+      <textarea id="lia-champ" rows="2" maxlength="600" placeholder="Posez votre question à Cerise…" required></textarea>
+      <button type="submit" aria-label="Envoyer à Cerise"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" /><path d="m21.854 2.147-10.94 10.939" /></svg></button>
+    </form>
+    <p class="lia-note" data-lia-note-site hidden>Cerise répond automatiquement et peut se tromper. Pour une demande précise, <a href="/contact/">écrivez à Alex</a>.</p>
+    <p class="lia-note" data-lia-note hidden><span data-lia-prix></span> Cerise répond automatiquement et peut se tromper. Elle ne touche pas à votre site : c’est Alex qui fait les modifications. <button type="button" class="link-btn" data-lia-nouveau>Nouvelle conversation</button></p>
+  </div>
+  <p class="lia-flot-coucou" hidden><strong>Je suis là pour vous aider !</strong><small>Cerise, la secrétaire de la bande</small></p>
+  <button type="button" class="lia-flot-btn" aria-expanded="false" aria-controls="lia-panel"><span class="sr-only">Parler à Cerise</span><svg class="monster monster-lia monster-coucou" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><ellipse class="m-shadow" cx="60" cy="112" rx="31" ry="4.5" fill="#2E2A47" opacity=".12"/>
+<g class="m-bob">
+<ellipse cx="45" cy="107" rx="9" ry="5" fill="#FFA9B6" stroke="#C8435E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="75" cy="107" rx="9" ry="5" fill="#FFA9B6" stroke="#C8435E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22 88C22 60 38 44 60 44S98 60 98 88C98 103 88 108 60 108S22 103 22 88Z" fill="#FFA9B6" stroke="#C8435E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse cx="60" cy="96" rx="21" ry="9" fill="#FFE3E8"/>
+<path d="M34 64c3-8 9-13 17-14" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+<g class="m-arceau"><path d="M22 70C21 47 38 34 60 34S99 47 98 70" fill="none" stroke="#5B4BC4" stroke-width="7" stroke-linecap="round"/><path d="M22 70C21 47 38 34 60 34S99 47 98 70" fill="none" stroke="#8C7BEA" stroke-width="3.4" stroke-linecap="round"/>
+<path d="M41 39c-1 4-3 7-5 9M41 39c1 4 2 7 5 9" fill="none" stroke="#3E9A55" stroke-width="1.6" stroke-linecap="round"/><path d="M41 39c3-3 6-3 8-1-3 2-5 2-8 1Z" fill="#6BCB77"/>
+<circle cx="35.5" cy="50" r="3.6" fill="#E8435A" stroke="#A62238" stroke-width="1.5"/><circle cx="46.5" cy="50" r="3.6" fill="#E8435A" stroke="#A62238" stroke-width="1.5"/><circle cx="34.5" cy="48.8" r="1" fill="#fff"/><circle cx="45.5" cy="48.8" r="1" fill="#fff"/></g>
+
+<path class="m-wave" d="M27 90c-9-1-13-9-8-12 4-2 8 1 10 5" fill="#FFA9B6" stroke="#C8435E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<g class="m-eyes"><g class="m-look"><ellipse cx="47" cy="75" rx="6" ry="7.4" fill="#2E2A47"/><circle cx="49.1" cy="72.3" r="2.5" fill="#fff"/><circle cx="45" cy="77.8" r="1.1" fill="#fff"/></g><g class="m-look"><ellipse cx="73" cy="75" rx="6" ry="7.4" fill="#2E2A47"/><circle cx="75.1" cy="72.3" r="2.5" fill="#fff"/><circle cx="71" cy="77.8" r="1.1" fill="#fff"/></g></g>
+<ellipse cx="35" cy="84" rx="6" ry="3.4" fill="#FF6F91" opacity=".55"/><ellipse cx="85" cy="84" rx="6" ry="3.4" fill="#FF6F91" opacity=".55"/>
+<path d="M54 87q3 4 6 0q3 4 6 0" fill="none" stroke="#2E2A47" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+
+<rect x="13" y="58" width="13" height="21" rx="6.5" fill="#8C7BEA" stroke="#5B4BC4" stroke-width="2.6"/><rect x="16.5" y="62" width="6" height="13" rx="3" fill="#C9C0FF"/><rect x="94" y="58" width="13" height="21" rx="6.5" fill="#8C7BEA" stroke="#5B4BC4" stroke-width="2.6"/><rect x="97.5" y="62" width="6" height="13" rx="3" fill="#C9C0FF"/>
+<path d="M100 79c0 12-8 17-18 15" fill="none" stroke="#5B4BC4" stroke-width="3" stroke-linecap="round"/>
+<path d="M79.5 91.5c.3-2.4 1.6-4 3.8-4.6" fill="none" stroke="#3E9A55" stroke-width="1.6" stroke-linecap="round"/>
+<circle cx="79" cy="95.5" r="4.4" fill="#E8435A" stroke="#A62238" stroke-width="1.8"/><circle cx="77.6" cy="94" r="1.3" fill="#fff"/>
+<path d="M94 96c8 2 12-4 9-8-3-3-7-1-9 2" fill="#FFA9B6" stroke="#C8435E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<g class="m-noel" display="none"><g transform="translate(0 7) scale(.75)"><g transform="rotate(-6 80 54)">
+<path d="M38 52C38 30 56 12 82 9C100 7 118 13 127 28L119 34C114 25 107 21 99 22C108 30 116 40 122 52Z" fill="#EF4B5F" stroke="#A3263A" stroke-width="3" stroke-linejoin="round"/>
+<path d="M99 22C108 30 116 40 122 52H111C107 41 102 31 95 24Z" fill="#B72C42" opacity=".35"/>
+<path d="M50 40C56 26 68 17 82 14" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity=".45"/>
+<circle cx="125" cy="33" r="8.5" fill="#fff" stroke="#D2CBE6" stroke-width="2.6"/><circle cx="122" cy="30" r="2.4" fill="#EDE8F7"/>
+<rect x="32" y="46" width="96" height="17" rx="8.5" fill="#fff" stroke="#D2CBE6" stroke-width="2.6"/>
+<circle cx="46" cy="54" r="2.2" fill="#EDE8F7"/><circle cx="62" cy="51" r="1.8" fill="#EDE8F7"/><circle cx="78" cy="56" r="2.2" fill="#EDE8F7"/><circle cx="96" cy="52" r="1.8" fill="#EDE8F7"/><circle cx="112" cy="55" r="2.2" fill="#EDE8F7"/>
+</g></g></g>
+</g></svg></button>
+</div>
+<script src="/assets/js/main.js?v=cbde4cd3" defer></script>
+</body>
+</html>

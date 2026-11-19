@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.4.0
+ * Version: 2.5.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.4.0');
+define('ALEXLIA_CONN_VERSION', '2.5.0');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 
 /* =========================================================================
@@ -126,6 +126,9 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'paiement_regler': return alexlia_bg_paiement_regler($args);
         case 'paiement_installer': return alexlia_bg_paiement_installer($args);
         case 'commandes_lire': return alexlia_bg_commandes_lire();
+        case 'commande_statut': return alexlia_bg_commande_statut($args);
+        case 'livraison_lire': return alexlia_bg_livraison_lire();
+        case 'livraison_regler': return alexlia_bg_livraison_regler($args);
         case 'stats': return alexlia_conn_stats();
         case 'vacances_lire': return alexlia_vac_get();
         case 'vacances_regler': return alexlia_vac_regler($args);
@@ -569,11 +572,81 @@ function alexlia_bg_commandes_lire() {
     if (!function_exists('wc_get_orders')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
     $o = [];
     foreach (wc_get_orders(['limit' => 15, 'orderby' => 'date', 'order' => 'DESC', 'type' => 'shop_order']) as $c) {
-        $o[] = ['numero' => (string) $c->get_order_number(), 'date' => $c->get_date_created() ? $c->get_date_created()->date('Y-m-d H:i') : '', 'statut' => wc_get_order_status_name($c->get_status()), 'statut_id' => $c->get_status(),
+        $o[] = ['id' => (int) $c->get_id(), 'numero' => (string) $c->get_order_number(), 'date' => $c->get_date_created() ? $c->get_date_created()->date('Y-m-d H:i') : '', 'statut' => wc_get_order_status_name($c->get_status()), 'statut_id' => $c->get_status(),
             'total' => (string) $c->get_total(), 'client' => trim($c->get_billing_first_name() . ' ' . mb_substr($c->get_billing_last_name(), 0, 1) . '.'), 'articles' => (int) $c->get_item_count(), 'adresse' => $c->get_edit_order_url()];
     }
     $hpos = class_exists('\\Automattic\\WooCommerce\\Utilities\\OrderUtil') && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
     return ['commandes' => $o, 'devise' => get_woocommerce_currency(), 'liste' => $hpos ? admin_url('admin.php?page=wc-orders') : admin_url('edit.php?post_type=shop_order')];
+}
+
+/* Faire avancer une commande avec les statuts de WooCommerce (2.5.0) : « en cours » (payée, à préparer) ou « terminée » (expédiée ou remise).
+ * C'est WooCommerce qui envoie ses propres e-mails au client de la boutique. Rien d'autre n'est possible d'ici (pas de remboursement). */
+function alexlia_bg_commande_statut($a) {
+    if (!function_exists('wc_get_order')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    $o = wc_get_order((int) ($a['id'] ?? 0));
+    $vers = sanitize_key((string) ($a['statut'] ?? ''));
+    if (!$o || $o->get_type() !== 'shop_order') return new WP_Error('alexlia_args', 'Commande introuvable.', ['status' => 404]);
+    if (!in_array($vers, ['processing', 'completed'], true)) return new WP_Error('alexlia_args', 'Ce statut ne se règle pas d’ici.', ['status' => 400]);
+    if (!in_array($o->get_status(), ['pending', 'on-hold', 'processing'], true)) return new WP_Error('alexlia_args', 'Cette commande ne peut plus changer d’ici.', ['status' => 400]);
+    $o->update_status($vers, 'Statut changé par le client depuis son espace Les Minis Monstres.');
+    alexlia_conn_journal('Commande n° ' . $o->get_order_number() . ' passée à « ' . wc_get_order_status_name($vers) . ' » depuis l’espace client.');
+    return ['ok' => true, 'statut' => wc_get_order_status_name($vers)];
+}
+
+/* La livraison, avec les modes d'expédition de WooCommerce (2.5.0) : forfait, livraison gratuite à partir d'un montant, retrait sur place.
+ * On règle la zone « France » de la boutique (créée si besoin). Les autres zones, plus fines, restent dans WooCommerce. */
+function alexlia_bg_livraison_zone($creer = false) {
+    if (!class_exists('WC_Shipping_Zones')) return null;
+    foreach (WC_Shipping_Zones::get_zones() as $z) {
+        foreach ((array) ($z['zone_locations'] ?? []) as $l) if ($l->type === 'country' && $l->code === 'FR') return new WC_Shipping_Zone((int) $z['zone_id']);
+    }
+    if (!$creer) return null;
+    $zone = new WC_Shipping_Zone();
+    $zone->set_zone_name('France');
+    $zone->add_location('FR', 'country');
+    $zone->save();
+    return $zone;
+}
+function alexlia_bg_livraison_lire() {
+    if (!class_exists('WC_Shipping_Zones')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    $r = ['forfait' => ['actif' => false, 'prix' => ''], 'gratuit' => ['actif' => false, 'minimum' => ''], 'retrait' => ['actif' => false], 'reglages' => admin_url('admin.php?page=wc-settings&tab=shipping'), 'devise' => get_woocommerce_currency()];
+    $zone = alexlia_bg_livraison_zone();
+    if (!$zone) return $r;
+    foreach ($zone->get_shipping_methods() as $m) {
+        $on = $m->enabled === 'yes';
+        if ($m->id === 'flat_rate' && !$r['forfait']['actif']) $r['forfait'] = ['actif' => $on, 'prix' => (string) $m->get_option('cost')];
+        if ($m->id === 'free_shipping' && !$r['gratuit']['actif']) $r['gratuit'] = ['actif' => $on, 'minimum' => $m->get_option('requires') === 'min_amount' ? (string) $m->get_option('min_amount') : ''];
+        if ($m->id === 'local_pickup' && !$r['retrait']['actif']) $r['retrait'] = ['actif' => $on];
+    }
+    return $r;
+}
+function alexlia_bg_livraison_regler($a) {
+    if (!class_exists('WC_Shipping_Zones')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    $zone = alexlia_bg_livraison_zone(true);
+    $nombre = function ($v) { $v = (float) str_replace(',', '.', preg_replace('/[^\d,.]/', '', (string) $v)); return $v > 0 && $v < 10000 ? (string) round($v, 2) : ''; };
+    $voulu = [
+        'flat_rate' => [!empty($a['forfait']), ['cost' => $nombre($a['forfait_prix'] ?? ''), 'title' => 'Livraison']],
+        'free_shipping' => [!empty($a['gratuit']), ($min = $nombre($a['gratuit_minimum'] ?? '')) !== '' ? ['requires' => 'min_amount', 'min_amount' => $min, 'title' => 'Livraison gratuite'] : ['requires' => '', 'title' => 'Livraison gratuite']],
+        'local_pickup' => [!empty($a['retrait']), ['title' => 'Retrait sur place']],
+    ];
+    if ($voulu['flat_rate'][0] && $voulu['flat_rate'][1]['cost'] === '') return new WP_Error('alexlia_args', 'Indiquez le prix de la livraison.', ['status' => 400]);
+    global $wpdb;
+    foreach ($voulu as $type => [$actif, $opts]) {
+        $inst = 0;
+        foreach ($zone->get_shipping_methods() as $m) if ($m->id === $type) { $inst = (int) $m->instance_id; break; }
+        if (!$inst && !$actif) continue;
+        if (!$inst) $inst = (int) $zone->add_shipping_method($type);
+        if (!$inst) continue;
+        if ($actif) {
+            $cle = 'woocommerce_' . $type . '_' . $inst . '_settings';
+            $set = get_option($cle, []);
+            update_option($cle, array_merge(is_array($set) ? $set : [], $opts));
+        }
+        $wpdb->update($wpdb->prefix . 'woocommerce_shipping_zone_methods', ['is_enabled' => $actif ? 1 : 0], ['instance_id' => $inst]);
+    }
+    if (class_exists('WC_Cache_Helper')) WC_Cache_Helper::get_transient_version('shipping', true);
+    alexlia_conn_journal('Livraison réglée par le client depuis son espace.');
+    return ['ok' => true] + alexlia_bg_livraison_lire();
 }
 
 /* Les articles du client (18 novembre 2026) : le client remplit un emplacement dans son espace client (photo, description, prix) et

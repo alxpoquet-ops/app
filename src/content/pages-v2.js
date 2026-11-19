@@ -2,59 +2,48 @@
 // Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160, aucun tiret long
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de src/config.js),
 // aucun chiffre sans source, et pas de phrase de 9 mots ou plus reprise d'une autre page.
-// Offre du 17 novembre 2026 : le Site Internet Professionnel (creation), une seule option à la commande (la boutique en
-// ligne, payée une fois), la page visibilité Google (options 'packseo', à l'unité) commandée plus tard depuis l'espace
-// client, puis « On s'occupe de tout » avec un seul abonnement au mois, sans engagement : Mini (id 'base' : modifications
-// faites par Alex en 48 h au plus, une demande à la fois, nom de domaine offert tant que l'abonnement est actif). Maxi est retiré :
-// ses avantages se prennent en extras (config.aLaDemande et options au mois). Ou « Je m'en occupe moi-même » (création seule,
-// le code du site est remis au client), et le code événement (config.evenement). Chaque mot technique est expliqué la première fois qu'il apparaît sur une page.
-const { site, creation, types, forfaits, annuel, lissage, delais, options, paiement, marche, fidelite, clients, bande, evenement } = require('../config');
+// Offre du 19 novembre 2026 : trois sites payés une fois (config.types : Site Essentiel, Site Visibilité, Site Boutique),
+// puis Autonomie (config.creationSeule, sans abonnement, export du site remis au client) ou Mini (config.forfaits[0], au mois,
+// sans engagement, modifications incluses, une demande à la fois). L'abonnement est facultatif. Trois extras : la page de
+// visibilité Google (payée une fois, par carte, depuis l'espace client), la traduction anglaise et la fonctionnalité spécifique
+// (sur devis). Chaque mot technique est expliqué la première fois qu'il apparaît sur une page.
+const { site, creation, types, forfaits, annuel, lissage, paiement, marche, fidelite, clients, bande, creationSeule, aLaDemande } = require('../config');
 
 // helpers
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
-const et = (l) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} et ${l[l.length - 1]}` : l.join(''));
-const ou = (l) => (l.length > 1 ? `${l.slice(0, -1).join(', ')} ou ${l[l.length - 1]}` : l.join(''));
-// Délai de création indicatif, s'il est encore donné dans config.types (une-page, vitrine, boutique).
-const delai = (id) => ((types || []).find((t) => t.id === id) || {}).delai || '';
+// Les trois sites, et leur délai de création indicatif (config.types : une-page, vitrine, boutique).
+const T = (id) => (types || []).find((t) => t.id === id) || {};
+const ESS = T('une-page'), VIS = T('vitrine'), BOU = T('boutique');
+const delai = (id) => T(id).delai || '';
 
-const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement : modifications par Alex en 48 h au plus, une demande à la fois
-const { sourcesMd, ecartBas, INDEPENDANT_DES } = require('../lib/components');
-const opt = (id) => options.find((o) => o.id === id && !o.retire);
-const mirette = opt('mirette'), deux = opt('deux');
+const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement, facultatif
+const AUTO = creationSeule.name; // sans abonnement
+const { sourcesMd, INDEPENDANT_DES } = require('../lib/components');
+const pageGoogle = aLaDemande.find((x) => x.id === 'packseo' && !x.retire) || { name: 'Page de visibilité Google', prix: 0 };
+const prixPage = eur(pageGoogle.prix); // la page de visibilité Google, payée une fois
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
-const annee = (f) => f.month * (12 - annuel.moisOfferts); // l'abonnement payé à l'année
 const durees = lissage.durees.join(' ou ');
-const packSeo = options.find((o) => o.id === 'packseo' && !o.retire); // la page visibilité Google, à l'unité
-// 17 novembre 2026 : c'est Alex qui fait toutes les modifications, à la main. Cerise prépare la demande avec le client.
-const lieux = ou(evenement.lieux); // une foire, un marché, un salon ou un événement professionnel
 
-// La petite bande : les automatisations d'Alex, dessinées en petits monstres. Prénom et métier : « Cerise, la secrétaire ».
+// La petite bande : cinq Minis Monstres. Prénom et métier : « Cerise, la secrétaire ».
 const B = (id) => bande.find((b) => b.id === id);
 const nomRole = (b) => `${b.nom}, ${minus(b.role)}`;
-const compris = bande.filter((b) => b.compris); // avec l'abonnement
-const avecBoutique = bande.filter((b) => b.option === 'boutique'); // arrive avec la boutique en ligne
-const extrasBande = bande.filter((b) => b.option && b.option !== 'boutique'); // arrivent avec un extra (Mirette, Lumi)
 // Ce que fait chaque petit monstre, écrit pour ces pages (différent des textes de config.bande), après « Prénom, rôle, ».
 // DIT : présentation de la bande (page Pourquoi les Minis Monstres). APRES : leur travail une fois le site en ligne (Accompagnement).
 const DIT = {
-  support: 'vous répond dans la petite bulle, vous aide à formuler chaque demande et me la transmet.',
+  support: 'vous répond dans la petite bulle, vous aide à formuler chaque demande et la transmet.',
+  constructeur: 'monte vos pages et s’assure que tout fonctionne, sur téléphone comme sur ordinateur.',
   ecrivain: 'propose une première version de vos textes, que je reprends avec vous.',
+  observateur: 'prépare les pages qui vous feront trouver sur Google, près de chez vous.',
   organisateur: 'classe vos pages et vos contenus, pour que vos visiteurs trouvent vite leur chemin.',
-  gardien: 'garde des copies de sécurité de votre site, fait les vérifications techniques et le surveille jour et nuit.',
-  observateur: 'regarde la vitesse de votre site et ses visites, et me signale ce qui peut s’améliorer.',
-  etoile: 'choisit les sujets des pages qui vous feront trouver sur Google, avec les extras visibilité Google. Je les écris ensuite.',
-  vendeur: 'rejoint la bande avec la boutique en ligne : il tient votre catalogue et suit vos commandes.',
 };
 const APRES = {
-  support: 'reçoit votre demande dans votre espace client, vous pose les questions utiles et s’assure qu’il ne manque rien avant de me la transmettre.',
+  support: 'reçoit votre demande dans votre espace client, vous pose les questions utiles et s’assure qu’il ne manque rien avant de la transmettre.',
+  constructeur: 'réalise le changement demandé et vérifie que rien d’autre n’a bougé.',
   ecrivain: 'vous aide à tourner un nouveau texte quand les mots ne viennent pas.',
-  organisateur: 'place chaque nouvelle page au bon endroit dans le menu.',
-  gardien: 'lance les sauvegardes, fait la maintenance et veille sur la sécurité, de jour comme de nuit.',
-  observateur: `suit les visites et la vitesse du site, et me dit ce qui mérite d’être amélioré. Avec l’extra « ${mirette.name} », ses idées vous arrivent en petits messages dans votre espace client.`,
-  etoile: `choisit le sujet de chaque page visibilité Google, que j’écris et publie, pour chaque page commandée avec l’extra « ${packSeo.name} ».`,
-  vendeur: 'suit les commandes de votre boutique et envoie les e-mails à vos clients.',
+  observateur: 'prépare chaque page de visibilité Google que vous commandez en plus.',
+  organisateur: 'place chaque nouveauté au bon endroit, et garde votre boutique en ordre si vous en avez une.',
 };
 
 const ville = site.address.city.replace(/'/g, '’');
@@ -76,14 +65,14 @@ const pages = [
     icon: 'piggy-bank',
     color: 'lilac',
     title: 'Pourquoi un site moins cher, sans rien sacrifier | Les Minis Monstres',
-    description: `Un site pro à ${eur(creation.prix)} € : le temps gagné sur les tâches répétitives, ce que je vérifie à la main, et tout ce qui n’est jamais sacrifié.`,
+    description: `Un site pro dès ${eur(ESS.price)} € : le temps gagné sur les tâches répétitives, ce que je vérifie à la main, et tout ce qui n’est jamais sacrifié.`,
     h1: 'Pourquoi sommes-nous moins chers ?',
     lead: 'Un site coûte cher surtout à cause du temps passé dessus. J’ai réduit ce temps, pas le soin. Voici comment, et ce que vous gardez.',
     resume: 'Le temps gagné, et ce qui ne change pas.',
     points: [
-      { icon: 'timer', t: 'De l’optimisation', d: 'Une petite bande d’automatisations pour le répétitif, et aucun intermédiaire à payer.' },
-      { icon: 'user-check', t: 'Tout vérifié à la main', d: 'Je relis, je teste sur téléphone et je mets en ligne moi-même.' },
-      { icon: 'badge-euro', t: 'Un prix affiché', d: `${eur(creation.prix)} € le site, le même pour tous, sans devis à attendre.` },
+      { icon: 'timer', t: 'De l’optimisation', d: 'Une petite bande de Minis Monstres pour le répétitif, et aucun intermédiaire à payer.' },
+      { icon: 'user-check', t: 'Tout vérifié à la main', d: 'Je relis, je teste sur téléphone et je contrôle chaque mise en ligne.' },
+      { icon: 'badge-euro', t: 'Un prix affiché', d: `Trois sites, de ${eur(ESS.price)} à ${mille(BOU.price)} €, les mêmes pour tous, sans devis à attendre.` },
       { icon: 'shield-check', t: 'Rien de sacrifié', d: 'Qualité, sécurité, visibilité sur Google et un vrai interlocuteur restent au rendez-vous.' },
     ],
     body: `## Ce que vous payez vraiment dans un site
@@ -96,49 +85,50 @@ Mon idée est différente. Je passe moins de temps sur ce qui se répète d’un
 
 ## Pas de magie : de l’optimisation
 
-À côté des sites que je fais moi-même, j’ai passé du temps à programmer une petite bande de compagnons. Ce sont mes automatisations, que j’ai dessinées en petits monstres. Chacun s’occupe d’une tâche répétitive mais utile, et il travaille en autonomie. Ajoutez des accès directs chez des hébergeurs français, et vous avez tout le secret de ces prix. Rien de magique là-dedans, c’est de l’optimisation.
+Au fil des sites, j’ai construit une méthode et une petite bande de compagnons, les Minis Monstres. Chacun s’occupe d’une tâche répétitive mais utile. Ajoutez des accès directs chez des hébergeurs français, et vous avez tout le secret de ces prix. Rien de magique là-dedans, c’est de l’optimisation.
 
 ### Une petite bande pour le répétitif
 
-Beaucoup d’étapes reviennent sur chaque projet, puis chaque mois une fois le site en ligne. La bande s’en charge, et je vérifie toujours ce qu’elle a fait. Ce qui me prenait des jours se fait maintenant en quelques heures.
+Beaucoup d’étapes reviennent sur chaque projet. La bande s’en charge, et je vérifie toujours ce qu’elle a fait. Ce qui me prenait des jours se fait maintenant en quelques heures.
 
-- **À la création** : ${nomRole(B('ecrivain'))}, prépare une base pour les textes, et ${nomRole(B('organisateur'))}, aide à ranger les pages. Je monte le site et je reprends tout avec vos mots.
-- **Après la mise en ligne** : ${nomRole(B('gardien'))}, s’occupe des sauvegardes, ces copies de sécurité de votre site, et de la maintenance, c’est-à-dire les vérifications techniques qui le gardent en état de marche. ${nomRole(B('support'))}, accueille vos demandes et me les transmet.
-- **Pour vous** : rien à apprendre, rien à surveiller. Je gère tout, et vous n’avez aucun effort à fournir.
+- **À la création** : ${nomRole(B('ecrivain'))}, prépare une base pour les textes, ${nomRole(B('constructeur'))}, monte les pages, et ${nomRole(B('organisateur'))}, aide à les ranger. Je reprends tout avec vos mots.
+- **Pour Google** : ${nomRole(B('observateur'))}, prépare les pages qui vous feront trouver près de chez vous.
+- **Après la mise en ligne**, avec l’abonnement ${mini.name} : ${nomRole(B('support'))}, accueille vos demandes de modification et les transmet.
+- **Pour vous** : rien à apprendre. Vous validez votre site, et vous décidez ensuite qui s’en occupe.
 ${delai('une-page') && delai('vitrine') ? `
-Résultat : une seule page est prête en ${delai('une-page')}, et un site de plusieurs pages en ${delai('vitrine')}.
+Résultat : un ${ESS.name} est prêt en ${delai('une-page')}, et un ${VIS.name} en ${delai('vitrine')}.
 ` : ''}
 ### Un hébergement en direct
 
-Votre site est hébergé en France : il est gardé sur des machines allumées jour et nuit, chez des hébergeurs auxquels j’accède en direct. Il n’y a pas d’intermédiaire entre eux et moi, et c’est aussi ce qui garde l’abonnement à un prix bas.
+Avec l’abonnement ${mini.name}, votre site est hébergé en France : il est gardé sur des machines allumées jour et nuit, chez des hébergeurs auxquels j’accède en direct. Il n’y a pas d’intermédiaire entre eux et moi, et c’est aussi ce qui garde l’abonnement à un prix bas.
 
 ## Ce que je fais à la main
 
-Les petits monstres vont vite, mais ils ne décident de rien. C’est moi qui conçois et fais votre site : je vous écoute, je fais les choix et je reprends tout ce qu’ils préparent.
+Les petits monstres vont vite, mais ils ne décident de rien. C’est moi qui conçois votre site : je vous écoute, je fais les choix et je reprends tout ce qu’ils préparent.
 
 - **La relecture** : chaque page, chaque texte, chaque horaire et chaque prix affiché.
 - **Les tests sur téléphone** : je parcours le site sur plusieurs appareils, comme le feront vos clients.
 - **La vérification** : les liens, le formulaire, la vitesse d’affichage, les informations destinées à Google.
-- **La mise en ligne** : je relie votre nom de domaine, l’adresse de votre site, j’installe le cadenas qui protège vos visiteurs et je publie le site moi-même.
-- **Vos modifications** : c’est moi qui les fais, une par une, à la main.
+- **La mise en ligne** : avec ${mini.name}, je relie votre nom de domaine, l’adresse de votre site, et j’installe le cadenas qui protège vos visiteurs. En ${AUTO}, je vous remets l’export du site, prêt à installer.
+- **Vos retouches** : elles sont illimitées jusqu’à ce que vous validiez le site.
 
 Votre site ne part en ligne qu’après être passé entre mes mains.
 
 ## Un prix affiché, sans devis
 
-Chez beaucoup de prestataires, il faut demander un devis, attendre, puis comparer. Ici, le prix est écrit sur le site et il est le même pour tout le monde : ${eur(creation.prix)} € le site, de ${creation.pages} pages. À la commande, une seule option, payée une fois : la boutique en ligne à ${eur(creation.boutique)} €, avec ${creation.boutiqueProduits} emplacements d’articles que vous remplissez vous-même, puis ${eur(creation.boutiqueSlot)} € l’emplacement en plus. Plus tard, depuis votre espace client, vous pouvez ajouter des extras, comme des pages visibilité Google (c’est ce qu’on appelle le SEO), à ${eur(packSeo.price.once)} € la page.
+Chez beaucoup de prestataires, il faut demander un devis, attendre, puis comparer. Ici, les prix sont écrits sur le site et ils sont les mêmes pour tout le monde : ${eur(ESS.price)} € le ${ESS.name}, sur une page, ${eur(VIS.price)} € le ${VIS.name}, jusqu’à ${creation.pages} pages, et ${mille(BOU.price)} € le ${BOU.name}, pour vendre en ligne. Plus tard, depuis votre espace client, vous pouvez ajouter une ${minus(pageGoogle.name)}, à ${prixPage} € la page, payée une fois par carte.
 
-Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, en une fois ou en ${durees} fois sans frais. Pour la suite, vous choisissez. Un abonnement sans engagement fait vivre le site : ${mini.name} à ${eur(mini.month)} € par mois, avec vos modifications incluses. Ou bien la création seule : je vous remets le code du site, et vous l’installez vous-même. Le détail complet est sur la page [tarifs](/tarifs/).
+Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, en une fois ou en ${durees} fois sans frais. Pour la suite, vous choisissez. L’abonnement ${mini.name}, sans engagement, fait vivre le site pour ${eur(mini.month)} € par mois, avec vos modifications incluses. Ou bien la formule ${AUTO} : je vous remets l’export du site, et vous l’installez vous-même, sans rien payer chaque mois. Le détail complet est sur la page [tarifs](/tarifs/).
 
 ## Les repères du marché, honnêtement
 
-Face au même site de ${marche.pagesCompare} pages fait par un indépendant, l’écart est de ${marche.fois} fois, d’après les fourchettes publiées.
+Face à un site vitrine de ${marche.pagesCompare} pages fait par un indépendant, notre ${VIS.name} à ${eur(VIS.price)} € coûte ${marche.fois} fois moins, d’après les fourchettes publiées.
 
 Côté entretien, ${eur(mini.month)} € par mois comprennent l’hébergement, le nom de domaine, les sauvegardes, la sécurité, la maintenance et les modifications. Les prestataires consultés demandent ${eur(marche.entretienMin)} à ${eur(marche.entretienMax)} € par mois, l’hébergement étant souvent en plus : c’est de ${marche.entretienFois} fois moins cher.
 
 La différence se joue alors sur ce qui vient avec : la vérification à la main, le suivi après la mise en ligne, et quelqu’un qui vous répond quand vous avez une question.
 
-> Soyons honnêtes : ces fourchettes viennent de prestataires, donc à lire avec prudence, et chacun fixe ses prix. Des indépendants proposent aussi un site dès ${eur(INDEPENDANT_DES)} €, et l’écart tombe alors à environ ${ecartBas} fois. Mes ${eur(creation.prix)} € comprennent ce que comprend un site de ${creation.pages} pages comparable : un design fait pour vous, un formulaire de contact et les bases du référencement. Les pages de référencement en plus ne sont pas comprises : elles se prennent à la carte.
+> Soyons honnêtes : ces fourchettes viennent de prestataires, donc à lire avec prudence, et chacun fixe ses prix. Des indépendants proposent aussi un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors presque nul. Le ${VIS.name} comprend un design fait pour vous, un formulaire de contact, une FAQ et des pages pensées pour le référencement local.
 
 **Sources**, consultées en novembre 2026 :
 
@@ -149,20 +139,20 @@ ${sourcesMd()}
 Un prix plus bas ne veut pas dire un travail bâclé. Voici ce que vous gardez, quel que soit le site choisi :
 
 - **La qualité** : un site moderne, clair et rapide, adapté à tous les supports.
-- **La sécurité** : le cadenas dans la barre d’adresse, la maintenance, les sauvegardes, un site surveillé jour et nuit.
+- **La sécurité** : avec ${mini.name}, le cadenas dans la barre d’adresse, la maintenance technique et les sauvegardes automatiques.
 - **La visibilité** : chaque page est écrite et réglée pour que Google comprenne votre activité.
 - **Un vrai interlocuteur** : quand vous écrivez, c’est moi qui vous réponds, en général dans la journée.
-- **Votre liberté** : le nom de domaine est à votre nom, et l’abonnement s’arrête quand vous le décidez.
+- **Votre liberté** : le nom de domaine est à votre nom, l’abonnement n’est pas imposé, et l’export de votre site reste possible.
 
 Et si votre projet dépasse ce que je sais bien faire, comme une application sur mesure ou un catalogue de milliers de produits, je vous le dis dès notre premier échange.`,
     faq: [
       { q: 'Moins cher, ça veut dire moins bien ?', a: 'Non. Le prix baisse parce que je passe moins de temps sur ce qui se répète, pas parce que je saute des étapes. Chaque site est relu, testé sur téléphone et vérifié avant d’être publié.' },
-      { q: 'Mon site est-il fait automatiquement ?', a: 'Non. C’est moi qui conçois et fais votre site. Ma petite bande s’occupe seulement de ce qui se répète : une mise en page de base, des premiers textes, des réglages. Je reprends ensuite tout à la main, je fais les choix avec vous et je publie le site moi-même.' },
-      { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. Le site coûte ${eur(creation.prix)} €, puis l’abonnement, à ${eur(mini.month)} € par mois, si vous me confiez la mise en ligne. La boutique en ligne et les extras, comme les pages visibilité Google, sont facultatifs, et leur prix est affiché sur le site.` },
+      { q: 'Mon site est-il fait automatiquement ?', a: 'Non. C’est moi qui conçois votre site. Ma petite bande s’occupe seulement de ce qui se répète : une mise en page de base, des premiers textes, des réglages. Je reprends ensuite tout, je fais les choix avec vous, et rien n’est publié sans votre validation.' },
+      { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. Vous payez le site choisi, puis ${eur(mini.month)} € par mois seulement si vous prenez l’abonnement ${mini.name}. Les extras, comme une ${minus(pageGoogle.name)}, sont facultatifs, et leur prix est affiché sur le site.` },
       { q: 'Pourquoi n’y a-t-il pas de devis ?', a: 'Parce que la plupart des sites d’indépendants, d’artisans, de commerces ou d’associations se construisent de la même façon. Un prix fixe est plus simple pour vous comme pour moi. Pour un projet hors norme, je vous le dis franchement.' },
     ],
     voir: ['/tarifs/', '/pourquoi-les-minis-monstres/', '/comparatif/'],
-    cta: { titre: 'Un site soigné, à prix clair', texte: 'Votre site, la boutique si vous vendez, puis qui s’en occupe : le total apparaît tout de suite.' },
+    cta: { titre: 'Un site soigné, à prix clair', texte: 'Choisissez votre site, puis qui s’en occupe : le total apparaît tout de suite.' },
   },
 
   // ------------------------------------------------------------------ pourquoi un site internet
@@ -182,7 +172,11 @@ Et si votre projet dépasse ce que je sais bien faire, comme une application sur
       { icon: 'house', t: 'Être chez vous', d: 'Votre adresse, vos règles, sans dépendre d’une plateforme.' },
       { icon: 'send', t: 'Recevoir des demandes', d: 'Un formulaire et un bouton d’appel, les messages arrivent chez vous.' },
     ],
-    body: `## Vos clients vous cherchent sur leur téléphone
+    body: `## Une vitrine que l’on voit
+
+Sans site, votre activité ressemble à une belle vitrine installée dans une rue déserte. Vos futurs clients ne peuvent pas choisir ce qu’ils ne voient pas.
+
+## Vos clients vous cherchent sur leur téléphone
 
 Avant d’appeler un artisan, de pousser la porte d’un commerce ou de rejoindre une association, beaucoup de gens jettent d’abord un œil sur internet. Et ils le font souvent depuis leur téléphone. Selon le Baromètre du numérique 2026, mené par le Crédoc pour l’Arcep, 91 % des personnes de 12 ans et plus ont un smartphone ([source](${SRC_BARO})). La même enquête indique que 74 % des personnes ont fait au moins un achat en ligne au cours des 12 derniers mois ([source](${SRC_BARO_INFO})).
 
@@ -228,14 +222,14 @@ Vos activités, vos prochains événements, la façon d’adhérer ou de devenir
 
 Un site travaille quand vous ne pouvez pas décrocher. Une personne qui vous découvre à dix heures du soir peut lire vos services, regarder vos photos et vous laisser un message. Le lendemain matin, sa demande vous attend dans votre boîte mail, avec ses coordonnées.
 
-> Commencer petit, c’est possible. Quelques pages suffisent souvent pour être trouvé et joignable, et les autres servent à Google en attendant. Le guide [site une page ou site vitrine](/guides/site-une-page-ou-site-vitrine/) vous aide à choisir.
+> Commencer petit, c’est possible. Une seule page suffit souvent pour être joignable. Pour être trouvé sur Google, plusieurs pages font mieux. Le guide [site une page ou site vitrine](/guides/site-une-page-ou-site-vitrine/) vous aide à choisir.
 
-Chez moi, le site coûte ${eur(creation.prix)} €, avec ${creation.pages} pages. Ensuite, si vous le voulez, un abonnement à ${eur(mini.month)} € par mois s’occupe du reste : l’hébergement, qui garde votre site accessible 24 h/24, son adresse, son entretien technique et vos modifications. Les prix sont détaillés sur la page [tarifs](/tarifs/).`,
+Chez moi, trois sites existent : le ${ESS.name} à ${eur(ESS.price)} €, le ${VIS.name} à ${eur(VIS.price)} € et le ${BOU.name} à ${mille(BOU.price)} €. Ensuite, si vous le voulez, l’abonnement ${mini.name}, à ${eur(mini.month)} € par mois, s’occupe du reste : l’hébergement, qui garde votre site accessible 24 h/24, son adresse, son entretien technique et vos modifications. Les prix sont détaillés sur la page [tarifs](/tarifs/).`,
     faq: [
       { q: 'Ma page Facebook ne suffit pas ?', a: 'Elle suffit pour garder le contact avec vos abonnés. Pour être trouvé par quelqu’un qui ne vous connaît pas encore, et pour présenter clairement vos services, un site fait mieux. Les deux vont très bien ensemble.' },
       { q: 'J’ai déjà une fiche Google, à quoi bon un site ?', a: 'La fiche indique votre adresse, vos horaires et vos avis. Le site raconte ce que vous faites, comment, et pourquoi vous choisir. Une fiche reliée à un vrai site inspire aussi davantage confiance.' },
-      { q: 'Un site, c’est compliqué à tenir à jour ?', a: 'Pas si quelqu’un s’en charge pour vous. Avec l’abonnement, vous envoyez vos changements depuis votre espace client, avec une photo si besoin. Ils sont faits pour vous, et compris sans limite.' },
-      { q: 'Quel site choisir pour commencer ?', a: `Une seule page, si vous voulez surtout être trouvé et joignable. Plusieurs pages, si vous avez plusieurs services à présenter. Chez moi, le site compte ${creation.pages} pages, et on peut en ajouter après coup.` },
+      { q: 'Un site, c’est compliqué à tenir à jour ?', a: `Pas si quelqu’un s’en charge pour vous. Avec l’abonnement ${mini.name}, vous envoyez vos changements depuis votre espace client, avec une photo si besoin. Ils sont faits pour vous, et inclus.` },
+      { q: 'Quel site choisir pour commencer ?', a: `Le ${ESS.name}, sur une seule page, si vous voulez surtout exister et être joignable. Le ${VIS.name}, si vous avez plusieurs services à présenter ou si vous comptez sur Google. Le ${BOU.name}, si vous voulez vendre en ligne.` },
     ],
     voir: ['/etre-visible-sur-google/', '/guides/site-une-page-ou-site-vitrine/', '/metiers/'],
     cta: { titre: 'Votre site, sans prise de tête', texte: 'Dites-moi ce que vous faites, je m’occupe du reste.' },
@@ -288,7 +282,7 @@ Sur chaque page, Google doit comprendre en un coup d’œil ce que vous faites, 
 
 Reliez aussi vos pages entre elles : de l’accueil vers chaque service, et de chaque service vers le contact. Le visiteur trouve son chemin sans chercher, et Google comprend mieux comment votre site est organisé.
 
-Chez moi, le site compte ${creation.pages} pages. Pour être trouvé sur plus de recherches, on peut ajouter des pages visibilité Google (le SEO) : chacune répond à une recherche précise. C’est un extra, que vous prenez quand vous le voulez.
+Chez moi, le ${VIS.name} compte jusqu’à ${creation.pages} pages, avec des pages de visibilité Google déjà intégrées. Pour être trouvé sur encore plus de recherches, on peut en ajouter : chacune répond à une recherche précise. C’est un extra, que vous prenez quand vous le voulez.
 
 ## Les mots de vos clients, pas ceux du métier
 
@@ -312,7 +306,7 @@ Ce qui aide ensuite : garder vos informations à jour, ajouter de temps en temps
 
 Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les autres, des mots répétés à l’excès, des liens achetés. Ils font souvent plus de mal que de bien, et le retard se rattrape ensuite difficilement.
 
-> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('etoile'))} de ma petite bande, choisit les sujets de vos pages visibilité Google, et je les écris une par une. C’est un extra : elle se commande depuis votre espace client quand vous le décidez, à ${eur(packSeo.price.once)} € la page, payée une fois. Tout est expliqué sur la page [référencement SEO](/referencement-seo/).`,
+> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('observateur'))} de ma petite bande, prépare vos pages de visibilité Google, une par une. Chaque page de plus se commande depuis votre espace client quand vous le décidez, à ${prixPage} € la page, payée une fois par carte. Tout est expliqué sur la page [référencement](/referencement-seo/).`,
     faq: [
       { q: 'Combien de temps pour apparaître sur Google ?', a: 'Sur le nom de votre entreprise, c’est en général rapide. Sur des recherches où beaucoup d’entreprises sont présentes, comptez plutôt plusieurs mois, avec un site soigné et des informations à jour.' },
       { q: 'Faut-il payer Google pour être bien placé ?', a: 'Non. Les résultats naturels ne s’achètent pas. Les annonces payantes existent, elles sont signalées comme sponsorisées, et elles disparaissent dès que vous arrêtez de payer.' },
@@ -330,14 +324,14 @@ Méfiez-vous en revanche des raccourcis : des pages copiées les unes sur les au
     icon: 'heart-handshake',
     color: 'pink',
     title: 'Pourquoi choisir les Minis Monstres : nos engagements | Les Minis Monstres',
-    description: 'Je fais votre site et je vous réponds, ma petite bande d’automatisations s’occupe du répétitif. Un prix affiché, sans engagement, et le domaine à votre nom.',
+    description: 'Je conçois votre site et je vous réponds, avec cinq Minis Monstres pour m’aider. Des prix affichés, un abonnement facultatif, et le domaine à votre nom.',
     h1: 'Pourquoi choisir les Minis Monstres ?',
-    lead: 'Parce qu’internet devrait être simple. Derrière ce site, il y a une personne, moi, qui conçoit votre site, le met en ligne et vous répond. Et tout ce qui se répète, je l’ai confié à une petite bande de monstres que j’ai programmés, pour que vous payiez moins.',
+    lead: 'Parce qu’internet devrait être simple. Derrière ce site, il y a une personne, moi, qui conçoit votre site et vous répond. Et tout ce qui se répète, je l’ai confié à une petite bande de cinq monstres, pour que vous payiez moins.',
     resume: 'Un vrai interlocuteur, des engagements écrits.',
     points: [
       { icon: 'user', t: 'Une vraie personne', d: 'C’est moi, Alex, qui lis vos messages et qui vous réponds.' },
       { icon: 'tag', t: 'Un prix affiché', d: 'Le même pour tous, sans devis et sans surprise.' },
-      { icon: 'lock', t: 'Rien ne vous retient', d: 'Sans engagement, et l’adresse de votre site reste à votre nom.' },
+      { icon: 'lock', t: 'Rien ne vous retient', d: 'Aucun abonnement imposé, et l’adresse de votre site reste à votre nom.' },
       { icon: 'workflow', t: 'Une petite bande', d: 'Des petits monstres m’aident sur le répétitif, et votre facture baisse d’autant.' },
     ],
     body: `## Moi, Alex, un vrai interlocuteur
@@ -354,45 +348,45 @@ Vous pouvez me poser vos questions avant de commander, sans rien vous engager. S
 
 1. **On échange** : vous me dites ce que vous faites, pour qui, et ce que vous attendez du site. Les choix se font avec vous.
 2. **Je conçois votre site** : la structure, les pages, le style. Au passage, ma petite bande prend en charge le répétitif, comme la mise en page de base, les premiers textes et les réglages.
-3. **Je vérifie** : je relis tout, je teste le site sur plusieurs appareils et je corrige ce qui doit l’être.
-4. **Je mets en ligne, et je reste là** : je relie l’adresse de votre site, je le confie à un hébergeur français qui le garde accessible jour et nuit, puis je m’occupe de vos modifications au fil des mois.
+3. **Je vérifie, et vous validez** : je relis tout, je teste le site sur plusieurs appareils, et vous demandez vos retouches sans limite jusqu’à la validation.
+4. **Le site part en ligne** : avec ${mini.name}, je relie l’adresse de votre site, je le confie à un hébergeur français et je reste là pour vos modifications. En ${AUTO}, je vous remets son export et vous prenez la suite.
 
 ## Mes engagements
 
 Ce sont des promesses simples, écrites ici pour que vous puissiez me les rappeler.
 
-- **Un prix affiché** : ${eur(creation.prix)} € pour le site, écrit noir sur blanc, le même pour tout le monde.
-- **Sans engagement** : l’abonnement s’arrête dès que vous le souhaitez. Seule exception, si vous payez le site en ${durees} fois, vous restez le temps du paiement.
+- **Un prix affiché** : ${eur(ESS.price)}, ${eur(VIS.price)} ou ${mille(BOU.price)} € selon le site, écrit noir sur blanc, le même pour tout le monde.
+- **Aucun abonnement imposé** : ${mini.name} est facultatif, et il s’arrête dès que vous le souhaitez. Seule exception, si vous payez le site en ${durees} fois, vous restez le temps du paiement.
 - **Le nom de domaine à votre nom** : l’adresse de votre site vous appartient, pas à moi.
-- **Vous repartez avec votre site** : si vous arrêtez, je vous remets une copie complète, et votre adresse vous suit.
-- **Rien en ligne sans vérification** : je contrôle votre site avant sa mise en ligne, et je fais moi-même chaque modification.
-- **Une réponse en général dans la journée** : vos questions sur votre site sont comprises dans l’abonnement.
+- **Vous repartez avec votre site** : l’export est possible à tout moment, et votre adresse vous suit.
+- **Rien en ligne sans vérification** : je contrôle votre site avant sa mise en ligne, et vous le validez.
+- **Une réponse en général dans la journée** : vos questions avant la commande ne vous engagent à rien.
 
 ## Ma petite bande
 
-D’un site à l’autre, beaucoup de choses se ressemblent : la structure de départ, les réglages pour Google, l’affichage sur téléphone, les copies de sécurité. Pour tout ce travail-là, j’ai programmé une petite bande de compagnons, mes automatisations, que j’ai dessinées en petits monstres mignons. Chacun a son métier. Ils travaillent seuls, vite et sans oubli, et c’est autant de temps que vous ne payez pas. La conception de votre site, elle, reste mon travail.
+D’un site à l’autre, beaucoup de choses se ressemblent : la structure de départ, les réglages pour Google, l’affichage sur téléphone. Pour tout ce travail-là, je m’appuie sur une petite bande de compagnons, dessinés en petits monstres mignons. Chacun a son métier. Ils travaillent vite et sans oubli, et c’est autant de temps que vous ne payez pas. La conception de votre site, elle, reste mon travail.
 
 Voici qui fait quoi :
 
 ${bande.map((b) => `- **${nomRole(b)}**, ${DIT[b.id] || `${minus(b.court)}`}`).join('\n')}
 
-${avecBoutique.length ? `À part ${et(avecBoutique.map((b) => b.nom))}, tous` : 'Tous'} travaillent pour votre site, sans supplément. Vous pouvez faire leur connaissance sur la page [notre équipe](/notre-equipe/).
+Tous les cinq travaillent pour votre site, sans supplément. Vous pouvez faire leur connaissance sur la page [notre équipe](/notre-equipe/).
 
-Une fois le site en ligne, vos demandes suivent toujours le même chemin : ${B('support').nom} les accueille, vous aide à les préciser, puis me les transmet. Ensuite, je fais la modification. Le détail est sur la page [accompagnement](/accompagnement/).
+Une fois le site en ligne, avec l’abonnement ${mini.name}, vos demandes suivent toujours le même chemin : ${B('support').nom} les accueille, vous aide à les préciser, puis les transmet. Le détail est sur la page [accompagnement](/accompagnement/).
 
-Ces petits monstres ne décident pas à votre place. Ils ne modifient jamais votre site eux-mêmes : ils m’aident, préparent et surveillent. Et ils ne me remplacent pas : je regarde ce qu’ils font, et c’est toujours moi qui réponds de votre site.
+Ces petits monstres ne décident pas à votre place. Et ils ne me remplacent pas : je regarde ce qu’ils font, et c’est toujours moi qui réponds de votre site.
 
 ## Ce que je fais bien, et ce que je ne fais pas
 
-Je crée des sites qui présentent une activité, de ${creation.pages} pages, et des petites boutiques en ligne. C’est ce que je sais bien faire, vite et avec soin. Vous pouvez en voir quelques-uns sur la page [réalisations](/realisations/).
+Je crée des sites d’une page, des sites qui vont jusqu’à ${creation.pages} pages, et des boutiques en ligne. C’est ce que je sais bien faire, vite et avec soin. Vous pouvez en voir quelques-uns sur la page [réalisations](/realisations/).
 
 Pour une application sur mesure, un logiciel métier ou un catalogue de milliers de produits, il faut un développeur expérimenté. Dans ce cas, je vous le dis honnêtement, et je peux vous orienter vers les bonnes personnes.
 
 Si mes prix restent doux, c’est grâce à cette petite bande, et à mes accès directs chez des hébergeurs français. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout.`,
     faq: [
-      { q: 'Est-ce que je parle à une vraie personne ?', a: `Oui. Les messages du formulaire de contact arrivent chez moi, et c’est moi qui réponds. Dans votre espace client, ${B('support').nom} accueille vos demandes et vous aide à les formuler, puis c’est moi qui fais chaque modification.` },
-      { q: 'Et si un petit monstre se trompe ?', a: `Cela peut arriver, comme avec tout outil. C’est pour cela qu’aucun d’eux ne touche à votre site. ${B('support').nom} vous relit votre demande avant de me l’envoyer, vous la confirmez, et c’est moi qui la fais.` },
-      { q: 'Et si je veux partir un jour ?', a: 'Vous partez librement. Le nom de domaine est déjà à votre nom, et je vous remets les fichiers de votre site pour le faire héberger ailleurs.' },
+      { q: 'Est-ce que je parle à une vraie personne ?', a: `Oui. Les messages du formulaire de contact arrivent chez moi, et c’est moi qui réponds. Dans votre espace client, ${B('support').nom} accueille vos demandes et vous aide à les formuler.` },
+      { q: 'Et si un petit monstre se trompe ?', a: `Cela peut arriver, comme avec tout outil. C’est pour cela que je contrôle leur travail. ${B('support').nom} vous relit votre demande avant de la transmettre, et vous la confirmez.` },
+      { q: 'Et si je veux partir un jour ?', a: 'Vous partez librement. Le nom de domaine est déjà à votre nom, et vous recevez l’export de votre site pour le faire héberger ailleurs.' },
       { q: 'Faut-il habiter près de chez vous ?', a: `Non. Tout peut se faire à distance, par e-mail, au téléphone ou en visio, partout en France. Si vous êtes dans les ${dept}, on peut aussi se rencontrer.` },
     ],
     voir: ['/pourquoi-moins-cher/', '/realisations/', '/accompagnement/'],
@@ -406,53 +400,53 @@ Si mes prix restent doux, c’est grâce à cette petite bande, et à mes accès
     icon: 'life-buoy',
     color: 'mint',
     title: 'Accompagnement après la mise en ligne du site | Les Minis Monstres',
-    description: `Un abonnement sans engagement, ${eur(mini.month)} € par mois : votre site hébergé, entretenu, vos modifications incluses et votre nom de domaine offert.`,
+    description: `L’abonnement ${mini.name}, facultatif et sans engagement, ${eur(mini.month)} € par mois : votre site hébergé, entretenu, avec nom de domaine et modifications inclus.`,
     h1: 'Accompagnement : ce qui se passe après la mise en ligne',
-    lead: 'Un site ne s’arrête pas le jour où il est publié. Chaque mois, je m’occupe de ce qui le fait tourner, et vous me demandez les changements quand vous en avez besoin.',
+    lead: 'Un site ne s’arrête pas le jour où il est publié. Vous pouvez le gérer seul, ou me le confier : chaque mois, je m’occupe alors de ce qui le fait tourner, et vous demandez vos changements quand vous en avez besoin.',
     resume: 'Chaque mois, votre site entretenu et suivi.',
     points: [
-      { icon: 'shield-check', t: 'Votre site entretenu', d: `${nomRole(B('gardien'))}, veille sur votre site et le garde en état de marche, jour et nuit.` },
-      { icon: 'pencil', t: 'Des modifications comprises', d: `Vous demandez, ${B('support').nom} me transmet, je modifie, en 48 h au plus.` },
-      { icon: 'search-check', t: 'Des extras à la carte', d: 'Pages pour Google, article de blog, assistant sur votre site : vous les prenez quand vous en avez besoin.' },
+      { icon: 'shield-check', t: 'Votre site entretenu', d: 'Hébergement, sauvegardes automatiques, sécurité et maintenance technique : tout est fait pour vous.' },
+      { icon: 'pencil', t: 'Des modifications incluses', d: `Vous demandez, ${B('support').nom} transmet, et c’est fait en 48 h au plus.` },
+      { icon: 'search-check', t: 'Trois extras, pas plus', d: 'Une page pour Google, une traduction anglaise, une fonctionnalité spécifique : seulement si vous en avez besoin.' },
       { icon: 'handshake', t: 'Sans engagement', d: 'Vous arrêtez quand vous voulez et vous gardez votre adresse.' },
     ],
-    body: `## Un abonnement, sans engagement
+    body: `## Deux façons de faire vivre votre site
 
-En commandant, si vous me confiez la mise en ligne, vous prenez l’abonnement ${mini.name}, à ${eur(mini.month)} € par mois. Il démarre à la réception de votre site, sans engagement. Payé à l’année, il vous offre ${annuel.moisOfferts} mois.
+Après la création, vous choisissez. Avec la formule ${AUTO}, vous ne payez rien chaque mois : vous gérez votre hébergement, votre nom de domaine, vos sauvegardes et vos mises à jour, et vous recevez votre site prêt à installer. Avec l’abonnement ${mini.name}, à ${eur(mini.month)} € par mois, tout cela est fait pour vous. Il démarre à la réception de votre site, sans engagement. Payé à l’année, il vous offre ${annuel.moisOfferts} mois.
 
-### Ce que comprend l’abonnement
+### Ce que comprend l’abonnement ${mini.name}
 
 Votre site reste en ligne, protégé et à jour, sans que vous ayez à y penser.
 
 - **L’hébergement** : l’endroit où votre site reste accessible 24 h/24.
-- **Le nom de domaine** : l’adresse de votre site, offerte tant que l’abonnement est actif, et qui reste à votre nom.
-- **Les sauvegardes** : une copie de sécurité de votre site, faite régulièrement.
-- **La sécurité et la surveillance** : des protections tenues à jour, et un œil sur votre site jour et nuit.
-- **La maintenance** : des vérifications techniques régulières, pour que votre site reste en état de marche.
-- **Vos modifications**, comprises sans limite. Une modification peut prendre ${delaiModif}, et vous avez une demande à la fois.
-- **Un tableau de bord**, pour suivre vos visiteurs et voir quelles pages plaisent le plus.
+- **Le nom de domaine** : l’adresse de votre site, comprise tant que l’abonnement est actif, et qui reste à votre nom.
+- **Les sauvegardes automatiques** : une copie de sécurité de votre site, faite régulièrement.
+- **La sécurité** : des protections tenues à jour.
+- **La maintenance technique** : des vérifications régulières, pour que votre site reste en état de marche.
+- **Vos modifications**, incluses. Une modification peut prendre ${delaiModif}, et vous avez une demande à la fois.
+- **Votre espace client**, où vous faites vos demandes et suivez vos visiteurs.
+- **Les Minis Monstres à votre service** : une question, et l’on vous répond.
 
-### Les extras, à la carte
+### Trois extras, à la carte
 
-Pour aller plus loin, vous prenez un extra quand vous en avez besoin, depuis votre espace client. Il apparaît sur votre prochaine facture, et vous l’arrêtez quand vous voulez.
+Pour aller plus loin, vous prenez un extra quand vous en avez besoin. Rien ne se renouvelle tout seul.
 
-- **Des pages visibilité Google en plus.** Chacune est écrite pour une recherche précise, comme une porte d’entrée de plus vers votre site. Seule ou en pack, payée une fois.
-- **Deux demandes à la fois**, si vous avez beaucoup de changements à faire.
-- **L’analyse de ${B('observateur').nom}**, qui surveille votre site et vous propose des améliorations dans votre espace client.
-- **Et d’autres petits plus** : un article de blog, vos avis Google, un bouton WhatsApp, une adresse e-mail pro.
+- **Une ${minus(pageGoogle.name)}, ${prixPage} € la page.** Elle est écrite pour une recherche précise, comme une porte d’entrée de plus vers votre site. Vous la commandez dans votre espace client et vous la payez par carte tout de suite, une seule fois.
+- **Une traduction anglaise**, sur devis.
+- **Une fonctionnalité spécifique**, sur devis : dites-moi votre besoin, je vous réponds avec un prix.
 
-Retrouvez tous les extras, avec leurs prix, dans la section « Les extras » de la page [tarifs](/tarifs/#extras).
+Retrouvez les extras, avec leurs prix, dans la section « Les extras » de la page [tarifs](/tarifs/#extras).
 
 ## Demander une modification
 
-Un horaire qui change, une nouvelle photo, un texte à ajouter : pour moi, ce sont des modifications, et elles sont comprises dans l’abonnement, sans limite. Tout part de votre espace client, une page privée que vous ouvrez sur ordinateur comme sur téléphone.
+Un horaire qui change, une nouvelle photo, un texte à ajouter : ce sont des modifications, et elles sont incluses dans l’abonnement ${mini.name}. Tout part de votre espace client, une page privée que vous ouvrez sur ordinateur comme sur téléphone.
 
 1. **Vous faites votre demande** en quelques mots, avec une photo si besoin.
 2. **${B('support').nom} vous pose les bonnes questions**, puis vous résume la demande.
-3. **Vous confirmez**, et elle me la transmet.
-4. **Je fais la modification moi-même**, puis je vous préviens.
+3. **Vous confirmez**, et elle la transmet.
+4. **La modification est faite**, je la contrôle, puis vous êtes prévenu.
 
-Tant que je n’ai pas commencé, vous pouvez annuler votre demande depuis votre espace client.
+Tant que le travail n’a pas commencé, vous pouvez annuler votre demande depuis votre espace client.
 
 Entre votre demande et la mise en ligne, il peut se passer ${mini.delai} au plus. Seule une refonte complète du site, ou l’ajout d’une fonction nouvelle, passe par un devis : je vous dis d’abord ce que cela représente.
 
@@ -462,30 +456,24 @@ Pour une question sur votre site, je vous réponds en général dans la journée
 
 ## La petite bande, après la mise en ligne
 
-Une fois votre site publié, mes petits monstres prennent le relais sur tout ce qui se répète. Ce sont mes automatisations : chacun a sa tâche et m’aide, mais aucun ne modifie votre site. Ceux-ci sont compris dans l’abonnement :
+Une fois votre site publié, mes cinq petits monstres continuent de travailler pour vous, si vous avez l’abonnement ${mini.name} :
 
-${compris.map((b) => `- **${nomRole(b)}**, ${APRES[b.id] || minus(b.court)}`).join('\n')}
-
-Avec les extras, deux autres monstres rejoignent la bande :
-
-${extrasBande.map((b) => `- **${nomRole(b)}**, ${APRES[b.id] || minus(b.court)}`).join('\n')}
-${avecBoutique.map((b) => `
-Avec la boutique en ligne, ${nomRole(b)}, rejoint la bande : il ${APRES[b.id] || minus(b.court)}`).join('')}
+${bande.map((b) => `- **${nomRole(b)}**, ${APRES[b.id] || minus(b.court)}`).join('\n')}
 
 ## Sans engagement, et si vous arrêtez
 
 Vous arrêtez votre abonnement quand vous voulez, et il prend fin à la fin de la période déjà payée. Seule exception : si vous avez choisi de régler votre site en ${durees} fois, vous restez le temps du paiement.
 
-Et après ? Votre nom de domaine est à votre nom, il reste donc à vous. Je vous remets une copie complète de votre site, pour le faire héberger où vous voulez. Vous ne perdez ni votre adresse, ni le travail déjà fait.
+Et après ? Votre nom de domaine est à votre nom, il reste donc à vous. Je vous remets l’export de votre site, pour le faire héberger où vous voulez. Vous ne perdez ni votre adresse, ni le travail déjà fait.
 
 Tous les prix sont réunis sur la page [tarifs](/tarifs/). Si vous parlez de moi autour de vous, le [parrainage](/fidelite/) offre ${fidelite.parrainageMois} mois d’abonnement à vous comme à la personne parrainée. Et un deuxième site profite de ${fidelite.remiseSecondSite} % de remise sur sa création.`,
     faq: [
-      { q: 'Puis-je avoir un site sans abonnement ?', a: 'Oui, avec la création seule : en commandant, vous choisissez « Je m’en occupe moi-même ». Je vous remets alors le code de votre site, et vous l’installez chez votre hébergeur, seul ou avec son aide. Tant que votre site est hébergé chez moi, en revanche, l’abonnement est nécessaire : il couvre son adresse, son hébergement et son entretien.' },
-      { q: 'Combien de modifications puis-je demander ?', a: `Autant qu’il vous en faut : elles sont comprises dans l’abonnement, sans limite. Vous avez une demande en cours à la fois, deux avec l’extra « ${deux.name} ». Seules une refonte complète ou une fonction nouvelle passent par un devis.` },
-      { q: 'En combien de temps ma demande est-elle traitée ?', a: `Une modification peut prendre ${delaiModif}. Je vous préviens par e-mail dès que la modification est en ligne.` },
+      { q: 'Puis-je avoir un site sans abonnement ?', a: `Oui, avec la formule ${AUTO} : vous la choisissez en commandant. Je vous remets alors l’export de votre site, et vous l’installez chez votre hébergeur, seul ou avec son aide. Tant que votre site est hébergé chez moi, en revanche, l’abonnement ${mini.name} est nécessaire : il couvre son adresse, son hébergement et son entretien.` },
+      { q: 'Combien de modifications puis-je demander ?', a: `Autant qu’il vous en faut : elles sont incluses dans l’abonnement ${mini.name}. Vous avez une demande en cours à la fois. Seules une refonte complète ou une fonction nouvelle passent par un devis.` },
+      { q: 'En combien de temps ma demande est-elle traitée ?', a: `Une modification peut prendre ${delaiModif}. Vous êtes prévenu par e-mail dès qu’elle est en ligne.` },
     ],
     voir: ['/tarifs/', '/mon-espace/demo/', '/pourquoi-les-minis-monstres/'],
-    cta: { titre: 'Entre de bonnes mains', texte: 'Visitez la démo de l’espace client, ou composez votre site.' },
+    cta: { titre: 'Entre de bonnes mains', texte: 'Visitez la démo de l’espace client, ou choisissez votre site.' },
   },
 
   // ------------------------------------------------------------------ page locale : Ardennes
@@ -495,7 +483,7 @@ Tous les prix sont réunis sur la page [tarifs](/tarifs/). Si vous parlez de moi
     icon: 'map-pin',
     color: 'peach',
     title: `Création de site internet dans les ${dept} (${num}) | Les Minis Monstres`,
-    description: `Je crée votre site internet depuis ${ville} : rencontre possible à Charleville-Mézières, Sedan ou Rethel, ou tout à distance. Le site à ${eur(creation.prix)} €.`,
+    description: `Je crée votre site internet depuis ${ville} : rencontre possible à Charleville-Mézières, Sedan ou Rethel, ou tout à distance. Un site dès ${eur(ESS.price)} €.`,
     h1: `Création de site internet dans les ${dept}`,
     lead: `Je suis installé à ${ville}, dans les ${dept}. Si vous êtes dans le coin, on peut se rencontrer. Sinon, tout se fait très bien à distance.`,
     resume: `Un créateur de sites installé dans les ${dept}.`,
@@ -511,7 +499,7 @@ Je m’appelle Alex et je crée des sites internet depuis ${ville} (${site.addre
 
 Je fais des sites d’une page ou de plusieurs, et des boutiques en ligne. L’offre est la même ici qu’ailleurs : un prix affiché, un site vérifié à la main, puis, si vous le voulez, un abonnement au mois qui s’occupe de l’entretien et de vos modifications.
 
-Indépendants, artisans, commerçants, gîtes, associations : si vous êtes à Charleville-Mézières, à Sedan, à Rethel, à ${ville} ou dans un village autour, on peut se voir pour parler de votre projet. Ce n’est jamais obligatoire. Beaucoup de choses se règlent très bien par téléphone ou par e-mail.
+Indépendants, artisans, commerçants, gîtes, associations : si vous êtes à Charleville-Mézières, à Sedan, à Rethel, à ${ville} ou dans un village autour, on peut se voir pour parler de votre projet. Rien ne vous y oblige. Beaucoup de choses se règlent très bien par téléphone ou par e-mail.
 
 ## Se rencontrer, ou tout faire à distance
 
@@ -520,7 +508,7 @@ Certaines personnes aiment mettre un visage sur un nom avant de se lancer. D’a
 - **En rendez-vous**, dans les Ardennes : on regarde ensemble ce que vous faites, vos photos et vos idées.
 - **À distance** : vous m’écrivez ou on s’appelle, puis vous suivez tout depuis votre espace client.
 
-Dans les deux cas, le tarif ne change pas et il est affiché à l’avance : ${eur(creation.prix)} € pour le site, puis l’abonnement, à ${eur(mini.month)} € par mois, sans engagement. Le détail est sur la page [tarifs](/tarifs/).
+Dans les deux cas, le tarif ne change pas et il est affiché à l’avance : ${eur(ESS.price)} € pour le ${ESS.name}, ${eur(VIS.price)} € pour le ${VIS.name}, ${mille(BOU.price)} € pour le ${BOU.name}. Ensuite, c’est ${AUTO}, sans abonnement, ou ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement. Le détail est sur la page [tarifs](/tarifs/).
 
 ## Être trouvé près de chez vous
 
@@ -532,7 +520,7 @@ Pour une entreprise locale, tout ne se joue pas face à la France entière. Tout
 
 Pensez aussi aux mots que les gens emploient vraiment. Beaucoup disent « Charleville » plutôt que « Charleville-Mézières ». Pour un gîte, la vallée de la Meuse ou la forêt des Ardennes parlent souvent plus qu’un simple nom de commune. Glissez ces mots naturellement dans vos textes, sans les répéter à chaque ligne.
 
-Votre site compte ${creation.pages} pages, et des pages visibilité Google peuvent s’y ajouter, écrites pour qu’on vous trouve sur Google. Pour un couvreur de Rethel, l’une peut parler de la réparation d’ardoises, une autre du démoussage. Chacune répond à une vraie recherche d’ici.
+Le ${VIS.name} compte jusqu’à ${creation.pages} pages, dont des pages de visibilité Google, écrites pour qu’on vous trouve près de chez vous. Pour un couvreur de Rethel, l’une peut parler de la réparation d’ardoises, une autre du démoussage. Chacune répond à une vraie recherche d’ici.
 
 > Pas de pages en série pour chaque village. Une page vraie et utile vaut mieux que vingt copies où seul le nom de la commune change. Google le repère, et vos clients aussi.
 
@@ -548,14 +536,14 @@ C’est un bon exemple de ce qu’un site peut apporter à une activité d’ici
 
 1. **Vous me contactez** par le [formulaire](/contact/), en précisant si vous aimeriez une rencontre. Vous savez déjà ce qu’il vous faut ? Commandez directement sur la page [créer mon site](/creer-mon-site/).
 2. **On fait le point**, en rendez-vous dans les Ardennes ou au téléphone.
-3. **Je crée votre site**${delai('une-page') && delai('vitrine') && delai('boutique') ? ` : comptez ${delai('une-page')} pour une seule page, ${delai('vitrine')} pour plusieurs pages, ${delai('boutique')} pour une boutique` : ', et je vous montre chaque étape'}.
-4. **Je le mets en ligne** après vérification, puis je m’occupe de son entretien et de vos modifications.
+3. **Je crée votre site**${delai('une-page') && delai('vitrine') && delai('boutique') ? ` : comptez ${delai('une-page')} pour un ${ESS.name}, ${delai('vitrine')} pour un ${VIS.name}, ${delai('boutique')} pour un ${BOU.name}` : ', et je vous montre chaque étape'}.
+4. **Vous validez, et le site part en ligne.** Ensuite, vous le gérez vous-même, ou je m’occupe de son entretien et de vos modifications avec ${mini.name}.
 
 Côté paiement, vous réglez ${paiement.acompte} % à la commande, et le reste à la réception du site.`,
     faq: [
       { q: 'Faut-il être dans les Ardennes pour travailler avec vous ?', a: 'Non. Je crée des sites pour toute la France, à distance. Être dans les Ardennes permet seulement de se rencontrer plus facilement, si vous le souhaitez.' },
       { q: 'Vous déplacez-vous pour un rendez-vous ?', a: `Oui, dans les ${dept}, par exemple à Charleville-Mézières, Sedan, Rethel ou ${ville}. Dites-moi dans votre message où vous êtes, et on trouve un moment.` },
-      { q: 'Le prix change-t-il pour une entreprise ardennaise ?', a: `Non. Qu’on se rencontre ou pas, c’est le même prix pour tous : ${eur(creation.prix)} € pour la création, puis l’abonnement au mois si vous le souhaitez.` },
+      { q: 'Le prix change-t-il pour une entreprise ardennaise ?', a: `Non. Qu’on se rencontre ou pas, c’est le même prix pour tous : à partir de ${eur(ESS.price)} € pour la création, puis l’abonnement au mois si vous le souhaitez.` },
       { q: 'Faites-vous une page pour chaque ville ?', a: 'Non, pas en série. Je préfère une page vraie, qui cite votre ville et les communes où vous travaillez, plutôt que des copies qui ne servent à personne.' },
     ],
     voir: ['/etre-visible-sur-google/', '/realisations/', '/contact/'],

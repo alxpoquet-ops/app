@@ -948,3 +948,10 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .verrou > * { min-width: 0; }
 .verrou .btn { white-space: normal; text-align: center; height: auto; padding-top: 12px; padding-bottom: 12px; }
 .verrou .btn span { min-width: 0; }
+/* Ma boutique : la livraison et les boutons d'une commande (WooCommerce) */
+.bg-carte { display: grid; gap: 10px; padding: 16px; margin-bottom: 12px; border-radius: 20px; background: var(--soft); }
+.bg-carte .field { margin: 0; }
+.bg-livraison .btn { width: 100%; justify-content: center; min-height: 50px; }
+.bg-cmd-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+.bg-cmd-actions .btn { flex: 1 1 140px; justify-content: center; min-height: 44px; }
+@media (min-width: 760px) { .bg-livraison .btn { width: auto; } }

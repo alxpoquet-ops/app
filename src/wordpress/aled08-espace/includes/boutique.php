@@ -89,6 +89,7 @@ function aled08e_boutique_html($uid) {
 <?php if ($sub === 'articles') : echo aled08e_articles_html($uid); // phpcs:ignore
 elseif ($sub === 'prix') : echo aled08e_bg_prix_html($uid); // phpcs:ignore
 elseif ($sub === 'paiements') : echo aled08e_bg_paiements_html($uid); // phpcs:ignore
+elseif ($sub === 'livraison') : echo aled08e_bg_livraison_html($uid); // phpcs:ignore
 elseif ($sub === 'commandes') : echo aled08e_bg_commandes_html($uid); // phpcs:ignore
 else : ?>
 <p class="app-p">Des petits outils de vente à régler vous-même en quelques secondes. Ils ne comptent pas dans vos modifications.</p>

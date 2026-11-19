@@ -11,7 +11,7 @@
 defined('ABSPATH') || exit;
 
 function aled08e_bg_flash($uid, $ok, $texte) { set_transient('aled08_bg_flash_' . (int) $uid, [$ok, $texte], 120); }
-function aled08e_bg_sub() { $s = sanitize_key(wp_unslash($_GET['sub'] ?? '')); return in_array($s, ['articles', 'prix', 'paiements', 'commandes', 'promos'], true) ? $s : 'articles'; }
+function aled08e_bg_sub() { $s = sanitize_key(wp_unslash($_GET['sub'] ?? '')); return in_array($s, ['articles', 'prix', 'paiements', 'livraison', 'commandes', 'promos'], true) ? $s : 'articles'; }
 function aled08e_bg_pret($uid) { return aled08e_meta($uid, 'lia_url') !== '' && aled08e_meta($uid, 'lia_secret') !== ''; }
 /* Un appel au site du client : [tableau] ou un texte d'erreur clair */
 function aled08e_bg_appel($uid, $action, $args = []) {
@@ -38,7 +38,7 @@ add_action('template_redirect', function () {
     if (!$uid) { wp_safe_redirect(aled08e_url(), 303); exit; }
     $P = wp_unslash($_POST);
     $op = sanitize_key((string) $P['aled08e_bg']);
-    $sub = in_array($op, ['prix'], true) ? 'prix' : 'paiements';
+    $sub = in_array($op, ['prix'], true) ? 'prix' : (in_array($op, ['livraison'], true) ? 'livraison' : (in_array($op, ['commande'], true) ? 'commandes' : 'paiements'));
     if (!wp_verify_nonce(sanitize_text_field((string) ($P['_aled08e_bg'] ?? '')), 'aled08e_bg')) $retour(false, 'La page avait expiré. Réessayez.');
     if (!aled08e_est_boutique($uid)) $retour(false, 'Ces réglages sont réservés aux boutiques en ligne.');
     $u = wp_get_current_user();
@@ -89,6 +89,20 @@ add_action('template_redirect', function () {
         $retour(true, $id === 'stripe' ? 'Stripe est installé ! Il ne reste qu’à coller vos clés ci-dessous, puis à cocher « Je propose ce moyen de paiement ».' : 'PayPal est installé ! Il ne reste qu’à connecter votre compte PayPal (bouton ci-dessous).');
     }
 
+    // --- la livraison (modes d'expédition de WooCommerce)
+    if ($op === 'livraison') {
+        $r = aled08e_bg_appel($uid, 'livraison_regler', ['forfait' => !empty($P['forfait']), 'forfait_prix' => (string) ($P['forfait_prix'] ?? ''), 'gratuit' => !empty($P['gratuit']), 'gratuit_minimum' => (string) ($P['gratuit_minimum'] ?? ''), 'retrait' => !empty($P['retrait'])]);
+        if (!is_array($r)) $retour(false, aled08e_bg_message_etat($r));
+        $retour(true, 'Votre livraison est réglée. C’est en place sur votre boutique.');
+    }
+    // --- une commande qui avance (statuts de WooCommerce, qui prévient le client)
+    if ($op === 'commande') {
+        $vers = sanitize_key((string) ($P['statut'] ?? ''));
+        $r = aled08e_bg_appel($uid, 'commande_statut', ['id' => (int) ($P['id'] ?? 0), 'statut' => $vers]);
+        if (!is_array($r)) $retour(false, aled08e_bg_message_etat($r));
+        $retour(true, $vers === 'completed' ? 'Commande terminée : votre client est prévenu par e-mail.' : 'Commande en préparation.');
+    }
+
     // --- un autre moyen de paiement : Alex s'en occupe
     if ($op === 'demander') {
         $quoi = trim(sanitize_textarea_field((string) ($P['quoi'] ?? '')));
@@ -101,7 +115,7 @@ add_action('template_redirect', function () {
 
 /* ---------- la navigation entre les rubriques de la boutique ---------- */
 function aled08e_bg_nav($sub) {
-    $r = ['articles' => ['shopping-bag', 'Mes articles'], 'prix' => ['badge-euro', 'Mes prix'], 'paiements' => ['credit-card', 'Paiements'], 'commandes' => ['package', 'Commandes'], 'promos' => ['badge-percent', 'Promos et soldes']];
+    $r = ['articles' => ['shopping-bag', 'Mes articles'], 'prix' => ['badge-euro', 'Mes prix'], 'paiements' => ['credit-card', 'Paiements'], 'livraison' => ['package', 'Livraison'], 'commandes' => ['receipt', 'Commandes'], 'promos' => ['badge-percent', 'Promos et soldes']];
     $h = '<nav class="ex-filtre bg-nav" aria-label="Rubriques de ma boutique">';
     foreach ($r as $id => [$ic, $lib]) $h .= '<a class="bg-lien' . ($id === $sub ? ' is-on' : '') . '"' . ($id === $sub ? ' aria-current="page"' : '') . ' href="' . esc_url(aled08e_url(['sub' => $id]) . '#vacances') . '">' . aled08e_icon($ic) . '<span>' . esc_html($lib) . '</span></a>';
     return $h . '</nav>';
@@ -202,9 +216,34 @@ function aled08e_bg_commandes_html($uid) {
     if (empty($r['commandes'])) return $h . '<p class="esp-empty">Pas encore de commande. Dès que votre premier client commande, elle apparaît ici.</p>';
     $dev = ($r['devise'] ?? 'EUR') === 'EUR' ? '€' : ($r['devise'] ?? '€');
     $h .= '<ul class="bg-commandes">';
+    $nonce = wp_nonce_field('aled08e_bg', '_aled08e_bg', true, false);
     foreach ($r['commandes'] as $c) {
-        $h .= '<li><span class="bg-num">#' . esc_html($c['numero']) . '</span><span class="bg-cmd"><strong>' . esc_html($c['client'] ?: 'Client') . '</strong><small>' . esc_html(aled08e_date($c['date'])) . ' · ' . (int) $c['articles'] . ' article' . ((int) $c['articles'] > 1 ? 's' : '') . '</small></span><em class="st ' . (in_array($c['statut_id'], ['completed'], true) ? 'st-done' : (in_array($c['statut_id'], ['cancelled', 'failed', 'refunded'], true) ? 'esp-st-off' : 'st-doing')) . '">' . esc_html($c['statut']) . '</em><b>' . esc_html(number_format((float) $c['total'], 2, ',', ' ')) . ' ' . esc_html($dev) . '</b></li>';
+        $actions = '';
+        if (!empty($c['id']) && in_array($c['statut_id'], ['on-hold', 'pending', 'processing'], true)) {
+            $btn = function ($vers, $ic, $lib) use ($c, $nonce) { return '<button class="btn btn-light btn-sm" type="submit" name="statut" value="' . $vers . '">' . aled08e_icon($ic) . '<span>' . $lib . '</span></button>'; };
+            $actions = '<form class="bg-cmd-actions" method="post" action="' . esc_url(aled08e_url()) . '">' . $nonce . '<input type="hidden" name="aled08e_bg" value="commande"><input type="hidden" name="id" value="' . (int) $c['id'] . '">'
+                . ($c['statut_id'] !== 'processing' ? $btn('processing', 'clock', 'Je la prépare') : '') . $btn('completed', 'check', 'Expédiée ou remise') . '</form>';
+        }
+        $h .= '<li><span class="bg-num">#' . esc_html($c['numero']) . '</span><span class="bg-cmd"><strong>' . esc_html($c['client'] ?: 'Client') . '</strong><small>' . esc_html(aled08e_date($c['date'])) . ' · ' . (int) $c['articles'] . ' article' . ((int) $c['articles'] > 1 ? 's' : '') . '</small></span><em class="st ' . (in_array($c['statut_id'], ['completed'], true) ? 'st-done' : (in_array($c['statut_id'], ['cancelled', 'failed', 'refunded'], true) ? 'esp-st-off' : 'st-doing')) . '">' . esc_html($c['statut']) . '</em><b>' . esc_html(number_format((float) $c['total'], 2, ',', ' ')) . ' ' . esc_html($dev) . '</b>' . $actions . '</li>';
     }
-    $h .= '</ul><p class="app-note">Pour préparer, expédier ou rembourser une commande, ouvrez les commandes de votre boutique : <a href="' . esc_url($r['liste'] ?? '') . '" target="_blank" rel="noopener">mes commandes</a>.</p>';
+    $h .= '</ul><p class="app-note">Quand vous marquez une commande « Expédiée ou remise », votre client reçoit l’e-mail de votre boutique. Pour le détail d’une commande ou un remboursement : <a href="' . esc_url($r['liste'] ?? '') . '" target="_blank" rel="noopener">mes commandes</a>.</p>';
+    return $h;
+}
+
+/* ---------- Livraison (modes d'expédition de WooCommerce, zone France) ---------- */
+function aled08e_bg_livraison_html($uid) {
+    $r = aled08e_bg_appel($uid, 'livraison_lire');
+    $h = '<h3 class="bg-titre">Ma livraison</h3>';
+    if (!is_array($r)) return $h . '<p class="esp-warn">' . esc_html(aled08e_bg_message_etat($r)) . '</p>';
+    $c = function ($k) use ($r) { return !empty($r[$k]['actif']) ? ' checked' : ''; };
+    $h .= '<p class="app-p">Choisissez comment vos clients reçoivent leurs achats, en France. Vous pouvez cocher plusieurs cases : votre client choisira.</p>'
+        . '<form class="form esp-form bg-livraison" method="post" action="' . esc_url(aled08e_url()) . '">' . wp_nonce_field('aled08e_bg', '_aled08e_bg', true, false) . '<input type="hidden" name="aled08e_bg" value="livraison">'
+        . '<div class="bg-carte"><label class="check"><input type="checkbox" name="forfait" value="1"' . $c('forfait') . '><span><strong>Livraison à prix fixe</strong></span></label>'
+        . '<div class="field"><label for="bg-liv-prix">Prix de la livraison (€)</label><input id="bg-liv-prix" name="forfait_prix" inputmode="decimal" maxlength="8" placeholder="5,90" value="' . esc_attr(str_replace('.', ',', (string) ($r['forfait']['prix'] ?? ''))) . '"></div></div>'
+        . '<div class="bg-carte"><label class="check"><input type="checkbox" name="gratuit" value="1"' . $c('gratuit') . '><span><strong>Livraison gratuite</strong></span></label>'
+        . '<div class="field"><label for="bg-liv-min">À partir de combien d’achats ? (€, vide = toujours gratuite)</label><input id="bg-liv-min" name="gratuit_minimum" inputmode="decimal" maxlength="8" placeholder="50" value="' . esc_attr(str_replace('.', ',', (string) ($r['gratuit']['minimum'] ?? ''))) . '"></div></div>'
+        . '<div class="bg-carte"><label class="check"><input type="checkbox" name="retrait" value="1"' . $c('retrait') . '><span><strong>Retrait sur place</strong>, gratuit : votre client vient chercher sa commande</span></label></div>'
+        . '<button class="btn btn-primary" type="submit">' . aled08e_icon('check') . '<span>Enregistrer ma livraison</span></button></form>'
+        . '<p class="app-note">Besoin de tarifs par poids, par pays ou avec un transporteur ? Ça se règle dans <a href="' . esc_url($r['reglages'] ?? '') . '" target="_blank" rel="noopener">les réglages d’expédition de votre boutique</a>, ou faites une demande.</p>';
     return $h;
 }
