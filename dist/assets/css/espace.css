@@ -1042,3 +1042,17 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 /* Le bouton qui demande confirmation : il change de couleur et dit « Confirmer » */
 button.is-confirmer.is-confirmer, .btn.is-confirmer.is-confirmer, .req-annul .link-btn.is-confirmer, .bq-x.is-confirmer.is-confirmer { width: auto; min-width: 0; padding: 8px 14px; border-radius: 999px; background: var(--pink); color: var(--ink); font-weight: 900; box-shadow: 0 0 0 2px var(--pink-d) inset; text-decoration: none; }
 @media (max-width: 759px) { .bg-nav a.bg-lien:last-child:nth-child(odd) { grid-column: 1 / -1; justify-content: center; } }
+
+/* Mes articles : cocher plusieurs articles et les supprimer d'un coup */
+.art-lot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 14px 0 12px; padding: 12px 14px; border-radius: 20px; background: var(--soft); position: sticky; top: calc(var(--header-h) + 8px); z-index: 5; box-shadow: var(--shadow-sm); }
+.art-lot .art-lot-tout { margin: 0; font-weight: 800; }
+.art-lot .btn { margin-left: auto; }
+.art-lot .btn:disabled { opacity: .5; cursor: default; }
+.art-lot.a-des-coches .btn:not(.is-confirmer) { background: var(--pink); color: var(--ink); box-shadow: 0 0 0 2px var(--pink-d) inset; }
+.art-lot small { flex-basis: 100%; color: var(--muted); font-weight: 700; line-height: 1.35; }
+.art-lot.a-des-coches small { display: none; }
+.art-carte { position: relative; }
+.art-coche { position: absolute; top: 16px; left: 16px; z-index: 2; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 14px; background: rgba(22, 20, 42, .72); cursor: pointer; }
+.art-coche input { width: 22px; height: 22px; margin: 0; accent-color: #FF8EBF; cursor: pointer; }
+.art-carte.est-coche { box-shadow: 0 0 0 3px var(--pink-d) inset, var(--shadow-sm); }
+.art-carte.est-coche .art-coche { background: var(--pink); }

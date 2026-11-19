@@ -819,6 +819,20 @@
       var y = sessionStorage.getItem('aled08-y');
       if (y !== null) { sessionStorage.removeItem('aled08-y'); if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; var poser = function () { window.scrollTo(0, parseInt(y, 10) || 0); }; poser(); setTimeout(poser, 60); window.addEventListener('load', poser); }
     } catch (e) {}
+    // Mes articles : cocher plusieurs articles pour les supprimer d'un coup
+    $$('form[data-art-lot]', app).forEach(function (f) {
+        var cases = $$('input[form="' + f.id + '"]', app), tout = $('[data-art-tout]', f), bt = $('[data-art-lot-btn]', f);
+        var maj = function () {
+          var n = cases.filter(function (c) { return c.checked; }).length;
+          cases.forEach(function (c) { var li = c.closest('.art-carte'); if (li) li.classList.toggle('est-coche', c.checked); });
+          if (tout) { tout.checked = n > 0 && n === cases.length; tout.indeterminate = n > 0 && n < cases.length; }
+          f.classList.toggle('a-des-coches', n > 0);
+          if (bt && !bt.classList.contains('is-confirmer')) { bt.disabled = n === 0; var s = $('span', bt); if (s) s.textContent = n ? 'Supprimer ' + n + (n > 1 ? ' articles' : ' article') : 'Supprimer la sélection'; }
+        };
+        cases.forEach(function (c) { c.addEventListener('change', maj); });
+        if (tout) tout.addEventListener('change', function () { cases.forEach(function (c) { c.checked = tout.checked; }); maj(); });
+        maj();
+    });
     // supprimer, retirer, annuler : le bouton devient « Confirmer », un second appui valide
     $$('form[data-confirmer]', app).forEach(function (f) {
       f.addEventListener('submit', function (e) {

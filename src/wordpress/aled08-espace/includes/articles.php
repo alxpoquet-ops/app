@@ -130,6 +130,30 @@ add_action('template_redirect', function () {
         if (is_array($r) && !empty($r['ok'])) $retour(true, 'La catégorie est supprimée. Ses articles sont gardés.');
         $retour(false, 'La catégorie n’a pas pu être supprimée. Réessayez dans un instant.');
     }
+    if ($op === 'retirer_lot') {
+        // plusieurs articles cochés : « p12 » pour un article du site, « i3 » pour un article encore en attente ici
+        $lot = array_slice(array_unique(array_map('sanitize_key', (array) ($P['lot'] ?? []))), 0, 200);
+        if (!$lot) $retour(false, 'Cochez d’abord les articles à supprimer.');
+        @set_time_limit(300);
+        $faits = 0; $rates = [];
+        $idxs = [];
+        foreach ($lot as $x) {
+            $n = (int) substr($x, 1);
+            if ($x[0] === 'i') { $idxs[] = $n; continue; }
+            if ($x[0] !== 'p' || !$n) continue;
+            $r = $pret ? aled08e_lia_appel($uid, 'article_retirer', ['id' => $n]) : new WP_Error('aled08_art', 'site pas relié');
+            if (is_wp_error($r)) $rates[] = $n; else $faits++;
+        }
+        if ($idxs) {
+            $liste = aled08e_art_liste($uid);
+            rsort($idxs);
+            foreach ($idxs as $i) if (isset($liste[$i])) { array_splice($liste, $i, 1); $faits++; }
+            update_user_meta($uid, 'aled08_articles', array_values($liste));
+        }
+        if ($rates) wp_mail(aled08e_to(), 'Articles à retirer : ' . $u->display_name, 'Le client veut retirer les produits n° ' . implode(', ', $rates) . " de sa boutique, mais le site n'a pas pu le faire.\n", aled08e_mail_headers());
+        if (!$faits && $rates) $retour(true, 'C’est noté : ces articles vont être retirés de votre boutique.');
+        $retour(true, ($faits > 1 ? $faits . ' articles sont retirés' : 'Votre article est retiré') . ' (récupérables quelques jours).' . ($rates ? ' ' . count($rates) . ' autre' . (count($rates) > 1 ? 's suivront' : ' suivra') . ' : c’est noté.' : ''));
+    }
     if ($op === 'retirer') {
         $pid = (int) ($P['pid'] ?? 0);
         if ($pid) {
@@ -251,11 +275,19 @@ function aled08e_articles_html($uid) {
     }
 
     if ($arts) {
+        $nbMod = count(array_filter($arts, function ($a) { return !empty($a['modifiable']); }));
+        if ($nbMod > 1) {
+            $h .= '<form id="art-lot" class="art-lot" method="post" action="' . $act . '" data-confirmer data-art-lot>' . $nonce . '<input type="hidden" name="aled08e_article" value="retirer_lot">'
+                . '<label class="check art-lot-tout"><input type="checkbox" data-art-tout><span>Tout sélectionner</span></label>'
+                . '<button class="btn btn-light btn-sm" type="submit" data-art-lot-btn>' . aled08e_icon('x') . '<span>Supprimer la sélection</span></button>'
+                . '<small>Cochez les articles à supprimer, en haut à gauche de chaque photo.</small></form>';
+        }
         $h .= '<ul class="art-grille">';
         foreach ($arts as $k => $a) {
             $etat = $a['statut'] === 'en_ligne' ? '<span class="art-statut is-ok">' . aled08e_icon('check') . 'En ligne</span>' : ($a['statut'] === 'attente' ? '<span class="art-statut is-attente">' . aled08e_icon('clock') . 'Bientôt en ligne</span>' : '<span class="art-statut is-off">Hors vente</span>');
             $cible = !empty($a['pid']) ? '<input type="hidden" name="pid" value="' . (int) $a['pid'] . '">' : '<input type="hidden" name="idx" value="' . (int) $a['idx'] . '">';
-            $h .= '<li class="art-carte"><div class="art-img">' . ($a['img'] ? '<img src="' . esc_url($a['img']) . '" alt="" loading="lazy">' : aled08e_icon('shopping-bag')) . '</div>'
+            $coche = (!empty($a['modifiable']) && $nbMod > 1) ? '<label class="art-coche"><input type="checkbox" form="art-lot" name="lot[]" value="' . (!empty($a['pid']) ? 'p' . (int) $a['pid'] : 'i' . (int) $a['idx']) . '" aria-label="Sélectionner ' . esc_attr($a['nom']) . '"></label>' : '';
+            $h .= '<li class="art-carte">' . $coche . '<div class="art-img">' . ($a['img'] ? '<img src="' . esc_url($a['img']) . '" alt="" loading="lazy">' : aled08e_icon('shopping-bag')) . '</div>'
                 . '<div class="art-corps"><strong>' . esc_html($a['nom']) . '</strong>' . ($a['prix'] !== '' ? '<b class="art-prix">' . (!empty($a['a_partir']) ? '<small>dès </small>' : '') . esc_html(number_format((float) $a['prix'], 2, ',', ' ')) . ' €</b>' : '<b class="art-prix art-prix-sans">Sans prix</b>') . $etat . (function () use ($a, $nomsCats) { $l = []; foreach ((array) ($a['categories'] ?? []) as $cid) if (isset($nomsCats[(int) $cid])) $l[] = '<em class="art-cat-tag">' . esc_html($nomsCats[(int) $cid]) . '</em>'; return $l ? '<span class="art-cat-tags">' . implode('', $l) . '</span>' : ''; })() . '</div>';
             if ($a['modifiable']) {
                 $h .= '<details class="art-edit"><summary>' . aled08e_icon('pencil') . '<span>Modifier</span></summary>' . aled08e_art_form($nonce, $act, 'e' . $k, $a, $cats)
