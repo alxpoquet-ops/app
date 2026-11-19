@@ -30,7 +30,9 @@ const acompte = (prix) => Math.round(prix * paiement.acompte) / 100;
 const lisse = (prix, n) => Math.floor(((prix - acompte(prix)) / n) * 100) / 100; // échéance arrondie au centime inférieur
 const T = (id) => types.find((t) => t.id === id) || {};
 const ESS = T('une-page'), VIS = T('vitrine'), BOU = T('boutique'); // les trois sites
-const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // abonnement Mini, facultatif
+const mini = forfaits.find((f) => f.id === 'base') || forfaits[0];
+const dom = mini.domaine || 2; // le nom de domaine fourni par nos soins : en plus, par mois
+const avecDom = mini.month + dom; // le forfait Mini avec le nom de domaine // abonnement Mini, facultatif
 const AUTO = creationSeule.name; // sans abonnement : Autonomie
 const DATE_OFFRE = '19 novembre 2026'; // nouvelle offre : clause de transition (article 7)
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
@@ -176,7 +178,7 @@ Ces conditions s’appliquent à toute commande passée auprès des Minis Monstr
 
 ## 2. Commande en ligne
 
-La commande se passe sur le site, en trois étapes : le choix du site, les coordonnées, puis le paiement sécurisé. Le client choisit d’abord son site parmi les trois proposés (article 3). Il choisit ensuite la façon de le faire vivre : la formule ${AUTO}, sans abonnement, ou le forfait ${mini.name}, au mois. Avec le forfait ${mini.name}, il choisit aussi son nom de domaine. Le total s’affiche en dernier, avec le choix de payer le reste en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants. S’il a un code promo (article 4), il le saisit dans la case « Code promo » avant de commander.
+La commande se passe sur le site, en trois étapes : le choix du site, les coordonnées, puis le paiement sécurisé. Le client choisit d’abord son site parmi les trois proposés (article 3). Il choisit ensuite la façon de le faire vivre : la formule ${AUTO}, sans abonnement, ou le forfait ${mini.name}, au mois. Avec le forfait ${mini.name}, il indique son nom de domaine s’il en a un, ou en choisit un, fourni en supplément (article 10). Le total s’affiche en dernier, avec le choix de payer le reste en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants. S’il a un code promo (article 4), il le saisit dans la case « Code promo » avant de commander.
 
 En cliquant sur « Commander et payer », le client accepte ces conditions et passe une commande ferme. Il reçoit aussitôt un e-mail de confirmation avec une référence de commande, à rappeler dans les échanges.
 
@@ -218,7 +220,7 @@ La ${minus(pageGoogle.name)} se commande depuis l’espace client. Elle est pay�
 
 **La formule ${AUTO}, ${eur(creationSeule.month)} € par mois.** Le client paie seulement son site, sans abonnement. Il gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. Les Minis Monstres ne fournissent ni hébergement ni nom de domaine. Une fois le site validé et le reste réglé, ou son paiement en plusieurs fois mis en place, le client reçoit l’export de son site, avec une courte notice d’installation. Il fait l’installation lui-même, ou avec l’aide de son hébergeur. La maintenance, la sécurité et les modifications ne sont pas comprises. Le client peut prendre le forfait ${mini.name} plus tard.
 
-**Le forfait ${mini.name}, ${eur(mini.month)} € par mois.** Les Minis Monstres installent le site, le mettent en ligne et le font vivre (article 6).
+**Le forfait ${mini.name}, ${eur(mini.month)} € par mois.** Les Minis Monstres installent le site, le mettent en ligne et le font vivre (article 6). Si le client n’a pas de nom de domaine, les Minis Monstres le lui fournissent pour ${eur(dom)} € de plus par mois, soit ${eur(avecDom)} € par mois (article 10).
 
 **Devis.** Une refonte complète du site, une traduction ou une fonction nouvelle, comme une prise de rendez-vous, fait l’objet d’un devis. Le client l’accepte avant le début du travail.
 
@@ -249,7 +251,6 @@ Le forfait ${mini.name} est facultatif. Le client peut le prendre au moment de l
 **Le forfait ${mini.name}, ${eur(mini.month)} € par mois.** Il comprend :
 
 - **L’hébergement** : le site reste accessible 24 h/24, avec le HTTPS, le petit cadenas qui protège les échanges avec les visiteurs.
-- **Le nom de domaine**, c’est-à-dire l’adresse du site, enregistré au nom du client et compris tant que l’abonnement est actif (article 10).
 - **Les sauvegardes automatiques** : des copies de sécurité du site, faites régulièrement.
 - **La sécurité** : le site est protégé contre les attaques.
 - **La maintenance technique** : des contrôles et des mises à jour faits régulièrement, pour que le site reste en état de marche.
@@ -259,7 +260,7 @@ Le forfait ${mini.name} est facultatif. Le client peut le prendre au moment de l
 
 Le délai de traitement des modifications est un délai habituel, donné à titre indicatif. Il ne constitue pas une garantie.
 
-**Paiement.** L’abonnement est prélevé d’avance, chaque mois : ${eur(mini.month)} € par mois pour le forfait ${mini.name}.
+**Paiement.** L’abonnement est prélevé d’avance, chaque mois : ${eur(mini.month)} € par mois pour le forfait ${mini.name}, ou ${eur(avecDom)} € par mois quand les Minis Monstres fournissent le nom de domaine (article 10).
 
 Les paiements sont confiés à Stripe, le prestataire de paiement en ligne, par carte bancaire ou par prélèvement SEPA, c’est-à-dire directement sur le compte bancaire. Les Minis Monstres ne voient pas et ne conservent pas les données bancaires. Chaque facture est envoyée par e-mail et reste disponible dans l’espace client.
 
@@ -287,7 +288,7 @@ En commandant, le client demande expressément, en cochant la case prévue, que 
 
 Le nom de domaine est l’adresse du site sur internet. Le client en est le titulaire. Avec le forfait ${mini.name}, les Minis Monstres y figurent comme contact technique, pour pouvoir le gérer. Le nom est réservé après le premier paiement, s’il est encore disponible à ce moment-là.
 
-Avec l’abonnement, un nom de domaine standard en .fr, .com, .net ou .org est compris tant que l’abonnement est actif : son renouvellement annuel ne coûte rien de plus. Les autres extensions et les noms dits « premium », vendus plus cher par les registres (les organismes qui gèrent chaque extension), font l’objet d’un devis.
+Le nom de domaine n’est pas compris dans le prix du forfait ${mini.name}. Si le client n’en possède pas, les Minis Monstres lui fournissent un nom de domaine standard en .fr, .com, .net ou .org, enregistré à son nom, pour ${eur(dom)} € de plus par mois, soit ${eur(avecDom)} € par mois au total. Ce supplément couvre le renouvellement annuel du nom tant que l’abonnement est actif. Si le client utilise son propre nom de domaine, le forfait reste à ${eur(mini.month)} € par mois. Les autres extensions et les noms dits « premium », vendus plus cher par les registres (les organismes qui gèrent chaque extension), font l’objet d’un devis.
 
 Si le client possède déjà un nom de domaine, il peut le transférer vers les Minis Monstres ou le garder chez son prestataire et le faire pointer vers le site. Les Minis Monstres lui envoient les réglages à faire. Avec la formule ${AUTO}, le client gère son nom de domaine sans les Minis Monstres (article 3).
 

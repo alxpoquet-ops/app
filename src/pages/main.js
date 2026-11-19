@@ -493,7 +493,7 @@ function comparatifPage() {
 
 Soyons honnêtes : ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois.`) + C.sourcesMarche(), { ico: 'scale', ouvert: true }),
     C.deroulant('Pourquoi ce prix ?', md(`Une méthode rodée, des outils préparés à l’avance, et pas de bureaux à payer. Les prix sont affichés : pas de rendez-vous commercial, pas de devis à attendre. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank' }),
-    C.deroulant('Et l’entretien, chaque mois ?', md(`Avec ${AUTO.name}, vous gérez tout vous-même, pour ${euro(AUTO.month)} par mois. Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, le nom de domaine, les sauvegardes, la sécurité, la maintenance et les modifications. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois pour l’entretien d’un site.`), { ico: 'repeat' }),
+    C.deroulant('Et l’entretien, chaque mois ?', md(`Avec ${AUTO.name}, vous gérez tout vous-même, pour ${euro(AUTO.month)} par mois. Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications. Pas de nom de domaine ? On vous le fournit pour ${euro(C.DOM)} de plus par mois. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois pour l’entretien d’un site.`), { ico: 'repeat' }),
     C.deroulant('Ce que vous ne faites pas vous-même', md(`Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, écrire pour Google. Ici, vous dites ce que vous voulez, et votre site est fait pour vous. Vous gardez votre temps pour votre métier.`), { ico: 'clock' }),
     C.deroulant('Quand on vous dira d’aller ailleurs', md(`Une application sur mesure, un logiciel métier, un catalogue de milliers de produits : ces projets demandent une agence ou un développeur. On vous le dit dès le premier échange.`), { ico: 'arrow-right' }),
   ])}
@@ -538,7 +538,7 @@ function commanderPage() {
   const field = (name, label, attrs, { req = true, hint = '' } = {}) =>
     `<div class="field"><label for="o-${name}">${label} ${req ? '<span class="req">*</span>' : '<span class="opt">(facultatif)</span>'}</label><input id="o-${name}" name="${name}" ${attrs}${req ? ' required' : ''}>${hint ? `<small class="field-hint">${hint}</small>` : ''}</div>`;
   const nextSteps = [
-    ['globe', 'Votre nom de domaine est réservé', 'Il est à votre nom. On s’occupe de tout.'],
+    ['globe', 'Votre nom de domaine est prêt', 'Le vôtre, ou celui qu’on réserve à votre nom.'],
     ['mail-check', 'On vous écrit sous 24 heures', 'Pour fixer le rendez-vous téléphonique de découverte.'],
     ['circle-user', 'Votre espace client arrive par e-mail', 'Vous y suivez votre commande et vos demandes.'],
     ['rocket', 'Votre site est en ligne', `Sous <span data-order="delai">${esc(t0.delai)}</span> pour le site choisi.`],
@@ -583,7 +583,7 @@ function commanderPage() {
       <fieldset class="o-card" data-avec-formule>
         <legend><span class="b-n">${icon('globe')}</span><span class="b-t">Votre nom de domaine</span></legend>
         <div class="o-in">
-        <p class="b-hint">Le nom de domaine, c’est l’adresse de votre site. Il est compris avec le forfait ${esc(ABO.name)}, et il reste à votre nom. On le réserve à la commande.</p>
+        <p class="b-hint">Le nom de domaine, c’est l’adresse de votre site. ${esc(C.DOMAINE_REGLE)} Il est toujours à votre nom.</p>
         ${C.domainBox({ prefix: 'o', ownName: 'domaine_mien' })}
         </div>
       </fieldset>
@@ -626,7 +626,7 @@ function commanderPage() {
           <ul class="o-pay-lines" data-order-lines>
             <li><span>Acompte de ${paiement.acompte} % sur la création (${t0.label.toLowerCase()})</span><b>${euro(acompte0)}</b></li>
           </ul>
-          <p class="o-pay-next"><span data-order="next-label">À la réception : le reste, et votre forfait</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month)}/mois</b></p>
+          <p class="o-pay-next"><span data-order="next-label">À la réception : le reste, et votre forfait</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month + C.DOM)}/mois</b></p>
           <p class="o-pay-note" data-order-solde>À la réception de votre site, vous réglez le reste, <b data-order="solde">${euro(t0.price - acompte0)}</b><span data-avec-formule>, et votre forfait démarre</span>. Vous pourrez encore choisir de payer le reste en ${C.lissageTxt} fois.</p>
           <p class="o-pay-note" data-order-lisse-note hidden>À la réception, le reste se paie en <span data-order="lisse-n">${C.LMAX}</span> fois sans frais : <b data-order="lisse">${euro(C.lisse(t0.price))}</b> par mois<span data-avec-formule>, avec votre forfait. Ensuite, il ne reste que l’abonnement, sans engagement</span>.</p>
         </div>
@@ -641,15 +641,15 @@ function commanderPage() {
         <p class="b-sum-title">Votre récapitulatif</p>
         <ul class="b-lines">
           <li><span data-order="type">${esc(t0.name)}</span><b data-order="type-price">${euro(t0.price)}</b></li>
-          <li data-avec-formule><span data-order="domain">Nom de domaine à choisir</span><b data-order="domain-prix">compris</b></li>
           <li><span data-order="forfait">Forfait ${esc(f0.name)}</span><b data-order="forfait-price">${euro(f0.month)}/mois</b></li>
+          <li data-avec-formule><span data-order="domain">Nom de domaine fourni</span><b data-order="domain-prix">+ ${euro(C.DOM)}/mois</b></li>
           <li data-order-opts hidden><span data-order="opts-label">Options</span><b data-order="opts">0 €</b></li>
         </ul>
         <div class="b-total">
           <p><span>Aujourd’hui</span><b data-order="today">${euro(today0)}</b></p>
-          <p><span data-order="next-label">À la réception : le reste, et votre forfait</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month)}/mois</b></p>
+          <p><span data-order="next-label">À la réception : le reste, et votre forfait</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month + C.DOM)}/mois</b></p>
         </div>
-        <p class="b-sum-note">${icon('check')}<span data-avec-formule>Votre forfait démarre à la réception de votre site, pas avant. Le nom de domaine, lui, est réservé dès la commande.</span><span data-seule-txt hidden>${esc(AUTO.name)} : pas d’abonnement. À la réception, on vous remet votre site, prêt à installer.</span></p>
+        <p class="b-sum-note">${icon('check')}<span data-avec-formule>Votre forfait démarre à la réception de votre site, pas avant. Si on vous fournit le nom de domaine, il est réservé dès la commande.</span><span data-seule-txt hidden>${esc(AUTO.name)} : pas d’abonnement. À la réception, on vous remet votre site, prêt à installer.</span></p>
       </div>
       <div class="o-next reveal">
         <h2 class="h3">${icon('list-checks')}Ce qui se passe ensuite</h2>
@@ -690,7 +690,7 @@ function confirmationPage() {
     <h2 class="h3">Les prochaines étapes</h2>
     ${C.steps([
       { t: 'On vous écrit sous 24 heures', d: 'Pour fixer le rendez-vous téléphonique de découverte.' },
-      { t: `Avec le forfait ${ABO.name}, votre nom de domaine est réservé`, d: `Il est à votre nom. Avec ${AUTO.name}, vous gardez le vôtre.` },
+      { t: 'Votre nom de domaine est prêt', d: `Vous gardez le vôtre, ou on vous en fournit un, à votre nom, avec le forfait ${ABO.name}.` },
       { t: 'Votre espace client arrive par e-mail', d: 'Vous y suivez votre commande et, ensuite, vos demandes de modification.' },
       { t: 'Votre site est prêt', d: `Dans le délai de votre site : ${delaiList}.` },
     ])}
@@ -907,7 +907,7 @@ function monEspacePage() {
         <div class="app-panel" role="tabpanel" id="t-forfait" aria-labelledby="tab-forfait" hidden>
           <h2 class="app-h">Mon compte</h2>
           <p class="app-sub">Votre forfait</p>
-          <p class="app-domain">${icon('shield-check')}<span><strong>Le forfait ${esc(ABO.name)}, ${euro(ABO.month)} par mois</strong><small>Sans engagement. Hébergement, nom de domaine, sauvegardes, sécurité, maintenance et modifications.</small></span></p>
+          <p class="app-domain">${icon('shield-check')}<span><strong>Le forfait ${esc(ABO.name)}, ${euro(ABO.month)} par mois</strong><small>Sans engagement. Hébergement, sauvegardes, sécurité, maintenance et modifications.</small></span></p>
           <p class="app-note">Vous préférez tout gérer vous-même ? Vous passez en ${esc(AUTO.name)} quand vous voulez : ${euro(AUTO.month)} par mois, et vous repartez avec votre site.</p>
           <p class="app-sub">Factures</p>
           <ul class="invoices">

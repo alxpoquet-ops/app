@@ -23,6 +23,8 @@ const ESS = T('une-page'), VIS = T('vitrine'), BOU = T('boutique');
 const delai = (id) => T(id).delai || '';
 
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement, facultatif
+const dom = mini.domaine || 2; // le nom de domaine fourni par nos soins : en plus, par mois
+const avecDom = mini.month + dom; // le forfait Mini avec le nom de domaine
 const AUTO = creationSeule.name; // sans abonnement
 const { sourcesMd, INDEPENDANT_DES } = require('../lib/components');
 const pageGoogle = aLaDemande.find((x) => x.id === 'packseo' && !x.retire) || { name: 'Page de visibilité Google', prix: 0 };
@@ -129,7 +131,7 @@ Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, 
 
 Face à un site vitrine de ${marche.pagesCompare} pages fait par un indépendant, notre ${VIS.name} à ${eur(VIS.price)} € coûte ${marche.fois} fois moins, d’après les fourchettes publiées.
 
-Côté entretien, les prestataires consultés demandent ${eur(marche.entretienMin)} à ${eur(marche.entretienMax)} € par mois, l’hébergement étant souvent en plus. Le forfait ${mini.name} coûte ${eur(mini.month)} € par mois, hébergement, nom de domaine et modifications compris : c’est de ${marche.entretienFois} fois moins cher.
+Côté entretien, les prestataires consultés demandent ${eur(marche.entretienMin)} à ${eur(marche.entretienMax)} € par mois, l’hébergement étant souvent en plus. Le forfait ${mini.name} coûte ${eur(mini.month)} € par mois, ou ${eur(avecDom)} € avec le nom de domaine, hébergement et modifications compris. Cela reste nettement en dessous de ces fourchettes.
 
 > Soyons honnêtes : ces fourchettes viennent de prestataires, donc à lire avec prudence, et chacun fixe ses prix. Des indépendants proposent aussi un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors presque nul.
 
@@ -386,7 +388,7 @@ Et pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourq
     icon: 'life-buoy',
     color: 'mint',
     title: 'Accompagnement après la mise en ligne du site | Les Minis Monstres',
-    description: `Le forfait ${mini.name}, facultatif et sans engagement, ${eur(mini.month)} € par mois : votre site reste visible, hébergé, entretenu, avec nom de domaine et modifications inclus.`,
+    description: `Le forfait ${mini.name}, facultatif et sans engagement, ${eur(mini.month)} € par mois : votre site reste visible, hébergé et entretenu, modifications incluses.`,
     h1: 'Accompagnement : ce qui se passe après la mise en ligne',
     lead: 'Un site ne reste visible que s’il reste en ligne et à jour. Vous pouvez le gérer seul, ou nous le confier : nous nous occupons alors de ce qui le fait tourner, et vous demandez vos changements quand vous en avez besoin.',
     resume: 'Chaque mois, votre site entretenu et suivi.',
@@ -408,12 +410,13 @@ Une fois le site créé, vous choisissez qui le fait vivre.
 Votre site reste en ligne, protégé et à jour, donc visible, sans que vous ayez à y penser.
 
 - **L’hébergement** : l’endroit où votre site reste accessible 24 h/24.
-- **Le nom de domaine** : l’adresse de votre site, à votre nom, comprise tant que l’abonnement est actif.
 - **Les sauvegardes automatiques** : une copie de sécurité, faite régulièrement.
 - **La sécurité** : des protections tenues à jour.
 - **La maintenance technique** : des vérifications régulières, pour que tout reste en état de marche.
 - **Vos modifications**, incluses. Une modification peut prendre ${delaiModif}, une demande à la fois.
 - **Votre espace client**, où vous faites vos demandes et commandez vos extras.
+
+Et le nom de domaine, l’adresse de votre site ? Vous en avez déjà un : le forfait reste à ${eur(mini.month)} € par mois. Vous n’en avez pas : nous le réservons à votre nom, et le forfait passe à ${eur(avecDom)} € par mois (${eur(dom)} € de plus).
 
 ## Demander une modification
 

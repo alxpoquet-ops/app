@@ -2717,3 +2717,8 @@ main > .section.section-citation + .section { padding-top: 48px; }
 
 .perks.perks-1 { grid-template-columns: minmax(0, 1fr); max-width: 520px; margin: 0 auto; }
 @media (max-width: 720px) { .cf-duo .cf-nom { padding-right: 98px; font-size: 1.14rem; } }
+
+/* forfait Mini : la ligne « + 2 € par mois si on vous fournit le nom de domaine » */
+.formule-plus { margin: -6px 0 12px; font-size: .9rem; font-weight: 700; line-height: 1.35; color: var(--ink); opacity: .9; }
+.offre.is-compact .formule-plus { margin: 6px 0 0; font-size: .82rem; }
+.cf-duo .cf-but { font-size: .92rem; line-height: 1.35; }

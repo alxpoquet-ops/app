@@ -12,6 +12,7 @@ const vis = T('vitrine'); // le Site Visibilité
 // Ton (tour global du 19 novembre 2026) : « nous / on », Alex nommé quand c'est utile (jamais « je »). Les mots techniques (SEO, CMS,
 // responsive, extension…) ne sont définis qu'ici, en mots simples ; les liens vers /referencement-seo/ s'appellent « visibilité sur Google ».
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement
+const dom = mini.domaine || 2; // nom de domaine fourni : en plus, par mois
 const AUTO = creationSeule.name; // sans abonnement
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
 const prixPage = (aLaDemande.find((x) => x.id === 'packseo' && !x.retire) || { prix: 0 }).prix; // la page de visibilité Google
@@ -65,7 +66,7 @@ Une fleuriste prend un hébergement très bon marché pour son site. Tout va bie
 Avec le [forfait](/tarifs/) ${mini.name}, vous n'avez pas à chercher un hébergeur : l'hébergement est compris, sur un serveur de qualité, quel que soit votre site. Vous n'avez ni facture à part ni réglage à faire. Avec la formule ${AUTO}, vous choisissez votre hébergeur et vous y installez l'export de votre site. Pour comprendre ce qu'est la machine elle-même, lisez la définition du [serveur](/lexique/serveur-web/).`,
     faq: [
       { q: 'Peut-on avoir un site sans hébergement ?', a: 'Non. Un site doit être posé quelque part pour être visible. Certaines plateformes intègrent l’hébergement dans leur abonnement, mais il existe toujours, même quand on ne le voit pas.' },
-      { q: 'Combien coûte un hébergement ?', a: `Les prix varient beaucoup selon la puissance et le service. Chez nous, il est compris dans le forfait ${mini.name}, à ${mini.month} € par mois, qui couvre aussi votre nom de domaine et l’entretien du site.` },
+      { q: 'Combien coûte un hébergement ?', a: `Les prix varient beaucoup selon la puissance et le service. Chez nous, il est compris dans le forfait ${mini.name}, à ${mini.month} € par mois, qui couvre aussi l’entretien du site. Le nom de domaine, si nous le fournissons, coûte ${dom} € de plus par mois.` },
       { q: 'Puis-je changer d’hébergeur plus tard ?', a: 'Oui. On copie les fichiers du site chez le nouvel hébergeur, puis on fait pointer le nom de domaine vers lui. Bien fait, le changement passe inaperçu pour vos visiteurs.' },
     ],
     voir: ['serveur-web', 'maintenance-site', 'sauvegarde-site'],

@@ -455,13 +455,15 @@
       var per = tr(annual ? '/an' : '/mois');
       setText('type', siteNom(t));
       setText('type-price', euro(t.price));
-      setText('domain-prix', tr('compris'));
+      // Forfait Mini : 10 € par mois avec le nom de domaine du client ; s'il n'en a pas, on le fournit pour data.domaine € de plus par mois
+      var domPlus = (!seule && !domain.own()) ? (data.domaine || 0) : 0;
       setText('forfait', seule ? tr('Autonomie') : tr('Forfait ') + planName(f.name));
       setText('forfait-price', seule ? tr('sans abonnement') : euro(f.month * mult) + per);
       var dom = domain.get(), domText = '';
       if (domain.own()) domText = tr('Mon nom de domaine actuel');
       else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? tr(' (disponible)') : dom.status === 'pris' ? tr(' (déjà pris)') : '');
-      setText('domain', domText || tr('Nom de domaine à choisir'));
+      setText('domain', domain.own() ? 'Nom de domaine : le vôtre' : 'Nom de domaine fourni' + (domText ? ' : ' + domText : ''));
+      setText('domain-prix', domain.own() ? euro(0) : '+ ' + euro(domPlus) + per);
       // code promo valable : la remise porte sur la création (le site et la boutique), jamais sur la formule
       var r = code.ok ? (data.remise || 0) : 0;
       var prixSite = round2(t.price * (100 - r) / 100);
@@ -470,7 +472,7 @@
       setText('remise', '- ' + euro(round2(t.price - prixSite)));
       var acompte = round2(prixSite * data.acompte / 100);
       var reste = round2(prixSite - acompte);
-      var recur = f.month * mult;
+      var recur = f.month * mult + domPlus;
       // chaque façon de payer, en clair : ce qu'on paie aujourd'hui, puis à la réception
       setText('p-0', euro(acompte) + tr(' aujourd’hui, puis ') + euro(reste) + tr(' à la réception'));
       (data.lissage || []).forEach(function (n) { setText('p-' + n, euro(acompte) + tr(' aujourd’hui, puis ') + euro(floor2(reste / n)) + tr(' par mois pendant ') + n + tr(' mois')); });
@@ -480,7 +482,7 @@
       setText('today', euro(acompte));
       setText('reste-label', lisse ? tr('Puis, dès la réception, pendant ') + lisseN + tr(' mois') : tr('À la réception du site, le reste'));
       setText('reste', lisse ? euro(lisseAmt) + tr('/mois') : euro(reste));
-      setText('recur-label', seule ? tr('Ensuite, chaque mois') : annual ? tr('Puis votre forfait, chaque année') : tr('Puis votre forfait, chaque mois'));
+      setText('recur-label', tr('Ensuite, chaque mois'));
       setText('recur', seule ? tr('rien') : euro(recur) + per);
       setText('detail', tr('Prix total du site : ') + euro(prixSite) + (lisse ? tr(', sans frais en plus.') : '.'));
       var bar = $('[data-sum="bar"]', box);
@@ -614,9 +616,11 @@
       var solde = round2(prixSite - acompte);
       var lisseAmt = lisse ? floor2(solde / lisseN) : 0;
       var forfaitFirst = f.month * mult;
+      // nom de domaine fourni : data.domaine € de plus par mois (rien si le client a déjà le sien, rien en Autonomie)
+      var domPlus = (!seule && !domain.own()) ? (data.domaine || 0) : 0;
       $$('[data-avec-formule]', root).forEach(function (e) { e.hidden = seule; });
       $$('[data-seule-txt]', root).forEach(function (e) { e.hidden = !seule; });
-      setText('domain-prix', tr('compris'));
+      setText('domain-prix', domain.own() ? euro(0) : '+ ' + euro(domPlus) + per);
       // chaque façon de payer, en clair
       setText('p-0', euro(acompte) + tr(' aujourd’hui, puis ') + euro(solde) + tr(' à la réception'));
       (data.lissage || []).forEach(function (n) { setText('p-' + n, euro(acompte) + tr(' aujourd’hui, puis ') + euro(floor2(solde / n)) + tr(' par mois pendant ') + n + tr(' mois')); });
@@ -630,7 +634,7 @@
       optOnce = round2(optOnce * k);
       if (pp) lines.push([ppNom(pp) + ' (' + pp + ' × ' + euro(data.pagePlus) + ')', pp * data.pagePlus]);
       var today = round2(lines.reduce(function (s, l) { return s + l[1]; }, 0));
-      var next = round2(forfaitFirst + optRec);
+      var next = round2(forfaitFirst + domPlus + optRec);
       setText('today', euro(today));
       setText('btn', euro(today));
       setText('next', seule ? (lisse ? euro(lisseAmt) + ' × ' + lisseN : euro(solde)) : lisse ? euro(lisseAmt) + ' × ' + lisseN + ' + ' + euro(next) + per : euro(solde) + ' + ' + euro(next) + per);
@@ -671,7 +675,7 @@
       var dom = domain.get(), domText = '';
       if (domain.own()) domText = tr('Mon nom de domaine actuel');
       else if (dom.name) domText = dom.name + dom.tld + (dom.status === 'libre' ? tr(' (disponible)') : dom.status === 'pris' ? tr(' (déjà pris)') : '');
-      setText('domain', domText || tr('Nom de domaine à choisir'));
+      setText('domain', domain.own() ? 'Nom de domaine : le vôtre' : 'Nom de domaine fourni' + (domText ? ' : ' + domText : ''));
       if (hiddenDomain) hiddenDomain.value = domain.full();
       /* la configuration reste dans l'adresse (retour arrière, partage, erreur serveur) */
       if (fromUser && window.history && history.replaceState) {

@@ -29,6 +29,10 @@ const F = (id) => forfaits.find((f) => f.id === id);
 const T = (id) => types.find((t) => t.id === id);
 // L'offre unique : un abonnement, des options payées une fois à la création, des extras au mois
 const ABO = forfaits[0]; // Mini : le seul abonnement (Maxi est retiré, voir forfaitsAnciens dans config.js)
+// Le nom de domaine : le client a le sien (rien à ajouter), ou on le lui fournit pour DOM € de plus par mois
+const DOM = ABO.domaine || 0;
+const DOMAINE_REGLE = `Vous avez déjà un nom de domaine ? ${euro(ABO.month)} par mois. Vous n’en avez pas ? On vous le fournit : ${euro(ABO.month + DOM)} par mois.`;
+const DOMAINE_PLUS = `+ ${euro(DOM)} par mois si on vous fournit le nom de domaine`;
 const delaiTxt = (f) => f.delaiTexte || `en ${f.delai} au plus`;
 // La liste d'un abonnement sans la ligne du délai (le délai a sa propre ligne sous la liste)
 const sansDelai = (arr) => arr.filter((x) => !/^Délai/.test(x));
@@ -174,7 +178,7 @@ function payBox() {
   return `<ul class="list-check">
     <li><strong>À la commande</strong> : ${paiement.acompte} % du site, soit ${euro(acompteDe(creation.prix))} pour un ${ESSENTIEL.name} à ${euro(creation.prix)}.</li>
     <li><strong>À la réception du site</strong> : le reste en une fois (${euro(creation.prix - acompteDe(creation.prix))}), ou en ${lissageTxt} fois sans frais, par exemple ${euro(lisse(creation.prix))} par mois pendant ${LMAX} mois.</li>
-    <li><strong>Ensuite</strong> : ${creationSeule.name}, ${euro(0)} par mois, vous gérez tout vous-même. Ou le forfait ${ABO.name}, ${euro(ABO.month)} par mois, sans engagement : on s’occupe de tout.</li>
+    <li><strong>Ensuite</strong> : ${creationSeule.name}, ${euro(0)} par mois, vous gérez tout vous-même. Ou le forfait ${ABO.name}, ${euro(ABO.month)} par mois, sans engagement : on s’occupe de tout. ${DOMAINE_REGLE}</li>
   </ul>`;
 }
 
@@ -214,7 +218,7 @@ function formuleCarte(f, { compact = false } = {}) {
   return `<article class="formule c-${f.color}${seule ? ' is-autonomie' : ' is-mini'} reveal">
     <span class="formule-art" aria-hidden="true">${petit(seule ? 'chaton' : 'maxi')}</span>
     <p class="formule-nom">${seule ? '' : 'Forfait '}${esc(f.name)}</p>
-    <p class="formule-prix">${seule ? `<b>${euro(0)}</b><small>/mois</small>` : billed(f.month)}</p><p class="formule-sans">${seule ? 'Vous gérez tout vous-même' : 'Sans engagement, on s’occupe de tout'}</p>
+    <p class="formule-prix">${seule ? `<b>${euro(0)}</b><small>/mois</small>` : billed(f.month)}</p><p class="formule-sans">${seule ? 'Vous gérez tout vous-même' : 'Sans engagement, on s’occupe de tout'}</p>${seule ? '' : `<p class="formule-plus">${DOMAINE_PLUS}</p>`}
     ${compact ? '' : listePlus(f.main, { vis: 5 })}
   </article>`;
 }
@@ -228,7 +232,7 @@ function offre({ compact = false, choose = true } = {}) {
   ${compact ? '' : `<p class="offre-note">${esc(revisionsNote)}</p>`}
   <p class="offre-k"><span>2</span>Ensuite, ${esc(creationSeule.name)} ou le forfait ${esc(ABO.name)}</p>
   <div class="formules is-duo">${[creationSeule, ...forfaits].map((f) => formuleCarte(f, { compact })).join('')}</div>
-  <p class="offre-sous">${icon('heart-handshake')}<span>Aucune obligation d’abonnement. Le forfait ${ABO.name} : ${euro(ABO.month)} par mois, sans engagement.</span></p>
+  <p class="offre-sous">${icon('heart-handshake')}<span>Aucune obligation d’abonnement. Le forfait ${ABO.name} : ${euro(ABO.month)} par mois, sans engagement, ou ${euro(ABO.month + DOM)} si on vous fournit le nom de domaine.</span></p>
   ${choose ? `<p class="offre-go">${btnCreer('btn-primary btn-lg')}${compact ? btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs') : ''}</p>` : ''}
 </div>`;
 }
@@ -269,7 +273,7 @@ function economie() {
   </div>
   <p>Pas de secret : une méthode bien rodée, des outils préparés à l’avance, et pas de bureaux à payer.</p>
   ${deroulants([
-    deroulant('Et pour l’entretien, chaque mois ?', `<p>Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, le nom de domaine, les sauvegardes, la sécurité, la maintenance et les modifications. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois, l’hébergement étant souvent en plus : c’est de ${marche.entretienFois} fois moins cher.</p>`),
+    deroulant('Et pour l’entretien, chaque mois ?', `<p>Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications (${euro(ABO.month + DOM)} si on vous fournit aussi le nom de domaine). Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois, l’hébergement étant souvent en plus : c’est de ${marche.entretienFois} fois moins cher.</p>`),
     deroulant('Nos sources, et ce qu’il faut en penser', `<p>Soyons honnêtes. Ces fourchettes sont publiées par des prestataires, donc à lire avec prudence. Il existe des indépendants dès ${euro(INDEPENDANT_DES)}, et l’écart est alors très faible (environ ${ecartBas} fois), ainsi que des offres à bas prix.</p>${sourcesMarche()}`, { id: 'sources' }),
   ])}
 </div>`;
@@ -377,6 +381,7 @@ function priceData() {
       options: options.filter((o) => !o.retire).map((o) => ({ id: o.id, name: o.name, once: o.price.once || 0, month: o.price.month || 0, types: o.types || null })),
       remise: evenement.remise,
       free: annuel.moisOfferts,
+      domaine: forfaits[0].domaine || 0,
       pages: creation.pages,
       pagePlus: 0,
       pagesPlusMax: creation.pagesPlusMax,
@@ -431,7 +436,8 @@ function gestionChoix({ name = 'b-gestion', court = false } = {}) {
         <span class="cf-corps">
           <strong class="cf-nom">Forfait ${esc(ABO.name)} : on s’occupe de tout</strong>
           <span class="cf-prix"><b>${euro(ABO.month)}</b><small>/mois, sans engagement</small></span>
-          <span class="cf-txt">On réserve votre nom de domaine (l’adresse de votre site), on installe votre site, puis on veille sur lui chaque mois. Vos modifications sont incluses.</span>
+          <span class="cf-but">${DOMAINE_PLUS}</span>
+          <span class="cf-txt">On installe votre site, puis on veille sur lui chaque mois. Vos modifications sont incluses.</span>
           ${court ? '' : cfListe(INCLUS_NOUS, 0)}
         </span>
         <span class="cf-coche" aria-hidden="true">${icon('check')}</span>
@@ -525,15 +531,15 @@ function configurator() {
     ${etape('Quel site voulez-vous ?', 'Exister sur internet, être trouvé sur Google, ou vendre sur internet.', `${siteCarte()}<p class="cf-info c-butter">${icon('info')}<span>${esc(revisionsNote)}</span></p>`)}
     ${partie('lilac', `Ensuite, ${esc(creationSeule.name)} ou le forfait ${esc(ABO.name)}`, 'Aucune obligation d’abonnement : c’est vous qui choisissez.')}
     ${etape('Qui s’occupe de votre site ?', 'L’hébergement, le nom de domaine, les sauvegardes et les mises à jour : on s’en charge, ou vous le faites vous-même.', gestionChoix())}
-    ${etape('Votre nom de domaine', 'C’est l’adresse de votre site, par exemple mon-entreprise.fr. On la réserve à votre nom. Elle est comprise dans le forfait Mini.', domainBox(), ' data-avec-formule')}
+    ${etape('Votre nom de domaine', `C’est l’adresse de votre site, par exemple mon-entreprise.fr. Vous en avez déjà une ? Cochez la case : ${euro(ABO.month)} par mois. Sinon, on vous la fournit, à votre nom : ${euro(ABO.month + DOM)} par mois.`, domainBox(), ' data-avec-formule')}
     ${etape(`Le forfait ${esc(ABO.name)}`, `${euro(ABO.month)} par mois, sans engagement. Il démarre à la réception du site, et vous l’arrêtez quand vous voulez.`, `${formulesChoix({ court: 'sans-carte' })}<p class="cf-plus-tard">${icon('plus')}<span>Les extras (page de visibilité Google, traduction anglaise, fonctionnalité spécifique) se demandent plus tard, depuis votre espace client. <a href="${sections.forfaits.path}#extras">Voir les extras</a></span></p>`, ' data-avec-formule')}
     <section class="cf-etape cf-total b-sum" id="cf-total" aria-live="polite">
       <h2 class="cf-titre"><span class="cf-n" aria-hidden="true"></span>Votre total</h2>
       <ul class="cf-lignes">
         <li><span data-sum="type">${esc(VISIBILITE.name)}</span><b data-sum="type-price">${euro(P0)}</b></li>
         <li data-sum-remise hidden><span>Code promo (- ${evenement.remise} %)</span><b data-sum="remise">0 €</b></li>
-        <li data-avec-formule><span data-sum="domain">Nom de domaine à choisir</span><b data-sum="domain-prix">compris</b></li>
         <li><span data-sum="forfait">Forfait ${esc(ABO.name)}</span><b data-sum="forfait-price">${euro(ABO.month)}/mois</b></li>
+        <li data-avec-formule><span data-sum="domain">Nom de domaine fourni</span><b data-sum="domain-prix">+ ${euro(DOM)}/mois</b></li>
       </ul>
       <p class="cf-q">Comment voulez-vous payer votre site ?</p>
       ${paiementChoix()}
@@ -541,7 +547,7 @@ function configurator() {
       <div class="cf-recap">
         <p class="cf-auj"><span data-sum="today-label">Aujourd’hui, l’acompte de ${paiement.acompte} %</span><b data-sum="today">${euro(acompte0)}</b></p>
         <p><span data-sum="reste-label">À la réception du site, le reste</span><b data-sum="reste">${euro(P0 - acompte0)}</b></p>
-        <p><span data-sum="recur-label">Puis votre forfait, chaque mois</span><b data-sum="recur">${euro(ABO.month)}/mois</b></p>
+        <p><span data-sum="recur-label">Ensuite, chaque mois</span><b data-sum="recur">${euro(ABO.month + DOM)}/mois</b></p>
       </div>
       <p class="cf-detail" data-sum="detail">Prix total du site : ${euro(P0)}.</p>
       <div class="cf-actions">
@@ -552,7 +558,7 @@ function configurator() {
     </section>
   </form>
   <div class="b-bar" data-sum-bar>
-    <p data-sum="bar"><b>${euro(P0)}</b> puis <b>${euro(ABO.month)}/mois</b></p>
+    <p data-sum="bar"><b>${euro(P0)}</b> puis <b>${euro(ABO.month + DOM)}/mois</b></p>
     <a class="btn btn-primary btn-sm" href="#cf-total" data-sum-total>${icon('arrow-right')}<span>Mon total</span></a>
   </div>
 </div>`;
@@ -605,7 +611,7 @@ function statsCard() {
 function comparatifTable() {
   const cols = ['Les Minis Monstres', 'Agence', 'Indépendant', 'Plateforme à faire soi-même'];
   const prixCreation = `${types.map((t) => `${t.name} ${euro(t.price)}`).join(', ')}. Les prix sont affichés, les mêmes pour tous`;
-  const prixMois = `${creationSeule.name} : ${euro(0)}. Ou le forfait ${ABO.name} : ${euro(ABO.month)} par mois, nom de domaine, hébergement et modifications compris`;
+  const prixMois = `${creationSeule.name} : ${euro(0)}. Ou le forfait ${ABO.name} : ${euro(ABO.month)} par mois, hébergement et modifications compris (${euro(ABO.month + DOM)} si on vous fournit le nom de domaine)`;
   const rows = [
     ['Qui fait le travail', 'Alex et les Minis Monstres, du premier appel à la mise en ligne', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
     ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
@@ -635,5 +641,5 @@ module.exports = {
   offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, BOUTIQUE_ARTICLES, BOUTIQUE_PAIEMENT, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
   siteOffreCarte, positionnement, ESSENTIEL, VISIBILITE, BOUTIQUE_T, revisionsNote, phrase,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
-  CERISE, BRICOU, PEPITE, presente, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
+  CERISE, BRICOU, PEPITE, presente, DOM, DOMAINE_REGLE, DOMAINE_PLUS, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };
