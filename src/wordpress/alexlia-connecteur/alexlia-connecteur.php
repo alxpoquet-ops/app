@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.7.0
+ * Version: 2.8.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.7.0');
+define('ALEXLIA_CONN_VERSION', '2.8.0');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 
 /* =========================================================================
@@ -127,6 +127,9 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'paiement_installer': return alexlia_bg_paiement_installer($args);
         case 'commandes_lire': return alexlia_bg_commandes_lire();
         case 'vente_lire': return alexlia_vitrine_lire();
+        case 'categories_lire': return alexlia_cat_lire();
+        case 'categorie_creer': return alexlia_cat_creer($args);
+        case 'categorie_supprimer': return alexlia_cat_supprimer($args);
         case 'vente_regler': return alexlia_vitrine_regler($args);
         case 'commande_statut': return alexlia_bg_commande_statut($args);
         case 'livraison_lire': return alexlia_bg_livraison_lire();
@@ -426,7 +429,7 @@ function alexlia_bg_catalogue($a) {
     foreach ($r->products as $p) {
         $img = $p->get_image_id() ? wp_get_attachment_image_url($p->get_image_id(), 'medium') : '';
         $o[] = ['id' => $p->get_id(), 'nom' => $p->get_name(), 'type' => $p->get_type(), 'prix' => (string) ($p->get_regular_price() !== '' ? $p->get_regular_price() : $p->get_price()), 'a_partir' => $p->get_type() !== 'simple' && $p->get_price() !== '', 'prix_promo' => (string) $p->get_sale_price(), 'statut' => $p->get_status(),
-            'en_stock' => $p->get_stock_status() === 'instock', 'image' => (string) $img, 'adresse' => (string) get_permalink($p->get_id()), 'modifiable' => $p->get_type() === 'simple', 'description' => mb_substr(wp_strip_all_tags((string) $p->get_description()), 0, 3000)];
+            'en_stock' => $p->get_stock_status() === 'instock', 'image' => (string) $img, 'adresse' => (string) get_permalink($p->get_id()), 'modifiable' => $p->get_type() === 'simple', 'categories' => array_map('intval', (array) $p->get_category_ids()), 'description' => mb_substr(wp_strip_all_tags((string) $p->get_description()), 0, 3000)];
     }
     return ['produits' => $o, 'total' => (int) $r->total, 'pages' => (int) $r->max_num_pages, 'devise' => get_woocommerce_currency()];
 }
@@ -691,6 +694,7 @@ function alexlia_conn_article_poser($args) {
     }
     if (isset($champs['nom'])) $p->set_name($champs['nom']);
     if (isset($champs['prix'])) { $p->set_regular_price($champs['prix']); if ($champs['prix'] === '') $p->set_sale_price(''); }
+    if (isset($args['categories']) && is_array($args['categories'])) { $ids = array_values(array_filter(array_map('intval', $args['categories']), function ($t) { return $t > 0 && term_exists($t, 'product_cat'); })); $p->set_category_ids($ids); }
     if (isset($champs['description'])) { $p->set_description($champs['description']); $p->set_short_description(wp_trim_words(wp_strip_all_tags($champs['description']), 30)); }
     if (!empty($args['image_url'])) { $img = alexlia_conn_article_image($args['image_url']); if ($img) $p->set_image_id($img); elseif (!$id) return new WP_Error('alexlia_image', 'La photo n’a pas pu être récupérée (JPG, PNG ou WEBP, 8 Mo au plus).', ['status' => 400]); }
     $p->set_stock_status('instock');
@@ -1353,4 +1357,41 @@ add_action('wp_loaded', function () {
     // les liens et l'icône du panier dans le menu : cachés
     add_action('wp_head', function () { echo '<style>.cart-contents,.site-header-cart,.wc-block-mini-cart,.widget_shopping_cart,a[href*="/panier"],a[href*="/cart"]{display:none!important}</style>'; });
 }, 20);
+
+/* ---------- Catégories de la boutique (2.8.0) : les catégories de produits de WooCommerce, gérées depuis l'espace client ---------- */
+function alexlia_cat_lire() {
+    if (!taxonomy_exists('product_cat')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    $defaut = (int) get_option('default_product_cat', 0);
+    $o = [];
+    $termes = get_terms(['taxonomy' => 'product_cat', 'hide_empty' => false, 'orderby' => 'name']);
+    foreach (is_array($termes) ? $termes : [] as $t) {
+        if ((int) $t->term_id === $defaut) continue; // « Non classé » : la catégorie par défaut de WooCommerce
+        $lien = get_term_link($t);
+        $o[] = ['id' => (int) $t->term_id, 'nom' => $t->name, 'nombre' => (int) $t->count, 'adresse' => is_wp_error($lien) ? '' : (string) $lien];
+    }
+    return ['categories' => $o];
+}
+function alexlia_cat_creer($a) {
+    if (!taxonomy_exists('product_cat')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    if (function_exists('alexlia_mcp_compter') && !alexlia_mcp_compter('categories', 20)) return new WP_Error('alexlia_limite', 'Trop de catégories créées en une heure : réessayez plus tard.', ['status' => 429]);
+    $nom = trim(sanitize_text_field((string) ($a['nom'] ?? '')));
+    if ($nom === '' || mb_strlen($nom) > 60) return new WP_Error('alexlia_args', 'Donnez un nom à la catégorie (60 caractères au plus).', ['status' => 400]);
+    if (term_exists($nom, 'product_cat')) return new WP_Error('alexlia_args', 'Cette catégorie existe déjà.', ['status' => 400]);
+    $r = wp_insert_term($nom, 'product_cat');
+    if (is_wp_error($r)) return new WP_Error('alexlia_args', 'La catégorie n’a pas pu être créée.', ['status' => 400]);
+    alexlia_conn_journal('Catégorie « ' . $nom . ' » créée par le client depuis son espace.');
+    return ['ok' => true, 'id' => (int) $r['term_id']] + alexlia_cat_lire();
+}
+/* Supprimer une catégorie : ses articles ne sont pas supprimés, ils perdent seulement cette catégorie */
+function alexlia_cat_supprimer($a) {
+    if (!taxonomy_exists('product_cat')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
+    $id = (int) ($a['id'] ?? 0);
+    $t = get_term($id, 'product_cat');
+    if (!$t || is_wp_error($t) || $id === (int) get_option('default_product_cat', 0)) return new WP_Error('alexlia_introuvable', 'Catégorie introuvable.', ['status' => 404]);
+    $nom = $t->name;
+    $r = wp_delete_term($id, 'product_cat');
+    if (is_wp_error($r) || !$r) return new WP_Error('alexlia_args', 'La catégorie n’a pas pu être supprimée.', ['status' => 400]);
+    alexlia_conn_journal('Catégorie « ' . $nom . ' » supprimée par le client depuis son espace (ses articles sont gardés).');
+    return ['ok' => true] + alexlia_cat_lire();
+}
 

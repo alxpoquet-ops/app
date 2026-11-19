@@ -39,11 +39,23 @@ function aled08e_art_produits($uid, $frais = false) {
     return $prods;
 }
 
+/* Les catégories de la boutique (catégories de produits de WooCommerce), gardées 5 minutes */
+function aled08e_art_categories($uid, $frais = false) {
+    if (!aled08e_art_pret($uid)) return [];
+    $cle = 'aled08_art_cats_' . (int) $uid;
+    $c = $frais ? false : get_transient($cle);
+    if (is_array($c)) return $c;
+    $r = aled08e_lia_appel($uid, 'categories_lire', []);
+    $c = is_array($r) && isset($r['categories']) && is_array($r['categories']) ? $r['categories'] : [];
+    set_transient($cle, $c, 5 * MINUTE_IN_SECONDS);
+    return $c;
+}
+
 /* ---------- les actions : poser ou modifier un article, le retirer, débloquer des emplacements ---------- */
 add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08e_article'])) return;
     $uid = get_current_user_id();
-    $retour = function ($ok, $texte) use ($uid) { if ($uid) aled08e_art_flash($uid, $ok, $texte); delete_transient('aled08_art_cat_' . (int) $uid); wp_safe_redirect(aled08e_url(['sub' => 'articles']) . '#vacances', 303); exit; };
+    $retour = function ($ok, $texte) use ($uid) { if ($uid) aled08e_art_flash($uid, $ok, $texte); delete_transient('aled08_art_cat_' . (int) $uid); delete_transient('aled08_art_cats_' . (int) $uid); wp_safe_redirect(aled08e_url(['sub' => 'articles']) . '#vacances', 303); exit; };
     if (!$uid) { wp_safe_redirect(aled08e_url(), 303); exit; }
     if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_aled08e_art'] ?? '')), 'aled08e_art')) $retour(false, 'La page avait expiré. Réessayez.');
     if (!aled08e_est_boutique($uid)) $retour(false, 'Les emplacements d’articles sont réservés aux boutiques en ligne.');
@@ -85,6 +97,7 @@ add_action('template_redirect', function () {
 
         if ($pret) {
             $args = ['nom' => $nom, 'description' => $desc] + ($sansPrix ? ['sans_prix' => 1] : ['prix' => $prix]);
+            if (!empty($P['cats_envoyees'])) $args['categories'] = array_values(array_filter(array_map('intval', (array) ($P['categories'] ?? []))));
             if ($pid) $args['id'] = $pid;
             if ($aid) $args['image_url'] = wp_get_attachment_url($aid);
             $res = aled08e_lia_appel($uid, 'article_poser', $args);
@@ -104,6 +117,19 @@ add_action('template_redirect', function () {
         $retour(true, 'Votre article est enregistré : il sera en ligne dans les prochaines heures.');
     }
 
+    // --- les catégories : en créer une, en supprimer une (ses articles sont gardés)
+    if ($op === 'categorie') {
+        $nomCat = trim(sanitize_text_field((string) ($P['nom_categorie'] ?? '')));
+        if ($nomCat === '' || mb_strlen($nomCat) > 60) $retour(false, 'Donnez un nom à votre catégorie (60 caractères au plus).');
+        $r = aled08e_lia_appel($uid, 'categorie_creer', ['nom' => $nomCat]);
+        if (is_array($r) && !empty($r['ok'])) $retour(true, 'La catégorie « ' . $nomCat . ' » est créée. Rangez-y vos articles avec « Modifier ».');
+        $retour(false, is_wp_error($r) && (int) ($r->get_error_data()['code'] ?? 0) === 400 && stripos($r->get_error_message(), 'inconnue') === false ? $r->get_error_message() : 'La catégorie n’a pas pu être créée. Réessayez dans un instant.');
+    }
+    if ($op === 'categorie_retirer') {
+        $r = aled08e_lia_appel($uid, 'categorie_supprimer', ['id' => (int) ($P['id_categorie'] ?? 0)]);
+        if (is_array($r) && !empty($r['ok'])) $retour(true, 'La catégorie est supprimée. Ses articles sont gardés.');
+        $retour(false, 'La catégorie n’a pas pu être supprimée. Réessayez dans un instant.');
+    }
     if ($op === 'retirer') {
         $pid = (int) ($P['pid'] ?? 0);
         if ($pid) {
@@ -149,8 +175,15 @@ add_action('template_redirect', function () {
 }, 5);
 
 /* ---------- l'affichage ---------- */
-function aled08e_art_form($nonce, $act, $cle, $a = null) {
+function aled08e_art_form($nonce, $act, $cle, $a = null, $cats = []) {
     $edit = $a !== null;
+    $choix = '';
+    if ($cats) {
+        $mes = $edit ? array_map('intval', (array) ($a['categories'] ?? [])) : [];
+        $choix = '<fieldset class="art-cats"><legend>Dans quelle catégorie ?</legend><input type="hidden" name="cats_envoyees" value="1">';
+        foreach ($cats as $c) $choix .= '<label class="art-cat"><input type="checkbox" name="categories[]" value="' . (int) $c['id'] . '"' . (in_array((int) $c['id'], $mes, true) ? ' checked' : '') . '><span>' . esc_html($c['nom']) . '</span></label>';
+        $choix .= '</fieldset>';
+    }
     $id = 'art-' . $cle;
     $h = '<form class="art-form" method="post" enctype="multipart/form-data" action="' . $act . '">' . $nonce . '<input type="hidden" name="aled08e_article" value="poser">';
     if ($edit && !empty($a['pid'])) $h .= '<input type="hidden" name="pid" value="' . (int) $a['pid'] . '">';
@@ -159,6 +192,7 @@ function aled08e_art_form($nonce, $act, $cle, $a = null) {
         . '<div class="field"><label for="' . $id . '-nom">Le nom de l’article</label><input id="' . $id . '-nom" name="nom" type="text" maxlength="120" required value="' . esc_attr($edit ? $a['nom'] : '') . '" placeholder="Ex. : Bougie à la vanille"></div>'
         . '<div class="field"><label for="' . $id . '-prix">Le prix (€)</label><input id="' . $id . '-prix" name="prix" type="text" inputmode="decimal" value="' . esc_attr($edit && $a['prix'] !== '' ? number_format((float) $a['prix'], 2, ',', '') : '') . '" placeholder="Ex. : 12,50"></div>'
         . '<label class="check art-sans-prix"><input type="checkbox" name="sans_prix" value="1"' . ($edit && $a['prix'] === '' ? ' checked' : '') . ' onchange="var p=this.form.elements.prix;p.disabled=this.checked;if(this.checked)p.value=\'\';"><span>Je ne mets pas de prix <small>(l’article est présenté, sans achat en ligne)</small></span></label>'
+        . $choix
         . '<div class="field"><label for="' . $id . '-desc">La description</label><textarea id="' . $id . '-desc" name="description" rows="4" maxlength="3000" placeholder="Ce qui le rend unique, sa taille, sa matière…">' . esc_textarea($edit ? $a['desc'] : '') . '</textarea></div>'
         . '<label class="req-photo"><input type="file" name="image" accept="image/jpeg,image/png,image/webp" class="sr-only"' . ($edit ? '' : ' required') . '>' . aled08e_icon('image-plus') . '<span>' . ($edit ? 'Changer la photo (facultatif)' : 'Ajouter la photo') . '</span></label>'
         . '<button class="btn btn-primary" type="submit">' . aled08e_icon('check') . '<span>' . ($edit ? 'Enregistrer' : 'Mettre en ligne') . '</span></button></form>';
@@ -176,7 +210,7 @@ function aled08e_articles_html($uid) {
     $prods = aled08e_art_produits($uid);
     $arts = [];
     if (is_array($prods)) {
-        foreach ($prods as $p) $arts[] = ['pid' => (int) $p['id'], 'nom' => (string) $p['nom'], 'prix' => (string) $p['prix'], 'desc' => (string) ($p['description'] ?? ''), 'img' => (string) ($p['image'] ?? ''), 'statut' => $p['statut'] === 'publish' ? 'en_ligne' : 'hors_vente', 'modifiable' => !empty($p['modifiable']), 'a_partir' => !empty($p['a_partir'])];
+        foreach ($prods as $p) $arts[] = ['pid' => (int) $p['id'], 'nom' => (string) $p['nom'], 'prix' => (string) $p['prix'], 'desc' => (string) ($p['description'] ?? ''), 'img' => (string) ($p['image'] ?? ''), 'statut' => $p['statut'] === 'publish' ? 'en_ligne' : 'hors_vente', 'modifiable' => !empty($p['modifiable']), 'a_partir' => !empty($p['a_partir']), 'categories' => (array) ($p['categories'] ?? [])];
     }
     $locaux = aled08e_art_liste($uid);
     foreach ($locaux as $i => $a) if (($a['statut'] ?? '') === 'attente' || !is_array($prods)) $arts[] = ['idx' => $i, 'nom' => $a['nom'], 'prix' => (string) $a['prix'], 'desc' => $a['desc'], 'img' => !empty($a['img']) ? (string) wp_get_attachment_image_url((int) $a['img'], 'medium') : '', 'statut' => 'attente', 'modifiable' => true];
@@ -184,6 +218,8 @@ function aled08e_articles_html($uid) {
     $pris = count($arts);
     $libres = max(0, $total - $pris);
     $libre = aled08e_art_libre();
+    $cats = aled08e_art_categories($uid);
+    $nomsCats = []; foreach ($cats as $c) $nomsCats[(int) $c['id']] = (string) $c['nom'];
 
     $h = '<section class="art-zone" aria-label="Vos articles">';
     $h .= '<div class="art-hero"><span class="art-hero-art" aria-hidden="true">' . aled08e_monster('mochi') . '</span>'
@@ -197,7 +233,7 @@ function aled08e_articles_html($uid) {
     // ajouter un article : en premier, bien visible
     if ($libres > 0) {
         $h .= '<details class="art-ajouter"><summary><span class="art-plus">' . aled08e_icon('plus') . '</span><span><strong>Ajouter un article</strong><small>' . ($libre ? 'Autant que vous voulez' : (int) $libres . ' emplacement' . ($libres > 1 ? 's' : '') . ' libre' . ($libres > 1 ? 's' : '')) . '</small></span></summary>'
-            . aled08e_art_form($nonce, $act, 'nouveau') . '</details>';
+            . aled08e_art_form($nonce, $act, 'nouveau', null, $cats) . '</details>';
     }
 
     if ($arts) {
@@ -206,9 +242,9 @@ function aled08e_articles_html($uid) {
             $etat = $a['statut'] === 'en_ligne' ? '<span class="art-statut is-ok">' . aled08e_icon('check') . 'En ligne</span>' : ($a['statut'] === 'attente' ? '<span class="art-statut is-attente">' . aled08e_icon('clock') . 'Bientôt en ligne</span>' : '<span class="art-statut is-off">Hors vente</span>');
             $cible = !empty($a['pid']) ? '<input type="hidden" name="pid" value="' . (int) $a['pid'] . '">' : '<input type="hidden" name="idx" value="' . (int) $a['idx'] . '">';
             $h .= '<li class="art-carte"><div class="art-img">' . ($a['img'] ? '<img src="' . esc_url($a['img']) . '" alt="" loading="lazy">' : aled08e_icon('shopping-bag')) . '</div>'
-                . '<div class="art-corps"><strong>' . esc_html($a['nom']) . '</strong>' . ($a['prix'] !== '' ? '<b class="art-prix">' . (!empty($a['a_partir']) ? '<small>dès </small>' : '') . esc_html(number_format((float) $a['prix'], 2, ',', ' ')) . ' €</b>' : '<b class="art-prix art-prix-sans">Sans prix</b>') . $etat . '</div>';
+                . '<div class="art-corps"><strong>' . esc_html($a['nom']) . '</strong>' . ($a['prix'] !== '' ? '<b class="art-prix">' . (!empty($a['a_partir']) ? '<small>dès </small>' : '') . esc_html(number_format((float) $a['prix'], 2, ',', ' ')) . ' €</b>' : '<b class="art-prix art-prix-sans">Sans prix</b>') . $etat . (function () use ($a, $nomsCats) { $l = []; foreach ((array) ($a['categories'] ?? []) as $cid) if (isset($nomsCats[(int) $cid])) $l[] = '<em class="art-cat-tag">' . esc_html($nomsCats[(int) $cid]) . '</em>'; return $l ? '<span class="art-cat-tags">' . implode('', $l) . '</span>' : ''; })() . '</div>';
             if ($a['modifiable']) {
-                $h .= '<details class="art-edit"><summary>' . aled08e_icon('pencil') . '<span>Modifier</span></summary>' . aled08e_art_form($nonce, $act, 'e' . $k, $a)
+                $h .= '<details class="art-edit"><summary>' . aled08e_icon('pencil') . '<span>Modifier</span></summary>' . aled08e_art_form($nonce, $act, 'e' . $k, $a, $cats)
                     . '<form class="art-retirer" method="post" action="' . $act . '" onsubmit="return confirm(\'Retirer cet article de votre boutique ?\');">' . $nonce . '<input type="hidden" name="aled08e_article" value="retirer">' . $cible . '<button class="link-btn" type="submit">' . aled08e_icon('x') . 'Retirer cet article</button></form></details>';
             } else {
                 $h .= '<p class="art-note">Produit à variantes : faites une demande, on le règle avec vous.</p>';
@@ -220,6 +256,19 @@ function aled08e_articles_html($uid) {
         $h .= '<p class="esp-empty">Pas encore d’article. Ajoutez le premier : il sera en ligne dans votre boutique tout de suite.</p>';
     }
 
+    // mes catégories : pour ranger les articles (elles existent aussi sur le site, dans la boutique)
+    if (aled08e_art_pret($uid)) {
+        $h .= '<details class="art-categories"' . ($cats ? '' : ' open') . '><summary>' . aled08e_icon('tag') . '<span><strong>Mes catégories</strong><small>' . ($cats ? count($cats) . ' catégorie' . (count($cats) > 1 ? 's' : '') . ' pour ranger vos articles' : 'Rangez vos articles : bouquets, cadeaux, décoration…') . '</small></span></summary>';
+        if ($cats) {
+            $h .= '<ul class="art-cat-liste">';
+            foreach ($cats as $c) $h .= '<li><span><strong>' . esc_html($c['nom']) . '</strong><small>' . (int) $c['nombre'] . ' article' . ((int) $c['nombre'] > 1 ? 's' : '') . '</small></span>'
+                . '<form method="post" action="' . $act . '" onsubmit="return confirm(\'Supprimer cette catégorie ? Ses articles sont gardés.\');">' . $nonce . '<input type="hidden" name="aled08e_article" value="categorie_retirer"><input type="hidden" name="id_categorie" value="' . (int) $c['id'] . '"><button class="link-btn" type="submit">' . aled08e_icon('x') . 'Supprimer</button></form></li>';
+            $h .= '</ul>';
+        }
+        $h .= '<form class="art-cat-form" method="post" action="' . $act . '">' . $nonce . '<input type="hidden" name="aled08e_article" value="categorie"><div class="field"><label for="art-cat-nom">Nouvelle catégorie</label><input id="art-cat-nom" name="nom_categorie" type="text" maxlength="60" required placeholder="Ex. : Bouquets"></div>'
+            . '<button class="btn btn-light" type="submit">' . aled08e_icon('plus') . '<span>Créer la catégorie</span></button></form>'
+            . '<p class="app-note">Pour ranger un article : « Modifier », puis cochez sa catégorie. C’est en place sur votre boutique tout de suite.</p></details>';
+    }
     // débloquer des emplacements (anciennes offres seulement)
     if ($libre) return $h . '</section>';
     $h .= '<div class="art-debloque"><div class="art-debloque-txt"><strong>' . aled08e_icon('sparkles') . 'Besoin de plus de place ?</strong><p>Chaque emplacement en plus coûte <b>' . esc_html(aled08e_euro_txt($prix)) . '</b>, payé une seule fois. Il est à vous pour toujours : si vous retirez un article, la place reste libre.</p></div>'

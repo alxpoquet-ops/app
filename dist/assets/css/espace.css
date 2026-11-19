@@ -1003,3 +1003,21 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .art-form .art-sans-prix span { flex: 1; min-width: 0; font-weight: 700; }
 .art-form .art-sans-prix small { display: block; font-weight: 600; opacity: .8; }
 .art-form input[type="checkbox"], .art-form input[type="radio"], .art-form input[type="file"] { width: auto; }
+/* Mes articles : les catégories */
+.art-form .art-cats { border: 0; margin: 0 0 12px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.art-form .art-cats legend { padding: 0; margin: 0 0 8px; font-weight: 800; color: var(--ink); }
+.art-form .art-cat { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; background: var(--soft); font-weight: 700; cursor: pointer; }
+.art-form .art-cat input { width: 20px; height: 20px; min-width: 20px; max-width: 20px; margin: 0; flex: none; }
+.art-cat-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.art-cat-tag { font-style: normal; padding: 2px 9px; border-radius: 999px; background: var(--lilac); color: var(--lilac-dd); font-weight: 800; font-size: .74rem; }
+.art-categories { margin-top: 18px; padding: 14px 16px; border-radius: 22px; background: var(--soft); }
+.art-categories > summary { display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; min-height: 48px; }
+.art-categories > summary::-webkit-details-marker { display: none; }
+.art-categories > summary svg { width: 22px; height: 22px; flex: none; color: var(--lilac-dd); }
+.art-categories > summary small { display: block; font-weight: 600; opacity: .8; }
+.art-cat-liste { list-style: none; margin: 12px 0; padding: 0; display: grid; gap: 8px; }
+.art-cat-liste li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 16px; background: var(--card); }
+.art-cat-liste small { display: block; opacity: .75; font-weight: 600; }
+.art-cat-liste form { margin: 0; }
+.art-cat-form { display: grid; gap: 10px; margin-top: 10px; }
+.art-cat-form .btn { justify-content: center; min-height: 48px; }
