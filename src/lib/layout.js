@@ -273,6 +273,8 @@ function page(p) {
 <meta name="robots" content="${robots}">
 <meta name="author" content="${esc(site.name)}">
 <meta name="theme-color" content="#16142A">
+<meta name="color-scheme" content="dark">
+<meta name="darkreader-lock">
 <meta name="format-detection" content="telephone=no">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:type" content="website">

@@ -469,6 +469,8 @@ HEADER_PHP = r"""<?php defined('ABSPATH') || exit; $u = get_template_directory_u
 <meta charset="<?php bloginfo('charset'); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#16142A">
+<meta name="color-scheme" content="dark">
+<meta name="darkreader-lock">
 <meta name="format-detection" content="telephone=no">
 <link rel="preload" href="<?php echo esc_url($u); ?>/assets/fonts/jakarta-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="<?php echo esc_url($u); ?>/assets/favicon.svg" type="image/svg+xml">
