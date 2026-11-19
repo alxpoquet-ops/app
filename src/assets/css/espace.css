@@ -997,3 +997,9 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .bg-vente-txt p { margin: 6px 0 0; line-height: 1.45; font-weight: 600; }
 .bg-vente .btn { width: 100%; justify-content: center; min-height: 50px; white-space: normal; }
 @media (min-width: 760px) { .bg-vente { grid-template-columns: minmax(0, 1fr) auto; align-items: center; } .bg-vente .btn { width: auto; } }
+/* la case « Je ne mets pas de prix » : une vraie case à cocher, à gauche de son texte */
+.art-form .art-sans-prix { display: flex; align-items: flex-start; gap: 10px; margin: 2px 0 12px; font-size: .95rem; color: var(--text); cursor: pointer; }
+.art-form .art-sans-prix input[type="checkbox"] { width: 22px; height: 22px; min-width: 22px; max-width: 22px; flex: none; margin: 2px 0 0; }
+.art-form .art-sans-prix span { flex: 1; min-width: 0; font-weight: 700; }
+.art-form .art-sans-prix small { display: block; font-weight: 600; opacity: .8; }
+.art-form input[type="checkbox"], .art-form input[type="radio"], .art-form input[type="file"] { width: auto; }
