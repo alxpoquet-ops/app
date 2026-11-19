@@ -1022,13 +1022,19 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .art-cat-form { display: grid; gap: 10px; margin-top: 10px; }
 .art-cat-form .btn { justify-content: center; min-height: 48px; }
 /* Ma boutique : la rubrique « Catégories » (sept rubriques au menu) */
-@media (min-width: 760px) { .bg-nav { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
+@media (min-width: 760px) { .bg-nav { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 .art-vers-cats { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 14px 0 0; font-weight: 700; }
 .art-vers-cats svg { width: 20px; height: 20px; flex: none; color: var(--lilac-dd); }
 .art-cat-nouvelle { padding: 16px; border-radius: 22px; background: var(--soft); margin-bottom: 16px; }
 .art-cat-nouvelle input { width: 100%; box-sizing: border-box; }
 /* « Créer une catégorie », dans Mes articles */
 .art-ajouter-cat { margin-top: 12px; }
-.art-ajouter-cat .art-cat-form { padding: 14px 0 4px; }
+.art-ajouter-cat[open] .art-plus { transform: none; }
+.art-ajouter-cat .art-cat-form { margin: 0; padding: 2px 16px 6px; }
+.art-ajouter-cat .art-cat-form .btn { width: 100%; justify-content: center; }
 .art-ajouter-cat .art-cat-form input { width: 100%; box-sizing: border-box; }
-.art-ajouter-cat .art-cat-liste { margin-bottom: 4px; }
+.art-ajouter-cat[open] { padding-bottom: 16px; }
+.art-ajouter-cat .art-cat-liste { margin: 10px 16px 0; }
+.art-ajouter-cat .art-cat-liste li { background: var(--soft); }
+.art-ajouter-cat .art-cat-liste li > span { min-width: 0; overflow-wrap: anywhere; }
+.art-ajouter-cat .art-cat-liste .btn { flex: none; min-height: 44px; padding: 8px 14px; font-size: .95rem; }

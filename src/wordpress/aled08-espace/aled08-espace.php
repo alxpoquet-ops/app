@@ -199,6 +199,7 @@ require_once __DIR__ . '/includes/extras.php';
 require_once __DIR__ . '/includes/articles.php';
 require_once __DIR__ . '/includes/boutique-gestion.php';
 require_once __DIR__ . '/includes/paiement-direct.php';
+require_once __DIR__ . '/includes/bienvenue.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
 require_once __DIR__ . '/includes/mirette.php';
@@ -1076,7 +1077,7 @@ function aled08e_dashboard() {
     if ($m === 'portail_erreur') $flashForfait = '<p class="esp-warn" role="status">La page de gestion du paiement n’a pas pu s’ouvrir. Réessayez dans un instant, ou écrivez-moi.</p>';
 
     $price = $annuel ? ($f['month'] * (12 - (int) $D['moisOfferts'])) : $f['month'];
-    if (!empty($cmd['montants']['domaine_mensuel'])) $price += (float) $cmd['montants']['domaine_mensuel']; // le nom de domaine fourni : + 2 € par mois
+    $price += (float) aled08e_domaine_mensuel($uid); // le nom de domaine fourni : + 2 € par mois
     $per = $annuel ? 'par an' : 'par mois';
     $offert = aled08e_meta($uid, 'offert') === '1';
     if ($offert) $price = 0;
