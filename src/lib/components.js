@@ -219,7 +219,7 @@ function formuleCarte(f, { compact = false } = {}) {
     <span class="formule-art" aria-hidden="true">${petit(seule ? 'chaton' : 'maxi')}</span>
     <p class="formule-nom">${seule ? '' : 'Forfait '}${esc(f.name)}</p>
     <p class="formule-prix">${seule ? `<b>${euro(0)}</b><small>/mois</small>` : billed(f.month)}</p><p class="formule-sans">${seule ? 'Vous gérez tout vous-même' : 'Sans engagement, on s’occupe de tout'}</p>${seule ? '' : `<p class="formule-plus">${DOMAINE_PLUS}</p>`}
-    ${compact ? '' : listePlus(f.main, { vis: 5 })}
+    ${compact ? '' : liste(f.main.filter((x) => !/^Nom de domaine fourni/.test(x)))}
   </article>`;
 }
 // compact : pour l'accueil (moins de lignes) ; choose : avec les boutons
