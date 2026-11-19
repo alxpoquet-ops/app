@@ -2459,3 +2459,187 @@ a.client-url { text-decoration: none; }
 .app-lock strong { display: block; font-weight: 900; }
 .app-lock p { margin: 4px 0 10px; line-height: 1.45; font-weight: 600; }
 .app-lock .btn { white-space: normal; }
+
+/* ============================================================
+   TOUR GLOBAL (novembre 2026) : même logique partout, téléphone d'abord.
+   Menus déroulants (le dessin de la FAQ), listes « voir tout », accueil plus court, pied de page en accordéon,
+   barre du bas pleine, grosses cases du formulaire de contact, démo de l'espace client.
+   ============================================================ */
+/* ---------- menus déroulants ---------- */
+.deroulants { max-width: 820px; margin: 0 auto; }
+.deroulant summary { min-height: 56px; }
+.deroulant-titre { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.deroulant-titre .ico { flex: none; width: 34px; height: 34px; padding: 7px; border-radius: 12px; background: var(--c); color: var(--c-dd); transform: none !important; }
+.deroulant-corps { padding: 0 22px 16px; color: var(--text); }
+.deroulant-corps > :first-child { margin-top: 0; }
+.deroulant-corps > :last-child { margin-bottom: 0; }
+.deroulant-corps .modif-etapes { padding: 0; background: transparent; box-shadow: none; }
+.deroulant-corps .sources { background: var(--soft); }
+.eco .deroulants { margin-top: 14px; gap: 8px; }
+.eco .deroulant { background: rgba(255, 255, 255, .08); box-shadow: none; color: var(--ink); }
+.eco .deroulant summary { padding: 12px 16px; min-height: 48px; }
+.eco .deroulant-corps { padding: 0 16px 14px; font-weight: 500; font-size: .95rem; line-height: 1.55; }
+.eco .deroulant-corps .sources { background: rgba(255, 255, 255, .06); }
+/* « Voir tout ce qui est compris » : la suite d'une liste, repliée sur téléphone */
+.liste-plus > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 800; font-size: .93rem; color: var(--c-dd, var(--ink)); text-decoration: underline; text-underline-offset: 3px; }
+.liste-plus > summary::-webkit-details-marker { display: none; }
+.liste-plus > summary .ico { width: 18px; height: 18px; transition: transform .2s; }
+.liste-plus[open] > summary .ico { transform: rotate(180deg); }
+.liste-plus > summary:focus-visible { outline: 3px solid var(--lilac-d); outline-offset: 2px; border-radius: 8px; }
+.site-carte .plan-list:has(+ .liste-plus), .formule .plan-list:has(+ .liste-plus) { margin-bottom: 0; }
+.site-carte .liste-plus, .formule .liste-plus { margin: 0 0 12px; }
+.site-carte .liste-plus .plan-list, .formule .liste-plus .plan-list { margin: 0; }
+.cf-carte .liste-plus { margin-top: 4px; }
+@media (min-width: 900px) {
+  /* sur ordinateur, les listes sont ouvertes d'office : le lien « voir tout » n'a plus lieu d'être */
+  .liste-plus[data-ordi][open] > summary { display: none; }
+  .site-carte .plan-list:has(+ .liste-plus[open]) { margin-bottom: 0; }
+}
+/* ---------- l'offre, version courte (accueil) ---------- */
+.offre.is-compact .formules.is-duo { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.offre.is-compact .formule { padding: 16px 14px 14px; }
+.offre.is-compact .formule-art { width: 54px; top: -14px; right: 6px; }
+.offre.is-compact .formule-nom { font-size: 1.15rem; padding-right: 50px; }
+.offre.is-compact .formule-prix b { font-size: 1.8rem; }
+.offre.is-compact .formule-sans { margin: 0; font-size: .88rem; line-height: 1.35; }
+.offre-go { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.promos { max-width: 760px; margin: 22px auto 0; }
+/* ---------- la bande, en version courte ---------- */
+.bande-courte { list-style: none; margin: 0 auto; padding: 0; max-width: 860px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.bande-courte li { display: grid; justify-items: center; gap: 2px; text-align: center; padding: 12px 6px; border-radius: 22px; background: var(--card); box-shadow: var(--shadow-sm); }
+.bande-courte-art { width: 64px; }
+.bande-courte-art svg { display: block; width: 100%; height: auto; }
+.bande-courte strong { color: var(--ink); font-weight: 900; }
+.bande-courte small { color: var(--muted); font-weight: 700; font-size: .78rem; line-height: 1.25; }
+/* six monstres : trois par ligne sur ordinateur, deux sur téléphone */
+.bande { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 1000px; margin-left: auto; margin-right: auto; }
+@media (max-width: 720px) { .bande { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+.perks.perks-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 820px; margin: 0 auto; }
+/* un petit monstre qui présente un bloc */
+.presente { display: flex; align-items: center; gap: 14px; max-width: 680px; margin: 0 auto 22px; padding: 14px 18px; border-radius: 24px; background: var(--card); box-shadow: var(--shadow-sm); }
+.presente-art { flex: none; width: 72px; }
+.presente-art .petit { display: block; width: 100%; height: auto; }
+.presente p { margin: 0; line-height: 1.5; color: var(--text); }
+.presente strong { color: var(--ink); }
+/* ---------- comparatif : la version téléphone ---------- */
+.cmp-mobile { display: none; }
+.cmp-m { padding: 16px; border-radius: 22px; background: var(--card); box-shadow: var(--shadow-sm); }
+.cmp-m-l { margin: 0 0 8px; font-weight: 900; font-size: 1.05rem; color: var(--ink); }
+.cmp-m-nous { margin: 0; padding: 10px 12px; border-radius: 14px; background: var(--mint); color: var(--ink); font-weight: 700; line-height: 1.45; }
+.cmp-m small { display: block; font-size: .72rem; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 2px; }
+.cmp-m-nous small { color: var(--mint-dd); }
+.cmp-m-autres { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 6px; }
+.cmp-m-autres li { padding: 8px 12px; border-radius: 12px; background: var(--soft); line-height: 1.45; }
+/* ---------- formulaire de contact : de grosses cases, une par ligne ---------- */
+.field-motif { border: 0; padding: 0; margin: 0 0 18px; min-width: 0; }
+.field-motif legend { padding: 0; margin-bottom: 8px; font-weight: 800; color: var(--ink); }
+.radio-group.radio-cartes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.radio-group.radio-cartes label { display: flex; min-height: 54px; padding: 12px 16px; border-radius: 18px; font-size: 1rem; line-height: 1.3; }
+@media (max-width: 720px) { .radio-group.radio-cartes { grid-template-columns: 1fr; } }
+/* ---------- pied de page : colonnes en accordéon sur téléphone ---------- */
+.footer-col > summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.footer-col > summary::-webkit-details-marker { display: none; }
+.footer-col > summary .footer-title { display: block; margin: 0; font-weight: 900; color: var(--ink); }
+.footer-col > summary .ico { display: none; }
+.footer-col .footer-links { margin-top: 12px; }
+@media (min-width: 900px) { .footer-col > summary { pointer-events: none; } }
+@media (max-width: 899px) {
+  .footer-grid { gap: 10px; }
+  .footer-brand { margin-bottom: 8px; }
+  .footer-col { grid-column: 1 / -1; border-radius: 18px; background: var(--card); }
+  .footer-col > summary { cursor: pointer; min-height: 52px; padding: 0 16px; }
+  .footer-col > summary .ico { display: block; width: 20px; height: 20px; color: var(--muted); transition: transform .2s; }
+  .footer-col[open] > summary .ico { transform: rotate(180deg); }
+  .footer-col .footer-links { margin: 0; padding: 0 16px 12px; }
+  .footer-col .footer-links li { padding: 0; }
+  .footer-col .footer-links a { display: block; padding: 9px 0; }
+  .footer-bottom { margin-top: 24px; }
+}
+/* ---------- démo de l'espace client ---------- */
+.demo-bricou { display: flex; align-items: center; gap: 14px; margin: 0 0 16px; padding: 12px 16px; border-radius: 22px; background: var(--sky); }
+.demo-bricou > span { flex: none; width: 90px; }
+.demo-bricou .petit { display: block; width: 100%; height: auto; }
+.demo-bricou p { margin: 0; }
+.demo-bricou strong { display: block; font-size: 1.15rem; font-weight: 900; color: var(--ink); line-height: 1.25; }
+.demo-bricou small { display: block; margin-top: 4px; font-weight: 700; color: var(--sky-dd); }
+.app .presente { margin: 0 0 16px; max-width: none; background: var(--butter); box-shadow: none; }
+.bq-r { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.bq-menu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0 0 14px; }
+.bq-menu label { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 10px 12px; border-radius: 16px; background: var(--card); box-shadow: 0 0 0 2px var(--line) inset; color: var(--ink); font-weight: 900; line-height: 1.2; cursor: pointer; }
+.bq-menu label .ico { flex: none; width: 32px; height: 32px; padding: 7px; border-radius: 10px; background: var(--pink); color: var(--pink-dd); }
+.bq-panel { display: none; }
+#bq-articles:checked ~ .bq-menu label[for="bq-articles"], #bq-prix:checked ~ .bq-menu label[for="bq-prix"], #bq-paiements:checked ~ .bq-menu label[for="bq-paiements"], #bq-livraison:checked ~ .bq-menu label[for="bq-livraison"], #bq-commandes:checked ~ .bq-menu label[for="bq-commandes"], #bq-promos:checked ~ .bq-menu label[for="bq-promos"] { background: var(--pink); box-shadow: 0 0 0 3px var(--pink-d) inset; }
+#bq-articles:checked ~ .bq-menu label[for="bq-articles"] .ico, #bq-prix:checked ~ .bq-menu label[for="bq-prix"] .ico, #bq-paiements:checked ~ .bq-menu label[for="bq-paiements"] .ico, #bq-livraison:checked ~ .bq-menu label[for="bq-livraison"] .ico, #bq-commandes:checked ~ .bq-menu label[for="bq-commandes"] .ico, #bq-promos:checked ~ .bq-menu label[for="bq-promos"] .ico { background: var(--card); }
+#bq-articles:focus-visible ~ .bq-menu label[for="bq-articles"], #bq-prix:focus-visible ~ .bq-menu label[for="bq-prix"], #bq-paiements:focus-visible ~ .bq-menu label[for="bq-paiements"], #bq-livraison:focus-visible ~ .bq-menu label[for="bq-livraison"], #bq-commandes:focus-visible ~ .bq-menu label[for="bq-commandes"], #bq-promos:focus-visible ~ .bq-menu label[for="bq-promos"] { outline: 3px solid var(--lilac-d); outline-offset: 2px; }
+#bq-articles:checked ~ [data-bq="articles"], #bq-prix:checked ~ [data-bq="prix"], #bq-paiements:checked ~ [data-bq="paiements"], #bq-livraison:checked ~ [data-bq="livraison"], #bq-commandes:checked ~ [data-bq="commandes"], #bq-promos:checked ~ [data-bq="promos"] { display: block; }
+.bq { position: relative; }
+.demo-commandes li { flex-wrap: wrap; }
+.demo-cmd-btns { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.demo-cmd-btns .btn { flex: 1 1 auto; min-height: 46px; }
+/* ---------- documentation : un chapitre par déroulant ---------- */
+.doc-chapitres { max-width: 1000px; }
+.doc-chap > summary { font-size: 1.08rem; }
+.doc-chap .deroulant-corps > h2 { font-size: 1.35rem; margin-top: 4px; }
+.doc-chap .container-narrow { max-width: none; padding: 0; }
+.doc-chap .doc-fig img { max-width: 100%; height: auto; }
+/* ---------- la barre du bas et la bulle de Cerise ---------- */
+.mobile-bar.is-hidden { transform: translateY(160%); opacity: 0; pointer-events: none; }
+.lia-flot-coucou { max-width: 190px; }
+/* ---------- cartes d'atouts courtes ---------- */
+.feats-courts .feat p { margin-bottom: 0; }
+
+@media (max-width: 720px) {
+  /* gros boutons, faciles à toucher */
+  .btn { min-height: 50px; }
+  .btn-sm { min-height: 46px; }
+  .section { padding: 44px 0; }
+  .section-sub { font-size: 1rem; margin-bottom: 24px; }
+  .more { margin-top: 22px; }
+  /* accueil : la phrase d'abord, le dessin ensuite, en petit */
+  .hero-in { gap: 8px; padding: 14px 16px 28px; }
+  .hero h1 { font-size: 1.82rem; line-height: 1.16; }
+  .hero-lead { font-size: 1.02rem; margin-bottom: 0; }
+  .hero-ctas { flex-direction: column; gap: 12px; margin-top: 18px; }
+  .hero-ctas .btn { flex: none; width: 100%; }
+  .hero-points { margin-top: 16px; flex-direction: column; gap: 6px; }
+  .page-accueil .hero-art.hero-scene { order: 2; width: min(190px, 56vw); margin: 18px auto 40px; }
+  .page-hero .lead { font-size: 1rem; }
+  .page-hero-in { padding-bottom: 26px; }
+  /* l'offre */
+  .offre.offre-finale { padding: 18px 12px 16px; }
+  .site-cartes { gap: 22px; }
+  .site-prix b { font-size: 2.2rem; }
+  .offre-go .btn { width: 100%; }
+  .cmp, .cmp-4 { display: none; }
+  .cmp-mobile { display: grid; gap: 12px; }
+  /* cartes d'atouts courtes : l'icône à gauche, le texte à droite */
+  .feats-courts { gap: 10px; }
+  .feats-courts .feat { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; row-gap: 2px; align-items: start; padding: 16px; }
+  .feats-courts .feat > .ico { grid-row: span 2; margin: 0; }
+  .feats-courts .feat h3 { margin: 0; font-size: 1.05rem; }
+  .feats-courts .feat p { grid-column: 2; font-size: .95rem; line-height: 1.45; }
+  .bande-courte { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .bande-courte-art { width: 56px; }
+  .perks.perks-2 { grid-template-columns: 1fr; }
+  .presente { padding: 12px 14px; gap: 12px; }
+  .presente-art { width: 60px; }
+  .presente p { font-size: .95rem; }
+  .deroulant summary { padding: 14px 16px; gap: 10px; }
+  .deroulant-corps { padding: 0 16px 14px; }
+  .deroulant-titre { gap: 10px; }
+  .doc-chap .deroulant-corps { padding: 0 12px 14px; }
+  .steps { gap: 10px; }
+  /* la barre du bas : un fond plein, et une marge sous la page pour que rien ne soit caché dessous */
+  body { padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
+  .mobile-bar { left: 0; right: 0; bottom: 0; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); border-radius: 22px 22px 0 0; background: var(--card); box-shadow: 0 -10px 26px -12px rgba(0, 0, 0, .55), 0 -1px 0 var(--edge); transition: transform .25s, opacity .25s; }
+  :root[data-theme="dark"] .mobile-bar { background: #211E3A; }
+  .mobile-bar a { min-height: 50px; }
+  body:has(.mobile-bar) .lia-flot, body:has(.b-bar) .lia-flot { bottom: calc(84px + env(safe-area-inset-bottom)); }
+  body:has(.mobile-bar.is-hidden) .lia-flot { bottom: calc(14px + env(safe-area-inset-bottom)); }
+  .bq-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .demo-bricou > span { width: 90px; }
+}
+@media (max-width: 380px) {
+  .hero h1 { font-size: 1.68rem; }
+  .offre.is-compact .formules.is-duo { grid-template-columns: 1fr; }
+}
