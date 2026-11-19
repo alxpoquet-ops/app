@@ -201,10 +201,49 @@ const BOUTIQUE_STOCK = 'Pas de stock à tenir si vous ne le voulez pas : un prod
 const liste = (items) => `<ul class="plan-list">${items.map((x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`).join('')}</ul>`;
 // Un site, en carte : nom, but, prix, ce qui est compris. compact (accueil) : quatre lignes visibles, la suite toujours repliée.
 const ancreSite = (t) => (t.id === 'une-page' ? 'site-essentiel' : t.id === 'vitrine' ? 'site-visibilite' : 'site-boutique');
+// Le dessin de chaque site : un petit écran qui montre ce qu'on obtient, avec son monstre posé devant.
+// Essentiel : une page toute simple. Visibilité : une recherche qui trouve le site. Boutique : un store et des articles.
+function siteIcone(t) {
+  const INK = '#2E2A47';
+  const P = {
+    'une-page': { barre: '#BFE3FF', trait: '#3D84C9', doux: '#E3F2FF' },
+    vitrine: { barre: '#FFE59A', trait: '#B98A10', doux: '#FFF4CF' },
+    boutique: { barre: '#FFC4AC', trait: '#C2603F', doux: '#FFE3D6' },
+  }[t.id] || { barre: '#DCD2FF', trait: '#6E54D6', doux: '#F1ECFF' };
+  const ligne = (x, y, w, c = '#DAD5EC') => `<rect x="${x}" y="${y}" width="${w}" height="5" rx="2.5" fill="${c}"/>`;
+  let dedans = '';
+  if (t.id === 'une-page') {
+    dedans = `<rect x="20" y="40" width="56" height="20" rx="6" fill="${P.doux}" stroke="${P.trait}" stroke-width="2"/>
+<path d="M48 45.5l1.8 3.7 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4-2.9-2.8 4-.6Z" fill="#FFD75E" stroke="${INK}" stroke-width="1.4" stroke-linejoin="round"/>
+${ligne(20, 66, 40)}${ligne(20, 75, 28)}`;
+  } else if (t.id === 'vitrine') {
+    dedans = `<rect x="20" y="40" width="56" height="13" rx="6.5" fill="#fff" stroke="${P.trait}" stroke-width="2"/>
+<circle cx="29" cy="46" r="3.2" fill="none" stroke="${INK}" stroke-width="2"/><path d="M31.4 48.4l3 3" stroke="${INK}" stroke-width="2" stroke-linecap="round"/>${ligne(39, 44, 26, P.barre)}
+<rect x="20" y="59" width="56" height="12" rx="5" fill="${P.doux}" stroke="${P.trait}" stroke-width="2"/>
+<circle cx="28" cy="65" r="4.2" fill="#FFD75E" stroke="${INK}" stroke-width="1.4"/><path d="M27 63.6l1.3-.7v4.2" fill="none" stroke="${INK}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>${ligne(37, 62.5, 30, P.trait)}
+${ligne(20, 77, 40)}`;
+  } else {
+    dedans = `<path d="M18 40h60v8a5 5 0 0 1-10 0a5 5 0 0 1-10 0a5 5 0 0 1-10 0a5 5 0 0 1-10 0a5 5 0 0 1-10 0a5 5 0 0 1-10 0Z" fill="${P.barre}" stroke="${P.trait}" stroke-width="2" stroke-linejoin="round"/>
+<path d="M28 40v8M38 40v8M48 40v8M58 40v8M68 40v8" stroke="${P.trait}" stroke-width="1.6"/>
+<rect x="22" y="60" width="20" height="20" rx="5" fill="${P.doux}" stroke="${P.trait}" stroke-width="2"/><path d="M28 66a4 4 0 0 0 8 0" fill="none" stroke="${INK}" stroke-width="1.8" stroke-linecap="round"/>
+<rect x="48" y="60" width="20" height="20" rx="5" fill="#FFE1EC" stroke="#C24A80" stroke-width="2"/><path d="M58 73.5c-5-3.2-5.5-8 -2.6-8.6 1.4-.3 2.3.6 2.6 1.5.3-.9 1.2-1.8 2.6-1.5 2.9.6 2.4 5.4-2.6 8.6Z" fill="#FF8FB8" stroke="${INK}" stroke-width="1.3" stroke-linejoin="round"/>`;
+  }
+  const monstre = petit(t.monstre, { humeur: 'ravi' }).replace('<svg class="petit', '<svg x="60" y="56" width="62" height="62" class="petit');
+  return `<svg class="site-ico" viewBox="0 0 124 120" aria-hidden="true" focusable="false">
+<ellipse cx="50" cy="104" rx="42" ry="5" fill="${INK}" opacity=".16"/>
+<rect x="8" y="14" width="80" height="84" rx="14" fill="#FFFBF5" stroke="${INK}" stroke-width="3.2"/>
+<path d="M8 28a14 14 0 0 1 14-14h52a14 14 0 0 1 14 14v6H8Z" fill="${P.barre}" stroke="${INK}" stroke-width="3.2" stroke-linejoin="round"/>
+<circle cx="20" cy="24.5" r="2.6" fill="#FF8FB8"/><circle cx="29" cy="24.5" r="2.6" fill="#FFD75E"/><circle cx="38" cy="24.5" r="2.6" fill="#7BDDB1"/>
+${dedans}
+<path d="M98 16l1.9 4.6 4.6 1.9-4.6 1.9-1.9 4.6-1.9-4.6-4.6-1.9 4.6-1.9Z" fill="#FFD75E" stroke="${INK}" stroke-width="1.4" stroke-linejoin="round"/>
+<circle cx="110" cy="38" r="2.4" fill="#FF8FB8"/>
+${monstre}
+</svg>`;
+}
 function siteOffreCarte(t, { compact = false, choose = true } = {}) {
   return `<article class="site-carte c-${t.color}${t.vedette ? ' is-vedette' : ''} reveal"${compact ? '' : ` id="${ancreSite(t)}"`}>
     ${t.vedette ? '<span class="site-tag">Le plus choisi</span>' : ''}
-    <span class="site-art" aria-hidden="true">${petit(t.monstre)}</span>
+    <span class="site-art" aria-hidden="true">${siteIcone(t)}</span>
     <p class="site-nom">${esc(t.name)}</p>
     <p class="site-but">${icon('arrow-right')}<span>${esc(t.but)}</span></p>
     <p class="site-prix"><b>${euro(t.price)}</b><small>une seule fois</small></p>
@@ -238,7 +277,7 @@ function offre({ compact = false, choose = true } = {}) {
 }
 // Le positionnement, en trois lignes : chaque site a son but
 function positionnement() {
-  return `<ul class="posi reveal">${types.map((t) => `<li class="c-${t.color}"><a href="${creerUrl({ type: t.id })}"><span class="posi-art" aria-hidden="true">${petit(t.monstre)}</span><strong>${esc(t.name)}</strong>${icon('arrow-right')}<em>${esc(t.but)}</em></a></li>`).join('')}</ul>`;
+  return `<ul class="posi reveal">${types.map((t) => `<li class="c-${t.color}"><a href="${creerUrl({ type: t.id })}"><span class="posi-art" aria-hidden="true">${siteIcone(t)}</span><strong>${esc(t.name)}</strong>${icon('arrow-right')}<em>${esc(t.but)}</em></a></li>`).join('')}</ul>`;
 }
 // Anciens noms, gardés pour les pages qui les appellent encore
 const forfaitMinis = () => offre({ compact: true });
@@ -639,7 +678,7 @@ module.exports = {
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, sourcesMarche, sourcesMd, sourcesInline, ecartBas, INDEPENDANT_DES, ABO, DELAI_MODIF, optsCreation, optsMois, EXTRAS_PAR_FAMILLE, extrasListe, prixExtra, prixType, optPrice, optionsCompact, extrasDemande, priceData, optionChoices, domainBox,
   offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, BOUTIQUE_ARTICLES, BOUTIQUE_PAIEMENT, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
-  siteOffreCarte, positionnement, ESSENTIEL, VISIBILITE, BOUTIQUE_T, revisionsNote, phrase,
+  siteOffreCarte, siteIcone, positionnement, ESSENTIEL, VISIBILITE, BOUTIQUE_T, revisionsNote, phrase,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
   CERISE, BRICOU, PEPITE, presente, DOM, DOMAINE_REGLE, DOMAINE_PLUS, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };

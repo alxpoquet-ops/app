@@ -2388,7 +2388,11 @@ a.client-url { text-decoration: none; }
 .site-carte { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 22px 18px 18px; border-radius: 26px; background: var(--c); }
 .site-carte.is-vedette { box-shadow: 0 0 0 3px var(--c-d) inset; }
 .site-tag { position: absolute; top: -13px; left: 18px; padding: 4px 12px; border-radius: 999px; background: var(--c-d); color: #16142A; font-weight: 900; font-size: .8rem; }
-.site-art { position: absolute; top: -18px; right: 10px; width: 78px; pointer-events: none; }
+.site-art { position: absolute; top: -26px; right: 6px; width: 104px; pointer-events: none; }
+.site-ico { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .18)); }
+.site-carte:hover .site-ico { transform: translateY(-3px) rotate(-2deg); }
+.site-ico { transition: transform .25s; }
+.posi-art .site-ico { width: 58px; filter: none; }
 .site-art .petit { display: block; width: 100%; height: auto; }
 .site-nom { margin: 0; padding-right: 84px; font-size: 1.35rem; font-weight: 900; color: var(--ink); line-height: 1.2; }
 .site-but { display: flex; gap: 6px; align-items: center; margin: 4px 0 10px; padding-right: 84px; font-weight: 800; color: var(--c-dd); }
