@@ -114,7 +114,7 @@ function home() {
 
 <section class="section section-soft" id="visible"><div class="container">
   <h2 class="section-title">Notre métier : vous rendre visible</h2>
-  <p class="section-sub">Une vitrine, oui, mais dans une rue où l’on passe.</p>
+  <p class="section-sub">Une vitrine, oui, mais dans une rue passante.</p>
   <div class="feats feats-3 feats-courts">
     <div class="feat reveal">${icon('search-check')}<h3>Un site que Google comprend</h3><p>Des pages claires et rapides, lisibles sur téléphone. Google sait ce que vous faites, et où.</p></div>
     <div class="feat reveal">${icon('tag')}<h3>Des prix affichés</h3><p>Pas de devis, pas de rendez-vous commercial. Le prix est le même pour tout le monde.</p></div>

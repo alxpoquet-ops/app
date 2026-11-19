@@ -116,7 +116,7 @@ function listePlus(items, { vis = 5, ordi = true, texte = 'Voir tout ce qui est 
 }
 
 // ---------------------------------------------------------------- appel à l'action
-function ctaBand({ title = 'On vous rend visible ?', text = 'Un site internet, c’est votre vitrine dans une rue où l’on passe. Choisissez le vôtre en deux minutes : le prix s’affiche tout de suite.', mascot = 'mascotte' } = {}) {
+function ctaBand({ title = 'On vous rend visible ?', text = 'Un site internet, c’est votre vitrine dans une rue passante. Choisissez le vôtre en deux minutes : le prix s’affiche tout de suite.', mascot = 'mascotte' } = {}) {
   return `<section class="cta-band"><div class="container">
   <div class="cta-box reveal">
     <div class="cta-art cta-duo" aria-hidden="true">${bouille(mascot)}${petit(mascot === 'mascotte' ? 'fantome' : 'gelee', { humeur: 'ravi' })}</div>
