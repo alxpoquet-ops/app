@@ -231,6 +231,8 @@ const forfaits = [
     emoji: '🔵',
     color: 'mint',
     month: 10,
+    // 19 novembre 2026 : le forfait est à 10 € par mois avec le nom de domaine du client. S'il n'en a pas, on le lui fournit : + 2 € par mois (12 € en tout).
+    domaine: 2,
     quota: 1,
     periode: 'trimestre',
     illimite: true,
@@ -244,10 +246,10 @@ const forfaits = [
     modifs: 'modifications incluses, faites en 48 h au plus',
     conseil: false,
     tagline: 'Sans engagement',
-    pitch: 'On s’occupe de tout : votre site reste en ligne, protégé et à jour, avec votre nom de domaine. Vos modifications sont incluses, et vous les demandez directement depuis votre espace client.',
-    main: ['Modifications incluses', 'Hébergement', 'Nom de domaine', 'Les Minis Monstres à votre service', 'Sauvegardes automatiques', 'Sécurité', 'Maintenance technique', 'Espace client', 'Demandes de modification directement depuis votre espace client'],
-    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site, à votre nom, comprise tant que l’abonnement est actif', 'Sauvegardes automatiques : une copie de sécurité de votre site, faite toute seule', 'Sécurité : le petit cadenas et la protection contre les attaques', 'Maintenance technique : votre site reste à jour', 'Espace client : tout se gère au même endroit, depuis votre téléphone', 'Les Minis Monstres à votre service : une question, et on vous répond', 'Modifications incluses : une modification peut prendre jusqu’à 48 h, une demande à la fois', 'Vos demandes se font directement depuis votre espace client'],
-    features: ['Modifications incluses', 'Hébergement', 'Nom de domaine', 'Sauvegardes automatiques', 'Sécurité', 'Maintenance technique'],
+    pitch: 'On s’occupe de tout : votre site reste en ligne, protégé et à jour. Vos modifications sont incluses, et vous les demandez directement depuis votre espace client. Pas encore de nom de domaine ? On vous le fournit pour 2 € de plus par mois.',
+    main: ['Modifications incluses', 'Hébergement', 'Les Minis Monstres à votre service', 'Sauvegardes automatiques', 'Sécurité', 'Maintenance technique', 'Espace client', 'Demandes de modification directement depuis votre espace client', 'Nom de domaine fourni si vous n’en avez pas : + 2 € par mois'],
+    details: ['Hébergement : l’endroit où votre site reste accessible 24 h/24', 'Nom de domaine : l’adresse de votre site. Vous avez le vôtre : rien à ajouter. Vous n’en avez pas : on vous le fournit, à votre nom, pour 2 € de plus par mois', 'Sauvegardes automatiques : une copie de sécurité de votre site, faite toute seule', 'Sécurité : le petit cadenas et la protection contre les attaques', 'Maintenance technique : votre site reste à jour', 'Espace client : tout se gère au même endroit, depuis votre téléphone', 'Les Minis Monstres à votre service : une question, et on vous répond', 'Modifications incluses : une modification peut prendre jusqu’à 48 h, une demande à la fois', 'Vos demandes se font directement depuis votre espace client'],
+    features: ['Modifications incluses', 'Hébergement', 'Sauvegardes automatiques', 'Sécurité', 'Maintenance technique'],
   },
 ];
 // Les anciens abonnements : plus proposés, mais un client qui en a un le garde (l'extension WordPress les lit ici).

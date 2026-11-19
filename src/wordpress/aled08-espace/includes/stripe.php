@@ -204,7 +204,7 @@ function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
     $items = [];
     $offert = $seule || ($c['user'] && aled08e_meta($c['user'], 'offert') === '1');
     if (!$offert) {
-        $items[] = $recurring(aled08e_abo_nom($f) . ($annee ? ' (à l’année)' : ' (au mois)'), $m['mensuel_forfait'], 'forfait');
+        $items[] = $recurring(aled08e_abo_nom($f) . (!empty($m['domaine_mensuel']) ? ', avec le nom de domaine' : '') . ($annee ? ' (à l’année)' : ' (au mois)'), $m['mensuel_forfait'], 'forfait');
         foreach ($c['options'] as $oid) {
             $o = aled08e_option($oid);
             if ($o && $o['month'] > 0) $items[] = $recurring('Option : ' . $o['name'], $annee ? $o['month'] * max(1, 12 - (int) $D['moisOfferts']) : $o['month'], 'option');

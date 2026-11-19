@@ -48,6 +48,8 @@ process.stdout.write(
     // création seule : le client a son hébergement, il reçoit le code de son site (pas de formule, pas d'hébergement chez nous)
     creationSeule: cfg.creationSeule ? { id: cfg.creationSeule.id, name: cfg.creationSeule.name, month: 0, quota: 0, periode: 'mois', jetons: 0, illimite: false, delai: '', main: cfg.creationSeule.main, seule: true } : null,
     creation: cfg.creation || { prix: 500, boutique: 200 },
+    // le nom de domaine fourni par nous : supplément par mois sur le forfait (0 : compris)
+    domainePrix: forfaits[0].domaine || 0,
     moisOfferts: annuel.moisOfferts,
     boost: boost.prix,
     // extras à la demande, payés une fois (commandés depuis l'espace client, ajoutés à la prochaine facture)

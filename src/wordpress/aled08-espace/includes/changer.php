@@ -50,7 +50,7 @@ function aled08e_stripe_changer_abonnement($uid, $forfaitId, $optIds) {
         if ($tag === 'forfait') {
             $pid = $produit(aled08e_abo_nom($f) . ($interval === 'year' ? ' (à l’année)' : ' (au mois)'), 'forfait');
             if (is_wp_error($pid)) return $pid;
-            $r = aled08e_stripe_request('POST', '/v1/subscription_items/' . rawurlencode($it['id']), ['price_data' => $prix($pid, $f['month'] * $mult), 'proration_behavior' => 'none']);
+            $r = aled08e_stripe_request('POST', '/v1/subscription_items/' . rawurlencode($it['id']), ['price_data' => $prix($pid, ($f['month'] + aled08e_domaine_mensuel($uid)) * $mult), 'proration_behavior' => 'none']);
             if (is_wp_error($r)) return $r;
             $forfaitFait = true;
         } elseif ($tag === 'option') {
@@ -69,7 +69,7 @@ function aled08e_stripe_changer_abonnement($uid, $forfaitId, $optIds) {
         if (is_wp_error($pid)) return $pid;
         return aled08e_stripe_request('POST', '/v1/subscription_items', ['subscription' => $sub, 'price_data' => $prix($pid, $euros), 'proration_behavior' => $tout_de_suite ? 'always_invoice' : 'none']);
     };
-    if (!$forfaitFait) { $r = $ajout(aled08e_abo_nom($f), 'forfait', $f['month'] * $mult); if (is_wp_error($r)) return $r; }
+    if (!$forfaitFait) { $r = $ajout(aled08e_abo_nom($f), 'forfait', ($f['month'] + aled08e_domaine_mensuel($uid)) * $mult); if (is_wp_error($r)) return $r; }
     foreach ($optIds as $oid) {
         if (in_array($oid, $gardes, true)) continue;
         $o = aled08e_option($oid);

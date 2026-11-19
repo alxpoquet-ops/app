@@ -144,6 +144,9 @@ function aled08e_cmd_montants($cfg) {
     $acompte = round($creation * (int) $D['acompte'] / 100, 2);
     $solde = round($creation - $acompte, 2);
     $mensuelForfait = (float) $f['month'] * $mult;
+    // le nom de domaine fourni par nous : + 2 € par mois sur le forfait (pas si le client a déjà le sien, ni en Autonomie)
+    $domaineMensuel = ((float) $f['month'] > 0 && empty($cfg['domaine_mien']) && !aled08e_est_seule($cfg['forfait'] ?? '')) ? (float) ($D['domainePrix'] ?? 0) * $mult : 0.0;
+    $mensuelForfait += $domaineMensuel;
     $mensuelOptions = 0.0;
     $ponctuel = 0.0;
     foreach ((array) ($cfg['options'] ?? []) as $oid) {
@@ -173,6 +176,7 @@ function aled08e_cmd_montants($cfg) {
         'acompte' => $acompte,
         'solde' => $solde,
         'mensuel_forfait' => $mensuelForfait,
+        'domaine_mensuel' => $domaineMensuel,
         'mensuel_options' => $mensuelOptions,
         'options_ponctuel' => $ponctuel,
         'pages_plus' => $pagesPlus,

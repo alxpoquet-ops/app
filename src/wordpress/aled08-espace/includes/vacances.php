@@ -183,3 +183,9 @@ function aled08e_autonomie_html($uid) {
     }
     return $h . '</section>';
 }
+
+/* Le nom de domaine fourni par nous : supplément par mois sur le forfait de ce client (0 s'il a le sien) */
+function aled08e_domaine_mensuel($uid) {
+    foreach (aled08e_cmd_user_commandes($uid) as $c) if (!empty($c['montants']['domaine_mensuel'])) return (float) $c['montants']['domaine_mensuel'];
+    return 0.0;
+}
