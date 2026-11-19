@@ -130,6 +130,8 @@ function home() {
   <p class="center more">${C.btn(sections.equipe.path, 'btn-light', sections.equipe.icon, 'Rencontrer la bande')}</p>
 </div></section>
 
+<section class="section section-soft" id="demo"><div class="container">${C.demoBande()}</div></section>
+
 ${C.ctaBand({ title: 'On ouvre votre vitrine sur internet ?', text: 'Choisissez votre site en deux minutes. Le prix s’affiche tout de suite.' })}`;
   return {
     path: '/',
@@ -247,7 +249,7 @@ function forfaitsPage() {
   <h2 class="section-title">Enfin, les extras</h2>
   ${C.presente('etoile', `<strong>Moi, c’est ${esc(C.PEPITE)}.</strong> Les extras, c’est mon rayon : trois extras, pas plus. Vous me les demandez depuis votre espace client, quand vous en avez besoin.`, { humeur: 'ravi' })}
   ${C.extrasListe()}
-  <p class="center more">${C.btn(site.espaceClient.demo, 'btn-light', 'eye', 'Voir l’espace client en démo')}</p>
+  ${C.demoBande()}
 </div></section>
 
 <section class="section" id="detail"><div class="container container-narrow">
@@ -769,8 +771,8 @@ function bandeMessages() {
 </div>`;
 }
 
-// La démo de l'espace client : « Pâtisserie Lila », une cliente imaginaire, avec un Site Visibilité et Mini.
-// Onglets : Accueil, Demandes (Bricou clarifie la demande, Alex fait la modification), Extras (présentés par Pépite), Ma boutique (verrouillé sans Site Boutique,
+// La démo de l'espace client : « Pâtisserie Lila », une cliente imaginaire, avec un Site Boutique et le forfait Mini.
+// Onglets : Accueil, Demandes (Bricou clarifie la demande, Alex fait la modification), Extras (présentés par Pépite), Ma boutique (ouverte : Lila a un Site Boutique,
 // avec son sous-menu en gros boutons : cases radio et CSS, sans script), Mon compte. Plus d'onglet « Mon site » ni de parrainage.
 // Les attributs data-* sont ceux que lit src/assets/js/main.js (data-tab, data-go, data-req, data-reqs, data-log, data-toast-msg…).
 function monEspacePage() {
@@ -805,11 +807,11 @@ function monEspacePage() {
                 </div>
               </details>`;
   // Le sous-menu de « Ma boutique », comme dans le vrai espace client
-  const BQ = [['articles', 'shopping-bag', 'Mes articles'], ['prix', 'tag', 'Mes prix'], ['paiements', 'credit-card', 'Paiements'], ['livraison', 'package', 'Livraison'], ['commandes', 'clipboard-check', 'Commandes'], ['promos', 'badge-percent', 'Promos']];
+  const BQ = [['articles', 'shopping-bag', 'Mes articles'], ['paiements', 'credit-card', 'Paiements'], ['livraison', 'package', 'Livraison'], ['commandes', 'clipboard-check', 'Commandes'], ['promos', 'badge-percent', 'Promos et soldes']];
   const body = `${C.pageHero({
     section: 'monespace',
     h1: 'Mon espace : la démo',
-    lead: 'Voici l’espace de « Pâtisserie Lila », une cliente imaginaire. Essayez : envoyez une demande, regardez les extras, ouvrez Ma boutique. Rien n’est envoyé.',
+    lead: 'Voici l’espace de « Pâtisserie Lila », une cliente imaginaire qui a un Site Boutique. Essayez : envoyez une demande, ajoutez un article, regardez les extras. Rien n’est envoyé.',
     crumbs: DEMO_CRUMBS,
   })}
 <section class="section section-app"><div class="container">
@@ -820,7 +822,7 @@ function monEspacePage() {
       <p data-mots="photo,image,picture" data-type="demande" data-par="lia" data-cout="0" data-texte="Sur la page d’accueil, remplacer la photo du haut par celle que je joins.">Avec plaisir ! Une nouvelle photo en haut de l’accueil, bonne idée. Tu pourras la joindre juste avant d’envoyer ta demande à Bricou.</p>
       <p data-mots="google,visibilité,visibilite,extra,traduction,anglais" data-type="onglet" data-onglet="extras" data-nom="Extras">Super question ! Une page de visibilité Google coûte ${euro(PRIX_PAGE)}, payée une fois, par carte. La traduction anglaise et les fonctionnalités spécifiques sont sur devis. Pépite t’attend dans l’onglet Extras !</p>
       <p data-mots="combien,reste,limite,modification,comment,how,limit" data-type="onglet" data-onglet="demandes" data-nom="Demandes">Avec le forfait ${esc(ABO.name)}, tes modifications sont incluses. Tu écris ce que tu veux changer, ${esc(C.BRICOU)} clarifie ta demande avec toi, puis il l’envoie à Alex, qui fait la modification. Une demande à la fois.</p>
-      <p data-mots="boutique,vendre,panier,shop,sell" data-type="demande" data-par="alex" data-texte="Je voudrais vendre en ligne. Pouvez-vous me dire comment passer au ${esc(BOU.name)} ?">Oh, quel beau projet ! Pour vendre en ligne, il te faut le ${esc(BOU.name)} : une boutique complète, un panier et le paiement sécurisé. Tu gères ton catalogue toi-même, sans limite d’articles. Voici ton message, c’est bien ça ?</p>
+      <p data-mots="boutique,vendre,panier,article,catégorie,categorie,shop,sell" data-type="onglet" data-onglet="boutique" data-nom="Ma boutique">Ta boutique est déjà là ! Dans l’onglet Ma boutique, tu ajoutes tes articles toi-même : une photo, un nom, un prix, et c’est en ligne. Mochi range tout pour toi.</p>
       <p data-defaut>Coucou ! Dans ton vrai espace, je réponds à tes questions et je te guide. Essaie par exemple : changer mes horaires.</p>
     </div>
     <div class="app-shell">
@@ -840,15 +842,20 @@ function monEspacePage() {
         <div class="app-panel" role="tabpanel" id="t-accueil" aria-labelledby="tab-accueil">
           <h2 class="app-h">Bonjour Lila !</h2>
           <div class="app-cards">
-            <button type="button" class="app-card c-${VIS.color}" data-go="forfait"><span class="app-card-art">${C.petit(VIS.monstre)}</span><span><small>Votre site</small><strong>${esc(VIS.name)}</strong><span class="dot-ok">En ligne</span></span></button>
+            <button type="button" class="app-card c-${BOU.color}" data-go="boutique"><span class="app-card-art">${C.petit(BOU.monstre, { humeur: 'ravi' })}</span><span><small>Votre site</small><strong>${esc(BOU.name)}</strong><span class="dot-ok">En ligne · ${articles.length} articles</span></span></button>
             <button type="button" class="app-card c-${ABO.color}" data-go="forfait"><span class="app-card-art">${C.petit('maxi')}</span><span><small>Votre forfait</small><strong>Forfait ${esc(ABO.name)}</strong><span>${euro(ABO.month + C.DOM)} par mois, nom de domaine fourni</span></span></button>
             <button type="button" class="app-card c-sky" data-go="extras"><span class="app-card-ico">${icon('sparkles')}</span><span><small>Envie d’aller plus loin ?</small><strong>Les extras</strong><span>Voir les trois extras</span></span></button>
+          </div>
+          <div class="demo-actions">
+            <button type="button" data-go="demandes"><span aria-hidden="true">${C.petit('bricou', { humeur: 'ravi' })}</span><strong>Une modification</strong><small>Dites-le à ${esc(C.BRICOU)}</small></button>
+            <button type="button" data-go="boutique"><span aria-hidden="true">${C.petit('mochi', { humeur: 'ravi' })}</span><strong>Ma boutique</strong><small>Articles et commandes</small></button>
+            <button type="button" data-go="extras"><span aria-hidden="true">${C.petit('etoile', { humeur: 'ravi' })}</span><strong>Les extras</strong><small>Avec ${esc(C.PEPITE)}</small></button>
           </div>
           ${bandeMessages()}
           <div class="cerise-box"><span aria-hidden="true">${monster('coucou')}</span><div>
             <p>Écrire à Cerise<small>Une question, une modification ? Elle vous répond tout de suite et prépare votre demande.</small></p>
             <form class="cerise-form" data-cerise-form><input type="text" maxlength="600" placeholder="Ex. : nous serons fermés lundi" aria-label="Votre message à Cerise"><button class="btn btn-primary btn-sm" type="submit">${icon('send')}<span>Envoyer</span></button></form>
-            <div class="cerise-ideas">${['Changer mes horaires', 'Ajouter une photo sur mon site', 'Une page de visibilité Google', 'Vendre en ligne'].map((x) => `<button type="button" data-cerise-idee>${x}</button>`).join('')}</div>
+            <div class="cerise-ideas">${['Changer mes horaires', 'Ajouter une photo sur mon site', 'Une page de visibilité Google', 'Ajouter un article'].map((x) => `<button type="button" data-cerise-idee>${x}</button>`).join('')}</div>
           </div></div>
           <p class="app-sub">Dernières activités</p>
           <ul class="app-log" data-log>
@@ -880,18 +887,26 @@ function monEspacePage() {
 
         <div class="app-panel" role="tabpanel" id="t-boutique" aria-labelledby="tab-boutique" hidden>
           <h2 class="app-h">Ma boutique</h2>
-          <div class="app-lock">${icon('lock')}<div><strong>Onglet verrouillé</strong><p>Il s’ouvre avec le ${esc(BOU.name)}. Pâtisserie Lila a un ${esc(VIS.name)} : voici ce qu’elle gérerait ici, elle-même.</p><button type="button" class="btn btn-light btn-sm" data-toast-msg="Demande envoyée : on vous répond avec un prix (démo)"><span>Passer au ${esc(BOU.name)}</span></button></div></div>
+          ${C.presente('mochi', '<strong>Moi, c’est Mochi.</strong> Je range votre boutique. Ici, vous faites tout vous-même, en quelques secondes : articles, catégories, paiements, livraison, commandes.', { humeur: 'ravi' })}
           <div class="bq">
             ${BQ.map(([id], i) => `<input type="radio" name="bq" id="bq-${id}" class="bq-r"${i === 0 ? ' checked' : ''}>`).join('')}
             <div class="bq-menu" role="group" aria-label="Les rubriques de Ma boutique">${BQ.map(([id, ic, nom]) => `<label for="bq-${id}">${icon(ic)}<span>${nom}</span></label>`).join('')}</div>
             <div class="bq-panel" data-bq="articles">
               <p class="art-ajout"><button type="button" class="btn btn-primary btn-sm" data-toast-msg="Nouvel article : une photo, un nom, une description, un prix (démo)">${icon('plus')}<span>Ajouter un article</span></button></p>
+              <details class="art-carte demo-cat">
+                <summary><span class="art-vignette demo-cat-ico">${icon('tag')}</span><span class="art-txt"><strong>Créer une catégorie</strong><b>3 catégories</b></span><span class="art-modifier">${icon('plus')}<span>Ouvrir</span></span></summary>
+                <div class="art-form">
+                  <div class="field"><label for="demo-cat-nom">Le nom de la catégorie</label><input id="demo-cat-nom" type="text" placeholder="Ex. : Tartes" maxlength="60"></div>
+                  <button type="button" class="btn btn-primary" data-toast-msg="Catégorie créée : elle apparaît tout de suite sur le site (démo)">${icon('plus')}<span>Créer la catégorie</span></button>
+                  <ul class="reqs">
+                    <li><span><strong>Tartes</strong><small>4 articles</small></span><button type="button" class="btn btn-light btn-sm" data-toast-msg="Catégorie supprimée, ses articles sont gardés (démo)"><span>Supprimer</span></button></li>
+                    <li><span><strong>Éclairs et choux</strong><small>3 articles</small></span><button type="button" class="btn btn-light btn-sm" data-toast-msg="Catégorie supprimée, ses articles sont gardés (démo)"><span>Supprimer</span></button></li>
+                    <li><span><strong>Gâteaux à commander</strong><small>2 articles</small></span><button type="button" class="btn btn-light btn-sm" data-toast-msg="Catégorie supprimée, ses articles sont gardés (démo)"><span>Supprimer</span></button></li>
+                  </ul>
+                </div>
+              </details>
               <div class="art-cartes">${articles.map(articleCarte).join('')}</div>
-              <p class="app-note">Pour chaque article : une photo, un nom, une description, un prix. Autant d’articles que vous voulez.</p>
-            </div>
-            <div class="bq-panel" data-bq="prix">
-              <ul class="ranks ranks-pages">${articles.map(([n, pr]) => `<li><span>${n}</span><b>${pr}</b></li>`).join('')}</ul>
-              <p class="app-note">Vous changez un prix quand vous voulez. Un prix en promotion s’affiche barré, tout seul.</p>
+              <p class="app-note">Pour chaque article : une photo, un nom, une description, un prix. Autant d’articles que vous voulez, rangés dans vos catégories.</p>
             </div>
             <div class="bq-panel" data-bq="paiements">
               <ul class="reqs">
@@ -929,7 +944,7 @@ function monEspacePage() {
         <div class="app-panel" role="tabpanel" id="t-forfait" aria-labelledby="tab-forfait" hidden>
           <h2 class="app-h">Mon compte</h2>
           <p class="app-sub">Votre forfait</p>
-          <p class="app-domain">${icon('shield-check')}<span><strong>Le forfait ${esc(ABO.name)}, ${euro(ABO.month + C.DOM)} par mois</strong><small>${euro(ABO.month)} pour le forfait, et ${euro(C.DOM)} pour le nom de domaine qu’on vous fournit. Sans engagement.</small></span></p>
+          <p class="app-domain">${icon('shield-check')}<span><strong>${esc(BOU.name)}, avec le forfait ${esc(ABO.name)} : ${euro(ABO.month + C.DOM)} par mois</strong><small>${euro(ABO.month)} pour le forfait, et ${euro(C.DOM)} pour le nom de domaine qu’on vous fournit. Sans engagement.</small></span></p>
           <p class="app-note">Vous préférez tout gérer vous-même ? Vous passez au forfait ${esc(AUTO.name)} quand vous voulez : ${euro(AUTO.month)} par mois, et vous repartez avec votre site.</p>
           <p class="app-sub">Factures</p>
           <ul class="invoices">

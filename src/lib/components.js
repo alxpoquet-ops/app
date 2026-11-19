@@ -115,6 +115,15 @@ function listePlus(items, { vis = 5, ordi = true, texte = 'Voir tout ce qui est 
   return `<ul class="plan-list">${items.slice(0, vis).map(li).join('')}</ul><details class="liste-plus"${ordi ? ' data-ordi' : ''}><summary><span>${texte}</span>${icon('chevron-down')}</summary><ul class="plan-list">${items.slice(vis).map(li).join('')}</ul></details>`;
 }
 
+// ---------------------------------------------------------------- la démo de l'espace client, mise en avant (accueil, Tarifs)
+function demoBande() {
+  return `<a class="demo-bande reveal" href="${site.espaceClient.demo}">
+    <span class="demo-bande-art" aria-hidden="true">${petit('mochi', { humeur: 'ravi' })}${petit('bricou', { humeur: 'ravi' })}</span>
+    <span class="demo-bande-txt"><strong>Essayez l’espace client</strong><span>Entrez dans l’espace d’une cliente imaginaire : ses demandes, sa boutique, ses extras. Sans compte, et rien n’est envoyé.</span></span>
+    <span class="btn btn-primary">${icon('eye')}<span>Ouvrir la démo</span></span>
+  </a>`;
+}
+
 // ---------------------------------------------------------------- appel à l'action
 function ctaBand({ title = 'On vous rend visible ?', text = 'Un site internet, c’est votre vitrine dans une rue passante. Choisissez le vôtre en deux minutes : le prix s’affiche tout de suite.', mascot = 'mascotte' } = {}) {
   return `<section class="cta-band"><div class="container">
@@ -678,7 +687,7 @@ module.exports = {
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, sourcesMarche, sourcesMd, sourcesInline, ecartBas, INDEPENDANT_DES, ABO, DELAI_MODIF, optsCreation, optsMois, EXTRAS_PAR_FAMILLE, extrasListe, prixExtra, prixType, optPrice, optionsCompact, extrasDemande, priceData, optionChoices, domainBox,
   offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, BOUTIQUE_ARTICLES, BOUTIQUE_PAIEMENT, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
-  siteOffreCarte, siteIcone, positionnement, ESSENTIEL, VISIBILITE, BOUTIQUE_T, revisionsNote, phrase,
+  siteOffreCarte, siteIcone, positionnement, demoBande, ESSENTIEL, VISIBILITE, BOUTIQUE_T, revisionsNote, phrase,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
   CERISE, BRICOU, PEPITE, presente, DOM, DOMAINE_REGLE, DOMAINE_PLUS, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };

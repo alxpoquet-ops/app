@@ -133,7 +133,7 @@ function header(currentPath) {
           const on = currentPath.startsWith(s.path);
           return `<li><a class="nav-link c-${s.color}" href="${s.path}"${on ? ' aria-current="page"' : ''}><span class="nav-mimi" aria-hidden="true">${petit(NAV_MIMI[k][0], { humeur: NAV_MIMI[k][1] })}</span>${icon(s.icon)}<span class="nav-txt">${s.label}<small>${NAV_DESC[k]}</small></span>${icon('chevron-right')}</a></li>`;
         }).join('')}
-        <li class="nav-creer"><span class="nav-creer-art" aria-hidden="true">${petit('mochi', { humeur: 'ravi' })}</span>${C.btn(sections.creer.path, 'btn-primary btn-lg', sections.creer.icon, sections.creer.label, onCreer ? ' aria-current="page"' : '')}<small>Pour être visible. Le prix s’affiche tout de suite.</small></li>
+        <li class="nav-creer"><span class="nav-creer-art" aria-hidden="true">${petit('mochi', { humeur: 'ravi' })}</span>${C.btn(sections.creer.path, 'btn-primary btn-lg', sections.creer.icon, sections.creer.label, onCreer ? ' aria-current="page"' : '')}<small>Pour être visible. Le prix s’affiche tout de suite.</small><a class="nav-demo" href="/mon-espace/demo/">${icon('eye')}<span>Essayer l’espace client en démo</span></a></li>
       </ul>
     </nav>
     <div class="header-actions">

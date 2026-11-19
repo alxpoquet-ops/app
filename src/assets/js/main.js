@@ -758,7 +758,8 @@
       if (id === 'forfait' && !$('[data-tab="forfait"]', app) && $('#forfait-bloc', app)) { bloc = $('#forfait-bloc', app); return 'compte'; }
       return id;
     };
-    var show = function (id, focus) {
+    var doux = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var show = function (id, focus, auto) {
       id = alias(id);
       tabs.forEach(function (t) {
         var on = t.getAttribute('data-tab') === id;
@@ -766,12 +767,31 @@
         t.tabIndex = on ? 0 : -1;
         if (on && focus) t.focus();
         var panel = d.getElementById(t.getAttribute('aria-controls'));
-        if (panel) panel.hidden = !on;
-        if (on && t.scrollIntoView && window.innerWidth < 900) t.scrollIntoView({ block: 'nearest', inline: 'center' });
+        if (panel) {
+          panel.hidden = !on;
+          if (on) {
+            // le panneau arrive en douceur
+            panel.classList.remove('is-in'); void panel.offsetWidth; panel.classList.add('is-in');
+            // Ma boutique : son sous-menu s'illumine un instant, pour qu'on le voie
+            var sous = $('.bg-nav, .bq-menu', panel);
+            if (sous) { sous.classList.remove('is-flash'); void sous.offsetWidth; sous.classList.add('is-flash'); setTimeout(function () { sous.classList.remove('is-flash'); }, 2200); }
+          }
+        }
+        if (on && window.innerWidth < 900) {
+          // l'onglet choisi glisse au milieu de la rangée, sans faire bouger la page
+          var rang = t.parentNode;
+          if (rang && rang.scrollTo) rang.scrollTo({ left: t.offsetLeft - (rang.clientWidth - t.offsetWidth) / 2, behavior: doux ? 'smooth' : 'auto' });
+        }
       });
-      if (bloc) { window.scrollBy({ top: bloc.getBoundingClientRect().top - 90, behavior: 'smooth' }); return; }
-      var top = $('.app-main', app).getBoundingClientRect().top;
-      if (top < 0) window.scrollBy({ top: top - 90, behavior: 'smooth' });
+      var entete = d.querySelector('.site-header');
+      var haut = (entete ? entete.offsetHeight : 70) + 10;
+      if (bloc) { window.scrollBy({ top: bloc.getBoundingClientRect().top - haut, behavior: doux ? 'smooth' : 'auto' }); return; }
+      if (auto) return;
+      // la page glisse jusqu'au début de l'onglet : sur téléphone, la rangée d'onglets vient juste sous l'en-tête
+      var tel = window.innerWidth < 900;
+      var cible = (tel && $('.app-tabs', app)) || $('.app-main', app);
+      var dy = cible.getBoundingClientRect().top - haut;
+      if (tel ? Math.abs(dy) > 6 : dy < 0) window.scrollBy({ top: dy, behavior: doux ? 'smooth' : 'auto' });
     };
     tabs.forEach(function (t, i) {
       t.addEventListener('click', function () { show(t.getAttribute('data-tab')); });
@@ -792,7 +812,7 @@
       });
     });
     var startTab = (new URLSearchParams(location.search).get('outil') || location.hash.slice(1) || '').replace(/[^a-z]/g, '');
-    if (startTab && $('[data-tab="' + alias(startTab) + '"]', app)) show(startTab);
+    if (startTab && $('[data-tab="' + alias(startTab) + '"]', app)) show(startTab, false, true);
     // les rubriques de la boutique : on reste au même endroit de la page après le changement
     $$('.bg-nav a.bg-lien', app).forEach(function (l) { l.addEventListener('click', function () { try { sessionStorage.setItem('aled08-y', String(window.scrollY)); } catch (e) {} }); });
     try {

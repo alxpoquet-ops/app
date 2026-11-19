@@ -2805,3 +2805,42 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .art-form .art-sans-prix span { flex: 1; min-width: 0; font-weight: 700; }
 .art-form .art-sans-prix small { display: block; font-weight: 600; opacity: .8; }
 .art-form input[type="checkbox"], .art-form input[type="radio"], .art-form input[type="file"] { width: auto; }
+
+/* Espace client : le panneau arrive en douceur, le sous-menu de la boutique s'illumine un instant */
+.app-panel.is-in { animation: app-in .34s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes app-in { from { opacity: 0; transform: translateY(10px); } }
+.bg-nav.is-flash, .bq-menu.is-flash { animation: nav-flash 2s ease both; }
+.bq-menu { border-radius: 20px; }
+@keyframes nav-flash { 0% { box-shadow: 0 0 0 0 rgba(255, 142, 191, 0); } 18% { box-shadow: 0 0 0 5px rgba(255, 142, 191, .75), 0 0 26px 6px rgba(255, 142, 191, .35); } 45% { box-shadow: 0 0 0 3px rgba(255, 142, 191, .35); } 70% { box-shadow: 0 0 0 5px rgba(255, 142, 191, .6), 0 0 20px 4px rgba(255, 142, 191, .25); } 100% { box-shadow: 0 0 0 0 rgba(255, 142, 191, 0); } }
+.app-tabs { scroll-behavior: smooth; }
+.app-tabs button { transition: background-color .2s, color .2s, box-shadow .2s, transform .15s; }
+.app-tabs button:active { transform: scale(.97); }
+@media (prefers-reduced-motion: reduce) { .app-panel.is-in, .bg-nav.is-flash, .bq-menu.is-flash { animation: none; } .app-tabs { scroll-behavior: auto; } }
+
+/* La démo de l'espace client, mise en avant */
+.demo-bande { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px; padding: 20px 24px; border-radius: 28px; background: linear-gradient(120deg, var(--mint), var(--lilac) 60%, var(--pink)); color: var(--ink); text-decoration: none; box-shadow: var(--shadow-sm); transition: transform .2s; }
+.demo-bande:hover { transform: translateY(-3px); }
+.demo-bande-art { display: flex; align-items: flex-end; }
+.demo-bande-art .petit { display: block; width: 74px; height: auto; }
+.demo-bande-art .petit + .petit { width: 58px; margin-left: -16px; }
+.demo-bande-txt { display: grid; gap: 4px; min-width: 0; }
+.demo-bande-txt strong { font-size: 1.3rem; font-weight: 900; line-height: 1.2; }
+.demo-bande-txt span { font-weight: 600; line-height: 1.45; }
+.demo-bande .btn { pointer-events: none; }
+.section > .container > .demo-bande:not(:first-child) { margin-top: 26px; }
+@media (max-width: 720px) { .demo-bande { grid-template-columns: 1fr; justify-items: center; text-align: center; padding: 22px 18px; gap: 12px; } .demo-bande .btn { width: 100%; } }
+.nav-demo { display: none; }
+@media (max-width: 899px) { .nav-creer .nav-demo { display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; padding: 8px 14px; border-radius: 999px; background: var(--card); color: var(--ink); font-weight: 800; font-size: .95rem; text-decoration: none; } .nav-demo .ico { width: 18px; height: 18px; color: var(--lilac-dd); } }
+
+/* Démo : les trois raccourcis de l'accueil, et le bloc « Créer une catégorie » */
+.demo-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0 0 18px; }
+.demo-actions button { display: grid; justify-items: center; gap: 2px; padding: 12px 8px; border: 0; border-radius: 20px; background: var(--card); color: var(--ink); font: inherit; cursor: pointer; box-shadow: 0 0 0 2px var(--line) inset; transition: transform .15s, box-shadow .2s; }
+.demo-actions button:hover { transform: translateY(-2px); box-shadow: 0 0 0 2px var(--pink-d) inset; }
+.demo-actions button > span { display: block; width: 54px; }
+.demo-actions .petit { display: block; width: 100%; height: auto; }
+.demo-actions strong { font-weight: 900; line-height: 1.2; }
+.demo-actions small { color: var(--muted); font-weight: 700; font-size: .8rem; line-height: 1.25; }
+.demo-cat { margin-bottom: 12px; }
+.demo-cat-ico { display: grid; place-items: center; background: var(--peach); border-radius: 14px; }
+.demo-cat-ico .ico { width: 26px; height: 26px; color: var(--peach-dd); }
+.demo-cat .reqs { margin-top: 12px; }
