@@ -55,7 +55,7 @@ function aled08e_art_categories($uid, $frais = false) {
 add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08e_article'])) return;
     $uid = get_current_user_id();
-    $retour = function ($ok, $texte) use ($uid) { if ($uid) aled08e_art_flash($uid, $ok, $texte); delete_transient('aled08_art_cat_' . (int) $uid); delete_transient('aled08_art_cats_' . (int) $uid); wp_safe_redirect(aled08e_url(['sub' => 'articles']) . '#vacances', 303); exit; };
+    $retour = function ($ok, $texte) use ($uid) { $vers = in_array(sanitize_key((string) wp_unslash($_POST['aled08e_article'] ?? '')), ['categorie', 'categorie_retirer'], true) ? 'categories' : 'articles'; if ($uid) aled08e_art_flash($uid, $ok, $texte); delete_transient('aled08_art_cat_' . (int) $uid); delete_transient('aled08_art_cats_' . (int) $uid); wp_safe_redirect(aled08e_url(['sub' => $vers]) . '#vacances', 303); exit; };
     if (!$uid) { wp_safe_redirect(aled08e_url(), 303); exit; }
     if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_aled08e_art'] ?? '')), 'aled08e_art')) $retour(false, 'La page avait expiré. Réessayez.');
     if (!aled08e_est_boutique($uid)) $retour(false, 'Les emplacements d’articles sont réservés aux boutiques en ligne.');
@@ -256,19 +256,7 @@ function aled08e_articles_html($uid) {
         $h .= '<p class="esp-empty">Pas encore d’article. Ajoutez le premier : il sera en ligne dans votre boutique tout de suite.</p>';
     }
 
-    // mes catégories : pour ranger les articles (elles existent aussi sur le site, dans la boutique)
-    if (aled08e_art_pret($uid)) {
-        $h .= '<details class="art-categories"' . ($cats ? '' : ' open') . '><summary>' . aled08e_icon('tag') . '<span><strong>Mes catégories</strong><small>' . ($cats ? count($cats) . ' catégorie' . (count($cats) > 1 ? 's' : '') . ' pour ranger vos articles' : 'Rangez vos articles : bouquets, cadeaux, décoration…') . '</small></span></summary>';
-        if ($cats) {
-            $h .= '<ul class="art-cat-liste">';
-            foreach ($cats as $c) $h .= '<li><span><strong>' . esc_html($c['nom']) . '</strong><small>' . (int) $c['nombre'] . ' article' . ((int) $c['nombre'] > 1 ? 's' : '') . '</small></span>'
-                . '<form method="post" action="' . $act . '" onsubmit="return confirm(\'Supprimer cette catégorie ? Ses articles sont gardés.\');">' . $nonce . '<input type="hidden" name="aled08e_article" value="categorie_retirer"><input type="hidden" name="id_categorie" value="' . (int) $c['id'] . '"><button class="link-btn" type="submit">' . aled08e_icon('x') . 'Supprimer</button></form></li>';
-            $h .= '</ul>';
-        }
-        $h .= '<form class="art-cat-form" method="post" action="' . $act . '">' . $nonce . '<input type="hidden" name="aled08e_article" value="categorie"><div class="field"><label for="art-cat-nom">Nouvelle catégorie</label><input id="art-cat-nom" name="nom_categorie" type="text" maxlength="60" required placeholder="Ex. : Bouquets"></div>'
-            . '<button class="btn btn-light" type="submit">' . aled08e_icon('plus') . '<span>Créer la catégorie</span></button></form>'
-            . '<p class="app-note">Pour ranger un article : « Modifier », puis cochez sa catégorie. C’est en place sur votre boutique tout de suite.</p></details>';
-    }
+    if (aled08e_art_pret($uid)) $h .= '<p class="art-vers-cats">' . aled08e_icon('tag') . '<span>Pour ranger vos articles : </span><a class="btn btn-light btn-sm" href="' . esc_url(aled08e_url(['sub' => 'categories']) . '#vacances') . '">Gérer mes catégories</a></p>';
     // débloquer des emplacements (anciennes offres seulement)
     if ($libre) return $h . '</section>';
     $h .= '<div class="art-debloque"><div class="art-debloque-txt"><strong>' . aled08e_icon('sparkles') . 'Besoin de plus de place ?</strong><p>Chaque emplacement en plus coûte <b>' . esc_html(aled08e_euro_txt($prix)) . '</b>, payé une seule fois. Il est à vous pour toujours : si vous retirez un article, la place reste libre.</p></div>'
@@ -277,4 +265,25 @@ function aled08e_articles_html($uid) {
     $h .= '</div><label class="check"><input type="checkbox" name="accord" value="1" required><span>' . ($famille ? 'Je débloque, c’est offert pour moi' : (aled08e_pd_pret() ? 'J’accepte le prix choisi, je paie par carte à l’étape suivante' : 'J’accepte le prix choisi, Alex m’envoie la facture')) . '</span></label>'
         . '<button class="btn btn-primary" type="submit">' . aled08e_icon('credit-card') . '<span>' . ($famille ? 'Débloquer' : 'Payer et débloquer') . '</span></button></form></div>';
     return $h . '</section>';
+}
+
+/* ---------- Mes catégories : une rubrique à part dans « Ma boutique » ---------- */
+function aled08e_art_categories_html($uid) {
+    $flash = get_transient('aled08_art_flash_' . $uid);
+    if ($flash) delete_transient('aled08_art_flash_' . $uid);
+    $nonce = wp_nonce_field('aled08e_art', '_aled08e_art', true, false);
+    $act = esc_url(aled08e_url());
+    $h = '<h3 class="bg-titre">Mes catégories</h3><p class="app-p">Les catégories rangent vos articles dans votre boutique : bouquets, cadeaux, décoration… Elles apparaissent sur votre site tout de suite.</p>';
+    if ($flash) $h .= '<p class="' . ($flash[0] ? 'esp-empty' : 'esp-warn') . '" role="status">' . esc_html($flash[1]) . '</p>';
+    if (!aled08e_art_pret($uid)) return $h . '<p class="esp-warn">Votre boutique n’est pas encore reliée à votre espace. On s’en occupe.</p>';
+    $cats = aled08e_art_categories($uid, true);
+    $h .= '<form class="art-cat-form art-cat-nouvelle" method="post" action="' . $act . '">' . $nonce . '<input type="hidden" name="aled08e_article" value="categorie"><div class="field"><label for="art-cat-nom">Créer une catégorie</label><input id="art-cat-nom" name="nom_categorie" type="text" maxlength="60" required placeholder="Ex. : Bouquets"></div>'
+        . '<button class="btn btn-primary" type="submit">' . aled08e_icon('plus') . '<span>Créer la catégorie</span></button></form>';
+    if ($cats) {
+        $h .= '<p class="app-sub">Vos catégories</p><ul class="art-cat-liste">';
+        foreach ($cats as $c) $h .= '<li><span><strong>' . esc_html($c['nom']) . '</strong><small>' . (int) $c['nombre'] . ' article' . ((int) $c['nombre'] > 1 ? 's' : '') . '</small></span>'
+            . '<form method="post" action="' . $act . '" onsubmit="return confirm(\'Supprimer cette catégorie ? Ses articles sont gardés.\');">' . $nonce . '<input type="hidden" name="aled08e_article" value="categorie_retirer"><input type="hidden" name="id_categorie" value="' . (int) $c['id'] . '"><button class="btn btn-light btn-sm" type="submit">' . aled08e_icon('x') . '<span>Supprimer</span></button></form></li>';
+        $h .= '</ul>';
+    } else $h .= '<p class="esp-empty">Pas encore de catégorie. Créez la première juste au-dessus.</p>';
+    return $h . '<p class="app-note">Pour ranger un article dans une catégorie : rubrique « Mes articles », bouton « Modifier », puis cochez sa catégorie.</p>';
 }

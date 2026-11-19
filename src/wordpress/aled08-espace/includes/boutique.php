@@ -87,6 +87,7 @@ function aled08e_boutique_html($uid) {
 <h2 class="app-h">Ma boutique</h2>
 <?php $sub = aled08e_bg_sub(); echo aled08e_bg_flash_html($uid) . aled08e_bg_nav($sub); // phpcs:ignore ?>
 <?php if ($sub === 'articles') : echo aled08e_articles_html($uid); // phpcs:ignore
+elseif ($sub === 'categories') : echo aled08e_art_categories_html($uid); // phpcs:ignore
 elseif ($sub === 'prix') : echo aled08e_bg_prix_html($uid); // phpcs:ignore
 elseif ($sub === 'paiements') : echo aled08e_bg_paiements_html($uid); // phpcs:ignore
 elseif ($sub === 'livraison') : echo aled08e_bg_livraison_html($uid); // phpcs:ignore

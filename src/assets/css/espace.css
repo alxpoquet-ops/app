@@ -1021,3 +1021,9 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .art-cat-liste form { margin: 0; }
 .art-cat-form { display: grid; gap: 10px; margin-top: 10px; }
 .art-cat-form .btn { justify-content: center; min-height: 48px; }
+/* Ma boutique : la rubrique « Catégories » (sept rubriques au menu) */
+@media (min-width: 760px) { .bg-nav { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
+.art-vers-cats { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 14px 0 0; font-weight: 700; }
+.art-vers-cats svg { width: 20px; height: 20px; flex: none; color: var(--lilac-dd); }
+.art-cat-nouvelle { padding: 16px; border-radius: 22px; background: var(--soft); margin-bottom: 16px; }
+.art-cat-nouvelle input { width: 100%; box-sizing: border-box; }

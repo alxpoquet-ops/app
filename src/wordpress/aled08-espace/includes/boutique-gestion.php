@@ -11,7 +11,7 @@
 defined('ABSPATH') || exit;
 
 function aled08e_bg_flash($uid, $ok, $texte) { set_transient('aled08_bg_flash_' . (int) $uid, [$ok, $texte], 120); }
-function aled08e_bg_sub() { $s = sanitize_key(wp_unslash($_GET['sub'] ?? '')); return in_array($s, ['articles', 'prix', 'paiements', 'livraison', 'commandes', 'promos'], true) ? $s : 'articles'; }
+function aled08e_bg_sub() { $s = sanitize_key(wp_unslash($_GET['sub'] ?? '')); return in_array($s, ['articles', 'categories', 'prix', 'paiements', 'livraison', 'commandes', 'promos'], true) ? $s : 'articles'; }
 function aled08e_bg_pret($uid) { return aled08e_meta($uid, 'lia_url') !== '' && aled08e_meta($uid, 'lia_secret') !== ''; }
 /* Un appel au site du client : [tableau] ou un texte d'erreur clair */
 function aled08e_bg_appel($uid, $action, $args = []) {
@@ -122,7 +122,7 @@ add_action('template_redirect', function () {
 
 /* ---------- la navigation entre les rubriques de la boutique ---------- */
 function aled08e_bg_nav($sub) {
-    $r = ['articles' => ['shopping-bag', 'Mes articles'], 'prix' => ['badge-euro', 'Mes prix'], 'paiements' => ['credit-card', 'Paiements'], 'livraison' => ['package', 'Livraison'], 'commandes' => ['receipt', 'Commandes'], 'promos' => ['badge-percent', 'Promos et soldes']];
+    $r = ['articles' => ['shopping-bag', 'Mes articles'], 'categories' => ['tag', 'Catégories'], 'prix' => ['badge-euro', 'Mes prix'], 'paiements' => ['credit-card', 'Paiements'], 'livraison' => ['package', 'Livraison'], 'commandes' => ['receipt', 'Commandes'], 'promos' => ['badge-percent', 'Promos et soldes']];
     $h = '<nav class="ex-filtre bg-nav" aria-label="Rubriques de ma boutique">';
     foreach ($r as $id => [$ic, $lib]) $h .= '<a class="bg-lien' . ($id === $sub ? ' is-on' : '') . '"' . ($id === $sub ? ' aria-current="page"' : '') . ' href="' . esc_url(aled08e_url(['sub' => $id]) . '#vacances') . '">' . aled08e_icon($ic) . '<span>' . esc_html($lib) . '</span></a>';
     return $h . '</nav>';
