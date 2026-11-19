@@ -321,6 +321,7 @@
                   <div class="field"><label for="art-nom-0">Nom</label><input id="art-nom-0" type="text" value="Tarte aux fraises" maxlength="80"></div>
                   <div class="field"><label for="art-desc-0">Description</label><textarea id="art-desc-0" rows="3" maxlength="400">Une pâte sablée, une crème légère et des fraises fraîches. À la part, à emporter.</textarea></div>
                   <div class="field art-prix"><label for="art-prix-0">Prix (en €)</label><input id="art-prix-0" type="text" inputmode="decimal" value="4,50" maxlength="10"></div>
+                  <label class="check art-sans-prix"><input type="checkbox" onchange="var p=document.getElementById('art-prix-0');p.disabled=this.checked;"><span>Je ne mets pas de prix <small>(l’article est présenté, sans achat en ligne)</small></span></label>
                   <button type="button" class="btn btn-primary" data-toast-msg="Enregistré (démo)"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg><span>Enregistrer</span></button>
                 </div>
               </details><details class="art-carte">
@@ -330,6 +331,7 @@
                   <div class="field"><label for="art-nom-1">Nom</label><input id="art-nom-1" type="text" value="Éclair au chocolat" maxlength="80"></div>
                   <div class="field"><label for="art-desc-1">Description</label><textarea id="art-desc-1" rows="3" maxlength="400">Pâte à choux, crème au chocolat noir et glaçage brillant.</textarea></div>
                   <div class="field art-prix"><label for="art-prix-1">Prix (en €)</label><input id="art-prix-1" type="text" inputmode="decimal" value="3,20" maxlength="10"></div>
+                  <label class="check art-sans-prix"><input type="checkbox" onchange="var p=document.getElementById('art-prix-1');p.disabled=this.checked;"><span>Je ne mets pas de prix <small>(l’article est présenté, sans achat en ligne)</small></span></label>
                   <button type="button" class="btn btn-primary" data-toast-msg="Enregistré (démo)"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg><span>Enregistrer</span></button>
                 </div>
               </details><details class="art-carte">
@@ -339,6 +341,7 @@
                   <div class="field"><label for="art-nom-2">Nom</label><input id="art-nom-2" type="text" value="Gâteau d’anniversaire, 8 parts" maxlength="80"></div>
                   <div class="field"><label for="art-desc-2">Description</label><textarea id="art-desc-2" rows="3" maxlength="400">Génoise, crème vanille et fruits rouges. À commander 48 h à l’avance.</textarea></div>
                   <div class="field art-prix"><label for="art-prix-2">Prix (en €)</label><input id="art-prix-2" type="text" inputmode="decimal" value="32" maxlength="10"></div>
+                  <label class="check art-sans-prix"><input type="checkbox" onchange="var p=document.getElementById('art-prix-2');p.disabled=this.checked;"><span>Je ne mets pas de prix <small>(l’article est présenté, sans achat en ligne)</small></span></label>
                   <button type="button" class="btn btn-primary" data-toast-msg="Enregistré (démo)"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5" /></svg><span>Enregistrer</span></button>
                 </div>
               </details></div>

@@ -983,3 +983,9 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .acc-action strong { align-self: end; font-size: 1.12rem; font-weight: 900; line-height: 1.2; }
 .acc-action small { align-self: start; font-size: .92rem; font-weight: 700; color: var(--c-dd, var(--text)); }
 @media (min-width: 760px) { .acc-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* Mes articles : la case « Je ne mets pas de prix » */
+.art-sans-prix { margin: -4px 0 12px; }
+.art-sans-prix small { display: block; font-weight: 600; opacity: .8; }
+.art-prix-sans { font-size: .9rem; opacity: .75; font-weight: 800; }
+.art-prix small { font-weight: 700; font-size: .78em; }
+.art-form input:disabled { opacity: .45; }

@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.5.0
+ * Version: 2.6.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.5.0');
+define('ALEXLIA_CONN_VERSION', '2.6.0');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 
 /* =========================================================================
@@ -370,7 +370,9 @@ function alexlia_conn_produit_champs($a, $creation) {
     if (!function_exists('wc_get_product') || !class_exists('WC_Product_Simple')) return new WP_Error('alexlia_boutique', 'La boutique n’est pas installée sur ce site.', ['status' => 400]);
     $c = [];
     if (isset($a['nom'])) { $c['nom'] = sanitize_text_field((string) $a['nom']); if ($c['nom'] === '' || mb_strlen($c['nom']) > 120) return new WP_Error('alexlia_args', 'Nom de produit vide ou trop long.', ['status' => 400]); }
-    if (isset($a['prix'])) {
+    // 2.6.0 : « sans_prix » : l'article est présenté sans prix (prix vide dans WooCommerce : il ne s'achète pas en ligne)
+    if (!empty($a['sans_prix'])) $c['prix'] = '';
+    elseif (isset($a['prix'])) {
         $p = (float) str_replace(',', '.', preg_replace('/[^\d,.]/', '', (string) $a['prix']));
         if ($p < 0.5 || $p > 5000) return new WP_Error('alexlia_args', 'Prix hors limites (entre 0,50 € et 5 000 €) : demandez le prix au client.', ['status' => 400]);
         $c['prix'] = wc_format_decimal($p);
@@ -421,7 +423,7 @@ function alexlia_bg_catalogue($a) {
     $o = [];
     foreach ($r->products as $p) {
         $img = $p->get_image_id() ? wp_get_attachment_image_url($p->get_image_id(), 'medium') : '';
-        $o[] = ['id' => $p->get_id(), 'nom' => $p->get_name(), 'type' => $p->get_type(), 'prix' => (string) $p->get_regular_price(), 'prix_promo' => (string) $p->get_sale_price(), 'statut' => $p->get_status(),
+        $o[] = ['id' => $p->get_id(), 'nom' => $p->get_name(), 'type' => $p->get_type(), 'prix' => (string) ($p->get_regular_price() !== '' ? $p->get_regular_price() : $p->get_price()), 'a_partir' => $p->get_type() !== 'simple' && $p->get_price() !== '', 'prix_promo' => (string) $p->get_sale_price(), 'statut' => $p->get_status(),
             'en_stock' => $p->get_stock_status() === 'instock', 'image' => (string) $img, 'adresse' => (string) get_permalink($p->get_id()), 'modifiable' => $p->get_type() === 'simple', 'description' => mb_substr(wp_strip_all_tags((string) $p->get_description()), 0, 3000)];
     }
     return ['produits' => $o, 'total' => (int) $r->total, 'pages' => (int) $r->max_num_pages, 'devise' => get_woocommerce_currency()];
@@ -686,7 +688,7 @@ function alexlia_conn_article_poser($args) {
         $p->update_meta_data('_alexlia_article_client', '1');
     }
     if (isset($champs['nom'])) $p->set_name($champs['nom']);
-    if (isset($champs['prix'])) $p->set_regular_price($champs['prix']);
+    if (isset($champs['prix'])) { $p->set_regular_price($champs['prix']); if ($champs['prix'] === '') $p->set_sale_price(''); }
     if (isset($champs['description'])) { $p->set_description($champs['description']); $p->set_short_description(wp_trim_words(wp_strip_all_tags($champs['description']), 30)); }
     if (!empty($args['image_url'])) { $img = alexlia_conn_article_image($args['image_url']); if ($img) $p->set_image_id($img); elseif (!$id) return new WP_Error('alexlia_image', 'La photo n’a pas pu être récupérée (JPG, PNG ou WEBP, 8 Mo au plus).', ['status' => 400]); }
     $p->set_stock_status('instock');

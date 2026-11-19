@@ -800,6 +800,7 @@ function monEspacePage() {
                   <div class="field"><label for="art-nom-${i}">Nom</label><input id="art-nom-${i}" type="text" value="${nom}" maxlength="80"></div>
                   <div class="field"><label for="art-desc-${i}">Description</label><textarea id="art-desc-${i}" rows="3" maxlength="400">${desc}</textarea></div>
                   <div class="field art-prix"><label for="art-prix-${i}">Prix (en €)</label><input id="art-prix-${i}" type="text" inputmode="decimal" value="${prix.replace(' €', '')}" maxlength="10"></div>
+                  <label class="check art-sans-prix"><input type="checkbox" onchange="var p=document.getElementById('art-prix-${i}');p.disabled=this.checked;"><span>Je ne mets pas de prix <small>(l’article est présenté, sans achat en ligne)</small></span></label>
                   <button type="button" class="btn btn-primary" data-toast-msg="Enregistré (démo)">${icon('check')}<span>Enregistrer</span></button>
                 </div>
               </details>`;

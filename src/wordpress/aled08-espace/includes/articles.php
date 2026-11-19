@@ -65,9 +65,10 @@ add_action('template_redirect', function () {
         }
         $nom = trim(sanitize_text_field((string) ($P['nom'] ?? '')));
         $desc = mb_substr(trim(sanitize_textarea_field((string) ($P['description'] ?? ''))), 0, 3000);
-        $prix = aled08e_art_prix_lu($P['prix'] ?? '');
+        $sansPrix = !empty($P['sans_prix']); // « Je ne mets pas de prix » : l'article est présenté sans prix
+        $prix = $sansPrix ? '' : aled08e_art_prix_lu($P['prix'] ?? '');
         if ($nom === '' || mb_strlen($nom) > 120) $retour(false, 'Donnez un nom à votre article (120 caractères au plus).');
-        if ($prix < 0.5 || $prix > 5000) $retour(false, 'Le prix doit être entre 0,50 € et 5 000 €.');
+        if (!$sansPrix && ($prix < 0.5 || $prix > 5000)) $retour(false, 'Indiquez un prix entre 0,50 € et 5 000 €, ou cochez « Je ne mets pas de prix ».');
         $aid = 0;
         if (!empty($_FILES['image']['name'])) {
             require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -83,7 +84,7 @@ add_action('template_redirect', function () {
         set_transient('aled08_art_n_' . $uid . '_' . wp_date('Ymd'), $n + 1, DAY_IN_SECONDS);
 
         if ($pret) {
-            $args = ['nom' => $nom, 'prix' => $prix, 'description' => $desc];
+            $args = ['nom' => $nom, 'description' => $desc] + ($sansPrix ? ['sans_prix' => 1] : ['prix' => $prix]);
             if ($pid) $args['id'] = $pid;
             if ($aid) $args['image_url'] = wp_get_attachment_url($aid);
             $res = aled08e_lia_appel($uid, 'article_poser', $args);
@@ -156,7 +157,8 @@ function aled08e_art_form($nonce, $act, $cle, $a = null) {
     if ($edit && isset($a['idx'])) $h .= '<input type="hidden" name="idx" value="' . (int) $a['idx'] . '">';
     return $h
         . '<div class="field"><label for="' . $id . '-nom">Le nom de l’article</label><input id="' . $id . '-nom" name="nom" type="text" maxlength="120" required value="' . esc_attr($edit ? $a['nom'] : '') . '" placeholder="Ex. : Bougie à la vanille"></div>'
-        . '<div class="field"><label for="' . $id . '-prix">Le prix (€)</label><input id="' . $id . '-prix" name="prix" type="text" inputmode="decimal" required value="' . esc_attr($edit && $a['prix'] !== '' ? number_format((float) $a['prix'], 2, ',', '') : '') . '" placeholder="Ex. : 12,50"></div>'
+        . '<div class="field"><label for="' . $id . '-prix">Le prix (€)</label><input id="' . $id . '-prix" name="prix" type="text" inputmode="decimal" value="' . esc_attr($edit && $a['prix'] !== '' ? number_format((float) $a['prix'], 2, ',', '') : '') . '" placeholder="Ex. : 12,50"></div>'
+        . '<label class="check art-sans-prix"><input type="checkbox" name="sans_prix" value="1"' . ($edit && $a['prix'] === '' ? ' checked' : '') . ' onchange="var p=this.form.elements.prix;p.disabled=this.checked;if(this.checked)p.value=\'\';"><span>Je ne mets pas de prix <small>(l’article est présenté, sans achat en ligne)</small></span></label>'
         . '<div class="field"><label for="' . $id . '-desc">La description</label><textarea id="' . $id . '-desc" name="description" rows="4" maxlength="3000" placeholder="Ce qui le rend unique, sa taille, sa matière…">' . esc_textarea($edit ? $a['desc'] : '') . '</textarea></div>'
         . '<label class="req-photo"><input type="file" name="image" accept="image/jpeg,image/png,image/webp" class="sr-only"' . ($edit ? '' : ' required') . '>' . aled08e_icon('image-plus') . '<span>' . ($edit ? 'Changer la photo (facultatif)' : 'Ajouter la photo') . '</span></label>'
         . '<button class="btn btn-primary" type="submit">' . aled08e_icon('check') . '<span>' . ($edit ? 'Enregistrer' : 'Mettre en ligne') . '</span></button></form>';
@@ -174,7 +176,7 @@ function aled08e_articles_html($uid) {
     $prods = aled08e_art_produits($uid);
     $arts = [];
     if (is_array($prods)) {
-        foreach ($prods as $p) $arts[] = ['pid' => (int) $p['id'], 'nom' => (string) $p['nom'], 'prix' => (string) $p['prix'], 'desc' => (string) ($p['description'] ?? ''), 'img' => (string) ($p['image'] ?? ''), 'statut' => $p['statut'] === 'publish' ? 'en_ligne' : 'hors_vente', 'modifiable' => !empty($p['modifiable'])];
+        foreach ($prods as $p) $arts[] = ['pid' => (int) $p['id'], 'nom' => (string) $p['nom'], 'prix' => (string) $p['prix'], 'desc' => (string) ($p['description'] ?? ''), 'img' => (string) ($p['image'] ?? ''), 'statut' => $p['statut'] === 'publish' ? 'en_ligne' : 'hors_vente', 'modifiable' => !empty($p['modifiable']), 'a_partir' => !empty($p['a_partir'])];
     }
     $locaux = aled08e_art_liste($uid);
     foreach ($locaux as $i => $a) if (($a['statut'] ?? '') === 'attente' || !is_array($prods)) $arts[] = ['idx' => $i, 'nom' => $a['nom'], 'prix' => (string) $a['prix'], 'desc' => $a['desc'], 'img' => !empty($a['img']) ? (string) wp_get_attachment_image_url((int) $a['img'], 'medium') : '', 'statut' => 'attente', 'modifiable' => true];
@@ -204,7 +206,7 @@ function aled08e_articles_html($uid) {
             $etat = $a['statut'] === 'en_ligne' ? '<span class="art-statut is-ok">' . aled08e_icon('check') . 'En ligne</span>' : ($a['statut'] === 'attente' ? '<span class="art-statut is-attente">' . aled08e_icon('clock') . 'Bientôt en ligne</span>' : '<span class="art-statut is-off">Hors vente</span>');
             $cible = !empty($a['pid']) ? '<input type="hidden" name="pid" value="' . (int) $a['pid'] . '">' : '<input type="hidden" name="idx" value="' . (int) $a['idx'] . '">';
             $h .= '<li class="art-carte"><div class="art-img">' . ($a['img'] ? '<img src="' . esc_url($a['img']) . '" alt="" loading="lazy">' : aled08e_icon('shopping-bag')) . '</div>'
-                . '<div class="art-corps"><strong>' . esc_html($a['nom']) . '</strong>' . ($a['prix'] !== '' ? '<b class="art-prix">' . esc_html(number_format((float) $a['prix'], 2, ',', ' ')) . ' €</b>' : '') . $etat . '</div>';
+                . '<div class="art-corps"><strong>' . esc_html($a['nom']) . '</strong>' . ($a['prix'] !== '' ? '<b class="art-prix">' . (!empty($a['a_partir']) ? '<small>dès </small>' : '') . esc_html(number_format((float) $a['prix'], 2, ',', ' ')) . ' €</b>' : '<b class="art-prix art-prix-sans">Sans prix</b>') . $etat . '</div>';
             if ($a['modifiable']) {
                 $h .= '<details class="art-edit"><summary>' . aled08e_icon('pencil') . '<span>Modifier</span></summary>' . aled08e_art_form($nonce, $act, 'e' . $k, $a)
                     . '<form class="art-retirer" method="post" action="' . $act . '" onsubmit="return confirm(\'Retirer cet article de votre boutique ?\');">' . $nonce . '<input type="hidden" name="aled08e_article" value="retirer">' . $cible . '<button class="link-btn" type="submit">' . aled08e_icon('x') . 'Retirer cet article</button></form></details>';
