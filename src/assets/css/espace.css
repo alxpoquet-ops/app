@@ -966,3 +966,6 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .bg-nav a.bg-lien svg { width: 22px; height: 22px; flex: none; color: var(--pink-dd); }
 .bg-nav a.bg-lien.is-on { background: var(--pink); color: var(--ink); box-shadow: 0 0 0 3px var(--pink-d) inset; }
 @media (min-width: 760px) { .bg-nav { grid-template-columns: repeat(6, minmax(0, 1fr)); } .bg-nav a.bg-lien { justify-content: center; } }
+.bg-nav a.bg-lien { min-width: 0; font-size: .95rem; padding: 10px 10px; gap: 8px; }
+.bg-nav a.bg-lien span { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 380px) { .bg-nav a.bg-lien { font-size: .88rem; } .bg-nav a.bg-lien svg { width: 18px; height: 18px; } }
