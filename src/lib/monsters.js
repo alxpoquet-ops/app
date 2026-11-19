@@ -159,23 +159,20 @@ function monster(kind, { size, cls = '', title } = {}) {
 // avec son étoile dorée, grosses lunettes un peu carrées, joues roses et sourire en « w ».
 // Il reste lisible en tout petit (icône de l'onglet).
 function logoMark({ id = 'lg', size } = {}) {
+  // Le logo : une fenêtre de site internet qui est un petit monstre (visage, joues, deux cornes), avec un liseré blanc pour les fonds sombres
   const dim = size ? ` width="${size}" height="${size}"` : '';
-  const CORPS = 'M8 44C8 27 18 17 32 17S56 27 56 44C56 54 48 59 32 59S8 54 8 44Z';
-  const CASQUE = 'M12 27C13 14 21 6 32 6S51 14 52 27Z';
-  const oeil = (x) => `<ellipse cx="${x}" cy="40" rx="2.6" ry="3.2" fill="${INK}"/><circle cx="${x + 1}" cy="38.7" r="1.05" fill="#fff"/>`;
   return `<svg class="logo" viewBox="0 0 64 64"${dim} aria-hidden="true" focusable="false">
-<g fill="#fff" stroke="#fff" stroke-width="7" stroke-linejoin="round"><path d="${CORPS}"/><path d="${CASQUE}"/><rect x="7" y="24" width="50" height="7" rx="3.5"/></g>
-<path d="${CORPS}" fill="#BCC8FF" stroke="#4F5FC4" stroke-width="2.2"/>
-<path d="M14 42c1-5 3-8 6-9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".6"/>
-<path d="${CASQUE}" fill="#fff" stroke="#7D87BE" stroke-width="2.2" stroke-linejoin="round"/>
-<path d="M32 8V25" stroke="#DCE1F7" stroke-width="3.4" stroke-linecap="round"/>
-<rect x="7" y="24" width="50" height="7" rx="3.5" fill="#F1F3FF" stroke="#7D87BE" stroke-width="2.2"/>
-<path d="M22 11.2l1.1 2.9 3.1.2-2.4 1.9.8 3-2.6-1.7-2.6 1.7.8-3-2.4-1.9 3.1-.2Z" fill="#FFC23D" stroke="#C99A00" stroke-width="1" stroke-linejoin="round"/>
-${oeil(23)}${oeil(41)}
-<g fill="rgba(255,255,255,.22)" stroke="${INK}" stroke-width="2.3" stroke-linejoin="round"><rect x="15" y="33.5" width="16" height="13" rx="4"/><rect x="33" y="33.5" width="16" height="13" rx="4"/></g>
-<path d="M31 38.5q1-1.4 2 0M15 37l-4.5-1.2M49 37l4.5-1.2" fill="none" stroke="${INK}" stroke-width="2" stroke-linecap="round"/>
-<ellipse cx="13.5" cy="50" rx="3.6" ry="2.1" fill="#FF7FAE" opacity=".65"/><ellipse cx="50.5" cy="50" rx="3.6" ry="2.1" fill="#FF7FAE" opacity=".65"/>
-<path d="M28 51q2 2.6 4 0q2 2.6 4 0" fill="none" stroke="${INK}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+<g transform="translate(2 4) scale(.5)">
+<g fill="#fff" stroke="#fff" stroke-width="15" stroke-linejoin="round"><path d="M26 24L16 0l26 16ZM94 24l10-24-26 16Z"/><rect x="10" y="16" width="100" height="96" rx="26"/></g>
+<path d="M26 24L16 0l26 16ZM94 24l10-24-26 16Z" fill="#FFD75E" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+<rect x="10" y="16" width="100" height="96" rx="26" fill="#FF8EBF" stroke="${INK}" stroke-width="6"/>
+<path d="M10 42a26 26 0 0 1 26-26h48a26 26 0 0 1 26 26v2H10Z" fill="#FFF6EF" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>
+<circle cx="30" cy="31" r="4.5" fill="#FF8EBF"/><circle cx="44" cy="31" r="4.5" fill="#FFD75E"/><circle cx="58" cy="31" r="4.5" fill="#7BDDB1"/>
+<ellipse cx="42" cy="68" rx="7.5" ry="9" fill="${INK}"/><circle cx="44.6" cy="64.4" r="3" fill="#fff"/>
+<ellipse cx="78" cy="68" rx="7.5" ry="9" fill="${INK}"/><circle cx="80.6" cy="64.4" r="3" fill="#fff"/>
+<ellipse cx="27" cy="86" rx="8" ry="4.6" fill="#fff" opacity=".6"/><ellipse cx="93" cy="86" rx="8" ry="4.6" fill="#fff" opacity=".6"/>
+<path d="M50 86q5 7 10 0q5 7 10 0" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</g></svg>`;
 }
 
 module.exports = { monster, logoMark, HUMEURS: Object.keys(HUMEURS) };
