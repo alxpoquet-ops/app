@@ -2852,3 +2852,8 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .bg-nav a.bg-lien.is-on { box-shadow: 0 0 0 3px var(--pink-d) inset, 0 8px 20px -10px var(--pink-d); }
 .bg-nav a.bg-lien.is-on svg { color: var(--ink); }
 .bg-nav a.bg-lien.is-on::after { content: ""; flex: none; width: 10px; height: 10px; margin-left: auto; border-radius: 50%; background: var(--pink-dd); }
+
+/* Ma boutique : changement de rubrique sans rechargement */
+.app-panel.est-en-charge > :not(h2):not(.bg-nav) { opacity: .45; transition: opacity .15s; pointer-events: none; }
+.bg-arrive { animation: app-in .3s cubic-bezier(.2, .7, .2, 1) both; }
+@media (prefers-reduced-motion: reduce) { .bg-arrive { animation: none; } }

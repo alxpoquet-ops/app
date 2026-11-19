@@ -813,15 +813,11 @@
     });
     var startTab = (new URLSearchParams(location.search).get('outil') || location.hash.slice(1) || '').replace(/[^a-z]/g, '');
     if (startTab && $('[data-tab="' + alias(startTab) + '"]', app)) show(startTab, false, true);
-    // les rubriques de la boutique : on reste au même endroit de la page après le changement
-    $$('.bg-nav a.bg-lien', app).forEach(function (l) { l.addEventListener('click', function () { try { sessionStorage.setItem('aled08-y', String(window.scrollY)); } catch (e) {} }); });
-    try {
-      var y = sessionStorage.getItem('aled08-y');
-      if (y !== null) { sessionStorage.removeItem('aled08-y'); if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; var poser = function () { window.scrollTo(0, parseInt(y, 10) || 0); }; poser(); setTimeout(poser, 60); window.addEventListener('load', poser); }
-    } catch (e) {}
+    // Tout ce qui se branche sur le contenu d'un onglet (au chargement, puis après un changement de rubrique sans rechargement)
+    var brancher = function (racine) {
     // Mes articles : cocher plusieurs articles pour les supprimer d'un coup
-    $$('form[data-art-lot]', app).forEach(function (f) {
-        var cases = $$('input[form="' + f.id + '"]', app), tout = $('[data-art-tout]', f), bt = $('[data-art-lot-btn]', f);
+    $$('form[data-art-lot]', racine).forEach(function (f) {
+        var cases = $$('input[form="' + f.id + '"]', racine), tout = $('[data-art-tout]', f), bt = $('[data-art-lot-btn]', f);
         var maj = function () {
           var n = cases.filter(function (c) { return c.checked; }).length;
           cases.forEach(function (c) { var li = c.closest('.art-carte'); if (li) li.classList.toggle('est-coche', c.checked); });
@@ -834,7 +830,7 @@
         maj();
     });
     // supprimer, retirer, annuler : le bouton devient « Confirmer », un second appui valide
-    $$('form[data-confirmer]', app).forEach(function (f) {
+    $$('form[data-confirmer]', racine).forEach(function (f) {
       f.addEventListener('submit', function (e) {
         if (f._ok) return;
         e.preventDefault();
@@ -844,6 +840,50 @@
         setTimeout(function () { f._ok = false; b.classList.remove('is-confirmer'); b.innerHTML = avant; }, 4000);
       });
     });
+      // Ma boutique : changer de rubrique sans recharger la page (pas de saut en haut puis en bas)
+      $$('.bg-nav a.bg-lien', racine).forEach(function (l) {
+        l.addEventListener('click', function (e) {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || !window.fetch || !window.DOMParser) return;
+          var panneau = l.closest('.app-panel');
+          if (!panneau || !panneau.id) return;
+          e.preventDefault();
+          var url = l.href.split('#')[0];
+          $$('.bg-nav a.bg-lien', panneau).forEach(function (x) { x.classList.toggle('is-on', x === l); if (x === l) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current'); });
+          panneau.classList.add('est-en-charge');
+          fetch(url, { credentials: 'same-origin', headers: { 'X-Requested-With': 'fetch' } }).then(function (r) { if (!r.ok) throw new Error('http'); return r.text(); }).then(function (html) {
+            var doc = new DOMParser().parseFromString(html, 'text/html');
+            var neuf = doc.getElementById(panneau.id);
+            if (!neuf || !neuf.querySelector('.bg-nav')) throw new Error('contenu');
+            panneau.innerHTML = neuf.innerHTML;
+            // les petits scripts posés dans la rubrique (aperçu des congés…) doivent repartir
+            $$('script', panneau).forEach(function (o) { if (o.src) return; var n = d.createElement('script'); n.text = o.text; o.parentNode.replaceChild(n, o); });
+            panneau.classList.remove('est-en-charge');
+            try { history.pushState({ aled08: 1 }, '', url + '#' + panneau.id.replace(/^t-/, '')); window._aled08Pousse = true; } catch (err) {}
+            brancher(panneau);
+            var contenu = $('.bg-nav', panneau);
+            if (contenu) {
+              // le contenu de la rubrique arrive en douceur, et la page glisse (une seule fois) jusqu'au sous-menu
+              var suite = contenu.nextElementSibling;
+              while (suite) { suite.classList.add('bg-arrive'); suite = suite.nextElementSibling; }
+              var entete = d.querySelector('.site-header');
+              var dy = contenu.getBoundingClientRect().top - (entete ? entete.offsetHeight : 70) - 10;
+              if (Math.abs(dy) > 6) window.scrollBy({ top: dy, behavior: doux ? 'smooth' : 'auto' });
+            }
+          }).catch(function () { location.href = l.href; });
+        });
+      });
+    };
+    brancher(app);
+    window.addEventListener('popstate', function () { if (window._aled08Pousse) location.reload(); });
+    // Après un enregistrement dans Ma boutique, la page revient directement sur la rubrique, sans animation
+    if (/[?&]sub=/.test(location.search)) {
+      var sousMenu = $('.app-panel:not([hidden]) .bg-nav', app);
+      if (sousMenu) {
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        var caler = function () { var en = d.querySelector('.site-header'); window.scrollBy(0, sousMenu.getBoundingClientRect().top - (en ? en.offsetHeight : 70) - 10); };
+        caler(); window.addEventListener('load', caler);
+      }
+    }
   }
 
   function copyButtons(app, toast) {
