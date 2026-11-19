@@ -55,7 +55,7 @@ function aled08e_forfait($id) {
     return $all ? $all[0] : ['id' => 'base', 'name' => 'Abonnement', 'month' => 10, 'quota' => 1, 'periode' => 'trimestre', 'jetons' => 250, 'modifs' => 'les petites retouches et les outils de la bande, et une intervention d’Alex par trimestre', 'color' => 'pink', 'tagline' => ''];
 }
 /* Le nom de l'abonnement sur une facture ou dans un e-mail */
-function aled08e_abo_nom($f) { return count(aled08e_data()['forfaits']) > 1 ? 'Forfait ' . $f['name'] : 'Abonnement des Minis Monstres'; }
+function aled08e_abo_nom($f) { return 'Forfait ' . $f['name']; }
 /* Les extras de l'abonnement : les options payées chaque mois, qu'on ajoute ou retire quand on veut */
 function aled08e_extras() {
     $out = [];
@@ -1054,7 +1054,7 @@ function aled08e_dashboard() {
         'lia_limite' => ['esp-warn', 'Vous avez utilisé vos ' . aled08e_limite('bricouMois', 8) . ' petites retouches du mois avec Bricou. Elles reviennent le 1er du mois. Pour celle-ci, choisissez Alex.'],
         'photo' => ['esp-warn', 'Demande envoyée, mais la photo n’a pas pu être ajoutée (8 Mo au plus, format JPG, PNG ou WEBP). Réessayez avec une photo plus légère.'],
         'vide' => ['esp-warn', 'Écrivez votre demande en quelques mots avant de l’envoyer.'],
-        'sans_formule' => ['esp-warn', 'Vous êtes en Autonomie : les modifications ne sont pas comprises. Avec l’abonnement Mini, elles le sont : le bouton est juste en dessous.'],
+        'sans_formule' => ['esp-warn', 'Vous êtes en Autonomie : les modifications ne sont pas comprises. Avec le forfait Mini, elles le sont : le bouton est juste en dessous.'],
         'lia_refait' => ['esp-empty', 'Merci pour vos précisions : Cerise reprend votre demande. Vous la voyez ici dans un instant.'],
         'rep_ok' => ['esp-empty', 'Merci ! Cerise reprend votre demande avec votre réponse.'],
         'rep_vide' => ['esp-warn', 'Écrivez votre réponse ou joignez une capture d’écran, puis envoyez.'],
