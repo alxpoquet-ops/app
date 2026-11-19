@@ -75,7 +75,7 @@ function aled08e_dashboard_libre($u) {
         <div class="app-panel" role="tabpanel" id="t-accueil" aria-labelledby="tab-accueil">
           <h2 class="app-h">Bienvenue <?php echo esc_html(aled08e_prenom($u)); ?> !</h2>
           <?php echo aled08e_annonces_html(); // phpcs:ignore ?>
-          <p class="app-p">Votre compte est prêt. Quand vous commandez votre site, tout arrive ici : le suivi de la commande, vos demandes de modification aux petits monstres ou à Alex, votre tableau de bord et votre parrainage.</p>
+          <p class="app-p">Votre compte est prêt. Quand vous commandez votre site, tout arrive ici : le suivi de la commande, vos demandes de modification, vos extras et vos factures.</p>
           <div class="app-cards">
             <a class="app-card c-mint" href="<?php echo esc_url(home_url('/creer-mon-site/')); ?>"><span class="app-card-ico"><?php echo aled08e_icon('wand-sparkles'); // phpcs:ignore ?></span><span><small>Étape suivante</small><strong>Créer mon site</strong><span>Choisir, voir le prix, commander</span></span></a>
             <a class="app-card c-lilac" href="<?php echo esc_url(home_url('/tarifs/')); ?>"><span class="app-card-ico"><?php echo aled08e_icon('tag'); // phpcs:ignore ?></span><span><small>Les tarifs</small><strong><?php echo esc_html(aled08e_euro_txt(aled08e_data()['creation']['prix'] ?? 500)); ?> le site</strong><span>Puis <?php echo esc_html(aled08e_euro_txt(aled08e_forfait('base')['month'])); ?> par mois, tout compris</span></span></a>

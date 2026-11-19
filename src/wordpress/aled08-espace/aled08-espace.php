@@ -289,7 +289,7 @@ add_filter('wp_new_user_notification_email', function ($email, $user) {
         . ($ctx && !empty($ctx['ref'])
             ? 'Votre commande ' . $ctx['ref'] . ' est bien enregistrée. Votre espace client des Minis Monstres est prêt : vous y suivez votre commande, puis vous y envoyez vos demandes de modification. Vous y retrouvez aussi votre parrainage et vos factures.' . "\n\n"
             : (get_user_meta($user->ID, 'aled08_inscrit_seul', true) ? 'Votre compte des Minis Monstres est créé, merci ! Quand vous commanderez votre site, vous y suivrez tout : la commande, vos demandes de modification aux petits monstres ou à Alex et votre parrainage.' . "\n\n"
-            : 'Votre espace client des Minis Monstres est prêt. Vous y envoyez vos demandes de modification, vous suivez leur avancement, et vous retrouvez votre parrainage et vos factures.' . "\n\n"))
+            : 'Votre espace client des Minis Monstres est prêt. Vous y envoyez vos demandes de modification, vous suivez leur avancement, et vous retrouvez vos factures.' . "\n\n"))
         . "Pour choisir votre mot de passe, ouvrez ce lien :\n" . $link . "\n\n"
         . "Ensuite, connectez-vous ici :\n" . aled08e_url() . "\n"
         . 'Votre identifiant : ' . $user->user_login . " (ou votre adresse e-mail)\n\n"
@@ -710,8 +710,6 @@ function aled08e_fields() {
     ] + $extras + [
         'domaine_info' => ['Nom de domaine (info affichée)', 'text', 'exemple.fr, renouvelé le 3 mars 2027'],
         'avis' => ['Lien d’avis Google', 'url', 'https://g.page/r/.../review'],
-        'parrain' => ['Parrainé par (code)', 'text', 'Ex. : LILA-7K2'],
-        'code' => ['Son code de parrainage', 'text', 'Créé automatiquement'],
         'mois_offerts' => ['Mois offerts à utiliser', 'text', '0'],
         'boutique' => ['Boutique en ligne', 'check', 'Oui : le client a une boutique (onglet Vacances, ventes dans le tableau de bord).'],
         'famille' => ['Famille : modifications illimitées', 'check', 'Oui : modifications sans limite (affichées ∞ avec un cœur).'],
@@ -800,7 +798,7 @@ function aled08e_profile_save($uid) {
     }
     // un nouveau filleul en ligne : on prévient le parrain
     $parrain = aled08e_meta($uid, 'parrain');
-    if ($parrain && $parrain !== $oldParrain) {
+    if (false && $parrain && $parrain !== $oldParrain) { // parrainage retiré (19 novembre 2026)
         $p = aled08e_user_by_code($parrain);
         $u = get_userdata($uid);
         if ($p && $u && $p->ID !== $u->ID) {

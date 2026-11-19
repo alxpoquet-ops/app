@@ -41,7 +41,7 @@ function aled08e_bulle_onglets($uid) {
     $o += ['demandes' => 'Mes demandes', 'tableau' => 'Tableau de bord'];
     if (aled08e_est_boutique($uid)) $o['vacances'] = 'Ma boutique';
     if (aled08e_outils_on()) $o['outils'] = 'Outils';
-    return $o + ['parrainage' => 'Parrainage', 'compte' => 'Mon compte', 'forfait' => 'Abonnement et factures'];
+    return $o + ['compte' => 'Mon compte', 'forfait' => 'Abonnement et factures'];
 }
 
 /* La conversation en cours (gardée une heure, côté serveur : le navigateur n'envoie que le nouveau message) */

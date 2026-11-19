@@ -127,7 +127,8 @@ function aled08e_code_evenement_ajax() {
     $code = wp_unslash($_GET['code'] ?? '');
     // une seule case pour le code promo et le code de parrainage : on dit seulement de quel genre il est (jamais à qui il appartient)
     if (aled08e_code_evenement_ok($code)) wp_send_json_success(['type' => 'promo', 'remise' => aled08e_remise_evenement()]);
-    if (aled08e_user_by_code(aled08e_clean_code($code))) wp_send_json_success(['type' => 'parrain', 'mois' => (int) (aled08e_data()['parrainageMois'] ?? 1)]);
+    // le parrainage est retiré (19 novembre 2026) : un ancien code de parrainage n'est plus reconnu
+    if (false && aled08e_user_by_code(aled08e_clean_code($code))) wp_send_json_success(['type' => 'parrain', 'mois' => (int) (aled08e_data()['parrainageMois'] ?? 1)]);
     wp_send_json_error(['message' => 'Code inconnu.']);
 }
 add_action('wp_ajax_aled08e_code_evenement', 'aled08e_code_evenement_ajax');
@@ -376,7 +377,7 @@ function aled08e_cmd_traiter_post() {
         'pages_plus' => aled08e_cmd_pages_plus($get('pages_plus', 4)),
         'domaine' => aled08e_cmd_nettoyer_domaine($get('domaine', 253)),
         'domaine_mien' => $get('domaine_mien', 2) === '1',
-        'parrain' => aled08e_clean_code($get('parrain', 20)),
+        'parrain' => '', // parrainage retiré (19 novembre 2026)
         'code_evenement' => aled08e_clean_code($get('code_evenement', 30)),
     ];
     // code événement : vérifié ici, la remise est recalculée par le serveur
@@ -388,7 +389,7 @@ function aled08e_cmd_traiter_post() {
     if (aled08e_est_seule($cfg['forfait'])) { $cfg['domaine_mien'] = true; $cfg['domaine'] = ''; $cfg['periode'] = 'mois'; }
     $err = function ($code) use ($cfg) { aled08e_cmd_redirect_erreur($code, $cfg); };
     // la case « Code promo ou parrainage » : un code de parrainage tapé là devient le parrain de la commande
-    if ($cfg['code_evenement'] !== '' && !$cfg['remise'] && aled08e_user_by_code($cfg['code_evenement'])) {
+    if (false && $cfg['code_evenement'] !== '' && !$cfg['remise'] && aled08e_user_by_code($cfg['code_evenement'])) {
         if ($cfg['parrain'] === '') $cfg['parrain'] = $cfg['code_evenement'];
         $cfg['code_evenement'] = '';
     }
@@ -522,6 +523,7 @@ function aled08e_cmd_set_domaine($id, $statut) {
  * C'est ici, et seulement ici, que le filleul reçoit la méta aled08_parrain : le parrain ne compte un filleul
  * « en ligne » qu'une fois le site vraiment en ligne, pas dès le formulaire de commande. */
 function aled08e_cmd_parrainage_en_ligne($cmd) {
+    return; // parrainage retiré (19 novembre 2026)
     if (!$cmd['parrain'] || get_post_meta($cmd['id'], '_aled08_parrain_prevenu', true)) return;
     $p = aled08e_user_by_code($cmd['parrain']);
     if (!$p || $p->ID === $cmd['user']) return;
