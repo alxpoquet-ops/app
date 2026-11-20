@@ -2857,3 +2857,5 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .app-panel.est-en-charge > :not(h2):not(.bg-nav) { opacity: .45; transition: opacity .15s; pointer-events: none; }
 .bg-arrive { animation: app-in .3s cubic-bezier(.2, .7, .2, 1) both; }
 @media (prefers-reduced-motion: reduce) { .bg-arrive { animation: none; } }
+
+.section-demo { padding-top: 26px; padding-bottom: 0; }

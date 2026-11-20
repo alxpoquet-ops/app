@@ -130,8 +130,6 @@ function home() {
   <p class="center more">${C.btn(sections.equipe.path, 'btn-light', sections.equipe.icon, 'Rencontrer la bande')}</p>
 </div></section>
 
-<section class="section section-soft" id="demo"><div class="container">${C.demoBande()}</div></section>
-
 ${C.ctaBand({ title: 'On ouvre votre vitrine sur internet ?', text: 'Choisissez votre site en deux minutes. Le prix s’affiche tout de suite.' })}`;
   return {
     path: '/',
@@ -249,7 +247,7 @@ function forfaitsPage() {
   <h2 class="section-title">Enfin, les extras</h2>
   ${C.presente('etoile', `<strong>Moi, c’est ${esc(C.PEPITE)}.</strong> Les extras, c’est mon rayon : trois extras, pas plus. Vous me les demandez depuis votre espace client, quand vous en avez besoin.`, { humeur: 'ravi' })}
   ${C.extrasListe()}
-  ${C.demoBande()}
+  ${C.demoBande({ titre: 'Voyez l’espace client avant de choisir', texte: 'Une démonstration à essayer tout de suite : envoyer une demande, ajouter un article, commander un extra. Aucun compte à créer.' })}
 </div></section>
 
 <section class="section" id="detail"><div class="container container-narrow">
@@ -1415,7 +1413,10 @@ function pageV2(p) {
   const k = SECTION_V2[p.path];
   const crumbs = k ? crumb(k) : [HOME, { name: p.nom, path: p.path }];
   const f = C.faq(p.faq || [], 'Vos questions', 'faq-v2');
+  // Accompagnement : la démo de l'espace client vient tout de suite sous la présentation
+  const demo = p.path === sections.accompagnement.path ? `<section class="section section-demo"><div class="container">${C.demoBande()}</div></section>` : '';
   const body = `${C.pageHero({ section: k || 'guides', h1: p.h1, lead: p.lead, crumbs })}
+${demo}
 ${p.points && p.points.length ? `<section class="section"><div class="container">
   <div class="feats">${p.points.map((b) => `<div class="feat reveal">${icon(b.icon)}<h3>${inline(b.t)}</h3><p>${inline(b.d)}</p></div>`).join('')}</div>
 </div></section>` : ''}

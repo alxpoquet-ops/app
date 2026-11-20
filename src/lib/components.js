@@ -116,10 +116,10 @@ function listePlus(items, { vis = 5, ordi = true, texte = 'Voir tout ce qui est 
 }
 
 // ---------------------------------------------------------------- la démo de l'espace client, mise en avant (accueil, Tarifs)
-function demoBande() {
+function demoBande({ titre = 'Essayez l’espace client', texte = 'Entrez dans l’espace d’une cliente imaginaire : ses demandes, sa boutique, ses extras. Sans compte, et rien n’est envoyé.' } = {}) {
   return `<a class="demo-bande reveal" href="${site.espaceClient.demo}">
     <span class="demo-bande-art" aria-hidden="true">${petit('mochi', { humeur: 'ravi' })}${petit('bricou', { humeur: 'ravi' })}</span>
-    <span class="demo-bande-txt"><strong>Essayez l’espace client</strong><span>Entrez dans l’espace d’une cliente imaginaire : ses demandes, sa boutique, ses extras. Sans compte, et rien n’est envoyé.</span></span>
+    <span class="demo-bande-txt"><strong>${esc(titre)}</strong><span>${esc(texte)}</span></span>
     <span class="btn btn-primary">${icon('eye')}<span>Ouvrir la démo</span></span>
   </a>`;
 }
