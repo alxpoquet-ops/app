@@ -238,6 +238,10 @@ Le prix de création se paie en deux temps.
 - **À la réception du site** : le reste, en une fois.
 - **Ou, à la réception, ${EN_FOIS}** : le client choisit cette option sur la page de paiement. L’échéancier est alors proposé par cet organisme, qui donne ou non son accord et applique ses propres conditions. Les Minis Monstres ne sont pas partie à ce contrat de paiement.
 
+**À quoi correspond l’acompte.** L’acompte de ${paiement.acompte} % paie le travail engagé dès la commande : le temps de développement du site, et la remise au client d’un visuel en PDF de l’ensemble des pages. Le client reçoit ce visuel avant la mise en ligne, pour voir son site et demander ses révisions (article 11).
+
+Une fois ce visuel remis, l’acompte reste acquis aux Minis Monstres, même si le client décide de ne pas poursuivre : il rémunère un travail déjà fait. Si les Minis Monstres ne remettent pas ce visuel, l’acompte est remboursé en entier. Cette règle ne retire rien au droit de rétractation (article 9).
+
 Le client choisit, au moment de payer le reste, de le régler en une fois ou en plusieurs fois. Ce choix est ouvert avec le forfait ${mini.name} comme avec le forfait ${AUTO} (article 3).
 
 Exemple pour un ${VIS.name} à ${eur(VIS.price)} €, sans code promo : le client paie ${eur(acompte(VIS.price))} € à la commande. À la réception, il paie ${eur(VIS.price - acompte(VIS.price))} € en une fois, ou choisit de les régler ${EN_FOIS}.
