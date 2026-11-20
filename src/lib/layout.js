@@ -13,7 +13,7 @@ function titreCourt(t) {
   const b = t.slice(0, -MARQUE.length);
   return (b + MARQUE_COURTE).length <= 70 ? b + MARQUE_COURTE : b;
 }
-const brandName = '<span class="brand-nom">Les Minis Monstres</span>'; // tout le nom, en dégradé pastel lumineux (20 novembre 2026)
+const brandName = '<span class="brand-nom" data-t="Les Minis Monstres">Les Minis Monstres</span>'; // tout le nom, en dégradé pastel lumineux (20 novembre 2026)
 const { esc, typo } = require('./md');
 const C = require('./components');
 

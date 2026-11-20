@@ -3005,3 +3005,12 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .brand:hover .brand-nom { animation: brand-defile 1.6s linear infinite; }
 @keyframes brand-defile { from { background-position: 0% 50%; } to { background-position: 200% 50%; } }
 @media (prefers-reduced-motion: reduce) { .brand-nom, .brand:hover .brand-nom { animation: none; } }
+
+/* lettres nettes : le halo est une copie floue posée derrière, le nom lui-même n'est plus flouté */
+.brand-nom, .brand:hover .brand-nom { position: relative; isolation: isolate; filter: none; }
+.brand-nom::after {
+  content: attr(data-t); position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: inherit; background-size: inherit; background-repeat: inherit; -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent; filter: blur(7px); opacity: .7; animation: inherit;
+}
+.brand:hover .brand-nom::after { opacity: .95; }
