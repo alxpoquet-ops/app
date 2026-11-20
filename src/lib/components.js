@@ -111,6 +111,8 @@ const deroulants = (items) => `<div class="faq deroulants">${items.filter(Boolea
 // Une liste « ce qui est compris » : les premières lignes visibles, la suite dans un petit déroulant (ouvert d'office sur ordinateur).
 function listePlus(items, { vis = 5, ordi = true, texte = 'Voir tout ce qui est compris' } = {}) {
   const li = (x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`;
+  return `<ul class="plan-list">${items.map(li).join('')}</ul>`; // tout est visible, sans menu déroulant
+  // eslint-disable-next-line no-unreachable
   if (items.length <= vis + 1) return `<ul class="plan-list">${items.map(li).join('')}</ul>`;
   return `<ul class="plan-list">${items.slice(0, vis).map(li).join('')}</ul><details class="liste-plus"${ordi ? ' data-ordi' : ''}><summary><span>${texte}</span>${icon('chevron-down')}</summary><ul class="plan-list">${items.slice(vis).map(li).join('')}</ul></details>`;
 }
@@ -450,7 +452,7 @@ function creationSeuleBox() {
 // ou moi (création seule, le code est fourni)  4. le nom de domaine et 5. la formule, seulement avec « nous »  6. le total.
 const cfLi = (x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`;
 // vis : lignes visibles ; la suite se déplie (« Voir tout ce qui est compris »), ouverte d'office sur ordinateur
-const cfListe = (items, vis = 4) => (items.length <= vis + 1
+const cfListe = (items, vis = 4) => (true // tout est visible, sans menu déroulant
   ? `<ul class="cf-liste">${items.map(cfLi).join('')}</ul>`
   : `${vis ? `<ul class="cf-liste">${items.slice(0, vis).map(cfLi).join('')}</ul>` : ''}<details class="liste-plus" data-ordi><summary><span>Voir tout ce qui est compris</span>${icon('chevron-down')}</summary><ul class="cf-liste">${items.slice(vis).map(cfLi).join('')}</ul></details>`);
 // Le site : trois grandes cartes à choisir (Essentiel, Visibilité, Boutique). name : le champ envoyé (une-page | vitrine | boutique).

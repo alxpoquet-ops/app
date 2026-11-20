@@ -2896,3 +2896,8 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .mdp-oeil-btn { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); width: 42px; height: 42px; display: grid; place-items: center; border: 0; border-radius: 12px; background: transparent; color: inherit; opacity: .75; cursor: pointer; }
 .mdp-oeil-btn:hover, .mdp-oeil-btn:focus-visible { opacity: 1; background: rgba(140, 108, 242, .18); }
 .mdp-oeil-btn[aria-pressed="true"] .oeil-barre { display: none; }
+
+/* Cartes des sites : le petit monstre a sa place à lui, au-dessus du nom, sans toucher le texte */
+.cf-trio .cf-art { position: static; width: 64px; margin: 0 0 2px; }
+.cf-trio .cf-corps { padding-right: 0; }
+.cf-trio .cf-nom { padding-right: 44px; }
