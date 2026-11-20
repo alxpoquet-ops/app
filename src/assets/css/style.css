@@ -3020,3 +3020,8 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .js.rv-pret .reveal:not(.is-visible) { opacity: 0; transform: translateY(12px); }
 .js.rv-pret .reveal { transition: opacity .4s ease, transform .4s ease; }
 .js .reveal.rv-direct { transition: none; }
+
+/* ---------- le nom, tout simple (20 novembre 2026) : « Les Minis » puis « MONSTRES » en majuscules dessous ---------- */
+.brand-text strong { display: flex; flex-direction: column; align-items: flex-start; line-height: 1; color: var(--ink); }
+.brand-l1 { font-size: .62em; font-weight: 800; letter-spacing: .03em; opacity: .85; margin: 0 0 .22em .06em; }
+.brand-l2 { font-size: 1em; font-weight: 900; text-transform: uppercase; letter-spacing: .07em; }
