@@ -125,7 +125,7 @@ Pas de devis à attendre. Tout se lit dans le même ordre.
 2. **Ensuite, Forfait ${AUTO} ou Forfait ${mini.name}** : vous gérez le site vous-même sans rien payer chaque mois, ou nous nous en occupons pour ${eur(mini.month)} € par mois, sans engagement.
 3. **Enfin, les extras, si besoin** : une ${minus(pageGoogle.name)} à ${prixPage} €, une traduction anglaise ou une fonctionnalité spécifique sur devis.
 
-Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, en une fois ou ${EN_FOIS}. Le détail est sur la page [tarifs](/tarifs/).
+Le site se règle à la commande, d’un coup ou ${EN_FOIS}, au choix sur la page de paiement. Le détail est sur la page [tarifs](/tarifs/).
 
 ## Les repères du marché, honnêtement
 
@@ -403,7 +403,7 @@ Et pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourq
 Une fois le site créé, vous choisissez qui le fait vivre.
 
 - **Forfait ${AUTO}, ${eur(creationSeule.month)} € par mois** : vous recevez votre site prêt à installer. L’hébergement, le nom de domaine, les sauvegardes et les mises à jour sont à votre charge.
-- **Forfait ${mini.name}, ${eur(mini.month)} € par mois** : nous nous occupons de tout. L’abonnement démarre à la réception du site, sans engagement.
+- **Forfait ${mini.name}, ${eur(mini.month)} € par mois** : nous nous occupons de tout. L’abonnement démarre à la mise en ligne du site, sans engagement.
 
 ## Ce que comprend le forfait ${mini.name}
 
@@ -522,7 +522,7 @@ Elle se fera connaître des Ardennais qui cherchent une idée de cadeau, et vend
 3. **Nous créons votre site**${delai('une-page') && delai('vitrine') && delai('boutique') ? ` : comptez ${delai('une-page')} pour un ${ESS.name}, ${delai('vitrine')} pour un ${VIS.name}, ${delai('boutique')} pour un ${BOU.name}` : ', et vous voyez chaque étape'}.
 4. **Vous validez, et le site part en ligne.**
 
-Côté paiement, c’est ${paiement.acompte} % à la commande, puis le solde quand vous recevez le site.`,
+Côté paiement, vous réglez le site en commandant. Vous préférez étaler ? Choisissez ${EN_FOIS} sur la page de paiement.`,
     faq: [
       { q: 'Faut-il être dans les Ardennes pour travailler avec vous ?', a: 'Non. Nous créons des sites pour toute la France, à distance. Être dans les Ardennes permet seulement de se rencontrer plus facilement.' },
       { q: 'Vous déplacez-vous pour un rendez-vous ?', a: `Oui, dans les ${dept}, par exemple à Charleville-Mézières, Sedan, Rethel ou ${ville}. Dites-nous où vous êtes dans votre message, et on trouve un moment.` },

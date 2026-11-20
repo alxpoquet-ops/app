@@ -29,7 +29,6 @@ const prixVis = eur(VIS.price); // le Site Visibilité
 const prixBoutique = mille(BOU.price); // le Site Boutique
 const pagesComprises = creation.pages; // nombre maximal de pages du Site Visibilité
 const EN_FOIS = `en ${fractionne.fois} fois avec ${fractionne.organismes}`; // par un organisme externe, sur la page de paiement
-const acompte = `${paiement.acompte} %`;
 const marcheVitrine = `${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €`;
 const remise = `${evenement.remise} %`; // le code événement, sur la création du site
 // La petite bande : prénom et métier (« Cerise, la secrétaire »).
@@ -106,7 +105,7 @@ Un tarif change, une nouvelle photo arrive ? Avec le forfait ${mini.name}, envoy
 - **Le site, payé une fois** : ${prix} € pour le ${ESS.name}, ${prixVis} € pour le ${VIS.name}.
 - **Ensuite** : le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement.
 
-Vous versez ${acompte} à la commande, puis le reste à la réception, d’un coup ou ${EN_FOIS}.
+Vous payez le site à la commande, d’un coup ou ${EN_FOIS}, au choix sur la page de paiement.
 
 Pour comparer, un site vitrine de ${marche.pagesCompare} pages confié à un indépendant se paie en général entre ${marcheVitrine}, d’après des fourchettes publiées par des prestataires (les [sources](/pourquoi-moins-cher/) sont citées). Tout est détaillé sur la page [tarifs](/tarifs/).`,
     faq: [
@@ -260,7 +259,7 @@ Vous nous envoyez vos photos et quelques notes sur chaque pièce. La petite band
 - **Le site, payé une fois** : ${prixVis} € le ${VIS.name} pour la galerie, ${prixBoutique} € le ${BOU.name} pour vendre en ligne.
 - **Ensuite** : le forfait ${AUTO} ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
 
-Vous réglez ${acompte} en commandant, puis le solde à la réception, en une fois ou ${EN_FOIS}. Une nouvelle collection à présenter ? Avec le forfait ${mini.name}, c’est une modification incluse.`,
+Le site se règle en commandant, en une seule fois ou ${EN_FOIS}. Une nouvelle collection à présenter ? Avec le forfait ${mini.name}, c’est une modification incluse.`,
     faq: [
       { q: 'Faut-il un statut pour vendre ses créations en ligne ?', a: 'Oui, dès que vous vendez de façon régulière. La micro-entreprise est la solution la plus courante pour démarrer. Les artistes auteurs ont un régime à part : renseignez-vous auprès de l’Urssaf avant d’ouvrir la boutique.' },
       { q: 'Mes photos sont-elles protégées une fois en ligne ?', a: 'Vos œuvres et vos photos restent à vous : le droit d’auteur s’applique sans aucune démarche. Nous publions des images assez grandes pour être belles à l’écran, sans mettre en ligne vos fichiers en pleine qualité.' },
@@ -410,7 +409,7 @@ Avec le forfait ${mini.name}, ces changements ne vous demandent qu’un message 
 - **Le site, une seule fois** : ${prixVis} € le ${VIS.name}, sans boutique, ou ${prixBoutique} € le ${BOU.name}.
 - **Puis** : le forfait ${AUTO}, où vous gérez tout, ou le forfait ${mini.name}, pour ${eur(mini.month)} € par mois.
 
-Vous versez ${acompte} à la commande et le reste à la réception, en une fois ou ${EN_FOIS}. Les extras possibles sont détaillés sur la page [tarifs](/tarifs/).`,
+Le paiement se fait à la commande : en une fois, ou ${EN_FOIS} si vous préférez étaler. Les extras possibles sont détaillés sur la page [tarifs](/tarifs/).`,
     faq: [
       { q: 'J’ai déjà une page sur les réseaux sociaux, ai-je besoin d’un site ?', a: 'Les deux se complètent. Sur les réseaux, vos horaires et vos produits se noient vite sous les publications. Le site garde l’essentiel au même endroit, à votre nom.' },
       { q: 'Comment fonctionne le retrait en magasin ?', a: 'Le client choisit ses produits, paie en ligne et coche le retrait au moment de valider. Vous recevez la commande par e-mail, et il passe la prendre aux horaires que vous avez fixés.' },
@@ -482,7 +481,7 @@ Avec le forfait ${mini.name}, le président, la secrétaire ou le trésorier env
 
 ## Un budget qui se vote
 
-- **Le site** : ${prix} € pour un ${ESS.name}, avec ${acompte} à la commande et le reste à la réception, ou ${EN_FOIS}.
+- **Le site** : ${prix} € pour un ${ESS.name}, payés à la commande, en une fois ou ${EN_FOIS}.
 - **Ensuite, au choix** : le forfait ${AUTO}, si un bénévole gère le site, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
 
 Pour la plupart des associations, une page suffit, sans aucun extra. Avec plusieurs sections, comme le foot, la gym et la randonnée, chacune peut avoir sa page grâce au ${VIS.name}, à ${prixVis} €.

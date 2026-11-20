@@ -10,7 +10,7 @@ const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contac
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 const UPDATED = '2026-11-15'; // mentions légales
 const UPDATED_CONF = '2026-11-19'; // politique de confidentialité : offre du 19 novembre 2026 (trois sites, abonnement facultatif, paiement des extras par carte)
-const UPDATED_CGV = '2026-11-19'; // conditions générales : offre du 19 novembre 2026
+const UPDATED_CGV = '2026-11-20'; // conditions générales : création payée en entier à la commande (20 novembre 2026)
 // La petite bande (config.bande) : six Minis Monstres, présentés par leur prénom et leur rôle. Le parrainage est retiré (19 novembre 2026).
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
 // (règlement européen sur ces systèmes, obligation de transparence). La politique de confidentialité nomme le fournisseur.
@@ -26,8 +26,7 @@ const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1200 → 1 2
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const liste = (l, mot = 'et') => (l.length > 1 ? `${l.slice(0, -1).join(', ')} ${mot} ${l[l.length - 1]}` : l.join(''));
 const EN_FOIS = `en ${fractionne.fois} fois avec ${fractionne.organismes}`; // par un organisme externe, sur la page de paiement
-const acompte = (prix) => Math.round(prix * paiement.acompte) / 100;
-const lisse = (prix, n) => Math.floor(((prix - acompte(prix)) / n) * 100) / 100; // échéance arrondie au centime inférieur
+const EN_FOIS_MAJ = EN_FOIS.charAt(0).toUpperCase() + EN_FOIS.slice(1);
 const T = (id) => types.find((t) => t.id === id) || {};
 const ESS = T('une-page'), VIS = T('vitrine'), BOU = T('boutique'); // les trois sites
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0];
@@ -178,11 +177,11 @@ Ces conditions s’appliquent à toute commande passée auprès des Minis Monstr
 
 ## 2. Commande en ligne
 
-La commande se passe sur le site, en trois étapes : le choix du site, les coordonnées, puis le paiement sécurisé. Le client choisit d’abord son site parmi les trois proposés (article 3). Il choisit ensuite la façon de le faire vivre : le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, au mois. Avec le forfait ${mini.name}, il indique son nom de domaine s’il en a un, ou en choisit un, fourni en supplément (article 10). Le total s’affiche en dernier, avec le choix de payer le reste en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et les montants suivants. S’il a un code promo (article 4), il le saisit dans la case « Code promo » avant de commander.
+La commande se passe sur le site, en trois étapes : le choix du site, les coordonnées, puis le paiement sécurisé. Le client choisit d’abord son site parmi les trois proposés (article 3). Il choisit ensuite la façon de le faire vivre : le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, au mois. Avec le forfait ${mini.name}, il indique son nom de domaine s’il en a un, ou en choisit un, fourni en supplément (article 10). Le total s’affiche en dernier. Le prix du site se règle le jour même, en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et le prix du forfait qui suivra. S’il a un code promo (article 4), il le saisit dans la case « Code promo » avant de commander.
 
 En cliquant sur « Commander et payer », le client accepte ces conditions et passe une commande ferme. Il reçoit aussitôt un e-mail de confirmation avec une référence de commande, à rappeler dans les échanges.
 
-Une commande peut aussi être passée par e-mail ou par message. Elle est alors ferme quand le client accepte le récapitulatif par écrit et règle le premier paiement.
+Une commande peut aussi être passée par e-mail ou par message. Elle est alors ferme quand le client accepte le récapitulatif par écrit et règle le prix de création.
 
 ## 3. Prix
 
@@ -218,7 +217,7 @@ ${listeExtras}
 
 La ${minus(pageGoogle.name)} se commande depuis l’espace client. Elle est payée par carte bancaire au moment de la commande, en une seule fois. Elle n’est jamais facturée au mois. Les extras sur devis sont réalisés après l’accord écrit du client sur le prix.
 
-**Le forfait ${AUTO}, ${eur(creationSeule.month)} € par mois.** Le client paie seulement son site, sans abonnement. Il gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. Les Minis Monstres ne fournissent ni hébergement ni nom de domaine. Une fois le site validé et le reste réglé, ou son paiement en plusieurs fois mis en place, le client reçoit l’export de son site, avec une courte notice d’installation. Il fait l’installation lui-même, ou avec l’aide de son hébergeur. La maintenance, la sécurité et les modifications ne sont pas comprises. Le client peut prendre le forfait ${mini.name} plus tard.
+**Le forfait ${AUTO}, ${eur(creationSeule.month)} € par mois.** Le client paie seulement son site, sans abonnement. Il gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. Les Minis Monstres ne fournissent ni hébergement ni nom de domaine. Une fois le site validé, le client reçoit l’export de son site, avec une courte notice d’installation. Il fait l’installation lui-même, ou avec l’aide de son hébergeur. La maintenance, la sécurité et les modifications ne sont pas comprises. Le client peut prendre le forfait ${mini.name} plus tard.
 
 **Le forfait ${mini.name}, ${eur(mini.month)} € par mois.** Les Minis Monstres installent le site, le mettent en ligne et le font vivre (article 6). Si le client n’a pas de nom de domaine, les Minis Monstres le lui fournissent pour ${eur(dom)} € de plus par mois, soit ${eur(avecDom)} € par mois (article 10).
 
@@ -228,29 +227,28 @@ La ${minus(pageGoogle.name)} se commande depuis l’espace client. Elle est pay�
 
 Les Minis Monstres peuvent proposer des codes promo, par exemple lors d’une opération ponctuelle. Un code promo donne une remise sur la création du site, quel que soit le site choisi. Il ne s’applique pas à l’abonnement, ni aux extras commandés plus tard.
 
-Le client saisit le code au moment de commander. Le code est vérifié, et le récapitulatif montre le prix après remise avant le paiement. L’acompte et le reste du prix de création sont calculés sur ce prix remisé (article 5).
+Le client saisit le code au moment de commander. Le code est vérifié, et le récapitulatif montre le prix après remise avant le paiement. Le prix de création payé à la commande est calculé sur ce prix remisé (article 5).
 
 ## 5. Paiement de la création
 
-Le prix de création se paie en deux temps.
+**Le prix payé à la commande.** Le prix de création du site se paie en entier à la commande, sur la page de paiement sécurisée. Les options payées une fois, s’il y en a, se règlent en même temps. Aucune autre somme n’est due pour la création, ni pendant le travail ni à la livraison du site.
 
-- **À la commande** : un acompte de ${paiement.acompte} % du prix du site choisi.
-- **À la réception du site** : le reste, en une fois.
-- **Ou, à la réception, ${EN_FOIS}** : le client choisit cette option sur la page de paiement. L’échéancier est alors proposé par cet organisme, qui donne ou non son accord et applique ses propres conditions. Les Minis Monstres ne sont pas partie à ce contrat de paiement.
+Sur la page de paiement, le client choisit sa façon de payer :
 
-**À quoi correspond l’acompte.** L’acompte de ${paiement.acompte} % paie le travail engagé dès la commande : le temps de développement du site, et la remise au client d’un visuel en PDF de l’ensemble des pages. Le client reçoit ce visuel avant la mise en ligne, pour voir son site et demander ses révisions (article 11).
+- **En une fois** : par carte bancaire, Apple Pay, Google Pay ou PayPal, selon les moyens proposés sur cette page.
+- **${EN_FOIS_MAJ}** : ce paiement fractionné est proposé par ces organismes, selon leurs propres conditions et après leur accord. L’organisme verse aussitôt le prix entier aux Minis Monstres. Le client le rembourse ensuite à l’organisme, en ${fractionne.fois} fois. Le contrat de paiement fractionné est conclu entre le client et l’organisme. Les Minis Monstres n’y sont pas partie.
 
-Une fois ce visuel remis, l’acompte reste acquis aux Minis Monstres, même si le client décide de ne pas poursuivre : il rémunère un travail déjà fait. Si les Minis Monstres ne remettent pas ce visuel, l’acompte est remboursé en entier. Cette règle ne retire rien au droit de rétractation (article 9).
+Ce choix est ouvert avec le forfait ${mini.name} comme avec le forfait ${AUTO} (article 3). Le forfait ${mini.name}, lui, se paie à part, chaque mois, à partir de la mise en ligne du site (article 6).
 
-Le client choisit, au moment de payer le reste, de le régler en une fois ou en plusieurs fois. Ce choix est ouvert avec le forfait ${mini.name} comme avec le forfait ${AUTO} (article 3).
+**En cas de rétractation.** Si le client se rétracte dans les 14 jours, le prix payé lui est remboursé en entier (article 9). S’il a demandé que la création démarre tout de suite, les Minis Monstres retiennent le montant qui correspond au travail déjà fait à la date de la rétractation, au prorata du prix de création. Le reste lui est remboursé. Une fois le site entièrement livré à sa demande, il ne peut plus se rétracter. Le remboursement se fait par le moyen de paiement utilisé à la commande.
 
-Exemple pour un ${VIS.name} à ${eur(VIS.price)} €, sans code promo : le client paie ${eur(acompte(VIS.price))} € à la commande. À la réception, il paie ${eur(VIS.price - acompte(VIS.price))} € en une fois, ou choisit de les régler ${EN_FOIS}.
+Exemple pour un ${VIS.name} à ${eur(VIS.price)} €, sans code promo : le client paie ${eur(VIS.price)} € à la commande, en une fois, ou choisit de les régler ${EN_FOIS}. S’il prend le forfait ${mini.name}, il paie ensuite ${eur(mini.month)} € par mois à partir de la mise en ligne, ou ${eur(avecDom)} € avec le nom de domaine fourni.
 
-Les extras ne suivent pas cette règle : la ${minus(pageGoogle.name)} est payée en entier, par carte, quand le client la commande (article 3).
+Les extras commandés plus tard ne suivent pas cette règle : la ${minus(pageGoogle.name)} est payée en entier, par carte, quand le client la commande (article 3).
 
 ## 6. L’abonnement
 
-Le forfait ${mini.name} est facultatif. Le client peut le prendre au moment de la commande, avec son nom de domaine, ou plus tard. C’est le seul abonnement proposé. Il démarre à la réception du site. Il est sans engagement (article 8).
+Le forfait ${mini.name} est facultatif. Le client peut le prendre au moment de la commande, avec son nom de domaine, ou plus tard. C’est le seul abonnement proposé. Il démarre à la mise en ligne du site : le client enregistre alors sa carte pour le forfait. Il est sans engagement (article 8).
 
 **Le forfait ${mini.name}, ${eur(mini.month)} € par mois.** Il comprend :
 
@@ -278,7 +276,7 @@ Un client inscrit avant le ${DATE_OFFRE} garde l’abonnement, les options et le
 
 L’abonnement est sans engagement. Le client peut l’arrêter à tout moment, par e-mail, par message ou avec le bouton prévu dans son espace client. L’arrêt prend effet à la fin de la période déjà payée.
 
-Quand le client paie le reste en plusieurs fois par un organisme externe, ses échéances sont dues à cet organisme, selon le contrat passé avec lui. Cela ne crée aucun engagement de durée sur le forfait.
+Quand le client paie la création en plusieurs fois par un organisme externe, ses échéances sont dues à cet organisme, selon le contrat passé avec lui. Cela ne crée aucun engagement de durée sur le forfait.
 
 La fin de l’abonnement met fin à l’hébergement du site par les Minis Monstres, à son entretien et aux modifications. Le client reçoit l’export de son site (textes, images, pages), pour le faire héberger où il veut. Le nom de domaine lui appartient : il peut le transférer vers le prestataire de son choix. L’hébergement par les Minis Monstres s’arrête 30 jours après la fin de l’abonnement.
 
@@ -288,8 +286,8 @@ Le client qui commande à distance dispose de 14 jours pour se rétracter, sans 
 
 En commandant, le client choisit lui-même quand la création commence.
 
-- **Démarrer maintenant** : le client demande expressément que la création commence avant la fin de ces 14 jours. Il reconnaît qu’il perd son droit de rétractation dès que le site est entièrement livré. S’il se rétracte avant cette livraison, il paie le travail déjà réalisé, au prorata du prix de création.
-- **Attendre 14 jours** : la création commence à la fin du délai. Le client garde son droit de rétractation jusque-là, et les délais de création (article 11) courent à partir de ce moment.
+- **Démarrer maintenant** : le client demande expressément que la création commence avant la fin de ces 14 jours. Il reconnaît qu’il perd son droit de rétractation dès que le site est entièrement livré. S’il se rétracte avant cette livraison, le travail déjà réalisé est retenu, au prorata du prix de création, et le reste lui est remboursé (article 5).
+- **Attendre 14 jours** : la création commence à la fin du délai. Le client garde son droit de rétractation jusque-là, avec un remboursement intégral, et les délais de création (article 11) courent à partir de ce moment.
 
 Aucun de ces deux choix n’est coché d’avance. Le nom de domaine déjà réservé, l’adresse du site, reste à sa charge, car il est enregistré à son nom et pour un an.
 

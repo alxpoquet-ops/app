@@ -203,7 +203,7 @@ function creerPage() {
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Et ensuite ?</h2>
   ${C.steps([
-    { t: 'Vous commandez', d: `Vous réglez ${paiement.acompte} % du site. Le reste vient à la réception, en une fois ou en ${C.lissageTxt} fois.` },
+    { t: 'Vous commandez', d: `Vous payez votre site en entier, en une fois ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}.` },
     { t: 'On s’appelle', d: 'Un rendez-vous téléphonique pour découvrir votre activité.' },
     { t: 'Votre site est créé', d: 'Vous le voyez avant la mise en ligne, et vous dites ce qui doit changer, jusqu’à ce qu’il vous plaise.' },
     { t: 'Il est mis en ligne', d: `Avec le forfait ${ABO.name}, on s’occupe de tout. Avec le forfait ${AUTO.name}, on vous remet votre site, prêt à installer chez votre hébergeur.` },
@@ -528,8 +528,7 @@ function commanderPage() {
   const S = sections.commander;
   const crumbs = [HOME, { name: sections.creer.label, path: sections.creer.path }, { name: S.label, path: S.path }];
   const t0 = T('vitrine'), f0 = ABO;
-  const acompte0 = round2((t0.price * paiement.acompte) / 100);
-  const today0 = acompte0;
+  const today0 = round2((t0.price * paiement.acompte) / 100); // la création en entier, payée à la commande
   const field = (name, label, attrs, { req = true, hint = '' } = {}) =>
     `<div class="field"><label for="o-${name}">${label} ${req ? '<span class="req">*</span>' : '<span class="opt">(facultatif)</span>'}</label><input id="o-${name}" name="${name}" ${attrs}${req ? ' required' : ''}>${hint ? `<small class="field-hint">${hint}</small>` : ''}</div>`;
   const nextSteps = [
@@ -616,16 +615,16 @@ function commanderPage() {
         <label class="check"><input type="checkbox" name="cgv" value="oui" required><span>J’accepte les <a href="/conditions-generales/" target="_blank" rel="noopener">conditions générales de vente</a>. <span class="req">*</span></span></label>
         <fieldset class="o-depart">
           <legend>Quand voulez-vous que la création commence ? <span class="req">*</span></legend>
-          <label class="check"><input type="radio" name="demarrage" value="oui" required><span><strong>Démarrer mon site maintenant.</strong> Je demande expressément que la création commence tout de suite, avant la fin du délai de rétractation de 14 jours. Je reconnais que je perds mon droit de rétractation dès que mon site est entièrement livré. Si je me rétracte avant, je paie le travail déjà fait.</span></label>
+          <label class="check"><input type="radio" name="demarrage" value="oui" required><span><strong>Démarrer mon site maintenant.</strong> Je demande expressément que la création commence tout de suite, avant la fin du délai de rétractation de 14 jours. Je reconnais que je perds mon droit de rétractation dès que mon site est entièrement livré. Si je me rétracte avant, le travail déjà fait est retenu et le reste m’est remboursé.</span></label>
           <label class="check"><input type="radio" name="demarrage" value="attendre" required><span><strong>Attendre 14 jours.</strong> La création commence à la fin du délai de rétractation. Je garde ce droit jusque-là.</span></label>
         </fieldset>
         <div class="o-pay">
           <p class="o-pay-today"><span>Aujourd’hui vous payez</span><b data-order="today">${euro(today0)}</b></p>
           <ul class="o-pay-lines" data-order-lines>
-            <li><span>Acompte de ${paiement.acompte} % sur la création (${t0.label.toLowerCase()})</span><b>${euro(acompte0)}</b></li>
+            <li><span>Création du site (${t0.label.toLowerCase()})</span><b>${euro(today0)}</b></li>
           </ul>
-          <p class="o-pay-next"><span data-order="next-label">À la réception : le reste, et votre forfait</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month + C.DOM)}/mois</b></p>
-          <p class="o-pay-note" data-order-solde>À la réception de votre site, vous réglez le reste, <b data-order="solde">${euro(t0.price - acompte0)}</b><span data-avec-formule>, et votre forfait démarre</span>. Vous pourrez choisir de payer ce reste en ${C.lissageTxt} fois avec ${C.ORGANISMES}.</p>
+          <p class="o-pay-next"><span data-order="next-label">Dès la mise en ligne : votre forfait</span><b data-order="next">${euro(f0.month + C.DOM)}/mois</b></p>
+          <p class="o-pay-note">C’est le prix complet de votre site : rien d’autre à payer pour la création. Sur la page de paiement, vous réglez en une fois, ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}.<span data-avec-formule> Votre forfait démarre à la mise en ligne : vous enregistrez alors votre carte.</span></p>
         </div>
         <button class="btn btn-primary btn-lg btn-block btn-flaque" type="submit">${icon('lock')}<span>Commander et payer <b data-order="btn">${euro(today0)}</b></span></button>
         <p class="o-trust">${icon('shield-check')}<span>Paiement sécurisé par Stripe. Vous recevez vos factures par e-mail.</span></p>
@@ -644,9 +643,9 @@ function commanderPage() {
         </ul>
         <div class="b-total">
           <p><span>Aujourd’hui</span><b data-order="today">${euro(today0)}</b></p>
-          <p><span data-order="next-label">À la réception : le reste, et votre forfait</span><b data-order="next">${euro(t0.price - acompte0)} + ${euro(f0.month + C.DOM)}/mois</b></p>
+          <p><span data-order="next-label">Dès la mise en ligne : votre forfait</span><b data-order="next">${euro(f0.month + C.DOM)}/mois</b></p>
         </div>
-        <p class="b-sum-note">${icon('check')}<span data-avec-formule>Votre forfait démarre à la réception de votre site, pas avant. Si on vous fournit le nom de domaine, il est réservé dès la commande.</span><span data-seule-txt hidden>Forfait ${esc(AUTO.name)} : pas d’abonnement. À la réception, on vous remet votre site, prêt à installer.</span></p>
+        <p class="b-sum-note">${icon('check')}<span data-avec-formule>Votre forfait démarre à la mise en ligne de votre site, pas avant. Si on vous fournit le nom de domaine, il est réservé dès la commande.</span><span data-seule-txt hidden>Forfait ${esc(AUTO.name)} : pas d’abonnement. Une fois votre site validé, on vous le remet, prêt à installer.</span></p>
       </div>
       <div class="o-next reveal">
         <h2 class="h3">${icon('list-checks')}Ce qui se passe ensuite</h2>
@@ -663,7 +662,7 @@ function commanderPage() {
     noindex: true,
     noMobileBar: true,
     title: 'Votre commande | Les Minis Monstres',
-    description: 'Vérifiez votre site, choisissez le forfait Autonome ou le forfait Mini, donnez vos coordonnées et payez en ligne en toute sécurité. Aujourd’hui, vous réglez seulement l’acompte.',
+    description: `Vérifiez votre site, choisissez le forfait Autonome ou le forfait Mini, donnez vos coordonnées et payez en ligne en toute sécurité. Vous réglez votre site en une fois, ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}.`,
     crumbs,
     body,
   };
@@ -1503,11 +1502,11 @@ function docPage() {
 ${chap('etapes', `1. Comment ça se passe`, `  <h2>De la commande à la mise en ligne</h2>
   <ol class="doc-steps">
     <li><strong>Vous choisissez votre site.</strong> ${types.map((t) => esc(t.name)).join(', ')} : le prix total s’affiche avant de commander.</li>
-    <li><strong>Vous réglez un acompte de ${paiement.acompte} %.</strong> C’est le signal de départ.</li>
+    <li><strong>Vous réglez votre site.</strong> En une fois, ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}, sur la page de paiement. C’est le signal de départ.</li>
     <li><strong>On s’appelle.</strong> Un rendez-vous téléphonique pour découvrir votre activité.</li>
     <li><strong>Vous remplissez le questionnaire de création.</strong> Dans votre espace client : couleurs, ambiance, photos, prix ou produits.</li>
     <li><strong>Votre site est créé.</strong> Vous demandez des changements autant de fois qu’il le faut, jusqu’à ce que vous le validiez.</li>
-    <li><strong>Vous recevez votre site et payez le reste.</strong> En une fois, ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}.</li>
+    <li><strong>Votre site est mis en ligne.</strong> Rien de plus à payer pour la création. Avec le forfait ${esc(ABO.name)}, l’abonnement démarre ce jour-là.</li>
     <li><strong>Ensuite, vous choisissez.</strong> Le forfait ${esc(ABO.name)}, ${euro(ABO.month)} par mois : on s’occupe de tout. Ou le forfait ${esc(AUTO.name)}, ${euro(AUTO.month)} : vous gérez tout vous-même.</li>
   </ol>
   <p class="doc-more">${C.btnCreer('btn-primary')}</p>`)}
@@ -1631,7 +1630,7 @@ ${chap('seo', `11. Être trouvé sur Google`, `  <h2>La visibilité Google, pas 
 
 ${chap('paiement', `12. Paiement`, `  <h2>Payer simplement</h2>
   <ul class="list-check">
-    <li>Acompte de ${paiement.acompte} % à la commande, le reste à la réception du site, en une fois ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}.</li>
+    <li>Le site se paie en entier à la commande : en une fois, ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}, directement sur la page de paiement.</li>
     <li>Le forfait ${esc(ABO.name)} se paie au mois, sans engagement.</li>
     <li>Une page de visibilité Google se paie par carte, au moment de la commander.</li>
     <li>Un deuxième site : ${fidelite.remiseSecondSite} % de remise sur sa création.</li>

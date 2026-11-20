@@ -16,8 +16,6 @@ const { sourcesMd, INDEPENDANT_DES } = require('../lib/components');
 const { forfaits, paiement, fractionne, creation, marche, bande, types, creationSeule, aLaDemande } = cfg;
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
-const acompte = (p) => eur(Math.round(p * paiement.acompte) / 100);
-const reste = (p) => eur(p - Math.round(p * paiement.acompte) / 100);
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 
 // L'offre : trois sites, un abonnement facultatif (Mini) ou la formule Autonomie, et trois extras.
@@ -162,7 +160,7 @@ Un salon change souvent ses horaires : nocturne, fermeture exceptionnelle, vacan
     resume: 'Vous lancez votre activité : un site sérieux sans y laisser votre trésorerie de départ.',
     h1: 'Site internet pour auto-entrepreneur : bien démarrer sans se ruiner',
     title: 'Site internet pour auto-entrepreneur : bien démarrer | Les Minis Monstres',
-    description: `Vous lancez votre micro-entreprise ? Un site clair pour inspirer confiance et trouver vos premiers clients, dès ${eur(ESS.price)} € avec ${paiement.acompte} % seulement à la commande.`,
+    description: `Vous lancez votre micro-entreprise ? Un site clair pour inspirer confiance et trouver vos premiers clients, dès ${eur(ESS.price)} €, payable ${EN_FOIS}.`,
     lead: 'Quand on démarre seul, on n’a ni réputation ni budget. Un site propre règle le premier problème sans creuser le second.',
     body: `## Pourquoi un site dès le début
 
@@ -183,10 +181,10 @@ Une seule page peut contenir tout cela : c’est le ${ESS.name}, à ${eur(ESS.pr
 
 ## Ménager sa trésorerie
 
-Au démarrage, chaque euro compte. C'est pour cela que le paiement est découpé :
+Au démarrage, chaque euro compte. C'est pour cela que vous pouvez étaler le paiement :
 
-- **${acompte(ESS.price)} € à la commande** pour un ${ESS.name}, soit ${paiement.acompte} % du prix.
-- **Le reste à la réception du site**, en une fois ou ${EN_FOIS}.
+- **${eur(ESS.price)} € pour un ${ESS.name}**, réglés à la commande, en une fois.
+- **Ou ${EN_FOIS}**, directement sur la page de paiement : l’organisme règle le site pour vous, et vous le remboursez petit à petit, selon son accord.
 - **Ensuite, c’est vous qui choisissez** : ${eur(creationSeule.month)} € par mois avec le forfait ${AUTO}, où vous gérez tout vous-même, ou ${eur(mini.month)} € par mois avec le forfait ${mini.name}, sans engagement.
 
 Avec le forfait ${mini.name}, l’hébergement, l’endroit où votre site reste accessible jour et nuit, est compris. Pas encore de nom de domaine (l’adresse de votre site) ? Nous le fournissons pour ${eur(dom)} € de plus par mois. Vous connaissez donc le coût exact avant de vous engager, sans devis à rallonge.
@@ -266,7 +264,7 @@ Chaque site reprend tout ce que contient le précédent. Vos modifications sont 
 
 Vous avez déjà un nom de domaine ? Le forfait reste à ${eur(mini.month)} € par mois. Vous n’en avez pas ? Il est fourni à votre nom pour ${eur(dom)} € de plus, soit ${eur(avecDom)} € par mois.
 
-L’abonnement est facultatif, et il démarre à la réception du site.
+L’abonnement est facultatif, et il démarre le jour où votre site est mis en ligne.
 
 ### 3. Les extras, seulement si besoin
 
@@ -275,7 +273,7 @@ L’abonnement est facultatif, et il démarre à la réception du site.
 
 Rien d’autre n’est vendu en plus. Une refonte complète du site se fait sur devis.
 
-Côté paiement, vous versez ${paiement.acompte} % à la commande et le reste à la réception du site, en une fois ou ${EN_FOIS}.
+Côté paiement, le site se règle en entier en commandant. Sur la page de paiement, vous choisissez de payer en une fois ou ${EN_FOIS}.
 
 ## Trois exemples sur la première année
 
@@ -301,7 +299,7 @@ Vous composez le tout sur la page [créer mon site](/creer-mon-site/), et le tot
     faq: [
       { q: 'Un site gratuit, ça existe ?', a: 'Des outils permettent de publier une page sans payer, mais avec une adresse qui porte le nom de l’outil et souvent de la publicité. Pour une activité professionnelle, une adresse à votre nom reste préférable, et elle n’est jamais gratuite.' },
       { q: 'Pourquoi les prix varient-ils autant d’un prestataire à l’autre ?', a: 'Parce que le temps passé n’est pas le même. Un site dessiné sur mesure par une équipe demande des semaines de travail. Un site bâti sur une base éprouvée, avec une méthode rodée, en demande beaucoup moins. Les deux approches sont valables, pour des besoins différents.' },
-      { q: 'Dois-je tout payer d’un coup ?', a: `Non. Vous réglez ${paiement.acompte} % à la commande. Le reste est dû à la réception du site, en une fois ou ${EN_FOIS}.` },
+      { q: 'Dois-je tout payer d’un coup ?', a: `Pas forcément. Le site se règle à la commande, mais vous pouvez choisir de le payer ${EN_FOIS}, sur la page de paiement, selon l’accord de l’organisme.` },
     ],
     voir: ['site-une-page-ou-site-vitrine', 'creer-son-site-soi-meme-ou-le-faire-faire', 'creer-boutique-en-ligne'],
   },
@@ -611,7 +609,7 @@ Vendre en ligne à des particuliers impose quelques obligations : afficher des *
 
 ## Combien ça coûte
 
-- **Le ${BOU.name} : ${mille(BOU.price)} €**, payés une fois. Il reprend tout le ${VIS.name} et ajoute la boutique complète : le catalogue, le panier, le paiement en ligne sécurisé, la gestion des commandes et les e-mails automatiques. Nous configurons la boutique, puis vous gérez votre catalogue en toute liberté. Vous réglez ${acompte(BOU.price)} € à la commande et ${reste(BOU.price)} € à la réception.
+- **Le ${BOU.name} : ${mille(BOU.price)} €**, payés une fois. Il reprend tout le ${VIS.name} et ajoute la boutique complète : le catalogue, le panier, le paiement en ligne sécurisé, la gestion des commandes et les e-mails automatiques. Nous configurons la boutique, puis vous gérez votre catalogue en toute liberté. Vous la réglez à la commande, d’un coup ou ${EN_FOIS}.
 - **Ensuite, Forfait ${AUTO} ou Forfait ${mini.name}.** Avec le forfait ${AUTO}, vous hébergez la boutique vous-même, sans rien nous payer chaque mois. Avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois, nous gardons votre boutique en ligne et en bon état : l’hébergement (l’endroit où elle reste accessible 24 h/24), des copies de sécurité régulières et les vérifications techniques. Le nom de domaine, si nous le fournissons, ajoute ${eur(dom)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
 
 Le service de paiement prélève de son côté une petite commission sur chaque vente. C'est le cas pour toutes les boutiques en ligne, quelle que soit la solution choisie.
