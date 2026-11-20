@@ -190,6 +190,10 @@ function clientCards({ max = 0, desc = true, enCours = false } = {}) {
 
 // ====================================================================== CRÉER MON SITE
 function creerPage() {
+  return commanderPage({ creer: true }); // une seule page pour choisir et commander (20 novembre 2026)
+}
+// eslint-disable-next-line no-unused-vars
+function ancienneCreerPage() {
   const crumbs = crumb('creer');
   const f = C.faq(FAQ.creation, 'Vos questions sur la création', 'faq-creation');
   const body = `${C.pageHero({
@@ -524,9 +528,9 @@ const ORDER_ERRORS = {
   annule: 'Le paiement a été annulé. Rien n’a été débité : vous pouvez reprendre quand vous voulez.',
   inconnu: 'Quelque chose n’a pas fonctionné. Réessayez, ou écrivez-nous par le formulaire de contact : on finalise la commande avec vous.',
 };
-function commanderPage() {
+function commanderPage({ creer = false } = {}) {
   const S = sections.commander;
-  const crumbs = [HOME, { name: sections.creer.label, path: sections.creer.path }, { name: S.label, path: S.path }];
+  const crumbs = creer ? crumb('creer') : [HOME, { name: sections.creer.label, path: sections.creer.path }, { name: S.label, path: S.path }];
   const t0 = T('vitrine'), f0 = ABO;
   const today0 = round2((t0.price * paiement.acompte) / 100); // la création en entier, payée à la commande
   const field = (name, label, attrs, { req = true, hint = '' } = {}) =>
@@ -538,9 +542,9 @@ function commanderPage() {
     ['rocket', 'Votre site est en ligne', `Sous <span data-order="delai">${esc(t0.delai)}</span> pour le site choisi.`],
   ];
   const body = `${C.pageHero({
-    section: 'commander',
-    h1: 'Votre commande',
-    lead: 'Vérifiez votre choix, donnez vos coordonnées et payez en ligne. C’est tout.',
+    section: creer ? 'creer' : 'commander',
+    h1: creer ? 'Créez votre site' : 'Votre commande',
+    lead: creer ? 'Choisissez votre site et votre forfait, donnez vos coordonnées et payez en ligne. Tout se fait sur cette page.' : 'Vérifiez votre choix, donnez vos coordonnées et payez en ligne. C’est tout.',
     crumbs,
     compact: true,
   })}
@@ -655,6 +659,21 @@ function commanderPage() {
     </aside>
   </div>
 </div></section>`;
+  if (creer) {
+    const f = C.faq(FAQ.creation, 'Vos questions sur la création', 'faq-creation');
+    return {
+      path: sections.creer.path,
+      section: 'creer',
+      bodyClass: 'page-commander page-creer',
+      noMobileBar: true,
+      title: 'Créer mon site internet et devenir visible | Les Minis Monstres',
+      description: `Créez votre site : ${ESS.name} ${creation.prix} €, ${VIS.name} ${creation.visibilite} € ou ${BOU.name} ${euro(creation.boutiquePrix)}, en une fois ou en ${C.lissageTxt} fois. Puis le forfait de votre choix.`,
+      crumbs,
+      body: body + f.html,
+      schema: [f.schema],
+      priority: 0.9,
+    };
+  }
   return {
     path: S.path,
     section: 'commander',
