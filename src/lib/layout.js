@@ -1,5 +1,5 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, sections, types, forfaits, creation, jetonsLia, enService, lissage, creationSeule } = require('../config');
+const { site, sections, types, forfaits, creation, jetonsLia, enService, fractionne, creationSeule } = require('../config');
 let METIERS = [];
 try { METIERS = require('../content/metiers').metiers; } catch (e) { /* pas encore écrit */ }
 const { icon } = require('./icons');
@@ -214,7 +214,7 @@ function liaFlot() {
   const eur = C.euro;
   const questions = [
     ['À quoi sert un site ?', 'À être visible, tout simplement ! Sans site internet, ton activité est comme une jolie vitrine dans une rue où personne ne passe. Avec un site, tes futurs clients te trouvent, sur Google comme sur leur téléphone. Te rendre visible, c’est notre métier à nous, la petite bande !', sections.seo.path, 'Être trouvé sur Google'],
-    ['C’est combien ?', `Bonne nouvelle : tu paies ton site une seule fois ! ${types.map((t) => `${t.name} ${eur(t.price)}`).join(', ')}. Tu peux payer en ${lissage.durees.join(' ou ')} fois sans frais. Ensuite, c’est toi qui choisis : le forfait ${AUTO.name}, ${eur(AUTO.month)} par mois, tu gères tout toi-même. Ou le forfait ${ABO.name}, ${eur(ABO.month)} par mois sans engagement, et on s’occupe de tout (${eur(ABO.month + (ABO.domaine || 0))} si on te fournit le nom de domaine).`, sections.forfaits.path, 'Voir les tarifs'],
+    ['C’est combien ?', `Bonne nouvelle : tu paies ton site une seule fois ! ${types.map((t) => `${t.name} ${eur(t.price)}`).join(', ')}. Tu peux payer en ${fractionne.fois} fois avec ${fractionne.organismes}. Ensuite, c’est toi qui choisis : le forfait ${AUTO.name}, ${eur(AUTO.month)} par mois, tu gères tout toi-même. Ou le forfait ${ABO.name}, ${eur(ABO.month)} par mois sans engagement, et on s’occupe de tout (${eur(ABO.month + (ABO.domaine || 0))} si on te fournit le nom de domaine).`, sections.forfaits.path, 'Voir les tarifs'],
     ['Quel site choisir ?', `Facile ! ${types.map((t) => `${t.name} : ${t.but.toLowerCase()}`).join('. ')}. Tu hésites ? Écris-nous, on choisit ensemble, promis.`, sections.creer.path, 'Créer mon site'],
     ['Qui fait mon site ?', 'C’est Alex ! Il conçoit ton site et vérifie tout. Et nous, sa petite bande, on l’aide chacun à notre façon. Moi, je suis Cerise : je réponds à tes questions avec le sourire.', sections.equipe.path, 'Rencontrer la bande'],
     ['Et pour changer mon site après ?', `Avec le forfait ${ABO.name}, tes modifications sont incluses, youpi ! Tu écris ta demande dans ton espace client, ${C.BRICOU} la clarifie avec toi, et Alex fait la modification.`, sections.accompagnement.path, 'L’accompagnement'],

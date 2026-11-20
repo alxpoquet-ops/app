@@ -209,7 +209,7 @@ function aled08e_cmd_get($id) {
         'code_evenement' => (string) $g('code_evenement'), 'remise' => (int) $g('remise', 0),
         'stripe_session' => (string) $g('stripe_session'), 'stripe_customer' => (string) $g('stripe_customer'), 'stripe_subscription' => (string) $g('stripe_subscription'),
         'stripe_lissage_item' => (string) $g('stripe_lissage_item'), 'lissage_paye' => (int) $g('lissage_paye', 0), 'solde_paye' => (int) $g('solde_paye', 0), 'solde_session' => (string) $g('solde_session'),
-        'paiement_en_cours' => (int) $g('paiement_en_cours', 0), 'reception_payee' => (int) $g('reception_payee', 0),
+        'paiement_en_cours' => (int) $g('paiement_en_cours', 0), 'reception_payee' => (int) $g('reception_payee', 0), 'solde_fois' => (int) $g('solde_fois', 0),
         'journal' => array_values((array) $g('journal', [])),
     ];
     foreach (['prenom', 'nom', 'entreprise', 'adresse', 'code_postal', 'ville', 'telephone', 'email'] as $k) $out[$k] = (string) $g($k);
@@ -580,7 +580,7 @@ function aled08e_cmd_mail_client_payee($c) {
     $delai = aled08e_cmd_delai_type($c);
     $corps = 'Bonjour ' . $c['prenom'] . ",\n\n"
         . "Votre acompte est bien reçu, merci !\n"
-        . "Le reste se règle à la réception de votre site (en une fois, ou en plusieurs fois sans frais), et votre abonnement démarre à ce moment-là.\n"
+        . "Le reste se règle à la réception de votre site (en une fois, ou en 3 ou 4 fois avec Alma ou Klarna), et votre forfait démarre à ce moment-là.\n"
         . 'Référence de la commande : ' . $c['ref'] . "\n\n"
         . "Ce qui se passe maintenant :\n"
         . ($c['domaine'] && !$c['domaine_mien'] ? '1. Je réserve le nom de domaine ' . $c['domaine'] . " à votre nom.\n" : "1. Je prépare l’hébergement de votre site.\n")
@@ -609,7 +609,7 @@ function aled08e_cmd_mail_client_en_ligne($c) {
     $corps = 'Bonjour ' . $c['prenom'] . ",\n\n"
         . "Bonne nouvelle : votre site est en ligne !\n" . ($site ? 'Adresse : ' . $site . "\n" : '') . "\n"
         . ($soldeDu
-            ? 'À la réception, il reste ' . aled08e_euro_txt($solde) . ' pour la création. Vous choisissez : en une fois, ou en ' . implode(' ou ', (array) aled08e_data()['lissageDurees']) . " fois sans frais. Votre abonnement démarre en même temps.\n"
+            ? 'À la réception, il reste ' . aled08e_euro_txt($solde) . ' pour la création. Vous choisissez : en une fois, ou ' . aled08e_fois_txt() . ". Votre forfait démarre à ce moment-là.\n"
                 . (aled08e_stripe_ready()
                     ? "Tout se fait dans votre espace client, onglet « Ma commande » :\n" . aled08e_url() . "#commande\n\n"
                     : "Je vous envoie le lien de paiement dans un e-mail séparé.\n\n")
@@ -637,6 +637,12 @@ function aled08e_cmd_rappel_domaines() {
 add_action('aled08_quotidien', 'aled08e_cmd_rappel_domaines', 20);
 
 /* À la réception : le reste de la création (et le démarrage du forfait) est-il encore à régler ? */
+/* Le paiement en plusieurs fois passe par un organisme externe (Alma, Klarna), sur la page de paiement Stripe :
+ * il avance la somme, le client le rembourse. « en 3 ou 4 fois avec Alma ou Klarna » */
+function aled08e_fois_txt() {
+    $f = (array) (aled08e_data()['fractionne'] ?? []);
+    return 'en ' . ($f['fois'] ?? '3 ou 4') . ' fois avec ' . ($f['organismes'] ?? 'Alma ou Klarna');
+}
 function aled08e_cmd_reception_due($c) {
     return $c['statut'] === 'en_ligne' && empty($c['reception_payee']) && empty($c['solde_paye']) && (float) $c['montants']['solde'] > 0;
 }

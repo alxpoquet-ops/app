@@ -13,7 +13,7 @@
 // Fil rouge : un site internet rend visible. Guides courts, pensés pour le téléphone.
 const cfg = require('../config');
 const { sourcesMd, INDEPENDANT_DES } = require('../lib/components');
-const { forfaits, paiement, lissage, creation, marche, bande, types, creationSeule, aLaDemande } = cfg;
+const { forfaits, paiement, fractionne, creation, marche, bande, types, creationSeule, aLaDemande } = cfg;
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
 const acompte = (p) => eur(Math.round(p * paiement.acompte) / 100);
@@ -30,7 +30,7 @@ const AUTO = creationSeule.name; // sans abonnement
 const pageGoogle = aLaDemande.find((x) => x.id === 'packseo' && !x.retire) || { name: 'Page de visibilité Google', prix: 0 };
 const prixPage = eur(pageGoogle.prix); // la page de visibilité Google, payée une fois
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
-const durees = lissage.durees.join(' ou ');
+const EN_FOIS = `en ${fractionne.fois} fois avec ${fractionne.organismes}`; // par un organisme externe, sur la page de paiement
 // La petite bande : prénom et métier (« Cerise, la secrétaire »).
 const B = (id) => bande.find((b) => b.id === id);
 const qui = (id) => `${B(id).nom}, ${minus(B(id).role)}`;
@@ -186,7 +186,7 @@ Une seule page peut contenir tout cela : c’est le ${ESS.name}, à ${eur(ESS.pr
 Au démarrage, chaque euro compte. C'est pour cela que le paiement est découpé :
 
 - **${acompte(ESS.price)} € à la commande** pour un ${ESS.name}, soit ${paiement.acompte} % du prix.
-- **Le reste à la réception du site**, en une fois ou étalé sur ${durees} mois sans frais.
+- **Le reste à la réception du site**, en une fois ou ${EN_FOIS}.
 - **Ensuite, c’est vous qui choisissez** : ${eur(creationSeule.month)} € par mois avec le forfait ${AUTO}, où vous gérez tout vous-même, ou ${eur(mini.month)} € par mois avec le forfait ${mini.name}, sans engagement.
 
 Avec le forfait ${mini.name}, l’hébergement, l’endroit où votre site reste accessible jour et nuit, est compris. Pas encore de nom de domaine (l’adresse de votre site) ? Nous le fournissons pour ${eur(dom)} € de plus par mois. Vous connaissez donc le coût exact avant de vous engager, sans devis à rallonge.
@@ -275,7 +275,7 @@ L’abonnement est facultatif, et il démarre à la réception du site.
 
 Rien d’autre n’est vendu en plus. Une refonte complète du site se fait sur devis.
 
-Côté paiement, vous versez ${paiement.acompte} % à la commande et le reste à la réception du site, en une fois ou étalé sur ${durees} mois sans frais.
+Côté paiement, vous versez ${paiement.acompte} % à la commande et le reste à la réception du site, en une fois ou ${EN_FOIS}.
 
 ## Trois exemples sur la première année
 
@@ -301,7 +301,7 @@ Vous composez le tout sur la page [créer mon site](/creer-mon-site/), et le tot
     faq: [
       { q: 'Un site gratuit, ça existe ?', a: 'Des outils permettent de publier une page sans payer, mais avec une adresse qui porte le nom de l’outil et souvent de la publicité. Pour une activité professionnelle, une adresse à votre nom reste préférable, et elle n’est jamais gratuite.' },
       { q: 'Pourquoi les prix varient-ils autant d’un prestataire à l’autre ?', a: 'Parce que le temps passé n’est pas le même. Un site dessiné sur mesure par une équipe demande des semaines de travail. Un site bâti sur une base éprouvée, avec une méthode rodée, en demande beaucoup moins. Les deux approches sont valables, pour des besoins différents.' },
-      { q: 'Dois-je tout payer d’un coup ?', a: `Non. Vous réglez ${paiement.acompte} % à la commande. Le reste est dû à la réception du site, en une fois ou en ${durees} mensualités sans frais.` },
+      { q: 'Dois-je tout payer d’un coup ?', a: `Non. Vous réglez ${paiement.acompte} % à la commande. Le reste est dû à la réception du site, en une fois ou ${EN_FOIS}.` },
     ],
     voir: ['site-une-page-ou-site-vitrine', 'creer-son-site-soi-meme-ou-le-faire-faire', 'creer-boutique-en-ligne'],
   },

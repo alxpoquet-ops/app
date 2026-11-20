@@ -368,3 +368,14 @@ Avec le Site Boutique (1 200 €), le client a un onglet « Ma boutique » (`inc
 - Dans « Ma boutique › Paiements », le client clique « Installer Stripe » ou « Installer PayPal » : le connecteur (2.4.0) installe l'extension officielle depuis le répertoire WordPress et l'active, en laissant le moyen de paiement **éteint** tant qu'il n'est pas réglé.
 - Stripe : le client colle ses clés (vérifiées auprès de Stripe) et coche « Je propose ce moyen de paiement ». PayPal : il connecte son compte PayPal depuis les réglages de son site (lien fourni), ou vous le demande.
 - Chez Flore et Chenilles, les deux extensions sont déjà installées et activées (Stripe éteint, PayPal pas encore connecté).
+
+## Le paiement en plusieurs fois (Alma, Klarna)
+
+Depuis le 20 novembre 2026, le « 6 ou 12 fois » maison est arrêté. Le paiement en plusieurs fois passe par un organisme externe, sur la page de paiement Stripe : il vous verse la somme entière tout de suite (moins sa commission) et le client le rembourse.
+
+- **À activer une fois** : dans Stripe, Réglages › Moyens de paiement, activer **Alma** et **Klarna**. Tant qu'ils ne sont pas activés, le client qui choisit « En plusieurs fois » voit un message qui lui propose de payer en une fois.
+- **Côté client** : à la réception du site, onglet « Ma commande », il choisit « En une fois » (carte, et le forfait démarre en même temps) ou « En plusieurs fois ». Dans ce second cas, il paie le reste avec Alma ou Klarna, puis démarre son forfait en un clic.
+- **Côté vous** : un e-mail « Site payé (en plusieurs fois) » arrive dès l'accord de l'organisme. La fiche de la commande le note dans son journal.
+- **Les commandes déjà étalées** (anciens 6 ou 12 fois) continuent jusqu'à leur dernière échéance, sans rien changer.
+
+Code : `aled08e_stripe_solde_fois_session` et `aled08e_stripe_on_solde_fois` dans `includes/stripe.php`. Les organismes proposés se changent avec le filtre `aled08e_stripe_fois_moyens`.

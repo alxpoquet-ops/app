@@ -55,6 +55,7 @@ process.stdout.write(
     // extras à la demande, payés une fois (commandés depuis l'espace client, ajoutés à la prochaine facture)
     aLaDemande: (cfg.aLaDemande || []).map((x) => ({ id: x.id, name: x.name, prix: x.prix, icon: x.icon, desc: x.desc, court: x.court || '', groupe: x.groupe || '', packs: x.packs || [], unite: x.unite || '', types: x.types || [], badge: x.badge || '', retire: !!x.retire, devis: !!x.devis, inclus: x.inclus || [] })),
     lissageDurees: lissage.durees || [6, 12],
+    fractionne: cfg.fractionne || { fois: '3 ou 4', organismes: 'Alma ou Klarna' },
     acompte: paiement.acompte || 25,
     delais: { reponse: delais.reponse || '72 heures', titan: delais.titan || delais.reponse || '72 heures', urgent: delais.urgent || '24 heures' },
     parrainageMois: fidelite.parrainageMois,

@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { site, sections, types, forfaits, annuel, lissage, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande, evenement, delais, creationSeule, extrasGroupes, revisionsNote, phrase } = require('../config');
+const { site, sections, types, forfaits, annuel, lissage, fractionne, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande, evenement, delais, creationSeule, extrasGroupes, revisionsNote, phrase } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
 const { petit, alexPortrait } = require('./bestiaire');
@@ -177,16 +177,17 @@ function typeCards() {
 // Mensualité du site payé en n fois (12 par défaut), arrondie au centime inférieur : jamais plus que le prix.
 // Mensualité du reste (après l'acompte) payé en n fois à la réception du site
 const acompteDe = (price) => Math.round(price * paiement.acompte) / 100;
-const lisse = (price, n = lissage.durees[lissage.durees.length - 1]) => Math.floor(((price - acompteDe(price)) / n) * 100) / 100;
-const LMAX = lissage.durees[lissage.durees.length - 1];
-const lissageTxt = lissage.durees.join(' ou ');
+const lisse = () => 0; // l'ancien étalement maison est arrêté : le paiement en plusieurs fois passe par un organisme externe
+const LMAX = 0;
+const lissageTxt = fractionne.fois;
+const ORGANISMES = fractionne.organismes;
 // « un site une page », « un site vitrine », « une boutique en ligne »
 const unType = (t) => (t.id === 'boutique' ? 'un Site Boutique' : t.id === 'une-page' ? 'un Site Essentiel' : 'un Site Visibilité');
 
 function payBox() {
   return `<ul class="list-check">
     <li><strong>À la commande</strong> : ${paiement.acompte} % du site, soit ${euro(acompteDe(creation.prix))} pour un ${ESSENTIEL.name} à ${euro(creation.prix)}.</li>
-    <li><strong>À la réception du site</strong> : le reste en une fois (${euro(creation.prix - acompteDe(creation.prix))}), ou en ${lissageTxt} fois sans frais, par exemple ${euro(lisse(creation.prix))} par mois pendant ${LMAX} mois.</li>
+    <li><strong>À la réception du site</strong> : le reste en une fois (${euro(creation.prix - acompteDe(creation.prix))}), ou en ${lissageTxt} fois avec ${ORGANISMES}.</li>
     <li><strong>Ensuite</strong> : le forfait ${creationSeule.name}, ${euro(0)} par mois, vous gérez tout vous-même. Ou le forfait ${ABO.name}, ${euro(ABO.month)} par mois, sans engagement : on s’occupe de tout. ${DOMAINE_REGLE}</li>
   </ul>`;
 }
@@ -276,7 +277,7 @@ function offre({ compact = false, choose = true } = {}) {
   return `<div class="offre offre-finale${compact ? ' is-compact' : ''}" id="offre">
   <p class="offre-k"><span>1</span>Créer votre site : payez une seule fois</p>
   <div class="site-cartes">${types.map((t) => siteOffreCarte(t, { compact, choose })).join('')}</div>
-  <p class="offre-sous">${icon('calendar-check')}<span>${paiement.acompte} % à la commande, le reste à la réception. Payable en ${lissageTxt} fois sans frais.</span></p>
+  <p class="offre-sous">${icon('calendar-check')}<span>${paiement.acompte} % à la commande, le reste à la réception. Payable en ${lissageTxt} fois avec ${ORGANISMES}.</span></p>
   ${compact ? '' : `<p class="offre-note">${esc(revisionsNote)}</p>`}
   <p class="offre-k"><span>2</span>Ensuite, le forfait ${esc(creationSeule.name)} ou le forfait ${esc(ABO.name)}</p>
   <div class="formules is-duo">${[creationSeule, ...forfaits].map((f) => formuleCarte(f, { compact })).join('')}</div>
@@ -521,13 +522,13 @@ function formulesChoix({ name = 'b-forfait', court = false } = {}) {
     <span class="cf-badge">${icon('check')}Tout compris</span>
   </div>`;
 }
-// Comment payer le site : en une fois, ou étalé (6 ou 12 fois sans frais). main.js écrit les montants.
+// Comment payer le site : en une fois, ou en plusieurs fois par un organisme externe (choisi à la réception, sur la page de paiement).
 function paiementChoix({ name = 'b-lisse', une = 'non' } = {}) {
-  return `<div class="cf-paie" role="radiogroup" aria-label="Comment payer votre site">
-    <label class="cf-choix"><input type="radio" name="${name}" value="${une}" checked class="cf-input"><span class="cf-carte"><strong>En une fois</strong><small data-sum="p-0" data-order="p-0"></small><span class="cf-coche" aria-hidden="true">${icon('check')}</span></span></label>
-    ${lissage.durees.map((n) => `<label class="cf-choix"><input type="radio" name="${name}" value="${n}" class="cf-input"><span class="cf-carte"><strong>En ${n} fois sans frais</strong><small data-sum="p-${n}" data-order="p-${n}"></small><span class="cf-coche" aria-hidden="true">${icon('check')}</span></span></label>`).join('')}
-  </div>
-  <p class="cf-info" data-lisse-note hidden>${icon('info')}<span>Sans frais. Vous vous engagez le temps du paiement<span data-avec-formule>, et le forfait se règle alors chaque mois</span>.</span></p>`;
+  return `<input type="hidden" name="${name}" value="${une}">
+  <div class="cf-fois">
+    <span class="cf-fois-ico" aria-hidden="true">${icon('calendar-check')}</span>
+    <p><strong>En une fois, ou en ${lissageTxt} fois</strong><span>${paiement.acompte} % aujourd’hui. Le reste à la réception de votre site : en une fois, ou en ${lissageTxt} fois avec ${ORGANISMES}, à choisir sur la page de paiement.</span><small>Le paiement en plusieurs fois est proposé par ${ORGANISMES}, selon leur accord.</small></p>
+  </div>`;
 }
 
 // Cases « options » (une fois) et « extras » (au mois)
@@ -575,7 +576,7 @@ function configurator() {
   const partie = (couleur, titre, texte, attrs = '') => `<div class="cf-partie c-${couleur}"${attrs}><p class="cf-partie-titre">${titre}</p><p class="cf-partie-txt">${texte}</p></div>`;
   return `<div class="builder cf" data-builder="${priceData()}" data-billing-scope>
   <form class="cf-form" data-builder-form>
-    ${partie('butter', 'Créer votre site : payez une seule fois', `Ou en ${lissageTxt} fois sans frais, si vous préférez.`)}
+    ${partie('butter', 'Créer votre site : payez une seule fois', `Ou en ${lissageTxt} fois avec ${ORGANISMES}, si vous préférez.`)}
     ${etape('Quel site voulez-vous ?', 'Exister sur internet, être trouvé sur Google, ou vendre sur internet.', `${siteCarte()}<p class="cf-info c-butter">${icon('info')}<span>${esc(revisionsNote)}</span></p>`)}
     ${partie('lilac', `Ensuite, le forfait ${esc(creationSeule.name)} ou le forfait ${esc(ABO.name)}`, 'Aucune obligation d’abonnement : c’est vous qui choisissez.')}
     ${etape('Qui s’occupe de votre site ?', 'L’hébergement, le nom de domaine, les sauvegardes et les mises à jour : on s’en charge, ou vous le faites vous-même.', gestionChoix())}
@@ -668,7 +669,7 @@ function comparatifTable() {
     ['Modifications', `Révisions illimitées jusqu’à validation du site. Ensuite, incluses avec le forfait ${ABO.name}`, 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
     ['Visibilité Google (être trouvé)', `Comprise dans le ${types[1].name} et le ${types[2].name}. Une page en plus : ${euro(prixPageSeo)}`, 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
-    ['Engagement', `Aucun, et aucune obligation d’abonnement. Seulement le temps du paiement si le reste est payé en ${lissageTxt} fois`, 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
+    ['Engagement', 'Aucun, et aucune obligation d’abonnement', 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
   // Sur téléphone : une carte par ligne, notre réponse visible, les trois autres dans un petit déroulant
@@ -682,7 +683,7 @@ function comparatifTable() {
 module.exports = {
   infoBtn, deroulant, deroulants, listePlus,
   LMAX,
-  lissageTxt,
+  lissageTxt, ORGANISMES,
   unType,
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, sourcesMarche, sourcesMd, sourcesInline, ecartBas, INDEPENDANT_DES, ABO, DELAI_MODIF, optsCreation, optsMois, EXTRAS_PAR_FAMILLE, extrasListe, prixExtra, prixType, optPrice, optionsCompact, extrasDemande, priceData, optionChoices, domainBox,

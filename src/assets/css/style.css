@@ -2873,3 +2873,12 @@ main > .section.section-citation + .section { padding-top: 48px; }
   .nav-bas .nav-link .nav-mimi .petit { width: 30px; height: 30px; }
   .nav-bas .nav-link .nav-txt small, .nav-bas .nav-link > .ico:last-child:not(:first-child) { display: none; }
 }
+
+/* Payer le site : en une fois, ou en plusieurs fois par un organisme externe */
+.cf-fois { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border-radius: 20px; background: var(--card); box-shadow: 0 0 0 2px var(--mint-d) inset; }
+.cf-fois-ico { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: var(--mint); color: var(--mint-dd); }
+.cf-fois-ico .ico { width: 24px; height: 24px; }
+.cf-fois p { margin: 0; display: grid; gap: 4px; }
+.cf-fois strong { color: var(--ink); font-weight: 900; font-size: 1.05rem; }
+.cf-fois span { line-height: 1.5; }
+.cf-fois small { color: var(--muted); font-weight: 700; }

@@ -11,7 +11,7 @@
 // vouvoiement, « site internet », « visibilité sur Google » plutôt que « référencement », « modification » plutôt que « retouche ».
 // Ordre de l'offre, toujours le même : le site (payé une fois), puis Autonomie ou Mini, enfin les extras.
 // Fil rouge : un site internet rend visible, et notre métier est d'apporter cette visibilité. Pages courtes, pensées pour le téléphone.
-const { site, creation, types, forfaits, lissage, paiement, marche, fidelite, clients, bande, creationSeule, aLaDemande } = require('../config');
+const { site, creation, types, forfaits, fractionne, paiement, marche, fidelite, clients, bande, creationSeule, aLaDemande } = require('../config');
 
 // helpers
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
@@ -30,7 +30,7 @@ const { sourcesMd, INDEPENDANT_DES } = require('../lib/components');
 const pageGoogle = aLaDemande.find((x) => x.id === 'packseo' && !x.retire) || { name: 'Page de visibilité Google', prix: 0 };
 const prixPage = eur(pageGoogle.prix); // la page de visibilité Google, payée une fois
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
-const durees = lissage.durees.join(' ou ');
+const EN_FOIS = `en ${fractionne.fois} fois avec ${fractionne.organismes}`; // par un organisme externe, sur la page de paiement
 
 // La petite bande : six Minis Monstres (Pépite, la spécialiste des extras, depuis le 19 novembre 2026). Prénom et métier : « Cerise, la secrétaire ».
 const B = (id) => bande.find((b) => b.id === id);
@@ -125,7 +125,7 @@ Pas de devis à attendre. Tout se lit dans le même ordre.
 2. **Ensuite, Forfait ${AUTO} ou Forfait ${mini.name}** : vous gérez le site vous-même sans rien payer chaque mois, ou nous nous en occupons pour ${eur(mini.month)} € par mois, sans engagement.
 3. **Enfin, les extras, si besoin** : une ${minus(pageGoogle.name)} à ${prixPage} €, une traduction anglaise ou une fonctionnalité spécifique sur devis.
 
-Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, en une fois ou en ${durees} fois sans frais. Le détail est sur la page [tarifs](/tarifs/).
+Vous réglez ${paiement.acompte} % à la commande et le reste à la réception, en une fois ou ${EN_FOIS}. Le détail est sur la page [tarifs](/tarifs/).
 
 ## Les repères du marché, honnêtement
 
@@ -350,7 +350,7 @@ Vos questions avant la commande ne vous engagent à rien. Si notre offre ne corr
 ## Nos engagements
 
 - **Un prix affiché** : ${eur(ESS.price)}, ${eur(VIS.price)} ou ${mille(BOU.price)} € selon le site, le même pour tout le monde.
-- **Aucun abonnement imposé** : le forfait ${mini.name} est facultatif et sans engagement. Seule exception, si vous payez le site en ${durees} fois, vous restez le temps du paiement.
+- **Aucun abonnement imposé** : le forfait ${mini.name} est facultatif et sans engagement.
 - **Le nom de domaine à votre nom** : l’adresse de votre site vous appartient.
 - **Vous repartez avec votre site** : l’export reste possible à tout moment.
 - **Rien en ligne sans vérification** : Alex contrôle votre site, et vous le validez.
@@ -449,7 +449,7 @@ ${bande.map((b) => `- **${nomRole(b)}**, ${APRES[b.id] || minus(b.court)}`).join
 
 ## Si vous arrêtez
 
-Vous arrêtez quand vous voulez, et l’abonnement prend fin à la fin de la période déjà payée. Seule exception : si vous réglez votre site en ${durees} fois, vous restez le temps du paiement.
+Vous arrêtez quand vous voulez, et l’abonnement prend fin à la fin de la période déjà payée.
 
 Votre nom de domaine reste à vous, et nous vous remettons l’export de votre site, pour le faire héberger où vous voulez. Vous ne perdez ni votre adresse, ni le travail déjà fait.
 

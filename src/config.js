@@ -303,7 +303,10 @@ const creationSeule = {
 const annuel = { moisOfferts: 0 }; // 19 novembre 2026 : plus de réduction à l'année (le paiement à l'année n'est plus proposé)
 // Prix du site payable en 6 ou 12 fois sans frais (engagement le temps du paiement ; sinon, aucun engagement).
 // Le paiement en plusieurs fois se fait au mois : l'abonnement passe alors au mois.
-const lissage = { durees: [6, 12] };
+// Le paiement en plusieurs fois passe par un organisme externe (Alma, Klarna), proposé sur la page de paiement Stripe :
+// il avance la somme, nous sommes payés tout de suite. L'ancien étalement maison (6 ou 12 fois) est arrêté (20 novembre 2026).
+const lissage = { durees: [] };
+const fractionne = { fois: '3 ou 4', organismes: 'Alma ou Klarna' };
 // Délai de réponse aux demandes de modification (le même pour tous).
 const delais = { reponse: '48 heures', titan: '72 heures', urgent: '24 heures', evolution: '48 heures' };
 
@@ -442,4 +445,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: 'Le site d’un électricien dans les Ardennes. Il sera en ligne très bientôt.' },
 ];
 
-module.exports = { optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };
+module.exports = { fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };

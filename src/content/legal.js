@@ -4,7 +4,7 @@
 // Règles : aucun tiret long, aucun point-virgule, phrases courtes, rien d'invérifiable. Chaque terme technique est
 // expliqué la première fois qu'il apparaît dans un article. Le nom de marque vient de site.name.
 const cfg = require('../config');
-const { site, paiement, fidelite, forfaits, lissage, types, creation, bande, limites, aLaDemande, creationSeule } = cfg;
+const { site, paiement, fidelite, forfaits, fractionne, types, creation, bande, limites, aLaDemande, creationSeule } = cfg;
 const L = site.legal;
 const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
@@ -25,7 +25,7 @@ const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', 
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1200 → 1 200
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const liste = (l, mot = 'et') => (l.length > 1 ? `${l.slice(0, -1).join(', ')} ${mot} ${l[l.length - 1]}` : l.join(''));
-const durees = lissage.durees.join(' ou ');
+const EN_FOIS = `en ${fractionne.fois} fois avec ${fractionne.organismes}`; // par un organisme externe, sur la page de paiement
 const acompte = (prix) => Math.round(prix * paiement.acompte) / 100;
 const lisse = (prix, n) => Math.floor(((prix - acompte(prix)) / n) * 100) / 100; // échéance arrondie au centime inférieur
 const T = (id) => types.find((t) => t.id === id) || {};
@@ -236,11 +236,11 @@ Le prix de création se paie en deux temps.
 
 - **À la commande** : un acompte de ${paiement.acompte} % du prix du site choisi.
 - **À la réception du site** : le reste, en une fois.
-- **Ou, à la réception, en ${durees} fois sans frais** : le reste est divisé en ${durees} mensualités, au choix du client. Chaque échéance est arrondie au centime inférieur : le total ne dépasse jamais le prix du site. Les prélèvements s’arrêtent d’eux-mêmes après la dernière échéance.
+- **Ou, à la réception, ${EN_FOIS}** : le client choisit cette option sur la page de paiement. L’échéancier est alors proposé par cet organisme, qui donne ou non son accord et applique ses propres conditions. Les Minis Monstres ne sont pas partie à ce contrat de paiement.
 
-Le client choisit, au moment de la commande, de payer le reste en une fois ou en plusieurs fois. Ce choix est ouvert avec le forfait ${mini.name} comme avec le forfait ${AUTO} (article 3).
+Le client choisit, au moment de payer le reste, de le régler en une fois ou en plusieurs fois. Ce choix est ouvert avec le forfait ${mini.name} comme avec le forfait ${AUTO} (article 3).
 
-Exemple pour un ${VIS.name} à ${eur(VIS.price)} €, sans code promo : le client paie ${eur(acompte(VIS.price))} € à la commande. À la réception, il paie ${eur(VIS.price - acompte(VIS.price))} € en une fois, ou ${lissage.durees.map((n) => `${eur(lisse(VIS.price, n))} € par mois pendant ${n} mois`).join(', ou ')}.
+Exemple pour un ${VIS.name} à ${eur(VIS.price)} €, sans code promo : le client paie ${eur(acompte(VIS.price))} € à la commande. À la réception, il paie ${eur(VIS.price - acompte(VIS.price))} € en une fois, ou choisit de les régler ${EN_FOIS}.
 
 Les extras ne suivent pas cette règle : la ${minus(pageGoogle.name)} est payée en entier, par carte, quand le client la commande (article 3).
 
@@ -274,7 +274,7 @@ Un client inscrit avant le ${DATE_OFFRE} garde l’abonnement, les options et le
 
 L’abonnement est sans engagement. Le client peut l’arrêter à tout moment, par e-mail, par message ou avec le bouton prévu dans son espace client. L’arrêt prend effet à la fin de la période déjà payée.
 
-Une seule exception : quand le reste du prix de création est payé en plusieurs fois, le client s’engage le temps du paiement, soit ${durees} mois à partir de la réception du site. S’il arrête avant, le reste du prix de création devient exigible en une fois. Avec le forfait ${AUTO}, les mensualités restent dues de la même façon jusqu’à la dernière. Une fois le site payé, l’abonnement est sans engagement.
+Quand le client paie le reste en plusieurs fois par un organisme externe, ses échéances sont dues à cet organisme, selon le contrat passé avec lui. Cela ne crée aucun engagement de durée sur le forfait.
 
 La fin de l’abonnement met fin à l’hébergement du site par les Minis Monstres, à son entretien et aux modifications. Le client reçoit l’export de son site (textes, images, pages), pour le faire héberger où il veut. Le nom de domaine lui appartient : il peut le transférer vers le prestataire de son choix. L’hébergement par les Minis Monstres s’arrête 30 jours après la fin de l’abonnement.
 

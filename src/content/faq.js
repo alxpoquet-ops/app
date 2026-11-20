@@ -14,16 +14,14 @@
 // Tour global du 19 novembre 2026 : questions regroupées (59 → 44), même ordre que l'offre (le site, puis Autonomie ou Mini,
 // enfin les extras), « visibilité sur Google » plutôt que « référencement », « modification » plutôt que « retouche ».
 const cfg = require('../config');
-const { forfaits, lissage, paiement, fidelite, creation, marche, bande, limites, aLaDemande, types, creationSeule } = cfg;
+const { forfaits, fractionne, paiement, fidelite, creation, marche, bande, limites, aLaDemande, types, creationSeule } = cfg;
 
 const { sourcesInline, INDEPENDANT_DES: INDEP } = require('../lib/components');
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const liste = (l, mot = 'et') => (l.length > 1 ? `${l.slice(0, -1).join(', ')} ${mot} ${l[l.length - 1]}` : l.join(''));
-const durees = lissage.durees.join(' ou ');
-const D1 = lissage.durees[0];
-const LN = lissage.durees[lissage.durees.length - 1];
+const EN_FOIS = `en ${fractionne.fois} fois avec ${fractionne.organismes}`; // par un organisme externe, sur la page de paiement
 const acompte = (prix) => Math.round(prix * paiement.acompte) / 100;
 // Mensualité du lissage, arrondie au centime inférieur (même règle que le serveur).
 const lisse = (prix, n = LN) => Math.floor(((prix - acompte(prix)) / n) * 100) / 100; // mensualité du reste, après l’acompte
@@ -69,12 +67,12 @@ module.exports = {
     { q: 'Je n’ai ni textes ni photos, c’est un problème ?', a: `Non. Vous nous racontez votre métier, et ${plume}, la rédactrice de la bande, aide à en tirer des textes clairs. Pour les photos, nous choisissons des images libres de droits, que vous remplacerez par les vôtres quand vous voudrez.` },
     { q: 'Combien de modifications puis-je demander avant la mise en ligne ?', a: `Autant que vous voulez, jusqu’à ce que vous validiez votre site : textes, photos, couleurs, mise en page. Une fois le site en ligne, les changements passent par le forfait ${mini.name}.` },
     { q: 'Quelle différence avec un site fait par un développeur ?', a: 'Pour un site vitrine ou une petite boutique, le résultat se vaut : moderne, rapide, soigné. Notre méthode est rodée, donc nous allons plus vite et nous coûtons moins cher. Pour une application sur mesure ou un très gros catalogue, un développeur reste le bon choix, et nous vous le dirons.' },
-    { q: 'Comment se passe le paiement du site ?', a: `Vous réglez ${paiement.acompte} % en commandant. Le reste se paie quand vous recevez votre site, d’un coup ou en ${durees} fois sans frais. Si vous prenez le forfait ${mini.name}, il démarre ce jour-là, pas avant.` },
+    { q: 'Comment se passe le paiement du site ?', a: `Vous réglez ${paiement.acompte} % en commandant. Le reste se paie quand vous recevez votre site, d’un coup ou ${EN_FOIS}. Si vous prenez le forfait ${mini.name}, il démarre ce jour-là, pas avant.` },
   ],
   commande: [
     { q: 'Comment ça se passe quand je commande ?', a: `Tout se lit de haut en bas sur la page Créer mon site. D’abord vous choisissez votre site, ensuite le forfait ${AUTO} ou le forfait ${mini.name}, et le total s’affiche. Vous payez l’acompte en ligne, et un e-mail de confirmation arrive aussitôt.` },
-    { q: 'Puis-je payer le site en plusieurs fois ?', a: `Oui, avec ou sans abonnement. Pour un ${VIS.name} à ${eur(VIS.price)} € : ${eur(acompte(VIS.price))} € à la commande, puis ${eur(lisse(VIS.price, D1))} € par mois pendant ${D1} mois, ou ${eur(lisse(VIS.price))} € pendant ${LN} mois, sans frais.` },
-    { q: 'Suis-je obligé de prendre un abonnement ?', a: `Non. Avec le forfait ${AUTO}, vous ne payez rien par mois et vous gérez votre site vous-même. Le forfait ${mini.name} est facultatif et s’arrête quand vous le décidez. Seule exception : si vous payez le site en ${durees} fois, vous restez le temps de ce paiement.` },
+    { q: 'Puis-je payer le site en plusieurs fois ?', a: `Oui, avec ou sans abonnement. Vous réglez ${paiement.acompte} % à la commande. À la réception, sur la page de paiement, vous choisissez de payer le reste en une fois, ou ${EN_FOIS}. Ce sont eux qui vous proposent l’échéancier et qui donnent leur accord, en quelques secondes.` },
+    { q: 'Suis-je obligé de prendre un abonnement ?', a: `Non. Avec le forfait ${AUTO}, vous ne payez rien par mois et vous gérez votre site vous-même. Le forfait ${mini.name} est facultatif et s’arrête quand vous le décidez.` },
     { q: 'Comment sont faites les factures ?', a: 'À chaque paiement, Stripe, le service de paiement en ligne, vous envoie la facture par e-mail. Vous la retrouvez aussi dans votre espace client. La TVA n’y figure pas, car l’entreprise est en franchise de TVA (article 293 B du CGI).' },
     { q: 'Que se passe-t-il si j’arrête ?', a: 'Votre abonnement se termine à la fin de la période en cours. Vous gardez votre nom de domaine (l’adresse de votre site) et vous recevez l’export de votre site, une copie complète prête à installer ailleurs. Le site reste en ligne encore 30 jours, le temps de déménager.' },
     { q: 'Et si je me rétracte ?', a: 'Vous avez 14 jours, par simple e-mail. Comme le travail commence tout de suite à votre demande, vous payez seulement ce qui est déjà fait, au prorata. Le nom de domaine déjà réservé reste à votre nom pour un an, et à votre charge.' },

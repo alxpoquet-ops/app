@@ -211,10 +211,13 @@ function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
         }
     }
     $lib = ($type ? $type['label'] : 'site') . ', commande ' . $c['ref'];
+    $dejaPaye = !empty($c['solde_fois']); // le reste a été payé en plusieurs fois par un organisme externe : il ne reste que le forfait
+    if ($dejaPaye) $n = 0;
+    if ($dejaPaye && !$items) return new WP_Error('aled08_stripe', 'Rien à régler pour cette commande.');
     if ($n) $items[] = $recurring('Reste de la création en ' . $n . ' fois sans frais (' . $lib . ')', $m['lissage_mensualite'], 'lissage');
-    else $items[] = $once('Reste de la création (' . (100 - (int) $D['acompte']) . ' %) : ' . $lib, $m['solde'], 'solde');
+    elseif (!$dejaPaye) $items[] = $once('Reste de la création (' . (100 - (int) $D['acompte']) . ' %) : ' . $lib, $m['solde'], 'solde');
     $meta = ['reception' => (string) $cid, 'ref' => $c['ref'], 'lissage' => (string) $n];
-    $sansAbo = $offert && !$n; // forfait offert (ou création seule) et reste en une fois : simple paiement
+    $sansAbo = $offert && !$n && !$dejaPaye; // forfait offert (ou création seule) et reste en une fois : simple paiement
     $params = [
         'mode' => $sansAbo ? 'payment' : 'subscription',
         'locale' => 'fr',
@@ -236,8 +239,65 @@ function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
     if (is_wp_error($r)) return $r;
     if (empty($r['url'])) return new WP_Error('aled08_stripe', 'Stripe n’a pas renvoyé d’adresse de paiement.');
     update_post_meta($cid, '_aled08_solde_session', $r['id'] ?? '');
-    aled08e_cmd_journal($cid, 'Paiement de réception ouvert : ' . ($n ? 'reste en ' . $n . ' fois (' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois)' : 'reste en une fois (' . aled08e_euro_txt($m['solde']) . ')') . ($expire ? ', lien valable 24 heures' : '') . '.');
+    aled08e_cmd_journal($cid, 'Paiement de réception ouvert : ' . ($dejaPaye ? 'démarrage du forfait (le reste est déjà payé en plusieurs fois)' : ($n ? 'reste en ' . $n . ' fois (' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois)' : 'reste en une fois (' . aled08e_euro_txt($m['solde']) . ')')) . ($expire ? ', lien valable 24 heures' : '') . '.');
     return $r['url'];
+}
+/* Le reste de la création payé en plusieurs fois par un organisme externe (Alma, Klarna) : une page de paiement Stripe qui ne
+ * propose que ces moyens-là. L'organisme nous verse la somme entière tout de suite, et le client le rembourse.
+ * Le forfait, lui, se démarre ensuite (ces moyens de paiement ne savent pas porter un abonnement). */
+function aled08e_stripe_fois_moyens() { return (array) apply_filters('aled08e_stripe_fois_moyens', ['alma', 'klarna']); }
+function aled08e_stripe_solde_fois_session($cid) {
+    $c = aled08e_cmd_get($cid);
+    if (!$c) return new WP_Error('aled08_stripe', 'Commande inconnue.');
+    if (!aled08e_cmd_reception_due($c) || $c['solde_fois']) return new WP_Error('aled08_stripe', 'Rien à régler pour cette commande.');
+    $m = aled08e_cmd_montants_reception($c, 0);
+    $type = aled08e_type($c['type']);
+    $D = aled08e_data();
+    $lib = ($type ? $type['label'] : 'site') . ', commande ' . $c['ref'];
+    $params = [
+        'mode' => 'payment',
+        'locale' => 'fr',
+        'payment_method_types' => aled08e_stripe_fois_moyens(),
+        'client_reference_id' => (string) $cid,
+        'metadata' => ['solde_fois' => (string) $cid, 'ref' => $c['ref']],
+        'line_items' => [['quantity' => 1, 'price_data' => ['currency' => 'eur', 'unit_amount' => aled08e_stripe_cents($m['solde']), 'product_data' => ['name' => 'Reste de la création (' . (100 - (int) $D['acompte']) . ' %) : ' . $lib, 'metadata' => ['aled08' => 'solde']]]]],
+        'success_url' => aled08e_url(['solde' => 'fois_ok']) . '#commande',
+        'cancel_url' => aled08e_url() . '#commande',
+    ];
+    $cus = $c['stripe_customer'] ?: ($c['user'] ? aled08e_meta($c['user'], 'stripe_customer') : '');
+    if ($cus) $params['customer'] = $cus;
+    else { $params['customer_email'] = $c['email']; $params['customer_creation'] = 'always'; }
+    aled08e_stripe_expirer_session($c['solde_session']);
+    $r = aled08e_stripe_request('POST', '/v1/checkout/sessions', $params, 'fois-' . $cid . '-' . wp_generate_password(10, false));
+    if (is_wp_error($r)) { aled08e_cmd_journal($cid, 'Paiement en plusieurs fois impossible à ouvrir : ' . mb_substr($r->get_error_message(), 0, 200)); return $r; }
+    if (empty($r['url'])) return new WP_Error('aled08_stripe', 'Stripe n’a pas renvoyé d’adresse de paiement.');
+    update_post_meta($cid, '_aled08_solde_session', $r['id'] ?? '');
+    aled08e_cmd_journal($cid, 'Paiement du reste en plusieurs fois ouvert (' . aled08e_euro_txt($m['solde']) . ', ' . implode(' ou ', aled08e_stripe_fois_moyens()) . ').');
+    return $r['url'];
+}
+/* L'organisme a accepté et nous a payés : le site est réglé. Sans forfait à démarrer, la réception est close ;
+ * sinon le client démarre son forfait depuis son espace. */
+function aled08e_stripe_on_solde_fois($s) {
+    $cid = (int) $s['metadata']['solde_fois'];
+    $c = aled08e_cmd_get($cid);
+    if (!$c) return 'reste en plusieurs fois : commande inconnue';
+    if (($s['payment_status'] ?? '') !== 'paid') { aled08e_cmd_journal($cid, 'Paiement en plusieurs fois : en attente de l’accord de l’organisme.'); return $c['ref'] . ' : plusieurs fois, en attente'; }
+    if ($c['solde_fois'] || $c['solde_paye']) return $c['ref'] . ' : reste déjà noté payé';
+    update_post_meta($cid, '_aled08_solde_fois', 1);
+    $cus = aled08e_stripe_id($s['customer'] ?? '');
+    if ($cus) { update_post_meta($cid, '_aled08_stripe_customer', $cus); aled08e_stripe_noter_customer($c['user'], $cus); }
+    $solde = aled08e_euro_txt($c['montants']['solde']);
+    $sansForfait = aled08e_est_seule($c['forfait']) || ($c['user'] && aled08e_meta($c['user'], 'offert') === '1');
+    if ($sansForfait) {
+        update_post_meta($cid, '_aled08_solde_paye', 1);
+        update_post_meta($cid, '_aled08_reception_payee', 1);
+        aled08e_cmd_journal($cid, 'Reste payé en plusieurs fois par un organisme externe (' . $solde . ', versé en entier). Pas de forfait à démarrer.');
+        aled08e_stripe_mail_owner('Site payé (en plusieurs fois) : commande ' . $c['ref'], 'Commande ' . $c['ref'] . ' (' . aled08e_cmd_nom($c) . ') : le reste de ' . $solde . " est payé. Le client a choisi le paiement en plusieurs fois : l’organisme vous verse la somme entière, moins sa commission.\n\nPas de forfait à démarrer. S’il est en forfait Autonome, remettez-lui le code du site.\n\nFiche : " . aled08e_cmd_admin_url($cid) . "\n");
+        return $c['ref'] . ' : reste payé en plusieurs fois, réception close';
+    }
+    aled08e_cmd_journal($cid, 'Reste payé en plusieurs fois par un organisme externe (' . $solde . ', versé en entier). Le client doit encore démarrer son forfait.');
+    aled08e_stripe_mail_owner('Site payé (en plusieurs fois) : commande ' . $c['ref'], 'Commande ' . $c['ref'] . ' (' . aled08e_cmd_nom($c) . ') : le reste de ' . $solde . " est payé. Le client a choisi le paiement en plusieurs fois : l’organisme vous verse la somme entière, moins sa commission.\n\nIl lui reste à démarrer son forfait, depuis son espace (onglet « Ma commande »).\n\nFiche : " . aled08e_cmd_admin_url($cid) . "\n");
+    return $c['ref'] . ' : reste payé en plusieurs fois, forfait à démarrer';
 }
 /* Ancien nom (lien copié depuis l'administration) : le reste en une fois */
 function aled08e_stripe_solde_session($cid, $expire = 0) { return aled08e_stripe_reception_session($cid, 0, $expire); }
@@ -274,7 +334,11 @@ add_action('template_redirect', function () {
     if (!$c || $c['user'] !== $uid) $back();
     if ($solde) {
         if (!$nonce('_aled08e_solde', 'aled08e_solde_' . $cid) || !aled08e_cmd_reception_due($c)) $back();
-        $url = aled08e_stripe_reception_session($cid, (int) ($_POST['reste'] ?? 0));
+        $reste = sanitize_key((string) wp_unslash($_POST['reste'] ?? '0'));
+        if ($reste === 'fois') {
+            $url = aled08e_stripe_solde_fois_session($cid);
+            if (is_wp_error($url)) { wp_safe_redirect(aled08e_url(['m' => 'fois_erreur']) . '#commande', 303); exit; }
+        } else $url = aled08e_stripe_reception_session($cid, (int) $reste);
     } else {
         if (!$nonce('_aled08e_payer', 'aled08e_payer_' . $cid) || $c['statut'] !== 'attente_paiement' || $c['paiement_en_cours']) $back();
         $url = aled08e_stripe_checkout($cid);
@@ -350,6 +414,7 @@ function aled08e_stripe_traiter_event($event) {
 /* Session de paiement terminée : commande payée (abonnement) ou solde payé (paiement) */
 function aled08e_stripe_on_checkout($s) {
     if (!empty($s['metadata']['aled08_direct']) && function_exists('aled08e_pd_on_paye')) return aled08e_pd_on_paye($s); // extra, emplacements : payés tout de suite
+    if (!empty($s['metadata']['solde_fois'])) return aled08e_stripe_on_solde_fois($s);
     if (!empty($s['metadata']['reception'])) return aled08e_stripe_on_reception($s);
     if (($s['mode'] ?? '') === 'payment' && !empty($s['metadata']['solde'])) {
         $cid = (int) ($s['metadata']['solde'] ?? 0);
@@ -412,7 +477,7 @@ function aled08e_stripe_on_checkout($s) {
     return $c['ref'] . ' : payée';
 }
 function aled08e_stripe_on_checkout_failed($s) {
-    $cid = (int) ($s['metadata']['commande'] ?? ($s['metadata']['solde'] ?? ($s['client_reference_id'] ?? 0)));
+    $cid = (int) ($s['metadata']['commande'] ?? ($s['metadata']['solde'] ?? ($s['metadata']['solde_fois'] ?? ($s['client_reference_id'] ?? 0))));
     $c = $cid ? aled08e_cmd_get($cid) : null;
     if (!$c) return 'échec : commande inconnue';
     delete_post_meta($cid, '_aled08_paiement_en_cours');
@@ -604,7 +669,7 @@ function aled08e_stripe_on_reception($s) {
         if ($n) aled08e_stripe_trouver_lissage($cid, $sub);
     }
     if ($c['user']) { update_user_meta($c['user'], 'aled08_paiement', $n ? 'mois' : ($c['periode'] === 'annee' ? 'annee' : 'mois')); }
-    $quoi = $n ? 'reste en ' . $n . ' fois (' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois)' : 'reste payé en une fois (' . aled08e_euro_txt($m['solde']) . ')';
+    $quoi = $n ? 'reste en ' . $n . ' fois (' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois)' : (!empty($c['solde_fois']) ? 'reste déjà payé en plusieurs fois par un organisme externe' : 'reste payé en une fois (' . aled08e_euro_txt($m['solde']) . ')');
     $seule = aled08e_est_seule($c['forfait']);
     aled08e_cmd_journal($cid, 'Réception réglée par Stripe : ' . $quoi . ($seule ? ($n ? ' (création seule : l’abonnement Stripe ne porte que les mensualités du site).' : ' (création seule, pas d’abonnement).') : ', abonnement démarré.'));
     aled08e_stripe_mail_owner('Réception réglée : commande ' . $c['ref'], 'Commande ' . $c['ref'] . ' (' . aled08e_cmd_nom($c) . ') : ' . $quoi . ($seule ? ". Création seule : pas d’abonnement. Remettez le code du site au client (fichiers et sauvegarde complète).\n\nFiche : " : ". L’abonnement a démarré.\n\nFiche : ") . aled08e_cmd_admin_url($cid) . "\n");

@@ -14,7 +14,7 @@
 // 'base' (l'abonnement Mini), ou l'id d'un extra de config.aLaDemande encore proposé ('packseo', 'anglais', 'specifique').
 // Le prix affiché vient de config.js. Chaque « pourquoi » doit coller à ce qui est conseillé.
 // (Le code événement a été retiré le 17 novembre 2026 : un seul champ « Code promo » à la commande ; le parrainage est retiré.)
-const { creation, forfaits, paiement, lissage, marche, bande, evenement, types, creationSeule } = require('../config');
+const { creation, forfaits, paiement, fractionne, marche, bande, evenement, types, creationSeule } = require('../config');
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
@@ -28,7 +28,7 @@ const prix = eur(ESS.price); // le Site Essentiel
 const prixVis = eur(VIS.price); // le Site Visibilité
 const prixBoutique = mille(BOU.price); // le Site Boutique
 const pagesComprises = creation.pages; // nombre maximal de pages du Site Visibilité
-const durees = lissage.durees.join(' ou ');
+const EN_FOIS = `en ${fractionne.fois} fois avec ${fractionne.organismes}`; // par un organisme externe, sur la page de paiement
 const acompte = `${paiement.acompte} %`;
 const marcheVitrine = `${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €`;
 const remise = `${evenement.remise} %`; // le code événement, sur la création du site
@@ -106,7 +106,7 @@ Un tarif change, une nouvelle photo arrive ? Avec le forfait ${mini.name}, envoy
 - **Le site, payé une fois** : ${prix} € pour le ${ESS.name}, ${prixVis} € pour le ${VIS.name}.
 - **Ensuite** : le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement.
 
-Vous versez ${acompte} à la commande, puis le reste à la réception, d’un coup ou en ${durees} fois sans frais.
+Vous versez ${acompte} à la commande, puis le reste à la réception, d’un coup ou ${EN_FOIS}.
 
 Pour comparer, un site vitrine de ${marche.pagesCompare} pages confié à un indépendant se paie en général entre ${marcheVitrine}, d’après des fourchettes publiées par des prestataires (les [sources](/pourquoi-moins-cher/) sont citées). Tout est détaillé sur la page [tarifs](/tarifs/).`,
     faq: [
@@ -260,7 +260,7 @@ Vous nous envoyez vos photos et quelques notes sur chaque pièce. La petite band
 - **Le site, payé une fois** : ${prixVis} € le ${VIS.name} pour la galerie, ${prixBoutique} € le ${BOU.name} pour vendre en ligne.
 - **Ensuite** : le forfait ${AUTO} ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
 
-Vous réglez ${acompte} en commandant, puis le solde à la réception, en une fois ou en ${durees} fois sans frais. Une nouvelle collection à présenter ? Avec le forfait ${mini.name}, c’est une modification incluse.`,
+Vous réglez ${acompte} en commandant, puis le solde à la réception, en une fois ou ${EN_FOIS}. Une nouvelle collection à présenter ? Avec le forfait ${mini.name}, c’est une modification incluse.`,
     faq: [
       { q: 'Faut-il un statut pour vendre ses créations en ligne ?', a: 'Oui, dès que vous vendez de façon régulière. La micro-entreprise est la solution la plus courante pour démarrer. Les artistes auteurs ont un régime à part : renseignez-vous auprès de l’Urssaf avant d’ouvrir la boutique.' },
       { q: 'Mes photos sont-elles protégées une fois en ligne ?', a: 'Vos œuvres et vos photos restent à vous : le droit d’auteur s’applique sans aucune démarche. Nous publions des images assez grandes pour être belles à l’écran, sans mettre en ligne vos fichiers en pleine qualité.' },
@@ -339,7 +339,7 @@ Un tarif d’été ou une date de fermeture ? Avec le forfait ${mini.name}, vous
     faq: [
       { q: 'Le site peut-il afficher mes disponibilités ?', a: 'Si vous tenez déjà un calendrier en ligne, le site peut y renvoyer. Sinon, la demande de séjour suffit souvent : vous gardez la main sur votre planning.' },
       { q: 'J’ai deux gîtes sur le même terrain, faut-il deux sites ?', a: 'Non. Un seul site présente les deux, chacun sur sa page, avec ses photos et ses tarifs. Vous n’avez qu’un site à faire vivre.' },
-      { q: 'Combien coûte un site pour un gîte ?', a: `${prixVis} € pour un ${VIS.name}, jusqu’à ${pagesComprises} pages, ou ${prix} € pour un ${ESS.name}. Le site peut se régler en ${durees} fois sans frais. Le forfait ${mini.name}, à ${eur(mini.month)} € par mois, reste facultatif.` },
+      { q: 'Combien coûte un site pour un gîte ?', a: `${prixVis} € pour un ${VIS.name}, jusqu’à ${pagesComprises} pages, ou ${prix} € pour un ${ESS.name}. Le site peut se régler ${EN_FOIS}. Le forfait ${mini.name}, à ${eur(mini.month)} € par mois, reste facultatif.` },
     ],
     voir: ['/guides/fiche-google-entreprise/', '/tarifs/', '/guides/choisir-nom-de-domaine/'],
   },
@@ -410,7 +410,7 @@ Avec le forfait ${mini.name}, ces changements ne vous demandent qu’un message 
 - **Le site, une seule fois** : ${prixVis} € le ${VIS.name}, sans boutique, ou ${prixBoutique} € le ${BOU.name}.
 - **Puis** : le forfait ${AUTO}, où vous gérez tout, ou le forfait ${mini.name}, pour ${eur(mini.month)} € par mois.
 
-Vous versez ${acompte} à la commande et le reste à la réception, en une fois ou en ${durees} mensualités sans frais. Les extras possibles sont détaillés sur la page [tarifs](/tarifs/).`,
+Vous versez ${acompte} à la commande et le reste à la réception, en une fois ou ${EN_FOIS}. Les extras possibles sont détaillés sur la page [tarifs](/tarifs/).`,
     faq: [
       { q: 'J’ai déjà une page sur les réseaux sociaux, ai-je besoin d’un site ?', a: 'Les deux se complètent. Sur les réseaux, vos horaires et vos produits se noient vite sous les publications. Le site garde l’essentiel au même endroit, à votre nom.' },
       { q: 'Comment fonctionne le retrait en magasin ?', a: 'Le client choisit ses produits, paie en ligne et coche le retrait au moment de valider. Vous recevez la commande par e-mail, et il passe la prendre aux horaires que vous avez fixés.' },
@@ -482,14 +482,14 @@ Avec le forfait ${mini.name}, le président, la secrétaire ou le trésorier env
 
 ## Un budget qui se vote
 
-- **Le site** : ${prix} € pour un ${ESS.name}, avec ${acompte} à la commande et le reste à la réception, ou étalé sur ${durees} mois sans frais.
+- **Le site** : ${prix} € pour un ${ESS.name}, avec ${acompte} à la commande et le reste à la réception, ou ${EN_FOIS}.
 - **Ensuite, au choix** : le forfait ${AUTO}, si un bénévole gère le site, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
 
 Pour la plupart des associations, une page suffit, sans aucun extra. Avec plusieurs sections, comme le foot, la gym et la randonnée, chacune peut avoir sa page grâce au ${VIS.name}, à ${prixVis} €.
 
 Une adresse de site au nom de l’association fait aussi sérieux sur un dossier de subvention. Le guide pour [choisir un nom de domaine](/guides/choisir-nom-de-domaine/) vous aide à la trouver.`,
     faq: [
-      { q: 'Notre budget est très serré, que faut-il prévoir ?', a: `Le ${ESS.name} coûte ${prix} €, une seule fois, et peut s’étaler sur ${durees} mois. Ensuite, soit un bénévole gère le site avec le forfait ${AUTO}, sans rien payer chaque mois, soit vous prenez le forfait ${mini.name}, à ${eur(mini.month)} € par mois.` },
+      { q: 'Notre budget est très serré, que faut-il prévoir ?', a: `Le ${ESS.name} coûte ${prix} €, une seule fois, et peut se régler ${EN_FOIS}. Ensuite, soit un bénévole gère le site avec le forfait ${AUTO}, sans rien payer chaque mois, soit vous prenez le forfait ${mini.name}, à ${eur(mini.month)} € par mois.` },
       { q: 'Qui peut demander des changements sur le site ?', a: 'Le bureau décide qui reçoit les codes de l’espace client. À chaque changement d’équipe, il suffit de mettre à jour l’adresse e-mail et le mot de passe du compte.' },
       { q: 'Peut-on recevoir des dons ou des adhésions en ligne ?', a: 'Oui, par un bouton qui mène vers le service de paiement que vous utilisez déjà pour vos cotisations. Sinon, un bulletin à télécharger suffit pour commencer.' },
       { q: 'Le site peut-il servir pour un événement, comme un festival ?', a: 'Oui. Une page dédiée présente le programme, les horaires, l’accès et les partenaires. Après l’événement, elle reste en ligne avec les photos.' },
