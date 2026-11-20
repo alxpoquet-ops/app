@@ -932,6 +932,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
               <p class="esp-warn">Cette commande est annulée. Une question ? Écrivez-moi, je vous réponds vite.</p>
             <?php endif; ?>
           </div>
+          <?php echo aled08e_chantier_html($cmd); // phpcs:ignore ?>
           <?php echo aled08e_brief_html($cmd); // phpcs:ignore ?>
 
           <p class="app-sub">Votre site</p>

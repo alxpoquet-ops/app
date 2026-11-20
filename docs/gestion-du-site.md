@@ -392,3 +392,12 @@ Il reste à saisir une fois, dans Réglages de l'espace client › Mise en ligne
 Ces valeurs sont enregistrées dans la base du site, jamais affichées ensuite. Les boutons « Tester OVH » et « Tester cPanel » disent si tout est bon.
 
 L'atelier (`includes/atelier.php`, route `/wp-json/aled08/v1/atelier`, réservée à l'administrateur) transmet une action au site d'un client, signée avec sa clé de liaison. Le connecteur 2.9.0 y répond avec `atelier_rest` (toute l'interface REST du site, sauf les comptes et les mots de passe d'application) et `atelier_image`. Un seul branchement de Claude, celui des Minis Monstres, suffit donc pour tous les sites.
+
+## Les chantiers : le site se crée sans Alex (20 novembre 2026)
+
+Après sa commande, le client remplit le questionnaire. L'atelier (une tâche programmée de Claude, toutes les deux heures de 7 h à 21 h) lit `/wp-json/aled08/v1/atelier/chantiers`, pose ses questions au client si besoin (e-mail + bloc « Nos questions pour votre site » dans l'onglet « Ma commande », où le client répond), fait le visuel par l'atelier, puis envoie à Alex le seul e-mail du parcours : « Site prêt à vérifier ». Alex peaufine et passe la commande « En ligne ».
+
+- Code : `includes/atelier.php` (routes `atelier/chantiers` et `atelier/chantier`, états dans `_aled08_chantier`, échanges dans `_aled08_chantier_fil`).
+- Tant que `aled08_chantier_auto` vaut 1 (par défaut), l'e-mail « Questionnaire reçu » n'est plus envoyé à Alex.
+- Un client qui ne répond pas reçoit un rappel au bout de 3 jours, une seule fois.
+- La tâche programmée doit avoir le connecteur « Mini monstres » : il se règle dans claude.ai, sur la tâche elle-même.

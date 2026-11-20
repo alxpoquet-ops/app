@@ -1067,3 +1067,10 @@ button.is-confirmer.is-confirmer, .btn.is-confirmer.is-confirmer, .req-annul .li
 }
 @media (max-width: 380px) { .bg-nav a.bg-lien { font-size: .84rem; gap: 6px; } .bg-nav a.bg-lien svg { width: 17px; height: 17px; } }
 @media (min-width: 760px) { .bg-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+/* Les questions de l'atelier pendant la création du site */
+.esp-chantier { margin: 20px 0; padding: 16px; border-radius: 16px; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .12); }
+.esp-chantier-msg { margin: 10px 0; padding: 10px 14px; border-radius: 14px; background: rgba(255, 255, 255, .06); line-height: 1.5; overflow-wrap: anywhere; }
+.esp-chantier-msg.is-client { margin-left: 24px; background: rgba(255, 170, 200, .14); }
+.esp-chantier-form { margin-top: 12px; }
+.esp-chantier-form textarea { width: 100%; }

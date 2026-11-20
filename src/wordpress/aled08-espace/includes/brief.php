@@ -153,7 +153,8 @@ add_action('template_redirect', function () {
     delete_post_meta($cid, '_aled08_brief_brouillon');
     update_post_meta($cid, '_aled08_brief_le', current_time('mysql'));
     aled08e_cmd_journal($cid, $premiere ? 'Questionnaire de création reçu.' : 'Questionnaire de création mis à jour.');
-    wp_mail(aled08e_to(), ($premiere ? 'Questionnaire reçu : ' : 'Questionnaire modifié : ') . aled08e_cmd_nom($cmd) . ' (' . $cmd['ref'] . ')',
+    if ($premiere) delete_post_meta($cid, '_aled08_chantier'); elseif (aled08e_chantier_etat($cid) === 'question') update_post_meta($cid, '_aled08_chantier', 'reponse');
+    if (!function_exists('aled08e_chantier_auto') || !aled08e_chantier_auto()) wp_mail(aled08e_to(), ($premiere ? 'Questionnaire reçu : ' : 'Questionnaire modifié : ') . aled08e_cmd_nom($cmd) . ' (' . $cmd['ref'] . ')',
         aled08e_brief_texte($cid) . "\n\nFichier complet (pour générer le site) : " . add_query_arg('aled08e_brief', $cid, home_url('/')) . "\n", aled08e_mail_headers());
     $back($echec ? 'brief_photos' : ($premiere ? 'brief_ok' : 'brief_maj'));
 }, 5);
