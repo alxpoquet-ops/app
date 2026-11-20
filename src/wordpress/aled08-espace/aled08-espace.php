@@ -203,6 +203,7 @@ require_once __DIR__ . '/includes/bienvenue.php';
 require_once __DIR__ . '/includes/relier.php';
 require_once __DIR__ . '/includes/pose.php';
 require_once __DIR__ . '/includes/atelier.php';
+require_once __DIR__ . '/includes/mails.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
 require_once __DIR__ . '/includes/mirette.php';

@@ -287,21 +287,8 @@ function aled08e_essai_faire(WP_REST_Request $req) {
         return new WP_REST_Response(['ok' => true], 200);
     }
     if ($faire === 'connexion') {
-        // un lien à usage unique, valable 10 minutes, pour voir l'espace comme ce client d'essai
-        $j = wp_generate_password(40, false, false);
-        set_transient('aled08e_essai_' . hash('sha256', $j), (int) $c['user'], 10 * MINUTE_IN_SECONDS);
-        return new WP_REST_Response(['ok' => true, 'lien' => add_query_arg('aled08e_essai', $j, aled08e_url())], 200);
+        // le même lien de connexion en un clic que dans l'e-mail de bienvenue, valable un jour
+        return new WP_REST_Response(['ok' => true, 'lien' => aled08e_clic_lien((int) $c['user'], 1)], 200);
     }
     return new WP_Error('aled08_essai', 'À faire inconnu.', ['status' => 400]);
 }
-add_action('init', function () {
-    if (empty($_GET['aled08e_essai'])) return;
-    $j = preg_replace('/[^A-Za-z0-9]/', '', (string) wp_unslash($_GET['aled08e_essai']));
-    $k = 'aled08e_essai_' . hash('sha256', $j);
-    $uid = (int) get_transient($k);
-    delete_transient($k);
-    if (!$uid || get_user_meta($uid, 'aled08_essai', true) !== '1' || user_can($uid, 'edit_posts')) return;
-    wp_set_auth_cookie($uid, false);
-    wp_safe_redirect(aled08e_url());
-    exit;
-}, 3);

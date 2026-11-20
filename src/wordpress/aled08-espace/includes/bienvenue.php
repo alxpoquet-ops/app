@@ -10,7 +10,7 @@ defined('ABSPATH') || exit;
 function aled08e_bienvenue_expediteur() { return (string) apply_filters('aled08e_bienvenue_from', 'contact@lesminismonstres.fr'); }
 
 /* L'e-mail, en HTML (tableaux et styles en ligne : c'est ce que les messageries affichent bien) */
-function aled08e_bienvenue_html($u, $mdp) {
+function aled08e_bienvenue_html($u, $mdp, $clic = '') {
     $D = aled08e_data();
     $uid = (int) $u->ID;
     $prenom = aled08e_prenom($u);
@@ -23,6 +23,7 @@ function aled08e_bienvenue_html($u, $mdp) {
     $site = (string) aled08e_meta($uid, 'site');
     $host = $site ? preg_replace('/^www\./', '', (string) wp_parse_url($site, PHP_URL_HOST)) : '';
     $espace = aled08e_url();
+    $clic = $clic ?: $espace;
     $logo = get_template_directory_uri() . '/assets/img/logo-192.png';
     $e = 'esc_html';
     $ligne = function ($txt) { return '<tr><td style="padding:5px 0;font-size:15px;line-height:1.5;color:#ECE9FF;"><span style="color:#7BDDB1;font-weight:bold;">&#10003;</span>&nbsp; ' . esc_html($txt) . '</td></tr>'; };
@@ -36,16 +37,17 @@ function aled08e_bienvenue_html($u, $mdp) {
         . '<div style="display:none;max-height:0;overflow:hidden;">Votre espace client est prêt : vos identifiants et votre offre sont juste ici.</div>'
         . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#16142A;"><tr><td align="center" style="padding:24px 12px;">'
         . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;font-family:Arial,Helvetica,sans-serif;color:#ECE9FF;">'
-        . '<tr><td align="center" style="padding:6px 0 18px;"><img src="' . esc_url($logo) . '" width="76" height="76" alt="Les Minis Monstres" style="display:block;border:0;border-radius:20px;"><p style="margin:10px 0 0;font-size:15px;font-weight:bold;letter-spacing:.02em;color:#FF8EBF;">Les Minis Monstres</p></td></tr>'
+        . '<tr><td align="center" style="padding:6px 0 18px;"><a href="' . esc_url(home_url('/')) . '" style="text-decoration:none;"><img src="' . esc_url($logo) . '" width="76" height="76" alt="Les Minis Monstres" style="display:block;margin:0 auto;border:0;border-radius:20px;"><span style="display:block;margin:10px 0 0;font-size:15px;font-weight:bold;letter-spacing:.02em;color:#FF8EBF;">Les Minis Monstres</span></a></td></tr>'
         . '<tr><td style="background:#232040;border-radius:28px;padding:28px 22px;">'
-        . '<h1 style="margin:0 0 10px;font-size:26px;line-height:1.2;color:#FFFFFF;">Bienvenue dans la famille, ' . $e($prenom) . ' !</h1>'
+        . '<h1 style="margin:0 0 10px;font-size:26px;line-height:1.2;color:#FFFFFF;"><a href="' . esc_url(home_url('/')) . '" style="color:#FFFFFF;text-decoration:none;">Bienvenue dans la famille, ' . $e($prenom) . ' !</a></h1>'
         . '<p style="margin:0 0 20px;font-size:16px;line-height:1.6;color:#CFCBEA;">Toute la petite bande est ravie de vous accueillir. Votre espace client est prêt : c’est votre coin à vous, pour gérer votre site et votre boutique, tranquillement, depuis votre téléphone.</p>'
         // les identifiants
         . $carte('#1E3A32', '#7BDDB1',
             '<p style="margin:0 0 10px;font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#7BDDB1;">Vos identifiants</p>'
             . '<p style="margin:0 0 6px;font-size:15px;color:#CFCBEA;">Votre e-mail</p><p style="margin:0 0 12px;font-size:18px;font-weight:bold;color:#FFFFFF;">' . $e($u->user_email) . '</p>'
             . '<p style="margin:0 0 6px;font-size:15px;color:#CFCBEA;">Votre mot de passe</p><p style="margin:0 0 16px;font-size:18px;font-weight:bold;color:#FFFFFF;font-family:Consolas,Menlo,monospace;">' . $e($mdp) . '</p>'
-            . '<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border-radius:999px;background:#7BDDB1;"><a href="' . esc_url($espace) . '" style="display:inline-block;padding:14px 26px;font-size:16px;font-weight:bold;color:#16142A;text-decoration:none;">Ouvrir mon espace client</a></td></tr></table>'
+            . '<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border-radius:999px;background:#7BDDB1;"><a href="' . esc_url($clic) . '" style="display:inline-block;padding:14px 26px;font-size:16px;font-weight:bold;color:#16142A;text-decoration:none;">Me connecter en un clic</a></td></tr></table>'
+            . '<p style="margin:12px 0 0;font-size:13px;line-height:1.5;color:#A9D9C5;">Ce bouton vous connecte directement, sans rien taper, pendant 14 jours. Ensuite, vos identifiants ci-dessus prennent le relais sur <a href="' . esc_url($espace) . '" style="color:#7BDDB1;">votre espace client</a>.</p>'
             . '<p style="margin:12px 0 0;font-size:13px;line-height:1.5;color:#A9D9C5;">Vous pouvez changer votre mot de passe quand vous voulez, dans « Mon compte ».</p>')
         // l'offre
         . '<h2 style="margin:8px 0 12px;font-size:19px;color:#FFFFFF;">Votre offre, en clair</h2>'
@@ -76,11 +78,11 @@ function aled08e_bienvenue_html($u, $mdp) {
 }
 
 /* La version texte, pour les messageries qui n'affichent pas le HTML */
-function aled08e_bienvenue_texte($u, $mdp) {
+function aled08e_bienvenue_texte($u, $mdp, $clic = '') {
     $uid = (int) $u->ID;
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
     $dom = function_exists('aled08e_domaine_mensuel') ? (float) aled08e_domaine_mensuel($uid) : 0.0;
-    return 'Bienvenue dans la famille, ' . aled08e_prenom($u) . " !\n\nVotre espace client est prêt : " . aled08e_url() . "\n\nVotre e-mail : " . $u->user_email . "\nVotre mot de passe : " . $mdp
+    return 'Bienvenue dans la famille, ' . aled08e_prenom($u) . " !\n\nVotre espace client est prêt.\nPour vous connecter en un clic (pendant 14 jours) : " . ($clic ?: aled08e_url()) . "\nEnsuite, avec vos identifiants : " . aled08e_url() . "\n\nVotre e-mail : " . $u->user_email . "\nVotre mot de passe : " . $mdp
         . "\n\nVotre offre : " . (aled08e_est_boutique($uid) ? 'Site Boutique' : 'votre site') . ', avec le forfait ' . ($f['name'] ?? 'Mini') . ', nom de domaine compris (' . aled08e_euro_txt((float) ($f['month'] ?? 10) + $dom) . " par mois, sans engagement).\n\nUne question ? Répondez à cet e-mail.\n\nÀ très vite,\nAlex et les Minis Monstres\n";
 }
 
@@ -89,14 +91,15 @@ function aled08e_bienvenue_envoyer($uid, $mdp, $vers = '') {
     if (!$u || !is_email($u->user_email)) return false;
     $vers = is_email($vers) ? $vers : $u->user_email; // une copie pour Alex : même e-mail, autre destinataire
     $from = aled08e_bienvenue_expediteur();
-    $texte = aled08e_bienvenue_texte($u, $mdp);
+    $clic = $vers === $u->user_email && function_exists('aled08e_clic_lien') ? aled08e_clic_lien($u->ID, 14) : ''; // une copie envoyée ailleurs ne porte pas le lien personnel
+    $texte = aled08e_bienvenue_texte($u, $mdp, $clic);
     $alt = function ($phpmailer) use ($texte) { $phpmailer->AltBody = $texte; };
     $adr = function () use ($from) { return $from; };
     $nom = function () { return 'Les Minis Monstres'; };
     add_action('phpmailer_init', $alt);
     add_filter('wp_mail_from', $adr, 99);
     add_filter('wp_mail_from_name', $nom, 99);
-    $ok = wp_mail($vers, 'Bienvenue chez les Minis Monstres, ' . aled08e_prenom($u) . ' !', aled08e_bienvenue_html($u, $mdp), ['Content-Type: text/html; charset=UTF-8', 'Reply-To: "Les Minis Monstres" <' . $from . '>']);
+    $ok = wp_mail($vers, 'Bienvenue chez les Minis Monstres, ' . aled08e_prenom($u) . ' !', aled08e_bienvenue_html($u, $mdp, $clic), ['Content-Type: text/html; charset=UTF-8', 'Reply-To: "Les Minis Monstres" <' . $from . '>']);
     remove_action('phpmailer_init', $alt);
     remove_filter('wp_mail_from', $adr, 99);
     remove_filter('wp_mail_from_name', $nom, 99);

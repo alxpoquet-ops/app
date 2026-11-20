@@ -2889,3 +2889,10 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .o-depart .check { clear: both; }
 .o-depart .check strong { color: var(--ink); }
 .o-depart .check input { margin-top: 4px; flex: none; }
+
+/* L'œil pour voir le mot de passe */
+.mdp-oeil { position: relative; display: block; }
+.mdp-oeil > input { width: 100%; padding-right: 52px; }
+.mdp-oeil-btn { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); width: 42px; height: 42px; display: grid; place-items: center; border: 0; border-radius: 12px; background: transparent; color: inherit; opacity: .75; cursor: pointer; }
+.mdp-oeil-btn:hover, .mdp-oeil-btn:focus-visible { opacity: 1; background: rgba(140, 108, 242, .18); }
+.mdp-oeil-btn[aria-pressed="true"] .oeil-barre { display: none; }

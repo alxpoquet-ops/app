@@ -737,6 +737,35 @@
   /* ---------- espace client (démo et vrai espace) ---------- */
   var appEl = $('[data-app]');
   if (appEl) initApp(appEl);
+  /* L'œil : voir le mot de passe qu'on tape (connexion, « Mon compte », clés de paiement) */
+  var OEIL = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="oeil-barre" d="M4 4l16 16"/></svg>';
+  var oeilPoser = function (racine) {
+    $$('input[type="password"]', racine || d).forEach(function (i) {
+      if (i.getAttribute('data-oeil') || i.closest('#wpadminbar')) return;
+      i.setAttribute('data-oeil', '1');
+      var w = d.createElement('span');
+      w.className = 'mdp-oeil';
+      i.parentNode.insertBefore(w, i);
+      w.appendChild(i);
+      var b = d.createElement('button');
+      b.type = 'button';
+      b.className = 'mdp-oeil-btn';
+      b.setAttribute('aria-label', 'Afficher le mot de passe');
+      b.setAttribute('aria-pressed', 'false');
+      b.innerHTML = OEIL;
+      w.appendChild(b);
+      b.addEventListener('click', function () {
+        var voir = i.type === 'password';
+        i.type = voir ? 'text' : 'password';
+        b.setAttribute('aria-pressed', voir ? 'true' : 'false');
+        b.setAttribute('aria-label', voir ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+        i.focus();
+      });
+    });
+  };
+  oeilPoser();
+  window.aled08OeilPoser = oeilPoser;
+
   var espaceEl = $('[data-espace]');
   if (espaceEl) initEspace(espaceEl);
 
@@ -871,7 +900,7 @@
             $$('script', panneau).forEach(function (o) { if (o.src) return; var n = d.createElement('script'); n.text = o.text; o.parentNode.replaceChild(n, o); });
             panneau.classList.remove('est-en-charge');
             try { history.pushState({ aled08: 1 }, '', url + '#' + panneau.id.replace(/^t-/, '')); window._aled08Pousse = true; } catch (err) {}
-            brancher(panneau);
+            brancher(panneau); oeilPoser(panneau);
             var contenu = $('.bg-nav', panneau);
             if (contenu) {
               // le contenu de la rubrique arrive en douceur, et la page glisse (une seule fois) jusqu'au sous-menu
