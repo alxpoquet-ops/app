@@ -190,7 +190,7 @@ function footer(p) {
         <li><a href="/contact/">Contact</a></li>`)}
   </div>
   <div class="footer-bottom"><div class="container footer-bottom-in">
-    <p>© ${new Date().getFullYear()} ${site.name}. Des sites internet pour être visible.</p>
+    <p><strong>© ${new Date().getFullYear()} ${site.name}</strong><span>Des sites internet pour être visible.</span></p>
     <ul>
       <li><a href="/mentions-legales/">Mentions légales</a></li>
       <li><a href="/politique-de-confidentialite/">Confidentialité</a></li>

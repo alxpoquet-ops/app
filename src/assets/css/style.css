@@ -2958,3 +2958,25 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .o-card > legend { margin-bottom: 20px; }
 .o-depart legend { display: block; }
 .o-card > .o-in { padding-top: 8px; }
+
+/* ---------- le logo (20 novembre 2026) : « Monstres » bien aligné sous « Les Minis », sur un coup de pinceau plus doux ---------- */
+.brand-text strong { display: flex; flex-direction: column; align-items: flex-start; }
+.brand-pre { margin: 0 0 .5em .02em; }
+.brand-co { margin-left: 0; padding: .02em .34em .06em .3em; }
+.brand-co::before { left: -.12em; right: -.3em; top: -.3em; bottom: -.36em; transform: rotate(-2.5deg);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 44' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFA9CF'/%3E%3Cstop offset='.55' stop-color='%23FF7DB7'/%3E%3Cstop offset='1' stop-color='%23F25C9E'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url%28%23g%29' d='M9 23C7 13 22 7 44 8C64 6 88 6 104 10C115 13 118 21 114 28C110 35 98 36 86 36C66 38 42 38 24 36C13 35 10 30 9 23Z'/%3E%3Cpath fill='url%28%23g%29' opacity='.55' d='M18 35C40 39 74 40 100 36C88 41 50 42 30 40C24 39 20 37 18 35Z'/%3E%3Cpath d='M22 15C34 11 52 11 66 12' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' opacity='.55'/%3E%3Ccircle cx='116' cy='9' r='2.4' fill='%23FF7DB7'/%3E%3Ccircle cx='5' cy='33' r='1.9' fill='%23FFA9CF'/%3E%3C/svg%3E") center / 100% 100% no-repeat; }
+.brand:hover .brand-co::before { transform: rotate(1deg) scale(1.04); }
+
+/* ---------- la parade : les monstres alignés sur le bord du pied de page, tous entiers ---------- */
+.parade { display: flex; justify-content: space-between; align-items: flex-end; top: -62px; height: 70px; padding: 0 max(16px, 3%); }
+.parade-m, .pm-0, .pm-1, .pm-2, .pm-3, .pm-4, .pm-5, .pm-6, .pm-7 { position: static; left: auto; bottom: auto; width: 62px; margin-bottom: -6px; }
+.pm-2, .pm-7 { width: 52px; }
+@media (max-width: 720px) {
+  .parade { top: -48px; height: 54px; padding: 0 20px; }
+  .parade-m, .pm-0, .pm-2, .pm-4, .pm-6, .pm-7 { width: 48px; }
+  .pm-1, .pm-3, .pm-5 { display: none; }
+}
+
+/* ---------- le bas du pied de page : le nom et l'année d'un côté, la phrase en dessous ---------- */
+.footer-bottom p { display: grid; gap: 2px; }
+.footer-bottom p strong { color: var(--ink); font-weight: 800; }
