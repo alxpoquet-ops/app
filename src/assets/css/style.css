@@ -2901,3 +2901,60 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .cf-trio .cf-art { position: static; width: 64px; margin: 0 0 2px; }
 .cf-trio .cf-corps { padding-right: 0; }
 .cf-trio .cf-nom { padding-right: 44px; }
+
+/* =========================================================================
+   Créer mon site (20 novembre 2026) : de l'air partout, sur téléphone d'abord
+   ========================================================================= */
+/* Les forfaits : le monstre en haut, à sa place, comme pour les sites */
+.cf-duo .cf-art { position: static; width: 60px; margin: 0 0 2px; }
+.cf-duo .cf-carte { padding-top: 30px; }
+.cf-duo .cf-nom { padding-right: 44px; }
+.cf-duo .cf-corps { padding-right: 0; gap: 8px; }
+.cf-carte .cf-but { line-height: 1.4; }
+.cf-carte .cf-txt { line-height: 1.55; }
+/* les intitulés au-dessus des cartes ne collent plus */
+.o-cf .b-label { margin: 28px 0 14px; line-height: 1.35; }
+.o-cf .b-label:first-child { margin-top: 4px; }
+.o-cf .b-label + .cf-duo, .o-cf .cf-site + .b-label { margin-top: 0; }
+.o-cf .b-label + .cf-duo { padding-top: 12px; }
+.cf-trio, .cf-duo { gap: 16px; }
+
+/* le bloc paiement : chaque partie respire */
+.o-in { gap: 22px; }
+.o-in > .o-cf { display: grid; gap: 18px; }
+.o-in > .o-cf > .b-label { margin: 0; }
+.cf-fois { gap: 14px; padding: 18px; box-shadow: 0 0 0 2px var(--line) inset; }
+.cf-fois-ico { width: 40px; height: 40px; border-radius: 12px; }
+.cf-fois p { gap: 8px; }
+.cf-fois strong { font-size: 1rem; line-height: 1.35; }
+.cf-fois span { font-size: .95rem; }
+.cf-fois small { font-size: .88rem; line-height: 1.5; }
+
+/* le code promo prend toute la largeur, sans majuscules dans l'exemple */
+.b-code { margin-top: 0; padding: 18px; }
+.b-code label { gap: 6px; margin-bottom: 12px; }
+.b-code input { max-width: none; padding: 13px 16px; }
+.b-code input::placeholder { text-transform: none; letter-spacing: 0; font-weight: 600; }
+
+/* l'accord et le démarrage */
+.o-in > .check { margin: 0; line-height: 1.5; }
+.o-depart { margin: 0; padding: 18px; gap: 16px; }
+.o-depart legend { margin: 0 0 6px; line-height: 1.35; }
+.o-depart legend .req { float: none; margin-left: 4px; }
+.o-depart .check { line-height: 1.55; font-size: .95rem; }
+.o-pay { padding: 20px; }
+.o-pay-lines { margin-bottom: 14px; padding-bottom: 14px; }
+.o-pay-next { margin-bottom: 12px; }
+.o-pay-note { line-height: 1.55; }
+
+@media (max-width: 720px) {
+  .cf-duo .cf-art { width: 54px; }
+  .cf-fois { flex-direction: column; gap: 12px; padding: 16px; }
+  .o-in { gap: 20px; }
+  .o-depart { padding: 16px; }
+  /* sur téléphone, le montant du jour est déjà dans le bloc paiement : le récapitulatif de côté ne se répète pas */
+  .page-creer .o-sum { display: none; }
+}
+.o-card > legend { margin-bottom: 20px; }
+.o-depart legend { display: block; }
+.o-card > .o-in { padding-top: 8px; }
