@@ -216,7 +216,7 @@ function aled08e_jauge_html($cmd) {
     $e = aled08e_jauge_etat($cmd);
     $etapes = ['Paiement', 'Questionnaire', 'Domaine et hébergement', 'Création', 'Vérification', 'En ligne'];
     $h = '<section class="esp-jauge' . ($e['avous'] ? ' is-avous' : '') . '" id="jauge-creation" aria-label="Avancement de la création de votre site">'
-        . '<div class="esp-jauge-tete"><span class="esp-jauge-art" aria-hidden="true">' . aled08e_monster('mascotte') . '</span>'
+        . '<div class="esp-jauge-tete"><span class="esp-jauge-art" aria-hidden="true">' . aled08e_monster($e['avous'] ? 'mascotte' : ($e['etape'] === 3 ? 'bricou' : ($e['etape'] === 4 ? 'etoile' : 'mochi'))) . '</span>'
         . '<div class="esp-jauge-txt"><p class="esp-jauge-titre">' . esc_html($e['titre']) . '</p><p>' . esc_html($e['texte']) . '</p></div>'
         . '<strong class="esp-jauge-pct">' . (int) $e['pct'] . '&nbsp;%</strong></div>'
         . '<div class="esp-jauge-barre" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' . (int) $e['pct'] . '"><i style="width:' . (int) $e['pct'] . '%"></i></div>'
@@ -226,3 +226,82 @@ function aled08e_jauge_html($cmd) {
         . '<p class="esp-jauge-note">' . aled08e_icon('lock') . '<span>Demandes, extras et boutique s’ouvrent dès que votre site est en ligne.</span></p></div></section>';
     return $h;
 }
+
+/* =========================================================================
+ *  La commande d'essai : rejouer tout le parcours d'un client sans rien payer ni rien acheter.
+ *  POST /aled08/v1/atelier/essai { faire: creer | etape | questionnaire | connexion | supprimer, … }
+ *  Le compte et la commande portent la marque « essai » : l'automate les ignore (pas de domaine acheté, pas d'hébergement).
+ * ========================================================================= */
+add_action('rest_api_init', function () {
+    register_rest_route('aled08/v1', '/atelier/essai', ['methods' => 'POST', 'permission_callback' => function () { return current_user_can('manage_options'); }, 'callback' => 'aled08e_essai_faire']);
+});
+function aled08e_essai_faire(WP_REST_Request $req) {
+    $p = (array) $req->get_json_params();
+    $faire = sanitize_key((string) ($p['faire'] ?? ''));
+    if ($faire === 'creer') {
+        $email = sanitize_email((string) ($p['email'] ?? ''));
+        if (!is_email($email)) return new WP_Error('aled08_essai', 'Adresse e-mail obligatoire.', ['status' => 400]);
+        $ex = get_user_by('email', $email);
+        if ($ex && get_user_meta($ex->ID, 'aled08_essai', true) !== '1') return new WP_Error('aled08_essai', 'Cette adresse est déjà celle d’un vrai compte.', ['status' => 409]);
+        $cfg = ['type' => in_array(($p['type'] ?? ''), ['une-page', 'vitrine', 'boutique'], true) ? $p['type'] : 'vitrine', 'forfait' => 'base', 'periode' => 'mois', 'lissage' => 0, 'options' => [], 'pages_plus' => 0,
+            'domaine' => 'essai-minis-monstres.fr', 'domaine_mien' => true, 'parrain' => '', 'code_evenement' => '', 'remise' => 0];
+        $c = ['prenom' => 'Camille', 'nom' => 'Essai', 'entreprise' => 'La Boulangerie d’Essai', 'adresse' => '1 rue de l’Essai', 'code_postal' => '08000', 'ville' => 'Charleville-Mézières', 'telephone' => '0600000000', 'email' => $email];
+        $compte = aled08e_compte_pour_commande($c + $cfg);
+        if (is_wp_error($compte)) return $compte;
+        $uid = (int) $compte['id'];
+        update_user_meta($uid, 'aled08_essai', '1');
+        $type = aled08e_type($cfg['type']);
+        $pid = wp_insert_post(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'private', 'post_author' => $uid, 'post_title' => 'ESSAI : Camille Essai (' . $type['label'] . ')', 'comment_status' => 'closed', 'ping_status' => 'closed'], true);
+        if (is_wp_error($pid)) return $pid;
+        $metas = ['ref' => 'ESSAI-' . $pid, 'essai' => 1, 'type' => $cfg['type'], 'forfait' => 'base', 'periode' => 'mois', 'lissage' => 0, 'options' => [], 'pages_plus' => 0, 'domaine' => $cfg['domaine'], 'domaine_mien' => 1, 'domaine_statut' => 'client',
+            'statut' => 'attente_paiement', 'montants' => aled08e_cmd_montants($cfg), 'message' => '', 'parrain' => '', 'user' => $uid, 'code_evenement' => '', 'remise' => 0,
+            'stripe_session' => '', 'stripe_customer' => '', 'stripe_subscription' => '', 'stripe_lissage_item' => '', 'lissage_paye' => 0, 'solde_paye' => 0, 'solde_session' => '', 'demarrage' => 'oui', 'demarrage_le' => time()];
+        foreach ($c + $metas as $k => $v) update_post_meta($pid, '_aled08_' . $k, $v);
+        aled08e_cmd_journal($pid, 'Commande d’essai créée par l’atelier : rien n’est payé, rien n’est acheté.');
+        return new WP_REST_Response(['ok' => true, 'commande' => (int) $pid, 'fiche' => $uid], 200);
+    }
+    $cid = (int) ($p['commande'] ?? 0);
+    if ($faire === 'supprimer') {
+        $n = 0;
+        foreach (get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'any', 'numberposts' => 50, 'fields' => 'ids', 'meta_query' => [['key' => '_aled08_essai', 'value' => '1']]]) as $id) { wp_delete_post($id, true); $n++; }
+        require_once ABSPATH . 'wp-admin/includes/user.php';
+        $u = 0;
+        foreach (get_users(['meta_key' => 'aled08_essai', 'meta_value' => '1', 'fields' => 'ID']) as $id) { if (!user_can((int) $id, 'edit_posts')) { wp_delete_user((int) $id); $u++; } }
+        return new WP_REST_Response(['ok' => true, 'commandes' => $n, 'comptes' => $u], 200);
+    }
+    if (!$cid || !get_post_meta($cid, '_aled08_essai', true)) return new WP_Error('aled08_essai', 'Ce n’est pas une commande d’essai.', ['status' => 404]);
+    $c = aled08e_cmd_get($cid);
+    if ($faire === 'etape') {
+        $st = sanitize_key((string) ($p['statut'] ?? ''));
+        if (!isset(aled08e_cmd_statuts()[$st]) || $st === 'en_ligne' && empty($p['sur'])) return new WP_Error('aled08_essai', 'Statut refusé.', ['status' => 400]);
+        update_post_meta($cid, '_aled08_statut', $st); // posé tel quel : aucun e-mail, aucun achat
+        aled08e_cmd_journal($cid, 'Essai : statut « ' . aled08e_cmd_statuts()[$st][0] . ' ».');
+        return new WP_REST_Response(['ok' => true, 'statut' => $st], 200);
+    }
+    if ($faire === 'questionnaire') {
+        update_post_meta($cid, '_aled08_brief', ['nom_site' => 'La Boulangerie d’Essai', 'activite' => 'Boulangerie artisanale : pains au levain, viennoiseries pur beurre et pâtisseries du week-end.', 'slogan' => 'Le bon pain, tout simplement',
+            'zone' => 'Charleville-Mézières', 'couleurs' => ['Beige et tons naturels'], 'ambiance' => ['Chaleureux'], 'textes' => 'Écrivez-les pour moi à partir de mes réponses', 'raison_sociale' => 'La Boulangerie d’Essai']);
+        delete_post_meta($cid, '_aled08_brief_brouillon');
+        update_post_meta($cid, '_aled08_brief_le', current_time('mysql'));
+        aled08e_cmd_journal($cid, 'Essai : questionnaire rempli.');
+        return new WP_REST_Response(['ok' => true], 200);
+    }
+    if ($faire === 'connexion') {
+        // un lien à usage unique, valable 10 minutes, pour voir l'espace comme ce client d'essai
+        $j = wp_generate_password(40, false, false);
+        set_transient('aled08e_essai_' . hash('sha256', $j), (int) $c['user'], 10 * MINUTE_IN_SECONDS);
+        return new WP_REST_Response(['ok' => true, 'lien' => add_query_arg('aled08e_essai', $j, aled08e_url())], 200);
+    }
+    return new WP_Error('aled08_essai', 'À faire inconnu.', ['status' => 400]);
+}
+add_action('init', function () {
+    if (empty($_GET['aled08e_essai'])) return;
+    $j = preg_replace('/[^A-Za-z0-9]/', '', (string) wp_unslash($_GET['aled08e_essai']));
+    $k = 'aled08e_essai_' . hash('sha256', $j);
+    $uid = (int) get_transient($k);
+    delete_transient($k);
+    if (!$uid || get_user_meta($uid, 'aled08_essai', true) !== '1' || user_can($uid, 'edit_posts')) return;
+    wp_set_auth_cookie($uid, false);
+    wp_safe_redirect(aled08e_url());
+    exit;
+}, 3);

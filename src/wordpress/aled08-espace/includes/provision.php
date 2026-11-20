@@ -59,7 +59,7 @@ function aled08e_prov_en_cours() {
 }
 function aled08e_prov_tour() {
     foreach (aled08e_prov_en_cours() as $c) {
-        if (get_post_meta($c['id'], '_aled08_intervention', true)) continue;
+        if (get_post_meta($c['id'], '_aled08_intervention', true) || get_post_meta($c['id'], '_aled08_essai', true)) continue; // une commande d'essai n'achète rien
         aled08e_prov_avancer($c['id']);
     }
 }
