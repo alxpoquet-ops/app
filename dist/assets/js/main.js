@@ -880,8 +880,17 @@
         setTimeout(function () { f._ok = false; b.classList.remove('is-confirmer'); b.innerHTML = avant; }, 4000);
       });
     });
-      // Ma boutique : changer de rubrique sans recharger la page (pas de saut en haut puis en bas)
-      $$('.bg-nav a.bg-lien', racine).forEach(function (l) {
+      // Ma boutique : changer de rubrique sans recharger la page (pas de saut en haut puis en bas).
+      // Les autres rubriques sont préparées en arrière-plan : le clic les affiche aussitôt.
+      window._bqPrets = window._bqPrets || {};
+      var bqObtenir = function (url) {
+        if (!window._bqPrets[url]) window._bqPrets[url] = fetch(url, { credentials: 'same-origin', headers: { 'X-Requested-With': 'fetch' } }).then(function (r) { if (!r.ok) throw new Error('http'); return r.text(); });
+        window._bqPrets[url].catch(function () { delete window._bqPrets[url]; });
+        return window._bqPrets[url];
+      };
+      var bqLiens = $$('.bg-nav a.bg-lien', racine);
+      if (bqLiens.length && window.fetch) setTimeout(function () { bqLiens.forEach(function (x, i) { if (!x.classList.contains('is-on')) setTimeout(function () { bqObtenir(x.href.split('#')[0]); }, i * 350); }); }, 400);
+      bqLiens.forEach(function (l) {
         l.addEventListener('click', function (e) {
           if (e.metaKey || e.ctrlKey || e.shiftKey || !window.fetch || !window.DOMParser) return;
           var panneau = l.closest('.app-panel');
@@ -890,7 +899,8 @@
           var url = l.href.split('#')[0];
           $$('.bg-nav a.bg-lien', panneau).forEach(function (x) { x.classList.toggle('is-on', x === l); if (x === l) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current'); });
           panneau.classList.add('est-en-charge');
-          fetch(url, { credentials: 'same-origin', headers: { 'X-Requested-With': 'fetch' } }).then(function (r) { if (!r.ok) throw new Error('http'); return r.text(); }).then(function (html) {
+          bqObtenir(url).then(function (html) {
+            delete window._bqPrets[url]; // la prochaine fois, une version fraîche
             var doc = new DOMParser().parseFromString(html, 'text/html');
             var neuf = doc.getElementById(panneau.id);
             if (!neuf || !neuf.querySelector('.bg-nav')) throw new Error('contenu');

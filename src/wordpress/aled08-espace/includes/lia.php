@@ -86,6 +86,8 @@ function aled08e_lia_appel($uid, $action, $args = []) {
     $code = (int) wp_remote_retrieve_response_code($r);
     $data = json_decode((string) wp_remote_retrieve_body($r), true);
     if ($code >= 400) return new WP_Error('aled08_lia', is_array($data) && !empty($data['message']) ? $data['message'] : 'Réponse ' . $code . ' du site du client.', ['code' => $code]);
+    // un changement sur le site du client (article, réglage…) : les lectures gardées de Ma boutique sont oubliées
+    if (function_exists('aled08e_bg_oublier') && !in_array($action, ['infos', 'lister', 'lire', 'stats', 'boutique_lire', 'categories_lire', 'catalogue', 'paiements_lire', 'vente_lire', 'commandes_lire', 'livraison_lire', 'vacances_lire', 'produits', 'ecran'], true)) aled08e_bg_oublier($uid);
     return is_array($data) ? $data : [];
 }
 /* Coût estimé d'une demande, en dollars, d'après les jetons comptés par Claude.

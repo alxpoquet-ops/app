@@ -14,9 +14,19 @@ function aled08e_bg_flash($uid, $ok, $texte) { set_transient('aled08_bg_flash_' 
 function aled08e_bg_sub() { $s = sanitize_key(wp_unslash($_GET['sub'] ?? '')); return in_array($s, ['articles', 'paiements', 'livraison', 'commandes', 'promos'], true) ? $s : 'articles'; }
 function aled08e_bg_pret($uid) { return aled08e_meta($uid, 'lia_url') !== '' && aled08e_meta($uid, 'lia_secret') !== ''; }
 /* Un appel au site du client : [tableau] ou un texte d'erreur clair */
+function aled08e_bg_lectures() { return ['catalogue' => 300, 'paiements_lire' => 600, 'vente_lire' => 600, 'livraison_lire' => 600, 'commandes_lire' => 120]; }
+function aled08e_bg_cle($uid, $action, $args) { return 'aled08_bgc_' . (int) $uid . '_' . (int) get_user_meta($uid, 'aled08_bgc_v', true) . '_' . md5($action . wp_json_encode($args)); }
+function aled08e_bg_oublier($uid) { update_user_meta($uid, 'aled08_bgc_v', (int) get_user_meta($uid, 'aled08_bgc_v', true) + 1); }
 function aled08e_bg_appel($uid, $action, $args = []) {
     if (!aled08e_bg_pret($uid)) return 'non_relie';
+    $lect = aled08e_bg_lectures();
+    // une lecture déjà faite il y a peu : pas besoin de redemander au site du client (c'est ce qui prenait une à deux secondes)
+    if (isset($lect[$action])) { $c = get_transient(aled08e_bg_cle($uid, $action, $args)); if (is_array($c)) return $c; }
     $r = aled08e_lia_appel($uid, $action, $args);
+    if (!is_wp_error($r)) {
+        if (isset($lect[$action])) set_transient(aled08e_bg_cle($uid, $action, $args), $r, $lect[$action]);
+        else aled08e_bg_oublier($uid); // un réglage a changé : les prochaines lectures repartent du site
+    }
     if (is_wp_error($r)) {
         $code = (int) ($r->get_error_data()['code'] ?? 0);
         return $code === 400 && stripos($r->get_error_message(), 'inconnue') !== false ? 'connecteur_ancien' : $r;
