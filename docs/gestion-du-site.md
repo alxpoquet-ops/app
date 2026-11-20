@@ -379,3 +379,16 @@ Depuis le 20 novembre 2026, le « 6 ou 12 fois » maison est arrêté. Le paieme
 - **Les commandes déjà étalées** (anciens 6 ou 12 fois) continuent jusqu'à leur dernière échéance, sans rien changer.
 
 Code : `aled08e_stripe_solde_fois_session` et `aled08e_stripe_on_solde_fois` dans `includes/stripe.php`. Les organismes proposés se changent avec le filtre `aled08e_stripe_fois_moyens`.
+
+## Installation 100 % automatique et atelier (20 novembre 2026)
+
+Après le paiement, l'automate achète le domaine chez OVH, le fait pointer vers o2switch, crée l'espace et la base, installe WordPress et l'extension du pack, puis relie le site à sa fiche. Réglages posés : hébergeur « o2switch cPanel », essai à blanc OVH décoché (les achats de domaine partent sans validation), pose automatique cochée.
+
+Il reste à saisir une fois, dans Réglages de l'espace client › Mise en ligne automatique :
+
+- les trois clés OVH (à créer sur https://eu.api.ovh.com/createToken/), avec un moyen de paiement par défaut sur le compte OVH ;
+- les accès cPanel o2switch : hôte, utilisateur, domaine principal, puis le jeton d'accès ou, à défaut, le mot de passe cPanel.
+
+Ces valeurs sont enregistrées dans la base du site, jamais affichées ensuite. Les boutons « Tester OVH » et « Tester cPanel » disent si tout est bon.
+
+L'atelier (`includes/atelier.php`, route `/wp-json/aled08/v1/atelier`, réservée à l'administrateur) transmet une action au site d'un client, signée avec sa clé de liaison. Le connecteur 2.9.0 y répond avec `atelier_rest` (toute l'interface REST du site, sauf les comptes et les mots de passe d'application) et `atelier_image`. Un seul branchement de Claude, celui des Minis Monstres, suffit donc pour tous les sites.

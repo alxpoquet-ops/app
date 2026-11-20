@@ -308,7 +308,7 @@ function aled08e_prov_email($c) {
     update_post_meta($cid, '_aled08_email_fait', 1);
     if (!empty($r['deja'])) { aled08e_cmd_journal($cid, 'Boîte contact@' . $c['domaine'] . ' déjà existante.'); return; }
     aled08e_cmd_journal($cid, 'Boîte contact@' . $c['domaine'] . ' créée (' . $h . '). Identifiants envoyés au client.');
-    $web = $h === 'ovh' ? 'https://www.ovhcloud.com/fr/mail/ (webmail OVH)' : 'https://' . (defined('ALED08_CPANEL_HOST') ? ALED08_CPANEL_HOST : 'webmail') . ':2096';
+    $web = $h === 'ovh' ? 'https://www.ovhcloud.com/fr/mail/ (webmail OVH)' : 'https://' . (ALED08_CPANEL_HOST ?: 'webmail') . ':2096';
     $corps = 'Bonjour ' . $c['prenom'] . ",\n\nVotre adresse e-mail professionnelle est prête :\n"
         . 'Adresse : contact@' . $c['domaine'] . "\nMot de passe : " . $mdp . "\n\n"
         . "Pour la lire : " . $web . "\n"
@@ -339,7 +339,7 @@ function aled08e_prov_wordpress($c) {
  *  cPanel (jeton) : adaptateur de secours
  * ========================================================================= */
 function aled08e_hb_cpanel_base() { return 'https://' . ALED08_CPANEL_HOST . ':2083'; }
-function aled08e_hb_cpanel_headers() { return ['Authorization' => 'cpanel ' . ALED08_CPANEL_USER . ':' . ALED08_CPANEL_TOKEN]; }
+function aled08e_hb_cpanel_headers() { return ['Authorization' => ALED08_CPANEL_TOKEN ? 'cpanel ' . ALED08_CPANEL_USER . ':' . ALED08_CPANEL_TOKEN : 'Basic ' . base64_encode(ALED08_CPANEL_USER . ':' . ALED08_CPANEL_PASS)]; }
 function aled08e_hb_cpanel_uapi($module, $func, $params = []) {
     if (!aled08e_cpanel_ok()) return new WP_Error('aled08_cpanel', 'cPanel non configuré.');
     $url = aled08e_hb_cpanel_base() . '/execute/' . rawurlencode($module) . '/' . rawurlencode($func) . ($params ? '?' . http_build_query($params, '', '&') : '');

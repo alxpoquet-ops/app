@@ -53,13 +53,20 @@ Les sites sont hébergés chez **o2switch**. Les noms de domaine sont achetés c
 - Le lien entre le site et l'espace client se fait tout seul dès que `aled08_site` porte l'adresse du site. Vérifie dans la fiche du client, bloc « Bricou : site relié », que la ligne Connexion dit OK.
 - Le mail de bienvenue aux couleurs du site part avec la note temporaire `aled08e_bienvenue_envoi` (voir `includes/bienvenue.php`). Ne l'envoie que si Alex le demande, et n'écris jamais le mot de passe dans le dépôt.
 
-## 5. Brancher Claude sur le site
+## 5. Travailler sur le site : par l'atelier, sans rien brancher
 
-Demande à Alex de relier le site neuf à Claude avec l'extension Easy MCP AI (déjà installée par l'extension du pack), et d'y allumer les outils d'installation d'extensions et de thèmes. C'est son geste : c'est son compte qui autorise l'accès. Vérifie ensuite que tu vois le site avec les outils WordPress.
+Tu n'as plus besoin qu'Alex relie chaque site à Claude. Dès que le site est installé, il se relie tout seul à sa fiche, et tu passes par les-minis-monstres.fr (outils WordPress « Mini monstres ») :
+
+- Voir les sites reliés : `wp_rest_read` sur la route `/aled08/v1/atelier`.
+- Agir sur un site : `wp_rest_write` sur `/aled08/v1/atelier` avec `{ "site": "DOMAINE", "action": "atelier_rest", "args": { "methode": "GET|POST|PUT|DELETE", "route": "/wp/v2/pages", "requete": { … }, "corps": { … } } }`. Toute l'interface REST du site est ouverte (pages, modèles, styles, réglages, menus, extensions), sauf les comptes et les mots de passe.
+- Poser une image : action `atelier_image` avec `{ "url": "https://…" }` ou `{ "base64": "…", "nom": "photo.jpg", "alt": "…" }`.
+- Quand le visuel est fini : action `visuel_fait` (note la date sur la fiche).
+
+Le branchement Easy MCP AI reste possible en secours, si Alex le demande.
 
 ## 6. Le visuel
 
-Une fois branché, c'est ton travail :
+Par l'atelier, c'est ton travail :
 
 - Un thème propre et léger, agréable d'abord au téléphone, puis sur ordinateur.
 - Les couleurs, le logo et les photos du client.

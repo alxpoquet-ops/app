@@ -464,8 +464,13 @@ add_action('admin_notices', function () {
 /* =========================================================================
  *  cPanel (optionnel, constantes dans wp-config.php) : domaine additionnel et boîte e-mail
  * ========================================================================= */
+/* Les accès viennent de wp-config.php ou, à défaut, des réglages (enregistrés sans chargement automatique, jamais affichés) */
+foreach (['HOST' => 'host', 'USER' => 'user', 'TOKEN' => 'token', 'PASS' => 'pass', 'MAIN_DOMAIN' => 'main_domain'] as $aled08e_c => $aled08e_o) {
+    if (!defined('ALED08_CPANEL_' . $aled08e_c)) define('ALED08_CPANEL_' . $aled08e_c, (string) get_option('aled08_cpanel_' . $aled08e_o, ''));
+}
+unset($aled08e_c, $aled08e_o);
 function aled08e_cpanel_ok() {
-    return defined('ALED08_CPANEL_HOST') && defined('ALED08_CPANEL_USER') && defined('ALED08_CPANEL_TOKEN') && defined('ALED08_CPANEL_MAIN_DOMAIN') && ALED08_CPANEL_HOST && ALED08_CPANEL_USER && ALED08_CPANEL_TOKEN;
+    return ALED08_CPANEL_HOST && ALED08_CPANEL_USER && ALED08_CPANEL_MAIN_DOMAIN && (ALED08_CPANEL_TOKEN || ALED08_CPANEL_PASS);
 }
 function aled08e_cpanel_brancher($cid, $mdp = '') {
     if (!aled08e_cpanel_ok()) return new WP_Error('aled08_cpanel', 'cPanel non configuré.');
@@ -548,8 +553,15 @@ function aled08e_admin_reglages() {
     echo '</table>';
     echo '<h3>cPanel o2switch</h3>';
     echo '<p><label><input type="checkbox" name="pose_auto" value="1"' . checked(function_exists('aled08e_pose_auto') && aled08e_pose_auto(), true, false) . '> Poser le site tout seul sur o2switch : WordPress, l’extension du type commandé, le lien avec l’espace client</label></p>';
-    if (aled08e_cpanel_ok()) echo '<p>Configuré dans wp-config.php : hôte <code>' . esc_html(ALED08_CPANEL_HOST) . '</code>, utilisateur <code>' . esc_html(ALED08_CPANEL_USER) . '</code>, domaine principal <code>' . esc_html(ALED08_CPANEL_MAIN_DOMAIN) . '</code>. Le jeton n’est jamais enregistré en base de données.</p>';
-    else echo '<p>Non configuré. Pour l’utiliser, ajoutez dans wp-config.php les constantes <code>ALED08_CPANEL_HOST</code>, <code>ALED08_CPANEL_USER</code>, <code>ALED08_CPANEL_TOKEN</code> et <code>ALED08_CPANEL_MAIN_DOMAIN</code> (voir le guide). Note : o2switch a désactivé temporairement la création de jetons (novembre 2026).</p>';
+    echo '<p>' . (aled08e_cpanel_ok() ? 'Relié : hôte <code>' . esc_html(ALED08_CPANEL_HOST) . '</code>, utilisateur <code>' . esc_html(ALED08_CPANEL_USER) . '</code>, domaine principal <code>' . esc_html(ALED08_CPANEL_MAIN_DOMAIN) . '</code>, accès par ' . (ALED08_CPANEL_TOKEN ? 'jeton' : 'mot de passe') . '.' : 'Pas encore relié : remplissez les quatre lignes ci-dessous, enregistrez, puis « Tester cPanel ».') . '</p>';
+    echo '<table class="form-table" role="presentation">';
+    foreach (['host' => ['Hôte cPanel', 'exemple.o2switch.net'], 'user' => ['Utilisateur cPanel', ''], 'main_domain' => ['Domaine principal du compte', 'les-minis-monstres.fr']] as $k => $d) {
+        echo '<tr><th><label for="aled08e-cp-' . $k . '">' . esc_html($d[0]) . '</label></th><td><input type="text" id="aled08e-cp-' . $k . '" name="cpanel_' . $k . '" class="regular-text" value="' . esc_attr(get_option('aled08_cpanel_' . $k, '')) . '" placeholder="' . esc_attr($d[1]) . '" autocomplete="off"></td></tr>';
+    }
+    foreach (['token' => 'Jeton d’accès (cPanel › Gérer les jetons d’API)', 'pass' => 'Ou, si o2switch ne permet pas de créer un jeton : le mot de passe cPanel'] as $k => $lab) {
+        echo '<tr><th><label for="aled08e-cp-' . $k . '">' . esc_html($lab) . '</label></th><td><input type="password" id="aled08e-cp-' . $k . '" name="cpanel_' . $k . '" class="regular-text" autocomplete="new-password"><p class="description">' . (get_option('aled08_cpanel_' . $k, '') !== '' ? 'Enregistré. ' : 'Rien d’enregistré. ') . 'Laissez vide pour ne rien changer.</p></td></tr>';
+    }
+    echo '<tr><th>Effacer</th><td><label><input type="checkbox" name="effacer_cpanel" value="1"> Effacer les accès cPanel enregistrés</label></td></tr></table>';
 
     aled08e_lia_reglages_html();
     aled08e_rs_reglages_html();
@@ -589,6 +601,13 @@ add_action('admin_post_aled08e_reglages', function () {
     update_option('aled08_ovh_essai', !empty($P['ovh_essai']) ? '1' : '0', false);
     update_option('aled08_ovh_wp', !empty($P['ovh_wp']) ? '1' : '0', false);
     update_option('aled08_pose_auto', !empty($P['pose_auto']) ? '1' : '0', false);
+    if (!empty($P['effacer_cpanel'])) foreach (['host', 'user', 'token', 'pass', 'main_domain'] as $k) delete_option('aled08_cpanel_' . $k);
+    foreach (['host', 'main_domain'] as $k) if (isset($P['cpanel_' . $k]) && empty($P['effacer_cpanel'])) {
+        $v = strtolower(trim((string) $P['cpanel_' . $k]));
+        if ($v === '' || preg_match('/^[a-z0-9.-]{3,190}$/', $v)) aled08e_option_set('aled08_cpanel_' . $k, $v);
+    }
+    if (isset($P['cpanel_user']) && empty($P['effacer_cpanel'])) { $v = trim((string) $P['cpanel_user']); if ($v === '' || preg_match('/^[A-Za-z0-9_]{2,32}$/', $v)) aled08e_option_set('aled08_cpanel_user', $v); }
+    foreach (['token', 'pass'] as $k) { $v = (string) ($P['cpanel_' . $k] ?? ''); if (trim($v) !== '' && strlen($v) <= 200 && empty($P['effacer_cpanel'])) aled08e_option_set('aled08_cpanel_' . $k, $k === 'token' ? trim($v) : $v); }
     aled08e_rs_reglages_save($P);
     $msg = aled08e_lia_reglages_save($P) ?: 'reglages';
     if (!empty($P['tester_ovh'])) {

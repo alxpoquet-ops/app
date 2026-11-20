@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.8.1
+ * Version: 2.9.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.8.1');
+define('ALEXLIA_CONN_VERSION', '2.9.0');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 
 /* =========================================================================
@@ -142,8 +142,63 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'promo_supprimer': return alexlia_bq_promo_supprimer($args);
         case 'soldes_regler': return alexlia_bq_soldes_regler($args);
         case 'bandeau_regler': return alexlia_bq_bandeau_regler($args);
+        case 'atelier_rest': return alexlia_atelier_rest($args);
+        case 'atelier_image': return alexlia_atelier_image($args);
         default: return new WP_Error('alexlia_action', 'Action inconnue.', ['status' => 400]);
     }
+}
+
+/* =========================================================================
+ *  L'atelier : le travail d'Alex sur le site (visuel, pages, modèles, styles), sans autre branchement.
+ *  Ces deux actions ne sont pas dans les outils de Bricou : seul l'atelier des Minis Monstres (réservé à Alex) les appelle.
+ *  atelier_rest rejoue une requête de l'interface REST de WordPress au nom de l'administrateur.
+ *  Jamais les comptes ni les mots de passe d'application, jamais ce connecteur lui-même.
+ * ========================================================================= */
+function alexlia_atelier_rest($a) {
+    $m = strtoupper((string) ($a['methode'] ?? 'GET'));
+    if (!in_array($m, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], true)) return new WP_Error('alexlia_atelier', 'Méthode refusée.', ['status' => 400]);
+    $route = '/' . ltrim((string) ($a['route'] ?? ''), '/');
+    if (strpos($route, '..') !== false || strpos($route, '?') !== false || !preg_match('#^/[A-Za-z0-9_\-./%]+$#', $route)) return new WP_Error('alexlia_atelier', 'Route refusée.', ['status' => 400]);
+    if (preg_match('#^/(wp/v2/users|wp/v2/application-passwords|alexlia/|wp-site-health/|wp/v2/block-directory)#i', $route) || stripos($route, 'application-passwords') !== false) {
+        return new WP_Error('alexlia_atelier', 'Cette partie du site n’est pas ouverte à l’atelier.', ['status' => 403]);
+    }
+    $req = new WP_REST_Request($m, $route);
+    if (!empty($a['requete']) && is_array($a['requete'])) $req->set_query_params($a['requete']);
+    if (isset($a['corps']) && is_array($a['corps'])) {
+        $req->set_header('content-type', 'application/json');
+        $req->set_body(wp_json_encode($a['corps'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+    }
+    $res = rest_do_request($req);
+    $donnees = rest_get_server()->response_to_data($res, false);
+    if ($m !== 'GET') alexlia_conn_journal('Atelier : ' . $m . ' ' . mb_substr($route, 0, 120) . ' (' . (int) $res->get_status() . ').');
+    $h = $res->get_headers();
+    return ['statut' => (int) $res->get_status(), 'total' => isset($h['X-WP-Total']) ? (int) $h['X-WP-Total'] : null, 'donnees' => $donnees];
+}
+/* Une image pour le visuel : depuis une adresse https publique, ou envoyée telle quelle (base64, 3 Mo au plus) */
+function alexlia_atelier_image($a) {
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    require_once ABSPATH . 'wp-admin/includes/media.php';
+    require_once ABSPATH . 'wp-admin/includes/image.php';
+    $nom = sanitize_file_name((string) ($a['nom'] ?? ''));
+    if (!empty($a['base64'])) {
+        $bin = base64_decode(preg_replace('#^data:[^,]*,#', '', (string) $a['base64']), true);
+        if ($bin === false || $bin === '' || strlen($bin) > 3 * MB_IN_BYTES) return new WP_Error('alexlia_image', 'Image illisible ou trop lourde.', ['status' => 400]);
+        $tmp = wp_tempnam($nom ?: 'image');
+        if (!$tmp || file_put_contents($tmp, $bin) === false) return new WP_Error('alexlia_image', 'Écriture impossible.', ['status' => 500]);
+    } else {
+        $url = esc_url_raw((string) ($a['url'] ?? ''));
+        if (wp_parse_url($url, PHP_URL_SCHEME) !== 'https' || !wp_http_validate_url($url)) return new WP_Error('alexlia_image', 'Adresse refusée (https public seulement).', ['status' => 400]);
+        $tmp = download_url($url, 60);
+        if (is_wp_error($tmp)) return $tmp;
+        if ($nom === '') $nom = sanitize_file_name(basename((string) wp_parse_url($url, PHP_URL_PATH)));
+    }
+    if ($nom === '' || !preg_match('/\.(jpe?g|png|gif|webp|avif|svg|ico)$/i', $nom)) { @unlink($tmp); return new WP_Error('alexlia_image', 'Nom de fichier obligatoire, avec son extension d’image.', ['status' => 400]); }
+    if (preg_match('/\.svg$/i', $nom)) { @unlink($tmp); return new WP_Error('alexlia_image', 'Les SVG se posent dans le contenu, pas dans la médiathèque.', ['status' => 400]); }
+    $id = media_handle_sideload(['name' => $nom, 'tmp_name' => $tmp], 0, sanitize_text_field((string) ($a['description'] ?? '')));
+    if (is_wp_error($id)) { @unlink($tmp); return $id; }
+    if (!empty($a['alt'])) update_post_meta($id, '_wp_attachment_image_alt', sanitize_text_field((string) $a['alt']));
+    alexlia_conn_journal('Atelier : image ajoutée à la médiathèque (#' . (int) $id . ').');
+    return ['ok' => true, 'image_id' => (int) $id, 'adresse' => wp_get_attachment_url($id)];
 }
 
 /* ---------- lecture ---------- */
