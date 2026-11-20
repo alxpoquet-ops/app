@@ -510,6 +510,10 @@ function aled08e_admin_reglages() {
     echo '</td></tr>';
     if (!$constSecret || !$constWh) echo '<tr><th>Effacer</th><td><label><input type="checkbox" name="effacer_stripe" value="1"> Effacer les clés enregistrées (retour au mode « paiement en attente »)</label></td></tr>';
     echo '<tr><th><label for="aled08e-footer">Pied de page des factures (mention TVA)</label></th><td><input type="text" id="aled08e-footer" name="stripe_footer" class="large-text" value="' . esc_attr(get_option('aled08_stripe_footer', '')) . '" placeholder="' . esc_attr(ALED08E_STRIPE_FOOTER_DEFAUT) . '"><p class="description">Ajouté sur chaque facture Stripe. Vide : « ' . esc_html(ALED08E_STRIPE_FOOTER_DEFAUT) . ' ». Ajoutez le SIRET quand vous l’avez. Réglez aussi le pied de page par défaut dans Stripe (Paramètres, Facturation, Modèle de facture) pour la toute première facture.</p></td></tr>';
+    $moy = get_option('aled08e_stripe_moyens');
+    echo '<tr><th>Moyens de paiement</th><td><button type="submit" name="stripe_moyens" value="1" class="button">Allumer tous les moyens de paiement</button>'
+        . '<p class="description">Carte, Apple Pay, Google Pay, PayPal, Klarna, Alma, prélèvement SEPA… La page de paiement montre ensuite ceux qui conviennent à chaque client. Certains demandent d’accepter leurs conditions dans Stripe (Réglages › Moyens de paiement).</p>'
+        . (is_array($moy) ? '<p class="description"><strong>Dernier passage, ' . esc_html(wp_date('j F Y à H:i', (int) $moy['le'])) . ' :</strong> ' . esc_html(!empty($moy['erreur']) ? $moy['erreur'] : aled08e_stripe_moyens_txt($moy['moyens'] ?? [])) . '</p>' : '') . '</td></tr>';
     echo '<tr><th>Test de connexion</th><td><button type="submit" name="tester" value="1" class="button">Tester la connexion (GET /v1/balance)</button><p class="description">Affiche OK, ou l’erreur renvoyée par Stripe. Enregistrez d’abord la clé.</p></td></tr>';
     echo '</table>';
 
@@ -596,6 +600,11 @@ add_action('admin_post_aled08e_reglages', function () {
         $t = aled08e_hb_cpanel_test();
         set_transient('aled08e_msg_' . get_current_user_id(), is_wp_error($t) ? 'Erreur : ' . $t->get_error_message() : $t, 300);
         $msg = 'test_cpanel';
+    }
+    if (!empty($P['stripe_moyens'])) {
+        $t = aled08e_stripe_moyens_activer();
+        set_transient('aled08e_msg_' . get_current_user_id(), is_wp_error($t) ? 'Erreur : ' . $t->get_error_message() : 'OK. ' . aled08e_stripe_moyens_txt($t), 300);
+        $msg = 'test';
     }
     if (!empty($P['tester'])) {
         $t = aled08e_stripe_test();

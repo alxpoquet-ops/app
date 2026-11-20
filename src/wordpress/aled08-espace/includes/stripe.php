@@ -138,6 +138,56 @@ function aled08e_stripe_test() {
 }
 
 /* =========================================================================
+ *  Les moyens de paiement proposés sur la page Stripe
+ *  Nos pages de paiement ne fixent aucune liste : Stripe y montre tout ce qui est allumé dans le compte, selon le client
+ *  et le montant. Ce bouton allume donc, d'un coup, tous les moyens utiles en France dans la configuration par défaut.
+ *  Certains (PayPal, Klarna, Alma…) demandent en plus d'accepter leurs conditions dans le tableau de bord Stripe :
+ *  ils restent alors « à activer chez Stripe ».
+ * ========================================================================= */
+function aled08e_stripe_moyens_voulus() {
+    return (array) apply_filters('aled08e_stripe_moyens_voulus', [
+        'card' => 'Carte bancaire', 'apple_pay' => 'Apple Pay', 'google_pay' => 'Google Pay', 'link' => 'Link (paiement en un clic)',
+        'paypal' => 'PayPal', 'klarna' => 'Klarna (en plusieurs fois)', 'alma' => 'Alma (en plusieurs fois)', 'revolut_pay' => 'Revolut Pay',
+        'amazon_pay' => 'Amazon Pay', 'sepa_debit' => 'Prélèvement SEPA', 'bancontact' => 'Bancontact', 'ideal' => 'iDEAL',
+    ]);
+}
+function aled08e_stripe_moyens_activer() {
+    @set_time_limit(300);
+    $r = aled08e_stripe_request('GET', '/v1/payment_method_configurations', ['limit' => 20]);
+    if (is_wp_error($r)) return $r;
+    $conf = null;
+    foreach ((array) ($r['data'] ?? []) as $c) if (!empty($c['is_default']) && empty($c['parent'])) { $conf = $c; break; }
+    if (!$conf && !empty($r['data'][0])) $conf = $r['data'][0];
+    if (!$conf || empty($conf['id'])) return new WP_Error('aled08_stripe', 'Aucune configuration de moyens de paiement trouvée dans Stripe.');
+    $bilan = [];
+    foreach (aled08e_stripe_moyens_voulus() as $k => $nom) {
+        if (!isset($conf[$k]) || !is_array($conf[$k])) { $bilan[$k] = ['nom' => $nom, 'etat' => 'absent', 'detail' => 'pas proposé à ce compte']; continue; }
+        $pref = (string) ($conf[$k]['display_preference']['value'] ?? ($conf[$k]['display_preference']['preference'] ?? ''));
+        $dispo = !empty($conf[$k]['available']);
+        if ($pref !== 'on') {
+            $u = aled08e_stripe_request('POST', '/v1/payment_method_configurations/' . rawurlencode($conf['id']), [$k => ['display_preference' => ['preference' => 'on']]], 'moyen-' . $k . '-' . wp_generate_password(8, false), true);
+            if (is_wp_error($u)) { $bilan[$k] = ['nom' => $nom, 'etat' => 'refuse', 'detail' => mb_substr($u->get_error_message(), 0, 160)]; continue; }
+            $dispo = !empty($u[$k]['available']);
+        }
+        $bilan[$k] = ['nom' => $nom, 'etat' => $dispo ? 'actif' : 'a_activer', 'detail' => $dispo ? '' : 'allumé ici, mais à activer dans Stripe (conditions à accepter)'];
+    }
+    update_option('aled08e_stripe_moyens', ['le' => time(), 'config' => (string) ($conf['name'] ?? ''), 'moyens' => $bilan], false);
+    return $bilan;
+}
+function aled08e_stripe_moyens_txt($bilan) {
+    $l = [];
+    foreach ((array) $bilan as $b) $l[] = $b['nom'] . ' : ' . (['actif' => 'actif', 'a_activer' => 'à activer dans Stripe', 'refuse' => 'refusé', 'absent' => 'non proposé'][$b['etat']] ?? $b['etat']);
+    return implode(' · ', $l);
+}
+/* Lancement une seule fois, à la demande (option posée à la main), en plus du bouton des réglages */
+add_action('init', function () {
+    if (!get_option('aled08e_stripe_moyens_lancer')) return;
+    delete_option('aled08e_stripe_moyens_lancer');
+    $r = aled08e_stripe_moyens_activer();
+    if (is_wp_error($r)) update_option('aled08e_stripe_moyens', ['le' => time(), 'erreur' => $r->get_error_message()], false);
+}, 45);
+
+/* =========================================================================
  *  Checkout d'une commande (mode abonnement)
  * ========================================================================= */
 function aled08e_stripe_checkout($cid) {
