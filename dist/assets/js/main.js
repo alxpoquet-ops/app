@@ -759,8 +759,20 @@
       return id;
     };
     var doux = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    /* Pendant la création du site, certains onglets restent fermés : on ramène à la grande jauge */
+    var verrou = (app.getAttribute('data-verrou') || '').split(',').filter(Boolean);
+    var jauge = $('#jauge-creation', app);
+    tabs.forEach(function (t) { if (verrou.indexOf(t.getAttribute('data-tab')) >= 0) { t.classList.add('is-ferme'); t.setAttribute('aria-disabled', 'true'); t.title = 'Disponible quand votre site sera en ligne'; } });
     var show = function (id, focus, auto) {
       id = alias(id);
+      if (verrou.indexOf(id) >= 0) {
+        if (jauge && !auto) {
+          var hj = d.querySelector('.site-header');
+          window.scrollBy({ top: jauge.getBoundingClientRect().top - (hj ? hj.offsetHeight : 70) - 10, behavior: doux ? 'smooth' : 'auto' });
+          jauge.classList.remove('is-rappel'); void jauge.offsetWidth; jauge.classList.add('is-rappel');
+        }
+        if (auto) id = 'accueil'; else return;
+      }
       tabs.forEach(function (t) {
         var on = t.getAttribute('data-tab') === id;
         t.setAttribute('aria-selected', on);

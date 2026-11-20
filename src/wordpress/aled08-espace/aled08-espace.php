@@ -1128,8 +1128,9 @@ function aled08e_dashboard() {
     ob_start();
     ?>
 <section class="section section-app"><div class="container">
-  <div class="app" data-espace>
+  <div class="app" data-espace<?php echo aled08e_jauge_verrou($cmd) ? ' data-verrou="' . esc_attr(aled08e_jauge_verrou($cmd)) . '"' : ''; ?>>
     <?php echo aled08e_bulle_html($uid); // phpcs:ignore ?>
+    <?php echo aled08e_jauge_html($cmd); // phpcs:ignore ?>
     <div class="app-shell">
       <aside class="app-side">
         <div class="app-user"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><div><strong><?php echo esc_html($u->display_name); ?></strong><small><?php echo esc_html($host ?: $u->user_email); ?></small></div></div>

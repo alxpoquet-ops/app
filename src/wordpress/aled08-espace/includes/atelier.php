@@ -185,3 +185,44 @@ add_action('aled08_horaire', function () {
         wp_mail($c['email'], 'Votre site attend votre réponse', 'Bonjour ' . $c['prenom'] . ",\n\nNous avons une question en attente pour votre site. Dès que vous y répondez, on reprend :\n" . aled08e_url() . "#commande\n\nMerci !\nLes Minis Monstres\n", aled08e_mail_headers());
     }
 });
+
+/* =========================================================================
+ *  La grande jauge de création, en haut de l'espace client.
+ *  Tant que le site n'est pas en ligne, l'espace ne montre que l'utile : l'accueil, « Ma commande » et « Mon compte ».
+ *  Les onglets qui ont besoin du site (demandes, extras, boutique, outils) restent fermés, avec leur cadenas.
+ * ========================================================================= */
+function aled08e_jauge_active($cmd) {
+    return $cmd && ($cmd['statut'] === 'attente_paiement' || in_array($cmd['statut'], aled08e_cmd_statuts_en_cours(), true));
+}
+function aled08e_jauge_verrou($cmd) { return aled08e_jauge_active($cmd) ? 'demandes,extras,vacances,outils' : ''; }
+function aled08e_jauge_etat($cmd) {
+    $s = $cmd['statut'];
+    $cid = $cmd['id'];
+    $brief = aled08e_brief_le($cid) !== '' && !get_post_meta($cid, '_aled08_brief_brouillon', true);
+    $ch = aled08e_chantier_etat($cid);
+    $infra = ['payee' => 30, 'domaine_commande' => 36, 'domaine_attribue' => 42, 'hebergement' => 48, 'ssl' => 55];
+    $r = ['etape' => 0, 'pct' => 5, 'titre' => 'Votre commande attend son paiement', 'texte' => 'Dès que le paiement est confirmé, tout démarre.', 'bouton' => 'Voir ma commande', 'avous' => true];
+    if ($s === 'attente_paiement') return $r;
+    $r['avous'] = false; $r['bouton'] = 'Suivre ma commande';
+    if (isset($infra[$s])) $r = array_merge($r, ['etape' => 2, 'pct' => $infra[$s], 'titre' => 'On prépare la maison de votre site', 'texte' => 'Votre nom de domaine et votre hébergement se mettent en place. Vous n’avez rien à faire pour cette étape.']);
+    else $r = array_merge($r, ['etape' => 3, 'pct' => 70, 'titre' => 'Votre site est en cours de création', 'texte' => 'On crée vos pages avec vos textes, vos couleurs et vos photos.']);
+    if ($ch === 'a_verifier') $r = array_merge($r, ['etape' => 4, 'pct' => 90, 'titre' => 'Dernières vérifications', 'texte' => 'Votre site est presque prêt : Alex le relit et le peaufine avant de vous le présenter.']);
+    if (!$brief) return array_merge($r, ['etape' => 1, 'pct' => min($r['pct'], 20), 'titre' => 'À vous : remplissez votre questionnaire', 'texte' => 'C’est lui qui lance la création : vos couleurs, vos textes, vos photos. Dix minutes suffisent.', 'bouton' => 'Remplir mon questionnaire', 'avous' => true]);
+    if ($ch === 'question') return array_merge($r, ['titre' => 'À vous : une question vous attend', 'texte' => 'Nous avons besoin d’une précision pour continuer votre site.', 'bouton' => 'Répondre à la question', 'avous' => true]);
+    return $r;
+}
+function aled08e_jauge_html($cmd) {
+    if (!aled08e_jauge_active($cmd)) return '';
+    $e = aled08e_jauge_etat($cmd);
+    $etapes = ['Paiement', 'Questionnaire', 'Domaine et hébergement', 'Création', 'Vérification', 'En ligne'];
+    $h = '<section class="esp-jauge' . ($e['avous'] ? ' is-avous' : '') . '" id="jauge-creation" aria-label="Avancement de la création de votre site">'
+        . '<div class="esp-jauge-tete"><span class="esp-jauge-art" aria-hidden="true">' . aled08e_monster('mascotte') . '</span>'
+        . '<div class="esp-jauge-txt"><p class="esp-jauge-titre">' . esc_html($e['titre']) . '</p><p>' . esc_html($e['texte']) . '</p></div>'
+        . '<strong class="esp-jauge-pct">' . (int) $e['pct'] . '&nbsp;%</strong></div>'
+        . '<div class="esp-jauge-barre" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' . (int) $e['pct'] . '"><i style="width:' . (int) $e['pct'] . '%"></i></div>'
+        . '<ol class="esp-jauge-etapes">';
+    foreach ($etapes as $i => $lab) $h .= '<li class="' . ($i < $e['etape'] ? 'is-done' : ($i === $e['etape'] ? 'is-now' : '')) . '"><span>' . esc_html($lab) . '</span></li>';
+    $h .= '</ol><div class="esp-jauge-pied"><button type="button" class="btn ' . ($e['avous'] ? 'btn-primary' : 'btn-ghost') . '" data-go="commande">' . esc_html($e['bouton']) . '</button>'
+        . '<p class="esp-jauge-note">' . aled08e_icon('lock') . '<span>Demandes, extras et boutique s’ouvrent dès que votre site est en ligne.</span></p></div></section>';
+    return $h;
+}
