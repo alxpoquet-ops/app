@@ -120,6 +120,9 @@ const NAV_MIMI = {
   accompagnement: ['gelee', 'content'], espace: ['dino', 'content'], contact: ['champi', 'ravi'],
 };
 
+// Sur téléphone, ces deux liens deviennent deux petits boutons côte à côte, tout en bas du menu
+const NAV_BAS = ['equipe', 'contact'];
+
 function header(currentPath) {
   const onCreer = currentPath.startsWith(sections.creer.path);
   return `<a class="skip" href="#contenu">Aller au contenu</a>
@@ -131,7 +134,7 @@ function header(currentPath) {
         ${NAV.map((k) => {
           const s = sections[k];
           const on = currentPath.startsWith(s.path);
-          return `<li><a class="nav-link c-${s.color}" href="${s.path}"${on ? ' aria-current="page"' : ''}><span class="nav-mimi" aria-hidden="true">${petit(NAV_MIMI[k][0], { humeur: NAV_MIMI[k][1] })}</span>${icon(s.icon)}<span class="nav-txt">${s.label}<small>${NAV_DESC[k]}</small></span>${icon('chevron-right')}</a></li>`;
+          return `<li${NAV_BAS.includes(k) ? ' class="nav-bas"' : ''}><a class="nav-link c-${s.color}" href="${s.path}"${on ? ' aria-current="page"' : ''}><span class="nav-mimi" aria-hidden="true">${petit(NAV_MIMI[k][0], { humeur: NAV_MIMI[k][1] })}</span>${icon(s.icon)}<span class="nav-txt">${s.label}<small>${NAV_DESC[k]}</small></span>${icon('chevron-right')}</a></li>`;
         }).join('')}
         <li class="nav-creer"><span class="nav-creer-art" aria-hidden="true">${petit('mochi', { humeur: 'ravi' })}</span>${C.btn(sections.creer.path, 'btn-primary btn-lg', sections.creer.icon, sections.creer.label, onCreer ? ' aria-current="page"' : '')}<small>Pour être visible. Le prix s’affiche tout de suite.</small><a class="nav-demo" href="/mon-espace/demo/">${icon('eye')}<span>Essayer l’espace client en démo</span></a></li>
       </ul>
