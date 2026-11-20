@@ -434,7 +434,9 @@ function aled08e_cmd_traiter_post() {
 
     // cases à cocher
     if ($get('cgv', 5) !== 'oui') $err('cgv');
-    if ($get('demarrage', 5) !== 'oui') $err('demarrage');
+    // quand commencer : « oui » (tout de suite, le client renonce à se rétracter une fois le site livré) ou « attendre » (après les 14 jours)
+    $demarrage = sanitize_key($get('demarrage', 10));
+    if (!in_array($demarrage, ['oui', 'attendre'], true)) $err('demarrage');
     if ($cfg['lissage'] && $get('engagement', 5) !== 'oui') $err('engagement');
 
     // montants recalculés ici, jamais repris du navigateur
@@ -467,6 +469,9 @@ function aled08e_cmd_traiter_post() {
     if (is_wp_error($pid)) $err('inconnu');
     $ref = aled08e_cmd_reference();
     update_post_meta($pid, '_aled08_ref', $ref);
+    // la preuve du choix du client, avec sa date
+    update_post_meta($pid, '_aled08_demarrage', $demarrage);
+    update_post_meta($pid, '_aled08_demarrage_le', time());
     wp_update_post(['ID' => $pid, 'post_title' => $ref . ' : ' . $titre]);
     $metas = [
         'ref' => $ref, 'type' => $cfg['type'], 'forfait' => $cfg['forfait'], 'periode' => $cfg['periode'], 'lissage' => (int) $cfg['lissage'], 'options' => $cfg['options'], 'pages_plus' => (int) $cfg['pages_plus'],
@@ -478,6 +483,9 @@ function aled08e_cmd_traiter_post() {
     foreach ($c as $k => $v) $metas[$k] = $v;
     foreach ($metas as $k => $v) update_post_meta($pid, '_aled08_' . $k, $v);
     aled08e_cmd_journal($pid, 'Commande reçue depuis le site.');
+    aled08e_cmd_journal($pid, $demarrage === 'oui'
+        ? 'Choix du client : démarrer tout de suite. Il a demandé expressément le démarrage avant la fin des 14 jours et reconnu qu’il perd son droit de rétractation une fois le site entièrement livré.'
+        : 'Choix du client : attendre 14 jours. La création ne commence pas avant le ' . wp_date('j F Y', time() + 14 * DAY_IN_SECONDS) . ' (fin du délai de rétractation).');
     aled08e_cmd_journal($pid, $compte['cree'] ? 'Compte client créé : ' . $compte['login'] . '.' : 'Commande rattachée au compte existant : ' . $compte['login'] . '.');
     set_transient($kCmd, (int) get_transient($kCmd) + 1, HOUR_IN_SECONDS);
     $cmd = aled08e_cmd_get($pid);
@@ -554,6 +562,9 @@ function aled08e_cmd_mail_owner_nouvelle($c, $compte, $stripe) {
         . (!empty($c['remise']) ? 'Code promo : ' . $c['code_evenement'] . ' (' . (int) $c['remise'] . " % de remise sur la création, déjà déduits)\n" : '')
         . ($c['parrain'] ? 'Code de parrainage : ' . $c['parrain'] . ' (' . (aled08e_user_by_code($c['parrain']) ? aled08e_user_by_code($c['parrain'])->display_name : 'code inconnu') . ")\n" : '')
         . ($c['message'] ? "Message du client :\n" . $c['message'] . "\n\n" : '')
+        . (get_post_meta($c['id'], '_aled08_demarrage', true) === 'attendre'
+            ? 'DÉMARRAGE : le client a choisi d’attendre 14 jours. Ne commencez pas la création avant le ' . wp_date('j F Y', time() + 14 * DAY_IN_SECONDS) . ".\n"
+            : "Démarrage : tout de suite (le client renonce à se rétracter une fois le site entièrement livré).\n")
         . 'Compte client : ' . ($compte['cree'] ? 'créé (' . $compte['login'] . '), e-mail de mot de passe envoyé' : 'déjà existant (' . $compte['login'] . '), commande rattachée') . "\n"
         . 'Paiement : ' . ($stripe ? 'le client est envoyé sur la page de paiement Stripe. Vous recevrez un e-mail quand il sera confirmé.' : 'paiement en ligne non activé. Envoyez-lui un lien ou un RIB, puis marquez la commande « Payée » dans l’administration.') . "\n\n"
         . 'Fiche commande : ' . aled08e_cmd_admin_url($c['id']) . "\n";

@@ -286,7 +286,12 @@ La fin de l’abonnement met fin à l’hébergement du site par les Minis Monst
 
 Le client qui commande à distance dispose de 14 jours pour se rétracter, sans avoir à se justifier. Un message par ${contact} suffit.
 
-En commandant, le client demande expressément, en cochant la case prévue, que la création commence tout de suite. S’il se rétracte pendant ces 14 jours, il paie le travail déjà réalisé, au prorata du prix de création. Le nom de domaine déjà réservé, l’adresse du site, reste à sa charge, car il est enregistré à son nom et pour un an.
+En commandant, le client choisit lui-même quand la création commence.
+
+- **Démarrer maintenant** : le client demande expressément que la création commence avant la fin de ces 14 jours. Il reconnaît qu’il perd son droit de rétractation dès que le site est entièrement livré. S’il se rétracte avant cette livraison, il paie le travail déjà réalisé, au prorata du prix de création.
+- **Attendre 14 jours** : la création commence à la fin du délai. Le client garde son droit de rétractation jusque-là, et les délais de création (article 11) courent à partir de ce moment.
+
+Aucun de ces deux choix n’est coché d’avance. Le nom de domaine déjà réservé, l’adresse du site, reste à sa charge, car il est enregistré à son nom et pour un an.
 
 ## 10. Nom de domaine
 

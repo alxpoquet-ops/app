@@ -518,7 +518,7 @@ const ORDER_ERRORS = {
   domaine: 'Indiquez le nom de domaine souhaité, ou cochez « J’ai déjà un nom de domaine ».',
   code: 'Ce code promo n’est pas reconnu. Vérifiez-le, ou laissez la case vide : vous pourrez nous écrire ensuite.',
   cgv: 'Pour commander, il faut accepter les conditions générales de vente.',
-  demarrage: 'Pour commander, il faut accepter que la création commence tout de suite.',
+  demarrage: 'Choisissez quand la création doit commencer : maintenant, ou après les 14 jours.',
   paiement: 'Le paiement n’a pas abouti. Votre commande est gardée : vous pouvez réessayer, ou nous écrire.',
   robot: 'L’envoi a été bloqué par la protection contre les robots. Attendez quelques secondes et réessayez.',
   annule: 'Le paiement a été annulé. Rien n’a été débité : vous pouvez reprendre quand vous voulez.',
@@ -614,7 +614,11 @@ function commanderPage() {
         ${C.codeEvenementBox({ name: 'code_evenement' })}
         </div>
         <label class="check"><input type="checkbox" name="cgv" value="oui" required><span>J’accepte les <a href="/conditions-generales/" target="_blank" rel="noopener">conditions générales de vente</a>. <span class="req">*</span></span></label>
-        <label class="check"><input type="checkbox" name="demarrage" value="oui" required><span>Je demande que la création commence tout de suite. Si je me rétracte dans les 14 jours, je paie le travail déjà fait. <span class="req">*</span></span></label>
+        <fieldset class="o-depart">
+          <legend>Quand voulez-vous que la création commence ? <span class="req">*</span></legend>
+          <label class="check"><input type="radio" name="demarrage" value="oui" required><span><strong>Démarrer mon site maintenant.</strong> Je demande expressément que la création commence tout de suite, avant la fin du délai de rétractation de 14 jours. Je reconnais que je perds mon droit de rétractation dès que mon site est entièrement livré. Si je me rétracte avant, je paie le travail déjà fait.</span></label>
+          <label class="check"><input type="radio" name="demarrage" value="attendre" required><span><strong>Attendre 14 jours.</strong> La création commence à la fin du délai de rétractation. Je garde ce droit jusque-là.</span></label>
+        </fieldset>
         <div class="o-pay">
           <p class="o-pay-today"><span>Aujourd’hui vous payez</span><b data-order="today">${euro(today0)}</b></p>
           <ul class="o-pay-lines" data-order-lines>

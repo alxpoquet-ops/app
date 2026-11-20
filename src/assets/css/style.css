@@ -2882,3 +2882,10 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .cf-fois strong { color: var(--ink); font-weight: 900; font-size: 1.05rem; }
 .cf-fois span { line-height: 1.5; }
 .cf-fois small { color: var(--muted); font-weight: 700; }
+
+/* Commande : quand commencer la création (deux choix, aucun coché d'avance) */
+.o-depart { margin: 6px 0 4px; padding: 14px 16px; border: 0; border-radius: 20px; background: var(--card); box-shadow: 0 0 0 2px var(--line) inset; display: grid; gap: 12px; }
+.o-depart legend { float: left; width: 100%; padding: 0; margin: 0 0 4px; font-weight: 900; color: var(--ink); }
+.o-depart .check { clear: both; }
+.o-depart .check strong { color: var(--ink); }
+.o-depart .check input { margin-top: 4px; flex: none; }
