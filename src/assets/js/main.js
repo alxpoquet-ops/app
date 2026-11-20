@@ -10,11 +10,8 @@
   var EN = /^en\b/i.test(d.documentElement.lang || '');
   var TR = {
     // bulle de Cerise et « i » des options
-    "Aujourd’hui : l’acompte et les options": "Today: the deposit and the options",
-    "Aujourd’hui : l’acompte de ": "Today: the deposit of ",
-    "Puis, dès la réception, pendant ": "Then, from delivery, for ",
+    
     " mois": " months",
-    "À la réception du site : le reste": "When the website is delivered: the rest",
     "Et le forfait, chaque année": "And the subscription, every year",
     "Et le forfait, chaque mois": "And the subscription, every month",
     "Prix total du site : ": "Total price of the website: ",
@@ -30,7 +27,6 @@
     'Code promo : ': 'Promo code: ',
     ' % de remise sur la création, déjà déduits': '% off the website, already deducted',
     ' fois, et votre forfait': ' instalments, and your plan',
-    'À la réception : le reste, et votre forfait': 'On delivery: the rest, and your plan',
     'Tranquillité': 'Peace of mind',
     'Évolution': 'Growth',
     'Pack SEO': 'SEO pack',
@@ -44,11 +40,8 @@
     'Je m’en occupe moi-même (création seule)': 'I will handle it myself (website only)',
     'Formule ': 'Plan ',
     'Abonnement ': 'Subscription: ',
-    ' aujourd’hui, puis ': ' today, then ',
-    ' à la réception': ' on delivery',
-    ' par mois pendant ': ' a month for ',
-    'Aujourd’hui, l’acompte de ': 'Today, the deposit of ',
-    'À la réception du site, le reste': 'On delivery, the rest',
+    
+    
     'Puis votre forfait, chaque année': 'Then your plan, every year',
     'Puis votre forfait, chaque mois': 'Then your plan, every month',
     ', sans abonnement': ', no plan',
@@ -59,7 +52,6 @@
     'Ensuite, chaque mois': 'Then, every month',
     'rien': 'nothing',
     ' fois': ' instalments',
-    'À la réception : le reste': 'On delivery: the rest',
     'Alex s’en occupe': 'Alex is on it',
     'En savoir plus': 'Learn more',
     'Alex a fait votre modification, elle est en ligne (démo)': 'Alex made your change, it is live (demo)',
@@ -102,12 +94,11 @@
     'Parfait, on gardera votre nom de domaine actuel.': 'Perfect, we will keep your current domain name.',
     'Forfait ': 'Plan ', '/an': '/year', '/mois': '/month', 'an': 'year', 'mois': 'month', 'année': 'year',
     'Mon nom de domaine actuel': 'My current domain name', ' (disponible)': ' (available)', ' (déjà pris)': ' (already taken)',
-    'Nom de domaine à choisir': 'Domain name to choose', 'Le reste en ': 'The rest in ', ' fois sans frais': ' interest-free instalments',
-    'Création, une fois': 'Creation, one-off', 'Abonnement, dès la réception, par ': 'Subscription, from delivery, per ', 'Abonnement': 'Subscription',
-    'Aujourd’hui ': 'Today ', ', à la réception ': ', on delivery ', ' + abonnement': ' + subscription',
-    'Au mois': 'Monthly', 'Acompte de ': 'Deposit of ', ' % sur la création (': '% of the creation (',
-    'À la réception : le reste en ': 'On delivery: the rest in ', ' fois, et le forfait': ' instalments, and the subscription',
-    'À la réception : le reste, et le forfait': 'On delivery: the rest, and the subscription', ' options': ' options', 'Options': 'Options', ' pages en plus': ' extra pages', ' page en plus': ' extra page',
+    'Nom de domaine à choisir': 'Domain name to choose', ' fois sans frais': ' interest-free instalments',
+    'Création, une fois': 'Creation, one-off', 'Abonnement': 'Subscription',
+    'Aujourd’hui ': 'Today ', ' + abonnement': ' + subscription',
+    'Au mois': 'Monthly', 
+    ' options': ' options', 'Options': 'Options', ' pages en plus': ' extra pages', ' page en plus': ' extra page',
     'Un instant, je prépare le paiement…': 'One moment, I am preparing the payment…', 'Lien copié, prêt à envoyer': 'Link copied, ready to send',
     'Écrivez votre demande en quelques mots': 'Write your request in a few words',
     'La photo dépasse 8 Mo : choisissez-en une plus légère': 'The photo is over 8 MB: please choose a lighter one',
@@ -471,21 +462,16 @@
       var rLine = $('[data-sum-remise]', box);
       if (rLine) rLine.hidden = !r;
       setText('remise', '- ' + euro(round2(t.price - prixSite)));
-      var acompte = round2(prixSite * data.acompte / 100);
-      var reste = round2(prixSite - acompte);
+      // la création se paie en entier à la commande (data.acompte = 100) : en une fois, ou en 3 ou 4 fois avec un
+      // organisme externe, sur la page de paiement. Le forfait démarre à la mise en ligne du site.
+      var aPayer = round2(prixSite * (data.acompte || 100) / 100);
       var recur = f.month * mult + domPlus;
-      // chaque façon de payer, en clair : ce qu'on paie aujourd'hui, puis à la réception
-      setText('p-0', euro(acompte) + tr(' aujourd’hui, puis ') + euro(reste) + tr(' à la réception'));
-      (data.lissage || []).forEach(function (n) { setText('p-' + n, euro(acompte) + tr(' aujourd’hui, puis ') + euro(floor2(reste / n)) + tr(' par mois pendant ') + n + tr(' mois')); });
       var lisse = lisseN > 0;
-      var lisseAmt = lisse ? floor2(reste / lisseN) : 0;
-      setText('today-label', tr('Aujourd’hui, l’acompte de ') + data.acompte + ' %');
-      setText('today', euro(acompte));
-      setText('reste-label', lisse ? tr('Puis, dès la réception, pendant ') + lisseN + tr(' mois') : tr('À la réception du site, le reste'));
-      setText('reste', lisse ? euro(lisseAmt) + tr('/mois') : euro(reste));
-      setText('recur-label', tr('Ensuite, chaque mois'));
+      setText('today-label', tr('Aujourd’hui, à la commande : votre site'));
+      setText('today', euro(aPayer));
+      setText('recur-label', seule ? tr('Ensuite, chaque mois') : tr('Dès la mise en ligne, chaque mois'));
       setText('recur', seule ? tr('rien') : euro(recur) + per);
-      setText('detail', tr('Prix total du site : ') + euro(prixSite) + (lisse ? tr(', sans frais en plus.') : '.'));
+      setText('detail', tr('Prix total du site : ') + euro(prixSite) + '.');
       var bar = $('[data-sum="bar"]', box);
       if (bar) bar.innerHTML = '<b>' + euro(prixSite) + '</b>' + (seule ? tr(', sans abonnement') : tr(' puis ') + '<b>' + euro(recur) + per + '</b>');
       // Lien « Poser une question » (formulaire de contact, en clair)
@@ -613,20 +599,16 @@
       var r = code.ok ? (data.remise || 0) : 0;
       var k = (100 - r) / 100;
       var prixSite = round2(t.price * k);
-      var acompte = round2(prixSite * data.acompte / 100);
-      var solde = round2(prixSite - acompte);
-      var lisseAmt = lisse ? floor2(solde / lisseN) : 0;
+      // la création se paie en entier à la commande (data.acompte = 100)
+      var aPayer = round2(prixSite * (data.acompte || 100) / 100);
       var forfaitFirst = f.month * mult;
       // nom de domaine fourni : data.domaine € de plus par mois (rien si le client a déjà le sien, rien en Autonomie)
       var domPlus = (!seule && !domain.own()) ? (data.domaine || 0) : 0;
       $$('[data-avec-formule]', root).forEach(function (e) { e.hidden = seule; });
       $$('[data-seule-txt]', root).forEach(function (e) { e.hidden = !seule; });
       setText('domain-prix', domain.own() ? euro(0) : '+ ' + euro(domPlus) + per);
-      // chaque façon de payer, en clair
-      setText('p-0', euro(acompte) + tr(' aujourd’hui, puis ') + euro(solde) + tr(' à la réception'));
-      (data.lissage || []).forEach(function (n) { setText('p-' + n, euro(acompte) + tr(' aujourd’hui, puis ') + euro(floor2(solde / n)) + tr(' par mois pendant ') + n + tr(' mois')); });
-      // aujourd'hui : l'acompte et les options payées une fois ; la formule démarre à la réception du site
-      lines.push([tr('Acompte de ') + data.acompte + tr(' % sur la création (') + siteNom(t).toLowerCase() + ')', acompte]);
+      // aujourd'hui : la création en entier et les options payées une fois ; le forfait démarre à la mise en ligne du site
+      lines.push([tr('Création du site (') + siteNom(t).toLowerCase() + ')', aPayer]);
       $$('.b-opt input:checked', form).forEach(function (i) {
         var o = find(data.options, i.value);
         if (o && o.once) lines.push([tr(o.name), round2(o.once * k)]);
@@ -638,15 +620,8 @@
       var next = round2(forfaitFirst + domPlus + optRec);
       setText('today', euro(today));
       setText('btn', euro(today));
-      setText('next', seule ? (lisse ? euro(lisseAmt) + ' × ' + lisseN : euro(solde)) : lisse ? euro(lisseAmt) + ' × ' + lisseN + ' + ' + euro(next) + per : euro(solde) + ' + ' + euro(next) + per);
-      setText('next-label', seule ? (lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois') : tr('À la réception : le reste')) : lisse ? tr('À la réception : le reste en ') + lisseN + tr(' fois, et votre forfait') : tr('À la réception : le reste, et votre forfait'));
-      if ($('[data-order="solde"]', root)) setText('solde', euro(solde));
-      setText('lisse', euro(lisseAmt));
-      setText('lisse-per', perUnit);
-      setText('lisse-n', String(lisseN));
-      var soldeNote = $('[data-order-solde]', root), lisseNote = $('[data-order-lisse-note]', root);
-      if (soldeNote) soldeNote.hidden = lisse;
-      if (lisseNote) lisseNote.hidden = !lisse;
+      setText('next', seule ? tr('rien') : euro(next) + per);
+      setText('next-label', seule ? tr('Ensuite : pas d’abonnement') : tr('Dès la mise en ligne : votre forfait'));
       var ul = $('[data-order-lines]', root);
       if (ul) {
         ul.innerHTML = '';

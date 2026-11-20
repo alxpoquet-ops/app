@@ -301,10 +301,8 @@ const creationSeule = {
   main: ['Aucune obligation d’abonnement', 'Vous gérez votre hébergement', 'Vous gérez votre nom de domaine', 'Vous gérez vos sauvegardes', 'Vous gérez vos mises à jour'],
 };
 const annuel = { moisOfferts: 0 }; // 19 novembre 2026 : plus de réduction à l'année (le paiement à l'année n'est plus proposé)
-// Prix du site payable en 6 ou 12 fois sans frais (engagement le temps du paiement ; sinon, aucun engagement).
-// Le paiement en plusieurs fois se fait au mois : l'abonnement passe alors au mois.
-// Le paiement en plusieurs fois passe par un organisme externe (Alma, Klarna), proposé sur la page de paiement Stripe :
-// il avance la somme, nous sommes payés tout de suite. L'ancien étalement maison (6 ou 12 fois) est arrêté (20 novembre 2026).
+// Le paiement en plusieurs fois passe par un organisme externe (Alma, Klarna), proposé sur la page de paiement Stripe, à la
+// commande : il avance la somme entière, nous sommes payés tout de suite. L'ancien étalement maison (6 ou 12 fois) est arrêté.
 const lissage = { durees: [] };
 const fractionne = { fois: '3 ou 4', organismes: 'Alma ou Klarna' };
 // Délai de réponse aux demandes de modification (le même pour tous).
@@ -368,7 +366,10 @@ const phrase = {
   suite: 'Vos futurs clients ne peuvent pas découvrir ce que vous proposez si vous n’êtes pas visible.',
 };
 const fidelite = { parrainageMois: 1, remiseSecondSite: 10 };
-const paiement = { acompte: 25 }; // 25 % à la commande ; à la réception : le reste (en une fois, ou en 6 / 12 fois sans frais) et l'abonnement démarre
+// 20 novembre 2026 : la création du site se paie en entier à la commande (acompte: 100, le nom de la clé est gardé : le PHP la lit).
+// Sur la page de paiement Stripe, le client choisit : en une fois, ou en 3 ou 4 fois avec Alma ou Klarna (l'organisme nous
+// verse tout de suite la somme entière). Plus de « reste à la réception ». Le forfait démarre à la mise en ligne du site.
+const paiement = { acompte: 100 };
 
 // ---------------------------------------------------------------- Jetons Cerise
 // 1 Jeton Cerise = 1 centime. Les jetons paient ce que fait Cerise : les modifications du site et les outils.

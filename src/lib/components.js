@@ -175,7 +175,7 @@ function typeCards() {
 
 // ---------------------------------------------------------------- prix du site lissé (arrondi au centime inférieur)
 // Mensualité du site payé en n fois (12 par défaut), arrondie au centime inférieur : jamais plus que le prix.
-// Mensualité du reste (après l'acompte) payé en n fois à la réception du site
+// Montant payé à la commande : la création en entier (paiement.acompte = 100). Le nom est gardé pour le PHP et les anciens appels.
 const acompteDe = (price) => Math.round(price * paiement.acompte) / 100;
 const lisse = () => 0; // l'ancien étalement maison est arrêté : le paiement en plusieurs fois passe par un organisme externe
 const LMAX = 0;
@@ -186,8 +186,8 @@ const unType = (t) => (t.id === 'boutique' ? 'un Site Boutique' : t.id === 'une-
 
 function payBox() {
   return `<ul class="list-check">
-    <li><strong>À la commande</strong> : ${paiement.acompte} % du site, soit ${euro(acompteDe(creation.prix))} pour un ${ESSENTIEL.name} à ${euro(creation.prix)}.</li>
-    <li><strong>À la réception du site</strong> : le reste en une fois (${euro(creation.prix - acompteDe(creation.prix))}), ou en ${lissageTxt} fois avec ${ORGANISMES}.</li>
+    <li><strong>À la commande</strong> : le site en entier, par exemple ${euro(acompteDe(creation.prix))} pour un ${ESSENTIEL.name}. Rien d’autre à payer pour la création.</li>
+    <li><strong>En une fois ou en ${lissageTxt} fois</strong> : vous choisissez sur la page de paiement. En une fois par carte, Apple Pay, Google Pay ou PayPal. Ou en ${lissageTxt} fois avec ${ORGANISMES}, selon leur accord.</li>
     <li><strong>Ensuite</strong> : le forfait ${creationSeule.name}, ${euro(0)} par mois, vous gérez tout vous-même. Ou le forfait ${ABO.name}, ${euro(ABO.month)} par mois, sans engagement : on s’occupe de tout. ${DOMAINE_REGLE}</li>
   </ul>`;
 }
@@ -277,7 +277,7 @@ function offre({ compact = false, choose = true } = {}) {
   return `<div class="offre offre-finale${compact ? ' is-compact' : ''}" id="offre">
   <p class="offre-k"><span>1</span>Créer votre site : payez une seule fois</p>
   <div class="site-cartes">${types.map((t) => siteOffreCarte(t, { compact, choose })).join('')}</div>
-  <p class="offre-sous">${icon('calendar-check')}<span>${paiement.acompte} % à la commande, le reste à la réception. Payable en ${lissageTxt} fois avec ${ORGANISMES}.</span></p>
+  <p class="offre-sous">${icon('calendar-check')}<span>Réglé à la commande, en une fois ou en ${lissageTxt} fois avec ${ORGANISMES}, directement sur la page de paiement.</span></p>
   ${compact ? '' : `<p class="offre-note">${esc(revisionsNote)}</p>`}
   <p class="offre-k"><span>2</span>Ensuite, le forfait ${esc(creationSeule.name)} ou le forfait ${esc(ABO.name)}</p>
   <div class="formules is-duo">${[creationSeule, ...forfaits].map((f) => formuleCarte(f, { compact })).join('')}</div>
@@ -522,12 +522,12 @@ function formulesChoix({ name = 'b-forfait', court = false } = {}) {
     <span class="cf-badge">${icon('check')}Tout compris</span>
   </div>`;
 }
-// Comment payer le site : en une fois, ou en plusieurs fois par un organisme externe (choisi à la réception, sur la page de paiement).
+// Comment payer le site : en entier à la commande, en une fois ou en plusieurs fois par un organisme externe (choisi sur la page de paiement Stripe).
 function paiementChoix({ name = 'b-lisse', une = 'non' } = {}) {
   return `<input type="hidden" name="${name}" value="${une}">
   <div class="cf-fois">
     <span class="cf-fois-ico" aria-hidden="true">${icon('calendar-check')}</span>
-    <p><strong>En une fois, ou en ${lissageTxt} fois</strong><span>${paiement.acompte} % aujourd’hui. Le reste à la réception de votre site : en une fois, ou en ${lissageTxt} fois avec ${ORGANISMES}, à choisir sur la page de paiement.</span><small>Le paiement en plusieurs fois est proposé par ${ORGANISMES}, selon leur accord.</small></p>
+    <p><strong>En une fois, ou en ${lissageTxt} fois</strong><span>Vous choisissez sur la page de paiement : en une fois (carte, Apple Pay, Google Pay, PayPal…), ou en ${lissageTxt} fois avec ${ORGANISMES}.</span><small>Avec ${ORGANISMES}, l’organisme règle le site pour vous, et vous le remboursez en ${lissageTxt} fois, selon son accord et ses conditions.</small></p>
   </div>`;
 }
 
@@ -572,7 +572,7 @@ function configurator() {
       ${body}
     </section>`;
   const P0 = VISIBILITE.price; // le site coché au départ
-  const acompte0 = Math.round(P0 * paiement.acompte) / 100;
+  const today0 = acompteDe(P0); // le site en entier, payé à la commande
   const partie = (couleur, titre, texte, attrs = '') => `<div class="cf-partie c-${couleur}"${attrs}><p class="cf-partie-titre">${titre}</p><p class="cf-partie-txt">${texte}</p></div>`;
   return `<div class="builder cf" data-builder="${priceData()}" data-billing-scope>
   <form class="cf-form" data-builder-form>
@@ -581,7 +581,7 @@ function configurator() {
     ${partie('lilac', `Ensuite, le forfait ${esc(creationSeule.name)} ou le forfait ${esc(ABO.name)}`, 'Aucune obligation d’abonnement : c’est vous qui choisissez.')}
     ${etape('Qui s’occupe de votre site ?', 'L’hébergement, le nom de domaine, les sauvegardes et les mises à jour : on s’en charge, ou vous le faites vous-même.', gestionChoix())}
     ${etape('Votre nom de domaine', `C’est l’adresse de votre site, par exemple mon-entreprise.fr. Vous en avez déjà une ? Cochez la case : ${euro(ABO.month)} par mois. Sinon, on vous la fournit, à votre nom : ${euro(ABO.month + DOM)} par mois.`, domainBox(), ' data-avec-formule')}
-    ${etape(`Le forfait ${esc(ABO.name)}`, `${euro(ABO.month)} par mois, sans engagement. Il démarre à la réception du site, et vous l’arrêtez quand vous voulez.`, `${formulesChoix({ court: 'sans-carte' })}<p class="cf-plus-tard">${icon('plus')}<span>Les extras (page de visibilité Google, traduction anglaise, fonctionnalité spécifique) se demandent plus tard, depuis votre espace client. <a href="${sections.forfaits.path}#extras">Voir les extras</a></span></p>`, ' data-avec-formule')}
+    ${etape(`Le forfait ${esc(ABO.name)}`, `${euro(ABO.month)} par mois, sans engagement. Il démarre à la mise en ligne de votre site, et vous l’arrêtez quand vous voulez.`, `${formulesChoix({ court: 'sans-carte' })}<p class="cf-plus-tard">${icon('plus')}<span>Les extras (page de visibilité Google, traduction anglaise, fonctionnalité spécifique) se demandent plus tard, depuis votre espace client. <a href="${sections.forfaits.path}#extras">Voir les extras</a></span></p>`, ' data-avec-formule')}
     <section class="cf-etape cf-total b-sum" id="cf-total" aria-live="polite">
       <h2 class="cf-titre"><span class="cf-n" aria-hidden="true"></span>Votre total</h2>
       <ul class="cf-lignes">
@@ -594,16 +594,15 @@ function configurator() {
       ${paiementChoix()}
       ${codeEvenementBox()}
       <div class="cf-recap">
-        <p class="cf-auj"><span data-sum="today-label">Aujourd’hui, l’acompte de ${paiement.acompte} %</span><b data-sum="today">${euro(acompte0)}</b></p>
-        <p><span data-sum="reste-label">À la réception du site, le reste</span><b data-sum="reste">${euro(P0 - acompte0)}</b></p>
-        <p><span data-sum="recur-label">Ensuite, chaque mois</span><b data-sum="recur">${euro(ABO.month + DOM)}/mois</b></p>
+        <p class="cf-auj"><span data-sum="today-label">Aujourd’hui, à la commande : votre site</span><b data-sum="today">${euro(today0)}</b></p>
+        <p><span data-sum="recur-label">Dès la mise en ligne, chaque mois</span><b data-sum="recur">${euro(ABO.month + DOM)}/mois</b></p>
       </div>
       <p class="cf-detail" data-sum="detail">Prix total du site : ${euro(P0)}.</p>
       <div class="cf-actions">
         <a class="btn btn-primary btn-lg btn-flaque" href="${sections.commander.path}" data-sum-order>${icon('shopping-bag')}<span>Commander</span></a>
         <a class="btn btn-light btn-lg" href="/contact/#devis" data-sum-go>${icon('message-circle')}<span>Nous écrire</span></a>
       </div>
-      <p class="cf-secu">${icon('shield-check')}<span>Paiement sécurisé par Stripe. Aujourd’hui, vous réglez seulement ${paiement.acompte} % du site.</span></p>
+      <p class="cf-secu">${icon('shield-check')}<span>Paiement sécurisé par Stripe. Votre forfait, lui, attend la mise en ligne de votre site.</span></p>
     </section>
   </form>
   <div class="b-bar" data-sum-bar>
