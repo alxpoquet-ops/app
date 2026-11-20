@@ -274,7 +274,8 @@ function aled08e_cmd_recap_txt($c) {
     if (!$c['domaine']) $dom = 'à choisir ensemble';
     elseif ($c['domaine_mien']) $dom = $c['domaine'] . ' (le client l’a déjà)';
     else $dom = $c['domaine'] . ' (à réserver au nom du client)';
-    $pay = 'acompte de ' . aled08e_euro_txt($m['acompte']) . ' à la commande, puis à la réception du site : '
+    if ((float) $m['solde'] <= 0) $pay = 'la création en entier à la commande, en une fois, ou en 3 ou 4 fois avec Alma ou Klarna sur la page de paiement' . (aled08e_est_seule($c['forfait']) ? '' : ' ; l’abonnement démarre à la mise en ligne du site');
+    else $pay = 'acompte de ' . aled08e_euro_txt($m['acompte']) . ' à la commande, puis à la réception du site : '
         . ($c['lissage'] ? 'le reste en ' . (int) $m['lissage_total_echeances'] . ' fois sans frais, ' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois (engagement de ' . (int) $m['lissage_total_echeances'] . ' mois)' . (aled08e_est_seule($c['forfait']) ? '' : ', avec l’abonnement') : 'le reste en une fois, ' . aled08e_euro_txt($m['solde']) . (aled08e_est_seule($c['forfait']) ? '' : ', et l’abonnement démarre'));
     return 'Référence : ' . $c['ref'] . "\n"
         . 'Site : ' . ($type ? $type['label'] : $c['type']) . ', création ' . aled08e_euro_txt($m['creation']) . ($type ? ' (délai habituel : ' . $type['delai'] . ')' : '') . "\n"
@@ -590,15 +591,16 @@ function aled08e_cmd_mail_client_nouvelle($c, $compte, $stripe) {
 function aled08e_cmd_mail_client_payee($c) {
     $delai = aled08e_cmd_delai_type($c);
     $corps = 'Bonjour ' . $c['prenom'] . ",\n\n"
-        . "Votre acompte est bien reçu, merci !\n"
-        . "Le reste se règle à la réception de votre site (en une fois, ou en 3 ou 4 fois avec Alma ou Klarna), et votre forfait démarre à ce moment-là.\n"
+        . ((float) $c['montants']['solde'] <= 0
+            ? "Votre paiement est bien reçu, merci !\n" . (aled08e_est_seule($c['forfait']) ? '' : "Votre forfait, lui, ne démarre qu’à la mise en ligne de votre site.\n")
+            : "Votre acompte est bien reçu, merci !\nLe reste se règle à la réception de votre site (en une fois, ou en 3 ou 4 fois avec Alma ou Klarna), et votre forfait démarre à ce moment-là.\n")
         . 'Référence de la commande : ' . $c['ref'] . "\n\n"
         . "Ce qui se passe maintenant :\n"
         . ($c['domaine'] && !$c['domaine_mien'] ? '1. Je réserve le nom de domaine ' . $c['domaine'] . " à votre nom.\n" : "1. Je prépare l’hébergement de votre site.\n")
         . "2. Vous remplissez votre questionnaire de création dans votre espace client (une dizaine de minutes) : couleurs, ambiance, photos, prix ou produits. C’est lui qui lance la création : " . aled08e_url() . "#commande\n"
         . '3. Je crée votre site' . ($delai ? ' (délai habituel : ' . $delai . ', à partir de vos réponses)' : '') . ", et vous suivez l’avancement dans votre espace client.\n\n"
         . "À bientôt,\nAlex et les Minis Monstres\n";
-    wp_mail($c['email'], 'Votre acompte pour la commande ' . $c['ref'] . ' est reçu', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
+    wp_mail($c['email'], ((float) $c['montants']['solde'] <= 0 ? 'Votre paiement' : 'Votre acompte') . ' pour la commande ' . $c['ref'] . ' est reçu', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
 }
 function aled08e_cmd_mail_owner_payee($c) {
     $dom = $c['domaine'] && !$c['domaine_mien'];
@@ -655,7 +657,10 @@ function aled08e_fois_txt() {
     return 'en ' . ($f['fois'] ?? '3 ou 4') . ' fois avec ' . ($f['organismes'] ?? 'Alma ou Klarna');
 }
 function aled08e_cmd_reception_due($c) {
-    return $c['statut'] === 'en_ligne' && empty($c['reception_payee']) && empty($c['solde_paye']) && (float) $c['montants']['solde'] > 0;
+    if ($c['statut'] !== 'en_ligne' || !empty($c['reception_payee']) || !empty($c['solde_paye'])) return false;
+    if ((float) $c['montants']['solde'] > 0) return true;
+    // la création est déjà payée en entier : il reste à démarrer le forfait (sauf forfait Autonome ou forfait offert)
+    return !aled08e_est_seule($c['forfait']) && !($c['user'] && aled08e_meta($c['user'], 'offert') === '1');
 }
 /* Montants recalculés pour le choix fait à la réception (n = 0 : en une fois ; 6 ou 12 : en plusieurs fois, forfait au mois) */
 function aled08e_cmd_montants_reception($c, $n) {

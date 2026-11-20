@@ -201,7 +201,7 @@ function aled08e_stripe_checkout($cid) {
         return ['quantity' => 1, 'price_data' => ['currency' => 'eur', 'unit_amount' => aled08e_stripe_cents($euros), 'product_data' => ['name' => $name, 'metadata' => ['aled08' => $tag]]]];
     };
     // À la commande : l'acompte et les options ponctuelles. Le forfait démarre à la réception du site.
-    $items = [$once('Acompte de ' . (int) $D['acompte'] . ' % sur la création (' . ($type ? mb_strtolower($type['label'], 'UTF-8') : 'site') . ')', $m['acompte'], 'acompte')];
+    $items = [$once(((int) $D['acompte'] >= 100 ? 'Création de votre site (' : 'Acompte de ' . (int) $D['acompte'] . ' % sur la création (') . ($type ? mb_strtolower($type['label'], 'UTF-8') : 'site') . ')', $m['acompte'], 'acompte')];
     foreach ($c['options'] as $oid) {
         $o = aled08e_option($oid);
         if ($o && $o['once'] > 0) $items[] = $once('Option : ' . $o['name'], $o['once'], 'option');
@@ -227,7 +227,7 @@ function aled08e_stripe_checkout($cid) {
     if (is_wp_error($r)) return $r;
     if (empty($r['url'])) return new WP_Error('aled08_stripe', 'Stripe n’a pas renvoyé d’adresse de paiement.');
     update_post_meta($cid, '_aled08_stripe_session', $r['id'] ?? '');
-    aled08e_cmd_journal($cid, 'Page de paiement Stripe ouverte (acompte : ' . aled08e_euro_txt($m['total_jour']) . ').');
+    aled08e_cmd_journal($cid, 'Page de paiement Stripe ouverte (montant : ' . aled08e_euro_txt($m['total_jour']) . ').');
     return $r['url'];
 }
 
@@ -261,7 +261,7 @@ function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
         }
     }
     $lib = ($type ? $type['label'] : 'site') . ', commande ' . $c['ref'];
-    $dejaPaye = !empty($c['solde_fois']); // le reste a été payé en plusieurs fois par un organisme externe : il ne reste que le forfait
+    $dejaPaye = !empty($c['solde_fois']) || (float) $c['montants']['solde'] <= 0; // le reste a été payé en plusieurs fois par un organisme externe : il ne reste que le forfait
     if ($dejaPaye) $n = 0;
     if ($dejaPaye && !$items) return new WP_Error('aled08_stripe', 'Rien à régler pour cette commande.');
     if ($n) $items[] = $recurring('Reste de la création en ' . $n . ' fois sans frais (' . $lib . ')', $m['lissage_mensualite'], 'lissage');
@@ -289,7 +289,7 @@ function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
     if (is_wp_error($r)) return $r;
     if (empty($r['url'])) return new WP_Error('aled08_stripe', 'Stripe n’a pas renvoyé d’adresse de paiement.');
     update_post_meta($cid, '_aled08_solde_session', $r['id'] ?? '');
-    aled08e_cmd_journal($cid, 'Paiement de réception ouvert : ' . ($dejaPaye ? 'démarrage du forfait (le reste est déjà payé en plusieurs fois)' : ($n ? 'reste en ' . $n . ' fois (' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois)' : 'reste en une fois (' . aled08e_euro_txt($m['solde']) . ')')) . ($expire ? ', lien valable 24 heures' : '') . '.');
+    aled08e_cmd_journal($cid, 'Paiement de réception ouvert : ' . ($dejaPaye ? 'démarrage du forfait (la création est déjà payée)' : ($n ? 'reste en ' . $n . ' fois (' . aled08e_euro_txt($m['lissage_mensualite']) . ' par mois)' : 'reste en une fois (' . aled08e_euro_txt($m['solde']) . ')')) . ($expire ? ', lien valable 24 heures' : '') . '.');
     return $r['url'];
 }
 /* Le reste de la création payé en plusieurs fois par un organisme externe (Alma, Klarna) : une page de paiement Stripe qui ne

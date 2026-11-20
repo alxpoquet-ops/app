@@ -53,7 +53,7 @@ function aled08e_atelier_action(WP_REST_Request $req) {
  *  L'atelier (Claude relié à ce site) lit la liste, pose ses questions au client (e-mail + espace client),
  *  fait le visuel par atelier_rest, puis prévient Alex : c'est le seul e-mail qu'il reçoit.
  *   GET  /aled08/v1/atelier/chantiers                 les commandes payées pas encore en ligne
- *   POST /aled08/v1/atelier/chantier { commande, faire: question | note | a_verifier, texte }
+ *   POST /aled08/v1/atelier/chantier { commande, faire: question | note | a_verifier | en_ligne (+ accord_alex), texte }
  *  États (_aled08_chantier) : '' (à lire), question (on attend le client), reponse (le client a répondu), visuel, a_verifier.
  * ========================================================================= */
 function aled08e_chantier_auto() { return get_option('aled08_chantier_auto', '1') === '1'; }
@@ -132,13 +132,37 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
         if ($c['user']) update_user_meta($c['user'], 'aled08_visuel_fait', wp_date('Y-m-d'));
         if ($c['statut'] === 'pret') aled08e_cmd_set_statut($cid, 'en_creation', 'Visuel fait par l’atelier, à vérifier.');
         aled08e_cmd_journal($cid, 'Atelier : site prêt à vérifier.');
-        wp_mail(aled08e_to(), 'Site prêt à vérifier : ' . ($c['domaine'] ?: aled08e_cmd_nom($c)),
-            'Le site de ' . aled08e_cmd_nom($c) . ' (' . $c['ref'] . ") est prêt. Il ne reste qu’à le regarder et à peaufiner.\n\n" . ($site ? 'Le site : ' . $site . "\n" : '')
-            . ($texte !== '' ? "\nCe qui a été fait, et ce qui reste à voir :\n" . $texte . "\n" : '')
-            . "\nQuand il vous plaît, passez la commande « En ligne » : le client est prévenu et règle le reste.\n" . aled08e_cmd_admin_url($cid) . "\n", aled08e_mail_headers());
+        aled08e_chantier_mail_verifier($c, $texte);
         return new WP_REST_Response(['ok' => true, 'etat' => 'a_verifier'], 200);
     }
-    return new WP_Error('aled08_chantier', 'À faire inconnu (question, note, a_verifier).', ['status' => 400]);
+    if ($faire === 'en_ligne') {
+        // seulement quand Alex l'a dit lui-même dans la conversation
+        if (empty($p['accord_alex'])) return new WP_Error('aled08_chantier', 'Il faut l’accord d’Alex.', ['status' => 400]);
+        if (aled08e_chantier_etat($cid) !== 'a_verifier') return new WP_Error('aled08_chantier', 'Ce site n’a pas encore été envoyé à la vérification.', ['status' => 409]);
+        aled08e_cmd_set_statut($cid, 'en_ligne', 'Mis en ligne avec l’accord d’Alex.');
+        update_post_meta($cid, '_aled08_chantier', 'en_ligne');
+        return new WP_REST_Response(['ok' => true, 'statut' => 'en_ligne'], 200);
+    }
+    return new WP_Error('aled08_chantier', 'À faire inconnu (question, note, a_verifier, en_ligne).', ['status' => 400]);
+}
+
+/* L'e-mail à Alex, le seul du parcours : le site à regarder, puis la réponse se donne dans la conversation avec Claude */
+function aled08e_chantier_conversation() { return (string) get_option('aled08_atelier_conversation', 'https://claude.ai/code') ?: 'https://claude.ai/code'; }
+function aled08e_chantier_mail_verifier($c, $texte) {
+    $site = $c['domaine'] ? 'https://' . $c['domaine'] . '/' : (string) aled08e_meta($c['user'], 'site');
+    $p = function ($t) { return '<p style="margin:0 0 14px;font-size:16px;line-height:1.6;color:#CFCBEA;">' . $t . '</p>'; };
+    $h = '<h1 style="margin:0 0 14px;font-size:24px;line-height:1.25;color:#FFFFFF;">Un site est prêt à vérifier</h1>'
+        . $p('Le site de <b style="color:#FFFFFF;">' . esc_html(aled08e_cmd_nom($c)) . '</b> (' . esc_html($c['ref']) . ') est prêt. Il ne reste qu’à le regarder.')
+        . ($site ? aled08e_mail_bouton($site, 'Voir le site') . '<p style="margin:-6px 0 18px;font-size:14px;color:#A9D9C5;">' . esc_html(preg_replace('#^https?://#', '', untrailingslashit($site))) . '</p>' : '')
+        . ($texte !== '' ? '<p style="margin:0 0 8px;font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#FF8EBF;">Ce que j’ai fait, et ce qui reste à voir</p>' . $p(nl2br(esc_html($texte))) : '')
+        . '<p style="margin:8px 0 8px;font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#7BDDB1;">Et ensuite ?</p>'
+        . $p('Revenez dans la conversation avec Claude et dites simplement :<br>« <b style="color:#FFFFFF;">OK</b> » pour mettre le site en ligne (le client est prévenu et son forfait démarre),<br>ou ce que vous voulez changer.')
+        . aled08e_mail_bouton(aled08e_chantier_conversation(), 'Répondre dans la conversation')
+        . '<p style="margin:6px 0 0;font-size:13px;line-height:1.5;color:#8B86B3;">La commande dans l’administration : <a href="' . esc_url(aled08e_cmd_admin_url($c['id'])) . '" style="color:#8B86B3;">' . esc_html($c['ref']) . '</a></p>';
+    $alt = function ($m) use ($c, $site, $texte) { $m->AltBody = 'Le site de ' . aled08e_cmd_nom($c) . ' (' . $c['ref'] . ") est prêt à vérifier.\n\nLe site : " . $site . "\n\n" . ($texte !== '' ? $texte . "\n\n" : '') . "Revenez dans la conversation avec Claude : « OK » pour le mettre en ligne, ou ce que vous voulez changer.\n" . aled08e_chantier_conversation() . "\n"; };
+    add_action('phpmailer_init', $alt, 20);
+    wp_mail(aled08e_to(), 'Site prêt à vérifier : ' . ($c['domaine'] ?: aled08e_cmd_nom($c)), aled08e_mail_coque('Site prêt à vérifier', $h, 'Un site est prêt : regardez-le, puis dites OK ou ce qu’il faut changer.'), ['Content-Type: text/html; charset=UTF-8']);
+    remove_action('phpmailer_init', $alt, 20);
 }
 
 /* Le client répond dans son espace, onglet « Ma commande » */
