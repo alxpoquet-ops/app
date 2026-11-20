@@ -2994,3 +2994,14 @@ main > .section.section-citation + .section { padding-top: 48px; }
 @keyframes brand-reflet { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
 @media (prefers-reduced-motion: reduce) { .brand-nom { animation: none; } }
 @media (max-width: 420px) { .site-header .brand-text strong { font-size: 1.08rem; } }
+
+/* le reflet tourne en continu, sans pause, avec des couleurs plus franches (20 novembre 2026) */
+.brand-nom {
+  background-image: linear-gradient(90deg, #FF6FB0 0%, #B18CFF 20%, #5FC8FF 40%, #4FD6A0 60%, #FFC94A 80%, #FF6FB0 100%);
+  background-size: 200% 100%; background-repeat: repeat-x;
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, .7)) drop-shadow(0 0 7px rgba(255, 111, 176, .7)) drop-shadow(0 0 16px rgba(177, 140, 255, .55));
+  animation: brand-defile 4s linear infinite;
+}
+.brand:hover .brand-nom { animation: brand-defile 1.6s linear infinite; }
+@keyframes brand-defile { from { background-position: 0% 50%; } to { background-position: 200% 50%; } }
+@media (prefers-reduced-motion: reduce) { .brand-nom, .brand:hover .brand-nom { animation: none; } }
