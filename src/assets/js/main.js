@@ -262,6 +262,10 @@
 
   /* ---------- apparition au défilement ---------- */
   var reveals = $$('.reveal');
+  d.documentElement.classList.add('rv-pret');
+  // ce qui est déjà à l'écran s'affiche tout de suite, sans fondu
+  var basEcran = window.innerHeight * 0.96;
+  reveals = reveals.filter(function (el) { if (el.getBoundingClientRect().top < basEcran) { el.classList.add('is-visible', 'rv-direct'); return false; } return true; });
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
@@ -767,8 +771,28 @@
     var verrou = (app.getAttribute('data-verrou') || '').split(',').filter(Boolean);
     var jauge = $('#jauge-creation', app);
     tabs.forEach(function (t) { if (verrou.indexOf(t.getAttribute('data-tab')) >= 0) { t.classList.add('is-ferme'); t.setAttribute('aria-disabled', 'true'); t.title = 'Disponible quand votre site sera en ligne'; } });
+    /* Ma boutique se prépare en arrière-plan : l'espace s'affiche d'abord, sans attendre le site du client */
+    var chargerBoutique = function () {
+      var p = d.getElementById('t-vacances');
+      var att = p && $('[data-charger]', p);
+      if (!att || att._encours || !window.fetch || !window.DOMParser) return;
+      att._encours = true;
+      fetch(att.getAttribute('data-charger'), { credentials: 'same-origin', headers: { 'X-Requested-With': 'fetch' } })
+        .then(function (r) { if (!r.ok) throw new Error('http'); return r.text(); })
+        .then(function (html) {
+          var neuf = new DOMParser().parseFromString(html, 'text/html').getElementById('t-vacances');
+          if (!neuf || $('[data-charger]', neuf)) throw new Error('contenu');
+          p.innerHTML = neuf.innerHTML;
+          $$('script', p).forEach(function (o) { if (o.src) return; var n = d.createElement('script'); n.text = o.text; o.parentNode.replaceChild(n, o); });
+          if (typeof brancher === 'function') brancher(p);
+          if (window.aled08OeilPoser) window.aled08OeilPoser(p);
+        })
+        .catch(function () { att._encours = false; var t = $('p', att); if (t) t.innerHTML = 'Votre boutique met du temps à répondre. <a href="' + att.getAttribute('data-charger') + '#vacances">Réessayer</a>'; });
+    };
+    setTimeout(chargerBoutique, 1200);
     var show = function (id, focus, auto) {
       id = alias(id);
+      if (id === 'vacances') chargerBoutique();
       if (verrou.indexOf(id) >= 0) {
         if (jauge && !auto) {
           var hj = d.querySelector('.site-header');

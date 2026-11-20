@@ -1301,7 +1301,13 @@ function aled08e_dashboard() {
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-vacances" aria-labelledby="tab-vacances" hidden>
-          <?php echo aled08e_est_boutique($uid) ? aled08e_boutique_html($uid) : aled08e_boutique_verrou_html($uid); // phpcs:ignore ?>
+          <?php
+          // Ma boutique demande des informations au site du client : elle n'est préparée que quand on l'ouvre (ou qu'on y revient
+          // après un changement), pour que l'espace s'affiche tout de suite. Sinon, une attente, chargée en arrière-plan.
+          $bqTout = isset($_GET['sub']) || isset($_GET['pg']) || isset($_GET['bq']) || !aled08e_est_boutique($uid);
+          if ($bqTout) echo aled08e_est_boutique($uid) ? aled08e_boutique_html($uid) : aled08e_boutique_verrou_html($uid); // phpcs:ignore
+          else echo '<div class="bq-attente" data-charger="' . esc_url(aled08e_url(['bq' => '1'])) . '"><span class="bq-attente-rond" aria-hidden="true"></span><p>On ouvre votre boutique…</p></div>';
+          ?>
         </div>
 
       </div>

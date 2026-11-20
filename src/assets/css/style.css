@@ -3014,3 +3014,9 @@ main > .section.section-citation + .section { padding-top: 48px; }
   color: transparent; -webkit-text-fill-color: transparent; filter: blur(7px); opacity: .7; animation: inherit;
 }
 .brand:hover .brand-nom::after { opacity: .95; }
+
+/* ---------- vitesse (20 novembre 2026) : le contenu n'attend plus le script pour s'afficher ---------- */
+.js .reveal { opacity: 1; transform: none; }
+.js.rv-pret .reveal:not(.is-visible) { opacity: 0; transform: translateY(12px); }
+.js.rv-pret .reveal { transition: opacity .4s ease, transform .4s ease; }
+.js .reveal.rv-direct { transition: none; }
