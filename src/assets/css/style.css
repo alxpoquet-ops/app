@@ -2980,3 +2980,17 @@ main > .section.section-citation + .section { padding-top: 48px; }
 /* ---------- le bas du pied de page : le nom et l'année d'un côté, la phrase en dessous ---------- */
 .footer-bottom p { display: grid; gap: 2px; }
 .footer-bottom p strong { color: var(--ink); font-weight: 800; }
+
+/* ---------- le nom : « Les Minis Monstres » sur une ligne, en dégradé pastel qui brille doucement (20 novembre 2026) ---------- */
+.brand-text strong { display: block; }
+.brand-nom {
+  display: inline-block; white-space: nowrap; font-weight: 900; letter-spacing: -.01em;
+  background: linear-gradient(90deg, #FF8EBF 0%, #C9A8FF 25%, #8FD3FF 45%, #7BDDB1 60%, #FFD36B 78%, #FF8EBF 100%);
+  background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, .55)) drop-shadow(0 0 6px rgba(255, 142, 191, .55)) drop-shadow(0 0 14px rgba(185, 164, 255, .45));
+  animation: brand-reflet 7s ease-in-out infinite alternate;
+}
+.brand:hover .brand-nom { animation-duration: 2.2s; filter: drop-shadow(0 0 1px rgba(255, 255, 255, .7)) drop-shadow(0 0 8px rgba(255, 142, 191, .75)) drop-shadow(0 0 18px rgba(185, 164, 255, .6)); }
+@keyframes brand-reflet { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+@media (prefers-reduced-motion: reduce) { .brand-nom { animation: none; } }
+@media (max-width: 420px) { .site-header .brand-text strong { font-size: 1.08rem; } }
