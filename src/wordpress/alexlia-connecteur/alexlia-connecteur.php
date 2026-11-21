@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.10.0
+ * Version: 2.11.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.10.0');
+define('ALEXLIA_CONN_VERSION', '2.11.0');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 
 /* =========================================================================
@@ -203,11 +203,12 @@ function alexlia_atelier_image($a) {
 }
 
 /* =========================================================================
- *  L'apparence du site : claire et sombre sont toujours prêtes ; le client choisit celle qui s'ouvre par défaut.
- *  auto : selon le réglage du téléphone ou de l'ordinateur du visiteur. clair / sombre : toujours celle-là.
+ *  L'apparence du site : claire et sombre sont toujours prêtes ; le site s'ouvre en clair, sauf si le client choisit autre chose.
+ *  clair (par défaut) / sombre : celle qui s'ouvre. auto : selon le réglage du téléphone du visiteur.
+ *  Le visiteur bascule avec le bouton soleil / lune du site ; son choix est gardé dans son navigateur (minis-theme).
  *  Le visuel suit l'attribut data-theme posé sur <html> (couleurs en variables, deux jeux : clair et sombre).
  * ========================================================================= */
-function alexlia_apparence() { $m = (string) get_option('alexlia_apparence', 'auto'); return in_array($m, ['auto', 'clair', 'sombre'], true) ? $m : 'auto'; }
+function alexlia_apparence() { $m = (string) get_option('alexlia_apparence', 'clair'); return in_array($m, ['auto', 'clair', 'sombre'], true) ? $m : 'clair'; }
 function alexlia_apparence_regler($a) {
     $m = sanitize_key((string) ($a['mode'] ?? ''));
     if (!in_array($m, ['auto', 'clair', 'sombre'], true)) return new WP_Error('alexlia_apparence', 'Choix inconnu.', ['status' => 400]);
@@ -217,9 +218,10 @@ function alexlia_apparence_regler($a) {
 }
 add_action('wp_head', function () {
     $m = alexlia_apparence();
-    if ($m === 'auto') { echo '<meta name="color-scheme" content="light dark">' . "\n"; return; }
-    echo '<meta name="color-scheme" content="' . ($m === 'sombre' ? 'dark' : 'light') . '">' . "\n";
-    echo '<script>document.documentElement.setAttribute("data-theme","' . ($m === 'sombre' ? 'dark' : 'light') . '");</script>' . "\n";
+    $def = $m === 'sombre' ? '"dark"' : ($m === 'auto' ? '(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")' : '"light"');
+    echo '<meta name="color-scheme" content="light dark">' . "\n";
+    // le choix du visiteur (bouton soleil / lune) passe avant l'apparence d'ouverture ; posé avant l'affichage, sans clignotement
+    echo '<script>(function(h){var t;try{t=localStorage.getItem("minis-theme")}catch(e){}h.setAttribute("data-theme",t==="dark"||t==="light"?t:' . $def . ');window.minisTheme=function(v){h.setAttribute("data-theme",v);try{localStorage.setItem("minis-theme",v)}catch(e){}};})(document.documentElement);</script>' . "\n";
 }, 1);
 
 /* ---------- lecture ---------- */

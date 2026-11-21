@@ -627,7 +627,7 @@ function aled08e_cmd_mail_client_en_ligne($c) {
                     ? "Tout se fait dans votre espace client, onglet « Ma commande » :\n" . aled08e_url() . "#commande\n\n"
                     : "Je vous envoie le lien de paiement dans un e-mail séparé.\n\n")
             : '')
-        . "Votre site existe en deux apparences, claire et sombre : par défaut, il s’ouvre selon le réglage du téléphone de chaque visiteur. Vous pouvez choisir celle qui s’ouvre pour tout le monde dans votre espace client, onglet « Mon compte », rubrique « L’apparence de mon site ».\n\n"
+        . "Votre site existe en deux apparences, claire et sombre. Il s’ouvre en clair, et vos visiteurs passent en sombre d’un geste avec le petit soleil ou la lune en haut du site. Vous pouvez choisir une autre apparence d’ouverture dans votre espace client, onglet « Mon compte », rubrique « L’apparence de mon site ».\n\n"
         . "Pour faire évoluer votre site, envoyez vos demandes depuis votre espace client, onglet « Mes demandes » :\n" . aled08e_url() . "\n"
         . "Merci pour votre confiance,\nAlex et sa petite bande\n";
     wp_mail($c['email'], 'Votre site est en ligne', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
