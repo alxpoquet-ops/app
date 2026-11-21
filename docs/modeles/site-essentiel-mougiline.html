@@ -1,0 +1,630 @@
+<title>Mougiline</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Mougiline : des bougies personnalisées en cire naturelle, depuis Nilvange, envoyées partout en France.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Mougiline, Site Essentiel : une page longue, douce et chic. Pastels (rose poudré, lilas, sauge), écriture fine pour le nom.
+   Direction après la recherche : les sites de bougies sont souvent sobres et beiges ; ici le pastel et la personnalisation passent devant. */
+:root {
+  --bg: #FCF9FA; --surface: #FFFFFF; --rose: #F6DFE5; --rose-fort: #EFC9D4; --lilas: #E9E3F5; --sauge: #E0EBE2; --creme: #FFF4E4;
+  --ink: #3A3142; --text: #64596C; --line: #ECE3EA; --accent: #A8687C; --accent-doux: #C98EA0;
+  --ombre: 0 18px 50px -24px rgba(90, 50, 70, .35);
+  --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --body: "Jost", "Segoe UI", system-ui, sans-serif;
+}
+:root[data-theme="dark"] {
+  --bg: #1F1A23; --surface: #29222E; --rose: #3A2A31; --rose-fort: #4A3340; --lilas: #2E293B; --sauge: #26322B; --creme: #33291F;
+  --ink: #F5EEF4; --text: #CFC4D2; --line: #3B3242; --accent: #E3A7BA; --accent-doux: #C98EA0;
+  --ombre: 0 18px 50px -24px rgba(0, 0, 0, .7); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--body); font-size: 17px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+body.menu-ouvert { overflow: hidden; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); color: var(--ink); line-height: 1.08; margin: 0; font-weight: 600; text-wrap: balance; }
+h1 { font-size: clamp(3.2rem, 13vw, 6.2rem); letter-spacing: .01em; }
+h2 { font-size: clamp(2.1rem, 6.4vw, 3.2rem); }
+h2 em, h1 em { font-style: italic; color: var(--accent); font-weight: 500; }
+h3 { font-size: 1.6rem; }
+p { margin: 0; }
+section { padding-block: clamp(64px, 10vw, 110px); }
+.surtitre { display: inline-flex; align-items: center; gap: 10px; font-size: .76rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+.surtitre::before { content: ""; width: 26px; height: 1.5px; background: currentColor; opacity: .6; }
+.chapeau { max-width: 60ch; margin-top: 16px; font-size: 1.06rem; }
+.centre { text-align: center; }
+.centre .chapeau { margin-inline: auto; }
+.centre .surtitre::after { content: ""; width: 26px; height: 1.5px; background: currentColor; opacity: .6; }
+
+/* l'image de base, la même partout en attendant les photos */
+.photo { display: block; width: 100%; aspect-ratio: 4 / 3; border-radius: 28px; background: var(--photo) center / cover no-repeat, var(--rose); }
+:root { --photo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='f' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23F6DFE5'/%3E%3Cstop offset='.55' stop-color='%23E9E3F5'/%3E%3Cstop offset='1' stop-color='%23E0EBE2'/%3E%3C/linearGradient%3E%3CradialGradient id='h' cx='.5' cy='.32' r='.34'%3E%3Cstop offset='0' stop-color='%23FFF1C9' stop-opacity='.95'/%3E%3Cstop offset='1' stop-color='%23FFF1C9' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23f)'/%3E%3Ccircle cx='200' cy='98' r='100' fill='url(%23h)'/%3E%3Crect x='158' y='130' width='84' height='104' rx='18' fill='%23FFFFFF'/%3E%3Crect x='158' y='130' width='84' height='104' rx='18' fill='none' stroke='%23E7CFD8' stroke-width='2'/%3E%3Cpath d='M200 130v-14' stroke='%233A3142' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M200 78c9 11 13 20 13 27a13 13 0 0 1-26 0c0-7 4-16 13-27z' fill='%23F2B8A0'/%3E%3Cpath d='M200 95c4 5 5 9 5 12a5 5 0 0 1-10 0c0-3 1-7 5-12z' fill='%23FFF4D6'/%3E%3Cellipse cx='200' cy='240' rx='64' ry='7' fill='%233A3142' opacity='.07'/%3E%3Ctext x='200' y='276' text-anchor='middle' font-family='Georgia' font-size='15' font-style='italic' fill='%2364596C'%3EPhoto à venir%3C/text%3E%3C/svg%3E"); }
+
+/* boutons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 12px 26px; border-radius: 999px; text-decoration: none; border: 1.5px solid var(--ink); font: inherit; font-weight: 600; cursor: pointer; transition: transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn-plein { background: var(--ink); color: var(--bg); }
+.btn-plein:hover { transform: translateY(-2px); box-shadow: var(--ombre); }
+.btn-trait { background: transparent; color: var(--ink); }
+.btn-trait:hover { background: var(--surface); }
+.btn:focus-visible, a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* en-tête : le nom, le menu, le contact toujours visible, le soleil / la lune, les trois traits */
+.top { position: sticky; top: 0; z-index: 30; padding-top: env(safe-area-inset-top, 0px); background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid transparent; transition: border-color .3s ease, box-shadow .3s ease; }
+.top.defile { border-color: var(--line); box-shadow: 0 10px 30px -26px rgba(60, 30, 50, .5); }
+.top .wrap { display: flex; align-items: center; gap: 10px; min-height: 70px; }
+.nom { font-family: var(--display); font-size: 1.75rem; font-weight: 700; color: var(--ink); text-decoration: none; letter-spacing: .02em; margin-right: auto; display: inline-flex; align-items: center; gap: 8px; }
+.nom i { width: 10px; height: 14px; background: radial-gradient(60% 70% at 50% 65%, #FFF4D6 0 30%, #F2B8A0 60%, transparent 74%); border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%; animation: vacille 2.4s ease-in-out infinite alternate; }
+@keyframes vacille { from { transform: scale(1) rotate(-3deg); } to { transform: scale(1.12) rotate(4deg); } }
+.menu { display: flex; gap: 2px; }
+.menu a { position: relative; text-decoration: none; font-weight: 500; font-size: .93rem; padding: 8px 13px; border-radius: 999px; color: var(--ink); transition: background .2s ease; }
+.menu a:hover { background: var(--rose); }
+.menu a.actif { background: var(--rose); }
+.contact-haut { min-height: 44px; padding: 8px 18px; font-size: .92rem; }
+.rond { position: relative; width: 44px; height: 44px; flex: none; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; display: grid; place-items: center; overflow: hidden; padding: 0; }
+.theme svg { position: absolute; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; transition: transform .45s ease, opacity .3s ease; }
+.theme .soleil circle { fill: #F2C46B; stroke: #E0A84A; }
+.theme .soleil path { stroke: #E0A84A; }
+.theme .lune { fill: #E9E3F5; stroke: #B9A8E0; transform: translateY(26px) rotate(-30deg); opacity: 0; }
+:root[data-theme="dark"] .theme .soleil { transform: translateY(-26px) rotate(60deg); opacity: 0; }
+:root[data-theme="dark"] .theme .lune { transform: none; opacity: 1; }
+.burger { display: none; }
+.burger span { position: absolute; left: 13px; width: 18px; height: 2px; border-radius: 2px; background: currentColor; transition: transform .35s ease, opacity .2s ease, top .35s ease; }
+.burger span:nth-child(1) { top: 15px; } .burger span:nth-child(2) { top: 21px; } .burger span:nth-child(3) { top: 27px; }
+.burger[aria-expanded="true"] span:nth-child(1) { top: 21px; transform: rotate(45deg); }
+.burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.burger[aria-expanded="true"] span:nth-child(3) { top: 21px; transform: rotate(-45deg); }
+@media (max-width: 900px) {
+  .menu { display: none; }
+  .burger { display: grid; }
+  .contact-haut { padding: 8px 14px; }
+}
+@media (max-width: 360px) { .contact-haut span { display: none; } .contact-haut { width: 44px; padding: 0; } }
+
+/* le menu du téléphone : un grand panneau pastel */
+.panneau { position: fixed; inset: 0; z-index: 25; padding: calc(env(safe-area-inset-top, 0px) + 90px) max(20px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 28px) max(20px, env(safe-area-inset-left, 0px));
+  background: radial-gradient(120% 70% at 100% 0%, var(--rose-fort), transparent 60%), radial-gradient(90% 60% at 0% 100%, var(--lilas), transparent 65%), var(--bg);
+  display: flex; flex-direction: column; overflow-y: auto; isolation: isolate;
+  clip-path: circle(0 at calc(100% - 38px) 38px); visibility: hidden; transition: clip-path .55s cubic-bezier(.7, 0, .2, 1), visibility 0s .55s; }
+.panneau.ouvert { clip-path: circle(150% at calc(100% - 38px) 38px); visibility: visible; transition: clip-path .6s cubic-bezier(.7, 0, .2, 1), visibility 0s; }
+.panneau nav { display: grid; gap: 4px; }
+.panneau nav a { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 12px 4px; border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); text-decoration: none; color: var(--ink);
+  opacity: 0; transform: translateY(14px); transition: opacity .35s ease, transform .45s ease; }
+.panneau.ouvert nav a { opacity: 1; transform: none; transition-delay: calc(.18s + var(--i) * .05s); }
+.panneau nav .mi { width: 40px; height: 40px; border-radius: 14px; display: grid; place-items: center; background: color-mix(in srgb, var(--surface) 80%, transparent); align-self: center; box-shadow: 0 6px 16px -12px rgba(90, 50, 70, .5); }
+.panneau nav a:nth-child(3n + 2) .mi { background: var(--lilas); }
+.panneau nav a:nth-child(3n) .mi { background: var(--sauge); }
+.panneau nav .mi svg { width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.panneau nav b { font-family: var(--display); font-size: clamp(1.75rem, 7.6vw, 2.4rem); font-weight: 600; line-height: 1.1; }
+.panneau nav em { font-style: normal; font-size: 1.2rem; color: var(--accent); }
+.panneau .bas { margin-top: auto; padding-top: 28px; display: grid; gap: 14px; }
+.panneau .bas .btn { width: 100%; }
+.panneau .bas p { font-size: .9rem; text-align: center; }
+@media (min-width: 901px) { .panneau { display: none; } }
+
+/* petits effets flottants, posés dans les parties (ils défilent avec la page) */
+.flotte { position: relative; overflow: hidden; isolation: isolate; }
+.deco { position: absolute; z-index: -1; pointer-events: none; animation: flotter var(--d, 9s) ease-in-out infinite alternate; }
+.deco.flamme { width: var(--t, 26px); height: calc(var(--t, 26px) * 1.4); background: radial-gradient(60% 70% at 50% 65%, #FFF4D6 0 30%, #F6C59A 55%, transparent 72%); border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%; opacity: .75; }
+.deco.lueur { width: var(--t, 120px); height: var(--t, 120px); border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--c, #F6DFE5) 90%, transparent), transparent 70%); opacity: .9; }
+.deco.goutte { width: var(--t, 12px); height: calc(var(--t, 12px) * 1.3); background: var(--c, #E9E3F5); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; opacity: .8; }
+@keyframes flotter { from { transform: translate3d(0, 0, 0) rotate(-4deg); } to { transform: translate3d(var(--x, 8px), var(--y, -22px), 0) rotate(5deg); } }
+:root[data-theme="dark"] .deco.flamme { opacity: .85; }
+:root[data-theme="dark"] .deco.lueur { opacity: .2; }
+:root[data-theme="dark"] .deco.goutte { opacity: .3; }
+@media (prefers-reduced-motion: reduce) { .deco, .nom i { animation: none; } }
+
+/* apparition douce au défilement (le contenu reste visible sans script) */
+.js .rv { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
+.js .rv.vu { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .js .rv { opacity: 1; transform: none; } }
+
+/* ouverture */
+.ouverture { padding-top: clamp(36px, 7vw, 80px); }
+.ouverture .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 52px; align-items: center; }
+.accroche { font-family: var(--display); font-style: italic; font-size: clamp(1.6rem, 5vw, 2.2rem); color: var(--accent); margin-top: 6px; }
+.ouverture .chapeau { font-size: 1.12rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.visuel { position: relative; }
+.visuel .photo { aspect-ratio: 4 / 5; border-radius: 200px 200px 32px 32px; box-shadow: var(--ombre); }
+.pastille { position: absolute; display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px 10px; border-radius: 999px; background: var(--surface); box-shadow: var(--ombre); font-size: .9rem; font-weight: 500; color: var(--ink); animation: flotter 7s ease-in-out infinite alternate; --y: -10px; --x: 4px; }
+.pastille i { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--rose); font-style: normal; }
+.pastille i svg { width: 18px; height: 18px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.pastille.p1 { top: 14%; left: -26px; }
+.pastille.p2 { bottom: 12%; right: -18px; animation-delay: -3s; }
+.pastille.p2 i { background: var(--sauge); }
+@media (prefers-reduced-motion: reduce) { .pastille { animation: none; } }
+@media (max-width: 900px) {
+  .ouverture .wrap { grid-template-columns: 1fr; gap: 34px; }
+  .visuel { max-width: 420px; width: 100%; margin-inline: auto; }
+  .visuel .photo { aspect-ratio: 1; border-radius: 160px 160px 28px 28px; }
+  .pastille.p1 { left: -6px; } .pastille.p2 { right: -6px; }
+}
+
+/* le cadre des essentiels : fixe, aux couleurs du site, une petite flamme en sceau */
+.ruban { padding-block: 8px 0; }
+.cadre { position: relative; list-style: none; margin: 0; padding: 26px 20px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; background: var(--surface); border: 1.5px solid var(--rose-fort); border-radius: 32px; box-shadow: var(--ombre); }
+.cadre::before { content: ""; position: absolute; inset: 7px; border: 1px dashed color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 25px; pointer-events: none; }
+.cadre::after { content: ""; position: absolute; top: -13px; left: 50%; width: 18px; height: 24px; margin-left: -9px; background: radial-gradient(60% 70% at 50% 65%, #FFF4D6 0 30%, #F2B8A0 60%, transparent 74%); border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%; animation: vacille 2.2s ease-in-out infinite alternate; }
+.cadre li { display: flex; align-items: center; gap: 12px; font-family: var(--display); font-size: 1.25rem; font-weight: 600; color: var(--ink); line-height: 1.2; justify-content: center; }
+.cadre i { width: 42px; height: 42px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--c, var(--rose)); }
+.cadre svg { width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 900px) { .cadre { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 24px 16px; } .cadre li { justify-content: flex-start; font-size: 1.1rem; } }
+@media (max-width: 380px) { .cadre li { font-size: 1rem; gap: 8px; } .cadre i { width: 36px; height: 36px; } }
+@media (prefers-reduced-motion: reduce) { .cadre::after { animation: none; } }
+
+/* pourquoi mes bougies */
+.pourquoi .tete { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: end; }
+.raisons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 44px; }
+.raison { background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: 26px 22px; display: grid; gap: 10px; align-content: start; transition: transform .3s ease, box-shadow .3s ease; }
+.raison:hover { transform: translateY(-4px); box-shadow: var(--ombre); }
+.raison .ico { width: 54px; height: 54px; border-radius: 18px; display: grid; place-items: center; background: var(--c); }
+.raison .ico svg { width: 26px; height: 26px; fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.raison h3 { font-size: 1.45rem; }
+.raison p { font-size: .98rem; }
+@media (max-width: 980px) { .raisons { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .pourquoi .tete { grid-template-columns: 1fr; gap: 0; } }
+@media (max-width: 560px) { .raisons { grid-template-columns: 1fr; } .raison { grid-template-columns: 54px minmax(0, 1fr); column-gap: 16px; } .raison .ico { grid-row: span 2; } }
+
+/* la personnalisation */
+.atelier { background: var(--rose); }
+.atelier .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 52px; align-items: center; }
+.quatre { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+.quatre div { background: color-mix(in srgb, var(--surface) 75%, transparent); border-radius: 22px; padding: 16px 18px; }
+.quatre b { display: block; font-family: var(--display); font-size: 1.4rem; color: var(--ink); font-weight: 600; }
+.quatre small { font-size: .9rem; }
+.photo.arche { aspect-ratio: 4 / 5; border-radius: 200px 200px 32px 32px; box-shadow: var(--ombre); }
+@media (max-width: 900px) { .atelier .wrap { grid-template-columns: 1fr; gap: 34px; } .photo.arche { aspect-ratio: 1; max-width: 420px; margin-inline: auto; border-radius: 160px 160px 28px 28px; } }
+@media (max-width: 420px) { .quatre { gap: 8px; } .quatre div { padding: 12px 14px; } }
+
+/* les bougies et les prix */
+.offres { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 44px; }
+.offre { background: var(--surface); border: 1px solid var(--line); border-radius: 30px; padding: 14px 14px 24px; display: grid; gap: 14px; align-content: start; position: relative; transition: transform .3s ease, box-shadow .3s ease; }
+.offre:hover { transform: translateY(-4px); box-shadow: var(--ombre); }
+.offre .photo { border-radius: 22px; aspect-ratio: 1; }
+.offre .txt { padding: 0 10px; display: grid; gap: 6px; }
+.offre .prix { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.offre .prix b { font-family: var(--display); font-size: 2.6rem; line-height: 1; color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.offre .prix span { font-size: .95rem; }
+.offre .btn { margin: 4px 10px 0; }
+.offre.vedette { border-color: var(--accent-doux); }
+.etiquette { position: absolute; top: 26px; left: 26px; z-index: 1; background: var(--surface); color: var(--accent); font-size: .74rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; box-shadow: var(--ombre); }
+@media (max-width: 900px) { .offres { grid-template-columns: 1fr; max-width: 460px; margin-inline: auto; } .offre .photo { aspect-ratio: 16 / 10; } }
+
+/* le pack Noël, mis en avant */
+.noel { background: linear-gradient(135deg, var(--lilas), var(--rose)); }
+.noel .wrap { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 52px; align-items: center; }
+.noel .photo { aspect-ratio: 1; border-radius: 32px; box-shadow: var(--ombre); }
+.noel .gros { display: flex; align-items: baseline; gap: 14px; margin-top: 22px; }
+.noel .gros b { font-family: var(--display); font-size: clamp(3.4rem, 12vw, 5rem); line-height: 1; color: var(--ink); font-weight: 600; }
+.noel .gros span { font-size: 1.05rem; font-weight: 500; color: var(--ink); }
+.cinq { display: flex; gap: 10px; margin-top: 22px; }
+.cinq i { width: 34px; height: 44px; border-radius: 10px 10px 8px 8px; background: var(--surface); position: relative; box-shadow: 0 8px 20px -14px rgba(60, 30, 50, .6); }
+.cinq i::before { content: ""; position: absolute; left: 50%; top: -15px; width: 10px; height: 14px; margin-left: -5px; background: radial-gradient(60% 70% at 50% 65%, #FFF4D6 0 30%, #F2B8A0 60%, transparent 74%); border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%; animation: vacille 2s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -.4s); }
+@media (prefers-reduced-motion: reduce) { .cinq i::before { animation: none; } }
+@media (max-width: 900px) { .noel .wrap { grid-template-columns: 1fr; gap: 30px; } .noel .photo { aspect-ratio: 16 / 11; } }
+
+/* comment commander */
+.etapes { list-style: none; margin: 44px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.etapes li { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: 28px 24px 26px; display: grid; gap: 8px; align-content: start; }
+.etapes li:not(:last-child)::after { content: ""; position: absolute; top: 54px; right: -14px; width: 10px; height: 10px; border-top: 2px solid var(--accent-doux); border-right: 2px solid var(--accent-doux); transform: rotate(45deg); }
+.etapes .ei { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--c, var(--rose)); margin-bottom: 6px; }
+.etapes .ei svg { width: 26px; height: 26px; fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.etapes h3 { font-size: 1.5rem; }
+@media (max-width: 900px) { .etapes { grid-template-columns: 1fr; } .etapes li { grid-template-columns: 56px minmax(0, 1fr); column-gap: 16px; padding: 20px; } .etapes .ei { grid-row: span 2; margin: 0; } .etapes li:not(:last-child)::after { top: auto; right: auto; bottom: -13px; left: 46px; transform: rotate(135deg); } }
+
+/* galerie */
+.galerie { display: grid; grid-template-columns: 1.3fr 1fr 1fr; grid-template-rows: auto auto; gap: 14px; margin-top: 40px; }
+.galerie .photo { aspect-ratio: 1; border-radius: 24px; }
+.galerie .photo:first-child { grid-row: span 2; aspect-ratio: auto; height: 100%; }
+@media (max-width: 700px) { .galerie { grid-template-columns: 1fr 1fr; } .galerie .photo:first-child { grid-column: span 2; grid-row: auto; aspect-ratio: 16 / 10; } .galerie .photo:nth-child(n + 4) { display: none; } }
+
+/* sur les marchés */
+.marches { background: var(--sauge); }
+.marches .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 52px; align-items: center; }
+.agenda { background: var(--surface); border-radius: 32px; padding: 26px; box-shadow: var(--ombre); display: grid; gap: 14px; }
+.agenda .ligne { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; align-items: center; padding: 14px; border-radius: 20px; background: var(--bg); }
+.agenda .date { width: 64px; height: 64px; border-radius: 18px; background: var(--rose); display: grid; place-items: center; text-align: center; line-height: 1.1; font-family: var(--display); font-size: 1.15rem; font-weight: 600; color: var(--ink); }
+.agenda .ligne:nth-child(2) .date { background: var(--lilas); }
+.agenda .ligne:nth-child(3) .date { background: var(--creme); }
+.agenda b { color: var(--ink); font-weight: 600; }
+.agenda .flou { opacity: .55; }
+.infos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+.infos span { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 500; padding: 8px 14px; border-radius: 999px; background: var(--surface); color: var(--ink); }
+.infos svg { width: 16px; height: 16px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 900px) { .marches .wrap { grid-template-columns: 1fr; gap: 30px; } }
+
+/* FAQ */
+.faq .wrap { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 52px; align-items: start; }
+.faq .tete { position: sticky; top: 110px; }
+.questions { display: grid; gap: 12px; }
+.questions details { background: var(--surface); border: 1px solid var(--line); border-radius: 24px; transition: box-shadow .3s ease; }
+.questions details[open] { box-shadow: var(--ombre); }
+.questions summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) 32px; gap: 14px; align-items: center; padding: 20px 22px; font-weight: 600; color: var(--ink); font-size: 1.02rem; border-radius: 24px; }
+.questions summary::-webkit-details-marker { display: none; }
+.questions summary i { width: 32px; height: 32px; border-radius: 50%; background: var(--rose); position: relative; transition: transform .3s ease, background .3s ease; }
+.questions summary i::before, .questions summary i::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 1.8px; margin: -.9px 0 0 -6px; background: var(--ink); border-radius: 2px; }
+.questions summary i::after { transform: rotate(90deg); transition: transform .3s ease; }
+.questions details[open] summary i { background: var(--lilas); transform: rotate(180deg); }
+.questions details[open] summary i::after { transform: rotate(0); }
+.questions details p { padding: 0 22px 22px; }
+@media (max-width: 900px) { .faq .wrap { grid-template-columns: 1fr; gap: 28px; } .faq .tete { position: static; } }
+
+/* contact */
+.contact { background: var(--lilas); }
+.contact .wrap { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 52px; align-items: start; }
+.moyens { display: grid; gap: 12px; margin-top: 28px; }
+.moyens div { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; align-items: center; background: color-mix(in srgb, var(--surface) 70%, transparent); border-radius: 20px; padding: 12px; }
+.moyens i { width: 48px; height: 48px; border-radius: 16px; background: var(--surface); display: grid; place-items: center; }
+.moyens svg { width: 22px; height: 22px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.moyens b { display: block; color: var(--ink); }
+.moyens small { font-size: .9rem; }
+.bientot { font-style: italic; }
+.formulaire { display: grid; gap: 8px; background: var(--surface); border-radius: 32px; padding: 28px; box-shadow: var(--ombre); }
+.formulaire h3 { margin-bottom: 8px; }
+.formulaire label { font-weight: 600; font-size: .9rem; color: var(--ink); }
+.formulaire input, .formulaire textarea, .formulaire select { font: inherit; padding: 13px 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); margin-bottom: 8px; width: 100%; }
+.formulaire input:focus, .formulaire textarea:focus, .formulaire select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.formulaire .btn { width: 100%; margin-top: 6px; }
+.envoye { font-weight: 600; color: var(--accent); text-align: center; }
+@media (max-width: 900px) { .contact .wrap { grid-template-columns: 1fr; gap: 30px; } .formulaire { padding: 22px; border-radius: 28px; } }
+
+/* pied de page */
+footer { background: var(--ink); color: color-mix(in srgb, var(--bg) 80%, transparent); padding-block: 56px calc(30px + env(safe-area-inset-bottom, 0px)); font-size: .92rem; }
+:root[data-theme="dark"] footer { background: #16121A; }
+footer .wrap { display: grid; grid-template-columns: minmax(0, 1.3fr) repeat(2, minmax(0, 1fr)); gap: 36px; }
+footer .nom { color: var(--bg); font-size: 2rem; }
+:root[data-theme="dark"] footer .nom, :root[data-theme="dark"] footer h3 { color: var(--ink); }
+footer h3 { font-family: var(--body); font-size: .76rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--bg); margin-bottom: 12px; }
+footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+footer a { color: inherit; text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+footer .legal { grid-column: 1 / -1; border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 22px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-size: .84rem; }
+@media (max-width: 760px) { footer .wrap { grid-template-columns: 1fr 1fr; } footer .marque { grid-column: 1 / -1; } }
+</style>
+
+<header class="top" id="haut">
+  <div class="wrap">
+    <a class="nom" href="#accueil"><i aria-hidden="true"></i>Mougiline</a>
+    <nav class="menu" aria-label="Sur cette page">
+      <a href="#pourquoi">Pourquoi Mougiline</a>
+      <a href="#personnaliser">Personnaliser</a>
+      <a href="#bougies">Bougies et prix</a>
+      <a href="#marches">Marchés</a>
+      <a href="#faq">Questions</a>
+    </nav>
+    <a class="btn btn-plein contact-haut" href="#contact" aria-label="Me contacter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Contact</span></a>
+    <button class="rond theme" type="button" aria-label="Passer en apparence sombre" aria-pressed="false">
+      <svg class="soleil" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      <svg class="lune" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+    </button>
+    <button class="rond burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="panneau"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="panneau" id="panneau" aria-label="Menu">
+  <span class="deco flamme" style="bottom:22%;right:10%;--t:22px;--d:6s" aria-hidden="true"></span>
+  <span class="deco lueur" style="--t:220px;--c:#FFF1C9;bottom:-60px;right:-60px;--d:12s" aria-hidden="true"></span>
+  <nav aria-label="Menu du site">
+    <a href="#accueil" style="--i:0"><i class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 10h8v10H8z"/><path d="M12 10V8"/><path d="M12 2.5c1.6 1.9 2.2 3 2.2 3.8a2.2 2.2 0 0 1-4.4 0c0-.8.6-1.9 2.2-3.8z"/></svg></i><b>Accueil</b><em>→</em></a>
+    <a href="#pourquoi" style="--i:1"><i class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></i><b>Pourquoi Mougiline</b><em>→</em></a>
+    <a href="#personnaliser" style="--i:2"><i class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="m14 6 3 3"/></svg></i><b>Personnaliser</b><em>→</em></a>
+    <a href="#bougies" style="--i:3"><i class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.4"/></svg></i><b>Bougies et prix</b><em>→</em></a>
+    <a href="#marches" style="--i:4"><i class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l2-5h14l2 5"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path d="M5 12v8h14v-8"/><path d="M10 20v-5h4v5"/></svg></i><b>Sur les marchés</b><em>→</em></a>
+    <a href="#faq" style="--i:5"><i class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.3 2.4c-.5.2-.8.6-.8 1.1v.5M12 16h.01"/></svg></i><b>Vos questions</b><em>→</em></a>
+  </nav>
+  <div class="bas">
+    <a class="btn btn-plein" href="#contact">Me contacter</a>
+    <p>Basée à Nilvange · Envoi partout en France</p>
+  </div>
+</div>
+
+<main>
+  <section class="ouverture flotte" id="accueil">
+    <span class="deco lueur" style="--t:260px;--c:#F6DFE5;top:-60px;right:-80px;--d:11s;--y:18px" aria-hidden="true"></span>
+    <span class="deco lueur" style="--t:180px;--c:#E9E3F5;bottom:20px;left:-70px;--d:13s;--x:-10px" aria-hidden="true"></span>
+    <span class="deco flamme" style="top:6%;left:46%;--t:18px;--d:6s" aria-hidden="true"></span>
+    <span class="deco goutte" style="bottom:6%;left:40%;--t:12px;--c:#F6DFE5;--d:10s" aria-hidden="true"></span>
+    <div class="wrap">
+      <div>
+        <p class="surtitre">Bougies personnalisées</p>
+        <h1>Mougiline</h1>
+        <p class="accroche">Bougie for all</p>
+        <p class="chapeau">Des bougies vraiment personnalisées, faites avec de la cire naturelle. Je m'adapte à chacun, et j'envoie mes bougies partout en France depuis Nilvange.</p>
+        <div class="actions">
+          <a class="btn btn-plein" href="#contact" data-sujet="perso">Commander ma bougie</a>
+          <a class="btn btn-trait" href="#bougies">Voir les prix</a>
+        </div>
+      </div>
+      <div class="visuel">
+        <span class="photo" role="img" aria-label="Photo à venir : une bougie Mougiline"></span>
+        <span class="pastille p1"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/></svg></i>Cire naturelle</span>
+        <span class="pastille p2"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="m14 6 3 3"/></svg></i>À votre prénom</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="ruban">
+    <div class="wrap">
+      <ul class="cadre" aria-label="Les essentiels de Mougiline">
+        <li><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="m14 6 3 3"/></svg></i>Bougies personnalisées</li>
+        <li><i style="--c:var(--lilas)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/></svg></i>Cire naturelle</li>
+        <li><i style="--c:var(--sauge)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></i>Envoi partout en France</li>
+        <li><i style="--c:var(--creme)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l2-5h14l2 5"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path d="M5 12v8h14v-8"/><path d="M10 20v-5h4v5"/></svg></i>Sur les marchés</li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="pourquoi" id="pourquoi">
+    <div class="wrap">
+      <div class="tete rv">
+        <div>
+          <p class="surtitre">Pourquoi Mougiline</p>
+          <h2>Pourquoi choisir <em>mes bougies</em></h2>
+        </div>
+        <p class="chapeau">Chaque bougie est pensée avec vous. Je prends le temps d'écouter ce que vous aimez, puis je la fabrique pour qu'elle vous ressemble.</p>
+      </div>
+      <div class="raisons">
+        <article class="raison rv" style="--c:var(--rose)">
+          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/><path d="M12 17a2 2 0 0 1-2-2c0-1.5 2-3.5 2-3.5s2 2 2 3.5a2 2 0 0 1-2 2z"/></svg></span>
+          <h3>Une cire naturelle</h3>
+          <p>Des bougies de qualité, faites avec de la cire naturelle.</p>
+        </article>
+        <article class="raison rv" style="--c:var(--lilas)">
+          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="m14 6 3 3"/></svg></span>
+          <h3>Vraiment personnalisées</h3>
+          <p>La forme, le parfum, la couleur, un prénom : tout se choisit.</p>
+        </article>
+        <article class="raison rv" style="--c:var(--sauge)">
+          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M9 11h.01M12 11h.01M15 11h.01"/></svg></span>
+          <h3>À votre écoute</h3>
+          <p>Je m'adapte à chaque client et à chaque envie.</p>
+        </article>
+        <article class="raison rv" style="--c:var(--creme)">
+          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="7" height="12" rx="2"/><rect x="14" y="8" width="7" height="12" rx="2"/><path d="M6.5 8V5M17.5 8V5"/></svg></span>
+          <h3>En plusieurs exemplaires</h3>
+          <p>Grâce à mes moules, je peux réaliser la même bougie plusieurs fois.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="atelier flotte" id="personnaliser">
+    <span class="deco flamme" style="top:8%;left:3%;--t:20px;--d:7s" aria-hidden="true"></span>
+    <span class="deco goutte" style="bottom:10%;left:44%;--t:12px;--c:#FFFFFF;--d:11s" aria-hidden="true"></span>
+    <span class="deco lueur" style="--t:240px;--c:#E9E3F5;top:-80px;right:-60px;--d:13s" aria-hidden="true"></span>
+    <div class="wrap">
+      <div class="rv">
+        <p class="surtitre">Personnaliser</p>
+        <h2>Une bougie <em>à votre image</em></h2>
+        <p class="chapeau">Mes bougies sont vraiment personnalisées. Vous me dites ce que vous aimez, je m'adapte.</p>
+        <div class="quatre">
+          <div><b>La forme</b><small>selon vos envies</small></div>
+          <div><b>Le parfum</b><small>celui qui vous plaît</small></div>
+          <div><b>La couleur</b><small>pour aller avec votre intérieur</small></div>
+          <div><b>Un prénom</b><small>pour offrir ou pour vous</small></div>
+        </div>
+        <div class="actions"><a class="btn btn-plein" href="#contact" data-sujet="perso">Demander ma bougie personnalisée</a></div>
+      </div>
+      <span class="photo arche rv" role="img" aria-label="Photo à venir : une bougie personnalisée"></span>
+    </div>
+  </section>
+
+  <section id="bougies">
+    <div class="wrap">
+      <div class="centre rv">
+        <p class="surtitre">Bougies et prix</p>
+        <h2>Une bougie <em>pour chaque envie</em></h2>
+        <p class="chapeau">Toutes mes bougies sont faites avec de la cire naturelle.</p>
+      </div>
+      <div class="offres">
+        <article class="offre rv">
+          <span class="photo" role="img" aria-label="Photo à venir : une bougie"></span>
+          <div class="txt"><h3>La bougie</h3><p class="prix"><b>10 €</b><span>la bougie</span></p><p>Ou <b>16 €</b> les deux bougies.</p></div>
+          <a class="btn btn-trait" href="#contact" data-sujet="bougie">Commander</a>
+        </article>
+        <article class="offre vedette rv">
+          <span class="etiquette">Sur mesure</span>
+          <span class="photo" role="img" aria-label="Photo à venir : une bougie personnalisée"></span>
+          <div class="txt"><h3>La bougie personnalisée</h3><p class="prix"><b>20 €</b><span>la bougie</span></p><p>Forme, parfum, couleur, prénom : à votre goût.</p></div>
+          <a class="btn btn-plein" href="#contact" data-sujet="perso">Personnaliser la mienne</a>
+        </article>
+        <article class="offre rv">
+          <span class="photo" role="img" aria-label="Photo à venir : le pack Noël"></span>
+          <div class="txt"><h3>Le pack Noël</h3><p class="prix"><b>40 €</b><span>le pack</span></p><p>5 bougies réunies dans un pack.</p></div>
+          <a class="btn btn-trait" href="#contact" data-sujet="noel">Commander</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="noel flotte" id="noel">
+    <span class="deco flamme" style="top:10%;right:5%;--t:24px;--d:6s" aria-hidden="true"></span>
+    <span class="deco flamme" style="bottom:8%;left:46%;--t:16px;--d:8s;--y:-16px" aria-hidden="true"></span>
+    <span class="deco goutte" style="top:18%;left:3%;--t:12px;--c:#FFFFFF;--d:10s" aria-hidden="true"></span>
+    <div class="wrap">
+      <span class="photo rv" role="img" aria-label="Photo à venir : le pack Noël"></span>
+      <div class="rv">
+        <p class="surtitre">Pour les fêtes</p>
+        <h2>Le pack <em>Noël</em></h2>
+        <p class="chapeau">Cinq bougies Mougiline réunies dans un pack, pour offrir ou pour vous faire plaisir.</p>
+        <div class="cinq" aria-hidden="true"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i></div>
+        <p class="gros"><b>40 €</b><span>les 5 bougies</span></p>
+        <div class="actions"><a class="btn btn-plein" href="#contact" data-sujet="noel">Commander mon pack Noël</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="commander">
+    <div class="wrap">
+      <div class="centre rv">
+        <p class="surtitre">Commander</p>
+        <h2>Comment <em>ça se passe</em></h2>
+      </div>
+      <ol class="etapes">
+        <li class="rv"><i class="ei"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg></i><h3>Vous me contactez</h3><p>Avec le formulaire en bas de la page, ou en venant me voir sur un marché.</p></li>
+        <li class="rv"><i class="ei" style="--c:var(--lilas)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 9a5 5 0 0 1-7.3 4.4L3 14l.8-3A5 5 0 1 1 14 9z"/><path d="M10 17.5a5 5 0 0 0 7.3.9L21 19l-.8-3A5 5 0 0 0 17 9.2"/></svg></i><h3>On en parle ensemble</h3><p>Forme, parfum, couleur, prénom : je m'adapte à ce que vous aimez.</p></li>
+        <li class="rv"><i class="ei" style="--c:var(--sauge)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="m3 7.5 9 4.5 9-4.5M12 12v9"/></svg></i><h3>Je vous l'envoie</h3><p>Depuis Nilvange, j'envoie mes bougies partout en France.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="galerie" style="padding-top:0">
+    <div class="wrap">
+      <div class="centre rv">
+        <p class="surtitre">Galerie</p>
+        <h2>En <em>images</em></h2>
+        <p class="chapeau">Les photos de mes bougies arrivent bientôt.</p>
+      </div>
+      <div class="galerie rv">
+        <span class="photo" role="img" aria-label="Photo à venir"></span>
+        <span class="photo" role="img" aria-label="Photo à venir"></span>
+        <span class="photo" role="img" aria-label="Photo à venir"></span>
+        <span class="photo" role="img" aria-label="Photo à venir"></span>
+        <span class="photo" role="img" aria-label="Photo à venir"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="marches flotte" id="marches">
+    <span class="deco lueur" style="--t:220px;--c:#FFFFFF;top:-70px;left:-60px;--d:12s" aria-hidden="true"></span>
+    <span class="deco flamme" style="bottom:10%;right:4%;--t:18px;--d:7s" aria-hidden="true"></span>
+    <div class="wrap">
+      <div class="rv">
+        <p class="surtitre">Sur les marchés</p>
+        <h2>Venez me <em>rencontrer</em></h2>
+        <p class="chapeau">Je fais beaucoup de marchés. C'est l'occasion de découvrir mes bougies et de parler ensemble de votre bougie personnalisée.</p>
+        <p class="infos">
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Basée à Nilvange</span>
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>Envoi partout en France</span>
+        </p>
+      </div>
+      <div class="agenda rv" aria-label="Mes prochains marchés">
+        <h3>Mes prochains marchés</h3>
+        <div class="ligne"><span class="date">Bientôt</span><p><b>L'agenda arrive bientôt</b><br>Les dates et les lieux seront affichés ici.</p></div>
+        <div class="ligne flou" aria-hidden="true"><span class="date">…</span><p><b>Prochain marché</b><br>Date et lieu à venir</p></div>
+        <div class="ligne flou" aria-hidden="true"><span class="date">…</span><p><b>Prochain marché</b><br>Date et lieu à venir</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" id="faq">
+    <div class="wrap">
+      <div class="tete rv">
+        <p class="surtitre">Vos questions</p>
+        <h2>Questions <em>fréquentes</em></h2>
+        <p class="chapeau">Une autre question ? Écrivez-moi.</p>
+        <div class="actions"><a class="btn btn-trait" href="#contact">Poser ma question</a></div>
+      </div>
+      <div class="questions rv">
+        <details open><summary>Avec quelle cire sont faites vos bougies ?<i aria-hidden="true"></i></summary><p>Mes bougies sont faites avec de la cire naturelle.</p></details>
+        <details><summary>Que peut-on personnaliser ?<i aria-hidden="true"></i></summary><p>Tout : la forme, le parfum, la couleur, et même un prénom. Je m'adapte à ce que vous aimez.</p></details>
+        <details><summary>Combien coûtent vos bougies ?<i aria-hidden="true"></i></summary><p>10 € la bougie, 16 € les deux bougies, 20 € la bougie personnalisée et 40 € le pack Noël de 5 bougies.</p></details>
+        <details><summary>Envoyez-vous vos bougies ?<i aria-hidden="true"></i></summary><p>Oui. Je suis basée à Nilvange et j'envoie mes bougies partout en France.</p></details>
+        <details><summary>Comment commander ?<i aria-hidden="true"></i></summary><p>Écrivez-moi avec le formulaire de contact, ou venez me voir sur un marché.</p></details>
+        <details><summary>Pouvez-vous faire la même bougie plusieurs fois ?<i aria-hidden="true"></i></summary><p>Oui, grâce à mes moules je peux réaliser la même bougie en plusieurs exemplaires.</p></details>
+        <details><summary>Où vous trouver ?<i aria-hidden="true"></i></summary><p>Je fais beaucoup de marchés. L'agenda de mes prochains marchés arrive bientôt sur ce site.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact flotte" id="contact">
+    <span class="deco flamme" style="top:8%;right:46%;--t:18px;--d:7s" aria-hidden="true"></span>
+    <span class="deco goutte" style="bottom:8%;left:4%;--t:12px;--c:#FFFFFF;--d:10s" aria-hidden="true"></span>
+    <div class="wrap">
+      <div class="rv">
+        <p class="surtitre">Contact</p>
+        <h2>Une envie, <em>une question ?</em></h2>
+        <p class="chapeau">Écrivez-moi pour commander une bougie, une bougie personnalisée ou un pack Noël. Je vous réponds avec plaisir.</p>
+        <div class="moyens">
+          <div><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg></i><p><b>Par le formulaire</b><small>Le plus simple pour commander</small></p></div>
+          <div><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></i><p><b>Sur les marchés</b><small>Venez me voir</small></p></div>
+          <div><i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></i><p><b>Instagram</b><small class="bientot">bientôt</small></p></div>
+        </div>
+      </div>
+      <form class="formulaire rv" id="form-contact">
+        <h3>Écrire à Mougiline</h3>
+        <label for="c-sujet">Ma demande</label>
+        <select id="c-sujet" name="sujet">
+          <option value="perso">Une bougie personnalisée</option>
+          <option value="bougie">Une ou deux bougies</option>
+          <option value="noel">Un pack Noël</option>
+          <option value="question">Une question</option>
+        </select>
+        <label for="c-nom">Votre prénom</label><input id="c-nom" name="nom" autocomplete="given-name" required>
+        <label for="c-mail">Votre e-mail</label><input id="c-mail" name="email" type="email" autocomplete="email" required>
+        <label for="c-msg">Votre message</label><textarea id="c-msg" name="message" rows="4" placeholder="Dites-moi ce que vous aimez : forme, parfum, couleur, prénom…" required></textarea>
+        <button class="btn btn-plein" type="submit">Envoyer mon message</button>
+        <p class="envoye" id="c-ok" hidden>Merci ! Sur le vrai site, votre message arrive directement chez Mougiline.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="marque">
+      <a class="nom" href="#accueil">Mougiline</a>
+      <p style="margin-top:8px">Bougie for all. Des bougies personnalisées en cire naturelle, depuis Nilvange, envoyées partout en France.</p>
+    </div>
+    <div>
+      <h3>Le site</h3>
+      <ul><li><a href="#pourquoi">Pourquoi Mougiline</a></li><li><a href="#personnaliser">Personnaliser</a></li><li><a href="#bougies">Bougies et prix</a></li><li><a href="#faq">Questions</a></li></ul>
+    </div>
+    <div>
+      <h3>Me trouver</h3>
+      <ul><li><a href="#marches">Sur les marchés</a></li><li><a href="#contact">Me contacter</a></li><li>Instagram : <span class="bientot">bientôt</span></li></ul>
+    </div>
+    <div class="legal">
+      <p>Mentions légales : site édité par Boubougi. Adresse : à compléter avant la mise en ligne.</p>
+      <p>© 2026 Mougiline · mougiline.fr · Site réalisé par Les Minis Monstres</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var h = document.documentElement;
+  h.classList.add("js");
+
+  // clair / sombre (sur le vrai site : minisTheme, fourni par le connecteur)
+  var b = document.querySelector(".theme");
+  var maj = function () { var s = h.getAttribute("data-theme") === "dark"; b.setAttribute("aria-pressed", s ? "true" : "false"); b.setAttribute("aria-label", s ? "Passer en apparence claire" : "Passer en apparence sombre"); };
+  try { var t0 = localStorage.getItem("mougiline-theme"); if (t0 === "dark" || t0 === "light") h.setAttribute("data-theme", t0); } catch (e) {}
+  b.addEventListener("click", function () { var t = h.getAttribute("data-theme") === "dark" ? "light" : "dark"; if (window.minisTheme) window.minisTheme(t); else h.setAttribute("data-theme", t); try { localStorage.setItem("mougiline-theme", t); } catch (e) {} maj(); });
+  maj();
+
+  // le menu à trois traits
+  var bg = document.querySelector(".burger"), pn = document.getElementById("panneau");
+  var fermer = function () { pn.classList.remove("ouvert"); bg.setAttribute("aria-expanded", "false"); bg.setAttribute("aria-label", "Ouvrir le menu"); document.body.classList.remove("menu-ouvert"); };
+  bg.addEventListener("click", function () {
+    var o = !pn.classList.contains("ouvert");
+    if (!o) return fermer();
+    pn.classList.add("ouvert"); bg.setAttribute("aria-expanded", "true"); bg.setAttribute("aria-label", "Fermer le menu"); document.body.classList.add("menu-ouvert");
+  });
+  pn.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", fermer); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && pn.classList.contains("ouvert")) { fermer(); bg.focus(); } });
+  window.addEventListener("resize", function () { if (innerWidth > 900) fermer(); });
+
+  // l'en-tête prend une ombre au défilement, l'onglet de la partie lue s'allume
+  var top = document.getElementById("haut");
+  var surDefile = function () { top.classList.toggle("defile", scrollY > 10); };
+  addEventListener("scroll", surDefile, { passive: true }); surDefile();
+  var liens = document.querySelectorAll(".menu a");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) liens.forEach(function (a) { a.classList.toggle("actif", a.getAttribute("href") === "#" + e.target.id); }); }); }, { rootMargin: "-45% 0px -50% 0px" });
+    ["pourquoi", "personnaliser", "bougies", "marches", "faq"].forEach(function (id) { io.observe(document.getElementById(id)); });
+    // apparition douce, seulement pour ce qui est plus bas que l'écran
+    var rv = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("vu"); rv.unobserve(e.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
+    document.querySelectorAll(".rv").forEach(function (el) { if (el.getBoundingClientRect().top < innerHeight) el.classList.add("vu"); else rv.observe(el); });
+  } else document.querySelectorAll(".rv").forEach(function (el) { el.classList.add("vu"); });
+
+  // les boutons « Commander » choisissent la bonne demande dans le formulaire
+  var sujet = document.getElementById("c-sujet");
+  document.querySelectorAll("[data-sujet]").forEach(function (a) { a.addEventListener("click", function () { sujet.value = a.dataset.sujet; }); });
+  document.getElementById("form-contact").addEventListener("submit", function (e) { e.preventDefault(); document.getElementById("c-ok").hidden = false; });
+})();
+</script>
