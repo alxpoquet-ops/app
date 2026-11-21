@@ -270,6 +270,7 @@ function page(p) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(h){var q=/[?&]clair=([01])/.exec(location.search),t;try{if(q)localStorage.setItem('mm-clair',q[1]);t=localStorage.getItem('mm-clair')}catch(e){}if(t==='1')h.setAttribute('data-theme','light')})(document.documentElement)</script>
 <title>${esc(titreCourt(p.title))}</title>
 <meta name="description" content="${esc(p.description)}">
 <link rel="canonical" href="${url}">

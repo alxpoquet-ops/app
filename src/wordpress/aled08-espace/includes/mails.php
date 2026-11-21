@@ -18,14 +18,16 @@ function aled08e_mail_monstre($nom, $taille = 72) {
     return '<img src="' . esc_url(get_template_directory_uri() . '/assets/img/mail/' . $nom . '.png') . '" width="' . (int) $taille . '" height="' . (int) $taille . '" alt="" style="display:inline-block;border:0;width:' . (int) $taille . 'px;height:' . (int) $taille . 'px;">';
 }
 /* Une carte pastel, comme sur le site : rose, lilas, menthe, beurre, pêche, ciel */
-function aled08e_mail_carte($teinte, $contenu, $monstre = '') {
+function aled08e_mail_carte($teinte, $contenu, $monstre = '', $etiquette = '') {
     $t = ['rose' => ['#FFD9E7', '#F27BA8'], 'lilas' => ['#E8E0FF', '#8C6CF2'], 'menthe' => ['#D5F5E8', '#34B27F'], 'beurre' => ['#FFF1C2', '#F2B83A'], 'peche' => ['#FFE4D6', '#FF8F5E'], 'ciel' => ['#DDEEFF', '#5AA2F0']][$teinte] ?? ['#F7F2FF', '#E3D9FB'];
-    return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 16px;background:' . $t[0] . ';border:2px solid ' . $t[1] . ';border-radius:24px;"><tr>'
-        . '<td style="padding:20px 22px;vertical-align:top;">' . $contenu . '</td>'
-        . ($monstre !== '' ? '<td width="76" style="padding:14px 14px 14px 0;vertical-align:bottom;">' . aled08e_mail_monstre($monstre, 64) . '</td>' : '')
-        . '</tr></table>';
+    $haut = ($etiquette !== '' || $monstre !== '')
+        ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 4px;"><tr><td style="vertical-align:middle;">' . $etiquette . '</td>'
+            . ($monstre !== '' ? '<td width="52" align="right" style="vertical-align:middle;padding-left:8px;">' . aled08e_mail_monstre($monstre, 48) . '</td>' : '') . '</tr></table>'
+        : '';
+    return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 14px;background:' . $t[0] . ';border:2px solid ' . $t[1] . ';border-radius:22px;"><tr>'
+        . '<td style="padding:16px 16px 18px;">' . $haut . $contenu . '</td></tr></table>';
 }
-function aled08e_mail_etiquette($texte, $couleur = '#A3305F') { return '<p style="margin:0 0 8px;font-size:12px;font-weight:bold;letter-spacing:.12em;text-transform:uppercase;color:' . $couleur . ';">' . esc_html($texte) . '</p>'; }
+function aled08e_mail_etiquette($texte, $couleur = '#A3305F') { return '<p style="margin:0;font-size:12px;font-weight:bold;letter-spacing:.12em;text-transform:uppercase;color:' . $couleur . ';">' . esc_html($texte) . '</p>'; }
 /* Les e-mails écrits avant la nouvelle charte (fond sombre) passent aux couleurs claires du site */
 function aled08e_mail_clair($html) {
     return strtr((string) $html, [
@@ -44,7 +46,7 @@ function aled08e_mail_coque($titre, $contenu, $apercu = '') {
     return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>' . esc_html($titre) . '</title></head>'
         . '<body style="margin:0;padding:0;background:#FFF8F2;">'
         . ($apercu !== '' ? '<div style="display:none;max-height:0;overflow:hidden;">' . esc_html($apercu) . '</div>' : '')
-        . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFF8F2;"><tr><td align="center" style="padding:22px 12px 28px;">'
+        . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFF8F2;"><tr><td align="center" style="padding:18px 8px 24px;">'
         . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;font-family:\'Plus Jakarta Sans\',Arial,Helvetica,sans-serif;color:#4B4668;">'
         // l'en-tête : le logo et le nom sur deux lignes, comme sur le site
         . '<tr><td align="center" style="padding:4px 0 14px;"><a href="' . esc_url($site) . '" style="text-decoration:none;"><table role="presentation" cellpadding="0" cellspacing="0"><tr>'
@@ -54,7 +56,7 @@ function aled08e_mail_coque($titre, $contenu, $apercu = '') {
         // la carte blanche, avec un liseré pastel en haut
         . '<tr><td style="background:#FFFFFF;border:2px solid #EEE6F6;border-radius:30px;overflow:hidden;">'
         . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="height:8px;line-height:8px;font-size:0;background:#FFD9E7;border-radius:28px 28px 0 0;">&nbsp;</td></tr>'
-        . '<tr><td style="padding:26px 22px 24px;">' . aled08e_mail_clair($contenu) . '</td></tr></table></td></tr>'
+        . '<tr><td style="padding:22px 16px 20px;">' . aled08e_mail_clair($contenu) . '</td></tr></table></td></tr>'
         // la petite bande, puis le pied
         . '<tr><td align="center" style="padding:20px 10px 0;">' . $bande . '</td></tr>'
         . '<tr><td align="center" style="padding:10px 10px 0;font-size:12px;line-height:1.6;color:#6B6789;"><a href="' . esc_url($site) . '" style="color:#6B6789;text-decoration:none;"><b style="color:#2E2A47;">Les Minis Monstres</b>, sites internet pour artisans et commerçants.</a></td></tr>'
