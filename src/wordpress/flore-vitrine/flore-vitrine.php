@@ -1,15 +1,15 @@
 <?php
 /**
  * Plugin Name: Flore & Chenilles : mode vitrine
- * Description: Le site présente les compositions sans prix ni paiement. Les visiteurs ajoutent leurs coups de cœur à leur sélection et envoient une demande de réservation, qui arrive par e-mail. Le compositeur « Votre bouquet à vous » est retiré. Désactiver l'extension remet la boutique comme avant.
- * Version: 1.0.4
+ * Description: Tant que la vente est coupée depuis l'espace client, le site présente les compositions sans prix ni paiement, sur toutes les pages. Les visiteurs ajoutent leurs coups de cœur à leur sélection et envoient une demande de réservation, qui arrive par e-mail. Le compositeur « Votre bouquet à vous » est retiré. Désactiver l'extension remet la boutique comme avant.
+ * Version: 1.1.0
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('FV_VERSION', '1.0.4');
+define('FV_VERSION', '1.1.0');
 
 /* Adresse qui reçoit les demandes : celle des réglages de la boutique, sinon celle du site */
 function fv_destinataire() {
@@ -22,6 +22,8 @@ function fv_destinataire() {
 /* Le connecteur des Minis Monstres a son propre bouton « Nous contacter » en vitrine : ici, c'est le formulaire de réservation qui le remplace */
 add_filter('alexlia_vitrine_bouton', '__return_false');
 function fv_front() { return !is_admin() && !wp_doing_ajax(); }
+/* La vitrine suit l'espace client : vente coupée (ou aucun moyen de paiement) = vitrine. Vente rouverte = boutique normale, prix compris. */
+function fv_actif() { return fv_front() && (!function_exists('alexlia_vitrine_active') || alexlia_vitrine_active()); }
 
 /* =========================================================================
  *  1. Réception des demandes de réservation (formulaire de l'accueil et des fiches)
@@ -86,18 +88,20 @@ function fv_reserver_post() {
 /* =========================================================================
  *  2. Plus de prix ni de paiement sur les pages WooCommerce
  * ========================================================================= */
-add_filter('woocommerce_get_price_html', function ($h) { return fv_front() ? '' : $h; }, 99);
-add_filter('woocommerce_is_purchasable', function ($v) { return fv_front() ? false : $v; }, 99);
-add_filter('woocommerce_variation_is_purchasable', function ($v) { return fv_front() ? false : $v; }, 99);
-add_filter('woocommerce_structured_data_product', function ($d) { unset($d['offers']); return $d; }, 99);
-add_filter('rank_math/snippet/rich_snippet_product_entity', function ($e) { unset($e['offers']); return $e; }, 99);
+add_filter('woocommerce_get_price_html', function ($h) { return fv_actif() ? '' : $h; }, 99);
+add_filter('woocommerce_is_purchasable', function ($v) { return fv_actif() ? false : $v; }, 99);
+add_filter('woocommerce_variation_is_purchasable', function ($v) { return fv_actif() ? false : $v; }, 99);
+add_filter('woocommerce_structured_data_product', function ($d) { if (fv_actif()) unset($d['offers']); return $d; }, 99);
+add_filter('rank_math/snippet/rich_snippet_product_entity', function ($e) { if (fv_actif()) unset($e['offers']); return $e; }, 99);
 add_action('template_redirect', function () {
-    if (function_exists('is_cart') && (is_cart() || is_checkout())) { wp_safe_redirect(home_url('/#boutique'), 302); exit; }
+    if (fv_actif() && function_exists('is_cart') && (is_cart() || is_checkout())) { wp_safe_redirect(home_url('/#boutique'), 302); exit; }
 });
 add_action('woocommerce_single_product_summary', function () {
+    if (!fv_actif()) return;
     echo '<p class="fv-compo-tag">Composition faite main</p>';
 }, 4);
 add_action('woocommerce_single_product_summary', function () {
+    if (!fv_actif()) return;
     global $product;
     $etat = isset($_GET['reservation']) ? sanitize_key(wp_unslash($_GET['reservation'])) : '';
     ?>
@@ -124,6 +128,7 @@ add_action('woocommerce_single_product_summary', function () {
  *  3. L'accueil : données sans prix, envoi des demandes par le site, compositeur retiré
  * ========================================================================= */
 add_action('wp_enqueue_scripts', function () {
+    if (!fv_actif()) return;
     $css = 'a[href$="#bouquet"],#bouquet,.why-price,[data-pm-custom],.product .price,.pm-price,.pm-count-line,.cart-total,.ci-price,.order-recap .tot,.order-recap li > span:last-child,.promo-pill,.promo-banner,.promo-tag,.sort-field,.fc-count-line{display:none!important}'
         . '.fv-compo-tag,.fv-tag{display:inline-block;margin:0 0 6px;padding:3px 10px;border-radius:999px;background:#ECE5F8;color:#5B4A8B;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}'
         . '.fv-reserver{margin:22px 0;padding:18px;border-radius:18px;background:#FBF1F4}.fv-reserver h2{margin-top:0;font-size:1.3rem}.fv-form label{display:block;font-weight:600;margin-bottom:8px}.fv-form input,.fv-form textarea{display:block;width:100%;margin-top:4px;padding:10px 12px;border:1px solid #E8D5DC;border-radius:12px;font:inherit}.fv-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.fv-hp{position:absolute!important;left:-9999px}.fv-ok{padding:10px 12px;border-radius:12px;background:#E2F1E7;color:#235C3A}.fv-err{padding:10px 12px;border-radius:12px;background:#FDE8E4;color:#8A2E1E}';
@@ -165,15 +170,98 @@ function fv_sans_prix($html) {
     if (is_admin() || !is_string($html) || !preg_match('/\d\s?(€|&euro;)/u', $html)) return $html;
     return preg_replace('/[^.!?<>]*\d\s?(€|&euro;)[^.!?<]*[.!?]?\s*/u', ' ', $html);
 }
-add_filter('the_content', function ($c) { return is_singular('product') ? fv_sans_prix($c) : $c; }, 20);
-add_filter('woocommerce_short_description', 'fv_sans_prix', 20);
+add_filter('the_content', function ($c) { return fv_actif() && is_singular('product') ? fv_sans_prix($c) : $c; }, 20);
+add_filter('woocommerce_short_description', function ($c) { return fv_actif() ? fv_sans_prix($c) : $c; }, 20);
 
 /* Le produit support du compositeur ne doit plus apparaître */
 add_action('pre_get_posts', function ($q) {
-    if (is_admin() || !$q->is_main_query() || !function_exists('fcb_bouquet_product_id')) return;
+    if (!fv_actif() || !$q->is_main_query() || !function_exists('fcb_bouquet_product_id')) return;
     if ($q->get('post_type') === 'product' || $q->is_post_type_archive('product') || $q->is_tax(['product_cat', 'product_tag'])) {
         $ex = (array) $q->get('post__not_in');
         $ex[] = (int) fcb_bouquet_product_id();
         $q->set('post__not_in', $ex);
     }
 });
+
+/* =========================================================================
+ *  4. Les pages du site, cohérentes avec la boutique en pause : ni prix, ni paiement en ligne.
+ *  Tant que la vente est coupée depuis l'espace client, chaque page est servie sans prix
+ *  et parle de réservation ; quand Flore rouvre sa boutique, les pages redeviennent telles qu'écrites.
+ * ========================================================================= */
+function fv_vitrine_texte($t) {
+    $W = '(?:\s|\x{a0}|\x{202f}|&nbsp;|&#160;|&#8239;)';
+    $E = $W . '?(?:€|&euro;)';
+    $r = [
+        // le paiement en ligne devient une demande de réservation
+        '/Le paiement se fait en ligne[^<]*?données bancaires\./u' => 'Pas de paiement en ligne : envoyez votre demande de réservation, je vous réponds par e-mail pour confirmer le prix et la date.',
+        '/puis réglez en toute sécurité par carte bancaire' . $W . '?:[^<.]*\./u' => 'puis envoyez votre demande de réservation : je vous réponds par e-mail pour le prix, la date et le retrait ou la livraison.',
+        '/Vous réglez en ligne par carte bancaire/u' => 'Vous envoyez votre demande de réservation',
+        '/Réglez en ligne par carte bancaire/u' => 'Envoyez votre demande de réservation',
+        '/réglez en ligne par carte bancaire(?:, en toute sécurité)?/u' => 'envoyez votre demande de réservation : je vous réponds par e-mail pour confirmer le prix et la date',
+        // les frais de livraison se confirment avec la demande
+        '/La livraison coûte 5' . $E . ' jusqu’à 15' . $W . 'km et 10' . $E . ' jusqu’à 25' . $W . 'km\./u' => 'Le tarif de la livraison dépend de la distance : je vous le confirme avec votre demande.',
+        '/Livraison' . $W . '?:' . $W . '?5' . $E . ' jusqu’à 15' . $W . 'km, 10' . $E . ' jusqu’à 25' . $W . 'km autour de Signy-l’Abbaye\./u' => 'Livraison autour de Signy-l’Abbaye : le tarif dépend de la distance, je vous le confirme avec votre demande.',
+        '/' . $W . '?:' . $W . '?5' . $E . ' jusqu’à 15' . $W . 'km,? (?:et )?10' . $E . ' jusqu’à 25' . $W . 'km(?: autour de (?:Signy-l’Abbaye|l’atelier))?/u' => ' autour de l’atelier, selon la distance',
+        '/Livraison 5' . $E . $W . '?\/' . $W . '?10' . $E . '/u' => 'Livraison autour de l’atelier',
+        // les petits morceaux de prix dans une phrase
+        '/' . $W . '?\(\+' . $W . '?\d+' . $E . '\)/u' => '',
+        '/,?' . $W . 'pour \d+' . $E . ' de plus(?: que la fleur)?/u' => '',
+        '/,' . $W . 'calculé à \d+' . $E . ' par fleur/u' => '',
+        '/,' . $W . 'à \d+' . $E . ',/u' => '',
+        '/' . $W . '?Paiement sécurisé par carte bancaire\./u' => '',
+        '/^(' . $W . '*)À \d+' . $E . ' la fleur' . $W . '*$/u' => '$1Une fleur, avec sa carte de vœux',
+        '/' . $W . '?:' . $W . '\d+' . $E . ' la fleur,/u' => ' :',
+        '/,?' . $W . 'à \d+' . $E . ' la fleur/u' => '',
+        '/' . $W . 'à \d+' . $E . '/u' => '',
+        '/' . $W . '·' . $W . '\d[\d\s\x{a0}\x{202f}]*(?:,\d+)?' . $E . '/u' => '',
+    ];
+    $x = preg_replace(array_keys($r), array_values($r), $t);
+    if (!is_string($x)) return $t;
+    // ce qui garde un prix : la phrase s'en va
+    $t = $x;
+    $x = preg_replace('/[^.!?<>]*\d' . $E . '[^.!?<]*[.!?…]?' . $W . '*/u', '', $t);
+    return is_string($x) ? $x : $t;
+}
+function fv_vitrine_html($html) {
+    if (!is_string($html) || $html === '') return $html;
+    // le compositeur « Votre bouquet à vous » n'existe pas en vitrine : ses liens et sa présentation s'en vont
+    $x = preg_replace_callback('#<li\b[^>]*>.*?</li>#su', function ($m) { return (substr_count($m[0], '<li') === 1 && strpos($m[0], '<ul') === false && preg_match('#composer-son-bouquet|\#bouquet"#', $m[0])) ? '' : $m[0]; }, $html);
+    if (is_string($x)) $html = $x;
+    $x = preg_replace_callback('#<p\b[^>]*>.*?</p>#su', function ($m) { return strpos($m[0], 'Votre bouquet à vous') !== false ? '' : $m[0]; }, $html);
+    if (is_string($x)) $html = $x;
+    // un prix posé dans sa propre balise rejoint sa phrase, pour partir avec elle ; un tableau de prix s'en va
+    $x = preg_replace('#<span\b[^>]*>\s*(\d+(?:\s|&nbsp;|\x{a0})?(?:€|&euro;))\s*</span>#u', '$1', $html);
+    if (is_string($x)) $html = $x;
+    $x = preg_replace_callback('#<table\b.*?</table>#su', function ($m) { return preg_match('/\d(?:\s|&nbsp;|\x{a0})?(?:€|&euro;)/u', $m[0]) ? '' : $m[0]; }, $html);
+    if (is_string($x)) $html = $x;
+    $x = preg_replace('#\s*Vous pouvez aussi <a\b[^>]*>composer votre bouquet en ligne</a>[^.<]*\.#u', '', $html);
+    if (is_string($x)) $html = $x;
+    // la page sur le prix d'un bouquet : les prix se donnent sur demande
+    if (strpos($html, 'Le prix d’un bouquet en fil chenille</h1>') !== false) {
+        $html = preg_replace('#<div class="pg-body">#', '<div class="pg-body"><section class="pg-sec is-tint"><h2>Des prix donnés sur demande</h2><p>Réservez la création qui vous plaît : je vous réponds par e-mail avec son prix, la date et le retrait ou la livraison.</p></section>', $html, 1) ?? $html;
+    }
+    // les étiquettes de prix des cartes et des images
+    $x = preg_replace(['#<span class="pg-card-price">[^<]*</span>#u', '#(<span class="pg-mosaic-cap"><strong>[^<]*</strong>)<span>[^<]*</span>#u'], ['', '$1'], $html);
+    if (is_string($x)) $html = $x;
+    // le texte (hors scripts et styles), morceau par morceau
+    $parts = preg_split('#(<script\b.*?</script>|<style\b.*?</style>|<[^>]+>)#su', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+    if (!is_array($parts)) return $html;
+    foreach ($parts as $i => $p) {
+        if ($p === '' || $p[0] === '<') {
+            if ($p !== '' && preg_match('#^<meta\b[^>]*\bcontent="[^"]*\d(?:\s|&nbsp;|\x{a0})?(?:€|&euro;)#u', $p)) {
+                $parts[$i] = preg_replace_callback('#\bcontent="([^"]*)"#u', function ($m) { return 'content="' . trim(fv_vitrine_texte($m[1])) . '"'; }, $p);
+            }
+            continue;
+        }
+        if (preg_match('/\d|carte bancaire|paiement/u', $p)) { $x = fv_vitrine_texte($p); if (is_string($x)) $parts[$i] = $x; }
+    }
+    $html = implode('', $parts);
+    // ce qui est resté vide
+    $x = preg_replace('#<(li|figcaption)\b[^>]*>\s*</\1>#u', '', $html);
+    return is_string($x) ? $x : $html;
+}
+add_action('template_redirect', function () {
+    if (!fv_actif() || is_feed() || is_singular('product') || (function_exists('is_woocommerce') && (is_woocommerce() || is_cart() || is_checkout() || is_account_page()))) return;
+    if (!is_page() && !is_front_page() && !is_home()) return;
+    ob_start('fv_vitrine_html');
+}, 5);
