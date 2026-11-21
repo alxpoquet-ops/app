@@ -168,7 +168,7 @@ function typeCards() {
       (t) => `<a class="type-card c-${t.color} reveal" href="${creerUrl({ type: t.id })}">
     <span class="type-ico">${icon(t.icon)}</span>
     <span class="type-name">${esc(t.label)}</span>
-    <span class="type-price"><b>${euro(t.price)}</b><small>une seule fois</small></span>
+    <span class="type-price"><b>${euro(t.price)}</b><small>la création</small></span>
     <span class="type-pitch">${inline(t.pitch)}</span>
     <span class="type-qui">${inline(t.qui)}</span>
     <span class="type-go">Choisir ${icon('arrow-right')}</span>
@@ -260,7 +260,7 @@ function siteOffreCarte(t, { compact = false, choose = true } = {}) {
     <span class="site-art" aria-hidden="true">${siteIcone(t)}</span>
     <p class="site-nom">${esc(t.name)}</p>
     <p class="site-but">${icon('arrow-right')}<span>${esc(t.but)}</span></p>
-    <p class="site-prix"><b>${euro(t.price)}</b><small>une seule fois</small></p>
+    <p class="site-prix"><b>${euro(t.price)}</b><small>la création</small></p>
     ${listePlus(t.inclus, { vis: 99 })}
     ${choose ? `<p class="site-go"><a class="btn ${t.vedette ? 'btn-primary' : 'btn-light'}" href="${creerUrl({ type: t.id })}">${icon('wand-sparkles')}<span>Choisir ce site</span></a></p>` : ''}
   </article>`;
@@ -316,7 +316,7 @@ function offre({ compact = false, choose = true } = {}) {
 function positionnement() {
   const ligne = (t, href, nom, em) => `<li class="c-${t.color}"><a href="${href}"><span class="posi-art" aria-hidden="true">${siteIcone(t)}</span><strong>${esc(nom)}</strong>${icon('arrow-right')}<em>${esc(em)}</em></a></li>`;
   return `<ul class="posi reveal">${[
-    ligne(ESSENTIEL, creerUrl(), ESSENTIEL.name, `${euro(ESSENTIEL.price)}, payé une fois`),
+    ligne(ESSENTIEL, creerUrl(), ESSENTIEL.name, `${euro(ESSENTIEL.price)} la création`),
     ligne(BOUTIQUE_T, creerUrl({ type: BOUTIQUE_T.id }), `Option ${ECOMMERCE.name}`, `+ ${euro(ECOMMERCE.prix)} pour vendre en ligne`),
     ligne({ id: 'vitrine', color: 'butter', monstre: 'gelee' }, `${sections.forfaits.path}#extras`, 'Pages de visibilité Google', `${euro(prixPageSeo)} la page, quand vous voulez`),
   ].join('')}</ul>`;
@@ -524,7 +524,7 @@ function siteCarte({ name = 'b-type', court = false } = {}) {
         <span class="cf-art" aria-hidden="true">${petit(BOUTIQUE_T.monstre)}</span>
         <span class="cf-corps">
           <strong class="cf-nom">${esc(ECOMMERCE.name)} : + ${euro(ECOMMERCE.prix)}</strong>
-          <span class="cf-but">${esc(BOUTIQUE_T.but)} : ${euro(BOUTIQUE_T.price)} avec le site, payés une fois</span>
+          <span class="cf-but">${esc(BOUTIQUE_T.but)} : ${euro(BOUTIQUE_T.price)} la création, avec le site</span>
           ${court ? `<span class="cf-txt">${esc(ECOMMERCE.court)}</span>` : cfListe(ECOMMERCE.inclus)}
         </span>
         <span class="cf-coche" aria-hidden="true">${icon('check')}</span>

@@ -4,8 +4,8 @@
  * - Les pages des extras « chaque mois » et « chaque semaine » (tâche quotidienne aled08_quotidien).
  * - Les pages de visibilité Google en plus commandées dans « Mes modifications » : à l'unité ou en pack (1, 5 ou 10 pages).
  * Pour chaque page, Mirette lit la liste des pages du site (connecteur) et les recherches Google, puis choisit un sujet utile
- * et pas encore traité. Elle crée une demande pour Alex (titre, recherche visée, pourquoi, plan) : c'est Alex qui écrit la page
- * et la met en ligne. Sans clé Claude, la demande part quand même chez Alex, avec « sujet à choisir ».
+ * et pas encore traité. Elle crée une demande (titre, recherche visée, pourquoi, plan) que l'atelier automatique écrit et met en ligne
+ * (pages-google.php), puis le client reçoit un e-mail avec ses pages. Sans clé Claude : « sujet à choisir », l'atelier le choisit.
  */
 defined('ABSPATH') || exit;
 
@@ -18,10 +18,10 @@ function aled08e_seo_quantites_html($prix, $famille) {
         $lib = $n === 1 ? 'Une page' : 'Pack de ' . $n . ' pages';
         $h .= '<label class="esp-seo-q-choix"><input type="radio" name="quantite" value="' . (int) $n . '"' . ($i === 0 ? ' checked' : '') . '><span><strong>' . esc_html($lib) . '</strong><small>' . esc_html($famille ? 'offert' : aled08e_euro_txt($prix * $n)) . '</small></span></label>';
     }
-    return $h . '</div><p class="app-note">Mirette analyse votre site et choisit les sujets. Alex écrit chaque page et la met en ligne. Vous les voyez arriver ici, une par une.</p>';
+    return $h . '</div><p class="app-note">Mirette analyse votre site et choisit les sujets, puis les Minis Monstres écrivent vos pages et les mettent en ligne. Vous recevez un e-mail avec vos pages dès qu’elles sont prêtes.</p>';
 }
 
-/* Les pages de visibilité Google partent toujours chez Alex : Mirette n'est qu'une aide pour choisir le sujet */
+/* Les pages de visibilité Google sont toujours faites (par l'atelier automatique) */
 function aled08e_seo_auto_possible($uid) { return true; }
 
 /* Mirette choisit $n sujets de pages pour ce client (une seule question à Claude, modèle rapide). Retourne une liste, vide si impossible. */
@@ -77,17 +77,17 @@ function aled08e_lumi_sujets($uid, $n = 1, $idees = '') {
     return array_slice($out, 0, $n);
 }
 
-/* Une page de visibilité Google pour Alex : une demande « Page de visibilité Google » avec le sujet choisi par Mirette ($sujet vide : sujet à choisir) */
+/* Une page de visibilité Google à faire : une demande « Page de visibilité Google » avec le sujet choisi par Mirette ($sujet vide : sujet à choisir par l'atelier) */
 function aled08e_seo_auto_creer($uid, $source, $idees = '', $parent = 0, $sujet = null, $rang = 0) {
     if ($sujet === null) { $l = aled08e_lumi_sujets($uid, 1, $idees); $sujet = $l[0] ?? []; }
     $titre = !empty($sujet['titre']) ? $sujet['titre'] : 'sujet à choisir';
     $brief = !empty($sujet['titre'])
         ? 'Titre : ' . $sujet['titre'] . "\nRecherche visée : " . $sujet['recherche'] . "\nPourquoi : " . $sujet['pourquoi'] . ($sujet['plan'] ? "\nPlan proposé :\n- " . implode("\n- ", $sujet['plan']) : '')
-        : 'Mirette n’a pas pu choisir le sujet : à choisir par Alex.' . (trim($idees) !== '' ? "\nIdées du client : " . trim($idees) : '');
-    $texte = 'Page de visibilité Google ' . ($source === 'pack' ? 'commandée par le client' : 'de l’abonnement') . ' : sujet proposé par Mirette, à écrire et mettre en ligne par Alex.';
+        : 'Mirette n’a pas pu choisir le sujet : à choisir par l’atelier, d’après le site et le questionnaire du client.' . (trim($idees) !== '' ? "\nIdées du client : " . trim($idees) : '');
+    $texte = 'Page de visibilité Google ' . ($source === 'pack' ? 'commandée par le client' : 'de l’abonnement') . ' : sujet proposé par Mirette, écrite et mise en ligne par l’atelier.';
     $pid = wp_insert_post(['post_type' => ALED08E_CPT, 'post_status' => 'private', 'post_author' => (int) $uid, 'post_title' => 'Page de visibilité Google : ' . $titre, 'post_content' => $texte, 'comment_status' => 'closed', 'ping_status' => 'closed'], true);
     if (is_wp_error($pid)) return 0;
-    $ech = time() + 7 * DAY_IN_SECONDS + (int) $rang * 3 * DAY_IN_SECONDS; // un pack : une page tous les trois jours
+    $ech = time() + DAY_IN_SECONDS; // l'atelier passe toutes les deux heures, de 7 h à 21 h
     update_post_meta($pid, '_aled08_statut', 'recue');
     update_post_meta($pid, '_aled08_par', 'alex');
     update_post_meta($pid, '_aled08_lia_etat', 'transmise');
@@ -97,17 +97,15 @@ function aled08e_seo_auto_creer($uid, $source, $idees = '', $parent = 0, $sujet 
     update_post_meta($pid, '_aled08_brief', $brief);
     update_post_meta($pid, '_aled08_transmise_le', time());
     update_post_meta($pid, '_aled08_echeance', $ech);
-    update_post_meta($pid, '_aled08_reponse', 'Mirette a choisi le sujet de cette page' . (!empty($sujet['titre']) ? ' : « ' . $titre . ' »' : '') . '. Alex l’écrit et la met en ligne d’ici ' . aled08e_cer_echeance_txt($ech) . '.');
+    update_post_meta($pid, '_aled08_reponse', 'Mirette a choisi le sujet de cette page' . (!empty($sujet['titre']) ? ' : « ' . $titre . ' »' : '') . '. Les Minis Monstres l’écrivent et la mettent en ligne : vous recevez un e-mail dès qu’elle est prête.');
     if ($parent) update_post_meta($pid, '_aled08_seo_parent', (int) $parent);
     if (function_exists('aled08e_cer_maxi') && aled08e_cer_maxi($uid)) update_post_meta($pid, '_aled08_priorite', 1);
     aled08e_lia_journal_add('Mirette : sujet de page de visibilité Google pour ' . (($u = get_userdata($uid)) ? $u->display_name : '#' . $uid) . ' : ' . $titre . '.');
-    $u = get_userdata($uid);
-    wp_mail(aled08e_to(), 'Page de visibilité Google à écrire avant le ' . wp_date('j/m', $ech) . ' : ' . ($u ? $u->display_name : '?'),
-        'Client : ' . ($u ? $u->display_name : '?') . "\nSite : " . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\nÀ mettre en ligne avant le : " . wp_date('l j F', $ech) . "\n\nLE SUJET (choisi par Mirette) :\n" . $brief . "\n\nVotre tableau : " . aled08e_url(['onglet' => 'accueil']) . "\n", aled08e_mail_headers());
+    // Alex n'a rien à faire : l'atelier écrit la page, et Alex est prévenu quand elle est en ligne (pages-google.php)
     return (int) $pid;
 }
 
-/* Des pages SEO commandées dans « Mes modifications » : Mirette choisit un sujet par page, Alex les écrit */
+/* Des pages SEO commandées dans « Mes modifications » : Mirette choisit un sujet par page, l'atelier les écrit */
 add_action('aled08e_demande_creee', function ($pid, $par, $uid) {
     if (get_post_meta($pid, '_aled08_extra', true) !== 'packseo') return;
     $n = max(1, (int) get_post_meta($pid, '_aled08_quantite', true));
@@ -116,7 +114,7 @@ add_action('aled08e_demande_creee', function ($pid, $par, $uid) {
     $sujets = aled08e_lumi_sujets($uid, $n, $idees);
     for ($i = 0; $i < $n; $i++) aled08e_seo_auto_creer($uid, 'pack', $idees, $pid, $sujets[$i] ?? [], $i);
     update_post_meta($pid, '_aled08_statut', 'faite');
-    update_post_meta($pid, '_aled08_reponse', 'Merci ! Mirette a choisi ' . ($n > 1 ? 'les sujets de vos ' . $n . ' pages' : 'le sujet de votre page') . ', et Alex ' . ($n > 1 ? 'les écrit' : 'l’écrit') . '. Vous les voyez arriver dans vos demandes.');
+    update_post_meta($pid, '_aled08_reponse', 'Merci ! Mirette a choisi ' . ($n > 1 ? 'les sujets de vos ' . $n . ' pages' : 'le sujet de votre page') . ', et les Minis Monstres ' . ($n > 1 ? 'les écrivent' : 'l’écrivent') . '. Vous recevez un e-mail dès ' . ($n > 1 ? 'qu’elles sont en ligne' : 'qu’elle est en ligne') . '.');
 }, 20, 3);
 
 /* Chaque jour : les pages de visibilité Google des extras « Une page de visibilité Google chaque mois » et « chaque semaine » */
@@ -140,4 +138,4 @@ function aled08e_seo_auto_tourner() {
 }
 add_action('aled08_quotidien', 'aled08e_seo_auto_tourner', 40);
 
-/* Mirette n'écrit plus les pages (Alex les écrit) : plus de consignes d'écriture ici. */
+/* Mirette choisit les sujets ; l'atelier automatique écrit les pages (pages-google.php). */

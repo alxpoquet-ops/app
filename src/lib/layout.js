@@ -53,7 +53,7 @@ function businessSchema() {
     name: site.name,
     slogan: `Un site internet pour être visible, dès ${creation.prix} €`,
     description:
-      `Un site internet rend votre activité visible : on crée le vôtre. Sites pour artisans, commerçants et associations, payés une fois : ${PRIX_SITES}. Ensuite, au choix : le forfait ${AUTO.name} à ${AUTO.month} € par mois, ou le forfait ${ABO.name} à ${ABO.month} € par mois sans engagement (hébergement, sauvegardes, sécurité, maintenance, modifications), ou ${ABO.month + (ABO.domaine || 0)} € par mois si on vous fournit le nom de domaine. Tout se fait en ligne, pour des clients partout en France.`,
+      `Un site internet rend votre activité visible : on crée le vôtre. Sites pour artisans, commerçants et associations, création : ${PRIX_SITES}. Ensuite, au choix : le forfait ${AUTO.name} à ${AUTO.month} € par mois, ou le forfait ${ABO.name} à ${ABO.month} € par mois sans engagement (hébergement, sauvegardes, sécurité, maintenance, modifications), ou ${ABO.month + (ABO.domaine || 0)} € par mois si on vous fournit le nom de domaine. Tout se fait en ligne, pour des clients partout en France.`,
     url: site.url + '/',
     ...(site.email ? { email: site.email } : {}),
     image: site.url + '/assets/img/og-image.png',

@@ -61,7 +61,7 @@
     'Fermer': 'Close',
     'Exemple : ': 'Example: ',
     'Exemple d’écran : le vôtre sera à vos couleurs.': 'Example screen: yours will be in your own colours.',
-    'Votre demande pour Alex': 'Your request for Alex',
+    'Votre demande pour Bricou': 'Your request for Bricou',
     'Les petits monstres': 'The little monsters',
     'Environ ': 'About ',
     '. C’est Alex qui fera la modification.': '. Alex will make the change.',
@@ -1212,7 +1212,7 @@
       var titre, detail = '', petit = '', oui;
       if (a.type === 'demande') {
         var parLia = a.par === 'lia';
-        titre = tr('Votre demande pour Alex');
+        titre = tr('Votre demande pour Bricou');
         detail = a.texte || '';
         petit = parLia && !sansEnergie ? tr('Environ ') + jetonsTxt(a.jetons || 0) + tr('. C’est Alex qui fera la modification.') : tr('C’est bien ça ? Alex fera la modification lui-même.');
         oui = tr('Oui, c’est bien ça');
@@ -1244,7 +1244,7 @@
           if (radio && !radio.disabled) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
           if (ta) { ta.value = a.texte || ''; ta.dispatchEvent(new Event('input', { bubbles: true })); }
           aller('demandes');
-          var m = tr('Merci ! Ta demande est prête dans « Modifications ». Ajoute une photo si tu veux, puis envoie : Bricou la prépare pour Alex !');
+          var m = tr('Merci ! Ta demande est prête dans « Modifications ». Ajoute une photo si tu veux, puis envoie : Bricou s’en occupe !');
           ecrire(m, 'lia'); garder('lia', m);
           flotOuvrir(false);
           if (ta) setTimeout(function () { ta.scrollIntoView({ behavior: 'smooth', block: 'center' }); ta.focus(); }, 250);

@@ -3,7 +3,7 @@
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de config.js), aucun client,
 // avis ou chiffre inventé, et pas de phrase de 9 mots ou plus reprise d'une autre page.
 // Offre du 21 novembre 2026 : un seul site payé une fois, le Site Essentiel (config.offreSite), assemblé à partir de nos modules,
-// avec l'option e-commerce (+ 200 €). Le Site Visibilité est retiré : les pages pour Google sont l'extra packseo (15 € la page).
+// avec l'option e-commerce (+ 200 €). Le Site Visibilité est retiré : les pages pour Google sont l'extra packseo (10 € la page).
 // Puis Autonomie (config.creationSeule, sans abonnement, export du site remis au client) ou Mini (config.forfaits[0], au mois,
 // sans engagement, modifications incluses, une demande à la fois). L'abonnement est facultatif. Trois extras : la page de
 // visibilité Google (payée une fois, par carte), la traduction anglaise et la fonctionnalité spécifique (sur devis).
@@ -104,14 +104,14 @@ Un tarif change, une nouvelle photo arrive ? Avec le forfait ${mini.name}, envoy
 
 ## Combien ça coûte
 
-- **Le site, payé une fois** : ${prix} € pour le ${ESS.name}, puis ${prixPage} € par page de visibilité Google, si vous en voulez.
+- **La création du site** : ${prix} € pour le ${ESS.name}, puis ${prixPage} € par page de visibilité Google, si vous en voulez.
 - **Ensuite** : le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement.
 
 Vous payez le site à la commande, d’un coup ou ${EN_FOIS}, au choix sur la page de paiement.
 
 Pour comparer, un site vitrine de ${marche.pagesCompare} pages confié à un indépendant se paie en général entre ${marcheVitrine}, d’après des fourchettes publiées par des prestataires (les [sources](/pourquoi-moins-cher/) sont citées). Tout est détaillé sur la page [tarifs](/tarifs/).`,
     faq: [
-      { q: 'Combien coûte un site internet pour un artisan ?', a: `${prix} € pour un ${ESS.name}, payés une fois, et ${prixPage} € par prestation que vous voulez mettre en avant sur Google. Ensuite, c’est le forfait ${AUTO}, sans rien payer chaque mois, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois.` },
+      { q: 'Combien coûte un site internet pour un artisan ?', a: `${prix} € la création d’un ${ESS.name}, et ${prixPage} € par prestation que vous voulez mettre en avant sur Google. Ensuite, c’est le forfait ${AUTO}, sans rien payer chaque mois, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois.` },
       { q: 'Je travaille sur une grande zone, comment être trouvé partout ?', a: 'Citez les principales communes où vous travaillez, sans en aligner des dizaines. Une liste honnête sur le site, et une zone bien réglée sur votre fiche Google, valent mieux qu’une page par village.' },
       { q: 'Je n’ai presque pas de photos de chantier, est-ce un problème ?', a: 'Non. On démarre avec ce que vous avez, même deux clichés pris au téléphone. Le site s’étoffe ensuite chantier après chantier.' },
       { q: 'J’ai déjà un vieux site, faut-il tout recommencer ?', a: 'Le nouveau site est fait à neuf, mais vos textes et vos photos servent de base. Si vous avez déjà un nom de domaine, vous le gardez, et nous le relions au nouveau site.' },
@@ -258,7 +258,7 @@ Vous nous envoyez vos photos et quelques notes sur chaque pièce. La petite band
 
 ## Le prix
 
-- **Le site, payé une fois** : ${prix} € le ${ESS.name} pour la galerie, et ${prixOption} € de plus avec l’option ${eco} pour vendre en ligne.
+- **La création du site** : ${prix} € le ${ESS.name} pour la galerie, et ${prixOption} € de plus avec l’option ${eco} pour vendre en ligne.
 - **Ensuite** : le forfait ${AUTO} ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
 
 Le site se règle en commandant, en une seule fois ou ${EN_FOIS}. Une nouvelle collection à présenter ? Avec le forfait ${mini.name}, c’est une modification incluse.`,
@@ -266,7 +266,7 @@ Le site se règle en commandant, en une seule fois ou ${EN_FOIS}. Une nouvelle c
       { q: 'Faut-il un statut pour vendre ses créations en ligne ?', a: 'Oui, dès que vous vendez de façon régulière. La micro-entreprise est la solution la plus courante pour démarrer. Les artistes auteurs ont un régime à part : renseignez-vous auprès de l’Urssaf avant d’ouvrir la boutique.' },
       { q: 'Mes photos sont-elles protégées une fois en ligne ?', a: 'Vos œuvres et vos photos restent à vous : le droit d’auteur s’applique sans aucune démarche. Nous publions des images assez grandes pour être belles à l’écran, sans mettre en ligne vos fichiers en pleine qualité.' },
       { q: 'Je vends déjà sur une place de marché, un site est-il utile ?', a: 'Oui, les deux se complètent. La place de marché amène du passage. Votre site, lui, porte votre nom, sans concurrent affiché à côté.' },
-      { q: 'Combien coûte un site avec boutique pour un créateur ?', a: `Le ${ESS.name} avec l’option ${eco} coûte ${prixBoutique} €, payés une fois. Il comprend le site, le panier, le paiement en ligne sécurisé et le suivi des commandes. Vous ajoutez vos pièces vous-même, autant que vous voulez.` },
+      { q: 'Combien coûte un site avec boutique pour un créateur ?', a: `Le ${ESS.name} avec l’option ${eco} coûte ${prixBoutique} € pour la création. Il comprend le site, le panier, le paiement en ligne sécurisé et le suivi des commandes. Vous ajoutez vos pièces vous-même, autant que vous voulez.` },
     ],
     voir: ['/guides/creer-boutique-en-ligne/', '/realisations/', '/tarifs/'],
   },
@@ -340,7 +340,7 @@ Un tarif d’été ou une date de fermeture ? Avec le forfait ${mini.name}, vous
     faq: [
       { q: 'Le site peut-il afficher mes disponibilités ?', a: 'Si vous tenez déjà un calendrier en ligne, le site peut y renvoyer. Sinon, la demande de séjour suffit souvent : vous gardez la main sur votre planning.' },
       { q: 'J’ai deux gîtes sur le même terrain, faut-il deux sites ?', a: 'Non. Un seul site présente les deux, chacun sur sa page, avec ses photos et ses tarifs. Vous n’avez qu’un site à faire vivre.' },
-      { q: 'Combien coûte un site pour un gîte ?', a: `${prix} € pour un ${ESS.name}, payés une fois, puis ${prixPage} € par page de visibilité Google si vous voulez être trouvé sur plus de recherches. Le site peut se régler ${EN_FOIS}. Le forfait ${mini.name}, à ${eur(mini.month)} € par mois, reste facultatif.` },
+      { q: 'Combien coûte un site pour un gîte ?', a: `${prix} € la création d’un ${ESS.name}, puis ${prixPage} € par page de visibilité Google si vous voulez être trouvé sur plus de recherches. Le site peut se régler ${EN_FOIS}. Le forfait ${mini.name}, à ${eur(mini.month)} € par mois, reste facultatif.` },
     ],
     voir: ['/guides/fiche-google-entreprise/', '/tarifs/', '/guides/choisir-nom-de-domaine/'],
   },

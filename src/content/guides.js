@@ -4,7 +4,7 @@
 // aucun faux avis, et pas de phrase de 9 mots ou plus reprise d'une autre page.
 // Offre du 21 novembre 2026 : un seul site payé une fois, le Site Essentiel (config.offreSite), assemblé à partir de nos modules,
 // avec l'option e-commerce (type 'boutique'). Le Site Visibilité est retiré : pour grandir sur Google, l'extra « page de visibilité
-// Google » (15 € la page, packs 1, 5 ou 10). Puis deux façons de faire vivre le site : Autonomie (config.creationSeule, sans abonnement, export du site remis au client)
+// Google » (10 € la page, packs 1, 5 ou 10). Puis deux façons de faire vivre le site : Autonomie (config.creationSeule, sans abonnement, export du site remis au client)
 // ou Mini (config.forfaits[0], au mois, sans engagement, modifications incluses, une demande à la fois). L'abonnement est facultatif.
 // Trois extras seulement : la page de visibilité Google (payée une fois, par carte, depuis l'espace client), la traduction
 // anglaise et la fonctionnalité spécifique (sur devis). La petite bande (config.bande) compte six Minis Monstres.
@@ -250,7 +250,7 @@ Un devis qui ne répond pas à ces cinq questions n'est pas complet.
 
 Chez nous, tout est affiché avant la commande, toujours dans le même ordre.
 
-### 1. Le site, payé une seule fois
+### 1. La création du site
 
 - **${ESS.name}, ${eur(ESS.price)} €** : votre site, assemblé à partir de nos modules et rempli avec votre contenu.
 - **Option ${eco}, ${eur(ECO.prix)} € de plus** : une boutique complète, pour vendre sur internet, soit ${eur(BOU.price)} € en tout.
@@ -424,7 +424,7 @@ Confiez-le si votre temps est compté, si l'écran vous fatigue, ou si vous avez
 Notre service est né de ce constat. Vous ne construisez rien vous-même, mais vous gardez la main sur ce qui compte :
 
 - Le site est pensé pour être trouvé : c’est notre métier.
-- Le prix est fixe et connu d’avance : ${eur(ESS.price)} € le site, ou ${eur(BOU.price)} € avec l’option ${eco}, payés une fois.
+- Le prix est fixe et connu d’avance : ${eur(ESS.price)} € la création du site, ou ${eur(BOU.price)} € avec l’option ${eco}.
 - Vous aimez quand même bricoler ? Avec le forfait ${AUTO}, vous recevez l’export du site (une copie complète) et vous l’installez chez votre hébergeur, sans abonnement.
 - Vous préférez ne rien gérer ? Avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois, vous demandez vos changements en une phrase depuis votre espace client, une page privée rien qu’à vous.
 - ${qui('constructeur')} de notre petite bande, clarifie chaque changement avec vous, puis l’envoie à Alex.
@@ -610,7 +610,7 @@ Vendre en ligne à des particuliers impose quelques obligations : afficher des *
 
 ## Combien ça coûte
 
-- **Le ${ESS.name} avec l’option ${eco} : ${eur(BOU.price)} €** (${eur(ESS.price)} € + ${eur(ECO.prix)} €), payés une fois. L’option ajoute la boutique complète : le catalogue, le panier, le paiement en ligne sécurisé, la gestion des commandes et les e-mails automatiques. Nous configurons la boutique, puis vous gérez votre catalogue en toute liberté. Vous la réglez à la commande, d’un coup ou ${EN_FOIS}.
+- **Le ${ESS.name} avec l’option ${eco} : ${eur(BOU.price)} €** (${eur(ESS.price)} € + ${eur(ECO.prix)} €) pour la création. L’option ajoute la boutique complète : le catalogue, le panier, le paiement en ligne sécurisé, la gestion des commandes et les e-mails automatiques. Nous configurons la boutique, puis vous gérez votre catalogue en toute liberté. Vous la réglez à la commande, d’un coup ou ${EN_FOIS}.
 - **Ensuite, Forfait ${AUTO} ou Forfait ${mini.name}.** Avec le forfait ${AUTO}, vous hébergez la boutique vous-même, sans rien nous payer chaque mois. Avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois, nous gardons votre boutique en ligne et en bon état : l’hébergement (l’endroit où elle reste accessible 24 h/24), des copies de sécurité régulières et les vérifications techniques. Le nom de domaine, si nous le fournissons, ajoute ${eur(dom)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
 
 Le service de paiement prélève de son côté une petite commission sur chaque vente. C'est le cas pour toutes les boutiques en ligne, quelle que soit la solution choisie.

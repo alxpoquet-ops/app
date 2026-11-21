@@ -206,6 +206,7 @@ require_once __DIR__ . '/includes/atelier.php';
 require_once __DIR__ . '/includes/mails.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
+require_once __DIR__ . '/includes/pages-google.php';
 require_once __DIR__ . '/includes/mirette.php';
 require_once __DIR__ . '/includes/edition.php';
 
@@ -1205,11 +1206,11 @@ function aled08e_dashboard() {
           <?php echo aled08e_gauge_zone_html($uid); // phpcs:ignore ?>
           <?php echo aled08e_edition_rappel_html($uid); // phpcs:ignore ?>
           <section class="bricou-bloc" aria-label="Votre demande de modification">
-          <div class="bricou-tete"><span class="bricou-art" aria-hidden="true"><?php echo aled08e_monster('bricou'); // phpcs:ignore ?></span><div><strong>Une modification ? Dites-le à Bricou</strong><p>Il prépare votre demande, puis Alex fait la modification.</p></div></div>
+          <div class="bricou-tete"><span class="bricou-art" aria-hidden="true"><?php echo aled08e_monster('bricou'); // phpcs:ignore ?></span><div><strong>Une modification plus compliquée, ou pas envie de la faire vous-même ?</strong><p>Moi, c’est Bricou : écrivez-la-moi ici, je m’en occupe. Vous suivez où ça en est juste en dessous.</p></div></div>
           <?php if (aled08e_sans_formule($uid)) : ?><?php echo aled08e_autonomie_html($uid); // phpcs:ignore ?>
           <?php else : ?>
           <?php if ($illimite) : ?>
-          <ol class="req-etapes"><li><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Vous écrivez votre demande</span></li><li><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Bricou la clarifie avec vous</span></li><li><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>Alex fait la modification</span></li></ol>
+          <ol class="req-etapes"><li><?php echo aled08e_icon('message-circle'); // phpcs:ignore ?><span>Vous écrivez votre demande</span></li><li><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Bricou la clarifie avec vous</span></li><li><?php echo aled08e_icon('wrench'); // phpcs:ignore ?><span>C’est fait : vous êtes prévenu(e)</span></li></ol>
           <?php endif; ?>
           <form class="req-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(aled08e_url()); ?>" data-req-real>
             <input type="hidden" name="aled08e_demande" value="1">

@@ -134,7 +134,7 @@ Aucun site ne part en ligne sans ce contrôle.
 
 Pas de devis à attendre. Tout se lit dans le même ordre.
 
-1. **D’abord le site, payé une fois** : ${eur(ESS.price)} € le ${ESS.name}, et ${eur(ECO.prix)} € de plus avec l’option ${eco} pour vendre sur internet.
+1. **D’abord la création du site** : ${eur(ESS.price)} € le ${ESS.name}, et ${eur(ECO.prix)} € de plus avec l’option ${eco} pour vendre sur internet.
 2. **Ensuite, Forfait ${AUTO} ou Forfait ${mini.name}** : vous gérez le site vous-même sans rien payer chaque mois, ou nous nous en occupons pour ${eur(mini.month)} € par mois, sans engagement.
 3. **Enfin, les extras, si besoin** : une ${minus(pageGoogle.name)} à ${prixPage} €, une traduction anglaise ou une fonctionnalité spécifique sur devis.
 

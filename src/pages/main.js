@@ -3,7 +3,7 @@ const { site, sections, types, typesOfferts, forfaits, annuel, lissage, delais, 
 // Les outils de l'espace client sont en pause (config enService) : la page Outils n'est pas construite.
 const OUTILS_ON = enService.outils;
 // OFFRE UNIQUE (21 novembre 2026). Créer le site, payé une fois : le Site Essentiel (400 €), avec ou sans l'option e-commerce
-// (+ 200 €). Les pages de visibilité Google sont un extra (15 € la page). Le Site Visibilité est retiré (config.types, retire: true).
+// (+ 200 €). Les pages de visibilité Google sont un extra (10 € la page). Le Site Visibilité est retiré (config.types, retire: true).
 // Ensuite, au choix : Autonomie (creationSeule, 0 € par mois, le client gère tout) ou Mini (forfaits[0], 10 € par mois, sans engagement).
 // Trois extras seulement, depuis l'espace client (C.extrasListe) : page de visibilité Google, traduction anglaise, fonctionnalité spécifique.
 const ABO = forfaits[0];
@@ -17,7 +17,7 @@ const legal = require('../content/legal');
 const OUTILS = require('../content/outils');
 const OUTILS_LIA = require('../content/outils-lia').outils;
 const FAMILLES_OUTILS = require('../content/outils-lia').FAMILLES;
-// Le site (Essentiel, option e-commerce), et l'extra « page de visibilité Google » (15 € la page, payée une fois)
+// Le site (Essentiel, option e-commerce), et l'extra « page de visibilité Google » (10 € la page, payée une fois)
 const ESS = C.ESSENTIEL, BOU = C.BOUTIQUE_T, ECO = C.ECOMMERCE; // le Site Essentiel, le même avec l'option e-commerce, l'option seule
 const PAGE_GOOGLE = C.PACK_SEO || { name: 'Page de visibilité Google', price: { once: 15 }, exemples: [] };
 const PRIX_PAGE = PAGE_GOOGLE.price.once;
@@ -108,7 +108,7 @@ function home() {
 
 <section class="section" id="sites"><div class="container">
   <h2 class="section-title">Un site pour être visible, dès ${euro(ESS.price)}</h2>
-  <p class="section-sub">Le ${esc(ESS.name)}, payé une fois. Une boutique en option, et des pages pour Google quand vous voulez.</p>
+  <p class="section-sub">Le ${esc(ESS.name)}, en ligne en ${esc(ESS.delai)}. Une boutique en option, et des pages pour Google quand vous voulez.</p>
   ${C.positionnement()}
   <p class="center more">${C.btn(sections.forfaits.path, 'btn-primary btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</p>
 </div></section>
@@ -295,7 +295,7 @@ ${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Il ne reste qu’à deven
     path: sections.forfaits.path,
     section: 'forfaits',
     title: `Tarifs : un site internet pour être visible, dès ${creation.prix} € | Les Minis Monstres`,
-    description: `${ESS.name} ${creation.prix} € payé une fois, option ${ECO.name} + ${ECO.prix} €, pages Google à ${PRIX_PAGE} €. Puis forfait ${AUTO.name} à ${AUTO.month} € ou forfait ${ABO.name} à ${ABO.month} € par mois.`,
+    description: `${ESS.name} : ${creation.prix} € la création, option ${ECO.name} + ${ECO.prix} €, pages Google à ${PRIX_PAGE} €. Puis forfait ${AUTO.name} à ${AUTO.month} € ou forfait ${ABO.name} à ${ABO.month} € par mois.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -902,7 +902,7 @@ function monEspacePage() {
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
           <h2 class="app-h">Mes modifications</h2>
           <div class="ed-rappel demo-rappel"><p>${icon('sparkles')}<span><b>Un texte ou une photo à changer ?</b> Faites-le vous-même, en direct sur votre site : c’est en ligne tout de suite, et vous pouvez annuler.</span></p><button type="button" class="btn btn-primary btn-sm" data-ed-ouvrir>${icon('pencil')}<span>Modifier mon site</span></button></div>
-          <div class="demo-bricou"><span aria-hidden="true">${C.petit('bricou', { humeur: 'ravi' })}</span><p><strong>Une modification ? Dites-le à ${esc(C.BRICOU)}</strong><small>Pour le reste (une partie à ajouter, une couleur, une page) : il prépare votre demande, puis Alex fait la modification.</small></p></div>
+          <div class="demo-bricou"><span aria-hidden="true">${C.petit('bricou', { humeur: 'ravi' })}</span><p><strong>Une modification plus compliquée, ou pas envie de la faire vous-même ?</strong><small>Moi, c’est ${esc(C.BRICOU)} : écrivez-la-moi ici, je m’en occupe.</small></p></div>
           <form class="req-form" data-req>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" rows="3" placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" accept="image/*" class="sr-only" data-req-file>${icon('image-plus')}<span data-req-file-name>Ajouter une photo (facultatif)</span></label>
@@ -1542,7 +1542,7 @@ function docPage() {
   const tabs = [
     ['house', 'Accueil', 'votre site, votre formule et les petits mots de la bande.'],
     ['package', 'Ma commande', 'le suivi de la création de votre site, étape par étape.'],
-    ['pencil', 'Modifications', `vous écrivez ce qu’il faut changer, ${C.BRICOU} clarifie votre demande, Alex fait la modification, et vous suivez où ça en est.`],
+    ['pencil', 'Modifications', `vous changez vous-même un texte ou une photo ; pour le reste, vous l’écrivez à ${C.BRICOU}, il s’en occupe, et vous suivez où ça en est.`],
     ['sparkles', 'Extras', `les trois extras, présentés par ${C.PEPITE} : page de visibilité Google, traduction anglaise, fonctionnalité spécifique.`],
     ['shopping-bag', 'Ma boutique', `vos articles, vos prix, vos paiements, la livraison, vos commandes et vos promos. Il s’ouvre avec l’option ${ECO.name}.`],
     ['circle-user', 'Mon compte', 'vos coordonnées, votre mot de passe, votre formule et vos factures.'],
@@ -1632,7 +1632,7 @@ ${chap('demandes', `7. Demander une modification`, `  <div class="doc-split doc-
       <p>Avec le forfait ${esc(ABO.name)}, vos modifications sont incluses. Voici comment ça se passe :</p>
       <ol class="doc-steps">${C.ETAPES_MODIF.map(([, t, d]) => `<li><strong>${esc(t)}.</strong> ${esc(d)}</li>`).join('')}</ol>
       <ul class="list-check">
-        <li>${esc(C.BRICOU)} clarifie votre demande, Alex fait la modification. Une demande à la fois.</li>
+        <li>${esc(C.BRICOU)} clarifie votre demande et s’en occupe. Une demande à la fois.</li>
         <li>Tant que votre demande n’est pas commencée, vous pouvez l’annuler d’un clic.</li>
       </ul>
       <p class="doc-more">${C.btn(sections.accompagnement.path, 'btn-light', sections.accompagnement.icon, 'L’accompagnement')}</p>

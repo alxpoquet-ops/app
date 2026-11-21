@@ -60,7 +60,7 @@ const bandeComprise = liste(bande.map(presente));
 
 module.exports = {
   creation: [
-    { q: 'Quel site proposez-vous, et à quel prix ?', a: `Un seul, le ${ESS.name}, à ${eur(ESS.price)} € payés une fois. Nous l’assemblons à partir de nos modules (accueil, présentation, services et tarifs, galerie, questions fréquentes, contact), puis nous le remplissons avec vos informations et vos photos. Pour vendre en ligne, l’option ${minus(ECO.name)} ajoute ${eur(ECO.prix)} €, soit ${eur(BOU.price)} € en tout.` },
+    { q: 'Quel site proposez-vous, et à quel prix ?', a: `Un seul, le ${ESS.name}, à ${eur(ESS.price)} € la création. Nous l’assemblons à partir de nos modules (accueil, présentation, services et tarifs, galerie, questions fréquentes, contact), puis nous le remplissons avec vos informations et vos photos. Pour vendre en ligne, l’option ${minus(ECO.name)} ajoute ${eur(ECO.prix)} €, soit ${eur(BOU.price)} € en tout.` },
     { q: 'Pourquoi un prix aussi bas ?', a: `Parce que le gros du travail est déjà fait. Alex a créé et optimisé chaque module une fois pour toutes, et chacun a son rôle. Il ne reste qu’à y mettre votre contenu : votre site est prêt en ${ESS.delai}.` },
     { q: 'Puis-je modifier mon site moi-même ?', a: `Oui. À la livraison, vous recevez une première version de votre site. Avec le forfait ${mini.name}, le bouton « Modifier mon site moi-même » de votre espace client vous permet de cliquer sur un texte ou une photo et de le changer, en direct. Vous préférez nous le confier ? Envoyez-nous une demande.` },
     { q: 'Je n’ai ni textes ni photos, c’est un problème ?', a: `Non. Vous nous racontez votre métier, et ${plume}, la rédactrice de la bande, aide à en tirer des textes clairs. Pour les photos, nous choisissons des images libres de droits, que vous remplacerez par les vôtres quand vous voudrez.` },
@@ -85,7 +85,7 @@ module.exports = {
     { q: 'Le nom de domaine est-il compris ?', a: `Vous avez déjà un nom de domaine (l’adresse de votre site) ? Le forfait ${mini.name} reste à ${eur(mini.month)} € par mois. Vous n’en avez pas ? On vous le fournit, à votre nom, pour ${eur(dom)} € de plus par mois, soit ${eur(avecDom)} €. L’hébergement, lui, est toujours compris.` },
     { q: 'Comment se paie l’abonnement ?', a: `Au mois : ${eur(mini.month)} € par mois, sans engagement. Il démarre à la mise en ligne de votre site et s’arrête quand vous le décidez. Ce jour-là, vous enregistrez votre carte pour le forfait.` },
     { q: 'J’ai un code promo. Où le mettre ?', a: 'Dans la case « Code promo », juste au-dessus du bouton Commander. Il réduit le prix du site, jamais celui de l’abonnement ni des extras.' },
-    { q: 'Et pour une boutique en ligne ?', a: `Cochez l’option ${minus(ECO.name)} sous le ${ESS.name} : ${eur(ECO.prix)} € de plus, payés une fois, soit ${eur(BOU.price)} € en tout. Elle ajoute le panier et le paiement en ligne sécurisé. Nous configurons la boutique, puis vous gérez vos produits, vos prix et vos commandes depuis votre espace client, sans limite d’articles.` },
+    { q: 'Et pour une boutique en ligne ?', a: `Cochez l’option ${minus(ECO.name)} sous le ${ESS.name} : ${eur(ECO.prix)} € de plus pour la création, soit ${eur(BOU.price)} € en tout. Elle ajoute le panier et le paiement en ligne sécurisé. Nous configurons la boutique, puis vous gérez vos produits, vos prix et vos commandes depuis votre espace client, sans limite d’articles.` },
     { q: `Pourquoi est-ce ${marche.fois} fois moins cher qu’un site vitrine classique ?`, a: `Parce que nos modules sont déjà prêts et que les Minis Monstres se chargent de ce qui se répète. Chez un indépendant, un site vitrine de ${marche.pagesCompare} pages coûte en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €, contre ${eur(ESS.price)} € pour notre ${ESS.name}. Ces fourchettes viennent de prestataires, donc prudence : des indépendants existent dès ${eur(INDEP)} €. Sources consultées en novembre 2026 : ${sourcesInline()}.` },
     { q: 'Y a-t-il des frais cachés ?', a: `Non. Le récapitulatif de commande montre tout : le site choisi, et le forfait ${mini.name} si vous le prenez. Un devis n’arrive que si vous le demandez, et vous l’acceptez ou non avant le début du travail.` },
   ],
@@ -117,6 +117,6 @@ module.exports = {
   ],
   fidelite: [
     { q: 'Y a-t-il une remise pour un deuxième site ?', a: `Oui. Votre deuxième site coûte ${fidelite.remiseSecondSite} % de moins : c’est notre façon de remercier les clients qui reviennent.` },
-    { q: 'La remise s’applique-t-elle à l’abonnement ?', a: 'Non. Elle porte sur le prix du site, payé une fois. L’abonnement et les extras gardent leur prix affiché.' },
+    { q: 'La remise s’applique-t-elle à l’abonnement ?', a: 'Non. Elle porte sur le prix de la création du site. L’abonnement et les extras gardent leur prix affiché.' },
   ],
 };

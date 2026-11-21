@@ -15,7 +15,7 @@ Ce guide explique, en français simple, comment fonctionne le site www.les-minis
   - ⚪ **Autonomie, 0 € par mois** (`config.creationSeule`, id `sans`) : le client gère son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. On lui remet l'export de son site, prêt à installer. L'automate saute le domaine et l'hébergement.
   - 🔵 **le forfait Mini, 10 € par mois, sans engagement** (`config.forfaits[0]`, id `base`) : hébergement, sauvegardes automatiques, sécurité, maintenance technique, espace client, les Minis Monstres à votre service, modifications incluses demandées depuis l'espace client. **Une modification peut prendre jusqu'à 48 h** (délai habituel, pas une garantie : les CGV le disent), une demande à la fois. C'est le seul abonnement. **Nom de domaine** : si le client a déjà le sien, le forfait reste à 10 € ; sinon on le lui fournit, à son nom, pour 2 € de plus par mois (`forfaits[0].domaine`), soit 12 €. Il n'est plus « compris » ni « offert ».
 - **Trois extras seulement** (`aLaDemande` non retirés dans `src/config.js`) :
-  - 📈 **Page de visibilité Google, 15 € la page, payée une fois** (id `packseo`, à l'unité ou par 5 ou 10) : nouvelle page optimisée pour Google, intégrée au site, référencement local soigné. Commandée et payée par carte tout de suite depuis l'espace client, une fois le site en ligne. C'est la façon de grandir sur Google (elle remplace le Site Visibilité).
+  - 📈 **Page de visibilité Google, 10 € la page, payée une fois** (id `packseo`, à l'unité ou par 5 ou 10) : nouvelle page optimisée pour Google, intégrée au site, référencement local soigné. Commandée et payée par carte tout de suite depuis l'espace client, une fois le site en ligne. C'est la façon de grandir sur Google (elle remplace le Site Visibilité).
   - 🌍 **Traduction anglaise** : sur devis.
   - ⚙️ **Fonctionnalité spécifique** : sur devis.
   - Tous les anciens extras sont retirés de la vente (`retire: true`), y compris les extras au mois et les lots d'articles de la boutique.
@@ -157,7 +157,7 @@ Faites tout d'abord en **mode test** (clés `sk_test_` et webhook créé en mode
 
 ### 5.5 Comment Stripe facture une commande
 
-- **À la commande** : l'acompte de 25 % du site choisi (Site Essentiel, Site Visibilité ou Site Boutique), payé une fois. Les pages de visibilité Google (15 € la page) ne se prennent pas à la commande : le client les commande plus tard depuis son espace client et les paie par carte tout de suite (voir « Paiement direct par carte »).
+- **À la commande** : l'acompte de 25 % du site choisi (Site Essentiel, Site Visibilité ou Site Boutique), payé une fois. Les pages de visibilité Google (10 € la page) ne se prennent pas à la commande : le client les commande plus tard depuis son espace client et les paie par carte tout de suite (voir « Paiement direct par carte »).
 - **À la réception** : le reste, en une fois, ou en 6 ou 12 fois sans frais (prix divisé par 6 ou 12, arrondi au centime inférieur). Avec l'abonnement, tout est dans un seul abonnement Stripe : la ligne de l'abonnement au mois et, s'il y a lieu, la ligne des mensualités du site. En Autonomie (sans abonnement), l'abonnement ne porte que les mensualités, ou bien c'est un simple paiement si le reste est réglé en une fois.
 - **Fin du paiement en plusieurs fois** : l'extension compte les mensualités payées (« Lissage : 4 / 12 payées » dans la fiche et le tableau de bord). Après la dernière, la ligne des mensualités est retirée de l'abonnement : il ne reste que l'abonnement au mois, sans engagement. En Autonomie, l'abonnement entier s'arrête tout seul.
 - Les factures Stripe apparaissent dans l'espace client dès qu'elles sont payées.
@@ -203,7 +203,7 @@ Offre du 19 novembre 2026 : les modifications sont incluses dans le forfait Mini
 5. Délais, à compter de la confirmation : **48 h au plus**, une demande à la fois. L'extra « demande en 24 heures » et l'extra « Deux demandes à la fois » n'existent plus.
 6. Dans « Mon espace », onglet « À faire » : les demandes chez Alex, par échéance (orange à moins de 24 h, rouge en retard). Boutons « Je commence » puis « C'est fait, prévenir le client ». Un rappel part la veille de l'échéance, et un autre si elle est dépassée.
 7. Le client peut annuler tant qu'Alex n'a pas cliqué « Je commence » (Alex est prévenu si la demande était déjà chez lui). Une demande qui attend le client plus de 7 jours est annulée toute seule. Si Cerise n'a pas pu relire une demande sous 24 h, elle part chez Alex telle quelle.
-8. Pages de visibilité Google : le client commande une page (15 €, payée par carte), Mirette en prépare le sujet (titre, recherche visée, plan), puis la page est écrite et intégrée au site. Il n'y a plus de page automatique chaque mois ou chaque semaine.
+8. Pages de visibilité Google : le client commande une page (10 €, payée par carte), Mirette en prépare le sujet (titre, recherche visée, plan), puis la page est écrite et intégrée au site. Il n'y a plus de page automatique chaque mois ou chaque semaine.
 9. La recherche de prospects a été retirée du tableau de gestion.
 
 ## 10. Le parrainage (retiré du site public)
@@ -356,6 +356,13 @@ Dans la bulle de Cerise, sur toutes les pages du site, un visiteur peut poser un
 - **Hébergeur o2switch :** son pare-feu (Tiger Protect) peut ralentir ou demander une vérification si on enchaîne beaucoup d'actions ; la barre affiche alors un message clair (« réessayez dans quelques secondes » / « rechargez la page »).
 - **Aussi dans l'application :** « Mon compte » › le nom du site et sa phrase d'accroche (onglet du navigateur, Google) ; « Ma boutique » › « Mes prix » (prix, promo, en vente, en stock, pour tous les articles d'un coup).
 
+## Les pages de visibilité Google, faites automatiquement (21 novembre 2026)
+
+- **Prix :** 10 € la page, à l'unité ou en pack de 5 ou 10, payée par carte depuis l'espace client (onglet Extras).
+- **Ce qui se passe :** Mirette choisit un sujet par page (`includes/lumi.php`). L'atelier automatique (la tâche planifiée, toutes les deux heures de 7 h à 21 h) lit `GET /aled08/v1/atelier/pages-google`, écrit chaque page sur le site du client, la met en ligne, puis la déclare avec `POST /aled08/v1/atelier/page-google {demande, titre, lien}` (`includes/pages-google.php`).
+- **Quand toutes les pages d'une commande sont en ligne :** le client reçoit le joli e-mail « Vos pages Google sont en ligne » (la liste des pages avec leurs liens), et vous recevez un court e-mail. Rien à faire à la main.
+- **Règle :** rien d'inventé sur le client (prix, délais, zones, méthodes) ; le reste est du savoir général sur son métier.
+
 ## Ma boutique : le client gère tout (19 novembre 2026)
 
 Avec le Site Boutique (1 200 €), le client a un onglet « Ma boutique » (`includes/boutique.php`, `articles.php`, `boutique-gestion.php`) avec cinq rubriques :
@@ -370,7 +377,7 @@ Avec le Site Boutique (1 200 €), le client a un onglet « Ma boutique » (`inc
 
 ## Paiement direct par carte (19 novembre 2026)
 
-- **Page de visibilité Google** (15 € la page, le seul extra à prix fixe) : le client paie sur la page sécurisée de Stripe au moment de commander, depuis son espace client. La demande reste en brouillon jusqu'au paiement, puis elle part chez vous (e-mail « PAYÉ PAR CARTE »), et Cerise et Mirette prennent le relais. Rien n'est reporté sur une facture suivante. Code : `includes/paiement-direct.php`. Le paiement est confirmé au retour du client et par le webhook (événement `checkout.session.completed`, déjà branché), une seule fois.
+- **Page de visibilité Google** (10 € la page, le seul extra à prix fixe) : le client paie sur la page sécurisée de Stripe au moment de commander, depuis son espace client. La demande reste en brouillon jusqu'au paiement, puis elle part chez vous (e-mail « PAYÉ PAR CARTE »), et Cerise et Mirette prennent le relais. Rien n'est reporté sur une facture suivante. Code : `includes/paiement-direct.php`. Le paiement est confirmé au retour du client et par le webhook (événement `checkout.session.completed`, déjà branché), une seule fois.
 - **Traduction anglaise et fonctionnalité spécifique** : sur devis. Vous répondez au client avec un prix, il accepte avant le début du travail.
 - Il n'y a plus d'extra au mois.
 - Sans clés Stripe, l'ancien fonctionnement reste : vous recevez un e-mail « à facturer à la main ».
