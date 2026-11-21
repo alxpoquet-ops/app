@@ -56,6 +56,7 @@ function aled08e_atelier_action(WP_REST_Request $req) {
  *   POST /aled08/v1/atelier/chantier { commande, faire: question | note | a_verifier | en_ligne (+ accord_alex), texte, resume }
  *   « resume » : le contenu du site expliqué au client, repris dans l'e-mail « Votre site est en ligne ».
  *   « pages_total » : le nombre de pages du site ; « pages_google » : celles faites pour Google (Site Visibilité et Site Boutique). Tous deux annoncés dans ce même e-mail.
+ *   « articles » : le nombre d'articles mis dans la boutique (Site Boutique), annoncé aussi.
  *  États (_aled08_chantier) : '' (à lire), question (on attend le client), reponse (le client a répondu), visuel, a_verifier.
  * ========================================================================= */
 function aled08e_chantier_auto() { return get_option('aled08_chantier_auto', '1') === '1'; }
@@ -162,10 +163,13 @@ function aled08e_chantier_resume_garder($cid, $p) {
     if ($r !== '') update_post_meta($cid, '_aled08_resume', mb_substr($r, 0, 4000));
     if (isset($p['pages_google'])) update_post_meta($cid, '_aled08_pages_google', max(0, min(200, (int) $p['pages_google'])));
     if (isset($p['pages_total'])) update_post_meta($cid, '_aled08_pages_total', max(0, min(300, (int) $p['pages_total'])));
+    if (isset($p['articles'])) update_post_meta($cid, '_aled08_articles', max(0, min(5000, (int) $p['articles'])));
 }
 /* Le nombre de pages faites pour Google (Site Visibilité et Site Boutique) */
 function aled08e_chantier_pages_google($cid) { return (int) get_post_meta($cid, '_aled08_pages_google', true); }
 function aled08e_chantier_pages_total($cid) { return (int) get_post_meta($cid, '_aled08_pages_total', true); }
+/* Le nombre d'articles mis dans la boutique (Site Boutique) */
+function aled08e_chantier_articles($cid) { return (int) get_post_meta($cid, '_aled08_articles', true); }
 function aled08e_chantier_mail_verifier($c, $texte, $lien = '') {
     $site = $lien !== '' ? $lien : ($c['domaine'] ? 'https://' . $c['domaine'] . '/' : (string) aled08e_meta($c['user'], 'site'));
     $p = function ($t) { return '<p style="margin:0 0 14px;font-size:16px;line-height:1.6;color:#CFCBEA;">' . $t . '</p>'; };
@@ -273,7 +277,7 @@ function aled08e_jauge_html($cmd) {
 
 /* =========================================================================
  *  La commande d'essai : rejouer tout le parcours d'un client sans rien payer ni rien acheter.
- *  POST /aled08/v1/atelier/essai { faire: creer | etape | questionnaire | connexion | livraison (+ resume, pages_total, pages_google) | supprimer, … }
+ *  POST /aled08/v1/atelier/essai { faire: creer | etape | questionnaire | connexion | livraison (+ resume, pages_total, pages_google, articles) | supprimer, … }
  *  Le compte et la commande portent la marque « essai » : l'automate les ignore (pas de domaine acheté, pas d'hébergement).
  * ========================================================================= */
 add_action('rest_api_init', function () {

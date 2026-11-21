@@ -623,6 +623,7 @@ function aled08e_cmd_mail_client_en_ligne($c) {
     $boutique = $c['type'] === 'boutique';
     $google = in_array($c['type'], ['vitrine', 'boutique'], true) && function_exists('aled08e_chantier_pages_google') ? aled08e_chantier_pages_google($c['id']) : 0;
     $total = function_exists('aled08e_chantier_pages_total') ? aled08e_chantier_pages_total($c['id']) : 0;
+    $articles = $boutique && function_exists('aled08e_chantier_articles') ? aled08e_chantier_articles($c['id']) : 0;
     $res = function_exists('aled08e_chantier_resume') ? aled08e_chantier_resume($c['id']) : '';
     $espace = function_exists('aled08e_clic_lien') && $c['user'] ? aled08e_clic_lien((int) $c['user'], 14) : aled08e_url();
     $typeNom = (aled08e_type($c['type']) ?: [])['name'] ?? 'votre site';
@@ -649,8 +650,14 @@ function aled08e_cmd_mail_client_en_ligne($c) {
         $h .= aled08e_mail_carte('beurre',
             ($total > 0 ? '<p style="margin:6px 0 2px;font-size:15px;color:#4B4668;">Votre site compte</p><p style="margin:0 0 10px;font-size:40px;line-height:1;font-weight:bold;color:#2E2A47;">' . $total . ' <span style="font-size:18px;">pages</span></p>' : '')
             . ($google > 0 ? '<p style="margin:0 0 8px;font-size:17px;line-height:1.4;color:#2E2A47;">' . ($total > 0 ? 'dont ' : '') . '<b>' . $google . ' pages de visibilité Google</b></p>'
-                . '<p style="margin:0;font-size:15px;line-height:1.55;color:#4B4668;">Chacune parle d’un sujet précis, pour que Google vous montre aux personnes qui le cherchent.' . ($total > $google ? ' Les autres sont les pages principales de votre site : accueil, ' . ($boutique ? 'boutique, commande, ' : '') . 'contact…' : '') . ' Tout est détaillé juste en dessous.</p>' : ''),
+                . '<p style="margin:0;font-size:15px;line-height:1.55;color:#4B4668;">Ce sont autant de <b style="color:#2E2A47;">portes d’entrée sur votre site</b> : chacune parle d’un sujet précis, et Google peut la montrer aux personnes qui le cherchent.' . ($total > $google ? ' Les autres sont les pages principales : accueil, ' . ($boutique ? 'boutique, commande, ' : '') . 'contact…' : '') . ' Tout est détaillé juste en dessous.</p>' : ''),
             'etoile', aled08e_mail_etiquette('Votre site en chiffres', '#7A5600'));
+    }
+    if ($articles > 0) {
+        $h .= aled08e_mail_carte('rose',
+            '<p style="margin:6px 0 2px;font-size:15px;color:#4B4668;">Votre boutique compte</p><p style="margin:0 0 10px;font-size:40px;line-height:1;font-weight:bold;color:#2E2A47;">' . $articles . ' <span style="font-size:18px;">article' . ($articles > 1 ? 's' : '') . '</span></p>'
+            . '<p style="margin:0;font-size:15px;line-height:1.55;color:#4B4668;">Ajoutez-en autant que vous voulez, <b style="color:#2E2A47;">sans limite</b>, depuis votre application, rubrique « Ma boutique », puis « Mes articles ». Prix, photos, promos : tout se change de là.</p>',
+            'mochi', aled08e_mail_etiquette('Votre boutique', '#A3305F'));
     }
     if ($parties) {
         $li = '';
@@ -674,7 +681,8 @@ function aled08e_cmd_mail_client_en_ligne($c) {
 
     // la version texte, pour les messageries qui n'affichent pas le HTML
     $txt = 'Bonjour ' . $c['prenom'] . ",\n\nBonne nouvelle : votre site est en ligne !\n" . ($site ? 'Adresse : ' . $site . "\n" : '') . "\n"
-        . ($total > 0 ? 'Votre site compte ' . $total . ' pages' . ($google > 0 ? ', dont ' . $google . ' pages de visibilité Google' : '') . ".\n\n" : ($google > 0 ? 'Votre site compte ' . $google . " pages de visibilité Google.\n\n" : ''))
+        . ($total > 0 ? 'Votre site compte ' . $total . ' pages' . ($google > 0 ? ', dont ' . $google . ' pages de visibilité Google : autant de portes d’entrée sur votre site' : '') . ".\n\n" : ($google > 0 ? 'Votre site compte ' . $google . " pages de visibilité Google : autant de portes d’entrée sur votre site.\n\n" : ''))
+        . ($articles > 0 ? 'Votre boutique compte ' . $articles . ' article' . ($articles > 1 ? 's' : '') . ". Ajoutez-en autant que vous voulez, sans limite, depuis votre application (Ma boutique, puis Mes articles).\n\n" : '')
         . ($res !== '' ? "Ce que contient votre site :\n" . $res . "\n\n" : '')
         . "Tout se règle depuis votre application (votre espace client) :\n" . implode("\n", array_map(function ($r) { return '- ' . $r[1] . ' (' . $r[2] . ')'; }, $reglages)) . "\n" . aled08e_url() . "\n\n"
         . ($soldeDu ? 'Il reste ' . aled08e_euro_txt($solde) . ' pour la création : en une fois, ou ' . aled08e_fois_txt() . ". Votre forfait démarre à ce moment-là.\n\n" : '')
