@@ -38,7 +38,7 @@ function aled08e_bsite_faits() {
     $u = [];
     foreach (aled08e_a_la_demande() as $x) if ($x['id'] !== 'urgent') $u[] = $x['name'] . ' : ' . (!empty($x['devis']) ? 'sur devis' : aled08e_euro_txt($x['prix']) . ', payé une fois par carte');
     $f[] = 'Extras, depuis l’espace client : ' . implode(' ; ', $u) . '.';
-    $f[] = 'L’option e-commerce (+ 200 €) ajoute la boutique et ouvre l’onglet « Ma boutique » de l’espace client : le client y gère lui-même ses articles, ses prix, ses moyens de paiement (Stripe, PayPal) et ses commandes. Les pages de visibilité Google se prennent en plus, 15 € la page, depuis l’espace client. Le site est fait de modules déjà prêts et soignés, remplis avec les informations et les photos du client : c’est pour ça qu’il coûte moins cher et qu’il est prêt en quelques jours.';
+    $f[] = 'L’option e-commerce (+ 200 €) ajoute la boutique et ouvre l’onglet « Ma boutique » de l’espace client : le client y gère lui-même ses articles, ses prix, ses moyens de paiement (Stripe, PayPal) et ses commandes. Les pages de visibilité Google se prennent en plus, 15 € la page, depuis l’espace client. Le site est fait de modules déjà prêts et soignés, remplis avec les informations et les photos du client : c’est pour ça qu’il coûte moins cher et qu’il est prêt en quelques heures, une fois le contenu reçu. Cette base préconfigurée, c’est le code invisible du site : chaque site garde son propre style (couleurs, polices, photos, textes), et le client demande les modifications qu’il veut jusqu’à ce que le site lui plaise.';
     $f[] = 'Alex répond aux messages en général dans la journée. Pour lui écrire : page Contact.';
     return implode("\n", $f);
 }

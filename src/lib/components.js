@@ -331,10 +331,11 @@ function modulesSite({ titre = 'Comment est fait votre site', id = 'comment' } =
   <!--commun-->${presente('mochi', `<strong>Un site, chez nous, c’est un assemblage de modules.</strong> Ce sont nos minis monstres : Alex les a recréés et optimisés un par un, et chacun se modifie de son côté. ${esc(MOCHI)}, lui, adore quand chaque chose est à sa place.`, { humeur: 'ravi' })}
   <ul class="modules reveal">${modules.map((m) => `<li class="${m.option ? 'is-option' : ''}">${icon(m.icon)}<span><strong>${esc(m.nom)}</strong>${m.option ? `<em>Option ${esc(ECOMMERCE.name)}</em>` : ''}<small>${esc(m.d)}</small></span></li>`).join('')}</ul>
   ${steps([
-    { t: 'Les modules sont prêts', d: 'Chacun a été pensé, optimisé et soigné une fois pour toutes : rapide, lisible sur téléphone, compris par Google.' },
-    { t: 'On les remplit avec votre contenu', d: 'Vos informations, vos textes et vos photos. C’est pour cela que le prix reste petit et que votre site est prêt en quelques jours.' },
-    { t: 'Vous recevez votre première version', d: `Avec le forfait ${ABO.name}, vous la modifiez vous-même depuis votre espace client, avec le bouton « Modifier mon site moi-même » : un clic sur un texte ou une photo, et vous le changez en direct. Ou vous nous demandez de le faire.` },
-  ])}<!--/commun-->
+    { t: 'La base est préconfigurée', d: 'Chaque module a été pensé, optimisé et soigné une fois pour toutes : rapide, lisible sur téléphone, sécurisé, compris par Google.' },
+    { t: 'On la remplit avec votre contenu', d: `Vos informations, vos textes et vos photos. C’est pour cela que le prix reste petit et que votre site est prêt en ${ESSENTIEL.delai}, dès que nous avons tout reçu.` },
+    { t: 'On le met à votre goût', d: `Vous demandez les modifications que vous voulez, à volonté, jusqu’à ce qu’il vous ressemble. Avec le forfait ${ABO.name}, vous pouvez aussi changer un texte ou une photo vous-même, en direct, depuis votre espace client.` },
+  ])}
+  <div class="preconf reveal">${icon('sparkles')}<div><strong>Préconfiguré ne veut pas dire identique.</strong><p>Ce que nous préparons à l’avance, c’est le code invisible de votre site : tout ce qui travaille derrière vos textes et vos images pour qu’il soit rapide, sûr et bien vu de Google. Cette base solide, nous vous la fournissons. Il ne reste qu’à la façonner à votre univers : vos couleurs, vos polices, vos photos, vos mots. Chaque site garde ainsi sa propre personnalité.</p></div></div><!--/commun-->
 </div></section>`;
 }
 // Anciens noms, gardés pour les pages qui les appellent encore

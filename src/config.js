@@ -154,7 +154,7 @@ marche.fois = Math.round(marche.vitrineMin / creation.prix) + ' à ' + Math.roun
 // et les anciennes commandes les lisent : 'une-page' = le Site Essentiel (400 €), 'boutique' = le Site Essentiel + e-commerce (600 €),
 // 'vitrine' = l'ancien Site Visibilité (750 €), retiré (retire: true) : plus proposé nulle part, gardé pour les anciennes commandes.
 // Sur le site public, on montre une seule offre (typesOfferts[0]) et une case « E-commerce » qui passe la commande en 'boutique'.
-// delai : « quelques jours », sans promesse précise.
+// delai : « quelques heures » (décision d'Alex, 21 novembre 2026), à partir de la réception du contenu : la base du site est préconfigurée.
 const INCLUS_ESSENTIEL = ['Site internet personnalisé, assemblé à partir de nos modules', 'Rempli avec vos informations et vos photos', 'Design adapté à votre activité', 'Compatible téléphone et ordinateur', 'Formulaire de contact', 'Bases du référencement Google', 'Rendez-vous téléphonique de découverte', 'Révisions illimitées jusqu’à validation finale du site*', 'Mise en ligne complète', 'Modifiable par vous-même, avec le forfait Mini', 'Export du site possible'];
 // Ce que l'option e-commerce ajoute (ce qu'apportait le Site Boutique)
 const INCLUS_ECOMMERCE = ['Boutique en ligne complète', 'Vente de produits et services', 'Panier d’achat', 'Paiement en ligne sécurisé', 'E-mails de commande automatiques', 'Catalogue, prix et promotions gérés par vous', 'Livraison et moyens de paiement réglés par vous', 'Configuration complète de la boutique'];
@@ -170,7 +170,7 @@ const types = [
     monstre: 'bricou',
     vedette: true,
     price: creation.prix,
-    delai: 'quelques jours',
+    delai: 'quelques heures',
     pitch: 'Votre site professionnel, assemblé à partir de nos modules déjà prêts et rempli avec vos informations et vos photos.',
     qui: 'Pour exister sur internet, être joignable et présenter votre activité.',
     ideal: 'idéal pour être visible vite, à petit prix',
@@ -190,7 +190,7 @@ const types = [
     base: 'Site Essentiel',
     option: true, // le Site Essentiel avec la case « E-commerce » cochée
     info: 'Une boutique complète sur votre site : vos produits et vos services, un panier et le paiement en ligne sécurisé. Vous recevez un e-mail à chaque commande, et vous gérez votre catalogue, vos prix, vos promotions, la livraison et vos paiements vous-même, depuis votre espace client.',
-    delai: 'quelques jours',
+    delai: 'quelques heures',
     pitch: 'Le Site Essentiel avec une boutique : vos clients choisissent, paient en ligne sur votre site, et vous recevez la commande.',
     qui: 'Pour vendre vos produits et vos services sur internet.',
     ideal: 'idéal pour vendre, avec le paiement en ligne',

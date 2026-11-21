@@ -102,6 +102,12 @@ Un site est fait de parties qui reviennent presque toujours : l’accueil, la pr
 
 Pour votre site, nous assemblons ces modules et nous les remplissons avec vos informations et vos photos. Le travail de fond n’est pas à refaire à chaque fois : c’est ce qui garde le prix bas.
 
+## Une base commune, des sites tous différents
+
+La préconfiguration concerne la partie que vos visiteurs ne voient jamais : le code qui fait tourner le site en coulisses, sous vos textes et vos images. C’est lui qui rend chaque page rapide, sécurisée, agréable sur téléphone et lisible par Google. Nous vous le livrons prêt et éprouvé.
+
+Ce qui se voit, en revanche, est fait pour vous : l’ambiance, les couleurs, les polices, la mise en avant de vos photos, le ton de vos textes. Votre site est en ligne en quelques heures, puis nous l’ajustons à votre goût, avec des modifications à volonté. Le résultat ressemble à votre activité, pas à celle du voisin.
+
 ## Comment nous gagnons du temps
 
 D’un site à l’autre, beaucoup d’étapes se répètent. Nous les avons confiées à une petite bande de compagnons, les Minis Monstres.

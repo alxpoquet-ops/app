@@ -138,7 +138,7 @@ ${C.ctaBand({ title: 'On ouvre votre vitrine sur internet ?', text: 'Choisissez 
     path: '/',
     bodyClass: 'page-accueil',
     title: 'Un site internet pour être visible | Les Minis Monstres',
-    description: `Sans site internet, personne ne passe devant votre vitrine. Votre site, assemblé à partir de modules déjà prêts, dès ${euro(ESS.price)}, prêt en quelques jours.`,
+    description: `Sans site internet, personne ne passe devant votre vitrine. Votre site, assemblé à partir de modules déjà prêts, dès ${euro(ESS.price)}, prêt en quelques heures.`,
     crumbs: [HOME],
     body,
     priority: 1,
