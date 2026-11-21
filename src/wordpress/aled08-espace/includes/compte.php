@@ -16,6 +16,13 @@ add_action('template_redirect', function () {
     $P = wp_unslash($_POST);
     $quoi = sanitize_key($P['aled08e_compte']);
 
+    if ($quoi === 'apparence') {
+        $m = sanitize_key((string) ($P['apparence'] ?? 'auto'));
+        if (!in_array($m, ['auto', 'clair', 'sombre'], true)) $back('erreur');
+        update_user_meta($uid, 'aled08_apparence', $m);
+        $r = (aled08e_meta($uid, 'lia_url') !== '' && aled08e_meta($uid, 'lia_secret') !== '') ? aled08e_lia_appel($uid, 'apparence_regler', ['mode' => $m]) : null;
+        $back(is_wp_error($r) ? 'apparence_attente' : 'apparence_ok');
+    }
     if ($quoi === 'infos') {
         $prenom = sanitize_text_field((string) ($P['prenom'] ?? ''));
         $nom = sanitize_text_field((string) ($P['nom'] ?? ''));
@@ -67,6 +74,8 @@ function aled08e_panel_compte($u) {
     $mc = isset($_GET['mc']) ? sanitize_key(wp_unslash($_GET['mc'])) : '';
     $msgs = [
         'infos_ok' => ['esp-empty', 'C’est enregistré.'],
+        'apparence_ok' => ['esp-empty', 'C’est enregistré : votre site s’ouvre maintenant avec cette apparence.'],
+        'apparence_attente' => ['esp-warn', 'Votre choix est noté. Votre site ne répond pas pour le moment : on l’applique dès qu’il est disponible.'],
         'email_ok' => ['esp-empty', 'Votre adresse e-mail est à jour. Un message de confirmation part à l’ancienne adresse.'],
         'mdp_ok' => ['esp-empty', 'Mot de passe changé. Vos autres appareils sont déconnectés.'],
         'nom_vide' => ['esp-warn', 'Indiquez au moins un nom ou un nom d’entreprise.'],
@@ -99,6 +108,15 @@ function aled08e_panel_compte($u) {
     echo $champ('mc-email', 'Adresse e-mail', 'email', $u->user_email, 'email', 'email', ' required'); // phpcs:ignore
     echo $champ('mc-mdp1', 'Mot de passe actuel, pour confirmer', 'mdp_actuel', '', 'password', 'current-password', ' required'); // phpcs:ignore
     echo '<button class="btn btn-primary" type="submit">' . aled08e_icon('check') . '<span>Changer mon e-mail</span></button></form>'; // phpcs:ignore
+
+    $app = aled08e_meta($u->ID, 'apparence') ?: 'auto';
+    echo '<form class="form esp-form" method="post" action="' . $act . '"><input type="hidden" name="aled08e_compte" value="apparence">' . $nonce; // phpcs:ignore
+    echo '<p class="app-sub">' . aled08e_icon('sparkles') . ' L’apparence de mon site</p>'; // phpcs:ignore
+    echo '<p class="app-note">Votre site existe en version claire et en version sombre. Choisissez celle qui s’ouvre pour vos visiteurs.</p><div class="esp-apparence">';
+    foreach (['auto' => ['Automatique', 'Selon le réglage du téléphone de chaque visiteur'], 'clair' => ['Toujours clair', 'Fond clair pour tout le monde'], 'sombre' => ['Toujours sombre', 'Fond sombre pour tout le monde']] as $k => $l) {
+        echo '<label class="esp-reste"><input type="radio" name="apparence" value="' . $k . '"' . checked($app, $k, false) . '><span><strong>' . esc_html($l[0]) . '</strong><small>' . esc_html($l[1]) . '</small></span></label>';
+    }
+    echo '</div><button class="btn btn-primary" type="submit">' . aled08e_icon('check') . '<span>Enregistrer</span></button></form>'; // phpcs:ignore
 
     echo '<form class="form esp-form" method="post" action="' . $act . '"><input type="hidden" name="aled08e_compte" value="mdp">' . $nonce; // phpcs:ignore
     echo '<p class="app-sub">' . aled08e_icon('lock') . ' Mon mot de passe</p>'; // phpcs:ignore

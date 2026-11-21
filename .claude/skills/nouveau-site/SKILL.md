@@ -64,6 +64,11 @@ Tu n'as plus besoin qu'Alex relie chaque site à Claude. Dès que le site est in
 
 Le branchement Easy MCP AI reste possible en secours, si Alex le demande.
 
+## 6 bis. Deux règles pour tout visuel (21 novembre 2026)
+
+- **Rien d'inventé.** Le site ne contient que ce que le client a donné dans le questionnaire et dans ses réponses : pas de service, d'horaire, de délai, de produit, de parfum, de promesse ou de formule qu'il n'a pas dits. S'il manque quelque chose, on pose la question ; sinon on écrit « bientôt » ou on retire la partie.
+- **Clair et sombre.** Chaque visuel existe dans les deux apparences : couleurs en variables, un jeu clair et un jeu sombre, appliqués selon `prefers-color-scheme` et selon `data-theme="light"` ou `data-theme="dark"` posé sur `<html>`. Le client choisit l'apparence d'ouverture dans son espace (Mon compte › L'apparence de mon site) ; le connecteur pose alors `data-theme`.
+
 ## 6. Le visuel
 
 Par l'atelier, c'est ton travail :
