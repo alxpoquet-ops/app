@@ -19,7 +19,7 @@ $fcb_cats = get_terms( array( 'taxonomy' => 'product_cat', 'hide_empty' => true,
         <a href="<?php echo esc_url( get_term_link( $c ) ); ?>"><?php echo esc_html( $c->name ); ?></a>
         <?php endforeach; endif; ?>
         <a href="<?php echo fcb_url( '/livraison-fleurs-signy-l-abbaye/' ); ?>">Livraison &amp; retrait</a>
-        <a href="<?php echo fcb_url( '/#faq' ); ?>">Questions fréquentes</a>
+        <a href="<?php echo fcb_url( '/questions-frequentes/' ); ?>">Questions fréquentes</a>
       </nav>
       <nav class="footer-nav" aria-label="Bon à savoir">
         <h3>Bon à savoir</h3>

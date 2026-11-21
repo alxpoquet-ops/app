@@ -7,6 +7,7 @@ $fcb_liens = array(
 	array( 'fleurs', fcb_url( '/fleurs/' ), 'Les fleurs', 'i-stem', '#E2F1E7' ),
 	array( 'occasions', fcb_url( '/occasions/' ), 'Occasions', 'i-gift', '#FBEBDD' ),
 	array( 'conseils', fcb_url( '/conseils/' ), 'Conseils', 'i-leaf', '#E3EDF8' ),
+	array( 'questions', fcb_url( '/questions-frequentes/' ), 'Vos questions', 'i-chat', '#F8E1E6' ),
 	array( 'contact', fcb_url( '/#contact' ), 'Contact', 'i-mail', '#F8F0D6' ),
 );
 ?>

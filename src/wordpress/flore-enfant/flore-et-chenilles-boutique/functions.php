@@ -41,6 +41,9 @@ function fcb_rubrique() {
 			if ( in_array( $slug, array( 'fleurs', 'occasions', 'conseils' ), true ) ) {
 				return $slug;
 			}
+			if ( 'questions-frequentes' === $slug ) {
+				return 'questions';
+			}
 			if ( in_array( $slug, array( 'lexique', 'guide' ), true ) ) {
 				return 'conseils';
 			}
@@ -95,4 +98,21 @@ add_action(
 		echo '</div>';
 	},
 	5
+);
+
+/* L'accueil allégé : un lien vers la page complète sous l'aperçu des créations et des occasions. */
+add_action(
+	'wp_footer',
+	function () {
+		if ( ! is_front_page() ) {
+			return;
+		}
+		$liens = array(
+			array( '#boutique .product-grid', fcb_boutique_url(), 'Voir toute la boutique' ),
+			array( '#occasions .occasion-grid', fcb_url( '/occasions/' ), 'Toutes les occasions' ),
+		);
+		$js = '(function(){var L=' . wp_json_encode( $liens ) . ';L.forEach(function(l){var g=document.querySelector(l[0]);if(!g||g.parentNode.querySelector(".fcb-suite"))return;var d=document.createElement("div");d.className="fcb-suite";d.innerHTML=\'<a class="btn btn-primary" href="\'+l[1]+\'">\'+l[2]+\' <svg><use href="#i-arrow"/></svg></a>\';g.parentNode.insertBefore(d,g.nextSibling);});})();';
+		echo '<script>' . $js . '</script>' . "\n"; // phpcs:ignore
+	},
+	99
 );

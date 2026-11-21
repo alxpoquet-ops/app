@@ -3,7 +3,7 @@ Theme Name: Flore & Chenilles · Boutique
 Template: flore-et-chenilles
 Description: Thème enfant de Flore & Chenilles : un vrai site boutique, avec un menu vers les pages (boutique, fleurs, occasions, conseils), un menu téléphone illustré, un pied de page complet et l’en-tête de la boutique avec ses catégories. Le thème parent reste intact.
 Author: Les Minis Monstres
-Version: 1.0.0
+Version: 1.1.0
 Text Domain: flore-et-chenilles-boutique
 */
 
@@ -54,3 +54,33 @@ Text Domain: flore-et-chenilles-boutique
 .fcb-rassure { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 18px 0 0; padding: 0; list-style: none; font-size: .9rem; color: var(--plum-2); }
 .fcb-rassure li { display: inline-flex; align-items: center; gap: 6px; }
 .fcb-rassure svg { width: 17px; height: 17px; fill: none; stroke: var(--rose-ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- L'accueil allégé : le détail vit maintenant dans les pages ----------
+   (masqué plutôt que retiré : le script de l'accueil garde tous ses repères) */
+.home .marquee-wrap,
+.home #livraison,
+.home #instagram,
+.home #faq,
+.home #boutique .shop-tools,
+.home #boutique [data-shop-more],
+.home #boutique .shop-more,
+.home #boutique .why-price { display: none !important; }
+.home #boutique .product-grid > :nth-child(n+7) { display: none !important; }
+.home #occasions .occasion-grid > :nth-child(n+7) { display: none !important; }
+.home .about .values { display: none; }
+.fcb-suite { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 30px 0 0; }
+
+/* ---------- La page « Questions fréquentes » ---------- */
+.fcb-faq { display: grid; gap: 12px; }
+.fcb-q { background: #fff; border-radius: 22px; box-shadow: 0 0 0 1.5px var(--line) inset; transition: box-shadow .3s; }
+.fcb-q[open] { box-shadow: var(--shadow); }
+.fcb-q summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 18px 20px; font-family: var(--serif); font-size: 1.15rem; color: var(--plum); }
+.fcb-q summary::-webkit-details-marker { display: none; }
+.fcb-q summary span { position: relative; width: 30px; height: 30px; flex: none; border-radius: 50%; background: var(--blush); transition: transform .3s, background-color .3s; }
+.fcb-q summary span::before, .fcb-q summary span::after { content: ''; position: absolute; left: 50%; top: 50%; width: 12px; height: 1.6px; margin: -.8px 0 0 -6px; background: var(--plum); border-radius: 2px; }
+.fcb-q summary span::after { transform: rotate(90deg); transition: transform .3s; }
+.fcb-q[open] summary span { background: var(--lilac); transform: rotate(180deg); }
+.fcb-q[open] summary span::after { transform: rotate(0); }
+.fcb-r { padding: 0 20px 18px; color: var(--plum-2); }
+.fcb-r p { margin: 0 0 10px; }
+.fcb-r a { color: var(--rose-ink); }
