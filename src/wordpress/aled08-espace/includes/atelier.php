@@ -132,7 +132,10 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
         if ($c['user']) update_user_meta($c['user'], 'aled08_visuel_fait', wp_date('Y-m-d'));
         if ($c['statut'] === 'pret') aled08e_cmd_set_statut($cid, 'en_creation', 'Visuel fait par l’atelier, à vérifier.');
         aled08e_cmd_journal($cid, 'Atelier : site prêt à vérifier.');
-        aled08e_chantier_mail_verifier($c, $texte);
+        $lien = esc_url_raw((string) ($p['lien'] ?? ''));
+        if ($lien !== '' && wp_parse_url($lien, PHP_URL_SCHEME) !== 'https') $lien = '';
+        if ($lien !== '') update_post_meta($cid, '_aled08_apercu', $lien);
+        aled08e_chantier_mail_verifier($c, $texte, $lien);
         return new WP_REST_Response(['ok' => true, 'etat' => 'a_verifier'], 200);
     }
     if ($faire === 'en_ligne') {
@@ -148,8 +151,8 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
 
 /* L'e-mail à Alex, le seul du parcours : le site à regarder, puis la réponse se donne dans la conversation avec Claude */
 function aled08e_chantier_conversation() { return (string) get_option('aled08_atelier_conversation', 'https://claude.ai/code') ?: 'https://claude.ai/code'; }
-function aled08e_chantier_mail_verifier($c, $texte) {
-    $site = $c['domaine'] ? 'https://' . $c['domaine'] . '/' : (string) aled08e_meta($c['user'], 'site');
+function aled08e_chantier_mail_verifier($c, $texte, $lien = '') {
+    $site = $lien !== '' ? $lien : ($c['domaine'] ? 'https://' . $c['domaine'] . '/' : (string) aled08e_meta($c['user'], 'site'));
     $p = function ($t) { return '<p style="margin:0 0 14px;font-size:16px;line-height:1.6;color:#CFCBEA;">' . $t . '</p>'; };
     $h = '<h1 style="margin:0 0 14px;font-size:24px;line-height:1.25;color:#FFFFFF;">Un site est prêt à vérifier</h1>'
         . $p('Le site de <b style="color:#FFFFFF;">' . esc_html(aled08e_cmd_nom($c)) . '</b> (' . esc_html($c['ref']) . ') est prêt. Il ne reste qu’à le regarder.')
@@ -268,14 +271,16 @@ function aled08e_essai_faire(WP_REST_Request $req) {
         $ex = get_user_by('email', $email);
         if ($ex && get_user_meta($ex->ID, 'aled08_essai', true) !== '1') return new WP_Error('aled08_essai', 'Cette adresse est déjà celle d’un vrai compte.', ['status' => 409]);
         $cfg = ['type' => in_array(($p['type'] ?? ''), ['une-page', 'vitrine', 'boutique'], true) ? $p['type'] : 'vitrine', 'forfait' => 'base', 'periode' => 'mois', 'lissage' => 0, 'options' => [], 'pages_plus' => 0,
-            'domaine' => 'essai-minis-monstres.fr', 'domaine_mien' => true, 'parrain' => '', 'code_evenement' => '', 'remise' => 0];
-        $c = ['prenom' => 'Camille', 'nom' => 'Essai', 'entreprise' => 'La Boulangerie d’Essai', 'adresse' => '1 rue de l’Essai', 'code_postal' => '08000', 'ville' => 'Charleville-Mézières', 'telephone' => '0600000000', 'email' => $email];
+            'domaine' => aled08e_cmd_nettoyer_domaine((string) ($p['domaine'] ?? '')) ?: 'essai-minis-monstres.fr', 'domaine_mien' => true, 'parrain' => '', 'code_evenement' => '', 'remise' => 0];
+        $t = function ($k, $def) use ($p) { $v = sanitize_text_field((string) ($p[$k] ?? '')); return $v !== '' ? $v : $def; };
+        $c = ['prenom' => $t('prenom', 'Camille'), 'nom' => $t('nom', 'Essai'), 'entreprise' => $t('entreprise', 'La Boulangerie d’Essai'), 'adresse' => $t('adresse', '1 rue de l’Essai'),
+            'code_postal' => $t('code_postal', '08000'), 'ville' => $t('ville', 'Charleville-Mézières'), 'telephone' => '0600000000', 'email' => $email];
         $compte = aled08e_compte_pour_commande($c + $cfg);
         if (is_wp_error($compte)) return $compte;
         $uid = (int) $compte['id'];
         update_user_meta($uid, 'aled08_essai', '1');
         $type = aled08e_type($cfg['type']);
-        $pid = wp_insert_post(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'private', 'post_author' => $uid, 'post_title' => 'ESSAI : Camille Essai (' . $type['label'] . ')', 'comment_status' => 'closed', 'ping_status' => 'closed'], true);
+        $pid = wp_insert_post(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'private', 'post_author' => $uid, 'post_title' => 'ESSAI : ' . $c['prenom'] . ' ' . $c['nom'] . ' (' . $type['label'] . ')', 'comment_status' => 'closed', 'ping_status' => 'closed'], true);
         if (is_wp_error($pid)) return $pid;
         $metas = ['ref' => 'ESSAI-' . $pid, 'essai' => 1, 'type' => $cfg['type'], 'forfait' => 'base', 'periode' => 'mois', 'lissage' => 0, 'options' => [], 'pages_plus' => 0, 'domaine' => $cfg['domaine'], 'domaine_mien' => 1, 'domaine_statut' => 'client',
             'statut' => 'attente_paiement', 'montants' => aled08e_cmd_montants($cfg), 'message' => '', 'parrain' => '', 'user' => $uid, 'code_evenement' => '', 'remise' => 0,
@@ -303,7 +308,8 @@ function aled08e_essai_faire(WP_REST_Request $req) {
         return new WP_REST_Response(['ok' => true, 'statut' => $st], 200);
     }
     if ($faire === 'questionnaire') {
-        update_post_meta($cid, '_aled08_brief', ['nom_site' => 'La Boulangerie d’Essai', 'activite' => 'Boulangerie artisanale : pains au levain, viennoiseries pur beurre et pâtisseries du week-end.', 'slogan' => 'Le bon pain, tout simplement',
+        if (!empty($p['reponses']) && is_array($p['reponses'])) update_post_meta($cid, '_aled08_brief', map_deep($p['reponses'], 'sanitize_textarea_field'));
+        else update_post_meta($cid, '_aled08_brief', ['nom_site' => 'La Boulangerie d’Essai', 'activite' => 'Boulangerie artisanale : pains au levain, viennoiseries pur beurre et pâtisseries du week-end.', 'slogan' => 'Le bon pain, tout simplement',
             'zone' => 'Charleville-Mézières', 'couleurs' => ['Beige et tons naturels'], 'ambiance' => ['Chaleureux'], 'textes' => 'Écrivez-les pour moi à partir de mes réponses', 'raison_sociale' => 'La Boulangerie d’Essai']);
         delete_post_meta($cid, '_aled08_brief_brouillon');
         update_post_meta($cid, '_aled08_brief_le', current_time('mysql'));
