@@ -39,7 +39,11 @@ process.stdout.write(
     forfaitsAnciens: (cfg.forfaitsAnciens || []).map((f) => ({ id: f.id, name: f.name, month: f.month, quota: f.quota || QUOTA[f.id] || 1, periode: f.periode || 'mois', jetons: f.jetons === undefined ? 1 : f.jetons, partage: !!f.partage, modifs: f.modifs, color: f.color, tagline: f.tagline, illimite: !!f.illimite, priorite: !!f.priorite, delai: f.delai || '', pageSeoSemaine: !!f.pageSeoSemaine, delaiMoyen: !!f.delaiMoyen, delaiTexte: f.delaiTexte || '', demandesMax: f.demandesMax || 1, pageSeo: f.pageSeo || (f.pageSeoSemaine ? 'semaine' : ''), optimisation: !!f.optimisation, main: f.main || [] })),
     extrasGroupes: cfg.extrasGroupes || [],
     optimisation: cfg.optimisation || null,
-    types: types.map((t) => ({ id: t.id, name: t.name, label: t.label, price: t.price, delai: t.delai, but: t.but || '', inclus: t.inclus || [] })),
+    // 21 novembre 2026 : une seule offre (Site Essentiel 400 €, option e-commerce + 200 € = type 'boutique'). Le Site Visibilité
+    // ('vitrine') est gardé pour les anciennes commandes, avec retire: true : l'extension ne doit plus le proposer.
+    types: types.map((t) => ({ id: t.id, name: t.name, label: t.label, price: t.price, delai: t.delai, but: t.but || '', inclus: t.inclus || [], retire: !!t.retire })),
+    // l'option e-commerce, cochée sous le Site Essentiel (son prix : creation.ecommerce)
+    ecommerce: cfg.offreSite ? { name: cfg.offreSite.option.name, prix: cfg.offreSite.option.prix, inclus: cfg.offreSite.option.inclus } : null,
     // quand : 'creation' (payée une fois, à la commande) ou 'mois' (extra de l'abonnement, à ajouter ou retirer)
     // retire : option ou extra qui n'est plus proposé (offre du 17 novembre 2026), gardé pour les clients qui l'ont déjà
     options: options.map((o) => ({ id: o.id, name: o.name, month: o.price.month || 0, once: o.price.once || 0, types: o.types || [], quand: o.quand || (o.price.month ? 'mois' : 'creation'), icon: o.icon || 'check', desc: o.desc || '', info: o.info || '', retire: !!o.retire, group: o.group || '', court: o.court || '', badge: o.badge || '' })),
@@ -47,7 +51,7 @@ process.stdout.write(
     evenement: cfg.evenement || { remise: 20 },
     // création seule : le client a son hébergement, il reçoit le code de son site (pas de formule, pas d'hébergement chez nous)
     creationSeule: cfg.creationSeule ? { id: cfg.creationSeule.id, name: cfg.creationSeule.name, month: 0, quota: 0, periode: 'mois', jetons: 0, illimite: false, delai: '', main: cfg.creationSeule.main, seule: true } : null,
-    creation: cfg.creation || { prix: 500, boutique: 200 },
+    creation: cfg.creation || { prix: 400, ecommerce: 200, boutique: 200 },
     // le nom de domaine fourni par nous : supplément par mois sur le forfait (0 : compris)
     domainePrix: forfaits[0].domaine || 0,
     moisOfferts: annuel.moisOfferts,

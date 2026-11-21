@@ -1,6 +1,6 @@
 // ============================================================================
 //  Les Minis Monstres : configuration centrale du site (identité, rubriques, l'offre unique :
-//  création à 500 €, abonnement à 10 € par mois, options et extras, Jetons Cerise,
+//  le Site Essentiel à 400 €, option e-commerce + 200 €, abonnement à 10 € par mois, options et extras, Jetons Cerise,
 //  fidélité, paiement). Tous les prix du site viennent d'ici : le configurateur, la page
 //  /commander/, les données structurées et l'extension WordPress (data.json)
 //  se mettent à jour au prochain build.
@@ -96,10 +96,21 @@ const sections = {
 // 18 novembre 2026 : le site compte 5 pages (plus 15). La boutique donne 5 emplacements d'articles (boutiqueProduits) que le client remplit lui-même
 // (photo, description, prix) dans son espace client ; chaque emplacement en plus coûte boutiqueSlot € une fois, débloqué pour toujours.
 // OFFRE FINALE (19 novembre 2026) : trois sites, trois prix. Site Essentiel (une page) 500 €, Site Visibilité (jusqu'à 15 pages, ramené de 20 à 15 le 21 novembre 2026) 750 €,
-// Site Boutique 1 200 €. Les prix sont dans `types` (plus bas) ; `creation` garde les repères communs : prix = le premier prix,
-// pages = pages du Site Visibilité, visibilite et boutiquePrix = les deux autres prix. La boutique n'a plus d'emplacements comptés
-// (boutiqueProduits et boutiqueSlot à 0 : le client gère son catalogue librement). boutique = écart Boutique / Visibilité (anciennes commandes).
-const creation = { prix: 500, visibilite: 750, boutiquePrix: 1200, pages: 15, pagePlus: 10, pagesPlusMax: 0, boutique: 450, boutiqueProduits: 0, boutiqueSlot: 0, exemplePages: 5 };
+// Site Boutique 1 200 €. (Remplacée le 21 novembre 2026, voir juste en dessous.)
+// UNE SEULE OFFRE (21 novembre 2026) : le Site Essentiel, 400 €, payé une fois. Dessous, une case « E-commerce : + 200 € »
+// (600 € avec la boutique) : la boutique, les produits et services, le panier, le paiement en ligne sécurisé, les e-mails de
+// commande, le catalogue, les prix, les promos, la livraison et les paiements gérés par le client depuis son espace client.
+// Le Site Visibilité disparaît de l'offre : les pages pour Google sont l'extra « Page de visibilité Google » (packseo, 15 € la page,
+// packs 1, 5 ou 10), commandé depuis l'espace client une fois le site en ligne.
+// Pourquoi ce prix : Alex a recréé et optimisé les « minis monstres », les modules dont un site est fait (accueil, présentation,
+// services et tarifs, galerie, questions fréquentes, contact, boutique). Chaque module a été soigné une fois et se modifie à part ;
+// un site s'assemble avec ces modules, rempli avec les informations et les photos du client. « Le cerveau est prêt : il ne
+// manque que votre contenu. » Le client reçoit une première version (V1), qu'il modifie lui-même (bouton « Modifier mon site
+// moi-même » de l'espace client) ou qu'il nous demande de modifier.
+// prix : le Site Essentiel. ecommerce : l'option e-commerce (boutique : le même écart, nom gardé pour l'extension et les anciennes
+// commandes). visibilite, boutiquePrix, pages et exemplePages sont retirés (plus aucune page ne les lit). pagePlus, pagesPlusMax,
+// boutiqueProduits et boutiqueSlot restent : l'extension WordPress les lit (data.json).
+const creation = { prix: 400, ecommerce: 200, boutique: 200, pagePlus: 10, pagesPlusMax: 0, boutiqueProduits: 0, boutiqueSlot: 0 };
 // Offre événement : un code donné sur une foire, un marché, un salon ou un événement professionnel.
 // remise : en %, sur la création du site (site et options payés une fois). Les codes valables se règlent dans
 // l'extension WordPress (Réglages, « Codes événement ») : le serveur vérifie le code et recalcule le prix.
@@ -134,30 +145,62 @@ const marche = {
   ],
 };
 // le nombre de fois : le prix bas et le prix haut de l'indépendant, divisés par notre prix (arrondis), donc « 3 à 6 » aujourd'hui
-marche.fois = Math.round(marche.vitrineMin / creation.visibilite) + ' à ' + Math.round(marche.vitrineMax / creation.visibilite); // comparé au Site Visibilité (plusieurs pages), le site comparable
+// 21 novembre 2026 : comparé au Site Essentiel (400 €), le seul site de l'offre.
+marche.fois = Math.round(marche.vitrineMin / creation.prix) + ' à ' + Math.round(marche.vitrineMax / creation.prix);
 // entretien : calculé plus bas, une fois le prix de l'abonnement connu (marche.entretienFois)
 
-// ---------------------------------------------------------------- types de site (même prix, sauf la boutique)
+// ---------------------------------------------------------------- types de site
+// 21 novembre 2026 : un seul site (le Site Essentiel), avec ou sans l'option e-commerce. Les ids restent, car l'extension WordPress
+// et les anciennes commandes les lisent : 'une-page' = le Site Essentiel (400 €), 'boutique' = le Site Essentiel + e-commerce (600 €),
+// 'vitrine' = l'ancien Site Visibilité (750 €), retiré (retire: true) : plus proposé nulle part, gardé pour les anciennes commandes.
+// Sur le site public, on montre une seule offre (typesOfferts[0]) et une case « E-commerce » qui passe la commande en 'boutique'.
+// delai : « quelques jours », sans promesse précise.
+const INCLUS_ESSENTIEL = ['Site internet personnalisé, assemblé à partir de nos modules', 'Rempli avec vos informations et vos photos', 'Design adapté à votre activité', 'Compatible téléphone et ordinateur', 'Formulaire de contact', 'Bases du référencement Google', 'Rendez-vous téléphonique de découverte', 'Révisions illimitées jusqu’à validation finale du site*', 'Mise en ligne complète', 'Modifiable par vous-même depuis votre espace client', 'Export du site possible'];
+// Ce que l'option e-commerce ajoute (ce qu'apportait le Site Boutique)
+const INCLUS_ECOMMERCE = ['Boutique en ligne complète', 'Vente de produits et services', 'Panier d’achat', 'Paiement en ligne sécurisé', 'E-mails de commande automatiques', 'Catalogue, prix et promotions gérés par vous', 'Livraison et moyens de paiement réglés par vous', 'Configuration complète de la boutique'];
 const types = [
   {
     id: 'une-page',
     name: 'Site Essentiel',
     label: 'Site Essentiel',
     emoji: '👾',
-    but: 'Exister sur internet',
+    but: 'Être visible sur internet',
     color: 'sky',
     icon: 'layout-template',
     monstre: 'bricou',
+    vedette: true,
     price: creation.prix,
-    delai: '3 à 5 jours',
-    pitch: 'Un site d’une seule page, à votre image : qui vous êtes, ce que vous faites, comment vous joindre.',
-    qui: 'Pour exister sur internet et être joignable.',
-    ideal: 'idéal pour démarrer, une carte de visite sur internet',
-    pourQui: 'Pour vous si vous démarrez, ou si votre activité se présente en quelques lignes. Par exemple : artisan, indépendant, association, événement.',
-    inclus: ['Site internet One Page personnalisé', 'Design adapté à votre activité', 'Compatible téléphone et ordinateur', 'Révisions illimitées jusqu’à validation finale du site*', 'Mise en ligne complète', 'Formulaire de contact', 'Rendez-vous téléphonique de découverte', 'Export du site possible'],
+    delai: 'quelques jours',
+    pitch: 'Votre site professionnel, assemblé à partir de nos modules déjà prêts et rempli avec vos informations et vos photos.',
+    qui: 'Pour exister sur internet, être joignable et présenter votre activité.',
+    ideal: 'idéal pour être visible vite, à petit prix',
+    pourQui: 'Pour toute activité qui veut un site clair, rapide et à son image : artisan, commerçant, indépendant, association, profession libérale.',
+    inclus: INCLUS_ESSENTIEL,
   },
   {
+    id: 'boutique',
+    name: 'Site Essentiel + e-commerce',
+    label: 'Site Essentiel + e-commerce',
+    emoji: '🛒',
+    but: 'Vendre sur internet',
+    color: 'pink',
+    icon: 'shopping-bag',
+    monstre: 'mochi',
+    price: creation.prix + creation.ecommerce,
+    base: 'Site Essentiel',
+    option: true, // le Site Essentiel avec la case « E-commerce » cochée
+    info: 'Une boutique complète sur votre site : vos produits et vos services, un panier et le paiement en ligne sécurisé. Vous recevez un e-mail à chaque commande, et vous gérez votre catalogue, vos prix, vos promotions, la livraison et vos paiements vous-même, depuis votre espace client.',
+    delai: 'quelques jours',
+    pitch: 'Le Site Essentiel avec une boutique : vos clients choisissent, paient en ligne sur votre site, et vous recevez la commande.',
+    qui: 'Pour vendre vos produits et vos services sur internet.',
+    ideal: 'idéal pour vendre, avec le paiement en ligne',
+    pourQui: 'Pour vous si vous voulez vendre vos produits ou vos services en ligne, même quand votre boutique est fermée. Par exemple : créateur, commerçant, producteur.',
+    inclus: ['Tout le Site Essentiel', ...INCLUS_ECOMMERCE, 'Export du site possible'],
+  },
+  {
+    // RETIRÉ le 21 novembre 2026 : plus proposé. Gardé pour les anciennes commandes (l'extension le lit encore).
     id: 'vitrine',
+    retire: true,
     name: 'Site Visibilité',
     label: 'Site Visibilité',
     emoji: '🚀',
@@ -165,35 +208,34 @@ const types = [
     color: 'butter',
     icon: 'search-check',
     monstre: 'gelee',
-    vedette: true,
-    price: creation.visibilite,
+    price: 750,
     delai: '1 à 2 semaines',
     base: 'Site Essentiel',
-    pitch: `Jusqu’à ${creation.pages} pages, pensées pour que Google comprenne votre activité et vous montre près de chez vous.`,
+    pitch: 'Jusqu’à 15 pages, pensées pour que Google comprenne votre activité et vous montre près de chez vous.',
     qui: 'Pour être trouvé sur Google par les clients de votre secteur.',
     ideal: 'idéal pour être trouvé sur Google, avec une page par sujet',
-    pourQui: 'Pour vous si vous proposez plusieurs services, ou si vous voulez être trouvé sur Google. Chaque page parle d’un sujet précis, et Google peut montrer chacune dans ses résultats. Par exemple : entreprise, commerce, profession libérale.',
-    inclus: ['Tout le contenu du Site Essentiel', `Jusqu’à ${creation.pages} pages`, 'Pages de visibilité Google intégrées', 'Référencement local renforcé', 'Structure optimisée pour Google', 'FAQ personnalisée', 'Export du site possible'],
+    pourQui: 'Pour vous si vous proposez plusieurs services, ou si vous voulez être trouvé sur Google.',
+    inclus: ['Tout le contenu du Site Essentiel', 'Jusqu’à 15 pages', 'Pages de visibilité Google intégrées', 'Référencement local renforcé', 'Structure optimisée pour Google', 'FAQ personnalisée', 'Export du site possible'],
   },
-  {
-    id: 'boutique',
-    name: 'Site Boutique',
-    label: 'Site Boutique',
-    emoji: '🛒',
-    but: 'Vendre sur internet',
-    color: 'pink',
-    icon: 'shopping-bag',
-    monstre: 'mochi',
-    price: creation.boutiquePrix,
-    base: 'Site Visibilité',
-    info: 'Une boutique complète sur votre site : vos produits et vos services, un panier et le paiement en ligne sécurisé. Vous recevez un e-mail à chaque commande et vous gérez votre catalogue vous-même, depuis votre espace client.',
-    delai: '2 à 3 semaines',
-    pitch: 'Un magasin sur internet : vos clients choisissent, paient en ligne sur votre site, et vous recevez la commande.',
-    qui: 'Pour vendre vos produits et vos services sur internet.',
-    ideal: 'idéal pour vendre, avec le paiement en ligne',
-    pourQui: 'Pour vous si vous voulez vendre vos produits ou vos services en ligne, même quand votre boutique est fermée. Par exemple : créateur, commerçant, producteur.',
-    inclus: ['Tout le contenu du Site Visibilité', 'Boutique en ligne complète', 'Paiement en ligne sécurisé', 'Vente de produits et services', 'Gestion autonome du catalogue', 'Panier d’achat', 'Gestion des commandes', 'Gestion des produits', 'E-mails automatiques clients', 'Configuration complète de la boutique', 'Export du site possible'],
-  },
+];
+// Les sites proposés aujourd'hui (sans les retirés) : le Site Essentiel, et le Site Essentiel + e-commerce.
+const typesOfferts = types.filter((t) => !t.retire);
+// L'offre, en un objet : le site, l'option e-commerce et ce qu'elle ajoute. Lu par les composants, les pages et les contenus.
+const offreSite = {
+  site: types[0],
+  avecBoutique: types[1],
+  option: { id: 'ecommerce', name: 'E-commerce', prix: creation.ecommerce, icon: 'shopping-bag', inclus: INCLUS_ECOMMERCE, court: 'La boutique en ligne : produits et services, panier, paiement sécurisé, e-mails de commande.' },
+};
+// Les modules dont un site est fait (« Comment est fait votre site ») : recréés et optimisés une fois, modifiables chacun de leur côté.
+// option : n'arrive qu'avec l'option e-commerce.
+const modules = [
+  { id: 'accueil', nom: 'Accueil', icon: 'house', d: 'Votre nom, ce que vous faites, et un bouton pour vous joindre.' },
+  { id: 'presentation', nom: 'Présentation', icon: 'user', d: 'Qui vous êtes, votre histoire, votre façon de travailler.' },
+  { id: 'services', nom: 'Services et tarifs', icon: 'tag', d: 'Ce que vous proposez, avec vos prix si vous le souhaitez.' },
+  { id: 'galerie', nom: 'Galerie', icon: 'image', d: 'Vos photos : vos réalisations, votre lieu, vos produits.' },
+  { id: 'faq', nom: 'Questions fréquentes', icon: 'message-circle', d: 'Les réponses aux questions que vos clients posent souvent.' },
+  { id: 'contact', nom: 'Contact', icon: 'mail', d: 'Le formulaire, vos horaires, votre adresse.' },
+  { id: 'boutique', nom: 'Boutique', icon: 'shopping-bag', option: true, d: 'Avec l’option e-commerce : vos articles, le panier et le paiement en ligne.' },
 ];
 // La petite étoile des « révisions illimitées »
 const revisionsNote = '* Les révisions portent sur le site commandé (textes, photos, couleurs, mise en page), jusqu’à ce que vous le validiez. Après la mise en ligne, les modifications passent par le forfait Mini.';
@@ -223,7 +265,7 @@ const enPause = !enService.energie;
 // delai : délai des modifications (« 48 heures » : une modification peut prendre jusqu'à 48 h). delaiTexte : la phrase complète après « Modifications ».
 // priorite, pageSeo, optimisation : ne servent plus que pour l'ancien abonnement Maxi.
 // L'abonnement, c'est « maintenir le site » : hébergement, sauvegardes, sécurité, maintenance et modifications. Le nom de domaine est offert
-// tant que l'abonnement est actif. La création du site (500 €) est un autre achat, payé une fois.
+// tant que l'abonnement est actif. La création du site (400 €, 600 € avec l'option e-commerce) est un autre achat, payé une fois.
 const forfaits = [
   {
     id: 'base',
@@ -315,8 +357,8 @@ const delais = { reponse: '48 heures', titan: '72 heures', urgent: '24 heures', 
 // court : la version en une ligne, pour le configurateur. desc : la description complète, pour la page Tarifs.
 // info : ce que l'option ajoute, montré par le petit « i », avec sa capture d'exemple (src/assets/img/options/<id>.webp,
 // fabriquée par scripts/captures-options.js).
-// 17 novembre 2026 : deux options seulement, payées une fois. Le Pack SEO ici, et la boutique en ligne (creation.boutique,
-// le type de site « boutique »). Les anciennes options et extras restent listés avec retire: true, pour les clients qui
+// 17 novembre 2026 : deux options seulement, payées une fois. Le Pack SEO ici, et la boutique en ligne (creation.ecommerce,
+// le type de site « boutique », l'option e-commerce depuis le 21 novembre 2026). Les anciennes options et extras restent listés avec retire: true, pour les clients qui
 // les ont déjà (l'extension les montre encore dans leur compte), mais ne sont plus proposés.
 const options = [
   { id: 'packseo', quand: 'espace' /* se commande depuis l'espace client, 15 € la page */, group: 'site', name: 'Page de visibilité Google', icon: 'search-check', price: { once: 15 }, pages: 1, exemples: ['Service + ville', 'FAQ', 'Métier', 'Page locale', 'Guide'], inclus: ['Nouvelle page optimisée pour Google', 'Intégration au site', 'Optimisation référencement local'], court: 'Une nouvelle page optimisée pour Google, intégrée à votre site.', packs: [1, 5, 10], info: 'Une page de plus, écrite pour une recherche que font vos clients sur Google. Par exemple : un service et une ville, une FAQ, votre métier, une page locale ou un guide. Plus votre site a de pages utiles, plus il a de chances d’apparaître.', desc: 'Une nouvelle page optimisée pour Google, intégrée à votre site, avec le référencement local soigné. Par exemple : service + ville, FAQ, métier, page locale ou guide.' },
@@ -339,7 +381,7 @@ const options = [
 // ---------------------------------------------------------------- la petite bande : les automatisations d'Alex
 // Alex conçoit et fait chaque site lui-même. À côté, il a programmé une petite bande de compagnons : ce sont ses
 // automatisations, dessinées en petits monstres (src/lib/bestiaire.js). Chacun s'occupe d'une tâche répétitive mais
-// utile, travaille en autonomie, et Alex vérifie tout ce qu'il fait. C'est ce qui permet un site 3 à 6 fois moins cher qu'un indépendant (voir `marche`).
+// utile, travaille en autonomie, et Alex vérifie tout ce qu'il fait. C'est ce qui permet un site bien moins cher qu'un indépendant (voir `marche` : le rapport est calculé).
 // Sur le site public, on ne parle ni d'IA ni de jetons : seulement de ces petits monstres. Chacun a un prénom et UN rôle :
 // Cerise répond et prépare les demandes ; c'est Alex qui fait toutes les modifications (17 novembre 2026).
 // option : l'extra qui l'ajoute à votre abonnement (id d'un extra de `options`, ou 'boutique'). compris : dans l'abonnement de base.
@@ -446,4 +488,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: 'Le site d’un électricien dans les Ardennes. Il sera en ligne très bientôt.' },
 ];
 
-module.exports = { fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };
+module.exports = { typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };
