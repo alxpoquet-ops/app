@@ -61,7 +61,7 @@ process.stdout.write(
     parrainageMois: fidelite.parrainageMois,
     remiseSecondSite: fidelite.remiseSecondSite || 0,
       // les icônes de l'espace client, plus celles des outils de Cerise (lues dans leur définition)
-    icons: Object.fromEntries([...new Set([...ICONS, ...require('../src/content/outils-lia').outils.map((o) => o.icon), ...options.map((o) => o.icon).filter(Boolean), ...(cfg.aLaDemande || []).map((x) => x.icon), ...(cfg.extrasGroupes || []).map((g) => g.icon)])].map((n) => [n, icon(n)])),
+    icons: Object.fromEntries([...new Set([...ICONS, ...require('../src/content/brief').sections.map((s) => s.icon), ...require('../src/content/outils-lia').outils.map((o) => o.icon), ...options.map((o) => o.icon).filter(Boolean), ...(cfg.aLaDemande || []).map((x) => x.icon), ...(cfg.extrasGroupes || []).map((g) => g.icon)])].map((n) => [n, icon(n)])),
     // Cerise (une humeur par dessin, mascotte = bonjour) et Alex, le petit monstre à lunettes
     // Cerise (une humeur par dessin), Alex en portrait, et la petite bande (Bricou fait les modifications)
     monsters: Object.fromEntries([
