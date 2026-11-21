@@ -425,7 +425,18 @@ footer .legal { grid-column: 1 / -1; border-top: 1px solid rgba(255, 255, 255, .
 .contact-rond { background: var(--ink); color: var(--bg); border-color: var(--ink); text-decoration: none; }
 .contact-rond .ic { width: 20px; height: 20px; }
 @media (min-width: 901px) { .contact-rond { width: auto; padding: 0 18px; border-radius: 999px; gap: 8px; display: inline-flex; } .contact-rond::after { content: "Contact"; font-weight: 600; font-size: .92rem; } }
-@media (max-width: 350px) { .top .wrap { gap: 6px; } .nom { font-size: 1.45rem; } }
+/* en-tête sur les téléphones étroits : tout tient sur une ligne */
+.nom { min-width: 0; }
+@media (max-width: 440px) {
+  .top .wrap { gap: 6px; min-height: 64px; }
+  .top .rond { width: 40px; height: 40px; }
+  .top .burger span { left: 11px; } .top .burger span:nth-child(1) { top: 13px; } .top .burger span:nth-child(2), .top .burger[aria-expanded="true"] span { top: 19px; } .top .burger span:nth-child(3) { top: 25px; }
+  .top .burger[aria-expanded="true"] span:nth-child(1), .top .burger[aria-expanded="true"] span:nth-child(3) { top: 19px; }
+  .nom { font-size: 1.5rem; gap: 6px; }
+}
+@media (max-width: 360px) { .nom i { display: none; } .nom { font-size: 1.35rem; } .top .wrap { gap: 5px; } .top .rond { width: 38px; height: 38px; } }
+
+.recap a, .chapeau a, .article-corps a { color: var(--accent); }
 </style>
 
 <header class="top" id="haut">
