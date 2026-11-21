@@ -44,7 +44,7 @@ add_action('template_redirect', function () {
 });
 function aled08e_edition_bouton_html($uid, $classe = 'acc-action c-mint') {
     if (!aled08e_edition_dispo($uid)) return '';
-    return '<form method="post" action="' . esc_url(aled08e_url()) . '" target="_blank" class="ed-form">'
+    return '<form method="post" action="' . esc_url(aled08e_url()) . '" class="ed-form">'
         . '<input type="hidden" name="aled08e_editer" value="1">' . wp_nonce_field('aled08e_editer', '_aled08e_editer', false, false)
         . '<button type="submit" class="' . esc_attr($classe) . '"><span class="acc-art" aria-hidden="true">' . aled08e_monster('ravie') . '</span>'
         . '<strong>Modifier mon site moi-même</strong><small>Je clique sur un texte ou une photo, je le change : c’est en ligne tout de suite</small></button></form>';
@@ -52,11 +52,21 @@ function aled08e_edition_bouton_html($uid, $classe = 'acc-action c-mint') {
 /* Dans « Mes demandes » : le petit rappel qu'un texte ou une photo se change en direct */
 function aled08e_edition_rappel_html($uid) {
     if (!aled08e_edition_dispo($uid)) return '';
-    return '<form method="post" action="' . esc_url(aled08e_url()) . '" target="_blank" class="ed-rappel">'
+    return '<form method="post" action="' . esc_url(aled08e_url()) . '" class="ed-rappel">'
         . '<input type="hidden" name="aled08e_editer" value="1">' . wp_nonce_field('aled08e_editer', '_aled08e_editer', false, false)
         . '<p>' . aled08e_icon('sparkles') . '<span><b>Un texte ou une photo à changer ?</b> Faites-le vous-même, en direct sur votre site : c’est en ligne tout de suite, et vous pouvez annuler.</span></p>'
         . '<button type="submit" class="btn btn-primary btn-sm">' . aled08e_icon('pencil') . '<span>Modifier mon site</span></button></form>';
 }
+
+/* Pour Alex : se connecter à l'application d'un client (lien en un clic, valable un jour), pour voir ce qu'il voit */
+add_action('rest_api_init', function () {
+    register_rest_route('aled08/v1', '/atelier/voir-client', ['methods' => 'POST', 'permission_callback' => function () { return current_user_can('manage_options'); }, 'callback' => function (WP_REST_Request $r) {
+        $uid = (int) ($r->get_json_params()['fiche'] ?? 0);
+        $u = $uid ? get_userdata($uid) : null;
+        if (!$u || user_can($u, 'edit_posts')) return new WP_Error('aled08_voir', 'Fiche client introuvable.', ['status' => 404]);
+        return new WP_REST_Response(['ok' => true, 'lien' => aled08e_clic_lien($uid, 1), 'valable' => '1 jour'], 200);
+    }]);
+});
 
 /* Pour Alex : le même lien, depuis l'atelier (pour vérifier ou aider un client) */
 add_action('rest_api_init', function () {

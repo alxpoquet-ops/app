@@ -85,13 +85,17 @@ function alexlia_ed_reperes($c) {
 }
 
 function alexlia_ed_barre() {
-    $cfg = ['api' => esc_url_raw(rest_url('alexlia/v1/edition/')), 'jeton' => alexlia_ed_anti_rebond()];
+    $pages = [];
+    foreach (get_pages(['sort_column' => 'menu_order,post_title', 'number' => 300]) as $pg) $pages[] = [get_the_title($pg), get_permalink($pg)];
+    $cfg = ['api' => esc_url_raw(rest_url('alexlia/v1/edition/')), 'jeton' => alexlia_ed_anti_rebond(), 'appli' => esc_url_raw(untrailingslashit(alexlia_conn_source()) . '/mon-espace/'), 'pages' => $pages];
     ?>
 <style id="alexlia-edition-css">
 .ale-barre{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:2147483000;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;width:max-content;max-width:calc(100% - 20px);padding:10px 12px;border-radius:20px;background:#2E2A47;color:#fff;font:500 14px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 16px 40px -12px rgba(0,0,0,.45)}
 .ale-barre p{margin:0;padding:0 4px;max-width:34em;color:#fff}
 .ale-barre button,.ale-pop button{appearance:none;border:0;border-radius:999px;padding:8px 14px;font:700 13px/1 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;background:#fff;color:#2E2A47}
 .ale-barre button.ale-fin{background:#7EDDB5}
+.ale-barre select{max-width:12em;padding:7px 10px;border:0;border-radius:999px;font:600 13px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;color:#2E2A47;background:#fff}
+.ale-barre a.ale-appli{color:#fff;font:700 13px/1 system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:underline;text-underline-offset:3px;padding:0 4px}
 .ale-modifiable{outline:2px dashed rgba(140,108,242,.55)!important;outline-offset:3px;border-radius:4px;cursor:text!important}
 .ale-modifiable:hover{outline-color:#8C6CF2!important;background:rgba(140,108,242,.07)}
 .ale-en-cours{outline:3px solid #8C6CF2!important;outline-offset:3px;background:#fff!important;color:#2E2A47!important}
@@ -103,7 +107,9 @@ img.ale-photo{outline:3px dashed rgba(255,143,94,.75)!important;outline-offset:-
 </style>
 <div class="ale-barre" role="region" aria-label="Mode modification">
   <p data-ale-aide>Mode modification : cliquez sur un texte ou une photo de la page pour le changer.</p>
+  <select data-ale-pages aria-label="Aller à une autre page" hidden><option value="">Aller à une page…</option></select>
   <button type="button" data-ale-annuler hidden>Annuler la dernière</button>
+  <a class="ale-appli" data-ale-appli href="#">Mon application</a>
   <button type="button" class="ale-fin" data-ale-fin>Terminer</button>
 </div>
 <script id="alexlia-edition-js">
@@ -127,7 +133,11 @@ img.ale-photo{outline:3px dashed rgba(255,143,94,.75)!important;outline-offset:-
   document.querySelector('[data-ale-fin]').addEventListener('click', function(){ sessionStorage.removeItem('ale-annuler'); appel('terminer').then(function(){ location.reload(); }).catch(function(){ location.reload(); }); });
   btnAnnuler.addEventListener('click', function(){ appel('annuler').then(function(j){ toast(j.message||'C’est annulé.'); setTimeout(function(){ location.reload(); }, 700); }).catch(function(e){ toast(e.message, true); }); });
   if (sessionStorage.getItem('ale-annuler')) btnAnnuler.hidden = false;
-  if (!debut) { aide.textContent = 'Sur cette page, les textes viennent de la mise en page : pour les changer, faites une demande depuis votre application. Les autres pages se modifient ici.'; return; }
+  document.querySelector('[data-ale-appli]').href = C.appli;
+  var choixPage = document.querySelector('[data-ale-pages]');
+  (C.pages||[]).forEach(function(pg){ var o=document.createElement('option'); o.value=pg[1]; o.textContent=pg[0]; choixPage.appendChild(o); });
+  choixPage.addEventListener('change', function(){ if (choixPage.value) location.href = choixPage.value; });
+  if (!debut) { aide.textContent = 'Cette page est faite par la mise en page du site : elle se change par une demande. Choisissez une page à modifier :'; choixPage.hidden = false; return; }
   var id = debut.getAttribute('data-alexlia-debut');
   var fin = document.querySelector('[data-alexlia-fin="'+id+'"]');
   // tout ce qui est entre les deux repères
