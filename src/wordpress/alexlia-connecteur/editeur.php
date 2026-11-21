@@ -9,6 +9,8 @@
  * 3. Tant que le cookie est là, chaque page montre une petite barre : un clic sur un texte de la page le rend
  *    modifiable, un clic sur une photo permet d'en mettre une autre. Rien d'autre (mise en page, menus, réglages).
  * 4. Chaque changement est enregistré avec une révision juste avant : « Annuler » revient en arrière.
+ * 5. Une page faite par la mise en page du thème (souvent l'accueil) se modifie aussi : ses textes et ses photos
+ *    changés sont gardés à part (option alexlia_ed_gabarit) et remis à l'affichage, à leur place.
  */
 defined('ABSPATH') || exit;
 
@@ -86,7 +88,7 @@ function alexlia_ed_reperes($c) {
 
 function alexlia_ed_barre() {
     $pages = [];
-    foreach (get_pages(['sort_column' => 'menu_order,post_title', 'number' => 300]) as $pg) $pages[] = [get_the_title($pg), get_permalink($pg)];
+    foreach (get_pages(['sort_column' => 'menu_order,post_title', 'number' => 300]) as $pg) $pages[] = [html_entity_decode(wp_strip_all_tags(get_the_title($pg)), ENT_QUOTES | ENT_HTML5, 'UTF-8'), get_permalink($pg)];
     $cfg = ['api' => esc_url_raw(rest_url('alexlia/v1/edition/')), 'jeton' => alexlia_ed_anti_rebond(), 'appli' => esc_url_raw(untrailingslashit(alexlia_conn_source()) . '/mon-espace/'), 'pages' => $pages];
     ?>
 <style id="alexlia-edition-css">
@@ -137,25 +139,35 @@ img.ale-photo{outline:3px dashed rgba(255,143,94,.75)!important;outline-offset:-
   var choixPage = document.querySelector('[data-ale-pages]');
   (C.pages||[]).forEach(function(pg){ var o=document.createElement('option'); o.value=pg[1]; o.textContent=pg[0]; choixPage.appendChild(o); });
   choixPage.addEventListener('change', function(){ if (choixPage.value) location.href = choixPage.value; });
-  if (!debut) { aide.textContent = 'Cette page est faite par la mise en page du site : elle se change par une demande. Choisissez une page à modifier :'; choixPage.hidden = false; return; }
-  var id = debut.getAttribute('data-alexlia-debut');
-  var fin = document.querySelector('[data-alexlia-fin="'+id+'"]');
-  // tout ce qui est entre les deux repères
-  var zone = [], n = debut.nextSibling;
-  while (n && n !== fin) { if (n.nodeType === 1) zone.push(n); n = n.nextSibling; }
+  // deux façons : le contenu de la page (entre les deux repères), ou la mise en page du thème (accueil…)
+  var gabarit = !debut, id = 0, zone = [];
+  var EXCLU = 'form,nav,header,footer,aside,[aria-hidden="true"],[hidden],.ale-barre,.ale-pop,.product,.products,.woocommerce,[data-no-edit]';
+  function norm(t){ return (t||'').replace(/[\s\u00a0\u202f\u2009]+/g,' ').trim(); }
+  if (gabarit) {
+    var principal = document.querySelector('main, [role="main"], #main, .site-main') || document.body;
+    zone = [principal];
+  } else {
+    id = debut.getAttribute('data-alexlia-debut');
+    var fin = document.querySelector('[data-alexlia-fin="'+id+'"]');
+    // tout ce qui est entre les deux repères
+    var n = debut.nextSibling;
+    while (n && n !== fin) { if (n.nodeType === 1) zone.push(n); n = n.nextSibling; }
+  }
+  function permis(el){ return !gabarit || (el.hasAttribute('data-ale-n') && !el.closest(EXCLU)); }
   function dansZone(el){ for (var i=0;i<zone.length;i++) if (zone[i]===el || zone[i].contains(el)) return true; return false; }
   function tous(sel){ var r=[]; zone.forEach(function(z){ if (z.matches && z.matches(sel)) r.push(z); Array.prototype.push.apply(r, z.querySelectorAll(sel)); }); return r; }
   // un texte modifiable : un bloc de texte (paragraphe, titre, élément de liste…) sans autre bloc dedans ; ou le texte d'un bouton-lien
   var textes = tous('p,h1,h2,h3,h4,h5,h6,li,figcaption,blockquote,td,th,dt,dd,summary,a').filter(function(el){
-    if (!el.textContent.trim()) return false;
+    if (!el.textContent.trim() || !permis(el)) return false;
+    if (gabarit && el.querySelector('img,svg,picture,video,iframe')) return false;
     if (el.tagName === 'A') return /btn|button/i.test(el.className) && !el.closest('p,li,h1,h2,h3,h4,h5,h6');
     if (el.querySelector('p,h1,h2,h3,h4,h5,h6,li,ul,ol,div,section,figure,table,blockquote,img,svg,iframe,form,input,select,textarea')) return false;
     return true;
   });
   textes.forEach(function(el){ el.classList.add('ale-modifiable'); });
-  var photos = tous('img').filter(function(im){ return im.getAttribute('src'); });
+  var photos = tous('img').filter(function(im){ return im.getAttribute('src') && permis(im) && !/^data:/.test(im.getAttribute('src')); });
   photos.forEach(function(im){ im.classList.add('ale-photo'); });
-  if (!textes.length && !photos.length) aide.textContent = 'Rien à modifier directement sur cette page : faites une demande depuis votre application.';
+  if (!textes.length && !photos.length) { aide.textContent = 'Rien à modifier directement sur cette page. Choisissez une autre page, ou faites une demande depuis votre application :'; choixPage.hidden = false; }
   var pop = null, courant = null, avant = '';
   function fermerPop(){ if (pop) { pop.remove(); pop = null; } }
   function placer(p, el){ var r = el.getBoundingClientRect(); p.style.top = (window.scrollY + r.bottom + 8) + 'px'; p.style.left = Math.max(8, Math.min(window.scrollX + r.left, window.scrollX + document.documentElement.clientWidth - p.offsetWidth - 8)) + 'px'; }
@@ -168,7 +180,11 @@ img.ale-photo{outline:3px dashed rgba(255,143,94,.75)!important;outline-offset:-
     var apres = el.innerHTML;
     if (apres === avant) return;
     if (!el.textContent.trim()) { el.innerHTML = avant; toast('Un texte ne peut pas rester vide. Pour retirer un passage, faites une demande depuis votre application.', true); return; }
-    appel('texte', {post:+id, avant:avant, apres:apres, rang:rang(el, avant)}).then(function(j){
+    var corps = gabarit
+      ? {gabarit:location.pathname, b:el.tagName.toLowerCase(), n:+el.getAttribute('data-ale-n'), texte:el.getAttribute('data-ale-texte')||'', apres:apres}
+      : {post:+id, avant:avant, apres:apres, rang:rang(el, avant)};
+    appel('texte', corps).then(function(j){
+      if (gabarit) el.setAttribute('data-ale-texte', norm(el.textContent));
       el.innerHTML = j.html; el.removeAttribute('data-ale-avant'); sessionStorage.setItem('ale-annuler','1'); btnAnnuler.hidden = false; toast('C’est enregistré : votre site est à jour.');
     }).catch(function(e){ el.innerHTML = avant; toast(e.message, true); });
   }
@@ -178,6 +194,7 @@ img.ale-photo{outline:3px dashed rgba(255,143,94,.75)!important;outline-offset:-
       ev.preventDefault(); ev.stopPropagation();
       if (courant) arreter(true);
       courant = el; avant = el.innerHTML; el.setAttribute('data-ale-avant', avant);
+      if (gabarit && !el.hasAttribute('data-ale-texte')) el.setAttribute('data-ale-texte', norm(el.textContent));
       el.setAttribute('contenteditable', 'true'); el.classList.add('ale-en-cours'); el.focus();
       pop = document.createElement('div'); pop.className = 'ale-pop';
       pop.innerHTML = '<button type="button" class="ale-ok">Enregistrer</button><button type="button">Annuler</button>';
@@ -225,7 +242,11 @@ img.ale-photo{outline:3px dashed rgba(255,143,94,.75)!important;outline-offset:-
         var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(img, 0, 0, c.width, c.height);
         var donnees = c.toDataURL('image/jpeg', 0.86);
         toast('Envoi de la photo…');
-        appel('image', {post:+id, src:srcAvant, rang:rangPhoto, nom:(f.name||'photo').replace(/\.[a-z0-9]+$/i,'') + '.jpg', donnees:donnees}).then(function(j){
+        var nom = (f.name||'photo').replace(/\.[a-z0-9]+$/i,'') + '.jpg';
+        var corps = gabarit
+          ? {gabarit:location.pathname, n:+cible.getAttribute('data-ale-n'), src:srcAvant, nom:nom, donnees:donnees}
+          : {post:+id, src:srcAvant, rang:rangPhoto, nom:nom, donnees:donnees};
+        appel('image', corps).then(function(j){
           cible.src = j.url; cible.removeAttribute('srcset'); cible.removeAttribute('sizes'); sessionStorage.setItem('ale-annuler','1'); btnAnnuler.hidden = false; toast('Nouvelle photo en place.');
         }).catch(function(e){ toast(e.message, true); });
       };
@@ -238,6 +259,129 @@ img.ale-photo{outline:3px dashed rgba(255,143,94,.75)!important;outline-offset:-
 })();
 </script>
     <?php
+}
+
+/* ---------- La mise en page du thème : textes et photos changés, remis à l'affichage ---------- */
+/* Les balises suivies, comptées dans l'ordre de la page (hors scripts, styles et commentaires) */
+define('ALEXLIA_ED_G_BALISES', 'p|h[1-6]|li|figcaption|blockquote|td|th|dt|dd|summary|a|img');
+function alexlia_ed_g_cle($chemin) {
+    $c = (string) wp_parse_url((string) $chemin, PHP_URL_PATH);
+    return strtolower(substr('/' . trim(rawurldecode($c), '/'), 0, 300));
+}
+function alexlia_ed_g_tout() { $t = get_option('alexlia_ed_gabarit', []); return is_array($t) ? $t : []; }
+function alexlia_ed_g_entrees($cle) { $t = alexlia_ed_g_tout(); return isset($t[$cle]) && is_array($t[$cle]) ? $t[$cle] : []; }
+function alexlia_ed_g_norm($html) {
+    $t = html_entity_decode(wp_strip_all_tags((string) $html, false), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    return trim((string) preg_replace('/[\s\x{00A0}\x{202F}\x{2009}]+/u', ' ', $t));
+}
+/* Toutes les balises suivies : [balise, numéro parmi les mêmes balises, position] */
+function alexlia_ed_g_scanner($html) {
+    $out = []; $nb = []; $i = 0; $L = strlen($html);
+    // les passages à ne jamais toucher (scripts, styles, commentaires) sont sautés à la main : pas de longue expression à retours
+    while ($i < $L) {
+        $fin = $L; $suite = $L;
+        if (preg_match('#<(?:script|style|textarea|template)\b|<!--#i', $html, $m, PREG_OFFSET_CAPTURE, $i)) {
+            $fin = $m[0][1];
+            if ($m[0][0] === '<!--') { $f = strpos($html, '-->', $fin + 4); $suite = $f === false ? $L : $f + 3; }
+            else {
+                $t = strtolower(substr($m[0][0], 1));
+                $f = stripos($html, '</' . $t, $fin + 1);
+                $g = $f === false ? false : strpos($html, '>', $f);
+                $suite = $g === false ? $L : $g + 1;
+            }
+        }
+        if ($fin > $i && preg_match_all('#<(' . ALEXLIA_ED_G_BALISES . ')(?=[\s/>])#i', substr($html, $i, $fin - $i), $tt, PREG_OFFSET_CAPTURE)) {
+            foreach ($tt[1] as $t) {
+                $b = strtolower($t[0]);
+                $nb[$b] = ($nb[$b] ?? -1) + 1;
+                $out[] = ['b' => $b, 'n' => $nb[$b], 'pos' => $i + $t[1] - 1];
+            }
+        }
+        $i = $suite;
+    }
+    return $out;
+}
+/* Une balise trouvée : sa balise ouvrante, et pour un texte ce qu'elle contient (seulement si rien de pareil dedans) */
+function alexlia_ed_g_element($html, $pos, $b) {
+    if (!preg_match('#\G<' . $b . '\b(?:[^>"\']++|"[^"]*+"|\'[^\']*+\')*+>#i', $html, $m, 0, $pos)) return null;
+    $x = ['debut' => $pos, 'ouv' => $m[0]];
+    if ($b === 'img') return $x;
+    $d = $pos + strlen($m[0]);
+    $f = stripos($html, '</' . $b . '>', $d);
+    if ($f === false) return null;
+    $dedans = substr($html, $d, $f - $d);
+    if (preg_match('#<' . $b . '(?=[\s/>])#i', $dedans)) return null;
+    return $x + ['debut_dedans' => $d, 'dedans' => $dedans];
+}
+function alexlia_ed_g_src($ouv) {
+    return preg_match('#\ssrc=(["\'])(.*?)\1#s', $ouv, $m) ? html_entity_decode($m[2], ENT_QUOTES | ENT_HTML5, 'UTF-8') : '';
+}
+/* Remet chaque changement à sa place : même balise, même texte (ou même photo), la plus proche de son numéro */
+function alexlia_ed_g_appliquer($html, $entrees) {
+    foreach ($entrees as $e) {
+        $b = (string) ($e['b'] ?? '');
+        if (!preg_match('/^(' . ALEXLIA_ED_G_BALISES . ')$/', $b)) continue;
+        $mieux = null; $ecart = PHP_INT_MAX;
+        foreach (alexlia_ed_g_scanner($html) as $el) {
+            if ($el['b'] !== $b) continue;
+            $x = alexlia_ed_g_element($html, $el['pos'], $b);
+            if (!$x) continue;
+            if ($b === 'img' ? alexlia_ed_g_src($x['ouv']) !== (string) ($e['src'] ?? '') : alexlia_ed_g_norm($x['dedans']) !== (string) ($e['texte'] ?? '')) continue;
+            $d = abs($el['n'] - (int) ($e['n'] ?? 0));
+            if ($d < $ecart) { $ecart = $d; $mieux = $x; }
+        }
+        if (!$mieux) continue;
+        if ($b === 'img') {
+            $url = esc_url((string) ($e['url'] ?? ''));
+            if ($url === '') continue;
+            $nouv = preg_replace('#\s(srcset|sizes|data-srcset)=(["\']).*?\2#is', '', $mieux['ouv']);
+            $nouv = preg_replace_callback('#(\s(?:data-)?src=)(["\']).*?\2#is', function ($m) use ($url) { return $m[1] . '"' . $url . '"'; }, $nouv);
+            $html = substr_replace($html, $nouv, $mieux['debut'], strlen($mieux['ouv']));
+        } else {
+            $html = substr_replace($html, (string) ($e['html'] ?? ''), $mieux['debut_dedans'], strlen($mieux['dedans']));
+        }
+    }
+    return $html;
+}
+/* En mode modification : chaque balise suivie reçoit son numéro, pour que le changement retrouve sa place */
+function alexlia_ed_g_annoter($html) {
+    $els = alexlia_ed_g_scanner($html);
+    for ($k = count($els) - 1; $k >= 0; $k--) {
+        $el = $els[$k];
+        $html = substr_replace($html, ' data-ale-n="' . $el['n'] . '"', $el['pos'] + 1 + strlen($el['b']), 0);
+    }
+    return $html;
+}
+add_action('template_redirect', function () {
+    if (is_admin() || wp_doing_ajax() || is_feed() || is_embed() || (defined('REST_REQUEST') && REST_REQUEST)) return;
+    $entrees = alexlia_ed_g_entrees(alexlia_ed_g_cle($_SERVER['REQUEST_URI'] ?? '/'));
+    $edition = alexlia_ed_actif();
+    if (!$entrees && !$edition) return;
+    // ouvert en premier, ce tampon reçoit la page finie (après les autres filtres de page)
+    ob_start(function ($html) use ($entrees, $edition) {
+        if (!is_string($html) || stripos($html, '<html') === false) return $html;
+        if ($entrees) $html = alexlia_ed_g_appliquer($html, $entrees);
+        // les numéros ne servent qu'aux pages faites par la mise en page (une page à contenu se modifie par son contenu)
+        // (le repère exact : le nom seul figure aussi dans le script de la barre)
+        if ($edition && strpos($html, '<span hidden data-alexlia-debut=') === false) $html = alexlia_ed_g_annoter($html);
+        return $html;
+    });
+}, 1);
+function alexlia_ed_g_ajouter($cle, $e, $quoi) {
+    $t = alexlia_ed_g_tout();
+    $e['id'] = bin2hex(random_bytes(6));
+    $e['le'] = time();
+    $t[$cle] = array_slice(array_merge(isset($t[$cle]) && is_array($t[$cle]) ? $t[$cle] : [], [$e]), -300);
+    if (count($t) > 200) $t = array_slice($t, -200, null, true);
+    update_option('alexlia_ed_gabarit', $t, true);
+    alexlia_ed_empiler_g($cle, $e['id']);
+    alexlia_ed_vider_cache();
+    alexlia_conn_journal('Modification en direct par le client : ' . $quoi . ' sur la page « ' . $cle . ' » (mise en page).');
+}
+function alexlia_ed_vider_cache() {
+    if (function_exists('litespeed_purge_all')) litespeed_purge_all();
+    do_action('litespeed_purge_all');
+    if (function_exists('wp_cache_flush')) wp_cache_flush();
 }
 
 /* ---------- Les enregistrements ---------- */
@@ -272,6 +416,13 @@ function alexlia_ed_empiler($post, $rev) {
     $pile[] = [(int) $post, (int) $rev];
     set_transient($k, array_slice($pile, -50), 3 * HOUR_IN_SECONDS);
 }
+function alexlia_ed_empiler_g($cle, $id) {
+    $k = 'alexlia_ed_pile_' . alexlia_ed_seance();
+    $pile = get_transient($k);
+    $pile = is_array($pile) ? $pile : [];
+    $pile[] = ['g' => (string) $cle, 'id' => (string) $id];
+    set_transient($k, array_slice($pile, -50), 3 * HOUR_IN_SECONDS);
+}
 /* Le n-ième passage identique, avec les deux façons d'écrire l'espace insécable */
 function alexlia_ed_trouver($tout, $avant, $rang) {
     $nbsp = "\u{00A0}";
@@ -294,16 +445,29 @@ function alexlia_ed_enregistrer($p, $contenu, $quoi) {
     alexlia_conn_journal('Modification en direct par le client : ' . $quoi . ' sur « ' . $p->post_title . ' ».');
     return true;
 }
+function alexlia_ed_nettoyer($apres) {
+    // seuls les petits styles du texte restent : liens, gras, italique, retours à la ligne
+    $apres = wp_kses((string) $apres, ['a' => ['href' => true, 'target' => true, 'rel' => true, 'class' => true], 'strong' => [], 'b' => [], 'em' => [], 'i' => [], 'br' => [], 'span' => ['class' => true]]);
+    return preg_replace('#(<br\s*/?>\s*)+$#u', '', $apres);
+}
 function alexlia_ed_texte(WP_REST_Request $req) {
     $d = (array) $req->get_json_params();
+    if (isset($d['gabarit'])) {
+        $b = strtolower((string) ($d['b'] ?? ''));
+        $texte = alexlia_ed_g_norm(esc_html((string) ($d['texte'] ?? '')));
+        $apres = (string) ($d['apres'] ?? '');
+        if ($b === 'img' || !preg_match('/^(' . ALEXLIA_ED_G_BALISES . ')$/', $b) || $texte === '' || strlen($texte) > 20000 || strlen($apres) > 20000) return new WP_Error('alexlia_edition', 'Ce texte ne se modifie pas ici.', ['status' => 400]);
+        $apres = alexlia_ed_nettoyer($apres);
+        if (alexlia_ed_g_norm($apres) === '') return new WP_Error('alexlia_edition', 'Un texte ne peut pas rester vide.', ['status' => 400]);
+        alexlia_ed_g_ajouter(alexlia_ed_g_cle($d['gabarit']), ['b' => $b, 'n' => max(0, (int) ($d['n'] ?? 0)), 'texte' => $texte, 'html' => $apres], 'un texte');
+        return ['ok' => true, 'html' => $apres];
+    }
     $p = alexlia_conn_post($d['post'] ?? 0);
     if (!$p) return new WP_Error('alexlia_edition', 'Cette page ne se modifie pas ici.', ['status' => 404]);
     $avant = (string) ($d['avant'] ?? '');
     $apres = (string) ($d['apres'] ?? '');
     if ($avant === '' || strlen($avant) > 20000 || strlen($apres) > 20000) return new WP_Error('alexlia_edition', 'Texte trop long.', ['status' => 400]);
-    // seuls les petits styles du texte restent : liens, gras, italique, retours à la ligne
-    $apres = wp_kses($apres, ['a' => ['href' => true, 'target' => true, 'rel' => true, 'class' => true], 'strong' => [], 'b' => [], 'em' => [], 'i' => [], 'br' => [], 'span' => ['class' => true]]);
-    $apres = preg_replace('#(<br\s*/?>\s*)+$#u', '', $apres);
+    $apres = alexlia_ed_nettoyer($apres);
     if (trim(wp_strip_all_tags(str_replace('&nbsp;', ' ', $apres))) === '') return new WP_Error('alexlia_edition', 'Un texte ne peut pas rester vide.', ['status' => 400]);
     $ici = alexlia_ed_trouver($p->post_content, $avant, (int) ($d['rang'] ?? 0));
     if (!$ici) return new WP_Error('alexlia_edition', 'Ce texte vient de la mise en page du site : il se change par une demande depuis votre application.', ['status' => 409]);
@@ -314,8 +478,9 @@ function alexlia_ed_texte(WP_REST_Request $req) {
 }
 function alexlia_ed_image(WP_REST_Request $req) {
     $d = (array) $req->get_json_params();
-    $p = alexlia_conn_post($d['post'] ?? 0);
-    if (!$p) return new WP_Error('alexlia_edition', 'Cette page ne se modifie pas ici.', ['status' => 404]);
+    $gabarit = isset($d['gabarit']);
+    $p = $gabarit ? null : alexlia_conn_post($d['post'] ?? 0);
+    if (!$gabarit && !$p) return new WP_Error('alexlia_edition', 'Cette page ne se modifie pas ici.', ['status' => 404]);
     $src = (string) ($d['src'] ?? '');
     // la photo arrive en texte (data:image/…;base64,…), déjà réduite par le navigateur
     if ($src === '' || !preg_match('#^data:image/(jpeg|png|webp);base64,(.+)$#s', (string) ($d['donnees'] ?? ''), $mm)) return new WP_Error('alexlia_edition', 'La photo n’est pas arrivée. Réessayez.', ['status' => 400]);
@@ -330,6 +495,17 @@ function alexlia_ed_image(WP_REST_Request $req) {
     $f = ['name' => $nomFichier, 'tmp_name' => $tmp, 'size' => strlen($octets)];
     $t = wp_check_filetype_and_ext($f['tmp_name'], (string) $f['name']);
     if (!in_array($t['type'] ?? '', ['image/jpeg', 'image/png', 'image/webp'], true)) { @unlink($tmp); return new WP_Error('alexlia_edition', 'Choisissez une photo JPG, PNG ou WebP.', ['status' => 415]); }
+    if ($gabarit) {
+        if (strlen($src) > 2000) { @unlink($tmp); return new WP_Error('alexlia_edition', 'Cette photo ne se change pas ici.', ['status' => 400]); }
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+        $aid = media_handle_sideload(['name' => sanitize_file_name((string) $f['name']), 'tmp_name' => $f['tmp_name']], 0);
+        if (is_wp_error($aid)) { @unlink($tmp); return new WP_Error('alexlia_edition', 'La photo n’a pas pu être enregistrée.', ['status' => 500]); }
+        $grand = wp_get_attachment_image_src($aid, 'large') ?: wp_get_attachment_image_src($aid, 'full');
+        $url = $grand ? $grand[0] : wp_get_attachment_url($aid);
+        alexlia_ed_g_ajouter(alexlia_ed_g_cle($d['gabarit']), ['b' => 'img', 'n' => max(0, (int) ($d['n'] ?? 0)), 'src' => $src, 'url' => $url], 'une photo');
+        return ['ok' => true, 'url' => $url];
+    }
     // la photo à remplacer doit être dans le contenu de la page
     $balises = [];
     if (preg_match_all('#<img\b[^>]*>#iu', $p->post_content, $m, PREG_OFFSET_CAPTURE)) {
@@ -362,6 +538,16 @@ function alexlia_ed_annuler() {
     $der = array_pop($pile);
     if (!$der) return new WP_Error('alexlia_edition', 'Il n’y a rien à annuler.', ['status' => 404]);
     set_transient($k, $pile, 3 * HOUR_IN_SECONDS);
+    if (isset($der['g'])) {
+        $t = alexlia_ed_g_tout();
+        $liste = isset($t[$der['g']]) && is_array($t[$der['g']]) ? $t[$der['g']] : [];
+        $t[$der['g']] = array_values(array_filter($liste, function ($e) use ($der) { return ($e['id'] ?? '') !== $der['id']; }));
+        if (!$t[$der['g']]) unset($t[$der['g']]);
+        update_option('alexlia_ed_gabarit', $t, true);
+        alexlia_ed_vider_cache();
+        alexlia_conn_journal('Modification en direct annulée par le client.');
+        return ['ok' => true, 'message' => $pile ? 'C’est annulé.' : 'C’est annulé : la page est revenue comme avant.', 'reste' => count($pile)];
+    }
     $r = wp_restore_post_revision($der[1]);
     if (!$r || is_wp_error($r)) return new WP_Error('alexlia_edition', 'Le retour en arrière n’a pas pu se faire.', ['status' => 500]);
     alexlia_conn_journal('Modification en direct annulée par le client.');
