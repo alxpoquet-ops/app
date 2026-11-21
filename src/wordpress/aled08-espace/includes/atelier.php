@@ -350,3 +350,32 @@ function aled08e_essai_faire(WP_REST_Request $req) {
     }
     return new WP_Error('aled08_essai', 'À faire inconnu.', ['status' => 400]);
 }
+
+/* =========================================================================
+ *  L'e-mail « Votre site est en ligne » d'un client déjà installé (sans commande dans l'atelier).
+ *  POST /aled08/v1/atelier/livraison { fiche, type, resume, pages_total, pages_google, pages_formule, articles, forfait, apercu }
+ *  Par défaut c'est un aperçu : il part à Alex seulement. Au client, seulement avec apercu: false et accord_alex: true
+ *  (Alex a dit « OK » dans la conversation). Rien d'autre ne change : ni statut, ni forfait.
+ * ========================================================================= */
+add_action('rest_api_init', function () {
+    register_rest_route('aled08/v1', '/atelier/livraison', ['methods' => 'POST', 'permission_callback' => function () { return current_user_can('manage_options'); }, 'callback' => 'aled08e_livraison_faire']);
+});
+function aled08e_livraison_faire(WP_REST_Request $req) {
+    $p = (array) $req->get_json_params();
+    $u = get_userdata((int) ($p['fiche'] ?? 0));
+    if (!$u || user_can($u, 'edit_posts')) return new WP_Error('aled08_livraison', 'Fiche client introuvable.', ['status' => 404]);
+    $apercu = !isset($p['apercu']) || !empty($p['apercu']);
+    if (!$apercu && empty($p['accord_alex'])) return new WP_Error('aled08_livraison', 'Envoi au client refusé sans l’accord d’Alex.', ['status' => 403]);
+    $type = in_array(($p['type'] ?? ''), ['une-page', 'vitrine', 'boutique'], true) ? $p['type'] : (aled08e_meta($u->ID, 'boutique') === '1' ? 'boutique' : 'vitrine');
+    $L = ['resume' => mb_substr(trim(sanitize_textarea_field((string) ($p['resume'] ?? ''))), 0, 4000), 'forfait_nom' => sanitize_text_field((string) ($p['forfait'] ?? ''))];
+    foreach (['pages_total' => 300, 'pages_google' => 200, 'pages_formule' => 300, 'articles' => 5000] as $k => $max) if (isset($p[$k])) $L[$k] = max(0, min($max, (int) $p[$k]));
+    update_user_meta($u->ID, 'aled08_livraison', $L);
+    $site = (string) aled08e_meta($u->ID, 'site');
+    $c = ['id' => 0, 'user' => $u->ID, 'prenom' => $u->first_name ?: $u->display_name, 'email' => $u->user_email, 'type' => $type, 'forfait' => (string) aled08e_meta($u->ID, 'forfait'),
+        'domaine' => $site ? preg_replace('#^https?://(www\.)?#', 'www.', untrailingslashit($site)) : '', 'statut' => 'en_ligne', 'reception_payee' => 1, 'solde_paye' => 1,
+        'montants' => ['solde' => 0], 'livraison' => $L];
+    if (strpos($c['domaine'], 'www.www.') === 0) $c['domaine'] = substr($c['domaine'], 4);
+    aled08e_cmd_mail_client_en_ligne($c, $apercu ? aled08e_to() : '');
+    if (!$apercu) update_user_meta($u->ID, 'aled08_livraison_envoyee', current_time('mysql'));
+    return new WP_REST_Response(['ok' => true, 'envoye_a' => $apercu ? 'Alex (aperçu)' : 'le client'], 200);
+}

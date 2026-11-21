@@ -615,16 +615,24 @@ function aled08e_cmd_mail_owner_payee($c) {
         . 'Fiche commande : ' . aled08e_cmd_admin_url($c['id']) . "\n";
     wp_mail(aled08e_to(), $sujet, $corps, aled08e_mail_headers());
 }
-function aled08e_cmd_mail_client_en_ligne($c) {
+/* $vers : une autre adresse (l'aperçu envoyé à Alex avant le client).
+ * $c['livraison'] (facultatif) remplace ce que le chantier a gardé : resume, pages_total, pages_google, articles,
+ * pages_formule (les pages comprises dans la formule : au-delà, elles sont offertes) et forfait_nom (ex. « Forfait personnalisé »). */
+function aled08e_cmd_mail_client_en_ligne($c, $vers = '') {
+    $L = (array) ($c['livraison'] ?? []);
     $site = $c['domaine'] ? 'https://' . $c['domaine'] : aled08e_meta($c['user'], 'site');
     $host = $site ? preg_replace('#^https?://(www\.)?#', '', untrailingslashit($site)) : '';
     $solde = (float) $c['montants']['solde'];
     $soldeDu = aled08e_cmd_reception_due(array_merge($c, ['statut' => 'en_ligne']));
     $boutique = $c['type'] === 'boutique';
-    $google = in_array($c['type'], ['vitrine', 'boutique'], true) && function_exists('aled08e_chantier_pages_google') ? aled08e_chantier_pages_google($c['id']) : 0;
-    $total = function_exists('aled08e_chantier_pages_total') ? aled08e_chantier_pages_total($c['id']) : 0;
-    $articles = $boutique && function_exists('aled08e_chantier_articles') ? aled08e_chantier_articles($c['id']) : 0;
-    $res = function_exists('aled08e_chantier_resume') ? aled08e_chantier_resume($c['id']) : '';
+    $google = isset($L['pages_google']) ? (int) $L['pages_google'] : (in_array($c['type'], ['vitrine', 'boutique'], true) && function_exists('aled08e_chantier_pages_google') ? aled08e_chantier_pages_google($c['id']) : 0);
+    $total = isset($L['pages_total']) ? (int) $L['pages_total'] : (function_exists('aled08e_chantier_pages_total') ? aled08e_chantier_pages_total($c['id']) : 0);
+    $articles = isset($L['articles']) ? (int) $L['articles'] : ($boutique && function_exists('aled08e_chantier_articles') ? aled08e_chantier_articles($c['id']) : 0);
+    $res = isset($L['resume']) ? (string) $L['resume'] : (function_exists('aled08e_chantier_resume') ? aled08e_chantier_resume($c['id']) : '');
+    $formule = (int) ($L['pages_formule'] ?? 0);
+    $offertes = ($formule > 0 && $total > $formule) ? $total - $formule : 0;
+    $principales = max(0, $total - $google);
+    $forfaitNom = trim((string) ($L['forfait_nom'] ?? ''));
     $espace = function_exists('aled08e_clic_lien') && $c['user'] ? aled08e_clic_lien((int) $c['user'], 14) : aled08e_url();
     $typeNom = (aled08e_type($c['type']) ?: [])['name'] ?? 'votre site';
 
@@ -650,8 +658,15 @@ function aled08e_cmd_mail_client_en_ligne($c) {
         $h .= aled08e_mail_carte('beurre',
             ($total > 0 ? '<p style="margin:6px 0 2px;font-size:15px;color:#4B4668;">Votre site compte</p><p style="margin:0 0 10px;font-size:40px;line-height:1;font-weight:bold;color:#2E2A47;">' . $total . ' <span style="font-size:18px;">pages</span></p>' : '')
             . ($google > 0 ? '<p style="margin:0 0 8px;font-size:17px;line-height:1.4;color:#2E2A47;">' . ($total > 0 ? 'dont ' : '') . '<b>' . $google . ' pages de visibilité Google</b></p>'
-                . '<p style="margin:0;font-size:15px;line-height:1.55;color:#4B4668;">Ce sont autant de <b style="color:#2E2A47;">portes d’entrée sur votre site</b> : chacune parle d’un sujet précis, et Google peut la montrer aux personnes qui le cherchent.' . ($total > $google ? ' Les autres sont les pages principales : accueil, ' . ($boutique ? 'boutique, commande, ' : '') . 'contact…' : '') . ' Tout est détaillé juste en dessous.</p>' : ''),
+                . '<p style="margin:0;font-size:15px;line-height:1.55;color:#4B4668;">Ce sont autant de <b style="color:#2E2A47;">portes d’entrée sur votre site</b> : chacune parle d’un sujet précis, et Google peut la montrer aux personnes qui le cherchent.' . ($total > $google ? ' Les autres sont les pages principales : accueil, ' . ($boutique ? 'boutique, panier, commande…' : 'contact…') : '') . ' Tout est détaillé juste en dessous.</p>' : '')
+            . ($offertes > 0 ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:14px 0 0;background:#FFFFFF;border-radius:16px;"><tr><td style="padding:12px 14px;">'
+                . '<p style="margin:0 0 4px;font-size:15px;line-height:1.5;color:#4B4668;">Votre formule ' . esc_html($typeNom) . ' comprend <b style="color:#2E2A47;">' . $formule . ' pages</b>' . ($principales > 0 && $formule > $principales ? ' : ' . $principales . ' pages principales et ' . ($formule - $principales) . ' pages de visibilité' : '') . '.</p>'
+                . '<p style="margin:0;font-size:17px;line-height:1.45;color:#A3305F;"><b>Les ' . $offertes . ' pages en plus vous sont offertes par les Minis Monstres.</b></p></td></tr></table>' : ''),
             'etoile', aled08e_mail_etiquette('Votre site en chiffres', '#7A5600'));
+    }
+    if ($forfaitNom !== '') {
+        $h .= aled08e_mail_carte('ciel', '<p style="margin:6px 0 4px;font-size:22px;line-height:1.25;font-weight:bold;color:#2E2A47;">' . esc_html($forfaitNom) . '</p>'
+            . '<p style="margin:0;font-size:15px;line-height:1.55;color:#4B4668;">Votre forfait est fait sur mesure pour vous. Son détail est dans votre application, rubrique « Mon compte ».</p>', 'chaton', aled08e_mail_etiquette('Votre forfait', '#1F5E9E'));
     }
     if ($articles > 0) {
         $h .= aled08e_mail_carte('rose',
@@ -661,7 +676,7 @@ function aled08e_cmd_mail_client_en_ligne($c) {
     }
     if ($parties) {
         $li = '';
-        foreach ($parties as $k => $x) $li .= '<tr><td width="26" style="padding:6px 0;vertical-align:top;font-size:15px;color:#8C6CF2;font-weight:bold;">&#10022;</td><td style="padding:6px 0;font-size:15px;line-height:1.55;color:#4B4668;">' . esc_html($x) . '</td></tr>';
+        foreach ($parties as $k => $x) { $d = explode(' : ', $x, 2); $x = count($d) === 2 ? '<b style="color:#2E2A47;">' . esc_html($d[0]) . '</b> : ' . esc_html($d[1]) : esc_html($x); $li .= '<tr><td width="26" style="padding:6px 0;vertical-align:top;font-size:15px;color:#8C6CF2;font-weight:bold;">&#10022;</td><td style="padding:6px 0;font-size:15px;line-height:1.55;color:#4B4668;">' . $x . '</td></tr>'; }
         $h .= aled08e_mail_carte('lilas', '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:6px;">' . $li . '</table>', 'gelee', aled08e_mail_etiquette('Ce que contient votre site', '#5B3FC4'));
     }
     if ($manque) {
@@ -682,6 +697,8 @@ function aled08e_cmd_mail_client_en_ligne($c) {
     // la version texte, pour les messageries qui n'affichent pas le HTML
     $txt = 'Bonjour ' . $c['prenom'] . ",\n\nBonne nouvelle : votre site est en ligne !\n" . ($site ? 'Adresse : ' . $site . "\n" : '') . "\n"
         . ($total > 0 ? 'Votre site compte ' . $total . ' pages' . ($google > 0 ? ', dont ' . $google . ' pages de visibilité Google : autant de portes d’entrée sur votre site' : '') . ".\n\n" : ($google > 0 ? 'Votre site compte ' . $google . " pages de visibilité Google : autant de portes d’entrée sur votre site.\n\n" : ''))
+        . ($offertes > 0 ? 'Votre formule ' . $typeNom . ' comprend ' . $formule . ' pages. Les ' . $offertes . " pages en plus vous sont offertes par les Minis Monstres.\n\n" : '')
+        . ($forfaitNom !== '' ? 'Votre forfait : ' . $forfaitNom . " (le détail est dans votre application, rubrique Mon compte).\n\n" : '')
         . ($articles > 0 ? 'Votre boutique compte ' . $articles . ' article' . ($articles > 1 ? 's' : '') . ". Ajoutez-en autant que vous voulez, sans limite, depuis votre application (Ma boutique, puis Mes articles).\n\n" : '')
         . ($res !== '' ? "Ce que contient votre site :\n" . $res . "\n\n" : '')
         . "Tout se règle depuis votre application (votre espace client) :\n" . implode("\n", array_map(function ($r) { return '- ' . $r[1] . ' (' . $r[2] . ')'; }, $reglages)) . "\n" . aled08e_url() . "\n\n"
@@ -689,7 +706,7 @@ function aled08e_cmd_mail_client_en_ligne($c) {
         . "Votre site existe en deux apparences, claire et sombre. Il s’ouvre en clair, et vos visiteurs passent en sombre avec le petit soleil ou la lune en haut du site.\n\nMerci pour votre confiance,\nAlex et sa petite bande\n";
     $alt = function ($m) use ($txt) { $m->AltBody = $txt; };
     add_action('phpmailer_init', $alt, 20);
-    wp_mail($c['email'], 'Votre site est en ligne', aled08e_mail_coque('Votre site est en ligne', $h, 'Votre site est en ligne : voici ce qu’il contient, et comment tout régler depuis votre application.'), array_merge(['Content-Type: text/html; charset=UTF-8'], array_values(array_filter((array) aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'), function ($e) { return stripos($e, 'content-type:') !== 0; }))));
+    wp_mail($vers !== '' ? $vers : $c['email'], ($vers !== '' ? '[Aperçu pour ' . $c['prenom'] . '] ' : '') . 'Votre site est en ligne', aled08e_mail_coque('Votre site est en ligne', $h, 'Votre site est en ligne : voici ce qu’il contient, et comment tout régler depuis votre application.'), array_merge(['Content-Type: text/html; charset=UTF-8'], array_values(array_filter((array) aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'), function ($e) { return stripos($e, 'content-type:') !== 0; }))));
     remove_action('phpmailer_init', $alt, 20);
 }
 
