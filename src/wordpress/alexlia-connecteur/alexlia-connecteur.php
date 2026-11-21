@@ -2,15 +2,16 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.11.0
+ * Version: 2.12.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.11.0');
+define('ALEXLIA_CONN_VERSION', '2.12.0');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
+require_once __DIR__ . '/editeur.php'; // le mode « je clique, je modifie » ouvert depuis l'application du client
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Co (Réglages › Alex & Co)
@@ -232,7 +233,7 @@ function alexlia_conn_post($id) {
     return $p;
 }
 function alexlia_conn_infos() {
-    return ['nom' => get_bloginfo('name'), 'slogan' => get_bloginfo('description'), 'url' => home_url('/'), 'wordpress' => get_bloginfo('version'), 'connecteur' => ALEXLIA_CONN_VERSION, 'mcp' => 1, 'page_accueil' => (int) get_option('page_on_front')];
+    return ['nom' => get_bloginfo('name'), 'slogan' => get_bloginfo('description'), 'url' => home_url('/'), 'wordpress' => get_bloginfo('version'), 'connecteur' => ALEXLIA_CONN_VERSION, 'mcp' => 1, 'edition' => 1, 'page_accueil' => (int) get_option('page_on_front')];
 }
 function alexlia_conn_lister($args) {
     $type = in_array($args['type'] ?? '', alexlia_conn_types(), true) ? $args['type'] : 'any';

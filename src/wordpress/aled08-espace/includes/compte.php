@@ -23,6 +23,15 @@ add_action('template_redirect', function () {
         $r = (aled08e_meta($uid, 'lia_url') !== '' && aled08e_meta($uid, 'lia_secret') !== '') ? aled08e_lia_appel($uid, 'apparence_regler', ['mode' => $m]) : null;
         $back(is_wp_error($r) ? 'apparence_attente' : 'apparence_ok');
     }
+    if ($quoi === 'site') {
+        $nom = mb_substr(sanitize_text_field((string) ($P['site_nom'] ?? '')), 0, 80);
+        $slogan = mb_substr(sanitize_text_field((string) ($P['site_slogan'] ?? '')), 0, 160);
+        if ($nom === '' || aled08e_meta($uid, 'lia_url') === '' || aled08e_meta($uid, 'lia_secret') === '') $back('erreur');
+        $a = aled08e_lia_appel($uid, 'reglage', ['nom' => 'nom', 'valeur' => $nom]);
+        $b = is_wp_error($a) ? $a : aled08e_lia_appel($uid, 'reglage', ['nom' => 'slogan', 'valeur' => $slogan]);
+        delete_transient('aled08e_site_infos_' . $uid);
+        $back(is_wp_error($b) ? 'site_attente' : 'site_ok');
+    }
     if ($quoi === 'infos') {
         $prenom = sanitize_text_field((string) ($P['prenom'] ?? ''));
         $nom = sanitize_text_field((string) ($P['nom'] ?? ''));
@@ -74,6 +83,8 @@ function aled08e_panel_compte($u) {
     $mc = isset($_GET['mc']) ? sanitize_key(wp_unslash($_GET['mc'])) : '';
     $msgs = [
         'infos_ok' => ['esp-empty', 'C’est enregistré.'],
+        'site_ok' => ['esp-empty', 'C’est enregistré : votre site affiche son nouveau nom et sa phrase d’accroche (dans l’onglet du navigateur et sur Google).'],
+        'site_attente' => ['esp-warn', 'Votre site ne répond pas pour le moment. Réessayez dans un instant.'],
         'apparence_ok' => ['esp-empty', 'C’est enregistré : votre site s’ouvre maintenant avec cette apparence.'],
         'apparence_attente' => ['esp-warn', 'Votre choix est noté. Votre site ne répond pas pour le moment : on l’applique dès qu’il est disponible.'],
         'email_ok' => ['esp-empty', 'Votre adresse e-mail est à jour. Un message de confirmation part à l’ancienne adresse.'],
@@ -117,6 +128,20 @@ function aled08e_panel_compte($u) {
         echo '<label class="esp-reste"><input type="radio" name="apparence" value="' . $k . '"' . checked($app, $k, false) . '><span><strong>' . esc_html($l[0]) . '</strong><small>' . esc_html($l[1]) . '</small></span></label>';
     }
     echo '</div><button class="btn btn-primary" type="submit">' . aled08e_icon('check') . '<span>Enregistrer</span></button></form>'; // phpcs:ignore
+
+    // le nom et la phrase d'accroche du site (onglet du navigateur, résultats Google), lus sur le site du client
+    if (aled08e_meta($uid, 'lia_url') !== '' && aled08e_meta($uid, 'lia_secret') !== '') {
+        $inf = get_transient('aled08e_site_infos_' . $uid);
+        if (!is_array($inf)) { $inf = aled08e_lia_appel($uid, 'infos'); $inf = is_wp_error($inf) ? [] : $inf; set_transient('aled08e_site_infos_' . $uid, $inf, 10 * MINUTE_IN_SECONDS); }
+        if ($inf) {
+            echo '<form class="form esp-form" method="post" action="' . $act . '"><input type="hidden" name="aled08e_compte" value="site">' . $nonce; // phpcs:ignore
+            echo '<p class="app-sub">' . aled08e_icon('globe') . ' Le nom de mon site</p>'; // phpcs:ignore
+            echo '<p class="app-note">Ils s’affichent dans l’onglet du navigateur et dans les résultats de Google.</p>';
+            echo $champ('mc-site-nom', 'Nom du site', 'site_nom', (string) ($inf['nom'] ?? ''), 'text', 'organization', ' required maxlength="80"'); // phpcs:ignore
+            echo $champ('mc-site-slogan', 'Phrase d’accroche (facultative)', 'site_slogan', (string) ($inf['slogan'] ?? ''), 'text', 'off', ' maxlength="160"'); // phpcs:ignore
+            echo '<button class="btn btn-primary" type="submit">' . aled08e_icon('check') . '<span>Enregistrer</span></button></form>'; // phpcs:ignore
+        }
+    }
 
     echo '<form class="form esp-form" method="post" action="' . $act . '"><input type="hidden" name="aled08e_compte" value="mdp">' . $nonce; // phpcs:ignore
     echo '<p class="app-sub">' . aled08e_icon('lock') . ' Mon mot de passe</p>'; // phpcs:ignore

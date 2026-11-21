@@ -207,6 +207,7 @@ require_once __DIR__ . '/includes/mails.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
 require_once __DIR__ . '/includes/mirette.php';
+require_once __DIR__ . '/includes/edition.php';
 
 /* =========================================================================
  *  Rôle « Client des Minis Monstres » et type de contenu « Demande »
@@ -1078,6 +1079,7 @@ function aled08e_dashboard() {
         'annul_quota' => ['esp-warn', 'Les demandes lancées ne s’annulent plus.'],
         'annul_delai' => ['esp-warn', 'Les demandes lancées ne s’annulent plus.'],
         'lia_non' => ['esp-empty', 'Merci pour vos précisions. Bricou a transmis votre demande à Alex, avec toutes vos remarques.'],
+        'edition_indispo' => ['esp-warn', 'Le mode modification n’a pas pu s’ouvrir : votre site ne répond pas pour le moment. Réessayez dans un instant, ou faites une demande.'],
         'lia_erreur' => ['esp-warn', 'Cette demande a déjà été confirmée. Vous suivez son avancement dans la jauge.'],
     ];
     if (isset($msgs[$m])) $flash = '<p class="' . $msgs[$m][0] . '" role="status">' . esc_html($msgs[$m][1]) . '</p>';
@@ -1168,6 +1170,7 @@ function aled08e_dashboard() {
           <p class="esp-warn">Votre site est en ligne : il reste <?php echo aled08e_euro($cmd['montants']['solde']); // phpcs:ignore ?> pour la création, en une fois ou en plusieurs fois, et votre abonnement démarre. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
           <?php endif; ?>
           <div class="acc-actions">
+            <?php echo aled08e_edition_bouton_html($uid); // phpcs:ignore ?>
             <button type="button" class="acc-action c-sky" data-go="demandes"><span class="acc-art" aria-hidden="true"><?php echo aled08e_monster('bricou'); // phpcs:ignore ?></span><strong>Demander une modification</strong><small>Bricou prépare, Alex modifie</small></button>
             <button type="button" class="acc-action c-butter" data-go="extras"><span class="acc-art" aria-hidden="true"><?php echo aled08e_monster('etoile'); // phpcs:ignore ?></span><strong>Ajouter un extra</strong><small>Pépite vous montre les petits plus</small></button>
             <button type="button" class="acc-action c-pink" data-go="vacances"><span class="acc-art" aria-hidden="true"><?php echo aled08e_monster('mochi'); // phpcs:ignore ?></span><strong>Ma boutique</strong><small><?php echo aled08e_est_boutique($uid) ? 'Articles, prix, paiements, commandes' : 'Option verrouillée : voir comment l’ouvrir'; ?></small></button>
@@ -1200,6 +1203,7 @@ function aled08e_dashboard() {
           <h2 class="app-h">Mes demandes</h2>
           <?php echo aled08e_pd_flash_html() . $flash; // phpcs:ignore ?>
           <?php echo aled08e_gauge_zone_html($uid); // phpcs:ignore ?>
+          <?php echo aled08e_edition_rappel_html($uid); // phpcs:ignore ?>
           <section class="bricou-bloc" aria-label="Votre demande de modification">
           <div class="bricou-tete"><span class="bricou-art" aria-hidden="true"><?php echo aled08e_monster('bricou'); // phpcs:ignore ?></span><div><strong>Une modification ? Dites-le à Bricou</strong><p>Il prépare votre demande, puis Alex fait la modification.</p></div></div>
           <?php if (aled08e_sans_formule($uid)) : ?><?php echo aled08e_autonomie_html($uid); // phpcs:ignore ?>

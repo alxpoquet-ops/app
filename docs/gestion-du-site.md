@@ -344,6 +344,16 @@ Dans la bulle de Cerise, sur toutes les pages du site, un visiteur peut poser un
 - Garde-fous : la demande doit venir d'une page du site ; 10 questions par heure et 30 par jour par visiteur (empreinte de l'adresse IP) ; 400 questions et 2 $ par jour pour tout le site (options `aled08_bulle_site_jour` et `aled08_bulle_site_budget`) ; question de 300 caractères au plus ; modèle rapide de la bulle (`aled08_bulle_modele`).
 - Aucune question n'est enregistrée : seul le coût du jour est compté. Sans clé Claude, la barre répond « écrivez à Alex ».
 
+## Le client modifie son site lui-même, en direct (21 novembre 2026)
+
+- **Bouton « Modifier mon site moi-même »** sur l'accueil de l'application (et un rappel en haut de « Mes demandes »). Il apparaît dès que le site du client a le connecteur **2.12.0** ou plus.
+- **Ce qui se passe :** l'application fabrique un lien signé avec la clé partagée du connecteur (valable 10 minutes, une seule fois). Le site du client ouvre alors le mode modification pour 2 heures, dans ce navigateur seulement (cookie HttpOnly). Pas de compte WordPress.
+- **Ce que le client peut faire :** cliquer sur un texte du contenu d'une page (paragraphe, titre, élément de liste, bouton) et le réécrire ; cliquer sur une photo et en mettre une autre (JPG, PNG ou WebP, 8 Mo au plus). Chaque changement est en ligne tout de suite, avec une révision juste avant : « Annuler la dernière » revient en arrière. « Terminer » ferme le mode.
+- **Ce qui reste une demande :** la mise en page, les menus, l'en-tête et le pied de page, les pages faites par le thème (ex. l'accueil de Flore), ajouter ou retirer une partie. La barre le dit au client.
+- **Pour Alex :** `POST /aled08/v1/atelier/edition {fiche, page}` donne le même lien (pour vérifier ou aider un client). Le journal du connecteur (Réglages › Alex & Co sur le site du client) note chaque ouverture et chaque changement.
+- **Hébergeur o2switch :** son pare-feu (Tiger Protect) peut ralentir ou demander une vérification si on enchaîne beaucoup d'actions ; la barre affiche alors un message clair (« réessayez dans quelques secondes » / « rechargez la page »).
+- **Aussi dans l'application :** « Mon compte » › le nom du site et sa phrase d'accroche (onglet du navigateur, Google) ; « Ma boutique » › « Mes prix » (prix, promo, en vente, en stock, pour tous les articles d'un coup).
+
 ## Ma boutique : le client gère tout (19 novembre 2026)
 
 Avec le Site Boutique (1 200 €), le client a un onglet « Ma boutique » (`includes/boutique.php`, `articles.php`, `boutique-gestion.php`) avec cinq rubriques :
