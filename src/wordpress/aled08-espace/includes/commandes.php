@@ -634,6 +634,7 @@ function aled08e_cmd_mail_client_en_ligne($c, $vers = '') {
     $offertes = ($formule > 0 && $total > $formule) ? $total - $formule : 0;
     $principales = max(0, $total - $google);
     $forfaitNom = trim((string) ($L['forfait_nom'] ?? ''));
+    $v1 = !isset($L['v1']) || !empty($L['v1']); // la première livraison : une V1 que le client peut modifier
     $offerts = array_values(array_filter((array) ($L['offerts'] ?? []), function ($o) { return is_array($o) && count($o) >= 2 && trim((string) $o[0]) !== ''; }));
     $espace = function_exists('aled08e_clic_lien') && $c['user'] ? aled08e_clic_lien((int) $c['user'], 14) : aled08e_url();
     $typeNom = (aled08e_type($c['type']) ?: [])['name'] ?? 'votre site';
@@ -654,6 +655,10 @@ function aled08e_cmd_mail_client_en_ligne($c, $vers = '') {
     $p = function ($t, $taille = 16) { return '<p style="margin:0 0 14px;font-size:' . $taille . 'px;line-height:1.6;color:#4B4668;">' . $t . '</p>'; };
     $h = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:0 0 6px;">' . aled08e_mail_monstre('ravie', 110) . '</td></tr></table>'
         . '<h1 style="margin:0 0 10px;font-size:28px;line-height:1.2;color:#2E2A47;text-align:center;">Votre site est en ligne !</h1>'
+        . ($v1 ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:4px 0 16px;background:#F1ECFF;border:2px solid #8C6CF2;border-radius:18px;"><tr><td style="padding:14px 16px;">'
+            . '<p style="margin:0 0 6px;font-size:12px;font-weight:bold;letter-spacing:.12em;text-transform:uppercase;color:#5B3FC4;">Version 1</p>'
+            . '<p style="margin:0;font-size:15px;line-height:1.55;color:#2E2A47;"><b>Voici la V1 de votre site</b>, faite avec vos réponses et vos photos. Un texte ou une photo à changer ? Faites-le vous-même depuis votre application, avec le bouton « Modifier mon site moi-même », ou demandez-le-nous dans « Mes demandes ».</p>'
+            . '</td></tr></table>' : '')
         . $p('Bonjour ' . esc_html($c['prenom']) . ', bonne nouvelle : votre ' . esc_html(mb_strtolower($typeNom)) . ' est prêt, et toute la petite bande est fière de vous le présenter.')
         . ($site ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">' . aled08e_mail_bouton($site, 'Voir mon site') . '<p style="margin:-4px 0 18px;font-size:14px;font-weight:bold;color:#5B3FC4;">' . esc_html($host) . '</p></td></tr></table>' : '');
     if ($google > 0 || $total > 0) {
@@ -721,7 +726,7 @@ function aled08e_cmd_mail_client_en_ligne($c, $vers = '') {
         . '<p style="margin:16px 0 0;font-size:16px;line-height:1.6;color:#2E2A47;">Merci pour votre confiance,<br><b>Alex et sa petite bande</b></p>';
 
     // la version texte, pour les messageries qui n'affichent pas le HTML
-    $txt = 'Bonjour ' . $c['prenom'] . ",\n\nBonne nouvelle : votre site est en ligne !\n" . ($site ? 'Adresse : ' . $site . "\n" : '') . "\n"
+    $txt = 'Bonjour ' . $c['prenom'] . ",\n\nBonne nouvelle : votre site est en ligne !\n" . ($v1 ? "Voici la V1 de votre site, faite avec vos réponses et vos photos. Un texte ou une photo à changer ? Faites-le vous-même depuis votre application (bouton « Modifier mon site moi-même »), ou demandez-le-nous dans « Mes demandes ».\n" : '') . ($site ? 'Adresse : ' . $site . "\n" : '') . "\n"
         . ($total > 0 ? 'Votre site compte ' . $total . ' pages' . ($google > 0 ? ', dont ' . $google . ' pages de visibilité Google : autant de portes d’entrée sur votre site' : '') . ".\n\n" : ($google > 0 ? 'Votre site compte ' . $google . " pages de visibilité Google : autant de portes d’entrée sur votre site.\n\n" : ''))
         . ($offertes > 0 ? 'Votre formule ' . $typeNom . ' comprend ' . $formule . ' pages. Les ' . $offertes . " pages en plus vous sont offertes par les Minis Monstres.\n\n" : '')
         . ($offerts ? "Offert par les Minis Monstres :\n" . implode("\n", array_map(function ($o) { return '- ' . $o[0] . ' : ' . $o[1] . ', offert'; }, $offerts)) . "\n\n" : ($forfaitNom !== '' ? 'Votre forfait : ' . $forfaitNom . " (le détail est dans votre application, rubrique Mon compte).\n\n" : ''))

@@ -151,7 +151,24 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
         update_post_meta($cid, '_aled08_chantier', 'en_ligne');
         return new WP_REST_Response(['ok' => true, 'statut' => 'en_ligne'], 200);
     }
-    return new WP_Error('aled08_chantier', 'À faire inconnu (question, note, a_verifier, en_ligne).', ['status' => 400]);
+    if ($faire === 'livrer') {
+        // depuis le 21 novembre 2026 : l'atelier livre lui-même la V1 au client (accord général d'Alex), puis prévient Alex
+        if (!in_array($c['statut'], ['pret', 'en_creation'], true)) return new WP_Error('aled08_chantier', 'Cette commande n’est pas en création (statut ' . $c['statut'] . ').', ['status' => 409]);
+        if (empty($p['resume'])) return new WP_Error('aled08_chantier', 'Le résumé pour le client (resume) est obligatoire.', ['status' => 400]);
+        $lien = esc_url_raw((string) ($p['lien'] ?? ''));
+        if ($lien !== '' && wp_parse_url($lien, PHP_URL_SCHEME) !== 'https') $lien = '';
+        if ($lien !== '') update_post_meta($cid, '_aled08_apercu', $lien);
+        aled08e_chantier_resume_garder($cid, $p);
+        if ($c['user']) update_user_meta($c['user'], 'aled08_visuel_fait', wp_date('Y-m-d'));
+        aled08e_cmd_set_statut($cid, 'en_ligne', 'V1 livrée par l’atelier.');
+        update_post_meta($cid, '_aled08_chantier', 'en_ligne');
+        aled08e_cmd_journal($cid, 'Atelier : V1 livrée au client, e-mail « Votre site est en ligne » envoyé.');
+        // Alex est prévenu, sans rien à valider
+        $site = $lien !== '' ? $lien : ($c['domaine'] ? 'https://' . $c['domaine'] . '/' : (string) aled08e_meta($c['user'], 'site'));
+        wp_mail(aled08e_to(), 'Site livré (V1) : ' . ($c['entreprise'] ?: $c['prenom'] . ' ' . $c['nom']), 'L’atelier a livré la V1 du site au client, avec l’e-mail « Votre site est en ligne ».' . "\n\nSite : " . $site . "\nCommande : " . $c['ref'] . ' ' . aled08e_cmd_admin_url($cid) . "\n\nNote de l’atelier :\n" . $texte . "\n\nCe que le client a reçu :\n" . (string) $p['resume'] . "\n", aled08e_mail_headers());
+        return new WP_REST_Response(['ok' => true, 'statut' => 'en_ligne'], 200);
+    }
+    return new WP_Error('aled08_chantier', 'À faire inconnu (question, note, a_verifier, livrer, en_ligne).', ['status' => 400]);
 }
 
 /* L'e-mail à Alex, le seul du parcours : le site à regarder, puis la réponse se donne dans la conversation avec Claude */
