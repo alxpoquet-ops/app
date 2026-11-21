@@ -3,7 +3,7 @@ Theme Name: Flore & Chenilles · Boutique
 Template: flore-et-chenilles
 Description: Thème enfant de Flore & Chenilles : un vrai site boutique, avec un menu vers les pages (boutique, fleurs, occasions, conseils), un menu téléphone illustré, un pied de page complet et l’en-tête de la boutique avec ses catégories. Clair et sombre, avec le bouton soleil / lune. Le thème parent reste intact.
 Author: Les Minis Monstres
-Version: 1.2.0
+Version: 1.3.2
 Text Domain: flore-et-chenilles-boutique
 */
 
@@ -84,6 +84,30 @@ Text Domain: flore-et-chenilles-boutique
 .fcb-r { padding: 0 20px 18px; color: var(--plum-2); }
 .fcb-r p { margin: 0 0 10px; }
 .fcb-r a { color: var(--rose-ink); }
+
+/* ---------- La page « Les fleurs » : un listing simple, une ligne par fleur avec son icône ---------- */
+.fcb-fl-tete { margin: clamp(22px, 4vw, 40px) 0 clamp(18px, 3vw, 26px); text-align: center; }
+.fcb-fl-tete h1 { margin: 0; font-size: clamp(2.1rem, 1.4rem + 3vw, 3.4rem); line-height: 1.08; }
+.fcb-fl-tete .pg-lead { margin: 14px auto 0; }
+.fcb-fl-couleurs, .fcb-fl-liste, .fcb-fl-fin { width: min(780px, 100%); margin-left: auto; margin-right: auto; }
+.fcb-fl-couleurs { margin-bottom: 18px; padding: 18px 20px 20px; border-radius: 24px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--line); text-align: center; }
+.fcb-fl-couleurs h2 { margin: 0 0 12px; font-family: var(--sans); font-size: .76rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--plum-2); }
+.fcb-fl-couleurs ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 14px; margin: 0; padding: 0; list-style: none; }
+.fcb-fl-couleurs li { display: inline-flex; align-items: center; gap: 7px; font-size: .92rem; color: var(--plum); }
+.fcb-fl-couleurs i { width: 16px; height: 16px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12); }
+.fcb-fl-liste { display: grid; margin-bottom: 26px; padding: 6px 20px; list-style: none; border-radius: 24px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--line); }
+@media (min-width: 700px) { .fcb-fl-liste { grid-template-columns: 1fr 1fr; column-gap: 34px; } }
+.fcb-fl-liste li { display: flex; align-items: center; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--line); font-family: var(--serif); font-size: 1.2rem; color: var(--plum); }
+.fcb-fl-liste li:last-child { border-bottom: 0; }
+@media (min-width: 700px) { .fcb-fl-liste li:nth-last-child(2):nth-child(odd), .fcb-fl-liste li:nth-last-child(2):nth-child(even) { border-bottom: 0; } }
+.fcb-fl-ic { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 15px; background: var(--blush); }
+.fcb-fl-liste li:nth-child(5n+2) .fcb-fl-ic { background: var(--lilac); }
+.fcb-fl-liste li:nth-child(5n+3) .fcb-fl-ic { background: var(--mint); }
+.fcb-fl-liste li:nth-child(5n+4) .fcb-fl-ic { background: var(--peach); }
+.fcb-fl-liste li:nth-child(5n+5) .fcb-fl-ic { background: var(--sky); }
+.fcb-fl-ic svg { width: 26px; height: 26px; fill: none; stroke: var(--rose-ink); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.fcb-fl-fin { margin-bottom: clamp(30px, 5vw, 60px); text-align: center; }
+.fcb-fl-fin p { margin: 0 0 14px; color: var(--plum-2); }
 
 /* ---------- Bouton soleil / lune (clair ou sombre) ---------- */
 .fcb-theme svg { width: 21px; height: 21px; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
