@@ -74,7 +74,7 @@ function aled08e_bienvenue_html($u, $mdp, $clic = '') {
         . '</td></tr>'
         . '<tr><td align="center" style="padding:18px 10px 0;font-size:12px;line-height:1.5;color:#8B86B3;">Les Minis Monstres, sites internet pour artisans et commerçants.<br>Gardez cet e-mail : il contient vos identifiants.</td></tr>'
         . '</table></td></tr></table></body></html>';
-    return $h;
+    return function_exists('aled08e_mail_clair') ? aled08e_mail_clair($h) : $h;
 }
 
 /* La version texte, pour les messageries qui n'affichent pas le HTML */

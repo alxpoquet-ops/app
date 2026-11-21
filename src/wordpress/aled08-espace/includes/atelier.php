@@ -55,6 +55,7 @@ function aled08e_atelier_action(WP_REST_Request $req) {
  *   GET  /aled08/v1/atelier/chantiers                 les commandes payées pas encore en ligne
  *   POST /aled08/v1/atelier/chantier { commande, faire: question | note | a_verifier | en_ligne (+ accord_alex), texte, resume }
  *   « resume » : le contenu du site expliqué au client, repris dans l'e-mail « Votre site est en ligne ».
+ *   « pages_google » : le nombre de pages faites pour Google (Site Visibilité et Site Boutique), annoncé dans ce même e-mail.
  *  États (_aled08_chantier) : '' (à lire), question (on attend le client), reponse (le client a répondu), visuel, a_verifier.
  * ========================================================================= */
 function aled08e_chantier_auto() { return get_option('aled08_chantier_auto', '1') === '1'; }
@@ -159,7 +160,10 @@ function aled08e_chantier_resume($cid) { return (string) get_post_meta($cid, '_a
 function aled08e_chantier_resume_garder($cid, $p) {
     $r = trim(sanitize_textarea_field((string) ($p['resume'] ?? '')));
     if ($r !== '') update_post_meta($cid, '_aled08_resume', mb_substr($r, 0, 4000));
+    if (isset($p['pages_google'])) update_post_meta($cid, '_aled08_pages_google', max(0, min(200, (int) $p['pages_google'])));
 }
+/* Le nombre de pages faites pour Google (Site Visibilité et Site Boutique) */
+function aled08e_chantier_pages_google($cid) { return (int) get_post_meta($cid, '_aled08_pages_google', true); }
 function aled08e_chantier_mail_verifier($c, $texte, $lien = '') {
     $site = $lien !== '' ? $lien : ($c['domaine'] ? 'https://' . $c['domaine'] . '/' : (string) aled08e_meta($c['user'], 'site'));
     $p = function ($t) { return '<p style="margin:0 0 14px;font-size:16px;line-height:1.6;color:#CFCBEA;">' . $t . '</p>'; };
@@ -167,6 +171,7 @@ function aled08e_chantier_mail_verifier($c, $texte, $lien = '') {
         . $p('Le site de <b style="color:#FFFFFF;">' . esc_html(aled08e_cmd_nom($c)) . '</b> (' . esc_html($c['ref']) . ') est prêt. Il ne reste qu’à le regarder.')
         . ($site ? aled08e_mail_bouton($site, 'Voir le site') . '<p style="margin:-6px 0 18px;font-size:14px;color:#A9D9C5;">' . esc_html(preg_replace('#^https?://#', '', untrailingslashit($site))) . '</p>' : '')
         . ($texte !== '' ? '<p style="margin:0 0 8px;font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#FF8EBF;">Ce que j’ai fait, et ce qui reste à voir</p>' . $p(nl2br(esc_html($texte))) : '')
+        . (($pg = aled08e_chantier_pages_google($c['id'])) > 0 ? $p('<b style="color:#FFFFFF;">' . $pg . ' pages de visibilité Google</b> annoncées au client.') : '')
         . (($res = aled08e_chantier_resume($c['id'])) !== '' ? '<p style="margin:0 0 8px;font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#FFD36E;">Le résumé que le client recevra</p>' . $p(nl2br(esc_html($res))) : '')
         . '<p style="margin:8px 0 8px;font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#7BDDB1;">Et ensuite ?</p>'
         . $p('Revenez dans la conversation avec Claude et dites simplement :<br>« <b style="color:#FFFFFF;">OK</b> » pour mettre le site en ligne (le client est prévenu et son forfait démarre),<br>ou ce que vous voulez changer.')
@@ -266,7 +271,7 @@ function aled08e_jauge_html($cmd) {
 
 /* =========================================================================
  *  La commande d'essai : rejouer tout le parcours d'un client sans rien payer ni rien acheter.
- *  POST /aled08/v1/atelier/essai { faire: creer | etape | questionnaire | connexion | livraison (+ resume) | supprimer, … }
+ *  POST /aled08/v1/atelier/essai { faire: creer | etape | questionnaire | connexion | livraison (+ resume, pages_google) | supprimer, … }
  *  Le compte et la commande portent la marque « essai » : l'automate les ignore (pas de domaine acheté, pas d'hébergement).
  * ========================================================================= */
 add_action('rest_api_init', function () {
