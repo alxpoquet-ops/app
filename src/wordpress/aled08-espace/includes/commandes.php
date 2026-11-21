@@ -667,11 +667,29 @@ function aled08e_cmd_mail_client_en_ligne($c, $vers = '') {
             'etoile', aled08e_mail_etiquette('Votre site en chiffres', '#7A5600'));
     }
     if ($offerts) {
-        $li = '';
-        foreach ($offerts as $o) $li .= '<tr><td style="padding:9px 0;border-bottom:1px solid #F7C6DA;font-size:15px;line-height:1.4;color:#2E2A47;"><b>' . esc_html($o[0]) . '</b></td>'
-            . '<td align="right" style="padding:9px 0 9px 10px;border-bottom:1px solid #F7C6DA;white-space:nowrap;font-size:14px;line-height:1.4;"><s style="color:#8A84A8;">' . esc_html($o[1]) . '</s><br><b style="font-size:16px;color:#A3305F;">Offert</b></td></tr>';
-        $h .= aled08e_mail_carte('rose', '<p style="margin:6px 0 8px;font-size:15px;line-height:1.55;color:#4B4668;">' . ($forfaitNom !== '' ? 'Votre forfait est fait sur mesure pour vous, et il vous est offert, lui aussi. ' : '') . 'Voici ce que les Minis Monstres vous offrent :</p>'
-            . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 4px;">' . $li . '</table>', 'clin', aled08e_mail_etiquette('Offert par les Minis Monstres', '#A3305F'));
+        // deux cartes, comme dans l'application : ce qui se paie une fois (création, pages), puis le forfait au mois
+        $montantDe = function ($t) { return (float) str_replace([' ', "\u{00A0}", "\u{202F}", ','], ['', '', '', '.'], preg_replace('/[^\d ,\x{00A0}\x{202F}]/u', '', explode('€', $t)[0])); };
+        $ligne = function ($o, $bord) { return '<tr><td style="padding:9px 0;border-bottom:1px solid ' . $bord . ';font-size:15px;line-height:1.4;color:#2E2A47;"><b>' . esc_html($o[0]) . '</b></td>'
+            . '<td align="right" style="padding:9px 0 9px 10px;border-bottom:1px solid ' . $bord . ';white-space:nowrap;font-size:14px;line-height:1.4;"><s style="color:#8A84A8;">' . esc_html($o[1]) . '</s><br><b style="font-size:16px;color:#A3305F;">Offert</b></td></tr>'; };
+        $ligneTotal = function ($m, $suffixe, $bord) { return '<tr><td style="padding:12px 0 2px;font-size:16px;color:#2E2A47;"><b>Total' . ($suffixe !== '' ? ' ' . $suffixe : '') . '</b></td><td align="right" style="padding:12px 0 2px 10px;white-space:nowrap;"><s style="font-size:15px;color:#8A84A8;">' . esc_html(aled08e_euro_txt($m)) . '</s> <b style="font-size:20px;color:#A3305F;">Offert</b></td></tr>'; };
+        $uneFois = []; $auMois = [];
+        foreach ($offerts as $o) { if (preg_match('/par mois|par an/u', $o[1])) $auMois[] = $o; else $uneFois[] = $o; }
+        if ($uneFois) {
+            $li = ''; $somme = 0;
+            foreach ($uneFois as $o) { $li .= $ligne($o, '#F7C6DA'); $somme += $montantDe($o[1]); }
+            if (count($uneFois) > 1 && $somme > 0) $li .= $ligneTotal($somme, '', '#F7C6DA');
+            $h .= aled08e_mail_carte('rose', '<p style="margin:6px 0 8px;font-size:15px;line-height:1.55;color:#4B4668;">Voici ce que les Minis Monstres vous offrent :</p>'
+                . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 4px;">' . $li . '</table>', 'clin', aled08e_mail_etiquette('Offert par les Minis Monstres', '#A3305F'));
+        }
+        if ($auMois) {
+            $li = ''; $somme = 0;
+            foreach ($auMois as $o) { $li .= $ligne($o, '#BFDDF7'); $somme += $montantDe($o[1]); }
+            if (count($auMois) > 1 && $somme > 0) $li .= $ligneTotal($somme, strpos($auMois[0][1], 'par an') !== false ? 'chaque année' : 'chaque mois', '#BFDDF7');
+            $h .= aled08e_mail_carte('ciel', ($forfaitNom !== '' ? '<p style="margin:6px 0 4px;font-size:22px;line-height:1.25;font-weight:bold;color:#2E2A47;">' . esc_html($forfaitNom) . '</p>' : '')
+                . '<p style="margin:0 0 8px;font-size:15px;line-height:1.55;color:#4B4668;">Hébergement, sécurité, sauvegardes et modifications : votre forfait' . (count($auMois) > 1 ? ' et votre nom de domaine vous sont offerts' : ' vous est offert') . ' par les Minis Monstres.</p>'
+                . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 10px;">' . $li . '</table>'
+                . '<p style="margin:0;font-size:14px;line-height:1.5;color:#4B4668;">Ce détail est aussi dans votre application, rubrique « Mon compte », puis « Mon forfait et mes factures ».</p>', 'chaton', aled08e_mail_etiquette('Votre forfait', '#1F5E9E'));
+        }
     } elseif ($forfaitNom !== '') {
         $h .= aled08e_mail_carte('ciel', '<p style="margin:6px 0 4px;font-size:22px;line-height:1.25;font-weight:bold;color:#2E2A47;">' . esc_html($forfaitNom) . '</p>'
             . '<p style="margin:0;font-size:15px;line-height:1.55;color:#4B4668;">Votre forfait est fait sur mesure pour vous. Son détail est dans votre application, rubrique « Mon compte ».</p>', 'chaton', aled08e_mail_etiquette('Votre forfait', '#1F5E9E'));
