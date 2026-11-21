@@ -6,6 +6,9 @@
 // aide (facultatif), options (choix et multi), autre (true : champ libre « Autre »),
 // types (limite le champ à certains types de site), si (affiché seulement si un autre champ a cette valeur),
 // prerempli (valeur reprise de la commande), requis, max (images et listes), colonnes (listes).
+// 21 novembre 2026 : une seule offre. 'une-page' = le Site Essentiel, 'boutique' = le Site Essentiel + e-commerce, 'vitrine' = l'ancien
+// Site Visibilité (retiré, gardé pour les anciennes commandes). « Être trouvé sur Google » vaut pour tous les sites ; les parties du
+// site (les modules) valent pour le Site Essentiel, avec ou sans boutique ; la liste de pages ne reste que pour les anciens Sites Visibilité.
 const sections = [
   {
     id: 'site',
@@ -41,11 +44,10 @@ const sections = [
     id: 'google',
     titre: 'Être trouvé sur Google',
     icon: 'search-check',
-    types: ['vitrine', 'boutique'],
     champs: [
-      { id: 'villes', label: 'Dans quelles villes ou quels secteurs voulez-vous être trouvé ?', kind: 'texte_long', requis: true, aide: 'Par exemple : Thionville, Hayange, Metz et alentours. Une page peut être faite pour chacun : seulement ceux que vous nous donnez.' },
+      { id: 'villes', label: 'Dans quelles villes ou quels secteurs voulez-vous être trouvé ?', kind: 'texte_long', requis: true, aide: 'Par exemple : Thionville, Hayange, Metz et alentours. Votre site les cite, pour que Google vous montre près de chez vous. Plus tard, une page de visibilité Google peut être faite pour chacun.' },
       { id: 'recherches', label: 'Que tapent vos clients sur Google pour vous trouver ?', kind: 'texte_long', requis: true, aide: 'Quelques recherches, comme vous les imaginez : « bougie personnalisée prénom », « cadeau naissance bougie ». Pas d’idée ? Notez vos produits et services principaux.' },
-      { id: 'conseils', label: 'Des sujets de conseils que vous aimeriez partager ? (facultatif)', kind: 'texte_long', aide: 'Par exemple : « comment bien entretenir une bougie ». Nous écrivons aussi des pages de conseils sur votre métier pour Google : vous les relisez avant la mise en ligne.' },
+      { id: 'conseils', label: 'Des sujets de conseils que vous aimeriez partager ? (facultatif)', kind: 'texte_long', aide: 'Par exemple : « comment bien entretenir une bougie ». Si vous prenez des pages de visibilité Google, ces sujets peuvent devenir des pages de conseils : vous les relisez avant la mise en ligne.' },
     ],
   },
   {
@@ -88,8 +90,8 @@ const sections = [
     titre: 'Le contenu',
     icon: 'layout-template',
     champs: [
-      { id: 'blocs', label: 'Les parties de votre page', kind: 'multi', types: ['une-page'], autre: true, options: ['Pourquoi me choisir', 'Mes produits ou services', 'Mes prix', 'Comment ça se passe', 'Galerie de photos', 'Où me trouver (adresse, horaires, marchés)', 'Questions fréquentes', 'Contact'], defaut: ['Pourquoi me choisir', 'Mes produits ou services', 'Mes prix', 'Comment ça se passe', 'Galerie de photos', 'Où me trouver (adresse, horaires, marchés)', 'Questions fréquentes', 'Contact'], aide: 'Tout est coché : c’est ce qui fait un site complet. Décochez seulement ce que vous ne voulez pas. Une partie encore vide (pas de photos, pas de dates) affichera « bientôt ».' },
-      { id: 'pages_voulues', label: 'Les pages que vous voulez', kind: 'liste', types: ['vitrine', 'boutique'], max: 15, colonnes: [{ id: 'nom', label: 'Nom de la page', kind: 'texte' }, { id: 'contenu', label: 'Ce qu’elle doit dire', kind: 'texte_long' }], aide: 'Par exemple : Accueil, Nos services, Tarifs, FAQ, À propos, Contact. Jusqu’à 15 pages, pages de visibilité Google comprises.' },
+      { id: 'blocs', label: 'Les parties de votre site', kind: 'multi', types: ['une-page', 'boutique'], autre: true, options: ['Pourquoi me choisir', 'Mes produits ou services', 'Mes prix', 'Comment ça se passe', 'Galerie de photos', 'Où me trouver (adresse, horaires, marchés)', 'Questions fréquentes', 'Contact'], defaut: ['Pourquoi me choisir', 'Mes produits ou services', 'Mes prix', 'Comment ça se passe', 'Galerie de photos', 'Où me trouver (adresse, horaires, marchés)', 'Questions fréquentes', 'Contact'], aide: 'Votre site est fait de modules, déjà prêts. Tout est coché : c’est ce qui fait un site complet. Décochez seulement ce que vous ne voulez pas. Une partie encore vide (pas de photos, pas de dates) affichera « bientôt ».' },
+      { id: 'pages_voulues', label: 'Les pages que vous voulez', kind: 'liste', types: ['vitrine'], max: 15, colonnes: [{ id: 'nom', label: 'Nom de la page', kind: 'texte' }, { id: 'contenu', label: 'Ce qu’elle doit dire', kind: 'texte_long' }], aide: 'Par exemple : Accueil, Nos services, Tarifs, FAQ, À propos, Contact.' },
       { id: 'textes', label: 'Les textes du site', kind: 'choix', requis: true, options: ['Écrivez-les pour moi à partir de mes réponses', 'J’écris mes textes et je les envoie'] },
     ],
   },

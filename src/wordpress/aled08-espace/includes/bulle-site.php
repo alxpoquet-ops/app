@@ -28,7 +28,7 @@ function aled08e_bsite_faits() {
     $f = [];
     $f[] = 'Les Minis Monstres : un petit studio français qui crée des sites internet pour les commerçants, artisans et associations. C’est Alex qui conçoit les sites et qui les met en ligne. La bande : Cerise la secrétaire, Bricou le constructeur, Plume la rédactrice, Mirette la spécialiste visibilité, Mochi l’organisateur.';
     $f[] = 'Phrase clé : avoir une activité sans site internet, c’est comme posséder une magnifique vitrine dans une rue où personne ne passe.';
-    foreach ((array) ($D['types'] ?? []) as $t) $f[] = $t['name'] . ' : ' . aled08e_euro_txt($t['price']) . ', payé une seule fois' . (!empty($t['but']) ? ' (pour ' . mb_strtolower($t['but']) . ')' : '') . '. Il comprend : ' . implode(', ', (array) ($t['inclus'] ?? [])) . '.';
+    foreach ((array) ($D['types'] ?? []) as $t) if (empty($t['retire'])) $f[] = $t['name'] . ' : ' . aled08e_euro_txt($t['price']) . ', payé une seule fois' . (!empty($t['but']) ? ' (pour ' . mb_strtolower($t['but']) . ')' : '') . '. Il comprend : ' . implode(', ', (array) ($t['inclus'] ?? [])) . '.';
     $f[] = 'Le visiteur choisit son site sur la page « Créer mon site » et voit le prix avant de commander. Paiement : le site se paie en entier à la commande, en une fois ou en 3 ou 4 fois avec Alma ou Klarna (ce sont eux qui donnent leur accord, sur la page de paiement). Le forfait mensuel démarre à la mise en ligne du site. Les révisions sont illimitées jusqu’à la validation finale du site. L’export du site est possible.';
     $f[] = 'Ensuite, deux choix, sans obligation d’abonnement. Forfait Autonome, 0 € par mois : le client gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour.';
     foreach ((array) ($D['forfaits'] ?? []) as $x) $f[] = 'Ou le forfait ' . $x['name'] . ' : ' . aled08e_euro_txt($x['month']) . ' par mois, sans engagement. Il comprend : ' . implode(', ', (array) ($x['main'] ?? [])) . '.';
@@ -38,7 +38,7 @@ function aled08e_bsite_faits() {
     $u = [];
     foreach (aled08e_a_la_demande() as $x) if ($x['id'] !== 'urgent') $u[] = $x['name'] . ' : ' . (!empty($x['devis']) ? 'sur devis' : aled08e_euro_txt($x['prix']) . ', payé une fois par carte');
     $f[] = 'Extras, depuis l’espace client : ' . implode(' ; ', $u) . '.';
-    $f[] = 'Le Site Boutique ouvre l’onglet « Ma boutique » de l’espace client : le client y gère lui-même ses articles, ses prix, ses moyens de paiement (Stripe, PayPal) et ses commandes.';
+    $f[] = 'L’option e-commerce (+ 200 €) ajoute la boutique et ouvre l’onglet « Ma boutique » de l’espace client : le client y gère lui-même ses articles, ses prix, ses moyens de paiement (Stripe, PayPal) et ses commandes. Les pages de visibilité Google se prennent en plus, 15 € la page, depuis l’espace client. Le site est fait de modules déjà prêts et soignés, remplis avec les informations et les photos du client : c’est pour ça qu’il coûte moins cher et qu’il est prêt en quelques jours.';
     $f[] = 'Alex répond aux messages en général dans la journée. Pour lui écrire : page Contact.';
     return implode("\n", $f);
 }

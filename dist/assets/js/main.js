@@ -202,12 +202,13 @@
     });
   };
 
-  /* les trois sites (Essentiel, Visibilité, Boutique) : des boutons radio ; ?type=... dans l'adresse coche le bon */
+  /* le site (21 novembre 2026) : le Site Essentiel (champ caché 'une-page') et la case « E-commerce » (même nom, valeur 'boutique').
+     ?type=boutique (ou ecommerce) dans l'adresse coche la case. L'ancien ?type=vitrine (Site Visibilité, retiré) donne le Site Essentiel. */
   var initBoutique = function (scope) {
     var box = $('[data-type-choix]', scope);
     if (!box) return;
     var q = slug(new URLSearchParams(location.search).get('type') || '');
-    var id = /^boutique/.test(q) ? 'boutique' : /^(une-page|essentiel)/.test(q) ? 'une-page' : /^(vitrine|visibilite)/.test(q) ? 'vitrine' : '';
+    var id = /^(boutique|e-?commerce)/.test(q) ? 'boutique' : '';
     var r = id && $('input[value="' + id + '"]', box);
     if (r) r.checked = true;
   };
@@ -435,7 +436,7 @@
 
     /* le total, en bas de la page */
     function update(ev) {
-      var t = find(data.types, val('b-type')) || find(data.types, 'vitrine') || data.types[0];
+      var t = find(data.types, val('b-type')) || find(data.types, 'une-page') || data.types[0];
       var seule = val('b-gestion') === 'moi'; // création seule : pas de formule, le code du site est remis
       var f = seule ? (find(data.forfaits, 'sans') || { id: 'sans', name: 'Autonome', month: 0 }) : (find(data.forfaits, val('b-forfait')) || data.forfaits[0]);
       // le client garde son nom de domaine : on le note, et on le remet comme avant s'il revient à « on s'occupe de tout »
@@ -572,7 +573,7 @@
     var autoOwn = false; // « j'ai déjà un nom de domaine » coché par « je m'en occupe moi-même »
 
     function update(fromUser, ev) {
-      var t = find(data.types, val('type')) || find(data.types, 'vitrine') || data.types[0];
+      var t = find(data.types, val('type')) || find(data.types, 'une-page') || data.types[0];
       var seule = val('gestion') === 'moi'; // création seule : pas de formule, le code du site est remis
       var f = seule ? (find(data.forfaits, 'sans') || { id: 'sans', name: 'Autonome', month: 0 }) : (find(data.forfaits, val('forfait')) || data.forfaits[0]);
       if (seule && !domain.own()) { autoOwn = true; domain.setOwn(true); return; }

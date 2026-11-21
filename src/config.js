@@ -155,7 +155,7 @@ marche.fois = Math.round(marche.vitrineMin / creation.prix) + ' à ' + Math.roun
 // 'vitrine' = l'ancien Site Visibilité (750 €), retiré (retire: true) : plus proposé nulle part, gardé pour les anciennes commandes.
 // Sur le site public, on montre une seule offre (typesOfferts[0]) et une case « E-commerce » qui passe la commande en 'boutique'.
 // delai : « quelques jours », sans promesse précise.
-const INCLUS_ESSENTIEL = ['Site internet personnalisé, assemblé à partir de nos modules', 'Rempli avec vos informations et vos photos', 'Design adapté à votre activité', 'Compatible téléphone et ordinateur', 'Formulaire de contact', 'Bases du référencement Google', 'Rendez-vous téléphonique de découverte', 'Révisions illimitées jusqu’à validation finale du site*', 'Mise en ligne complète', 'Modifiable par vous-même depuis votre espace client', 'Export du site possible'];
+const INCLUS_ESSENTIEL = ['Site internet personnalisé, assemblé à partir de nos modules', 'Rempli avec vos informations et vos photos', 'Design adapté à votre activité', 'Compatible téléphone et ordinateur', 'Formulaire de contact', 'Bases du référencement Google', 'Rendez-vous téléphonique de découverte', 'Révisions illimitées jusqu’à validation finale du site*', 'Mise en ligne complète', 'Modifiable par vous-même, avec le forfait Mini', 'Export du site possible'];
 // Ce que l'option e-commerce ajoute (ce qu'apportait le Site Boutique)
 const INCLUS_ECOMMERCE = ['Boutique en ligne complète', 'Vente de produits et services', 'Panier d’achat', 'Paiement en ligne sécurisé', 'E-mails de commande automatiques', 'Catalogue, prix et promotions gérés par vous', 'Livraison et moyens de paiement réglés par vous', 'Configuration complète de la boutique'];
 const types = [

@@ -2,32 +2,34 @@
 // Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160, aucun tiret long
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de config.js), aucun client,
 // avis ou chiffre inventé, et pas de phrase de 9 mots ou plus reprise d'une autre page.
-// Offre du 19 novembre 2026 : trois sites payés une fois (config.types : Site Essentiel, Site Visibilité, Site Boutique),
-// puis Autonomie (config.creationSeule, sans abonnement, export du site remis au client) ou Mini (config.forfaits[0], au mois,
+// Offre du 21 novembre 2026 : un seul site payé une fois, le Site Essentiel (config.offreSite), assemblé à partir de nos modules,
+// avec l'option e-commerce (+ 200 €). Le Site Visibilité est retiré : les pages pour Google sont l'extra packseo (15 € la page).
+// Puis Autonomie (config.creationSeule, sans abonnement, export du site remis au client) ou Mini (config.forfaits[0], au mois,
 // sans engagement, modifications incluses, une demande à la fois). L'abonnement est facultatif. Trois extras : la page de
 // visibilité Google (payée une fois, par carte), la traduction anglaise et la fonctionnalité spécifique (sur devis).
 // La petite bande (config.bande) compte six Minis Monstres.
 // Ton (tour global du 19 novembre 2026) : « nous / on », Alex nommé quand c'est utile (jamais « je »), vouvoiement, « site internet »,
 // « modification ». Chaque page ouvre sur la visibilité (un site rend visible, c'est notre métier) et garde l'ordre de l'offre :
 // le site, puis Autonomie ou Mini, enfin les extras. Pages courtes, pensées pour le téléphone.
-// options : les conseils de la page (« Ce qu’on vous conseille »). Ids acceptés : 'boutique' (le Site Boutique),
+// options : les conseils de la page (« Ce qu’on vous conseille »). Ids acceptés : 'boutique' (l'option e-commerce),
 // 'base' (l'abonnement Mini), ou l'id d'un extra de config.aLaDemande encore proposé ('packseo', 'anglais', 'specifique').
 // Le prix affiché vient de config.js. Chaque « pourquoi » doit coller à ce qui est conseillé.
 // (Le code événement a été retiré le 17 novembre 2026 : un seul champ « Code promo » à la commande ; le parrainage est retiré.)
-const { creation, forfaits, paiement, fractionne, marche, bande, evenement, types, creationSeule } = require('../config');
+const { creation, forfaits, paiement, fractionne, marche, bande, evenement, creationSeule } = require('../config');
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
 
-const T = (id) => types.find((t) => t.id === id) || {};
-const ESS = T('une-page'), VIS = T('vitrine'), BOU = T('boutique'); // les trois sites
+const { offreSite, aLaDemande } = require('../config');
+const ESS = offreSite.site, BOU = offreSite.avecBoutique, ECO = offreSite.option; // le site, le site avec l'option, l'option
+const eco = ECO.name.toLowerCase(); // « e-commerce »
+const prixPage = eur((aLaDemande.find((x) => x.id === 'packseo' && !x.retire) || { prix: 0 }).prix); // une page de visibilité Google
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement, facultatif
 const AUTO = creationSeule.name; // sans abonnement
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
 const prix = eur(ESS.price); // le Site Essentiel
-const prixVis = eur(VIS.price); // le Site Visibilité
-const prixBoutique = mille(BOU.price); // le Site Boutique
-const pagesComprises = creation.pages; // nombre maximal de pages du Site Visibilité
+const prixOption = eur(ECO.prix); // l'option e-commerce
+const prixBoutique = eur(BOU.price); // le Site Essentiel avec l'option e-commerce
 const EN_FOIS = `en ${fractionne.fois} fois avec ${fractionne.organismes}`; // par un organisme externe, sur la page de paiement
 const marcheVitrine = `${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €`;
 const remise = `${evenement.remise} %`; // le code événement, sur la création du site
@@ -90,7 +92,7 @@ Prenez l’habitude de photographier avant et après, même au téléphone. Troi
 
 Vous proposez plusieurs prestations, par exemple plomberie, chauffage et salle de bain ? Chacune mérite sa page. Celui qui cherche « installation pompe à chaleur » tombe alors sur la page qui en parle, et pas sur un texte fourre-tout.
 
-C’est le rôle du ${VIS.name} : jusqu’à ${pagesComprises} pages, avec des pages de visibilité Google intégrées, écrites pour des recherches comme « recherche de fuite » dans votre secteur. Pour un seul métier, simple à présenter, le ${ESS.name} peut suffire. Le guide [une page ou un site vitrine](/guides/site-une-page-ou-site-vitrine/) vous aide à trancher.
+C’est le rôle des pages de visibilité Google : ${prixPage} € la page, ajoutées une fois votre ${ESS.name} en ligne, et écrites pour des recherches comme « recherche de fuite » dans votre secteur. Pour un seul métier, simple à présenter, le ${ESS.name} seul peut suffire. Le guide [une page ou un site vitrine](/guides/site-une-page-ou-site-vitrine/) vous aide à trancher.
 
 Le site fait équipe avec votre [fiche Google](/guides/fiche-google-entreprise/) : la fiche vous place sur la carte, le site achève de convaincre.
 
@@ -102,14 +104,14 @@ Un tarif change, une nouvelle photo arrive ? Avec le forfait ${mini.name}, envoy
 
 ## Combien ça coûte
 
-- **Le site, payé une fois** : ${prix} € pour le ${ESS.name}, ${prixVis} € pour le ${VIS.name}.
+- **Le site, payé une fois** : ${prix} € pour le ${ESS.name}, puis ${prixPage} € par page de visibilité Google, si vous en voulez.
 - **Ensuite** : le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement.
 
 Vous payez le site à la commande, d’un coup ou ${EN_FOIS}, au choix sur la page de paiement.
 
 Pour comparer, un site vitrine de ${marche.pagesCompare} pages confié à un indépendant se paie en général entre ${marcheVitrine}, d’après des fourchettes publiées par des prestataires (les [sources](/pourquoi-moins-cher/) sont citées). Tout est détaillé sur la page [tarifs](/tarifs/).`,
     faq: [
-      { q: 'Combien coûte un site internet pour un artisan ?', a: `${prix} € pour un ${ESS.name}, sur une seule page, ou ${prixVis} € pour un ${VIS.name}, jusqu’à ${pagesComprises} pages. Ensuite, c’est le forfait ${AUTO}, sans rien payer chaque mois, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois.` },
+      { q: 'Combien coûte un site internet pour un artisan ?', a: `${prix} € pour un ${ESS.name}, payés une fois, et ${prixPage} € par prestation que vous voulez mettre en avant sur Google. Ensuite, c’est le forfait ${AUTO}, sans rien payer chaque mois, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois.` },
       { q: 'Je travaille sur une grande zone, comment être trouvé partout ?', a: 'Citez les principales communes où vous travaillez, sans en aligner des dizaines. Une liste honnête sur le site, et une zone bien réglée sur votre fiche Google, valent mieux qu’une page par village.' },
       { q: 'Je n’ai presque pas de photos de chantier, est-ce un problème ?', a: 'Non. On démarre avec ce que vous avez, même deux clichés pris au téléphone. Le site s’étoffe ensuite chantier après chantier.' },
       { q: 'J’ai déjà un vieux site, faut-il tout recommencer ?', a: 'Le nouveau site est fait à neuf, mais vos textes et vos photos servent de base. Si vous avez déjà un nom de domaine, vous le gardez, et nous le relions au nouveau site.' },
@@ -170,7 +172,7 @@ Voici les repères que nous appliquons en écrivant vos textes avec vous :
 
 Pour une seule pratique, une page bien construite fait l’affaire. Avec plusieurs pratiques, chacune peut avoir la sienne. Quelqu’un qui tape « réflexologie plantaire » et le nom de sa ville tombe alors sur la page qui en parle vraiment.
 
-Les pages de conseils sont une autre piste : comment se passe une première séance, trois exercices de respiration à faire chez soi. Chacune répond à une vraie question et ouvre une porte de plus vers vous. Ce sont des pages de visibilité Google. Le ${VIS.name} en contient déjà, et d’autres se commandent à la carte.
+Les pages de conseils sont une autre piste : comment se passe une première séance, trois exercices de respiration à faire chez soi. Chacune répond à une vraie question et ouvre une porte de plus vers vous. Ce sont des pages de visibilité Google, qui se commandent à la carte.
 
 C’est le choix fait pour le site d’un magnétiseur, à découvrir parmi nos [réalisations](/realisations/).
 
@@ -182,7 +184,7 @@ Alex relit ensuite chaque phrase avec vous, surtout les plus délicates. Rien ne
 
 ## Le prix
 
-- **Le site** : le ${ESS.name}, à ${prix} €, pour une seule page. Le ${VIS.name}, à ${prixVis} €, pour une page par pratique, avec ${pagesComprises} pages au plus.
+- **Le site** : le ${ESS.name}, à ${prix} €. Puis, pour donner sa page à chaque pratique, ${prixPage} € la page de visibilité Google.
 - **Ensuite** : le forfait ${AUTO} si vous gérez tout seul, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois et sans engagement.
 
 Avec le forfait ${mini.name}, vos horaires ou vos tarifs bougent ? Vous le demandez, et c’est fait pour vous. Vous avez déjà un agenda en ligne ? Un bouton du site y mène, sans rien payer de plus. Les deux formules sont présentées sur la page [tarifs](/tarifs/).`,
@@ -218,7 +220,7 @@ Avec le forfait ${mini.name}, vos horaires ou vos tarifs bougent ? Vous le deman
       texte: 'Ici, tout est fait main, pièce par pièce. Le site laisse toute la place aux créations, et la boutique en ligne, qui ouvre très bientôt, permettra de les commander sans passer par l’atelier.',
     },
     options: [
-      { id: 'boutique', pourquoi: `Avec le ${BOU.name}, vos pièces se choisissent, se paient en ligne et partent vers leur acheteur, même quand l’atelier est fermé.` },
+      { id: 'boutique', pourquoi: `Avec l’option ${eco}, vos pièces se choisissent, se paient en ligne et partent vers leur acheteur, même quand l’atelier est fermé.` },
       { id: 'packseo', pourquoi: 'Une page de plus sur une technique ou une matière, là où les amateurs commencent leurs recherches. Vous la commandez une fois le site lancé, et vous la payez en une fois.' },
     ],
     body: `## Un atelier que l’on voit de partout
@@ -256,7 +258,7 @@ Vous nous envoyez vos photos et quelques notes sur chaque pièce. La petite band
 
 ## Le prix
 
-- **Le site, payé une fois** : ${prixVis} € le ${VIS.name} pour la galerie, ${prixBoutique} € le ${BOU.name} pour vendre en ligne.
+- **Le site, payé une fois** : ${prix} € le ${ESS.name} pour la galerie, et ${prixOption} € de plus avec l’option ${eco} pour vendre en ligne.
 - **Ensuite** : le forfait ${AUTO} ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
 
 Le site se règle en commandant, en une seule fois ou ${EN_FOIS}. Une nouvelle collection à présenter ? Avec le forfait ${mini.name}, c’est une modification incluse.`,
@@ -264,7 +266,7 @@ Le site se règle en commandant, en une seule fois ou ${EN_FOIS}. Une nouvelle c
       { q: 'Faut-il un statut pour vendre ses créations en ligne ?', a: 'Oui, dès que vous vendez de façon régulière. La micro-entreprise est la solution la plus courante pour démarrer. Les artistes auteurs ont un régime à part : renseignez-vous auprès de l’Urssaf avant d’ouvrir la boutique.' },
       { q: 'Mes photos sont-elles protégées une fois en ligne ?', a: 'Vos œuvres et vos photos restent à vous : le droit d’auteur s’applique sans aucune démarche. Nous publions des images assez grandes pour être belles à l’écran, sans mettre en ligne vos fichiers en pleine qualité.' },
       { q: 'Je vends déjà sur une place de marché, un site est-il utile ?', a: 'Oui, les deux se complètent. La place de marché amène du passage. Votre site, lui, porte votre nom, sans concurrent affiché à côté.' },
-      { q: 'Combien coûte un site avec boutique pour un créateur ?', a: `Le ${BOU.name} coûte ${prixBoutique} €, payés une fois. Il comprend le site, le panier, le paiement en ligne sécurisé et le suivi des commandes. Vous ajoutez vos pièces vous-même, autant que vous voulez.` },
+      { q: 'Combien coûte un site avec boutique pour un créateur ?', a: `Le ${ESS.name} avec l’option ${eco} coûte ${prixBoutique} €, payés une fois. Il comprend le site, le panier, le paiement en ligne sécurisé et le suivi des commandes. Vous ajoutez vos pièces vous-même, autant que vous voulez.` },
     ],
     voir: ['/guides/creer-boutique-en-ligne/', '/realisations/', '/tarifs/'],
   },
@@ -321,7 +323,7 @@ Le voyageur remplit une demande de séjour : ses dates, le nombre de personnes, 
 
 Avant de choisir où dormir, beaucoup de voyageurs cherchent d’abord une région, une randonnée, un lieu à visiter.
 
-Le ${VIS.name} compte jusqu’à ${pagesComprises} pages, dont des pages de visibilité Google : une sur la boucle de randonnée qui part de chez vous, une sur le marché du dimanche, une sur le château voisin. ${qui('observateur')} de notre petite bande, en prépare les sujets avec vous.
+Les pages de visibilité Google sont faites pour eux, à ${prixPage} € la page : une sur la boucle de randonnée qui part de chez vous, une sur le marché du dimanche, une sur le château voisin. ${qui('observateur')} de notre petite bande, en prépare les sujets avec vous.
 
 ## Les avis et les règles à respecter
 
@@ -331,14 +333,14 @@ Publiez seulement de vrais commentaires de vos hôtes, avec leur accord, ou renv
 
 ## Le prix, et qui s’en occupe
 
-- **Le site** : ${prixVis} € pour le ${VIS.name}, où chaque gîte ou chaque chambre peut avoir sa page. Pour un seul hébergement, le ${ESS.name}, à ${prix} €, peut suffire.
+- **Le site** : ${prix} € pour le ${ESS.name}, qui présente votre hébergement, vos chambres et vos tarifs. Chaque page de visibilité Google ajoutée ensuite coûte ${prixPage} €.
 - **Ensuite** : avec le forfait ${AUTO}, vous faites vos changements vous-même. Avec le forfait ${mini.name}, au mois et sans engagement, ils sont faits pour vous.
 
 Un tarif d’été ou une date de fermeture ? Avec le forfait ${mini.name}, vous le demandez à ${B('constructeur').nom}, qui prépare votre demande pour Alex. Ce genre de modification est inclus.`,
     faq: [
       { q: 'Le site peut-il afficher mes disponibilités ?', a: 'Si vous tenez déjà un calendrier en ligne, le site peut y renvoyer. Sinon, la demande de séjour suffit souvent : vous gardez la main sur votre planning.' },
       { q: 'J’ai deux gîtes sur le même terrain, faut-il deux sites ?', a: 'Non. Un seul site présente les deux, chacun sur sa page, avec ses photos et ses tarifs. Vous n’avez qu’un site à faire vivre.' },
-      { q: 'Combien coûte un site pour un gîte ?', a: `${prixVis} € pour un ${VIS.name}, jusqu’à ${pagesComprises} pages, ou ${prix} € pour un ${ESS.name}. Le site peut se régler ${EN_FOIS}. Le forfait ${mini.name}, à ${eur(mini.month)} € par mois, reste facultatif.` },
+      { q: 'Combien coûte un site pour un gîte ?', a: `${prix} € pour un ${ESS.name}, payés une fois, puis ${prixPage} € par page de visibilité Google si vous voulez être trouvé sur plus de recherches. Le site peut se régler ${EN_FOIS}. Le forfait ${mini.name}, à ${eur(mini.month)} € par mois, reste facultatif.` },
     ],
     voir: ['/guides/fiche-google-entreprise/', '/tarifs/', '/guides/choisir-nom-de-domaine/'],
   },
@@ -366,7 +368,7 @@ Un tarif d’été ou une date de fermeture ? Avec le forfait ${mini.name}, vous
       texte: 'Une petite entreprise de village qui ouvre sa boutique en ligne : bientôt, les commandes pourront arriver à toute heure, de clients qui habitent bien plus loin que la commune.',
     },
     options: [
-      { id: 'boutique', pourquoi: `Avec le ${BOU.name}, vos clients commandent le soir ou le dimanche, paient en ligne et passent prendre leurs achats au comptoir.` },
+      { id: 'boutique', pourquoi: `Avec l’option ${eco}, vos clients commandent le soir ou le dimanche, paient en ligne et passent prendre leurs achats au comptoir.` },
       { id: 'base', pourquoi: `Une fermeture imprévue ou une promotion à annoncer ? Vous l’écrivez dans votre espace client, et le site est mis à jour pour vous.` },
     ],
     body: `## Une deuxième vitrine, dans la rue où tout le monde passe
@@ -394,7 +396,7 @@ Le nom, l’adresse, le téléphone et les horaires doivent être identiques des
 
 Vendre en ligne n’est pas un passage imposé. Un site qui montre vos rayons et vos spécialités donne déjà une bonne raison de venir.
 
-Pour aller plus loin, le ${BOU.name} permet à vos clients de commander à toute heure. Ils paient sur le site, puis choisissent la livraison ou le retrait au magasin. Pour un producteur, c’est aussi une façon simple de prendre les commandes de paniers.
+Pour aller plus loin, l’option ${eco} permet à vos clients de commander à toute heure. Ils paient sur le site, puis choisissent la livraison ou le retrait au magasin. Pour un producteur, c’est aussi une façon simple de prendre les commandes de paniers.
 
 Commencez petit, avec vos produits les plus demandés. Vous complétez ensuite votre catalogue depuis votre espace client, et ${qui('organisateur')} de notre petite bande, garde le tout en ordre. Le guide pour [créer une boutique en ligne](/guides/creer-boutique-en-ligne/) explique le paiement, la livraison et les règles de vente.
 
@@ -406,7 +408,7 @@ Avec le forfait ${mini.name}, ces changements ne vous demandent qu’un message 
 
 ## Combien ça coûte
 
-- **Le site, une seule fois** : ${prixVis} € le ${VIS.name}, sans boutique, ou ${prixBoutique} € le ${BOU.name}.
+- **Le site, une seule fois** : ${prix} € le ${ESS.name}, sans boutique, ou ${prixBoutique} € avec l’option ${eco}.
 - **Puis** : le forfait ${AUTO}, où vous gérez tout, ou le forfait ${mini.name}, pour ${eur(mini.month)} € par mois.
 
 Le paiement se fait à la commande : en une fois, ou ${EN_FOIS} si vous préférez étaler. Les extras possibles sont détaillés sur la page [tarifs](/tarifs/).`,
@@ -484,7 +486,7 @@ Avec le forfait ${mini.name}, le président, la secrétaire ou le trésorier env
 - **Le site** : ${prix} € pour un ${ESS.name}, payés à la commande, en une fois ou ${EN_FOIS}.
 - **Ensuite, au choix** : le forfait ${AUTO}, si un bénévole gère le site, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
 
-Pour la plupart des associations, une page suffit, sans aucun extra. Avec plusieurs sections, comme le foot, la gym et la randonnée, chacune peut avoir sa page grâce au ${VIS.name}, à ${prixVis} €.
+Pour la plupart des associations, le ${ESS.name} suffit, sans aucun extra. Avec plusieurs sections, comme le foot, la gym et la randonnée, chacune peut avoir sa page de visibilité Google, à ${prixPage} € la page.
 
 Une adresse de site au nom de l’association fait aussi sérieux sur un dossier de subvention. Le guide pour [choisir un nom de domaine](/guides/choisir-nom-de-domaine/) vous aide à la trouver.`,
     faq: [

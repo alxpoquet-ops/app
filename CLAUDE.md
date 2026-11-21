@@ -1,8 +1,9 @@
 # Les Minis Monstres : repères pour Claude
 
-- Les extensions d'installation des sites clients sont gardées dans `extensions/` : `minis-site-essentiel.zip`, `minis-site-visibilite.zip`, `minis-site-boutique.zip`. Quand Alex en demande une, la lui envoyer telle quelle (après `python3 scripts/wp-export.py --sans-sdk` si le connecteur a changé). Mode d'emploi : `extensions/LISEZ-MOI.md`. Code : `src/wordpress/minis-site/`.
+- Les extensions d'installation des sites clients sont gardées dans `extensions/` : `minis-site-essentiel.zip`, `minis-site-boutique.zip` (option e-commerce), `minis-site-visibilite.zip` (anciens Sites Visibilité seulement). Quand Alex en demande une, la lui envoyer telle quelle (après `python3 scripts/wp-export.py --sans-sdk` si le connecteur a changé). Mode d'emploi : `extensions/LISEZ-MOI.md`. Code : `src/wordpress/minis-site/`.
 - Le site se construit avec `node build.js` ; `node scripts/check.js` doit donner 0 erreur, 0 avertissement, 0 phrase dupliquée.
 - La marche à suivre pour mettre en ligne est dans `docs/gestion-du-site.md`.
 - Pour créer le site d'un nouveau client, suivre la marche guidée `.claude/skills/nouveau-site/SKILL.md` (commande `/nouveau-site`) : questions d'abord, puis une étape à la fois.
 - Niveau minimum d'un Site Essentiel (validé par Alex) : `docs/modeles/site-essentiel-mougiline.html`. Règles : rien d'inventé, clair par défaut avec bouton soleil / lune, recherche de concurrents, menu téléphone avec icônes, pas de gadget non demandé.
-- Niveau minimum d'un Site Boutique (validé par Alex) : `docs/modeles/site-boutique-mougiline.html`. Le Site Visibilité suit les mêmes pages, sans la boutique.
+- Niveau minimum de l'option e-commerce (l'ancien Site Boutique, validé par Alex) : `docs/modeles/site-boutique-mougiline.html`. Les pages de visibilité Google achetées suivent les mêmes pages (services, pages locales, conseils), sans la boutique.
+- L'offre (21 novembre 2026) : un seul site, le **Site Essentiel à 400 €**, avec l'**option e-commerce à + 200 €** (600 €). Les pages pour Google sont l'extra « Page de visibilité Google » (15 € la page, packs 1, 5 ou 10, depuis l'espace client). Le Site Visibilité n'est plus proposé (gardé dans `src/config.js` avec `retire: true` pour les anciennes commandes). Forfait Mini inchangé : 10 € par mois, + 2 € si on fournit le nom de domaine.

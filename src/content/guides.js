@@ -2,8 +2,9 @@
 // Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160,
 // aucun tiret long, aucun prix d'un concurrent nommé (seule la fourchette du marché de config.marche est citée),
 // aucun faux avis, et pas de phrase de 9 mots ou plus reprise d'une autre page.
-// Offre du 19 novembre 2026 : trois sites payés une fois (config.types : Site Essentiel, Site Visibilité, Site Boutique),
-// puis deux façons de faire vivre le site : Autonomie (config.creationSeule, sans abonnement, export du site remis au client)
+// Offre du 21 novembre 2026 : un seul site payé une fois, le Site Essentiel (config.offreSite), assemblé à partir de nos modules,
+// avec l'option e-commerce (type 'boutique'). Le Site Visibilité est retiré : pour grandir sur Google, l'extra « page de visibilité
+// Google » (15 € la page, packs 1, 5 ou 10). Puis deux façons de faire vivre le site : Autonomie (config.creationSeule, sans abonnement, export du site remis au client)
 // ou Mini (config.forfaits[0], au mois, sans engagement, modifications incluses, une demande à la fois). L'abonnement est facultatif.
 // Trois extras seulement : la page de visibilité Google (payée une fois, par carte, depuis l'espace client), la traduction
 // anglaise et la fonctionnalité spécifique (sur devis). La petite bande (config.bande) compte six Minis Monstres.
@@ -13,14 +14,14 @@
 // Fil rouge : un site internet rend visible. Guides courts, pensés pour le téléphone.
 const cfg = require('../config');
 const { sourcesMd, INDEPENDANT_DES } = require('../lib/components');
-const { forfaits, paiement, fractionne, creation, marche, bande, types, creationSeule, aLaDemande } = cfg;
+const { forfaits, paiement, fractionne, creation, marche, bande, creationSeule, aLaDemande } = cfg;
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 
-// L'offre : trois sites, un abonnement facultatif (Mini) ou la formule Autonomie, et trois extras.
-const T = (id) => types.find((t) => t.id === id) || {};
-const ESS = T('une-page'), VIS = T('vitrine'), BOU = T('boutique');
+// L'offre : un site (avec ou sans l'option e-commerce), un abonnement facultatif (Mini) ou la formule Autonomie, et trois extras.
+const ESS = cfg.offreSite.site, BOU = cfg.offreSite.avecBoutique, ECO = cfg.offreSite.option;
+const eco = ECO.name.toLowerCase(); // « e-commerce »
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement
 const dom = mini.domaine || 2; // le nom de domaine fourni par nos soins : en plus, par mois
 const avecDom = mini.month + dom; // le forfait Mini avec le nom de domaine
@@ -76,9 +77,9 @@ Ces changements sont compris dans le forfait : vous envoyez votre demande, et vo
 
 ## Quel site choisir ?
 
-Une seule page bien faite convient à beaucoup de restaurants : une belle photo de la salle, la carte, les horaires, le plan, le contact. Tout se fait défiler d’un doigt. C’est le ${ESS.name}, à ${eur(ESS.price)} €.
+Un site simple et bien fait convient à beaucoup de restaurants : une belle photo de la salle, la carte, les horaires, le plan, le contact. Tout se trouve d’un doigt. C’est le ${ESS.name}, à ${eur(ESS.price)} €, avec ses modules déjà prêts.
 
-Vous avez plusieurs activités, comme le traiteur, la privatisation de salle ou la vente à emporter ? Prenez le ${VIS.name}, à ${eur(VIS.price)} €, qui compte jusqu’à ${creation.pages} pages. Ses pages de visibilité Google aident à vous faire trouver sur des recherches comme « menu du midi » ou « repas de groupe », suivies du nom de votre ville.
+Vous avez plusieurs activités, comme le traiteur, la privatisation de salle ou la vente à emporter ? Ajoutez, une fois le site en ligne, des pages de visibilité Google à ${prixPage} € la page. Elles aident à vous faire trouver sur des recherches comme « menu du midi » ou « repas de groupe », suivies du nom de votre ville.
 
 ## Ne négligez pas les photos
 
@@ -134,13 +135,13 @@ Pas encore d’agenda en ligne ? Commencez avec le téléphone et le formulaire.
 
 Une cliente qui vient d'emménager tape « coiffeur » suivi du nom de son quartier ou de sa ville. Pour apparaître, deux choses comptent : votre [fiche Google](/guides/fiche-google-entreprise/) avec de vrais avis, et un site qui dit clairement où vous êtes et ce que vous faites.
 
-Votre site peut aller plus loin. Le ${VIS.name} compte jusqu’à ${creation.pages} pages, pensées pour Google. Plus tard, vous pouvez commander des pages de visibilité Google depuis votre espace client, à ${prixPage} € la page. Chacune vise une recherche précise, comme « balayage » ou « coiffeur à domicile ». Votre [visibilité sur Google](/referencement-seo/) grandit ainsi page après page.
+Votre site peut aller plus loin. Une fois en ligne, il grandit avec des pages de visibilité Google, commandées depuis votre espace client, à ${prixPage} € la page. Chacune vise une recherche précise, comme « balayage » ou « coiffeur à domicile ». Votre [visibilité sur Google](/referencement-seo/) grandit ainsi page après page.
 
 ## Quel site pour un salon ?
 
-Une seule page contient souvent l’essentiel : la présentation, les tarifs, les photos, les horaires et le contact. C’est le ${ESS.name}, à ${eur(ESS.price)} €.
+L’essentiel tient souvent en quelques parties : la présentation, les tarifs, les photos, les horaires et le contact. Ce sont les modules du ${ESS.name}, à ${eur(ESS.price)} €.
 
-Si vous avez plusieurs univers (coiffure, esthétique, onglerie, vente de produits), chacun peut avoir sa page. Prenez alors le ${VIS.name}, à ${eur(VIS.price)} € pour ${creation.pages} pages au plus.
+Si vous avez plusieurs univers (coiffure, esthétique, onglerie, vente de produits), chacun peut ensuite avoir sa propre page de visibilité Google.
 
 ## Les horaires et les congés
 
@@ -177,7 +178,7 @@ Inutile de voir grand. Pour un lancement, il faut un site qui réponde à quatre
 3. **À quel prix ?** Ou au moins une fourchette, ou « devis gratuit ».
 4. **Comment vous joindre ?** Formulaire, e-mail, téléphone professionnel.
 
-Une seule page peut contenir tout cela : c’est le ${ESS.name}, à ${eur(ESS.price)} €. Vous démarrez petit, et rien ne vous empêche de voir plus grand ensuite. Si vous comptez sur Google pour trouver vos clients, regardez plutôt le ${VIS.name}, à ${eur(VIS.price)} €.
+Le ${ESS.name}, à ${eur(ESS.price)} €, contient tout cela : ses modules sont déjà prêts, il ne manque que vos informations. Vous démarrez petit, et rien ne vous empêche de voir plus grand ensuite. Si vous comptez sur Google pour trouver vos clients, ajoutez des pages de visibilité Google quand vous le souhaitez.
 
 ## Ménager sa trésorerie
 
@@ -202,7 +203,7 @@ C'est possible, et pour certains c'est le bon choix. Le guide [faire son site so
 Votre activité va évoluer : nouvelles prestations, nouveaux tarifs, premières réalisations à montrer. Avec le forfait ${mini.name}, chaque changement se demande depuis votre espace client, et il est inclus. Pour toucher de nouveaux clients sur Google, vous pouvez aussi commander des pages de visibilité Google, à ${prixPage} € la page, payées une fois.`,
     faq: [
       { q: 'Le site est-il une dépense déductible ?', a: 'En micro-entreprise, vous ne déduisez pas vos frais un par un : l’administration applique un abattement forfaitaire sur votre chiffre d’affaires. Pour votre situation précise, le mieux est de poser la question à votre service des impôts ou à un comptable.' },
-      { q: 'Puis-je commencer petit et agrandir le site plus tard ?', a: `Oui. Vous démarrez avec un ${ESS.name}. Le jour où une page ne suffit plus, écrivez-nous : vos textes et vos photos sont repris pour passer au ${VIS.name}.` },
+      { q: 'Puis-je commencer petit et agrandir le site plus tard ?', a: `Oui. Vous démarrez avec un ${ESS.name}. Ensuite, chaque page de visibilité Google s’ajoute depuis votre espace client, à ${prixPage} € la page : votre site grandit à votre rythme.` },
       { q: 'Dois-je déjà avoir mon numéro SIRET pour commander ?', a: 'Non, vous pouvez commander pendant vos démarches. Le SIRET sera ajouté dans les mentions légales dès que vous l’aurez reçu.' },
     ],
     voir: ['creer-son-site-soi-meme-ou-le-faire-faire', 'choisir-nom-de-domaine', 'prix-site-internet'],
@@ -251,11 +252,11 @@ Chez nous, tout est affiché avant la commande, toujours dans le même ordre.
 
 ### 1. Le site, payé une seule fois
 
-- **${ESS.name}, ${eur(ESS.price)} €** : une page, pour exister sur internet.
-- **${VIS.name}, ${eur(VIS.price)} €** : jusqu’à ${creation.pages} pages, pour être trouvé sur Google.
-- **${BOU.name}, ${mille(BOU.price)} €** : une boutique complète, pour vendre sur internet.
+- **${ESS.name}, ${eur(ESS.price)} €** : votre site, assemblé à partir de nos modules et rempli avec votre contenu.
+- **Option ${eco}, ${eur(ECO.prix)} € de plus** : une boutique complète, pour vendre sur internet, soit ${eur(BOU.price)} € en tout.
+- **Pages de visibilité Google, ${prixPage} € la page** : plus tard, depuis votre espace client, pour être trouvé sur plus de recherches.
 
-Chaque site reprend tout ce que contient le précédent. Vos modifications sont illimitées jusqu’à ce que vous validiez le site.
+Vos modifications sont illimitées jusqu’à ce que vous validiez le site.
 
 ### 2. Ensuite : Forfait ${AUTO} ou Forfait ${mini.name}
 
@@ -278,8 +279,8 @@ Côté paiement, le site se règle en entier en commandant. Sur la page de paiem
 ## Trois exemples sur la première année
 
 - **Un artisan avec un ${ESS.name}, avec le forfait ${AUTO}** : ${eur(ESS.price)} €. Son hébergement et son nom de domaine sont à sa charge.
-- **Un commerce avec un ${VIS.name} et le forfait ${mini.name}** : ${eur(VIS.price)} € + 12 × ${eur(mini.month)} € = **${eur(VIS.price + 12 * mini.month)} €**.
-- **Un créateur avec un ${BOU.name} et le forfait ${mini.name}** : ${mille(BOU.price)} € + 12 × ${eur(mini.month)} € = **${mille(BOU.price + 12 * mini.month)} €**.
+- **Un commerce avec un ${ESS.name}, cinq pages de visibilité Google et le forfait ${mini.name}** : ${eur(ESS.price)} € + 5 × ${prixPage} € + 12 × ${eur(mini.month)} € = **${eur(ESS.price + 5 * pageGoogle.prix + 12 * mini.month)} €**.
+- **Un créateur avec l’option ${eco} et le forfait ${mini.name}** : ${eur(BOU.price)} € + 12 × ${eur(mini.month)} € = **${mille(BOU.price + 12 * mini.month)} €**.
 
 Ces exemples comptent un nom de domaine que le client possède déjà. S’il est fourni par nos soins, ajoutez 12 × ${eur(dom)} € = ${eur(12 * dom)} € par an.
 
@@ -287,9 +288,9 @@ Les années suivantes, il ne reste que l'abonnement : ${eur(mini.month)} € par
 
 ## Pourquoi ces prix sont bas
 
-Chez un indépendant, un site vitrine de ${marche.pagesCompare} pages se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Notre ${VIS.name}, à ${eur(VIS.price)} €, coûte donc ${marche.fois} fois moins.
+Chez un indépendant, un site vitrine de ${marche.pagesCompare} pages se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Notre ${ESS.name}, à ${eur(ESS.price)} €, avec les mêmes parties (accueil, présentation, services, photos, contact), coûte donc ${marche.fois} fois moins.
 
-La différence vient de la méthode : Alex conçoit et vérifie chaque site, et les Minis Monstres se chargent de ce qui revient d’un projet à l’autre.
+La différence vient de la méthode : Alex a recréé et optimisé une fois pour toutes les modules dont un site est fait, et les Minis Monstres se chargent de ce qui revient d’un projet à l’autre.
 
 Soyons honnêtes : ces chiffres viennent de prestataires, donc prudence. Certains indépendants vendent un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors très faible. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout, sources comprises.
 
@@ -319,7 +320,7 @@ Un **site une page**, c'est une grande affiche. Tout est au même endroit : on f
 
 Un **site vitrine**, c'est un petit livret. Il y a une couverture (l'accueil), puis une page par chapitre : vos services, vos tarifs, votre histoire, le contact. On passe de l'une à l'autre par le menu.
 
-Chez nous, l’affiche s’appelle le ${ESS.name} : ${eur(ESS.price)} €, pour exister sur internet. Le livret s’appelle le ${VIS.name} : ${eur(VIS.price)} €, jusqu’à ${creation.pages} pages, pour être trouvé sur Google. L’écart de prix est faible. Choisissez donc d’abord selon votre activité.
+Chez nous, vous n’avez pas à trancher au moment de commander. Le ${ESS.name}, à ${eur(ESS.price)} €, rassemble l’essentiel de l’affiche. Pour ajouter des chapitres pensés pour Google, chaque page de visibilité Google coûte ${prixPage} €, quand vous voulez. Choisissez donc d’abord selon votre activité.
 
 ## Quand le site une page suffit
 
@@ -355,13 +356,13 @@ Sur un site vitrine, la page « Élagage » ne parle que de cela, avec ses mots,
 
 ## Et si je me trompe ?
 
-Ce n’est pas grave. On peut commencer avec une page et passer au site de plusieurs pages ensuite : vos textes et vos photos resservent. Rien n’est figé.
+Ce n’est pas grave. On peut commencer simple et ajouter des pages ensuite : vos textes et vos photos resservent. Rien n’est figé.
 
 ## Et la boutique en ligne ?
 
-Elle répond à un autre besoin : encaisser des commandes sur le site. C’est le ${BOU.name}, qui reprend tout le ${VIS.name}. Si vous voulez vendre des produits, lisez le guide pour [créer une boutique en ligne](/guides/creer-boutique-en-ligne/).`,
+Elle répond à un autre besoin : encaisser des commandes sur le site. C’est l’option ${eco}, à cocher sous le ${ESS.name}, pour ${eur(ECO.prix)} € de plus. Si vous voulez vendre des produits, lisez le guide pour [créer une boutique en ligne](/guides/creer-boutique-en-ligne/).`,
     faq: [
-      { q: 'Combien de pages contient un site vitrine ?', a: `Chez nous, le ${VIS.name} va jusqu’à ${creation.pages} pages. On y trouve en général l’accueil, les services, les tarifs, une présentation, une FAQ et le contact. Une fois le site en ligne, une page de visibilité Google de plus coûte ${prixPage} €, commandée depuis votre espace client.` },
+      { q: 'Combien de pages contient un site vitrine ?', a: `Souvent cinq ou six : l’accueil, les services, les tarifs, une présentation, une FAQ et le contact. Chez nous, ce sont les modules du ${ESS.name}. Une fois le site en ligne, chaque page de visibilité Google de plus coûte ${prixPage} €, commandée depuis votre espace client.` },
       { q: 'Un site une page peut-il sortir sur Google ?', a: 'Oui, surtout sur votre nom et sur votre métier dans votre ville. Il est simplement moins armé qu’un site vitrine pour les recherches portant sur un service précis.' },
       { q: 'Peut-on transformer un site une page en site vitrine plus tard ?', a: 'Oui. Les textes et les photos existants sont repris, et les nouvelles pages viennent s’y ajouter. Écrivez-nous quand le besoin se présente, et nous vous disons ce que cela représente.' },
     ],
@@ -423,7 +424,7 @@ Confiez-le si votre temps est compté, si l'écran vous fatigue, ou si vous avez
 Notre service est né de ce constat. Vous ne construisez rien vous-même, mais vous gardez la main sur ce qui compte :
 
 - Le site est pensé pour être trouvé : c’est notre métier.
-- Le prix est fixe et connu d’avance : ${eur(ESS.price)} €, ${eur(VIS.price)} € ou ${mille(BOU.price)} € selon le site, payés une fois.
+- Le prix est fixe et connu d’avance : ${eur(ESS.price)} € le site, ou ${eur(BOU.price)} € avec l’option ${eco}, payés une fois.
 - Vous aimez quand même bricoler ? Avec le forfait ${AUTO}, vous recevez l’export du site (une copie complète) et vous l’installez chez votre hébergeur, sans abonnement.
 - Vous préférez ne rien gérer ? Avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois, vous demandez vos changements en une phrase depuis votre espace client, une page privée rien qu’à vous.
 - ${qui('constructeur')} de notre petite bande, clarifie chaque changement avec vous, puis l’envoie à Alex.
@@ -551,7 +552,7 @@ Veillez justement à ce que le nom, l'adresse et le téléphone soient écrits *
 
 Sur chaque site que nous créons, votre nom, votre adresse et votre téléphone sont écrits comme sur votre fiche, et votre activité est décrite dans un format que Google sait lire.
 
-Pour aller plus loin, ${qui('observateur')} de notre petite bande, repère les recherches de votre secteur et prépare vos pages de visibilité Google. Le ${VIS.name} en contient dès le départ, et vous pouvez en commander d’autres quand vous le voulez. La fiche et le site travaillent alors ensemble pour votre [visibilité sur Google](/referencement-seo/), près de chez vous.`,
+Pour aller plus loin, ${qui('observateur')} de notre petite bande, repère les recherches de votre secteur et prépare vos pages de visibilité Google. Vous les commandez quand vous le voulez, à ${prixPage} € la page. La fiche et le site travaillent alors ensemble pour votre [visibilité sur Google](/referencement-seo/), près de chez vous.`,
     faq: [
       { q: 'La fiche Google est-elle vraiment gratuite ?', a: 'Oui, sa création et sa gestion ne coûtent rien. Méfiez-vous des démarcheurs qui prétendent vous la vendre ou qui vous réclament un paiement pour la « maintenir en ligne ».' },
       { q: 'Je travaille de chez moi, dois-je afficher mon adresse ?', a: 'Non. Vous pouvez masquer votre adresse et indiquer seulement les communes où vous intervenez. Votre fiche apparaît alors sur les recherches de cette zone.' },
@@ -567,7 +568,7 @@ Pour aller plus loin, ${qui('observateur')} de notre petite bande, repère les r
     resume: 'Produits, paiement, livraison, obligations : par où commencer pour vendre sur internet.',
     h1: 'Créer une boutique en ligne : par où commencer ?',
     title: 'Créer une boutique en ligne : par où commencer ? | Les Minis Monstres',
-    description: `Produits, photos, paiement par carte, livraison, conditions de vente : les étapes pour ouvrir une boutique en ligne sans se perdre. ${mille(BOU.price)} €, à prix fixe.`,
+    description: `Produits, photos, paiement par carte, livraison, conditions de vente : les étapes pour ouvrir une boutique en ligne sans se perdre. ${eur(BOU.price)} €, à prix fixe.`,
     lead: 'Vendre sur internet, ce n’est pas seulement mettre des produits en ligne. Il faut penser au paiement, à l’envoi et à quelques règles. Rien d’insurmontable, à condition de prendre les choses dans l’ordre.',
     body: `## Une boutique en ligne, c'est quoi exactement ?
 
@@ -609,7 +610,7 @@ Vendre en ligne à des particuliers impose quelques obligations : afficher des *
 
 ## Combien ça coûte
 
-- **Le ${BOU.name} : ${mille(BOU.price)} €**, payés une fois. Il reprend tout le ${VIS.name} et ajoute la boutique complète : le catalogue, le panier, le paiement en ligne sécurisé, la gestion des commandes et les e-mails automatiques. Nous configurons la boutique, puis vous gérez votre catalogue en toute liberté. Vous la réglez à la commande, d’un coup ou ${EN_FOIS}.
+- **Le ${ESS.name} avec l’option ${eco} : ${eur(BOU.price)} €** (${eur(ESS.price)} € + ${eur(ECO.prix)} €), payés une fois. L’option ajoute la boutique complète : le catalogue, le panier, le paiement en ligne sécurisé, la gestion des commandes et les e-mails automatiques. Nous configurons la boutique, puis vous gérez votre catalogue en toute liberté. Vous la réglez à la commande, d’un coup ou ${EN_FOIS}.
 - **Ensuite, Forfait ${AUTO} ou Forfait ${mini.name}.** Avec le forfait ${AUTO}, vous hébergez la boutique vous-même, sans rien nous payer chaque mois. Avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois, nous gardons votre boutique en ligne et en bon état : l’hébergement (l’endroit où elle reste accessible 24 h/24), des copies de sécurité régulières et les vérifications techniques. Le nom de domaine, si nous le fournissons, ajoute ${eur(dom)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
 
 Le service de paiement prélève de son côté une petite commission sur chaque vente. C'est le cas pour toutes les boutiques en ligne, quelle que soit la solution choisie.

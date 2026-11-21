@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { site, sections, types, forfaits, annuel, lissage, fractionne, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande, evenement, delais, creationSeule, extrasGroupes, revisionsNote, phrase } = require('../config');
+const { site, sections, types, typesOfferts, offreSite, modules, forfaits, annuel, lissage, fractionne, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande, evenement, delais, creationSeule, extrasGroupes, revisionsNote, phrase } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
 const { petit, alexPortrait } = require('./bestiaire');
@@ -14,6 +14,7 @@ const bouille = (nom, opts) => petit(PETIT_DE[nom] || nom, opts);
 // Un petit monstre posé au bord d'un bloc : place = haut-droite, haut-gauche, bas-droite, bas-gauche, cote-gauche, cote-droite
 const deco = (nom, place = 'haut-droite', humeur) => `<span class="deco deco-${place}" aria-hidden="true">${petit(nom, { humeur })}</span>`;
 const { inline, esc, plain } = require('./md');
+const minus = (x) => x.charAt(0).toLowerCase() + x.slice(1);
 
 // ---------------------------------------------------------------- liens et prix
 const contactUrl = site.contactPath || '/contact/';
@@ -158,10 +159,10 @@ function flecheLia() {
 <g stroke="#FFD45E" stroke-width="1.200" opacity=".5" transform="translate(1.500 1.200)">${p('fleche')}</g></g></svg>`.replace(/(\.\d)00/g, '$1');
 }
 
-// ---------------------------------------------------------------- les trois sites (Essentiel, Visibilité, Boutique)
+// ---------------------------------------------------------------- le site (Essentiel, avec ou sans l'option e-commerce)
 const prixType = (t) => euro(t.price);
 function typeCards() {
-  return `<div class="types">${types
+  return `<div class="types">${typesOfferts
     .map(
       (t) => `<a class="type-card c-${t.color} reveal" href="${creerUrl({ type: t.id })}">
     <span class="type-ico">${icon(t.icon)}</span>
@@ -183,8 +184,8 @@ const lisse = () => 0; // l'ancien étalement maison est arrêté : le paiement 
 const LMAX = 0;
 const lissageTxt = fractionne.fois;
 const ORGANISMES = fractionne.organismes;
-// « un site une page », « un site vitrine », « une boutique en ligne »
-const unType = (t) => (t.id === 'boutique' ? 'un Site Boutique' : t.id === 'une-page' ? 'un Site Essentiel' : 'un Site Visibilité');
+// « un Site Essentiel », « un Site Essentiel avec l'option e-commerce » (et l'ancien Site Visibilité, pour les anciennes commandes)
+const unType = (t) => (t.id === 'boutique' ? 'un Site Essentiel avec l’option e-commerce' : t.id === 'une-page' ? 'un Site Essentiel' : 'un Site Visibilité');
 
 function payBox() {
   return `<ul class="list-check">
@@ -194,8 +195,9 @@ function payBox() {
   </ul>`;
 }
 
-// ---------------------------------------------------------------- l'offre finale : trois sites, puis Autonomie ou Mini
-const ESSENTIEL = types[0], VISIBILITE = types[1], BOUTIQUE_T = types[2];
+// ---------------------------------------------------------------- l'offre (21 novembre 2026) : un site, une option e-commerce, puis Autonomie ou Mini
+// ESSENTIEL : le Site Essentiel (400 €). BOUTIQUE_T : le Site Essentiel + e-commerce (600 €). ECOMMERCE : l'option (+ 200 €).
+const ESSENTIEL = offreSite.site, BOUTIQUE_T = offreSite.avecBoutique, ECOMMERCE = offreSite.option;
 const INCLUS_SITE = ESSENTIEL.inclus;
 // « On s'occupe de tout » (Mini) et « Je gère tout moi-même » (Autonomie)
 const INCLUS_NOUS = forfaits[0].main;
@@ -203,10 +205,10 @@ const INCLUS_MOI = creationSeule.main;
 const PACK_SEO = options.find((o) => o.id === 'packseo' && !o.retire);
 const prixPageSeo = PACK_SEO ? PACK_SEO.price.once : 15;
 const packsSeo = PACK_SEO && PACK_SEO.packs ? PACK_SEO.packs.filter((n) => n > 1).join(' ou ') : '5 ou 10';
-const PLUS_DE_PAGES = `Envie d’être trouvé sur encore plus de recherches ? Une page de visibilité Google en plus coûte ${euro(prixPageSeo)}, payée une fois. Elle se commande depuis votre espace client, quand vous voulez.`;
+const PLUS_DE_PAGES = `Envie d’être trouvé sur plus de recherches ? Une fois votre site en ligne, ajoutez des pages de visibilité Google : ${euro(prixPageSeo)} la page, payée une fois, par ${packsSeo} si vous voulez. Elles se commandent depuis votre espace client, quand vous voulez.`;
 // La boutique : le client gère tout lui-même depuis l'onglet « Ma boutique » de son espace client
 const BOUTIQUE_ARTICLES = 'Vous gérez votre catalogue vous-même depuis votre espace client : photo, description, prix, autant d’articles que vous voulez.';
-const BOUTIQUE_INCLUS = BOUTIQUE_T.inclus.slice(1);
+const BOUTIQUE_INCLUS = ECOMMERCE.inclus;
 const BOUTIQUE_ESPACE = ['Vos articles : photo, description, prix', 'Vos prix et vos promotions', 'Vos moyens de paiement', 'Le suivi de vos commandes'];
 const BOUTIQUE_PAIEMENT = 'Vous choisissez comment on vous paie : Stripe, PayPal, virement, chèque ou paiement à la livraison. Stripe et PayPal s’installent en un clic depuis votre espace client. Vos clés de paiement sont enregistrées sur votre propre site, jamais chez nous.';
 const BOUTIQUE_STOCK = 'Pas de stock à tenir si vous ne le voulez pas : un produit qui manque passe simplement en épuisé.';
@@ -254,13 +256,35 @@ ${monstre}
 }
 function siteOffreCarte(t, { compact = false, choose = true } = {}) {
   return `<article class="site-carte c-${t.color}${t.vedette ? ' is-vedette' : ''} reveal"${compact ? '' : ` id="${ancreSite(t)}"`}>
-    ${t.vedette ? '<span class="site-tag">Le plus choisi</span>' : ''}
     <span class="site-art" aria-hidden="true">${siteIcone(t)}</span>
     <p class="site-nom">${esc(t.name)}</p>
     <p class="site-but">${icon('arrow-right')}<span>${esc(t.but)}</span></p>
     <p class="site-prix"><b>${euro(t.price)}</b><small>une seule fois</small></p>
     ${listePlus(t.inclus, { vis: 99 })}
     ${choose ? `<p class="site-go"><a class="btn ${t.vedette ? 'btn-primary' : 'btn-light'}" href="${creerUrl({ type: t.id })}">${icon('wand-sparkles')}<span>Choisir ce site</span></a></p>` : ''}
+  </article>`;
+}
+// L'option e-commerce, en carte, à côté du Site Essentiel (page Tarifs, accueil)
+function optionEcommerceCarte({ compact = false, choose = true } = {}) {
+  const t = BOUTIQUE_T;
+  return `<article class="site-carte site-option c-${t.color} reveal"${compact ? '' : ' id="site-boutique"'}>
+    <span class="site-art" aria-hidden="true">${siteIcone(t)}</span>
+    <p class="site-nom">${esc(ECOMMERCE.name)}</p>
+    <p class="site-but">${icon('arrow-right')}<span>En option : ${esc(minus(t.but))}</span></p>
+    <p class="site-prix"><b>+ ${euro(ECOMMERCE.prix)}</b><small>une seule fois, ${euro(t.price)} avec le site</small></p>
+    ${listePlus(ECOMMERCE.inclus, { vis: 99 })}
+    ${choose ? `<p class="site-go"><a class="btn btn-light" href="${creerUrl({ type: t.id })}">${icon('shopping-bag')}<span>Avec l’e-commerce</span></a></p>` : ''}
+  </article>`;
+}
+// Les pages de visibilité Google, en carte : l'extra pour grandir sur Google, une fois le site en ligne
+function pagesGoogleCarte({ compact = false } = {}) {
+  const t = { id: 'vitrine', monstre: 'gelee' }; // le dessin « recherche » et Mirette, la spécialiste visibilité
+  return `<article class="site-carte site-option c-butter reveal"${compact ? '' : ' id="pages-google"'}>
+    <span class="site-art" aria-hidden="true">${siteIcone(t)}</span>
+    <p class="site-nom">${esc(PACK_SEO ? PACK_SEO.name : 'Page de visibilité Google')}</p>
+    <p class="site-but">${icon('arrow-right')}<span>Grandir sur Google</span></p>
+    <p class="site-prix"><b>${euro(prixPageSeo)}</b><small>la page, payée une fois</small></p>
+    ${listePlus(PACK_SEO && PACK_SEO.inclus ? [...PACK_SEO.inclus, `À l’unité, ou par ${packsSeo} pages`, 'Commandées depuis votre espace client, une fois le site en ligne'] : [], { vis: 99 })}
   </article>`;
 }
 // Autonomie ou Mini, en carte
@@ -275,10 +299,11 @@ function formuleCarte(f, { compact = false } = {}) {
 }
 // compact : pour l'accueil (moins de lignes) ; choose : avec les boutons
 // Deux choses bien séparées : « Créer le site » (une seule fois) et « Le faire vivre » (Autonomie ou Mini).
+// 21 novembre 2026 : un seul site, le Site Essentiel, avec l'option e-commerce et les pages de visibilité Google à côté.
 function offre({ compact = false, choose = true } = {}) {
   return `<div class="offre offre-finale${compact ? ' is-compact' : ''}" id="offre">
   <p class="offre-k"><span>1</span>Créer votre site : payez une seule fois</p>
-  <div class="site-cartes">${types.map((t) => siteOffreCarte(t, { compact, choose })).join('')}</div>
+  <div class="site-cartes">${siteOffreCarte(ESSENTIEL, { compact, choose })}${optionEcommerceCarte({ compact, choose })}${pagesGoogleCarte({ compact })}</div>
   <p class="offre-sous">${icon('calendar-check')}<span>Réglé à la commande, en une fois ou en ${lissageTxt} fois avec ${ORGANISMES}, directement sur la page de paiement.</span></p>
   ${compact ? '' : `<p class="offre-note">${esc(revisionsNote)}</p>`}
   <p class="offre-k"><span>2</span>Ensuite, le forfait ${esc(creationSeule.name)} ou le forfait ${esc(ABO.name)}</p>
@@ -287,9 +312,30 @@ function offre({ compact = false, choose = true } = {}) {
   ${choose ? `<p class="offre-go">${btnCreer('btn-primary btn-lg')}${compact ? btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs') : ''}</p>` : ''}
 </div>`;
 }
-// Le positionnement, en trois lignes : chaque site a son but
+// L'offre, en trois lignes : le site, l'option e-commerce, les pages de visibilité Google
 function positionnement() {
-  return `<ul class="posi reveal">${types.map((t) => `<li class="c-${t.color}"><a href="${creerUrl({ type: t.id })}"><span class="posi-art" aria-hidden="true">${siteIcone(t)}</span><strong>${esc(t.name)}</strong>${icon('arrow-right')}<em>${esc(t.but)}</em></a></li>`).join('')}</ul>`;
+  const ligne = (t, href, nom, em) => `<li class="c-${t.color}"><a href="${href}"><span class="posi-art" aria-hidden="true">${siteIcone(t)}</span><strong>${esc(nom)}</strong>${icon('arrow-right')}<em>${esc(em)}</em></a></li>`;
+  return `<ul class="posi reveal">${[
+    ligne(ESSENTIEL, creerUrl(), ESSENTIEL.name, `${euro(ESSENTIEL.price)}, payé une fois`),
+    ligne(BOUTIQUE_T, creerUrl({ type: BOUTIQUE_T.id }), `Option ${ECOMMERCE.name}`, `+ ${euro(ECOMMERCE.prix)} pour vendre en ligne`),
+    ligne({ id: 'vitrine', color: 'butter', monstre: 'gelee' }, `${sections.forfaits.path}#extras`, 'Pages de visibilité Google', `${euro(prixPageSeo)} la page, quand vous voulez`),
+  ].join('')}</ul>`;
+}
+// « Comment est fait votre site » : les modules (nos minis monstres), puis la V1 que le client modifie lui-même ou nous demande de modifier.
+// Bloc commun (accueil, Tarifs) : marqué <!--commun--> pour le contrôle des phrases dupliquées.
+function modulesSite({ titre = 'Comment est fait votre site', id = 'comment' } = {}) {
+  const MOCHI = (bande.find((b) => b.id === 'organisateur') || { nom: 'Mochi' }).nom;
+  return `<section class="section section-soft" id="${id}"><div class="container">
+  <h2 class="section-title">${esc(titre)}</h2>
+  <p class="section-sub">Le cerveau est prêt : il ne manque que votre contenu.</p>
+  <!--commun-->${presente('mochi', `<strong>Un site, chez nous, c’est un assemblage de modules.</strong> Ce sont nos minis monstres : Alex les a recréés et optimisés un par un, et chacun se modifie de son côté. ${esc(MOCHI)}, lui, adore quand chaque chose est à sa place.`, { humeur: 'ravi' })}
+  <ul class="modules reveal">${modules.map((m) => `<li class="${m.option ? 'is-option' : ''}">${icon(m.icon)}<span><strong>${esc(m.nom)}</strong>${m.option ? `<em>Option ${esc(ECOMMERCE.name)}</em>` : ''}<small>${esc(m.d)}</small></span></li>`).join('')}</ul>
+  ${steps([
+    { t: 'Les modules sont prêts', d: 'Chacun a été pensé, optimisé et soigné une fois pour toutes : rapide, lisible sur téléphone, compris par Google.' },
+    { t: 'On les remplit avec votre contenu', d: 'Vos informations, vos textes et vos photos. C’est pour cela que le prix reste petit et que votre site est prêt en quelques jours.' },
+    { t: 'Vous recevez votre première version', d: `Avec le forfait ${ABO.name}, vous la modifiez vous-même depuis votre espace client, avec le bouton « Modifier mon site moi-même » : un clic sur un texte ou une photo, et vous le changez en direct. Ou vous nous demandez de le faire.` },
+  ])}<!--/commun-->
+</div></section>`;
 }
 // Anciens noms, gardés pour les pages qui les appellent encore
 const forfaitMinis = () => offre({ compact: true });
@@ -299,7 +345,7 @@ const forfaitCards = ({ choose = true } = {}) => offre({ choose });
 // On compare ce qui est comparable (un site de marche.pagesCompare pages, comme le nôtre, avec les bases du référencement), on dit la vérité
 // et on cite les sources (marche.sources, consultées en novembre 2026). marche.fois et marche.entretienFois sont calculés dans config.js.
 const INDEPENDANT_DES = 800; // des indépendants existent dès ce prix : l'écart n'est alors que de INDEPENDANT_DES / creation.prix fois
-const ecartBas = String(Math.round((INDEPENDANT_DES / creation.visibilite) * 10) / 10).replace('.', ',');
+const ecartBas = String(Math.round((INDEPENDANT_DES / creation.prix) * 10) / 10).replace('.', ',');
 // Les sources, en vrais liens
 const nomSource = (x) => x.nom.replace(', ', ' : ');
 function sourcesMarche() {
@@ -310,19 +356,19 @@ function sourcesMarche() {
 const sourcesMd = () => (marche.sources || []).map((x) => `- [${nomSource(x)}](${x.url}).`).join('\n');
 const sourcesInline = () => (marche.sources || []).map((x) => `[${nomSource(x)}](${x.url})`).join(', ');
 function economie() {
-  const n = marche.pagesCompare || creation.pages;
+  const n = marche.pagesCompare || 5;
   const mAgence = (marche.agenceMin + marche.agenceMax) / 2;
   const mInde = (marche.vitrineMin + marche.vitrineMax) / 2;
   const w = (x) => `${Math.max(6, Math.round((x / mAgence) * 100))}%`;
   return `<div class="eco reveal">
   <h3>${icon('scale')}${marche.fois} fois moins cher qu’un indépendant, à site comparable</h3>
-  <p class="eco-base">On compare un site de ${n} pages chez un indépendant ou dans une agence avec notre ${VISIBILITE.name}, qui va jusqu’à ${creation.pages} pages.</p>
-  <div class="eco-barres" role="img" aria-label="Un site de ${n} pages coûte en général ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)} en agence, ${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)} chez un indépendant. Notre ${VISIBILITE.name}, jusqu’à ${creation.pages} pages : ${euro(creation.visibilite)}.">
+  <p class="eco-base">On compare un site vitrine de ${n} pages chez un indépendant ou dans une agence (accueil, présentation, services, photos, contact) avec notre ${ESSENTIEL.name}, qui contient ces mêmes modules.</p>
+  <div class="eco-barres" role="img" aria-label="Un site vitrine de ${n} pages coûte en général ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)} en agence, ${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)} chez un indépendant. Notre ${ESSENTIEL.name} : ${euro(creation.prix)}.">
     <p class="eco-ligne"><span>Agence</span><i style="width:${w(mAgence)}"></i><b>${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}</b></p>
     <p class="eco-ligne"><span>Indépendant</span><i style="width:${w(mInde)}"></i><b>${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)}</b></p>
-    <p class="eco-ligne is-nous"><span>Notre ${VISIBILITE.name}</span><i style="width:${w(creation.visibilite)}"></i><b>${euro(creation.visibilite)}</b></p>
+    <p class="eco-ligne is-nous"><span>Notre ${ESSENTIEL.name}</span><i style="width:${w(creation.prix)}"></i><b>${euro(creation.prix)}</b></p>
   </div>
-  <p>Pas de secret : une méthode bien rodée, des outils préparés à l’avance, et pas de bureaux à payer.</p>
+  <p>Pas de secret : des modules déjà prêts, une méthode bien rodée, et pas de bureaux à payer.</p>
   ${deroulants([
     deroulant('Et pour l’entretien, chaque mois ?', `<p>Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications (${euro(ABO.month + DOM)} si on vous fournit aussi le nom de domaine). Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois, l’hébergement étant souvent en plus : c’est de ${marche.entretienFois} fois moins cher.</p>`),
     deroulant('Nos sources, et ce qu’il faut en penser', `<p>Soyons honnêtes. Ces fourchettes sont publiées par des prestataires, donc à lire avec prudence. Il existe des indépendants dès ${euro(INDEPENDANT_DES)}, et l’écart est alors très faible (environ ${ecartBas} fois), ainsi que des offres à bas prix.</p>${sourcesMarche()}`, { id: 'sources' }),
@@ -358,7 +404,7 @@ function bandeGrid({ complet = false, prix = true } = {}) {
     .map((b) => `<div class="bande-carte reveal${b.compris ? ' is-compris' : ''}"><span class="bande-art">${art(b)}</span><strong>${esc(b.nom)}<small>${esc(b.role)}</small></strong>${complet && b.missions ? `<ul class="bande-missions">${b.missions.map((m) => `<li>${esc(m)}</li>`).join('')}</ul><em class="bande-perso">${esc(b.perso)}</em>` : `<span class="bande-fait">${inline(b.court)}</span>`}</div>`)
     .join('')}</div>`;
 }
-// Le Site Boutique, expliqué simplement
+// L'option e-commerce, expliquée simplement
 function optionsCompact() {
   return `<p>Vos clients achètent sur votre site, même quand vous êtes fermé. Tout se gère depuis l’onglet « Ma boutique » de votre espace client : vos articles, vos prix et vos promotions, vos moyens de paiement, la livraison et le suivi de vos commandes.</p><p>${BOUTIQUE_ARTICLES}</p><p>${BOUTIQUE_PAIEMENT} La boutique est un outil : elle ne promet aucune vente.</p>`;
 }
@@ -425,7 +471,7 @@ function processusModif({ titre = true } = {}) {
 function priceData() {
   return esc(
     JSON.stringify({
-      types: types.map((t) => ({ id: t.id, label: t.label, price: t.price, delai: t.delai })),
+      types: typesOfferts.map((t) => ({ id: t.id, label: t.label, price: t.price, delai: t.delai })),
       lissage: lissage.durees,
       acompte: paiement.acompte,
       forfaits: [...forfaits, ...(creationSeule ? [creationSeule] : [])].map((f) => ({ id: f.id, name: f.name, month: f.month })),
@@ -433,7 +479,6 @@ function priceData() {
       remise: evenement.remise,
       free: annuel.moisOfferts,
       domaine: forfaits[0].domaine || 0,
-      pages: creation.pages,
       pagePlus: 0,
       pagesPlusMax: creation.pagesPlusMax,
     })
@@ -455,26 +500,37 @@ const cfLi = (x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`;
 const cfListe = (items, vis = 4) => (true // tout est visible, sans menu déroulant
   ? `<ul class="cf-liste">${items.map(cfLi).join('')}</ul>`
   : `${vis ? `<ul class="cf-liste">${items.slice(0, vis).map(cfLi).join('')}</ul>` : ''}<details class="liste-plus" data-ordi><summary><span>Voir tout ce qui est compris</span>${icon('chevron-down')}</summary><ul class="cf-liste">${items.slice(vis).map(cfLi).join('')}</ul></details>`);
-// Le site : trois grandes cartes à choisir (Essentiel, Visibilité, Boutique). name : le champ envoyé (une-page | vitrine | boutique).
+// Le site : le Site Essentiel (toujours compris), et dessous la case « E-commerce : + 200 € ». name : le champ envoyé.
+// Le champ caché vaut 'une-page' ; la case cochée envoie 'boutique' sous le même nom (la dernière valeur l'emporte côté serveur,
+// et main.js lit d'abord la case cochée). Les ids restent ceux de l'extension WordPress.
 function siteCarte({ name = 'b-type', court = false } = {}) {
-  return `<div class="cf-trio" role="radiogroup" aria-label="Quel site voulez-vous" data-type-choix>
-    ${types.map((t) => `<label class="cf-choix c-${t.color}">
-      <input type="radio" name="${name}" value="${t.id}"${t.vedette ? ' checked' : ''} class="cf-input">
+  const t = ESSENTIEL;
+  return `<div class="cf-un-site" data-type-choix>
+    <input type="hidden" name="${name}" value="${t.id}">
+    <div class="cf-site c-${t.color}">
+      <span class="cf-art" aria-hidden="true">${petit(t.monstre, { humeur: 'ravi' })}</span>
+      <div class="cf-corps">
+        <p class="cf-nom">${esc(t.name)}</p>
+        <p class="cf-prix"><b>${euro(t.price)}</b><small>une fois</small></p>
+        ${court ? `<p class="cf-txt">${esc(t.pitch)}</p>` : cfListe(t.inclus)}
+      </div>
+      <span class="cf-badge">${icon('check')}Compris</span>
+    </div>
+    <label class="cf-choix cf-boutique c-${BOUTIQUE_T.color}">
+      <input type="checkbox" name="${name}" value="${BOUTIQUE_T.id}" class="cf-input" data-ecommerce>
       <span class="cf-carte">
-        ${t.vedette ? '<span class="cf-tag">Le plus choisi</span>' : ''}
-        <span class="cf-art" aria-hidden="true">${petit(t.monstre)}</span>
+        <span class="cf-art" aria-hidden="true">${petit(BOUTIQUE_T.monstre)}</span>
         <span class="cf-corps">
-          <strong class="cf-nom">${esc(t.name)}</strong>
-          <span class="cf-but">${esc(t.but)}</span>
-          <span class="cf-prix"><b>${euro(t.price)}</b><small>une fois</small></span>
-          ${court ? `<span class="cf-txt">${esc(t.pitch)}</span>` : cfListe(t.inclus)}
+          <strong class="cf-nom">${esc(ECOMMERCE.name)} : + ${euro(ECOMMERCE.prix)}</strong>
+          <span class="cf-but">${esc(BOUTIQUE_T.but)} : ${euro(BOUTIQUE_T.price)} avec le site, payés une fois</span>
+          ${court ? `<span class="cf-txt">${esc(ECOMMERCE.court)}</span>` : cfListe(ECOMMERCE.inclus)}
         </span>
         <span class="cf-coche" aria-hidden="true">${icon('check')}</span>
       </span>
-    </label>`).join('')}
+    </label>
   </div>`;
 }
-// Plus de case « boutique » : le Site Boutique est l'un des trois sites
+// Plus de case « boutique » à part : elle est dans siteCarte (l'option e-commerce)
 function boutiqueCarte() { return ''; }
 // Qui s'occupe de la mise en ligne ? Deux grandes cartes. name : le champ envoyé (nous | moi).
 function gestionChoix({ name = 'b-gestion', court = false } = {}) {
@@ -573,13 +629,13 @@ function configurator() {
       ${sous ? `<p class="cf-sous">${sous}</p>` : ''}
       ${body}
     </section>`;
-  const P0 = VISIBILITE.price; // le site coché au départ
+  const P0 = ESSENTIEL.price; // le site au départ (sans l'option e-commerce)
   const today0 = acompteDe(P0); // le site en entier, payé à la commande
   const partie = (couleur, titre, texte, attrs = '') => `<div class="cf-partie c-${couleur}"${attrs}><p class="cf-partie-titre">${titre}</p><p class="cf-partie-txt">${texte}</p></div>`;
   return `<div class="builder cf" data-builder="${priceData()}" data-billing-scope>
   <form class="cf-form" data-builder-form>
     ${partie('butter', 'Créer votre site : payez une seule fois', `Ou en ${lissageTxt} fois avec ${ORGANISMES}, si vous préférez.`)}
-    ${etape('Quel site voulez-vous ?', 'Exister sur internet, être trouvé sur Google, ou vendre sur internet.', `${siteCarte()}<p class="cf-info c-butter">${icon('info')}<span>${esc(revisionsNote)}</span></p>`)}
+    ${etape('Votre site', `Le ${esc(ESSENTIEL.name)}, assemblé à partir de nos modules. Vous voulez vendre en ligne ? Cochez l’option ${esc(ECOMMERCE.name)}.`, `${siteCarte()}<p class="cf-info c-butter">${icon('info')}<span>${esc(revisionsNote)}</span></p>`)}
     ${partie('lilac', `Ensuite, le forfait ${esc(creationSeule.name)} ou le forfait ${esc(ABO.name)}`, 'Aucune obligation d’abonnement : c’est vous qui choisissez.')}
     ${etape('Qui s’occupe de votre site ?', 'L’hébergement, le nom de domaine, les sauvegardes et les mises à jour : on s’en charge, ou vous le faites vous-même.', gestionChoix())}
     ${etape('Votre nom de domaine', `C’est l’adresse de votre site, par exemple mon-entreprise.fr. Vous en avez déjà une ? Cochez la case : ${euro(ABO.month)} par mois. Sinon, on vous la fournit, à votre nom : ${euro(ABO.month + DOM)} par mois.`, domainBox(), ' data-avec-formule')}
@@ -587,7 +643,7 @@ function configurator() {
     <section class="cf-etape cf-total b-sum" id="cf-total" aria-live="polite">
       <h2 class="cf-titre"><span class="cf-n" aria-hidden="true"></span>Votre total</h2>
       <ul class="cf-lignes">
-        <li><span data-sum="type">${esc(VISIBILITE.name)}</span><b data-sum="type-price">${euro(P0)}</b></li>
+        <li><span data-sum="type">${esc(ESSENTIEL.name)}</span><b data-sum="type-price">${euro(P0)}</b></li>
         <li data-sum-remise hidden><span>Code promo (- ${evenement.remise} %)</span><b data-sum="remise">0 €</b></li>
         <li><span data-sum="forfait">Forfait ${esc(ABO.name)}</span><b data-sum="forfait-price">${euro(ABO.month)}/mois</b></li>
         <li data-avec-formule><span data-sum="domain">Nom de domaine fourni</span><b data-sum="domain-prix">+ ${euro(DOM)}/mois</b></li>
@@ -660,16 +716,16 @@ function statsCard() {
 // Sans chiffres pour les autres solutions (fourchettes sourcées ajoutées plus tard), sans nommer de marque.
 function comparatifTable() {
   const cols = ['Les Minis Monstres', 'Agence', 'Indépendant', 'Plateforme à faire soi-même'];
-  const prixCreation = `${types.map((t) => `${t.name} ${euro(t.price)}`).join(', ')}. Les prix sont affichés, les mêmes pour tous`;
+  const prixCreation = `${ESSENTIEL.name} ${euro(ESSENTIEL.price)}, ou ${euro(BOUTIQUE_T.price)} avec l’option ${ECOMMERCE.name}. Les prix sont affichés, les mêmes pour tous`;
   const prixMois = `Forfait ${creationSeule.name} : ${euro(0)}. Ou le forfait ${ABO.name} : ${euro(ABO.month)} par mois, hébergement et modifications compris (${euro(ABO.month + DOM)} si on vous fournit le nom de domaine)`;
   const rows = [
     ['Qui fait le travail', 'Alex et les Minis Monstres, du premier appel à la mise en ligne', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
     ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
     ['Prix chaque mois', prixMois, 'Contrat de maintenance, sur devis', 'Selon le prestataire, souvent en option', 'Abonnement mensuel, plus les applications en option'],
-    ['Délai', `${types[0].delai} pour un ${types[0].name}, ${types[1].delai} pour un ${types[1].name}, ${types[2].delai} pour un ${types[2].name}`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
+    ['Délai', `Quelques jours : les modules sont déjà prêts, il ne manque que votre contenu`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
     ['Modifications', `Révisions illimitées jusqu’à validation du site. Ensuite, incluses avec le forfait ${ABO.name}`, 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
-    ['Visibilité Google (être trouvé)', `Comprise dans le ${types[1].name} et le ${types[2].name}. Une page en plus : ${euro(prixPageSeo)}`, 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
+    ['Visibilité Google (être trouvé)', `Les bases dans chaque site. Puis des pages de visibilité Google : ${euro(prixPageSeo)} la page`, 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
     ['Engagement', 'Aucun, et aucune obligation d’abonnement', 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
   ];
   const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
@@ -689,7 +745,7 @@ module.exports = {
   contactUrl, acompteDe, flecheLia, euro, creerUrl, commanderUrl, year, btn, btnCreer, btnWa, breadcrumbs, pageHero, steps, faq, faqItem, faqSchema, ctaBand,
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, sourcesMarche, sourcesMd, sourcesInline, ecartBas, INDEPENDANT_DES, ABO, DELAI_MODIF, optsCreation, optsMois, EXTRAS_PAR_FAMILLE, extrasListe, prixExtra, prixType, optPrice, optionsCompact, extrasDemande, priceData, optionChoices, domainBox,
   offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, BOUTIQUE_ARTICLES, BOUTIQUE_PAIEMENT, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
-  siteOffreCarte, siteIcone, positionnement, demoBande, ESSENTIEL, VISIBILITE, BOUTIQUE_T, revisionsNote, phrase,
+  siteOffreCarte, optionEcommerceCarte, pagesGoogleCarte, modulesSite, siteIcone, positionnement, demoBande, ESSENTIEL, BOUTIQUE_T, ECOMMERCE, revisionsNote, phrase, prixPageSeo, packsSeo,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
   CERISE, BRICOU, PEPITE, presente, DOM, DOMAINE_REGLE, DOMAINE_PLUS, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };

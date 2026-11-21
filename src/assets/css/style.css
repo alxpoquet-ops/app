@@ -3038,3 +3038,19 @@ main > .section.section-citation + .section { padding-top: 48px; }
 :root[data-theme="dark"] .theme-btn:hover { background: var(--lilac); }
 .theme-btn:focus-visible { outline: 3px solid var(--lilac-d); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .theme-btn svg { transition: none; } }
+
+/* 21 novembre 2026 : un seul site (le Site Essentiel) et la case « E-commerce » dessous */
+.cf-un-site { display: grid; gap: 18px; }
+.cf-un-site .cf-art { width: 72px; flex: none; }
+.cf-un-site .cf-liste { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 720px) { .cf-un-site .cf-liste { grid-template-columns: 1fr; } }
+/* l'option e-commerce et les pages de visibilité Google, à côté du site (page Tarifs) */
+.site-carte.site-option { box-shadow: 0 0 0 2px var(--c-d) inset; }
+/* « Comment est fait votre site » : les modules */
+.modules { list-style: none; margin: 22px auto 26px; padding: 0; max-width: 1000px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.modules li { display: flex; gap: 12px; align-items: flex-start; padding: 16px; border-radius: 22px; background: var(--card); box-shadow: var(--shadow-sm); }
+.modules li > .ico { flex: none; width: 36px; height: 36px; padding: 8px; border-radius: 12px; background: var(--mint); color: var(--mint-dd); }
+.modules li.is-option > .ico { background: var(--pink); color: var(--pink-dd); }
+.modules strong { display: block; color: var(--ink); font-weight: 900; }
+.modules em { display: inline-block; margin: 2px 0; padding: 2px 8px; border-radius: 999px; background: var(--pink); color: var(--pink-dd); font-style: normal; font-weight: 800; font-size: .8rem; }
+.modules small { display: block; color: var(--text); font-weight: 600; line-height: 1.45; font-size: .92rem; }

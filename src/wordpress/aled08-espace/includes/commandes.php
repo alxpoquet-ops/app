@@ -415,7 +415,7 @@ function aled08e_cmd_traiter_post() {
     if ((int) get_transient($kCmd) >= 5 || $nTry >= 20) $err('robot');
 
     // configuration
-    if (!aled08e_type($cfg['type']) || !aled08e_cmd_forfait_existe($cfg['forfait'])) $err('champs');
+    if (!aled08e_type($cfg['type']) || !empty(aled08e_type($cfg['type'])['retire']) || !aled08e_cmd_forfait_existe($cfg['forfait'])) $err('champs'); // un site retiré (Site Visibilité) ne se commande plus
 
     // coordonnées
     $c = [

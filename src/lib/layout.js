@@ -17,10 +17,11 @@ const brandName = '<span class="brand-l1">Les Minis</span><span class="brand-l2"
 const { esc, typo } = require('./md');
 const C = require('./components');
 
-// L'offre finale : trois sites payés une fois (config.types), puis Autonomie (0 € par mois) ou Mini (10 € par mois, sans engagement)
+// L'offre (21 novembre 2026) : le Site Essentiel payé une fois, option e-commerce, puis Autonomie (0 € par mois) ou Mini (10 € par mois,
+// sans engagement). Le Site Visibilité (config.types, retire: true) n'apparaît plus nulle part.
 const ABO = forfaits[0];
 const AUTO = creationSeule;
-const PRIX_SITES = types.map((t) => `${t.name} ${C.euro(t.price)}`).join(', ');
+const PRIX_SITES = `${C.ESSENTIEL.name} ${C.euro(C.ESSENTIEL.price)}, ou ${C.euro(C.BOUTIQUE_T.price)} avec l’option ${C.ECOMMERCE.name}`;
 
 const assetsVersion = { css: '1', js: '1' };
 function setAssetVersion(v) { Object.assign(assetsVersion, v); }
@@ -28,7 +29,7 @@ function setAssetVersion(v) { Object.assign(assetsVersion, v); }
 // ---------------------------------------------------------------- schema.org
 function businessSchema() {
   const offers = [
-    ...types.map((t) => ({
+    ...types.filter((t) => !t.retire).map((t) => ({
       '@type': 'Offer',
       name: t.name + ' : ' + t.but.toLowerCase(),
       price: t.price,
@@ -107,7 +108,7 @@ const NAV = ['forfaits', 'seo', 'confiance', 'equipe', 'accompagnement', 'espace
 const NAV_DESC = {
   equipe: 'Alex et la bande',
   accompagnement: 'Après la mise en ligne',
-  forfaits: `Trois sites, dès ${creation.prix} €`,
+  forfaits: `Un site, dès ${creation.prix} €`,
   seo: 'Être trouvé sur Google',
   espace: 'Des outils pour vous aider',
   confiance: 'Des sites à visiter',
@@ -169,7 +170,8 @@ function footer(p) {
       </ul>
     </div>
     ${col('Votre site', `<li><a href="${sections.creer.path}">Créer mon site</a></li>
-        ${types.map((t) => `<li><a href="${C.creerUrl({ type: t.id })}">${t.name}</a></li>`).join('\n        ')}
+        <li><a href="${C.creerUrl()}">${C.ESSENTIEL.name}</a></li>
+        <li><a href="${C.creerUrl({ type: C.BOUTIQUE_T.id })}">Option ${C.ECOMMERCE.name}</a></li>
         <li><a href="${sections.forfaits.path}">Voir les tarifs</a></li>`)}
     ${col('Être visible', `<li><a href="/pourquoi-un-site-internet/">Pourquoi avoir un site internet ?</a></li>
         <li><a href="/etre-visible-sur-google/">Être visible sur Google</a></li>
@@ -215,8 +217,8 @@ function liaFlot() {
   const eur = C.euro;
   const questions = [
     ['À quoi sert un site ?', 'À être visible, tout simplement ! Sans site internet, ton activité est comme une jolie vitrine dans une rue où personne ne passe. Avec un site, tes futurs clients te trouvent, sur Google comme sur leur téléphone. Te rendre visible, c’est notre métier à nous, la petite bande !', sections.seo.path, 'Être trouvé sur Google'],
-    ['C’est combien ?', `Bonne nouvelle : tu paies ton site une seule fois ! ${types.map((t) => `${t.name} ${eur(t.price)}`).join(', ')}. Tu peux payer en ${fractionne.fois} fois avec ${fractionne.organismes}. Ensuite, c’est toi qui choisis : le forfait ${AUTO.name}, ${eur(AUTO.month)} par mois, tu gères tout toi-même. Ou le forfait ${ABO.name}, ${eur(ABO.month)} par mois sans engagement, et on s’occupe de tout (${eur(ABO.month + (ABO.domaine || 0))} si on te fournit le nom de domaine).`, sections.forfaits.path, 'Voir les tarifs'],
-    ['Quel site choisir ?', `Facile ! ${types.map((t) => `${t.name} : ${t.but.toLowerCase()}`).join('. ')}. Tu hésites ? Écris-nous, on choisit ensemble, promis.`, sections.creer.path, 'Créer mon site'],
+    ['C’est combien ?', `Bonne nouvelle : tu paies ton site une seule fois ! Le ${C.ESSENTIEL.name}, ${eur(C.ESSENTIEL.price)}, et ${eur(C.ECOMMERCE.prix)} de plus avec l’option ${C.ECOMMERCE.name} pour vendre en ligne. Tu peux payer en ${fractionne.fois} fois avec ${fractionne.organismes}. Ensuite, c’est toi qui choisis : le forfait ${AUTO.name}, ${eur(AUTO.month)} par mois, tu gères tout toi-même. Ou le forfait ${ABO.name}, ${eur(ABO.month)} par mois sans engagement, et on s’occupe de tout (${eur(ABO.month + (ABO.domaine || 0))} si on te fournit le nom de domaine).`, sections.forfaits.path, 'Voir les tarifs'],
+    ['Quel site choisir ?', `Facile, il n’y en a qu’un : le ${C.ESSENTIEL.name} ! On l’assemble avec nos modules déjà prêts, et on le remplit avec tes infos et tes photos. Tu vends en ligne ? Coche l’option ${C.ECOMMERCE.name}. Et pour grandir sur Google, des pages à ${eur(C.prixPageSeo)}, quand tu veux.`, sections.creer.path, 'Créer mon site'],
     ['Qui fait mon site ?', 'C’est Alex ! Il conçoit ton site et vérifie tout. Et nous, sa petite bande, on l’aide chacun à notre façon. Moi, je suis Cerise : je réponds à tes questions avec le sourire.', sections.equipe.path, 'Rencontrer la bande'],
     ['Et pour changer mon site après ?', `Avec le forfait ${ABO.name}, tes modifications sont incluses, youpi ! Tu écris ta demande dans ton espace client, ${C.BRICOU} la clarifie avec toi, et Alex fait la modification.`, sections.accompagnement.path, 'L’accompagnement'],
   ];

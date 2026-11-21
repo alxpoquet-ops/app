@@ -17,7 +17,7 @@ function aled08e_bienvenue_html($u, $mdp, $clic = '') {
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
     $boutique = aled08e_est_boutique($uid);
     $type = null;
-    foreach ((array) ($D['types'] ?? []) as $t) if (($t['id'] ?? '') === ($boutique ? 'boutique' : 'vitrine')) $type = $t;
+    foreach ((array) ($D['types'] ?? []) as $t) if (($t['id'] ?? '') === ($boutique ? 'boutique' : 'une-page')) $type = $t;
     $dom = function_exists('aled08e_domaine_mensuel') ? (float) aled08e_domaine_mensuel($uid) : 0.0;
     $prix = (float) ($f['month'] ?? 10) + $dom;
     $site = (string) aled08e_meta($uid, 'site');
@@ -83,7 +83,7 @@ function aled08e_bienvenue_texte($u, $mdp, $clic = '') {
     $f = aled08e_forfait(aled08e_meta($uid, 'forfait'));
     $dom = function_exists('aled08e_domaine_mensuel') ? (float) aled08e_domaine_mensuel($uid) : 0.0;
     return 'Bienvenue dans la famille, ' . aled08e_prenom($u) . " !\n\nVotre espace client est prêt.\nPour vous connecter en un clic (pendant 14 jours) : " . ($clic ?: aled08e_url()) . "\nEnsuite, avec vos identifiants : " . aled08e_url() . "\n\nVotre e-mail : " . $u->user_email . "\nVotre mot de passe : " . $mdp
-        . "\n\nVotre offre : " . (aled08e_est_boutique($uid) ? 'Site Boutique' : 'votre site') . ', avec le forfait ' . ($f['name'] ?? 'Mini') . ', nom de domaine compris (' . aled08e_euro_txt((float) ($f['month'] ?? 10) + $dom) . " par mois, sans engagement).\n\nUne question ? Répondez à cet e-mail.\n\nÀ très vite,\nAlex et les Minis Monstres\n";
+        . "\n\nVotre offre : " . (aled08e_est_boutique($uid) ? 'votre site avec la boutique' : 'votre site') . ', avec le forfait ' . ($f['name'] ?? 'Mini') . ', nom de domaine compris (' . aled08e_euro_txt((float) ($f['month'] ?? 10) + $dom) . " par mois, sans engagement).\n\nUne question ? Répondez à cet e-mail.\n\nÀ très vite,\nAlex et les Minis Monstres\n";
 }
 
 function aled08e_bienvenue_envoyer($uid, $mdp, $vers = '') {

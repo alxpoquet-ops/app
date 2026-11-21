@@ -4,41 +4,40 @@
 // Règles : aucun tiret long, aucun point-virgule, phrases courtes, rien d'invérifiable. Chaque terme technique est
 // expliqué la première fois qu'il apparaît dans un article. Le nom de marque vient de site.name.
 const cfg = require('../config');
-const { site, paiement, fidelite, forfaits, fractionne, types, creation, bande, limites, aLaDemande, creationSeule } = cfg;
+const { site, paiement, fidelite, forfaits, fractionne, bande, limites, aLaDemande, creationSeule } = cfg;
 const L = site.legal;
 const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 const UPDATED = '2026-11-15'; // mentions légales
-const UPDATED_CONF = '2026-11-19'; // politique de confidentialité : offre du 19 novembre 2026 (trois sites, abonnement facultatif, paiement des extras par carte)
-const UPDATED_CGV = '2026-11-20'; // conditions générales : création payée en entier à la commande (20 novembre 2026)
+const UPDATED_CONF = '2026-11-19'; // politique de confidentialité : offre du 19 novembre 2026 (abonnement facultatif, paiement des extras par carte). Rien à changer le 21 novembre 2026 (un seul site).
+const UPDATED_CGV = '2026-11-21'; // conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
 // La petite bande (config.bande) : six Minis Monstres, présentés par leur prénom et leur rôle. Le parrainage est retiré (19 novembre 2026).
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
 // (règlement européen sur ces systèmes, obligation de transparence). La politique de confidentialité nomme le fournisseur.
 
-// L'offre du 19 novembre 2026 : trois sites payés une fois (config.types : Site Essentiel, Site Visibilité, Site Boutique),
-// puis deux façons de faire vivre le site : Autonomie (config.creationSeule, sans abonnement, export du site remis au client)
+// L'offre du 21 novembre 2026 : un seul site payé une fois, le Site Essentiel (config.offreSite), avec l'option e-commerce (type
+// 'boutique'). Le Site Visibilité est retiré : les pages pour Google sont l'extra « page de visibilité Google ». Puis deux façons de faire vivre le site : Autonomie (config.creationSeule, sans abonnement, export du site remis au client)
 // ou Mini (config.forfaits[0], au mois, sans engagement). L'abonnement est facultatif. Trois extras (config.aLaDemande non retirés) :
 // la page de visibilité Google, payée une fois par carte depuis l'espace client, la traduction anglaise et la fonctionnalité
 // spécifique, sur devis. Les délais des modifications sont des délais habituels, jamais garantis.
 // Tous les nombres viennent de src/config.js, pour que les CGV suivent les prix.
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
-const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1200 → 1 200
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const liste = (l, mot = 'et') => (l.length > 1 ? `${l.slice(0, -1).join(', ')} ${mot} ${l[l.length - 1]}` : l.join(''));
 const EN_FOIS = `en ${fractionne.fois} fois avec ${fractionne.organismes}`; // par un organisme externe, sur la page de paiement
 const EN_FOIS_MAJ = EN_FOIS.charAt(0).toUpperCase() + EN_FOIS.slice(1);
-const T = (id) => types.find((t) => t.id === id) || {};
-const ESS = T('une-page'), VIS = T('vitrine'), BOU = T('boutique'); // les trois sites
+const ESS = cfg.offreSite.site, BOU = cfg.offreSite.avecBoutique, ECO = cfg.offreSite.option; // le site, le site avec l'option, l'option
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0];
 const dom = mini.domaine || 2; // le nom de domaine fourni par nos soins : en plus, par mois
 const avecDom = mini.month + dom; // le forfait Mini avec le nom de domaine // abonnement Mini, facultatif
 const AUTO = creationSeule.name; // sans abonnement : Autonomie
 const DATE_OFFRE = '19 novembre 2026'; // nouvelle offre : clause de transition (article 7)
 const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une modification peut prendre jusqu'à 48 h
-const listeDelais = types.map((t) => `${t.name} : ${t.delai}`).join(', ');
+const listeDelais = `${ESS.delai}, avec ou sans l’option ${minus(ECO.name)}`;
+const DATE_OFFRE_SITE = '21 novembre 2026'; // un seul site : clause de transition pour les sites commandés avant (article 7)
 const tvaMention = L.tva || 'non applicable, art. 293 B du CGI';
 // Ce que comprend chaque site : la liste vient de config.types (inclus), l'astérisque des révisions est expliqué à l'article 11.
-const inclusDe = (t) => t.inclus.map((x) => `- ${x.replace(/\*$/, '').replace('à votre activité', 'à l’activité du client')}`).join('\n');
+const inclusDe = (t) => t.inclus.map((x) => `- ${x.replace(/\*$/, '').replace('à votre activité', 'à l’activité du client').replace('vos informations et vos photos', 'les informations et les photos du client').replace('par vous-même', 'par le client lui-même')}`).join('\n');
 // Les extras encore proposés (config.aLaDemande, non retirés) : un prix à la page, ou un devis.
 const extras = aLaDemande.filter((x) => !x.retire);
 const pageGoogle = extras.find((x) => x.id === 'packseo') || { name: 'Page de visibilité Google', prix: 0 };
@@ -168,7 +167,7 @@ Vous pouvez demander l’accès à vos données, leur correction, leur suppressi
     path: '/conditions-generales/',
     name: 'Conditions générales',
     title: `Conditions générales de vente | Les Minis Monstres`,
-    description: `Conditions générales de vente des Minis Monstres : commande en ligne, trois sites à prix fixe, abonnement facultatif, extras, révisions, export, rétractation.`,
+    description: `Conditions générales de vente des Minis Monstres : commande en ligne, un site à prix fixe, option e-commerce, abonnement facultatif, extras, rétractation.`,
     lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif de commande.',
     updated: UPDATED_CGV,
     body: `## 1. Objet
@@ -177,7 +176,7 @@ Ces conditions s’appliquent à toute commande passée auprès des Minis Monstr
 
 ## 2. Commande en ligne
 
-La commande se passe sur le site, en trois étapes : le choix du site, les coordonnées, puis le paiement sécurisé. Le client choisit d’abord son site parmi les trois proposés (article 3). Il choisit ensuite la façon de le faire vivre : le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, au mois. Avec le forfait ${mini.name}, il indique son nom de domaine s’il en a un, ou en choisit un, fourni en supplément (article 10). Le total s’affiche en dernier. Le prix du site se règle le jour même, en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et le prix du forfait qui suivra. S’il a un code promo (article 4), il le saisit dans la case « Code promo » avant de commander.
+La commande se passe sur le site, en trois étapes : le choix du site, les coordonnées, puis le paiement sécurisé. Le client commande d’abord son site, avec ou sans l’option ${minus(ECO.name)} (article 3). Il choisit ensuite la façon de le faire vivre : le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, au mois. Avec le forfait ${mini.name}, il indique son nom de domaine s’il en a un, ou en choisit un, fourni en supplément (article 10). Le total s’affiche en dernier. Le prix du site se règle le jour même, en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et le prix du forfait qui suivra. S’il a un code promo (article 4), il le saisit dans la case « Code promo » avant de commander.
 
 En cliquant sur « Commander et payer », le client accepte ces conditions et passe une commande ferme. Il reçoit aussitôt un e-mail de confirmation avec une référence de commande, à rappeler dans les échanges.
 
@@ -189,27 +188,23 @@ Les prix sont en euros. La TVA n’est pas applicable (article 293 B du Code gé
 
 L’offre est la même pour tous les clients. Elle tient en deux parties : la création du site, payée une fois, puis la façon de le faire vivre. Le client choisit entre le forfait ${AUTO}, sans abonnement, et le forfait ${mini.name}. L’abonnement est facultatif.
 
-**Les trois sites.** Chaque site se paie une seule fois.
+**Le site.** Un seul site est proposé, payé une seule fois. Il est assemblé à partir de modules déjà conçus par les Minis Monstres (par exemple l’accueil, la présentation, les services et tarifs, la galerie, les questions fréquentes et le contact), puis rempli avec les informations et les photos fournies par le client.
 
 **${ESS.name}, ${eur(ESS.price)} €.** Il comprend :
 
 ${inclusDe(ESS)}
 
-**${VIS.name}, ${eur(VIS.price)} €.** Il comprend :
+**Option ${minus(ECO.name)}, ${eur(ECO.prix)} € de plus**, soit ${eur(BOU.price)} € avec le site. Elle se choisit à la commande. Elle ajoute :
 
-${inclusDe(VIS)}
-
-**${BOU.name}, ${mille(BOU.price)} €.** Il comprend :
-
-${inclusDe(BOU)}
+${ECO.inclus.map((x) => `- ${x.replace(/par vous$/, 'par le client')}`).join('\n')}
 
 **Révisions.** Les révisions sont illimitées jusqu’à la validation finale du site par le client. Elles portent sur le site commandé : ses textes, ses photos, ses couleurs et sa mise en page. Elles ne permettent pas de changer de site ni d’ajouter ce qui n’a pas été commandé. Après la mise en ligne, les changements passent par le forfait ${mini.name} (article 12).
 
-**Export du site.** L’export est possible pour les trois sites. Il s’agit d’une copie complète du site, avec ses fichiers et une sauvegarde, prête à installer chez un hébergeur. Le client la reçoit avec le forfait ${AUTO}, et à la fin de son abonnement s’il en a un (article 8).
+**Export du site.** L’export est possible, avec ou sans l’option ${minus(ECO.name)}. Il s’agit d’une copie complète du site, avec ses fichiers et une sauvegarde, prête à installer chez un hébergeur. Le client la reçoit avec le forfait ${AUTO}, et à la fin de son abonnement s’il en a un (article 8).
 
-**Visibilité Google.** La visibilité Google, aussi appelée référencement, désigne ce qui aide un site à être trouvé plus facilement sur Google. Le ${VIS.name} et le ${BOU.name} comptent jusqu’à ${creation.pages} pages, avec des pages de visibilité Google intégrées. Pour en avoir davantage, le client prend l’extra prévu (voir ci-dessous). Aucune page n’est ajoutée sans sa demande.
+**Visibilité Google.** La visibilité Google, aussi appelée référencement, désigne ce qui aide un site à être trouvé plus facilement sur Google. Le ${ESS.name} en pose les bases. Pour être trouvé sur plus de recherches, le client ajoute des pages de visibilité Google, une fois son site en ligne, avec l’extra prévu (voir ci-dessous). Aucune page n’est ajoutée sans sa demande.
 
-**Gestion de la boutique en ligne.** Avec le ${BOU.name}, les Minis Monstres configurent la boutique. Le client gère ensuite son catalogue lui-même, depuis l’onglet « Ma boutique » de son espace client : ses produits et ses services, ses prix, ses promotions et le suivi de ses commandes. Le nombre d’articles n’est pas limité. Le client installe lui-même ses moyens de paiement (Stripe, PayPal) depuis cet espace. Ses clés de paiement sont enregistrées sur son propre site, jamais chez les Minis Monstres. Les Minis Monstres ne promettent ni un volume de ventes ni un résultat.
+**Gestion de la boutique en ligne.** Avec l’option ${minus(ECO.name)}, les Minis Monstres configurent la boutique. Le client gère ensuite son catalogue lui-même, depuis l’onglet « Ma boutique » de son espace client : ses produits et ses services, ses prix, ses promotions, la livraison et le suivi de ses commandes. Le nombre d’articles n’est pas limité. Le client installe lui-même ses moyens de paiement (Stripe, PayPal) depuis cet espace. Ses clés de paiement sont enregistrées sur son propre site, jamais chez les Minis Monstres. Les Minis Monstres ne promettent ni un volume de ventes ni un résultat.
 
 **Les extras.** Les extras sont des services à la carte. Aucun n’est imposé, et aucun n’est renouvelé sans que le client l’ait demandé. Il y en a trois :
 
@@ -242,7 +237,7 @@ Ce choix est ouvert avec le forfait ${mini.name} comme avec le forfait ${AUTO} (
 
 **En cas de rétractation.** Si le client se rétracte dans les 14 jours, le prix payé lui est remboursé en entier (article 9). S’il a demandé que la création démarre tout de suite, les Minis Monstres retiennent le montant qui correspond au travail déjà fait à la date de la rétractation, au prorata du prix de création. Le reste lui est remboursé. Une fois le site entièrement livré à sa demande, il ne peut plus se rétracter. Le remboursement se fait par le moyen de paiement utilisé à la commande.
 
-Exemple pour un ${VIS.name} à ${eur(VIS.price)} €, sans code promo : le client paie ${eur(VIS.price)} € à la commande, en une fois, ou choisit de les régler ${EN_FOIS}. S’il prend le forfait ${mini.name}, il paie ensuite ${eur(mini.month)} € par mois à partir de la mise en ligne, ou ${eur(avecDom)} € avec le nom de domaine fourni.
+Exemple pour un ${ESS.name} avec l’option ${minus(ECO.name)}, soit ${eur(BOU.price)} €, sans code promo : le client paie ${eur(BOU.price)} € à la commande, en une fois, ou choisit de les régler ${EN_FOIS}. S’il prend le forfait ${mini.name}, il paie ensuite ${eur(mini.month)} € par mois à partir de la mise en ligne, ou ${eur(avecDom)} € avec le nom de domaine fourni.
 
 Les extras commandés plus tard ne suivent pas cette règle : la ${minus(pageGoogle.name)} est payée en entier, par carte, quand le client la commande (article 3).
 
@@ -271,6 +266,8 @@ En cas d’échec de paiement, le client est prévenu par e-mail. Si rien n’es
 ## 7. Clients inscrits avant le ${DATE_OFFRE}
 
 Un client inscrit avant le ${DATE_OFFRE} garde l’abonnement, les options et les extras qu’il a déjà, aux mêmes conditions, tant qu’il ne les retire pas. Un abonnement déjà en cours continue à son prix actuel. Les anciens extras ne sont plus proposés à la vente.
+
+Un site commandé avant le ${DATE_OFFRE_SITE}, par exemple un Site Visibilité, est réalisé et livré comme prévu dans sa commande, à son prix.
 
 ## 8. Engagement, résiliation et fin de l’abonnement
 
@@ -303,11 +300,13 @@ Si le client possède déjà un nom de domaine, il peut le transférer vers les 
 
 La création commence par un rendez-vous téléphonique de découverte. Le client fournit ses textes, photos et informations, ou les prépare avec les Minis Monstres à partir de ses explications. Les délais annoncés (${listeDelais}) sont indicatifs. Ils courent à partir de la réception de ces éléments.
 
-Le client voit son site avant la mise en ligne. Il peut demander des révisions sans limite de nombre, jusqu’à ce qu’il valide le site (article 3). La validation finale déclenche la mise en ligne, ou la remise de l’export avec le forfait ${AUTO}.
+Le client reçoit une première version de son site avant la mise en ligne. Il peut demander des révisions sans limite de nombre, jusqu’à ce qu’il valide le site (article 3). La validation finale déclenche la mise en ligne, ou la remise de l’export avec le forfait ${AUTO}.
 
 ## 12. Modifications
 
 **Ce qui est inclus.** Les modifications sont incluses dans le forfait ${mini.name}. Une modification est un changement demandé sur le site déjà en ligne : ajouter ou changer un texte ou des photos, mettre à jour une information. Ajouter une ${minus(pageGoogle.name)} n’en est pas une : c’est un extra (article 3). Une refonte complète fait l’objet d’un devis. Sans abonnement, le client fait lui-même ses modifications.
+
+**Modification par le client.** Avec le forfait ${mini.name}, le client peut aussi changer lui-même les textes et les photos de son site, depuis son espace client (bouton « Modifier mon site moi-même »). Ces changements sont publiés tout de suite, sous sa responsabilité. Le reste passe par une demande de modification.
 
 **Déroulé.** Chaque modification suit les mêmes étapes :
 
@@ -349,7 +348,7 @@ Les petits monstres sont des outils automatisés, dont certains reposent sur un 
 
 ## 16. Visibilité Google (référencement)
 
-La visibilité Google, ou référencement, c’est le travail qui aide un site à être trouvé sur Google. Le ${VIS.name} et le ${BOU.name} sont structurés pour cela, avec un référencement local renforcé. Les pages de visibilité Google commandées comme extras (article 3), payées une fois, ouvrent le site à plus de recherches. ${mirette}, la spécialiste visibilité de la petite bande, les prépare.
+La visibilité Google, ou référencement, c’est le travail qui aide un site à être trouvé sur Google. Le ${ESS.name} est construit pour cela : pages rapides, titres et descriptions écrits pour Google. Les pages de visibilité Google commandées comme extras (article 3), payées une fois, ouvrent le site à plus de recherches. ${mirette}, la spécialiste visibilité de la petite bande, les prépare.
 
 Dans tous les cas, la visibilité Google est une obligation de moyens : les Minis Monstres font de leur mieux et appliquent les bonnes pratiques, sans garantir une position donnée sur Google.
 

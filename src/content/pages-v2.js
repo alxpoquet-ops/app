@@ -2,8 +2,9 @@
 // Règles (scripts/check.js) : title de 65 caractères au plus, description de 120 à 160, aucun tiret long
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de src/config.js),
 // aucun chiffre sans source, et pas de phrase de 9 mots ou plus reprise d'une autre page.
-// Offre du 19 novembre 2026 : trois sites payés une fois (config.types : Site Essentiel, Site Visibilité, Site Boutique),
-// puis Autonomie (config.creationSeule, sans abonnement, export du site remis au client) ou Mini (config.forfaits[0], au mois,
+// Offre du 21 novembre 2026 : un seul site payé une fois, le Site Essentiel (config.offreSite), assemblé à partir de nos modules
+// (les « minis monstres » recréés et optimisés par Alex), avec l'option e-commerce (+ 200 €). Le Site Visibilité est retiré :
+// les pages pour Google sont l'extra « page de visibilité Google ». Puis Autonomie (config.creationSeule, sans abonnement, export du site remis au client) ou Mini (config.forfaits[0], au mois,
 // sans engagement, modifications incluses, une demande à la fois). L'abonnement est facultatif. Trois extras : la page de
 // visibilité Google (payée une fois, par carte, depuis l'espace client), la traduction anglaise et la fonctionnalité spécifique
 // (sur devis). Chaque mot technique est expliqué la première fois qu'il apparaît sur une page.
@@ -17,10 +18,10 @@ const { site, creation, types, forfaits, fractionne, paiement, marche, fidelite,
 const eur = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','));
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1500 → 1 500
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
-// Les trois sites, et leur délai de création indicatif (config.types : une-page, vitrine, boutique).
-const T = (id) => (types || []).find((t) => t.id === id) || {};
-const ESS = T('une-page'), VIS = T('vitrine'), BOU = T('boutique');
-const delai = (id) => T(id).delai || '';
+// Le site (config.offreSite) : le Site Essentiel, le même avec l'option e-commerce, l'option seule, et son délai indicatif.
+const { offreSite } = require('../config');
+const ESS = offreSite.site, BOU = offreSite.avecBoutique, ECO = offreSite.option;
+const eco = ECO.name.toLowerCase(); // « e-commerce »
 
 const mini = forfaits.find((f) => f.id === 'base') || forfaits[0]; // Mini, le seul abonnement, facultatif
 const dom = mini.domaine || 2; // le nom de domaine fourni par nos soins : en plus, par mois
@@ -80,7 +81,7 @@ const pages = [
     points: [
       { icon: 'timer', t: 'Une méthode rodée', d: 'La petite bande des Minis Monstres se charge du répétitif, et aucun intermédiaire n’est à payer.' },
       { icon: 'user-check', t: 'Tout vérifié à la main', d: 'Alex relit, teste sur téléphone et contrôle chaque mise en ligne.' },
-      { icon: 'badge-euro', t: 'Un prix affiché', d: `Trois sites, de ${eur(ESS.price)} à ${mille(BOU.price)} €, les mêmes pour tous, sans devis à attendre.` },
+      { icon: 'badge-euro', t: 'Un prix affiché', d: `${eur(ESS.price)} € le site, ${eur(BOU.price)} € avec une boutique, les mêmes pour tous, sans devis à attendre.` },
       { icon: 'shield-check', t: 'Rien de sacrifié', d: 'Qualité, sécurité, visibilité sur Google et une vraie personne qui vous répond.' },
     ],
     body: `## Être visible ne devrait pas être un luxe
@@ -95,6 +96,12 @@ Un site internet, c’est surtout du temps : la maquette, la mise en page de cha
 
 D’après des repères publics relevés en France, un site vitrine de ${marche.pagesCompare} pages fait par un indépendant coûte en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Son entretien revient souvent entre ${mille(marche.entretienMin)} et ${mille(marche.entretienMax)} € par mois. Ces prix ne sont pas exagérés : ils correspondent au travail fourni.
 
+## Le cerveau est prêt, il ne manque que votre contenu
+
+Un site est fait de parties qui reviennent presque toujours : l’accueil, la présentation, les services et les tarifs, la galerie, les questions fréquentes, le contact, et parfois la boutique. Alex a recréé et optimisé chacune de ces parties, une fois pour toutes. Ce sont nos modules, nos minis monstres à nous : soignés, rapides, lisibles sur téléphone, et modifiables chacun de leur côté.
+
+Pour votre site, nous assemblons ces modules et nous les remplissons avec vos informations et vos photos. Le travail de fond n’est pas à refaire à chaque fois : c’est ce qui garde le prix bas.
+
 ## Comment nous gagnons du temps
 
 D’un site à l’autre, beaucoup d’étapes se répètent. Nous les avons confiées à une petite bande de compagnons, les Minis Monstres.
@@ -103,8 +110,8 @@ D’un site à l’autre, beaucoup d’étapes se répètent. Nous les avons con
 - **Pour les pages** : ${nomRole(B('constructeur'))}, les monte, et ${nomRole(B('organisateur'))}, les range.
 - **Pour Google** : ${nomRole(B('observateur'))}, prépare les pages qui vous feront trouver près de chez vous.
 - **Sans intermédiaire** : nous traitons en direct avec des hébergeurs français, les entreprises qui gardent les sites en ligne.
-${delai('une-page') && delai('vitrine') ? `
-Ce qui prenait des jours se fait en quelques heures. Un ${ESS.name} est prêt en ${delai('une-page')}, un ${VIS.name} en ${delai('vitrine')}.
+${ESS.delai ? `
+Ce qui prenait des semaines se fait en ${ESS.delai}, avec ou sans l’option ${eco}.
 ` : ''}
 ## Ce qu’Alex fait à la main
 
@@ -121,7 +128,7 @@ Aucun site ne part en ligne sans ce contrôle.
 
 Pas de devis à attendre. Tout se lit dans le même ordre.
 
-1. **D’abord le site, payé une fois** : ${eur(ESS.price)} € le ${ESS.name} pour exister sur internet, ${eur(VIS.price)} € le ${VIS.name} pour être trouvé sur Google, ${mille(BOU.price)} € le ${BOU.name} pour vendre sur internet.
+1. **D’abord le site, payé une fois** : ${eur(ESS.price)} € le ${ESS.name}, et ${eur(ECO.prix)} € de plus avec l’option ${eco} pour vendre sur internet.
 2. **Ensuite, Forfait ${AUTO} ou Forfait ${mini.name}** : vous gérez le site vous-même sans rien payer chaque mois, ou nous nous en occupons pour ${eur(mini.month)} € par mois, sans engagement.
 3. **Enfin, les extras, si besoin** : une ${minus(pageGoogle.name)} à ${prixPage} €, une traduction anglaise ou une fonctionnalité spécifique sur devis.
 
@@ -129,7 +136,7 @@ Le site se règle à la commande, d’un coup ou ${EN_FOIS}, au choix sur la pag
 
 ## Les repères du marché, honnêtement
 
-Face à un site vitrine de ${marche.pagesCompare} pages fait par un indépendant, notre ${VIS.name} à ${eur(VIS.price)} € coûte ${marche.fois} fois moins, d’après les fourchettes publiées.
+Face à un site vitrine de ${marche.pagesCompare} pages fait par un indépendant, notre ${ESS.name} à ${eur(ESS.price)} €, qui en reprend les mêmes parties, coûte ${marche.fois} fois moins, d’après les fourchettes publiées.
 
 Côté entretien, les prestataires consultés demandent ${eur(marche.entretienMin)} à ${eur(marche.entretienMax)} € par mois, l’hébergement étant souvent en plus. Le forfait ${mini.name} coûte ${eur(mini.month)} € par mois, ou ${eur(avecDom)} € avec le nom de domaine, hébergement et modifications compris. Cela reste nettement en dessous de ces fourchettes.
 
@@ -215,11 +222,11 @@ Les autres métiers sont réunis sur la page [votre métier](/metiers/).
 
 ## Par où commencer
 
-Chez nous, chaque site a un but précis.
+Chez nous, c’est simple : un seul site, puis ce dont vous avez besoin.
 
-- **${ESS.name}, ${eur(ESS.price)} €** : exister sur internet.
-- **${VIS.name}, ${eur(VIS.price)} €** : être trouvé sur Google.
-- **${BOU.name}, ${mille(BOU.price)} €** : vendre sur internet.
+- **${ESS.name}, ${eur(ESS.price)} €** : exister sur internet et être joignable.
+- **Option ${eco}, + ${eur(ECO.prix)} €** : vendre sur internet.
+- **Pages de visibilité Google, ${prixPage} € la page** : être trouvé sur plus de recherches, quand vous voulez.
 
 Ensuite, vous gérez votre site vous-même avec le forfait ${AUTO}, ou nous nous en occupons avec le forfait ${mini.name}, à ${eur(mini.month)} € par mois. Les prix sont détaillés sur la page [tarifs](/tarifs/).
 
@@ -228,7 +235,7 @@ Ensuite, vous gérez votre site vous-même avec le forfait ${AUTO}, ou nous nous
       { q: 'Ma page Facebook ne suffit pas ?', a: 'Elle suffit pour garder le contact avec vos abonnés. Pour être trouvé par quelqu’un qui ne vous connaît pas encore, un site internet fait mieux. Les deux vont très bien ensemble.' },
       { q: 'J’ai déjà une fiche Google, à quoi bon un site ?', a: 'La fiche indique votre adresse, vos horaires et vos avis. Le site raconte ce que vous faites, et pourquoi vous choisir. Une fiche reliée à un vrai site inspire aussi davantage confiance.' },
       { q: 'Un site, c’est compliqué à tenir à jour ?', a: `Pas si quelqu’un s’en charge pour vous. Avec le forfait ${mini.name}, vous envoyez vos changements depuis votre espace client, et ils sont faits pour vous.` },
-      { q: 'Quel site choisir pour commencer ?', a: `Le ${ESS.name} pour exister et être joignable. Le ${VIS.name} si vous comptez sur Google pour trouver des clients. Le ${BOU.name} si vous voulez vendre en ligne.` },
+      { q: 'Par quoi commencer ?', a: `Par le ${ESS.name}. Vous vendez en ligne ? Cochez l’option ${eco}. Vous comptez sur Google pour trouver des clients ? Ajoutez des pages de visibilité Google une fois le site en ligne.` },
     ],
     voir: ['/etre-visible-sur-google/', '/guides/site-une-page-ou-site-vitrine/', '/metiers/'],
     cta: { titre: 'Devenez visible, sans prise de tête', texte: 'Dites-nous ce que vous faites, on s’occupe du reste.' },
@@ -277,7 +284,7 @@ Imaginez un paysagiste qui crée des jardins, les entretient et taille les haies
 
 Sur chaque page, Google doit comprendre ce que vous faites, où, et pour qui. Un titre net, quelques paragraphes, vos photos et un moyen de vous contacter suffisent.
 
-C’est le rôle de notre ${VIS.name} : jusqu’à ${creation.pages} pages, avec des pages de visibilité Google déjà intégrées.
+C’est le rôle de nos pages de visibilité Google : ${prixPage} € la page, ajoutées à votre site quand vous voulez, depuis votre espace client.
 
 ## 4. Les mots de vos clients
 
@@ -349,7 +356,7 @@ Vos questions avant la commande ne vous engagent à rien. Si notre offre ne corr
 
 ## Nos engagements
 
-- **Un prix affiché** : ${eur(ESS.price)}, ${eur(VIS.price)} ou ${mille(BOU.price)} € selon le site, le même pour tout le monde.
+- **Un prix affiché** : ${eur(ESS.price)} € le site, ${eur(BOU.price)} € avec l’option ${eco}, le même pour tout le monde.
 - **Aucun abonnement imposé** : le forfait ${mini.name} est facultatif et sans engagement.
 - **Le nom de domaine à votre nom** : l’adresse de votre site vous appartient.
 - **Vous repartez avec votre site** : l’export reste possible à tout moment.
@@ -366,7 +373,7 @@ Ils ne décident pas à votre place, et ils ne remplacent pas Alex : il regarde 
 
 ## Ce que nous faisons bien, et le reste
 
-Nous créons des sites d’une page, des sites jusqu’à ${creation.pages} pages et des boutiques en ligne. Quelques exemples sont sur la page [réalisations](/realisations/).
+Nous créons des sites vitrines, assemblés à partir de nos modules, des boutiques en ligne, et des pages pour être trouvé sur Google. Quelques exemples sont sur la page [réalisations](/realisations/).
 
 Pour une application sur mesure, un logiciel métier ou un catalogue de milliers de produits, il faut un développeur expérimenté. Dans ce cas, nous vous orientons vers les bonnes personnes.
 
@@ -491,7 +498,7 @@ Artisans, commerçants, gîtes, associations : beaucoup d’activités d’ici f
 - **En rendez-vous**, à Charleville-Mézières, Sedan, Rethel, ${ville} ou dans un village autour : on regarde ensemble ce que vous faites, vos photos et vos idées.
 - **À distance** : vous nous écrivez ou on s’appelle, puis vous suivez tout depuis votre espace client.
 
-Dans les deux cas, le tarif ne change pas : ${eur(ESS.price)} € pour le ${ESS.name}, ${eur(VIS.price)} € pour le ${VIS.name}, ${mille(BOU.price)} € pour le ${BOU.name}. Ensuite, c’est le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
+Dans les deux cas, le tarif ne change pas : ${eur(ESS.price)} € pour le ${ESS.name}, ou ${eur(BOU.price)} € avec l’option ${eco}. Ensuite, c’est le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
 
 ## Être trouvé près de chez vous
 
@@ -503,7 +510,7 @@ Pour une entreprise locale, tout se joue sur les recherches des gens du coin : �
 
 Pensez aussi aux mots que les gens emploient vraiment. Beaucoup disent « Charleville » plutôt que « Charleville-Mézières ». Pour un gîte, la vallée de la Meuse ou la forêt des Ardennes parlent souvent plus qu’un nom de commune.
 
-Le ${VIS.name} est fait pour cela. Pour un couvreur de Rethel, une page peut parler de la réparation d’ardoises, une autre du démoussage : chacune répond à une vraie recherche d’ici.
+Les pages de visibilité Google sont faites pour cela. Pour un couvreur de Rethel, une page peut parler de la réparation d’ardoises, une autre du démoussage : chacune répond à une vraie recherche d’ici.
 
 > Pas de pages en série pour chaque village. Une page vraie et utile vaut mieux que vingt copies où seul le nom de la commune change.
 
@@ -519,7 +526,7 @@ Elle se fera connaître des Ardennais qui cherchent une idée de cadeau, et vend
 
 1. **Vous nous contactez** par le [formulaire](/contact/), en précisant si vous aimeriez une rencontre. Vous savez déjà ce qu’il vous faut ? Commandez sur la page [créer mon site](/creer-mon-site/).
 2. **On fait le point**, en rendez-vous ou au téléphone.
-3. **Nous créons votre site**${delai('une-page') && delai('vitrine') && delai('boutique') ? ` : comptez ${delai('une-page')} pour un ${ESS.name}, ${delai('vitrine')} pour un ${VIS.name}, ${delai('boutique')} pour un ${BOU.name}` : ', et vous voyez chaque étape'}.
+3. **Nous créons votre site**${ESS.delai ? ` : comptez ${ESS.delai}, puisque nos modules sont déjà prêts` : ', et vous voyez chaque étape'}.
 4. **Vous validez, et le site part en ligne.**
 
 Côté paiement, vous réglez le site en commandant. Vous préférez étaler ? Choisissez ${EN_FOIS} sur la page de paiement.`,

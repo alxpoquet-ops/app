@@ -4,8 +4,8 @@ const { types, forfaits, bande, creation, creationSeule, aLaDemande } = require(
 const minus = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const T = (id) => types.find((t) => t.id === id);
 const page = T('une-page'); // le Site Essentiel
-const vis = T('vitrine'); // le Site Visibilité
-// L'offre (19 novembre 2026) : trois sites payés une fois (Site Essentiel, Site Visibilité, Site Boutique), puis Autonomie
+// L'offre (21 novembre 2026) : un seul site payé une fois, le Site Essentiel, avec l'option e-commerce. Le Site Visibilité est
+// retiré : les pages pour Google sont l'extra « page de visibilité Google ». Puis Autonomie
 // (config.creationSeule, sans abonnement, export du site remis au client) ou Mini (au mois, sans engagement, facultatif :
 // modifications incluses, une demande à la fois). Une page de visibilité Google en plus se prend en extra depuis l'espace client,
 // payée une fois par carte. « Chez les Minis Monstres » reste : c'est le nom de la marque.
@@ -434,7 +434,7 @@ Une esthéticienne écrit sur son site « Bienvenue dans mon univers de douceur 
 
 Derrière ce mot technique, il y a une idée simple : être visible. C'est le cœur de notre métier.
 
-Le ${vis.name} compte jusqu'à ${creation.pages} pages, avec des pages de visibilité Google intégrées. Pour être trouvé sur plus de recherches, vous pouvez en ajouter, chacune écrite pour une recherche de vos clients. Elles se prennent en extra, depuis votre espace client, à ${prixPage} € la page, payée une fois. Tout est expliqué sur la page [visibilité sur Google](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
+Le ${page.name} pose les bases : des pages rapides, un titre et une description pour chacune. Pour être trouvé sur plus de recherches, vous ajoutez des pages de visibilité Google, chacune écrite pour une recherche de vos clients. Elles se prennent en extra, depuis votre espace client, à ${prixPage} € la page, payée une fois. Tout est expliqué sur la page [visibilité sur Google](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
     faq: [
       { q: 'Quelle différence entre SEO et publicité Google ?', a: 'La publicité vous place en haut des résultats tant que vous payez chaque clic. Le SEO vise les résultats gratuits : il demande du travail au départ, mais ne s’arrête pas le jour où vous cessez de payer.' },
       { q: 'Au bout de combien de temps voit-on des effets ?', a: 'Cela dépend de votre métier, de votre ville et de la concurrence. Il faut en général compter plusieurs mois avant de juger. C’est un travail de fond, pas un interrupteur.' },
@@ -968,7 +968,7 @@ Un salon de toilettage distribue des cartes chez les vétérinaires du coin, ave
 
 ## Chez les Minis Monstres
 
-Un site d'une seule page peut faire office de landing page pour lancer une activité ou un événement. C'est le ${page.name}, à ${page.price} €. Les trois sites et leurs prix sont détaillés sur [créer mon site](/creer-mon-site/). Le bouton qui fait agir est détaillé à la page [call to action](/lexique/call-to-action/).`,
+Un site simple, centré sur une seule offre, peut faire office de landing page pour lancer une activité ou un événement. Le ${page.name}, à ${page.price} €, s'y prête bien. Son prix et l'option e-commerce sont détaillés sur [créer mon site](/creer-mon-site/). Le bouton qui fait agir est détaillé à la page [call to action](/lexique/call-to-action/).`,
     faq: [
       { q: 'Quelle différence entre landing page et page d’accueil ?', a: 'La page d’accueil présente toute l’entreprise et oriente vers le reste du site. La landing page parle d’une seule offre et vise une seule action.' },
       { q: 'Faut-il faire de la publicité pour avoir une landing page ?', a: 'Non. Elle peut aussi recevoir des visiteurs depuis un e-mail, un QR code, un post sur les réseaux ou une carte de visite. Ce qui compte, c’est qu’ils arrivent avec une attente précise.' },

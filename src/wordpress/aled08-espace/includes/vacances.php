@@ -136,26 +136,25 @@ function aled08e_vacances_html($uid) {
     return ob_get_clean();
 }
 
-/* Sans Site Boutique : l'onglet « Ma boutique » est là, mais verrouillé. Il dit ce qu'il débloque, et comment l'ouvrir. */
+/* Sans l'option e-commerce : l'onglet « Ma boutique » est là, mais verrouillé. Il dit ce qu'il débloque, et comment l'ouvrir. */
 function aled08e_boutique_verrou_html($uid) {
     $D = aled08e_data();
-    $t = null;
-    foreach ((array) ($D['types'] ?? []) as $x) if (($x['id'] ?? '') === 'boutique') $t = $x;
-    $nom = $t['name'] ?? 'Site Boutique';
+    $prix = isset($D['creation']['ecommerce']) ? (int) $D['creation']['ecommerce'] : 200;
+    $nom = 'option e-commerce (+ ' . $prix . ' €)';
     $points = ['Vos articles : photo, description, prix', 'Vos prix et vos promotions', 'Vos moyens de paiement (Stripe, PayPal, virement…)', 'Le suivi de vos commandes'];
     $h = '<h2 class="app-h">Ma boutique</h2>'
         . '<section class="verrou" aria-label="Option verrouillée">'
         . '<span class="verrou-art" aria-hidden="true">' . aled08e_monster('mochi') . '</span>'
         . '<p class="verrou-tag">' . aled08e_icon('lock') . '<span>Option verrouillée</span></p>'
-        . '<h3>Cette partie s’ouvre avec le ' . esc_html($nom) . '</h3>'
-        . '<p>Vous n’avez pas de boutique en ligne sur votre site pour le moment. Avec le ' . esc_html($nom) . ', vous gérez tout ici, vous-même, depuis votre téléphone :</p>'
+        . '<h3>Cette partie s’ouvre avec l’' . esc_html($nom) . '</h3>'
+        . '<p>Vous n’avez pas de boutique en ligne sur votre site pour le moment. Avec l’option e-commerce, vous gérez tout ici, vous-même, depuis votre téléphone :</p>'
         . '<ul class="verrou-liste">';
     foreach ($points as $l) $h .= '<li>' . aled08e_icon('check') . '<span>' . esc_html($l) . '</span></li>';
     $h .= '</ul>';
     if (aled08e_a_la_demande('specifique')) {
         $h .= '<form method="post" action="' . esc_url(aled08e_url()) . '">'
             . '<input type="hidden" name="aled08e_demande" value="1"><input type="hidden" name="extra" value="specifique"><input type="hidden" name="extra_ok" value="1">' . wp_nonce_field('aled08e_demande', '_aled08e', true, false)
-            . '<input type="hidden" name="demande" value="Je voudrais ajouter une boutique en ligne à mon site (passer au ' . esc_attr($nom) . '). Pouvez-vous me dire le prix ?">'
+            . '<input type="hidden" name="demande" value="Je voudrais ajouter une boutique en ligne à mon site (l’' . esc_attr($nom) . '). Pouvez-vous me dire le prix ?">'
             . '<button class="btn btn-primary" type="submit">' . aled08e_icon('key-round') . '<span>Débloquer ma boutique : demander le prix</span></button></form>'
             . '<p class="verrou-note">Gratuit et sans engagement : vous recevez un prix, et vous décidez.</p>';
     } else {
