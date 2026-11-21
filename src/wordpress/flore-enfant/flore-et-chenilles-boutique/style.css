@@ -1,0 +1,56 @@
+/*
+Theme Name: Flore & Chenilles · Boutique
+Template: flore-et-chenilles
+Description: Thème enfant de Flore & Chenilles : un vrai site boutique, avec un menu vers les pages (boutique, fleurs, occasions, conseils), un menu téléphone illustré, un pied de page complet et l’en-tête de la boutique avec ses catégories. Le thème parent reste intact.
+Author: Les Minis Monstres
+Version: 1.0.0
+Text Domain: flore-et-chenilles-boutique
+*/
+
+/* ---------- Menu ordinateur : de vraies pages, la page lue s'allume ----------
+   (une classe à part : le script de l'accueil lit les liens de « .nav » comme des ancres) */
+.fcb-nav { display: none; gap: 2px; }
+.fcb-nav a { position: relative; padding: 8px 14px; border-radius: 999px; font-size: .94rem; color: var(--plum-2); text-decoration: none; transition: color .3s, background-color .3s; white-space: nowrap; }
+.fcb-nav a:hover { color: var(--plum); background: rgba(255, 255, 255, .75); }
+.fcb-nav a[aria-current] { color: var(--plum); background: #fff; box-shadow: var(--shadow-sm); }
+@media (min-width: 980px) { .fcb-nav { display: flex; } }
+@media (min-width: 980px) and (max-width: 1180px) {
+  .fcb-nav a { padding: 8px 9px; font-size: .88rem; }
+  .header-inner { gap: 10px; }
+}
+
+/* ---------- Menu téléphone : une petite icône pastel par lien ---------- */
+.mobile-menu { justify-content: flex-start; overflow-y: auto; }
+.mobile-menu nav a.fcb-lien {
+  display: flex; align-items: center; gap: 14px;
+  font-size: clamp(1.55rem, 7vw, 2.1rem); padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+.fcb-ic {
+  width: 42px; height: 42px; flex: none; border-radius: 15px;
+  display: grid; place-items: center; background: var(--t, var(--blush));
+  box-shadow: 0 6px 16px -12px rgba(74, 44, 61, .5);
+}
+.fcb-ic svg { width: 21px; height: 21px; fill: none; stroke: var(--rose-ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.mobile-menu nav a.fcb-lien[aria-current] { color: var(--rose-ink); }
+.mobile-menu nav a.fcb-lien::after { content: '→'; margin-left: auto; font-family: var(--sans); font-size: 1.1rem; color: var(--rose-ink); opacity: .7; }
+
+/* ---------- Pied de page : quatre colonnes ---------- */
+@media (min-width: 860px) { .footer-grid.fcb-pied { grid-template-columns: 1.4fr 1fr 1fr 1fr; } }
+
+/* ---------- La boutique : présentation et catégories ---------- */
+.fcb-boutique-tete { margin: 6px 0 22px; }
+.fcb-boutique-tete p { max-width: 40em; color: var(--plum-2); margin: 0 0 16px; }
+.fcb-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.fcb-chips a {
+  display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px;
+  background: #fff; color: var(--plum); text-decoration: none; font-size: .95rem;
+  box-shadow: 0 0 0 1.5px var(--line) inset; transition: background-color .3s, box-shadow .3s;
+}
+.fcb-chips a small { font-size: .78rem; color: var(--plum-3); }
+.fcb-chips a:hover { background: var(--blush); }
+.fcb-chips a[aria-current] { background: var(--plum); color: #fff; box-shadow: none; }
+.fcb-chips a[aria-current] small { color: rgba(255,255,255,.75); }
+.fcb-rassure { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 18px 0 0; padding: 0; list-style: none; font-size: .9rem; color: var(--plum-2); }
+.fcb-rassure li { display: inline-flex; align-items: center; gap: 6px; }
+.fcb-rassure svg { width: 17px; height: 17px; fill: none; stroke: var(--rose-ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
