@@ -116,3 +116,18 @@ add_action(
 	},
 	99
 );
+
+/* Le bouton soleil / lune : clair ou sombre, le choix du visiteur est gardé (minis-theme, comme le connecteur). */
+add_action(
+	'wp_footer',
+	function () {
+		$js = '(function(){var h=document.documentElement,b=document.querySelector("[data-fcb-theme]");'
+			. 'function maj(t){var m=document.querySelector("meta[name=theme-color]");if(m)m.setAttribute("content",t==="dark"?"#1D1418":"#FBF7F2");'
+			. 'if(b){b.setAttribute("aria-pressed",t==="dark"?"true":"false");b.setAttribute("aria-label",t==="dark"?"Passer en apparence claire":"Passer en apparence sombre");}}'
+			. 'maj(h.getAttribute("data-theme")==="dark"?"dark":"light");if(!b)return;'
+			. 'b.addEventListener("click",function(){var t=h.getAttribute("data-theme")==="dark"?"light":"dark";'
+			. 'if(typeof window.minisTheme==="function"){window.minisTheme(t);}else{h.setAttribute("data-theme",t);try{localStorage.setItem("minis-theme",t)}catch(e){}}maj(t);});})();';
+		echo '<script>' . $js . '</script>' . "\n"; // phpcs:ignore
+	},
+	99
+);

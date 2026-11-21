@@ -1,9 +1,9 @@
 /*
 Theme Name: Flore & Chenilles · Boutique
 Template: flore-et-chenilles
-Description: Thème enfant de Flore & Chenilles : un vrai site boutique, avec un menu vers les pages (boutique, fleurs, occasions, conseils), un menu téléphone illustré, un pied de page complet et l’en-tête de la boutique avec ses catégories. Le thème parent reste intact.
+Description: Thème enfant de Flore & Chenilles : un vrai site boutique, avec un menu vers les pages (boutique, fleurs, occasions, conseils), un menu téléphone illustré, un pied de page complet et l’en-tête de la boutique avec ses catégories. Clair et sombre, avec le bouton soleil / lune. Le thème parent reste intact.
 Author: Les Minis Monstres
-Version: 1.1.0
+Version: 1.2.0
 Text Domain: flore-et-chenilles-boutique
 */
 
@@ -84,3 +84,111 @@ Text Domain: flore-et-chenilles-boutique
 .fcb-r { padding: 0 20px 18px; color: var(--plum-2); }
 .fcb-r p { margin: 0 0 10px; }
 .fcb-r a { color: var(--rose-ink); }
+
+/* ---------- Bouton soleil / lune (clair ou sombre) ---------- */
+.fcb-theme svg { width: 21px; height: 21px; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.fcb-theme .fcb-soleil circle { fill: #F6CF7A; stroke: #DDA54A; }
+.fcb-theme .fcb-soleil path { fill: none; stroke: #DDA54A; }
+.fcb-theme .fcb-lune { fill: #D9CBF5; stroke: #A48ADB; }
+.fcb-theme .fcb-lune, [data-theme="dark"] .fcb-theme .fcb-soleil { display: none; }
+[data-theme="dark"] .fcb-theme .fcb-lune { display: block; }
+
+/* ==========================================================================
+   Le site en sombre : une nuit prune et douce, mêmes pastels en plus sourds.
+   Tout suit l'attribut data-theme posé sur <html> par le connecteur.
+   ========================================================================== */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --cream: #1D1418;
+  --cream-2: #251A20;
+  --paper: #2B1F26;
+  --blush: #4A2B39;
+  --blush-2: #6E3F55;
+  --lilac: #342A47;
+  --mint: #213529;
+  --sky: #222F42;
+  --butter: #3A3222;
+  --peach: #3E2B22;
+  --plum: #F7EAF0;
+  --plum-2: #DCC6D1;
+  --plum-3: #AD97A3;
+  --rose-ink: #F2A9C6;
+  --rose-btn: #D48CAB;
+  --line: rgba(247, 234, 240, 0.12);
+  --fcb-surface: #2B1F26;
+  --fcb-voile: rgba(43, 31, 38, 0.78);
+  --fcb-texte-bouton: #2A1620;
+  --shadow-sm: 0 2px 10px -4px rgba(0, 0, 0, 0.5);
+  --shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.65);
+  --shadow-lg: 0 40px 80px -36px rgba(0, 0, 0, 0.75);
+}
+[data-theme="dark"] body::after { opacity: 0.03; }
+
+/* Les boutons pleins : fond clair, texte prune */
+[data-theme="dark"] :is(.skip, .btn-primary, .filter[aria-pressed='true'], .add-btn, .toast, .noscript, .pg-btn, .fcb-chips a[aria-current],
+  .woocommerce a.button, .woocommerce button.button, .woocommerce input.button, .woocommerce #respond input#submit, .wc-block-components-button, .woocommerce .wc-forward,
+  .woocommerce nav.woocommerce-pagination ul li span.current, .pg-steps li::before) { color: var(--fcb-texte-bouton); }
+[data-theme="dark"] :is(.btn-primary, .pg-btn, .woocommerce a.button, .woocommerce button.button, .woocommerce input.button):hover { background: #fff; color: var(--fcb-texte-bouton); }
+[data-theme="dark"] .fcb-chips a[aria-current] { background: var(--plum); }
+[data-theme="dark"] .fcb-chips a[aria-current] small { color: rgba(42, 22, 32, 0.7); }
+[data-theme="dark"] :is(.woocommerce .button.alt, .woocommerce #place_order) { background: var(--rose-btn); color: var(--fcb-texte-bouton); }
+[data-theme="dark"] :is(.woocommerce .button.alt, .woocommerce #place_order):hover { background: #E7A9C2; }
+[data-theme="dark"] .add-btn:hover { background: var(--rose-btn); }
+[data-theme="dark"] .fp:hover .fp-plus { color: var(--fcb-texte-bouton); }
+
+/* Les surfaces blanches deviennent prune foncé */
+[data-theme="dark"] :is(.btn-ghost:hover, .btn-soft, .nav a.is-active, .fcb-nav a[aria-current], .value:hover, .filter:hover, .why-ic, .swatches--label .swatch, .fp, .chip,
+  .b-summary, .field input:focus, .field select:focus, .field textarea:focus, .review, .faq-ic, .contact-list li:hover, .ci, .contact-form, .qty, .pill, .order-recap,
+  .done textarea, .pm-thumb, .pm-nav:hover, .card-idea, .oc-item, .cp-bubble, .pm-jar:has(input:checked), .sort-field select:hover, .sticker, .preview-card,
+  .pg-btn--ghost, .pg-btn--ghost:hover, .pg-msgs li, .pg-links a, .fc-field input:focus, .fc-field select:focus, .fc-field textarea:focus, .woocommerce .woocommerce-ordering select,
+  .woocommerce nav.woocommerce-pagination ul li a, .fc-card, .woocommerce ul.order_details li, .fcb-chips a, .fcb-q, .arch--photo) { background: var(--fcb-surface); }
+[data-theme="dark"] :is(.btn-ghost, .icon-btn:hover, .nav a:hover, .fcb-nav a:hover, .hero-chip, .value, .step, .filter, .why-list li, .b-step, .delivery-list li, .contact-list li,
+  .drawer-foot, .modal-close, .pm-words, .pm-nav, .pm-count, .pm-why, .pm-card, .pm-jar, .pg-quote, .pg-steps li, .fc-jar, .woocommerce-checkout #payment div.payment_box) { background-color: var(--fcb-voile); }
+[data-theme="dark"] .sort-field select { background-color: var(--fcb-voile); }
+[data-theme="dark"] .woocommerce-checkout #payment div.payment_box::before { border-bottom-color: var(--fcb-voile); }
+[data-theme="dark"] .cp-bubble::after { border-top-color: var(--fcb-surface); }
+[data-theme="dark"] :is(.field input, .field select, .field textarea, .fc-field input, .fc-field select, .fc-field textarea, .fv-form input, .fv-form textarea) { background: #241920; color: var(--plum); border-color: rgba(247, 234, 240, 0.16); }
+[data-theme="dark"] .hero-chip { border-color: rgba(247, 234, 240, 0.1); }
+[data-theme="dark"] .swatch[aria-checked='true'] { box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3), 0 0 0 3px var(--cream), 0 0 0 5px var(--plum); }
+[data-theme="dark"] .step-n { background: color-mix(in srgb, var(--tint, #F8E1E6) 26%, #2B1F26); box-shadow: 0 0 0 8px var(--fcb-surface), inset 0 0 0 1px rgba(247, 234, 240, 0.1); color: var(--rose-ink); }
+[data-theme="dark"] :is(.occasion, .product-media, .pm-media, .pm-media.has-photo .pm-art, .insta-tile) { background: color-mix(in srgb, var(--bg, #F8E1E6) 20%, #2B1F26); }
+[data-theme="dark"] .occasion { box-shadow: inset 0 0 0 1px rgba(247, 234, 240, 0.07); }
+[data-theme="dark"] .value-ic { background: color-mix(in srgb, var(--tint, #F8E1E6) 26%, #2B1F26); color: var(--rose-ink); }
+[data-theme="dark"] .blob { opacity: 0.3; }
+
+/* L'en-tête, le menu, le pied de page */
+[data-theme="dark"] .site-header.is-scrolled { background: rgba(29, 20, 24, 0.84); box-shadow: 0 1px 0 var(--line), 0 12px 30px -24px rgba(0, 0, 0, 0.7); }
+[data-theme="dark"] .pg-top { background: rgba(29, 20, 24, 0.9); }
+[data-theme="dark"] .mobile-menu { background: radial-gradient(60% 40% at 90% 10%, rgba(80, 60, 120, 0.35), transparent 70%), radial-gradient(60% 40% at 0% 100%, rgba(120, 50, 80, 0.35), transparent 70%), var(--cream); }
+[data-theme="dark"] .fcb-ic { background: color-mix(in srgb, var(--t, #F8E1E6) 20%, #2B1F26); box-shadow: inset 0 0 0 1px rgba(247, 234, 240, 0.08); }
+[data-theme="dark"] .site-footer::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 40' preserveAspectRatio='none'%3E%3Cpath d='M0 40V22C120 6 240 2 360 12s240 26 360 22 240-26 360-30 240 8 360 18v18z' fill='%23251A20'/%3E%3C/svg%3E"); }
+[data-theme="dark"] .footer-big { color: rgba(247, 234, 240, 0.06); }
+[data-theme="dark"] .footer-big em { color: rgba(242, 169, 198, 0.14); }
+[data-theme="dark"] .drawer-panel { box-shadow: -30px 0 60px -30px rgba(0, 0, 0, 0.7); }
+
+/* Les grands fonds pastel en dégradé, version nuit */
+[data-theme="dark"] :is(.arch, .cat-intro, .why-price, .pg-sec.is-tint, .promo-banner) { background: linear-gradient(150deg, #34212C 0%, #2B2538 100%); box-shadow: inset 0 0 0 1px rgba(247, 234, 240, 0.07); }
+[data-theme="dark"] :is(.arch--mint, .pg-sec.is-mint, .delivery-panel) { background: linear-gradient(150deg, #1F2E25 0%, #2E2A20 100%); box-shadow: inset 0 0 0 1px rgba(247, 234, 240, 0.07); }
+[data-theme="dark"] :is(.builder-panel, .contact-panel) { background: linear-gradient(155deg, #23302A 0%, #232A38 50%, #30253A 100%); box-shadow: inset 0 0 0 1px rgba(247, 234, 240, 0.07); }
+[data-theme="dark"] .marquee { background: linear-gradient(90deg, #3A2430, #2E2840 50%, #22332A); border-color: rgba(247, 234, 240, 0.08); }
+[data-theme="dark"] .steps { background: linear-gradient(180deg, transparent 0%, rgba(74, 43, 57, 0.35) 30%, rgba(52, 42, 71, 0.35) 70%, transparent 100%); }
+[data-theme="dark"] .why-list li.is-love { background: linear-gradient(110deg, #4A2B39 0%, #2B1F26 100%); }
+[data-theme="dark"] .promo-pill { background: linear-gradient(100deg, #2B1F26 0%, #4A2B39 100%); }
+[data-theme="dark"] .product-media::after { background: linear-gradient(to top, rgba(29, 20, 24, 0.3), transparent); }
+[data-theme="dark"] .send-alert { background: #3A2330; box-shadow: inset 0 0 0 1px #5A3446; }
+[data-theme="dark"] .fv-reserver { background: #33212B; }
+[data-theme="dark"] .fv-ok { background: #213529; color: #BFE6CC; }
+[data-theme="dark"] .fv-err { background: #3E2420; color: #F3C1B5; }
+[data-theme="dark"] .pm-unique.is-sold { background: #2B1F26; box-shadow: inset 0 0 0 1px var(--line); color: var(--plum-2); }
+[data-theme="dark"] .wp-content mark { background: #4A3D1E; color: #F6E3AE; }
+[data-theme="dark"] .woocommerce-error { background: #3E2329; }
+
+/* Très petits téléphones : soleil / lune, panier et menu tiennent sur la ligne */
+@media (max-width: 400px) {
+  .header-inner { gap: 6px; }
+  .header-actions { gap: 0; }
+  .header-actions .icon-btn { width: 38px; height: 38px; }
+  .logo { gap: 8px; }
+  .logo-word { font-size: 1.04rem; }
+  .logo-img { width: 34px; height: 34px; }
+}

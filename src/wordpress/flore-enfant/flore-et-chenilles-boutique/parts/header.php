@@ -26,6 +26,7 @@ $fcb_liens = array(
         <a href="<?php echo fcb_url( '/#contact' ); ?>">Contact</a>
       </nav>
       <div class="header-actions">
+        <button class="icon-btn fcb-theme" type="button" data-fcb-theme aria-label="Passer en apparence sombre" aria-pressed="false"><svg class="fcb-soleil" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="fcb-lune" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6Z"/></svg></button>
         <a class="icon-btn hide-sm" data-ig href="<?php echo esc_url( fc_instagram_url() ); ?>" target="_blank" rel="noopener" aria-label="Instagram de Flore &amp; Chenilles (nouvel onglet)"><svg><use href="#i-instagram"/></svg></a>
         <?php fc_cart_button(); ?>
         <button class="icon-btn burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button>
