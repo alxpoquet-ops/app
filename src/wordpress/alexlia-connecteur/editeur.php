@@ -201,11 +201,28 @@ img.ale-photo{outline:3px dashed rgba(255,143,94,.75)!important;outline-offset:-
   });
   choix.addEventListener('change', function(){
     var f = choix.files && choix.files[0]; if (!f || !photoCourante) return;
-    if (f.size > 8*1024*1024) { toast('Cette photo est trop lourde (8 Mo au plus).', true); return; }
-    var fd = new FormData(); fd.append('post', id); fd.append('src', photoCourante.getAttribute('src')); fd.append('rang', photos.filter(function(p){ return p.getAttribute('src')===photoCourante.getAttribute('src'); }).indexOf(photoCourante)); fd.append('fichier', f);
-    fermerPop(); toast('Envoi de la photo…');
-    appel('image', fd, true).then(function(j){ photoCourante.src = j.url; photoCourante.removeAttribute('srcset'); photoCourante.removeAttribute('sizes'); sessionStorage.setItem('ale-annuler','1'); btnAnnuler.hidden = false; toast('Nouvelle photo en place.'); })
-      .catch(function(e){ toast(e.message, true); });
+    if (f.size > 20*1024*1024) { toast('Cette photo est trop lourde (20 Mo au plus).', true); return; }
+    var cible = photoCourante, srcAvant = cible.getAttribute('src');
+    var rangPhoto = photos.filter(function(p){ return p.getAttribute('src')===srcAvant; }).indexOf(cible);
+    fermerPop(); toast('Préparation de la photo…');
+    // la photo est réduite sur l'appareil (1600 px au plus) : plus légère, elle part plus vite
+    var lecteur = new FileReader();
+    lecteur.onload = function(){
+      var img = new Image();
+      img.onload = function(){
+        var k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+        var c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth*k); c.height = Math.round(img.naturalHeight*k);
+        var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(img, 0, 0, c.width, c.height);
+        var donnees = c.toDataURL('image/jpeg', 0.86);
+        toast('Envoi de la photo…');
+        appel('image', {post:+id, src:srcAvant, rang:rangPhoto, nom:(f.name||'photo').replace(/\.[a-z0-9]+$/i,'') + '.jpg', donnees:donnees}).then(function(j){
+          cible.src = j.url; cible.removeAttribute('srcset'); cible.removeAttribute('sizes'); sessionStorage.setItem('ale-annuler','1'); btnAnnuler.hidden = false; toast('Nouvelle photo en place.');
+        }).catch(function(e){ toast(e.message, true); });
+      };
+      img.onerror = function(){ toast('Cette photo ne peut pas être lue. Choisissez une photo JPG, PNG ou WebP.', true); };
+      img.src = lecteur.result;
+    };
+    lecteur.readAsDataURL(f);
   });
   document.addEventListener('mousedown', function(ev){ if (courant && !courant.contains(ev.target) && !(pop && pop.contains(ev.target))) arreter(true); });
 })();
@@ -286,28 +303,36 @@ function alexlia_ed_texte(WP_REST_Request $req) {
     return ['ok' => true, 'html' => $apres];
 }
 function alexlia_ed_image(WP_REST_Request $req) {
-    $p = alexlia_conn_post($req->get_param('post'));
+    $d = (array) $req->get_json_params();
+    $p = alexlia_conn_post($d['post'] ?? 0);
     if (!$p) return new WP_Error('alexlia_edition', 'Cette page ne se modifie pas ici.', ['status' => 404]);
-    $src = (string) $req->get_param('src');
-    $f = $req->get_file_params()['fichier'] ?? null;
-    if ($src === '' || !$f || !empty($f['error']) || empty($f['tmp_name'])) return new WP_Error('alexlia_edition', 'La photo n’est pas arrivée. Réessayez.', ['status' => 400]);
-    if ((int) $f['size'] > 8 * 1024 * 1024) return new WP_Error('alexlia_edition', 'Cette photo est trop lourde (8 Mo au plus).', ['status' => 413]);
+    $src = (string) ($d['src'] ?? '');
+    // la photo arrive en texte (data:image/…;base64,…), déjà réduite par le navigateur
+    if ($src === '' || !preg_match('#^data:image/(jpeg|png|webp);base64,(.+)$#s', (string) ($d['donnees'] ?? ''), $mm)) return new WP_Error('alexlia_edition', 'La photo n’est pas arrivée. Réessayez.', ['status' => 400]);
+    $octets = base64_decode($mm[2], true);
+    if ($octets === false || strlen($octets) < 100) return new WP_Error('alexlia_edition', 'La photo n’est pas arrivée entière. Réessayez.', ['status' => 400]);
+    if (strlen($octets) > 8 * 1024 * 1024) return new WP_Error('alexlia_edition', 'Cette photo est trop lourde (8 Mo au plus).', ['status' => 413]);
+    $nomFichier = sanitize_file_name((string) ($d['nom'] ?? 'photo.jpg')) ?: 'photo.jpg';
+    if (!preg_match('/\.(jpe?g|png|webp)$/i', $nomFichier)) $nomFichier .= '.' . ($mm[1] === 'jpeg' ? 'jpg' : $mm[1]);
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    $tmp = wp_tempnam($nomFichier);
+    if (!$tmp || file_put_contents($tmp, $octets) === false) return new WP_Error('alexlia_edition', 'La photo n’a pas pu être enregistrée.', ['status' => 500]);
+    $f = ['name' => $nomFichier, 'tmp_name' => $tmp, 'size' => strlen($octets)];
     $t = wp_check_filetype_and_ext($f['tmp_name'], (string) $f['name']);
-    if (!in_array($t['type'] ?? '', ['image/jpeg', 'image/png', 'image/webp'], true)) return new WP_Error('alexlia_edition', 'Choisissez une photo JPG, PNG ou WebP.', ['status' => 415]);
+    if (!in_array($t['type'] ?? '', ['image/jpeg', 'image/png', 'image/webp'], true)) { @unlink($tmp); return new WP_Error('alexlia_edition', 'Choisissez une photo JPG, PNG ou WebP.', ['status' => 415]); }
     // la photo à remplacer doit être dans le contenu de la page
     $balises = [];
     if (preg_match_all('#<img\b[^>]*>#iu', $p->post_content, $m, PREG_OFFSET_CAPTURE)) {
         foreach ($m[0] as $b) if (preg_match('#\ssrc=(["\'])' . preg_quote($src, '#') . '\1#u', $b[0])) $balises[] = $b;
     }
-    if (!$balises) return new WP_Error('alexlia_edition', 'Cette photo vient de la mise en page du site : elle se change par une demande depuis votre application.', ['status' => 409]);
-    require_once ABSPATH . 'wp-admin/includes/file.php';
+    if (!$balises) { @unlink($tmp); return new WP_Error('alexlia_edition', 'Cette photo vient de la mise en page du site : elle se change par une demande depuis votre application.', ['status' => 409]); }
     require_once ABSPATH . 'wp-admin/includes/media.php';
     require_once ABSPATH . 'wp-admin/includes/image.php';
     $aid = media_handle_sideload(['name' => sanitize_file_name((string) $f['name']), 'tmp_name' => $f['tmp_name']], $p->ID);
-    if (is_wp_error($aid)) return new WP_Error('alexlia_edition', 'La photo n’a pas pu être enregistrée.', ['status' => 500]);
+    if (is_wp_error($aid)) { @unlink($tmp); return new WP_Error('alexlia_edition', 'La photo n’a pas pu être enregistrée.', ['status' => 500]); }
     $grand = wp_get_attachment_image_src($aid, 'large') ?: wp_get_attachment_image_src($aid, 'full');
     $url = $grand ? $grand[0] : wp_get_attachment_url($aid);
-    $b = $balises[min(max(0, (int) $req->get_param('rang')), count($balises) - 1)];
+    $b = $balises[min(max(0, (int) ($d['rang'] ?? 0)), count($balises) - 1)];
     $nouvelle = preg_replace('#\s(srcset|sizes)=(["\']).*?\2#iu', '', $b[0]);
     $nouvelle = preg_replace('#\ssrc=(["\'])' . preg_quote($src, '#') . '\1#u', ' src="' . esc_url($url) . '"', $nouvelle, 1);
     if ($grand) {
