@@ -140,6 +140,7 @@ function header(currentPath) {
       </ul>
     </nav>
     <div class="header-actions">
+      <button class="theme-btn" type="button" aria-label="Passer en apparence sombre" aria-pressed="false"><svg class="t-soleil" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="t-lune" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
       <a class="btn-espace" href="${sections.monespace.path}"${currentPath.startsWith(sections.monespace.path) ? ' aria-current="page"' : ''}>${icon('circle-user')}<span>Mon espace</span></a>
       ${C.btn(sections.creer.path, 'btn-primary btn-sm btn-creer', 'wand-sparkles', 'Créer mon site', onCreer ? ' aria-current="page"' : '')}
       <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
@@ -266,18 +267,18 @@ function page(p) {
   const robots = p.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1';
   const color = p.section ? sections[p.section].color : 'mint';
   return `<!doctype html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>(function(h){var q=/[?&]clair=([01])/.exec(location.search),t;try{if(q)localStorage.setItem('mm-clair',q[1]);t=localStorage.getItem('mm-clair')}catch(e){}if(t==='1')h.setAttribute('data-theme','light')})(document.documentElement)</script>
 <title>${esc(titreCourt(p.title))}</title>
 <meta name="description" content="${esc(p.description)}">
 <link rel="canonical" href="${url}">
 <meta name="robots" content="${robots}">
 <meta name="author" content="${esc(site.name)}">
-<meta name="theme-color" content="#16142A">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#FFF8F2">
+<meta name="color-scheme" content="light">
+<script>(function(h){var t;try{t=localStorage.getItem('mm-theme')}catch(e){}h.setAttribute('data-theme',t==='dark'?'dark':'light')})(document.documentElement)</script>
 <meta name="darkreader-lock">
 <meta name="format-detection" content="telephone=no">
 <meta property="og:locale" content="fr_FR">

@@ -1570,3 +1570,21 @@
     $$('[data-form-error]').forEach(function (el) { el.hidden = false; });
   }
 })();
+
+/* Le bouton soleil / lune : le site s'ouvre en clair ; le dernier choix du visiteur est gardé sur son appareil */
+(function () {
+  var h = document.documentElement, b = document.querySelector('.theme-btn');
+  var appliquer = function (t) {
+    h.setAttribute('data-theme', t);
+    var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', t === 'dark' ? '#16142A' : '#FFF8F2');
+    var c = document.querySelector('meta[name="color-scheme"]'); if (c) c.setAttribute('content', t === 'dark' ? 'dark' : 'light');
+    if (b) { b.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false'); b.setAttribute('aria-label', t === 'dark' ? 'Passer en apparence claire' : 'Passer en apparence sombre'); }
+  };
+  appliquer(h.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+  if (!b) return;
+  b.addEventListener('click', function () {
+    var t = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    appliquer(t);
+    try { localStorage.setItem('mm-theme', t); } catch (e) {}
+  });
+})();

@@ -3025,3 +3025,16 @@ main > .section.section-citation + .section { padding-top: 48px; }
 .brand-text strong { display: flex; flex-direction: column; align-items: flex-start; line-height: 1; color: var(--ink); }
 .brand-l1 { font-size: .62em; font-weight: 800; letter-spacing: .03em; opacity: .85; margin: 0 0 .22em .06em; }
 .brand-l2 { font-size: 1em; font-weight: 900; text-transform: uppercase; letter-spacing: .07em; }
+
+/* le bouton soleil / lune : clair de base, le choix du visiteur est gardé */
+.theme-btn { position: relative; width: 42px; height: 42px; flex: none; border-radius: 50%; border: 0; background: var(--card); color: var(--ink); box-shadow: 0 0 0 2px var(--edge) inset; cursor: pointer; display: inline-grid; place-items: center; overflow: hidden; padding: 0; }
+.theme-btn svg { position: absolute; width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; transition: transform .45s ease, opacity .3s ease; }
+.theme-btn .t-soleil circle { fill: #F2C46B; stroke: #E0A84A; }
+.theme-btn .t-soleil path { stroke: #E0A84A; }
+.theme-btn .t-lune { fill: #CDBEFF; stroke: #8C6CF2; transform: translateY(26px) rotate(-30deg); opacity: 0; }
+:root[data-theme="dark"] .theme-btn .t-soleil { transform: translateY(-26px) rotate(60deg); opacity: 0; }
+:root[data-theme="dark"] .theme-btn .t-lune { transform: none; opacity: 1; }
+.theme-btn:hover { background: var(--butter); }
+:root[data-theme="dark"] .theme-btn:hover { background: var(--lilac); }
+.theme-btn:focus-visible { outline: 3px solid var(--lilac-d); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .theme-btn svg { transition: none; } }

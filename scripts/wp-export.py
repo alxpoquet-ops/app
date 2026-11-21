@@ -464,12 +464,13 @@ function aled08_simple_page() {
 """
 
 HEADER_PHP = r"""<?php defined('ABSPATH') || exit; $u = get_template_directory_uri(); ?><!doctype html>
-<html <?php language_attributes(); ?> data-theme="dark">
+<html <?php language_attributes(); ?> data-theme="light">
 <head>
 <meta charset="<?php bloginfo('charset'); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#16142A">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#FFF8F2">
+<meta name="color-scheme" content="light">
+<?php /* clair de base, quel que soit le téléphone ; le choix du visiteur (bouton soleil / lune) est gardé */ ?><script>(function(h){var t;try{t=localStorage.getItem('mm-theme')}catch(e){}h.setAttribute('data-theme',t==='dark'?'dark':'light')})(document.documentElement)</script>
 <meta name="darkreader-lock">
 <meta name="format-detection" content="telephone=no">
 <link rel="preload" href="<?php echo esc_url($u); ?>/assets/fonts/jakarta-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -477,7 +478,6 @@ HEADER_PHP = r"""<?php defined('ABSPATH') || exit; $u = get_template_directory_u
 <link rel="icon" href="<?php echo esc_url($u); ?>/assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="<?php echo esc_url($u); ?>/assets/apple-touch-icon.png">
 <link rel="manifest" href="<?php echo esc_url($u); ?>/assets/app.webmanifest">
-<?php /* aperçu en clair : ?clair=1 (gardé sur cet appareil), ?clair=0 pour revenir au sombre */ ?><script>(function(h){var q=/[?&]clair=([01])/.exec(location.search),t;try{if(q)localStorage.setItem('mm-clair',q[1]);t=localStorage.getItem('mm-clair')}catch(e){}if(t==='1')h.setAttribute('data-theme','light')})(document.documentElement)</script>
 <script>(function(h){h.classList.add('js');var d=new Date(),n=(d.getMonth()+1)*100+d.getDate(),q=/[?&]noel=([01])/.exec(location.search);if(q?q[1]==='1':(n>=1115||n<=106))h.classList.add('noel')})(document.documentElement)</script>
 <?php wp_head(); ?>
 </head>
