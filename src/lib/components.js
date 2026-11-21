@@ -119,12 +119,13 @@ function listePlus(items, { vis = 5, ordi = true, texte = 'Voir tout ce qui est 
 }
 
 // ---------------------------------------------------------------- la démo de l'espace client, mise en avant (accueil, Tarifs)
-function demoBande({ titre = 'Essayez l’espace client', texte = 'Entrez dans l’espace d’une cliente imaginaire : ses demandes, sa boutique, ses extras. Sans compte, et rien n’est envoyé.' } = {}) {
-  return `<a class="demo-bande reveal" href="${site.espaceClient.demo}">
+function demoBande({ titre = 'Essayez l’espace client', texte = 'Entrez dans l’espace d’une cliente imaginaire : modifiez un texte de son site, demandez une modification, changez un prix. Sans compte, et rien n’est envoyé.' } = {}) {
+  // bloc commun (accueil, Tarifs, Accompagnement) : hors du contrôle des phrases dupliquées
+  return `<!--commun--><a class="demo-bande reveal" href="${site.espaceClient.demo}">
     <span class="demo-bande-art" aria-hidden="true">${petit('mochi', { humeur: 'ravi' })}${petit('bricou', { humeur: 'ravi' })}</span>
     <span class="demo-bande-txt"><strong>${esc(titre)}</strong><span>${esc(texte)}</span></span>
     <span class="btn btn-primary">${icon('eye')}<span>Ouvrir la démo</span></span>
-  </a>`;
+  </a><!--/commun-->`;
 }
 
 // ---------------------------------------------------------------- appel à l'action
@@ -335,6 +336,7 @@ function modulesSite({ titre = 'Comment est fait votre site', id = 'comment' } =
     { t: 'Vous le mettez à votre goût', d: `Avec le forfait ${ABO.name}, vous le modifiez vous-même, à volonté : un texte ou une photo se change en direct, depuis votre espace client. Pour le reste, vous nous le demandez dans « Mes modifications ».` },
   ])}
   <div class="preconf reveal">${icon('sparkles')}<div><strong>Préconfiguré ne veut pas dire identique.</strong><p>Ce que nous préparons à l’avance, c’est le code invisible de votre site : tout ce qui travaille derrière vos textes et vos images pour qu’il soit rapide, sûr et bien vu de Google. Cette base solide, nous vous la fournissons. Il ne reste qu’à la façonner à votre univers : vos couleurs, vos polices, vos photos, vos mots. Chaque site garde ainsi sa propre personnalité.</p></div></div><!--/commun-->
+  <div class="modules-demo">${demoBande()}</div>
 </div></section>`;
 }
 // Anciens noms, gardés pour les pages qui les appellent encore

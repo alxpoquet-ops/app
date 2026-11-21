@@ -16,7 +16,8 @@ const sections = [
     icon: 'globe',
     champs: [
       { id: 'nom_site', label: 'Le nom de votre site', kind: 'texte', requis: true, prerempli: 'entreprise', aide: 'Celui qui s’affiche en haut du site, en général le nom de votre entreprise.' },
-      { id: 'domaine', label: 'Votre nom de domaine', kind: 'texte', prerempli: 'domaine', lectureSeule: true },
+      // Le nom de domaine est déjà donné à la commande : on ne le demande que si le client a le sien et ne l'a pas écrit (siCommande).
+      { id: 'domaine', label: 'Votre nom de domaine actuel', kind: 'texte', siCommande: 'domaine_a_demander', aide: 'L’adresse de votre site, par exemple mon-entreprise.fr. On s’occupe de le relier à votre nouveau site.' },
       { id: 'activite', label: 'Votre activité en quelques phrases', kind: 'texte_long', requis: true, aide: 'Ce que vous faites et pour qui. Écrivez comme vous parlez : on met en forme.' },
       { id: 'points_forts', label: 'Pourquoi vos clients vous choisissent-ils ?', kind: 'texte_long', requis: true, aide: 'Deux à quatre raisons : la qualité, les matières, le fait main, l’écoute, la rapidité, l’expérience… Pas d’idée ? Notez ce que vos clients vous disent souvent. C’est la partie « Pourquoi me choisir » de votre site.' },
       { id: 'slogan', label: 'Une phrase d’accroche (facultatif)', kind: 'texte', aide: 'Par exemple : « Des fleurs qui ne fanent jamais ». Pas d’idée ? Laissez vide.' },

@@ -1020,6 +1020,48 @@
     initTabs(app);
     $$('[data-toast-msg]', app).forEach(function (b) { b.addEventListener('click', function () { toast(b.getAttribute('data-toast-msg')); }); });
 
+    // « Modifier mon site moi-même » : un petit site en mode modification, comme le vrai (rien n'est envoyé)
+    var ed = $('[data-demo-ed]', app);
+    if (ed) {
+      var edSite = $('[data-ed-site]', ed), edAnnuler = $('[data-ed-annuler]', ed), pile = [], courant = null, avant = '', pop = null;
+      var fermerPop = function () { if (pop && pop.parentNode) pop.parentNode.removeChild(pop); pop = null; };
+      var fermer = function (garder) {
+        if (!courant) return;
+        var el = courant; courant = null; fermerPop();
+        el.removeAttribute('contenteditable'); el.classList.remove('is-cours');
+        if (!garder || !el.textContent.trim()) { el.textContent = avant; return; }
+        if (el.textContent !== avant) { pile.push([el, avant]); edAnnuler.hidden = false; toast(tr('C’est enregistré : votre site est à jour (démo)')); }
+      };
+      $$('[data-ed-texte]', ed).forEach(function (el) {
+        el.addEventListener('click', function () {
+          if (courant === el) return;
+          fermer(true);
+          courant = el; avant = el.textContent;
+          el.setAttribute('contenteditable', 'true'); el.classList.add('is-cours'); el.focus();
+          pop = document.createElement('div'); pop.className = 'demo-ed-pop';
+          pop.innerHTML = '<button type="button" class="is-ok">' + tr('Enregistrer') + '</button><button type="button">' + tr('Annuler') + '</button>';
+          el.insertAdjacentElement('afterend', pop);
+          pop.firstChild.addEventListener('mousedown', function (e) { e.preventDefault(); fermer(true); });
+          pop.lastChild.addEventListener('mousedown', function (e) { e.preventDefault(); fermer(false); });
+        });
+        el.addEventListener('keydown', function (e) {
+          if (courant !== el) return;
+          if (e.key === 'Escape') { e.preventDefault(); fermer(false); }
+          if (e.key === 'Enter' && el.tagName !== 'P') { e.preventDefault(); fermer(true); }
+        });
+      });
+      $('[data-ed-photo]', ed).addEventListener('click', function () { fermer(true); toast(tr('Dans votre vrai espace : choisissez une photo sur votre téléphone, elle remplace celle-ci (démo)')); });
+      edAnnuler.addEventListener('click', function () { var d = pile.pop(); if (d) { d[0].textContent = d[1]; toast(tr('C’est annulé (démo)')); } edAnnuler.hidden = !pile.length; });
+      $('[data-ed-fin]', ed).addEventListener('click', function () { fermer(true); ed.open = false; toast(tr('Mode modification fermé (démo)')); });
+      edSite.addEventListener('mousedown', function (e) { if (courant && !courant.contains(e.target) && !(pop && pop.contains(e.target))) fermer(true); });
+      $$('[data-ed-ouvrir]', app).forEach(function (b) {
+        b.addEventListener('click', function () {
+          var t = $('[role="tab"][data-tab="accueil"]', app); if (t) t.click();
+          ed.open = true; ed.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    }
+
     var log = $('[data-log]', app);
     var addLog = function (ic, text) {
       var li = d.createElement('li');

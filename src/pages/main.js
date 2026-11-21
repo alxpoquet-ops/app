@@ -256,7 +256,6 @@ ${C.modulesSite({ titre: 'Pourquoi ce prix : comment est fait votre site', id: '
   <h2 class="section-title">Enfin, les extras</h2>
   ${C.presente('etoile', `<strong>Moi, c’est ${esc(C.PEPITE)}.</strong> Les extras, c’est mon rayon : trois extras, pas plus. Vous me les demandez depuis votre espace client, quand vous en avez besoin.`, { humeur: 'ravi' })}
   ${C.extrasListe()}
-  ${C.demoBande({ titre: 'Voyez l’espace client avant de choisir', texte: 'Une démonstration à essayer tout de suite : envoyer une demande, ajouter un article, commander un extra. Aucun compte à créer.' })}
 </div></section>
 
 <section class="section" id="detail"><div class="container container-narrow">
@@ -828,11 +827,11 @@ function monEspacePage() {
                 </div>
               </details>`;
   // Le sous-menu de « Ma boutique », comme dans le vrai espace client
-  const BQ = [['articles', 'shopping-bag', 'Mes articles'], ['paiements', 'credit-card', 'Paiements'], ['livraison', 'package', 'Livraison'], ['commandes', 'clipboard-check', 'Commandes'], ['promos', 'badge-percent', 'Promos et soldes']];
+  const BQ = [['articles', 'shopping-bag', 'Mes articles'], ['prix', 'tag', 'Mes prix'], ['paiements', 'credit-card', 'Paiements'], ['livraison', 'package', 'Livraison'], ['commandes', 'clipboard-check', 'Commandes'], ['promos', 'badge-percent', 'Promos et soldes']];
   const body = `${C.pageHero({
     section: 'monespace',
     h1: 'Mon espace : la démo',
-    lead: 'Voici l’espace de « Pâtisserie Lila », une cliente imaginaire qui a un Site Essentiel avec l’option e-commerce. Essayez : envoyez une demande, ajoutez un article, regardez les extras. Rien n’est envoyé.',
+    lead: 'Voici l’espace de « Pâtisserie Lila », une cliente imaginaire qui a un Site Essentiel avec l’option e-commerce. Essayez : modifiez un texte de son site, demandez une modification, changez un prix. Rien n’est envoyé.',
     crumbs: DEMO_CRUMBS,
   })}
 <section class="section section-app"><div class="container">
@@ -867,6 +866,21 @@ function monEspacePage() {
             <button type="button" class="app-card c-${ABO.color}" data-go="forfait"><span class="app-card-art">${C.petit('maxi')}</span><span><small>Votre forfait</small><strong>Forfait ${esc(ABO.name)}</strong><span>${euro(ABO.month + C.DOM)} par mois, nom de domaine fourni</span></span></button>
             <button type="button" class="app-card c-sky" data-go="extras"><span class="app-card-ico">${icon('sparkles')}</span><span><small>Envie d’aller plus loin ?</small><strong>Les extras</strong><span>Voir les trois extras</span></span></button>
           </div>
+          <details class="demo-ed" data-demo-ed>
+            <summary class="demo-ed-btn"><span class="demo-ed-ico" aria-hidden="true">${icon('pencil')}</span><span><strong>Modifier mon site moi-même</strong><small>Je touche un texte ou une photo, je le change : c’est en ligne tout de suite</small></span>${icon('chevron-down')}</summary>
+            <div class="demo-ed-site" data-ed-site>
+              <div class="demo-ed-nav"><b>Pâtisserie Lila</b><span>Accueil</span><span>Nos gâteaux</span><span>Contact</span></div>
+              <div class="demo-ed-hero">
+                <div>
+                  <p class="demo-ed-k" data-ed-texte>Pâtisserie artisanale</p>
+                  <h3 data-ed-texte>Des gâteaux faits maison, chaque matin</h3>
+                  <p data-ed-texte>Tartes, éclairs et macarons préparés dans notre atelier, avec des fruits de saison.</p>
+                </div>
+                <button type="button" class="demo-ed-photo" data-ed-photo aria-label="Changer la photo">${C.petit('mochi', { humeur: 'ravi' })}</button>
+              </div>
+              <div class="demo-ed-barre"><p>Mode modification : touchez un texte ou la photo pour le changer.</p><button type="button" data-ed-annuler hidden>Annuler la dernière</button><button type="button" class="is-fin" data-ed-fin>Terminer</button></div>
+            </div>
+          </details>
           <div class="demo-actions">
             <button type="button" data-go="demandes"><span aria-hidden="true">${C.petit('bricou', { humeur: 'ravi' })}</span><strong>Une modification</strong><small>Dites-le à ${esc(C.BRICOU)}</small></button>
             <button type="button" data-go="boutique"><span aria-hidden="true">${C.petit('mochi', { humeur: 'ravi' })}</span><strong>Ma boutique</strong><small>Articles et commandes</small></button>
@@ -887,7 +901,8 @@ function monEspacePage() {
 
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
           <h2 class="app-h">Mes modifications</h2>
-          <div class="demo-bricou"><span aria-hidden="true">${C.petit('bricou', { humeur: 'ravi' })}</span><p><strong>Une modification ? Dites-le à ${esc(C.BRICOU)}</strong><small>Il prépare votre demande, puis Alex fait la modification.</small></p></div>
+          <div class="ed-rappel demo-rappel"><p>${icon('sparkles')}<span><b>Un texte ou une photo à changer ?</b> Faites-le vous-même, en direct sur votre site : c’est en ligne tout de suite, et vous pouvez annuler.</span></p><button type="button" class="btn btn-primary btn-sm" data-ed-ouvrir>${icon('pencil')}<span>Modifier mon site</span></button></div>
+          <div class="demo-bricou"><span aria-hidden="true">${C.petit('bricou', { humeur: 'ravi' })}</span><p><strong>Une modification ? Dites-le à ${esc(C.BRICOU)}</strong><small>Pour le reste (une partie à ajouter, une couleur, une page) : il prépare votre demande, puis Alex fait la modification.</small></p></div>
           <form class="req-form" data-req>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" rows="3" placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
             <label class="req-photo"><input type="file" accept="image/*" class="sr-only" data-req-file>${icon('image-plus')}<span data-req-file-name>Ajouter une photo (facultatif)</span></label>
@@ -929,6 +944,11 @@ function monEspacePage() {
               <div class="art-cartes">${articles.map(articleCarte).join('')}</div>
               <p class="app-note">Pour chaque article : une photo, un nom, une description, un prix. Autant d’articles que vous voulez, rangés dans vos catégories.</p>
             </div>
+            <div class="bq-panel" data-bq="prix">
+              <p class="app-note">Tous vos prix sur une seule page : changez-les, lancez une promo, mettez un article en pause. Un seul bouton pour tout enregistrer.</p>
+              <div class="demo-prix">${[['Tarte aux fraises', '24', '', true, true], ['6 éclairs au chocolat', '19,20', '16,90', true, true], ['Boîte de 12 macarons', '18', '', true, false]].map(([nom, p, promo, vente, stock], i) => `<div class="demo-prix-l"><strong>${nom}</strong><label><span>Prix (€)</span><input type="text" inputmode="decimal" value="${p}" aria-label="Prix de ${nom}"></label><label><span>Promo (€)</span><input type="text" inputmode="decimal" value="${promo}" placeholder="aucune" aria-label="Promo de ${nom}"></label><label class="check"><input type="checkbox"${vente ? ' checked' : ''}><span>En vente</span></label><label class="check"><input type="checkbox"${stock ? ' checked' : ''}><span>En stock</span></label></div>`).join('')}</div>
+              <button type="button" class="btn btn-primary" data-toast-msg="Vos prix sont à jour sur votre site (démo)">${icon('check')}<span>Enregistrer mes prix</span></button>
+            </div>
             <div class="bq-panel" data-bq="paiements">
               <ul class="reqs">
                 <li><span><strong>Stripe (carte bancaire)</strong><small>paiement en ligne sécurisé</small></span><em class="st st-done">Actif</em></li>
@@ -965,6 +985,7 @@ function monEspacePage() {
         <div class="app-panel" role="tabpanel" id="t-forfait" aria-labelledby="tab-forfait" hidden>
           <h2 class="app-h">Mon compte</h2>
           <p class="app-sub">Votre forfait</p>
+          <ul class="demo-detail"><li><span>Forfait ${esc(ABO.name)}</span><b>${euro(ABO.month)} par mois</b></li><li><span>Option nom de domaine</span><b>${euro(C.DOM)} par mois</b></li><li class="is-total"><span>Total</span><b>${euro(ABO.month + C.DOM)} par mois</b></li></ul>
           <p class="app-domain">${icon('shield-check')}<span><strong>${esc(BOU.name)}, avec le forfait ${esc(ABO.name)} : ${euro(ABO.month + C.DOM)} par mois</strong><small>${euro(ABO.month)} pour le forfait, et ${euro(C.DOM)} pour le nom de domaine qu’on vous fournit. Sans engagement.</small></span></p>
           <p class="app-note">Vous préférez tout gérer vous-même ? Vous passez au forfait ${esc(AUTO.name)} quand vous voulez : ${euro(AUTO.month)} par mois, et vous repartez avec votre site.</p>
           <p class="app-sub">Factures</p>
@@ -974,6 +995,15 @@ function monEspacePage() {
           </ul>
           <p class="app-sub">Nom de domaine</p>
           <p class="app-domain">${icon('globe')}<span><strong>patisserie-lila.fr</strong><small>À votre nom, fourni avec le forfait ${esc(ABO.name)} : ${euro(C.DOM)} par mois</small></span></p>
+          <p class="app-sub">${icon('sparkles')} L’apparence de mon site</p>
+          <p class="app-note">Votre site existe en version claire et en version sombre. Il s’ouvre en clair ; vos visiteurs passent en sombre avec le petit soleil ou la lune.</p>
+          <div class="demo-apparence">${[['Clair', 'Conseillé : fond clair à l’ouverture', true], ['Sombre', 'Fond sombre à l’ouverture', false], ['Automatique', 'Selon le réglage du téléphone de chaque visiteur', false]].map(([t, d, on]) => `<label class="esp-reste"><input type="radio" name="demo-apparence"${on ? ' checked' : ''}><span><strong>${t}</strong><small>${d}</small></span></label>`).join('')}</div>
+          <button type="button" class="btn btn-primary btn-sm" data-toast-msg="C’est enregistré : votre site s’ouvre comme vous l’avez choisi (démo)">${icon('check')}<span>Enregistrer</span></button>
+          <p class="app-sub">${icon('globe')} Le nom de mon site</p>
+          <p class="app-note">Ils s’affichent dans l’onglet du navigateur et dans les résultats de Google.</p>
+          <div class="field"><label for="demo-site-nom">Nom du site</label><input id="demo-site-nom" type="text" value="Pâtisserie Lila" maxlength="80"></div>
+          <div class="field"><label for="demo-site-slogan">Phrase d’accroche (facultative)</label><input id="demo-site-slogan" type="text" value="Des gâteaux faits maison, chaque matin" maxlength="160"></div>
+          <button type="button" class="btn btn-primary btn-sm" data-toast-msg="C’est enregistré sur votre site (démo)">${icon('check')}<span>Enregistrer</span></button>
         </div>
 
       </div>
@@ -983,14 +1013,14 @@ function monEspacePage() {
   </div>
 </div></section>
 
-${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : on vous rend visible, vous envoyez vos demandes, et on s’occupe du reste.' })}`;
+${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : en ligne en quelques heures, puis vous le modifiez à volonté, vous-même ou avec nous.' })}`;
   return {
     path: '/mon-espace/demo/',
     section: 'monespace',
     noindex: true,
     noMobileBar: true,
     title: 'Mon espace, la démo | Les Minis Monstres',
-    description: 'Essayez l’espace client des Minis Monstres : demandes de modification, extras, votre boutique et votre compte. Une démonstration sans compte.',
+    description: 'Essayez l’espace client des Minis Monstres : modifier son site soi-même, demander une modification, gérer sa boutique et ses prix. Une démonstration sans compte.',
     crumbs: DEMO_CRUMBS,
     body,
   };

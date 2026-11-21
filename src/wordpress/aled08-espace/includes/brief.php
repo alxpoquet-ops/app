@@ -10,14 +10,22 @@
 defined('ABSPATH') || exit;
 
 /* Les sections et champs du questionnaire pour un type de site */
-function aled08e_brief_def($type) {
+function aled08e_brief_def($type, $cmd = null) {
     $out = [];
     foreach ((array) (aled08e_data()['brief'] ?? []) as $s) {
         if (!empty($s['types']) && !in_array($type, $s['types'], true)) continue;
-        $s['champs'] = array_values(array_filter((array) $s['champs'], function ($c) use ($type) { return empty($c['types']) || in_array($type, $c['types'], true); }));
+        $s['champs'] = array_values(array_filter((array) $s['champs'], function ($c) use ($type, $cmd) { return (empty($c['types']) || in_array($type, $c['types'], true)) && aled08e_brief_pour_commande($c, $cmd); }));
         if ($s['champs']) $out[] = $s;
     }
     return $out;
+}
+/* Un champ qui dépend de la commande (siCommande) :
+   'domaine_a_demander' : le client a déjà son nom de domaine mais ne l'a pas donné à la commande. S'il l'a donné,
+   ou si on le lui fournit, la question ne se pose pas. */
+function aled08e_brief_pour_commande($c, $cmd) {
+    if (empty($c['siCommande']) || !is_array($cmd)) return true;
+    if ($c['siCommande'] === 'domaine_a_demander') return !empty($cmd['domaine_mien']) && trim((string) $cmd['domaine']) === '';
+    return true;
 }
 function aled08e_brief_get($cid) {
     $b = get_post_meta($cid, '_aled08_brief', true);
@@ -69,7 +77,7 @@ add_action('template_redirect', function () {
     $rep = [];
     $propre = function ($v, $long = false) { $v = is_scalar($v) ? (string) $v : ''; return $long ? mb_substr(sanitize_textarea_field($v), 0, 3000) : mb_substr(sanitize_text_field($v), 0, 300); };
     $manque = [];
-    foreach (aled08e_brief_def($cmd['type']) as $s) {
+    foreach (aled08e_brief_def($cmd['type'], $cmd) as $s) {
         foreach ($s['champs'] as $c) {
             $id = $c['id'];
             switch ($c['kind']) {
@@ -109,7 +117,12 @@ add_action('template_redirect', function () {
         }
     }
     // les champs cachés par une condition ne sont pas gardés
-    foreach (aled08e_brief_def($cmd['type']) as $s) foreach ($s['champs'] as $c) if (!aled08e_brief_visible($c, $rep)) unset($rep[$c['id']]);
+    foreach (aled08e_brief_def($cmd['type'], $cmd) as $s) foreach ($s['champs'] as $c) if (!aled08e_brief_visible($c, $rep)) unset($rep[$c['id']]);
+    // le nom de domaine que le client a déjà, donné ici : il rejoint sa commande
+    if (!empty($rep['domaine']) && !empty($cmd['domaine_mien']) && trim((string) $cmd['domaine']) === '') {
+        $d = aled08e_cmd_nettoyer_domaine($rep['domaine']);
+        if ($d !== '' && aled08e_cmd_domaine_valide($d)) { update_post_meta($cid, '_aled08_domaine', $d); $rep['domaine'] = $d; }
+    }
 
     // photos : celles déjà envoyées (description modifiable, ou à retirer), puis les nouvelles
     require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -165,7 +178,7 @@ function aled08e_brief_texte($cid) {
     $rep = aled08e_brief_get($cid);
     $t = aled08e_type($cmd['type']);
     $o = 'Questionnaire de création : ' . aled08e_cmd_nom($cmd) . ' (' . $cmd['ref'] . ', ' . ($t ? $t['label'] : $cmd['type']) . ")\n";
-    foreach (aled08e_brief_def($cmd['type']) as $s) {
+    foreach (aled08e_brief_def($cmd['type'], $cmd) as $s) {
         $o .= "\n== " . $s['titre'] . " ==\n";
         foreach ($s['champs'] as $c) {
             if ($c['kind'] === 'images') {
@@ -203,7 +216,7 @@ add_action('template_redirect', function () {
         'reponses' => aled08e_brief_get($cid),
         'logo' => $logo ? wp_get_attachment_url($logo) : null,
         'images' => $img,
-        'questions' => aled08e_brief_def($cmd['type']),
+        'questions' => aled08e_brief_def($cmd['type'], $cmd),
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 });
@@ -327,7 +340,7 @@ function aled08e_brief_html($cmd) {
     <form class="form esp-form bf-form" method="post" action="<?php echo esc_url(aled08e_url()); ?>" enctype="multipart/form-data">
       <?php wp_nonce_field('aled08e_brief_' . $cid, '_aled08e_brief'); ?>
       <input type="hidden" name="cid" value="<?php echo $cid; ?>">
-      <?php foreach (aled08e_brief_def($cmd['type']) as $i => $s) : ?>
+      <?php foreach (aled08e_brief_def($cmd['type'], $cmd) as $i => $s) : ?>
       <fieldset class="bf-section">
         <legend><span class="bf-num"><?php echo (int) $i + 1; ?></span><?php echo aled08e_icon($s['icon'] ?? 'check'); // phpcs:ignore ?><?php echo esc_html($s['titre']); ?></legend>
         <?php foreach ($s['champs'] as $c) echo $champ($c); // phpcs:ignore ?>
