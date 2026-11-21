@@ -51,6 +51,19 @@ const SCENES = {
     <div class="hero-img">${gateau.tarte}</div>
   </div>`, { menu: false }),
 
+  // « Modifier mon site moi-même » : le mode modification ouvert sur le site, un texte en cours, une photo à changer, la barre en bas
+  modifier: navigateur('patisserie-lila.fr', `<div class="md">
+    <div class="md-hero">
+      <div class="md-txt">
+        <p class="md-k md-on">Pâtisserie artisanale · Lyon</p>
+        <h2 class="md-on md-cours">Des gâteaux faits maison, chaque matin<i class="md-curseur"></i></h2>
+        <div class="md-pop"><b>Enregistrer</b><span>Annuler</span></div>
+        <p class="md-on md-p">Tartes, éclairs et macarons préparés dans notre atelier, avec des fruits de saison.</p>
+      </div>
+      <div class="md-photo">${gateau.tarte}<span class="md-photo-b">${icon('image')}Changer la photo</span></div>
+    </div>
+    <div class="md-barre"><p>Mode modification : cliquez sur un texte ou une photo de la page pour le changer.</p><span class="md-b">Annuler la dernière</span><u>Mon application</u><span class="md-b md-fin">Terminer</span></div>
+  </div>`),
   rdv: navigateur('patisserie-lila.fr/rendez-vous', `<div class="rdv"><h2>Réserver un atelier pâtisserie</h2>
     <div class="cal">${['Lun. 8', 'Mar. 9', 'Mer. 10', 'Jeu. 11', 'Ven. 12'].map((j, i) => `<div class="jour"><b>${j}</b>${['9 h 00', '10 h 30', '14 h 00', '16 h 00'].map((h, k) => `<span class="${(i + k) % 3 === 0 ? 'pris' : ''}${i === 3 && k === 1 ? ' choisi' : ''}">${h}</span>`).join('')}</div>`).join('')}</div>
     <div class="rdv-bas"><p>${icon('calendar-check')}<b>Jeudi 11 à 10 h 30</b></p><button>Confirmer la réservation</button></div>
@@ -104,7 +117,17 @@ const SCENES = {
     <button>${icon('refresh-cw')}Commander à nouveau</button></div>`),
 };
 
-const CSS = `@font-face{font-family:J;src:url(${font});font-weight:200 800}
+const CSS = `.md{position:relative;height:100%;padding-top:4px}.md-hero{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;align-items:center}
+.md-txt{position:relative;display:grid;gap:7px}.md-on{outline:2px dashed rgba(140,108,242,.6);outline-offset:3px;border-radius:4px;margin:0}
+.md-k{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#A3305F}.md-txt h2{font-size:19px;line-height:1.2;color:#2E2A47;margin:0}
+.md-cours{outline:3px solid #8C6CF2!important;background:#fff}.md-curseur{display:inline-block;width:2px;height:20px;margin-left:2px;vertical-align:-3px;background:#8C6CF2}
+.md-pop{display:flex;gap:5px;width:max-content;padding:4px;border-radius:99px;background:#2E2A47;box-shadow:0 8px 20px -8px rgba(0,0,0,.5);margin:-2px 0 2px}.md-pop b,.md-pop span{padding:5px 11px;border-radius:99px;font-size:10.5px;font-weight:800;background:#fff;color:#2E2A47}.md-pop b{background:#7EDDB5}
+.md-p{font-size:11.5px;line-height:1.5;color:#4B4668}
+.md-photo{position:relative;height:132px;border-radius:16px;background:#FFE9F1;display:grid;place-items:center;outline:3px dashed rgba(255,143,94,.85);outline-offset:-3px}.md-photo svg{height:100px}
+.md-photo-b{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:99px;background:#2E2A47;color:#fff;font-size:10.5px;font-weight:800;white-space:nowrap}.md-photo-b svg{width:13px;height:13px}
+.md-barre{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:7px;width:92%;margin:12px auto 0;padding:9px 11px;border-radius:16px;background:#2E2A47;color:#fff;font-size:10.5px;font-weight:600;box-shadow:0 14px 30px -12px rgba(0,0,0,.45)}
+.md-barre p{margin:0;width:100%;text-align:center}.md-b{padding:5px 11px;border-radius:99px;background:#fff;color:#2E2A47;font-weight:800}.md-fin{background:#7EDDB5}.md-barre u{font-weight:800}
+@font-face{font-family:J;src:url(${font});font-weight:200 800}
 *{box-sizing:border-box;margin:0}body{width:${W}px;height:${H}px;font-family:J,sans-serif;color:#2E2A47;background:linear-gradient(135deg,#FFF1F6,#F2EEFF 55%,#E9FBF3);overflow:hidden}
 .scene{position:relative;width:${W}px;height:${H}px;padding:22px;display:flex}
 .ico{width:1em;height:1em;flex:none}

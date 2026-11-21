@@ -196,7 +196,7 @@ Comptes › Ajouter : identifiant, e-mail, prénom, rôle **Client ALED08**, cas
 
 Offre du 19 novembre 2026 : les modifications sont incluses dans le forfait Mini, demandées depuis l'espace client, une demande à la fois, 48 h au plus. Sur le site public, la phrase est toujours la même : le client écrit sa demande, Cerise l'aide à la préciser, Bricou fait la modification ; Alex conçoit et contrôle. Le déroulé ci-dessous décrit l'extension telle qu'elle fonctionne : Cerise prépare la demande, puis elle arrive dans la liste « À faire ».
 
-1. Le client écrit sa demande dans l'onglet « Demandes » (avec des photos s'il veut). La jauge apparaît : Demande reçue, Précisée avec Cerise, Chez Alex, Faite.
+1. Le client écrit sa demande dans l'onglet « Modifications » (avec des photos s'il veut). La jauge apparaît : Demande reçue, Précisée avec Cerise, Chez Alex, Faite.
 2. Cerise relit la demande (elle peut lire le site relié, sans rien modifier). Si c'est flou, elle pose une question (deux au plus), le client répond depuis la jauge.
 3. Cerise reformule la demande clairement et la fait confirmer au client (« Vérifier ma demande » dans la jauge). Non : le client corrige, Cerise reprend (au deuxième « non », la demande part chez Alex avec les remarques).
 4. Oui : Cerise répond « Merci pour vos précisions ! Je transmets votre demande à Alex », et Alex reçoit un e-mail avec la demande claire, la demande d'origine, les photos, les échanges et l'échéance.
@@ -347,7 +347,7 @@ Dans la bulle de Cerise, sur toutes les pages du site, un visiteur peut poser un
 
 ## Le client modifie son site lui-même, en direct (21 novembre 2026)
 
-- **Bouton « Modifier mon site moi-même »** sur l'accueil de l'application (et un rappel en haut de « Mes demandes »). Il apparaît dès que le site du client a le connecteur **2.12.0** ou plus.
+- **Bouton « Modifier mon site moi-même »** sur l'accueil de l'application (et un rappel en haut de « Mes modifications »). Il apparaît dès que le site du client a le connecteur **2.12.0** ou plus.
 - **Ce qui se passe :** l'application fabrique un lien signé avec la clé partagée du connecteur (valable 10 minutes, une seule fois). Le site du client ouvre alors le mode modification pour 2 heures, dans ce navigateur seulement (cookie HttpOnly). Pas de compte WordPress.
 - **Ce que le client peut faire :** cliquer sur un texte du contenu d'une page (paragraphe, titre, élément de liste, bouton) et le réécrire ; cliquer sur une photo et en mettre une autre (JPG, PNG ou WebP, 8 Mo au plus). Chaque changement est en ligne tout de suite, avec une révision juste avant : « Annuler la dernière » revient en arrière. « Terminer » ferme le mode.
 - **Pages faites par le thème (connecteur 2.13.0, ex. l'accueil de Flore) :** leurs textes et leurs photos se changent aussi. Le changement est gardé à part sur le site du client (option `alexlia_ed_gabarit`, par adresse de page) et remis à l'affichage à sa place (même balise, même texte ou même photo). Si le thème change ce texte plus tard, le changement ne s'applique plus, sans rien casser. Pas modifiables : en-tête, menu, pied de page, formulaires, fiches produits (elles se changent dans « Ma boutique »).

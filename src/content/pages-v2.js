@@ -3,7 +3,7 @@
 // ni demi-cadratin, aucun point-virgule, aucun prix écrit en dur (tout vient de src/config.js),
 // aucun chiffre sans source, et pas de phrase de 9 mots ou plus reprise d'une autre page.
 // Offre du 21 novembre 2026 : un seul site payé une fois, le Site Essentiel (config.offreSite), assemblé à partir de nos modules
-// (les « minis monstres » recréés et optimisés par Alex), avec l'option e-commerce (+ 200 €). Le Site Visibilité est retiré :
+// (les « minis monstres » créés et optimisés par Alex), avec l'option e-commerce (+ 200 €). Le Site Visibilité est retiré :
 // les pages pour Google sont l'extra « page de visibilité Google ». Puis Autonomie (config.creationSeule, sans abonnement, export du site remis au client) ou Mini (config.forfaits[0], au mois,
 // sans engagement, modifications incluses, une demande à la fois). L'abonnement est facultatif. Trois extras : la page de
 // visibilité Google (payée une fois, par carte, depuis l'espace client), la traduction anglaise et la fonctionnalité spécifique
@@ -98,7 +98,7 @@ D’après des repères publics relevés en France, un site vitrine de ${marche.
 
 ## Le cerveau est prêt, il ne manque que votre contenu
 
-Un site est fait de parties qui reviennent presque toujours : l’accueil, la présentation, les services et les tarifs, la galerie, les questions fréquentes, le contact, et parfois la boutique. Alex a recréé et optimisé chacune de ces parties, une fois pour toutes. Ce sont nos modules, nos minis monstres à nous : soignés, rapides, lisibles sur téléphone, et modifiables chacun de leur côté.
+Un site est fait de parties qui reviennent presque toujours : l’accueil, la présentation, les services et les tarifs, la galerie, les questions fréquentes, le contact, et parfois la boutique. Alex a créé et optimisé chacune de ces parties, une fois pour toutes. Ce sont nos modules, nos minis monstres à nous : soignés, rapides, lisibles sur téléphone, et modifiables chacun de leur côté.
 
 Pour votre site, nous assemblons ces modules et nous les remplissons avec vos informations et vos photos. Le travail de fond n’est pas à refaire à chaque fois : c’est ce qui garde le prix bas.
 
@@ -126,7 +126,7 @@ Les petits monstres vont vite, mais ils ne décident de rien. Alex, qui a créé
 - **La relecture** : chaque page, chaque texte, chaque horaire, chaque prix affiché.
 - **Les tests sur téléphone**, comme le feront vos clients.
 - **La vérification** : les liens, le formulaire, la vitesse d’affichage, les informations destinées à Google.
-- **Vos modifications** : illimitées jusqu’à ce que vous validiez le site.
+- **Vos modifications** : à volonté ensuite, par vous-même ou sur demande, avec le forfait ${mini.name}.
 
 Aucun site ne part en ligne sans ce contrôle.
 
@@ -355,10 +355,10 @@ Vos questions avant la commande ne vous engagent à rien. Si notre offre ne corr
 
 ## Notre méthode, en quatre temps
 
-1. **On échange** : vous nous dites ce que vous faites, pour qui, et ce que vous attendez du site.
+1. **Vous nous racontez votre activité** : dans le questionnaire de votre espace client, ce que vous faites, pour qui, et ce que vous attendez du site.
 2. **Alex conçoit votre site** : la structure, les pages, le style. La petite bande prend en charge ce qui se répète.
-3. **Alex vérifie, et vous validez** : tout est relu et testé sur plusieurs appareils. Vos modifications sont illimitées jusqu’à la validation.
-4. **Le site part en ligne** : avec le forfait ${mini.name}, nous l’hébergeons et restons là pour vos modifications. Avec le forfait ${AUTO}, vous recevez l’export du site, une copie complète prête à installer.
+3. **Alex vérifie** : tout est relu et testé sur plusieurs appareils, puis votre première version part en ligne.
+4. **Vous le peaufinez** : avec le forfait ${mini.name}, nous l’hébergeons et vous le modifiez à volonté, vous-même ou avec nous. Avec le forfait ${AUTO}, vous recevez l’export du site, une copie complète prête à installer.
 
 ## Nos engagements
 
@@ -531,9 +531,9 @@ Elle se fera connaître des Ardennais qui cherchent une idée de cadeau, et vend
 ## Comment ça se passe
 
 1. **Vous nous contactez** par le [formulaire](/contact/), en précisant si vous aimeriez une rencontre. Vous savez déjà ce qu’il vous faut ? Commandez sur la page [créer mon site](/creer-mon-site/).
-2. **On fait le point**, en rendez-vous ou au téléphone.
+2. **Vous remplissez le questionnaire** de création, dans votre espace client.
 3. **Nous créons votre site**${ESS.delai ? ` : comptez ${ESS.delai}, puisque nos modules sont déjà prêts` : ', et vous voyez chaque étape'}.
-4. **Vous validez, et le site part en ligne.**
+4. **Votre site part en ligne**, et vous le modifiez ensuite à votre goût.
 
 Côté paiement, vous réglez le site en commandant. Vous préférez étaler ? Choisissez ${EN_FOIS} sur la page de paiement.`,
     faq: [

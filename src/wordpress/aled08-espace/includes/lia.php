@@ -878,7 +878,7 @@ add_action('template_redirect', function () {
     exit;
 }, 5);
 
-/* Dans « Mes demandes » : l'aperçu préparé par Bricou, à valider */
+/* Dans « Mes modifications » : l'aperçu préparé par Bricou, à valider */
 function aled08e_lia_bloc_confirmation($p) {
     if (function_exists('aled08e_cer_bloc_confirmation')) return aled08e_cer_bloc_confirmation($p);
     if (get_post_meta($p->ID, '_aled08_lia_etat', true) !== 'a_confirmer') return '';

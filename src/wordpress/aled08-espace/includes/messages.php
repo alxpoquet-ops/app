@@ -195,7 +195,7 @@ add_action('init', function () {
         'post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private', 'post_title' => $titre,
         'post_content' => $mini['name'] . ', à ' . aled08e_euro_txt($mini['month']) . ' par mois : votre site entretenu, vos modifications incluses ' . aled08e_delai_txt($mini) . ', et une page pour Google chaque mois.' . "\n"
             . $maxi['name'] . ', à ' . aled08e_euro_txt($maxi['month']) . ' par mois : vos modifications en priorité sous 48 h, deux demandes à la fois, une page optimisée chaque semaine, et la bande qui surveille votre site pour vous proposer des idées, ici, dans vos petits mots.' . "\n"
-            . 'Vous changez quand vous voulez, dans Mon compte. Et une page de visibilité Google en plus coûte maintenant ' . aled08e_euro_txt((float) (aled08e_a_la_demande('packseo')['prix'] ?? 5)) . ', dans Mes demandes.',
+            . 'Vous changez quand vous voulez, dans Mon compte. Et une page de visibilité Google en plus coûte maintenant ' . aled08e_euro_txt((float) (aled08e_a_la_demande('packseo')['prix'] ?? 5)) . ', dans Mes modifications.',
         'post_author' => $admins ? (int) $admins[0] : 0, 'post_date' => wp_date('Y-m-d H:i:s'),
     ]);
     update_option('aled08_annonce_derniere', ['titre' => $titre, 'le' => current_time('mysql'), 'total' => function_exists('aled08e_annonces') ? count(aled08e_annonces(100)) : 1], false);

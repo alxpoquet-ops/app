@@ -139,7 +139,7 @@ function aled08e_changer_html($uid) {
     } else {
         $h .= '<input type="hidden" name="forfait" value="' . esc_attr($actuel) . '">';
     }
-    if ($opts) $h .= '<p class="app-sub">Les extras au mois</p><p class="app-note">Cochez ce qui vous intéresse : c’est ajouté à votre abonnement, et vous pouvez le retirer quand vous voulez. Les extras payés une fois se commandent dans « Mes demandes ».</p>';
+    if ($opts) $h .= '<p class="app-sub">Les extras au mois</p><p class="app-note">Cochez ce qui vous intéresse : c’est ajouté à votre abonnement, et vous pouvez le retirer quand vous voulez. Les extras payés une fois se commandent dans « Mes modifications ».</p>';
     $ordre = array_flip(array_column((array) (aled08e_data()['extrasGroupes'] ?? []), 'id'));
     usort($opts, function ($a, $b) use ($ordre) { return ($ordre[$a['group'] ?? ''] ?? 99) <=> ($ordre[$b['group'] ?? ''] ?? 99); });
     $noms = array_column((array) (aled08e_data()['extrasGroupes'] ?? []), 'nom', 'id');

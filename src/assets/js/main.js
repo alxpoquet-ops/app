@@ -75,7 +75,7 @@
     'Y aller': 'Go there',
     'Je corrige': 'Let me fix it',
     'Pas de souci ! Dites-moi ce qu’il faut changer, et je reformule votre demande.': 'No problem! Tell me what to change and I will rephrase your request.',
-    'Merci pour vos précisions ! Votre demande est prête dans « Demandes ». Ajoutez une photo si vous voulez, puis envoyez : je transmets à Bricou !': 'Thank you for the details! Your request is ready in “My requests”. Add a photo if you like, then send it: I will pass it on to Alex!',
+    'Merci pour vos précisions ! Votre demande est prête dans « Modifications ». Ajoutez une photo si vous voulez, puis envoyez : je transmets à Bricou !': 'Thank you for the details! Your request is ready in “My requests”. Add a photo if you like, then send it: I will pass it on to Alex!',
     'Dans votre vrai espace, je vous réponds ici.': 'In your real client area, I answer you here.',
     'Cerise n’a pas pu répondre. Réessayez dans un instant.': 'Cerise couldn’t answer. Try again in a moment.',
     'La connexion a coupé. Réessayez dans un instant.': 'The connection dropped. Try again in a moment.',
@@ -1202,7 +1202,7 @@
           if (radio && !radio.disabled) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
           if (ta) { ta.value = a.texte || ''; ta.dispatchEvent(new Event('input', { bubbles: true })); }
           aller('demandes');
-          var m = tr('Merci ! Ta demande est prête dans « Demandes ». Ajoute une photo si tu veux, puis envoie : Bricou la prépare pour Alex !');
+          var m = tr('Merci ! Ta demande est prête dans « Modifications ». Ajoute une photo si tu veux, puis envoie : Bricou la prépare pour Alex !');
           ecrire(m, 'lia'); garder('lia', m);
           flotOuvrir(false);
           if (ta) setTimeout(function () { ta.scrollIntoView({ behavior: 'smooth', block: 'center' }); ta.focus(); }, 250);

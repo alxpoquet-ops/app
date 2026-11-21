@@ -36,7 +36,7 @@ const delaiModif = `jusqu’à ${mini.delai.replace(/ heures?$/, ' h')}`; // une
 const listeDelais = `${ESS.delai}, avec ou sans l’option ${minus(ECO.name)}`;
 const DATE_OFFRE_SITE = '21 novembre 2026'; // un seul site : clause de transition pour les sites commandés avant (article 7)
 const tvaMention = L.tva || 'non applicable, art. 293 B du CGI';
-// Ce que comprend chaque site : la liste vient de config.types (inclus), l'astérisque des révisions est expliqué à l'article 11.
+// Ce que comprend chaque site : la liste vient de config.types (inclus), la première version et les modifications sont à l'article 11 et 12.
 const inclusDe = (t) => t.inclus.map((x) => `- ${x.replace(/\*$/, '').replace('à votre activité', 'à l’activité du client').replace('vos informations et vos photos', 'les informations et les photos du client').replace('par vous-même', 'par le client lui-même')}`).join('\n');
 // Les extras encore proposés (config.aLaDemande, non retirés) : un prix à la page, ou un devis.
 const extras = aLaDemande.filter((x) => !x.retire);
@@ -198,7 +198,7 @@ ${inclusDe(ESS)}
 
 ${ECO.inclus.map((x) => `- ${x.replace(/par vous$/, 'par le client')}`).join('\n')}
 
-**Révisions.** Les révisions sont illimitées jusqu’à la validation finale du site par le client. Elles portent sur le site commandé : ses textes, ses photos, ses couleurs et sa mise en page. Elles ne permettent pas de changer de site ni d’ajouter ce qui n’a pas été commandé. Après la mise en ligne, les changements passent par le forfait ${mini.name} (article 12).
+**Première version et modifications.** Le site est livré en ligne dans une première version, faite avec les réponses et les photos du client. Avec le forfait ${mini.name}, le client modifie lui-même, sans limite, les textes et les photos de ses pages depuis son espace client, et demande les autres changements (article 12). Les modifications portent sur le site commandé : elles ne permettent pas de changer de site ni d’ajouter ce qui n’a pas été commandé.
 
 **Export du site.** L’export est possible, avec ou sans l’option ${minus(ECO.name)}. Il s’agit d’une copie complète du site, avec ses fichiers et une sauvegarde, prête à installer chez un hébergeur. Le client la reçoit avec le forfait ${AUTO}, et à la fin de son abonnement s’il en a un (article 8).
 
@@ -296,11 +296,11 @@ Le nom de domaine n’est pas compris dans le prix du forfait ${mini.name}. Si l
 
 Si le client possède déjà un nom de domaine, il peut le transférer vers les Minis Monstres ou le garder chez son prestataire et le faire pointer vers le site. Les Minis Monstres lui envoient les réglages à faire. Avec le forfait ${AUTO}, le client gère son nom de domaine sans les Minis Monstres (article 3).
 
-## 11. Création du site, révisions et délais
+## 11. Création du site, première version et délais
 
-La création commence par un rendez-vous téléphonique de découverte. Le client fournit ses textes, photos et informations, ou les prépare avec les Minis Monstres à partir de ses explications. Les délais annoncés (${listeDelais}) sont indicatifs. Ils courent à partir de la réception de ces éléments.
+La création commence par le questionnaire de création, rempli par le client dans son espace client. Le client y fournit ses textes, photos et informations, ou les prépare avec les Minis Monstres à partir de ses explications. Les délais annoncés (${listeDelais}) sont indicatifs. Ils courent à partir de la réception de ces éléments.
 
-Le client reçoit une première version de son site avant la mise en ligne. Il peut demander des révisions sans limite de nombre, jusqu’à ce qu’il valide le site (article 3). La validation finale déclenche la mise en ligne, ou la remise de l’export avec le forfait ${AUTO}.
+Le site est mis en ligne dans une première version, présentée au client par e-mail (article 3), ou remis sous forme d’export avec le forfait ${AUTO}. Le client l’ajuste ensuite à son goût, comme le prévoit l’article 12.
 
 ## 12. Modifications
 

@@ -930,7 +930,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
             <?php elseif ($s === 'pret' || $s === 'en_creation') : ?>
               <p class="esp-empty">Votre nom de domaine, votre hébergement et votre certificat sont prêts. Je crée votre site<?php echo $type ? ' (' . esc_html($type['delai']) . ' en général)' : ''; ?> et je vous écris dès que j’ai besoin de vous.</p>
             <?php elseif ($s === 'en_ligne') : ?>
-              <p class="esp-empty"><?php echo $seule ? 'Votre site est terminé : je vous remets son code, prêt à installer chez votre hébergeur. Envie d’une formule plus tard ? Écrivez-moi.' : 'Votre site est en ligne. Pour le faire évoluer, envoyez vos demandes depuis « Mes demandes ».'; ?></p>
+              <p class="esp-empty"><?php echo $seule ? 'Votre site est terminé : je vous remets son code, prêt à installer chez votre hébergeur. Envie d’une formule plus tard ? Écrivez-moi.' : 'Votre site est en ligne. Pour le faire évoluer, envoyez vos demandes depuis « Mes modifications ».'; ?></p>
             <?php elseif ($s === 'annulee') : ?>
               <p class="esp-warn">Cette commande est annulée. Une question ? Écrivez-moi, je vous réponds vite.</p>
             <?php endif; ?>
@@ -1151,7 +1151,7 @@ function aled08e_dashboard() {
           <?php
           echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
           if ($cmd) echo aled08e_tab('commande', 'package', 'Ma commande'); // phpcs:ignore
-          echo aled08e_tab('demandes', 'message-circle', 'Demandes') . aled08e_tab('extras', 'sparkles', 'Extras') . aled08e_tab('vacances', aled08e_est_boutique($uid) ? 'shopping-bag' : 'lock', 'Ma boutique') . (aled08e_outils_on() ? aled08e_tab('outils', 'toolbox', 'Outils') : '') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
+          echo aled08e_tab('demandes', 'pencil', 'Modifications') . aled08e_tab('extras', 'sparkles', 'Extras') . aled08e_tab('vacances', aled08e_est_boutique($uid) ? 'shopping-bag' : 'lock', 'Ma boutique') . (aled08e_outils_on() ? aled08e_tab('outils', 'toolbox', 'Outils') : '') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -1188,7 +1188,7 @@ function aled08e_dashboard() {
           <?php if ($reqs) : ?>
           <ul class="reqs"><?php foreach (array_slice($reqs, 0, 3) as $p) echo $reqItem($p, false); // phpcs:ignore ?></ul>
           <?php else : ?>
-          <p class="esp-empty">Aucune demande pour le moment. Un horaire, un prix, une photo à changer ? Écrivez-le dans « Mes demandes ».</p>
+          <p class="esp-empty">Aucune demande pour le moment. Un horaire, un prix, une photo à changer ? Écrivez-le dans « Mes modifications ».</p>
           <?php endif; ?>
           <?php echo aled08e_annonces_html(2); // phpcs:ignore ?>
         </div>
@@ -1200,7 +1200,7 @@ function aled08e_dashboard() {
         <?php endif; ?>
 
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
-          <h2 class="app-h">Mes demandes</h2>
+          <h2 class="app-h">Mes modifications</h2>
           <?php echo aled08e_pd_flash_html() . $flash; // phpcs:ignore ?>
           <?php echo aled08e_gauge_zone_html($uid); // phpcs:ignore ?>
           <?php echo aled08e_edition_rappel_html($uid); // phpcs:ignore ?>
@@ -1390,7 +1390,7 @@ add_action('wp_ajax_aled08e_suivi', function () {
     $m = aled08e_gauge_modals_html($uid);
     wp_send_json_success(['html' => $h, 'gauge' => $g, 'modals' => $m, 'empreinte' => md5($h . $g . $m), 'actif' => aled08e_suivi_actif($uid)]);
 });
-/* Le bloc « Suivi » en haut de « Mes demandes », avec son rafraîchissement automatique (sans recharger la page) */
+/* Le bloc « Suivi » en haut de « Mes modifications », avec son rafraîchissement automatique (sans recharger la page) */
 function aled08e_suivi_html($uid) {
     $nonce = wp_create_nonce('aled08e_suivi');
     $liste = aled08e_suivi_liste_html($uid);
@@ -1494,7 +1494,7 @@ add_action('init', function () {
         'post_type' => ALED08E_CPT_ANNONCE, 'post_status' => 'private',
         'post_title' => 'Nouveau : des extras à la demande, payés une fois',
         'post_content' => "Vous gardez votre intervention d’Alex chaque mois, rien ne change pour vous.\n"
-            . 'Nouveau, dans « Mes demandes » : ' . implode(', ', $t) . ". Ils s’ajoutent à votre prochaine facture, seulement si vous les commandez.",
+            . 'Nouveau, dans « Mes modifications » : ' . implode(', ', $t) . ". Ils s’ajoutent à votre prochaine facture, seulement si vous les commandez.",
     ]);
     update_option('aled08e_annonce_v2', '1', false);
 }, 21);
@@ -1509,7 +1509,7 @@ add_action('init', function () {
     $corriger = function_exists('aled08e_jl_outil') ? (int) ((aled08e_jl_outil('corriger') ?: [])['jetons'] ?? 12) : 12;
     $page = aled08e_a_la_demande('page');
     $annonces = []; // de la plus ancienne à la plus récente : la plus récente s'affiche en premier
-    if ($page) $annonces[] = ['Nouveau : une page en plus pour ' . aled08e_euro_txt($page['prix']), "Besoin d’une nouvelle page sur votre site ? Commandez-la dans « Mes demandes ». Je la prépare avec vos textes et vos photos, puis je la publie. Les " . aled08e_euro_txt($page['prix']) . " s’ajoutent à votre prochaine facture."];
+    if ($page) $annonces[] = ['Nouveau : une page en plus pour ' . aled08e_euro_txt($page['prix']), "Besoin d’une nouvelle page sur votre site ? Commandez-la dans « Mes modifications ». Je la prépare avec vos textes et vos photos, puis je la publie. Les " . aled08e_euro_txt($page['prix']) . " s’ajoutent à votre prochaine facture."];
     $annonces[] = ['Le prix de chaque outil, sur sa carte', "Dans l’onglet Outils, chaque carte montre l’énergie que l’outil utilise, par exemple " . $corriger . " pour corriger un texte. Tous les outils en utilisent un peu, même le QR code ou le recadrage d’une photo. Une même action ne compte qu’une fois par jour : retélécharger ne coûte rien de plus."];
     $annonces[] = ['Plus d’énergie : ' . $energie . ' chaque mois', "Votre abonnement donne maintenant " . $energie . " d’énergie par mois à vos petits monstres, au lieu de 100. Vous avez plus de place pour les outils et les petites retouches de votre site, au même prix."];
     $admins = get_users(['role' => 'administrator', 'number' => 1, 'orderby' => 'ID', 'fields' => 'ids']);

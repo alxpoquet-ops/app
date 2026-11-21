@@ -102,7 +102,7 @@ const sections = {
 // commande, le catalogue, les prix, les promos, la livraison et les paiements gérés par le client depuis son espace client.
 // Le Site Visibilité disparaît de l'offre : les pages pour Google sont l'extra « Page de visibilité Google » (packseo, 15 € la page,
 // packs 1, 5 ou 10), commandé depuis l'espace client une fois le site en ligne.
-// Pourquoi ce prix : Alex a recréé et optimisé les « minis monstres », les modules dont un site est fait (accueil, présentation,
+// Pourquoi ce prix : Alex a créé et optimisé les « minis monstres », les modules dont un site est fait (accueil, présentation,
 // services et tarifs, galerie, questions fréquentes, contact, boutique). Chaque module a été soigné une fois et se modifie à part ;
 // un site s'assemble avec ces modules, rempli avec les informations et les photos du client. « Le cerveau est prêt : il ne
 // manque que votre contenu. » Le client reçoit une première version (V1), qu'il modifie lui-même (bouton « Modifier mon site
@@ -155,7 +155,9 @@ marche.fois = Math.round(marche.vitrineMin / creation.prix) + ' à ' + Math.roun
 // 'vitrine' = l'ancien Site Visibilité (750 €), retiré (retire: true) : plus proposé nulle part, gardé pour les anciennes commandes.
 // Sur le site public, on montre une seule offre (typesOfferts[0]) et une case « E-commerce » qui passe la commande en 'boutique'.
 // delai : « quelques heures » (décision d'Alex, 21 novembre 2026), à partir de la réception du contenu : la base du site est préconfigurée.
-const INCLUS_ESSENTIEL = ['Site internet personnalisé, assemblé à partir de nos modules', 'Rempli avec vos informations et vos photos', 'Design adapté à votre activité', 'Compatible téléphone et ordinateur', 'Formulaire de contact', 'Bases du référencement Google', 'Rendez-vous téléphonique de découverte', 'Révisions illimitées jusqu’à validation finale du site*', 'Mise en ligne complète', 'Modifiable par vous-même, avec le forfait Mini', 'Export du site possible'];
+const INCLUS_ESSENTIEL = ['Site internet personnalisé, assemblé à partir de nos modules', 'Rempli avec vos informations et vos photos', 'Design adapté à votre activité', 'Compatible téléphone et ordinateur', 'Formulaire de contact', 'Bases du référencement Google', 'Mise en ligne complète', 'Modifiable par vous-même, à volonté, avec le forfait Mini', 'Export du site possible'];
+// La ligne de la liste qui a son petit « i » avec une capture (src/assets/img/options/modifier.webp)
+const INCLUS_INFO = { 'Modifiable par vous-même, à volonté, avec le forfait Mini': { id: 'modifier', nom: 'Modifier mon site moi-même', texte: 'Depuis votre espace client, le bouton « Modifier mon site moi-même » ouvre votre site en mode modification : vous touchez un texte ou une photo, vous le changez, c’est en ligne tout de suite. Une erreur ? « Annuler la dernière » revient en arrière.' } };
 // Ce que l'option e-commerce ajoute (ce qu'apportait le Site Boutique)
 const INCLUS_ECOMMERCE = ['Boutique en ligne complète', 'Vente de produits et services', 'Panier d’achat', 'Paiement en ligne sécurisé', 'E-mails de commande automatiques', 'Catalogue, prix et promotions gérés par vous', 'Livraison et moyens de paiement réglés par vous', 'Configuration complète de la boutique'];
 const types = [
@@ -226,7 +228,7 @@ const offreSite = {
   avecBoutique: types[1],
   option: { id: 'ecommerce', name: 'E-commerce', prix: creation.ecommerce, icon: 'shopping-bag', inclus: INCLUS_ECOMMERCE, court: 'La boutique en ligne : produits et services, panier, paiement sécurisé, e-mails de commande.' },
 };
-// Les modules dont un site est fait (« Comment est fait votre site ») : recréés et optimisés une fois, modifiables chacun de leur côté.
+// Les modules dont un site est fait (« Comment est fait votre site ») : créés et optimisés une fois, modifiables chacun de leur côté.
 // option : n'arrive qu'avec l'option e-commerce.
 const modules = [
   { id: 'accueil', nom: 'Accueil', icon: 'house', d: 'Votre nom, ce que vous faites, et un bouton pour vous joindre.' },
@@ -237,8 +239,8 @@ const modules = [
   { id: 'contact', nom: 'Contact', icon: 'mail', d: 'Le formulaire, vos horaires, votre adresse.' },
   { id: 'boutique', nom: 'Boutique', icon: 'shopping-bag', option: true, d: 'Avec l’option e-commerce : vos articles, le panier et le paiement en ligne.' },
 ];
-// La petite étoile des « révisions illimitées »
-const revisionsNote = '* Les révisions portent sur le site commandé (textes, photos, couleurs, mise en page), jusqu’à ce que vous le validiez. Après la mise en ligne, les modifications passent par le forfait Mini.';
+// (ancienne petite étoile des « révisions illimitées » : retirée le 21 novembre 2026, la V1 est livrée directement)
+const revisionsNote = '';
 
 // ---------------------------------------------------------------- l'abonnement de base (un seul, obligatoire)
 // En paiement annuel : 2 mois offerts.
@@ -488,4 +490,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: 'Le site d’un électricien dans les Ardennes. Il sera en ligne très bientôt.' },
 ];
 
-module.exports = { typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };
+module.exports = { INCLUS_INFO, typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };

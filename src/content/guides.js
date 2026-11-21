@@ -256,7 +256,7 @@ Chez nous, tout est affiché avant la commande, toujours dans le même ordre.
 - **Option ${eco}, ${eur(ECO.prix)} € de plus** : une boutique complète, pour vendre sur internet, soit ${eur(BOU.price)} € en tout.
 - **Pages de visibilité Google, ${prixPage} € la page** : plus tard, depuis votre espace client, pour être trouvé sur plus de recherches.
 
-Vos modifications sont illimitées jusqu’à ce que vous validiez le site.
+Ensuite, avec le forfait ${mini.name}, vous modifiez vous-même vos textes et vos photos, à volonté.
 
 ### 2. Ensuite : Forfait ${AUTO} ou Forfait ${mini.name}
 
@@ -290,7 +290,7 @@ Les années suivantes, il ne reste que l'abonnement : ${eur(mini.month)} € par
 
 Chez un indépendant, un site vitrine de ${marche.pagesCompare} pages se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Notre ${ESS.name}, à ${eur(ESS.price)} €, avec les mêmes parties (accueil, présentation, services, photos, contact), coûte donc ${marche.fois} fois moins.
 
-La différence vient de la méthode : Alex a recréé et optimisé une fois pour toutes les modules dont un site est fait, et les Minis Monstres se chargent de ce qui revient d’un projet à l’autre.
+La différence vient de la méthode : Alex a créé et optimisé une fois pour toutes les modules dont un site est fait, et les Minis Monstres se chargent de ce qui revient d’un projet à l’autre.
 
 Soyons honnêtes : ces chiffres viennent de prestataires, donc prudence. Certains indépendants vendent un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors très faible. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout, sources comprises.
 

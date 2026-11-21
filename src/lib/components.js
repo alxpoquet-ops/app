@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { site, sections, types, typesOfferts, offreSite, modules, forfaits, annuel, lissage, fractionne, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande, evenement, delais, creationSeule, extrasGroupes, revisionsNote, phrase } = require('../config');
+const { INCLUS_INFO, site, sections, types, typesOfferts, offreSite, modules, forfaits, annuel, lissage, fractionne, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande, evenement, delais, creationSeule, extrasGroupes, revisionsNote, phrase } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
 const { petit, alexPortrait } = require('./bestiaire');
@@ -111,7 +111,7 @@ function deroulant(titre, html, { id = '', ico = '', ordi = false, ouvert = fals
 const deroulants = (items) => `<div class="faq deroulants">${items.filter(Boolean).join('')}</div>`;
 // Une liste « ce qui est compris » : les premières lignes visibles, la suite dans un petit déroulant (ouvert d'office sur ordinateur).
 function listePlus(items, { vis = 5, ordi = true, texte = 'Voir tout ce qui est compris' } = {}) {
-  const li = (x) => `<li>${icon('check')}<span>${inline(x)}</span></li>`;
+  const li = (x) => { const k = INCLUS_INFO[x]; return `<li>${icon('check')}<span>${k ? nomI(x, k.id, k.texte) : inline(x)}</span></li>`; };
   return `<ul class="plan-list">${items.map(li).join('')}</ul>`; // tout est visible, sans menu déroulant
   // eslint-disable-next-line no-unreachable
   if (items.length <= vis + 1) return `<ul class="plan-list">${items.map(li).join('')}</ul>`;
@@ -305,7 +305,6 @@ function offre({ compact = false, choose = true } = {}) {
   <p class="offre-k"><span>1</span>Créer votre site : payez une seule fois</p>
   <div class="site-cartes">${siteOffreCarte(ESSENTIEL, { compact, choose })}${optionEcommerceCarte({ compact, choose })}${pagesGoogleCarte({ compact })}</div>
   <p class="offre-sous">${icon('calendar-check')}<span>Réglé à la commande, en une fois ou en ${lissageTxt} fois avec ${ORGANISMES}, directement sur la page de paiement.</span></p>
-  ${compact ? '' : `<p class="offre-note">${esc(revisionsNote)}</p>`}
   <p class="offre-k"><span>2</span>Ensuite, le forfait ${esc(creationSeule.name)} ou le forfait ${esc(ABO.name)}</p>
   <div class="formules is-duo">${[creationSeule, ...forfaits].map((f) => formuleCarte(f, { compact })).join('')}</div>
   <p class="offre-sous">${icon('heart-handshake')}<span>Aucune obligation d’abonnement. Le forfait ${ABO.name} : ${euro(ABO.month)} par mois, sans engagement, ou ${euro(ABO.month + DOM)} si on vous fournit le nom de domaine.</span></p>
@@ -328,12 +327,12 @@ function modulesSite({ titre = 'Comment est fait votre site', id = 'comment' } =
   return `<section class="section section-soft" id="${id}"><div class="container">
   <h2 class="section-title">${esc(titre)}</h2>
   <p class="section-sub">Le cerveau est prêt : il ne manque que votre contenu.</p>
-  <!--commun-->${presente('mochi', `<strong>Un site, chez nous, c’est un assemblage de modules.</strong> Ce sont nos minis monstres : Alex les a recréés et optimisés un par un, et chacun se modifie de son côté. ${esc(MOCHI)}, lui, adore quand chaque chose est à sa place.`, { humeur: 'ravi' })}
+  <!--commun-->${presente('mochi', `<strong>Un site, chez nous, c’est un assemblage de modules.</strong> Ce sont nos minis monstres : Alex les a créés et optimisés un par un, et chacun a son rôle. ${esc(MOCHI)}, lui, adore quand chaque chose est à sa place.`, { humeur: 'ravi' })}
   <ul class="modules reveal">${modules.map((m) => `<li class="${m.option ? 'is-option' : ''}">${icon(m.icon)}<span><strong>${esc(m.nom)}</strong>${m.option ? `<em>Option ${esc(ECOMMERCE.name)}</em>` : ''}<small>${esc(m.d)}</small></span></li>`).join('')}</ul>
   ${steps([
     { t: 'La base est préconfigurée', d: 'Chaque module a été pensé, optimisé et soigné une fois pour toutes : rapide, lisible sur téléphone, sécurisé, compris par Google.' },
     { t: 'On la remplit avec votre contenu', d: `Vos informations, vos textes et vos photos. C’est pour cela que le prix reste petit et que votre site est prêt en ${ESSENTIEL.delai}, dès que nous avons tout reçu.` },
-    { t: 'On le met à votre goût', d: `Vous demandez les modifications que vous voulez, à volonté, jusqu’à ce qu’il vous ressemble. Avec le forfait ${ABO.name}, vous pouvez aussi changer un texte ou une photo vous-même, en direct, depuis votre espace client.` },
+    { t: 'Vous le mettez à votre goût', d: `Avec le forfait ${ABO.name}, vous le modifiez vous-même, à volonté : un texte ou une photo se change en direct, depuis votre espace client. Pour le reste, vous nous le demandez dans « Mes modifications ».` },
   ])}
   <div class="preconf reveal">${icon('sparkles')}<div><strong>Préconfiguré ne veut pas dire identique.</strong><p>Ce que nous préparons à l’avance, c’est le code invisible de votre site : tout ce qui travaille derrière vos textes et vos images pour qu’il soit rapide, sûr et bien vu de Google. Cette base solide, nous vous la fournissons. Il ne reste qu’à la façonner à votre univers : vos couleurs, vos polices, vos photos, vos mots. Chaque site garde ainsi sa propre personnalité.</p></div></div><!--/commun-->
 </div></section>`;
@@ -720,11 +719,11 @@ function comparatifTable() {
   const prixCreation = `${ESSENTIEL.name} ${euro(ESSENTIEL.price)}, ou ${euro(BOUTIQUE_T.price)} avec l’option ${ECOMMERCE.name}. Les prix sont affichés, les mêmes pour tous`;
   const prixMois = `Forfait ${creationSeule.name} : ${euro(0)}. Ou le forfait ${ABO.name} : ${euro(ABO.month)} par mois, hébergement et modifications compris (${euro(ABO.month + DOM)} si on vous fournit le nom de domaine)`;
   const rows = [
-    ['Qui fait le travail', 'Alex et les Minis Monstres, du premier appel à la mise en ligne', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
+    ['Qui fait le travail', 'Alex et les Minis Monstres, de la commande à la mise en ligne', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
     ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
     ['Prix chaque mois', prixMois, 'Contrat de maintenance, sur devis', 'Selon le prestataire, souvent en option', 'Abonnement mensuel, plus les applications en option'],
     ['Délai', `Quelques jours : les modules sont déjà prêts, il ne manque que votre contenu`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
-    ['Modifications', `Révisions illimitées jusqu’à validation du site. Ensuite, incluses avec le forfait ${ABO.name}`, 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
+    ['Modifications', `Par vous-même, à volonté, et sur demande : incluses avec le forfait ${ABO.name}`, 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
     ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
     ['Visibilité Google (être trouvé)', `Les bases dans chaque site. Puis des pages de visibilité Google : ${euro(prixPageSeo)} la page`, 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
     ['Engagement', 'Aucun, et aucune obligation d’abonnement', 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],

@@ -2,7 +2,7 @@
 /**
  * Les Minis Monstres Espace client : Mirette, l'étoile de Google, analyse le site et choisit les sujets des pages de visibilité Google.
  * - Les pages des extras « chaque mois » et « chaque semaine » (tâche quotidienne aled08_quotidien).
- * - Les pages de visibilité Google en plus commandées dans « Mes demandes » : à l'unité ou en pack (1, 5 ou 10 pages).
+ * - Les pages de visibilité Google en plus commandées dans « Mes modifications » : à l'unité ou en pack (1, 5 ou 10 pages).
  * Pour chaque page, Mirette lit la liste des pages du site (connecteur) et les recherches Google, puis choisit un sujet utile
  * et pas encore traité. Elle crée une demande pour Alex (titre, recherche visée, pourquoi, plan) : c'est Alex qui écrit la page
  * et la met en ligne. Sans clé Claude, la demande part quand même chez Alex, avec « sujet à choisir ».
@@ -107,7 +107,7 @@ function aled08e_seo_auto_creer($uid, $source, $idees = '', $parent = 0, $sujet 
     return (int) $pid;
 }
 
-/* Des pages SEO commandées dans « Mes demandes » : Mirette choisit un sujet par page, Alex les écrit */
+/* Des pages SEO commandées dans « Mes modifications » : Mirette choisit un sujet par page, Alex les écrit */
 add_action('aled08e_demande_creee', function ($pid, $par, $uid) {
     if (get_post_meta($pid, '_aled08_extra', true) !== 'packseo') return;
     $n = max(1, (int) get_post_meta($pid, '_aled08_quantite', true));

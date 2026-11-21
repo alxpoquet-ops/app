@@ -49,7 +49,7 @@ function aled08e_edition_bouton_html($uid, $classe = 'acc-action c-mint') {
         . '<button type="submit" class="' . esc_attr($classe) . '"><span class="acc-art" aria-hidden="true">' . aled08e_monster('ravie') . '</span>'
         . '<strong>Modifier mon site moi-même</strong><small>Je clique sur un texte ou une photo, je le change : c’est en ligne tout de suite</small></button></form>';
 }
-/* Dans « Mes demandes » : le petit rappel qu'un texte ou une photo se change en direct */
+/* Dans « Mes modifications » : le petit rappel qu'un texte ou une photo se change en direct */
 function aled08e_edition_rappel_html($uid) {
     if (!aled08e_edition_dispo($uid)) return '';
     return '<form method="post" action="' . esc_url(aled08e_url()) . '" class="ed-rappel">'

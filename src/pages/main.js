@@ -211,9 +211,9 @@ function ancienneCreerPage() {
   <h2 class="section-title">Et ensuite ?</h2>
   ${C.steps([
     { t: 'Vous commandez', d: `Vous payez votre site en entier, en une fois ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}.` },
-    { t: 'On s’appelle', d: 'Un rendez-vous téléphonique pour découvrir votre activité.' },
-    { t: 'Votre site est créé', d: 'Vous le voyez avant la mise en ligne, et vous dites ce qui doit changer, jusqu’à ce qu’il vous plaise.' },
-    { t: 'Il est mis en ligne', d: `Avec le forfait ${ABO.name}, on s’occupe de tout. Avec le forfait ${AUTO.name}, on vous remet votre site, prêt à installer chez votre hébergeur.` },
+    { t: 'Vous répondez au questionnaire', d: 'Dans votre espace client : votre activité, vos couleurs, vos photos. Pas de rendez-vous à caler.' },
+    { t: 'Votre site est en ligne', d: `En ${ESS.delai}, une première version faite avec vos réponses. Avec le forfait ${AUTO.name}, on vous remet votre site, prêt à installer chez votre hébergeur.` },
+    { t: 'Vous le peaufinez', d: `Avec le forfait ${ABO.name}, vous changez vous-même un texte ou une photo, à volonté, ou vous nous demandez la modification.` },
   ])}
 </div></section>
 
@@ -497,7 +497,7 @@ function comparatifPage() {
     C.deroulant('Les prix, côte à côte', md(`Un indépendant demande en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence, plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. Notre ${ESS.name}, qui contient ces mêmes modules, coûte ${euro(ESS.price)}.
 
 Soyons honnêtes : ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois.`) + C.sourcesMarche(), { ico: 'scale', ouvert: true }),
-    C.deroulant('Pourquoi ce prix ?', md(`Des modules déjà prêts, recréés et optimisés une fois pour toutes : il ne manque que votre contenu. Ajoutez une méthode rodée, et pas de bureaux à payer. Les prix sont affichés : pas de rendez-vous commercial, pas de devis à attendre. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank' }),
+    C.deroulant('Pourquoi ce prix ?', md(`Des modules déjà prêts, créés et optimisés une fois pour toutes : il ne manque que votre contenu. Ajoutez une méthode rodée, et pas de bureaux à payer. Les prix sont affichés : pas de rendez-vous commercial, pas de devis à attendre. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank' }),
     C.deroulant('Et l’entretien, chaque mois ?', md(`Avec le forfait ${AUTO.name}, vous gérez tout vous-même, pour ${euro(AUTO.month)} par mois. Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications. Pas de nom de domaine ? On vous le fournit pour ${euro(C.DOM)} de plus par mois. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois pour l’entretien d’un site.`), { ico: 'repeat' }),
     C.deroulant('Ce que vous ne faites pas vous-même', md(`Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, écrire pour Google. Ici, vous dites ce que vous voulez, et votre site est fait pour vous. Vous gardez votre temps pour votre métier.`), { ico: 'clock' }),
     C.deroulant('Quand on vous dira d’aller ailleurs', md(`Une application sur mesure, un logiciel métier, un catalogue de milliers de produits : ces projets demandent une agence ou un développeur. On vous le dit dès le premier échange.`), { ico: 'arrow-right' }),
@@ -542,8 +542,8 @@ function commanderPage({ creer = false } = {}) {
     `<div class="field"><label for="o-${name}">${label} ${req ? '<span class="req">*</span>' : '<span class="opt">(facultatif)</span>'}</label><input id="o-${name}" name="${name}" ${attrs}${req ? ' required' : ''}>${hint ? `<small class="field-hint">${hint}</small>` : ''}</div>`;
   const nextSteps = [
     ['globe', 'Votre nom de domaine est prêt', 'Le vôtre, ou celui qu’on réserve à votre nom.'],
-    ['mail-check', 'On vous écrit sous 24 heures', 'Pour fixer le rendez-vous téléphonique de découverte.'],
-    ['circle-user', 'Votre espace client arrive par e-mail', 'Vous y suivez votre commande et vos demandes.'],
+    ['circle-user', 'Votre espace client arrive par e-mail', 'Vous y suivez votre commande, puis vos modifications.'],
+    ['list-checks', 'Vous remplissez le questionnaire', 'Dans votre espace client : votre activité, vos couleurs, vos photos.'],
     ['rocket', 'Votre site est en ligne', `Comptez <span data-order="delai">${esc(t0.delai)}</span> : les modules sont déjà prêts, il ne manque que votre contenu.`],
   ];
   const body = `${C.pageHero({
@@ -709,10 +709,10 @@ function confirmationPage() {
     <p class="confirm-msg is-wait" data-confirm-wait hidden>${icon('hourglass')}<span>On vous envoie le lien de paiement sous 24 heures. Votre commande est gardée : rien à faire de votre côté pour l’instant.</span></p>
     <h2 class="h3">Les prochaines étapes</h2>
     ${C.steps([
-      { t: 'On vous écrit sous 24 heures', d: 'Pour fixer le rendez-vous téléphonique de découverte.' },
+      { t: 'Votre espace client arrive par e-mail', d: 'Vous y suivez votre commande et, ensuite, vos modifications.' },
+      { t: 'Le questionnaire de création', d: 'Dans votre espace client : votre activité, vos couleurs, vos photos. Pas de rendez-vous à caler.' },
       { t: 'Votre nom de domaine est prêt', d: `Vous gardez le vôtre, ou on vous en fournit un, à votre nom, avec le forfait ${ABO.name}.` },
-      { t: 'Votre espace client arrive par e-mail', d: 'Vous y suivez votre commande et, ensuite, vos demandes de modification.' },
-      { t: 'Votre première version est prête', d: `Comptez ${delaiList}.` },
+      { t: 'Votre site est en ligne', d: `Comptez ${delaiList}, une fois le questionnaire rempli. Ensuite, vous le modifiez à volonté.` },
     ])}
     <div class="hero-ctas centered">${C.btn(sections.monespace.path, 'btn-primary btn-lg', 'circle-user', 'Accéder à mon espace')}${C.btnWa('btn-light btn-lg', 'Une question ? Nous écrire')}</div>
   </div>
@@ -723,7 +723,7 @@ function confirmationPage() {
     noindex: true,
     noMobileBar: true,
     title: 'Commande confirmée | Les Minis Monstres',
-    description: 'Merci pour votre commande. On vous écrit sous 24 heures pour le rendez-vous de découverte, et votre espace client arrive par e-mail.',
+    description: 'Merci pour votre commande. Votre espace client arrive par e-mail, avec le questionnaire de création : votre site est en ligne quelques heures après.',
     body,
   };
 }
@@ -852,7 +852,7 @@ function monEspacePage() {
         <p class="app-badge">${icon('wrench')}<span>Modifications incluses</span></p>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           ${tab('accueil', 'house', 'Accueil', true)}
-          ${tab('demandes', 'message-circle', 'Demandes')}
+          ${tab('demandes', 'pencil', 'Modifications')}
           ${tab('extras', 'sparkles', 'Extras')}
           ${tab('boutique', 'shopping-bag', 'Ma boutique')}
           ${tab('forfait', 'circle-user', 'Mon compte')}
@@ -886,7 +886,7 @@ function monEspacePage() {
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
-          <h2 class="app-h">Demandes</h2>
+          <h2 class="app-h">Mes modifications</h2>
           <div class="demo-bricou"><span aria-hidden="true">${C.petit('bricou', { humeur: 'ravi' })}</span><p><strong>Une modification ? Dites-le à ${esc(C.BRICOU)}</strong><small>Il prépare votre demande, puis Alex fait la modification.</small></p></div>
           <form class="req-form" data-req>
             <div class="field"><label for="req-txt">Votre demande</label><textarea id="req-txt" rows="3" placeholder="Ex. : nous serons fermés le lundi 24 novembre"></textarea></div>
@@ -1298,7 +1298,7 @@ function equipePage() {
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Comment on travaille</h2>
   <div class="feats feats-3">
-    <div class="feat reveal">${icon('list-checks')}<h3>Une méthode rodée</h3><p>Un appel pour vous connaître, puis votre site est construit étape par étape. Vous le voyez avant la mise en ligne.</p></div>
+    <div class="feat reveal">${icon('list-checks')}<h3>Une méthode rodée</h3><p>Un questionnaire pour vous connaître, puis votre site est assemblé avec nos modules. Vous le modifiez ensuite comme vous voulez.</p></div>
     <div class="feat reveal">${icon('tag')}<h3>Des prix affichés</h3><p>Les mêmes pour tout le monde, sans devis. Vous savez ce que vous payez avant de commander.</p></div>
     <div class="feat reveal">${icon('message-circle')}<h3>Quelqu’un qui répond</h3><p>${esc(C.CERISE)} répond à vos questions, ${esc(C.BRICOU)} prépare vos demandes, et Alex fait vos modifications.</p></div>
   </div>
@@ -1512,7 +1512,7 @@ function docPage() {
   const tabs = [
     ['house', 'Accueil', 'votre site, votre formule et les petits mots de la bande.'],
     ['package', 'Ma commande', 'le suivi de la création de votre site, étape par étape.'],
-    ['message-circle', 'Demandes', `vous écrivez ce qu’il faut changer, ${C.BRICOU} clarifie votre demande, Alex fait la modification, et vous suivez où ça en est.`],
+    ['pencil', 'Modifications', `vous écrivez ce qu’il faut changer, ${C.BRICOU} clarifie votre demande, Alex fait la modification, et vous suivez où ça en est.`],
     ['sparkles', 'Extras', `les trois extras, présentés par ${C.PEPITE} : page de visibilité Google, traduction anglaise, fonctionnalité spécifique.`],
     ['shopping-bag', 'Ma boutique', `vos articles, vos prix, vos paiements, la livraison, vos commandes et vos promos. Il s’ouvre avec l’option ${ECO.name}.`],
     ['circle-user', 'Mon compte', 'vos coordonnées, votre mot de passe, votre formule et vos factures.'],
@@ -1529,10 +1529,9 @@ ${chap('etapes', `1. Comment ça se passe`, `  <h2>De la commande à la mise en 
   <ol class="doc-steps">
     <li><strong>Vous commandez votre site.</strong> Le ${esc(ESS.name)}, avec l’option ${esc(ECO.name)} si vous vendez en ligne : le prix total s’affiche avant de commander.</li>
     <li><strong>Vous réglez votre site.</strong> En une fois, ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}, sur la page de paiement. C’est le signal de départ.</li>
-    <li><strong>On s’appelle.</strong> Un rendez-vous téléphonique pour découvrir votre activité.</li>
     <li><strong>Vous remplissez le questionnaire de création.</strong> Dans votre espace client : couleurs, ambiance, photos, prix ou produits.</li>
-    <li><strong>Votre site est assemblé.</strong> Nos modules, remplis avec vos informations et vos photos. Vous recevez une première version, et vous demandez des changements autant de fois qu’il le faut, jusqu’à ce que vous la validiez.</li>
-    <li><strong>Votre site est mis en ligne.</strong> Rien de plus à payer pour la création. Avec le forfait ${esc(ABO.name)}, l’abonnement démarre ce jour-là.</li>
+    <li><strong>Votre site est assemblé.</strong> Nos modules, remplis avec vos informations et vos photos. Votre première version est en ligne en ${esc(ESS.delai)}, et vous recevez un e-mail qui vous la présente.</li>
+    <li><strong>Vous le peaufinez.</strong> Rien de plus à payer pour la création. Avec le forfait ${esc(ABO.name)}, qui démarre ce jour-là, vous changez vous-même un texte ou une photo, à volonté, ou vous nous demandez la modification dans « Mes modifications ».</li>
     <li><strong>Ensuite, vous choisissez.</strong> Le forfait ${esc(ABO.name)}, ${euro(ABO.month)} par mois : on s’occupe de tout. Ou le forfait ${esc(AUTO.name)}, ${euro(AUTO.month)} : vous gérez tout vous-même.</li>
   </ol>
   <p class="doc-more">${C.btnCreer('btn-primary')}</p>`)}
@@ -1579,7 +1578,7 @@ ${chap('prix', `5. Le prix`, `  <div class="container-narrow">
     <h3>Ce que comprend le forfait ${esc(ABO.name)}</h3><ul class="list-check">${ABO.details.map((d) => `<li>${inline(d)}</li>`).join('')}</ul>
   </div>
   <div class="doc-cards3">
-    <div class="doc-mini reveal"><strong>${icon('wrench')}Révisions jusqu’à validation</strong><p>Pendant la création, vous demandez des changements autant de fois qu’il le faut. Après la mise en ligne, les modifications passent par le forfait ${esc(ABO.name)}.</p></div>
+    <div class="doc-mini reveal"><strong>${icon('wrench')}Modifications à volonté</strong><p>Votre première version est en ligne : avec le forfait ${esc(ABO.name)}, vous changez vous-même vos textes et vos photos, ou vous nous demandez la modification.</p></div>
     <div class="doc-mini reveal"><strong>${icon('search-check')}Page de visibilité Google</strong><p>${euro(PRIX_PAGE)} la page, payée une fois, par carte, depuis votre espace client.</p></div>
     <div class="doc-mini reveal"><strong>${icon('ticket')}Code promo</strong><p>Une seule case, à la commande. La remise s’applique sur la création du site.</p></div>
   </div>
@@ -1597,7 +1596,7 @@ ${chap('espace', `6. L’espace client`, `  <div class="doc-split">
   <p class="doc-more">${C.btn('/mon-espace/demo/', 'btn-light', 'eye', 'Essayer la démo')}</p>`)}
 
 ${chap('demandes', `7. Demander une modification`, `  <div class="doc-split doc-split-rev">
-    ${fig('demandes', 'L’onglet Mes demandes', 'L’onglet « Mes demandes » : on écrit, on ajoute une photo si besoin, on suit l’avancement.')}
+    ${fig('demandes', 'L’onglet Mes modifications', 'L’onglet « Mes modifications » : on écrit, on ajoute une photo si besoin, on suit l’avancement.')}
     <div>
       <h2>Vous demandez, on s’en charge</h2>
       <p>Avec le forfait ${esc(ABO.name)}, vos modifications sont incluses. Voici comment ça se passe :</p>

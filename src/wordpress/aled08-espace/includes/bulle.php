@@ -38,7 +38,7 @@ function aled08e_bulle_prete() { return aled08e_jl_outils_prets(); }
 function aled08e_bulle_onglets($uid) {
     $o = ['accueil' => 'Accueil'];
     if (aled08e_cmd_user_commandes($uid)) $o['commande'] = 'Ma commande';
-    $o += ['demandes' => 'Mes demandes', 'tableau' => 'Tableau de bord'];
+    $o += ['demandes' => 'Mes modifications', 'tableau' => 'Tableau de bord'];
     if (aled08e_est_boutique($uid)) $o['vacances'] = 'Ma boutique';
     if (aled08e_outils_on()) $o['outils'] = 'Outils';
     return $o + ['compte' => 'Mon compte', 'forfait' => 'Abonnement et factures'];
