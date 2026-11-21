@@ -38,6 +38,17 @@ const sections = [
     ],
   },
   {
+    id: 'google',
+    titre: 'Être trouvé sur Google',
+    icon: 'search-check',
+    types: ['vitrine', 'boutique'],
+    champs: [
+      { id: 'villes', label: 'Dans quelles villes ou quels secteurs voulez-vous être trouvé ?', kind: 'texte_long', requis: true, aide: 'Par exemple : Thionville, Hayange, Metz et alentours. Une page peut être faite pour chacun : seulement ceux que vous nous donnez.' },
+      { id: 'recherches', label: 'Que tapent vos clients sur Google pour vous trouver ?', kind: 'texte_long', requis: true, aide: 'Quelques recherches, comme vous les imaginez : « bougie personnalisée prénom », « cadeau naissance bougie ». Pas d’idée ? Notez vos produits et services principaux.' },
+      { id: 'conseils', label: 'Des sujets de conseils que vous aimeriez partager ? (facultatif)', kind: 'texte_long', aide: 'Par exemple : « comment bien entretenir une bougie ». Nous écrivons aussi des pages de conseils sur votre métier pour Google : vous les relisez avant la mise en ligne.' },
+    ],
+  },
+  {
     id: 'style',
     titre: 'Le style',
     icon: 'palette',
