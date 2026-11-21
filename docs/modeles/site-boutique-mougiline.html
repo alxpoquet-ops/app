@@ -1,0 +1,1004 @@
+<title>Mougiline · Bougies personnalisées en cire naturelle</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Mougiline : la boutique des bougies personnalisées en cire naturelle, depuis Nilvange, envoyées partout en France.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Mougiline, Site Boutique (Site Visibilité + boutique) : une page longue, douce et chic. Pastels (rose poudré, lilas, sauge), écriture fine pour le nom.
+   Direction après la recherche : les sites de bougies sont souvent sobres et beiges ; ici le pastel et la personnalisation passent devant. */
+:root {
+  --bg: #FCF9FA; --surface: #FFFFFF; --rose: #F6DFE5; --rose-fort: #EFC9D4; --lilas: #E9E3F5; --sauge: #E0EBE2; --creme: #FFF4E4;
+  --ink: #3A3142; --text: #64596C; --line: #ECE3EA; --accent: #A8687C; --accent-doux: #C98EA0;
+  --ombre: 0 18px 50px -24px rgba(90, 50, 70, .35);
+  --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --body: "Jost", "Segoe UI", system-ui, sans-serif;
+}
+:root[data-theme="dark"] {
+  --bg: #1F1A23; --surface: #29222E; --rose: #3A2A31; --rose-fort: #4A3340; --lilas: #2E293B; --sauge: #26322B; --creme: #33291F;
+  --ink: #F5EEF4; --text: #CFC4D2; --line: #3B3242; --accent: #E3A7BA; --accent-doux: #C98EA0;
+  --ombre: 0 18px 50px -24px rgba(0, 0, 0, .7); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--body); font-size: 17px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+body.menu-ouvert { overflow: hidden; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); color: var(--ink); line-height: 1.08; margin: 0; font-weight: 600; text-wrap: balance; }
+h1 { font-size: clamp(3.2rem, 13vw, 6.2rem); letter-spacing: .01em; }
+h2 { font-size: clamp(2.1rem, 6.4vw, 3.2rem); }
+h2 em, h1 em { font-style: italic; color: var(--accent); font-weight: 500; }
+h3 { font-size: 1.6rem; }
+p { margin: 0; }
+section { padding-block: clamp(64px, 10vw, 110px); }
+.surtitre { display: inline-flex; align-items: center; gap: 10px; font-size: .76rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+.surtitre::before { content: ""; width: 26px; height: 1.5px; background: currentColor; opacity: .6; }
+.chapeau { max-width: 60ch; margin-top: 16px; font-size: 1.06rem; }
+.centre { text-align: center; }
+.centre .chapeau { margin-inline: auto; }
+.centre .surtitre::after { content: ""; width: 26px; height: 1.5px; background: currentColor; opacity: .6; }
+
+/* l'image de base, la même partout en attendant les photos */
+.photo { display: block; width: 100%; aspect-ratio: 4 / 3; border-radius: 28px; background: var(--photo) center / cover no-repeat, var(--rose); }
+:root { --photo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='f' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23F6DFE5'/%3E%3Cstop offset='.55' stop-color='%23E9E3F5'/%3E%3Cstop offset='1' stop-color='%23E0EBE2'/%3E%3C/linearGradient%3E%3CradialGradient id='h' cx='.5' cy='.32' r='.34'%3E%3Cstop offset='0' stop-color='%23FFF1C9' stop-opacity='.95'/%3E%3Cstop offset='1' stop-color='%23FFF1C9' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23f)'/%3E%3Ccircle cx='200' cy='98' r='100' fill='url(%23h)'/%3E%3Crect x='158' y='130' width='84' height='104' rx='18' fill='%23FFFFFF'/%3E%3Crect x='158' y='130' width='84' height='104' rx='18' fill='none' stroke='%23E7CFD8' stroke-width='2'/%3E%3Cpath d='M200 130v-14' stroke='%233A3142' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M200 78c9 11 13 20 13 27a13 13 0 0 1-26 0c0-7 4-16 13-27z' fill='%23F2B8A0'/%3E%3Cpath d='M200 95c4 5 5 9 5 12a5 5 0 0 1-10 0c0-3 1-7 5-12z' fill='%23FFF4D6'/%3E%3Cellipse cx='200' cy='240' rx='64' ry='7' fill='%233A3142' opacity='.07'/%3E%3Ctext x='200' y='276' text-anchor='middle' font-family='Georgia' font-size='15' font-style='italic' fill='%2364596C'%3EPhoto à venir%3C/text%3E%3C/svg%3E"); }
+
+/* boutons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 12px 26px; border-radius: 999px; text-decoration: none; border: 1.5px solid var(--ink); font: inherit; font-weight: 600; cursor: pointer; transition: transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn-plein { background: var(--ink); color: var(--bg); }
+.btn-plein:hover { transform: translateY(-2px); box-shadow: var(--ombre); }
+.btn-trait { background: transparent; color: var(--ink); }
+.btn-trait:hover { background: var(--surface); }
+.btn:focus-visible, a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* en-tête : le nom, le menu, le contact toujours visible, le soleil / la lune, les trois traits */
+.top { position: sticky; top: 0; z-index: 30; padding-top: env(safe-area-inset-top, 0px); background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid transparent; transition: border-color .3s ease, box-shadow .3s ease; }
+.top.defile { border-color: var(--line); box-shadow: 0 10px 30px -26px rgba(60, 30, 50, .5); }
+.top .wrap { display: flex; align-items: center; gap: 10px; min-height: 70px; }
+.nom { font-family: var(--display); font-size: 1.75rem; font-weight: 700; color: var(--ink); text-decoration: none; letter-spacing: .02em; margin-right: auto; display: inline-flex; align-items: center; gap: 8px; }
+.nom i { width: 10px; height: 14px; background: radial-gradient(60% 70% at 50% 65%, #FFF4D6 0 30%, #F2B8A0 60%, transparent 74%); border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%; animation: vacille 2.4s ease-in-out infinite alternate; }
+@keyframes vacille { from { transform: scale(1) rotate(-3deg); } to { transform: scale(1.12) rotate(4deg); } }
+.menu { display: flex; gap: 2px; }
+.menu a { position: relative; text-decoration: none; font-weight: 500; font-size: .93rem; padding: 8px 13px; border-radius: 999px; color: var(--ink); transition: background .2s ease; }
+.menu a:hover { background: var(--rose); }
+.menu a.actif { background: var(--rose); }
+.contact-haut { min-height: 44px; padding: 8px 18px; font-size: .92rem; }
+.rond { position: relative; width: 44px; height: 44px; flex: none; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; display: grid; place-items: center; overflow: hidden; padding: 0; }
+.theme svg { position: absolute; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; transition: transform .45s ease, opacity .3s ease; }
+.theme .soleil circle { fill: #F2C46B; stroke: #E0A84A; }
+.theme .soleil path { stroke: #E0A84A; }
+.theme .lune { fill: #E9E3F5; stroke: #B9A8E0; transform: translateY(26px) rotate(-30deg); opacity: 0; }
+:root[data-theme="dark"] .theme .soleil { transform: translateY(-26px) rotate(60deg); opacity: 0; }
+:root[data-theme="dark"] .theme .lune { transform: none; opacity: 1; }
+.burger { display: none; }
+.burger span { position: absolute; left: 13px; width: 18px; height: 2px; border-radius: 2px; background: currentColor; transition: transform .35s ease, opacity .2s ease, top .35s ease; }
+.burger span:nth-child(1) { top: 15px; } .burger span:nth-child(2) { top: 21px; } .burger span:nth-child(3) { top: 27px; }
+.burger[aria-expanded="true"] span:nth-child(1) { top: 21px; transform: rotate(45deg); }
+.burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.burger[aria-expanded="true"] span:nth-child(3) { top: 21px; transform: rotate(-45deg); }
+@media (max-width: 900px) {
+  .menu { display: none; }
+  .burger { display: grid; }
+  .contact-haut { padding: 8px 14px; }
+}
+@media (max-width: 360px) { .contact-haut span { display: none; } .contact-haut { width: 44px; padding: 0; } }
+
+/* le menu du téléphone : un grand panneau pastel */
+.panneau { position: fixed; inset: 0; z-index: 25; padding: calc(env(safe-area-inset-top, 0px) + 90px) max(20px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 28px) max(20px, env(safe-area-inset-left, 0px));
+  background: radial-gradient(120% 70% at 100% 0%, var(--rose-fort), transparent 60%), radial-gradient(90% 60% at 0% 100%, var(--lilas), transparent 65%), var(--bg);
+  display: flex; flex-direction: column; overflow-y: auto; isolation: isolate;
+  clip-path: circle(0 at calc(100% - 38px) 38px); visibility: hidden; transition: clip-path .55s cubic-bezier(.7, 0, .2, 1), visibility 0s .55s; }
+.panneau.ouvert { clip-path: circle(150% at calc(100% - 38px) 38px); visibility: visible; transition: clip-path .6s cubic-bezier(.7, 0, .2, 1), visibility 0s; }
+.panneau nav { display: grid; gap: 4px; }
+.panneau nav a { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 12px 4px; border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); text-decoration: none; color: var(--ink);
+  opacity: 0; transform: translateY(14px); transition: opacity .35s ease, transform .45s ease; }
+.panneau.ouvert nav a { opacity: 1; transform: none; transition-delay: calc(.18s + var(--i) * .05s); }
+.panneau nav .mi { width: 40px; height: 40px; border-radius: 14px; display: grid; place-items: center; background: color-mix(in srgb, var(--surface) 80%, transparent); align-self: center; box-shadow: 0 6px 16px -12px rgba(90, 50, 70, .5); }
+.panneau nav a:nth-child(3n + 2) .mi { background: var(--lilas); }
+.panneau nav a:nth-child(3n) .mi { background: var(--sauge); }
+.panneau nav .mi svg { width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.panneau nav b { font-family: var(--display); font-size: clamp(1.75rem, 7.6vw, 2.4rem); font-weight: 600; line-height: 1.1; }
+.panneau nav em { font-style: normal; font-size: 1.2rem; color: var(--accent); }
+.panneau .bas { margin-top: auto; padding-top: 28px; display: grid; gap: 14px; }
+.panneau .bas .btn { width: 100%; }
+.panneau .bas p { font-size: .9rem; text-align: center; }
+@media (min-width: 901px) { .panneau { display: none; } }
+
+/* petits effets flottants, posés dans les parties (ils défilent avec la page) */
+.flotte { position: relative; overflow: hidden; isolation: isolate; }
+.deco { position: absolute; z-index: -1; pointer-events: none; animation: flotter var(--d, 9s) ease-in-out infinite alternate; }
+.deco.flamme { width: var(--t, 26px); height: calc(var(--t, 26px) * 1.4); background: radial-gradient(60% 70% at 50% 65%, #FFF4D6 0 30%, #F6C59A 55%, transparent 72%); border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%; opacity: .75; }
+.deco.lueur { width: var(--t, 120px); height: var(--t, 120px); border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--c, #F6DFE5) 90%, transparent), transparent 70%); opacity: .9; }
+.deco.goutte { width: var(--t, 12px); height: calc(var(--t, 12px) * 1.3); background: var(--c, #E9E3F5); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; opacity: .8; }
+@keyframes flotter { from { transform: translate3d(0, 0, 0) rotate(-4deg); } to { transform: translate3d(var(--x, 8px), var(--y, -22px), 0) rotate(5deg); } }
+:root[data-theme="dark"] .deco.flamme { opacity: .85; }
+:root[data-theme="dark"] .deco.lueur { opacity: .2; }
+:root[data-theme="dark"] .deco.goutte { opacity: .3; }
+@media (prefers-reduced-motion: reduce) { .deco, .nom i { animation: none; } }
+
+/* apparition douce au défilement (le contenu reste visible sans script) */
+.js .rv { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
+.js .rv.vu { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .js .rv { opacity: 1; transform: none; } }
+
+/* ouverture */
+.ouverture { padding-top: clamp(36px, 7vw, 80px); }
+.ouverture .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 52px; align-items: center; }
+.accroche { font-family: var(--display); font-style: italic; font-size: clamp(1.6rem, 5vw, 2.2rem); color: var(--accent); margin-top: 6px; }
+.ouverture .chapeau { font-size: 1.12rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.visuel { position: relative; }
+.visuel .photo { aspect-ratio: 4 / 5; border-radius: 200px 200px 32px 32px; box-shadow: var(--ombre); }
+.pastille { position: absolute; display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px 10px; border-radius: 999px; background: var(--surface); box-shadow: var(--ombre); font-size: .9rem; font-weight: 500; color: var(--ink); animation: flotter 7s ease-in-out infinite alternate; --y: -10px; --x: 4px; }
+.pastille i { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--rose); font-style: normal; }
+.pastille i svg { width: 18px; height: 18px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.pastille.p1 { top: 14%; left: -26px; }
+.pastille.p2 { bottom: 12%; right: -18px; animation-delay: -3s; }
+.pastille.p2 i { background: var(--sauge); }
+@media (prefers-reduced-motion: reduce) { .pastille { animation: none; } }
+@media (max-width: 900px) {
+  .ouverture .wrap { grid-template-columns: 1fr; gap: 34px; }
+  .visuel { max-width: 420px; width: 100%; margin-inline: auto; }
+  .visuel .photo { aspect-ratio: 1; border-radius: 160px 160px 28px 28px; }
+  .pastille.p1 { left: -6px; } .pastille.p2 { right: -6px; }
+}
+
+/* le cadre des essentiels : fixe, aux couleurs du site, une petite flamme en sceau */
+.ruban { padding-block: 8px 0; }
+.cadre { position: relative; list-style: none; margin: 0; padding: 26px 20px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; background: var(--surface); border: 1.5px solid var(--rose-fort); border-radius: 32px; box-shadow: var(--ombre); }
+.cadre::before { content: ""; position: absolute; inset: 7px; border: 1px dashed color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 25px; pointer-events: none; }
+.cadre::after { content: ""; position: absolute; top: -13px; left: 50%; width: 18px; height: 24px; margin-left: -9px; background: radial-gradient(60% 70% at 50% 65%, #FFF4D6 0 30%, #F2B8A0 60%, transparent 74%); border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%; animation: vacille 2.2s ease-in-out infinite alternate; }
+.cadre li { display: flex; align-items: center; gap: 12px; font-family: var(--display); font-size: 1.25rem; font-weight: 600; color: var(--ink); line-height: 1.2; justify-content: center; }
+.cadre i { width: 42px; height: 42px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--c, var(--rose)); }
+.cadre svg { width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 900px) { .cadre { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 24px 16px; } .cadre li { justify-content: flex-start; font-size: 1.1rem; } }
+@media (max-width: 380px) { .cadre li { font-size: 1rem; gap: 8px; } .cadre i { width: 36px; height: 36px; } }
+@media (prefers-reduced-motion: reduce) { .cadre::after { animation: none; } }
+
+/* pourquoi mes bougies */
+.pourquoi .tete { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: end; }
+.raisons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 44px; }
+.raison { background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: 26px 22px; display: grid; gap: 10px; align-content: start; transition: transform .3s ease, box-shadow .3s ease; }
+.raison:hover { transform: translateY(-4px); box-shadow: var(--ombre); }
+.raison .ico { width: 54px; height: 54px; border-radius: 18px; display: grid; place-items: center; background: var(--c); }
+.raison .ico svg { width: 26px; height: 26px; fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.raison h3 { font-size: 1.45rem; }
+.raison p { font-size: .98rem; }
+@media (max-width: 980px) { .raisons { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .pourquoi .tete { grid-template-columns: 1fr; gap: 0; } }
+@media (max-width: 560px) { .raisons { grid-template-columns: 1fr; } .raison { grid-template-columns: 54px minmax(0, 1fr); column-gap: 16px; } .raison .ico { grid-row: span 2; } }
+
+/* la personnalisation */
+.atelier { background: var(--rose); }
+.atelier .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 52px; align-items: center; }
+.quatre { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+.quatre div { background: color-mix(in srgb, var(--surface) 75%, transparent); border-radius: 22px; padding: 16px 18px; }
+.quatre b { display: block; font-family: var(--display); font-size: 1.4rem; color: var(--ink); font-weight: 600; }
+.quatre small { font-size: .9rem; }
+.photo.arche { aspect-ratio: 4 / 5; border-radius: 200px 200px 32px 32px; box-shadow: var(--ombre); }
+@media (max-width: 900px) { .atelier .wrap { grid-template-columns: 1fr; gap: 34px; } .photo.arche { aspect-ratio: 1; max-width: 420px; margin-inline: auto; border-radius: 160px 160px 28px 28px; } }
+@media (max-width: 420px) { .quatre { gap: 8px; } .quatre div { padding: 12px 14px; } }
+
+/* les bougies et les prix */
+.offres { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 44px; }
+.offre { background: var(--surface); border: 1px solid var(--line); border-radius: 30px; padding: 14px 14px 24px; display: grid; gap: 14px; align-content: start; position: relative; transition: transform .3s ease, box-shadow .3s ease; }
+.offre:hover { transform: translateY(-4px); box-shadow: var(--ombre); }
+.offre .photo { border-radius: 22px; aspect-ratio: 1; }
+.offre .txt { padding: 0 10px; display: grid; gap: 6px; }
+.offre .prix { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.offre .prix b { font-family: var(--display); font-size: 2.6rem; line-height: 1; color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.offre .prix span { font-size: .95rem; }
+.offre .btn { margin: 4px 10px 0; }
+.offre.vedette { border-color: var(--accent-doux); }
+.etiquette { position: absolute; top: 26px; left: 26px; z-index: 1; background: var(--surface); color: var(--accent); font-size: .74rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; box-shadow: var(--ombre); }
+@media (max-width: 900px) { .offres { grid-template-columns: 1fr; max-width: 460px; margin-inline: auto; } .offre .photo { aspect-ratio: 16 / 10; } }
+
+/* le pack Noël, mis en avant */
+.noel { background: linear-gradient(135deg, var(--lilas), var(--rose)); }
+.noel .wrap { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 52px; align-items: center; }
+.noel .photo { aspect-ratio: 1; border-radius: 32px; box-shadow: var(--ombre); }
+.noel .gros { display: flex; align-items: baseline; gap: 14px; margin-top: 22px; }
+.noel .gros b { font-family: var(--display); font-size: clamp(3.4rem, 12vw, 5rem); line-height: 1; color: var(--ink); font-weight: 600; }
+.noel .gros span { font-size: 1.05rem; font-weight: 500; color: var(--ink); }
+.cinq { display: flex; gap: 10px; margin-top: 22px; }
+.cinq i { width: 34px; height: 44px; border-radius: 10px 10px 8px 8px; background: var(--surface); position: relative; box-shadow: 0 8px 20px -14px rgba(60, 30, 50, .6); }
+.cinq i::before { content: ""; position: absolute; left: 50%; top: -15px; width: 10px; height: 14px; margin-left: -5px; background: radial-gradient(60% 70% at 50% 65%, #FFF4D6 0 30%, #F2B8A0 60%, transparent 74%); border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%; animation: vacille 2s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -.4s); }
+@media (prefers-reduced-motion: reduce) { .cinq i::before { animation: none; } }
+@media (max-width: 900px) { .noel .wrap { grid-template-columns: 1fr; gap: 30px; } .noel .photo { aspect-ratio: 16 / 11; } }
+
+/* comment commander */
+.etapes { list-style: none; margin: 44px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.etapes li { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: 28px 24px 26px; display: grid; gap: 8px; align-content: start; }
+.etapes li:not(:last-child)::after { content: ""; position: absolute; top: 54px; right: -14px; width: 10px; height: 10px; border-top: 2px solid var(--accent-doux); border-right: 2px solid var(--accent-doux); transform: rotate(45deg); }
+.etapes .ei { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--c, var(--rose)); margin-bottom: 6px; }
+.etapes .ei svg { width: 26px; height: 26px; fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.etapes h3 { font-size: 1.5rem; }
+@media (max-width: 900px) { .etapes { grid-template-columns: 1fr; } .etapes li { grid-template-columns: 56px minmax(0, 1fr); column-gap: 16px; padding: 20px; } .etapes .ei { grid-row: span 2; margin: 0; } .etapes li:not(:last-child)::after { top: auto; right: auto; bottom: -13px; left: 46px; transform: rotate(135deg); } }
+
+/* galerie */
+.galerie { display: grid; grid-template-columns: 1.3fr 1fr 1fr; grid-template-rows: auto auto; gap: 14px; margin-top: 40px; }
+.galerie .photo { aspect-ratio: 1; border-radius: 24px; }
+.galerie .photo:first-child { grid-row: span 2; aspect-ratio: auto; height: 100%; }
+@media (max-width: 700px) { .galerie { grid-template-columns: 1fr 1fr; } .galerie .photo:first-child { grid-column: span 2; grid-row: auto; aspect-ratio: 16 / 10; } .galerie .photo:nth-child(n + 4) { display: none; } }
+
+/* sur les marchés */
+.marches { background: var(--sauge); }
+.marches .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 52px; align-items: center; }
+.agenda { background: var(--surface); border-radius: 32px; padding: 26px; box-shadow: var(--ombre); display: grid; gap: 14px; }
+.agenda .ligne { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; align-items: center; padding: 14px; border-radius: 20px; background: var(--bg); }
+.agenda .date { width: 64px; height: 64px; border-radius: 18px; background: var(--rose); display: grid; place-items: center; text-align: center; line-height: 1.1; font-family: var(--display); font-size: 1.15rem; font-weight: 600; color: var(--ink); }
+.agenda .ligne:nth-child(2) .date { background: var(--lilas); }
+.agenda .ligne:nth-child(3) .date { background: var(--creme); }
+.agenda b { color: var(--ink); font-weight: 600; }
+.agenda .flou { opacity: .55; }
+.infos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+.infos span { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 500; padding: 8px 14px; border-radius: 999px; background: var(--surface); color: var(--ink); }
+.infos svg { width: 16px; height: 16px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 900px) { .marches .wrap { grid-template-columns: 1fr; gap: 30px; } }
+
+/* FAQ */
+.faq .wrap { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 52px; align-items: start; }
+.faq .tete { position: sticky; top: 110px; }
+.questions { display: grid; gap: 12px; }
+.questions details { background: var(--surface); border: 1px solid var(--line); border-radius: 24px; transition: box-shadow .3s ease; }
+.questions details[open] { box-shadow: var(--ombre); }
+.questions summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) 32px; gap: 14px; align-items: center; padding: 20px 22px; font-weight: 600; color: var(--ink); font-size: 1.02rem; border-radius: 24px; }
+.questions summary::-webkit-details-marker { display: none; }
+.questions summary i { width: 32px; height: 32px; border-radius: 50%; background: var(--rose); position: relative; transition: transform .3s ease, background .3s ease; }
+.questions summary i::before, .questions summary i::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 1.8px; margin: -.9px 0 0 -6px; background: var(--ink); border-radius: 2px; }
+.questions summary i::after { transform: rotate(90deg); transition: transform .3s ease; }
+.questions details[open] summary i { background: var(--lilas); transform: rotate(180deg); }
+.questions details[open] summary i::after { transform: rotate(0); }
+.questions details p { padding: 0 22px 22px; }
+@media (max-width: 900px) { .faq .wrap { grid-template-columns: 1fr; gap: 28px; } .faq .tete { position: static; } }
+
+/* contact */
+.contact { background: var(--lilas); }
+.contact .wrap { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 52px; align-items: start; }
+.moyens { display: grid; gap: 12px; margin-top: 28px; }
+.moyens div { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; align-items: center; background: color-mix(in srgb, var(--surface) 70%, transparent); border-radius: 20px; padding: 12px; }
+.moyens i { width: 48px; height: 48px; border-radius: 16px; background: var(--surface); display: grid; place-items: center; }
+.moyens svg { width: 22px; height: 22px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.moyens b { display: block; color: var(--ink); }
+.moyens small { font-size: .9rem; }
+.bientot { font-style: italic; }
+.formulaire { display: grid; gap: 8px; background: var(--surface); border-radius: 32px; padding: 28px; box-shadow: var(--ombre); }
+.formulaire h3 { margin-bottom: 8px; }
+.formulaire label { font-weight: 600; font-size: .9rem; color: var(--ink); }
+.formulaire input, .formulaire textarea, .formulaire select { font: inherit; padding: 13px 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); margin-bottom: 8px; width: 100%; }
+.formulaire input:focus, .formulaire textarea:focus, .formulaire select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.formulaire .btn { width: 100%; margin-top: 6px; }
+.envoye { font-weight: 600; color: var(--accent); text-align: center; }
+@media (max-width: 900px) { .contact .wrap { grid-template-columns: 1fr; gap: 30px; } .formulaire { padding: 22px; border-radius: 28px; } }
+
+/* pied de page */
+footer { background: var(--ink); color: color-mix(in srgb, var(--bg) 80%, transparent); padding-block: 56px calc(30px + env(safe-area-inset-bottom, 0px)); font-size: .92rem; }
+:root[data-theme="dark"] footer { background: #16121A; }
+footer .wrap { display: grid; grid-template-columns: minmax(0, 1.3fr) repeat(2, minmax(0, 1fr)); gap: 36px; }
+footer .nom { color: var(--bg); font-size: 2rem; }
+:root[data-theme="dark"] footer .nom, :root[data-theme="dark"] footer h3 { color: var(--ink); }
+footer h3 { font-family: var(--body); font-size: .76rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--bg); margin-bottom: 12px; }
+footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+footer a { color: inherit; text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+footer .legal { grid-column: 1 / -1; border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 22px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-size: .84rem; }
+@media (max-width: 760px) { footer .wrap { grid-template-columns: 1fr 1fr; } footer .marque { grid-column: 1 / -1; } }
+
+/* ===== Site Boutique : les pages, la boutique, le panier ===== */
+[hidden] { display: none !important; }
+.page { display: none; }
+.page.actif { display: block; animation: arrivee .45s ease; }
+@keyframes arrivee { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .page.actif { animation: none; } }
+.menu a.actif { background: var(--rose); }
+.etroit { max-width: 780px; }
+.entete-page { padding-block: clamp(40px, 7vw, 72px) 20px; }
+.h1-page { font-size: clamp(2.5rem, 9vw, 4.2rem); }
+.h1-page em { font-style: italic; color: var(--accent); font-weight: 500; }
+.fil { font-size: .86rem; margin-bottom: 14px; color: var(--text); }
+.fil a { color: var(--accent); text-decoration: none; }
+.fil a:hover { text-decoration: underline; }
+.tete-ligne { display: flex; align-items: end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.lien-fleche { color: var(--ink); font-weight: 600; text-decoration: none; border-bottom: 1.5px solid var(--accent-doux); padding-bottom: 2px; }
+.lien-fleche span { display: inline-block; transition: transform .2s ease; }
+.lien-fleche:hover span { transform: translateX(4px); }
+
+/* le bouton panier */
+.panier-btn svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.panier-btn { overflow: visible; }
+.panier-btn .compte { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: var(--accent); color: #fff; font-size: .72rem; display: grid; place-items: center; box-shadow: 0 0 0 2px var(--bg); }
+.panier-btn.secoue { animation: secoue .5s ease; }
+@keyframes secoue { 30% { transform: scale(1.15) rotate(-6deg); } 60% { transform: scale(.95) rotate(4deg); } }
+
+/* les cartes produits */
+.grille-produits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-top: 36px; }
+.produit { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: 12px 12px 18px; display: grid; gap: 10px; align-content: start; transition: transform .3s ease, box-shadow .3s ease; }
+.produit:hover { transform: translateY(-4px); box-shadow: var(--ombre); }
+.produit .photo { aspect-ratio: 1; border-radius: 20px; }
+.produit h3 { font-size: 1.4rem; padding: 0 6px; }
+.produit h3 a { color: inherit; text-decoration: none; }
+.produit .court { font-size: .92rem; padding: 0 6px; }
+.produit .bas-carte { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 6px 0; }
+.produit .px { font-family: var(--display); font-size: 1.9rem; font-weight: 600; color: var(--ink); line-height: 1; }
+.produit .ajout { width: 46px; height: 46px; border-radius: 50%; border: 0; background: var(--ink); color: var(--bg); cursor: pointer; display: grid; place-items: center; transition: transform .2s ease; }
+.produit .ajout:hover { transform: scale(1.08); }
+.produit .ajout svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.produit .etiquette { top: 22px; left: 22px; }
+@media (max-width: 980px) { .grille-produits { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .grille-produits { gap: 10px; } .produit { padding: 8px 8px 14px; border-radius: 22px; } .produit h3 { font-size: 1.15rem; } .produit .court { display: none; } .produit .px { font-size: 1.5rem; } .produit .ajout { width: 40px; height: 40px; } .produit .etiquette { top: 14px; left: 14px; font-size: .62rem; padding: 4px 8px; } }
+.aide-boutique { margin-top: 36px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; background: var(--lilas); border-radius: 28px; padding: 20px 24px; }
+.aide-boutique > i { width: 48px; height: 48px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; flex: none; }
+.aide-boutique p { flex: 1 1 240px; }
+
+/* la fiche produit */
+.fiche-grille { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 52px; align-items: start; margin-top: 10px; }
+.fiche-photo { aspect-ratio: 1; border-radius: 36px; box-shadow: var(--ombre); }
+.fiche-prix { font-family: var(--display); font-size: 2.6rem; font-weight: 600; color: var(--ink); margin-top: 8px; }
+.perso-champ { display: grid; gap: 6px; margin-top: 22px; }
+.perso-champ label { font-weight: 600; font-size: .9rem; color: var(--ink); }
+.perso-champ textarea { font: inherit; padding: 13px 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.achat { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+.achat .btn { flex: 1 1 200px; }
+.qte { display: inline-flex; align-items: center; border: 1.5px solid var(--line); border-radius: 999px; background: var(--surface); }
+.qte button { width: 46px; height: 46px; border: 0; background: none; font-size: 1.3rem; color: var(--ink); cursor: pointer; border-radius: 50%; }
+.qte output { min-width: 28px; text-align: center; font-weight: 600; color: var(--ink); }
+.garanties { list-style: none; margin: 26px 0 0; padding: 18px 0 0; border-top: 1px solid var(--line); display: grid; gap: 10px; }
+.garanties li, .liste-ico li { display: flex; align-items: center; gap: 12px; }
+.garanties i, .liste-ico i, .aide-boutique > i { color: var(--accent); }
+.garanties i { width: 36px; height: 36px; border-radius: 50%; background: var(--rose); display: grid; place-items: center; flex: none; }
+@media (max-width: 900px) { .fiche-grille { grid-template-columns: 1fr; gap: 26px; } }
+
+/* les icônes au trait dans les puces */
+.ic { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.raison .ico .ic, .etapes .ei .ic { width: 26px; height: 26px; color: var(--ink); }
+.cadre i .ic, .panneau .mi .ic { width: 20px; height: 20px; color: var(--accent); }
+.pastille i .ic { color: var(--accent); }
+.infos .ic { width: 16px; height: 16px; color: var(--accent); }
+.moyens i .ic { width: 22px; height: 22px; color: var(--accent); }
+
+/* la commande */
+.commande-grille { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 32px; align-items: start; }
+.deux { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.deux > div { display: grid; gap: 8px; }
+.recap { background: var(--rose); border-radius: 32px; padding: 26px; display: grid; gap: 14px; position: sticky; top: 100px; }
+.recap-ligne { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); }
+.recap-ligne small { display: block; font-size: .84rem; }
+.recap .total { display: flex; justify-content: space-between; font-weight: 600; color: var(--ink); font-size: 1.1rem; }
+.recap-note { display: flex; gap: 8px; align-items: center; font-size: .9rem; }
+@media (max-width: 900px) { .commande-grille { grid-template-columns: 1fr; } .recap { position: static; order: -1; } }
+
+/* les conseils */
+.grille-conseils { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 32px; }
+.conseil { display: grid; gap: 10px; align-content: start; background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: 24px; text-decoration: none; color: inherit; transition: transform .3s ease, box-shadow .3s ease; }
+.conseil:hover { transform: translateY(-4px); box-shadow: var(--ombre); }
+.conseil .ico-c { width: 54px; height: 54px; border-radius: 18px; display: grid; place-items: center; background: var(--c); }
+.conseil .ico-c .ic { width: 26px; height: 26px; color: var(--ink); }
+.conseil h3 { font-size: 1.45rem; }
+.conseil .lire { font-weight: 600; color: var(--accent); font-size: .92rem; }
+@media (max-width: 900px) { .grille-conseils { grid-template-columns: 1fr; } }
+.article { padding-block: clamp(40px, 7vw, 72px); }
+.ico-article { width: 64px; height: 64px; border-radius: 22px; display: grid; place-items: center; background: var(--rose); margin-bottom: 16px; }
+.ico-article .ic { width: 30px; height: 30px; color: var(--accent); }
+.article-corps { margin-top: 26px; }
+.article-corps h2 { font-size: clamp(1.6rem, 5vw, 2rem); margin: 34px 0 10px; }
+.article-corps p + p { margin-top: 12px; }
+.article-corps ul { padding-left: 20px; display: grid; gap: 6px; margin: 10px 0 0; }
+.article-pied { margin-top: 44px; padding: 26px; border-radius: 28px; background: var(--lilas); }
+.article-pied p { font-family: var(--display); font-size: 1.5rem; color: var(--ink); font-weight: 600; }
+
+/* Nilvange */
+.duo-texte { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 52px; align-items: center; }
+.duo-texte p { margin-top: 14px; }
+.liste-ico { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 12px; }
+.liste-ico i { width: 40px; height: 40px; border-radius: 50%; background: var(--sauge); display: grid; place-items: center; flex: none; }
+@media (max-width: 900px) { .duo-texte { grid-template-columns: 1fr; gap: 30px; } }
+
+.contact-bande { padding-block: 60px; }
+.contact-bande .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; background: linear-gradient(135deg, var(--lilas), var(--rose)); border-radius: 36px; padding: 34px clamp(20px, 4vw, 44px); }
+.contact-bande .actions { margin-top: 0; }
+.contact .wrap { padding-top: 10px; }
+
+/* le tiroir du panier */
+.voile { position: fixed; inset: 0; z-index: 40; background: rgba(40, 25, 40, .35); backdrop-filter: blur(2px); }
+.tiroir { position: fixed; top: 0; right: 0; bottom: 0; z-index: 41; width: min(420px, 100%); background: var(--bg); box-shadow: -20px 0 60px -30px rgba(40, 20, 40, .6); display: flex; flex-direction: column; transform: translateX(105%); transition: transform .45s cubic-bezier(.7, 0, .2, 1); padding: calc(env(safe-area-inset-top, 0px) + 16px) 20px calc(env(safe-area-inset-bottom, 0px) + 20px); }
+.tiroir.ouvert { transform: none; }
+.tiroir-tete { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.tiroir-tete h2 { font-size: 2rem; }
+.tiroir-tete svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.tiroir-liste { flex: 1; overflow-y: auto; display: grid; gap: 12px; align-content: start; padding-block: 16px; }
+.article-panier { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 12px; background: var(--surface); border-radius: 20px; padding: 10px; }
+.article-panier .photo { aspect-ratio: 1; border-radius: 14px; }
+.article-panier b { color: var(--ink); }
+.article-panier small { display: block; font-size: .82rem; }
+.article-panier .ligne-bas { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+.article-panier .qte button { width: 34px; height: 34px; font-size: 1.1rem; }
+.article-panier .retirer { border: 0; background: none; color: var(--accent); font: inherit; font-size: .84rem; cursor: pointer; text-decoration: underline; }
+.vide { text-align: center; padding: 30px 10px; }
+.vide .ico-article { margin: 0 auto 12px; }
+.tiroir-pied { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 16px; }
+.tiroir-pied .total { display: flex; justify-content: space-between; align-items: baseline; color: var(--ink); }
+.tiroir-pied .total b { font-family: var(--display); font-size: 2rem; }
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); z-index: 45; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; background: var(--ink); color: var(--bg); padding: 10px 10px 10px 18px; border-radius: 999px; box-shadow: var(--ombre); font-weight: 500; width: max-content; max-width: calc(100% - 32px); }
+.toast button { border: 0; background: var(--bg); color: var(--ink); font: inherit; font-weight: 600; font-size: .88rem; padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+
+.contact-rond { background: var(--ink); color: var(--bg); border-color: var(--ink); text-decoration: none; }
+.contact-rond .ic { width: 20px; height: 20px; }
+@media (min-width: 901px) { .contact-rond { width: auto; padding: 0 18px; border-radius: 999px; gap: 8px; display: inline-flex; } .contact-rond::after { content: "Contact"; font-weight: 600; font-size: .92rem; } }
+@media (max-width: 350px) { .top .wrap { gap: 6px; } .nom { font-size: 1.45rem; } }
+</style>
+
+<header class="top" id="haut">
+  <div class="wrap">
+    <a class="nom" href="#/"><i aria-hidden="true"></i>Mougiline</a>
+    <nav class="menu" aria-label="Menu du site">
+      <a href="#/" data-p="accueil">Accueil</a>
+      <a href="#/boutique" data-p="boutique">Boutique</a>
+      <a href="#/conseils" data-p="conseils">Conseils</a>
+      <a href="#/questions" data-p="questions">Questions</a>
+      <a href="#/contact" data-p="contact">Contact</a>
+    </nav>
+    <a class="rond contact-rond" href="#/contact" aria-label="Me contacter"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg></a>
+    <button class="rond panier-btn" type="button" aria-label="Ouvrir le panier" data-panier>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      <b class="compte" hidden>0</b>
+    </button>
+    <button class="rond theme" type="button" aria-label="Passer en apparence sombre" aria-pressed="false">
+      <svg class="soleil" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      <svg class="lune" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+    </button>
+    <button class="rond burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="panneau"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="panneau" id="panneau" aria-label="Menu">
+  <span class="deco flamme" style="bottom:22%;right:10%;--t:22px;--d:6s" aria-hidden="true"></span>
+  <span class="deco lueur" style="--t:220px;--c:#FFF1C9;bottom:-60px;right:-60px;--d:12s" aria-hidden="true"></span>
+  <nav aria-label="Menu du site">
+    <a href="#/" style="--i:0"><i class="mi"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 10h8v10H8z"/><path d="M12 10V8"/><path d="M12 2.5c1.6 1.9 2.2 3 2.2 3.8a2.2 2.2 0 0 1-4.4 0c0-.8.6-1.9 2.2-3.8z"/></svg></i><b>Accueil</b><em>→</em></a>
+    <a href="#/boutique" style="--i:1"><i class="mi"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></i><b>La boutique</b><em>→</em></a>
+    <a href="#/produit/perso" style="--i:2"><i class="mi"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="m14 6 3 3"/></svg></i><b>Personnaliser</b><em>→</em></a>
+    <a href="#/conseils" style="--i:3"><i class="mi"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M9 7h6"/></svg></i><b>Conseils</b><em>→</em></a>
+    <a href="#/questions" style="--i:4"><i class="mi"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.3 2.4c-.5.2-.8.6-.8 1.1v.5M12 16h.01"/></svg></i><b>Vos questions</b><em>→</em></a>
+    <a href="#/contact" style="--i:5"><i class="mi"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg></i><b>Contact</b><em>→</em></a>
+  </nav>
+  <div class="bas">
+    <button class="btn btn-plein" type="button" data-panier>Voir mon panier</button>
+    <p>Basée à Nilvange · Envoi partout en France</p>
+  </div>
+</div>
+
+<main>
+<!-- ===================== ACCUEIL ===================== -->
+<div class="page" data-page="accueil">
+  <section class="ouverture flotte">
+    <span class="deco lueur" style="--t:260px;--c:#F6DFE5;top:-60px;right:-80px;--d:11s;--y:18px" aria-hidden="true"></span>
+    <span class="deco lueur" style="--t:180px;--c:#E9E3F5;bottom:20px;left:-70px;--d:13s;--x:-10px" aria-hidden="true"></span>
+    <span class="deco flamme" style="top:6%;left:46%;--t:18px;--d:6s" aria-hidden="true"></span>
+    <span class="deco goutte" style="bottom:6%;left:40%;--t:12px;--c:#F6DFE5;--d:10s" aria-hidden="true"></span>
+    <div class="wrap">
+      <div>
+        <p class="surtitre">Bougies personnalisées</p>
+        <h1>Mougiline</h1>
+        <p class="accroche">Bougie for all</p>
+        <p class="chapeau">Des bougies vraiment personnalisées, faites avec de la cire naturelle. Commandez en ligne : je vous les envoie partout en France depuis Nilvange.</p>
+        <div class="actions">
+          <a class="btn btn-plein" href="#/boutique">Voir la boutique</a>
+          <a class="btn btn-trait" href="#/produit/perso">Personnaliser ma bougie</a>
+        </div>
+      </div>
+      <div class="visuel">
+        <span class="photo" role="img" aria-label="Photo à venir : une bougie Mougiline"></span>
+        <span class="pastille p1"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/></svg></i>Cire naturelle</span>
+        <span class="pastille p2"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="m14 6 3 3"/></svg></i>À votre prénom</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="ruban">
+    <div class="wrap">
+      <ul class="cadre" aria-label="Les essentiels de Mougiline">
+        <li><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="m14 6 3 3"/></svg></i>Bougies personnalisées</li>
+        <li><i style="--c:var(--lilas)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/></svg></i>Cire naturelle</li>
+        <li><i style="--c:var(--sauge)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></i>Envoi partout en France</li>
+        <li><i style="--c:var(--creme)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg></i>Paiement en ligne sécurisé</li>
+      </ul>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="tete-ligne rv">
+        <div>
+          <p class="surtitre">La boutique</p>
+          <h2>Mes <em>bougies</em></h2>
+        </div>
+        <a class="lien-fleche" href="#/boutique">Toute la boutique <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="grille-produits" data-grille="4"></div>
+    </div>
+  </section>
+
+  <section class="pourquoi flotte" style="background:var(--rose)">
+    <span class="deco flamme" style="top:8%;right:4%;--t:20px;--d:7s" aria-hidden="true"></span>
+    <div class="wrap">
+      <div class="tete rv">
+        <div>
+          <p class="surtitre">Pourquoi Mougiline</p>
+          <h2>Pourquoi choisir <em>mes bougies</em></h2>
+        </div>
+        <p class="chapeau">Chaque bougie est pensée avec vous. Je prends le temps d'écouter ce que vous aimez, puis je la fabrique pour qu'elle vous ressemble.</p>
+      </div>
+      <div class="raisons">
+        <article class="raison rv" style="--c:var(--surface)"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/></svg></span><h3>Une cire naturelle</h3><p>Des bougies de qualité, faites avec de la cire naturelle.</p></article>
+        <article class="raison rv" style="--c:var(--lilas)"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="m14 6 3 3"/></svg></span><h3>Vraiment personnalisées</h3><p>La forme, le parfum, la couleur, un prénom : tout se choisit.</p></article>
+        <article class="raison rv" style="--c:var(--sauge)"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M9 11h.01M12 11h.01M15 11h.01"/></svg></span><h3>À votre écoute</h3><p>Je m'adapte à chaque client et à chaque envie.</p></article>
+        <article class="raison rv" style="--c:var(--creme)"><span class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="7" height="12" rx="2"/><rect x="14" y="8" width="7" height="12" rx="2"/><path d="M6.5 8V5M17.5 8V5"/></svg></span><h3>En plusieurs exemplaires</h3><p>Grâce à mes moules, je peux réaliser la même bougie plusieurs fois.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="noel flotte">
+    <span class="deco flamme" style="top:10%;right:5%;--t:24px;--d:6s" aria-hidden="true"></span>
+    <span class="deco goutte" style="top:18%;left:3%;--t:12px;--c:#FFFFFF;--d:10s" aria-hidden="true"></span>
+    <div class="wrap">
+      <span class="photo rv" role="img" aria-label="Photo à venir : le pack Noël"></span>
+      <div class="rv">
+        <p class="surtitre">Pour les fêtes</p>
+        <h2>Le pack <em>Noël</em></h2>
+        <p class="chapeau">Cinq bougies Mougiline réunies dans un pack, pour offrir ou pour vous faire plaisir.</p>
+        <div class="cinq" aria-hidden="true"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i></div>
+        <p class="gros"><b>40 €</b><span>les 5 bougies</span></p>
+        <div class="actions"><button class="btn btn-plein" type="button" data-ajout="noel">Ajouter au panier</button><a class="btn btn-trait" href="#/produit/noel">Voir le pack</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="centre rv"><p class="surtitre">Commander</p><h2>Comment <em>ça se passe</em></h2></div>
+      <ol class="etapes">
+        <li class="rv"><i class="ei"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></i><h3>Vous commandez</h3><p>Sur la boutique, avec le formulaire de contact, ou en venant me voir sur un marché.</p></li>
+        <li class="rv"><i class="ei" style="--c:var(--lilas)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="m14 6 3 3"/></svg></i><h3>À votre goût</h3><p>Pour une bougie personnalisée, dites-moi la forme, le parfum, la couleur et le prénom.</p></li>
+        <li class="rv"><i class="ei" style="--c:var(--sauge)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="m3 7.5 9 4.5 9-4.5M12 12v9"/></svg></i><h3>Je vous l'envoie</h3><p>Depuis Nilvange, j'envoie mes bougies partout en France.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="marches flotte">
+    <span class="deco lueur" style="--t:220px;--c:#FFFFFF;top:-70px;left:-60px;--d:12s" aria-hidden="true"></span>
+    <div class="wrap">
+      <div class="rv">
+        <p class="surtitre">Sur les marchés</p>
+        <h2>Venez me <em>rencontrer</em></h2>
+        <p class="chapeau">Je fais beaucoup de marchés. C'est l'occasion de découvrir mes bougies et de parler ensemble de votre bougie personnalisée.</p>
+        <p class="infos"><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg> Basée à Nilvange</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg> Envoi partout en France</span></p>
+        <div class="actions"><a class="btn btn-trait" href="#/nilvange">Mougiline à Nilvange</a></div>
+      </div>
+      <div class="agenda rv" aria-label="Mes prochains marchés">
+        <h3>Mes prochains marchés</h3>
+        <div class="ligne"><span class="date">Bientôt</span><p><b>L'agenda arrive bientôt</b><br>Les dates et les lieux seront affichés ici.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="tete-ligne rv">
+        <div><p class="surtitre">Conseils</p><h2>Le coin <em>des conseils</em></h2></div>
+        <a class="lien-fleche" href="#/conseils">Tous les conseils <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="grille-conseils" data-conseils></div>
+    </div>
+  </section>
+
+  <section class="contact-bande">
+    <div class="wrap rv">
+      <div><h2>Une envie, <em>une question ?</em></h2><p class="chapeau">Écrivez-moi : pour une bougie personnalisée, on en parle ensemble.</p></div>
+      <div class="actions"><a class="btn btn-plein" href="#/contact">Me contacter</a><a class="btn btn-trait" href="#/questions">Questions fréquentes</a></div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== BOUTIQUE ===================== -->
+<div class="page" data-page="boutique">
+  <section class="entete-page flotte">
+    <span class="deco flamme" style="top:20%;right:8%;--t:20px;--d:7s" aria-hidden="true"></span>
+    <span class="deco lueur" style="--t:220px;--c:#E9E3F5;top:-80px;left:-60px;--d:13s" aria-hidden="true"></span>
+    <div class="wrap">
+      <p class="fil"><a href="#/">Accueil</a> <span aria-hidden="true">›</span> Boutique</p>
+      <h1 class="h1-page">La <em>boutique</em></h1>
+      <p class="chapeau">Toutes mes bougies, en cire naturelle. Ajoutez-les au panier et payez en ligne : je vous les envoie partout en France.</p>
+    </div>
+  </section>
+  <section style="padding-top:20px">
+    <div class="wrap">
+      <div class="grille-produits" data-grille="tout"></div>
+      <div class="aide-boutique rv">
+        <i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/><path d="M9 11h.01M12 11h.01M15 11h.01"/></svg></i>
+        <p><b>Une idée bien précise ?</b> Écrivez-moi avant de commander : je m'adapte à ce que vous aimez.</p>
+        <a class="btn btn-trait" href="#/contact">Me contacter</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== FICHE PRODUIT ===================== -->
+<div class="page" data-page="produit">
+  <section class="fiche flotte">
+    <span class="deco flamme" style="top:10%;right:4%;--t:20px;--d:7s" aria-hidden="true"></span>
+    <div class="wrap">
+      <p class="fil"><a href="#/">Accueil</a> <span aria-hidden="true">›</span> <a href="#/boutique">Boutique</a> <span aria-hidden="true">›</span> <span data-f="nom"></span></p>
+      <div class="fiche-grille">
+        <span class="photo fiche-photo" role="img" aria-label="Photo à venir"></span>
+        <div class="fiche-infos">
+          <p class="surtitre">Mougiline</p>
+          <h1 class="h1-page" data-f="nom"></h1>
+          <p class="fiche-prix" data-f="prix"></p>
+          <p class="chapeau" data-f="desc"></p>
+          <div class="perso-champ" data-f="perso" hidden>
+            <label for="f-perso">Votre personnalisation</label>
+            <textarea id="f-perso" rows="3" placeholder="La forme, le parfum, la couleur, le prénom…"></textarea>
+          </div>
+          <div class="achat">
+            <div class="qte" role="group" aria-label="Quantité"><button type="button" data-q="-1" aria-label="Une de moins">−</button><output id="f-qte">1</output><button type="button" data-q="1" aria-label="Une de plus">+</button></div>
+            <button class="btn btn-plein" type="button" id="f-ajout">Ajouter au panier</button>
+          </div>
+          <ul class="garanties">
+            <li><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/></svg></i>Cire naturelle</li>
+            <li><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></i>Envoi partout en France depuis Nilvange</li>
+            <li><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg></i>Paiement en ligne sécurisé</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section style="padding-top:0">
+    <div class="wrap">
+      <h2 class="rv">Vous aimerez <em>aussi</em></h2>
+      <div class="grille-produits" data-grille="autres"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== COMMANDE ===================== -->
+<div class="page" data-page="commande">
+  <section class="entete-page">
+    <div class="wrap">
+      <p class="fil"><a href="#/">Accueil</a> <span aria-hidden="true">›</span> <a href="#/boutique">Boutique</a> <span aria-hidden="true">›</span> Commande</p>
+      <h1 class="h1-page">Ma <em>commande</em></h1>
+    </div>
+  </section>
+  <section style="padding-top:10px">
+    <div class="wrap commande-grille">
+      <form class="formulaire" id="form-commande">
+        <h3>Vos coordonnées</h3>
+        <div class="deux"><div><label for="k-prenom">Prénom</label><input id="k-prenom" autocomplete="given-name" required></div><div><label for="k-nom">Nom</label><input id="k-nom" autocomplete="family-name" required></div></div>
+        <label for="k-mail">E-mail</label><input id="k-mail" type="email" autocomplete="email" required>
+        <label for="k-adr">Adresse de livraison</label><input id="k-adr" autocomplete="street-address" required>
+        <div class="deux"><div><label for="k-cp">Code postal</label><input id="k-cp" autocomplete="postal-code" inputmode="numeric" required></div><div><label for="k-ville">Ville</label><input id="k-ville" autocomplete="address-level2" required></div></div>
+        <button class="btn btn-plein" type="submit" id="k-payer">Payer en ligne</button>
+        <p class="envoye" id="k-ok" hidden>Sur le vrai site, le paiement sécurisé s'ouvre ici.</p>
+      </form>
+      <aside class="recap">
+        <h3>Récapitulatif</h3>
+        <div data-recap></div>
+        <p class="recap-note"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg> Envoi partout en France depuis Nilvange.</p>
+      </aside>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== CONSEILS ===================== -->
+<div class="page" data-page="conseils">
+  <section class="entete-page flotte">
+    <span class="deco goutte" style="top:20%;right:10%;--t:14px;--c:#E9E3F5;--d:9s" aria-hidden="true"></span>
+    <div class="wrap">
+      <p class="fil"><a href="#/">Accueil</a> <span aria-hidden="true">›</span> Conseils</p>
+      <h1 class="h1-page">Le coin <em>des conseils</em></h1>
+      <p class="chapeau">Pour profiter de vos bougies plus longtemps, et bien choisir celles que vous offrez.</p>
+    </div>
+  </section>
+  <section style="padding-top:20px"><div class="wrap"><div class="grille-conseils" data-conseils></div></div></section>
+</div>
+
+<div class="page" data-page="article">
+  <article class="article">
+    <div class="wrap etroit">
+      <p class="fil"><a href="#/">Accueil</a> <span aria-hidden="true">›</span> <a href="#/conseils">Conseils</a> <span aria-hidden="true">›</span> <span data-a="titre"></span></p>
+      <span class="ico-article" data-a="ico"></span>
+      <h1 class="h1-page" data-a="titre"></h1>
+      <p class="chapeau" data-a="chapeau"></p>
+      <div class="article-corps" data-a="corps"></div>
+      <div class="article-pied">
+        <p>Envie d'une bougie qui vous ressemble ?</p>
+        <div class="actions"><a class="btn btn-plein" href="#/boutique">Voir la boutique</a><a class="btn btn-trait" href="#/conseils">Autres conseils</a></div>
+      </div>
+    </div>
+  </article>
+</div>
+
+<!-- ===================== NILVANGE ===================== -->
+<div class="page" data-page="nilvange">
+  <section class="entete-page flotte">
+    <span class="deco flamme" style="top:16%;right:8%;--t:20px;--d:7s" aria-hidden="true"></span>
+    <div class="wrap">
+      <p class="fil"><a href="#/">Accueil</a> <span aria-hidden="true">›</span> Nilvange</p>
+      <h1 class="h1-page">Bougies personnalisées <em>à Nilvange</em></h1>
+      <p class="chapeau">Mougiline est basée à Nilvange. J'y crée des bougies vraiment personnalisées, en cire naturelle, et je les envoie partout en France.</p>
+    </div>
+  </section>
+  <section style="padding-top:20px">
+    <div class="wrap duo-texte">
+      <div class="rv">
+        <h2>Près de chez vous, <em>et plus loin</em></h2>
+        <p>Vous habitez près de Nilvange ? Je fais beaucoup de marchés : c'est le moment de découvrir mes bougies et de parler de la vôtre. Vous habitez plus loin ? Commandez sur la boutique, je vous envoie votre bougie.</p>
+        <ul class="liste-ico">
+          <li><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="m14 6 3 3"/></svg></i>La forme, le parfum, la couleur et un prénom à votre goût</li>
+          <li><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/></svg></i>Des bougies faites avec de la cire naturelle</li>
+          <li><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="7" height="12" rx="2"/><rect x="14" y="8" width="7" height="12" rx="2"/><path d="M6.5 8V5M17.5 8V5"/></svg></i>Plusieurs exemplaires possibles grâce à mes moules</li>
+        </ul>
+        <div class="actions"><a class="btn btn-plein" href="#/boutique">Voir la boutique</a><a class="btn btn-trait" href="#/contact">Me contacter</a></div>
+      </div>
+      <span class="photo arche rv" role="img" aria-label="Photo à venir"></span>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== QUESTIONS ===================== -->
+<div class="page" data-page="questions">
+  <section class="entete-page">
+    <div class="wrap">
+      <p class="fil"><a href="#/">Accueil</a> <span aria-hidden="true">›</span> Questions</p>
+      <h1 class="h1-page">Questions <em>fréquentes</em></h1>
+      <p class="chapeau">Une autre question ? <a href="#/contact">Écrivez-moi.</a></p>
+    </div>
+  </section>
+  <section style="padding-top:10px">
+    <div class="wrap etroit questions">
+      <details open><summary>Avec quelle cire sont faites vos bougies ?<i aria-hidden="true"></i></summary><p>Mes bougies sont faites avec de la cire naturelle.</p></details>
+      <details><summary>Que peut-on personnaliser ?<i aria-hidden="true"></i></summary><p>Tout : la forme, le parfum, la couleur, et même un prénom. Je m'adapte à ce que vous aimez.</p></details>
+      <details><summary>Comment commander une bougie personnalisée ?<i aria-hidden="true"></i></summary><p>Sur sa fiche dans la boutique, écrivez votre personnalisation dans le champ prévu, puis ajoutez-la au panier. Vous pouvez aussi m'écrire avant, avec le formulaire de contact.</p></details>
+      <details><summary>Combien coûtent vos bougies ?<i aria-hidden="true"></i></summary><p>10 € la bougie, 16 € les deux bougies, 20 € la bougie personnalisée et 40 € le pack Noël de 5 bougies.</p></details>
+      <details><summary>Comment payer ?<i aria-hidden="true"></i></summary><p>En ligne, sur le site, au moment de valider votre panier. Le paiement est sécurisé.</p></details>
+      <details><summary>Envoyez-vous vos bougies ?<i aria-hidden="true"></i></summary><p>Oui. Je suis basée à Nilvange et j'envoie mes bougies partout en France.</p></details>
+      <details><summary>Pouvez-vous faire la même bougie plusieurs fois ?<i aria-hidden="true"></i></summary><p>Oui, grâce à mes moules je peux réaliser la même bougie en plusieurs exemplaires.</p></details>
+      <details><summary>Où vous trouver ?<i aria-hidden="true"></i></summary><p>Je fais beaucoup de marchés. L'agenda de mes prochains marchés arrive bientôt sur ce site.</p></details>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== CONTACT ===================== -->
+<div class="page" data-page="contact">
+  <section class="contact flotte">
+    <span class="deco flamme" style="top:8%;right:46%;--t:18px;--d:7s" aria-hidden="true"></span>
+    <div class="wrap">
+      <div>
+        <p class="fil"><a href="#/">Accueil</a> <span aria-hidden="true">›</span> Contact</p>
+        <h1 class="h1-page">Une envie, <em>une question ?</em></h1>
+        <p class="chapeau">Écrivez-moi pour une bougie personnalisée, une question sur une commande, ou simplement pour en parler.</p>
+        <div class="moyens">
+          <div><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg></i><p><b>Par le formulaire</b><small>Je vous réponds par e-mail</small></p></div>
+          <div><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></i><p><b>Sur les marchés</b><small>Venez me voir</small></p></div>
+          <div><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></i><p><b>Instagram</b><small class="bientot">bientôt</small></p></div>
+        </div>
+      </div>
+      <form class="formulaire" id="form-contact">
+        <h3>Écrire à Mougiline</h3>
+        <label for="c-sujet">Ma demande</label>
+        <select id="c-sujet"><option value="perso">Une bougie personnalisée</option><option value="commande">Une question sur une commande</option><option value="question">Une autre question</option></select>
+        <label for="c-nom">Votre prénom</label><input id="c-nom" autocomplete="given-name" required>
+        <label for="c-mail">Votre e-mail</label><input id="c-mail" type="email" autocomplete="email" required>
+        <label for="c-msg">Votre message</label><textarea id="c-msg" rows="4" placeholder="Dites-moi ce que vous aimez : forme, parfum, couleur, prénom…" required></textarea>
+        <button class="btn btn-plein" type="submit">Envoyer mon message</button>
+        <p class="envoye" id="c-ok" hidden>Merci ! Sur le vrai site, votre message arrive directement chez Mougiline.</p>
+      </form>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== MENTIONS ===================== -->
+<div class="page" data-page="mentions">
+  <section class="entete-page"><div class="wrap etroit">
+    <p class="fil"><a href="#/">Accueil</a> <span aria-hidden="true">›</span> Mentions légales</p>
+    <h1 class="h1-page">Mentions <em>légales</em></h1>
+    <div class="article-corps"><p>Site édité par Boubougi. Adresse : à compléter avant la mise en ligne.</p><h2>Conditions générales de vente</h2><p class="bientot">Bientôt disponibles.</p></div>
+  </div></section>
+</div>
+</main>
+
+<!-- le panier -->
+<div class="voile" data-fermer hidden></div>
+<aside class="tiroir" id="tiroir" aria-label="Mon panier" aria-hidden="true">
+  <div class="tiroir-tete"><h2>Mon <em>panier</em></h2><button class="rond" type="button" data-fermer aria-label="Fermer le panier"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="tiroir-liste" data-liste></div>
+  <div class="tiroir-pied">
+    <p class="total"><span>Total</span><b data-total>0 €</b></p>
+    <a class="btn btn-plein" href="#/commande" data-fermer-lien>Commander</a>
+    <button class="btn btn-trait" type="button" data-fermer>Continuer mes achats</button>
+  </div>
+</aside>
+<div class="toast" role="status" aria-live="polite" hidden></div>
+
+<footer>
+  <div class="wrap">
+    <div class="marque">
+      <a class="nom" href="#/">Mougiline</a>
+      <p style="margin-top:8px">Bougie for all. Des bougies personnalisées en cire naturelle, depuis Nilvange, envoyées partout en France.</p>
+    </div>
+    <div><h3>La boutique</h3><ul><li><a href="#/boutique">Toutes les bougies</a></li><li><a href="#/produit/perso">Bougie personnalisée</a></li><li><a href="#/produit/noel">Pack Noël</a></li><li><a href="#/nilvange">Mougiline à Nilvange</a></li></ul></div>
+    <div><h3>Bon à savoir</h3><ul><li><a href="#/conseils">Conseils</a></li><li><a href="#/questions">Questions fréquentes</a></li><li><a href="#/contact">Contact</a></li><li>Instagram : <span class="bientot">bientôt</span></li></ul></div>
+    <div class="legal"><p><a href="#/mentions">Mentions légales et conditions de vente</a></p><p>© 2026 Mougiline · mougiline.fr · Site réalisé par Les Minis Monstres</p></div>
+  </div>
+</footer>
+
+<script>window.MOUG_IC = {"bougie": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M8 10h8v10H8z\"/><path d=\"M12 10V8\"/><path d=\"M12 2.5c1.6 1.9 2.2 3 2.2 3.8a2.2 2.2 0 0 1-4.4 0c0-.8.6-1.9 2.2-3.8z\"/></svg>", "sac": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M6 8h12l-1 12H7z\"/><path d=\"M9 8V6a3 3 0 0 1 6 0v2\"/></svg>", "pinceau": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 20l4-1 11-11-3-3L5 16z\"/><path d=\"m14 6 3 3\"/></svg>", "livre": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z\"/><path d=\"M4 19V5M9 7h6\"/></svg>", "bulle": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z\"/><path d=\"M9.5 9.5a2.5 2.5 0 1 1 3.3 2.4c-.5.2-.8.6-.8 1.1v.5M12 16h.01\"/></svg>", "bulle-vide": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z\"/><path d=\"M9 11h.01M12 11h.01M15 11h.01\"/></svg>", "lettre": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 6h16v12H4z\"/><path d=\"m4 7 8 6 8-6\"/></svg>", "goutte": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z\"/></svg>", "camion": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M3 7h11v9H3zM14 10h4l3 3v3h-7\"/><circle cx=\"7\" cy=\"17.5\" r=\"1.8\"/><circle cx=\"17\" cy=\"17.5\" r=\"1.8\"/></svg>", "carte": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"3\" y=\"6\" width=\"18\" height=\"13\" rx=\"2.5\"/><path d=\"M3 10h18M7 15h4\"/></svg>", "deux": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"3\" y=\"8\" width=\"7\" height=\"12\" rx=\"2\"/><rect x=\"14\" y=\"8\" width=\"7\" height=\"12\" rx=\"2\"/><path d=\"M6.5 8V5M17.5 8V5\"/></svg>", "colis": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z\"/><path d=\"m3 7.5 9 4.5 9-4.5M12 12v9\"/></svg>", "pin": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>", "insta": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M17.5 6.5h.01\"/></svg>", "flamme": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3c3.5 4 5.5 7 5.5 10a5.5 5.5 0 0 1-11 0c0-3 2-6 5.5-10z\"/><path d=\"M12 13c1.2 1.4 1.8 2.4 1.8 3.2a1.8 1.8 0 0 1-3.6 0c0-.8.6-1.8 1.8-3.2z\"/></svg>", "cadeau": "<svg class=\"ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"3\" y=\"8\" width=\"18\" height=\"4\" rx=\"1\"/><path d=\"M5 12v8h14v-8M12 8v12\"/><path d=\"M12 8c-1.5-3-5-3-5-1s3 1 5 1c2 0 5 1 5-1s-3.5-2-5 1z\"/></svg>"};</script>
+<script>
+(function () {
+  var h = document.documentElement;
+  h.classList.add("js");
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var euro = function (n) { return n.toLocaleString("fr-FR") + " €"; };
+  var IC = window.MOUG_IC;
+
+  // les produits : uniquement ceux du questionnaire
+  var P = [
+    { id: "bougie", nom: "La bougie", prix: 10, court: "Une bougie en cire naturelle.", desc: "Une bougie Mougiline, faite avec de la cire naturelle." },
+    { id: "duo", nom: "Les deux bougies", prix: 16, court: "Deux bougies en cire naturelle.", desc: "Deux bougies Mougiline, faites avec de la cire naturelle." },
+    { id: "perso", nom: "La bougie personnalisée", prix: 20, court: "Forme, parfum, couleur, prénom.", desc: "Une bougie vraiment à votre goût : la forme, le parfum, la couleur et un prénom se choisissent. Dites-moi ce que vous aimez dans le champ ci-dessous.", perso: true, etiquette: "Sur mesure" },
+    { id: "noel", nom: "Le pack Noël", prix: 40, court: "5 bougies réunies dans un pack.", desc: "Cinq bougies Mougiline réunies dans un pack, pour offrir ou pour vous faire plaisir.", etiquette: "Pour les fêtes" }
+  ];
+  var prod = function (id) { for (var i = 0; i < P.length; i++) if (P[i].id === id) return P[i]; return null; };
+
+  // les pages de conseils : savoir général, rien sur Mougiline qu'elle n'ait dit
+  var A = [
+    { id: "entretenir-une-bougie", ico: "flamme", c: "var(--rose)", titre: "Bien entretenir sa bougie", chapeau: "Quelques gestes simples pour qu'une bougie brûle bien, plus longtemps et en toute sécurité.",
+      corps: "<h2>La première fois, laissez fondre toute la surface</h2><p>Lors du premier allumage, laissez la bougie brûler jusqu'à ce que toute la surface de cire soit fondue, d'un bord à l'autre. Sinon, la cire ne fond ensuite qu'autour de la mèche et creuse un puits : une partie de la bougie est perdue.</p><h2>Coupez la mèche avant chaque allumage</h2><p>Une mèche d'environ 5 mm donne une flamme calme et régulière. Trop longue, elle fait une grande flamme qui fume et noircit le contenant.</p><h2>Pas plus de quelques heures d'affilée</h2><p>Au-delà de trois à quatre heures, la mèche s'allonge et la flamme grossit. Éteignez, laissez refroidir, puis rallumez plus tard.</p><h2>Le bon endroit</h2><p>Posez la bougie sur une surface stable qui ne craint pas la chaleur, loin des courants d'air, des rideaux et de tout ce qui peut brûler. Gardez-la hors de portée des enfants et des animaux, et ne la laissez jamais sans surveillance.</p><h2>Pour l'éteindre</h2><p>Utilisez un éteignoir, ou couchez la mèche dans la cire fondue puis redressez-la : la fumée est moins forte qu'en soufflant. Quand il ne reste qu'environ un centimètre de cire au fond d'un contenant, arrêtez-la.</p>" },
+    { id: "offrir-une-bougie-personnalisee", ico: "cadeau", c: "var(--lilas)", titre: "Offrir une bougie personnalisée", chapeau: "Un cadeau qui fait plaisir parce qu'il a été pensé pour la personne qui le reçoit.",
+      corps: "<h2>Pour quelles occasions ?</h2><p>Un anniversaire, une naissance, un mariage, la fête des mères ou des pères, Noël, un merci à une collègue : une bougie personnalisée trouve sa place à beaucoup de moments.</p><h2>Ce qui la rend unique</h2><p>Chez Mougiline, la forme, le parfum, la couleur et un prénom se choisissent.</p><h2>Quelques idées pour bien choisir</h2><ul><li>Un parfum que la personne aime déjà, ou qui lui rappelle un souvenir.</li><li>Une couleur qui va avec son intérieur.</li><li>Son prénom, ou celui d'un enfant pour une naissance.</li><li>Pour un événement, plusieurs bougies identiques : grâce à mes moules, je peux réaliser la même bougie plusieurs fois.</li></ul>" },
+    { id: "la-cire-naturelle", ico: "goutte", c: "var(--sauge)", titre: "La cire naturelle, qu'est-ce que c'est ?", chapeau: "On parle souvent de cire naturelle pour les bougies. Voici ce que cela veut dire.",
+      corps: "<h2>Deux grandes familles de cires</h2><p>La paraffine, la plus répandue, est issue du raffinage du pétrole. Les cires dites naturelles viennent de ressources renouvelables : des plantes, comme le soja ou le colza, ou les abeilles, pour la cire d'abeille.</p><h2>Chaque cire a son caractère</h2><p>Sa couleur, la façon dont elle prend le parfum, sa tenue dans un moule : chaque cire se comporte un peu différemment. C'est pour cela que chaque fabricant choisit la sienne avec soin.</p><h2>Et chez Mougiline ?</h2><p>Toutes mes bougies sont faites avec de la cire naturelle. Une question sur ma cire ? <a href=\"#/contact\">Écrivez-moi.</a></p>" }
+  ];
+
+  // ---- les cartes ----
+  var carte = function (p) {
+    return '<article class="produit rv vu">' + (p.etiquette ? '<span class="etiquette">' + esc(p.etiquette) + '</span>' : '') +
+      '<a href="#/produit/' + p.id + '" class="photo" role="img" aria-label="Photo à venir : ' + esc(p.nom) + '"></a>' +
+      '<h3><a href="#/produit/' + p.id + '">' + esc(p.nom) + '</a></h3><p class="court">' + esc(p.court) + '</p>' +
+      '<div class="bas-carte"><span class="px">' + euro(p.prix) + '</span>' +
+      (p.perso ? '<a class="ajout" href="#/produit/' + p.id + '" aria-label="Personnaliser ' + esc(p.nom) + '">' + IC.pinceau + '</a>'
+               : '<button class="ajout" type="button" data-ajout="' + p.id + '" aria-label="Ajouter ' + esc(p.nom) + ' au panier"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>') +
+      '</div></article>';
+  };
+  var remplirGrilles = function (courant) {
+    $$("[data-grille]").forEach(function (g) {
+      var l = g.dataset.grille === "autres" ? P.filter(function (p) { return p.id !== courant; }).slice(0, 3) : P;
+      g.innerHTML = l.map(carte).join("");
+      if (g.dataset.grille === "autres") g.style.gridTemplateColumns = "";
+    });
+    $$("[data-conseils]").forEach(function (g) {
+      g.innerHTML = A.map(function (a) { return '<a class="conseil rv vu" href="#/conseils/' + a.id + '"><span class="ico-c" style="--c:' + a.c + '">' + IC[a.ico] + '</span><h3>' + esc(a.titre) + '</h3><p>' + esc(a.chapeau) + '</p><span class="lire">Lire le conseil →</span></a>'; }).join("");
+    });
+  };
+
+  // ---- le panier ----
+  var panier = [];
+  try { panier = JSON.parse(localStorage.getItem("mougiline-panier") || "[]") || []; } catch (e) { panier = []; }
+  var garder = function () { try { localStorage.setItem("mougiline-panier", JSON.stringify(panier)); } catch (e) {} };
+  var total = function () { return panier.reduce(function (s, a) { var p = prod(a.id); return s + (p ? p.prix * a.qte : 0); }, 0); };
+  var nb = function () { return panier.reduce(function (s, a) { return s + a.qte; }, 0); };
+  var majPanier = function () {
+    var n = nb(), c = $(".panier-btn .compte");
+    c.textContent = n; c.hidden = !n;
+    $(".panier-btn").setAttribute("aria-label", n ? "Ouvrir le panier, " + n + " article" + (n > 1 ? "s" : "") : "Ouvrir le panier");
+    var l = $("[data-liste]");
+    l.innerHTML = panier.length ? panier.map(function (a, i) { var p = prod(a.id); return '<div class="article-panier"><span class="photo" aria-hidden="true"></span><div><b>' + esc(p.nom) + '</b>' + (a.perso ? '<small>« ' + esc(a.perso) + ' »</small>' : '') + '<small>' + euro(p.prix) + ' l’unité</small><div class="ligne-bas"><div class="qte" role="group" aria-label="Quantité"><button type="button" data-pq="' + i + '" data-d="-1" aria-label="Une de moins">−</button><output>' + a.qte + '</output><button type="button" data-pq="' + i + '" data-d="1" aria-label="Une de plus">+</button></div><button class="retirer" type="button" data-retirer="' + i + '">Retirer</button></div></div></div>'; }).join("")
+      : '<div class="vide"><span class="ico-article">' + IC.sac + '</span><p>Votre panier est vide.</p><p><a class="lien-fleche" href="#/boutique" data-fermer-lien>Voir la boutique</a></p></div>';
+    $("[data-total]").textContent = euro(total());
+    $(".tiroir-pied").hidden = !panier.length;
+    var r = $("[data-recap]");
+    r.innerHTML = panier.length ? panier.map(function (a) { var p = prod(a.id); return '<div class="recap-ligne"><span>' + a.qte + ' × ' + esc(p.nom) + (a.perso ? '<small>« ' + esc(a.perso) + ' »</small>' : '') + '</span><b>' + euro(p.prix * a.qte) + '</b></div>'; }).join("") + '<p class="total"><span>Total</span><span>' + euro(total()) + '</span></p>'
+      : '<p>Votre panier est vide. <a href="#/boutique">Voir la boutique</a></p>';
+    $("#k-payer").textContent = panier.length ? "Payer " + euro(total()) + " en ligne" : "Payer en ligne";
+    $("#k-payer").disabled = !panier.length;
+  };
+  var toastT;
+  var ajouter = function (id, qte, perso) {
+    var p = prod(id); if (!p) return;
+    var ex = null; panier.forEach(function (a) { if (a.id === id && (a.perso || "") === (perso || "")) ex = a; });
+    if (ex) ex.qte += qte; else panier.push({ id: id, qte: qte, perso: perso || "" });
+    garder(); majPanier();
+    var b = $(".panier-btn"); b.classList.remove("secoue"); void b.offsetWidth; b.classList.add("secoue");
+    var t = $(".toast"); t.innerHTML = '<span>' + esc(p.nom) + ' ajouté' + (p.id === "noel" || p.id === "duo" ? '' : 'e') + ' au panier</span><button type="button" data-panier>Voir le panier</button>'; t.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(function () { t.hidden = true; }, 3200);
+  };
+  var tiroir = $("#tiroir"), voile = $(".voile");
+  var ouvrirPanier = function () { $(".toast").hidden = true; fermerMenu(); voile.hidden = false; tiroir.classList.add("ouvert"); tiroir.setAttribute("aria-hidden", "false"); document.body.classList.add("menu-ouvert"); setTimeout(function () { $("[data-fermer]", tiroir).focus(); }, 300); };
+  var fermerPanier = function () { voile.hidden = true; tiroir.classList.remove("ouvert"); tiroir.setAttribute("aria-hidden", "true"); document.body.classList.remove("menu-ouvert"); };
+
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest("[data-ajout],[data-panier],[data-fermer],[data-fermer-lien],[data-pq],[data-retirer]");
+    if (!t) return;
+    if (t.hasAttribute("data-ajout")) ajouter(t.dataset.ajout, 1);
+    else if (t.hasAttribute("data-panier")) ouvrirPanier();
+    else if (t.hasAttribute("data-fermer") || t.hasAttribute("data-fermer-lien")) fermerPanier();
+    else if (t.hasAttribute("data-pq")) { var a = panier[+t.dataset.pq]; a.qte = Math.max(1, a.qte + (+t.dataset.d)); garder(); majPanier(); }
+    else if (t.hasAttribute("data-retirer")) { panier.splice(+t.dataset.retirer, 1); garder(); majPanier(); }
+  });
+
+  // ---- la fiche produit ----
+  var qte = 1, courant = null;
+  $$(".fiche [data-q]").forEach(function (b) { b.addEventListener("click", function () { qte = Math.max(1, qte + (+b.dataset.q)); $("#f-qte").textContent = qte; }); });
+  $("#f-ajout").addEventListener("click", function () {
+    if (!courant) return;
+    var perso = courant.perso ? $("#f-perso").value.trim() : "";
+    if (courant.perso && !perso) { $("#f-perso").focus(); $("#f-perso").setAttribute("aria-invalid", "true"); return; }
+    ajouter(courant.id, qte, perso);
+  });
+
+  // ---- les pages ----
+  var titres = { accueil: "Mougiline · Bougies personnalisées en cire naturelle", boutique: "La boutique", conseils: "Conseils", nilvange: "Bougies personnalisées à Nilvange", questions: "Questions fréquentes", contact: "Contact", commande: "Ma commande", mentions: "Mentions légales" };
+  var aller = function () {
+    var r = (location.hash || "#/").replace(/^#\/?/, "").split("/");
+    var page = r[0] || "accueil", art = null;
+    if (page === "produit") { courant = prod(r[1]); if (!courant) page = "boutique"; }
+    if (page === "conseils" && r[1]) { A.forEach(function (a) { if (a.id === r[1]) art = a; }); if (art) page = "article"; }
+    if (!$('[data-page="' + page + '"]')) page = "accueil";
+    $$(".page").forEach(function (p) { p.classList.toggle("actif", p.dataset.page === page); });
+    $$(".menu a").forEach(function (a) { a.classList.toggle("actif", a.dataset.p === (page === "produit" ? "boutique" : page === "article" ? "conseils" : page)); });
+    if (page === "produit") {
+      $$('[data-f="nom"]').forEach(function (e) { e.textContent = courant.nom; });
+      $('[data-f="prix"]').textContent = euro(courant.prix);
+      $('[data-f="desc"]').textContent = courant.desc;
+      $('[data-f="perso"]').hidden = !courant.perso;
+      $("#f-perso").value = ""; $("#f-perso").removeAttribute("aria-invalid");
+      qte = 1; $("#f-qte").textContent = 1;
+      $(".fiche-photo").setAttribute("aria-label", "Photo à venir : " + courant.nom);
+    }
+    if (page === "article") {
+      $$('[data-a="titre"]').forEach(function (e) { e.textContent = art.titre; });
+      $('[data-a="chapeau"]').textContent = art.chapeau;
+      $('[data-a="corps"]').innerHTML = art.corps;
+      $('[data-a="ico"]').innerHTML = IC[art.ico];
+    }
+    remplirGrilles(courant && courant.id);
+    document.title = page === "produit" ? courant.nom + " · Mougiline" : page === "article" ? art.titre + " · Mougiline" : page === "accueil" ? titres.accueil : titres[page] + " · Mougiline";
+    window.scrollTo(0, 0);
+    reveler();
+  };
+
+  // ---- apparition douce ----
+  var rv = "IntersectionObserver" in window ? new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("vu"); rv.unobserve(e.target); } }); }, { rootMargin: "0px 0px -8% 0px" }) : null;
+  var reveler = function () { $$(".page.actif .rv:not(.vu)").forEach(function (el) { if (!rv || el.getBoundingClientRect().top < innerHeight) el.classList.add("vu"); else rv.observe(el); }); };
+
+  // ---- clair / sombre ----
+  var b = $(".theme");
+  var maj = function () { var s = h.getAttribute("data-theme") === "dark"; b.setAttribute("aria-pressed", s ? "true" : "false"); b.setAttribute("aria-label", s ? "Passer en apparence claire" : "Passer en apparence sombre"); };
+  try { var t0 = localStorage.getItem("mougiline-theme"); if (t0 === "dark" || t0 === "light") h.setAttribute("data-theme", t0); } catch (e) {}
+  b.addEventListener("click", function () { var t = h.getAttribute("data-theme") === "dark" ? "light" : "dark"; if (window.minisTheme) window.minisTheme(t); else h.setAttribute("data-theme", t); try { localStorage.setItem("mougiline-theme", t); } catch (e) {} maj(); });
+  maj();
+
+  // ---- le menu à trois traits ----
+  var bg = $(".burger"), pn = $("#panneau");
+  var fermerMenu = function () { pn.classList.remove("ouvert"); bg.setAttribute("aria-expanded", "false"); bg.setAttribute("aria-label", "Ouvrir le menu"); if (!tiroir.classList.contains("ouvert")) document.body.classList.remove("menu-ouvert"); };
+  bg.addEventListener("click", function () {
+    if (pn.classList.contains("ouvert")) return fermerMenu();
+    pn.classList.add("ouvert"); bg.setAttribute("aria-expanded", "true"); bg.setAttribute("aria-label", "Fermer le menu"); document.body.classList.add("menu-ouvert");
+  });
+  $$("a", pn).forEach(function (a) { a.addEventListener("click", fermerMenu); });
+  document.addEventListener("keydown", function (e) { if (e.key !== "Escape") return; if (tiroir.classList.contains("ouvert")) fermerPanier(); else if (pn.classList.contains("ouvert")) { fermerMenu(); bg.focus(); } });
+  addEventListener("resize", function () { if (innerWidth > 900) fermerMenu(); });
+  var top = $("#haut");
+  var surDefile = function () { top.classList.toggle("defile", scrollY > 10); };
+  addEventListener("scroll", surDefile, { passive: true }); surDefile();
+
+  // ---- formulaires ----
+  $("#form-contact").addEventListener("submit", function (e) { e.preventDefault(); $("#c-ok").hidden = false; });
+  $("#form-commande").addEventListener("submit", function (e) { e.preventDefault(); $("#k-ok").hidden = false; });
+
+  addEventListener("hashchange", aller);
+  majPanier(); aller();
+})();
+</script>
