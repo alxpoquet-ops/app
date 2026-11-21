@@ -1117,3 +1117,7 @@ button.is-confirmer.is-confirmer, .btn.is-confirmer.is-confirmer, .req-annul .li
 .bq-attente-rond { width: 34px; height: 34px; border-radius: 50%; border: 4px solid var(--line); border-top-color: var(--pink-d); animation: bq-tourne .8s linear infinite; }
 @keyframes bq-tourne { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .bq-attente-rond { animation-duration: 2.4s; } }
+
+/* Un prix offert : barré, puis « Offert » (forfait, option nom de domaine) */
+.app-barre { font-weight: 400; opacity: .7; text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.app-offert { margin-left: 4px; font-weight: 800; color: var(--pink-dd); }

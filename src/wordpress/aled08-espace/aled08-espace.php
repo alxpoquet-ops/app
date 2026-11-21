@@ -711,6 +711,7 @@ function aled08e_fields() {
     foreach (aled08e_extras() as $o) $extras[$o['id']] = ['Extra : ' . $o['name'] . ' (' . aled08e_euro_txt($o['month']) . ' par mois)', 'check', 'Actif'];
     return [
         'forfait' => ['Abonnement', 'select', $forfaits],
+        'forfait_nom' => ['Nom du forfait affiché (facultatif)', 'text', 'personnalisé'],
         'paiement' => ['Paiement de l’abonnement', 'select', ['mois' => 'Au mois', 'annee' => 'À l’année']],
         'site' => ['Adresse du site', 'url', 'https://www.exemple.fr'],
     ] + $extras + [
@@ -720,7 +721,7 @@ function aled08e_fields() {
         'boutique' => ['Boutique en ligne', 'check', 'Oui : le client a une boutique (onglet Vacances, ventes dans le tableau de bord).'],
         'famille' => ['Famille : modifications illimitées', 'check', 'Oui : modifications sans limite (affichées ∞ avec un cœur).'],
         'alex_mensuel' => ['Une intervention d’Alex chaque mois', 'check', 'Oui : client inscrit avant l’offre V2 (16 novembre 2026), il garde une intervention par mois. Sinon : une par trimestre.'],
-        'offert' => ['Abonnement offert à vie', 'check', 'Oui : l’abonnement et ses extras sont gratuits pour ce client, pour toujours. Son compte n’est jamais supprimé automatiquement.'],
+        'offert' => ['Abonnement offert', 'check', 'Oui : l’abonnement, l’option nom de domaine et les extras sont offerts à ce client (prix barrés, « Offert », dans son espace). Son compte n’est jamais supprimé automatiquement.'],
         'abonnement_manuel' => ['Abonnement actif hors Stripe', 'check', 'Oui : ce client paie autrement (virement, espèces). Son compte n’est jamais supprimé automatiquement.'],
         'stats_mois' => ['Tableau de bord : mois', 'text', 'Novembre 2026'],
         'stats_visites' => ['Visites', 'text', '1240'],
@@ -1084,11 +1085,17 @@ function aled08e_dashboard() {
     if (in_array($m, ['changer_ok', 'changer_rien', 'changer_erreur'], true)) { $flashForfait = $flash; $flash = ''; }
     if ($m === 'portail_erreur') $flashForfait = '<p class="esp-warn" role="status">La page de gestion du paiement n’a pas pu s’ouvrir. Réessayez dans un instant, ou écrivez-moi.</p>';
 
-    $price = $annuel ? ($f['month'] * (12 - (int) $D['moisOfferts'])) : $f['month'];
-    $price += (float) aled08e_domaine_mensuel($uid); // le nom de domaine fourni : + 2 € par mois
+    $prixForfait = $annuel ? ($f['month'] * (12 - (int) $D['moisOfferts'])) : $f['month'];
+    $domMois = (float) aled08e_domaine_mensuel($uid); // le nom de domaine fourni : + 2 € par mois
+    $prixDomaine = $annuel ? $domMois * (12 - (int) $D['moisOfferts']) : $domMois;
+    $price = $prixForfait + $prixDomaine;
+    $prixPlein = $price;
     $per = $annuel ? 'par an' : 'par mois';
     $offert = aled08e_meta($uid, 'offert') === '1';
     if ($offert) $price = 0;
+    $fNom = aled08e_meta($uid, 'forfait_nom') !== '' ? aled08e_meta($uid, 'forfait_nom') : ($f['name'] ?? '');
+    // un prix offert : barré, puis « Offert »
+    $barre = function ($montant) use ($per) { return '<s class="app-barre">' . aled08e_euro($montant) . ' ' . esc_html($per) . '</s> <b class="app-offert">Offert</b>'; };
     $total = $price;
     if (!$offert) foreach ($optsMois as $o) $total += $annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month'];
     $wa = home_url('/contact/');
@@ -1166,7 +1173,7 @@ function aled08e_dashboard() {
             <button type="button" class="acc-action c-pink" data-go="vacances"><span class="acc-art" aria-hidden="true"><?php echo aled08e_monster('mochi'); // phpcs:ignore ?></span><strong>Ma boutique</strong><small><?php echo aled08e_est_boutique($uid) ? 'Articles, prix, paiements, commandes' : 'Option verrouillée : voir comment l’ouvrir'; ?></small></button>
           </div>
           <div class="app-cards">
-            <button type="button" class="app-card c-<?php echo esc_attr($f['color']); ?>" data-go="forfait"><span class="app-card-art"><?php echo aled08e_monster(($f['id'] ?? '') === 'evolution' ? 'maxi' : 'clin'); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($f['name'] ?? 'Abonnement'); ?></strong><span><?php echo ($offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . ($optsMois ? 'avec ' . count($optsMois) . ' extra' . (count($optsMois) > 1 ? 's' : '') : 'tout compris'); // phpcs:ignore ?></span></span></button>
+            <button type="button" class="app-card c-<?php echo esc_attr($f['color']); ?>" data-go="forfait"><span class="app-card-art"><?php echo aled08e_monster(($f['id'] ?? '') === 'evolution' ? 'maxi' : 'clin'); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($fNom !== '' ? mb_strtoupper(mb_substr($fNom, 0, 1)) . mb_substr($fNom, 1) : 'Abonnement'); ?></strong><span><?php echo ($offert ? $barre($prixPlein) : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . ($optsMois ? 'avec ' . count($optsMois) . ' extra' . (count($optsMois) > 1 ? 's' : '') : 'tout compris'); // phpcs:ignore ?></span></span></button>
             <?php if ($cmd) : ?>
             <button type="button" class="app-card c-mint" data-go="commande"><span class="app-card-ico"><?php echo aled08e_icon('globe'); // phpcs:ignore ?></span><span><small>Votre site</small><strong><?php echo esc_html($host ?: 'En préparation'); ?></strong><span class="<?php echo $siteOk ? 'dot-ok' : ''; ?>"><?php echo esc_html($siteEtat); ?></span></span></button>
             <?php else : ?>
@@ -1268,15 +1275,18 @@ function aled08e_dashboard() {
           <section class="compte-forfait" id="forfait-bloc">
           <h2 class="app-h">Mon forfait et mes factures</h2>
           <?php echo $flashForfait; // phpcs:ignore ?>
-          <div class="app-card c-<?php echo esc_attr($f['color']); ?>"><span class="app-card-art"><?php echo aled08e_monster(($f['id'] ?? '') === 'evolution' ? 'maxi' : 'ravie'); // phpcs:ignore ?></span><span><small>Votre forfait <?php echo esc_html($f['name'] ?? ''); ?></small><strong>Hébergement, sécurité, modifications</strong><span><?php echo ($offert ? 'Offert à vie' : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . esc_html($f['modifs']); // phpcs:ignore ?></span></span></div>
-          <?php if ($offert) : ?><p class="app-note">Votre forfait est offert, à vie. Merci de votre confiance !</p><?php endif; ?>
+          <div class="app-card c-<?php echo esc_attr($f['color']); ?>"><span class="app-card-art"><?php echo aled08e_monster(($f['id'] ?? '') === 'evolution' ? 'maxi' : 'ravie'); // phpcs:ignore ?></span><span><small>Votre forfait <?php echo esc_html($fNom); ?></small><strong>Hébergement, sécurité, modifications</strong><span><?php echo ($offert ? $barre($prixPlein) : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . esc_html($f['modifs']); // phpcs:ignore ?></span></span></div>
+          <p class="app-sub">Le détail</p>
+          <p class="app-domain"><?php echo aled08e_icon('check'); // phpcs:ignore ?><span><strong>Forfait <?php echo esc_html($fNom); ?></strong><small><?php echo $offert ? $barre($prixForfait) : aled08e_euro($prixForfait) . ' ' . esc_html($per); // phpcs:ignore ?></small></span></p>
+          <?php if ($prixDomaine > 0) : ?><p class="app-domain"><?php echo aled08e_icon('globe'); // phpcs:ignore ?><span><strong>Option nom de domaine</strong><small><?php echo $offert ? $barre($prixDomaine) : aled08e_euro($prixDomaine) . ' ' . esc_html($per); // phpcs:ignore ?></small></span></p><?php endif; ?>
+          <?php if ($offert) : ?><p class="app-note">Votre forfait<?php echo $prixDomaine > 0 ? ' et votre nom de domaine vous sont offerts' : ' vous est offert'; ?> par les Minis Monstres. Merci de votre confiance !</p><?php endif; ?>
           <?php if ($optsMois) : ?>
           <p class="app-sub">Vos extras</p>
           <?php foreach ($optsMois as $o) : ?>
           <p class="app-domain"><?php echo aled08e_icon('check'); // phpcs:ignore ?><span><strong><?php echo esc_html($o['name']); ?></strong><small><?php echo aled08e_euro($annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month']) . ' ' . esc_html($per); // phpcs:ignore ?></small></span></p>
           <?php endforeach; ?>
           <?php endif; ?>
-          <p class="app-total"><span>Total <?php echo $annuel ? 'chaque année' : 'chaque mois'; ?></span><b><?php echo aled08e_euro($total); // phpcs:ignore ?></b></p>
+          <p class="app-total"><span>Total <?php echo $annuel ? 'chaque année' : 'chaque mois'; ?></span><b><?php echo $offert ? '<s class="app-barre">' . aled08e_euro($prixPlein) . '</s> Offert' : aled08e_euro($total); // phpcs:ignore ?></b></p>
           <?php if ($annuel) : ?><p class="app-note">Vous payez à l’année.</p><?php endif; ?>
           <?php if ($cmd && $cmd['lissage'] && $cmd['lissage_paye'] < $cmd['montants']['lissage_total_echeances']) : ?><p class="app-note">Et la création de votre site, lissée : <?php echo aled08e_euro($cmd['montants']['lissage_mensualite']) . ' ' . esc_html($cmd['periode'] === 'annee' ? 'par an' : 'par mois'); // phpcs:ignore ?>, <?php echo (int) $cmd['lissage_paye']; ?> / <?php echo (int) $cmd['montants']['lissage_total_echeances']; ?> échéances payées.</p><?php endif; ?>
           <?php if ($abo === 'past_due') : ?><p class="esp-warn">Votre dernier paiement n’a pas abouti. Mettez à jour votre moyen de paiement ci-dessous, ou écrivez-nous.</p><?php endif; ?>
