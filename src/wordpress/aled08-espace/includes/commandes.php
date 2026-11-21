@@ -621,6 +621,7 @@ function aled08e_cmd_mail_client_en_ligne($c) {
     $soldeDu = aled08e_cmd_reception_due(array_merge($c, ['statut' => 'en_ligne']));
     $corps = 'Bonjour ' . $c['prenom'] . ",\n\n"
         . "Bonne nouvelle : votre site est en ligne !\n" . ($site ? 'Adresse : ' . $site . "\n" : '') . "\n"
+        . (function_exists('aled08e_chantier_resume') && ($res = aled08e_chantier_resume($c['id'])) !== '' ? "Ce que contient votre site :\n" . $res . "\n\n" : '')
         . ($soldeDu
             ? 'À la réception, il reste ' . aled08e_euro_txt($solde) . ' pour la création. Vous choisissez : en une fois, ou ' . aled08e_fois_txt() . ". Votre forfait démarre à ce moment-là.\n"
                 . (aled08e_stripe_ready()

@@ -53,7 +53,8 @@ function aled08e_atelier_action(WP_REST_Request $req) {
  *  L'atelier (Claude relié à ce site) lit la liste, pose ses questions au client (e-mail + espace client),
  *  fait le visuel par atelier_rest, puis prévient Alex : c'est le seul e-mail qu'il reçoit.
  *   GET  /aled08/v1/atelier/chantiers                 les commandes payées pas encore en ligne
- *   POST /aled08/v1/atelier/chantier { commande, faire: question | note | a_verifier | en_ligne (+ accord_alex), texte }
+ *   POST /aled08/v1/atelier/chantier { commande, faire: question | note | a_verifier | en_ligne (+ accord_alex), texte, resume }
+ *   « resume » : le contenu du site expliqué au client, repris dans l'e-mail « Votre site est en ligne ».
  *  États (_aled08_chantier) : '' (à lire), question (on attend le client), reponse (le client a répondu), visuel, a_verifier.
  * ========================================================================= */
 function aled08e_chantier_auto() { return get_option('aled08_chantier_auto', '1') === '1'; }
@@ -135,6 +136,7 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
         $lien = esc_url_raw((string) ($p['lien'] ?? ''));
         if ($lien !== '' && wp_parse_url($lien, PHP_URL_SCHEME) !== 'https') $lien = '';
         if ($lien !== '') update_post_meta($cid, '_aled08_apercu', $lien);
+        aled08e_chantier_resume_garder($cid, $p);
         aled08e_chantier_mail_verifier($c, $texte, $lien);
         return new WP_REST_Response(['ok' => true, 'etat' => 'a_verifier'], 200);
     }
@@ -142,6 +144,7 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
         // seulement quand Alex l'a dit lui-même dans la conversation
         if (empty($p['accord_alex'])) return new WP_Error('aled08_chantier', 'Il faut l’accord d’Alex.', ['status' => 400]);
         if (aled08e_chantier_etat($cid) !== 'a_verifier') return new WP_Error('aled08_chantier', 'Ce site n’a pas encore été envoyé à la vérification.', ['status' => 409]);
+        aled08e_chantier_resume_garder($cid, $p);
         aled08e_cmd_set_statut($cid, 'en_ligne', 'Mis en ligne avec l’accord d’Alex.');
         update_post_meta($cid, '_aled08_chantier', 'en_ligne');
         return new WP_REST_Response(['ok' => true, 'statut' => 'en_ligne'], 200);
@@ -151,6 +154,12 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
 
 /* L'e-mail à Alex, le seul du parcours : le site à regarder, puis la réponse se donne dans la conversation avec Claude */
 function aled08e_chantier_conversation() { return (string) get_option('aled08_atelier_conversation', 'https://claude.ai/code') ?: 'https://claude.ai/code'; }
+/* Le résumé du contenu du site, écrit pour le client (une ligne par partie) */
+function aled08e_chantier_resume($cid) { return (string) get_post_meta($cid, '_aled08_resume', true); }
+function aled08e_chantier_resume_garder($cid, $p) {
+    $r = trim(sanitize_textarea_field((string) ($p['resume'] ?? '')));
+    if ($r !== '') update_post_meta($cid, '_aled08_resume', mb_substr($r, 0, 4000));
+}
 function aled08e_chantier_mail_verifier($c, $texte, $lien = '') {
     $site = $lien !== '' ? $lien : ($c['domaine'] ? 'https://' . $c['domaine'] . '/' : (string) aled08e_meta($c['user'], 'site'));
     $p = function ($t) { return '<p style="margin:0 0 14px;font-size:16px;line-height:1.6;color:#CFCBEA;">' . $t . '</p>'; };
@@ -158,6 +167,7 @@ function aled08e_chantier_mail_verifier($c, $texte, $lien = '') {
         . $p('Le site de <b style="color:#FFFFFF;">' . esc_html(aled08e_cmd_nom($c)) . '</b> (' . esc_html($c['ref']) . ') est prêt. Il ne reste qu’à le regarder.')
         . ($site ? aled08e_mail_bouton($site, 'Voir le site') . '<p style="margin:-6px 0 18px;font-size:14px;color:#A9D9C5;">' . esc_html(preg_replace('#^https?://#', '', untrailingslashit($site))) . '</p>' : '')
         . ($texte !== '' ? '<p style="margin:0 0 8px;font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#FF8EBF;">Ce que j’ai fait, et ce qui reste à voir</p>' . $p(nl2br(esc_html($texte))) : '')
+        . (($res = aled08e_chantier_resume($c['id'])) !== '' ? '<p style="margin:0 0 8px;font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#FFD36E;">Le résumé que le client recevra</p>' . $p(nl2br(esc_html($res))) : '')
         . '<p style="margin:8px 0 8px;font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#7BDDB1;">Et ensuite ?</p>'
         . $p('Revenez dans la conversation avec Claude et dites simplement :<br>« <b style="color:#FFFFFF;">OK</b> » pour mettre le site en ligne (le client est prévenu et son forfait démarre),<br>ou ce que vous voulez changer.')
         . aled08e_mail_bouton(aled08e_chantier_conversation(), 'Répondre dans la conversation')
@@ -256,7 +266,7 @@ function aled08e_jauge_html($cmd) {
 
 /* =========================================================================
  *  La commande d'essai : rejouer tout le parcours d'un client sans rien payer ni rien acheter.
- *  POST /aled08/v1/atelier/essai { faire: creer | etape | questionnaire | connexion | supprimer, … }
+ *  POST /aled08/v1/atelier/essai { faire: creer | etape | questionnaire | connexion | livraison (+ resume) | supprimer, … }
  *  Le compte et la commande portent la marque « essai » : l'automate les ignore (pas de domaine acheté, pas d'hébergement).
  * ========================================================================= */
 add_action('rest_api_init', function () {
@@ -314,6 +324,13 @@ function aled08e_essai_faire(WP_REST_Request $req) {
         delete_post_meta($cid, '_aled08_brief_brouillon');
         update_post_meta($cid, '_aled08_brief_le', current_time('mysql'));
         aled08e_cmd_journal($cid, 'Essai : questionnaire rempli.');
+        return new WP_REST_Response(['ok' => true], 200);
+    }
+    if ($faire === 'livraison') {
+        // l'e-mail « Votre site est en ligne » tel que le client le recevrait, sans changer le statut
+        aled08e_chantier_resume_garder($cid, $p);
+        aled08e_cmd_mail_client_en_ligne(aled08e_cmd_get($cid));
+        aled08e_cmd_journal($cid, 'Essai : e-mail de livraison envoyé (la commande ne passe pas en ligne).');
         return new WP_REST_Response(['ok' => true], 200);
     }
     if ($faire === 'connexion') {
