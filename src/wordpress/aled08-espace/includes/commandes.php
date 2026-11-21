@@ -617,7 +617,8 @@ function aled08e_cmd_mail_owner_payee($c) {
 }
 /* $vers : une autre adresse (l'aperçu envoyé à Alex avant le client).
  * $c['livraison'] (facultatif) remplace ce que le chantier a gardé : resume, pages_total, pages_google, articles,
- * pages_formule (les pages comprises dans la formule : au-delà, elles sont offertes) et forfait_nom (ex. « Forfait personnalisé »). */
+ * pages_formule (les pages comprises dans la formule : au-delà, elles sont offertes), forfait_nom (ex. « Forfait personnalisé »)
+ * et offerts : [[libellé, prix], …] ce que les Minis Monstres offrent, prix barré puis « Offert ». */
 function aled08e_cmd_mail_client_en_ligne($c, $vers = '') {
     $L = (array) ($c['livraison'] ?? []);
     $site = $c['domaine'] ? 'https://' . $c['domaine'] : aled08e_meta($c['user'], 'site');
@@ -633,6 +634,7 @@ function aled08e_cmd_mail_client_en_ligne($c, $vers = '') {
     $offertes = ($formule > 0 && $total > $formule) ? $total - $formule : 0;
     $principales = max(0, $total - $google);
     $forfaitNom = trim((string) ($L['forfait_nom'] ?? ''));
+    $offerts = array_values(array_filter((array) ($L['offerts'] ?? []), function ($o) { return is_array($o) && count($o) >= 2 && trim((string) $o[0]) !== ''; }));
     $espace = function_exists('aled08e_clic_lien') && $c['user'] ? aled08e_clic_lien((int) $c['user'], 14) : aled08e_url();
     $typeNom = (aled08e_type($c['type']) ?: [])['name'] ?? 'votre site';
 
@@ -664,7 +666,13 @@ function aled08e_cmd_mail_client_en_ligne($c, $vers = '') {
                 . '<p style="margin:0;font-size:17px;line-height:1.45;color:#A3305F;"><b>Les ' . $offertes . ' pages en plus vous sont offertes par les Minis Monstres.</b></p></td></tr></table>' : ''),
             'etoile', aled08e_mail_etiquette('Votre site en chiffres', '#7A5600'));
     }
-    if ($forfaitNom !== '') {
+    if ($offerts) {
+        $li = '';
+        foreach ($offerts as $o) $li .= '<tr><td style="padding:9px 0;border-bottom:1px solid #F7C6DA;font-size:15px;line-height:1.4;color:#2E2A47;"><b>' . esc_html($o[0]) . '</b></td>'
+            . '<td align="right" style="padding:9px 0 9px 10px;border-bottom:1px solid #F7C6DA;white-space:nowrap;font-size:14px;line-height:1.4;"><s style="color:#8A84A8;">' . esc_html($o[1]) . '</s><br><b style="font-size:16px;color:#A3305F;">Offert</b></td></tr>';
+        $h .= aled08e_mail_carte('rose', '<p style="margin:6px 0 8px;font-size:15px;line-height:1.55;color:#4B4668;">' . ($forfaitNom !== '' ? 'Votre forfait est fait sur mesure pour vous, et il vous est offert, lui aussi. ' : '') . 'Voici ce que les Minis Monstres vous offrent :</p>'
+            . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 4px;">' . $li . '</table>', 'clin', aled08e_mail_etiquette('Offert par les Minis Monstres', '#A3305F'));
+    } elseif ($forfaitNom !== '') {
         $h .= aled08e_mail_carte('ciel', '<p style="margin:6px 0 4px;font-size:22px;line-height:1.25;font-weight:bold;color:#2E2A47;">' . esc_html($forfaitNom) . '</p>'
             . '<p style="margin:0;font-size:15px;line-height:1.55;color:#4B4668;">Votre forfait est fait sur mesure pour vous. Son détail est dans votre application, rubrique « Mon compte ».</p>', 'chaton', aled08e_mail_etiquette('Votre forfait', '#1F5E9E'));
     }
@@ -698,7 +706,7 @@ function aled08e_cmd_mail_client_en_ligne($c, $vers = '') {
     $txt = 'Bonjour ' . $c['prenom'] . ",\n\nBonne nouvelle : votre site est en ligne !\n" . ($site ? 'Adresse : ' . $site . "\n" : '') . "\n"
         . ($total > 0 ? 'Votre site compte ' . $total . ' pages' . ($google > 0 ? ', dont ' . $google . ' pages de visibilité Google : autant de portes d’entrée sur votre site' : '') . ".\n\n" : ($google > 0 ? 'Votre site compte ' . $google . " pages de visibilité Google : autant de portes d’entrée sur votre site.\n\n" : ''))
         . ($offertes > 0 ? 'Votre formule ' . $typeNom . ' comprend ' . $formule . ' pages. Les ' . $offertes . " pages en plus vous sont offertes par les Minis Monstres.\n\n" : '')
-        . ($forfaitNom !== '' ? 'Votre forfait : ' . $forfaitNom . " (le détail est dans votre application, rubrique Mon compte).\n\n" : '')
+        . ($offerts ? "Offert par les Minis Monstres :\n" . implode("\n", array_map(function ($o) { return '- ' . $o[0] . ' : ' . $o[1] . ', offert'; }, $offerts)) . "\n\n" : ($forfaitNom !== '' ? 'Votre forfait : ' . $forfaitNom . " (le détail est dans votre application, rubrique Mon compte).\n\n" : ''))
         . ($articles > 0 ? 'Votre boutique compte ' . $articles . ' article' . ($articles > 1 ? 's' : '') . ". Ajoutez-en autant que vous voulez, sans limite, depuis votre application (Ma boutique, puis Mes articles).\n\n" : '')
         . ($res !== '' ? "Ce que contient votre site :\n" . $res . "\n\n" : '')
         . "Tout se règle depuis votre application (votre espace client) :\n" . implode("\n", array_map(function ($r) { return '- ' . $r[1] . ' (' . $r[2] . ')'; }, $reglages)) . "\n" . aled08e_url() . "\n\n"

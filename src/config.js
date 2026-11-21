@@ -95,11 +95,11 @@ const sections = {
 // pagePlus et pagesPlusMax ne sont plus proposés (gardés pour les anciennes commandes de l'extension).
 // 18 novembre 2026 : le site compte 5 pages (plus 15). La boutique donne 5 emplacements d'articles (boutiqueProduits) que le client remplit lui-même
 // (photo, description, prix) dans son espace client ; chaque emplacement en plus coûte boutiqueSlot € une fois, débloqué pour toujours.
-// OFFRE FINALE (19 novembre 2026) : trois sites, trois prix. Site Essentiel (une page) 500 €, Site Visibilité (jusqu'à 20 pages) 750 €,
+// OFFRE FINALE (19 novembre 2026) : trois sites, trois prix. Site Essentiel (une page) 500 €, Site Visibilité (jusqu'à 15 pages, ramené de 20 à 15 le 21 novembre 2026) 750 €,
 // Site Boutique 1 200 €. Les prix sont dans `types` (plus bas) ; `creation` garde les repères communs : prix = le premier prix,
 // pages = pages du Site Visibilité, visibilite et boutiquePrix = les deux autres prix. La boutique n'a plus d'emplacements comptés
 // (boutiqueProduits et boutiqueSlot à 0 : le client gère son catalogue librement). boutique = écart Boutique / Visibilité (anciennes commandes).
-const creation = { prix: 500, visibilite: 750, boutiquePrix: 1200, pages: 20, pagePlus: 10, pagesPlusMax: 0, boutique: 450, boutiqueProduits: 0, boutiqueSlot: 0, exemplePages: 5 };
+const creation = { prix: 500, visibilite: 750, boutiquePrix: 1200, pages: 15, pagePlus: 10, pagesPlusMax: 0, boutique: 450, boutiqueProduits: 0, boutiqueSlot: 0, exemplePages: 5 };
 // Offre événement : un code donné sur une foire, un marché, un salon ou un événement professionnel.
 // remise : en %, sur la création du site (site et options payés une fois). Les codes valables se règlent dans
 // l'extension WordPress (Réglages, « Codes événement ») : le serveur vérifie le code et recalcule le prix.

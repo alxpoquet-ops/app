@@ -353,7 +353,7 @@ function aled08e_essai_faire(WP_REST_Request $req) {
 
 /* =========================================================================
  *  L'e-mail « Votre site est en ligne » d'un client déjà installé (sans commande dans l'atelier).
- *  POST /aled08/v1/atelier/livraison { fiche, type, resume, pages_total, pages_google, pages_formule, articles, forfait, apercu }
+ *  POST /aled08/v1/atelier/livraison { fiche, type, resume, pages_total, pages_google, pages_formule, articles, forfait, offerts: [[libellé, prix], …], apercu }
  *  Par défaut c'est un aperçu : il part à Alex seulement. Au client, seulement avec apercu: false et accord_alex: true
  *  (Alex a dit « OK » dans la conversation). Rien d'autre ne change : ni statut, ni forfait.
  * ========================================================================= */
@@ -369,6 +369,7 @@ function aled08e_livraison_faire(WP_REST_Request $req) {
     $type = in_array(($p['type'] ?? ''), ['une-page', 'vitrine', 'boutique'], true) ? $p['type'] : (aled08e_meta($u->ID, 'boutique') === '1' ? 'boutique' : 'vitrine');
     $L = ['resume' => mb_substr(trim(sanitize_textarea_field((string) ($p['resume'] ?? ''))), 0, 4000), 'forfait_nom' => sanitize_text_field((string) ($p['forfait'] ?? ''))];
     foreach (['pages_total' => 300, 'pages_google' => 200, 'pages_formule' => 300, 'articles' => 5000] as $k => $max) if (isset($p[$k])) $L[$k] = max(0, min($max, (int) $p[$k]));
+    if (!empty($p['offerts']) && is_array($p['offerts'])) $L['offerts'] = array_slice(array_map(function ($o) { return [sanitize_text_field((string) ($o[0] ?? '')), sanitize_text_field((string) ($o[1] ?? ''))]; }, $p['offerts']), 0, 8);
     update_user_meta($u->ID, 'aled08_livraison', $L);
     $site = (string) aled08e_meta($u->ID, 'site');
     $c = ['id' => 0, 'user' => $u->ID, 'prenom' => $u->first_name ?: $u->display_name, 'email' => $u->user_email, 'type' => $type, 'forfait' => (string) aled08e_meta($u->ID, 'forfait'),

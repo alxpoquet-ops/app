@@ -89,7 +89,7 @@ const sections = [
     icon: 'layout-template',
     champs: [
       { id: 'blocs', label: 'Les parties de votre page', kind: 'multi', types: ['une-page'], autre: true, options: ['Pourquoi me choisir', 'Mes produits ou services', 'Mes prix', 'Comment ça se passe', 'Galerie de photos', 'Où me trouver (adresse, horaires, marchés)', 'Questions fréquentes', 'Contact'], defaut: ['Pourquoi me choisir', 'Mes produits ou services', 'Mes prix', 'Comment ça se passe', 'Galerie de photos', 'Où me trouver (adresse, horaires, marchés)', 'Questions fréquentes', 'Contact'], aide: 'Tout est coché : c’est ce qui fait un site complet. Décochez seulement ce que vous ne voulez pas. Une partie encore vide (pas de photos, pas de dates) affichera « bientôt ».' },
-      { id: 'pages_voulues', label: 'Les pages que vous voulez', kind: 'liste', types: ['vitrine', 'boutique'], max: 20, colonnes: [{ id: 'nom', label: 'Nom de la page', kind: 'texte' }, { id: 'contenu', label: 'Ce qu’elle doit dire', kind: 'texte_long' }], aide: 'Par exemple : Accueil, Nos services, Tarifs, FAQ, À propos, Contact. Jusqu’à 20 pages, pages de visibilité Google comprises.' },
+      { id: 'pages_voulues', label: 'Les pages que vous voulez', kind: 'liste', types: ['vitrine', 'boutique'], max: 15, colonnes: [{ id: 'nom', label: 'Nom de la page', kind: 'texte' }, { id: 'contenu', label: 'Ce qu’elle doit dire', kind: 'texte_long' }], aide: 'Par exemple : Accueil, Nos services, Tarifs, FAQ, À propos, Contact. Jusqu’à 15 pages, pages de visibilité Google comprises.' },
       { id: 'textes', label: 'Les textes du site', kind: 'choix', requis: true, options: ['Écrivez-les pour moi à partir de mes réponses', 'J’écris mes textes et je les envoie'] },
     ],
   },
