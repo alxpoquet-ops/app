@@ -10,6 +10,8 @@
 - [ ] Les parties sans matière sont retirées ou marquées « bientôt ».
 - [ ] Le site est cohérent avec les réglages de son espace (boutique en pause = aucun prix ni paiement nulle part).
 - [ ] Le texte et les photos sont dans le contenu des pages : le client peut les changer lui-même.
+- [ ] L'organisation suit l'exemple d'une marque connue du même métier, et rien n'en est copié (ni texte, ni photo, ni avis, ni prix).
+- [ ] Les images d'attente (client sans photo) ne servent qu'à l'ambiance, jamais comme ses produits, et le résumé lui dit de les remplacer.
 
 ## 2. Le téléphone
 

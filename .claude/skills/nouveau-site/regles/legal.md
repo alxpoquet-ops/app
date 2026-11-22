@@ -47,7 +47,7 @@ Rien de tout cela ne s'invente. Le client règle ses moyens de paiement, sa livr
 
 ## Les images et les textes
 
-- Uniquement les photos du client, ou des images libres de droits. Jamais une image prise sur le site d'un concurrent ou sur un moteur de recherche.
+- Uniquement les photos du client, ou des images libres de droits prises dans une banque d'images dont la licence permet un usage commercial (Unsplash, Pexels, Pixabay), pour l'ambiance seulement (voir `visuel.md`). Jamais une image prise sur le site d'un concurrent, de la référence du métier ou sur un moteur de recherche.
 - Les textes sont écrits pour le client : rien n'est copié d'un autre site.
 - Une photo où l'on reconnaît une personne : le client confirme qu'il a son accord.
 

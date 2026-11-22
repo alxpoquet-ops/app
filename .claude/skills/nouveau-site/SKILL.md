@@ -12,7 +12,7 @@ Ce fichier donne le parcours. Les règles détaillées sont dans `regles/` : lis
 ## Les cinq règles à ne jamais oublier
 
 1. **Rien d'inventé.** Le site ne contient que ce que le client a donné. S'il manque une information : on la demande, ou on écrit « bientôt », ou on retire la partie.
-2. **Chaque site est différent.** La base est commune (nos modules), le style est propre à chaque client.
+2. **L'exemple vient du métier du client.** On prend exemple sur une marque connue du même métier que lui (des bougies pour des bougies, jamais un autre métier) : son organisation, pas son contenu. Le style reste celui du client.
 3. **Un site qui vend.** En moins de dix secondes sur un téléphone, le visiteur comprend ce que fait le client, où, et comment le joindre.
 4. **Le client peut modifier lui-même.** Textes et photos sont dans le contenu des pages, pas dans le thème.
 5. **Jamais de secret dans la discussion ni dans le dépôt.** Mots de passe, clés et jetons se saisissent dans les réglages du site ou chez l'hébergeur.
@@ -32,7 +32,7 @@ Le détail et les autres règles : `regles/regles-d-or.md`. Lis-le en premier, �
 | 1. Les questions de départ | Nom de domaine, site (avec ou sans e-commerce, pages Google), forfait, client, contenu. Avec AskUserQuestion, puis un résumé en trois lignes. | `regles/offre.md` |
 | 2. Le nom de domaine et l'hébergement | Vérifier où pointe le domaine, puis installer (chemin automatique ou guidé). | `regles/installation.md` |
 | 3. L'espace client | Compte client, forfait, lien entre le site et sa fiche. | `regles/installation.md` |
-| 4. La recherche | 3 à 5 sites du même métier : ce qui se fait, ce qui manque, la direction choisie. | `regles/concurrents.md` |
+| 4. La recherche | Une marque connue du même métier que le client, et 2 ou 3 autres sites du métier : on prend exemple sur son organisation. | `regles/concurrents.md` |
 | 5. Le site | Le contenu, le visuel, ce qui fait venir des demandes. | `regles/visuel.md`, `regles/conversion.md` |
 | 6. Google | Titres, données de l'entreprise, pages de visibilité si achetées. | `regles/google.md` |
 | 7. La finition | Vitesse, accessibilité, pages légales. | `regles/vitesse-accessibilite.md`, `regles/legal.md` |

@@ -20,6 +20,8 @@ const sections = [
       { id: 'domaine', label: 'Votre nom de domaine actuel', kind: 'texte', siCommande: 'domaine_a_demander', aide: 'L’adresse de votre site, par exemple mon-entreprise.fr. On s’occupe de le relier à votre nouveau site.' },
       { id: 'activite', label: 'Votre activité en quelques phrases', kind: 'texte_long', requis: true, aide: 'Ce que vous faites et pour qui. Écrivez comme vous parlez : on met en forme.' },
       { id: 'points_forts', label: 'Pourquoi vos clients vous choisissent-ils ?', kind: 'texte_long', requis: true, aide: 'Deux à quatre raisons : la qualité, les matières, le fait main, l’écoute, la rapidité, l’expérience… Pas d’idée ? Notez ce que vos clients vous disent souvent. C’est la partie « Pourquoi me choisir » de votre site.' },
+      // 22 novembre 2026 : les avis de vrais clients, la meilleure preuve de confiance (jamais inventés : seulement ceux donnés ici)
+      { id: 'avis', label: 'Deux ou trois avis de vos clients (facultatif)', kind: 'liste', max: 5, colonnes: [{ id: 'prenom', label: 'Le prénom du client', kind: 'texte' }, { id: 'avis', label: 'Ce qu’il ou elle a dit', kind: 'texte_long' }], aide: 'De vrais avis, tels que vos clients les ont écrits ou dits : ils rassurent vos futurs clients. Pas encore d’avis ? Laissez vide, vous en ajouterez plus tard.' },
       { id: 'slogan', label: 'Une phrase d’accroche (facultatif)', kind: 'texte', aide: 'Par exemple : « Des fleurs qui ne fanent jamais ». Pas d’idée ? Laissez vide.' },
       { id: 'base', label: 'Où êtes-vous installé(e) ?', kind: 'texte', requis: true, aide: 'Votre ville. Elle sert aussi à être trouvé(e) sur Google près de chez vous.' },
       { id: 'zone', label: 'Jusqu’où travaillez-vous, ou envoyez-vous ?', kind: 'choix', autre: true, options: ['Dans ma ville et autour', 'Dans mon département ou ma région', 'Partout en France', 'En France et à l’étranger'] },
@@ -49,6 +51,7 @@ const sections = [
       { id: 'villes', label: 'Dans quelles villes ou quels secteurs voulez-vous être trouvé ?', kind: 'texte_long', requis: true, aide: 'Par exemple : Thionville, Hayange, Metz et alentours. Votre site les cite, pour que Google vous montre près de chez vous. Plus tard, une page de visibilité Google peut être faite pour chacun.' },
       { id: 'recherches', label: 'Que tapent vos clients sur Google pour vous trouver ?', kind: 'texte_long', requis: true, aide: 'Quelques recherches, comme vous les imaginez : « bougie personnalisée prénom », « cadeau naissance bougie ». Pas d’idée ? Notez vos produits et services principaux.' },
       { id: 'conseils', label: 'Des sujets de conseils que vous aimeriez partager ? (facultatif)', kind: 'texte_long', aide: 'Par exemple : « comment bien entretenir une bougie ». Si vous prenez des pages de visibilité Google, ces sujets peuvent devenir des pages de conseils : vous les relisez avant la mise en ligne.' },
+      { id: 'fiche_google', label: 'Le lien de votre fiche Google, si vous en avez une (facultatif)', kind: 'texte', aide: 'La fiche de votre entreprise sur Google Maps. Elle nous sert à écrire votre nom, votre adresse et vos horaires exactement comme sur Google, et à mettre un lien vers vos avis. Pas de fiche ? Laissez vide : on vous dira comment la créer.' },
     ],
   },
   {
@@ -60,7 +63,7 @@ const sections = [
       { id: 'couleurs_precises', label: 'Des couleurs précises ? (facultatif)', kind: 'texte', aide: 'Les couleurs de votre logo ou de votre boutique, par exemple « vert sauge et crème ». Pas d’idée ? Laissez vide : on choisit avec vos couleurs préférées.' },
       { id: 'ambiance', label: 'L’ambiance du site', kind: 'multi', autre: true, options: ['Kawaii, mignon', 'Naturel', 'Élégant, chic', 'Moderne', 'Minimaliste', 'Rétro, vintage', 'Chaleureux', 'Sérieux, professionnel', 'Ludique, coloré'] },
       { id: 'logo', label: 'Votre logo', kind: 'fichier', aide: 'Pas de logo ? Laissez vide : le nom de votre site sera écrit avec une belle police.' },
-      { id: 'sites_aimes', label: 'Un site internet dont le style vous plaît ? (facultatif)', kind: 'texte_long', aide: 'Celui d’une marque, d’un commerçant ou d’un créateur que vous aimez. Donnez son nom ou son adresse, et ce qui vous plaît : les couleurs, les photos, la façon dont c’est rangé. On s’en inspire sans copier. Rien en tête ? Laissez vide : nous regardons nous-mêmes ce qui se fait dans votre métier.' },
+      { id: 'sites_aimes', label: 'Un site internet dont le style vous plaît ? (facultatif)', kind: 'texte_long', aide: 'Celui d’une marque, d’un commerçant ou d’un créateur que vous aimez. Donnez son nom ou son adresse, et ce qui vous plaît : les couleurs, les photos, la façon dont c’est rangé. On s’en inspire sans copier. Rien en tête ? Laissez vide : nous prenons exemple sur une marque connue de votre métier.' },
     ],
   },
   {
@@ -83,7 +86,7 @@ const sections = [
     titre: 'Vos images',
     icon: 'image-plus',
     champs: [
-      { id: 'images', label: 'Vos photos, avec une petite description pour chacune', kind: 'images', max: 10, aide: 'Vos produits, votre lieu, votre travail, vous. Une phrase par photo suffit : « le bouquet de mariée rose », « l’atelier ». 8 Mo au plus par photo. Pas encore de photos ? Aucun souci : on met une jolie image d’attente, la même partout, et vous enverrez vos photos plus tard.' },
+      { id: 'images', label: 'Vos photos, avec une petite description pour chacune', kind: 'images', max: 10, aide: 'Vos produits, votre lieu, votre travail, vous. Une phrase par photo suffit : « le bouquet de mariée rose », « l’atelier ». 8 Mo au plus par photo. Pas encore de photos ? Aucun souci : on met de jolies images en rapport avec votre métier, et vous les remplacerez par les vôtres quand vous voudrez.' },
     ],
   },
   {

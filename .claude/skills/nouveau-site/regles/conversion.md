@@ -38,7 +38,7 @@ Si l'un des trois manque, le haut de page est à refaire.
 
 À utiliser quand le client les a fournies, jamais autrement :
 
-- **Des avis de vrais clients**, avec le prénom, tels qu'il les a transmis. S'il a une fiche Google : un lien « Voir mes avis sur Google ». Pas de note ni d'étoiles inventées.
+- **Des avis de vrais clients**, avec le prénom, tels qu'il les a transmis (question « Deux ou trois avis de vos clients » du questionnaire). S'il a donné le lien de sa fiche Google : un lien « Voir mes avis sur Google ». Pas de note ni d'étoiles inventées.
 - **Ses vraies photos** : réalisations, atelier, produits, et son visage s'il l'a donné. Une photo de la personne rassure plus qu'une image de catalogue.
 - **Des chiffres vrais** : années d'activité, nombre de marchés, de créations.
 - **Ses labels, diplômes, assurances**, cités tels quels.

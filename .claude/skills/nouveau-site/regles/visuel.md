@@ -10,12 +10,12 @@ Chaque nouveau site atteint au moins ce niveau, avec son propre style et uniquem
 ## Avant de commencer
 
 1. Regarde ce qui existe sur le site : pages créées par l'installation, thème actif, styles.
-2. Fais la recherche du métier (voir `concurrents.md`) et choisis une direction.
+2. Fais la recherche **dans le métier du client** (voir `concurrents.md`) : une marque connue du même métier donne l'exemple pour l'organisation du site.
 3. Liste la matière fournie par le client : textes, prix, photos, logo, couleurs. Ce qui manque se demande, ou la partie est retirée.
 
 ## Une page longue et riche
 
-Même le Site Essentiel est une page longue, découpée en parties qu'on fait défiler. Dans l'ordre :
+Même le Site Essentiel est une page longue, découpée en parties qu'on fait défiler. Voici notre base. L'ordre des parties 3 à 10 et la façon de montrer les produits suivent l'exemple de la référence du métier (par exemple les produits avant les points forts, si c'est ce que fait la marque connue) :
 
 1. **L'en-tête, collé en haut** : le nom, les liens vers chaque partie (celle qu'on lit s'allume), un bouton « Contact » toujours visible, le bouton soleil / lune.
 2. **L'ouverture** : un titre fort, une phrase, deux boutons d'action (voir `conversion.md` pour le titre et les boutons).
@@ -30,7 +30,7 @@ Même le Site Essentiel est une page longue, découpée en parties qu'on fait d�
 11. **Le contact** : un formulaire court, dont le choix de demande se remplit selon le bouton cliqué.
 12. **Le pied de page** : coordonnées, horaires s'ils sont donnés, liens, pages légales.
 
-Une partie sans matière est retirée ou marquée « bientôt ». S'il en manque trop, pose la question au client.
+Une partie sans matière est retirée ou marquée « bientôt », et le résumé de livraison le dit au client.
 
 ## Sur téléphone
 
@@ -58,9 +58,15 @@ En rapport avec le métier : flammes et gouttes de cire pour des bougies, pétal
 
 ## Les couleurs, les polices, les photos
 
-- Les couleurs, l'ambiance, le logo et les polices demandés par le client. S'il n'a rien précisé : une palette qui se distingue des sites du même métier tout en restant dans son esprit.
+- Les couleurs, l'ambiance, le logo et les polices demandés par le client. S'il n'a rien précisé : une palette dans l'esprit de son métier, mais à lui (pas la copie des couleurs de la référence).
 - Deux familles de polices au plus : une pour les titres, une pour le texte.
-- Ses photos, bien cadrées. Sans photo : une même image de base partout, jamais une photo qui ferait croire à une réalisation du client.
+- Ses photos, bien cadrées, partout où il en a donné.
+- **Sans photo du client** (décision d'Alex, 22 novembre 2026) : de belles images libres de droits en rapport avec son métier, **pour l'ambiance seulement** : le haut de page, le fond d'une partie, la présentation.
+  - Jamais dans les cartes de produits, la galerie ou une fiche produit, et jamais présentées comme ses créations : ces endroits attendent ses vraies photos (une carte sans photo porte une icône aux couleurs du site ; une galerie vide est retirée ou marquée « bientôt »).
+  - Elles viennent d'une banque d'images dont la licence permet un usage commercial sans mention (Unsplash, Pexels, Pixabay), jamais du site d'un concurrent ni d'un moteur de recherche.
+  - Elles sont copiées sur le site du client avec `atelier_image`, pas affichées depuis leur site d'origine.
+  - Leur texte de remplacement décrit l'image, sans dire que c'est le travail du client.
+  - Le résumé de livraison le dit : « Les images en place sont des images d'attente : remplacez-les par vos photos quand vous voulez, avec le bouton Modifier mon site moi-même. »
 - Les icônes sont dessinées dans le même style sur tout le site.
 
 ## Avec l'option e-commerce

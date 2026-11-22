@@ -8,23 +8,37 @@ Tout passe par les-minis-monstres.fr (outils WordPress « Mini monstres »). Les
 
 | `faire` | Quand | Ce qui se passe |
 |---|---|---|
-| `question` + `texte` | Le questionnaire est incomplet, flou ou contradictoire | Le client reçoit un e-mail et répond dans son espace (onglet « Ma commande ») |
+| `question` + `texte` | Seulement si l'essentiel manque (voir ci-dessous) | Le client reçoit un e-mail et répond dans son espace (onglet « Ma commande ») |
 | `note` + `texte` (+ `etat`: `visuel`) | Tu commences le visuel, ou quelque chose bloque | Une ligne dans le journal de la commande |
 | `livrer` + `texte`, `resume`, `lien` | Le site est prêt et relu | La commande passe en ligne, le client reçoit « Votre site est en ligne », Alex reçoit « Site livré (V1) » |
 | `a_verifier` | Seulement si Alex a demandé à voir le site avant | Alex reçoit le site à vérifier, rien ne part au client |
 
-## Poser une question au client
+## Question ou livraison : selon ce qui manque
 
-- **Toutes les questions en un seul message**, court, simple, numéroté.
-- Seulement ce qui manque ou reste flou. Le questionnaire demande déjà : la ville et la zone, pourquoi on le choisit, comment ses clients achètent, l'envoi, la personnalisation, les étapes d'une commande, l'offre vedette, les marchés et leurs dates, les questions fréquentes, ce que contient chaque prix, l'adresse des mentions légales, les villes visées et les recherches Google de ses clients.
-- **Jamais plus de deux séries de questions** par commande. Au-delà, on fait avec ce qu'on a : les parties sans matière sont retirées ou marquées « bientôt ».
-- Si le site n'est pas encore installé ou relié : on peut poser les questions, puis on attend.
+Décision d'Alex (22 novembre 2026). Le site est promis en quelques heures : on ne fait pas attendre un client pour un détail.
+
+**On pose une question avant de livrer seulement si l'essentiel manque :**
+
+- ce qu'il vend ou ce qu'il fait ;
+- sa ville ou sa zone ;
+- comment ses clients le joignent ou lui achètent ;
+- ou une vraie contradiction, qui obligerait à écrire quelque chose de faux (deux prix différents pour le même produit, par exemple).
+
+**Dans tous les autres cas, on livre tout de suite** avec ce qu'on a (il manque ses horaires, les étapes d'une commande, des photos, des avis, un prix…). Les parties sans matière sont retirées ou marquées « bientôt », et le résumé de livraison liste ce qu'il reste à envoyer. Le client complète ensuite lui-même, ou nous le demande.
+
+**Quand il faut vraiment poser une question :**
+
+- Toutes les questions en un seul message, court, simple, numéroté.
+- Jamais plus de deux séries de questions par commande. Au-delà, on livre avec ce qu'on a.
+- Si le site n'est pas encore installé ou relié : on peut poser la question, puis on attend.
+
+Pour mémoire, le questionnaire demande déjà : la ville et la zone, pourquoi on le choisit, des avis de clients, comment ses clients achètent, l'envoi, la personnalisation, les étapes d'une commande, l'offre vedette, les marchés et leurs dates, les questions fréquentes, les villes visées, les recherches Google de ses clients, le lien de sa fiche Google, un site dont le style lui plaît, ses photos, ses prix et ce qu'ils comprennent, le nom et l'adresse pour les mentions légales.
 
 ## Livrer la V1
 
 Après le contrôle complet (`controle-qualite.md`), envoie `faire: "livrer"` avec :
 
-- **`texte`** : une note courte pour Alex. Ce qui est fait, la direction choisie après la recherche sur les concurrents, ce que tu as décidé seul, les pages de conseils écrites, ce qui reste à compléter.
+- **`texte`** : une note courte pour Alex. Ce qui est fait, la référence du métier choisie et ce qu'on a repris de son organisation, ce que tu as décidé seul, les pages de conseils écrites, ce qui reste à compléter.
 - **`resume`** : le contenu du site expliqué au client (voir plus bas). Obligatoire.
 - **`lien`** : l'adresse du site, en https.
 - **`pages_total`** et **`pages_google`** : quand le site a des pages de visibilité Google ou l'option e-commerce. Le total des pages, et celles faites pour Google (pages produits ou services, pages locales, conseils, questions fréquentes).
@@ -40,7 +54,7 @@ Vouvoiement, simple, rien d'inventé.
 2. Une ligne sur le menu du téléphone et le bouton soleil / lune.
 3. S'il y a des pages de conseils : une ligne qui les nomme, et invite le client à les relire et à demander toute correction depuis « Mes modifications ».
 4. Enfin, **sans tiret**, ce qui s'affichera dans la carte « À ajouter quand vous pourrez » :
-   - « À ajouter depuis votre espace client quand vous pourrez : … » avec ce qui manque (photos, avis de clients, dates, réseaux, adresse des mentions légales…) ;
+   - « À ajouter depuis votre espace client quand vous pourrez : … » avec ce qui manque (photos, avis de clients, horaires, dates, réseaux…), et, s'il y en a, la phrase sur les images d'attente à remplacer ;
    - « Pour être mieux trouvé sur Google, de votre côté : … » avec les conseils de `google.md` (fiche Google, avis).
 
 ## Les pages de visibilité Google commandées après coup

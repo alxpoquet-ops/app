@@ -9,14 +9,16 @@ Le site ne contient que ce que le client a donné dans son questionnaire et dans
 - N'ajoute aucun service, produit, parfum, horaire, délai, prix, zone, promesse, façon de commander ou détail de fabrication qu'il n'a pas dit, même si ça paraît probable.
 - Pas de faux avis, pas de chiffre arrondi (« plus de 500 clients »), pas d'ancienneté supposée (« depuis 10 ans »), pas de label ni de garantie qu'il n'a pas cités.
 - Tu décides seul du style (couleurs précises, polices, mise en page, effets) et de la façon de dire les choses. Tu reformules, tu mets en valeur, tu n'ajoutes rien.
-- S'il manque une information utile : pose la question au client. Sinon écris « bientôt » ou retire la partie.
+- S'il manque une information : écris « bientôt » ou retire la partie, et dis-le au client dans le résumé de livraison. On ne lui pose une question avant de livrer que si l'essentiel manque (voir `livraison.md`).
 - Seule exception : les pages de conseils des pages de visibilité Google, qui donnent un savoir général et exact sur le métier, sans rien affirmer sur le client (voir `google.md`).
 
 Pourquoi : une promesse inventée engage le client devant ses propres clients. Une seule erreur de ce genre coûte plus cher que dix parties laissées vides.
 
-## 2. Chaque site est différent
+## 2. Chaque site est fait pour son client, sur l'exemple de son métier
 
-La base est commune (nos modules, le code invisible). Ce qui se voit est fait pour le client : ambiance, couleurs, polices, mise en avant de ses photos, ton de ses textes. Avant le visuel, regarde 3 à 5 sites du même métier (voir `concurrents.md`). On s'inspire du style, jamais du contenu : rien ne vient des concurrents dans les textes.
+La base est commune (nos modules, le code invisible). Ce qui se voit est fait pour le client : ambiance, couleurs, polices, mise en avant de ses photos, ton de ses textes.
+
+Avant le visuel, on cherche **une marque assez connue du même métier que lui** (des bougies pour un client qui vend des bougies, jamais un autre métier) et on prend exemple sur l'organisation de son site : l'ordre des parties, la façon de montrer les produits, ce qui est mis en avant. Le détail est dans `concurrents.md`. On reprend l'organisation, jamais le contenu : aucun texte, photo, avis, prix ou promesse ne vient d'un autre site.
 
 ## 3. Un site qui vaut son prix
 

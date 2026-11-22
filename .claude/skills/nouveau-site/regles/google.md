@@ -12,7 +12,7 @@ Trois niveaux : ce que tout site reçoit, les pages de visibilité Google achet�
 
 **Le nom, l'adresse et le téléphone, identiques partout**
 
-Le nom de l'entreprise, son adresse et son téléphone s'écrivent exactement de la même façon dans le pied de page, la partie contact, les mentions légales et les données de l'entreprise. Si le client a une fiche Google, on reprend son écriture à la lettre. Google et les assistants IA se méfient d'une entreprise dont les informations varient d'un endroit à l'autre.
+Le nom de l'entreprise, son adresse et son téléphone s'écrivent exactement de la même façon dans le pied de page, la partie contact, les mentions légales et les données de l'entreprise. Si le client a donné le lien de sa fiche Google (questionnaire), on reprend son écriture à la lettre. Google et les assistants IA se méfient d'une entreprise dont les informations varient d'un endroit à l'autre.
 
 **Les données de l'entreprise (données structurées)**
 

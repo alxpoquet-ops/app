@@ -90,7 +90,7 @@ function aled08e_chantiers_liste(WP_REST_Request $req) {
         if ($etat === 'a_verifier') $afaire = 'rien : Alex vérifie';
         elseif (!$brief) $afaire = 'rien : on attend le questionnaire du client';
         elseif ($etat === 'question') $afaire = 'rien : on attend la réponse du client';
-        elseif (!$relie) $afaire = 'lire le questionnaire et poser les questions utiles ; le site n’est pas encore installé (' . $c['statut'] . ')';
+        elseif (!$relie) $afaire = 'lire le questionnaire ; poser une question seulement si l’essentiel manque ; le site n’est pas encore installé (' . $c['statut'] . ')';
         else $afaire = 'faire le visuel (questionnaire reçu, site installé et relié)';
         $l = ['commande' => (int) $cid, 'ref' => $c['ref'], 'prenom' => $c['prenom'], 'activite' => $c['entreprise'], 'type' => $c['type'], 'forfait' => $c['forfait'], 'domaine' => $c['domaine'],
             'statut' => $c['statut'], 'questionnaire_recu' => $brief, 'site_installe' => $pose, 'site_relie' => $relie, 'etat' => $etat ?: 'a_lire', 'a_faire' => $afaire];
