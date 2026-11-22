@@ -667,6 +667,11 @@ def main():
     shutil.copy(os.path.join(DIST, 'assets', 'css', 'espace.css'), os.path.join(edir, 'espace.css'))
     data = subprocess.run(['node', os.path.join(ROOT, 'scripts', 'wp-espace-data.js')], check=True, capture_output=True, text=True).stdout
     write(os.path.join(edir, 'data.json'), data)
+    # les règles de création d'un site (le skill « nouveau-site ») : servies à l'atelier automatique par /aled08/v1/atelier/regles.
+    # Dans un fichier PHP (pas en .md) pour qu'elles ne soient pas lisibles par une simple adresse.
+    rdir = os.path.join(ROOT, '.claude', 'skills', 'nouveau-site', 'regles')
+    regles = {f[:-3]: read(os.path.join(rdir, f)) for f in sorted(os.listdir(rdir)) if f.endswith('.md')} if os.path.isdir(rdir) else {}
+    write(os.path.join(edir, 'regles-donnees.php'), "<?php\ndefined('ABSPATH') || exit;\nreturn json_decode(<<<'ALED08_REGLES'\n" + json.dumps(regles, ensure_ascii=False) + "\nALED08_REGLES\n, true);\n")
 
     # connecteur à installer sur chaque site client (Cerise y fait ses modifications)
     shutil.copytree(os.path.join(ROOT, 'src', 'wordpress', 'alexlia-connecteur'), os.path.join(OUT, 'alexlia-connecteur'))

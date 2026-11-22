@@ -412,9 +412,17 @@ Ces valeurs sont enregistrées dans la base du site, jamais affichées ensuite. 
 
 L'atelier (`includes/atelier.php`, route `/wp-json/aled08/v1/atelier`, réservée à l'administrateur) transmet une action au site d'un client, signée avec sa clé de liaison. Le connecteur 2.9.0 y répond avec `atelier_rest` (toute l'interface REST du site, sauf les comptes et les mots de passe d'application) et `atelier_image`. Un seul branchement de Claude, celui des Minis Monstres, suffit donc pour tous les sites.
 
-## Les chantiers : le site se crée sans Alex (20 novembre 2026)
+## Les chantiers : le site se crée sans Alex (20 novembre 2026, mis à jour le 22)
 
-Après sa commande, le client remplit le questionnaire. L'atelier (une tâche programmée de Claude, toutes les deux heures de 7 h à 21 h) lit `/wp-json/aled08/v1/atelier/chantiers`, pose ses questions au client si besoin (e-mail + bloc « Nos questions pour votre site » dans l'onglet « Ma commande », où le client répond), fait le visuel par l'atelier, puis envoie à Alex le seul e-mail du parcours : « Site prêt à vérifier ». Alex peaufine et passe la commande « En ligne ».
+Après sa commande, le client remplit le questionnaire. L'atelier (une tâche programmée de Claude, toutes les deux heures de 7 h à 21 h) lit `/wp-json/aled08/v1/atelier/chantiers`, pose ses questions au client si besoin (e-mail + bloc « Nos questions pour votre site » dans l'onglet « Ma commande », où le client répond), fait le site, le contrôle, puis **le livre lui-même** : le client reçoit « Votre site est en ligne » (une V1 qu'il peut modifier), et Alex un e-mail « Site livré (V1) ».
+
+### Les règles de création : un seul endroit (22 novembre 2026)
+
+Toutes les règles (rien d'inventé, visuel, ce qui fait venir des demandes, Google, vitesse, accessibilité, pages légales, contrôle, livraison) sont écrites dans le skill « nouveau-site » : `.claude/skills/nouveau-site/regles/`, un fichier par sujet. `regles/sources.md` dit d'où viennent celles tirées du web et quand elles ont été relues.
+
+- **Une session avec Alex** les lit dans le dépôt (commande `/nouveau-site`).
+- **L'atelier automatique** les lit sur le site : `GET /aled08/v1/atelier/regles` (la liste), puis `?fichier=NOM`. Elles y arrivent à l'export : `scripts/wp-export.py` les range dans `regles-donnees.php` de l'extension (`includes/regles.php` les sert, à l'administrateur seulement).
+- **Changer une règle** : modifier le fichier dans `regles/`, refaire l'export, réinstaller `aled08-espace.zip`. La consigne de la tâche programmée n'a pas à changer : elle ne contient que le déroulé et les garde-fous.
 
 - Code : `includes/atelier.php` (routes `atelier/chantiers` et `atelier/chantier`, états dans `_aled08_chantier`, échanges dans `_aled08_chantier_fil`).
 - Tant que `aled08_chantier_auto` vaut 1 (par défaut), l'e-mail « Questionnaire reçu » n'est plus envoyé à Alex.

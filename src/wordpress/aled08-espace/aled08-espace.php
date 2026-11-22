@@ -207,6 +207,7 @@ require_once __DIR__ . '/includes/mails.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
 require_once __DIR__ . '/includes/pages-google.php';
+require_once __DIR__ . '/includes/regles.php';
 require_once __DIR__ . '/includes/mirette.php';
 require_once __DIR__ . '/includes/edition.php';
 
