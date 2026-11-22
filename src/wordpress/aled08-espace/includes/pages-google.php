@@ -2,13 +2,15 @@
 /**
  * Les Minis Monstres Espace client : les pages de visibilité Google, faites automatiquement (21 novembre 2026).
  * Le client commande une page ou un pack (1, 5 ou 10) depuis son espace. Mirette choisit les sujets (lumi.php).
- * L'atelier automatique (la tâche planifiée) lit la liste, écrit chaque page sur le site du client et la met en ligne,
- * puis la déclare ici. Quand toutes les pages d'une commande sont en ligne, le client reçoit un joli e-mail avec ses pages,
+ * Le constructeur lit la liste et prépare chaque page en brouillon sur le site du client ; le contrôleur la relit,
+ * la publie et la valide ici (22 novembre 2026 : rien n'arrive chez un client sans le contrôle d'un autre agent). Quand toutes les pages d'une commande sont en ligne, le client reçoit un joli e-mail avec ses pages,
  * et Alex est prévenu. Personne n'a rien à faire à la main.
  *
  * Routes (administrateur, pour l'atelier) :
  *   GET  /aled08/v1/atelier/pages-google               les pages à écrire (sujet, site, questionnaire du client)
- *   POST /aled08/v1/atelier/page-google {demande, titre, lien}   une page écrite et en ligne
+ *   POST /aled08/v1/atelier/page-google {demande, faire, …}
+ *        a_controler (le constructeur : titre, page, texte) ; corriger (le contrôleur : texte) ;
+ *        valider (le contrôleur, page publiée : lien) ; pour_alex (texte) ; reprendre (avec l'accord d'Alex)
  */
 defined('ABSPATH') || exit;
 
@@ -33,8 +35,13 @@ add_action('rest_api_init', function () {
             $uid = (int) $p->post_author;
             $u = get_userdata($uid);
             $site = aled08e_meta($uid, 'lia_url');
+            $etat = (string) get_post_meta($p->ID, '_aled08_pg_etat', true);
             $out[] = [
                 'demande' => (int) $p->ID,
+                'etat' => $etat ?: 'a_faire',
+                'role' => function_exists('aled08e_agent_role') ? aled08e_agent_role($etat) : 'constructeur',
+                'entre_agents' => function_exists('aled08e_agent_fil') ? aled08e_agent_fil($p->ID) : [],
+                'page_preparee' => $etat !== '' ? ['titre' => (string) get_post_meta($p->ID, '_aled08_pg_titre', true), 'lien' => (string) get_post_meta($p->ID, '_aled08_lien', true), 'page' => (int) get_post_meta($p->ID, '_aled08_pg_page', true)] : null,
                 'client' => $u ? $u->display_name : '',
                 'site' => $site,
                 'site_relie' => $site !== '' && aled08e_meta($uid, 'lia_secret') !== '',
@@ -44,7 +51,7 @@ add_action('rest_api_init', function () {
                 'questionnaire' => aled08e_pg_questionnaire($uid),
             ];
         }
-        return new WP_REST_Response(['pages' => $out, 'aide' => 'Écrivez chaque page sur le site du client (atelier_rest), puis POST /aled08/v1/atelier/page-google {demande, titre, lien}.'], 200);
+        return new WP_REST_Response(['pages' => $out, 'aide' => 'Le constructeur prépare la page en brouillon puis POST /aled08/v1/atelier/page-google {demande, faire: "a_controler", titre, page, texte}. Le contrôleur la publie puis {demande, faire: "valider", lien}, ou {demande, faire: "corriger", texte}.'], 200);
     }]);
     register_rest_route('aled08/v1', '/atelier/page-google', ['methods' => 'POST', 'permission_callback' => $perm, 'callback' => 'aled08e_pg_livrer']);
 });
@@ -54,9 +61,58 @@ function aled08e_pg_livrer(WP_REST_Request $req) {
     $pid = (int) ($d['demande'] ?? 0);
     $p = $pid ? get_post($pid) : null;
     if (!$p || $p->post_type !== ALED08E_CPT || !get_post_meta($pid, '_aled08_seo', true)) return new WP_Error('aled08_pg', 'Demande introuvable.', ['status' => 404]);
+    $faire = sanitize_key((string) ($d['faire'] ?? 'a_controler'));
+    $etat = (string) get_post_meta($pid, '_aled08_pg_etat', true);
+    $note = trim(wp_strip_all_tags((string) ($d['texte'] ?? '')));
     $titre = mb_substr(sanitize_text_field((string) ($d['titre'] ?? '')), 0, 160);
     $lien = esc_url_raw((string) ($d['lien'] ?? ''));
-    if ($titre === '' || !wp_http_validate_url($lien)) return new WP_Error('aled08_pg', 'Il faut le titre de la page et son adresse (https://…).', ['status' => 400]);
+    $uidP = (int) $p->post_author;
+    $nomP = '#' . $pid . ' de ' . (($uu = get_userdata($uidP)) ? $uu->display_name : '?');
+    if (get_post_meta($pid, '_aled08_statut', true) === 'faite') return new WP_Error('aled08_pg', 'Cette page est déjà livrée.', ['status' => 409]);
+    if ($faire === 'a_controler') {
+        // le constructeur a préparé la page (en brouillon sur le site du client) : elle part au contrôle
+        if ($etat === 'pour_alex') return new WP_Error('aled08_pg', 'Cette page est chez Alex.', ['status' => 409]);
+        if ($titre === '' || (empty($d['page']) && !wp_http_validate_url($lien))) return new WP_Error('aled08_pg', 'Il faut le titre de la page, et son numéro sur le site du client (page) ou son adresse (lien).', ['status' => 400]);
+        update_post_meta($pid, '_aled08_pg_titre', $titre);
+        if (!empty($d['page'])) update_post_meta($pid, '_aled08_pg_page', (int) $d['page']);
+        if ($lien !== '') update_post_meta($pid, '_aled08_lien', $lien);
+        if ($note !== '') aled08e_agent_fil_ajouter($pid, 'constructeur', $note);
+        update_post_meta($pid, '_aled08_statut', 'encours');
+        update_post_meta($pid, '_aled08_pg_etat', 'a_controler');
+        return new WP_REST_Response(['ok' => true, 'etat' => 'a_controler'], 200);
+    }
+    if ($faire === 'corriger') {
+        if ($etat !== 'a_controler') return new WP_Error('aled08_pg', 'Cette page n’est pas au contrôle.', ['status' => 409]);
+        if ($note === '') return new WP_Error('aled08_pg', 'Dites ce qu’il faut corriger (texte).', ['status' => 400]);
+        aled08e_agent_fil_ajouter($pid, 'controleur', $note);
+        if (aled08e_agent_tour($pid) > 2) {
+            update_post_meta($pid, '_aled08_pg_etat', 'pour_alex');
+            aled08e_agents_pour_alex('la page Google', $nomP, 'Le contrôle a refusé trois fois la page.', 'Dernier refus : ' . $note);
+            return new WP_REST_Response(['ok' => true, 'etat' => 'pour_alex'], 200);
+        }
+        update_post_meta($pid, '_aled08_pg_etat', 'a_corriger');
+        return new WP_REST_Response(['ok' => true, 'etat' => 'a_corriger'], 200);
+    }
+    if ($faire === 'pour_alex') {
+        if ($note === '') return new WP_Error('aled08_pg', 'Dites pourquoi ce cas est pour Alex (texte).', ['status' => 400]);
+        aled08e_agent_fil_ajouter($pid, 'pour_alex', $note);
+        update_post_meta($pid, '_aled08_pg_etat', 'pour_alex');
+        aled08e_agents_pour_alex('la page Google', $nomP, $note, 'Sujet : ' . (string) get_post_meta($pid, '_aled08_brief', true));
+        return new WP_REST_Response(['ok' => true, 'etat' => 'pour_alex'], 200);
+    }
+    if ($faire === 'reprendre') {
+        if (empty($d['accord_alex'])) return new WP_Error('aled08_pg', 'Il faut l’accord d’Alex.', ['status' => 400]);
+        if ($note !== '') aled08e_agent_fil_ajouter($pid, 'alex', $note);
+        delete_post_meta($pid, '_aled08_controle_tours');
+        update_post_meta($pid, '_aled08_pg_etat', 'a_corriger');
+        return new WP_REST_Response(['ok' => true, 'etat' => 'a_corriger'], 200);
+    }
+    if ($faire !== 'valider') return new WP_Error('aled08_pg', 'À faire inconnu (a_controler, corriger, valider, pour_alex, reprendre).', ['status' => 400]);
+    // le contrôleur a publié la page et la valide : elle est livrée
+    if ($etat !== 'a_controler' && empty($d['accord_alex'])) return new WP_Error('aled08_pg', 'Une page n’est validée qu’après être passée au contrôle (faire "a_controler" d’abord).', ['status' => 409]);
+    if ($titre === '') $titre = (string) get_post_meta($pid, '_aled08_pg_titre', true);
+    if ($titre === '' || !wp_http_validate_url($lien)) return new WP_Error('aled08_pg', 'Il faut le titre de la page et son adresse en ligne (https://…).', ['status' => 400]);
+    update_post_meta($pid, '_aled08_pg_etat', 'faite');
     update_post_meta($pid, '_aled08_statut', 'faite');
     update_post_meta($pid, '_aled08_lien', $lien);
     update_post_meta($pid, '_aled08_pg_titre', $titre);
@@ -64,7 +120,7 @@ function aled08e_pg_livrer(WP_REST_Request $req) {
     update_post_meta($pid, '_aled08_reponse', 'Votre page « ' . $titre . ' » est en ligne : ' . $lien);
     wp_update_post(['ID' => $pid, 'post_title' => 'Page de visibilité Google : ' . $titre]);
     $uid = (int) $p->post_author;
-    aled08e_lia_journal_add('Atelier : page de visibilité Google en ligne pour ' . (($u = get_userdata($uid)) ? $u->display_name : '#' . $uid) . ' : ' . $titre . '.');
+    aled08e_lia_journal_add('Atelier : page de visibilité Google contrôlée et en ligne pour ' . (($u = get_userdata($uid)) ? $u->display_name : '#' . $uid) . ' : ' . $titre . '.');
 
     // toutes les pages de la même commande sont en ligne ? alors le joli e-mail part
     $parent = (int) get_post_meta($pid, '_aled08_seo_parent', true);

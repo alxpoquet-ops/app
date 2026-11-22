@@ -129,7 +129,7 @@ function aled08e_cer_transmettre($pid, $note = '') {
     update_post_meta($pid, '_aled08_echeance', $ech);
     if ($note !== '') update_post_meta($pid, '_aled08_note_cerise', $note);
     if (aled08e_cer_maxi($uid)) update_post_meta($pid, '_aled08_priorite', 1);
-    update_post_meta($pid, '_aled08_reponse', 'Cerise : Merci pour vos précisions ! Je transmets votre demande à Alex. Il s’en occupe d’ici ' . aled08e_cer_echeance_txt($ech) . ', et vous serez prévenu dès que c’est fait.');
+    update_post_meta($pid, '_aled08_reponse', 'Cerise : Merci pour vos précisions ! Je passe votre demande à Bricou. Il s’en occupe d’ici ' . aled08e_cer_echeance_txt($ech) . ', et vous serez prévenu dès que c’est fait.');
     aled08e_ech_activite($pid);
     aled08e_lia_journal_add('Demande #' . $pid . ' transmise à Alex (à faire avant le ' . wp_date('j/m H:i', $ech) . ').');
     $photos = [];
@@ -137,6 +137,8 @@ function aled08e_cer_transmettre($pid, $note = '') {
     $hist = '';
     foreach (aled08e_ech_retours($pid) as $r) { $hist .= '- ' . ['refus' => 'Correction du client', 'question' => 'Question de Cerise', 'reponse' => 'Réponse du client'][$r['type']] . ' : ' . ($r['texte'] !== '' ? $r['texte'] : '(sans texte)') . "\n"; foreach ($r['photos'] as $id) { $url = wp_get_attachment_url((int) $id); if ($url) $hist .= '  capture : ' . $url . "\n"; } }
     $brief = (string) get_post_meta($pid, '_aled08_brief', true);
+    // 22 novembre 2026 : les agents font les modifications simples ; Alex n'est prévenu que pour un cas compliqué (includes/agents.php)
+    if (function_exists('aled08e_agents_pour_modifs') && aled08e_agents_pour_modifs($pid)) return;
     wp_mail(aled08e_to(), (get_post_meta($pid, '_aled08_priorite', true) ? 'MAXI · ' : '') . 'Demande à faire avant le ' . wp_date('j/m à G\hi', $ech) . ' : ' . ($u ? $u->display_name : '?'),
         'Client : ' . ($u ? $u->display_name . ' (' . $u->user_email . ')' : '?') . "\nSite : " . (aled08e_meta($uid, 'site') ?: 'non renseigné') . "\nÀ faire avant le : " . wp_date('l j F à G\hi', $ech) . "\n\n"
         . ($brief !== '' ? "LA DEMANDE (préparée par Cerise, confirmée par le client) :\n" . $brief . "\n\n" : '') . ($note !== '' ? 'Note : ' . $note . "\n\n" : '')

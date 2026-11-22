@@ -156,7 +156,8 @@ function aled08e_ech_en_retard() {
         if (time() > $ech && !get_post_meta($pid, '_aled08_rappel_retard', true)) {
             update_post_meta($pid, '_aled08_rappel_retard', time());
             wp_mail(aled08e_to(), 'En retard : demande de ' . ($u ? $u->display_name : '?'), "Le délai promis au client est dépassé (" . wp_date('l j F à G\hi', $ech) . ") :\n\n" . $quoi . "\n\nFiche : " . $fiche . "\nVotre tableau : " . aled08e_url(['onglet' => 'accueil']) . "\n", aled08e_mail_headers());
-        } elseif ($ech - time() < DAY_IN_SECONDS && time() <= $ech && !get_post_meta($pid, '_aled08_rappel_alex', true)) {
+        } elseif ($ech - time() < DAY_IN_SECONDS && time() <= $ech && !get_post_meta($pid, '_aled08_rappel_alex', true)
+            && !(function_exists('aled08e_agents_pour_modifs') && aled08e_agents_pour_modifs($pid) && get_post_meta($pid, '_aled08_agent_etat', true) !== 'pour_alex')) {
             update_post_meta($pid, '_aled08_rappel_alex', time());
             wp_mail(aled08e_to(), 'À faire avant ' . wp_date('l G\hi', $ech) . ' : ' . ($u ? $u->display_name : '?'), "Cette demande est à faire avant le " . wp_date('l j F à G\hi', $ech) . " :\n\n" . $quoi . "\n\nFiche : " . $fiche . "\n", aled08e_mail_headers());
         }

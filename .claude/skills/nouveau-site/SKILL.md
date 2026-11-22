@@ -21,7 +21,7 @@ Le détail et les autres règles : `regles/regles-d-or.md`. Lis-le en premier, �
 
 ## Deux façons de créer un site
 
-**A. Tout seul (le cas normal).** Le client commande et paie sur les-minis-monstres.fr, remplit son questionnaire, et l'atelier automatique (une tâche planifiée de Claude, toutes les deux heures de 7 h à 21 h) crée le site et le livre. Cet atelier lit les mêmes règles que toi : elles lui sont servies par la route `GET /aled08/v1/atelier/regles`. Rien à faire ici, sauf si Alex demande de vérifier ou de corriger.
+**A. Tout seul (le cas normal).** Le client commande et paie sur les-minis-monstres.fr, remplit son questionnaire, puis trois agents s'en occupent : le constructeur fait le site, le contrôleur le relit et le livre, Jarvis surveille l'ensemble et prévient Alex seulement pour un cas compliqué (`regles/organisation.md`, `regles/escalade.md`). Ils lisent les mêmes règles que toi, servies par `GET /aled08/v1/atelier/regles`. Rien à faire ici, sauf si Alex demande de vérifier, de corriger, ou tranche un cas.
 
 **B. Avec Alex (ce skill).** Pour un client hors commande en ligne, une reprise, une vérification, ou tant que l'installation automatique n'est pas réglée. Une seule étape à la fois : tu dis quoi faire, tu attends « fait », tu vérifies toi-même quand c'est possible, puis tu passes à la suite. Ne déroule jamais toute la liste d'un coup.
 
@@ -43,7 +43,7 @@ Termine par un court résumé pour Alex : ce qui est fait, ce qui reste, ce que 
 
 ## Où sont les choses
 
-- Les règles : `regles/` (un fichier par sujet). `regles/sources.md` dit d'où viennent les règles tirées du web et quand elles ont été relues.
+- Les règles : `regles/` (un fichier par sujet), dont les fiches de poste des agents (`agent-*.md`), `organisation.md` et `escalade.md`. `regles/sources.md` dit d'où viennent les règles tirées du web et quand elles ont été relues.
 - Les modèles validés par Alex (le niveau minimum) : `docs/modeles/site-essentiel-mougiline.html` et `docs/modeles/site-boutique-mougiline.html`.
 - L'offre et les prix : `src/config.js` fait foi.
 - Le fonctionnement de l'agence (commandes, paiements, atelier) : `docs/gestion-du-site.md`.

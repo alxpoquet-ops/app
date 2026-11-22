@@ -4,14 +4,20 @@ Tout passe par les-minis-monstres.fr (outils WordPress « Mini monstres »). Les
 
 ## Les étapes d'une commande dans l'atelier
 
+Depuis le 22 novembre 2026, un site passe par deux agents : le constructeur le fait, le contrôleur le relit et le livre (`organisation.md`).
+
 `wp_rest_write` sur `/aled08/v1/atelier/chantier`, avec `{ "commande": ID, "faire": "…" }` :
 
-| `faire` | Quand | Ce qui se passe |
-|---|---|---|
-| `question` + `texte` | Seulement si l'essentiel manque (voir ci-dessous) | Le client reçoit un e-mail et répond dans son espace (onglet « Ma commande ») |
-| `note` + `texte` (+ `etat`: `visuel`) | Tu commences le visuel, ou quelque chose bloque | Une ligne dans le journal de la commande |
-| `livrer` + `texte`, `resume`, `lien` | Le site est prêt et relu | La commande passe en ligne, le client reçoit « Votre site est en ligne », Alex reçoit « Site livré (V1) » |
-| `a_verifier` | Seulement si Alex a demandé à voir le site avant | Alex reçoit le site à vérifier, rien ne part au client |
+| `faire` | Qui | Quand | Ce qui se passe |
+|---|---|---|---|
+| `question` + `texte` | Le constructeur | Seulement si l'essentiel manque (voir ci-dessous) | Le client reçoit un e-mail et répond dans son espace (onglet « Ma commande ») |
+| `note` + `texte` (+ `etat`: `visuel`) | Le constructeur | Il commence le site, ou quelque chose bloque | Une ligne dans le journal de la commande |
+| `a_controler` + `resume`, `lien`, `texte` | Le constructeur | Le site est fini et relu | Le site part au contrôle. Rien n'est envoyé au client |
+| `corriger` + `texte` | Le contrôleur | Un défaut | Le site repart chez le constructeur, avec la liste des corrections |
+| `livrer` + `texte` | Le contrôleur | Tout est bon | La commande passe en ligne, le client reçoit « Votre site est en ligne », Alex reçoit « Site livré (V1) » |
+| `pour_alex` + `texte` | L'un ou l'autre | Un cas de `escalade.md` | Alex reçoit « À voir par vous », le travail attend |
+
+`livrer` est refusé tant que le site n'est pas passé par `a_controler`.
 
 ## Question ou livraison : selon ce qui manque
 
@@ -34,15 +40,17 @@ Décision d'Alex (22 novembre 2026). Le site est promis en quelques heures : on 
 
 Pour mémoire, le questionnaire demande déjà : la ville et la zone, pourquoi on le choisit, des avis de clients, comment ses clients achètent, l'envoi, la personnalisation, les étapes d'une commande, l'offre vedette, les marchés et leurs dates, les questions fréquentes, les villes visées, les recherches Google de ses clients, le lien de sa fiche Google, un site dont le style lui plaît, ses photos, ses prix et ce qu'ils comprennent, le nom et l'adresse pour les mentions légales.
 
-## Livrer la V1
+## Remettre le site au contrôle, puis le livrer
 
-Après le contrôle complet (`controle-qualite.md`), envoie `faire: "livrer"` avec :
+Après avoir passé lui-même toute la liste de `controle-qualite.md`, **le constructeur** envoie `faire: "a_controler"` avec :
 
-- **`texte`** : une note courte pour Alex. Ce qui est fait, la référence du métier choisie et ce qu'on a repris de son organisation, ce que tu as décidé seul, les pages de conseils écrites, ce qui reste à compléter.
 - **`resume`** : le contenu du site expliqué au client (voir plus bas). Obligatoire.
 - **`lien`** : l'adresse du site, en https.
+- **`texte`** : sa note pour le contrôle et pour Alex. Ce qui est fait, la référence du métier choisie et ce qu'on a repris de son organisation, ce qu'il a décidé seul, les images d'attente, les pages de conseils écrites, ce qui reste à compléter.
 - **`pages_total`** et **`pages_google`** : quand le site a des pages de visibilité Google ou l'option e-commerce. Le total des pages, et celles faites pour Google (pages produits ou services, pages locales, conseils, questions fréquentes).
 - **`articles`** : avec l'option e-commerce, le nombre d'articles mis dans la boutique.
+
+**Le contrôleur** relit tout, puis envoie `faire: "livrer"` avec son verdict dans `texte` (ou `corriger`).
 
 L'e-mail « Votre site est en ligne » dit en haut que c'est une **V1** : le client peut la modifier lui-même (« Modifier mon site moi-même ») ou nous la faire modifier (« Mes modifications »). Il présente le contenu en cartes pastel avec les petits monstres, et rappelle que tout se règle depuis l'application.
 
@@ -59,12 +67,24 @@ Vouvoiement, simple, rien d'inventé.
 
 ## Les pages de visibilité Google commandées après coup
 
-1. `wp_rest_read` sur `/aled08/v1/atelier/pages-google` : chaque ligne donne `demande`, `site`, `site_relie`, `sujet` (choisi par Mirette, ou « sujet à choisir »), `idees_du_client` et `questionnaire`.
-2. Écris la page sur le site du client et mets-la en ligne (règles : `google.md`).
-3. Relis-la en ligne, puis déclare-la : `wp_rest_write` sur `/aled08/v1/atelier/page-google` avec `{ "demande": N, "titre": "…", "lien": "https://…" }`.
-4. Quand toutes les pages d'une même commande sont déclarées, le client reçoit « Vos pages Google sont en ligne » avec la liste et les liens, et Alex un court e-mail.
+1. `wp_rest_read` sur `/aled08/v1/atelier/pages-google` : chaque ligne donne `demande`, `etat`, `role`, `site`, `site_relie`, `sujet` (choisi par Mirette, ou « sujet à choisir »), `idees_du_client`, `questionnaire`, `entre_agents`.
+2. **Le constructeur** écrit la page **en brouillon** sur le site du client (règles : `google.md`), puis l'envoie au contrôle : `wp_rest_write` sur `/aled08/v1/atelier/page-google` avec `{ "demande": N, "faire": "a_controler", "titre": "…", "page": NUMÉRO, "texte": "…" }`.
+3. **Le contrôleur** la relit. Bonne : il la publie, ajoute le lien depuis la page indiquée, puis `{ "demande": N, "faire": "valider", "lien": "https://…" }`. Sinon : `{ "demande": N, "faire": "corriger", "texte": "…" }`.
+4. Quand toutes les pages d'une même commande sont validées, le client reçoit « Vos pages Google sont en ligne » avec la liste et les liens, et Alex un court e-mail.
 
 Un site pas encore relié (`site_relie` faux) : on passe, on reviendra.
+
+## Les modifications demandées par les clients
+
+`wp_rest_read` sur `/aled08/v1/atelier/demandes`, puis `wp_rest_write` sur `/aled08/v1/atelier/demande` avec `{ "demande": N, "faire": "…" }` :
+
+| `faire` | Qui | Ce qui se passe |
+|---|---|---|
+| `commencer` | Le constructeur | Le client voit que Bricou s'en occupe |
+| `a_controler` + `texte` | Le constructeur | La modification part au contrôle (`texte` : la page, avant, après) |
+| `corriger` + `texte` | Le contrôleur | Elle repart chez le constructeur |
+| `faite` + `texte` | Le contrôleur | Le client reçoit « Votre modification est en ligne », avec le petit mot de `texte` |
+| `pour_alex` + `texte` | L'un ou l'autre | Alex reçoit « À voir par vous », le client voit que sa demande a besoin de son regard |
 
 ## Un client déjà installé, sans commande dans l'atelier
 
@@ -78,4 +98,4 @@ Un site pas encore relié (`site_relie` faux) : on passe, on reviendra.
 
 ## Si quelque chose bloque
 
-Une erreur qui se répète, un site injoignable : écris-le avec `faire: "note"` et arrête-toi pour ce site. Ne livre jamais un site que tu n'as pas pu relire en ligne.
+Une erreur passagère : écris-le avec `faire: "note"` et laisse ce travail pour le prochain passage. La même erreur au passage suivant : c'est un cas pour Alex (`escalade.md`). On ne remet jamais au contrôle, et on ne livre jamais, un site qu'on n'a pas pu relire en ligne.

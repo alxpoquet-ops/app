@@ -87,17 +87,28 @@ function aled08e_chantiers_liste(WP_REST_Request $req) {
         $pose = (bool) get_post_meta($cid, '_aled08_pose_fin', true);
         $relie = $c['user'] && aled08e_meta($c['user'], 'lia_secret') !== '' && aled08e_meta($c['user'], 'lia_url') !== '';
         // ce qu'il y a à faire maintenant, en clair
-        if ($etat === 'a_verifier') $afaire = 'rien : Alex vérifie';
-        elseif (!$brief) $afaire = 'rien : on attend le questionnaire du client';
-        elseif ($etat === 'question') $afaire = 'rien : on attend la réponse du client';
+        // à qui est la main : le constructeur, le contrôleur, le client ou Alex
+        $role = 'constructeur';
+        if ($etat === 'a_verifier') { $afaire = 'rien : Alex vérifie'; $role = 'alex'; }
+        elseif ($etat === 'pour_alex') { $afaire = 'rien : Alex regarde ce cas'; $role = 'alex'; }
+        elseif ($etat === 'a_controler') { $afaire = 'contrôler le site, puis le livrer ou demander des corrections'; $role = 'controleur'; }
+        elseif ($etat === 'a_corriger') $afaire = 'corriger le site d’après le contrôle, puis le renvoyer au contrôle';
+        elseif (!$brief) { $afaire = 'rien : on attend le questionnaire du client'; $role = 'client'; }
+        elseif ($etat === 'question') { $afaire = 'rien : on attend la réponse du client'; $role = 'client'; }
         elseif (!$relie) $afaire = 'lire le questionnaire ; poser une question seulement si l’essentiel manque ; le site n’est pas encore installé (' . $c['statut'] . ')';
-        else $afaire = 'faire le visuel (questionnaire reçu, site installé et relié)';
+        else $afaire = 'faire le site (questionnaire reçu, site installé et relié)';
         $l = ['commande' => (int) $cid, 'ref' => $c['ref'], 'prenom' => $c['prenom'], 'activite' => $c['entreprise'], 'type' => $c['type'], 'forfait' => $c['forfait'], 'domaine' => $c['domaine'],
-            'statut' => $c['statut'], 'questionnaire_recu' => $brief, 'site_installe' => $pose, 'site_relie' => $relie, 'etat' => $etat ?: 'a_lire', 'a_faire' => $afaire];
+            'statut' => $c['statut'], 'questionnaire_recu' => $brief, 'site_installe' => $pose, 'site_relie' => $relie, 'etat' => $etat ?: 'a_lire', 'role' => $role, 'a_faire' => $afaire];
         if ($detail === (int) $cid) {
             $l['questionnaire'] = $brief ? aled08e_brief_texte($cid) : '';
             $l['echanges'] = aled08e_chantier_fil($cid);
             $l['journal'] = array_slice((array) get_post_meta($cid, '_aled08_journal', true), -15);
+            // entre agents (jamais montré au client) : ce que le constructeur a remis au contrôle, et les corrections demandées
+            $l['entre_agents'] = function_exists('aled08e_agent_fil') ? aled08e_agent_fil($cid) : [];
+            if (in_array($etat, ['a_controler', 'a_corriger', 'pour_alex'], true)) {
+                $l['remis_au_controle'] = ['resume' => aled08e_chantier_resume($cid), 'lien' => (string) get_post_meta($cid, '_aled08_apercu', true),
+                    'pages_total' => aled08e_chantier_pages_total($cid), 'pages_google' => aled08e_chantier_pages_google($cid), 'articles' => aled08e_chantier_articles($cid)];
+            }
         }
         $out[] = $l;
     }
@@ -151,10 +162,58 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
         update_post_meta($cid, '_aled08_chantier', 'en_ligne');
         return new WP_REST_Response(['ok' => true, 'statut' => 'en_ligne'], 200);
     }
-    if ($faire === 'livrer') {
-        // depuis le 21 novembre 2026 : l'atelier livre lui-même la V1 au client (accord général d'Alex), puis prévient Alex
+    $nomCmd = $c['ref'] . ' ' . ($c['entreprise'] ?: trim($c['prenom'] . ' ' . $c['nom']));
+    if ($faire === 'a_controler') {
+        // 22 novembre 2026 : le constructeur a fini, le site part au contrôle (un autre agent). Rien n'est envoyé au client.
         if (!in_array($c['statut'], ['pret', 'en_creation'], true)) return new WP_Error('aled08_chantier', 'Cette commande n’est pas en création (statut ' . $c['statut'] . ').', ['status' => 409]);
-        if (empty($p['resume'])) return new WP_Error('aled08_chantier', 'Le résumé pour le client (resume) est obligatoire.', ['status' => 400]);
+        if (aled08e_chantier_etat($cid) === 'pour_alex') return new WP_Error('aled08_chantier', 'Ce site est chez Alex : il repartira quand il aura tranché.', ['status' => 409]);
+        if (empty($p['resume']) && aled08e_chantier_resume($cid) === '') return new WP_Error('aled08_chantier', 'Le résumé pour le client (resume) est obligatoire.', ['status' => 400]);
+        $lien = esc_url_raw((string) ($p['lien'] ?? ''));
+        if ($lien !== '' && wp_parse_url($lien, PHP_URL_SCHEME) === 'https') update_post_meta($cid, '_aled08_apercu', $lien);
+        aled08e_chantier_resume_garder($cid, $p);
+        if ($texte !== '') aled08e_agent_fil_ajouter($cid, 'constructeur', $texte);
+        if ($c['statut'] === 'pret') aled08e_cmd_set_statut($cid, 'en_creation', 'Site fait par l’atelier, au contrôle.');
+        update_post_meta($cid, '_aled08_chantier', 'a_controler');
+        aled08e_cmd_journal($cid, 'Atelier : site fait, envoyé au contrôle.');
+        return new WP_REST_Response(['ok' => true, 'etat' => 'a_controler'], 200);
+    }
+    if ($faire === 'corriger') {
+        if (aled08e_chantier_etat($cid) !== 'a_controler') return new WP_Error('aled08_chantier', 'Ce site n’est pas au contrôle.', ['status' => 409]);
+        if ($texte === '') return new WP_Error('aled08_chantier', 'Dites ce qu’il faut corriger (texte).', ['status' => 400]);
+        aled08e_agent_fil_ajouter($cid, 'controleur', $texte);
+        if (aled08e_agent_tour($cid) > 2) {
+            update_post_meta($cid, '_aled08_chantier', 'pour_alex');
+            aled08e_agents_pour_alex('le site', $nomCmd, 'Le contrôle a refusé trois fois le site.', 'Dernier refus : ' . $texte . "\n\nSite : " . $site . "\nCommande : " . aled08e_cmd_admin_url($cid));
+            return new WP_REST_Response(['ok' => true, 'etat' => 'pour_alex'], 200);
+        }
+        update_post_meta($cid, '_aled08_chantier', 'a_corriger');
+        aled08e_cmd_journal($cid, 'Contrôle : corrections demandées.');
+        return new WP_REST_Response(['ok' => true, 'etat' => 'a_corriger'], 200);
+    }
+    if ($faire === 'pour_alex') {
+        if ($texte === '') return new WP_Error('aled08_chantier', 'Dites pourquoi ce cas est pour Alex (texte).', ['status' => 400]);
+        aled08e_agent_fil_ajouter($cid, 'pour_alex', $texte);
+        update_post_meta($cid, '_aled08_chantier', 'pour_alex');
+        aled08e_cmd_journal($cid, 'Cas remonté à Alex : ' . mb_substr($texte, 0, 300));
+        aled08e_agents_pour_alex('le site', $nomCmd, $texte, 'Site : ' . $site . "\nCommande : " . aled08e_cmd_admin_url($cid));
+        return new WP_REST_Response(['ok' => true, 'etat' => 'pour_alex'], 200);
+    }
+    if ($faire === 'reprendre') {
+        // Alex a tranché (dit dans une conversation) : le travail repart chez le constructeur avec sa consigne
+        if (empty($p['accord_alex'])) return new WP_Error('aled08_chantier', 'Il faut l’accord d’Alex.', ['status' => 400]);
+        if ($texte !== '') aled08e_agent_fil_ajouter($cid, 'alex', $texte);
+        delete_post_meta($cid, '_aled08_controle_tours');
+        update_post_meta($cid, '_aled08_chantier', 'a_corriger');
+        aled08e_cmd_journal($cid, 'Alex a tranché : le site repart chez le constructeur.');
+        return new WP_REST_Response(['ok' => true, 'etat' => 'a_corriger'], 200);
+    }
+    if ($faire === 'livrer') {
+        // la V1 est livrée au client sans attendre Alex (21 novembre 2026), mais seulement après le contrôle d'un autre agent (22 novembre)
+        if (!in_array($c['statut'], ['pret', 'en_creation'], true)) return new WP_Error('aled08_chantier', 'Cette commande n’est pas en création (statut ' . $c['statut'] . ').', ['status' => 409]);
+        if (aled08e_chantier_etat($cid) !== 'a_controler' && empty($p['accord_alex'])) return new WP_Error('aled08_chantier', 'Un site n’est livré qu’après le contrôle : le constructeur l’envoie d’abord avec faire "a_controler".', ['status' => 409]);
+        if (empty($p['resume']) && aled08e_chantier_resume($cid) === '') return new WP_Error('aled08_chantier', 'Le résumé pour le client (resume) est obligatoire.', ['status' => 400]);
+        if ($texte !== '') aled08e_agent_fil_ajouter($cid, 'controleur', 'Contrôle bon : ' . $texte);
+        if (function_exists('aled08e_memoire_ajouter')) aled08e_memoire_ajouter('journal', 'Site livré : ' . $nomCmd, 'V1 livrée après contrôle. ' . $texte, (int) $c['user'], 'controleur');
         $lien = esc_url_raw((string) ($p['lien'] ?? ''));
         if ($lien !== '' && wp_parse_url($lien, PHP_URL_SCHEME) !== 'https') $lien = '';
         if ($lien !== '') update_post_meta($cid, '_aled08_apercu', $lien);
@@ -165,10 +224,10 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
         aled08e_cmd_journal($cid, 'Atelier : V1 livrée au client, e-mail « Votre site est en ligne » envoyé.');
         // Alex est prévenu, sans rien à valider
         $site = $lien !== '' ? $lien : ($c['domaine'] ? 'https://' . $c['domaine'] . '/' : (string) aled08e_meta($c['user'], 'site'));
-        wp_mail(aled08e_to(), 'Site livré (V1) : ' . ($c['entreprise'] ?: $c['prenom'] . ' ' . $c['nom']), 'L’atelier a livré la V1 du site au client, avec l’e-mail « Votre site est en ligne ».' . "\n\nSite : " . $site . "\nCommande : " . $c['ref'] . ' ' . aled08e_cmd_admin_url($cid) . "\n\nNote de l’atelier :\n" . $texte . "\n\nCe que le client a reçu :\n" . (string) $p['resume'] . "\n", aled08e_mail_headers());
+        wp_mail(aled08e_to(), 'Site livré (V1) : ' . ($c['entreprise'] ?: $c['prenom'] . ' ' . $c['nom']), 'L’atelier a livré la V1 du site au client, avec l’e-mail « Votre site est en ligne ».' . "\n\nSite : " . $site . "\nCommande : " . $c['ref'] . ' ' . aled08e_cmd_admin_url($cid) . "\n\nLe contrôle :\n" . ($texte !== '' ? $texte : '(sans note)') . "\n\nLa note du constructeur :\n" . (aled08e_agent_fil_dernier($cid, 'constructeur') ?: '(sans note)') . "\n\nCe que le client a reçu :\n" . aled08e_chantier_resume($cid) . "\n", aled08e_mail_headers());
         return new WP_REST_Response(['ok' => true, 'statut' => 'en_ligne'], 200);
     }
-    return new WP_Error('aled08_chantier', 'À faire inconnu (question, note, a_verifier, livrer, en_ligne).', ['status' => 400]);
+    return new WP_Error('aled08_chantier', 'À faire inconnu (question, note, a_controler, corriger, livrer, pour_alex, reprendre, a_verifier, en_ligne).', ['status' => 400]);
 }
 
 /* L'e-mail à Alex, le seul du parcours : le site à regarder, puis la réponse se donne dans la conversation avec Claude */

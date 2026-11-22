@@ -416,6 +416,23 @@ L'atelier (`includes/atelier.php`, route `/wp-json/aled08/v1/atelier`, réservé
 
 Après sa commande, le client remplit le questionnaire. L'atelier (une tâche programmée de Claude, toutes les deux heures de 7 h à 21 h) lit `/wp-json/aled08/v1/atelier/chantiers`, pose ses questions au client si besoin (e-mail + bloc « Nos questions pour votre site » dans l'onglet « Ma commande », où le client répond), fait le site, le contrôle, puis **le livre lui-même** : le client reçoit « Votre site est en ligne » (une V1 qu'il peut modifier), et Alex un e-mail « Site livré (V1) ».
 
+### Trois agents : le constructeur, le contrôleur, Jarvis (22 novembre 2026)
+
+Décision d'Alex : LMM tourne seul, chaque travail est vérifié par un second agent, et seuls les cas compliqués lui remontent. Le détail est dans `.claude/skills/nouveau-site/regles/organisation.md` et `escalade.md`.
+
+| Tâche planifiée (claude.ai) | Quand | Rôle |
+|---|---|---|
+| « LMM · Le constructeur » (`trig_01MRc7z3rX6i3hSssqBFKBE8`) | 7 h 17 à 21 h 17, toutes les 2 h | Fait les sites, les pages Google, les modifications, puis les envoie au contrôle |
+| « LMM · Le contrôleur » (`trig_01VBp8mxyTbiM1uTb6ybGpFt`) | 8 h 17 à 22 h 17, toutes les 2 h | Relit, puis livre ou renvoie à corriger |
+| « LMM · Jarvis » (`trig_014KPYem6nbbgTn5FFFsZEUk`) | Chaque jour à 8 h 43 | Regarde l'ensemble, écrit à Alex seulement s'il le faut (et le lundi) |
+
+- **À faire une fois par Alex :** dans claude.ai, sur chacune de ces trois tâches planifiées, activer le connecteur « Mini monstres ». Sans lui, un agent s'arrête dès son premier pas (il n'a pas accès au site). Ce réglage ne peut pas se faire depuis une conversation.
+- **Tant que ce n'est pas fait :** l'option `aled08_agents` reste à `0` sur le site, et les modifications des clients arrivent chez Alex comme avant. Une fois les agents vérifiés : la passer à `1`, et poser `aled08_agents_en_place` à `1` (le chien de garde prévient alors Alex si les agents ne passent plus depuis une journée).
+- **Chaque agent commence par** `GET /aled08/v1/atelier/poste?agent=NOM` : sa fiche de poste, son travail, la mémoire. La consigne de la tâche planifiée ne contient que ce premier pas et les garde-fous.
+- **La mémoire commune (le « second cerveau »)** : `GET` et `POST /aled08/v1/atelier/memoire` (décisions d'Alex, notes par client, leçons, journal). Code : `includes/agents.php`.
+- **Un cas pour Alex** : e-mail « À voir par vous ». Il répond dans une conversation avec Claude, qui relance le travail (`faire: "reprendre"`, `accord_alex: true`).
+- **Essais sans WordPress** des états (site, modification, page Google) : le banc d'essai de la session du 22 novembre a vérifié que rien n'est livré sans contrôle, que trois refus envoient le cas chez Alex, et qu'un cas chez Alex est bloqué pour les agents.
+
 ### Les règles de création : un seul endroit (22 novembre 2026)
 
 Toutes les règles (rien d'inventé, visuel, ce qui fait venir des demandes, Google, vitesse, accessibilité, pages légales, contrôle, livraison) sont écrites dans le skill « nouveau-site » : `.claude/skills/nouveau-site/regles/`, un fichier par sujet. `regles/sources.md` dit d'où viennent celles tirées du web et quand elles ont été relues.

@@ -208,6 +208,7 @@ require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
 require_once __DIR__ . '/includes/pages-google.php';
 require_once __DIR__ . '/includes/regles.php';
+require_once __DIR__ . '/includes/agents.php';
 require_once __DIR__ . '/includes/mirette.php';
 require_once __DIR__ . '/includes/edition.php';
 
@@ -635,7 +636,7 @@ add_action('template_redirect', function () {
         foreach ($payes as $x) aled08e_extra_facturer($pid, $uid, $x);
         $corps .= "\n(Le paiement par carte n'a pas pu s'ouvrir : " . $url->get_error_message() . ". À FACTURER À LA MAIN.)\n";
     }
-    if ($par !== 'lia') wp_mail(aled08e_to(), $sujet . $u->display_name, $corps, aled08e_mail_headers($u->display_name . ' <' . $u->user_email . '>')); // avec Cerise, Alex reçoit la demande claire à la transmission
+    if ($par !== 'lia' && !(function_exists('aled08e_agents_pour_modifs') && aled08e_agents_pour_modifs($pid))) wp_mail(aled08e_to(), $sujet . $u->display_name, $corps, aled08e_mail_headers($u->display_name . ' <' . $u->user_email . '>')); // avec Cerise, Alex reçoit la demande claire à la transmission
     do_action('aled08e_demande_creee', $pid, $par, $uid);
 
     $back($photoFail ? 'photo' : ($extra ? (!empty($xInfo['devis']) ? 'devis_ok' : 'extra_ok') : ($over ? 'boost' : ($urgent ? 'urgent_ok' : 'ok'))));

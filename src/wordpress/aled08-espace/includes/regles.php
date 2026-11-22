@@ -17,15 +17,20 @@ defined('ABSPATH') || exit;
 /* Les fichiers servis, dans l'ordre de lecture : nom => [titre, travaux concernés] */
 function aled08e_regles_liste() {
     return [
-        'regles-d-or' => ['Les règles d’or : à lire en premier, à chaque fois', ['site', 'pages-google']],
+        'regles-d-or' => ['Les règles d’or : à lire en premier, à chaque fois', ['site', 'pages-google', 'modification']],
+        'escalade' => ['Les cas pour Alex : ce qui remonte, et comment', ['site', 'pages-google', 'modification']],
+        'organisation' => ['Qui fait quoi : les trois agents, la mémoire', ['organisation']],
+        'agent-constructeur' => ['Fiche de poste du constructeur', ['poste']],
+        'agent-controleur' => ['Fiche de poste du contrôleur', ['poste']],
+        'agent-jarvis' => ['Fiche de poste de Jarvis', ['poste']],
         'offre' => ['L’offre, les prix, les mots à employer', ['site']],
-        'concurrents' => ['La recherche de concurrents avant chaque site', ['site']],
+        'concurrents' => ['La référence du métier du client, à chercher avant chaque site', ['site']],
         'visuel' => ['Le visuel : parties de la page, téléphone, clair et sombre', ['site']],
         'conversion' => ['Un site qui fait venir des demandes', ['site']],
         'google' => ['Être trouvé sur Google, pages de visibilité', ['site', 'pages-google']],
         'vitesse-accessibilite' => ['Un site rapide et utilisable par tous', ['site', 'pages-google']],
         'legal' => ['Les pages légales et la vie privée', ['site']],
-        'controle-qualite' => ['Le contrôle avant de livrer', ['site', 'pages-google']],
+        'controle-qualite' => ['Le contrôle avant de livrer', ['site', 'pages-google', 'modification']],
         'livraison' => ['Poser une question, livrer, annoncer', ['site', 'pages-google']],
     ];
 }
