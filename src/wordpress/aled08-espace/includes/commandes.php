@@ -693,12 +693,13 @@ function aled08e_cmd_relancer_paiements() {
 }
 function aled08e_cmd_mail_owner_payee($c) {
     $dom = $c['domaine'] && !$c['domaine_mien'];
-    $sujet = 'Commande ' . $c['ref'] . ' payée' . ($dom ? ' : nom de domaine à réserver' : '');
+    $auto = $dom && function_exists('aled08e_registrar') && aled08e_registrar() === 'ovh';
+    $sujet = 'Commande ' . $c['ref'] . ' payée' . ($dom && !$auto ? ' : nom de domaine à réserver' : '');
     $corps = 'La commande ' . $c['ref'] . ' de ' . aled08e_cmd_nom($c) . " est payée.\n\n"
         . aled08e_cmd_recap_txt($c) . "\n"
         . ($dom
             ? (function_exists('aled08e_registrar') && aled08e_registrar() === 'ovh'
-                ? "Nom de domaine : " . $c['domaine'] . " (achat automatique chez OVH" . (function_exists('aled08e_ovh_essai') && aled08e_ovh_essai() ? ', avec votre validation par e-mail' : '') . ")\n\n"
+                ? "Le nom de domaine s’achète tout seul chez OVH" . (function_exists('aled08e_ovh_essai') && aled08e_ovh_essai() ? ', après votre validation par e-mail (mode essai à blanc)' : '') . ".\n\n"
                 : "Nom de domaine à réserver : " . $c['domaine'] . "\nTitulaire (le client) :\n" . aled08e_cmd_titulaire_txt($c) . "\n\nCommandez le domaine chez votre registrar, puis cliquez « Domaine réservé » dans la fiche commande.\n\n")
             : "Le client garde son nom de domaine : il faudra pointer ses DNS vers l’hébergement.\n\n")
         . 'Fiche commande : ' . aled08e_cmd_admin_url($c['id']) . "\n";
