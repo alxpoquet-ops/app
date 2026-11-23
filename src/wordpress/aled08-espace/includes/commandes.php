@@ -468,16 +468,9 @@ function aled08e_cmd_traiter_post() {
         }
     }
 
-    // même adresse e-mail : pas plus de 3 commandes par heure ; et un nouvel envoi du même formulaire (après une erreur
-    // Stripe, un retour arrière…) reprend la commande encore en attente au lieu d'en créer une deuxième
+    // même adresse e-mail : pas plus de 3 commandes par heure
     $recentes = aled08e_cmd_recentes_email($c['email'], HOUR_IN_SECONDS);
     if (count($recentes) >= 3) $err('robot');
-    foreach ($recentes as $r) {
-        if ($r['statut'] === 'attente_paiement' && !$r['paiement_en_cours'] && aled08e_cmd_meme_config($r, $cfg)) {
-            aled08e_cmd_journal($r['id'], 'Formulaire renvoyé depuis le site : reprise de cette commande (pas de nouvelle commande, pas de nouvel e-mail).');
-            aled08e_cmd_vers_paiement($r['id'], $r['ref'], $cfg);
-        }
-    }
 
     // nouveau client : son compte est créé avec le mot de passe qu'il a choisi, et il est connecté
     if (!$compte) {
@@ -488,6 +481,16 @@ function aled08e_cmd_traiter_post() {
         wp_set_auth_cookie($compte['id'], true, is_ssl());
     }
     $uid = $compte['id'];
+
+    // un nouvel envoi du même formulaire (après une erreur
+    // Stripe, un retour arrière…) reprend la commande encore en attente au lieu d'en créer une deuxième
+    foreach ($recentes as $r) {
+        if ($r['statut'] === 'attente_paiement' && !$r['paiement_en_cours'] && (int) $r['user'] === (int) $compte['id'] && aled08e_cmd_meme_config($r, $cfg)) {
+            aled08e_cmd_journal($r['id'], 'Formulaire renvoyé depuis le site : reprise de cette commande (pas de nouvelle commande, pas de nouvel e-mail).');
+            aled08e_cmd_vers_paiement($r['id'], $r['ref'], $cfg);
+        }
+    }
+
 
     // la commande, puis sa référence (le compteur n'est consommé que si la commande existe)
     $type = aled08e_type($cfg['type']);
@@ -659,6 +662,15 @@ add_action('wp_ajax_aled08e_moi', function () {
     if ($cmds) { $last = reset($cmds); foreach (['adresse', 'code_postal', 'ville', 'telephone'] as $k) if (empty($d[$k]) && !empty($last[$k])) $d[$k] = $last[$k]; }
     nocache_headers();
     wp_send_json_success($d);
+});
+
+/* Un compte supprimé : ses commandes jamais payées partent avec lui (les commandes payées restent, pour la comptabilité).
+   Et une commande en attente dont le compte n'existe plus (supprimé avant cette règle) est effacée au passage suivant. */
+add_action('delete_user', function ($uid) {
+    foreach (aled08e_cmd_user_commandes($uid) as $c) if ($c['statut'] === 'attente_paiement') wp_delete_post($c['id'], true);
+});
+add_action('aled08_provision', function () {
+    foreach (aled08e_cmd_par_statut(['attente_paiement']) as $c) if ($c['user'] && !get_userdata((int) $c['user'])) wp_delete_post($c['id'], true);
 });
 
 /* Une commande pas payée une heure après : une seule relance au client, avec le bouton pour reprendre le paiement.
