@@ -75,7 +75,7 @@ add_action('rest_api_init', function () {
 });
 
 function aled08e_chantiers_liste(WP_REST_Request $req) {
-    $ids = get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'any', 'numberposts' => 40, 'fields' => 'ids', 'orderby' => 'date', 'order' => 'ASC',
+    $ids = get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'private', 'numberposts' => 40, 'fields' => 'ids', 'orderby' => 'date', 'order' => 'ASC',
         'meta_query' => [['key' => '_aled08_statut', 'value' => aled08e_cmd_statuts_en_cours(), 'compare' => 'IN']]]);
     $detail = (int) $req->get_param('commande');
     $out = [];
@@ -305,7 +305,7 @@ function aled08e_chantier_html($cmd) {
 
 /* Rappel au client resté sans répondre : une fois, au bout de 3 jours */
 add_action('aled08_horaire', function () {
-    $ids = get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'any', 'numberposts' => 20, 'fields' => 'ids', 'meta_query' => [['key' => '_aled08_chantier', 'value' => 'question']]]);
+    $ids = get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'private', 'numberposts' => 20, 'fields' => 'ids', 'meta_query' => [['key' => '_aled08_chantier', 'value' => 'question']]]);
     foreach ($ids as $cid) {
         $le = (int) get_post_meta($cid, '_aled08_chantier_question_le', true);
         if (!$le || $le > time() - 3 * DAY_IN_SECONDS || get_post_meta($cid, '_aled08_chantier_rappel', true) == $le) continue;
@@ -395,7 +395,7 @@ function aled08e_essai_faire(WP_REST_Request $req) {
     $cid = (int) ($p['commande'] ?? 0);
     if ($faire === 'supprimer') {
         $n = 0;
-        foreach (get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'any', 'numberposts' => 50, 'fields' => 'ids', 'meta_query' => [['key' => '_aled08_essai', 'value' => '1']]]) as $id) { wp_delete_post($id, true); $n++; }
+        foreach (get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'private', 'numberposts' => 50, 'fields' => 'ids', 'meta_query' => [['key' => '_aled08_essai', 'value' => '1']]]) as $id) { wp_delete_post($id, true); $n++; }
         require_once ABSPATH . 'wp-admin/includes/user.php';
         $u = 0;
         foreach (get_users(['meta_key' => 'aled08_essai', 'meta_value' => '1', 'fields' => 'ID']) as $id) { if (!user_can((int) $id, 'edit_posts')) { wp_delete_user((int) $id); $u++; } }

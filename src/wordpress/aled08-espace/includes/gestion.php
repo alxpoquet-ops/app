@@ -258,7 +258,7 @@ function aled08e_gestion($u) {
 
         <div class="app-panel" role="tabpanel" id="t-suivi" aria-labelledby="tab-suivi" hidden>
           <h2 class="app-h">Toutes les demandes</h2>
-          <p class="app-p">Les 60 dernières demandes, où elles en sont, et quand elles ont été faites.</p>
+          <p class="app-p">Les 60 dernières demandes de modification des clients, où elles en sont, et quand elles ont été faites. Les commandes de site sont dans l’onglet <a href="#commandes" data-go="commandes">Commandes</a>.</p>
           <?php
           $toutes = get_posts(['post_type' => ALED08E_CPT, 'post_status' => ['private', 'publish'], 'numberposts' => 60, 'orderby' => 'date', 'order' => 'DESC']);
           $etats = [
@@ -285,7 +285,7 @@ function aled08e_gestion($u) {
             <div class="app-card c-mint"><span class="app-card-ico"><?php echo aled08e_icon('circle-check'); // phpcs:ignore ?></span><span><small>Faites<?php echo $moy ? ' (en ' . ($moy < DAY_IN_SECONDS ? round($moy / HOUR_IN_SECONDS) . ' h' : round($moy / DAY_IN_SECONDS, 1) . ' j') . ' en moyenne)' : ''; ?></small><strong><?php echo (int) $nFaites; ?></strong></span></div>
             <div class="app-card c-pink"><span class="app-card-ico"><?php echo aled08e_icon('badge-euro'); // phpcs:ignore ?></span><span><small>Coût estimé de Cerise</small><strong><?php echo esc_html(number_format($cout, 2, ',', ' ')); ?> $</strong></span></div>
           </div>
-          <?php if (!$toutes) : ?><p class="esp-empty">Aucune demande pour le moment.</p><?php else : ?>
+          <?php if (!$toutes) : ?><p class="esp-empty">Aucune demande de modification pour le moment. Une demande arrive ici quand un client écrit depuis « Mes modifications » de son espace (les demandes retirées à la corbeille n’apparaissent pas).</p><?php else : ?>
           <div class="field ges-filter"><label for="ges-dq">Filtrer</label><input id="ges-dq" type="search" placeholder="Client, Cerise, faite, annulée, visibilité Google" data-ges-filter="#ges-suivi"></div>
           <ul class="ges-list" id="ges-suivi">
             <?php foreach ($toutes as $d) :
