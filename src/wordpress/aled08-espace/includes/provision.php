@@ -491,6 +491,24 @@ function aled08e_hb_cpanel_test() {
     return 'OK' . (aled08e_hb_cpanel_local('uapi') ? ' (de l’intérieur du serveur)' : '') . ', compte ' . ($i['user'] ?? '?') . ', domaine principal ' . ($i['domain'] ?? '?') . ', IP ' . ($i['ip'] ?? '?');
 }
 
+/* Un renvoi d'adresse e-mail sur le compte o2switch (ex. contact@les-minis-monstres.fr vers la boîte d'Alex).
+   POST /aled08/v1/admin/email-renvoi { "adresse": "contact@domaine.fr", "vers": "boite@exemple.fr" } (administrateur) */
+add_action('rest_api_init', function () {
+    register_rest_route('aled08/v1', '/admin/email-renvoi', ['methods' => 'POST', 'permission_callback' => function () { return current_user_can('manage_options'); }, 'callback' => function (WP_REST_Request $r) {
+        $p = (array) $r->get_json_params();
+        $adresse = strtolower(trim((string) ($p['adresse'] ?? ''))); $vers = trim((string) ($p['vers'] ?? ''));
+        if (!is_email($adresse) || !is_email($vers)) return new WP_Error('aled08_renvoi', 'Adresse ou destination invalide.', ['status' => 400]);
+        $dom = substr($adresse, strpos($adresse, '@') + 1);
+        $liste = aled08e_hb_cpanel_uapi('Email', 'list_forwarders', ['domain' => $dom]);
+        if (!is_wp_error($liste)) foreach ((array) $liste as $f) {
+            if (strtolower((string) ($f['dest'] ?? '')) === $adresse && strtolower((string) ($f['forward'] ?? '')) === strtolower($vers)) return new WP_REST_Response(['ok' => true, 'deja' => true], 200);
+        }
+        $res = aled08e_hb_cpanel_uapi('Email', 'add_forwarder', ['domain' => $dom, 'email' => $adresse, 'fwdopt' => 'fwd', 'fwdemail' => $vers]);
+        if (is_wp_error($res)) return new WP_Error('aled08_renvoi', $res->get_error_message(), ['status' => 502]);
+        return new WP_REST_Response(['ok' => true, 'adresse' => $adresse, 'vers' => $vers], 200);
+    }]);
+});
+
 /* =========================================================================
  *  E-mails au client (peu nombreux, rassurants)
  * ========================================================================= */
