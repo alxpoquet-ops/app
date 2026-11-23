@@ -2849,7 +2849,7 @@ main > .section.section-citation + .section { padding-top: 48px; }
 /* Les menus de l'espace client : l'onglet et la rubrique ouverts se voient au premier coup d'œil */
 .app-side .app-tabs button[aria-selected="true"] { background: var(--c, var(--lilac)); color: var(--ink); box-shadow: 0 0 0 3px var(--c-d, var(--lilac-d)) inset, 0 8px 20px -10px var(--c-d, var(--lilac-d)); }
 .app-side .app-tabs button[aria-selected="true"] .ico { background: var(--c-d, var(--lilac-d)); color: var(--bg); }
-.app-side .app-tabs button[aria-selected="true"]::after { content: ""; flex: none; width: 10px; height: 10px; margin-left: auto; border-radius: 50%; background: var(--c-dd, var(--lilac-dd)); }
+@media (min-width: 900px) { .app-side .app-tabs button[aria-selected="true"]::after { content: ""; flex: none; width: 10px; height: 10px; margin-left: auto; border-radius: 50%; background: var(--c-dd, var(--lilac-dd)); } } /* sur téléphone, le point dépasserait de la case */
 .bg-nav a.bg-lien.is-on { box-shadow: 0 0 0 3px var(--pink-d) inset, 0 8px 20px -10px var(--pink-d); }
 .bg-nav a.bg-lien.is-on svg { color: var(--ink); }
 .bg-nav a.bg-lien.is-on::after { content: ""; flex: none; width: 10px; height: 10px; margin-left: auto; border-radius: 50%; background: var(--pink-dd); }
