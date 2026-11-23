@@ -339,6 +339,47 @@ function aled08e_prov_wordpress($c) {
  *  cPanel (jeton) : adaptateur de secours
  * ========================================================================= */
 function aled08e_hb_cpanel_base() { return 'https://' . ALED08_CPANEL_HOST . ':2083'; }
+/* Se connecter comme le navigateur : la page de connexion de cPanel donne une session (un cookie et un chemin /cpsess…).
+   Beaucoup d'hébergeurs, dont o2switch, refusent le mot de passe envoyé à chaque demande (réponse 401) mais acceptent cette
+   connexion-là. La session est gardée 15 minutes, jamais affichée. */
+function aled08e_hb_cpanel_session($neuve = false) {
+    if (!$neuve) { $s = get_transient('aled08_cpanel_session'); if (is_array($s) && !empty($s['jeton'])) return $s; }
+    delete_transient('aled08_cpanel_session');
+    $r = wp_remote_post(aled08e_hb_cpanel_base() . '/login/?login_only=1', ['timeout' => 30, 'redirection' => 0, 'body' => ['user' => ALED08_CPANEL_USER, 'pass' => ALED08_CPANEL_PASS]]);
+    if (is_wp_error($r)) return $r->get_error_code() === 'aled08_cpanel' ? $r : new WP_Error('aled08_cpanel', 'cPanel injoignable : ' . $r->get_error_message());
+    $d = json_decode((string) wp_remote_retrieve_body($r), true);
+    $cookie = '';
+    foreach ((array) wp_remote_retrieve_cookies($r) as $c) if (is_object($c) && $c->name === 'cpsession') $cookie = 'cpsession=' . $c->value;
+    if (!is_array($d) || empty($d['status']) || empty($d['security_token']) || $cookie === '') {
+        $why = is_array($d) && !empty($d['message']) ? ' (' . wp_strip_all_tags((string) $d['message']) . ')' : '';
+        return new WP_Error('aled08_cpanel', 'cPanel refuse la connexion avec ce mot de passe' . $why . ' (' . (int) wp_remote_retrieve_response_code($r) . ').');
+    }
+    $s = ['jeton' => '/' . trim((string) $d['security_token'], '/'), 'cookie' => $cookie];
+    set_transient('aled08_cpanel_session', $s, 15 * MINUTE_IN_SECONDS);
+    return $s;
+}
+/* Une demande à cPanel : avec le jeton s'il y en a un, sinon par une session (et en dernier recours, le mot de passe direct) */
+function aled08e_hb_cpanel_http($method, $chemin, $corps = null, $timeout = 40) {
+    $args = ['timeout' => $timeout, 'redirection' => 0, 'headers' => []];
+    if ($corps !== null) $args['body'] = $corps;
+    $envoyer = function ($url, $args) use ($method) { return $method === 'POST' ? wp_remote_post($url, $args) : wp_remote_get($url, $args); };
+    if (ALED08_CPANEL_TOKEN) {
+        $args['headers'] = aled08e_hb_cpanel_headers();
+        return $envoyer(aled08e_hb_cpanel_base() . $chemin, $args);
+    }
+    for ($essai = 0; $essai < 2; $essai++) {
+        $s = aled08e_hb_cpanel_session($essai > 0);
+        if (is_wp_error($s)) break;
+        $args['headers'] = ['Cookie' => $s['cookie']];
+        $r = $envoyer(aled08e_hb_cpanel_base() . $s['jeton'] . $chemin, $args);
+        $code = is_wp_error($r) ? 0 : (int) wp_remote_retrieve_response_code($r);
+        if (!in_array($code, [301, 302, 401, 403], true)) return $r; // une session expirée renvoie vers la connexion : on se reconnecte une fois
+    }
+    $args['headers'] = aled08e_hb_cpanel_headers(); // dernier recours : le mot de passe envoyé directement
+    $r = $envoyer(aled08e_hb_cpanel_base() . $chemin, $args);
+    if (!is_wp_error($r) && in_array((int) wp_remote_retrieve_response_code($r), [401, 403], true) && isset($s) && is_wp_error($s)) return $s;
+    return $r;
+}
 function aled08e_hb_cpanel_headers() { return ['Authorization' => ALED08_CPANEL_TOKEN ? 'cpanel ' . ALED08_CPANEL_USER . ':' . ALED08_CPANEL_TOKEN : 'Basic ' . base64_encode(ALED08_CPANEL_USER . ':' . ALED08_CPANEL_PASS)]; }
 /* cPanel de l'intérieur : le site LMM tourne sur le même compte o2switch que celui des clients. Il appelle alors les
    commandes de cPanel (uapi, cpapi2) directement sur le serveur, sans mot de passe ni jeton, et sans passer par internet.
@@ -391,9 +432,9 @@ function aled08e_hb_cpanel_uapi($module, $func, $params = []) {
         $d = aled08e_hb_cpanel_local_lancer($bin, $module, $func, $params);
         return is_wp_error($d) ? $d : aled08e_hb_cpanel_uapi_lire($d);
     }
-    $url = aled08e_hb_cpanel_base() . '/execute/' . rawurlencode($module) . '/' . rawurlencode($func) . ($params ? '?' . http_build_query($params, '', '&') : '');
-    $r = wp_remote_get($url, ['timeout' => 40, 'headers' => aled08e_hb_cpanel_headers()]);
-    if (is_wp_error($r)) return new WP_Error('aled08_cpanel', 'cPanel injoignable : ' . $r->get_error_message());
+    $url = '/execute/' . rawurlencode($module) . '/' . rawurlencode($func) . ($params ? '?' . http_build_query($params, '', '&') : '');
+    $r = aled08e_hb_cpanel_http('GET', $url);
+    if (is_wp_error($r)) return $r->get_error_code() === 'aled08_cpanel' ? $r : new WP_Error('aled08_cpanel', 'cPanel injoignable : ' . $r->get_error_message());
     return aled08e_hb_cpanel_uapi_lire(json_decode((string) wp_remote_retrieve_body($r), true), (int) wp_remote_retrieve_response_code($r));
 }
 function aled08e_hb_cpanel_api2($module, $func, $params = []) {
@@ -404,8 +445,8 @@ function aled08e_hb_cpanel_api2($module, $func, $params = []) {
         return aled08e_hb_cpanel_api2_lire($d);
     }
     $q = array_merge(['cpanel_jsonapi_user' => ALED08_CPANEL_USER, 'cpanel_jsonapi_apiversion' => 2, 'cpanel_jsonapi_module' => $module, 'cpanel_jsonapi_func' => $func], $params);
-    $r = wp_remote_post(aled08e_hb_cpanel_base() . '/json-api/cpanel', ['timeout' => 40, 'headers' => aled08e_hb_cpanel_headers(), 'body' => $q]);
-    if (is_wp_error($r)) return new WP_Error('aled08_cpanel', 'cPanel injoignable : ' . $r->get_error_message());
+    $r = aled08e_hb_cpanel_http('POST', '/json-api/cpanel', $q);
+    if (is_wp_error($r)) return $r->get_error_code() === 'aled08_cpanel' ? $r : new WP_Error('aled08_cpanel', 'cPanel injoignable : ' . $r->get_error_message());
     return aled08e_hb_cpanel_api2_lire(json_decode((string) wp_remote_retrieve_body($r), true), (int) wp_remote_retrieve_response_code($r));
 }
 function aled08e_hb_cpanel_api2_lire($d, $code = 0) {

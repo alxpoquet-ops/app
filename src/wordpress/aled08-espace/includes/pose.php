@@ -29,8 +29,8 @@ function aled08e_pose_uapi_post($module, $func, $params) {
         }
         return aled08e_hb_cpanel_uapi($module, $func, $params);
     }
-    $r = wp_remote_post(aled08e_hb_cpanel_base() . '/execute/' . rawurlencode($module) . '/' . rawurlencode($func), ['timeout' => 60, 'headers' => aled08e_hb_cpanel_headers(), 'body' => $params]);
-    if (is_wp_error($r)) return new WP_Error('aled08_cpanel', 'cPanel injoignable : ' . $r->get_error_message());
+    $r = aled08e_hb_cpanel_http('POST', '/execute/' . rawurlencode($module) . '/' . rawurlencode($func), $params, 60);
+    if (is_wp_error($r)) return $r->get_error_code() === 'aled08_cpanel' ? $r : new WP_Error('aled08_cpanel', 'cPanel injoignable : ' . $r->get_error_message());
     return aled08e_hb_cpanel_uapi_lire(json_decode((string) wp_remote_retrieve_body($r), true), (int) wp_remote_retrieve_response_code($r));
 }
 
