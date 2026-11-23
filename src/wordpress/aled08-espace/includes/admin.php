@@ -582,9 +582,16 @@ add_action('admin_post_aled08e_reglages', function () {
     $P = wp_unslash($_POST);
     if (!empty($P['effacer_stripe'])) { delete_option('aled08_stripe_secret'); delete_option('aled08_stripe_webhook_secret'); }
     $sk = trim((string) ($P['stripe_secret'] ?? ''));
-    if ($sk !== '' && preg_match('/^(sk|rk)_(live|test)_[A-Za-z0-9]+$/', $sk)) aled08e_option_set('aled08_stripe_secret', $sk);
+    $refus = [];
+    if ($sk !== '') {
+        if (preg_match('/^(sk|rk)_(live|test)_[A-Za-z0-9]+$/', $sk)) aled08e_option_set('aled08_stripe_secret', $sk);
+        else $refus[] = 'La clé secrète Stripe n’a pas été enregistrée : collez la clé entière (elle commence par sk_live_ en production), sans espace et sans « … ». Dans Stripe, en production, la clé complète ne s’affiche qu’avec « Révéler » ou à sa création.';
+    }
     $wh = trim((string) ($P['stripe_webhook_secret'] ?? ''));
-    if ($wh !== '' && preg_match('/^whsec_[A-Za-z0-9]+$/', $wh)) aled08e_option_set('aled08_stripe_webhook_secret', $wh);
+    if ($wh !== '') {
+        if (preg_match('/^whsec_[A-Za-z0-9]+$/', $wh)) aled08e_option_set('aled08_stripe_webhook_secret', $wh);
+        else $refus[] = 'Le secret du webhook n’a pas été enregistré : collez-le en entier (il commence par whsec_).';
+    }
     aled08e_option_set('aled08_stripe_footer', sanitize_text_field((string) ($P['stripe_footer'] ?? '')));
     if (isset($P['codes_evenement'])) {
         $codes = array_values(array_unique(array_filter(array_map('aled08e_clean_code', preg_split('/[\s,;]+/', (string) $P['codes_evenement'])))));
@@ -634,6 +641,7 @@ add_action('admin_post_aled08e_reglages', function () {
         set_transient('aled08e_msg_' . get_current_user_id(), is_wp_error($t) ? 'Erreur : ' . $t->get_error_message() : $t, 300);
         $msg = 'test';
     }
+    if ($refus) { set_transient('aled08e_msg_' . get_current_user_id(), 'Erreur : ' . implode(' ', $refus), 300); $msg = 'test'; }
     wp_safe_redirect(add_query_arg('aled08e_msg', $msg, admin_url('admin.php?page=aled08-reglages')));
     exit;
 });
