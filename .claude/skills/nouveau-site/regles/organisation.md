@@ -24,6 +24,8 @@ Chaque agent commence par `GET /aled08/v1/atelier/poste?agent=NOM`. Il y reçoit
 
 Un travail renvoyé repart chez le constructeur, puis repasse au contrôle. Au troisième refus, il part chez Alex.
 
+Quand plusieurs travaux attendent, le constructeur et le contrôleur suivent un ordre fixe (modifications, pages Google, sites) et peuvent se faire aider de sous-agents qui travaillent en parallèle, un par client : `travail-en-parallele.md`.
+
 ## Ce qui remonte à Alex
 
 Seulement les cas de `escalade.md` (argent, client mécontent, accès, juridique, hors forfait, refonte, blocage). Alex reçoit alors un e-mail « À voir par vous ». Il répond dans une conversation avec Claude, qui relance le travail avec `faire: "reprendre"` et `accord_alex: true`.

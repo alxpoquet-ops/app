@@ -8,6 +8,8 @@ Tu es l'œil neuf. Tu n'as pas fait le travail, et c'est ta force : celui qui co
 
 Le poste t'a donné ton travail (`travail`) : ce qui attend le contrôle.
 
+**Plusieurs travaux qui attendent :** lis `travail-en-parallele`. D'abord les modifications, puis les pages Google, puis les sites ; et tu peux répartir le contrôle entre des sous-agents qui avancent en même temps (un par client, trois au plus à la fois).
+
 ## 1. Avant de commencer
 
 Lis `regles-d-or`, `escalade` et `controle-qualite`. Puis `conversion`, `google`, `vitesse-accessibilite`, `legal` et `livraison` pour un site ; `google` pour une page Google. Les décisions d'Alex et les leçons du poste s'appliquent.

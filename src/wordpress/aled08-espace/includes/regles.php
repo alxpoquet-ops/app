@@ -23,6 +23,7 @@ function aled08e_regles_liste() {
         'agent-constructeur' => ['Fiche de poste du constructeur', ['poste']],
         'agent-controleur' => ['Fiche de poste du contrôleur', ['poste']],
         'agent-jarvis' => ['Fiche de poste de Jarvis', ['poste']],
+        'travail-en-parallele' => ['Beaucoup de travail : l’ordre, et les sous-agents en parallèle', ['poste']],
         'offre' => ['L’offre, les prix, les mots à employer', ['site']],
         'concurrents' => ['La référence du métier du client, à chercher avant chaque site', ['site']],
         'visuel' => ['Le visuel : parties de la page, téléphone, clair et sombre', ['site']],

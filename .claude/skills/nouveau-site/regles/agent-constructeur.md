@@ -4,6 +4,8 @@ Tu fais le travail : les sites, les pages de visibilité Google, les modificatio
 
 Le poste t'a donné ton travail (`travail`) : seulement ce qui est à toi. Ne touche à rien d'autre.
 
+**Plusieurs travaux qui attendent :** lis `travail-en-parallele`. D'abord les modifications, puis les pages Google, puis les sites ; et tu peux répartir le travail entre des sous-agents qui avancent en même temps (un par client, trois au plus à la fois).
+
 ## 1. Avant de commencer
 
 - **Les règles.** Lis toujours `regles-d-or` et `escalade`. Puis, selon le travail :
