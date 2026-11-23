@@ -524,6 +524,9 @@ function aled08e_admin_reglages() {
     echo '<tr><th>Test de connexion</th><td><button type="submit" name="tester" value="1" class="button">Tester la connexion (GET /v1/balance)</button><p class="description">Affiche OK, ou l’erreur renvoyée par Stripe. Enregistrez d’abord la clé.</p></td></tr>';
     echo '</table>';
 
+    echo '<h2>Ouverture du site</h2><table class="form-table" role="presentation"><tr><th>Site ouvert au public</th><td>'
+        . '<input type="hidden" name="site_ouvert_present" value="1"><label><input type="checkbox" name="site_ouvert" value="1"' . checked(function_exists('aled08e_site_ouvert') && aled08e_site_ouvert(), true, false) . '> Les visiteurs voient le site et peuvent commander</label>'
+        . '<p class="description">Décoché : les visiteurs voient une page d’attente (SIRET et médiateur en cours) et personne ne peut commander. Vous, connecté, voyez le site normalement. L’espace client, les pages légales et la page contact restent ouverts.</p></td></tr></table>';
     echo '<h2>E-mails</h2><table class="form-table" role="presentation">';
     echo '<tr><th><label for="aled08e-codes">Codes promo</label></th><td><textarea id="aled08e-codes" name="codes_evenement" rows="3" class="large-text code">' . esc_textarea(implode("\n", aled08e_codes_evenement())) . '</textarea><p class="description">Un code par ligne, à donner à qui vous voulez (une opération, un partenaire) : chaque code donne ' . (int) ((aled08e_data()['evenement']['remise'] ?? 20)) . ' % de remise sur la création du site. Le client le tape dans la case « Code promo ou parrainage ». Laissez vide : aucun code promo. Les codes de parrainage des clients marchent tout seuls dans la même case.</p></td></tr>';
     echo '<tr><th><label for="aled08e-to">Adresse de réception</label></th><td><input type="email" id="aled08e-to" name="form_to" class="regular-text" value="' . esc_attr(get_option('aled08_form_to', '')) . '" placeholder="' . esc_attr(defined('ALED08_FORM_TO') ? ALED08_FORM_TO : get_option('admin_email')) . '"><p class="description">Reçoit les commandes, les demandes de modification, les messages du formulaire de contact et les alertes Stripe. Vide : l’adresse du thème, sinon celle de WordPress.</p></td></tr>';
@@ -597,6 +600,7 @@ add_action('admin_post_aled08e_reglages', function () {
         $codes = array_values(array_unique(array_filter(array_map('aled08e_clean_code', preg_split('/[\s,;]+/', (string) $P['codes_evenement'])))));
         update_option('aled08_codes_evenement', implode("\n", $codes), false);
     }
+    if (!empty($P['site_ouvert_present'])) update_option('aled08_site_ouvert', !empty($P['site_ouvert']) ? '1' : '0', true);
     $to = sanitize_email((string) ($P['form_to'] ?? ''));
     if ($to === '' || is_email($to)) update_option('aled08_form_to', $to);
     if (!empty($P['effacer_ovh'])) { foreach (['ak', 'as', 'ck'] as $k) delete_option('aled08_ovh_' . $k); delete_transient('aled08_ovh_delta'); }
