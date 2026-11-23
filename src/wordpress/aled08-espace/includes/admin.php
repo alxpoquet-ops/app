@@ -355,7 +355,9 @@ function aled08e_cmd_box_detail($post) {
     $abo = $u ? aled08e_meta($u->ID, 'abonnement') : '';
     $row('Stripe', $c['stripe_subscription']
         ? 'abonnement ' . esc_html($c['stripe_subscription']) . ($abo ? ' (' . esc_html($abo) . ')' : '') . ', client ' . esc_html($c['stripe_customer']) . ($c['stripe_lissage_item'] ? ', ligne de lissage ' . esc_html($c['stripe_lissage_item']) : '')
-        : ($c['paiement_en_cours'] ? 'prélèvement en cours de confirmation' : 'pas de paiement Stripe pour cette commande'));
+        : ($c['paiement_en_cours'] ? 'prélèvement en cours de confirmation'
+            : ($c['statut'] !== 'attente_paiement' && $c['stripe_customer'] ? 'création payée par Stripe (client ' . esc_html($c['stripe_customer']) . ')' . (aled08e_est_seule($c['forfait']) ? '' : ' ; le forfait démarrera à la mise en ligne')
+            : ($c['statut'] !== 'attente_paiement' ? 'création payée' : 'pas encore payée'))));
     echo '</dl></div>';
     $note = (string) get_post_meta($c['id'], '_aled08_note', true);
     echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" style="margin-top:14px"><input type="hidden" name="action" value="aled08e_cmd"><input type="hidden" name="cid" value="' . (int) $c['id'] . '"><input type="hidden" name="faire" value="note">' . wp_nonce_field('aled08e_cmd_' . $c['id'], '_aled08e_cmd', true, false)
