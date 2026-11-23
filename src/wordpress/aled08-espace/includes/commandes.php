@@ -504,6 +504,13 @@ function aled08e_cmd_traiter_post() {
 /* =========================================================================
  *  Changements de statut (admin ou Stripe) et leurs e-mails
  * ========================================================================= */
+/* Le client a choisi « attendre 14 jours » : la fin de son délai de rétractation (0 s'il a choisi de démarrer tout de suite).
+   Le délai part du paiement (la conclusion du contrat), ou de la commande pour une commande payée avant cette date. */
+function aled08e_cmd_attente_fin($id) {
+    if (get_post_meta((int) $id, '_aled08_demarrage', true) !== 'attendre') return 0;
+    $depart = (int) get_post_meta((int) $id, '_aled08_paye_le', true) ?: (int) get_post_meta((int) $id, '_aled08_demarrage_le', true);
+    return $depart ? strtotime('tomorrow', $depart + 14 * DAY_IN_SECONDS) : 0; // jusqu'à la fin du 14e jour
+}
 function aled08e_cmd_set_statut($id, $statut, $note = '') {
     $cmd = aled08e_cmd_get($id);
     if (!$cmd || !isset(aled08e_cmd_statuts()[$statut])) return false;
@@ -514,6 +521,7 @@ function aled08e_cmd_set_statut($id, $statut, $note = '') {
     $cmd['statut'] = $statut;
     do_action('aled08e_statut_change', $id, $statut, $old);
     if ($statut === 'payee' && $old === 'attente_paiement') {
+        if (!get_post_meta($id, '_aled08_paye_le', true)) update_post_meta($id, '_aled08_paye_le', time()); // le contrat est conclu : le délai de rétractation part d'ici
         aled08e_compte_metas_commande($cmd); // le compte reprend les choix de la commande, maintenant qu'elle est payée
         aled08e_cmd_mail_client_payee($cmd);
         aled08e_cmd_mail_owner_payee($cmd);

@@ -10,7 +10,7 @@ const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contac
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 const UPDATED = '2026-11-15'; // mentions légales
 const UPDATED_CONF = '2026-11-19'; // politique de confidentialité : offre du 19 novembre 2026 (abonnement facultatif, paiement des extras par carte). Rien à changer le 21 novembre 2026 (un seul site).
-const UPDATED_CGV = '2026-11-21'; // conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
+const UPDATED_CGV = '2026-11-23'; // 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
 // La petite bande (config.bande) : six Minis Monstres, présentés par leur prénom et leur rôle. Le parrainage est retiré (19 novembre 2026).
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
 // (règlement européen sur ces systèmes, obligation de transparence). La politique de confidentialité nomme le fournisseur.
@@ -49,7 +49,7 @@ const listeExtras = extras
 // La petite bande, par prénom et par rôle. Ce que fait chacun est écrit ici pour les CGV.
 const ROLE_CGV = {
   support: 'répond aux questions dans la bulle d’aide',
-  constructeur: 'aide le client à formuler ses demandes de modification et les transmet à Alexandre Poquet',
+  constructeur: 'aide le client à formuler ses demandes de modification et les réalise',
   ecrivain: 'prépare les contenus, aide à rédiger les textes et améliore leur lisibilité',
   observateur: 'prépare les pages de visibilité Google et soigne le référencement local',
   organisateur: 'classe les contenus, organise les pages et range la boutique et ses commandes',
@@ -210,7 +210,7 @@ ${ECO.inclus.map((x) => `- ${x.replace(/par vous$/, 'par le client')}`).join('\n
 
 ${listeExtras}
 
-La ${minus(pageGoogle.name)} se commande depuis l’espace client. Elle est payée par carte bancaire au moment de la commande, en une seule fois. Elle n’est jamais facturée au mois. Les extras sur devis sont réalisés après l’accord écrit du client sur le prix.
+La ${minus(pageGoogle.name)} se commande depuis l’espace client. Elle est payée par carte bancaire au moment de la commande, en une seule fois. Elle n’est jamais facturée au mois. En la commandant, le client demande qu’elle soit faite tout de suite : il perd son droit de rétractation une fois la page entièrement livrée (article 9). Les extras sur devis sont réalisés après l’accord écrit du client sur le prix.
 
 **Le forfait ${AUTO}, ${eur(creationSeule.month)} € par mois.** Le client paie seulement son site, sans abonnement. Il gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. Les Minis Monstres ne fournissent ni hébergement ni nom de domaine. Une fois le site validé, le client reçoit l’export de son site, avec une courte notice d’installation. Il fait l’installation lui-même, ou avec l’aide de son hébergeur. La maintenance, la sécurité et les modifications ne sont pas comprises. Le client peut prendre le forfait ${mini.name} plus tard.
 
@@ -271,7 +271,7 @@ Un site commandé avant le ${DATE_OFFRE_SITE}, par exemple un Site Visibilité, 
 
 ## 8. Engagement, résiliation et fin de l’abonnement
 
-L’abonnement est sans engagement. Le client peut l’arrêter à tout moment, par e-mail, par message ou avec le bouton prévu dans son espace client. L’arrêt prend effet à la fin de la période déjà payée.
+L’abonnement est sans engagement. Le client peut l’arrêter à tout moment, par e-mail, par message ou avec le bouton « Résilier mon forfait » de son espace client. L’arrêt prend effet à la fin de la période déjà payée.
 
 Quand le client paie la création en plusieurs fois par un organisme externe, ses échéances sont dues à cet organisme, selon le contrat passé avec lui. Cela ne crée aucun engagement de durée sur le forfait.
 
@@ -287,6 +287,10 @@ En commandant, le client choisit lui-même quand la création commence.
 - **Attendre 14 jours** : la création commence à la fin du délai. Le client garde son droit de rétractation jusque-là, avec un remboursement intégral, et les délais de création (article 11) courent à partir de ce moment.
 
 Aucun de ces deux choix n’est coché d’avance. Le nom de domaine déjà réservé, l’adresse du site, reste à sa charge, car il est enregistré à son nom et pour un an.
+
+Pour se rétracter, le client peut, s’il le souhaite, utiliser ce modèle, envoyé par ${contact} :
+
+> À l’attention des Minis Monstres (Alexandre Poquet EI, ${site.address.postalCode} ${site.address.city}) : je vous notifie par la présente ma rétractation du contrat portant sur la prestation ci-dessous. Commandée le : … Référence de commande : … Nom du client : … Adresse du client : … Date : …
 
 ## 10. Nom de domaine
 
@@ -313,8 +317,8 @@ Le site est mis en ligne dans une première version, présentée au client par e
 1. Le client fait sa demande dans son espace client.
 2. ${monstre('constructeur').nom}, un petit monstre de la bande (article 15), l’aide à la formuler clairement et lui pose les questions utiles.
 3. Le client confirme la demande résumée par ${monstre('constructeur').nom}.
-4. La demande est transmise à Alexandre Poquet.
-5. Alexandre Poquet réalise la modification, puis elle est mise en ligne.
+4. Les Minis Monstres réalisent la modification. Elle est relue par un second outil avant que le client soit prévenu, et Alexandre Poquet traite lui-même les demandes délicates.
+5. Le client reçoit un e-mail dès qu’elle est en ligne.
 
 Le client peut annuler une demande tant qu’elle n’est pas commencée.
 
@@ -338,13 +342,13 @@ Le client garantit qu’il a le droit d’utiliser les textes, images, logos et 
 
 Avec le forfait ${mini.name}, chaque version du site est conservée et peut être restaurée sur demande.
 
-Alex conçoit chaque site et en contrôle la réalisation. Il s’appuie sur des outils qu’il a mis au point, présentés sur le site comme une petite bande de six Minis Monstres :
+Alex a conçu la méthode de création et en reste responsable. Le travail est fait par des outils qu’il a mis au point, présentés sur le site comme une petite bande de six Minis Monstres :
 
 ${laBande}
 
 Dans cet article, « les petits monstres » désigne l’ensemble de ces outils, bulle d’aide comprise.
 
-Les petits monstres sont des outils automatisés, dont certains reposent sur un système d’intelligence artificielle, qui peuvent se tromper. Alex contrôle leur travail, et le client valide son site avant la mise en ligne (article 11). Les textes et les conseils que donnent les outils sont des propositions : le client les relit et reste responsable de ce qu’il publie. Ces outils ne donnent pas de conseil juridique, médical ou comptable.
+Les petits monstres sont des outils automatisés, dont certains reposent sur un système d’intelligence artificielle, qui peuvent se tromper. Chaque travail fait par un outil est relu par un autre outil avant d’être livré, selon les règles écrites par Alex, qui traite lui-même les cas délicats (réclamation, remboursement, demande hors forfait). Le site est livré en première version, que le client fait ensuite ajuster (articles 11 et 12). Les textes et les conseils que donnent les outils sont des propositions : le client les relit et reste responsable de ce qu’il publie. Ces outils ne donnent pas de conseil juridique, médical ou comptable.
 
 ## 16. Visibilité Google (référencement)
 
@@ -359,6 +363,8 @@ Un deuxième site commandé par le même client bénéficie de ${fidelite.remise
 ## 18. Responsabilité
 
 Les Minis Monstres mettent tout en œuvre pour que le site reste disponible et sauvegardé tant qu’ils l’hébergent. Les Minis Monstres ne peuvent pas être tenus responsables d’une panne de l’hébergeur (l’entreprise qui garde le site en ligne), d’un registre de noms de domaine ou du service de paiement, ni des contenus fournis par le client. Avec le forfait ${AUTO}, le client est seul responsable de l’hébergement, des sauvegardes et des mises à jour de son site après la remise de l’export. Un éventuel dédommagement ne peut pas dépasser les sommes versées au titre de l’abonnement au cours des 12 derniers mois, ou le prix du site en l’absence d’abonnement, sauf si la loi en dispose autrement.
+
+Garantie légale de conformité. Le client consommateur bénéficie de la garantie légale de conformité des contenus et services numériques (articles L224-25-12 et suivants du Code de la consommation). Si le site ne correspond pas à ce qui a été commandé, il obtient sa mise en conformité, sans frais ; à défaut, une réduction du prix ou la résolution du contrat. Cette garantie s’ajoute aux modifications prévues à l’article 12.
 
 ## 19. Médiation et litiges
 

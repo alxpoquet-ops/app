@@ -353,10 +353,18 @@ function aled08e_stripe_on_solde_fois($s) {
 function aled08e_stripe_solde_session($cid, $expire = 0) { return aled08e_stripe_reception_session($cid, 0, $expire); }
 
 /* Portail client Stripe (moyen de paiement, factures) : créé au clic, le lien expire en 5 minutes */
-function aled08e_stripe_portail($uid) {
+function aled08e_stripe_portail($uid, $resilier = false) {
     $cus = aled08e_meta($uid, 'stripe_customer');
     if (!$cus) return new WP_Error('aled08_stripe', 'Pas de client Stripe pour ce compte.');
-    $r = aled08e_stripe_request('POST', '/v1/billing_portal/sessions', ['customer' => $cus, 'return_url' => aled08e_url() . '#forfait', 'locale' => 'fr']);
+    $params = ['customer' => $cus, 'return_url' => aled08e_url() . '#forfait', 'locale' => 'fr'];
+    // « Résilier mon forfait » : la page Stripe s'ouvre directement sur l'arrêt de l'abonnement (à la fin de la période payée)
+    if ($resilier) {
+        $sub = aled08e_meta($uid, 'stripe_subscription');
+        if (!$sub) return new WP_Error('aled08_stripe', 'Pas d’abonnement Stripe pour ce compte.');
+        $params['flow_data'] = ['type' => 'subscription_cancel', 'subscription_cancel' => ['subscription' => $sub],
+            'after_completion' => ['type' => 'redirect', 'redirect' => ['return_url' => aled08e_url(['m' => 'resiliation']) . '#forfait']]];
+    }
+    $r = aled08e_stripe_request('POST', '/v1/billing_portal/sessions', $params);
     if (is_wp_error($r)) return $r;
     return !empty($r['url']) ? $r['url'] : new WP_Error('aled08_stripe', 'Pas d’adresse de portail.');
 }
@@ -365,12 +373,26 @@ function aled08e_stripe_portail($uid) {
 add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') return;
     $portal = !empty($_POST['aled08e_portal']);
+    $resil = !empty($_POST['aled08e_resilier']);
     $solde = !empty($_POST['aled08e_solde']);
     $payer = !empty($_POST['aled08e_payer']);
-    if (!$portal && !$solde && !$payer) return;
+    if (!$portal && !$resil && !$solde && !$payer) return;
     if (!is_user_logged_in()) { wp_safe_redirect(aled08e_url(), 303); exit; }
     $uid = get_current_user_id();
     $nonce = function ($field, $action) { return wp_verify_nonce(isset($_POST[$field]) ? sanitize_text_field(wp_unslash($_POST[$field])) : '', $action); };
+    // Résilier le forfait (obligation légale : un bouton simple, toujours accessible). Si la page Stripe ne s'ouvre pas,
+    // la demande est quand même enregistrée et Alex la traite : le client n'est jamais bloqué.
+    if ($resil) {
+        if (!$nonce('_aled08e_resilier', 'aled08e_resilier')) { wp_safe_redirect(aled08e_url(['m' => 'portail_erreur']) . '#forfait', 303); exit; }
+        $url = aled08e_stripe_portail($uid, true);
+        if (!is_wp_error($url)) { wp_redirect($url, 303); exit; } // phpcs:ignore WordPress.Security.SafeRedirect -- portail Stripe
+        $u = wp_get_current_user();
+        update_user_meta($uid, 'aled08_resiliation_demandee', time());
+        wp_mail(aled08e_to(), 'À faire : résiliation demandée par ' . $u->display_name, 'Le client ' . $u->display_name . ' (' . $u->user_email . ') a cliqué sur « Résilier mon forfait », mais la page Stripe n’a pas pu s’ouvrir (' . $url->get_error_message() . ').'
+            . "\n\nArrêtez son abonnement dans Stripe, à la fin de la période déjà payée, puis confirmez-le-lui. La date de sa demande fait foi.\n\n" . admin_url('user-edit.php?user_id=' . $uid), aled08e_mail_headers());
+        wp_mail($u->user_email, 'Votre demande de résiliation est bien reçue', 'Bonjour ' . $u->display_name . ",\n\nNous avons bien reçu votre demande de résiliation du forfait, le " . wp_date('j F Y') . ".\n\nVotre forfait s’arrête à la fin de la période déjà payée, sans autre prélèvement. Vous recevez une confirmation dès que c’est fait, avec l’export de votre site.\n\nLes Minis Monstres\n", aled08e_mail_headers());
+        wp_safe_redirect(aled08e_url(['m' => 'resiliation_recue']) . '#forfait', 303); exit;
+    }
     if ($portal) {
         if (!$nonce('_aled08e_portal', 'aled08e_portal')) { wp_safe_redirect(aled08e_url(['m' => 'portail_erreur']) . '#forfait', 303); exit; }
         $url = aled08e_stripe_portail($uid);

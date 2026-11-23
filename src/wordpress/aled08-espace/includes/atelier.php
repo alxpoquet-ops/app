@@ -89,7 +89,9 @@ function aled08e_chantiers_liste(WP_REST_Request $req) {
         // ce qu'il y a à faire maintenant, en clair
         // à qui est la main : le constructeur, le contrôleur, le client ou Alex
         $role = 'constructeur';
-        if ($etat === 'a_verifier') { $afaire = 'rien : Alex vérifie'; $role = 'alex'; }
+        $attente = function_exists('aled08e_cmd_attente_fin') ? aled08e_cmd_attente_fin($cid) : 0;
+        if ($attente > time() && !in_array($etat, ['a_verifier', 'pour_alex'], true)) { $afaire = 'rien : le client a choisi d’attendre la fin de son délai de rétractation, on ne commence pas avant le ' . wp_date('j F Y', $attente); $role = 'attente'; }
+        elseif ($etat === 'a_verifier') { $afaire = 'rien : Alex vérifie'; $role = 'alex'; }
         elseif ($etat === 'pour_alex') { $afaire = 'rien : Alex regarde ce cas'; $role = 'alex'; }
         elseif ($etat === 'a_controler') { $afaire = 'contrôler le site, puis le livrer ou demander des corrections'; $role = 'controleur'; }
         elseif ($etat === 'a_corriger') $afaire = 'corriger le site d’après le contrôle, puis le renvoyer au contrôle';
@@ -123,6 +125,10 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
     $faire = sanitize_key((string) ($p['faire'] ?? ''));
     $texte = trim(wp_strip_all_tags((string) ($p['texte'] ?? '')));
     $site = $c['domaine'] ? 'https://' . $c['domaine'] . '/' : '';
+    // le client a choisi d'attendre la fin de son délai de rétractation : rien ne commence avant (sauf décision d'Alex)
+    $attente = function_exists('aled08e_cmd_attente_fin') ? aled08e_cmd_attente_fin($cid) : 0;
+    if ($attente > time() && empty($p['accord_alex']) && in_array($faire, ['question', 'note', 'a_controler', 'corriger', 'livrer'], true))
+        return new WP_Error('aled08_chantier', 'Le client a choisi d’attendre la fin de son délai de rétractation : la création ne commence pas avant le ' . wp_date('j F Y', $attente) . '.', ['status' => 409]);
     if ($faire === 'question') {
         if ($texte === '') return new WP_Error('aled08_chantier', 'Texte manquant.', ['status' => 400]);
         if (!is_email($c['email'])) return new WP_Error('aled08_chantier', 'Pas d’adresse e-mail sur cette commande.', ['status' => 400]);

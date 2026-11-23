@@ -103,7 +103,8 @@ function aled08e_ex_carte_unique($x, $uid, $famille, $sans) {
         . '<p class="app-note">' . esc_html($x['desc'] ?? '') . '</p>'
         . aled08e_extra_packs_html($x, $famille)
         . '<div class="field"><label for="extra-' . esc_attr($id) . '">' . esc_html($q[0]) . '</label><textarea id="extra-' . esc_attr($id) . '" name="demande" rows="2" maxlength="2000" ' . ($id === 'packseo' ? '' : 'required ') . 'placeholder="' . esc_attr($q[1]) . '"></textarea></div>'
-        . '<label class="check"><input type="checkbox" name="extra_ok" value="1" required><span>' . esc_html($accord) . ($famille ? '' : (aled08e_pd_pret() ? ', je paie par carte à l’étape suivante' : ', je reçois la facture par e-mail')) . '</span></label>'
+        . '<label class="check"><input type="checkbox" name="extra_ok" value="1" required><span>' . esc_html($accord) . ($famille ? '' : (aled08e_pd_pret() ? ', je paie par carte à l’étape suivante' : ', je reçois la facture par e-mail')
+            . '. Je demande que le travail commence tout de suite, et je reconnais perdre mon droit de rétractation une fois qu’il est entièrement livré') . '</span></label>'
         . '<p class="ex-delai">' . aled08e_icon('clock') . '<span>Vous êtes prévenu dès que c’est fait.</span></p>'
         . '<button class="btn btn-primary" type="submit">' . aled08e_icon('credit-card') . '<span>' . ($famille ? 'Commander' : 'Commander et payer') . '</span></button></form></details>'
         . '</article>';

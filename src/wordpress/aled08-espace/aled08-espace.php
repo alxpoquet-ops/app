@@ -1088,6 +1088,8 @@ function aled08e_dashboard() {
     if (isset($msgs[$m])) $flash = '<p class="' . $msgs[$m][0] . '" role="status">' . esc_html($msgs[$m][1]) . '</p>';
     $flashForfait = '';
     if (in_array($m, ['changer_ok', 'changer_rien', 'changer_erreur'], true)) { $flashForfait = $flash; $flash = ''; }
+    if ($m === 'resiliation') $flashForfait = '<p class="esp-ok" role="status">C’est noté : votre forfait s’arrêtera à la fin de la période déjà payée. Vous recevrez l’export de votre site.</p>';
+    if ($m === 'resiliation_recue') $flashForfait = '<p class="esp-ok" role="status">Votre demande de résiliation est bien reçue : votre forfait s’arrêtera à la fin de la période déjà payée. Un e-mail vous le confirme.</p>';
     if ($m === 'portail_erreur') $flashForfait = '<p class="esp-warn" role="status">La page de gestion du paiement n’a pas pu s’ouvrir. Réessayez dans un instant, ou écrivez-moi.</p>';
 
     $prixForfait = $annuel ? ($f['month'] * (12 - (int) $D['moisOfferts'])) : $f['month'];
@@ -1303,6 +1305,13 @@ function aled08e_dashboard() {
               <input type="hidden" name="aled08e_portal" value="1">
               <?php wp_nonce_field('aled08e_portal', '_aled08e_portal'); ?>
               <button class="btn btn-primary" type="submit"><?php echo aled08e_icon('credit-card'); // phpcs:ignore ?><span>Gérer mon paiement et mes factures</span></button>
+            </form>
+            <?php endif; ?>
+            <?php if (aled08e_meta($uid, 'stripe_subscription') && in_array($abo, ['active', 'trialing', 'past_due'], true)) : ?>
+            <form method="post" action="<?php echo esc_url(aled08e_url()); ?>">
+              <input type="hidden" name="aled08e_resilier" value="1">
+              <?php wp_nonce_field('aled08e_resilier', '_aled08e_resilier'); ?>
+              <button class="btn btn-light" type="submit"><span>Résilier mon forfait</span></button>
             </form>
             <?php endif; ?>
 
