@@ -75,6 +75,14 @@ add_action('rest_api_init', function () {
 });
 
 function aled08e_chantiers_liste(WP_REST_Request $req) {
+    // ?toutes=1 : les 20 dernières commandes, quel que soit leur statut (pour comprendre pourquoi une commande n'est pas dans la liste)
+    if ($req->get_param('toutes')) {
+        $l = [];
+        foreach (get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'any', 'numberposts' => 20, 'orderby' => 'date', 'order' => 'DESC', 'fields' => 'ids']) as $id) {
+            $l[] = ['commande' => (int) $id, 'ref' => (string) get_post_meta($id, '_aled08_ref', true), 'statut' => (string) get_post_meta($id, '_aled08_statut', true), 'etat_post' => get_post_status($id), 'le' => get_the_date('Y-m-d H:i', $id)];
+        }
+        return new WP_REST_Response(['toutes' => $l, 'statuts_listes' => aled08e_cmd_statuts_en_cours()], 200);
+    }
     $ids = get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'private', 'numberposts' => 40, 'fields' => 'ids', 'orderby' => 'date', 'order' => 'ASC',
         'meta_query' => [['key' => '_aled08_statut', 'value' => aled08e_cmd_statuts_en_cours(), 'compare' => 'IN']]]);
     $detail = (int) $req->get_param('commande');

@@ -207,7 +207,7 @@ add_action('template_redirect', function () {
     $deja = is_array($mois) && ($mois['m'] ?? '') === wp_date('Y-m') ? (int) $mois['n'] : 0;
     if ($deja + (int) $p['jetons'] > ALED08E_JL_RECHARGE_MOIS) $back(false, 'Vous avez déjà redonné ' . aled08e_jl_txt($deja) . ' ce mois-ci. Pour aller plus loin, écrivez à Alex.');
     $u = get_userdata($uid);
-    $cus = aled08e_meta($uid, 'stripe_customer');
+    $cus = function_exists('aled08e_stripe_client_connu') ? aled08e_stripe_client_connu($uid) : aled08e_meta($uid, 'stripe_customer');
     $ok = false;
     // facturation automatique : seulement pour un abonnement mensuel actif chez Stripe (il y aura bien une prochaine facture)
     $auto = function_exists('aled08e_stripe_ready') && aled08e_stripe_ready() && $cus !== '' && aled08e_meta($uid, 'abonnement') === 'active' && aled08e_meta($uid, 'stripe_subscription') !== '' && aled08e_meta($uid, 'paiement') !== 'annee';

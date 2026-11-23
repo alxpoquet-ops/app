@@ -219,7 +219,7 @@ function aled08e_stripe_checkout($cid) {
         'cancel_url' => aled08e_cmd_url_commander($cfg, ['annule' => '1']),
     ];
     // un client déjà connu de Stripe (autre commande) est réutilisé : un seul client Stripe par compte
-    $cus = $c['stripe_customer'] ?: ($c['user'] ? aled08e_meta($c['user'], 'stripe_customer') : '');
+    $cus = aled08e_stripe_client_connu((int) $c['user'], (string) $c['stripe_customer']);
     if ($cus) $params['customer'] = $cus;
     else { $params['customer_email'] = $c['email']; $params['customer_creation'] = 'always'; }
     aled08e_stripe_expirer_session($c['stripe_session']);
@@ -279,7 +279,7 @@ function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
     ];
     if ($sansAbo) $params['invoice_creation'] = ['enabled' => 'true', 'invoice_data' => ['footer' => aled08e_stripe_footer(), 'metadata' => ['commande' => (string) $cid]]];
     else $params['subscription_data'] = ['metadata' => ['commande' => (string) $cid, 'ref' => $c['ref']]];
-    $cus = $c['stripe_customer'] ?: ($c['user'] ? aled08e_meta($c['user'], 'stripe_customer') : '');
+    $cus = aled08e_stripe_client_connu((int) $c['user'], (string) $c['stripe_customer']);
     if ($cus) $params['customer'] = $cus;
     else $params['customer_email'] = $c['email'];
     // Stripe accepte au plus 24 h : on garde 5 minutes de marge pour la dérive d'horloge entre les serveurs
@@ -314,7 +314,7 @@ function aled08e_stripe_solde_fois_session($cid) {
         'success_url' => aled08e_url(['solde' => 'fois_ok']) . '#commande',
         'cancel_url' => aled08e_url() . '#commande',
     ];
-    $cus = $c['stripe_customer'] ?: ($c['user'] ? aled08e_meta($c['user'], 'stripe_customer') : '');
+    $cus = aled08e_stripe_client_connu((int) $c['user'], (string) $c['stripe_customer']);
     if ($cus) $params['customer'] = $cus;
     else { $params['customer_email'] = $c['email']; $params['customer_creation'] = 'always'; }
     aled08e_stripe_expirer_session($c['solde_session']);
@@ -352,9 +352,26 @@ function aled08e_stripe_on_solde_fois($s) {
 /* Ancien nom (lien copié depuis l'administration) : le reste en une fois */
 function aled08e_stripe_solde_session($cid, $expire = 0) { return aled08e_stripe_reception_session($cid, 0, $expire); }
 
+/* Le client Stripe enregistré pour un compte, s'il existe encore dans le compte Stripe relié.
+   Après un changement de compte Stripe, ou le passage du mode test au mode réel, les anciens identifiants n'existent plus :
+   on les oublie, et Stripe en crée un nouveau au prochain paiement (au lieu d'échouer sur « No such customer »). */
+function aled08e_stripe_client_connu($uid, $cus = '') {
+    $cus = (string) ($cus ?: ($uid ? aled08e_meta($uid, 'stripe_customer') : ''));
+    if ($cus === '') return '';
+    $cle = 'aled08_cus_' . md5(substr(aled08e_stripe_secret(), -8) . $cus);
+    if (get_transient($cle) === 'ok') return $cus;
+    $r = aled08e_stripe_request('GET', '/v1/customers/' . rawurlencode($cus), [], '', true);
+    if (is_wp_error($r) || !empty($r['deleted'])) {
+        if (is_wp_error($r) && stripos($r->get_error_message(), 'No such customer') === false) return $cus; // panne passagère : on garde
+        if ($uid && aled08e_meta($uid, 'stripe_customer') === $cus) delete_user_meta($uid, 'aled08_stripe_customer');
+        return '';
+    }
+    set_transient($cle, 'ok', DAY_IN_SECONDS);
+    return $cus;
+}
 /* Portail client Stripe (moyen de paiement, factures) : créé au clic, le lien expire en 5 minutes */
 function aled08e_stripe_portail($uid, $resilier = false) {
-    $cus = aled08e_meta($uid, 'stripe_customer');
+    $cus = aled08e_stripe_client_connu($uid);
     if (!$cus) return new WP_Error('aled08_stripe', 'Pas de client Stripe pour ce compte.');
     $params = ['customer' => $cus, 'return_url' => aled08e_url() . '#forfait', 'locale' => 'fr'];
     // « Résilier mon forfait » : la page Stripe s'ouvre directement sur l'arrêt de l'abonnement (à la fin de la période payée)

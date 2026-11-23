@@ -665,6 +665,18 @@ function aled08e_cmd_mail_client_payee($c) {
     $entetes = array_merge(['Content-Type: text/html; charset=UTF-8'], array_values(array_filter((array) aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'), function ($e) { return stripos($e, 'content-type') !== 0; })));
     wp_mail($c['email'], 'Merci ! Votre commande ' . $c['ref'] . ' est payée', aled08e_mail_coque('Merci, c’est payé !', $h, 'Votre site est lancé : il ne reste qu’à remplir votre questionnaire.'), $entetes);
 }
+/* Annuler une commande pas encore payée (essais, commandes abandonnées), sans e-mail au client.
+   POST /aled08/v1/admin/commande-annuler { "commande": ID } (administrateur). Une commande payée s'annule dans sa fiche. */
+add_action('rest_api_init', function () {
+    register_rest_route('aled08/v1', '/admin/commande-annuler', ['methods' => 'POST', 'permission_callback' => function () { return current_user_can('manage_options'); }, 'callback' => function (WP_REST_Request $r) {
+        $c = aled08e_cmd_get((int) (((array) $r->get_json_params())['commande'] ?? 0));
+        if (!$c) return new WP_Error('aled08_cmd', 'Commande introuvable.', ['status' => 404]);
+        if ($c['statut'] !== 'attente_paiement') return new WP_Error('aled08_cmd', 'Seule une commande en attente de paiement s’annule ici (statut : ' . $c['statut'] . ').', ['status' => 409]);
+        aled08e_cmd_set_statut($c['id'], 'annulee', 'jamais payée, annulée depuis l’atelier');
+        return new WP_REST_Response(['ok' => true, 'ref' => $c['ref']], 200);
+    }]);
+});
+
 /* La page de commande demande si le visiteur est connecté à son espace client, pour préremplir et sauter le mot de passe */
 add_action('wp_ajax_nopriv_aled08e_moi', function () { wp_send_json_success(['connecte' => false]); });
 add_action('wp_ajax_aled08e_moi', function () {

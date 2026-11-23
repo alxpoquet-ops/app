@@ -185,7 +185,7 @@ add_action('template_redirect', function () {
         }
         $facture = false;
         if (!aled08e_famille($uid)) {
-            $cus = aled08e_meta($uid, 'stripe_customer');
+            $cus = function_exists('aled08e_stripe_client_connu') ? aled08e_stripe_client_connu($uid) : aled08e_meta($uid, 'stripe_customer');
             if (function_exists('aled08e_stripe_ready') && aled08e_stripe_ready() && $cus !== '' && !aled08e_sans_formule($uid)) {
                 $r = aled08e_stripe_request('POST', '/v1/invoiceitems', ['customer' => $cus, 'amount' => (int) round($total * 100), 'currency' => 'eur', 'description' => ($q > 1 ? $q . ' emplacements' : 'Un emplacement') . ' d’articles en plus pour votre boutique'], 'slots_' . $uid . '_' . time(), true);
                 $facture = !is_wp_error($r) && !empty($r['id']);

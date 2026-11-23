@@ -33,7 +33,7 @@ function aled08e_pd_session($uid, $lignes, $meta, $onglet, $sub = '') {
         'success_url' => add_query_arg($retour, aled08e_url()) . '&session={CHECKOUT_SESSION_ID}#' . $onglet,
         'cancel_url' => aled08e_url(['paye' => 'annule'] + ($sub ? ['sub' => $sub] : [])) . '#' . $onglet,
     ];
-    $cus = aled08e_meta($uid, 'stripe_customer');
+    $cus = function_exists('aled08e_stripe_client_connu') ? aled08e_stripe_client_connu($uid) : aled08e_meta($uid, 'stripe_customer');
     if ($cus) $params['customer'] = $cus;
     else { $params['customer_email'] = $u->user_email; $params['customer_creation'] = 'always'; }
     $r = aled08e_stripe_request('POST', '/v1/checkout/sessions', $params, 'direct-' . $uid . '-' . wp_generate_password(12, false));
