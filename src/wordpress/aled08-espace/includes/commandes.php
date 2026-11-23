@@ -629,27 +629,41 @@ function aled08e_cmd_mail_client_nouvelle($c, $compte, $stripe) {
     wp_mail($c['email'], 'Votre commande ' . $c['ref'] . ' est bien reçue', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
 }
 function aled08e_cmd_mail_client_payee($c) {
-    // Le seul e-mail du client pour sa commande : le merci, le récapitulatif, et le bouton pour remplir son questionnaire.
+    // Le seul e-mail du client pour sa commande, aux couleurs du site : le merci, le récapitulatif, le bouton vers le questionnaire.
+    $m = $c['montants'];
+    $type = aled08e_type($c['type']);
     $delai = aled08e_cmd_delai_type($c);
     $attente = function_exists('aled08e_cmd_attente_fin') ? aled08e_cmd_attente_fin($c['id']) : 0;
     $lien = (function_exists('aled08e_clic_lien') && $c['user'] ? aled08e_clic_lien($c['user']) : aled08e_url()) . '#commande';
-    $corps = 'Bonjour ' . $c['prenom'] . ",\n\n"
-        . ((float) $c['montants']['solde'] <= 0
-            ? "Votre paiement est bien reçu, merci ! Votre site est lancé.\n" . (aled08e_est_seule($c['forfait']) ? '' : "Votre forfait, lui, ne démarre qu’à la mise en ligne de votre site.\n")
-            : "Votre premier paiement est bien reçu, merci ! Le reste se règle à la réception de votre site.\n")
-        . 'Référence de la commande : ' . $c['ref'] . "\n\n"
-        . aled08e_cmd_recap_txt($c) . "\n"
-        . "La suite, en deux étapes :\n"
-        . "1. Remplissez votre questionnaire de création, dans votre espace client (une dizaine de minutes) : vos couleurs, vos photos, vos prix ou vos produits. C’est lui qui lance la création.\n\n"
-        . $lien . "\n\n"
-        . '2. ' . ($attente > time()
-            ? 'Comme vous l’avez choisi, la création commence après votre délai de rétractation, le ' . wp_date('j F Y', $attente) . '. Vous pouvez remplir le questionnaire dès maintenant.'
-            : 'Votre site est créé à partir de vos réponses' . ($delai ? ', en ' . $delai : '') . '.')
-        . " Vous recevez un e-mail dès qu’il est en ligne.\n"
-        . ($c['domaine'] && !$c['domaine_mien'] ? 'Nous réservons aussi le nom de domaine ' . $c['domaine'] . " à votre nom.\n" : '')
-        . "\nPour revenir dans votre espace client : votre adresse e-mail et le mot de passe choisi à la commande, sur " . aled08e_url() . "\n\n"
-        . "Une question ? Répondez simplement à cet e-mail.\n\nÀ bientôt,\nAlex et les Minis Monstres\n";
-    wp_mail($c['email'], 'Merci ! Votre commande ' . $c['ref'] . ' est payée', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
+    $seule = aled08e_est_seule($c['forfait']);
+    $p = function ($t, $taille = 16, $marge = 14) { return '<p style="margin:0 0 ' . $marge . 'px;font-size:' . $taille . 'px;line-height:1.6;color:#4B4668;">' . $t . '</p>'; };
+    $ligne = function ($k, $v) { return '<tr><td style="padding:5px 10px 5px 0;font-size:14px;color:#6B6789;vertical-align:top;white-space:nowrap;">' . esc_html($k) . '</td><td style="padding:5px 0;font-size:15px;color:#2E2A47;font-weight:bold;">' . $v . '</td></tr>'; };
+    $dom = !$c['domaine'] ? 'à choisir ensemble' : esc_html($c['domaine']) . ($c['domaine_mien'] ? ' (le vôtre)' : ', à votre nom');
+    $recap = '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px 0 0;">'
+        . $ligne('Votre site', esc_html($type ? $type['label'] : $c['type']))
+        . $ligne('Nom de domaine', $dom)
+        . $ligne('Payé aujourd’hui', esc_html(aled08e_euro_txt($m['total_jour'] ?? $m['creation'])))
+        . ($seule ? '' : $ligne('Votre forfait', esc_html(aled08e_euro_txt($m['mensuel_forfait'])) . ' par mois, à partir de la mise en ligne'))
+        . $ligne('Référence', esc_html($c['ref']))
+        . '</table>';
+    $etape = function ($n, $titre, $texte) { return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 10px;"><tr>'
+        . '<td width="34" style="vertical-align:top;"><span style="display:inline-block;width:26px;height:26px;line-height:26px;border-radius:50%;background:#8C6CF2;color:#FFFFFF;font-size:14px;font-weight:bold;text-align:center;">' . $n . '</span></td>'
+        . '<td style="vertical-align:top;"><p style="margin:2px 0 2px;font-size:16px;font-weight:bold;color:#2E2A47;">' . $titre . '</p><p style="margin:0;font-size:15px;line-height:1.55;color:#4B4668;">' . $texte . '</p></td></tr></table>'; };
+    $h = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:0 0 6px;">' . aled08e_mail_monstre('ravie', 100) . '</td></tr></table>'
+        . '<h1 style="margin:0 0 10px;font-size:26px;line-height:1.2;color:#2E2A47;text-align:center;">Merci, c’est payé !</h1>'
+        . $p('Bonjour ' . esc_html($c['prenom']) . ', votre paiement est bien reçu. Votre site est lancé, et toute la petite bande s’y met.')
+        . aled08e_mail_carte('menthe', $recap, 'mochi', aled08e_mail_etiquette('Votre commande', '#176A4C'))
+        . aled08e_mail_carte('lilas',
+            $etape(1, 'Remplissez votre questionnaire', 'Une dizaine de minutes, dans votre espace client : vos couleurs, vos photos, vos prix ou vos produits. C’est lui qui lance la création.')
+            . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">' . aled08e_mail_bouton($lien, 'Remplir mon questionnaire') . '</td></tr></table>'
+            . $etape(2, $attente > time() ? 'La création commence le ' . esc_html(wp_date('j F Y', $attente)) : 'Votre site est créé', $attente > time()
+                ? 'Comme vous l’avez choisi, après votre délai de rétractation. Vous pouvez déjà remplir le questionnaire.'
+                : 'À partir de vos réponses' . ($delai ? ', en ' . esc_html($delai) : '') . '. Vous recevez un e-mail dès qu’il est en ligne.'),
+            'bricou', aled08e_mail_etiquette('La suite', '#5B3FC4'))
+        . $p('Pour revenir dans votre espace client : votre adresse e-mail et le mot de passe choisi à la commande, sur <a href="' . esc_url(aled08e_url()) . '" style="color:#5B3FC4;">' . esc_html(preg_replace('#^https?://(www\.)?#', '', untrailingslashit(aled08e_url()))) . '</a>.', 14)
+        . $p('Une question ? Répondez simplement à cet e-mail.<br>À bientôt,<br><b style="color:#2E2A47;">Alex et les Minis Monstres</b>', 15, 0);
+    $entetes = array_merge(['Content-Type: text/html; charset=UTF-8'], array_values(array_filter((array) aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'), function ($e) { return stripos($e, 'content-type') !== 0; })));
+    wp_mail($c['email'], 'Merci ! Votre commande ' . $c['ref'] . ' est payée', aled08e_mail_coque('Merci, c’est payé !', $h, 'Votre site est lancé : il ne reste qu’à remplir votre questionnaire.'), $entetes);
 }
 /* La page de commande demande si le visiteur est connecté à son espace client, pour préremplir et sauter le mot de passe */
 add_action('wp_ajax_nopriv_aled08e_moi', function () { wp_send_json_success(['connecte' => false]); });
