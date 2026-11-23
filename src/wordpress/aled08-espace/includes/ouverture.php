@@ -107,13 +107,12 @@ function aled08e_attente_html($mode = 'attente', $page = null) {
         $corps = $haut
             . '<div class="bande" aria-hidden="true">' . implode('', array_map(function ($b) use ($img, $e) { return '<div class="m">' . $img($b[0], 64) . '<b>' . $e($b[1]) . '</b>' . $e($b[2]) . '</div>'; }, $bande)) . '</div>'
             . '<h1>On ouvre <mark>très bientôt</mark> !</h1>'
-            . '<p>La petite bande se prépare. Il nous reste les dernières démarches administratives pour vous accueillir dans les règles.</p>'
+            . '<p>La petite bande se prépare : encore quelques démarches administratives, et on vous accueille.</p>'
             . '<div class="bloc concept"><h2>Le concept</h2>'
-            . '<p>Un site internet professionnel pour les artisans, les commerçants et les indépendants, <b>prêt en quelques heures</b>.</p>'
-            . '<p>Nos modules sont déjà conçus et optimisés : l’accueil, la présentation, les services, la galerie, le contact… <b>Il ne manque que votre contenu.</b></p>'
-            . '<p>Ensuite, vous changez vous-même vos textes et vos photos, quand vous voulez. Et pour le reste, la petite bande s’en occupe.</p></div>'
-            . '<div class="bloc etapes"><p><b>En cours :</b> notre numéro SIRET pour cette activité, et l’adhésion à un médiateur de la consommation.</p>'
-            . '<p><b>Ensuite :</b> les commandes ouvrent. Revenez dans quelques jours !</p></div>'
+            . '<p><b>Être vu sur internet, sans se ruiner.</b> On crée le site des artisans, des commerçants et des indépendants, à petit prix.</p>'
+            . '<p>Nos modules sont déjà prêts : l’accueil, la présentation, les services, la galerie, le contact… Votre site est en ligne <b>en quelques heures</b>, avec vos textes et vos photos.</p>'
+            . '<p>Ensuite, on s’occupe de tout : l’hébergement, la sécurité, les mises à jour et vos changements. Vous, vous n’avez plus qu’à être vu.</p></div>'
+            . '<div class="bloc etapes"><p><b>Bientôt :</b> les commandes ouvrent dans quelques jours. Revenez nous voir !</p></div>'
             . '<p>Une question, ou envie d’être prévenu de l’ouverture ? Écrivez-nous.</p>'
             . '<a class="btn" href="mailto:contact@les-minis-monstres.fr">contact@les-minis-monstres.fr</a>'
             . $pied;
