@@ -617,6 +617,7 @@ add_action('admin_post_aled08e_reglages', function () {
         $msg = 'test_ovh';
     }
     if (!empty($P['tester_cpanel'])) {
+        delete_transient('aled08_cpanel_local_essai'); // le test refait l'essai « de l'intérieur du serveur »
         $t = aled08e_hb_cpanel_test();
         set_transient('aled08e_msg_' . get_current_user_id(), is_wp_error($t) ? 'Erreur : ' . $t->get_error_message() : $t, 300);
         $msg = 'test_cpanel';

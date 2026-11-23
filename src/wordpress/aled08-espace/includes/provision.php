@@ -352,7 +352,19 @@ function aled08e_hb_cpanel_local($outil = 'uapi') {
     if (!function_exists('posix_geteuid') || !function_exists('posix_getpwuid')) return '';
     $moi = posix_getpwuid(posix_geteuid());
     if (!is_array($moi) || ($moi['name'] ?? '') !== ALED08_CPANEL_USER) return '';
-    foreach (['/usr/local/cpanel/bin/' . $outil, '/usr/bin/' . $outil] as $bin) if (@is_executable($bin)) return $cache[$outil] = $bin;
+    // déjà essayé : sur certains hébergeurs (o2switch), la commande existe mais ne marche pas dans l'espace isolé du site
+    $essai = get_transient('aled08_cpanel_local_essai');
+    if ($essai === 'non') return '';
+    foreach (['/usr/local/cpanel/bin/' . $outil, '/usr/bin/' . $outil] as $bin) {
+        if (!@is_executable($bin)) continue;
+        if ($essai !== 'oui') {
+            $t = aled08e_hb_cpanel_local_lancer($outil === 'uapi' ? $bin : dirname($bin) . '/uapi', 'Variables', 'get_user_information', ['name' => 'user']);
+            $ok = !is_wp_error($t) && !is_wp_error(aled08e_hb_cpanel_uapi_lire($t));
+            set_transient('aled08_cpanel_local_essai', $ok ? 'oui' : 'non', DAY_IN_SECONDS);
+            if (!$ok) return '';
+        }
+        return $cache[$outil] = $bin;
+    }
     return '';
 }
 function aled08e_hb_cpanel_local_lancer($bin, $module, $func, $params) {
