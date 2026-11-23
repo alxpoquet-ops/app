@@ -340,23 +340,64 @@ function aled08e_prov_wordpress($c) {
  * ========================================================================= */
 function aled08e_hb_cpanel_base() { return 'https://' . ALED08_CPANEL_HOST . ':2083'; }
 function aled08e_hb_cpanel_headers() { return ['Authorization' => ALED08_CPANEL_TOKEN ? 'cpanel ' . ALED08_CPANEL_USER . ':' . ALED08_CPANEL_TOKEN : 'Basic ' . base64_encode(ALED08_CPANEL_USER . ':' . ALED08_CPANEL_PASS)]; }
+/* cPanel de l'intérieur : le site LMM tourne sur le même compte o2switch que celui des clients. Il appelle alors les
+   commandes de cPanel (uapi, cpapi2) directement sur le serveur, sans mot de passe ni jeton, et sans passer par internet.
+   Utilisé seulement si le site tourne bien sous l'utilisateur cPanel indiqué, et si l'hébergeur permet de lancer une commande. */
+function aled08e_hb_cpanel_local($outil = 'uapi') {
+    static $cache = [];
+    if (isset($cache[$outil])) return $cache[$outil];
+    $cache[$outil] = '';
+    if (get_option('aled08_cpanel_local', '1') !== '1' || !ALED08_CPANEL_USER) return '';
+    if (!function_exists('proc_open') || in_array('proc_open', array_map('trim', explode(',', (string) ini_get('disable_functions'))), true)) return '';
+    if (!function_exists('posix_geteuid') || !function_exists('posix_getpwuid')) return '';
+    $moi = posix_getpwuid(posix_geteuid());
+    if (!is_array($moi) || ($moi['name'] ?? '') !== ALED08_CPANEL_USER) return '';
+    foreach (['/usr/local/cpanel/bin/' . $outil, '/usr/bin/' . $outil] as $bin) if (@is_executable($bin)) return $cache[$outil] = $bin;
+    return '';
+}
+function aled08e_hb_cpanel_local_lancer($bin, $module, $func, $params) {
+    $cmd = escapeshellarg($bin) . ' --output=json ' . escapeshellarg($module) . ' ' . escapeshellarg($func);
+    foreach ((array) $params as $k => $v) $cmd .= ' ' . escapeshellarg($k . '=' . (is_bool($v) ? (int) $v : (string) $v));
+    $p = proc_open($cmd, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    if (!is_resource($p)) return new WP_Error('aled08_cpanel', 'cPanel (serveur) : commande impossible à lancer.');
+    $out = stream_get_contents($pipes[1]); $err = stream_get_contents($pipes[2]);
+    fclose($pipes[1]); fclose($pipes[2]); proc_close($p);
+    $d = json_decode((string) $out, true);
+    if (!is_array($d)) return new WP_Error('aled08_cpanel', 'cPanel (serveur) : réponse illisible. ' . mb_substr(trim((string) $err), 0, 200));
+    return $d;
+}
+/* Une réponse UAPI, qu'elle soit enveloppée dans « result » (ligne de commande) ou non (adresse web) */
+function aled08e_hb_cpanel_uapi_lire($d, $code = 0) {
+    $res = is_array($d) && isset($d['result']) && is_array($d['result']) ? $d['result'] : (is_array($d) && array_key_exists('status', $d) ? $d : null);
+    if ($res === null) return new WP_Error('aled08_cpanel', $code === 401 || $code === 403 ? 'cPanel refuse l’identification (' . $code . ') : vérifiez l’utilisateur et le mot de passe, ou le jeton.' : 'Réponse cPanel illisible (' . $code . ').');
+    if (empty($res['status'])) return new WP_Error('aled08_cpanel', implode(' ; ', array_filter((array) ($res['errors'] ?? ['erreur cPanel']))) ?: 'erreur cPanel');
+    return $res['data'] ?? true;
+}
 function aled08e_hb_cpanel_uapi($module, $func, $params = []) {
     if (!aled08e_cpanel_ok()) return new WP_Error('aled08_cpanel', 'cPanel non configuré.');
+    if ($bin = aled08e_hb_cpanel_local('uapi')) {
+        $d = aled08e_hb_cpanel_local_lancer($bin, $module, $func, $params);
+        return is_wp_error($d) ? $d : aled08e_hb_cpanel_uapi_lire($d);
+    }
     $url = aled08e_hb_cpanel_base() . '/execute/' . rawurlencode($module) . '/' . rawurlencode($func) . ($params ? '?' . http_build_query($params, '', '&') : '');
     $r = wp_remote_get($url, ['timeout' => 40, 'headers' => aled08e_hb_cpanel_headers()]);
     if (is_wp_error($r)) return new WP_Error('aled08_cpanel', 'cPanel injoignable : ' . $r->get_error_message());
-    $d = json_decode((string) wp_remote_retrieve_body($r), true);
-    if (!is_array($d) || !isset($d['result'])) return new WP_Error('aled08_cpanel', 'Réponse cPanel illisible (' . (int) wp_remote_retrieve_response_code($r) . ').');
-    if (empty($d['result']['status'])) return new WP_Error('aled08_cpanel', implode(' ; ', (array) ($d['result']['errors'] ?? ['erreur cPanel'])));
-    return $d['result']['data'] ?? true;
+    return aled08e_hb_cpanel_uapi_lire(json_decode((string) wp_remote_retrieve_body($r), true), (int) wp_remote_retrieve_response_code($r));
 }
 function aled08e_hb_cpanel_api2($module, $func, $params = []) {
     if (!aled08e_cpanel_ok()) return new WP_Error('aled08_cpanel', 'cPanel non configuré.');
+    if ($bin = aled08e_hb_cpanel_local('cpapi2')) {
+        $d = aled08e_hb_cpanel_local_lancer($bin, $module, $func, $params);
+        if (is_wp_error($d)) return $d;
+        return aled08e_hb_cpanel_api2_lire($d);
+    }
     $q = array_merge(['cpanel_jsonapi_user' => ALED08_CPANEL_USER, 'cpanel_jsonapi_apiversion' => 2, 'cpanel_jsonapi_module' => $module, 'cpanel_jsonapi_func' => $func], $params);
     $r = wp_remote_post(aled08e_hb_cpanel_base() . '/json-api/cpanel', ['timeout' => 40, 'headers' => aled08e_hb_cpanel_headers(), 'body' => $q]);
     if (is_wp_error($r)) return new WP_Error('aled08_cpanel', 'cPanel injoignable : ' . $r->get_error_message());
-    $d = json_decode((string) wp_remote_retrieve_body($r), true);
-    if (!is_array($d) || !isset($d['cpanelresult'])) return new WP_Error('aled08_cpanel', 'Réponse cPanel illisible.');
+    return aled08e_hb_cpanel_api2_lire(json_decode((string) wp_remote_retrieve_body($r), true), (int) wp_remote_retrieve_response_code($r));
+}
+function aled08e_hb_cpanel_api2_lire($d, $code = 0) {
+    if (!is_array($d) || !isset($d['cpanelresult'])) return new WP_Error('aled08_cpanel', $code === 401 || $code === 403 ? 'cPanel refuse l’identification (' . $code . ').' : 'Réponse cPanel illisible.');
     $cr = $d['cpanelresult'];
     if (!empty($cr['error'])) return new WP_Error('aled08_cpanel', (string) $cr['error']);
     $data = $cr['data'] ?? [];
@@ -394,7 +435,7 @@ function aled08e_hb_cpanel_autossl() {
 function aled08e_hb_cpanel_test() {
     $i = aled08e_hb_cpanel_uapi('Variables', 'get_user_information', ['name-1' => 'user', 'name-2' => 'domain', 'name-3' => 'ip']);
     if (is_wp_error($i)) return $i;
-    return 'OK, compte ' . ($i['user'] ?? '?') . ', domaine principal ' . ($i['domain'] ?? '?') . ', IP ' . ($i['ip'] ?? '?');
+    return 'OK' . (aled08e_hb_cpanel_local('uapi') ? ' (de l’intérieur du serveur)' : '') . ', compte ' . ($i['user'] ?? '?') . ', domaine principal ' . ($i['domain'] ?? '?') . ', IP ' . ($i['ip'] ?? '?');
 }
 
 /* =========================================================================

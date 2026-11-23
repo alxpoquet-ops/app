@@ -18,12 +18,20 @@ function aled08e_pose_dossier($dom) { return 'public_html/' . $dom; }
 /* cPanel en POST (pour envoyer un fichier entier) */
 function aled08e_pose_uapi_post($module, $func, $params) {
     if (!aled08e_cpanel_ok()) return new WP_Error('aled08_cpanel', 'cPanel non configuré.');
+    if (aled08e_hb_cpanel_local('uapi')) {
+        // de l'intérieur du serveur : un fichier s'écrit directement dans le dossier du compte, le reste passe par uapi
+        if ($module === 'Fileman' && $func === 'save_file_content') {
+            $home = (string) (posix_getpwuid(posix_geteuid())['dir'] ?? '');
+            $dir = $home . '/' . trim((string) $params['dir'], '/');
+            if ($home === '' || strpos((string) $params['dir'], '..') !== false || basename((string) $params['file']) !== (string) $params['file']) return new WP_Error('aled08_cpanel', 'Chemin refusé.');
+            if (!is_dir($dir) && !wp_mkdir_p($dir)) return new WP_Error('aled08_cpanel', 'Dossier impossible à créer : ' . $params['dir']);
+            return file_put_contents($dir . '/' . $params['file'], (string) $params['content']) === false ? new WP_Error('aled08_cpanel', 'Fichier impossible à écrire.') : true;
+        }
+        return aled08e_hb_cpanel_uapi($module, $func, $params);
+    }
     $r = wp_remote_post(aled08e_hb_cpanel_base() . '/execute/' . rawurlencode($module) . '/' . rawurlencode($func), ['timeout' => 60, 'headers' => aled08e_hb_cpanel_headers(), 'body' => $params]);
     if (is_wp_error($r)) return new WP_Error('aled08_cpanel', 'cPanel injoignable : ' . $r->get_error_message());
-    $d = json_decode((string) wp_remote_retrieve_body($r), true);
-    if (!is_array($d) || !isset($d['result'])) return new WP_Error('aled08_cpanel', 'Réponse cPanel illisible (' . (int) wp_remote_retrieve_response_code($r) . ').');
-    if (empty($d['result']['status'])) return new WP_Error('aled08_cpanel', implode(' ; ', (array) ($d['result']['errors'] ?? ['erreur cPanel'])));
-    return $d['result']['data'] ?? true;
+    return aled08e_hb_cpanel_uapi_lire(json_decode((string) wp_remote_retrieve_body($r), true), (int) wp_remote_retrieve_response_code($r));
 }
 
 /* La base de données du site : un nom court, préfixé par le compte cPanel comme cPanel l'exige */
