@@ -94,7 +94,7 @@ module.exports = {
     { q: 'Comment suivre ma demande ?', a: `Vous la suivez dans votre espace client, étape par étape, et vous êtes prévenu dès qu’elle est faite. Vous avez une seule demande en cours à la fois : dès qu’elle est terminée, vous envoyez la suivante.` },
     { q: 'Puis-je annuler une demande ?', a: 'Oui, tant qu’elle n’est pas commencée : un bouton Annuler s’affiche à côté de la demande. Une fois le travail lancé, écrivez-nous.' },
     { q: 'Que trouve-t-on dans l’espace client ?', a: `Les onglets Accueil, Demandes, Extras et Mon compte, plus Ma boutique avec l’option ${minus(ECO.name)}. Vous y demandez vos modifications, vous commandez un extra et vous retrouvez vos factures. ${cerise} vous y répond aussi dans la bulle en bas de l’écran, jusqu’à ${limites.bulleJour} messages par jour.` },
-    { q: 'Comment est créé mon compte ?', a: 'Tout seul, dès que votre commande est validée. Vous recevez un e-mail avec un lien pour choisir votre mot de passe. Vous pouvez aussi le créer avant, sans rien commander, sur la page Mon espace.' },
+    { q: 'Comment est créé mon compte ?', a: 'En commandant : vous choisissez votre mot de passe dans le formulaire de commande, et votre espace client est prêt tout de suite. Vous pouvez aussi le créer avant, sans rien commander, sur la page Mon espace.' },
     { q: 'Mon compte peut-il être supprimé ?', a: 'Seulement s’il ne sert plus : aucune connexion depuis 12 mois et aucun abonnement actif. Vous êtes prévenu par e-mail 30 jours avant, et une simple connexion annule tout.' },
   ],
   seo: [

@@ -444,6 +444,30 @@ function aled08e_cmd_traiter_post() {
     $m = aled08e_cmd_montants($cfg);
     if ($m['total_jour'] <= 0) $err('champs');
 
+    // le compte : on commande toujours depuis son espace client. Connecté : la commande va sur ce compte.
+    // Sinon, le même formulaire sert à tout : nouveau client, il choisit son mot de passe (le compte est créé et il est connecté) ;
+    // client déjà inscrit, il tape son mot de passe habituel (il est connecté). Pas d'e-mail « choisissez votre mot de passe ».
+    $compte = null;
+    if (is_user_logged_in()) {
+        $moi = wp_get_current_user();
+        $c['email'] = $moi->user_email;
+        if (!aled08e_is_client($moi) && aled08e_compte_simple($moi)) $moi->add_role(ALED08E_ROLE);
+        $compte = ['id' => (int) $moi->ID, 'cree' => false, 'login' => $moi->user_login];
+    } else {
+        $mdp = isset($_POST['mot_de_passe']) && is_string($_POST['mot_de_passe']) ? (string) wp_unslash($_POST['mot_de_passe']) : '';
+        if ($mdp === '' || strlen($mdp) > 200) $err('mot_de_passe');
+        $deja = get_user_by('email', $c['email']);
+        if ($deja) {
+            $u = wp_signon(['user_login' => $deja->user_login, 'user_password' => $mdp, 'remember' => true], is_ssl());
+            if (is_wp_error($u)) $err('compte');
+            wp_set_current_user($u->ID);
+            if (!aled08e_is_client($u) && aled08e_compte_simple($u)) $u->add_role(ALED08E_ROLE);
+            $compte = ['id' => (int) $u->ID, 'cree' => false, 'login' => $u->user_login];
+        } elseif (strlen($mdp) < 8) {
+            $err('mot_de_passe');
+        }
+    }
+
     // même adresse e-mail : pas plus de 3 commandes par heure ; et un nouvel envoi du même formulaire (après une erreur
     // Stripe, un retour arrière…) reprend la commande encore en attente au lieu d'en créer une deuxième
     $recentes = aled08e_cmd_recentes_email($c['email'], HOUR_IN_SECONDS);
@@ -455,9 +479,14 @@ function aled08e_cmd_traiter_post() {
         }
     }
 
-    // compte client : créé, ou rattaché s'il existe déjà pour cet e-mail
-    $compte = aled08e_compte_pour_commande($c + $cfg);
-    if (is_wp_error($compte)) $err('inconnu');
+    // nouveau client : son compte est créé avec le mot de passe qu'il a choisi, et il est connecté
+    if (!$compte) {
+        $compte = aled08e_compte_pour_commande($c + $cfg);
+        if (is_wp_error($compte)) $err('inconnu');
+        wp_set_password($mdp, $compte['id']);
+        wp_set_current_user($compte['id']);
+        wp_set_auth_cookie($compte['id'], true, is_ssl());
+    }
     $uid = $compte['id'];
 
     // la commande, puis sa référence (le compteur n'est consommé que si la commande existe)
@@ -491,11 +520,14 @@ function aled08e_cmd_traiter_post() {
     set_transient($kCmd, (int) get_transient($kCmd) + 1, HOUR_IN_SECONDS);
     $cmd = aled08e_cmd_get($pid);
 
-    // e-mails : propriétaire, client, puis l'accès à l'espace pour un nouveau compte
+    // e-mails : aucun ici quand le paiement en ligne marche. Le client et Alex reçoivent chacun un seul e-mail, au paiement
+    // (et le client une relance une heure plus tard s'il n'a pas payé). Sans paiement en ligne, il faut envoyer le lien à la main :
+    // Alex et le client sont prévenus tout de suite.
     $stripe = aled08e_stripe_ready();
-    aled08e_cmd_mail_owner_nouvelle($cmd, $compte, $stripe);
-    aled08e_cmd_mail_client_nouvelle($cmd, $compte, $stripe);
-    if ($compte['cree']) aled08e_compte_envoyer_acces($uid, $ref);
+    if (!$stripe) {
+        aled08e_cmd_mail_owner_nouvelle($cmd, $compte, $stripe);
+        aled08e_cmd_mail_client_nouvelle($cmd, $compte, $stripe);
+    }
 
     // paiement : Stripe si configuré, sinon « en attente » (lien envoyé à la main)
     aled08e_cmd_vers_paiement($pid, $ref, $cfg);
@@ -569,12 +601,11 @@ function aled08e_cmd_mail_owner_nouvelle($c, $compte, $stripe) {
         . aled08e_cmd_recap_txt($c) . "\n"
         . "Client :\n" . aled08e_cmd_titulaire_txt($c) . "\n\n"
         . (!empty($c['remise']) ? 'Code promo : ' . $c['code_evenement'] . ' (' . (int) $c['remise'] . " % de remise sur la création, déjà déduits)\n" : '')
-        . ($c['parrain'] ? 'Code de parrainage : ' . $c['parrain'] . ' (' . (aled08e_user_by_code($c['parrain']) ? aled08e_user_by_code($c['parrain'])->display_name : 'code inconnu') . ")\n" : '')
         . ($c['message'] ? "Message du client :\n" . $c['message'] . "\n\n" : '')
         . (get_post_meta($c['id'], '_aled08_demarrage', true) === 'attendre'
             ? 'DÉMARRAGE : le client a choisi d’attendre 14 jours. Ne commencez pas la création avant le ' . wp_date('j F Y', time() + 14 * DAY_IN_SECONDS) . ".\n"
             : "Démarrage : tout de suite (le client renonce à se rétracter une fois le site entièrement livré).\n")
-        . 'Compte client : ' . ($compte['cree'] ? 'créé (' . $compte['login'] . '), e-mail de mot de passe envoyé' : 'déjà existant (' . $compte['login'] . '), commande rattachée') . "\n"
+        . 'Compte client : ' . ($compte['cree'] ? 'créé (' . $compte['login'] . ')' : 'déjà existant (' . $compte['login'] . '), commande rattachée') . "\n"
         . 'Paiement : ' . ($stripe ? 'le client est envoyé sur la page de paiement Stripe. Vous recevrez un e-mail quand il sera confirmé.' : 'paiement en ligne non activé. Envoyez-lui un lien ou un RIB, puis marquez la commande « Payée » dans l’administration.') . "\n\n"
         . 'Fiche commande : ' . aled08e_cmd_admin_url($c['id']) . "\n";
     wp_mail(aled08e_to(), $sujet, $corps, aled08e_mail_headers(aled08e_cmd_nom($c) . ' <' . $c['email'] . '>'));
@@ -590,25 +621,63 @@ function aled08e_cmd_mail_client_nouvelle($c, $compte, $stripe) {
         . ($c['domaine'] && !$c['domaine_mien'] ? '2. Je réserve le nom de domaine ' . $c['domaine'] . " à votre nom.\n" : "2. Je prépare l’hébergement de votre site.\n")
         . "3. Je vous écris sous 24 heures pour commencer la création.\n"
         . "4. Vous suivez tout dans votre espace client : " . aled08e_url() . "\n"
-        . ($compte['cree']
-            ? "   Un autre e-mail arrive avec le lien pour choisir votre mot de passe.\n\n"
-            : "   Vous avez déjà un compte : connectez-vous avec votre mot de passe habituel.\n\n")
+        . "   Connectez-vous avec l’adresse e-mail et le mot de passe choisis à la commande.\n\n"
         . "Une question ? Répondez à cet e-mail.\n\nÀ bientôt,\nAlex et les Minis Monstres\n";
     wp_mail($c['email'], 'Votre commande ' . $c['ref'] . ' est bien reçue', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
 }
 function aled08e_cmd_mail_client_payee($c) {
+    // Le seul e-mail du client pour sa commande : le merci, le récapitulatif, et le bouton pour remplir son questionnaire.
     $delai = aled08e_cmd_delai_type($c);
+    $attente = function_exists('aled08e_cmd_attente_fin') ? aled08e_cmd_attente_fin($c['id']) : 0;
+    $lien = (function_exists('aled08e_clic_lien') && $c['user'] ? aled08e_clic_lien($c['user']) : aled08e_url()) . '#commande';
     $corps = 'Bonjour ' . $c['prenom'] . ",\n\n"
         . ((float) $c['montants']['solde'] <= 0
-            ? "Votre paiement est bien reçu, merci !\n" . (aled08e_est_seule($c['forfait']) ? '' : "Votre forfait, lui, ne démarre qu’à la mise en ligne de votre site.\n")
-            : "Votre acompte est bien reçu, merci !\nLe reste se règle à la réception de votre site (en une fois, ou en 3 ou 4 fois avec Alma ou Klarna), et votre forfait démarre à ce moment-là.\n")
+            ? "Votre paiement est bien reçu, merci ! Votre site est lancé.\n" . (aled08e_est_seule($c['forfait']) ? '' : "Votre forfait, lui, ne démarre qu’à la mise en ligne de votre site.\n")
+            : "Votre premier paiement est bien reçu, merci ! Le reste se règle à la réception de votre site.\n")
         . 'Référence de la commande : ' . $c['ref'] . "\n\n"
-        . "Ce qui se passe maintenant :\n"
-        . ($c['domaine'] && !$c['domaine_mien'] ? '1. Je réserve le nom de domaine ' . $c['domaine'] . " à votre nom.\n" : "1. Je prépare l’hébergement de votre site.\n")
-        . "2. Vous remplissez votre questionnaire de création dans votre espace client (une dizaine de minutes) : couleurs, ambiance, photos, prix ou produits. C’est lui qui lance la création : " . aled08e_url() . "#commande\n"
-        . '3. Je crée votre site' . ($delai ? ' (délai habituel : ' . $delai . ', à partir de vos réponses)' : '') . ", et vous suivez l’avancement dans votre espace client.\n\n"
-        . "À bientôt,\nAlex et les Minis Monstres\n";
-    wp_mail($c['email'], ((float) $c['montants']['solde'] <= 0 ? 'Votre paiement' : 'Votre acompte') . ' pour la commande ' . $c['ref'] . ' est reçu', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
+        . aled08e_cmd_recap_txt($c) . "\n"
+        . "La suite, en deux étapes :\n"
+        . "1. Remplissez votre questionnaire de création, dans votre espace client (une dizaine de minutes) : vos couleurs, vos photos, vos prix ou vos produits. C’est lui qui lance la création.\n\n"
+        . $lien . "\n\n"
+        . '2. ' . ($attente > time()
+            ? 'Comme vous l’avez choisi, la création commence après votre délai de rétractation, le ' . wp_date('j F Y', $attente) . '. Vous pouvez remplir le questionnaire dès maintenant.'
+            : 'Votre site est créé à partir de vos réponses' . ($delai ? ', en ' . $delai : '') . '.')
+        . " Vous recevez un e-mail dès qu’il est en ligne.\n"
+        . ($c['domaine'] && !$c['domaine_mien'] ? 'Nous réservons aussi le nom de domaine ' . $c['domaine'] . " à votre nom.\n" : '')
+        . "\nPour revenir dans votre espace client : votre adresse e-mail et le mot de passe choisi à la commande, sur " . aled08e_url() . "\n\n"
+        . "Une question ? Répondez simplement à cet e-mail.\n\nÀ bientôt,\nAlex et les Minis Monstres\n";
+    wp_mail($c['email'], 'Merci ! Votre commande ' . $c['ref'] . ' est payée', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
+}
+/* La page de commande demande si le visiteur est connecté à son espace client, pour préremplir et sauter le mot de passe */
+add_action('wp_ajax_nopriv_aled08e_moi', function () { wp_send_json_success(['connecte' => false]); });
+add_action('wp_ajax_aled08e_moi', function () {
+    $u = wp_get_current_user();
+    if (!$u || !$u->ID) wp_send_json_success(['connecte' => false]);
+    $d = ['connecte' => true, 'email' => $u->user_email, 'prenom' => $u->first_name, 'nom' => $u->last_name,
+        'telephone' => aled08e_meta($u->ID, 'telephone'), 'entreprise' => aled08e_meta($u->ID, 'entreprise')];
+    $cmds = function_exists('aled08e_cmd_user_commandes') ? (array) aled08e_cmd_user_commandes($u->ID) : [];
+    if ($cmds) { $last = reset($cmds); foreach (['adresse', 'code_postal', 'ville', 'telephone'] as $k) if (empty($d[$k]) && !empty($last[$k])) $d[$k] = $last[$k]; }
+    nocache_headers();
+    wp_send_json_success($d);
+});
+
+/* Une commande pas payée une heure après : une seule relance au client, avec le bouton pour reprendre le paiement.
+   Passe avec la tâche « aled08_provision » (toutes les 5 minutes). */
+add_action('aled08_provision', 'aled08e_cmd_relancer_paiements');
+function aled08e_cmd_relancer_paiements() {
+    if (!aled08e_stripe_ready()) return;
+    foreach (aled08e_cmd_par_statut(['attente_paiement']) as $c) {
+        if (strpos((string) $c['ref'], 'ESSAI-') === 0 || get_post_meta($c['id'], '_aled08_relance', true) || !is_email($c['email'])) continue;
+        $age = time() - (int) get_post_time('U', true, $c['id']);
+        if ($age < HOUR_IN_SECONDS || $age > 3 * DAY_IN_SECONDS) continue;
+        update_post_meta($c['id'], '_aled08_relance', time());
+        $lien = (function_exists('aled08e_clic_lien') && $c['user'] ? aled08e_clic_lien($c['user']) : aled08e_url()) . '#commande';
+        wp_mail($c['email'], 'Votre commande ' . $c['ref'] . ' attend son paiement', 'Bonjour ' . $c['prenom'] . ",\n\n"
+            . "Votre commande est bien gardée, mais le paiement n’est pas encore passé. Vous pouvez le reprendre quand vous voulez, depuis votre espace client :\n\n"
+            . $lien . "\n\n"
+            . "Un souci pour payer, ou une question ? Répondez simplement à cet e-mail.\n\nÀ bientôt,\nAlex et les Minis Monstres\n", aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
+        aled08e_cmd_journal($c['id'], 'Relance envoyée au client : paiement pas encore fait une heure après la commande.');
+    }
 }
 function aled08e_cmd_mail_owner_payee($c) {
     $dom = $c['domaine'] && !$c['domaine_mien'];

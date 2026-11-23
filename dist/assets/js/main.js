@@ -518,6 +518,21 @@
     var setText = function (key, text) { $$('[data-order="' + key + '"]', root).forEach(function (el) { el.textContent = text; }); };
     var params = new URLSearchParams(location.search);
     var t0 = form.querySelector('input[name="_t"]'); if (t0) t0.value = Date.now();
+    // Déjà connecté à son espace client : la commande va sur ce compte, sans mot de passe à taper
+    (function () {
+      var ajax = (window.aled08Ajax || '/wp-admin/admin-ajax.php');
+      if (!window.fetch) return;
+      fetch(ajax + '?action=aled08e_moi', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
+        if (!j || !j.success || !j.data || !j.data.connecte) return;
+        var d = j.data, box = $('[data-order-moi]', form), mdp = $('[data-order-mdp]', form);
+        if (mdp) { mdp.hidden = true; var i = $('input', mdp); if (i) { i.required = false; i.disabled = true; } }
+        ['prenom', 'nom', 'telephone', 'entreprise', 'adresse', 'code_postal', 'ville'].forEach(function (k) {
+          var el = form.querySelector('[name="' + k + '"]'); if (el && !el.value && d[k]) el.value = d[k];
+        });
+        var em = form.querySelector('[name="email"]'); if (em) { em.value = d.email || em.value; em.readOnly = true; }
+        if (box) { box.textContent = 'Vous êtes connecté à votre espace client (' + (d.email || '') + ') : la commande s’y ajoute.'; box.hidden = false; }
+      }).catch(function () {});
+    })();
 
     /* messages d'erreur (?erreur=CODE, ?annule=1, ou vérification avant envoi) */
     var alertBox = $('[data-order-error]', root), tpl = $('template[data-order-errors]', root);

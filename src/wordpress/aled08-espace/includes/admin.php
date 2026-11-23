@@ -351,7 +351,6 @@ function aled08e_cmd_box_detail($post) {
             ? ($c['lissage'] ? 'reste en ' . (int) $m['lissage_total_echeances'] . ' fois, ' . aled08e_euro($m['lissage_mensualite']) . ' par mois. <strong>' . (int) $c['lissage_paye'] . ' / ' . (int) $m['lissage_total_echeances'] . ' payées</strong>' . (get_post_meta($c['id'], '_aled08_lissage_fini', true) ? ' (terminé)' : '') : 'reste payé en une fois, ' . aled08e_euro($m['solde']) . ' <strong>(payé)</strong>')
             : 'reste ' . aled08e_euro($m['solde']) . ($c['solde_paye'] ? ' <strong>(payé à la main)</strong>' : ' <strong>(à régler, ' . ($c['lissage'] ? 'le client pensait payer en ' . (int) $c['lissage'] . ' fois' : 'en une fois prévu') . ')</strong>')));
     $row('Montant du jour de la commande', '<strong>' . aled08e_euro($m['total_jour']) . '</strong>');
-    if ($c['parrain']) { $p = aled08e_user_by_code($c['parrain']); $row('Parrainage', esc_html($c['parrain']) . ' (' . ($p ? '<a href="' . esc_url(get_edit_user_link($p->ID)) . '">' . esc_html($p->display_name) . '</a>' : 'code inconnu') . ')'); }
     if ($c['message']) $row('Message du client', '<div class="aled08-pre">' . esc_html($c['message']) . '</div>');
     $abo = $u ? aled08e_meta($u->ID, 'abonnement') : '';
     $row('Stripe', $c['stripe_subscription']

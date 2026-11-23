@@ -137,7 +137,7 @@ Pour réserver le nom de domaine, je transmets vos coordonnées de titulaire (pr
 
 ## 6. Espace client et comptes
 
-Votre compte est créé automatiquement à la commande, avec votre adresse e-mail. Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée.
+Votre compte est créé à la commande, avec votre adresse e-mail et le mot de passe que vous choisissez. Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée.
 
 Certains petits monstres fonctionnent avec Claude, un service de la société Anthropic. C’est le cas de ${cerise}, qui vous répond dans la bulle d’aide, et de ${monstre('constructeur').nom}, qui vous aide à formuler vos demandes de modification. Quand vous écrivez dans la bulle ou que vous demandez une modification, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude pour préparer la réponse ou le résumé de votre demande. L’envoi passe par une liaison chiffrée, c’est-à-dire protégée contre les regards extérieurs. Ces éléments ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
 
@@ -176,9 +176,9 @@ Ces conditions s’appliquent à toute commande passée auprès des Minis Monstr
 
 ## 2. Commande en ligne
 
-La commande se passe sur le site, en trois étapes : le choix du site, les coordonnées, puis le paiement sécurisé. Le client commande d’abord son site, avec ou sans l’option ${minus(ECO.name)} (article 3). Il choisit ensuite la façon de le faire vivre : le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, au mois. Avec le forfait ${mini.name}, il indique son nom de domaine s’il en a un, ou en choisit un, fourni en supplément (article 10). Le total s’affiche en dernier. Le prix du site se règle le jour même, en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et le prix du forfait qui suivra. S’il a un code promo (article 4), il le saisit dans la case « Code promo » avant de commander.
+La commande se passe sur le site, en trois étapes : le choix du site, les coordonnées avec la création de l’espace client, puis le paiement sécurisé. Le client commande d’abord son site, avec ou sans l’option ${minus(ECO.name)} (article 3). Il choisit ensuite la façon de le faire vivre : le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, au mois. Avec le forfait ${mini.name}, il indique son nom de domaine s’il en a un, ou en choisit un, fourni en supplément (article 10). Le total s’affiche en dernier. Le prix du site se règle le jour même, en une fois ou en plusieurs fois (article 5). Avant de payer, le client voit un récapitulatif complet, avec le montant réglé le jour même et le prix du forfait qui suivra. S’il a un code promo (article 4), il le saisit dans la case « Code promo » avant de commander.
 
-En cliquant sur « Commander et payer », le client accepte ces conditions et passe une commande ferme. Il reçoit aussitôt un e-mail de confirmation avec une référence de commande, à rappeler dans les échanges.
+En cliquant sur « Commander et payer », le client accepte ces conditions et passe une commande ferme. Une fois le paiement fait, il reçoit un e-mail de confirmation avec le récapitulatif et la référence de commande, à rappeler dans les échanges.
 
 Une commande peut aussi être passée par e-mail ou par message. Elle est alors ferme quand le client accepte le récapitulatif par écrit et règle le prix de création.
 
@@ -330,7 +330,7 @@ Une demande sur devis suit le délai indiqué dans le devis.
 
 ## 13. Espace client et compte
 
-Un espace client est créé automatiquement à la commande, avec l’adresse e-mail du client. C’est sa page personnelle, protégée par un mot de passe. Il y suit sa commande et ses factures. Avec le forfait ${mini.name}, il y fait ses demandes de modification et y gère son abonnement. C’est aussi là qu’il commande une ${minus(pageGoogle.name)} (article 3), et, avec le ${BOU.name}, qu’il gère son catalogue dans l’onglet « Ma boutique ». La bulle d’aide de ${cerise} y répond à ses questions, dans la limite de ${limites.bulleJour} messages par jour. Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
+Pour commander, le client crée son espace client, avec son adresse e-mail et un mot de passe qu’il choisit (ou se connecte à celui qu’il a déjà). C’est sa page personnelle, protégée par un mot de passe. Il y suit sa commande et ses factures. Avec le forfait ${mini.name}, il y fait ses demandes de modification et y gère son abonnement. C’est aussi là qu’il commande une ${minus(pageGoogle.name)} (article 3), et, avec le ${BOU.name}, qu’il gère son catalogue dans l’onglet « Ma boutique ». La bulle d’aide de ${cerise} y répond à ses questions, dans la limite de ${limites.bulleJour} messages par jour. Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
 
 Un compte sans connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec ses demandes et ses photos. Le client est prévenu par e-mail 30 jours avant. Une connexion suffit pour annuler la suppression. Les factures sont conservées en dehors du compte, le temps prévu par la loi.
 

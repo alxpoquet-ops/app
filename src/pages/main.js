@@ -530,6 +530,8 @@ const ORDER_ERRORS = {
   paiement: 'Le paiement n’a pas abouti. Votre commande est gardée : vous pouvez réessayer, ou nous écrire.',
   robot: 'L’envoi a été bloqué par la protection contre les robots. Attendez quelques secondes et réessayez.',
   annule: 'Le paiement a été annulé. Rien n’a été débité : vous pouvez reprendre quand vous voulez.',
+  mot_de_passe: 'Choisissez un mot de passe d’au moins 8 caractères : il ouvre votre espace client.',
+  compte: 'Cette adresse e-mail a déjà un espace client, et le mot de passe ne correspond pas. Tapez votre mot de passe habituel, ou choisissez-en un nouveau avec « Mot de passe oublié ».',
   inconnu: 'Quelque chose n’a pas fonctionné. Réessayez, ou écrivez-nous par le formulaire de contact : on finalise la commande avec vous.',
 };
 function commanderPage({ creer = false } = {}) {
@@ -541,7 +543,7 @@ function commanderPage({ creer = false } = {}) {
     `<div class="field"><label for="o-${name}">${label} ${req ? '<span class="req">*</span>' : '<span class="opt">(facultatif)</span>'}</label><input id="o-${name}" name="${name}" ${attrs}${req ? ' required' : ''}>${hint ? `<small class="field-hint">${hint}</small>` : ''}</div>`;
   const nextSteps = [
     ['globe', 'Votre nom de domaine est prêt', 'Le vôtre, ou celui qu’on réserve à votre nom.'],
-    ['circle-user', 'Votre espace client arrive par e-mail', 'Vous y suivez votre commande, puis vos modifications.'],
+    ['circle-user', 'Votre espace client est prêt tout de suite', 'Avec le mot de passe choisi ici : vous y suivez votre commande, puis vos modifications.'],
     ['list-checks', 'Vous remplissez le questionnaire', 'Dans votre espace client : votre activité, vos couleurs, vos photos.'],
     ['rocket', 'Votre site est en ligne', `Comptez <span data-order="delai">${esc(t0.delai)}</span> : les modules sont déjà prêts, il ne manque que votre contenu.`],
   ];
@@ -598,10 +600,12 @@ function commanderPage({ creer = false } = {}) {
           ${field('prenom', 'Prénom', 'type="text" autocomplete="given-name" maxlength="80"')}
           ${field('nom', 'Nom', 'type="text" autocomplete="family-name" maxlength="80"')}
         </div>
+        <p class="o-connecte" data-order-moi hidden></p>
         <div class="form-row">
           ${field('email', 'E-mail', 'type="email" autocomplete="email" maxlength="150" inputmode="email"')}
           ${field('telephone', 'Téléphone', 'type="tel" autocomplete="tel" maxlength="30" inputmode="tel"')}
         </div>
+        <div class="field o-mdp" data-order-mdp><label for="o-mot_de_passe">Mot de passe de votre espace client <span class="req">*</span></label><input id="o-mot_de_passe" name="mot_de_passe" type="password" autocomplete="new-password" minlength="8" maxlength="200" required><small class="field-hint">Nouveau client : choisissez-le, 8 caractères minimum. Vous suivrez votre commande avec. Déjà client : votre mot de passe habituel (<a href="/mon-espace/">mot de passe oublié ?</a>).</small></div>
         ${field('entreprise', 'Nom de votre activité', 'type="text" autocomplete="organization" maxlength="120" placeholder="Ex. : Pâtisserie Lila"', { req: false })}
         ${field('adresse', 'Adresse', 'type="text" autocomplete="street-address" maxlength="200"')}
         <div class="form-row">
@@ -708,7 +712,7 @@ function confirmationPage() {
     <p class="confirm-msg is-wait" data-confirm-wait hidden>${icon('hourglass')}<span>On vous envoie le lien de paiement sous 24 heures. Votre commande est gardée : rien à faire de votre côté pour l’instant.</span></p>
     <h2 class="h3">Les prochaines étapes</h2>
     ${C.steps([
-      { t: 'Votre espace client arrive par e-mail', d: 'Vous y suivez votre commande et, ensuite, vos modifications.' },
+      { t: 'Votre espace client est prêt', d: 'Vous y êtes connecté, avec le mot de passe choisi à la commande : vous y suivez votre commande et, ensuite, vos modifications.' },
       { t: 'Le questionnaire de création', d: 'Dans votre espace client : votre activité, vos couleurs, vos photos. Pas de rendez-vous à caler.' },
       { t: 'Votre nom de domaine est prêt', d: `Vous gardez le vôtre, ou on vous en fournit un, à votre nom, avec le forfait ${ABO.name}.` },
       { t: 'Votre site est en ligne', d: `Comptez ${delaiList}, une fois le questionnaire rempli. Ensuite, vous le modifiez à volonté.` },
@@ -722,7 +726,7 @@ function confirmationPage() {
     noindex: true,
     noMobileBar: true,
     title: 'Commande confirmée | Les Minis Monstres',
-    description: 'Merci pour votre commande. Votre espace client arrive par e-mail, avec le questionnaire de création : votre site est en ligne quelques heures après.',
+    description: 'Merci pour votre commande. Votre espace client est prêt, avec le questionnaire de création : votre site est en ligne quelques heures après.',
     body,
   };
 }

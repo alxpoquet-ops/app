@@ -774,10 +774,6 @@ function aled08e_profile_fields($user) {
         } else {
             echo '<input type="' . ($type === 'url' ? 'url' : 'text') . '" id="' . esc_attr($id) . '" name="aled08e[' . esc_attr($k) . ']" value="' . esc_attr($v) . '" class="regular-text" placeholder="' . esc_attr($extra) . '">';
         }
-        if ($k === 'code' && $uid) {
-            $n = count(aled08e_filleuls($uid));
-            echo '<p class="description">Filleuls en ligne : ' . (int) $n . '. Lien : ' . esc_html(home_url('/creer-mon-site/?parrain=' . ($v ?: '…'))) . '</p>';
-        }
         if ($k === 'factures') echo '<p class="description">Les factures Stripe s’ajoutent toutes seules dans l’espace du client.</p>';
         echo '</td></tr>';
     }
