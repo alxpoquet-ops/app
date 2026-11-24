@@ -293,7 +293,7 @@ const outilsOffre = {
       briques: ['produit', 'formats', 'conseilphoto', 'phototexte'] },
     { id: 'comparer', nom: 'Comparer mes devis', monstre: 'champi', chef: 'Plume', color: 'lilac', prix: 3, statut: 'pret', limite: 20, unite: 'comparaisons',
       court: 'Vos devis de fournisseurs côte à côte, et le message pour négocier le prix.',
-      briques: [] },
+      briques: ['comparer'] },
     { id: 'stock', nom: 'Mon stock', monstre: 'dino', chef: 'Mochi', color: 'mint', prix: 9, statut: 'bientot',
       court: 'Le stock dans le téléphone : + et −, une alerte avant la rupture, la boutique mise à jour seule.' },
     { id: 'devis', nom: 'Devis éclair', monstre: 'bricou', chef: 'Bricou', color: 'peach', prix: 12, statut: 'bientot', tag: 'Artisans',

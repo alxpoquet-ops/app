@@ -1,14 +1,17 @@
 <?php
 /**
- * Les Minis Monstres Espace client : publier sur les réseaux sociaux depuis l'espace client (outil « Publier partout »).
+ * Les Minis Monstres Espace client : publier sur les réseaux depuis l'outil « Publier partout » (atelier « Les outils », Pépite).
  *
- * Le client relie ses comptes une fois, puis publie une photo et un texte sur chacun, sans quitter son espace.
- *  - Bluesky et Mastodon : le client donne un mot de passe d'application ou un jeton. Aucune application à déclarer.
+ * Le client présente Pépite une fois à ses comptes, puis tout part d'un seul bouton, sans quitter son espace.
  *  - Facebook (page) et Instagram (compte professionnel relié à la page) : par l'application Meta des Minis Monstres
  *    (identifiant et clé secrète dans les réglages de l'extension).
  *  - LinkedIn (profil) : par l'application LinkedIn des Minis Monstres (identifiant et clé secrète dans les réglages).
- * Les jetons d'accès restent dans la fiche du client (jamais affichés). La photo est gardée une heure, le temps
- * que les réseaux la récupèrent, puis effacée. Publier ne coûte aucun Jeton Cerise : seul le texte écrit par Cerise en coûte.
+ *  - Bluesky et Mastodon : le client donne un mot de passe d'application ou un code. Aucune application à déclarer.
+ *  - Mon site : une actualité publiée sur le site du client par son connecteur (actions « image » et « publier »).
+ *  - La fiche Google n'a pas d'accès simple : elle passe toujours par « Partager » (texte copié, photo, fiche ouverte).
+ * Un réseau pas encore relié se publie avec « Partager » (outils.js), sans aucun accord de Meta ou de Google.
+ * Les jetons d'accès restent dans la fiche du client (jamais affichés). La photo est gardée une heure (ou jusqu'à la
+ * publication programmée), le temps que les réseaux la récupèrent, puis effacée.
  */
 defined('ABSPATH') || exit;
 
@@ -19,6 +22,19 @@ function aled08e_rs_opt($k) { return trim((string) get_option('aled08_rs_' . $k,
 function aled08e_rs_meta_ok() { return aled08e_rs_opt('meta_id') !== '' && aled08e_rs_opt('meta_secret') !== ''; }
 function aled08e_rs_linkedin_ok() { return aled08e_rs_opt('linkedin_id') !== '' && aled08e_rs_opt('linkedin_secret') !== ''; }
 function aled08e_rs_retour($reseau) { return aled08e_url(['aled08e_rs' => $reseau]); }
+/* Publier partout est-il ouvert pour ce client ? (abonnement ou essai de l'outil, atelier-outils.php) */
+function aled08e_rs_ouvert($uid) {
+    if (function_exists('aled08e_ao_actif')) return aled08e_ao_actif($uid, 'publier');
+    return function_exists('aled08e_outils_on') && aled08e_outils_on();
+}
+/* Le site du client est relié à l'espace (connecteur) : Pépite peut y publier une actualité */
+function aled08e_rs_site_ok($uid) { return aled08e_meta($uid, 'lia_url') !== '' && aled08e_meta($uid, 'lia_secret') !== ''; }
+/* Après une liaison (ou une erreur), retour sur l'outil Publier partout */
+function aled08e_rs_revenir($uid, $ok, $texte) {
+    set_transient('aled08_ao_flash_' . (int) $uid, [$ok, $texte], 300);
+    wp_safe_redirect(function_exists('aled08e_ao_url') ? aled08e_ao_url('publier') : aled08e_url() . '#outils', 303);
+    exit;
+}
 function aled08e_rs_get($uid) { $c = get_user_meta($uid, 'aled08_rs', true); return is_array($c) ? $c : []; }
 function aled08e_rs_set($uid, $c) { update_user_meta($uid, 'aled08_rs', $c); }
 /* La page Facebook choisie (avec son compte Instagram, s'il y en a un) */
@@ -67,7 +83,7 @@ function aled08e_rs_json($methode, $url, $donnees, $entetes = [], $protege = fal
 }
 
 /* ---------- La photo : réduite, en JPEG, gardée une heure dans un dossier public (Facebook et Instagram viennent la chercher) ---------- */
-function aled08e_rs_image($fichier) {
+function aled08e_rs_image($fichier, $garde = HOUR_IN_SECONDS) {
     if (empty($fichier['name'])) return null;
     if (!empty($fichier['error']) || empty($fichier['tmp_name']) || !is_uploaded_file($fichier['tmp_name'])) return new WP_Error('aled08_rs', 'Votre photo n’est pas arrivée (trop lourde, ou envoi coupé). Rien n’a été publié : réessayez avec une photo plus légère.');
     if ($fichier['size'] > 8 * 1024 * 1024) return new WP_Error('aled08_rs', 'Cette photo est trop lourde (8 Mo au plus).');
@@ -91,7 +107,7 @@ function aled08e_rs_image($fichier) {
         if (is_wp_error($s) || empty($s['path'])) return new WP_Error('aled08_rs', 'Impossible de préparer la photo.');
         if (filesize($s['path']) < 950000) break;
     }
-    wp_schedule_single_event(time() + HOUR_IN_SECONDS, 'aled08_rs_nettoyer', [$s['path']]);
+    wp_schedule_single_event(time() + max(HOUR_IN_SECONDS, (int) $garde), 'aled08_rs_nettoyer', [$s['path']]);
     return ['chemin' => $s['path'], 'url' => trailingslashit($up['baseurl']) . 'aled08-publications/' . basename($s['path']), 'mime' => 'image/jpeg'];
 }
 add_action('aled08_rs_nettoyer', function ($chemin) {
@@ -213,12 +229,40 @@ function aled08e_rs_linkedin_publier($c, $texte, $image) {
     return ['url' => $id !== '' ? 'https://www.linkedin.com/feed/update/' . $id . '/' : 'https://www.linkedin.com/feed/'];
 }
 
-/* Publier sur un réseau relié. Rend ['url' => adresse de la publication] ou une WP_Error. */
+/* ---------- Mon site : une actualité, par le connecteur du site du client ----------
+ * La première ligne du texte est le titre (Pépite l'écrit ainsi), le reste est le texte de l'actualité. */
+function aled08e_rs_site_publier($uid, $texte, $image) {
+    $l = preg_split('/\n+/', trim((string) $texte), 2);
+    $titre = trim(preg_replace('/^[#*\s]+|[*\s]+$/u', '', (string) ($l[0] ?? '')));
+    $corps = trim((string) ($l[1] ?? ''));
+    if ($corps === '') { $corps = $titre; $titre = wp_trim_words($titre, 10, '…'); }
+    $titre = mb_substr($titre, 0, 90);
+    if ($titre === '' || $corps === '') return new WP_Error('aled08_rs', 'Le texte pour votre site est vide.');
+    $args = ['titre' => $titre, 'contenu' => wpautop(make_clickable(esc_html($corps)))];
+    if ($image) {
+        $im = aled08e_lia_appel($uid, 'image', ['url' => $image['url'], 'description' => $titre]);
+        if (!is_wp_error($im) && !empty($im['image_id'])) $args['image_id'] = (int) $im['image_id'];
+    }
+    $r = aled08e_lia_appel($uid, 'publier', $args);
+    if (is_wp_error($r) || empty($r['id'])) return new WP_Error('aled08_rs', 'Votre site n’a pas répondu. Réessayez dans un instant.');
+    $lien = esc_url_raw((string) ($r['adresse'] ?? ''), ['http', 'https']);
+    return ['url' => $lien !== '' ? $lien : esc_url_raw(aled08e_meta($uid, 'site'))];
+}
+
+/* Les réseaux où Pépite publie directement pour ce client (comptes reliés, plus son site s'il est relié) */
+function aled08e_rs_directs($uid) {
+    $r = aled08e_rs_relies($uid);
+    if (aled08e_rs_site_ok($uid)) $r['site'] = 'Mon site';
+    return $r;
+}
+
+/* Publier sur un réseau relié (ou sur le site). Rend ['url' => adresse de la publication] ou une WP_Error. */
 function aled08e_rs_publier($uid, $reseau, $texte, $image) {
     $c = aled08e_rs_get($uid);
-    $relies = aled08e_rs_relies($uid);
-    if (!isset($relies[$reseau])) return new WP_Error('aled08_rs', 'Ce réseau n’est pas relié.');
+    $relies = aled08e_rs_directs($uid);
+    if (!isset($relies[$reseau])) return new WP_Error('aled08_rs', 'Ce réseau n’est pas encore présenté à Pépite : utilisez « Partager ».');
     switch ($reseau) {
+        case 'site': return aled08e_rs_site_publier($uid, $texte, $image);
         case 'bluesky': return aled08e_rs_bluesky_publier($c['bluesky'], $texte, $image);
         case 'mastodon': return aled08e_rs_mastodon_publier($c['mastodon'], $texte, $image);
         case 'facebook': return aled08e_rs_facebook_publier(aled08e_rs_page($c), $texte, $image);
@@ -233,8 +277,8 @@ function aled08e_rs_publier($uid, $reseau, $texte, $image) {
  * ========================================================================= */
 add_action('wp_ajax_aled08e_rs', function () {
     $uid = get_current_user_id();
-    if (!aled08e_outils_on()) wp_send_json_error(['message' => 'Les outils sont en pause pour l’instant.'], 403);
-    if (!$uid || !check_ajax_referer('aled08e_jl', '_aled08e_jl', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
+    if (!$uid || !check_ajax_referer('aled08e_ao', '_ao', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
+    if (!aled08e_rs_ouvert($uid)) wp_send_json_error(['message' => 'Publier partout n’est pas actif sur votre compte.'], 403);
     $P = wp_unslash($_POST);
     $op = sanitize_key((string) ($P['op'] ?? ''));
     $reseau = sanitize_key((string) ($P['reseau'] ?? ''));
@@ -243,7 +287,7 @@ add_action('wp_ajax_aled08e_rs', function () {
         $cle = in_array($reseau, ['facebook', 'instagram'], true) ? 'meta' : $reseau;
         unset($c[$cle]);
         aled08e_rs_set($uid, $c);
-        wp_send_json_success(['message' => 'Compte délié.']);
+        wp_send_json_success(['message' => 'C’est fait : Pépite ne publie plus sur ce compte.']);
     }
     if ($op === 'page') { // choisir une autre page Facebook
         $i = (int) ($P['page'] ?? 0);
@@ -261,7 +305,7 @@ add_action('wp_ajax_aled08e_rs', function () {
         if (is_wp_error($s)) wp_send_json_error(['message' => $s->get_error_message()], 400);
         $c['bluesky'] = ['handle' => (string) $s['handle'], 'did' => (string) $s['did'], 'mdp' => $mdp];
         aled08e_rs_set($uid, $c);
-        wp_send_json_success(['message' => 'Bluesky est relié.']);
+        wp_send_json_success(['message' => 'Pépite connaît maintenant votre Bluesky.']);
     }
     if ($reseau === 'mastodon') {
         $inst = strtolower(trim(sanitize_text_field((string) ($P['instance'] ?? ''))));
@@ -272,18 +316,19 @@ add_action('wp_ajax_aled08e_rs', function () {
         if (is_wp_error($v) || empty($v['json']['id'])) wp_send_json_error(['message' => 'Mastodon refuse ce code : vérifiez l’adresse du serveur et le code d’accès.'], 400);
         $c['mastodon'] = ['instance' => 'https://' . $inst, 'jeton' => $jeton, 'nom' => '@' . mb_substr(preg_replace('/[^A-Za-z0-9_.-]/', '', (string) ($v['json']['username'] ?? '')), 0, 40) . '@' . $inst];
         aled08e_rs_set($uid, $c);
-        wp_send_json_success(['message' => 'Mastodon est relié.']);
+        wp_send_json_success(['message' => 'Pépite connaît maintenant votre Mastodon.']);
     }
     wp_send_json_error(['message' => 'Ce réseau se relie avec son bouton.'], 400);
 });
 
 /* Départ vers Facebook ou LinkedIn, puis retour avec le code d'accord */
 add_action('template_redirect', function () {
-    if (empty($_GET['aled08e_rs']) || !is_user_logged_in() || !aled08e_outils_on()) return;
+    if (empty($_GET['aled08e_rs']) || !is_user_logged_in()) return;
     $uid = get_current_user_id();
     $reseau = sanitize_key(wp_unslash($_GET['aled08e_rs']));
     if (!in_array($reseau, ['facebook', 'linkedin'], true)) return;
-    $fin = function ($ok, $texte) use ($uid) { set_transient('aled08_jl_flash_' . $uid, [$ok, $texte], 120); wp_safe_redirect(aled08e_url(['ol' => 'publier']) . '#outils', 303); exit; };
+    $fin = function ($ok, $texte) use ($uid) { aled08e_rs_revenir($uid, $ok, $texte); };
+    if (!aled08e_rs_ouvert($uid)) $fin(false, 'Publier partout n’est pas actif sur votre compte.');
     $retour = aled08e_rs_retour($reseau);
     $pret = $reseau === 'facebook' ? aled08e_rs_meta_ok() : aled08e_rs_linkedin_ok();
     if (!$pret) $fin(false, 'Ce réseau n’est pas encore ouvert à la liaison directe.');
@@ -324,7 +369,7 @@ add_action('template_redirect', function () {
         if (!$pages) $fin(false, 'Aucune page Facebook trouvée. Il faut gérer une page (pas seulement un profil), et la cocher au moment de l’accord.');
         $c['meta'] = ['pages' => $pages, 'page' => 0];
         aled08e_rs_set($uid, $c);
-        $fin(true, 'Facebook est relié : page « ' . $pages[0]['nom'] . ' »' . ($pages[0]['ig_id'] ? ', avec Instagram @' . $pages[0]['ig_nom'] : '. Pour Instagram, il faut un compte professionnel relié à cette page') . '.');
+        $fin(true, 'Pépite connaît maintenant votre page Facebook « ' . $pages[0]['nom'] . ' »' . ($pages[0]['ig_id'] ? ' et votre Instagram @' . $pages[0]['ig_nom'] : '. Pour Instagram, il faut un compte professionnel relié à cette page : en attendant, « Partager » marche très bien') . '.');
     }
 
     $t = aled08e_rs_http('POST', 'https://www.linkedin.com/oauth/v2/accessToken', ['body' => ['grant_type' => 'authorization_code', 'code' => $code, 'redirect_uri' => $retour, 'client_id' => aled08e_rs_opt('linkedin_id'), 'client_secret' => aled08e_rs_opt('linkedin_secret')]]);
@@ -333,16 +378,50 @@ add_action('template_redirect', function () {
     if (is_wp_error($moi) || empty($moi['json']['sub'])) $fin(false, 'LinkedIn n’a pas donné votre profil.');
     $c['linkedin'] = ['jeton' => (string) $t['json']['access_token'], 'sub' => (string) $moi['json']['sub'], 'nom' => (string) ($moi['json']['name'] ?? 'Votre profil'), 'exp' => time() + (int) ($t['json']['expires_in'] ?? 5184000) - DAY_IN_SECONDS];
     aled08e_rs_set($uid, $c);
-    $fin(true, 'LinkedIn est relié : ' . $c['linkedin']['nom'] . '. LinkedIn redemande votre accord tous les deux mois.');
+    $fin(true, 'Pépite connaît maintenant votre LinkedIn (' . $c['linkedin']['nom'] . '). LinkedIn redemande votre accord tous les deux mois.');
 }, 5);
 
 /* =========================================================================
  *  Publier (depuis l'outil « Publier partout »)
  * ========================================================================= */
+/* La photo est déposée une fois (réduite, en JPEG, dans un dossier public le temps que les réseaux la récupèrent) ;
+ * chaque publication la retrouve par sa référence. Seules les photos de ce client sont retrouvées. */
+function aled08e_rs_photo_deposer($uid, $fichier, $garde = HOUR_IN_SECONDS) {
+    $im = aled08e_rs_image($fichier, $garde);
+    if (!$im || is_wp_error($im)) return $im ?: new WP_Error('aled08_rs', 'Aucune photo reçue.');
+    $ref = basename($im['chemin'], '.jpg');
+    $l = get_user_meta($uid, 'aled08_rs_photos', true);
+    $l = array_filter(is_array($l) ? $l : [], function ($p) { return (int) ($p['fin'] ?? 0) > time() && file_exists((string) ($p['chemin'] ?? '')); });
+    $l[$ref] = $im + ['fin' => time() + max(HOUR_IN_SECONDS, (int) $garde)];
+    update_user_meta($uid, 'aled08_rs_photos', array_slice($l, -30, null, true));
+    return ['ref' => $ref] + $im;
+}
+function aled08e_rs_photo($uid, $ref) {
+    $ref = preg_replace('/[^A-Za-z0-9]/', '', (string) $ref);
+    if ($ref === '') return null;
+    $l = get_user_meta($uid, 'aled08_rs_photos', true);
+    $p = is_array($l) ? ($l[$ref] ?? null) : null;
+    return $p && file_exists((string) $p['chemin']) ? $p : null;
+}
+function aled08e_rs_garder($uid, $reseau, $url, $texte) {
+    $h = get_user_meta($uid, 'aled08_rs_histo', true);
+    $h = is_array($h) ? $h : [];
+    array_unshift($h, ['t' => time(), 'r' => $reseau, 'u' => $url, 'x' => mb_substr((string) $texte, 0, 80)]);
+    update_user_meta($uid, 'aled08_rs_histo', array_slice($h, 0, 30));
+}
+add_action('wp_ajax_aled08e_rs_photo', function () {
+    $uid = get_current_user_id();
+    if (!$uid || !check_ajax_referer('aled08e_ao', '_ao', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
+    if (!aled08e_rs_ouvert($uid)) wp_send_json_error(['message' => 'Publier partout n’est pas actif sur votre compte.'], 403);
+    if (!aled08e_jl_quota($uid, 'aled08_rs_ph_', 40)) wp_send_json_error(['message' => 'Beaucoup de photos cette heure-ci. Réessayez dans un moment.'], 429);
+    $p = aled08e_rs_photo_deposer($uid, $_FILES['image'] ?? []);
+    if (is_wp_error($p)) wp_send_json_error(['message' => $p->get_error_message()], 400);
+    wp_send_json_success(['photo' => $p['ref']]);
+});
 add_action('wp_ajax_aled08e_publier', function () {
     $uid = get_current_user_id();
-    if (!aled08e_outils_on()) wp_send_json_error(['message' => 'Les outils sont en pause pour l’instant.'], 403);
-    if (!$uid || !check_ajax_referer('aled08e_jl', '_aled08e_jl', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
+    if (!$uid || !check_ajax_referer('aled08e_ao', '_ao', false)) wp_send_json_error(['message' => 'La page avait expiré. Rechargez-la, puis réessayez.'], 403);
+    if (!aled08e_rs_ouvert($uid)) wp_send_json_error(['message' => 'Publier partout n’est pas actif sur votre compte.'], 403);
     $reseau = sanitize_key(wp_unslash($_POST['reseau'] ?? ''));
     // le texte part tel quel vers le réseau (« <3 », « -50 % », un lien avec des accents) : on retire seulement ce qui n'est pas du texte
     $texte = aled08e_jl_texte(is_scalar($_POST['texte'] ?? '') ? wp_unslash($_POST['texte'] ?? '') : '');
@@ -350,57 +429,56 @@ add_action('wp_ajax_aled08e_publier', function () {
     if (mb_strlen($texte) > 5000) wp_send_json_error(['message' => 'Ce texte est trop long pour une publication.'], 400);
     if (!aled08e_jl_quota($uid, 'aled08_rs_nb_', 30)) wp_send_json_error(['message' => 'Vous avez beaucoup publié cette heure-ci. Réessayez dans un moment.'], 429);
     $image = null;
-    if (!empty($_FILES['image']['name'])) {
-        $image = aled08e_rs_image($_FILES['image']);
-        if (is_wp_error($image)) wp_send_json_error(['message' => $image->get_error_message()], 400);
+    $ref = sanitize_text_field(wp_unslash($_POST['photo'] ?? ''));
+    if ($ref !== '') {
+        $image = aled08e_rs_photo($uid, $ref);
+        if (!$image) wp_send_json_error(['message' => 'La photo n’est plus là. Rechargez la page et rajoutez-la.'], 400);
     }
     @set_time_limit(120);
     $r = aled08e_rs_publier($uid, $reseau, $texte, $image);
     if (is_wp_error($r)) wp_send_json_error(['message' => $r->get_error_message()], 400);
-    $h = get_user_meta($uid, 'aled08_rs_histo', true);
-    $h = is_array($h) ? $h : [];
-    array_unshift($h, ['t' => time(), 'r' => $reseau, 'u' => $r['url'], 'x' => mb_substr($texte, 0, 80)]);
-    update_user_meta($uid, 'aled08_rs_histo', array_slice($h, 0, 30));
+    aled08e_rs_garder($uid, $reseau, $r['url'], $texte);
     wp_send_json_success(['url' => $r['url']]);
 });
 
 /* =========================================================================
  *  « Mes réseaux » : ce que le client voit dans l'outil
  * ========================================================================= */
-function aled08e_rs_noms() { return ['facebook' => 'Facebook', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn', 'bluesky' => 'Bluesky', 'mastodon' => 'Mastodon']; }
+function aled08e_rs_noms() { return ['instagram' => 'Instagram', 'facebook' => 'Facebook', 'google' => 'Fiche Google', 'linkedin' => 'LinkedIn', 'site' => 'Mon site', 'bluesky' => 'Bluesky', 'mastodon' => 'Mastodon']; }
+/* « Mes réseaux » : présenter Pépite à ses comptes, une seule fois. Sans liaison, « Partager » fait le travail. */
 function aled08e_rs_html($uid) {
     $relies = aled08e_rs_relies($uid);
     $c = aled08e_rs_get($uid);
-    $noms = aled08e_rs_noms();
-    $aller = function ($r) { return esc_url(add_query_arg(['aled08e_rs' => $r, 'aller' => 1, '_n' => wp_create_nonce('aled08e_rs_aller')], home_url('/mon-espace/'))); };
-    $h = '<div class="rs" data-rs><p class="app-sub">' . aled08e_icon('link') . 'Mes réseaux</p>'
-        . '<p class="app-note">Reliez un compte une fois : ensuite, un bouton suffit pour y publier. Pour les autres réseaux (Facebook, Instagram, LinkedIn…), le texte est copié et le réseau s’ouvre : il reste à coller.</p><ul class="rs-liste">';
-    foreach ($noms as $id => $nom) {
-        // un réseau dont l'application n'est pas déclarée dans les réglages n'est pas montré : il reste le copier-coller
-        if (!isset($relies[$id]) && in_array($id, ['facebook', 'instagram'], true) && !aled08e_rs_meta_ok()) continue;
-        if (!isset($relies[$id]) && $id === 'linkedin' && !aled08e_rs_linkedin_ok()) continue;
-        $h .= '<li class="rs-ligne' . (isset($relies[$id]) ? ' is-on' : '') . '"><strong>' . esc_html($nom) . '</strong>';
-        if (isset($relies[$id])) {
-            $h .= '<span class="rs-compte">' . aled08e_icon('check') . esc_html($relies[$id]) . '</span>';
-            if ($id !== 'instagram') $h .= '<button type="button" class="link-btn" data-rs-delier="' . esc_attr($id) . '">Délier</button>';
-        } elseif ($id === 'facebook') {
-            $h .= aled08e_rs_meta_ok() ? '<a class="btn btn-light btn-sm" href="' . $aller('facebook') . '">Relier ma page</a>' : '<span class="rs-bientot">Liaison directe bientôt</span>';
-        } elseif ($id === 'instagram') {
-            $h .= '<span class="rs-bientot">' . (isset($relies['facebook']) ? 'Il faut un compte Instagram professionnel relié à votre page Facebook' : (aled08e_rs_meta_ok() ? 'Se relie avec votre page Facebook' : 'Liaison directe bientôt')) . '</span>';
-        } elseif ($id === 'linkedin') {
-            $h .= aled08e_rs_linkedin_ok() ? '<a class="btn btn-light btn-sm" href="' . $aller('linkedin') . '">Relier mon profil</a>' : '<span class="rs-bientot">Liaison directe bientôt</span>';
-        } elseif ($id === 'bluesky') {
-            $h .= '<details class="rs-form"><summary class="btn btn-light btn-sm">Relier</summary><form data-rs-relier="bluesky"><div class="field"><label for="rs-bs-id">Votre identifiant Bluesky</label><input id="rs-bs-id" type="text" name="identifiant" placeholder="votrenom.bsky.social" autocomplete="off" required></div>'
-                . '<div class="field"><label for="rs-bs-mdp">Un mot de passe d’application</label><input id="rs-bs-mdp" type="password" name="mdp" placeholder="xxxx-xxxx-xxxx-xxxx" autocomplete="off" required><small class="ol-aide">À créer dans Bluesky : Paramètres, Confidentialité et sécurité, Mots de passe d’application. Ce n’est pas votre mot de passe habituel.</small></div>'
-                . '<button class="btn btn-primary btn-sm" type="submit">Relier Bluesky</button><p class="ol-etat" data-rs-etat role="status"></p></form></details>';
-        } elseif ($id === 'mastodon') {
-            $h .= '<details class="rs-form"><summary class="btn btn-light btn-sm">Relier</summary><form data-rs-relier="mastodon"><div class="field"><label for="rs-ma-i">L’adresse de votre serveur</label><input id="rs-ma-i" type="text" name="instance" placeholder="mastodon.social" autocomplete="off" required></div>'
-                . '<div class="field"><label for="rs-ma-j">Votre code d’accès</label><input id="rs-ma-j" type="password" name="jeton" autocomplete="off" required><small class="ol-aide">À créer dans Mastodon : Préférences, Développement, Nouvelle application. Cochez « write:statuses » et « write:media », puis copiez le code que Mastodon affiche sous « Votre jeton d’accès ».</small></div>'
-                . '<button class="btn btn-primary btn-sm" type="submit">Relier Mastodon</button><p class="ol-etat" data-rs-etat role="status"></p></form></details>';
-        }
-        $h .= '</li>';
+    $aller = function ($r) { return esc_url(add_query_arg(['aled08e_rs' => $r, 'aller' => 1, '_n' => wp_create_nonce('aled08e_rs_aller')], aled08e_url())); };
+    $ligne = function ($nom, $droite, $on = false) { return '<li class="rs-ligne' . ($on ? ' is-on' : '') . '"><strong>' . esc_html($nom) . '</strong>' . $droite . '</li>'; };
+    $compte = function ($id) use ($relies) { return '<span class="rs-compte">' . aled08e_icon('check') . esc_html($relies[$id]) . '</span>'; };
+    $delier = function ($id) { return '<button type="button" class="link-btn" data-rs-delier="' . esc_attr($id) . '">Ne plus publier ici</button>'; };
+    $nb = count($relies) + (aled08e_rs_site_ok($uid) ? 1 : 0);
+    $h = '<details class="rs ao-reseaux"' . (isset($_GET['aled08e_rs']) ? ' open' : '') . '><summary>' . aled08e_icon('link') . '<span>Mes réseaux' . ($nb ? ' : Pépite en connaît ' . $nb : '') . '</span></summary>'
+        . '<p class="app-note">Présentez Pépite une seule fois à un compte : ensuite, elle y publie toute seule. Un réseau pas présenté marche aussi, avec « Partager » : le texte et la photo sont prêts, il reste un geste.</p><ul class="rs-liste">';
+    // Facebook et Instagram : un seul accord chez Meta donne les deux
+    if (isset($relies['facebook'])) {
+        $h .= $ligne('Facebook', $compte('facebook') . $delier('facebook'), true);
+        $h .= $ligne('Instagram', isset($relies['instagram']) ? $compte('instagram') : '<span class="rs-bientot">Pour publier directement, il faut un compte Instagram professionnel relié à votre page Facebook. En attendant, « Partager » marche très bien.</span>', isset($relies['instagram']));
+    } elseif (aled08e_rs_meta_ok()) {
+        $h .= '<li class="rs-ligne"><a class="btn btn-light btn-sm" href="' . $aller('facebook') . '">' . aled08e_icon('send') . '<span>Présenter Pépite à mon Instagram et mon Facebook</span></a></li>';
     }
+    if (isset($relies['linkedin'])) $h .= $ligne('LinkedIn', $compte('linkedin') . $delier('linkedin'), true);
+    elseif (aled08e_rs_linkedin_ok()) $h .= '<li class="rs-ligne"><a class="btn btn-light btn-sm" href="' . $aller('linkedin') . '">' . aled08e_icon('send') . '<span>Présenter Pépite à mon LinkedIn</span></a></li>';
+    $h .= $ligne('Fiche Google', '<span class="rs-bientot">Avec « Partager » : le texte est copié et votre fiche s’ouvre.</span>');
+    $h .= $ligne('Mon site', aled08e_rs_site_ok($uid) ? '<span class="rs-compte">' . aled08e_icon('check') . 'Pépite y publie une actualité</span>' : '<span class="rs-bientot">Pour les sites faits par Les Minis Monstres.</span>', aled08e_rs_site_ok($uid));
+    foreach (['bluesky' => 'Bluesky', 'mastodon' => 'Mastodon'] as $id => $nom) if (isset($relies[$id])) $h .= $ligne($nom, $compte($id) . $delier($id), true);
     $h .= '</ul>';
+    if (!isset($relies['bluesky']) || !isset($relies['mastodon'])) {
+        $h .= '<details class="rs-form ao-autres"><summary class="link-btn">Vous êtes aussi sur Bluesky ou Mastodon ?</summary>';
+        if (!isset($relies['bluesky'])) $h .= '<form data-rs-relier="bluesky"><div class="field"><label for="rs-bs-id">Votre identifiant Bluesky</label><input id="rs-bs-id" type="text" name="identifiant" placeholder="votrenom.bsky.social" autocomplete="off" required></div>'
+            . '<div class="field"><label for="rs-bs-mdp">Un mot de passe d’application</label><input id="rs-bs-mdp" type="password" name="mdp" placeholder="xxxx-xxxx-xxxx-xxxx" autocomplete="off" required><small class="ol-aide">À créer dans Bluesky : Paramètres, Confidentialité et sécurité, Mots de passe d’application. Ce n’est pas votre mot de passe habituel.</small></div>'
+            . '<button class="btn btn-primary btn-sm" type="submit">Présenter Pépite à mon Bluesky</button><p class="ol-etat" data-rs-etat role="status"></p></form>';
+        if (!isset($relies['mastodon'])) $h .= '<form data-rs-relier="mastodon"><div class="field"><label for="rs-ma-i">L’adresse de votre serveur Mastodon</label><input id="rs-ma-i" type="text" name="instance" placeholder="mastodon.social" autocomplete="off" required></div>'
+            . '<div class="field"><label for="rs-ma-j">Votre code d’accès</label><input id="rs-ma-j" type="password" name="jeton" autocomplete="off" required><small class="ol-aide">À créer dans Mastodon : Préférences, Développement, Nouvelle application. Cochez « write:statuses » et « write:media », puis copiez le long code que Mastodon affiche.</small></div>'
+            . '<button class="btn btn-primary btn-sm" type="submit">Présenter Pépite à mon Mastodon</button><p class="ol-etat" data-rs-etat role="status"></p></form>';
+        $h .= '</details>';
+    }
     $pages = (array) ($c['meta']['pages'] ?? []);
     if (count($pages) > 1) {
         $h .= '<div class="field rs-page"><label for="rs-page">Votre page Facebook</label><select id="rs-page" data-rs-page>';
@@ -408,12 +486,13 @@ function aled08e_rs_html($uid) {
         $h .= '</select></div>';
     }
     $histo = get_user_meta($uid, 'aled08_rs_histo', true);
+    $noms = aled08e_rs_noms();
     if (is_array($histo) && $histo) {
         $h .= '<details class="rs-histo"><summary>Mes dernières publications</summary><ul>';
         foreach (array_slice($histo, 0, 8) as $l) $h .= '<li><a href="' . esc_url($l['u']) . '" target="_blank" rel="noopener">' . esc_html(($noms[$l['r']] ?? $l['r']) . ' : ' . $l['x']) . '</a> <small>' . esc_html(wp_date('j F', (int) $l['t'])) . '</small></li>';
         $h .= '</ul></details>';
     }
-    return $h . '</div>';
+    return $h . '</details>';
 }
 
 /* =========================================================================
@@ -422,7 +501,7 @@ function aled08e_rs_html($uid) {
 function aled08e_rs_reglages_html() {
     $m = function ($k) { $v = aled08e_rs_opt($k); return $v === '' ? 'aucune' : 'enregistrée, se termine par ' . substr($v, -4); };
     echo '<h2>Publier sur les réseaux (outil « Publier partout »)</h2>';
-    echo '<p>Bluesky et Mastodon marchent sans rien régler ici : chaque client relie son compte dans son espace. Pour Facebook, Instagram et LinkedIn, il faut déclarer une fois l’application des Minis Monstres chez le réseau, puis coller ici son identifiant et sa clé secrète. Tant que c’est vide, le client voit « Liaison directe bientôt » et publie par copier-coller.</p>';
+    echo '<p>Bluesky et Mastodon marchent sans rien régler ici : chaque client relie son compte dans son espace. Pour Facebook, Instagram et LinkedIn, il faut déclarer une fois l’application des Minis Monstres chez le réseau, puis coller ici son identifiant et sa clé secrète. Tant que c’est vide, le client publie avec « Partager » (partage du téléphone, ou texte copié et réseau ouvert).</p>';
     echo '<table class="form-table" role="presentation">';
     echo '<tr><th>Facebook et Instagram (Meta)</th><td><p><label>Identifiant de l’application <input type="text" name="rs_meta_id" class="regular-text" value="' . esc_attr(aled08e_rs_opt('meta_id')) . '" autocomplete="off"></label></p>'
         . '<p><label>Clé secrète <input type="password" name="rs_meta_secret" class="regular-text" autocomplete="off"></label> <span class="description">' . esc_html($m('meta_secret')) . '. Laissez vide pour ne rien changer.</span></p>'

@@ -1,451 +1,629 @@
-/* Les Minis Monstres Espace client : l'onglet « Outils » (outils de Cerise, Jetons Cerise) et le prix d'une demande par Cerise. */
+/* Les Minis Monstres Espace client : l'atelier « Les outils » (Publier partout, Mes avis Google, Fiche produit, Comparer mes devis).
+ * Chaque outil est une section [data-ao] écrite par includes/atelier-outils.php. Rien n'est compté ici : le serveur vérifie
+ * l'abonnement et la limite du mois avant chaque travail d'un petit monstre. */
 (function () {
   'use strict';
   var d = document;
   function $(s, r) { return (r || d).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || d).querySelectorAll(s)); }
   function el(tag, cls, txt) { var e = d.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
-  function jetons(n) { return n + ' d’énergie'; }
   function copier(txt, fini) {
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(fini, fini);
-    else { var t = el('textarea'); t.value = txt; d.body.appendChild(t); t.select(); try { d.execCommand('copy'); } catch (e) {} d.body.removeChild(t); fini(); }
+    fini = fini || function () {};
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { fini(true); }, function () { fini(false); });
+    else { var t = el('textarea'); t.value = txt; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0'; d.body.appendChild(t); t.select(); var ok = false; try { ok = d.execCommand('copy'); } catch (e) {} d.body.removeChild(t); fini(ok); }
+  }
+  function liste(noms) { return noms.length > 1 ? noms.slice(0, -1).join(', ') + ' et ' + noms[noms.length - 1] : (noms[0] || ''); }
+  function telecharger(blob, nom) {
+    var a = el('a'), u = URL.createObjectURL(blob);
+    a.href = u; a.download = nom; d.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
+  }
+  function enFichier(blob, nom) { try { return new File([blob], nom, { type: blob.type || 'image/jpeg' }); } catch (e) { return null; } }
+  var tactile = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+
+  /* une photo réduite dans le navigateur (JPEG, cote pixels au plus) : plus légère à envoyer, bien tournée */
+  function reduire(file, cote, q) {
+    return new Promise(function (ok, ko) {
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var w0 = img.naturalWidth, h0 = img.naturalHeight, r = Math.min(1, cote / Math.max(w0, h0)), w = Math.round(w0 * r), h = Math.round(h0 * r);
+        var c = el('canvas'); c.width = w; c.height = h;
+        var cx = c.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, w, h); cx.drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        if (!c.toBlob) { ko(); return; }
+        c.toBlob(function (b) { if (b) ok(b); else ko(); }, 'image/jpeg', q || 0.85);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); ko(); };
+      img.src = url;
+    });
   }
 
-  /* ---------- prix d'une demande par Cerise, calculé pendant que le client écrit ---------- */
+  /* ---------- l'ancien prix d'une demande par Cerise (seulement si l'énergie revenait : data-jl-estime) ---------- */
   var est = $('[data-jl-estime]');
   if (est) {
-    var form = est.closest('form'), txt = $('textarea[name="demande"]', form), file = $('[data-req-file]', form), out = $('[data-jl-prix]', est);
+    var eform = est.closest('form'), etxt = $('textarea[name="demande"]', eform), efile = $('[data-req-file]', eform), eout = $('[data-jl-prix]', est);
     var base = +est.getAttribute('data-base'), parMots = +est.getAttribute('data-mots') || 10, parImage = +est.getAttribute('data-image'), solde = +est.getAttribute('data-solde');
     var calc = function () {
-      var mots = Math.max((txt.value.trim().match(/\S+/g) || []).length, Math.ceil(txt.value.trim().length / 6));
-      var photos = file && file.files ? Math.min(3, file.files.length) : 0;
+      var mots = Math.max((etxt.value.trim().match(/\S+/g) || []).length, Math.ceil(etxt.value.trim().length / 6));
+      var photos = efile && efile.files ? Math.min(3, efile.files.length) : 0;
       var prix = base + Math.ceil(mots / parMots) + parImage * photos;
-      out.textContent = prix;
+      eout.textContent = prix;
       est.classList.toggle('is-trop', prix > solde);
-      var lia = $('input[name="par"][value="lia"]', form);
+      var lia = $('input[name="par"][value="lia"]', eform);
       est.hidden = !!(lia && !lia.checked);
     };
-    txt.addEventListener('input', calc);
-    if (file) file.addEventListener('change', calc);
-    $$('input[name="par"]', form).forEach(function (r) { r.addEventListener('change', calc); });
+    etxt.addEventListener('input', calc);
+    if (efile) efile.addEventListener('change', calc);
+    $$('input[name="par"]', eform).forEach(function (r) { r.addEventListener('change', calc); });
     calc();
   }
 
-  /* ---------- les outils ---------- */
-  var grille = $('[data-outils]');
-  if (!grille) return;
-  var ajax = grille.getAttribute('data-ajax'), nonce = grille.getAttribute('data-nonce');
-  var panneaux = $$('[data-ol]');
-  function ouvrir(id) {
-    panneaux.forEach(function (p) { p.hidden = p.getAttribute('data-ol') !== id; });
-    $$('[data-ol-ouvrir]', grille).forEach(function (b) { var on = b.getAttribute('data-ol-ouvrir') === id; b.setAttribute('aria-expanded', on ? 'true' : 'false'); b.classList.toggle('is-on', on); });
-    var p = id && d.getElementById('ol-' + id);
-    if (p) { p.scrollIntoView({ behavior: 'smooth', block: 'start' }); var f = $('input:not([type=hidden]):not([type=file]), textarea, select', p); if (f) setTimeout(function () { f.focus({ preventScroll: true }); }, 350); }
-  }
-  $$('[data-ol-ouvrir]', grille).forEach(function (b) {
-    b.addEventListener('click', function () { ouvrir(b.getAttribute('aria-expanded') === 'true' ? '' : b.getAttribute('data-ol-ouvrir')); });
-  });
-  /* les familles d'outils : un bouton par famille, « Tous » pour tout revoir */
-  $$('[data-ol-filtre]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var cat = b.getAttribute('data-ol-filtre');
-      $$('[data-ol-filtre]').forEach(function (x) { var on = x === b; x.classList.toggle('is-on', on); x.setAttribute('aria-pressed', on ? 'true' : 'false'); });
-      $$('[data-ol-ouvrir]', grille).forEach(function (c) { c.hidden = !!cat && c.getAttribute('data-cat') !== cat; });
-      ouvrir('');
-    });
-  });
-  $$('[data-ol-fermer]').forEach(function (b) { b.addEventListener('click', function () { ouvrir(''); grille.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }); });
-  /* un texte trop long n'est jamais coupé : le compteur prévient, et l'envoi est refusé */
-  $$('textarea[data-max]').forEach(function (t) {
-    var c = $('[data-ol-compte]', t.parentNode), max = +t.getAttribute('data-max');
-    var maj = function () {
-      var n = t.value.length;
-      if (!c) return;
-      c.textContent = n > max * 0.6 || n > max ? n + ' sur ' + max + ' caractères' + (n > max ? ' : c’est trop long, coupez votre texte en deux.' : '') : '';
-      c.classList.toggle('is-trop', n > max);
-    };
-    t.addEventListener('input', maj); maj();
-  });
-  function tropLong(form) {
-    var t = $$('textarea[data-max]', form).filter(function (x) { return x.value.length > +x.getAttribute('data-max'); })[0];
-    return t ? 'Votre texte fait ' + t.value.length + ' caractères. Cet outil en prend ' + t.getAttribute('data-max') + '. Coupez-le en deux, puis relancez.' : '';
-  }
-  $$('[data-ol-file]').forEach(function (i) {
-    var nom = $('[data-ol-file-name]', i.parentNode), depart = nom.textContent;
-    i.addEventListener('change', function () { nom.textContent = i.files && i.files[0] ? i.files[0].name : depart; });
-  });
-
-  /* où coller le texte : chaque réseau s'ouvre sur sa page pour publier */
-  var RESEAUX = {
-    'facebook': ['Facebook', function () { return 'https://www.facebook.com/'; }],
-    'instagram': ['Instagram', function () { return 'https://www.instagram.com/'; }],
-    'linkedin': ['LinkedIn', function (t) { return 'https://www.linkedin.com/feed/?shareActive=true&text=' + encodeURIComponent(t); }],
-    'x': ['X', function (t) { return 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(t); }],
-    'fiche google': ['Google', function () { return 'https://business.google.com/'; }],
-    'tiktok': ['TikTok', function () { return 'https://www.tiktok.com/upload'; }],
-    'bluesky': ['Bluesky', function (t) { return 'https://bsky.app/intent/compose?text=' + encodeURIComponent(t); }],
-    'mastodon': ['Mastodon', function (t) { return 'https://mastodon.social/share?text=' + encodeURIComponent(t); }]
+  /* les réseaux : nom, adresse où publier à la main, longueur conseillée */
+  var RS = {
+    instagram: { nom: 'Instagram', url: function () { return 'https://www.instagram.com/'; } },
+    facebook: { nom: 'Facebook', url: function () { return 'https://www.facebook.com/'; } },
+    google: { nom: 'Fiche Google', url: function () { return 'https://business.google.com/'; } },
+    linkedin: { nom: 'LinkedIn', url: function (t) { return 'https://www.linkedin.com/feed/?shareActive=true&text=' + encodeURIComponent(t); } },
+    site: { nom: 'Mon site' },
+    bluesky: { nom: 'Bluesky', url: function (t) { return 'https://bsky.app/intent/compose?text=' + encodeURIComponent(t); } },
+    mastodon: { nom: 'Mastodon', url: function (t) { return 'https://mastodon.social/share?text=' + encodeURIComponent(t); } }
   };
-  function poster(donnees) {
-    var fd = new FormData();
-    Object.keys(donnees).forEach(function (k) { if (donnees[k] != null) fd.append(k, donnees[k]); });
-    fd.append('_aled08e_jl', nonce);
-    return fetch(ajax, { method: 'POST', body: fd, credentials: 'same-origin' })
-      .then(function (r) { return r.json().catch(function () { return { success: false, data: { message: 'Réponse illisible. Réessayez.' } }; }); });
+  function reseauDe(titre) {
+    var t = String(titre || '').toLowerCase().trim();
+    if (t === 'fiche google' || t === 'google') return 'google';
+    if (t === 'mon site' || t === 'site') return 'site';
+    return RS[t] ? t : '';
   }
-  /* ---------- les outils du navigateur utilisent aussi un peu d'énergie ----------
-   * Le serveur la compte avant de donner le résultat. Une même action (même photo, même image, même jour pour le lien
-   * d'avis) n'est comptée qu'une fois en 24 heures : retélécharger ou recopier ne coûte rien de plus. */
-  function empreinte(t) { var h = 5381; t = String(t); for (var i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
-  function payer(outil, cle, etat) {
-    if (etat) { etat.className = 'ol-etat'; etat.textContent = 'Un instant…'; }
-    return poster({ action: 'aled08e_outil_local', outil: outil, cle: empreinte(cle) }).then(function (j) {
-      if (!j || !j.success) { if (etat) { etat.className = 'ol-etat is-err'; etat.textContent = (j && j.data && j.data.message) || 'Ça n’a pas marché. Réessayez.'; } return false; }
-      var data = j.data;
-      if (etat) { etat.className = 'ol-etat is-ok'; etat.textContent = data.jetons ? 'Énergie utilisée : ' + data.jetons + ', il vous en reste ' + data.solde + '.' : ''; }
-      var s = $('[data-jl-solde]'); if (s && !data.illimite) s.textContent = jetons(data.solde);
-      return true;
-    }, function () { if (etat) { etat.className = 'ol-etat is-err'; etat.textContent = 'La connexion a coupé. Réessayez.'; } return false; });
-  }
-  /* un bouton dont l'action est faite ailleurs (QR code, lien d'avis) : on compte l'énergie d'abord, puis on le relance */
-  function garder(b, outil, cleFn) {
-    var paye = '';
-    b.addEventListener('click', function (ev) {
-      var cle = cleFn();
-      if (paye === cle) return;
-      ev.preventDefault(); ev.stopImmediatePropagation();
-      var sec = b.closest('[data-ol]'), etat = sec && $('[data-ol-etat-local]', sec);
-      b.disabled = true;
-      payer(outil, cle, etat).then(function (ok) { b.disabled = false; if (ok) { paye = cle; b.click(); } });
-    }, true);
-  }
-  $$('[data-ol="qr"] [data-qr-dl]').forEach(function (b) { garder(b, 'qr', function () { return 'qr'; }); });
-  $$('[data-ol="lienavis"] [data-copy]').forEach(function (b) { garder(b, 'lienavis', function () { return 'avis' + new Date().toISOString().slice(0, 10); }); });
-  var LIMITES_RESEAUX = { 'x': 280, 'bluesky': 300, 'mastodon': 500 };
-  function bloc(b, partage, image, relies, limites) {
-    var c = el('div', 'ol-bloc');
-    var tete = el('div', 'ol-bloc-tete');
-    tete.appendChild(el('strong', '', b.titre || 'Texte'));
-    var compte = el('small', '', '');
-    tete.appendChild(compte);
-    c.appendChild(tete);
-    var ta = el('textarea');
-    ta.value = b.texte; ta.rows = Math.min(12, Math.max(3, Math.ceil(b.texte.length / 60) + (b.texte.match(/\n/g) || []).length));
-    ta.setAttribute('aria-label', b.titre || 'Texte');
-    var limite = (limites && limites[b.titre]) || (partage && LIMITES_RESEAUX[(b.titre || '').toLowerCase()]) || 0;
-    var maj = function () {
-      compte.textContent = ta.value.length + (limite ? ' sur ' + limite : '') + ' caractères';
-      compte.classList.toggle('is-trop', !!limite && ta.value.length > limite);
-    };
-    ta.addEventListener('input', maj); maj();
-    c.appendChild(ta);
-    var actions = el('div', 'ol-bloc-actions');
-    var msg = el('span', 'ol-bloc-msg'); msg.setAttribute('role', 'status');
-    var dire = function (t) { msg.textContent = t; setTimeout(function () { if (msg.textContent === t) msg.textContent = ''; }, 5000); };
-    var bc = el('button', 'btn btn-light btn-sm', 'Copier'); bc.type = 'button';
-    bc.addEventListener('click', function () { copier(ta.value, function () { dire('Copié.'); }); });
-    actions.appendChild(bc);
-    var cle = (b.titre || '').toLowerCase();
-    var r = partage && RESEAUX[cle];
-    if (r && relies && relies.indexOf(cle) !== -1) {
-      /* compte relié : la publication part directement */
-      var bd = el('button', 'btn btn-primary btn-sm', 'Publier sur ' + r[0]); bd.type = 'button';
-      bd.setAttribute('data-ol-publier', cle);
-      c.publier = function () {
-        if (bd.disabled) return Promise.resolve();
-        if (cle === 'instagram' && !image) { msg.className = 'ol-bloc-msg is-err'; msg.textContent = 'Instagram demande une photo : ajoutez-en une en haut.'; return Promise.resolve(); }
-        bd.disabled = true; msg.className = 'ol-bloc-msg'; msg.textContent = 'Publication en cours…';
-        return poster({ action: 'aled08e_publier', reseau: cle, texte: ta.value, image: image }).then(function (j) {
-          if (!j || !j.success) { bd.disabled = false; msg.className = 'ol-bloc-msg is-err'; msg.textContent = (j && j.data && j.data.message) || 'La publication n’est pas partie. Réessayez.'; return; }
-          msg.className = 'ol-bloc-msg'; msg.textContent = 'Publié. ';
-          var a = el('a', '', 'Voir la publication'); a.href = j.data.url; a.target = '_blank'; a.rel = 'noopener';
-          msg.appendChild(a);
-          bd.textContent = 'Publié'; c.classList.add('is-publie');
-        }, function () { bd.disabled = false; msg.className = 'ol-bloc-msg is-err'; msg.textContent = 'La connexion a coupé. Réessayez.'; });
+
+  $$('[data-ao][data-ajax]').forEach(function (sec) {
+    var outil = sec.getAttribute('data-ao'), ajax = sec.getAttribute('data-ajax'), nonce = sec.getAttribute('data-nonce'), chef = sec.getAttribute('data-chef') || 'Le petit monstre';
+    var photo = { blob: null, ref: '' };
+
+    function poster(donnees) {
+      var fd = donnees instanceof FormData ? donnees : new FormData();
+      if (!(donnees instanceof FormData)) Object.keys(donnees).forEach(function (k) {
+        var v = donnees[k];
+        if (v == null) return;
+        if (Array.isArray(v)) v.forEach(function (x) { fd.append(k + '[]', x); });
+        else if (v instanceof Blob) fd.append(k, v, 'photo.jpg');
+        else if (typeof v === 'object') Object.keys(v).forEach(function (x) { fd.append(k + '[' + x + ']', v[x]); });
+        else fd.append(k, v);
+      });
+      fd.append('_ao', nonce);
+      return fetch(ajax, { method: 'POST', body: fd, credentials: 'same-origin' })
+        .then(function (r) { return r.json().catch(function () { return { success: false, data: { message: 'Réponse illisible. Réessayez.' } }; }); });
+    }
+    function dire(etat, texte, cls) { if (!etat) return; etat.className = (etat.className.split(' ')[0] || 'ol-etat') + (cls ? ' ' + cls : ''); etat.textContent = texte; }
+    function erreur(j, defaut) { return (j && j.data && j.data.message) || defaut || 'Ça n’a pas marché. Réessayez.'; }
+    function majUsage(data) {
+      if (!data || !data.usage) return;
+      var u = $('[data-ao-usage]', sec), j = $('[data-ao-jauge]', sec);
+      if (u && data.usageTxt) u.textContent = data.usageTxt;
+      if (j && data.usage.limite) j.style.width = Math.min(100, Math.round(100 * data.usage.fait / data.usage.limite)) + '%';
+    }
+
+    /* ---------- les boutons de l'outil : un panneau à la fois ---------- */
+    function montrer(pid) {
+      var p = $('[data-ao-panneau="' + pid + '"]', sec);
+      if (!p) return;
+      $$('[data-ao-panneau]', sec).forEach(function (x) { x.hidden = x !== p; });
+      $$('.ao-nav [data-ao-aller]', sec).forEach(function (b) { var on = b.getAttribute('data-ao-aller') === pid; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+      if (p.getBoundingClientRect().top < 0) p.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    $$('[data-ao-aller]', sec).forEach(function (b) { b.addEventListener('click', function () { montrer(b.getAttribute('data-ao-aller')); }); });
+
+    /* ---------- les compteurs : un texte trop long n'est jamais coupé, il est signalé ---------- */
+    $$('textarea[data-max]', sec).forEach(function (t) {
+      var c = $('[data-ao-compte]', t.parentNode), max = +t.getAttribute('data-max');
+      var maj = function () {
+        if (!c) return;
+        var n = t.value.length;
+        c.textContent = n > max * 0.6 ? n + ' sur ' + max + ' caractères' + (n > max ? ' : c’est trop long, raccourcissez-le.' : '') : '';
+        c.classList.toggle('is-trop', n > max);
       };
-      bd.addEventListener('click', c.publier);
-      actions.appendChild(bd);
-    } else if (r) {
-      var bo = el('button', 'btn btn-primary btn-sm', 'Publier sur ' + r[0]); bo.type = 'button';
-      bo.addEventListener('click', function () {
-        var url = r[1](ta.value);
-        copier(ta.value, function () { dire('Texte copié : collez-le dans ' + r[0] + (image ? ', puis ajoutez votre photo.' : '.')); });
-        window.open(url, '_blank', 'noopener');
-      });
-      actions.appendChild(bo);
-      if (navigator.share) {
-        var bp = el('button', 'btn btn-light btn-sm', 'Partager'); bp.type = 'button';
-        bp.addEventListener('click', function () {
-          var data = { text: ta.value };
-          if (image && navigator.canShare && navigator.canShare({ files: [image] })) data.files = [image];
-          navigator.share(data).catch(function () {});
-        });
-        actions.appendChild(bp);
-      }
-    }
-    actions.appendChild(msg);
-    c.appendChild(actions);
-    return c;
-  }
-
-  function afficher(res, blocs, image) {
-    var partage = res.hasAttribute('data-partage'), relies = [], limites = {}, note = res.getAttribute('data-note');
-    try { relies = JSON.parse(res.getAttribute('data-relies') || '[]'); } catch (e) {}
-    try { limites = JSON.parse(res.getAttribute('data-limites') || '{}'); } catch (e) {}
-    res.innerHTML = '';
-    var directs = blocs.filter(function (b) { return relies.indexOf((b.titre || '').toLowerCase()) !== -1; }).length;
-    res.appendChild(el('p', 'app-note', !partage ? (note || 'Relisez, changez ce que vous voulez, puis copiez.') : directs ? 'Relisez, changez ce que vous voulez, puis publiez. Sur vos comptes reliés, la publication part directement.' : 'Relisez, changez ce que vous voulez, puis publiez : le texte est copié, le réseau s’ouvre, il reste à coller.'));
-    var cartes = blocs.map(function (b) { var c = bloc(b, partage, image, relies, limites); res.appendChild(c); return c; });
-    if (directs > 1) {
-      var tout = el('button', 'btn btn-primary', 'Tout publier sur mes ' + directs + ' comptes reliés'); tout.type = 'button';
-      tout.addEventListener('click', function () {
-        tout.disabled = true;
-        cartes.filter(function (c) { return c.publier; }).reduce(function (p, c) { return p.then(c.publier); }, Promise.resolve()).then(function () { tout.textContent = 'C’est parti'; });
-      });
-      res.insertBefore(tout, res.children[1]);
-    }
-    res.hidden = false;
-    res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-  $$('[data-ol-form]').forEach(function (form) {
-    var sec = form.closest('[data-ol]'), res = $('[data-ol-resultat]', sec), etat = $('[data-ol-etat]', form), btn = $('button[type=submit]', form);
-    var direct = $('[data-ol-direct]', form);
-    if (direct) direct.addEventListener('click', function () {
-      var t = $('textarea[name="c_description"]', form), texte = t.value.trim();
-      if (!texte) { etat.className = 'ol-etat is-err'; etat.textContent = 'Écrivez d’abord votre texte.'; t.focus(); return; }
-      var choisis = $$('input[name="c_reseaux[]"]:checked', form).map(function (i) { return i.value; });
-      if (!choisis.length) { etat.className = 'ol-etat is-err'; etat.textContent = 'Cochez au moins un réseau.'; return; }
-      var fi = $('[data-ol-file]', form), ph = fi && fi.files && fi.files[0] ? fi.files[0] : null;
-      direct.disabled = true;
-      payer('publier', texte + '|' + choisis.join(',') + '|' + (ph ? ph.name + ph.size : ''), etat).then(function (ok) {
-        direct.disabled = false;
-        if (ok) afficher(res, choisis.map(function (n) { return { titre: n, texte: texte }; }), ph);
-      });
+      t.addEventListener('input', maj); maj();
     });
-    form.addEventListener('submit', function (ev) {
-      ev.preventDefault();
-      if (btn.disabled) return;
-      var long = tropLong(form), fq = $('[data-ol-file][data-requis]', form);
-      if (long) { etat.className = 'ol-etat is-err'; etat.textContent = long; return; }
-      if (fq && !(fq.files && fq.files[0])) { etat.className = 'ol-etat is-err'; etat.textContent = 'Il manque : votre photo.'; return; }
-      var debut = Date.now();
-      var reussi = function (data) {
-          btn.disabled = false; form.classList.remove('is-busy');
-          etat.className = 'ol-etat is-ok';
-          etat.textContent = data.illimite ? 'C’est prêt.' : 'C’est prêt. Énergie utilisée : ' + data.jetons + ', il vous en reste ' + data.solde + '.';
-          var s = $('[data-jl-solde]'); if (s && !data.illimite) s.textContent = jetons(data.solde);
-          var vz = $('[data-visuel]', sec);
-          if (vz && vz.remplir) { vz.remplir(data.blocs); res.hidden = true; }
-          else afficher(res, data.blocs, image);
+
+    /* ---------- la photo, choisie une fois pour tout l'outil ---------- */
+    var zone = $('[data-ao-photo]', sec), apresPhoto = [];
+    if (zone) {
+      var fi = $('[data-ao-photo-file]', zone), ap = $('[data-ao-photo-apercu]', zone), vide = $('[data-ao-photo-vide]', zone), ret = $('[data-ao-photo-retirer]', zone), pe = $('[data-ao-photo-etat]', zone), urlAp = '';
+      var vider = function () {
+        photo.blob = null; photo.ref = ''; fi.value = '';
+        if (urlAp) URL.revokeObjectURL(urlAp);
+        ap.hidden = true; ap.removeAttribute('src'); vide.hidden = false; ret.hidden = true; dire(pe, '');
+        apresPhoto.forEach(function (f) { f(); });
       };
-      var fd = new FormData(form);
-      fd.append('action', 'aled08e_outil');
-      fd.append('_aled08e_jl', nonce);
-      var fi = $('[data-ol-file]', form), image = fi && fi.files && fi.files[0] ? fi.files[0] : null;
+      fi.addEventListener('change', function () {
+        var f = fi.files && fi.files[0];
+        if (!f) return;
+        if (!/^image\//.test(f.type || 'image/')) { dire(pe, 'Choisissez une photo.', 'is-err'); return; }
+        dire(pe, 'Préparation de la photo…');
+        reduire(f, 1600, 0.85).then(function (b) {
+          photo.blob = b; photo.ref = '';
+          if (urlAp) URL.revokeObjectURL(urlAp);
+          urlAp = URL.createObjectURL(b); ap.src = urlAp; ap.hidden = false; vide.hidden = true; ret.hidden = false; dire(pe, '');
+          apresPhoto.forEach(function (fn) { fn(); });
+        }, function () { dire(pe, 'Cette photo ne s’ouvre pas ici. Enregistrez-la en JPG (ou faites une capture d’écran), puis réessayez.', 'is-err'); });
+      });
+      ret.addEventListener('click', vider);
+      sec._viderPhoto = vider;
+    }
+
+    /* ---------- les résultats : un bloc par texte, modifiable, à copier ---------- */
+    function blocCarte(b, limites) {
+      var c = el('div', 'ol-bloc'), tete = el('div', 'ol-bloc-tete'), compte = el('small', '', '');
+      tete.appendChild(el('strong', '', b.titre || 'Texte')); tete.appendChild(compte); c.appendChild(tete);
+      var ta = el('textarea');
+      ta.value = b.texte; ta.rows = Math.min(12, Math.max(3, Math.ceil(b.texte.length / 60) + (b.texte.match(/\n/g) || []).length));
+      ta.setAttribute('aria-label', b.titre || 'Texte');
+      var limite = (limites && limites[b.titre]) || 0;
+      var maj = function () { compte.textContent = ta.value.length + (limite ? ' sur ' + limite : '') + ' caractères'; compte.classList.toggle('is-trop', !!limite && ta.value.length > limite); };
+      ta.addEventListener('input', maj); maj();
+      c.appendChild(ta);
+      var actions = el('div', 'ol-bloc-actions'), msg = el('span', 'ol-bloc-msg'); msg.setAttribute('role', 'status');
+      var bc = el('button', 'btn btn-light btn-sm', 'Copier'); bc.type = 'button';
+      bc.addEventListener('click', function () { copier(ta.value, function (ok) { msg.textContent = ok ? 'Copié.' : 'Sélectionnez le texte pour le copier.'; setTimeout(function () { msg.textContent = ''; }, 4000); }); });
+      actions.appendChild(bc); actions.appendChild(msg); c.appendChild(actions);
+      c.ta = ta; c.actions = actions; c.msg = msg;
+      return c;
+    }
+    /* « Tableau comparatif » : des lignes « a | b | c » deviennent un vrai tableau (le texte reste à copier) */
+    function tableauCarte(b) {
+      var lignes = b.texte.split('\n').filter(function (l) { return l.indexOf('|') !== -1 && !/^[\s|:\-]+$/.test(l); }).map(function (l) {
+        var c = l.split('|').map(function (x) { return x.trim(); });
+        if (c[0] === '') c.shift();
+        if (c.length && c[c.length - 1] === '') c.pop();
+        return c;
+      });
+      if (lignes.length < 2) return null;
+      var carte = el('div', 'ol-bloc'), tete = el('div', 'ol-bloc-tete');
+      tete.appendChild(el('strong', '', b.titre)); carte.appendChild(tete);
+      var wrap = el('div', 'ao-table'), t = el('table'), th = el('thead'), tr = el('tr');
+      wrap.setAttribute('tabindex', '0'); wrap.setAttribute('role', 'region'); wrap.setAttribute('aria-label', b.titre);
+      lignes[0].forEach(function (x) { var h = el('th', '', x); h.scope = 'col'; tr.appendChild(h); });
+      th.appendChild(tr); t.appendChild(th);
+      var tb = el('tbody');
+      lignes.slice(1).forEach(function (l) { var r = el('tr'); l.forEach(function (x, i) { var cell = el(i === 0 ? 'th' : 'td', '', x); if (i === 0) cell.scope = 'row'; r.appendChild(cell); }); tb.appendChild(r); });
+      t.appendChild(tb); wrap.appendChild(t); carte.appendChild(wrap);
+      var actions = el('div', 'ol-bloc-actions'), msg = el('span', 'ol-bloc-msg'), bc = el('button', 'btn btn-light btn-sm', 'Copier le tableau'); bc.type = 'button';
+      bc.addEventListener('click', function () { copier(lignes.map(function (l) { return l.join('\t'); }).join('\n'), function () { msg.textContent = 'Copié : collez-le dans un tableur.'; }); });
+      actions.appendChild(bc); actions.appendChild(msg); carte.appendChild(actions);
+      return carte;
+    }
+    function afficher(res, blocs, opts) {
+      opts = opts || {};
+      var limites = {};
+      try { limites = JSON.parse(res.getAttribute('data-limites') || '{}'); } catch (e) {}
+      res.innerHTML = '';
+      res.appendChild(el('p', 'app-note', res.getAttribute('data-note') || 'Relisez, changez ce que vous voulez, puis copiez.'));
+      var cartes = {};
+      blocs.forEach(function (b) {
+        var c = /^tableau/i.test(b.titre || '') ? tableauCarte(b) : null;
+        if (!c) {
+          c = blocCarte(b, limites);
+          cartes[b.titre] = c;
+          if (opts.utiliser) {
+            var bu = el('button', 'btn btn-primary btn-sm', 'Publier cette idée'); bu.type = 'button';
+            bu.addEventListener('click', function () { opts.utiliser(c.ta.value); });
+            c.actions.insertBefore(bu, c.actions.firstChild);
+          }
+        }
+        res.appendChild(c);
+      });
+      if (opts.boutique) res.appendChild(boutiqueForm(cartes));
+      res.hidden = false;
+      res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    /* ---------- lancer une brique ---------- */
+    function manque(form) {
+      var vides = $$('textarea[required], input[required]', form).filter(function (x) { return !x.value.trim(); });
+      if (vides.length) { var lab = form.querySelector('label[for="' + vides[0].id + '"]'); vides[0].focus(); return 'Il manque : ' + (lab ? lab.textContent : 'une case'); }
+      var t = $$('textarea[data-max]', form).filter(function (x) { return x.value.length > +x.getAttribute('data-max'); })[0];
+      if (t) { t.focus(); return 'Votre texte fait ' + t.value.length + ' caractères. Cette case en prend ' + t.getAttribute('data-max') + '. Raccourcissez-le, puis relancez.'; }
+      if (form.getAttribute('data-photo') === 'requis' && !photo.blob) return 'Il manque : la photo, en haut.';
+      if (form.getAttribute('data-ao-pub') != null && !$$('input[name="c_reseaux[]"]:checked', form).length) return 'Cochez au moins un endroit où publier.';
+      return '';
+    }
+    /* les devis : photos réduites (lisibles), PDF tels quels (5 Mo au plus) */
+    function preparerFichiers(form) {
+      var fi = $('[data-ao-fichiers]', form);
+      if (!fi || !fi.files || !fi.files.length) return Promise.resolve([]);
+      var max = +fi.getAttribute('data-max') || 4, l = Array.prototype.slice.call(fi.files);
+      if (l.length > max) return Promise.reject('Envoyez ' + max + ' fichiers au plus.');
+      return Promise.all(l.map(function (f) {
+        if (f.type === 'application/pdf' || /\.pdf$/i.test(f.name)) return f.size > 5 * 1048576 ? Promise.reject('« ' + f.name + ' » est trop lourd (5 Mo au plus) : envoyez plutôt une photo de chaque page.') : Promise.resolve([f, f.name, fi.name]);
+        return reduire(f, 2000, 0.85).then(function (b) { return [b, f.name.replace(/\.[^.]+$/, '') + '.jpg', fi.name]; }, function () { return Promise.reject('« ' + f.name + ' » ne s’ouvre pas ici. Enregistrez-le en JPG ou en PDF.'); });
+      }));
+    }
+    function lancer(form, reussi) {
+      var bid = form.getAttribute('data-brique'), etat = $('[data-ao-etat]', form), btn = $('button[type=submit]', form);
+      if (btn.disabled) return;
+      var m = manque(form);
+      if (m) { dire(etat, m, 'is-err'); return; }
       btn.disabled = true; form.classList.add('is-busy');
-      etat.className = 'ol-etat'; etat.textContent = 'Un petit monstre s’y met… quelques secondes.';
-      fetch(ajax, { method: 'POST', body: fd, credentials: 'same-origin' })
-        .then(function (r) { return r.json().catch(function () { return { success: false, data: { message: 'Réponse illisible. Réessayez.' } }; }); })
-        .then(function (j) {
-          if (!j || !j.success) { btn.disabled = false; form.classList.remove('is-busy'); etat.className = 'ol-etat is-err'; etat.textContent = (j && j.data && j.data.message) || 'Le petit monstre n’a pas pu répondre. Réessayez.'; return; }
-          reussi(j.data);
-        })
-        .catch(function () {
-          /* la connexion a coupé, mais Cerise a peut-être fini : on revient chercher son résultat (4 essais sur une minute) */
-          etat.className = 'ol-etat'; etat.textContent = 'La connexion a coupé. Je regarde si le petit monstre a fini…';
-          var essais = 0, outil = fd.get('outil');
+      dire(etat, chef + ' s’y met… quelques secondes.');
+      var fin = function () { btn.disabled = false; form.classList.remove('is-busy'); };
+      preparerFichiers(form).then(function (fichiers) {
+        var fd = new FormData(form);
+        fd.delete && fd.delete('c_image');
+        $$('[data-ao-fichiers]', form).forEach(function (x) { if (fd.delete) fd.delete(x.name); });
+        fichiers.forEach(function (f) { fd.append(f[2], f[0], f[1]); });
+        if (form.getAttribute('data-photo') && photo.blob) fd.append('c_image', photo.blob, 'photo.jpg');
+        fd.append('action', 'aled08e_ao_brique'); fd.append('outil', outil); fd.append('brique', bid);
+        var debut = Date.now();
+        var ok = function (data) { fin(); dire(etat, 'C’est prêt.', 'is-ok'); majUsage(data); reussi(data.blocs); };
+        poster(fd).then(function (j) {
+          if (!j || !j.success) { fin(); dire(etat, erreur(j, chef + ' n’a pas pu répondre. Réessayez.'), 'is-err'); return; }
+          ok(j.data);
+        }, function () {
+          /* la connexion a coupé, mais le monstre a peut-être fini : on revient chercher son résultat (4 essais sur une minute) */
+          dire(etat, 'La connexion a coupé. Je regarde si ' + chef + ' a fini…');
+          var essais = 0;
           var revoir = function () {
             essais++;
-            poster({ action: 'aled08e_outil_dernier', outil: outil, il_y_a: Math.ceil((Date.now() - debut) / 1000) + 5 }).then(function (j) {
-              if (j && j.success) { reussi(j.data); return; }
+            poster({ action: 'aled08e_ao_dernier', brique: bid, il_y_a: Math.ceil((Date.now() - debut) / 1000) + 5 }).then(function (j) {
+              if (j && j.success) { ok(j.data); return; }
               if (essais < 4) { setTimeout(revoir, 15000); return; }
-              btn.disabled = false; form.classList.remove('is-busy'); etat.className = 'ol-etat is-err';
-              etat.textContent = 'La connexion a coupé avant la réponse. Regardez votre énergie en rechargeant la page : si de l’énergie a été comptée, écrivez à Alex.';
-            }, function () { if (essais < 4) setTimeout(revoir, 15000); else { btn.disabled = false; form.classList.remove('is-busy'); etat.className = 'ol-etat is-err'; etat.textContent = 'Pas de connexion. Réessayez quand le réseau est revenu.'; } });
+              fin(); dire(etat, 'La connexion a coupé avant la réponse. Réessayez quand le réseau est revenu.', 'is-err');
+            }, function () { if (essais < 4) setTimeout(revoir, 15000); else { fin(); dire(etat, 'Pas de connexion. Réessayez quand le réseau est revenu.', 'is-err'); } });
           };
           setTimeout(revoir, 8000);
         });
-    });
-  });
-
-  /* ---------- mes réseaux : relier, délier, choisir sa page ---------- */
-  var revenir = function () { try { sessionStorage.setItem('aled08-ol', 'publier'); } catch (e) {} location.hash = 'outils'; location.reload(); };
-  $$('[data-rs-relier]').forEach(function (f) {
-    f.addEventListener('submit', function (ev) {
-      ev.preventDefault();
-      var et = $('[data-rs-etat]', f), b = $('button[type=submit]', f), d2 = { action: 'aled08e_rs', op: 'relier', reseau: f.getAttribute('data-rs-relier') };
-      $$('input', f).forEach(function (i) { d2[i.name] = i.value; });
-      b.disabled = true; et.className = 'ol-etat'; et.textContent = 'Vérification…';
-      poster(d2).then(function (j) {
-        if (j && j.success) { et.className = 'ol-etat is-ok'; et.textContent = j.data.message; revenir(); return; }
-        b.disabled = false; et.className = 'ol-etat is-err'; et.textContent = (j && j.data && j.data.message) || 'La liaison n’a pas marché. Réessayez.';
-      }, function () { b.disabled = false; et.className = 'ol-etat is-err'; et.textContent = 'La connexion a coupé. Réessayez.'; });
-    });
-  });
-  $$('[data-rs-delier]').forEach(function (b) {
-    b.addEventListener('click', function () { b.disabled = true; poster({ action: 'aled08e_rs', op: 'delier', reseau: b.getAttribute('data-rs-delier') }).then(revenir, revenir); });
-  });
-  var selPage = $('[data-rs-page]');
-  if (selPage) selPage.addEventListener('change', function () { poster({ action: 'aled08e_rs', op: 'page', page: selPage.value }).then(revenir, revenir); });
-  /* retour d'une liaison : l'outil se rouvre tout seul */
-  var rouvrir = new URLSearchParams(location.search).get('ol');
-  try { rouvrir = rouvrir || sessionStorage.getItem('aled08-ol'); sessionStorage.removeItem('aled08-ol'); } catch (e) {}
-  if (rouvrir && d.getElementById('ol-' + rouvrir)) setTimeout(function () { ouvrir(rouvrir); }, 400);
-
-  /* ---------- visuel d'annonce : un texte sur une couleur ou sur une photo, dessiné dans le navigateur ---------- */
-  $$('[data-visuel]').forEach(function (vz) {
-    var cv = $('[data-v-canvas]', vz), ctx = cv.getContext('2d'), dl = $('[data-v-dl]', vz), photo = null, photoNom = '', paye = '';
-    var champ = function (n) { return $('[data-v-' + n + ']', vz); };
-    var choix = function (n) { var c = $('input[name="v-' + n + '"]:checked', vz); return c ? c.value : ''; };
-    var FORMATS = { carre: [1080, 1080], portrait: [1080, 1350], story: [1080, 1920] };
-    var COULEURS = {
-      rose: ['#FFD9E7', '#A3305F'], lilas: ['#E8E0FF', '#5B3FC4'], menthe: ['#D5F5E8', '#176A4C'], peche: ['#FFE4D6', '#9C4220'],
-      ciel: ['#DDEEFF', '#2C67AE'], beurre: ['#FFF1C2', '#7A5600'], sombre: ['#2E2A47', '#FFFFFF'], blanc: ['#FFFFFF', '#2E2A47']
-    };
-    var police = function (px, gras) { return (gras ? '800 ' : '600 ') + px + 'px "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif'; };
-    /* coupe un texte en lignes qui tiennent dans la largeur */
-    var lignes = function (txt, px, gras, larg) {
-      ctx.font = police(px, gras);
-      var out = [];
-      String(txt).split('\n').forEach(function (par) {
-        var l = '';
-        par.split(/\s+/).forEach(function (mot) {
-          var essai = l ? l + ' ' + mot : mot;
-          if (l && ctx.measureText(essai).width > larg) { out.push(l); l = mot; } else l = essai;
-        });
-        if (l) out.push(l);
+      }, function (msg) { fin(); dire(etat, String(msg), 'is-err'); });
+    }
+    $$('[data-ao-fichiers]', sec).forEach(function (fi) {
+      var l = $('[data-ao-fichiers-liste]', fi.closest('.field'));
+      fi.addEventListener('change', function () {
+        if (!l) return;
+        l.innerHTML = '';
+        Array.prototype.slice.call(fi.files || []).forEach(function (f) { l.appendChild(el('li', '', f.name)); });
       });
-      return out;
-    };
-    var dessiner = function () {
-      var F = FORMATS[choix('format')] || FORMATS.carre, W = F[0], H = F[1];
-      var C = COULEURS[choix('couleur')] || COULEURS.rose, titre = champ('titre').value.trim(), sous = champ('sous').value.trim(), pied = champ('pied').value.trim();
-      cv.width = W; cv.height = H;
-      var encre = C[1], marge = 90, larg = W - marge * 2;
-      if (photo) {
-        var k = Math.max(W / photo.width, H / photo.height), w = photo.width * k, h = photo.height * k;
-        ctx.drawImage(photo, (W - w) / 2, (H - h) / 2, w, h);
-        /* un voile sombre pour que le texte se lise sur n'importe quelle photo */
-        var place = choix('place') || 'bas', g = ctx.createLinearGradient(0, 0, 0, H);
-        if (place === 'haut') { g.addColorStop(0, 'rgba(20,18,36,.78)'); g.addColorStop(.6, 'rgba(20,18,36,.12)'); g.addColorStop(1, 'rgba(20,18,36,.35)'); }
-        else if (place === 'milieu') { g.addColorStop(0, 'rgba(20,18,36,.5)'); g.addColorStop(1, 'rgba(20,18,36,.5)'); }
-        else { g.addColorStop(0, 'rgba(20,18,36,.2)'); g.addColorStop(.4, 'rgba(20,18,36,.12)'); g.addColorStop(1, 'rgba(20,18,36,.8)'); }
-        ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-        encre = '#FFFFFF';
-      } else {
-        ctx.fillStyle = C[0]; ctx.fillRect(0, 0, W, H);
-        /* deux ronds doux, pour un fond moins plat */
-        ctx.globalAlpha = .1; ctx.fillStyle = C[1];
-        ctx.beginPath(); ctx.arc(W * .92, H * .08, W * .28, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(W * .05, H * .97, W * .22, 0, Math.PI * 2); ctx.fill();
-        ctx.globalAlpha = 1;
-      }
-      /* le titre : aussi grand que possible, sur 4 lignes au plus */
-      var px = 150, lt = [];
-      for (; px >= 54; px -= 6) { lt = lignes(titre || 'Votre titre', px, true, larg); var large = lt.some(function (l) { ctx.font = police(px, true); return ctx.measureText(l).width > larg; }); if (lt.length <= 4 && !large) break; }
-      var pxs = Math.max(40, Math.round(px * .42)), ls = sous ? lignes(sous, pxs, false, larg).slice(0, 4) : [];
-      var hTitre = lt.length * px * 1.12, hSous = ls.length ? ls.length * pxs * 1.35 + px * .35 : 0, bloc = hTitre + hSous;
-      var p = choix('place') || 'milieu', basLibre = pied ? 150 : 90;
-      var y = p === 'haut' ? marge + 40 : p === 'bas' ? H - basLibre - bloc : (H - bloc) / 2 - (pied ? 20 : 0);
-      ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillStyle = encre;
-      ctx.font = police(px, true);
-      lt.forEach(function (l, i) { ctx.fillText(l, W / 2, y + i * px * 1.12); });
-      if (ls.length) {
-        ctx.font = police(pxs, false); ctx.globalAlpha = .92;
-        ls.forEach(function (l, i) { ctx.fillText(l, W / 2, y + hTitre + px * .35 + i * pxs * 1.35); });
-        ctx.globalAlpha = 1;
-      }
-      if (pied) {
-        ctx.font = police(34, true);
-        var wp = Math.min(larg, ctx.measureText(pied).width + 64), hp = 68, xp = (W - wp) / 2, yp = H - 60 - hp, r = hp / 2;
-        ctx.fillStyle = photo ? 'rgba(255,255,255,.92)' : encre;
-        ctx.beginPath(); ctx.moveTo(xp + r, yp); ctx.arcTo(xp + wp, yp, xp + wp, yp + hp, r); ctx.arcTo(xp + wp, yp + hp, xp, yp + hp, r); ctx.arcTo(xp, yp + hp, xp, yp, r); ctx.arcTo(xp, yp, xp + wp, yp, r); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = photo ? '#2E2A47' : C[0]; ctx.textBaseline = 'middle';
-        ctx.fillText(pied, W / 2, yp + hp / 2 + 2, wp - 40);
-      }
-      try { dl.href = cv.toDataURL('image/jpeg', .92); dl.download = 'annonce-' + W + 'x' + H + '.jpg'; } catch (e) {}
-    };
-    var redessiner = function () { if (d.fonts && d.fonts.ready) d.fonts.ready.then(dessiner); else dessiner(); };
-    $$('input, textarea', vz).forEach(function (i) { if (i.type !== 'file') i.addEventListener(i.type === 'radio' ? 'change' : 'input', dessiner); });
-    var fp = $('[data-v-photo]', vz), retirer = $('[data-v-sans]', vz);
-    if (fp) fp.addEventListener('change', function () {
-      var f = fp.files && fp.files[0];
-      if (!f) return;
-      var img = new Image(), url = URL.createObjectURL(f);
-      img.onload = function () { photo = img; photoNom = f.name + f.size; if (retirer) retirer.hidden = false; vz.classList.add('a-photo'); dessiner(); URL.revokeObjectURL(url); };
-      img.src = url;
     });
-    if (retirer) retirer.addEventListener('click', function () { photo = null; photoNom = ''; fp.value = ''; retirer.hidden = true; vz.classList.remove('a-photo'); dessiner(); });
-    /* le téléchargement compte un peu d'énergie, une seule fois pour une même image */
-    if (dl) dl.addEventListener('click', function (ev) {
-      var cle = [champ('titre').value, champ('sous').value, champ('pied').value, choix('format'), choix('couleur'), choix('place'), photoNom].join('|');
-      if (paye === cle) return;
-      ev.preventDefault();
-      payer('visuel', cle, $('[data-ol-etat-local]', vz)).then(function (ok) { if (ok) { paye = cle; dl.click(); } });
-    });
-    /* quand Cerise propose les mots (outil juste au-dessous), ils vont dans le visuel */
-    vz.remplir = function (blocs) {
-      blocs.forEach(function (b) {
-        var t = (b.titre || '').toLowerCase();
-        if (t.indexOf('sous') === 0 || t.indexOf('ligne') === 0) champ('sous').value = b.texte; else if (t.indexOf('titre') === 0) champ('titre').value = b.texte;
-      });
-      dessiner();
-      vz.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    };
-    redessiner();
-    /* l'outil est caché au chargement : on redessine quand il s'ouvre */
-    var sec = vz.closest('[data-ol]');
-    if (sec && window.MutationObserver) new MutationObserver(function () { if (!sec.hidden) redessiner(); }).observe(sec, { attributes: true, attributeFilter: ['hidden'] });
-  });
 
-  /* ---------- recadrer et alléger une photo : tout se passe dans le navigateur ---------- */
-  var fz = $('[data-formats]');
-  if (fz) {
-    /* [nom, largeur, hauteur] ; hauteur 0 = photo entière, seulement réduite (pour le site) */
-    var FORMATS = [
-      ['Pour votre site, légère', 1600, 0], ['Instagram, carré', 1080, 1080], ['Instagram, portrait', 1080, 1350], ['Story et Reel', 1080, 1920],
-      ['Facebook et LinkedIn', 1200, 630], ['Fiche Google', 1200, 900]
-    ];
-    var liste = $('[data-formats-liste]', fz), info = $('[data-formats-info]', fz);
-    var poids = function (o) { return o > 1048576 ? (o / 1048576).toFixed(1).replace('.', ',') + ' Mo' : Math.max(1, Math.round(o / 1024)) + ' Ko'; };
-    $('[data-formats-file]', fz).addEventListener('change', function () {
-      var f = this.files && this.files[0];
-      if (!f) return;
-      liste.innerHTML = '';
-      payer('formats', f.name + f.size + f.lastModified, info).then(function (ok) { if (ok) preparer(f); });
-    });
-    var preparer = function (f) {
-      var img = new Image(), url = URL.createObjectURL(f);
-      if (info) { info.className = 'ol-etat'; info.textContent = 'Préparation…'; }
-      img.onerror = function () {
-        URL.revokeObjectURL(url);
-        if (info) { info.className = 'ol-etat is-err'; info.textContent = 'Cette photo ne s’ouvre pas ici. Enregistrez-la en JPG (ou faites une capture d’écran de la photo), puis réessayez.'; }
-      };
-      img.onload = function () {
-        if (info) { info.className = 'ol-etat'; info.textContent = 'Votre photo : ' + img.width + ' × ' + img.height + ', ' + poids(f.size) + '.'; }
-        FORMATS.forEach(function (F) {
-          var c = el('canvas'), W = F[1], H = F[2];
-          if (!H) { var r = Math.min(1, W / Math.max(img.width, img.height)); W = Math.round(img.width * r); H = Math.round(img.height * r); c.width = W; c.height = H; c.getContext('2d').drawImage(img, 0, 0, W, H); }
-          else { c.width = W; c.height = H; var k = Math.max(W / img.width, H / img.height), w = img.width * k, h = img.height * k; c.getContext('2d').drawImage(img, (W - w) / 2, (H - h) / 2, w, h); }
-          var fig = el('figure', 'ol-format');
-          fig.appendChild(c);
-          var cap = el('figcaption');
-          cap.appendChild(el('strong', '', F[0]));
-          var taille = el('small', '', W + ' × ' + H);
-          cap.appendChild(taille);
-          var a = el('a', 'btn btn-light btn-sm', 'Télécharger');
-          a.download = (f.name.replace(/\.[^.]+$/, '') || 'photo') + '-' + W + 'x' + H + '.jpg';
-          cap.appendChild(a);
-          fig.appendChild(cap);
-          liste.appendChild(fig);
-          /* toBlob donne le poids du fichier ; à défaut, on garde l'ancien chemin */
-          if (c.toBlob) c.toBlob(function (bl) { if (!bl) { a.href = c.toDataURL('image/jpeg', 0.82); return; } a.href = URL.createObjectURL(bl); taille.textContent = W + ' × ' + H + ', ' + poids(bl.size); }, 'image/jpeg', 0.82);
-          else a.href = c.toDataURL('image/jpeg', 0.82);
+    /* ---------- Fiche produit : mettre en boutique ---------- */
+    function boutiqueForm(cartes) {
+      var box = el('div', 'ao-boutique'), etat = el('p', 'ol-etat');
+      etat.setAttribute('role', 'status');
+      box.appendChild(el('p', 'app-sub', 'Mettre en boutique'));
+      var f = el('div', 'field'), lab = el('label', '', 'Votre prix de vente, en euros'), inp = el('input');
+      var idp = 'ao-prix-' + Date.now(); lab.htmlFor = idp; inp.id = idp; inp.type = 'text'; inp.inputMode = 'decimal'; inp.placeholder = 'Par exemple 35';
+      f.appendChild(lab); f.appendChild(inp); box.appendChild(f);
+      var cas = el('label', 'ao-case'), cb = el('input'); cb.type = 'checkbox'; cas.appendChild(cb); cas.appendChild(d.createTextNode(' Sans prix (sur demande)')); box.appendChild(cas);
+      var bt = el('button', 'btn btn-primary', 'Mettre en boutique'); bt.type = 'button'; box.appendChild(bt); box.appendChild(etat);
+      bt.addEventListener('click', function () {
+        var titre = cartes['Titre'] ? cartes['Titre'].ta.value.trim() : '';
+        var desc = [cartes['Accroche'], cartes['Description']].filter(Boolean).map(function (c) { return c.ta.value.trim(); }).join('\n\n');
+        if (!photo.blob) { dire(etat, 'Ajoutez la photo du produit, en haut.', 'is-err'); return; }
+        if (!cb.checked && !inp.value.trim()) { dire(etat, 'Indiquez votre prix, ou cochez « Sans prix ».', 'is-err'); inp.focus(); return; }
+        bt.disabled = true; dire(etat, 'Mirette met votre article en boutique…');
+        poster({ action: 'aled08e_ao_boutique', nom: titre, description: desc, prix: inp.value, sans_prix: cb.checked ? 1 : null, image: photo.blob }).then(function (j) {
+          if (!j || !j.success) { bt.disabled = false; dire(etat, erreur(j), 'is-err'); return; }
+          dire(etat, j.data.message, 'is-ok'); bt.textContent = 'En boutique';
+        }, function () { bt.disabled = false; dire(etat, 'La connexion a coupé. Réessayez.', 'is-err'); });
+      });
+      return box;
+    }
+
+    /* ---------- Publier partout ---------- */
+    var pub = $('[data-ao-publier]', sec);
+    var publierForm = pub && $('form[data-ao-pub]', pub);
+    if (pub) initPublier();
+    function initPublier() {
+      var directs = [], limites = {};
+      try { directs = JSON.parse(pub.getAttribute('data-directs') || '[]'); } catch (e) {}
+      try { limites = JSON.parse(pub.getAttribute('data-limites') || '{}'); } catch (e) {}
+      var ecrans = $$('[data-ao-ecran]', pub), boite = $('[data-ao-cartes]', pub), consigne = $('[data-ao-consigne]', pub);
+      var tout = $('[data-ao-tout]', pub), etat2 = $('[data-ao-etat2]', pub), progOuvrir = $('[data-ao-prog-ouvrir]', pub), prog = $('[data-ao-prog]', pub);
+      var cartes = [], fini = '';
+      function ecran(n) {
+        ecrans.forEach(function (e) { e.hidden = e.getAttribute('data-ao-ecran') !== String(n); });
+        var e = $('[data-ao-ecran="' + n + '"]', pub);
+        if (e && e.getBoundingClientRect().top < 0) e.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      function cochees() { return cartes.filter(function (c) { return c.cb.checked; }); }
+      function noms(l) { return l.map(function (c) { return c.nom; }); }
+      function majConsigne() {
+        var on = cochees(), dir = on.filter(function (c) { return c.direct && !c.fait; }), par = on.filter(function (c) { return !c.direct && !c.fait; });
+        tout.hidden = !dir.length;
+        progOuvrir.hidden = !on.filter(function (c) { return c.direct; }).length;
+        if (!on.length) consigne.textContent = 'Cochez au moins un réseau.';
+        else if (dir.length && par.length) consigne.textContent = 'Relisez et changez ce que vous voulez. « Tout publier » envoie sur ' + liste(noms(dir)) + '. Pour ' + liste(noms(par)) + ', touchez « Partager » : tout est prêt, il reste un geste.';
+        else if (dir.length) consigne.textContent = 'Relisez et changez ce que vous voulez, puis « Tout publier ».';
+        else if (par.length) consigne.textContent = 'Relisez et changez ce que vous voulez, puis touchez « Partager » sur chaque carte : le texte et la photo sont prêts, il reste un geste par réseau.';
+        else consigne.textContent = '';
+      }
+      function marquer(c, mode, url) {
+        c.fait = mode; c.url = url || '';
+        c.el.classList.add('is-fait');
+        if (c.bp) c.bp.textContent = mode === 'partage' ? 'Partagé' : 'Publié';
+        majConsigne();
+        var reste = cochees().filter(function (x) { return !x.fait; });
+        if (!reste.length && cochees().length) setTimeout(function () { finir(); }, 600);
+      }
+      function carte(b) {
+        var cle = reseauDe(b.titre), r = RS[cle] || { nom: b.titre }, direct = directs.indexOf(cle) !== -1;
+        var c = { cle: cle, nom: r.nom, direct: direct };
+        var e = el('div', 'ao-carte'), tete = el('label', 'ao-carte-tete'), cb = el('input'), compte = el('small');
+        cb.type = 'checkbox'; cb.checked = true;
+        tete.appendChild(cb); tete.appendChild(el('strong', '', r.nom)); tete.appendChild(compte); e.appendChild(tete);
+        var ta = el('textarea'); ta.value = b.texte; ta.rows = Math.min(10, Math.max(3, Math.ceil(b.texte.length / 38) + (b.texte.match(/\n/g) || []).length + 1));
+        ta.setAttribute('aria-label', 'Texte pour ' + r.nom);
+        var limite = limites[b.titre] || 0;
+        var maj = function () { compte.textContent = ta.value.length + (limite ? ' sur ' + limite : ''); compte.classList.toggle('is-trop', !!limite && ta.value.length > limite); };
+        ta.addEventListener('input', maj); maj();
+        e.appendChild(ta);
+        var actions = el('div', 'ol-bloc-actions'), msg = el('span', 'ol-bloc-msg'); msg.setAttribute('role', 'status');
+        c.dire = function (t, err) { msg.className = 'ol-bloc-msg' + (err ? ' is-err' : ''); msg.textContent = t; };
+        if (direct) actions.appendChild(el('span', 'ao-mode is-direct', cle === 'site' ? 'Pépite la publie sur votre site' : 'Pépite publie directement'));
+        else if (r.url) {
+          var bp = el('button', 'btn btn-primary btn-sm', 'Partager sur ' + r.nom); bp.type = 'button';
+          bp.addEventListener('click', function () { partager(c); });
+          actions.appendChild(bp); c.bp = bp;
+        }
+        var bc = el('button', 'btn btn-light btn-sm', 'Copier'); bc.type = 'button';
+        bc.addEventListener('click', function () { copier(ta.value, function (ok) { c.dire(ok ? 'Copié.' : 'Sélectionnez le texte pour le copier.'); }); });
+        actions.appendChild(bc); actions.appendChild(msg); e.appendChild(actions);
+        cb.addEventListener('change', function () { e.classList.toggle('is-off', !cb.checked); majConsigne(); });
+        c.el = e; c.cb = cb; c.ta = ta;
+        if (cle === 'instagram' && !photo.blob) {
+          c.dire('Instagram demande une photo : ajoutez-en une (Changer ma photo), ou décochez Instagram.', true);
+          if (direct) { cb.checked = false; e.classList.add('is-off'); }
+        }
+        return c;
+      }
+      /* « Partager » : le partage du téléphone (photo + texte) ; sur ordinateur, texte copié, photo téléchargée, réseau ouvert */
+      function partager(c) {
+        var r = RS[c.cle], t = c.ta.value, f = photo.blob ? enFichier(photo.blob, 'photo.jpg') : null;
+        if (c.cle === 'instagram' && !f) { c.dire('Instagram demande une photo : ajoutez-en une, en haut.', true); return; }
+        var avecFichier = !!(f && navigator.canShare && navigator.canShare({ files: [f] }));
+        if (tactile && navigator.share && (avecFichier || !f)) {
+          copier(t);
+          var data = { text: t };
+          if (avecFichier) data.files = [f];
+          c.dire('Le texte est copié : dans ' + r.nom + ', collez-le en légende si besoin.');
+          navigator.share(data).then(function () { marquer(c, 'partage'); }, function (e) {
+            if (e && e.name === 'AbortError') { c.dire('Partage annulé. Le texte reste copié.'); return; }
+            var a = el('a', '', 'Ouvrir ' + r.nom); a.href = r.url(t); a.target = '_blank'; a.rel = 'noopener';
+            c.dire('Le partage n’a pas marché. Le texte est copié : ');
+            c.el.querySelector('.ol-bloc-msg').appendChild(a);
+          });
+          return;
+        }
+        copier(t);
+        if (f) telecharger(photo.blob, 'photo-' + c.cle + '.jpg');
+        window.open(r.url(t), '_blank', 'noopener');
+        c.dire('Texte copié' + (f ? ' et photo téléchargée' : '') + '. Dans ' + r.nom + ' (nouvel onglet), créez une publication' + (f ? ', ajoutez la photo' : '') + ' et collez le texte.');
+        marquer(c, 'partage');
+      }
+      function deposerPhoto() {
+        if (!photo.blob || photo.ref) return Promise.resolve(photo.ref);
+        return poster({ action: 'aled08e_rs_photo', image: photo.blob }).then(function (j) {
+          if (!j || !j.success) throw new Error(erreur(j, 'La photo n’est pas partie.'));
+          photo.ref = j.data.photo; return photo.ref;
         });
-        URL.revokeObjectURL(url);
+      }
+      tout.addEventListener('click', function () {
+        var aFaire = cochees().filter(function (c) { return c.direct && !c.fait; });
+        if (!aFaire.length) return;
+        tout.disabled = true; dire(etat2, 'Pépite publie…');
+        deposerPhoto().then(function (ref) {
+          return aFaire.reduce(function (p, c) {
+            return p.then(function () {
+              c.dire('Publication en cours…');
+              return poster({ action: 'aled08e_publier', reseau: c.cle, texte: c.ta.value, photo: ref || null }).then(function (j) {
+                if (!j || !j.success) { c.dire(erreur(j, 'La publication n’est pas partie. Réessayez.'), true); return; }
+                c.dire('Publié. ');
+                var a = el('a', '', 'Voir'); a.href = j.data.url; a.target = '_blank'; a.rel = 'noopener';
+                c.el.querySelector('.ol-bloc-msg').appendChild(a);
+                marquer(c, 'publie', j.data.url);
+              }, function () { c.dire('La connexion a coupé. Réessayez.', true); });
+            });
+          }, Promise.resolve());
+        }).then(function () {
+          tout.disabled = false;
+          var reste = cochees().filter(function (c) { return !c.fait; });
+          dire(etat2, reste.length ? 'Il reste ' + liste(noms(reste)) + '.' : '', reste.length ? '' : 'is-ok');
+        }, function (e) { tout.disabled = false; dire(etat2, e.message, 'is-err'); });
+      });
+      /* programmer pour plus tard : seulement les réseaux où Pépite publie directement */
+      progOuvrir.addEventListener('click', function () {
+        prog.hidden = !prog.hidden;
+        var on = cochees(), dir = on.filter(function (c) { return c.direct; }), par = on.filter(function (c) { return !c.direct; });
+        $('[data-ao-prog-note]', prog).textContent = 'Pépite publiera sur ' + liste(noms(dir)) + ' au moment choisi.' + (par.length ? ' ' + liste(noms(par)) + (par.length > 1 ? ' ne se programment' : ' ne se programme') + ' pas : partagez maintenant, ou présentez Pépite à ce compte.' : '');
+        if (!prog.hidden) $('[data-ao-prog-quand]', prog).focus();
+      });
+      $('[data-ao-prog-ok]', prog).addEventListener('click', function () {
+        var bt = this, quand = $('[data-ao-prog-quand]', prog).value;
+        if (!quand) { dire(etat2, 'Choisissez un jour et une heure.', 'is-err'); return; }
+        var textes = {};
+        cochees().forEach(function (c) { if (c.direct && !c.fait) textes[c.cle] = c.ta.value; });
+        if (!Object.keys(textes).length) { dire(etat2, 'Rien à programmer.', 'is-err'); return; }
+        bt.disabled = true; dire(etat2, 'Un instant…');
+        poster({ action: 'aled08e_ao_programmer', quand: quand, textes: textes, extrait: extrait(), image: photo.blob }).then(function (j) {
+          bt.disabled = false;
+          if (!j || !j.success) { dire(etat2, erreur(j), 'is-err'); return; }
+          cochees().forEach(function (c) { if (textes[c.cle] != null) { c.fait = 'programme'; c.el.classList.add('is-fait'); c.dire('Programmé.'); } });
+          prog.hidden = true;
+          fini = j.data.message;
+          var reste = cochees().filter(function (c) { return !c.fait; });
+          if (reste.length) { majConsigne(); dire(etat2, j.data.message + ' Il reste ' + liste(noms(reste)) + ' à partager.', 'is-ok'); }
+          else finir();
+        }, function () { bt.disabled = false; dire(etat2, 'La connexion a coupé. Réessayez.', 'is-err'); });
+      });
+      function extrait() { var t = $('textarea[name="c_description"]', publierForm); return t ? t.value.trim().slice(0, 80) : ''; }
+      function finir() {
+        var on = cochees(), publies = on.filter(function (c) { return c.fait === 'publie'; }), partages = on.filter(function (c) { return c.fait === 'partage'; });
+        if (publies.length || partages.length) poster({ action: 'aled08e_ao_fini', publies: publies.map(function (c) { return c.cle; }), partages: partages.map(function (c) { return c.cle; }), extrait: extrait() });
+        var titre = $('[data-ao-fin-titre]', pub), ou = $('[data-ao-fin-ou]', pub), liens = $('[data-ao-fin-liens]', pub);
+        titre.textContent = publies.length ? 'C’est publié !' : (fini ? 'C’est programmé !' : 'C’est prêt !');
+        ou.textContent = ((publies.length ? 'Sur ' + liste(noms(publies)) + '.' : '') + (partages.length ? (publies.length ? ' Et prêt pour ' : 'Prêt pour ') + liste(noms(partages)) + '.' : '') + (fini ? ' ' + fini : '')).trim();
+        liens.innerHTML = '';
+        publies.forEach(function (c) { if (!c.url) return; var li = el('li'), a = el('a', '', 'Voir sur ' + c.nom); a.href = c.url; a.target = '_blank'; a.rel = 'noopener'; li.appendChild(a); liens.appendChild(li); });
+        ecran(3);
+        titre.focus({ preventScroll: true });
+      }
+      $('[data-ao-retour]', pub).addEventListener('click', function () { ecran(1); });
+      $('[data-ao-nouvelle]', pub).addEventListener('click', function () {
+        publierForm.reset(); boite.innerHTML = ''; cartes = []; fini = ''; dire(etat2, '');
+        if (sec._viderPhoto) sec._viderPhoto();
+        ecran(1);
+      });
+      /* le formulaire : Pépite écrit, puis l'écran 2 */
+      publierForm.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        lancer(publierForm, function (blocs) {
+          boite.innerHTML = ''; cartes = []; fini = ''; dire(etat2, ''); prog.hidden = true;
+          blocs.forEach(function (b) { var c = carte(b); cartes.push(c); boite.appendChild(c.el); });
+          majConsigne();
+          ecran(2);
+        });
+      });
+      /* une nouvelle photo : Pépite pourra republier, avec la nouvelle */
+      apresPhoto.push(function () { photo.ref = ''; });
+      /* « Publier cette idée » : l'idée devient les quelques mots de la publication */
+      pub._utiliser = function (t) {
+        var ta = $('textarea[name="c_description"]', publierForm), max = +(ta.getAttribute('data-max') || 600);
+        ta.value = t.replace(/(^|\s)#\S+/g, '').replace(/\s+\n/g, '\n').trim().slice(0, max);
+        ta.dispatchEvent(new Event('input'));
+        montrer('publier'); ecran(1); ta.focus();
       };
-      img.src = url;
-    };
-  }
+      /* mes programmées : annuler */
+      $$('[data-ao-deprog]', pub).forEach(function (b) {
+        b.addEventListener('click', function () {
+          b.disabled = true;
+          poster({ action: 'aled08e_ao_deprogrammer', id: b.getAttribute('data-ao-deprog') }).then(function (j) {
+            if (j && j.success) { var li = b.closest('li'), ul = li.parentNode; li.remove(); if (!ul.children.length) ul.closest('.ao-progs').remove(); }
+            else b.disabled = false;
+          }, function () { b.disabled = false; });
+        });
+      });
+    }
+
+    /* les autres formulaires : un résultat en blocs */
+    $$('[data-ao-form]', sec).forEach(function (form) {
+      if (form === publierForm) return;
+      var res = form.parentNode.querySelector('[data-ao-res]');
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var bid = form.getAttribute('data-brique');
+        lancer(form, function (blocs) {
+          afficher(res, blocs, { boutique: bid === 'produit' && res.hasAttribute('data-ao-boutique'), utiliser: bid === 'idees' && pub && pub._utiliser });
+        });
+      });
+    });
+
+    /* ---------- mes réseaux : présenter Pépite, ne plus publier, choisir sa page ---------- */
+    var recharger = function () { location.reload(); };
+    $$('[data-rs-relier]', sec).forEach(function (f) {
+      f.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var et = $('[data-rs-etat]', f), b = $('button[type=submit]', f), donnees = { action: 'aled08e_rs', op: 'relier', reseau: f.getAttribute('data-rs-relier') };
+        $$('input', f).forEach(function (i) { donnees[i.name] = i.value; });
+        b.disabled = true; dire(et, 'Vérification…');
+        poster(donnees).then(function (j) {
+          if (j && j.success) { dire(et, j.data.message, 'is-ok'); setTimeout(recharger, 900); return; }
+          b.disabled = false; dire(et, erreur(j, 'Ça n’a pas marché. Réessayez.'), 'is-err');
+        }, function () { b.disabled = false; dire(et, 'La connexion a coupé. Réessayez.', 'is-err'); });
+      });
+    });
+    $$('[data-rs-delier]', sec).forEach(function (b) {
+      b.addEventListener('click', function () { b.disabled = true; poster({ action: 'aled08e_rs', op: 'delier', reseau: b.getAttribute('data-rs-delier') }).then(recharger, recharger); });
+    });
+    var selPage = $('[data-rs-page]', sec);
+    if (selPage) selPage.addEventListener('change', function () { poster({ action: 'aled08e_rs', op: 'page', page: selPage.value }).then(recharger, recharger); });
+
+    /* ---------- Mes avis Google : le lien, le message, le QR code ---------- */
+    $$('[data-ao-avis-lien]', sec).forEach(function (f) {
+      f.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var et = $('[data-ao-etat]', f), b = $('button[type=submit]', f), v = $('input[name="lien"]', f).value.trim();
+        if (!v) { dire(et, 'Collez d’abord votre lien.', 'is-err'); return; }
+        b.disabled = true;
+        poster({ action: 'aled08e_ao_avis_lien', lien: v }).then(function (j) {
+          if (j && j.success) { dire(et, j.data.message, 'is-ok'); setTimeout(recharger, 700); return; }
+          b.disabled = false; dire(et, erreur(j), 'is-err');
+        }, function () { b.disabled = false; dire(et, 'La connexion a coupé. Réessayez.', 'is-err'); });
+      });
+    });
+    var avis = $('[data-ao-avis]', sec);
+    if (avis) {
+      var msgA = $('[data-ao-avis-msg]', avis), st = $('.ol-bloc-msg', avis);
+      var majLiens = function () {
+        var t = msgA.value;
+        $('[data-ao-avis-sms]', avis).href = 'sms:?&body=' + encodeURIComponent(t);
+        $('[data-ao-avis-wa]', avis).href = 'https://wa.me/?text=' + encodeURIComponent(t);
+        $('[data-ao-avis-mail]', avis).href = 'mailto:?subject=' + encodeURIComponent('Votre avis compte') + '&body=' + encodeURIComponent(t);
+      };
+      msgA.addEventListener('input', majLiens); majLiens();
+      $('[data-ao-avis-copier]', avis).addEventListener('click', function () { copier(msgA.value, function (ok) { st.textContent = ok ? 'Copié : collez-le dans votre message.' : 'Sélectionnez le texte pour le copier.'; }); });
+    }
+    function dessinerQr() {
+      if (typeof window.qrcode !== 'function') return false;
+      $$('[data-ao-qr]', sec).forEach(function (box) {
+        var qr = window.qrcode(0, 'M');
+        qr.addData(box.getAttribute('data-ao-qr')); qr.make();
+        var n = qr.getModuleCount(), m = 2, path = '';
+        for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (qr.isDark(r, c)) path += 'M' + (c + m) + ',' + (r + m) + 'h1v1h-1z';
+        var t = n + m * 2;
+        box.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + t + ' ' + t + '" role="img" aria-label="QR code" shape-rendering="crispEdges"><rect width="' + t + '" height="' + t + '" fill="#fff"/><path fill="#2E2A47" d="' + path + '"/></svg>';
+        var dl = $('[data-ao-qr-dl]', box.parentNode);
+        if (!dl || dl._ok) return;
+        dl._ok = true;
+        /* l'image à imprimer : le code, et pour les avis une phrase dessous */
+        dl.addEventListener('click', function () {
+          var nom = box.getAttribute('data-ao-qr-nom') || '', avecTexte = box.hasAttribute('data-ao-qr-texte');
+          var W = 1200, H = avecTexte ? 1500 : 1200, cv = el('canvas'), cx = cv.getContext('2d'), k = Math.floor(1000 / t), o = (W - k * t) / 2;
+          cv.width = W; cv.height = H; cx.fillStyle = '#fff'; cx.fillRect(0, 0, W, H); cx.fillStyle = '#2E2A47';
+          for (var r2 = 0; r2 < n; r2++) for (var c2 = 0; c2 < n; c2++) if (qr.isDark(r2, c2)) cx.fillRect(o + (c2 + m) * k, 60 + (r2 + m) * k, k, k);
+          if (avecTexte) {
+            cx.textAlign = 'center'; cx.textBaseline = 'top';
+            cx.font = '800 72px "Plus Jakarta Sans", system-ui, Arial, sans-serif'; cx.fillText('Votre avis compte !', W / 2, 60 + k * t + 40);
+            cx.font = '600 42px "Plus Jakarta Sans", system-ui, Arial, sans-serif'; cx.fillText('Visez ce code avec votre téléphone', W / 2, 60 + k * t + 140);
+            if (nom) { cx.font = '700 40px "Plus Jakarta Sans", system-ui, Arial, sans-serif'; cx.fillText(nom.slice(0, 48), W / 2, 60 + k * t + 210); }
+          }
+          if (cv.toBlob) cv.toBlob(function (b) { if (b) telecharger(b, avecTexte ? 'qr-code-avis.png' : 'qr-code.png'); }, 'image/png');
+        });
+      });
+      return true;
+    }
+    if ($('[data-ao-qr]', sec) && !dessinerQr()) window.addEventListener('load', dessinerQr);
+
+    /* ---------- Fiche produit : la photo recadrée et allégée, dans le navigateur ---------- */
+    var fz = $('[data-ao-formats]', sec);
+    if (fz) {
+      var FORMATS = [
+        ['Pour votre site, légère', 1600, 0], ['Boutique, carré', 1080, 1080], ['Instagram, portrait', 1080, 1350], ['Story et Reel', 1080, 1920],
+        ['Facebook et LinkedIn', 1200, 630], ['Fiche Google', 1200, 900]
+      ];
+      var fl = $('[data-formats-liste]', fz), info = $('[data-formats-info]', fz);
+      var poids = function (o) { return o > 1048576 ? (o / 1048576).toFixed(1).replace('.', ',') + ' Mo' : Math.max(1, Math.round(o / 1024)) + ' Ko'; };
+      var preparer = function () {
+        fl.innerHTML = '';
+        if (!photo.blob) { dire(info, 'Choisissez d’abord la photo, en haut.'); return; }
+        var img = new Image(), url = URL.createObjectURL(photo.blob);
+        img.onload = function () {
+          dire(info, 'Votre photo : ' + img.naturalWidth + ' × ' + img.naturalHeight + '. Touchez « Télécharger » sous le format voulu.');
+          FORMATS.forEach(function (F) {
+            var c = el('canvas'), W = F[1], H = F[2];
+            if (!H) { var r = Math.min(1, W / Math.max(img.naturalWidth, img.naturalHeight)); W = Math.round(img.naturalWidth * r); H = Math.round(img.naturalHeight * r); c.width = W; c.height = H; c.getContext('2d').drawImage(img, 0, 0, W, H); }
+            else { c.width = W; c.height = H; var k = Math.max(W / img.naturalWidth, H / img.naturalHeight), w = img.naturalWidth * k, h = img.naturalHeight * k; c.getContext('2d').drawImage(img, (W - w) / 2, (H - h) / 2, w, h); }
+            var fig = el('figure', 'ol-format'), cap = el('figcaption'), taille = el('small', '', W + ' × ' + H), a = el('a', 'btn btn-light btn-sm', 'Télécharger');
+            fig.appendChild(c); cap.appendChild(el('strong', '', F[0])); cap.appendChild(taille);
+            a.download = 'photo-' + W + 'x' + H + '.jpg'; cap.appendChild(a); fig.appendChild(cap); fl.appendChild(fig);
+            if (c.toBlob) c.toBlob(function (bl) { if (!bl) { a.href = c.toDataURL('image/jpeg', 0.82); return; } a.href = URL.createObjectURL(bl); taille.textContent = W + ' × ' + H + ', ' + poids(bl.size); }, 'image/jpeg', 0.82);
+            else a.href = c.toDataURL('image/jpeg', 0.82);
+          });
+          URL.revokeObjectURL(url);
+        };
+        img.src = url;
+      };
+      apresPhoto.push(preparer);
+      preparer();
+    }
+
+    /* retour d'une liaison (Facebook, LinkedIn) ou lien vers un outil : on l'amène à l'écran */
+    if (new URLSearchParams(location.search).get('outil') === outil) setTimeout(function () { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 400);
+  });
 })();

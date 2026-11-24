@@ -1,38 +1,40 @@
-// Les outils de Cerise : dans l'espace client, compris dans l'abonnement. Ils ne demandent qu'une chose : la clé Claude,
-// réglée une fois dans la gestion. Aucun autre compte, aucun autre service.
-// Une seule définition, utilisée par la page « Outils », la Documentation et l'espace client (PHP, via data.json).
+// Les petits outils de la bande (les « briques ») : une seule définition, lue par l'espace client (PHP, via data.json)
+// et par la page publique des outils. Depuis le 24 novembre 2026, ils vivent dans l'atelier « Les outils » : chaque
+// outil vendu (src/config.js, outilsOffre.outils) regroupe quelques briques (briques: [ids]) qui deviennent ses boutons.
+// L'usage est compris dans l'abonnement de l'outil, avec une limite par mois : plus aucun jeton, plus aucune « énergie ».
+// Côté client, on ne parle jamais d'IA : ce sont des petits monstres (chef : Pépite, Cerise, Mirette, Plume…).
 //
-// categorie : la famille (reseaux, texte, image, site, avis), qui sert de filtre dans l'onglet.
-// jetons    : prix fixe de l'outil en Jetons Cerise (1 jeton = 1 centime). Règle : ce que l'outil coûte chez Claude
-//             (coutCts, en centimes, estimé pour Claude Opus 5.5) × config.jetonsLia.margeOutils, arrondi au-dessus.
-//             Un outil qui tourne dans le navigateur (local: true) utilise aussi un peu d'énergie, comptée par le serveur.
-// jetonsLocal : pour un outil qui marche aussi sans Cerise (visuel téléchargé, texte publié tel quel), l'énergie de cet usage-là.
-// champs    : le formulaire. kind : texte (une ligne), texte_long, choix, multi, image (une photo, vue par Cerise),
-//             page (une page du site du client, lue par notre serveur). requis, aide, options, defaut,
-//             max (longueur maximale : un texte trop long est refusé, jamais coupé).
-// consigne  : ce que Cerise doit rendre, bloc par bloc (titres exacts). Un seul bloc « STOP » = rien d'utilisable :
-//             le message s'affiche et aucun jeton n'est compté.
+// categorie : la famille (reseaux, texte, image, site, avis, gestion).
+// chef      : le petit monstre qui fait le travail (affiché au client).
+// coutCts   : ce qu'un lancement coûte chez Claude, en centimes (estimé), pour suivre la marge de l'abonnement.
+// jetons, jetonsLocal : anciens prix en énergie, gardés pour l'ancien code (inertes, jamais affichés dans l'atelier).
+// local     : la brique tourne dans le navigateur (photo recadrée, QR code, lien d'avis) : rien n'est envoyé.
+// champs    : le formulaire. kind : texte (une ligne), texte_long, choix, multi, image (une photo, vue par le monstre),
+//             fichiers (2 à 4 photos ou PDF), page (une page du site du client, lue par notre serveur).
+//             requis, aide, options, defaut, max (longueur maximale : un texte trop long est refusé, jamais coupé).
+// consigne  : ce que le monstre doit rendre, bloc par bloc (titres exacts). Un seul bloc « STOP » = rien d'utilisable :
+//             le message s'affiche et rien n'est compté.
 // note      : la phrase fixe affichée sous le résultat. limites : longueur conseillée par titre de bloc.
-// visuel    : l'outil dessine une image dans le navigateur (jetonsLocal au téléchargement) ; ses champs servent à demander les mots à Cerise.
-// imageMax  : taille de la photo envoyée à Cerise (1024 par défaut).
-// Sources des idées : baromètre France Num, bibliothèque de prompts d'Anthropic, outils d'IA de Wix, Shopify, Canva.
-const RESEAUX = ['Facebook', 'Instagram', 'LinkedIn', 'X', 'Fiche Google', 'TikTok', 'Bluesky', 'Mastodon'];
+// maxTokens : longueur maximale de la réponse. imageMax : taille de la photo envoyée (1024 par défaut).
+// Sources des idées : baromètre France Num, bibliothèque de prompts d'Anthropic, outils de Wix, Shopify, Canva.
+const RESEAUX = ['Instagram', 'Facebook', 'Fiche Google', 'LinkedIn', 'Mon site', 'Bluesky', 'Mastodon'];
 
-const FAMILLES = { reseaux: 'Réseaux', texte: 'Textes', image: 'Photos', site: 'Mon site', avis: 'Avis' };
+const FAMILLES = { reseaux: 'Réseaux', texte: 'Textes', image: 'Photos', site: 'Mon site', avis: 'Avis', gestion: 'Gestion' };
 
 const outils = [
   {
     "id": "publier",
     "categorie": "reseaux",
     "icon": "megaphone",
-    "color": "pink",
+    "color": "butter",
+    "chef": "Pépite",
     "name": "Publier partout",
-    "court": "Une photo, une description : publiez sur tous vos réseaux depuis la même page.",
-    "desc": "Vous donnez une photo et quelques mots, puis vous publiez sur tous vos réseaux depuis la même page. Avec votre texte, il utilise juste un peu d’énergie. Pouf peut aussi l’adapter à chaque réseau, avec les hashtags.",
+    "court": "Une photo, quelques mots : un texte pour chaque réseau, publié partout.",
+    "desc": "Vous donnez une photo et quelques mots. Pépite écrit un texte adapté à chaque réseau, vous le relisez, et tout part d’un seul bouton.",
     "coutCts": 3.3,
     "jetons": 14,
-    "jetonsLocal": 2,
-    "bouton": "Écrire mes publications",
+    "maxTokens": 2400,
+    "bouton": "Pépite, à toi !",
     "champs": [
       {
         "id": "image",
@@ -41,28 +43,29 @@ const outils = [
       },
       {
         "id": "description",
-        "label": "De quoi parle la publication ?",
+        "label": "En quelques mots",
         "kind": "texte_long",
         "requis": true,
-        "aide": "Par exemple : nouveau bouquet de printemps, disponible dès samedi à l’atelier."
+        "max": 600,
+        "aide": "Par exemple : couronne fleurs séchées, 35 €, dispo samedi au marché."
       },
       {
         "id": "reseaux",
-        "label": "Pour quels réseaux ?",
+        "label": "Où publier ?",
         "kind": "multi",
         "options": [
-          "Facebook",
           "Instagram",
-          "LinkedIn",
-          "X",
+          "Facebook",
           "Fiche Google",
-          "TikTok",
+          "LinkedIn",
+          "Mon site",
           "Bluesky",
           "Mastodon"
         ],
         "defaut": [
+          "Instagram",
           "Facebook",
-          "Instagram"
+          "Fiche Google"
         ]
       },
       {
@@ -78,19 +81,28 @@ const outils = [
         "defaut": "Chaleureux"
       }
     ],
-    "consigne": "Écris une publication pour chaque réseau coché, et seulement pour ceux-là, adaptée à ses usages : Facebook (2 à 4 phrases, chaleureux), Instagram (accroche courte, 2 à 3 phrases, puis une ligne de 8 à 12 hashtags), LinkedIn (professionnel, 3 à 5 phrases, 3 hashtags), X (moins de 260 caractères, 1 ou 2 hashtags), Fiche Google (factuel, 2 à 3 phrases, sans hashtag, avec une invitation à venir ou à appeler), TikTok (légende courte et vivante, 4 à 6 hashtags), Bluesky (moins de 280 caractères, 1 ou 2 hashtags), Mastodon (moins de 450 caractères, 2 à 4 hashtags). Un bloc par réseau, dont le titre est exactement le nom du réseau. Respecte le ton choisi. Utilise seulement ce que le client a écrit : n’ajoute ni prix, ni date, ni horaire, ni adresse, ni promotion, ni nouveauté. Recopie ses dates, ses heures et ses prix tels qu’il les a écrits, sans calculer un jour de la semaine. Les hashtags parlent du sujet, du métier et de la ville si elle est donnée, sans marque ni nom de personne. Aucune promesse de résultat ou de santé. Si une photo est jointe, tu peux dire ce qu’on y voit, sans deviner la matière, la marque ni le lieu, et sans nommer personne. Si la description ne dit pas de quoi parler (un mot seul, des lettres au hasard), rends un seul bloc dont le titre est « STOP » et dont le texte demande en une phrase ce qu’il faut annoncer."
+    "consigne": "Écris une publication pour chaque réseau coché, et seulement pour ceux-là, adaptée à ses usages : Instagram (une accroche courte, 2 à 3 phrases, puis une ligne de 5 à 10 hashtags), Facebook (2 à 4 phrases, chaleureux), Fiche Google (factuel, 2 à 3 phrases, sans hashtag ni émoji, avec une invitation à venir ou à appeler), LinkedIn (professionnel, 3 à 5 phrases, 3 hashtags au plus), Mon site (une courte actualité pour le site du commerce : la première ligne est un titre de 70 caractères au plus, sans émoji ni hashtag, puis 2 à 4 phrases sans hashtag), Bluesky (moins de 280 caractères, 1 ou 2 hashtags), Mastodon (moins de 450 caractères, 2 à 4 hashtags). Un bloc par réseau, dont le titre est exactement le nom du réseau tel qu’il est écrit dans la liste. Respecte le ton choisi. Utilise seulement ce que le client a écrit : n’ajoute ni prix, ni date, ni horaire, ni adresse, ni promotion, ni nouveauté, ni « fait main ». Recopie ses dates, ses heures et ses prix tels qu’il les a écrits, sans calculer un jour de la semaine. Les hashtags parlent du sujet, du métier et de la ville si elle est donnée, sans marque ni nom de personne. Aucune promesse de résultat ou de santé. Si une photo est jointe, tu peux dire ce qu’on y voit, sans deviner la matière, la marque ni le lieu, et sans nommer personne. Si la description ne dit pas de quoi parler (un mot seul, des lettres au hasard), rends un seul bloc dont le titre est « STOP » et dont le texte demande en une phrase ce qu’il faut annoncer.",
+    "limites": {
+      "Instagram": 2200,
+      "Fiche Google": 1500,
+      "LinkedIn": 3000,
+      "Bluesky": 300,
+      "Mastodon": 500
+    }
   },
   {
     "id": "idees",
     "categorie": "reseaux",
     "icon": "lightbulb",
     "color": "butter",
-    "name": "Idées de publications",
-    "court": "Sept idées pour la semaine, avec le texte déjà écrit.",
-    "desc": "Plus de page blanche : le messager propose sept publications pour votre activité, une par jour, chacune avec son texte prêt à copier. Il laisse un mot entre crochets là où il faut mettre votre détail à vous.",
-    "coutCts": 2.9,
-    "jetons": 12,
-    "bouton": "Trouver mes idées",
+    "chef": "Pépite",
+    "name": "Idées de la semaine",
+    "court": "Trois idées de publications pour la semaine, avec le texte déjà écrit.",
+    "desc": "Plus de page blanche : Pépite propose trois publications pour votre activité, chacune avec son texte prêt à relire. Elle laisse un mot entre crochets là où il faut mettre votre détail à vous.",
+    "coutCts": 1.6,
+    "jetons": 7,
+    "maxTokens": 1500,
+    "bouton": "Mes trois idées",
     "champs": [
       {
         "id": "activite",
@@ -104,10 +116,11 @@ const outils = [
         "id": "actualite",
         "label": "Une actualité en ce moment ? (facultatif)",
         "kind": "texte_long",
+        "max": 600,
         "aide": "Une promotion, une nouveauté, un événement, une saison."
       }
     ],
-    "consigne": "Propose sept publications pour les réseaux sociaux de cette activité, une par jour du lundi au dimanche, variées : coulisses, conseil, produit ou service, savoir-faire, question posée aux abonnés, humeur du moment, annonce. Un bloc par jour. Le titre est le jour suivi de l’idée en quelques mots (par exemple « Lundi : les coulisses de l’atelier »). Le texte est la publication prête à copier : 2 à 4 phrases, puis 3 à 5 hashtags sur une dernière ligne. Si une actualité est donnée, deux publications au plus en parlent, avec ses mots exacts pour les dates et les prix. N’invente aucun fait : ni client, ni témoignage, ni promotion, ni prix, ni date, ni événement, ni nouveauté. Quand une idée a besoin d’un détail que tu n’as pas, laisse un mot entre crochets que le commerçant remplacera, par exemple [votre produit du moment], deux crochets au plus par publication. Aucune promesse de résultat ou de santé. Si l’activité n’est pas compréhensible (un mot seul sans rapport, des lettres au hasard), rends un seul bloc dont le titre est « STOP » et dont le texte demande en une phrase de décrire l’activité.",
+    "consigne": "Propose trois publications pour les réseaux sociaux de cette activité, à publier cette semaine, bien différentes : par exemple les coulisses, un conseil, un produit ou un service, le savoir-faire, une question posée aux abonnés. Trois blocs. Le titre de chaque bloc dit l’idée en quelques mots (par exemple « Les coulisses de l’atelier »). Le texte est la publication prête à copier : 2 à 4 phrases, puis 3 à 5 hashtags sur une dernière ligne. Si une actualité est donnée, une publication au plus en parle, avec ses mots exacts pour les dates et les prix. N’invente aucun fait : ni client, ni témoignage, ni promotion, ni prix, ni date, ni événement, ni nouveauté. Quand une idée a besoin d’un détail que tu n’as pas, laisse un mot entre crochets que le commerçant remplacera, par exemple [votre produit du moment], deux crochets au plus par publication. Aucune promesse de résultat ou de santé. Si l’activité n’est pas compréhensible (un mot seul sans rapport, des lettres au hasard), rends un seul bloc dont le titre est « STOP » et dont le texte demande en une phrase de décrire l’activité.",
     "note": "Remplacez les mots entre crochets par vos détails avant de publier."
   },
   {
@@ -216,9 +229,10 @@ const outils = [
     "categorie": "texte",
     "icon": "message-square-reply",
     "color": "peach",
+    "chef": "Cerise",
     "name": "Répondre à un client",
     "court": "Une réponse polie et claire à un message, une demande de prix ou une réclamation.",
-    "desc": "Vous collez le message reçu et vous dites en quelques mots ce que vous voulez répondre. Plume prépare la réponse pour un e-mail, et une version courte pour un SMS. Pour une relance ou une annonce, laissez le message vide.",
+    "desc": "Vous collez le message reçu et vous dites en quelques mots ce que vous voulez répondre. Cerise prépare la réponse pour un e-mail, et une version courte pour un SMS. Pour une relance ou une annonce, laissez le message vide.",
     "coutCts": 1.5,
     "jetons": 6,
     "bouton": "Écrire la réponse",
@@ -260,13 +274,15 @@ const outils = [
     "id": "produit",
     "categorie": "texte",
     "icon": "shopping-bag",
-    "color": "mint",
+    "color": "sky",
+    "chef": "Mirette",
     "name": "Fiche produit",
-    "court": "Le titre et la description d’un produit, prêts à vendre.",
-    "desc": "Une photo ou quelques mots sur votre produit : l’écrivain prépare un titre, une phrase d’accroche et une description claire pour votre boutique. Il n’invente ni prix, ni taille, ni matière.",
-    "coutCts": 1.8,
-    "jetons": 8,
-    "bouton": "Écrire la fiche",
+    "court": "Le titre, la description et un prix conseillé, prêts à vendre.",
+    "desc": "Une photo ou quelques mots sur votre produit : Mirette prépare un titre, une phrase d’accroche, une description claire et un prix conseillé à partir de ce qu’il vous coûte. Elle n’invente ni taille, ni matière.",
+    "coutCts": 2.2,
+    "jetons": 9,
+    "maxTokens": 1500,
+    "bouton": "Mirette, à toi !",
     "champs": [
       {
         "id": "image",
@@ -277,17 +293,33 @@ const outils = [
         "id": "nom",
         "label": "Le nom du produit",
         "kind": "texte",
-        "requis": true
+        "requis": true,
+        "max": 120
       },
       {
         "id": "infos",
-        "label": "Ce qu’il faut savoir",
+        "label": "Ce qu’il faut savoir (facultatif)",
         "kind": "texte_long",
+        "max": 1500,
         "aide": "Matière, taille, couleurs, fabrication, à qui il plaît."
+      },
+      {
+        "id": "cout",
+        "label": "Ce qu’il vous coûte (facultatif)",
+        "kind": "texte",
+        "max": 120,
+        "aide": "Prix d’achat ou de fabrication, par exemple 12 €. Pour avoir un prix conseillé."
+      },
+      {
+        "id": "ailleurs",
+        "label": "Prix vus ailleurs (facultatif)",
+        "kind": "texte",
+        "max": 200,
+        "aide": "Par exemple : entre 30 et 40 € chez les autres fleuristes."
       }
     ],
-    "consigne": "Écris la fiche de ce produit pour une boutique en ligne. Trois blocs, avec ces titres exacts. « Titre » : 60 caractères au plus, le nom du produit d’abord. « Accroche » : une phrase. « Description » : 80 à 120 mots, phrases simples, ce que c’est, pour qui ou pour quelle occasion, les détails utiles. Utilise seulement ce que le client a écrit ou ce qui se voit clairement sur la photo. N’invente ni prix, ni dimensions, ni poids, ni matière, ni origine, ni délai. N’écris « fait main », « artisanal », « bio » ou « fabriqué en France » que si le client l’a écrit. Aucune promesse de résultat, de santé ou de bien-être. Ne nomme aucune personne visible sur la photo. Ajoute un quatrième bloc « À vérifier » seulement si la photo ne semble pas montrer le produit nommé, ou si une information utile à l’acheteur manque (taille, matière, entretien) : dis laquelle, sans la deviner. Si le nom du produit ne veut rien dire (lettres au hasard) et qu’il n’y a ni photo ni détail, rends un seul bloc dont le titre est « STOP » et dont le texte demande en une phrase le nom du produit et deux ou trois détails.",
-    "note": "Relisez : l’écrivain n’invente ni prix, ni taille, ni matière. Complétez ce qui manque.",
+    "consigne": "Écris la fiche de ce produit pour une boutique en ligne. Quatre blocs, avec ces titres exacts. « Titre » : 60 caractères au plus, le nom du produit d’abord. « Accroche » : une phrase. « Description » : 80 à 120 mots, phrases simples, ce que c’est, pour qui ou pour quelle occasion, les détails utiles. « Prix conseillé » : seulement à partir des chiffres donnés par le client. S’il a donné ce que le produit lui coûte, propose une fourchette de prix de vente en euros TTC, calculée en multipliant ce coût par 2 à 2,5 (l’usage courant dans le petit commerce), et montre le calcul en une ligne. S’il a donné des prix vus ailleurs, dis en une phrase où se place la fourchette par rapport à eux. S’il n’a donné aucun chiffre, écris seulement : « Donnez ce que le produit vous coûte, et je vous propose un prix. » Termine par « C’est un conseil : le prix, c’est vous qui le décidez. » N’invente aucun chiffre. Dans le titre et la description, utilise seulement ce que le client a écrit ou ce qui se voit clairement sur la photo. N’invente ni dimensions, ni poids, ni matière, ni origine, ni délai, et ne mets aucun prix. N’écris « fait main », « artisanal », « bio » ou « fabriqué en France » que si le client l’a écrit. Aucune promesse de résultat, de santé ou de bien-être. Ne nomme aucune personne visible sur la photo. Ajoute un cinquième bloc « À vérifier » seulement si la photo ne semble pas montrer le produit nommé, ou si une information utile à l’acheteur manque (taille, matière, entretien) : dis laquelle, sans la deviner. Si le nom du produit ne veut rien dire (lettres au hasard) et qu’il n’y a ni photo ni détail, rends un seul bloc dont le titre est « STOP » et dont le texte demande en une phrase le nom du produit et deux ou trois détails.",
+    "note": "Relisez : Mirette n’invente ni taille, ni matière. Complétez ce qui manque.",
     "limites": {
       "Titre": 60
     }
@@ -326,6 +358,7 @@ const outils = [
     "categorie": "image",
     "icon": "scissors",
     "color": "sky",
+    "chef": "Mirette",
     "name": "Recadrer et alléger une photo",
     "court": "Votre photo au bon format pour chaque réseau, et légère pour votre site.",
     "desc": "Vous choisissez une photo. Elle est recadrée au bon format pour Instagram, les stories, Facebook, LinkedIn et votre fiche Google, et une version légère est préparée pour votre site. Vous téléchargez celles que vous voulez. Rien ne quitte votre appareil.",
@@ -338,9 +371,10 @@ const outils = [
     "categorie": "image",
     "icon": "camera",
     "color": "pink",
+    "chef": "Mirette",
     "name": "Conseils sur une photo",
-    "court": "Pouf regarde votre photo et vous dit comment la réussir.",
-    "desc": "Vous envoyez une photo de produit ou de réalisation. Pouf vous dit ce qui est réussi et les gestes simples pour la refaire mieux avec votre téléphone : lumière, fond, cadrage. Il conseille, il ne retouche pas la photo.",
+    "court": "Mirette regarde votre photo et vous dit comment la réussir.",
+    "desc": "Vous envoyez une photo de produit ou de réalisation. Mirette vous dit ce qui est réussi et les gestes simples pour la refaire mieux avec votre téléphone : lumière, fond, cadrage. Il conseille, il ne retouche pas la photo.",
     "coutCts": 1.8,
     "jetons": 8,
     "bouton": "Regarder ma photo",
@@ -370,17 +404,18 @@ const outils = [
         "aide": "Par exemple : le détail des pétales, la boîte ouverte."
       }
     ],
-    "consigne": "Regarde la photo comme un client qui la découvre sur son téléphone, pour l’usage indiqué dans « Où ira cette photo ? ». Donne des conseils pratiques pour la refaire mieux avec un simple téléphone. Tu conseilles, tu ne retouches pas la photo. Parle seulement de ce qui se voit : la lumière et les ombres, le fond et ce qui traîne dans le décor, le cadrage, l’angle, la place du sujet, les reflets, la photo penchée, l’ombre ou le doigt du photographe. Tu reçois une copie réduite : ne juge pas la netteté fine, parle de flou seulement s’il saute aux yeux. Ne juge pas le produit lui-même, seulement la photo. Ne commente jamais le physique, l’âge ni la tenue d’une personne, et ne nomme personne. Pas de note, pas de pourcentage, pas de promesse de ventes. Ne conseille aucun achat : tout doit se faire avec un téléphone, une fenêtre et ce qu’on a chez soi (un drap, une feuille blanche, une planche). Sois honnête et bienveillante : n’invente pas de défaut, ne cache pas un vrai problème. Trois blocs, avec ces titres exacts. « Ce qui est réussi » : 1 à 3 points précis. « À refaire en priorité » : 3 gestes au plus, numérotés, le plus utile d’abord, chacun en une ou deux phrases qui disent quoi faire (par exemple : « Posez le bouquet près d’une fenêtre, lumière de côté, sans flash. »). Si la photo convient déjà à cet usage, dis-le et donne un seul geste, ou aucun. « Le bon cadrage » : le format qui convient (carré pour une boutique en ligne, large pour une page de site, carré ou vertical pour les réseaux sociaux, large pour une fiche Google) et ce qu’il faut garder dans le cadre. Termine ce bloc par : « L’outil gratuit Recadrer et alléger une photo prépare ces formats. » Si l’image n’est pas une photo (capture d’écran, document, dessin) ou si aucune photo n’est jointe, rends un seul bloc dont le titre est « STOP » et dont le texte demande en une phrase une photo de produit ou de réalisation.",
-    "note": "Pouf conseille, il ne retouche pas la photo. Il voit une copie réduite : il ne juge pas la netteté fine."
+    "consigne": "Regarde la photo comme un client qui la découvre sur son téléphone, pour l’usage indiqué dans « Où ira cette photo ? ». Donne des conseils pratiques pour la refaire mieux avec un simple téléphone. Tu conseilles, tu ne retouches pas la photo. Parle seulement de ce qui se voit : la lumière et les ombres, le fond et ce qui traîne dans le décor, le cadrage, l’angle, la place du sujet, les reflets, la photo penchée, l’ombre ou le doigt du photographe. Tu reçois une copie réduite : ne juge pas la netteté fine, parle de flou seulement s’il saute aux yeux. Ne juge pas le produit lui-même, seulement la photo. Ne commente jamais le physique, l’âge ni la tenue d’une personne, et ne nomme personne. Pas de note, pas de pourcentage, pas de promesse de ventes. Ne conseille aucun achat : tout doit se faire avec un téléphone, une fenêtre et ce qu’on a chez soi (un drap, une feuille blanche, une planche). Sois honnête et bienveillante : n’invente pas de défaut, ne cache pas un vrai problème. Trois blocs, avec ces titres exacts. « Ce qui est réussi » : 1 à 3 points précis. « À refaire en priorité » : 3 gestes au plus, numérotés, le plus utile d’abord, chacun en une ou deux phrases qui disent quoi faire (par exemple : « Posez le bouquet près d’une fenêtre, lumière de côté, sans flash. »). Si la photo convient déjà à cet usage, dis-le et donne un seul geste, ou aucun. « Le bon cadrage » : le format qui convient (carré pour une boutique en ligne, large pour une page de site, carré ou vertical pour les réseaux sociaux, large pour une fiche Google) et ce qu’il faut garder dans le cadre. Termine ce bloc par : « Le bouton Recadrer et alléger prépare ces formats. » Si l’image n’est pas une photo (capture d’écran, document, dessin) ou si aucune photo n’est jointe, rends un seul bloc dont le titre est « STOP » et dont le texte demande en une phrase une photo de produit ou de réalisation.",
+    "note": "Mirette conseille, elle ne retouche pas la photo. Elle voit une copie réduite : elle ne juge pas la netteté fine."
   },
   {
     "id": "phototexte",
     "categorie": "image",
     "icon": "file-text",
     "color": "lilac",
+    "chef": "Mirette",
     "name": "Recopier le texte d’une photo",
     "court": "Votre ardoise, votre carte ou votre affiche en photo devient un texte à coller.",
-    "desc": "Vous prenez en photo une ardoise, une liste de prix, une carte ou une affiche. Plume recopie le texte ligne par ligne, sans rien changer. Il vous signale les mots et les chiffres qu’il lit mal.",
+    "desc": "Vous prenez en photo une ardoise, une liste de prix, une carte ou une affiche. Mirette recopie le texte ligne par ligne, sans rien changer. Elle vous signale les mots et les chiffres qu’elle lit mal.",
     "coutCts": 3.2,
     "jetons": 13,
     "bouton": "Recopier le texte",
@@ -483,6 +518,7 @@ const outils = [
     "categorie": "site",
     "icon": "qr-code",
     "color": "peach",
+    "chef": "Cerise",
     "name": "QR code",
     "court": "Un QR code vers votre site, prêt à imprimer.",
     "desc": "Un QR code vers votre site, à imprimer sur vos cartes, votre vitrine ou vos flyers. Vos clients le visent avec leur téléphone et arrivent chez vous.",
@@ -495,9 +531,10 @@ const outils = [
     "categorie": "avis",
     "icon": "star",
     "color": "pink",
+    "chef": "Cerise",
     "name": "Répondre à un avis",
     "court": "Une réponse polie à un avis Google, même difficile.",
-    "desc": "Vous collez l’avis d’un client. Plume prépare une réponse courte et polie, que l’avis soit bon ou mauvais. Vous la copiez sur votre fiche Google.",
+    "desc": "Vous collez l’avis d’un client. Cerise prépare une réponse courte et polie, que l’avis soit bon ou mauvais. Vous la copiez sur votre fiche Google.",
     "coutCts": 1.2,
     "jetons": 5,
     "bouton": "Écrire la réponse",
@@ -529,9 +566,20 @@ const outils = [
         "kind": "texte_long",
         "aide": "Par exemple : nous avions prévenu du retard, je propose qu’il m’appelle.",
         "max": 500
+      },
+      {
+        "id": "ton",
+        "label": "Votre ton",
+        "kind": "choix",
+        "options": [
+          "Chaleureux",
+          "Professionnel",
+          "Simple et direct"
+        ],
+        "defaut": "Chaleureux"
       }
     ],
-    "consigne": "Écris la réponse du commerçant à cet avis Google. Elle sera publique. Polie, sincère, 2 à 4 phrases, au « vous », sans signature. Pour un bon avis (4 ou 5 étoiles) : remercier en reprenant un détail de l’avis, inviter à revenir. Pour un avis moyen ou mauvais (1 à 3 étoiles) : remercier, reconnaître la gêne du client sans se justifier longuement, sans accuser ni ironiser, proposer d’en parler directement. Si le commerçant a écrit ce qu’il veut dire, intègre-le avec tact et n’y ajoute rien. Ne promets rien de précis : ni remboursement, ni geste commercial, ni délai, sauf si le commerçant l’a écrit. N’invente aucun fait sur ce qui s’est passé. Ne répète aucun détail personnel de l’avis (santé, famille, argent, adresse) et ne confirme rien de privé sur le client. Pas de nom de famille. Pas de menace, pas de conseil juridique. Ne traite jamais l’avis de faux : si le commerçant dit ne pas reconnaître ce client, écris simplement qu’il ne retrouve pas sa visite et qu’il l’invite à le contacter. Si la note et le texte ne vont pas ensemble, fie-toi au texte. Deux blocs, avec ces titres exacts : « Réponse » et « Variante plus courte » (1 ou 2 phrases). Si le texte collé n’est pas un avis de client, rends un seul bloc dont le titre est « STOP » et dont le texte demande en une phrase de coller l’avis reçu.",
+    "consigne": "Écris la réponse du commerçant à cet avis Google. Elle sera publique. Polie, sincère, 2 à 4 phrases, au « vous », sans signature, dans le ton choisi par le commerçant. Pour un bon avis (4 ou 5 étoiles) : remercier en reprenant un détail de l’avis, inviter à revenir. Pour un avis moyen ou mauvais (1 à 3 étoiles) : remercier, reconnaître la gêne du client sans se justifier longuement, sans accuser ni ironiser, proposer d’en parler directement. Si le commerçant a écrit ce qu’il veut dire, intègre-le avec tact et n’y ajoute rien. Ne promets rien de précis : ni remboursement, ni geste commercial, ni délai, sauf si le commerçant l’a écrit. N’invente aucun fait sur ce qui s’est passé. Ne répète aucun détail personnel de l’avis (santé, famille, argent, adresse) et ne confirme rien de privé sur le client. Pas de nom de famille. Pas de menace, pas de conseil juridique. Ne traite jamais l’avis de faux : si le commerçant dit ne pas reconnaître ce client, écris simplement qu’il ne retrouve pas sa visite et qu’il l’invite à le contacter. Si la note et le texte ne vont pas ensemble, fie-toi au texte. Deux blocs, avec ces titres exacts : « Réponse » et « Variante plus courte » (1 ou 2 phrases). Si le texte collé n’est pas un avis de client, rends un seul bloc dont le titre est « STOP » et dont le texte demande en une phrase de coller l’avis reçu.",
     "note": "Relisez avant de publier : la réponse sera visible par tout le monde."
   },
   {
@@ -539,12 +587,53 @@ const outils = [
     "categorie": "avis",
     "icon": "link",
     "color": "butter",
+    "chef": "Cerise",
     "name": "Lien d’avis Google",
     "court": "Le lien à envoyer à vos clients pour qu’ils laissent un avis.",
     "desc": "Un lien tout prêt à envoyer à vos clients après une vente ou une prestation. Il ouvre directement la page pour laisser un avis sur votre fiche Google. Envoyez-le à tous vos clients, sans rien offrir en échange : c’est la règle de Google.",
     "coutCts": 0,
     "jetons": 1,
     "local": true
+  },
+  {
+    "id": "comparer",
+    "categorie": "gestion",
+    "icon": "scale",
+    "color": "lilac",
+    "chef": "Plume",
+    "name": "Comparer mes devis",
+    "court": "Vos devis de fournisseurs côte à côte, et le message pour négocier le prix.",
+    "desc": "Vous photographiez ou collez 2 à 4 devis. Plume les met côte à côte : le prix, ce qui est compris, les délais, les points à vérifier. Puis elle écrit le message pour demander un meilleur prix. Ce qu’elle ne lit pas bien, elle le dit.",
+    "coutCts": 6,
+    "jetons": 24,
+    "maxTokens": 3500,
+    "imageMax": 1568,
+    "bouton": "Plume, compare !",
+    "champs": [
+      {
+        "id": "devis",
+        "label": "Vos devis : photos ou PDF (2 à 4)",
+        "kind": "fichiers",
+        "max": 4,
+        "aide": "Une photo par page, bien droite et bien éclairée. Un PDF de 5 Mo au plus."
+      },
+      {
+        "id": "texte",
+        "label": "Ou collez le texte de vos devis",
+        "kind": "texte_long",
+        "max": 8000,
+        "aide": "Mettez le nom du fournisseur en haut de chaque devis, et une ligne vide entre deux devis."
+      },
+      {
+        "id": "achat",
+        "label": "Ce que vous voulez acheter (facultatif)",
+        "kind": "texte",
+        "max": 200,
+        "aide": "Par exemple : 500 sacs kraft avec mon logo."
+      }
+    ],
+    "consigne": "Le client t’envoie 2 à 4 devis de fournisseurs (en photos, en PDF ou en texte collé). Compare-les pour l’aider à choisir et à négocier. Règles. Utilise seulement ce qui est écrit sur les devis : n’invente aucun prix, aucune quantité, aucun délai, aucune condition. Recopie les montants exactement, avec HT ou TTC comme sur le devis ; ne convertis pas, et ne fais un calcul (par exemple un prix à l’unité) que si les deux nombres sont écrits, en le disant. Ce que tu ne lis pas bien : écris ce que tu lis suivi de [?]. Ce qui est absent : écris « pas indiqué ». Une page illisible : dis-le. Ne nomme pas les personnes, seulement les entreprises. Pas de conseil juridique ni fiscal. Blocs, dans cet ordre, avec ces titres exacts. « Tableau comparatif » : une première ligne d’en-têtes « Fournisseur | Prix total | Ce qui est compris | Délai | Validité du devis | À vérifier », puis une ligne par devis, les colonnes séparées par le caractère |, sans autre mise en forme. « En bref » : 2 à 4 phrases qui disent les vraies différences (prix, contenu, délais), en comparant ce qui est comparable ; si deux devis ne parlent pas de la même chose, dis-le. « Points à vérifier » : une ligne par point (frais de livraison, acompte, quantités différentes, options, TVA, durée de validité, montant illisible), 8 lignes au plus. « Message pour négocier » : un message poli et court (80 à 120 mots), au « vous », adressé au fournisseur que le client préfère sans doute pour le contenu mais qui n’est pas le moins cher, écrit [nom du fournisseur] ; il demande s’il peut revoir son prix en citant le montant le plus bas trouvé, sans nommer l’autre fournisseur, sans menace et sans rien promettre. S’il n’y a qu’un seul devis lisible, ou si ce n’est pas un devis, rends un seul bloc dont le titre est « STOP » et dont le texte demande en une phrase d’envoyer au moins deux devis lisibles.",
+    "note": "Plume a lu vos devis : relisez les montants avant de décider, une photo peut tromper."
   }
 ];
 
