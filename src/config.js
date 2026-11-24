@@ -301,6 +301,11 @@ const outilsOffre = {
       court: 'Une note vocale sur le chantier : un devis propre à votre nom, envoyé et relancé pour vous.' },
   ],
 };
+// Les formations de Mini Tuto (décision d'Alex, 24 novembre 2026) : les petits tutos sont gratuits ; les trois grandes formations
+// coûtent prix € chacune, payées une fois, accès à vie (tant que Les Minis Monstres existent), SAUF la première (gratuite) qui montre
+// la qualité. Une formation payante montre en public son programme et son premier chapitre ; le reste s'ouvre dans l'espace client
+// (onglet « Mes cours ») après l'achat. Achat grisé tant que les ventes sont fermées (ouverture.php).
+const formationsOffre = { prix: 49.99, gratuites: ['formation-automatiser-ses-taches'], apercuChapitres: 1 };
 const limites = { bulleJour: 40 }; // messages par jour dans la bulle de Cerise (les modifications sont sans limite)
 const enPause = !enService.energie;
 // Un seul abonnement : Mini, 10 € par mois, sans engagement (18 novembre 2026). Maxi est retiré : tout ce qu'il apportait se prend
@@ -533,4 +538,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: 'Le site d’un électricien dans les Ardennes. Il sera en ligne très bientôt.' },
 ];
 
-module.exports = { ateliers, outilsOffre, INCLUS_INFO, typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };
+module.exports = { ateliers, outilsOffre, formationsOffre, INCLUS_INFO, typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };
