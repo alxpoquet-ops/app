@@ -302,108 +302,111 @@
     d.addEventListener('click', function (e) { lis.forEach(function (li) { if (!li.contains(e.target)) fermer(li); }); });
   })();
 
-  /* ---------- Mini Tuto : le hub (filtre par thème et recherche instantanée) ---------- */
-  // Sans JavaScript, les pastilles sont des ancres vers chaque thème. Avec : elles filtrent, et le champ de recherche apparaît.
+  /* ---------- Mes Tutos : la recherche instantanée du hub ---------- */
+  // Sans JavaScript, le champ reste caché et tout est listé. Avec : chaque lettre filtre les cartes (tutos, À la une, guides) ;
+  // pendant une recherche, la jauge des étapes se range pour laisser les résultats en haut.
   (function () {
-    var liste = $('.tuto-liste');
-    if (!liste) return;
-    var champ = $('#tuto-q', liste), boite = $('[data-tuto-recherche]', liste);
-    var filtres = $$('[data-filtre]', liste), themes = $$('[data-theme]', liste), cartes = $$('[data-tuto]', liste);
-    var vide = $('[data-tuto-vide]', liste), compte = $('[data-tuto-compte]', liste);
-    var actif = '';
+    var liste = $('[data-tuto-liste]'), boite = $('[data-tuto-recherche]');
+    if (!liste || !boite) return;
+    var champ = $('input', boite);
+    var themes = $$('[data-theme]', liste), cartes = $$('[data-tuto]', liste), masques = $$('[data-masque-recherche]', liste);
+    var vide = $('[data-tuto-vide]', liste), compte = $('[data-tuto-compte]', liste), filtres = $('.tuto-filtres', liste);
     var norm = function (x) { x = x || ''; return (x.normalize ? x.normalize('NFD').replace(/[̀-ͯ]/g, '') : x).toLowerCase(); };
-    if (boite) boite.hidden = false;
-    filtres.forEach(function (f) { if (f.tagName === 'BUTTON') f.hidden = false; });
+    boite.hidden = false;
     var appliquer = function () {
-      var mots = norm(champ ? champ.value.trim() : '').split(/\s+/).filter(Boolean), n = 0;
+      var mots = norm(champ.value.trim()).split(/\s+/).filter(Boolean), n = 0, cherche = mots.length > 0;
       cartes.forEach(function (c) {
-        var th = c.closest('[data-theme]'), id = th ? th.getAttribute('data-theme') : '';
-        var ok = (!actif || (actif === 'gratuit' ? c.hasAttribute('data-gratuit') : id === actif));
-        if (ok && mots.length) { var t = c.getAttribute('data-texte') || ''; ok = mots.every(function (m) { return t.indexOf(m) > -1; }); }
+        var t = c.getAttribute('data-texte') || '';
+        var ok = mots.every(function (m) { return t.indexOf(m) > -1; });
         c.classList.toggle('is-cache', !ok);
         if (ok) n++;
       });
       themes.forEach(function (th) { th.classList.toggle('is-cache', !$$('[data-tuto]:not(.is-cache)', th).length); });
-      if (vide) vide.hidden = n > 0;
-      if (compte) compte.textContent = n ? n + (n > 1 ? ' tutos affichés' : ' tuto affiché') : 'Aucun tuto ne correspond';
-      filtres.forEach(function (f) {
-        var on = (f.getAttribute('data-filtre') || '') === actif;
-        if (f.tagName === 'BUTTON') f.setAttribute('aria-pressed', on ? 'true' : 'false');
-        else if (on) f.setAttribute('aria-current', 'true'); else f.removeAttribute('aria-current');
-      });
+      masques.forEach(function (m) { m.hidden = cherche; });
+      if (filtres) filtres.hidden = cherche;
+      if (vide) vide.hidden = !cherche || n > 0;
+      if (compte) compte.textContent = !cherche ? '' : n ? n + (n > 1 ? ' tutos trouvés' : ' tuto trouvé') : 'Aucun tuto ne correspond';
     };
-    filtres.forEach(function (f) {
-      f.addEventListener('click', function (e) {
-        e.preventDefault();
-        var id = f.getAttribute('data-filtre') || '';
-        actif = actif === id && id ? '' : id;
-        appliquer();
-        try { history.replaceState(null, '', actif && actif !== 'gratuit' ? '#' + actif : location.pathname + location.search); } catch (er) {}
-      });
+    champ.addEventListener('input', appliquer);
+    champ.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      var doux = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+      liste.scrollIntoView({ behavior: doux ? 'smooth' : 'auto', block: 'start' });
     });
-    if (champ) champ.addEventListener('input', appliquer);
     var tout = $('[data-tuto-tout]', liste);
-    if (tout) tout.addEventListener('click', function () { actif = ''; if (champ) champ.value = ''; appliquer(); if (champ) champ.focus(); });
-    // une adresse /mini-tuto/#reseaux (menu, autre page) ouvre directement ce thème
-    var depuisAncre = function () {
-      var h = location.hash.slice(1);
-      if (h && filtres.some(function (f) { return f.getAttribute('data-filtre') === h; })) { actif = h; appliquer(); }
-    };
-    depuisAncre();
-    window.addEventListener('hashchange', depuisAncre);
+    if (tout) tout.addEventListener('click', function () { champ.value = ''; appliquer(); champ.focus(); });
   })();
 
-  /* ---------- Mini Tuto : un tuto se lit page par page ---------- */
-  // Sans JavaScript, toutes les pages publiques se suivent (les boutons sont des ancres). Avec : une seule page à la fois.
-  (function () {
-    var bloc = $('[data-pagination]');
-    if (!bloc) return;
-    var pages = $$('.tuto-page', bloc);
-    if (pages.length < 2) return;
-    var liens = $$('[data-page-lien]');
-    bloc.classList.add('is-pagine');
-    var courante = -1;
-    var montrer = function (i, defiler) {
-      i = Math.max(0, Math.min(pages.length - 1, i));
-      pages.forEach(function (pg, j) { pg.hidden = j !== i; });
-      liens.forEach(function (a) {
-        if (!a.closest('.tuto-sommaire')) return;
-        if (+a.getAttribute('data-page-lien') === i + 1) a.setAttribute('aria-current', 'step'); else a.removeAttribute('aria-current');
-      });
-      var change = courante !== i;
-      courante = i;
-      if (defiler && change) {
-        var hd = $('.site-header'), haut = pages[i].getBoundingClientRect().top + window.pageYOffset - ((hd ? hd.offsetHeight : 70) + 14);
-        var doux = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-        window.scrollTo({ top: Math.max(0, haut), behavior: doux ? 'smooth' : 'auto' });
-        var titre = $('.tuto-page-titre', pages[i]);
-        if (titre) { titre.setAttribute('tabindex', '-1'); try { titre.focus({ preventScroll: true }); } catch (e) {} }
+  /* ---------- la frise des étapes de la création (Mes Tutos) ---------- */
+  // Survol (souris), focus (clavier) ou toucher : l'étape grossit doucement, sa bulle s'ouvre et la frise se remplit jusqu'à elle.
+  // Flèches (gauche, droite, haut, bas), Début et Fin pour passer d'une étape à l'autre, Échap pour refermer la bulle.
+  // Le sens de la frise vient du CSS (--sens: h sur ordinateur, v sur téléphone).
+  $$('[data-frise]').forEach(function (j) {
+    var etapes = $$('.frise-etape', j), piste = $('.frise-piste', j), rempli = $('.frise-rempli', j);
+    if (!etapes.length || !piste || !rempli) return;
+    j.classList.add('is-vivante');
+    var actif = -1, souris = !!(window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches);
+    var bouton = function (i) { return $('.frise-point', etapes[i]); };
+    var pastille = function (i) { return $('.frise-n', etapes[i]); };
+    var centre = function (el) { var r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };
+    var vertical = function () { return getComputedStyle(j).getPropertyValue('--sens').trim() === 'v'; };
+    // la piste va du centre de la première pastille au centre de la dernière ; le remplissage s'arrête sur l'étape active
+    var mesurer = function () {
+      var a = centre(pastille(0)), z = centre(pastille(etapes.length - 1)), o = j.getBoundingClientRect(), v = vertical();
+      piste.style.left = (a.x - o.left) + 'px';
+      piste.style.top = (a.y - o.top) + 'px';
+      piste.style.width = v ? '' : Math.max(0, z.x - a.x) + 'px';
+      piste.style.height = v ? Math.max(0, z.y - a.y) + 'px' : '';
+      var part = 0;
+      if (actif > -1) {
+        var p = centre(pastille(actif)), long = v ? z.y - a.y : z.x - a.x;
+        part = long ? (v ? p.y - a.y : p.x - a.x) / long : 0;
       }
+      rempli.style.setProperty('--part', Math.max(0, Math.min(1, part)).toFixed(4));
     };
-    // la page qui contient l'ancre demandée (#page-3, ou un intertitre #p3-...)
-    var pageDe = function (hash) {
-      if (!hash || hash.length < 2) return -1;
-      var cible = null;
-      try { cible = d.getElementById(decodeURIComponent(hash.slice(1))); } catch (e) {}
-      if (!cible) return -1;
-      for (var j = 0; j < pages.length; j++) if (pages[j] === cible || pages[j].contains(cible)) return j;
-      return -1;
+    var ouvrir = function (i) {
+      if (i === actif) return;
+      actif = i;
+      etapes.forEach(function (e, k) {
+        var on = k === i;
+        e.classList.toggle('is-active', on);
+        e.classList.toggle('is-faite', i > -1 && k < i);
+        var b = bouton(k);
+        if (b) b.setAttribute('aria-expanded', on ? 'true' : 'false');
+      });
+      mesurer();
     };
-    liens.forEach(function (a) {
-      a.addEventListener('click', function (e) {
-        var n = +a.getAttribute('data-page-lien');
-        if (!n) return;
-        e.preventDefault();
-        try { history.pushState(null, '', '#page-' + n); } catch (er) {}
-        montrer(n - 1, true);
+    etapes.forEach(function (e, i) {
+      var b = bouton(i);
+      if (souris) e.addEventListener('mouseenter', function () { ouvrir(i); });
+      if (!b) return;
+      // le focus au clavier ouvre la bulle ; au doigt, c'est le toucher (un second toucher la referme)
+      var auDoigt = false;
+      b.addEventListener('pointerdown', function () { auDoigt = true; });
+      b.addEventListener('focus', function () { if (!auDoigt) ouvrir(i); });
+      b.addEventListener('click', function () { auDoigt = false; ouvrir(i === actif && !souris ? -1 : i); });
+      b.addEventListener('keydown', function (ev) {
+        var k = ev.key, n = etapes.length, cible = -1;
+        if (k === 'ArrowRight' || k === 'ArrowDown') cible = (i + 1) % n;
+        else if (k === 'ArrowLeft' || k === 'ArrowUp') cible = (i - 1 + n) % n;
+        else if (k === 'Home') cible = 0;
+        else if (k === 'End') cible = n - 1;
+        else if (k === 'Escape') { ouvrir(-1); return; }
+        if (cible < 0) return;
+        ev.preventDefault();
+        var bc = bouton(cible);
+        if (bc) bc.focus();
       });
     });
-    window.addEventListener('hashchange', function () { var j = pageDe(location.hash); if (j > -1) montrer(j, true); });
-    window.addEventListener('popstate', function () { var j = pageDe(location.hash); montrer(j > -1 ? j : 0, true); });
-    var dep = pageDe(location.hash);
-    montrer(dep > -1 ? dep : 0, false);
-    if (dep > 0) setTimeout(function () { courante = -1; montrer(dep, true); }, 60);
-  })();
+    // un toucher ailleurs que sur la frise referme la bulle (téléphone)
+    d.addEventListener('click', function (ev) { if (!souris && actif > -1 && !j.contains(ev.target)) ouvrir(-1); });
+    window.addEventListener('resize', mesurer);
+    // les bulles qui s'ouvrent (frise verticale) changent la hauteur : on remesure
+    if (window.ResizeObserver) new ResizeObserver(mesurer).observe(j);
+    // au départ : la première étape, bulle ouverte sur ordinateur ; sur téléphone, tout est replié
+    ouvrir(souris ? 0 : -1);
+  });
 
   /* ---------- commander : les ventes ouvrent bientôt ---------- */
   // Le serveur renvoie ici (?ventes=bientot) une commande envoyée pendant que les ventes sont fermées.
@@ -987,6 +990,13 @@
           if (rang && rang.scrollTo) rang.scrollTo({ left: t.offsetLeft - (rang.clientWidth - t.offsetWidth) / 2, behavior: doux ? 'smooth' : 'auto' });
         }
       });
+      // « Mon site » reste allumé quand une de ses rubriques (Ma commande, Modifications, Extras, Ma boutique) est ouverte
+      var siteTab = $('[role="tab"][data-tab="site"]', app);
+      if (siteTab) {
+        var sous = tabs.some(function (t) { return t.getAttribute('data-groupe') === 'site' && t.getAttribute('data-tab') === id; });
+        siteTab.classList.toggle('is-groupe-on', sous);
+        app.classList.toggle('is-site-sous', sous);
+      }
       var entete = d.querySelector('.site-header');
       var haut = (entete ? entete.offsetHeight : 70) + 10;
       if (bloc) { window.scrollBy({ top: bloc.getBoundingClientRect().top - haut, behavior: doux ? 'smooth' : 'auto' }); return; }
@@ -1175,10 +1185,8 @@
     if (d.readyState === 'complete') drawQr(); else window.addEventListener('load', drawQr);
   }
 
-  /* démo de l'espace client */
+  /* démo de l'espace client : les mêmes onglets que le vrai espace, chaque bouton affiche un petit message */
   function initApp(app) {
-    var tpl = $('template[data-icons]', app), mtpl = $('template[data-monsters]', app);
-    var ico = function (n) { var el = tpl && tpl.content.querySelector('[data-i="' + n + '"]'); return el ? el.innerHTML : ''; };
     var toast = makeToast(app);
     initTabs(app);
     $$('[data-toast-msg]', app).forEach(function (b) { b.addEventListener('click', function () { toast(b.getAttribute('data-toast-msg')); }); });
@@ -1214,107 +1222,40 @@
         });
       });
       $('[data-ed-photo]', ed).addEventListener('click', function () { fermer(true); toast(tr('Dans votre vrai espace : choisissez une photo sur votre téléphone, elle remplace celle-ci (démo)')); });
-      edAnnuler.addEventListener('click', function () { var d = pile.pop(); if (d) { d[0].textContent = d[1]; toast(tr('C’est annulé (démo)')); } edAnnuler.hidden = !pile.length; });
+      edAnnuler.addEventListener('click', function () { var x = pile.pop(); if (x) { x[0].textContent = x[1]; toast(tr('C’est annulé (démo)')); } edAnnuler.hidden = !pile.length; });
       $('[data-ed-fin]', ed).addEventListener('click', function () { fermer(true); ed.open = false; toast(tr('Mode modification fermé (démo)')); });
       edSite.addEventListener('mousedown', function (e) { if (courant && !courant.contains(e.target) && !(pop && pop.contains(e.target))) fermer(true); });
+      // le bouton « Modifier mon site moi-même » (Mon site, Modifications) : le site s'ouvre en mode modification
       $$('[data-ed-ouvrir]', app).forEach(function (b) {
         b.addEventListener('click', function () {
-          var t = $('[role="tab"][data-tab="accueil"]', app); if (t) t.click();
-          ed.open = true; ed.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          var t = $('[role="tab"][data-tab="site"]', app); if (t && t.getAttribute('aria-selected') !== 'true') t.click();
+          ed.open = true;
+          var doux = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+          setTimeout(function () { ed.scrollIntoView({ behavior: doux ? 'smooth' : 'auto', block: 'start' }); }, 60);
         });
       });
     }
 
-    var log = $('[data-log]', app);
-    var addLog = function (ic, text) {
-      var li = d.createElement('li');
-      li.innerHTML = ico(ic) + '<span></span><small>à l’instant</small>';
-      li.querySelector('span').textContent = text;
-      log.insertBefore(li, log.firstChild);
-    };
-
-    /* modifications restantes ce mois : le quota vient du forfait coché (data-jetons), deux demandes sont déjà faites dans la démo.
-       Énergie en pause (data-unite="retouches" sur la jauge) : la jauge compte les demandes, une par demande.
-       Depuis le 17 novembre 2026, c'est Alex qui fait chaque modification : la démo montre « Transmise à Alex », puis « Alex s'en occupe ». */
-    var jaugeEl = $('[data-jauge]', app), parRetouche = !!jaugeEl && jaugeEl.getAttribute('data-unite') === 'retouches';
-    var startPlan = $('input[name="app-plan"]:checked', app);
-    var used = parRetouche ? 2 : 62;
-    var max = startPlan ? +startPlan.getAttribute('data-jetons') : 250, left = Math.max(0, max - used);
-    var drawJauge = function () {
-      if (!$('[data-jetons-max]', app)) return; // modifications incluses : pas de jauge (les cases d'abonnement ont aussi data-jetons)
-      $('[data-jetons]', app).textContent = left;
-      $('[data-jetons-max]', app).textContent = max;
-      $('[data-jauge-fill]', app).style.width = (max ? Math.min(100, left / max * 100) : 0) + '%';
-      $('[data-jauge]', app).classList.toggle('is-low', left < (parRetouche ? 2 : 30));
-    };
-    drawJauge();
-
-    /* demandes de modification */
+    /* une demande de modification : Bricou la reçoit, Alex la fait (démo : quelques secondes) */
     var form = $('[data-req]', app), txt = $('#req-txt', app), list = $('[data-reqs]', app);
     var file = $('[data-req-file]', app), fileName = $('[data-req-file-name]', app);
-    file.addEventListener('change', function () { if (file.files && file.files[0]) fileName.textContent = file.files[0].name; });
+    if (!form || !txt || !list) return;
+    var fileTxt = fileName ? fileName.textContent : '';
+    if (file && fileName) file.addEventListener('change', function () { if (file.files && file.files[0]) fileName.textContent = file.files[0].name; });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var text = txt.value.trim();
       if (!text) { toast(tr('Écrivez votre demande en quelques mots')); txt.focus(); return; }
-      var sansJauge = !jaugeEl;
-      var prix = sansJauge ? 0 : parRetouche ? 1 : 30 + Math.ceil((text.match(/\S+/g) || []).length / 10) + (file.files && file.files.length ? 10 : 0);
-      if (left < prix) { toast(tr(parRetouche ? 'Vous avez utilisé vos petites retouches du mois (démo)' : 'Il ne vous reste pas assez d’énergie pour cette demande (démo)')); return; }
-      used += prix; left = Math.max(0, max - used); drawJauge();
       var li = d.createElement('li');
-      li.innerHTML = '<span><strong></strong><small>' + tr('envoyée à l’instant') + '</small></span><em class="st st-new">' + tr('Transmise à Alex') + '</em>';
+      li.innerHTML = '<span><strong></strong><small>' + tr('envoyée à l’instant') + '</small></span><em class="st st-new">' + tr('Reçue par Bricou') + '</em>';
       li.querySelector('strong').textContent = text.length > 60 ? text.slice(0, 57) + '…' : text;
       list.insertBefore(li, list.firstChild);
-      txt.value = ''; file.value = ''; fileName.textContent = tr('Ajouter une photo (facultatif)');
-      toast(sansJauge || parRetouche ? tr('Merci pour vos précisions, je transmets à Bricou ! (démo)') : tr('Demande envoyée') + ' : ' + prix + ' ' + tr('d’énergie (démo)'));
+      txt.value = ''; if (file) file.value = ''; if (fileName) fileName.textContent = fileTxt;
+      toast(tr('Merci ! Bricou a bien reçu votre demande (démo)'));
       var st = li.querySelector('.st');
-      setTimeout(function () { st.className = 'st st-doing'; st.textContent = tr(sansJauge ? 'Alex s’en occupe' : 'En cours'); }, 2000);
-      setTimeout(function () {
-        st.className = 'st st-done'; st.textContent = tr('Faite');
-        toast(tr(sansJauge ? 'Alex a fait votre modification, elle est en ligne (démo)' : 'Votre modification est en ligne (démo)'));
-        addLog('check', 'Modification faite par Alex : ' + li.querySelector('strong').textContent);
-      }, 4500);
+      setTimeout(function () { st.className = 'st st-doing'; st.textContent = tr('Alex s’en occupe'); }, 2000);
+      setTimeout(function () { st.className = 'st st-done'; st.textContent = tr('Faite'); toast(tr('Alex a fait votre modification, elle est en ligne (démo)')); }, 4500);
     });
-
-    /* lien d'avis */
-    copyButtons(app, toast);
-
-    /* forfait et options */
-    var total = $('[data-app-total]', app);
-    var recompute = function () {
-      var p = $('input[name="app-plan"]:checked', app);
-      var sum = p ? +p.getAttribute('data-month') : 0;
-      $$('.app-opt input:checked', app).forEach(function (i) { sum += +i.getAttribute('data-month'); });
-      if (total) total.textContent = euro(sum);
-      if (p) {
-        $('[data-app-plan-name]', app).textContent = p.getAttribute('data-name');
-        $('[data-app-plan-price]', app).textContent = euro(+p.getAttribute('data-month')) + ' par mois';
-        var m = mtpl && mtpl.content.querySelector('[data-m="' + p.value + '"]');
-        if (m) $('[data-app-plan-art]', app).innerHTML = m.innerHTML;
-      }
-      // les petits mots de la bande qui dépendent d'un extra (analyse de Mirette, pages de Lumi) : ils apparaissent si l'extra est pris
-      $$('[data-extra]', app).forEach(function (e) {
-        var c = $('.app-opt input[value="' + e.getAttribute('data-extra') + '"]', app);
-        e.hidden = !(c && c.checked);
-      });
-      // sans l'extra d'analyse, un message propose de le prendre
-      var mir = $('.app-opt input[value="mirette"]', app);
-      $$('[data-extra-teaser]', app).forEach(function (e) { e.hidden = !!(mir && mir.checked); });
-    };
-    $$('input[name="app-plan"]', app).forEach(function (r) {
-      r.addEventListener('change', function () {
-        max = +r.getAttribute('data-jetons'); left = Math.max(0, max - used);
-        drawJauge(); recompute();
-        toast(planName(r.getAttribute('data-name')) + tr(' choisi, à partir du mois prochain (démo)'));
-      });
-    });
-    $$('.app-opt input', app).forEach(function (c) {
-      c.addEventListener('change', function () {
-        recompute();
-        toast(tr(c.checked ? 'Extra ajouté' : 'Extra retiré') + tr(' (démo)'));
-      });
-    });
-    recompute();
   }
 
   /* ---------- la bulle de Cerise : en bas de l'écran, sur toutes les pages ----------

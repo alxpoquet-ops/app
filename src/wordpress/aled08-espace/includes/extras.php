@@ -5,12 +5,44 @@
  * - les extras payés une fois (aLaDemande dans data.json) : on les commande, ils s'ajoutent à la prochaine facture, Alex les fait ;
  * - les extras au mois (options) : on les ajoute ou on les retire d'un clic, ils s'ajoutent à l'abonnement.
  * Les prix et les textes viennent de src/config.js (data.json). Rien n'est facturé sans que le client ait coché son accord.
+ * « À la une » (config.tutosOffre.aLaUne, 24 novembre 2026) : la page de visibilité Google, l'option e-commerce et la traduction
+ * anglaise passent en premier, avec un petit badge et le lien vers leur tuto gratuit (includes/aide.php). Rien de plus voyant.
  */
 defined('ABSPATH') || exit;
 
 /* La couleur de chaque famille (les mêmes pastels que le reste de l'espace) */
 function aled08e_ex_couleur($groupe) {
     return ['trouve' => 'mint', 'contact' => 'pink', 'reseaux' => 'lilac', 'langue' => 'sky', 'quotidien' => 'butter', 'boutique' => 'peach'][$groupe] ?? 'lilac';
+}
+
+/* « À la une » : la place de l'extra dans la liste (0, 1, 2…), ou -1 ; et le lien vers son tuto */
+function aled08e_ex_une_rang($id) {
+    if (!function_exists('aled08e_aide_a_la_une')) return -1;
+    $r = array_search($id, array_values(aled08e_aide_a_la_une()), true);
+    return $r === false ? -1 : (int) $r;
+}
+function aled08e_ex_une_badge($id, $badge = '') {
+    if ($badge !== '') return '<em class="ex-badge">' . esc_html($badge) . '</em>';
+    return aled08e_ex_une_rang($id) >= 0 ? '<em class="ex-badge ex-badge-une">' . aled08e_icon('star') . 'À la une</em>' : '';
+}
+function aled08e_ex_tuto_html($id) {
+    $slug = function_exists('aled08e_aide_tuto_extra') ? aled08e_aide_tuto_extra($id) : '';
+    $l = $slug !== '' ? aled08e_aide_lien_html($slug, 'Le tuto') : '';
+    return $l !== '' ? '<p class="ex-tuto">' . $l . '</p>' : '';
+}
+/* L'option e-commerce (« À la une ») : ce n'est pas un extra qu'on commande ici, la carte mène à « Ma boutique » */
+function aled08e_ex_carte_ecommerce($uid) {
+    $D = aled08e_data();
+    $prix = isset($D['creation']['ecommerce']) ? (int) $D['creation']['ecommerce'] : 200;
+    $actif = aled08e_est_boutique($uid);
+    $badge = $actif ? '<em class="ex-badge ex-badge-actif">' . aled08e_icon('check') . 'Active</em>' : aled08e_ex_une_badge('ecommerce');
+    return '<article class="ex-carte c-' . aled08e_ex_couleur('boutique') . ($actif ? ' is-actif' : '') . '" id="ex-ecommerce">'
+        . '<header class="ex-tete"><span class="ex-ico">' . aled08e_icon('shopping-bag') . '</span><div class="ex-nom"><strong>Option e-commerce</strong>' . $badge . '</div>'
+        . ($actif ? '' : '<span class="ex-prix"><b>+ ' . esc_html(aled08e_euro_txt($prix)) . '</b><small>payé une fois</small></span>') . '</header>'
+        . '<p class="ex-court">' . ($actif ? 'Votre boutique en ligne est ouverte : vos articles, vos prix, vos paiements et vos commandes se gèrent dans « Ma boutique ».' : 'Une boutique en ligne sur votre site : vos articles, vos prix, vos paiements et vos commandes, que vous gérez vous-même dans « Ma boutique ».') . '</p>'
+        . aled08e_ex_tuto_html('ecommerce')
+        . '<button type="button" class="btn ' . ($actif ? 'btn-light' : 'btn-primary') . ' btn-sm ex-go" data-go="vacances">' . aled08e_icon($actif ? 'store' : 'key-round') . '<span>' . ($actif ? 'Ouvrir ma boutique' : 'Voir comment l’ajouter') . '</span></button>'
+        . '</article>';
 }
 
 /* Une quantité de pack valide pour cet extra (sinon la première proposée, ou 1) */
@@ -78,9 +110,9 @@ function aled08e_ex_carte_unique($x, $uid, $famille, $sans) {
     // sur devis : pas de prix, pas de paiement. Le client décrit son besoin, il reçoit un prix.
     if (!empty($x['devis'])) {
         return '<article class="ex-carte ex-devis c-' . aled08e_ex_couleur($x['groupe'] ?? '') . '" id="ex-' . esc_attr($id) . '">'
-            . '<header class="ex-tete"><span class="ex-ico">' . aled08e_icon($x['icon'] ?? 'plus') . '</span><div class="ex-nom"><strong>' . esc_html($x['name']) . '</strong></div>'
+            . '<header class="ex-tete"><span class="ex-ico">' . aled08e_icon($x['icon'] ?? 'plus') . '</span><div class="ex-nom"><strong>' . esc_html($x['name']) . '</strong>' . aled08e_ex_une_badge($id, (string) ($x['badge'] ?? '')) . '</div>'
             . '<span class="ex-prix"><b>Sur devis</b><small>gratuit, sans engagement</small></span></header>'
-            . '<p class="ex-court">' . esc_html($x['court'] ?? $x['desc'] ?? '') . '</p>'
+            . '<p class="ex-court">' . esc_html($x['court'] ?? $x['desc'] ?? '') . '</p>' . aled08e_ex_tuto_html($id)
             . '<details class="ex-plus"><summary><span>' . aled08e_icon('file-text') . 'Demander un devis</span></summary>'
             . '<form class="req-form" method="post" action="' . esc_url(aled08e_url()) . '">'
             . '<input type="hidden" name="aled08e_demande" value="1"><input type="hidden" name="extra" value="' . esc_attr($id) . '"><input type="hidden" name="extra_ok" value="1">' . wp_nonce_field('aled08e_demande', '_aled08e', true, false)
@@ -91,12 +123,12 @@ function aled08e_ex_carte_unique($x, $uid, $famille, $sans) {
             . '</article>';
     }
     [$gros, $petit] = aled08e_ex_prix_txt($x, $famille);
-    $badge = !empty($x['badge']) ? '<em class="ex-badge">' . esc_html($x['badge']) . '</em>' : '';
+    $badge = aled08e_ex_une_badge($id, (string) ($x['badge'] ?? ''));
     $accord = $famille ? 'Je commande, c’est offert pour moi' : (!empty($x['packs']) ? 'J’accepte le prix du pack choisi ci-dessus' : 'J’accepte ' . aled08e_euro_txt($x['prix']));
     return '<article class="ex-carte c-' . aled08e_ex_couleur($x['groupe'] ?? '') . '" id="ex-' . esc_attr($id) . '">'
         . '<header class="ex-tete"><span class="ex-ico">' . aled08e_icon($x['icon'] ?? 'plus') . '</span><div class="ex-nom"><strong>' . esc_html($x['name']) . '</strong>' . $badge . '</div>'
         . '<span class="ex-prix"><b>' . esc_html($gros) . '</b><small>' . esc_html($petit) . '</small></span></header>'
-        . '<p class="ex-court">' . esc_html($x['court'] ?? $x['desc'] ?? '') . '</p>' . $inclus
+        . '<p class="ex-court">' . esc_html($x['court'] ?? $x['desc'] ?? '') . '</p>' . $inclus . aled08e_ex_tuto_html($id)
         . '<details class="ex-plus"><summary><span>' . aled08e_icon('plus') . 'Je le veux</span></summary>'
         . '<form class="req-form" method="post" action="' . esc_url(aled08e_url()) . '">'
         . '<input type="hidden" name="aled08e_demande" value="1"><input type="hidden" name="extra" value="' . esc_attr($id) . '">' . wp_nonce_field('aled08e_demande', '_aled08e', true, false)
@@ -171,12 +203,20 @@ function aled08e_extras_html($uid, $famille, $flash = '') {
     }
     $filtre .= '</div>';
     if ($corps === '') return $h . '<p class="esp-empty">Les extras arrivent bientôt.</p>';
-    // peu d'extras (offre finale : trois) : une seule grille, sans filtre ni titres de famille
+    // peu d'extras (offre finale : trois, plus l'option e-commerce « À la une ») : une seule grille, sans filtre ni titres de
+    // famille ; les extras « À la une » d'abord, dans leur ordre
+    $liste = [];
+    foreach ($groupes as $g) { foreach ($mois[$g['id']] ?? [] as $o) $liste[] = [$o['id'], aled08e_ex_carte_mois($o, $uid, $actifs, $mult, $per)]; foreach ($unique[$g['id']] ?? [] as $x) $liste[] = [$x['id'], aled08e_ex_carte_unique($x, $uid, $famille, $sans)]; }
+    $ecommerce = aled08e_ex_une_rang('ecommerce') >= 0 ? aled08e_ex_carte_ecommerce($uid) : '';
+    if ($ecommerce !== '') $liste[] = ['ecommerce', $ecommerce];
+    $rang = function ($id) { $r = aled08e_ex_une_rang($id); return $r < 0 ? 99 : $r; };
+    $ordre = array_keys($liste);
+    usort($ordre, function ($a, $b) use ($liste, $rang) { return [$rang($liste[$a][0]), $a] <=> [$rang($liste[$b][0]), $b]; });
     $toutes = '';
-    $n = 0;
-    foreach ($groupes as $g) { foreach ($mois[$g['id']] ?? [] as $o) { $toutes .= aled08e_ex_carte_mois($o, $uid, $actifs, $mult, $per); $n++; } foreach ($unique[$g['id']] ?? [] as $x) { $toutes .= aled08e_ex_carte_unique($x, $uid, $famille, $sans); $n++; } }
-    $h .= $n <= 4 ? '<div class="ex-grille ex-grille-peu">' . $toutes . '</div>' : $filtre . $corps;
-    $h .= '<p class="ex-aide">' . aled08e_icon('message-circle') . '<span>Une question avant de choisir ? Cerise vous répond dans l’onglet Demandes.</span> <button type="button" class="link-btn" data-go="demandes">Écrire à Cerise</button></p>';
+    foreach ($ordre as $i) $toutes .= $liste[$i][1];
+    $h .= count($liste) <= 4 ? '<div class="ex-grille ex-grille-peu">' . $toutes . '</div>'
+        : ($ecommerce !== '' ? '<div class="ex-grille ex-grille-peu">' . $ecommerce . '</div>' : '') . $filtre . $corps;
+    $h .= '<p class="ex-aide">' . aled08e_icon('message-circle') . '<span>Une question avant de choisir ? Écrivez-la à Bricou, dans l’onglet Modifications.</span> <button type="button" class="link-btn" data-go="demandes">Poser ma question</button></p>';
     return $h;
 }
 

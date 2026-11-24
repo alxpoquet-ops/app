@@ -521,7 +521,7 @@ Artisans, commerçants, gîtes, associations : beaucoup d’activités d’ici f
 - **En rendez-vous**, à Charleville-Mézières, Sedan, Rethel, ${ville} ou dans un village autour : on regarde ensemble ce que vous faites, vos photos et vos idées.
 - **À distance** : vous nous écrivez ou on s’appelle, puis vous suivez tout depuis votre espace client.
 
-Dans les deux cas, le tarif ne change pas : ${eur(ESS.price)} € pour le ${ESS.name}, ou ${eur(BOU.price)} € avec l’option ${eco}. Ensuite, c’est le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
+Dans les deux cas, le tarif ne change pas : le ${ESS.name} coûte ${eur(ESS.price)} €, et ${eur(BOU.price)} € quand on y ajoute l’option ${eco}. Ensuite, c’est le forfait ${AUTO}, sans abonnement, ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois. Le détail est sur la page [tarifs](/tarifs/).
 
 ## Être trouvé près de chez vous
 

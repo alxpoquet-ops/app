@@ -142,7 +142,7 @@ function aled08e_boutique_verrou_html($uid) {
     $prix = isset($D['creation']['ecommerce']) ? (int) $D['creation']['ecommerce'] : 200;
     $nom = 'option e-commerce (+ ' . $prix . ' €)';
     $points = ['Vos articles : photo, description, prix', 'Vos prix et vos promotions', 'Vos moyens de paiement (Stripe, PayPal, virement…)', 'Le suivi de vos commandes'];
-    $h = '<h2 class="app-h">Ma boutique</h2>'
+    $h = '<h2 class="app-h">Ma boutique</h2>' . (function_exists('aled08e_aide_html') ? aled08e_aide_html('vacances', 3, array_keys(aled08e_aide_a_la_une())) : '')
         . '<section class="verrou" aria-label="Option verrouillée">'
         . '<span class="verrou-art" aria-hidden="true">' . aled08e_monster('mochi') . '</span>'
         . '<p class="verrou-tag">' . aled08e_icon('lock') . '<span>Option verrouillée</span></p>'
@@ -150,7 +150,7 @@ function aled08e_boutique_verrou_html($uid) {
         . '<p>Vous n’avez pas de boutique en ligne sur votre site pour le moment. Avec l’option e-commerce, vous gérez tout ici, vous-même, depuis votre téléphone :</p>'
         . '<ul class="verrou-liste">';
     foreach ($points as $l) $h .= '<li>' . aled08e_icon('check') . '<span>' . esc_html($l) . '</span></li>';
-    $h .= '</ul>';
+    $h .= '</ul>' . (function_exists('aled08e_aide_tuto_extra') && ($l = aled08e_aide_lien_html(aled08e_aide_tuto_extra('ecommerce'), 'Le tuto : la boutique en ligne')) !== '' ? '<p class="ex-tuto">' . $l . '</p>' : '');
     if (aled08e_a_la_demande('specifique')) {
         $h .= '<form method="post" action="' . esc_url(aled08e_url()) . '">'
             . '<input type="hidden" name="aled08e_demande" value="1"><input type="hidden" name="extra" value="specifique"><input type="hidden" name="extra_ok" value="1">' . wp_nonce_field('aled08e_demande', '_aled08e', true, false)

@@ -507,7 +507,6 @@ function aled08e_stripe_traiter_event($event) {
 
 /* Session de paiement terminée : commande payée (abonnement) ou solde payé (paiement) */
 function aled08e_stripe_on_checkout($s) {
-    if (!empty($s['metadata']['aled08_tuto']) && function_exists('aled08e_tuto_on_checkout')) return aled08e_tuto_on_checkout($s); // un Mini Tuto, payé une fois (includes/tutos.php)
     if (!empty($s['metadata']['aled08_direct']) && function_exists('aled08e_pd_on_paye')) return aled08e_pd_on_paye($s); // extra, emplacements : payés tout de suite
     if (!empty($s['metadata']['aled08_outils']) && function_exists('aled08e_outils_on_checkout')) return aled08e_outils_on_checkout($s); // un outil (includes/abonnements-outils.php)
     if (!empty($s['metadata']['solde_fois'])) return aled08e_stripe_on_solde_fois($s);

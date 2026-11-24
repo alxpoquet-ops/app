@@ -10,7 +10,7 @@ const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contac
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 const UPDATED = '2026-11-24'; // mentions légales : 24 novembre 2026, le SIREN de l'entreprise individuelle (le SIRET de l'activité est en cours)
 const UPDATED_CONF = '2026-11-24'; // politique de confidentialité : 24 novembre 2026, les outils au mois (comptes sans site, réseaux reliés, photos, avis et devis confiés aux outils). Avant : offre du 19 novembre 2026 (abonnement facultatif, paiement des extras par carte).
-const UPDATED_CGV = '2026-11-24'; // 24 novembre 2026 : article 20, les outils au mois (essai de 14 jours sans carte, abonnement outil par outil, limites, rétractation). 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
+const UPDATED_CGV = '2026-11-24'; // 24 novembre 2026, au soir : les outils mis de côté (article 20 gardé pour les abonnements en cours, avec une phrase en tête). Plus tôt le 24 novembre : article 20, les outils au mois (essai de 14 jours sans carte, abonnement outil par outil, limites, rétractation). 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
 // La petite bande (config.bande) : six Minis Monstres, présentés par leur prénom et leur rôle. Le parrainage est retiré (19 novembre 2026).
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
 // (règlement européen sur ces systèmes, obligation de transparence). La politique de confidentialité nomme le fournisseur.
@@ -69,6 +69,9 @@ const OO = cfg.outilsOffre || { actif: false, outils: [], bande: {}, essaiJours:
 const outilsPrets = (OO.outils || []).filter((o) => o.statut === 'pret');
 const outilsBientot = (OO.outils || []).filter((o) => o.statut === 'bientot');
 const AVEC_OUTILS = !!OO.actif && outilsPrets.length > 0;
+// Outils mis de côté (actif: false, 24 novembre 2026 au soir) : l'article 20 reste, avec une phrase en tête, pour les abonnements
+// déjà pris (son ancre #20-les-outils-au-mois reste valable). Le reste des conditions ne parle plus des outils.
+const ARTICLE_OUTILS = outilsPrets.length > 0;
 const outilOffert = outilsPrets.find((o) => o.inclusSite);
 const listeOutils = outilsPrets
   .map((o) => `- **${o.nom}, ${eur(o.prix)} € par mois**${o.inclusSite ? `, compris sans supplément tant que le client a le forfait ${mini.name}` : ''} : jusqu’à ${o.limite} ${o.unite} par mois.`)
@@ -409,11 +412,13 @@ Garantie légale de conformité. Le client consommateur bénéficie de la garant
 
 ## 19. Médiation et litiges
 
-En cas de désaccord, le client écrit d’abord par ${contact} : la plupart des questions se règlent en quelques échanges. Si la réponse ne lui convient pas, le client consommateur peut saisir gratuitement un médiateur de la consommation : ${L.mediator}. Le droit français s’applique.${AVEC_OUTILS ? `
+En cas de désaccord, le client écrit d’abord par ${contact} : la plupart des questions se règlent en quelques échanges. Si la réponse ne lui convient pas, le client consommateur peut saisir gratuitement un médiateur de la consommation : ${L.mediator}. Le droit français s’applique.${ARTICLE_OUTILS ? `
 
 ## 20. Les outils au mois
-
-**Objet.** Les Minis Monstres proposent aussi de petits outils en ligne, utilisés depuis l’espace client : préparer des publications pour les réseaux sociaux, demander des avis Google et y répondre, préparer des fiches produits, comparer des devis de fournisseurs. Ils sont ouverts à tous, professionnels et particuliers, avec ou sans site chez les Minis Monstres. Ce sont des petits monstres au sens de l’article 15.
+${AVEC_OUTILS ? '' : `
+**Les outils ne sont pas proposés pour l’instant.** Aucun essai ni abonnement ne peut être pris. Un abonnement déjà en cours s’arrête depuis l’espace client, dans Mon compte, et plus rien n’est prélevé ensuite. Cet article reste valable pour ces abonnements, jusqu’à leur arrêt.
+`}
+**Objet.** Les Minis Monstres ${AVEC_OUTILS ? 'proposent aussi' : 'ont proposé'} de petits outils en ligne, utilisés depuis l’espace client : préparer des publications pour les réseaux sociaux, demander des avis Google et y répondre, préparer des fiches produits, comparer des devis de fournisseurs. ${AVEC_OUTILS ? 'Ils sont ouverts' : 'Ils étaient ouverts'} à tous, professionnels et particuliers, avec ou sans site chez les Minis Monstres. Ce sont des petits monstres au sens de l’article 15.
 
 **Compte.** Un espace client est nécessaire (article 13). Il se crée gratuitement, sans commander de site.
 

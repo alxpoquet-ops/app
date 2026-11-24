@@ -941,7 +941,11 @@ dialog.visuel-modal .lia-confirm, dialog.visuel-modal .lia-reponse { margin: 10p
 .ex-inclus li { display: flex; gap: 8px; align-items: flex-start; font-weight: 700; font-size: .92rem; }
 .ex-inclus .ico { flex: none; width: 18px; height: 18px; margin-top: 1px; color: var(--c-dd, currentColor); }
 .ex-grille-peu { grid-template-columns: 1fr; max-width: 980px; margin-top: 14px; }
-@media (min-width: 760px) { .ex-grille-peu { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 760px) { .ex-grille-peu { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* peu d'extras (« À la une » compris) : le prix passe sous le nom, le nom garde toute la largeur */
+.ex-grille-peu .ex-tete { grid-template-columns: auto minmax(0, 1fr); }
+.ex-grille-peu .ex-prix { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; justify-items: start; text-align: left; }
+.ex-grille-peu .ex-prix small { margin-top: 0; }
 .ex-devis .ex-prix b { font-size: 1.1rem; }
 .verrou-mini { background: var(--mint); box-shadow: 0 0 0 2px var(--mint-d) inset; margin-bottom: 18px; }
 .verrou-mini .verrou-tag, .verrou-mini .verrou-liste .ico { color: var(--mint-dd); }
@@ -1304,3 +1308,23 @@ button.is-confirmer.is-confirmer, .btn.is-confirmer.is-confirmer, .req-annul .li
 .mo-lignes li > .mo-form, .mo-lignes li > .mo-retract { grid-column: 2 / -1; }
 .mo-retract summary { cursor: pointer; color: var(--muted); font-weight: 800; font-size: .88rem; }
 .mo-retract p { margin: 8px 0; color: var(--text); font-size: .9rem; line-height: 1.45; }
+
+/* ---------- L'aide en lien avec Mes Tutos (includes/aide.php) : un petit « ? » discret à côté des endroits clés ---------- */
+.mm-aide { display: flex; align-items: flex-start; gap: 8px; margin: 0 0 14px; color: var(--muted); font-weight: 700; font-size: .88rem; line-height: 1.5; }
+.mm-aide-ico { flex: none; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--lilac); color: var(--lilac-dd); font-weight: 900; font-size: .78rem; line-height: 1; }
+.mm-aide-txt { min-width: 0; overflow-wrap: anywhere; }
+.mm-aide-lab { color: var(--muted); }
+.mm-aide a, .mm-aide-lien { color: var(--lilac-dd); font-weight: 800; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); }
+.mm-aide a:hover, .mm-aide a:focus-visible, .mm-aide-lien:hover, .mm-aide-lien:focus-visible { text-decoration-color: currentColor; }
+.mm-aide-sep { color: var(--muted); }
+.mm-aide-lien { display: inline-flex; align-items: center; gap: 7px; font-size: .88rem; }
+.mm-aide-lien .mm-aide-ico { text-decoration: none; }
+.ex-tuto { margin: 0; }
+.ex-badge-une { background: var(--lilac); color: var(--lilac-dd); }
+.ex-carte .ex-go { justify-self: start; max-width: 100%; }
+/* téléphone et tablette : sans « Mes outils » (outils mis de côté), trois onglets côte à côte, le monstre au-dessus du nom */
+@media (max-width: 959px) {
+  .app-maison .app-side .app-tabs:not(:has(> [data-tab="outils"])) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .app-maison .app-side .app-tabs:not(:has(> [data-tab="outils"])) > button:not(.tab-sous) { flex-direction: column; justify-content: center; align-items: center; gap: 4px; padding: 9px 6px; text-align: center; grid-column: auto; }
+  .app-maison .app-side .app-tabs:not(:has(> [data-tab="outils"])) > button:not(.tab-sous) .tab-monstre { width: 30px; height: 30px; }
+}

@@ -741,20 +741,69 @@ function comparatifTable() {
 </div>`;
 }
 
-// ---------------------------------------------------------------- Mini Tuto : « Minis Tutos, Minis Prix » (24 novembre 2026, soir)
-// Les tutos (src/content/tutos/*.js) sont découpés en pages ; chacun coûte config.tutosOffre.prix, payé une fois, accès à vie,
-// sauf ceux marqués gratuit: true. En public, un tuto payant montre ses tutosOffre.apercuPages premières pages ; le contenu des
-// suivantes n'est JAMAIS dans la page publique (il s'ouvre dans l'espace client, onglet « Mes tutos »).
-// Les guides (src/content/guides.js) restent des articles gratuits, à leur adresse /guides/<slug>/, listés à part sur le hub.
+// ---------------------------------------------------------------- le déroulement d'une création (24 novembre 2026, soir)
+// Ce qui se passe vraiment, dans l'ordre (voir src/wordpress/aled08-espace/includes/atelier.php : paiement, questionnaire,
+// appel d'Alex et feu vert, création, vérification, en ligne). court : une phrase (accueil, Créer mon site) ; bulle : la jauge de
+// Mes Tutos ; cle : les mots qui, dans l'adresse d'un tuto, désignent le tuto de cette étape (lien posé seulement s'il existe).
+// monstre 'alex' : le portrait d'Alex (bestiaire), sinon un dessin de src/assets/img/mail.
+const DEROULEMENT = [
+  { id: 'commande', icon: 'shopping-bag', monstre: 'mochi', color: 'mint', titre: 'Vous commandez', court: `En ligne, en deux minutes : le prix s’affiche avant de payer, en une fois ou en ${lissageTxt} fois.`, bulle: `Vous choisissez votre site sur la page Créer mon site, vous payez en ligne, et votre espace client est prêt tout de suite. ${(bande.find((b) => b.id === 'organisateur') || { nom: 'Mochi' }).nom} range votre commande.`, cle: /^creer-mon-site|command|deroulement|achat/ },
+  { id: 'questionnaire', icon: 'list-checks', monstre: 'mascotte', color: 'lilac', titre: 'Le questionnaire', court: 'Un formulaire précis dans votre espace client : votre activité, vos couleurs, vos photos.', bulle: `Des questions claires sur votre activité, vos services, vos couleurs et vos photos. C’est la base de votre site : rien n’est laissé au hasard, pas de mauvaise surprise à l’arrivée.`, cle: /questionnaire/ },
+  { id: 'appel', icon: 'phone', monstre: 'alex', color: 'sky', titre: 'Alex vous appelle', court: 'Pour dégrossir ensemble votre projet, avant que la bande commence.', bulle: 'Alex lit vos réponses, puis vous téléphone : votre métier, vos envies, ce que vous attendez du site. Après cet appel, et pas avant, la bande se met au travail.', cle: /appel/ },
+  { id: 'creation', icon: 'wand-sparkles', monstre: 'bricou', color: 'peach', titre: 'La bande crée', court: `${BRICOU} et les petits monstres assemblent votre site, en ${offreSite.site.delai}.`, bulle: `${BRICOU} et la bande assemblent nos modules déjà prêts et les remplissent avec vos réponses. Comptez ${offreSite.site.delai} après l’appel.`, cle: /combien-de-temps|delai|fabrique/ },
+  { id: 'verification', icon: 'user-check', monstre: 'alex', color: 'butter', titre: 'Alex vérifie tout', court: 'Chaque page, chaque texte, chaque prix, sur ordinateur et sur téléphone.', bulle: 'Les liens, le formulaire, les textes, les horaires, la vitesse, l’affichage sur téléphone. Votre site, Alex l’a toujours vérifié avant vous.', cle: /verif|controle/ },
+  { id: 'en-ligne', icon: 'rocket', monstre: 'ravie', color: 'pink', titre: 'Votre site en ligne', court: 'Vous êtes prévenu, vous le découvrez et vous le partagez.', bulle: `Votre site est publié à son adresse, et vous êtes prévenu. Avec le forfait ${creationSeule.name}, on vous le remet, prêt à installer chez votre hébergeur.`, cle: /mise-en-ligne|en-ligne|livraison/ },
+  { id: 'ameliorer', icon: 'sparkles', monstre: 'etoile', color: 'mint', titre: 'Améliorable à tout moment', court: 'Un texte, une photo, une page de plus : votre site grandit avec votre budget.', bulle: `Avec le forfait ${forfaits[0].name}, vous changez vous-même un texte ou une photo, ou vous nous demandez la modification. Les extras s’ajoutent quand vous voulez, au rythme de votre budget.`, cle: /modif|amelior|changer/ },
+];
+const portraitAlex = (cls = '') => alexPortrait({ cls });
+const artEtape = (e, taille) => (e.monstre === 'alex' ? portraitAlex('etape-alex') : imgMonstre(e.monstre, taille));
+// Le tuto d'une étape, s'il existe (thème « creer » d'abord, puis tous)
+function tutoEtape(e) {
+  const T = tutosDonnees().tutos;
+  const ok = (t) => e.cle.test(t.slug);
+  return T.find((t) => t.groupe === 'creer' && ok(t)) || T.find(ok) || null;
+}
+// Les étapes en clair, toutes visibles (accueil, Créer mon site) : bloc commun, repris tel quel sur plusieurs pages.
+function deroulementListe({ compact = false } = {}) {
+  return `<!--commun--><ol class="etapes${compact ? ' is-compact' : ''}">${DEROULEMENT.map((e, i) => `<li class="etape c-${e.color}">
+    <span class="etape-art" aria-hidden="true">${artEtape(e, 56)}<span class="etape-n">${i + 1}</span></span>
+    <span class="etape-txt"><strong>${esc(e.titre)}</strong><small>${esc(e.court)}</small></span>
+  </li>`).join('')}</ol><!--/commun-->`;
+}
+// La frise des étapes (Mes Tutos) : survol, clavier ou toucher ouvrent la bulle de l'étape, la frise se remplit jusqu'à elle.
+// Sans JavaScript, toutes les bulles sont lisibles, à la suite (voir style.css, « la frise des étapes »).
+function frise({ id = 'etapes' } = {}) {
+  return `<div class="frise" data-frise style="--n:${DEROULEMENT.length}">
+  <div class="frise-piste" aria-hidden="true"><span class="frise-rempli"></span></div>
+  <ol class="frise-etapes">${DEROULEMENT.map((e, i) => {
+    const t = tutoEtape(e);
+    return `<li class="frise-etape c-${e.color}" data-etape="${i}">
+      <button class="frise-point" type="button" id="${id}-b${i}" aria-expanded="false" aria-controls="${id}-${i}">
+        <span class="frise-art" aria-hidden="true">${artEtape(e, 64)}</span>
+        <span class="frise-n" aria-hidden="true">${i + 1}</span>
+        <span class="frise-nom"><span class="sr-only">Étape ${i + 1} : </span>${esc(e.titre)}</span>
+      </button>
+      <div class="frise-bulle" id="${id}-${i}" role="region" aria-labelledby="${id}-b${i}">
+        <span class="frise-bulle-art" aria-hidden="true">${artEtape(e, 56)}</span>
+        <div class="frise-bulle-txt"><p>${esc(e.bulle)}</p>${t ? `<a class="frise-lien" href="${t.path}">${icon('book-open')}<span>Le tuto : ${inline(t.nom)}</span></a>` : ''}</div>
+      </div>
+    </li>`;
+  }).join('')}</ol>
+</div>`;
+}
+
+// ---------------------------------------------------------------- Mes Tutos (l'atelier « ecole », adresse /mini-tuto/)
+// Depuis le 24 novembre 2026 au soir : l'aide des Minis Monstres en petits tutos GRATUITS (src/content/tutos/, format dans index.js).
+// En haut du hub, « À la une » : config.tutosOffre.aLaUne (les extras à donner envie de prendre). Les guides (src/content/guides.js)
+// gardent leur adresse /guides/<slug>/ et sont listés en bas du hub, « Pour aller plus loin ».
 // Les contenus sont lus une seule fois, au premier besoin (pas au chargement : src/content/guides.js lit ce fichier-ci). Un fichier
 // en cours d'écriture et illisible n'arrête pas la construction : il est sauté, avec un avertissement.
 const TUTO_HUB = '/mini-tuto/';
 const cfgTuto = require('../config');
-const THEMES_OUTILS = ['reseaux', 'temps', 'bande']; // l'appel en bas d'un tuto : Mini Outils pour ces thèmes, Mini Site pour les autres
 let _tutos = null;
 function chargeContenu(nom, defaut) {
   try { return require(nom); } catch (e) {
-    console.warn(`⚠ Mini Tuto : ${nom.replace('../', 'src/')} illisible, ignoré pour cette construction (${String(e.message).split('\n')[0]})`);
+    console.warn(`⚠ Mes Tutos : ${nom.replace('../', 'src/')} illisible, ignoré pour cette construction (${String(e.message).split('\n')[0]})`);
     return defaut;
   }
 }
@@ -762,35 +811,36 @@ function tutosDonnees() {
   if (_tutos) return _tutos;
   const T = chargeContenu('../content/tutos', { groupes: [], tutos: [] });
   const G = require('../content/guides');
-  if (process.env.MM_TUTO_TEST) { const X = require(process.env.MM_TUTO_TEST); T.tutos = [...(T.tutos || []), ...X.tutos]; if (!(T.groupes || []).length) T.groupes = X.groupes; } // TEST-TEMPORAIRE
-  const OF = cfgTuto.tutosOffre || { prix: 0, apercuPages: 2, slogan: '' };
+  if (process.env.MM_TUTO_TEST) { const X = require(process.env.MM_TUTO_TEST); T.tutos = [...(T.tutos || []), ...X.tutos]; if (!(T.groupes || []).length) T.groupes = X.groupes; } // essai local avec de faux tutos
+  const OF = cfgTuto.tutosOffre || { gratuit: true, aLaUne: [] };
   const groupes = (T.groupes || []).filter((g) => g && g.id);
   const mots = (x) => String(x || '').split(/\s+/).filter(Boolean).length;
   const themeDe = (id) => groupes.find((g) => g.id === id) || groupes[0] || { id: '', monstre: 'mochi' };
-  const tutos = (T.tutos || []).filter((t) => t && t.slug && (t.pages || t.body)).map((t) => {
-    // l'ancien format (un seul body) devient une page unique
-    const pages = (t.pages && t.pages.length ? t.pages : [{ titre: t.nom, body: t.body }]).filter((pg) => pg && pg.body);
-    const gratuit = !!t.gratuit || !OF.prix;
-    const duree = Number(t.duree) || Math.max(3, Math.ceil(pages.reduce((n, pg) => n + mots(pg.body), 0) / 200));
-    return { niveau: 'Débutant', monstre: themeDe(t.groupe).monstre, voir: [], faq: [], ...t, pages, duree, gratuit, prix: gratuit ? 0 : OF.prix, apercu: gratuit ? pages.length : Math.min(pages.length, Math.max(0, OF.apercuPages ?? 2)), path: `${TUTO_HUB}${t.slug}/`, type: 'tuto' };
+  const tutos = (T.tutos || []).filter((t) => t && t.slug && (t.body || (t.pages && t.pages.length))).map((t) => {
+    // un ancien tuto découpé en pages devient un seul texte (un intertitre par page)
+    const body = t.body || t.pages.filter((pg) => pg && pg.body).map((pg) => `## ${pg.titre}\n\n${pg.body}`).join('\n\n');
+    const duree = Number(t.duree) || Math.max(2, Math.ceil(mots(body) / 200));
+    return { monstre: themeDe(t.groupe).monstre, voir: [], faq: [], ...t, body, duree, path: `${TUTO_HUB}${t.slug}/`, type: 'tuto' };
   });
   const MONSTRES_GUIDES = ['gelee', 'bricou', 'mochi', 'chaton', 'champi', 'dino', 'clin', 'etoile', 'ravie']; // les dessins de src/assets/img/mail
-  const guides = G.guides.map((g, i) => ({ ...g, monstre: g.monstre || MONSTRES_GUIDES[i % MONSTRES_GUIDES.length], duree: Math.max(3, Math.ceil(mots(g.body) / 200)), niveau: 'Débutant', gratuit: true, path: `/guides/${g.slug}/`, type: 'guide', publie: G.PUBLIE }));
+  const guides = G.guides.map((g, i) => ({ ...g, monstre: g.monstre || MONSTRES_GUIDES[i % MONSTRES_GUIDES.length], duree: Math.max(3, Math.ceil(mots(g.body) / 200)), path: `/guides/${g.slug}/`, type: 'guide', publie: G.PUBLIE }));
   const vus = new Map();
   for (const x of [...tutos, ...guides]) {
-    if (vus.has(x.path)) throw new Error(`Mini Tuto : deux contenus à la même adresse ${x.path}`);
+    if (vus.has(x.path)) throw new Error(`Mes Tutos : deux contenus à la même adresse ${x.path}`);
     vus.set(x.path, x.type);
   }
-  _tutos = { offre: OF, groupes, tutos, guides };
+  const aLaUne = (OF.aLaUne || []).map((s) => tutos.find((t) => t.slug === s)).filter(Boolean);
+  _tutos = { offre: OF, groupes, tutos, guides, aLaUne };
   return _tutos;
 }
 const TUTOS = {
   HUB: TUTO_HUB,
-  THEMES_OUTILS,
   get offre() { return tutosDonnees().offre; },
   get groupes() { return tutosDonnees().groupes; },
   get tutos() { return tutosDonnees().tutos; },
   get guides() { return tutosDonnees().guides; },
+  // les tutos « À la une » qui existent déjà (config.tutosOffre.aLaUne, dans cet ordre)
+  get aLaUne() { return tutosDonnees().aLaUne; },
   // les thèmes qui ont au moins un tuto (un thème vide n'apparaît nulle part)
   themes() { const d = tutosDonnees(); return d.groupes.filter((g) => d.tutos.some((t) => t.groupe === g.id)); },
   duTheme(id) { return tutosDonnees().tutos.filter((t) => t.groupe === id); },
@@ -800,7 +850,7 @@ const TUTOS = {
 };
 
 module.exports = {
-  TUTOS,
+  TUTOS, DEROULEMENT, deroulementListe, frise, portraitAlex,
   infoBtn, deroulant, deroulants, listePlus,
   LMAX,
   lissageTxt, ORGANISMES,

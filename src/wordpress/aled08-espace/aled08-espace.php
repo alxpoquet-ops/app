@@ -213,11 +213,15 @@ require_once __DIR__ . '/includes/agents.php';
 require_once __DIR__ . '/includes/mirette.php';
 require_once __DIR__ . '/includes/edition.php';
 // la maison et ses ateliers (24 novembre 2026) : les outils par abonnement, le fil de la bande. L'écran de chaque outil
-// (atelier-outils.php) est écrit à part : sans lui, les outils s'affichent « bientôt ».
+// (atelier-outils.php, avec le kit de publication) est écrit à part : sans lui, les outils s'affichent « bientôt ».
+// Outils mis de côté (outilsOffre.actif faux, 24 novembre 2026) : ni l'écran des outils ni le kit de publication ne sont
+// chargés (aucune route, aucune tâche). Les fichiers restent pour plus tard.
 require_once __DIR__ . '/includes/abonnements-outils.php';
-if (file_exists(__DIR__ . '/includes/atelier-outils.php')) require_once __DIR__ . '/includes/atelier-outils.php';
-// les Minis Tutos (24 novembre 2026) : vendus à l'unité, l'onglet « Mes tutos », la lecture page par page
-require_once __DIR__ . '/includes/tutos.php';
+if (aled08e_outils_offre() && file_exists(__DIR__ . '/includes/atelier-outils.php')) require_once __DIR__ . '/includes/atelier-outils.php';
+// la tâche de ménage du kit, si elle avait été planifiée pendant un essai : retirée (sans le kit, elle ne ferait rien)
+if (!aled08e_outils_offre()) add_action('init', function () { if (wp_next_scheduled('aled08_kits_menage')) wp_clear_scheduled_hook('aled08_kits_menage'); }, 30);
+// l'aide en lien avec Mes Tutos (les petits tutos gratuits) : les liens « ? » à côté des endroits clés
+require_once __DIR__ . '/includes/aide.php';
 
 /* =========================================================================
  *  Rôle « Client des Minis Monstres » et type de contenu « Demande »
@@ -933,6 +937,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
     ob_start();
     ?>
           <h2 class="app-h">Ma commande</h2>
+          <?php echo aled08e_aide_html('commande'); // phpcs:ignore ?>
           <?php echo $flash; // phpcs:ignore ?>
           <div class="esp-order">
             <p class="esp-order-head"><span>Référence <b><?php echo esc_html($cmd['ref']); ?></b></span><em class="st <?php echo esc_attr(aled08e_cmd_statuts()[$s][1] ?? 'st-new'); ?>"><?php echo esc_html(aled08e_cmd_libelle_client($s)); ?></em></p>
@@ -1180,10 +1185,11 @@ function aled08e_dashboard() {
 
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           <?php
-          // la maison (24 novembre 2026) : Accueil, Mon site (et ses rubriques), Mes outils, Mes tutos, Mon compte.
+          // la maison (24 novembre 2026) : Accueil, Mon site (et ses rubriques), Mon compte. « Mes outils » seulement quand les
+          // outils sont proposés (outilsOffre.actif) ; l'aide est dans Mes Tutos (liens « ? », includes/aide.php).
           echo aled08e_tab_monstre('accueil', 'mascotte', 'Accueil', true) . aled08e_tab_monstre('site', 'bricou', 'Mon site'); // phpcs:ignore
           foreach ($siteTabs as $sid => [$sic, $slab]) echo aled08e_tab_sous($sid, $sic, $slab); // phpcs:ignore
-          echo aled08e_tab_monstre('outils', 'etoile', 'Mes outils') . aled08e_tab_monstre('tutos', 'mochi', 'Mes tutos') . aled08e_tab_monstre('compte', 'clin', 'Mon compte'); // phpcs:ignore
+          echo (aled08e_outils_offre() ? aled08e_tab_monstre('outils', 'etoile', 'Mes outils') : '') . aled08e_tab_monstre('compte', 'clin', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <?php echo aled08e_outils_nouveau_html($uid); // phpcs:ignore ?>
@@ -1194,6 +1200,7 @@ function aled08e_dashboard() {
         <div class="app-panel" role="tabpanel" id="t-accueil" aria-labelledby="tab-accueil">
           <h2 class="app-h mm-bonjour">Bonjour <?php echo esc_html($prenom); ?> <span aria-hidden="true">👋</span></h2>
           <p class="app-p acc-intro">Voici ce que la bande a fait pour vous ces derniers jours.</p>
+          <?php echo aled08e_aide_html('accueil'); // phpcs:ignore ?>
           <?php if ($cmd && $cmd['statut'] !== 'annulee' && $cmd['statut'] !== 'en_ligne' && (aled08e_brief_le($cmd['id']) === '' || get_post_meta($cmd['id'], '_aled08_brief_brouillon', true))) : ?>
           <p class="esp-warn bf-rappel"><?php echo aled08e_icon('clipboard-check'); // phpcs:ignore ?><span><b>À faire :</b> votre questionnaire de création attend vos réponses. C’est lui qui lance la création de votre site.</span> <button type="button" class="link-btn" data-go="commande">Le remplir</button></p>
           <?php endif; ?>
@@ -1214,7 +1221,7 @@ function aled08e_dashboard() {
 
         <div class="app-panel" role="tabpanel" id="t-site" aria-labelledby="tab-site" hidden>
           <h2 class="app-h">Mon site</h2>
-          <?php echo aled08e_site_nav_html('', $siteTabs); // phpcs:ignore ?>
+          <?php echo aled08e_site_nav_html('', $siteTabs) . aled08e_aide_html('site'); // phpcs:ignore ?>
           <div class="app-cards">
             <button type="button" class="app-card c-mint" data-go="<?php echo $cmd ? 'commande' : 'demandes'; ?>"><span class="app-card-ico"><?php echo aled08e_icon('globe'); // phpcs:ignore ?></span><span><small>Votre site</small><strong><?php echo esc_html($host ?: 'En préparation'); ?></strong><span class="<?php echo $siteOk ? 'dot-ok' : ''; ?>"><?php echo esc_html($siteEtat); ?></span></span></button>
             <button type="button" class="app-card c-<?php echo esc_attr($f['color']); ?>" data-go="forfait"><span class="app-card-art"><?php echo aled08e_monster(($f['id'] ?? '') === 'evolution' ? 'maxi' : 'clin'); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($fNom !== '' ? mb_strtoupper(mb_substr($fNom, 0, 1)) . mb_substr($fNom, 1) : 'Abonnement'); ?></strong><span><?php echo ($offert ? $barre($prixPlein) : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . ($optsMois ? 'avec ' . count($optsMois) . ' extra' . (count($optsMois) > 1 ? 's' : '') : 'tout compris'); // phpcs:ignore ?></span></span></button>
@@ -1244,6 +1251,7 @@ function aled08e_dashboard() {
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
           <?php echo aled08e_site_nav_html('demandes', $siteTabs); // phpcs:ignore ?>
           <h2 class="app-h">Mes modifications</h2>
+          <?php echo aled08e_aide_html('demandes'); // phpcs:ignore ?>
           <?php echo aled08e_pd_flash_html() . $flash; // phpcs:ignore ?>
           <?php echo aled08e_gauge_zone_html($uid); // phpcs:ignore ?>
           <?php echo aled08e_edition_rappel_html($uid); // phpcs:ignore ?>
@@ -1271,13 +1279,16 @@ function aled08e_dashboard() {
         <div class="app-panel" role="tabpanel" id="t-extras" aria-labelledby="tab-extras" hidden>
           <?php echo aled08e_site_nav_html('extras', $siteTabs); // phpcs:ignore ?>
           <h2 class="app-h">Les extras</h2>
+          <?php echo aled08e_aide_html('extras', 3, array_keys(aled08e_aide_a_la_une())); // phpcs:ignore -- les tutos « À la une » sont sur leur carte ?>
           <?php echo aled08e_extras_html($uid, $famille, aled08e_pd_flash_html() . $flash . $flashForfait); // phpcs:ignore ?>
         </div>
 
+        <?php if (aled08e_outils_offre()) : ?>
         <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
           <?php echo aled08e_outils_panel_html($uid); // phpcs:ignore ?>
           <?php if (aled08e_outils_on()) echo '<p class="app-sub">Les petits outils</p>' . aled08e_jl_onglet_html($uid, $f, $site, $host, $avis); // phpcs:ignore -- ancien système (énergie), en pause ?>
         </div>
+        <?php endif; ?>
 
         <?php if (false) : // retiré le 19 novembre 2026 (tableau) ?>
         <div class="app-panel" role="tabpanel" id="t-tableau" aria-labelledby="tab-tableau" hidden>
@@ -1320,10 +1331,6 @@ function aled08e_dashboard() {
         </div>
 
         <?php endif; ?>
-        <div class="app-panel" role="tabpanel" id="t-tutos" aria-labelledby="tab-tutos" hidden>
-          <?php echo aled08e_tutos_panel_html($uid); // phpcs:ignore ?>
-        </div>
-
         <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
           <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>
           <section class="compte-forfait" id="forfait-bloc">

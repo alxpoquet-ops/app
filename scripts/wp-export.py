@@ -34,11 +34,12 @@ FORM_RECIPIENT = 'alx.poquet@gmail.com'
 # sauf cas particuliers. Les clés de OLD_TARGETS sont toujours redirigées, même absentes de wp-old-paths.txt.
 OLD_PATHS_FILE = os.path.join(ROOT, 'scripts', 'wp-old-paths.txt')
 OLD_TARGETS = {'/devis/': '/contact/', '/prestations/': '/creer-mon-site/', '/blog/': '/', '/comparatif-shopify/': '/comparatif/', '/nos-outils/': '/outils/', '/forfaits/': '/tarifs/', '/en/forfaits/': '/en/tarifs/'}
-# Novembre 2026 : la page Outils est en pause (config enService). Tant qu'elle n'existe pas, ses adresses mènent à
-# l'accompagnement ; quand elle revient, elle est dans les pages exportées et la redirection saute toute seule (redirects()).
-OLD_TARGETS.update({'/outils/': '/accompagnement/', '/en/outils/': '/en/accompagnement/'})
+# 24 novembre 2026, fin de soirée : les outils sont mis de côté (config.outilsOffre.actif = false), on se concentre sur les sites.
+# Tant que la page /outils/ n'est pas construite, ses adresses mènent à « Créer mon site » ; quand elle revient, elle est dans
+# les pages exportées et la redirection saute toute seule (redirects()).
+OLD_TARGETS.update({'/outils/': '/creer-mon-site/', '/en/outils/': '/creer-mon-site/'})
 if not os.path.exists(os.path.join(ROOT, 'dist', 'outils', 'index.html')):
-    OLD_TARGETS['/nos-outils/'] = '/accompagnement/'
+    OLD_TARGETS['/nos-outils/'] = '/creer-mon-site/'
 # V2 (novembre 2026) : pages renommées, et trois guides devenus des pages métier à la racine
 for _old, _new in {'/methode/': '/pourquoi-moins-cher/', '/lia-et-alex/': '/pourquoi-les-minis-monstres/', '/pourquoi-alex-et-lia/': '/pourquoi-les-minis-monstres/', '/pourquoi-alex-et-co/': '/pourquoi-les-minis-monstres/', '/ils-nous-ont-fait-confiance/': '/realisations/',
                    '/guides/site-internet-artisan/': '/site-internet-artisan/', '/guides/site-internet-therapeute/': '/site-internet-therapeute/',
@@ -50,6 +51,10 @@ for _old, _new in {'/methode/': '/pourquoi-moins-cher/', '/lia-et-alex/': '/pour
 # (REDIRECTIONS_TOUJOURS : même quand la page existe, contrairement à OLD_TARGETS qui ne joue que sur une page absente).
 OLD_TARGETS.update({'/guides/': '/mini-tuto/', '/en/guides/': '/mini-tuto/'})
 REDIRECTIONS_TOUJOURS = {'/guides/': '/mini-tuto/'}
+# La page /outils/ existe encore sous WordPress (ancien export) : tant qu'elle n'est plus construite, elle mène TOUJOURS à
+# « Créer mon site », même si la page WordPress n'a pas encore été supprimée.
+if not os.path.exists(os.path.join(ROOT, 'dist', 'outils', 'index.html')):
+    REDIRECTIONS_TOUJOURS.update({'/outils/': '/creer-mon-site/', '/nos-outils/': '/creer-mon-site/'})
 
 
 def read(p):
@@ -267,6 +272,9 @@ add_action('wp_enqueue_scripts', function () {
     $uri = get_template_directory_uri();
     wp_enqueue_style('aled08', $uri . '/assets/css/style.css', [], (string) filemtime($dir . '/assets/css/style.css'));
     wp_enqueue_script('aled08', $uri . '/assets/js/main.js', [], (string) filemtime($dir . '/assets/js/main.js'), ['in_footer' => true, 'strategy' => 'defer']);
+    // la démo de l'espace client (/mon-espace/demo/) reprend le dessin du vrai espace : ses styles aussi
+    $chemin = trim((string) wp_parse_url(isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '', PHP_URL_PATH), '/');
+    if ($chemin === 'mon-espace/demo' && file_exists($dir . '/assets/css/espace.css')) wp_enqueue_style('aled08-espace-demo', $uri . '/assets/css/espace.css', ['aled08'], (string) filemtime($dir . '/assets/css/espace.css'));
     wp_dequeue_style('global-styles');
     wp_dequeue_style('classic-theme-styles');
 }, 20);

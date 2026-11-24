@@ -101,36 +101,40 @@ function graph(p) {
 }
 
 // ---------------------------------------------------------------- en-tête
-// La maison et ses ateliers (décision d'Alex, 24 novembre 2026) : un grand onglet par atelier non caché (config.ateliers),
-// avec l'image de son monstre. « La maison » et « Les sites » ouvrent un petit menu avec leurs pages.
+// Trois onglets (décision d'Alex, 24 novembre 2026, soir) : La maison, Mon Site, Mes Tutos (config.ateliers, sans les cachés),
+// chacun avec son petit monstre et un sous-menu court. La première lettre de chaque onglet est discrètement teintée :
+// L, M, M, un clin d'œil à LMM. À droite : un seul bouton d'action (« Créer mon site »), le soleil / la lune et « Mon espace ».
 // L'onglet en surbrillance : posé ici à la construction, puis recalculé par le script du site (sous WordPress, l'en-tête
 // est le même pour toutes les pages : data-chemins dit quelles pages appartiennent à quel atelier).
-// Sur téléphone : chaque atelier est une carte, ses pages en petits boutons avec icône, et « Créer mon site » tout en bas.
+// Sur téléphone : chaque atelier est une carte, ses pages en boutons avec icône, et deux gros boutons tout en bas.
 const ATELIERS = ateliers.filter((a) => !a.cache && (a.id !== 'outils' || (outilsOffre && outilsOffre.actif)));
-// Mini Tuto : les thèmes qui ont au moins un tuto (voir TUTOS dans src/lib/components.js), puis les guides gratuits
 const TUTOS = C.TUTOS;
-const lien = (k) => ({ path: sections[k].path, label: sections[k].label, icon: sections[k].icon, color: sections[k].color });
+const lien = (k, label) => ({ path: sections[k].path, label: label || sections[k].label, icon: sections[k].icon, color: sections[k].color });
 const AT = (id) => ateliers.find((a) => a.id === id) || {};
 const SOUS_MENU = {
-  maison: [{ path: AT('maison').path, label: 'Le concept', icon: 'house', color: 'lilac' }, lien('equipe'), lien('liaalex'), lien('contact')],
-  sites: ['creer', 'forfaits', 'seo', 'confiance', 'metiers', 'accompagnement'].map(lien),
-  ecole: [
-    { path: TUTOS.HUB, label: 'Tous les tutos', icon: 'book-open', color: 'lilac' },
-    ...TUTOS.themes().map((g) => ({ path: `${TUTOS.HUB}#${g.id}`, label: g.titre, icon: g.icon, color: g.color })),
-    ...(TUTOS.guides.length ? [{ path: `${TUTOS.HUB}#guides`, label: 'Nos guides gratuits', icon: 'gift', color: 'sky' }] : []),
-  ],
+  maison: [{ path: AT('maison').path, label: 'Le concept', icon: 'house', color: 'lilac' }, lien('equipe'), lien('methode'), lien('contact')],
+  sites: [lien('creer'), lien('forfaits'), lien('confiance'), lien('metiers'), lien('seo')],
+  // Mes Tutos : les étapes de la création, « À la une » s'il y a des tutos à mettre en avant, puis les thèmes qui ont des tutos
+  get ecole() {
+    return [
+      { path: `${TUTOS.HUB}#etapes`, label: 'Les étapes de votre site', icon: 'route', color: 'mint' },
+      ...(TUTOS.aLaUne.length ? [{ path: `${TUTOS.HUB}#a-la-une`, label: 'À la une', icon: 'star', color: 'butter' }] : []),
+      ...TUTOS.themes().map((g) => ({ path: `${TUTOS.HUB}#${g.id}`, label: g.titre, icon: g.icon, color: g.color })),
+    ];
+  },
 };
-const prixOutilMin = outilsOffre ? Math.min(...outilsOffre.outils.filter((o) => o.statut === 'pret').map((o) => o.prix)) : 0;
 const DESC_ATELIER = {
   maison: 'Le concept, Alex et la bande',
-  sites: `Votre site, dès ${creation.prix} €`,
-  outils: outilsOffre ? `Dès ${C.euro(prixOutilMin)} par mois, ${outilsOffre.essaiJours} jours gratuits` : '',
-  ecole: (C.TUTOS.offre && C.TUTOS.offre.slogan) || 'Des tutos clairs et complets',
+  sites: `Votre site professionnel, ${C.euro(creation.prix)}`,
+  ecole: 'Toutes vos questions, gratuites',
 };
+// La teinte de la première lettre (le monstre de l'onglet : Cerise en rose, Bricou en vert, Mochi en pêche)
+const TEINTE_LETTRE = { maison: 'pink', sites: 'mint', ecole: 'peach' };
+const lettre = (a) => `<span class="onglet-l c-${TEINTE_LETTRE[a.id] || a.color}">${esc(a.label.charAt(0))}</span>${esc(a.label.slice(1))}`;
 // Les pages rattachées à chaque atelier, en plus de celles de son menu (pour savoir quel onglet allumer)
 const RATTACHE = {
-  maison: ['/faq/'],
-  sites: ['/commander/', '/commande-confirmee/', '/etre-visible-sur-google/', '/pourquoi-un-site-internet/', '/creation-site-internet-ardennes/', '/lexique/', '/comparatif/', '/pourquoi-moins-cher/', '/fidelite/', ...METIERS.map((m) => `/${m.slug}/`)],
+  maison: ['/faq/', '/pourquoi-les-minis-monstres/'],
+  sites: ['/commander/', '/commande-confirmee/', '/etre-visible-sur-google/', '/pourquoi-un-site-internet/', '/creation-site-internet-ardennes/', '/lexique/', '/comparatif/', '/fidelite/', '/accompagnement/', ...METIERS.map((m) => `/${m.slug}/`)],
   ecole: ['/guides/'],
   outils: [],
 };
@@ -149,14 +153,15 @@ const imgMonstre = (m, taille, cls) => `<img class="${cls}" src="/assets/img/mai
 
 function header(currentPath) {
   const onCreer = currentPath.startsWith(sections.creer.path);
+  const onEspace = currentPath.startsWith(sections.monespace.path);
   const actif = atelierDe(currentPath);
   const onglet = (a) => {
     const sous = SOUS_MENU[a.id] || [];
     const on = a.id === actif;
     const cur = on ? ` aria-current="${a.path === currentPath ? 'page' : 'true'}"` : '';
     return `<li class="onglet-li c-${a.color}${on ? ' is-on' : ''}" data-chemins="${cheminsDe(a).join(' ')}">
-          <div class="onglet-tete"><a class="onglet" href="${a.path}"${cur}>${imgMonstre(a.monstre, 32, 'onglet-img')}<span class="onglet-txt">${esc(a.label)}<small>${esc(DESC_ATELIER[a.id] || a.court || '')}</small></span>${icon('chevron-right')}</a>${sous.length ? `<button class="onglet-plus" type="button" aria-expanded="false" aria-controls="sm-${a.id}"><span class="sr-only">Les pages : ${esc(a.label)}</span>${icon('chevron-down')}</button>` : ''}</div>
-          ${sous.length ? `<ul class="sous-menu${sous.length > 5 ? ' is-long' : ''}" id="sm-${a.id}">${sous.map((s) => `<li><a class="nav-link sous-lien c-${s.color}" href="${s.path}"${currentPath === s.path ? ' aria-current="page"' : ''}>${icon(s.icon)}<span>${esc(s.label)}</span></a></li>`).join('')}</ul>` : ''}
+          <div class="onglet-tete"><a class="onglet" href="${a.path}"${cur}>${imgMonstre(a.monstre, 32, 'onglet-img')}<span class="onglet-txt"><span class="onglet-nom">${lettre(a)}</span><small>${esc(DESC_ATELIER[a.id] || a.court || '')}</small></span>${icon('chevron-right')}</a>${sous.length ? `<button class="onglet-plus" type="button" aria-expanded="false" aria-controls="sm-${a.id}"><span class="sr-only">Les pages : ${esc(a.label)}</span>${icon('chevron-down')}</button>` : ''}</div>
+          ${sous.length ? `<ul class="sous-menu" id="sm-${a.id}">${sous.map((s) => `<li><a class="nav-link sous-lien c-${s.color}" href="${s.path}"${currentPath === s.path ? ' aria-current="page"' : ''}>${icon(s.icon)}<span>${esc(s.label)}</span></a></li>`).join('')}</ul>` : ''}
         </li>`;
   };
   return `<a class="skip" href="#contenu">Aller au contenu</a>
@@ -166,12 +171,13 @@ function header(currentPath) {
     <nav class="nav" id="nav" aria-label="Navigation principale">
       <ul class="nav-list onglets">
         ${ATELIERS.map(onglet).join('\n        ')}
-        <li class="nav-creer"><span class="nav-creer-art" aria-hidden="true">${petit('mochi', { humeur: 'ravi' })}</span>${C.btn(sections.creer.path, 'btn-primary btn-lg', sections.creer.icon, sections.creer.label, onCreer ? ' aria-current="page"' : '')}<small>Pour être visible. Le prix s’affiche tout de suite.</small><a class="nav-demo" href="/mon-espace/demo/">${icon('eye')}<span>Essayer l’espace client en démo</span></a></li>
+        <li class="nav-creer">${C.btn(sections.creer.path, 'btn-primary btn-lg', sections.creer.icon, sections.creer.label, onCreer ? ' aria-current="page"' : '')}${C.btn(sections.monespace.path, 'btn-light btn-lg', 'circle-user', 'Mon espace client', onEspace ? ' aria-current="page"' : '')}<small>Le prix s’affiche avant de payer. Alex vérifie chaque site.</small></li>
       </ul>
     </nav>
     <div class="header-actions">
+      <a class="btn btn-primary header-creer" href="${sections.creer.path}"${onCreer ? ' aria-current="page"' : ''}>${icon(sections.creer.icon)}<span>${sections.creer.label}</span></a>
       <button class="theme-btn" type="button" aria-label="Passer en apparence sombre" aria-pressed="false"><svg class="t-soleil" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="t-lune" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
-      <a class="btn-espace" href="${sections.monespace.path}"${currentPath.startsWith(sections.monespace.path) ? ' aria-current="page"' : ''}>${icon('circle-user')}<span>Mon espace</span></a>
+      <a class="btn-espace" href="${sections.monespace.path}"${onEspace ? ' aria-current="page"' : ''}>${icon('circle-user')}<span>Mon espace</span></a>
       <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -204,11 +210,12 @@ function footer(p) {
     ${col('Être visible', `<li><a href="/pourquoi-un-site-internet/">Pourquoi avoir un site internet ?</a></li>
         <li><a href="/etre-visible-sur-google/">Être visible sur Google</a></li>
         <li><a href="${sections.seo.path}">Être trouvé sur Google : notre méthode</a></li>
-        <li><a href="${TUTOS.HUB}">Mini Tuto : les tutos</a></li>
+        <li><a href="${TUTOS.HUB}">${esc(AT('ecole').label || 'Mes Tutos')} : l’aide en petits tutos</a></li>
         <li><a href="/lexique/">Lexique : les mots d’internet</a></li>`)}
-    ${col('Votre métier', `${METIERS.map((m) => `<li><a href="/${m.slug}/">${m.nom}</a></li>`).join('')}
+    ${col('Votre métier', `${METIERS.slice(0, 6).map((m) => `<li><a href="/${m.slug}/">${m.nom}</a></li>`).join('')}
+        ${METIERS.length > 6 ? `<li><a href="${sections.metiers.path}">Tous les métiers</a></li>` : ''}
         <li><a href="/creation-site-internet-ardennes/">Création de site dans les Ardennes</a></li>`)}
-    ${col('Les Minis Monstres', `<li><a href="${AT('maison').path}">Le concept de la maison</a></li>
+    ${col('Les Minis Monstres', `<li><a href="${AT('maison').path}">Le concept</a></li>
         <li><a href="${sections.liaalex.path}">Pourquoi les Minis Monstres ?</a></li>
         <li><a href="${sections.methode.path}">Pourquoi c’est moins cher</a></li>
         <li><a href="${sections.comparatif.path}">Comparatif avec les autres solutions</a></li>
@@ -327,7 +334,7 @@ function page(p) {
 <meta name="twitter:description" content="${esc(p.description)}">
 <meta name="twitter:image" content="${ogImage}">
 <link rel="preload" href="/assets/fonts/jakarta-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/style.css?v=${assetsVersion.css}">
+<link rel="stylesheet" href="/assets/css/style.css?v=${assetsVersion.css}">${(p.css || []).map((f) => `\n<link rel="stylesheet" href="/assets/css/${f}?v=${assetsVersion.css}">`).join('')}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">

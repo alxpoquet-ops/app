@@ -3,7 +3,8 @@
  * Les Minis Monstres Espace client : créer son compte sans commander.
  * Le visiteur donne son prénom, son nom et son e-mail ; il reçoit un e-mail pour choisir son mot de passe
  * (ce qui vérifie aussi l'adresse). Un compte sans forfait voit la même maison que les clients : Accueil, Mon site (une porte
- * vers /creer-mon-site/), Mes outils, Mes tutos, Mon compte. (Depuis un outil, /mon-espace/?outil=…, voir includes/abonnements-outils.php.)
+ * vers /creer-mon-site/), Mes outils (seulement quand les outils sont proposés), Mon compte. (Depuis un outil,
+ * /mon-espace/?outil=…, voir includes/abonnements-outils.php.)
  * Sans commande ni forfait, la règle habituelle s'applique : compte supprimé après 12 mois sans connexion.
  */
 defined('ABSPATH') || exit;
@@ -63,6 +64,7 @@ function aled08e_dashboard_libre($u) {
     $uid = (int) $u->ID;
     $portail = function_exists('aled08e_stripe_ready') && aled08e_stripe_ready() && aled08e_meta($uid, 'stripe_customer') !== '';
     $siteInfo = ['ok' => false, 'host' => '', 'etat' => '', 'formule' => false];
+    $outils = (bool) aled08e_outils_offre(); // outils mis de côté (outilsOffre.actif faux) : ni onglet ni texte sur les outils
     $flash = '';
     if (isset($_GET['m']) && sanitize_key(wp_unslash($_GET['m'])) === 'portail_erreur') $flash = '<p class="esp-warn" role="status">La page de gestion du paiement n’a pas pu s’ouvrir. Réessayez dans un instant, ou écrivez-nous.</p>';
     ob_start();
@@ -73,7 +75,7 @@ function aled08e_dashboard_libre($u) {
       <aside class="app-side">
         <div class="app-user"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><div><strong><?php echo esc_html($u->display_name); ?></strong><small><?php echo esc_html($u->user_email); ?></small></div></div>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
-          <?php echo aled08e_tab_monstre('accueil', 'mascotte', 'Accueil', true) . aled08e_tab_monstre('site', 'bricou', 'Mon site') . aled08e_tab_monstre('outils', 'etoile', 'Mes outils') . aled08e_tab_monstre('tutos', 'mochi', 'Mes tutos') . aled08e_tab_monstre('compte', 'clin', 'Mon compte'); // phpcs:ignore ?>
+          <?php echo aled08e_tab_monstre('accueil', 'mascotte', 'Accueil', true) . aled08e_tab_monstre('site', 'bricou', 'Mon site') . ($outils ? aled08e_tab_monstre('outils', 'etoile', 'Mes outils') : '') . aled08e_tab_monstre('compte', 'clin', 'Mon compte'); // phpcs:ignore ?>
         </div>
         <?php echo aled08e_outils_nouveau_html($uid); // phpcs:ignore ?>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -81,7 +83,8 @@ function aled08e_dashboard_libre($u) {
       <div class="app-main">
         <div class="app-panel" role="tabpanel" id="t-accueil" aria-labelledby="tab-accueil">
           <h2 class="app-h mm-bonjour">Bonjour <?php echo esc_html(aled08e_prenom($u)); ?> <span aria-hidden="true">👋</span></h2>
-          <p class="app-p acc-intro">Bienvenue dans la maison des Minis Monstres : vos outils, votre site, une seule facture.</p>
+          <p class="app-p acc-intro"><?php echo $outils ? 'Bienvenue dans la maison des Minis Monstres : vos outils, votre site, une seule facture.' : 'Bienvenue dans la maison des Minis Monstres&nbsp;! Ici, vous suivrez votre site : la création, les modifications, les extras.'; ?></p>
+          <?php echo aled08e_aide_html('accueil'); // phpcs:ignore ?>
           <?php echo aled08e_ateliers_cartes_html($uid, $siteInfo); // phpcs:ignore ?>
           <div class="mm-duo">
             <?php echo aled08e_fil_html($uid); // phpcs:ignore ?>
@@ -91,14 +94,13 @@ function aled08e_dashboard_libre($u) {
           <p class="app-note">Une question ? <a href="<?php echo esc_url(home_url('/contact/')); ?>">Écrivez-nous</a>, on vous répond vite.</p>
         </div>
         <div class="app-panel" role="tabpanel" id="t-site" aria-labelledby="tab-site" hidden>
-          <?php echo aled08e_site_porte_html(); // phpcs:ignore ?>
+          <?php echo aled08e_site_porte_html() . aled08e_aide_html('site'); // phpcs:ignore ?>
         </div>
+        <?php if ($outils) : ?>
         <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
           <?php echo aled08e_outils_panel_html($uid); // phpcs:ignore ?>
         </div>
-        <div class="app-panel" role="tabpanel" id="t-tutos" aria-labelledby="tab-tutos" hidden>
-          <?php echo aled08e_tutos_panel_html($uid); // phpcs:ignore ?>
-        </div>
+        <?php endif; ?>
         <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
           <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>
           <section class="compte-forfait" id="forfait-bloc">

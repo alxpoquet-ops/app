@@ -57,6 +57,32 @@ function aled08e_outils_param($v) {
 }
 /* Le prix d'un outil en texte : « 9 € par mois » */
 function aled08e_outil_prix_txt($def) { return aled08e_euro_txt((int) ($def['prix'] ?? 0)) . ' par mois'; }
+/* Outils mis de côté (outilsOffre.actif faux) : le nom d'un outil que le client paie peut-être encore (data.json, même éteint) */
+function aled08e_outil_nom_brut($id) {
+    $o = aled08e_data()['outilsOffre'] ?? null;
+    if ($id === 'bande') return (string) (is_array($o) ? ($o['bande']['nom'] ?? '') : '') ?: 'Toute la bande';
+    foreach ((array) (is_array($o) ? ($o['outils'] ?? []) : []) as $x) if (($x['id'] ?? '') === $id) return (string) ($x['nom'] ?? $id);
+    return (string) $id;
+}
+/* Les outils encore payés par un client alors que les outils ne sont plus proposés : [id => abonnement] (un essai, lui,
+ * s'arrête tout seul et n'est plus montré) */
+function aled08e_outils_restants($uid) {
+    if (aled08e_outils_offre()) return [];
+    return array_filter(aled08e_outils_abos($uid), 'aled08e_outils_abo_vivant');
+}
+/* Dans « Mon compte », pour ces clients seulement : la ligne, avec « Arrêter cet outil » (rien n'est prélevé ensuite) */
+function aled08e_outils_restants_compte_html($uid) {
+    $r = aled08e_outils_restants($uid);
+    if (!$r) return '';
+    $h = '<p class="app-sub">' . aled08e_icon('toolbox') . ' Vos outils</p><ul class="mo-lignes">';
+    foreach ($r as $id => $a) {
+        $act = empty($a['fin']) ? aled08e_outils_bouton('arreter', $id, 'Arrêter cet outil', 'x', 'btn btn-light btn-sm', false, 'compte', true) : '';
+        if (aled08e_outils_retractable($a)) $act .= aled08e_outils_bouton('retracter', $id, 'Me rétracter et être remboursé', 'rotate-ccw', 'btn btn-light btn-sm', false, 'compte', true);
+        $h .= '<li><span class="mo-ligne-art" aria-hidden="true">' . aled08e_monster($id === 'bande' ? 'mascotte' : 'etoile') . '</span><span class="mo-ligne-nom"><strong>' . esc_html(aled08e_outil_nom_brut($id)) . '</strong>'
+            . ($a['fin'] ? '<small>Arrêté : actif jusqu’au ' . esc_html(wp_date('j F Y', (int) $a['fin'])) . ', puis plus rien n’est prélevé</small>' : '') . '</span><b>' . aled08e_euro((float) ($a['prix'] ?? 0)) . ' <small>par mois</small></b>' . $act . '</li>'; // phpcs:ignore
+    }
+    return $h . '</ul><p class="app-note">Les outils sont mis de côté pour l’instant : ils ne s’ouvrent plus dans votre espace. Arrêtez le vôtre ici : rien n’est plus prélevé après le mois déjà payé. Une question ? <a href="' . esc_url(home_url('/contact/')) . '">Écrivez-nous</a>.</p>';
+}
 /* Le dessin d'un monstre d'après son dessin (etoile, mascotte…) ou son prénom (Cerise, Pépite…) */
 function aled08e_fil_dessin($m) {
     $m = sanitize_key(remove_accents(mb_strtolower((string) $m)));
@@ -181,7 +207,7 @@ function aled08e_fil_quand($ts) {
 function aled08e_fil_html($uid, $n = 6) {
     $l = aled08e_fil_lire($uid, $n);
     $h = '<section class="mm-bloc mm-fil" aria-labelledby="mm-fil-t"><h3 class="mm-bloc-t" id="mm-fil-t">Le fil de la bande</h3>';
-    if (!$l) return $h . '<p class="mm-vide">' . aled08e_monster('pense') . '<span>Ici, vous verrez ce que les petits monstres font pour vous : une modification faite, une page pour Google en ligne, un outil qui a travaillé.</span></p></section>';
+    if (!$l) return $h . '<p class="mm-vide">' . aled08e_monster('pense') . '<span>Ici, vous verrez ce que les petits monstres font pour vous : ' . (aled08e_outils_offre() ? 'une modification faite, une page pour Google en ligne, un outil qui a travaillé.' : 'une modification faite, une page pour Google en ligne, votre site mis en ligne.') . '</span></p></section>';
     $h .= '<ul class="mm-fil-l">';
     foreach ($l as $x) {
         $h .= '<li><span class="mm-fil-art" aria-hidden="true">' . aled08e_monster(aled08e_fil_dessin($x['monstre'])) . '</span><p>' . esc_html($x['texte']) . '</p><time datetime="' . esc_attr(gmdate('c', $x['date'])) . '">' . esc_html(aled08e_fil_quand($x['date'])) . '</time></li>';
@@ -410,7 +436,7 @@ function aled08e_outils_arreter($uid, $id) {
         $fin = (int) $a['depuis'];
         while ($fin <= time()) $fin = strtotime('+1 month', $fin);
         $u = get_userdata($uid);
-        wp_mail(aled08e_to(), 'À vérifier : outil arrêté par ' . ($u ? $u->display_name : '#' . $uid), 'Le client a arrêté l’outil « ' . (aled08e_outil_def($id)['nom'] ?? $id) . ' », mais Stripe n’a pas répondu. La ligne (' . $a['item'] . ', abonnement ' . $a['sub'] . ') sera retirée le ' . wp_date('j F Y', $fin) . ". Vérifiez dans Stripe qu’elle part bien.\n", aled08e_mail_headers());
+        wp_mail(aled08e_to(), 'À vérifier : outil arrêté par ' . ($u ? $u->display_name : '#' . $uid), 'Le client a arrêté l’outil « ' . (aled08e_outil_def($id)['nom'] ?? aled08e_outil_nom_brut($id)) . ' », mais Stripe n’a pas répondu. La ligne (' . $a['item'] . ', abonnement ' . $a['sub'] . ') sera retirée le ' . wp_date('j F Y', $fin) . ". Vérifiez dans Stripe qu’elle part bien.\n", aled08e_mail_headers());
     }
     $a['fin'] = $fin;
     $abos[$id] = $a;
@@ -459,7 +485,7 @@ function aled08e_outils_retracter($uid, $id) {
     $a = $abos[$id] ?? null;
     if (!aled08e_outils_abo_vivant($a)) return new WP_Error('aled08_outils', 'rien');
     if (!aled08e_outils_retractable($a)) return new WP_Error('aled08_outils', 'delai');
-    $def = aled08e_outil_def($id);
+    $def = aled08e_outil_def($id) ?: ['nom' => aled08e_outil_nom_brut($id), 'prix' => (int) ($a['prix'] ?? 0)]; // outils mis de côté
     $s = aled08e_stripe_ready() ? aled08e_outils_lire_sub((string) $a['sub']) : null;
     $finPeriode = $s ? (int) ($s['fins'][$a['item']] ?? 0) : 0;
     if ($finPeriode <= time()) $finPeriode = strtotime('+1 month', (int) $a['depuis']);
@@ -566,6 +592,12 @@ add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08e_outils'])) return;
     $quoi = sanitize_key(wp_unslash($_POST['aled08e_outils']));
     $id = aled08e_outils_param($_POST['outil'] ?? '');
+    // outils mis de côté : seul un outil encore payé par le client peut être arrêté (ou faire l'objet d'une rétractation)
+    if (!aled08e_outils_offre()) {
+        $id = '';
+        $v = is_string($_POST['outil'] ?? null) ? sanitize_key(wp_unslash($_POST['outil'])) : '';
+        if (is_user_logged_in() && in_array($quoi, ['arreter', 'retracter'], true) && isset(aled08e_outils_restants(get_current_user_id())[$v])) $id = $v;
+    }
     $onglet = (($_POST['retour'] ?? '') === 'compte') ? 'compte' : 'outils';
     $back = function ($m) use ($id, $onglet) { wp_safe_redirect(aled08e_url(['mo' => $m] + ($id ? ['choix' => $id] : []) + ($onglet === 'compte' ? ['ou' => 'compte'] : [])) . '#' . $onglet, 303); exit; };
     if (!is_user_logged_in()) { wp_safe_redirect(aled08e_url(), 303); exit; }
@@ -608,10 +640,8 @@ add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08e_inscription_outil'])) return;
     $P = wp_unslash($_POST);
     $id = aled08e_outils_param($_POST['outil'] ?? '');
-    // le même parcours depuis un Mini Tuto (includes/tutos.php, /mon-espace/?tuto=…) : retour sur le tuto
-    $tuto = function_exists('aled08e_tuto_param') ? aled08e_tuto_param(wp_unslash($_POST['tuto'] ?? '')) : '';
-    $back = function ($m) use ($id, $tuto) { wp_safe_redirect(aled08e_url(['inscription' => $m] + ($tuto !== '' ? ['tuto' => $tuto] : ['outil' => $id ?: 'bande'])) . '#inscription', 303); exit; };
-    if (is_user_logged_in()) { wp_safe_redirect($tuto !== '' ? aled08e_url(['tuto' => $tuto]) : aled08e_url(['choix' => $id]) . '#outils', 303); exit; }
+    $back = function ($m) use ($id) { wp_safe_redirect(aled08e_url(['inscription' => $m, 'outil' => $id ?: 'bande']) . '#inscription', 303); exit; };
+    if (is_user_logged_in()) { wp_safe_redirect(aled08e_url(['choix' => $id]) . '#outils', 303); exit; }
     foreach (['prenom', 'email', 'mdp', 'site_web'] as $k) if (isset($P[$k]) && !is_string($P[$k])) $back('erreur');
     if (!empty($P['site_web'])) $back('erreur'); // piège à robots
     if (!wp_verify_nonce(sanitize_text_field((string) ($P['_aled08e_insc'] ?? '')), 'aled08e_inscription_outil')) $back('erreur');
@@ -631,13 +661,12 @@ add_action('template_redirect', function () {
     $uid = (int) $r['id'];
     wp_set_password($mdp, $uid);
     update_user_meta($uid, 'aled08_inscrit_seul', current_time('mysql'));
-    if ($tuto !== '') update_user_meta($uid, 'aled08_inscrit_tuto', $tuto);
-    else update_user_meta($uid, 'aled08_inscrit_outils', $id ?: 'bande');
+    update_user_meta($uid, 'aled08_inscrit_outils', $id ?: 'bande');
     wp_set_current_user($uid);
     wp_set_auth_cookie($uid, true, is_ssl());
     if (function_exists('aled08e_noter_connexion')) aled08e_noter_connexion($uid);
     aled08e_fil_ajouter($uid, 'mascotte', 'Cerise vous souhaite la bienvenue chez les Minis Monstres !');
-    wp_safe_redirect($tuto !== '' ? aled08e_url(['tuto' => $tuto, 'mo' => 'bienvenue']) : aled08e_url(['choix' => $id, 'mo' => 'bienvenue']) . '#outils', 303);
+    wp_safe_redirect(aled08e_url(['choix' => $id, 'mo' => 'bienvenue']) . '#outils', 303);
     exit;
 }, 4);
 
@@ -806,7 +835,9 @@ function aled08e_abonnement_prix_html($x) {
 function aled08e_abonnement_resume_html($uid) {
     $l = aled08e_abonnement_lignes($uid);
     $h = '<section class="mm-bloc mm-abo" aria-labelledby="mm-abo-t"><h3 class="mm-bloc-t" id="mm-abo-t">Mon abonnement</h3>';
-    if (!$l) return $h . '<p class="mm-vide-txt">Rien pour le moment. Un outil vous tente ? Les ' . (int) aled08e_essai_jours() . ' premiers jours sont offerts.</p><button type="button" class="btn btn-light btn-sm" data-go="outils">' . aled08e_icon('toolbox') . '<span>Voir les outils</span></button></section>';
+    if (!$l && aled08e_outils_offre()) return $h . '<p class="mm-vide-txt">Rien pour le moment. Un outil vous tente ? Les ' . (int) aled08e_essai_jours() . ' premiers jours sont offerts.</p><button type="button" class="btn btn-light btn-sm" data-go="outils">' . aled08e_icon('toolbox') . '<span>Voir les outils</span></button></section>';
+    // outils mis de côté : un compte sans site n'a rien à payer (la carte « Mon site », juste au-dessus, mène à « Créer mon site »)
+    if (!$l) return $h . '<p class="mm-vide-txt">Rien pour le moment : aucun abonnement, rien à payer. Quand votre site sera chez nous, son forfait s’affichera ici.</p></section>';
     $total = 0.0;
     $h .= '<ul class="mm-abo-l">';
     foreach ($l as $x) {
@@ -815,6 +846,7 @@ function aled08e_abonnement_resume_html($uid) {
     }
     $h .= '</ul><p class="mm-abo-total"><span>Chaque mois</span><b>' . aled08e_euro($total) . '</b></p>';
     $annuel = (bool) array_filter($l, function ($x) { return $x['txt'] === 'par an'; });
+    if (!aled08e_outils_offre()) return $h . '<p class="mm-abo-note">' . ($annuel ? 'Votre forfait est payé à l’année. ' : 'Une seule facture chaque mois. ') . 'Sans engagement.</p></section>';
     return $h . '<p class="mm-abo-note">' . ($annuel ? 'Votre forfait est payé à l’année ; les outils, chaque mois. ' : 'Une seule facture. ') . 'Chaque outil s’arrête quand vous voulez.</p></section>';
 }
 
@@ -827,7 +859,7 @@ function aled08e_outils_bouton($quoi, $id, $label, $icone, $classe = 'btn btn-pr
 
 /* Les lignes de l'abonnement dans « Mon compte », avec « Arrêter cet outil » */
 function aled08e_abonnement_outils_compte_html($uid) {
-    if (!aled08e_outils_offre()) return '';
+    if (!aled08e_outils_offre()) return aled08e_outils_restants_compte_html($uid);
     $lignes = array_values(array_filter(aled08e_abonnement_lignes($uid), function ($x) { return in_array($x['type'], ['outil', 'bande'], true); }));
     $h = '<p class="app-sub">' . aled08e_icon('toolbox') . ' Mes outils</p>';
     if (!$lignes) return $h . '<p class="esp-empty">Aucun outil pour le moment. <button type="button" class="link-btn" data-go="outils">Voir les outils</button> : ' . (int) aled08e_essai_jours() . ' jours gratuits pour chacun.</p>';
@@ -871,7 +903,7 @@ function aled08e_outils_flash_html($ici = false) {
         'bienvenue' => ['esp-empty', 'Bienvenue ! Votre compte est prêt. ' . ($def ? 'Lancez votre essai de ' . $nom . ' juste en dessous : ' . $j . ' jours gratuits, sans carte.' : 'Choisissez un outil : ' . $j . ' jours gratuits, sans carte.')],
         'essai_ok' => ['esp-empty', 'C’est parti : ' . $nom . ' est à vous pendant ' . $j . ' jours, gratuitement. Aucune carte, rien à payer. On vous écrit 2 jours avant la fin.'],
         'abo_ok' => ['esp-empty', 'Merci ! ' . ucfirst($nom) . ' est à vous. La part du mois en cours est payée maintenant, ensuite il est sur votre facture de chaque mois.'],
-        'arret_ok' => ['esp-empty', 'C’est noté : ' . $nom . ' s’arrête' . ($abo && !empty($abo['fin']) ? ' le ' . wp_date('j F', (int) $abo['fin']) : ' à la fin du mois payé') . '. Vous le gardez jusque-là, et rien d’autre ne change.'],
+        'arret_ok' => ['esp-empty', 'C’est noté : ' . $nom . ' s’arrête' . ($abo && !empty($abo['fin']) ? ' le ' . wp_date('j F', (int) $abo['fin']) : ' à la fin du mois payé') . (aled08e_outils_offre() ? '. Vous le gardez jusque-là, et rien d’autre ne change.' : '. Plus rien n’est prélevé ensuite, et rien d’autre ne change.')],
         'reprise_ok' => ['esp-empty', 'Parfait, vous gardez ' . $nom . '. Rien ne change sur votre facture.'],
         'retract_ok' => ['esp-empty', 'C’est noté : ' . $nom . ' est arrêté. Vous payez seulement les jours passés : le reste vous est remboursé sous quelques jours, sur votre carte.'],
         'delai' => ['esp-warn', 'Les 14 jours de rétractation sont passés. Vous pouvez arrêter l’outil : il s’arrête à la fin du mois payé.'],
@@ -1008,7 +1040,7 @@ function aled08e_ateliers_cartes_html($uid, $site) {
             $cartes .= '<article class="mm-carte c-' . esc_attr($a['color']) . '"><div class="mm-carte-tete"><span class="mm-carte-art" aria-hidden="true">' . aled08e_monster($a['monstre']) . '</span><div><strong>Mon site</strong><small>' . esc_html($sub) . '</small></div></div>' . $btn . '</article>';
             continue;
         }
-        if ($a['id'] === 'ecole' && function_exists('aled08e_tutos_carte_accueil_html')) { $cartes .= aled08e_tutos_carte_accueil_html($uid, $a); continue; } // les Minis Tutos (includes/tutos.php)
+        if ($a['id'] === 'ecole' && function_exists('aled08e_aide_carte_accueil_html')) { $cartes .= aled08e_aide_carte_accueil_html($a); continue; } // Mes Tutos (gratuits, includes/aide.php)
         if ($a['id'] === 'outils' && aled08e_outils_offre()) {
             $n = 0;
             foreach (aled08e_outils_etat($uid) as $id => $e) {
@@ -1040,7 +1072,7 @@ function aled08e_site_porte_html() {
         . '<p>' . esc_html($at['court'] ?? 'Votre site professionnel en quelques heures, puis on s’en occupe chaque mois.') . '</p>'
         . '<ul class="mm-po-points"><li>' . aled08e_icon('check') . '<span>' . esc_html(aled08e_euro_txt($prix)) . ' la création, payée une fois</span></li>'
         . '<li>' . aled08e_icon('check') . '<span>Puis le forfait ' . esc_html($mini['name'] ?? 'Mini') . ' : ' . esc_html(aled08e_euro_txt($mini['month'] ?? 10)) . ' par mois, modifications incluses</span></li>'
-        . '<li>' . aled08e_icon('check') . '<span>Tout se suit ici, dans le même espace, sur la même facture que vos outils</span></li></ul>'
+        . '<li>' . aled08e_icon('check') . '<span>' . (aled08e_outils_offre() ? 'Tout se suit ici, dans le même espace, sur la même facture que vos outils' : 'Tout se suit ici : votre commande, vos modifications, vos factures') . '</span></li></ul>'
         . '<div class="mm-porte-act"><a class="btn btn-primary" href="' . esc_url(home_url('/creer-mon-site/')) . '">' . aled08e_icon('wand-sparkles') . '<span>Créer mon site</span></a>'
         . '<a class="btn btn-light" href="' . esc_url(home_url('/mon-espace/demo/')) . '">' . aled08e_icon('eye') . '<span>Voir la démo</span></a></div></div></section>';
 }
@@ -1080,7 +1112,11 @@ function aled08e_site_groupe_js() {
  *  Pour Alex : les outils d'un client (gestion et fiche client)
  * ========================================================================= */
 function aled08e_outils_client_txt($uid) {
-    if (!aled08e_outils_offre()) return '';
+    if (!aled08e_outils_offre()) { // outils mis de côté : seulement ceux que le client paie encore (à arrêter, voir Mon compte)
+        $t = [];
+        foreach (aled08e_outils_restants($uid) as $id => $a) $t[] = aled08e_outil_nom_brut($id) . ' (encore payé, ' . aled08e_euro_txt((float) ($a['prix'] ?? 0)) . ' par mois' . (!empty($a['fin']) ? ', arrêté, jusqu’au ' . wp_date('j F', (int) $a['fin']) : '') . ')';
+        return implode(', ', $t);
+    }
     $t = [];
     $b = aled08e_bande_etat($uid);
     if ($b['statut'] !== 'inactif') $t[] = 'Toute la bande' . ($b['statut'] === 'essai' ? ' (essai)' : '');
@@ -1095,7 +1131,7 @@ function aled08e_outils_client_txt($uid) {
 add_action('show_user_profile', 'aled08e_outils_fiche', 11);
 add_action('edit_user_profile', 'aled08e_outils_fiche', 11);
 function aled08e_outils_fiche($user) {
-    if (!current_user_can('edit_users') || !is_object($user) || !aled08e_outils_offre()) return;
+    if (!current_user_can('edit_users') || !is_object($user) || (!aled08e_outils_offre() && !aled08e_outils_restants($user->ID))) return;
     $t = aled08e_outils_client_txt($user->ID);
     echo '<table class="form-table" role="presentation"><tr><th>Outils des Minis Monstres</th><td>' . esc_html($t !== '' ? $t : 'aucun') . (aled08e_meta($user->ID, 'outils_sub') ? '<p class="description">Abonnement Stripe des outils : ' . esc_html(aled08e_meta($user->ID, 'outils_sub')) . '</p>' : '') . '</td></tr></table>';
 }

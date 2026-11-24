@@ -104,7 +104,7 @@ function aled08e_panel_compte($u) {
         return '<div class="field"><label for="' . $id . '">' . esc_html($label) . '</label><input id="' . $id . '" name="' . $name . '" type="' . $type . '" value="' . esc_attr($val) . '"' . ($auto ? ' autocomplete="' . $auto . '"' : '') . $extra . '></div>';
     };
     ob_start();
-    echo '<h2 class="app-h">Mon compte</h2>' . $flash; // phpcs:ignore
+    echo '<h2 class="app-h">Mon compte</h2>' . (function_exists('aled08e_aide_html') ? aled08e_aide_html('compte') : '') . $flash; // phpcs:ignore
     echo '<p class="app-p">Vos informations, votre adresse e-mail et votre mot de passe. Vous changez tout vous-même, quand vous voulez.</p>';
 
     echo '<form class="form esp-form" method="post" action="' . $act . '"><input type="hidden" name="aled08e_compte" value="infos">' . $nonce; // phpcs:ignore
