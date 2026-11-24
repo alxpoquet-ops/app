@@ -111,7 +111,8 @@ const sections = {
 // prix : le Site Essentiel. ecommerce : l'option e-commerce (boutique : le même écart, nom gardé pour l'extension et les anciennes
 // commandes). visibilite, boutiquePrix, pages et exemplePages sont retirés (plus aucune page ne les lit). pagePlus, pagesPlusMax,
 // boutiqueProduits et boutiqueSlot restent : l'extension WordPress les lit (data.json).
-const creation = { prix: 400, ecommerce: 200, boutique: 200, pagePlus: 10, pagesPlusMax: 0, boutiqueProduits: 0, boutiqueSlot: 0 };
+// 24 novembre 2026 (carte blanche d'Alex) : prix psychologiques, 399 € le site, 599 € avec l'option e-commerce.
+const creation = { prix: 399, ecommerce: 200, boutique: 200, pagePlus: 10, pagesPlusMax: 0, boutiqueProduits: 0, boutiqueSlot: 0 };
 // Offre événement : un code donné sur une foire, un marché, un salon ou un événement professionnel.
 // remise : en %, sur la création du site (site et options payés une fois). Les codes valables se règlent dans
 // l'extension WordPress (Réglages, « Codes événement ») : le serveur vérifie le code et recalcule le prix.
