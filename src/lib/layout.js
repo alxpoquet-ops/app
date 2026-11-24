@@ -1,5 +1,5 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, sections, types, forfaits, creation, jetonsLia, enService, fractionne, creationSeule } = require('../config');
+const { site, sections, types, forfaits, creation, jetonsLia, enService, fractionne, creationSeule, ateliers, outilsOffre } = require('../config');
 let METIERS = [];
 try { METIERS = require('../content/metiers').metiers; } catch (e) { /* pas encore écrit */ }
 const { icon } = require('./icons');
@@ -101,49 +101,69 @@ function graph(p) {
 }
 
 // ---------------------------------------------------------------- en-tête
-// Notre équipe, Accompagnement, Tarifs, Outils, Réalisations, Contact. Outils et Documentation passent dans l'espace client.
-// Sur téléphone, chaque lien a une petite phrase (NAV_DESC), et « Créer mon site » est le grand bouton du bas.
-// Outils en pause (config enService) : l'onglet Outils disparaît du menu.
-const NAV = ['forfaits', 'seo', 'confiance', 'equipe', 'accompagnement', 'espace', 'contact'].filter((k) => k !== 'espace' || enService.outils);
-const NAV_DESC = {
-  equipe: 'Alex et la bande',
-  accompagnement: 'Après la mise en ligne',
-  forfaits: `Un site, dès ${creation.prix} €`,
-  seo: 'Être trouvé sur Google',
-  espace: 'Des outils pour vous aider',
-  confiance: 'Des sites à visiter',
-  contact: 'Une question, un projet ?',
+// La maison et ses ateliers (décision d'Alex, 24 novembre 2026) : un grand onglet par atelier non caché (config.ateliers),
+// avec l'image de son monstre. « La maison » et « Les sites » ouvrent un petit menu avec leurs pages.
+// L'onglet en surbrillance : posé ici à la construction, puis recalculé par le script du site (sous WordPress, l'en-tête
+// est le même pour toutes les pages : data-chemins dit quelles pages appartiennent à quel atelier).
+// Sur téléphone : chaque atelier est une carte, ses pages en petits boutons avec icône, et « Créer mon site » tout en bas.
+const ATELIERS = ateliers.filter((a) => !a.cache && (a.id !== 'outils' || (outilsOffre && outilsOffre.actif)));
+const SOUS_MENU = {
+  maison: ['equipe', 'liaalex', 'contact'],
+  sites: ['creer', 'forfaits', 'seo', 'confiance', 'metiers', 'accompagnement'],
 };
-
-// Sur téléphone, chaque lien du menu a son petit monstre plutôt qu'une icône au trait
-const NAV_MIMI = {
-  forfaits: ['chaton', 'content'], seo: ['etoile', 'ravi'], confiance: ['nuage', 'content'], equipe: ['fantome', 'ravi'],
-  accompagnement: ['gelee', 'content'], espace: ['dino', 'content'], contact: ['champi', 'ravi'],
+const prixOutilMin = outilsOffre ? Math.min(...outilsOffre.outils.filter((o) => o.statut === 'pret').map((o) => o.prix)) : 0;
+const DESC_ATELIER = {
+  maison: 'Alex et la petite bande',
+  sites: `Votre site, dès ${creation.prix} €`,
+  outils: outilsOffre ? `Dès ${C.euro(prixOutilMin)} par mois, ${outilsOffre.essaiJours} jours gratuits` : '',
+  ecole: 'De courtes vidéos',
 };
-
-// Sur téléphone, ces deux liens deviennent deux petits boutons côte à côte, tout en bas du menu
-const NAV_BAS = ['equipe', 'contact'];
+// Les pages rattachées à chaque atelier, en plus de celles de son menu (pour savoir quel onglet allumer)
+const RATTACHE = {
+  maison: ['/faq/'],
+  sites: ['/commander/', '/commande-confirmee/', '/etre-visible-sur-google/', '/pourquoi-un-site-internet/', '/creation-site-internet-ardennes/', '/guides/', '/lexique/', '/comparatif/', '/pourquoi-moins-cher/', '/fidelite/', ...METIERS.map((m) => `/${m.slug}/`)],
+  outils: [],
+};
+const cheminsDe = (a) => [a.path, ...(SOUS_MENU[a.id] || []).map((k) => sections[k].path), ...(RATTACHE[a.id] || [])].filter((x, i, t) => t.indexOf(x) === i);
+// L'atelier d'une page : le chemin le plus long qui la contient (« / » seulement pour l'accueil)
+function atelierDe(path) {
+  let best = null, len = -1;
+  for (const a of ATELIERS) for (const c of cheminsDe(a)) {
+    const ok = c === '/' ? path === '/' : path.startsWith(c);
+    if (ok && c.length > len) { best = a.id; len = c.length; }
+  }
+  return best;
+}
+const imgMonstre = (m, taille, cls) => `<img class="${cls}" src="/assets/img/mail/${m}.png" alt="" width="${taille}" height="${taille}" decoding="async">`;
 
 function header(currentPath) {
   const onCreer = currentPath.startsWith(sections.creer.path);
+  const actif = atelierDe(currentPath);
+  const onglet = (a) => {
+    const sous = SOUS_MENU[a.id] || [];
+    const on = a.id === actif;
+    const cur = on ? ` aria-current="${a.path === currentPath ? 'page' : 'true'}"` : '';
+    return `<li class="onglet-li c-${a.color}${on ? ' is-on' : ''}" data-chemins="${cheminsDe(a).join(' ')}">
+          <div class="onglet-tete"><a class="onglet" href="${a.path}"${cur}>${imgMonstre(a.monstre, 32, 'onglet-img')}<span class="onglet-txt">${esc(a.label)}<small>${esc(DESC_ATELIER[a.id] || a.court || '')}</small></span>${icon('chevron-right')}</a>${sous.length ? `<button class="onglet-plus" type="button" aria-expanded="false" aria-controls="sm-${a.id}"><span class="sr-only">Les pages : ${esc(a.label)}</span>${icon('chevron-down')}</button>` : ''}</div>
+          ${sous.length ? `<ul class="sous-menu" id="sm-${a.id}">${sous.map((k) => {
+            const s = sections[k];
+            return `<li><a class="nav-link sous-lien c-${s.color}" href="${s.path}"${currentPath === s.path ? ' aria-current="page"' : ''}>${icon(s.icon)}<span>${esc(s.label)}</span></a></li>`;
+          }).join('')}</ul>` : ''}
+        </li>`;
+  };
   return `<a class="skip" href="#contenu">Aller au contenu</a>
 <header class="site-header">
   <div class="container header-in">
     <a class="brand" href="/" aria-label="${site.name}, accueil">${logoMark({ id: 'lgh' })}<span class="brand-text"><strong>${brandName}</strong></span></a>
     <nav class="nav" id="nav" aria-label="Navigation principale">
-      <ul class="nav-list">
-        ${NAV.map((k) => {
-          const s = sections[k];
-          const on = currentPath.startsWith(s.path);
-          return `<li${NAV_BAS.includes(k) ? ' class="nav-bas"' : ''}><a class="nav-link c-${s.color}" href="${s.path}"${on ? ' aria-current="page"' : ''}><span class="nav-mimi" aria-hidden="true">${petit(NAV_MIMI[k][0], { humeur: NAV_MIMI[k][1] })}</span>${icon(s.icon)}<span class="nav-txt">${s.label}<small>${NAV_DESC[k]}</small></span>${icon('chevron-right')}</a></li>`;
-        }).join('')}
+      <ul class="nav-list onglets">
+        ${ATELIERS.map(onglet).join('\n        ')}
         <li class="nav-creer"><span class="nav-creer-art" aria-hidden="true">${petit('mochi', { humeur: 'ravi' })}</span>${C.btn(sections.creer.path, 'btn-primary btn-lg', sections.creer.icon, sections.creer.label, onCreer ? ' aria-current="page"' : '')}<small>Pour être visible. Le prix s’affiche tout de suite.</small><a class="nav-demo" href="/mon-espace/demo/">${icon('eye')}<span>Essayer l’espace client en démo</span></a></li>
       </ul>
     </nav>
     <div class="header-actions">
       <button class="theme-btn" type="button" aria-label="Passer en apparence sombre" aria-pressed="false"><svg class="t-soleil" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="t-lune" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
       <a class="btn-espace" href="${sections.monespace.path}"${currentPath.startsWith(sections.monespace.path) ? ' aria-current="page"' : ''}>${icon('circle-user')}<span>Mon espace</span></a>
-      ${C.btn(sections.creer.path, 'btn-primary btn-sm btn-creer', 'wand-sparkles', 'Créer mon site', onCreer ? ' aria-current="page"' : '')}
       <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -188,7 +208,7 @@ function footer(p) {
         <li><a href="${sections.accompagnement.path}">Accompagnement</a></li>`)}
     ${col('Aide', `<li><a href="/faq/">Questions fréquentes</a></li>
         <li><a href="/mon-espace/demo/">Essayer l’espace client</a></li>
-        ${enService.outils ? `<li><a href="${sections.espace.path}">Les outils de l’espace client</a></li>` : ''}
+        ${outilsOffre && outilsOffre.actif ? `<li><a href="${sections.espace.path}">Les outils de la bande</a></li>` : ''}
         <li><a href="${sections.documentation.path}">Documentation</a></li>
         <li><a href="/contact/">Contact</a></li>`)}
   </div>
@@ -224,8 +244,8 @@ function liaFlot() {
   ];
   const exemples = ['Comment demander une modification ?', 'Où sont mes factures ?', enService.outils ? 'Comment avoir plus d’avis Google ?' : 'Comment marche ma boutique ?', `Que comprend le forfait ${ABO.name} ?`];
   return `<div class="lia-flot" data-lia-flot hidden>
-  <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Cerise, la secrétaire de la bande" hidden>
-    <div class="lia-tete">${monster('coucou')}<p><strong>Cerise</strong><small>La secrétaire de la bande</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Cerise">${icon('x')}</button></div>
+  <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Cerise, l’assistante automatique de la bande" hidden>
+    <div class="lia-tete">${monster('coucou')}<p><strong>Cerise</strong><small>L’assistante automatique de la bande. Pour parler à Alex : <a href="${C.contactUrl}">page Contact</a>.</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Cerise">${icon('x')}</button></div>
     <div class="lia-fil" data-lia-fil aria-live="polite">
       <p class="lia-msg is-lia" data-lia-accueil="site">Coucou, moi c’est Cerise, de la bande des Minis Monstres ! Ici, on est une petite famille, et on crée des sites internet pour te rendre visible. Choisis une question, ou écris-moi la tienne !</p>
       <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Coucou ! Une question sur ton site ou ton espace ? Je suis là. Et pour une modification, c’est Bricou qui t’attend dans l’onglet Demandes !</p>
@@ -267,7 +287,7 @@ function page(p) {
   const url = site.url + p.path;
   const ogImage = site.url + '/assets/img/og-image.png';
   const robots = p.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1';
-  const color = p.section ? sections[p.section].color : 'mint';
+  const color = p.color || (p.section ? sections[p.section].color : 'mint');
   return `<!doctype html>
 <html lang="fr" data-theme="light">
 <head>

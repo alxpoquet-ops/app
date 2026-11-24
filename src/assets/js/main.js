@@ -261,6 +261,51 @@
     });
   }
 
+  /* ---------- les grands onglets des ateliers ---------- */
+  // L'onglet allumé : l'atelier dont un chemin (data-chemins) contient la page, le plus long gagne (« / » : l'accueil seulement).
+  // Sous WordPress, l'en-tête est le même partout : c'est ce script qui choisit l'onglet.
+  (function () {
+    var lis = $$('.onglet-li');
+    if (!lis.length) return;
+    var p = location.pathname, best = null, len = -1;
+    lis.forEach(function (li) {
+      (li.getAttribute('data-chemins') || '').split(' ').forEach(function (c) {
+        if (!c) return;
+        var ok = c === '/' ? p === '/' : p.indexOf(c) === 0;
+        if (ok && c.length > len) { best = li; len = c.length; }
+      });
+    });
+    lis.forEach(function (li) {
+      var a = $('.onglet', li), on = li === best;
+      li.classList.toggle('is-on', on);
+      if (!a) return;
+      if (on) a.setAttribute('aria-current', a.getAttribute('href') === p ? 'page' : 'true'); else a.removeAttribute('aria-current');
+    });
+    // Le petit menu de chaque onglet (ordinateur) : le bouton flèche l'ouvre, Échap ou un clic ailleurs le ferme
+    var fermer = function (li, focus) {
+      var b = $('.onglet-plus', li);
+      if (!b || b.getAttribute('aria-expanded') !== 'true') return;
+      b.setAttribute('aria-expanded', 'false'); li.classList.remove('is-open');
+      if (focus) b.focus();
+    };
+    lis.forEach(function (li) {
+      var b = $('.onglet-plus', li);
+      if (!b) return;
+      b.addEventListener('click', function () {
+        var ouvrir = b.getAttribute('aria-expanded') !== 'true';
+        lis.forEach(function (x) { if (x !== li) fermer(x); });
+        b.setAttribute('aria-expanded', ouvrir ? 'true' : 'false'); li.classList.toggle('is-open', ouvrir);
+      });
+      li.addEventListener('focusout', function (e) { if (!e.relatedTarget || !li.contains(e.relatedTarget)) fermer(li); });
+      li.addEventListener('keydown', function (e) { if (e.key === 'Escape' && li.classList.contains('is-open')) { e.stopPropagation(); fermer(li, true); } });
+    });
+    d.addEventListener('click', function (e) { lis.forEach(function (li) { if (!li.contains(e.target)) fermer(li); }); });
+  })();
+
+  /* ---------- commander : les ventes ouvrent bientôt ---------- */
+  // Le serveur renvoie ici (?ventes=bientot) une commande envoyée pendant que les ventes sont fermées.
+  if (/[?&]ventes=bientot(&|$)/.test(location.search)) $$('[data-ventes-bientot]').forEach(function (el) { el.hidden = false; });
+
   /* ---------- apparition au défilement ---------- */
   var reveals = $$('.reveal');
   d.documentElement.classList.add('rv-pret');

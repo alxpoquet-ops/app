@@ -1,7 +1,6 @@
 // Pages du site
-const { site, sections, types, typesOfferts, forfaits, annuel, lissage, delais, fidelite, paiement, jetonsLia, creation, marche, enService, limites, creationSeule, bande } = require('../config');
-// Les outils de l'espace client sont en pause (config enService) : la page Outils n'est pas construite.
-const OUTILS_ON = enService.outils;
+const { site, sections, types, typesOfferts, forfaits, annuel, lissage, delais, fidelite, paiement, jetonsLia, creation, marche, enService, limites, creationSeule, bande, ateliers, outilsOffre } = require('../config');
+// L'ancien système d'outils à énergie est en pause (config enService) : la page /outils/ suit désormais config.outilsOffre.
 // OFFRE UNIQUE (21 novembre 2026). Créer le site, payé une fois : le Site Essentiel (400 €), avec ou sans l'option e-commerce
 // (+ 200 €). Les pages de visibilité Google sont un extra (10 € la page). Le Site Visibilité est retiré (config.types, retire: true).
 // Ensuite, au choix : Autonomie (creationSeule, 0 € par mois, le client gère tout) ou Mini (forfaits[0], 10 € par mois, sans engagement).
@@ -14,9 +13,6 @@ const { md, inline, esc } = require('../lib/md');
 const C = require('../lib/components');
 const FAQ = require('../content/faq');
 const legal = require('../content/legal');
-const OUTILS = require('../content/outils');
-const OUTILS_LIA = require('../content/outils-lia').outils;
-const FAMILLES_OUTILS = require('../content/outils-lia').FAMILLES;
 // Le site (Essentiel, option e-commerce), et l'extra « page de visibilité Google » (10 € la page, payée une fois)
 const ESS = C.ESSENTIEL, BOU = C.BOUTIQUE_T, ECO = C.ECOMMERCE; // le Site Essentiel, le même avec l'option e-commerce, l'option seule
 const PAGE_GOOGLE = C.PACK_SEO || { name: 'Page de visibilité Google', price: { once: 15 }, exemples: [] };
@@ -58,51 +54,39 @@ function formHidden() {
 // ====================================================================== ACCUEIL
 // La phrase principale d'abord (config.phrase), puis le positionnement (un site, un but), les prix en clair,
 // la bande, et pourquoi c'est moins cher. Peu de blocs : la plupart des visiteurs sont sur téléphone.
-// La vitrine de l'accueil : une petite boutique (store rayé, enseigne, vitre éclairée) et un repère de carte au-dessus : on la voit, on la trouve.
-function vitrineSvg() {
-  const etoile = (x, y, k) => `<path class="vit-etoile" style="animation-delay:${k * 0.7}s" transform="translate(${x} ${y})" d="M0-11l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FFE07A"/>`;
-  return `<svg class="vitrine" viewBox="0 0 360 300" aria-hidden="true" focusable="false">
-  <defs><radialGradient id="vit-lueur" cx="50%" cy="55%" r="60%"><stop offset="0" stop-color="#FFE9A8" stop-opacity=".5"/><stop offset="1" stop-color="#FFE9A8" stop-opacity="0"/></radialGradient>
-  <linearGradient id="vit-vitre" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF8D9"/><stop offset="1" stop-color="#FFE07A"/></linearGradient></defs>
-  <ellipse cx="170" cy="180" rx="175" ry="125" fill="url(#vit-lueur)"/>
-  <ellipse cx="180" cy="284" rx="150" ry="11" fill="#000" opacity=".28"/>
-  <rect x="50" y="80" width="260" height="204" rx="22" fill="#FFFDF9"/>
-  <rect x="50" y="250" width="260" height="34" rx="14" fill="#EDE6FB"/>
-  <rect x="84" y="50" width="192" height="46" rx="16" fill="#B9A6FF"/>
-  <rect x="108" y="67" width="96" height="12" rx="6" fill="#2E2A47"/><rect x="214" y="67" width="38" height="12" rx="6" fill="#FFFDF9" opacity=".85"/>
-  <rect x="74" y="152" width="142" height="104" rx="14" fill="url(#vit-vitre)"/>
-  <path d="M90 164h22l-30 52v-44a8 8 0 0 1 8-8z" fill="#fff" opacity=".45"/>
-  <rect x="66" y="252" width="158" height="12" rx="6" fill="#D9CFF5"/>
-  <rect x="236" y="152" width="56" height="132" rx="12" fill="#7EDDB5"/>
-  <rect x="246" y="164" width="36" height="48" rx="8" fill="#DDF7EC"/>
-  <circle cx="248" cy="228" r="4.500" fill="#2E2A47"/>
-  <rect x="36" y="96" width="288" height="12" rx="6" fill="#FF8FB8"/>
-  <path d="M40 104h40v28a20 20 0 0 1-40 0z" fill="#FF9EC4"/><path d="M80 104h40v28a20 20 0 0 1-40 0z" fill="#FFF1F6"/><path d="M120 104h40v28a20 20 0 0 1-40 0z" fill="#FF9EC4"/><path d="M160 104h40v28a20 20 0 0 1-40 0z" fill="#FFF1F6"/><path d="M200 104h40v28a20 20 0 0 1-40 0z" fill="#FF9EC4"/><path d="M240 104h40v28a20 20 0 0 1-40 0z" fill="#FFF1F6"/><path d="M280 104h40v28a20 20 0 0 1-40 0z" fill="#FF9EC4"/>
-  <g class="vit-pin"><path d="M300 0c-17 0-30 13-30 29 0 21 30 46 30 46s30-25 30-46c0-16-13-29-30-29z" fill="#FF8FB8"/><circle cx="300" cy="29" r="11" fill="#FFFDF9"/></g>
-  ${etoile(28, 60, 0)}${etoile(238, 22, 1)}${etoile(340, 120, 2)}
-</svg>`.replace('.500', '.5');
-}
 function home() {
   const art = (b) => (b.monstre === 'lia' ? monster('coucou') : C.petit(b.monstre));
-  const body = `<section class="hero">
+  // La maison (24 novembre 2026) : l'accroche, la bande, puis une grande porte par atelier non caché.
+  // L'école cachée : une petite mention « bientôt », sans lien.
+  const AT = (id) => ateliers.find((x) => x.id === id);
+  const prixOutilMin = Math.min(...outilsOffre.outils.filter((o) => o.statut === 'pret').map((o) => o.prix));
+  const PORTES = [
+    { a: AT('sites'), prix: `Dès ${euro(ESS.price)}`, bouton: 'Créer mon site', href: sections.creer.path },
+    ...(outilsOffre.actif ? [{ a: AT('outils'), prix: `Dès ${euro(prixOutilMin)} par mois`, bouton: 'Voir les outils', href: AT('outils').path }] : []),
+    { a: AT('ecole'), prix: '', bouton: 'Voir les cours', href: AT('ecole').path },
+  ].filter((p) => p.a && !p.a.cache);
+  const bientot = ateliers.filter((x) => x.cache && x.id !== 'maison');
+  const porte = (p) => `<article class="porte c-${p.a.color} reveal">
+    <div class="porte-art" aria-hidden="true">${C.imgMonstre(p.a.monstre, 120, { tot: true })}</div>
+    <h2 class="porte-titre"><a href="${p.href}">${esc(p.a.label)}</a></h2>
+    <p>${esc(p.a.court)}</p>
+    <div class="porte-pied">${p.prix ? `<b>${p.prix}</b>` : ''}<span class="btn btn-noir" aria-hidden="true">${esc(p.bouton)}</span></div>
+  </article>`;
+  // la bande éparpillée à droite de l'accroche (les dessins de src/assets/img/mail)
+  const EPARS = ['mascotte', 'bricou', 'chaton', 'etoile', 'mochi', 'gelee'];
+  const body = `<section class="hero maison-hero">
   <div class="container hero-in">
     <div class="hero-text">
-      <p class="hero-sur">${icon('store')}Sites internet pour artisans et commerçants</p>
-      <h1>Votre activité mérite <mark>d’être vue</mark>.</h1>
-      <p class="hero-lead">Sans site internet, c’est une belle vitrine, mais dans une rue où personne ne passe. On crée le vôtre, et on vous rend visible.</p>
-      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}<a class="hero-lien" href="${sections.forfaits.path}">Voir les tarifs${icon('arrow-right')}</a></div>
-      <ul class="hero-points">
-        <li>${icon('check')}Prix affichés</li>
-        <li>${icon('check')}Sans abonnement obligatoire</li>
-        <li>${icon('check')}On vous répond</li>
-      </ul>
+      <p class="hero-sur maison-sur">Une petite bande qui travaille pour vous</p>
+      <h1>Vous faites votre métier. <mark>Les monstres font le reste</mark>.</h1>
+      <p class="hero-lead">Votre site internet, vos réseaux, vos avis, vos produits : chaque petit monstre a sa tâche et la fait pour vous, sans rien à installer ni à brancher. Un seul compte, une seule facture.</p>
+      <div class="hero-ctas"><a class="btn btn-primary btn-lg" href="#qui-fait-quoi">Découvrir la bande</a>${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les prix')}</div>
     </div>
-    <div class="hero-art hero-vitrine" aria-hidden="true">
-      ${vitrineSvg()}
-      <span class="vit-m vit-m1">${C.petit('gelee', { humeur: 'ravi' })}</span>
-      <span class="vit-m vit-m2">${C.petit('bricou', { humeur: 'ravi' })}</span>
-      <span class="vit-m vit-m3">${monster('coucou')}</span>
-    </div>
+    <div class="hero-art maison-art" aria-hidden="true">${EPARS.map((m, i) => `<span class="maison-m mm-${i}">${C.imgMonstre(m, 110, { tot: true })}</span>`).join('')}</div>
+  </div>
+  <div class="container">
+    <div class="portes portes-${PORTES.length}">${PORTES.map(porte).join('')}</div>
+    ${bientot.length ? `<p class="portes-bientot">${bientot.map((x) => `${C.imgMonstre(x.monstre, 36)}<span><b>Bientôt : ${esc(x.label)}.</b> ${esc(x.court)}</span>`).join('')}</p>` : ''}
   </div>
 </section>
 
@@ -137,8 +121,8 @@ ${C.ctaBand({ title: 'On ouvre votre vitrine sur internet ?', text: 'Choisissez 
   return {
     path: '/',
     bodyClass: 'page-accueil',
-    title: 'Un site internet pour être visible | Les Minis Monstres',
-    description: `Sans site internet, personne ne passe devant votre vitrine. Votre site, assemblé à partir de modules déjà prêts, dès ${euro(ESS.price)}, prêt en quelques heures.`,
+    title: 'Création de site internet et petits outils | Les Minis Monstres',
+    description: `Votre site internet dès ${euro(ESS.price)}, prêt en quelques heures, et de petits monstres pour publier, répondre aux avis et préparer vos fiches produits.`,
     crumbs: [HOME],
     body,
     priority: 1,
@@ -303,61 +287,87 @@ ${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Il ne reste qu’à deven
   };
 }
 
-// ====================================================================== NOS OUTILS (en pause : config enService.outils)
-// La page n'est construite que si les outils reviennent. Quelques noms changent sur la page publique.
-const PUBLIC_OUTIL = {
-  question: ['Une question sur internet', 'Vous posez votre question avec vos mots, sur votre site, Google ou les réseaux. La réponse arrive en quelques phrases simples, avec ce qu’il faut faire en premier.'],
-  conseilphoto: ['Conseils sur une photo'],
-  conseilpage: ['Conseils pour ma page'],
-};
+// ====================================================================== LES OUTILS (atelier « Les outils », 24 novembre 2026)
+// Construite à partir de config.outilsOffre (actif) : un petit monstre par corvée, un prix par mois, une limite raisonnable affichée,
+// « Toute la bande » pour tout, essai gratuit, sans engagement, avec ou sans site chez nous. On ne parle jamais d'IA ici.
+// Les boutons « Essayer » mènent à l'espace client et portent data-achat (ventes fermées : WordPress les grise tout seul).
+// L'ancienne page des outils à énergie (enService.outils) n'existe plus : ne pas la réactiver.
+const OUTILS_PAGE = !!(outilsOffre && outilsOffre.actif);
+const ESSAI = outilsOffre.essaiJours;
+const essaiUrl = (id) => `${sections.monespace.path}?outil=${id}`;
+function outilCarte(o) {
+  const pret = o.statut === 'pret';
+  return `<article class="outil c-${o.color}${pret ? '' : ' is-bientot'} reveal">
+    <div class="outil-art" aria-hidden="true">${C.imgMonstre(o.monstre, 76)}</div>
+    <div class="outil-corps">
+      <div class="outil-tete"><h3>${esc(o.nom)}</h3>${pret ? (o.tag ? `<span class="outil-tag">${esc(o.tag)}</span>` : '') : `<span class="outil-tag is-bientot">Bientôt</span>`}</div>
+      <p class="outil-chef">Avec ${esc(o.chef)}</p>
+      <p class="outil-txt">${esc(o.court)}</p>
+      ${o.limite ? `<p class="outil-limite">${icon('check')}<span>Jusqu’à ${o.limite} ${esc(o.unite)} par mois</span></p>` : ''}
+      <div class="outil-pied"><b>${euro(o.prix)}<small> / mois</small></b>${pret
+        ? `<a class="outil-essai" href="${essaiUrl(o.id)}" data-achat>Essayer ${ESSAI} jours<span class="sr-only"> : ${esc(o.nom)}</span>${icon('arrow-right')}</a>`
+        : '<span class="outil-prochain">Arrive bientôt</span>'}</div>
+    </div>
+  </article>`;
+}
 function outilsPage() {
-  const crumbs = crumb('espace');
-  const f = C.faq(FAQ.espace, 'Vos questions sur l’espace client', 'faq-outils');
-  const body = `${C.pageHero({
-    section: 'espace',
-    h1: 'Des outils simples pour vous faire connaître',
-    lead: `Corriger un texte, préparer une photo, publier sur vos réseaux : les Minis Monstres vous aident, et vous gardez la main. Les outils sont dans votre espace client, avec le forfait ${ABO.name}.`,
-    crumbs,
-  })}
-${site.espaceClient.ouvert ? '' : `<div class="container"><p class="notice reveal">${icon('hourglass')}<span>L’espace client ouvre bientôt. D’ici là, envoyez vos demandes par le formulaire de contact.</span></p></div>`}
-<div class="container demo-cta demo-cta-duo">${C.btn(sections.monespace.path + '#outils', 'btn-primary btn-lg', 'circle-user', 'Ouvrir mes outils')}${C.btn(site.espaceClient.demo, 'btn-light btn-lg', 'eye', 'Essayer la démo')}</div>
-
-<section class="section" id="outils-lia"><div class="container">
-  <h2 class="section-title">Les outils de votre espace</h2>
-  <p class="section-sub">Il suffit d’être connecté. Rien d’autre à installer, aucun autre compte à créer.</p>
-  ${Object.entries(FAMILLES_OUTILS).map(([fid, fnom]) => `<h3 class="tools-famille reveal">${fnom}</h3>
-  <div class="tools">${OUTILS_LIA.filter((t) => t.categorie === fid).map(
-    (t) => `<div class="tool c-${t.color} reveal"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${(PUBLIC_OUTIL[t.id] || [])[0] || t.name}</strong><span>${(PUBLIC_OUTIL[t.id] || [])[1] || t.desc}</span></span><span class="tool-tag c-mint">Compris</span></div>`
-  ).join('')}</div>`).join('\n  ')}
-</div></section>
-
-<section class="section section-soft"><div class="container split">
-  <div class="reveal">
-    <p class="kicker c-mint">${icon('message-circle')}Demande de modification</p>
-    <h2>Une demande, et c’est fait</h2>
-    <p>Un horaire, un prix, une photo ? Écrivez-le dans votre espace, avec une photo si besoin. ${esc(C.CERISE)} vous aide à bien formuler votre demande, vous la confirmez, et la modification est faite sous ${delais.reponse}.</p>
-    <ul class="list-check">
-      <li>Vous suivez chaque demande : reçue, en cours, faite</li>
-      <li>Modifications incluses avec le forfait ${esc(ABO.name)}, une demande à la fois</li>
-    </ul>
+  const crumbs = [HOME, { name: 'Les outils', path: sections.espace.path }];
+  const B = outilsOffre.bande;
+  const prets = outilsOffre.outils.filter((o) => o.statut === 'pret');
+  // Les questions viennent de src/content/faq.js (FAQ.outils), reprises sur la FAQ complète
+  const f = C.faq(FAQ.outils || [], 'Vos questions sur les outils', 'questions-outils');
+  const body = `<section class="page-hero outils-hero c-butter">
+  <div class="container">
+    ${C.breadcrumbs(crumbs)}
+    <div class="outils-hero-in">
+      <p class="outils-sur">Les outils des Minis Monstres</p>
+      <h1>Un petit monstre pour chaque <mark>corvée</mark></h1>
+      <p class="lead">Rien à installer, rien à brancher. Vous choisissez, il commence aujourd’hui. Sans engagement, avec ou sans site chez nous.</p>
+      <ul class="outils-points">
+        <li>${icon('gift')}<span>${ESSAI} jours gratuits</span></li>
+        <li>${icon('repeat')}<span>Sans engagement</span></li>
+        <li>${icon('receipt')}<span>Une seule facture</span></li>
+      </ul>
+    </div>
   </div>
-  ${C.phoneEdit(true)}
+</section>
+
+<section class="section section-outils" id="outils"><div class="container">
+  <h2 class="sr-only">Les outils, un par un</h2>
+  <div class="outils">${outilsOffre.outils.map(outilCarte).join('')}</div>
+  <div class="bande-offre reveal">
+    <span class="bande-offre-art" aria-hidden="true">${C.imgMonstre('mascotte', 84)}</span>
+    <div class="bande-offre-txt"><h2>${esc(B.nom)} : ${euro(B.prix)} par mois</h2><p>${esc(B.court)} Gratuit ${ESSAI} jours, sans engagement.</p></div>
+    <a class="btn btn-primary btn-lg" href="${essaiUrl(B.id)}" data-achat>${icon('sparkles')}<span>Tout essayer</span></a>
+  </div>
 </div></section>
 
-<section class="section"><div class="container">
-  <h2 class="section-title">Aussi dans votre espace client</h2>
-  <div class="tools">${OUTILS.filter((t) => !['qr', 'avis'].includes(t.id)).map(
-    (t) => `<a class="tool c-${t.color} reveal" href="${site.espaceClient.demo}?outil=${t.demo}"><span class="tool-ico">${icon(t.icon)}</span><span class="tool-body"><strong>${t.name}</strong><span>${t.desc}</span></span><span class="tool-tag c-mint">Compris</span></a>`
-  ).join('')}</div>
+<section class="section section-soft"><div class="container">
+  <h2 class="section-title">Comment ça marche</h2>
+  <p class="section-sub">Exemple avec ${esc(prets[0].nom)}, sur votre téléphone.</p>
+  ${C.steps([
+    { t: 'Vous choisissez', d: `Un outil, ou toute la bande. Il apparaît dans votre espace client, et l’essai de ${ESSAI} jours commence.` },
+    { t: 'Une photo, trois mots', d: `Vous donnez l’essentiel. ${esc(prets[0].chef)} prépare un texte pour chaque endroit où publier.` },
+    { t: 'Vous relisez, c’est parti', d: 'Vous changez ce que vous voulez, puis vous publiez tout d’un coup, ou plus tard.' },
+  ])}
 </div></section>
 
 ${f.html}
-${C.ctaBand({ title: 'Envie d’essayer les outils ?', text: `Créez votre site : les outils arrivent avec le forfait ${ABO.name}.` })}`;
+
+<section class="section"><div class="container">
+  <div class="outils-site reveal">
+    <span class="outils-site-art" aria-hidden="true">${C.imgMonstre('bricou', 84)}</span>
+    <div><h2>Et votre site internet ?</h2><p>Les outils marchent seuls. Mais avec un site chez nous, tout est au même endroit : un seul compte, un seul espace client.</p></div>
+    ${C.btn(sections.creer.path, 'btn-light btn-lg', sections.creer.icon, 'Voir les sites')}
+  </div>
+</div></section>`;
   return {
     path: sections.espace.path,
     section: 'espace',
-    title: 'Outils : textes, photos, réseaux et votre site | Les Minis Monstres',
-    description: `Corriger ou traduire un texte, préparer une photo, publier sur vos réseaux : les Minis Monstres vous aident, et les outils sont compris avec le forfait ${ABO.name}.`,
+    color: 'butter',
+    bodyClass: 'page-outils',
+    title: 'Outils pour publier, avis Google et fiches produits | Les Minis Monstres',
+    description: `Publier partout, répondre aux avis Google, préparer vos fiches produits : un petit monstre par corvée, dès ${euro(Math.min(...prets.map((o) => o.prix)))} par mois. Essai gratuit ${ESSAI} jours.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -554,6 +564,7 @@ function commanderPage({ creer = false } = {}) {
     crumbs,
     compact: true,
   })}
+<div class="container"><p class="notice notice-ventes" data-ventes-bientot role="status" hidden>${icon('hourglass')}<span>Les commandes ouvrent très bientôt : quelques démarches administratives à finir. Vous pouvez déjà tout préparer.</span></p></div>
 <section class="section section-order"><div class="container">
   <ol class="o-steps" aria-label="Les trois étapes de la commande">
     <li class="c-mint"><span>1</span>Votre site</li>
@@ -795,6 +806,32 @@ function bandeMessages() {
 </div>`;
 }
 
+// L'onglet « Mes outils » de la démo (comme sur la maquette de l'espace client) : Mes avis Google offert avec le forfait Mini,
+// les autres outils à essayer, et Toute la bande. Rien n'est envoyé : chaque bouton affiche un petit message (démo).
+function demoOutils() {
+  const B = outilsOffre.bande;
+  const ligne = (o) => {
+    const offert = o.inclusSite && o.statut === 'pret';
+    const action = o.statut !== 'pret'
+      ? '<em class="st st-new">Bientôt</em>'
+      : offert
+        ? '<em class="st st-done">Offert</em>'
+        : `<button type="button" class="btn btn-primary btn-sm" data-toast-msg="${esc(o.nom)} : essai de ${ESSAI} jours lancé (démo)"><span>Essayer</span></button>`;
+    const prix = offert ? `Offert avec le forfait ${ABO.name}` : `${euro(o.prix)} par mois`;
+    return `<div class="app-opt app-opt-once"><span class="app-opt-ico demo-outil-art c-${o.color}">${C.imgMonstre(o.monstre, 38)}</span><span class="app-opt-txt"><strong>${esc(o.nom)}</strong><small>${esc(prix)}${o.limite ? ` · jusqu’à ${o.limite} ${esc(o.unite)} par mois` : ''}</small><small>${esc(o.court)}</small></span>${action}</div>`;
+  };
+  return `<div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
+          <h2 class="app-h">Mes outils</h2>
+          ${C.presente('etoile', `<strong>Moi, c’est ${esc(C.PEPITE)}.</strong> Chaque outil est un petit monstre qui fait une corvée pour vous. Essayez-le ${ESSAI} jours, sans engagement.`, { humeur: 'ravi' })}
+          <div class="app-opts">${outilsOffre.outils.map(ligne).join('')}</div>
+          <p class="app-sub">${icon('sparkles')} ${esc(B.nom)}</p>
+          <p class="app-domain">${C.imgMonstre('mascotte', 40)}<span><strong>${esc(B.nom)} : ${euro(B.prix)} par mois</strong><small>${esc(B.court)} Gratuit ${ESSAI} jours.</small></span></p>
+          <button type="button" class="btn btn-primary btn-sm" data-toast-msg="${esc(B.nom)} : essai de ${ESSAI} jours lancé (démo)">${icon('sparkles')}<span>Tout essayer</span></button>
+          <p class="app-note">Une seule facture : vos outils s’ajoutent à votre forfait, et chacun s’arrête quand vous voulez.</p>
+        </div>
+`;
+}
+
 // La démo de l'espace client : « Pâtisserie Lila », une cliente imaginaire, avec un Site Essentiel + e-commerce et le forfait Mini.
 // Onglets : Accueil, Demandes (Bricou clarifie la demande, Alex fait la modification), Extras (présentés par Pépite), Ma boutique (ouverte : Lila a l'option e-commerce,
 // avec son sous-menu en gros boutons : cases radio et CSS, sans script), Mon compte. Plus d'onglet « Mon site » ni de parrainage.
@@ -856,6 +893,7 @@ function monEspacePage() {
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           ${tab('accueil', 'house', 'Accueil', true)}
           ${tab('demandes', 'pencil', 'Modifications')}
+          ${OUTILS_PAGE ? tab('outils', 'toolbox', 'Mes outils') : ''}
           ${tab('extras', 'sparkles', 'Extras')}
           ${tab('boutique', 'shopping-bag', 'Ma boutique')}
           ${tab('forfait', 'circle-user', 'Mon compte')}
@@ -919,6 +957,7 @@ function monEspacePage() {
           </ul>
         </div>
 
+${OUTILS_PAGE ? demoOutils() : ''}
         <div class="app-panel" role="tabpanel" id="t-extras" aria-labelledby="tab-extras" hidden>
           <h2 class="app-h">Extras</h2>
           ${C.presente('etoile', `<strong>Moi, c’est ${esc(C.PEPITE)}.</strong> Voici les trois extras. Une page de visibilité Google se paie par carte, tout de suite. Les deux autres sont sur devis.`, { humeur: 'ravi' })}
@@ -1717,6 +1756,7 @@ function faqPage() {
     ['La commande', FAQ.commande || [], 'commander'],
     ['Les tarifs et le forfait Mini', FAQ.forfaits || FAQ.tarifs || [], 'forfaits'],
     ['Votre espace client', FAQ.espace, 'espace'],
+    ...(OUTILS_PAGE ? [['Les outils', FAQ.outils || [], 'espace']] : []),
     ['Être trouvé sur Google', FAQ.seo, 'seo'],
     ['Notre méthode', FAQ.methode, 'methode'],
     ['Le comparatif', FAQ.comparatif || [], 'comparatif'],
@@ -1765,7 +1805,7 @@ function planDuSite() {
   const crumbs = [HOME, { name: 'Plan du site', path: '/plan-du-site/' }];
   // Les pages du parcours de commande (noindex) ne figurent pas dans le plan.
   // Outils et Documentation (noindex depuis la V2) restent dans le plan : les clients les cherchent.
-  const hidden = ['commander', 'confirmation', 'fidelite', ...(OUTILS_ON ? [] : ['espace'])];
+  const hidden = ['commander', 'confirmation', 'fidelite', ...(OUTILS_PAGE ? [] : ['espace'])];
   const links = [
     ['/', 'Accueil'],
     ...Object.entries(sections).filter(([k]) => !hidden.includes(k)).map(([, s]) => [s.path, s.label]),
@@ -1814,7 +1854,7 @@ function notFound() {
 function build() {
   return [
     home(), creerPage(), commanderPage(), confirmationPage(), forfaitsPage(), espacePage(), monEspacePage(), seoPage(), comparatifPage(), fidelitePage(), contactPage(), faqPage(),
-    ...(OUTILS_ON ? [outilsPage()] : []),
+    ...(OUTILS_PAGE ? [outilsPage()] : []),
     confiancePage(),
     equipePage(),
     // V2 : pages métier, réassurance, guides de fond, page locale (remplacent /methode/ et /lia-et-alex/)

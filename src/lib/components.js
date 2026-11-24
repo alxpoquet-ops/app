@@ -12,6 +12,8 @@ const PETIT_DE = { mascotte: 'mochi', bonjour: 'mochi', coucou: 'mochi', clin: '
 const PETIT_SECTION = { creer: 'mochi', forfaits: 'etoile', espace: 'gelee', seo: 'nuage', contact: 'chaton', confiance: 'mochi', liaalex: 'mochi', metiers: 'dino', equipe: 'gelee', accompagnement: 'gelee', guides: 'nuage', documentation: 'fantome', lexique: 'mochi', comparatif: 'chaton', fidelite: 'etoile', methode: 'mochi', monespace: 'fantome', commander: 'etoile', confirmation: 'etoile' };
 const bouille = (nom, opts) => petit(PETIT_DE[nom] || nom, opts);
 // Un petit monstre posé au bord d'un bloc : place = haut-droite, haut-gauche, bas-droite, bas-gauche, cote-gauche, cote-droite
+// Le dessin d'un monstre (src/assets/img/mail/<nom>.png, 200 × 200), pour les ateliers et les outils. Toujours décoratif (alt vide).
+const imgMonstre = (nom, taille = 64, { cls = 'img-monstre', tot = false } = {}) => `<img class="${cls}" src="/assets/img/mail/${nom}.png" alt="" width="${taille}" height="${taille}"${tot ? '' : ' loading="lazy"'} decoding="async">`;
 const deco = (nom, place = 'haut-droite', humeur) => `<span class="deco deco-${place}" aria-hidden="true">${petit(nom, { humeur })}</span>`;
 const { inline, esc, plain } = require('./md');
 const minus = (x) => x.charAt(0).toLowerCase() + x.slice(1);
@@ -749,5 +751,5 @@ module.exports = {
   offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, BOUTIQUE_ARTICLES, BOUTIQUE_PAIEMENT, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
   siteOffreCarte, optionEcommerceCarte, pagesGoogleCarte, modulesSite, siteIcone, positionnement, demoBande, ESSENTIEL, BOUTIQUE_T, ECOMMERCE, revisionsNote, phrase, prixPageSeo, packsSeo,
   configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
-  CERISE, BRICOU, PEPITE, presente, DOM, DOMAINE_REGLE, DOMAINE_PLUS, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
+  CERISE, BRICOU, PEPITE, presente, imgMonstre, DOM, DOMAINE_REGLE, DOMAINE_PLUS, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };
