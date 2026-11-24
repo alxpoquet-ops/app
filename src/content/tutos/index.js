@@ -17,6 +17,10 @@
 //                  et une liste « À faire aujourd'hui » à la fin. Chaque mot technique expliqué la première fois.
 //   faq          : [{ q, a }] (2 à 4, facultatif)
 //   voir         : slugs de tutos ou de guides liés (2 à 3)
+//   formation    : slug de la grande formation liée (facultatif) : 'formation-automatiser-ses-taches', 'formation-assistant-qui-ecrit',
+//                  'formation-monter-sa-petite-bande'. La page du tuto montre alors la carte « Pour tout savoir ».
+// Consigne d'Alex (24 novembre 2026) : un tuto explique RAPIDEMENT l'essentiel (400 à 700 mots), sans tout dire, pour donner envie
+// de la formation ; la formation, elle, dit tout ce qu'il faut savoir.
 // Règles (scripts/check.js) : aucun tiret long, pas de phrase de 9 mots ou plus reprise d'une autre page,
 // rien d'inventé (pas de chiffre sans source fiable, pas de faux avis), vouvoiement, français simple, phrases courtes.
 const groupes = [
