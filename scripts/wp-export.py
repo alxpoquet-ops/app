@@ -45,6 +45,11 @@ for _old, _new in {'/methode/': '/pourquoi-moins-cher/', '/lia-et-alex/': '/pour
                    '/guides/site-internet-association/': '/site-internet-association/'}.items():
     OLD_TARGETS[_old] = _new
     OLD_TARGETS['/en' + _old] = '/en' + _new
+# 24 novembre 2026 : le hub des guides devient Mini Tuto. Les pages /guides/<slug>/ gardent leur adresse : sous WordPress,
+# elles ont besoin d'une page parente « guides », gardée cachée (conteneur, noindex) et redirigée TOUJOURS vers /mini-tuto/
+# (REDIRECTIONS_TOUJOURS : même quand la page existe, contrairement à OLD_TARGETS qui ne joue que sur une page absente).
+OLD_TARGETS.update({'/guides/': '/mini-tuto/', '/en/guides/': '/mini-tuto/'})
+REDIRECTIONS_TOUJOURS = {'/guides/': '/mini-tuto/'}
 
 
 def read(p):
@@ -169,6 +174,24 @@ def collect():
             item.update(kind='page', slug=segs[-1], parent='/'.join(segs[:-1]), title=title)
         item['content'] = to_blocks(fix_urls(main))
         items.append(item)
+
+    # Une page dont le parent n'existe plus dans le site (ex. /guides/<slug>/ sans le hub /guides/) : on crée un conteneur
+    # caché à l'adresse du parent, sinon WordPress rattacherait la page à la racine et son adresse changerait.
+    have = {it['path'] for it in items}
+    for it in list(items):
+        if it['kind'] != 'page' or not it['parent']:
+            continue
+        segs = it['parent'].split('/')
+        for k in range(1, len(segs) + 1):
+            ppath = '/' + '/'.join(segs[:k]) + '/'
+            if ppath in have:
+                continue
+            cible = REDIRECTIONS_TOUJOURS.get(ppath, OLD_TARGETS.get(ppath, '/'))
+            items.append({'path': ppath, 'kind': 'page', 'slug': segs[k - 1], 'parent': '/'.join(segs[:k - 1]), 'title': segs[k - 1].capitalize(),
+                          'head': '<title>' + segs[k - 1].capitalize() + ' | Les Minis Monstres</title>\n<meta name="robots" content="noindex, follow">',
+                          'body_class': '', 'nobar': False, 'noindex': True, 'conteneur': True,
+                          'content': to_blocks('<section class="section"><div class="container"><p><a href="' + cible + '">Cette page a déménagé : suivez ce lien.</a></p></div></section>')})
+            have.add(ppath)
 
     order = {'front': 0, 'page': 1}
     items.sort(key=lambda x: (order[x['kind']], x['path'].count('/'), x['path']))
@@ -320,6 +343,14 @@ add_action('template_redirect', function () {
     foreach (['/wp-json/', '/wp-admin', '/wp-login', '/wp-cron', '/xmlrpc', '/?rest_route='] as $debut) if (strpos($uri, $debut) === 0) return;
     wp_redirect(home_url($uri), 301); exit;
 }, 0);
+
+/* Adresses qui mènent toujours ailleurs, même si une page (cachée) y existe : l'ancien hub /guides/ mène à Mini Tuto */
+add_action('template_redirect', function () {
+    $path = wp_parse_url(isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '', PHP_URL_PATH);
+    $toujours = json_decode(@file_get_contents(get_template_directory() . '/parts/redirects-toujours.json'), true) ?: [];
+    $key = '/' . trim((string) $path, '/') . '/';
+    if ($key !== '//' && isset($toujours[$key])) { wp_safe_redirect(home_url($toujours[$key]), 301); exit; }
+}, 1);
 
 /* Anciennes adresses : plan du site, et pages de l'ancien site d'électricien */
 add_action('template_redirect', function () {
@@ -656,6 +687,7 @@ def main():
     # extension d'import
     items = collect()
     write(os.path.join(tdir, 'parts', 'redirects.json'), json.dumps(redirects(items), ensure_ascii=False))
+    write(os.path.join(tdir, 'parts', 'redirects-toujours.json'), json.dumps(REDIRECTIONS_TOUJOURS, ensure_ascii=False))
     write(os.path.join(idir, 'aled08-import.php'), IMPORT_PHP)
     write(os.path.join(idir, 'data.json'), json.dumps(items, ensure_ascii=False))
 

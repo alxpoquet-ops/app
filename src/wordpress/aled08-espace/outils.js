@@ -1,6 +1,7 @@
 /* Les Minis Monstres Espace client : l'atelier « Les outils » (Publier partout, Mes avis Google, Fiche produit, Comparer mes devis).
  * Chaque outil est une section [data-ao] écrite par includes/atelier-outils.php. Rien n'est compté ici : le serveur vérifie
- * l'abonnement et la limite du mois avant chaque travail d'un petit monstre. */
+ * l'abonnement et la limite du mois avant chaque travail d'un petit monstre. Publier partout s'appuie sur le kit de
+ * publication (kit-publication.js : cartes et boutons par réseau ; kit-video.js : formats et vidéo), chargé avant ce fichier. */
 (function () {
   'use strict';
   var d = document;
@@ -18,8 +19,6 @@
     a.href = u; a.download = nom; d.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
   }
-  function enFichier(blob, nom) { try { return new File([blob], nom, { type: blob.type || 'image/jpeg' }); } catch (e) { return null; } }
-  var tactile = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
 
   /* une photo réduite dans le navigateur (JPEG, cote pixels au plus) : plus légère à envoyer, bien tournée */
   function reduire(file, cote, q) {
@@ -56,23 +55,6 @@
     if (efile) efile.addEventListener('change', calc);
     $$('input[name="par"]', eform).forEach(function (r) { r.addEventListener('change', calc); });
     calc();
-  }
-
-  /* les réseaux : nom, adresse où publier à la main, longueur conseillée */
-  var RS = {
-    instagram: { nom: 'Instagram', url: function () { return 'https://www.instagram.com/'; } },
-    facebook: { nom: 'Facebook', url: function () { return 'https://www.facebook.com/'; } },
-    google: { nom: 'Fiche Google', url: function () { return 'https://business.google.com/'; } },
-    linkedin: { nom: 'LinkedIn', url: function (t) { return 'https://www.linkedin.com/feed/?shareActive=true&text=' + encodeURIComponent(t); } },
-    site: { nom: 'Mon site' },
-    bluesky: { nom: 'Bluesky', url: function (t) { return 'https://bsky.app/intent/compose?text=' + encodeURIComponent(t); } },
-    mastodon: { nom: 'Mastodon', url: function (t) { return 'https://mastodon.social/share?text=' + encodeURIComponent(t); } }
-  };
-  function reseauDe(titre) {
-    var t = String(titre || '').toLowerCase().trim();
-    if (t === 'fiche google' || t === 'google') return 'google';
-    if (t === 'mon site' || t === 'site') return 'site';
-    return RS[t] ? t : '';
   }
 
   $$('[data-ao][data-ajax]').forEach(function (sec) {
@@ -253,7 +235,7 @@
         if (form.getAttribute('data-photo') && photo.blob) fd.append('c_image', photo.blob, 'photo.jpg');
         fd.append('action', 'aled08e_ao_brique'); fd.append('outil', outil); fd.append('brique', bid);
         var debut = Date.now();
-        var ok = function (data) { fin(); dire(etat, 'C’est prêt.', 'is-ok'); majUsage(data); reussi(data.blocs); };
+        var ok = function (data) { fin(); dire(etat, 'C’est prêt.', 'is-ok'); majUsage(data); reussi(data.blocs || [], data); };
         poster(fd).then(function (j) {
           if (!j || !j.success) { fin(); dire(etat, erreur(j, chef + ' n’a pas pu répondre. Réessayez.'), 'is-err'); return; }
           ok(j.data);
@@ -306,17 +288,24 @@
       return box;
     }
 
-    /* ---------- Publier partout ---------- */
+    /* ---------- Publier partout : le kit de publication (kit-publication.js, kit-video.js) ---------- */
     var pub = $('[data-ao-publier]', sec);
     var publierForm = pub && $('form[data-ao-pub]', pub);
     if (pub) initPublier();
     function initPublier() {
-      var directs = [], limites = {};
+      var directs = [], defs = {};
       try { directs = JSON.parse(pub.getAttribute('data-directs') || '[]'); } catch (e) {}
-      try { limites = JSON.parse(pub.getAttribute('data-limites') || '{}'); } catch (e) {}
-      var ecrans = $$('[data-ao-ecran]', pub), boite = $('[data-ao-cartes]', pub), consigne = $('[data-ao-consigne]', pub);
+      try { defs = JSON.parse(pub.getAttribute('data-kit-defs') || '{}'); } catch (e) {}
+      var site = pub.getAttribute('data-site') || '';
+      var ecrans = $$('[data-ao-ecran]', pub), boite = $('[data-ao-cartes]', pub), fichiersBoite = $('[data-ao-kit-fichiers]', pub), consigne = $('[data-ao-consigne]', pub);
       var tout = $('[data-ao-tout]', pub), etat2 = $('[data-ao-etat2]', pub), progOuvrir = $('[data-ao-prog-ouvrir]', pub), prog = $('[data-ao-prog]', pub);
-      var cartes = [], fini = '';
+      var tel = $('[data-ao-kit-tel]', pub), kitEtat = $('[data-ao-kit-etat]', pub);
+      // sur téléphone, le bloc du lien (e-mail, rappel) passe en bas : on y est déjà, le QR code ne sert pas
+      if (window.LMMKit && LMMKit.tactile) { var retour = $('[data-ao-retour]', pub); retour.parentNode.parentNode.insertBefore(tel, retour.parentNode); tel.classList.add('is-tactile'); }
+      var cartes = [], fini = '', api = null, enr = null, sauverT = 0;
+      var finBtn = el('button', 'btn btn-light btn-sm', 'C’est fait, merci Pépite'); finBtn.type = 'button'; finBtn.hidden = true;
+      etat2.parentNode.insertBefore(finBtn, etat2.nextSibling);
+      finBtn.addEventListener('click', function () { finir(); });
       function ecran(n) {
         ecrans.forEach(function (e) { e.hidden = e.getAttribute('data-ao-ecran') !== String(n); });
         var e = $('[data-ao-ecran="' + n + '"]', pub);
@@ -328,78 +317,63 @@
         var on = cochees(), dir = on.filter(function (c) { return c.direct && !c.fait; }), par = on.filter(function (c) { return !c.direct && !c.fait; });
         tout.hidden = !dir.length;
         progOuvrir.hidden = !on.filter(function (c) { return c.direct; }).length;
+        finBtn.hidden = !(on.length && !dir.length && !par.length);
         if (!on.length) consigne.textContent = 'Cochez au moins un réseau.';
-        else if (dir.length && par.length) consigne.textContent = 'Relisez et changez ce que vous voulez. « Tout publier » envoie sur ' + liste(noms(dir)) + '. Pour ' + liste(noms(par)) + ', touchez « Partager » : tout est prêt, il reste un geste.';
+        else if (dir.length && par.length) consigne.textContent = 'Relisez et changez ce que vous voulez. « Tout publier » envoie sur ' + liste(noms(dir)) + '. Pour ' + liste(noms(par)) + ', touchez le bouton de chaque carte : le bon fichier est prêt et le texte est copié.';
         else if (dir.length) consigne.textContent = 'Relisez et changez ce que vous voulez, puis « Tout publier ».';
-        else if (par.length) consigne.textContent = 'Relisez et changez ce que vous voulez, puis touchez « Partager » sur chaque carte : le texte et la photo sont prêts, il reste un geste par réseau.';
-        else consigne.textContent = '';
+        else if (par.length) consigne.textContent = 'Relisez et changez ce que vous voulez, puis touchez le bouton de chaque réseau : le bon fichier est prêt et le texte est copié.' + (enr && !LMMKit.tactile ? ' Sur votre téléphone, c’est encore plus simple : visez le QR code plus bas.' : '');
+        else consigne.textContent = 'Tout est prêt. Votre lien reste valable si vous voulez republier.';
       }
       function marquer(c, mode, url) {
         c.fait = mode; c.url = url || '';
         c.el.classList.add('is-fait');
-        if (c.bp) c.bp.textContent = mode === 'partage' ? 'Partagé' : 'Publié';
         majConsigne();
-        var reste = cochees().filter(function (x) { return !x.fait; });
-        if (!reste.length && cochees().length) setTimeout(function () { finir(); }, 600);
+        if (mode === 'publie' && !cochees().filter(function (x) { return !x.fait; }).length) setTimeout(function () { finir(); }, 600);
       }
-      function carte(b) {
-        var cle = reseauDe(b.titre), r = RS[cle] || { nom: b.titre }, direct = directs.indexOf(cle) !== -1;
-        var c = { cle: cle, nom: r.nom, direct: direct };
-        var e = el('div', 'ao-carte'), tete = el('label', 'ao-carte-tete'), cb = el('input'), compte = el('small');
-        cb.type = 'checkbox'; cb.checked = true;
-        tete.appendChild(cb); tete.appendChild(el('strong', '', r.nom)); tete.appendChild(compte); e.appendChild(tete);
-        var ta = el('textarea'); ta.value = b.texte; ta.rows = Math.min(10, Math.max(3, Math.ceil(b.texte.length / 38) + (b.texte.match(/\n/g) || []).length + 1));
-        ta.setAttribute('aria-label', 'Texte pour ' + r.nom);
-        var limite = limites[b.titre] || 0;
-        var maj = function () { compte.textContent = ta.value.length + (limite ? ' sur ' + limite : ''); compte.classList.toggle('is-trop', !!limite && ta.value.length > limite); };
-        ta.addEventListener('input', maj); maj();
-        e.appendChild(ta);
-        var actions = el('div', 'ol-bloc-actions'), msg = el('span', 'ol-bloc-msg'); msg.setAttribute('role', 'status');
-        c.dire = function (t, err) { msg.className = 'ol-bloc-msg' + (err ? ' is-err' : ''); msg.textContent = t; };
-        if (direct) actions.appendChild(el('span', 'ao-mode is-direct', cle === 'site' ? 'Pépite la publie sur votre site' : 'Pépite publie directement'));
-        else if (r.url) {
-          var bp = el('button', 'btn btn-primary btn-sm', 'Partager sur ' + r.nom); bp.type = 'button';
-          bp.addEventListener('click', function () { partager(c); });
-          actions.appendChild(bp); c.bp = bp;
-        }
-        var bc = el('button', 'btn btn-light btn-sm', 'Copier'); bc.type = 'button';
-        bc.addEventListener('click', function () { copier(ta.value, function (ok) { c.dire(ok ? 'Copié.' : 'Sélectionnez le texte pour le copier.'); }); });
-        actions.appendChild(bc); actions.appendChild(msg); e.appendChild(actions);
-        cb.addEventListener('change', function () { e.classList.toggle('is-off', !cb.checked); majConsigne(); });
-        c.el = e; c.cb = cb; c.ta = ta;
-        if (cle === 'instagram' && !photo.blob) {
-          c.dire('Instagram demande une photo : ajoutez-en une (Changer ma photo), ou décochez Instagram.', true);
-          if (direct) { cb.checked = false; e.classList.add('is-off'); }
-        }
-        return c;
+      /* les textes changés sont gardés avec le lien (le téléphone retrouve la dernière version) */
+      function sauver(maintenant) {
+        if (!enr || !api) return Promise.resolve();
+        clearTimeout(sauverT);
+        var go = function () { return poster({ action: 'aled08e_ao_kit_maj', k: enr.cle, kit: JSON.stringify(api.donnees()) }).catch(function () {}); };
+        if (maintenant) return go();
+        sauverT = setTimeout(go, 1500);
+        return Promise.resolve();
       }
-      /* « Partager » : le partage du téléphone (photo + texte) ; sur ordinateur, texte copié, photo téléchargée, réseau ouvert */
-      function partager(c) {
-        var r = RS[c.cle], t = c.ta.value, f = photo.blob ? enFichier(photo.blob, 'photo.jpg') : null;
-        if (c.cle === 'instagram' && !f) { c.dire('Instagram demande une photo : ajoutez-en une, en haut.', true); return; }
-        var avecFichier = !!(f && navigator.canShare && navigator.canShare({ files: [f] }));
-        if (tactile && navigator.share && (avecFichier || !f)) {
-          copier(t);
-          var data = { text: t };
-          if (avecFichier) data.files = [f];
-          c.dire('Le texte est copié : dans ' + r.nom + ', collez-le en légende si besoin.');
-          navigator.share(data).then(function () { marquer(c, 'partage'); }, function (e) {
-            if (e && e.name === 'AbortError') { c.dire('Partage annulé. Le texte reste copié.'); return; }
-            var a = el('a', '', 'Ouvrir ' + r.nom); a.href = r.url(t); a.target = '_blank'; a.rel = 'noopener';
-            c.dire('Le partage n’a pas marché. Le texte est copié : ');
-            c.el.querySelector('.ol-bloc-msg').appendChild(a);
-          });
-          return;
-        }
-        copier(t);
-        if (f) telecharger(photo.blob, 'photo-' + c.cle + '.jpg');
-        window.open(r.url(t), '_blank', 'noopener');
-        c.dire('Texte copié' + (f ? ' et photo téléchargée' : '') + '. Dans ' + r.nom + ' (nouvel onglet), créez une publication' + (f ? ', ajoutez la photo' : '') + ' et collez le texte.');
-        marquer(c, 'partage');
+      function montrerTel() {
+        tel.hidden = !enr;
+        if (!enr) return;
+        $('[data-ao-kit-fin]', tel).textContent = enr.finTxt || '';
+        var qr = $('[data-ao-kit-qr]', tel);
+        if (!LMMKit.qr(qr, enr.lien)) window.addEventListener('load', function () { LMMKit.qr(qr, enr.lien); });
+        dire(kitEtat, '');
       }
+      function versTel() { tel.classList.remove('is-vu'); void tel.offsetWidth; tel.classList.add('is-vu'); }
+      function monterKit(data) {
+        if (api) api.detruire();
+        cartes = []; fini = ''; dire(etat2, ''); prog.hidden = true;
+        enr = data.enr || null;
+        api = LMMKit.monter({
+          kit: data.kit, defs: defs, directs: directs, cases: true, site: site, photoUrl: enr ? enr.photo : '',
+          fichiersBoite: fichiersBoite, cartesBoite: boite,
+          photo: function () { return Promise.resolve(photo.blob); },
+          ajouterPhoto: function () { var l = el('label', 'btn btn-light btn-sm', 'Ajouter une photo'); l.htmlFor = 'ao-photo-publier'; return l; },
+          surChange: function () { sauver(); majConsigne(); },
+          surFait: function (c, mode) { marquer(c, mode); },
+          versTel: versTel
+        });
+        cartes = api.cartes;
+        cartes.forEach(function (c) {
+          if (c.cle === 'instagram' && c.direct && !photo.blob) { c.cb.checked = false; c.el.classList.add('is-off'); c.dire('Instagram demande une photo : ajoutez-en une, ou publiez avec le bouton plus tard.', true); }
+        });
+        majConsigne(); montrerTel();
+        ecran(2);
+      }
+      /* la photo pour les réseaux présentés à Pépite : le format 4:5 (accepté partout, Instagram compris) */
+      function photoPourDirect() { var f = api && api.fichier('45'); return f ? f.blob : photo.blob; }
       function deposerPhoto() {
-        if (!photo.blob || photo.ref) return Promise.resolve(photo.ref);
-        return poster({ action: 'aled08e_rs_photo', image: photo.blob }).then(function (j) {
+        var b = photoPourDirect();
+        if (!b || photo.ref) return Promise.resolve(photo.ref);
+        return poster({ action: 'aled08e_rs_photo', image: b }).then(function (j) {
           if (!j || !j.success) throw new Error(erreur(j, 'La photo n’est pas partie.'));
           photo.ref = j.data.photo; return photo.ref;
         });
@@ -412,11 +386,11 @@
           return aFaire.reduce(function (p, c) {
             return p.then(function () {
               c.dire('Publication en cours…');
-              return poster({ action: 'aled08e_publier', reseau: c.cle, texte: c.ta.value, photo: ref || null }).then(function (j) {
+              return poster({ action: 'aled08e_publier', reseau: c.cle, texte: c.texte(), photo: ref || null }).then(function (j) {
                 if (!j || !j.success) { c.dire(erreur(j, 'La publication n’est pas partie. Réessayez.'), true); return; }
                 c.dire('Publié. ');
                 var a = el('a', '', 'Voir'); a.href = j.data.url; a.target = '_blank'; a.rel = 'noopener';
-                c.el.querySelector('.ol-bloc-msg').appendChild(a);
+                c.msg.appendChild(a);
                 marquer(c, 'publie', j.data.url);
               }, function () { c.dire('La connexion a coupé. Réessayez.', true); });
             });
@@ -431,57 +405,97 @@
       progOuvrir.addEventListener('click', function () {
         prog.hidden = !prog.hidden;
         var on = cochees(), dir = on.filter(function (c) { return c.direct; }), par = on.filter(function (c) { return !c.direct; });
-        $('[data-ao-prog-note]', prog).textContent = 'Pépite publiera sur ' + liste(noms(dir)) + ' au moment choisi.' + (par.length ? ' ' + liste(noms(par)) + (par.length > 1 ? ' ne se programment' : ' ne se programme') + ' pas : partagez maintenant, ou présentez Pépite à ce compte.' : '');
+        $('[data-ao-prog-note]', prog).textContent = 'Pépite publiera sur ' + liste(noms(dir)) + ' au moment choisi.' + (par.length ? ' Pour ' + liste(noms(par)) + ', utilisez plutôt « Me le rappeler plus tard » : Pépite vous enverra le lien à l’heure choisie.' : '');
         if (!prog.hidden) $('[data-ao-prog-quand]', prog).focus();
       });
       $('[data-ao-prog-ok]', prog).addEventListener('click', function () {
         var bt = this, quand = $('[data-ao-prog-quand]', prog).value;
         if (!quand) { dire(etat2, 'Choisissez un jour et une heure.', 'is-err'); return; }
         var textes = {};
-        cochees().forEach(function (c) { if (c.direct && !c.fait) textes[c.cle] = c.ta.value; });
+        cochees().forEach(function (c) { if (c.direct && !c.fait) textes[c.cle] = c.texte(); });
         if (!Object.keys(textes).length) { dire(etat2, 'Rien à programmer.', 'is-err'); return; }
         bt.disabled = true; dire(etat2, 'Un instant…');
-        poster({ action: 'aled08e_ao_programmer', quand: quand, textes: textes, extrait: extrait(), image: photo.blob }).then(function (j) {
+        poster({ action: 'aled08e_ao_programmer', quand: quand, textes: textes, extrait: extrait(), image: photoPourDirect() }).then(function (j) {
           bt.disabled = false;
           if (!j || !j.success) { dire(etat2, erreur(j), 'is-err'); return; }
           cochees().forEach(function (c) { if (textes[c.cle] != null) { c.fait = 'programme'; c.el.classList.add('is-fait'); c.dire('Programmé.'); } });
           prog.hidden = true;
           fini = j.data.message;
           var reste = cochees().filter(function (c) { return !c.fait; });
-          if (reste.length) { majConsigne(); dire(etat2, j.data.message + ' Il reste ' + liste(noms(reste)) + ' à partager.', 'is-ok'); }
+          if (reste.length) { majConsigne(); dire(etat2, j.data.message + ' Il reste ' + liste(noms(reste)) + '.', 'is-ok'); }
           else finir();
         }, function () { bt.disabled = false; dire(etat2, 'La connexion a coupé. Réessayez.', 'is-err'); });
       });
+      /* le lien sur le téléphone : e-mail, copie, rappel, suppression */
+      $('[data-ao-kit-mail]', tel).addEventListener('click', function () {
+        var b = this; if (!enr) return;
+        b.disabled = true; dire(kitEtat, 'Un instant…');
+        sauver(true).then(function () { return poster({ action: 'aled08e_ao_kit_mail', k: enr.cle }); }).then(function (j) {
+          b.disabled = false; dire(kitEtat, j && j.success ? j.data.message : erreur(j), j && j.success ? 'is-ok' : 'is-err');
+        }, function () { b.disabled = false; dire(kitEtat, 'La connexion a coupé. Réessayez.', 'is-err'); });
+      });
+      $('[data-ao-kit-copier]', tel).addEventListener('click', function () {
+        if (!enr) return;
+        sauver(true);
+        LMMKit.copier(enr.lien, function (ok) { dire(kitEtat, ok ? 'Lien copié. Il ouvre votre publication sans mot de passe : gardez-le pour vous.' : 'Le lien : ' + enr.lien, ok ? 'is-ok' : ''); });
+      });
+      $('[data-ao-kit-rappel]', tel).addEventListener('click', function () {
+        var b = this, quand = $('[data-ao-kit-quand]', tel).value;
+        if (!enr) return;
+        if (!quand) { dire(kitEtat, 'Choisissez un jour et une heure.', 'is-err'); return; }
+        b.disabled = true;
+        sauver(true).then(function () { return poster({ action: 'aled08e_ao_kit_rappel', k: enr.cle, quand: quand }); }).then(function (j) {
+          b.disabled = false; dire(kitEtat, j && j.success ? j.data.message : erreur(j), j && j.success ? 'is-ok' : 'is-err');
+        }, function () { b.disabled = false; dire(kitEtat, 'La connexion a coupé. Réessayez.', 'is-err'); });
+      });
+      $('[data-ao-kit-suppr-courant]', tel).addEventListener('click', function () {
+        if (!enr || !window.confirm('Supprimer ce lien ? La publication gardée et sa photo seront effacées (ce que vous voyez ici reste).')) return;
+        var k = enr.cle;
+        poster({ action: 'aled08e_ao_kit_effacer', k: k }).then(function (j) {
+          if (!j || !j.success) { dire(kitEtat, erreur(j), 'is-err'); return; }
+          enr = null; api.photoUrl(''); tel.hidden = true; dire(etat2, j.data.message, 'is-ok');
+          var li = $('[data-ao-kit-suppr="' + k + '"]', pub); if (li) li.closest('li').remove();
+        });
+      });
       function extrait() { var t = $('textarea[name="c_description"]', publierForm); return t ? t.value.trim().slice(0, 80) : ''; }
       function finir() {
+        sauver(true);
         var on = cochees(), publies = on.filter(function (c) { return c.fait === 'publie'; }), partages = on.filter(function (c) { return c.fait === 'partage'; });
-        if (publies.length || partages.length) poster({ action: 'aled08e_ao_fini', publies: publies.map(function (c) { return c.cle; }), partages: partages.map(function (c) { return c.cle; }), extrait: extrait() });
+        if (publies.length) poster({ action: 'aled08e_ao_fini', publies: publies.map(function (c) { return c.cle; }), extrait: extrait() });
         var titre = $('[data-ao-fin-titre]', pub), ou = $('[data-ao-fin-ou]', pub), liens = $('[data-ao-fin-liens]', pub);
         titre.textContent = publies.length ? 'C’est publié !' : (fini ? 'C’est programmé !' : 'C’est prêt !');
-        ou.textContent = ((publies.length ? 'Sur ' + liste(noms(publies)) + '.' : '') + (partages.length ? (publies.length ? ' Et prêt pour ' : 'Prêt pour ') + liste(noms(partages)) + '.' : '') + (fini ? ' ' + fini : '')).trim();
+        ou.textContent = ((publies.length ? 'Sur ' + liste(noms(publies)) + '.' : '') + (partages.length ? (publies.length ? ' Et prêt pour ' : 'Prêt pour ') + liste(noms(partages)) + '.' : '') + (fini ? ' ' + fini : '') + (enr ? ' Votre lien reste valable jusqu’au ' + enr.finTxt + '.' : '')).trim();
         liens.innerHTML = '';
         publies.forEach(function (c) { if (!c.url) return; var li = el('li'), a = el('a', '', 'Voir sur ' + c.nom); a.href = c.url; a.target = '_blank'; a.rel = 'noopener'; li.appendChild(a); liens.appendChild(li); });
         ecran(3);
         titre.focus({ preventScroll: true });
       }
       $('[data-ao-retour]', pub).addEventListener('click', function () { ecran(1); });
+      $('[data-ao-revoir]', pub).addEventListener('click', function () { ecran(2); });
       $('[data-ao-nouvelle]', pub).addEventListener('click', function () {
-        publierForm.reset(); boite.innerHTML = ''; cartes = []; fini = ''; dire(etat2, '');
+        sauver(true);
+        publierForm.reset(); if (api) api.detruire(); api = null; enr = null; cartes = []; fini = ''; dire(etat2, ''); tel.hidden = true;
         if (sec._viderPhoto) sec._viderPhoto();
         ecran(1);
       });
       /* le formulaire : Pépite écrit, puis l'écran 2 */
       publierForm.addEventListener('submit', function (ev) {
         ev.preventDefault();
-        lancer(publierForm, function (blocs) {
-          boite.innerHTML = ''; cartes = []; fini = ''; dire(etat2, ''); prog.hidden = true;
-          blocs.forEach(function (b) { var c = carte(b); cartes.push(c); boite.appendChild(c.el); });
-          majConsigne();
-          ecran(2);
+        lancer(publierForm, function (blocs, data) {
+          if (!data || !data.kit) return;
+          if (window.LMMKit && LMMKit.monter) monterKit(data);
+          else d.addEventListener('lmmkit', function () { monterKit(data); }, { once: true });
         });
       });
-      /* une nouvelle photo : Pépite pourra republier, avec la nouvelle */
-      apresPhoto.push(function () { photo.ref = ''; });
+      /* une nouvelle photo : les fichiers sont refaits, et le lien la garde */
+      apresPhoto.push(function () {
+        photo.ref = '';
+        if (!api) return;
+        api.nouvellePhoto();
+        if (enr && photo.blob) poster({ action: 'aled08e_ao_kit_maj', k: enr.cle, kit: JSON.stringify(api.donnees()), image: photo.blob }).then(function (j) {
+          if (j && j.success && j.data.photo && enr) { enr.photo = j.data.photo; api.photoUrl(j.data.photo); }
+        });
+      });
       /* « Publier cette idée » : l'idée devient les quelques mots de la publication */
       pub._utiliser = function (t) {
         var ta = $('textarea[name="c_description"]', publierForm), max = +(ta.getAttribute('data-max') || 600);
@@ -489,12 +503,22 @@
         ta.dispatchEvent(new Event('input'));
         montrer('publier'); ecran(1); ta.focus();
       };
-      /* mes programmées : annuler */
+      /* mes programmées : annuler ; mes publications prêtes : supprimer le lien */
       $$('[data-ao-deprog]', pub).forEach(function (b) {
         b.addEventListener('click', function () {
           b.disabled = true;
           poster({ action: 'aled08e_ao_deprogrammer', id: b.getAttribute('data-ao-deprog') }).then(function (j) {
             if (j && j.success) { var li = b.closest('li'), ul = li.parentNode; li.remove(); if (!ul.children.length) ul.closest('.ao-progs').remove(); }
+            else b.disabled = false;
+          }, function () { b.disabled = false; });
+        });
+      });
+      $$('[data-ao-kit-suppr]', pub).forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (!window.confirm('Supprimer ce lien ? La publication et sa photo seront effacées.')) return;
+          b.disabled = true;
+          poster({ action: 'aled08e_ao_kit_effacer', k: b.getAttribute('data-ao-kit-suppr') }).then(function (j) {
+            if (j && j.success) { var li = b.closest('li'), ul = li.parentNode; li.remove(); if (!ul.children.length) ul.closest('.ao-kits').remove(); }
             else b.disabled = false;
           }, function () { b.disabled = false; });
         });

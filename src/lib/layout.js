@@ -107,24 +107,35 @@ function graph(p) {
 // est le même pour toutes les pages : data-chemins dit quelles pages appartiennent à quel atelier).
 // Sur téléphone : chaque atelier est une carte, ses pages en petits boutons avec icône, et « Créer mon site » tout en bas.
 const ATELIERS = ateliers.filter((a) => !a.cache && (a.id !== 'outils' || (outilsOffre && outilsOffre.actif)));
+// Mini Tuto : les thèmes qui ont au moins un tuto (voir TUTOS dans src/lib/components.js), puis les guides gratuits
+const TUTOS = C.TUTOS;
+const lien = (k) => ({ path: sections[k].path, label: sections[k].label, icon: sections[k].icon, color: sections[k].color });
+const AT = (id) => ateliers.find((a) => a.id === id) || {};
 const SOUS_MENU = {
-  maison: ['equipe', 'liaalex', 'contact'],
-  sites: ['creer', 'forfaits', 'seo', 'confiance', 'metiers', 'accompagnement'],
+  maison: [{ path: AT('maison').path, label: 'Le concept', icon: 'house', color: 'lilac' }, lien('equipe'), lien('liaalex'), lien('contact')],
+  sites: ['creer', 'forfaits', 'seo', 'confiance', 'metiers', 'accompagnement'].map(lien),
+  ecole: [
+    { path: TUTOS.HUB, label: 'Tous les tutos', icon: 'book-open', color: 'lilac' },
+    ...TUTOS.themes().map((g) => ({ path: `${TUTOS.HUB}#${g.id}`, label: g.titre, icon: g.icon, color: g.color })),
+    ...(TUTOS.guides.length ? [{ path: `${TUTOS.HUB}#guides`, label: 'Nos guides gratuits', icon: 'gift', color: 'sky' }] : []),
+  ],
 };
 const prixOutilMin = outilsOffre ? Math.min(...outilsOffre.outils.filter((o) => o.statut === 'pret').map((o) => o.prix)) : 0;
 const DESC_ATELIER = {
-  maison: 'Alex et la petite bande',
+  maison: 'Le concept, Alex et la bande',
   sites: `Votre site, dès ${creation.prix} €`,
   outils: outilsOffre ? `Dès ${C.euro(prixOutilMin)} par mois, ${outilsOffre.essaiJours} jours gratuits` : '',
-  ecole: 'De courtes vidéos',
+  ecole: (C.TUTOS.offre && C.TUTOS.offre.slogan) || 'Des tutos clairs et complets',
 };
 // Les pages rattachées à chaque atelier, en plus de celles de son menu (pour savoir quel onglet allumer)
 const RATTACHE = {
   maison: ['/faq/'],
-  sites: ['/commander/', '/commande-confirmee/', '/etre-visible-sur-google/', '/pourquoi-un-site-internet/', '/creation-site-internet-ardennes/', '/guides/', '/lexique/', '/comparatif/', '/pourquoi-moins-cher/', '/fidelite/', ...METIERS.map((m) => `/${m.slug}/`)],
+  sites: ['/commander/', '/commande-confirmee/', '/etre-visible-sur-google/', '/pourquoi-un-site-internet/', '/creation-site-internet-ardennes/', '/lexique/', '/comparatif/', '/pourquoi-moins-cher/', '/fidelite/', ...METIERS.map((m) => `/${m.slug}/`)],
+  ecole: ['/guides/'],
   outils: [],
 };
-const cheminsDe = (a) => [a.path, ...(SOUS_MENU[a.id] || []).map((k) => sections[k].path), ...(RATTACHE[a.id] || [])].filter((x, i, t) => t.indexOf(x) === i);
+// les ancres (#theme) ne servent pas à choisir l'onglet : seule l'adresse compte
+const cheminsDe = (a) => [a.path, ...(SOUS_MENU[a.id] || []).map((x) => x.path), ...(RATTACHE[a.id] || [])].filter((x, i, t) => !x.includes('#') && t.indexOf(x) === i);
 // L'atelier d'une page : le chemin le plus long qui la contient (« / » seulement pour l'accueil)
 function atelierDe(path) {
   let best = null, len = -1;
@@ -145,10 +156,7 @@ function header(currentPath) {
     const cur = on ? ` aria-current="${a.path === currentPath ? 'page' : 'true'}"` : '';
     return `<li class="onglet-li c-${a.color}${on ? ' is-on' : ''}" data-chemins="${cheminsDe(a).join(' ')}">
           <div class="onglet-tete"><a class="onglet" href="${a.path}"${cur}>${imgMonstre(a.monstre, 32, 'onglet-img')}<span class="onglet-txt">${esc(a.label)}<small>${esc(DESC_ATELIER[a.id] || a.court || '')}</small></span>${icon('chevron-right')}</a>${sous.length ? `<button class="onglet-plus" type="button" aria-expanded="false" aria-controls="sm-${a.id}"><span class="sr-only">Les pages : ${esc(a.label)}</span>${icon('chevron-down')}</button>` : ''}</div>
-          ${sous.length ? `<ul class="sous-menu" id="sm-${a.id}">${sous.map((k) => {
-            const s = sections[k];
-            return `<li><a class="nav-link sous-lien c-${s.color}" href="${s.path}"${currentPath === s.path ? ' aria-current="page"' : ''}>${icon(s.icon)}<span>${esc(s.label)}</span></a></li>`;
-          }).join('')}</ul>` : ''}
+          ${sous.length ? `<ul class="sous-menu${sous.length > 5 ? ' is-long' : ''}" id="sm-${a.id}">${sous.map((s) => `<li><a class="nav-link sous-lien c-${s.color}" href="${s.path}"${currentPath === s.path ? ' aria-current="page"' : ''}>${icon(s.icon)}<span>${esc(s.label)}</span></a></li>`).join('')}</ul>` : ''}
         </li>`;
   };
   return `<a class="skip" href="#contenu">Aller au contenu</a>
@@ -196,11 +204,12 @@ function footer(p) {
     ${col('Être visible', `<li><a href="/pourquoi-un-site-internet/">Pourquoi avoir un site internet ?</a></li>
         <li><a href="/etre-visible-sur-google/">Être visible sur Google</a></li>
         <li><a href="${sections.seo.path}">Être trouvé sur Google : notre méthode</a></li>
-        <li><a href="/guides/">Guides pour créer son site</a></li>
+        <li><a href="${TUTOS.HUB}">Mini Tuto : les tutos</a></li>
         <li><a href="/lexique/">Lexique : les mots d’internet</a></li>`)}
     ${col('Votre métier', `${METIERS.map((m) => `<li><a href="/${m.slug}/">${m.nom}</a></li>`).join('')}
         <li><a href="/creation-site-internet-ardennes/">Création de site dans les Ardennes</a></li>`)}
-    ${col('Les Minis Monstres', `<li><a href="${sections.liaalex.path}">Pourquoi les Minis Monstres ?</a></li>
+    ${col('Les Minis Monstres', `<li><a href="${AT('maison').path}">Le concept de la maison</a></li>
+        <li><a href="${sections.liaalex.path}">Pourquoi les Minis Monstres ?</a></li>
         <li><a href="${sections.methode.path}">Pourquoi c’est moins cher</a></li>
         <li><a href="${sections.comparatif.path}">Comparatif avec les autres solutions</a></li>
         <li><a href="${sections.equipe.path}">Notre équipe</a></li>

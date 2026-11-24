@@ -8,8 +8,9 @@
  *  - LinkedIn (profil) : par l'application LinkedIn des Minis Monstres (identifiant et clé secrète dans les réglages).
  *  - Bluesky et Mastodon : le client donne un mot de passe d'application ou un code. Aucune application à déclarer.
  *  - Mon site : une actualité publiée sur le site du client par son connecteur (actions « image » et « publier »).
- *  - La fiche Google n'a pas d'accès simple : elle passe toujours par « Partager » (texte copié, photo, fiche ouverte).
- * Un réseau pas encore relié se publie avec « Partager » (outils.js), sans aucun accord de Meta ou de Google.
+ *  - La fiche Google n'a pas d'accès simple : elle passe toujours par son bouton (texte copié, photo, fiche ouverte).
+ * Un réseau pas encore relié se publie avec son bouton du kit de publication (kit-publication.php et kit-publication.js) :
+ * lien prérempli, ou fichier prêt et légende copiée, sans aucun accord de Meta, de TikTok ou de Google.
  * Les jetons d'accès restent dans la fiche du client (jamais affichés). La photo est gardée une heure (ou jusqu'à la
  * publication programmée), le temps que les réseaux la récupèrent, puis effacée.
  */
@@ -260,7 +261,7 @@ function aled08e_rs_directs($uid) {
 function aled08e_rs_publier($uid, $reseau, $texte, $image) {
     $c = aled08e_rs_get($uid);
     $relies = aled08e_rs_directs($uid);
-    if (!isset($relies[$reseau])) return new WP_Error('aled08_rs', 'Ce réseau n’est pas encore présenté à Pépite : utilisez « Partager ».');
+    if (!isset($relies[$reseau])) return new WP_Error('aled08_rs', 'Ce réseau n’est pas encore présenté à Pépite : utilisez son bouton dans la publication.');
     switch ($reseau) {
         case 'site': return aled08e_rs_site_publier($uid, $texte, $image);
         case 'bluesky': return aled08e_rs_bluesky_publier($c['bluesky'], $texte, $image);
@@ -369,7 +370,7 @@ add_action('template_redirect', function () {
         if (!$pages) $fin(false, 'Aucune page Facebook trouvée. Il faut gérer une page (pas seulement un profil), et la cocher au moment de l’accord.');
         $c['meta'] = ['pages' => $pages, 'page' => 0];
         aled08e_rs_set($uid, $c);
-        $fin(true, 'Pépite connaît maintenant votre page Facebook « ' . $pages[0]['nom'] . ' »' . ($pages[0]['ig_id'] ? ' et votre Instagram @' . $pages[0]['ig_nom'] : '. Pour Instagram, il faut un compte professionnel relié à cette page : en attendant, « Partager » marche très bien') . '.');
+        $fin(true, 'Pépite connaît maintenant votre page Facebook « ' . $pages[0]['nom'] . ' »' . ($pages[0]['ig_id'] ? ' et votre Instagram @' . $pages[0]['ig_nom'] : '. Pour Instagram, il faut un compte professionnel relié à cette page : en attendant, le bouton « Publier sur Instagram » marche très bien') . '.');
     }
 
     $t = aled08e_rs_http('POST', 'https://www.linkedin.com/oauth/v2/accessToken', ['body' => ['grant_type' => 'authorization_code', 'code' => $code, 'redirect_uri' => $retour, 'client_id' => aled08e_rs_opt('linkedin_id'), 'client_secret' => aled08e_rs_opt('linkedin_secret')]]);
@@ -444,8 +445,12 @@ add_action('wp_ajax_aled08e_publier', function () {
 /* =========================================================================
  *  « Mes réseaux » : ce que le client voit dans l'outil
  * ========================================================================= */
-function aled08e_rs_noms() { return ['instagram' => 'Instagram', 'facebook' => 'Facebook', 'google' => 'Fiche Google', 'linkedin' => 'LinkedIn', 'site' => 'Mon site', 'bluesky' => 'Bluesky', 'mastodon' => 'Mastodon']; }
-/* « Mes réseaux » : présenter Pépite à ses comptes, une seule fois. Sans liaison, « Partager » fait le travail. */
+function aled08e_rs_noms() {
+    $n = ['instagram' => 'Instagram', 'facebook' => 'Facebook', 'google' => 'Fiche Google', 'linkedin' => 'LinkedIn', 'site' => 'Mon site', 'bluesky' => 'Bluesky', 'mastodon' => 'Mastodon'];
+    if (function_exists('aled08e_kit_defs')) foreach (aled08e_kit_defs() as $id => $d) $n += [$id => $d['nom']];
+    return $n;
+}
+/* « Mes réseaux » : présenter Pépite à ses comptes, une seule fois. Sans liaison, le bouton du réseau fait le travail. */
 function aled08e_rs_html($uid) {
     $relies = aled08e_rs_relies($uid);
     $c = aled08e_rs_get($uid);
@@ -455,17 +460,18 @@ function aled08e_rs_html($uid) {
     $delier = function ($id) { return '<button type="button" class="link-btn" data-rs-delier="' . esc_attr($id) . '">Ne plus publier ici</button>'; };
     $nb = count($relies) + (aled08e_rs_site_ok($uid) ? 1 : 0);
     $h = '<details class="rs ao-reseaux"' . (isset($_GET['aled08e_rs']) ? ' open' : '') . '><summary>' . aled08e_icon('link') . '<span>Mes réseaux' . ($nb ? ' : Pépite en connaît ' . $nb : '') . '</span></summary>'
-        . '<p class="app-note">Présentez Pépite une seule fois à un compte : ensuite, elle y publie toute seule. Un réseau pas présenté marche aussi, avec « Partager » : le texte et la photo sont prêts, il reste un geste.</p><ul class="rs-liste">';
+        . '<p class="app-note">Présentez Pépite une seule fois à un compte : ensuite, elle y publie toute seule. Un réseau pas présenté marche aussi, avec son bouton : le texte et le bon fichier sont prêts, il reste un geste.</p><ul class="rs-liste">';
     // Facebook et Instagram : un seul accord chez Meta donne les deux
     if (isset($relies['facebook'])) {
         $h .= $ligne('Facebook', $compte('facebook') . $delier('facebook'), true);
-        $h .= $ligne('Instagram', isset($relies['instagram']) ? $compte('instagram') : '<span class="rs-bientot">Pour publier directement, il faut un compte Instagram professionnel relié à votre page Facebook. En attendant, « Partager » marche très bien.</span>', isset($relies['instagram']));
+        $h .= $ligne('Instagram', isset($relies['instagram']) ? $compte('instagram') : '<span class="rs-bientot">Pour publier directement, il faut un compte Instagram professionnel relié à votre page Facebook. En attendant, le bouton « Publier sur Instagram » marche très bien.</span>', isset($relies['instagram']));
     } elseif (aled08e_rs_meta_ok()) {
         $h .= '<li class="rs-ligne"><a class="btn btn-light btn-sm" href="' . $aller('facebook') . '">' . aled08e_icon('send') . '<span>Présenter Pépite à mon Instagram et mon Facebook</span></a></li>';
     }
     if (isset($relies['linkedin'])) $h .= $ligne('LinkedIn', $compte('linkedin') . $delier('linkedin'), true);
     elseif (aled08e_rs_linkedin_ok()) $h .= '<li class="rs-ligne"><a class="btn btn-light btn-sm" href="' . $aller('linkedin') . '">' . aled08e_icon('send') . '<span>Présenter Pépite à mon LinkedIn</span></a></li>';
-    $h .= $ligne('Fiche Google', '<span class="rs-bientot">Avec « Partager » : le texte est copié et votre fiche s’ouvre.</span>');
+    $h .= $ligne('Fiche Google', '<span class="rs-bientot">Avec son bouton : le texte est copié et votre fiche s’ouvre.</span>');
+    $h .= $ligne('TikTok, YouTube, X, Threads, Pinterest, WhatsApp', '<span class="rs-bientot">Avec leur bouton : la vidéo ou la photo au bon format, le texte déjà rempli ou copié.</span>');
     $h .= $ligne('Mon site', aled08e_rs_site_ok($uid) ? '<span class="rs-compte">' . aled08e_icon('check') . 'Pépite y publie une actualité</span>' : '<span class="rs-bientot">Pour les sites faits par Les Minis Monstres.</span>', aled08e_rs_site_ok($uid));
     foreach (['bluesky' => 'Bluesky', 'mastodon' => 'Mastodon'] as $id => $nom) if (isset($relies[$id])) $h .= $ligne($nom, $compte($id) . $delier($id), true);
     $h .= '</ul>';
@@ -501,7 +507,7 @@ function aled08e_rs_html($uid) {
 function aled08e_rs_reglages_html() {
     $m = function ($k) { $v = aled08e_rs_opt($k); return $v === '' ? 'aucune' : 'enregistrée, se termine par ' . substr($v, -4); };
     echo '<h2>Publier sur les réseaux (outil « Publier partout »)</h2>';
-    echo '<p>Bluesky et Mastodon marchent sans rien régler ici : chaque client relie son compte dans son espace. Pour Facebook, Instagram et LinkedIn, il faut déclarer une fois l’application des Minis Monstres chez le réseau, puis coller ici son identifiant et sa clé secrète. Tant que c’est vide, le client publie avec « Partager » (partage du téléphone, ou texte copié et réseau ouvert).</p>';
+    echo '<p>Bluesky et Mastodon marchent sans rien régler ici : chaque client relie son compte dans son espace. Pour Facebook, Instagram et LinkedIn, il faut déclarer une fois l’application des Minis Monstres chez le réseau, puis coller ici son identifiant et sa clé secrète. Tant que c’est vide, le client publie avec le bouton de chaque réseau (lien prérempli, ou fichier prêt, légende copiée et réseau ouvert).</p>';
     echo '<table class="form-table" role="presentation">';
     echo '<tr><th>Facebook et Instagram (Meta)</th><td><p><label>Identifiant de l’application <input type="text" name="rs_meta_id" class="regular-text" value="' . esc_attr(aled08e_rs_opt('meta_id')) . '" autocomplete="off"></label></p>'
         . '<p><label>Clé secrète <input type="password" name="rs_meta_secret" class="regular-text" autocomplete="off"></label> <span class="description">' . esc_html($m('meta_secret')) . '. Laissez vide pour ne rien changer.</span></p>'

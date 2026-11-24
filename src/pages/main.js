@@ -9,7 +9,7 @@ const ABO = forfaits[0];
 const AUTO = creationSeule;
 const { icon } = require('../lib/icons');
 const { monster } = require('../lib/monsters');
-const { md, inline, esc } = require('../lib/md');
+const { md, inline, esc, plain } = require('../lib/md');
 const C = require('../lib/components');
 const FAQ = require('../content/faq');
 const legal = require('../content/legal');
@@ -19,7 +19,6 @@ const PAGE_GOOGLE = C.PACK_SEO || { name: 'Page de visibilité Google', price: {
 const PRIX_PAGE = PAGE_GOOGLE.price.once;
 // Un bloc repris tel quel sur plusieurs pages (scripts/check.js ne le compte pas comme une phrase en double)
 const commun = (html) => `<!--commun-->${html}<!--/commun-->`;
-const GUIDES = require('../content/guides');
 const BRIEF = require('../content/brief');
 // V2 : pages métier (/<slug>/) et pages de réassurance, guides de fond et page locale
 let METIERS = [], METIERS_PUBLIE = '2026-11-16';
@@ -51,27 +50,111 @@ function formHidden() {
   return `<input type="hidden" name="_t" value=""><div class="hp" aria-hidden="true"><label>Ne pas remplir <input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>`;
 }
 
-// ====================================================================== ACCUEIL
-// La phrase principale d'abord (config.phrase), puis le positionnement (un site, un but), les prix en clair,
-// la bande, et pourquoi c'est moins cher. Peu de blocs : la plupart des visiteurs sont sur téléphone.
-function home() {
-  const art = (b) => (b.monstre === 'lia' ? monster('coucou') : C.petit(b.monstre));
-  // La maison (24 novembre 2026) : l'accroche, la bande, puis une grande porte par atelier non caché.
-  // L'école cachée : une petite mention « bientôt », sans lien.
-  const AT = (id) => ateliers.find((x) => x.id === id);
+// ====================================================================== LA MAISON ET SES PORTES (24 novembre 2026)
+// Une grande porte par atelier, dans l'ordre de config.ateliers : Mini Site, Mini Tuto, Mini Outils (et la bande, sur /la-maison/).
+const MAISON = ateliers.find((x) => x.id === 'maison') || { path: '/la-maison/', label: 'La maison' };
+function portesAteliers({ bande: avecBande = false } = {}) {
   const prixOutilMin = Math.min(...outilsOffre.outils.filter((o) => o.statut === 'pret').map((o) => o.prix));
-  const PORTES = [
-    { a: AT('sites'), prix: `Dès ${euro(ESS.price)}`, bouton: 'Créer mon site', href: sections.creer.path },
-    ...(outilsOffre.actif ? [{ a: AT('outils'), prix: `Dès ${euro(prixOutilMin)} par mois`, bouton: 'Voir les outils', href: AT('outils').path }] : []),
-    { a: AT('ecole'), prix: '', bouton: 'Voir les cours', href: AT('ecole').path },
-  ].filter((p) => p.a && !p.a.cache);
-  const bientot = ateliers.filter((x) => x.cache && x.id !== 'maison');
-  const porte = (p) => `<article class="porte c-${p.a.color} reveal">
+  const OF = C.TUTOS.offre;
+  const P = {
+    sites: (a) => ({ a, prix: `Dès ${euro(ESS.price)}`, bouton: 'Créer mon site', href: sections.creer.path }),
+    ecole: (a) => ({ a, prix: OF.prix ? `${euro(OF.prix)} le tuto` : 'Gratuit', bouton: 'Voir les tutos', href: a.path }),
+    outils: (a) => (outilsOffre.actif ? { a, prix: `Dès ${euro(prixOutilMin)} par mois`, bouton: 'Voir les outils', href: a.path } : null),
+  };
+  const portes = ateliers.filter((a) => !a.cache && P[a.id]).map((a) => P[a.id](a)).filter(Boolean);
+  if (avecBande) portes.push({ a: { label: 'La bande', color: 'pink', monstre: 'mascotte', court: `Alex et ${NB_BANDE} petits monstres, chacun son métier : faites connaissance avec ceux qui travaillent pour vous.` }, prix: '', bouton: 'Rencontrer la bande', href: sections.equipe.path });
+  return portes;
+}
+const porteHtml = (p) => `<article class="porte c-${p.a.color} reveal">
     <div class="porte-art" aria-hidden="true">${C.imgMonstre(p.a.monstre, 120, { tot: true })}</div>
     <h2 class="porte-titre"><a href="${p.href}">${esc(p.a.label)}</a></h2>
     <p>${esc(p.a.court)}</p>
     <div class="porte-pied">${p.prix ? `<b>${p.prix}</b>` : ''}<span class="btn btn-noir" aria-hidden="true">${esc(p.bouton)}</span></div>
   </article>`;
+// les portes reprennent les phrases de config.ateliers sur plusieurs pages : bloc commun (hors contrôle des phrases dupliquées)
+const portesHtml = (portes) => `<!--commun--><div class="portes portes-${portes.length}">${portes.map(porteHtml).join('')}</div><!--/commun-->`;
+
+function laMaisonPage() {
+  const crumbs = [HOME, { name: MAISON.label, path: MAISON.path }];
+  const AT = (id) => ateliers.find((x) => x.id === id) || {};
+  const salle = (a, texte) => `<li class="piece c-${a.color}"><a href="${a.path}"><span class="piece-art" aria-hidden="true">${C.imgMonstre(a.monstre, 72)}</span><span class="piece-txt"><strong>${esc(a.label)}</strong><small>${texte}</small></span></a></li>`;
+  const bandeArt = ['bricou', 'gelee', 'mochi', 'etoile', 'chaton'];
+  const body = `<section class="page-hero maison-page-hero c-lilac">
+  <div class="container page-hero-in has-mascot">
+    <div class="page-hero-text">
+      ${C.breadcrumbs(crumbs)}
+      <p class="where">${icon('house')}<span>${esc(MAISON.label)} · le concept</span></p>
+      <h1>Une maison, trois ateliers, <mark>une petite bande au milieu</mark>.</h1>
+      <p class="lead">Les Minis Monstres, c’est une maison. Alex la dirige, la bande y travaille, et chaque atelier s’occupe d’une partie de votre activité sur internet. Vous entrez par la porte qui vous intéresse.</p>
+    </div>
+    <div class="page-hero-art" aria-hidden="true">${C.imgMonstre('mascotte', 170, { tot: true })}</div>
+  </div>
+</section>
+
+<section class="section" id="plan"><div class="container">
+  <h2 class="section-title">Le plan de la maison</h2>
+  <p class="section-sub">En haut, celui qui décide. Au centre, ceux qui travaillent. En bas, les portes où l’on vous reçoit.</p>
+  <div class="maison-plan reveal">
+    <div class="maison-toit"><span class="maison-alex" aria-hidden="true">${C.alexPortrait({ cls: 'maison-alex-svg' })}</span><p><strong>Alex, à la tête</strong><small>Il conçoit les sites, relit le travail de la bande et décide de ce qui change dans la maison.</small></p></div>
+    <div class="maison-centre"><span class="maison-bande" aria-hidden="true">${bandeArt.map((m) => C.imgMonstre(m, 48)).join('')}</span><p><strong>La bande, au centre</strong><small>${Maj(NB_BANDE)} petits monstres, chacun avec son métier, qui passent d’un atelier à l’autre.</small></p></div>
+    <ul class="maison-pieces">
+      ${salle(AT('sites'), 'Votre site, fait pour être trouvé')}
+      ${salle(AT('ecole'), 'Apprendre à votre rythme, à petit prix')}
+      ${OUTILS_PAGE ? salle(AT('outils'), 'Les corvées faites chaque jour pour vous') : ''}
+    </ul>
+  </div>
+</div></section>
+
+<section class="section section-soft" id="vision"><div class="container">
+  <h2 class="section-title">Notre idée : la machine pour le répétitif, nous pour le reste</h2>
+  <div class="maison-vision reveal">
+    <div class="maison-vision-txt prose">
+      <p>Pensez au lave-vaisselle. Personne ne regrette de laver ses verres à la main. On garde son temps pour cuisiner, recevoir, discuter à table.</p>
+      <p>Chez nous, c’est pareil. Ce qui se répète d’un client à l’autre est confié à des machines bien réglées : préparer les pages, alléger les images, contrôler chaque lien. Le temps gagné va à ce qui compte : écouter votre projet, choisir les bons mots, soigner les détails.</p>
+      <p><strong>Le résultat : un travail soigné, plus vite, et un prix qui reste doux.</strong></p>
+    </div>
+    <span class="maison-vision-art" aria-hidden="true">${C.imgMonstre('bricou', 150)}</span>
+  </div>
+</div></section>
+
+<section class="section" id="promesses"><div class="container">
+  <h2 class="section-title">Ce que la maison vous promet</h2>
+  <p class="section-sub">Quatre choses simples, valables dans chaque atelier.</p>
+  <div class="feats feats-4 maison-promesses">
+    <div class="feat reveal">${icon('phone-call')}<h3>Un appel d’Alex avant chaque site</h3><p>Avant que la bande commence, Alex vous téléphone. Vous lui parlez de votre métier, il pose ses questions, et on démarre sur de bonnes bases.</p></div>
+    <div class="feat reveal">${icon('receipt')}<h3>Un seul compte, une seule facture</h3><p>Site, tutos, outils : tout se retrouve dans le même espace client. Un identifiant à retenir, un relevé clair chaque mois.</p></div>
+    <div class="feat reveal">${icon('piggy-bank')}<h3>${marche.foisMin} fois moins cher qu’un indépendant</h3><p>Pour un site de même taille, comparé aux prix publics relevés en France. Les détails sont sur <a href="${sections.methode.path}">notre page sur les prix</a>.</p></div>
+    <div class="feat reveal">${icon('house')}<h3>Ni bureaux ni loyer</h3><p>La maison n’a pas de vitrine en ville à payer. Cette économie ne se retrouve pas sur votre facture : elle reste chez vous.</p></div>
+  </div>
+</div></section>
+
+<section class="section section-soft" id="portes"><div class="container">
+  <h2 class="section-title">Les quatre portes</h2>
+  <p class="section-sub">Choisissez par où entrer. Vous pourrez toujours passer dans une autre pièce.</p>
+  ${portesHtml(portesAteliers({ bande: true }))}
+</div></section>
+
+${C.ctaBand({ title: 'On commence par votre site ?', text: 'Le Site Essentiel, en ligne en quelques heures. Vous voyez le prix avant de commander.' })}`;
+  return {
+    path: MAISON.path,
+    color: 'lilac',
+    bodyClass: 'page-maison',
+    title: 'La maison des Minis Monstres : le concept | Les Minis Monstres',
+    description: `Une maison avec Alex à la tête, une petite bande au centre et trois ateliers : Mini Site, Mini Tuto et Mini Outils. Un seul compte, ${marche.foisMin} fois moins cher.`,
+    crumbs,
+    body,
+    priority: 0.8,
+  };
+}
+
+// ====================================================================== ACCUEIL
+// La phrase principale d'abord (config.phrase), puis le positionnement (un site, un but), les prix en clair,
+// la bande, et pourquoi c'est moins cher. Peu de blocs : la plupart des visiteurs sont sur téléphone.
+function home() {
+  const art = (b) => (b.monstre === 'lia' ? monster('coucou') : C.petit(b.monstre));
+  // La maison (24 novembre 2026) : l'accroche, la bande, puis une grande porte par atelier (Mini Site, Mini Tuto, Mini Outils).
+  const PORTES = portesAteliers();
+  const bientot = ateliers.filter((x) => x.cache && x.id !== 'maison');
   // la bande éparpillée à droite de l'accroche (les dessins de src/assets/img/mail)
   const EPARS = ['mascotte', 'bricou', 'chaton', 'etoile', 'mochi', 'gelee'];
   const body = `<section class="hero maison-hero">
@@ -80,12 +163,12 @@ function home() {
       <p class="hero-sur maison-sur">Une petite bande qui travaille pour vous</p>
       <h1>Vous faites votre métier. <mark>Les monstres font le reste</mark>.</h1>
       <p class="hero-lead">Votre site internet, vos réseaux, vos avis, vos produits : chaque petit monstre a sa tâche et la fait pour vous, sans rien à installer ni à brancher. Un seul compte, une seule facture.</p>
-      <div class="hero-ctas"><a class="btn btn-primary btn-lg" href="#qui-fait-quoi">Découvrir la bande</a>${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les prix')}</div>
+      <div class="hero-ctas">${C.btn(MAISON.path, 'btn-primary btn-lg', 'house', 'Le concept')}${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les prix')}</div>
     </div>
     <div class="hero-art maison-art" aria-hidden="true">${EPARS.map((m, i) => `<span class="maison-m mm-${i}">${C.imgMonstre(m, 110, { tot: true })}</span>`).join('')}</div>
   </div>
   <div class="container">
-    <div class="portes portes-${PORTES.length}">${PORTES.map(porte).join('')}</div>
+    ${portesHtml(PORTES)}
     ${bientot.length ? `<p class="portes-bientot">${bientot.map((x) => `${C.imgMonstre(x.monstre, 36)}<span><b>Bientôt : ${esc(x.label)}.</b> ${esc(x.court)}</span>`).join('')}</p>` : ''}
   </div>
 </section>
@@ -114,7 +197,7 @@ ${C.modulesSite()}
   <h2 class="section-title">Alex et la bande</h2>
   <p class="section-sub">Alex conçoit votre site et vérifie tout. Les Minis Monstres l’aident, chacun son métier.</p>
   <ul class="bande-courte reveal">${bande.map((b) => `<li><span class="bande-courte-art" aria-hidden="true">${art(b)}</span><strong>${esc(b.nom)}</strong><small>${esc(b.role)}</small></li>`).join('')}</ul>
-  <p class="center more">${C.btn(sections.equipe.path, 'btn-light', sections.equipe.icon, 'Rencontrer la bande')}</p>
+  <p class="center more hero-ctas centered">${C.btn(sections.equipe.path, 'btn-light', sections.equipe.icon, 'Rencontrer la bande')}${C.btn(MAISON.path, 'btn-light', 'house', 'Découvrir la maison')}</p>
 </div></section>
 
 ${C.ctaBand({ title: 'On ouvre votre vitrine sur internet ?', text: 'Choisissez votre site en deux minutes. Le prix s’affiche tout de suite.' })}`;
@@ -449,7 +532,7 @@ Ce ne sont **pas des pages inutiles** remplies de mots-clés : Google les repèr
 
 Votre site peut garder **une seule page principale**, simple et claire. À côté, on ajoute des pages de visibilité Google, chacune sur un sujet précis. Vos visiteurs voient un site simple, et Google trouve plus de bonnes raisons de vous montrer.
 
-Ce site applique la même méthode. Ses [guides](/guides/) répondent chacun à une question précise : le prix d’un site, le choix d’un nom de domaine, la fiche Google, et d’autres.`), { ico: 'file-text' }),
+Ce site applique la même méthode. Ses [tutos](/mini-tuto/) répondent chacun à une question précise : le prix d’un site, le choix d’un nom de domaine, la fiche Google, et d’autres.`), { ico: 'file-text' }),
     C.deroulant('Ce qu’on ne promet pas', md(`Personne ne peut garantir la première place sur Google. Méfiez-vous de ceux qui le font.
 
 Les premiers effets arrivent en général en quelques semaines, parfois quelques mois pour les recherches les plus disputées.
@@ -1193,74 +1276,252 @@ function contactPage() {
   };
 }
 
-// ====================================================================== GUIDES (pages utiles pour le référencement)
-const guideCard = (g) => `<a class="guide-card reveal" href="/guides/${g.slug}/"><span class="type-ico">${icon(g.icon)}</span><span class="guide-card-text"><strong>${inline(g.nom)}</strong><span>${inline(g.resume)}</span></span>${icon('arrow-right')}</a>`;
+// ====================================================================== MINI TUTO : « Minis Tutos, Minis Prix » (24 novembre 2026)
+// Le hub /mini-tuto/, une page par tuto (/mini-tuto/<slug>/, découpée en pages), et les guides gratuits (/guides/<slug>/).
+// Les données : C.TUTOS (components.js), le prix : config.tutosOffre. Un tuto payant ne montre en public que ses premières
+// pages (tutosOffre.apercuPages) : le contenu des suivantes n'est jamais écrit dans la page publique.
+const TUTOS = C.TUTOS;
+const HUB = TUTOS.HUB;
+const ECOLE = ateliers.find((x) => x.id === 'ecole') || { label: 'Mini Tuto', path: HUB };
+const TUTO_PUBLIE = '2026-11-24'; // date des tutos sans date propre (champs facultatifs `date` et `modifie`)
+const sansAccent = (x) => String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const nbTxt = (n, mot) => `${n} ${mot}${n > 1 ? 's' : ''}`;
+const prixTuto = (t) => (t.gratuit ? 'Gratuit' : euro(t.prix));
+const achatTuto = (t) => `${sections.monespace.path}?tuto=${encodeURIComponent(t.slug)}`;
+const HUB_CRUMBS = [HOME, { name: ECOLE.label, path: HUB }];
+const GUIDES_TITRE = 'Nos guides gratuits';
 
-function guidesHub() {
-  const crumbs = crumb('guides');
-  const body = `${C.pageHero({
-    section: 'guides',
-    h1: 'Guides : tout comprendre avant de créer votre site',
-    lead: 'Des explications simples pour créer votre site et devenir visible. Pas de jargon, pas de blabla : ce qu’il faut savoir, et rien d’autre.',
-    crumbs,
-  })}
-${GUIDES.groupes
-  .map(
-    (gr, i) => `<section class="section${i % 2 ? ' section-soft' : ''}"><div class="container">
-  <h2 class="section-title">${gr.titre}</h2>
-  <p class="section-lead">${inline(gr.texte)}</p>
-  <div class="guide-cards">${GUIDES.guides.filter((g) => g.groupe === gr.id).map(guideCard).join('')}</div>
-</div></section>`
-  )
-  .join('\n')}
-${C.ctaBand({ title: 'Vous avez votre réponse ?', text: 'Il ne manque que votre vitrine sur internet. Choisissez votre site en deux minutes : le prix s’affiche avant de commander.' })}`;
+// Une carte de tuto ou de guide (hub, « À lire ensuite ») : le monstre, le nom, le résumé, la durée, les pages et le prix.
+// data-texte : ce que cherche le petit champ de recherche du hub (sans accents) ; data-gratuit : pour le filtre « Gratuits ».
+function tutoCarte(t, { titre = 'h3' } = {}) {
+  const th = (t.type === 'tuto' && TUTOS.theme(t.groupe)) || { color: 'sky', titre: GUIDES_TITRE };
+  return `<a class="tuto-carte c-${th.color || 'lilac'} reveal" href="${t.path}" data-tuto${t.gratuit ? ' data-gratuit' : ''} data-texte="${esc(sansAccent(plain(`${t.nom} ${t.resume} ${th.titre || ''}`)))}">
+      <span class="tuto-carte-art" aria-hidden="true">${C.imgMonstre(t.monstre, 56)}</span>
+      <span class="tuto-carte-corps"><${titre} class="tuto-carte-nom">${inline(t.nom)}</${titre}><span class="tuto-carte-resume">${inline(t.resume)}</span>
+      <span class="tuto-meta"><span>${icon('clock')}${t.duree} min</span>${t.type === 'tuto' ? `<span>${icon('layers')}${nbTxt(t.pages.length, 'page')}</span>` : `<span>${icon('file-text')}Article</span>`}<b class="tuto-prix${t.gratuit ? ' is-gratuit' : ''}">${prixTuto(t)}</b></span></span>
+    </a>`;
+}
+
+// ---------------------------------------------------------------- le hub
+function tutoHub() {
+  const crumbs = HUB_CRUMBS;
+  const OF = TUTOS.offre;
+  const themes = TUTOS.themes();
+  const T = TUTOS.tutos, G = TUTOS.guides;
+  const offerts = T.filter((t) => t.gratuit).length;
+  const art = ['mochi', 'gelee', 'bricou', 'etoile', 'chaton'];
+  const slogan = (OF.slogan || 'Minis Tutos, Minis Prix').split(/,\s*/);
+  const filtre = (id, ico, label, color, extra = '') => `<a class="tuto-filtre c-${color}" href="#${id || 'tutos'}" data-filtre="${id}"${extra}>${icon(ico)}<span>${esc(label)}</span></a>`;
+  const body = `<section class="page-hero tuto-hub-hero c-lilac">
+  <div class="container">
+    ${C.breadcrumbs(crumbs)}
+    <div class="tuto-hub-in">
+      <div class="tuto-hub-art" aria-hidden="true">${art.map((m, i) => `<span class="th-m th-${i}">${C.imgMonstre(m, 76, { tot: true })}</span>`).join('')}</div>
+      <p class="tuto-sur">${icon('book-open')}<span>${esc(ECOLE.label)}, l’école de la bande</span></p>
+      <h1 class="tuto-slogan">${esc(slogan[0])}${slogan[1] ? `, <mark>${esc(slogan[1])}</mark>` : ''}</h1>
+      <p class="tuto-accroche">Apprenez à être vu, à attirer des clients et à gagner du temps.</p>
+      <p class="lead">Des tutos complets, clairs et sans jargon${OF.prix ? `, à ${euro(OF.prix)} chacun, payés une fois et gardés à vie` : ''}. ${OF.prix && OF.apercuPages ? `Les ${OF.apercuPages > 1 ? `${OF.apercuPages} premières pages` : 'première page'} de chaque tuto ${OF.apercuPages > 1 ? 'sont offertes' : 'est offerte'}` : 'Tout est offert'}${offerts && OF.prix ? `, et ${offerts > 1 ? `${offerts} tutos sont entièrement gratuits` : 'un tuto est entièrement gratuit'}` : ''}.</p>
+      <ul class="outils-points tuto-points">
+        ${OF.prix ? `<li>${icon('tag')}<span>${euro(OF.prix)} le tuto</span></li>` : ''}
+        ${OF.prix && OF.apercuPages ? `<li>${icon('eye')}<span>${nbTxt(OF.apercuPages, 'page')} pour essayer</span></li>` : ''}
+        <li>${icon('infinity')}<span>Accès à vie</span></li>
+        <li>${icon('smartphone')}<span>Pensés pour le téléphone</span></li>
+      </ul>
+      <div class="hero-ctas centered">${T.length ? C.btn('#tutos', 'btn-primary btn-lg', 'book-open', `Voir les ${T.length} tutos`) : ''}${G.length ? C.btn('#guides', 'btn-light btn-lg', 'gift', GUIDES_TITRE) : ''}</div>
+    </div>
+  </div>
+</section>
+
+<section class="section tuto-liste" id="tutos"><div class="container">
+  <div class="tuto-barre">
+    <div class="tuto-recherche" data-tuto-recherche hidden>${icon('search')}<label class="sr-only" for="tuto-q">Chercher un tuto</label><input id="tuto-q" type="search" placeholder="Google, avis, photos, devis…" autocomplete="off" enterkeyhint="search"></div>
+    <nav class="tuto-filtres" aria-label="Les thèmes des tutos">
+      ${filtre('', 'layout-grid', 'Tous', 'lilac', ' aria-current="true"')}
+      <button type="button" class="tuto-filtre c-mint" data-filtre="gratuit" hidden>${icon('gift')}<span>Gratuits</span></button>
+      ${themes.map((g) => filtre(g.id, g.icon, g.titre, g.color)).join('\n      ')}
+      ${G.length ? filtre('guides', 'file-text', GUIDES_TITRE, 'sky') : ''}
+    </nav>
+  </div>
+  <p class="tuto-vide" data-tuto-vide hidden>${C.imgMonstre('clin', 48)}<span>Aucun tuto ne parle de cela pour l’instant. Essayez un autre mot, ou <button type="button" class="link-btn" data-tuto-tout>voyez tous les tutos</button>.</span></p>
+  <p class="sr-only" aria-live="polite" data-tuto-compte></p>
+  ${themes.map((g) => `<section class="tuto-theme c-${g.color}" id="${g.id}" data-theme="${g.id}" aria-labelledby="t-${g.id}">
+    <div class="tuto-theme-tete"><span class="tuto-theme-art" aria-hidden="true">${C.imgMonstre(g.monstre, 64)}</span><div><h2 class="tuto-theme-titre" id="t-${g.id}">${esc(g.titre)}</h2><p>${inline(g.texte)}</p></div></div>
+    <div class="tuto-cartes">${TUTOS.duTheme(g.id).map((t) => tutoCarte(t)).join('')}</div>
+  </section>`).join('\n  ')}
+  ${G.length ? `<section class="tuto-theme tuto-guides c-sky" id="guides" data-theme="guides" aria-labelledby="t-guides">
+    <div class="tuto-theme-tete"><span class="tuto-theme-art" aria-hidden="true">${C.imgMonstre('ravie', 64)}</span><div><h2 class="tuto-theme-titre" id="t-guides">${GUIDES_TITRE}</h2><p>Des articles à lire en entier, sans rien payer : le prix d’un site, le nom de domaine, la fiche Google, votre métier.</p></div></div>
+    <div class="tuto-cartes">${G.map((t) => tutoCarte(t)).join('')}</div>
+  </section>` : ''}
+</div></section>
+
+${C.ctaBand({ title: 'Et si on le faisait pour vous ?', text: 'Un site qui vous rend visible, et de petits monstres qui publient et répondent à votre place. Le prix s’affiche tout de suite.' })}`;
   return {
-    path: '/guides/',
-    section: 'guides',
-    title: 'Guides pour créer son site, sans jargon | Les Minis Monstres',
-    description: 'Prix d’un site, nom de domaine, fiche Google, boutique en ligne, site pour artisan, restaurant ou association : des guides simples pour décider sans se tromper.',
+    path: HUB,
+    color: 'lilac',
+    bodyClass: 'page-tuto-hub',
+    title: `Mini Tuto : ${OF.slogan || 'tutos pour être vu et trouver des clients'} | Les Minis Monstres`,
+    description: `Des tutos complets et sans jargon${OF.prix ? ` à ${euro(OF.prix)}` : ''} pour être vu sur Google, attirer des clients, publier sur les réseaux et gagner du temps. Accès à vie.`,
     crumbs,
     body,
-    schema: [{ '@type': 'ItemList', itemListElement: GUIDES.guides.map((g, i) => ({ '@type': 'ListItem', position: i + 1, name: g.nom, url: site.url + '/guides/' + g.slug + '/' })) }],
+    schema: [{ '@type': 'ItemList', name: ECOLE.label, itemListElement: [...T, ...G].map((t, i) => ({ '@type': 'ListItem', position: i + 1, name: plain(t.nom), url: site.url + t.path })) }],
     priority: 0.8,
+    changefreq: 'weekly',
   };
 }
 
-function guidePage(g) {
-  const path = `/guides/${g.slug}/`;
-  const crumbs = [...crumb('guides'), { name: g.nom, path }];
-  const f = C.faq(g.faq, 'Vos questions', 'faq-guide');
-  const voir = g.voir.map((s) => GUIDES.guides.find((x) => x.slug === s)).filter(Boolean);
-  const body = `${C.pageHero({ section: 'guides', h1: g.h1, lead: g.lead, crumbs })}
-<section class="section"><div class="container container-narrow prose reveal">
-  ${md(g.body)}
+// ---------------------------------------------------------------- le Markdown d'un tuto
+// La partie « ## À faire… » (ou « ### À faire… ») est mise dans un encadré. decale : les titres descendent d'un cran
+// (sur une page de tuto, le titre de la page est le h2). prefixe : les ancres restent uniques sur toute la page.
+function corpsTuto(src, { decale = false, prefixe = '' } = {}) {
+  const rendu = (x) => {
+    let h = md(x);
+    if (decale) h = h.replace(/<(\/?)h3>/g, '<$1h4>').replace(/<h2 id="/g, '<h3 id="').replace(/<\/h2>/g, '</h3>');
+    return prefixe ? h.replace(/ id="([^"]+)"/g, ` id="${prefixe}$1"`) : h;
+  };
+  const texte = String(src || '').trim();
+  const m = /^(#{2,3}) (?:À|A) faire.*$/im.exec(texte);
+  if (!m) return rendu(texte);
+  const niveau = m[1].length;
+  const reste = texte.slice(m.index);
+  const suite = new RegExp(`\\n#{2,${niveau}} `).exec(reste.slice(niveau + 1));
+  const fin = suite ? suite.index + niveau + 1 : reste.length;
+  const bloc = rendu(reste.slice(0, fin)).replace(/^<(h[234])([^>]*)>/, (x, h, at) => `<${h} class="a-faire-titre"${at}>${icon('list-checks')}`);
+  return `${rendu(texte.slice(0, m.index))}\n<div class="a-faire">${bloc}</div>\n${rendu(reste.slice(fin))}`;
+}
+// En bas d'un tuto gratuit ou d'un guide : un appel discret vers Mini Site ou Mini Outils, selon le thème.
+function tutoAppel(t) {
+  const outils = OUTILS_PAGE && t.type === 'tuto' && TUTOS.THEMES_OUTILS.includes(t.groupe);
+  const a = ateliers.find((x) => x.id === (outils ? 'outils' : 'sites')) || {};
+  return `<aside class="inline-cta tuto-appel c-${a.color || 'mint'}">
+    <span class="tuto-appel-art" aria-hidden="true">${C.imgMonstre(a.monstre || 'bricou', 56)}</span>
+    <p>${outils ? `<strong>Pas le temps de tout faire ?</strong> Les petits monstres de ${esc(a.label)} publient et répondent pour vous, ${ESSAI} jours gratuits.` : `<strong>Envie qu’on s’en occupe ?</strong> ${esc(a.label || 'Mini Site')} : votre site professionnel, prêt à être trouvé, dès ${euro(ESS.price)}.`}</p>
+    ${C.btn(outils ? a.path : sections.creer.path, 'btn-light', 'arrow-right', outils ? 'Voir les outils' : 'Créer mon site')}
+  </aside>`;
+}
+function lireEnsuite(slugs) {
+  const liste = (slugs || []).map((s) => TUTOS.trouve(s)).filter(Boolean);
+  if (!liste.length) return '';
+  return `<nav class="related" aria-label="À lire ensuite"><div class="container"><h2 class="section-title">À lire ensuite</h2><div class="tuto-cartes tuto-cartes-voir">${liste.map((t) => tutoCarte(t, { titre: 'strong' })).join('')}</div><p class="center"><a class="link-more" href="${HUB}">Tous les tutos</a></p></div></nav>`;
+}
+function tutoHero(t, th, crumbs, faits) {
+  return `<section class="page-hero tuto-hero c-${th.color}">
+  <div class="container page-hero-in has-mascot">
+    <div class="page-hero-text">
+      ${C.breadcrumbs(crumbs)}
+      <p class="where">${icon(th.icon)}<span>${esc(ECOLE.label)} · ${esc(th.titre)}</span></p>
+      <h1>${inline(t.h1)}</h1>
+      ${t.lead ? `<p class="lead">${inline(t.lead)}</p>` : ''}
+      <ul class="tuto-faits">${faits}</ul>
+    </div>
+    <div class="page-hero-art tuto-hero-art" aria-hidden="true">${C.imgMonstre(t.monstre, 170, { tot: true })}</div>
+  </div>
+</section>`;
+}
+const articleTuto = (t, date, payant) => ({
+  '@type': 'Article',
+  '@id': site.url + t.path + '#article',
+  headline: plain(t.h1),
+  description: t.description,
+  inLanguage: 'fr-FR',
+  datePublished: date,
+  dateModified: t.modifie || date,
+  timeRequired: `PT${t.duree}M`,
+  author: { '@id': site.url + '/#entreprise' },
+  publisher: { '@id': site.url + '/#entreprise' },
+  image: site.url + `/assets/img/mail/${t.monstre}.png`,
+  mainEntityOfPage: { '@id': site.url + t.path + '#page' },
+  // contenu payant : le balisage recommandé par Google (la partie réservée est marquée par son sélecteur CSS)
+  isAccessibleForFree: !payant,
+  ...(payant ? { hasPart: { '@type': 'WebPageElement', isAccessibleForFree: false, cssSelector: '.tuto-payant' } } : {}),
+});
+
+// ---------------------------------------------------------------- la page d'un tuto (/mini-tuto/<slug>/)
+// Les pages publiques se lisent une à une (« Page 1 sur 6 », boutons précédente et suivante ; sans JavaScript, elles se suivent
+// avec des ancres). Tuto payant : la liste des pages suivantes, verrouillées, puis l'encart pour acheter.
+function tutoPage(t) {
+  const th = TUTOS.theme(t.groupe) || { id: '', titre: ECOLE.label, icon: 'book-open', color: 'lilac' };
+  const crumbs = [...HUB_CRUMBS, ...(th.id ? [{ name: th.titre, path: `${HUB}#${th.id}` }] : []), { name: t.nom, path: t.path }];
+  const f = C.faq(t.faq, 'Vos questions', 'faq-tuto');
+  const M = t.pages.length, A = t.apercu, payant = !t.gratuit && A < M;
+  const pid = (n) => `page-${n}`;
+  // le sommaire : ouvert d'office sur ordinateur, replié sur téléphone (la page 1 arrive tout de suite)
+  const sommaire = `<details class="tuto-sommaire" data-ordi><summary>${icon('list-checks')}<span>Les ${M} pages du tuto</span>${icon('chevron-down')}</summary><nav aria-label="Les pages du tuto"><ol>${t.pages.map((pg, i) => i < A
+    ? `<li><a href="#${pid(i + 1)}" data-page-lien="${i + 1}"><span class="ts-n">${i + 1}</span><span>${inline(pg.titre)}</span></a></li>`
+    : `<li class="is-verrou"><span class="ts-lien"><span class="ts-n">${i + 1}</span><span>${inline(pg.titre)}</span>${icon('lock')}<span class="sr-only"> (après l’achat)</span></span></li>`).join('')}</ol></nav></details>`;
+  const navPage = (n) => {
+    const prec = n > 1 ? `<a class="btn btn-light page-prec" href="#${pid(n - 1)}" data-page-lien="${n - 1}">${icon('chevron-right')}<span>Page précédente</span></a>` : '<span></span>';
+    const suiv = n < A ? `<a class="btn btn-primary" href="#${pid(n + 1)}" data-page-lien="${n + 1}"><span>Page suivante</span>${icon('chevron-right')}</a>`
+      : payant ? `<a class="btn btn-primary" href="#suite"><span>Lire la suite</span>${icon('chevron-right')}</a>`
+      : `<a class="btn btn-light" href="${HUB}"><span>Tous les tutos</span>${icon('chevron-right')}</a>`;
+    return `<nav class="page-nav" aria-label="Changer de page">${prec}<span class="page-nav-n" aria-hidden="true">${n} / ${M}</span>${suiv}</nav>`;
+  };
+  const pages = t.pages.slice(0, A).map((pg, i) => `<section class="tuto-page" id="${pid(i + 1)}" data-page="${i + 1}" aria-labelledby="${pid(i + 1)}-titre">
+      <p class="tuto-page-n">Page ${i + 1} sur ${M}</p>
+      <h2 class="tuto-page-titre" id="${pid(i + 1)}-titre">${inline(pg.titre)}</h2>
+      <div class="prose tuto-prose">${corpsTuto(pg.body, { decale: true, prefixe: `p${i + 1}-` })}</div>
+      ${navPage(i + 1)}
+    </section>`).join('\n    ');
+  const suite = payant ? `<section class="tuto-suite tuto-payant c-${th.color}" id="suite" aria-labelledby="suite-titre">
+    <h2 class="tuto-suite-titre" id="suite-titre">La suite du tuto</h2>
+    <ol class="tuto-verrous" start="${A + 1}">${t.pages.slice(A).map((pg) => `<li>${icon('lock')}<span>${inline(pg.titre)}</span></li>`).join('')}</ol>
+    <!--commun--><div class="tuto-achat">
+      <span class="tuto-achat-art" aria-hidden="true">${C.imgMonstre(t.monstre, 80)}</span>
+      <div class="tuto-achat-txt"><p class="tuto-achat-prix">Lire la suite : <b>${euro(t.prix)}</b></p><p class="tuto-achat-plus">Payé une fois · accès à vie · ${nbTxt(M - A, 'page')} de plus</p></div>
+      <a class="btn btn-primary btn-lg" href="${achatTuto(t)}" data-achat>${icon('shopping-bag')}<span>Acheter ce tuto</span></a>
+    </div>
+    <p class="tuto-achat-note">Déjà acheté ? Le tuto complet vous attend dans <a href="${sections.monespace.path}">votre espace client</a>, onglet « Mes tutos ».</p><!--/commun-->
+  </section>` : '';
+  const faits = `<li>${icon('clock')}<span>${t.duree} min</span></li><li>${icon('layers')}<span>${nbTxt(M, 'page')}</span></li><li>${icon('badge-check')}<span>${esc(t.niveau)}</span></li><li class="tuto-faits-prix${t.gratuit ? ' is-gratuit' : ''}">${icon(t.gratuit ? 'gift' : 'tag')}<span>${t.gratuit ? 'Gratuit' : `${euro(t.prix)}, ${nbTxt(A, 'page')} ${A > 1 ? 'offertes' : 'offerte'}`}</span></li>`;
+  const body = `${tutoHero(t, th, crumbs, faits)}
+<section class="section tuto-section"><div class="container container-narrow">
+  ${M > 1 ? sommaire : ''}
+  <div class="tuto-pages" data-pagination>
+    ${pages}
+  </div>
+  ${suite}
+  ${payant ? '' : tutoAppel(t)}
 </div></section>
 ${f.html}
-<nav class="related" aria-label="À lire aussi"><div class="container"><h2 class="section-title">À lire aussi</h2><div class="guide-cards">${voir.map(guideCard).join('')}</div><p class="center"><a class="link-more" href="/guides/">Tous les guides</a></p></div></nav>
-${C.ctaBand({ text: CTA_TEXTE })}`;
+${lireEnsuite(t.voir)}`;
   return {
-    path,
-    section: 'guides',
+    path: t.path,
+    color: th.color,
+    bodyClass: 'page-tuto',
+    title: t.title,
+    description: t.description,
+    crumbs,
+    body,
+    schema: [articleTuto(t, t.date || TUTO_PUBLIE, payant), f.schema],
+    priority: 0.7,
+  };
+}
+
+// ---------------------------------------------------------------- la page d'un guide gratuit (/guides/<slug>/)
+function guidePage(g) {
+  const th = { id: 'guides', titre: GUIDES_TITRE, icon: 'file-text', color: 'sky' };
+  const crumbs = [...HUB_CRUMBS, { name: GUIDES_TITRE, path: `${HUB}#guides` }, { name: g.nom, path: g.path }];
+  const f = C.faq(g.faq, 'Vos questions', 'faq-guide');
+  const { toc } = md(g.body, { withToc: true });
+  const faits = `<li>${icon('clock')}<span>${g.duree} min</span></li><li>${icon('file-text')}<span>Article</span></li><li class="tuto-faits-prix is-gratuit">${icon('gift')}<span>Gratuit</span></li>`;
+  const body = `${tutoHero(g, th, crumbs, faits)}
+<section class="section tuto-section"><div class="container container-narrow">
+  ${toc.length >= 3 ? `<details class="tuto-sommaire" data-ordi><summary>${icon('list-checks')}<span>Au sommaire</span>${icon('chevron-down')}</summary><ol>${toc.map((x, i) => `<li><a href="#${x.id}"><span class="ts-n">${i + 1}</span><span>${inline(x.title)}</span></a></li>`).join('')}</ol></details>` : ''}
+  <article class="prose tuto-prose">
+    ${corpsTuto(g.body)}
+  </article>
+  ${tutoAppel(g)}
+</div></section>
+${f.html}
+${lireEnsuite(g.voir)}`;
+  return {
+    path: g.path,
+    color: 'sky',
+    bodyClass: 'page-tuto page-guide',
     title: g.title,
     description: g.description,
     crumbs,
     body,
-    schema: [
-      {
-        '@type': 'Article',
-        '@id': site.url + path + '#article',
-        headline: g.h1,
-        description: g.description,
-        inLanguage: 'fr-FR',
-        datePublished: GUIDES.PUBLIE,
-        dateModified: GUIDES.PUBLIE,
-        author: { '@id': site.url + '/#entreprise' },
-        publisher: { '@id': site.url + '/#entreprise' },
-        image: site.url + '/assets/img/og-image.png',
-        mainEntityOfPage: { '@id': site.url + path + '#page' },
-      },
-      f.schema,
-    ],
+    schema: [articleTuto(g, g.publie || TUTO_PUBLIE, false), f.schema],
     priority: 0.7,
   };
 }
@@ -1283,7 +1544,7 @@ function lexiqueHub() {
   ${lettres
     .map((l) => `<h2 class="lex-lettre" id="lettre-${l}">${l}</h2><div class="guide-cards">${tri.filter((t) => t.nom[0].toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '') === l).map(lexCard).join('')}</div>`)
     .join('\n')}
-  <p class="center"><a class="link-more" href="/guides/">Et nos guides pour créer votre site</a></p>
+  <p class="center"><a class="link-more" href="${HUB}">Et nos tutos gratuits, dans ${esc(ECOLE.label)}</a></p>
 </div></section>
 ${C.ctaBand({ title: 'Plus besoin de tout savoir', text: 'On peut s’occuper de la technique pour vous. Choisissez votre site en deux minutes, le prix s’affiche tout de suite.' })}`;
   return {
@@ -1411,7 +1672,7 @@ function metiersHub() {
   })}
 <section class="section"><div class="container">
   ${metierCards()}
-  <p class="center muted">Votre métier n’est pas dans la liste ? Les <a href="/guides/">guides</a> parlent aussi des restaurants, des instituts et des auto-entrepreneurs. Et vous pouvez <a href="${C.contactUrl}">nous écrire</a>.</p>
+  <p class="center muted">Votre métier n’est pas dans la liste ? Les <a href="${HUB}#site">tutos</a> parlent aussi des restaurants, des instituts et des auto-entrepreneurs. Et vous pouvez <a href="${C.contactUrl}">nous écrire</a>.</p>
 </div></section>
 ${C.ctaBand({ text: CTA_TEXTE })}`;
   return {
@@ -1432,8 +1693,8 @@ function nomDe(path) {
   if (m) return [m.nom, m.resume, m.icon];
   const p = PAGES_V2.find((x) => x.path === path);
   if (p) return [p.nom, p.resume, p.icon];
-  const g = GUIDES.guides.find((x) => '/guides/' + x.slug + '/' === path);
-  if (g) return [g.nom, g.resume, g.icon];
+  const g = [...C.TUTOS.tutos, ...C.TUTOS.guides].find((x) => x.path === path);
+  if (g) return [g.nom, g.resume, g.icon || 'book-open'];
   const sec = Object.values(sections).find((x) => x.path === path);
   if (sec) return [sec.label, '', sec.icon];
   return null;
@@ -1728,7 +1989,7 @@ ${chap('seo', `11. Être trouvé sur Google`, `  <h2>La visibilité Google, pas 
   <p>Tous les sites partent avec de bonnes bases : des pages rapides, lisibles sur téléphone, avec un titre et une description pour Google. Pour aller plus loin, une fois votre site en ligne, vous ajoutez des pages de visibilité Google depuis votre espace client : ${euro(PRIX_PAGE)} la page, payée une fois, à l’unité ou par ${C.packsSeo}.</p>
   <div class="go-links">
     <a class="go-link c-${sections.seo.color}" href="${sections.seo.path}"><span class="type-ico">${icon(sections.seo.icon)}</span><strong>Être trouvé sur Google, en détail</strong>${icon('arrow-right')}</a>
-    <a class="go-link c-${sections.guides.color}" href="${sections.guides.path}"><span class="type-ico">${icon(sections.guides.icon)}</span><strong>Les guides pratiques</strong>${icon('arrow-right')}</a>
+    <a class="go-link c-lilac" href="${HUB}"><span class="type-ico">${icon('book-open')}</span><strong>Les tutos de ${esc(ECOLE.label)}</strong>${icon('arrow-right')}</a>
     ${LEXIQUE.termes.length ? `<a class="go-link c-${sections.lexique.color}" href="${sections.lexique.path}"><span class="type-ico">${icon(sections.lexique.icon)}</span><strong>Le lexique</strong>${icon('arrow-right')}</a>` : ''}
     <a class="go-link c-${sections.confiance.color}" href="${sections.confiance.path}"><span class="type-ico">${icon(sections.confiance.icon)}</span><strong>Les pages créées pour nos clients</strong>${icon('arrow-right')}</a>
   </div>`)}
@@ -1810,25 +2071,30 @@ function legalPage(l) {
 
 function planDuSite() {
   const crumbs = [HOME, { name: 'Plan du site', path: '/plan-du-site/' }];
-  // Les pages du parcours de commande (noindex) ne figurent pas dans le plan.
+  // Les pages du parcours de commande (noindex) ne figurent pas dans le plan. Le hub des guides n'existe plus (/guides/ mène à Mini Tuto).
   // Outils et Documentation (noindex depuis la V2) restent dans le plan : les clients les cherchent.
-  const hidden = ['commander', 'confirmation', 'fidelite', ...(OUTILS_PAGE ? [] : ['espace'])];
+  const hidden = ['commander', 'confirmation', 'fidelite', 'guides', ...(OUTILS_PAGE ? [] : ['espace'])];
   const links = [
     ['/', 'Accueil'],
+    [MAISON.path, `${MAISON.label} : le concept`],
     ...Object.entries(sections).filter(([k]) => !hidden.includes(k)).map(([, s]) => [s.path, s.label]),
     ['/faq/', 'Questions fréquentes'],
     ...METIERS.map((m) => ['/' + m.slug + '/', 'Site internet : ' + m.nom.toLowerCase()]),
     ...PAGES_V2.filter((p) => !Object.values(sections).some((x) => x.path === p.path)).map((p) => [p.path, p.nom]),
-    ...GUIDES.guides.map((g) => ['/guides/' + g.slug + '/', g.nom]),
     ...legal.map((l) => [l.path, l.name]),
   ];
+  const liste = (l) => `<ul class="sitemap-list">${l.map(([p, t]) => `<li><a href="${p}">${esc(plain(t))}</a></li>`).join('')}</ul>`;
   return {
     path: '/plan-du-site/',
     title: 'Plan du site | Les Minis Monstres',
-    description: 'Toutes les pages du site des Minis Monstres : créer mon site, tarifs, réalisations, votre métier, accompagnement, guides, contact, FAQ et pages légales.',
+    description: 'Toutes les pages du site des Minis Monstres : créer mon site, tarifs, réalisations, votre métier, les tutos de Mini Tuto, contact, FAQ et pages légales.',
     crumbs,
     body: `${C.pageHero({ h1: 'Plan du site', lead: 'Toutes les pages du site, au même endroit.', crumbs })}
-<section class="section"><div class="container container-narrow"><ul class="sitemap-list">${links.map(([p, l]) => `<li><a href="${p}">${esc(l)}</a></li>`).join('')}</ul></div></section>`,
+<section class="section"><div class="container container-narrow">${liste(links)}
+  <h2 class="plan-titre" id="mini-tuto"><a href="${HUB}">${esc(ECOLE.label)}</a></h2>
+  ${TUTOS.themes().map((g) => `<h3 class="plan-sous-titre">${esc(g.titre)}</h3>${liste(TUTOS.duTheme(g.id).map((t) => [t.path, t.nom]))}`).join('\n  ')}
+  ${TUTOS.guides.length ? `<h3 class="plan-sous-titre">${GUIDES_TITRE}</h3>${liste(TUTOS.guides.map((t) => [t.path, t.nom]))}` : ''}
+</div></section>`,
     priority: 0.2,
   };
 }
@@ -1868,7 +2134,8 @@ function build() {
     ...(METIERS.length ? [metiersHub(), ...METIERS.map(metierPage)] : []),
     ...PAGES_V2.map(pageV2),
     docPage(),
-    guidesHub(), ...GUIDES.guides.map(guidePage),
+    laMaisonPage(),
+    tutoHub(), ...TUTOS.tutos.map(tutoPage), ...TUTOS.guides.map(guidePage),
     ...(LEXIQUE.termes.length ? [lexiqueHub(), ...LEXIQUE.termes.map(lexiquePage)] : []),
     ...legal.map(legalPage), planDuSite(), merci(), notFound(),
   ];

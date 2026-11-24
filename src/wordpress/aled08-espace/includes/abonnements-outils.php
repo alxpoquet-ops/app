@@ -608,8 +608,10 @@ add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08e_inscription_outil'])) return;
     $P = wp_unslash($_POST);
     $id = aled08e_outils_param($_POST['outil'] ?? '');
-    $back = function ($m) use ($id) { wp_safe_redirect(aled08e_url(['inscription' => $m, 'outil' => $id ?: 'bande']) . '#inscription', 303); exit; };
-    if (is_user_logged_in()) { wp_safe_redirect(aled08e_url(['choix' => $id]) . '#outils', 303); exit; }
+    // le même parcours depuis un Mini Tuto (includes/tutos.php, /mon-espace/?tuto=…) : retour sur le tuto
+    $tuto = function_exists('aled08e_tuto_param') ? aled08e_tuto_param(wp_unslash($_POST['tuto'] ?? '')) : '';
+    $back = function ($m) use ($id, $tuto) { wp_safe_redirect(aled08e_url(['inscription' => $m] + ($tuto !== '' ? ['tuto' => $tuto] : ['outil' => $id ?: 'bande'])) . '#inscription', 303); exit; };
+    if (is_user_logged_in()) { wp_safe_redirect($tuto !== '' ? aled08e_url(['tuto' => $tuto]) : aled08e_url(['choix' => $id]) . '#outils', 303); exit; }
     foreach (['prenom', 'email', 'mdp', 'site_web'] as $k) if (isset($P[$k]) && !is_string($P[$k])) $back('erreur');
     if (!empty($P['site_web'])) $back('erreur'); // piège à robots
     if (!wp_verify_nonce(sanitize_text_field((string) ($P['_aled08e_insc'] ?? '')), 'aled08e_inscription_outil')) $back('erreur');
@@ -629,12 +631,13 @@ add_action('template_redirect', function () {
     $uid = (int) $r['id'];
     wp_set_password($mdp, $uid);
     update_user_meta($uid, 'aled08_inscrit_seul', current_time('mysql'));
-    update_user_meta($uid, 'aled08_inscrit_outils', $id ?: 'bande');
+    if ($tuto !== '') update_user_meta($uid, 'aled08_inscrit_tuto', $tuto);
+    else update_user_meta($uid, 'aled08_inscrit_outils', $id ?: 'bande');
     wp_set_current_user($uid);
     wp_set_auth_cookie($uid, true, is_ssl());
     if (function_exists('aled08e_noter_connexion')) aled08e_noter_connexion($uid);
     aled08e_fil_ajouter($uid, 'mascotte', 'Cerise vous souhaite la bienvenue chez les Minis Monstres !');
-    wp_safe_redirect(aled08e_url(['choix' => $id, 'mo' => 'bienvenue']) . '#outils', 303);
+    wp_safe_redirect($tuto !== '' ? aled08e_url(['tuto' => $tuto, 'mo' => 'bienvenue']) : aled08e_url(['choix' => $id, 'mo' => 'bienvenue']) . '#outils', 303);
     exit;
 }, 4);
 
@@ -1005,6 +1008,7 @@ function aled08e_ateliers_cartes_html($uid, $site) {
             $cartes .= '<article class="mm-carte c-' . esc_attr($a['color']) . '"><div class="mm-carte-tete"><span class="mm-carte-art" aria-hidden="true">' . aled08e_monster($a['monstre']) . '</span><div><strong>Mon site</strong><small>' . esc_html($sub) . '</small></div></div>' . $btn . '</article>';
             continue;
         }
+        if ($a['id'] === 'ecole' && function_exists('aled08e_tutos_carte_accueil_html')) { $cartes .= aled08e_tutos_carte_accueil_html($uid, $a); continue; } // les Minis Tutos (includes/tutos.php)
         if ($a['id'] === 'outils' && aled08e_outils_offre()) {
             $n = 0;
             foreach (aled08e_outils_etat($uid) as $id => $e) {

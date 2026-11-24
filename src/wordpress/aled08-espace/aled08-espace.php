@@ -216,6 +216,8 @@ require_once __DIR__ . '/includes/edition.php';
 // (atelier-outils.php) est écrit à part : sans lui, les outils s'affichent « bientôt ».
 require_once __DIR__ . '/includes/abonnements-outils.php';
 if (file_exists(__DIR__ . '/includes/atelier-outils.php')) require_once __DIR__ . '/includes/atelier-outils.php';
+// les Minis Tutos (24 novembre 2026) : vendus à l'unité, l'onglet « Mes tutos », la lecture page par page
+require_once __DIR__ . '/includes/tutos.php';
 
 /* =========================================================================
  *  Rôle « Client des Minis Monstres » et type de contenu « Demande »
@@ -1178,10 +1180,10 @@ function aled08e_dashboard() {
 
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           <?php
-          // la maison (24 novembre 2026) : Accueil, Mon site (et ses rubriques), Mes outils, Mon compte. Mes cours : l'école est cachée.
+          // la maison (24 novembre 2026) : Accueil, Mon site (et ses rubriques), Mes outils, Mes tutos, Mon compte.
           echo aled08e_tab_monstre('accueil', 'mascotte', 'Accueil', true) . aled08e_tab_monstre('site', 'bricou', 'Mon site'); // phpcs:ignore
           foreach ($siteTabs as $sid => [$sic, $slab]) echo aled08e_tab_sous($sid, $sic, $slab); // phpcs:ignore
-          echo aled08e_tab_monstre('outils', 'etoile', 'Mes outils') . aled08e_tab_monstre('compte', 'clin', 'Mon compte'); // phpcs:ignore
+          echo aled08e_tab_monstre('outils', 'etoile', 'Mes outils') . aled08e_tab_monstre('tutos', 'mochi', 'Mes tutos') . aled08e_tab_monstre('compte', 'clin', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
         <?php echo aled08e_outils_nouveau_html($uid); // phpcs:ignore ?>
@@ -1318,6 +1320,10 @@ function aled08e_dashboard() {
         </div>
 
         <?php endif; ?>
+        <div class="app-panel" role="tabpanel" id="t-tutos" aria-labelledby="tab-tutos" hidden>
+          <?php echo aled08e_tutos_panel_html($uid); // phpcs:ignore ?>
+        </div>
+
         <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
           <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>
           <section class="compte-forfait" id="forfait-bloc">

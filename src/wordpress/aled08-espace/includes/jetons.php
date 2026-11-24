@@ -456,9 +456,21 @@ function aled08e_jl_valeurs($uid, $outil, $P, $F, $options = []) {
     return ['valeurs' => $valeurs, 'fichiers' => $fichiers];
 }
 
+/* Une réponse en JSON (brique avec son propre « schema ») : l'objet, même entouré de ``` ou d'un peu de texte, sinon null */
+function aled08e_jl_json($txt) {
+    $txt = trim((string) $txt);
+    if (preg_match('/```(?:json)?\s*(\{.*\})\s*```/s', $txt, $m)) $txt = $m[1];
+    $a = strpos($txt, '{'); $b = strrpos($txt, '}');
+    if ($a === false || $b === false || $b <= $a) return null;
+    $data = json_decode(substr($txt, $a, $b - $a + 1), true);
+    return is_array($data) ? $data : null;
+}
+
 /* Le moteur : un appel à Claude pour une brique, une réponse en blocs. Il ne compte rien.
  * $fichiers : photos et PDF prêts (['mime', 'data', 'pdf'?]). $chef : le monstre qui signe (consigne fixe).
- * Rend ['blocs' => [...], 'dollars' => coût Claude] ou une WP_Error (son coût éventuel dans get_error_data()['dollars']). */
+ * Une brique qui donne son « schema » (outils-lia.js, ex. Publier partout) reçoit un objet JSON de cette forme : ['json' => objet]
+ * au lieu des blocs. Elle le vérifie elle-même. Un champ « stop » non vide veut dire : rien d'utilisable.
+ * Rend ['blocs' => [...], 'dollars' => coût Claude] (ou ['json' => ..., 'dollars' => ...]) ou une WP_Error (son coût éventuel dans get_error_data()['dollars']). */
 function aled08e_jl_moteur($uid, $outil, $valeurs, $fichiers = [], $chef = 'Cerise') {
     if (!aled08e_jl_outils_prets() || !aled08e_lia_sdk()) return new WP_Error('aled08_jl', 'Les petits monstres ne sont pas encore branchés. Alex s’en occupe : revenez un peu plus tard.');
     $u = get_userdata($uid);
@@ -487,7 +499,8 @@ function aled08e_jl_moteur($uid, $outil, $valeurs, $fichiers = [], $chef = 'Ceri
     if ($nPhotos) $joint[] = $nPhotos > 1 ? $nPhotos . ' photos du client sont jointes.' : 'La photo du client est jointe.';
     if ($nPdf) $joint[] = $nPdf > 1 ? $nPdf . ' documents PDF du client sont joints.' : 'Un document PDF du client est joint.';
     $contenu[] = ['type' => 'text', 'text' => "Ce qu’il faut faire :\n" . ($outil['consigne'] ?? '') . "\n\n<commerce>" . $commerce . "</commerce>\n\n<client>\n" . implode("\n\n", $lignes) . "\n</client>" . ($joint ? "\n\n" . implode(' ', $joint) : '')];
-    $schema = ['type' => 'object', 'additionalProperties' => false, 'required' => ['blocs'], 'properties' => ['blocs' => ['type' => 'array', 'items' => [
+    $enJson = !empty($outil['schema']) && is_array($outil['schema']);
+    $schema = $enJson ? $outil['schema'] : ['type' => 'object', 'additionalProperties' => false, 'required' => ['blocs'], 'properties' => ['blocs' => ['type' => 'array', 'items' => [
         'type' => 'object', 'additionalProperties' => false, 'required' => ['titre', 'texte'], 'properties' => ['titre' => ['type' => 'string'], 'texte' => ['type' => 'string']],
     ]]]];
     @set_time_limit(180);
@@ -497,11 +510,12 @@ function aled08e_jl_moteur($uid, $outil, $valeurs, $fichiers = [], $chef = 'Ceri
     $systeme = aled08e_jl_systeme($chef);
     $client = null;
     // un appel à Claude ; $libre = sans format imposé (filet de sécurité), les blocs sont alors séparés par des lignes « === Titre === »
-    $appel = function ($libre) use (&$client, $modele, $contenu, $schema, $plafond, $systeme) {
+    $appel = function ($libre) use (&$client, $modele, $contenu, $schema, $plafond, $systeme, $enJson) {
         if (!$client) $client = new \Anthropic\Client(apiKey: aled08e_lia_cle());
         $c = $contenu;
         $config = ['effort' => 'low'];
-        if ($libre) $c[] = ['type' => 'text', 'text' => "Format de la réponse, obligatoire : pour chaque bloc, une ligne « === Titre du bloc === », puis le texte du bloc sur les lignes suivantes. Rien avant le premier bloc, rien après le dernier."];
+        if ($libre && $enJson) $c[] = ['type' => 'text', 'text' => "Format de la réponse, obligatoire : un seul objet JSON qui suit exactement ce schéma, sans rien avant ni après :\n" . wp_json_encode($schema, JSON_UNESCAPED_UNICODE)];
+        elseif ($libre) $c[] = ['type' => 'text', 'text' => "Format de la réponse, obligatoire : pour chaque bloc, une ligne « === Titre du bloc === », puis le texte du bloc sur les lignes suivantes. Rien avant le premier bloc, rien après le dernier."];
         else $config['format'] = ['type' => 'json_schema', 'schema' => $schema];
         return $client->messages->create(
             model: $modele,
@@ -528,7 +542,7 @@ function aled08e_jl_moteur($uid, $outil, $valeurs, $fichiers = [], $chef = 'Ceri
         $compter($r);
         if (($r->stopReason ?? '') === 'refusal') return $echec('Le petit monstre ne peut pas écrire ce texte. Rien n’a été compté.');
         $coupe = ($r->stopReason ?? '') === 'max_tokens';
-        $blocs = aled08e_jl_blocs($lire($r));
+        $blocs = $enJson ? aled08e_jl_json($lire($r)) : aled08e_jl_blocs($lire($r));
     } catch (\Throwable $e) {
         aled08e_lia_journal_add('Outil « ' . $nom . ' » : erreur Claude (format imposé) : ' . $e->getMessage());
     }
@@ -540,13 +554,18 @@ function aled08e_jl_moteur($uid, $outil, $valeurs, $fichiers = [], $chef = 'Ceri
             $r = $appel(true);
             $compter($r);
             if (($r->stopReason ?? '') === 'refusal') return $echec('Le petit monstre ne peut pas écrire ce texte. Rien n’a été compté.');
-            $blocs = aled08e_jl_blocs($lire($r));
+            $blocs = $enJson ? aled08e_jl_json($lire($r)) : aled08e_jl_blocs($lire($r));
         } catch (\Throwable $e) {
             aled08e_lia_journal_add('Outil « ' . $nom . ' » : erreur Claude : ' . $e->getMessage());
             return $echec('Le petit monstre n’a pas pu répondre cette fois. Réessayez dans un instant : rien n’a été compté.');
         }
     }
     if (!$blocs) return $echec('La réponse est arrivée incomplète. Réessayez : rien n’a été compté.');
+    if ($enJson) {
+        $stop = is_string($blocs['stop'] ?? null) ? trim(wp_strip_all_tags($blocs['stop'])) : '';
+        if ($stop !== '') return $echec(mb_substr($stop, 0, 300) . ' Rien n’a été compté.');
+        return ['json' => $blocs, 'dollars' => $dollars];
+    }
     // la matière ne permettait pas de faire le travail : le monstre le dit dans un seul bloc « STOP », et rien n'est compté
     if (count($blocs) === 1 && mb_strtoupper(trim($blocs[0]['titre'], " \t\n\r«»\"'.:")) === 'STOP') {
         return $echec(rtrim($blocs[0]['texte']) . ' Rien n’a été compté.');

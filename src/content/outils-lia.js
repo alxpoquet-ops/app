@@ -17,7 +17,7 @@
 // note      : la phrase fixe affichée sous le résultat. limites : longueur conseillée par titre de bloc.
 // maxTokens : longueur maximale de la réponse. imageMax : taille de la photo envoyée (1024 par défaut).
 // Sources des idées : baromètre France Num, bibliothèque de prompts d'Anthropic, outils de Wix, Shopify, Canva.
-const RESEAUX = ['Instagram', 'Facebook', 'Fiche Google', 'LinkedIn', 'Mon site', 'Bluesky', 'Mastodon'];
+const RESEAUX = ['Instagram', 'Facebook', 'TikTok', 'YouTube', 'LinkedIn', 'X', 'Threads', 'Bluesky', 'Pinterest', 'WhatsApp', 'Fiche Google', 'Mon site', 'Mastodon'];
 
 const FAMILLES = { reseaux: 'Réseaux', texte: 'Textes', image: 'Photos', site: 'Mon site', avis: 'Avis', gestion: 'Gestion' };
 
@@ -29,12 +29,37 @@ const outils = [
     "color": "butter",
     "chef": "Pépite",
     "name": "Publier partout",
-    "court": "Une photo, quelques mots : un texte pour chaque réseau, publié partout.",
-    "desc": "Vous donnez une photo et quelques mots. Pépite écrit un texte adapté à chaque réseau, vous le relisez, et tout part d’un seul bouton.",
-    "coutCts": 3.3,
-    "jetons": 14,
-    "maxTokens": 2400,
+    "court": "Une photo, quelques mots : le bon texte et le bon format pour chaque réseau.",
+    "desc": "Vous donnez une photo et quelques mots. Pépite écrit le texte et les hashtags de chaque réseau, prépare la photo et une courte vidéo au bon format, et vous n’avez plus qu’un bouton à toucher par réseau.",
+    "coutCts": 4.5,
+    "jetons": 18,
+    "maxTokens": 3600,
     "bouton": "Pépite, à toi !",
+    // Le kit de publication (includes/kit-publication.php) : un objet JSON, vérifié et nettoyé par le serveur
+    // (longueurs, hashtags « #mot », doublons). Les identifiants sont ceux de aled08e_kit_defs().
+    "schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stop", "titre_image", "reseaux"],
+      "properties": {
+        "stop": { "type": "string" },
+        "titre_image": { "type": "string" },
+        "reseaux": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["reseau", "titre", "texte", "hashtags"],
+            "properties": {
+              "reseau": { "type": "string", "enum": ["instagram", "facebook", "tiktok", "youtube", "linkedin", "x", "threads", "bluesky", "pinterest", "whatsapp", "google", "site", "mastodon"] },
+              "titre": { "type": "string" },
+              "texte": { "type": "string" },
+              "hashtags": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
     "champs": [
       {
         "id": "image",
@@ -56,16 +81,23 @@ const outils = [
         "options": [
           "Instagram",
           "Facebook",
-          "Fiche Google",
+          "TikTok",
+          "YouTube",
           "LinkedIn",
-          "Mon site",
+          "X",
+          "Threads",
           "Bluesky",
+          "Pinterest",
+          "WhatsApp",
+          "Fiche Google",
+          "Mon site",
           "Mastodon"
         ],
         "defaut": [
           "Instagram",
           "Facebook",
-          "Fiche Google"
+          "TikTok",
+          "YouTube"
         ]
       },
       {
@@ -79,16 +111,17 @@ const outils = [
           "Sobre"
         ],
         "defaut": "Chaleureux"
+      },
+      {
+        "id": "activite",
+        "label": "Votre activité et votre ville (facultatif)",
+        "kind": "texte",
+        "max": 120,
+        "aide": "Par exemple : fleuriste à Signy-l’Abbaye. Pépite s’en sert pour choisir les hashtags.",
+        "prerempli": "activite"
       }
     ],
-    "consigne": "Écris une publication pour chaque réseau coché, et seulement pour ceux-là, adaptée à ses usages : Instagram (une accroche courte, 2 à 3 phrases, puis une ligne de 5 à 10 hashtags), Facebook (2 à 4 phrases, chaleureux), Fiche Google (factuel, 2 à 3 phrases, sans hashtag ni émoji, avec une invitation à venir ou à appeler), LinkedIn (professionnel, 3 à 5 phrases, 3 hashtags au plus), Mon site (une courte actualité pour le site du commerce : la première ligne est un titre de 70 caractères au plus, sans émoji ni hashtag, puis 2 à 4 phrases sans hashtag), Bluesky (moins de 280 caractères, 1 ou 2 hashtags), Mastodon (moins de 450 caractères, 2 à 4 hashtags). Un bloc par réseau, dont le titre est exactement le nom du réseau tel qu’il est écrit dans la liste. Respecte le ton choisi. Utilise seulement ce que le client a écrit : n’ajoute ni prix, ni date, ni horaire, ni adresse, ni promotion, ni nouveauté, ni « fait main ». Recopie ses dates, ses heures et ses prix tels qu’il les a écrits, sans calculer un jour de la semaine. Les hashtags parlent du sujet, du métier et de la ville si elle est donnée, sans marque ni nom de personne. Aucune promesse de résultat ou de santé. Si une photo est jointe, tu peux dire ce qu’on y voit, sans deviner la matière, la marque ni le lieu, et sans nommer personne. Si la description ne dit pas de quoi parler (un mot seul, des lettres au hasard), rends un seul bloc dont le titre est « STOP » et dont le texte demande en une phrase ce qu’il faut annoncer.",
-    "limites": {
-      "Instagram": 2200,
-      "Fiche Google": 1500,
-      "LinkedIn": 3000,
-      "Bluesky": 300,
-      "Mastodon": 500
-    }
+    "consigne": "Prépare une publication pour chaque réseau coché, et seulement pour ceux-là. Rends un objet JSON. « reseaux » : un élément par réseau coché, avec « reseau » (son identifiant : instagram, facebook, tiktok, youtube, linkedin, x, threads, bluesky, pinterest, whatsapp, google pour la Fiche Google, site pour Mon site, mastodon), « titre », « texte » et « hashtags » (une liste de mots-clés, chacun en un seul mot sans espace ; ils seront ajoutés à la fin du texte : ne les écris pas dans « texte »). Pour chaque réseau. Instagram : une accroche courte, puis 2 à 3 phrases ; 5 à 10 hashtags. Facebook : 2 à 4 phrases chaleureuses ; 1 à 3 hashtags. TikTok : un texte court qui donne envie de regarder (une ou deux phrases, 150 caractères au plus) ; 3 à 5 hashtags. YouTube (une courte vidéo verticale, YouTube Shorts) : « titre » de 70 caractères au plus, sans hashtag ; « texte » : une description de 2 à 3 phrases ; 2 ou 3 hashtags (#Shorts est ajouté tout seul). LinkedIn : professionnel, 3 à 5 phrases ; 3 hashtags au plus. X : un texte de 200 caractères au plus ; 1 ou 2 hashtags. Threads : 2 à 3 phrases, 400 caractères au plus ; 1 hashtag. Bluesky : un texte de 220 caractères au plus ; 1 ou 2 hashtags. Pinterest : « titre » de 90 caractères au plus qui dit ce qu’on voit ; « texte » : 2 phrases utiles, 300 caractères au plus ; 3 à 5 hashtags. WhatsApp : un message court et amical à envoyer à ses clients, 2 phrases ; aucun hashtag. Fiche Google : factuel, 2 à 3 phrases, sans émoji, avec une invitation à venir ou à appeler ; aucun hashtag. Mon site : une courte actualité pour le site du commerce : « titre » de 70 caractères au plus, sans émoji ; « texte » : 2 à 4 phrases ; aucun hashtag. Mastodon : 400 caractères au plus ; 2 à 4 hashtags. « titre » est vide pour les autres réseaux. « titre_image » : 2 à 5 mots qui accrochent, à écrire sur la vidéo, sans hashtag ni émoji. Respecte le ton choisi. Utilise seulement ce que le client a écrit : n’ajoute ni prix, ni date, ni horaire, ni adresse, ni promotion, ni nouveauté, ni « fait main », ni promesse. Recopie ses dates, ses heures et ses prix tels qu’il les a écrits, sans calculer un jour de la semaine. Les hashtags sont réalistes, ceux que les gens cherchent vraiment : le sujet, le métier, et la ville si elle est donnée ; sans marque ni nom de personne. Aucune promesse de résultat ou de santé. Si une photo est jointe, tu peux dire ce qu’on y voit, sans deviner la matière, la marque ni le lieu, et sans nommer personne. « stop » est vide. Si la description ne dit pas de quoi parler (un mot seul, des lettres au hasard), « stop » demande en une phrase ce qu’il faut annoncer, et « reseaux » est vide."
   },
   {
     "id": "idees",

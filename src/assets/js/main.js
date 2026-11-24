@@ -302,6 +302,109 @@
     d.addEventListener('click', function (e) { lis.forEach(function (li) { if (!li.contains(e.target)) fermer(li); }); });
   })();
 
+  /* ---------- Mini Tuto : le hub (filtre par thème et recherche instantanée) ---------- */
+  // Sans JavaScript, les pastilles sont des ancres vers chaque thème. Avec : elles filtrent, et le champ de recherche apparaît.
+  (function () {
+    var liste = $('.tuto-liste');
+    if (!liste) return;
+    var champ = $('#tuto-q', liste), boite = $('[data-tuto-recherche]', liste);
+    var filtres = $$('[data-filtre]', liste), themes = $$('[data-theme]', liste), cartes = $$('[data-tuto]', liste);
+    var vide = $('[data-tuto-vide]', liste), compte = $('[data-tuto-compte]', liste);
+    var actif = '';
+    var norm = function (x) { x = x || ''; return (x.normalize ? x.normalize('NFD').replace(/[̀-ͯ]/g, '') : x).toLowerCase(); };
+    if (boite) boite.hidden = false;
+    filtres.forEach(function (f) { if (f.tagName === 'BUTTON') f.hidden = false; });
+    var appliquer = function () {
+      var mots = norm(champ ? champ.value.trim() : '').split(/\s+/).filter(Boolean), n = 0;
+      cartes.forEach(function (c) {
+        var th = c.closest('[data-theme]'), id = th ? th.getAttribute('data-theme') : '';
+        var ok = (!actif || (actif === 'gratuit' ? c.hasAttribute('data-gratuit') : id === actif));
+        if (ok && mots.length) { var t = c.getAttribute('data-texte') || ''; ok = mots.every(function (m) { return t.indexOf(m) > -1; }); }
+        c.classList.toggle('is-cache', !ok);
+        if (ok) n++;
+      });
+      themes.forEach(function (th) { th.classList.toggle('is-cache', !$$('[data-tuto]:not(.is-cache)', th).length); });
+      if (vide) vide.hidden = n > 0;
+      if (compte) compte.textContent = n ? n + (n > 1 ? ' tutos affichés' : ' tuto affiché') : 'Aucun tuto ne correspond';
+      filtres.forEach(function (f) {
+        var on = (f.getAttribute('data-filtre') || '') === actif;
+        if (f.tagName === 'BUTTON') f.setAttribute('aria-pressed', on ? 'true' : 'false');
+        else if (on) f.setAttribute('aria-current', 'true'); else f.removeAttribute('aria-current');
+      });
+    };
+    filtres.forEach(function (f) {
+      f.addEventListener('click', function (e) {
+        e.preventDefault();
+        var id = f.getAttribute('data-filtre') || '';
+        actif = actif === id && id ? '' : id;
+        appliquer();
+        try { history.replaceState(null, '', actif && actif !== 'gratuit' ? '#' + actif : location.pathname + location.search); } catch (er) {}
+      });
+    });
+    if (champ) champ.addEventListener('input', appliquer);
+    var tout = $('[data-tuto-tout]', liste);
+    if (tout) tout.addEventListener('click', function () { actif = ''; if (champ) champ.value = ''; appliquer(); if (champ) champ.focus(); });
+    // une adresse /mini-tuto/#reseaux (menu, autre page) ouvre directement ce thème
+    var depuisAncre = function () {
+      var h = location.hash.slice(1);
+      if (h && filtres.some(function (f) { return f.getAttribute('data-filtre') === h; })) { actif = h; appliquer(); }
+    };
+    depuisAncre();
+    window.addEventListener('hashchange', depuisAncre);
+  })();
+
+  /* ---------- Mini Tuto : un tuto se lit page par page ---------- */
+  // Sans JavaScript, toutes les pages publiques se suivent (les boutons sont des ancres). Avec : une seule page à la fois.
+  (function () {
+    var bloc = $('[data-pagination]');
+    if (!bloc) return;
+    var pages = $$('.tuto-page', bloc);
+    if (pages.length < 2) return;
+    var liens = $$('[data-page-lien]');
+    bloc.classList.add('is-pagine');
+    var courante = -1;
+    var montrer = function (i, defiler) {
+      i = Math.max(0, Math.min(pages.length - 1, i));
+      pages.forEach(function (pg, j) { pg.hidden = j !== i; });
+      liens.forEach(function (a) {
+        if (!a.closest('.tuto-sommaire')) return;
+        if (+a.getAttribute('data-page-lien') === i + 1) a.setAttribute('aria-current', 'step'); else a.removeAttribute('aria-current');
+      });
+      var change = courante !== i;
+      courante = i;
+      if (defiler && change) {
+        var hd = $('.site-header'), haut = pages[i].getBoundingClientRect().top + window.pageYOffset - ((hd ? hd.offsetHeight : 70) + 14);
+        var doux = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+        window.scrollTo({ top: Math.max(0, haut), behavior: doux ? 'smooth' : 'auto' });
+        var titre = $('.tuto-page-titre', pages[i]);
+        if (titre) { titre.setAttribute('tabindex', '-1'); try { titre.focus({ preventScroll: true }); } catch (e) {} }
+      }
+    };
+    // la page qui contient l'ancre demandée (#page-3, ou un intertitre #p3-...)
+    var pageDe = function (hash) {
+      if (!hash || hash.length < 2) return -1;
+      var cible = null;
+      try { cible = d.getElementById(decodeURIComponent(hash.slice(1))); } catch (e) {}
+      if (!cible) return -1;
+      for (var j = 0; j < pages.length; j++) if (pages[j] === cible || pages[j].contains(cible)) return j;
+      return -1;
+    };
+    liens.forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var n = +a.getAttribute('data-page-lien');
+        if (!n) return;
+        e.preventDefault();
+        try { history.pushState(null, '', '#page-' + n); } catch (er) {}
+        montrer(n - 1, true);
+      });
+    });
+    window.addEventListener('hashchange', function () { var j = pageDe(location.hash); if (j > -1) montrer(j, true); });
+    window.addEventListener('popstate', function () { var j = pageDe(location.hash); montrer(j > -1 ? j : 0, true); });
+    var dep = pageDe(location.hash);
+    montrer(dep > -1 ? dep : 0, false);
+    if (dep > 0) setTimeout(function () { courante = -1; montrer(dep, true); }, 60);
+  })();
+
   /* ---------- commander : les ventes ouvrent bientôt ---------- */
   // Le serveur renvoie ici (?ventes=bientot) une commande envoyée pendant que les ventes sont fermées.
   if (/[?&]ventes=bientot(&|$)/.test(location.search)) $$('[data-ventes-bientot]').forEach(function (el) { el.hidden = false; });

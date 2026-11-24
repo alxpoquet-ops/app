@@ -4,7 +4,9 @@
  *
  * Chaque outil vendu (src/config.js, outilsOffre.outils, via data.json) regroupe quelques « briques », les petits outils
  * déjà écrits (src/content/outils-lia.js) qui deviennent ses boutons :
- *  - publier  (Pépite)  : Publier partout. Une photo, quelques mots, un texte par réseau, tout publié d'un bouton.
+ *  - publier  (Pépite)  : Publier partout. Une photo, quelques mots : le « kit de publication » (includes/kit-publication.php),
+ *                         un texte et des hashtags par réseau, la photo et une vidéo au bon format, un bouton par réseau,
+ *                         et un lien personnel pour tout retrouver sur le téléphone.
  *  - avis     (Cerise)  : Mes avis Google. Lien et QR code pour demander des avis, réponse à un avis, réponse à un client.
  *  - fiche    (Mirette) : Fiche produit. Photo recadrée et allégée, titre, description, prix conseillé, mise en boutique.
  *  - comparer (Plume)   : Comparer mes devis. 2 à 4 devis côte à côte, et le message pour négocier.
@@ -17,9 +19,11 @@
  *  - aled08e_outil_usage($uid, $id) : ['fait' => n, 'limite' => n] pour le mois en cours.
  * Points d'entrée (admin-ajax, nonce « aled08e_ao » dans le champ _ao, client connecté) : aled08e_ao_brique,
  * aled08e_ao_dernier, aled08e_ao_fini, aled08e_ao_programmer, aled08e_ao_deprogrammer, aled08e_ao_avis_lien,
- * aled08e_ao_boutique ; et dans reseaux.php : aled08e_rs (relier), aled08e_rs_photo, aled08e_publier.
+ * aled08e_ao_boutique ; dans kit-publication.php : aled08e_ao_kit_maj, aled08e_ao_kit_mail, aled08e_ao_kit_rappel,
+ * aled08e_ao_kit_effacer ; et dans reseaux.php : aled08e_rs (relier), aled08e_rs_photo, aled08e_publier.
  */
 defined('ABSPATH') || exit;
+require_once __DIR__ . '/kit-publication.php';
 
 /* =========================================================================
  *  L'offre (data.json : outilsOffre ; valeurs de repli tant que l'export ne la contient pas)
@@ -139,8 +143,7 @@ add_action('wp_ajax_aled08e_ao_brique', function () {
     if ($bid === 'publier') {
         $relies = function_exists('aled08e_rs_relies') ? aled08e_rs_relies($uid) : [];
         if (!function_exists('aled08e_rs_site_ok') || !aled08e_rs_site_ok($uid)) $retirer[] = 'Mon site';
-        if (!isset($relies['bluesky'])) $retirer[] = 'Bluesky';
-        if (!isset($relies['mastodon'])) $retirer[] = 'Mastodon';
+        if (!isset($relies['mastodon'])) $retirer[] = 'Mastodon'; // Bluesky a un lien prérempli : toujours proposé
     }
     $P = wp_unslash($_POST);
     $v = aled08e_jl_valeurs($uid, $b, $P, $_FILES, ['retirer' => $retirer]);
@@ -154,6 +157,17 @@ add_action('wp_ajax_aled08e_ao_brique', function () {
     $r = aled08e_jl_moteur($uid, $b, $v['valeurs'], $v['fichiers'], aled08e_ao_chef($o, $b));
     aled08e_jl_cout_outil($uid, $b, $r); // le coût Claude va au bilan du mois (rien n'est compté au client)
     if (is_wp_error($r)) wp_send_json_error(['message' => $r->get_error_message()], 400);
+    if ($bid === 'publier') {
+        // le kit de publication : la réponse est vérifiée avant de compter (une réponse abîmée ne compte pas)
+        $kit = aled08e_kit_normaliser(isset($r['json']) ? $r['json'] : aled08e_kit_depuis_blocs($r['blocs'] ?? []), $v['valeurs']['reseaux'] ?? []);
+        if (is_wp_error($kit)) wp_send_json_error(['message' => $kit->get_error_message()], 400);
+        aled08e_ao_compter($uid, $id);
+        $enr = aled08e_kit_creer($uid, $kit, $_FILES['c_image'] ?? [], (string) ($v['valeurs']['description'] ?? ''));
+        aled08e_ao_fil($uid, 'etoile', 'Pépite a préparé votre publication pour ' . aled08e_kit_noms($kit['ordre']) . '.');
+        $res = ['kit' => $kit, 'enr' => is_wp_error($enr) ? null : $enr, 'usage' => aled08e_outil_usage($uid, $id), 'usageTxt' => aled08e_ao_usage_txt($uid, $id)];
+        update_user_meta($uid, 'aled08_ao_dernier', ['outil' => $id, 'brique' => $bid, 't' => time(), 'resultat' => $res]);
+        wp_send_json_success($res);
+    }
     aled08e_ao_compter($uid, $id);
     $res = ['blocs' => $r['blocs'], 'usage' => aled08e_outil_usage($uid, $id), 'usageTxt' => aled08e_ao_usage_txt($uid, $id)];
     // gardé une heure : si la connexion coupe pendant que le monstre écrit, le navigateur vient rechercher le résultat
@@ -167,12 +181,12 @@ add_action('wp_ajax_aled08e_ao_dernier', function () {
     $d = get_user_meta($uid, 'aled08_ao_dernier', true);
     $depuis = time() - max(0, min(900, (int) ($_POST['il_y_a'] ?? 0)));
     $bid = sanitize_key(wp_unslash($_POST['brique'] ?? ''));
-    if (!is_array($d) || ($d['brique'] ?? '') !== $bid || (int) ($d['t'] ?? 0) < $depuis || empty($d['resultat']['blocs'])) wp_send_json_error(['message' => 'Rien de nouveau.'], 404);
+    if (!is_array($d) || ($d['brique'] ?? '') !== $bid || (int) ($d['t'] ?? 0) < $depuis || (empty($d['resultat']['blocs']) && empty($d['resultat']['kit']))) wp_send_json_error(['message' => 'Rien de nouveau.'], 404);
     wp_send_json_success($d['resultat']);
 });
 
-/* Fin d'une publication : une phrase au fil de la bande. « Publié » seulement pour ce que Pépite a vraiment publié
- * (historique des 30 dernières minutes) ; un réseau partagé par le client est « préparé ». */
+/* Fin d'une publication : une phrase au fil de la bande, seulement pour ce que Pépite a vraiment publié (historique des
+ * 30 dernières minutes). La préparation (« Pépite a préparé votre publication pour… ») est notée dès que le kit est écrit. */
 add_action('wp_ajax_aled08e_ao_fini', function () {
     $uid = aled08e_ao_entree();
     aled08e_ao_exiger($uid, 'publier');
@@ -181,14 +195,13 @@ add_action('wp_ajax_aled08e_ao_fini', function () {
     $histo = get_user_meta($uid, 'aled08_rs_histo', true);
     $faits = [];
     foreach (is_array($histo) ? $histo : [] as $l) if ((int) ($l['t'] ?? 0) > time() - 30 * MINUTE_IN_SECONDS) $faits[$l['r']] = 1;
-    $pub = []; $prep = [];
+    $pub = [];
     foreach (array_unique(array_map('sanitize_key', (array) wp_unslash($_POST['publies'] ?? []))) as $r) if (isset($noms[$r], $faits[$r])) $pub[] = $noms[$r];
-    foreach (array_unique(array_map('sanitize_key', (array) wp_unslash($_POST['partages'] ?? []))) as $r) if (isset($noms[$r]) && !in_array($noms[$r], $pub, true)) $prep[] = $noms[$r];
-    if (!$pub && !$prep) wp_send_json_success([]);
+    if (!$pub) wp_send_json_success([]);
     $x = trim(preg_replace('/\s+/u', ' ', sanitize_text_field(wp_unslash($_POST['extrait'] ?? ''))));
     $x = $x !== '' ? '« ' . (mb_strlen($x) > 60 ? rtrim(mb_substr($x, 0, 57)) . '…' : $x) . ' »' : 'votre publication';
     $liste = function ($l) { return count($l) > 1 ? implode(', ', array_slice($l, 0, -1)) . ' et ' . end($l) : $l[0]; };
-    $t = 'Pépite a ' . ($pub ? 'publié ' . $x . ' sur ' . $liste($pub) . ($prep ? ', et préparé ' . $liste($prep) : '') : 'préparé ' . $x . ' pour ' . $liste($prep)) . '.';
+    $t = 'Pépite a publié ' . $x . ' sur ' . $liste($pub) . '.';
     aled08e_ao_fil($uid, 'etoile', $t);
     wp_send_json_success([]);
 });
@@ -379,7 +392,7 @@ function aled08e_ao_form($id, $bid, $b, $uid, $sansPhoto, $options = [], $bouton
 /* La photo choisie une fois pour tout l'outil */
 function aled08e_ao_photo_html($id, $titre, $aide) {
     return '<div class="ao-photo" data-ao-photo><p class="app-sub">' . esc_html($titre) . '</p>'
-        . '<label class="ao-photo-zone"><input type="file" accept="image/*" class="sr-only" data-ao-photo-file><img alt="" data-ao-photo-apercu hidden><span class="ao-photo-vide" data-ao-photo-vide>' . aled08e_icon('camera') . '<span>' . esc_html($aide) . '</span></span></label>'
+        . '<label class="ao-photo-zone"><input type="file" accept="image/*" class="sr-only" id="ao-photo-' . esc_attr($id) . '" data-ao-photo-file><img alt="" data-ao-photo-apercu hidden><span class="ao-photo-vide" data-ao-photo-vide>' . aled08e_icon('camera') . '<span>' . esc_html($aide) . '</span></span></label>'
         . '<button type="button" class="link-btn" data-ao-photo-retirer hidden>Retirer la photo</button><p class="ol-etat" data-ao-photo-etat role="status" aria-live="polite"></p></div>';
 }
 /* Les boutons d'un outil (ses briques) */
@@ -423,7 +436,7 @@ function aled08e_outil_html($uid, $id) {
     return $h . '</section>';
 }
 
-/* ---------- Publier partout ---------- */
+/* ---------- Publier partout : le kit de publication ---------- */
 function aled08e_ao_publier_html($uid, $o) {
     $b = aled08e_jl_outil('publier');
     $idees = aled08e_jl_outil('idees');
@@ -433,18 +446,21 @@ function aled08e_ao_publier_html($uid, $o) {
     $options = [];
     foreach ((array) (array_values(array_filter($b['champs'], function ($c) { return $c['id'] === 'reseaux'; }))[0]['options'] ?? []) as $r) {
         if ($r === 'Mon site' && !$site) continue;
-        if (in_array($r, ['Bluesky', 'Mastodon'], true) && !isset($directs[strtolower($r)])) continue;
+        if ($r === 'Mastodon' && !isset($directs['mastodon'])) continue; // Mastodon : seulement présenté à Pépite (chaque serveur a son adresse)
         $options[] = $r;
     }
     $prefs = aled08e_ao_prefs($uid, 'publier');
     // la première fois, un client qui a un site chez nous publie aussi sur son site
     if (!isset($prefs['reseaux']) && $site) foreach ($b['champs'] as $c) if ($c['id'] === 'reseaux') $prefs['reseaux'] = array_merge((array) ($c['defaut'] ?? []), ['Mon site']);
+    // les anciens choix (avant le kit) : TikTok et YouTube s'ajoutent une fois, puisqu'ils viennent d'arriver
+    if (isset($prefs['reseaux']) && !get_user_meta($uid, 'aled08_kit_vu', true)) { $prefs['reseaux'] = array_values(array_unique(array_merge((array) $prefs['reseaux'], ['TikTok', 'YouTube']))); update_user_meta($uid, 'aled08_kit_vu', 1); }
     $champs = [];
     foreach ($b['champs'] as $c) $champs[$c['id']] = $c;
+    $reglages = (isset($champs['ton']) ? aled08e_ao_champ('publier', 'publier', $champs['ton'], $uid, $prefs, true) : '') . (isset($champs['activite']) ? aled08e_ao_champ('publier', 'publier', $champs['activite'], $uid, $prefs, true) : '');
     $form = '<form class="ol-form" data-ao-form data-brique="publier" data-photo="oui" data-ao-pub novalidate>'
         . (isset($champs['description']) ? aled08e_ao_champ('publier', 'publier', $champs['description'], $uid, $prefs, true) : '')
         . (isset($champs['reseaux']) ? aled08e_ao_champ('publier', 'publier', $champs['reseaux'], $uid, $prefs, true, $options) : '')
-        . (isset($champs['ton']) ? '<details class="ao-plus"><summary class="link-btn">Le ton : ' . esc_html((string) ($prefs['ton'] ?? ($champs['ton']['defaut'] ?? 'Chaleureux'))) . '</summary>' . aled08e_ao_champ('publier', 'publier', $champs['ton'], $uid, $prefs, true) . '</details>' : '')
+        . ($reglages !== '' ? '<details class="ao-plus"><summary class="link-btn">Le ton : ' . esc_html((string) ($prefs['ton'] ?? ($champs['ton']['defaut'] ?? 'Chaleureux'))) . ', votre ville</summary><div class="ao-reglages">' . $reglages . '</div></details>' : '')
         . '<div class="ol-boutons"><button class="btn btn-primary ao-grand" type="submit">' . aled08e_icon('sparkles') . '<span>' . esc_html($b['bouton'] ?? 'Pépite, à toi !') . '</span></button></div>'
         . '<p class="ol-etat" data-ao-etat role="status" aria-live="polite"></p></form>';
     // les publications programmées
@@ -460,11 +476,22 @@ function aled08e_ao_publier_html($uid, $o) {
     $monstre = '<span class="ao-mini" aria-hidden="true">' . aled08e_monster('etoile') . '</span>';
     $ecran1 = '<div class="ao-ecran" data-ao-ecran="1">' . aled08e_ao_photo_html('publier', 'Votre photo', 'Prendre ou choisir une photo (facultatif)') . $form
         . ($idees ? '<p class="ao-aussi"><button type="button" class="btn btn-light btn-sm" data-ao-aller="idees">' . aled08e_icon('lightbulb') . '<span>Pas d’idée ? Les idées de la semaine</span></button></p>' : '')
-        . $prog . (function_exists('aled08e_rs_html') ? aled08e_rs_html($uid) : '') . '</div>';
+        . aled08e_kit_liste_html($uid) . $prog . (function_exists('aled08e_rs_html') ? aled08e_rs_html($uid) : '') . '</div>';
     $min = wp_date('Y-m-d\TH:i', time() + 15 * MINUTE_IN_SECONDS);
     $maxd = wp_date('Y-m-d\TH:i', time() + 30 * DAY_IN_SECONDS);
-    $ecran2 = '<div class="ao-ecran" data-ao-ecran="2" hidden><p class="ao-titre">' . $monstre . '<span>Pépite a écrit pour chaque réseau</span></p>'
-        . '<p class="app-note" data-ao-consigne></p><div class="ao-cartes" data-ao-cartes></div>'
+    $tel = '<div class="kp-tel" data-ao-kit-tel hidden><div class="ao-qr"><div class="ao-qr-code" data-ao-kit-qr></div><div>'
+        . '<p class="app-sub">' . aled08e_icon('phone') . 'Sur mon téléphone</p>'
+        . '<p class="app-note">Visez ce code avec l’appareil photo de votre téléphone, ou recevez le lien par e-mail : la photo, la vidéo et les textes y sont prêts, un bouton par réseau. Le lien marche sans mot de passe jusqu’au <span data-ao-kit-fin></span>.</p>'
+        . '<div class="ol-bloc-actions"><button type="button" class="btn btn-primary btn-sm" data-ao-kit-mail>' . aled08e_icon('mail') . '<span>M’envoyer le lien</span></button><button type="button" class="btn btn-light btn-sm" data-ao-kit-copier>' . aled08e_icon('link') . '<span>Copier le lien</span></button></div></div></div>'
+        . '<details class="ao-plus"><summary class="link-btn">' . aled08e_icon('clock') . '<span>Me le rappeler plus tard</span></summary><div class="ao-prog"><div class="field"><label for="ao-kit-quand">Me le rappeler le… à…</label><input id="ao-kit-quand" type="datetime-local" data-ao-kit-quand min="' . esc_attr($min) . '" max="' . esc_attr($maxd) . '"></div>'
+        . '<p class="app-note">À l’heure choisie, Pépite vous envoie un e-mail « C’est l’heure de publier », avec le lien.</p><button type="button" class="btn btn-primary btn-sm" data-ao-kit-rappel>Me le rappeler</button></div></details>'
+        . '<p class="ol-etat" data-ao-kit-etat role="status" aria-live="polite"></p>'
+        . '<p class="kp-bas"><button type="button" class="link-btn" data-ao-kit-suppr-courant>Supprimer ce lien</button></p></div>';
+    $ecran2 = '<div class="ao-ecran" data-ao-ecran="2" hidden><p class="ao-titre">' . $monstre . '<span>Pépite a préparé votre publication</span></p>'
+        . '<p class="app-note" data-ao-consigne></p>'
+        . $tel
+        . '<div class="kp-fichiers" data-ao-kit-fichiers></div>'
+        . '<div class="ao-cartes" data-ao-cartes></div>'
         . '<div class="ol-boutons"><button type="button" class="btn btn-primary ao-grand" data-ao-tout>' . aled08e_icon('send') . '<span>Tout publier</span></button>'
         . '<button type="button" class="btn btn-light" data-ao-prog-ouvrir>' . aled08e_icon('clock') . '<span>Programmer pour plus tard</span></button></div>'
         . '<div class="ao-prog" data-ao-prog hidden><div class="field"><label for="ao-prog-quand">Quand publier ?</label><input id="ao-prog-quand" type="datetime-local" data-ao-prog-quand min="' . esc_attr($min) . '" max="' . esc_attr($maxd) . '"></div>'
@@ -475,10 +502,12 @@ function aled08e_ao_publier_html($uid, $o) {
         . '<h3 data-ao-fin-titre tabindex="-1">C’est publié !</h3><p data-ao-fin-ou></p><ul class="ao-liens" data-ao-fin-liens></ul>'
         . '<div class="ao-suite"><strong>La suite</strong><p>Besoin d’une idée pour la prochaine fois ? Pépite vous propose trois idées pour la semaine, avec le texte déjà écrit.</p></div>'
         . '<div class="ol-boutons"><button type="button" class="btn btn-primary" data-ao-nouvelle>' . aled08e_icon('plus') . '<span>Une nouvelle publication</span></button>'
+        . '<button type="button" class="btn btn-light" data-ao-revoir>' . aled08e_icon('arrow-right') . '<span>Revoir ma publication</span></button>'
         . ($idees ? '<button type="button" class="btn btn-light" data-ao-aller="idees">' . aled08e_icon('lightbulb') . '<span>Les idées de la semaine</span></button>' : '') . '</div></div>';
     $panIdees = $idees ? '<div class="ao-panneau" data-ao-panneau="idees" hidden><p class="ao-titre">' . $monstre . '<span>Les idées de la semaine</span></p><p class="app-note">' . esc_html($idees['desc'] ?? '') . '</p>'
         . aled08e_ao_form('publier', 'idees', $idees, $uid, true) . '<p><button type="button" class="link-btn" data-ao-aller="publier">Revenir à ma publication</button></p></div>' : '';
-    return '<div class="ao-panneau" data-ao-panneau="publier" data-ao-publier data-directs="' . esc_attr(wp_json_encode(array_keys($directs))) . '" data-limites="' . esc_attr(wp_json_encode($b['limites'] ?? new stdClass())) . '">' . $ecran1 . $ecran2 . $ecran3 . '</div>' . $panIdees;
+    $site_url = esc_url_raw(aled08e_meta($uid, 'site'));
+    return aled08e_kit_styles() . '<div class="ao-panneau" data-ao-panneau="publier" data-ao-publier data-directs="' . esc_attr(wp_json_encode(array_keys($directs))) . '" data-kit-defs="' . esc_attr(wp_json_encode(aled08e_kit_defs())) . '" data-site="' . esc_attr($site_url) . '">' . $ecran1 . $ecran2 . $ecran3 . '</div>' . $panIdees;
 }
 
 /* ---------- Mes avis Google ---------- */
@@ -543,8 +572,15 @@ function aled08e_ao_scripts() {
     if (!function_exists('wp_enqueue_script')) return;
     $f = defined('ALED08E_FILE') ? ALED08E_FILE : dirname(__DIR__) . '/aled08-espace.php';
     $dir = dirname($f);
-    if (file_exists($dir . '/qrcode.js')) wp_enqueue_script('aled08-qrcode', plugins_url('qrcode.js', $f), [], defined('ALED08E_VERSION') ? ALED08E_VERSION : null, ['in_footer' => true, 'strategy' => 'defer']);
-    wp_enqueue_script('aled08-outils', plugins_url('outils.js', $f), [], (string) @filemtime($dir . '/outils.js'), ['in_footer' => true, 'strategy' => 'defer']);
+    $pied = ['in_footer' => true, 'strategy' => 'defer'];
+    if (file_exists($dir . '/qrcode.js')) wp_enqueue_script('aled08-qrcode', plugins_url('qrcode.js', $f), [], defined('ALED08E_VERSION') ? ALED08E_VERSION : null, $pied);
+    // le kit de publication : les formats et la vidéo (kit-video.js), les boutons par réseau (kit-publication.js)
+    wp_enqueue_script('aled08-kit-video', plugins_url('kit-video.js', $f), [], (string) @filemtime($dir . '/kit-video.js'), $pied);
+    wp_enqueue_script('aled08-kit', plugins_url('kit-publication.js', $f), ['aled08-kit-video'], (string) @filemtime($dir . '/kit-publication.js'), $pied);
+    wp_enqueue_script('aled08-outils', plugins_url('outils.js', $f), ['aled08-kit'], (string) @filemtime($dir . '/outils.js'), $pied);
+    // outils.js a pu être déclaré plus tôt (aled08-espace.php) : il passe après le kit
+    $ws = wp_scripts();
+    if (isset($ws->registered['aled08-outils']) && !in_array('aled08-kit', $ws->registered['aled08-outils']->deps, true)) $ws->registered['aled08-outils']->deps[] = 'aled08-kit';
 }
 function aled08e_ao_styles() {
     static $fait = false;
@@ -596,7 +632,7 @@ function aled08e_ao_styles() {
         . '.ao-avis{display:grid;gap:10px}.ao-avis .field textarea{min-height:0}'
         . '.ao-qr{display:flex;flex-wrap:wrap;align-items:center;gap:16px}.ao-qr-code{width:160px;flex:none;border-radius:14px;overflow:hidden;background:#fff}.ao-qr-code svg{display:block;width:100%;height:auto}'
         . '.ao-qr>div:last-child{flex:1 1 200px;display:grid;gap:8px;justify-items:start}.ao-qr .app-sub{display:flex;align-items:center;gap:8px;margin:0}.ao-qr .app-note{margin:0}'
-        . '.ao-lien-form{display:grid;gap:10px}.ao-lien-form .btn{justify-self:start}'
+        . '.ao-lien-form{display:grid;gap:10px}.ao-lien-form .btn{justify-self:start}.ao-reglages{display:grid;gap:12px}'
         . '.ao-boutique{display:grid;gap:10px;padding:14px;border-radius:18px;background:var(--mint)}.ao-boutique .app-sub{margin:0}.ao-boutique .btn{justify-self:start}.ao-boutique label.ao-case{display:flex;gap:8px;align-items:center;font-weight:700}'
         . '@media (max-width:520px){.ao{padding:14px;border-radius:20px}.ao-monstre{width:52px;height:52px}.ao-monstre svg{width:44px;height:44px}.ao .ol-boutons .btn,.ao-grand{width:100%;justify-content:center;white-space:normal}.ao-qr-code{width:140px}}'
         . '</style>';

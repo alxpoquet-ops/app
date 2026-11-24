@@ -741,7 +741,66 @@ function comparatifTable() {
 </div>`;
 }
 
+// ---------------------------------------------------------------- Mini Tuto : « Minis Tutos, Minis Prix » (24 novembre 2026, soir)
+// Les tutos (src/content/tutos/*.js) sont découpés en pages ; chacun coûte config.tutosOffre.prix, payé une fois, accès à vie,
+// sauf ceux marqués gratuit: true. En public, un tuto payant montre ses tutosOffre.apercuPages premières pages ; le contenu des
+// suivantes n'est JAMAIS dans la page publique (il s'ouvre dans l'espace client, onglet « Mes tutos »).
+// Les guides (src/content/guides.js) restent des articles gratuits, à leur adresse /guides/<slug>/, listés à part sur le hub.
+// Les contenus sont lus une seule fois, au premier besoin (pas au chargement : src/content/guides.js lit ce fichier-ci). Un fichier
+// en cours d'écriture et illisible n'arrête pas la construction : il est sauté, avec un avertissement.
+const TUTO_HUB = '/mini-tuto/';
+const cfgTuto = require('../config');
+const THEMES_OUTILS = ['reseaux', 'temps', 'bande']; // l'appel en bas d'un tuto : Mini Outils pour ces thèmes, Mini Site pour les autres
+let _tutos = null;
+function chargeContenu(nom, defaut) {
+  try { return require(nom); } catch (e) {
+    console.warn(`⚠ Mini Tuto : ${nom.replace('../', 'src/')} illisible, ignoré pour cette construction (${String(e.message).split('\n')[0]})`);
+    return defaut;
+  }
+}
+function tutosDonnees() {
+  if (_tutos) return _tutos;
+  const T = chargeContenu('../content/tutos', { groupes: [], tutos: [] });
+  const G = require('../content/guides');
+  if (process.env.MM_TUTO_TEST) { const X = require(process.env.MM_TUTO_TEST); T.tutos = [...(T.tutos || []), ...X.tutos]; if (!(T.groupes || []).length) T.groupes = X.groupes; } // TEST-TEMPORAIRE
+  const OF = cfgTuto.tutosOffre || { prix: 0, apercuPages: 2, slogan: '' };
+  const groupes = (T.groupes || []).filter((g) => g && g.id);
+  const mots = (x) => String(x || '').split(/\s+/).filter(Boolean).length;
+  const themeDe = (id) => groupes.find((g) => g.id === id) || groupes[0] || { id: '', monstre: 'mochi' };
+  const tutos = (T.tutos || []).filter((t) => t && t.slug && (t.pages || t.body)).map((t) => {
+    // l'ancien format (un seul body) devient une page unique
+    const pages = (t.pages && t.pages.length ? t.pages : [{ titre: t.nom, body: t.body }]).filter((pg) => pg && pg.body);
+    const gratuit = !!t.gratuit || !OF.prix;
+    const duree = Number(t.duree) || Math.max(3, Math.ceil(pages.reduce((n, pg) => n + mots(pg.body), 0) / 200));
+    return { niveau: 'Débutant', monstre: themeDe(t.groupe).monstre, voir: [], faq: [], ...t, pages, duree, gratuit, prix: gratuit ? 0 : OF.prix, apercu: gratuit ? pages.length : Math.min(pages.length, Math.max(0, OF.apercuPages ?? 2)), path: `${TUTO_HUB}${t.slug}/`, type: 'tuto' };
+  });
+  const MONSTRES_GUIDES = ['gelee', 'bricou', 'mochi', 'chaton', 'champi', 'dino', 'clin', 'etoile', 'ravie']; // les dessins de src/assets/img/mail
+  const guides = G.guides.map((g, i) => ({ ...g, monstre: g.monstre || MONSTRES_GUIDES[i % MONSTRES_GUIDES.length], duree: Math.max(3, Math.ceil(mots(g.body) / 200)), niveau: 'Débutant', gratuit: true, path: `/guides/${g.slug}/`, type: 'guide', publie: G.PUBLIE }));
+  const vus = new Map();
+  for (const x of [...tutos, ...guides]) {
+    if (vus.has(x.path)) throw new Error(`Mini Tuto : deux contenus à la même adresse ${x.path}`);
+    vus.set(x.path, x.type);
+  }
+  _tutos = { offre: OF, groupes, tutos, guides };
+  return _tutos;
+}
+const TUTOS = {
+  HUB: TUTO_HUB,
+  THEMES_OUTILS,
+  get offre() { return tutosDonnees().offre; },
+  get groupes() { return tutosDonnees().groupes; },
+  get tutos() { return tutosDonnees().tutos; },
+  get guides() { return tutosDonnees().guides; },
+  // les thèmes qui ont au moins un tuto (un thème vide n'apparaît nulle part)
+  themes() { const d = tutosDonnees(); return d.groupes.filter((g) => d.tutos.some((t) => t.groupe === g.id)); },
+  duTheme(id) { return tutosDonnees().tutos.filter((t) => t.groupe === id); },
+  theme(id) { return tutosDonnees().groupes.find((g) => g.id === id); },
+  // un tuto ou un guide par son slug (pour « À lire ensuite »)
+  trouve(slug) { const d = tutosDonnees(); return d.tutos.find((t) => t.slug === slug) || d.guides.find((t) => t.slug === slug); },
+};
+
 module.exports = {
+  TUTOS,
   infoBtn, deroulant, deroulants, listePlus,
   LMAX,
   lissageTxt, ORGANISMES,

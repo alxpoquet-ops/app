@@ -3,7 +3,7 @@
  * Les Minis Monstres Espace client : créer son compte sans commander.
  * Le visiteur donne son prénom, son nom et son e-mail ; il reçoit un e-mail pour choisir son mot de passe
  * (ce qui vérifie aussi l'adresse). Un compte sans forfait voit la même maison que les clients : Accueil, Mon site (une porte
- * vers /creer-mon-site/), Mes outils, Mon compte. (Depuis un outil, /mon-espace/?outil=…, voir includes/abonnements-outils.php.)
+ * vers /creer-mon-site/), Mes outils, Mes tutos, Mon compte. (Depuis un outil, /mon-espace/?outil=…, voir includes/abonnements-outils.php.)
  * Sans commande ni forfait, la règle habituelle s'applique : compte supprimé après 12 mois sans connexion.
  */
 defined('ABSPATH') || exit;
@@ -73,7 +73,7 @@ function aled08e_dashboard_libre($u) {
       <aside class="app-side">
         <div class="app-user"><?php echo aled08e_monster('mascotte'); // phpcs:ignore ?><div><strong><?php echo esc_html($u->display_name); ?></strong><small><?php echo esc_html($u->user_email); ?></small></div></div>
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
-          <?php echo aled08e_tab_monstre('accueil', 'mascotte', 'Accueil', true) . aled08e_tab_monstre('site', 'bricou', 'Mon site') . aled08e_tab_monstre('outils', 'etoile', 'Mes outils') . aled08e_tab_monstre('compte', 'clin', 'Mon compte'); // phpcs:ignore ?>
+          <?php echo aled08e_tab_monstre('accueil', 'mascotte', 'Accueil', true) . aled08e_tab_monstre('site', 'bricou', 'Mon site') . aled08e_tab_monstre('outils', 'etoile', 'Mes outils') . aled08e_tab_monstre('tutos', 'mochi', 'Mes tutos') . aled08e_tab_monstre('compte', 'clin', 'Mon compte'); // phpcs:ignore ?>
         </div>
         <?php echo aled08e_outils_nouveau_html($uid); // phpcs:ignore ?>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
@@ -95,6 +95,9 @@ function aled08e_dashboard_libre($u) {
         </div>
         <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
           <?php echo aled08e_outils_panel_html($uid); // phpcs:ignore ?>
+        </div>
+        <div class="app-panel" role="tabpanel" id="t-tutos" aria-labelledby="tab-tutos" hidden>
+          <?php echo aled08e_tutos_panel_html($uid); // phpcs:ignore ?>
         </div>
         <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
           <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>
