@@ -167,7 +167,7 @@ add_action('template_redirect', function () {
     update_post_meta($cid, '_aled08_brief_le', current_time('mysql'));
     aled08e_cmd_journal($cid, $premiere ? 'Questionnaire de création reçu.' : 'Questionnaire de création mis à jour.');
     if ($premiere) delete_post_meta($cid, '_aled08_chantier'); elseif (aled08e_chantier_etat($cid) === 'question') update_post_meta($cid, '_aled08_chantier', 'reponse');
-    if ($premiere && !(function_exists('aled08e_feu_vert') && aled08e_feu_vert($cid))) {
+    if ($premiere && !(function_exists('aled08e_appel_fait') && aled08e_appel_fait($cid))) {
         // l'appel d'Alex : un seul e-mail, avec le numéro à appeler ; le feu vert se donne dans l'espace de gestion (« À appeler »)
         wp_mail(aled08e_to(), 'À appeler : ' . aled08e_cmd_nom($cmd) . ' (' . $cmd['ref'] . ')',
             'Le questionnaire de ' . aled08e_cmd_nom($cmd) . ($cmd['entreprise'] ? ' (' . $cmd['entreprise'] . ')' : '') . " est rempli.\n\n"
@@ -336,7 +336,7 @@ function aled08e_brief_html($cmd) {
     <div>
       <h3>Votre questionnaire de création</h3>
       <p><?php echo $fait
-          ? 'Reçu le ' . esc_html(aled08e_date($le)) . '. ' . (function_exists('aled08e_feu_vert') && !aled08e_feu_vert($cid) ? 'Je vous appelle très vite' . ($cmd['telephone'] ? ' au ' . esc_html($cmd['telephone']) : '') . ' pour parler de votre site, puis la bande se met au travail. ' : '') . 'Vous pouvez encore modifier vos réponses : je travaille toujours avec la dernière version.'
+          ? 'Reçu le ' . esc_html(aled08e_date($le)) . '. ' . (function_exists('aled08e_appel_fait') && !aled08e_appel_fait($cid) ? 'Je vous appelle très vite' . ($cmd['telephone'] ? ' au ' . esc_html($cmd['telephone']) : '') . ' pour parler de votre site, puis la bande se met au travail. ' : '') . 'Vous pouvez encore modifier vos réponses : je travaille toujours avec la dernière version.'
           : 'Avec lui, puis un petit appel ensemble, on lance la création. Couleurs, ambiance, photos' . ($cmd['type'] === 'boutique' ? ', produits, livraison' : ', prix') . ' : avec vos réponses, je crée votre ' . esc_html(mb_strtolower($t ? $t['label'] : 'site')) . '. Comptez une dizaine de minutes.'; ?></p>
     </div>
     <?php if (!$fait) echo '<em class="st st-new">À remplir</em>'; else echo '<em class="st st-done">Reçu</em>'; ?>
