@@ -26,6 +26,10 @@ Un travail renvoyé repart chez le constructeur, puis repasse au contrôle. Au t
 
 Quand plusieurs travaux attendent, le constructeur et le contrôleur suivent un ordre fixe (modifications, pages Google, sites) et peuvent se faire aider de sous-agents qui travaillent en parallèle, un par client : `travail-en-parallele.md`.
 
+## L'appel avant chaque site
+
+Décision d'Alex (24 novembre 2026) : une fois le questionnaire rempli, Alex reçoit un e-mail « À appeler » et appelle le client pour parler de son site et clarifier ce qu'il attend. Ensuite il donne le feu vert dans son espace (À faire › À appeler), avec une note sur l'appel. La bande ne commence qu'après ce feu vert. C'est la seule étape où Alex intervient à chaque site, par choix.
+
 ## Ce qui remonte à Alex
 
 Seulement les cas de `escalade.md` (argent, client mécontent, accès, juridique, hors forfait, refonte, blocage). Alex reçoit alors un e-mail « À voir par vous ». Il répond dans une conversation avec Claude, qui relance le travail avec `faire: "reprendre"` et `accord_alex: true`.

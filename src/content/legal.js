@@ -343,7 +343,7 @@ Si le client possède déjà un nom de domaine, il peut le transférer vers les 
 
 ## 11. Création du site, première version et délais
 
-La création commence par le questionnaire de création, rempli par le client dans son espace client. Le client y fournit ses textes, photos et informations, ou les prépare avec les Minis Monstres à partir de ses explications. Les délais annoncés (${listeDelais}) sont indicatifs. Ils courent à partir de la réception de ces éléments.
+La création commence par le questionnaire de création, rempli par le client dans son espace client. Le client y fournit ses textes, photos et informations, ou les prépare avec les Minis Monstres à partir de ses explications. Alex appelle ensuite le client, au numéro donné à la commande, pour parler du site et préciser ses attentes ; la création démarre après cet appel. Les délais annoncés (${listeDelais}) sont indicatifs. Ils courent à partir de cet appel, une fois les éléments reçus.
 
 Le site est mis en ligne dans une première version, présentée au client par e-mail (article 3), ou remis sous forme d’export avec le forfait ${AUTO}. Le client l’ajuste ensuite à son goût, comme le prévoit l’article 12.
 

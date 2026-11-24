@@ -103,7 +103,13 @@ Une agence paie des bureaux, un loyer, des commerciaux, des réunions et toute u
 
 Chez nous, rien de tout cela : pas de locaux, pas de loyer, pas d’équipe commerciale à faire vivre. Ce que nous n’avons pas à payer, vous ne le payez pas non plus. Notre objectif : vous fournir un site professionnel plus rapidement et moins cher que les autres.
 
-> Creuser un trou, on peut le faire à la pelle ou à la tractopelle. Le trou est le même à l’arrivée. Le temps passé pour y arriver, lui, n’a rien à voir. Les Minis Monstres, c’est notre tractopelle.
+> La vaisselle, on peut la faire à la main ou au lave-vaisselle. À la fin, les assiettes sont aussi propres. Mais avec la machine, vous n’avez pas passé votre soirée devant l’évier.
+
+## Notre vision : les machines pour le répétitif, nous pour le reste
+
+D’un site à l’autre, une bonne partie du travail se répète : monter les pages, faire les réglages, alléger les photos, vérifier les liens. Ce n’est ni difficile ni passionnant, mais à la main, cela prend des heures. Nos outils, les Minis Monstres, s’en chargent comme un lave-vaisselle : le même travail, bien fait, sans perdre de temps.
+
+Le temps gagné, nous le gardons pour la partie qui compte vraiment, et que nous aimons : vous écouter, comprendre votre métier, choisir l’ambiance de votre site, trouver les bons mots, soigner les détails. Le répétitif pour les machines, le plaisir du travail bien fait pour nous. Et vous, vous en profitez : un site prêt plus vite, et moins cher.
 
 ## Le cerveau est prêt, il ne manque que votre contenu
 
@@ -131,6 +137,8 @@ Ce qui prenait des semaines se fait en ${ESS.delai}, avec ou sans l’option ${e
 ## Ce qu’Alex fait à la main
 
 Les petits monstres vont vite, mais ils ne décident de rien. Alex, qui a créé les Minis Monstres, conçoit votre site et reprend tout ce qu’ils préparent.
+
+- **Un appel avant chaque site** : une fois votre questionnaire rempli, Alex vous appelle pour parler de votre site et bien comprendre ce que vous attendez. Ensuite seulement, il donne le feu vert à la bande.
 
 - **La relecture** : chaque page, chaque texte, chaque horaire, chaque prix affiché.
 - **Les tests sur téléphone**, comme le feront vos clients.
@@ -364,7 +372,7 @@ Vos questions avant la commande ne vous engagent à rien. Si notre offre ne corr
 
 ## Notre méthode, en quatre temps
 
-1. **Vous nous racontez votre activité** : dans le questionnaire de votre espace client, ce que vous faites, pour qui, et ce que vous attendez du site.
+1. **Vous nous racontez votre activité** : dans le questionnaire de votre espace client, puis lors d’un appel avec Alex, pour bien comprendre ce que vous attendez du site.
 2. **Alex conçoit votre site** : la structure, les pages, le style. La petite bande prend en charge ce qui se répète.
 3. **Alex vérifie** : tout est relu et testé sur plusieurs appareils, puis votre première version part en ligne.
 4. **Vous le peaufinez** : avec le forfait ${mini.name}, nous l’hébergeons et vous le modifiez à volonté, vous-même ou avec nous. Avec le forfait ${AUTO}, vous recevez l’export du site, une copie complète prête à installer.
@@ -540,8 +548,8 @@ Elle se fera connaître des Ardennais qui cherchent une idée de cadeau, et vend
 ## Comment ça se passe
 
 1. **Vous nous contactez** par le [formulaire](/contact/), en précisant si vous aimeriez une rencontre. Vous savez déjà ce qu’il vous faut ? Commandez sur la page [créer mon site](/creer-mon-site/).
-2. **Vous remplissez le questionnaire** de création, dans votre espace client.
-3. **Nous créons votre site**${ESS.delai ? ` : comptez ${ESS.delai}, puisque nos modules sont déjà prêts` : ', et vous voyez chaque étape'}.
+2. **Vous remplissez le questionnaire** de création, dans votre espace client, puis Alex vous appelle pour en parler.
+3. **Nous créons votre site**${ESS.delai ? ` : comptez ${ESS.delai} après l’appel, puisque nos modules sont déjà prêts` : ', et vous voyez chaque étape'}.
 4. **Votre site part en ligne**, et vous le modifiez ensuite à votre goût.
 
 Côté paiement, vous réglez le site en commandant. Vous préférez étaler ? Choisissez ${EN_FOIS} sur la page de paiement.`,

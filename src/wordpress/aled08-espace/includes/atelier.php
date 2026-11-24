@@ -60,6 +60,25 @@ function aled08e_atelier_action(WP_REST_Request $req) {
  *  États (_aled08_chantier) : '' (à lire), question (on attend le client), reponse (le client a répondu), visuel, a_verifier.
  * ========================================================================= */
 function aled08e_chantier_auto() { return get_option('aled08_chantier_auto', '1') === '1'; }
+/* L'appel d'Alex (décision du 24 novembre 2026) : pour chaque site, une fois le questionnaire rempli, Alex appelle le client
+ * pour parler du site et clarifier ce qu'il attend. Ensuite seulement il donne le feu vert à la bande (espace de gestion,
+ * « À appeler »). Avant ce feu vert, le constructeur ne commence pas. Ce qu'Alex a noté pendant l'appel va dans le fil entre agents. */
+function aled08e_feu_vert($cid) { return (int) get_post_meta((int) $cid, '_aled08_feu_vert', true); }
+function aled08e_feu_vert_donner($cid, $note = '') {
+    update_post_meta((int) $cid, '_aled08_feu_vert', time());
+    $note = trim((string) $note);
+    if ($note !== '' && function_exists('aled08e_agent_fil_ajouter')) aled08e_agent_fil_ajouter($cid, 'alex', 'Ce qu’Alex a retenu de l’appel avec le client : ' . $note);
+    if (function_exists('aled08e_cmd_journal')) aled08e_cmd_journal($cid, 'Appel avec le client fait : feu vert donné à la bande.');
+    $c = function_exists('aled08e_cmd_get') ? aled08e_cmd_get($cid) : null;
+    if ($c && !empty($c['user']) && function_exists('aled08e_fil_ajouter')) aled08e_fil_ajouter((int) $c['user'], 'bricou', 'Alex a donné le feu vert : Bricou commence votre site.');
+}
+/* Les commandes dont le questionnaire est reçu et qui attendent l'appel d'Alex */
+function aled08e_a_appeler() {
+    if (!function_exists('aled08e_cmd_statuts_en_cours')) return [];
+    $ids = get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'private', 'numberposts' => 40, 'fields' => 'ids', 'orderby' => 'date', 'order' => 'ASC',
+        'meta_query' => [['key' => '_aled08_statut', 'value' => aled08e_cmd_statuts_en_cours(), 'compare' => 'IN'], ['key' => '_aled08_brief_le', 'compare' => 'EXISTS'], ['key' => '_aled08_feu_vert', 'compare' => 'NOT EXISTS']]]);
+    return array_values(array_filter($ids, function ($cid) { return aled08e_brief_le($cid) !== '' && !get_post_meta($cid, '_aled08_brief_brouillon', true); }));
+}
 function aled08e_chantier_fil($cid) { $f = get_post_meta((int) $cid, '_aled08_chantier_fil', true); return is_array($f) ? $f : []; }
 function aled08e_chantier_fil_ajouter($cid, $qui, $texte) {
     $f = aled08e_chantier_fil($cid);
@@ -104,6 +123,7 @@ function aled08e_chantiers_liste(WP_REST_Request $req) {
         elseif ($etat === 'a_controler') { $afaire = 'contrôler le site, puis le livrer ou demander des corrections'; $role = 'controleur'; }
         elseif ($etat === 'a_corriger') $afaire = 'corriger le site d’après le contrôle, puis le renvoyer au contrôle';
         elseif (!$brief) { $afaire = 'rien : on attend le questionnaire du client'; $role = 'client'; }
+        elseif (!aled08e_feu_vert($cid) && !in_array($etat, ['a_controler', 'a_corriger'], true)) { $afaire = 'rien : Alex appelle le client pour parler de son site, puis il donne le feu vert à la bande'; $role = 'alex'; }
         elseif ($etat === 'question') { $afaire = 'rien : on attend la réponse du client'; $role = 'client'; }
         elseif (!$relie) $afaire = 'lire le questionnaire ; poser une question seulement si l’essentiel manque ; le site n’est pas encore installé (' . $c['statut'] . ')';
         else $afaire = 'faire le site (questionnaire reçu, site installé et relié)';
@@ -137,6 +157,10 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
     $attente = function_exists('aled08e_cmd_attente_fin') ? aled08e_cmd_attente_fin($cid) : 0;
     if ($attente > time() && empty($p['accord_alex']) && in_array($faire, ['question', 'note', 'a_controler', 'corriger', 'livrer'], true))
         return new WP_Error('aled08_chantier', 'Le client a choisi d’attendre la fin de son délai de rétractation : la création ne commence pas avant le ' . wp_date('j F Y', $attente) . '.', ['status' => 409]);
+    // pas de feu vert d'Alex (il appelle d'abord le client) : la création n'a pas commencé
+    $briefRecu = aled08e_brief_le($cid) !== '' && !get_post_meta($cid, '_aled08_brief_brouillon', true);
+    if ($briefRecu && !aled08e_feu_vert($cid) && empty($p['accord_alex']) && in_array($faire, ['question', 'a_controler', 'livrer'], true))
+        return new WP_Error('aled08_chantier', 'Alex n’a pas encore donné le feu vert : il appelle d’abord le client pour parler de son site. Ne commencez pas ce chantier.', ['status' => 409]);
     if ($faire === 'question') {
         if ($texte === '') return new WP_Error('aled08_chantier', 'Texte manquant.', ['status' => 400]);
         if (!is_email($c['email'])) return new WP_Error('aled08_chantier', 'Pas d’adresse e-mail sur cette commande.', ['status' => 400]);

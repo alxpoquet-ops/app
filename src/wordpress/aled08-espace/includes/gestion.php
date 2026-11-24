@@ -97,6 +97,12 @@ add_action('template_redirect', function () {
     $onglet = strpos($quoi, 'annonce') === 0 ? 'annonces' : 'accueil';
     $back = function ($m) use ($onglet) { wp_safe_redirect(aled08e_url(['mg' => $m]) . '#' . $onglet, 303); exit; };
     if (!wp_verify_nonce(sanitize_text_field((string) ($P['_aled08e_gestion'] ?? '')), 'aled08e_gestion')) $back('erreur');
+    if ($quoi === 'feu_vert') {
+        $cid = (int) ($P['commande'] ?? 0);
+        if (!$cid || !function_exists('aled08e_feu_vert_donner') || get_post_type($cid) !== ALED08E_CPT_CMD) $back('erreur');
+        aled08e_feu_vert_donner($cid, mb_substr(sanitize_textarea_field((string) ($P['note'] ?? '')), 0, 2000));
+        $back('feu_vert');
+    }
 
     if ($quoi === 'demande') {
         $pid = (int) ($P['id'] ?? 0);
@@ -144,6 +150,7 @@ function aled08e_gestion($u) {
         'demande_ok' => ['esp-empty', 'Demande mise à jour.'],
         'annonce_ok' => ['esp-empty', 'Annonce publiée : vos clients la voient en haut de leur espace.'],
         'annonce_suppr' => ['esp-empty', 'Annonce retirée.'],
+        'feu_vert' => ['esp-empty', 'Feu vert donné : la bande commence le site.'],
         'titre_vide' => ['esp-warn', 'Donnez un titre à votre annonce.'],
         'erreur' => ['esp-warn', 'Ça n’a pas marché. Rechargez la page et réessayez.'],
     ];
@@ -189,6 +196,24 @@ function aled08e_gestion($u) {
           </div>
           <p class="app-note">Le circuit : le client écrit, Cerise précise la demande avec lui et la lui fait confirmer, puis elle vous l’envoie ici (et par e-mail). Vous faites la modification. Une modification : 48 h au plus (24 h si le client a coché « en 24 heures »), une demande à la fois, deux avec l’extra « Deux demandes à la fois ». Un extra commandé : 7 jours. Le client peut annuler tant que vous n’avez pas cliqué « Je commence ».</p>
 
+          <?php $aAppeler = function_exists('aled08e_a_appeler') ? aled08e_a_appeler() : []; if ($aAppeler) : ?>
+          <p class="app-sub"><?php echo aled08e_icon('phone'); // phpcs:ignore ?> À appeler avant de lancer le site</p>
+          <ul class="ges-list">
+            <?php foreach ($aAppeler as $acid) : $ac = aled08e_cmd_get($acid); if (!$ac) continue; $tel = preg_replace('/[^0-9+]/', '', (string) $ac['telephone']); ?>
+            <li class="ges-item ges-afaire">
+              <div class="ges-head"><strong><?php echo esc_html(aled08e_cmd_nom($ac)); ?></strong><em class="st st-new"><?php echo esc_html($ac['ref']); ?></em></div>
+              <p><?php echo esc_html($ac['entreprise'] ?: 'Activité non précisée'); ?> · questionnaire reçu le <?php echo esc_html(wp_date('j/m à H:i', strtotime(aled08e_brief_le($acid)))); ?></p>
+              <p><?php if ($tel) : ?><a class="btn btn-primary btn-sm" href="tel:<?php echo esc_attr($tel); ?>"><?php echo aled08e_icon('phone'); // phpcs:ignore ?><span>Appeler <?php echo esc_html($ac['telephone']); ?></span></a><?php else : ?>Pas de numéro : <?php echo esc_html($ac['email']); ?><?php endif; ?>
+                <a class="btn btn-light btn-sm" href="<?php echo esc_url(add_query_arg('aled08e_brief', $acid, home_url('/'))); ?>" target="_blank" rel="noopener"><?php echo aled08e_icon('clipboard-check'); // phpcs:ignore ?><span>Le questionnaire</span></a></p>
+              <form method="post" action="<?php echo $act; // phpcs:ignore ?>"><?php echo $nonce; // phpcs:ignore ?>
+                <input type="hidden" name="aled08e_gestion" value="feu_vert"><input type="hidden" name="commande" value="<?php echo (int) $acid; ?>">
+                <div class="field"><label for="fv-<?php echo (int) $acid; ?>">Ce qu’il faut retenir de l’appel (pour la bande)</label><textarea id="fv-<?php echo (int) $acid; ?>" name="note" rows="3" placeholder="Ex. : il veut surtout mettre en avant ses gâteaux de mariage, couleurs douces, pas de photo de lui."></textarea></div>
+                <button class="btn btn-primary btn-sm" type="submit"><?php echo aled08e_icon('rocket'); // phpcs:ignore ?><span>Feu vert à la bande</span></button>
+              </form>
+            </li>
+            <?php endforeach; ?>
+          </ul>
+          <?php endif; ?>
           <p class="app-sub"><?php echo aled08e_icon('wrench'); // phpcs:ignore ?> À faire, dans l’ordre</p>
           <?php if (!$aFaire) : ?>
           <p class="esp-empty">Rien à faire pour le moment.</p>

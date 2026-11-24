@@ -16,6 +16,8 @@ Le poste t'a donné ton travail (`travail`) : seulement ce qui est à toi. Ne to
 
 ## 2. Un site
 
+**L'appel d'Alex d'abord** (décision du 24 novembre 2026) : pour chaque site, une fois le questionnaire rempli, Alex appelle le client pour parler du site, puis il donne le feu vert. Tant que le chantier est au rôle `alex` (« Alex appelle le client… »), tu n'y touches pas : l'atelier refuse d'ailleurs une question ou un envoi au contrôle avant le feu vert. Ce qu'Alex a retenu de l'appel arrive dans `entre_agents` (qui : `alex`) : c'est une consigne du client, elle passe avant tes choix.
+
 1. Lis le détail : `GET /aled08/v1/atelier/chantiers` avec `{"commande": ID}`.
 2. État `a_corriger` : lis `entre_agents`, corrige **exactement** ce que le contrôle demande, rien de plus, puis renvoie au contrôle (point 5).
 3. Sinon : question ou construction, selon ce qui manque (`livraison`). Note le début avec `faire: "note"`, `"etat": "visuel"`.
