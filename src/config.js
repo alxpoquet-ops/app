@@ -262,15 +262,16 @@ const energieMois = 250;
 // Pour tout remettre : outils et energie à true (les textes, l'onglet Outils et la page /outils/ reviennent).
 const enService = { outils: false, energie: false };
 // ---------------------------------------------------------------- la maison et ses ateliers (24 novembre 2026)
-// 24 novembre 2026, soir : les quatre onglets s'appellent La maison (le concept), Mini Site, Mini Tuto (formations, l'id reste 'ecole') et Mini Outils.
+// 24 novembre 2026, plus tard : TROIS onglets (La maison, Mini Site, Mini Tuto) ; Mini Outils est caché (outils mis de côté).
+// Avant : les quatre onglets s'appelaient La maison (le concept), Mini Site, Mini Tuto (formations, l'id reste 'ecole') et Mini Outils.
 // Décision d'Alex : Les Minis Monstres deviennent « la maison » (Alex à la tête, la bande au centre) ; en dessous, des ateliers,
 // chacun avec son monstre chef et son grand onglet sur le site. Un seul compte, un seul espace client, une seule facture.
 // cache : l'onglet n'apparaît pas encore (l'école attend ses premiers cours). monstre : image de src/assets/img/mail/<monstre>.png.
 const ateliers = [
   { id: 'maison', label: 'La maison', path: '/la-maison/', monstre: 'mascotte', color: 'lilac', court: 'Le concept, Alex et la petite bande' },
   { id: 'sites', label: 'Mini Site', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: `Votre site professionnel en quelques heures, ${Math.round(marche.vitrineMin / creation.prix)} fois moins cher qu’un indépendant, puis on s’en occupe chaque mois.` },
-  { id: 'ecole', label: 'Mini Tuto', path: '/mini-tuto/', monstre: 'mochi', color: 'lilac', chef: 'Mochi', court: 'Minis Tutos, Minis Prix : des tutos clairs et complets à 4,99 €, pour être vu, attirer des clients et gagner du temps.' },
-  { id: 'outils', label: 'Mini Outils', path: '/outils/', monstre: 'etoile', color: 'butter', chef: 'Pépite', court: 'Publier partout, répondre aux avis, préparer ses fiches produits : de petits monstres au travail tous les jours.' },
+  { id: 'ecole', label: 'Mini Tuto', path: '/mini-tuto/', monstre: 'mochi', color: 'lilac', chef: 'Mochi', court: 'De petits tutos gratuits pour tout comprendre : créer votre site avec nous, votre espace client, vos modifications, les extras.' },
+  { id: 'outils', label: 'Mini Outils', path: '/outils/', monstre: 'etoile', color: 'butter', chef: 'Pépite', cache: true, court: 'Publier partout, répondre aux avis, préparer ses fiches produits : de petits monstres au travail tous les jours.' },
 ];
 // Les outils (atelier « Les outils ») : par abonnement, outil par outil OU « toute la bande » (décision d'Alex, 24 novembre 2026).
 // Vendus à tout le monde, avec ou sans site chez nous. Essai gratuit de essaiJours jours, sans engagement, chaque outil se résilie seul.
@@ -279,7 +280,7 @@ const ateliers = [
 // briques : les petits outils déjà écrits (src/content/outils-lia.js, ids) qui deviennent des boutons de cet outil.
 // Sur le site public, on ne parle jamais d'IA : ce sont des petits monstres qui travaillent pour le client.
 const outilsOffre = {
-  actif: true,
+  actif: false, // 24 novembre 2026, soir : Alex met les outils de côté pour se concentrer sur les sites (rien de public, rien dans l'espace client)
   essaiJours: 14,
   bande: { id: 'bande', nom: 'Toute la bande', prix: 19, court: 'Tous les outils prêts, et les prochains dès leur sortie.' },
   outils: [
@@ -301,12 +302,11 @@ const outilsOffre = {
       court: 'Une note vocale sur le chantier : un devis propre à votre nom, envoyé et relancé pour vous.' },
   ],
 };
-// Mini Tuto (décision d'Alex, 24 novembre 2026, soir) : « Minis Tutos, Minis Prix ». Une vingtaine de tutos à prix € chacun,
-// payés une fois, accès à vie (tant que Les Minis Monstres proposent les tutos). Chaque tuto a plusieurs pages ; les apercuPages
-// premières se lisent gratuitement en public, la suite s'ouvre dans l'espace client (« Mes tutos ») après l'achat.
-// Deux ou trois tutos sont entièrement gratuits (champ gratuit: true), pour montrer la qualité. Plus de grandes formations.
-// Achat grisé tant que les ventes sont fermées (ouverture.php).
-const tutosOffre = { prix: 4.99, apercuPages: 2, slogan: 'Minis Tutos, Minis Prix' };
+// Mini Tuto (décision d'Alex, 24 novembre 2026, plus tard dans la soirée) : on se concentre sur les sites. Mini Tuto devient l'aide
+// des Minis Monstres en petits tutos GRATUITS, une bonne vingtaine, tous sur ce qui se passe chez nous pour un site internet :
+// créer son site avec nous, le déroulement, l'espace client, les modifications, les extras (mis en avant : la page de visibilité
+// Google, l'e-commerce, la traduction anglaise), pourquoi nous plutôt qu'un autre. Plus de tutos payants ni de formations.
+const tutosOffre = { gratuit: true, aLaUne: ['page-de-visibilite-google', 'boutique-en-ligne-e-commerce', 'traduction-anglaise'] };
 const limites = { bulleJour: 40 }; // messages par jour dans la bulle de Cerise (les modifications sont sans limite)
 const enPause = !enService.energie;
 // Un seul abonnement : Mini, 10 € par mois, sans engagement (18 novembre 2026). Maxi est retiré : tout ce qu'il apportait se prend
