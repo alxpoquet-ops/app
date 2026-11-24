@@ -262,15 +262,16 @@ const energieMois = 250;
 // Pour tout remettre : outils et energie à true (les textes, l'onglet Outils et la page /outils/ reviennent).
 const enService = { outils: false, energie: false };
 // ---------------------------------------------------------------- la maison et ses ateliers (24 novembre 2026)
-// 24 novembre 2026, plus tard : TROIS onglets (La maison, Mini Site, Mini Tuto) ; Mini Outils est caché (outils mis de côté).
+// 24 novembre 2026, fin de soirée : TROIS onglets « La maison, Mon Site, Mes Tutos » : leurs initiales font LMM, première lettre
+// discrètement mise en évidence (clin d'œil d'Alex). Avant : TROIS onglets (La maison, Mini Site, Mini Tuto) ; Mini Outils est caché (outils mis de côté).
 // Avant : les quatre onglets s'appelaient La maison (le concept), Mini Site, Mini Tuto (formations, l'id reste 'ecole') et Mini Outils.
 // Décision d'Alex : Les Minis Monstres deviennent « la maison » (Alex à la tête, la bande au centre) ; en dessous, des ateliers,
 // chacun avec son monstre chef et son grand onglet sur le site. Un seul compte, un seul espace client, une seule facture.
 // cache : l'onglet n'apparaît pas encore (l'école attend ses premiers cours). monstre : image de src/assets/img/mail/<monstre>.png.
 const ateliers = [
   { id: 'maison', label: 'La maison', path: '/la-maison/', monstre: 'mascotte', color: 'lilac', court: 'Le concept, Alex et la petite bande' },
-  { id: 'sites', label: 'Mini Site', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: `Votre site professionnel en quelques heures, ${Math.round(marche.vitrineMin / creation.prix)} fois moins cher qu’un indépendant, puis on s’en occupe chaque mois.` },
-  { id: 'ecole', label: 'Mini Tuto', path: '/mini-tuto/', monstre: 'mochi', color: 'lilac', chef: 'Mochi', court: 'De petits tutos gratuits pour tout comprendre : créer votre site avec nous, votre espace client, vos modifications, les extras.' },
+  { id: 'sites', label: 'Mon Site', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: `Votre site professionnel en quelques heures, ${Math.round(marche.vitrineMin / creation.prix)} fois moins cher qu’un indépendant, puis on s’en occupe chaque mois.` },
+  { id: 'ecole', label: 'Mes Tutos', path: '/mini-tuto/', monstre: 'mochi', color: 'lilac', chef: 'Mochi', court: 'De petits tutos gratuits pour tout comprendre : créer votre site avec nous, votre espace client, vos modifications, les extras.' },
   { id: 'outils', label: 'Mini Outils', path: '/outils/', monstre: 'etoile', color: 'butter', chef: 'Pépite', cache: true, court: 'Publier partout, répondre aux avis, préparer ses fiches produits : de petits monstres au travail tous les jours.' },
 ];
 // Les outils (atelier « Les outils ») : par abonnement, outil par outil OU « toute la bande » (décision d'Alex, 24 novembre 2026).
