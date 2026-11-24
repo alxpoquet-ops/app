@@ -288,7 +288,7 @@ ${C.ctaBand({ title: 'Le prix vous convient ?', text: 'Il ne reste qu’à deven
 }
 
 // ====================================================================== LES OUTILS (atelier « Les outils », 24 novembre 2026)
-// Construite à partir de config.outilsOffre (actif) : un petit monstre par corvée, un prix par mois, une limite raisonnable affichée,
+// Construite à partir de config.outilsOffre (actif) : un petit monstre par tâche, un prix par mois, une limite raisonnable affichée,
 // « Toute la bande » pour tout, essai gratuit, sans engagement, avec ou sans site chez nous. On ne parle jamais d'IA ici.
 // Les boutons « Essayer » mènent à l'espace client et portent data-achat (ventes fermées : WordPress les grise tout seul).
 // L'ancienne page des outils à énergie (enService.outils) n'existe plus : ne pas la réactiver.
@@ -321,8 +321,8 @@ function outilsPage() {
     ${C.breadcrumbs(crumbs)}
     <div class="outils-hero-in">
       <p class="outils-sur">Les outils des Minis Monstres</p>
-      <h1>Un petit monstre pour chaque <mark>corvée</mark></h1>
-      <p class="lead">Rien à installer, rien à brancher. Vous choisissez, il commence aujourd’hui. Sans engagement, avec ou sans site chez nous.</p>
+      <h1>Votre temps est précieux. <mark>On vous en fait gagner.</mark></h1>
+      <p class="lead">Les petits monstres s’occupent de vos réseaux, de vos avis et de vos fiches produits, pour que vous restiez concentré sur votre activité. Rien à installer, sans engagement, avec ou sans site chez nous.</p>
       <ul class="outils-points">
         <li>${icon('gift')}<span>${ESSAI} jours gratuits</span></li>
         <li>${icon('repeat')}<span>Sans engagement</span></li>
@@ -367,7 +367,7 @@ ${f.html}
     color: 'butter',
     bodyClass: 'page-outils',
     title: 'Outils pour publier, avis Google et fiches produits | Les Minis Monstres',
-    description: `Publier partout, répondre aux avis Google, préparer vos fiches produits : un petit monstre par corvée, dès ${euro(Math.min(...prets.map((o) => o.prix)))} par mois. Essai gratuit ${ESSAI} jours.`,
+    description: `Publier partout, répondre aux avis Google, préparer vos fiches produits : les petits monstres vous font gagner du temps, dès ${euro(Math.min(...prets.map((o) => o.prix)))} par mois. Essai gratuit ${ESSAI} jours.`,
     crumbs,
     body,
     schema: [f.schema],
@@ -822,7 +822,7 @@ function demoOutils() {
   };
   return `<div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
           <h2 class="app-h">Mes outils</h2>
-          ${C.presente('etoile', `<strong>Moi, c’est ${esc(C.PEPITE)}.</strong> Chaque outil est un petit monstre qui fait une corvée pour vous. Essayez-le ${ESSAI} jours, sans engagement.`, { humeur: 'ravi' })}
+          ${C.presente('etoile', `<strong>Moi, c’est ${esc(C.PEPITE)}.</strong> Chaque outil est un petit monstre qui vous fait gagner du temps. Essayez-le ${ESSAI} jours, sans engagement.`, { humeur: 'ravi' })}
           <div class="app-opts">${outilsOffre.outils.map(ligne).join('')}</div>
           <p class="app-sub">${icon('sparkles')} ${esc(B.nom)}</p>
           <p class="app-domain">${C.imgMonstre('mascotte', 40)}<span><strong>${esc(B.nom)} : ${euro(B.prix)} par mois</strong><small>${esc(B.court)} Gratuit ${ESSAI} jours.</small></span></p>
