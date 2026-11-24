@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres Espace client
  * Description: L'espace client des Minis Monstres sur la page /mon-espace/ et la gestion du site : commandes passées sur /commander/, paiement Stripe, comptes clients automatiques, demandes de modification, parrainage, tableau de bord.
- * Version: 2.8.0
+ * Version: 2.9.0
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALED08E_VERSION', '2.8.0');
+define('ALED08E_VERSION', '2.9.0');
 define('ALED08E_FILE', __FILE__);
 define('ALED08E_ROLE', 'aled08_client');
 define('ALED08E_CPT', 'aled08_demande');
@@ -212,6 +212,10 @@ require_once __DIR__ . '/includes/regles.php';
 require_once __DIR__ . '/includes/agents.php';
 require_once __DIR__ . '/includes/mirette.php';
 require_once __DIR__ . '/includes/edition.php';
+// la maison et ses ateliers (24 novembre 2026) : les outils par abonnement, le fil de la bande. L'écran de chaque outil
+// (atelier-outils.php) est écrit à part : sans lui, les outils s'affichent « bientôt ».
+require_once __DIR__ . '/includes/abonnements-outils.php';
+if (file_exists(__DIR__ . '/includes/atelier-outils.php')) require_once __DIR__ . '/includes/atelier-outils.php';
 
 /* =========================================================================
  *  Rôle « Client des Minis Monstres » et type de contenu « Demande »
@@ -258,24 +262,30 @@ add_filter('login_redirect', function ($to, $requested, $user) {
     if ($user instanceof WP_User && aled08e_is_client($user)) return aled08e_url();
     return $to;
 }, 20, 3);
+/* Après la connexion : l'espace, ou « Mes outils » avec l'outil choisi (lien public /mon-espace/?outil=…) */
+function aled08e_login_retour($ok) {
+    $outil = function_exists('aled08e_outils_param') ? aled08e_outils_param($_POST['outil'] ?? '') : '';
+    if (!$ok) return aled08e_url(['connexion' => 'erreur'] + ($outil ? ['outil' => $outil] : []));
+    return $outil ? aled08e_url(['choix' => $outil]) . '#outils' : aled08e_url();
+}
 add_action('wp_login_failed', function () {
-    if (!empty($_POST['aled08_login'])) { wp_safe_redirect(aled08e_url(['connexion' => 'erreur']), 303); exit; }
+    if (!empty($_POST['aled08_login'])) { wp_safe_redirect(aled08e_login_retour(false), 303); exit; }
 });
 /* Connexion depuis la page /mon-espace/ elle-même (la page wp-login.php est filtrée par le pare-feu de l'hébergeur) */
 add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08_login'])) return;
-    if (is_user_logged_in()) { wp_safe_redirect(aled08e_url(), 303); exit; }
+    if (is_user_logged_in()) { wp_safe_redirect(aled08e_login_retour(true), 303); exit; }
     // les champs doivent être des chaînes (un tableau log[]=… ferait planter is_email)
     $log = $_POST['log'] ?? '';
     $pwd = $_POST['pwd'] ?? '';
-    if (!is_string($log) || !is_string($pwd)) { wp_safe_redirect(aled08e_url(['connexion' => 'erreur']), 303); exit; }
+    if (!is_string($log) || !is_string($pwd)) { wp_safe_redirect(aled08e_login_retour(false), 303); exit; }
     $log = wp_unslash($log);
     $login = is_email($log) ? sanitize_email($log) : sanitize_user($log);
     $pass = (string) wp_unslash($pwd);
-    if ($login === '' || $pass === '') { wp_safe_redirect(aled08e_url(['connexion' => 'erreur']), 303); exit; }
+    if ($login === '' || $pass === '') { wp_safe_redirect(aled08e_login_retour(false), 303); exit; }
     $user = wp_signon(['user_login' => $login, 'user_password' => $pass, 'remember' => !empty($_POST['rememberme'])], is_ssl());
-    if (is_wp_error($user)) { wp_safe_redirect(aled08e_url(['connexion' => 'erreur']), 303); exit; }
-    wp_safe_redirect(aled08e_url(), 303);
+    if (is_wp_error($user)) { wp_safe_redirect(aled08e_login_retour(false), 303); exit; }
+    wp_safe_redirect(aled08e_login_retour(true), 303);
     exit;
 }, 1);
 add_action('admin_init', function () {
@@ -836,7 +846,15 @@ add_filter('manage_users_custom_column', function ($out, $col, $uid) {
  *  La page « Mon espace » : [aled08_espace]…formulaire de connexion…[/aled08_espace]
  * ========================================================================= */
 add_action('wp_enqueue_scripts', function () {
-    if (!is_page('mon-espace') || !is_user_logged_in()) return;
+    if (!is_page('mon-espace')) return;
+    $porteOutil = !is_user_logged_in() && !empty($_GET['outil']); // la page publique d'un outil (créer son compte, se connecter)
+    if (!is_user_logged_in() && !$porteOutil) return;
+    if ($porteOutil) {
+        $theme = get_template_directory() . '/assets/css/espace.css';
+        if (file_exists($theme)) wp_enqueue_style('aled08-espace', get_template_directory_uri() . '/assets/css/espace.css', ['aled08'], (string) filemtime($theme));
+        elseif (file_exists(__DIR__ . '/espace.css')) wp_enqueue_style('aled08-espace', plugins_url('espace.css', __FILE__), ['aled08'], ALED08E_VERSION);
+        return;
+    }
     wp_enqueue_script('aled08-qrcode', plugins_url('qrcode.js', __FILE__), [], ALED08E_VERSION, ['in_footer' => true, 'strategy' => 'defer']);
     if (aled08e_outils_on()) wp_enqueue_script('aled08-outils', plugins_url('outils.js', __FILE__), [], (string) @filemtime(__DIR__ . '/outils.js'), ['in_footer' => true, 'strategy' => 'defer']);
     // Styles propres à l'espace client : dans le thème (assets/css/espace.css), sinon la copie livrée avec l'extension
@@ -847,6 +865,9 @@ add_action('wp_enqueue_scripts', function () {
 
 add_shortcode('aled08_espace', function ($atts, $content = '') {
     if (!is_user_logged_in()) {
+        // /mon-espace/?outil=<id> : l'outil présenté, avec « Je crée mon compte » (e-mail et mot de passe) et « J'ai déjà un compte »
+        $outil = function_exists('aled08e_outils_param') && aled08e_outils_offre() ? aled08e_outils_param($_GET['outil'] ?? '') : '';
+        if ($outil !== '') return aled08e_outils_porte_html($outil);
         $c = str_replace(
             ['action="/wp-login.php"', 'href="/wp-login.php?action=lostpassword"'],
             ['action="' . esc_url(aled08e_url()) . '"', 'href="' . esc_url(wp_lostpassword_url(aled08e_url(['mdp' => 'envoye']))) . '"'],
@@ -990,6 +1011,26 @@ function aled08e_panel_commande($cmd, $u, $D) {
     return ob_get_clean();
 }
 
+/* Les factures du client : celles de Stripe (automatiques) puis celles saisies à la main dans la fiche client */
+function aled08e_factures_html($uid) {
+    $factures = [];
+    $stripeF = get_user_meta($uid, 'aled08_factures_stripe', true);
+    $stripeF = is_array($stripeF) ? array_reverse($stripeF) : [];
+    foreach ($stripeF as $fa) {
+        $lien = $fa['url'] ?? '';
+        $pdf = $fa['pdf'] ?? '';
+        $factures[] = '<li><span>' . esc_html(aled08e_date($fa['date'] ?? '') . (!empty($fa['number']) ? ' · ' . $fa['number'] : '')) . '</span><b>' . aled08e_euro($fa['montant'] ?? 0) . '</b>'
+            . ($lien ? '<a class="link-btn" href="' . esc_url($lien) . '" target="_blank" rel="noopener">Voir</a>' : '') . ($pdf ? '<a class="link-btn" href="' . esc_url($pdf) . '" target="_blank" rel="noopener">PDF</a>' : '') . '</li>';
+    }
+    foreach (preg_split('/\r?\n/', aled08e_meta($uid, 'factures')) as $line) {
+        $p = array_map('trim', explode(';', $line));
+        if ($p[0] === '') continue;
+        $lien = $p[3] ?? '';
+        $factures[] = '<li><span>' . esc_html($p[0] . (!empty($p[1]) ? ' · ' . $p[1] : '')) . '</span><b>' . esc_html($p[2] ?? '') . '</b>' . ($lien ? '<a class="link-btn" href="' . esc_url($lien) . '" target="_blank" rel="noopener">Voir</a>' : '') . '</li>';
+    }
+    return $factures ? '<ul class="invoices">' . implode('', $factures) . '</ul>' : '<p class="esp-empty">Vos factures apparaîtront ici après chaque paiement.</p>';
+}
+
 function aled08e_dashboard() {
     $u = wp_get_current_user();
     $uid = $u->ID;
@@ -1116,22 +1157,8 @@ function aled08e_dashboard() {
         if ($parts[0] === '') continue;
         $ranks[] = '<li><span>' . esc_html($parts[0]) . '</span>' . (isset($parts[1]) && $parts[1] !== '' ? '<b>' . esc_html($parts[1]) . '<sup>e</sup></b>' : '') . '</li>';
     }
-    // Factures : celles de Stripe (automatiques) puis celles saisies à la main dans la fiche client
-    $factures = [];
-    $stripeF = get_user_meta($uid, 'aled08_factures_stripe', true);
-    $stripeF = is_array($stripeF) ? array_reverse($stripeF) : [];
-    foreach ($stripeF as $fa) {
-        $lien = $fa['url'] ?? '';
-        $pdf = $fa['pdf'] ?? '';
-        $factures[] = '<li><span>' . esc_html(aled08e_date($fa['date'] ?? '') . (!empty($fa['number']) ? ' · ' . $fa['number'] : '')) . '</span><b>' . aled08e_euro($fa['montant'] ?? 0) . '</b>'
-            . ($lien ? '<a class="link-btn" href="' . esc_url($lien) . '" target="_blank" rel="noopener">Voir</a>' : '') . ($pdf ? '<a class="link-btn" href="' . esc_url($pdf) . '" target="_blank" rel="noopener">PDF</a>' : '') . '</li>';
-    }
-    foreach (preg_split('/\r?\n/', aled08e_meta($uid, 'factures')) as $line) {
-        $p = array_map('trim', explode(';', $line));
-        if ($p[0] === '') continue;
-        $lien = $p[3] ?? '';
-        $factures[] = '<li><span>' . esc_html($p[0] . (!empty($p[1]) ? ' · ' . $p[1] : '')) . '</span><b>' . esc_html($p[2] ?? '') . '</b>' . ($lien ? '<a class="link-btn" href="' . esc_url($lien) . '" target="_blank" rel="noopener">Voir</a>' : '') . '</li>';
-    }
+    $siteTabs = ($cmd ? ['commande' => ['package', 'Ma commande']] : []) + ['demandes' => ['pencil', 'Modifications'], 'extras' => ['sparkles', 'Extras'], 'vacances' => [aled08e_est_boutique($uid) ? 'shopping-bag' : 'lock', 'Ma boutique']];
+    $siteInfo = ['ok' => true, 'host' => $host, 'etat' => $siteEtat, 'formule' => !aled08e_sans_formule($uid)];
     $avis = aled08e_meta($uid, 'avis');
     $mois = aled08e_meta($uid, 'stats_mois');
     $rapport = aled08e_meta($uid, 'stats_rapport');
@@ -1141,7 +1168,7 @@ function aled08e_dashboard() {
     ob_start();
     ?>
 <section class="section section-app"><div class="container">
-  <div class="app" data-espace<?php echo aled08e_jauge_verrou($cmd) ? ' data-verrou="' . esc_attr(aled08e_jauge_verrou($cmd)) . '"' : ''; ?>>
+  <div class="app app-maison" data-espace<?php echo aled08e_jauge_verrou($cmd) ? ' data-verrou="' . esc_attr(aled08e_jauge_verrou($cmd)) . '"' : ''; ?>>
     <?php echo aled08e_bulle_html($uid); // phpcs:ignore ?>
     <?php echo aled08e_jauge_html($cmd); // phpcs:ignore ?>
     <div class="app-shell">
@@ -1151,18 +1178,20 @@ function aled08e_dashboard() {
 
         <div class="app-tabs" role="tablist" aria-label="Mon espace">
           <?php
-          echo aled08e_tab('accueil', 'house', 'Accueil', true); // phpcs:ignore
-          if ($cmd) echo aled08e_tab('commande', 'package', 'Ma commande'); // phpcs:ignore
-          echo aled08e_tab('demandes', 'pencil', 'Modifications') . aled08e_tab('extras', 'sparkles', 'Extras') . aled08e_tab('vacances', aled08e_est_boutique($uid) ? 'shopping-bag' : 'lock', 'Ma boutique') . (aled08e_outils_on() ? aled08e_tab('outils', 'toolbox', 'Outils') : '') . aled08e_tab('compte', 'circle-user', 'Mon compte'); // phpcs:ignore
+          // la maison (24 novembre 2026) : Accueil, Mon site (et ses rubriques), Mes outils, Mon compte. Mes cours : l'école est cachée.
+          echo aled08e_tab_monstre('accueil', 'mascotte', 'Accueil', true) . aled08e_tab_monstre('site', 'bricou', 'Mon site'); // phpcs:ignore
+          foreach ($siteTabs as $sid => [$sic, $slab]) echo aled08e_tab_sous($sid, $sic, $slab); // phpcs:ignore
+          echo aled08e_tab_monstre('outils', 'etoile', 'Mes outils') . aled08e_tab_monstre('compte', 'clin', 'Mon compte'); // phpcs:ignore
           ?>
         </div>
+        <?php echo aled08e_outils_nouveau_html($uid); // phpcs:ignore ?>
         <a class="app-logout" href="<?php echo esc_url(wp_logout_url(aled08e_url())); ?>"><?php echo aled08e_icon('log-out'); // phpcs:ignore ?><span>Me déconnecter</span></a>
       </aside>
       <div class="app-main">
 
         <div class="app-panel" role="tabpanel" id="t-accueil" aria-labelledby="tab-accueil">
-          <h2 class="app-h">Bonjour <?php echo esc_html($prenom); ?> !</h2>
-          <p class="app-p acc-intro">Que voulez-vous faire aujourd’hui ?</p>
+          <h2 class="app-h mm-bonjour">Bonjour <?php echo esc_html($prenom); ?> <span aria-hidden="true">👋</span></h2>
+          <p class="app-p acc-intro">Voici ce que la bande a fait pour vous ces derniers jours.</p>
           <?php if ($cmd && $cmd['statut'] !== 'annulee' && $cmd['statut'] !== 'en_ligne' && (aled08e_brief_le($cmd['id']) === '' || get_post_meta($cmd['id'], '_aled08_brief_brouillon', true))) : ?>
           <p class="esp-warn bf-rappel"><?php echo aled08e_icon('clipboard-check'); // phpcs:ignore ?><span><b>À faire :</b> votre questionnaire de création attend vos réponses. C’est lui qui lance la création de votre site.</span> <button type="button" class="link-btn" data-go="commande">Le remplir</button></p>
           <?php endif; ?>
@@ -1171,37 +1200,47 @@ function aled08e_dashboard() {
           <?php elseif ($cmd && aled08e_cmd_reception_due($cmd)) : ?>
           <p class="esp-warn">Votre site est en ligne : il reste <?php echo aled08e_euro($cmd['montants']['solde']); // phpcs:ignore ?> pour la création, en une fois ou en plusieurs fois, et votre abonnement démarre. <button type="button" class="link-btn" data-go="commande">Voir ma commande</button></p>
           <?php endif; ?>
+          <?php if ($abo === 'past_due') : ?><p class="esp-warn">Votre dernier paiement n’a pas abouti. <button type="button" class="link-btn" data-go="forfait">Mettre à jour mon moyen de paiement</button></p><?php endif; ?>
+          <?php echo aled08e_ateliers_cartes_html($uid, $siteInfo); // phpcs:ignore ?>
+          <div class="mm-duo">
+            <?php echo aled08e_fil_html($uid); // phpcs:ignore ?>
+            <?php echo aled08e_abonnement_resume_html($uid); // phpcs:ignore ?>
+          </div>
+          <?php echo aled08e_messages_html($uid); // phpcs:ignore ?>
+          <?php echo aled08e_annonces_html(2); // phpcs:ignore ?>
+        </div>
+
+        <div class="app-panel" role="tabpanel" id="t-site" aria-labelledby="tab-site" hidden>
+          <h2 class="app-h">Mon site</h2>
+          <?php echo aled08e_site_nav_html('', $siteTabs); // phpcs:ignore ?>
+          <div class="app-cards">
+            <button type="button" class="app-card c-mint" data-go="<?php echo $cmd ? 'commande' : 'demandes'; ?>"><span class="app-card-ico"><?php echo aled08e_icon('globe'); // phpcs:ignore ?></span><span><small>Votre site</small><strong><?php echo esc_html($host ?: 'En préparation'); ?></strong><span class="<?php echo $siteOk ? 'dot-ok' : ''; ?>"><?php echo esc_html($siteEtat); ?></span></span></button>
+            <button type="button" class="app-card c-<?php echo esc_attr($f['color']); ?>" data-go="forfait"><span class="app-card-art"><?php echo aled08e_monster(($f['id'] ?? '') === 'evolution' ? 'maxi' : 'clin'); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($fNom !== '' ? mb_strtoupper(mb_substr($fNom, 0, 1)) . mb_substr($fNom, 1) : 'Abonnement'); ?></strong><span><?php echo ($offert ? $barre($prixPlein) : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . ($optsMois ? 'avec ' . count($optsMois) . ' extra' . (count($optsMois) > 1 ? 's' : '') : 'tout compris'); // phpcs:ignore ?></span></span></button>
+          </div>
+          <?php if ($host && $siteOk) : ?><p class="mm-site-lien"><a class="btn btn-light btn-sm" href="<?php echo esc_url($site ?: 'https://' . $host); ?>" target="_blank" rel="noopener"><?php echo aled08e_icon('eye'); // phpcs:ignore ?><span>Voir mon site</span></a></p><?php endif; ?>
           <div class="acc-actions">
             <?php echo aled08e_edition_bouton_html($uid); // phpcs:ignore ?>
             <button type="button" class="acc-action c-sky" data-go="demandes"><span class="acc-art" aria-hidden="true"><?php echo aled08e_monster('bricou'); // phpcs:ignore ?></span><strong>Demander une modification</strong><small>Bricou prépare, Alex modifie</small></button>
             <button type="button" class="acc-action c-butter" data-go="extras"><span class="acc-art" aria-hidden="true"><?php echo aled08e_monster('etoile'); // phpcs:ignore ?></span><strong>Ajouter un extra</strong><small>Pépite vous montre les petits plus</small></button>
             <button type="button" class="acc-action c-pink" data-go="vacances"><span class="acc-art" aria-hidden="true"><?php echo aled08e_monster('mochi'); // phpcs:ignore ?></span><strong>Ma boutique</strong><small><?php echo aled08e_est_boutique($uid) ? 'Articles, prix, paiements, commandes' : 'Option verrouillée : voir comment l’ouvrir'; ?></small></button>
           </div>
-          <div class="app-cards">
-            <button type="button" class="app-card c-<?php echo esc_attr($f['color']); ?>" data-go="forfait"><span class="app-card-art"><?php echo aled08e_monster(($f['id'] ?? '') === 'evolution' ? 'maxi' : 'clin'); // phpcs:ignore ?></span><span><small>Votre forfait</small><strong><?php echo esc_html($fNom !== '' ? mb_strtoupper(mb_substr($fNom, 0, 1)) . mb_substr($fNom, 1) : 'Abonnement'); ?></strong><span><?php echo ($offert ? $barre($prixPlein) : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . ($optsMois ? 'avec ' . count($optsMois) . ' extra' . (count($optsMois) > 1 ? 's' : '') : 'tout compris'); // phpcs:ignore ?></span></span></button>
-            <?php if ($cmd) : ?>
-            <button type="button" class="app-card c-mint" data-go="commande"><span class="app-card-ico"><?php echo aled08e_icon('globe'); // phpcs:ignore ?></span><span><small>Votre site</small><strong><?php echo esc_html($host ?: 'En préparation'); ?></strong><span class="<?php echo $siteOk ? 'dot-ok' : ''; ?>"><?php echo esc_html($siteEtat); ?></span></span></button>
-            <?php else : ?>
-            <div class="app-card c-mint"><span class="app-card-ico"><?php echo aled08e_icon('globe'); // phpcs:ignore ?></span><span><small>Votre site</small><strong><?php echo esc_html($host ?: 'En préparation'); ?></strong><span class="<?php echo $siteOk ? 'dot-ok' : ''; ?>"><?php echo esc_html($siteEtat); ?></span></span></div>
-            <?php endif; ?>
-          </div>
-          <?php echo aled08e_messages_html($uid); // phpcs:ignore ?>
           <p class="app-sub">Dernières demandes</p>
           <?php if ($reqs) : ?>
           <ul class="reqs"><?php foreach (array_slice($reqs, 0, 3) as $p) echo $reqItem($p, false); // phpcs:ignore ?></ul>
           <?php else : ?>
-          <p class="esp-empty">Aucune demande pour le moment. Un horaire, un prix, une photo à changer ? Écrivez-le dans « Mes modifications ».</p>
+          <p class="esp-empty">Aucune demande pour le moment. Un horaire, un prix, une photo à changer ? Écrivez-le dans « Modifications ».</p>
           <?php endif; ?>
-          <?php echo aled08e_annonces_html(2); // phpcs:ignore ?>
         </div>
 
         <?php if ($cmd) : ?>
         <div class="app-panel" role="tabpanel" id="t-commande" aria-labelledby="tab-commande" hidden>
+          <?php echo aled08e_site_nav_html('commande', $siteTabs); // phpcs:ignore ?>
           <?php echo aled08e_panel_commande($cmd, $u, $D); // phpcs:ignore ?>
         </div>
         <?php endif; ?>
 
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
+          <?php echo aled08e_site_nav_html('demandes', $siteTabs); // phpcs:ignore ?>
           <h2 class="app-h">Mes modifications</h2>
           <?php echo aled08e_pd_flash_html() . $flash; // phpcs:ignore ?>
           <?php echo aled08e_gauge_zone_html($uid); // phpcs:ignore ?>
@@ -1228,8 +1267,14 @@ function aled08e_dashboard() {
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-extras" aria-labelledby="tab-extras" hidden>
+          <?php echo aled08e_site_nav_html('extras', $siteTabs); // phpcs:ignore ?>
           <h2 class="app-h">Les extras</h2>
           <?php echo aled08e_extras_html($uid, $famille, aled08e_pd_flash_html() . $flash . $flashForfait); // phpcs:ignore ?>
+        </div>
+
+        <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
+          <?php echo aled08e_outils_panel_html($uid); // phpcs:ignore ?>
+          <?php if (aled08e_outils_on()) echo '<p class="app-sub">Les petits outils</p>' . aled08e_jl_onglet_html($uid, $f, $site, $host, $avis); // phpcs:ignore -- ancien système (énergie), en pause ?>
         </div>
 
         <?php if (false) : // retiré le 19 novembre 2026 (tableau) ?>
@@ -1247,9 +1292,6 @@ function aled08e_dashboard() {
           <?php if (!$famille && !aled08e_extra_actif($uid, 'mirette')) : ?><p class="app-note">Pour aller plus loin : l’analyse de Mirette et les pages de visibilité Google régulières se prennent dans l’onglet <button type="button" class="link-btn" data-go="extras">Extras</button>.</p><?php endif; ?>
         </div>
 
-        <?php if (aled08e_outils_on()) : ?><div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>
-          <?php echo aled08e_jl_onglet_html($uid, $f, $site, $host, $avis); // phpcs:ignore ?>
-        </div><?php endif; ?>
 
         <?php endif; ?>
         <?php if (false) : // retiré le 19 novembre 2026 (parrainage) ?>
@@ -1279,7 +1321,7 @@ function aled08e_dashboard() {
         <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
           <?php echo aled08e_panel_compte($u); // phpcs:ignore ?>
           <section class="compte-forfait" id="forfait-bloc">
-          <h2 class="app-h">Mon forfait et mes factures</h2>
+          <h2 class="app-h">Mon abonnement et mes factures</h2>
           <?php echo $flashForfait; // phpcs:ignore ?>
           <div class="app-card c-<?php echo esc_attr($f['color']); ?>"><span class="app-card-art"><?php echo aled08e_monster(($f['id'] ?? '') === 'evolution' ? 'maxi' : 'ravie'); // phpcs:ignore ?></span><span><small>Votre forfait <?php echo esc_html($fNom); ?></small><strong>Hébergement, sécurité, modifications</strong><span><?php echo ($offert ? $barre($prixPlein) : aled08e_euro($price) . ' ' . esc_html($per)) . ' · ' . esc_html($f['modifs']); // phpcs:ignore ?></span></span></div>
           <p class="app-sub">Le détail</p>
@@ -1314,8 +1356,10 @@ function aled08e_dashboard() {
 
           </div>
           <p class="ex-renvoi"><?php echo aled08e_icon('sparkles'); // phpcs:ignore ?><span>Pour ajouter ou retirer un extra au mois, rendez-vous dans l’onglet Extras.</span> <button type="button" class="btn btn-light btn-sm" data-go="extras">Gérer mes extras</button></p>
+          <?php echo aled08e_outils_flash_html_compte(); // phpcs:ignore ?>
+          <?php echo aled08e_abonnement_outils_compte_html($uid); // phpcs:ignore ?>
           <p class="app-sub">Factures</p>
-          <?php if ($factures) : ?><ul class="invoices"><?php echo implode('', $factures); // phpcs:ignore ?></ul><?php else : ?><p class="esp-empty">Vos factures apparaîtront ici après chaque paiement.</p><?php endif; ?>
+          <?php echo aled08e_factures_html($uid); // phpcs:ignore ?>
           <?php if (aled08e_meta($uid, 'domaine_info') || $host) : ?>
           <p class="app-sub">Nom de domaine</p>
           <p class="app-domain"><?php echo aled08e_icon('globe'); // phpcs:ignore ?><span><strong><?php echo esc_html($host ?: aled08e_meta($uid, 'domaine_info')); ?></strong><small><?php echo esc_html(aled08e_meta($uid, 'domaine_info') ?: ($cmd && $cmd['domaine_mien'] ? 'Votre nom de domaine actuel' : 'À votre nom, renouvelé avec l’abonnement')); ?></small></span></p>
@@ -1324,6 +1368,7 @@ function aled08e_dashboard() {
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-vacances" aria-labelledby="tab-vacances" hidden>
+          <?php echo aled08e_site_nav_html('vacances', $siteTabs); // phpcs:ignore ?>
           <?php
           // Ma boutique demande des informations au site du client : elle n'est préparée que quand on l'ouvre (ou qu'on y revient
           // après un changement), pour que l'espace s'affiche tout de suite. Sinon, une attente, chargée en arrière-plan.
@@ -1338,6 +1383,7 @@ function aled08e_dashboard() {
     <p class="app-toast" data-toast role="status" hidden></p>
   </div>
 </div></section>
+<?php echo aled08e_site_groupe_js(); // phpcs:ignore ?>
     <?php
     return ob_get_clean();
 }

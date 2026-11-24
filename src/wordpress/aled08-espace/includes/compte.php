@@ -115,12 +115,14 @@ function aled08e_panel_compte($u) {
 
     echo '<form class="form esp-form" method="post" action="' . $act . '"><input type="hidden" name="aled08e_compte" value="email">' . $nonce; // phpcs:ignore
     echo '<p class="app-sub">' . aled08e_icon('mail') . ' Mon adresse e-mail</p>'; // phpcs:ignore
-    echo '<p class="app-note">Elle sert à vous connecter et à recevoir les nouvelles de votre site.</p>';
+    echo '<p class="app-note">Elle sert à vous connecter et à recevoir les nouvelles de la bande.</p>';
     echo $champ('mc-email', 'Adresse e-mail', 'email', $u->user_email, 'email', 'email', ' required'); // phpcs:ignore
     echo $champ('mc-mdp1', 'Mot de passe actuel, pour confirmer', 'mdp_actuel', '', 'password', 'current-password', ' required'); // phpcs:ignore
     echo '<button class="btn btn-primary" type="submit">' . aled08e_icon('check') . '<span>Changer mon e-mail</span></button></form>'; // phpcs:ignore
 
     $app = aled08e_meta($u->ID, 'apparence') ?: 'clair';
+    $aUnSite = !(function_exists('aled08e_sans_forfait') && aled08e_sans_forfait($uid)) || aled08e_meta($uid, 'lia_url') !== ''; // un compte « outils seuls » n'a pas de site à régler
+    if ($aUnSite) {
     echo '<form class="form esp-form" method="post" action="' . $act . '"><input type="hidden" name="aled08e_compte" value="apparence">' . $nonce; // phpcs:ignore
     echo '<p class="app-sub">' . aled08e_icon('sparkles') . ' L’apparence de mon site</p>'; // phpcs:ignore
     echo '<p class="app-note">Votre site existe en version claire et en version sombre. Il s’ouvre en clair ; vos visiteurs passent en sombre avec le petit soleil ou la lune. Vous pouvez choisir une autre ouverture.</p><div class="esp-apparence">';
@@ -128,6 +130,7 @@ function aled08e_panel_compte($u) {
         echo '<label class="esp-reste"><input type="radio" name="apparence" value="' . $k . '"' . checked($app, $k, false) . '><span><strong>' . esc_html($l[0]) . '</strong><small>' . esc_html($l[1]) . '</small></span></label>';
     }
     echo '</div><button class="btn btn-primary" type="submit">' . aled08e_icon('check') . '<span>Enregistrer</span></button></form>'; // phpcs:ignore
+    }
 
     // le nom et la phrase d'accroche du site (onglet du navigateur, résultats Google), lus sur le site du client
     if (aled08e_meta($uid, 'lia_url') !== '' && aled08e_meta($uid, 'lia_secret') !== '') {

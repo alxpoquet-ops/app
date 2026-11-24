@@ -158,11 +158,13 @@ add_action('init', function () {
 }, 20);
 
 /* Un abonnement est « actif » si : Stripe le dit (active ou past_due), ou la case « hors Stripe » est cochée,
- * ou une commande non annulée date de moins de 12 mois. */
+ * ou un outil est pris par abonnement (includes/abonnements-outils.php), ou une commande non annulée date de moins de 12 mois. */
 function aled08e_compte_abonnement_actif($uid) {
     $abo = aled08e_meta($uid, 'abonnement');
     if (in_array($abo, ['active', 'past_due'], true)) return true;
     if (aled08e_meta($uid, 'abonnement_manuel') === '1' || aled08e_meta($uid, 'offert') === '1') return true;
+    // un abonnement à un outil (ou à toute la bande) compte aussi : un client « outils seuls » n'est jamais supprimé (CGV)
+    if (function_exists('aled08e_outils_abos')) foreach (aled08e_outils_abos($uid) as $a) if (aled08e_outils_abo_vivant($a)) return true;
     foreach (aled08e_cmd_user_commandes($uid) as $c) {
         if ($c['statut'] !== 'annulee' && strtotime($c['date']) > strtotime('-12 months')) return true;
     }

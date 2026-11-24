@@ -332,7 +332,7 @@ add_action('aled08_horaire', function () {
 function aled08e_jauge_active($cmd) {
     return $cmd && ($cmd['statut'] === 'attente_paiement' || in_array($cmd['statut'], aled08e_cmd_statuts_en_cours(), true));
 }
-function aled08e_jauge_verrou($cmd) { return aled08e_jauge_active($cmd) ? 'demandes,extras,vacances,outils' : ''; }
+function aled08e_jauge_verrou($cmd) { return aled08e_jauge_active($cmd) ? 'demandes,extras,vacances' : ''; } // les outils (atelier « Les outils ») restent ouverts pendant la création du site
 function aled08e_jauge_etat($cmd) {
     $s = $cmd['statut'];
     $cid = $cmd['id'];

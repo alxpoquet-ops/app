@@ -508,6 +508,7 @@ function aled08e_stripe_traiter_event($event) {
 /* Session de paiement terminée : commande payée (abonnement) ou solde payé (paiement) */
 function aled08e_stripe_on_checkout($s) {
     if (!empty($s['metadata']['aled08_direct']) && function_exists('aled08e_pd_on_paye')) return aled08e_pd_on_paye($s); // extra, emplacements : payés tout de suite
+    if (!empty($s['metadata']['aled08_outils']) && function_exists('aled08e_outils_on_checkout')) return aled08e_outils_on_checkout($s); // un outil (includes/abonnements-outils.php)
     if (!empty($s['metadata']['solde_fois'])) return aled08e_stripe_on_solde_fois($s);
     if (!empty($s['metadata']['reception'])) return aled08e_stripe_on_reception($s);
     if (($s['mode'] ?? '') === 'payment' && !empty($s['metadata']['solde'])) {
@@ -627,6 +628,10 @@ function aled08e_stripe_invoice_commande($inv) {
     if (!$c) { $sub = aled08e_stripe_invoice_subscription($inv); if ($sub) $c = aled08e_cmd_par_meta('stripe_subscription', $sub); }
     return $c;
 }
+/* L'abonnement des outils d'un compte sans forfait (includes/abonnements-outils.php) : son client WordPress, d'après ses métadonnées */
+function aled08e_stripe_outils_user($inv) {
+    return (int) ($inv['parent']['subscription_details']['metadata']['aled08_outils_user'] ?? ($inv['subscription_details']['metadata']['aled08_outils_user'] ?? 0));
+}
 function aled08e_stripe_user_par_customer($cus) {
     if (!$cus) return 0;
     $u = get_users(['meta_key' => 'aled08_stripe_customer', 'meta_value' => $cus, 'number' => 1, 'fields' => 'ID']);
@@ -646,7 +651,8 @@ function aled08e_stripe_facture_lissage($inv, $c) {
 function aled08e_stripe_on_invoice_paid($inv) {
     $c = aled08e_stripe_invoice_commande($inv);
     $cus = aled08e_stripe_id($inv['customer'] ?? '');
-    $uid = $c ? $c['user'] : aled08e_stripe_user_par_customer($cus);
+    $outilsUid = aled08e_stripe_outils_user($inv);
+    $uid = $c ? $c['user'] : (aled08e_stripe_user_par_customer($cus) ?: $outilsUid);
     if (!$uid) return 'facture : client inconnu';
     $factures = get_user_meta($uid, 'aled08_factures_stripe', true);
     $factures = is_array($factures) ? $factures : [];
@@ -663,7 +669,8 @@ function aled08e_stripe_on_invoice_paid($inv) {
         ];
         update_user_meta($uid, 'aled08_factures_stripe', array_slice($factures, -200));
     }
-    if (aled08e_stripe_invoice_subscription($inv)) aled08e_stripe_maj_abonnement($uid, $c ? $c['id'] : 0, 'active');
+    // une facture de l'abonnement des outils ne change pas le statut du forfait du site (l'outil offert avec le forfait en dépend)
+    if (aled08e_stripe_invoice_subscription($inv) && !(!$c && $outilsUid)) aled08e_stripe_maj_abonnement($uid, $c ? $c['id'] : 0, 'active');
     if (!$c) return 'facture ajoutée (client ' . $uid . ')';
     $res = 'facture ' . ($inv['number'] ?? '') . ' ajoutée pour ' . $c['ref'];
     if ($cus && !$c['stripe_customer']) { update_post_meta($c['id'], '_aled08_stripe_customer', $cus); aled08e_stripe_noter_customer($uid, $cus); }
@@ -685,9 +692,10 @@ function aled08e_stripe_on_invoice_paid($inv) {
 function aled08e_stripe_on_invoice_failed($inv) {
     $c = aled08e_stripe_invoice_commande($inv);
     $cus = aled08e_stripe_id($inv['customer'] ?? '');
-    $uid = $c ? $c['user'] : aled08e_stripe_user_par_customer($cus);
+    $outilsUid = aled08e_stripe_outils_user($inv);
+    $uid = $c ? $c['user'] : (aled08e_stripe_user_par_customer($cus) ?: $outilsUid);
     if (!$uid) return 'échec de facture : client inconnu';
-    aled08e_stripe_maj_abonnement($uid, $c ? $c['id'] : 0, 'past_due');
+    if ($c || !$outilsUid) aled08e_stripe_maj_abonnement($uid, $c ? $c['id'] : 0, 'past_due');
     $u = get_userdata($uid);
     $nom = $u ? $u->display_name . ' (' . $u->user_email . ')' : 'client ' . $uid;
     if ($c) aled08e_cmd_journal($c['id'], 'Un paiement de l’abonnement a échoué : abonnement en retard.');
@@ -698,8 +706,13 @@ function aled08e_stripe_on_subscription($sub, $deleted) {
     $cid = (int) ($sub['metadata']['commande'] ?? 0);
     $c = $cid ? aled08e_cmd_get($cid) : aled08e_cmd_par_meta('stripe_subscription', aled08e_stripe_id($sub['id'] ?? ''));
     $cus = aled08e_stripe_id($sub['customer'] ?? '');
-    $uid = $c ? $c['user'] : aled08e_stripe_user_par_customer($cus);
+    $outilsUid = (int) ($sub['metadata']['aled08_outils_user'] ?? 0);
+    $uid = $c ? $c['user'] : (aled08e_stripe_user_par_customer($cus) ?: $outilsUid);
     if (!$uid) return 'abonnement : client inconnu';
+    // les lignes d'outils de cet abonnement (forfait ou abonnement des outils) : celles qui n'y sont plus sont oubliées
+    $outils = function_exists('aled08e_outils_on_subscription') ? aled08e_outils_on_subscription($uid, $sub, $deleted) : '';
+    // l'abonnement des outils d'un compte : ni le statut du forfait, ni l'alerte « site plus couvert » ne sont concernés
+    if (!$c && $outilsUid) return 'abonnement des outils du client ' . $uid . ' : ' . ($deleted ? 'arrêté' : (string) ($sub['status'] ?? '')) . ($outils ? ' (' . $outils . ')' : '');
     $status = (string) ($sub['status'] ?? '');
     $map = ['active' => 'active', 'trialing' => 'active', 'past_due' => 'past_due', 'unpaid' => 'past_due', 'canceled' => 'canceled', 'incomplete_expired' => 'canceled', 'incomplete' => 'none', 'paused' => 'past_due'];
     $abo = $deleted ? 'canceled' : ($map[$status] ?? $status);
@@ -710,7 +723,7 @@ function aled08e_stripe_on_subscription($sub, $deleted) {
     // création seule : l'abonnement ne portait que les mensualités du site, sa fin est normale (pas d'alerte)
     if ($deleted && $c && aled08e_est_seule($c['forfait']) && get_post_meta($c['id'], '_aled08_lissage_fini', true)) return 'mensualités terminées pour ' . $nom;
     if ($deleted) aled08e_stripe_mail_owner('Abonnement arrêté : ' . $nom, 'L’abonnement Stripe de ' . $nom . " est terminé. Le site et le nom de domaine ne sont plus couverts par un abonnement : voyez avec le client ce qu’il souhaite.\n" . ($c ? "\nFiche commande : " . aled08e_cmd_admin_url($c['id']) . "\n" : ''));
-    return 'abonnement de ' . $nom . ' : ' . $abo;
+    return 'abonnement de ' . $nom . ' : ' . $abo . ($outils ? ' (' . $outils . ')' : '');
 }
 
 /* =========================================================================

@@ -21,7 +21,7 @@ const ICONS = [
   'star', 'globe', 'log-out', 'whatsapp', 'pencil', 'circle-user', 'history', 'file-text', 'arrow-right', 'link', 'hourglass', 'sparkles',
   'package', 'credit-card', 'clipboard-check', 'rocket', 'circle-check', 'clock', 'shield-check', 'mail', 'triangle-alert', 'badge-euro',
   'calendar-check', 'wand-sparkles', 'refresh-cw', 'info', 'user', 'lock', 'key-round', 'user-check', 'pen-tool',
-  'eye', 'timer', 'euro', 'shopping-bag', 'megaphone', 'target', 'search', 'map-pin', 'plus', 'x', 'wrench', 'camera', 'phone', 'gauge', 'sun', 'badge-percent', 'tag', 'zap', 'palette', 'layout-template', 'scale', 'lightbulb', 'coins', 'toolbox', 'ticket', 'repeat', 'clock', 'search-check', 'eye', 'circle-check',
+  'eye', 'timer', 'euro', 'shopping-bag', 'megaphone', 'target', 'search', 'map-pin', 'plus', 'x', 'wrench', 'camera', 'phone', 'gauge', 'sun', 'badge-percent', 'tag', 'zap', 'palette', 'layout-template', 'scale', 'lightbulb', 'coins', 'toolbox', 'ticket', 'repeat', 'clock', 'search-check', 'eye', 'circle-check', 'play', 'store', 'gift', 'rotate-ccw', 'party-popper',
 ];
 
 process.stdout.write(
@@ -33,6 +33,15 @@ process.stdout.write(
     jetonsLia: cfg.jetonsLia,
     // énergie et outils en pause (novembre 2026) : l'extension cache l'onglet Outils et ne compte plus d'énergie
     enService: cfg.enService || { outils: true, energie: true },
+    // la maison et ses ateliers (24 novembre 2026) : les cartes de l'accueil de l'espace client, et les outils vendus par abonnement
+    // (outil par outil ou « toute la bande », essai gratuit, usage compris avec une limite par mois). Lus par includes/abonnements-outils.php.
+    ateliers: (cfg.ateliers || []).map((a) => ({ id: a.id, label: a.label, path: a.path, monstre: a.monstre, color: a.color, chef: a.chef || '', court: a.court || '', cache: !!a.cache })),
+    outilsOffre: cfg.outilsOffre ? {
+      actif: cfg.outilsOffre.actif !== false,
+      essaiJours: cfg.outilsOffre.essaiJours || 14,
+      bande: cfg.outilsOffre.bande,
+      outils: cfg.outilsOffre.outils.map((o) => ({ id: o.id, nom: o.nom, monstre: o.monstre, chef: o.chef || '', color: o.color || 'lilac', prix: o.prix, statut: o.statut === 'pret' ? 'pret' : 'bientot', limite: o.limite || 0, unite: o.unite || '', inclusSite: !!o.inclusSite, tag: o.tag || '', court: o.court || '', briques: o.briques || [] })),
+    } : null,
     limites: cfg.limites || { bricouMois: 8, bulleJour: 40 },
     outilsLia: require('../src/content/outils-lia').outils,
     forfaits: forfaits.map((f) => ({ id: f.id, name: f.name, month: f.month, quota: f.quota || QUOTA[f.id] || 1, periode: f.periode || 'mois', jetons: f.jetons === undefined ? 1 : f.jetons, partage: !!f.partage, modifs: f.modifs, color: f.color, tagline: f.tagline, illimite: !!f.illimite, priorite: !!f.priorite, delai: f.delai || '', pageSeoSemaine: !!f.pageSeoSemaine, delaiMoyen: !!f.delaiMoyen, delaiTexte: f.delaiTexte || '', demandesMax: f.demandesMax || 1, pageSeo: f.pageSeo || (f.pageSeoSemaine ? 'semaine' : ''), optimisation: !!f.optimisation, main: f.main || [] })),
