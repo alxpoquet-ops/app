@@ -500,13 +500,17 @@ function comparatifPage() {
 </div></section>
 
 <section class="section"><div class="container container-narrow">
-  <h2 class="section-title">${marche.fois} fois moins cher qu’un indépendant, sans tour de magie</h2>
+  <h2 class="section-title">Un site professionnel ${marche.foisMin} fois moins cher qu’un indépendant</h2>
   <p class="section-sub">Pour un site vitrine complet : accueil, présentation, services, photos et contact.</p>
   ${C.deroulants([
     C.deroulant('Les prix, côte à côte', md(`Un indépendant demande en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence, plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. Notre ${ESS.name}, qui contient ces mêmes modules, coûte ${euro(ESS.price)}.
 
 Soyons honnêtes : ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois.`) + C.sourcesMarche(), { ico: 'scale', ouvert: true }),
-    C.deroulant('Pourquoi ce prix ?', md(`Des modules déjà prêts, créés et optimisés une fois pour toutes : il ne manque que votre contenu. Ajoutez une méthode rodée, et pas de bureaux à payer. Les prix sont affichés : pas de rendez-vous commercial, pas de devis à attendre. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank' }),
+    C.deroulant('Pourquoi ce prix ?', md(`Nous n’avons pas de locaux, pas de loyer, pas de commerciaux ni de grosse organisation à faire tourner : autant de frais que vous ne payez pas. Nos modules sont déjà prêts, il ne manque que votre contenu. Notre objectif est simple : vous livrer un site professionnel plus vite et moins cher que les autres.
+
+> Un trou se creuse à la pelle ou à la tractopelle. À la fin, c’est le même trou. Mais le temps pour y arriver n’a rien à voir.
+
+Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank', ouvert: true }),
     C.deroulant('Et l’entretien, chaque mois ?', md(`Avec le forfait ${AUTO.name}, vous gérez tout vous-même, pour ${euro(AUTO.month)} par mois. Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications. Pas de nom de domaine ? On vous le fournit pour ${euro(C.DOM)} de plus par mois. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois pour l’entretien d’un site.`), { ico: 'repeat' }),
     C.deroulant('Ce que vous ne faites pas vous-même', md(`Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, écrire pour Google. Ici, vous dites ce que vous voulez, et votre site est fait pour vous. Vous gardez votre temps pour votre métier.`), { ico: 'clock' }),
     C.deroulant('Quand on vous dira d’aller ailleurs', md(`Une application sur mesure, un logiciel métier, un catalogue de milliers de produits : ces projets demandent une agence ou un développeur. On vous le dit dès le premier échange.`), { ico: 'arrow-right' }),

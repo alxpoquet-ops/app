@@ -148,6 +148,8 @@ const marche = {
 // le nombre de fois : le prix bas et le prix haut de l'indépendant, divisés par notre prix (arrondis), donc « 3 à 6 » aujourd'hui
 // 21 novembre 2026 : comparé au Site Essentiel (400 €), le seul site de l'offre.
 marche.fois = Math.round(marche.vitrineMin / creation.prix) + ' à ' + Math.round(marche.vitrineMax / creation.prix);
+// « 4 fois moins cher qu'un indépendant » (décision d'Alex, 24 novembre 2026) : le bas de la fourchette de l'indépendant divisé par notre prix, arrondi.
+marche.foisMin = Math.round(marche.vitrineMin / creation.prix);
 // entretien : calculé plus bas, une fois le prix de l'abonnement connu (marche.entretienFois)
 
 // ---------------------------------------------------------------- types de site
@@ -265,7 +267,7 @@ const enService = { outils: false, energie: false };
 // cache : l'onglet n'apparaît pas encore (l'école attend ses premiers cours). monstre : image de src/assets/img/mail/<monstre>.png.
 const ateliers = [
   { id: 'maison', label: 'La maison', path: '/', monstre: 'mascotte', color: 'lilac', court: 'Alex et la petite bande' },
-  { id: 'sites', label: 'Les sites', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: 'Votre site professionnel en quelques heures, puis on s’en occupe chaque mois.' },
+  { id: 'sites', label: 'Les sites', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: `Votre site professionnel en quelques heures, ${Math.round(marche.vitrineMin / creation.prix)} fois moins cher qu’un indépendant, puis on s’en occupe chaque mois.` },
   { id: 'outils', label: 'Les outils', path: '/outils/', monstre: 'etoile', color: 'butter', chef: 'Pépite', court: 'Publier partout, répondre aux avis, préparer ses fiches produits : de petits monstres au travail tous les jours.' },
   { id: 'ecole', label: 'L’école', path: '/ecole/', monstre: 'mochi', color: 'lilac', chef: 'Mochi', cache: true, court: 'De courtes vidéos pour gagner du temps.' },
 ];

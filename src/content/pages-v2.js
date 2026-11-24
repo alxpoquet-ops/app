@@ -76,9 +76,10 @@ const pages = [
     title: 'Pourquoi un site moins cher, sans rien sacrifier | Les Minis Monstres',
     description: `Un site internet dès ${eur(ESS.price)} € pour être enfin visible : le temps gagné sur le répétitif, ce qu’Alex vérifie à la main, et ce qui n’est jamais sacrifié.`,
     h1: 'Pourquoi sommes-nous moins chers ?',
-    lead: 'Un site internet coûte cher surtout à cause du temps passé dessus. Nous avons réduit ce temps, pas le soin. Être visible sur internet devient possible, même avec un petit budget.',
+    lead: `Un site professionnel ${marche.foisMin} fois moins cher qu’un indépendant : pas de locaux, pas de loyer, pas de lourde organisation, et un temps de fabrication réduit. Le soin, lui, reste entier.`,
     resume: 'Le temps gagné, et ce qui ne change pas.',
     points: [
+      { icon: 'house', t: 'Pas de locaux, pas de loyer', d: 'Aucun bureau, aucun loyer, aucun commercial : ces frais ne finissent pas sur votre facture.' },
       { icon: 'timer', t: 'Une méthode rodée', d: 'La petite bande des Minis Monstres se charge du répétitif, et aucun intermédiaire n’est à payer.' },
       { icon: 'user-check', t: 'Tout vérifié à la main', d: 'Alex relit, teste sur téléphone et contrôle chaque mise en ligne.' },
       { icon: 'badge-euro', t: 'Un prix affiché', d: `${eur(ESS.price)} € le site, ${eur(BOU.price)} € avec une boutique, les mêmes pour tous, sans devis à attendre.` },
@@ -95,6 +96,14 @@ Notre métier, c’est de leur apporter cette visibilité à un tarif qu’elles
 Un site internet, c’est surtout du temps : la maquette, la mise en page de chaque écran, les textes, les réglages, les tests. Fait entièrement à la main, cela prend des jours, parfois des semaines.
 
 D’après des repères publics relevés en France, un site vitrine de ${marche.pagesCompare} pages fait par un indépendant coûte en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Son entretien revient souvent entre ${mille(marche.entretienMin)} et ${mille(marche.entretienMax)} € par mois. Ces prix ne sont pas exagérés : ils correspondent au travail fourni.
+
+## Pas de locaux, pas de loyer, pas de frais cachés
+
+Une agence paie des bureaux, un loyer, des commerciaux, des réunions et toute une organisation. Ces frais se retrouvent dans le prix de chaque site.
+
+Chez nous, rien de tout cela : pas de locaux, pas de loyer, pas d’équipe commerciale à faire vivre. Ce que nous n’avons pas à payer, vous ne le payez pas non plus. Notre objectif : vous fournir un site professionnel plus rapidement et moins cher que les autres.
+
+> Creuser un trou, on peut le faire à la pelle ou à la tractopelle. Le trou est le même à l’arrivée. Le temps passé pour y arriver, lui, n’a rien à voir. Les Minis Monstres, c’est notre tractopelle.
 
 ## Le cerveau est prêt, il ne manque que votre contenu
 
