@@ -206,7 +206,7 @@ const INCLUS_SITE = ESSENTIEL.inclus;
 const INCLUS_NOUS = forfaits[0].main;
 const INCLUS_MOI = creationSeule.main;
 const PACK_SEO = options.find((o) => o.id === 'packseo' && !o.retire);
-const prixPageSeo = PACK_SEO ? PACK_SEO.price.once : 15;
+const prixPageSeo = PACK_SEO ? PACK_SEO.price.once : 10;
 const packsSeo = PACK_SEO && PACK_SEO.packs ? PACK_SEO.packs.filter((n) => n > 1).join(' ou ') : '5 ou 10';
 const PLUS_DE_PAGES = `Envie d’être trouvé sur plus de recherches ? Une fois votre site en ligne, ajoutez des pages de visibilité Google : ${euro(prixPageSeo)} la page, payée une fois, par ${packsSeo} si vous voulez. Elles se commandent depuis votre espace client, quand vous voulez.`;
 // La boutique : le client gère tout lui-même depuis l'onglet « Ma boutique » de son espace client
@@ -717,28 +717,96 @@ function statsCard() {
 }
 
 // ---------------------------------------------------------------- comparatif : Les Minis Monstres et les autres solutions
-// Sans chiffres pour les autres solutions (fourchettes sourcées ajoutées plus tard), sans nommer de marque.
-function comparatifTable() {
-  const cols = ['Les Minis Monstres', 'Agence', 'Indépendant', 'Plateforme à faire soi-même'];
-  const prixCreation = `${ESSENTIEL.name} ${euro(ESSENTIEL.price)}, ou ${euro(BOUTIQUE_T.price)} avec l’option ${ECOMMERCE.name}. Les prix sont affichés, les mêmes pour tous`;
-  const prixMois = `Forfait ${creationSeule.name} : ${euro(0)}. Ou le forfait ${ABO.name} : ${euro(ABO.month)} par mois, hébergement et modifications compris (${euro(ABO.month + DOM)} si on vous fournit le nom de domaine)`;
-  const rows = [
-    ['Qui fait le travail', 'Alex et les Minis Monstres, de la commande à la mise en ligne', 'Une équipe, sur devis', 'Une personne, selon son emploi du temps', 'Vous-même, avec des modèles'],
-    ['Prix de création', prixCreation, 'Sur devis', 'Sur devis, selon le prestataire', 'Compris dans l’abonnement, votre temps en plus'],
-    ['Prix chaque mois', prixMois, 'Contrat de maintenance, sur devis', 'Selon le prestataire, souvent en option', 'Abonnement mensuel, plus les applications en option'],
-    ['Délai', `Quelques jours : les modules sont déjà prêts, il ne manque que votre contenu`, 'Selon le planning de l’équipe', 'Selon le prestataire', 'Dès que vous avez fini'],
-    ['Modifications', `Par vous-même, à volonté, et sur demande : incluses avec le forfait ${ABO.name}`, 'Sur devis, ou dans un contrat', 'Sur devis', 'Vous-même'],
-    ['Prix', 'Juste et affiché : rien de caché, rien au devis', 'Sur devis', 'Sur devis', 'Abonnement affiché, options en plus'],
-    ['Visibilité Google (être trouvé)', `Les bases dans chaque site. Puis des pages de visibilité Google : ${euro(prixPageSeo)} la page`, 'Souvent une prestation à part', 'Selon ses compétences', 'Vous-même, avec des applications'],
-    ['Engagement', 'Aucun, et aucune obligation d’abonnement', 'Selon le contrat', 'Selon le contrat', 'Selon l’abonnement choisi'],
+// Publicité comparative loyale (24 novembre 2026, revue) : on compare des CATÉGORIES (un indépendant, une agence, une plateforme
+// à faire soi-même), jamais une marque, pour le même besoin (un site vitrine d'environ marche.pagesCompare pages). Les prix des autres
+// viennent de config.marche (fourchettes publiées, sources citées sous le tableau) ; la plateforme reste sans chiffre (pas de source).
+// Un seul tableau <table> : un vrai tableau sur ordinateur, une carte par ligne sur téléphone (style.css, « comparatif loyal »).
+// court : la version de l'accueil (quatre lignes). Le bloc est commun (repris tel quel sur plusieurs pages).
+const CMP_COLS = ['Les Minis Monstres', 'Un indépendant', 'Une agence', 'Le faire soi-même sur une plateforme'];
+const CMP_COLS_COURTS = ['Les Minis Monstres', 'Indépendant', 'Agence', 'Soi-même'];
+function comparatifLignes() {
+  const fourchette = (a, b) => `${euro(a)} à ${euro(b)}`;
+  return [
+    { id: 'prix', court: true, l: 'Prix de création', c: [
+      [euro(ESSENTIEL.price), `payé une fois, ${euro(BOUTIQUE_T.price)} avec l’option ${ECOMMERCE.name}. Le même prix pour tous`],
+      [fourchette(marche.vitrineMin, marche.vitrineMax), 'en général, au devis'],
+      [fourchette(marche.agenceMin, marche.agenceMax), 'en général, au devis'],
+      ['Pas de création à payer', 'mais un abonnement, et votre temps pour tout construire'],
+    ] },
+    { id: 'delai', l: 'Délai', c: [
+      ['Quelques jours', `la création elle-même prend ${offreSite.site.delai}, après l’appel d’Alex`],
+      ['Selon son planning', 'fixé au devis'],
+      ['Selon le planning de l’équipe', 'fixé au devis'],
+      ['À votre rythme', 'le temps de tout construire'],
+    ] },
+    { id: 'qui', l: 'Qui fait le travail', c: [
+      ['Alex et sa petite bande', 'à partir de votre questionnaire'],
+      ['Une personne', 'qui fait tout, du dessin à la mise en ligne'],
+      ['Une équipe', 'chef de projet, graphiste, développeur'],
+      ['Vous-même', 'avec des modèles à remplir'],
+    ] },
+    { id: 'appel', court: true, l: 'Un appel et une vérification avant la mise en ligne', c: [
+      ['Oui, toujours', 'Alex vous appelle avant de commencer, et vérifie tout avant la mise en ligne'],
+      ['Selon le prestataire', ''],
+      ['En général, oui', 'avec des rendez-vous de suivi'],
+      ['Non', 'vous relisez tout vous-même'],
+    ] },
+    { id: 'modifs', court: true, l: 'Modifications', c: [
+      [`Incluses avec le forfait ${ABO.name}`, 'vous-même à volonté, ou sur simple demande'],
+      ['Au devis', 'ou dans un contrat d’entretien'],
+      ['Au devis', 'ou dans un contrat de maintenance'],
+      ['Vous-même', 'quand vous avez le temps'],
+    ] },
+    { id: 'heberg', l: 'Hébergement et nom de domaine', c: [
+      [`Compris dans le forfait ${ABO.name}`, DOM ? `nom de domaine fourni pour ${euro(DOM)} de plus par mois, si vous n’en avez pas` : 'nom de domaine compris'],
+      ['Souvent facturés à part', ''],
+      ['Souvent facturés à part', 'ou compris dans un contrat'],
+      ['Compris dans l’abonnement', 'le nom de domaine, selon la formule'],
+    ] },
+    { id: 'mois', court: true, l: 'Entretien par mois', c: [
+      [`${euro(creationSeule.month)} ou ${euro(ABO.month)}`, `${creationSeule.name} : vous gérez tout. ${ABO.name} : on s’occupe de tout`],
+      [fourchette(marche.entretienMin, marche.entretienMax), 'en général, hébergement souvent en plus'],
+      ['Contrat de maintenance', 'au devis'],
+      ['L’abonnement de la plateforme', 'chaque mois, tant que le site existe'],
+    ] },
+    { id: 'engagement', l: 'Engagement', c: [
+      ['Aucun', `le forfait ${ABO.name} s’arrête quand vous voulez, votre site et votre nom de domaine restent à vous`],
+      ['Selon le contrat', ''],
+      ['Selon le contrat', ''],
+      ['Selon l’abonnement', 'au mois ou à l’année'],
+    ] },
   ];
-  const cell = (txt, i) => `<span class="cmp-cell${i === 0 ? ' cmp-me' : ''}" role="cell" data-label="${esc(cols[i])}">${esc(txt)}</span>`;
-  // Sur téléphone : une carte par ligne, notre réponse visible, les trois autres dans un petit déroulant
-  const mobile = `<div class="cmp-mobile">${rows.map(([l, nous, ...autres]) => `<div class="cmp-m reveal"><p class="cmp-m-l">${esc(l)}</p><p class="cmp-m-nous"><small>${esc(cols[0])}</small>${esc(nous)}</p><details class="liste-plus"><summary><span>Et ailleurs ?</span>${icon('chevron-down')}</summary><ul class="cmp-m-autres">${autres.map((a, i) => `<li><small>${esc(cols[i + 1])}</small>${esc(a)}</li>`).join('')}</ul></details></div>`).join('')}</div>`;
-  return `${mobile}<div class="cmp cmp-4 reveal" role="table" aria-label="Les Minis Monstres comparés à une agence, un indépendant et une plateforme à faire soi-même">
-  <div class="cmp-head" role="row"><span role="columnheader"></span>${cols.map((c, i) => `<span role="columnheader" class="cmp-cell${i === 0 ? ' cmp-me' : ''}">${i === 0 ? petit('mochi') : ''}${esc(c)}</span>`).join('')}</div>
-  ${rows.map(([l, ...cells]) => `<div class="cmp-row" role="row"><span class="cmp-label" role="rowheader">${esc(l)}</span>${cells.map(cell).join('')}</div>`).join('')}
-</div>`;
+}
+function comparatifTable({ court = false, sources = true } = {}) {
+  const lignes = comparatifLignes().filter((x) => !court || x.court);
+  const cellule = ([fort, detail], i) => `<td class="cmpt-c${i === 0 ? ' cmpt-nous' : ''}" data-col="${esc(CMP_COLS_COURTS[i])}">${i === 0 ? icon('circle-check') : ''}<span><strong>${esc(fort)}</strong>${detail ? `<small>${esc(detail)}</small>` : ''}</span></td>`;
+  const note = `<p class="cmpt-note">${icon('info')}<span><strong>Fourchettes publiées, chaque devis est différent.</strong> Prix relevés en France en novembre 2026 pour un site vitrine d’environ ${marche.pagesCompare || 5} pages. Certains indépendants vendent un site dès ${euro(INDEPENDANT_DES)}. Pour les plateformes, aucun chiffre : les formules sont trop différentes pour être comparées honnêtement.</span></p>`;
+  return `<!--commun--><div class="cmpt-wrap${court ? ' is-court' : ''}">
+  <table class="cmpt">
+    <caption class="sr-only">Les Minis Monstres comparés à un indépendant, une agence et une plateforme à faire soi-même</caption>
+    <thead><tr><td class="cmpt-vide"></td>${CMP_COLS.map((c, i) => `<th scope="col" class="cmpt-h${i === 0 ? ' cmpt-nous' : ''}">${i === 0 ? `<span class="cmpt-h-art" aria-hidden="true">${petit('mochi', { humeur: 'ravi' })}</span>` : ''}<span>${esc(c)}</span></th>`).join('')}</tr></thead>
+    <tbody>${lignes.map((x) => `<tr><th scope="row" class="cmpt-l">${esc(x.l)}</th>${x.c.map(cellule).join('')}</tr>`).join('')}</tbody>
+  </table>
+  ${court ? `<p class="cmpt-note">${icon('info')}<span>Fourchettes publiées pour un site vitrine, chaque devis est différent.</span></p>` : note}
+  ${!court && sources ? sourcesMarche() : ''}
+</div><!--/commun-->`;
+}
+
+// ---------------------------------------------------------------- les questions qu'on se pose avant de commander (accueil, tarifs)
+// Des réponses vraies, courtes, avec un lien pour en savoir plus. Bloc commun (repris tel quel sur plusieurs pages).
+function objections() {
+  const Q = [
+    { ico: 'badge-check', c: 'mint', q: `${euro(ESSENTIEL.price)}, ce n’est pas un site bâclé ?`, r: `Non. Le prix est bas parce que le gros du travail est déjà fait : nos modules (accueil, présentation, services, galerie, contact) ont été soignés une fois pour toutes, puis remplis avec votre contenu. Et Alex vérifie chaque page avant la mise en ligne.`, href: sections.methode.path, lien: 'Pourquoi c’est moins cher' },
+    { ico: 'user-check', c: 'sky', q: 'Qui est derrière ?', r: `Alex, depuis ${site.address.city}, dans les Ardennes. Il vous appelle avant de commencer, il relit tout, et il répond quand vous écrivez. Sa petite bande l’aide pour ce qui se répète.`, href: sections.equipe.path, lien: 'Rencontrer l’équipe' },
+    { ico: 'pencil', c: 'lilac', q: 'Et si je veux changer quelque chose ?', r: `Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois sans engagement, vous changez vous-même vos textes et vos photos, à volonté. Le reste, vous nous le demandez depuis votre espace client : c’est compris.`, href: site.espaceClient && site.espaceClient.demo ? site.espaceClient.demo : sections.monespace.path, lien: 'Essayer l’espace client' },
+    { ico: 'heart-handshake', c: 'pink', q: 'Et si le résultat ne me plaît pas ?', r: `On part de votre questionnaire et de l’appel avec Alex, pour éviter les surprises. Une fois en ligne, votre site s’ajuste : vous le modifiez, ou vous nous dites quoi changer. Et la loi vous donne 14 jours pour vous rétracter.`, href: '/conditions-generales/#9-droit-de-retractation', lien: 'Le droit de rétractation' },
+  ];
+  return `<!--commun--><div class="objections">${Q.map((x) => `<article class="objection c-${x.c}">
+    <span class="objection-ico" aria-hidden="true">${icon(x.ico)}</span>
+    <h3>${esc(x.q)}</h3>
+    <p>${esc(x.r)}</p>
+    <a class="objection-lien" href="${x.href}">${esc(x.lien)}${icon('arrow-right')}</a>
+  </article>`).join('')}</div><!--/commun-->`;
 }
 
 // ---------------------------------------------------------------- le déroulement d'une création (24 novembre 2026, soir)
@@ -859,6 +927,6 @@ module.exports = {
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, sourcesMarche, sourcesMd, sourcesInline, ecartBas, INDEPENDANT_DES, ABO, DELAI_MODIF, optsCreation, optsMois, EXTRAS_PAR_FAMILLE, extrasListe, prixExtra, prixType, optPrice, optionsCompact, extrasDemande, priceData, optionChoices, domainBox,
   offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, BOUTIQUE_ARTICLES, BOUTIQUE_PAIEMENT, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
   siteOffreCarte, optionEcommerceCarte, pagesGoogleCarte, modulesSite, siteIcone, positionnement, demoBande, ESSENTIEL, BOUTIQUE_T, ECOMMERCE, revisionsNote, phrase, prixPageSeo, packsSeo,
-  configurator, phoneEdit, phoneSocial, statsCard, comparatifTable,
+  configurator, phoneEdit, phoneSocial, statsCard, comparatifTable, objections,
   CERISE, BRICOU, PEPITE, presente, imgMonstre, DOM, DOMAINE_REGLE, DOMAINE_PLUS, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };

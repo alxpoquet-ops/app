@@ -1328,3 +1328,11 @@ button.is-confirmer.is-confirmer, .btn.is-confirmer.is-confirmer, .req-annul .li
   .app-maison .app-side .app-tabs:not(:has(> [data-tab="outils"])) > button:not(.tab-sous) { flex-direction: column; justify-content: center; align-items: center; gap: 4px; padding: 9px 6px; text-align: center; grid-column: auto; }
   .app-maison .app-side .app-tabs:not(:has(> [data-tab="outils"])) > button:not(.tab-sous) .tab-monstre { width: 30px; height: 30px; }
 }
+
+/* la démo : l'appel d'Alex, dans « Ma commande » (revue du 24 novembre 2026) */
+.demo-appel { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; margin: 4px 0 14px; padding: 12px 14px; border-radius: 16px; background: var(--sky); }
+.demo-appel-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 13px; background: var(--card); color: var(--sky-dd); }
+.demo-appel-ico .ico { width: 20px; height: 20px; }
+.demo-appel strong { display: block; color: var(--ink); }
+.demo-appel small { display: block; color: var(--text); font-size: .88rem; line-height: 1.45; }
+@media (max-width: 520px) { .demo-appel { grid-template-columns: auto minmax(0, 1fr); } .demo-appel .st { grid-column: 2; justify-self: start; } }

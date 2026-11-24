@@ -246,23 +246,25 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
         return new WP_REST_Response(['ok' => true, 'etat' => 'a_corriger'], 200);
     }
     if ($faire === 'livrer') {
-        // la V1 est livrée au client sans attendre Alex (21 novembre 2026), mais seulement après le contrôle d'un autre agent (22 novembre)
+        // le contrôle d'un autre agent d'abord (22 novembre 2026), puis, depuis le 24 novembre 2026, ALEX VÉRIFIE TOUJOURS le site avant
+        // le client (promesse du site public) : le contrôleur l'envoie chez Alex (« À vérifier » dans sa gestion), qui livre d'un clic.
         if (!in_array($c['statut'], ['pret', 'en_creation'], true)) return new WP_Error('aled08_chantier', 'Cette commande n’est pas en création (statut ' . $c['statut'] . ').', ['status' => 409]);
         if (aled08e_chantier_etat($cid) !== 'a_controler' && empty($p['accord_alex'])) return new WP_Error('aled08_chantier', 'Un site n’est livré qu’après le contrôle : le constructeur l’envoie d’abord avec faire "a_controler".', ['status' => 409]);
         if (empty($p['resume']) && aled08e_chantier_resume($cid) === '') return new WP_Error('aled08_chantier', 'Le résumé pour le client (resume) est obligatoire.', ['status' => 400]);
         if ($texte !== '') aled08e_agent_fil_ajouter($cid, 'controleur', 'Contrôle bon : ' . $texte);
-        if (function_exists('aled08e_memoire_ajouter')) aled08e_memoire_ajouter('journal', 'Site livré : ' . $nomCmd, 'V1 livrée après contrôle. ' . $texte, (int) $c['user'], 'controleur');
         $lien = esc_url_raw((string) ($p['lien'] ?? ''));
         if ($lien !== '' && wp_parse_url($lien, PHP_URL_SCHEME) !== 'https') $lien = '';
         if ($lien !== '') update_post_meta($cid, '_aled08_apercu', $lien);
         aled08e_chantier_resume_garder($cid, $p);
-        if ($c['user']) update_user_meta($c['user'], 'aled08_visuel_fait', wp_date('Y-m-d'));
-        aled08e_cmd_set_statut($cid, 'en_ligne', 'V1 livrée par l’atelier.');
-        update_post_meta($cid, '_aled08_chantier', 'en_ligne');
-        aled08e_cmd_journal($cid, 'Atelier : V1 livrée au client, e-mail « Votre site est en ligne » envoyé.');
-        // Alex est prévenu, sans rien à valider
-        $site = $lien !== '' ? $lien : ($c['domaine'] ? 'https://' . $c['domaine'] . '/' : (string) aled08e_meta($c['user'], 'site'));
-        wp_mail(aled08e_to(), 'Site livré (V1) : ' . ($c['entreprise'] ?: $c['prenom'] . ' ' . $c['nom']), 'L’atelier a livré la V1 du site au client, avec l’e-mail « Votre site est en ligne ».' . "\n\nSite : " . $site . "\nCommande : " . $c['ref'] . ' ' . aled08e_cmd_admin_url($cid) . "\n\nLe contrôle :\n" . ($texte !== '' ? $texte : '(sans note)') . "\n\nLa note du constructeur :\n" . (aled08e_agent_fil_dernier($cid, 'constructeur') ?: '(sans note)') . "\n\nCe que le client a reçu :\n" . aled08e_chantier_resume($cid) . "\n", aled08e_mail_headers());
+        if (empty($p['accord_alex']) && aled08e_verif_alex()) {
+            update_post_meta($cid, '_aled08_chantier', 'a_verifier');
+            if ($c['statut'] === 'pret') aled08e_cmd_set_statut($cid, 'en_creation', 'Site contrôlé, à vérifier par Alex.');
+            aled08e_cmd_journal($cid, 'Atelier : contrôle bon, le site attend la vérification d’Alex avant d’être livré.');
+            if (function_exists('aled08e_memoire_ajouter')) aled08e_memoire_ajouter('journal', 'Site à vérifier par Alex : ' . $nomCmd, 'Contrôle bon. ' . $texte, (int) $c['user'], 'controleur');
+            aled08e_chantier_mail_verifier($c, $texte, $lien);
+            return new WP_REST_Response(['ok' => true, 'etat' => 'a_verifier', 'note' => 'Alex vérifie le site avant de le livrer au client : rien d’autre à faire pour toi.'], 200);
+        }
+        aled08e_chantier_livrer_v1($cid, $lien);
         return new WP_REST_Response(['ok' => true, 'statut' => 'en_ligne'], 200);
     }
     return new WP_Error('aled08_chantier', 'À faire inconnu (question, note, a_controler, corriger, livrer, pour_alex, reprendre, a_verifier, en_ligne).', ['status' => 400]);
@@ -284,6 +286,31 @@ function aled08e_chantier_pages_google($cid) { return (int) get_post_meta($cid, 
 function aled08e_chantier_pages_total($cid) { return (int) get_post_meta($cid, '_aled08_pages_total', true); }
 /* Le nombre d'articles mis dans la boutique (Site Boutique) */
 function aled08e_chantier_articles($cid) { return (int) get_post_meta($cid, '_aled08_articles', true); }
+/* Alex vérifie toujours un site avant le client (option, oui par défaut). */
+function aled08e_verif_alex() { return get_option('aled08_verif_alex', '1') === '1'; }
+/* Livrer la V1 au client : statut « en ligne », e-mail « Votre site est en ligne », Alex prévenu. */
+function aled08e_chantier_livrer_v1($cid, $lien = '', $par = 'atelier') {
+    $c = aled08e_cmd_get($cid);
+    if (!$c) return false;
+    if ($lien === '') $lien = (string) get_post_meta($cid, '_aled08_apercu', true);
+    if ($c['user']) update_user_meta($c['user'], 'aled08_visuel_fait', wp_date('Y-m-d'));
+    aled08e_cmd_set_statut($cid, 'en_ligne', $par === 'alex' ? 'V1 vérifiée et livrée par Alex.' : 'V1 livrée par l’atelier.');
+    update_post_meta($cid, '_aled08_chantier', 'en_ligne');
+    aled08e_cmd_journal($cid, ($par === 'alex' ? 'Alex a vérifié le site et l’a livré' : 'Atelier : V1 livrée au client') . ', e-mail « Votre site est en ligne » envoyé.');
+    $nom = $c['ref'] . ' ' . ($c['entreprise'] ?: trim($c['prenom'] . ' ' . $c['nom']));
+    if (function_exists('aled08e_memoire_ajouter')) aled08e_memoire_ajouter('journal', 'Site livré : ' . $nom, $par === 'alex' ? 'V1 vérifiée et livrée par Alex.' : 'V1 livrée après contrôle.', (int) $c['user'], $par === 'alex' ? 'alex' : 'controleur');
+    if ($par !== 'alex') {
+        $site = $lien !== '' ? $lien : ($c['domaine'] ? 'https://' . $c['domaine'] . '/' : (string) aled08e_meta($c['user'], 'site'));
+        wp_mail(aled08e_to(), 'Site livré (V1) : ' . ($c['entreprise'] ?: $c['prenom'] . ' ' . $c['nom']), 'L’atelier a livré la V1 du site au client, avec l’e-mail « Votre site est en ligne ».' . "\n\nSite : " . $site . "\n", aled08e_mail_headers());
+    }
+    return true;
+}
+/* Les sites contrôlés qui attendent la vérification d'Alex */
+function aled08e_a_verifier() {
+    if (!function_exists('aled08e_cmd_statuts_en_cours')) return [];
+    return get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'private', 'numberposts' => 40, 'fields' => 'ids', 'orderby' => 'date', 'order' => 'ASC',
+        'meta_query' => [['key' => '_aled08_statut', 'value' => aled08e_cmd_statuts_en_cours(), 'compare' => 'IN'], ['key' => '_aled08_chantier', 'value' => 'a_verifier']]]);
+}
 function aled08e_chantier_mail_verifier($c, $texte, $lien = '') {
     $site = $lien !== '' ? $lien : ($c['domaine'] ? 'https://' . $c['domaine'] . '/' : (string) aled08e_meta($c['user'], 'site'));
     $p = function ($t) { return '<p style="margin:0 0 14px;font-size:16px;line-height:1.6;color:#CFCBEA;">' . $t . '</p>'; };
@@ -294,10 +321,10 @@ function aled08e_chantier_mail_verifier($c, $texte, $lien = '') {
         . (($pg = aled08e_chantier_pages_google($c['id'])) > 0 || aled08e_chantier_pages_total($c['id']) > 0 ? $p('Annoncé au client : <b style="color:#FFFFFF;">' . aled08e_chantier_pages_total($c['id']) . ' pages en tout, dont ' . $pg . ' pages de visibilité Google</b>.') : '')
         . (($res = aled08e_chantier_resume($c['id'])) !== '' ? '<p style="margin:0 0 8px;font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#FFD36E;">Le résumé que le client recevra</p>' . $p(nl2br(esc_html($res))) : '')
         . '<p style="margin:8px 0 8px;font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#7BDDB1;">Et ensuite ?</p>'
-        . $p('Revenez dans la conversation avec Claude et dites simplement :<br>« <b style="color:#FFFFFF;">OK</b> » pour mettre le site en ligne (le client est prévenu et son forfait démarre),<br>ou ce que vous voulez changer.')
-        . aled08e_mail_bouton(aled08e_chantier_conversation(), 'Répondre dans la conversation')
+        . $p('Regardez-le, puis dans votre espace (onglet « À faire », « À vérifier avant de livrer ») : <b style="color:#FFFFFF;">« C’est bon, je livre »</b> (le client reçoit « Votre site est en ligne » et son forfait démarre) ou <b style="color:#FFFFFF;">« À corriger »</b> avec une note pour la bande.')
+        . aled08e_mail_bouton(aled08e_url() . '#accueil', 'Ouvrir mon espace')
         . '<p style="margin:6px 0 0;font-size:13px;line-height:1.5;color:#8B86B3;">La commande dans l’administration : <a href="' . esc_url(aled08e_cmd_admin_url($c['id'])) . '" style="color:#8B86B3;">' . esc_html($c['ref']) . '</a></p>';
-    $alt = function ($m) use ($c, $site, $texte) { $m->AltBody = 'Le site de ' . aled08e_cmd_nom($c) . ' (' . $c['ref'] . ") est prêt à vérifier.\n\nLe site : " . $site . "\n\n" . ($texte !== '' ? $texte . "\n\n" : '') . "Revenez dans la conversation avec Claude : « OK » pour le mettre en ligne, ou ce que vous voulez changer.\n" . aled08e_chantier_conversation() . "\n"; };
+    $alt = function ($m) use ($c, $site, $texte) { $m->AltBody = 'Le site de ' . aled08e_cmd_nom($c) . ' (' . $c['ref'] . ") est prêt à vérifier.\n\nLe site : " . $site . "\n\n" . ($texte !== '' ? $texte . "\n\n" : '') . "Dans votre espace (À faire, À vérifier avant de livrer) : « C’est bon, je livre » ou « À corriger ».\n" . aled08e_url() . "#accueil\n"; };
     add_action('phpmailer_init', $alt, 20);
     wp_mail(aled08e_to(), 'Site prêt à vérifier : ' . ($c['domaine'] ?: aled08e_cmd_nom($c)), aled08e_mail_coque('Site prêt à vérifier', $h, 'Un site est prêt : regardez-le, puis dites OK ou ce qu’il faut changer.'), ['Content-Type: text/html; charset=UTF-8']);
     remove_action('phpmailer_init', $alt, 20);

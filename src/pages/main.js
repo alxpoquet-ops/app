@@ -15,7 +15,7 @@ const FAQ = require('../content/faq');
 const legal = require('../content/legal');
 // Le site (Essentiel, option e-commerce), et l'extra « page de visibilité Google » (10 € la page, payée une fois)
 const ESS = C.ESSENTIEL, BOU = C.BOUTIQUE_T, ECO = C.ECOMMERCE; // le Site Essentiel, le même avec l'option e-commerce, l'option seule
-const PAGE_GOOGLE = C.PACK_SEO || { name: 'Page de visibilité Google', price: { once: 15 }, exemples: [] };
+const PAGE_GOOGLE = C.PACK_SEO || { name: 'Page de visibilité Google', price: { once: 10 }, exemples: [] };
 const PRIX_PAGE = PAGE_GOOGLE.price.once;
 // Un bloc repris tel quel sur plusieurs pages (scripts/check.js ne le compte pas comme une phrase en double)
 const commun = (html) => `<!--commun-->${html}<!--/commun-->`;
@@ -177,7 +177,7 @@ function home() {
       <p class="hero-lead">Sans site internet, c’est une belle vitrine, mais dans une rue où personne ne passe. On crée le vôtre, et on vous rend visible.</p>
       <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}<a class="hero-lien" href="${sections.forfaits.path}">Voir les tarifs${icon('arrow-right')}</a></div>
       <ul class="hero-points">
-        <li>${icon('check')}Prix affichés</li>
+        <li>${icon('check')}${euro(ESS.price)} la création</li>
         <li>${icon('check')}Sans abonnement obligatoire</li>
         <li>${icon('check')}Alex vérifie tout</li>
       </ul>
@@ -210,6 +210,13 @@ function home() {
   </div>
 </div></section>
 
+<section class="section" id="comparer"><div class="container">
+  <h2 class="section-title">Comparez, en toute honnêteté</h2>
+  <p class="section-sub">Le même besoin, un site vitrine professionnel, chez nous et ailleurs.</p>
+  ${C.comparatifTable({ court: true })}
+  <p class="center more"><a class="link-more" href="${sections.comparatif.path}">Le comparatif complet, avec les sources</a></p>
+</div></section>
+
 <section class="section section-soft" id="deroulement"><div class="container">
   <h2 class="section-title">Comment se passe la création de votre site</h2>
   <p class="section-sub">Sept étapes simples. Vous savez toujours où vous en êtes, et il n’y a pas de mauvaise surprise.</p>
@@ -233,6 +240,12 @@ function home() {
       <p class="center"><a class="link-more" href="${sections.confiance.path}">Voir les réalisations</a></p>
     </div>
   </div>
+</div></section>
+
+<section class="section section-soft" id="questions"><div class="container">
+  <h2 class="section-title">Les questions qu’on se pose avant de commander</h2>
+  <p class="section-sub">Les vraies réponses, sans détour.</p>
+  ${C.objections()}
 </div></section>
 
 <section class="section section-porte"><div class="container">
@@ -389,15 +402,20 @@ ${C.modulesSite({ titre: 'Pourquoi ce prix : comment est fait votre site', id: '
 
 <section class="section section-soft" id="comparer"><div class="container">
   <h2 class="section-title">Et ailleurs, ça coûte combien ?</h2>
-  <p class="section-sub">Une comparaison honnête, avec les sources.</p>
-  ${C.economie()}
+  <p class="section-sub">Un indépendant, une agence ou une plateforme à faire soi-même : le même besoin, comparé ligne par ligne.</p>
+  ${C.comparatifTable()}
   <div class="promos">
     <a class="promo c-butter reveal" href="${sections.comparatif.path}">
       <span class="promo-ico">${icon('scale')}</span>
-      <span class="promo-text"><strong>Et par rapport aux autres solutions ?</strong><span>Agence, indépendant, plateforme : la comparaison, ligne par ligne.</span></span>
+      <span class="promo-text"><strong>Pour qui, chaque solution ?</strong><span>Chacune a sa place : quand choisir une agence, un indépendant ou une plateforme.</span></span>
       <span class="promo-go">${icon('arrow-right')}</span>
     </a>
   </div>
+</div></section>
+
+<section class="section" id="questions"><div class="container">
+  <h2 class="section-title">Avant de vous décider</h2>
+  ${C.objections()}
 </div></section>
 
 ${f.html}
@@ -533,7 +551,7 @@ function comparatifPage() {
   })}
 <section class="section"><div class="container">
   ${C.comparatifTable()}
-  <p class="source">Les prix des autres solutions dépendent du prestataire et du projet : le tableau ne les chiffre pas. Nos prix sont ceux de la page <a href="${sections.forfaits.path}">tarifs</a>.</p>
+  <p class="center more">${C.btnCreer('btn-primary btn-lg')}</p>
 </div></section>
 
 <section class="section section-soft"><div class="container">
@@ -549,12 +567,12 @@ function comparatifPage() {
   ${C.deroulants([
     C.deroulant('Les prix, côte à côte', md(`Un indépendant demande en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence, plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. Notre ${ESS.name}, qui contient ces mêmes modules, coûte ${euro(ESS.price)}.
 
-Soyons honnêtes : ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois.`) + C.sourcesMarche(), { ico: 'scale', ouvert: true }),
+Soyons honnêtes : ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois. Les sources sont citées sous le tableau, en haut de cette page.`), { ico: 'scale' }),
     C.deroulant('Pourquoi ce prix ?', md(`Nous n’avons pas de locaux, pas de loyer, pas de commerciaux ni de grosse organisation à faire tourner : autant de frais que vous ne payez pas. Nos modules sont déjà prêts, il ne manque que votre contenu. Notre objectif est simple : vous livrer un site professionnel plus vite et moins cher que les autres.
 
 > Faire la vaisselle à la main ou au lave-vaisselle : les assiettes sont aussi propres. Mais la machine vous rend votre soirée. Nos outils font le répétitif ; nous, on garde le plaisir du travail bien fait.
 
-Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank', ouvert: true }),
+Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank' }),
     C.deroulant('Et l’entretien, chaque mois ?', md(`Avec le forfait ${AUTO.name}, vous gérez tout vous-même, pour ${euro(AUTO.month)} par mois. Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications. Pas de nom de domaine ? On vous le fournit pour ${euro(C.DOM)} de plus par mois. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois pour l’entretien d’un site.`), { ico: 'repeat' }),
     C.deroulant('Ce que vous ne faites pas vous-même', md(`Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, écrire pour Google. Ici, vous dites ce que vous voulez, et votre site est fait pour vous. Vous gardez votre temps pour votre métier.`), { ico: 'clock' }),
     C.deroulant('Quand on vous dira d’aller ailleurs', md(`Une application sur mesure, un logiciel métier, un catalogue de milliers de produits : ces projets demandent une agence ou un développeur. On vous le dit dès le premier échange.`), { ico: 'arrow-right' }),
@@ -997,7 +1015,8 @@ function monEspacePage() {
             <p class="esp-empty">Votre site est en ligne. Pour le faire évoluer, envoyez vos demandes depuis « Mes modifications ».</p>
           </div>
           <section class="bf" id="questionnaire">
-            <div class="bf-head"><span class="bf-ico">${icon('circle-check')}</span><div><h3>Votre questionnaire de création</h3><p>Reçu le 3 novembre. Alex vous a appelée le 4 novembre pour parler de votre site, puis la bande s’est mise au travail. Vous pouvez encore relire vos réponses.</p></div><em class="st st-done">Reçu</em></div>
+            <div class="bf-head"><span class="bf-ico">${icon('circle-check')}</span><div><h3>Votre questionnaire de création</h3><p>Reçu le 3 novembre. Vous pouvez encore relire vos réponses.</p></div><em class="st st-done">Reçu</em></div>
+            <p class="demo-appel"><span class="demo-appel-ico" aria-hidden="true">${icon('phone-call')}</span><span><strong>L’appel avec Alex</strong><small>Le 4 novembre, vingt minutes pour parler de votre pâtisserie et de vos envies. Après cet appel, la bande s’est mise au travail.</small></span><em class="st st-done">Fait</em></p>
             <button type="button" class="btn btn-light btn-sm"${demoToast('Vos réponses s’ouvrent ici : votre activité, vos couleurs, vos photos, vos produits')}>${icon('list-checks')}<span>Voir ou modifier mes réponses</span></button>
           </section>
           <p class="app-sub">Votre site</p>
@@ -1607,7 +1626,7 @@ function metiersHub() {
   })}
 <section class="section"><div class="container">
   ${metierCards()}
-  <p class="center muted">Votre métier n’est pas dans la liste ? Les <a href="${HUB}#site">tutos</a> parlent aussi des restaurants, des instituts et des auto-entrepreneurs. Et vous pouvez <a href="${C.contactUrl}">nous écrire</a>.</p>
+  <p class="center muted">Votre métier n’est pas dans la liste ? Nos guides parlent aussi des <a href="/guides/site-internet-restaurant/">restaurants</a>, des <a href="/guides/site-internet-coiffeur-institut/">salons et instituts</a> et des <a href="/guides/site-internet-auto-entrepreneur/">auto-entrepreneurs</a>. Et vous pouvez <a href="${C.contactUrl}">nous écrire</a>.</p>
 </div></section>
 ${C.ctaBand({ text: CTA_TEXTE })}`;
   return {

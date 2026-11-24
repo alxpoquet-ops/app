@@ -417,7 +417,8 @@
   d.documentElement.classList.add('rv-pret');
   // ce qui est déjà à l'écran s'affiche tout de suite, sans fondu
   var basEcran = window.innerHeight * 0.96;
-  reveals = reveals.filter(function (el) { if (el.getBoundingClientRect().top < basEcran) { el.classList.add('is-visible', 'rv-direct'); return false; } return true; });
+  // ce qui est rangé dans un menu déroulant (fermé) s'affiche tel quel à l'ouverture : pas de fondu, jamais de bloc vide
+  reveals = reveals.filter(function (el) { if (el.closest('details') || el.getBoundingClientRect().top < basEcran) { el.classList.add('is-visible', 'rv-direct'); return false; } return true; });
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {

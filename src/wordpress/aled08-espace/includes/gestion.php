@@ -97,6 +97,17 @@ add_action('template_redirect', function () {
     $onglet = strpos($quoi, 'annonce') === 0 ? 'annonces' : 'accueil';
     $back = function ($m) use ($onglet) { wp_safe_redirect(aled08e_url(['mg' => $m]) . '#' . $onglet, 303); exit; };
     if (!wp_verify_nonce(sanitize_text_field((string) ($P['_aled08e_gestion'] ?? '')), 'aled08e_gestion')) $back('erreur');
+    if ($quoi === 'livrer_ok' || $quoi === 'livrer_corriger') {
+        $cid = (int) ($P['commande'] ?? 0);
+        if (!$cid || get_post_type($cid) !== ALED08E_CPT_CMD || !function_exists('aled08e_chantier_livrer_v1') || aled08e_chantier_etat($cid) !== 'a_verifier') $back('erreur');
+        if ($quoi === 'livrer_ok') { aled08e_chantier_livrer_v1($cid, '', 'alex'); $back('livre'); }
+        $note = trim(mb_substr(sanitize_textarea_field((string) ($P['note'] ?? '')), 0, 2000));
+        if ($note === '') $back('note_vide');
+        if (function_exists('aled08e_agent_fil_ajouter')) aled08e_agent_fil_ajouter($cid, 'alex', 'À corriger (vérification d’Alex) : ' . $note);
+        update_post_meta($cid, '_aled08_chantier', 'a_corriger');
+        aled08e_cmd_journal($cid, 'Alex a vérifié le site : à corriger avant la livraison.');
+        $back('a_corriger');
+    }
     if ($quoi === 'feu_vert') {
         $cid = (int) ($P['commande'] ?? 0);
         if (!$cid || !function_exists('aled08e_feu_vert_donner') || get_post_type($cid) !== ALED08E_CPT_CMD) $back('erreur');
@@ -151,6 +162,9 @@ function aled08e_gestion($u) {
         'annonce_ok' => ['esp-empty', 'Annonce publiée : vos clients la voient en haut de leur espace.'],
         'annonce_suppr' => ['esp-empty', 'Annonce retirée.'],
         'feu_vert' => ['esp-empty', 'Feu vert donné : la bande commence le site.'],
+        'livre' => ['esp-empty', 'Site livré : le client reçoit « Votre site est en ligne ».'],
+        'a_corriger' => ['esp-empty', 'C’est noté : la bande corrige, puis le site revient chez vous.'],
+        'note_vide' => ['esp-warn', 'Écrivez ce qu’il faut corriger.'],
         'titre_vide' => ['esp-warn', 'Donnez un titre à votre annonce.'],
         'erreur' => ['esp-warn', 'Ça n’a pas marché. Rechargez la page et réessayez.'],
     ];
@@ -196,6 +210,25 @@ function aled08e_gestion($u) {
           </div>
           <p class="app-note">Le circuit : le client écrit, Cerise précise la demande avec lui et la lui fait confirmer, puis elle vous l’envoie ici (et par e-mail). Vous faites la modification. Une modification : 48 h au plus (24 h si le client a coché « en 24 heures »), une demande à la fois, deux avec l’extra « Deux demandes à la fois ». Un extra commandé : 7 jours. Le client peut annuler tant que vous n’avez pas cliqué « Je commence ».</p>
 
+          <?php $aVerifier = function_exists('aled08e_a_verifier') ? aled08e_a_verifier() : []; if ($aVerifier) : ?>
+          <p class="app-sub"><?php echo aled08e_icon('search-check'); // phpcs:ignore ?> À vérifier avant de livrer</p>
+          <ul class="ges-list">
+            <?php foreach ($aVerifier as $vcid) : $vc = aled08e_cmd_get($vcid); if (!$vc) continue; $vlien = (string) get_post_meta($vcid, '_aled08_apercu', true) ?: ($vc['domaine'] ? 'https://' . $vc['domaine'] . '/' : ''); $vres = function_exists('aled08e_chantier_resume') ? aled08e_chantier_resume($vcid) : ''; ?>
+            <li class="ges-item ges-afaire">
+              <div class="ges-head"><strong><?php echo esc_html(aled08e_cmd_nom($vc)); ?></strong><em class="st st-doing"><?php echo esc_html($vc['ref']); ?></em></div>
+              <p><?php echo esc_html($vc['entreprise'] ?: 'Activité non précisée'); ?> · contrôlé par la bande, il attend votre regard.</p>
+              <?php if ($vres !== '') : ?><p class="app-note"><?php echo esc_html(mb_substr($vres, 0, 400)); ?></p><?php endif; ?>
+              <?php if ($vlien) : ?><p><a class="btn btn-light btn-sm" href="<?php echo esc_url($vlien); ?>" target="_blank" rel="noopener"><?php echo aled08e_icon('globe'); // phpcs:ignore ?><span>Voir le site</span></a></p><?php endif; ?>
+              <form method="post" action="<?php echo $act; // phpcs:ignore ?>" style="display:inline"><?php echo $nonce; // phpcs:ignore ?><input type="hidden" name="aled08e_gestion" value="livrer_ok"><input type="hidden" name="commande" value="<?php echo (int) $vcid; ?>">
+                <button class="btn btn-primary btn-sm" type="submit"><?php echo aled08e_icon('rocket'); // phpcs:ignore ?><span>C’est bon, je livre</span></button></form>
+              <details class="ges-details"><summary>À corriger</summary>
+                <form method="post" action="<?php echo $act; // phpcs:ignore ?>"><?php echo $nonce; // phpcs:ignore ?><input type="hidden" name="aled08e_gestion" value="livrer_corriger"><input type="hidden" name="commande" value="<?php echo (int) $vcid; ?>">
+                  <div class="field"><label for="vc-<?php echo (int) $vcid; ?>">Ce que la bande doit corriger</label><textarea id="vc-<?php echo (int) $vcid; ?>" name="note" rows="3" required></textarea></div>
+                  <button class="btn btn-light btn-sm" type="submit"><?php echo aled08e_icon('pencil'); // phpcs:ignore ?><span>Renvoyer à la bande</span></button></form></details>
+            </li>
+            <?php endforeach; ?>
+          </ul>
+          <?php endif; ?>
           <?php $aAppeler = function_exists('aled08e_a_appeler') ? aled08e_a_appeler() : []; if ($aAppeler) : ?>
           <p class="app-sub"><?php echo aled08e_icon('phone'); // phpcs:ignore ?> À appeler avant de lancer le site</p>
           <ul class="ges-list">

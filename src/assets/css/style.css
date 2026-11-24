@@ -3531,3 +3531,97 @@ html:not(.js) .onglet-li:focus-within .sous-menu { display: grid; }
 /* ---------- la démo de l'espace client : le bouton « Me déconnecter » a l'air d'un lien, comme dans le vrai espace ---------- */
 button.app-logout { border: 0; background: none; font: inherit; cursor: pointer; text-align: left; }
 .demo-fictif { margin: 12px 0 0; text-align: center; }
+
+/* ==========================================================================
+   Revue du 24 novembre 2026 : comparatif loyal, questions avant de commander, cibles au doigt, contrastes
+   ========================================================================== */
+/* ---------- le comparatif loyal (un vrai tableau sur ordinateur, une carte par ligne sur téléphone) ---------- */
+.cmpt-wrap { max-width: 1120px; margin: 0 auto; }
+.cmpt { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; background: var(--card); border-radius: 30px; box-shadow: 0 0 0 1px var(--line), var(--shadow); }
+.cmpt th, .cmpt td { padding: 14px 16px; text-align: left; vertical-align: top; border-top: 1px solid var(--line); font-size: .94rem; line-height: 1.4; }
+.cmpt thead th, .cmpt thead td { border-top: 0; vertical-align: bottom; padding-top: 22px; }
+.cmpt .cmpt-vide { width: 19%; }
+.cmpt-h { color: var(--ink); font-weight: 900; font-size: 1rem; line-height: 1.25; }
+.cmpt-l { color: var(--ink); font-weight: 900; font-size: .95rem; }
+.cmpt-c strong { display: block; color: var(--ink); font-weight: 800; }
+.cmpt-c small { display: block; margin-top: 3px; color: var(--muted); font-size: .84rem; font-weight: 600; line-height: 1.4; }
+.cmpt-c > .ico { display: none; }
+/* notre colonne, en surbrillance douce */
+.cmpt .cmpt-nous { background: var(--mint); }
+.cmpt thead .cmpt-nous { position: relative; border-radius: 22px 22px 0 0; padding-top: 50px; color: var(--mint-dd); }
+.cmpt tbody tr:last-child .cmpt-nous { border-radius: 0 0 22px 22px; }
+.cmpt td.cmpt-nous { border-top-color: rgba(23, 106, 76, .14); }
+.cmpt td.cmpt-nous strong { color: var(--mint-dd); }
+.cmpt td.cmpt-nous small { color: var(--text); }
+.cmpt-h-art { position: absolute; top: -18px; left: 12px; width: 60px; }
+.cmpt-h-art svg { display: block; width: 100%; height: auto; }
+.cmpt-h-art .m-shadow { display: none; }
+.cmpt tbody tr:first-child td strong { font-size: 1.12rem; }
+.cmpt tbody tr:first-child td.cmpt-nous strong { font-size: 1.5rem; letter-spacing: -.02em; }
+.cmpt-note { display: flex; gap: 10px; align-items: flex-start; max-width: 860px; margin: 18px auto 0; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+.cmpt-note .ico { flex: none; width: 18px; height: 18px; margin-top: 2px; color: var(--lilac-d); }
+.cmpt-note strong { color: var(--ink); }
+.cmpt-wrap .sources { max-width: 860px; margin: 12px auto 0; }
+.cmpt-wrap.is-court .cmpt-note { justify-content: center; text-align: center; }
+@media (max-width: 860px) {
+  .cmpt, .cmpt thead, .cmpt tbody, .cmpt tr, .cmpt th, .cmpt td { display: block; width: auto; }
+  .cmpt { background: transparent; box-shadow: none; border-radius: 0; }
+  .cmpt thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .cmpt tbody { display: grid; gap: 14px; }
+  .cmpt tr { padding: 16px; border-radius: 24px; background: var(--card); box-shadow: 0 0 0 1px var(--line), var(--shadow-sm); }
+  .cmpt th, .cmpt td { border-top: 0; padding: 0; }
+  .cmpt .cmpt-l { margin: 0 0 10px; font-size: 1.04rem; }
+  .cmpt td.cmpt-nous { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; margin-bottom: 10px; padding: 12px 14px; border-radius: 16px !important; box-shadow: 0 0 0 2px var(--mint-d) inset; }
+  .cmpt td.cmpt-nous > .ico { display: block; width: 22px; height: 22px; color: var(--mint-dd); }
+  .cmpt td.cmpt-nous::before { content: attr(data-col); grid-column: 1 / -1; margin-bottom: -6px; font-size: .72rem; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; color: var(--mint-dd); }
+  .cmpt td.cmpt-c:not(.cmpt-nous) { display: grid; grid-template-columns: 6.6em minmax(0, 1fr); gap: 10px; padding: 8px 2px; border-top: 1px dashed var(--line); }
+  .cmpt td.cmpt-c:not(.cmpt-nous)::before { content: attr(data-col); font-size: .78rem; font-weight: 900; color: var(--muted); line-height: 1.5; }
+  .cmpt td.cmpt-c:not(.cmpt-nous) strong { font-size: .93rem; }
+  .cmpt tbody tr:first-child td strong { font-size: 1rem; }
+  .cmpt tbody tr:first-child td.cmpt-nous strong { font-size: 1.35rem; }
+}
+
+/* ---------- les questions qu'on se pose avant de commander ---------- */
+.objections { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; max-width: 1040px; margin: 0 auto; }
+.objection { display: flex; flex-direction: column; align-items: flex-start; padding: 24px; border-radius: 26px; background: var(--card); box-shadow: 0 0 0 1px var(--line), var(--shadow-sm); }
+.objection-ico { display: grid; place-items: center; width: 46px; height: 46px; margin-bottom: 12px; border-radius: 15px; background: var(--c); color: var(--c-dd); }
+.objection-ico .ico { width: 22px; height: 22px; }
+.objection h3 { margin: 0 0 8px; font-size: 1.12rem; line-height: 1.3; }
+.objection p { margin: 0 0 12px; color: var(--text); font-size: .97rem; line-height: 1.55; }
+.objection-lien { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: auto; font-weight: 900; color: var(--c-dd); text-decoration: none; }
+.objection-lien .ico { width: 18px; height: 18px; transition: transform .2s; }
+.objection-lien:hover .ico { transform: translateX(3px); }
+@media (max-width: 720px) {
+  .objections { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .objection { padding: 18px 18px 8px; border-radius: 22px; }
+}
+
+/* ---------- cibles au doigt : 44 px au moins, sans changer le dessin ---------- */
+.link-more { display: inline-flex; align-items: center; min-height: 44px; }
+.footer-contact a { min-height: 44px; }
+.terme-i, .client-i, .opt-i { position: relative; }
+.terme-i::after, .client-i::after, .opt-i::after { content: ""; position: absolute; inset: -11px; }
+.tuto-sommaire > summary { min-height: 44px; }
+.alex-carte-bande a { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* ---------- la barre du bas en sombre : texte foncé sur le bouton vert, comme les autres boutons verts ---------- */
+.mobile-bar .mb-creer, .mobile-bar .mb-creer:hover { color: #2E2A47; }
+
+/* ---------- la bulle de Cerise ne cache jamais le bas de page : place réservée à droite (ordinateur) ou dessous (téléphone) ---------- */
+@media (min-width: 721px) { .footer-bottom-in { padding-right: 96px; } }
+@media (max-width: 720px) {
+  .footer-bottom { padding-bottom: 86px; }
+  .footer-bottom ul { gap: 0 18px; }
+  .footer-bottom a { display: inline-flex; align-items: center; min-height: 40px; }
+}
+
+/* ---------- pages métier : « Ce qu'on vous conseille » sur téléphone, le prix passe sous le texte (le texte gardait un mot par ligne) ---------- */
+@media (max-width: 600px) {
+  .opt-conseil { padding: 18px 16px; }
+  .opt-conseil li { grid-template-columns: auto minmax(0, 1fr); align-items: start; }
+  .opt-conseil .opt-price { grid-column: 2; white-space: normal; font-size: .9rem; color: var(--mint-dd); }
+  .opt-conseil li + li { padding-top: 14px; border-top: 1px dashed var(--line); }
+}
+/* ---------- les titres longs (pages métier) restent lisibles sur téléphone ---------- */
+@media (max-width: 480px) { .page-hero h1 { font-size: clamp(1.55rem, 7.4vw, 1.9rem); line-height: 1.18; overflow-wrap: break-word; } }
+.frise-lien { min-height: 44px; align-items: center; }
