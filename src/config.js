@@ -269,7 +269,7 @@ const enService = { outils: false, energie: false };
 const ateliers = [
   { id: 'maison', label: 'La maison', path: '/la-maison/', monstre: 'mascotte', color: 'lilac', court: 'Le concept, Alex et la petite bande' },
   { id: 'sites', label: 'Mini Site', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: `Votre site professionnel en quelques heures, ${Math.round(marche.vitrineMin / creation.prix)} fois moins cher qu’un indépendant, puis on s’en occupe chaque mois.` },
-  { id: 'ecole', label: 'Mini Tuto', path: '/mini-tuto/', monstre: 'mochi', color: 'lilac', chef: 'Mochi', court: 'Plein de petits tutos gratuits pour être vu, attirer des clients et gagner du temps, puis trois grandes formations.' },
+  { id: 'ecole', label: 'Mini Tuto', path: '/mini-tuto/', monstre: 'mochi', color: 'lilac', chef: 'Mochi', court: 'Minis Tutos, Minis Prix : des tutos clairs et complets à 4,99 €, pour être vu, attirer des clients et gagner du temps.' },
   { id: 'outils', label: 'Mini Outils', path: '/outils/', monstre: 'etoile', color: 'butter', chef: 'Pépite', court: 'Publier partout, répondre aux avis, préparer ses fiches produits : de petits monstres au travail tous les jours.' },
 ];
 // Les outils (atelier « Les outils ») : par abonnement, outil par outil OU « toute la bande » (décision d'Alex, 24 novembre 2026).
@@ -301,11 +301,12 @@ const outilsOffre = {
       court: 'Une note vocale sur le chantier : un devis propre à votre nom, envoyé et relancé pour vous.' },
   ],
 };
-// Les formations de Mini Tuto (décision d'Alex, 24 novembre 2026) : les petits tutos sont gratuits ; les trois grandes formations
-// coûtent prix € chacune, payées une fois, accès à vie (tant que Les Minis Monstres existent), SAUF la première (gratuite) qui montre
-// la qualité. Une formation payante montre en public son programme et son premier chapitre ; le reste s'ouvre dans l'espace client
-// (onglet « Mes cours ») après l'achat. Achat grisé tant que les ventes sont fermées (ouverture.php).
-const formationsOffre = { prix: 49.99, gratuites: ['formation-automatiser-ses-taches'], apercuChapitres: 1 };
+// Mini Tuto (décision d'Alex, 24 novembre 2026, soir) : « Minis Tutos, Minis Prix ». Une vingtaine de tutos à prix € chacun,
+// payés une fois, accès à vie (tant que Les Minis Monstres proposent les tutos). Chaque tuto a plusieurs pages ; les apercuPages
+// premières se lisent gratuitement en public, la suite s'ouvre dans l'espace client (« Mes tutos ») après l'achat.
+// Deux ou trois tutos sont entièrement gratuits (champ gratuit: true), pour montrer la qualité. Plus de grandes formations.
+// Achat grisé tant que les ventes sont fermées (ouverture.php).
+const tutosOffre = { prix: 4.99, apercuPages: 2, slogan: 'Minis Tutos, Minis Prix' };
 const limites = { bulleJour: 40 }; // messages par jour dans la bulle de Cerise (les modifications sont sans limite)
 const enPause = !enService.energie;
 // Un seul abonnement : Mini, 10 € par mois, sans engagement (18 novembre 2026). Maxi est retiré : tout ce qu'il apportait se prend
@@ -538,4 +539,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: 'Le site d’un électricien dans les Ardennes. Il sera en ligne très bientôt.' },
 ];
 
-module.exports = { ateliers, outilsOffre, formationsOffre, INCLUS_INFO, typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };
+module.exports = { ateliers, outilsOffre, tutosOffre, INCLUS_INFO, typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };
