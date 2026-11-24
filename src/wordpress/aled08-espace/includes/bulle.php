@@ -9,6 +9,12 @@
  * Prix : chaque message coûte des Jetons Cerise, selon la règle des outils (ce que le message coûte chez Claude
  * × margeOutils, arrondi au-dessus, 1 jeton au moins). Les jetons sont rendus si Cerise ne répond pas.
  * Modèle : rapide et peu cher par défaut (option aled08_bulle_modele pour en changer).
+ *
+ * Transparence (règlement européen sur l'IA, article 50) : la mention « assistante automatique » est affichée une fois,
+ * discrètement, par l'interface de la bulle (src/lib/layout.js et src/assets/js/main.js), pas dans chaque réponse.
+ * Ici, la consigne oblige Cerise à répondre franchement « oui, je suis une assistante automatique » si on le lui demande.
+ * L'atelier « Les outils » (24 novembre 2026) : ses faits (prix, essai, limites, ventes fermées ou ouvertes) viennent de
+ * data.json (outilsOffre, tiré de src/config.js) et de la case « Ventes ouvertes » : voir aled08e_bulle_outils_faits().
  */
 defined('ABSPATH') || exit;
 
@@ -60,11 +66,54 @@ function aled08e_bulle_quota($uid) {
     return true;
 }
 
+/* La phrase honnête, la même dans les deux bulles (espace client et visiteurs du site) */
+function aled08e_bulle_honnete() {
+    return "Si on te demande si tu es un robot, une intelligence artificielle ou une vraie personne, réponds franchement : « Oui, je suis une assistante automatique. » Ne prétends jamais être un humain. Alex, lui, reprend tout ce qui demande un humain. ";
+}
+/* La consigne sur les ventes, tant qu'elles sont fermées (case « Ventes ouvertes » des réglages) */
+function aled08e_bulle_ventes_consigne() {
+    return "Si les faits que tu reçois disent que les ventes ne sont pas encore ouvertes, ne dis jamais qu'on peut déjà commander, payer ou s'abonner, et ne donne aucune date d'ouverture. ";
+}
+/* Les ventes sont-elles ouvertes ? On lit la case elle-même : un administrateur connecté peut acheter pour tester,
+ * mais Cerise doit dire ce que voit un visiteur. */
+function aled08e_bulle_ventes_fait() {
+    if (get_option('aled08_ventes_ouvertes', '0') === '1') return '';
+    return 'Les ventes ne sont pas encore ouvertes : rien ne s’achète pour l’instant (site, extras, outils), le temps de finir quelques démarches administratives. Elles ouvrent très bientôt, sans date annoncée.';
+}
+/* L'atelier « Les outils » (décision d'Alex, 24 novembre 2026), en quelques faits. Vide si data.json ne le contient pas. */
+function aled08e_bulle_outils_faits() {
+    $o = (array) (aled08e_data()['outilsOffre'] ?? []);
+    if (empty($o['actif']) || empty($o['outils'])) return [];
+    $prets = []; $bientot = []; $offert = '';
+    foreach ((array) $o['outils'] as $x) {
+        $nom = (string) ($x['nom'] ?? '');
+        if ($nom === '') continue;
+        if (($x['statut'] ?? '') === 'bientot') { $bientot[] = $nom; continue; }
+        if (($x['statut'] ?? '') !== 'pret') continue;
+        // Publier partout : ce que fait vraiment reseaux.php (Facebook, Instagram, LinkedIn, Bluesky, Mastodon, ou le bouton Partager)
+        $quoi = ($x['id'] ?? '') === 'publier'
+            ? 'une photo et quelques mots, un texte proposé pour chaque réseau, que le client relit et publie lui-même'
+            : rtrim(mb_strtolower(mb_substr((string) ($x['court'] ?? ''), 0, 1)) . mb_substr((string) ($x['court'] ?? ''), 1), '.');
+        $prets[] = $nom . ', ' . aled08e_euro_txt($x['prix'] ?? 0) . ' par mois' . (!empty($x['limite']) ? ', jusqu’à ' . (int) $x['limite'] . ' ' . ($x['unite'] ?? '') . ' par mois' : '') . ($quoi !== '' ? ' (' . $quoi . ')' : '');
+        if (!empty($x['inclusSite'])) $offert = $nom;
+    }
+    if (!$prets) return [];
+    $f = [];
+    $f[] = 'L’atelier « Les outils » : de petits outils au mois, ouverts à tous, particuliers et professionnels, avec ou sans site chez les Minis Monstres. Il faut seulement un compte client, gratuit. Chaque outil se prend seul : ' . implode(' ; ', $prets) . '.';
+    $b = (array) ($o['bande'] ?? []);
+    if (!empty($b['nom'])) $f[] = 'Ou « ' . $b['nom'] . ' » : ' . aled08e_euro_txt($b['prix'] ?? 0) . ' par mois, tous les outils en vente, et les suivants dès leur sortie.';
+    if ($offert !== '') $f[] = $offert . ' est offert avec le forfait Mini d’un site.';
+    if ($bientot) $f[] = 'Annoncés mais pas encore en vente, sans date : ' . implode(', ', $bientot) . '.';
+    $f[] = 'Essai gratuit de ' . (int) ($o['essaiJours'] ?? 14) . ' jours pour chaque outil, sans carte bancaire, un essai par outil et par compte. À la fin de l’essai, l’outil s’arrête tout seul : rien n’est prélevé tant que le client ne s’abonne pas lui-même. Ensuite, abonnement au mois payé par Stripe, ajouté à la même facture que le forfait Mini s’il y en a un. Sans engagement : chaque outil s’arrête seul depuis l’espace client, à la fin du mois payé. L’usage est compris, avec une limite par mois affichée pour chaque outil : une fois atteinte, l’outil reprend le mois suivant, rien n’est facturé en plus.';
+    $f[] = 'Publier partout : le client relie une fois ses comptes Facebook, Instagram, LinkedIn, Bluesky ou Mastodon, ou partage avec le bouton Partager de son téléphone. Les textes lui sont proposés, il peut les modifier, et c’est lui qui publie (bouton « Tout publier ») : rien ne part sans lui.';
+    return $f;
+}
+
 /* La consigne de Cerise dans la bulle : fixe, la même pour tous les clients */
 function aled08e_bulle_systeme() {
     return "Tu es Cerise, l'assistante des Minis Monstres, une petite entreprise française qui crée et entretient des sites internet pour des commerçants, des artisans et des associations. "
         . "Tu parles au client dans son espace client. Alex est l'humain de l'entreprise : c'est lui qui conçoit les sites et qui fait toutes les modifications lui-même. Les petits monstres aident (ils répondent, préparent les demandes, analysent le site) mais ne modifient jamais le site. "
-        . "Présente-toi comme l'assistante autonome d'Alex, qui automatise les tâches répétitives. Tu fais partie de la petite bande de petits monstres qu'Alex a programmés : ce sont ses automatisations. " . (aled08e_energie_on() ? "Les outils et les petites modifications utilisent l'énergie des petits monstres, comptée avec un simple nombre : dis « 30 d'énergie », jamais « points » ni « jetons ». " : "Il n'y a aucune énergie à compter : les modifications sont comprises dans l'abonnement et faites par Alex. Les outils de l'espace client sont en pause pour l'instant : n'en propose aucun. ") . "Si le client te demande si tu es une intelligence artificielle ou un humain, réponds honnêtement : tu es un assistant automatique, et Alex reprend tout ce qui demande un humain.\n\n"
+        . "Présente-toi comme l'assistante automatique d'Alex, qui automatise les tâches répétitives. Tu fais partie de la petite bande de petits monstres qu'Alex a programmés : ce sont ses automatisations. " . (aled08e_energie_on() ? "Les outils et les petites modifications utilisent l'énergie des petits monstres, comptée avec un simple nombre : dis « 30 d'énergie », jamais « points » ni « jetons ». " : "Il n'y a aucune énergie à compter : les modifications sont comprises dans l'abonnement et faites par Alex. " . (aled08e_outils_on() ? '' : (aled08e_bulle_outils_faits() ? "Tu ne lances aucun outil toi-même : présente seulement l'atelier « Les outils » avec les faits de la balise offre. " : "Les outils de l'espace client sont en pause pour l'instant : n'en propose aucun. "))) . aled08e_bulle_honnete() . aled08e_bulle_ventes_consigne() . "\n\n"
         . "Ton rôle : répondre à ses questions, et préparer ce qu'il veut faire. Tu ne fais jamais l'action toi-même : tu la proposes dans le champ « action », et le client la valide ensuite d'un clic dans son espace.\n\n"
         . "Comment répondre :\n"
         . "- En français simple, avec des mots de tous les jours, sans jargon. Ton joyeux, chaleureux et complice, comme quand on parle à quelqu'un de la famille. Tutoie toujours le client (jamais de « vous »). Un petit mot gai est bienvenu (« Coucou », « Avec plaisir »), sans en faire trop. Une à quatre phrases courtes. Pas de tiret long, pas d'émoji, pas de liste à puces, pas de mise en forme.\n"
@@ -129,6 +178,9 @@ function aled08e_bulle_contexte($uid) {
     if (!empty($D['creationSeule'])) $offre[] = 'Forfait Autonome, 0 € par mois : le client gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. Maintenance et modifications non comprises. Il peut passer à Mini quand il veut, depuis l’onglet Demandes.';
     $offre[] = 'L’offre (depuis le 21 novembre 2026) : un seul site, ' . implode(' ; ', array_map(function ($t) { return $t['name'] . ' ' . aled08e_euro_txt($t['price']); }, array_values(array_filter((array) ($D['types'] ?? []), function ($t) { return empty($t['retire']); })))) . '. L’option e-commerce ouvre l’onglet « Ma boutique » : le client y gère lui-même ses articles, ses prix, ses promos, ses paiements et sa livraison ; sans l’option, cet onglet est verrouillé, avec un bouton pour la demander. Les pages de visibilité Google se prennent en plus, 10 € la page, depuis l’espace client. Le client modifie lui-même les textes et les photos de ses pages avec « Modifier mon site moi-même ».';
     $offre[] = 'Une modification (avec le forfait Mini) : le client écrit sa demande dans l’onglet Demandes de son espace client. Bricou la clarifie avec lui (une question si besoin, puis un résumé à confirmer) et l’envoie à Alex. C’est Alex qui fait la modification. Une demande à la fois. Ne donne jamais de délai.';
+    foreach (aled08e_bulle_outils_faits() as $l) $offre[] = $l;
+    $v = aled08e_bulle_ventes_fait();
+    if ($v !== '') $offre[] = $v;
     $rech = [];
     foreach ((array) $jl['recharge'] as $r) $rech[] = (int) $r['jetons'] . ' d’énergie pour ' . aled08e_euro_txt($r['prix']);
     if (!$pause) $offre[] = 'Redonner de l’énergie (onglet Outils) : ' . implode(', ', $rech) . '.';

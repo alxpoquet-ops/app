@@ -281,7 +281,7 @@ const outilsOffre = {
   bande: { id: 'bande', nom: 'Toute la bande', prix: 19, court: 'Tous les outils prêts, et les prochains dès leur sortie.' },
   outils: [
     { id: 'publier', nom: 'Publier partout', monstre: 'etoile', chef: 'Pépite', color: 'butter', prix: 9, statut: 'pret', limite: 60, unite: 'publications', tag: 'Le plus demandé',
-      court: 'Une photo, trois mots : un texte pour chaque réseau, publié sur Instagram, Facebook, votre fiche Google et votre site.',
+      court: 'Une photo, trois mots : un texte pour chaque réseau, publié sur Instagram, Facebook, LinkedIn et vos autres réseaux.',
       briques: ['publier', 'idees'] },
     { id: 'avis', nom: 'Mes avis Google', monstre: 'mascotte', chef: 'Cerise', color: 'pink', prix: 5, statut: 'pret', limite: 100, unite: 'réponses', inclusSite: true, tag: 'Offert avec un site',
       court: 'Un QR code et un lien pour demander des avis, une réponse prête pour chaque avis.',

@@ -8,9 +8,9 @@ const { site, paiement, fidelite, forfaits, fractionne, bande, limites, aLaDeman
 const L = site.legal;
 const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
-const UPDATED = '2026-11-15'; // mentions légales
-const UPDATED_CONF = '2026-11-19'; // politique de confidentialité : offre du 19 novembre 2026 (abonnement facultatif, paiement des extras par carte). Rien à changer le 21 novembre 2026 (un seul site).
-const UPDATED_CGV = '2026-11-23'; // 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
+const UPDATED = '2026-11-24'; // mentions légales : 24 novembre 2026, le SIREN de l'entreprise individuelle (le SIRET de l'activité est en cours)
+const UPDATED_CONF = '2026-11-24'; // politique de confidentialité : 24 novembre 2026, les outils au mois (comptes sans site, réseaux reliés, photos, avis et devis confiés aux outils). Avant : offre du 19 novembre 2026 (abonnement facultatif, paiement des extras par carte).
+const UPDATED_CGV = '2026-11-24'; // 24 novembre 2026 : article 20, les outils au mois (essai de 14 jours sans carte, abonnement outil par outil, limites, rétractation). 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
 // La petite bande (config.bande) : six Minis Monstres, présentés par leur prénom et leur rôle. Le parrainage est retiré (19 novembre 2026).
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
 // (règlement européen sur ces systèmes, obligation de transparence). La politique de confidentialité nomme le fournisseur.
@@ -61,6 +61,26 @@ const monstre = (id) => bande.find((b) => b.id === id) || { nom: '', role: '' };
 const cerise = monstre('support').nom;
 const mirette = monstre('observateur').nom;
 
+// Les outils au mois (config.outilsOffre, décision d'Alex du 24 novembre 2026) : article 20 des conditions générales et point 7
+// de la politique de confidentialité. Vendus à tous, avec ou sans site. Essai gratuit sans carte, un par outil et par compte.
+// Les réseaux et la photo à publier : ce que fait vraiment src/wordpress/aled08-espace/includes/reseaux.php (jetons dans la fiche
+// du client, jamais affichés, effacés quand il délie le réseau ; photo gardée environ une heure, puis effacée par une tâche planifiée).
+const OO = cfg.outilsOffre || { actif: false, outils: [], bande: {}, essaiJours: 14 };
+const outilsPrets = (OO.outils || []).filter((o) => o.statut === 'pret');
+const outilsBientot = (OO.outils || []).filter((o) => o.statut === 'bientot');
+const AVEC_OUTILS = !!OO.actif && outilsPrets.length > 0;
+const outilOffert = outilsPrets.find((o) => o.inclusSite);
+const listeOutils = outilsPrets
+  .map((o) => `- **${o.nom}, ${eur(o.prix)} € par mois**${o.inclusSite ? `, compris sans supplément tant que le client a le forfait ${mini.name}` : ''} : jusqu’à ${o.limite} ${o.unite} par mois.`)
+  .join('\n');
+const nomsBientot = liste(outilsBientot.map((o) => `« ${o.nom} »`));
+// Mentions légales : le SIRET s'affiche dès qu'il est dans config.js (14 chiffres). D'ici là, le SIREN de l'entreprise individuelle.
+const SIRET_PRET = /^\d{14}$/.test(String(L.siret || '').replace(/\s/g, ''));
+const ligneSiren = SIRET_PRET
+  ? `- **SIRET** : ${L.siret}`
+  : `- **SIREN** : ${L.siren || 'en cours d’attribution'} (le numéro SIRET de l’activité de création de sites est ${L.siret || 'en cours d’attribution'})`;
+const exploitant = /individuel/i.test(L.status || '') ? `${site.owner} EI` : site.owner; // l'entrepreneur individuel signe « EI »
+
 module.exports = [
   {
     path: '/mentions-legales/',
@@ -72,11 +92,11 @@ module.exports = [
     body: `## Éditeur du site
 
 - **Nom commercial** : Les Minis Monstres
-- **Exploitant** : ${site.owner}
+- **Exploitant** : ${exploitant}
 - **Forme juridique** : ${L.status}
 - **Adresse** : ${addr}, France
 - **Contact** : ${contact}
-- **SIRET** : ${L.siret}
+${ligneSiren}
 - **TVA** : ${tvaMention}
 
 ## Directeur de la publication
@@ -107,7 +127,7 @@ Pour un litige avec un consommateur, un médiateur de la consommation peut être
     path: '/politique-de-confidentialite/',
     name: 'Politique de confidentialité',
     title: `Politique de confidentialité | Les Minis Monstres`,
-    description: `Comment les Minis Monstres traitent vos données : devis, commande en ligne, paiement par Stripe, nom de domaine, espace client. Aucun traceur publicitaire.`,
+    description: `Comment les Minis Monstres traitent vos données : devis, commande, paiement, nom de domaine, espace client, outils et réseaux reliés. Aucun traceur publicitaire.`,
     lead: 'Ce que deviennent les informations que vous m’envoyez, combien de temps je les garde, et vos droits.',
     updated: UPDATED_CONF,
     body: `## 1. Responsable du traitement
@@ -118,12 +138,16 @@ ${site.owner}, Les Minis Monstres, ${addr}. Contact : ${contact}.
 
 - **Demande de contact ou de devis** : votre nom, votre e-mail, votre téléphone si vous le donnez, vos choix (site, abonnement, nom de domaine) et votre message.
 - **Commande en ligne** : prénom, nom, e-mail, téléphone, adresse postale, nom de votre activité, vos choix, le nom de domaine souhaité, votre message et un éventuel code promo. L’adresse postale sert à la facture et à la réservation du nom de domaine.
-- **Espace client** : vos identifiants, vos demandes de modification (texte et photos), vos messages dans la bulle d’aide et la date de votre dernière connexion.
+- **Espace client** : vos identifiants, vos demandes de modification (texte et photos), vos messages dans la bulle d’aide et la date de votre dernière connexion.${AVEC_OUTILS ? `
+- **Outils au mois** : ce que vous confiez à un outil (une photo, un texte, le texte d’un avis Google avec le prénom de son auteur s’il y figure, des devis de fournisseurs collés pour les comparer), la courte description de votre activité si vous l’écrivez, le dernier résultat obtenu et le nombre d’utilisations du mois. Un compte peut servir aux outils seuls, sans site.
+- **Réseaux sociaux reliés** : le nom de vos comptes ou de vos pages, les clés qui permettent d’y publier et la liste de vos dernières publications (voir le point 7).` : ''}
 - **Paiement** : je ne reçois jamais votre numéro de carte ni votre IBAN (voir le point 4).
 
 ## 3. Pourquoi je les utilise
 
-Pour vous répondre et préparer votre récapitulatif. Pour exécuter votre commande : créer le site, réserver le nom de domaine, gérer votre abonnement si vous en avez un, vos demandes de modification et vos extras. Pour établir les factures et les garder le temps prévu par la loi. Rien d’autre : pas de publicité, pas de revente, pas de profilage.
+Pour vous répondre et préparer votre récapitulatif. Pour exécuter votre commande : créer le site, réserver le nom de domaine, gérer votre abonnement si vous en avez un, vos demandes de modification et vos extras.${AVEC_OUTILS ? ' Pour faire marcher les outils que vous essayez ou que vous payez au mois, et suivre leur limite.' : ''} Pour établir les factures et les garder le temps prévu par la loi. Rien d’autre : pas de publicité, pas de revente, pas de profilage.
+
+Ces traitements sont nécessaires au contrat que vous passez avec moi, ou à sa préparation quand vous demandez un devis. La conservation des factures répond à une obligation légale.
 
 ## 4. Paiement par Stripe
 
@@ -137,29 +161,44 @@ Pour réserver le nom de domaine, je transmets vos coordonnées de titulaire (pr
 
 ## 6. Espace client et comptes
 
-Votre compte est créé à la commande, avec votre adresse e-mail et le mot de passe que vous choisissez. Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée.
+Votre compte est créé à la commande${AVEC_OUTILS ? ', ou sans rien commander, par exemple pour essayer un outil' : ''}, avec votre adresse e-mail et le mot de passe que vous choisissez. Les demandes envoyées depuis l’espace client (texte et photos) servent uniquement à réaliser la modification demandée.
 
 Certains petits monstres fonctionnent avec Claude, un service de la société Anthropic. C’est le cas de ${cerise}, qui vous répond dans la bulle d’aide, et de ${monstre('constructeur').nom}, qui vous aide à formuler vos demandes de modification. Quand vous écrivez dans la bulle ou que vous demandez une modification, le texte, la photo ou l’adresse de page que vous donnez sont envoyés à Claude pour préparer la réponse ou le résumé de votre demande. L’envoi passe par une liaison chiffrée, c’est-à-dire protégée contre les regards extérieurs. Ces éléments ne servent à rien d’autre. D’après les conditions d’Anthropic pour les professionnels, ces données ne servent pas à entraîner ses modèles. Évitez d’y mettre des informations sensibles : santé, coordonnées bancaires, nom complet d’un de vos clients.
 
 Un compte sans aucune connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec les demandes et les photos qu’il contient. Un e-mail vous prévient 30 jours avant. Il suffit de vous connecter pour le conserver.
 
-## 7. Durée de conservation
+${AVEC_OUTILS ? `## 7. Les outils et vos réseaux sociaux
+
+Les outils au mois (article 20 des conditions générales) préparent des publications, des réponses aux avis, des fiches produits ou la comparaison de vos devis. Ce que vous leur confiez sert seulement à préparer le résultat demandé.
+
+- **Ce qui part chez Claude** : comme pour la bulle d’aide (point 6), le texte, la photo, l’avis ou le devis donné à un outil est envoyé à Claude pour préparer le résultat. La photo est d’abord réduite, et la copie faite pour l’envoi est effacée aussitôt. Certains outils travaillent directement dans votre navigateur, par exemple pour recadrer une photo ou créer un QR code : rien ne m’est alors envoyé. Un devis contient souvent les coordonnées d’un fournisseur : collez seulement ce qui sert à comparer.
+- **Ce qui reste dans votre compte** : le dernier résultat obtenu, pour le retrouver si la connexion coupe, remplacé par le suivant. Le nombre d’utilisations de chaque outil dans le mois, pour suivre sa limite. La courte description de votre activité, si vous l’écrivez, pour préremplir les outils.
+- **Vos comptes de réseaux sociaux** : pour publier sans quitter votre espace, vous reliez un compte une fois. Pour Facebook, Instagram et LinkedIn, vous donnez votre accord sur le site du réseau, qui me remet un jeton d’accès, une clé qui permet de publier pour vous. Pour Bluesky, vous créez un mot de passe d’application, différent de votre mot de passe habituel. Pour Mastodon, vous créez un code d’accès sur votre serveur. Ces clés restent dans votre compte, sur le serveur du site, et ne sont jamais affichées. Elles servent quand vous publiez. Elles sont effacées dès que vous déliez le réseau, ou avec votre compte. Vous pouvez aussi retirer votre accord depuis le réseau lui-même. Le jeton de LinkedIn expire de lui-même au bout de deux mois environ.
+- **La photo à publier** : elle est réduite, puis déposée sur le serveur du site à une adresse impossible à deviner, le temps que les réseaux viennent la chercher. Elle est effacée automatiquement après une heure environ.
+- **Vos publications** : une fois publiés, votre texte et votre photo sont chez le réseau, sous votre nom, et suivent ses propres règles de confidentialité. Je garde la liste de vos 30 dernières publications (le réseau, le lien et le début du texte), que vous retrouvez dans l’outil. Si vous partagez avec le bouton Partager de votre téléphone, le texte va directement de votre téléphone à l’application choisie.
+- **Essai et abonnement** : l’essai gratuit ne demande aucune donnée bancaire. L’abonnement qui suit est payé par Stripe (point 4).
+
+` : ''}## ${AVEC_OUTILS ? 8 : 7}. Durée de conservation
 
 - Demandes sans suite : 3 ans après le dernier échange.
 - Commandes et comptes clients : toute la durée de la relation, puis 5 ans pour les pièces du contrat et 10 ans pour les factures, comme la loi l’impose.
-- Comptes inactifs : supprimés après 12 mois sans connexion ni abonnement actif (point 6).
+- Comptes inactifs : supprimés après 12 mois sans connexion ni abonnement actif (point 6).${AVEC_OUTILS ? `
+- Clés d’accès à vos réseaux sociaux : jusqu’à ce que vous déliiez le réseau, ou jusqu’à la suppression de votre compte.
+- Photo à publier : une heure environ.
+- Liste de vos publications : les 30 dernières.
+- Photo, texte, avis ou devis confiés à un outil : rien n’est gardé après le travail. Seul le dernier résultat reste, remplacé par le suivant.` : ''}
 
-## 8. Destinataires
+## ${AVEC_OUTILS ? 9 : 8}. Destinataires
 
-Vos données sont destinées aux Minis Monstres uniquement. Elles transitent par l’hébergeur du site, ${L.host}, par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Ce que vous écrivez dans la bulle d’aide ou dans une demande de modification passe par Anthropic (Claude), société américaine : ce traitement peut avoir lieu hors de l’Union européenne, dans le cadre prévu par ses conditions de traitement des données. Elles ne sont jamais vendues ni cédées.
+Vos données sont destinées aux Minis Monstres uniquement. Elles transitent par l’hébergeur du site, ${L.host}, par la messagerie qui reçoit les demandes, par Stripe pour le paiement et par le bureau d’enregistrement pour le nom de domaine. Ce que vous écrivez dans la bulle d’aide ou dans une demande de modification${AVEC_OUTILS ? ', et ce que vous confiez à un outil,' : ''} passe par Anthropic (Claude), société américaine : ce traitement peut avoir lieu hors de l’Union européenne, dans le cadre prévu par ses conditions de traitement des données.${AVEC_OUTILS ? ' Quand vous publiez, votre publication et la clé du réseau sont envoyées au réseau que vous avez choisi parmi ceux que vous avez reliés : Meta (Facebook et Instagram), LinkedIn, Bluesky ou votre serveur Mastodon. Ces réseaux la traitent ensuite selon leurs propres règles, parfois hors de l’Union européenne.' : ''} Vos données ne sont jamais vendues ni cédées.
 
-## 9. Cookies et stockage local
+## ${AVEC_OUTILS ? 10 : 9}. Cookies et stockage local
 
 Ce site n’utilise aucun traceur publicitaire ni outil de mesure d’audience. Il ne pose aucun cookie, ce petit fichier qu’un site range dans votre navigateur, tant que vous n’êtes pas connecté à votre espace client.
 
 - Quand vous vous connectez à l’espace client, un cookie de connexion est posé. Il est nécessaire au service et sert uniquement à vous garder connecté.
 
-## 10. Vos droits
+## ${AVEC_OUTILS ? 11 : 10}. Vos droits
 
 Vous pouvez demander l’accès à vos données, leur correction, leur suppression ou une copie, et vous opposer à un traitement, en écrivant par ${contact}. Je réponds sous un mois. Vous pouvez aussi saisir la CNIL (www.cnil.fr).`,
   },
@@ -167,12 +206,12 @@ Vous pouvez demander l’accès à vos données, leur correction, leur suppressi
     path: '/conditions-generales/',
     name: 'Conditions générales',
     title: `Conditions générales de vente | Les Minis Monstres`,
-    description: `Conditions générales de vente des Minis Monstres : commande en ligne, un site à prix fixe, option e-commerce, abonnement facultatif, extras, rétractation.`,
+    description: `Conditions générales de vente des Minis Monstres : commande en ligne, site à prix fixe, option e-commerce, abonnement facultatif, extras, outils au mois.`,
     lead: 'Les règles du jeu, écrites simplement. Elles s’appliquent à toutes les prestations, avec le récapitulatif de commande.',
     updated: UPDATED_CGV,
     body: `## 1. Objet
 
-Ces conditions s’appliquent à toute commande passée auprès des Minis Monstres : création d’un site internet, abonnement au mois, extras et services liés. Elles complètent le récapitulatif de commande, qui précise le site choisi, la formule retenue pour la suite (le forfait ${AUTO} ou le forfait ${mini.name}) et les prix.
+Ces conditions s’appliquent à toute commande passée auprès des Minis Monstres : création d’un site internet, abonnement au mois, extras et services liés${AVEC_OUTILS ? ', ainsi que les outils au mois, ouverts à tous, avec ou sans site (article 20)' : ''}. Elles complètent le récapitulatif de commande, qui précise le site choisi, la formule retenue pour la suite (le forfait ${AUTO} ou le forfait ${mini.name}) et les prix.
 
 ## 2. Commande en ligne
 
@@ -243,7 +282,7 @@ Les extras commandés plus tard ne suivent pas cette règle : la ${minus(pageGoo
 
 ## 6. L’abonnement
 
-Le forfait ${mini.name} est facultatif. Le client peut le prendre au moment de la commande, avec son nom de domaine, ou plus tard. C’est le seul abonnement proposé. Il démarre à la mise en ligne du site : le client enregistre alors sa carte pour le forfait. Il est sans engagement (article 8).
+Le forfait ${mini.name} est facultatif. Le client peut le prendre au moment de la commande, avec son nom de domaine, ou plus tard. C’est le seul abonnement proposé pour le site${AVEC_OUTILS ? ' (les outils ont leur propre abonnement, article 20)' : ''}. Il démarre à la mise en ligne du site : le client enregistre alors sa carte pour le forfait. Il est sans engagement (article 8).
 
 **Le forfait ${mini.name}, ${eur(mini.month)} € par mois.** Il comprend :
 
@@ -291,7 +330,9 @@ Aucun de ces deux choix n’est coché d’avance. Le nom de domaine déjà rés
 Pour se rétracter, le client peut, s’il le souhaite, utiliser ce modèle, envoyé par ${contact} :
 
 > À l’attention des Minis Monstres (Alexandre Poquet EI, ${site.address.postalCode} ${site.address.city}) : je vous notifie par la présente ma rétractation du contrat portant sur la prestation ci-dessous. Commandée le : … Référence de commande : … Nom du client : … Adresse du client : … Date : …
-
+${AVEC_OUTILS ? `
+Pour un outil au mois, les règles de rétractation sont précisées à l’article 20.
+` : ''}
 ## 10. Nom de domaine
 
 Le nom de domaine est l’adresse du site sur internet. Le client en est le titulaire. Avec le forfait ${mini.name}, les Minis Monstres y figurent comme contact technique, pour pouvoir le gérer. Le nom est réservé après le premier paiement, s’il est encore disponible à ce moment-là.
@@ -330,7 +371,7 @@ Une demande sur devis suit le délai indiqué dans le devis.
 
 ## 13. Espace client et compte
 
-Pour commander, le client crée son espace client, avec son adresse e-mail et un mot de passe qu’il choisit (ou se connecte à celui qu’il a déjà). C’est sa page personnelle, protégée par un mot de passe. Il y suit sa commande et ses factures. Avec le forfait ${mini.name}, il y fait ses demandes de modification et y gère son abonnement. C’est aussi là qu’il commande une ${minus(pageGoogle.name)} (article 3), et, avec le ${BOU.name}, qu’il gère son catalogue dans l’onglet « Ma boutique ». La bulle d’aide de ${cerise} y répond à ses questions, dans la limite de ${limites.bulleJour} messages par jour. Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
+Pour commander, le client crée son espace client, avec son adresse e-mail et un mot de passe qu’il choisit (ou se connecte à celui qu’il a déjà). C’est sa page personnelle, protégée par un mot de passe. Il y suit sa commande et ses factures. Avec le forfait ${mini.name}, il y fait ses demandes de modification et y gère son abonnement. C’est aussi là qu’il commande une ${minus(pageGoogle.name)} (article 3), et, avec le ${BOU.name}, qu’il gère son catalogue dans l’onglet « Ma boutique ». La bulle d’aide de ${cerise} y répond à ses questions, dans la limite de ${limites.bulleJour} messages par jour.${AVEC_OUTILS ? ' Pour utiliser les outils au mois (article 20), un espace client suffit : il se crée gratuitement, sans commander de site.' : ''} Il garde ses identifiants pour lui et prévient les Minis Monstres en cas de doute sur leur usage.
 
 Un compte sans connexion depuis 12 mois et sans abonnement actif est supprimé automatiquement, avec ses demandes et ses photos. Le client est prévenu par e-mail 30 jours avant. Une connexion suffit pour annuler la suppression. Les factures sont conservées en dehors du compte, le temps prévu par la loi.
 
@@ -346,7 +387,7 @@ Alex a conçu la méthode de création et en reste responsable. Le travail est f
 
 ${laBande}
 
-Dans cet article, « les petits monstres » désigne l’ensemble de ces outils, bulle d’aide comprise.
+Dans cet article, « les petits monstres » désigne l’ensemble de ces outils, bulle d’aide comprise${AVEC_OUTILS ? ', ainsi que les outils au mois de l’article 20' : ''}.
 
 Les petits monstres sont des outils automatisés, dont certains reposent sur un système d’intelligence artificielle, qui peuvent se tromper. Chaque travail fait par un outil est relu par un autre outil avant d’être livré, selon les règles écrites par Alex, qui traite lui-même les cas délicats (réclamation, remboursement, demande hors forfait). Le site est livré en première version, que le client fait ensuite ajuster (articles 11 et 12). Les textes et les conseils que donnent les outils sont des propositions : le client les relit et reste responsable de ce qu’il publie. Ces outils ne donnent pas de conseil juridique, médical ou comptable.
 
@@ -362,12 +403,48 @@ Un deuxième site commandé par le même client bénéficie de ${fidelite.remise
 
 ## 18. Responsabilité
 
-Les Minis Monstres mettent tout en œuvre pour que le site reste disponible et sauvegardé tant qu’ils l’hébergent. Les Minis Monstres ne peuvent pas être tenus responsables d’une panne de l’hébergeur (l’entreprise qui garde le site en ligne), d’un registre de noms de domaine ou du service de paiement, ni des contenus fournis par le client. Avec le forfait ${AUTO}, le client est seul responsable de l’hébergement, des sauvegardes et des mises à jour de son site après la remise de l’export. Un éventuel dédommagement ne peut pas dépasser les sommes versées au titre de l’abonnement au cours des 12 derniers mois, ou le prix du site en l’absence d’abonnement, sauf si la loi en dispose autrement.
+Les Minis Monstres mettent tout en œuvre pour que le site reste disponible et sauvegardé tant qu’ils l’hébergent. Les Minis Monstres ne peuvent pas être tenus responsables d’une panne de l’hébergeur (l’entreprise qui garde le site en ligne), d’un registre de noms de domaine ou du service de paiement, ni des contenus fournis par le client${AVEC_OUTILS ? ', ni d’une panne ou d’un changement de règles d’un réseau social ou de Google' : ''}. Avec le forfait ${AUTO}, le client est seul responsable de l’hébergement, des sauvegardes et des mises à jour de son site après la remise de l’export. Un éventuel dédommagement ne peut pas dépasser les sommes versées au titre de l’abonnement${AVEC_OUTILS ? ' (forfait du site ou outils au mois)' : ''} au cours des 12 derniers mois, ou le prix du site en l’absence d’abonnement, sauf si la loi en dispose autrement.
 
 Garantie légale de conformité. Le client consommateur bénéficie de la garantie légale de conformité des contenus et services numériques (articles L224-25-12 et suivants du Code de la consommation). Si le site ne correspond pas à ce qui a été commandé, il obtient sa mise en conformité, sans frais ; à défaut, une réduction du prix ou la résolution du contrat. Cette garantie s’ajoute aux modifications prévues à l’article 12.
 
 ## 19. Médiation et litiges
 
-En cas de désaccord, le client écrit d’abord par ${contact} : la plupart des questions se règlent en quelques échanges. Si la réponse ne lui convient pas, le client consommateur peut saisir gratuitement un médiateur de la consommation : ${L.mediator}. Le droit français s’applique.`,
+En cas de désaccord, le client écrit d’abord par ${contact} : la plupart des questions se règlent en quelques échanges. Si la réponse ne lui convient pas, le client consommateur peut saisir gratuitement un médiateur de la consommation : ${L.mediator}. Le droit français s’applique.${AVEC_OUTILS ? `
+
+## 20. Les outils au mois
+
+**Objet.** Les Minis Monstres proposent aussi de petits outils en ligne, utilisés depuis l’espace client : préparer des publications pour les réseaux sociaux, demander des avis Google et y répondre, préparer des fiches produits, comparer des devis de fournisseurs. Ils sont ouverts à tous, professionnels et particuliers, avec ou sans site chez les Minis Monstres. Ce sont des petits monstres au sens de l’article 15.
+
+**Compte.** Un espace client est nécessaire (article 13). Il se crée gratuitement, sans commander de site.
+
+**Les outils et leur prix.** Chaque outil se prend seul, par abonnement au mois. L’usage est compris dans le prix, sans jeton ni supplément, dans une limite raisonnable par mois, affichée dans chaque outil :
+
+${listeOutils}
+
+**${OO.bande.nom}, ${eur(OO.bande.prix)} € par mois** : tous les outils en vente, avec les mêmes limites, et ceux qui seront mis en vente ensuite, dès leur sortie.${outilsBientot.length ? ` ${nomsBientot} ${outilsBientot.length > 1 ? 'sont annoncés' : 'est annoncé'}, mais pas encore en vente : rien n’est facturé pour ${outilsBientot.length > 1 ? 'eux' : 'lui'}, et aucune date de sortie n’est promise.` : ''}
+
+**Essai gratuit.** Chaque outil s’essaie gratuitement pendant ${OO.essaiJours} jours, sans carte bancaire. Il y a un essai par outil et par compte. À la fin de l’essai, l’outil s’arrête tout seul, sans rien coûter. Pour continuer, le client s’abonne lui-même depuis son espace client : aucun paiement ne démarre sans cette démarche.
+
+**Paiement et facture.** L’abonnement à un outil se paie d’avance, chaque mois, par Stripe (article 6). Si le client a déjà le forfait ${mini.name}, ses outils s’ajoutent à la même facture mensuelle. Sinon, ils ont leur propre facture chaque mois. Chaque facture est envoyée par e-mail et reste dans l’espace client. En cas d’échec de paiement, le client est prévenu par e-mail, et l’outil peut être mis en pause jusqu’au règlement.
+
+**Limite du mois.** Une fois la limite d’un outil atteinte, il reprend le mois suivant. Rien n’est facturé en plus. Le client qui a besoin de davantage écrit aux Minis Monstres.
+
+**Sans engagement.** Chaque outil s’arrête séparément, à tout moment, depuis l’espace client. L’arrêt prend effet à la fin de la période déjà payée : l’outil reste utilisable jusque-là. Les autres outils et le forfait du site continuent.${outilOffert ? ` ${outilOffert.nom}, compris avec le forfait ${mini.name}, s’arrête avec ce forfait, sauf si le client choisit de s’y abonner à part.` : ''}
+
+**Changement de prix.** Si le prix d’un outil change, le client abonné est prévenu par e-mail au moins 30 jours avant. Il peut arrêter l’outil avant que le nouveau prix s’applique.
+
+**Disponibilité et résultats.** Les Minis Monstres font de leur mieux pour que les outils restent disponibles, sans garantir qu’ils fonctionnent sans interruption : maintenance, panne d’un prestataire, panne ou changement de règles d’un réseau social ou de Google. Si un réseau ferme la publication directe, le client peut encore partager avec le bouton Partager de son téléphone. Les outils ne garantissent aucun résultat : ni nombre de vues, d’abonnés, d’avis ou de ventes, ni note sur Google.
+
+**Ce que le client publie.** Les textes, réponses et fiches préparés par un outil sont des propositions (article 15). Le client les relit et peut les modifier. C’est lui qui décide de les publier, avec le bouton « Tout publier » ou en les partageant lui-même : les Minis Monstres ne publient rien à sa place. Le client reste seul responsable de ce qu’il publie, des photos qu’il envoie et des prix qu’il affiche (article 14).
+
+**Comptes reliés.** Pour publier sans quitter son espace, le client relie ses comptes (Facebook, Instagram, LinkedIn, Bluesky, Mastodon) en donnant son autorisation sur le réseau. Il peut les délier à tout moment depuis l’outil, ou retirer son autorisation depuis le réseau. La politique de confidentialité explique ce que deviennent ces autorisations.
+
+**Règles des réseaux et de Google.** Le client respecte les conditions d’utilisation de chaque réseau social et de Google. Pour les avis, il ne donne rien en échange d’un avis (remise, cadeau, participation à un jeu), il ne demande pas d’avis seulement aux clients satisfaits, il n’écrit pas d’avis sur sa propre activité et ne publie pas de faux avis, que la loi interdit aussi.
+
+**Suspension en cas d’abus.** Les Minis Monstres peuvent suspendre un outil en cas d’usage contraire à ces conditions, à la loi ou aux règles d’un réseau : envois en masse non sollicités, contenu illicite, faux avis, usage par un robot ou pour contourner les limites. Le client est prévenu, avec le motif, avant la suspension, sauf urgence, et peut s’expliquer. Si l’abus est grave ou continue, l’abonnement à cet outil peut être résilié.
+
+**Droit de rétractation.** Le client consommateur dispose de 14 jours pour se rétracter à partir du jour où il s’abonne à un outil, avec un simple message ou le modèle de l’article 9. L’essai gratuit, lui, ne coûte rien et s’arrête quand le client veut. En s’abonnant, le client demande expressément que l’outil fonctionne tout de suite, avant la fin de ce délai. S’il se rétracte ensuite, il paie seulement la part du mois déjà écoulée, au prorata, et le reste lui est remboursé.
+
+**Données.** Les photos, textes, avis et devis confiés à un outil servent seulement à préparer le résultat demandé. La politique de confidentialité précise ce qui est gardé, combien de temps, et qui le reçoit.` : ''}`,
   },
 ];

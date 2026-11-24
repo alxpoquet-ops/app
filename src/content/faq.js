@@ -58,6 +58,16 @@ const mission = (b) => MISSION[b.id] || minus(b.court.replace(/\.$/, ''));
 const presente = (b) => `${b.nom} (${minus(b.role)}) ${mission(b)}`;
 const bandeComprise = liste(bande.map(presente));
 
+// Les outils au mois (config.outilsOffre, décision d'Alex du 24 novembre 2026) : rubrique « outils », pour la page /outils/
+// et la FAQ complète. Ouverts à tous, avec ou sans site. Jamais un mot sur l'IA : ce sont des petits monstres.
+// Les règles précises sont à l'article 20 des conditions générales (src/content/legal.js).
+const OO = cfg.outilsOffre || { outils: [], bande: {}, essaiJours: 14 };
+const outilsPrets = (OO.outils || []).filter((o) => o.statut === 'pret');
+const outilOffert = outilsPrets.find((o) => o.inclusSite);
+const prixOutils = liste(outilsPrets.map((o) => `${o.nom} ${eur(o.prix)} €`));
+const publier = outilsPrets.find((o) => o.id === 'publier');
+const exempleLimite = publier ? `${publier.limite} ${publier.unite} pour ${publier.nom}` : '';
+
 module.exports = {
   creation: [
     { q: 'Quel site proposez-vous, et à quel prix ?', a: `Un seul, le ${ESS.name}, à ${eur(ESS.price)} € la création. Nous l’assemblons à partir de nos modules (accueil, présentation, services et tarifs, galerie, questions fréquentes, contact), puis nous le remplissons avec vos informations et vos photos. Pour vendre en ligne, l’option ${minus(ECO.name)} ajoute ${eur(ECO.prix)} €, soit ${eur(BOU.price)} € en tout.` },
@@ -114,6 +124,15 @@ module.exports = {
     { q: 'Quelle différence avec une plateforme à faire soi-même ?', a: 'Qui fait le travail. Sur une plateforme, vous construisez le site et vous le tenez à jour, souvent le soir. Chez nous, vous décrivez ce que vous voulez et c’est fait pour vous.' },
     { q: 'Et par rapport à un indépendant ?', a: `Un indépendant crée votre site, puis chaque changement se négocie quand il est disponible. Avec le forfait ${mini.name}, votre site reste en ligne et à jour, vos modifications sont incluses, et vous connaissez le prix à l’avance.` },
     { q: 'Si je pars, puis-je récupérer mon site ?', a: 'Oui. Votre nom de domaine est à votre nom et se transfère où vous voulez. Vous recevez aussi l’export de votre site, pour le mettre en ligne chez un autre prestataire. Rien ne vous retient.' },
+  ],
+  outils: [
+    { q: 'Faut-il avoir un site chez vous pour prendre un outil ?', a: 'Non. Les outils sont ouverts à tous, pour votre activité comme pour vos projets personnels, que votre site soit chez nous, ailleurs, ou que vous n’en ayez pas. Il faut seulement un compte client, gratuit.' },
+    { q: 'Combien coûtent les outils ?', a: `Chacun a son prix au mois : ${prixOutils}. ${OO.bande.nom ? `${OO.bande.nom}, à ${eur(OO.bande.prix)} € par mois, les réunit tous, avec les suivants dès leur sortie. ` : ''}Avec le forfait ${mini.name}, ${outilOffert ? `${outilOffert.nom} est offert et ` : ''}les outils s’ajoutent à la même facture.` },
+    { q: 'L’essai est-il gratuit ? Faut-il une carte bancaire ?', a: `L’essai dure ${OO.essaiJours} jours, il est gratuit, et aucune carte n’est demandée. Vous avez un essai par outil. S’il ne vous convient pas, ne faites rien : l’outil s’arrête de lui-même, et rien n’est prélevé.` },
+    { q: 'Comment arrêter un outil ?', a: 'Depuis votre espace client, outil par outil, quand vous voulez : il n’y a pas d’engagement. L’outil marche jusqu’au bout du mois déjà payé, puis s’arrête, et vos autres outils continuent.' },
+    { q: 'Que se passe-t-il si je dépasse la limite ?', a: `Chaque outil affiche sa limite du mois${exempleLimite ? `, par exemple ${exempleLimite}` : ''}. Une fois atteinte, il se repose jusqu’au mois suivant, sans rien vous facturer en plus. Il vous en faut davantage ? Écrivez-nous.` },
+    { q: 'Est-ce que vous publiez sans moi ?', a: 'Jamais. Les petits monstres vous proposent un texte par réseau, vous le changez si vous voulez, puis c’est vous qui appuyez sur « Tout publier ». Vous restez maître de ce qui sort en votre nom.' },
+    { q: 'Mes comptes sont-ils en sécurité ?', a: 'Vous reliez un réseau une fois, avec une autorisation créée sur le réseau lui-même : nous ne voyons jamais votre mot de passe habituel. Cette clé reste dans votre compte, sans jamais s’afficher, et elle est effacée quand vous déliez le réseau. Vous préférez ne rien relier ? Le bouton Partager de votre téléphone suffit.' },
   ],
   fidelite: [
     { q: 'Y a-t-il une remise pour un deuxième site ?', a: `Oui. Votre deuxième site coûte ${fidelite.remiseSecondSite} % de moins : c’est notre façon de remercier les clients qui reviennent.` },
