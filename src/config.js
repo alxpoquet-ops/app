@@ -37,6 +37,7 @@ const site = {
   // Informations légales : ⚠️ À REMPLACER
   legal: {
     status: 'Entreprise individuelle', // ex. : Entreprise individuelle (micro-entreprise)
+    siren: '948 617 782', // l'entreprise individuelle existe (SIREN) ; le SIRET de l'activité de création de sites est en cours
     siret: 'en cours d’attribution', // ⚠️ À REMPLACER par le numéro dès réception
     tva: '', // ex. : 'TVA non applicable, art. 293 B du CGI' si vous êtes en franchise de TVA
     mediator: 'en cours de désignation, ses coordonnées seront indiquées ici', // ⚠️ À REMPLACER
