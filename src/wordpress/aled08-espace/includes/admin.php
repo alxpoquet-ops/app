@@ -525,8 +525,10 @@ function aled08e_admin_reglages() {
     echo '</table>';
 
     echo '<h2>Ouverture du site</h2><table class="form-table" role="presentation"><tr><th>Site ouvert au public</th><td>'
-        . '<input type="hidden" name="site_ouvert_present" value="1"><label><input type="checkbox" name="site_ouvert" value="1"' . checked(function_exists('aled08e_site_ouvert') && aled08e_site_ouvert(), true, false) . '> Les visiteurs voient le site et peuvent commander</label>'
-        . '<p class="description">Décoché : les visiteurs voient une page d’attente (SIRET et médiateur en cours) et personne ne peut commander. Vous, connecté, voyez le site normalement. L’espace client, les pages légales et la page contact restent ouverts.</p></td></tr></table>';
+        . '<input type="hidden" name="site_ouvert_present" value="1"><label><input type="checkbox" name="site_ouvert" value="1"' . checked(function_exists('aled08e_site_ouvert') && aled08e_site_ouvert(), true, false) . '> Les visiteurs voient le site</label>'
+        . '<p class="description">Décoché : les visiteurs voient une page d’attente (SIRET et médiateur en cours) et personne ne peut commander. Vous, connecté, voyez le site normalement. L’espace client, les pages légales et la page contact restent ouverts.</p></td></tr>'
+        . '<tr><th>Ventes ouvertes</th><td><input type="hidden" name="ventes_ouvertes_present" value="1"><label><input type="checkbox" name="ventes_ouvertes" value="1"' . checked(get_option('aled08_ventes_ouvertes', '0') === '1', true, false) . '> Les visiteurs et les clients peuvent acheter (site, extras, outils)</label>'
+        . '<p class="description">Décoché : le site se visite en entier, mais chaque bouton d’achat est grisé avec « Les commandes ouvrent très bientôt », et le serveur refuse tout nouveau paiement. Vous, connecté, pouvez acheter pour tester. À cocher une fois le SIRET et le médiateur dans les mentions légales.</p></td></tr></table>';
     echo '<h2>E-mails</h2><table class="form-table" role="presentation">';
     echo '<tr><th><label for="aled08e-codes">Codes promo</label></th><td><textarea id="aled08e-codes" name="codes_evenement" rows="3" class="large-text code">' . esc_textarea(implode("\n", aled08e_codes_evenement())) . '</textarea><p class="description">Un code par ligne, à donner à qui vous voulez (une opération, un partenaire) : chaque code donne ' . (int) ((aled08e_data()['evenement']['remise'] ?? 20)) . ' % de remise sur la création du site. Le client le tape dans la case « Code promo ou parrainage ». Laissez vide : aucun code promo. Les codes de parrainage des clients marchent tout seuls dans la même case.</p></td></tr>';
     echo '<tr><th><label for="aled08e-to">Adresse de réception</label></th><td><input type="email" id="aled08e-to" name="form_to" class="regular-text" value="' . esc_attr(get_option('aled08_form_to', '')) . '" placeholder="' . esc_attr(defined('ALED08_FORM_TO') ? ALED08_FORM_TO : get_option('admin_email')) . '"><p class="description">Reçoit les commandes, les demandes de modification, les messages du formulaire de contact et les alertes Stripe. Vide : l’adresse du thème, sinon celle de WordPress.</p></td></tr>';
@@ -601,6 +603,7 @@ add_action('admin_post_aled08e_reglages', function () {
         update_option('aled08_codes_evenement', implode("\n", $codes), false);
     }
     if (!empty($P['site_ouvert_present'])) update_option('aled08_site_ouvert', !empty($P['site_ouvert']) ? '1' : '0', true);
+    if (!empty($P['ventes_ouvertes_present'])) update_option('aled08_ventes_ouvertes', !empty($P['ventes_ouvertes']) ? '1' : '0', true);
     $to = sanitize_email((string) ($P['form_to'] ?? ''));
     if ($to === '' || is_email($to)) update_option('aled08_form_to', $to);
     if (!empty($P['effacer_ovh'])) { foreach (['ak', 'as', 'ck'] as $k) delete_option('aled08_ovh_' . $k); delete_transient('aled08_ovh_delta'); }

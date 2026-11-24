@@ -258,6 +258,45 @@ const energieMois = 250;
 // sont sans limite, la bulle garde limites.bulleJour messages par jour.
 // Pour tout remettre : outils et energie à true (les textes, l'onglet Outils et la page /outils/ reviennent).
 const enService = { outils: false, energie: false };
+// ---------------------------------------------------------------- la maison et ses ateliers (24 novembre 2026)
+// Décision d'Alex : Les Minis Monstres deviennent « la maison » (Alex à la tête, la bande au centre) ; en dessous, des ateliers,
+// chacun avec son monstre chef et son grand onglet sur le site. Un seul compte, un seul espace client, une seule facture.
+// cache : l'onglet n'apparaît pas encore (l'école attend ses premiers cours). monstre : image de src/assets/img/mail/<monstre>.png.
+const ateliers = [
+  { id: 'maison', label: 'La maison', path: '/', monstre: 'mascotte', color: 'lilac', court: 'Alex et la petite bande' },
+  { id: 'sites', label: 'Les sites', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: 'Votre site professionnel en quelques heures, puis on s’en occupe chaque mois.' },
+  { id: 'outils', label: 'Les outils', path: '/outils/', monstre: 'etoile', color: 'butter', chef: 'Pépite', court: 'Publier partout, répondre aux avis, préparer ses fiches produits : de petits monstres au travail tous les jours.' },
+  { id: 'ecole', label: 'L’école', path: '/ecole/', monstre: 'mochi', color: 'lilac', chef: 'Mochi', cache: true, court: 'De courtes vidéos pour gagner du temps.' },
+];
+// Les outils (atelier « Les outils ») : par abonnement, outil par outil OU « toute la bande » (décision d'Alex, 24 novembre 2026).
+// Vendus à tout le monde, avec ou sans site chez nous. Essai gratuit de essaiJours jours, sans engagement, chaque outil se résilie seul.
+// Aucun jeton, aucune « énergie » : l'usage est compris, avec une limite raisonnable par mois (limite + unite), affichée.
+// statut : 'pret' (vendu) ou 'bientot' (affiché, pas encore vendu). inclusSite : offert avec le forfait d'un site (Mini).
+// briques : les petits outils déjà écrits (src/content/outils-lia.js, ids) qui deviennent des boutons de cet outil.
+// Sur le site public, on ne parle jamais d'IA : ce sont des petits monstres qui travaillent pour le client.
+const outilsOffre = {
+  actif: true,
+  essaiJours: 14,
+  bande: { id: 'bande', nom: 'Toute la bande', prix: 19, court: 'Tous les outils prêts, et les prochains dès leur sortie.' },
+  outils: [
+    { id: 'publier', nom: 'Publier partout', monstre: 'etoile', chef: 'Pépite', color: 'butter', prix: 9, statut: 'pret', limite: 60, unite: 'publications', tag: 'Le plus demandé',
+      court: 'Une photo, trois mots : un texte pour chaque réseau, publié sur Instagram, Facebook, votre fiche Google et votre site.',
+      briques: ['publier', 'idees'] },
+    { id: 'avis', nom: 'Mes avis Google', monstre: 'mascotte', chef: 'Cerise', color: 'pink', prix: 5, statut: 'pret', limite: 100, unite: 'réponses', inclusSite: true, tag: 'Offert avec un site',
+      court: 'Un QR code et un lien pour demander des avis, une réponse prête pour chaque avis.',
+      briques: ['avis', 'lienavis', 'qr', 'repondre'] },
+    { id: 'fiche', nom: 'Fiche produit', monstre: 'gelee', chef: 'Mirette', color: 'sky', prix: 5, statut: 'pret', limite: 60, unite: 'fiches',
+      court: 'Une photo : recadrée et allégée, avec un titre, une description et un prix conseillé, prête pour la boutique.',
+      briques: ['produit', 'formats', 'conseilphoto', 'phototexte'] },
+    { id: 'comparer', nom: 'Comparer mes devis', monstre: 'champi', chef: 'Plume', color: 'lilac', prix: 3, statut: 'pret', limite: 20, unite: 'comparaisons',
+      court: 'Vos devis de fournisseurs côte à côte, et le message pour négocier le prix.',
+      briques: [] },
+    { id: 'stock', nom: 'Mon stock', monstre: 'dino', chef: 'Mochi', color: 'mint', prix: 9, statut: 'bientot',
+      court: 'Le stock dans le téléphone : + et −, une alerte avant la rupture, la boutique mise à jour seule.' },
+    { id: 'devis', nom: 'Devis éclair', monstre: 'bricou', chef: 'Bricou', color: 'peach', prix: 12, statut: 'bientot', tag: 'Artisans',
+      court: 'Une note vocale sur le chantier : un devis propre à votre nom, envoyé et relancé pour vous.' },
+  ],
+};
 const limites = { bulleJour: 40 }; // messages par jour dans la bulle de Cerise (les modifications sont sans limite)
 const enPause = !enService.energie;
 // Un seul abonnement : Mini, 10 € par mois, sans engagement (18 novembre 2026). Maxi est retiré : tout ce qu'il apportait se prend
@@ -490,4 +529,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: 'Le site d’un électricien dans les Ardennes. Il sera en ligne très bientôt.' },
 ];
 
-module.exports = { INCLUS_INFO, typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };
+module.exports = { ateliers, outilsOffre, INCLUS_INFO, typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };

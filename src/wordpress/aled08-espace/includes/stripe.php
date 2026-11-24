@@ -80,6 +80,11 @@ function aled08e_stripe_request($method, $path, $params = [], $idem = '', $quiet
     $key = aled08e_stripe_secret();
     if ($key === '') return new WP_Error('aled08_stripe', 'Stripe n’est pas configuré (aucune clé).');
     $method = strtoupper($method);
+    // Ventes fermées (ouverture.php) : aucun nouveau paiement ni nouvel abonnement. Résilier, rembourser, lire : toujours possible.
+    if ($method === 'POST' && in_array($path, ['/v1/checkout/sessions', '/v1/subscriptions', '/v1/subscription_items'], true)
+        && function_exists('aled08e_ventes_ouvertes') && !aled08e_ventes_ouvertes()) {
+        return new WP_Error('aled08_ventes', aled08e_ventes_message());
+    }
     $url = 'https://api.stripe.com' . $path;
     $headers = ['Authorization' => 'Bearer ' . $key, 'Stripe-Version' => ALED08E_STRIPE_API];
     $args = ['method' => $method, 'timeout' => 30, 'headers' => $headers];

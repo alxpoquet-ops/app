@@ -16,6 +16,32 @@ defined('ABSPATH') || exit;
 
 function aled08e_site_ouvert() { return get_option('aled08_site_ouvert', '0') === '1'; }
 
+/* Les ventes (décision d'Alex, 24 novembre 2026) : le site s'ouvre en entier, mais rien ne s'achète tant que la case
+ * « Ventes ouvertes » (Réglages) n'est pas cochée (SIRET et médiateur en cours). Tous les boutons d'achat sont grisés
+ * (formulaire de commande, extras, outils : tout bouton marqué data-achat) et le serveur refuse de créer un paiement Stripe
+ * (aled08e_stripe_request) ou une commande. Un administrateur connecté peut acheter quand même, pour tester. */
+function aled08e_ventes_ouvertes() { return get_option('aled08_ventes_ouvertes', '0') === '1' || current_user_can('manage_options'); }
+function aled08e_ventes_message() { return 'Les commandes ouvrent très bientôt : quelques démarches administratives à finir. Revenez nous voir !'; }
+
+/* Un formulaire de commande envoyé quand même (page gardée en cache, script désactivé) : refusé avant tout traitement */
+add_action('template_redirect', function () {
+    if (aled08e_ventes_ouvertes() || ($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08_order'])) return;
+    wp_safe_redirect(add_query_arg('ventes', 'bientot', home_url('/creer-mon-site/')), 303);
+    exit;
+}, 0);
+
+/* Les boutons d'achat grisés, pour un visiteur ou un client tant que les ventes sont fermées */
+add_filter('body_class', function ($c) { if (!aled08e_ventes_ouvertes()) $c[] = 'lmm-ventes-fermees'; return $c; });
+add_action('wp_footer', function () {
+    if (aled08e_ventes_ouvertes()) return;
+    $msg = esc_js('Les commandes ouvrent très bientôt');
+    echo '<style>.lmm-ventes-fermees [data-achat],.lmm-ventes-fermees .lmm-achat-off{opacity:.55!important;filter:grayscale(1)!important;cursor:not-allowed!important;pointer-events:none!important}'
+        . '.lmm-bientot{display:block;margin:.6em 0 0;padding:.55em .9em;border-radius:14px;background:#FFF1C2;color:#7A5600;font-weight:800;font-size:.92rem;text-align:center}</style>'
+        . '<script>(function(){var m="' . $msg . '";function off(b){if(b.dataset.lmmOff)return;b.dataset.lmmOff=1;b.classList.add("lmm-achat-off");b.setAttribute("aria-disabled","true");if(b.tagName==="BUTTON"||b.tagName==="INPUT")b.disabled=true;if(b.tagName==="A"){b.removeAttribute("href");b.setAttribute("role","link");}var n=document.createElement("span");n.className="lmm-bientot";n.textContent=m;b.insertAdjacentElement("afterend",n);}'
+        . 'function tout(){document.querySelectorAll("[data-achat],form input[name=aled08_order]").forEach(function(e){if(e.tagName==="INPUT"){var f=e.form;if(f){f.addEventListener("submit",function(ev){ev.preventDefault();},true);f.querySelectorAll("button[type=submit],input[type=submit]").forEach(off);}}else off(e);});}'
+        . 'tout();new MutationObserver(tout).observe(document.body,{childList:true,subtree:true});})();</script>';
+}, 99);
+
 /* Ce qu'on montre à cette requête : '' (le site normal), 'attente', 'connexion' ou 'page' (une page légale) */
 function aled08e_attente_mode() {
     if (aled08e_site_ouvert() || current_user_can('manage_options')) return '';
@@ -47,6 +73,11 @@ add_action('template_redirect', function () {
 
 /* Un petit rappel pour l'administrateur, qui voit le site normalement */
 add_action('wp_body_open', function () {
+    if (current_user_can('manage_options') && aled08e_site_ouvert() && get_option('aled08_ventes_ouvertes', '0') !== '1') {
+        echo '<div style="position:sticky;top:0;z-index:9999;background:#FFF1C2;color:#7A5600;font:700 14px/1.4 system-ui,sans-serif;text-align:center;padding:8px 12px;">'
+            . 'Ventes fermées : les visiteurs voient les boutons d’achat grisés. Vous, connecté, pouvez acheter pour tester. Pour ouvrir : Réglages › « Ventes ouvertes ».</div>';
+        return;
+    }
     if (aled08e_site_ouvert() || !current_user_can('manage_options')) return;
     echo '<div style="position:sticky;top:0;z-index:9999;background:#FFF1C2;color:#7A5600;font:700 14px/1.4 system-ui,sans-serif;text-align:center;padding:8px 12px;">'
         . 'Site fermé au public : les visiteurs voient la page d’attente. Pour ouvrir : Les Minis Monstres › Réglages › « Site ouvert au public ».</div>';
