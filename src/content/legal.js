@@ -498,10 +498,12 @@ Le jeu est ouvert pendant la période annoncée par Les Minis Monstres sur leur 
 
 Le gagnant reçoit :
 
-- **un ${ESS.name}, offert** (valeur : ${eur(ESS.prixNormal || ESS.price)} €), créé avec ses informations et ses photos, comme pour un client qui l’achète ;
-- **un an de forfait ${mini.name}, offert** (valeur : ${eur(mini.month * 12)} €) : l’hébergement, les sauvegardes, la sécurité, les mises à jour et les modifications comprises dans le forfait. S’il n’a pas de nom de domaine, on le lui fournit aussi pendant cette année.
+- **l’usage d’un ${ESS.name}** (valeur : ${eur(ESS.prixNormal || ESS.price)} €), créé avec ses informations et ses photos, comme pour un client qui l’achète ;
+- **un an de forfait ${mini.name}, offert** (valeur : ${eur(mini.month * 12)} €) : l’hébergement, le nom de domaine, les sauvegardes, la sécurité, les mises à jour et les modifications comprises dans le forfait.
 
-**Le site est à lui : il le garde.** Au bout de l’année offerte, il choisit librement : continuer avec le forfait ${mini.name} à ${eur(mini.month)} € par mois, sans engagement, passer au forfait ${creationSeule ? creationSeule.name : 'Autonome'} à 0 € par mois, ou récupérer l’export de son site.
+**Le site internet et le nom de domaine restent la propriété des Minis Monstres.** Le nom de domaine est enregistré au nom des Minis Monstres. Le site est fait pour le gagnant et présente son activité, mais le lot lui en donne seulement l’usage. Il ne peut ni le vendre, ni le céder, ni le transférer chez un autre hébergeur, ni en demander l’export ou une copie. Ses propres textes, photos et logo restent à lui.
+
+Au bout de l’année offerte, il peut continuer à utiliser son site avec le forfait ${mini.name} à ${eur(avecDom)} € par mois, nom de domaine compris, sans engagement. S’il ne continue pas, le site et le nom de domaine sont mis hors ligne. Les Minis Monstres en disposent ensuite librement.
 
 L’option ${ECO.name} n’est pas comprise : le gagnant peut l’ajouter au prix affiché sur le site. Le lot ne peut être ni échangé contre de l’argent, ni cédé à une autre personne.
 

@@ -101,7 +101,7 @@ add_action('wp_footer', function () {
     $mini = 0; foreach ((array) ($D['forfaits'] ?? []) as $f) { $mini = (float) ($f['month'] ?? 0); break; }
     $cfg = ['ajax' => admin_url('admin-ajax.php'), 'espace' => function_exists('aled08e_url') ? aled08e_url() : home_url('/mon-espace/'),
         'reglement' => home_url('/jeu-concours/'), 'ruban' => aled08e_monster('ruban'), 'icones' => ['x' => aled08e_icon('x'), 'check' => aled08e_icon('check'), 'gift' => aled08e_icon('gift')],
-        'lot' => 'un site internet offert (le Site Essentiel, d’une valeur de ' . aled08e_euro_txt($valeur) . ') et un an de forfait Mini (' . aled08e_euro_txt($mini * 12) . ')'];
+        'lot' => 'un site internet pour votre activité (le Site Essentiel, d’une valeur de ' . aled08e_euro_txt($valeur) . ') et un an de forfait Mini (' . aled08e_euro_txt($mini * 12) . ')'];
     ?>
 <script id="lmm-rubans">
 (function (C) {
@@ -139,7 +139,7 @@ add_action('wp_footer', function () {
     var d = document.querySelector('[data-cc-dialog]'); if (d) d.remove();
     d = el('<dialog class="cc-dialog" data-cc-dialog aria-labelledby="cc-titre"><form method="dialog" class="cc-fermer-f"><button class="cc-fermer" aria-label="Fermer">' + C.icones.x + '</button></form>'
       + '<div class="cc-art" aria-hidden="true">' + C.ruban + '</div><h2 id="cc-titre">Bravo, vous avez trouvé les ' + etat.total + ' Rubans !</h2>'
-      + '<p>Ils gardent un cadeau : <strong>' + C.lot + '</strong>. Le site est à vous : vous le gardez, même après l’année offerte.</p>'
+      + '<p>Ils gardent un cadeau : <strong>' + C.lot + '</strong>. Vous en profitez gratuitement pendant un an, puis vous pouvez le garder en ligne avec le forfait Mini. Le site et le nom de domaine restent la propriété des Minis Monstres (voir le règlement).</p>'
       + '<div class="cc-deja" hidden><p class="cc-ok">' + C.icones.check + '<span>C’est noté : vous participez au tirage au sort. Bonne chance !</span></p></div>'
       + '<form class="cc-form"><label class="cc-label" for="cc-mail">Votre adresse e-mail</label><input class="cc-input" id="cc-mail" type="email" name="email" required autocomplete="email">'
       + '<label class="cc-label" for="cc-tel">Votre numéro de portable, pour vous appeler si vous gagnez</label><input class="cc-input" id="cc-tel" type="tel" name="tel" required autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78">'

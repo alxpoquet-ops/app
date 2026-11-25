@@ -475,6 +475,6 @@ Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit
 - Suivre : `GET` donne les joueurs, les Rubans trouvés, les inscrits et les doublons possibles.
 - Fermer et tirer au sort : `{"faire": "fermer"}`. Si le gagnant ne répond pas dans les 15 jours : `{"faire": "retirer"}`.
 
-**Le lot** : un Site Essentiel (valeur 749 €) et un an de forfait Mini offerts, avec le nom de domaine fourni cette année-là si besoin. Le site reste au gagnant. L'option e-commerce n'est pas comprise.
+**Le lot** : l'usage d'un Site Essentiel (valeur 749 €) et un an de forfait Mini offerts, nom de domaine compris. **Le site et le nom de domaine restent la propriété des Minis Monstres** (décision d'Alex, 25 novembre 2026) : le domaine est enregistré à notre nom ; pas d'export, de cession ni de transfert pour le gagnant (ses textes, photos et logo restent à lui). Après l'année, il continue avec le forfait Mini (12 € par mois, domaine compris) ; sinon, le site et le domaine sont mis hors ligne. L'option e-commerce n'est pas comprise.
 
 Aucun e-mail ne part automatiquement au gagnant : Alex le prévient. Les données (e-mails, numéros, Rubans trouvés) sont effacées 3 mois après le dernier tirage.
