@@ -537,12 +537,16 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     $phraseH = $e($m['phrase'] ?? '');
     if ($nom !== '' && $phraseH !== '') { $q = preg_quote(esc_html($nom), '/'); $phraseH = preg_replace('/' . $q . '/u', '<b>' . esc_html($nom) . '</b>', $phraseH, 1); }
 
+    // Des boutons lisibles en mode sombre (Gmail éclaircit les textes foncés posés sur un fond clair) : le bouton principal
+    // est violet foncé à texte blanc, le second blanc à texte violet. Un bouton par ligne, en pleine largeur : sur un
+    // téléphone, le texte ne se coupe plus sur trois lignes.
     $bouton = function ($url, $txt, $plein) {
-        $st = $plein ? 'background:#7ad9b0;color:#12392a;border:2px solid #7ad9b0;' : 'background:#ffffff;color:#3d3570;border:2px solid #cfc6f2;';
-        return '<td style="padding:0 10px 10px 0;"><a href="' . esc_url($url) . '" style="display:inline-block;padding:11px 18px;border-radius:999px;' . $st . 'font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;line-height:1.2;text-decoration:none;">' . esc_html($txt) . '</a></td>';
+        $st = $plein ? 'background:#5b3fc4;background-color:#5b3fc4;color:#ffffff;border:2px solid #5b3fc4;' : 'background:#ffffff;background-color:#ffffff;color:#5b3fc4;border:2px solid #5b3fc4;';
+        return '<tr><td style="padding:0 0 10px 0;"><a href="' . esc_url($url) . '" style="display:block;padding:13px 18px;border-radius:999px;text-align:center;' . $st . 'font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;line-height:1.25;text-decoration:none;">'
+            . '<span style="color:' . ($plein ? '#ffffff' : '#5b3fc4') . ';">' . esc_html($txt) . '</span></a></td></tr>';
     };
     $avecApercu = !$relance && !empty($l['apercu']);
-    $boutons = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;"><tr>' . $bouton($l['realisations'] ?? $l['site'], 'Voir les sites déjà en ligne', !$avecApercu) . $bouton($l['creer'] ?? $l['site'], 'Créer mon site', false) . '</tr></table>';
+    $boutons = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;width:100%;max-width:420px;">' . $bouton($l['realisations'] ?? $l['site'], 'Voir les sites déjà en ligne', !$avecApercu) . $bouton($l['creer'] ?? $l['site'], 'Créer mon site', false) . '</table>';
     // les trois arguments : moins cher, un suivi, tout vous appartient
     $atouts = aled08e_px_atouts();
     $atoutsH = ''; $atoutsT = '';
@@ -579,7 +583,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     }
     $domT = $dom !== '' ? 'Bonne nouvelle : nous avons vérifié, l’adresse ' . $dom . ' est libre aujourd’hui. Nous pouvons créer votre site à cette adresse, enregistrée à votre nom, en ligne en 24 à 48 heures.' : '';
     $rappel = 'Pour rappel : ' . mb_strtolower(mb_substr($atouts[0][0], 0, 1)) . rtrim(mb_substr($atouts[0][0], 1), '.') . ', un vrai suivi, et un site qui vous appartient.';
-    $boutonApercu = $avecApercu ? '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;"><tr>' . $bouton($l['apercu'], 'Voir l’aperçu de votre site', true) . '</tr></table>' : '';
+    $boutonApercu = $avecApercu ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;width:100%;max-width:420px;">' . $bouton($l['apercu'], 'Voir l’aperçu de votre site', true) . '</table>' : '';
     $avecCode = (int) $r > 0 && (string) $code !== '';
     $lanc = aled08e_px_lancement();
     $aClique = $relance && (int) aled08e_px_meta((int) ($p['prospect'] ?? 0), 'nb_clics', 0) > 0;
