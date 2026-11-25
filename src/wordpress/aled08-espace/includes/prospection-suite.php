@@ -26,6 +26,13 @@ function aled08e_px_apercu_lien($id) {
     if (!$id) return add_query_arg('lmm_apercu', 'exemple', home_url('/'));
     return add_query_arg('lmm_apercu', (int) $id . '-' . aled08e_px_signe($id, 'apercu'), home_url('/'));
 }
+/* L'aperçu d'un essai : l'entreprise d'exemple est gardée 7 jours derrière un jeton tiré au hasard (pas de nom dans l'adresse :
+ * personne ne peut fabriquer une page à nos couleurs avec le nom qu'il veut) */
+function aled08e_px_apercu_essai($p, $m) {
+    $jeton = strtolower(wp_generate_password(20, false, false));
+    set_transient('aled08e_px_apx_' . $jeton, ['entreprise' => (string) ($p['entreprise'] ?? ''), 'metier' => (string) ($p['metier'] ?? ''), 'ville' => (string) ($p['ville'] ?? ''), 'points' => (array) ($m['points'] ?? [])], 7 * DAY_IN_SECONDS);
+    return add_query_arg('lmm_apercu', 'essai-' . $jeton, home_url('/'));
+}
 /* Cinq habillages : deux entreprises ne reçoivent pas forcément le même aperçu (règle « jamais deux sites pareils ») */
 function aled08e_px_apercu_habillage($nom) {
     $h = [
@@ -102,6 +109,9 @@ add_action('init', function () {
     if ($v === 'exemple') {
         $ex = aled08e_px_exemple();
         $p = ['entreprise' => $ex['entreprise'], 'metier' => 'Boulangerie', 'ville' => 'Charleville-Mézières', 'points' => $ex['morceaux']['points']];
+    } elseif (preg_match('/^essai-([a-z0-9]{20})$/', $v, $mm)) {
+        $t = get_transient('aled08e_px_apx_' . $mm[1]);
+        if (is_array($t) && !empty($t['entreprise'])) $p = $t;
     } else {
         $j = aled08e_px_lire_jeton($v, false);
         if ($j && hash_equals(aled08e_px_signe($j['id'], 'apercu'), $j['sig']) && ($x = aled08e_px_get($j['id'])) && !in_array($x['etat'], ['desinscrit', 'ecarte'], true)) {

@@ -469,6 +469,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     $hote = preg_replace('/^www\./', '', (string) wp_parse_url($site, PHP_URL_HOST));
     $logo = get_template_directory_uri() . '/assets/img/logo-192.png';
     $l = aled08e_px_liens((int) ($p['prospect'] ?? 0));
+    if (!empty($p['apercu_lien'])) $l['apercu'] = (string) $p['apercu_lien']; // l'aperçu d'un essai (entreprise d'exemple)
     $prix = aled08e_px_prix();
     $r = aled08e_px_remise();
     $jours = aled08e_px_offre()['jours'];
@@ -630,8 +631,16 @@ function aled08e_px_faire(WP_REST_Request $req) {
             $fin = $p['code'] ? aled08e_px_code_fin($id) : time() + aled08e_px_offre()['jours'] * DAY_IN_SECONDS;
         } else {
             $p = aled08e_px_exemple();
+            // une entreprise d'exemple au choix (un coiffeur, un garage…), pour montrer le mail à Alex : jamais un vrai prospect
+            $ex = (array) ($d['exemple'] ?? []);
+            if (!empty($ex['entreprise'])) {
+                $art = str_replace("'", '’', (string) ($ex['article'] ?? ''));
+                $p = ['entreprise' => aled08e_px_texte($ex['entreprise'], 120), 'article' => in_array($art, ['le', 'la', 'l’', 'les'], true) ? $art : '',
+                    'metier' => aled08e_px_texte($ex['metier'] ?? '', 80), 'ville' => aled08e_px_texte($ex['ville'] ?? '', 80)] + $p;
+            }
             $m = (!empty($d['sujet']) || !empty($d['phrase'])) ? aled08e_px_morceaux($d, $pour) : ($pour === 'relancer' ? ['sujet' => '', 'phrase' => '', 'points' => []] : $p['morceaux']);
             if (is_wp_error($m)) return $m;
+            if (!empty($ex['entreprise']) && function_exists('aled08e_px_apercu_essai')) $p['apercu_lien'] = aled08e_px_apercu_essai($p, $m);
             $code = 'MAIL' . aled08e_px_remise() . '-7KQ2';
             $fin = time() + aled08e_px_offre()['jours'] * DAY_IN_SECONDS;
         }
