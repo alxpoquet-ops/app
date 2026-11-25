@@ -247,34 +247,22 @@ ${liaFlot()}`;
 }
 
 // ---------------------------------------------------------------- la bulle de Cerise
-// En bas de chaque page. Sur le site : Cerise répond tout de suite à quelques questions (réponses écrites ici, sans appel au modèle).
+// En bas de chaque page. Sur le site : on écrit sa question dans la barre et Cerise répond (includes/bulle-site.php).
+// Plus de questions toutes faites sur le site : elles prenaient la place de la conversation (Alex, 25 novembre 2026).
 // Dans l'espace client : on lui écrit, elle répond, aide à formuler la demande, la fait confirmer puis la transmet à Alex
 // (voir main.js et includes/bulle.php). Aucun petit monstre ne modifie le site : c'est Alex qui fait les modifications.
 function liaFlot() {
-  const eur = C.euro;
-  const questions = [
-    ['À quoi sert un site ?', 'À être visible, tout simplement ! Sans site internet, ton activité est comme une jolie vitrine dans une rue où personne ne passe. Avec un site, tes futurs clients te trouvent, sur Google comme sur leur téléphone. Te rendre visible, c’est notre métier à nous, la petite bande !', sections.seo.path, 'Être trouvé sur Google'],
-    ['C’est combien ?', `La création de ton site, c’est ${eur(C.ESSENTIEL.price)} pour le ${C.ESSENTIEL.name}, et ${eur(C.ECOMMERCE.prix)} de plus avec l’option ${C.ECOMMERCE.name} pour vendre en ligne. Tu peux payer en ${fractionne.fois} fois avec ${fractionne.organismes}. Ensuite, c’est toi qui choisis : le forfait ${AUTO.name}, ${eur(AUTO.month)} par mois, tu gères tout toi-même. Ou le forfait ${ABO.name}, ${eur(ABO.month)} par mois sans engagement, et on s’occupe de tout (${eur(ABO.month + (ABO.domaine || 0))} si on te fournit le nom de domaine).`, sections.forfaits.path, 'Voir les tarifs'],
-    ['Quel site choisir ?', `Facile, il n’y en a qu’un : le ${C.ESSENTIEL.name} ! On le crée avec tes infos, tes photos et tes couleurs. Tu vends en ligne ? Coche l’option ${C.ECOMMERCE.name}. Et pour grandir sur Google, des pages à ${eur(C.prixPageSeo)}, quand tu veux.`, sections.creer.path, 'Créer mon site'],
-    ['Qui fait mon site ?', 'C’est Alex ! Il conçoit ton site, et chaque page est vérifiée avant la mise en ligne. Et nous, sa petite bande, on l’aide chacun à notre façon. Moi, je suis Cerise : je réponds à tes questions avec le sourire.', sections.equipe.path, 'Rencontrer la bande'],
-    ['Et pour changer mon site après ?', `Avec le forfait ${ABO.name}, tes modifications sont incluses, youpi ! Tu écris ta demande dans ton espace client, ${C.BRICOU} la clarifie avec toi, et Alex fait la modification.`, sections.accompagnement.path, 'L’accompagnement'],
-  ];
   const exemples = ['Comment demander une modification ?', 'Où sont mes factures ?', enService.outils ? 'Comment avoir plus d’avis Google ?' : 'Comment marche ma boutique ?', `Que comprend le forfait ${ABO.name} ?`];
   return `<div class="lia-flot" data-lia-flot hidden>
   <div class="lia-flot-panel" id="lia-panel" role="dialog" aria-label="Cerise, l’assistante automatique de la bande" hidden>
     <div class="lia-tete">${monster('coucou')}<p><strong>Cerise</strong><small>L’assistante automatique de la bande. Pour parler à Alex : <a href="${C.contactUrl}">page Contact</a>.</small></p><span class="lia-jetons" data-lia-jetons hidden></span><button type="button" class="lia-flot-fermer" aria-label="Fermer la bulle de Cerise">${icon('x')}</button></div>
     <div class="lia-fil" data-lia-fil aria-live="polite">
-      <p class="lia-msg is-lia" data-lia-accueil="site">Coucou, moi c’est Cerise, de la bande des Minis Monstres ! Ici, on est une petite famille, et on crée des sites internet pour te rendre visible. Choisis une question, ou écris-moi la tienne !</p>
+      <p class="lia-msg is-lia" data-lia-accueil="site">Coucou, moi c’est Cerise, de la bande des Minis Monstres ! Ici, on est une petite famille, et on crée des sites internet pour te rendre visible. Écris-moi ta question, je te réponds tout de suite !</p>
       <p class="lia-msg is-lia" data-lia-accueil="ok" hidden>Coucou ! Une question sur ton site ou ton espace ? Je suis là. Et pour une modification, c’est Bricou qui t’attend dans l’onglet Demandes !</p>
       <p class="lia-msg is-lia" data-lia-accueil="demo" hidden>Coucou ! Ici, c’est une démonstration : écris-moi comme un client, je te montre comment je réponds.</p>
       <p class="lia-msg is-lia" data-lia-accueil="attente" hidden>Coucou ! Je ne suis pas encore branchée dans cet espace. En attendant, écris ta demande dans l’onglet Demandes.</p>
       <p class="lia-msg is-lia" data-lia-accueil="abonnement" hidden>Coucou ! Je te réponds ici avec le forfait ${ABO.name}, dès qu’il a démarré. En attendant, écris ta demande dans l’onglet Demandes.</p>
     </div>
-    <div class="lia-puces" data-lia-liens="site">
-      ${questions.map(([q], i) => `<button type="button" data-lia-q="${i}">${q}</button>`).join('')}
-      <a href="${C.contactUrl}">Nous écrire</a>
-    </div>
-    <div hidden>${questions.map(([, r, href, label], i) => `<p data-lia-r="${i}">${r} <a href="${href}">${label}</a></p>`).join('')}</div>
     <div class="lia-puces" data-lia-liens="espace" hidden>
       ${exemples.map((e) => `<button type="button" data-lia-ex>${e}</button>`).join('')}
     </div>

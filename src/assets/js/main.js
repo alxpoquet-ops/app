@@ -1475,14 +1475,6 @@
       });
     } else if (mode === 'site') {
       var histoSite = []; // les derniers échanges, renvoyés à chaque question (le serveur n'en garde rien)
-      $$('[data-lia-q]', flot).forEach(function (b) {
-        b.addEventListener('click', function () {
-          var r = $('[data-lia-r="' + b.getAttribute('data-lia-q') + '"]', flot);
-          ecrire(b.textContent.trim(), 'moi');
-          if (r) ecrire('', 'lia', r.innerHTML);
-          histoSite.push(['moi', b.textContent.trim()], ['lia', r ? r.textContent.replace(/\s+/g, ' ').trim() : '']);
-        });
-      });
       // la barre de discussion : une question libre, Cerise répond avec ce qu'elle sait du site
       var noteSite = $('[data-lia-note-site]', flot), ajaxSite = liaForm && liaForm.getAttribute('data-site-ajax');
       if (liaForm && ajaxSite) {
@@ -1495,7 +1487,6 @@
           occupeSite = true;
           var envoi = $('button', liaForm); envoi.disabled = true;
           ecrire(q, 'moi'); champ.value = '';
-          $$('[data-lia-liens="site"]', flot).forEach(function (g) { g.hidden = true; }); // les questions toutes faites laissent la place à la conversation
           var attenteSite = ecrire('', 'lia is-attente', '<i></i><i></i><i></i>');
           var finiSite = function (txt, lien) {
             attenteSite.remove(); occupeSite = false; envoi.disabled = false;
