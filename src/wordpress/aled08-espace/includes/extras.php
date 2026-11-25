@@ -38,7 +38,7 @@ function aled08e_ex_carte_ecommerce($uid) {
     $badge = $actif ? '<em class="ex-badge ex-badge-actif">' . aled08e_icon('check') . 'Active</em>' : aled08e_ex_une_badge('ecommerce');
     return '<article class="ex-carte c-' . aled08e_ex_couleur('boutique') . ($actif ? ' is-actif' : '') . '" id="ex-ecommerce">'
         . '<header class="ex-tete"><span class="ex-ico">' . aled08e_icon('shopping-bag') . '</span><div class="ex-nom"><strong>Option e-commerce</strong>' . $badge . '</div>'
-        . ($actif ? '' : '<span class="ex-prix"><b>+ ' . esc_html(aled08e_euro_txt($prix)) . '</b><small>payé une fois</small></span>') . '</header>'
+        . ($actif ? '' : '<span class="ex-prix"><b>+ ' . esc_html(aled08e_euro_txt($prix)) . '</b><small>sans abonnement</small></span>') . '</header>'
         . '<p class="ex-court">' . ($actif ? 'Votre boutique en ligne est ouverte : vos articles, vos prix, vos paiements et vos commandes se gèrent dans « Ma boutique ».' : 'Une boutique en ligne sur votre site : vos articles, vos prix, vos paiements et vos commandes, que vous gérez vous-même dans « Ma boutique ».') . '</p>'
         . aled08e_ex_tuto_html('ecommerce')
         . '<button type="button" class="btn ' . ($actif ? 'btn-light' : 'btn-primary') . ' btn-sm ex-go" data-go="vacances">' . aled08e_icon($actif ? 'store' : 'key-round') . '<span>' . ($actif ? 'Ouvrir ma boutique' : 'Voir comment l’ajouter') . '</span></button>'
@@ -70,8 +70,8 @@ function aled08e_extra_packs_html($x, $famille) {
 function aled08e_ex_prix_txt($x, $famille) {
     if ($famille) return ['offert', 'pour vous'];
     $unite = (string) ($x['unite'] ?? '');
-    if (!empty($x['packs'])) return [aled08e_euro_txt($x['prix']), 'la ' . $unite . ', payée une fois'];
-    return [aled08e_euro_txt($x['prix']), 'payé une fois'];
+    if (!empty($x['packs'])) return [aled08e_euro_txt($x['prix']), 'la ' . $unite . ', sans abonnement'];
+    return [aled08e_euro_txt($x['prix']), 'sans abonnement'];
 }
 
 /* L'extra est-il pour ce client ? (réservé aux boutiques, par exemple) */

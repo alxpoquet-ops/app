@@ -434,7 +434,7 @@ Une esthéticienne écrit sur son site « Bienvenue dans mon univers de douceur 
 
 Derrière ce mot technique, il y a une idée simple : être visible. C'est le cœur de notre métier.
 
-Le ${page.name} pose les bases : des pages rapides, un titre et une description pour chacune. Pour être trouvé sur plus de recherches, vous ajoutez des pages de visibilité Google, chacune écrite pour une recherche de vos clients. Elles se prennent en extra, depuis votre espace client, à ${prixPage} € la page, payée une fois. Tout est expliqué sur la page [visibilité sur Google](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
+Le ${page.name} pose les bases : des pages rapides, un titre et une description pour chacune. Pour être trouvé sur plus de recherches, vous ajoutez des pages de visibilité Google, chacune écrite pour une recherche de vos clients. Elles se prennent en extra, depuis votre espace client, à ${prixPage} € la page, sans abonnement. Tout est expliqué sur la page [visibilité sur Google](/referencement-seo/). Pour la partie liée à votre ville, voyez le [référencement local](/lexique/referencement-local/).`,
     faq: [
       { q: 'Quelle différence entre SEO et publicité Google ?', a: 'La publicité vous place en haut des résultats tant que vous payez chaque clic. Le SEO vise les résultats gratuits : il demande du travail au départ, mais ne s’arrête pas le jour où vous cessez de payer.' },
       { q: 'Au bout de combien de temps voit-on des effets ?', a: 'Cela dépend de votre métier, de votre ville et de la concurrence. Il faut en général compter plusieurs mois avant de juger. C’est un travail de fond, pas un interrupteur.' },

@@ -168,7 +168,7 @@ function aled08e_bulle_contexte($uid) {
     elseif ($pause) $offre[] = 'Les modifications du site sont incluses, sans limite. Aucun délai n’est annoncé.' . ' Une refonte complète ou une fonction nouvelle se fait sur devis.';
     $offre[] = 'Une modification (avec le forfait Mini) : le client écrit sa demande dans l’onglet Demandes de son espace client. Bricou la clarifie avec lui (une question si besoin, puis un résumé à confirmer) et l’envoie à Alex. C’est Alex qui fait la modification. Une demande à la fois. Ne donne jamais de délai.';
     $ald = [];
-    foreach (aled08e_a_la_demande() as $x) if ($x['id'] !== 'urgent') $ald[] = $x['name'] . ' : ' . (!empty($x['devis']) ? 'sur devis (gratuit, sans engagement)' : aled08e_euro_txt($x['prix']) . ', payé une fois par carte au moment de commander');
+    foreach (aled08e_a_la_demande() as $x) if ($x['id'] !== 'urgent') $ald[] = $x['name'] . ' : ' . (!empty($x['devis']) ? 'sur devis (gratuit, sans engagement)' : aled08e_euro_txt($x['prix']) . ', sans abonnement, réglé par carte au moment de commander');
     if ($ald) $offre[] = 'Les extras, dans l’onglet Extras : ' . implode(' ; ', $ald) . '.';
     $fo = [];
     foreach ((array) $D['forfaits'] as $x) $fo[] = $x['name'] . ' ' . aled08e_euro_txt($x['month']) . ' par mois (' . implode(', ', (array) ($x['main'] ?? [])) . ')';

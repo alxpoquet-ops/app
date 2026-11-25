@@ -81,7 +81,7 @@ function laMaisonPage() {
     <div class="lettre-txt prose">
       <h2>Le mot d’Alex</h2>
       <p>J’ai créé les Minis Monstres pour les artisans, les commerçants, les associations, et pour tous ceux qui démarrent avec un petit budget.</p>
-      <p>Un site fait sur mesure coûte souvent plusieurs milliers d’euros. C’est un prix honnête pour le travail fourni. Mais beaucoup d’entrepreneurs ne peuvent pas se le permettre, alors ils restent invisibles.</p>
+      <p>Un site fait sur mesure coûte souvent plusieurs milliers d’euros. C’est le juste prix du travail fourni. Mais beaucoup d’entrepreneurs ne peuvent pas se le permettre, alors ils restent invisibles.</p>
       <p>Je suis autodidacte : je n’ai pas suivi d’école de développeur, j’ai appris en construisant, un site après l’autre. Je n’ai ni local, ni agence, ni loyer, ni bureaux à chauffer et à éclairer : je fais tout depuis chez moi. C’est ce qui me permet de vous proposer un prix doux, sans rien retirer au soin.</p>
       <p>Car je tiens à faire les choses bien : je vous appelle avant de commencer, je vérifie chaque page, et je reste là ensuite. Un prix juste, c’est aussi un prix qui me permet de vivre de mon travail, et de le faire durer.</p>
       <p>Notre époque a quelque chose de beau : les efforts peuvent enfin être récompensés. Je voudrais que chacun en profite, pas seulement ceux qui ont un gros budget.</p>
@@ -174,10 +174,6 @@ function vitrineSvg() {
 const COMPRIS = () => [
   ['layout-grid', 'mint', 'Un site complet, à votre image', `${esc(listeEt(MODULES_SITE.map((x, i) => (i ? x.toLowerCase() : x))))} : vos couleurs, vos photos, vos mots.`],
   ['gauge', 'sky', 'Rapide, sûr et bien vu de Google', 'Lisible sur téléphone, léger à charger, et préparé pour que Google comprenne ce que vous faites et où.'],
-  ['phone-call', 'lilac', 'Un appel, puis une vérification', 'Alex vous téléphone avant de commencer. Avant la mise en ligne, il contrôle chaque page, sur ordinateur et sur téléphone.'],
-  ['list-checks', 'peach', 'La liste de toutes vos pages', 'Dans votre espace client, chaque page de votre site, dont vos pages de visibilité Google, avec un lien pour la voir ou la modifier.'],
-  ['pencil', 'pink', 'Vous modifiez vous-même', `Avec le forfait ${esc(ABO.name)}, un texte ou une photo se change en direct. Le reste, vous nous le demandez dans « Mes modifications ».`],
-  ['route', 'butter', 'Un vrai suivi', 'Votre commande, vos demandes et vos factures se suivent au même endroit, étape par étape.'],
   ['search-check', 'mint', 'Des pages pour grandir sur Google', 'Quand vous le voulez, des pages de visibilité Google s’ajoutent depuis votre espace client, écrites pour les recherches de vos clients.'],
   ['shield-check', 'sky', 'Hébergé, protégé, sauvegardé', `Avec le forfait ${esc(ABO.name)}, l’hébergement, la sécurité, les sauvegardes et la maintenance sont faits pour vous.`],
 ];
@@ -207,23 +203,16 @@ function home() {
 
 <section class="section" id="compris"><div class="container">
   <h2 class="section-title">Tout ce que vous avez, <mark>avec votre site</mark></h2>
-  <p class="section-sub">Un site soigné jusque dans les détails, et un vrai suivi autour, du premier appel jusqu’à longtemps après la mise en ligne.</p>
+  <p class="section-sub">Un site soigné jusque dans les détails, prêt à grandir avec votre activité.</p>
   <ul class="compris reveal">${COMPRIS().map(([ico, c, t, d]) => `<li class="compris-carte c-${c}"><span class="compris-ico" aria-hidden="true">${icon(ico)}</span><h3>${t}</h3><p>${d}</p></li>`).join('')}</ul>
   <p class="center more compris-pied">${C.btn(C.TUTOS.HUB, 'btn-light', 'book-open', 'Chaque étape, expliquée')}${C.btn(site.espaceClient && site.espaceClient.demo ? site.espaceClient.demo : sections.monespace.path, 'btn-light', 'circle-user', 'Visiter l’espace client')}</p>
 </div></section>
 
-<section class="section section-soft" id="pas-ailleurs"><div class="container">
-  <h2 class="section-title">Ce que vous avez chez nous, <mark>et pas ailleurs</mark></h2>
-  <p class="section-sub">Face à un prestataire classique, qui crée votre site et l’héberge : plus d’avantages, pour bien moins cher.</p>
+<section class="section section-soft" id="uniques"><div class="container">
+  <h2 class="section-title">Ce qui nous rend <mark>uniques</mark></h2>
+  <p class="section-sub">Une personne qui vous connaît, un espace client où tout est à portée de main, et un site qui reste le vôtre.</p>
   ${C.avantagesNous()}
   ${C.prixJuste()}
-</div></section>
-
-<section class="section" id="comparer"><div class="container">
-  <h2 class="section-title">Comparez, en toute honnêteté</h2>
-  <p class="section-sub">Le même besoin, un site vitrine professionnel, chez nous et ailleurs, prix compris.</p>
-  ${C.comparatifTable({ court: true })}
-  <p class="center more"><a class="link-more" href="${sections.comparatif.path}">Le comparatif complet, avec les sources</a></p>
 </div></section>
 
 <section class="section section-soft" id="deroulement"><div class="container">
@@ -334,7 +323,7 @@ function ancienneCreerPage() {
   const body = `${C.pageHero({
     section: 'creer',
     h1: 'Choisissez votre site en deux minutes',
-    lead: `Un site, une option e-commerce si vous vendez. Créez votre site : payez une seule fois. Ensuite, le forfait ${AUTO.name} ou le forfait ${ABO.name}. Le total s’affiche en bas.`,
+    lead: `Un site, une option e-commerce si vous vendez. D’abord la création de votre site, puis le forfait ${AUTO.name} ou le forfait ${ABO.name}. Le total s’affiche en bas.`,
     crumbs,
   })}
 <section class="section section-builder"><div class="container">${C.configurator()}</div></section>
@@ -344,7 +333,7 @@ function ancienneCreerPage() {
   ${C.steps([
     { t: 'Vous commandez', d: `Vous payez votre site en entier, en une fois ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}.` },
     { t: 'Vous répondez au questionnaire', d: 'Dans votre espace client : votre activité, vos couleurs, vos photos.' },
-    { t: 'Alex vous appelle', d: 'Pour parler de votre site et bien comprendre ce que vous attendez. Ensuite, il donne le feu vert à la bande.' },
+    { t: 'Alex vous appelle', d: 'Pour parler de votre site et bien comprendre ce que vous attendez. Ensuite, il crée votre site et le vérifie en entier.' },
     { t: 'Votre site est en ligne', d: `En ${ESS.delai}, une première version faite avec vos réponses. Avec le forfait ${AUTO.name}, on vous remet votre site, prêt à installer chez votre hébergeur.` },
     { t: 'Vous le peaufinez', d: `Avec le forfait ${ABO.name}, vous changez vous-même un texte ou une photo, à volonté, ou vous nous demandez la modification.` },
   ])}
@@ -374,7 +363,7 @@ function forfaitsPage() {
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: `Tarifs : un site soigné, dès ${euro(creation.prix)}`,
-    lead: `Des prix affichés, les mêmes pour tous, ${marche.foisTexte} fois moins chers qu’un indépendant. Créez votre site : payez une seule fois. Ensuite, le **forfait ${AUTO.name}** à ${euro(AUTO.month)} ou le **forfait ${ABO.name}** à ${euro(ABO.month)} par mois. Enfin, les extras, si vous en avez besoin.`,
+    lead: `Des prix affichés, les mêmes pour tous, ${marche.foisTexte} fois moins chers qu’un indépendant. D’abord la création de votre site. Ensuite, le **forfait ${AUTO.name}** à ${euro(AUTO.month)} ou le **forfait ${ABO.name}** à ${euro(ABO.month)} par mois. Enfin, les extras, si vous en avez besoin.`,
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
@@ -409,21 +398,15 @@ ${C.modulesSite({ titre: 'Pourquoi ce prix : comment est fait votre site', id: '
   ])}
 </div></section>
 
-<section class="section section-soft" id="pas-ailleurs"><div class="container">
-  <h2 class="section-title">Moins cher, et bien plus d’avantages</h2>
-  <p class="section-sub">Ce que vous avez chez nous, et que n’offre pas toujours un prestataire classique.</p>
+<section class="section section-soft" id="uniques"><div class="container">
+  <h2 class="section-title">Ce qui nous rend <mark>uniques</mark></h2>
+  <p class="section-sub">Ce que vous avez avec chaque site, compris dans le prix.</p>
   ${C.avantagesNous()}
   ${C.prixJuste()}
-</div></section>
-
-<section class="section" id="comparer"><div class="container">
-  <h2 class="section-title">Et ailleurs, ça coûte combien ?</h2>
-  <p class="section-sub">Un indépendant, une agence ou une plateforme à faire soi-même : le même besoin, comparé ligne par ligne.</p>
-  ${C.comparatifTable()}
   <div class="promos">
     <a class="promo c-butter reveal" href="${sections.comparatif.path}">
       <span class="promo-ico">${icon('scale')}</span>
-      <span class="promo-text"><strong>Pour qui, chaque solution ?</strong><span>Chacune a sa place : quand choisir une agence, un indépendant ou une plateforme.</span></span>
+      <span class="promo-text"><strong>Agence, indépendant ou plateforme ?</strong><span>Les prix du marché, ligne par ligne, et quand choisir chaque solution.</span></span>
       <span class="promo-go">${icon('arrow-right')}</span>
     </a>
   </div>
@@ -462,7 +445,7 @@ function seoPage() {
   // Les deux façons d'être plus visible : [couleur, monstre, titre, prix, liste]
   const levels = [
     [ESS.color, ESS.monstre, `Avec le ${ESS.name}`, `Compris, ${euro(ESS.price)}`, ['Un site rapide et sécurisé', 'Lisible sur téléphone et sur ordinateur', 'Un titre et une description pour Google', 'Des modules pensés pour que Google comprenne votre activité']],
-    ['lilac', 'gelee', pack.name, `${euro(pack.price.once)} la page, payée une fois`, ['Une page de plus, quand vous voulez', `Par exemple : ${(pack.exemples || []).join(', ').toLowerCase().replace('faq', 'FAQ')}`, `À l’unité, ou par ${C.packsSeo} pages`, 'Commandée depuis votre espace client, une fois le site en ligne']],
+    ['lilac', 'gelee', pack.name, `${euro(pack.price.once)} la page, sans abonnement`, ['Une page de plus, quand vous voulez', `Par exemple : ${(pack.exemples || []).join(', ').toLowerCase().replace('faq', 'FAQ')}`, `À l’unité, ou par ${C.packsSeo} pages`, 'Commandée depuis votre espace client, une fois le site en ligne']],
   ];
   const body = `${C.pageHero({
     section: 'seo',
@@ -578,16 +561,16 @@ function comparatifPage() {
 </div></section>
 
 <section class="section"><div class="container container-narrow">
-  <h2 class="section-title">${marche.foisTexte} fois moins cher, et plus d’avantages</h2>
+  <h2 class="section-title">${marche.foisTexte} fois moins cher qu’un indépendant</h2>
   <p class="section-sub">Pour un site vitrine complet : accueil, présentation, services, photos et contact.</p>
   ${C.deroulants([
     C.deroulant('Les prix, côte à côte', md(`Un indépendant demande en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence, plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. Notre ${ESS.name}, qui contient ces mêmes modules, coûte ${euro(ESS.price)}.
 
-Soyons honnêtes : ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois. Les sources sont citées sous le tableau, en haut de cette page.`), { ico: 'scale' }),
+Ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois. Les sources sont citées sous le tableau, en haut de cette page.`), { ico: 'scale' }),
     C.deroulant('Pourquoi ce prix ?', md(`Nous n’avons ni local, ni agence, ni loyer, ni bureaux à chauffer et à éclairer : Alex travaille depuis chez lui. Ces frais n’existent pas chez nous, donc vous ne les payez pas. Nos modules ont été soignés une fois pour toutes, et il ne manque que votre contenu.
 
 Le prix reste juste : assez doux pour vous, assez juste pour que nous vivions de notre travail. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank' }),
-    C.deroulant('Ce que vous avez en plus', md(`Chez un prestataire classique, celui qui crée votre site et l’héberge, les accès restent souvent chez lui. Ici, votre espace client vous montre la liste de toutes vos pages, dont vos pages de visibilité Google, avec un lien pour voir ou modifier chacune.
+    C.deroulant('Ce que vous avez avec votre site', md(`Votre espace client vous montre la liste de toutes vos pages, dont vos pages de visibilité Google, avec un lien pour voir ou modifier chacune.
 
 Avec le forfait ${ABO.name}, vous changez un texte ou une photo vous-même, en direct. Vous suivez votre commande, vos demandes de modification et vos factures au même endroit.`), { ico: 'key-round' }),
     C.deroulant('Et l’entretien, chaque mois ?', md(`Avec le forfait ${AUTO.name}, vous gérez tout vous-même, pour ${euro(AUTO.month)} par mois. Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications. Pas de nom de domaine ? On vous le fournit pour ${euro(C.DOM)} de plus par mois. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois pour l’entretien d’un site : chez nous, c’est bien moins cher.`), { ico: 'repeat' }),
@@ -926,7 +909,7 @@ function monEspacePage() {
   const couleur = { trouve: 'mint', langue: 'sky', mesure: 'lilac' };
   const slugExtra = { packseo: UNE[0], anglais: UNE[2] };
   const carteExtra = (x) => `<article class="ex-carte${x.devis ? ' ex-devis' : ''} c-${couleur[x.groupe] || 'lilac'}" id="ex-${x.id}">
-            <header class="ex-tete"><span class="ex-ico">${icon(x.icon)}</span><div class="ex-nom"><strong>${esc(x.name)}</strong>${slugExtra[x.id] ? badgeUne : ''}</div><span class="ex-prix"><b>${x.devis ? 'Sur devis' : euro(x.fois)}</b><small>${x.devis ? 'gratuit, sans engagement' : 'la page, payée une fois'}</small></span></header>
+            <header class="ex-tete"><span class="ex-ico">${icon(x.icon)}</span><div class="ex-nom"><strong>${esc(x.name)}</strong>${slugExtra[x.id] ? badgeUne : ''}</div><span class="ex-prix"><b>${x.devis ? 'Sur devis' : euro(x.fois)}</b><small>${x.devis ? 'gratuit, sans engagement' : 'la page, sans abonnement'}</small></span></header>
             <p class="ex-court">${esc(x.court || plain(x.desc || ''))}</p>
             ${x.inclus ? `<ul class="ex-inclus">${x.inclus.map((l) => `<li>${icon('check')}<span>${esc(l)}</span></li>`).join('')}</ul>` : ''}
             ${exTuto(slugExtra[x.id])}
@@ -954,7 +937,7 @@ function monEspacePage() {
     <div hidden data-lia-demo>
       <p data-mots="horaire,fermé,ferme,ouvert,ouvre,hours,closed,open" data-type="demande" data-par="lia" data-cout="0" data-texte="Sur la page Contact, changer les horaires : nous serons fermés le lundi 24 novembre.">Coucou ! Pour changer tes horaires, c’est Bricou qu’il te faut : écris-lui dans « Modifications », il prépare tout pour Alex. Je t’ai mis ta phrase juste ici, c’est bien ça ?</p>
       <p data-mots="photo,image,picture" data-type="demande" data-par="lia" data-cout="0" data-texte="Sur la page d’accueil, remplacer la photo du haut par celle que je joins.">Avec plaisir ! Une nouvelle photo en haut de l’accueil, bonne idée. Tu peux aussi la changer toi-même : « Mon site », puis « Modifier mon site moi-même ».</p>
-      <p data-mots="google,visibilité,visibilite,extra,traduction,anglais" data-type="onglet" data-onglet="extras" data-nom="Extras">Super question ! Une page de visibilité Google coûte ${euro(PRIX_PAGE)}, payée une fois, par carte. La traduction anglaise et les fonctionnalités spécifiques sont sur devis. Pépite t’attend dans « Extras » !</p>
+      <p data-mots="google,visibilité,visibilite,extra,traduction,anglais" data-type="onglet" data-onglet="extras" data-nom="Extras">Super question ! Une page de visibilité Google coûte ${euro(PRIX_PAGE)}, sans abonnement, réglée par carte. La traduction anglaise et les fonctionnalités spécifiques sont sur devis. Pépite t’attend dans « Extras » !</p>
       <p data-mots="combien,reste,limite,modification,comment,how,limit" data-type="onglet" data-onglet="demandes" data-nom="Modifications">Avec le forfait ${esc(ABO.name)}, tes modifications sont incluses. Tu écris ce que tu veux changer, ${esc(C.BRICOU)} clarifie ta demande avec toi, puis Alex fait la modification. Une demande à la fois.</p>
       <p data-mots="boutique,vendre,panier,article,catégorie,categorie,shop,sell" data-type="onglet" data-onglet="vacances" data-nom="Ma boutique">Ta boutique est déjà là ! Dans « Ma boutique », tu ajoutes tes articles toi-même : une photo, un nom, un prix, et c’est en ligne.</p>
       <p data-defaut>Coucou ! Dans ton vrai espace, je réponds à tes questions et je te guide. Essaie par exemple : changer mes horaires.</p>
@@ -1384,7 +1367,7 @@ ${G.length ? `<section class="section tuto-plus" id="guides" data-theme="guides"
 </div></section>` : ''}
 </div>
 
-${C.ctaBand({ title: 'Et si on le faisait pour vous ?', text: `Le ${esc(ESS.name)}, ${euro(ESS.price)} la création. Vous répondez au questionnaire, Alex vous appelle, la bande s’occupe du reste.` })}`;
+${C.ctaBand({ title: 'Et si on le faisait pour vous ?', text: `Le ${esc(ESS.name)}, ${euro(ESS.price)} la création. Vous répondez au questionnaire, Alex vous appelle, puis il crée votre site.` })}`;
   return {
     path: HUB,
     color: 'lilac',
@@ -1726,8 +1709,8 @@ ${ex || opts.length ? `<section class="section"><div class="container">
   ${m.exemple.texte ? `<p class="section-sub">${inline(m.exemple.texte)}</p>` : ''}
   <div class="client-cards client-cards-solo"><a class="client-card c-${ex.color} reveal" href="${ex.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(ex.icon)}</span><span class="client-genre">${esc(ex.genre)}</span><strong>${esc(ex.nom)}</strong><span class="client-url">${icon('globe')}${esc(ex.domaine)}${icon('arrow-right')}</span></a></div>` : ''}
 </div></section>` : ''}
-<section class="section section-soft" id="pas-ailleurs"><div class="container">
-  ${commun('<h2 class="section-title">Ce que vous avez chez nous, et pas ailleurs</h2>')}
+<section class="section section-soft" id="uniques"><div class="container">
+  ${commun('<h2 class="section-title">Ce qui nous rend uniques</h2>')}
   ${C.avantagesNous({ court: true })}
 </div></section>
 ${f.html}
@@ -1845,7 +1828,7 @@ ${chap('etapes', `1. Comment ça se passe`, `  <h2>De la commande à la mise en 
     <li><strong>Vous commandez votre site.</strong> Le ${esc(ESS.name)}, avec l’option ${esc(ECO.name)} si vous vendez en ligne : le prix total s’affiche avant de commander.</li>
     <li><strong>Vous réglez votre site.</strong> En une fois, ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}, sur la page de paiement. C’est le signal de départ.</li>
     <li><strong>Vous remplissez le questionnaire de création.</strong> Dans votre espace client : couleurs, ambiance, photos, prix ou produits.</li>
-    <li><strong>Alex vous appelle.</strong> Pour parler de votre site et clarifier ce que vous attendez. Ensuite, il donne le feu vert à la bande.</li>
+    <li><strong>Alex vous appelle.</strong> Pour parler de votre site et clarifier ce que vous attendez. Ensuite, il crée votre site et le vérifie en entier.</li>
     <li><strong>Votre site est assemblé.</strong> Nos modules, remplis avec vos informations et vos photos. Votre première version est en ligne en ${esc(ESS.delai)}, et vous recevez un e-mail qui vous la présente.</li>
     <li><strong>Vous le peaufinez.</strong> Rien de plus à payer pour la création. Avec le forfait ${esc(ABO.name)}, qui démarre ce jour-là, vous changez vous-même un texte ou une photo, à volonté, ou vous nous demandez la modification dans « Mes modifications ».</li>
     <li><strong>Ensuite, vous choisissez.</strong> Le forfait ${esc(ABO.name)}, ${euro(ABO.month)} par mois : on s’occupe de tout. Ou le forfait ${esc(AUTO.name)}, ${euro(AUTO.month)} : vous gérez tout vous-même.</li>
@@ -1869,7 +1852,7 @@ ${chap('questionnaire', `3. Le questionnaire de création`, `  <h2>Ce qu’on vo
 
 ${chap('sites', `4. Votre site`, `  <div class="container-narrow">
     <h2>Un site, une option, un prix</h2>
-    <p>Votre site est assemblé à partir de nos modules (accueil, présentation, services et tarifs, galerie, questions fréquentes, contact), puis rempli avec votre contenu. Il se paie une seule fois, et le prix ne change pas en cours de route. ${esc(C.PLUS_DE_PAGES)}</p>
+    <p>Votre site est assemblé à partir de nos modules (accueil, présentation, services et tarifs, galerie, questions fréquentes, contact), puis rempli avec votre contenu. Le prix est fixé dès la commande, et il ne change pas en cours de route. ${esc(C.PLUS_DE_PAGES)}</p>
   </div>
   <div class="doc-types">
     ${typesOfferts.map((t) => `<div class="doc-type reveal"><strong>${esc(t.name)}</strong><b>${C.prixType(t)}</b><span>${icon('clock')}Prêt en ${esc(t.delai)}</span><p><strong>${esc(t.but)}.</strong> ${esc(t.pitch)}</p></div>`).join('')}
@@ -1885,7 +1868,7 @@ ${chap('prix', `5. Le prix`, `  <div class="container-narrow">
     <p>Les prix sont les mêmes pour tous. Vous payez votre site une fois. Ensuite, c’est vous qui choisissez, sans obligation d’abonnement.</p>
   </div>
   <div class="doc-types">
-    <div class="doc-type reveal"><strong>Créer le site</strong><b>dès ${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Une seule fois</span><p>${esc(ESS.name)} ${euro(ESS.price)}, option ${esc(ECO.name)} + ${euro(ECO.prix)}. Payable en ${C.lissageTxt} fois avec ${C.ORGANISMES}.</p></div>
+    <div class="doc-type reveal"><strong>Créer le site</strong><b>dès ${euro(creation.prix)}</b><span>${icon('wand-sparkles')}Sans abonnement</span><p>${esc(ESS.name)} ${euro(ESS.price)}, option ${esc(ECO.name)} + ${euro(ECO.prix)}. Payable en ${C.lissageTxt} fois avec ${C.ORGANISMES}.</p></div>
     <div class="doc-type reveal"><strong>Forfait ${esc(AUTO.name)}</strong><b>${euro(AUTO.month)}</b><span>${icon('download')}Par mois</span><p>Vous gérez votre hébergement, votre nom de domaine, vos sauvegardes et vos mises à jour.</p></div>
     <div class="doc-type reveal"><strong>Forfait ${esc(ABO.name)}</strong><b>${euro(ABO.month)}</b><span>${icon('repeat')}Par mois, sans engagement</span><p>On s’occupe de tout, modifications incluses.</p></div>
     <div class="doc-type reveal"><strong>Les extras</strong><b>${euro(PRIX_PAGE)} la page</b><span>${icon('sparkles')}Ou sur devis</span><p>Page de visibilité Google, traduction anglaise, fonctionnalité spécifique. Depuis votre espace client.</p></div>
@@ -1895,7 +1878,7 @@ ${chap('prix', `5. Le prix`, `  <div class="container-narrow">
   </div>
   <div class="doc-cards3">
     <div class="doc-mini reveal"><strong>${icon('wrench')}Modifications à volonté</strong><p>Votre première version est en ligne : avec le forfait ${esc(ABO.name)}, vous changez vous-même vos textes et vos photos, ou vous nous demandez la modification.</p></div>
-    <div class="doc-mini reveal"><strong>${icon('search-check')}Page de visibilité Google</strong><p>${euro(PRIX_PAGE)} la page, payée une fois, par carte, depuis votre espace client.</p></div>
+    <div class="doc-mini reveal"><strong>${icon('search-check')}Page de visibilité Google</strong><p>${euro(PRIX_PAGE)} la page, sans abonnement, réglée par carte depuis votre espace client.</p></div>
     <div class="doc-mini reveal"><strong>${icon('ticket')}Code promo</strong><p>Une seule case, à la commande. La remise s’applique sur la création du site.</p></div>
   </div>
   <p class="doc-more center">${C.btn(sections.forfaits.path, 'btn-light', sections.forfaits.icon, 'Voir les tarifs')}</p>`)}
@@ -1935,7 +1918,7 @@ ${chap('jetons', `8. La petite bande`, `  <h2>${Maj(NB_BANDE)} Minis Monstres, c
 ${chap('messages', `9. Les extras`, `  <div class="container-narrow">
     <h2>Trois extras, quand vous en avez besoin</h2>
     <ul class="list-check">
-      ${C.EXTRAS_PAR_FAMILLE.flatMap((g) => g.items).map((x) => `<li><strong>${esc(x.name)}</strong>, ${x.devis ? 'sur devis' : `${euro(x.fois)} la page, payée une fois, par carte`}. ${inline(x.desc)}</li>`).join('')}
+      ${C.EXTRAS_PAR_FAMILLE.flatMap((g) => g.items).map((x) => `<li><strong>${esc(x.name)}</strong>, ${x.devis ? 'sur devis' : `${euro(x.fois)} la page, sans abonnement, réglée par carte`}. ${inline(x.desc)}</li>`).join('')}
     </ul>
     <p>Tout se demande depuis l’onglet « Extras » de votre espace client.</p>
   </div>
@@ -1961,7 +1944,7 @@ ${chap('boutique', `10. L’option ${esc(ECO.name)}`, `  <div class="container-n
   ${fig('boutique', 'L’onglet Ma boutique', 'L’onglet « Ma boutique » : codes promo, soldes rapides et bandeau (exemple).', 'doc-fig-wide')}`)}
 
 ${chap('seo', `11. Être trouvé sur Google`, `  <h2>La visibilité Google, pas à pas</h2>
-  <p>Tous les sites partent avec de bonnes bases : des pages rapides, lisibles sur téléphone, avec un titre et une description pour Google. Pour aller plus loin, une fois votre site en ligne, vous ajoutez des pages de visibilité Google depuis votre espace client : ${euro(PRIX_PAGE)} la page, payée une fois, à l’unité ou par ${C.packsSeo}.</p>
+  <p>Tous les sites partent avec de bonnes bases : des pages rapides, lisibles sur téléphone, avec un titre et une description pour Google. Pour aller plus loin, une fois votre site en ligne, vous ajoutez des pages de visibilité Google depuis votre espace client : ${euro(PRIX_PAGE)} la page, sans abonnement, à l’unité ou par ${C.packsSeo}.</p>
   <div class="go-links">
     <a class="go-link c-${sections.seo.color}" href="${sections.seo.path}"><span class="type-ico">${icon(sections.seo.icon)}</span><strong>Être trouvé sur Google, en détail</strong>${icon('arrow-right')}</a>
     <a class="go-link c-lilac" href="${HUB}"><span class="type-ico">${icon('book-open')}</span><strong>Les tutos de ${esc(ECOLE.label)}</strong>${icon('arrow-right')}</a>

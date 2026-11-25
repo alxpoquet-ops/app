@@ -196,7 +196,7 @@ Un site professionnel doit afficher des mentions légales : votre nom, votre num
 
 ## Faire le site soi-même ?
 
-C'est possible, et pour certains c'est le bon choix. Le guide [faire son site soi-même ou le faire faire](/guides/creer-son-site-soi-meme-ou-le-faire-faire/) pèse honnêtement les deux options, pour que vous décidiez selon votre temps et vos envies.
+C'est possible, et pour certains c'est le bon choix. Le guide [faire son site soi-même ou le faire faire](/guides/creer-son-site-soi-meme-ou-le-faire-faire/) pèse le pour et le contre des deux options, pour que vous décidiez selon votre temps et vos envies.
 
 ## Et après le lancement
 
@@ -269,7 +269,7 @@ L’abonnement est facultatif, et il démarre le jour où votre site est mis en 
 
 ### 3. Les extras, seulement si besoin
 
-- **Une ${minus(pageGoogle.name)}, ${prixPage} € la page**, payée une fois, par carte, depuis votre espace client.
+- **Une ${minus(pageGoogle.name)}, ${prixPage} € la page**, sans abonnement, réglée par carte depuis votre espace client.
 - **Une traduction anglaise ou une fonctionnalité spécifique** : sur devis, gratuit et sans engagement.
 
 Rien d’autre n’est vendu en plus. Une refonte complète du site se fait sur devis.
@@ -292,7 +292,7 @@ Chez un indépendant, un site vitrine de ${marche.pagesCompare} pages se paie en
 
 La différence tient d’abord aux frais : pas de local, pas d’agence, pas de loyer, pas de bureaux à chauffer et à éclairer, puisqu’Alex fait tout depuis chez lui. Il a aussi soigné une fois pour toutes les modules dont un site est fait. Et vous gagnez en plus un espace client où vous voyez toutes vos pages, et où vous modifiez vous-même avec le forfait ${mini.name}.
 
-Soyons honnêtes : ces chiffres viennent de prestataires, donc prudence. Certains indépendants vendent un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors très faible. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout, sources comprises.
+Ces chiffres viennent de prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors très faible. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout, sources comprises.
 
 > Le bon calcul ne s’arrête pas au prix. Une activité que personne ne trouve sur internet a aussi un coût : celui des clients qui vont ailleurs.
 
@@ -373,10 +373,10 @@ Elle répond à un autre besoin : encaisser des commandes sur le site. C’est l
     groupe: 'question',
     icon: 'puzzle',
     nom: 'Faire son site soi-même ou le faire faire ?',
-    resume: 'Les avantages et les limites de chaque solution, dits honnêtement, pour décider sans regret.',
+    resume: 'Les avantages et les limites de chaque solution, pour décider sans regret.',
     h1: 'Créer son site soi-même ou le faire faire ?',
     title: 'Créer son site soi-même ou le faire faire ? | Les Minis Monstres',
-    description: 'Faire son site seul avec un outil en ligne ou le confier à quelqu’un : le temps, le coût, le résultat et l’entretien, comparés honnêtement pour bien choisir.',
+    description: 'Faire son site seul avec un outil en ligne ou le confier à quelqu’un : le temps, le coût, le résultat et l’entretien, comparés point par point pour bien choisir.',
     lead: 'Les deux solutions sont bonnes, mais pas pour les mêmes personnes. La vraie question n’est pas « est-ce que j’en suis capable ? », c’est « est-ce que j’ai envie d’y passer mes soirées ? ».',
     body: `## Faire son site soi-même
 

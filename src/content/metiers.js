@@ -63,7 +63,7 @@ const metiers = [
       texte: 'Nous n’avons pas encore d’artisan parmi nos réalisations. Pour vous donner une idée, voici comment nous bâtirions le site d’un couvreur : un accueil avec sa zone et son numéro, une page par prestation (toiture neuve, réparation, zinguerie, démoussage), une galerie de chantiers et un formulaire de devis.',
     },
     options: [
-      { id: 'packseo', pourquoi: 'Une page de plus sur un travail précis que l’on tape sur Google, comme le démoussage d’un toit ou la pose d’une fenêtre de toit. À commander plus tard, depuis votre espace client, et à régler par carte, une seule fois.' },
+      { id: 'packseo', pourquoi: 'Une page de plus sur un travail précis que l’on tape sur Google, comme le démoussage d’un toit ou la pose d’une fenêtre de toit. À commander plus tard, depuis votre espace client, et à régler par carte, sans abonnement.' },
     ],
     body: `## Un bon artisan que l’on ne trouve pas perd des chantiers
 
@@ -221,7 +221,7 @@ Avec le forfait ${mini.name}, vos horaires ou vos tarifs bougent ? Vous le deman
     },
     options: [
       { id: 'boutique', pourquoi: `Avec l’option ${eco}, vos pièces se choisissent, se paient en ligne et partent vers leur acheteur, même quand l’atelier est fermé.` },
-      { id: 'packseo', pourquoi: 'Une page de plus sur une technique ou une matière, là où les amateurs commencent leurs recherches. Vous la commandez une fois le site lancé, et vous la payez en une fois.' },
+      { id: 'packseo', pourquoi: 'Une page de plus sur une technique ou une matière, là où les amateurs commencent leurs recherches. Vous la commandez une fois le site lancé, sans abonnement.' },
     ],
     body: `## Un atelier que l’on voit de partout
 
@@ -261,7 +261,7 @@ Vous nous envoyez vos photos et quelques notes sur chaque pièce. La petite band
 - **La création du site** : ${prix} € le ${ESS.name} pour la galerie, et ${prixOption} € de plus avec l’option ${eco} pour vendre en ligne.
 - **Ensuite** : le forfait ${AUTO} ou le forfait ${mini.name}, à ${eur(mini.month)} € par mois, sans engagement.
 
-Le site se règle en commandant, en une seule fois ou ${EN_FOIS}. Une nouvelle collection à présenter ? Avec le forfait ${mini.name}, c’est une modification incluse.`,
+Le site se règle en commandant, d’un coup ou ${EN_FOIS}. Une nouvelle collection à présenter ? Avec le forfait ${mini.name}, c’est une modification incluse.`,
     faq: [
       { q: 'Faut-il un statut pour vendre ses créations en ligne ?', a: 'Oui, dès que vous vendez de façon régulière. La micro-entreprise est la solution la plus courante pour démarrer. Les artistes auteurs ont un régime à part : renseignez-vous auprès de l’Urssaf avant d’ouvrir la boutique.' },
       { q: 'Mes photos sont-elles protégées une fois en ligne ?', a: 'Vos œuvres et vos photos restent à vous : le droit d’auteur s’applique sans aucune démarche. Nous publions des images assez grandes pour être belles à l’écran, sans mettre en ligne vos fichiers en pleine qualité.' },
@@ -408,7 +408,7 @@ Avec le forfait ${mini.name}, ces changements ne vous demandent qu’un message 
 
 ## Combien ça coûte
 
-- **Le site, une seule fois** : ${prix} € le ${ESS.name}, sans boutique, ou ${prixBoutique} € avec l’option ${eco}.
+- **La création du site** : ${prix} € le ${ESS.name}, sans boutique, ou ${prixBoutique} € avec l’option ${eco}.
 - **Puis** : le forfait ${AUTO}, où vous gérez tout, ou le forfait ${mini.name}, pour ${eur(mini.month)} € par mois.
 
 Le paiement se fait à la commande : en une fois, ou ${EN_FOIS} si vous préférez étaler. Les extras possibles sont détaillés sur la page [tarifs](/tarifs/).`,
@@ -490,7 +490,7 @@ Pour la plupart des associations, le ${ESS.name} suffit, sans aucun extra. Avec 
 
 Une adresse de site au nom de l’association fait aussi sérieux sur un dossier de subvention. Le guide pour [choisir un nom de domaine](/guides/choisir-nom-de-domaine/) vous aide à la trouver.`,
     faq: [
-      { q: 'Notre budget est très serré, que faut-il prévoir ?', a: `Le ${ESS.name} coûte ${prix} €, une seule fois, et peut se régler ${EN_FOIS}. Ensuite, soit un bénévole gère le site avec le forfait ${AUTO}, sans rien payer chaque mois, soit vous prenez le forfait ${mini.name}, à ${eur(mini.month)} € par mois.` },
+      { q: 'Notre budget est très serré, que faut-il prévoir ?', a: `La création du ${ESS.name} coûte ${prix} €, et peut se régler ${EN_FOIS}. Ensuite, soit un bénévole gère le site avec le forfait ${AUTO}, sans rien payer chaque mois, soit vous prenez le forfait ${mini.name}, à ${eur(mini.month)} € par mois.` },
       { q: 'Qui peut demander des changements sur le site ?', a: 'Le bureau décide qui reçoit les codes de l’espace client. À chaque changement d’équipe, il suffit de mettre à jour l’adresse e-mail et le mot de passe du compte.' },
       { q: 'Peut-on recevoir des dons ou des adhésions en ligne ?', a: 'Oui, par un bouton qui mène vers le service de paiement que vous utilisez déjà pour vos cotisations. Sinon, un bulletin à télécharger suffit pour commencer.' },
       { q: 'Le site peut-il servir pour un événement, comme un festival ?', a: 'Oui. Une page dédiée présente le programme, les horaires, l’accès et les partenaires. Après l’événement, elle reste en ligne avec les photos.' },
@@ -559,7 +559,7 @@ La [fiche Google](/guides/fiche-google-entreprise/) vous met sur la carte. Le si
 
 ## Comment on s’y prend
 
-Vous commandez en ligne, puis vous remplissez un questionnaire précis : horaires, gamme, commandes spéciales, photos. Alex vous appelle pour caler les détails. La petite bande assemble le site, Alex vérifie chaque page, puis tout part en ligne. Une nouvelle spécialité plus tard ? Votre site s’améliore à tout moment.
+Vous commandez en ligne, puis vous remplissez un questionnaire précis : horaires, gamme, commandes spéciales, photos. Alex vous appelle pour caler les détails. Alex crée le site, le vérifie en entier, puis tout part en ligne. Une nouvelle spécialité plus tard ? Votre site s’améliore à tout moment.
 
 ## Les tarifs
 
@@ -638,7 +638,7 @@ Reliez aussi le site à votre [fiche Google](/guides/fiche-google-entreprise/), 
 
 ## De la commande à la mise en ligne
 
-La commande se passe en ligne. Un questionnaire précis vous demande vos spécialités, vos formules et vos meilleures séries. Alex vous appelle pour bien saisir votre style. La bande monte le site, Alex vérifie tout, image par image, puis le site est publié. Une nouvelle série ensuite ? Le site évolue avec vous.
+La commande se passe en ligne. Un questionnaire précis vous demande vos spécialités, vos formules et vos meilleures séries. Alex vous appelle pour bien saisir votre style. Alex crée le site, le vérifie image par image, puis le publie. Une nouvelle série ensuite ? Le site évolue avec vous.
 
 ## Le budget
 
@@ -711,7 +711,7 @@ Vous avez plusieurs cordes, comme le renforcement, la course et le yoga ? Chaque
 
 ## Votre site, étape par étape
 
-Vous passez commande. Un questionnaire précis recueille vos formules, vos lieux, vos diplômes et vos photos. Alex vous appelle ensuite pour affiner. Notre petite bande crée le site, Alex vérifie tout avant la mise en ligne, et vous pourrez l’améliorer à tout moment, au fil de vos nouvelles séances.
+Vous passez commande. Un questionnaire précis recueille vos formules, vos lieux, vos diplômes et vos photos. Alex vous appelle ensuite pour affiner. Alex crée le site et le vérifie en entier avant la mise en ligne, et vous pourrez l’améliorer à tout moment, au fil de vos nouvelles séances.
 
 ## Le prix
 
@@ -752,7 +752,7 @@ Planning d’été, nouveau créneau de groupe : avec le forfait ${mini.name}, $
     },
     options: [
       { id: 'base', pourquoi: 'Un emplacement annulé, une soirée ajoutée ? Vous l’envoyez depuis votre espace client, et votre planning en ligne est corrigé pour vous.' },
-      { id: 'packseo', pourquoi: 'Une page de plus pour « food truck mariage » ou pour une commune de votre tournée, afin d’apparaître là où l’on vous attend. À commander quand le site tourne, réglée en une fois.' },
+      { id: 'packseo', pourquoi: 'Une page de plus pour « food truck mariage » ou pour une commune de votre tournée, afin d’apparaître là où l’on vous attend. À commander quand le site tourne, sans abonnement.' },
     ],
     body: `## Vos clients vous cherchent, mais où ?
 
@@ -789,7 +789,7 @@ Pour aller plus loin, une page de visibilité Google peut parler d’une commune
 
 ## Comment se fait votre site
 
-Commande en ligne, puis un questionnaire précis : votre tournée, votre carte, vos photos. Alex vous appelle pour clarifier ce qui doit l’être. La bande réalise le site, Alex contrôle chaque détail, et c’est en ligne. Votre carte change avec les saisons ? Le site suit, à tout moment.
+Commande en ligne, puis un questionnaire précis : votre tournée, votre carte, vos photos. Alex vous appelle pour clarifier ce qui doit l’être. Alex crée le site, en contrôle chaque détail, et c’est en ligne. Votre carte change avec les saisons ? Le site suit, à tout moment.
 
 ## Combien ça coûte
 
@@ -864,7 +864,7 @@ Votre [fiche Google](/guides/fiche-google-entreprise/) complète le tout : la ca
 
 ## De votre commande au site en ligne
 
-Vous commandez en ligne. Un questionnaire précis vous fait détailler vos occasions, votre zone, vos tarifs. Alex vous appelle pour lever les doutes. La petite bande compose le site, puis Alex le relit en entier avant de le publier. Vous pourrez ensuite l’enrichir quand vous voulez.
+Vous commandez en ligne. Un questionnaire précis vous fait détailler vos occasions, votre zone, vos tarifs. Alex vous appelle pour lever les doutes. Alex crée le site, puis le relit en entier avant de le publier. Vous pourrez ensuite l’enrichir quand vous voulez.
 
 ## Le prix
 
@@ -904,7 +904,7 @@ La création se règle à la commande, d’un coup ou ${EN_FOIS}.`,
       texte: 'Pas encore de garage parmi nos réalisations. Nous proposerions un accueil avec le numéro et les horaires, une page par grande prestation, vos tarifs courants, une galerie de l’atelier et une demande de rendez-vous.',
     },
     options: [
-      { id: 'packseo', pourquoi: 'Une page de plus pour une réparation précise que l’on tape sur Google, comme « changement d’embrayage » ou « recharge clim », avec votre commune. Commandée et réglée en une fois, depuis votre espace client.' },
+      { id: 'packseo', pourquoi: 'Une page de plus pour une réparation précise que l’on tape sur Google, comme « changement d’embrayage » ou « recharge clim », avec votre commune. Elle se commande depuis votre espace client, sans abonnement.' },
       { id: 'specifique', pourquoi: 'Un planning d’atelier où le client choisit lui-même son créneau ? C’est une fonctionnalité à part : expliquez comment vous organisez vos journées, et le devis est gratuit.' },
     ],
     body: `## Un garage, on le choisit souvent au téléphone
@@ -938,7 +938,7 @@ Votre [fiche Google](/guides/fiche-google-entreprise/) vous place sur la carte e
 
 ## Le chemin jusqu’à la mise en ligne
 
-Après votre commande, vous répondez à un questionnaire précis : prestations, marques, tarifs, horaires, photos. Alex vous appelle pour compléter. La bande assemble le site, Alex vérifie tout, puis il est mis en ligne. Un nouveau service, comme l’entretien des voitures électriques, s’ajoute ensuite à tout moment.
+Après votre commande, vous répondez à un questionnaire précis : prestations, marques, tarifs, horaires, photos. Alex vous appelle pour compléter. Alex crée le site, le vérifie en entier, puis le met en ligne. Un nouveau service, comme l’entretien des voitures électriques, s’ajoute ensuite à tout moment.
 
 ## Combien prévoir
 
@@ -1015,7 +1015,7 @@ Votre [fiche Google](/guides/fiche-google-entreprise/) place la ferme sur la car
 
 ## Comment on avance ensemble
 
-La commande se fait en ligne. Vous remplissez ensuite un questionnaire précis : vos produits, vos saisons, vos points de vente, vos photos de la ferme. Alex vous appelle pour bien comprendre votre organisation. La petite bande bâtit le site, Alex vérifie le tout, puis c’est en ligne. À la saison suivante, le site s’améliore avec vous.
+La commande se fait en ligne. Vous remplissez ensuite un questionnaire précis : vos produits, vos saisons, vos points de vente, vos photos de la ferme. Alex vous appelle pour bien comprendre votre organisation. Alex crée le site, vérifie le tout, puis c’est en ligne. À la saison suivante, le site s’améliore avec vous.
 
 ## Le budget
 
@@ -1086,7 +1086,7 @@ Chaque spécialité peut aussi avoir sa page : le toilettage des chats, les race
 
 ## De la commande au site publié
 
-Vous commandez, puis un questionnaire précis vous demande vos prestations, vos grilles de prix et vos meilleures photos. Alex vous appelle pour préciser. La bande crée le site, Alex vérifie chaque page, et c’est en ligne. Une nouvelle prestation plus tard ? Le site s’enrichit quand vous voulez.
+Vous commandez, puis un questionnaire précis vous demande vos prestations, vos grilles de prix et vos meilleures photos. Alex vous appelle pour préciser. Alex crée le site, vérifie chaque page, et c’est en ligne. Une nouvelle prestation plus tard ? Le site s’enrichit quand vous voulez.
 
 ## Combien ça coûte
 
@@ -1157,7 +1157,7 @@ Citez vos communes sur le site, et réglez la même zone sur votre [fiche Google
 
 ## Votre site, sans y passer vos soirées
 
-Vous passez commande en ligne. Un questionnaire précis recueille vos services, votre zone, vos tarifs et votre statut. Alex vous appelle pour vérifier les points délicats, comme le crédit d’impôt. La petite bande crée le site, Alex le vérifie de bout en bout, puis il est publié. Il reste améliorable à tout moment.
+Vous passez commande en ligne. Un questionnaire précis recueille vos services, votre zone, vos tarifs et votre statut. Alex vous appelle pour vérifier les points délicats, comme le crédit d’impôt. Alex crée le site, le vérifie de bout en bout, puis le publie. Il reste améliorable à tout moment.
 
 ## Le prix
 
@@ -1232,7 +1232,7 @@ Les mariages se réservent longtemps à l’avance, les repas de fin d’année 
 
 ## De la commande à la mise en ligne
 
-Vous commandez sur notre site. Un questionnaire précis vous fait lister vos formules, vos prix, votre zone et vos photos. Alex vous appelle pour les détails. La bande assemble votre site, Alex vérifie tout, puis le site est publié. Votre carte de printemps arrive ? Le site s’améliore à tout moment.
+Vous commandez sur notre site. Un questionnaire précis vous fait lister vos formules, vos prix, votre zone et vos photos. Alex vous appelle pour les détails. Alex crée votre site, le vérifie en entier, puis le publie. Votre carte de printemps arrive ? Le site s’améliore à tout moment.
 
 ## Combien ça coûte
 

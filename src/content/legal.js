@@ -44,7 +44,7 @@ const pageGoogle = extras.find((x) => x.id === 'packseo') || { name: 'Page de vi
 const listeExtras = extras
   .map((x) => (x.devis
     ? `- **${x.name}** : sur devis, gratuit et sans engagement.`
-    : `- **${x.name}, ${eur(x.prix)} € la ${x.unite || 'page'}**, payée une seule fois : ${(x.inclus || []).map(minus).join(', ')}.`))
+    : `- **${x.name}, ${eur(x.prix)} € la ${x.unite || 'page'}**, sans abonnement : ${(x.inclus || []).map(minus).join(', ')}.`))
   .join('\n');
 // La petite bande, par prénom et par rôle. Ce que fait chacun est écrit ici pour les CGV.
 const ROLE_CGV = {
@@ -228,9 +228,9 @@ Une commande peut aussi être passée par e-mail ou par message. Elle est alors 
 
 Les prix sont en euros. La TVA n’est pas applicable (article 293 B du Code général des impôts) tant que l’entreprise bénéficie de la franchise de TVA. Si cette situation change, les prix affichés sont mis à jour. Les commandes déjà passées gardent leur prix.
 
-L’offre est la même pour tous les clients. Elle tient en deux parties : la création du site, payée une fois, puis la façon de le faire vivre. Le client choisit entre le forfait ${AUTO}, sans abonnement, et le forfait ${mini.name}. L’abonnement est facultatif.
+L’offre est la même pour tous les clients. Elle tient en deux parties : la création du site, réglée à la commande, puis la façon de le faire vivre. Le client choisit entre le forfait ${AUTO}, sans abonnement, et le forfait ${mini.name}. L’abonnement est facultatif.
 
-**Le site.** Un seul site est proposé : sa création se paie une seule fois. Il est assemblé à partir de modules déjà conçus par les Minis Monstres (par exemple l’accueil, la présentation, les services et tarifs, la galerie, les questions fréquentes et le contact), puis rempli avec les informations et les photos fournies par le client.
+**Le site.** Un seul site est proposé : sa création se règle à la commande, sans abonnement. Il est assemblé à partir de modules déjà conçus par les Minis Monstres (par exemple l’accueil, la présentation, les services et tarifs, la galerie, les questions fréquentes et le contact), puis rempli avec les informations et les photos fournies par le client.
 
 **${ESS.name}, ${eur(ESS.price)} €.** Il comprend :
 
@@ -252,7 +252,7 @@ ${ECO.inclus.map((x) => `- ${x.replace(/par vous$/, 'par le client')}`).join('\n
 
 ${listeExtras}
 
-La ${minus(pageGoogle.name)} se commande depuis l’espace client. Elle est payée par carte bancaire au moment de la commande, en une seule fois. Elle n’est jamais facturée au mois. En la commandant, le client demande qu’elle soit faite tout de suite : il perd son droit de rétractation une fois la page entièrement livrée (article 9). Les extras sur devis sont réalisés après l’accord écrit du client sur le prix.
+La ${minus(pageGoogle.name)} se commande depuis l’espace client. Elle est payée par carte bancaire au moment de la commande, en un seul paiement. Elle n’est jamais facturée au mois. En la commandant, le client demande qu’elle soit faite tout de suite : il perd son droit de rétractation une fois la page entièrement livrée (article 9). Les extras sur devis sont réalisés après l’accord écrit du client sur le prix.
 
 **Le forfait ${AUTO}, ${eur(creationSeule.month)} € par mois.** Le client paie seulement son site, sans abonnement. Il gère lui-même son hébergement, son nom de domaine, ses sauvegardes et ses mises à jour. Les Minis Monstres ne fournissent ni hébergement ni nom de domaine. Une fois le site validé, le client reçoit l’export de son site, avec une courte notice d’installation. Il fait l’installation lui-même, ou avec l’aide de son hébergeur. La maintenance, la sécurité et les modifications ne sont pas comprises. Le client peut prendre le forfait ${mini.name} plus tard.
 

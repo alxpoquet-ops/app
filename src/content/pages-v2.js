@@ -129,11 +129,11 @@ Monter les pages, alléger les photos, vérifier les liens : ce qui revient d’
 
 ## Ce qu’Alex fait à la main
 
-Les petits monstres vont vite, mais ils ne décident de rien. Alex, qui a créé les Minis Monstres, conçoit votre site et reprend tout ce qu’ils préparent.
+Alex, qui a créé les Minis Monstres, s’occupe lui-même de votre site, du premier appel à la mise en ligne. Les Minis Monstres prennent le relais ensuite : ils sauvegardent votre site, le tiennent à jour et relèvent ses chiffres de visite pour votre espace client.
 
-- **Un appel avant chaque site** : une fois votre questionnaire rempli, Alex vous appelle pour parler de votre site et bien comprendre ce que vous attendez. Ensuite seulement, il donne le feu vert à la bande.
+- **Un appel avant chaque site** : une fois votre questionnaire rempli, Alex vous appelle pour parler de votre site et bien comprendre ce que vous attendez. Ensuite, il crée votre site.
 
-- **La relecture** : chaque page, chaque texte, chaque horaire, chaque prix affiché.
+- **Une dernière relecture, complète** : chaque page, chaque texte, chaque horaire, chaque prix affiché.
 - **Les tests sur téléphone**, comme le feront vos clients.
 - **La vérification** : les liens, le formulaire, la vitesse d’affichage, les informations destinées à Google.
 - **Vos modifications** : à volonté ensuite, par vous-même ou sur demande, avec le forfait ${mini.name}.
@@ -150,21 +150,21 @@ Pas de devis à attendre. Tout se lit dans le même ordre.
 
 Le site se règle à la commande, d’un coup ou ${EN_FOIS}, au choix sur la page de paiement. Le détail est sur la page [tarifs](/tarifs/).
 
-## Les repères du marché, honnêtement
+## Les prix du marché
 
 Face à un site vitrine de ${marche.pagesCompare} pages fait par un indépendant, notre ${ESS.name} à ${eur(ESS.price)} €, qui en reprend les mêmes parties, coûte ${marche.foisTexte} fois moins, d’après les fourchettes publiées.
 
 Côté entretien, les prestataires consultés demandent ${eur(marche.entretienMin)} à ${eur(marche.entretienMax)} € par mois, l’hébergement étant souvent en plus. Le forfait ${mini.name} coûte ${eur(mini.month)} € par mois, ou ${eur(avecDom)} € avec le nom de domaine, hébergement et modifications compris : bien moins cher.
 
-> Soyons honnêtes : ces fourchettes viennent de prestataires, donc à lire avec prudence, et chacun fixe ses prix. Des indépendants proposent aussi un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors presque nul.
+> Ces fourchettes viennent de prestataires, et chacun fixe ses prix. Des indépendants proposent aussi un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors presque nul.
 
 **Sources**, consultées en novembre 2026 :
 
 ${sourcesMd()}
 
-## Moins cher, et plus d’avantages
+## Ce qui nous rend uniques
 
-Chez un prestataire classique, celui qui crée votre site et l’héberge, vous passez souvent par lui pour tout. Chez nous, vous gardez la main.
+Votre espace client vous donne la main sur votre site, du premier jour au dernier.
 
 - **La liste de toutes vos pages** : dans votre espace client, chaque page de votre site, dont vos pages de visibilité Google, avec un lien pour la voir ou la modifier.
 - **Modifier vous-même** : avec le forfait ${mini.name}, le bouton « Modifier mon site moi-même » change un texte ou une photo en direct.
@@ -330,7 +330,7 @@ Ce qui aide ensuite : garder vos informations à jour, ajouter de temps en temps
 
 Méfiez-vous des raccourcis : pages copiées, mots répétés à l’excès, liens achetés. Ils font souvent plus de mal que de bien.
 
-> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('observateur'))} de notre petite bande, prépare vos pages de visibilité Google. Chaque page de plus se commande depuis votre espace client, à ${prixPage} € la page, payée une fois. Pour aller plus loin, voyez la page [visibilité sur Google](/referencement-seo/).`,
+> Vous préférez que quelqu’un s’en occupe ? ${nomRole(B('observateur'))} de notre petite bande, prépare vos pages de visibilité Google. Chaque page de plus se commande depuis votre espace client, à ${prixPage} € la page, sans abonnement. Pour aller plus loin, voyez la page [visibilité sur Google](/referencement-seo/).`,
     faq: [
       { q: 'Combien de temps pour apparaître sur Google ?', a: 'Sur le nom de votre entreprise, c’est en général rapide. Sur des recherches où beaucoup d’entreprises sont présentes, comptez plutôt plusieurs mois.' },
       { q: 'Faut-il payer Google pour être bien placé ?', a: 'Non. Les résultats naturels ne s’achètent pas. Les annonces payantes existent, elles sont signalées comme sponsorisées, et elles disparaissent dès que vous arrêtez de payer.' },
@@ -467,7 +467,7 @@ Tant que le travail n’a pas commencé, vous pouvez annuler votre demande. Seul
 
 Vous prenez un extra quand vous en avez besoin. Rien ne se renouvelle tout seul.
 
-- **Une ${minus(pageGoogle.name)}, ${prixPage} € la page** : une porte d’entrée de plus vers votre site, écrite pour une recherche précise. Vous la commandez dans votre espace client et vous la payez par carte, une seule fois.
+- **Une ${minus(pageGoogle.name)}, ${prixPage} € la page** : une porte d’entrée de plus vers votre site, écrite pour une recherche précise. Vous la commandez dans votre espace client et la réglez par carte, sans abonnement.
 - **Une traduction anglaise**, sur devis.
 - **Une fonctionnalité spécifique**, sur devis : dites-nous votre besoin, nous répondons avec un prix.
 
@@ -516,7 +516,7 @@ Vous revenez pour un deuxième site ? Il profite de ${fidelite.remiseSecondSite}
 
 Alex crée des sites internet depuis ${ville} (${site.address.postalCode}), avec sa petite bande de Minis Monstres. Nous travaillons pour toute la France, et les ${dept}, c’est chez nous.
 
-Artisans, commerçants, gîtes, associations : beaucoup d’activités d’ici font du très bon travail sans que personne ne les trouve sur internet. C’est ce que nous changeons, avec la même offre qu’ailleurs et un prix affiché.
+Artisans, commerçants, gîtes, associations : beaucoup d’activités d’ici font du très bon travail sans que personne ne les trouve sur internet. C’est ce que nous changeons : un site soigné, suivi de près, à un prix affiché et le même pour tous.
 
 ## Se rencontrer, ou tout faire à distance
 

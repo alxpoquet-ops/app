@@ -41,7 +41,7 @@ module.exports = [
 3. **Vous donnez vos coordonnées**, et vous choisissez le mot de passe de votre espace client.
 4. **Vous payez** sur la page de paiement sécurisée, d’un seul coup ou en ${FOIS} fois avec ${ORG}.
 5. **Vous répondez au questionnaire de création**, depuis votre espace client. Comptez une dizaine de minutes.
-6. **Alex vous appelle** pour parler de votre site. Ensuite seulement, la petite bande se met au travail.
+6. **Alex vous appelle** pour parler de votre site. Ensuite, il crée votre site, puis le vérifie en entier.
 7. **Votre site est en ligne**, en général ${DELAI} après cet appel. Un e-mail vous donne le lien.
 
 ## Ce que vous n’avez pas à faire
@@ -93,7 +93,7 @@ Une question avant de vous lancer ? Écrivez-nous par le [formulaire de contact]
 5. **La confirmation.** L’e-mail « Merci, c’est payé ! » arrive avec le récapitulatif, la référence de votre commande et un bouton vers le questionnaire.
 6. **Le nom de domaine et l’hébergement.** Avec le forfait ${mini.name}, ils se préparent automatiquement. Rien à faire de votre côté pendant cette étape.
 7. **Le questionnaire de création**, dans l’onglet « Ma commande ». C’est son envoi qui lance la création.
-8. **L’appel d’Alex.** Il vous téléphone au numéro donné à la commande, pour parler de votre site. Après l’appel, c’est lui qui autorise la bande à commencer.
+8. **L’appel d’Alex.** Il vous téléphone au numéro donné à la commande, pour parler de votre site. Après l’appel, il commence votre site.
 9. **La création, puis la vérification.** Un petit monstre construit votre site avec vos réponses, et un second le relit d’un œil neuf avant toute livraison. S’il manque une précision, vous recevez l’e-mail « Une petite question pour votre site », et vous répondez dans « Ma commande ».
 10. **La mise en ligne.** L’e-mail « Votre site est en ligne ! » vous donne le lien. C’est la première version de votre site, et elle peut évoluer ensuite.
 
@@ -150,7 +150,7 @@ Dans votre espace client, onglet « Ma commande ». L’e-mail de confirmation c
 
 ## Et ensuite ?
 
-Un message vous confirme la bonne réception. Alex lit vos réponses, puis il vous appelle pour en parler avant que la bande commence. Une réponse vous a semblé floue ? C’est le bon moment pour la préciser de vive voix.`,
+Un message vous confirme la bonne réception. Alex lit vos réponses, puis il vous appelle pour en parler avant de commencer votre site. Une réponse vous a semblé floue ? C’est le bon moment pour la préciser de vive voix.`,
     faq: [
       { q: 'Je n’ai pas encore de photos, je peux envoyer le questionnaire ?', a: 'Oui. Des images en rapport avec votre métier sont posées à leur place, et vous mettrez les vôtres quand vous les aurez.' },
       { q: 'Pourquoi demander mon adresse ?', a: 'La loi demande l’adresse de la personne qui publie un site. Elle apparaît seulement dans les mentions légales, en bas de votre site.' },

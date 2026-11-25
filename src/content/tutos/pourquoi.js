@@ -49,7 +49,7 @@ module.exports = [
 
 1. **Un prix clair, le même pour tous.** ${eur(ESS.price)} € la création du ${ESS.name}, ${eur(BOU.price)} € avec l’option ${ECO.name}. Pas de devis à attendre, pas de ligne surprise.
 2. **Un vrai site, pas un modèle à remplir seul.** Nos modules sont assemblés pour vous, puis garnis de vos textes, de vos informations et de vos photos.
-3. **Un parcours sans mauvaise surprise.** Un questionnaire précis, puis un appel d’Alex avant que la bande commence. Rien n’est inventé sur votre activité.
+3. **Un parcours sans mauvaise surprise.** Un questionnaire précis, puis un appel d’Alex avant qu’il commence votre site. Rien n’est inventé sur votre activité.
 4. **Une vérification avant chaque livraison.** Votre site est relu d’un œil neuf avant d’arriver chez vous.
 5. **L’accès à tout.** Votre espace client vous montre la liste de toutes vos pages, dont vos pages de visibilité Google. Avec le forfait ${mini.name}, vous modifiez vous-même un texte ou une photo, en direct.
 6. **Un site qui suit votre budget.** Vous commencez avec l’essentiel, et vous ajoutez des pages ou des extras plus tard, quand vous le décidez.
@@ -77,11 +77,11 @@ Nous ne faisons pas d’applications sur mesure ni de catalogues de plusieurs mi
     icon: 'scale',
     monstre: 'champi',
     nom: 'Nous ou un développeur web ?',
-    resume: 'Une comparaison honnête : qui fait le travail, comment, et pour quel prix.',
+    resume: 'Qui fait le travail, comment, et pour quel prix : les vraies différences.',
     duree: 4,
     h1: 'Quelle différence entre les Minis Monstres et un développeur web ?',
     title: 'Les Minis Monstres ou un développeur web ? | Les Minis Monstres',
-    description: 'Alex est autodidacte et travaille avec les dernières technologies. Une comparaison honnête avec un développeur web : résultat, méthode, contrôle, prix.',
+    description: 'Alex est autodidacte et travaille avec les dernières technologies. Ce qui change avec un développeur web : résultat, méthode, contrôle, prix.',
     lead: 'Disons-le franchement : Alex n’a pas de diplôme de développeur. Il a appris seul, et il s’entoure des meilleurs outils pour faire le même travail.',
     body: `La réponse tout de suite : pour présenter une activité ou vendre quelques produits, le résultat se compare. Un développeur web écrirait le même genre de site, rapide, clair et lisible sur téléphone. La différence se trouve dans la façon de le fabriquer, donc dans le temps passé, donc dans le prix.
 
@@ -91,7 +91,7 @@ Alex a construit les Minis Monstres sans formation de développeur. Il s’appui
 
 ## Point par point
 
-1. **Qui conçoit votre site ?** Chez un développeur, lui. Chez nous, Alex a conçu une fois pour toutes les modules dont votre site est fait, puis la bande les assemble avec vos réponses.
+1. **Qui conçoit votre site ?** Chez un développeur, lui. Chez nous, Alex a conçu une fois pour toutes les modules dont votre site est fait, puis il les remplit avec vos réponses.
 2. **Combien de temps ?** Des jours ou des semaines pour un site fait entièrement à la main. Chez nous, ${DELAI} en général après l’appel d’Alex.
 3. **Qui vérifie ?** Chez nous, un second petit monstre contrôle le travail du premier avant toute livraison, selon les règles écrites par Alex. Les cas délicats arrivent toujours chez lui.
 4. **Qui vous parle ?** Alex vous appelle avant chaque site, et il répond à vos messages.
@@ -137,7 +137,7 @@ Le prix doit rester doux pour vous, et assez juste pour qu’Alex vive de son tr
 ## Ce qui ne baisse jamais
 
 - **L’écoute** : un questionnaire précis, et l’appel d’Alex avant chaque site.
-- **Le contrôle** : un autre membre de la bande repasse derrière celui qui a construit votre site, puis Alex le vérifie lui-même avant de vous le livrer.
+- **Le contrôle** : Alex vérifie votre site une dernière fois, en entier, avant de vous le livrer.
 - **La qualité** : un site rapide, lisible sur téléphone, avec un formulaire de contact et les bases de la visibilité sur Google.
 - **La vérité** : rien n’est inventé sur votre activité, ni avis, ni prix, ni service.
 
