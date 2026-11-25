@@ -10,7 +10,7 @@ const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contac
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 const UPDATED = '2026-11-24'; // mentions légales : 24 novembre 2026, le SIREN de l'entreprise individuelle (le SIRET de l'activité est en cours)
 const UPDATED_CONF = '2026-11-25'; // 25 novembre 2026 : le jeu-concours de Ruban (l'adresse e-mail des participants). 24 novembre : politique de confidentialité : 24 novembre 2026, les outils au mois (comptes sans site, réseaux reliés, photos, avis et devis confiés aux outils). Avant : offre du 19 novembre 2026 (abonnement facultatif, paiement des extras par carte).
-const UPDATED_CGV = '2026-11-25'; // 25 novembre 2026 : plus d'appel avant la création (article 11), chaque site relu par un autre outil avant la livraison (article 15). 24 novembre 2026, tard : vérification par Alex (retirée le 25). Au soir : les outils mis de côté (article 20 gardé pour les abonnements en cours, avec une phrase en tête). Plus tôt le 24 novembre : article 20, les outils au mois (essai de 14 jours sans carte, abonnement outil par outil, limites, rétractation). 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
+const UPDATED_CGV = '2026-11-25'; // 25 novembre 2026, soir : la copie du site se télécharge depuis l'espace client (article 3, export). 25 novembre 2026 : plus d'appel avant la création (article 11), chaque site relu par un autre outil avant la livraison (article 15). 24 novembre 2026, tard : vérification par Alex (retirée le 25). Au soir : les outils mis de côté (article 20 gardé pour les abonnements en cours, avec une phrase en tête). Plus tôt le 24 novembre : article 20, les outils au mois (essai de 14 jours sans carte, abonnement outil par outil, limites, rétractation). 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
 // La petite bande (config.bande) : six Minis Monstres, présentés par leur prénom et leur rôle. Le parrainage est retiré (19 novembre 2026).
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
 // (règlement européen sur ces systèmes, obligation de transparence). La politique de confidentialité nomme le fournisseur.
@@ -243,7 +243,7 @@ ${ECO.inclus.map((x) => `- ${x.replace(/par vous$/, 'par le client')}`).join('\n
 
 **Première version et modifications.** Le site est livré en ligne dans une première version, faite avec les réponses et les photos du client. Avec le forfait ${mini.name}, le client modifie lui-même, sans limite, les textes et les photos de ses pages depuis son espace client, et demande les autres changements (article 12). Les modifications portent sur le site commandé : elles ne permettent pas de changer de site ni d’ajouter ce qui n’a pas été commandé.
 
-**Export du site.** L’export est possible, avec ou sans l’option ${minus(ECO.name)}. Il s’agit d’une copie complète du site, avec ses fichiers et une sauvegarde, prête à installer chez un hébergeur. Le client la reçoit avec le forfait ${AUTO}, et à la fin de son abonnement s’il en a un (article 8).
+**Export du site.** Le site appartient au client. Dès qu’il est en ligne, le client en télécharge lui-même une copie complète, quand il veut, depuis son espace client (Mon site, « Télécharger »), avec ou sans l’option ${minus(ECO.name)}. Il choisit le format : les pages HTML et CSS avec leurs images, prêtes à poser chez n’importe quel hébergeur, ou le site WordPress complet avec sa base de données, pour le réinstaller tel quel. Le fichier zip se télécharge aussitôt. Il contient un mode d’emploi. Il ne contient aucun mot de passe du serveur. Le client reçoit aussi cette copie avec le forfait ${AUTO}, et à la fin de son abonnement s’il en a un (article 8).
 
 **Visibilité Google.** La visibilité Google, aussi appelée référencement, désigne ce qui aide un site à être trouvé plus facilement sur Google. Le ${ESS.name} en pose les bases. Pour être trouvé sur plus de recherches, le client ajoute des pages de visibilité Google, une fois son site en ligne, avec l’extra prévu (voir ci-dessous). Aucune page n’est ajoutée sans sa demande.
 
@@ -498,12 +498,10 @@ Le jeu est ouvert pendant la période annoncée par Les Minis Monstres sur leur 
 
 Le gagnant reçoit :
 
-- **l’usage d’un ${ESS.name}** (valeur : ${eur(ESS.prixNormal || ESS.price)} €), créé avec ses informations et ses photos, comme pour un client qui l’achète ;
-- **un an de forfait ${mini.name}, offert** (valeur : ${eur(mini.month * 12)} €) : l’hébergement, le nom de domaine, les sauvegardes, la sécurité, les mises à jour et les modifications comprises dans le forfait.
+- **un ${ESS.name}, offert** (valeur : ${eur(ESS.prixNormal || ESS.price)} €), créé avec ses informations et ses photos, comme pour un client qui l’achète ;
+- **un an de forfait ${mini.name}, offert** (valeur : ${eur(mini.month * 12)} €) : l’hébergement, les sauvegardes, la sécurité, les mises à jour et les modifications comprises dans le forfait. S’il n’a pas de nom de domaine, on le lui fournit aussi pendant cette année.
 
-**Le site internet et le nom de domaine restent la propriété des Minis Monstres.** Le nom de domaine est enregistré au nom des Minis Monstres. Le site est fait pour le gagnant et présente son activité, mais le lot lui en donne seulement l’usage. Il ne peut ni le vendre, ni le céder, ni le transférer chez un autre hébergeur, ni en demander l’export ou une copie. Ses propres textes, photos et logo restent à lui.
-
-Au bout de l’année offerte, il peut continuer à utiliser son site avec le forfait ${mini.name} à ${eur(avecDom)} € par mois, nom de domaine compris, sans engagement. S’il ne continue pas, le site et le nom de domaine sont mis hors ligne. Les Minis Monstres en disposent ensuite librement.
+**Le site est à lui : il le garde.** Au bout de l’année offerte, il choisit librement : continuer avec le forfait ${mini.name} à ${eur(mini.month)} € par mois, sans engagement, passer au forfait ${creationSeule ? creationSeule.name : 'Autonome'} à 0 € par mois, ou récupérer l’export de son site.
 
 L’option ${ECO.name} n’est pas comprise : le gagnant peut l’ajouter au prix affiché sur le site. Le lot ne peut être ni échangé contre de l’argent, ni cédé à une autre personne.
 

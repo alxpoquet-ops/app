@@ -78,7 +78,7 @@ function aled08e_lia_appel($uid, $action, $args = []) {
     $body = wp_json_encode(['action' => $action, 'args' => (object) $args, 'n' => wp_generate_password(16, false, false)], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     $ts = (string) time();
     $r = wp_remote_post($url, [
-        'timeout' => $action === 'paiement_installer' ? 150 : 40, // installer une extension de paiement prend plus de temps
+        'timeout' => $action === 'copie' ? 600 : ($action === 'paiement_installer' ? 150 : 40), // la copie du site (zip) peut prendre plusieurs minutes // installer une extension de paiement prend plus de temps
         'headers' => ['Content-Type' => 'application/json', 'X-AlexLia-Time' => $ts, 'X-AlexLia-Signature' => hash_hmac('sha256', $ts . '.' . $body, $secret)],
         'body' => $body,
     ]);

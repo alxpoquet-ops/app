@@ -2,15 +2,16 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.14.0
+ * Version: 2.15.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.14.0');
+define('ALEXLIA_CONN_VERSION', '2.15.0');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
+require_once __DIR__ . '/copie.php'; // la copie du site (zip HTML et CSS, ou WordPress complet), à la demande de son propriétaire
 require_once __DIR__ . '/editeur.php'; // le mode « je clique, je modifie » ouvert depuis l'application du client
 
 /* =========================================================================
@@ -136,6 +137,7 @@ function alexlia_conn_action(WP_REST_Request $req) {
         case 'livraison_lire': return alexlia_bg_livraison_lire();
         case 'livraison_regler': return alexlia_bg_livraison_regler($args);
         case 'stats': return alexlia_conn_stats();
+        case 'copie': return alexlia_conn_copie($args);
         case 'vacances_lire': return alexlia_vac_get();
         case 'vacances_regler': return alexlia_vac_regler($args);
         case 'boutique_lire': return alexlia_bq_lire();

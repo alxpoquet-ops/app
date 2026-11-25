@@ -475,6 +475,24 @@ Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit
 - Suivre : `GET` donne les joueurs, les Rubans trouvés, les inscrits et les doublons possibles.
 - Fermer et tirer au sort : `{"faire": "fermer"}`. Si le gagnant ne répond pas dans les 15 jours : `{"faire": "retirer"}`.
 
-**Le lot** : l'usage d'un Site Essentiel (valeur 749 €) et un an de forfait Mini offerts, nom de domaine compris. **Le site et le nom de domaine restent la propriété des Minis Monstres** (décision d'Alex, 25 novembre 2026) : le domaine est enregistré à notre nom ; pas d'export, de cession ni de transfert pour le gagnant (ses textes, photos et logo restent à lui). Après l'année, il continue avec le forfait Mini (12 € par mois, domaine compris) ; sinon, le site et le domaine sont mis hors ligne. L'option e-commerce n'est pas comprise.
+**Le lot** : un Site Essentiel (valeur 749 €) et un an de forfait Mini offerts, avec le nom de domaine fourni cette année-là si besoin. Le site reste au gagnant. L'option e-commerce n'est pas comprise.
 
 Aucun e-mail ne part automatiquement au gagnant : Alex le prévient. Les données (e-mails, numéros, Rubans trouvés) sont effacées 3 mois après le dernier tirage.
+
+## « Télécharger mon site » : la copie du site par le client
+
+Décision d'Alex (25 novembre 2026) : **le site appartient au client.** Dans son espace, onglet **Mon site**, rubrique **Télécharger**, il choisit un format puis clique sur « Télécharger mon site ». Le zip se télécharge tout seul.
+
+**Les deux formats :**
+- **Pages HTML et CSS** : le site tel que les visiteurs le voient, avec toutes les pages, les feuilles de style, les scripts, les images et les polices. Les liens sont rendus relatifs : le dossier s'ouvre sur un ordinateur ou se pose chez n'importe quel hébergeur. Le formulaire de contact, la recherche et le panier n'y fonctionnent pas.
+- **WordPress complet** : les fichiers de WordPress (wp-admin, wp-includes, wp-content avec le thème, les extensions et toutes les images) et la base de données en un fichier SQL, plus un modèle `wp-config-a-completer.php`. La copie ne contient ni `wp-config.php` (mots de passe du serveur) ni la clé du connecteur.
+
+Chaque zip contient un `LISEZ-MOI.txt` qui explique quoi en faire.
+
+**Comment ça marche :**
+- Le zip est fabriqué sur le serveur du site du client, par le connecteur (action signée `copie`, `alexlia-connecteur/copie.php`, version 2.15.0 ou plus).
+- Il est déposé à une adresse impossible à deviner, dans `wp-content/uploads/alexlia-copies/`, puis effacé au bout de 2 heures.
+- Le navigateur du client le récupère directement là-bas. Côté espace : `includes/copie.php`.
+- Une copie toutes les 5 minutes au plus par client.
+
+**Si le connecteur d'un site est plus ancien que 2.15.0**, Alex reçoit un e-mail et le client voit « nous vous l'envoyons par e-mail ». Il faut alors mettre le connecteur à jour sur ce site. Flore et Chenilles est passé en 2.15.0 le 25 novembre 2026.

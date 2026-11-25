@@ -205,7 +205,8 @@ require_once __DIR__ . '/includes/pose.php';
 require_once __DIR__ . '/includes/ouverture.php';
 require_once __DIR__ . '/includes/atelier.php';
 require_once __DIR__ . '/includes/delai.php';
-require_once __DIR__ . '/includes/concours.php'; // le jeu-concours de Ruban, le monstre cadeau (éteint par défaut) // le site livré 24 heures après les informations complètes (annoncé « entre 24 et 48 heures »)
+require_once __DIR__ . '/includes/concours.php';
+require_once __DIR__ . '/includes/copie.php'; // « Télécharger mon site » : un zip HTML et CSS, ou WordPress complet // le jeu-concours de Ruban, le monstre cadeau (éteint par défaut) // le site livré 24 heures après les informations complètes (annoncé « entre 24 et 48 heures »)
 require_once __DIR__ . '/includes/mails.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
@@ -1246,7 +1247,7 @@ function aled08e_dashboard() {
           <?php else : ?>
           <p class="esp-empty">Aucune demande pour le moment. Un horaire, un prix, une photo à changer ? Écrivez-le dans « Modifications ».</p>
           <?php endif; ?>
-          <?php $smDem = ob_get_clean(); echo aled08e_sm_html(['monsite' => ['globe', 'Mon site', $smSite], 'pages' => ['list-checks', 'Mes pages', $smPages], 'dernieres' => ['clock', 'Mes demandes', $smDem]], 'Rubriques de Mon site'); // phpcs:ignore ?>
+          <?php $smDem = ob_get_clean(); echo aled08e_sm_html(['monsite' => ['globe', 'Mon site', $smSite], 'pages' => ['list-checks', 'Mes pages', $smPages], 'dernieres' => ['clock', 'Mes demandes', $smDem], 'copie' => ['download', 'Télécharger', aled08e_copie_html($uid)]], 'Rubriques de Mon site'); // phpcs:ignore ?>
         </div>
 
         <?php if ($cmd) : ?>
