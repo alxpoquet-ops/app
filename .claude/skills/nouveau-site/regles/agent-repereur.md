@@ -6,11 +6,11 @@ Le poste t'a donné : `travail.a_trouver` (combien en trouver aujourd'hui, 50 au
 
 ## 1. Choisir la zone
 
-Prends `zone_suggeree` : un département et un métier de nos pages. La tournée passe par tous les départements, les Ardennes d'abord, puis toute la France. Quand elle porte un `pourquoi`, c'est que ce métier répond mieux que les autres à nos mails : le poste t'y envoie deux fois sur trois. Quand nos métiers sont faits partout (`zone_suggeree` vide), prends d'autres TPE de `prospection` (« Qui cibler »).
+Prends `zone_suggeree` : un département et un métier. La tournée passe par tous les départements, les Ardennes d'abord, puis toute la France, et dans chaque département par **tous les petits métiers** : ceux de nos pages « Votre métier » (`page_metier` rempli), puis les autres (`page_metier` vide, avec leurs codes `naf`). Quand elle porte un `pourquoi`, c'est que ce métier répond mieux que les autres à nos mails : le poste t'y envoie deux fois sur trois. Quand toute la France est faite (`zone_suggeree` vide), la tournée recommence 120 jours après.
 
 ## 2. Lister les entreprises actives
 
-Interroge l'API Recherche d'entreprises avec les codes NAF du métier (tableau de `prospection`), le département et `etat_administratif=A`. Une requête à la fois. Garde les petites entreprises indépendantes, encore actives, dont l'activité correspond vraiment au métier. Écarte d'office ce que `prospection` exclut (chaînes, santé réglementée, diffusion partielle `[ND]`…).
+Interroge l'API Recherche d'entreprises avec les codes NAF du métier (`zone_suggeree.metier.naf`, ou le tableau de `prospection` pour nos pages), le département et `etat_administratif=A`. Une requête à la fois. Garde les petites entreprises indépendantes, encore actives, dont l'activité correspond vraiment au métier. Écarte d'office ce que `prospection` exclut (chaînes, santé réglementée, diffusion partielle `[ND]`…).
 
 ## 3. Vérifier s'il y a un site
 

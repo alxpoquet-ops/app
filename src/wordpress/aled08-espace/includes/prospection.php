@@ -259,6 +259,32 @@ function aled08e_px_metiers() {
     foreach ((array) (aled08e_data()['metiers'] ?? []) as $m) if (!empty($m['slug'])) $out[(string) $m['slug']] = $m;
     return $out;
 }
+/* Tous les métiers de la tournée : nos pages « Votre métier » (+10 à la note), puis les autres petits métiers dont les
+ * clients cherchent sur internet avant de venir (Alex, 25 novembre 2026 : « il y a tellement d'autres entrepreneurs »).
+ * Les codes NAF servent à l'API Recherche d'entreprises. Exclus d'office : santé réglementée, droit, tabac, jeux, armes. */
+function aled08e_px_autres_metiers() {
+    return [
+        'autre-coiffure' => ['nom' => 'Coiffeurs, barbiers', 'naf' => ['96.02A']],
+        'autre-esthetique' => ['nom' => 'Esthéticiennes, instituts de beauté, ongleries', 'naf' => ['96.02B']],
+        'autre-restaurant' => ['nom' => 'Restaurants, cafés, bars', 'naf' => ['56.10A', '56.30Z']],
+        'autre-alimentation' => ['nom' => 'Bouchers, charcutiers, poissonniers, primeurs, épiceries fines, cavistes', 'naf' => ['47.22Z', '47.23Z', '47.21Z', '47.29Z', '47.25Z']],
+        'autre-batiment' => ['nom' => 'Plaquistes, carreleurs, serruriers, menuisiers métal, ramoneurs', 'naf' => ['43.31Z', '43.33Z', '43.32B', '43.29A', '81.22Z']],
+        'autre-auto-ecole' => ['nom' => 'Auto-écoles', 'naf' => ['85.53Z']],
+        'autre-taxi' => ['nom' => 'Taxis, VTC', 'naf' => ['49.32Z']],
+        'autre-demenagement' => ['nom' => 'Déménageurs, petits transporteurs', 'naf' => ['49.42Z']],
+        'autre-immobilier' => ['nom' => 'Agences immobilières indépendantes', 'naf' => ['68.31Z']],
+        'autre-reparation' => ['nom' => 'Réparation (informatique, téléphones, électroménager, cordonniers)', 'naf' => ['95.11Z', '95.12Z', '95.21Z', '95.22Z', '95.23Z']],
+        'autre-couture' => ['nom' => 'Couturières, retouches, pressings', 'naf' => ['14.13Z', '96.01B']],
+        'autre-loisirs' => ['nom' => 'Loisirs, écoles de musique et de danse, cours particuliers', 'naf' => ['85.52Z', '93.29Z', '85.59B']],
+    ];
+}
+/* La tournée : nos métiers d'abord, puis les autres, dans chaque département */
+function aled08e_px_metiers_tournee() {
+    $out = [];
+    foreach (aled08e_px_metiers() as $slug => $m) $out[$slug] = ['slug' => $slug, 'nom' => (string) ($m['nom'] ?? $slug), 'qui' => (string) ($m['qui'] ?? ''), 'page' => true];
+    foreach (aled08e_px_autres_metiers() as $slug => $m) $out[$slug] = ['slug' => $slug, 'nom' => $m['nom'], 'qui' => $m['nom'], 'page' => false, 'naf' => $m['naf']];
+    return $out;
+}
 /* La note sur 100, calculée ici à partir de ce que le Repéreur a constaté (il ne donne pas de chiffre) */
 function aled08e_px_note($criteres, $metier_couvert) {
     $c = (array) $criteres;
@@ -908,7 +934,7 @@ function aled08e_px_tournee() { $t = get_option('aled08_prospection_tournee', []
 function aled08e_px_tournee_noter($dep, $metier) {
     $dep = strtoupper(sanitize_text_field((string) $dep));
     $metier = sanitize_key((string) $metier);
-    if (!aled08e_px_departement_ok($dep) || $metier === '') return false;
+    if (!aled08e_px_departement_ok($dep) || $metier === '' || !isset(aled08e_px_metiers_tournee()[$metier])) return false;
     $t = aled08e_px_tournee();
     $t[$dep . '|' . $metier] = time();
     $vieux = time() - 400 * DAY_IN_SECONDS;
@@ -918,12 +944,14 @@ function aled08e_px_tournee_noter($dep, $metier) {
 }
 function aled08e_px_zone_suivante() {
     $t = aled08e_px_tournee();
-    $metiers = aled08e_px_metiers();
+    $metiers = aled08e_px_metiers_tournee();
     if (!$metiers) return null;
     $limite = time() - 120 * DAY_IN_SECONDS;
     $zone = function ($dep, $slug, $pourquoi = '') use ($metiers) {
         $m = $metiers[$slug];
-        return ['departement' => $dep, 'metier' => ['slug' => $slug, 'nom' => (string) ($m['nom'] ?? $slug), 'qui' => (string) ($m['qui'] ?? '')]] + ($pourquoi !== '' ? ['pourquoi' => $pourquoi] : []);
+        $x = ['slug' => $slug, 'nom' => (string) $m['nom'], 'qui' => (string) $m['qui'], 'page_metier' => $m['page'] ? $slug : ''];
+        if (!empty($m['naf'])) $x['naf'] = $m['naf'];
+        return ['departement' => $dep, 'metier' => $x] + ($pourquoi !== '' ? ['pourquoi' => $pourquoi] : []);
     };
     // ce qui marche passe devant : deux zones sur trois vont au métier qui répond le mieux, la troisième suit la tournée
     // normale pour continuer d'essayer les autres (includes/prospection-suite.php)
@@ -935,7 +963,7 @@ function aled08e_px_zone_suivante() {
         if ((int) ($t[$dep . '|' . $slug] ?? 0) > $limite) continue;
         return $zone($dep, $slug);
     }
-    return null; // toute la France faite pour nos métiers : d'autres TPE (voir prospection.md)
+    return null; // toute la France faite, tous métiers : la tournée recommence 120 jours après
 }
 function aled08e_px_poste($agent) {
     if ($agent === 'repondeur') return function_exists('aled08e_px_poste_repondeur') ? aled08e_px_poste_repondeur() : ['agent' => $agent, 'rien_a_faire' => true];
@@ -950,7 +978,7 @@ function aled08e_px_poste($agent) {
         $aTrouver = max(0, min(50, $max - $stock));
         if ($pourquoi === '' && $aTrouver <= 0) $pourquoi = 'Assez de prospects en attente (' . $stock . ') : le Facteur doit d’abord avancer.';
         $out['travail'] = ['a_trouver' => $aTrouver, 'en_attente' => $stock, 'zone_suggeree' => aled08e_px_zone_suivante(),
-            'metiers' => array_values(array_map(function ($m) { return ['slug' => (string) $m['slug'], 'nom' => (string) ($m['nom'] ?? ''), 'qui' => (string) ($m['qui'] ?? '')]; }, aled08e_px_metiers())),
+            'metiers' => array_values(aled08e_px_metiers_tournee()),
             'zones_faites_120_jours' => count(array_filter(aled08e_px_tournee(), function ($x) { return (int) $x > time() - 120 * DAY_IN_SECONDS; }))];
     } else {
         $restant = (int) $r['quota_restant'];

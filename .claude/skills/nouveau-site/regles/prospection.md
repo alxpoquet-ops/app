@@ -44,7 +44,7 @@ Puis il invite à voir les sites déjà en ligne (« Plutôt que mille mots, voy
 
 ## Qui cibler
 
-**Oui** : les entreprises actives, petites et indépendantes, **sans site internet**, ou avec un site cassé, abandonné ou illisible sur téléphone (le Repéreur dit lequel). D'abord les métiers de nos pages « Votre métier » (le poste du Repéreur les donne), puis d'autres TPE dont les clients cherchent sur internet avant d'acheter (coiffeurs, esthéticiennes, auto-écoles, serruriers, déménageurs, chauffagistes, restaurants, cavistes, salles de sport…).
+**Oui** : les entreprises actives, petites et indépendantes, **sans site internet**, ou avec un site cassé, abandonné ou illisible sur téléphone (le Repéreur dit lequel). **Tous les petits métiers** dont les clients cherchent sur internet avant de venir, pas seulement ceux de nos pages (Alex, 25 novembre 2026 : « il y a tellement d'autres entrepreneurs »). La tournée passe département par département, les Ardennes d'abord, et dans chaque département par tous les métiers : ceux de nos pages « Votre métier » (+ 10 points), puis les autres (tableau « Les autres métiers » ci-dessous). Le poste donne chaque fois le métier et ses codes NAF.
 
 **Non** :
 
@@ -105,6 +105,25 @@ Dans chaque résultat : `siren`, `nom_complet`, `siege.liste_enseignes` (le nom 
 | `site-internet-toiletteur` | 96.09Z (vérifiez le toilettage dans le nom ou l'enseigne : ce code couvre d'autres services) |
 | `site-internet-services-a-domicile` | 81.21Z (ménage), 88.10A (aide à domicile), 81.30Z (jardinage) |
 | `site-internet-traiteur` | 56.21Z |
+
+### Les autres métiers (sans page chez nous)
+
+| Métier de la tournée (`zone.metier`) | Codes NAF |
+|---|---|
+| `autre-coiffure` | 96.02A (coiffure, barbiers) |
+| `autre-esthetique` | 96.02B (esthétique, ongleries) |
+| `autre-restaurant` | 56.10A (restaurants), 56.30Z (cafés, bars ; pas de bar-tabac) |
+| `autre-alimentation` | 47.22Z (boucherie), 47.23Z (poissonnerie), 47.21Z (primeurs), 47.29Z (épiceries fines), 47.25Z (cavistes) |
+| `autre-batiment` | 43.31Z (plâtrerie), 43.33Z (carrelage), 43.32B (serrurerie, menuiserie métal), 43.29A (isolation), 81.22Z (ramonage, nettoyage) |
+| `autre-auto-ecole` | 85.53Z |
+| `autre-taxi` | 49.32Z (taxis, VTC) |
+| `autre-demenagement` | 49.42Z |
+| `autre-immobilier` | 68.31Z (agences indépendantes seulement, jamais un réseau) |
+| `autre-reparation` | 95.11Z, 95.12Z (informatique, téléphones), 95.21Z, 95.22Z (électroménager), 95.23Z (cordonnerie) |
+| `autre-couture` | 14.13Z (couture), 96.01B (pressing, retouches) |
+| `autre-loisirs` | 85.52Z (musique, danse), 93.29Z (loisirs), 85.59B (cours particuliers) |
+
+Pour ces métiers, `metier_page` reste vide (pas de page chez nous) ; `zone.metier` reprend le nom de la tournée (`autre-coiffure`…). Les exclusions de « Qui cibler » restent valables (santé réglementée, droit, tabac, jeux, chaînes et franchises…).
 
 Un code NAF large (96.09Z, 47.78C, 94.99Z) ramène des activités très différentes : gardez seulement celles qui correspondent vraiment au métier.
 
