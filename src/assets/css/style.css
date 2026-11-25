@@ -3689,13 +3689,11 @@ button.app-logout { border: 0; background: none; font: inherit; cursor: pointer;
 .cc-ruban:focus-visible { outline: 3px solid var(--lilac-d, #8C6CF2); outline-offset: 2px; border-radius: 12px; }
 @media (prefers-reduced-motion: no-preference) {
   .cc-ruban:not(.cc-attrape) svg { animation: cc-coucou 6s ease-in-out infinite; }
-  .cc-attrape { animation: cc-attrape .9s cubic-bezier(.3, 1.6, .5, 1) forwards; }
-  .cc-confetti { position: fixed; z-index: 10000; width: 9px; height: 13px; border-radius: 3px; pointer-events: none; animation: cc-confetti 1.2s ease-out forwards; }
 }
-@media (prefers-reduced-motion: reduce) { .cc-attrape { opacity: 0; transition: opacity .4s; } .cc-confetti { display: none; } }
+/* le clic : animé en JavaScript (Web Animations, includes/concours.php), plus fiable sur iPhone qu'une animation CSS */
+.cc-attrape { pointer-events: none; transition: none; }
+.cc-confetti { position: fixed; z-index: 10000; width: 9px; height: 13px; border-radius: 3px; pointer-events: none; transform: translate(-50%, -50%); }
 @keyframes cc-coucou { 0%, 86%, 100% { transform: none; } 90% { transform: translateY(-5px) rotate(6deg); } 95% { transform: rotate(-6deg); } }
-@keyframes cc-attrape { 0% { transform: scale(1); } 35% { transform: scale(1.9) translateY(-14px) rotate(-12deg); } 60% { transform: scale(1.7) translateY(-22px) rotate(200deg); opacity: 1; } 100% { transform: scale(.2) translateY(-60px) rotate(400deg); opacity: 0; } }
-@keyframes cc-confetti { 0% { transform: translate(-50%, -50%) rotate(0); opacity: 1; } 100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy) + 90px)) rotate(var(--r)); opacity: 0; } }
 .cc-toast { position: fixed; z-index: 9999; left: 50%; bottom: 96px; transform: translateX(-50%); max-width: min(420px, calc(100vw - 32px)); margin: 0; padding: 12px 18px; border-radius: 16px; background: var(--ink); color: var(--bg); font-weight: 700; line-height: 1.4; text-align: center; box-shadow: 0 12px 30px rgba(46, 42, 71, .3); transition: opacity .5s; }
 .cc-toast.is-out { opacity: 0; }
 /* Le compteur flottant de l'espace client, avec les indices */

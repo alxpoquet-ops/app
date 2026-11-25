@@ -7,13 +7,13 @@
  *    l'espace client, les mini-tutos, la page Tarifs et les questions fréquentes. À chaque manche, leurs cachettes changent
  *    (tirées dans une réserve d'endroits bien visibles, jamais les mêmes que la manche d'avant).
  *  - Il faut être connecté à son compte (gratuit, sans achat) pour les voir. Tout le monde joue, sauf l'équipe et les anciens gagnants.
- *    Un gagnant qui a déjà un site ou une commande reçoit 3 mois de forfait Mini offerts (ajoutés tout seuls à ses mois offerts).
+ *    Un gagnant qui a déjà un site ou une commande reçoit un an de forfait Mini offert (ajoutés tout seuls à ses mois offerts).
  *  - Dans l'espace client, un compteur flottant montre les Rubans trouvés, un indice pour chacun et le chrono du tirage.
  *  - Les cinq trouvés : le joueur donne son e-mail et son numéro de portable (une participation par compte, par e-mail et par
  *    numéro ; les doublons d'appareil ou d'adresse internet sont signalés).
  *  - À la fin des 100 jours, le tirage se fait tout seul (random_int). Le gagnant reçoit un e-mail « Félicitations » avec un code
  *    personnel (GAGNANT-…), valable 30 jours, à taper dans « Créer mon site » : il suit le même parcours qu'un client, sans rien
- *    payer pour le Site Essentiel, et son forfait Mini est offert un an (includes/commandes.php). Alex reçoit une copie.
+ *    payer pour le Site Essentiel, et son forfait Mini est offert 6 mois (includes/commandes.php). Alex reçoit une copie.
  *    Puis une nouvelle manche commence, avec de nouvelles cachettes.
  *  - Sur la page d'accueil, un encart montre le chrono et les derniers gagnants dont le site est en ligne (jamais de faux gagnants).
  *
@@ -40,35 +40,35 @@ function aled08e_concours_pool() {
     $t = function ($chemin, $sel, $coin, $indice) { return ['chemin' => $chemin, 'selecteur' => $sel, 'coin' => $coin, 'indice' => $indice]; };
     return [
         'accueil' => [
-            $t('/', '#deroulement', 'bas-gauche', 'Sur la page d’accueil, je suis les étapes, de la commande à la mise en ligne.'),
-            $t('/', '#compris', 'haut-droite', 'Sur la page d’accueil, je regarde tout ce qui est compris dans votre site.'),
-            $t('/', '#uniques', 'bas-droite', 'Sur la page d’accueil, je suis là où l’on dit ce qui rend les Minis Monstres uniques.'),
-            $t('/', '#confiance', 'haut-gauche', 'Sur la page d’accueil, je me tiens près d’Alex.'),
-            $t('/', '#questions', 'bas-droite', 'Sur la page d’accueil, je me glisse entre les questions.'),
+            $t('/', '#deroulement', 'bas-gauche', 'Je ne suis pas loin de l’entrée. J’aime avancer pas à pas.'),
+            $t('/', '#compris', 'haut-droite', 'Je ne suis pas loin de l’entrée. Je fais l’inventaire.'),
+            $t('/', '#uniques', 'bas-droite', 'Je ne suis pas loin de l’entrée. Je me crois un peu à part.'),
+            $t('/', '#confiance', 'haut-gauche', 'Je ne suis pas loin de l’entrée. Je reste près de quelqu’un de confiance.'),
+            $t('/', '#questions', 'bas-droite', 'Je ne suis pas loin de l’entrée. Je doute de tout.'),
         ],
         'espace' => [
-            $t('/mon-espace/', '#t-compte [data-sm-part="infos"], #t-compte', 'bas-droite', 'Dans votre espace client, je garde vos informations au chaud, dans Mon compte.'),
-            $t('/mon-espace/', '#t-site', 'bas-droite', 'Dans votre espace client, j’attends votre futur site, dans Mon site.'),
-            $t('/mon-espace/', '#t-accueil .mm-duo, #t-accueil', 'haut-droite', 'Dans votre espace client, je lis les nouvelles de la bande, sur l’accueil.'),
-            $t('/mon-espace/', '#t-compte .compte-forfait, #t-compte', 'haut-droite', 'Dans votre espace client, je surveille votre abonnement et vos factures.'),
+            $t('/mon-espace/', '#t-compte [data-sm-part="infos"], #t-compte', 'bas-droite', 'Chez vous, je garde ce qui vous ressemble.'),
+            $t('/mon-espace/', '#t-site', 'bas-droite', 'Chez vous, je surveille votre plus beau projet.'),
+            $t('/mon-espace/', '#t-accueil .mm-duo, #t-accueil', 'haut-droite', 'Chez vous, j’écoute les nouvelles.'),
+            $t('/mon-espace/', '#t-compte .compte-forfait, #t-compte', 'haut-droite', 'Chez vous, je compte les sous.'),
         ],
         'tutos' => [
-            $t('/mini-tuto/qui-sont-les-minis-monstres/', '.tuto-section', 'haut-droite', 'Dans les mini-tutos, je me présente avec toute la bande.'),
-            $t('/mini-tuto/creer-mon-site-avec-nous/', '.tuto-section', 'bas-gauche', 'Dans les mini-tutos, je vous explique comment on crée votre site.'),
-            $t('/mini-tuto/pourquoi-choisir-les-minis-monstres/', '.tuto-section', 'haut-gauche', 'Dans les mini-tutos, je vous dis pourquoi choisir les Minis Monstres.'),
-            $t('/mini-tuto/deroulement-d-un-achat/', '.tuto-section', 'bas-droite', 'Dans les mini-tutos, je suis le déroulement d’un achat.'),
-            $t('/mini-tuto/combien-de-temps-pour-mon-site/', '.tuto-section', 'haut-droite', 'Dans les mini-tutos, je compte le temps qu’il faut pour un site.'),
+            $t('/mini-tuto/qui-sont-les-minis-monstres/', '.tuto-section', 'haut-droite', 'Là où l’on apprend, je fais les présentations.'),
+            $t('/mini-tuto/creer-mon-site-avec-nous/', '.tuto-section', 'bas-gauche', 'Là où l’on apprend, je mets la main à la pâte.'),
+            $t('/mini-tuto/pourquoi-choisir-les-minis-monstres/', '.tuto-section', 'haut-gauche', 'Là où l’on apprend, j’aide ceux qui hésitent.'),
+            $t('/mini-tuto/deroulement-d-un-achat/', '.tuto-section', 'bas-droite', 'Là où l’on apprend, je suis un panier.'),
+            $t('/mini-tuto/combien-de-temps-pour-mon-site/', '.tuto-section', 'haut-droite', 'Là où l’on apprend, je regarde l’horloge.'),
         ],
         'tarifs' => [
-            $t('/tarifs/', '#extras', 'haut-gauche', 'Sur la page des tarifs, je joue avec les extras.'),
-            $t('/tarifs/', '#comment', 'bas-droite', 'Sur la page des tarifs, j’explique comment c’est possible.'),
-            $t('/tarifs/', '#detail', 'haut-droite', 'Sur la page des tarifs, je lis le détail de ce qui est compris.'),
-            $t('/tarifs/', '#questions', 'bas-gauche', 'Sur la page des tarifs, je réponds aux questions.'),
+            $t('/tarifs/', '#extras', 'haut-gauche', 'Là où l’on parle d’argent, j’aime les petits plus.'),
+            $t('/tarifs/', '#comment', 'bas-droite', 'Là où l’on parle d’argent, je me demande comment c’est possible.'),
+            $t('/tarifs/', '#detail', 'haut-droite', 'Là où l’on parle d’argent, je lis les petites lignes.'),
+            $t('/tarifs/', '#questions', 'bas-gauche', 'Là où l’on parle d’argent, j’hésite encore.'),
         ],
         'faq' => [
-            $t('/faq/', '.page-hero + .section', 'haut-droite', 'Vous avez une question ? Je me cache en haut des réponses.'),
-            $t('/faq/', '.page-hero + .section', 'bas-gauche', 'Vous avez une question ? Je vous attends tout en bas des réponses.'),
-            $t('/faq/', '.page-hero', 'bas-droite', 'Vous avez une question ? Je suis juste sous le titre des questions fréquentes.'),
+            $t('/faq/', '.page-hero + .section', 'haut-droite', 'Là où l’on vous répond, je suis pressé.'),
+            $t('/faq/', '.page-hero + .section', 'bas-gauche', 'Là où l’on vous répond, je suis patient.'),
+            $t('/faq/', '.page-hero', 'bas-droite', 'Là où l’on vous répond, je n’ai pas lu la suite.'),
         ],
     ];
 }
@@ -93,6 +93,7 @@ function aled08e_concours_cachettes() {
     $out = [];
     foreach (aled08e_concours_categories() as $k => $cat) {
         $c = (isset($e['cachettes'][$k]) && is_array($e['cachettes'][$k]) && !empty($e['cachettes'][$k]['chemin'])) ? $e['cachettes'][$k] : $pool[$k][0];
+        foreach ($pool[$k] as $pc) if ($pc['chemin'] === $c['chemin'] && $pc['selecteur'] === $c['selecteur'] && $pc['coin'] === $c['coin']) $c['indice'] = $pc['indice']; // les indices à jour, même en cours de manche
         $out[$k] = ['categorie' => $cat] + array_intersect_key($c, array_flip(['chemin', 'selecteur', 'coin', 'indice']));
     }
     return $out;
@@ -116,8 +117,9 @@ function aled08e_concours_peut_jouer($u) {
     if (!$u || empty($u->ID) || user_can($u, 'edit_posts')) return false;
     return aled08e_meta((int) $u->ID, 'concours_gagne') === ''; // une seule victoire par personne ; les clients jouent aussi (Alex, 25 novembre 2026)
 }
-/* Un client a déjà un site ou une commande chez nous : s'il gagne, son lot est 3 mois de forfait Mini offerts (pas un site) */
-define('ALED08E_LOT_CLIENT_MOIS', 3);
+/* Un client a déjà un site ou une commande chez nous : s'il gagne, son lot est un an de forfait Mini offert (pas un site) */
+define('ALED08E_LOT_CLIENT_MOIS', 12); // un client gagnant : un an de forfait Mini (Alex, 25 novembre 2026, au lieu de 3 mois)
+define('ALED08E_LOT_SITE_MOIS', 6);    // un nouveau gagnant : le site, et 6 mois de forfait Mini (au lieu d'un an)
 function aled08e_concours_est_client($uid) {
     $uid = (int) $uid;
     if (aled08e_meta($uid, 'lia_url') !== '' || aled08e_meta($uid, 'site') !== '') return true;
@@ -126,10 +128,10 @@ function aled08e_concours_est_client($uid) {
 }
 function aled08e_concours_lot_txt($uid) {
     $D = aled08e_data();
-    if (aled08e_concours_est_client($uid)) return ALED08E_LOT_CLIENT_MOIS . ' mois de forfait Mini offerts, ajoutés tout seuls à vos mois offerts';
+    if (aled08e_concours_est_client($uid)) return 'un an de forfait Mini offert (12 mois), ajouté tout seul à vos mois offerts';
     $valeur = (float) ($D['creation']['prixNormal'] ?? ($D['creation']['prix'] ?? 0));
     $mini = 0; foreach ((array) ($D['forfaits'] ?? []) as $f) { $mini = (float) ($f['month'] ?? 0); break; }
-    return 'un site internet offert (le Site Essentiel, d’une valeur de ' . aled08e_euro_txt($valeur) . ') et un an de forfait Mini (' . aled08e_euro_txt($mini * 12) . ')';
+    return 'un site internet offert (le Site Essentiel, d’une valeur de ' . aled08e_euro_txt($valeur) . ') et ' . ALED08E_LOT_SITE_MOIS . ' mois de forfait Mini (' . aled08e_euro_txt($mini * ALED08E_LOT_SITE_MOIS) . ')';
 }
 /* Un numéro de portable français (métropole et outre-mer : 06 et 07), sous la forme +33XXXXXXXXX ; '' s'il n'est pas valable */
 function aled08e_concours_tel($t) {
@@ -201,7 +203,7 @@ function aled08e_concours_designer(&$e, $id, $exclus = [], $faire = 'tirer') {
     if ($g) {
         update_user_meta($g['user'], 'aled08_concours_gagne', $id);
         if (aled08e_concours_est_client($g['user'])) {
-            // un client : 3 mois de forfait Mini offerts, ajoutés tout de suite à ses mois offerts (includes/parrainage.php)
+            // un client : un an de forfait Mini offert, ajoutés tout de suite à ses mois offerts (includes/parrainage.php)
             $t['lot'] = 'mois';
             $t['mois'] = ALED08E_LOT_CLIENT_MOIS;
             $t['detail'] = function_exists('aled08e_mois_offerts_ajouter') ? aled08e_mois_offerts_ajouter($g['user'], ALED08E_LOT_CLIENT_MOIS, 'concours') : '';
@@ -216,7 +218,7 @@ function aled08e_concours_designer(&$e, $id, $exclus = [], $faire = 'tirer') {
     $e['tirages'][] = $t;
     $txt = !$g ? 'Personne n’a trouvé les cinq Rubans : pas de gagnant pour cette manche.'
         : 'Gagnant tiré au sort parmi ' . $g['parmi'] . ' participation' . ($g['parmi'] > 1 ? 's' : '') . ' : ' . $g['nom'] . ' (' . $g['email'] . '). '
-          . ($t['lot'] === 'mois' ? 'Déjà client : ' . ALED08E_LOT_CLIENT_MOIS . ' mois de forfait Mini offerts, ajoutés tout seuls. ' . ($t['detail'] ?? '') : 'Code ' . $t['code'] . ', valable jusqu’au ' . aled08e_date_fr($t['code_fin'], false) . '. Il commande son site sur « Créer mon site » comme un client, sans payer le Site Essentiel, et son forfait Mini est offert un an.')
+          . ($t['lot'] === 'mois' ? 'Déjà client : un an de forfait Mini offert (' . ALED08E_LOT_CLIENT_MOIS . ' mois), ajouté tout seul. ' . ($t['detail'] ?? '') : 'Code ' . $t['code'] . ', valable jusqu’au ' . aled08e_date_fr($t['code_fin'], false) . '. Il commande son site sur « Créer mon site » comme un client, sans payer le Site Essentiel, et son forfait Mini est offert ' . ALED08E_LOT_SITE_MOIS . ' mois.')
           . ($g['doublon_possible'] ? ' Attention : ' . $g['doublon_possible'] . '.' : '');
     wp_mail(aled08e_to(), $g ? 'Jeu-concours : le gagnant de la manche ' . (int) $e['manche'] : 'Jeu-concours : pas de gagnant pour la manche ' . (int) $e['manche'], $txt . "\n\nLe gagnant a reçu son e-mail de félicitations.\n", aled08e_mail_headers());
     if (function_exists('aled08e_memoire_ajouter')) aled08e_memoire_ajouter('journal', 'Jeu-concours, manche ' . (int) $e['manche'] . ' : ' . ($faire === 'retirer' ? 'nouveau tirage' : 'tirage'), $txt, $g ? $g['user'] : 0, 'claude');
@@ -227,10 +229,10 @@ function aled08e_concours_mail_gagnant_client($t) {
     $prenom = $u && function_exists('aled08e_prenom') ? aled08e_prenom($u) : ($u ? $u->display_name : '');
     $corps = 'Bonjour ' . $prenom . ",\n\n"
         . "Félicitations : vous avez gagné le jeu des Rubans !\n\n"
-        . 'Vous avez déjà votre site chez nous : votre lot, ce sont ' . ALED08E_LOT_CLIENT_MOIS . " mois de forfait Mini offerts. Ils sont déjà ajoutés à votre compte, vous n’avez rien à faire.\n"
+        . "Vous avez déjà votre site chez nous : votre lot, c’est un an de forfait Mini offert. Il est déjà ajouté à votre compte, vous n’avez rien à faire.\n"
         . (!empty($t['detail']) ? $t['detail'] . "\n" : '')
         . "\nVous les retrouvez dans votre espace client (Mon compte) :\n" . aled08e_url() . "\n\nEncore bravo, et merci de votre fidélité !\nAlex et les Minis Monstres\n";
-    return wp_mail($t['email'], 'Félicitations : ' . ALED08E_LOT_CLIENT_MOIS . ' mois de forfait offerts !', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
+    return wp_mail($t['email'], 'Félicitations : un an de forfait offert !', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
 }
 function aled08e_concours_mail_gagnant($t) {
     $u = get_userdata($t['user']);
@@ -240,12 +242,12 @@ function aled08e_concours_mail_gagnant($t) {
     $lien = add_query_arg('code', $t['code'], home_url('/creer-mon-site/'));
     $corps = 'Bonjour ' . $prenom . ",\n\n"
         . "Félicitations : vous avez gagné un site internet !\n\n"
-        . 'Vous avez trouvé les cinq Rubans, et le tirage au sort vous a désigné. Votre lot : un Site Essentiel (valeur ' . aled08e_euro_txt($valeur) . ") et un an de forfait Mini, offerts. Le site est à vous : vous le gardez.\n\n"
+        . 'Vous avez trouvé les cinq Rubans, et le tirage au sort vous a désigné. Votre lot : un Site Essentiel (valeur ' . aled08e_euro_txt($valeur) . ') et ' . ALED08E_LOT_SITE_MOIS . " mois de forfait Mini, offerts. Le site est à vous : vous le gardez.\n\n"
         . "Votre code personnel : " . $t['code'] . "\n"
         . 'Il est valable jusqu’au ' . aled08e_date_fr($t['code_fin'], false) . ", seulement avec votre compte.\n\n"
         . "Pour recevoir votre site :\n"
         . "1. Connectez-vous à votre espace client, puis ouvrez « Créer mon site » avec ce lien (le code est déjà rempli) :\n   " . $lien . "\n"
-        . "2. Faites les mêmes choix qu’un client : votre nom de domaine, puis vos coordonnées. Vous ne payez rien pour le site, et le forfait Mini est offert un an.\n"
+        . '2. Faites les mêmes choix qu’un client : votre nom de domaine, puis vos coordonnées. Vous ne payez rien pour le site, et le forfait Mini est offert ' . ALED08E_LOT_SITE_MOIS . " mois.\n"
         . "3. Remplissez le questionnaire de création dans votre espace : votre site est en ligne 24 à 48 heures après.\n\n"
         . "Si vous ajoutez l’option e-commerce, seule cette option est à payer.\n\n"
         . "Encore bravo, et à très vite !\nAlex et les Minis Monstres\n";
@@ -295,7 +297,7 @@ function aled08e_concours_lot_utilise($code, $pid) {
     $e['tirages'][$t['index']]['commande'] = (int) $pid;
     aled08e_concours_sauver($e);
 }
-/* Le forfait Mini offert un an : à la fin, l'offre s'arrête et le client démarre son forfait (rappel un mois avant) */
+/* Le forfait Mini offert (lot du jeu-concours) : à la fin, l'offre s'arrête et le client démarre son forfait (rappel un mois avant) */
 add_action('aled08_quotidien', function () {
     foreach (get_users(['meta_key' => 'aled08_offert_fin', 'number' => 500]) as $u) {
         $fin = (int) get_user_meta($u->ID, 'aled08_offert_fin', true);
@@ -303,11 +305,11 @@ add_action('aled08_quotidien', function () {
         if ($fin <= time()) {
             delete_user_meta($u->ID, 'aled08_offert');
             delete_user_meta($u->ID, 'aled08_offert_fin');
-            wp_mail($u->user_email, 'Votre année de forfait Mini offerte est terminée', 'Bonjour ' . (function_exists('aled08e_prenom') ? aled08e_prenom($u) : $u->display_name) . ",\n\nVotre année de forfait Mini offerte (votre lot du jeu-concours) est terminée.\n\nPour garder votre site en ligne avec nous, démarrez votre forfait dans votre espace client (Mon compte, « Mon forfait ») :\n" . aled08e_url() . "\n\nVous préférez l’héberger ailleurs ? Téléchargez-le à tout moment dans Mon site, « Télécharger » : il est à vous.\n\nÀ bientôt,\nAlex et les Minis Monstres\n", aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
-            wp_mail(aled08e_to(), 'Fin de l’année offerte : ' . $u->display_name, 'L’année de forfait Mini offerte (lot du jeu-concours) de ' . $u->display_name . ' <' . $u->user_email . "> est terminée. Il a été invité à démarrer son forfait.\n", aled08e_mail_headers());
+            wp_mail($u->user_email, 'Vos mois de forfait Mini offerts sont terminés', 'Bonjour ' . (function_exists('aled08e_prenom') ? aled08e_prenom($u) : $u->display_name) . ",\n\nVos mois de forfait Mini offerts (votre lot du jeu-concours) sont terminés.\n\nPour garder votre site en ligne avec nous, démarrez votre forfait dans votre espace client (Mon compte, « Mon forfait ») :\n" . aled08e_url() . "\n\nVous préférez l’héberger ailleurs ? Téléchargez-le à tout moment dans Mon site, « Télécharger » : il est à vous.\n\nÀ bientôt,\nAlex et les Minis Monstres\n", aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
+            wp_mail(aled08e_to(), 'Fin du forfait offert : ' . $u->display_name, 'Le forfait Mini offert (lot du jeu-concours) de ' . $u->display_name . ' <' . $u->user_email . "> est terminée. Il a été invité à démarrer son forfait.\n", aled08e_mail_headers());
         } elseif ($fin - time() < 30 * DAY_IN_SECONDS && !get_user_meta($u->ID, 'aled08_offert_rappel', true)) {
             update_user_meta($u->ID, 'aled08_offert_rappel', 1);
-            wp_mail($u->user_email, 'Votre forfait Mini offert se termine le ' . aled08e_date_fr($fin, false), 'Bonjour ' . (function_exists('aled08e_prenom') ? aled08e_prenom($u) : $u->display_name) . ",\n\nPetit rappel : votre année de forfait Mini offerte se termine le " . aled08e_date_fr($fin, false) . ".\nEnsuite, le forfait Mini continue à " . aled08e_euro_txt((float) ((aled08e_data()['forfaits'][0]['month'] ?? 10))) . " par mois, sans engagement : vous le démarrerez dans votre espace client. Vous pouvez aussi télécharger votre site (Mon site, « Télécharger ») et l’héberger où vous voulez.\n\nÀ bientôt,\nAlex et les Minis Monstres\n", aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
+            wp_mail($u->user_email, 'Votre forfait Mini offert se termine le ' . aled08e_date_fr($fin, false), 'Bonjour ' . (function_exists('aled08e_prenom') ? aled08e_prenom($u) : $u->display_name) . ",\n\nPetit rappel : votre forfait Mini offert se termine le " . aled08e_date_fr($fin, false) . ".\nEnsuite, le forfait Mini continue à " . aled08e_euro_txt((float) ((aled08e_data()['forfaits'][0]['month'] ?? 10))) . " par mois, sans engagement : vous le démarrerez dans votre espace client. Vous pouvez aussi télécharger votre site (Mon site, « Télécharger ») et l’héberger où vous voulez.\n\nÀ bientôt,\nAlex et les Minis Monstres\n", aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
         }
     }
 });
@@ -339,7 +341,7 @@ function aled08e_concours_encart_html() {
     $h .= '<span class="jr-art" aria-hidden="true">' . aled08e_monster('ruban') . '</span><div class="jr-corps">';
     $h .= '<p class="jr-sur">Le jeu des Rubans</p><h2 class="jr-titre">Un site internet à gagner tous les ' . (int) ($e['jours'] ?: ALED08E_MANCHE_JOURS) . ' jours</h2>';
     if (aled08e_concours_ouvert()) {
-        $h .= '<p>Cinq Rubans, de petits monstres cadeaux, se cachent sur notre site. Créez votre espace client (c’est gratuit), trouvez-les tous et participez au tirage au sort. Déjà client ? Vous jouez aussi : à gagner, ' . (int) ALED08E_LOT_CLIENT_MOIS . ' mois de forfait offerts.</p>';
+        $h .= '<p>Cinq Rubans, de petits monstres cadeaux, se cachent sur notre site. Créez votre espace client (c’est gratuit), trouvez-les tous et participez au tirage au sort. Déjà client ? Vous jouez aussi : à gagner, un an de forfait offert.</p>';
         $h .= '<p class="jr-chrono" data-jr-fin="' . (int) $e['fin'] . '">' . aled08e_icon('clock') . '<span>Prochain tirage dans <b data-jr-reste>' . esc_html(aled08e_concours_reste_txt($e['fin'])) . '</b>, le ' . esc_html(aled08e_date_fr((int) $e['fin'])) . ' (heure de Paris)</span></p>';
         $h .= '<p class="jr-go"><a class="btn btn-primary" href="' . esc_url(aled08e_url() . '#inscription') . '">' . aled08e_icon('gift') . '<span>Je joue</span></a> <a class="jr-regl" href="' . esc_url(home_url('/jeu-concours/')) . '">Le règlement</a></p>';
     }
@@ -364,7 +366,7 @@ add_action('wp_footer', function () {
     $mini = 0; foreach ((array) ($D['forfaits'] ?? []) as $f) { $mini = (float) ($f['month'] ?? 0); break; }
     $cfg = ['ajax' => admin_url('admin-ajax.php'), 'espace' => function_exists('aled08e_url') ? aled08e_url() : home_url('/mon-espace/'),
         'reglement' => home_url('/jeu-concours/'), 'ruban' => aled08e_monster('ruban'), 'icones' => ['x' => aled08e_icon('x'), 'check' => aled08e_icon('check'), 'gift' => aled08e_icon('gift'), 'clock' => aled08e_icon('clock')],
-        'lot' => 'un site internet offert (le Site Essentiel, d’une valeur de ' . aled08e_euro_txt($valeur) . ') et un an de forfait Mini (' . aled08e_euro_txt($mini * 12) . ')'];
+        'lot' => 'un site internet offert (le Site Essentiel, d’une valeur de ' . aled08e_euro_txt($valeur) . ') et ' . ALED08E_LOT_SITE_MOIS . ' mois de forfait Mini (' . aled08e_euro_txt($mini * ALED08E_LOT_SITE_MOIS) . ')'];
     ?>
 <script id="lmm-rubans">
 (function (C) {
@@ -376,12 +378,33 @@ add_action('wp_footer', function () {
   var reste = function (court) { var s = Math.max(0, Math.floor((etat.fin * 1000 - Date.now()) / 1000)), j = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
     return court ? (j ? j + ' j' : deux(h) + ':' + deux(m)) : (j ? j + ' j ' : '') + deux(h) + ' h ' + deux(m) + ' min ' + deux(x) + ' s'; };
   function toast(t) { var x = el('<p class="cc-toast" role="status"></p>'); x.textContent = t; document.body.appendChild(x); setTimeout(function () { x.classList.add('is-out'); }, 3600); setTimeout(function () { x.remove(); }, 4200); }
+  var calme = function () { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; };
+  // Les confettis : animés par le navigateur (Web Animations), retirés quoi qu'il arrive au bout de 1,2 seconde
   function confettis(x, y) {
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (calme()) return;
     var cols = ['#FF9EC4', '#FFE07A', '#A9EFD4', '#AED2FF', '#C9B8FF', '#FFB38A'];
-    for (var i = 0; i < 26; i++) { var p = document.createElement('i'); p.className = 'cc-confetti'; var a = Math.random() * Math.PI * 2, d = 60 + Math.random() * 110;
-      p.style.cssText = 'left:' + x + 'px;top:' + y + 'px;background:' + cols[i % cols.length] + ';--dx:' + Math.cos(a) * d + 'px;--dy:' + (Math.sin(a) * d - 40) + 'px;--r:' + (Math.random() * 720 - 360) + 'deg';
-      document.body.appendChild(p); setTimeout(function (q) { return function () { q.remove(); }; }(p), 1300); }
+    for (var i = 0; i < 26; i++) {
+      var p = document.createElement('i'); p.className = 'cc-confetti';
+      var a = Math.random() * Math.PI * 2, d = 60 + Math.random() * 110, dx = Math.cos(a) * d, dy = Math.sin(a) * d + 50, r = Math.random() * 720 - 360;
+      p.style.left = x + 'px'; p.style.top = y + 'px'; p.style.background = cols[i % cols.length];
+      document.body.appendChild(p);
+      if (p.animate) p.animate([{ transform: 'translate(-50%, -50%) rotate(0deg)', opacity: 1 }, { transform: 'translate(' + (dx - 4) + 'px, ' + (dy - 6) + 'px) rotate(' + r + 'deg)', opacity: 0 }], { duration: 1100, easing: 'ease-out', fill: 'forwards' });
+      else p.style.opacity = '0';
+      setTimeout(function (q) { return function () { if (q.parentNode) q.parentNode.removeChild(q); }; }(p), 1200);
+    }
+  }
+  // Ruban saute, tourne et s'envole ; il quitte la page au bout de 0,9 seconde, même si le serveur tarde ou ne répond pas
+  function envol(b) {
+    b.disabled = true; b.classList.add('cc-attrape');
+    var s = b.querySelector('svg');
+    if (s && s.animate && !calme()) s.animate([
+      { transform: 'scale(1) rotate(0deg)', opacity: 1 },
+      { transform: 'scale(1.8) translateY(-10px) rotate(-12deg)', opacity: 1, offset: 0.35 },
+      { transform: 'scale(1.6) translateY(-18px) rotate(200deg)', opacity: 1, offset: 0.6 },
+      { transform: 'scale(0.2) translateY(-50px) rotate(400deg)', opacity: 0 }
+    ], { duration: 850, easing: 'ease-in-out', fill: 'forwards' });
+    else b.style.opacity = '0';
+    setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 900);
   }
   // Le compteur flottant de l'espace client : les Rubans trouvés, le chrono du tirage et les indices
   function compteur() {
@@ -410,7 +433,7 @@ add_action('wp_footer', function () {
     var d = document.querySelector('[data-cc-dialog]'); if (d) d.remove();
     d = el('<dialog class="cc-dialog" data-cc-dialog aria-labelledby="cc-titre"><form method="dialog" class="cc-fermer-f"><button class="cc-fermer" aria-label="Fermer">' + C.icones.x + '</button></form>'
       + '<div class="cc-art" aria-hidden="true">' + C.ruban + '</div><h2 id="cc-titre">Bravo, vous avez trouvé les ' + etat.total + ' Rubans !</h2>'
-      + '<p>Ils gardent un cadeau : <strong>' + (etat.lot || C.lot) + '</strong>.' + (etat.client ? '' : ' Le site est à vous : vous le gardez, même après l’année offerte.') + ' Le tirage a lieu dans <b>' + reste(false) + '</b> : le gagnant est prévenu par e-mail.</p>'
+      + '<p>Ils gardent un cadeau : <strong>' + (etat.lot || C.lot) + '</strong>.' + (etat.client ? '' : ' Le site est à vous : vous le gardez, même après les mois offerts.') + ' Le tirage a lieu dans <b>' + reste(false) + '</b> : le gagnant est prévenu par e-mail.</p>'
       + '<div class="cc-deja" hidden><p class="cc-ok">' + C.icones.check + '<span>C’est noté : vous participez au tirage au sort. Bonne chance !</span></p></div>'
       + '<form class="cc-form"><label class="cc-label" for="cc-mail">Votre adresse e-mail, pour vous prévenir si vous gagnez</label><input class="cc-input" id="cc-mail" type="email" name="email" required autocomplete="email">'
       + '<label class="cc-label" for="cc-tel">Votre numéro de portable</label><input class="cc-input" id="cc-tel" type="tel" name="tel" required autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78"><small class="cc-aide">Un numéro ne sert qu’une fois : une seule participation par personne.</small>'
@@ -436,11 +459,11 @@ add_action('wp_footer', function () {
     var b = el('<button type="button" class="cc-ruban cc-' + r.coin + '" aria-label="Un petit monstre cadeau se cache ici : l’attraper">' + C.ruban + '</button>');
     cible.classList.add('cc-cachette'); cible.appendChild(b);
     b.addEventListener('click', function () {
-      if (b.disabled) return; b.disabled = true;
-      var z = b.getBoundingClientRect(); confettis(z.left + z.width / 2, z.top + z.height / 2); b.classList.add('cc-attrape');
-      post('aled08e_ruban_trouve', { _cc: etat.nonce, jeton: r.jeton }).then(function (j) {
-        setTimeout(function () { b.remove(); }, 900);
-        if (!j || !j.success) { toast((j && j.data && j.data.message) || 'Ruban s’est échappé ! Rechargez la page.'); return; }
+      if (b.disabled) return;
+      var z = b.getBoundingClientRect(); confettis(z.left + z.width / 2, z.top + z.height / 2); envol(b);
+      var rate = function (m) { toast(m || 'Ruban s’est échappé ! Il revient dans un instant : réessayez.'); setTimeout(function () { cacher(r); }, 1500); };
+      post('aled08e_ruban_trouve', { _cc: etat.nonce, jeton: r.jeton }).catch(function () { return null; }).then(function (j) {
+        if (!j || !j.success) { rate(j && j.data && j.data.message); return; }
         etat.trouves = j.data.trouves; compteur();
         var n = etat.trouves.length;
         if (n >= etat.total && !etat.inscrit) setTimeout(formulaire, 950);

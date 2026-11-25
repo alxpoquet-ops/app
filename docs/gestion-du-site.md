@@ -456,8 +456,9 @@ Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit
 - Cinq Rubans se cachent, un par catégorie du règlement : la page d'accueil, l'espace client, les mini-tutos, la page Tarifs et les questions fréquentes.
 - À chaque manche, leurs cachettes sont tirées au hasard dans une réserve d'endroits bien visibles (`aled08e_concours_pool()`), jamais les mêmes que la manche d'avant.
 - Le joueur doit être connecté. Tout le monde joue, sauf l'équipe et les anciens gagnants (décision d'Alex, 25 novembre 2026 : les clients aussi).
-- Un gagnant qui a déjà un site ou une commande reçoit **3 mois de forfait Mini offerts** (`ALED08E_LOT_CLIENT_MOIS`). Ils sont ajoutés tout seuls avec `aled08e_mois_offerts_ajouter`, comme le parrainage : abonnement suspendu s'il est en cours, sinon mis de côté pour le démarrage du forfait. Ils s'affichent dans son « compteur de mois offerts » : accueil de l'espace, et Mon compte › Mon forfait. Il reçoit l'e-mail « Félicitations : 3 mois de forfait offerts ! ».
-- Un clic sur un Ruban lance l'animation (saut, tour, confettis) et le compte.
+- Un gagnant qui a déjà un site ou une commande reçoit **un an de forfait Mini offert** (12 mois, `ALED08E_LOT_CLIENT_MOIS`, décision d'Alex du 25 novembre 2026). Ils sont ajoutés tout seuls avec `aled08e_mois_offerts_ajouter`, comme le parrainage : abonnement suspendu s'il est en cours, sinon mis de côté pour le démarrage du forfait. Ils s'affichent dans son « compteur de mois offerts » : accueil de l'espace, et Mon compte › Mon forfait. Il reçoit l'e-mail « Félicitations : un an de forfait offert ! ».
+- Un clic sur un Ruban lance l'animation (saut, tour, confettis) et le compte. L'animation est jouée en JavaScript (Web Animations) et Ruban quitte la page au bout de 0,9 seconde quoi qu'il arrive ; si le serveur ne répond pas, un message s'affiche et Ruban revient à sa place.
+- Les indices restent vagues (une pièce, une humeur), pas l'endroit exact : trouver doit demander de chercher.
 - Dans l'espace client, un compteur flottant (en bas à gauche) affiche les Rubans trouvés sur 5 et le chrono du tirage. Ouvert, il montre le temps exact et un indice par Ruban.
 - Les cinq trouvés, le joueur donne son e-mail et son numéro de portable. Le numéro sert seulement à empêcher les doublons : on n'appelle personne.
 
@@ -475,9 +476,9 @@ Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit
 
 **Le lot, comme un client qui a payé.** Le gagnant ouvre « Créer mon site » avec son code (le lien de l'e-mail le remplit). Il fait les mêmes choix qu'un client.
 - Le Site Essentiel est à 0 €. L'option e-commerce reste payante.
-- Avec le forfait Mini, il est « Offert jusqu'au … » pendant un an, nom de domaine compris (métas `aled08_offert` et `aled08_offert_fin`).
+- Avec le forfait Mini, il est « Offert jusqu'au … » pendant 6 mois (`ALED08E_LOT_SITE_MOIS`), nom de domaine compris (métas `aled08_offert` et `aled08_offert_fin`).
 - Si tout est à 0 €, la commande passe « Payée » sans passer par Stripe, puis suit le parcours normal : questionnaire, création, livraison à 24 heures.
-- Un mois avant la fin de l'année offerte, le client reçoit un rappel. À la fin, l'offre s'arrête et il est invité à démarrer son forfait ou à télécharger son site.
+- Un mois avant la fin des 6 mois offerts, le client reçoit un rappel. À la fin, l'offre s'arrête et il est invité à démarrer son forfait ou à télécharger son site.
 - Le site est à lui.
 
 **L'accueil.** Un encart « Le jeu des Rubans » montre le chrono et le bouton « Je joue ». Il liste les derniers gagnants (nom de l'activité, ville, lien vers le site) dès que leur site est en ligne. Jamais de faux gagnants.

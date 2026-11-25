@@ -1155,7 +1155,7 @@ function aled08e_dashboard() {
     if ($offert) $price = 0;
     $fNom = aled08e_meta($uid, 'forfait_nom') !== '' ? aled08e_meta($uid, 'forfait_nom') : ($f['name'] ?? '');
     // un prix offert : barré, puis « Offert »
-    $offertFin = (int) aled08e_meta($uid, 'offert_fin'); // le lot du jeu-concours : offert un an, jusqu'à cette date
+    $offertFin = (int) aled08e_meta($uid, 'offert_fin'); // le lot du jeu-concours : offert 6 mois, jusqu'à cette date
     $barre = function ($montant) use ($per, $offertFin) { return '<s class="app-barre">' . aled08e_euro($montant) . ' ' . esc_html($per) . '</s> <b class="app-offert">Offert' . ($offertFin ? ' jusqu’au ' . esc_html(wp_date('j F Y', $offertFin)) : '') . '</b>'; };
     $total = $price;
     if (!$offert) foreach ($optsMois as $o) $total += $annuel ? $o['month'] * (12 - (int) $D['moisOfferts']) : $o['month'];

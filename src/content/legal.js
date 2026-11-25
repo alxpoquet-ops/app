@@ -513,13 +513,13 @@ Chaque manche dure 100 jours. La date et l’heure du prochain tirage sont affic
 Le gagnant de chaque manche qui n’a pas encore de site chez les Minis Monstres reçoit :
 
 - **un ${ESS.name}, offert** (valeur : ${eur(ESS.prixNormal || ESS.price)} €), créé avec ses informations et ses photos, comme pour un client qui l’achète ;
-- **un an de forfait ${mini.name}, offert** (valeur : ${eur(mini.month * 12)} €) : l’hébergement, les sauvegardes, la sécurité, les mises à jour et les modifications comprises dans le forfait. S’il n’a pas de nom de domaine, on le lui fournit aussi pendant cette année.
+- **6 mois de forfait ${mini.name}, offerts** (valeur : ${eur(mini.month * 6)} €) : l’hébergement, les sauvegardes, la sécurité, les mises à jour et les modifications comprises dans le forfait. S’il n’a pas de nom de domaine, on le lui fournit aussi pendant ces 6 mois.
 
-**Le site est à lui : il le garde.** Au bout de l’année offerte, il choisit librement : continuer avec le forfait ${mini.name} à ${eur(mini.month)} € par mois, sans engagement, passer au forfait ${creationSeule ? creationSeule.name : 'Autonome'} à 0 € par mois, ou télécharger son site depuis son espace client pour l’héberger ailleurs.
+**Le site est à lui : il le garde.** Au bout des 6 mois offerts, il choisit librement : continuer avec le forfait ${mini.name} à ${eur(mini.month)} € par mois, sans engagement, passer au forfait ${creationSeule ? creationSeule.name : 'Autonome'} à 0 € par mois, ou télécharger son site depuis son espace client pour l’héberger ailleurs.
 
 L’option ${ECO.name} n’est pas comprise : le gagnant peut l’ajouter au prix affiché sur le site.
 
-**Le gagnant qui a déjà un site ou une commande chez les Minis Monstres** reçoit **3 mois de forfait ${mini.name} offerts** (valeur : ${eur(mini.month * 3)} €). Ils sont ajoutés automatiquement à son compte, sans démarche : si son abonnement est en cours, ses factures sont suspendues pendant 3 mois ; sinon, les 3 mois l’attendent pour le démarrage de son forfait. Ils s’affichent dans son espace client, avec ses autres mois offerts.
+**Le gagnant qui a déjà un site ou une commande chez les Minis Monstres** reçoit **un an de forfait ${mini.name} offert** (12 mois, valeur : ${eur(mini.month * 12)} €). Il est ajouté automatiquement à son compte, sans démarche : si son abonnement est en cours, ses factures sont suspendues pendant 12 mois ; sinon, les 12 mois l’attendent pour le démarrage de son forfait. Ils s’affichent dans son espace client, avec ses autres mois offerts.
 
 Aucun lot ne peut être échangé contre de l’argent, ni cédé à une autre personne.
 
@@ -527,7 +527,7 @@ Aucun lot ne peut être échangé contre de l’argent, ni cédé à une autre p
 
 À la fin de chaque manche, un tirage au sort désigne un gagnant parmi les participations valables. Il est fait par ordinateur, entièrement au hasard.
 
-**Le gagnant est prévenu par e-mail**, à l’adresse qu’il a donnée. S’il est déjà client, ses 3 mois offerts sont ajoutés le jour même. Sinon, cet e-mail contient un **code personnel, valable 30 jours**, utilisable seulement depuis son compte. Le gagnant commande son site sur la page « Créer mon site » en tapant ce code : il fait les mêmes démarches qu’un client (nom de domaine, coordonnées, puis le questionnaire de création), sans rien payer pour le ${ESS.name}, et son forfait ${mini.name} est offert pendant un an. Sans commande dans les 30 jours, le lot est perdu.
+**Le gagnant est prévenu par e-mail**, à l’adresse qu’il a donnée. S’il est déjà client, son année offerte est ajoutée le jour même. Sinon, cet e-mail contient un **code personnel, valable 30 jours**, utilisable seulement depuis son compte. Le gagnant commande son site sur la page « Créer mon site » en tapant ce code : il fait les mêmes démarches qu’un client (nom de domaine, coordonnées, puis le questionnaire de création), sans rien payer pour le ${ESS.name}, et son forfait ${mini.name} est offert pendant 6 mois. Sans commande dans les 30 jours, le lot est perdu.
 
 Le nom de l’activité du gagnant, sa ville et l’adresse de son site, une fois en ligne, quel que soit son lot, sont présentés sur la page d’accueil des Minis Monstres, dans « Les derniers gagnants ». Le gagnant peut demander à tout moment qu’ils soient retirés, depuis la [page contact](/contact/).
 

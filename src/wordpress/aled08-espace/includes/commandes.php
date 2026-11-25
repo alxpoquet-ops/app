@@ -411,7 +411,7 @@ function aled08e_cmd_traiter_post() {
     $cfg['remise_sur'] = '';
     // ou le code personnel d'un mail de prospection : -10 % sur la création seulement, accepté 30 jours après l'envoi (includes/prospection.php)
     if (!$cfg['remise'] && $cfg['code_evenement'] !== '' && function_exists('aled08e_px_code_ok') && aled08e_px_code_ok($cfg['code_evenement'])) { $cfg['remise'] = aled08e_px_remise(); $cfg['remise_sur'] = 'creation'; }
-    // ou le code du gagnant du jeu-concours : le Site Essentiel offert, et le forfait Mini offert un an (includes/concours.php)
+    // ou le code du gagnant du jeu-concours : le Site Essentiel offert, et le forfait Mini offert 6 mois (includes/concours.php)
     $cfg['lot'] = false;
     if (!$cfg['remise'] && $cfg['code_evenement'] !== '' && function_exists('aled08e_concours_lot') && aled08e_concours_lot($cfg['code_evenement']) && aled08e_concours_lot_refus($cfg['code_evenement'], get_current_user_id()) === '') {
         $cfg['remise'] = 100; $cfg['remise_sur'] = 'site'; $cfg['lot'] = true; $cfg['lissage'] = 0;
@@ -565,16 +565,16 @@ function aled08e_cmd_traiter_post() {
         aled08e_cmd_mail_client_nouvelle($cmd, $compte, $stripe);
     }
 
-    // le gagnant du jeu-concours : le code est utilisé, le forfait Mini offert un an ; rien à payer, la commande est « payée » tout de suite
+    // le gagnant du jeu-concours : le code est utilisé, le forfait Mini offert 6 mois ; rien à payer, la commande est « payée » tout de suite
     if (!empty($cfg['lot'])) {
         aled08e_concours_lot_utilise($cfg['code_evenement'], $pid);
         update_post_meta($pid, '_aled08_lot', 1);
         if ($cfg['forfait'] === 'base') {
             update_user_meta($uid, 'aled08_offert', '1');
-            update_user_meta($uid, 'aled08_offert_fin', time() + YEAR_IN_SECONDS);
+            update_user_meta($uid, 'aled08_offert_fin', strtotime('+' . (defined('ALED08E_LOT_SITE_MOIS') ? ALED08E_LOT_SITE_MOIS : 6) . ' months'));
             delete_user_meta($uid, 'aled08_offert_rappel');
         }
-        aled08e_cmd_journal($pid, 'Lot du jeu-concours (code ' . $cfg['code_evenement'] . ') : Site Essentiel offert' . ($cfg['forfait'] === 'base' ? ', forfait Mini offert jusqu’au ' . wp_date('j F Y', time() + YEAR_IN_SECONDS) : '') . '.');
+        aled08e_cmd_journal($pid, 'Lot du jeu-concours (code ' . $cfg['code_evenement'] . ') : Site Essentiel offert' . ($cfg['forfait'] === 'base' ? ', forfait Mini offert jusqu’au ' . aled08e_date_fr((int) get_user_meta($uid, 'aled08_offert_fin', true), false) : '') . '.');
         if ($m['total_jour'] <= 0) {
             aled08e_cmd_set_statut($pid, 'payee', 'Lot du jeu-concours : rien à payer');
             wp_safe_redirect(home_url('/commande-confirmee/?ref=' . rawurlencode($ref)), 303);
