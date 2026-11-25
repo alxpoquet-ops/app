@@ -101,7 +101,7 @@ const sections = {
 // UNE SEULE OFFRE (21 novembre 2026) : le Site Essentiel, 400 €, payé une fois. Dessous, une case « E-commerce : + 200 € »
 // (600 € avec la boutique) : la boutique, les produits et services, le panier, le paiement en ligne sécurisé, les e-mails de
 // commande, le catalogue, les prix, les promos, la livraison et les paiements gérés par le client depuis son espace client.
-// Le Site Visibilité disparaît de l'offre : les pages pour Google sont l'extra « Page de visibilité Google » (packseo, 15 € la page,
+// Le Site Visibilité disparaît de l'offre : les pages pour Google sont l'extra « Page de visibilité Google » (packseo, 10 € la page,
 // packs 1, 5 ou 10), commandé depuis l'espace client une fois le site en ligne.
 // Pourquoi ce prix : Alex a créé et optimisé les « minis monstres », les modules dont un site est fait (accueil, présentation,
 // services et tarifs, galerie, questions fréquentes, contact, boutique). Chaque module a été soigné une fois et se modifie à part ;
@@ -274,7 +274,7 @@ const enService = { outils: false, energie: false };
 // cache : l'onglet n'apparaît pas encore (l'école attend ses premiers cours). monstre : image de src/assets/img/mail/<monstre>.png.
 const ateliers = [
   { id: 'maison', label: 'La maison', path: '/la-maison/', monstre: 'mascotte', color: 'lilac', court: 'Le concept, Alex et la petite bande' },
-  { id: 'sites', label: 'Mon Site', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: `Votre site professionnel en quelques heures, ${Math.round(marche.vitrineMin / creation.prix)} fois moins cher qu’un indépendant, puis on s’en occupe chaque mois.` },
+  { id: 'sites', label: 'Mon Site', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: `Votre site professionnel en quelques heures, ${marche.foisTexte} fois moins cher qu’un indépendant, puis on s’en occupe chaque mois.` },
   { id: 'ecole', label: 'Mes Tutos', path: '/mini-tuto/', monstre: 'mochi', color: 'lilac', chef: 'Mochi', court: 'De petits tutos gratuits pour tout comprendre : créer votre site avec nous, votre espace client, vos modifications, les extras.' },
   { id: 'outils', label: 'Mini Outils', path: '/outils/', monstre: 'etoile', color: 'butter', chef: 'Pépite', cache: true, court: 'Publier partout, répondre aux avis, préparer ses fiches produits : de petits monstres au travail tous les jours.' },
 ];

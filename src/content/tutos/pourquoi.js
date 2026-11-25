@@ -1,5 +1,6 @@
 // Mini Tuto, thème « pourquoi » : voir le format dans ./index.js.
-// Pourquoi les Minis Monstres : la méthode (le lave-vaisselle, les modules), le prix, la bande, et ce qu'Alex fait lui-même.
+// Pourquoi les Minis Monstres : le prix (pas de local, pas de loyer, tout depuis chez Alex), les modules, la bande, et ce qu'Alex fait lui-même.
+// 25 novembre 2026 : ton premium, « 2 à 3 fois moins cher » (config.marche.foisTexte), le lave-vaisselle reste sur /la-maison/ seulement.
 // Exact par rapport au code : l'appel d'Alex avant chaque site et son feu vert (atelier.php), le contrôle par un second
 // petit monstre avant toute livraison, les cas délicats qui remontent à Alex (regles/escalade.md), les CGV (src/content/legal.js).
 // Aucun prix écrit en dur : tout vient de src/config.js (les repères du marché : config.marche, sources sur la page Tarifs).
@@ -40,9 +41,9 @@ module.exports = [
     duree: 3,
     h1: 'Pourquoi passer par les Minis Monstres plutôt que par quelqu’un d’autre ?',
     title: 'Pourquoi passer par les Minis Monstres ? | Les Minis Monstres',
-    description: 'Un vrai site professionnel à petit prix, une personne qui vous répond, un site qui grandit avec votre budget : ce qui fait notre différence.',
+    description: 'Un site professionnel soigné, une personne qui vous répond, l’accès à toutes vos pages et un prix juste : ce qui fait notre différence.',
     lead: 'Beaucoup d’entrepreneurs n’ont pas plusieurs milliers d’euros à mettre dans un site. C’est pour eux que les Minis Monstres existent.',
-    body: `La réponse tout de suite : chez nous, vous avez un site professionnel, fait avec soin, à un prix affiché que la plupart des petites activités peuvent se permettre. Et derrière, il y a une personne qui vous connaît : Alex.
+    body: `La réponse tout de suite : chez nous, vous avez un site professionnel, fait avec soin, suivi de près, et vous gardez la main sur tout. Et derrière, il y a une personne qui vous connaît : Alex.
 
 ## Ce que vous trouvez chez nous
 
@@ -50,12 +51,13 @@ module.exports = [
 2. **Un vrai site, pas un modèle à remplir seul.** Nos modules sont assemblés pour vous, puis garnis de vos textes, de vos informations et de vos photos.
 3. **Un parcours sans mauvaise surprise.** Un questionnaire précis, puis un appel d’Alex avant que la bande commence. Rien n’est inventé sur votre activité.
 4. **Une vérification avant chaque livraison.** Votre site est relu d’un œil neuf avant d’arriver chez vous.
-5. **Un site qui suit votre budget.** Vous commencez avec l’essentiel, et vous ajoutez des pages ou des extras plus tard, quand vous le décidez.
-6. **Votre liberté.** Le nom de domaine est à votre nom, le forfait ${mini.name} est sans engagement, et l’export de votre site reste possible.
+5. **L’accès à tout.** Votre espace client vous montre la liste de toutes vos pages, dont vos pages de visibilité Google. Avec le forfait ${mini.name}, vous modifiez vous-même un texte ou une photo, en direct.
+6. **Un site qui suit votre budget.** Vous commencez avec l’essentiel, et vous ajoutez des pages ou des extras plus tard, quand vous le décidez.
+7. **Votre liberté.** Le nom de domaine est à votre nom, le forfait ${mini.name} est sans engagement, et l’export de votre site reste possible.
 
 ## Pour qui nous travaillons
 
-Artisans, commerçants, indépendants, associations, professions libérales : des activités qui font du bon travail et qui méritent d’être trouvées sur internet. D’après les repères publics affichés sur notre page [tarifs](/tarifs/), un site vitrine fait par un indépendant coûte souvent entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Chez nous, la création coûte environ ${marche.foisMin} fois moins que le bas de cette fourchette.
+Artisans, commerçants, indépendants, associations, professions libérales : des activités qui font du bon travail et qui méritent d’être trouvées sur internet. D’après les repères publics affichés sur notre page [tarifs](/tarifs/), un site vitrine fait par un indépendant coûte souvent entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Chez nous, elle coûte ${marche.foisTexte} fois moins, parce qu’Alex travaille depuis chez lui : ni local, ni agence, ni loyer à faire payer.
 
 ## Ce que nous ne promettons pas
 
@@ -93,7 +95,7 @@ Alex a construit les Minis Monstres sans formation de développeur. Il s’appui
 2. **Combien de temps ?** Des jours ou des semaines pour un site fait entièrement à la main. Chez nous, ${DELAI} en général après l’appel d’Alex.
 3. **Qui vérifie ?** Chez nous, un second petit monstre contrôle le travail du premier avant toute livraison, selon les règles écrites par Alex. Les cas délicats arrivent toujours chez lui.
 4. **Qui vous parle ?** Alex vous appelle avant chaque site, et il répond à vos messages.
-5. **Combien ça coûte ?** Comptez souvent, chez un indépendant, pour ${marche.pagesCompare} pages de site vitrine, entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €, d’après les repères de notre page [tarifs](/tarifs/). Le ${ESS.name} coûte ${eur(ESS.price)} €.
+5. **Combien ça coûte ?** Comptez souvent, chez un indépendant, pour ${marche.pagesCompare} pages de site vitrine, entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €, d’après les repères de notre page [tarifs](/tarifs/). Le ${ESS.name} coûte ${eur(ESS.price)} €, soit ${marche.foisTexte} fois moins : Alex travaille depuis chez lui, sans loyer à répercuter sur vos factures.
 6. **Et après ?** Avec le forfait ${mini.name}, vos modifications sont comprises dans les ${eur(mini.month)} € par mois. Avec le forfait ${AUTO}, vous repartez avec votre site.
 
 ## Quand un développeur reste le bon choix
@@ -113,29 +115,29 @@ Une application métier, un logiciel sur mesure, un très gros catalogue, une co
     groupe: 'pourquoi',
     icon: 'piggy-bank',
     monstre: 'bricou',
-    nom: `Un site à ${eur(ESS.price)} €, pas bâclé`,
+    nom: 'Moins cher, sans rien bâcler',
     resume: 'Les trois raisons du prix, et tout ce qui ne baisse jamais.',
     duree: 3,
-    h1: `Comment un site peut-il coûter ${eur(ESS.price)} € sans être bâclé ?`,
-    title: `Un site à ${eur(ESS.price)} € sans être bâclé, comment ? | Les Minis Monstres`,
-    description: `Comment le ${ESS.name} coûte ${eur(ESS.price)} € sans rien bâcler : des modules déjà prêts, le répétitif confié à nos outils, aucun loyer à payer, et le soin gardé.`,
-    lead: 'Un prix bas fait parfois peur. Ici, il vient du temps gagné, pas des étapes sautées. Voici comment.',
-    body: `La réponse tout de suite : nous gagnons du temps sur ce qui se répète d’un site à l’autre, et nous n’avons pas de frais de structure à vous faire payer. Le soin, lui, reste le même.
-
-## L’image du lave-vaisselle
-
-Vos assiettes sortent aussi propres du lave-vaisselle que de l’évier. Ce qui change, c’est l’heure que vous avez gagnée. Pour votre site, nos outils font office de machine. Ils prennent les tâches longues et répétitives, et ils les font aussi bien qu’à la main, en beaucoup moins de temps.
+    h1: `Comment un site soigné peut-il coûter ${marche.foisTexte} fois moins cher ?`,
+    title: 'Un site moins cher, sans rien bâcler : comment ? | Les Minis Monstres',
+    description: `Comment le ${ESS.name} coûte ${marche.foisTexte} fois moins cher qu’un site d’indépendant : ni local ni loyer, des modules soignés, et Alex qui vérifie tout.`,
+    lead: 'Un prix doux fait parfois peur. Ici, il vient des frais que nous n’avons pas, jamais des étapes sautées. Voici comment.',
+    body: `La réponse tout de suite : nous n’avons ni local, ni agence, ni loyer à vous faire payer. Alex fait tout depuis chez lui. Le soin, lui, reste le même.
 
 ## Les trois raisons du prix
 
-1. **Des modules déjà prêts.** Accueil, présentation, galerie, contact, questions fréquentes, services et tarifs : Alex a soigné chacun de ces modules une seule fois. Pour votre site, il ne reste qu’à les assembler et à y mettre votre contenu.
-2. **Le répétitif confié à nos outils.** Monter les pages, alléger les photos, vérifier les liens : nos petits monstres s’en chargent. Le temps gagné se retrouve dans votre prix.
-3. **Aucune lourde structure.** Pas de bureaux, pas de loyer, pas de commerciaux à rémunérer. Ces frais n’apparaissent donc nulle part sur votre facture.
+1. **Ni local, ni agence, ni loyer.** Pas de bureaux à chauffer et à éclairer, pas de vitrine en ville, pas de commerciaux à rémunérer. Ces frais n’existent pas chez nous, donc ils n’apparaissent nulle part sur votre facture.
+2. **Des modules soignés une fois pour toutes.** Accueil, présentation, galerie, contact, questions fréquentes, services et tarifs : Alex a peaufiné chacun d’eux. Pour votre site, il les assemble et les façonne à votre image.
+3. **Les tâches répétitives outillées.** Alléger les photos ou vérifier les liens ne demande pas de talent particulier : nos petits monstres s’en chargent, et le temps gagné va au design et aux détails.
+
+## Un prix juste, pas un prix au rabais
+
+Le prix doit rester doux pour vous, et assez juste pour qu’Alex vive de son travail. C’est ce qui lui permet de prendre le temps de chaque site, et d’être encore là dans quelques années pour vous répondre.
 
 ## Ce qui ne baisse jamais
 
 - **L’écoute** : un questionnaire précis, et l’appel d’Alex avant chaque site.
-- **Le contrôle** : un autre membre de la bande repasse derrière celui qui a construit votre site, avant qu’il vous soit livré.
+- **Le contrôle** : un autre membre de la bande repasse derrière celui qui a construit votre site, puis Alex le vérifie lui-même avant de vous le livrer.
 - **La qualité** : un site rapide, lisible sur téléphone, avec un formulaire de contact et les bases de la visibilité sur Google.
 - **La vérité** : rien n’est inventé sur votre activité, ni avis, ni prix, ni service.
 
