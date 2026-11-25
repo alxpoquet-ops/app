@@ -1336,3 +1336,49 @@ button.is-confirmer.is-confirmer, .btn.is-confirmer.is-confirmer, .req-annul .li
 .demo-appel strong { display: block; color: var(--ink); }
 .demo-appel small { display: block; color: var(--text); font-size: .88rem; line-height: 1.45; }
 @media (max-width: 520px) { .demo-appel { grid-template-columns: auto minmax(0, 1fr); } .demo-appel .st { grid-column: 2; justify-self: start; } }
+
+/* ---------- « Mes pages » (includes/mes-pages.php, 25 novembre 2026) : toutes les pages du site du client, dont ses pages Google ---------- */
+.mp { margin: 22px 0 22px; padding: 16px 16px 12px; border-radius: 24px; background: var(--card); box-shadow: 0 0 0 2px var(--edge) inset, var(--shadow-sm); }
+.mp[aria-busy="true"] [data-mp-corps] { opacity: .7; transition: opacity .2s; }
+.mp-tete { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; margin: 0 0 10px; }
+.mp-tete-ico { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: var(--sky); color: var(--sky-dd); }
+.mp-tete-ico .ico { width: 22px; height: 22px; }
+.mp-tete h3 { margin: 0; font-size: 1.15rem; line-height: 1.2; color: var(--ink); }
+.mp-tete p { margin: 2px 0 0; color: var(--muted); font-weight: 700; font-size: .88rem; line-height: 1.4; }
+.mp-maj { color: var(--muted); font-weight: 800; font-size: .78rem; white-space: nowrap; }
+.mp-compteur { margin: 0 0 10px; color: var(--ink); font-weight: 900; }
+.mp-vide, .mp-note { display: flex; gap: 10px; align-items: flex-start; }
+.mp-vide .ico, .mp-note .ico { flex: none; margin-top: 2px; }
+.mp-vide { margin: 0 0 4px; }
+.mp-liste { list-style: none; margin: 0; padding: 0; }
+.mp-item { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 8px 12px; align-items: center; padding: 11px 0; border-top: 1px solid var(--line); }
+.mp-liste:first-child > .mp-item:first-child, .mp-form > .mp-liste:first-child > .mp-item:first-child { border-top: 0; }
+.mp-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 13px; background: var(--lilac); color: var(--lilac-dd); }
+.mp-item.is-google .mp-ico { background: var(--mint); color: var(--mint-dd); }
+.mp-ico .ico { width: 20px; height: 20px; }
+.mp-txt { display: grid; gap: 1px; min-width: 0; }
+.mp-txt strong { color: var(--ink); line-height: 1.3; overflow-wrap: anywhere; }
+.mp-adr { color: var(--muted); font-weight: 700; font-size: .84rem; overflow-wrap: anywhere; }
+.mp-meta { display: flex; flex-wrap: wrap; gap: 2px 10px; align-items: center; margin-top: 3px; color: var(--muted); font-weight: 700; font-size: .8rem; }
+.mp-type { font-style: normal; font-weight: 900; padding: 2px 9px; border-radius: 999px; background: var(--soft); color: var(--text); }
+.mp-item.is-google .mp-type { background: var(--mint); color: var(--mint-dd); }
+.mp-act { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.mp-act .btn { min-height: 38px; padding: 0 .85em; font-size: .88rem; gap: 6px; }
+.mp-plus { margin: 0; border-top: 1px solid var(--line); }
+.mp-plus > summary { list-style: none; display: inline-flex; align-items: center; gap: 8px; padding: 12px 0 4px; cursor: pointer; color: var(--lilac-dd); font-weight: 900; }
+.mp-plus > summary::-webkit-details-marker { display: none; }
+.mp-plus[open] > summary .ico { transform: rotate(45deg); }
+.mp-plus > .mp-liste > .mp-item:first-child { border-top: 1px solid var(--line); }
+.mp-aide { display: flex; gap: 8px; align-items: flex-start; margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--line); color: var(--muted); font-weight: 700; font-size: .84rem; line-height: 1.45; }
+.mp-aide .ico { flex: none; margin-top: 2px; color: var(--lilac-dd); }
+.mp-raccourci { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 0 0 16px; color: var(--muted); font-weight: 700; font-size: .9rem; }
+.mp-raccourci > .ico { color: var(--sky-dd); }
+.mp-raccourci .link-btn { padding: 2px 0; }
+@media (max-width: 560px) {
+  .mp { padding: 14px 12px 10px; border-radius: 20px; }
+  .mp-tete { grid-template-columns: auto minmax(0, 1fr); }
+  .mp-maj { grid-column: 1 / -1; }
+  .mp-item { grid-template-columns: 36px minmax(0, 1fr); }
+  .mp-ico { width: 36px; height: 36px; border-radius: 12px; }
+  .mp-act { grid-column: 2; justify-content: flex-start; }
+}

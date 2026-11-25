@@ -120,6 +120,7 @@ function aled08e_pg_livrer(WP_REST_Request $req) {
     update_post_meta($pid, '_aled08_reponse', 'Votre page « ' . $titre . ' » est en ligne : ' . $lien);
     wp_update_post(['ID' => $pid, 'post_title' => 'Page de visibilité Google : ' . $titre]);
     $uid = (int) $p->post_author;
+    if (function_exists('aled08e_mp_oublier')) aled08e_mp_oublier($uid); // « Mes pages » se relit : la nouvelle page y apparaît
     aled08e_lia_journal_add('Atelier : page de visibilité Google contrôlée et en ligne pour ' . (($u = get_userdata($uid)) ? $u->display_name : '#' . $uid) . ' : ' . $titre . '.');
 
     // toutes les pages de la même commande sont en ligne ? alors le joli e-mail part

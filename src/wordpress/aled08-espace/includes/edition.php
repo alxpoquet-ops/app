@@ -31,12 +31,28 @@ function aled08e_edition_lien($uid, $chemin = '/') {
     return $url . $chemin . (strpos($chemin, '?') === false ? '?' : '&') . 'alexlia_editer=' . $charge . '.' . $sig;
 }
 
+/* Le chemin d'une page du site du client, d'après son adresse : seulement le chemin (le lien reste sur le site du client),
+ * sans le dossier du site s'il est installé dans un sous-dossier ; '/' si l'adresse est douteuse */
+function aled08e_edition_chemin($uid, $adresse) {
+    $p = (string) wp_parse_url((string) $adresse, PHP_URL_PATH);
+    $q = (string) wp_parse_url((string) $adresse, PHP_URL_QUERY);
+    if ($p === '') $p = '/';
+    if (strpos($p, '..') !== false || !preg_match('#^/[A-Za-z0-9_\-./%~]*$#', $p)) return '/';
+    $base = '/' . trim((string) wp_parse_url(aled08e_meta($uid, 'lia_url'), PHP_URL_PATH), '/');
+    if ($base !== '/' && strpos($p . '/', $base . '/') === 0) $p = substr($p, strlen($base));
+    $p = '/' . ltrim($p, '/');
+    if (preg_match('/^(page_id|p)=\d+$/', $q)) $p .= '?' . $q;
+    return $p;
+}
+
 /* Le bouton de l'application : un formulaire, pour que le lien soit fabriqué au moment du clic */
 add_action('template_redirect', function () {
     if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || empty($_POST['aled08e_editer'])) return;
     if (!is_user_logged_in() || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_aled08e_editer'] ?? '')), 'aled08e_editer')) { wp_safe_redirect(aled08e_url(), 303); exit; }
     $uid = get_current_user_id();
-    $lien = aled08e_edition_dispo($uid) ? aled08e_edition_lien($uid) : null;
+    // « Mes pages » (includes/mes-pages.php) : le bouton « Modifier » d'une page ouvre le mode modification sur cette page
+    $chemin = isset($_POST['page']) ? aled08e_edition_chemin($uid, (string) wp_unslash($_POST['page'])) : '/'; // phpcs:ignore -- vérifié dans aled08e_edition_chemin (chemin seulement)
+    $lien = aled08e_edition_dispo($uid) ? aled08e_edition_lien($uid, $chemin) : null;
     if (!$lien || is_wp_error($lien)) { wp_safe_redirect(aled08e_url(['m' => 'edition_indispo']) . '#accueil', 303); exit; }
     update_user_meta($uid, 'aled08_edition_le', current_time('mysql'));
     wp_redirect($lien, 303); // le site du client, sur son propre domaine

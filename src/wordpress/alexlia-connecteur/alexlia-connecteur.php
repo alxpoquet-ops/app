@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.13.0
+ * Version: 2.14.0
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.13.0');
+define('ALEXLIA_CONN_VERSION', '2.14.0');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 require_once __DIR__ . '/editeur.php'; // le mode « je clique, je modifie » ouvert depuis l'application du client
 
@@ -239,8 +239,17 @@ function alexlia_conn_lister($args) {
     $type = in_array($args['type'] ?? '', alexlia_conn_types(), true) ? $args['type'] : 'any';
     $q = get_posts(['post_type' => $type === 'any' ? alexlia_conn_types() : $type, 'post_status' => ['publish', 'draft', 'private'], 'numberposts' => 100, 'orderby' => 'menu_order title', 'order' => 'ASC']);
     $out = [];
-    foreach ($q as $p) $out[] = ['id' => $p->ID, 'type' => $p->post_type, 'titre' => $p->post_title, 'statut' => $p->post_status, 'adresse' => get_permalink($p), 'modifie' => $p->post_modified];
+    // 2.14.0 : publie (date de mise en ligne, horodatage) et role (accueil, boutique) en plus, pour « Mes pages » de l'espace client
+    foreach ($q as $p) $out[] = ['id' => $p->ID, 'type' => $p->post_type, 'titre' => $p->post_title, 'statut' => $p->post_status, 'adresse' => get_permalink($p), 'modifie' => $p->post_modified,
+        'publie' => $p->post_status === 'publish' ? (int) get_post_time('U', true, $p) : 0, 'role' => alexlia_conn_role($p)];
     return ['contenus' => $out];
+}
+/* Le rôle d'une page : l'accueil, une page de la boutique (WooCommerce), sinon rien */
+function alexlia_conn_role($p) {
+    if ($p->post_type !== 'page') return '';
+    if ((int) get_option('page_on_front') === (int) $p->ID) return 'accueil';
+    if (function_exists('wc_get_page_id')) foreach (['shop', 'cart', 'checkout', 'myaccount'] as $w) if ((int) wc_get_page_id($w) === (int) $p->ID) return 'boutique';
+    return '';
 }
 function alexlia_conn_lire($args) {
     $p = alexlia_conn_post($args['id'] ?? 0);

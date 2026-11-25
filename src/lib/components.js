@@ -334,7 +334,7 @@ function modulesSite({ titre = 'Comment est fait votre site', id = 'comment' } =
   <ul class="modules reveal">${modules.map((m) => `<li class="${m.option ? 'is-option' : ''}">${icon(m.icon)}<span><strong>${esc(m.nom)}</strong>${m.option ? `<em>Option ${esc(ECOMMERCE.name)}</em>` : ''}<small>${esc(m.d)}</small></span></li>`).join('')}</ul>
   ${steps([
     { t: 'La base est préconfigurée', d: 'Chaque module a été pensé, optimisé et soigné une fois pour toutes : rapide, lisible sur téléphone, sécurisé, compris par Google.' },
-    { t: 'On la remplit avec votre contenu', d: `Vos informations, vos textes et vos photos. C’est pour cela que le prix reste petit et que votre site est prêt en ${ESSENTIEL.delai}, dès que nous avons tout reçu.` },
+    { t: 'On la remplit avec votre contenu', d: `Vos informations, vos textes et vos photos. C’est ainsi que votre site est prêt en ${ESSENTIEL.delai}, dès que nous avons tout reçu, sans que le soin en pâtisse.` },
     { t: 'Vous le mettez à votre goût', d: `Avec le forfait ${ABO.name}, vous le modifiez vous-même, à volonté : un texte ou une photo se change en direct, depuis votre espace client. Pour le reste, vous nous le demandez dans « Mes modifications ».` },
   ])}
   <div class="preconf reveal">${icon('sparkles')}<div><strong>Préconfiguré ne veut pas dire identique.</strong><p>Ce que nous préparons à l’avance, c’est le code invisible de votre site : tout ce qui travaille derrière vos textes et vos images pour qu’il soit rapide, sûr et bien vu de Google. Cette base solide, nous vous la fournissons. Il ne reste qu’à la façonner à votre univers : vos couleurs, vos polices, vos photos, vos mots. Chaque site garde ainsi sa propre personnalité.</p></div></div><!--/commun-->
@@ -347,7 +347,7 @@ const forfaitCards = ({ choose = true } = {}) => offre({ choose });
 
 // Pourquoi c'est moins cher : la comparaison avec un site fait à la main, chiffres du marché à l'appui.
 // On compare ce qui est comparable (un site de marche.pagesCompare pages, comme le nôtre, avec les bases du référencement), on dit la vérité
-// et on cite les sources (marche.sources, consultées en novembre 2026). marche.fois et marche.entretienFois sont calculés dans config.js.
+// et on cite les sources (marche.sources, consultées en novembre 2026). marche.foisTexte (« 2 à 3 ») est calculé dans config.js.
 const INDEPENDANT_DES = 800; // des indépendants existent dès ce prix : l'écart n'est alors que de INDEPENDANT_DES / creation.prix fois
 const ecartBas = String(Math.round((INDEPENDANT_DES / creation.prix) * 10) / 10).replace('.', ',');
 // Les sources, en vrais liens
@@ -365,19 +365,57 @@ function economie() {
   const mInde = (marche.vitrineMin + marche.vitrineMax) / 2;
   const w = (x) => `${Math.max(6, Math.round((x / mAgence) * 100))}%`;
   return `<div class="eco reveal">
-  <h3>${icon('scale')}${marche.fois} fois moins cher qu’un indépendant, à site comparable</h3>
+  <h3>${icon('scale')}${marche.foisTexte} fois moins cher qu’un indépendant, à site comparable</h3>
   <p class="eco-base">On compare un site vitrine de ${n} pages chez un indépendant ou dans une agence (accueil, présentation, services, photos, contact) avec notre ${ESSENTIEL.name}, qui contient ces mêmes modules.</p>
   <div class="eco-barres" role="img" aria-label="Un site vitrine de ${n} pages coûte en général ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)} en agence, ${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)} chez un indépendant. Notre ${ESSENTIEL.name} : ${euro(creation.prix)}.">
     <p class="eco-ligne"><span>Agence</span><i style="width:${w(mAgence)}"></i><b>${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}</b></p>
     <p class="eco-ligne"><span>Indépendant</span><i style="width:${w(mInde)}"></i><b>${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)}</b></p>
     <p class="eco-ligne is-nous"><span>Notre ${ESSENTIEL.name}</span><i style="width:${w(creation.prix)}"></i><b>${euro(creation.prix)}</b></p>
   </div>
-  <p>Pas de secret : des modules déjà prêts, une méthode bien rodée, et pas de bureaux à payer.</p>
+  <p>Pas de secret : pas de local, pas d’agence, pas de loyer. Alex fait tout depuis chez lui.</p>
   ${deroulants([
-    deroulant('Et pour l’entretien, chaque mois ?', `<p>Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications (${euro(ABO.month + DOM)} si on vous fournit aussi le nom de domaine). Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois, l’hébergement étant souvent en plus : c’est de ${marche.entretienFois} fois moins cher.</p>`),
+    deroulant('Et pour l’entretien, chaque mois ?', `<p>Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications (${euro(ABO.month + DOM)} si on vous fournit aussi le nom de domaine). Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois, l’hébergement étant souvent en plus : c’est bien moins cher.</p>`),
     deroulant('Nos sources, et ce qu’il faut en penser', `<p>Soyons honnêtes. Ces fourchettes sont publiées par des prestataires, donc à lire avec prudence. Il existe des indépendants dès ${euro(INDEPENDANT_DES)}, et l’écart est alors très faible (environ ${ecartBas} fois), ainsi que des offres à bas prix.</p>${sourcesMarche()}`, { id: 'sources' }),
   ])}
 </div>`;
+}
+
+// ---------------------------------------------------------------- ce que vous avez chez nous, et pas ailleurs (25 novembre 2026)
+// Nous face à un prestataire classique (celui qui crée votre site et l'héberge) : qualitatif, sans dénigrer, aucun prix chez nous
+// (le prix exact est dans le comparatif, sur Tarifs et à la commande). L'espace client : « Mes pages » (la liste de toutes les pages
+// du site, dont les pages de visibilité Google), « Modifier mon site moi-même », « Mes modifications », Ma commande, les factures.
+// court : quatre lignes (pages métier). Bloc commun, repris tel quel sur plusieurs pages.
+const AVANTAGES = [
+  { ico: 'key-round', t: 'L’accès à tout', nous: 'Votre espace client vous ouvre votre site, vos demandes, vos extras et vos factures.', eux: 'Les accès restent souvent chez lui : pour tout, il faut lui demander.', court: true },
+  { ico: 'pencil', t: 'Modifier vous-même', nous: `Avec le forfait ${ABO.name}, un texte ou une photo se change en direct, grâce au bouton « Modifier mon site moi-même ».`, eux: 'Chaque changement passe par lui, et attend son tour.', court: true },
+  { ico: 'list-checks', t: 'La liste de vos pages', nous: 'Toutes les pages de votre site, dont vos pages de visibilité Google, avec un lien pour voir ou modifier chacune.', eux: 'Vous ne voyez pas toujours ce que contient votre site.', court: true },
+  { ico: 'route', t: 'Un suivi, étape par étape', nous: 'Votre commande et chacune de vos demandes se suivent dans votre espace client, jusqu’à la mise en ligne.', eux: 'Les nouvelles arrivent au fil des échanges.' },
+  { ico: 'badge-euro', t: 'Le prix de la création', nous: `${marche.foisTexte} fois moins cher qu’un indépendant, pour un site aussi complet.`, eux: `En général ${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)} pour un site vitrine, au devis.`, court: true },
+  { ico: 'shield-check', t: 'L’entretien chaque mois', nous: 'Bien moins cher : hébergement, sécurité, sauvegardes, maintenance et modifications compris.', eux: `${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois chez les prestataires consultés, hébergement souvent en plus.` },
+];
+function avantagesNous({ court = false } = {}) {
+  const l = AVANTAGES.filter((x) => !court || x.court);
+  return `<!--commun--><div class="avantages${court ? ' is-court' : ''} reveal">
+  <div class="avantages-tete" aria-hidden="true"><span></span><span class="av-nous">${petit('mochi', { humeur: 'ravi' })}Chez nous</span><span class="av-eux">Chez un prestataire classique</span></div>
+  <ul class="avantages-liste">${l.map((x) => `<li>
+    <p class="av-t">${icon(x.ico)}<strong>${esc(x.t)}</strong></p>
+    <p class="av-nous">${icon('circle-check')}<span><span class="sr-only">Chez nous : </span>${esc(x.nous)}</span></p>
+    <p class="av-eux"><span><span class="av-eux-k">Ailleurs</span><span class="sr-only"> : </span>${esc(x.eux)}</span></p>
+  </li>`).join('')}</ul>
+  <p class="avantages-note">${icon('info')}<span>Un prestataire classique : celui qui crée votre site et l’héberge. Chacun travaille à sa façon, et certains font autrement. Les fourchettes de prix sont publiées par des prestataires (sources sur la page Tarifs).</span></p>
+</div><!--/commun-->`;
+}
+// « Comment c'est possible ? » : pas de local, pas d'agence, pas de loyer (le message d'Alex du 25 novembre 2026). Bloc commun.
+function prixJuste({ lien = true } = {}) {
+  return `<!--commun--><div class="prix-juste reveal">
+  <span class="prix-juste-art" aria-hidden="true">${icon('house')}</span>
+  <div>
+    <h3>Comment c’est possible ?</h3>
+    <p><strong>Pas de local, pas d’agence, pas de loyer, pas de bureaux à chauffer et à éclairer</strong> : Alex fait tout depuis chez lui. Ces frais, vous ne les payez pas.</p>
+    <p>Le prix reste juste des deux côtés : doux pour vous, et assez juste pour que nous puissions bien faire notre travail, et durer.</p>
+    ${lien ? `<a class="link-more" href="${sections.methode.path}">Pourquoi nos prix sont plus doux</a>` : ''}
+  </div>
+</div><!--/commun-->`;
 }
 
 // Prix d'une option, lisible
@@ -733,6 +771,24 @@ function comparatifLignes() {
       [fourchette(marche.agenceMin, marche.agenceMax), 'en général, au devis'],
       ['Pas de création à payer', 'mais un abonnement, et votre temps pour tout construire'],
     ] },
+    { id: 'acces', court: true, l: 'Accès à votre site et à la liste de vos pages', c: [
+      ['Oui, à tout', 'votre espace client liste toutes vos pages, dont vos pages de visibilité Google, avec un lien pour voir ou modifier chacune'],
+      ['Le plus souvent, par lui', 'c’est lui qui garde les accès : vous lui demandez'],
+      ['Selon le contrat', 'les accès restent en général chez l’agence'],
+      ['Oui', 'dans l’outil de la plateforme'],
+    ] },
+    { id: 'soimeme', court: true, l: 'Modifier vous-même', c: [
+      ['Oui, en direct', `avec le forfait ${ABO.name}, un texte ou une photo se change d’un clic, grâce au bouton « Modifier mon site moi-même »`],
+      ['Rarement', 'chaque changement passe par lui'],
+      ['Rarement', 'une demande, puis un devis ou un contrat'],
+      ['Oui, et tout le reste aussi', 'c’est vous qui faites tout'],
+    ] },
+    { id: 'suivi', court: true, l: 'Suivi dans un espace client', c: [
+      ['Oui, tout au même endroit', 'votre commande, vos demandes de modification, vos extras et vos factures'],
+      ['Par e-mail ou par téléphone', 'au fil des échanges'],
+      ['Avec un chef de projet', 'selon le contrat'],
+      ['Un support en ligne', 'pour l’outil, pas pour votre site'],
+    ] },
     { id: 'delai', l: 'Délai', c: [
       ['Quelques jours', `la création elle-même prend ${offreSite.site.delai}, après l’appel d’Alex`],
       ['Selon son planning', 'fixé au devis'],
@@ -751,7 +807,7 @@ function comparatifLignes() {
       ['En général, oui', 'avec des rendez-vous de suivi'],
       ['Non', 'vous relisez tout vous-même'],
     ] },
-    { id: 'modifs', court: true, l: 'Modifications', c: [
+    { id: 'modifs', l: 'Modifications', c: [
       [`Incluses avec le forfait ${ABO.name}`, 'vous-même à volonté, ou sur simple demande'],
       ['Au devis', 'ou dans un contrat d’entretien'],
       ['Au devis', 'ou dans un contrat de maintenance'],
@@ -796,8 +852,8 @@ function comparatifTable({ court = false, sources = true } = {}) {
 // Des réponses vraies, courtes, avec un lien pour en savoir plus. Bloc commun (repris tel quel sur plusieurs pages).
 function objections() {
   const Q = [
-    { ico: 'badge-check', c: 'mint', q: `${euro(ESSENTIEL.price)}, ce n’est pas un site bâclé ?`, r: `Non. Le prix est bas parce que le gros du travail est déjà fait : nos modules (accueil, présentation, services, galerie, contact) ont été soignés une fois pour toutes, puis remplis avec votre contenu. Et Alex vérifie chaque page avant la mise en ligne.`, href: sections.methode.path, lien: 'Pourquoi c’est moins cher' },
-    { ico: 'user-check', c: 'sky', q: 'Qui est derrière ?', r: `Alex, depuis ${site.address.city}, dans les Ardennes. Il vous appelle avant de commencer, il relit tout, et il répond quand vous écrivez. Sa petite bande l’aide pour ce qui se répète.`, href: sections.equipe.path, lien: 'Rencontrer l’équipe' },
+    { ico: 'badge-check', c: 'mint', q: 'Moins cher, ce n’est pas bâclé ?', r: `Non. Alex n’a ni local ni loyer à payer : il travaille depuis chez lui. Nos modules ont été soignés une fois pour toutes, puis remplis avec votre contenu, et chaque page est vérifiée avant la mise en ligne. Le prix baisse, le soin reste entier.`, href: sections.methode.path, lien: 'Pourquoi c’est moins cher' },
+    { ico: 'user-check', c: 'sky', q: 'Qui est derrière ?', r: `Alex, depuis ${site.address.city}, dans les Ardennes. Il vous appelle avant de commencer, il relit tout, et il répond quand vous écrivez.`, href: sections.equipe.path, lien: 'Rencontrer l’équipe' },
     { ico: 'pencil', c: 'lilac', q: 'Et si je veux changer quelque chose ?', r: `Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois sans engagement, vous changez vous-même vos textes et vos photos, à volonté. Le reste, vous nous le demandez depuis votre espace client : c’est compris.`, href: site.espaceClient && site.espaceClient.demo ? site.espaceClient.demo : sections.monespace.path, lien: 'Essayer l’espace client' },
     { ico: 'heart-handshake', c: 'pink', q: 'Et si le résultat ne me plaît pas ?', r: `On part de votre questionnaire et de l’appel avec Alex, pour éviter les surprises. Une fois en ligne, votre site s’ajuste : vous le modifiez, ou vous nous dites quoi changer. Et la loi vous donne 14 jours pour vous rétracter.`, href: '/conditions-generales/#9-droit-de-retractation', lien: 'Le droit de rétractation' },
   ];
@@ -927,6 +983,6 @@ module.exports = {
   billingSwitch, billed, lisse, typeCards, payBox, forfaitMinis, forfaitCards, offre, economie, sourcesMarche, sourcesMd, sourcesInline, ecartBas, INDEPENDANT_DES, ABO, DELAI_MODIF, optsCreation, optsMois, EXTRAS_PAR_FAMILLE, extrasListe, prixExtra, prixType, optPrice, optionsCompact, extrasDemande, priceData, optionChoices, domainBox,
   offreEvenement, processusModif, formuleCarte, codeEvenementBox, creationSeuleBox, siteCarte, boutiqueCarte, gestionChoix, formulesChoix, paiementChoix, INCLUS_NOUS, INCLUS_MOI, INCLUS_SITE, PLUS_DE_PAGES, BOUTIQUE_ARTICLES, BOUTIQUE_PAIEMENT, PACK_SEO, delaiTxt, sansDelai, BOUTIQUE_INCLUS, BOUTIQUE_ESPACE, BOUTIQUE_STOCK, ETAPES_MODIF,
   siteOffreCarte, optionEcommerceCarte, pagesGoogleCarte, modulesSite, siteIcone, positionnement, demoBande, ESSENTIEL, BOUTIQUE_T, ECOMMERCE, revisionsNote, phrase, prixPageSeo, packsSeo,
-  configurator, phoneEdit, phoneSocial, statsCard, comparatifTable, objections,
+  configurator, phoneEdit, phoneSocial, statsCard, comparatifTable, objections, avantagesNous, prixJuste,
   CERISE, BRICOU, PEPITE, presente, imgMonstre, DOM, DOMAINE_REGLE, DOMAINE_PLUS, petit, bouille, deco, PETIT_SECTION, bandeGrid, alexPortrait, nomI,
 };

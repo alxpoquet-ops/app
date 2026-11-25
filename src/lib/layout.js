@@ -1,5 +1,5 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, sections, types, forfaits, creation, jetonsLia, enService, fractionne, creationSeule, ateliers, outilsOffre } = require('../config');
+const { site, sections, types, forfaits, creation, marche, jetonsLia, enService, fractionne, creationSeule, ateliers, outilsOffre } = require('../config');
 let METIERS = [];
 try { METIERS = require('../content/metiers').metiers; } catch (e) { /* pas encore écrit */ }
 const { icon } = require('./icons');
@@ -51,7 +51,7 @@ function businessSchema() {
     '@type': 'ProfessionalService',
     '@id': site.url + '/#entreprise',
     name: site.name,
-    slogan: `Un site internet pour être visible, dès ${creation.prix} €`,
+    slogan: `Un site internet soigné pour être visible, ${marche.foisTexte} fois moins cher qu’un indépendant`,
     description:
       `Un site internet rend votre activité visible : on crée le vôtre. Sites pour artisans, commerçants et associations, création : ${PRIX_SITES}. Ensuite, au choix : le forfait ${AUTO.name} à ${AUTO.month} € par mois, ou le forfait ${ABO.name} à ${ABO.month} € par mois sans engagement (hébergement, sauvegardes, sécurité, maintenance, modifications), ou ${ABO.month + (ABO.domaine || 0)} € par mois si on vous fournit le nom de domaine. Tout se fait en ligne, pour des clients partout en France.`,
     url: site.url + '/',
@@ -125,7 +125,7 @@ const SOUS_MENU = {
 };
 const DESC_ATELIER = {
   maison: 'Le concept, Alex et la bande',
-  sites: `Votre site professionnel, ${C.euro(creation.prix)}`,
+  sites: 'Votre site professionnel, soigné et suivi',
   ecole: 'Toutes vos questions, gratuites',
 };
 // La teinte de la première lettre (le monstre de l'onglet : Cerise en rose, Bricou en vert, Mochi en pêche)
@@ -328,7 +328,7 @@ function page(p) {
 <meta property="og:image" content="${ogImage}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="${esc(`${site.name} : un site internet pour être visible, dès ${creation.prix} €`)}">
+<meta property="og:image:alt" content="${esc(`${site.name} : un site internet soigné et suivi, pour être visible`)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(titreCourt(p.title))}">
 <meta name="twitter:description" content="${esc(p.description)}">

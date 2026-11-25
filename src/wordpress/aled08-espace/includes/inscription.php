@@ -95,6 +95,7 @@ function aled08e_dashboard_libre($u) {
         </div>
         <div class="app-panel" role="tabpanel" id="t-site" aria-labelledby="tab-site" hidden>
           <?php echo aled08e_site_porte_html() . aled08e_aide_html('site'); // phpcs:ignore ?>
+          <?php if (function_exists('aled08e_mp_html')) echo aled08e_mp_html($uid); // phpcs:ignore -- « Mes pages » : la liste viendra avec le site ?>
         </div>
         <?php if ($outils) : ?>
         <div class="app-panel" role="tabpanel" id="t-outils" aria-labelledby="tab-outils" hidden>

@@ -286,11 +286,11 @@ Ces exemples comptent un nom de domaine que le client possède déjà. S’il es
 
 Les années suivantes, il ne reste que l'abonnement : ${eur(mini.month)} € par mois avec le forfait ${mini.name}, ou ${eur(avecDom)} € avec le nom de domaine.
 
-## Pourquoi ces prix sont bas
+## Pourquoi nos prix restent doux
 
-Chez un indépendant, un site vitrine de ${marche.pagesCompare} pages se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Notre ${ESS.name}, à ${eur(ESS.price)} €, avec les mêmes parties (accueil, présentation, services, photos, contact), coûte donc ${marche.fois} fois moins.
+Chez un indépendant, un site vitrine de ${marche.pagesCompare} pages se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Notre ${ESS.name}, à ${eur(ESS.price)} €, avec les mêmes parties (accueil, présentation, services, photos, contact), coûte donc ${marche.foisTexte} fois moins.
 
-La différence vient de la méthode : Alex a créé et optimisé une fois pour toutes les modules dont un site est fait, et les Minis Monstres se chargent de ce qui revient d’un projet à l’autre.
+La différence tient d’abord aux frais : pas de local, pas d’agence, pas de loyer, pas de bureaux à chauffer et à éclairer, puisqu’Alex fait tout depuis chez lui. Il a aussi soigné une fois pour toutes les modules dont un site est fait. Et vous gagnez en plus un espace client où vous voyez toutes vos pages, et où vous modifiez vous-même avec le forfait ${mini.name}.
 
 Soyons honnêtes : ces chiffres viennent de prestataires, donc prudence. Certains indépendants vendent un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors très faible. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout, sources comprises.
 

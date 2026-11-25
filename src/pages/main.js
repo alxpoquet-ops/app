@@ -82,7 +82,8 @@ function laMaisonPage() {
       <h2>Le mot d’Alex</h2>
       <p>J’ai créé les Minis Monstres pour les artisans, les commerçants, les associations, et pour tous ceux qui démarrent avec un petit budget.</p>
       <p>Un site fait sur mesure coûte souvent plusieurs milliers d’euros. C’est un prix honnête pour le travail fourni. Mais beaucoup d’entrepreneurs ne peuvent pas se le permettre, alors ils restent invisibles.</p>
-      <p>Je suis autodidacte : je n’ai pas suivi d’école de développeur, j’ai appris en construisant, un site après l’autre. Aujourd’hui, je m’appuie sur les dernières technologies. Elles me permettent de livrer le travail d’un développeur web, avec la même exigence, en bien moins de temps. Et ce temps gagné, c’est vous qui en profitez sur le prix.</p>
+      <p>Je suis autodidacte : je n’ai pas suivi d’école de développeur, j’ai appris en construisant, un site après l’autre. Je n’ai ni local, ni agence, ni loyer, ni bureaux à chauffer et à éclairer : je fais tout depuis chez moi. C’est ce qui me permet de vous proposer un prix doux, sans rien retirer au soin.</p>
+      <p>Car je tiens à faire les choses bien : je vous appelle avant de commencer, je vérifie chaque page, et je reste là ensuite. Un prix juste, c’est aussi un prix qui me permet de vivre de mon travail, et de le faire durer.</p>
       <p>Notre époque a quelque chose de beau : les efforts peuvent enfin être récompensés. Je voudrais que chacun en profite, pas seulement ceux qui ont un gros budget.</p>
       <p class="lettre-signe"><strong>Alex</strong><span>Fondateur des Minis Monstres</span></p>
     </div>
@@ -97,20 +98,20 @@ function laMaisonPage() {
     <div class="prose">
       <p>Les Minis Monstres ne sont pas de simples dessins. Alex a passé des mois à les programmer un par un, à leur donner un caractère et un métier, puis à leur apprendre à travailler ensemble.</p>
       <p>${listeEt([B('constructeur'), B('ecrivain'), B('organisateur'), B('observateur'), B('support'), B('extras')].filter((b) => b.nom).map(metierDe))} : chacun connaît sa place, et la bande avance comme une vraie équipe.</p>
-      <p>Les faire tourner coûte aussi chaque mois, en temps comme en argent. C’est notre investissement, pour que votre site, lui, reste à petit prix.</p>
+      <p>Ils prennent les tâches répétitives, et Alex garde pour lui ce qui demande du goût et de l’attention. Les faire tourner coûte aussi chaque mois, en temps comme en argent : c’est notre investissement, pour vous.</p>
     </div>
   </div>
   <p class="center more">${C.btn(sections.equipe.path, 'btn-light', sections.equipe.icon, 'Rencontrer la bande')}</p>
 </div></section>
 
-<section class="section" id="lave-vaisselle"><div class="container">
+<section class="section" id="chez-alex"><div class="container">
   <div class="maison-vision reveal">
     <span class="maison-vision-art" aria-hidden="true">${C.imgMonstre('bricou', 150)}</span>
     <div class="maison-vision-txt prose">
-      <h2>L’image du lave-vaisselle</h2>
-      <p>Laver ses verres à la main ou les confier à la machine : le résultat est le même, une vaisselle propre. La différence, c’est la soirée que vous avez gagnée.</p>
-      <p>Nos outils jouent ce rôle. Ils prennent en charge ce qui revient d’un site à l’autre, et ce qui en sort est aussi soigné qu’un travail fait à la main.</p>
-      <p><strong>Nous gardons pour nous le plaisir du travail bien fait</strong> : comprendre votre métier, choisir les mots justes, peaufiner chaque détail.</p>
+      <h2>Une maison, pas une agence</h2>
+      <p>Les Minis Monstres n’ont pas de vitrine en ville, ni de bureaux à louer. Tout se fait depuis chez Alex, dans les ${esc(site.address.department)} : pas de loyer, pas de chauffage ni d’éclairage de locaux, pas de commerciaux à payer. Ce que la maison n’a pas à dépenser, votre site ne le coûte pas.</p>
+      <p>Pour les tâches qui reviennent d’un site à l’autre, des outils font le travail, un peu comme un lave-vaisselle : la vaisselle est aussi propre, et le temps gagné va au reste.</p>
+      <p><strong>Ce reste, c’est le plus beau du métier</strong> : comprendre votre activité, choisir les mots justes, soigner le design, vérifier chaque détail.</p>
     </div>
   </div>
 </div></section>
@@ -121,9 +122,9 @@ function laMaisonPage() {
   <div class="promesses">
     ${promesse('list-checks', 'Un questionnaire précis', 'Avant de commencer, vous répondez à des questions claires. Nous savons ce que vous voulez, vous savez ce que vous aurez.')}
     ${promesse('phone-call', 'Un appel pour dégrossir', 'Alex vous téléphone avant que la bande se mette au travail. Vous parlez de votre activité, il prend des notes.')}
-    ${promesse('user-check', 'Une vérification, à chaque fois', 'Nos outils font gagner du temps, mais Alex relit tout lui-même. Rien n’est publié sans son contrôle.')}
-    ${promesse('trending-up', 'Un site qui suit votre budget', 'Commencez simple. Une page, une boutique ou une traduction s’ajoutent plus tard, quand vous le décidez.')}
-    ${promesse('piggy-bank', `${marche.foisMin} fois moins cher qu’un indépendant`, `D’après les prix publics relevés en France. Le détail est sur <a href="${sections.methode.path}">notre page sur les prix</a>.`)}
+    ${promesse('user-check', 'Une vérification, à chaque fois', 'Alex relit tout lui-même, sur ordinateur et sur téléphone. Rien n’est publié sans son contrôle.')}
+    ${promesse('key-round', 'La main sur tout', 'Votre espace client liste toutes vos pages. Vous modifiez vous-même, ou vous nous le demandez.')}
+    ${promesse('piggy-bank', `${marche.foisTexte} fois moins cher qu’un indépendant`, `D’après les prix publics relevés en France, et avec plus d’avantages. Le détail est sur <a href="${sections.methode.path}">notre page sur les prix</a>.`)}
     ${promesse('heart-handshake', '« Je serai toujours là »', 'Une question, un doute, une idée pour votre site : vous écrivez, et c’est Alex qui vous répond.')}
   </div>
 </div></section>
@@ -134,7 +135,7 @@ ${C.ctaBand({ title: 'Et si on commençait par votre site ?', text: `Le ${esc(ES
     color: 'lilac',
     bodyClass: 'page-maison',
     title: 'Notre concept : un site professionnel pour tous | Les Minis Monstres',
-    description: 'Pourquoi Les Minis Monstres existent : des sites professionnels à petit prix pour ceux qui se lancent, une bande programmée par Alex, et sa vérification.',
+    description: 'Pourquoi Les Minis Monstres existent : des sites professionnels soignés, à un prix juste, faits depuis chez Alex, sans local ni loyer, et vérifiés par lui.',
     crumbs,
     body,
     priority: 0.8,
@@ -167,6 +168,19 @@ function vitrineSvg() {
   ${etoile(28, 60, 0)}${etoile(238, 22, 1)}${etoile(340, 120, 2)}
 </svg>`;
 }
+// Ce que contient votre site (accueil, 25 novembre 2026) : la valeur d'abord, le prix plus bas (comparatif) et à la commande.
+// Uniquement ce qui existe : l'espace client (« Mes pages », « Modifier mon site moi-même », « Mes modifications », Ma commande,
+// les factures : src/wordpress/aled08-espace/), l'appel et la vérification d'Alex, les pages de visibilité Google (extra packseo).
+const COMPRIS = () => [
+  ['layout-grid', 'mint', 'Un site complet, à votre image', `${esc(listeEt(MODULES_SITE.map((x, i) => (i ? x.toLowerCase() : x))))} : vos couleurs, vos photos, vos mots.`],
+  ['gauge', 'sky', 'Rapide, sûr et bien vu de Google', 'Lisible sur téléphone, léger à charger, et préparé pour que Google comprenne ce que vous faites et où.'],
+  ['phone-call', 'lilac', 'Un appel, puis une vérification', 'Alex vous téléphone avant de commencer. Avant la mise en ligne, il contrôle chaque page, sur ordinateur et sur téléphone.'],
+  ['list-checks', 'peach', 'La liste de toutes vos pages', 'Dans votre espace client, chaque page de votre site, dont vos pages de visibilité Google, avec un lien pour la voir ou la modifier.'],
+  ['pencil', 'pink', 'Vous modifiez vous-même', `Avec le forfait ${esc(ABO.name)}, un texte ou une photo se change en direct. Le reste, vous nous le demandez dans « Mes modifications ».`],
+  ['route', 'butter', 'Un vrai suivi', 'Votre commande, vos demandes et vos factures se suivent au même endroit, étape par étape.'],
+  ['search-check', 'mint', 'Des pages pour grandir sur Google', 'Quand vous le voulez, des pages de visibilité Google s’ajoutent depuis votre espace client, écrites pour les recherches de vos clients.'],
+  ['shield-check', 'sky', 'Hébergé, protégé, sauvegardé', `Avec le forfait ${esc(ABO.name)}, l’hébergement, la sécurité, les sauvegardes et la maintenance sont faits pour vous.`],
+];
 function home() {
   const ECOLE_A = ateliers.find((x) => x.id === 'ecole') || { label: 'Mes Tutos', path: C.TUTOS.HUB, monstre: 'mochi' };
   const body = `<section class="hero">
@@ -175,11 +189,11 @@ function home() {
       <p class="hero-sur">${icon('store')}Création de site internet professionnel</p>
       <h1>Votre activité mérite <mark>d’être vue</mark>.</h1>
       <p class="hero-lead">Sans site internet, c’est une belle vitrine, mais dans une rue où personne ne passe. On crée le vôtre, et on vous rend visible.</p>
-      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}<a class="hero-lien" href="${sections.forfaits.path}">Voir les tarifs${icon('arrow-right')}</a></div>
+      <div class="hero-ctas">${C.btnCreer('btn-primary btn-lg')}<a class="hero-lien" href="#compris">Tout ce qui est compris${icon('arrow-right')}</a></div>
       <ul class="hero-points">
-        <li>${icon('check')}${euro(ESS.price)} la création</li>
+        <li>${icon('check')}Un site soigné, suivi par Alex</li>
+        <li>${icon('check')}La main sur tout</li>
         <li>${icon('check')}Sans abonnement obligatoire</li>
-        <li>${icon('check')}Alex vérifie tout</li>
       </ul>
     </div>
     <div class="hero-art hero-vitrine" aria-hidden="true">
@@ -191,28 +205,23 @@ function home() {
   </div>
 </section>
 
-<section class="section" id="prix"><div class="container">
-  <h2 class="section-title">Un site professionnel, vraiment pas cher</h2>
-  <p class="section-sub">Une vitrine, oui, mais dans une rue passante. Et à un prix que vous pouvez vous permettre.</p>
-  <div class="prix-une reveal">
-    <div class="prix-une-tete">
-      <p class="prix-une-nom">${esc(ESS.name)}</p>
-      <p class="prix-une-prix"><b>${euro(ESS.price)}</b><span>la création, payée une fois</span></p>
-      <a class="prix-une-fois" href="${sections.methode.path}">${icon('piggy-bank')}<span>${marche.foisMin} fois moins cher qu’un indépendant</span></a>
-    </div>
-    <ul class="prix-une-liste">
-      <li>${icon('layout-grid')}<span><strong>Un site complet</strong> : ${esc(listeEt(MODULES_SITE.map((x, i) => (i ? x.toLowerCase() : x))))}.</span></li>
-      <li>${icon('smartphone')}<span><strong>Rapide et lisible sur téléphone</strong>, préparé pour que Google comprenne votre activité.</span></li>
-      <li>${icon('shopping-bag')}<span><strong>Vous vendez en ligne ?</strong> L’option ${esc(ECO.name)}, ${euro(ECO.prix)} de plus.</span></li>
-      <li>${icon('calendar-check')}<span><strong>Ensuite, vous choisissez</strong> : le forfait ${esc(ABO.name)} à ${euro(ABO.month)} par mois sans engagement, ou le forfait ${esc(AUTO.name)} à ${euro(AUTO.month)}.</span></li>
-    </ul>
-    <div class="prix-une-pied">${C.btnCreer('btn-primary btn-lg')}${C.btn(sections.forfaits.path, 'btn-light btn-lg', sections.forfaits.icon, 'Voir les tarifs')}</div>
-  </div>
+<section class="section" id="compris"><div class="container">
+  <h2 class="section-title">Tout ce que vous avez, <mark>avec votre site</mark></h2>
+  <p class="section-sub">Un site soigné jusque dans les détails, et un vrai suivi autour, du premier appel jusqu’à longtemps après la mise en ligne.</p>
+  <ul class="compris reveal">${COMPRIS().map(([ico, c, t, d]) => `<li class="compris-carte c-${c}"><span class="compris-ico" aria-hidden="true">${icon(ico)}</span><h3>${t}</h3><p>${d}</p></li>`).join('')}</ul>
+  <p class="center more compris-pied">${C.btn(C.TUTOS.HUB, 'btn-light', 'book-open', 'Chaque étape, expliquée')}${C.btn(site.espaceClient && site.espaceClient.demo ? site.espaceClient.demo : sections.monespace.path, 'btn-light', 'circle-user', 'Visiter l’espace client')}</p>
+</div></section>
+
+<section class="section section-soft" id="pas-ailleurs"><div class="container">
+  <h2 class="section-title">Ce que vous avez chez nous, <mark>et pas ailleurs</mark></h2>
+  <p class="section-sub">Face à un prestataire classique, qui crée votre site et l’héberge : plus d’avantages, pour bien moins cher.</p>
+  ${C.avantagesNous()}
+  ${C.prixJuste()}
 </div></section>
 
 <section class="section" id="comparer"><div class="container">
   <h2 class="section-title">Comparez, en toute honnêteté</h2>
-  <p class="section-sub">Le même besoin, un site vitrine professionnel, chez nous et ailleurs.</p>
+  <p class="section-sub">Le même besoin, un site vitrine professionnel, chez nous et ailleurs, prix compris.</p>
   ${C.comparatifTable({ court: true })}
   <p class="center more"><a class="link-more" href="${sections.comparatif.path}">Le comparatif complet, avec les sources</a></p>
 </div></section>
@@ -230,7 +239,7 @@ function home() {
     <div class="alex-carte reveal">
       <span class="alex-carte-art" aria-hidden="true">${C.alexPortrait({ cls: 'alex-carte-svg' })}</span>
       <div>
-        <p class="alex-carte-txt">Derrière chaque site, il y a Alex. Il vous appelle avant de commencer, relit tout ce que prépare la bande, et répond quand vous lui écrivez. Ses outils l’aident à aller vite. La vérification, elle, reste toujours la sienne.</p>
+        <p class="alex-carte-txt">Derrière chaque site, il y a Alex. Il vous appelle avant de commencer, relit tout ce que prépare la bande, et répond quand vous lui écrivez. La bande l’épaule sur les tâches répétitives. Le soin et la vérification, eux, restent toujours les siens.</p>
         <p class="alex-carte-bande"><span class="alex-carte-monstres" aria-hidden="true">${['bricou', 'mochi', 'gelee', 'etoile', 'mascotte'].map((m) => C.imgMonstre(m, 40)).join('')}</span><a href="${sections.equipe.path}">et sa petite bande</a></p>
       </div>
     </div>
@@ -256,12 +265,12 @@ function home() {
   </a>
 </div></section>
 
-${C.ctaBand({ title: 'On ouvre votre vitrine ?', text: 'Choisissez votre site en deux minutes. Le prix s’affiche avant de payer, et Alex vous appelle pour démarrer.' })}`;
+${C.ctaBand({ title: 'On ouvre votre vitrine ?', text: `Le ${esc(ESS.name)} : ${euro(ESS.price)} la création, ${euro(BOU.price)} avec l’option ${esc(ECO.name)}. Vous commandez en deux minutes, et Alex vous appelle pour démarrer.` })}`;
   return {
     path: '/',
     bodyClass: 'page-accueil',
-    title: `Création de site internet professionnel dès ${euro(ESS.price)} | Les Minis Monstres`,
-    description: `Votre site internet professionnel pour ${euro(ESS.price)}, ${marche.foisMin} fois moins cher qu’un indépendant. Un questionnaire précis, un appel d’Alex, tout vérifié avant la mise en ligne.`,
+    title: 'Création de site internet professionnel, soigné et suivi | Les Minis Monstres',
+    description: `Un site internet professionnel soigné, suivi par Alex et ${marche.foisTexte} fois moins cher qu’un indépendant. Votre espace client, toutes vos pages, la main sur tout.`,
     crumbs: [HOME],
     body,
     priority: 1,
@@ -364,8 +373,8 @@ function forfaitsPage() {
   const f = C.faq(FAQ.forfaits || FAQ.tarifs || [], 'Vos questions sur les tarifs', 'faq-tarifs');
   const body = `${C.pageHero({
     section: 'forfaits',
-    h1: `Tarifs : être visible, dès ${euro(creation.prix)}`,
-    lead: `Des prix affichés, les mêmes pour tous. Créez votre site : payez une seule fois. Ensuite, le **forfait ${AUTO.name}** à ${euro(AUTO.month)} ou le **forfait ${ABO.name}** à ${euro(ABO.month)} par mois. Enfin, les extras, si vous en avez besoin.`,
+    h1: `Tarifs : un site soigné, dès ${euro(creation.prix)}`,
+    lead: `Des prix affichés, les mêmes pour tous, ${marche.foisTexte} fois moins chers qu’un indépendant. Créez votre site : payez une seule fois. Ensuite, le **forfait ${AUTO.name}** à ${euro(AUTO.month)} ou le **forfait ${ABO.name}** à ${euro(ABO.month)} par mois. Enfin, les extras, si vous en avez besoin.`,
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>
@@ -400,7 +409,14 @@ ${C.modulesSite({ titre: 'Pourquoi ce prix : comment est fait votre site', id: '
   ])}
 </div></section>
 
-<section class="section section-soft" id="comparer"><div class="container">
+<section class="section section-soft" id="pas-ailleurs"><div class="container">
+  <h2 class="section-title">Moins cher, et bien plus d’avantages</h2>
+  <p class="section-sub">Ce que vous avez chez nous, et que n’offre pas toujours un prestataire classique.</p>
+  ${C.avantagesNous()}
+  ${C.prixJuste()}
+</div></section>
+
+<section class="section" id="comparer"><div class="container">
   <h2 class="section-title">Et ailleurs, ça coûte combien ?</h2>
   <p class="section-sub">Un indépendant, une agence ou une plateforme à faire soi-même : le même besoin, comparé ligne par ligne.</p>
   ${C.comparatifTable()}
@@ -413,7 +429,7 @@ ${C.modulesSite({ titre: 'Pourquoi ce prix : comment est fait votre site', id: '
   </div>
 </div></section>
 
-<section class="section" id="questions"><div class="container">
+<section class="section section-soft" id="questions"><div class="container">
   <h2 class="section-title">Avant de vous décider</h2>
   ${C.objections()}
 </div></section>
@@ -541,12 +557,12 @@ function comparatifPage() {
     ['butter', 'building-2', 'L’agence', 'Une équipe complète, idéale pour un gros projet avec un budget à la hauteur. Le prix et le délai dépendent du devis.'],
     ['sky', 'user', 'L’indépendant', 'Une personne qui fait tout. La qualité dépend beaucoup de qui vous choisissez, et le suivi se fait souvent au devis.'],
     ['lilac', 'mouse-pointer-click', 'La plateforme à faire soi-même', 'Vous construisez votre site à partir de modèles. C’est vous qui faites le travail, les mises à jour et la visibilité sur Google.'],
-    ['mint', 'sparkles', 'Les Minis Monstres', `Des prix affichés, dès ${euro(creation.prix)}, et quelqu’un qui répond. On crée votre site pour vous, et on le rend visible.`],
+    ['mint', 'sparkles', 'Les Minis Monstres', `Un site soigné, fait pour vous, à ${euro(creation.prix)}. Puis un espace client où vous voyez toutes vos pages, et où vous modifiez vous-même.`],
   ];
   const body = `${C.pageHero({
     section: 'comparatif',
     h1: 'Les Minis Monstres et les autres solutions',
-    lead: 'Agence, indépendant ou plateforme à faire soi-même : chaque solution a sa place. La nôtre : vous rendre visible sur internet, avec des prix affichés et quelqu’un qui répond.',
+    lead: 'Agence, indépendant ou plateforme à faire soi-même : chaque solution a sa place. La nôtre : un site soigné, suivi de près, et l’accès à tout depuis votre espace client.',
     crumbs,
   })}
 <section class="section"><div class="container">
@@ -562,18 +578,19 @@ function comparatifPage() {
 </div></section>
 
 <section class="section"><div class="container container-narrow">
-  <h2 class="section-title">Un site professionnel ${marche.foisMin} fois moins cher qu’un indépendant</h2>
+  <h2 class="section-title">${marche.foisTexte} fois moins cher, et plus d’avantages</h2>
   <p class="section-sub">Pour un site vitrine complet : accueil, présentation, services, photos et contact.</p>
   ${C.deroulants([
     C.deroulant('Les prix, côte à côte', md(`Un indépendant demande en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence, plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. Notre ${ESS.name}, qui contient ces mêmes modules, coûte ${euro(ESS.price)}.
 
 Soyons honnêtes : ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois. Les sources sont citées sous le tableau, en haut de cette page.`), { ico: 'scale' }),
-    C.deroulant('Pourquoi ce prix ?', md(`Nous n’avons pas de locaux, pas de loyer, pas de commerciaux ni de grosse organisation à faire tourner : autant de frais que vous ne payez pas. Nos modules sont déjà prêts, il ne manque que votre contenu. Notre objectif est simple : vous livrer un site professionnel plus vite et moins cher que les autres.
+    C.deroulant('Pourquoi ce prix ?', md(`Nous n’avons ni local, ni agence, ni loyer, ni bureaux à chauffer et à éclairer : Alex travaille depuis chez lui. Ces frais n’existent pas chez nous, donc vous ne les payez pas. Nos modules ont été soignés une fois pour toutes, et il ne manque que votre contenu.
 
-> Faire la vaisselle à la main ou au lave-vaisselle : les assiettes sont aussi propres. Mais la machine vous rend votre soirée. Nos outils font le répétitif ; nous, on garde le plaisir du travail bien fait.
+Le prix reste juste : assez doux pour vous, assez juste pour que nous vivions de notre travail. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank' }),
+    C.deroulant('Ce que vous avez en plus', md(`Chez un prestataire classique, celui qui crée votre site et l’héberge, les accès restent souvent chez lui. Ici, votre espace client vous montre la liste de toutes vos pages, dont vos pages de visibilité Google, avec un lien pour voir ou modifier chacune.
 
-Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank' }),
-    C.deroulant('Et l’entretien, chaque mois ?', md(`Avec le forfait ${AUTO.name}, vous gérez tout vous-même, pour ${euro(AUTO.month)} par mois. Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications. Pas de nom de domaine ? On vous le fournit pour ${euro(C.DOM)} de plus par mois. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois pour l’entretien d’un site.`), { ico: 'repeat' }),
+Avec le forfait ${ABO.name}, vous changez un texte ou une photo vous-même, en direct. Vous suivez votre commande, vos demandes de modification et vos factures au même endroit.`), { ico: 'key-round' }),
+    C.deroulant('Et l’entretien, chaque mois ?', md(`Avec le forfait ${AUTO.name}, vous gérez tout vous-même, pour ${euro(AUTO.month)} par mois. Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications. Pas de nom de domaine ? On vous le fournit pour ${euro(C.DOM)} de plus par mois. Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois pour l’entretien d’un site : chez nous, c’est bien moins cher.`), { ico: 'repeat' }),
     C.deroulant('Ce que vous ne faites pas vous-même', md(`Avec une plateforme à faire soi-même, le site n’est jamais fini : il faut apprendre l’outil, choisir les réglages, écrire pour Google. Ici, vous dites ce que vous voulez, et votre site est fait pour vous. Vous gardez votre temps pour votre métier.`), { ico: 'clock' }),
     C.deroulant('Quand on vous dira d’aller ailleurs', md(`Une application sur mesure, un logiciel métier, un catalogue de milliers de produits : ces projets demandent une agence ou un développeur. On vous le dit dès le premier échange.`), { ico: 'arrow-right' }),
   ])}
@@ -1709,9 +1726,13 @@ ${ex || opts.length ? `<section class="section"><div class="container">
   ${m.exemple.texte ? `<p class="section-sub">${inline(m.exemple.texte)}</p>` : ''}
   <div class="client-cards client-cards-solo"><a class="client-card c-${ex.color} reveal" href="${ex.url}" target="_blank" rel="noopener"><span class="type-ico">${icon(ex.icon)}</span><span class="client-genre">${esc(ex.genre)}</span><strong>${esc(ex.nom)}</strong><span class="client-url">${icon('globe')}${esc(ex.domaine)}${icon('arrow-right')}</span></a></div>` : ''}
 </div></section>` : ''}
+<section class="section section-soft" id="pas-ailleurs"><div class="container">
+  ${commun('<h2 class="section-title">Ce que vous avez chez nous, et pas ailleurs</h2>')}
+  ${C.avantagesNous({ court: true })}
+</div></section>
 ${f.html}
 ${voirCards(m.voir || [])}
-${C.ctaBand({ title: 'On vous rend visible ?', text: `Choisissez votre site en deux minutes : dès ${euro(creation.prix)}, prix affichés. Ou écrivez-nous pour en parler d’abord.` })}`;
+${C.ctaBand({ title: 'On vous rend visible ?', text: `Votre site, soigné et suivi : ${euro(creation.prix)} la création, à régler en commandant. Ou écrivez-nous pour en parler d’abord.` })}`;
   return {
     path,
     section: 'metiers',

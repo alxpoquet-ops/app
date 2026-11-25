@@ -3171,27 +3171,62 @@ html:not(.js) .onglet-li:focus-within .sous-menu { display: grid; }
   .onglet-img { width: 48px; height: 48px; }
 }
 
-/* ---------- accueil : le prix, sans détour ---------- */
-.prix-une { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 0; max-width: 980px; margin: 0 auto; border-radius: 32px; background: var(--card); box-shadow: 0 0 0 1px var(--line), var(--shadow); overflow: hidden; }
-.prix-une-tete { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 10px; padding: 34px 34px; background: radial-gradient(120% 90% at 0% 0%, var(--mint), transparent 70%), radial-gradient(90% 80% at 100% 100%, var(--lilac), transparent 70%); }
-.prix-une-nom { margin: 0; padding: 5px 12px; border-radius: 999px; background: var(--card); color: var(--mint-dd); font-weight: 900; font-size: .9rem; }
-.prix-une-prix { display: flex; flex-direction: column; margin: 0; line-height: 1.05; }
-.prix-une-prix b { color: var(--ink); font-weight: 900; font-size: clamp(3.2rem, 7vw, 4.6rem); letter-spacing: -.03em; }
-.prix-une-prix span { margin-top: 6px; color: var(--text); font-weight: 700; }
-.prix-une-fois { display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; padding: 8px 14px 8px 9px; border-radius: 999px; background: var(--card); color: var(--ink); font-weight: 800; font-size: .93rem; text-decoration: none; box-shadow: var(--shadow-sm); }
-.prix-une-fois .ico { flex: none; width: 28px; height: 28px; padding: 5px; border-radius: 50%; background: var(--lilac); color: var(--lilac-dd); }
-.prix-une-fois:hover { color: var(--ink); box-shadow: 0 0 0 2px var(--lilac-d), var(--shadow-sm); }
-.prix-une-liste { list-style: none; display: grid; gap: 16px; margin: 0; padding: 32px 34px 8px; }
-.prix-une-liste li { display: flex; align-items: flex-start; gap: 12px; color: var(--text); line-height: 1.5; }
-.prix-une-liste .ico { flex: none; width: 34px; height: 34px; padding: 8px; border-radius: 11px; background: var(--soft); color: var(--lilac-dd); }
-.prix-une-liste strong { color: var(--ink); }
-.prix-une-pied { grid-column: 2; display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 34px 32px; }
-@media (max-width: 860px) {
-  .prix-une { grid-template-columns: minmax(0, 1fr); border-radius: 26px; }
-  .prix-une-tete { align-items: center; padding: 26px 20px; text-align: center; }
-  .prix-une-liste { padding: 22px 18px 4px; gap: 12px; }
-  .prix-une-pied { grid-column: 1; padding: 14px 18px 22px; }
-  .prix-une-pied .btn { flex: 1 1 220px; }
+/* ---------- accueil : tout ce que vous avez avec votre site (la valeur d'abord, le prix plus bas) ---------- */
+.compris { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; max-width: 1120px; margin: 0 auto; padding: 0; }
+.compris-carte { display: flex; flex-direction: column; gap: 8px; padding: 22px 20px 24px; border-radius: 26px; background: var(--card); box-shadow: 0 0 0 1px var(--line), var(--shadow-sm); min-width: 0; }
+.compris-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 16px; background: var(--c); color: var(--c-dd); }
+.compris-ico .ico { width: 24px; height: 24px; }
+.compris-carte h3 { margin: 4px 0 0; font-size: 1.04rem; line-height: 1.3; color: var(--ink); }
+.compris-carte p { margin: 0; color: var(--text); font-size: .94rem; line-height: 1.5; }
+.compris-pied { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+@media (max-width: 1020px) { .compris { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) {
+  .compris { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .compris-carte { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; row-gap: 4px; padding: 18px 16px; border-radius: 22px; }
+  .compris-ico { grid-row: span 2; width: 44px; height: 44px; border-radius: 14px; }
+  .compris-carte h3 { margin: 0; }
+  .compris-pied .btn { flex: 1 1 220px; }
+}
+
+/* ---------- ce que vous avez chez nous, et pas ailleurs (accueil, Tarifs, pages métier) ---------- */
+.avantages { max-width: 1040px; margin: 0 auto; border-radius: 30px; background: var(--card); box-shadow: 0 0 0 1px var(--line), var(--shadow); overflow: hidden; }
+.avantages-tete, .avantages-liste li { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr) minmax(0, 1fr); }
+.avantages-tete > span { display: flex; align-items: flex-end; gap: 8px; padding: 18px 20px 12px; font-weight: 900; font-size: .98rem; color: var(--muted); }
+.avantages-tete .av-nous { background: var(--mint); color: var(--mint-dd); padding-top: 14px; }
+.avantages-tete .av-nous svg { width: 44px; height: auto; flex: none; margin: -8px 0 -6px; }
+.avantages-tete .av-nous .m-shadow { display: none; }
+.avantages-liste { list-style: none; margin: 0; padding: 0; }
+.avantages-liste li > p { margin: 0; padding: 14px 20px; border-top: 1px solid var(--line); font-size: .94rem; line-height: 1.45; }
+.av-t { display: flex; align-items: center; gap: 10px; color: var(--ink); }
+.av-t .ico { flex: none; width: 34px; height: 34px; padding: 8px; border-radius: 11px; background: var(--soft); color: var(--lilac-dd); }
+.av-t strong { font-weight: 900; }
+p.av-nous { display: flex; align-items: flex-start; gap: 9px; background: var(--mint); color: var(--ink); font-weight: 700; border-top-color: rgba(23, 106, 76, .14) !important; }
+p.av-nous > .ico { flex: none; width: 20px; height: 20px; margin-top: 1px; color: var(--mint-dd); }
+p.av-eux { color: var(--muted); font-weight: 600; }
+.av-eux-k { display: none; }
+.avantages-note { display: flex; gap: 10px; align-items: flex-start; margin: 0; padding: 14px 20px 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: .86rem; line-height: 1.5; }
+.avantages-note .ico { flex: none; width: 18px; height: 18px; margin-top: 2px; color: var(--lilac-d); }
+@media (max-width: 760px) {
+  .avantages { border-radius: 0; background: transparent; box-shadow: none; overflow: visible; }
+  .avantages-tete { display: none; }
+  .avantages-liste { display: grid; gap: 12px; }
+  .avantages-liste li { display: block; padding: 16px; border-radius: 22px; background: var(--card); box-shadow: 0 0 0 1px var(--line), var(--shadow-sm); }
+  .avantages-liste li > p { padding: 0; border-top: 0; }
+  .avantages-liste li > p.av-t { margin-bottom: 10px; font-size: 1.02rem; }
+  .avantages-liste li > p.av-nous { padding: 12px 14px; border-radius: 16px; box-shadow: 0 0 0 2px var(--mint-d) inset; }
+  .avantages-liste li > p.av-eux { margin-top: 10px; padding: 0 4px; }
+  .av-eux-k { display: block; margin-bottom: 2px; font-size: .74rem; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  .avantages-note { padding: 12px 4px 0; border-top: 0; }
+}
+.prix-juste { display: flex; gap: 18px; align-items: flex-start; max-width: 1040px; margin: 22px auto 0; padding: 24px 26px; border-radius: 28px; background: radial-gradient(120% 120% at 0% 0%, var(--butter), transparent 60%), var(--card); box-shadow: 0 0 0 1px var(--line), var(--shadow-sm); }
+.prix-juste-art { display: grid; place-items: center; flex: none; width: 56px; height: 56px; border-radius: 18px; background: var(--card); color: var(--butter-dd); box-shadow: var(--shadow-sm); }
+.prix-juste-art .ico { width: 28px; height: 28px; }
+.prix-juste h3 { margin: 0 0 6px; font-size: 1.12rem; color: var(--ink); }
+.prix-juste p { margin: 0 0 8px; color: var(--text); line-height: 1.55; }
+.prix-juste strong { color: var(--ink); }
+@media (max-width: 560px) {
+  .prix-juste { flex-direction: column; gap: 12px; padding: 20px 18px; border-radius: 24px; }
+  .prix-juste-art { width: 48px; height: 48px; border-radius: 15px; }
 }
 
 /* ---------- les étapes en clair (accueil, Créer mon site) ---------- */

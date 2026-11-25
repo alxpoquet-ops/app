@@ -208,6 +208,7 @@ require_once __DIR__ . '/includes/mails.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
 require_once __DIR__ . '/includes/pages-google.php';
+require_once __DIR__ . '/includes/mes-pages.php'; // « Mes pages » : la liste de toutes les pages du site du client (onglet Mon site)
 require_once __DIR__ . '/includes/regles.php';
 require_once __DIR__ . '/includes/agents.php';
 require_once __DIR__ . '/includes/mirette.php';
@@ -1211,6 +1212,7 @@ function aled08e_dashboard() {
           <?php endif; ?>
           <?php if ($abo === 'past_due') : ?><p class="esp-warn">Votre dernier paiement n’a pas abouti. <button type="button" class="link-btn" data-go="forfait">Mettre à jour mon moyen de paiement</button></p><?php endif; ?>
           <?php echo aled08e_ateliers_cartes_html($uid, $siteInfo); // phpcs:ignore ?>
+          <?php echo aled08e_mp_raccourci_html($uid); // phpcs:ignore -- « Mes pages » : le raccourci vers Mon site ?>
           <div class="mm-duo">
             <?php echo aled08e_fil_html($uid); // phpcs:ignore ?>
             <?php echo aled08e_abonnement_resume_html($uid); // phpcs:ignore ?>
@@ -1233,6 +1235,7 @@ function aled08e_dashboard() {
             <button type="button" class="acc-action c-butter" data-go="extras"><span class="acc-art" aria-hidden="true"><?php echo aled08e_monster('etoile'); // phpcs:ignore ?></span><strong>Ajouter un extra</strong><small>Pépite vous montre les petits plus</small></button>
             <button type="button" class="acc-action c-pink" data-go="vacances"><span class="acc-art" aria-hidden="true"><?php echo aled08e_monster('mochi'); // phpcs:ignore ?></span><strong>Ma boutique</strong><small><?php echo aled08e_est_boutique($uid) ? 'Articles, prix, paiements, commandes' : 'Option verrouillée : voir comment l’ouvrir'; ?></small></button>
           </div>
+          <?php echo aled08e_mp_html($uid); // phpcs:ignore -- « Mes pages » (includes/mes-pages.php) ?>
           <p class="app-sub">Dernières demandes</p>
           <?php if ($reqs) : ?>
           <ul class="reqs"><?php foreach (array_slice($reqs, 0, 3) as $p) echo $reqItem($p, false); // phpcs:ignore ?></ul>

@@ -74,14 +74,14 @@ const pages = [
     icon: 'piggy-bank',
     color: 'lilac',
     title: 'Pourquoi un site moins cher, sans rien sacrifier | Les Minis Monstres',
-    description: `Un site internet dès ${eur(ESS.price)} € pour être enfin visible : le temps gagné sur le répétitif, ce qu’Alex vérifie à la main, et ce qui n’est jamais sacrifié.`,
+    description: `Un site internet soigné, ${marche.foisTexte} fois moins cher qu’un indépendant : pas de local, pas d’agence, pas de loyer, tout fait depuis chez Alex, et vérifié par lui.`,
     h1: 'Pourquoi sommes-nous moins chers ?',
-    lead: `Un site professionnel ${marche.foisMin} fois moins cher qu’un indépendant : pas de locaux, pas de loyer, pas de lourde organisation, et un temps de fabrication réduit. Le soin, lui, reste entier.`,
-    resume: 'Le temps gagné, et ce qui ne change pas.',
+    lead: `Un site professionnel ${marche.foisTexte} fois moins cher qu’un indépendant, pour une raison simple : pas de local, pas d’agence, pas de loyer, pas de bureaux à chauffer et à éclairer. Alex fait tout depuis chez lui. Le soin, lui, reste entier.`,
+    resume: 'Pas de local, pas de loyer, et tout le soin.',
     points: [
-      { icon: 'house', t: 'Pas de locaux, pas de loyer', d: 'Aucun bureau, aucun loyer, aucun commercial : ces frais ne finissent pas sur votre facture.' },
-      { icon: 'timer', t: 'Une méthode rodée', d: 'La petite bande des Minis Monstres se charge du répétitif, et aucun intermédiaire n’est à payer.' },
+      { icon: 'house', t: 'Pas de local, pas de loyer', d: 'Ni agence ni bureaux à chauffer : Alex travaille de chez lui, et ces frais restent hors de votre facture.' },
       { icon: 'user-check', t: 'Tout vérifié à la main', d: 'Alex relit, teste sur téléphone et contrôle chaque mise en ligne.' },
+      { icon: 'key-round', t: 'L’accès à tout', d: 'Votre espace client montre toutes vos pages. Vous modifiez vous-même, ou vous nous demandez.' },
       { icon: 'badge-euro', t: 'Un prix affiché', d: `${eur(ESS.price)} € le site, ${eur(BOU.price)} € avec une boutique, les mêmes pour tous, sans devis à attendre.` },
       { icon: 'shield-check', t: 'Rien de sacrifié', d: 'Qualité, sécurité, visibilité sur Google et une vraie personne qui vous répond.' },
     ],
@@ -89,33 +89,33 @@ const pages = [
 
 Une activité que personne ne trouve sur internet perd des clients sans le savoir. Beaucoup de petites structures renoncent pourtant au site internet à cause du prix.
 
-Notre métier, c’est de leur apporter cette visibilité à un tarif qu’elles peuvent se permettre.
+Notre métier, c’est de leur apporter cette visibilité, avec un site soigné, à un tarif qu’elles peuvent se permettre.
+
+## Pas de local, pas d’agence, pas de loyer
+
+Une agence paie des bureaux, un loyer, le chauffage et l’éclairage de ses locaux, des commerciaux, des réunions et toute une organisation. Ces frais se retrouvent dans le prix de chaque site.
+
+Chez nous, rien de tout cela. **Alex fait tout depuis chez lui** : pas de vitrine en ville, pas de bureaux à chauffer et à éclairer, pas d’équipe commerciale à faire vivre. Ce que nous n’avons pas à payer, vous ne le payez pas non plus.
+
+C’est la vraie raison de notre prix. Pas une étape sautée, pas un site fait à la va-vite : seulement des frais qui n’existent pas.
+
+## Un prix juste, des deux côtés
+
+Un prix doux ne veut pas dire un prix au rabais. Il doit rester assez juste pour que nous puissions prendre le temps de chaque site, répondre à chaque message, et vivre de notre travail sur la durée.
+
+C’est l’équilibre que nous avons cherché : bien moins cher pour vous, et tenable pour nous. Un prestataire qui dure, c’est aussi un site qui reste suivi.
 
 ## Ce que vous payez vraiment dans un site
 
 Un site internet, c’est surtout du temps : la maquette, la mise en page de chaque écran, les textes, les réglages, les tests. Fait entièrement à la main, cela prend des jours, parfois des semaines.
 
-D’après des repères publics relevés en France, un site vitrine de ${marche.pagesCompare} pages fait par un indépendant coûte en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Son entretien revient souvent entre ${mille(marche.entretienMin)} et ${mille(marche.entretienMax)} € par mois. Ces prix ne sont pas exagérés : ils correspondent au travail fourni.
-
-## Pas de locaux, pas de loyer, pas de frais cachés
-
-Une agence paie des bureaux, un loyer, des commerciaux, des réunions et toute une organisation. Ces frais se retrouvent dans le prix de chaque site.
-
-Chez nous, rien de tout cela : pas de locaux, pas de loyer, pas d’équipe commerciale à faire vivre. Ce que nous n’avons pas à payer, vous ne le payez pas non plus. Notre objectif : vous fournir un site professionnel plus rapidement et moins cher que les autres.
-
-> La vaisselle, on peut la faire à la main ou au lave-vaisselle. À la fin, les assiettes sont aussi propres. Mais avec la machine, vous n’avez pas passé votre soirée devant l’évier.
-
-## Notre vision : les machines pour le répétitif, nous pour le reste
-
-D’un site à l’autre, une bonne partie du travail se répète : monter les pages, faire les réglages, alléger les photos, vérifier les liens. Ce n’est ni difficile ni passionnant, mais à la main, cela prend des heures. Nos outils, les Minis Monstres, s’en chargent comme un lave-vaisselle : le même travail, bien fait, sans perdre de temps.
-
-Le temps gagné, nous le gardons pour la partie qui compte vraiment, et que nous aimons : vous écouter, comprendre votre métier, choisir l’ambiance de votre site, trouver les bons mots, soigner les détails. Le répétitif pour les machines, le plaisir du travail bien fait pour nous. Et vous, vous en profitez : un site prêt plus vite, et moins cher.
+D’après des repères publics relevés en France, un site vitrine de ${marche.pagesCompare} pages fait par un indépendant coûte en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Son entretien revient souvent entre ${mille(marche.entretienMin)} et ${mille(marche.entretienMax)} € par mois. Ces prix ne sont pas exagérés : ils correspondent au travail fourni, et aux frais de chacun.
 
 ## Le cerveau est prêt, il ne manque que votre contenu
 
 Un site est fait de parties qui reviennent presque toujours : l’accueil, la présentation, les services et les tarifs, la galerie, les questions fréquentes, le contact, et parfois la boutique. Alex a créé et optimisé chacune de ces parties, une fois pour toutes. Ce sont nos modules, nos minis monstres à nous : soignés, rapides, lisibles sur téléphone, et modifiables chacun de leur côté.
 
-Pour votre site, nous assemblons ces modules et nous les remplissons avec vos informations et vos photos. Le travail de fond n’est pas à refaire à chaque fois : c’est ce qui garde le prix bas.
+Pour votre site, nous assemblons ces modules et nous les remplissons avec vos informations et vos photos. Le travail de fond n’est pas à refaire, et le temps gagné va au design, aux mots et aux détails.
 
 ## Une base commune, des sites tous différents
 
@@ -123,17 +123,10 @@ La préconfiguration concerne la partie que vos visiteurs ne voient jamais : le 
 
 Ce qui se voit, en revanche, est fait pour vous : l’ambiance, les couleurs, les polices, la mise en avant de vos photos, le ton de vos textes. Votre site est en ligne en quelques heures, puis nous l’ajustons à votre goût, avec des modifications à volonté. Le résultat ressemble à votre activité, pas à celle du voisin.
 
-## Comment nous gagnons du temps
+## Les tâches répétitives, outillées
 
-D’un site à l’autre, beaucoup d’étapes se répètent. Nous les avons confiées à une petite bande de compagnons, les Minis Monstres.
+Monter les pages, alléger les photos, vérifier les liens : ce qui revient d’un site à l’autre est outillé, et confié à notre petite bande. C’est discret, et c’est tout le temps gagné pour ce qui compte vraiment.${ESS.delai ? ` Votre site est prêt en ${ESS.delai}, avec ou sans l’option ${eco}.` : ''}
 
-- **Pour les textes** : ${nomRole(B('ecrivain'))}, prépare une première base.
-- **Pour les pages** : ${nomRole(B('constructeur'))}, les monte, et ${nomRole(B('organisateur'))}, les range.
-- **Pour Google** : ${nomRole(B('observateur'))}, prépare les pages qui vous feront trouver près de chez vous.
-- **Sans intermédiaire** : nous traitons en direct avec des hébergeurs français, les entreprises qui gardent les sites en ligne.
-${ESS.delai ? `
-Ce qui prenait des semaines se fait en ${ESS.delai}, avec ou sans l’option ${eco}.
-` : ''}
 ## Ce qu’Alex fait à la main
 
 Les petits monstres vont vite, mais ils ne décident de rien. Alex, qui a créé les Minis Monstres, conçoit votre site et reprend tout ce qu’ils préparent.
@@ -159,15 +152,24 @@ Le site se règle à la commande, d’un coup ou ${EN_FOIS}, au choix sur la pag
 
 ## Les repères du marché, honnêtement
 
-Face à un site vitrine de ${marche.pagesCompare} pages fait par un indépendant, notre ${ESS.name} à ${eur(ESS.price)} €, qui en reprend les mêmes parties, coûte ${marche.fois} fois moins, d’après les fourchettes publiées.
+Face à un site vitrine de ${marche.pagesCompare} pages fait par un indépendant, notre ${ESS.name} à ${eur(ESS.price)} €, qui en reprend les mêmes parties, coûte ${marche.foisTexte} fois moins, d’après les fourchettes publiées.
 
-Côté entretien, les prestataires consultés demandent ${eur(marche.entretienMin)} à ${eur(marche.entretienMax)} € par mois, l’hébergement étant souvent en plus. Le forfait ${mini.name} coûte ${eur(mini.month)} € par mois, ou ${eur(avecDom)} € avec le nom de domaine, hébergement et modifications compris. Cela reste nettement en dessous de ces fourchettes.
+Côté entretien, les prestataires consultés demandent ${eur(marche.entretienMin)} à ${eur(marche.entretienMax)} € par mois, l’hébergement étant souvent en plus. Le forfait ${mini.name} coûte ${eur(mini.month)} € par mois, ou ${eur(avecDom)} € avec le nom de domaine, hébergement et modifications compris : bien moins cher.
 
 > Soyons honnêtes : ces fourchettes viennent de prestataires, donc à lire avec prudence, et chacun fixe ses prix. Des indépendants proposent aussi un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors presque nul.
 
 **Sources**, consultées en novembre 2026 :
 
 ${sourcesMd()}
+
+## Moins cher, et plus d’avantages
+
+Chez un prestataire classique, celui qui crée votre site et l’héberge, vous passez souvent par lui pour tout. Chez nous, vous gardez la main.
+
+- **La liste de toutes vos pages** : dans votre espace client, chaque page de votre site, dont vos pages de visibilité Google, avec un lien pour la voir ou la modifier.
+- **Modifier vous-même** : avec le forfait ${mini.name}, le bouton « Modifier mon site moi-même » change un texte ou une photo en direct.
+- **Vos demandes suivies** : dans « Mes modifications », chaque demande avance étape par étape, et vous êtes prévenu quand elle est en ligne.
+- **Votre commande et vos factures**, au même endroit, à tout moment.
 
 ## Ce qui n’est pas sacrifié
 
@@ -179,8 +181,8 @@ ${sourcesMd()}
 
 Votre projet dépasse ce que nous savons bien faire, comme une application sur mesure ou un catalogue de milliers de produits ? Nous vous le disons dès le premier échange.`,
     faq: [
-      { q: 'Moins cher, ça veut dire moins bien ?', a: 'Non. Le prix baisse parce que nous passons moins de temps sur ce qui se répète, pas parce que nous sautons des étapes. Chaque site est relu, testé sur téléphone et vérifié avant d’être publié.' },
-      { q: 'Mon site est-il fait à la chaîne ?', a: 'Non. Alex conçoit votre site et fait les choix avec vous. La petite bande prépare seulement ce qui se répète, et rien n’est publié sans votre validation.' },
+      { q: 'Moins cher, ça veut dire moins bien ?', a: 'Non. Le prix baisse parce que nous n’avons ni local ni loyer à payer, pas parce que nous sautons des étapes. Chaque site est relu, testé sur téléphone et vérifié avant d’être publié.' },
+      { q: 'Mon site est-il fait à la chaîne ?', a: 'Non. Alex conçoit votre site et fait les choix avec vous : l’ambiance, les couleurs, les mots. Rien n’est publié sans sa vérification, ni sans votre validation.' },
       { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. Vous payez le site choisi, puis ${eur(mini.month)} € par mois seulement si vous prenez le forfait ${mini.name}. Les extras sont facultatifs, et leur prix est affiché.` },
       { q: 'Pourquoi n’y a-t-il pas de devis ?', a: 'Parce que la plupart des sites d’artisans, de commerces ou d’associations se construisent de la même façon. Un prix fixe est plus simple pour tout le monde.' },
     ],
@@ -354,7 +356,7 @@ Méfiez-vous des raccourcis : pages copiées, mots répétés à l’excès, lie
       { icon: 'user', t: 'Une vraie personne', d: 'Alex lit vos messages et vous répond.' },
       { icon: 'tag', t: 'Un prix affiché', d: 'Le même pour tous, sans devis et sans surprise.' },
       { icon: 'lock', t: 'Rien ne vous retient', d: 'Aucun abonnement imposé, et l’adresse de votre site reste à votre nom.' },
-      { icon: 'workflow', t: 'Une petite bande', d: 'Six petits monstres se chargent du répétitif, et votre facture baisse d’autant.' },
+      { icon: 'house', t: 'Ni local ni loyer', d: 'Tout se fait depuis chez Alex, et votre facture ne porte aucun loyer.' },
     ],
     body: `## Notre métier : vous rendre visible
 
@@ -373,7 +375,7 @@ Vos questions avant la commande ne vous engagent à rien. Si notre offre ne corr
 ## Notre méthode, en quatre temps
 
 1. **Vous nous racontez votre activité** : dans le questionnaire de votre espace client, puis lors d’un appel avec Alex, pour bien comprendre ce que vous attendez du site.
-2. **Alex conçoit votre site** : la structure, les pages, le style. La petite bande prend en charge ce qui se répète.
+2. **Alex conçoit votre site** : la structure, les pages, le style, avec le même soin pour chaque client.
 3. **Alex vérifie** : tout est relu et testé sur plusieurs appareils, puis votre première version part en ligne.
 4. **Vous le peaufinez** : avec le forfait ${mini.name}, nous l’hébergeons et vous le modifiez à volonté, vous-même ou avec nous. Avec le forfait ${AUTO}, vous recevez l’export du site, une copie complète prête à installer.
 
@@ -388,7 +390,7 @@ Vos questions avant la commande ne vous engagent à rien. Si notre offre ne corr
 
 ## La petite bande
 
-D’un site à l’autre, beaucoup de choses se ressemblent. Pour ce travail-là, Alex s’appuie sur six compagnons, dessinés en petits monstres. Ils travaillent vite et sans oubli, et c’est autant de temps que vous ne payez pas.
+D’un site à l’autre, beaucoup de choses se ressemblent. Pour ces tâches répétitives, Alex s’appuie sur six compagnons, dessinés en petits monstres. Lui garde le reste : l’écoute, le design, les mots justes et la vérification.
 
 ${bande.map((b) => `- **${nomRole(b)}**, ${DIT[b.id] || `${minus(b.court)}`}`).join('\n')}
 
@@ -400,7 +402,7 @@ Nous créons des sites vitrines, assemblés à partir de nos modules, des boutiq
 
 Pour une application sur mesure, un logiciel métier ou un catalogue de milliers de produits, il faut un développeur expérimenté. Dans ce cas, nous vous orientons vers les bonnes personnes.
 
-Et pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourquoi-moins-cher/).`,
+Pas de local, pas d’agence, pas de loyer : tout se fait depuis chez Alex. Pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourquoi-moins-cher/).`,
     faq: [
       { q: 'Est-ce que je parle à une vraie personne ?', a: `Oui. Les messages du formulaire de contact arrivent chez Alex, et c’est lui qui répond. Dans votre espace client, ${B('constructeur').nom} prépare vos demandes de modification avec vous, et c’est encore Alex qui les fait.` },
       { q: 'Et si un petit monstre se trompe ?', a: `Cela peut arriver, comme avec tout outil. C’est pour cela qu’Alex contrôle leur travail. ${B('constructeur').nom} vous relit aussi votre demande avant de l’envoyer à Alex, et vous la confirmez.` },

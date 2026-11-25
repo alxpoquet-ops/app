@@ -1260,7 +1260,7 @@
   }
 
   /* ---------- la bulle de Cerise : en bas de l'écran, sur toutes les pages ----------
-     Sur le site : quelques questions, avec la réponse tout de suite (écrite dans la page, sans IA).
+     Sur le site : quelques questions, avec la réponse tout de suite (écrite dans la page, sans appel extérieur).
      Dans l'espace client : on écrit à Cerise, elle répond, reformule la demande, le client la confirme et elle part chez Alex.
      Dans la démo : les mêmes gestes, avec des réponses d'exemple écrites dans la page. */
   var flot = $('[data-lia-flot]');
