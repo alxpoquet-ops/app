@@ -1000,6 +1000,7 @@
       }
       var entete = d.querySelector('.site-header');
       var haut = (entete ? entete.offsetHeight : 70) + 10;
+      if (bloc && window.lmmSmOuvrir) { var part = bloc.closest('[data-sm-part]'); if (part) window.lmmSmOuvrir(part); } // la rubrique qui contient le bloc s'ouvre
       if (bloc) { window.scrollBy({ top: bloc.getBoundingClientRect().top - haut, behavior: doux ? 'smooth' : 'auto' }); return; }
       if (auto) return;
       // la page glisse jusqu'au début de l'onglet : sur téléphone, la rangée d'onglets vient juste sous l'en-tête
@@ -1889,4 +1890,37 @@
   var essayer = function () { if (!charge && (!panneau || !panneau.hidden)) { charge = true; charger(); setInterval(charger, 3600000); } };
   if (panneau && window.MutationObserver) new MutationObserver(essayer).observe(panneau, { attributes: true, attributeFilter: ['hidden'] });
   essayer();
+})();
+
+/* ---------- Les sous-menus des onglets (Mon site, Statistiques, Modifications, Mon compte), comme Ma boutique ----------
+   Une grille de rubriques en haut de l'onglet ([data-sm-nav]) ; on touche une rubrique, seule elle s'affiche ([data-sm-part]).
+   La dernière rubrique ouverte de chaque onglet est gardée pour la visite (sessionStorage). */
+(function () {
+  var navs = document.querySelectorAll('[data-sm-nav]');
+  if (!navs.length) return;
+  var ouvrir = function (nav, id, garder) {
+    var zone = nav.parentNode;
+    var parts = Array.prototype.filter.call(zone.querySelectorAll('[data-sm-part]'), function (p) { return p.parentNode === zone; });
+    if (!parts.some(function (p) { return p.getAttribute('data-sm-part') === id; })) return;
+    parts.forEach(function (p) { p.hidden = p.getAttribute('data-sm-part') !== id; });
+    nav.querySelectorAll('[data-sm-go]').forEach(function (b) { var on = b.getAttribute('data-sm-go') === id; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    var panneau = nav.closest('[role="tabpanel"]');
+    if (garder && panneau) { try { sessionStorage.setItem('lmm-sm-' + panneau.id, id); } catch (e) {} }
+  };
+  window.lmmSmOuvrir = function (part) {
+    var zone = part.parentNode, nav = zone && Array.prototype.filter.call(zone.children, function (c) { return c.hasAttribute('data-sm-nav'); })[0];
+    if (nav) ouvrir(nav, part.getAttribute('data-sm-part'), false);
+  };
+  navs.forEach(function (nav) {
+    nav.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-sm-go]'); if (!b) return;
+      ouvrir(nav, b.getAttribute('data-sm-go'), true);
+      // sur téléphone, le haut de la rubrique reste en vue juste sous la grille
+      var r = nav.getBoundingClientRect(), h = document.querySelector('.site-header');
+      if (r.top < (h ? h.offsetHeight : 70)) window.scrollBy({ top: r.top - (h ? h.offsetHeight : 70) - 10, behavior: 'smooth' });
+    });
+    var panneau = nav.closest('[role="tabpanel"]'), memo = null;
+    try { memo = panneau && sessionStorage.getItem('lmm-sm-' + panneau.id); } catch (e) {}
+    if (memo) ouvrir(nav, memo, false);
+  });
 })();

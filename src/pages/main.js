@@ -845,6 +845,16 @@ ${C.ctaBand()}`;
 // « Pâtisserie Lila » (Site Essentiel avec l'option e-commerce, en ligne) ; chaque bouton affiche seulement un petit message.
 // Rien sur les outils, l'énergie, les jetons ou des tutos payants : ils n'existent plus dans l'espace.
 const DEMO = { nom: 'Pâtisserie Lila', prenom: 'Lila', domaine: 'patisserie-lila.fr', ref: 'DEMO-2611' };
+// Les sous-menus des onglets de la démo : le même dessin que le vrai espace (includes/sous-menus.php, aled08e_sm_html).
+// parts : [[id, icône, libellé, html], …] ; les rubriques vides ne sont pas proposées, la première est ouverte.
+function smNav(items, label) {
+  return items.length < 2 ? '' : `<nav class="ex-filtre bg-nav sm-nav" data-sm-nav aria-label="${label}">${items.map(([id, ic, lib], i) => `<button type="button" class="bg-lien${i ? '' : ' is-on'}" data-sm-go="${id}" aria-pressed="${i ? 'false' : 'true'}">${icon(ic)}<span>${lib}</span></button>`).join('')}</nav>`;
+}
+function smHtml(parts, label) {
+  const l = parts.filter((p) => String(p[3] || '').trim() !== '');
+  const nav = smNav(l, label);
+  return nav + l.map(([id, , , html], i) => `<div class="sm-part" data-sm-part="${id}"${i ? ' hidden' : ''}>${html}</div>`).join('');
+}
 // L'onglet « Statistiques » de la démo : le même squelette que le vrai espace (src/wordpress/aled08-espace/includes/statistiques.php),
 // rempli par src/assets/js/main.js avec ces chiffres d'EXEMPLE (une pâtisserie imaginaire), annoncés comme tels.
 function demoStats() {
@@ -886,15 +896,17 @@ function demoStats() {
   const bloc = (id, ic, titre, corps, aide) => `<section class="st2-bloc" data-st2-bloc="${id}"><h3>${icon(ic)}<span>${titre}</span></h3>${corps}<p class="st2-aide">${aide}</p></section>`;
   return `<div class="st2" data-stats2 data-demo="1" data-exemple="${esc(JSON.stringify(ex))}">`
     + '<p class="st2-maj" data-st2-maj aria-live="polite">Connexion à votre site…</p><p class="esp-warn" data-st2-msg hidden></p>'
-    + `<div class="st2-kpis">${kpi('visiteurs', 'users', 'Visiteurs sur 30 jours', 'mint')}${kpi('vues', 'eye', 'Pages vues sur 30 jours', 'sky')}${kpi('semaine', 'calendar-check', 'Visiteurs cette semaine', 'lilac')}${kpi('google', 'search', 'Clics depuis Google', 'peach')}</div>`
-    + bloc('pages', 'trophy', 'Vos meilleures pages', '<ol class="st2-pages" data-st2="pages"></ol>', 'Les pages les plus vues sur les 30 derniers jours. La part indique quelle proportion de toutes les pages vues elle représente.')
-    + bloc('jours', 'chart-line', 'Vos visiteurs, jour par jour', '<div class="st2-jours" data-st2="jours"></div><p class="st2-ligne" data-st2="record"></p>', 'Chaque barre est une journée : le nombre de personnes différentes venues sur votre site ce jour-là.')
-    + '<div class="st2-duo">'
-    + bloc('sources', 'navigation', 'D’où viennent vos visiteurs', '<ul class="st2-barres" data-st2="sources"></ul>', 'Accès direct : votre adresse tapée, un favori, un lien dans un e-mail ou un SMS.')
-    + bloc('appareils', 'smartphone', 'Sur quel appareil', '<ul class="st2-barres" data-st2="appareils"></ul>', 'Sur téléphone, un site doit se lire sans zoomer : le vôtre est fait pour.')
-    + '</div>'
-    + bloc('google', 'search-check', 'Sur Google', '<div class="st2-google" data-st2="google"></div>', 'Apparitions : combien de fois votre site s’est affiché dans les résultats. Position : votre place moyenne dans la page de Google (1 = tout en haut).')
-    + bloc('infos', 'info', 'Votre site en bref', '<dl class="st2-infos" data-st2="infos"></dl>', 'La vitesse est le temps moyen que met votre site à répondre. Sous une demi-seconde, c’est très rapide.')
+    + smHtml([
+      ['resume', 'chart-line', 'Résumé', `<div class="st2-kpis">${kpi('visiteurs', 'users', 'Visiteurs sur 30 jours', 'mint')}${kpi('vues', 'eye', 'Pages vues sur 30 jours', 'sky')}${kpi('semaine', 'calendar-check', 'Visiteurs cette semaine', 'lilac')}${kpi('google', 'search', 'Clics depuis Google', 'peach')}</div>`],
+      ['pages', 'trophy', 'Meilleures pages', bloc('pages', 'trophy', 'Vos meilleures pages', '<ol class="st2-pages" data-st2="pages"></ol>', 'Les pages les plus vues sur les 30 derniers jours. La part indique quelle proportion de toutes les pages vues elle représente.')],
+      ['visiteurs', 'users', 'Visiteurs', bloc('jours', 'chart-line', 'Vos visiteurs, jour par jour', '<div class="st2-jours" data-st2="jours"></div><p class="st2-ligne" data-st2="record"></p>', 'Chaque barre est une journée : le nombre de personnes différentes venues sur votre site ce jour-là.')
+        + '<div class="st2-duo">'
+        + bloc('sources', 'navigation', 'D’où viennent vos visiteurs', '<ul class="st2-barres" data-st2="sources"></ul>', 'Accès direct : votre adresse tapée, un favori, un lien dans un e-mail ou un SMS.')
+        + bloc('appareils', 'smartphone', 'Sur quel appareil', '<ul class="st2-barres" data-st2="appareils"></ul>', 'Sur téléphone, un site doit se lire sans zoomer : le vôtre est fait pour.')
+        + '</div>'],
+      ['google', 'search-check', 'Google', bloc('google', 'search-check', 'Sur Google', '<div class="st2-google" data-st2="google"></div>', 'Apparitions : combien de fois votre site s’est affiché dans les résultats. Position : votre place moyenne dans la page de Google (1 = tout en haut).')],
+      ['infos', 'info', 'En bref', bloc('infos', 'info', 'Votre site en bref', '<dl class="st2-infos" data-st2="infos"></dl>', 'La vitesse est le temps moyen que met votre site à répondre. Sous une demi-seconde, c’est très rapide.')],
+    ], 'Rubriques de Mes statistiques')
     + '<p class="app-note">Mesure d’audience sans cookie : vos visiteurs sont comptés de façon anonyme, sans aucune donnée personnelle gardée. Vos propres visites, quand vous êtes connecté, et celles des robots ne sont pas comptées.</p>'
     + '</div>';
 }
@@ -1015,16 +1027,14 @@ function monEspacePage() {
             <article class="mm-carte c-${SITES_A.color || 'mint'}"><div class="mm-carte-tete"><span class="mm-carte-art" aria-hidden="true">${mon(SITES_A.monstre || 'bricou')}</span><div><strong>Mon site</strong><small>En ligne · ${DEMO.domaine}</small></div></div><button type="button" class="btn btn-light btn-sm" data-go="demandes">${icon('pencil')}<span>Demander une modification</span></button></article>
             <article class="mm-carte c-${ECOLE_A.color || 'lilac'}"><div class="mm-carte-tete"><span class="mm-carte-art" aria-hidden="true">${mon(ECOLE_A.monstre || 'mochi')}</span><div><strong>${esc(ECOLE_A.label)}</strong><small>Toutes les réponses à vos questions, pas à pas</small></div></div><a class="btn btn-light btn-sm" href="${ECOLE_A.path}" target="_blank" rel="noopener">${icon('book-open')}<span>Voir les tutos</span></a></article>
           </div>
-          <div class="mm-duo">
-            <section class="mm-bloc mm-fil" aria-labelledby="mm-fil-t"><h3 class="mm-bloc-t" id="mm-fil-t">Le fil de la bande</h3><ul class="mm-fil-l">${FIL.map(([m, t, q]) => `<li><span class="mm-fil-art" aria-hidden="true">${mon(m)}</span><p>${esc(t)}</p><time>${esc(q)}</time></li>`).join('')}</ul></section>
-            <section class="mm-bloc mm-abo" aria-labelledby="mm-abo-t"><h3 class="mm-bloc-t" id="mm-abo-t">Mon abonnement</h3><ul class="mm-abo-l"><li><span>Forfait ${esc(ABO.name)} (site)</span><b>${euro(ABO.month)}</b></li>${C.DOM ? `<li><span>Option nom de domaine</span><b>${euro(C.DOM)}</b></li>` : ''}</ul><p class="mm-abo-total"><span>Chaque mois</span><b>${euro(mensuel)}</b></p><p class="mm-abo-note">Une seule facture chaque mois. Sans engagement.</p></section>
-          </div>
-          <div class="msgs" id="messages"><p class="app-sub">Les petits mots de la bande</p>${MSGS.map((x) => `<article class="msg"><span class="msg-art">${mon(x.m)}</span><div class="msg-corps"><p class="msg-qui"><strong>${esc(x.qui)}</strong><small>${esc(x.role)} · ${esc(x.quand)}</small></p><p class="msg-titre">${esc(x.titre)}</p><p class="msg-txt">${esc(x.texte)}</p>${x.vis}<div class="msg-actions"><button type="button" class="btn btn-light btn-sm"${demoToast('Le petit mot est rangé')}><span>Merci, c’est noté</span></button></div></div></article>`).join('')}</div>
+          <section class="mm-bloc mm-fil" aria-labelledby="mm-fil-t"><h3 class="mm-bloc-t" id="mm-fil-t">Le fil de la bande</h3><ul class="mm-fil-l">${FIL.slice(0, 3).map(([m, t, q]) => `<li><span class="mm-fil-art" aria-hidden="true">${mon(m)}</span><p>${esc(t)}</p><time>${esc(q)}</time></li>`).join('')}</ul></section>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-site" aria-labelledby="tab-site" hidden>
           <h2 class="app-h">Mon site</h2>
           ${siteNav('')}${demoAide('site', 1)}
+          ${smNav([['monsite', 'globe', 'Mon site'], ['pages', 'list-checks', 'Mes pages'], ['dernieres', 'clock', 'Mes demandes']], 'Rubriques de Mon site')}
+          <div class="sm-part" data-sm-part="monsite">
           <div class="app-cards">
             <button type="button" class="app-card c-mint" data-go="commande"><span class="app-card-ico">${icon('globe')}</span><span><small>Votre site</small><strong>${DEMO.domaine}</strong><span class="dot-ok">En ligne · ${articles.length} articles</span></span></button>
             <button type="button" class="app-card c-${ABO.color || 'mint'}" data-go="forfait"><span class="app-card-art">${mon('clin')}</span><span><small>Votre forfait</small><strong>${esc(ABO.name)}</strong><span>${euro(mensuel)} par mois · tout compris</span></span></button>
@@ -1051,11 +1061,17 @@ function monEspacePage() {
               <div class="demo-ed-barre"><p>Mode modification : touchez un texte ou la photo pour le changer.</p><button type="button" data-ed-annuler hidden>Annuler la dernière</button><button type="button" class="is-fin" data-ed-fin>Terminer</button></div>
             </div>
           </details>
-          <p class="app-sub">Dernières demandes</p>
+          </div>
+          <div class="sm-part" data-sm-part="pages" hidden>
+          <p class="app-p">Toutes les pages de votre site, dont vos pages de visibilité Google. Touchez « Voir » pour l’ouvrir, « Modifier » pour la changer.</p>
+          <ul class="reqs">${[['Accueil', 'Page d’accueil'], ['Nos gâteaux', 'Mise en ligne le 3 novembre'], ['Gâteau d’anniversaire à Rethel', 'Page Google, mise en ligne lundi'], ['Commander un gâteau', 'Mise en ligne le 3 novembre'], ['Horaires et accès', 'Mise en ligne le 3 novembre'], ['Contact', 'Mise en ligne le 3 novembre']].map(([t, d]) => `<li><span><strong>${t}</strong><small>${d}</small></span><span class="demo-pg-act"><button type="button" class="link-btn"${demoToast(`La page « ${t} » s’ouvre`)}>Voir</button> · <button type="button" class="link-btn"${demoToast('Le mode modification s’ouvre sur cette page')}>Modifier</button></span></li>`).join('')}</ul>
+          </div>
+          <div class="sm-part" data-sm-part="dernieres" hidden>
           <ul class="reqs">
             <li><span><strong>Horaires d’été</strong><small>envoyée le 10 novembre</small></span><em class="st st-done">Faite</em></li>
             <li><span><strong>Nouvelle photo de l’accueil</strong><small>envoyée le 3 novembre</small></span><em class="st st-done">Faite</em></li>
           </ul>
+          </div>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-stats" aria-labelledby="tab-stats" hidden>
@@ -1092,7 +1108,11 @@ function monEspacePage() {
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
           <h2 class="app-h">Mes modifications</h2>
           ${siteNav('demandes')}${demoAide('demandes')}
+          ${smNav([['nouvelle', 'send', 'Nouvelle demande'], ['moi', 'pencil', 'Moi-même'], ['historique', 'list-checks', 'Historique']], 'Rubriques de Mes modifications')}
+          <div class="sm-part" data-sm-part="moi" hidden>
           <div class="ed-rappel demo-rappel"><p>${icon('sparkles')}<span><b>Un texte ou une photo à changer ?</b> Faites-le vous-même, en direct sur votre site : c’est en ligne tout de suite, et vous pouvez annuler.</span></p><button type="button" class="btn btn-primary btn-sm" data-ed-ouvrir>${icon('pencil')}<span>Modifier mon site moi-même</span></button></div>
+          </div>
+          <div class="sm-part" data-sm-part="nouvelle">
           <div class="demo-bricou"><span aria-hidden="true">${C.petit('bricou', { humeur: 'ravi' })}</span><p><strong>Une modification plus compliquée, ou pas envie de la faire vous-même ?</strong><small>Moi, c’est ${esc(C.BRICOU)} : écrivez-la-moi ici, je m’en occupe. Vous suivez où ça en est juste en dessous.</small></p></div>
           ${C.processusModif({ titre: false })}
           <form class="req-form" data-req>
@@ -1100,11 +1120,14 @@ function monEspacePage() {
             <label class="req-photo"><input type="file" accept="image/*" class="sr-only" data-req-file>${icon('image-plus')}<span data-req-file-name>Ajouter jusqu’à 3 photos (facultatif)</span></label>
             <button class="btn btn-primary" type="submit">${icon('send')}<span>Envoyer ma demande</span></button>
           </form>
-          <p class="app-sub">Historique, de la plus récente à la plus ancienne</p>
+          </div>
+          <div class="sm-part" data-sm-part="historique" hidden>
+          <p class="app-sub">De la plus récente à la plus ancienne</p>
           <ul class="reqs" data-reqs>
             <li><span><strong>Horaires d’été</strong><small>envoyée le 10 novembre</small></span><em class="st st-done">Faite</em></li>
             <li><span><strong>Nouvelle photo de l’accueil</strong><small>envoyée le 3 novembre</small></span><em class="st st-done">Faite</em></li>
           </ul>
+          </div>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-extras" aria-labelledby="tab-extras" hidden>
@@ -1161,6 +1184,8 @@ function monEspacePage() {
         <div class="app-panel" role="tabpanel" id="t-compte" aria-labelledby="tab-compte" hidden>
           <h2 class="app-h">Mon compte</h2>
           ${demoAide('compte')}
+          ${smNav([['infos', 'circle-user', 'Mes infos'], ['forfait', 'credit-card', 'Mon forfait'], ['factures', 'receipt', 'Factures'], ['domaine', 'globe', 'Nom de domaine']], 'Rubriques de Mon compte')}
+          <div class="sm-part" data-sm-part="infos">
           <p class="app-p">Vos informations, votre adresse e-mail et votre mot de passe. Vous changez tout vous-même, quand vous voulez.</p>
           <div class="esp-form-bloc">
             <p class="app-sub">${icon('circle-user')} Mes informations</p>
@@ -1177,8 +1202,9 @@ function monEspacePage() {
             <p class="app-sub">${icon('lock')} Mon mot de passe</p>
             <p class="app-note">Vous le changez ici, avec votre mot de passe actuel. Oublié ? « Mot de passe oublié » sur la page de connexion.</p>
           </div>
-          <section class="compte-forfait" id="forfait-bloc">
-            <h2 class="app-h">Mon abonnement et mes factures</h2>
+          </div>
+          <section class="compte-forfait sm-part" id="forfait-bloc" data-sm-part="forfait" hidden>
+            <h2 class="app-h">Mon forfait</h2>
             <div class="app-card c-${ABO.color || 'mint'}"><span class="app-card-art">${mon('ravie')}</span><span><small>Votre forfait ${esc(ABO.name)}</small><strong>Hébergement, sécurité, modifications</strong><span>${euro(ABO.month)} par mois · modifications incluses</span></span></div>
             <p class="app-sub">Le détail</p>
             <p class="app-domain">${icon('check')}<span><strong>Forfait ${esc(ABO.name)}</strong><small>${euro(ABO.month)} par mois</small></span></p>
@@ -1188,14 +1214,16 @@ function monEspacePage() {
               <button type="button" class="btn btn-primary"${demoToast('La page sécurisée de paiement s’ouvre : carte, factures')}>${icon('credit-card')}<span>Gérer mon paiement et mes factures</span></button>
               <button type="button" class="btn btn-light"${demoToast(`Sans engagement : votre forfait s’arrête à la fin du mois payé. Vous pouvez aussi passer au forfait ${AUTO.name}`)}><span>Résilier mon forfait</span></button>
             </div>
-            <p class="app-sub">Factures</p>
+          </section>
+          <div class="sm-part" data-sm-part="factures" hidden>
             <ul class="invoices">
               <li><span>Novembre 2026</span><button type="button" class="link-btn"${demoToast('Facture téléchargée')}>PDF</button></li>
               <li><span>Octobre 2026</span><button type="button" class="link-btn"${demoToast('Facture téléchargée')}>PDF</button></li>
             </ul>
-            <p class="app-sub">Nom de domaine</p>
+          </div>
+          <div class="sm-part" data-sm-part="domaine" hidden>
             <p class="app-domain">${icon('globe')}<span><strong>${DEMO.domaine}</strong><small>À votre nom, renouvelé avec votre forfait</small></span></p>
-          </section>
+          </div>
         </div>
 
       </div>

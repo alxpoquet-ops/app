@@ -48,15 +48,17 @@ function aled08e_stats2_squelette($attrs) {
     return '<div class="st2" data-stats2 ' . $attrs . '>'
         . '<p class="st2-maj" data-st2-maj aria-live="polite">Connexion à votre site…</p>'
         . '<p class="esp-warn" data-st2-msg hidden></p>'
-        . '<div class="st2-kpis">' . $kpi('visiteurs', 'users', 'Visiteurs sur 30 jours', 'mint') . $kpi('vues', 'eye', 'Pages vues sur 30 jours', 'sky') . $kpi('semaine', 'calendar-check', 'Visiteurs cette semaine', 'lilac') . $kpi('google', 'search', 'Clics depuis Google', 'peach') . '</div>'
-        . $bloc('pages', 'trophy', 'Vos meilleures pages', '<ol class="st2-pages" data-st2="pages"></ol>', 'Les pages les plus vues sur les 30 derniers jours. La part indique quelle proportion de toutes les pages vues elle représente.')
-        . $bloc('jours', 'chart-line', 'Vos visiteurs, jour par jour', '<div class="st2-jours" data-st2="jours"></div><p class="st2-ligne" data-st2="record"></p>', 'Chaque barre est une journée : le nombre de personnes différentes venues sur votre site ce jour-là.')
-        . '<div class="st2-duo">'
-        . $bloc('sources', 'navigation', 'D’où viennent vos visiteurs', '<ul class="st2-barres" data-st2="sources"></ul>', 'Accès direct : votre adresse tapée, un favori, un lien dans un e-mail ou un SMS.')
-        . $bloc('appareils', 'smartphone', 'Sur quel appareil', '<ul class="st2-barres" data-st2="appareils"></ul>', 'Sur téléphone, un site doit se lire sans zoomer : le vôtre est fait pour.')
-        . '</div>'
-        . $bloc('google', 'search-check', 'Sur Google', '<div class="st2-google" data-st2="google"></div>', 'Apparitions : combien de fois votre site s’est affiché dans les résultats. Position : votre place moyenne dans la page de Google (1 = tout en haut).')
-        . $bloc('infos', 'info', 'Votre site en bref', '<dl class="st2-infos" data-st2="infos"></dl>', 'La vitesse est le temps moyen que met votre site à répondre. Sous une demi-seconde, c’est très rapide.')
+        . aled08e_sm_html([
+            'resume' => ['chart-line', 'Résumé', '<div class="st2-kpis">' . $kpi('visiteurs', 'users', 'Visiteurs sur 30 jours', 'mint') . $kpi('vues', 'eye', 'Pages vues sur 30 jours', 'sky') . $kpi('semaine', 'calendar-check', 'Visiteurs cette semaine', 'lilac') . $kpi('google', 'search', 'Clics depuis Google', 'peach') . '</div>'],
+            'pages' => ['trophy', 'Meilleures pages', $bloc('pages', 'trophy', 'Vos meilleures pages', '<ol class="st2-pages" data-st2="pages"></ol>', 'Les pages les plus vues sur les 30 derniers jours. La part indique quelle proportion de toutes les pages vues elle représente.')],
+            'visiteurs' => ['users', 'Visiteurs', $bloc('jours', 'chart-line', 'Vos visiteurs, jour par jour', '<div class="st2-jours" data-st2="jours"></div><p class="st2-ligne" data-st2="record"></p>', 'Chaque barre est une journée : le nombre de personnes différentes venues sur votre site ce jour-là.')
+                . '<div class="st2-duo">'
+                . $bloc('sources', 'navigation', 'D’où viennent vos visiteurs', '<ul class="st2-barres" data-st2="sources"></ul>', 'Accès direct : votre adresse tapée, un favori, un lien dans un e-mail ou un SMS.')
+                . $bloc('appareils', 'smartphone', 'Sur quel appareil', '<ul class="st2-barres" data-st2="appareils"></ul>', 'Sur téléphone, un site doit se lire sans zoomer : le vôtre est fait pour.')
+                . '</div>'],
+            'google' => ['search-check', 'Google', $bloc('google', 'search-check', 'Sur Google', '<div class="st2-google" data-st2="google"></div>', 'Apparitions : combien de fois votre site s’est affiché dans les résultats. Position : votre place moyenne dans la page de Google (1 = tout en haut).')],
+            'infos' => ['info', 'En bref', $bloc('infos', 'info', 'Votre site en bref', '<dl class="st2-infos" data-st2="infos"></dl>', 'La vitesse est le temps moyen que met votre site à répondre. Sous une demi-seconde, c’est très rapide.')],
+          ], 'Rubriques de Mes statistiques')
         . '<p class="app-note">Mesure d’audience sans cookie : vos visiteurs sont comptés de façon anonyme, sans aucune donnée personnelle gardée. Vos propres visites, quand vous êtes connecté, et celles des robots ne sont pas comptées.</p>'
         . '</div>';
 }
