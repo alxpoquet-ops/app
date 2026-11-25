@@ -171,7 +171,7 @@ Un message vous confirme la bonne réception, et la création de votre site comm
     description: `Votre site est en ligne en général ${DELAI} après l’envoi de votre questionnaire. Le temps de chaque étape, ce qui peut l’allonger et comment aller plus vite.`,
     lead: `Comptez en général ${DELAI} une fois vos éléments reçus. Voici le détail, étape par étape, et ce qui peut rallonger un peu l’attente.`,
     espace: 'commande',
-    body: `La réponse tout de suite : une fois votre questionnaire envoyé et vos éléments reçus, votre site est en général en ligne en ${DELAI}. C’est possible parce que nos modules sont déjà prêts. Ce délai reste indicatif, comme le précisent nos [conditions générales](/conditions-generales/).
+    body: `La réponse tout de suite : une fois votre questionnaire envoyé et vos éléments reçus, votre site est en général en ligne en ${DELAI}. Ce délai reste indicatif, comme le précisent nos [conditions générales](/conditions-generales/).
 
 ## Le temps de chaque étape
 

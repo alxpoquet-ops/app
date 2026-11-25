@@ -180,7 +180,7 @@ const types = [
     vedette: true,
     price: creation.prix,
     delai: 'quelques heures',
-    pitch: 'Votre site professionnel, assemblé à partir de nos modules déjà prêts et rempli avec vos informations et vos photos.',
+    pitch: 'Votre site professionnel, créé avec vos informations, vos photos et vos couleurs.',
     qui: 'Pour exister sur internet, être joignable et présenter votre activité.',
     ideal: 'idéal pour être visible vite, à petit prix',
     pourQui: 'Pour toute activité qui veut un site clair, rapide et à son image : artisan, commerçant, indépendant, association, profession libérale.',

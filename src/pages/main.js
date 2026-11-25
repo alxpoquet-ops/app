@@ -774,7 +774,7 @@ function commanderPage({ creer = false } = {}) {
 // ====================================================================== COMMANDE CONFIRMÉE
 function confirmationPage() {
   const S = sections.confirmation;
-  const delaiList = `${ESS.delai}, avec ou sans l’option ${ECO.name.toLowerCase()} : nos modules sont déjà prêts`;
+  const delaiList = `${ESS.delai}, avec ou sans l’option ${ECO.name.toLowerCase()}`;
   const body = `${C.pageHero({
     section: 'confirmation',
     h1: 'Merci, votre commande est bien reçue !',

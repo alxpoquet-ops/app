@@ -77,7 +77,7 @@ Ces changements sont compris dans le forfait : vous envoyez votre demande, et vo
 
 ## Quel site choisir ?
 
-Un site simple et bien fait convient à beaucoup de restaurants : une belle photo de la salle, la carte, les horaires, le plan, le contact. Tout se trouve d’un doigt. C’est le ${ESS.name}, à ${eur(ESS.price)} €, avec ses modules déjà prêts.
+Un site simple et bien fait convient à beaucoup de restaurants : une belle photo de la salle, la carte, les horaires, le plan, le contact. Tout se trouve d’un doigt. C’est ce que contient le ${ESS.name}, à ${eur(ESS.price)} €.
 
 Vous avez plusieurs activités, comme le traiteur, la privatisation de salle ou la vente à emporter ? Ajoutez, une fois le site en ligne, des pages de visibilité Google à ${prixPage} € la page. Elles aident à vous faire trouver sur des recherches comme « menu du midi » ou « repas de groupe », suivies du nom de votre ville.
 
@@ -178,7 +178,7 @@ Inutile de voir grand. Pour un lancement, il faut un site qui réponde à quatre
 3. **À quel prix ?** Ou au moins une fourchette, ou « devis gratuit ».
 4. **Comment vous joindre ?** Formulaire, e-mail, téléphone professionnel.
 
-Le ${ESS.name}, à ${eur(ESS.price)} €, contient tout cela : ses modules sont déjà prêts, il ne manque que vos informations. Vous démarrez petit, et rien ne vous empêche de voir plus grand ensuite. Si vous comptez sur Google pour trouver vos clients, ajoutez des pages de visibilité Google quand vous le souhaitez.
+Le ${ESS.name}, à ${eur(ESS.price)} €, contient tout cela : il ne manque que vos informations. Vous démarrez petit, et rien ne vous empêche de voir plus grand ensuite. Si vous comptez sur Google pour trouver vos clients, ajoutez des pages de visibilité Google quand vous le souhaitez.
 
 ## Ménager sa trésorerie
 

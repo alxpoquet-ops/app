@@ -230,7 +230,7 @@ Les prix sont en euros. La TVA n’est pas applicable (article 293 B du Code gé
 
 L’offre est la même pour tous les clients. Elle tient en deux parties : la création du site, réglée à la commande, puis la façon de le faire vivre. Le client choisit entre le forfait ${AUTO}, sans abonnement, et le forfait ${mini.name}. L’abonnement est facultatif.
 
-**Le site.** Un seul site est proposé : sa création se règle à la commande, sans abonnement. Il est assemblé à partir de modules déjà conçus par les Minis Monstres (par exemple l’accueil, la présentation, les services et tarifs, la galerie, les questions fréquentes et le contact), puis rempli avec les informations et les photos fournies par le client.
+**Le site.** Un seul site est proposé : sa création se règle à la commande, sans abonnement. Il comprend notamment l’accueil, la présentation, les services et tarifs, la galerie, les questions fréquentes et le contact, et il est créé avec les informations et les photos fournies par le client.
 
 **${ESS.name}, ${eur(ESS.price)} €.** Il comprend :
 

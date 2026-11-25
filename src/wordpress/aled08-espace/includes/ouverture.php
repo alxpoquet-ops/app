@@ -141,7 +141,7 @@ function aled08e_attente_html($mode = 'attente', $page = null) {
             . '<p>La petite bande se prépare : encore quelques démarches administratives, et on vous accueille.</p>'
             . '<div class="bloc concept"><h2>Le concept</h2>'
             . '<p><b>Être vu sur internet, sans se ruiner.</b> On crée le site des artisans, des commerçants et des indépendants, à petit prix.</p>'
-            . '<p>Nos modules sont déjà prêts : l’accueil, la présentation, les services, la galerie, le contact… Votre site est en ligne <b>en quelques heures</b>, avec vos textes et vos photos.</p>'
+            . '<p>L’accueil, la présentation, les services, la galerie, le contact… Votre site est en ligne <b>en quelques heures</b>, avec vos textes et vos photos.</p>'
             . '<p>Ensuite, on s’occupe de tout : l’hébergement, la sécurité, les mises à jour et vos changements.</p></div>'
             . '<p class="slogan">Vous vous occupez de votre activité,<br><mark>on s’occupe de vous faire voir.</mark></p>'
             . '<div class="bloc etapes"><p><b>Bientôt :</b> les commandes ouvrent dans quelques jours. Revenez nous voir !</p></div>'

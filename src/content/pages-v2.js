@@ -119,7 +119,7 @@ Pour votre site, nous assemblons ces modules et nous les remplissons avec vos in
 
 ## Une base commune, des sites tous différents
 
-La préconfiguration concerne la partie que vos visiteurs ne voient jamais : le code qui fait tourner le site en coulisses, sous vos textes et vos images. C’est lui qui rend chaque page rapide, sécurisée, agréable sur téléphone et lisible par Google. Nous vous le livrons prêt et éprouvé.
+Ce qui ne se voit pas est le même pour tous : le code qui fait tourner le site en coulisses, sous vos textes et vos images. C’est lui qui rend chaque page rapide, sécurisée, agréable sur téléphone et lisible par Google.
 
 Ce qui se voit, en revanche, est fait pour vous : l’ambiance, les couleurs, les polices, la mise en avant de vos photos, le ton de vos textes. Votre site est en ligne en quelques heures, puis nous l’ajustons à votre goût, avec des modifications à volonté. Le résultat ressemble à votre activité, pas à celle du voisin.
 
@@ -550,7 +550,7 @@ Elle se fera connaître des Ardennais qui cherchent une idée de cadeau, et vend
 
 1. **Vous nous contactez** par le [formulaire](/contact/), en précisant si vous aimeriez une rencontre. Vous savez déjà ce qu’il vous faut ? Commandez sur la page [créer mon site](/creer-mon-site/).
 2. **Vous remplissez le questionnaire** de création, dans votre espace client : son envoi lance la création.
-3. **Nous créons votre site**${ESS.delai ? ` : comptez ${ESS.delai} une fois vos éléments reçus, puisque nos modules sont déjà prêts` : ', et vous voyez chaque étape'}.
+3. **Nous créons votre site**${ESS.delai ? ` : comptez ${ESS.delai} une fois vos éléments reçus` : ', et vous voyez chaque étape'}.
 4. **Votre site part en ligne**, et vous le modifiez ensuite à votre goût.
 
 Côté paiement, vous réglez le site en commandant. Vous préférez étaler ? Choisissez ${EN_FOIS} sur la page de paiement.`,
