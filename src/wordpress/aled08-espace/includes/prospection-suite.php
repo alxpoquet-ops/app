@@ -198,11 +198,11 @@ function aled08e_px_constat_lignes($c, $nom) {
     $pos = (int) $c['position'];
     $quand = !empty($c['le']) ? 'Le ' . wp_date('j F', (int) $c['le']) . ', nous' : 'Nous';
     $l1 = $quand . ' avons tapé « ' . $q . ' » sur Google.';
-    if ($pos <= 0) return [$l1, $nom . ' n’apparaît dans aucun des ' . (int) ($c['regardes'] ?? 50) . ' premiers résultats.', 'Pour ceux qui cherchent, c’est comme si vous n’existiez pas encore.', 'Envie d’y apparaître, avec votre propre site ? C’est notre métier.'];
+    if ($pos <= 0) return [$l1, $nom . ' n’apparaît dans aucun des ' . (int) ($c['regardes'] ?? 50) . ' premiers résultats.', 'Ceux qui font cette recherche trouvent d’autres noms, mais pas le vôtre : pour eux, c’est comme si vous n’existiez pas encore.', 'Envie d’y apparaître, avec votre propre site ? C’est notre métier.'];
     $qui = mb_strtoupper(mb_substr((string) $c['trouve'], 0, 1)) . mb_substr((string) $c['trouve'], 1);
     if ($pos <= 10) return [$l1, $qui . ' arrive en ' . aled08e_px_ordinal($pos) . ' position : bravo, c’est la première page !', 'Mais vos clients y trouvent ' . $c['trouve'] . ', pas votre vitrine à vous, avec vos tarifs et vos photos.', 'Envie que ce soit votre propre site qu’ils voient ? C’est notre métier.'];
     $page = (int) ceil($pos / 10);
-    return [$l1, $qui . ' arrive en ' . aled08e_px_ordinal($pos) . ' position, sur la ' . aled08e_px_ordinal($page) . ' page des résultats.', 'Or la plupart des gens ne regardent que la première page.', 'Envie de vous rapprocher de la première page, avec votre propre site ? C’est notre métier.'];
+    return [$l1, $qui . ' arrive en ' . aled08e_px_ordinal($pos) . ' position, sur la ' . aled08e_px_ordinal($page) . ' page des résultats.', 'Or la plupart des gens ne regardent que la première page : ceux qui font cette recherche trouvent d’abord ' . ($pos - 1) . ' autres résultats avant le vôtre.', 'Envie de vous rapprocher de la première page, avec votre propre site ? C’est notre métier.'];
 }
 /* Pour la relance et les agents : la mesure en une phrase */
 function aled08e_px_constat_court($c, $nom) {
@@ -211,6 +211,39 @@ function aled08e_px_constat_court($c, $nom) {
     return (string) $c['trouve'] . ' arrivait en ' . aled08e_px_ordinal($pos) . ' position' . ($pos > 10 ? ', sur la ' . aled08e_px_ordinal((int) ceil($pos / 10)) . ' page' : '');
 }
 function aled08e_px_constat_txt($c, $nom) { return 'En tapant « ' . $c['recherche'] . ' » sur Google, ' . aled08e_px_constat_court($c, $nom) . '.'; }
+
+/* ====================================================================== 1 ter. un nom de domaine libre, à son nom */
+/* À partir du nom de l'entreprise : « Coiffure Beau Gosse » → coiffurebeaugosse.fr, lacoiffurebeaugosse.fr,
+ * coiffurebeaugosse-sedan.fr, coiffure-beau-gosse.fr, coiffurebeaugosse.com. Le premier libre, vérifié auprès du registre
+ * officiel (RDAP : l'AFNIC pour les .fr, includes/commandes.php). '' si aucun n'est libre ou vérifiable. */
+function aled08e_px_domaine_candidats($nom, $ville = '', $article = '') {
+    $mots = function ($t) {
+        $t = strtolower(remove_accents(str_replace(['’', "'"], ' ', (string) $t)));
+        $l = preg_split('/[^a-z0-9]+/', $t, -1, PREG_SPLIT_NO_EMPTY);
+        $vides = ['le', 'la', 'les', 'l', 'de', 'du', 'des', 'd', 'et', 'sarl', 'sas', 'sasu', 'eurl', 'ei', 'eirl', 'snc', 'sci', 'ets', 'etablissements'];
+        return array_values(array_filter($l, function ($m) use ($vides) { return !in_array($m, $vides, true); }));
+    };
+    $m = $mots($nom);
+    if (!$m) return [];
+    $colle = implode('', $m);
+    $tiret = implode('-', $m);
+    $v = $mots($ville);
+    $vi = $v ? implode('', $v) : '';
+    $art = str_replace("'", '’', (string) $article);
+    $c = [$colle . '.fr'];
+    if ($art === 'la' || $art === 'le' || $art === 'les') $c[] = $art . $colle . '.fr';
+    if ($art === 'l’') $c[] = 'l' . $colle . '.fr';
+    if ($vi !== '') $c[] = $colle . '-' . $vi . '.fr';
+    if (count($m) > 1) $c[] = $tiret . '.fr';
+    $c[] = $colle . '.com';
+    // une forme correcte (lettres, chiffres, tirets ; 3 à 40 caractères avant l'extension), sans doublon
+    return array_values(array_unique(array_filter($c, function ($d) { return (bool) preg_match('/^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])\.(fr|com)$/', $d); })));
+}
+function aled08e_px_domaine_trouver($nom, $ville = '', $article = '') {
+    if (!function_exists('aled08e_rdap_statut')) return '';
+    foreach (array_slice(aled08e_px_domaine_candidats($nom, $ville, $article), 0, 5) as $d) if (aled08e_rdap_statut($d) === 'libre') return $d;
+    return '';
+}
 
 /* ====================================================================== 2. ce qui marche */
 /* Les résultats de tous les mails envoyés, rangés par métier, département, type de sujet et entreprise récente ou non.

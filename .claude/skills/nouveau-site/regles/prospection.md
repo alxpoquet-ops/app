@@ -36,6 +36,10 @@ Décision d'Alex (25 novembre 2026) : le mail lui-même doit convaincre. La rout
 
 Le mail ajoute aussi qu'un site, c'est une adresse à soi, à mettre sur ses cartes de visite, sa vitrine et ses factures.
 
+**Un nom de domaine libre, à son nom.** Quand le Facteur retient un prospect sans site, le site cherche lui-même une adresse libre à partir du nom de l'entreprise (« Coiffure Beau Gosse » : coiffurebeaugosse.fr, lacoiffurebeaugosse.fr, coiffurebeaugosse-sedan.fr, coiffure-beau-gosse.fr, coiffurebeaugosse.com), vérifiée auprès du registre officiel, et la revérifie au moment de l'envoi. Le mail l'annonce dans un encadré « Bonne nouvelle » : l'adresse est libre aujourd'hui, nous pouvons créer le site à cette adresse, enregistrée à son nom. Aucun agent n'écrit de nom de domaine. Le mail ne parle pas du forfait : l'encadré du prix dit seulement que l'hébergement et la suite se choisissent après, et que tout est expliqué sur le site.
+
+**Ce que coûte l'absence de site**, dit avec des faits mesurés et sans fausse urgence : « ceux qui font cette recherche trouvent d'abord 35 autres résultats avant le vôtre », ou, absent des résultats, « pour eux, c'est comme si vous n'existiez pas encore ».
+
 Puis il invite à voir les sites déjà en ligne (« Plutôt que mille mots, voyez par vous-même ») : le premier bouton mène à notre page Réalisations, le second à « Créer mon site ». **Plus de démo ni d'aperçu personnalisé dans le mail** : Alex a trouvé qu'ils ne donnaient pas envie. (L'aperçu personnalisé existe toujours dans le code, éteint : `apercuNote` à 101 dans la configuration.) L'agent n'écrit aucun de ces arguments ni aucun chiffre : il donne le sujet, la phrase vraie et les trois points du métier.
 
 ## Qui cibler

@@ -21,7 +21,7 @@ Pour chaque prospect de `a_verifier` :
 2. Une recherche rapide, nom et ville : toujours pas de site (ou un site toujours cassé) ?
 3. Rien dans `prospection` ne l'exclut (chaîne, santé réglementée, administration…) ?
 
-**Oui aux trois** : `POST /aled08/v1/atelier/prospect` avec `{ "prospect": N, "faire": "retenir", "texte": "Adresse vue sur la fiche Google le 25/11, pas de site." }`. Il passe « à écrire ». La réponse donne aussi `position_google` : le site vient de mesurer où l'entreprise apparaît sur Google pour sa `recherche`. Dans `a_ecrire`, chaque prospect mesuré a son `constat`.
+**Oui aux trois** : `POST /aled08/v1/atelier/prospect` avec `{ "prospect": N, "faire": "retenir", "texte": "Adresse vue sur la fiche Google le 25/11, pas de site." }`. Il passe « à écrire ». La réponse donne aussi `domaine_libre` (une adresse libre à son nom, trouvée par le site : la route l'écrit dans le mail, ne l'écris pas toi-même) et `position_google` : le site vient de mesurer où l'entreprise apparaît sur Google pour sa `recherche`. Dans `a_ecrire`, chaque prospect mesuré a son `constat`.
 
 **Non** : `{ "prospect": N, "faire": "ecarter", "texte": "Un site existe : …" }`.
 

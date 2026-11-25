@@ -319,7 +319,7 @@ function aled08e_px_get($id) {
         'metier' => (string) $m('metier'), 'metier_page' => (string) $m('metier_page'), 'ville' => (string) $m('ville'), 'departement' => (string) $m('departement'),
         'siren' => (string) $m('siren'), 'entreprise_individuelle' => (bool) $m('ei', 0), 'email' => (string) $m('email'),
         'url_source_email' => (string) $m('url_source'), 'source' => (string) $m('source'), 'site_actuel' => (string) $m('site_actuel'), 'recherche' => (string) $m('recherche'),
-        'note' => (int) $m('note', 0), 'criteres' => (array) $m('criteres', []), 'raisons' => (string) $m('raisons'), 'date_creation' => (string) $m('creation'), 'constat' => (array) $m('constat', []),
+        'note' => (int) $m('note', 0), 'criteres' => (array) $m('criteres', []), 'raisons' => (string) $m('raisons'), 'date_creation' => (string) $m('creation'), 'constat' => (array) $m('constat', []), 'domaine_libre' => (string) $m('domaine_libre'),
         'etat' => (string) $m('etat'), 'etat_libelle' => aled08e_px_etats()[(string) $m('etat')] ?? '',
         'ajoute_le' => get_the_date('Y-m-d H:i', $p), 'verification' => (string) $m('verification'),
         'envoye_le' => $env ? wp_date('Y-m-d H:i', $env) : '', 'relance_le' => $rel ? wp_date('Y-m-d H:i', $rel) : '',
@@ -533,6 +533,14 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         . '<span style="display:block;font-size:12.5px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#2c67ae;margin-bottom:4px;">Nous avons fait le test</span>'
         . esc_html($cTxt[0]) . '<br><b style="font-size:17px;">' . esc_html($cTxt[1]) . '</b><br>' . esc_html($cTxt[2]) . '<br><b>' . esc_html($cTxt[3]) . '</b></td></tr></table>' : '';
     $constatT = $cTxt ? 'Nous avons fait le test. ' . implode(' ', $cTxt) : '';
+    // le nom de domaine libre, à son nom
+    $dom = (string) ($p['domaine_libre'] ?? '');
+    $adresseH = 'Et c’est une adresse à vous' . ($dom !== '' ? ', comme <b>' . esc_html($dom) . '</b>,' : ',') . ' à mettre sur vos cartes de visite, votre vitrine et vos factures : vos clients retrouvent tout au même endroit.';
+    $adresseT = 'Et c’est une adresse à vous' . ($dom !== '' ? ', comme ' . $dom . ',' : ',') . ' à mettre sur vos cartes de visite, votre vitrine et vos factures : vos clients retrouvent tout au même endroit.';
+    $domH = $dom !== '' ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;"><tr><td style="background:#fff0f6;border-radius:16px;padding:14px 16px;font-size:15px;line-height:1.55;color:#2e2a47;">'
+        . '<span style="display:block;font-size:12.5px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#a3305f;margin-bottom:4px;">Bonne nouvelle</span>'
+        . 'Nous avons vérifié : l’adresse <b style="font-size:17px;">' . esc_html($dom) . '</b> est libre aujourd’hui. Nous pouvons créer votre site à cette adresse, enregistrée à votre nom, en ligne en 24 à 48 heures.</td></tr></table>' : '';
+    $domT = $dom !== '' ? 'Bonne nouvelle : nous avons vérifié, l’adresse ' . $dom . ' est libre aujourd’hui. Nous pouvons créer votre site à cette adresse, enregistrée à votre nom, en ligne en 24 à 48 heures.' : '';
     $rappel = 'Pour rappel : ' . mb_strtolower(mb_substr($atouts[0][0], 0, 1)) . rtrim(mb_substr($atouts[0][0], 1), '.') . ', un vrai suivi, et un site qui vous appartient.';
     $boutonApercu = $avecApercu ? '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;"><tr>' . $bouton($l['apercu'], 'Voir l’aperçu de votre site', true) . '</tr></table>' : '';
     $avecCode = (int) $r > 0 && (string) $code !== '';
@@ -548,8 +556,8 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     } elseif ($lanc) {
         // l'offre de lancement, la même que pour tout le monde (Alex, 25 novembre 2026)
         $codeH = $cadre . ($relance ? 'Le prix de lancement est toujours là :' : 'En ce moment, c’est le prix de lancement :') . '<br>' . $gros(aled08e_euro($prix['prix']) . ' la création de votre site')
-            . '<br><span style="font-size:13px;color:#6b5a1f;">Pour toute commande jusqu’au ' . esc_html($lanc['jusquau']) . '. Ensuite, la création passe à ' . aled08e_euro($lanc['normal']) . '.</span></td></tr></table>';
-        $codeT = ($relance ? 'Le prix de lancement est toujours là : ' : 'En ce moment, c’est le prix de lancement : ') . aled08e_euro_txt($prix['prix']) . ' la création de votre site, pour toute commande jusqu’au ' . $lanc['jusquau'] . '. Ensuite, la création passe à ' . aled08e_euro_txt($lanc['normal']) . '.';
+            . '<br><span style="font-size:13px;color:#6b5a1f;">Pour toute commande jusqu’au ' . esc_html($lanc['jusquau']) . '. Ensuite, la création passe à ' . aled08e_euro($lanc['normal']) . '. L’hébergement et la suite se choisissent après : tout est expliqué sur notre site.</span></td></tr></table>';
+        $codeT = ($relance ? 'Le prix de lancement est toujours là : ' : 'En ce moment, c’est le prix de lancement : ') . aled08e_euro_txt($prix['prix']) . ' la création de votre site, pour toute commande jusqu’au ' . $lanc['jusquau'] . '. Ensuite, la création passe à ' . aled08e_euro_txt($lanc['normal']) . '. L’hébergement et la suite se choisissent après : tout est expliqué sur notre site.';
     } else {
         $codeH = $cadre . 'La création de votre site :<br>' . $gros(aled08e_euro($prix['prix'])) . '</td></tr></table>';
         $codeT = 'La création de votre site : ' . aled08e_euro_txt($prix['prix']) . '.';
@@ -582,9 +590,10 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . $constatH
             . $P('Aujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :')
             . $pointsH
-            . $P('Et c’est une adresse à vous, à mettre sur vos cartes de visite, votre vitrine et vos factures : vos clients retrouvent tout au même endroit.', '10px 0 14px')
+            . $P($adresseH, '10px 0 14px')
             . $P('Nous sommes la bande des Minis Monstres, une petite famille qui crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :')
             . $atoutsH . '<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>'
+            . $domH
             . $codeH
             . ($avecApercu ? $P('Nous avons préparé un petit aperçu de ce que pourrait donner le site ' . esc_html($deX) . ' :', '0 0 10px') . $boutonApercu : '')
             . $P('Plutôt que mille mots, voyez par vous-même : voici des sites déjà en ligne, créés pour nos clients.')
@@ -619,9 +628,9 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         $pt = '';
         foreach ((array) $m['points'] as $x) $pt .= '- ' . $x['titre'] . ' ' . $x['texte'] . "\n";
         $texte = "Bonjour,\n\n" . $m['phrase'] . "\n\n" . ($constatT !== '' ? $constatT . "\n\n" : '') . "Aujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :\n" . $pt
-            . "Et c’est une adresse à vous, à mettre sur vos cartes de visite, votre vitrine et vos factures : vos clients retrouvent tout au même endroit.\n\n"
+            . $adresseT . "\n\n"
             . "Nous sommes la bande des Minis Monstres, une petite famille qui crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :\n" . $atoutsT . "\n"
-            . $codeT . "\n\n"
+            . ($domT !== '' ? $domT . "\n\n" : '') . $codeT . "\n\n"
             . ($avecApercu ? 'Nous avons préparé un petit aperçu de ce que pourrait donner le site ' . $deX . " :\n" . $l['apercu'] . "\n\n" : '')
             . "Plutôt que mille mots, voyez par vous-même : voici des sites déjà en ligne, créés pour nos clients.\n"
             . ($l['realisations'] ?? $l['site']) . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\nUne question ? Répondez simplement à ce message : nous vous répondons.\n\nBonne journée,\nLa bande des Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
@@ -688,6 +697,7 @@ function aled08e_px_faire(WP_REST_Request $req) {
                 $art = str_replace("'", '’', (string) ($ex['article'] ?? ''));
                 $p = ['entreprise' => aled08e_px_texte($ex['entreprise'], 120), 'article' => in_array($art, ['le', 'la', 'l’', 'les'], true) ? $art : '',
                     'metier' => aled08e_px_texte($ex['metier'] ?? '', 80), 'ville' => aled08e_px_texte($ex['ville'] ?? '', 80)] + $p;
+                $p['domaine_libre'] = function_exists('aled08e_px_domaine_trouver') ? aled08e_px_domaine_trouver($p['entreprise'], $p['ville'], $p['article']) : '';
                 $c = (array) ($ex['constat'] ?? []);
                 if (!empty($c['recherche']) && isset($c['position'])) $p['constat'] = ['recherche' => aled08e_px_texte($c['recherche'], 80), 'position' => max(0, min(100, (int) $c['position'])),
                     'regardes' => max(10, min(100, (int) ($c['regardes'] ?? 50))), 'trouve' => aled08e_px_texte($c['trouve'] ?? 'votre page Facebook', 60), 'le' => time()];
@@ -731,8 +741,13 @@ function aled08e_px_faire(WP_REST_Request $req) {
         aled08e_px_journal($id, 'Vérifié par le Facteur : ' . $texte);
         // la position sur Google, mesurée par le site lui-même (jamais un chiffre donné par un agent)
         $mesure = function_exists('aled08e_px_mesurer') ? aled08e_px_mesurer($id) : null;
+        // un nom de domaine libre à son nom (sauf s'il a déjà un site, donc déjà une adresse)
+        $dom = ($p['site_actuel'] === '' && function_exists('aled08e_px_domaine_trouver')) ? aled08e_px_domaine_trouver($p['entreprise'], $p['ville'], $p['article']) : '';
+        aled08e_px_set($id, 'domaine_libre', $dom);
+        if ($dom !== '') aled08e_px_journal($id, 'Nom de domaine libre trouvé : ' . $dom . '.');
         $set('a_ecrire');
-        return new WP_REST_Response(['ok' => true, 'etat' => 'a_ecrire', 'position_google' => $mesure ? aled08e_px_constat_txt($mesure, (string) $p['entreprise']) : 'non mesurée (pas de clé de mesure, ou service indisponible) : le mail n’en parlera pas'], 200);
+        return new WP_REST_Response(['ok' => true, 'etat' => 'a_ecrire', 'position_google' => $mesure ? aled08e_px_constat_txt($mesure, (string) $p['entreprise']) : 'non mesurée (pas de clé de mesure, ou service indisponible) : le mail n’en parlera pas',
+            'domaine_libre' => $dom !== '' ? $dom : 'aucun trouvé (ou déjà un site) : le mail n’en parlera pas'], 200);
     }
     if ($faire === 'ecarter') {
         if (in_array($etat, ['desinscrit', 'commande'], true)) return $err('Ce prospect est « ' . $etat . ' » : on n’y touche plus.');
@@ -800,6 +815,11 @@ function aled08e_px_faire(WP_REST_Request $req) {
     // un code personnel seulement quand l'offre du mail a une remise (data.json « prospection ») ; sinon le prix de lancement, sans code
     $code = $premier ? ($p['code'] ?: (aled08e_px_remise() > 0 ? aled08e_px_code_nouveau() : '')) : $p['code'];
     if ($premier) { if ($code !== '') aled08e_px_set($id, 'code', $code); aled08e_px_set($id, 'envoye_le', time()); }
+    // le domaine proposé doit être libre au moment où le mail part : sinon on en cherche un autre
+    if ($premier && $p['domaine_libre'] !== '' && function_exists('aled08e_rdap_statut') && aled08e_rdap_statut($p['domaine_libre']) === 'pris') {
+        $p['domaine_libre'] = function_exists('aled08e_px_domaine_trouver') ? aled08e_px_domaine_trouver($p['entreprise'], $p['ville'], $p['article']) : '';
+        aled08e_px_set($id, 'domaine_libre', $p['domaine_libre']);
+    }
     $mail = aled08e_px_mail($p, $m, $faire, $code, aled08e_px_code_fin($id));
     $ok = aled08e_px_poster($p['email'], $mail, $id, !$premier);
     if (!$ok) {
