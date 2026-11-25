@@ -1383,3 +1383,11 @@ button.is-confirmer.is-confirmer, .btn.is-confirmer.is-confirmer, .req-annul .li
   .mp-ico { width: 36px; height: 36px; border-radius: 12px; }
   .mp-act { grid-column: 2; justify-content: flex-start; }
 }
+
+/* Espacements (revue du 25 novembre 2026) : aucun bloc ne doit en toucher un autre */
+.mm-site-lien { margin: 12px 0 18px; }
+.app-domain + .app-domain { margin-top: 8px; }
+.esp-form-bloc > .btn { margin-top: 14px; }
+.esp-reste + .esp-reste { margin-top: 8px; }
+ul + .esp-warn, ol + .esp-warn, ul + .esp-empty, ol + .esp-empty { margin-top: 14px; }
+.esp-apparence { display: grid; gap: 8px; }

@@ -3660,3 +3660,13 @@ button.app-logout { border: 0; background: none; font: inherit; cursor: pointer;
 /* ---------- les titres longs (pages métier) restent lisibles sur téléphone ---------- */
 @media (max-width: 480px) { .page-hero h1 { font-size: clamp(1.55rem, 7.4vw, 1.9rem); line-height: 1.18; overflow-wrap: break-word; } }
 .frise-lien { min-height: 44px; align-items: center; }
+
+/* Espacements (revue du 25 novembre 2026) : aucun bloc ne doit en toucher un autre dans la démo de l'espace client */
+.mm-site-lien { margin: 12px 0 18px; }
+.esp-form-bloc .field + .btn, .esp-form-bloc .esp-grid2 + .btn, .esp-form-bloc input + .btn { margin-top: 14px; }
+.esp-form-bloc > .btn { margin-top: 14px; }
+.app-domain + .app-domain { margin-top: 8px; }
+.modif-etapes + .req-form, .modif-etapes + * { margin-top: 18px; }
+.demo-ed + .cta-box, .demo-editeur + .cta-box, .section .cta-box { margin-top: 28px; }
+.tab-sous, .app-tabs .is-groupe-on + * { margin-top: 6px; }
+.faq-item + .faq-item, li + .faq-item, .faq-item + li { margin-top: 10px; }
