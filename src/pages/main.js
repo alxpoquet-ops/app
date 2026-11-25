@@ -978,7 +978,7 @@ function monEspacePage() {
           ${demoAide('accueil', 1)}
           <div class="mm-cartes">
             <article class="mm-carte c-${SITES_A.color || 'mint'}"><div class="mm-carte-tete"><span class="mm-carte-art" aria-hidden="true">${mon(SITES_A.monstre || 'bricou')}</span><div><strong>Mon site</strong><small>En ligne · ${DEMO.domaine}</small></div></div><button type="button" class="btn btn-light btn-sm" data-go="demandes">${icon('pencil')}<span>Demander une modification</span></button></article>
-            <article class="mm-carte c-${ECOLE_A.color || 'lilac'}"><div class="mm-carte-tete"><span class="mm-carte-art" aria-hidden="true">${mon(ECOLE_A.monstre || 'mochi')}</span><div><strong>${esc(ECOLE_A.label)}</strong><small>Une question ? Un petit tuto, gratuit, vous répond</small></div></div><a class="btn btn-light btn-sm" href="${ECOLE_A.path}" target="_blank" rel="noopener">${icon('book-open')}<span>Voir les tutos</span></a></article>
+            <article class="mm-carte c-${ECOLE_A.color || 'lilac'}"><div class="mm-carte-tete"><span class="mm-carte-art" aria-hidden="true">${mon(ECOLE_A.monstre || 'mochi')}</span><div><strong>${esc(ECOLE_A.label)}</strong><small>Toutes les réponses à vos questions, pas à pas</small></div></div><a class="btn btn-light btn-sm" href="${ECOLE_A.path}" target="_blank" rel="noopener">${icon('book-open')}<span>Voir les tutos</span></a></article>
           </div>
           <div class="mm-duo">
             <section class="mm-bloc mm-fil" aria-labelledby="mm-fil-t"><h3 class="mm-bloc-t" id="mm-fil-t">Le fil de la bande</h3><ul class="mm-fil-l">${FIL.map(([m, t, q]) => `<li><span class="mm-fil-art" aria-hidden="true">${mon(m)}</span><p>${esc(t)}</p><time>${esc(q)}</time></li>`).join('')}</ul></section>

@@ -68,6 +68,6 @@ function aled08e_aide_tuto_extra($extra) {
 
 /* La carte « Mes Tutos » de l'accueil (atelier « ecole ») : une porte discrète vers les tutos gratuits */
 function aled08e_aide_carte_accueil_html($a) {
-    return '<article class="mm-carte c-' . esc_attr($a['color'] ?? 'lilac') . '"><div class="mm-carte-tete"><span class="mm-carte-art" aria-hidden="true">' . aled08e_monster($a['monstre'] ?? 'mochi') . '</span><div><strong>' . esc_html($a['label'] ?? 'Mes Tutos') . '</strong><small>Une question ? Un petit tuto, gratuit, vous répond</small></div></div>'
+    return '<article class="mm-carte c-' . esc_attr($a['color'] ?? 'lilac') . '"><div class="mm-carte-tete"><span class="mm-carte-art" aria-hidden="true">' . aled08e_monster($a['monstre'] ?? 'mochi') . '</span><div><strong>' . esc_html($a['label'] ?? 'Mes Tutos') . '</strong><small>Toutes les réponses à vos questions, pas à pas</small></div></div>'
         . '<a class="btn btn-light btn-sm" href="' . esc_url(home_url($a['path'] ?? '/mini-tuto/')) . '" target="_blank" rel="noopener">' . aled08e_icon('book-open') . '<span>Voir les tutos</span></a></article>';
 }
