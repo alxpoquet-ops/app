@@ -1089,7 +1089,8 @@ function aled08e_outils_nouveau_html($uid) {
 }
 /* Un onglet avec son petit monstre (Accueil, Mon site, Mes outils, Mon compte) */
 function aled08e_tab_monstre($id, $monstre, $label, $on = false, $extra = '') {
-    return '<button type="button" role="tab" id="tab-' . esc_attr($id) . '" aria-controls="t-' . esc_attr($id) . '" aria-selected="' . ($on ? 'true' : 'false') . '"' . ($on ? '' : ' tabindex="-1"') . ' data-tab="' . esc_attr($id) . '"' . $extra . '><span class="tab-monstre" aria-hidden="true">' . aled08e_monster($monstre) . '</span><span>' . esc_html($label) . '</span></button>';
+    $ic = ['accueil' => 'house', 'site' => 'globe', 'outils' => 'sparkles', 'compte' => 'circle-user'][$id] ?? 'house'; // l'icône, montrée sur téléphone à la place du monstre
+    return '<button type="button" role="tab" id="tab-' . esc_attr($id) . '" aria-controls="t-' . esc_attr($id) . '" aria-selected="' . ($on ? 'true' : 'false') . '"' . ($on ? '' : ' tabindex="-1"') . ' data-tab="' . esc_attr($id) . '"' . $extra . '><span class="tab-monstre" aria-hidden="true">' . aled08e_monster($monstre) . '</span><span class="tab-ico" aria-hidden="true">' . aled08e_icon($ic) . '</span><span>' . esc_html($label) . '</span></button>';
 }
 /* Un sous-onglet de « Mon site » (Ma commande, Modifications, Extras, Ma boutique) */
 function aled08e_tab_sous($id, $ic, $label) {

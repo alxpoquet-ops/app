@@ -1423,3 +1423,20 @@ ul + .esp-warn, ol + .esp-warn, ul + .esp-empty, ol + .esp-empty { margin-top: 1
   .app-maison .app-main pre, .app-maison .app-main code { white-space: pre-wrap; word-break: break-word; }
 }
 @media (max-width: 345px) { .app-maison .app-side .app-tabs > button { font-size: .6rem; } .app-maison .app-side .app-tabs { gap: 4px; } }
+/* les onglets : l'icône ne sert que sur téléphone (sur ordinateur, le petit monstre reste) */
+.app-tabs .tab-ico { display: none; }
+@media (max-width: 959px) {
+  /* que des icônes, toutes pareilles, et tout aligné : l'icône en haut, le nom dessous dans une case de deux lignes */
+  .app-maison .app-side .app-tabs .tab-monstre { display: none !important; }
+  .app-maison .app-side .app-tabs .tab-ico { display: block; }
+  .app-maison .app-side .app-tabs > button, .app-maison .app-side .app-tabs:not(:has(> [data-tab="outils"])) > button:not(.tab-sous) { justify-content: flex-start; gap: 5px; padding: 9px 2px 7px; min-height: 76px; }
+  .app-maison .app-side .app-tabs > button > .ico, .app-maison .app-side .app-tabs .tab-ico .ico { display: block; box-sizing: border-box; width: 34px; height: 34px; margin: 0; padding: 8px; border-radius: 12px; background: var(--lilac); color: var(--lilac-dd); flex: none; }
+  .app-maison .app-side .app-tabs > button > span:last-child { display: flex; align-items: center; justify-content: center; min-height: 2.3em; }
+  .app-maison .app-side .app-tabs > button[aria-selected="true"] > .ico, .app-maison .app-side .app-tabs > button[aria-selected="true"] .tab-ico .ico { background: var(--card); }
+}
+@media (max-width: 959px) {
+  /* tous les onglets à la même hauteur (l'ancien petit décalage des sous-onglets est retiré) et des icônes identiques */
+  .app-maison .app-side .app-tabs > button, .app-maison .app-side .app-tabs > button.tab-sous { margin: 0 !important; align-self: stretch; }
+  .app-maison .app-side .app-tabs > button > svg.ico, .app-maison .app-side .app-tabs > button.tab-sous > svg.ico, .app-maison .app-side .app-tabs .tab-ico > svg.ico { margin: 0 !important; width: 34px !important; height: 34px !important; padding: 8px !important; border-radius: 12px !important; background: var(--lilac) !important; color: var(--lilac-dd) !important; }
+  .app-maison .app-side .app-tabs > button[aria-selected="true"] > svg.ico, .app-maison .app-side .app-tabs > button[aria-selected="true"] .tab-ico > svg.ico { background: var(--card) !important; }
+}

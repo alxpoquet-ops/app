@@ -33,7 +33,7 @@ FORM_RECIPIENT = 'alx.poquet@gmail.com'
 # Anciennes adresses (ancien site d'électricien, anciennes pages du site ALED08) : redirigées vers l'accueil,
 # sauf cas particuliers. Les clés de OLD_TARGETS sont toujours redirigées, même absentes de wp-old-paths.txt.
 OLD_PATHS_FILE = os.path.join(ROOT, 'scripts', 'wp-old-paths.txt')
-OLD_TARGETS = {'/devis/': '/contact/', '/prestations/': '/creer-mon-site/', '/blog/': '/', '/comparatif-shopify/': '/comparatif/', '/nos-outils/': '/outils/', '/forfaits/': '/tarifs/', '/en/forfaits/': '/en/tarifs/'}
+OLD_TARGETS = {'/devis/': '/contact/', '/prestations/': '/creer-mon-site/', '/blog/': '/', '/comparatif-shopify/': '/comparatif/', '/nos-outils/': '/outils/', '/forfaits/': '/tarifs/', '/en/forfaits/': '/en/tarifs/', '/mini-tuto/appel-avec-alex/': '/mini-tuto/questionnaire-de-creation/'}
 # 24 novembre 2026, fin de soirée : les outils sont mis de côté (config.outilsOffre.actif = false), on se concentre sur les sites.
 # Tant que la page /outils/ n'est pas construite, ses adresses mènent à « Créer mon site » ; quand elle revient, elle est dans
 # les pages exportées et la redirection saute toute seule (redirects()).

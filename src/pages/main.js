@@ -253,7 +253,7 @@ function home() {
   </a>
 </div></section>
 
-${C.ctaBand({ title: 'On ouvre votre vitrine ?', text: `Le ${esc(ESS.name)} : ${euro(ESS.price)} la création, ${euro(BOU.price)} avec l’option ${esc(ECO.name)}. Vous commandez en deux minutes, et la création démarre dès votre questionnaire. Pour démarrer.` })}`;
+${C.ctaBand({ title: 'On ouvre votre vitrine ?', text: `Le ${esc(ESS.name)} : ${euro(ESS.price)} la création, ${euro(BOU.price)} avec l’option ${esc(ECO.name)}. Vous commandez en deux minutes, et la création démarre dès votre questionnaire.` })}`;
   return {
     path: '/',
     bodyClass: 'page-accueil',
@@ -860,7 +860,7 @@ const demoToast = (msg) => ` data-toast-msg="${esc(msg)} (démo)"`;
 function monEspacePage() {
   const ECOLE_A = ateliers.find((x) => x.id === 'ecole') || { label: 'Mes Tutos', path: C.TUTOS.HUB, monstre: 'mochi', color: 'lilac' };
   const SITES_A = ateliers.find((x) => x.id === 'sites') || { monstre: 'bricou', color: 'mint' };
-  const tabM = (id, m, label, on) => `<button type="button" role="tab" id="tab-${id}" aria-controls="t-${id}" aria-selected="${on ? 'true' : 'false'}"${on ? '' : ' tabindex="-1"'} data-tab="${id}"><span class="tab-monstre" aria-hidden="true">${mon(m)}</span><span>${label}</span></button>`;
+  const tabM = (id, m, label, on) => `<button type="button" role="tab" id="tab-${id}" aria-controls="t-${id}" aria-selected="${on ? 'true' : 'false'}"${on ? '' : ' tabindex="-1"'} data-tab="${id}"><span class="tab-monstre" aria-hidden="true">${mon(m)}</span><span class="tab-ico" aria-hidden="true">${icon({ accueil: 'house', site: 'globe', outils: 'sparkles', compte: 'circle-user' }[id] || 'house')}</span><span>${label}</span></button>`;
   const tabS = (id, ic, label) => `<button type="button" role="tab" id="tab-${id}" aria-controls="t-${id}" aria-selected="false" tabindex="-1" data-tab="${id}" data-groupe="site" class="tab-sous">${icon(ic)}<span>${label}</span></button>`;
   const SITE_TABS = [['commande', 'package', 'Ma commande'], ['demandes', 'pencil', 'Modifications'], ['extras', 'sparkles', 'Extras'], ['vacances', 'shopping-bag', 'Ma boutique']];
   const siteNav = (actif) => `<nav class="mm-site-nav" aria-label="Mon site">${SITE_TABS.map(([id, ic, l]) => `<button type="button" data-go="${id}"${id === actif ? ' aria-current="page"' : ''}>${icon(ic)}<span>${l}</span></button>`).join('')}</nav>`;

@@ -858,7 +858,7 @@ function objections() {
 
 // ---------------------------------------------------------------- le déroulement d'une création (24 novembre 2026, soir)
 // Ce qui se passe vraiment, dans l'ordre (voir src/wordpress/aled08-espace/includes/atelier.php : paiement, questionnaire,
-// appel d'Alex et feu vert, création, vérification, en ligne). court : une phrase (accueil, Créer mon site) ; bulle : la jauge de
+// création dès le questionnaire, vérification, en ligne ; plus d'appel depuis le 25 novembre 2026). court : une phrase (accueil, Créer mon site) ; bulle : la jauge de
 // Mes Tutos ; cle : les mots qui, dans l'adresse d'un tuto, désignent le tuto de cette étape (lien posé seulement s'il existe).
 // monstre 'alex' : le portrait d'Alex (bestiaire), sinon un dessin de src/assets/img/mail.
 const DEROULEMENT = [
