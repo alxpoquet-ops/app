@@ -48,7 +48,7 @@ module.exports = [
 ## Ce que vous trouvez chez nous
 
 1. **Un prix clair, le même pour tous.** ${eur(ESS.price)} € la création du ${ESS.name}, ${eur(BOU.price)} € avec l’option ${ECO.name}. Pas de devis à attendre, pas de ligne surprise.
-2. **Un vrai site, pas un modèle à remplir seul.** Nos modules sont assemblés pour vous, puis garnis de vos textes, de vos informations et de vos photos.
+2. **Un vrai site, fait pour vous.** Alex le crée avec vos textes, vos informations et vos photos. Vous n’avez rien à monter vous-même.
 3. **Un parcours sans mauvaise surprise.** Un questionnaire précis, et votre site se construit avec vos réponses. Rien n’est inventé sur votre activité.
 4. **Une vérification avant chaque livraison.** Votre site est relu d’un œil neuf avant d’arriver chez vous.
 5. **L’accès à tout.** Votre espace client vous montre la liste de toutes vos pages, dont vos pages de visibilité Google. Avec le forfait ${mini.name}, vous modifiez vous-même un texte ou une photo, en direct.
@@ -91,7 +91,7 @@ Alex a construit les Minis Monstres sans formation de développeur. Il s’appui
 
 ## Point par point
 
-1. **Qui conçoit votre site ?** Chez un développeur, lui. Chez nous, Alex a conçu une fois pour toutes les modules dont votre site est fait, puis il les remplit avec vos réponses.
+1. **Qui conçoit votre site ?** Chez un développeur, lui. Chez nous aussi, une personne : Alex crée votre site avec vos réponses, vos textes, vos photos et vos couleurs.
 2. **Combien de temps ?** Des jours ou des semaines pour un site fait entièrement à la main. Chez nous, ${DELAI} en général une fois vos éléments reçus.
 3. **Qui vérifie ?** Chez nous, un second petit monstre contrôle le travail du premier avant toute livraison, selon les règles écrites par Alex. Les cas délicats arrivent toujours chez lui.
 4. **Qui vous parle ?** Alex, la personne derrière les Minis Monstres : il répond à vos messages.
@@ -120,15 +120,15 @@ Une application métier, un logiciel sur mesure, un très gros catalogue, une co
     duree: 3,
     h1: `Comment un site soigné peut-il coûter ${marche.foisTexte} fois moins cher ?`,
     title: 'Un site moins cher, sans rien bâcler : comment ? | Les Minis Monstres',
-    description: `Comment le ${ESS.name} coûte ${marche.foisTexte} fois moins cher qu’un site d’indépendant : ni local ni loyer, des modules soignés, et un contrôle avant chaque livraison.`,
+    description: `Comment le ${ESS.name} coûte ${marche.foisTexte} fois moins cher qu’un site d’indépendant : ni local, ni agence, ni loyer, et un contrôle avant chaque livraison.`,
     lead: 'Un prix doux fait parfois peur. Ici, il vient des frais que nous n’avons pas, jamais des étapes sautées. Voici comment.',
     body: `La réponse tout de suite : nous n’avons ni local, ni agence, ni loyer à vous faire payer. Alex fait tout depuis chez lui. Le soin, lui, reste le même.
 
 ## Les trois raisons du prix
 
 1. **Ni local, ni agence, ni loyer.** Pas de bureaux à chauffer et à éclairer, pas de vitrine en ville, pas de commerciaux à rémunérer. Ces frais n’existent pas chez nous, donc ils n’apparaissent nulle part sur votre facture.
-2. **Des modules soignés une fois pour toutes.** Accueil, présentation, galerie, contact, questions fréquentes, services et tarifs : Alex a peaufiné chacun d’eux. Pour votre site, il les assemble et les façonne à votre image.
-3. **Les tâches répétitives outillées.** Alléger les photos ou vérifier les liens ne demande pas de talent particulier : nos petits monstres s’en chargent, et le temps gagné va au design et aux détails.
+2. **Pas de réunion, pas de devis à attendre.** Un questionnaire précis suffit : Alex crée votre site avec vos réponses, vos photos et vos couleurs. Le temps qu’une agence passe en rendez-vous, il le passe sur votre site.
+3. **Aucun frais de structure.** Pas de bureaux à louer, pas de standard, pas de commercial à payer : tout ce que vous réglez sert à votre site.
 
 ## Un prix juste, pas un prix au rabais
 

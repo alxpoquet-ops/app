@@ -443,7 +443,7 @@ function seoPage() {
 
   // Les deux façons d'être plus visible : [couleur, monstre, titre, prix, liste]
   const levels = [
-    [ESS.color, ESS.monstre, `Avec le ${ESS.name}`, `Compris, ${euro(ESS.price)}`, ['Un site rapide et sécurisé', 'Lisible sur téléphone et sur ordinateur', 'Un titre et une description pour Google', 'Des modules pensés pour que Google comprenne votre activité']],
+    [ESS.color, ESS.monstre, `Avec le ${ESS.name}`, `Compris, ${euro(ESS.price)}`, ['Un site rapide et sécurisé', 'Lisible sur téléphone et sur ordinateur', 'Un titre et une description pour Google', 'Des pages pensées pour que Google comprenne votre activité']],
     ['lilac', 'gelee', pack.name, `${euro(pack.price.once)} la page, sans abonnement`, ['Une page de plus, quand vous voulez', `Par exemple : ${(pack.exemples || []).join(', ').toLowerCase().replace('faq', 'FAQ')}`, `À l’unité, ou par ${C.packsSeo} pages`, 'Commandée depuis votre espace client, une fois le site en ligne']],
   ];
   const body = `${C.pageHero({
@@ -563,10 +563,10 @@ function comparatifPage() {
   <h2 class="section-title">${marche.foisTexte} fois moins cher qu’un indépendant</h2>
   <p class="section-sub">Pour un site vitrine complet : accueil, présentation, services, photos et contact.</p>
   ${C.deroulants([
-    C.deroulant('Les prix, côte à côte', md(`Un indépendant demande en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence, plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. Notre ${ESS.name}, qui contient ces mêmes modules, coûte ${euro(ESS.price)}.
+    C.deroulant('Les prix, côte à côte', md(`Un indépendant demande en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence, plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. Notre ${ESS.name}, qui contient ces mêmes parties, coûte ${euro(ESS.price)}.
 
 Ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois. Les sources sont citées sous le tableau, en haut de cette page.`), { ico: 'scale' }),
-    C.deroulant('Pourquoi ce prix ?', md(`Nous n’avons ni local, ni agence, ni loyer, ni bureaux à chauffer et à éclairer : Alex travaille depuis chez lui. Ces frais n’existent pas chez nous, donc vous ne les payez pas. Nos modules ont été soignés une fois pour toutes, et il ne manque que votre contenu.
+    C.deroulant('Pourquoi ce prix ?', md(`Nous n’avons ni local, ni agence, ni loyer, ni bureaux à chauffer et à éclairer : Alex travaille depuis chez lui. Ces frais n’existent pas chez nous, donc vous ne les payez pas. Ce que vous payez, c’est le temps qu’Alex passe sur votre site, avec vos textes, vos photos et vos couleurs.
 
 Le prix reste juste : assez doux pour vous, assez juste pour que nous vivions de notre travail. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank' }),
     C.deroulant('Ce que vous avez avec votre site', md(`Votre espace client vous montre la liste de toutes vos pages, dont vos pages de visibilité Google, avec un lien pour voir ou modifier chacune.
@@ -1676,7 +1676,7 @@ function equipePage() {
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Comment on travaille</h2>
   <div class="feats feats-3">
-    <div class="feat reveal">${icon('list-checks')}<h3>Une méthode rodée</h3><p>Un questionnaire précis pour vous connaître, puis votre site est assemblé avec nos modules. Vous le modifiez ensuite comme vous voulez.</p></div>
+    <div class="feat reveal">${icon('list-checks')}<h3>Une méthode rodée</h3><p>Un questionnaire précis pour vous connaître, puis Alex crée votre site avec vos réponses. Vous le modifiez ensuite comme vous voulez.</p></div>
     <div class="feat reveal">${icon('tag')}<h3>Des prix affichés</h3><p>Les mêmes pour tout le monde, sans devis. Vous savez ce que vous payez avant de commander.</p></div>
     <div class="feat reveal">${icon('message-circle')}<h3>Quelqu’un qui répond</h3><p>${esc(C.CERISE)} répond à vos questions, ${esc(C.BRICOU)} prépare vos demandes, et Alex fait vos modifications.</p></div>
   </div>
@@ -1913,7 +1913,7 @@ ${chap('etapes', `1. Comment ça se passe`, `  <h2>De la commande à la mise en 
     <li><strong>Vous réglez votre site.</strong> En une fois, ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}, sur la page de paiement. C’est le signal de départ.</li>
     <li><strong>Vous remplissez le questionnaire de création.</strong> Dans votre espace client : couleurs, ambiance, photos, prix ou produits.</li>
     <li><strong>Alex crée votre site.</strong> Dès votre questionnaire envoyé, avec vos réponses. Chaque page est vérifiée avant la mise en ligne.</li>
-    <li><strong>Votre site est assemblé.</strong> Nos modules, remplis avec vos informations et vos photos. Votre première version est en ligne en ${esc(ESS.delai)}, et vous recevez un e-mail qui vous la présente.</li>
+    <li><strong>Votre site prend forme.</strong> Vos textes, vos photos et vos couleurs, chacun à sa place. Votre première version est en ligne en ${esc(ESS.delai)}, et vous recevez un e-mail qui vous la présente.</li>
     <li><strong>Vous le peaufinez.</strong> Rien de plus à payer pour la création. Avec le forfait ${esc(ABO.name)}, qui démarre ce jour-là, vous changez vous-même un texte ou une photo, à volonté, ou vous nous demandez la modification dans « Mes modifications ».</li>
     <li><strong>Ensuite, vous choisissez.</strong> Le forfait ${esc(ABO.name)}, ${euro(ABO.month)} par mois : on s’occupe de tout. Ou le forfait ${esc(AUTO.name)}, ${euro(AUTO.month)} : vous gérez tout vous-même.</li>
   </ol>
@@ -1936,7 +1936,7 @@ ${chap('questionnaire', `3. Le questionnaire de création`, `  <h2>Ce qu’on vo
 
 ${chap('sites', `4. Votre site`, `  <div class="container-narrow">
     <h2>Un site, une option, un prix</h2>
-    <p>Votre site est assemblé à partir de nos modules (accueil, présentation, services et tarifs, galerie, questions fréquentes, contact), puis rempli avec votre contenu. Le prix est fixé dès la commande, et il ne change pas en cours de route. ${esc(C.PLUS_DE_PAGES)}</p>
+    <p>Votre site comprend les pages qui comptent (accueil, présentation, services et tarifs, galerie, questions fréquentes, contact), et Alex les crée avec votre contenu. Le prix est fixé dès la commande, et il ne change pas en cours de route. ${esc(C.PLUS_DE_PAGES)}</p>
   </div>
   <div class="doc-types">
     ${typesOfferts.map((t) => `<div class="doc-type reveal"><strong>${esc(t.name)}</strong><b>${C.prixType(t)}</b><span>${icon('clock')}Prêt en ${esc(t.delai)}</span><p><strong>${esc(t.but)}.</strong> ${esc(t.pitch)}</p></div>`).join('')}

@@ -323,21 +323,21 @@ function positionnement() {
     ligne({ id: 'vitrine', color: 'butter', monstre: 'gelee' }, `${sections.forfaits.path}#extras`, 'Pages de visibilité Google', `${euro(prixPageSeo)} la page, quand vous voulez`),
   ].join('')}</ul>`;
 }
-// « Comment est fait votre site » : les modules (nos minis monstres), puis la V1 que le client modifie lui-même ou nous demande de modifier.
+// « Comment est fait votre site » : les parties du site (config.modules), puis la V1 que le client modifie lui-même ou nous demande de modifier.
 // Bloc commun (accueil, Tarifs) : marqué <!--commun--> pour le contrôle des phrases dupliquées.
 function modulesSite({ titre = 'Comment est fait votre site', id = 'comment' } = {}) {
   const MOCHI = (bande.find((b) => b.id === 'organisateur') || { nom: 'Mochi' }).nom;
   return `<section class="section section-soft" id="${id}"><div class="container">
   <h2 class="section-title">${esc(titre)}</h2>
-  <p class="section-sub">Le cerveau est prêt : il ne manque que votre contenu.</p>
-  <!--commun-->${presente('mochi', `<strong>Un site, chez nous, c’est un assemblage de modules.</strong> Ce sont nos minis monstres : Alex les a créés et optimisés un par un, et chacun a son rôle. ${esc(MOCHI)}, lui, adore quand chaque chose est à sa place.`, { humeur: 'ravi' })}
+  <p class="section-sub">Alex le crée avec vos réponses : vos textes, vos photos, vos couleurs.</p>
+  <!--commun-->${presente('mochi', `<strong>Un site, chez nous, se compose de quelques parties.</strong> Chacune a son rôle, et Alex les écrit pour vous avec ce que vous lui confiez. ${esc(MOCHI)}, lui, adore quand chaque chose est à sa place.`, { humeur: 'ravi' })}
   <ul class="modules reveal">${modules.map((m) => `<li class="${m.option ? 'is-option' : ''}">${icon(m.icon)}<span><strong>${esc(m.nom)}</strong>${m.option ? `<em>Option ${esc(ECOMMERCE.name)}</em>` : ''}<small>${esc(m.d)}</small></span></li>`).join('')}</ul>
   ${steps([
     { t: 'Solide dès le premier jour', d: 'Rapide, lisible sur téléphone, sécurisé et compris par Google : chaque site part sur de bonnes bases.' },
-    { t: 'On la remplit avec votre contenu', d: `Vos informations, vos textes et vos photos. C’est ainsi que votre site est prêt en ${ESSENTIEL.delai}, dès que nous avons tout reçu, sans que le soin en pâtisse.` },
+    { t: 'Fait avec votre contenu', d: `Vos informations, vos textes et vos photos : Alex crée votre site avec, sans rendez-vous à caler. Il est prêt en ${ESSENTIEL.delai}, dès que nous avons tout reçu, sans que le soin en pâtisse.` },
     { t: 'Vous le mettez à votre goût', d: `Avec le forfait ${ABO.name}, vous le modifiez vous-même, à volonté : un texte ou une photo se change en direct, depuis votre espace client. Pour le reste, vous nous le demandez dans « Mes modifications ».` },
   ])}
-  <div class="preconf reveal">${icon('sparkles')}<div><strong>Préconfiguré ne veut pas dire identique.</strong><p>Ce que nous préparons à l’avance, c’est le code invisible de votre site : tout ce qui travaille derrière vos textes et vos images pour qu’il soit rapide, sûr et bien vu de Google. Cette base solide, nous vous la fournissons. Il ne reste qu’à la façonner à votre univers : vos couleurs, vos polices, vos photos, vos mots. Chaque site garde ainsi sa propre personnalité.</p></div></div><!--/commun-->
+  <div class="preconf reveal">${icon('sparkles')}<div><strong>Chaque site a sa propre personnalité.</strong><p>Ce qui ne se voit pas suit les mêmes exigences pour tous : le code qui travaille derrière vos textes et vos images pour que le site soit rapide, sûr et bien vu de Google. Ce qui se voit est à vous : vos couleurs, vos polices, vos photos, vos mots.</p></div></div><!--/commun-->
   <div class="modules-demo">${demoBande()}</div>
 </div></section>`;
 }
@@ -366,7 +366,7 @@ function economie() {
   const w = (x) => `${Math.max(6, Math.round((x / mAgence) * 100))}%`;
   return `<div class="eco reveal">
   <h3>${icon('scale')}${marche.foisTexte} fois moins cher qu’un indépendant, à site comparable</h3>
-  <p class="eco-base">On compare un site vitrine de ${n} pages chez un indépendant ou dans une agence (accueil, présentation, services, photos, contact) avec notre ${ESSENTIEL.name}, qui contient ces mêmes modules.</p>
+  <p class="eco-base">On compare un site vitrine de ${n} pages chez un indépendant ou dans une agence (accueil, présentation, services, photos, contact) avec notre ${ESSENTIEL.name}, qui contient ces mêmes pages.</p>
   <div class="eco-barres" role="img" aria-label="Un site vitrine de ${n} pages coûte en général ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)} en agence, ${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)} chez un indépendant. Notre ${ESSENTIEL.name} : ${euro(creation.prix)}.">
     <p class="eco-ligne"><span>Agence</span><i style="width:${w(mAgence)}"></i><b>${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}</b></p>
     <p class="eco-ligne"><span>Indépendant</span><i style="width:${w(mInde)}"></i><b>${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)}</b></p>
@@ -668,7 +668,7 @@ function configurator() {
   return `<div class="builder cf" data-builder="${priceData()}" data-billing-scope>
   <form class="cf-form" data-builder-form>
     ${partie('butter', 'La création de votre site', `Ou en ${lissageTxt} fois avec ${ORGANISMES}, si vous préférez.`)}
-    ${etape('Votre site', `Le ${esc(ESSENTIEL.name)}, assemblé à partir de nos modules. Vous voulez vendre en ligne ? Cochez l’option ${esc(ECOMMERCE.name)}.`, `${siteCarte()}<p class="cf-info c-butter">${icon('info')}<span>${esc(revisionsNote)}</span></p>`)}
+    ${etape('Votre site', `Le ${esc(ESSENTIEL.name)}, créé par Alex avec vos réponses. Vous voulez vendre en ligne ? Cochez l’option ${esc(ECOMMERCE.name)}.`, `${siteCarte()}<p class="cf-info c-butter">${icon('info')}<span>${esc(revisionsNote)}</span></p>`)}
     ${partie('lilac', `Ensuite, le forfait ${esc(creationSeule.name)} ou le forfait ${esc(ABO.name)}`, 'Aucune obligation d’abonnement : c’est vous qui choisissez.')}
     ${etape('Qui s’occupe de votre site ?', 'L’hébergement, le nom de domaine, les sauvegardes et les mises à jour : on s’en charge, ou vous le faites vous-même.', gestionChoix())}
     ${etape('Votre nom de domaine', `C’est l’adresse de votre site, par exemple mon-entreprise.fr. Vous en avez déjà une ? Cochez la case : ${euro(ABO.month)} par mois. Sinon, on vous la fournit, à votre nom : ${euro(ABO.month + DOM)} par mois.`, domainBox(), ' data-avec-formule')}
@@ -843,7 +843,7 @@ function comparatifTable({ court = false, sources = true } = {}) {
 // Des réponses vraies, courtes, avec un lien pour en savoir plus. Bloc commun (repris tel quel sur plusieurs pages).
 function objections() {
   const Q = [
-    { ico: 'badge-check', c: 'mint', q: 'Moins cher, ce n’est pas bâclé ?', r: `Non. Alex n’a ni local ni loyer à payer : il travaille depuis chez lui. Nos modules ont été soignés une fois pour toutes, puis remplis avec votre contenu, et chaque page est vérifiée avant la mise en ligne. Le prix baisse, le soin reste entier.`, href: sections.methode.path, lien: 'Pourquoi c’est moins cher' },
+    { ico: 'badge-check', c: 'mint', q: 'Moins cher, ce n’est pas bâclé ?', r: `Non. Alex n’a ni local ni loyer à payer : il travaille depuis chez lui. Il crée votre site avec vos textes, vos photos et vos couleurs, et chaque page est vérifiée avant la mise en ligne. Le prix baisse, le soin reste entier.`, href: sections.methode.path, lien: 'Pourquoi c’est moins cher' },
     { ico: 'user-check', c: 'sky', q: 'Qui est derrière ?', r: `Alex, depuis ${site.address.city}, dans les Ardennes. Il crée votre site et il répond quand vous écrivez. Chaque page est vérifiée avant la mise en ligne.`, href: sections.equipe.path, lien: 'Rencontrer l’équipe' },
     { ico: 'pencil', c: 'lilac', q: 'Et si je veux changer quelque chose ?', r: `Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois sans engagement, vous changez vous-même vos textes et vos photos, à volonté. Le reste, vous nous le demandez depuis votre espace client : c’est compris.`, href: site.espaceClient && site.espaceClient.demo ? site.espaceClient.demo : sections.monespace.path, lien: 'Essayer l’espace client' },
     { ico: 'heart-handshake', c: 'pink', q: 'Et si le résultat ne me plaît pas ?', r: `On part de votre questionnaire, précis, pour éviter les surprises. Une fois en ligne, votre site s’ajuste : vous le modifiez, ou vous nous dites quoi changer. Et la loi vous donne 14 jours pour vous rétracter.`, href: '/conditions-generales/#9-droit-de-retractation', lien: 'Le droit de rétractation' },

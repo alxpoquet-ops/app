@@ -193,7 +193,7 @@ Un moniteur d'auto-école veut afficher ses nouvelles dates de stage code chaque
 
 ## Ce qu'il faut savoir
 
-- **Un CMS demande de l'entretien.** Le logiciel et ses modules reçoivent des mises à jour, souvent pour boucher des failles. Un CMS jamais mis à jour devient une cible.
+- **Un CMS demande de l'entretien.** Le logiciel et ses extensions reçoivent des mises à jour, souvent pour boucher des failles. Un CMS jamais mis à jour devient une cible.
 - **La liberté a un prix.** Plus on peut tout changer, plus on peut aussi casser la mise en page sans le vouloir.
 - **Le temps reste le vrai sujet.** Avoir un outil simple ne veut pas dire avoir le temps de s'en servir le soir, après le travail.
 
@@ -219,7 +219,7 @@ Vous n'avez pas à apprendre d'outil. Avec le forfait ${mini.name}, vous décriv
     lead: `WordPress est un CMS libre et gratuit, c'est-à-dire un logiciel qui sert à construire un site et à en modifier le contenu sans coder. Né pour les blogs, il fait aujourd'hui tourner des sites vitrines comme des boutiques.`,
     body: `## La définition en une phrase
 
-WordPress est **un logiciel qu'on installe sur un hébergement**, puis qu'on pilote depuis une page d'administration. On y crée des pages, des articles, des menus, et on lui ajoute des fonctions avec des modules.
+WordPress est **un logiciel qu'on installe sur un hébergement**, puis qu'on pilote depuis une page d'administration. On y crée des pages, des articles, des menus, et on lui ajoute des fonctions avec des extensions.
 
 Attention à la confusion : le logiciel libre se télécharge sur wordpress.org, alors que wordpress.com est un service commercial qui l'héberge pour vous avec ses propres règles.
 
@@ -235,7 +235,7 @@ Une éleveuse de chèvres crée son site WordPress seule, un week-end, avec un t
 
 ## Les erreurs fréquentes
 
-- **Installer trop d'extensions.** Chacune ajoute du poids et un risque. Mieux vaut quelques modules sérieux que vingt gadgets.
+- **Installer trop d'extensions.** Chacune ajoute du poids et un risque. Mieux vaut quelques extensions sérieuses que vingt gadgets.
 - **Oublier les mises à jour.** WordPress, le thème et les extensions évoluent souvent. Les laisser vieillir, c'est laisser la porte entrouverte.
 - **Choisir un thème trop chargé.** Les thèmes « qui font tout » sont souvent lents sur téléphone.
 - **Garder le mot de passe « admin ».** Les robots essaient ces identifiants en boucle, jour et nuit.
@@ -301,14 +301,14 @@ Nous ne vous faisons pas choisir dans un catalogue. Nous partons de votre métie
     slug: 'extension-plugin',
     icon: 'puzzle',
     nom: 'Extension (plugin)',
-    resume: 'Un petit module qu’on ajoute à un site pour lui donner une fonction de plus.',
+    resume: 'Un petit programme qu’on ajoute à un site pour lui donner une fonction de plus.',
     h1: "Extension ou plugin : c'est quoi, sur un site internet ?",
     title: 'Extension (plugin) de site : définition et pièges | Les Minis Monstres',
     description: 'Une extension, ou plugin, ajoute une fonction à un site : formulaire, galerie, paiement. Pourquoi il en faut peu, et pourquoi chacune doit rester à jour.',
-    lead: `Une extension, qu'on appelle aussi plugin en anglais, est un module qu'on branche sur un site pour lui apprendre à faire quelque chose de nouveau. C'est comme ajouter un accessoire à un robot de cuisine.`,
+    lead: `Une extension, qu'on appelle aussi plugin en anglais, est un petit programme qu'on branche sur un site pour lui apprendre à faire quelque chose de nouveau. C'est comme ajouter un accessoire à un robot de cuisine.`,
     body: `## La définition en une phrase
 
-Le CMS fournit la base : des pages, des menus, des comptes. Les **extensions** ajoutent le reste : un formulaire de contact, un module de réservation, une galerie photo, un outil contre les messages indésirables, un panier d'achat.
+Le CMS fournit la base : des pages, des menus, des comptes. Les **extensions** ajoutent le reste : un formulaire de contact, la réservation en ligne, une galerie photo, un outil contre les messages indésirables, un panier d'achat.
 
 Elles sont écrites par des milliers de développeurs différents. Certaines sont gratuites, d'autres payantes, certaines sont suivies de près, d'autres abandonnées depuis des années.
 
@@ -337,7 +337,7 @@ Un ostéopathe installe une extension de rendez-vous, une de galerie, une pour l
 
 ## Chez les Minis Monstres
 
-Les mises à jour des extensions font partie du [forfait](/tarifs/) ${mini.name}. Nous les faisons pour vous et nous vérifions que le site tient debout ensuite. Vous gardez un site léger, sans module inutile. Pour savoir comment on revient en arrière quand quelque chose casse, lisez la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
+Les mises à jour des extensions font partie du [forfait](/tarifs/) ${mini.name}. Nous les faisons pour vous et nous vérifions que le site tient debout ensuite. Vous gardez un site léger, sans extension inutile. Pour savoir comment on revient en arrière quand quelque chose casse, lisez la page sur la [sauvegarde de site](/lexique/sauvegarde-site/).`,
     faq: [
       { q: 'Combien d’extensions faut-il sur un site ?', a: 'Il n’y a pas de bon nombre. La règle est simple : uniquement celles dont vous avez besoin, chacune choisie avec soin. Un petit site bien fait en a souvent peu.' },
       { q: 'Les extensions gratuites sont-elles dangereuses ?', a: 'Pas forcément. Beaucoup sont excellentes et suivies par des équipes sérieuses. Le danger vient surtout des extensions plus mises à jour, gratuites ou payantes.' },
@@ -1110,7 +1110,7 @@ Refuser doit être aussi simple qu'accepter. Un bandeau où seul le bouton « To
 
 ## Un exemple de la vie réelle
 
-Un caviste ajoute à son site une vidéo, une carte et un bouton de partage. Sans le savoir, chacun de ces modules dépose ses propres cookies dès l'arrivée du visiteur. Le site, pensé comme une simple vitrine, se retrouve à envoyer des données à plusieurs services extérieurs. Il a suffi de les charger seulement après accord pour remettre les choses d'aplomb.
+Un caviste ajoute à son site une vidéo, une carte et un bouton de partage. Sans le savoir, chacun de ces ajouts dépose ses propres cookies dès l'arrivée du visiteur. Le site, pensé comme une simple vitrine, se retrouve à envoyer des données à plusieurs services extérieurs. Il a suffi de les charger seulement après accord pour remettre les choses d'aplomb.
 
 !> Le plus simple, pour un petit site, reste de limiter les outils qui déposent des cookies. Moins d'outils, c'est aussi moins de bandeau et un site plus rapide.
 
@@ -1319,7 +1319,7 @@ Ouvrez votre site sur votre téléphone, en 4G plutôt qu'en wifi. C'est le test
 
 ## Chez les Minis Monstres
 
-Nous faisons des sites légers : images allégées, peu de modules, code propre. Votre site tourne sur un serveur de qualité, qui tient bon quand il y a du monde. L'hébergement fait partie du forfait ${mini.name}, décrit sur la page des [tarifs](/tarifs/). Pour comprendre le rôle de la machine, voyez la définition du [serveur web](/lexique/serveur-web/).`,
+Nous faisons des sites légers : images allégées, peu d'extensions, code propre. Votre site tourne sur un serveur de qualité, qui tient bon quand il y a du monde. L'hébergement fait partie du forfait ${mini.name}, décrit sur la page des [tarifs](/tarifs/). Pour comprendre le rôle de la machine, voyez la définition du [serveur web](/lexique/serveur-web/).`,
     faq: [
       { q: 'Quel est un bon temps de chargement ?', a: 'Le plus court possible. Une page dont le contenu principal apparaît en un clin d’œil sur téléphone donne une bonne impression. Au-delà de quelques secondes d’attente, beaucoup de visiteurs abandonnent.' },
       { q: 'Un site rapide sur mon ordinateur l’est-il aussi pour mes clients ?', a: 'Pas forcément. Votre ordinateur a peut-être déjà gardé les fichiers en mémoire et profite d’une bonne connexion. Testez depuis un téléphone, en données mobiles, et si possible depuis un autre appareil que le vôtre.' },

@@ -111,11 +111,11 @@ Un site internet, c’est surtout du temps : la maquette, la mise en page de cha
 
 D’après des repères publics relevés en France, un site vitrine de ${marche.pagesCompare} pages fait par un indépendant coûte en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Son entretien revient souvent entre ${mille(marche.entretienMin)} et ${mille(marche.entretienMax)} € par mois. Ces prix ne sont pas exagérés : ils correspondent au travail fourni, et aux frais de chacun.
 
-## Le cerveau est prêt, il ne manque que votre contenu
+## Alex crée votre site avec vos réponses
 
-Un site est fait de parties qui reviennent presque toujours : l’accueil, la présentation, les services et les tarifs, la galerie, les questions fréquentes, le contact, et parfois la boutique. Alex a créé et optimisé chacune de ces parties, une fois pour toutes. Ce sont nos modules, nos minis monstres à nous : soignés, rapides, lisibles sur téléphone, et modifiables chacun de leur côté.
+Un site est fait de parties qui reviennent presque toujours : l’accueil, la présentation, les services et les tarifs, la galerie, les questions fréquentes, le contact, et parfois la boutique. Ce qui change d’une activité à l’autre, c’est ce qu’on y met.
 
-Pour votre site, nous assemblons ces modules et nous les remplissons avec vos informations et vos photos. Le travail de fond n’est pas à refaire, et le temps gagné va au design, aux mots et aux détails.
+Votre questionnaire donne à Alex tout ce qu’il lui faut : vos textes, vos photos, vos couleurs. Il crée chaque partie avec, soignée, rapide et lisible sur téléphone, et vous pourrez ensuite la modifier à part.
 
 ## Une base commune, des sites tous différents
 
@@ -123,9 +123,9 @@ Ce qui ne se voit pas est le même pour tous : le code qui fait tourner le site 
 
 Ce qui se voit, en revanche, est fait pour vous : l’ambiance, les couleurs, les polices, la mise en avant de vos photos, le ton de vos textes. Votre site est en ligne en quelques heures, puis nous l’ajustons à votre goût, avec des modifications à volonté. Le résultat ressemble à votre activité, pas à celle du voisin.
 
-## Les tâches répétitives, outillées
+## Ni local, ni agence, ni loyer
 
-Monter les pages, alléger les photos, vérifier les liens : ce qui revient d’un site à l’autre est outillé, et confié à notre petite bande. C’est discret, et c’est tout le temps gagné pour ce qui compte vraiment.${ESS.delai ? ` Votre site est prêt en ${ESS.delai}, avec ou sans l’option ${eco}.` : ''}
+Une agence fait payer ses bureaux, son chauffage et son loyer dans chaque devis. Alex travaille depuis chez lui, dans les Ardennes : ces frais n’existent pas, et vous ne les payez donc pas. C’est la première raison de nos prix.${ESS.delai ? ` Votre site est prêt en ${ESS.delai}, avec ou sans l’option ${eco}.` : ''}
 
 ## Ce qui est fait pour chaque site
 
@@ -397,7 +397,7 @@ Ils ne décident pas à votre place, et ils ne remplacent pas Alex : il leur a �
 
 ## Ce que nous faisons bien, et le reste
 
-Nous créons des sites vitrines, assemblés à partir de nos modules, des boutiques en ligne, et des pages pour être trouvé sur Google. Quelques exemples sont sur la page [réalisations](/realisations/).
+Nous créons des sites vitrines à votre image, des boutiques en ligne, et des pages pour être trouvé sur Google. Quelques exemples sont sur la page [réalisations](/realisations/).
 
 Pour une application sur mesure, un logiciel métier ou un catalogue de milliers de produits, il faut un développeur expérimenté. Dans ce cas, nous vous orientons vers les bonnes personnes.
 

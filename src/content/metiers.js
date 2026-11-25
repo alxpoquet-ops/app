@@ -535,9 +535,9 @@ Vos habitués vous connaissent. Mais le nouvel arrivant du village, le vacancier
 - **Les gâteaux sur commande**, avec le délai à prévoir pour chacun.
 - **Où vous trouver** : l’adresse, un bouton d’itinéraire, et vos dépôts de pain dans les villages voisins si vous en avez.
 
-## Les modules qui servent
+## Les parties qui servent
 
-Le ${ESS.name} est assemblé à partir de nos modules. Pour une boulangerie, l’accueil montre les horaires et le numéro. La page services et tarifs présente la gamme. La galerie fait saliver, et les questions fréquentes répondent aux classiques : « faites-vous du sans gluten ? », « livrez-vous les mariages ? ».
+Votre ${ESS.name}, Alex le crée avec vos réponses et vos photos. Pour une boulangerie, l’accueil montre les horaires et le numéro. La page services et tarifs présente la gamme. La galerie fait saliver, et les questions fréquentes répondent aux classiques : « faites-vous du sans gluten ? », « livrez-vous les mariages ? ».
 
 ## Les commandes de fêtes, sans carnet ni coup de fil
 
@@ -622,7 +622,7 @@ Nous publions vos photos dans un format allégé, net à l’écran, pour que le
 
 Afficher un prix de départ par formule évite les demandes qui n’aboutiront pas. Pour les mariages, un « à partir de » suffit.
 
-## Les modules qui comptent pour vous
+## Les pages qui comptent pour vous
 
 La galerie passe en premier. La présentation dit qui tient l’appareil : on confie un mariage ou un nourrisson à une personne, pas à un logo. La page services et tarifs liste vos formules, et le contact demande la date, le lieu et le type de séance.
 
@@ -699,7 +699,7 @@ Une reprise après une grossesse, une course à préparer, l’envie de bouger p
 
 Restez aussi mesuré dans vos promesses. « Perdre dix kilos en un mois » attire des ennuis, pas des clients fidèles. Parlez plutôt de régularité, de forme, de plaisir retrouvé. Pour un public fragile, rappelez qu’un avis médical passe avant la reprise.
 
-## Les modules à mettre en avant
+## Les pages à mettre en avant
 
 La présentation porte une grande partie du travail : on s’engage avec une personne. La page services et tarifs détaille chaque formule. La galerie montre vos séances, avec l’accord des participants. Les questions fréquentes préparent la première fois : la tenue, le matériel, ce qui se passe si l’on doit annuler.
 
@@ -767,7 +767,7 @@ Un restaurant ne bouge pas. Votre camion, si. La question qui revient : « il es
 
 Un planning faux fait plus de tort que pas de planning du tout. Pensez à prévenir à chaque changement.
 
-## Les modules qui vous servent
+## Les parties qui vous servent
 
 L’accueil porte la tournée et le numéro. La page services et tarifs présente la carte, avec les prix. La galerie montre le camion, pour qu’on le reconnaisse de loin, et vos plats. Les questions fréquentes répondent à « prenez-vous la carte bancaire ? » ou « faites-vous un menu enfant ? ».
 
@@ -844,7 +844,7 @@ Un petit-fils qui habite loin veut fleurir l’anniversaire de sa grand-mère. U
 - **Comment se passe un deuil** : livraison au funérarium, à l’église ou au cimetière, ruban personnalisé.
 - **Vos horaires**, dimanche matin et jours de fête compris.
 
-## Les modules à mettre en valeur
+## Les pages à mettre en valeur
 
 L’accueil annonce vos horaires et votre zone. La galerie présente vos compositions par occasion. La page services et tarifs donne des repères de prix. La présentation raconte votre façon de travailler : fleurs de saison, horticulteurs du coin, si c’est votre cas. Rien n’est écrit que vous ne fassiez vraiment.
 
@@ -928,7 +928,7 @@ Des conducteurs croient encore perdre la garantie du constructeur s’ils font l
 
 La loi vous demande aussi de proposer des pièces de réemploi pour certaines réparations. Le mentionner rassure sur le budget.
 
-## Les modules qui font venir
+## Les pages qui font venir
 
 L’accueil met en avant le numéro et les horaires. La page services et tarifs détaille chaque prestation. La galerie montre l’atelier, le pont, l’équipe, et pourquoi pas une carrosserie avant et après réparation. Le contact devient une demande de rendez-vous qui vous fait gagner du temps au téléphone.
 
@@ -993,7 +993,7 @@ Un client goûte votre fromage sur le marché, il veut en racheter, mais il a ou
 - **Quand venir**, jour par jour, et ce qu’il se passe en cas de fermeture exceptionnelle.
 - **Comment vous travaillez** : vos bêtes, vos champs, vos méthodes. C’est ce qui donne envie de revenir.
 
-## Les modules du site
+## Les pages du site
 
 L’accueil donne les jours de vente et le produit du moment. La présentation raconte la ferme et ceux qui la font tourner. La galerie montre les champs, les animaux, le magasin. La page services et tarifs liste vos produits avec leurs prix au kilo ou à la pièce, et le contact sert aux commandes particulières.
 
@@ -1070,7 +1070,7 @@ Un chiot qui arrive, un déménagement, un toiletteur qui part à la retraite : 
 - **La durée**, et quand venir rechercher l’animal.
 - **Vos conditions** : vaccins à jour, traitement contre les puces, animaux âgés ou craintifs acceptés ou non.
 
-## Les modules qui comptent
+## Les parties qui comptent
 
 La galerie avant et après fait le gros du travail. La présentation dit qui vous êtes et comment vous traitez les animaux. La page services et tarifs pose vos grilles, et les questions fréquentes rassurent sur les premières fois : un chiot, un chat qui griffe, un vieux chien raide des hanches.
 
@@ -1147,7 +1147,7 @@ Une mère qui ne peut plus tondre, un père qui a besoin d’aide pour le ménag
 
 Un exemple avec votre propre tarif parle mieux qu’un long paragraphe : une heure facturée tant, soit tant après crédit d’impôt. Nous le calculons avec vous à partir de vos vrais prix. Si vous proposez l’avance immédiate du crédit d’impôt, dites-le : votre client ne paie alors que sa part.
 
-## Les modules à privilégier
+## Les pages à privilégier
 
 La présentation compte plus que tout : on fait entrer une personne, pas une enseigne. La page services et tarifs détaille chaque service. La galerie peut montrer un jardin entretenu ou une haie bien taillée, jamais l’intérieur d’un client sans son accord. Les questions fréquentes répondent à « dois-je être présent ? » ou « qui fournit les produits ? ».
 
@@ -1212,7 +1212,7 @@ Des futurs mariés, une famille qui organise une communion, une entreprise qui p
 - **Votre zone**, et si vous servez dans les salles des fêtes du secteur.
 - **Les régimes particuliers** : végétarien, sans porc, sans gluten, menu enfant.
 
-## Les modules qui vous ressemblent
+## Les parties qui vous ressemblent
 
 La galerie montre vos plats et vos buffets dressés, à la lumière du jour. La page services et tarifs détaille vos menus. La présentation parle de votre cuisine : vos produits, vos fournisseurs du coin si c’est vrai, votre parcours. Le contact devient une vraie demande de devis.
 

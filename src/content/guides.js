@@ -139,7 +139,7 @@ Votre site peut aller plus loin. Une fois en ligne, il grandit avec des pages de
 
 ## Quel site pour un salon ?
 
-L’essentiel tient souvent en quelques parties : la présentation, les tarifs, les photos, les horaires et le contact. Ce sont les modules du ${ESS.name}, à ${eur(ESS.price)} €.
+L’essentiel tient souvent en quelques parties : la présentation, les tarifs, les photos, les horaires et le contact. Ce sont les parties du ${ESS.name}, à ${eur(ESS.price)} €.
 
 Si vous avez plusieurs univers (coiffure, esthétique, onglerie, vente de produits), chacun peut ensuite avoir sa propre page de visibilité Google.
 
@@ -252,7 +252,7 @@ Chez nous, tout est affiché avant la commande, toujours dans le même ordre.
 
 ### 1. La création du site
 
-- **${ESS.name}, ${eur(ESS.price)} €** : votre site, assemblé à partir de nos modules et rempli avec votre contenu.
+- **${ESS.name}, ${eur(ESS.price)} €** : votre site, créé par Alex avec vos textes, vos photos et vos couleurs.
 - **Option ${eco}, ${eur(ECO.prix)} € de plus** : une boutique complète, pour vendre sur internet, soit ${eur(BOU.price)} € en tout.
 - **Pages de visibilité Google, ${prixPage} € la page** : plus tard, depuis votre espace client, pour être trouvé sur plus de recherches.
 
@@ -290,7 +290,7 @@ Les années suivantes, il ne reste que l'abonnement : ${eur(mini.month)} € par
 
 Chez un indépendant, un site vitrine de ${marche.pagesCompare} pages se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Notre ${ESS.name}, à ${eur(ESS.price)} €, avec les mêmes parties (accueil, présentation, services, photos, contact), coûte donc ${marche.foisTexte} fois moins.
 
-La différence tient d’abord aux frais : pas de local, pas d’agence, pas de loyer, pas de bureaux à chauffer et à éclairer, puisqu’Alex fait tout depuis chez lui. Il a aussi soigné une fois pour toutes les modules dont un site est fait. Et vous gagnez en plus un espace client où vous voyez toutes vos pages, et où vous modifiez vous-même avec le forfait ${mini.name}.
+La différence tient d’abord aux frais : pas de local, pas d’agence, pas de loyer, pas de bureaux à chauffer et à éclairer, puisqu’Alex fait tout depuis chez lui. Votre site, il le crée avec vos réponses : pas de réunion à caler, pas de devis à attendre. Et vous gagnez en plus un espace client où vous voyez toutes vos pages, et où vous modifiez vous-même avec le forfait ${mini.name}.
 
 Ces chiffres viennent de prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors très faible. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout, sources comprises.
 
@@ -362,7 +362,7 @@ Ce n’est pas grave. On peut commencer simple et ajouter des pages ensuite : vo
 
 Elle répond à un autre besoin : encaisser des commandes sur le site. C’est l’option ${eco}, à cocher sous le ${ESS.name}, pour ${eur(ECO.prix)} € de plus. Si vous voulez vendre des produits, lisez le guide pour [créer une boutique en ligne](/guides/creer-boutique-en-ligne/).`,
     faq: [
-      { q: 'Combien de pages contient un site vitrine ?', a: `Souvent cinq ou six : l’accueil, les services, les tarifs, une présentation, une FAQ et le contact. Chez nous, ce sont les modules du ${ESS.name}. Une fois le site en ligne, chaque page de visibilité Google de plus coûte ${prixPage} €, commandée depuis votre espace client.` },
+      { q: 'Combien de pages contient un site vitrine ?', a: `Souvent cinq ou six : l’accueil, les services, les tarifs, une présentation, une FAQ et le contact. Chez nous, ce sont les pages du ${ESS.name}. Une fois le site en ligne, chaque page de visibilité Google de plus coûte ${prixPage} €, commandée depuis votre espace client.` },
       { q: 'Un site une page peut-il sortir sur Google ?', a: 'Oui, surtout sur votre nom et sur votre métier dans votre ville. Il est simplement moins armé qu’un site vitrine pour les recherches portant sur un service précis.' },
       { q: 'Peut-on transformer un site une page en site vitrine plus tard ?', a: 'Oui. Les textes et les photos existants sont repris, et les nouvelles pages viennent s’y ajouter. Écrivez-nous quand le besoin se présente, et nous vous disons ce que cela représente.' },
     ],
