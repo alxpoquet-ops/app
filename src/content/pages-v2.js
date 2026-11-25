@@ -125,7 +125,11 @@ Ce qui se voit, en revanche, est fait pour vous : l’ambiance, les couleurs, le
 
 ## Moins de charges, un prix plus doux
 
-Moins de charges pour nous, un prix plus doux pour vous : c’est la première raison de nos tarifs.${ESS.delai ? ` Votre site est prêt en ${ESS.delai}, avec ou sans l’option ${eco}.` : ''}
+Moins de charges pour nous, un prix plus doux pour vous : c’est la première raison de nos tarifs.
+
+## Le travail répétitif, automatisé
+
+D’un site à l’autre, beaucoup de tâches reviennent : préparer les pages, alléger les photos, vérifier les liens, régler l’affichage sur téléphone. Nous avons automatisé une grande partie de ce travail. Ce qui demandait des heures se fait en quelques minutes, et c’est la deuxième raison de nos prix.${ESS.delai ? ` Votre site est prêt en ${ESS.delai}, avec ou sans l’option ${eco}.` : ''}
 
 ## Ce qui est fait pour chaque site
 

@@ -372,7 +372,7 @@ function economie() {
     <p class="eco-ligne"><span>Indépendant</span><i style="width:${w(mInde)}"></i><b>${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)}</b></p>
     <p class="eco-ligne is-nous"><span>Notre ${ESSENTIEL.name}</span><i style="width:${w(creation.prix)}"></i><b>${euro(creation.prix)}</b></p>
   </div>
-  <p>Comment c’est possible ? Nous avons réduit nos charges au maximum : c’est vous qui en profitez.</p>
+  <p>Comment c’est possible ? Nous avons réduit nos charges au maximum et automatisé une grande partie du travail répétitif : c’est vous qui en profitez.</p>
   ${deroulants([
     deroulant('Et pour l’entretien, chaque mois ?', `<p>Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications (${euro(ABO.month + DOM)} si on vous fournit aussi le nom de domaine). Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois, l’hébergement étant souvent en plus : c’est bien moins cher.</p>`),
     deroulant('Nos sources, et ce qu’il faut en penser', `<p>Ces fourchettes sont publiées par des prestataires, donc à lire avec prudence. Il existe des indépendants dès ${euro(INDEPENDANT_DES)}, et l’écart est alors très faible (environ ${ecartBas} fois), ainsi que des offres à bas prix.</p>${sourcesMarche()}`, { id: 'sources' }),
@@ -402,7 +402,8 @@ function prixJuste({ lien = true } = {}) {
   <span class="prix-juste-art" aria-hidden="true">${icon('piggy-bank')}</span>
   <div>
     <h3>Comment c’est possible ?</h3>
-    <p><strong>Des charges réduites au maximum</strong> : nous dépensons le moins possible pour faire tourner la maison. Ces économies se retrouvent dans votre prix.</p>
+    <p><strong>Des charges réduites au maximum</strong> : nous dépensons le moins possible pour faire tourner la maison.</p>
+    <p><strong>Le travail répétitif automatisé</strong> : une grande partie des tâches qui reviennent d’un site à l’autre se fait toute seule. Le temps gagné, et ces économies, se retrouvent dans votre prix.</p>
     <p>Le prix reste juste des deux côtés : doux pour vous, et assez juste pour que nous puissions bien faire notre travail, et durer.</p>
     ${lien ? `<a class="link-more" href="${sections.methode.path}">Pourquoi nos prix sont plus doux</a>` : ''}
   </div>

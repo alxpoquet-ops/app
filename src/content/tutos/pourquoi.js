@@ -124,10 +124,11 @@ Une application métier, un logiciel sur mesure, un très gros catalogue, une co
     lead: 'Un prix doux fait parfois peur. Ici, il vient de charges tenues au plus bas, jamais d’étapes sautées. Voici comment.',
     body: `La réponse tout de suite : nous avons réduit nos charges au maximum, et c’est vous qui en profitez. Le soin, lui, reste le même.
 
-## Les deux raisons du prix
+## Les trois raisons du prix
 
 1. **Des charges au plus bas.** Nous dépensons le strict nécessaire pour faire tourner la maison : tout ce que vous réglez sert à votre site.
-2. **Pas de réunion, pas de devis à attendre.** Un questionnaire précis suffit : Alex crée votre site avec vos réponses, vos photos et vos couleurs. Le temps qu’une agence passe en rendez-vous, il le passe sur votre site.
+2. **Le travail répétitif automatisé.** Préparer les pages, alléger les photos, vérifier les liens : une grande partie de ces tâches se fait toute seule, et le temps gagné baisse le prix.
+3. **Pas de réunion, pas de devis à attendre.** Un questionnaire précis suffit : Alex crée votre site avec vos réponses, vos photos et vos couleurs. Le temps qu’une agence passe en rendez-vous, il le passe sur votre site.
 
 ## Un prix juste, pas un prix au rabais
 
