@@ -283,7 +283,16 @@ function aled08e_stripe_reception_session($cid, $n = 0, $expire = 0) {
         'cancel_url' => aled08e_url() . '#commande',
     ];
     if ($sansAbo) $params['invoice_creation'] = ['enabled' => 'true', 'invoice_data' => ['footer' => aled08e_stripe_footer(), 'metadata' => ['commande' => (string) $cid]]];
-    else $params['subscription_data'] = ['metadata' => ['commande' => (string) $cid, 'ref' => $c['ref']]];
+    else {
+        $params['subscription_data'] = ['metadata' => ['commande' => (string) $cid, 'ref' => $c['ref']]];
+        // les mois offerts par le parrainage (includes/parrainage.php) : une période d'essai, la carte est enregistrée et rien n'est prélevé
+        $moisOff = $c['user'] ? (int) aled08e_meta($c['user'], 'mois_offerts') : 0;
+        if ($moisOff > 0 && !$n && $dejaPaye) {
+            $params['subscription_data']['trial_end'] = strtotime('+' . $moisOff . ' months');
+            $params['subscription_data']['metadata']['mois_offerts'] = (string) $moisOff;
+            $params['metadata']['mois_offerts'] = (string) $moisOff;
+        }
+    }
     $cus = aled08e_stripe_client_connu((int) $c['user'], (string) $c['stripe_customer']);
     if ($cus) $params['customer'] = $cus;
     else $params['customer_email'] = $c['email'];
@@ -757,6 +766,16 @@ function aled08e_stripe_on_reception($s) {
     $cus = aled08e_stripe_id($s['customer'] ?? '');
     $sub = aled08e_stripe_id($s['subscription'] ?? '');
     if ($c['reception_payee']) return $c['ref'] . ' : réception déjà notée';
+    // le forfait démarre avec des mois offerts (parrainage) : rien n'est prélevé aujourd'hui, Stripe répond « no_payment_required »
+    $moisOff = (int) ($s['metadata']['mois_offerts'] ?? 0);
+    if ($moisOff > 0 && ($s['payment_status'] ?? '') === 'no_payment_required') {
+        $s['payment_status'] = 'paid';
+        if ($c['user']) {
+            update_user_meta($c['user'], 'aled08_mois_offerts', max(0, (int) aled08e_meta($c['user'], 'mois_offerts') - $moisOff));
+            update_user_meta($c['user'], 'aled08_mois_offerts_jusquau', strtotime('+' . $moisOff . ' months'));
+        }
+        aled08e_cmd_journal($cid, 'Forfait démarré avec ' . aled08e_mois_txt($moisOff) . ' offerts (parrainage) : premier prélèvement dans ' . aled08e_mois_txt($moisOff) . '.');
+    }
     if (($s['payment_status'] ?? '') !== 'paid') {
         aled08e_cmd_journal($cid, 'Paiement de réception en cours de confirmation (prélèvement).');
         return $c['ref'] . ' : réception en cours de confirmation';

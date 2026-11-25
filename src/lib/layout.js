@@ -135,7 +135,7 @@ const lettre = (a) => `<span class="onglet-l c-${TEINTE_LETTRE[a.id] || a.color}
 // Les pages rattachées à chaque atelier, en plus de celles de son menu (pour savoir quel onglet allumer)
 const RATTACHE = {
   maison: ['/faq/', '/pourquoi-les-minis-monstres/'],
-  sites: ['/commander/', '/commande-confirmee/', '/etre-visible-sur-google/', '/pourquoi-un-site-internet/', '/creation-site-internet-ardennes/', '/lexique/', '/comparatif/', '/fidelite/', '/accompagnement/', ...METIERS.map((m) => `/${m.slug}/`)],
+  sites: ['/commander/', '/commande-confirmee/', '/etre-visible-sur-google/', '/pourquoi-un-site-internet/', '/creation-site-internet-ardennes/', '/lexique/', '/comparatif/', '/parrainage/', '/accompagnement/', ...METIERS.map((m) => `/${m.slug}/`)],
   ecole: ['/guides/'],
   outils: [],
 };

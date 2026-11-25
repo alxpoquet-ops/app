@@ -245,6 +245,14 @@ function home() {
   ${C.objections()}
 </div></section>
 
+<section class="section"><div class="container">
+  <a class="pr-pub c-pink reveal" href="${sections.fidelite.path}">
+    <span class="pr-pub-ico" aria-hidden="true">${icon('gift')}</span>
+    <span class="pr-pub-txt"><strong>Parrainez vos proches : ${fidelite.parrainageMois} mois offerts pour vous, ${fidelite.parrainageMois} mois pour eux</strong><span>Chaque site créé avec votre code vous offre ${fidelite.parrainageMois} mois de forfait ${esc(forfaits[0].name)}, sans limite. Deux proches, c’est un an offert.</span></span>
+    <span class="pr-pub-go">${icon('arrow-right')}</span>
+  </a>
+</div></section>
+
 <section class="section jr-section" data-jeu-rubans hidden><div class="container" data-jeu-rubans-in></div></section>
 
 <section class="section section-porte"><div class="container">
@@ -371,6 +379,7 @@ function forfaitsPage() {
   <h2 class="section-title">Un site, un prix, une option</h2>
   <p class="section-sub">Le ${esc(ESS.name)} à ${euro(ESS.price)}. Vous vendez en ligne ? L’option ${esc(ECO.name)} ajoute ${euro(ECO.prix)}. Pour grandir sur Google, des pages à ${euro(PRIX_PAGE)}.</p>
   ${commun(C.offre())}
+  <a class="pr-pub c-pink reveal" href="${sections.fidelite.path}"><span class="pr-pub-ico" aria-hidden="true">${icon('gift')}</span><span class="pr-pub-txt"><strong>Et avec le parrainage, votre forfait peut ne rien vous coûter</strong><span>Chaque proche qui crée son site avec votre code : ${fidelite.parrainageMois} mois de forfait ${esc(forfaits[0].name)} offerts pour vous, et autant pour lui.</span></span><span class="pr-pub-go">${icon('arrow-right')}</span></a>
 </div></section>
 
 ${C.modulesSite({ titre: 'Pourquoi ce prix : comment est fait votre site', id: 'comment' })}
@@ -810,33 +819,59 @@ function confirmationPage() {
 }
 
 // ====================================================================== FIDÉLITÉ
+// Le parrainage (25 novembre 2026, Alex : « montrer la puissance du parrainage ») : 6 mois de forfait Mini offerts au filleul
+// ET au parrain, à chaque filleul, sans limite. Le code est dans l'espace client ; l'extension fait le reste (includes/parrainage.php).
 function fidelitePage() {
   const crumbs = crumb('fidelite');
-  const perks = [
-    ['butter', 'badge-percent', 'Deuxième site', `${fidelite.remiseSecondSite} % sur la création`, `Un deuxième site ? Sa création coûte ${fidelite.remiseSecondSite} % de moins, quel que soit le site. Par exemple, un ${ESS.name} à ${euro(ESS.price * (100 - fidelite.remiseSecondSite) / 100)} au lieu de ${euro(ESS.price)}.`],
+  const M = fidelite.parrainageMois;
+  const mini = forfaits[0];
+  const val = M * mini.month;
+  const etapes = [
+    ['butter', 'key-round', '1. Votre code', 'Il vous attend dans votre espace client, avec votre lien à envoyer en un geste : WhatsApp, SMS ou e-mail.'],
+    ['mint', 'wand-sparkles', '2. Votre proche crée son site', `Il tape votre code dans « Code promo ou parrainage » en commandant son ${esc(ESS.name)}.`],
+    ['pink', 'gift', `3. ${M} mois offerts, chacun`, `Dès que son site est en ligne : ${M} mois de forfait ${esc(mini.name)} offerts pour lui, et ${M} mois pour vous.`],
   ];
+  const paliers = [1, 2, 4, 10];
+  const ligne = (n) => { const mo = n * M; const ans = mo % 12 === 0 ? ` (${mo / 12 === 1 ? 'un an' : mo / 12 + ' ans'})` : ''; return `<tr><td><b>${n}</b> filleul${n > 1 ? 's' : ''}</td><td><b>${mo} mois</b>${ans}</td><td><b>${euro(mo * mini.month)}</b></td></tr>`; };
   const body = `${C.pageHero({
     section: 'fidelite',
-    h1: 'Fidélité : merci de nous faire confiance',
-    lead: 'Un petit avantage, simple et affiché.',
+    h1: `Parrainage : ${M} mois offerts pour vous, ${M} mois pour vos proches`,
+    lead: `Vous aimez votre site ? Faites-le connaître. Chaque proche qui crée son site avec votre code vous rapporte ${M} mois de forfait ${esc(mini.name)} offerts, et il en reçoit autant. Sans limite.`,
     crumbs,
   })}
 <section class="section"><div class="container">
-  <div class="perks perks-1">${perks
-    .map(([c, ic, t, big, d]) => `<article class="perk c-${c} reveal"><span class="perk-ico">${icon(ic)}</span><p class="perk-kind">${t}</p><h2>${big}</h2><p>${d}</p></article>`)
-    .join('')}</div>
-  <p class="center more">${C.btn(sections.forfaits.path, 'btn-light', sections.forfaits.icon, 'Voir les tarifs')}</p>
+  <h2 class="section-title">Comment ça marche</h2>
+  <div class="perks perks-3">${etapes.map(([c, ic, t, d]) => `<article class="perk c-${c} reveal"><span class="perk-ico">${icon(ic)}</span><h3>${t}</h3><p>${d}</p></article>`).join('')}</div>
 </div></section>
+<section class="section section-soft" id="puissance"><div class="container container-narrow">
+  <h2 class="section-title">La puissance du parrainage</h2>
+  <p class="section-sub">Chaque filleul compte. Avec ${M} mois par filleul, deux proches suffisent pour une année entière de forfait ${esc(mini.name)} offerte.</p>
+  <div class="pr-tableau reveal"><table><thead><tr><th>Vos filleuls</th><th>Vos mois offerts</th><th>Vous économisez</th></tr></thead><tbody>${paliers.map(ligne).join('')}</tbody></table></div>
+  <p class="center small muted">Sur la base du forfait ${esc(mini.name)} à ${euro(mini.month)} par mois. Et chacun de vos filleuls reçoit aussi ${M} mois offerts, soit ${euro(val)}.</p>
+</div></section>
+<section class="section"><div class="container container-narrow prose">${md(`## Les questions qu’on nous pose
+
+**Qui peut parrainer ?** Toute personne qui a un espace client des Minis Monstres. Votre code est dans votre espace, sur l’accueil et dans Mon compte, rubrique « Parrainage ».
+
+**Combien de proches puis-je parrainer ?** Autant que vous voulez. Chaque filleul dont le site est en ligne vous rapporte ${M} mois de plus, qui s’ajoutent aux précédents.
+
+**Quand les mois offerts commencent-ils ?** Dès que le site de votre filleul est en ligne. Si votre forfait est déjà en cours, ses prochaines factures sont suspendues pendant ${M} mois. S’il n’a pas encore commencé, il démarrera avec ${M} mois sans rien payer.
+
+**Je n’ai pas encore de site, ça marche quand même ?** Oui : vos mois offerts vous attendent, et ils commenceront avec votre forfait ${esc(mini.name)}.
+
+**Et mon filleul ?** Il reçoit ${M} mois de forfait ${esc(mini.name)} offerts, dès la mise en ligne de son site, s’il a choisi ce forfait.
+
+Les conditions complètes sont dans les [conditions générales](${'/conditions-generales/'}), article 17.`)}</div></section>
+<section class="section"><div class="container center"><div class="hero-ctas centered">${C.btn(sections.monespace.path, 'btn-primary btn-lg', 'gift', 'Mon code de parrainage')}${C.btn(sections.creer.path, 'btn-light btn-lg', 'wand-sparkles', 'Créer mon site avec un code')}</div></div></section>
 ${C.ctaBand()}`;
   return {
     path: sections.fidelite.path,
     section: 'fidelite',
-    noindex: true, // plus de parrainage : la page reste à son adresse, très courte, sans lien depuis le site
-    title: 'Fidélité : un deuxième site à prix réduit | Les Minis Monstres',
-    description: `Vous avez déjà un site chez les Minis Monstres ? La création d’un deuxième site coûte ${fidelite.remiseSecondSite} % de moins, quel que soit le site choisi.`,
+    title: `Parrainage : ${M} mois de forfait offerts pour vous et vos proches | Les Minis Monstres`,
+    description: `Parrainez vos proches : chaque site créé avec votre code vous rapporte ${M} mois de forfait ${mini.name} offerts, et autant pour votre filleul. Sans limite.`,
     crumbs,
     body,
-    priority: 0.3,
+    priority: 0.6,
   };
 }
 

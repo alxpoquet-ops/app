@@ -136,7 +136,12 @@ function aled08e_code_evenement_ajax() {
     // le code personnel d'un mail de prospection (MAIL10-7KQ2) : sa remise, sur la création seulement, pendant 30 jours après l'envoi
     if (function_exists('aled08e_px_code_ok') && aled08e_px_code_ok($code)) wp_send_json_success(['type' => 'mail', 'remise' => aled08e_px_remise(), 'sur' => 'creation']);
     // le parrainage est retiré (19 novembre 2026) : un ancien code de parrainage n'est plus reconnu
-    if (false && aled08e_user_by_code(aled08e_clean_code($code))) wp_send_json_success(['type' => 'parrain', 'mois' => (int) (aled08e_data()['parrainageMois'] ?? 1)]);
+    // le code de parrainage d'un client : 6 mois de forfait Mini offerts au filleul et au parrain (includes/parrainage.php)
+    $pp = aled08e_user_by_code(aled08e_clean_code($code));
+    if ($pp) {
+        if (is_user_logged_in() && (int) $pp->ID === get_current_user_id()) wp_send_json_error(['message' => 'C’est votre propre code de parrainage : donnez-le à vos proches !']);
+        wp_send_json_success(['type' => 'parrain', 'mois' => (int) (aled08e_data()['parrainageMois'] ?? 6)]);
+    }
     wp_send_json_error(['message' => 'Code inconnu.']);
 }
 add_action('wp_ajax_aled08e_code_evenement', 'aled08e_code_evenement_ajax');
@@ -418,7 +423,8 @@ function aled08e_cmd_traiter_post() {
     if (aled08e_est_seule($cfg['forfait'])) { $cfg['domaine_mien'] = true; $cfg['domaine'] = ''; $cfg['periode'] = 'mois'; }
     $err = function ($code) use ($cfg) { aled08e_cmd_redirect_erreur($code, $cfg); };
     // la case « Code promo ou parrainage » : un code de parrainage tapé là devient le parrain de la commande
-    if (false && $cfg['code_evenement'] !== '' && !$cfg['remise'] && aled08e_user_by_code($cfg['code_evenement'])) {
+    // (le parrainage revient le 25 novembre 2026 : 6 mois de forfait Mini offerts au filleul et au parrain, includes/parrainage.php)
+    if ($cfg['code_evenement'] !== '' && !$cfg['remise'] && aled08e_user_by_code($cfg['code_evenement'])) {
         if ($cfg['parrain'] === '') $cfg['parrain'] = $cfg['code_evenement'];
         $cfg['code_evenement'] = '';
     }
@@ -505,6 +511,8 @@ function aled08e_cmd_traiter_post() {
         wp_set_auth_cookie($compte['id'], true, is_ssl());
     }
     $uid = $compte['id'];
+    // le parrainage : jamais son propre code, et un seul parrain par client
+    if ($cfg['parrain'] !== '') { $pp = aled08e_user_by_code($cfg['parrain']); if (!$pp || (int) $pp->ID === (int) $uid || aled08e_meta($uid, 'parrain') !== '') $cfg['parrain'] = ''; }
 
     // un nouvel envoi du même formulaire (après une erreur
     // Stripe, un retour arrière…) reprend la commande encore en attente au lieu d'en créer une deuxième
@@ -620,7 +628,8 @@ function aled08e_cmd_set_domaine($id, $statut) {
  * C'est ici, et seulement ici, que le filleul reçoit la méta aled08_parrain : le parrain ne compte un filleul
  * « en ligne » qu'une fois le site vraiment en ligne, pas dès le formulaire de commande. */
 function aled08e_cmd_parrainage_en_ligne($cmd) {
-    return; // parrainage retiré (19 novembre 2026)
+    if (function_exists('aled08e_parrainage_recompenser')) { aled08e_parrainage_recompenser($cmd); return; } // 25 novembre 2026 : 6 mois chacun
+    return;
     if (!$cmd['parrain'] || get_post_meta($cmd['id'], '_aled08_parrain_prevenu', true)) return;
     $p = aled08e_user_by_code($cmd['parrain']);
     if (!$p || $p->ID === $cmd['user']) return;

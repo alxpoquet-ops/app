@@ -192,7 +192,7 @@ function aled08e_concours_designer(&$e, $id, $exclus = [], $faire = 'tirer') {
         aled08e_concours_mail_gagnant($t);
     }
     $e['tirages'][] = $t;
-    $txt = $g ? 'Gagnant tiré au sort parmi ' . $g['parmi'] . ' participation' . ($g['parmi'] > 1 ? 's' : '') . ' : ' . $g['nom'] . ' (' . $g['email'] . '). Code ' . $t['code'] . ', valable jusqu’au ' . wp_date('j F Y', $t['code_fin']) . '.' . ($g['doublon_possible'] ? ' Attention : ' . $g['doublon_possible'] . '.' : '') : 'Personne n’a trouvé les cinq Rubans : pas de gagnant pour cette manche.';
+    $txt = $g ? 'Gagnant tiré au sort parmi ' . $g['parmi'] . ' participation' . ($g['parmi'] > 1 ? 's' : '') . ' : ' . $g['nom'] . ' (' . $g['email'] . '). Code ' . $t['code'] . ', valable jusqu’au ' . aled08e_date_fr($t['code_fin'], false) . '.' . ($g['doublon_possible'] ? ' Attention : ' . $g['doublon_possible'] . '.' : '') : 'Personne n’a trouvé les cinq Rubans : pas de gagnant pour cette manche.';
     wp_mail(aled08e_to(), $g ? 'Jeu-concours : le gagnant de la manche ' . (int) $e['manche'] : 'Jeu-concours : pas de gagnant pour la manche ' . (int) $e['manche'], $txt . "\n\nLe gagnant a reçu son e-mail de félicitations avec son code. Il commande son site sur « Créer mon site » comme un client, sans payer le Site Essentiel, et son forfait Mini est offert un an.\n", aled08e_mail_headers());
     if (function_exists('aled08e_memoire_ajouter')) aled08e_memoire_ajouter('journal', 'Jeu-concours, manche ' . (int) $e['manche'] . ' : ' . ($faire === 'retirer' ? 'nouveau tirage' : 'tirage'), $txt, $g ? $g['user'] : 0, 'claude');
     return $t;
@@ -207,7 +207,7 @@ function aled08e_concours_mail_gagnant($t) {
         . "Félicitations : vous avez gagné un site internet !\n\n"
         . 'Vous avez trouvé les cinq Rubans, et le tirage au sort vous a désigné. Votre lot : un Site Essentiel (valeur ' . aled08e_euro_txt($valeur) . ") et un an de forfait Mini, offerts. Le site est à vous : vous le gardez.\n\n"
         . "Votre code personnel : " . $t['code'] . "\n"
-        . 'Il est valable jusqu’au ' . wp_date('j F Y', $t['code_fin']) . ", seulement avec votre compte.\n\n"
+        . 'Il est valable jusqu’au ' . aled08e_date_fr($t['code_fin'], false) . ", seulement avec votre compte.\n\n"
         . "Pour recevoir votre site :\n"
         . "1. Connectez-vous à votre espace client, puis ouvrez « Créer mon site » avec ce lien (le code est déjà rempli) :\n   " . $lien . "\n"
         . "2. Faites les mêmes choix qu’un client : votre nom de domaine, puis vos coordonnées. Vous ne payez rien pour le site, et le forfait Mini est offert un an.\n"
@@ -250,7 +250,7 @@ function aled08e_concours_lot_refus($code, $uid) {
     if (!$t) return 'inconnu';
     if (!$uid || (int) $t['user'] !== (int) $uid) return 'Ce code est réservé au compte du gagnant : connectez-vous avec ce compte.';
     if (!empty($t['commande'])) return 'Ce code a déjà servi pour votre commande.';
-    if ((int) $t['code_fin'] < time()) return 'Ce code a expiré le ' . wp_date('j F Y', (int) $t['code_fin']) . '.';
+    if ((int) $t['code_fin'] < time()) return 'Ce code a expiré le ' . aled08e_date_fr((int) $t['code_fin'], false) . '.';
     return '';
 }
 function aled08e_concours_lot_utilise($code, $pid) {
@@ -272,7 +272,7 @@ add_action('aled08_quotidien', function () {
             wp_mail(aled08e_to(), 'Fin de l’année offerte : ' . $u->display_name, 'L’année de forfait Mini offerte (lot du jeu-concours) de ' . $u->display_name . ' <' . $u->user_email . "> est terminée. Il a été invité à démarrer son forfait.\n", aled08e_mail_headers());
         } elseif ($fin - time() < 30 * DAY_IN_SECONDS && !get_user_meta($u->ID, 'aled08_offert_rappel', true)) {
             update_user_meta($u->ID, 'aled08_offert_rappel', 1);
-            wp_mail($u->user_email, 'Votre forfait Mini offert se termine le ' . wp_date('j F Y', $fin), 'Bonjour ' . (function_exists('aled08e_prenom') ? aled08e_prenom($u) : $u->display_name) . ",\n\nPetit rappel : votre année de forfait Mini offerte se termine le " . wp_date('j F Y', $fin) . ".\nEnsuite, le forfait Mini continue à " . aled08e_euro_txt((float) ((aled08e_data()['forfaits'][0]['month'] ?? 10))) . " par mois, sans engagement : vous le démarrerez dans votre espace client. Vous pouvez aussi télécharger votre site (Mon site, « Télécharger ») et l’héberger où vous voulez.\n\nÀ bientôt,\nAlex et les Minis Monstres\n", aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
+            wp_mail($u->user_email, 'Votre forfait Mini offert se termine le ' . aled08e_date_fr($fin, false), 'Bonjour ' . (function_exists('aled08e_prenom') ? aled08e_prenom($u) : $u->display_name) . ",\n\nPetit rappel : votre année de forfait Mini offerte se termine le " . aled08e_date_fr($fin, false) . ".\nEnsuite, le forfait Mini continue à " . aled08e_euro_txt((float) ((aled08e_data()['forfaits'][0]['month'] ?? 10))) . " par mois, sans engagement : vous le démarrerez dans votre espace client. Vous pouvez aussi télécharger votre site (Mon site, « Télécharger ») et l’héberger où vous voulez.\n\nÀ bientôt,\nAlex et les Minis Monstres\n", aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
         }
     }
 });
@@ -298,7 +298,7 @@ function aled08e_concours_encart_html() {
     $h .= '<p class="jr-sur">Le jeu des Rubans</p><h2 class="jr-titre">Un site internet à gagner tous les ' . (int) ($e['jours'] ?: ALED08E_MANCHE_JOURS) . ' jours</h2>';
     if (aled08e_concours_ouvert()) {
         $h .= '<p>Cinq Rubans, de petits monstres cadeaux, se cachent sur notre site. Créez votre espace client (c’est gratuit), trouvez-les tous et participez au tirage au sort.</p>';
-        $h .= '<p class="jr-chrono" data-jr-fin="' . (int) $e['fin'] . '">' . aled08e_icon('clock') . '<span>Prochain tirage dans <b data-jr-reste>' . esc_html(aled08e_concours_reste_txt($e['fin'])) . '</b>, le ' . esc_html(wp_date('j F Y', (int) $e['fin'])) . '</span></p>';
+        $h .= '<p class="jr-chrono" data-jr-fin="' . (int) $e['fin'] . '">' . aled08e_icon('clock') . '<span>Prochain tirage dans <b data-jr-reste>' . esc_html(aled08e_concours_reste_txt($e['fin'])) . '</b>, le ' . esc_html(aled08e_date_fr((int) $e['fin'])) . ' (heure de Paris)</span></p>';
         $h .= '<p class="jr-go"><a class="btn btn-primary" href="' . esc_url(aled08e_url() . '#inscription') . '">' . aled08e_icon('gift') . '<span>Je joue</span></a> <a class="jr-regl" href="' . esc_url(home_url('/jeu-concours/')) . '">Le règlement</a></p>';
     }
     if ($g) {
@@ -348,7 +348,7 @@ add_action('wp_footer', function () {
     if (!etat || !etat.connecte || ici !== new URL(C.espace, location.href).pathname.replace(/\/?$/, '/')) return;
     var n = etat.trouves.length, T = etat.total;
     var b = el('<div class="cc-compteur" data-cc-compteur><button type="button" class="cc-compteur-btn" aria-expanded="false" aria-controls="cc-indices"><span class="cc-compteur-art" aria-hidden="true">' + C.ruban + '</span><span class="cc-compteur-n"><b>' + n + '</b>/' + T + '</span><span class="cc-compteur-chrono">' + C.icones.clock + '<span data-cc-court></span></span><span class="sr-only"> Rubans trouvés : voir les indices et le temps restant</span></button>'
-      + '<div class="cc-indices" id="cc-indices" hidden><p class="cc-indices-t">Le jeu des Rubans</p><p class="cc-chrono">Prochain tirage dans <b data-cc-long></b></p><ul></ul><p class="cc-indices-fin"></p><a class="cc-indices-regl" href="' + C.reglement + '">Le règlement du jeu</a></div></div>');
+      + '<div class="cc-indices" id="cc-indices" hidden><p class="cc-indices-t">Le jeu des Rubans</p><p class="cc-chrono">Prochain tirage dans <b data-cc-long></b><small data-cc-date></small></p><ul></ul><p class="cc-indices-fin"></p><a class="cc-indices-regl" href="' + C.reglement + '">Le règlement du jeu</a></div></div>');
     var ul = b.querySelector('ul');
     etat.cachettes.forEach(function (c) { var ok = etat.trouves.indexOf(c.id) > -1; var li = el('<li class="' + (ok ? 'is-ok' : '') + '"><span class="cc-ind-ico" aria-hidden="true">' + (ok ? C.icones.check : '?') + '</span><span><b></b><small></small></span></li>'); li.querySelector('b').textContent = c.categorie + (ok ? ' : trouvé' : ''); li.querySelector('small').textContent = c.indice; ul.appendChild(li); });
     var fin = b.querySelector('.cc-indices-fin');
@@ -358,6 +358,7 @@ add_action('wp_footer', function () {
     var btn = b.querySelector('.cc-compteur-btn'), pan = b.querySelector('.cc-indices');
     btn.addEventListener('click', function () { var o = pan.hidden; pan.hidden = !o; btn.setAttribute('aria-expanded', String(o)); });
     document.body.appendChild(b);
+    b.querySelector('[data-cc-date]').textContent = 'le ' + etat.fin_txt + ', heure de Paris';
     var tic = function () { b.querySelector('[data-cc-court]').textContent = reste(true); b.querySelector('[data-cc-long]').textContent = reste(false); };
     tic(); minuteur = setInterval(tic, 1000);
   }
@@ -431,7 +432,7 @@ function aled08e_concours_ajax_etat() {
     }
     $p = aled08e_concours_participation($u->ID);
     wp_send_json_success(['ouvert' => true, 'connecte' => true, 'total' => count($liste), 'cachettes' => $liste, 'trouves' => array_keys($trouves), 'ici' => $ici,
-        'inscrit' => (bool) $p, 'email' => $p ? $p['email'] : $u->user_email, 'fin' => (int) $e['fin'], 'nonce' => wp_create_nonce('aled08e_concours')]);
+        'inscrit' => (bool) $p, 'email' => $p ? $p['email'] : $u->user_email, 'fin' => (int) $e['fin'], 'fin_txt' => aled08e_date_fr((int) $e['fin']), 'nonce' => wp_create_nonce('aled08e_concours')]);
 }
 add_action('wp_ajax_aled08e_rubans', 'aled08e_concours_ajax_etat');
 add_action('wp_ajax_nopriv_aled08e_rubans', 'aled08e_concours_ajax_etat');
@@ -501,7 +502,7 @@ function aled08e_concours_faire(WP_REST_Request $req) {
     $faire = sanitize_key((string) ($p['faire'] ?? ''));
     $e = aled08e_concours_etat();
     if ($faire === 'ouvrir') {
-        if (aled08e_concours_ouvert()) return new WP_Error('aled08_concours', 'Le jeu tourne déjà (manche ' . (int) $e['manche'] . ', tirage le ' . wp_date('j F Y', (int) $e['fin']) . ').', ['status' => 409]);
+        if (aled08e_concours_ouvert()) return new WP_Error('aled08_concours', 'Le jeu tourne déjà (manche ' . (int) $e['manche'] . ', tirage le ' . aled08e_date_fr((int) $e['fin']) . ').', ['status' => 409]);
         $e = aled08e_concours_nouvelle_manche($e, max(1, min(365, (int) ($p['jours'] ?? ALED08E_MANCHE_JOURS))));
         aled08e_concours_sauver($e);
         return new WP_REST_Response(['ok' => true, 'manche' => $e['manche'], 'tirage_le' => wp_date('Y-m-d H:i', $e['fin']), 'cachettes' => aled08e_concours_cachettes()], 200);

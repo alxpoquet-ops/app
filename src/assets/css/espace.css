@@ -1554,3 +1554,24 @@ a.st2-p-titre { text-decoration: underline; text-decoration-thickness: 1.5px; te
 @keyframes cp-tourne { to { transform: rotate(360deg); } }
 .cp-note { display: flex; gap: 8px; align-items: flex-start; margin: 14px 0 0; font-size: .92rem; color: var(--muted); line-height: 1.45; }
 .cp-note svg { flex: none; width: 18px; height: 18px; margin-top: 2px; }
+
+/* Le parrainage dans l'espace client (includes/parrainage.php) */
+.pr-bloc { margin: 16px 0; padding: 18px; border-radius: 22px; background: var(--pink); border: 2px solid var(--pink-d); }
+.pr-tete { display: flex; gap: 14px; align-items: flex-start; }
+.pr-art { flex: none; width: 70px; }
+.pr-art svg { width: 100%; height: auto; display: block; }
+.pr-sur { margin: 0 0 2px; font-weight: 800; font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--pink-dd); }
+.pr-titre { margin: 0 0 6px; font-size: 1.15rem; line-height: 1.3; }
+.pr-txt { margin: 0; line-height: 1.5; }
+.pr-code { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 14px 0 10px; }
+.pr-code span { font-weight: 700; }
+.pr-code b { padding: 6px 14px; border-radius: 12px; background: var(--card); font-size: 1.2rem; letter-spacing: .08em; border: 2px dashed var(--pink-d); }
+.pr-lien { display: grid; gap: 8px; }
+.pr-lien .copy-in { width: 100%; min-width: 0; }
+.pr-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.pr-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0 10px; }
+.pr-stats div { padding: 10px; border-radius: 14px; background: var(--card); text-align: center; }
+.pr-stats b { display: block; font-size: 1.3rem; }
+.pr-stats small { color: var(--muted); }
+.pr-note { margin: 10px 0 0; font-size: .9rem; }
+@media (max-width: 420px) { .pr-art { width: 54px; } .pr-titre { font-size: 1.05rem; } }

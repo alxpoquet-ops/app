@@ -10,7 +10,7 @@ const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contac
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 const UPDATED = '2026-11-24'; // mentions légales : 24 novembre 2026, le SIREN de l'entreprise individuelle (le SIRET de l'activité est en cours)
 const UPDATED_CONF = '2026-11-25'; // 25 novembre 2026 : le jeu-concours de Ruban (l'adresse e-mail des participants). 24 novembre : politique de confidentialité : 24 novembre 2026, les outils au mois (comptes sans site, réseaux reliés, photos, avis et devis confiés aux outils). Avant : offre du 19 novembre 2026 (abonnement facultatif, paiement des extras par carte).
-const UPDATED_CGV = '2026-11-25'; // 25 novembre 2026, soir : la copie du site se télécharge depuis l'espace client (article 3, export). 25 novembre 2026 : plus d'appel avant la création (article 11), chaque site relu par un autre outil avant la livraison (article 15). 24 novembre 2026, tard : vérification par Alex (retirée le 25). Au soir : les outils mis de côté (article 20 gardé pour les abonnements en cours, avec une phrase en tête). Plus tôt le 24 novembre : article 20, les outils au mois (essai de 14 jours sans carte, abonnement outil par outil, limites, rétractation). 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
+const UPDATED_CGV = '2026-11-25'; // 25 novembre 2026, nuit : le parrainage revient (article 17, 6 mois offerts chacun). 25 novembre 2026, soir : la copie du site se télécharge depuis l'espace client (article 3, export). 25 novembre 2026 : plus d'appel avant la création (article 11), chaque site relu par un autre outil avant la livraison (article 15). 24 novembre 2026, tard : vérification par Alex (retirée le 25). Au soir : les outils mis de côté (article 20 gardé pour les abonnements en cours, avec une phrase en tête). Plus tôt le 24 novembre : article 20, les outils au mois (essai de 14 jours sans carte, abonnement outil par outil, limites, rétractation). 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
 // La petite bande (config.bande) : six Minis Monstres, présentés par leur prénom et leur rôle. Le parrainage est retiré (19 novembre 2026).
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
 // (règlement européen sur ces systèmes, obligation de transparence). La politique de confidentialité nomme le fournisseur.
@@ -401,9 +401,18 @@ La visibilité Google, ou référencement, c’est le travail qui aide un site �
 
 Dans tous les cas, la visibilité Google est une obligation de moyens : les Minis Monstres font de leur mieux et appliquent les bonnes pratiques, sans garantir une position donnée sur Google.
 
-## 17. Fidélité
+## 17. Fidélité et parrainage
 
 Un deuxième site commandé par le même client bénéficie de ${fidelite.remiseSecondSite} % de remise sur la création. Cet avantage n’est pas convertible en argent.
+
+**Parrainage.** Chaque client a un code de parrainage, dans son espace client. Un nouveau client, le filleul, peut taper ce code dans la case « Code promo ou parrainage » en commandant son site. Une fois le site du filleul en ligne :
+
+- le filleul reçoit ${fidelite.parrainageMois} mois de forfait ${mini.name} offerts, s’il a choisi ce forfait ;
+- le parrain reçoit ${fidelite.parrainageMois} mois de forfait ${mini.name} offerts, pour chaque filleul, sans limite de nombre. Les mois s’ajoutent les uns aux autres.
+
+Les mois offerts portent sur l’abonnement du client. Si l’abonnement est en cours, ses factures sont suspendues pendant la durée offerte, puis reprennent d’elles-mêmes. S’il n’a pas encore démarré, il démarre avec la durée offerte, sans prélèvement. Un parrain qui n’a pas encore de forfait ${mini.name} garde ses mois pour le jour où il le prend.
+
+Un client ne peut ni utiliser son propre code, ni être parrainé deux fois. Le code de parrainage ne se cumule pas avec un autre code dans la même commande. Les mois offerts ne sont ni remboursables, ni convertibles en argent, ni cessibles. Une commande annulée ou remboursée n’ouvre droit à aucun mois offert. Un parrainage obtenu par des comptes fictifs ou de fausses informations est annulé.
 
 ## 18. Responsabilité
 

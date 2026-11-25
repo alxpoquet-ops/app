@@ -205,6 +205,7 @@ require_once __DIR__ . '/includes/pose.php';
 require_once __DIR__ . '/includes/ouverture.php';
 require_once __DIR__ . '/includes/atelier.php';
 require_once __DIR__ . '/includes/delai.php';
+require_once __DIR__ . '/includes/parrainage.php'; // le parrainage : 6 mois de forfait Mini offerts au filleul et au parrain
 require_once __DIR__ . '/includes/concours.php';
 require_once __DIR__ . '/includes/copie.php'; // « Télécharger mon site » : un zip HTML et CSS, ou WordPress complet // le jeu-concours de Ruban, le monstre cadeau (éteint par défaut) // le site livré 24 heures après les informations complètes (annoncé « entre 24 et 48 heures »)
 require_once __DIR__ . '/includes/mails.php';
@@ -1224,6 +1225,7 @@ function aled08e_dashboard() {
           <?php if ($abo === 'past_due') : ?><p class="esp-warn">Votre dernier paiement n’a pas abouti. <button type="button" class="link-btn" data-go="forfait">Mettre à jour mon moyen de paiement</button></p><?php endif; ?>
           <?php echo aled08e_ateliers_cartes_html($uid, $siteInfo); // phpcs:ignore ?>
           <?php echo aled08e_fil_html($uid, 3); // phpcs:ignore -- l'Accueil simplifié (25 novembre 2026) : les 3 dernières nouvelles seulement ?>
+          <?php echo aled08e_parrainage_html($uid, true); // phpcs:ignore -- le parrainage, mis en avant (6 mois offerts chacun) ?>
           <?php echo aled08e_annonces_html(1); // phpcs:ignore ?>
         </div>
 
@@ -1397,7 +1399,7 @@ function aled08e_dashboard() {
           <p class="app-sub">Nom de domaine</p>
           <p class="app-domain"><?php echo aled08e_icon('globe'); // phpcs:ignore ?><span><strong><?php echo esc_html($host ?: aled08e_meta($uid, 'domaine_info')); ?></strong><small><?php echo esc_html(aled08e_meta($uid, 'domaine_info') ?: ($cmd && $cmd['domaine_mien'] ? 'Votre nom de domaine actuel' : 'À votre nom, renouvelé avec l’abonnement')); ?></small></span></p>
           <?php endif; ?>
-          <?php $smDom = ob_get_clean(); echo aled08e_sm_html(['infos' => ['circle-user', 'Mes infos', $smInfos], 'forfait' => ['credit-card', 'Mon forfait', $smForfait], 'factures' => ['receipt', 'Factures', $smFact], 'domaine' => ['globe', 'Nom de domaine', $smDom]], 'Rubriques de Mon compte'); // phpcs:ignore ?>
+          <?php $smDom = ob_get_clean(); echo aled08e_sm_html(['infos' => ['circle-user', 'Mes infos', $smInfos], 'parrainage' => ['gift', 'Parrainage', aled08e_parrainage_html($uid)], 'forfait' => ['credit-card', 'Mon forfait', $smForfait], 'factures' => ['receipt', 'Factures', $smFact], 'domaine' => ['globe', 'Nom de domaine', $smDom]], 'Rubriques de Mon compte'); // phpcs:ignore ?>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-vacances" aria-labelledby="tab-vacances" hidden>

@@ -90,6 +90,7 @@ function aled08e_dashboard_libre($u) {
             <?php echo aled08e_fil_html($uid); // phpcs:ignore ?>
             <?php echo aled08e_abonnement_resume_html($uid); // phpcs:ignore ?>
           </div>
+          <?php echo aled08e_parrainage_html($uid, true); // phpcs:ignore -- le parrainage, même sans site : les mois attendent le forfait ?>
           <?php echo aled08e_annonces_html(2); // phpcs:ignore ?>
           <p class="app-note">Une question ? <a href="<?php echo esc_url(home_url('/contact/')); ?>">Écrivez-nous</a>, on vous répond vite.</p>
         </div>
