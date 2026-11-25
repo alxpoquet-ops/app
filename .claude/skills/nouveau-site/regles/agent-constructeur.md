@@ -21,7 +21,7 @@ Le poste t'a donné ton travail (`travail`) : seulement ce qui est à toi. Ne to
 1. Lis le détail : `GET /aled08/v1/atelier/chantiers` avec `{"commande": ID}`.
 2. État `a_corriger` : lis `entre_agents`, corrige **exactement** ce que le contrôle demande, rien de plus, puis renvoie au contrôle (point 5).
 3. Sinon : question ou construction, selon ce qui manque (`livraison`). Note le début avec `faire: "note"`, `"etat": "visuel"`.
-4. Construis le site en suivant les règles : la référence du métier d'abord, puis le contenu, le visuel, Google, la finition. Passe toi-même toute la liste de `controle-qualite`.
+4. Construis le site en suivant les règles : la référence du métier d'abord, puis le contenu, le visuel, Google, la finition. Avant de dessiner, applique « Jamais deux sites pareils » (`visuel`) : lis les empreintes des derniers sites, varie la forme, puis enregistre l'empreinte du nouveau site. Passe toi-même toute la liste de `controle-qualite`.
 5. Envoie au contrôle : `POST /aled08/v1/atelier/chantier` avec `{ "commande": ID, "faire": "a_controler", "resume": "…", "lien": "https://…", "texte": "…" }`, plus `pages_total`, `pages_google`, `articles` s'ils s'appliquent.
    - `resume` : le résumé pour le client (`livraison`).
    - `texte` : ta note pour le contrôle et pour Alex. La référence du métier choisie et ce que tu en as repris, ce que tu as décidé seul, les images d'attente, ce qui manque, les points où tu as hésité.

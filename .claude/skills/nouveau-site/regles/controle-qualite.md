@@ -4,6 +4,7 @@
 
 ## 1. Le contenu
 
+- [ ] Le site n'est pas le jumeau d'un site récent : règle « Jamais deux sites pareils » de `visuel.md`, empreinte notée dans la mémoire.
 - [ ] Chaque phrase de chaque page vient du client (sauf le savoir général des pages de conseils). Relis phrase par phrase.
 - [ ] Aucun service, prix, horaire, délai, zone, avis, chiffre ou promesse qu'il n'a pas donné.
 - [ ] Plus aucun texte [entre crochets], aucun texte de remplissage.

@@ -32,6 +32,25 @@ Même le Site Essentiel est une page longue, découpée en parties qu'on fait d�
 
 Une partie sans matière est retirée ou marquée « bientôt », et le résumé de livraison le dit au client.
 
+## Jamais deux sites pareils
+
+Décision d'Alex (25 novembre 2026) : **deux clients ne doivent jamais avoir le même site**, même s'ils font le même métier. La base ci-dessus garantit un site correct ; la forme change d'un client à l'autre.
+
+1. **Regarde les derniers sites livrés.** Avant de dessiner, lis les empreintes des 15 derniers sites : `GET /aled08/v1/atelier/memoire` avec `{"type": "client", "q": "Empreinte", "limite": 15}`. Ton site doit différer d'eux sur au moins **quatre** des points ci-dessous, et de tout site du même métier sur au moins **cinq**.
+2. **Inspire-toi de la concurrence du même métier** (`concurrents.md`) : regarde comment deux ou trois sites qui marchent dans ce métier placent leurs parties, montrent leurs photos et leurs produits, et choisis des formes qui conviennent à ce métier. On s'inspire, on ne copie jamais.
+3. **Ce qui varie** (choisis une option par ligne, différente des sites récents) :
+   - **L'ouverture** : grande photo plein écran avec le titre dessus ; photo d'un côté et texte de l'autre ; titre seul sur un fond de couleur avec une petite image ; mosaïque de 3 photos.
+   - **L'ordre des parties 3 à 10** : par exemple les produits juste après l'ouverture, ou l'histoire du client d'abord, ou les avis et la zone avant les services. Seules restent fixes l'ouverture en premier, le contact et le pied de page à la fin.
+   - **La forme des images** : coins très arrondis, coins droits, cercles, arches, cadres décalés, photos inclinées façon polaroïd, formes organiques.
+   - **Les cartes** : en grille de 2 ou 3, en liste avec la photo à gauche, en grandes bandes alternées, en carrousel à faire défiler soi-même.
+   - **Le fond des parties** : couleurs alternées, une seule couleur avec des séparations en vague, en diagonale ou droites, fonds texturés légers.
+   - **Les titres** : centrés ou alignés à gauche, avec un petit sur-titre, un trait, un chiffre ou une icône.
+   - **Les boutons** : ronds, carrés ou à bords doux ; pleins ou en contour.
+   - **Les polices** : un autre couple titre / texte que les sites récents, toujours deux familles au plus.
+   - **Les petits décors** : formes flottantes, motifs du métier (épis, feuilles, outils…), ou rien du tout pour un métier sobre.
+4. **Toujours correct.** Varier ne veut jamais dire désordonner : le contact reste facile à trouver, tout reste lisible sur téléphone, contrasté, rapide, et chaque partie garde son contenu de la base. Dans le doute, on choisit la forme la plus claire.
+5. **Note l'empreinte du site.** À la fin, enregistre ce que tu as choisi : `POST /aled08/v1/atelier/memoire` avec `{ "type": "client", "client": FICHE, "titre": "Empreinte du site : NOM", "texte": "métier : … ; ouverture : … ; ordre : … ; images : … ; cartes : … ; fonds : … ; titres : … ; boutons : … ; polices : … ; décors : …", "par": "constructeur" }`. Le contrôleur compare cette empreinte aux précédentes.
+
 ## Sur téléphone
 
 - Un menu à trois traits qui se change en croix et ouvre un vrai panneau soigné : grands liens, chacun avec une petite icône dessinée dans l'esprit du métier (jamais de numéros), couleurs du site, un petit effet du métier, un bouton contact en bas. Jamais une simple liste grise.

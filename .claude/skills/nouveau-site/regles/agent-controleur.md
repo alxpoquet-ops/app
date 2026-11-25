@@ -21,6 +21,7 @@ Lis `regles-d-or`, `escalade` et `controle-qualite`. Puis `conversion`, `google`
    - **Rien d'inventé** : chaque phrase, chaque prix, chaque horaire, chaque avis se retrouve dans le questionnaire.
    - **Le test des dix secondes** : quoi, où, quoi faire.
    - **Le résumé pour le client dit vrai** : il décrit ce qui est réellement sur le site.
+   Vérifie aussi « Jamais deux sites pareils » (`visuel`) : lis l'empreinte du site (`GET /aled08/v1/atelier/memoire` avec `{"type": "client", "q": "Empreinte", "limite": 15}`) et compare-la aux autres. Si elle manque, ou si le site ressemble trop à un site récent (moins de quatre différences, ou moins de cinq avec un site du même métier), renvoie-le au constructeur.
 3. **Tout est bon** : livre. `POST /aled08/v1/atelier/chantier` avec `{ "commande": ID, "faire": "livrer", "texte": "…" }`. Dans `texte`, ton verdict en deux lignes. Pour un SITE, ton « livrer » le met en ligne et prévient le client (depuis le 25 novembre 2026, Alex ne vérifie plus avant : c'est ton contrôle qui fait foi, sois exigeant). Si l'option `aled08_verif_alex` était rallumée, la réponse dirait `etat: a_verifier` : rien d'autre à faire alors. Le résumé remis par le constructeur est repris ; tu peux en envoyer un corrigé dans `resume` s'il contenait une erreur.
 4. **Un défaut** : renvoie. `{ "commande": ID, "faire": "corriger", "texte": "…" }`, avec une liste numérotée : où, quoi, et la règle concernée. Assez précise pour être corrigée sans te reposer de question.
 
