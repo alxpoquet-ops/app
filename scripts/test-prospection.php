@@ -47,6 +47,7 @@ function sanitize_key($k) { return preg_replace('/[^a-z0-9_\-]/', '', strtolower
 function sanitize_text_field($t) { return trim(strip_tags((string) $t)); }
 function wp_generate_password($n = 12, $s = true, $x = false) { return substr(bin2hex(random_bytes($n)), 0, $n); }
 function current_user_can($c) { return true; }
+function checked($a, $b, $e = true) { return $a === $b ? ' checked' : ''; }
 function get_user_by($k, $v) { return $v === 'deja.client@exemple.fr' ? (object) ['ID' => 1] : false; }
 function wp_mail($a, $s, $m, $h = []) { $GLOBALS['T']['mails'][] = compact('a', 's', 'm', 'h'); return true; }
 function aled08e_to() { return 'alex@exemple.fr'; }
@@ -127,7 +128,8 @@ verifie('adresse mal formée refusée', aled08e_px_email_refus('boulangerie@') !
 verifie('administration refusée', aled08e_px_email_refus('contact@ardennes.gouv.fr') !== '');
 verifie('note : sans site, métier recherché, activité, indépendante, page métier = 100', aled08e_px_note(['sans_site' => 1, 'metier_recherche' => 1, 'activite_recente' => 1, 'independante' => 1], true) === 100);
 verifie('libellé de la source Facebook', aled08e_px_source_libelle('https://www.facebook.com/x') === 'sa page Facebook');
-verifie('prix réduit calculé depuis la config (749 → 674,10)', aled08e_euro_txt(aled08e_px_prix()['reduit']) === '674,10 €', aled08e_euro_txt(aled08e_px_prix()['reduit']));
+$prixSite = (float) aled08e_type('une-page')['price'];
+verifie('prix réduit calculé depuis la config (' . $prixSite . ' € moins 10 %)', aled08e_px_prix()['prix'] === $prixSite && abs(aled08e_px_prix()['reduit'] - round($prixSite * 0.9, 2)) < 0.001, aled08e_euro_txt(aled08e_px_prix()['reduit']));
 verifie('identité tirée de data.json', aled08e_px_identite() === 'Les Minis Monstres, entreprise individuelle d’Alexandre Poquet, SIREN 948 617 782, 08460 Signy-l’Abbaye.', aled08e_px_identite());
 update_option('aled08_prospection_premier_envoi', time() - 15 * DAY_IN_SECONDS);
 verifie('quota : 20 + 20 par semaine (deux semaines : 60)', aled08e_px_quota_jour() === 60, (string) aled08e_px_quota_jour());
@@ -171,7 +173,7 @@ update_option('aled08_prospection_active', '1');
 verifie('un texte qui parle d’IA : refusé', statut(faire(['prospect' => $id, 'faire' => 'envoyer', 'phrase' => 'Grâce à l’IA, j’ai trouvé la fiche de la Boulangerie Martin sur Google, sans site.'] + $morceaux)) === 400);
 verifie('un prix écrit à la main : refusé', statut(faire(['prospect' => $id, 'faire' => 'envoyer', 'sujet' => 'Un site pour 500 € seulement, Boulangerie Martin'] + $morceaux)) === 400);
 verifie('deux points au lieu de trois : refusé', statut(faire(['prospect' => $id, 'faire' => 'envoyer', 'points' => array_slice($morceaux['points'], 0, 2)] + $morceaux)) === 400);
-verifie('du HTML dans un point : refusé ou nettoyé', ($x = faire(['prospect' => $id, 'faire' => 'apercu', 'points' => [['titre' => '<b>Être</b> trouvé', 'texte' => '<a href="https://x">quand</a> on cherche une boulangerie.']] + array_slice($morceaux['points'], 1)] + $morceaux)) && statut($x) === 200 && strpos($x->data['html'], 'href="https://x"') === false);
+verifie('du HTML dans un point : refusé ou nettoyé', ($x = faire(['prospect' => $id, 'faire' => 'apercu', 'points' => array_merge([['titre' => '<b>Être</b> trouvé', 'texte' => '<a href="https://x">quand</a> on cherche une boulangerie.']], array_slice($morceaux['points'], 1))] + $morceaux)) && statut($x) === 200 && strpos($x->data['html'], 'href="https://x"') === false);
 $GLOBALS['T']['mails'] = [];
 $r = faire(['prospect' => $id, 'faire' => 'envoyer'] + $morceaux);
 verifie('l’envoi part', statut($r) === 200 && count($GLOBALS['T']['mails']) === 1, is_wp_error($r) ? $r->m : '');
@@ -179,7 +181,7 @@ $mail = $GLOBALS['T']['mails'][0] ?? ['a' => '', 's' => '', 'm' => '', 'h' => []
 $code = $r->data['code'] ?? '';
 verifie('au prospect, avec le sujet', $mail['a'] === 'boulangerie.martin@orange.fr' && $mail['s'] === $morceaux['sujet']);
 verifie('code personnel MAIL10-XXXX', (bool) preg_match('/^MAIL10-[2-9A-HJKMNP-Z]{4}$/', $code), $code);
-verifie('le mail porte le code, le prix réduit et le prix', strpos($mail['m'], $code) !== false && strpos($mail['m'], '674,10&nbsp;€') !== false && strpos($mail['m'], '749&nbsp;€') !== false);
+verifie('le mail porte le code, le prix réduit et le prix', strpos($mail['m'], $code) !== false && strpos($mail['m'], aled08e_euro(round($prixSite * 0.9, 2))) !== false && strpos($mail['m'], 'à partir de ' . aled08e_euro($prixSite)) !== false);
 verifie('le mail dit la source de l’adresse', strpos($mail['m'], 'l’adresse de la Boulangerie Martin est publiée sur <a href="https://www.google.com/maps/place/x"') !== false);
 verifie('le mail a l’identité de l’expéditeur', strpos($mail['m'], 'SIREN 948 617 782') !== false && strpos($mail['m'], 'Alexandre Poquet') !== false);
 verifie('le mail a le lien de désinscription signé', strpos($mail['m'], 'lmm_stop=' . $id . '-' . aled08e_px_signe($id, 'stop')) !== false);
@@ -243,6 +245,12 @@ verifie('poste du Repéreur : une zone et des métiers', !$pr['rien_a_faire'] &&
 aled08e_px_tournee_noter('08', $pr['travail']['zone_suggeree']['metier']['slug']);
 verifie('la tournée avance', aled08e_px_zone_suivante()['metier']['slug'] !== $pr['travail']['zone_suggeree']['metier']['slug']);
 verifie('bilan pour Jarvis', aled08e_px_bilan_jarvis()['sept_derniers_jours']['commandes'] === 1);
+$bloc = aled08e_px_bloc_gestion('https://x/mon-espace/', '');
+verifie('le bloc « Prospection » de l’espace de gestion', strpos($bloc, 'Prospection par e-mail') !== false && strpos($bloc, 'Couper la prospection') !== false && strpos($bloc, 'Boulangerie Martin') !== false);
+ob_start(); aled08e_px_reglages_html(); $reg = ob_get_clean();
+verifie('la case « Prospection activée » des Réglages', strpos($reg, 'name="prospection_active"') !== false);
+aled08e_px_reglages_save(['prospection_present' => '1']);
+verifie('décocher la case éteint la prospection', !aled08e_px_active());
 
 // l'aperçu, pour le regarder
 if (!empty($argv[1]) && is_dir($argv[1])) {

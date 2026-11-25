@@ -451,7 +451,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     $codeH = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 18px;"><tr><td align="center" style="background:#fff7d9;border:2px dashed #e5b93c;border-radius:16px;padding:14px 16px;font-size:15px;line-height:1.5;color:#2e2a47;">'
         . ($relance ? 'Votre code personnel, toujours valable :' : 'Parce que vous recevez cette offre par e-mail :') . '<br>'
         . '<span style="display:inline-block;margin:6px 0 4px;padding:6px 14px;background:#ffffff;border-radius:10px;font-size:20px;font-weight:bold;letter-spacing:.08em;color:#2e2a47;">-' . (int) $r . '&nbsp;% : ' . esc_html($code) . '</span>'
-        . '<br><span style="font-size:13px;color:#6b5a1f;">Valable ' . (int) $jours . ' jours, jusqu’au ' . esc_html($date) . ', sur la création de votre site : ' . aled08e_euro($prix['reduit']) . ' au lieu de ' . aled08e_euro($prix['prix']) . '. À taper dans la case « Code promo » au moment de commander.</span>'
+        . '<br><span style="font-size:13px;color:#6b5a1f;">Valable ' . ($relance ? '' : (int) $jours . ' jours, ') . 'jusqu’au ' . esc_html($date) . ', sur la création de votre site : ' . aled08e_euro($prix['reduit']) . ' au lieu de ' . aled08e_euro($prix['prix']) . '. À taper dans la case « Code promo » au moment de commander.</span>'
         . '</td></tr></table>';
     $pointsH = '';
     foreach ((array) ($m['points'] ?? []) as $pt) {
@@ -499,7 +499,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         . '</table></td></tr></table></body></html>';
 
     // la version texte (pour les messageries qui n'affichent pas le HTML, et pour l'historique du prospect)
-    $codeT = '-' . $r . ' % : ' . $code . "\nValable " . $jours . ' jours, jusqu’au ' . $date . ', sur la création de votre site : ' . aled08e_euro_txt($prix['reduit']) . ' au lieu de ' . aled08e_euro_txt($prix['prix']) . '. À taper dans la case « Code promo » au moment de commander.';
+    $codeT = '-' . $r . ' % : ' . $code . "\nValable " . ($relance ? '' : $jours . ' jours, ') . 'jusqu’au ' . $date . ', sur la création de votre site : ' . aled08e_euro_txt($prix['reduit']) . ' au lieu de ' . aled08e_euro_txt($prix['prix']) . '. À taper dans la case « Code promo » au moment de commander.';
     $piedT = 'Vous recevez ce message parce que l’adresse ' . $deX . ' est publiée sur ' . ($p['source'] ?: aled08e_px_source_libelle($p['url_source_email'] ?? '')) . ' (' . ($p['url_source_email'] ?? '') . '). '
         . ($relance ? 'C’est notre dernier message.' : 'C’est le seul message que vous recevrez, sauf une petite relance dans une semaine.')
         . "\nPour ne plus rien recevoir, en un clic : " . $l['stop'] . "\n" . aled08e_px_identite();
@@ -953,7 +953,7 @@ function aled08e_px_bloc_gestion($act, $nonce) {
         $h .= '<ul class="ges-list">';
         foreach ($derniers as $p) {
             $h .= '<li class="ges-item ges-mini"><div class="ges-head"><strong>' . esc_html($p['entreprise']) . '</strong><em class="st ' . (in_array($p['etat'], ['repondu', 'commande'], true) ? 'st-done' : ($p['etat'] === 'desinscrit' ? 'esp-st-off' : 'st-doing')) . '">' . esc_html($p['etat_libelle']) . '</em></div>'
-                . '<p class="ges-meta">' . esc_html($p['metier'] . ' · ' . $p['ville'] . ' (' . $p['departement'] . ') · écrit le ' . wp_date('j/m', strtotime($p['envoye_le'])) . ($p['relance_le'] ? ', relancé le ' . wp_date('j/m', strtotime($p['relance_le'])) : '') . ' · ' . $p['clics'] . ' clic' . ($p['clics'] > 1 ? 's' : '') . ' · ' . $p['code'] . ($p['commande'] ? ' · ' . $p['commande'] : '')) . '</p>';
+                . '<p class="ges-meta">' . esc_html($p['metier'] . ' · ' . $p['ville'] . ' (' . $p['departement'] . ') · écrit le ' . wp_date('j/m', (int) aled08e_px_meta($p['prospect'], 'envoye_le', 0)) . ($p['relance_le'] ? ', relancé le ' . wp_date('j/m', (int) aled08e_px_meta($p['prospect'], 'relance_le', 0)) : '') . ' · ' . $p['clics'] . ' clic' . ($p['clics'] > 1 ? 's' : '') . ' · ' . $p['code'] . ($p['commande'] ? ' · ' . $p['commande'] : '')) . '</p>';
             if (in_array($p['etat'], ['envoye', 'relance'], true)) {
                 $h .= '<form method="post" action="' . $act . '" style="display:inline">' . $nonce . '<input type="hidden" name="prospect" value="' . (int) $p['prospect'] . '"><button class="btn btn-light btn-sm" type="submit" name="aled08e_gestion" value="prospection_repondu">' . aled08e_icon('message-circle') . '<span>A répondu</span></button> '
                     . '<button class="btn btn-light btn-sm" type="submit" name="aled08e_gestion" value="prospection_stop">' . aled08e_icon('x') . '<span>Ne plus lui écrire</span></button></form>';
