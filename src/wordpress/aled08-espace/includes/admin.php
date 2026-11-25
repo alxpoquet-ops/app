@@ -570,6 +570,7 @@ function aled08e_admin_reglages() {
     }
     echo '<tr><th>Effacer</th><td><label><input type="checkbox" name="effacer_cpanel" value="1"> Effacer les accès cPanel enregistrés</label></td></tr></table>';
 
+    if (function_exists('aled08e_px_reglages_html')) aled08e_px_reglages_html(); // la prospection par e-mail (éteinte par défaut)
     aled08e_lia_reglages_html();
     aled08e_rs_reglages_html();
     echo '<p class="submit"><button type="submit" class="button button-primary">Enregistrer</button></p></form>';
@@ -625,6 +626,7 @@ add_action('admin_post_aled08e_reglages', function () {
     if (isset($P['cpanel_user']) && empty($P['effacer_cpanel'])) { $v = trim((string) $P['cpanel_user']); if ($v === '' || preg_match('/^[A-Za-z0-9_]{2,32}$/', $v)) aled08e_option_set('aled08_cpanel_user', $v); }
     foreach (['token', 'pass'] as $k) { $v = (string) ($P['cpanel_' . $k] ?? ''); if (trim($v) !== '' && strlen($v) <= 200 && empty($P['effacer_cpanel'])) aled08e_option_set('aled08_cpanel_' . $k, $k === 'token' ? trim($v) : $v); }
     aled08e_rs_reglages_save($P);
+    if (function_exists('aled08e_px_reglages_save')) aled08e_px_reglages_save($P);
     $msg = aled08e_lia_reglages_save($P) ?: 'reglages';
     if (!empty($P['tester_ovh'])) {
         $t = aled08e_ovh_test();

@@ -215,7 +215,8 @@
   var siteNom = function (t) { return tr(t.label || t.name || 'Site'); };
   /* ---------- la case « Code promo » : vérifiée par le serveur ----------
      ok : true (code valable), false (inconnu), null (pas encore vérifié, ou vérification impossible ici)
-     Un code promo donne toujours sa remise sur la création du site. */
+     Un code promo donne toujours sa remise sur la création du site. La remise est celle que renvoie le serveur (st.remise) :
+     un code personnel de mail de prospection (MAIL10-…) donne 10 %, sur la création seulement (st.sur = 'creation'). */
   var codeEvenement = function (scope, onChange) {
     var input = $('[data-code-evenement]', scope), etat = $('[data-code-etat]', scope);
     var st = { code: '', ok: null }, timer = null, ajax = (window.aled08Ajax || '/wp-admin/admin-ajax.php');
@@ -223,7 +224,7 @@
     var dire = function (txt, cls) { if (etat) { etat.textContent = txt; etat.className = 'b-code-etat' + (cls ? ' ' + cls : ''); } };
     var verifier = function () {
       var c = cleanCode(input.value);
-      st.code = c; st.ok = null; st.type = '';
+      st.code = c; st.ok = null; st.type = ''; st.remise = 0; st.sur = '';
       if (c.length < 3) { dire(''); onChange(); return; }
       dire(tr('Vérification du code…'));
       onChange();
@@ -232,7 +233,7 @@
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (j) {
           if (cleanCode(input.value) !== c) return;
-          if (j && j.success) { st.ok = true; st.type = 'promo'; dire(tr('Code promo valable : la remise est appliquée.'), 'is-ok'); }
+          if (j && j.success) { st.ok = true; st.type = (j.data && j.data.type) || 'promo'; st.remise = (j.data && +j.data.remise) || 0; st.sur = (j.data && j.data.sur) || ''; dire(tr('Code promo valable : la remise est appliquée.'), 'is-ok'); }
           else if (j && j.success === false) { st.ok = false; dire(tr('Ce code n’est pas reconnu. Vérifiez-le, ou écrivez-nous.'), 'is-ko'); }
           else dire(tr('Le code sera vérifié au moment de commander.'));
           onChange();
@@ -614,10 +615,13 @@
       setText('domain', domain.own() ? 'Nom de domaine : le vôtre' : 'Nom de domaine fourni' + (domText ? ' : ' + domText : ''));
       setText('domain-prix', domain.own() ? euro(0) : '+ ' + euro(domPlus) + per);
       // code promo valable : la remise porte sur la création (le site et la boutique), jamais sur la formule
-      var r = code.ok ? (data.remise || 0) : 0;
+      var r = code.ok ? (code.remise || data.remise || 0) : 0;
       var prixSite = round2(t.price * (100 - r) / 100);
       var rLine = $('[data-sum-remise]', box);
       if (rLine) rLine.hidden = !r;
+      // le libellé suit la remise du code tapé (10 % pour un code de mail de prospection, 20 % pour un code événement)
+      var rLab = rLine && rLine.querySelector('span');
+      if (rLab && r) rLab.textContent = (EN ? 'Promo code' : 'Code promo') + ' (- ' + r + ' %)';
       setText('remise', '- ' + euro(round2(t.price - prixSite)));
       // la création se paie en entier à la commande (data.acompte = 100) : en une fois, ou en 3 ou 4 fois avec un
       // organisme externe, sur la page de paiement. Le forfait démarre à la mise en ligne du site.
@@ -768,8 +772,9 @@
       var pp = pagesPlus(form, data);
       if (pp) { names.push(ppNom(pp)); optOnce += pp * data.pagePlus; }
       // code promo valable : la remise porte sur la création (le site et les options payées une fois)
-      var r = code.ok ? (data.remise || 0) : 0;
+      var r = code.ok ? (code.remise || data.remise || 0) : 0;
       var k = (100 - r) / 100;
+      var kOpt = code.sur === 'creation' ? 1 : k; // un code de mail de prospection ne touche que la création
       var prixSite = round2(t.price * k);
       // la création se paie en entier à la commande (data.acompte = 100)
       var aPayer = round2(prixSite * (data.acompte || 100) / 100);
@@ -783,10 +788,10 @@
       lines.push([tr('Création du site (') + siteNom(t).toLowerCase() + ')', aPayer]);
       $$('.b-opt input:checked', form).forEach(function (i) {
         var o = find(data.options, i.value);
-        if (o && o.once) lines.push([tr(o.name), round2(o.once * k)]);
+        if (o && o.once) lines.push([tr(o.name), round2(o.once * kOpt)]);
       });
       if (r) lines.push([tr('Code promo : ') + r + tr(' % de remise sur la création, déjà déduits'), 0]);
-      optOnce = round2(optOnce * k);
+      optOnce = round2(optOnce * kOpt);
       if (pp) lines.push([ppNom(pp) + ' (' + pp + ' × ' + euro(data.pagePlus) + ')', pp * data.pagePlus]);
       var today = round2(lines.reduce(function (s, l) { return s + l[1]; }, 0));
       var next = round2(forfaitFirst + domPlus + optRec);

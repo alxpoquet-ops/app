@@ -10,7 +10,7 @@
  * Route (administrateur) :
  *   GET /aled08/v1/atelier/regles                 la liste des fichiers, et pour quel travail les lire
  *   GET /aled08/v1/atelier/regles?fichier=visuel  le texte d'un fichier
- *   GET /aled08/v1/atelier/regles?pour=site       tous les fichiers à lire pour un travail (site, pages-google)
+ *   GET /aled08/v1/atelier/regles?pour=site       tous les fichiers à lire pour un travail (site, pages-google, prospection)
  */
 defined('ABSPATH') || exit;
 
@@ -19,10 +19,13 @@ function aled08e_regles_liste() {
     return [
         'regles-d-or' => ['Les règles d’or : à lire en premier, à chaque fois', ['site', 'pages-google', 'modification']],
         'escalade' => ['Les cas pour Alex : ce qui remonte, et comment', ['site', 'pages-google', 'modification']],
-        'organisation' => ['Qui fait quoi : les trois agents, la mémoire', ['organisation']],
+        'organisation' => ['Qui fait quoi : les cinq agents, la mémoire', ['organisation']],
         'agent-constructeur' => ['Fiche de poste du constructeur', ['poste']],
         'agent-controleur' => ['Fiche de poste du contrôleur', ['poste']],
         'agent-jarvis' => ['Fiche de poste de Jarvis', ['poste']],
+        'agent-repereur' => ['Fiche de poste du Repéreur (prospection : trouver les entreprises sans site)', ['poste', 'prospection']],
+        'agent-facteur' => ['Fiche de poste du Facteur (prospection : vérifier, écrire, relancer une fois)', ['poste', 'prospection']],
+        'prospection' => ['La prospection par e-mail : qui cibler, la note, les sources, ce qui est interdit', ['prospection']],
         'travail-en-parallele' => ['Beaucoup de travail : l’ordre, et les sous-agents en parallèle', ['poste']],
         'offre' => ['L’offre, les prix, les mots à employer', ['site']],
         'concurrents' => ['La référence du métier du client, à chercher avant chaque site', ['site']],
@@ -67,11 +70,11 @@ add_action('rest_api_init', function () {
                 $t = aled08e_regles_texte($n);
                 if ($t !== '') $out[] = ['fichier' => $n, 'titre' => $x[0], 'texte' => $t];
             }
-            if (!$out) return new WP_Error('aled08_regles', 'Aucune règle pour ce travail (site, pages-google).', ['status' => 404]);
+            if (!$out) return new WP_Error('aled08_regles', 'Aucune règle pour ce travail (site, pages-google, prospection).', ['status' => 404]);
             return new WP_REST_Response(['pour' => $pour, 'regles' => $out], 200);
         }
         $index = [];
         foreach ($liste as $n => $x) $index[] = ['fichier' => $n, 'titre' => $x[0], 'pour' => $x[1], 'present' => aled08e_regles_texte($n) !== ''];
-        return new WP_REST_Response(['fichiers' => $index, 'aide' => 'Ajoutez ?pour=site ou ?pour=pages-google pour lire d’un coup toutes les règles d’un travail, ou ?fichier=NOM pour un seul fichier.'], 200);
+        return new WP_REST_Response(['fichiers' => $index, 'aide' => 'Ajoutez ?pour=site, ?pour=pages-google ou ?pour=prospection pour lire d’un coup toutes les règles d’un travail, ou ?fichier=NOM pour un seul fichier.'], 200);
     }]);
 });

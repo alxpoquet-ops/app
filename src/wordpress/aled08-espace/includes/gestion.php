@@ -5,7 +5,8 @@
  * les demandes à faire (préparées par Cerise), les clients, les commandes et les annonces.
  * Tout est réservé à la capacité manage_options ; rien n'est visible ni modifiable par un client.
  *
- * (La recherche de prospects a été retirée le 17 novembre 2026 ; le type de contenu reste déclaré pour ne rien perdre.)
+ * (La recherche de prospects a été retirée le 17 novembre 2026 ; le type de contenu reste déclaré pour ne rien perdre.
+ *  Depuis le 25 novembre 2026, il sert aussi à la prospection par e-mail : includes/prospection.php, et le bloc « Prospection » de l'accueil.)
  */
 defined('ABSPATH') || exit;
 
@@ -97,6 +98,8 @@ add_action('template_redirect', function () {
     $onglet = strpos($quoi, 'annonce') === 0 ? 'annonces' : 'accueil';
     $back = function ($m) use ($onglet) { wp_safe_redirect(aled08e_url(['mg' => $m]) . '#' . $onglet, 303); exit; };
     if (!wp_verify_nonce(sanitize_text_field((string) ($P['_aled08e_gestion'] ?? '')), 'aled08e_gestion')) $back('erreur');
+    // la prospection par e-mail : l'interrupteur, et « a répondu » ou « ne plus lui écrire » sur un prospect
+    if (strpos($quoi, 'prospection_') === 0 && function_exists('aled08e_px_gestion_action')) $back(aled08e_px_gestion_action($quoi, $P));
     if ($quoi === 'livrer_ok' || $quoi === 'livrer_corriger') {
         $cid = (int) ($P['commande'] ?? 0);
         if (!$cid || get_post_type($cid) !== ALED08E_CPT_CMD || !function_exists('aled08e_chantier_livrer_v1') || aled08e_chantier_etat($cid) !== 'a_verifier') $back('erreur');
@@ -166,6 +169,9 @@ function aled08e_gestion($u) {
         'a_corriger' => ['esp-empty', 'C’est noté : la bande corrige, puis le site revient chez vous.'],
         'note_vide' => ['esp-warn', 'Écrivez ce qu’il faut corriger.'],
         'titre_vide' => ['esp-warn', 'Donnez un titre à votre annonce.'],
+        'px_on' => ['esp-empty', 'Prospection allumée : le Repéreur cherche et le Facteur écrit, dans la limite du quota.'],
+        'px_off' => ['esp-empty', 'Prospection coupée : plus rien n’est cherché ni envoyé.'],
+        'px_ok' => ['esp-empty', 'C’est noté pour ce prospect : il ne recevra pas de relance.'],
         'erreur' => ['esp-warn', 'Ça n’a pas marché. Rechargez la page et réessayez.'],
     ];
     $flash = isset($msgs[$mg]) ? '<p class="' . $msgs[$mg][0] . '" role="status">' . esc_html($msgs[$mg][1]) . '</p>' : '';
@@ -312,6 +318,7 @@ function aled08e_gestion($u) {
             <?php endforeach; ?>
           </ul>
           <?php endif; ?>
+          <?php if (function_exists('aled08e_px_bloc_gestion')) echo aled08e_px_bloc_gestion($act, $nonce); // phpcs:ignore -- la prospection par e-mail ?>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-suivi" aria-labelledby="tab-suivi" hidden>

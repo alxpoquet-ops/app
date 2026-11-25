@@ -43,7 +43,7 @@ Termine par un court résumé pour Alex : ce qui est fait, ce qui reste, ce que 
 
 ## Où sont les choses
 
-- Les règles : `regles/` (un fichier par sujet), dont les fiches de poste des agents (`agent-*.md`), `organisation.md`, `escalade.md` et `travail-en-parallele.md` (l’ordre et les sous-agents quand le travail s’accumule). `regles/sources.md` dit d'où viennent les règles tirées du web et quand elles ont été relues.
+- Les règles : `regles/` (un fichier par sujet), dont les fiches de poste des agents (`agent-*.md`), `organisation.md`, `escalade.md`, `prospection.md` (la prospection par e-mail, éteinte par défaut) et `travail-en-parallele.md` (l’ordre et les sous-agents quand le travail s’accumule). `regles/sources.md` dit d'où viennent les règles tirées du web et quand elles ont été relues.
 - Les modèles validés par Alex (le niveau minimum) : `docs/modeles/site-essentiel-mougiline.html` et `docs/modeles/site-boutique-mougiline.html`.
 - L'offre et les prix : `src/config.js` fait foi.
 - Le fonctionnement de l'agence (commandes, paiements, atelier) : `docs/gestion-du-site.md`.

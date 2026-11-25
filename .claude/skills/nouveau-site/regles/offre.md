@@ -4,8 +4,8 @@
 
 ## Le site
 
-- **Site Essentiel : 749 € la création.** Un seul site. Il est assemblé à partir de nos modules (accueil, présentation, services et tarifs, galerie, questions fréquentes, contact) et rempli avec les informations et les photos du client. Type de commande : `une-page`.
-- **Option e-commerce : + 200 €** (949 € en tout). Une boutique complète : produits, panier, paiement en ligne. Type de commande : `boutique`.
+- **Site Essentiel : 400 € la création.** Un seul site. Il comprend les parties essentielles (accueil, présentation, services et tarifs, galerie, questions fréquentes, contact) et rempli avec les informations et les photos du client. Type de commande : `une-page`.
+- **Option e-commerce : + 150 €** (550 € en tout). Une boutique complète : produits, panier, paiement en ligne. Type de commande : `boutique`.
 - **Page de visibilité Google : 10 € la page**, à l'unité ou en pack de 5 ou 10. Commandée depuis l'espace client, écrite et mise en ligne automatiquement par l'atelier, puis annoncée au client par e-mail.
 - L'ancien Site Visibilité (750 €, type `vitrine`, jusqu'à 15 pages) n'est plus proposé. Une commande passée avant le 21 novembre 2026 se fait comme prévu à sa commande.
 
@@ -25,7 +25,7 @@
 
 | On dit | On ne dit plus |
 |---|---|
-| « 749 € la création » | « 749 € payé une fois » |
+| « 400 € la création » | « 400 € payé une fois » |
 | « Mes modifications » (l'onglet) | « Mes demandes » |
 | « Modifier mon site moi-même » (le bouton) | |
 | « option e-commerce » | « Site Boutique » |
