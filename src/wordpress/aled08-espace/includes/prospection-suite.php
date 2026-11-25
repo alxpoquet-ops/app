@@ -230,7 +230,18 @@ function aled08e_px_domaine_candidats($nom, $ville = '', $article = '') {
     $v = $mots($ville);
     $vi = $v ? implode('', $v) : '';
     $art = str_replace("'", '’', (string) $article);
-    $c = [$colle . '.fr'];
+    // d'abord le nom en entier, avec ses « de », « du », « et » du milieu (« Fabrique de Rêve » → fabriquedereve.fr) :
+    // c'est le nom que ses clients connaissent. Seuls l'article du début et la forme juridique tombent.
+    $tous = preg_split('/[^a-z0-9]+/', strtolower(remove_accents(str_replace(['’', "'"], ' ', (string) $nom))), -1, PREG_SPLIT_NO_EMPTY);
+    $tous = array_values(array_filter($tous, function ($x) { return !in_array($x, ['sarl', 'sas', 'sasu', 'eurl', 'ei', 'eirl', 'snc', 'sci', 'ets', 'etablissements'], true); }));
+    while ($tous && in_array($tous[0], ['le', 'la', 'les', 'l'], true)) array_shift($tous);
+    $plein = implode('', $tous);
+    $c = [];
+    if ($plein !== '' && $plein !== $colle) {
+        $c[] = $plein . '.fr';
+        if ($art === 'la' || $art === 'le' || $art === 'les') $c[] = $art . $plein . '.fr';
+    }
+    $c[] = $colle . '.fr';
     if ($art === 'la' || $art === 'le' || $art === 'les') $c[] = $art . $colle . '.fr';
     if ($art === 'l’') $c[] = 'l' . $colle . '.fr';
     if ($vi !== '') $c[] = $colle . '-' . $vi . '.fr';
