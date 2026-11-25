@@ -141,6 +141,8 @@ function aled08e_parrainage_html($uid, $compact = false) {
     $h .= '<div class="pr-tete"><span class="pr-art" aria-hidden="true">' . aled08e_monster('ruban') . '</span><div><p class="pr-sur">Parrainage</p>'
         . '<h3 class="pr-titre">' . esc_html($mois) . ' mois offerts pour vous, ' . esc_html($mois) . ' mois pour votre filleul</h3>'
         . '<p class="pr-txt">Un proche crée son site avec votre code : un mois après la mise en ligne de son site, vous recevez chacun ' . esc_html($mois) . ' mois de forfait Mini offerts (' . esc_html(aled08e_euro_txt($valeur)) . '). Sans limite : 2 filleuls, c’est un an offert.</p></div></div>';
+    $moTxt = aled08e_mois_offerts_txt($uid); // le compteur des mois offerts (parrainage, jeu-concours)
+    if ($compact && $moTxt !== '') $h .= '<p class="pr-mo">' . aled08e_icon('gift') . '<span>' . esc_html($moTxt) . '</span></p>';
     $h .= '<div class="pr-code"><span>Votre code</span><b>' . esc_html($code) . '</b></div>';
     $h .= '<div class="pr-lien"><input class="copy-in" id="' . esc_attr($id) . '" type="text" readonly value="' . esc_attr($lien) . '" aria-label="Votre lien de parrainage">'
         . '<div class="pr-btns"><button type="button" class="btn btn-primary btn-sm" data-copy="' . esc_attr($id) . '" data-copy-msg="Lien de parrainage copié">' . aled08e_icon('link') . '<span>Copier le lien</span></button>'

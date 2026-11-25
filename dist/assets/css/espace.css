@@ -1575,3 +1575,7 @@ a.st2-p-titre { text-decoration: underline; text-decoration-thickness: 1.5px; te
 .pr-stats small { color: var(--muted); }
 .pr-note { margin: 10px 0 0; font-size: .9rem; }
 @media (max-width: 420px) { .pr-art { width: 54px; } .pr-titre { font-size: 1.05rem; } }
+/* Le compteur des mois offerts (parrainage, jeu-concours) */
+.pr-mo, .mo-offerts { display: flex; gap: 8px; align-items: flex-start; margin: 12px 0 0; padding: 10px 14px; border-radius: 14px; background: var(--mint); color: var(--ink); font-weight: 700; line-height: 1.4; }
+.pr-mo svg, .mo-offerts svg { flex: none; width: 20px; height: 20px; margin-top: 1px; }
+.mo-offerts { margin: 0 0 14px; }

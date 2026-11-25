@@ -455,7 +455,8 @@ Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit
 **La manche (100 jours).**
 - Cinq Rubans se cachent, un par catégorie du règlement : la page d'accueil, l'espace client, les mini-tutos, la page Tarifs et les questions fréquentes.
 - À chaque manche, leurs cachettes sont tirées au hasard dans une réserve d'endroits bien visibles (`aled08e_concours_pool()`), jamais les mêmes que la manche d'avant.
-- Le joueur doit être connecté. Ne jouent pas : l'équipe, les clients qui ont un site ou une commande, et les anciens gagnants.
+- Le joueur doit être connecté. Tout le monde joue, sauf l'équipe et les anciens gagnants (décision d'Alex, 25 novembre 2026 : les clients aussi).
+- Un gagnant qui a déjà un site ou une commande reçoit **3 mois de forfait Mini offerts** (`ALED08E_LOT_CLIENT_MOIS`). Ils sont ajoutés tout seuls avec `aled08e_mois_offerts_ajouter`, comme le parrainage : abonnement suspendu s'il est en cours, sinon mis de côté pour le démarrage du forfait. Ils s'affichent dans son « compteur de mois offerts » : accueil de l'espace, et Mon compte › Mon forfait. Il reçoit l'e-mail « Félicitations : 3 mois de forfait offerts ! ».
 - Un clic sur un Ruban lance l'animation (saut, tour, confettis) et le compte.
 - Dans l'espace client, un compteur flottant (en bas à gauche) affiche les Rubans trouvés sur 5 et le chrono du tirage. Ouvert, il montre le temps exact et un indice par Ruban.
 - Les cinq trouvés, le joueur donne son e-mail et son numéro de portable. Le numéro sert seulement à empêcher les doublons : on n'appelle personne.

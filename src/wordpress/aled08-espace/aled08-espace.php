@@ -1399,7 +1399,7 @@ function aled08e_dashboard() {
           <p class="app-sub">Nom de domaine</p>
           <p class="app-domain"><?php echo aled08e_icon('globe'); // phpcs:ignore ?><span><strong><?php echo esc_html($host ?: aled08e_meta($uid, 'domaine_info')); ?></strong><small><?php echo esc_html(aled08e_meta($uid, 'domaine_info') ?: ($cmd && $cmd['domaine_mien'] ? 'Votre nom de domaine actuel' : 'À votre nom, renouvelé avec l’abonnement')); ?></small></span></p>
           <?php endif; ?>
-          <?php $smDom = ob_get_clean(); echo aled08e_sm_html(['infos' => ['circle-user', 'Mes infos', $smInfos], 'parrainage' => ['gift', 'Parrainage', aled08e_parrainage_html($uid)], 'forfait' => ['credit-card', 'Mon forfait', $smForfait], 'factures' => ['receipt', 'Factures', $smFact], 'domaine' => ['globe', 'Nom de domaine', $smDom]], 'Rubriques de Mon compte'); // phpcs:ignore ?>
+          <?php $smDom = ob_get_clean(); echo aled08e_sm_html(['infos' => ['circle-user', 'Mes infos', $smInfos], 'parrainage' => ['gift', 'Parrainage', aled08e_parrainage_html($uid)], 'forfait' => ['credit-card', 'Mon forfait', (function_exists('aled08e_mois_offerts_txt') && aled08e_mois_offerts_txt($uid) !== '' ? '<p class="esp-ok mo-offerts">' . aled08e_icon('gift') . '<span>' . esc_html(aled08e_mois_offerts_txt($uid)) . '</span></p>' : '') . $smForfait], 'factures' => ['receipt', 'Factures', $smFact], 'domaine' => ['globe', 'Nom de domaine', $smDom]], 'Rubriques de Mon compte'); // phpcs:ignore ?>
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-vacances" aria-labelledby="tab-vacances" hidden>
