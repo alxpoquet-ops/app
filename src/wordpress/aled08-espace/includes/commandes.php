@@ -127,6 +127,8 @@ function aled08e_code_evenement_ajax() {
     $code = wp_unslash($_GET['code'] ?? '');
     // une seule case pour le code promo et le code de parrainage : on dit seulement de quel genre il est (jamais à qui il appartient)
     if (aled08e_code_evenement_ok($code)) wp_send_json_success(['type' => 'promo', 'remise' => aled08e_remise_evenement()]);
+    // le code personnel d'un mail de prospection (MAIL10-7KQ2) : sa remise, sur la création seulement, pendant 30 jours après l'envoi
+    if (function_exists('aled08e_px_code_ok') && aled08e_px_code_ok($code)) wp_send_json_success(['type' => 'mail', 'remise' => aled08e_px_remise(), 'sur' => 'creation']);
     // le parrainage est retiré (19 novembre 2026) : un ancien code de parrainage n'est plus reconnu
     if (false && aled08e_user_by_code(aled08e_clean_code($code))) wp_send_json_success(['type' => 'parrain', 'mois' => (int) (aled08e_data()['parrainageMois'] ?? 1)]);
     wp_send_json_error(['message' => 'Code inconnu.']);
@@ -158,10 +160,11 @@ function aled08e_cmd_montants($cfg) {
     $pagesPlus = aled08e_cmd_pages_plus($cfg['pages_plus'] ?? 0);
     $ponctuel += $pagesPlus * aled08e_cmd_page_prix();
     // code événement : la remise porte sur la création (le site et ce qui se paie une fois), pas sur la formule
+    // remise_sur 'creation' (le code personnel d'un mail de prospection) : seulement le prix de création du site
     $remise = max(0, min(90, (int) ($cfg['remise'] ?? 0)));
     if ($remise) {
         $creation = round($creation * (100 - $remise) / 100, 2);
-        $ponctuel = round($ponctuel * (100 - $remise) / 100, 2);
+        if (($cfg['remise_sur'] ?? '') !== 'creation') $ponctuel = round($ponctuel * (100 - $remise) / 100, 2);
         $acompte = round($creation * (int) $D['acompte'] / 100, 2);
         $solde = round($creation - $acompte, 2);
     }
@@ -206,7 +209,7 @@ function aled08e_cmd_get($id) {
         'domaine' => (string) $g('domaine'), 'domaine_mien' => (int) $g('domaine_mien', 0), 'domaine_statut' => (string) $g('domaine_statut', 'a_reserver'),
         'statut' => (string) $g('statut', 'attente_paiement'), 'montants' => $m,
         'message' => (string) $g('message'), 'parrain' => (string) $g('parrain'), 'user' => (int) $g('user', $p->post_author),
-        'code_evenement' => (string) $g('code_evenement'), 'remise' => (int) $g('remise', 0),
+        'code_evenement' => (string) $g('code_evenement'), 'remise' => (int) $g('remise', 0), 'remise_sur' => (string) $g('remise_sur'),
         'stripe_session' => (string) $g('stripe_session'), 'stripe_customer' => (string) $g('stripe_customer'), 'stripe_subscription' => (string) $g('stripe_subscription'),
         'stripe_lissage_item' => (string) $g('stripe_lissage_item'), 'lissage_paye' => (int) $g('lissage_paye', 0), 'solde_paye' => (int) $g('solde_paye', 0), 'solde_session' => (string) $g('solde_session'),
         'paiement_en_cours' => (int) $g('paiement_en_cours', 0), 'reception_payee' => (int) $g('reception_payee', 0), 'solde_fois' => (int) $g('solde_fois', 0),
@@ -387,6 +390,9 @@ function aled08e_cmd_traiter_post() {
     ];
     // code événement : vérifié ici, la remise est recalculée par le serveur
     $cfg['remise'] = ($cfg['code_evenement'] !== '' && aled08e_code_evenement_ok($cfg['code_evenement'])) ? aled08e_remise_evenement() : 0;
+    $cfg['remise_sur'] = '';
+    // ou le code personnel d'un mail de prospection : -10 % sur la création seulement, accepté 30 jours après l'envoi (includes/prospection.php)
+    if (!$cfg['remise'] && $cfg['code_evenement'] !== '' && function_exists('aled08e_px_code_ok') && aled08e_px_code_ok($cfg['code_evenement'])) { $cfg['remise'] = aled08e_px_remise(); $cfg['remise_sur'] = 'creation'; }
     if ($cfg['lissage']) $cfg['periode'] = 'mois'; // le site en plusieurs fois se paie avec un forfait au mois
     // « Je m'en occupe moi-même » (champ gestion = moi) : création seule, sans formule. Le client garde son nom de domaine
     // et son hébergement. Il peut payer le reste en une fois ou étalé (un abonnement Stripe qui ne porte que les mensualités).
@@ -510,12 +516,13 @@ function aled08e_cmd_traiter_post() {
         'ref' => $ref, 'type' => $cfg['type'], 'forfait' => $cfg['forfait'], 'periode' => $cfg['periode'], 'lissage' => (int) $cfg['lissage'], 'options' => $cfg['options'], 'pages_plus' => (int) $cfg['pages_plus'],
         'domaine' => $cfg['domaine'], 'domaine_mien' => $cfg['domaine_mien'] ? 1 : 0, 'domaine_statut' => $cfg['domaine_mien'] ? 'client' : 'a_reserver',
         'statut' => 'attente_paiement', 'montants' => $m, 'message' => $message, 'parrain' => $cfg['parrain'], 'user' => $uid,
-        'code_evenement' => $cfg['remise'] ? $cfg['code_evenement'] : '', 'remise' => (int) $cfg['remise'],
+        'code_evenement' => $cfg['remise'] ? $cfg['code_evenement'] : '', 'remise' => (int) $cfg['remise'], 'remise_sur' => $cfg['remise_sur'],
         'stripe_session' => '', 'stripe_customer' => '', 'stripe_subscription' => '', 'stripe_lissage_item' => '', 'lissage_paye' => 0, 'solde_paye' => 0, 'solde_session' => '',
     ];
     foreach ($c as $k => $v) $metas[$k] = $v;
     foreach ($metas as $k => $v) update_post_meta($pid, '_aled08_' . $k, $v);
     aled08e_cmd_journal($pid, 'Commande reçue depuis le site.');
+    do_action('aled08e_commande_recue', $pid, $cfg, $c); // la prospection par e-mail y reconnaît son code ou son adresse
     aled08e_cmd_journal($pid, $demarrage === 'oui'
         ? 'Choix du client : démarrer tout de suite. Il a demandé expressément le démarrage avant la fin des 14 jours et reconnu qu’il perd son droit de rétractation une fois le site entièrement livré.'
         : 'Choix du client : attendre 14 jours. La création ne commence pas avant le ' . wp_date('j F Y', time() + 14 * DAY_IN_SECONDS) . ' (fin du délai de rétractation).');
@@ -889,6 +896,6 @@ function aled08e_cmd_reception_due($c) {
 }
 /* Montants recalculés pour le choix fait à la réception (n = 0 : en une fois ; 6 ou 12 : en plusieurs fois, forfait au mois) */
 function aled08e_cmd_montants_reception($c, $n) {
-    $cfg = ['type' => $c['type'], 'forfait' => $c['forfait'], 'periode' => $n ? 'mois' : $c['periode'], 'lissage' => $n, 'options' => $c['options'], 'pages_plus' => $c['pages_plus'] ?? 0, 'remise' => (int) ($c['remise'] ?? 0)];
+    $cfg = ['type' => $c['type'], 'forfait' => $c['forfait'], 'periode' => $n ? 'mois' : $c['periode'], 'lissage' => $n, 'options' => $c['options'], 'pages_plus' => $c['pages_plus'] ?? 0, 'remise' => (int) ($c['remise'] ?? 0), 'remise_sur' => (string) ($c['remise_sur'] ?? '')];
     return aled08e_cmd_montants($cfg);
 }

@@ -6,13 +6,15 @@
  *   - Le constructeur : fait les sites, les pages de visibilité Google et les modifications demandées par les clients.
  *   - Le contrôleur   : relit tout avec un œil neuf, puis livre (ou renvoie à corriger). Rien n'arrive chez un client sans lui.
  *   - Jarvis          : regarde l'ensemble, tient la mémoire propre, et écrit à Alex seulement quand il le faut.
+ *   - Le Repéreur et le Facteur : la prospection par e-mail (25 novembre 2026), éteinte par défaut. Leur travail est dans
+ *     includes/prospection.php ; leur poste passe par la même route.
  *
  * Ce fichier porte : le poste de chaque agent (une seule route d'entrée), la mémoire commune (le « second cerveau »),
  * les modifications des clients, les cas pour Alex, le point de Jarvis, et un chien de garde si les agents ne passent plus.
  * Les fiches de poste et les règles viennent du skill « nouveau-site » (regles/*.md, servies par includes/regles.php).
  *
  * Routes (administrateur) :
- *   GET  /aled08/v1/atelier/poste?agent=constructeur|controleur|jarvis   sa fiche de poste, son travail, la mémoire utile (note son passage)
+ *   GET  /aled08/v1/atelier/poste?agent=constructeur|controleur|jarvis|repereur|facteur   sa fiche de poste, son travail, la mémoire utile (note son passage)
  *   POST /aled08/v1/atelier/passage {agent, bilan}                        le bilan de fin de passage
  *   GET  /aled08/v1/atelier/memoire?type=&client=&q=&limite=              lire la mémoire
  *   POST /aled08/v1/atelier/memoire {type, client, titre, texte, par}     ajouter une note
@@ -23,7 +25,9 @@
 defined('ABSPATH') || exit;
 
 define('ALED08E_CPT_NOTE', 'aled08_note');
-define('ALED08E_AGENTS', ['constructeur', 'controleur', 'jarvis']);
+define('ALED08E_AGENTS', ['constructeur', 'controleur', 'jarvis', 'repereur', 'facteur']);
+/* Les agents de la prospection par e-mail (includes/prospection.php) */
+define('ALED08E_AGENTS_PROSPECTION', ['repereur', 'facteur']);
 
 /* Les agents font-ils les modifications des clients ? ('0' : tout revient chez Alex, comme avant) */
 function aled08e_agents_actifs() { return get_option('aled08_agents', '1') === '1'; }
@@ -230,19 +234,24 @@ add_action('rest_api_init', function () {
     $perm = function () { return current_user_can('manage_options'); };
     register_rest_route('aled08/v1', '/atelier/poste', ['methods' => 'GET', 'permission_callback' => $perm, 'callback' => function (WP_REST_Request $r) {
         $agent = sanitize_key((string) $r->get_param('agent'));
-        if (!in_array($agent, ALED08E_AGENTS, true)) return new WP_Error('aled08_agents', 'Agent inconnu (constructeur, controleur, jarvis).', ['status' => 400]);
+        if (!in_array($agent, ALED08E_AGENTS, true)) return new WP_Error('aled08_agents', 'Agent inconnu (constructeur, controleur, jarvis, repereur, facteur).', ['status' => 400]);
         $pass = aled08e_agents_passages();
         $avant = $pass;
         $pass[$agent] = ['le' => time(), 'bilan' => $pass[$agent]['bilan'] ?? ''];
         update_option('aled08_agents_passages', $pass, false);
+        // le Repéreur et le Facteur : leur poste vient de la prospection (rien_a_faire quand elle est éteinte)
+        if (in_array($agent, ALED08E_AGENTS_PROSPECTION, true)) return new WP_REST_Response(function_exists('aled08e_px_poste') ? aled08e_px_poste($agent) : ['agent' => $agent, 'rien_a_faire' => true], 200);
         $travail = aled08e_agents_travail($agent);
         $rien = !$travail['sites'] && !$travail['pages_google'] && !$travail['modifications'];
         $out = ['agent' => $agent, 'rien_a_faire' => $agent !== 'jarvis' && $rien, 'travail' => $travail];
         if ($agent === 'jarvis') {
             $pp = [];
-            foreach (ALED08E_AGENTS as $a) $pp[$a] = isset($avant[$a]) ? ['dernier_passage' => wp_date('j/m H:i', (int) $avant[$a]['le']), 'il_y_a_heures' => round((time() - (int) $avant[$a]['le']) / 3600, 1), 'bilan' => (string) ($avant[$a]['bilan'] ?? '')] : ['dernier_passage' => 'jamais'];
+            $pxOn = function_exists('aled08e_px_active') && aled08e_px_active();
+            foreach (ALED08E_AGENTS as $a) if ($pxOn || !in_array($a, ALED08E_AGENTS_PROSPECTION, true)) $pp[$a] = isset($avant[$a]) ? ['dernier_passage' => wp_date('j/m H:i', (int) $avant[$a]['le']), 'il_y_a_heures' => round((time() - (int) $avant[$a]['le']) / 3600, 1), 'bilan' => (string) ($avant[$a]['bilan'] ?? '')] : ['dernier_passage' => 'jamais'];
             $out['passages'] = $pp;
             $out['dernier_point_envoye'] = ($x = (int) get_option('aled08_agents_point_le')) ? wp_date('j/m H:i', $x) : 'jamais';
+            // la prospection par e-mail : le bilan des sept derniers jours, pour le point du lundi
+            if (function_exists('aled08e_px_bilan_jarvis')) $out['prospection'] = aled08e_px_bilan_jarvis();
         }
         // la fiche de poste et la mémoire ne sont envoyées que s'il y a du travail (un passage à vide reste court)
         if (!$out['rien_a_faire']) {
