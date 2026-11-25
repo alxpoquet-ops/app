@@ -1,5 +1,5 @@
 // Gabarit commun : <head>, en-tête, pied de page, données structurées
-const { site, sections, types, forfaits, creation, marche, jetonsLia, enService, fractionne, creationSeule, ateliers, outilsOffre } = require('../config');
+const { site, sections, types, forfaits, creation, lancement, marche, jetonsLia, enService, fractionne, creationSeule, ateliers, outilsOffre } = require('../config');
 let METIERS = [];
 try { METIERS = require('../content/metiers').metiers; } catch (e) { /* pas encore écrit */ }
 const { icon } = require('./icons');
@@ -34,6 +34,7 @@ function businessSchema() {
       name: t.name + ' : ' + t.but.toLowerCase(),
       price: t.price,
       priceCurrency: 'EUR',
+      ...(C.enLancement() && t.prixNormal && t.prixNormal !== t.price ? { priceValidUntil: lancement.jusquau } : {}), // l'offre de lancement
       description: t.pitch.replace(/’/g, "'"),
       url: site.url + C.creerUrl({ type: t.id }),
     })),

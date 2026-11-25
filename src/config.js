@@ -114,7 +114,14 @@ const sections = {
 // 25 novembre 2026 (Alex) : on se positionne « 2 à 3 fois moins cher qu'un indépendant » et premium : 749 € le site, 949 € avec
 // l'option e-commerce (1 500 € ÷ 749 € = 2,0 ; 3 000 € ÷ 749 € = 4,0, « 3 » reste prudent). Avant : 399 € (24 novembre), 400 €.
 // 25 novembre 2026, soir (Alex) : 400 € le site, + 150 € l'option e-commerce (550 € en tout). Avant ce soir : 749 € et + 200 €.
-const creation = { prix: 400, ecommerce: 150, boutique: 150, pagePlus: 10, pagesPlusMax: 0, boutiqueProduits: 0, boutiqueSlot: 0 };
+// 25 novembre 2026, nuit (Alex) : retour à 749 € le site et + 200 € l'option e-commerce (les prix normaux), avec une OFFRE DE
+// LANCEMENT la première année : 549 € le site, 749 € avec l'option e-commerce, pour toute commande jusqu'au 25 novembre 2027 inclus.
+// prix = le prix payé aujourd'hui (l'offre de lancement) : la commande, Stripe, l'extension et les codes promo partent de lui.
+// prixNormal = le prix après l'offre. Le 26 novembre 2027 : mettre lancement.actif à false (prix repasse à prixNormal).
+// Pas de prix barré : 399 € et 400 € ont été pratiqués dans les 30 derniers jours, un « 749 € barré » ne serait pas un prix de
+// référence valable (règle du prix antérieur). On annonce donc un prix de lancement et le prix d'après, sans « au lieu de ».
+const lancement = { actif: true, nom: 'Offre de lancement', prix: 549, jusquau: '2027-11-25', jusquauTexte: '25 novembre 2027' };
+const creation = { prix: lancement.actif ? lancement.prix : 749, prixNormal: 749, ecommerce: 200, boutique: 200, pagePlus: 10, pagesPlusMax: 0, boutiqueProduits: 0, boutiqueSlot: 0 };
 // Offre événement : un code donné sur une foire, un marché, un salon ou un événement professionnel.
 // remise : en %, sur la création du site (site et options payés une fois). Les codes valables se règlent dans
 // l'extension WordPress (Réglages, « Codes événement ») : le serveur vérifie le code et recalcule le prix.
@@ -153,8 +160,8 @@ const marche = {
 marche.fois = Math.round(marche.vitrineMin / creation.prix) + ' à ' + Math.round(marche.vitrineMax / creation.prix);
 // « 4 fois moins cher qu'un indépendant » (décision d'Alex, 24 novembre 2026) : le bas de la fourchette de l'indépendant divisé par notre prix, arrondi.
 marche.foisMin = Math.round(marche.vitrineMin / creation.prix);
-// « X à Y fois moins cher qu'un indépendant » : le bas et le haut de la fourchette de l'indépendant divisés par notre prix, arrondis
-// vers le bas (jamais exagéré). À 400 € : 1 500 ÷ 400 = 3,75 → 3 ; 3 000 ÷ 400 = 7,5 → 7, donc « 3 à 7 » (25 novembre 2026, soir).
+// « X à Y fois moins cher qu'un indépendant » : le bas et le haut de la fourchette de l'indépendant divisés par le prix payé
+// aujourd'hui, arrondis vers le bas (jamais exagéré). À 549 € : 1 500 ÷ 549 = 2,7 → 2 ; 3 000 ÷ 549 = 5,5 → 5, donc « 2 à 5 ».
 marche.foisTexte = `${Math.max(1, Math.floor(marche.vitrineMin / creation.prix))} à ${Math.max(2, Math.floor(marche.vitrineMax / creation.prix))}`;
 // entretien : calculé plus bas, une fois le prix de l'abonnement connu (marche.entretienFois)
 
@@ -181,6 +188,7 @@ const types = [
     monstre: 'bricou',
     vedette: true,
     price: creation.prix,
+    prixNormal: creation.prixNormal, // le prix après l'offre de lancement
     delai: 'quelques heures',
     pitch: 'Votre site professionnel, créé avec vos informations, vos photos et vos couleurs.',
     qui: 'Pour exister sur internet, être joignable et présenter votre activité.',
@@ -198,6 +206,7 @@ const types = [
     icon: 'shopping-bag',
     monstre: 'mochi',
     price: creation.prix + creation.ecommerce,
+    prixNormal: creation.prixNormal + creation.ecommerce,
     base: 'Site Essentiel',
     option: true, // le Site Essentiel avec la case « E-commerce » cochée
     info: 'Une boutique complète sur votre site : vos produits et vos services, un panier et le paiement en ligne sécurisé. Vous recevez un e-mail à chaque commande, et vous gérez votre catalogue, vos prix, vos promotions, la livraison et vos paiements vous-même, depuis votre espace client.',
@@ -546,4 +555,4 @@ const clients = [
   { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: 'Le site d’un électricien dans les Ardennes. Il sera en ligne très bientôt.' },
 ];
 
-module.exports = { ateliers, outilsOffre, tutosOffre, INCLUS_INFO, typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };
+module.exports = { lancement, ateliers, outilsOffre, tutosOffre, INCLUS_INFO, typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };

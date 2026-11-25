@@ -1,5 +1,5 @@
 // Composants HTML réutilisables
-const { INCLUS_INFO, site, sections, types, typesOfferts, offreSite, modules, forfaits, annuel, lissage, fractionne, options, fidelite, paiement, creation, marche, boost, aLaDemande, bande, evenement, delais, creationSeule, extrasGroupes, revisionsNote, phrase } = require('../config');
+const { INCLUS_INFO, site, sections, types, typesOfferts, offreSite, modules, forfaits, annuel, lissage, fractionne, options, fidelite, paiement, creation, lancement, marche, boost, aLaDemande, bande, evenement, delais, creationSeule, extrasGroupes, revisionsNote, phrase } = require('../config');
 const { icon } = require('./icons');
 const { monster } = require('./monsters');
 const { petit, alexPortrait } = require('./bestiaire');
@@ -171,6 +171,7 @@ function typeCards() {
     <span class="type-ico">${icon(t.icon)}</span>
     <span class="type-name">${esc(t.label)}</span>
     <span class="type-price"><b>${euro(t.price)}</b><small>la création</small></span>
+    ${lancementNote(t)}
     <span class="type-pitch">${inline(t.pitch)}</span>
     <span class="type-qui">${inline(t.qui)}</span>
     <span class="type-go">Choisir ${icon('arrow-right')}</span>
@@ -201,6 +202,14 @@ function payBox() {
 // ---------------------------------------------------------------- l'offre (21 novembre 2026) : un site, une option e-commerce, puis Autonomie ou Mini
 // ESSENTIEL : le Site Essentiel (400 €). BOUTIQUE_T : le Site Essentiel + e-commerce (600 €). ECOMMERCE : l'option (+ 200 €).
 const ESSENTIEL = offreSite.site, BOUTIQUE_T = offreSite.avecBoutique, ECOMMERCE = offreSite.option;
+// L'offre de lancement (config : lancement), sous le prix d'une carte : la date de fin et le prix d'après, sans prix barré.
+const enLancement = () => lancement.actif && new Date() <= new Date(lancement.jusquau + 'T23:59:59');
+function lancementNote(t, { tag = 'span', cls = '' } = {}) {
+  if (!enLancement() || !t.prixNormal || t.prixNormal === t.price) return '';
+  return `<${tag} class="prix-lancement${cls ? ' ' + cls : ''}">${icon('sparkles')}<span><strong>${esc(lancement.nom)}</strong> jusqu’au ${esc(lancement.jusquauTexte)}, puis ${euro(t.prixNormal)}</span></${tag}>`;
+}
+// La phrase, pour un texte courant (pages Tarifs, Créer mon site, accueil)
+const lancementPhrase = () => (enLancement() ? `${lancement.nom} : ${euro(ESSENTIEL.price)} la création pour toute commande passée jusqu’au ${lancement.jusquauTexte}, ${euro(ESSENTIEL.prixNormal)} ensuite.` : '');
 const INCLUS_SITE = ESSENTIEL.inclus;
 // « On s'occupe de tout » (Mini) et « Je gère tout moi-même » (Autonomie)
 const INCLUS_NOUS = forfaits[0].main;
@@ -263,6 +272,7 @@ function siteOffreCarte(t, { compact = false, choose = true } = {}) {
     <p class="site-nom">${esc(t.name)}</p>
     <p class="site-but">${icon('arrow-right')}<span>${esc(t.but)}</span></p>
     <p class="site-prix"><b>${euro(t.price)}</b><small>la création</small></p>
+    ${lancementNote(t, { tag: 'p' })}
     ${listePlus(t.inclus, { vis: 99 })}
     ${choose ? `<p class="site-go"><a class="btn ${t.vedette ? 'btn-primary' : 'btn-light'}" href="${creerUrl({ type: t.id })}">${icon('wand-sparkles')}<span>Choisir ce site</span></a></p>` : ''}
   </article>`;
@@ -275,6 +285,7 @@ function optionEcommerceCarte({ compact = false, choose = true } = {}) {
     <p class="site-nom">${esc(ECOMMERCE.name)}</p>
     <p class="site-but">${icon('arrow-right')}<span>En option : ${esc(minus(t.but))}</span></p>
     <p class="site-prix"><b>+ ${euro(ECOMMERCE.prix)}</b><small>à la création, ${euro(t.price)} le site complet</small></p>
+    ${lancementNote(t, { tag: 'p' })}
     ${listePlus(ECOMMERCE.inclus, { vis: 99 })}
     ${choose ? `<p class="site-go"><a class="btn btn-light" href="${creerUrl({ type: t.id })}">${icon('shopping-bag')}<span>Avec l’e-commerce</span></a></p>` : ''}
   </article>`;
@@ -546,6 +557,7 @@ function siteCarte({ name = 'b-type', court = false } = {}) {
       <div class="cf-corps">
         <p class="cf-nom">${esc(t.name)}</p>
         <p class="cf-prix"><b>${euro(t.price)}</b><small>une fois</small></p>
+        ${lancementNote(t, { tag: 'p' })}
         ${court ? `<p class="cf-txt">${esc(t.pitch)}</p>` : cfListe(t.inclus)}
       </div>
       <span class="cf-badge">${icon('check')}Compris</span>
@@ -556,7 +568,7 @@ function siteCarte({ name = 'b-type', court = false } = {}) {
         <span class="cf-art" aria-hidden="true">${petit(BOUTIQUE_T.monstre)}</span>
         <span class="cf-corps">
           <strong class="cf-nom">${esc(ECOMMERCE.name)} : + ${euro(ECOMMERCE.prix)}</strong>
-          <span class="cf-but">${esc(BOUTIQUE_T.but)} : ${euro(BOUTIQUE_T.price)} la création, avec le site</span>
+          <span class="cf-but">${esc(BOUTIQUE_T.but)} : ${euro(BOUTIQUE_T.price)} la création, avec le site${enLancement() ? ` (${esc(minus(lancement.nom))}, puis ${euro(BOUTIQUE_T.prixNormal)})` : ''}</span>
           ${court ? `<span class="cf-txt">${esc(ECOMMERCE.court)}</span>` : cfListe(ECOMMERCE.inclus)}
         </span>
         <span class="cf-coche" aria-hidden="true">${icon('check')}</span>
@@ -758,7 +770,7 @@ function comparatifLignes() {
   const fourchette = (a, b) => `${euro(a)} à ${euro(b)}`;
   return [
     { id: 'prix', court: true, l: 'Prix de création', c: [
-      [euro(ESSENTIEL.price), `la création, ou ${euro(BOUTIQUE_T.price)} avec l’option ${ECOMMERCE.name}. Le même prix pour tous`],
+      [euro(ESSENTIEL.price), `la création, ou ${euro(BOUTIQUE_T.price)} avec l’option ${ECOMMERCE.name}. Le même prix pour tous${enLancement() ? `, jusqu’au ${lancement.jusquauTexte} (${minus(lancement.nom)})` : ''}`],
       [fourchette(marche.vitrineMin, marche.vitrineMax), 'en général, au devis'],
       [fourchette(marche.agenceMin, marche.agenceMax), 'en général, au devis'],
       ['Pas de création à payer', 'mais un abonnement, et votre temps pour tout construire'],
@@ -965,6 +977,7 @@ const TUTOS = {
 };
 
 module.exports = {
+  enLancement, lancementNote, lancementPhrase,
   TUTOS, DEROULEMENT, deroulementListe, frise, portraitAlex,
   infoBtn, deroulant, deroulants, listePlus,
   LMAX,

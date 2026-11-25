@@ -362,7 +362,7 @@ function forfaitsPage() {
   const body = `${C.pageHero({
     section: 'forfaits',
     h1: `Tarifs : un site soigné, dès ${euro(creation.prix)}`,
-    lead: `Des prix affichés, les mêmes pour tous, ${marche.foisTexte} fois moins chers qu’un indépendant. D’abord la création de votre site. Ensuite, le **forfait ${AUTO.name}** à ${euro(AUTO.month)} ou le **forfait ${ABO.name}** à ${euro(ABO.month)} par mois. Enfin, les extras, si vous en avez besoin.`,
+    lead: `${C.lancementPhrase() ? `**${C.lancementPhrase()}** ` : ''}Des prix affichés, les mêmes pour tous, ${marche.foisTexte} fois moins chers qu’un indépendant. D’abord la création de votre site. Ensuite, le **forfait ${AUTO.name}** à ${euro(AUTO.month)} ou le **forfait ${ABO.name}** à ${euro(ABO.month)} par mois. Enfin, les extras, si vous en avez besoin.`,
     crumbs,
   })}
 <section class="section"><div class="container" data-billing-scope>

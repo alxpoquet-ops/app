@@ -2339,6 +2339,11 @@ a.client-url { text-decoration: none; }
 .site-prix { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin: 0 0 12px; }
 .site-prix b { font-size: 2.6rem; line-height: 1; font-weight: 900; color: var(--ink); white-space: nowrap; }
 .site-prix small { font-weight: 800; color: var(--c-dd); }
+/* L'offre de lancement sous un prix (config : lancement), 25 novembre 2026 */
+.prix-lancement { display: flex; align-items: flex-start; gap: 6px; margin: -4px 0 12px; padding: 6px 10px; border-radius: 12px; background: var(--butter); color: var(--butter-dd); font-size: .88rem; line-height: 1.35; font-weight: 600; }
+.prix-lancement .icon, .prix-lancement svg { flex: none; width: 16px; height: 16px; margin-top: 1px; }
+.prix-lancement strong { font-weight: 900; }
+.type-card .prix-lancement, .cf-corps .prix-lancement { margin: 2px 0 8px; }
 .site-carte .plan-list { margin: 0 0 14px; }
 .site-carte .plan-list li { color: var(--ink); font-size: .95rem; }
 .site-carte .plan-list .ico { background: var(--card); }
