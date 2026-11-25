@@ -213,42 +213,44 @@ function aled08e_px_constat_court($c, $nom) {
 function aled08e_px_constat_txt($c, $nom) { return 'En tapant « ' . $c['recherche'] . ' » sur Google, ' . aled08e_px_constat_court($c, $nom) . '.'; }
 
 /* ====================================================================== 1 ter. un nom de domaine libre, à son nom */
-/* À partir du nom de l'entreprise : « Coiffure Beau Gosse » → coiffurebeaugosse.fr, lacoiffurebeaugosse.fr,
- * coiffurebeaugosse-sedan.fr, coiffure-beau-gosse.fr, coiffurebeaugosse.com. Le premier libre, vérifié auprès du registre
- * officiel (RDAP : l'AFNIC pour les .fr, includes/commandes.php). '' si aucun n'est libre ou vérifiable. */
+/* Le nom de domaine reprend le nom ENTIER de l'entreprise, tous ses mots dans l'ordre, « de », « du », « et » compris
+ * (Alex, 25 novembre 2026 : un domaine qui perd un mot, comme fabriquereve.fr pour « Fabrique de Rêve », ne doit jamais
+ * arriver). Seuls tombent l'article du début (« La », « L’ ») et la forme juridique (SARL, EI…). Sans accent : un accent
+ * dans une adresse se tape mal et passe mal dans les e-mails.
+ * L'ordre (Alex : « ça fait plus joli ») : fabrique-de-reve.fr, fabriquedereve.fr, la-fabrique-de-reve.fr,
+ * fabrique-de-reve-pourcy.fr, fabrique-de-reve.com. Le premier libre, vérifié auprès du registre officiel (RDAP : l'AFNIC
+ * pour les .fr, includes/commandes.php). */
+function aled08e_px_domaine_mots($t, $nom = true) {
+    $t = strtolower(remove_accents(str_replace('’', "'", trim((string) $t))));
+    if ($nom) $t = preg_replace("/^(?:(?:le|la|les)\s+|l')/", '', $t);      // l'article du début seulement
+    $t = str_replace("'", '', $t);                                              // l'élision se colle : d'or → dor, l'abbaye → labbaye
+    $l = preg_split('/[^a-z0-9]+/', $t, -1, PREG_SPLIT_NO_EMPTY);
+    $formes = ['sarl', 'sas', 'sasu', 'eurl', 'ei', 'eirl', 'snc', 'sci', 'scop', 'ets', 'etablissements'];
+    return array_values(array_filter($l, function ($m) use ($formes) { return !in_array($m, $formes, true); }));
+}
+/* Vrai si le domaine contient tous les mots du nom, dans l'ordre, sans en sauter un : le garde-fou, vérifié partout */
+function aled08e_px_domaine_fidele($domaine, $nom) {
+    $m = aled08e_px_domaine_mots($nom);
+    if (!$m) return false;
+    $label = str_replace('-', '', strtolower(preg_replace('/\.(fr|com)$/', '', (string) $domaine)));
+    return strpos($label, implode('', $m)) !== false;
+}
 function aled08e_px_domaine_candidats($nom, $ville = '', $article = '') {
-    $mots = function ($t) {
-        $t = strtolower(remove_accents(str_replace(['’', "'"], ' ', (string) $t)));
-        $l = preg_split('/[^a-z0-9]+/', $t, -1, PREG_SPLIT_NO_EMPTY);
-        $vides = ['le', 'la', 'les', 'l', 'de', 'du', 'des', 'd', 'et', 'sarl', 'sas', 'sasu', 'eurl', 'ei', 'eirl', 'snc', 'sci', 'ets', 'etablissements'];
-        return array_values(array_filter($l, function ($m) use ($vides) { return !in_array($m, $vides, true); }));
-    };
-    $m = $mots($nom);
+    $m = aled08e_px_domaine_mots($nom);
     if (!$m) return [];
-    $colle = implode('', $m);
     $tiret = implode('-', $m);
-    $v = $mots($ville);
-    $vi = $v ? implode('', $v) : '';
+    $colle = implode('', $m);
+    $v = aled08e_px_domaine_mots($ville, false);
     $art = str_replace("'", '’', (string) $article);
-    // d'abord le nom en entier, avec ses « de », « du », « et » du milieu (« Fabrique de Rêve » → fabriquedereve.fr) :
-    // c'est le nom que ses clients connaissent. Seuls l'article du début et la forme juridique tombent.
-    $tous = preg_split('/[^a-z0-9]+/', strtolower(remove_accents(str_replace(['’', "'"], ' ', (string) $nom))), -1, PREG_SPLIT_NO_EMPTY);
-    $tous = array_values(array_filter($tous, function ($x) { return !in_array($x, ['sarl', 'sas', 'sasu', 'eurl', 'ei', 'eirl', 'snc', 'sci', 'ets', 'etablissements'], true); }));
-    while ($tous && in_array($tous[0], ['le', 'la', 'les', 'l'], true)) array_shift($tous);
-    $plein = implode('', $tous);
-    $c = [];
-    if ($plein !== '' && $plein !== $colle) {
-        $c[] = $plein . '.fr';
-        if ($art === 'la' || $art === 'le' || $art === 'les') $c[] = $art . $plein . '.fr';
-    }
-    $c[] = $colle . '.fr';
-    if ($art === 'la' || $art === 'le' || $art === 'les') $c[] = $art . $colle . '.fr';
-    if ($art === 'l’') $c[] = 'l' . $colle . '.fr';
-    if ($vi !== '') $c[] = $colle . '-' . $vi . '.fr';
-    if (count($m) > 1) $c[] = $tiret . '.fr';
-    $c[] = $colle . '.com';
-    // une forme correcte (lettres, chiffres, tirets ; 3 à 40 caractères avant l'extension), sans doublon
-    return array_values(array_unique(array_filter($c, function ($d) { return (bool) preg_match('/^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])\.(fr|com)$/', $d); })));
+    $c = [$tiret . '.fr', $colle . '.fr'];
+    if ($art === 'la' || $art === 'le' || $art === 'les') $c[] = $art . '-' . $tiret . '.fr';
+    if ($art === 'l’') $c[] = 'l' . $tiret . '.fr';
+    if ($v) $c[] = $tiret . '-' . implode('-', $v) . '.fr';
+    $c[] = $tiret . '.com';
+    // une forme correcte (lettres, chiffres, tirets ; 3 à 50 caractères), sans doublon, et jamais un mot en moins
+    return array_values(array_unique(array_filter($c, function ($d) use ($nom) {
+        return (bool) preg_match('/^[a-z0-9](?:[a-z0-9-]{1,48}[a-z0-9])\.(fr|com)$/', $d) && strpos($d, '--') === false && aled08e_px_domaine_fidele($d, $nom);
+    })));
 }
 function aled08e_px_domaine_trouver($nom, $ville = '', $article = '') {
     if (!function_exists('aled08e_rdap_statut')) return '';

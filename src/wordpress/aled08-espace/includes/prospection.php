@@ -586,6 +586,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     $constatT = $cTxt ? 'Nous avons fait le test. ' . implode(' ', $cTxt) : '';
     // le nom de domaine libre, à son nom
     $dom = (string) ($p['domaine_libre'] ?? '');
+    if ($dom !== '' && (!function_exists('aled08e_px_domaine_fidele') || !aled08e_px_domaine_fidele($dom, (string) ($p['entreprise'] ?? '')))) $dom = '';
     $adresseH = 'Et c’est une adresse à vous' . ($dom !== '' ? ', comme <b>' . esc_html($dom) . '</b>,' : ',') . ' à mettre sur vos cartes de visite, votre vitrine et vos factures : vos clients retrouvent tout au même endroit.';
     $adresseT = 'Et c’est une adresse à vous' . ($dom !== '' ? ', comme ' . $dom . ',' : ',') . ' à mettre sur vos cartes de visite, votre vitrine et vos factures : vos clients retrouvent tout au même endroit.';
     $domH = $dom !== '' ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;"><tr><td style="background:#fff0f6;border-radius:16px;padding:14px 16px;font-size:15px;line-height:1.55;color:#2e2a47;">'
@@ -881,7 +882,7 @@ function aled08e_px_faire(WP_REST_Request $req) {
     $code = $premier ? ($p['code'] ?: (aled08e_px_remise() > 0 ? aled08e_px_code_nouveau() : '')) : $p['code'];
     if ($premier) { if ($code !== '') aled08e_px_set($id, 'code', $code); aled08e_px_set($id, 'envoye_le', time()); }
     // le domaine proposé doit être libre au moment où le mail part : sinon on en cherche un autre
-    if ($premier && $p['domaine_libre'] !== '' && function_exists('aled08e_rdap_statut') && aled08e_rdap_statut($p['domaine_libre']) === 'pris') {
+    if ($premier && $p['domaine_libre'] !== '' && function_exists('aled08e_rdap_statut') && (aled08e_rdap_statut($p['domaine_libre']) === 'pris' || !aled08e_px_domaine_fidele($p['domaine_libre'], $p['entreprise']))) {
         $p['domaine_libre'] = function_exists('aled08e_px_domaine_trouver') ? aled08e_px_domaine_trouver($p['entreprise'], $p['ville'], $p['article']) : '';
         aled08e_px_set($id, 'domaine_libre', $p['domaine_libre']);
     }
