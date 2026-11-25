@@ -566,6 +566,17 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     $domH = $dom !== '' ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;"><tr><td style="background:#fff0f6;border-radius:16px;padding:14px 16px;font-size:15px;line-height:1.55;color:#2e2a47;">'
         . '<span style="display:block;font-size:12.5px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#a3305f;margin-bottom:4px;">Bonne nouvelle</span>'
         . 'Nous avons vérifié : l’adresse <b style="font-size:17px;">' . esc_html($dom) . '</b> est libre aujourd’hui. Nous pouvons créer votre site à cette adresse, enregistrée à votre nom, en ligne en 24 à 48 heures.</td></tr></table>' : '';
+    // l'étude officielle, et sa source juste en dessous (data.json « prospection.etude »)
+    $et = (array) ((aled08e_data()['prospection'] ?? [])['etude'] ?? []);
+    $etudeH = ''; $etudeT = '';
+    if (!empty($et['siteInternet']) && !empty($et['clientsInternet']) && !empty($et['source'])) {
+        $etudeTxt = 'En France, ' . (int) $et['siteInternet'] . ' % des petites entreprises ont déjà un site internet. Et près d’une sur deux (' . (int) $et['clientsInternet'] . ' %) dit qu’au moins 5 % de ses clients viennent d’internet.';
+        $etudeH = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;"><tr><td style="background:#f6f3ff;border-radius:16px;padding:14px 16px;font-size:15px;line-height:1.55;color:#2e2a47;">'
+            . '<span style="display:block;font-size:12.5px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#5b3fc4;margin-bottom:4px;">Ce que disent les chiffres</span>'
+            . 'En France, <b>' . (int) $et['siteInternet'] . ' % des petites entreprises ont déjà un site internet.</b> Et près d’une sur deux (<b>' . (int) $et['clientsInternet'] . ' %</b>) dit qu’au moins 5 % de ses clients viennent d’internet.'
+            . '<span style="display:block;margin-top:8px;font-size:12px;line-height:1.45;color:#6b6789;">Source : ' . (!empty($et['lien']) ? '<a href="' . esc_url($et['lien']) . '" style="color:#6a5bd6;">' . esc_html($et['source']) . '</a>' : esc_html($et['source'])) . '.</span></td></tr></table>';
+        $etudeT = $etudeTxt . "\nSource : " . $et['source'] . (!empty($et['lien']) ? ' (' . $et['lien'] . ')' : '') . '.';
+    }
     $domT = $dom !== '' ? 'Bonne nouvelle : nous avons vérifié, l’adresse ' . $dom . ' est libre aujourd’hui. Nous pouvons créer votre site à cette adresse, enregistrée à votre nom, en ligne en 24 à 48 heures.' : '';
     $rappel = 'Pour rappel : ' . mb_strtolower(mb_substr($atouts[0][0], 0, 1)) . rtrim(mb_substr($atouts[0][0], 1), '.') . ', un vrai suivi, et un site qui vous appartient.';
     $boutonApercu = $avecApercu ? '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;"><tr>' . $bouton($l['apercu'], 'Voir l’aperçu de votre site', true) . '</tr></table>' : '';
@@ -617,6 +628,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . $P('Aujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :')
             . $pointsH
             . $P($adresseH, '10px 0 14px')
+            . $etudeH
             . $P('Nous sommes la bande des Minis Monstres, une petite famille qui crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :')
             . $atoutsH . '<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>'
             . $domH
@@ -654,7 +666,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         $pt = '';
         foreach ((array) $m['points'] as $x) $pt .= '- ' . $x['titre'] . ' ' . $x['texte'] . "\n";
         $texte = "Bonjour,\n\n" . $m['phrase'] . "\n\n" . ($constatT !== '' ? $constatT . "\n\n" : '') . "Aujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :\n" . $pt
-            . $adresseT . "\n\n"
+            . $adresseT . "\n\n" . ($etudeT !== '' ? $etudeT . "\n\n" : '')
             . "Nous sommes la bande des Minis Monstres, une petite famille qui crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :\n" . $atoutsT . "\n"
             . ($domT !== '' ? $domT . "\n\n" : '') . $codeT . "\n\n"
             . ($avecApercu ? 'Nous avons préparé un petit aperçu de ce que pourrait donner le site ' . $deX . " :\n" . $l['apercu'] . "\n\n" : '')

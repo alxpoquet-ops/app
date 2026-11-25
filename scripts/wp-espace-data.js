@@ -83,7 +83,15 @@ process.stdout.write(
     // 80 ou plus. Pour changer : config.prospection.
     // apercuNote 101 : l'aperçu personnalisé du site est éteint (Alex, 25 novembre 2026 : il ne donne pas envie ; le mail se
     // concentre sur trois arguments : moins cher, un suivi, tout vous appartient). 80 le rallumerait pour les meilleurs prospects.
-    prospection: Object.assign({ remise: 0, jours: 30, relanceJours: 7, relanceClicJours: 3, apercuNote: 101 }, cfg.prospection || {}),
+    prospection: Object.assign({ remise: 0, jours: 30, relanceJours: 7, relanceClicJours: 3, apercuNote: 101,
+      // l'étude citée dans le mail, chiffres recopiés du rapport officiel (vérifiés le 25 novembre 2026, pages 25 et 26).
+      // À mettre à jour à chaque nouveau baromètre (chaque automne), jamais un chiffre arrondi ou « amélioré ».
+      etude: {
+        siteInternet: 64, clientsInternet: 46,
+        source: 'Baromètre France Num 2026, Direction générale des Entreprises et Crédoc, enquête auprès de 9 655 TPE et PME',
+        lien: 'https://www.francenum.gouv.fr/guides-et-conseils/strategie-numerique/comprendre-le-numerique/barometre-france-num-2026-le',
+      },
+    }, cfg.prospection || {}),
     // le prix d'entrée d'un site fait par une agence (config.marche, sources citées sur la page Comparatif) : pour dire
     // « 4 à 5 fois moins cher qu'une agence » dans le mail de prospection, calculé et jamais écrit à la main
     marche: { agenceMin: (cfg.marche || {}).agenceMin || 0 },
