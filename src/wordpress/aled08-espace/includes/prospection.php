@@ -697,6 +697,8 @@ function aled08e_px_faire(WP_REST_Request $req) {
                 $art = str_replace("'", '’', (string) ($ex['article'] ?? ''));
                 $p = ['entreprise' => aled08e_px_texte($ex['entreprise'], 120), 'article' => in_array($art, ['le', 'la', 'l’', 'les'], true) ? $art : '',
                     'metier' => aled08e_px_texte($ex['metier'] ?? '', 80), 'ville' => aled08e_px_texte($ex['ville'] ?? '', 80)] + $p;
+                // la page où l'essai dit avoir vu l'entreprise (sinon, celle de l'exemple)
+                if (($u = aled08e_px_url($ex['url_source'] ?? '')) !== '') { $p['url_source_email'] = $u; $p['source'] = aled08e_px_texte($ex['source'] ?? '', 80) ?: aled08e_px_source_libelle($u); }
                 $p['domaine_libre'] = function_exists('aled08e_px_domaine_trouver') ? aled08e_px_domaine_trouver($p['entreprise'], $p['ville'], $p['article']) : '';
                 $c = (array) ($ex['constat'] ?? []);
                 if (!empty($c['recherche']) && isset($c['position'])) $p['constat'] = ['recherche' => aled08e_px_texte($c['recherche'], 80), 'position' => max(0, min(100, (int) $c['position'])),
