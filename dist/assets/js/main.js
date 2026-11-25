@@ -233,8 +233,8 @@
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (j) {
           if (cleanCode(input.value) !== c) return;
-          if (j && j.success) { st.ok = true; st.type = (j.data && j.data.type) || 'promo'; st.remise = (j.data && +j.data.remise) || 0; st.sur = (j.data && j.data.sur) || ''; dire(tr('Code promo valable : la remise est appliquée.'), 'is-ok'); }
-          else if (j && j.success === false) { st.ok = false; dire(tr('Ce code n’est pas reconnu. Vérifiez-le, ou écrivez-nous.'), 'is-ko'); }
+          if (j && j.success) { st.ok = true; st.type = (j.data && j.data.type) || 'promo'; st.remise = (j.data && +j.data.remise) || 0; st.sur = (j.data && j.data.sur) || ''; dire(st.type === 'lot' ? tr('Félicitations ! Votre site est offert, et votre forfait Mini pendant 1 an.') : tr('Code promo valable : la remise est appliquée.'), 'is-ok'); }
+          else if (j && j.success === false) { st.ok = false; dire((j.data && j.data.message && /GAGNANT/i.test(c)) ? j.data.message : tr('Ce code n’est pas reconnu. Vérifiez-le, ou écrivez-nous.'), 'is-ko'); }
           else dire(tr('Le code sera vérifié au moment de commander.'));
           onChange();
         })
@@ -616,12 +616,15 @@
       setText('domain-prix', domain.own() ? euro(0) : '+ ' + euro(domPlus) + per);
       // code promo valable : la remise porte sur la création (le site et la boutique), jamais sur la formule
       var r = code.ok ? (code.remise || data.remise || 0) : 0;
-      var prixSite = round2(t.price * (100 - r) / 100);
+      // le code du gagnant du jeu-concours (sur = 'site') : le Site Essentiel est offert, l'option e-commerce reste payante
+      var lot = code.ok && code.sur === 'site';
+      var essP = ((data.types || []).filter(function (x) { return x.id === 'une-page'; })[0] || t).price;
+      var prixSite = lot ? round2(t.price - Math.min(t.price, essP) * r / 100) : round2(t.price * (100 - r) / 100);
       var rLine = $('[data-sum-remise]', box);
       if (rLine) rLine.hidden = !r;
       // le libellé suit la remise du code tapé (10 % pour un code de mail de prospection, 20 % pour un code événement)
       var rLab = rLine && rLine.querySelector('span');
-      if (rLab && r) rLab.textContent = (EN ? 'Promo code' : 'Code promo') + ' (- ' + r + ' %)';
+      if (rLab && r) rLab.textContent = lot ? (EN ? 'Contest prize: your website is free' : 'Jeu-concours : votre site est offert') : (EN ? 'Promo code' : 'Code promo') + ' (- ' + r + ' %)';
       setText('remise', '- ' + euro(round2(t.price - prixSite)));
       // la création se paie en entier à la commande (data.acompte = 100) : en une fois, ou en 3 ou 4 fois avec un
       // organisme externe, sur la page de paiement. Le forfait démarre à la mise en ligne du site.
@@ -631,7 +634,7 @@
       setText('today-label', tr('Aujourd’hui, à la commande : votre site'));
       setText('today', euro(aPayer));
       setText('recur-label', seule ? tr('Ensuite, chaque mois') : tr('Dès la mise en ligne, chaque mois'));
-      setText('recur', seule ? tr('rien') : euro(recur) + per);
+      setText('recur', seule ? tr('rien') : lot ? tr('offert pendant 1 an, puis ') + euro(recur) + per : euro(recur) + per);
       setText('detail', tr('Prix total du site : ') + euro(prixSite) + '.');
       var bar = $('[data-sum="bar"]', box);
       if (bar) bar.innerHTML = '<b>' + euro(prixSite) + '</b>' + (seule ? tr(', sans abonnement') : tr(' puis ') + '<b>' + euro(recur) + per + '</b>');
@@ -774,8 +777,11 @@
       // code promo valable : la remise porte sur la création (le site et les options payées une fois)
       var r = code.ok ? (code.remise || data.remise || 0) : 0;
       var k = (100 - r) / 100;
-      var kOpt = code.sur === 'creation' ? 1 : k; // un code de mail de prospection ne touche que la création
-      var prixSite = round2(t.price * k);
+      var kOpt = (code.sur === 'creation' || code.sur === 'site') ? 1 : k; // un code de mail de prospection ne touche que la création
+      // le code du gagnant du jeu-concours (sur = 'site') : le Site Essentiel est offert, l'option e-commerce reste payante
+      var lot = code.ok && code.sur === 'site';
+      var essP = ((data.types || []).filter(function (x) { return x.id === 'une-page'; })[0] || t).price;
+      var prixSite = lot ? round2(t.price - Math.min(t.price, essP) * r / 100) : round2(t.price * k);
       // la création se paie en entier à la commande (data.acompte = 100)
       var aPayer = round2(prixSite * (data.acompte || 100) / 100);
       var forfaitFirst = f.month * mult;
@@ -790,14 +796,14 @@
         var o = find(data.options, i.value);
         if (o && o.once) lines.push([tr(o.name), round2(o.once * kOpt)]);
       });
-      if (r) lines.push([tr('Code promo : ') + r + tr(' % de remise sur la création, déjà déduits'), 0]);
+      if (r) lines.push([lot ? tr('Jeu-concours : votre site est offert, et le forfait Mini pendant 1 an') : tr('Code promo : ') + r + tr(' % de remise sur la création, déjà déduits'), 0]);
       optOnce = round2(optOnce * kOpt);
       if (pp) lines.push([ppNom(pp) + ' (' + pp + ' × ' + euro(data.pagePlus) + ')', pp * data.pagePlus]);
       var today = round2(lines.reduce(function (s, l) { return s + l[1]; }, 0));
       var next = round2(forfaitFirst + domPlus + optRec);
       setText('today', euro(today));
       setText('btn', euro(today));
-      setText('next', seule ? tr('rien') : euro(next) + per);
+      setText('next', seule ? tr('rien') : lot ? tr('offert pendant 1 an, puis ') + euro(next) + per : euro(next) + per);
       setText('next-label', seule ? tr('Ensuite : pas d’abonnement') : tr('Dès la mise en ligne : votre forfait'));
       var ul = $('[data-order-lines]', root);
       if (ul) {

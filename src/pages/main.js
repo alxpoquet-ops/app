@@ -245,6 +245,8 @@ function home() {
   ${C.objections()}
 </div></section>
 
+<section class="section jr-section" data-jeu-rubans hidden><div class="container" data-jeu-rubans-in></div></section>
+
 <section class="section section-porte"><div class="container">
   <a class="porte-tutos c-lilac reveal" href="${ECOLE_A.path}">
     <span class="porte-tutos-art" aria-hidden="true">${C.imgMonstre(ECOLE_A.monstre || 'mochi', 72)}</span>

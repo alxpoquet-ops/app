@@ -3732,3 +3732,26 @@ button.app-logout { border: 0; background: none; font: inherit; cursor: pointer;
 .cc-go { justify-self: center; }
 .cc-ok { display: flex; gap: 8px; align-items: flex-start; text-align: left; padding: 12px 14px; border-radius: 14px; background: var(--mint); }
 .cc-ok svg { flex: none; width: 20px; height: 20px; margin-top: 2px; }
+/* L'encart du jeu des Rubans sur la page d'accueil : le chrono et les derniers gagnants (rempli par l'extension, includes/concours.php) */
+.jr-section[hidden] { display: none; }
+.jr-encart { display: flex; gap: 20px; align-items: center; padding: 22px; border-radius: 26px; background: var(--mint); border: 2px solid var(--mint-d); }
+.jr-art { flex: none; width: 120px; }
+.jr-art svg { width: 100%; height: auto; display: block; }
+.jr-corps { min-width: 0; }
+.jr-sur { margin: 0 0 4px; font-weight: 800; color: var(--mint-dd); text-transform: uppercase; letter-spacing: .06em; font-size: .82rem; }
+.jr-titre { margin: 0 0 8px; font-size: clamp(1.3rem, 4vw, 1.75rem); line-height: 1.2; }
+.jr-corps > p { margin: 0 0 10px; line-height: 1.55; }
+.jr-chrono { display: flex; gap: 8px; align-items: center; font-weight: 700; }
+.jr-chrono svg { flex: none; width: 20px; height: 20px; }
+.jr-go { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+.jr-g-t { margin: 14px 0 6px !important; font-weight: 800; }
+.jr-gagnants { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.jr-gagnants li { display: flex; gap: 10px; align-items: center; padding: 8px 12px; border-radius: 14px; background: var(--card); }
+.jr-gagnants li svg { width: 18px; height: 18px; color: var(--butter-dd); }
+.jr-gagnants a { display: block; font-size: .92rem; overflow-wrap: anywhere; }
+@media (max-width: 560px) { .jr-encart { flex-direction: column; align-items: flex-start; } .jr-art { width: 90px; } }
+/* Le chrono dans le compteur flottant de l'espace client */
+.cc-compteur-chrono { display: inline-flex; align-items: center; gap: 4px; padding-left: 8px; margin-left: 2px; border-left: 2px solid var(--line); font-size: .9rem; font-variant-numeric: tabular-nums; }
+.cc-compteur-chrono svg { width: 15px; height: 15px; }
+.cc-chrono { margin: -4px 0 10px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.cc-aide { color: var(--muted); font-size: .85rem; margin-top: -4px; }

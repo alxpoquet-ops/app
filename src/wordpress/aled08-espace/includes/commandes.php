@@ -125,6 +125,12 @@ function aled08e_code_evenement_ajax() {
     if ($n >= 20) wp_send_json_error(['message' => 'Trop d’essais. Réessayez dans une heure.'], 429);
     set_transient($k, $n + 1, HOUR_IN_SECONDS);
     $code = wp_unslash($_GET['code'] ?? '');
+    // le code du gagnant du jeu-concours (GAGNANT-…) : seulement avec son compte, une fois, dans les 30 jours (includes/concours.php)
+    if (function_exists('aled08e_concours_lot') && aled08e_concours_lot($code)) {
+        $refus = aled08e_concours_lot_refus($code, get_current_user_id());
+        if ($refus !== '') wp_send_json_error(['message' => $refus]);
+        wp_send_json_success(['type' => 'lot', 'remise' => 100, 'sur' => 'site']);
+    }
     // une seule case pour le code promo et le code de parrainage : on dit seulement de quel genre il est (jamais à qui il appartient)
     if (aled08e_code_evenement_ok($code)) wp_send_json_success(['type' => 'promo', 'remise' => aled08e_remise_evenement()]);
     // le code personnel d'un mail de prospection (MAIL10-7KQ2) : sa remise, sur la création seulement, pendant 30 jours après l'envoi
@@ -161,8 +167,15 @@ function aled08e_cmd_montants($cfg) {
     $ponctuel += $pagesPlus * aled08e_cmd_page_prix();
     // code événement : la remise porte sur la création (le site et ce qui se paie une fois), pas sur la formule
     // remise_sur 'creation' (le code personnel d'un mail de prospection) : seulement le prix de création du site
-    $remise = max(0, min(90, (int) ($cfg['remise'] ?? 0)));
-    if ($remise) {
+    $lot = ($cfg['remise_sur'] ?? '') === 'site'; // le lot du jeu-concours : le Site Essentiel offert (l'option e-commerce reste payante)
+    $remise = max(0, min($lot ? 100 : 90, (int) ($cfg['remise'] ?? 0)));
+    if ($remise && $lot) {
+        $ess = aled08e_type('une-page');
+        $base = $ess ? min($creation, (float) $ess['price']) : $creation;
+        $creation = round($creation - $base * $remise / 100, 2);
+        $acompte = round($creation * (int) $D['acompte'] / 100, 2);
+        $solde = round($creation - $acompte, 2);
+    } elseif ($remise) {
         $creation = round($creation * (100 - $remise) / 100, 2);
         if (($cfg['remise_sur'] ?? '') !== 'creation') $ponctuel = round($ponctuel * (100 - $remise) / 100, 2);
         $acompte = round($creation * (int) $D['acompte'] / 100, 2);
@@ -393,6 +406,11 @@ function aled08e_cmd_traiter_post() {
     $cfg['remise_sur'] = '';
     // ou le code personnel d'un mail de prospection : -10 % sur la création seulement, accepté 30 jours après l'envoi (includes/prospection.php)
     if (!$cfg['remise'] && $cfg['code_evenement'] !== '' && function_exists('aled08e_px_code_ok') && aled08e_px_code_ok($cfg['code_evenement'])) { $cfg['remise'] = aled08e_px_remise(); $cfg['remise_sur'] = 'creation'; }
+    // ou le code du gagnant du jeu-concours : le Site Essentiel offert, et le forfait Mini offert un an (includes/concours.php)
+    $cfg['lot'] = false;
+    if (!$cfg['remise'] && $cfg['code_evenement'] !== '' && function_exists('aled08e_concours_lot') && aled08e_concours_lot($cfg['code_evenement']) && aled08e_concours_lot_refus($cfg['code_evenement'], get_current_user_id()) === '') {
+        $cfg['remise'] = 100; $cfg['remise_sur'] = 'site'; $cfg['lot'] = true; $cfg['lissage'] = 0;
+    }
     if ($cfg['lissage']) $cfg['periode'] = 'mois'; // le site en plusieurs fois se paie avec un forfait au mois
     // « Je m'en occupe moi-même » (champ gestion = moi) : création seule, sans formule. Le client garde son nom de domaine
     // et son hébergement. Il peut payer le reste en une fois ou étalé (un abonnement Stripe qui ne porte que les mensualités).
@@ -448,7 +466,7 @@ function aled08e_cmd_traiter_post() {
 
     // montants recalculés ici, jamais repris du navigateur
     $m = aled08e_cmd_montants($cfg);
-    if ($m['total_jour'] <= 0) $err('champs');
+    if ($m['total_jour'] <= 0 && empty($cfg['lot'])) $err('champs'); // le gagnant du jeu-concours ne paie rien
 
     // le compte : on commande toujours depuis son espace client. Connecté : la commande va sur ce compte.
     // Sinon, le même formulaire sert à tout : nouveau client, il choisit son mot de passe (le compte est créé et il est connecté) ;
@@ -539,6 +557,22 @@ function aled08e_cmd_traiter_post() {
         aled08e_cmd_mail_client_nouvelle($cmd, $compte, $stripe);
     }
 
+    // le gagnant du jeu-concours : le code est utilisé, le forfait Mini offert un an ; rien à payer, la commande est « payée » tout de suite
+    if (!empty($cfg['lot'])) {
+        aled08e_concours_lot_utilise($cfg['code_evenement'], $pid);
+        update_post_meta($pid, '_aled08_lot', 1);
+        if ($cfg['forfait'] === 'base') {
+            update_user_meta($uid, 'aled08_offert', '1');
+            update_user_meta($uid, 'aled08_offert_fin', time() + YEAR_IN_SECONDS);
+            delete_user_meta($uid, 'aled08_offert_rappel');
+        }
+        aled08e_cmd_journal($pid, 'Lot du jeu-concours (code ' . $cfg['code_evenement'] . ') : Site Essentiel offert' . ($cfg['forfait'] === 'base' ? ', forfait Mini offert jusqu’au ' . wp_date('j F Y', time() + YEAR_IN_SECONDS) : '') . '.');
+        if ($m['total_jour'] <= 0) {
+            aled08e_cmd_set_statut($pid, 'payee', 'Lot du jeu-concours : rien à payer');
+            wp_safe_redirect(home_url('/commande-confirmee/?ref=' . rawurlencode($ref)), 303);
+            exit;
+        }
+    }
     // paiement : Stripe si configuré, sinon « en attente » (lien envoyé à la main)
     aled08e_cmd_vers_paiement($pid, $ref, $cfg);
 }

@@ -144,7 +144,7 @@ ${site.owner}, Les Minis Monstres, ${addr}. Contact : ${contact}.
 - **Espace client** : vos identifiants, vos demandes de modification (texte et photos), vos messages dans la bulle d’aide et la date de votre dernière connexion.${AVEC_OUTILS ? `
 - **Outils au mois** : ce que vous confiez à un outil (une photo, un texte, le texte d’un avis Google avec le prénom de son auteur s’il y figure, des devis de fournisseurs collés pour les comparer), la courte description de votre activité si vous l’écrivez, le dernier résultat obtenu et le nombre d’utilisations du mois. Un compte peut servir aux outils seuls, sans site.
 - **Réseaux sociaux reliés** : le nom de vos comptes ou de vos pages, les clés qui permettent d’y publier et la liste de vos dernières publications (voir le point 7).` : ''}
-- **Jeu-concours** : quand vous jouez à trouver les Rubans, les petits monstres cadeaux : les Rubans trouvés, puis l’adresse e-mail et le numéro de portable donnés pour participer, avec une empreinte de l’appareil et de l’adresse internet pour repérer la triche. Ces données servent seulement au tirage au sort et à joindre le gagnant, puis elles sont effacées 3 mois après le tirage (voir le [règlement du jeu](/jeu-concours/)).
+- **Jeu-concours** : quand vous jouez à trouver les Rubans, les petits monstres cadeaux : les Rubans trouvés, puis l’adresse e-mail et le numéro de portable donnés pour participer, avec une empreinte de l’appareil et de l’adresse internet pour repérer la triche. Le numéro sert seulement à vérifier qu’une personne ne participe qu’une fois, l’adresse à prévenir le gagnant. Ces données sont effacées 3 mois après le tirage de la manche (voir le [règlement du jeu](/jeu-concours/)).
 - **Paiement** : je ne reçois jamais votre numéro de carte ni votre IBAN (voir le point 4).
 
 ## 3. Pourquoi je les utilise
@@ -459,7 +459,7 @@ ${listeOutils}
     path: '/jeu-concours/',
     name: 'Règlement du jeu-concours',
     title: `Règlement du jeu-concours des Rubans | Les Minis Monstres`,
-    description: `Trouvez les 5 Rubans, les petits monstres cadeaux cachés sur le site, et tentez de gagner un site internet et un an de forfait ${mini.name}. Gratuit, sans achat.`,
+    description: `Tous les 100 jours, un site internet à gagner : trouvez les 5 Rubans cachés sur le site et participez au tirage au sort. Gratuit, sans achat.`,
     lead: 'Cinq petits monstres cadeaux se cachent sur le site. Trouvez-les tous et tentez de gagner un site internet offert.',
     updated: '2026-11-25',
     body: `## 1. Organisateur
@@ -468,7 +468,7 @@ Le jeu est organisé par Les Minis Monstres, ${exploitant}, ${addr}, SIREN ${L.s
 
 ## 2. Le principe
 
-Pendant le jeu, **cinq Rubans**, les petits monstres cadeaux, se cachent sur le site des Minis Monstres, un dans chacune de ces catégories :
+Le jeu se joue en **manches de 100 jours**. Pendant une manche, **cinq Rubans**, les petits monstres cadeaux, se cachent sur le site des Minis Monstres, un dans chacune de ces catégories :
 
 1. la page d’accueil du site ;
 2. l’espace client ;
@@ -476,44 +476,52 @@ Pendant le jeu, **cinq Rubans**, les petits monstres cadeaux, se cachent sur le 
 4. la page Tarifs ;
 5. les questions fréquentes.
 
-**Pour jouer, il faut être connecté à son espace client** : les Rubans ne se montrent qu’aux joueurs connectés. Quand vous en trouvez un, touchez-le : il est compté. Un compteur, dans votre espace client, montre combien vous en avez trouvé et donne un indice pour chacun.
+**Pour jouer, il faut être connecté à son espace client** : les Rubans ne se montrent qu’aux joueurs connectés. Quand vous en trouvez un, touchez-le : il est compté. Dans votre espace client, un compteur montre combien vous en avez trouvé, donne un indice pour chacun et affiche le temps restant avant le tirage.
 
-Quand vous avez trouvé les cinq, vous donnez votre adresse e-mail et votre numéro de portable, et vous acceptez ce règlement : vous participez au tirage au sort.
+Quand vous avez trouvé les cinq, vous donnez votre adresse e-mail et votre numéro de portable, et vous acceptez ce règlement : vous participez au tirage au sort de la manche.
+
+À la fin de chaque manche, le tirage a lieu automatiquement, puis une nouvelle manche commence : les Rubans changent de cachette, et il faut les retrouver tous les cinq pour participer de nouveau.
 
 ## 3. Qui peut participer
 
-Toute personne majeure qui réside en France. Ne peuvent pas participer : l’organisateur et les membres de sa famille.
+Toute personne majeure qui réside en France. Ne peuvent pas participer :
 
-**Une seule participation par personne** : un seul compte, une seule adresse e-mail et **un seul numéro de portable**. Le même numéro ne peut pas servir deux fois. Une participation faite avec plusieurs comptes, le numéro de quelqu’un d’autre ou de fausses informations n’est pas retenue.
+- l’organisateur et les membres de sa famille ;
+- les personnes qui ont déjà un site ou une commande chez les Minis Monstres ;
+- les personnes qui ont déjà gagné le jeu.
+
+**Une seule participation par personne et par manche** : un seul compte, une seule adresse e-mail et **un seul numéro de portable**. Le même numéro ne peut servir qu’une fois. Une participation faite avec plusieurs comptes, le numéro de quelqu’un d’autre ou de fausses informations n’est pas retenue, et le lot gagné avec elle est annulé.
 
 ## 4. Gratuit, sans achat
 
-Participer ne coûte rien et n’oblige à rien acheter. L’espace client se crée gratuitement sur le site, en quelques secondes, sans commander de site. Les clients qui ont déjà un site peuvent aussi participer.
+Participer ne coûte rien et n’oblige à rien acheter. L’espace client se crée gratuitement sur le site, en quelques secondes, sans commander de site.
 
 ## 5. Dates
 
-Le jeu est ouvert pendant la période annoncée par Les Minis Monstres sur leur site et leurs réseaux sociaux. En dehors de cette période, les Rubans ne se montrent pas et aucune participation n’est enregistrée.
+Chaque manche dure 100 jours. La date et l’heure du prochain tirage sont affichées dans l’espace client et sur la page d’accueil du site. Le jeu peut être suspendu ou arrêté par l’organisateur ; il l’annonce alors sur le site.
 
 ## 6. Le lot
 
-Le gagnant reçoit :
+Le gagnant de chaque manche reçoit :
 
 - **un ${ESS.name}, offert** (valeur : ${eur(ESS.prixNormal || ESS.price)} €), créé avec ses informations et ses photos, comme pour un client qui l’achète ;
 - **un an de forfait ${mini.name}, offert** (valeur : ${eur(mini.month * 12)} €) : l’hébergement, les sauvegardes, la sécurité, les mises à jour et les modifications comprises dans le forfait. S’il n’a pas de nom de domaine, on le lui fournit aussi pendant cette année.
 
-**Le site est à lui : il le garde.** Au bout de l’année offerte, il choisit librement : continuer avec le forfait ${mini.name} à ${eur(mini.month)} € par mois, sans engagement, passer au forfait ${creationSeule ? creationSeule.name : 'Autonome'} à 0 € par mois, ou récupérer l’export de son site.
+**Le site est à lui : il le garde.** Au bout de l’année offerte, il choisit librement : continuer avec le forfait ${mini.name} à ${eur(mini.month)} € par mois, sans engagement, passer au forfait ${creationSeule ? creationSeule.name : 'Autonome'} à 0 € par mois, ou télécharger son site depuis son espace client pour l’héberger ailleurs.
 
 L’option ${ECO.name} n’est pas comprise : le gagnant peut l’ajouter au prix affiché sur le site. Le lot ne peut être ni échangé contre de l’argent, ni cédé à une autre personne.
 
-## 7. Le tirage au sort
+## 7. Le tirage au sort et le gagnant
 
-À la fin du jeu, un tirage au sort désigne un gagnant parmi les participations valables. Il est fait par ordinateur, entièrement au hasard.
+À la fin de chaque manche, un tirage au sort désigne un gagnant parmi les participations valables. Il est fait par ordinateur, entièrement au hasard.
 
-Le gagnant est appelé au numéro de portable qu’il a donné et prévenu par e-mail. Il a **15 jours** pour répondre. Avant de remettre le lot, l’organisateur vérifie que le gagnant est bien la personne du compte, du numéro et de l’adresse donnés. Sans réponse, ou si la participation ne respecte pas ce règlement, un nouveau tirage désigne un autre gagnant. Avec son accord, son prénom et sa ville peuvent être annoncés sur le site et les réseaux des Minis Monstres.
+**Le gagnant est prévenu par e-mail**, à l’adresse qu’il a donnée. Cet e-mail contient un **code personnel, valable 30 jours**, utilisable seulement depuis son compte. Le gagnant commande son site sur la page « Créer mon site » en tapant ce code : il fait les mêmes démarches qu’un client (nom de domaine, coordonnées, puis le questionnaire de création), sans rien payer pour le ${ESS.name}, et son forfait ${mini.name} est offert pendant un an. Sans commande dans les 30 jours, le lot est perdu.
+
+Le nom de l’activité du gagnant, sa ville et l’adresse de son site, une fois en ligne, sont présentés sur la page d’accueil des Minis Monstres, dans « Les derniers gagnants ». Le gagnant peut demander à tout moment qu’ils soient retirés, depuis la [page contact](/contact/).
 
 ## 8. Vos données
 
-Pour le jeu, nous gardons votre adresse e-mail, votre numéro de portable, les Rubans trouvés et, pour repérer la triche, une empreinte de votre appareil et de votre adresse internet. Ces données servent seulement à organiser le tirage au sort et à joindre le gagnant. Elles ne sont ni vendues, ni prêtées, ni utilisées pour vous envoyer de la publicité. Elles sont effacées **3 mois après le tirage**.
+Pour le jeu, nous gardons les Rubans que vous trouvez, votre adresse e-mail, votre numéro de portable et, pour repérer la triche, une empreinte de votre appareil et de votre adresse internet. Le numéro sert seulement à vérifier qu’une personne ne participe qu’une fois : nous ne vous appelons pas. L’adresse e-mail sert à prévenir le gagnant. Ces données ne sont ni vendues, ni prêtées, ni utilisées pour vous envoyer de la publicité. Elles sont effacées **3 mois après le tirage** de la manche, sauf le nom et l’adresse e-mail des gagnants, gardés pour la remise du lot et pour qu’une même personne ne gagne pas deux fois.
 
 Vous pouvez à tout moment demander à voir, corriger ou effacer vos données, ou retirer votre participation, depuis la [page contact](/contact/). La [politique de confidentialité](/politique-de-confidentialite/) détaille vos droits.
 

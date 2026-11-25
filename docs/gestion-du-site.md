@@ -454,30 +454,46 @@ Quand le contrôleur livre un site plus tôt, la commande passe à l'état « pr
 
 ## Le jeu-concours des Rubans
 
-Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit('ruban')`). Le code est dans `includes/concours.php`, le règlement sur `/jeu-concours/`.
+Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit('ruban')`). Le code est dans `includes/concours.php`, le règlement sur `/jeu-concours/`. Décisions d'Alex du 25 novembre 2026 : tout est automatique, en manches de 100 jours.
 
-**Le jeu.** Pendant un jeu, **cinq Rubans** se cachent sur le site, un par catégorie : la page d'accueil, l'espace client, les mini-tutos, la page Tarifs et les questions fréquentes. Ces catégories sont écrites dans le règlement. Il faut être **connecté** pour voir les Rubans.
-
-**Pour le joueur :**
-- Un clic sur un Ruban lance l'animation : il saute, tourne et disparaît dans une pluie de confettis. Il est alors compté.
-- Dans l'espace client, un **compteur flottant** (en bas à gauche) indique combien de Rubans sont trouvés sur 5. Quand on le touche, il donne un indice pour chacun.
-- Les cinq trouvés, le joueur donne son e-mail et son **numéro de portable**, puis accepte le règlement.
+**La manche (100 jours).**
+- Cinq Rubans se cachent, un par catégorie du règlement : la page d'accueil, l'espace client, les mini-tutos, la page Tarifs et les questions fréquentes.
+- À chaque manche, leurs cachettes sont tirées au hasard dans une réserve d'endroits bien visibles (`aled08e_concours_pool()`), jamais les mêmes que la manche d'avant.
+- Le joueur doit être connecté. Ne jouent pas : l'équipe, les clients qui ont un site ou une commande, et les anciens gagnants.
+- Un clic sur un Ruban lance l'animation (saut, tour, confettis) et le compte.
+- Dans l'espace client, un compteur flottant (en bas à gauche) affiche les Rubans trouvés sur 5 et le chrono du tirage. Ouvert, il montre le temps exact et un indice par Ruban.
+- Les cinq trouvés, le joueur donne son e-mail et son numéro de portable. Le numéro sert seulement à empêcher les doublons : on n'appelle personne.
 
 **Contre la triche :**
-- Une participation par compte, par adresse e-mail et par numéro de portable. Les numéros sont ramenés à une seule forme : 06…, +33 6… et 0033 6… sont le même numéro.
-- Les participations faites depuis le même appareil ou la même adresse internet sont signalées (« doublon_possible »), mais pas refusées : une famille peut partager un ordinateur.
+- Une participation par compte, par e-mail et par numéro de portable. 06…, +33 6… et 0033 6… sont le même numéro.
+- Un numéro ou un e-mail déjà gagnant ne rejoue pas.
+- Les doublons d'appareil ou d'adresse internet sont signalés à Alex.
 - Chaque Ruban porte un jeton secret, vérifié par le serveur.
-- Le gagnant est appelé au numéro donné avant de recevoir son lot.
 
-**Pour Alex** (Claude le fait sur demande) :
-- Ouvrir : `POST /aled08/v1/atelier/concours` avec `{"faire": "ouvrir"}`.
-- Déplacer un Ruban dans sa catégorie : `{"faire": "cachette", "cachette": "tarifs", "chemin": "/tarifs/", "selecteur": "#detail", "indice": "…", "coin": "bas-droite"}`.
-- Suivre : `GET` donne les joueurs, les Rubans trouvés, les inscrits et les doublons possibles.
-- Fermer et tirer au sort : `{"faire": "fermer"}`. Si le gagnant ne répond pas dans les 15 jours : `{"faire": "retirer"}`.
+**Le tirage, tout seul.** À la fin des 100 jours (tâche WordPress toutes les heures, plus un filet à la première visite) :
+1. Un gagnant est tiré au hasard (`random_int`).
+2. Il reçoit l'e-mail « Félicitations : vous avez gagné un site internet ! », avec un code personnel `GAGNANT-XXXXXX` valable 30 jours, seulement avec son compte.
+3. Alex reçoit une copie du résultat.
+4. Une nouvelle manche commence aussitôt, avec de nouvelles cachettes.
 
-**Le lot** : un Site Essentiel (valeur 749 €) et un an de forfait Mini offerts, avec le nom de domaine fourni cette année-là si besoin. Le site reste au gagnant. L'option e-commerce n'est pas comprise.
+**Le lot, comme un client qui a payé.** Le gagnant ouvre « Créer mon site » avec son code (le lien de l'e-mail le remplit). Il fait les mêmes choix qu'un client.
+- Le Site Essentiel est à 0 €. L'option e-commerce reste payante.
+- Avec le forfait Mini, il est « Offert jusqu'au … » pendant un an, nom de domaine compris (métas `aled08_offert` et `aled08_offert_fin`).
+- Si tout est à 0 €, la commande passe « Payée » sans passer par Stripe, puis suit le parcours normal : questionnaire, création, livraison à 24 heures.
+- Un mois avant la fin de l'année offerte, le client reçoit un rappel. À la fin, l'offre s'arrête et il est invité à démarrer son forfait ou à télécharger son site.
+- Le site est à lui.
 
-Aucun e-mail ne part automatiquement au gagnant : Alex le prévient. Les données (e-mails, numéros, Rubans trouvés) sont effacées 3 mois après le dernier tirage.
+**L'accueil.** Un encart « Le jeu des Rubans » montre le chrono et le bouton « Je joue ». Il liste les derniers gagnants (nom de l'activité, ville, lien vers le site) dès que leur site est en ligne. Jamais de faux gagnants.
+
+**Pour Alex** (Claude le fait sur demande), avec `POST /aled08/v1/atelier/concours` :
+- Lancer : `{"faire": "ouvrir"}`.
+- Nouvelles cachettes tout de suite : `{"faire": "melanger"}`.
+- Placer un Ruban à la main : `{"faire": "cachette", "cachette": "tarifs", "chemin": "/tarifs/", "selecteur": "#detail", "indice": "…", "coin": "bas-droite"}`.
+- Tirer au sort maintenant : `{"faire": "tirer"}`.
+- Nouveau tirage si le gagnant triche : `{"faire": "retirer"}`.
+- Arrêter : `{"faire": "arreter"}`.
+
+`GET` donne la manche, la date du tirage, les cachettes, les joueurs, les inscrits, les doublons possibles et les tirages. Les données d'une manche sont effacées 3 mois après son tirage. Les noms et e-mails des gagnants sont gardés, pour qu'une même personne ne gagne pas deux fois.
 
 ## « Télécharger mon site » : la copie du site par le client
 
