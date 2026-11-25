@@ -46,6 +46,9 @@ define('ALED08E_PX_NOTE_MIN', 60);    // en dessous : écarté
 
 /* ====================================================================== réglages et offre */
 function aled08e_px_active() { return get_option('aled08_prospection_active', '0') === '1'; }
+/* La collecte seule (option aled08_prospection_collecte = '1') : on peut enregistrer des prospects pour plus tard pendant
+ * que la prospection est éteinte. Rien ne part : l'envoi, lui, demande toujours aled08_prospection_active. */
+function aled08e_px_collecte() { return aled08e_px_active() || get_option('aled08_prospection_collecte', '0') === '1'; }
 /* Les envois demandent aussi un site ouvert et des ventes ouvertes : on ne promet pas un code qu'on ne pourrait pas honorer */
 function aled08e_px_site_pret() { return get_option('aled08_site_ouvert', '0') === '1' && get_option('aled08_ventes_ouvertes', '0') === '1'; }
 /* En semaine, de 8 h à 18 h, heure du site : on écrit à des professionnels pendant leurs heures de travail */
@@ -1079,7 +1082,7 @@ add_action('rest_api_init', function () {
                 'resume' => aled08e_px_resume(), 'etats' => aled08e_px_etats()], 200);
         }],
         ['methods' => 'POST', 'permission_callback' => $perm, 'callback' => function (WP_REST_Request $r) {
-            if (!aled08e_px_active()) return new WP_Error('aled08_px', 'La prospection est éteinte : on ne collecte rien.', ['status' => 403]);
+            if (!aled08e_px_collecte()) return new WP_Error('aled08_px', 'La prospection est éteinte : on ne collecte rien.', ['status' => 403]);
             $d = (array) $r->get_json_params();
             $liste = isset($d['prospects']) ? array_values((array) $d['prospects']) : (isset($d['email']) ? [$d] : []);
             $zone = (array) ($d['zone'] ?? []);
@@ -1172,8 +1175,9 @@ add_action('aled08e_statut_change', function ($cid, $statut, $old) {
 }, 10, 3);
 
 /* ====================================================================== le ménage (chaque jour) */
-/* Un prospect écarté s'efface après 180 jours ; un prospect sans suite, trois ans après le dernier contact (durée conseillée
- * par la CNIL). Les désinscriptions restent dans la liste d'opposition (empreintes) : on ne réécrit jamais. */
+/* Un prospect écarté s'efface après 180 jours ; un prospect à qui l'on n'a jamais écrit aussi (collecté pour plus tard,
+ * on ne garde pas sans fin) ; un prospect sans suite, trois ans après le dernier contact (durée conseillée par la CNIL).
+ * Les désinscriptions restent dans la liste d'opposition (empreintes) : on ne réécrit jamais. */
 add_action('aled08_quotidien', function () {
     $effacer = function ($etats, $jours, $cle = '') {
         $q = ['post_type' => ALED08E_CPT_PROSPECT, 'post_status' => 'private', 'numberposts' => 200, 'fields' => 'ids', 'suppress_filters' => true,
@@ -1183,6 +1187,7 @@ add_action('aled08_quotidien', function () {
         foreach (get_posts($q) as $id) wp_delete_post((int) $id, true);
     };
     $effacer(['ecarte'], 180);
+    $effacer(['nouveau', 'a_ecrire'], 180);
     $effacer(['envoye', 'relance', 'repondu', 'desinscrit'], 3 * 365, 'envoye_le');
 }, 80);
 

@@ -176,7 +176,7 @@ Elles arrivent à l'adresse des réponses (réglage « Adresse des réponses »,
 
 ## Combien de temps on garde
 
-Un prospect écarté s'efface après 180 jours ; un prospect sans suite, trois ans après le premier mail. La liste d'opposition, elle, reste toujours (des empreintes, jamais l'adresse en clair).
+Un prospect écarté s'efface après 180 jours, un prospect à qui l'on n'a jamais écrit aussi ; un prospect sans suite, trois ans après le premier mail. **La collecte seule** (option `aled08_prospection_collecte`, Alex, 25 novembre 2026) permet d'enregistrer des prospects pour plus tard pendant que la prospection est éteinte : rien ne part, le Facteur les vérifiera au lancement. La liste d'opposition, elle, reste toujours (des empreintes, jamais l'adresse en clair).
 
 ## Ce que les agents ne font jamais
 
