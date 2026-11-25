@@ -1,8 +1,8 @@
 // Mini Tuto, thème « pourquoi » : voir le format dans ./index.js.
 // Pourquoi les Minis Monstres : le prix (pas de local, pas de loyer, tout depuis chez Alex), les modules, la bande, et ce qu'Alex fait lui-même.
 // 25 novembre 2026 : ton premium, « 2 à 3 fois moins cher » (config.marche.foisTexte), le lave-vaisselle reste sur /la-maison/ seulement.
-// Exact par rapport au code : l'appel d'Alex avant chaque site et son feu vert (atelier.php), le contrôle par un second
-// petit monstre avant toute livraison, les cas délicats qui remontent à Alex (regles/escalade.md), les CGV (src/content/legal.js).
+// Exact par rapport au code : depuis le 25 novembre 2026, plus d'appel ni de feu vert, le questionnaire envoyé lance la
+// création (atelier.php) ; le contrôle par un second petit monstre avant toute livraison, les cas délicats qui remontent à Alex (regles/escalade.md), les CGV (src/content/legal.js).
 // Aucun prix écrit en dur : tout vient de src/config.js (les repères du marché : config.marche, sources sur la page Tarifs).
 const cfg = require('../../config');
 const { forfaits, creationSeule, offreSite, marche, bande, site } = cfg;
@@ -49,7 +49,7 @@ module.exports = [
 
 1. **Un prix clair, le même pour tous.** ${eur(ESS.price)} € la création du ${ESS.name}, ${eur(BOU.price)} € avec l’option ${ECO.name}. Pas de devis à attendre, pas de ligne surprise.
 2. **Un vrai site, pas un modèle à remplir seul.** Nos modules sont assemblés pour vous, puis garnis de vos textes, de vos informations et de vos photos.
-3. **Un parcours sans mauvaise surprise.** Un questionnaire précis, puis un appel d’Alex avant qu’il commence votre site. Rien n’est inventé sur votre activité.
+3. **Un parcours sans mauvaise surprise.** Un questionnaire précis, et votre site se construit avec vos réponses. Rien n’est inventé sur votre activité.
 4. **Une vérification avant chaque livraison.** Votre site est relu d’un œil neuf avant d’arriver chez vous.
 5. **L’accès à tout.** Votre espace client vous montre la liste de toutes vos pages, dont vos pages de visibilité Google. Avec le forfait ${mini.name}, vous modifiez vous-même un texte ou une photo, en direct.
 6. **Un site qui suit votre budget.** Vous commencez avec l’essentiel, et vous ajoutez des pages ou des extras plus tard, quand vous le décidez.
@@ -65,7 +65,7 @@ Nous ne faisons pas d’applications sur mesure ni de catalogues de plusieurs mi
 
 > Bon à savoir : vous hésitez encore ? Écrivez-nous par le [formulaire de contact](/contact/). Poser une question ne vous engage à rien.`,
     faq: [
-      { q: 'Faut-il habiter dans les Ardennes ?', a: `Non. Alex travaille depuis ${ville}, mais tout se fait à distance, partout en France : la commande en ligne, le questionnaire, puis l’appel.` },
+      { q: 'Faut-il habiter dans les Ardennes ?', a: `Non. Alex travaille depuis ${ville}, mais tout se fait à distance, partout en France : la commande en ligne, le questionnaire, puis vos messages si besoin.` },
     ],
     voir: ['minis-monstres-ou-developpeur-web', 'site-pas-cher-sans-etre-bacle', 'alex-sera-toujours-la'],
   },
@@ -87,14 +87,14 @@ Nous ne faisons pas d’applications sur mesure ni de catalogues de plusieurs mi
 
 ## Alex, autodidacte
 
-Alex a construit les Minis Monstres sans formation de développeur. Il s’appuie sur des outils qui l’aident à écrire et à vérifier le code, et il suit de près les dernières technologies du web. Là où un développeur écrit tout lui-même, Alex prépare, guide et contrôle. Le site final respecte les mêmes exigences : vitesse, sécurité, lisibilité, bases de la visibilité sur Google.
+Alex a construit les Minis Monstres sans formation de développeur. Il s’appuie sur des outils qui l’aident à écrire et à vérifier le code, et il suit de près les dernières technologies du web. Là où un développeur écrit tout lui-même, Alex prépare, guide et fixe les règles du contrôle. Le site final respecte les mêmes exigences : vitesse, sécurité, lisibilité, bases de la visibilité sur Google.
 
 ## Point par point
 
 1. **Qui conçoit votre site ?** Chez un développeur, lui. Chez nous, Alex a conçu une fois pour toutes les modules dont votre site est fait, puis il les remplit avec vos réponses.
-2. **Combien de temps ?** Des jours ou des semaines pour un site fait entièrement à la main. Chez nous, ${DELAI} en général après l’appel d’Alex.
+2. **Combien de temps ?** Des jours ou des semaines pour un site fait entièrement à la main. Chez nous, ${DELAI} en général une fois vos éléments reçus.
 3. **Qui vérifie ?** Chez nous, un second petit monstre contrôle le travail du premier avant toute livraison, selon les règles écrites par Alex. Les cas délicats arrivent toujours chez lui.
-4. **Qui vous parle ?** Alex vous appelle avant chaque site, et il répond à vos messages.
+4. **Qui vous parle ?** Alex, la personne derrière les Minis Monstres : il répond à vos messages.
 5. **Combien ça coûte ?** Comptez souvent, chez un indépendant, pour ${marche.pagesCompare} pages de site vitrine, entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €, d’après les repères de notre page [tarifs](/tarifs/). Le ${ESS.name} coûte ${eur(ESS.price)} €, soit ${marche.foisTexte} fois moins : Alex travaille depuis chez lui, sans loyer à répercuter sur vos factures.
 6. **Et après ?** Avec le forfait ${mini.name}, vos modifications sont comprises dans les ${eur(mini.month)} € par mois. Avec le forfait ${AUTO}, vous repartez avec votre site.
 
@@ -120,7 +120,7 @@ Une application métier, un logiciel sur mesure, un très gros catalogue, une co
     duree: 3,
     h1: `Comment un site soigné peut-il coûter ${marche.foisTexte} fois moins cher ?`,
     title: 'Un site moins cher, sans rien bâcler : comment ? | Les Minis Monstres',
-    description: `Comment le ${ESS.name} coûte ${marche.foisTexte} fois moins cher qu’un site d’indépendant : ni local ni loyer, des modules soignés, et Alex qui vérifie tout.`,
+    description: `Comment le ${ESS.name} coûte ${marche.foisTexte} fois moins cher qu’un site d’indépendant : ni local ni loyer, des modules soignés, et un contrôle avant chaque livraison.`,
     lead: 'Un prix doux fait parfois peur. Ici, il vient des frais que nous n’avons pas, jamais des étapes sautées. Voici comment.',
     body: `La réponse tout de suite : nous n’avons ni local, ni agence, ni loyer à vous faire payer. Alex fait tout depuis chez lui. Le soin, lui, reste le même.
 
@@ -136,8 +136,8 @@ Le prix doit rester doux pour vous, et assez juste pour qu’Alex vive de son tr
 
 ## Ce qui ne baisse jamais
 
-- **L’écoute** : un questionnaire précis, et l’appel d’Alex avant chaque site.
-- **Le contrôle** : Alex vérifie votre site une dernière fois, en entier, avant de vous le livrer.
+- **L’écoute** : un questionnaire précis, et Alex qui répond à vos messages.
+- **Le contrôle** : votre site est vérifié page par page avant de vous être livré.
 - **La qualité** : un site rapide, lisible sur téléphone, avec un formulaire de contact et les bases de la visibilité sur Google.
 - **La vérité** : rien n’est inventé sur votre activité, ni avis, ni prix, ni service.
 
@@ -185,7 +185,7 @@ Aucun d’eux ne fait de choix pour vous, et aucun ne prend la place d’Alex. I
 
 > Bon à savoir : vous croiserez surtout ${B('support').nom} et ${B('constructeur').nom} dans votre espace client. Vous voulez voir toute la bande en images ? Elle vous attend sur la page [notre équipe](/notre-equipe/).`,
     faq: [
-      { q: 'Est-ce que je parle à un petit monstre ou à une personne ?', a: `Les deux. ${B('support').nom} répond dans la bulle de votre espace client, et ${B('constructeur').nom} prépare vos demandes. Alex vous appelle avant votre site, et il répond aux messages du formulaire de contact.` },
+      { q: 'Est-ce que je parle à un petit monstre ou à une personne ?', a: `Les deux. ${B('support').nom} répond dans la bulle de votre espace client, et ${B('constructeur').nom} prépare vos demandes. Alex, lui, répond aux messages du formulaire de contact.` },
     ],
     voir: ['alex-sera-toujours-la', 'site-pas-cher-sans-etre-bacle', 'minis-monstres-ou-developpeur-web'],
   },
@@ -201,29 +201,27 @@ Aucun d’eux ne fait de choix pour vous, et aucun ne prend la place d’Alex. I
     duree: 3,
     h1: 'Alex sera toujours là : ce qu’il fait lui-même, à chaque site',
     title: 'Alex sera toujours là, à chaque site | Les Minis Monstres',
-    description: 'La bande travaille vite, mais Alex reste derrière chaque site : l’appel avant la création, les règles du contrôle, les cas délicats et vos messages.',
-    lead: 'Nos petits monstres font beaucoup. Mais vous n’êtes jamais seul face à une machine : Alex est là, du premier appel jusqu’à longtemps après la mise en ligne.',
-    body: `La réponse tout de suite : Alex a créé les Minis Monstres, et il en répond personnellement. Il vous appelle avant votre site, il a écrit les règles que suit la bande, il est prévenu de chaque livraison, et il traite lui-même tout ce qui est délicat.
+    description: 'La bande travaille vite, mais Alex reste derrière chaque site : les règles du travail, l’organisation du contrôle, les cas délicats et vos messages.',
+    lead: 'Nos petits monstres font beaucoup. Mais vous n’êtes jamais seul face à une machine : Alex est là, de votre commande jusqu’à longtemps après la mise en ligne.',
+    body: `La réponse tout de suite : Alex a créé les Minis Monstres, et il en répond personnellement. Il a écrit les règles que suit la bande, il est prévenu de chaque livraison, et il traite lui-même tout ce qui est délicat.
 
 ## Ce qu’Alex fait lui-même
 
-1. **Il vous appelle avant chaque site.** Une fois votre questionnaire reçu, il vous téléphone pour parler de votre projet. C’est lui qui donne ensuite le feu vert à la bande.
-2. **Il a écrit les règles du travail.** Ne rien inventer, tout vérifier, rester prudent : chaque petit monstre suit ses consignes, à chaque site.
-3. **Il organise le contrôle.** Chaque site est relu par un second petit monstre avant toute livraison, et Alex reçoit un message dès qu’un site part chez son client.
-4. **Il tranche les cas délicats.** Un remboursement, une réclamation, un accès à votre nom de domaine, une demande qui sort du forfait : tout cela arrive directement chez lui.
-5. **Il répond à vos messages.** Ce que vous écrivez par le formulaire de contact, c’est lui qui le lit.
+1. **Il a écrit les règles du travail.** Ne rien inventer, tout vérifier, rester prudent : chaque petit monstre suit ses consignes, à chaque site.
+2. **Il organise le contrôle.** Chaque site est relu par un second petit monstre avant toute livraison, et Alex reçoit un message dès qu’un site part chez son client.
+3. **Il tranche les cas délicats.** Un remboursement, une réclamation, un accès à votre nom de domaine, une demande qui sort du forfait : tout cela arrive directement chez lui.
+4. **Il répond à vos messages.** Ce que vous écrivez par le formulaire de contact, c’est lui qui le lit.
 
 ## Comment le joindre
 
 - Par le [formulaire de contact](/contact/), avant ou après votre commande.
 - En répondant simplement à un e-mail que nous vous avons envoyé.
-- Pendant l’appel, avant la création de votre site.
 
 ## Pourquoi c’est important pour lui
 
 Alex est installé à ${ville}, dans les ${dept}. Il a construit les Minis Monstres pour rendre le web accessible aux petites activités, sans les laisser seules avec un outil. Les petits monstres lui font gagner du temps. Ce temps, il le garde pour vous écouter.
 
 > Bon à savoir : avec le forfait ${mini.name}, vous n’êtes pas lâché après la mise en ligne. Vos modifications sont comprises, et une vraie personne reste derrière votre site, mois après mois.`,
-    voir: ['appel-avec-alex', 'qui-sont-les-minis-monstres', 'pourquoi-choisir-les-minis-monstres'],
+    voir: ['qui-sont-les-minis-monstres', 'pourquoi-choisir-les-minis-monstres', 'minis-monstres-ou-developpeur-web'],
   },
 ];

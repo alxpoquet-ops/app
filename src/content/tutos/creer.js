@@ -1,7 +1,7 @@
 // Mini Tuto, thème « creer » : voir le format dans ./index.js.
 // Créer son site avec nous, de la commande à la mise en ligne. Tout est vérifié sur le code réel du parcours :
 // src/pages/main.js (page /creer-mon-site/, formulaire de commande), src/content/brief.js (le questionnaire),
-// src/wordpress/aled08-espace/includes/ commandes.php, brief.php, atelier.php (l'appel d'Alex, le feu vert, le contrôle) et provision.php.
+// src/wordpress/aled08-espace/includes/ commandes.php, brief.php, atelier.php (le questionnaire envoyé lance la création, puis le contrôle) et provision.php.
 // Aucun prix écrit en dur : tout vient de src/config.js.
 const cfg = require('../../config');
 const { forfaits, creationSeule, fractionne, offreSite, aLaDemande } = cfg;
@@ -15,7 +15,7 @@ const AUTO = creationSeule.name; // Autonome, sans abonnement
 const pageGoogle = aLaDemande.find((x) => x.id === 'packseo' && !x.retire) || { name: 'Page de visibilité Google', prix: 0, packs: [1] };
 const packs = (pageGoogle.packs || [1]).join(', ').replace(/, (\d+)$/, ' ou $1'); // « 1, 5 ou 10 »
 const FOIS = fractionne.fois, ORG = fractionne.organismes; // « 3 ou 4 », « Alma ou Klarna »
-const DELAI = ESS.delai; // « quelques heures », après l'appel d'Alex
+const DELAI = ESS.delai; // « quelques heures », après l'envoi du questionnaire
 
 module.exports = [
   // ------------------------------------------------------------------ l'essentiel
@@ -29,8 +29,8 @@ module.exports = [
     duree: 3,
     h1: 'Comment créer mon site avec les Minis Monstres ?',
     title: 'Créer son site avec nous : l’essentiel | Les Minis Monstres',
-    description: `Commander, payer, répondre au questionnaire, parler avec Alex, recevoir son site : le parcours complet pour créer votre ${ESS.name}, expliqué simplement.`,
-    lead: 'Vous commandez en ligne, vous répondez au questionnaire, Alex vous appelle, puis votre site arrive. Voici le chemin, sans jargon.',
+    description: `Commander, payer, répondre au questionnaire, puis recevoir son site : le parcours complet pour créer votre ${ESS.name}, expliqué simplement.`,
+    lead: 'Vous commandez en ligne, vous répondez au questionnaire, puis votre site arrive. Voici le chemin, sans jargon.',
     espace: 'commande',
     body: `La réponse courte : tout commence sur la page [Créer mon site](/creer-mon-site/). Vous y choisissez votre site et vous payez en ligne. Votre espace client s’ouvre aussitôt, et la suite se passe là-bas, à votre rythme.
 
@@ -40,9 +40,9 @@ module.exports = [
 2. **Vous choisissez qui s’en occupe.** Avec le forfait ${mini.name}, nous hébergeons et entretenons votre site pour ${eur(mini.month)} € par mois, sans engagement. Avec le forfait ${AUTO}, rien à payer chaque mois : vous installez le site vous-même.
 3. **Vous donnez vos coordonnées**, et vous choisissez le mot de passe de votre espace client.
 4. **Vous payez** sur la page de paiement sécurisée, d’un seul coup ou en ${FOIS} fois avec ${ORG}.
-5. **Vous répondez au questionnaire de création**, depuis votre espace client. Comptez une dizaine de minutes.
-6. **Alex vous appelle** pour parler de votre site. Ensuite, il crée votre site, puis le vérifie en entier.
-7. **Votre site est en ligne**, en général ${DELAI} après cet appel. Un e-mail vous donne le lien.
+5. **Vous répondez au questionnaire de création**, depuis votre espace client. Comptez une dizaine de minutes. Son envoi lance la création.
+6. **Alex crée votre site** avec vos réponses. Il est vérifié page par page avant la mise en ligne.
+7. **Votre site est en ligne**, en général ${DELAI} après l’envoi de votre questionnaire. Un e-mail vous donne le lien.
 
 ## Ce que vous n’avez pas à faire
 
@@ -59,7 +59,7 @@ Inutile de savoir coder ou de connaître les mots du web. Avec le forfait ${mini
 
 Une question avant de vous lancer ? Écrivez-nous par le [formulaire de contact](/contact/) : c’est Alex qui lit et qui répond.`,
     faq: [
-      { q: 'Faut-il prendre rendez-vous avant de commander ?', a: 'Non. Vous commandez directement en ligne. C’est après votre questionnaire qu’Alex vous appelle, pour parler de votre site.' },
+      { q: 'Faut-il prendre rendez-vous avant de commander ?', a: 'Non. Vous commandez directement en ligne, puis vous remplissez le questionnaire. C’est son envoi qui lance la création de votre site.' },
       { q: 'Puis-je changer d’avis pendant la commande ?', a: 'Oui. Tant que vous n’avez pas payé, cochez ou décochez ce que vous voulez : le prix se met à jour tout de suite.' },
     ],
     voir: ['deroulement-d-un-achat', 'questionnaire-de-creation', 'combien-de-temps-pour-mon-site'],
@@ -72,14 +72,14 @@ Une question avant de vous lancer ? Écrivez-nous par le [formulaire de contact]
     icon: 'route',
     monstre: 'mochi',
     nom: 'Un achat, étape par étape',
-    resume: 'Les dix étapes d’une commande, et qui a la main à chaque moment.',
+    resume: 'Les neuf étapes d’une commande, et qui a la main à chaque moment.',
     duree: 4,
     h1: 'Comment se déroule un achat chez les Minis Monstres, étape par étape ?',
     title: 'Le déroulement d’un achat, pas à pas | Les Minis Monstres',
-    description: 'De la page de commande à l’e-mail « Votre site est en ligne », les dix étapes d’un achat chez nous, avec ce que vous faites et ce que nous faisons.',
-    lead: 'Une commande suit toujours le même chemin. Vous savez à chaque instant où en est votre site, et qui a la main : vous, Alex ou la bande.',
+    description: 'De la page de commande à l’e-mail « Votre site est en ligne », les neuf étapes d’un achat chez nous, avec ce que vous faites et ce que nous faisons.',
+    lead: 'Une commande suit toujours le même chemin. Vous savez à chaque instant où en est votre site, et qui a la main : vous ou la bande.',
     espace: 'commande',
-    body: `La réponse tout de suite : quatre étapes sur la page de commande, puis six dans votre espace client. Rien n’est caché : la barre d’avancement de votre espace client vous montre toujours l’étape en cours.
+    body: `La réponse tout de suite : quatre étapes sur la page de commande, puis cinq dans votre espace client. Rien n’est caché : la barre d’avancement de votre espace client vous montre toujours l’étape en cours.
 
 ## Sur la page Créer mon site
 
@@ -92,10 +92,9 @@ Une question avant de vous lancer ? Écrivez-nous par le [formulaire de contact]
 
 5. **La confirmation.** L’e-mail « Merci, c’est payé ! » arrive avec le récapitulatif, la référence de votre commande et un bouton vers le questionnaire.
 6. **Le nom de domaine et l’hébergement.** Avec le forfait ${mini.name}, ils se préparent automatiquement. Rien à faire de votre côté pendant cette étape.
-7. **Le questionnaire de création**, dans l’onglet « Ma commande ». C’est son envoi qui lance la création.
-8. **L’appel d’Alex.** Il vous téléphone au numéro donné à la commande, pour parler de votre site. Après l’appel, il commence votre site.
-9. **La création, puis la vérification.** Un petit monstre construit votre site avec vos réponses, et un second le relit d’un œil neuf avant toute livraison. S’il manque une précision, vous recevez l’e-mail « Une petite question pour votre site », et vous répondez dans « Ma commande ».
-10. **La mise en ligne.** L’e-mail « Votre site est en ligne ! » vous donne le lien. C’est la première version de votre site, et elle peut évoluer ensuite.
+7. **Le questionnaire de création**, dans l’onglet « Ma commande ». C’est son envoi qui lance la création, sans autre rendez-vous.
+8. **La création, puis la vérification.** Un petit monstre construit votre site avec vos réponses, et un second le relit d’un œil neuf avant toute livraison. S’il manque une précision, vous recevez l’e-mail « Une petite question pour votre site », et vous répondez dans « Ma commande ».
+9. **La mise en ligne.** L’e-mail « Votre site est en ligne ! » vous donne le lien. C’est la première version de votre site, et elle peut évoluer ensuite.
 
 > Bon à savoir : avec le forfait ${mini.name}, rien n’est prélevé chaque mois avant la mise en ligne. Votre forfait démarre ce jour-là, quand vous enregistrez votre carte.
 
@@ -106,7 +105,7 @@ Le chemin est le même jusqu’à la création, sans nom de domaine ni hébergem
       { q: 'Que se passe-t-il si je choisis d’attendre 14 jours ?', a: 'Vous gardez votre droit de rétractation jusque-là. Vous pouvez déjà remplir le questionnaire, mais la création commence seulement à la fin de ce délai.' },
       { q: 'Je ne réponds pas à une question de la bande, que se passe-t-il ?', a: 'Votre site attend votre réponse. Au bout de trois jours, un petit e-mail vous le rappelle, une seule fois.' },
     ],
-    voir: ['creer-mon-site-avec-nous', 'appel-avec-alex', 'payer-mon-site-en-plusieurs-fois'],
+    voir: ['creer-mon-site-avec-nous', 'combien-de-temps-pour-mon-site', 'payer-mon-site-en-plusieurs-fois'],
   },
 
   // ------------------------------------------------------------------ le questionnaire
@@ -150,59 +149,12 @@ Dans votre espace client, onglet « Ma commande ». L’e-mail de confirmation c
 
 ## Et ensuite ?
 
-Un message vous confirme la bonne réception. Alex lit vos réponses, puis il vous appelle pour en parler avant de commencer votre site. Une réponse vous a semblé floue ? C’est le bon moment pour la préciser de vive voix.`,
+Un message vous confirme la bonne réception, et la création de votre site commence aussitôt. S’il manque une précision, la bande vous pose sa question par e-mail, et vous répondez dans « Ma commande ».`,
     faq: [
       { q: 'Je n’ai pas encore de photos, je peux envoyer le questionnaire ?', a: 'Oui. Des images en rapport avec votre métier sont posées à leur place, et vous mettrez les vôtres quand vous les aurez.' },
       { q: 'Pourquoi demander mon adresse ?', a: 'La loi demande l’adresse de la personne qui publie un site. Elle apparaît seulement dans les mentions légales, en bas de votre site.' },
     ],
-    voir: ['appel-avec-alex', 'deroulement-d-un-achat', 'combien-de-temps-pour-mon-site'],
-  },
-
-  // ------------------------------------------------------------------ l'appel d'Alex
-  {
-    slug: 'appel-avec-alex',
-    groupe: 'creer',
-    icon: 'phone-call',
-    monstre: 'ravie',
-    nom: 'L’appel avec Alex',
-    resume: 'Pourquoi Alex vous téléphone avant chaque site, et comment s’y préparer.',
-    duree: 3,
-    h1: 'L’appel avec Alex : à quoi sert-il ?',
-    title: 'L’appel avec Alex, avant votre site | Les Minis Monstres',
-    description: 'Avant de lancer votre site, Alex vous appelle pour bien comprendre ce que vous attendez. À quoi sert cet appel, quand il a lieu et comment vous y préparer.',
-    lead: 'Un questionnaire dit beaucoup, mais pas tout. Avant que la bande se mette au travail, Alex prend son téléphone et vous appelle.',
-    espace: 'commande',
-    body: `La réponse tout de suite : cet appel sert à dégrossir votre projet. Alex a lu vos réponses, il vous écoute, et il s’assure d’avoir bien compris ce que vous attendez de votre site. Il a lieu pour chaque site, sans exception, et c’est un choix d’Alex.
-
-## Comment il se passe
-
-1. **Vous envoyez votre questionnaire.** Alex est prévenu aussitôt, avec vos réponses sous les yeux.
-2. **Alex vous appelle** au numéro que vous avez donné à la commande. Vous n’avez rien à réserver.
-3. **Vous parlez de votre site** : ce qui compte le plus pour vous, ce que vos visiteurs doivent faire en premier, ce qui vous fait hésiter.
-4. **Alex note ce qu’il retient** de votre échange, et il le transmet à la bande avec votre questionnaire.
-5. **Il donne le feu vert.** Avant ce feu vert, personne ne commence votre site. Après, comptez en général ${DELAI} jusqu’à la mise en ligne.
-
-## Pourquoi c’est important
-
-Un même mot ne veut pas dire la même chose pour tout le monde. « Moderne », « chaleureux », « simple » : quelques minutes de conversation suffisent à lever le doute. C’est aussi l’occasion de régler un détail qui ne rentrait dans aucune case du questionnaire.
-
-Ce n’est pas un appel commercial. Votre site est déjà commandé : il s’agit seulement de bien le faire.
-
-## Comment vous y préparer
-
-- Gardez votre questionnaire à portée de main, ou ouvrez votre espace client.
-- Pensez à l’action principale de vos visiteurs : vous appeler, vous écrire, venir sur place, acheter.
-- Repérez la photo ou le service que vous voulez voir en premier.
-- Notez vos questions, même petites. Il n’y en a pas de bête.
-
-> Bon à savoir : vous avez choisi d’attendre la fin de votre délai de rétractation ? La création commence seulement à cette date, même après l’appel.
-
-Après la mise en ligne, Alex reste joignable : vous lui écrivez depuis le [formulaire de contact](/contact/) ou en répondant à nos e-mails.`,
-    faq: [
-      { q: 'Combien de temps dure l’appel ?', a: 'Aucune durée n’est fixée. L’appel sert à bien comprendre votre projet, et il s’arrête quand tout est clair pour vous et pour Alex.' },
-      { q: 'Puis-je modifier mon questionnaire après l’appel ?', a: 'Oui. Vos réponses restent modifiables dans « Ma commande », et la bande travaille avec la dernière version.' },
-    ],
-    voir: ['questionnaire-de-creation', 'alex-sera-toujours-la', 'combien-de-temps-pour-mon-site'],
+    voir: ['deroulement-d-un-achat', 'combien-de-temps-pour-mon-site', 'creer-mon-site-avec-nous'],
   },
 
   // ------------------------------------------------------------------ les délais
@@ -216,19 +168,18 @@ Après la mise en ligne, Alex reste joignable : vous lui écrivez depuis le [for
     duree: 3,
     h1: 'Combien de temps faut-il pour avoir mon site ?',
     title: 'Combien de temps pour avoir mon site ? | Les Minis Monstres',
-    description: `Votre site est en ligne en général ${DELAI} après l’appel d’Alex. Le temps de chaque étape, ce qui peut l’allonger et comment aller plus vite.`,
-    lead: `Comptez en général ${DELAI} après l’appel avec Alex. Voici le détail, étape par étape, et ce qui peut rallonger un peu l’attente.`,
+    description: `Votre site est en ligne en général ${DELAI} après l’envoi de votre questionnaire. Le temps de chaque étape, ce qui peut l’allonger et comment aller plus vite.`,
+    lead: `Comptez en général ${DELAI} une fois vos éléments reçus. Voici le détail, étape par étape, et ce qui peut rallonger un peu l’attente.`,
     espace: 'commande',
-    body: `La réponse tout de suite : une fois l’appel avec Alex passé et vos éléments reçus, votre site est en général en ligne en ${DELAI}. C’est possible parce que nos modules sont déjà prêts. Ce délai reste indicatif, comme le précisent nos [conditions générales](/conditions-generales/).
+    body: `La réponse tout de suite : une fois votre questionnaire envoyé et vos éléments reçus, votre site est en général en ligne en ${DELAI}. C’est possible parce que nos modules sont déjà prêts. Ce délai reste indicatif, comme le précisent nos [conditions générales](/conditions-generales/).
 
 ## Le temps de chaque étape
 
 1. **La commande** : quelques minutes sur la page Créer mon site, paiement compris.
 2. **L’adresse et l’hébergement** (avec le forfait ${mini.name}) : tout se fait automatiquement. Une fois le nom réservé, l’hébergement et le cadenas de sécurité sont souvent prêts en une heure environ.
 3. **Le questionnaire** : une dizaine de minutes, quand vous voulez. Vous pouvez le remplir pendant que le nom de domaine se prépare.
-4. **L’appel d’Alex** : il a lieu après l’envoi de votre questionnaire.
-5. **La création et la vérification** : ${DELAI} en général, contrôle compris.
-6. **Le grand jour** : vous êtes prévenu par e-mail dès que tout est bon.
+4. **La création et la vérification** : elles commencent dès l’envoi de votre questionnaire. Comptez ${DELAI} en général, contrôle compris.
+5. **Le grand jour** : vous êtes prévenu par e-mail dès que tout est bon.
 
 ## Ce qui peut rallonger un peu
 
@@ -246,7 +197,7 @@ Après la mise en ligne, Alex reste joignable : vous lui écrivez depuis le [for
 > Bon à savoir : aller vite ne veut pas dire sauter des étapes. Chaque site passe par la vérification, même quand tout est prêt en quelques heures.
 
 Après la mise en ligne, vos modifications n’ont pas de délai garanti : chacune est traitée dans un délai raisonnable, selon ce qu’elle demande, et vous la suivez dans votre espace client.`,
-    voir: ['deroulement-d-un-achat', 'appel-avec-alex', 'nom-de-domaine-le-mien-ou-le-votre'],
+    voir: ['deroulement-d-un-achat', 'questionnaire-de-creation', 'nom-de-domaine-le-mien-ou-le-votre'],
   },
 
   // ------------------------------------------------------------------ le paiement

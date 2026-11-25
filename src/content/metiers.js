@@ -98,7 +98,7 @@ Le site fait équipe avec votre [fiche Google](/guides/fiche-google-entreprise/)
 
 ## Vous êtes sur les chantiers, on s’occupe du site
 
-Vous n’avez ni le temps ni l’envie de gérer un site le soir, et c’est normal. Nous écrivons les textes avec vous après un court échange, puis nous mettons tout en ligne.
+Vous n’avez ni le temps ni l’envie de gérer un site le soir, et c’est normal. Nous écrivons les textes à partir de vos réponses au questionnaire, puis nous mettons tout en ligne.
 
 Un tarif change, une nouvelle photo arrive ? Avec le forfait ${mini.name}, envoyez le changement depuis votre téléphone, dans votre espace client. ${qui('constructeur')} de notre petite bande, clarifie votre demande avec vous, puis l’envoie à Alex, qui fait la modification. Elle est incluse.
 
@@ -178,9 +178,9 @@ C’est le choix fait pour le site d’un magnétiseur, à découvrir parmi nos 
 
 ## Vous accompagnez, on s’occupe du site
 
-Vous n’avez pas à écrire seul. Racontez-nous votre pratique avec vos mots, au téléphone ou par écrit. ${qui('ecrivain')} de notre petite bande, met vos notes en forme.
+Vous n’avez pas à écrire seul. Racontez-nous votre pratique avec vos mots, dans le questionnaire ou par message. ${qui('ecrivain')} de notre petite bande, met vos notes en forme.
 
-Alex relit ensuite chaque phrase avec vous, surtout les plus délicates. Rien ne part en ligne sans votre accord.
+Chaque phrase est ensuite relue avant la mise en ligne, surtout les plus délicates. Un mot ne vous convient pas ? Vous le changez quand vous voulez.
 
 ## Le prix
 
@@ -254,7 +254,7 @@ Le guide pour [créer une boutique en ligne](/guides/creer-boutique-en-ligne/) d
 
 ## Vous créez, on s’occupe du reste
 
-Vous nous envoyez vos photos et quelques notes sur chaque pièce. La petite bande prépare les fiches. Alex reprend ensuite chaque texte pour qu’il sonne comme vous, et vérifie chaque page avant la mise en ligne.
+Vous nous envoyez vos photos et quelques notes sur chaque pièce. La petite bande prépare les fiches. Chaque texte est ensuite repris pour qu’il sonne comme vous, puis tout est vérifié avant la mise en ligne.
 
 ## Le prix
 
@@ -559,7 +559,7 @@ La [fiche Google](/guides/fiche-google-entreprise/) vous met sur la carte. Le si
 
 ## Comment on s’y prend
 
-Vous commandez en ligne, puis vous remplissez un questionnaire précis : horaires, gamme, commandes spéciales, photos. Alex vous appelle pour caler les détails. Alex crée le site, le vérifie en entier, puis tout part en ligne. Une nouvelle spécialité plus tard ? Votre site s’améliore à tout moment.
+Vous commandez en ligne, puis vous remplissez un questionnaire précis : horaires, gamme, commandes spéciales, photos. Son envoi suffit à lancer le travail. Alex crée le site, chaque page est vérifiée, puis tout part en ligne. Une nouvelle spécialité plus tard ? Votre site s’améliore à tout moment.
 
 ## Les tarifs
 
@@ -638,7 +638,7 @@ Reliez aussi le site à votre [fiche Google](/guides/fiche-google-entreprise/), 
 
 ## De la commande à la mise en ligne
 
-La commande se passe en ligne. Un questionnaire précis vous demande vos spécialités, vos formules et vos meilleures séries. Alex vous appelle pour bien saisir votre style. Alex crée le site, le vérifie image par image, puis le publie. Une nouvelle série ensuite ? Le site évolue avec vous.
+La commande se passe en ligne. Un questionnaire précis vous demande vos spécialités, vos formules et vos meilleures séries. Vos réponses suffisent pour saisir votre style. Alex crée le site, il est vérifié image par image, puis publié. Une nouvelle série ensuite ? Le site évolue avec vous.
 
 ## Le budget
 
@@ -711,7 +711,7 @@ Vous avez plusieurs cordes, comme le renforcement, la course et le yoga ? Chaque
 
 ## Votre site, étape par étape
 
-Vous passez commande. Un questionnaire précis recueille vos formules, vos lieux, vos diplômes et vos photos. Alex vous appelle ensuite pour affiner. Alex crée le site et le vérifie en entier avant la mise en ligne, et vous pourrez l’améliorer à tout moment, au fil de vos nouvelles séances.
+Vous passez commande. Un questionnaire précis recueille vos formules, vos lieux, vos diplômes et vos photos. Dès l’envoi, la création démarre. Alex crée le site, qui est contrôlé en entier avant la mise en ligne, et vous pourrez l’améliorer à tout moment, au fil de vos nouvelles séances.
 
 ## Le prix
 
@@ -789,7 +789,7 @@ Pour aller plus loin, une page de visibilité Google peut parler d’une commune
 
 ## Comment se fait votre site
 
-Commande en ligne, puis un questionnaire précis : votre tournée, votre carte, vos photos. Alex vous appelle pour clarifier ce qui doit l’être. Alex crée le site, en contrôle chaque détail, et c’est en ligne. Votre carte change avec les saisons ? Le site suit, à tout moment.
+Commande en ligne, puis un questionnaire précis : votre tournée, votre carte, vos photos. Un détail reste flou ? La bande vous pose la question par e-mail. Alex crée le site, chaque détail en est contrôlé, et c’est en ligne. Votre carte change avec les saisons ? Le site suit, à tout moment.
 
 ## Combien ça coûte
 
@@ -864,7 +864,7 @@ Votre [fiche Google](/guides/fiche-google-entreprise/) complète le tout : la ca
 
 ## De votre commande au site en ligne
 
-Vous commandez en ligne. Un questionnaire précis vous fait détailler vos occasions, votre zone, vos tarifs. Alex vous appelle pour lever les doutes. Alex crée le site, puis le relit en entier avant de le publier. Vous pourrez ensuite l’enrichir quand vous voulez.
+Vous commandez en ligne. Un questionnaire précis vous fait détailler vos occasions, votre zone, vos tarifs. Pas de rendez-vous à caler : vos réponses lancent la création. Alex crée le site, relu en entier avant sa publication. Vous pourrez ensuite l’enrichir quand vous voulez.
 
 ## Le prix
 
@@ -938,7 +938,7 @@ Votre [fiche Google](/guides/fiche-google-entreprise/) vous place sur la carte e
 
 ## Le chemin jusqu’à la mise en ligne
 
-Après votre commande, vous répondez à un questionnaire précis : prestations, marques, tarifs, horaires, photos. Alex vous appelle pour compléter. Alex crée le site, le vérifie en entier, puis le met en ligne. Un nouveau service, comme l’entretien des voitures électriques, s’ajoute ensuite à tout moment.
+Après votre commande, vous répondez à un questionnaire précis : prestations, marques, tarifs, horaires, photos. C’est tout ce qu’il faut pour commencer. Alex crée le site, il est vérifié de la première à la dernière page, puis mis en ligne. Un nouveau service, comme l’entretien des voitures électriques, s’ajoute ensuite à tout moment.
 
 ## Combien prévoir
 
@@ -1015,7 +1015,7 @@ Votre [fiche Google](/guides/fiche-google-entreprise/) place la ferme sur la car
 
 ## Comment on avance ensemble
 
-La commande se fait en ligne. Vous remplissez ensuite un questionnaire précis : vos produits, vos saisons, vos points de vente, vos photos de la ferme. Alex vous appelle pour bien comprendre votre organisation. Alex crée le site, vérifie le tout, puis c’est en ligne. À la saison suivante, le site s’améliore avec vous.
+La commande se fait en ligne. Vous remplissez ensuite un questionnaire précis : vos produits, vos saisons, vos points de vente, vos photos de la ferme. Vos réponses décrivent votre organisation, sans rendez-vous à prendre. Alex crée le site, le tout est vérifié, puis c’est en ligne. À la saison suivante, le site s’améliore avec vous.
 
 ## Le budget
 
@@ -1086,7 +1086,7 @@ Chaque spécialité peut aussi avoir sa page : le toilettage des chats, les race
 
 ## De la commande au site publié
 
-Vous commandez, puis un questionnaire précis vous demande vos prestations, vos grilles de prix et vos meilleures photos. Alex vous appelle pour préciser. Alex crée le site, vérifie chaque page, et c’est en ligne. Une nouvelle prestation plus tard ? Le site s’enrichit quand vous voulez.
+Vous commandez, puis un questionnaire précis vous demande vos prestations, vos grilles de prix et vos meilleures photos. L’envoi lance aussitôt la création. Alex crée le site, chaque page passe au contrôle, et c’est en ligne. Une nouvelle prestation plus tard ? Le site s’enrichit quand vous voulez.
 
 ## Combien ça coûte
 
@@ -1157,7 +1157,7 @@ Citez vos communes sur le site, et réglez la même zone sur votre [fiche Google
 
 ## Votre site, sans y passer vos soirées
 
-Vous passez commande en ligne. Un questionnaire précis recueille vos services, votre zone, vos tarifs et votre statut. Alex vous appelle pour vérifier les points délicats, comme le crédit d’impôt. Alex crée le site, le vérifie de bout en bout, puis le publie. Il reste améliorable à tout moment.
+Vous passez commande en ligne. Un questionnaire précis recueille vos services, votre zone, vos tarifs et votre statut. Un point délicat, comme le crédit d’impôt ? Notez-le dans vos réponses, ou écrivez-nous. Alex crée le site, il est vérifié de bout en bout, puis publié. Il reste améliorable à tout moment.
 
 ## Le prix
 
@@ -1232,7 +1232,7 @@ Les mariages se réservent longtemps à l’avance, les repas de fin d’année 
 
 ## De la commande à la mise en ligne
 
-Vous commandez sur notre site. Un questionnaire précis vous fait lister vos formules, vos prix, votre zone et vos photos. Alex vous appelle pour les détails. Alex crée votre site, le vérifie en entier, puis le publie. Votre carte de printemps arrive ? Le site s’améliore à tout moment.
+Vous commandez sur notre site. Un questionnaire précis vous fait lister vos formules, vos prix, votre zone et vos photos. Une précision manque ? On vous écrit. Alex crée votre site, il est relu en entier, puis publié. Votre carte de printemps arrive ? Le site s’améliore à tout moment.
 
 ## Combien ça coûte
 

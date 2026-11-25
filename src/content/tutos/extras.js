@@ -68,7 +68,7 @@ Ensuite, vous n’avez rien à faire. ${MIRETTE} regarde votre site et ce qu’o
 
 Personne ne choisit la place que Google vous donne, et une page ne promet pas la première ligne. Mais un site qui répond à beaucoup de questions utiles a bien plus de chances d’être montré. Commencez par une page, regardez, puis continuez à votre rythme : votre espace client vous attend, onglet « Extras ».`,
     faq: [
-      { q: 'Qui écrit la page ?', a: `La bande des Minis Monstres, à partir de votre site et de votre questionnaire de création, sans rien inventer. ${MIRETTE} en choisit le sujet, Alex veille sur le tout.` },
+      { q: 'Qui écrit la page ?', a: `La bande des Minis Monstres, à partir de votre site et de votre questionnaire de création, sans rien inventer. ${MIRETTE} en choisit le sujet, et la page est vérifiée avant sa mise en ligne.` },
       { q: 'Est-ce un abonnement ?', a: 'Non. Chaque page se règle à la commande, et rien ne s’ajoute à votre forfait.' },
     ],
     voir: ['quel-extra-choisir-selon-mon-metier', 'traduction-anglaise'],

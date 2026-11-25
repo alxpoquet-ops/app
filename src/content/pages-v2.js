@@ -74,13 +74,13 @@ const pages = [
     icon: 'piggy-bank',
     color: 'lilac',
     title: 'Pourquoi un site moins cher, sans rien sacrifier | Les Minis Monstres',
-    description: `Un site internet soigné, ${marche.foisTexte} fois moins cher qu’un indépendant : pas de local, pas d’agence, pas de loyer, tout fait depuis chez Alex, et vérifié par lui.`,
+    description: `Un site internet soigné, ${marche.foisTexte} fois moins cher qu’un indépendant : pas de local, pas d’agence, pas de loyer, tout fait depuis chez Alex, et tout vérifié.`,
     h1: 'Pourquoi sommes-nous moins chers ?',
     lead: `Un site professionnel ${marche.foisTexte} fois moins cher qu’un indépendant, pour une raison simple : pas de local, pas d’agence, pas de loyer, pas de bureaux à chauffer et à éclairer. Alex fait tout depuis chez lui. Le soin, lui, reste entier.`,
     resume: 'Pas de local, pas de loyer, et tout le soin.',
     points: [
       { icon: 'house', t: 'Pas de local, pas de loyer', d: 'Ni agence ni bureaux à chauffer : Alex travaille de chez lui, et ces frais restent hors de votre facture.' },
-      { icon: 'user-check', t: 'Tout vérifié à la main', d: 'Alex relit, teste sur téléphone et contrôle chaque mise en ligne.' },
+      { icon: 'user-check', t: 'Tout vérifié, page par page', d: 'Chaque site est relu et testé sur téléphone avant sa mise en ligne.' },
       { icon: 'key-round', t: 'L’accès à tout', d: 'Votre espace client montre toutes vos pages. Vous modifiez vous-même, ou vous nous demandez.' },
       { icon: 'badge-euro', t: 'Un prix affiché', d: `${eur(ESS.price)} € le site, ${eur(BOU.price)} € avec une boutique, les mêmes pour tous, sans devis à attendre.` },
       { icon: 'shield-check', t: 'Rien de sacrifié', d: 'Qualité, sécurité, visibilité sur Google et une vraie personne qui vous répond.' },
@@ -127,12 +127,11 @@ Ce qui se voit, en revanche, est fait pour vous : l’ambiance, les couleurs, le
 
 Monter les pages, alléger les photos, vérifier les liens : ce qui revient d’un site à l’autre est outillé, et confié à notre petite bande. C’est discret, et c’est tout le temps gagné pour ce qui compte vraiment.${ESS.delai ? ` Votre site est prêt en ${ESS.delai}, avec ou sans l’option ${eco}.` : ''}
 
-## Ce qu’Alex fait à la main
+## Ce qui est fait pour chaque site
 
-Alex, qui a créé les Minis Monstres, s’occupe lui-même de votre site, du premier appel à la mise en ligne. Les Minis Monstres prennent le relais ensuite : ils sauvegardent votre site, le tiennent à jour et relèvent ses chiffres de visite pour votre espace client.
+Alex, qui a créé les Minis Monstres, crée votre site à partir de vos réponses, puis il reste là pour vos messages et pour les cas délicats. Les Minis Monstres prennent le relais ensuite : ils sauvegardent votre site, le tiennent à jour et relèvent ses chiffres de visite pour votre espace client.
 
-- **Un appel avant chaque site** : une fois votre questionnaire rempli, Alex vous appelle pour parler de votre site et bien comprendre ce que vous attendez. Ensuite, il crée votre site.
-
+- **Un questionnaire qui lance tout** : une fois vos réponses envoyées, la création de votre site commence, sans rendez-vous à prendre.
 - **Une dernière relecture, complète** : chaque page, chaque texte, chaque horaire, chaque prix affiché.
 - **Les tests sur téléphone**, comme le feront vos clients.
 - **La vérification** : les liens, le formulaire, la vitesse d’affichage, les informations destinées à Google.
@@ -182,7 +181,7 @@ Votre espace client vous donne la main sur votre site, du premier jour au dernie
 Votre projet dépasse ce que nous savons bien faire, comme une application sur mesure ou un catalogue de milliers de produits ? Nous vous le disons dès le premier échange.`,
     faq: [
       { q: 'Moins cher, ça veut dire moins bien ?', a: 'Non. Le prix baisse parce que nous n’avons ni local ni loyer à payer, pas parce que nous sautons des étapes. Chaque site est relu, testé sur téléphone et vérifié avant d’être publié.' },
-      { q: 'Mon site est-il fait à la chaîne ?', a: 'Non. Alex conçoit votre site et fait les choix avec vous : l’ambiance, les couleurs, les mots. Rien n’est publié sans sa vérification, ni sans votre validation.' },
+      { q: 'Mon site est-il fait à la chaîne ?', a: 'Non. Alex conçoit votre site à partir de vos choix : l’ambiance, les couleurs, les mots. Rien n’est publié sans vérification, et vous l’ajustez ensuite à votre goût.' },
       { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. Vous payez le site choisi, puis ${eur(mini.month)} € par mois seulement si vous prenez le forfait ${mini.name}. Les extras sont facultatifs, et leur prix est affiché.` },
       { q: 'Pourquoi n’y a-t-il pas de devis ?', a: 'Parce que la plupart des sites d’artisans, de commerces ou d’associations se construisent de la même façon. Un prix fixe est plus simple pour tout le monde.' },
     ],
@@ -374,9 +373,9 @@ Vos questions avant la commande ne vous engagent à rien. Si notre offre ne corr
 
 ## Notre méthode, en quatre temps
 
-1. **Vous nous racontez votre activité** : dans le questionnaire de votre espace client, puis lors d’un appel avec Alex, pour bien comprendre ce que vous attendez du site.
+1. **Vous nous racontez votre activité** : dans le questionnaire de votre espace client, précis, pour que l’on comprenne bien ce que vous attendez du site.
 2. **Alex conçoit votre site** : la structure, les pages, le style, avec le même soin pour chaque client.
-3. **Alex vérifie** : tout est relu et testé sur plusieurs appareils, puis votre première version part en ligne.
+3. **Tout est vérifié** : chaque page est relue et testée sur plusieurs appareils, puis votre première version part en ligne.
 4. **Vous le peaufinez** : avec le forfait ${mini.name}, nous l’hébergeons et vous le modifiez à volonté, vous-même ou avec nous. Avec le forfait ${AUTO}, vous recevez l’export du site, une copie complète prête à installer.
 
 ## Nos engagements
@@ -385,16 +384,16 @@ Vos questions avant la commande ne vous engagent à rien. Si notre offre ne corr
 - **Aucun abonnement imposé** : le forfait ${mini.name} est facultatif et sans engagement.
 - **Le nom de domaine à votre nom** : l’adresse de votre site vous appartient.
 - **Vous repartez avec votre site** : l’export reste possible à tout moment.
-- **Rien en ligne sans vérification** : Alex contrôle votre site, et vous le validez.
+- **Rien en ligne sans vérification** : chaque page est contrôlée avant sa publication.
 - **Une réponse en général dans la journée.**
 
 ## La petite bande
 
-D’un site à l’autre, beaucoup de choses se ressemblent. Pour ces tâches répétitives, Alex s’appuie sur six compagnons, dessinés en petits monstres. Lui garde le reste : l’écoute, le design, les mots justes et la vérification.
+D’un site à l’autre, beaucoup de choses se ressemblent. Pour ces tâches répétitives, Alex s’appuie sur six compagnons, dessinés en petits monstres. Lui garde le reste : l’écoute, le design, les mots justes et les règles du contrôle.
 
 ${bande.map((b) => `- **${nomRole(b)}**, ${DIT[b.id] || `${minus(b.court)}`}`).join('\n')}
 
-Ils ne décident pas à votre place, et ils ne remplacent pas Alex : il regarde tout ce qu’ils font. Faites leur connaissance sur la page [notre équipe](/notre-equipe/).
+Ils ne décident pas à votre place, et ils ne remplacent pas Alex : il leur a écrit des règles précises, et les cas délicats lui reviennent. Faites leur connaissance sur la page [notre équipe](/notre-equipe/).
 
 ## Ce que nous faisons bien, et le reste
 
@@ -405,7 +404,7 @@ Pour une application sur mesure, un logiciel métier ou un catalogue de milliers
 Pas de local, pas d’agence, pas de loyer : tout se fait depuis chez Alex. Pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourquoi-moins-cher/).`,
     faq: [
       { q: 'Est-ce que je parle à une vraie personne ?', a: `Oui. Les messages du formulaire de contact arrivent chez Alex, et c’est lui qui répond. Dans votre espace client, ${B('constructeur').nom} prépare vos demandes de modification avec vous, et c’est encore Alex qui les fait.` },
-      { q: 'Et si un petit monstre se trompe ?', a: `Cela peut arriver, comme avec tout outil. C’est pour cela qu’Alex contrôle leur travail. ${B('constructeur').nom} vous relit aussi votre demande avant de l’envoyer à Alex, et vous la confirmez.` },
+      { q: 'Et si un petit monstre se trompe ?', a: `Cela peut arriver, comme avec tout outil. C’est pour cela qu’un second petit monstre relit le travail du premier avant toute livraison. ${B('constructeur').nom} vous relit aussi votre demande avant de l’envoyer à Alex, et vous la confirmez.` },
       { q: 'Et si je veux partir un jour ?', a: 'Vous partez librement. Le nom de domaine est déjà à votre nom, et vous recevez l’export de votre site pour le faire héberger ailleurs.' },
       { q: 'Faut-il habiter près de chez vous ?', a: `Non. Tout peut se faire à distance, par e-mail, au téléphone ou en visio, partout en France. Si vous êtes dans les ${dept}, on peut aussi se rencontrer.` },
     ],
@@ -550,8 +549,8 @@ Elle se fera connaître des Ardennais qui cherchent une idée de cadeau, et vend
 ## Comment ça se passe
 
 1. **Vous nous contactez** par le [formulaire](/contact/), en précisant si vous aimeriez une rencontre. Vous savez déjà ce qu’il vous faut ? Commandez sur la page [créer mon site](/creer-mon-site/).
-2. **Vous remplissez le questionnaire** de création, dans votre espace client, puis Alex vous appelle pour en parler.
-3. **Nous créons votre site**${ESS.delai ? ` : comptez ${ESS.delai} après l’appel, puisque nos modules sont déjà prêts` : ', et vous voyez chaque étape'}.
+2. **Vous remplissez le questionnaire** de création, dans votre espace client : son envoi lance la création.
+3. **Nous créons votre site**${ESS.delai ? ` : comptez ${ESS.delai} une fois vos éléments reçus, puisque nos modules sont déjà prêts` : ', et vous voyez chaque étape'}.
 4. **Votre site part en ligne**, et vous le modifiez ensuite à votre goût.
 
 Côté paiement, vous réglez le site en commandant. Vous préférez étaler ? Choisissez ${EN_FOIS} sur la page de paiement.`,

@@ -116,7 +116,7 @@ module.exports = {
   ],
   methode: [
     { q: 'Qui sont les petits monstres ?', a: `Ce sont les six personnages de notre petite bande, chacun avec son rôle. ${bandeComprise}.` },
-    { q: 'Qui construit mon site ?', a: `Alex, la personne derrière les Minis Monstres. Il vous appelle, crée votre site, puis le vérifie une dernière fois en entier. Ensuite, les petits monstres veillent dessus : ils le sauvegardent, le tiennent à jour et relèvent vos visites pour votre espace client, et ${bricou} prépare vos demandes de modification pour Alex. Rien ne part en ligne sans son accord, ni sans le vôtre.` },
+    { q: 'Qui construit mon site ?', a: `Alex, la personne derrière les Minis Monstres. Il crée votre site à partir de votre questionnaire, et votre site est relu en entier avant sa mise en ligne. Ensuite, les petits monstres veillent dessus : ils le sauvegardent, le tiennent à jour et relèvent vos visites pour votre espace client, et ${bricou} prépare vos demandes de modification pour Alex. Rien ne part en ligne sans vérification.` },
     { q: 'Mes clients verront-ils comment mon site a été fait ?', a: 'Non, rien ne le signale sur votre site. Ils voient un site propre et rapide, à votre nom. De notre côté, nous préférons vous dire comment nous travaillons : vous savez ce que vous achetez.' },
   ],
   comparatif: [

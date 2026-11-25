@@ -1391,3 +1391,35 @@ button.is-confirmer.is-confirmer, .btn.is-confirmer.is-confirmer, .req-annul .li
 .esp-reste + .esp-reste { margin-top: 8px; }
 ul + .esp-warn, ol + .esp-warn, ul + .esp-empty, ol + .esp-empty { margin-top: 14px; }
 .esp-apparence { display: grid; gap: 8px; }
+
+/* ---------- 25 novembre 2026 (Alex) : sur téléphone, tous les menus en haut, rien à faire glisser de travers ----------
+   Le titre de la page est réduit, puis viennent le nom du client (avec « Me déconnecter » à côté) et TOUS les onglets
+   (Accueil, Mon site, Ma commande, Modifications, Extras, Ma boutique, Mon compte) sur deux lignes : on touche un onglet,
+   son contenu s'affiche juste dessous. Le petit menu qui glissait de côté dans « Mon site » disparaît. */
+@media (max-width: 959px) {
+  body:has(.app-maison) .page-hero { padding: 12px 0 2px; }
+  body:has(.app-maison) .page-hero .crumbs, body:has(.app-maison) .page-hero .where, body:has(.app-maison) .page-hero-art { display: none; }
+  body:has(.app-maison) .page-hero h1 { margin: 0; font-size: 1.4rem; }
+  body:has(.app-maison) .section-app { padding-top: 10px; }
+  .app-maison .app-side { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 12px 10px 12px; }
+  .app-maison .app-side .app-user { flex: 1 1 0; min-width: 0; margin: 0; padding: 0 4px; }
+  .app-maison .app-side .app-user .monster, .app-maison .app-side .app-user > svg { width: 34px; }
+  .app-maison .app-side .app-user strong { font-size: .95rem; }
+  .app-maison .app-side .app-logout { order: 1; flex: none; margin: 0 0 0 auto; padding: 4px 4px; font-size: .8rem; }
+  .app-maison .app-side .app-badge { display: none; }
+  .app-maison .app-side .app-tabs, .app-maison .app-side .app-tabs:not(:has(> [data-tab="outils"])) { order: 2; flex: 1 1 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; overflow: visible; margin: 0; padding: 0; }
+  .app-maison .app-tabs .tab-sous { display: flex; }
+  .app-maison .app-side .app-tabs > button, .app-maison .app-side .app-tabs:not(:has(> [data-tab="outils"])) > button:not(.tab-sous) { flex-direction: column; justify-content: center; align-items: center; gap: 4px; width: 100%; min-width: 0; min-height: 62px; padding: 8px 2px; border-radius: 16px; background: var(--card); color: var(--ink); font-size: clamp(.64rem, 2.95vw, .76rem); font-weight: 800; line-height: 1.15; text-align: center; white-space: normal; box-shadow: 0 0 0 1px var(--line) inset; }
+  .app-maison .app-side .app-tabs > button span { overflow-wrap: normal; word-break: keep-all; hyphens: none; letter-spacing: -.01em; }
+  .app-maison .app-side .app-user small { overflow-wrap: anywhere; }
+  .app-maison .app-side .app-tabs .tab-monstre, .app-maison .app-side .app-tabs:not(:has(> [data-tab="outils"])) > button:not(.tab-sous) .tab-monstre { width: 26px; height: 26px; }
+  .app-maison .app-side .app-tabs .tab-sous .ico { width: 22px; height: 22px; margin: 2px 0; color: var(--mint-d); }
+  .app-maison .app-side .app-tabs > button[aria-selected="true"], .app-maison .app-side .app-tabs:not(:has(> [data-tab="outils"])) > button[aria-selected="true"]:not(.tab-sous) { background: var(--lilac); color: var(--ink); box-shadow: 0 0 0 2px var(--lilac-d) inset; }
+  .app-maison .app-side .app-tabs > button.is-groupe-on, .app-maison .app-side .app-tabs:not(:has(> [data-tab="outils"])) > button.is-groupe-on:not(.tab-sous) { background: var(--card); box-shadow: 0 0 0 2px var(--lilac) inset; }
+  .mm-site-nav { display: none !important; }
+  /* plus rien ne dépasse de l'écran : les tableaux et longues lignes passent à la ligne */
+  .app-maison .app-main { min-width: 0; overflow-wrap: anywhere; }
+  .app-maison .app-main table { display: block; max-width: 100%; overflow-x: auto; }
+  .app-maison .app-main pre, .app-maison .app-main code { white-space: pre-wrap; word-break: break-word; }
+}
+@media (max-width: 345px) { .app-maison .app-side .app-tabs > button { font-size: .6rem; } .app-maison .app-side .app-tabs { gap: 4px; } }

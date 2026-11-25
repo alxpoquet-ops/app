@@ -89,7 +89,7 @@ Deux ou trois photos lumineuses de vos plats et de votre salle font plus que n'i
 
 Les horaires que Google affiche viennent de votre fiche d'établissement. Si elle est fausse, le client se déplace pour rien. Le guide sur la [fiche Google](/guides/fiche-google-entreprise/) explique comment la tenir à jour.`,
     faq: [
-      { q: 'Puis-je changer ma carte moi-même ?', a: 'Vous n’avez pas besoin de toucher au site. Écrivez la nouvelle carte, ou envoyez une photo de votre ardoise, depuis votre espace client. La page est préparée pour vous, Alex la vérifie, puis elle est publiée.' },
+      { q: 'Puis-je changer ma carte moi-même ?', a: 'Vous n’avez pas besoin de toucher au site. Écrivez la nouvelle carte, ou envoyez une photo de votre ardoise, depuis votre espace client. La page est préparée pour vous, vérifiée, puis publiée.' },
       { q: 'Mon restaurant a déjà une page sur les réseaux sociaux, est-ce suffisant ?', a: 'C’est un bon complément, mais une personne sans compte ne voit pas toujours votre page, et la carte y est vite enterrée sous les publications. Un site garde les informations essentielles toujours au même endroit.' },
       { q: 'Peut-on réserver une table depuis le site ?', a: 'Oui : par un bouton d’appel, par un formulaire qui arrive dans votre boîte mail, ou par un lien vers l’outil de réservation que vous utilisez déjà.' },
     ],

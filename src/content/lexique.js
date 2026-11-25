@@ -385,7 +385,7 @@ Un garagiste a un site fait il y a longtemps, pensé pour l'ordinateur. Sur tél
 
 ## Chez les Minis Monstres
 
-Tous les sites que nous créons s'adaptent à tous les écrans : téléphone, tablette et ordinateur. Le numéro est cliquable, le menu se replie proprement, et Alex teste sur plusieurs tailles d'écran avant la mise en ligne. Vous pouvez composer le vôtre et voir son prix sur [créer mon site](/creer-mon-site/). La vitesse sur mobile est expliquée à la page [temps de chargement](/lexique/temps-de-chargement/).`,
+Tous les sites que nous créons s'adaptent à tous les écrans : téléphone, tablette et ordinateur. Le numéro est cliquable, le menu se replie proprement, et l'affichage est testé sur plusieurs tailles d'écran avant la mise en ligne. Vous pouvez composer le vôtre et voir son prix sur [créer mon site](/creer-mon-site/). La vitesse sur mobile est expliquée à la page [temps de chargement](/lexique/temps-de-chargement/).`,
     faq: [
       { q: 'Faut-il une application en plus d’un site responsive ?', a: 'Pour la plupart des petites entreprises, non. Un site bien adapté à tous les écrans suffit, et vos clients n’ont rien à installer pour vous trouver.' },
       { q: 'Comment savoir si mon site est responsive ?', a: 'Ouvrez-le sur un téléphone. Si vous devez zoomer pour lire ou si la page déborde sur le côté, il ne l’est pas, ou mal. Sur ordinateur, vous pouvez aussi réduire la largeur de la fenêtre et regarder si les blocs se réorganisent.' },
@@ -1072,7 +1072,7 @@ Un photographe de mariage reçoit des messages du genre « Bonjour, c'est combie
 
 ## Chez les Minis Monstres
 
-Chaque site que nous livrons a son formulaire, relié à votre messagerie. Alex le teste avant la mise en ligne et il tourne sur une connexion protégée en HTTPS. Tout ce que comprend le forfait ${mini.name} est listé sur la page des [tarifs](/tarifs/). Les règles sur les données personnelles sont résumées à la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
+Chaque site que nous livrons a son formulaire, relié à votre messagerie. Il est testé avant la mise en ligne et il tourne sur une connexion protégée en HTTPS. Tout ce que comprend le forfait ${mini.name} est listé sur la page des [tarifs](/tarifs/). Les règles sur les données personnelles sont résumées à la page [RGPD et cookies](/lexique/rgpd-cookies/).`,
     faq: [
       { q: 'Où arrivent les messages du formulaire ?', a: 'Dans la boîte mail de votre choix. Il peut s’agir de votre adresse habituelle ou d’une adresse professionnelle à votre nom de domaine.' },
       { q: 'Pourquoi je reçois des messages publicitaires par mon formulaire ?', a: 'Des robots remplissent automatiquement les formulaires trouvés sur internet. Une protection bien réglée en bloque la plus grande partie, sans gêner vos vrais clients.' },
