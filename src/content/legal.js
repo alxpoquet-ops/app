@@ -468,7 +468,7 @@ ${listeOutils}
     path: '/jeu-concours/',
     name: 'Règlement du jeu-concours',
     title: `Règlement du jeu-concours des Rubans | Les Minis Monstres`,
-    description: `Tous les 100 jours, un site internet à gagner : trouvez les 5 Rubans cachés sur le site et participez au tirage au sort. Gratuit, sans achat.`,
+    description: `Tous les 100 jours, un site internet à gagner : trouvez les 10 Rubans cachés sur le site et participez au tirage au sort. Gratuit, sans achat.`,
     lead: 'Cinq petits monstres cadeaux se cachent sur le site. Trouvez-les tous et tentez de gagner un site internet offert.',
     updated: '2026-11-25',
     body: `## 1. Organisateur
@@ -477,7 +477,7 @@ Le jeu est organisé par Les Minis Monstres, ${exploitant}, ${addr}, SIREN ${L.s
 
 ## 2. Le principe
 
-Le jeu se joue en **manches de 100 jours**. Pendant une manche, **cinq Rubans**, les petits monstres cadeaux, se cachent sur le site des Minis Monstres, un dans chacune de ces catégories :
+Le jeu se joue en **manches de 100 jours**. Pendant une manche, **dix Rubans**, les petits monstres cadeaux, se cachent sur le site des Minis Monstres, deux dans chacune de ces catégories :
 
 1. la page d’accueil du site ;
 2. l’espace client ;
@@ -485,11 +485,11 @@ Le jeu se joue en **manches de 100 jours**. Pendant une manche, **cinq Rubans**,
 4. la page Tarifs ;
 5. les questions fréquentes.
 
-**Pour jouer, il faut être connecté à son espace client** : les Rubans ne se montrent qu’aux joueurs connectés. Quand vous en trouvez un, touchez-le : il est compté. Dans votre espace client, un compteur montre combien vous en avez trouvé, donne un indice pour chacun et affiche le temps restant avant le tirage.
+**Pour jouer, il faut être connecté à son espace client** : les Rubans ne se montrent qu’aux joueurs connectés. Quand vous en trouvez un, touchez-le : il est compté. Dans votre espace client, un compteur montre combien vous en avez trouvé, donne un indice d’un ou deux mots pour chacun et affiche le temps restant avant le tirage.
 
-Quand vous avez trouvé les cinq, vous donnez votre adresse e-mail et votre numéro de portable, et vous acceptez ce règlement : vous participez au tirage au sort de la manche.
+Quand vous avez trouvé les dix, vous donnez votre adresse e-mail et votre numéro de portable, et vous acceptez ce règlement : vous participez au tirage au sort de la manche.
 
-À la fin de chaque manche, le tirage a lieu automatiquement, puis une nouvelle manche commence : les Rubans changent de cachette, et il faut les retrouver tous les cinq pour participer de nouveau.
+À la fin de chaque manche, le tirage a lieu automatiquement, puis une nouvelle manche commence : les Rubans changent de cachette, et il faut les retrouver tous les dix pour participer de nouveau.
 
 ## 3. Qui peut participer
 

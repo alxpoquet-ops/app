@@ -3,13 +3,13 @@
  * Le jeu-concours des Rubans, les petits monstres cadeaux (demandes d'Alex, 25 novembre 2026).
  *
  * LE JEU, EN MANCHES DE 100 JOURS, 100 % AUTOMATIQUE
- *  - Pendant une manche, CINQ Rubans se cachent sur le site, un par catégorie du règlement (/jeu-concours/) : la page d'accueil,
+ *  - Pendant une manche, DIX Rubans se cachent sur le site, deux par catégorie du règlement (/jeu-concours/) : la page d'accueil,
  *    l'espace client, les mini-tutos, la page Tarifs et les questions fréquentes. À chaque manche, leurs cachettes changent
  *    (tirées dans une réserve d'endroits bien visibles, jamais les mêmes que la manche d'avant).
  *  - Il faut être connecté à son compte (gratuit, sans achat) pour les voir. Tout le monde joue, sauf l'équipe et les anciens gagnants.
  *    Un gagnant qui a déjà un site ou une commande reçoit un an de forfait Mini offert (ajoutés tout seuls à ses mois offerts).
  *  - Dans l'espace client, un compteur flottant montre les Rubans trouvés, un indice pour chacun et le chrono du tirage.
- *  - Les cinq trouvés : le joueur donne son e-mail et son numéro de portable (une participation par compte, par e-mail et par
+ *  - Les dix trouvés : le joueur donne son e-mail et son numéro de portable (une participation par compte, par e-mail et par
  *    numéro ; les doublons d'appareil ou d'adresse internet sont signalés).
  *  - À la fin des 100 jours, le tirage se fait tout seul (random_int). Le gagnant reçoit un e-mail « Félicitations » avec un code
  *    personnel (GAGNANT-…), valable 30 jours, à taper dans « Créer mon site » : il suit le même parcours qu'un client, sans rien
@@ -36,49 +36,68 @@ define('ALED08E_LOT_JOURS', 30); // le code du gagnant reste valable 30 jours
 function aled08e_concours_categories() {
     return ['accueil' => 'La page d’accueil du site', 'espace' => 'L’espace client', 'tutos' => 'Les mini-tutos', 'tarifs' => 'La page Tarifs', 'faq' => 'Les questions fréquentes'];
 }
+/* Dix Rubans par manche : deux par catégorie (Alex, 25 novembre 2026). Clés : accueil, accueil2, espace, espace2… */
+define('ALED08E_RUBANS_PAR_CATEGORIE', 2);
+function aled08e_concours_places() {
+    $out = [];
+    foreach (aled08e_concours_categories() as $k => $cat) for ($i = 1; $i <= ALED08E_RUBANS_PAR_CATEGORIE; $i++) $out[$i === 1 ? $k : $k . $i] = $k;
+    return $out;
+}
+/* Les indices : un ou deux mots, jamais l'endroit exact (Alex : « juste un mot ou deux par indice ») */
 function aled08e_concours_pool() {
     $t = function ($chemin, $sel, $coin, $indice) { return ['chemin' => $chemin, 'selecteur' => $sel, 'coin' => $coin, 'indice' => $indice]; };
     return [
         'accueil' => [
-            $t('/', '#deroulement', 'bas-gauche', 'Je ne suis pas loin de l’entrée. J’aime avancer pas à pas.'),
-            $t('/', '#compris', 'haut-droite', 'Je ne suis pas loin de l’entrée. Je fais l’inventaire.'),
-            $t('/', '#uniques', 'bas-droite', 'Je ne suis pas loin de l’entrée. Je me crois un peu à part.'),
-            $t('/', '#confiance', 'haut-gauche', 'Je ne suis pas loin de l’entrée. Je reste près de quelqu’un de confiance.'),
-            $t('/', '#questions', 'bas-droite', 'Je ne suis pas loin de l’entrée. Je doute de tout.'),
+            $t('/', '#deroulement', 'bas-gauche', 'En chemin'),
+            $t('/', '#compris', 'haut-droite', 'Inventaire'),
+            $t('/', '#uniques', 'bas-droite', 'À part'),
+            $t('/', '#confiance', 'haut-gauche', 'Les copains'),
+            $t('/', '#questions', 'bas-droite', 'Curieux'),
         ],
         'espace' => [
-            $t('/mon-espace/', '#t-compte [data-sm-part="infos"], #t-compte', 'bas-droite', 'Chez vous, je garde ce qui vous ressemble.'),
-            $t('/mon-espace/', '#t-site', 'bas-droite', 'Chez vous, je surveille votre plus beau projet.'),
-            $t('/mon-espace/', '#t-accueil .mm-duo, #t-accueil', 'haut-droite', 'Chez vous, j’écoute les nouvelles.'),
-            $t('/mon-espace/', '#t-compte .compte-forfait, #t-compte', 'haut-droite', 'Chez vous, je compte les sous.'),
+            $t('/mon-espace/', '#t-compte [data-sm-part="infos"], #t-compte', 'bas-droite', 'Miroir'),
+            $t('/mon-espace/', '#t-site', 'bas-droite', 'Trésor'),
+            $t('/mon-espace/', '#t-accueil .mm-duo, #t-accueil', 'haut-droite', 'Bavard'),
+            $t('/mon-espace/', '#t-compte .compte-forfait, #t-compte', 'haut-droite', 'Tirelire'),
+            $t('/mon-espace/', '#t-demandes, #t-accueil', 'haut-gauche', 'Coup de pinceau'),
+            $t('/mon-espace/', '#t-extras, #t-site', 'haut-gauche', 'Gourmand'),
         ],
         'tutos' => [
-            $t('/mini-tuto/qui-sont-les-minis-monstres/', '.tuto-section', 'haut-droite', 'Là où l’on apprend, je fais les présentations.'),
-            $t('/mini-tuto/creer-mon-site-avec-nous/', '.tuto-section', 'bas-gauche', 'Là où l’on apprend, je mets la main à la pâte.'),
-            $t('/mini-tuto/pourquoi-choisir-les-minis-monstres/', '.tuto-section', 'haut-gauche', 'Là où l’on apprend, j’aide ceux qui hésitent.'),
-            $t('/mini-tuto/deroulement-d-un-achat/', '.tuto-section', 'bas-droite', 'Là où l’on apprend, je suis un panier.'),
-            $t('/mini-tuto/combien-de-temps-pour-mon-site/', '.tuto-section', 'haut-droite', 'Là où l’on apprend, je regarde l’horloge.'),
+            $t('/mini-tuto/qui-sont-les-minis-monstres/', '.tuto-section', 'haut-droite', 'Famille'),
+            $t('/mini-tuto/creer-mon-site-avec-nous/', '.tuto-section', 'bas-gauche', 'Atelier'),
+            $t('/mini-tuto/pourquoi-choisir-les-minis-monstres/', '.tuto-section', 'haut-gauche', 'Hésitant'),
+            $t('/mini-tuto/deroulement-d-un-achat/', '.tuto-section', 'bas-droite', 'Emplettes'),
+            $t('/mini-tuto/combien-de-temps-pour-mon-site/', '.tuto-section', 'haut-droite', 'Tic-tac'),
+            $t('/mini-tuto/payer-mon-site-en-plusieurs-fois/', '.tuto-section', 'bas-gauche', 'Tranches'),
+            $t('/mini-tuto/nom-de-domaine-le-mien-ou-le-votre/', '.tuto-section', 'haut-droite', 'Adresse'),
         ],
         'tarifs' => [
-            $t('/tarifs/', '#extras', 'haut-gauche', 'Là où l’on parle d’argent, j’aime les petits plus.'),
-            $t('/tarifs/', '#comment', 'bas-droite', 'Là où l’on parle d’argent, je me demande comment c’est possible.'),
-            $t('/tarifs/', '#detail', 'haut-droite', 'Là où l’on parle d’argent, je lis les petites lignes.'),
-            $t('/tarifs/', '#questions', 'bas-gauche', 'Là où l’on parle d’argent, j’hésite encore.'),
+            $t('/tarifs/', '#extras', 'haut-gauche', 'Bonus'),
+            $t('/tarifs/', '#comment', 'bas-droite', 'Mystère'),
+            $t('/tarifs/', '#detail', 'haut-droite', 'Loupe'),
+            $t('/tarifs/', '#questions', 'bas-gauche', 'Hésitation'),
+            $t('/tarifs/', '#uniques', 'bas-droite', 'Unique'),
         ],
         'faq' => [
-            $t('/faq/', '.page-hero + .section', 'haut-droite', 'Là où l’on vous répond, je suis pressé.'),
-            $t('/faq/', '.page-hero + .section', 'bas-gauche', 'Là où l’on vous répond, je suis patient.'),
-            $t('/faq/', '.page-hero', 'bas-droite', 'Là où l’on vous répond, je n’ai pas lu la suite.'),
+            $t('/faq/', '.page-hero + .section', 'haut-droite', 'Pressé'),
+            $t('/faq/', '.page-hero', 'bas-droite', 'Au seuil'),
+            $t('/faq/', '.faq-group:nth-child(3), .page-hero + .section', 'haut-gauche', 'Entre-deux'),
+            $t('/faq/', '.faq-group:last-child, .page-hero + .section', 'bas-droite', 'Le bout'),
+            $t('/faq/', '.faq-group:nth-child(5), .page-hero + .section', 'bas-gauche', 'Patient'),
         ],
     ];
 }
-/* Une cachette par catégorie, au hasard, différente de la manche d'avant quand c'est possible */
-function aled08e_concours_choisir($avant = []) {
-    $out = [];
-    foreach (aled08e_concours_pool() as $k => $liste) {
-        $ok = array_values(array_filter($liste, function ($c) use ($avant, $k) { return empty($avant[$k]) || $c['selecteur'] !== $avant[$k]['selecteur'] || $c['chemin'] !== $avant[$k]['chemin'] || $c['coin'] !== $avant[$k]['coin']; }));
-        if (!$ok) $ok = $liste;
-        $out[$k] = $ok[random_int(0, count($ok) - 1)];
+function aled08e_concours_meme_lieu($a, $b) { return is_array($a) && is_array($b) && ($a['chemin'] ?? '') === ($b['chemin'] ?? '') && ($a['selecteur'] ?? '') === ($b['selecteur'] ?? ''); }
+/* Deux cachettes par catégorie, au hasard : jamais deux Rubans au même endroit, et pas ceux de la manche d'avant quand c'est possible.
+   $garder : des cachettes déjà placées à ne pas bouger (une manche en cours qui passe de 5 à 10 Rubans). */
+function aled08e_concours_choisir($avant = [], $garder = []) {
+    $pool = aled08e_concours_pool(); $out = [];
+    foreach (aled08e_concours_places() as $place => $k) {
+        if (!empty($garder[$place]['chemin'])) { $out[$place] = $garder[$place]; continue; }
+        $libres = array_values(array_filter($pool[$k], function ($c) use ($out, $garder) { foreach (array_merge(array_values($out), array_values((array) $garder)) as $o) if (aled08e_concours_meme_lieu($c, $o)) return false; return true; }));
+        $neufs = array_values(array_filter($libres, function ($c) use ($avant) { foreach ((array) $avant as $o) if (aled08e_concours_meme_lieu($c, $o)) return false; return true; }));
+        $ok = $neufs ?: ($libres ?: $pool[$k]);
+        $out[$place] = $ok[random_int(0, count($ok) - 1)];
     }
     return $out;
 }
@@ -89,12 +108,16 @@ function aled08e_concours_etat() {
 function aled08e_concours_sauver($e) { update_option('aled08_concours', $e, false); }
 function aled08e_concours_cachettes() {
     $e = aled08e_concours_etat();
-    $pool = aled08e_concours_pool();
+    $pool = aled08e_concours_pool(); $cats = aled08e_concours_categories(); $places = aled08e_concours_places();
+    $ont = array_filter(array_intersect_key((array) $e['cachettes'], $places), function ($c) { return is_array($c) && !empty($c['chemin']); });
+    if ($e['id'] !== '' && count($ont) < count($places)) { // une manche lancée avec moins de Rubans : on place ceux qui manquent, sans bouger les autres
+        $e['cachettes'] = aled08e_concours_choisir([], $ont); aled08e_concours_sauver($e); $ont = $e['cachettes'];
+    }
     $out = [];
-    foreach (aled08e_concours_categories() as $k => $cat) {
-        $c = (isset($e['cachettes'][$k]) && is_array($e['cachettes'][$k]) && !empty($e['cachettes'][$k]['chemin'])) ? $e['cachettes'][$k] : $pool[$k][0];
+    foreach ($places as $place => $k) {
+        $c = $ont[$place] ?? $pool[$k][0];
         foreach ($pool[$k] as $pc) if ($pc['chemin'] === $c['chemin'] && $pc['selecteur'] === $c['selecteur'] && $pc['coin'] === $c['coin']) $c['indice'] = $pc['indice']; // les indices à jour, même en cours de manche
-        $out[$k] = ['categorie' => $cat] + array_intersect_key($c, array_flip(['chemin', 'selecteur', 'coin', 'indice']));
+        $out[$place] = ['categorie' => $cats[$k]] + array_intersect_key($c, array_flip(['chemin', 'selecteur', 'coin', 'indice']));
     }
     return $out;
 }
@@ -105,7 +128,7 @@ function aled08e_concours_jeton($id, $cach) { return substr(hash_hmac('sha256', 
 function aled08e_concours_trouves($uid, $id = '') {
     if ($id === '') $id = aled08e_concours_etat()['id'];
     $t = $id !== '' ? get_user_meta((int) $uid, aled08e_concours_cle($id, 'rubans'), true) : [];
-    return is_array($t) ? array_intersect_key($t, aled08e_concours_categories()) : [];
+    return is_array($t) ? array_intersect_key($t, aled08e_concours_places()) : [];
 }
 function aled08e_concours_participation($uid, $id = '') {
     if ($id === '') $id = aled08e_concours_etat()['id'];
@@ -216,7 +239,7 @@ function aled08e_concours_designer(&$e, $id, $exclus = [], $faire = 'tirer') {
         }
     }
     $e['tirages'][] = $t;
-    $txt = !$g ? 'Personne n’a trouvé les cinq Rubans : pas de gagnant pour cette manche.'
+    $txt = !$g ? 'Personne n’a trouvé les dix Rubans : pas de gagnant pour cette manche.'
         : 'Gagnant tiré au sort parmi ' . $g['parmi'] . ' participation' . ($g['parmi'] > 1 ? 's' : '') . ' : ' . $g['nom'] . ' (' . $g['email'] . '). '
           . ($t['lot'] === 'mois' ? 'Déjà client : un an de forfait Mini offert (' . ALED08E_LOT_CLIENT_MOIS . ' mois), ajouté tout seul. ' . ($t['detail'] ?? '') : 'Code ' . $t['code'] . ', valable jusqu’au ' . aled08e_date_fr($t['code_fin'], false) . '. Il commande son site sur « Créer mon site » comme un client, sans payer le Site Essentiel, et son forfait Mini est offert ' . ALED08E_LOT_SITE_MOIS . ' mois.')
           . ($g['doublon_possible'] ? ' Attention : ' . $g['doublon_possible'] . '.' : '');
@@ -242,7 +265,7 @@ function aled08e_concours_mail_gagnant($t) {
     $lien = add_query_arg('code', $t['code'], home_url('/creer-mon-site/'));
     $corps = 'Bonjour ' . $prenom . ",\n\n"
         . "Félicitations : vous avez gagné un site internet !\n\n"
-        . 'Vous avez trouvé les cinq Rubans, et le tirage au sort vous a désigné. Votre lot : un Site Essentiel (valeur ' . aled08e_euro_txt($valeur) . ') et ' . ALED08E_LOT_SITE_MOIS . " mois de forfait Mini, offerts. Le site est à vous : vous le gardez.\n\n"
+        . 'Vous avez trouvé les dix Rubans, et le tirage au sort vous a désigné. Votre lot : un Site Essentiel (valeur ' . aled08e_euro_txt($valeur) . ') et ' . ALED08E_LOT_SITE_MOIS . " mois de forfait Mini, offerts. Le site est à vous : vous le gardez.\n\n"
         . "Votre code personnel : " . $t['code'] . "\n"
         . 'Il est valable jusqu’au ' . aled08e_date_fr($t['code_fin'], false) . ", seulement avec votre compte.\n\n"
         . "Pour recevoir votre site :\n"
@@ -341,7 +364,7 @@ function aled08e_concours_encart_html() {
     $h .= '<span class="jr-art" aria-hidden="true">' . aled08e_monster('ruban') . '</span><div class="jr-corps">';
     $h .= '<p class="jr-sur">Le jeu des Rubans</p><h2 class="jr-titre">Un site internet à gagner tous les ' . (int) ($e['jours'] ?: ALED08E_MANCHE_JOURS) . ' jours</h2>';
     if (aled08e_concours_ouvert()) {
-        $h .= '<p>Cinq Rubans, de petits monstres cadeaux, se cachent sur notre site. Créez votre espace client (c’est gratuit), trouvez-les tous et participez au tirage au sort. Déjà client ? Vous jouez aussi : à gagner, un an de forfait offert.</p>';
+        $h .= '<p>Dix Rubans, de petits monstres cadeaux, se cachent sur notre site. Créez votre espace client (c’est gratuit), trouvez-les tous et participez au tirage au sort. Déjà client ? Vous jouez aussi : à gagner, un an de forfait offert.</p>';
         $h .= '<p class="jr-chrono" data-jr-fin="' . (int) $e['fin'] . '">' . aled08e_icon('clock') . '<span>Prochain tirage dans <b data-jr-reste>' . esc_html(aled08e_concours_reste_txt($e['fin'])) . '</b>, le ' . esc_html(aled08e_date_fr((int) $e['fin'])) . ' (heure de Paris)</span></p>';
         $h .= '<p class="jr-go"><a class="btn btn-primary" href="' . esc_url(aled08e_url() . '#inscription') . '">' . aled08e_icon('gift') . '<span>Je joue</span></a> <a class="jr-regl" href="' . esc_url(home_url('/jeu-concours/')) . '">Le règlement</a></p>';
     }
@@ -376,7 +399,7 @@ add_action('wp_footer', function () {
   var appareil = function () { try { var a = localStorage.getItem('lmm-ruban-appareil'); if (!a) { a = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('lmm-ruban-appareil', a); } return a; } catch (e) { return ''; } };
   var deux = function (n) { return (n < 10 ? '0' : '') + n; };
   var reste = function (court) { var s = Math.max(0, Math.floor((etat.fin * 1000 - Date.now()) / 1000)), j = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
-    return court ? (j ? j + ' j' : deux(h) + ':' + deux(m)) : (j ? j + ' j ' : '') + deux(h) + ' h ' + deux(m) + ' min ' + deux(x) + ' s'; };
+    return court ? (j ? j + ' j' : deux(h) + ':' + deux(m)) : (j ? j + '\u00a0j ' : '') + deux(h) + '\u00a0h ' + deux(m) + '\u00a0min ' + deux(x) + '\u00a0s'; }; // chaque nombre collé à son unité : jamais un « s » seul à la ligne
   function toast(t) { var x = el('<p class="cc-toast" role="status"></p>'); x.textContent = t; document.body.appendChild(x); setTimeout(function () { x.classList.add('is-out'); }, 3600); setTimeout(function () { x.remove(); }, 4200); }
   var calme = function () { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; };
   // Les confettis : animés par le navigateur (Web Animations), retirés quoi qu'il arrive au bout de 1,2 seconde
@@ -413,7 +436,7 @@ add_action('wp_footer', function () {
     if (!etat || !etat.connecte || ici !== new URL(C.espace, location.href).pathname.replace(/\/?$/, '/')) return;
     var n = etat.trouves.length, T = etat.total;
     var b = el('<div class="cc-compteur" data-cc-compteur><button type="button" class="cc-compteur-btn" aria-expanded="false" aria-controls="cc-indices"><span class="cc-compteur-art" aria-hidden="true">' + C.ruban + '</span><span class="cc-compteur-n"><b>' + n + '</b>/' + T + '</span><span class="cc-compteur-chrono">' + C.icones.clock + '<span data-cc-court></span></span><span class="sr-only"> Rubans trouvés : voir les indices et le temps restant</span></button>'
-      + '<div class="cc-indices" id="cc-indices" hidden><p class="cc-indices-t">Le jeu des Rubans</p><p class="cc-chrono">Prochain tirage dans <b data-cc-long></b><small data-cc-date></small></p><p class="cc-lot" data-cc-lot></p><ul></ul><p class="cc-indices-fin"></p><a class="cc-indices-regl" href="' + C.reglement + '">Le règlement du jeu</a></div></div>');
+      + '<div class="cc-indices" id="cc-indices" hidden><p class="cc-indices-t">Le jeu des Rubans</p><p class="cc-chrono">Prochain tirage dans <b data-cc-long></b> <small data-cc-date></small></p><p class="cc-lot" data-cc-lot></p><ul></ul><p class="cc-indices-fin"></p><a class="cc-indices-regl" href="' + C.reglement + '">Le règlement du jeu</a></div></div>');
     var ul = b.querySelector('ul');
     etat.cachettes.forEach(function (c) { var ok = etat.trouves.indexOf(c.id) > -1; var li = el('<li class="' + (ok ? 'is-ok' : '') + '"><span class="cc-ind-ico" aria-hidden="true">' + (ok ? C.icones.check : '?') + '</span><span><b></b><small></small></span></li>'); li.querySelector('b').textContent = c.categorie + (ok ? ' : trouvé' : ''); li.querySelector('small').textContent = c.indice; ul.appendChild(li); });
     var fin = b.querySelector('.cc-indices-fin');
@@ -428,7 +451,7 @@ add_action('wp_footer', function () {
     var tic = function () { b.querySelector('[data-cc-court]').textContent = reste(true); b.querySelector('[data-cc-long]').textContent = reste(false); };
     tic(); minuteur = setInterval(tic, 1000);
   }
-  // Le formulaire, une fois les cinq trouvés
+  // Le formulaire, une fois les dix trouvés
   function formulaire() {
     var d = document.querySelector('[data-cc-dialog]'); if (d) d.remove();
     d = el('<dialog class="cc-dialog" data-cc-dialog aria-labelledby="cc-titre"><form method="dialog" class="cc-fermer-f"><button class="cc-fermer" aria-label="Fermer">' + C.icones.x + '</button></form>'
@@ -520,7 +543,7 @@ add_action('wp_ajax_aled08e_ruban_trouve', function () {
     wp_send_json_success(['trouves' => array_keys($t)]);
 });
 
-/* La participation : les cinq Rubans trouvés, une par compte, par adresse e-mail et par numéro de portable */
+/* La participation : les dix Rubans trouvés, une par compte, par adresse e-mail et par numéro de portable */
 add_action('wp_ajax_aled08e_concours', function () {
     $non = function ($m) { wp_send_json_error(['message' => $m]); };
     if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_cc'] ?? '')), 'aled08e_concours')) $non('La page a expiré : rechargez-la, puis réessayez.');
@@ -528,7 +551,7 @@ add_action('wp_ajax_aled08e_concours', function () {
     $u = wp_get_current_user();
     if (!aled08e_concours_peut_jouer($u)) $non('Ce compte ne peut pas participer (règlement, article 3).');
     $e = aled08e_concours_etat();
-    if (count(aled08e_concours_trouves($u->ID)) < count(aled08e_concours_categories())) $non('Il faut d’abord trouver les ' . count(aled08e_concours_categories()) . ' Rubans.');
+    if (count(aled08e_concours_trouves($u->ID)) < count(aled08e_concours_places())) $non('Il faut d’abord trouver les ' . count(aled08e_concours_places()) . ' Rubans.');
     if (aled08e_concours_participation($u->ID)) wp_send_json_success(['deja' => true]);
     if (empty($_POST['accord'])) $non('Cochez la case du règlement pour participer.');
     $email = sanitize_email(wp_unslash($_POST['email'] ?? ''));
@@ -581,7 +604,7 @@ function aled08e_concours_faire(WP_REST_Request $req) {
     }
     if ($faire === 'cachette') {
         $k = sanitize_key((string) ($p['cachette'] ?? ''));
-        if (!isset(aled08e_concours_categories()[$k])) return new WP_Error('aled08_concours', 'Cachette inconnue : ' . implode(', ', array_keys(aled08e_concours_categories())) . '.', ['status' => 400]);
+        if (!isset(aled08e_concours_places()[$k])) return new WP_Error('aled08_concours', 'Cachette inconnue : ' . implode(', ', array_keys(aled08e_concours_places())) . '.', ['status' => 400]);
         $v = aled08e_concours_cachettes()[$k];
         foreach (['chemin', 'selecteur', 'indice', 'coin'] as $c) if (isset($p[$c]) && is_string($p[$c]) && trim($p[$c]) !== '') $v[$c] = sanitize_text_field($p[$c]);
         if (!in_array($v['coin'], ['haut-gauche', 'haut-droite', 'bas-gauche', 'bas-droite'], true)) $v['coin'] = 'bas-droite';

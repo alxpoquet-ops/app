@@ -453,14 +453,14 @@ Quand le contrôleur livre un site plus tôt, la commande passe à l'état « pr
 Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit('ruban')`). Le code est dans `includes/concours.php`, le règlement sur `/jeu-concours/`. Décisions d'Alex du 25 novembre 2026 : tout est automatique, en manches de 100 jours.
 
 **La manche (100 jours).**
-- Cinq Rubans se cachent, un par catégorie du règlement : la page d'accueil, l'espace client, les mini-tutos, la page Tarifs et les questions fréquentes.
+- Dix Rubans se cachent, deux par catégorie du règlement (`ALED08E_RUBANS_PAR_CATEGORIE`, décision d'Alex du 25 novembre 2026) : la page d'accueil, l'espace client, les mini-tutos, la page Tarifs et les questions fréquentes.
 - À chaque manche, leurs cachettes sont tirées au hasard dans une réserve d'endroits bien visibles (`aled08e_concours_pool()`), jamais les mêmes que la manche d'avant.
 - Le joueur doit être connecté. Tout le monde joue, sauf l'équipe et les anciens gagnants (décision d'Alex, 25 novembre 2026 : les clients aussi).
 - Un gagnant qui a déjà un site ou une commande reçoit **un an de forfait Mini offert** (12 mois, `ALED08E_LOT_CLIENT_MOIS`, décision d'Alex du 25 novembre 2026). Ils sont ajoutés tout seuls avec `aled08e_mois_offerts_ajouter`, comme le parrainage : abonnement suspendu s'il est en cours, sinon mis de côté pour le démarrage du forfait. Ils s'affichent dans son « compteur de mois offerts » : accueil de l'espace, et Mon compte › Mon forfait. Il reçoit l'e-mail « Félicitations : un an de forfait offert ! ».
 - Un clic sur un Ruban lance l'animation (saut, tour, confettis) et le compte. L'animation est jouée en JavaScript (Web Animations) et Ruban quitte la page au bout de 0,9 seconde quoi qu'il arrive ; si le serveur ne répond pas, un message s'affiche et Ruban revient à sa place.
-- Les indices restent vagues (une pièce, une humeur), pas l'endroit exact : trouver doit demander de chercher.
+- Les indices tiennent en un ou deux mots (« Tirelire », « Tic-tac », « Loupe »…), jamais l'endroit exact : trouver doit demander de chercher.
 - Dans l'espace client, un compteur flottant (en bas à gauche) affiche les Rubans trouvés sur 5 et le chrono du tirage. Ouvert, il montre le temps exact et un indice par Ruban.
-- Les cinq trouvés, le joueur donne son e-mail et son numéro de portable. Le numéro sert seulement à empêcher les doublons : on n'appelle personne.
+- Les dix trouvés, le joueur donne son e-mail et son numéro de portable. Le numéro sert seulement à empêcher les doublons : on n'appelle personne.
 
 **Contre la triche :**
 - Une participation par compte, par e-mail et par numéro de portable. 06…, +33 6… et 0033 6… sont le même numéro.
