@@ -142,6 +142,76 @@ add_action('init', function () {
     exit;
 }, 2);
 
+/* ====================================================================== 1 bis. la position sur Google */
+/* Le site mesure lui-même, par le service Serper (les résultats de Google, en France et en français), où l'entreprise apparaît
+ * quand on tape la recherche que le Repéreur a notée (« coiffeur Signy-l'Abbaye »). Jamais un chiffre donné par un agent :
+ * Google refuse les recherches faites par un programme, un agent ne peut pas le voir lui-même. Sans clé, rien n'est mesuré. */
+function aled08e_px_mesurer($id) {
+    $cle = trim((string) get_option('aled08_prospection_serper', ''));
+    if ($cle === '') return null;
+    $q = trim((string) aled08e_px_meta($id, 'recherche'));
+    if ($q === '') $q = trim(aled08e_px_meta($id, 'metier') . ' ' . aled08e_px_meta($id, 'ville'));
+    if ($q === '') return null;
+    $r = wp_remote_post('https://google.serper.dev/search', ['timeout' => 20, 'headers' => ['X-API-KEY' => $cle, 'Content-Type' => 'application/json'],
+        'body' => wp_json_encode(['q' => $q, 'gl' => 'fr', 'hl' => 'fr', 'num' => 50])]);
+    if (is_wp_error($r) || (int) wp_remote_retrieve_response_code($r) !== 200) { aled08e_px_journal($id, 'Position sur Google : mesure impossible (service indisponible ou clé refusée).'); return null; }
+    $d = json_decode((string) wp_remote_retrieve_body($r), true);
+    if (!is_array($d) || !isset($d['organic']) || !is_array($d['organic'])) return null;
+    $res = aled08e_px_reperer($d['organic'], (string) get_the_title($id), (string) aled08e_px_meta($id, 'url_source'), (string) aled08e_px_meta($id, 'site_actuel'));
+    $c = ['recherche' => $q, 'position' => $res['position'], 'regardes' => max(10, count($d['organic'])), 'trouve' => $res['trouve'], 'url' => $res['url'], 'le' => time()];
+    aled08e_px_set($id, 'constat', $c);
+    aled08e_px_journal($id, 'Position sur Google pour « ' . $q . ' » : ' . ($c['position'] ? $c['position'] . 'e (' . $c['trouve'] . ')' : 'absent des ' . $c['regardes'] . ' premiers résultats') . '.');
+    return $c;
+}
+/* Dans les résultats : la première page qui est à l'entreprise (sa page Facebook, sa fiche, son ancien site, ou un titre à son nom) */
+function aled08e_px_reperer($organic, $nom, $source, $site) {
+    $norm = function ($u) { $h = strtolower((string) wp_parse_url((string) $u, PHP_URL_HOST)); return preg_replace('/^(www|m|fr-fr|fr)\./', '', $h) . rtrim(strtolower((string) wp_parse_url((string) $u, PHP_URL_PATH)), '/'); };
+    $cibles = array_values(array_filter([$source !== '' ? $norm($source) : '', $site !== '' ? $norm($site) : '']));
+    $mots = aled08e_px_mots($nom);
+    foreach (array_values($organic) as $i => $o) {
+        $lien = (string) ($o['link'] ?? '');
+        $n = $norm($lien);
+        $ok = false;
+        foreach ($cibles as $c) if ($c !== '' && strlen($c) > 6 && strpos($n, $c) === 0) $ok = true;
+        if (!$ok && $mots) {
+            $titre = strtolower(remove_accents((string) ($o['title'] ?? '')));
+            $tous = true;
+            foreach ($mots as $m) if (strpos($titre, $m) === false) $tous = false;
+            $ok = $tous;
+        }
+        if ($ok) return ['position' => (int) ($o['position'] ?? $i + 1), 'trouve' => aled08e_px_trouve_libelle($lien), 'url' => $lien];
+    }
+    return ['position' => 0, 'trouve' => '', 'url' => ''];
+}
+function aled08e_px_trouve_libelle($url) {
+    $h = strtolower((string) wp_parse_url((string) $url, PHP_URL_HOST));
+    if (preg_match('/(^|\.)facebook\.com$/', $h)) return 'votre page Facebook';
+    if (preg_match('/(^|\.)instagram\.com$/', $h)) return 'votre compte Instagram';
+    if (preg_match('/(^|\.)pagesjaunes\.fr$/', $h)) return 'votre fiche PagesJaunes';
+    if (preg_match('/(^|\.)google\./', $h)) return 'votre fiche Google';
+    return 'une page à votre nom';
+}
+function aled08e_px_ordinal($n) { return (int) $n === 1 ? '1re' : (int) $n . 'e'; }
+/* Les quatre lignes du bloc « Nous avons fait le test » : la recherche, le résultat, ce que ça veut dire, la proposition */
+function aled08e_px_constat_lignes($c, $nom) {
+    $q = (string) $c['recherche'];
+    $pos = (int) $c['position'];
+    $quand = !empty($c['le']) ? 'Le ' . wp_date('j F', (int) $c['le']) . ', nous' : 'Nous';
+    $l1 = $quand . ' avons tapé « ' . $q . ' » sur Google.';
+    if ($pos <= 0) return [$l1, $nom . ' n’apparaît dans aucun des ' . (int) ($c['regardes'] ?? 50) . ' premiers résultats.', 'Pour ceux qui cherchent, c’est comme si vous n’existiez pas encore.', 'Envie d’y apparaître, avec votre propre site ? C’est notre métier.'];
+    $qui = mb_strtoupper(mb_substr((string) $c['trouve'], 0, 1)) . mb_substr((string) $c['trouve'], 1);
+    if ($pos <= 10) return [$l1, $qui . ' arrive en ' . aled08e_px_ordinal($pos) . ' position : bravo, c’est la première page !', 'Mais vos clients y trouvent ' . $c['trouve'] . ', pas votre vitrine à vous, avec vos tarifs et vos photos.', 'Envie que ce soit votre propre site qu’ils voient ? C’est notre métier.'];
+    $page = (int) ceil($pos / 10);
+    return [$l1, $qui . ' arrive en ' . aled08e_px_ordinal($pos) . ' position, sur la ' . aled08e_px_ordinal($page) . ' page des résultats.', 'Or la plupart des gens ne regardent que la première page.', 'Envie de vous rapprocher de la première page, avec votre propre site ? C’est notre métier.'];
+}
+/* Pour la relance et les agents : la mesure en une phrase */
+function aled08e_px_constat_court($c, $nom) {
+    $pos = (int) $c['position'];
+    if ($pos <= 0) return $nom . ' n’apparaissait dans aucun des ' . (int) ($c['regardes'] ?? 50) . ' premiers résultats';
+    return (string) $c['trouve'] . ' arrivait en ' . aled08e_px_ordinal($pos) . ' position' . ($pos > 10 ? ', sur la ' . aled08e_px_ordinal((int) ceil($pos / 10)) . ' page' : '');
+}
+function aled08e_px_constat_txt($c, $nom) { return 'En tapant « ' . $c['recherche'] . ' » sur Google, ' . aled08e_px_constat_court($c, $nom) . '.'; }
+
 /* ====================================================================== 2. ce qui marche */
 /* Les résultats de tous les mails envoyés, rangés par métier, département, type de sujet et entreprise récente ou non.
  * La note d'un groupe (à partir de 10 envois) : clics + 5 × intéressés + 20 × commandes − 4 × refus, pour 100 envois. */

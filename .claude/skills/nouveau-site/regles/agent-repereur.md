@@ -28,7 +28,7 @@ Sur sa fiche Google, sa page Facebook ou Instagram, ou un annuaire qu'elle a rem
 
 ## 5. Noter ce que tu as vu
 
-Pour chaque prospect, coche seulement ce que tu as constaté (`criteres`, voir la note dans `prospection`) et écris-le dans `raisons`, en une ou deux phrases précises : ce que tu as cherché, ce que tu as trouvé, la date des derniers avis. Le Facteur n'écrira rien d'autre que ça. Donne aussi `recherche` : la recherche Google qui l'a fait apparaître (par exemple « boulangerie Charleville-Mézières »).
+Pour chaque prospect, coche seulement ce que tu as constaté (`criteres`, voir la note dans `prospection`) et écris-le dans `raisons`, en une ou deux phrases précises : ce que tu as cherché, ce que tu as trouvé, la date des derniers avis. Le Facteur n'écrira rien d'autre que ça. Donne aussi `recherche` : ce qu'un client taperait pour le trouver, le métier et la ville, par exemple « boulangerie Charleville-Mézières ». Soigne-la : c'est avec elle que le site mesurera la position de l'entreprise sur Google, et le mail la citera mot pour mot. Tu n'as pas à donner de position : tu ne peux pas la voir (Google refuse les recherches faites par un programme), le site la mesure lui-même.
 
 ## 6. Ajouter
 

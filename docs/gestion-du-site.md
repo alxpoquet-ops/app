@@ -542,6 +542,7 @@ La durée se règle dans `src/config.js` (`fidelite.parrainageMois`, 6).
 **L'offre du mail** (décision d'Alex, 25 novembre 2026) : la même que pour tout le monde, le prix de lancement. Plus de code de réduction, jamais de « au lieu de ». Réglage : `prospection` dans `scripts/wp-espace-data.js` (`remise: 0`).
 
 **Ce qui est automatique.**
+- La position sur Google : quand le Facteur retient un prospect, le site la mesure lui-même avec le service Serper (réglage « Clé de mesure Google », que vous collez vous-même), pour la recherche notée par le Repéreur. Le mail le dit dans l'encadré « Nous avons fait le test » (« votre page Facebook arrive en 36e position, sur la 4e page »). Sans clé, le mail n'en parle pas. Un agent ne donne jamais de position : Google refuse les recherches faites par un programme.
 - Les trois arguments du mail (Alex, 25 novembre 2026) : « 4 à 5 fois moins cher qu'une agence » (calculé avec `marche.agenceMin`), un vrai suivi (sans parler du forfait Mini), tout vous appartient. Le mail est écrit au « nous » et signé « La bande des Minis Monstres » : jamais « je » ni « Alex ». Il invite ensuite à voir les sites déjà en ligne (page Réalisations), puis à « Créer mon site ». Plus de démo ni d'aperçu personnalisé dans le mail : l'aperçu (`/?lmm_apercu=…`) reste dans le code, éteint par `apercuNote: 101` dans `scripts/wp-espace-data.js` (80 le rallume).
 - La relance, une seule : 7 jours après le mail, ou 3 jours pour ceux qui ont cliqué.
 - Le signal « entreprise récente » : créée depuis moins de 18 mois, + 15 points à la note.

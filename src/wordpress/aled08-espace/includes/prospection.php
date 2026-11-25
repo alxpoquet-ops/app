@@ -319,7 +319,7 @@ function aled08e_px_get($id) {
         'metier' => (string) $m('metier'), 'metier_page' => (string) $m('metier_page'), 'ville' => (string) $m('ville'), 'departement' => (string) $m('departement'),
         'siren' => (string) $m('siren'), 'entreprise_individuelle' => (bool) $m('ei', 0), 'email' => (string) $m('email'),
         'url_source_email' => (string) $m('url_source'), 'source' => (string) $m('source'), 'site_actuel' => (string) $m('site_actuel'), 'recherche' => (string) $m('recherche'),
-        'note' => (int) $m('note', 0), 'criteres' => (array) $m('criteres', []), 'raisons' => (string) $m('raisons'), 'date_creation' => (string) $m('creation'),
+        'note' => (int) $m('note', 0), 'criteres' => (array) $m('criteres', []), 'raisons' => (string) $m('raisons'), 'date_creation' => (string) $m('creation'), 'constat' => (array) $m('constat', []),
         'etat' => (string) $m('etat'), 'etat_libelle' => aled08e_px_etats()[(string) $m('etat')] ?? '',
         'ajoute_le' => get_the_date('Y-m-d H:i', $p), 'verification' => (string) $m('verification'),
         'envoye_le' => $env ? wp_date('Y-m-d H:i', $env) : '', 'relance_le' => $rel ? wp_date('Y-m-d H:i', $rel) : '',
@@ -526,6 +526,13 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . '<td valign="top" style="padding:9px 12px 9px 8px;font-size:15px;line-height:1.5;color:#2e2a47;"><b>' . esc_html($a[0]) . '</b> ' . esc_html($a[1]) . '</td></tr></table>';
         $atoutsT .= '- ' . $a[0] . ' ' . $a[1] . "\n";
     }
+    // la position mesurée sur Google (prospection-suite.php) : la preuve, chiffrée, qu'on a fait des recherches
+    $constat = (array) ($p['constat'] ?? []);
+    $cTxt = !empty($constat['recherche']) && function_exists('aled08e_px_constat_lignes') ? aled08e_px_constat_lignes($constat, $nom) : null;
+    $constatH = $cTxt ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:2px 0 18px;"><tr><td style="background:#eef4ff;border-left:0;border-radius:16px;padding:14px 16px;font-size:15px;line-height:1.55;color:#2e2a47;">'
+        . '<span style="display:block;font-size:12.5px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#2c67ae;margin-bottom:4px;">Nous avons fait le test</span>'
+        . esc_html($cTxt[0]) . '<br><b style="font-size:17px;">' . esc_html($cTxt[1]) . '</b><br>' . esc_html($cTxt[2]) . '<br><b>' . esc_html($cTxt[3]) . '</b></td></tr></table>' : '';
+    $constatT = $cTxt ? 'Nous avons fait le test. ' . implode(' ', $cTxt) : '';
     $rappel = 'Pour rappel : ' . mb_strtolower(mb_substr($atouts[0][0], 0, 1)) . rtrim(mb_substr($atouts[0][0], 1), '.') . ', un vrai suivi, et un site qui vous appartient.';
     $boutonApercu = $avecApercu ? '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;"><tr>' . $bouton($l['apercu'], 'Voir l’aperçu de votre site', true) . '</tr></table>' : '';
     $avecCode = (int) $r > 0 && (string) $code !== '';
@@ -562,6 +569,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         $corps = '<h1 style="margin:0 0 14px;font-size:21px;line-height:1.3;color:#2e2a47;">Bonjour,</h1>'
             . $P('Nous nous permettons une petite relance de notre dernier message, au sujet d’un site internet ' . esc_html(aled08e_px_pour($p['article'] ?? '', $nom)) . '.')
             . ($phraseH !== '' ? $P($phraseH) : '')
+            . ($cTxt ? $P('En tapant « ' . esc_html($constat['recherche']) . ' » sur Google, ' . esc_html(aled08e_px_constat_court($constat, $nom)) . '.') : '')
             . $P(esc_html($rappel))
             . $codeH
             . $P('Plutôt que mille mots, voyez par vous-même : voici des sites déjà en ligne, créés pour nos clients.')
@@ -571,8 +579,10 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     } else {
         $corps = '<h1 style="margin:0 0 14px;font-size:21px;line-height:1.3;color:#2e2a47;">Bonjour,</h1>'
             . $P($phraseH)
+            . $constatH
             . $P('Aujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :')
-            . $pointsH . '<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>'
+            . $pointsH
+            . $P('Et c’est une adresse à vous, à mettre sur vos cartes de visite, votre vitrine et vos factures : vos clients retrouvent tout au même endroit.', '10px 0 14px')
             . $P('Nous sommes la bande des Minis Monstres, une petite famille qui crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :')
             . $atoutsH . '<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>'
             . $codeH
@@ -602,13 +612,14 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         . "\nPour ne plus rien recevoir, en un clic : " . $l['stop'] . "\n" . aled08e_px_identite();
     if ($relance) {
         $texte = "Bonjour,\n\nNous nous permettons une petite relance de notre dernier message, au sujet d’un site internet " . aled08e_px_pour($p['article'] ?? '', $nom) . ".\n\n"
-            . ($m['phrase'] !== '' ? $m['phrase'] . "\n\n" : '') . $rappel . "\n\n" . $codeT . "\n\n"
+            . ($m['phrase'] !== '' ? $m['phrase'] . "\n\n" : '') . ($cTxt ? 'En tapant « ' . $constat['recherche'] . ' » sur Google, ' . aled08e_px_constat_court($constat, $nom) . ".\n\n" : '') . $rappel . "\n\n" . $codeT . "\n\n"
             . "Plutôt que mille mots, voyez par vous-même : voici des sites déjà en ligne, créés pour nos clients.\n" . ($l['realisations'] ?? $l['site']) . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\n"
             . "Une question ? Répondez simplement à ce message : nous vous répondons. Et si ce n’est pas le moment, aucun souci : nous ne vous écrirons plus.\n\nBonne journée,\nLa bande des Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
     } else {
         $pt = '';
         foreach ((array) $m['points'] as $x) $pt .= '- ' . $x['titre'] . ' ' . $x['texte'] . "\n";
-        $texte = "Bonjour,\n\n" . $m['phrase'] . "\n\nAujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :\n" . $pt . "\n"
+        $texte = "Bonjour,\n\n" . $m['phrase'] . "\n\n" . ($constatT !== '' ? $constatT . "\n\n" : '') . "Aujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :\n" . $pt
+            . "Et c’est une adresse à vous, à mettre sur vos cartes de visite, votre vitrine et vos factures : vos clients retrouvent tout au même endroit.\n\n"
             . "Nous sommes la bande des Minis Monstres, une petite famille qui crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :\n" . $atoutsT . "\n"
             . $codeT . "\n\n"
             . ($avecApercu ? 'Nous avons préparé un petit aperçu de ce que pourrait donner le site ' . $deX . " :\n" . $l['apercu'] . "\n\n" : '')
@@ -677,6 +688,9 @@ function aled08e_px_faire(WP_REST_Request $req) {
                 $art = str_replace("'", '’', (string) ($ex['article'] ?? ''));
                 $p = ['entreprise' => aled08e_px_texte($ex['entreprise'], 120), 'article' => in_array($art, ['le', 'la', 'l’', 'les'], true) ? $art : '',
                     'metier' => aled08e_px_texte($ex['metier'] ?? '', 80), 'ville' => aled08e_px_texte($ex['ville'] ?? '', 80)] + $p;
+                $c = (array) ($ex['constat'] ?? []);
+                if (!empty($c['recherche']) && isset($c['position'])) $p['constat'] = ['recherche' => aled08e_px_texte($c['recherche'], 80), 'position' => max(0, min(100, (int) $c['position'])),
+                    'regardes' => max(10, min(100, (int) ($c['regardes'] ?? 50))), 'trouve' => aled08e_px_texte($c['trouve'] ?? 'votre page Facebook', 60), 'le' => time()];
             }
             $m = (!empty($d['sujet']) || !empty($d['phrase'])) ? aled08e_px_morceaux($d, $pour) : ($pour === 'relancer' ? ['sujet' => '', 'phrase' => '', 'points' => []] : $p['morceaux']);
             if (is_wp_error($m)) return $m;
@@ -715,8 +729,10 @@ function aled08e_px_faire(WP_REST_Request $req) {
         if (aled08e_px_oppose($p['email'], $p['siren'])) { $set('desinscrit'); return $err('Ce prospect est sur la liste d’opposition : il est passé « desinscrit ».'); }
         aled08e_px_set($id, 'verification', $texte);
         aled08e_px_journal($id, 'Vérifié par le Facteur : ' . $texte);
+        // la position sur Google, mesurée par le site lui-même (jamais un chiffre donné par un agent)
+        $mesure = function_exists('aled08e_px_mesurer') ? aled08e_px_mesurer($id) : null;
         $set('a_ecrire');
-        return new WP_REST_Response(['ok' => true, 'etat' => 'a_ecrire'], 200);
+        return new WP_REST_Response(['ok' => true, 'etat' => 'a_ecrire', 'position_google' => $mesure ? aled08e_px_constat_txt($mesure, (string) $p['entreprise']) : 'non mesurée (pas de clé de mesure, ou service indisponible) : le mail n’en parlera pas'], 200);
     }
     if ($faire === 'ecarter') {
         if (in_array($etat, ['desinscrit', 'commande'], true)) return $err('Ce prospect est « ' . $etat . ' » : on n’y touche plus.');
@@ -1143,13 +1159,18 @@ function aled08e_px_reglages_html() {
         . '<tr><th><label for="aled08e-px-exp">Adresse d’envoi</label></th><td><input type="email" id="aled08e-px-exp" name="prospection_expediteur" value="' . esc_attr((string) get_option('aled08_prospection_expediteur', '')) . '" class="regular-text" placeholder="' . esc_attr(aled08e_mail_from()) . '">'
         . '<p class="description">Vide : les mails partent de l’adresse du site (' . esc_html(aled08e_mail_from()) . '), la même que celle des clients. Conseillé : une adresse à part, créée chez l’hébergeur (par exemple alex@bonjour.votre-domaine.fr), pour que les mails des clients ne souffrent jamais d’un signalement.</p></td></tr>'
         . '<tr><th><label for="aled08e-px-rep">Adresse des réponses</label></th><td><input type="email" id="aled08e-px-rep" name="prospection_reponse" value="' . esc_attr((string) get_option('aled08_prospection_reponse', '')) . '" class="regular-text" placeholder="' . esc_attr(aled08e_to()) . '">'
-        . '<p class="description">Vide : les réponses arrivent à ' . esc_html(aled08e_to()) . '. Le Répondeur lit cette boîte dans Gmail : l’adresse doit donc arriver dans votre Gmail (directement, ou par un transfert automatique).</p></td></tr></table>';
+        . '<p class="description">Vide : les réponses arrivent à ' . esc_html(aled08e_to()) . '. Le Répondeur lit cette boîte dans Gmail : l’adresse doit donc arriver dans votre Gmail (directement, ou par un transfert automatique).</p></td></tr>'
+        . '<tr><th><label for="aled08e-px-serper">Clé de mesure Google (Serper)</label></th><td><input type="password" id="aled08e-px-serper" name="prospection_serper" value="" class="regular-text" autocomplete="off" placeholder="' . (get_option('aled08_prospection_serper', '') !== '' ? 'Clé enregistrée (laisser vide pour la garder)' : 'Collez votre clé ici') . '">'
+        . (get_option('aled08_prospection_serper', '') !== '' ? ' <label><input type="checkbox" name="prospection_serper_effacer" value="1"> Effacer la clé</label>' : '')
+        . '<p class="description">Avec cette clé (compte sur serper.dev), le site mesure la position de chaque entreprise sur Google avant le premier mail, et le mail le dit : « En tapant coiffeur Signy-l’Abbaye sur Google, votre page Facebook arrive en 36e position ». Sans clé, le mail n’en parle pas.</p></td></tr></table>';
 }
 function aled08e_px_reglages_save($P) {
     if (empty($P['prospection_present'])) return;
     update_option('aled08_prospection_active', !empty($P['prospection_active']) ? '1' : '0', false);
     if (isset($P['prospection_quota_depart'])) update_option('aled08_prospection_quota_depart', max(0, min(500, (int) $P['prospection_quota_depart'])), false);
     if (isset($P['prospection_quota_max'])) update_option('aled08_prospection_quota_max', max(0, min(1000, (int) $P['prospection_quota_max'])), false);
+    if (!empty($P['prospection_serper_effacer'])) delete_option('aled08_prospection_serper');
+    elseif (isset($P['prospection_serper']) && trim((string) $P['prospection_serper']) !== '') update_option('aled08_prospection_serper', preg_replace('/[^A-Za-z0-9_-]/', '', wp_unslash((string) $P['prospection_serper'])), false);
     foreach (['prospection_expediteur' => 'aled08_prospection_expediteur', 'prospection_reponse' => 'aled08_prospection_reponse'] as $champ => $opt) {
         if (!isset($P[$champ])) continue;
         $e = sanitize_email(wp_unslash((string) $P[$champ]));

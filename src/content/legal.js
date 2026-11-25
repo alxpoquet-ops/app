@@ -210,7 +210,7 @@ Vous pouvez demander l’accès à vos données, leur correction, leur suppressi
 
 Pour faire connaître mes services, j’écris à des professionnels dont l’activité peut avoir besoin d’un site internet : artisans, commerçants, indépendants, associations. Jamais à des particuliers.
 
-- **Ce que j’utilise** : le nom de l’entreprise, son métier, sa ville et son numéro SIREN, tirés de l’annuaire public des entreprises, et une adresse e-mail professionnelle que l’entreprise publie elle-même (sa fiche Google, sa page Facebook, un annuaire qu’elle a rempli). La page où l’adresse a été vue est rappelée au bas de chaque message.
+- **Ce que j’utilise** : le nom de l’entreprise, son métier, sa ville et son numéro SIREN, tirés de l’annuaire public des entreprises, et une adresse e-mail professionnelle que l’entreprise publie elle-même (sa fiche Google, sa page Facebook, un annuaire qu’elle a rempli). La page où l’adresse a été vue est rappelée au bas de chaque message. Je regarde aussi où l’entreprise apparaît dans une recherche Google publique (par exemple « coiffeur » et sa ville), avec un service de mesure qui interroge Google pour moi : seuls la recherche et le résultat sont gardés.
 - **Comment** : des outils automatiques m’aident à repérer ces entreprises, à préparer mes messages et à trier les réponses.
 - **Combien de messages** : un message, et une seule relance. Ensuite, plus rien.
 - **Pour ne plus rien recevoir** : le lien « se désinscrire » de chaque message est pris en compte tout de suite. Répondre « stop » suffit aussi.

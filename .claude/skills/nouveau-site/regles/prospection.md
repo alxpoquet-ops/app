@@ -32,6 +32,10 @@ Décision d'Alex (25 novembre 2026) : le mail lui-même doit convaincre. La rout
 2. **Il y a un vrai suivi** : un espace client, des tutos pour chaque étape, une bande qui reste aux côtés du client. **Le mail ne parle pas du forfait Mini** (Alex, 25 novembre 2026).
 3. **Tout appartient au client** : le site et le nom de domaine sont à lui, il récupère son site quand il veut.
 
+**La preuve, chiffrée.** Quand le Facteur retient un prospect, le site mesure lui-même sa position sur Google pour la recherche notée par le Repéreur (`recherche`, par exemple « coiffeur Signy-l'Abbaye »), avec le service Serper (réglage « Clé de mesure Google »). Le mail le dit dans un encadré « Nous avons fait le test » : « Votre page Facebook arrive en 36e position, sur la 4e page des résultats. Or la plupart des gens ne regardent que la première page. Envie de vous rapprocher de la première page, avec votre propre site ? C'est notre métier. » Sur la première page, il dit « bravo », puis que les clients y voient une page Facebook et non leur vitrine ; absent des 50 premiers, « c'est comme si vous n'existiez pas encore ». **Aucun agent ne donne ni n'écrit de position** : Google refuse les recherches faites par un programme, seul le service de mesure la connaît. Sans clé, le mail n'en parle pas. On ne promet jamais la première place : « vous rapprocher », « c'est notre métier ».
+
+Le mail ajoute aussi qu'un site, c'est une adresse à soi, à mettre sur ses cartes de visite, sa vitrine et ses factures.
+
 Puis il invite à voir les sites déjà en ligne (« Plutôt que mille mots, voyez par vous-même ») : le premier bouton mène à notre page Réalisations, le second à « Créer mon site ». **Plus de démo ni d'aperçu personnalisé dans le mail** : Alex a trouvé qu'ils ne donnaient pas envie. (L'aperçu personnalisé existe toujours dans le code, éteint : `apercuNote` à 101 dans la configuration.) L'agent n'écrit aucun de ces arguments ni aucun chiffre : il donne le sujet, la phrase vraie et les trois points du métier.
 
 ## Qui cibler
