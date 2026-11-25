@@ -111,8 +111,9 @@ const sections = {
 // prix : le Site Essentiel. ecommerce : l'option e-commerce (boutique : le même écart, nom gardé pour l'extension et les anciennes
 // commandes). visibilite, boutiquePrix, pages et exemplePages sont retirés (plus aucune page ne les lit). pagePlus, pagesPlusMax,
 // boutiqueProduits et boutiqueSlot restent : l'extension WordPress les lit (data.json).
-// 24 novembre 2026 (carte blanche d'Alex) : prix psychologiques, 399 € le site, 599 € avec l'option e-commerce.
-const creation = { prix: 399, ecommerce: 200, boutique: 200, pagePlus: 10, pagesPlusMax: 0, boutiqueProduits: 0, boutiqueSlot: 0 };
+// 25 novembre 2026 (Alex) : on se positionne « 2 à 3 fois moins cher qu'un indépendant » et premium : 749 € le site, 949 € avec
+// l'option e-commerce (1 500 € ÷ 749 € = 2,0 ; 3 000 € ÷ 749 € = 4,0, « 3 » reste prudent). Avant : 399 € (24 novembre), 400 €.
+const creation = { prix: 749, ecommerce: 200, boutique: 200, pagePlus: 10, pagesPlusMax: 0, boutiqueProduits: 0, boutiqueSlot: 0 };
 // Offre événement : un code donné sur une foire, un marché, un salon ou un événement professionnel.
 // remise : en %, sur la création du site (site et options payés une fois). Les codes valables se règlent dans
 // l'extension WordPress (Réglages, « Codes événement ») : le serveur vérifie le code et recalcule le prix.
@@ -151,6 +152,8 @@ const marche = {
 marche.fois = Math.round(marche.vitrineMin / creation.prix) + ' à ' + Math.round(marche.vitrineMax / creation.prix);
 // « 4 fois moins cher qu'un indépendant » (décision d'Alex, 24 novembre 2026) : le bas de la fourchette de l'indépendant divisé par notre prix, arrondi.
 marche.foisMin = Math.round(marche.vitrineMin / creation.prix);
+// « 2 à 3 fois moins cher qu'un indépendant » (25 novembre 2026) : le bas arrondi vers le bas (jamais exagéré), le haut plafonné à 3 (prudent).
+marche.foisTexte = `${Math.max(1, Math.floor(marche.vitrineMin / creation.prix))} à ${Math.min(3, Math.max(2, Math.floor(marche.vitrineMax / creation.prix)))}`;
 // entretien : calculé plus bas, une fois le prix de l'abonnement connu (marche.entretienFois)
 
 // ---------------------------------------------------------------- types de site

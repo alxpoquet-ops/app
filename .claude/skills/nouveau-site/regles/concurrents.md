@@ -69,11 +69,11 @@ Repères tirés de comparatifs publics. Ce ne sont pas des grilles officielles :
 | Un abonnement tout compris (Simplébo, Solocal et autres) | Environ 39 à 129 € par mois | On s'occupe de tout, mais on paie chaque mois, longtemps, et le site ne s'emporte pas toujours |
 | Un indépendant | Environ 1 500 à 3 000 € un site vitrine, puis l'entretien | Sur mesure, mais cher et plus long |
 | Une agence | Souvent 2 000 à 5 000 €, puis 100 à 300 € par mois | Une équipe, mais un budget hors de portée d'une petite activité |
-| **Les Minis Monstres** | **399 € la création**, puis 0 ou 10 € par mois | Fait pour vous en quelques heures, modifiable par vous-même, sans engagement, et le site s'emporte |
+| **Les Minis Monstres** | **749 € la création**, puis 0 ou 10 € par mois | Fait pour vous en quelques heures, modifiable par vous-même, sans engagement, et le site s'emporte |
 
 **Ce qui nous distingue, et que chaque site livré doit prouver :**
 
-1. **Le prix total.** Sur trois ans, 399 € plus 10 € par mois font 759 €. Un abonnement à 39 € par mois en fait plus de 1 400.
+1. **Le prix total.** Sur trois ans, 749 € plus 10 € par mois font 1 109 €. Un abonnement à 39 € par mois en fait plus de 1 400.
 2. **La vitesse.** En ligne en quelques heures une fois le questionnaire rempli.
 3. **Le client garde la main.** Il modifie ses textes et ses photos lui-même, à volonté, et demande le reste.
 4. **Pas de piège.** Sans engagement, prix affichés, export du site possible.
