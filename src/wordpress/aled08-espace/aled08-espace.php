@@ -1412,7 +1412,6 @@ function aled08e_dashboard() {
       </div>
     </div>
     <p class="app-toast" data-toast role="status" hidden></p>
-    <?php echo function_exists('aled08e_concours_html') ? aled08e_concours_html($u) : ''; // phpcs:ignore -- Ruban, pendant un jeu-concours ?>
   </div>
 </div></section>
 <?php echo aled08e_site_groupe_js(); // phpcs:ignore ?>

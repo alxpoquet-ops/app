@@ -452,20 +452,29 @@ Décision d'Alex (25 novembre 2026). Le site public et l'espace client annoncent
 
 Quand le contrôleur livre un site plus tôt, la commande passe à l'état « pret_livraison » avec l'heure prévue. À cette heure-là, le site passe « en ligne » et le client reçoit l'e-mail « Votre site est en ligne ». Une tâche WordPress s'en charge, avec un filet de sécurité qui vérifie toutes les 10 minutes. Le code est dans `src/wordpress/aled08-espace/includes/delai.php`. Si Alex livre lui-même un site depuis sa gestion, il part tout de suite.
 
-## Le jeu-concours de Ruban
+## Le jeu-concours des Rubans
 
-Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit('ruban')`). Pendant un jeu, il se cache dans l'espace client. Le client qui le trouve clique dessus, donne son adresse e-mail et accepte le règlement (`/jeu-concours/`) : il participe. Pour participer, il suffit d'un compte, gratuit, sans achat.
+Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit('ruban')`). Le code est dans `includes/concours.php`, le règlement sur `/jeu-concours/`.
 
-- **Éteint par défaut.** Claude l'ouvre quand Alex le demande : `POST /aled08/v1/atelier/concours` avec `{"faire": "ouvrir", "cachette": "infos"}`.
-- **Les cachettes possibles** :
-  - `infos`, `forfait` ou `factures` : les rubriques de Mon compte ;
-  - `accueil` ;
-  - `stats` ;
-  - `modifications`.
-  Pour en changer pendant le jeu : `{"faire": "cachette", "cachette": "…"}`. Un compte sans site, qui n'a pas ces rubriques, le voit dans Mon compte.
-- **Suivre le jeu** : `GET /aled08/v1/atelier/concours` donne l'état, le nombre d'inscrits et la liste.
-- **Fermer et tirer au sort** : `{"faire": "fermer"}`. Le tirage se fait au hasard (`random_int`) parmi les inscrits, les comptes de l'équipe exclus. Une seule participation par compte et par adresse.
-- **Nouveau tirage** : `{"faire": "retirer"}`, si le gagnant ne répond pas dans les 15 jours.
-- **Le lot** : un Site Essentiel et un an de forfait Mini offerts, avec le nom de domaine fourni cette année-là si besoin. Le site reste au gagnant. L'option e-commerce n'est pas comprise.
-- **Le gagnant** : aucun e-mail ne lui est envoyé automatiquement. Alex le prévient lui-même, puis crée sa commande offerte.
-- **Les adresses** sont effacées 3 mois après le dernier tirage.
+**Le jeu.** Pendant un jeu, **cinq Rubans** se cachent sur le site, un par catégorie : la page d'accueil, l'espace client, les mini-tutos, la page Tarifs et les questions fréquentes. Ces catégories sont écrites dans le règlement. Il faut être **connecté** pour voir les Rubans.
+
+**Pour le joueur :**
+- Un clic sur un Ruban lance l'animation : il saute, tourne et disparaît dans une pluie de confettis. Il est alors compté.
+- Dans l'espace client, un **compteur flottant** (en bas à gauche) indique combien de Rubans sont trouvés sur 5. Quand on le touche, il donne un indice pour chacun.
+- Les cinq trouvés, le joueur donne son e-mail et son **numéro de portable**, puis accepte le règlement.
+
+**Contre la triche :**
+- Une participation par compte, par adresse e-mail et par numéro de portable. Les numéros sont ramenés à une seule forme : 06…, +33 6… et 0033 6… sont le même numéro.
+- Les participations faites depuis le même appareil ou la même adresse internet sont signalées (« doublon_possible »), mais pas refusées : une famille peut partager un ordinateur.
+- Chaque Ruban porte un jeton secret, vérifié par le serveur.
+- Le gagnant est appelé au numéro donné avant de recevoir son lot.
+
+**Pour Alex** (Claude le fait sur demande) :
+- Ouvrir : `POST /aled08/v1/atelier/concours` avec `{"faire": "ouvrir"}`.
+- Déplacer un Ruban dans sa catégorie : `{"faire": "cachette", "cachette": "tarifs", "chemin": "/tarifs/", "selecteur": "#detail", "indice": "…", "coin": "bas-droite"}`.
+- Suivre : `GET` donne les joueurs, les Rubans trouvés, les inscrits et les doublons possibles.
+- Fermer et tirer au sort : `{"faire": "fermer"}`. Si le gagnant ne répond pas dans les 15 jours : `{"faire": "retirer"}`.
+
+**Le lot** : un Site Essentiel (valeur 749 €) et un an de forfait Mini offerts, avec le nom de domaine fourni cette année-là si besoin. Le site reste au gagnant. L'option e-commerce n'est pas comprise.
+
+Aucun e-mail ne part automatiquement au gagnant : Alex le prévient. Les données (e-mails, numéros, Rubans trouvés) sont effacées 3 mois après le dernier tirage.

@@ -1532,28 +1532,3 @@ a.st2-p-titre { text-decoration: underline; text-decoration-thickness: 1.5px; te
 #t-extras .ex-filtre:not(.bg-nav) button svg { width: 20px; height: 20px; flex: none; color: var(--lilac-dd); }
 #t-extras .ex-filtre:not(.bg-nav) button.is-on { background: var(--lilac); box-shadow: 0 0 0 3px var(--lilac-d) inset; }
 @media (min-width: 760px) { #t-extras .ex-filtre:not(.bg-nav) { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); } }
-
-/* Le jeu-concours de Ruban (25 novembre 2026, includes/concours.php) : Ruban dépasse d'un coin de sa cachette, tout petit */
-.cc-cachette { position: relative; }
-.cc-ruban { position: absolute; right: 6px; bottom: -6px; z-index: 3; width: 46px; height: 46px; padding: 0; border: 0; background: none; cursor: pointer; transform: rotate(-12deg); transition: transform .2s; }
-.cc-ruban svg { width: 100%; height: 100%; display: block; }
-.cc-ruban:hover, .cc-ruban:focus-visible { transform: rotate(0) scale(1.25); }
-.cc-ruban:focus-visible { outline: 3px solid var(--lilac-d, #8C6CF2); outline-offset: 2px; border-radius: 12px; }
-@media (prefers-reduced-motion: no-preference) { .cc-ruban { animation: cc-coucou 6s ease-in-out infinite; } }
-@keyframes cc-coucou { 0%, 88%, 100% { transform: rotate(-12deg); } 92% { transform: rotate(-4deg) translateY(-4px); } 96% { transform: rotate(-16deg); } }
-.cc-dialog { width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; padding: 22px 20px 20px; border: 0; border-radius: 24px; background: var(--card, #fff); color: var(--ink); box-shadow: 0 20px 60px rgba(46, 42, 71, .25); text-align: center; }
-.cc-dialog::backdrop { background: rgba(46, 42, 71, .45); }
-.cc-dialog h2 { margin: 4px 0 8px; font-size: 1.35rem; line-height: 1.25; }
-.cc-dialog p { margin: 0 0 12px; line-height: 1.5; }
-.cc-art svg { display: block; width: 110px; height: 110px; margin: 0 auto; }
-.cc-fermer-f { position: absolute; top: 10px; right: 10px; margin: 0; }
-.cc-fermer { width: 38px; height: 38px; display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--bg-soft, #f4f1fb); color: var(--ink); cursor: pointer; }
-.cc-fermer svg { width: 18px; height: 18px; }
-.cc-form { display: grid; gap: 10px; text-align: left; }
-.cc-label { font-weight: 800; font-size: .95rem; }
-.cc-input { width: 100%; min-height: 46px; padding: 10px 14px; border: 2px solid var(--line, #e6e1f5); border-radius: 14px; font: inherit; background: var(--bg, #fff); color: var(--ink); }
-.cc-check { font-size: .9rem; line-height: 1.4; }
-.cc-err { margin: 0; color: #B3261E; font-weight: 700; }
-.cc-go { justify-self: center; }
-.cc-ok { display: flex; gap: 8px; align-items: flex-start; text-align: left; padding: 12px 14px; border-radius: 14px; background: var(--mint, #DDFBEF); }
-.cc-ok svg { flex: none; width: 20px; height: 20px; margin-top: 2px; }

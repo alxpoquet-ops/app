@@ -125,7 +125,6 @@ function aled08e_dashboard_libre($u) {
       </div>
     </div>
     <p class="app-toast" data-toast role="status" hidden></p>
-    <?php echo function_exists('aled08e_concours_html') ? aled08e_concours_html(wp_get_current_user()) : ''; // phpcs:ignore -- Ruban, pendant un jeu-concours ?>
   </div>
 </div></section>
     <?php
