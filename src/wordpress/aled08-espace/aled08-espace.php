@@ -204,6 +204,8 @@ require_once __DIR__ . '/includes/relier.php';
 require_once __DIR__ . '/includes/pose.php';
 require_once __DIR__ . '/includes/ouverture.php';
 require_once __DIR__ . '/includes/atelier.php';
+require_once __DIR__ . '/includes/delai.php';
+require_once __DIR__ . '/includes/concours.php'; // le jeu-concours de Ruban, le monstre cadeau (éteint par défaut) // le site livré 24 heures après les informations complètes (annoncé « entre 24 et 48 heures »)
 require_once __DIR__ . '/includes/mails.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
@@ -1410,6 +1412,7 @@ function aled08e_dashboard() {
       </div>
     </div>
     <p class="app-toast" data-toast role="status" hidden></p>
+    <?php echo function_exists('aled08e_concours_html') ? aled08e_concours_html($u) : ''; // phpcs:ignore -- Ruban, pendant un jeu-concours ?>
   </div>
 </div></section>
 <?php echo aled08e_site_groupe_js(); // phpcs:ignore ?>

@@ -121,6 +121,7 @@ function aled08e_chantiers_liste(WP_REST_Request $req) {
         $role = 'constructeur';
         $attente = function_exists('aled08e_cmd_attente_fin') ? aled08e_cmd_attente_fin($cid) : 0;
         if ($attente > time() && !in_array($etat, ['a_verifier', 'pour_alex'], true)) { $afaire = 'rien : le client a choisi d’attendre la fin de son délai de rétractation, on ne commence pas avant le ' . wp_date('j F Y', $attente); $role = 'attente'; }
+        elseif ($etat === 'pret_livraison') { $h = (int) get_post_meta($cid, '_aled08_livrer_le', true); $afaire = 'rien : le site est contrôlé, il part tout seul chez le client le ' . wp_date('j F Y à H:i', $h); $role = 'attente'; }
         elseif ($etat === 'a_verifier') { $afaire = 'rien : Alex vérifie'; $role = 'alex'; }
         elseif ($etat === 'pour_alex') { $afaire = 'rien : Alex regarde ce cas'; $role = 'alex'; }
         elseif ($etat === 'a_controler') { $afaire = 'contrôler le site, puis le livrer ou demander des corrections'; $role = 'controleur'; }
@@ -267,7 +268,9 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
             aled08e_chantier_mail_verifier($c, $texte, $lien);
             return new WP_REST_Response(['ok' => true, 'etat' => 'a_verifier', 'note' => 'Alex vérifie le site avant de le livrer au client : rien d’autre à faire pour toi.'], 200);
         }
-        aled08e_chantier_livrer_v1($cid, $lien);
+        // 25 novembre 2026 (Alex) : le site part 24 heures après les informations complètes, jamais avant (annoncé « 24 à 48 heures »)
+        $h = aled08e_livrer_a_l_heure($cid, $lien); // includes/delai.php
+        if ($h) return new WP_REST_Response(['ok' => true, 'etat' => 'pret_livraison', 'livraison_le' => wp_date('Y-m-d H:i', $h), 'note' => 'Contrôle bon. Le site partira tout seul chez le client le ' . wp_date('j F Y à H:i', $h) . ' (24 heures après ses informations complètes) : rien d’autre à faire pour toi.'], 200);
         return new WP_REST_Response(['ok' => true, 'statut' => 'en_ligne'], 200);
     }
     return new WP_Error('aled08_chantier', 'À faire inconnu (question, note, a_controler, corriger, livrer, pour_alex, reprendre, a_verifier, en_ligne).', ['status' => 400]);
@@ -344,6 +347,7 @@ add_action('template_redirect', function () {
     if ($t !== '') {
         aled08e_chantier_fil_ajouter($cid, 'client', $t);
         update_post_meta($cid, '_aled08_chantier', 'reponse');
+        if (function_exists('aled08e_infos_completes')) aled08e_infos_completes($cid); // les 24 heures avant la livraison repartent de sa réponse
         aled08e_cmd_journal($cid, 'Le client a répondu à la question de l’atelier.');
     }
     wp_safe_redirect(aled08e_url() . '#commande', 303);

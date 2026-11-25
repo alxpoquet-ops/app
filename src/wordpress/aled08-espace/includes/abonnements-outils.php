@@ -1068,8 +1068,8 @@ function aled08e_site_porte_html() {
     foreach ((array) ($D['ateliers'] ?? []) as $a) if (($a['id'] ?? '') === 'sites') $at = $a;
     return '<h2 class="app-h">Mon site</h2><section class="mm-porte c-mint">'
         . '<span class="mm-porte-art" aria-hidden="true">' . aled08e_monster('bricou') . '</span>'
-        . '<div class="mm-porte-txt"><p class="mm-po-sur">Avec Bricou</p><h3>Votre site, en ligne en quelques heures</h3>'
-        . '<p>' . esc_html($at['court'] ?? 'Votre site professionnel en quelques heures, puis on s’en occupe chaque mois.') . '</p>'
+        . '<div class="mm-porte-txt"><p class="mm-po-sur">Avec Bricou</p><h3>Votre site, en ligne en 24 à 48 heures</h3>'
+        . '<p>' . esc_html($at['court'] ?? 'Votre site professionnel en 24 à 48 heures, puis on s’en occupe chaque mois.') . '</p>'
         . '<ul class="mm-po-points"><li>' . aled08e_icon('check') . '<span>' . esc_html(aled08e_euro_txt($prix)) . ' la création, payée une fois</span></li>'
         . '<li>' . aled08e_icon('check') . '<span>Puis le forfait ' . esc_html($mini['name'] ?? 'Mini') . ' : ' . esc_html(aled08e_euro_txt($mini['month'] ?? 10)) . ' par mois, modifications incluses</span></li>'
         . '<li>' . aled08e_icon('check') . '<span>' . (aled08e_outils_offre() ? 'Tout se suit ici, dans le même espace, sur la même facture que vos outils' : 'Tout se suit ici : votre commande, vos modifications, vos factures') . '</span></li></ul>'

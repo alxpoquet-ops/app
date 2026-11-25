@@ -198,6 +198,26 @@ ${eclat(14, 30, 5, '#FFE07A')}${eclat(108, 22, 4, '#FFB3D1')}${eclat(10, 100, 3.
 </g>`;
 };
 
+// Ruban, le petit monstre cadeau (25 novembre 2026) : une boîte cadeau menthe, toute ronde, avec un gros nœud rose sur la tête.
+// Il se cache dans l'espace client pendant les jeux-concours (extension : includes/concours.php).
+DESSINS.ruban = (h) => {
+  const c = { corps: '#A9EFD4', ventre: '#DDFBEF', trait: '#2E9A71' };
+  const r = { fill: '#FF9EC4', trait: '#C24A80' };
+  return `${ombre(32)}<g class="p-bob">
+<ellipse cx="44" cy="107" rx="9" ry="5" fill="${c.corps}" ${t(c, 2.6)}/><ellipse cx="76" cy="107" rx="9" ry="5" fill="${c.corps}" ${t(c, 2.6)}/>
+<rect x="22" y="48" width="76" height="60" rx="18" fill="${c.corps}" ${t(c)}/>
+<rect x="18" y="44" width="84" height="16" rx="8" fill="${c.ventre}" ${t(c, 2.8)}/>
+<path d="M60 45V107" stroke="${r.fill}" stroke-width="11"/><path d="M54.5 45V107M65.5 45V107" stroke="${r.trait}" stroke-width="1.6" opacity=".55"/>
+<path d="M58 42C50 28 34 26 34 36c0 8 13 9 24 6ZM62 42c8-14 24-16 24-6 0 8-13 9-24 6Z" fill="${r.fill}" stroke="${r.trait}" stroke-width="2.6" stroke-linejoin="round"/>
+<path d="M57 43l-9 12M63 43l9 12" stroke="${r.fill}" stroke-width="5" stroke-linecap="round"/>
+<circle cx="60" cy="41" r="6" fill="${r.fill}" stroke="${r.trait}" stroke-width="2.6"/>
+${reflet('M30 70c2-6 5-9 9-11')}
+${yeux(43, 77, 78, h, 1.15)}${joues(34, 86, 90)}${bouche.u(60, 90)}
+<path class="p-salut" d="M93 84c9 1 13-6 9-10-3-3-8-1-10 3" fill="${c.corps}" ${t(c, 2.6)}/>
+${eclat(104, 30, 6, '#FFE07A')}${eclat(14, 40, 4, '#FFB3D1')}${eclat(20, 18, 3, '#AED2FF')}
+</g>`;
+};
+
 const NOMS = Object.keys(DESSINS);
 
 // Alex, le chef de chantier de la bande : un petit monstre bleu pervenche, avec le casque blanc du chef de chantier

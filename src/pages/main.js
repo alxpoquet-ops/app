@@ -128,7 +128,7 @@ function laMaisonPage() {
   </div>
 </div></section>
 
-${C.ctaBand({ title: 'Et si on commençait par votre site ?', text: `Le ${esc(ESS.name)}, ${euro(ESS.price)} la création. Le prix s’affiche avant de payer, et votre site est en ligne quelques heures après votre questionnaire.` })}`;
+${C.ctaBand({ title: 'Et si on commençait par votre site ?', text: `Le ${esc(ESS.name)}, ${euro(ESS.price)} la création. Le prix s’affiche avant de payer, et votre site est en ligne 24 à 48 heures après votre questionnaire.` })}`;
   return {
     path: MAISON.path,
     color: 'lilac',
@@ -802,7 +802,7 @@ function confirmationPage() {
     noindex: true,
     noMobileBar: true,
     title: 'Commande confirmée | Les Minis Monstres',
-    description: 'Merci pour votre commande. Votre espace client est prêt, avec le questionnaire de création : une fois envoyé, votre site est en ligne quelques heures après.',
+    description: 'Merci pour votre commande. Votre espace client est prêt, avec le questionnaire de création : une fois envoyé, votre site est en ligne 24 à 48 heures après.',
     body,
   };
 }
@@ -1233,7 +1233,7 @@ function monEspacePage() {
   </div>
 </div></section>
 
-${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : en ligne en quelques heures, puis vous le modifiez à volonté, vous-même ou avec nous.' })}`;
+${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : en ligne en 24 à 48 heures, puis vous le modifiez à volonté, vous-même ou avec nous.' })}`;
   return {
     path: '/mon-espace/demo/',
     section: 'monespace',

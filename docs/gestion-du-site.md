@@ -445,3 +445,27 @@ Toutes les règles (rien d'inventé, visuel, ce qui fait venir des demandes, Goo
 - Tant que `aled08_chantier_auto` vaut 1 (par défaut), l'e-mail « Questionnaire reçu » n'est plus envoyé à Alex.
 - Un client qui ne répond pas reçoit un rappel au bout de 3 jours, une seule fois.
 - La tâche programmée doit avoir le connecteur « Mini monstres » : il se règle dans claude.ai, sur la tâche elle-même.
+
+## Le délai de création : 24 heures, annoncé « 24 à 48 heures »
+
+Décision d'Alex (25 novembre 2026). Le site public et l'espace client annoncent un site en ligne « en 24 à 48 heures » après le questionnaire complet. En vrai, le site part **exactement 24 heures** après le moment où l'on a toutes les informations : l'envoi complet du questionnaire, ou la dernière réponse du client à une question de l'atelier.
+
+Quand le contrôleur livre un site plus tôt, la commande passe à l'état « pret_livraison » avec l'heure prévue. À cette heure-là, le site passe « en ligne » et le client reçoit l'e-mail « Votre site est en ligne ». Une tâche WordPress s'en charge, avec un filet de sécurité qui vérifie toutes les 10 minutes. Le code est dans `src/wordpress/aled08-espace/includes/delai.php`. Si Alex livre lui-même un site depuis sa gestion, il part tout de suite.
+
+## Le jeu-concours de Ruban
+
+Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit('ruban')`). Pendant un jeu, il se cache dans l'espace client. Le client qui le trouve clique dessus, donne son adresse e-mail et accepte le règlement (`/jeu-concours/`) : il participe. Pour participer, il suffit d'un compte, gratuit, sans achat.
+
+- **Éteint par défaut.** Claude l'ouvre quand Alex le demande : `POST /aled08/v1/atelier/concours` avec `{"faire": "ouvrir", "cachette": "infos"}`.
+- **Les cachettes possibles** :
+  - `infos`, `forfait` ou `factures` : les rubriques de Mon compte ;
+  - `accueil` ;
+  - `stats` ;
+  - `modifications`.
+  Pour en changer pendant le jeu : `{"faire": "cachette", "cachette": "…"}`. Un compte sans site, qui n'a pas ces rubriques, le voit dans Mon compte.
+- **Suivre le jeu** : `GET /aled08/v1/atelier/concours` donne l'état, le nombre d'inscrits et la liste.
+- **Fermer et tirer au sort** : `{"faire": "fermer"}`. Le tirage se fait au hasard (`random_int`) parmi les inscrits, les comptes de l'équipe exclus. Une seule participation par compte et par adresse.
+- **Nouveau tirage** : `{"faire": "retirer"}`, si le gagnant ne répond pas dans les 15 jours.
+- **Le lot** : un Site Essentiel et un an de forfait Mini offerts, avec le nom de domaine fourni cette année-là si besoin. Le site reste au gagnant. L'option e-commerce n'est pas comprise.
+- **Le gagnant** : aucun e-mail ne lui est envoyé automatiquement. Alex le prévient lui-même, puis crée sa commande offerte.
+- **Les adresses** sont effacées 3 mois après le dernier tirage.

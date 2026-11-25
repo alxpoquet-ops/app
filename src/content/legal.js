@@ -9,7 +9,7 @@ const L = site.legal;
 const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contact (${site.url}/contact/)` : `le formulaire de contact (${site.url}/contact/)`;
 const addr = `${site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 const UPDATED = '2026-11-24'; // mentions légales : 24 novembre 2026, le SIREN de l'entreprise individuelle (le SIRET de l'activité est en cours)
-const UPDATED_CONF = '2026-11-24'; // politique de confidentialité : 24 novembre 2026, les outils au mois (comptes sans site, réseaux reliés, photos, avis et devis confiés aux outils). Avant : offre du 19 novembre 2026 (abonnement facultatif, paiement des extras par carte).
+const UPDATED_CONF = '2026-11-25'; // 25 novembre 2026 : le jeu-concours de Ruban (l'adresse e-mail des participants). 24 novembre : politique de confidentialité : 24 novembre 2026, les outils au mois (comptes sans site, réseaux reliés, photos, avis et devis confiés aux outils). Avant : offre du 19 novembre 2026 (abonnement facultatif, paiement des extras par carte).
 const UPDATED_CGV = '2026-11-25'; // 25 novembre 2026 : plus d'appel avant la création (article 11), chaque site relu par un autre outil avant la livraison (article 15). 24 novembre 2026, tard : vérification par Alex (retirée le 25). Au soir : les outils mis de côté (article 20 gardé pour les abonnements en cours, avec une phrase en tête). Plus tôt le 24 novembre : article 20, les outils au mois (essai de 14 jours sans carte, abonnement outil par outil, limites, rétractation). 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
 // La petite bande (config.bande) : six Minis Monstres, présentés par leur prénom et leur rôle. Le parrainage est retiré (19 novembre 2026).
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
@@ -144,6 +144,7 @@ ${site.owner}, Les Minis Monstres, ${addr}. Contact : ${contact}.
 - **Espace client** : vos identifiants, vos demandes de modification (texte et photos), vos messages dans la bulle d’aide et la date de votre dernière connexion.${AVEC_OUTILS ? `
 - **Outils au mois** : ce que vous confiez à un outil (une photo, un texte, le texte d’un avis Google avec le prénom de son auteur s’il y figure, des devis de fournisseurs collés pour les comparer), la courte description de votre activité si vous l’écrivez, le dernier résultat obtenu et le nombre d’utilisations du mois. Un compte peut servir aux outils seuls, sans site.
 - **Réseaux sociaux reliés** : le nom de vos comptes ou de vos pages, les clés qui permettent d’y publier et la liste de vos dernières publications (voir le point 7).` : ''}
+- **Jeu-concours** : quand vous trouvez Ruban, le petit monstre cadeau, l’adresse e-mail que vous donnez pour participer. Elle sert seulement au tirage au sort et à prévenir le gagnant, puis elle est effacée 3 mois après le tirage (voir le [règlement du jeu](/jeu-concours/)).
 - **Paiement** : je ne reçois jamais votre numéro de carte ni votre IBAN (voir le point 4).
 
 ## 3. Pourquoi je les utilise
@@ -451,5 +452,62 @@ ${listeOutils}
 **Droit de rétractation.** Le client consommateur dispose de 14 jours pour se rétracter à partir du jour où il s’abonne à un outil, avec un simple message ou le modèle de l’article 9. L’essai gratuit, lui, ne coûte rien et s’arrête quand le client veut. En s’abonnant, le client demande expressément que l’outil fonctionne tout de suite, avant la fin de ce délai. S’il se rétracte ensuite, il paie seulement la part du mois déjà écoulée, au prorata, et le reste lui est remboursé.
 
 **Données.** Les photos, textes, avis et devis confiés à un outil servent seulement à préparer le résultat demandé. La politique de confidentialité précise ce qui est gardé, combien de temps, et qui le reçoit.` : ''}`,
+  },
+  // Le jeu-concours de Ruban, le petit monstre cadeau (25 novembre 2026). Le code : src/wordpress/aled08-espace/includes/concours.php.
+  {
+    path: '/jeu-concours/',
+    name: 'Règlement du jeu-concours',
+    title: `Règlement du jeu-concours de Ruban | Les Minis Monstres`,
+    description: `Trouvez Ruban, le petit monstre cadeau caché dans l’espace client, et tentez de gagner un site internet et un an de forfait ${mini.name}. Gratuit, sans achat.`,
+    lead: 'Ruban, le petit monstre cadeau, se cache dans l’espace client. Trouvez-le et tentez de gagner un site internet offert.',
+    updated: '2026-11-25',
+    body: `## 1. Organisateur
+
+Le jeu est organisé par Les Minis Monstres, ${exploitant}, ${addr}, SIREN ${L.siren}.
+
+## 2. Le principe
+
+Pendant le jeu, **Ruban**, le petit monstre cadeau, se cache quelque part dans l’espace client des Minis Monstres. La personne qui le trouve clique dessus, donne son adresse e-mail et accepte ce règlement : elle participe au tirage au sort.
+
+## 3. Qui peut participer
+
+Toute personne majeure qui réside en France. Ne peuvent pas participer : l’organisateur et les membres de sa famille.
+
+Une seule participation par personne : un seul compte, une seule adresse e-mail. Une participation faite avec plusieurs comptes ou de fausses informations n’est pas retenue.
+
+## 4. Gratuit, sans achat
+
+Participer ne coûte rien et n’oblige à rien acheter. Il suffit d’un espace client : il se crée gratuitement sur le site, en quelques secondes, sans commander de site. Les clients qui ont déjà un site peuvent aussi participer.
+
+## 5. Dates
+
+Le jeu est ouvert pendant la période annoncée par Les Minis Monstres sur leur site et leurs réseaux sociaux. En dehors de cette période, Ruban ne se montre pas et aucune participation n’est enregistrée.
+
+## 6. Le lot
+
+Le gagnant reçoit :
+
+- **un ${ESS.name}, offert** (valeur : ${eur(ESS.price)} €), créé avec ses informations et ses photos, comme pour un client qui l’achète ;
+- **un an de forfait ${mini.name}, offert** (valeur : ${eur(mini.month * 12)} €) : l’hébergement, les sauvegardes, la sécurité, les mises à jour et les modifications comprises dans le forfait. S’il n’a pas de nom de domaine, on le lui fournit aussi pendant cette année.
+
+**Le site est à lui : il le garde.** Au bout de l’année offerte, il choisit librement : continuer avec le forfait ${mini.name} à ${eur(mini.month)} € par mois, sans engagement, passer au forfait ${creationSeule ? creationSeule.name : 'Autonome'} à 0 € par mois, ou récupérer l’export de son site.
+
+L’option ${ECO.name} n’est pas comprise : le gagnant peut l’ajouter au prix affiché sur le site. Le lot ne peut être ni échangé contre de l’argent, ni cédé à une autre personne.
+
+## 7. Le tirage au sort
+
+À la fin du jeu, un tirage au sort désigne un gagnant parmi les participations valables. Il est fait par ordinateur, entièrement au hasard.
+
+Le gagnant est prévenu par e-mail, à l’adresse qu’il a donnée. Il a **15 jours** pour répondre. Sans réponse, un nouveau tirage désigne un autre gagnant. Avec son accord, son prénom et sa ville peuvent être annoncés sur le site et les réseaux des Minis Monstres.
+
+## 8. Vos données
+
+L’adresse e-mail donnée pour le jeu sert seulement à organiser le tirage au sort et à prévenir le gagnant. Elle n’est ni vendue, ni prêtée, ni utilisée pour vous envoyer de la publicité. Elle est effacée **3 mois après le tirage**.
+
+Vous pouvez à tout moment demander à voir, corriger ou effacer vos données, ou retirer votre participation, depuis la [page contact](/contact/). La [politique de confidentialité](/politique-de-confidentialite/) détaille vos droits.
+
+## 9. Le règlement
+
+Ce règlement est consultable gratuitement sur cette page. Participer au jeu, c’est l’accepter. Le jeu est soumis au droit français. Pour toute question, écrivez-nous depuis la [page contact](/contact/).`,
   },
 ];

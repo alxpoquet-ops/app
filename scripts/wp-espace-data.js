@@ -108,7 +108,7 @@ process.stdout.write(
     monsters: Object.fromEntries([
       ...['mascotte', 'clin', 'ravie', 'pense', 'triste'].map((n) => [n, monster(n)]),
       ['alex', alexPortrait()],
-      ...['bricou', 'mochi', 'fantome', 'nuage', 'etoile', 'gelee', 'chaton', 'dino', 'champi', 'maxi'].map((n) => [n, petit(n)]),
+      ...['bricou', 'mochi', 'fantome', 'nuage', 'etoile', 'gelee', 'chaton', 'dino', 'champi', 'maxi', 'ruban'].map((n) => [n, petit(n)]),
     ]),
   })
 );

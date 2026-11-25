@@ -121,7 +121,7 @@ Votre questionnaire donne à Alex tout ce qu’il lui faut : vos textes, vos pho
 
 Ce qui ne se voit pas est le même pour tous : le code qui fait tourner le site en coulisses, sous vos textes et vos images. C’est lui qui rend chaque page rapide, sécurisée, agréable sur téléphone et lisible par Google.
 
-Ce qui se voit, en revanche, est fait pour vous : l’ambiance, les couleurs, les polices, la mise en avant de vos photos, le ton de vos textes. Votre site est en ligne en quelques heures, puis nous l’ajustons à votre goût, avec des modifications à volonté. Le résultat ressemble à votre activité, pas à celle du voisin.
+Ce qui se voit, en revanche, est fait pour vous : l’ambiance, les couleurs, les polices, la mise en avant de vos photos, le ton de vos textes. Votre site est en ligne en 24 à 48 heures, puis nous l’ajustons à votre goût, avec des modifications à volonté. Le résultat ressemble à votre activité, pas à celle du voisin.
 
 ## Moins de charges, un prix plus doux
 

@@ -21,7 +21,9 @@ Depuis le 22 novembre 2026, un site passe par deux agents : le constructeur le f
 
 ## Question ou livraison : selon ce qui manque
 
-Décision d'Alex (22 novembre 2026). Le site est promis en quelques heures : on ne fait pas attendre un client pour un détail.
+Décision d'Alex (22 novembre 2026). Le site est promis en 24 à 48 heures : on ne fait pas attendre un client pour un détail.
+
+**Livré exactement 24 heures après les informations complètes** (décision d'Alex, 25 novembre 2026). Au client, on annonce toujours « entre 24 et 48 heures ». Le compte part du questionnaire complet, ou de la dernière réponse du client à une question. Si le site est contrôlé avant, `faire: livrer` répond `etat: pret_livraison` avec l'heure : le site part tout seul à cette heure-là, avec l'e-mail « Votre site est en ligne ». Il n'y a rien d'autre à faire. On ne dit jamais au client que son site est prêt plus tôt.
 
 **On pose une question avant de livrer seulement si l'essentiel manque :**
 

@@ -15,7 +15,7 @@ const AUTO = creationSeule.name; // Autonome, sans abonnement
 const pageGoogle = aLaDemande.find((x) => x.id === 'packseo' && !x.retire) || { name: 'Page de visibilité Google', prix: 0, packs: [1] };
 const packs = (pageGoogle.packs || [1]).join(', ').replace(/, (\d+)$/, ' ou $1'); // « 1, 5 ou 10 »
 const FOIS = fractionne.fois, ORG = fractionne.organismes; // « 3 ou 4 », « Alma ou Klarna »
-const DELAI = ESS.delai; // « quelques heures », après l'envoi du questionnaire
+const DELAI = ESS.delai; // « 24 à 48 heures » annoncées, après le questionnaire complet (livré en vrai 24 heures après : includes/delai.php)
 
 module.exports = [
   // ------------------------------------------------------------------ l'essentiel
@@ -194,7 +194,7 @@ Un message vous confirme la bonne réception, et la création de votre site comm
 2. Préparez vos photos et vos prix à l’avance.
 3. Répondez vite si une question arrive dans « Ma commande ».
 
-> Bon à savoir : aller vite ne veut pas dire sauter des étapes. Chaque site passe par la vérification, même quand tout est prêt en quelques heures.
+> Bon à savoir : aller vite ne veut pas dire sauter des étapes. Chaque site passe par la vérification, même quand tout est prêt en 24 à 48 heures.
 
 Après la mise en ligne, vos modifications n’ont pas de délai garanti : chacune est traitée dans un délai raisonnable, selon ce qu’elle demande, et vous la suivez dans votre espace client.`,
     voir: ['deroulement-d-un-achat', 'questionnaire-de-creation', 'nom-de-domaine-le-mien-ou-le-votre'],

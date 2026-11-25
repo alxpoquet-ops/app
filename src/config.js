@@ -170,7 +170,8 @@ marche.foisTexte = `${Math.max(1, Math.floor(marche.vitrineMin / creation.prix))
 // et les anciennes commandes les lisent : 'une-page' = le Site Essentiel (400 €), 'boutique' = le Site Essentiel + e-commerce (600 €),
 // 'vitrine' = l'ancien Site Visibilité (750 €), retiré (retire: true) : plus proposé nulle part, gardé pour les anciennes commandes.
 // Sur le site public, on montre une seule offre (typesOfferts[0]) et une case « E-commerce » qui passe la commande en 'boutique'.
-// delai : « quelques heures » (décision d'Alex, 21 novembre 2026), à partir de la réception du contenu : la base du site est préconfigurée.
+// delai : « 24 à 48 heures » (décision d'Alex, 25 novembre 2026 ; « quelques heures » avant), à partir du questionnaire complet. En vrai, le site part
+// exactement 24 heures après les informations complètes (extension : includes/delai.php), pour ne pas paraître fait trop vite.
 const INCLUS_ESSENTIEL = ['Site internet personnalisé, créé par Alex pour vous', 'Rempli avec vos informations et vos photos', 'Design adapté à votre activité', 'Compatible téléphone et ordinateur', 'Formulaire de contact', 'Bases du référencement Google', 'Mise en ligne complète', 'Modifiable par vous-même, à volonté, avec le forfait Mini', 'Export du site possible'];
 // La ligne de la liste qui a son petit « i » avec une capture (src/assets/img/options/modifier.webp)
 const INCLUS_INFO = { 'Modifiable par vous-même, à volonté, avec le forfait Mini': { id: 'modifier', nom: 'Modifier mon site moi-même', texte: 'Depuis votre espace client, le bouton « Modifier mon site moi-même » ouvre votre site en mode modification : vous touchez un texte ou une photo, vous le changez, c’est en ligne tout de suite. Une erreur ? « Annuler la dernière » revient en arrière.' } };
@@ -189,7 +190,7 @@ const types = [
     vedette: true,
     price: creation.prix,
     prixNormal: creation.prixNormal, // le prix après l'offre de lancement
-    delai: 'quelques heures',
+    delai: '24 à 48 heures',
     pitch: 'Votre site professionnel, créé avec vos informations, vos photos et vos couleurs.',
     qui: 'Pour exister sur internet, être joignable et présenter votre activité.',
     ideal: 'idéal pour être visible vite, à petit prix',
@@ -210,7 +211,7 @@ const types = [
     base: 'Site Essentiel',
     option: true, // le Site Essentiel avec la case « E-commerce » cochée
     info: 'Une boutique complète sur votre site : vos produits et vos services, un panier et le paiement en ligne sécurisé. Vous recevez un e-mail à chaque commande, et vous gérez votre catalogue, vos prix, vos promotions, la livraison et vos paiements vous-même, depuis votre espace client.',
-    delai: 'quelques heures',
+    delai: '24 à 48 heures',
     pitch: 'Le Site Essentiel avec une boutique : vos clients choisissent, paient en ligne sur votre site, et vous recevez la commande.',
     qui: 'Pour vendre vos produits et vos services sur internet.',
     ideal: 'idéal pour vendre, avec le paiement en ligne',
@@ -285,7 +286,7 @@ const enService = { outils: false, energie: false };
 // cache : l'onglet n'apparaît pas encore (l'école attend ses premiers cours). monstre : image de src/assets/img/mail/<monstre>.png.
 const ateliers = [
   { id: 'maison', label: 'La maison', path: '/la-maison/', monstre: 'mascotte', color: 'lilac', court: 'Le concept, Alex et la petite bande' },
-  { id: 'sites', label: 'Mon Site', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: `Votre site professionnel en quelques heures, ${marche.foisTexte} fois moins cher qu’un indépendant, puis on s’en occupe chaque mois.` },
+  { id: 'sites', label: 'Mon Site', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: `Votre site professionnel en 24 à 48 heures, ${marche.foisTexte} fois moins cher qu’un indépendant, puis on s’en occupe chaque mois.` },
   { id: 'ecole', label: 'Mes Tutos', path: '/mini-tuto/', monstre: 'mochi', color: 'lilac', chef: 'Mochi', court: 'De petits tutos gratuits pour tout comprendre : créer votre site avec nous, votre espace client, vos modifications, les extras.' },
   { id: 'outils', label: 'Mini Outils', path: '/outils/', monstre: 'etoile', color: 'butter', chef: 'Pépite', cache: true, court: 'Publier partout, répondre aux avis, préparer ses fiches produits : de petits monstres au travail tous les jours.' },
 ];
