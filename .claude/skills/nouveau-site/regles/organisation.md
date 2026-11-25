@@ -4,7 +4,7 @@ Décision d'Alex (22 novembre 2026) : LMM tourne seul. Chaque travail est fait p
 
 ## Les cinq agents
 
-Ce sont des tâches planifiées de Claude. Chacune démarre une session neuve, avec le connecteur « Mini monstres » (l'accès au site les-minis-monstres.fr). Trois font tourner l'agence ; deux font la prospection par e-mail, éteinte par défaut (`prospection`).
+Ce sont des tâches planifiées de Claude. Chacune démarre une session neuve, avec le connecteur « Mini monstres » (l'accès au site les-minis-monstres.fr). Trois font tourner l'agence ; trois font la prospection par e-mail, éteinte par défaut (`prospection`).
 
 | Agent | Quand | Ce qu'il fait | Ce qu'il ne fait jamais |
 |---|---|---|---|
@@ -13,12 +13,13 @@ Ce sont des tâches planifiées de Claude. Chacune démarre une session neuve, a
 | **Jarvis** | Chaque matin, à 8 h 43 | Regarde l'ensemble, tient la mémoire, écrit à Alex s'il le faut ; le lundi, le bilan de la prospection | Toucher à un site, à la prospection |
 | **Le Repéreur** | Une fois par jour de semaine, tôt le matin (quand Alex crée sa tâche) | Trouve des entreprises sans site, avec une adresse publiée par elles-mêmes, et les ajoute | Écrire à quelqu'un, deviner une adresse |
 | **Le Facteur** | Toutes les heures en semaine, de 9 h à 17 h (quand Alex crée sa tâche) | Revérifie chaque prospect, écrit le mail, relance une fois | Écrire hors de la route, répondre à un prospect, une deuxième relance |
+| **Le Répondeur** | Trois fois par jour en semaine (il a aussi le connecteur Gmail) | Lit les réponses à la prospection, désinscrit ceux qui disent non, note les adresses fausses, prépare les brouillons de réponse | Envoyer une réponse, lire autre chose que les réponses à la prospection, supprimer un message |
 
-Chaque agent commence par `GET /aled08/v1/atelier/poste?agent=NOM` (`constructeur`, `controleur`, `jarvis`, `repereur`, `facteur`). Il y reçoit sa fiche de poste (`agent-constructeur`, `agent-controleur`, `agent-jarvis`, `agent-repereur`, `agent-facteur`), son travail, et la mémoire utile. Sans travail, il s'arrête tout de suite : c'est toujours le cas du Repéreur et du Facteur quand la prospection est éteinte.
+Chaque agent commence par `GET /aled08/v1/atelier/poste?agent=NOM` (`constructeur`, `controleur`, `jarvis`, `repereur`, `facteur`, `repondeur`). Il y reçoit sa fiche de poste (`agent-constructeur`, `agent-controleur`, `agent-jarvis`, `agent-repereur`, `agent-facteur`, `agent-repondeur`), son travail, et la mémoire utile. Sans travail, il s'arrête tout de suite : c'est toujours le cas du Repéreur et du Facteur quand la prospection est éteinte. Le Répondeur, lui, continue tant que des mails sont partis depuis moins de 45 jours : des réponses peuvent encore arriver.
 
 ## La prospection par e-mail
 
-Le Repéreur trouve, le Facteur revérifie puis écrit : comme pour les sites, celui qui fait n'est pas celui qui vérifie. Le mail est fabriqué par le site, avec le gabarit validé par Alex ; il part de l'adresse des Minis Monstres, et les réponses arrivent dans la boîte d'Alex. Tout est dans `prospection` (qui, comment, ce qui est interdit), `agent-repereur` et `agent-facteur`. Le code : `src/wordpress/aled08-espace/includes/prospection.php`.
+Le Repéreur trouve, le Facteur revérifie puis écrit : comme pour les sites, celui qui fait n'est pas celui qui vérifie. Le mail est fabriqué par le site, avec le gabarit validé par Alex ; il part de l'adresse d'envoi de la prospection (un réglage : de préférence une adresse à part, pour protéger les mails des clients), et les réponses arrivent dans la boîte d'Alex, où le Répondeur les lit. Aucun agent n'envoie de réponse : le Répondeur prépare un brouillon, Alex l'envoie. Chaque soir de semaine, le site envoie à Alex le débrief du jour ; trop de refus ou d'adresses fausses, et la prospection s'éteint toute seule. Tout est dans `prospection` (qui, comment, ce qui est interdit), `agent-repereur`, `agent-facteur` et `agent-repondeur`. Le code : `src/wordpress/aled08-espace/includes/prospection.php` et `prospection-suite.php`.
 
 ## Le chemin d'un travail
 
@@ -62,6 +63,6 @@ Au début d'une conversation sur l'agence, lis la mémoire (`GET /aled08/v1/atel
 ## Tout arrêter, ou revenir en arrière
 
 - Les modifications reviennent chez Alex : option `aled08_agents` à `0` sur le site (les sites et les pages Google gardent leur contrôle).
-- La prospection : bouton « Couper la prospection » dans l'espace de gestion, ou case « Prospection activée » dans les Réglages (option `aled08_prospection_active` à `0`). Plus rien n'est cherché ni envoyé ; les codes déjà envoyés restent valables jusqu'à leur date.
+- La prospection : bouton « Couper la prospection » dans l'espace de gestion, ou case « Prospection activée » dans les Réglages (option `aled08_prospection_active` à `0`). Plus rien n'est cherché ni envoyé ; le Répondeur continue de lire les réponses aux mails déjà partis.
 - Mettre un agent en pause : sa tâche planifiée, dans claude.ai.
-- Le code : `src/wordpress/aled08-espace/includes/agents.php`, `atelier.php`, `pages-google.php`, `regles.php`, `prospection.php`.
+- Le code : `src/wordpress/aled08-espace/includes/agents.php`, `atelier.php`, `pages-google.php`, `regles.php`, `prospection.php`, `prospection-suite.php`.

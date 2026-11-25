@@ -529,3 +529,28 @@ Décision d'Alex (25 novembre 2026) : on insiste sur le parrainage. Le code est 
 - **Forfait pas encore démarré** : les mois sont gardés (méta `aled08_mois_offerts`). Au démarrage du forfait, ils deviennent une période d'essai Stripe (`trial_end`) : la carte est enregistrée, rien n'est prélevé.
 
 La durée se règle dans `src/config.js` (`fidelite.parrainageMois`, 6).
+
+## La prospection par e-mail
+
+Éteinte par défaut. Elle ne s'allume que quand Alex dit « lance la prospection » : bouton « Allumer la prospection » de l'espace de gestion (option `aled08_prospection_active`), et les trois tâches planifiées mises en route. Le code : `includes/prospection.php` et `includes/prospection-suite.php`. Les règles des agents : `regles/prospection.md`, `agent-repereur.md`, `agent-facteur.md`, `agent-repondeur.md`.
+
+**Qui fait quoi.**
+- **Le Repéreur** (chaque matin de semaine) trouve des entreprises sans site, avec une adresse e-mail qu'elles publient elles-mêmes.
+- **Le Facteur** (toutes les heures, en semaine) revérifie chaque entreprise, puis envoie le mail. Il ne fournit que le sujet, une phrase vraie et trois points : le site fabrique le mail.
+- **Le Répondeur** (trois fois par jour en semaine, avec le connecteur Gmail) lit les réponses. Il désinscrit ceux qui disent non, note les adresses fausses et prépare un brouillon de réponse dans Gmail pour les intéressés. Il n'envoie rien : Alex relit le brouillon et l'envoie.
+
+**L'offre du mail** (décision d'Alex, 25 novembre 2026) : la même que pour tout le monde, le prix de lancement. Plus de code de réduction, jamais de « au lieu de ». Réglage : `prospection` dans `scripts/wp-espace-data.js` (`remise: 0`).
+
+**Ce qui est automatique.**
+- L'aperçu personnalisé : les prospects notés 80 ou plus ont un bouton « Voir l'aperçu de votre site » (`/?lmm_apercu=…`, lien signé, jamais dans Google). La page porte leur nom, leur métier et leur ville ; tout le reste est un emplacement à remplir.
+- La relance, une seule : 7 jours après le mail, ou 3 jours pour ceux qui ont cliqué.
+- Le signal « entreprise récente » : créée depuis moins de 18 mois, + 15 points à la note.
+- Ce qui marche : les résultats par métier, département et type de sujet. Le Repéreur va deux fois sur trois vers le métier qui répond le mieux.
+- Le débrief du soir : chaque jour de semaine à 18 h 15 (heure de Paris), un e-mail à Alex avec les mails envoyés, les clics, les réponses, les refus, les adresses fausses, les commandes et les brouillons à envoyer.
+- La pause automatique : plus de 5 % de désinscriptions ou plus de 8 % d'adresses fausses sur 7 jours (et au moins 40 envois) éteignent la prospection. Alex est prévenu, et lui seul la rallume.
+
+**Les deux adresses** (Réglages de l'extension, « Prospection par e-mail »).
+- « Adresse d'envoi » : vide, les mails partent de l'adresse du site, la même que celle des clients. Conseillé : une adresse à part, pour que les mails des clients ne souffrent jamais d'un signalement.
+- « Adresse des réponses » : vide, les réponses arrivent à l'adresse de réception du site. Le Répondeur lit Gmail : cette adresse doit donc arriver dans le Gmail d'Alex, directement ou par un transfert automatique.
+
+**On ne dit pas que c'est automatique** dans les mails (Alex, 25 novembre 2026). La politique de confidentialité (point « Si je vous ai écrit pour vous proposer un site ») dit que des outils automatiques aident à repérer les entreprises, à préparer les messages et à trier les réponses. Les réponses aux prospects sont toujours envoyées par Alex lui-même.

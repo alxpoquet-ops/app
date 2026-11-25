@@ -16,10 +16,14 @@
  * reste même quand un prospect est effacé : on ne réécrit jamais à quelqu'un qui a dit non.
  * Les règles des agents : .claude/skills/nouveau-site/regles/prospection.md, agent-repereur.md, agent-facteur.md.
  *
- * L'offre : -10 % sur la CRÉATION du site seulement (jamais sur le forfait), avec un code personnel (MAIL10-7KQ2) accepté
- * pendant 30 jours après l'envoi (data.json « prospection » : remise, jours, relanceJours). Le code se tape dans la case
- * « Code promo » du configurateur ou de /commander/ (includes/commandes.php) ; une commande passée avec lui (ou avec
- * l'adresse e-mail du prospect) marque le prospect « commande ».
+ * L'offre (décision d'Alex, 25 novembre 2026, soir) : LA MÊME QUE POUR TOUT LE MONDE, le prix de lancement du site
+ * (data.json « lancement »). Plus de code de réduction : data.json « prospection » a remise 0. (Si remise repasse au-dessus
+ * de 0, le code personnel MAIL10-7KQ2 revient tout seul, accepté « jours » jours après l'envoi.) Une commande passée avec
+ * l'adresse e-mail du prospect le marque « commande ».
+ *
+ * La suite (includes/prospection-suite.php) : l'aperçu personnalisé du site pour les meilleurs prospects, la relance plus
+ * tôt pour ceux qui ont cliqué, ce qui marche le mieux (par métier, département, type de sujet), le Répondeur (qui lit
+ * les réponses), le débrief du soir pour Alex et la mise en pause automatique si trop de refus.
  *
  * Réglages (options) :
  *   aled08_prospection_active        '0' (défaut) ou '1' : rien ne part tant que ce n'est pas '1'
@@ -53,8 +57,30 @@ function aled08e_px_heure_ok($t = null) {
 }
 function aled08e_px_offre() {
     $p = (array) (aled08e_data()['prospection'] ?? []);
-    return ['remise' => max(1, min(50, (int) ($p['remise'] ?? 10))), 'jours' => max(1, min(90, (int) ($p['jours'] ?? 30))), 'relance' => max(1, min(30, (int) ($p['relanceJours'] ?? 7)))];
+    return ['remise' => max(0, min(50, (int) ($p['remise'] ?? 0))), 'jours' => max(1, min(90, (int) ($p['jours'] ?? 30))), 'relance' => max(1, min(30, (int) ($p['relanceJours'] ?? 7))),
+        'relance_clic' => max(1, min(30, (int) ($p['relanceClicJours'] ?? 3))), 'apercu_note' => max(0, min(101, (int) ($p['apercuNote'] ?? 80)))];
 }
+/* L'offre de lancement du site, la même que pour tout le monde : la date de fin et le prix d'après. null quand elle est finie. */
+function aled08e_px_lancement() {
+    $D = aled08e_data();
+    $l = (array) ($D['lancement'] ?? []);
+    $normal = (float) ($D['creation']['prixNormal'] ?? 0);
+    if (empty($l['actif']) || empty($l['jusquauTexte']) || $normal <= 0) return null;
+    if (!empty($l['jusquau'])) { $fin = date_create($l['jusquau'] . ' 23:59:59', wp_timezone()); if ($fin && time() > $fin->getTimestamp()) return null; }
+    return ['jusquau' => (string) $l['jusquauTexte'], 'normal' => $normal];
+}
+/* L'offre en une phrase (espace de gestion, débrief, poste des agents) */
+function aled08e_px_offre_txt() {
+    $prix = aled08e_px_prix();
+    $l = aled08e_px_lancement();
+    $t = aled08e_euro_txt($prix['prix']) . ' la création du site' . ($l ? ', prix de lancement jusqu’au ' . $l['jusquau'] . ', puis ' . aled08e_euro_txt($l['normal']) : '');
+    if (aled08e_px_remise() > 0) $t .= ' ; avec le code personnel du mail : -' . aled08e_px_remise() . ' %, soit ' . aled08e_euro_txt($prix['reduit']);
+    return $t;
+}
+/* D'où partent les mails, et où arrivent les réponses. Une adresse d'envoi à part protège les mails des clients :
+ * si des prospects signalent nos messages, ce n'est pas l'adresse des clients qui en souffre. */
+function aled08e_px_expediteur() { $e = sanitize_email((string) get_option('aled08_prospection_expediteur', '')); return is_email($e) ? $e : aled08e_mail_from(); }
+function aled08e_px_reponse() { $e = sanitize_email((string) get_option('aled08_prospection_reponse', '')); return is_email($e) ? $e : aled08e_to(); }
 function aled08e_px_remise() { return aled08e_px_offre()['remise']; }
 /* Le prix de création du Site Essentiel (data.json), et le prix avec la remise du mail */
 function aled08e_px_prix() {
@@ -88,7 +114,7 @@ function aled08e_px_stat($quoi, $n = 1) {
 /* La somme des compteurs sur les $jours derniers jours (aujourd'hui compris) */
 function aled08e_px_stats_sur($jours) {
     $depuis = wp_date('Y-m-d', time() - (max(1, (int) $jours) - 1) * DAY_IN_SECONDS);
-    $out = ['envois' => 0, 'relances' => 0, 'clics_demo' => 0, 'clics_site' => 0, 'repondus' => 0, 'desinscrits' => 0, 'commandes' => 0, 'ajoutes' => 0, 'ecartes' => 0];
+    $out = ['envois' => 0, 'relances' => 0, 'clics_demo' => 0, 'clics_site' => 0, 'clics_apercu' => 0, 'repondus' => 0, 'interesses' => 0, 'brouillons' => 0, 'desinscrits' => 0, 'rebonds' => 0, 'commandes' => 0, 'ajoutes' => 0, 'ecartes' => 0];
     foreach (aled08e_px_stats() as $j => $c) if ($j >= $depuis) foreach ((array) $c as $k => $v) $out[$k] = (int) ($out[$k] ?? 0) + (int) $v;
     return $out;
 }
@@ -219,6 +245,7 @@ function aled08e_px_note($criteres, $metier_couvert) {
     if (!empty($c['metier_recherche'])) $n += 20;
     if (!empty($c['activite_recente'])) $n += 20;
     if (!empty($c['independante'])) $n += 10;
+    if (!empty($c['creation_recente'])) $n += 15; // créée depuis moins de 18 mois : c'est le moment où l'on a besoin d'un site
     if ($metier_couvert) $n += 10;
     return min(100, $n);
 }
@@ -269,19 +296,27 @@ function aled08e_px_get($id) {
         'metier' => (string) $m('metier'), 'metier_page' => (string) $m('metier_page'), 'ville' => (string) $m('ville'), 'departement' => (string) $m('departement'),
         'siren' => (string) $m('siren'), 'entreprise_individuelle' => (bool) $m('ei', 0), 'email' => (string) $m('email'),
         'url_source_email' => (string) $m('url_source'), 'source' => (string) $m('source'), 'site_actuel' => (string) $m('site_actuel'), 'recherche' => (string) $m('recherche'),
-        'note' => (int) $m('note', 0), 'criteres' => (array) $m('criteres', []), 'raisons' => (string) $m('raisons'),
+        'note' => (int) $m('note', 0), 'criteres' => (array) $m('criteres', []), 'raisons' => (string) $m('raisons'), 'date_creation' => (string) $m('creation'),
         'etat' => (string) $m('etat'), 'etat_libelle' => aled08e_px_etats()[(string) $m('etat')] ?? '',
         'ajoute_le' => get_the_date('Y-m-d H:i', $p), 'verification' => (string) $m('verification'),
         'envoye_le' => $env ? wp_date('Y-m-d H:i', $env) : '', 'relance_le' => $rel ? wp_date('Y-m-d H:i', $rel) : '',
-        'relance_possible_le' => ($env && !$rel) ? wp_date('Y-m-d H:i', $env + $offre['relance'] * DAY_IN_SECONDS) : '',
+        'relance_possible_le' => ($env && !$rel) ? wp_date('Y-m-d H:i', aled08e_px_relance_quand($id)) : '',
         'code' => (string) $m('code'), 'code_valable_jusqu_au' => $env ? wp_date('Y-m-d', aled08e_px_code_fin($id)) : '',
         'sujet' => (string) $m('sujet'), 'contenu_envoye' => (string) $m('contenu'), 'contenu_relance' => (string) $m('contenu_relance'),
-        'clics' => (int) $m('nb_clics', 0), 'clics_detail' => (array) $m('clics', []),
+        'clics' => (int) $m('nb_clics', 0), 'clics_detail' => (array) $m('clics', []), 'sujet_type' => (string) $m('sujet_type'),
+        'apercu' => function_exists('aled08e_px_apercu_ok') && aled08e_px_apercu_ok($id) ? aled08e_px_apercu_lien($id) : '', 'reponse_avis' => (string) $m('reponse_avis'),
         'commande' => (string) $m('commande_ref'), 'commande_payee' => (bool) $m('commande_payee', 0), 'raison_ecarte' => (string) $m('ecarte_raison'),
         'journal' => (array) $m('journal', []),
     ];
 }
-/* La fin de validité du code : 30 jours après l'envoi, jusqu'à la fin de ce jour-là (heure du site) */
+/* Quand la relance devient possible : 7 jours après le mail, ou 3 jours quand le prospect a cliqué (démo, aperçu, site) */
+function aled08e_px_relance_quand($id) {
+    $env = (int) aled08e_px_meta($id, 'envoye_le', 0);
+    if (!$env) return 0;
+    $o = aled08e_px_offre();
+    return $env + ((int) aled08e_px_meta($id, 'nb_clics', 0) > 0 ? min($o['relance_clic'], $o['relance']) : $o['relance']) * DAY_IN_SECONDS;
+}
+/* La fin de l'offre du mail (et de la période où l'on peut relancer) : 30 jours après l'envoi, jusqu'à la fin de ce jour-là */
 function aled08e_px_code_fin($id) {
     $env = (int) aled08e_px_meta($id, 'envoye_le', 0);
     if (!$env) return 0;
@@ -320,8 +355,12 @@ function aled08e_px_ajouter($d) {
         'url_source_email' => aled08e_px_url($d['url_source_email'] ?? ''), 'source' => aled08e_px_texte($d['source'] ?? '', 80),
         'site_actuel' => aled08e_px_url($d['site_actuel'] ?? ''), 'recherche' => aled08e_px_texte($d['recherche'] ?? '', 120),
         'raisons' => aled08e_px_texte($d['raisons'] ?? '', 1200), 'criteres' => [],
+        'date_creation' => preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($d['date_creation'] ?? '')) ? (string) $d['date_creation'] : '',
     ];
     foreach (['sans_site', 'site_casse', 'metier_recherche', 'activite_recente', 'independante'] as $k) $p['criteres'][$k] = !empty($d['criteres'][$k]);
+    // l'entreprise récente n'est pas une case à cocher : c'est la date de création de l'annuaire de l'État qui le dit
+    $cree = $p['date_creation'] !== '' ? strtotime($p['date_creation'] . ' 12:00:00') : 0;
+    $p['criteres']['creation_recente'] = $cree && $cree <= time() && $cree > time() - 548 * DAY_IN_SECONDS;
     $refus = function ($r) use ($p) { return ['ok' => false, 'entreprise' => $p['entreprise'], 'email' => $p['email'], 'refus' => $r]; };
     foreach (['entreprise' => 'le nom de l’entreprise', 'metier' => 'le métier', 'ville' => 'la ville', 'raisons' => 'les raisons (ce que vous avez constaté)'] as $k => $lab) if ($p[$k] === '') return $refus('il manque ' . $lab);
     if (!aled08e_px_departement_ok($p['departement'])) return $refus('département inconnu (01 à 95, 2A, 2B, 971 à 976)');
@@ -343,7 +382,7 @@ function aled08e_px_ajouter($d) {
     $metas = ['etat' => $etat, 'article' => $p['article'], 'raison_sociale' => $p['raison_sociale'], 'metier' => $p['metier'], 'metier_page' => $p['metier_page'], 'ville' => $p['ville'],
         'departement' => $p['departement'], 'siren' => $p['siren'], 'ei' => $p['entreprise_individuelle'] ? 1 : 0, 'email' => $p['email'], 'url_source' => $p['url_source_email'],
         'source' => $p['source'] !== '' ? $p['source'] : aled08e_px_source_libelle($p['url_source_email']), 'site_actuel' => $p['site_actuel'], 'recherche' => $p['recherche'],
-        'note' => $note, 'criteres' => $p['criteres'], 'raisons' => $p['raisons'], 'nb_clics' => 0];
+        'note' => $note, 'criteres' => $p['criteres'], 'raisons' => $p['raisons'], 'nb_clics' => 0, 'creation' => $p['date_creation']];
     if ($etat === 'ecarte') $metas['ecarte_raison'] = 'Note ' . $note . ' sur 100 : sous le seuil de ' . ALED08E_PX_NOTE_MIN . '.';
     foreach ($metas as $k => $v) aled08e_px_set($id, $k, $v);
     aled08e_px_journal($id, 'Trouvé par le Repéreur (note ' . $note . ').');
@@ -358,15 +397,16 @@ function aled08e_px_cle() {
     return $k;
 }
 function aled08e_px_signe($id, $quoi) { return substr(hash_hmac('sha256', 'px|' . (int) $id . '|' . $quoi, aled08e_px_cle()), 0, 20); }
-function aled08e_px_destinations() { return ['demo' => home_url('/mon-espace/demo/'), 'site' => home_url('/')]; }
+function aled08e_px_destinations() { return ['demo' => home_url('/mon-espace/demo/'), 'site' => home_url('/'), 'creer' => home_url('/creer-mon-site/')]; }
 function aled08e_px_lien($id, $quoi) {
     if ($quoi === 'stop') return add_query_arg('lmm_stop', (int) $id . '-' . aled08e_px_signe($id, 'stop'), home_url('/'));
     return add_query_arg('lmm_px', (int) $id . '-' . $quoi . '-' . aled08e_px_signe($id, $quoi), home_url('/'));
 }
 /* Les liens d'un aperçu ou d'un essai (prospect 0) : ils mènent aux vraies pages, sans rien noter */
 function aled08e_px_liens($id) {
-    if (!$id) return aled08e_px_destinations() + ['stop' => home_url('/')];
-    return ['demo' => aled08e_px_lien($id, 'demo'), 'site' => aled08e_px_lien($id, 'site'), 'stop' => aled08e_px_lien($id, 'stop')];
+    $apercu = function_exists('aled08e_px_apercu_ok') && (!$id || aled08e_px_apercu_ok($id)) ? aled08e_px_apercu_lien($id) : '';
+    if (!$id) return aled08e_px_destinations() + ['stop' => home_url('/'), 'apercu' => $apercu];
+    return ['demo' => aled08e_px_lien($id, 'demo'), 'site' => aled08e_px_lien($id, 'site'), 'creer' => aled08e_px_lien($id, 'creer'), 'stop' => aled08e_px_lien($id, 'stop'), 'apercu' => $apercu];
 }
 
 /* ====================================================================== le mail (gabarit validé par Alex) */
@@ -447,12 +487,28 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         $st = $plein ? 'background:#7ad9b0;color:#12392a;border:2px solid #7ad9b0;' : 'background:#ffffff;color:#3d3570;border:2px solid #cfc6f2;';
         return '<td style="padding:0 10px 10px 0;"><a href="' . esc_url($url) . '" style="display:inline-block;padding:11px 18px;border-radius:999px;' . $st . 'font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;line-height:1.2;text-decoration:none;">' . esc_html($txt) . '</a></td>';
     };
-    $boutons = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;"><tr>' . $bouton($l['demo'], 'Essayer la démo', true) . $bouton($l['site'], 'Voir le site', false) . '</tr></table>';
-    $codeH = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 18px;"><tr><td align="center" style="background:#fff7d9;border:2px dashed #e5b93c;border-radius:16px;padding:14px 16px;font-size:15px;line-height:1.5;color:#2e2a47;">'
-        . ($relance ? 'Votre code personnel, toujours valable :' : 'Parce que vous recevez cette offre par e-mail :') . '<br>'
-        . '<span style="display:inline-block;margin:6px 0 4px;padding:6px 14px;background:#ffffff;border-radius:10px;font-size:20px;font-weight:bold;letter-spacing:.08em;color:#2e2a47;">-' . (int) $r . '&nbsp;% : ' . esc_html($code) . '</span>'
-        . '<br><span style="font-size:13px;color:#6b5a1f;">Valable ' . ($relance ? '' : (int) $jours . ' jours, ') . 'jusqu’au ' . esc_html($date) . ', sur la création de votre site : ' . aled08e_euro($prix['reduit']) . ' au lieu de ' . aled08e_euro($prix['prix']) . '. À taper dans la case « Code promo » au moment de commander.</span>'
-        . '</td></tr></table>';
+    $avecApercu = !$relance && !empty($l['apercu']);
+    $boutons = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;"><tr>' . $bouton($l['demo'], 'Essayer la démo', !$avecApercu) . $bouton($l['site'], 'Voir le site', false) . '</tr></table>';
+    $boutonApercu = $avecApercu ? '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;"><tr>' . $bouton($l['apercu'], 'Voir l’aperçu de votre site', true) . '</tr></table>' : '';
+    $avecCode = (int) $r > 0 && (string) $code !== '';
+    $lanc = aled08e_px_lancement();
+    $aClique = $relance && (int) aled08e_px_meta((int) ($p['prospect'] ?? 0), 'nb_clics', 0) > 0;
+    $cadre = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 18px;"><tr><td align="center" style="background:#fff7d9;border:2px dashed #e5b93c;border-radius:16px;padding:14px 16px;font-size:15px;line-height:1.5;color:#2e2a47;">';
+    $gros = function ($t) { return '<span style="display:inline-block;margin:6px 0 4px;padding:6px 14px;background:#ffffff;border-radius:10px;font-size:20px;font-weight:bold;letter-spacing:.02em;color:#2e2a47;">' . $t . '</span>'; };
+    if ($avecCode) {
+        // un code personnel (seulement si data.json « prospection » a une remise) : jamais de « au lieu de »
+        $codeH = $cadre . ($relance ? 'Votre code personnel, toujours valable :' : 'Parce que vous recevez cette offre par e-mail :') . '<br>' . $gros('-' . (int) $r . '&nbsp;% : ' . esc_html($code))
+            . '<br><span style="font-size:13px;color:#6b5a1f;">Valable ' . ($relance ? '' : (int) $jours . ' jours, ') . 'jusqu’au ' . esc_html($date) . ', sur la création de votre site : ' . aled08e_euro($prix['reduit']) . ' avec ce code. À taper dans la case « Code promo » au moment de commander.</span></td></tr></table>';
+        $codeT = '-' . $r . ' % : ' . $code . "\nValable " . ($relance ? '' : $jours . ' jours, ') . 'jusqu’au ' . $date . ', sur la création de votre site : ' . aled08e_euro_txt($prix['reduit']) . ' avec ce code. À taper dans la case « Code promo » au moment de commander.';
+    } elseif ($lanc) {
+        // l'offre de lancement, la même que pour tout le monde (Alex, 25 novembre 2026)
+        $codeH = $cadre . ($relance ? 'Le prix de lancement est toujours là :' : 'En ce moment, c’est le prix de lancement :') . '<br>' . $gros(aled08e_euro($prix['prix']) . ' la création de votre site')
+            . '<br><span style="font-size:13px;color:#6b5a1f;">Pour toute commande jusqu’au ' . esc_html($lanc['jusquau']) . '. Ensuite, la création passe à ' . aled08e_euro($lanc['normal']) . '.</span></td></tr></table>';
+        $codeT = ($relance ? 'Le prix de lancement est toujours là : ' : 'En ce moment, c’est le prix de lancement : ') . aled08e_euro_txt($prix['prix']) . ' la création de votre site, pour toute commande jusqu’au ' . $lanc['jusquau'] . '. Ensuite, la création passe à ' . aled08e_euro_txt($lanc['normal']) . '.';
+    } else {
+        $codeH = $cadre . 'La création de votre site :<br>' . $gros(aled08e_euro($prix['prix'])) . '</td></tr></table>';
+        $codeT = 'La création de votre site : ' . aled08e_euro_txt($prix['prix']) . '.';
+    }
     $pointsH = '';
     foreach ((array) ($m['points'] ?? []) as $pt) {
         $pointsH .= '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;background:#f6f3ff;border-radius:12px;"><tr>'
@@ -461,25 +517,26 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     }
     $source = '<a href="' . esc_url($p['url_source_email'] ?: $site) . '" style="color:#6a5bd6;">' . esc_html($p['source'] ?: aled08e_px_source_libelle($p['url_source_email'] ?? '')) . '</a>';
     $pied = 'Vous recevez ce message parce que l’adresse ' . esc_html($deX) . ' est publiée sur ' . $source . '. '
-        . ($relance ? 'C’est notre dernier message.' : 'C’est le seul message que vous recevrez, sauf une petite relance dans une semaine.')
+        . ($relance ? 'C’est notre dernier message.' : 'C’est le seul message que vous recevrez, sauf une petite relance dans quelques jours.')
         . ' Pour ne plus rien recevoir : <a href="' . esc_url($l['stop']) . '" style="color:#6a5bd6;">se désinscrire en un clic</a>.<br>' . esc_html(aled08e_px_identite());
 
     if ($relance) {
         $corps = '<h1 style="margin:0 0 14px;font-size:21px;line-height:1.3;color:#2e2a47;">Bonjour,</h1>'
-            . $P('Je me permets une petite relance de mon message de la semaine dernière, au sujet d’un site internet ' . esc_html(aled08e_px_pour($p['article'] ?? '', $nom)) . '.')
+            . $P('Je me permets une petite relance de mon dernier message, au sujet d’un site internet ' . esc_html(aled08e_px_pour($p['article'] ?? '', $nom)) . '.')
             . ($phraseH !== '' ? $P($phraseH) : '')
             . $codeH
-            . $P('Envie de voir avant de décider ? La démo de l’espace client se visite librement.')
+            . $P($aClique ? 'Si vous avez eu le temps de regarder et qu’une question vous est venue, répondez simplement à ce message : je vous réponds.' : 'Envie de voir avant de décider ? La démo de l’espace client se visite librement.')
             . $boutons
             . $P('Si ce n’est pas le moment, aucun souci : je ne vous écrirai plus.');
-        $apercu = 'Une petite relance, et votre code personnel valable jusqu’au ' . $date . '.';
+        $apercu = 'Une petite relance au sujet de votre site internet.';
     } else {
         $corps = '<h1 style="margin:0 0 14px;font-size:21px;line-height:1.3;color:#2e2a47;">Bonjour,</h1>'
             . $P($phraseH)
             . $P('Aujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :')
             . $pointsH . '<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>'
-            . $P('Je m’appelle Alex et je crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, <b>à partir de ' . aled08e_euro($prix['prix']) . '</b>, sans abonnement obligatoire.')
+            . $P('Je m’appelle Alex et je crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures, sans abonnement obligatoire.')
             . $codeH
+            . ($avecApercu ? $P('J’ai préparé un petit aperçu de ce que pourrait donner le site ' . esc_html($deX) . ' :', '0 0 10px') . $boutonApercu : '')
             . $P('Envie de voir avant de décider ? Promenez-vous dans la démo de l’espace client : vous verrez comment on change soi-même un texte ou une photo, et comment on suit ses visites.')
             . $boutons;
         $apercu = mb_substr($m['phrase'], 0, 110);
@@ -499,21 +556,21 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         . '</table></td></tr></table></body></html>';
 
     // la version texte (pour les messageries qui n'affichent pas le HTML, et pour l'historique du prospect)
-    $codeT = '-' . $r . ' % : ' . $code . "\nValable " . ($relance ? '' : $jours . ' jours, ') . 'jusqu’au ' . $date . ', sur la création de votre site : ' . aled08e_euro_txt($prix['reduit']) . ' au lieu de ' . aled08e_euro_txt($prix['prix']) . '. À taper dans la case « Code promo » au moment de commander.';
     $piedT = 'Vous recevez ce message parce que l’adresse ' . $deX . ' est publiée sur ' . ($p['source'] ?: aled08e_px_source_libelle($p['url_source_email'] ?? '')) . ' (' . ($p['url_source_email'] ?? '') . '). '
-        . ($relance ? 'C’est notre dernier message.' : 'C’est le seul message que vous recevrez, sauf une petite relance dans une semaine.')
+        . ($relance ? 'C’est notre dernier message.' : 'C’est le seul message que vous recevrez, sauf une petite relance dans quelques jours.')
         . "\nPour ne plus rien recevoir, en un clic : " . $l['stop'] . "\n" . aled08e_px_identite();
     if ($relance) {
-        $texte = "Bonjour,\n\nJe me permets une petite relance de mon message de la semaine dernière, au sujet d’un site internet " . aled08e_px_pour($p['article'] ?? '', $nom) . ".\n\n"
-            . ($m['phrase'] !== '' ? $m['phrase'] . "\n\n" : '') . "Votre code personnel, toujours valable :\n" . $codeT . "\n\n"
-            . "Envie de voir avant de décider ? La démo de l’espace client se visite librement :\n" . $l['demo'] . "\nLe site : " . $l['site'] . "\n\n"
+        $texte = "Bonjour,\n\nJe me permets une petite relance de mon dernier message, au sujet d’un site internet " . aled08e_px_pour($p['article'] ?? '', $nom) . ".\n\n"
+            . ($m['phrase'] !== '' ? $m['phrase'] . "\n\n" : '') . $codeT . "\n\n"
+            . ($aClique ? "Si vous avez eu le temps de regarder et qu’une question vous est venue, répondez simplement à ce message : je vous réponds.\nLa démo : " : "Envie de voir avant de décider ? La démo de l’espace client se visite librement :\n") . $l['demo'] . "\nLe site : " . $l['site'] . "\n\n"
             . "Si ce n’est pas le moment, aucun souci : je ne vous écrirai plus.\n\nBonne journée,\nAlex · Les Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
     } else {
         $pt = '';
         foreach ((array) $m['points'] as $x) $pt .= '- ' . $x['titre'] . ' ' . $x['texte'] . "\n";
         $texte = "Bonjour,\n\n" . $m['phrase'] . "\n\nAujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :\n" . $pt . "\n"
-            . 'Je m’appelle Alex et je crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, à partir de ' . aled08e_euro_txt($prix['prix']) . ", sans abonnement obligatoire.\n\n"
-            . "Parce que vous recevez cette offre par e-mail :\n" . $codeT . "\n\n"
+            . "Je m’appelle Alex et je crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures, sans abonnement obligatoire.\n\n"
+            . $codeT . "\n\n"
+            . ($avecApercu ? 'J’ai préparé un petit aperçu de ce que pourrait donner le site ' . $deX . " :\n" . $l['apercu'] . "\n\n" : '')
             . "Envie de voir avant de décider ? Promenez-vous dans la démo de l’espace client : vous verrez comment on change soi-même un texte ou une photo, et comment on suit ses visites.\n"
             . 'Essayer la démo : ' . $l['demo'] . "\nVoir le site : " . $l['site'] . "\n\nBonne journée,\nAlex · Les Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
     }
@@ -521,9 +578,11 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
 }
 /* L'envoi, par le site (wp_mail), depuis l'adresse des Minis Monstres ; les réponses vont chez Alex (Reply-To) */
 function aled08e_px_poster($a, $mail, $id, $relance = false) {
-    $entetes = array_values(array_filter((array) aled08e_mail_headers('Alex · Les Minis Monstres <' . aled08e_to() . '>'), function ($e) { return stripos($e, 'content-type:') !== 0; }));
+    $entetes = array_values(array_filter((array) aled08e_mail_headers('Alex · Les Minis Monstres <' . aled08e_px_reponse() . '>'), function ($e) { return stripos($e, 'content-type:') !== 0; }));
     $entetes[] = 'Content-Type: text/html; charset=UTF-8';
-    $entetes[] = 'From: "Alex · Les Minis Monstres" <' . aled08e_mail_from() . '>';
+    $entetes[] = 'From: "Alex · Les Minis Monstres" <' . aled08e_px_expediteur() . '>';
+    // une adresse d'envoi à part : les retours d'adresses fausses y reviennent aussi (et pas dans la boîte des clients)
+    $retour = is_email((string) get_option('aled08_prospection_expediteur', '')) ? aled08e_px_expediteur() : '';
     if ($id) {
         $entetes[] = 'List-Unsubscribe: <' . aled08e_px_lien($id, 'stop') . '>';
         $entetes[] = 'List-Unsubscribe-Post: List-Unsubscribe=One-Click';
@@ -531,8 +590,9 @@ function aled08e_px_poster($a, $mail, $id, $relance = false) {
     $hote = (string) wp_parse_url(home_url(), PHP_URL_HOST);
     $msgid = $id ? '<lmm-px-' . (int) $id . '-' . ($relance ? 'r' : 'e') . '-' . time() . '@' . $hote . '>' : '';
     $avant = $id && $relance ? (string) aled08e_px_meta($id, 'msgid') : '';
-    $init = function ($m) use ($mail, $msgid, $avant) {
+    $init = function ($m) use ($mail, $msgid, $avant, $retour) {
         $m->AltBody = $mail['texte'];
+        if ($retour !== '') $m->Sender = $retour;
         if ($msgid !== '') $m->MessageID = $msgid;
         if ($avant !== '') { $m->addCustomHeader('In-Reply-To', $avant); $m->addCustomHeader('References', $avant); }
     };
@@ -585,6 +645,16 @@ function aled08e_px_faire(WP_REST_Request $req) {
         return $ok ? new WP_REST_Response(['ok' => true, 'envoye_a' => aled08e_to()], 200) : $err('L’e-mail d’essai n’est pas parti (wp_mail).', 502);
     }
 
+    // le Répondeur : retrouver un prospect par l'adresse qui a répondu (marche même prospection éteinte : les réponses arrivent encore)
+    if ($faire === 'trouver') {
+        $e = aled08e_px_norm_email($d['email'] ?? '');
+        $x = is_email($e) ? aled08e_px_cherche('email', $e) : 0;
+        $p = $x ? aled08e_px_get($x) : null;
+        if (!$p) return $err('Aucun prospect avec cette adresse : ce message ne vient pas de la prospection.', 404);
+        unset($p['journal'], $p['clics_detail']);
+        return new WP_REST_Response(['ok' => true, 'prospect' => $p], 200);
+    }
+
     $p = $id ? aled08e_px_get($id) : null;
     if (!$p) return $err('Prospect introuvable.', 404);
     $etat = $p['etat'];
@@ -609,19 +679,37 @@ function aled08e_px_faire(WP_REST_Request $req) {
         return new WP_REST_Response(['ok' => true, 'etat' => 'ecarte'], 200);
     }
     if ($faire === 'repondu') {
-        if (!in_array($etat, ['envoye', 'relance'], true)) return $err('Seul un prospect à qui on a écrit peut avoir répondu (il est « ' . $etat . ' »).');
-        aled08e_px_set($id, 'repondu_le', time());
-        aled08e_px_journal($id, 'A répondu' . ($texte !== '' ? ' : ' . $texte : '.'));
-        $set('repondu');
-        aled08e_px_stat('repondus');
-        return new WP_REST_Response(['ok' => true, 'etat' => 'repondu'], 200);
+        if (!in_array($etat, ['envoye', 'relance', 'repondu'], true)) return $err('Seul un prospect à qui on a écrit peut avoir répondu (il est « ' . $etat . ' »).');
+        // l'avis du Répondeur sur la réponse, et s'il a laissé un brouillon de réponse à Alex
+        $avis = sanitize_key((string) ($d['avis'] ?? ''));
+        if (!in_array($avis, ['interesse', 'question', 'pas_interesse', 'autre'], true)) $avis = '';
+        $avant = (string) aled08e_px_meta($id, 'reponse_avis');
+        if ($etat !== 'repondu') { aled08e_px_set($id, 'repondu_le', time()); $set('repondu'); aled08e_px_stat('repondus'); }
+        if ($avis !== '') aled08e_px_set($id, 'reponse_avis', $avis);
+        if ($avis === 'interesse' && $avant !== 'interesse') aled08e_px_stat('interesses');
+        if (!empty($d['brouillon']) && !aled08e_px_meta($id, 'brouillon_le', 0)) { aled08e_px_set($id, 'brouillon_le', time()); aled08e_px_stat('brouillons'); }
+        aled08e_px_journal($id, 'A répondu' . ($avis !== '' ? ' (' . $avis . ')' : '') . ($texte !== '' ? ' : ' . $texte : '.') . (!empty($d['brouillon']) ? ' Brouillon de réponse prêt.' : ''));
+        delete_transient('aled08e_px_appr');
+        return new WP_REST_Response(['ok' => true, 'etat' => 'repondu', 'avis' => $avis], 200);
+    }
+    if ($faire === 'rebond') {
+        // l'adresse n'existe pas (ou plus) : on ne réessaie jamais, et on compte (trop d'adresses fausses abîme la réputation de l'envoi)
+        if (!in_array($etat, ['envoye', 'relance'], true)) return $err('Seul un prospect à qui on a écrit peut revenir en erreur (il est « ' . $etat . ' »).');
+        aled08e_px_opposer($p['email'], '');
+        aled08e_px_set($id, 'ecarte_raison', 'Adresse e-mail fausse ou fermée' . ($texte !== '' ? ' : ' . $texte : '.'));
+        aled08e_px_set($id, 'rebond_le', time());
+        aled08e_px_journal($id, 'Le mail est revenu : adresse fausse ou fermée.');
+        $set('ecarte');
+        aled08e_px_stat('rebonds');
+        if (function_exists('aled08e_px_surveiller')) aled08e_px_surveiller();
+        return new WP_REST_Response(['ok' => true, 'etat' => 'ecarte'], 200);
     }
     if ($faire === 'desinscrire') {
         // une demande d'arrêt reçue autrement (une réponse « STOP », un appel) : prise en compte tout de suite
         aled08e_px_desinscrire($id, $texte !== '' ? $texte : 'Demande reçue par un autre moyen.');
         return new WP_REST_Response(['ok' => true, 'etat' => 'desinscrit'], 200);
     }
-    if ($faire !== 'envoyer' && $faire !== 'relancer') return $err('À faire inconnu (retenir, envoyer, relancer, ecarter, repondu, desinscrire, apercu, essai).', 400);
+    if ($faire !== 'envoyer' && $faire !== 'relancer') return $err('À faire inconnu (retenir, envoyer, relancer, ecarter, repondu, rebond, desinscrire, trouver, apercu, essai).', 400);
 
     // ----- envoyer, relancer : tous les garde-fous
     if (!aled08e_px_active()) return $err('La prospection est éteinte (option aled08_prospection_active). Rien n’est envoyé.', 403);
@@ -634,9 +722,9 @@ function aled08e_px_faire(WP_REST_Request $req) {
     } else {
         if ($etat !== 'envoye') return $err('Une relance ne part qu’à un prospect « envoye » (il est « ' . $etat . ' ») : une seule relance, puis plus rien.');
         if (aled08e_px_meta($id, 'relance_le', 0)) return $err('Il a déjà été relancé : plus rien.');
-        $quand = (int) aled08e_px_meta($id, 'envoye_le', 0) + aled08e_px_offre()['relance'] * DAY_IN_SECONDS;
+        $quand = aled08e_px_relance_quand($id);
         if (time() < $quand) return $err('Trop tôt : la relance est possible à partir du ' . wp_date('j F Y à H:i', $quand) . '.');
-        if (time() > aled08e_px_code_fin($id)) return $err('Son code n’est plus valable : pas de relance.');
+        if (time() > aled08e_px_code_fin($id)) return $err('Plus de ' . aled08e_px_offre()['jours'] . ' jours depuis le premier mail : pas de relance.');
     }
     if (aled08e_px_quota_restant() <= 0) return $err('Le quota du jour est atteint (' . aled08e_px_quota_jour() . ' envois). La suite demain.', 429);
     if (($att = aled08e_px_attente_minutes()) > 0) return $err('Déjà ' . ALED08E_PX_HEURE_MAX . ' envois dans l’heure : réessayez dans ' . $att . ' minutes.', 429, ['reessayer_dans_minutes' => $att]);
@@ -644,8 +732,9 @@ function aled08e_px_faire(WP_REST_Request $req) {
     if (is_wp_error($m)) return $m;
 
     $premier = $faire === 'envoyer';
-    $code = $premier ? ($p['code'] ?: aled08e_px_code_nouveau()) : $p['code'];
-    if ($premier) { aled08e_px_set($id, 'code', $code); aled08e_px_set($id, 'envoye_le', time()); }
+    // un code personnel seulement quand l'offre du mail a une remise (data.json « prospection ») ; sinon le prix de lancement, sans code
+    $code = $premier ? ($p['code'] ?: (aled08e_px_remise() > 0 ? aled08e_px_code_nouveau() : '')) : $p['code'];
+    if ($premier) { if ($code !== '') aled08e_px_set($id, 'code', $code); aled08e_px_set($id, 'envoye_le', time()); }
     $mail = aled08e_px_mail($p, $m, $faire, $code, aled08e_px_code_fin($id));
     $ok = aled08e_px_poster($p['email'], $mail, $id, !$premier);
     if (!$ok) {
@@ -659,9 +748,13 @@ function aled08e_px_faire(WP_REST_Request $req) {
         aled08e_px_set($id, 'sujet', $mail['sujet']);
         aled08e_px_set($id, 'contenu', $mail['texte']);
         aled08e_px_set($id, 'morceaux', $m);
+        // le type de sujet (question, constat, benefice, local) : pour apprendre lequel marche le mieux
+        $st = sanitize_key((string) ($d['sujet_type'] ?? ''));
+        if (in_array($st, ['question', 'constat', 'benefice', 'local'], true)) aled08e_px_set($id, 'sujet_type', $st);
         $set('envoye');
         aled08e_px_stat('envois');
-        aled08e_px_journal($id, 'Mail envoyé : « ' . $mail['sujet'] . ' » (code ' . $code . ').');
+        delete_transient('aled08e_px_appr');
+        aled08e_px_journal($id, 'Mail envoyé : « ' . $mail['sujet'] . ' »' . ($code !== '' ? ' (code ' . $code . ')' : '') . (function_exists('aled08e_px_apercu_ok') && aled08e_px_apercu_ok($id) ? ', avec l’aperçu de son site' : '') . '.');
     } else {
         aled08e_px_set($id, 'relance_le', time());
         aled08e_px_set($id, 'contenu_relance', $mail['texte']);
@@ -681,6 +774,8 @@ function aled08e_px_desinscrire($id, $pourquoi) {
         aled08e_px_set($id, 'desinscrit_le', time());
         aled08e_px_journal($id, 'Désinscrit : ' . $pourquoi);
         aled08e_px_stat('desinscrits');
+        delete_transient('aled08e_px_appr');
+        if (function_exists('aled08e_px_surveiller')) aled08e_px_surveiller();
     }
     return true;
 }
@@ -704,7 +799,8 @@ function aled08e_px_resume() {
         'quota_depart' => (int) get_option('aled08_prospection_quota_depart', 20), 'quota_max' => (int) get_option('aled08_prospection_quota_max', 150),
         'premier_envoi' => $premier ? wp_date('Y-m-d', $premier) : '',
         'semaine' => aled08e_px_stats_sur(7), 'total' => $c['par_etat'], 'clics_total' => $c['clics'], 'liste_opposition' => $c['oppositions'],
-        'offre' => aled08e_px_offre() + aled08e_px_prix(),
+        'offre' => aled08e_px_offre() + aled08e_px_prix() + ['en_clair' => aled08e_px_offre_txt()],
+        'adresse_envoi' => aled08e_px_expediteur(), 'adresse_reponses' => aled08e_px_reponse(),
     ];
 }
 function aled08e_px_liste($args = []) {
@@ -730,6 +826,7 @@ function aled08e_px_tournee_noter($dep, $metier) {
     $t[$dep . '|' . $metier] = time();
     $vieux = time() - 400 * DAY_IN_SECONDS;
     update_option('aled08_prospection_tournee', array_filter($t, function ($x) use ($vieux) { return (int) $x > $vieux; }), false);
+    update_option('aled08_prospection_tour', (int) get_option('aled08_prospection_tour', 0) + 1, false);
     return true;
 }
 function aled08e_px_zone_suivante() {
@@ -737,13 +834,24 @@ function aled08e_px_zone_suivante() {
     $metiers = aled08e_px_metiers();
     if (!$metiers) return null;
     $limite = time() - 120 * DAY_IN_SECONDS;
+    $zone = function ($dep, $slug, $pourquoi = '') use ($metiers) {
+        $m = $metiers[$slug];
+        return ['departement' => $dep, 'metier' => ['slug' => $slug, 'nom' => (string) ($m['nom'] ?? $slug), 'qui' => (string) ($m['qui'] ?? '')]] + ($pourquoi !== '' ? ['pourquoi' => $pourquoi] : []);
+    };
+    // ce qui marche passe devant : deux zones sur trois vont au métier qui répond le mieux, la troisième suit la tournée
+    // normale pour continuer d'essayer les autres (includes/prospection-suite.php)
+    $mieux = function_exists('aled08e_px_meilleur_metier') ? aled08e_px_meilleur_metier() : '';
+    if ($mieux !== '' && isset($metiers[$mieux]) && (int) get_option('aled08_prospection_tour', 0) % 3 !== 2) {
+        foreach (aled08e_px_departements() as $dep) if ((int) ($t[$dep . '|' . $mieux] ?? 0) <= $limite) return $zone($dep, $mieux, 'C’est le métier qui répond le mieux à nos mails en ce moment.');
+    }
     foreach (aled08e_px_departements() as $dep) foreach ($metiers as $slug => $m) {
         if ((int) ($t[$dep . '|' . $slug] ?? 0) > $limite) continue;
-        return ['departement' => $dep, 'metier' => ['slug' => $slug, 'nom' => (string) ($m['nom'] ?? $slug), 'qui' => (string) ($m['qui'] ?? '')]];
+        return $zone($dep, $slug);
     }
     return null; // toute la France faite pour nos métiers : d'autres TPE (voir prospection.md)
 }
 function aled08e_px_poste($agent) {
+    if ($agent === 'repondeur') return function_exists('aled08e_px_poste_repondeur') ? aled08e_px_poste_repondeur() : ['agent' => $agent, 'rien_a_faire' => true];
     $r = aled08e_px_resume();
     $out = ['agent' => $agent, 'prospection' => $r];
     $pourquoi = '';
@@ -761,10 +869,12 @@ function aled08e_px_poste($agent) {
         $restant = (int) $r['quota_restant'];
         $relancer = [];
         if ($r['active']) foreach (aled08e_px_liste(['etat' => ['envoye'], 'limite' => 100, 'orderby' => 'date', 'order' => 'ASC']) as $p) {
-            $q = (int) aled08e_px_meta($p['prospect'], 'envoye_le', 0) + aled08e_px_offre()['relance'] * DAY_IN_SECONDS;
-            if (time() >= $q && time() <= aled08e_px_code_fin($p['prospect'])) $relancer[] = $p + ['sujet_envoye' => $p['sujet']];
-            if (count($relancer) >= $restant) break;
+            $q = aled08e_px_relance_quand($p['prospect']);
+            if (time() >= $q && time() <= aled08e_px_code_fin($p['prospect'])) $relancer[] = $p + ['sujet_envoye' => $p['sujet'], 'a_clique' => $p['clics'] > 0];
         }
+        // ceux qui ont cliqué d'abord : ils ont montré de l'intérêt
+        usort($relancer, function ($a, $b) { return (int) $b['a_clique'] <=> (int) $a['a_clique']; });
+        $relancer = array_slice($relancer, 0, max(0, $restant));
         $out['travail'] = [
             'a_verifier' => $r['active'] ? aled08e_px_liste(['etat' => ['nouveau'], 'limite' => 30, 'orderby' => 'date', 'order' => 'ASC']) : [],
             'a_ecrire' => $r['active'] ? aled08e_px_liste(['etat' => ['a_ecrire'], 'limite' => max(1, min(50, $restant)), 'meta_key' => '_aled08_px_note', 'order' => 'DESC']) : [],
@@ -777,7 +887,9 @@ function aled08e_px_poste($agent) {
             $pourquoi = !$r['site_et_ventes_ouverts'] ? 'Le site ou les ventes ne sont pas ouverts : aucun envoi.' : (!$r['heure_d_envoi'] ? 'Hors des heures d’envoi (semaine, 8 h à 18 h).' : ($restant <= 0 ? 'Quota du jour atteint.' : 'Personne à vérifier, à écrire ni à relancer.'));
         }
         $out['travail']['peut_envoyer'] = $peutEnvoyer;
+        $out['travail']['offre'] = aled08e_px_offre_txt();
     }
+    if ($r['active'] && function_exists('aled08e_px_ce_qui_marche')) $out['travail']['ce_qui_marche'] = aled08e_px_ce_qui_marche();
     $out['rien_a_faire'] = $pourquoi !== '';
     if ($pourquoi !== '') $out['pourquoi'] = $pourquoi;
     if (!$out['rien_a_faire']) {
@@ -795,9 +907,12 @@ function aled08e_px_bilan_jarvis() {
     $env = (int) $s['envois'] + (int) $s['relances'];
     if ($r['active'] && $env >= 20 && (int) $s['desinscrits'] * 20 > $env) $alerte[] = 'Plus de 5 % de désinscriptions cette semaine : les mails ou les cibles sont à revoir.';
     if ($r['active'] && !$r['site_et_ventes_ouverts']) $alerte[] = 'La prospection est allumée, mais le site ou les ventes sont fermés : rien ne part.';
-    return ['active' => $r['active'], 'sept_derniers_jours' => ['envoyes' => (int) $s['envois'], 'relances' => (int) $s['relances'], 'clics_demo' => (int) $s['clics_demo'], 'clics_site' => (int) $s['clics_site'],
-        'reponses' => (int) $s['repondus'], 'desinscriptions' => (int) $s['desinscrits'], 'commandes' => (int) $s['commandes'], 'trouves' => (int) $s['ajoutes']],
-        'depuis_le_debut' => $r['total'], 'quota_jour' => $r['quota_jour'], 'a_signaler' => $alerte];
+    $pause = (array) get_option('aled08_prospection_pause', []);
+    if (!$r['active'] && !empty($pause['le']) && (int) $pause['le'] > time() - 8 * DAY_IN_SECONDS) $alerte[] = 'La prospection s’est mise en pause toute seule le ' . wp_date('j F', (int) $pause['le']) . ' : ' . (string) ($pause['raison'] ?? '') . ' Alex décide de la rallumer ou non.';
+    return ['active' => $r['active'], 'sept_derniers_jours' => ['envoyes' => (int) $s['envois'], 'relances' => (int) $s['relances'], 'clics_demo' => (int) $s['clics_demo'], 'clics_apercu' => (int) $s['clics_apercu'], 'clics_site' => (int) $s['clics_site'],
+        'reponses' => (int) $s['repondus'], 'interesses' => (int) $s['interesses'], 'desinscriptions' => (int) $s['desinscrits'], 'adresses_fausses' => (int) $s['rebonds'], 'commandes' => (int) $s['commandes'], 'trouves' => (int) $s['ajoutes']],
+        'depuis_le_debut' => $r['total'], 'quota_jour' => $r['quota_jour'], 'a_signaler' => $alerte,
+        'ce_qui_marche' => function_exists('aled08e_px_ce_qui_marche') ? aled08e_px_ce_qui_marche() : null];
 }
 
 /* ====================================================================== les routes */
@@ -850,6 +965,7 @@ add_action('init', function () {
                 aled08e_px_set($j['id'], 'clics', array_slice($l, -20));
                 aled08e_px_set($j['id'], 'nb_clics', (int) aled08e_px_meta($j['id'], 'nb_clics', 0) + 1);
                 aled08e_px_stat($j['quoi'] === 'demo' ? 'clics_demo' : 'clics_site');
+                delete_transient('aled08e_px_appr');
             }
         }
         nocache_headers();
@@ -948,7 +1064,7 @@ function aled08e_px_bloc_gestion($act, $nonce) {
         . '<div class="app-card c-mint"><span class="app-card-ico">' . aled08e_icon('message-circle') . '</span><span><small>Réponses · commandes</small><strong>' . (int) $t['repondu'] . ' · ' . (int) $t['commande'] . '</strong></span></div>'
         . '<div class="app-card c-pink"><span class="app-card-ico">' . aled08e_icon('x') . '</span><span><small>Désinscrits</small><strong>' . (int) $t['desinscrit'] . '</strong></span></div></div>';
     $h .= '<p class="app-note">En attente : ' . (int) $t['nouveau'] . ' à vérifier, ' . (int) $t['a_ecrire'] . ' à écrire. Depuis le début : ' . ((int) $t['envoye'] + (int) $t['relance'] + (int) $t['repondu'] + (int) $t['desinscrit'] + (int) $t['commande']) . ' écrits, ' . (int) $r['clics_total'] . ' clics, ' . (int) $t['ecarte'] . ' écartés. '
-        . 'Offre : -' . (int) $r['offre']['remise'] . ' % sur la création (' . esc_html(aled08e_euro_txt($r['offre']['reduit'])) . ' au lieu de ' . esc_html(aled08e_euro_txt($r['offre']['prix'])) . '), code personnel valable ' . (int) $r['offre']['jours'] . ' jours. Les réponses arrivent dans votre boîte : notez-les ici (« A répondu »), la relance ne partira pas.</p>';
+        . 'Offre du mail : ' . esc_html($r['offre']['en_clair']) . '. Les réponses arrivent à ' . esc_html($r['adresse_reponses']) . ' : le Répondeur les lit, désinscrit ceux qui disent stop et vous prépare les réponses. Vous pouvez aussi les noter ici.</p>';
     if ($derniers) {
         $h .= '<ul class="ges-list">';
         foreach ($derniers as $p) {
@@ -969,16 +1085,25 @@ function aled08e_px_bloc_gestion($act, $nonce) {
 
 /* ====================================================================== les Réglages (includes/admin.php) */
 function aled08e_px_reglages_html() {
-    echo '<h2>Prospection par e-mail</h2><p>Le Repéreur trouve des entreprises sans site, le Facteur leur écrit (-' . (int) aled08e_px_remise() . ' % sur la création, code personnel valable ' . (int) aled08e_px_offre()['jours'] . ' jours). Rien ne part tant que la case n’est pas cochée, ni tant que le site et les ventes ne sont pas ouverts. Les règles : <code>regles/prospection.md</code>.</p>'
+    echo '<h2>Prospection par e-mail</h2><p>Le Repéreur trouve des entreprises sans site, le Facteur leur écrit (' . esc_html(aled08e_px_offre_txt()) . '), le Répondeur lit les réponses. Rien ne part tant que la case n’est pas cochée, ni tant que le site et les ventes ne sont pas ouverts. Les règles : <code>regles/prospection.md</code>.</p>'
         . '<table class="form-table" role="presentation"><tr><th>Prospection activée</th><td><input type="hidden" name="prospection_present" value="1"><label><input type="checkbox" name="prospection_active" value="1"' . checked(aled08e_px_active(), true, false) . '> Le Repéreur cherche et le Facteur écrit</label>'
         . '<p class="description">Décoché (par défaut) : aucun prospect n’est cherché, aucun mail ne part, et les deux agents s’arrêtent tout de suite. Les codes déjà envoyés restent valables jusqu’à leur date.</p></td></tr>'
         . '<tr><th><label for="aled08e-px-dep">Envois par jour au départ</label></th><td><input type="number" min="0" max="500" id="aled08e-px-dep" name="prospection_quota_depart" value="' . (int) get_option('aled08_prospection_quota_depart', 20) . '" class="small-text"> '
         . '<label for="aled08e-px-max">plafond</label> <input type="number" min="0" max="1000" id="aled08e-px-max" name="prospection_quota_max" value="' . (int) get_option('aled08_prospection_quota_max', 150) . '" class="small-text">'
-        . '<p class="description">Le quota monte de ' . ALED08E_PX_PALIER . ' chaque semaine depuis le premier envoi, jusqu’au plafond. Les relances comptent. ' . ALED08E_PX_HEURE_MAX . ' envois par heure au plus, en semaine de 8 h à 18 h.</p></td></tr></table>';
+        . '<p class="description">Le quota monte de ' . ALED08E_PX_PALIER . ' chaque semaine depuis le premier envoi, jusqu’au plafond. Les relances comptent. ' . ALED08E_PX_HEURE_MAX . ' envois par heure au plus, en semaine de 8 h à 18 h.</p></td></tr>'
+        . '<tr><th><label for="aled08e-px-exp">Adresse d’envoi</label></th><td><input type="email" id="aled08e-px-exp" name="prospection_expediteur" value="' . esc_attr((string) get_option('aled08_prospection_expediteur', '')) . '" class="regular-text" placeholder="' . esc_attr(aled08e_mail_from()) . '">'
+        . '<p class="description">Vide : les mails partent de l’adresse du site (' . esc_html(aled08e_mail_from()) . '), la même que celle des clients. Conseillé : une adresse à part, créée chez l’hébergeur (par exemple alex@bonjour.votre-domaine.fr), pour que les mails des clients ne souffrent jamais d’un signalement.</p></td></tr>'
+        . '<tr><th><label for="aled08e-px-rep">Adresse des réponses</label></th><td><input type="email" id="aled08e-px-rep" name="prospection_reponse" value="' . esc_attr((string) get_option('aled08_prospection_reponse', '')) . '" class="regular-text" placeholder="' . esc_attr(aled08e_to()) . '">'
+        . '<p class="description">Vide : les réponses arrivent à ' . esc_html(aled08e_to()) . '. Le Répondeur lit cette boîte dans Gmail : l’adresse doit donc arriver dans votre Gmail (directement, ou par un transfert automatique).</p></td></tr></table>';
 }
 function aled08e_px_reglages_save($P) {
     if (empty($P['prospection_present'])) return;
     update_option('aled08_prospection_active', !empty($P['prospection_active']) ? '1' : '0', false);
     if (isset($P['prospection_quota_depart'])) update_option('aled08_prospection_quota_depart', max(0, min(500, (int) $P['prospection_quota_depart'])), false);
     if (isset($P['prospection_quota_max'])) update_option('aled08_prospection_quota_max', max(0, min(1000, (int) $P['prospection_quota_max'])), false);
+    foreach (['prospection_expediteur' => 'aled08_prospection_expediteur', 'prospection_reponse' => 'aled08_prospection_reponse'] as $champ => $opt) {
+        if (!isset($P[$champ])) continue;
+        $e = sanitize_email(wp_unslash((string) $P[$champ]));
+        update_option($opt, is_email($e) ? $e : '', false);
+    }
 }

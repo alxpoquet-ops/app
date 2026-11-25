@@ -204,7 +204,19 @@ Ce site n’utilise aucun traceur publicitaire ni outil de mesure d’audience. 
 
 ## ${AVEC_OUTILS ? 11 : 10}. Vos droits
 
-Vous pouvez demander l’accès à vos données, leur correction, leur suppression ou une copie, et vous opposer à un traitement, en écrivant par ${contact}. Je réponds sous un mois. Vous pouvez aussi saisir la CNIL (www.cnil.fr).`,
+Vous pouvez demander l’accès à vos données, leur correction, leur suppression ou une copie, et vous opposer à un traitement, en écrivant par ${contact}. Je réponds sous un mois. Vous pouvez aussi saisir la CNIL (www.cnil.fr).
+
+## ${AVEC_OUTILS ? 12 : 11}. Si je vous ai écrit pour vous proposer un site
+
+Pour faire connaître mes services, j’écris à des professionnels dont l’activité peut avoir besoin d’un site internet : artisans, commerçants, indépendants, associations. Jamais à des particuliers.
+
+- **Ce que j’utilise** : le nom de l’entreprise, son métier, sa ville et son numéro SIREN, tirés de l’annuaire public des entreprises, et une adresse e-mail professionnelle que l’entreprise publie elle-même (sa fiche Google, sa page Facebook, un annuaire qu’elle a rempli). La page où l’adresse a été vue est rappelée au bas de chaque message.
+- **Comment** : des outils automatiques m’aident à repérer ces entreprises, à préparer mes messages et à trier les réponses.
+- **Combien de messages** : un message, et une seule relance. Ensuite, plus rien.
+- **Pour ne plus rien recevoir** : le lien « se désinscrire » de chaque message est pris en compte tout de suite. Répondre « stop » suffit aussi.
+- **Combien de temps** : sans suite, ces informations sont effacées trois ans après le dernier message, et au bout de six mois pour une entreprise que je n’ai finalement pas contactée. Après un refus, je garde seulement une trace chiffrée de l’adresse, pour ne plus jamais vous écrire.
+
+Cette prospection repose sur mon intérêt légitime à faire connaître mes services à des professionnels. Vous pouvez vous y opposer à tout moment, par le lien du message ou par ${contact}.`,
   },
   {
     path: '/conditions-generales/',

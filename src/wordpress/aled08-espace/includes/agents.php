@@ -6,15 +6,15 @@
  *   - Le constructeur : fait les sites, les pages de visibilité Google et les modifications demandées par les clients.
  *   - Le contrôleur   : relit tout avec un œil neuf, puis livre (ou renvoie à corriger). Rien n'arrive chez un client sans lui.
  *   - Jarvis          : regarde l'ensemble, tient la mémoire propre, et écrit à Alex seulement quand il le faut.
- *   - Le Repéreur et le Facteur : la prospection par e-mail (25 novembre 2026), éteinte par défaut. Leur travail est dans
- *     includes/prospection.php ; leur poste passe par la même route.
+ *   - Le Repéreur, le Facteur et le Répondeur : la prospection par e-mail (25 novembre 2026), éteinte par défaut. Leur travail
+ *     est dans includes/prospection.php et includes/prospection-suite.php ; leur poste passe par la même route.
  *
  * Ce fichier porte : le poste de chaque agent (une seule route d'entrée), la mémoire commune (le « second cerveau »),
  * les modifications des clients, les cas pour Alex, le point de Jarvis, et un chien de garde si les agents ne passent plus.
  * Les fiches de poste et les règles viennent du skill « nouveau-site » (regles/*.md, servies par includes/regles.php).
  *
  * Routes (administrateur) :
- *   GET  /aled08/v1/atelier/poste?agent=constructeur|controleur|jarvis|repereur|facteur   sa fiche de poste, son travail, la mémoire utile (note son passage)
+ *   GET  /aled08/v1/atelier/poste?agent=constructeur|controleur|jarvis|repereur|facteur|repondeur   sa fiche de poste, son travail, la mémoire utile (note son passage)
  *   POST /aled08/v1/atelier/passage {agent, bilan}                        le bilan de fin de passage
  *   GET  /aled08/v1/atelier/memoire?type=&client=&q=&limite=              lire la mémoire
  *   POST /aled08/v1/atelier/memoire {type, client, titre, texte, par}     ajouter une note
@@ -25,9 +25,9 @@
 defined('ABSPATH') || exit;
 
 define('ALED08E_CPT_NOTE', 'aled08_note');
-define('ALED08E_AGENTS', ['constructeur', 'controleur', 'jarvis', 'repereur', 'facteur']);
+define('ALED08E_AGENTS', ['constructeur', 'controleur', 'jarvis', 'repereur', 'facteur', 'repondeur']);
 /* Les agents de la prospection par e-mail (includes/prospection.php) */
-define('ALED08E_AGENTS_PROSPECTION', ['repereur', 'facteur']);
+define('ALED08E_AGENTS_PROSPECTION', ['repereur', 'facteur', 'repondeur']);
 
 /* Les agents font-ils les modifications des clients ? ('0' : tout revient chez Alex, comme avant) */
 function aled08e_agents_actifs() { return get_option('aled08_agents', '1') === '1'; }
@@ -234,7 +234,7 @@ add_action('rest_api_init', function () {
     $perm = function () { return current_user_can('manage_options'); };
     register_rest_route('aled08/v1', '/atelier/poste', ['methods' => 'GET', 'permission_callback' => $perm, 'callback' => function (WP_REST_Request $r) {
         $agent = sanitize_key((string) $r->get_param('agent'));
-        if (!in_array($agent, ALED08E_AGENTS, true)) return new WP_Error('aled08_agents', 'Agent inconnu (constructeur, controleur, jarvis, repereur, facteur).', ['status' => 400]);
+        if (!in_array($agent, ALED08E_AGENTS, true)) return new WP_Error('aled08_agents', 'Agent inconnu (constructeur, controleur, jarvis, repereur, facteur, repondeur).', ['status' => 400]);
         $pass = aled08e_agents_passages();
         $avant = $pass;
         $pass[$agent] = ['le' => time(), 'bilan' => $pass[$agent]['bilan'] ?? ''];

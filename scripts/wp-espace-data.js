@@ -77,9 +77,11 @@ process.stdout.write(
     options: options.map((o) => ({ id: o.id, name: o.name, month: o.price.month || 0, once: o.price.once || 0, types: o.types || [], quand: o.quand || (o.price.month ? 'mois' : 'creation'), icon: o.icon || 'check', desc: o.desc || '', info: o.info || '', retire: !!o.retire, group: o.group || '', court: o.court || '', badge: o.badge || '' })),
     // offre événement : remise en % sur la création, avec un code donné sur une foire, un marché ou un salon
     evenement: cfg.evenement || { remise: 20 },
-    // la prospection par e-mail (includes/prospection.php, 25 novembre 2026) : -10 % sur la création seulement, avec un code
-    // personnel valable 30 jours après l'envoi, une seule relance au moins 7 jours après. Pour changer : config.prospection.
-    prospection: Object.assign({ remise: 10, jours: 30, relanceJours: 7 }, cfg.prospection || {}),
+    // la prospection par e-mail (includes/prospection.php). Décision d'Alex (25 novembre 2026, soir) : les prospects ont la même
+    // offre que tout le monde, le prix de lancement, donc remise 0 et plus de code personnel. Une seule relance, 7 jours après
+    // le mail (3 jours pour ceux qui ont cliqué), dans les 30 jours. L'aperçu personnalisé du site part aux prospects notés
+    // 80 ou plus. Pour changer : config.prospection.
+    prospection: Object.assign({ remise: 0, jours: 30, relanceJours: 7, relanceClicJours: 3, apercuNote: 80 }, cfg.prospection || {}),
     // l'identité de l'expéditeur, écrite au pied de chaque mail de prospection (jamais en dur dans l'extension)
     identite: { nom: site.name, proprietaire: site.owner, statut: (site.legal || {}).status || '', siren: (site.legal || {}).siren || '', codePostal: (site.address || {}).postalCode || '', ville: (site.address || {}).city || '' },
     // nos pages « Votre métier » (src/content/metiers.js) : les métiers que le Repéreur cherche d'abord (+10 à la note)

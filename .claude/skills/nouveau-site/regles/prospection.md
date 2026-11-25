@@ -1,6 +1,6 @@
 # La prospection par e-mail
 
-Décision d'Alex (25 novembre 2026) : trouver, partout en France, les petites entreprises qui ont besoin d'un site, et leur écrire un joli mail. Deux agents s'en chargent : **le Repéreur** trouve (`agent-repereur`), **le Facteur** vérifie et écrit (`agent-facteur`). Comme pour les sites, celui qui trouve n'est pas celui qui écrit : le Facteur relit chaque prospect avant le premier mail.
+Décision d'Alex (25 novembre 2026) : trouver, partout en France, les petites entreprises qui ont besoin d'un site, et leur écrire un joli mail. Trois agents s'en chargent : **le Repéreur** trouve (`agent-repereur`), **le Facteur** vérifie et écrit (`agent-facteur`), **le Répondeur** lit les réponses (`agent-repondeur`). Comme pour les sites, celui qui trouve n'est pas celui qui écrit : le Facteur relit chaque prospect avant le premier mail. Décision d'Alex (25 novembre 2026, soir) : le plus automatique possible. Chaque soir de semaine, à 18 h 15, Alex reçoit le débrief du jour, envoyé par le site.
 
 **La prospection est éteinte par défaut.** Elle s'allume dans l'espace de gestion d'Alex (bloc « Prospection », bouton « Allumer la prospection ») ou dans les Réglages de l'extension (case « Prospection activée », option `aled08_prospection_active`). Éteinte, les deux agents reçoivent `rien_a_faire: true` et s'arrêtent, et la route refuse d'ajouter ou d'envoyer quoi que ce soit.
 
@@ -18,10 +18,15 @@ La CNIL permet d'écrire à un professionnel sans son accord préalable, à ces 
 
 ## L'offre du mail
 
-- **-10 % sur la création du site seulement**, jamais sur le forfait.
-- Un **code personnel** par prospect (par exemple `MAIL10-7KQ2`), créé au premier envoi, **accepté 30 jours** après l'envoi, jusqu'à la fin du 30e jour. Il se tape dans la case « Code promo » du configurateur ou de la page Commander. Une commande payée avec lui l'a utilisé.
-- Une commande passée avec ce code (ou avec l'adresse e-mail du prospect) le marque « commande » tout seul.
-- Le mail cite le prix du Site Essentiel et le prix réduit, calculés par la route. L'agent n'écrit aucun chiffre.
+Décision d'Alex (25 novembre 2026, soir) : **les prospects ont la même offre que tout le monde, le prix de lancement.**
+
+- Le mail annonce le prix de lancement de la création du site, sa date de fin et le prix d'après, tirés de la configuration. **Plus de code de réduction, plus de -10 %.** On n'écrit jamais « au lieu de ».
+- Une commande passée avec l'adresse e-mail du prospect le marque « commande » tout seul.
+- L'agent n'écrit aucun chiffre : le prix vient de la route.
+
+## L'aperçu personnalisé
+
+Pour les meilleurs prospects (**note de 80 ou plus**), la route ajoute au mail un bouton « Voir l'aperçu de votre site ». Il mène à une page au nom de l'entreprise, avec son métier, sa ville et les trois points du mail. Tout le reste est un emplacement à remplir (« Votre premier service », « Votre plus belle photo ») : rien n'est inventé sur elle. La page n'est jamais dans Google, et son lien ne se devine pas. L'agent n'a rien à faire : la route décide et fabrique.
 
 ## Qui cibler
 
@@ -100,6 +105,7 @@ Le Repéreur ne donne pas de chiffre : il coche ce qu'il a constaté (`criteres`
 | `metier_recherche` | + 20 | Un métier où l'on cherche sur internet avant d'acheter ou d'appeler |
 | `activite_recente` | + 20 | Une activité réelle et récente : des avis de moins d'un an, une fiche ou une page tenue à jour, des publications récentes |
 | `independante` | + 10 | Une petite entreprise indépendante : pas une chaîne ni une franchise, un seul ou quelques établissements |
+| (automatique) | + 15 | L'entreprise est **créée depuis moins de 18 mois** : c'est le moment où l'on a besoin d'un site. Ce n'est pas une case à cocher : le Repéreur donne `date_creation` (la date de l'annuaire de l'État), et la route calcule |
 | (automatique) | + 10 | Le métier a sa page chez nous : `metier_page` est le slug d'une page « Votre métier » |
 
 **En dessous de 60 : écarté** (la route le garde quelques mois pour ne pas le retrouver, sans jamais lui écrire). Dans le doute sur un critère, on ne le coche pas.
@@ -108,8 +114,20 @@ Le Repéreur ne donne pas de chiffre : il coche ce qu'il a constaté (`criteres`
 
 - Le quota : 20 envois par jour la première semaine, puis 20 de plus chaque semaine depuis le premier envoi, jusqu'à 150 (options `aled08_prospection_quota_depart` et `aled08_prospection_quota_max`). Les relances comptent.
 - Au plus 30 envois par heure, en semaine de 8 h à 18 h (heure du site), et seulement quand le site et les ventes sont ouverts.
-- Une seule relance, au moins 7 jours après le premier mail, tant que le code est valable. Puis plus rien.
-- On ne relance jamais quelqu'un qui a répondu, s'est désinscrit ou a commandé. Les réponses arrivent dans la boîte d'Alex : il les note dans son espace (« A répondu », « Ne plus lui écrire »), ou le dit dans une conversation, qui appelle la route avec `faire: "repondu"` ou `"desinscrire"`.
+- Une seule relance, **7 jours** après le premier mail, ou **3 jours** quand le prospect a cliqué dans le mail (la démo, l'aperçu, le site) : il a montré de l'intérêt, on ne le laisse pas refroidir. Jamais plus de 30 jours après le premier mail. Puis plus rien.
+- On ne relance jamais quelqu'un qui a répondu, s'est désinscrit ou a commandé. Le Répondeur lit les réponses et les note tout seul (`faire: "repondu"`, `"desinscrire"`, `"rebond"`). Alex peut aussi les noter dans son espace (« A répondu », « Ne plus lui écrire »).
+- **La pause automatique** : sur 7 jours et au moins 40 envois, plus de 5 % de désinscriptions ou plus de 8 % d'adresses fausses éteignent la prospection toute seule, et Alex est prévenu. Lui seul la rallume.
+
+## Ce qui marche
+
+La route compte, pour chaque métier, chaque département et chaque type de sujet, les clics, les réponses, les intéressés, les commandes et les refus (`ce_qui_marche`, dans le poste). À partir de 10 mails par groupe :
+
+- le Repéreur est envoyé deux fois sur trois vers le métier qui répond le mieux, et une fois sur trois dans la tournée normale, pour continuer d'essayer les autres ;
+- le Facteur dit le type de chaque sujet (`sujet_type`) et lit lequel marche le mieux.
+
+## Les réponses
+
+Elles arrivent à l'adresse des réponses (réglage « Adresse des réponses », sinon l'adresse de réception du site), qui doit arriver dans le Gmail d'Alex. Le Répondeur désinscrit ceux qui disent non, note les adresses fausses, et **prépare un brouillon** pour les intéressés et les questions. **Aucun agent n'envoie de réponse à un prospect : Alex relit le brouillon et l'envoie.**
 - Le Repéreur ne garde pas plus de trois jours d'envois d'avance : le poste lui dit combien en trouver.
 
 ## Combien de temps on garde
@@ -122,4 +140,4 @@ Un prospect écarté s'efface après 180 jours ; un prospect sans suite, trois a
 - Écrire à une adresse qui n'a pas de source publiée par l'entreprise.
 - Changer une option de la prospection (l'allumer, le quota) : c'est Alex.
 - Promettre un prix, une remise ou un délai que la route n'a pas mis dans le mail.
-- Répondre à un prospect : c'est Alex qui répond, depuis sa boîte.
+- Envoyer une réponse à un prospect : le Répondeur prépare un brouillon, c'est Alex qui l'envoie, depuis sa boîte.

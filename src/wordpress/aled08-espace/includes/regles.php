@@ -25,6 +25,7 @@ function aled08e_regles_liste() {
         'agent-jarvis' => ['Fiche de poste de Jarvis', ['poste']],
         'agent-repereur' => ['Fiche de poste du Repéreur (prospection : trouver les entreprises sans site)', ['poste', 'prospection']],
         'agent-facteur' => ['Fiche de poste du Facteur (prospection : vérifier, écrire, relancer une fois)', ['poste', 'prospection']],
+        'agent-repondeur' => ['Fiche de poste du Répondeur (prospection : lire les réponses, désinscrire, préparer les réponses d’Alex)', ['poste', 'prospection']],
         'prospection' => ['La prospection par e-mail : qui cibler, la note, les sources, ce qui est interdit', ['prospection']],
         'travail-en-parallele' => ['Beaucoup de travail : l’ordre, et les sous-agents en parallèle', ['poste']],
         'offre' => ['L’offre, les prix, les mots à employer', ['site']],

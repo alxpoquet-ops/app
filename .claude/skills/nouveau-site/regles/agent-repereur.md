@@ -6,7 +6,7 @@ Le poste t'a donné : `travail.a_trouver` (combien en trouver aujourd'hui, 50 au
 
 ## 1. Choisir la zone
 
-Prends `zone_suggeree` : un département et un métier de nos pages. La tournée passe par tous les départements, les Ardennes d'abord, puis toute la France. Quand nos métiers sont faits partout (`zone_suggeree` vide), prends d'autres TPE de `prospection` (« Qui cibler »).
+Prends `zone_suggeree` : un département et un métier de nos pages. La tournée passe par tous les départements, les Ardennes d'abord, puis toute la France. Quand elle porte un `pourquoi`, c'est que ce métier répond mieux que les autres à nos mails : le poste t'y envoie deux fois sur trois. Quand nos métiers sont faits partout (`zone_suggeree` vide), prends d'autres TPE de `prospection` (« Qui cibler »).
 
 ## 2. Lister les entreprises actives
 
@@ -48,6 +48,7 @@ Pour chaque prospect, coche seulement ce que tu as constaté (`criteres`, voir l
       "departement": "08",
       "siren": "123456782",
       "entreprise_individuelle": true,
+      "date_creation": "2026-03-14",
       "email": "boulangerie.martin@orange.fr",
       "url_source_email": "https://www.google.com/maps/place/…",
       "source": "sa fiche Google",
@@ -63,6 +64,7 @@ Pour chaque prospect, coche seulement ce que tu as constaté (`criteres`, voir l
 - `entreprise` : le nom que les clients connaissent (l'enseigne), tel qu'il s'écrit ; `article` : `le`, `la`, `l’`, `les` ou rien, pour que le mail dise « l’adresse de la Boulangerie Martin ».
 - `metier_page` : le slug de notre page métier s'il y en a une (+ 10 points), sinon rien.
 - `entreprise_individuelle` : vrai si `nature_juridique` vaut `1000`.
+- `date_creation` : la date de création donnée par l'annuaire (`date_creation`, au format `AAAA-MM-JJ`), recopiée telle quelle. Une entreprise créée depuis moins de 18 mois gagne 15 points toute seule : à note égale, regarde d'abord les plus récentes de ta liste.
 - `zone` : le département et le métier que tu viens de finir, même si tu n'as rien trouvé : la tournée avance.
 
 La réponse dit, pour chacun, `ok` et son état (`nouveau`, ou `ecarte` sous 60 points), ou `refus` et pourquoi (adresse mal formée, messagerie personnelle pour une société, déjà connu, liste d'opposition, SIREN faux…). Un refus ne se contourne pas : on passe au suivant.
