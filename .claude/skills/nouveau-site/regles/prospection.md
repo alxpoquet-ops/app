@@ -48,6 +48,8 @@ Puis il invite à voir les sites déjà en ligne (« Plutôt que mille mots, voy
 
 **Oui** : les entreprises actives, petites et indépendantes, **sans site internet**, ou avec un site cassé, abandonné ou illisible sur téléphone (le Repéreur dit lequel). **Tous les petits métiers** dont les clients cherchent sur internet avant de venir, pas seulement ceux de nos pages (Alex, 25 novembre 2026 : « il y a tellement d'autres entrepreneurs »). La tournée passe département par département, les Ardennes d'abord, et dans chaque département par tous les métiers : ceux de nos pages « Votre métier » (+ 10 points), puis les autres (tableau « Les autres métiers » ci-dessous). Le poste donne chaque fois le métier et ses codes NAF.
 
+**Les petits qu'on ne voit pas** (Alex, 25 novembre 2026 : « vise aussi les petits artisans pas très connus qui publient sur AlloVoisins ou autre… les petits qui font des foires ») : créateurs et artisans d'art, exposants des foires, marchés de Noël, marchés de créateurs et salons d'artisans, petits producteurs, services à la maison proposés sur les plateformes entre voisins. Ce sont souvent des micro-entrepreneurs qui n'ont qu'une page Facebook, une boutique Etsy ou un profil sur une plateforme : ceux à qui un site change le plus la vie. À chaque zone, le Repéreur cherche aussi par là (`travail.chercher_aussi` dans son poste), en plus de l'annuaire par métier. Les mêmes garde-fous valent : une vraie entreprise (SIREN actif), un e-mail qu'elle publie elle-même, pas de site correct.
+
 **Non** :
 
 - les entreprises qui ont déjà un site correct, même simple ;
@@ -65,7 +67,9 @@ Puis il invite à voir les sites déjà en ligne (« Plutôt que mille mots, voy
 |---|---|---|
 | Lister les entreprises | L'API publique et gratuite « Recherche d'entreprises » de l'État : `https://recherche-entreprises.api.gouv.fr/search` | Filtres ci-dessous, une requête à la fois (7 par seconde au plus) |
 | Savoir s'il y a un site | Une recherche sur le web : nom de l'entreprise + ville | Les 10 premiers résultats, la fiche Google, la page Facebook |
-| Trouver l'adresse e-mail | Ce que **l'entreprise publie elle-même** : sa fiche Google, sa page Facebook ou Instagram, un annuaire qu'elle a rempli (PagesJaunes, annuaire de la Chambre de métiers ou de commerce, de sa fédération, la liste des associations de sa mairie) | On note l'adresse exacte de la page (`url_source_email`) |
+| Repérer les petits qu'on ne voit pas | Les listes d'exposants des foires, marchés de Noël, marchés de créateurs et salons d'artisans (mairies, offices de tourisme, organisateurs, fest.fr, jds.fr, evenements-createurs.fr) ; les annuaires de créateurs (marche-des-createurs.fr, creatrices-et-createurs.com…) ; les plateformes de services (AlloVoisins, StarOfService, Leboncoin) ; Etsy | Seulement pour **repérer un nom**, page par page, comme un visiteur. On note où on l'a vu (`vu_sur`, `url_vu_sur`) |
+| Vérifier que c'est une entreprise | L'API Recherche d'entreprises, avec son nom (`q=`) et le département | Pas de SIREN actif : c'est peut-être un particulier, on passe |
+| Trouver l'adresse e-mail | Ce que **l'entreprise publie elle-même** : sa fiche Google, sa page Facebook ou Instagram, un annuaire qu'elle a rempli (PagesJaunes, annuaire de la Chambre de métiers ou de commerce, de sa fédération, un annuaire de créateurs où elle a rempli sa fiche, sa fiche d'exposant, la liste des associations de sa mairie) | On note l'adresse exacte de la page (`url_source_email`) |
 
 **Interdit** :
 
@@ -74,6 +78,7 @@ Puis il invite à voir les sites déjà en ligne (« Plutôt que mille mots, voy
 - l'adresse personnelle d'un dirigeant, ou une adresse tirée de la liste des dirigeants ;
 - un fichier acheté, loué ou échangé ;
 - aspirer en masse un site qui l'interdit (ses conditions d'utilisation ou son fichier `robots.txt`) ; LinkedIn, jamais ;
+- sur AlloVoisins et les autres plateformes de mise en relation : un robot (leurs conditions l'interdisent : « contournement des limitations techniques (… robots …) », CGU AlloVoisins du 17 avril 2026), un message par leur messagerie, une adresse tirée de la plateforme (elle cache les coordonnées : la route refuse une source AlloVoisins), un profil « particulier » ;
 - écrire à quelqu'un de la liste d'opposition, ou contourner un refus de la route.
 
 ### L'API Recherche d'entreprises
@@ -124,6 +129,10 @@ Dans chaque résultat : `siren`, `nom_complet`, `siege.liste_enseignes` (le nom 
 | `autre-reparation` | 95.11Z, 95.12Z (informatique, téléphones), 95.21Z, 95.22Z (électroménager), 95.23Z (cordonnerie) |
 | `autre-couture` | 14.13Z (couture), 96.01B (pressing, retouches) |
 | `autre-loisirs` | 85.52Z (musique, danse), 93.29Z (loisirs), 85.59B (cours particuliers) |
+| `autre-createurs` | 32.12Z, 32.13Z (bijoux), 32.99Z (autres créations), 23.41Z (céramique), 16.29Z (objets en bois), 90.03A (création artistique), 13.92Z, 14.19Z (textile), 20.42Z (savons, cosmétiques artisanaux) |
+| `autre-marches` | 47.89Z (vente sur les marchés et foires), 47.81Z (alimentaire sur les marchés), 47.82Z (textile sur les marchés) |
+| `autre-producteurs` | 01.13Z (maraîchage), 01.49Z (apiculture), 10.51C (fromages), 10.82Z (confiserie), 10.52Z (glaces), 10.39B (confitures) |
+| `autre-services-maison` | 81.30Z (jardinage), 81.21Z (ménage), 43.39Z, 43.34Z (petits travaux, peinture), 95.24Z (meubles) |
 
 Pour ces métiers, `metier_page` reste vide (pas de page chez nous) ; `zone.metier` reprend le nom de la tournée (`autre-coiffure`…). Les exclusions de « Qui cibler » restent valables (santé réglementée, droit, tabac, jeux, chaînes et franchises…).
 

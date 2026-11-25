@@ -251,6 +251,9 @@ function aled08e_px_source_libelle($url) {
     if (preg_match('/(^|\.)facebook\.com$|(^|\.)fb\.com$/', $h)) return 'sa page Facebook';
     if (preg_match('/(^|\.)instagram\.com$/', $h)) return 'son compte Instagram';
     if (preg_match('/(^|\.)pagesjaunes\.fr$/', $h)) return 'sa fiche PagesJaunes';
+    if (preg_match('/(^|\.)etsy\.com$/', $h)) return 'sa boutique Etsy';
+    if (preg_match('/(^|\.)marche-des-createurs\.fr$/', $h)) return 'sa fiche sur l’annuaire Marché des Créateurs';
+    if (preg_match('/(^|\.)creatrices-et-createurs\.com$/', $h)) return 'sa fiche sur l’annuaire Créatrices et Créateurs';
     return 'la page ' . preg_replace('/^www\./', '', $h);
 }
 /* Les métiers de nos pages « Votre métier » (data.json) : slug => nom */
@@ -276,6 +279,21 @@ function aled08e_px_autres_metiers() {
         'autre-reparation' => ['nom' => 'Réparation (informatique, téléphones, électroménager, cordonniers)', 'naf' => ['95.11Z', '95.12Z', '95.21Z', '95.22Z', '95.23Z']],
         'autre-couture' => ['nom' => 'Couturières, retouches, pressings', 'naf' => ['14.13Z', '96.01B']],
         'autre-loisirs' => ['nom' => 'Loisirs, écoles de musique et de danse, cours particuliers', 'naf' => ['85.52Z', '93.29Z', '85.59B']],
+        // les petits qu'on ne voit pas (Alex, 25 novembre 2026) : ils vendent sur les foires et les marchés, ou passent par une plateforme
+        'autre-createurs' => ['nom' => 'Créateurs et artisans d’art (bijoux, bois, céramique, bougies, savons, textile)', 'naf' => ['32.12Z', '32.13Z', '32.99Z', '23.41Z', '16.29Z', '90.03A', '13.92Z', '14.19Z', '20.42Z']],
+        'autre-marches' => ['nom' => 'Vendeurs des marchés, foires et salons', 'naf' => ['47.89Z', '47.81Z', '47.82Z']],
+        'autre-producteurs' => ['nom' => 'Petits producteurs (maraîchers, apiculteurs, fromagers, confiseurs)', 'naf' => ['01.13Z', '01.49Z', '10.51C', '10.82Z', '10.52Z', '10.39B']],
+        'autre-services-maison' => ['nom' => 'Services à la maison (jardinage, ménage, petits travaux, montage de meubles)', 'naf' => ['81.30Z', '81.21Z', '43.39Z', '43.34Z', '95.24Z']],
+    ];
+}
+/* Les petits qu'on ne voit pas dans l'annuaire en cherchant par métier : où les repérer. Ces pages servent à REPÉRER un nom ;
+ * l'e-mail vient toujours d'une page où l'artisan le publie lui-même, et l'entreprise doit exister (SIREN actif). */
+function aled08e_px_sources_petits() {
+    return [
+        ['ou' => 'Les foires, marchés de Noël, marchés de créateurs et salons d’artisans du département, des 12 derniers mois et des 2 mois à venir', 'exemples' => 'sites des mairies et des offices de tourisme, ardennes.com, fest.fr, jds.fr, festivalenfrance.com, evenements-createurs.fr, la liste des exposants publiée par l’organisateur'],
+        ['ou' => 'Les annuaires de créateurs, où chacun remplit sa fiche', 'exemples' => 'marche-des-createurs.fr, creatrices-et-createurs.com, marchedesartisanscreateurs.fr, l’annuaire des artisans de la Chambre de métiers'],
+        ['ou' => 'Les plateformes de services entre voisins et de mise en relation', 'exemples' => 'AlloVoisins, StarOfService, les services de Leboncoin : comme un simple visiteur, page par page ; seulement les profils « professionnel » ; jamais de message par la plateforme, jamais un robot (interdit par leurs conditions), et l’e-mail n’y est pas : on le cherche ailleurs'],
+        ['ou' => 'Les boutiques en ligne sans site à eux', 'exemples' => 'Etsy, Un grand marché, la page Facebook ou Instagram de l’atelier'],
     ];
 }
 /* La tournée : nos métiers d'abord, puis les autres, dans chaque département */
@@ -345,7 +363,7 @@ function aled08e_px_get($id) {
         'metier' => (string) $m('metier'), 'metier_page' => (string) $m('metier_page'), 'ville' => (string) $m('ville'), 'departement' => (string) $m('departement'),
         'siren' => (string) $m('siren'), 'entreprise_individuelle' => (bool) $m('ei', 0), 'email' => (string) $m('email'),
         'url_source_email' => (string) $m('url_source'), 'source' => (string) $m('source'), 'site_actuel' => (string) $m('site_actuel'), 'recherche' => (string) $m('recherche'),
-        'note' => (int) $m('note', 0), 'criteres' => (array) $m('criteres', []), 'raisons' => (string) $m('raisons'), 'date_creation' => (string) $m('creation'), 'constat' => (array) $m('constat', []), 'domaine_libre' => (string) $m('domaine_libre'),
+        'note' => (int) $m('note', 0), 'criteres' => (array) $m('criteres', []), 'raisons' => (string) $m('raisons'), 'date_creation' => (string) $m('creation'), 'constat' => (array) $m('constat', []), 'domaine_libre' => (string) $m('domaine_libre'), 'vu_sur' => (string) $m('vu_sur'), 'url_vu_sur' => (string) $m('url_vu_sur'),
         'etat' => (string) $m('etat'), 'etat_libelle' => aled08e_px_etats()[(string) $m('etat')] ?? '',
         'ajoute_le' => get_the_date('Y-m-d H:i', $p), 'verification' => (string) $m('verification'),
         'envoye_le' => $env ? wp_date('Y-m-d H:i', $env) : '', 'relance_le' => $rel ? wp_date('Y-m-d H:i', $rel) : '',
@@ -405,6 +423,7 @@ function aled08e_px_ajouter($d) {
         'site_actuel' => aled08e_px_url($d['site_actuel'] ?? ''), 'recherche' => aled08e_px_texte($d['recherche'] ?? '', 120),
         'raisons' => aled08e_px_texte($d['raisons'] ?? '', 1200), 'criteres' => [],
         'date_creation' => preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($d['date_creation'] ?? '')) ? (string) $d['date_creation'] : '',
+        'vu_sur' => aled08e_px_texte($d['vu_sur'] ?? '', 160), 'url_vu_sur' => aled08e_px_url($d['url_vu_sur'] ?? ''),
     ];
     foreach (['sans_site', 'site_casse', 'metier_recherche', 'activite_recente', 'independante'] as $k) $p['criteres'][$k] = !empty($d['criteres'][$k]);
     // l'entreprise récente n'est pas une case à cocher : c'est la date de création de l'annuaire de l'État qui le dit
@@ -415,6 +434,8 @@ function aled08e_px_ajouter($d) {
     if (!aled08e_px_departement_ok($p['departement'])) return $refus('département inconnu (01 à 95, 2A, 2B, 971 à 976)');
     if (!aled08e_px_siren_ok($p['siren'])) return $refus('SIREN absent ou faux (9 chiffres, tiré de l’annuaire des entreprises)');
     if ($p['url_source_email'] === '') return $refus('il manque l’adresse de la page où l’entreprise publie elle-même son e-mail (url_source_email)');
+    if ($p['vu_sur'] !== '' && $p['url_vu_sur'] === '') return $refus('« vu_sur » sans preuve : donnez l’adresse de la page (url_vu_sur), la liste des exposants ou le profil');
+    if (preg_match('/(^|\.)allovoisins?\.(com|fr)$/', strtolower((string) wp_parse_url($p['url_source_email'], PHP_URL_HOST)))) return $refus('AlloVoisins cache les coordonnées de ses membres : l’e-mail doit venir d’une page où l’artisan le publie lui-même');
     $r = aled08e_px_email_refus($p['email'], $p);
     if ($r !== '') return $refus($r);
     if (aled08e_px_oppose($p['email'], $p['siren'])) return $refus('cette entreprise ou cette adresse a demandé à ne plus rien recevoir (liste d’opposition)');
@@ -431,7 +452,7 @@ function aled08e_px_ajouter($d) {
     $metas = ['etat' => $etat, 'article' => $p['article'], 'raison_sociale' => $p['raison_sociale'], 'metier' => $p['metier'], 'metier_page' => $p['metier_page'], 'ville' => $p['ville'],
         'departement' => $p['departement'], 'siren' => $p['siren'], 'ei' => $p['entreprise_individuelle'] ? 1 : 0, 'email' => $p['email'], 'url_source' => $p['url_source_email'],
         'source' => $p['source'] !== '' ? $p['source'] : aled08e_px_source_libelle($p['url_source_email']), 'site_actuel' => $p['site_actuel'], 'recherche' => $p['recherche'],
-        'note' => $note, 'criteres' => $p['criteres'], 'raisons' => $p['raisons'], 'nb_clics' => 0, 'creation' => $p['date_creation']];
+        'note' => $note, 'criteres' => $p['criteres'], 'raisons' => $p['raisons'], 'nb_clics' => 0, 'creation' => $p['date_creation'], 'vu_sur' => $p['vu_sur'], 'url_vu_sur' => $p['url_vu_sur']];
     if ($etat === 'ecarte') $metas['ecarte_raison'] = 'Note ' . $note . ' sur 100 : sous le seuil de ' . ALED08E_PX_NOTE_MIN . '.';
     foreach ($metas as $k => $v) aled08e_px_set($id, $k, $v);
     aled08e_px_journal($id, 'Trouvé par le Repéreur (note ' . $note . ').');
@@ -995,6 +1016,7 @@ function aled08e_px_poste($agent) {
         if ($pourquoi === '' && $aTrouver <= 0) $pourquoi = 'Assez de prospects en attente (' . $stock . ') : le Facteur doit d’abord avancer.';
         $out['travail'] = ['a_trouver' => $aTrouver, 'en_attente' => $stock, 'zone_suggeree' => aled08e_px_zone_suivante(),
             'metiers' => array_values(aled08e_px_metiers_tournee()),
+            'chercher_aussi' => aled08e_px_sources_petits(),
             'zones_faites_120_jours' => count(array_filter(aled08e_px_tournee(), function ($x) { return (int) $x > time() - 120 * DAY_IN_SECONDS; }))];
     } else {
         $restant = (int) $r['quota_restant'];

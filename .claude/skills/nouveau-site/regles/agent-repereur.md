@@ -12,6 +12,17 @@ Prends `zone_suggeree` : un département et un métier. La tournée passe par to
 
 Interroge l'API Recherche d'entreprises avec les codes NAF du métier (`zone_suggeree.metier.naf`, ou le tableau de `prospection` pour nos pages), le département et `etat_administratif=A`. Une requête à la fois. Garde les petites entreprises indépendantes, encore actives, dont l'activité correspond vraiment au métier. Écarte d'office ce que `prospection` exclut (chaînes, santé réglementée, diffusion partielle `[ND]`…).
 
+## 2 bis. Chercher aussi les petits qu'on ne voit pas
+
+L'annuaire par métier rate les plus petits : le créateur de bijoux qui vend sur les marchés de Noël, la savonnière des foires, le jardinier d'AlloVoisins. Pour chaque zone, cherche aussi par là (`travail.chercher_aussi`) :
+
+- **les foires, marchés de Noël, marchés de créateurs et salons d'artisans** du département (12 derniers mois, 2 mois à venir) : la liste des exposants sur le site de la mairie, de l'office de tourisme ou de l'organisateur ;
+- **les annuaires de créateurs** (marche-des-createurs.fr, creatrices-et-createurs.com…), filtrés sur le département ;
+- **les plateformes de services** (AlloVoisins, StarOfService, Leboncoin) : comme un visiteur, page par page, les profils « professionnel » seulement. Jamais de robot, jamais de message par la plateforme : elle cache les coordonnées, l'e-mail se cherche ailleurs ;
+- **Etsy**, la page Facebook ou Instagram de l'atelier.
+
+Pour chaque nom repéré : cherche-le dans l'API Recherche d'entreprises (`q=` le nom, `departement=`, `etat_administratif=A`). **Pas de SIREN actif : on passe** (c'est peut-être un particulier). Puis les étapes 3 et 4 comme pour les autres. Note où tu l'as vu : `vu_sur` (« au marché de Noël de Sedan », « sur AlloVoisins », « dans l'annuaire Marché des Créateurs ») et `url_vu_sur` (la page de la liste des exposants, du profil) : le Facteur pourra écrire « Nous vous avons vu au marché de Noël de Sedan », parce que c'est vrai et prouvé. Un `vu_sur` sans `url_vu_sur` est refusé.
+
 ## 3. Vérifier s'il y a un site
 
 Pour chaque entreprise retenue : une recherche sur le web avec son nom (l'enseigne si elle en a une) et sa ville. Regarde les premiers résultats, sa fiche Google et sa page Facebook.
@@ -22,7 +33,7 @@ Pour chaque entreprise retenue : une recherche sur le web avec son nom (l'enseig
 
 ## 4. Trouver une adresse e-mail publiée par l'entreprise elle-même
 
-Sur sa fiche Google, sa page Facebook ou Instagram, ou un annuaire qu'elle a rempli. Note l'adresse exacte de la page où tu l'as vue (`url_source_email`) et comment le dire (`source` : « sa fiche Google », « sa page Facebook », « l’annuaire de la Chambre de métiers »).
+Sur sa fiche Google, sa page Facebook ou Instagram, ou un annuaire qu'elle a rempli (PagesJaunes, Chambre de métiers, un annuaire de créateurs où elle a rempli sa fiche, sa fiche d'exposant). Note l'adresse exacte de la page où tu l'as vue (`url_source_email`) et comment le dire (`source` : « sa fiche Google », « sa page Facebook », « l’annuaire de la Chambre de métiers »).
 
 **Pas d'adresse publiée : on passe.** Jamais d'adresse devinée, jamais l'adresse d'un dirigeant, jamais un fichier.
 
@@ -54,6 +65,8 @@ Pour chaque prospect, coche seulement ce que tu as constaté (`criteres`, voir l
       "source": "sa fiche Google",
       "site_actuel": "",
       "recherche": "boulangerie Charleville-Mézières",
+      "vu_sur": "",
+      "url_vu_sur": "",
       "criteres": { "sans_site": true, "site_casse": false, "metier_recherche": true, "activite_recente": true, "independante": true },
       "raisons": "Fiche Google avec 48 avis, le dernier il y a deux semaines, horaires à jour. Aucun site trouvé en cherchant le nom et la ville, ni sur la fiche ni sur Facebook."
     }
