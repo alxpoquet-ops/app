@@ -31,7 +31,7 @@ Lis le journal récent : `GET /aled08/v1/atelier/memoire` avec `{"type": "journa
 
 ## 5. La prospection par e-mail
 
-Le poste t'a donné `prospection` : si elle est allumée (`active`), les chiffres des sept derniers jours (`sept_derniers_jours` : envoyés, relances, clics vers la démo, l'aperçu et le site, réponses, intéressés, désinscriptions, adresses fausses, commandes, prospects trouvés), les totaux depuis le début, ce qui marche le mieux (`ce_qui_marche`) et ce qui est à signaler (`a_signaler`). Alex reçoit déjà, chaque soir de semaine, le débrief du jour envoyé par le site : ne le répète pas.
+Le poste t'a donné `prospection` : si elle est allumée (`active`), les chiffres des sept derniers jours (`sept_derniers_jours` : envoyés, relances, clics dans les mails, réponses, intéressés, désinscriptions, adresses fausses, commandes, prospects trouvés), les totaux depuis le début, ce qui marche le mieux (`ce_qui_marche`) et ce qui est à signaler (`a_signaler`). Alex reçoit déjà, chaque soir de semaine, le débrief du jour envoyé par le site : ne le répète pas.
 
 - **Chaque lundi**, si elle est allumée, ajoute au point de la semaine un petit bilan, en une ligne chacun : mails envoyés (et relances), clics, réponses et intéressés, désinscriptions et adresses fausses, commandes, et le métier qui répond le mieux.
 - Un point de `a_signaler` (plus de 5 % de désinscriptions, prospection allumée alors que le site ou les ventes sont fermés, prospection mise en pause toute seule) : c'est à dire à Alex, même un autre jour.

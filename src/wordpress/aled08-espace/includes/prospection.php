@@ -77,6 +77,32 @@ function aled08e_px_offre_txt() {
     if (aled08e_px_remise() > 0) $t .= ' ; avec le code personnel du mail : -' . aled08e_px_remise() . ' %, soit ' . aled08e_euro_txt($prix['reduit']);
     return $t;
 }
+/* « 4 à 5 » fois moins cher qu'une agence : le prix d'entrée d'une agence (data.json « marche.agenceMin ») divisé par notre prix
+ * après l'offre de lancement, puis par notre prix d'aujourd'hui, arrondis vers le bas. '' si on ne peut pas le dire. */
+function aled08e_px_fois_agence() {
+    $min = (float) (aled08e_data()['marche']['agenceMin'] ?? 0);
+    $prix = (float) aled08e_px_prix()['prix'];
+    $l = aled08e_px_lancement();
+    $apres = $l ? max($prix, (float) $l['normal']) : $prix;
+    if ($min <= 0 || $prix <= 0) return '';
+    $haut = (int) floor($min / $prix);
+    $bas = (int) floor($min / $apres);
+    if ($haut < 2) return '';
+    return ($bas >= 2 && $bas < $haut) ? $bas . ' à ' . $haut : (string) $haut;
+}
+/* Ce qui nous distingue, dit dans le mail (Alex, 25 novembre 2026) : c'est moins cher, il y a un suivi, tout appartient au client */
+function aled08e_px_atouts() {
+    $D = aled08e_data();
+    $f = aled08e_px_fois_agence();
+    $mini = null;
+    foreach ((array) ($D['forfaits'] ?? []) as $x) if (($x['id'] ?? '') === 'base') $mini = $x;
+    return [
+        [$f !== '' ? $f . ' fois moins cher qu’une agence.' : 'Un prix doux.', 'Nos charges sont réduites au maximum, et c’est vous qui en profitez.'],
+        ['Un vrai suivi, pas seulement un site.', 'Un espace client pour tout suivre, des tutos pour chaque étape'
+            . ($mini ? ', et vos modifications incluses avec le forfait ' . ($mini['name'] ?? 'Mini') . ' (' . aled08e_euro_txt((float) ($mini['month'] ?? 0)) . ' par mois, sans engagement)' : '') . '.'],
+        ['Tout vous appartient.', 'Le site et le nom de domaine sont à vous : vous récupérez votre site quand vous voulez.'],
+    ];
+}
 /* D'où partent les mails, et où arrivent les réponses. Une adresse d'envoi à part protège les mails des clients :
  * si des prospects signalent nos messages, ce n'est pas l'adresse des clients qui en souffre. */
 function aled08e_px_expediteur() { $e = sanitize_email((string) get_option('aled08_prospection_expediteur', '')); return is_email($e) ? $e : aled08e_mail_from(); }
@@ -404,7 +430,9 @@ function aled08e_px_lien($id, $quoi) {
 }
 /* Les liens d'un aperçu ou d'un essai (prospect 0) : ils mènent aux vraies pages, sans rien noter */
 function aled08e_px_liens($id) {
-    $apercu = function_exists('aled08e_px_apercu_ok') && (!$id || aled08e_px_apercu_ok($id)) ? aled08e_px_apercu_lien($id) : '';
+    // l'aperçu personnalisé : éteint quand « apercuNote » dépasse 100 (data.json « prospection »), y compris dans un essai
+    $apercuOn = function_exists('aled08e_px_apercu_ok') && aled08e_px_offre()['apercu_note'] <= 100;
+    $apercu = $apercuOn && (!$id || aled08e_px_apercu_ok($id)) ? aled08e_px_apercu_lien($id) : '';
     if (!$id) return aled08e_px_destinations() + ['stop' => home_url('/'), 'apercu' => $apercu];
     return ['demo' => aled08e_px_lien($id, 'demo'), 'site' => aled08e_px_lien($id, 'site'), 'creer' => aled08e_px_lien($id, 'creer'), 'stop' => aled08e_px_lien($id, 'stop'), 'apercu' => $apercu];
 }
@@ -489,7 +517,17 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         return '<td style="padding:0 10px 10px 0;"><a href="' . esc_url($url) . '" style="display:inline-block;padding:11px 18px;border-radius:999px;' . $st . 'font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;line-height:1.2;text-decoration:none;">' . esc_html($txt) . '</a></td>';
     };
     $avecApercu = !$relance && !empty($l['apercu']);
-    $boutons = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;"><tr>' . $bouton($l['demo'], 'Essayer la démo', !$avecApercu) . $bouton($l['site'], 'Voir le site', false) . '</tr></table>';
+    $boutons = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;"><tr>' . $bouton($l['site'], 'Voir le site', !$avecApercu) . $bouton($l['creer'] ?? $l['site'], 'Créer mon site', false) . '</tr></table>';
+    // les trois arguments : moins cher, un suivi, tout vous appartient
+    $atouts = aled08e_px_atouts();
+    $atoutsH = ''; $atoutsT = '';
+    foreach ($atouts as $a) {
+        $atoutsH .= '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;background:#eafaf2;border-radius:12px;"><tr>'
+            . '<td width="34" valign="top" style="padding:10px 0 9px 12px;"><span style="display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;background:#7ad9b0;border-radius:11px;font-size:13px;font-weight:bold;color:#12392a;">&#10003;</span></td>'
+            . '<td valign="top" style="padding:9px 12px 9px 8px;font-size:15px;line-height:1.5;color:#2e2a47;"><b>' . esc_html($a[0]) . '</b> ' . esc_html($a[1]) . '</td></tr></table>';
+        $atoutsT .= '- ' . $a[0] . ' ' . $a[1] . "\n";
+    }
+    $rappel = 'Pour rappel : ' . mb_strtolower(mb_substr($atouts[0][0], 0, 1)) . rtrim(mb_substr($atouts[0][0], 1), '.') . ', un vrai suivi, et un site qui vous appartient.';
     $boutonApercu = $avecApercu ? '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;"><tr>' . $bouton($l['apercu'], 'Voir l’aperçu de votre site', true) . '</tr></table>' : '';
     $avecCode = (int) $r > 0 && (string) $code !== '';
     $lanc = aled08e_px_lancement();
@@ -525,8 +563,9 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         $corps = '<h1 style="margin:0 0 14px;font-size:21px;line-height:1.3;color:#2e2a47;">Bonjour,</h1>'
             . $P('Je me permets une petite relance de mon dernier message, au sujet d’un site internet ' . esc_html(aled08e_px_pour($p['article'] ?? '', $nom)) . '.')
             . ($phraseH !== '' ? $P($phraseH) : '')
+            . $P(esc_html($rappel))
             . $codeH
-            . $P($aClique ? 'Si vous avez eu le temps de regarder et qu’une question vous est venue, répondez simplement à ce message : je vous réponds.' : 'Envie de voir avant de décider ? La démo de l’espace client se visite librement.')
+            . $P('Une question ? Répondez simplement à ce message : je vous réponds.')
             . $boutons
             . $P('Si ce n’est pas le moment, aucun souci : je ne vous écrirai plus.');
         $apercu = 'Une petite relance au sujet de votre site internet.';
@@ -535,10 +574,11 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . $P($phraseH)
             . $P('Aujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :')
             . $pointsH . '<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>'
-            . $P('Je m’appelle Alex et je crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures, sans abonnement obligatoire.')
+            . $P('Je m’appelle Alex et je crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :')
+            . $atoutsH . '<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>'
             . $codeH
             . ($avecApercu ? $P('J’ai préparé un petit aperçu de ce que pourrait donner le site ' . esc_html($deX) . ' :', '0 0 10px') . $boutonApercu : '')
-            . $P('Envie de voir avant de décider ? Promenez-vous dans la démo de l’espace client : vous verrez comment on change soi-même un texte ou une photo, et comment on suit ses visites.')
+            . $P('Une question ? Répondez simplement à ce message : je vous réponds. Tout est aussi expliqué sur le site.')
             . $boutons;
         $apercu = mb_substr($m['phrase'], 0, 110);
     }
@@ -562,18 +602,18 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         . "\nPour ne plus rien recevoir, en un clic : " . $l['stop'] . "\n" . aled08e_px_identite();
     if ($relance) {
         $texte = "Bonjour,\n\nJe me permets une petite relance de mon dernier message, au sujet d’un site internet " . aled08e_px_pour($p['article'] ?? '', $nom) . ".\n\n"
-            . ($m['phrase'] !== '' ? $m['phrase'] . "\n\n" : '') . $codeT . "\n\n"
-            . ($aClique ? "Si vous avez eu le temps de regarder et qu’une question vous est venue, répondez simplement à ce message : je vous réponds.\nLa démo : " : "Envie de voir avant de décider ? La démo de l’espace client se visite librement :\n") . $l['demo'] . "\nLe site : " . $l['site'] . "\n\n"
+            . ($m['phrase'] !== '' ? $m['phrase'] . "\n\n" : '') . $rappel . "\n\n" . $codeT . "\n\n"
+            . "Une question ? Répondez simplement à ce message : je vous réponds.\nLe site : " . $l['site'] . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\n"
             . "Si ce n’est pas le moment, aucun souci : je ne vous écrirai plus.\n\nBonne journée,\nAlex · Les Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
     } else {
         $pt = '';
         foreach ((array) $m['points'] as $x) $pt .= '- ' . $x['titre'] . ' ' . $x['texte'] . "\n";
         $texte = "Bonjour,\n\n" . $m['phrase'] . "\n\nAujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :\n" . $pt . "\n"
-            . "Je m’appelle Alex et je crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures, sans abonnement obligatoire.\n\n"
+            . "Je m’appelle Alex et je crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :\n" . $atoutsT . "\n"
             . $codeT . "\n\n"
             . ($avecApercu ? 'J’ai préparé un petit aperçu de ce que pourrait donner le site ' . $deX . " :\n" . $l['apercu'] . "\n\n" : '')
-            . "Envie de voir avant de décider ? Promenez-vous dans la démo de l’espace client : vous verrez comment on change soi-même un texte ou une photo, et comment on suit ses visites.\n"
-            . 'Essayer la démo : ' . $l['demo'] . "\nVoir le site : " . $l['site'] . "\n\nBonne journée,\nAlex · Les Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
+            . "Une question ? Répondez simplement à ce message : je vous réponds. Tout est aussi expliqué sur le site.\n"
+            . 'Voir le site : ' . $l['site'] . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\nBonne journée,\nAlex · Les Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
     }
     return ['sujet' => $sujet, 'html' => $html, 'texte' => $texte];
 }
@@ -640,7 +680,7 @@ function aled08e_px_faire(WP_REST_Request $req) {
             }
             $m = (!empty($d['sujet']) || !empty($d['phrase'])) ? aled08e_px_morceaux($d, $pour) : ($pour === 'relancer' ? ['sujet' => '', 'phrase' => '', 'points' => []] : $p['morceaux']);
             if (is_wp_error($m)) return $m;
-            if (!empty($ex['entreprise']) && function_exists('aled08e_px_apercu_essai')) $p['apercu_lien'] = aled08e_px_apercu_essai($p, $m);
+            if (!empty($ex['entreprise']) && function_exists('aled08e_px_apercu_essai') && aled08e_px_offre()['apercu_note'] <= 100) $p['apercu_lien'] = aled08e_px_apercu_essai($p, $m);
             $code = 'MAIL' . aled08e_px_remise() . '-7KQ2';
             $fin = time() + aled08e_px_offre()['jours'] * DAY_IN_SECONDS;
         }
@@ -1069,7 +1109,7 @@ function aled08e_px_bloc_gestion($act, $nonce) {
         : '<b>Éteinte.</b> Aucun prospect n’est cherché, aucun mail ne part. Le Repéreur et le Facteur s’arrêtent tout de suite.') . '</p>';
     $h .= '<div class="app-cards ges-cards">'
         . '<div class="app-card c-sky"><span class="app-card-ico">' . aled08e_icon('send') . '</span><span><small>Écrits (7 jours)</small><strong>' . ((int) $s['envois'] + (int) $s['relances']) . '</strong></span></div>'
-        . '<div class="app-card c-lilac"><span class="app-card-ico">' . aled08e_icon('eye') . '</span><span><small>Clics démo (7 jours)</small><strong>' . (int) $s['clics_demo'] . '</strong></span></div>'
+        . '<div class="app-card c-lilac"><span class="app-card-ico">' . aled08e_icon('eye') . '</span><span><small>Clics dans les mails (7 jours)</small><strong>' . ((int) $s['clics_demo'] + (int) $s['clics_apercu'] + (int) $s['clics_site']) . '</strong></span></div>'
         . '<div class="app-card c-mint"><span class="app-card-ico">' . aled08e_icon('message-circle') . '</span><span><small>Réponses · commandes</small><strong>' . (int) $t['repondu'] . ' · ' . (int) $t['commande'] . '</strong></span></div>'
         . '<div class="app-card c-pink"><span class="app-card-ico">' . aled08e_icon('x') . '</span><span><small>Désinscrits</small><strong>' . (int) $t['desinscrit'] . '</strong></span></div></div>';
     $h .= '<p class="app-note">En attente : ' . (int) $t['nouveau'] . ' à vérifier, ' . (int) $t['a_ecrire'] . ' à écrire. Depuis le début : ' . ((int) $t['envoye'] + (int) $t['relance'] + (int) $t['repondu'] + (int) $t['desinscrit'] + (int) $t['commande']) . ' écrits, ' . (int) $r['clics_total'] . ' clics, ' . (int) $t['ecarte'] . ' écartés. '

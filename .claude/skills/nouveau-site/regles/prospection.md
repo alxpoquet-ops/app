@@ -24,9 +24,15 @@ Décision d'Alex (25 novembre 2026, soir) : **les prospects ont la même offre q
 - Une commande passée avec l'adresse e-mail du prospect le marque « commande » tout seul.
 - L'agent n'écrit aucun chiffre : le prix vient de la route.
 
-## L'aperçu personnalisé
+## Ce que le mail dit toujours
 
-Pour les meilleurs prospects (**note de 80 ou plus**), la route ajoute au mail un bouton « Voir l'aperçu de votre site ». Il mène à une page au nom de l'entreprise, avec son métier, sa ville et les trois points du mail. Tout le reste est un emplacement à remplir (« Votre premier service », « Votre plus belle photo ») : rien n'est inventé sur elle. La page n'est jamais dans Google, et son lien ne se devine pas. L'agent n'a rien à faire : la route décide et fabrique.
+Décision d'Alex (25 novembre 2026) : le mail lui-même doit convaincre. La route y écrit trois arguments, avec les chiffres de la configuration :
+
+1. **C'est moins cher** : « 4 à 5 fois moins cher qu'une agence » (calculé), parce que nos charges sont réduites au maximum.
+2. **Il y a un vrai suivi** : un espace client, des tutos pour chaque étape, les modifications incluses avec le forfait Mini.
+3. **Tout appartient au client** : le site et le nom de domaine sont à lui, il récupère son site quand il veut.
+
+Les deux boutons mènent au site et à « Créer mon site ». **Plus de démo ni d'aperçu personnalisé dans le mail** : Alex a trouvé qu'ils ne donnaient pas envie. (L'aperçu personnalisé existe toujours dans le code, éteint : `apercuNote` à 101 dans la configuration.) L'agent n'écrit aucun de ces arguments ni aucun chiffre : il donne le sujet, la phrase vraie et les trois points du métier.
 
 ## Qui cibler
 
@@ -114,7 +120,7 @@ Le Repéreur ne donne pas de chiffre : il coche ce qu'il a constaté (`criteres`
 
 - Le quota : 20 envois par jour la première semaine, puis 20 de plus chaque semaine depuis le premier envoi, jusqu'à 150 (options `aled08_prospection_quota_depart` et `aled08_prospection_quota_max`). Les relances comptent.
 - Au plus 30 envois par heure, en semaine de 8 h à 18 h (heure du site), et seulement quand le site et les ventes sont ouverts.
-- Une seule relance, **7 jours** après le premier mail, ou **3 jours** quand le prospect a cliqué dans le mail (la démo, l'aperçu, le site) : il a montré de l'intérêt, on ne le laisse pas refroidir. Jamais plus de 30 jours après le premier mail. Puis plus rien.
+- Une seule relance, **7 jours** après le premier mail, ou **3 jours** quand le prospect a cliqué dans le mail (le site, « Créer mon site ») : il a montré de l'intérêt, on ne le laisse pas refroidir. Jamais plus de 30 jours après le premier mail. Puis plus rien.
 - On ne relance jamais quelqu'un qui a répondu, s'est désinscrit ou a commandé. Le Répondeur lit les réponses et les note tout seul (`faire: "repondu"`, `"desinscrire"`, `"rebond"`). Alex peut aussi les noter dans son espace (« A répondu », « Ne plus lui écrire »).
 - **La pause automatique** : sur 7 jours et au moins 40 envois, plus de 5 % de désinscriptions ou plus de 8 % d'adresses fausses éteignent la prospection toute seule, et Alex est prévenu. Lui seul la rallume.
 

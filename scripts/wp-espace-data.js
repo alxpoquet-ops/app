@@ -81,7 +81,12 @@ process.stdout.write(
     // offre que tout le monde, le prix de lancement, donc remise 0 et plus de code personnel. Une seule relance, 7 jours après
     // le mail (3 jours pour ceux qui ont cliqué), dans les 30 jours. L'aperçu personnalisé du site part aux prospects notés
     // 80 ou plus. Pour changer : config.prospection.
-    prospection: Object.assign({ remise: 0, jours: 30, relanceJours: 7, relanceClicJours: 3, apercuNote: 80 }, cfg.prospection || {}),
+    // apercuNote 101 : l'aperçu personnalisé du site est éteint (Alex, 25 novembre 2026 : il ne donne pas envie ; le mail se
+    // concentre sur trois arguments : moins cher, un suivi, tout vous appartient). 80 le rallumerait pour les meilleurs prospects.
+    prospection: Object.assign({ remise: 0, jours: 30, relanceJours: 7, relanceClicJours: 3, apercuNote: 101 }, cfg.prospection || {}),
+    // le prix d'entrée d'un site fait par une agence (config.marche, sources citées sur la page Comparatif) : pour dire
+    // « 4 à 5 fois moins cher qu'une agence » dans le mail de prospection, calculé et jamais écrit à la main
+    marche: { agenceMin: (cfg.marche || {}).agenceMin || 0 },
     // l'identité de l'expéditeur, écrite au pied de chaque mail de prospection (jamais en dur dans l'extension)
     identite: { nom: site.name, proprietaire: site.owner, statut: (site.legal || {}).status || '', siren: (site.legal || {}).siren || '', codePostal: (site.address || {}).postalCode || '', ville: (site.address || {}).city || '' },
     // nos pages « Votre métier » (src/content/metiers.js) : les métiers que le Repéreur cherche d'abord (+10 à la note)

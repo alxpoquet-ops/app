@@ -27,7 +27,7 @@ Pour chaque prospect de `a_verifier` :
 
 ## 2. Écrire le premier mail
 
-Pour chaque prospect de `a_ecrire`, dans la limite du quota, tu rédiges seulement trois morceaux. La route fabrique le mail validé par Alex (le logo, « Bonjour, », le paragraphe « Aujourd’hui, avant de pousser une porte… », la présentation d'Alex, l'encadré du prix de lancement, le bouton de l'aperçu personnalisé pour les prospects notés 80 ou plus, la démo, les boutons, la signature, le pied avec la source et la désinscription).
+Pour chaque prospect de `a_ecrire`, dans la limite du quota, tu rédiges seulement trois morceaux. La route fabrique le mail validé par Alex (le logo, « Bonjour, », le paragraphe « Aujourd’hui, avant de pousser une porte… », la présentation d'Alex, les trois arguments « moins cher, un vrai suivi, tout vous appartient », l'encadré du prix de lancement, les deux boutons vers le site, la signature, le pied avec la source et la désinscription). Ne répète pas ces arguments dans tes trois points : les tiens parlent du métier.
 
 - **`sujet`** (10 à 90 caractères) : le nom de l'entreprise et une idée simple, par exemple « Boulangerie Martin : vos clients vous cherchent sur Google ». Pas de majuscules partout, pas de « Re : », pas de prix, pas de « gratuit » ni d'« urgent ».
 - **`phrase`** (40 à 320 caractères) : la phrase vraie et personnelle. **Seulement ce que le Repéreur a constaté** (`raisons`, `recherche`, `source`), avec le nom de l'entreprise. Par exemple : « En cherchant « boulangerie Charleville-Mézières » sur Google, j’ai trouvé la fiche de la Boulangerie Martin… mais pas de site internet. » Pour un site cassé : « …j’ai trouvé le site de la Boulangerie Martin, mais il s’affiche mal sur téléphone. » Rien d'inventé : ni un nombre d'avis, ni un compliment, ni une spécialité qui ne sont pas dans `raisons`.
@@ -58,7 +58,7 @@ Avant le premier envoi d'un nouveau métier, tu peux regarder le résultat : `fa
 
 ## 3. Relancer, une seule fois
 
-Pour chaque prospect de `a_relancer` : `{ "prospect": N, "faire": "relancer" }`. La route écrit une relance courte et gentille, dans le même fil, rappelle le prix de lancement, et dit que c'est le dernier message. Pour un prospect qui a cliqué, elle l'invite à poser sa question en répondant au mail. Tu peux ajouter `phrase` (240 caractères au plus) si tu as quelque chose de vrai et d'utile à dire ; sinon, rien.
+Pour chaque prospect de `a_relancer` : `{ "prospect": N, "faire": "relancer" }`. La route écrit une relance courte et gentille, dans le même fil, rappelle les trois arguments et le prix de lancement, invite à poser une question en répondant au mail, et dit que c'est le dernier message. Tu peux ajouter `phrase` (240 caractères au plus) si tu as quelque chose de vrai et d'utile à dire ; sinon, rien.
 
 Après la relance, plus rien : ni deuxième relance, ni autre mail. On ne relance jamais quelqu'un qui a répondu, s'est désinscrit ou a commandé (la route le refuse).
 

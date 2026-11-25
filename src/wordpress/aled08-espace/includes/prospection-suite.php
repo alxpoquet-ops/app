@@ -246,7 +246,7 @@ function aled08e_px_debrief_texte() {
     $l[] = 'La prospection, aujourd’hui ' . wp_date('l j F') . ' :';
     $l[] = '';
     $l[] = '- ' . $n((int) $j['envois'] + (int) $j['relances'], 'mail envoyé', 'mails envoyés') . ' (' . $n($j['envois'], 'premier message', 'premiers messages') . ', ' . $n($j['relances'], 'relance', 'relances') . ')';
-    $l[] = '- ' . $n($clics, 'clic', 'clics') . ' dans les mails (démo : ' . (int) $j['clics_demo'] . ', aperçu du site : ' . (int) $j['clics_apercu'] . ', site : ' . (int) $j['clics_site'] . ')';
+    $l[] = '- ' . $n($clics, 'clic', 'clics') . ' dans les mails';
     $l[] = '- ' . $n($j['repondus'], 'réponse', 'réponses') . ', dont ' . $n($j['interesses'], 'intéressé', 'intéressés');
     $l[] = '- ' . $n($j['desinscrits'], 'refus (désinscription)', 'refus (désinscriptions)') . ' et ' . $n($j['rebonds'], 'adresse fausse', 'adresses fausses');
     $l[] = '- ' . $n($j['commandes'], 'commande', 'commandes');
