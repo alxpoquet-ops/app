@@ -209,6 +209,7 @@ require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
 require_once __DIR__ . '/includes/pages-google.php';
 require_once __DIR__ . '/includes/mes-pages.php'; // « Mes pages » : la liste de toutes les pages du site du client (onglet Mon site)
+require_once __DIR__ . '/includes/statistiques.php'; // l'onglet « Statistiques » de Mon site (meilleures pages, visiteurs, Google)
 require_once __DIR__ . '/includes/regles.php';
 require_once __DIR__ . '/includes/agents.php';
 require_once __DIR__ . '/includes/mirette.php';
@@ -1165,7 +1166,7 @@ function aled08e_dashboard() {
         if ($parts[0] === '') continue;
         $ranks[] = '<li><span>' . esc_html($parts[0]) . '</span>' . (isset($parts[1]) && $parts[1] !== '' ? '<b>' . esc_html($parts[1]) . '<sup>e</sup></b>' : '') . '</li>';
     }
-    $siteTabs = ($cmd ? ['commande' => ['package', 'Ma commande']] : []) + ['demandes' => ['pencil', 'Modifications'], 'extras' => ['sparkles', 'Extras'], 'vacances' => [aled08e_est_boutique($uid) ? 'shopping-bag' : 'lock', 'Ma boutique']];
+    $siteTabs = ['stats' => ['chart-line', 'Statistiques']] + ($cmd ? ['commande' => ['package', 'Ma commande']] : []) + ['demandes' => ['pencil', 'Modifications'], 'extras' => ['sparkles', 'Extras'], 'vacances' => [aled08e_est_boutique($uid) ? 'shopping-bag' : 'lock', 'Ma boutique']];
     $siteInfo = ['ok' => true, 'host' => $host, 'etat' => $siteEtat, 'formule' => !aled08e_sans_formule($uid)];
     $avis = aled08e_meta($uid, 'avis');
     $mois = aled08e_meta($uid, 'stats_mois');
@@ -1250,6 +1251,12 @@ function aled08e_dashboard() {
           <?php echo aled08e_panel_commande($cmd, $u, $D); // phpcs:ignore ?>
         </div>
         <?php endif; ?>
+
+        <div class="app-panel" role="tabpanel" id="t-stats" aria-labelledby="tab-stats" hidden>
+          <?php echo aled08e_site_nav_html('stats', $siteTabs); // phpcs:ignore ?>
+          <h2 class="app-h">Mes statistiques</h2>
+          <?php echo aled08e_stats2_html($uid); // phpcs:ignore ?>
+        </div>
 
         <div class="app-panel" role="tabpanel" id="t-demandes" aria-labelledby="tab-demandes" hidden>
           <?php echo aled08e_site_nav_html('demandes', $siteTabs); // phpcs:ignore ?>

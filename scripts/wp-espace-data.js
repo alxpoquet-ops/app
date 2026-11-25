@@ -29,6 +29,7 @@ function tutosAide(list) {
 }
 
 const ICONS = [
+  'trophy', 'smartphone', 'monitor', 'navigation', // onglet Statistiques (25 novembre 2026)
   'key-round', 'shopping-bag', 'image-plus', 'plus', 'pencil', 'info', 'clock', 'sparkles', 'circle-check',
   'megaphone', 'search', 'lock', 'zap', 'scale',
   'house', 'message-circle', 'chart-line', 'qr-code', 'heart', 'gift', 'users', 'receipt', 'check', 'send', 'image-plus', 'download',

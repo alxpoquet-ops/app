@@ -845,6 +845,59 @@ ${C.ctaBand()}`;
 // « Pâtisserie Lila » (Site Essentiel avec l'option e-commerce, en ligne) ; chaque bouton affiche seulement un petit message.
 // Rien sur les outils, l'énergie, les jetons ou des tutos payants : ils n'existent plus dans l'espace.
 const DEMO = { nom: 'Pâtisserie Lila', prenom: 'Lila', domaine: 'patisserie-lila.fr', ref: 'DEMO-2611' };
+// L'onglet « Statistiques » de la démo : le même squelette que le vrai espace (src/wordpress/aled08-espace/includes/statistiques.php),
+// rempli par src/assets/js/main.js avec ces chiffres d'EXEMPLE (une pâtisserie imaginaire), annoncés comme tels.
+function demoStats() {
+  const jours = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date(Date.UTC(2026, 9, 27 + i));
+    const v = Math.max(4, Math.round(18 + i * 0.9 + 6 * Math.sin(i / 2.2) + (d.getUTCDay() === 6 ? 12 : 0)));
+    return { jour: d.toISOString().slice(0, 10), visiteurs: v, vues: Math.round(v * 2.7) };
+  });
+  const ex = {
+    etat: 'ok',
+    aujourdhui: { vues: 94, visiteurs: 37, actifs: 4 },
+    jours,
+    pages: { '/': 1180, '/nos-gateaux/': 642, '/gateau-d-anniversaire-rethel/': 418, '/commander/': 305, '/contact/': 214, '/la-boutique/': 176, '/horaires-et-acces/': 133, '/qui-sommes-nous/': 71 },
+    pages_infos: {
+      '/': { titre: 'Accueil', adresse: `https://${DEMO.domaine}/` },
+      '/nos-gateaux/': { titre: 'Nos gâteaux', adresse: `https://${DEMO.domaine}/nos-gateaux/` },
+      '/gateau-d-anniversaire-rethel/': { titre: 'Gâteau d’anniversaire à Rethel', adresse: `https://${DEMO.domaine}/gateau-d-anniversaire-rethel/`, google: true },
+      '/commander/': { titre: 'Commander un gâteau', adresse: `https://${DEMO.domaine}/commander/` },
+      '/contact/': { titre: 'Contact', adresse: `https://${DEMO.domaine}/contact/` },
+      '/la-boutique/': { titre: 'La boutique', adresse: `https://${DEMO.domaine}/la-boutique/` },
+      '/horaires-et-acces/': { titre: 'Horaires et accès', adresse: `https://${DEMO.domaine}/horaires-et-acces/` },
+      '/qui-sommes-nous/': { titre: 'Qui sommes-nous', adresse: `https://${DEMO.domaine}/qui-sommes-nous/` },
+    },
+    sources: { Google: 512, 'Accès direct': 268, 'Réseaux sociaux': 131, 'Autres moteurs': 24, 'Autres sites': 17 },
+    appareils: { mobile: 641, ordinateur: 262, tablette: 49 },
+    google: { etat: 'ok', jours: 28, apparitions: 6840, clics: 498, recherches: [
+      { recherche: 'pâtisserie rethel', position: 2.1, apparitions: 1210, clics: 164 },
+      { recherche: 'gâteau anniversaire rethel', position: 3.4, apparitions: 860, clics: 97 },
+      { recherche: 'pâtisserie lila', position: 1, apparitions: 402, clics: 121 },
+      { recherche: 'gâteau sur commande ardennes', position: 7.8, apparitions: 1530, clics: 41 },
+      { recherche: 'entremets rethel', position: 5.2, apparitions: 390, clics: 22 },
+      { recherche: 'boulangerie pâtisserie près de moi', position: 12.6, apparitions: 2448, clics: 18 },
+    ] },
+    serveur: { https: true, temps_reponse: 0.31 },
+    contenu: { pages: 12, articles: 3 },
+    boutique: { produits: 24, commandes_30j: 31, ventes_30j: 1184.5 },
+  };
+  const kpi = (k, ic, lab, c) => `<div class="st2-kpi c-${c}"><span class="st2-kpi-ico" aria-hidden="true">${icon(ic)}</span><small>${lab}</small><strong data-st2-v="${k}">…</strong><span class="st2-kpi-plus" data-st2-p="${k}"></span></div>`;
+  const bloc = (id, ic, titre, corps, aide) => `<section class="st2-bloc" data-st2-bloc="${id}"><h3>${icon(ic)}<span>${titre}</span></h3>${corps}<p class="st2-aide">${aide}</p></section>`;
+  return `<div class="st2" data-stats2 data-demo="1" data-exemple="${esc(JSON.stringify(ex))}">`
+    + '<p class="st2-maj" data-st2-maj aria-live="polite">Connexion à votre site…</p><p class="esp-warn" data-st2-msg hidden></p>'
+    + `<div class="st2-kpis">${kpi('visiteurs', 'users', 'Visiteurs sur 30 jours', 'mint')}${kpi('vues', 'eye', 'Pages vues sur 30 jours', 'sky')}${kpi('semaine', 'calendar-check', 'Visiteurs cette semaine', 'lilac')}${kpi('google', 'search', 'Clics depuis Google', 'peach')}</div>`
+    + bloc('pages', 'trophy', 'Vos meilleures pages', '<ol class="st2-pages" data-st2="pages"></ol>', 'Les pages les plus vues sur les 30 derniers jours. La part indique quelle proportion de toutes les pages vues elle représente.')
+    + bloc('jours', 'chart-line', 'Vos visiteurs, jour par jour', '<div class="st2-jours" data-st2="jours"></div><p class="st2-ligne" data-st2="record"></p>', 'Chaque barre est une journée : le nombre de personnes différentes venues sur votre site ce jour-là.')
+    + '<div class="st2-duo">'
+    + bloc('sources', 'navigation', 'D’où viennent vos visiteurs', '<ul class="st2-barres" data-st2="sources"></ul>', 'Accès direct : votre adresse tapée, un favori, un lien dans un e-mail ou un SMS.')
+    + bloc('appareils', 'smartphone', 'Sur quel appareil', '<ul class="st2-barres" data-st2="appareils"></ul>', 'Sur téléphone, un site doit se lire sans zoomer : le vôtre est fait pour.')
+    + '</div>'
+    + bloc('google', 'search-check', 'Sur Google', '<div class="st2-google" data-st2="google"></div>', 'Apparitions : combien de fois votre site s’est affiché dans les résultats. Position : votre place moyenne dans la page de Google (1 = tout en haut).')
+    + bloc('infos', 'info', 'Votre site en bref', '<dl class="st2-infos" data-st2="infos"></dl>', 'La vitesse est le temps moyen que met votre site à répondre. Sous une demi-seconde, c’est très rapide.')
+    + '<p class="app-note">Mesure d’audience sans cookie : vos visiteurs sont comptés de façon anonyme, sans aucune donnée personnelle gardée. Vos propres visites, quand vous êtes connecté, et celles des robots ne sont pas comptées.</p>'
+    + '</div>';
+}
 // Les tutos d'une partie de l'espace (champ `espace` des tutos), comme les liens « ? » du vrai espace (includes/aide.php)
 function demoAide(espace, max = 3) {
   const l = C.TUTOS.tutos.filter((t) => t.espace === espace);
@@ -862,7 +915,7 @@ function monEspacePage() {
   const SITES_A = ateliers.find((x) => x.id === 'sites') || { monstre: 'bricou', color: 'mint' };
   const tabM = (id, m, label, on) => `<button type="button" role="tab" id="tab-${id}" aria-controls="t-${id}" aria-selected="${on ? 'true' : 'false'}"${on ? '' : ' tabindex="-1"'} data-tab="${id}"><span class="tab-monstre" aria-hidden="true">${mon(m)}</span><span class="tab-ico" aria-hidden="true">${icon({ accueil: 'house', site: 'globe', outils: 'sparkles', compte: 'circle-user' }[id] || 'house')}</span><span>${label}</span></button>`;
   const tabS = (id, ic, label) => `<button type="button" role="tab" id="tab-${id}" aria-controls="t-${id}" aria-selected="false" tabindex="-1" data-tab="${id}" data-groupe="site" class="tab-sous">${icon(ic)}<span>${label}</span></button>`;
-  const SITE_TABS = [['commande', 'package', 'Ma commande'], ['demandes', 'pencil', 'Modifications'], ['extras', 'sparkles', 'Extras'], ['vacances', 'shopping-bag', 'Ma boutique']];
+  const SITE_TABS = [['stats', 'chart-line', 'Statistiques'], ['commande', 'package', 'Ma commande'], ['demandes', 'pencil', 'Modifications'], ['extras', 'sparkles', 'Extras'], ['vacances', 'shopping-bag', 'Ma boutique']];
   const siteNav = (actif) => `<nav class="mm-site-nav" aria-label="Mon site">${SITE_TABS.map(([id, ic, l]) => `<button type="button" data-go="${id}"${id === actif ? ' aria-current="page"' : ''}>${icon(ic)}<span>${l}</span></button>`).join('')}</nav>`;
   const mensuel = ABO.month + C.DOM;
   // ---- Accueil : le fil de la bande et les petits mots (exemples inventés)
@@ -1003,6 +1056,11 @@ function monEspacePage() {
             <li><span><strong>Horaires d’été</strong><small>envoyée le 10 novembre</small></span><em class="st st-done">Faite</em></li>
             <li><span><strong>Nouvelle photo de l’accueil</strong><small>envoyée le 3 novembre</small></span><em class="st st-done">Faite</em></li>
           </ul>
+        </div>
+
+        <div class="app-panel" role="tabpanel" id="t-stats" aria-labelledby="tab-stats" hidden>
+          <h2 class="app-h">Mes statistiques</h2>
+          ${siteNav('stats')}${demoStats()}
         </div>
 
         <div class="app-panel" role="tabpanel" id="t-commande" aria-labelledby="tab-commande" hidden>

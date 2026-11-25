@@ -1736,3 +1736,157 @@
     try { localStorage.setItem('mm-theme', t); } catch (e) {}
   });
 })();
+
+/* ---------- Statistiques (onglet de « Mon site », espace client et démo, 25 novembre 2026) ----------
+   Le squelette vient de includes/statistiques.php (ou de la démo). Les chiffres : le connecteur du site du client
+   (visiteurs et pages vues jour par jour, pages les plus vues, provenance, appareils, Google). Tout est calculé ici,
+   clairement : totaux, évolution sur 7 jours, meilleures pages avec leur part, record, vitesse. Rien d'inventé. */
+(function () {
+  var box = document.querySelector('[data-stats2]');
+  if (!box) return;
+  var $ = function (s) { return box.querySelector(s); };
+  var nf = function (n) { return Math.round(n).toLocaleString('fr-FR'); };
+  var pc = function (n) { return (Math.round(n * 10) / 10).toLocaleString('fr-FR') + ' %'; };
+  var mk = function (t, cls, txt) { var e = document.createElement(t); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  var vider = function (n) { while (n && n.firstChild) n.removeChild(n.firstChild); };
+  var JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  var MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  var date = function (s) { var d = new Date(s + 'T12:00:00'); return isNaN(d) ? s : JOURS[d.getDay()] + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()]; };
+  var court = function (s) { var d = new Date(s + 'T12:00:00'); return isNaN(d) ? '' : d.getDate() + ' ' + MOIS[d.getMonth()]; };
+  // le nom d'une page : son vrai titre si on le connaît, sinon tiré de son adresse
+  var nomPage = function (chemin, info) {
+    if (info && info.titre) return info.titre;
+    if (!chemin || chemin === '/') return 'Accueil';
+    var s = chemin.replace(/\/+$/, '').split('/').pop().replace(/[-_]+/g, ' ');
+    try { s = decodeURIComponent(s); } catch (e) {}
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
+  var set = function (k, v, plus, ton) {
+    var e = $('[data-st2-v="' + k + '"]'); if (e) e.textContent = v;
+    var p = $('[data-st2-p="' + k + '"]'); if (p) { p.textContent = plus || ''; p.className = 'st2-kpi-plus' + (ton ? ' is-' + ton : ''); }
+  };
+  function barres(n, obj, total, ordre) {
+    vider(n); if (!n) return;
+    var cles = (ordre || Object.keys(obj || {})).filter(function (k) { return (obj || {})[k] > 0; });
+    if (!cles.length || !total) { n.appendChild(mk('li', 'st2-vide', 'Pas encore de visite mesurée.')); return; }
+    cles.sort(function (a, b) { return obj[b] - obj[a]; }).forEach(function (k) {
+      var part = obj[k] / total * 100, li = mk('li');
+      var l = mk('span', 'st2-b-l', k.charAt(0).toUpperCase() + k.slice(1)), v = mk('span', 'st2-b-v', pc(part)), b = mk('span', 'st2-b-b'), i = mk('i');
+      i.style.width = Math.max(2, part) + '%'; b.appendChild(i); li.appendChild(l); li.appendChild(v); li.appendChild(b);
+      li.title = nf(obj[k]) + ' visiteurs'; n.appendChild(li);
+    });
+  }
+  function afficher(d) {
+    var jours = d.jours || [], vis = 0, vues = 0;
+    jours.forEach(function (j) { vis += +j.visiteurs || 0; vues += +j.vues || 0; });
+    var sem = 0, avant = 0;
+    jours.slice(-7).forEach(function (j) { sem += +j.visiteurs || 0; });
+    jours.slice(-14, -7).forEach(function (j) { avant += +j.visiteurs || 0; });
+    set('visiteurs', nf(vis), vis ? (Math.round(vues / vis * 10) / 10).toLocaleString('fr-FR') + ' pages vues par visiteur' : 'Pas encore de visite');
+    set('vues', nf(vues), d.aujourdhui ? 'Aujourd’hui : ' + nf(d.aujourdhui.vues || 0) + ' pages vues' : '');
+    var evol = avant ? Math.round((sem - avant) / avant * 100) : null;
+    set('semaine', nf(sem), evol === null ? (sem ? 'Première semaine mesurée' : '7 derniers jours') : (evol > 0 ? '+' : '') + evol + ' % par rapport à la semaine d’avant', evol === null ? '' : (evol > 0 ? 'haut' : (evol < 0 ? 'bas' : '')));
+    var g = d.google || {};
+    set('google', g.etat === 'ok' ? nf(g.clics || 0) : '–', g.etat === 'ok' ? nf(g.apparitions || 0) + ' apparitions sur ' + (g.jours || 28) + ' jours' : 'Google n’est pas encore relié');
+
+    // les meilleures pages
+    var ol = $('[data-st2="pages"]'); vider(ol);
+    var pages = d.pages || {}, infos = d.pages_infos || {}, cles = Object.keys(pages).sort(function (a, b) { return pages[b] - pages[a]; });
+    var totPages = vues || cles.reduce(function (s, k) { return s + pages[k]; }, 0), max = cles.length ? pages[cles[0]] : 1;
+    if (!cles.length) ol.appendChild(mk('li', 'st2-vide', 'Vos pages les plus vues s’afficheront ici dès les premières visites.'));
+    cles.forEach(function (k, i) {
+      var info = infos[k] || null, li = mk('li', i < 3 ? 'is-top' : '');
+      li.appendChild(mk('span', 'st2-rang', String(i + 1)));
+      var corps = mk('span', 'st2-p-corps'), titre = info && info.adresse ? mk('a', 'st2-p-titre', nomPage(k, info)) : mk('span', 'st2-p-titre', nomPage(k, info));
+      if (info && info.adresse) { titre.href = info.adresse; titre.target = '_blank'; titre.rel = 'noopener'; }
+      corps.appendChild(titre);
+      var sous = mk('small', 'st2-p-sous', k); if (info && info.google) { var bg = mk('em', 'st2-badge', 'Page Google'); sous.appendChild(bg); }
+      corps.appendChild(sous);
+      var b = mk('span', 'st2-p-b'), bi = mk('i'); bi.style.width = Math.max(3, pages[k] / max * 100) + '%'; b.appendChild(bi); corps.appendChild(b);
+      li.appendChild(corps);
+      var chiffres = mk('span', 'st2-p-chiffres'); chiffres.appendChild(mk('strong', '', nf(pages[k]))); chiffres.appendChild(mk('small', '', 'vues · ' + pc(totPages ? pages[k] / totPages * 100 : 0)));
+      li.appendChild(chiffres); ol.appendChild(li);
+    });
+
+    // jour par jour
+    var zone = $('[data-st2="jours"]'); vider(zone);
+    var maxJ = Math.max.apply(null, jours.map(function (j) { return +j.visiteurs || 0; }).concat([1]));
+    var grille = mk('div', 'st2-j-grille'); grille.setAttribute('role', 'img');
+    grille.setAttribute('aria-label', 'Visiteurs par jour sur 30 jours, ' + nf(vis) + ' au total');
+    jours.forEach(function (j, i) {
+      var c = mk('span', 'st2-j' + (i === jours.length - 1 ? ' is-auj' : '')), barre = mk('i');
+      barre.style.height = Math.max(2, (+j.visiteurs || 0) / maxJ * 100) + '%';
+      c.title = date(j.jour) + ' : ' + nf(j.visiteurs || 0) + ' visiteurs, ' + nf(j.vues || 0) + ' pages vues';
+      c.appendChild(barre); grille.appendChild(c);
+    });
+    zone.appendChild(grille);
+    if (jours.length) { var ax = mk('div', 'st2-j-axe'); ax.appendChild(mk('span', '', court(jours[0].jour))); ax.appendChild(mk('span', '', court(jours[Math.floor(jours.length / 2)].jour))); ax.appendChild(mk('span', '', 'Aujourd’hui')); zone.appendChild(ax); }
+    var rec = $('[data-st2="record"]'), best = null;
+    jours.forEach(function (j) { if (!best || (+j.visiteurs || 0) > (+best.visiteurs || 0)) best = j; });
+    rec.textContent = best && +best.visiteurs ? 'Meilleure journée : ' + date(best.jour) + ', avec ' + nf(best.visiteurs) + ' visiteur' + (+best.visiteurs > 1 ? 's' : '') + '. Moyenne : ' + (Math.round(vis / Math.max(1, jours.length) * 10) / 10).toLocaleString('fr-FR') + ' visiteurs par jour.' : 'Pas encore de visite sur les 30 derniers jours.';
+
+    // provenance et appareils
+    var src = d.sources || {}, totS = Object.keys(src).reduce(function (s, k) { return s + (+src[k] || 0); }, 0);
+    barres($('[data-st2="sources"]'), src, totS);
+    var ap = d.appareils || {}, ap2 = { 'téléphone': +ap.mobile || 0, 'ordinateur': +ap.ordinateur || 0, 'tablette': +ap.tablette || 0 };
+    barres($('[data-st2="appareils"]'), ap2, ap2['téléphone'] + ap2.ordinateur + ap2.tablette);
+
+    // Google
+    var gz = $('[data-st2="google"]'); vider(gz);
+    if (g.etat !== 'ok') {
+      gz.appendChild(mk('p', 'st2-vide', g.etat === 'vide' ? 'Google n’a pas encore montré votre site : ça vient dans les semaines qui suivent la mise en ligne.' : 'Vos chiffres Google s’afficheront ici dès que Google Search Console sera relié à votre site. On s’en occupe.'));
+    } else {
+      var gk = mk('div', 'st2-g-kpis');
+      [[nf(g.apparitions || 0), 'apparitions'], [nf(g.clics || 0), 'clics'], [g.apparitions ? pc((g.clics || 0) / g.apparitions * 100) : '–', 'des apparitions donnent un clic']].forEach(function (x) { var s = mk('span'); s.appendChild(mk('strong', '', x[0])); s.appendChild(mk('small', '', x[1])); gk.appendChild(s); });
+      gz.appendChild(gk);
+      var rl = mk('ol', 'st2-recherches');
+      (g.recherches || []).slice(0, 8).forEach(function (r) {
+        var li = mk('li'), t = mk('span', 'st2-r-t', r.recherche), pos = Math.max(1, Math.round(r.position || 0));
+        t.appendChild(mk('small', '', nf(r.apparitions || 0) + ' apparitions · ' + nf(r.clics || 0) + ' clic' + ((r.clics || 0) > 1 ? 's' : '')));
+        var p = mk('span', 'st2-r-pos' + (pos <= 3 ? ' is-haut' : (pos <= 10 ? ' is-page1' : '')));
+        p.appendChild(mk('strong', '', pos + (pos === 1 ? 're' : 'e'))); p.appendChild(mk('small', '', pos <= 10 ? 'page 1' : 'page ' + Math.ceil(pos / 10)));
+        li.appendChild(t); li.appendChild(p); rl.appendChild(li);
+      });
+      if (rl.children.length) { gz.appendChild(mk('p', 'st2-sous-titre', 'Les recherches qui vous amènent')); gz.appendChild(rl); }
+    }
+
+    // le site en bref
+    var dl = $('[data-st2="infos"]'); vider(dl);
+    var s = d.serveur || {}, c = d.contenu || {}, b = d.boutique, t = s.temps_reponse;
+    var lignes = [
+      ['Votre site', d.etat === 'ok' ? 'En ligne' : '–', d.etat === 'ok' ? 'ok' : ''],
+      ['Cadenas (HTTPS)', s.https ? 'Actif' : (s.https === false ? 'À vérifier' : '–'), s.https ? 'ok' : ''],
+      ['Vitesse', t == null ? 'Pas encore mesurée' : (t < 0.6 ? 'Très rapide' : (t < 1.2 ? 'Correcte' : 'À améliorer')) + (t == null ? '' : ' (' + (Math.round(t * 100) / 100).toLocaleString('fr-FR') + ' s)'), t != null && t < 0.6 ? 'ok' : ''],
+      ['Pages en ligne', c.pages != null ? nf(c.pages) : '–', ''],
+      ['Visiteurs en ce moment', d.aujourdhui ? nf(d.aujourdhui.actifs || 0) + ' dans la dernière heure' : '–', '']
+    ];
+    if (c.articles) lignes.push(['Articles', nf(c.articles), '']);
+    if (b) { lignes.push(['Produits en vente', nf(b.produits || 0), '']); lignes.push(['Commandes sur 30 jours', nf(b.commandes_30j || 0) + (b.ventes_30j ? ' · ' + (Math.round(b.ventes_30j * 100) / 100).toLocaleString('fr-FR') + ' €' : ''), '']); }
+    lignes.forEach(function (l) { var dv = mk('div', l[2] ? 'is-' + l[2] : ''); dv.appendChild(mk('dt', '', l[0])); dv.appendChild(mk('dd', '', l[1])); dl.appendChild(dv); });
+  }
+
+  var msg = $('[data-st2-msg]'), maj = $('[data-st2-maj]');
+  if (box.getAttribute('data-demo') === '1') {
+    try { afficher(JSON.parse(box.getAttribute('data-exemple') || '{}')); } catch (e) {}
+    maj.textContent = 'Exemple : les chiffres de votre site s’affichent ici, mis à jour toutes les heures.';
+    return;
+  }
+  box.classList.add('is-attente'); // pas de faux « 0 visiteur » : les chiffres n'apparaissent qu'une fois vraiment reçus
+  var MSG = { non_relie: 'Votre site n’est pas encore relié à votre espace : vos chiffres apparaîtront ici dès que c’est fait. On s’en occupe.', connecteur_ancien: 'L’extension de votre site doit être mise à jour pour afficher vos chiffres. On s’en occupe.', injoignable: 'Votre site ne répond pas pour le moment : nouvel essai dans quelques minutes.' };
+  var le = 0;
+  var quand = function () { var m = Math.round((Date.now() / 1000 - le) / 60); return m < 1 ? 'à l’instant' : (m < 60 ? 'il y a ' + m + ' min' : 'il y a ' + Math.floor(m / 60) + ' h'); };
+  function charger() {
+    if (document.hidden) return;
+    var f = new FormData(); f.append('action', 'aled08e_stats2'); f.append('_n', box.getAttribute('data-nonce') || '');
+    fetch(box.getAttribute('data-ajax'), { method: 'POST', body: f, credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (r) {
+      var d = r && r.data ? r.data : {};
+      if (!r.success || d.etat !== 'ok') { msg.textContent = MSG[d.etat] || 'Vos chiffres ne sont pas disponibles pour le moment.'; msg.hidden = false; maj.textContent = ''; return; }
+      msg.hidden = true; le = d.le || Date.now() / 1000; afficher(d); box.classList.remove('is-attente'); maj.textContent = 'Chiffres mis à jour ' + quand() + ', puis toutes les heures.';
+    }).catch(function () { msg.textContent = MSG.injoignable; msg.hidden = false; });
+  }
+  // on ne charge les chiffres que quand l'onglet est ouvert (ou s'il l'est déjà)
+  var panneau = box.closest('[role="tabpanel"]'), charge = false;
+  var essayer = function () { if (!charge && (!panneau || !panneau.hidden)) { charge = true; charger(); setInterval(charger, 3600000); } };
+  if (panneau && window.MutationObserver) new MutationObserver(essayer).observe(panneau, { attributes: true, attributeFilter: ['hidden'] });
+  essayer();
+})();
