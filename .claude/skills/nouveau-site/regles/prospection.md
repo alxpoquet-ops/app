@@ -13,7 +13,7 @@ La CNIL permet d'écrire à un professionnel sans son accord préalable, à ces 
 3. **Une offre liée à son métier** : un site internet pour son activité. Les trois points du mail parlent de son métier à elle.
 4. **L'identité de l'expéditeur, la source de l'adresse et la désinscription en un clic** dans chaque mail. La route les ajoute elle-même : l'agent n'écrit jamais le pied du mail.
 5. **La liste d'opposition** : une entreprise ou une adresse qui s'est désinscrite (ou qui a répondu « STOP ») ne reçoit plus jamais rien. La route la garde même si le prospect est effacé, et refuse tout ajout ou envoi qui la touche.
-6. **On ne parle jamais d'IA**, ni d'outil automatique. C'est Alex qui écrit.
+6. **On ne parle jamais d'IA**, ni d'outil automatique. **C'est la bande des Minis Monstres qui écrit, au « nous »** : une petite famille (décision d'Alex, 25 novembre 2026). Jamais « je » ni le prénom d'Alex dans un mail ; le mail est signé « La bande des Minis Monstres ».
 7. **Rien de faux** : la phrase personnelle dit seulement ce que le Repéreur a vraiment constaté. Pas de promesse de résultat (« plus de clients garantis »), pas de fausse urgence, pas de prix écrit à la main (le prix et la remise viennent de la configuration).
 
 ## L'offre du mail
@@ -29,10 +29,10 @@ Décision d'Alex (25 novembre 2026, soir) : **les prospects ont la même offre q
 Décision d'Alex (25 novembre 2026) : le mail lui-même doit convaincre. La route y écrit trois arguments, avec les chiffres de la configuration :
 
 1. **C'est moins cher** : « 4 à 5 fois moins cher qu'une agence » (calculé), parce que nos charges sont réduites au maximum.
-2. **Il y a un vrai suivi** : un espace client, des tutos pour chaque étape, les modifications incluses avec le forfait Mini.
+2. **Il y a un vrai suivi** : un espace client, des tutos pour chaque étape, une bande qui reste aux côtés du client. **Le mail ne parle pas du forfait Mini** (Alex, 25 novembre 2026).
 3. **Tout appartient au client** : le site et le nom de domaine sont à lui, il récupère son site quand il veut.
 
-Les deux boutons mènent au site et à « Créer mon site ». **Plus de démo ni d'aperçu personnalisé dans le mail** : Alex a trouvé qu'ils ne donnaient pas envie. (L'aperçu personnalisé existe toujours dans le code, éteint : `apercuNote` à 101 dans la configuration.) L'agent n'écrit aucun de ces arguments ni aucun chiffre : il donne le sujet, la phrase vraie et les trois points du métier.
+Puis il invite à voir les sites déjà en ligne (« Plutôt que mille mots, voyez par vous-même ») : le premier bouton mène à notre page Réalisations, le second à « Créer mon site ». **Plus de démo ni d'aperçu personnalisé dans le mail** : Alex a trouvé qu'ils ne donnaient pas envie. (L'aperçu personnalisé existe toujours dans le code, éteint : `apercuNote` à 101 dans la configuration.) L'agent n'écrit aucun de ces arguments ni aucun chiffre : il donne le sujet, la phrase vraie et les trois points du métier.
 
 ## Qui cibler
 
@@ -120,7 +120,7 @@ Le Repéreur ne donne pas de chiffre : il coche ce qu'il a constaté (`criteres`
 
 - Le quota : 20 envois par jour la première semaine, puis 20 de plus chaque semaine depuis le premier envoi, jusqu'à 150 (options `aled08_prospection_quota_depart` et `aled08_prospection_quota_max`). Les relances comptent.
 - Au plus 30 envois par heure, en semaine de 8 h à 18 h (heure du site), et seulement quand le site et les ventes sont ouverts.
-- Une seule relance, **7 jours** après le premier mail, ou **3 jours** quand le prospect a cliqué dans le mail (le site, « Créer mon site ») : il a montré de l'intérêt, on ne le laisse pas refroidir. Jamais plus de 30 jours après le premier mail. Puis plus rien.
+- Une seule relance, **7 jours** après le premier mail, ou **3 jours** quand le prospect a cliqué dans le mail (les sites déjà en ligne, « Créer mon site ») : il a montré de l'intérêt, on ne le laisse pas refroidir. Jamais plus de 30 jours après le premier mail. Puis plus rien.
 - On ne relance jamais quelqu'un qui a répondu, s'est désinscrit ou a commandé. Le Répondeur lit les réponses et les note tout seul (`faire: "repondu"`, `"desinscrire"`, `"rebond"`). Alex peut aussi les noter dans son espace (« A répondu », « Ne plus lui écrire »).
 - **La pause automatique** : sur 7 jours et au moins 40 envois, plus de 5 % de désinscriptions ou plus de 8 % d'adresses fausses éteignent la prospection toute seule, et Alex est prévenu. Lui seul la rallume.
 

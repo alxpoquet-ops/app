@@ -92,14 +92,11 @@ function aled08e_px_fois_agence() {
 }
 /* Ce qui nous distingue, dit dans le mail (Alex, 25 novembre 2026) : c'est moins cher, il y a un suivi, tout appartient au client */
 function aled08e_px_atouts() {
-    $D = aled08e_data();
     $f = aled08e_px_fois_agence();
-    $mini = null;
-    foreach ((array) ($D['forfaits'] ?? []) as $x) if (($x['id'] ?? '') === 'base') $mini = $x;
     return [
         [$f !== '' ? $f . ' fois moins cher qu’une agence.' : 'Un prix doux.', 'Nos charges sont réduites au maximum, et c’est vous qui en profitez.'],
-        ['Un vrai suivi, pas seulement un site.', 'Un espace client pour tout suivre, des tutos pour chaque étape'
-            . ($mini ? ', et vos modifications incluses avec le forfait ' . ($mini['name'] ?? 'Mini') . ' (' . aled08e_euro_txt((float) ($mini['month'] ?? 0)) . ' par mois, sans engagement)' : '') . '.'],
+        // sans parler du forfait Mini (Alex, 25 novembre 2026)
+        ['Un vrai suivi, pas seulement un site.', 'Un espace client pour tout suivre, des tutos pour chaque étape, et une bande qui reste à vos côtés.'],
         ['Tout vous appartient.', 'Le site et le nom de domaine sont à vous : vous récupérez votre site quand vous voulez.'],
     ];
 }
@@ -423,7 +420,7 @@ function aled08e_px_cle() {
     return $k;
 }
 function aled08e_px_signe($id, $quoi) { return substr(hash_hmac('sha256', 'px|' . (int) $id . '|' . $quoi, aled08e_px_cle()), 0, 20); }
-function aled08e_px_destinations() { return ['demo' => home_url('/mon-espace/demo/'), 'site' => home_url('/'), 'creer' => home_url('/creer-mon-site/')]; }
+function aled08e_px_destinations() { return ['demo' => home_url('/mon-espace/demo/'), 'site' => home_url('/'), 'creer' => home_url('/creer-mon-site/'), 'realisations' => home_url('/realisations/')]; }
 function aled08e_px_lien($id, $quoi) {
     if ($quoi === 'stop') return add_query_arg('lmm_stop', (int) $id . '-' . aled08e_px_signe($id, 'stop'), home_url('/'));
     return add_query_arg('lmm_px', (int) $id . '-' . $quoi . '-' . aled08e_px_signe($id, $quoi), home_url('/'));
@@ -434,7 +431,7 @@ function aled08e_px_liens($id) {
     $apercuOn = function_exists('aled08e_px_apercu_ok') && aled08e_px_offre()['apercu_note'] <= 100;
     $apercu = $apercuOn && (!$id || aled08e_px_apercu_ok($id)) ? aled08e_px_apercu_lien($id) : '';
     if (!$id) return aled08e_px_destinations() + ['stop' => home_url('/'), 'apercu' => $apercu];
-    return ['demo' => aled08e_px_lien($id, 'demo'), 'site' => aled08e_px_lien($id, 'site'), 'creer' => aled08e_px_lien($id, 'creer'), 'stop' => aled08e_px_lien($id, 'stop'), 'apercu' => $apercu];
+    return ['demo' => aled08e_px_lien($id, 'demo'), 'site' => aled08e_px_lien($id, 'site'), 'creer' => aled08e_px_lien($id, 'creer'), 'realisations' => aled08e_px_lien($id, 'realisations'), 'stop' => aled08e_px_lien($id, 'stop'), 'apercu' => $apercu];
 }
 
 /* ====================================================================== le mail (gabarit validé par Alex) */
@@ -444,6 +441,8 @@ function aled08e_px_interdits($t) {
     if (preg_match('#https?://|www\.|<[a-z/!]#i', $t)) return 'pas de lien ni de balise : la route ajoute elle-même les liens';
     if (preg_match('/\d\s*(€|euros?\b)|€/iu', $t)) return 'pas de prix : le prix vient de la configuration du site';
     if (preg_match('/\b(urgent|gratuit|dernière chance|exceptionnel(le)?)\b/iu', $t)) return 'pas de mot qui presse ou qui promet (urgent, gratuit, exceptionnel…)';
+    // la bande parle au « nous » (Alex, 25 novembre 2026 : « on est une famille ») : jamais « je »
+    if (preg_match('/(^|[\s«(])(je|moi)(\s|$)|(^|[\s«(])j[’\']\p{L}/iu', $t)) return 'on écrit au nom de la bande, au « nous » (« nous avons trouvé »), jamais « je »';
     return '';
 }
 function aled08e_px_morceaux($d, $pour = 'envoyer') {
@@ -517,7 +516,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         return '<td style="padding:0 10px 10px 0;"><a href="' . esc_url($url) . '" style="display:inline-block;padding:11px 18px;border-radius:999px;' . $st . 'font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;line-height:1.2;text-decoration:none;">' . esc_html($txt) . '</a></td>';
     };
     $avecApercu = !$relance && !empty($l['apercu']);
-    $boutons = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;"><tr>' . $bouton($l['site'], 'Voir le site', !$avecApercu) . $bouton($l['creer'] ?? $l['site'], 'Créer mon site', false) . '</tr></table>';
+    $boutons = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;"><tr>' . $bouton($l['realisations'] ?? $l['site'], 'Voir les sites déjà en ligne', !$avecApercu) . $bouton($l['creer'] ?? $l['site'], 'Créer mon site', false) . '</tr></table>';
     // les trois arguments : moins cher, un suivi, tout vous appartient
     $atouts = aled08e_px_atouts();
     $atoutsH = ''; $atoutsT = '';
@@ -561,25 +560,26 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
 
     if ($relance) {
         $corps = '<h1 style="margin:0 0 14px;font-size:21px;line-height:1.3;color:#2e2a47;">Bonjour,</h1>'
-            . $P('Je me permets une petite relance de mon dernier message, au sujet d’un site internet ' . esc_html(aled08e_px_pour($p['article'] ?? '', $nom)) . '.')
+            . $P('Nous nous permettons une petite relance de notre dernier message, au sujet d’un site internet ' . esc_html(aled08e_px_pour($p['article'] ?? '', $nom)) . '.')
             . ($phraseH !== '' ? $P($phraseH) : '')
             . $P(esc_html($rappel))
             . $codeH
-            . $P('Une question ? Répondez simplement à ce message : je vous réponds.')
+            . $P('Plutôt que mille mots, voyez par vous-même : voici des sites déjà en ligne, créés pour nos clients.')
             . $boutons
-            . $P('Si ce n’est pas le moment, aucun souci : je ne vous écrirai plus.');
+            . $P('Une question ? Répondez simplement à ce message : nous vous répondons. Et si ce n’est pas le moment, aucun souci : nous ne vous écrirons plus.', '8px 0 6px');
         $apercu = 'Une petite relance au sujet de votre site internet.';
     } else {
         $corps = '<h1 style="margin:0 0 14px;font-size:21px;line-height:1.3;color:#2e2a47;">Bonjour,</h1>'
             . $P($phraseH)
             . $P('Aujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :')
             . $pointsH . '<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>'
-            . $P('Je m’appelle Alex et je crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :')
+            . $P('Nous sommes la bande des Minis Monstres, une petite famille qui crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :')
             . $atoutsH . '<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>'
             . $codeH
-            . ($avecApercu ? $P('J’ai préparé un petit aperçu de ce que pourrait donner le site ' . esc_html($deX) . ' :', '0 0 10px') . $boutonApercu : '')
-            . $P('Une question ? Répondez simplement à ce message : je vous réponds. Tout est aussi expliqué sur le site.')
-            . $boutons;
+            . ($avecApercu ? $P('Nous avons préparé un petit aperçu de ce que pourrait donner le site ' . esc_html($deX) . ' :', '0 0 10px') . $boutonApercu : '')
+            . $P('Plutôt que mille mots, voyez par vous-même : voici des sites déjà en ligne, créés pour nos clients.')
+            . $boutons
+            . $P('Une question ? Répondez simplement à ce message : nous vous répondons.', '8px 0 6px');
         $apercu = mb_substr($m['phrase'], 0, 110);
     }
     $html = '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>' . esc_html($sujet) . '</title></head>'
@@ -592,7 +592,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         . '<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right:12px;vertical-align:middle;"><a href="' . esc_url($l['site']) . '"><img src="' . esc_url($logo) . '" width="46" height="46" alt="" style="display:block;border:0;border-radius:12px;"></a></td>'
         . '<td style="vertical-align:middle;"><span style="display:block;font-size:17px;font-weight:bold;letter-spacing:.02em;color:#2e2a47;">Les Minis Monstres</span><span style="display:block;font-size:12px;color:#5d5a78;">Des sites internet pour être visible, près de chez vous</span></td></tr></table></td></tr>'
         . '<tr><td style="padding:22px 24px 8px;">' . $corps . '</td></tr>'
-        . '<tr><td style="padding:4px 24px 20px;font-size:15px;line-height:1.5;color:#2e2a47;">Bonne journée,<br><b>Alex</b> · Les Minis Monstres<br><a href="' . esc_url($l['site']) . '" style="color:#2e2a47;text-decoration:none;">' . esc_html($hote) . '</a></td></tr>'
+        . '<tr><td style="padding:4px 24px 20px;font-size:15px;line-height:1.5;color:#2e2a47;">Bonne journée,<br><b>La bande des Minis Monstres</b><br><a href="' . esc_url($l['site']) . '" style="color:#2e2a47;text-decoration:none;">' . esc_html($hote) . '</a></td></tr>'
         . '<tr><td style="padding:14px 24px 20px;font-size:11.5px;line-height:1.5;color:#7a7795;border-top:1px solid #eee9f8;">' . $pied . '</td></tr>'
         . '</table></td></tr></table></body></html>';
 
@@ -601,27 +601,27 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         . ($relance ? 'C’est notre dernier message.' : 'C’est le seul message que vous recevrez, sauf une petite relance dans quelques jours.')
         . "\nPour ne plus rien recevoir, en un clic : " . $l['stop'] . "\n" . aled08e_px_identite();
     if ($relance) {
-        $texte = "Bonjour,\n\nJe me permets une petite relance de mon dernier message, au sujet d’un site internet " . aled08e_px_pour($p['article'] ?? '', $nom) . ".\n\n"
+        $texte = "Bonjour,\n\nNous nous permettons une petite relance de notre dernier message, au sujet d’un site internet " . aled08e_px_pour($p['article'] ?? '', $nom) . ".\n\n"
             . ($m['phrase'] !== '' ? $m['phrase'] . "\n\n" : '') . $rappel . "\n\n" . $codeT . "\n\n"
-            . "Une question ? Répondez simplement à ce message : je vous réponds.\nLe site : " . $l['site'] . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\n"
-            . "Si ce n’est pas le moment, aucun souci : je ne vous écrirai plus.\n\nBonne journée,\nAlex · Les Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
+            . "Plutôt que mille mots, voyez par vous-même : voici des sites déjà en ligne, créés pour nos clients.\n" . ($l['realisations'] ?? $l['site']) . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\n"
+            . "Une question ? Répondez simplement à ce message : nous vous répondons. Et si ce n’est pas le moment, aucun souci : nous ne vous écrirons plus.\n\nBonne journée,\nLa bande des Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
     } else {
         $pt = '';
         foreach ((array) $m['points'] as $x) $pt .= '- ' . $x['titre'] . ' ' . $x['texte'] . "\n";
         $texte = "Bonjour,\n\n" . $m['phrase'] . "\n\nAujourd’hui, avant de pousser une porte, on regarde d’abord sur son téléphone. Un site, c’est :\n" . $pt . "\n"
-            . "Je m’appelle Alex et je crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :\n" . $atoutsT . "\n"
+            . "Nous sommes la bande des Minis Monstres, une petite famille qui crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :\n" . $atoutsT . "\n"
             . $codeT . "\n\n"
-            . ($avecApercu ? 'J’ai préparé un petit aperçu de ce que pourrait donner le site ' . $deX . " :\n" . $l['apercu'] . "\n\n" : '')
-            . "Une question ? Répondez simplement à ce message : je vous réponds. Tout est aussi expliqué sur le site.\n"
-            . 'Voir le site : ' . $l['site'] . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\nBonne journée,\nAlex · Les Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
+            . ($avecApercu ? 'Nous avons préparé un petit aperçu de ce que pourrait donner le site ' . $deX . " :\n" . $l['apercu'] . "\n\n" : '')
+            . "Plutôt que mille mots, voyez par vous-même : voici des sites déjà en ligne, créés pour nos clients.\n"
+            . ($l['realisations'] ?? $l['site']) . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\nUne question ? Répondez simplement à ce message : nous vous répondons.\n\nBonne journée,\nLa bande des Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
     }
     return ['sujet' => $sujet, 'html' => $html, 'texte' => $texte];
 }
 /* L'envoi, par le site (wp_mail), depuis l'adresse des Minis Monstres ; les réponses vont chez Alex (Reply-To) */
 function aled08e_px_poster($a, $mail, $id, $relance = false) {
-    $entetes = array_values(array_filter((array) aled08e_mail_headers('Alex · Les Minis Monstres <' . aled08e_px_reponse() . '>'), function ($e) { return stripos($e, 'content-type:') !== 0; }));
+    $entetes = array_values(array_filter((array) aled08e_mail_headers('Les Minis Monstres <' . aled08e_px_reponse() . '>'), function ($e) { return stripos($e, 'content-type:') !== 0; }));
     $entetes[] = 'Content-Type: text/html; charset=UTF-8';
-    $entetes[] = 'From: "Alex · Les Minis Monstres" <' . aled08e_px_expediteur() . '>';
+    $entetes[] = 'From: "Les Minis Monstres" <' . aled08e_px_expediteur() . '>';
     // une adresse d'envoi à part : les retours d'adresses fausses y reviennent aussi (et pas dans la boîte des clients)
     $retour = is_email((string) get_option('aled08_prospection_expediteur', '')) ? aled08e_px_expediteur() : '';
     if ($id) {
@@ -645,7 +645,7 @@ function aled08e_px_poster($a, $mail, $id, $relance = false) {
 /* L'exemple du gabarit d'Alex, pour un aperçu ou un essai sans prospect */
 function aled08e_px_exemple() {
     return ['prospect' => 0, 'entreprise' => 'Boulangerie Martin', 'article' => 'la', 'url_source_email' => 'https://www.google.com/maps', 'source' => 'sa fiche Google', 'sujet' => 'Boulangerie Martin : vos clients vous cherchent sur Google',
-        'morceaux' => ['sujet' => 'Boulangerie Martin : vos clients vous cherchent sur Google', 'phrase' => 'En cherchant « boulangerie Charleville-Mézières » sur Google, j’ai trouvé la fiche de la Boulangerie Martin… mais pas de site internet.',
+        'morceaux' => ['sujet' => 'Boulangerie Martin : vos clients vous cherchent sur Google', 'phrase' => 'En cherchant « boulangerie Charleville-Mézières » sur Google, nous avons trouvé la fiche de la Boulangerie Martin… mais pas de site internet.',
             'points' => [['icone' => '🔎', 'titre' => 'Être trouvé', 'texte' => 'quand quelqu’un cherche une boulangerie près de chez lui.'],
                 ['icone' => '🕒', 'titre' => 'Vos horaires, vos spécialités et vos photos', 'texte' => 'toujours à jour, même le dimanche.'],
                 ['icone' => '🎂', 'titre' => 'Des commandes de gâteaux', 'texte' => 'qui arrivent même quand vous êtes au fournil.']]]];

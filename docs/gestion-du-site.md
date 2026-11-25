@@ -542,7 +542,7 @@ La durée se règle dans `src/config.js` (`fidelite.parrainageMois`, 6).
 **L'offre du mail** (décision d'Alex, 25 novembre 2026) : la même que pour tout le monde, le prix de lancement. Plus de code de réduction, jamais de « au lieu de ». Réglage : `prospection` dans `scripts/wp-espace-data.js` (`remise: 0`).
 
 **Ce qui est automatique.**
-- Les trois arguments du mail (Alex, 25 novembre 2026) : « 4 à 5 fois moins cher qu'une agence » (calculé avec `marche.agenceMin`), un vrai suivi, tout vous appartient. Les boutons mènent au site et à « Créer mon site ». Plus de démo ni d'aperçu personnalisé dans le mail : l'aperçu (`/?lmm_apercu=…`) reste dans le code, éteint par `apercuNote: 101` dans `scripts/wp-espace-data.js` (80 le rallume).
+- Les trois arguments du mail (Alex, 25 novembre 2026) : « 4 à 5 fois moins cher qu'une agence » (calculé avec `marche.agenceMin`), un vrai suivi (sans parler du forfait Mini), tout vous appartient. Le mail est écrit au « nous » et signé « La bande des Minis Monstres » : jamais « je » ni « Alex ». Il invite ensuite à voir les sites déjà en ligne (page Réalisations), puis à « Créer mon site ». Plus de démo ni d'aperçu personnalisé dans le mail : l'aperçu (`/?lmm_apercu=…`) reste dans le code, éteint par `apercuNote: 101` dans `scripts/wp-espace-data.js` (80 le rallume).
 - La relance, une seule : 7 jours après le mail, ou 3 jours pour ceux qui ont cliqué.
 - Le signal « entreprise récente » : créée depuis moins de 18 mois, + 15 points à la note.
 - Ce qui marche : les résultats par métier, département et type de sujet. Le Repéreur va deux fois sur trois vers le métier qui répond le mieux.
