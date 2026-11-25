@@ -13,7 +13,6 @@ Le constructeur passe toutes les deux heures de 7 h à 21 h, le contrôleur une 
 - Un site « à contrôler » ou « à corriger » depuis plus de six heures.
 - Une modification en retard (`en_retard` vrai) : le délai promis au client est dépassé.
 - Un travail bloqué par une erreur (lis le bilan des agents dans `passages`).
-- Un client qui attend l'appel d'Alex (rôle `alex`, « Alex appelle le client… ») depuis plus de 24 heures : rappelle-le à Alex dans ton point, avec le prénom et l'activité.
 
 Un client qui ne répond pas à une question n'est pas un problème : il est relancé tout seul.
 

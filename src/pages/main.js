@@ -83,7 +83,7 @@ function laMaisonPage() {
       <p>J’ai créé les Minis Monstres pour les artisans, les commerçants, les associations, et pour tous ceux qui démarrent avec un petit budget.</p>
       <p>Un site fait sur mesure coûte souvent plusieurs milliers d’euros. C’est le juste prix du travail fourni. Mais beaucoup d’entrepreneurs ne peuvent pas se le permettre, alors ils restent invisibles.</p>
       <p>Je suis autodidacte : je n’ai pas suivi d’école de développeur, j’ai appris en construisant, un site après l’autre. Je n’ai ni local, ni agence, ni loyer, ni bureaux à chauffer et à éclairer : je fais tout depuis chez moi. C’est ce qui me permet de vous proposer un prix doux, sans rien retirer au soin.</p>
-      <p>Car je tiens à faire les choses bien : je vous appelle avant de commencer, je vérifie chaque page, et je reste là ensuite. Un prix juste, c’est aussi un prix qui me permet de vivre de mon travail, et de le faire durer.</p>
+      <p>Car je tiens à faire les choses bien : chaque page est vérifiée avant la mise en ligne, et je reste là ensuite. Un prix juste, c’est aussi un prix qui me permet de vivre de mon travail, et de le faire durer.</p>
       <p>Notre époque a quelque chose de beau : les efforts peuvent enfin être récompensés. Je voudrais que chacun en profite, pas seulement ceux qui ont un gros budget.</p>
       <p class="lettre-signe"><strong>Alex</strong><span>Fondateur des Minis Monstres</span></p>
     </div>
@@ -121,15 +121,14 @@ function laMaisonPage() {
   <p class="section-sub">Quel que soit votre site, et quel que soit votre budget.</p>
   <div class="promesses">
     ${promesse('list-checks', 'Un questionnaire précis', 'Avant de commencer, vous répondez à des questions claires. Nous savons ce que vous voulez, vous savez ce que vous aurez.')}
-    ${promesse('phone-call', 'Un appel pour dégrossir', 'Alex vous téléphone avant que la bande se mette au travail. Vous parlez de votre activité, il prend des notes.')}
-    ${promesse('user-check', 'Une vérification, à chaque fois', 'Alex relit tout lui-même, sur ordinateur et sur téléphone. Rien n’est publié sans son contrôle.')}
+    ${promesse('user-check', 'Une vérification, à chaque fois', 'Chaque page est vérifiée sur ordinateur et sur téléphone. Rien n’est publié sans ce contrôle.')}
     ${promesse('key-round', 'La main sur tout', 'Votre espace client liste toutes vos pages. Vous modifiez vous-même, ou vous nous le demandez.')}
     ${promesse('piggy-bank', `${marche.foisTexte} fois moins cher qu’un indépendant`, `D’après les prix publics relevés en France, et avec plus d’avantages. Le détail est sur <a href="${sections.methode.path}">notre page sur les prix</a>.`)}
     ${promesse('heart-handshake', '« Je serai toujours là »', 'Une question, un doute, une idée pour votre site : vous écrivez, et c’est Alex qui vous répond.')}
   </div>
 </div></section>
 
-${C.ctaBand({ title: 'Et si on commençait par votre site ?', text: `Le ${esc(ESS.name)}, ${euro(ESS.price)} la création. Le prix s’affiche avant de payer, et Alex vous appelle ensuite.` })}`;
+${C.ctaBand({ title: 'Et si on commençait par votre site ?', text: `Le ${esc(ESS.name)}, ${euro(ESS.price)} la création. Le prix s’affiche avant de payer, et votre site est en ligne quelques heures après votre questionnaire.` })}`;
   return {
     path: MAISON.path,
     color: 'lilac',
@@ -217,7 +216,7 @@ function home() {
 
 <section class="section section-soft" id="deroulement"><div class="container">
   <h2 class="section-title">Comment se passe la création de votre site</h2>
-  <p class="section-sub">Sept étapes simples. Vous savez toujours où vous en êtes, et il n’y a pas de mauvaise surprise.</p>
+  <p class="section-sub">Six étapes simples. Vous savez toujours où vous en êtes, et il n’y a pas de mauvaise surprise.</p>
   ${C.deroulementListe()}
   <p class="center more"><a class="link-more" href="${C.TUTOS.HUB}#etapes">Chaque étape expliquée en détail</a></p>
 </div></section>
@@ -228,7 +227,7 @@ function home() {
     <div class="alex-carte reveal">
       <span class="alex-carte-art" aria-hidden="true">${C.alexPortrait({ cls: 'alex-carte-svg' })}</span>
       <div>
-        <p class="alex-carte-txt">Derrière chaque site, il y a Alex. Il vous appelle avant de commencer, relit tout ce que prépare la bande, et répond quand vous lui écrivez. La bande l’épaule sur les tâches répétitives. Le soin et la vérification, eux, restent toujours les siens.</p>
+        <p class="alex-carte-txt">Derrière chaque site, il y a Alex. Il crée votre site avec sa petite bande, et il répond quand vous lui écrivez. Chaque page est vérifiée avant la mise en ligne.</p>
         <p class="alex-carte-bande"><span class="alex-carte-monstres" aria-hidden="true">${['bricou', 'mochi', 'gelee', 'etoile', 'mascotte'].map((m) => C.imgMonstre(m, 40)).join('')}</span><a href="${sections.equipe.path}">et sa petite bande</a></p>
       </div>
     </div>
@@ -254,7 +253,7 @@ function home() {
   </a>
 </div></section>
 
-${C.ctaBand({ title: 'On ouvre votre vitrine ?', text: `Le ${esc(ESS.name)} : ${euro(ESS.price)} la création, ${euro(BOU.price)} avec l’option ${esc(ECO.name)}. Vous commandez en deux minutes, et Alex vous appelle pour démarrer.` })}`;
+${C.ctaBand({ title: 'On ouvre votre vitrine ?', text: `Le ${esc(ESS.name)} : ${euro(ESS.price)} la création, ${euro(BOU.price)} avec l’option ${esc(ECO.name)}. Vous commandez en deux minutes, et la création démarre dès votre questionnaire. Pour démarrer.` })}`;
   return {
     path: '/',
     bodyClass: 'page-accueil',
@@ -333,7 +332,7 @@ function ancienneCreerPage() {
   ${C.steps([
     { t: 'Vous commandez', d: `Vous payez votre site en entier, en une fois ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}.` },
     { t: 'Vous répondez au questionnaire', d: 'Dans votre espace client : votre activité, vos couleurs, vos photos.' },
-    { t: 'Alex vous appelle', d: 'Pour parler de votre site et bien comprendre ce que vous attendez. Ensuite, il crée votre site et le vérifie en entier.' },
+    { t: 'Alex crée votre site', d: 'Dès votre questionnaire envoyé, avec vos réponses. Chaque page est vérifiée avant la mise en ligne.' },
     { t: 'Votre site est en ligne', d: `En ${ESS.delai}, une première version faite avec vos réponses. Avec le forfait ${AUTO.name}, on vous remet votre site, prêt à installer chez votre hébergeur.` },
     { t: 'Vous le peaufinez', d: `Avec le forfait ${ABO.name}, vous changez vous-même un texte ou une photo, à volonté, ou vous nous demandez la modification.` },
   ])}
@@ -790,9 +789,9 @@ function confirmationPage() {
     <h2 class="h3">Les prochaines étapes</h2>
     ${C.steps([
       { t: 'Votre espace client est prêt', d: 'Vous y êtes connecté, avec le mot de passe choisi à la commande : vous y suivez votre commande et, ensuite, vos modifications.' },
-      { t: 'Le questionnaire de création', d: 'Dans votre espace client : votre activité, vos couleurs, vos photos. Ensuite, Alex vous appelle pour en parler.' },
+      { t: 'Le questionnaire de création', d: 'Dans votre espace client : votre activité, vos couleurs, vos photos. Son envoi lance la création de votre site.' },
       { t: 'Votre nom de domaine est prêt', d: `Vous gardez le vôtre, ou on vous en fournit un, à votre nom, avec le forfait ${ABO.name}.` },
-      { t: 'Votre site est en ligne', d: `Comptez ${delaiList} après l’appel avec Alex. Ensuite, vous le modifiez à volonté.` },
+      { t: 'Votre site est en ligne', d: `Comptez ${delaiList} après l’envoi du questionnaire. Ensuite, vous le modifiez à volonté.` },
     ])}
     <div class="hero-ctas centered">${C.btn(sections.monespace.path, 'btn-primary btn-lg', 'circle-user', 'Accéder à mon espace')}${C.btnWa('btn-light btn-lg', 'Une question ? Nous écrire')}</div>
   </div>
@@ -803,7 +802,7 @@ function confirmationPage() {
     noindex: true,
     noMobileBar: true,
     title: 'Commande confirmée | Les Minis Monstres',
-    description: 'Merci pour votre commande. Votre espace client est prêt, avec le questionnaire de création. Alex vous appelle ensuite, puis votre site est en ligne quelques heures après.',
+    description: 'Merci pour votre commande. Votre espace client est prêt, avec le questionnaire de création : une fois envoyé, votre site est en ligne quelques heures après.',
     body,
   };
 }
@@ -1016,7 +1015,6 @@ function monEspacePage() {
           </div>
           <section class="bf" id="questionnaire">
             <div class="bf-head"><span class="bf-ico">${icon('circle-check')}</span><div><h3>Votre questionnaire de création</h3><p>Reçu le 3 novembre. Vous pouvez encore relire vos réponses.</p></div><em class="st st-done">Reçu</em></div>
-            <p class="demo-appel"><span class="demo-appel-ico" aria-hidden="true">${icon('phone-call')}</span><span><strong>L’appel avec Alex</strong><small>Le 4 novembre, vingt minutes pour parler de votre pâtisserie et de vos envies. Après cet appel, la bande s’est mise au travail.</small></span><em class="st st-done">Fait</em></p>
             <button type="button" class="btn btn-light btn-sm"${demoToast('Vos réponses s’ouvrent ici : votre activité, vos couleurs, vos photos, vos produits')}>${icon('list-checks')}<span>Voir ou modifier mes réponses</span></button>
           </section>
           <p class="app-sub">Votre site</p>
@@ -1367,7 +1365,7 @@ ${G.length ? `<section class="section tuto-plus" id="guides" data-theme="guides"
 </div></section>` : ''}
 </div>
 
-${C.ctaBand({ title: 'Et si on le faisait pour vous ?', text: `Le ${esc(ESS.name)}, ${euro(ESS.price)} la création. Vous répondez au questionnaire, Alex vous appelle, puis il crée votre site.` })}`;
+${C.ctaBand({ title: 'Et si on le faisait pour vous ?', text: `Le ${esc(ESS.name)}, ${euro(ESS.price)} la création. Vous répondez au questionnaire, puis Alex crée votre site.` })}`;
   return {
     path: HUB,
     color: 'lilac',
@@ -1581,18 +1579,18 @@ function equipePage() {
   const body = `${C.pageHero({
     section: 'equipe',
     h1: 'Notre équipe : Alex et les Minis Monstres',
-    lead: `Alex conçoit votre site et vérifie tout. Avec lui, ${NB_BANDE} petits monstres, chacun son métier. Leur but commun : vous rendre visible.`,
+    lead: `Alex conçoit votre site. Avec lui, ${NB_BANDE} petits monstres, chacun son métier. Leur but commun : vous rendre visible.`,
     crumbs,
   })}
 <section class="section section-bande" id="bande"><div class="container">
-  <div class="alex-bulle reveal"><span class="alex-art">${C.alexPortrait({ title: 'Alex' })}</span><p><strong>Moi, c’est Alex.</strong> Je conçois votre site pour qu’il vous rende visible, je vérifie tout et je reste votre interlocuteur. Avec moi, les Minis Monstres : ${bande.map((b) => b.nom).join(', ').replace(/, ([^,]*)$/, ' et $1')}. Rien ne part en ligne sans mon accord.</p></div>
+  <div class="alex-bulle reveal"><span class="alex-art">${C.alexPortrait({ title: 'Alex' })}</span><p><strong>Moi, c’est Alex.</strong> Je conçois votre site pour qu’il vous rende visible, et je reste votre interlocuteur. Avec moi, les Minis Monstres : ${bande.map((b) => b.nom).join(', ').replace(/, ([^,]*)$/, ' et $1')}. Chaque page est vérifiée avant de partir en ligne.</p></div>
   ${C.bandeGrid({ complet: true })}
 </div></section>
 
 <section class="section section-soft"><div class="container">
   <h2 class="section-title">Comment on travaille</h2>
   <div class="feats feats-3">
-    <div class="feat reveal">${icon('list-checks')}<h3>Une méthode rodée</h3><p>Un questionnaire et un appel pour vous connaître, puis votre site est assemblé avec nos modules. Vous le modifiez ensuite comme vous voulez.</p></div>
+    <div class="feat reveal">${icon('list-checks')}<h3>Une méthode rodée</h3><p>Un questionnaire précis pour vous connaître, puis votre site est assemblé avec nos modules. Vous le modifiez ensuite comme vous voulez.</p></div>
     <div class="feat reveal">${icon('tag')}<h3>Des prix affichés</h3><p>Les mêmes pour tout le monde, sans devis. Vous savez ce que vous payez avant de commander.</p></div>
     <div class="feat reveal">${icon('message-circle')}<h3>Quelqu’un qui répond</h3><p>${esc(C.CERISE)} répond à vos questions, ${esc(C.BRICOU)} prépare vos demandes, et Alex fait vos modifications.</p></div>
   </div>
@@ -1608,7 +1606,7 @@ ${C.ctaBand({ title: 'On s’occupe de votre visibilité ?', text: 'Choisissez v
     path: sections.equipe.path,
     section: 'equipe',
     title: 'Notre équipe : Alex et sa petite bande | Les Minis Monstres',
-    description: `Alex conçoit chaque site et vérifie tout. Avec lui, ${NB_BANDE} petits monstres, chacun son métier : ${bande.map((b) => b.nom).join(', ')}. Faites connaissance.`,
+    description: `Alex conçoit chaque site. Avec lui, ${NB_BANDE} petits monstres, chacun son métier : ${bande.map((b) => b.nom).join(', ')}. Faites connaissance.`,
     crumbs,
     body,
     priority: 0.7,
@@ -1828,7 +1826,7 @@ ${chap('etapes', `1. Comment ça se passe`, `  <h2>De la commande à la mise en 
     <li><strong>Vous commandez votre site.</strong> Le ${esc(ESS.name)}, avec l’option ${esc(ECO.name)} si vous vendez en ligne : le prix total s’affiche avant de commander.</li>
     <li><strong>Vous réglez votre site.</strong> En une fois, ou en ${C.lissageTxt} fois avec ${C.ORGANISMES}, sur la page de paiement. C’est le signal de départ.</li>
     <li><strong>Vous remplissez le questionnaire de création.</strong> Dans votre espace client : couleurs, ambiance, photos, prix ou produits.</li>
-    <li><strong>Alex vous appelle.</strong> Pour parler de votre site et clarifier ce que vous attendez. Ensuite, il crée votre site et le vérifie en entier.</li>
+    <li><strong>Alex crée votre site.</strong> Dès votre questionnaire envoyé, avec vos réponses. Chaque page est vérifiée avant la mise en ligne.</li>
     <li><strong>Votre site est assemblé.</strong> Nos modules, remplis avec vos informations et vos photos. Votre première version est en ligne en ${esc(ESS.delai)}, et vous recevez un e-mail qui vous la présente.</li>
     <li><strong>Vous le peaufinez.</strong> Rien de plus à payer pour la création. Avec le forfait ${esc(ABO.name)}, qui démarre ce jour-là, vous changez vous-même un texte ou une photo, à volonté, ou vous nous demandez la modification dans « Mes modifications ».</li>
     <li><strong>Ensuite, vous choisissez.</strong> Le forfait ${esc(ABO.name)}, ${euro(ABO.month)} par mois : on s’occupe de tout. Ou le forfait ${esc(AUTO.name)}, ${euro(AUTO.month)} : vous gérez tout vous-même.</li>
@@ -1838,7 +1836,7 @@ ${chap('etapes', `1. Comment ça se passe`, `  <h2>De la commande à la mise en 
 ${chap('lia-alex', `2. Cerise et Alex`, `  <h2>Deux pour s’occuper de vos demandes</h2>
   <div class="doc-duo-qui">
     <div class="doc-qui c-pink reveal"><span class="doc-qui-art">${monster('coucou')}</span><h3>Cerise, la secrétaire de la bande</h3><p>Elle répond à vos questions et vous aide à formuler vos demandes. Elle vous les fait relire, puis les transmet.</p></div>
-    <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${C.alexPortrait({ title: 'Alex' })}</span><h3>Alex</h3><p>Il conçoit votre site et vérifie tout. Il répond aussi à vos questions quand Cerise ne sait pas.</p></div>
+    <div class="doc-qui c-sky reveal"><span class="doc-qui-art">${C.alexPortrait({ title: 'Alex' })}</span><h3>Alex</h3><p>Il conçoit votre site, et il répond à vos questions quand Cerise ne sait pas.</p></div>
   </div>
   <p class="doc-more">${C.btn(sections.equipe.path, 'btn-primary', sections.equipe.icon, 'Rencontrer la bande')} ${C.btn(sections.methode.path, 'btn-light', sections.methode.icon, 'Pourquoi c’est moins cher')}</p>`)}
 

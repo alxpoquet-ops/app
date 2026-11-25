@@ -63,7 +63,10 @@ function aled08e_chantier_auto() { return get_option('aled08_chantier_auto', '1'
 /* L'appel d'Alex (décision du 24 novembre 2026) : pour chaque site, une fois le questionnaire rempli, Alex appelle le client
  * pour parler du site et clarifier ce qu'il attend. Ensuite seulement il donne le feu vert à la bande (espace de gestion,
  * « À appeler »). Avant ce feu vert, le constructeur ne commence pas. Ce qu'Alex a noté pendant l'appel va dans le fil entre agents. */
-function aled08e_appel_fait($cid) { return (int) get_post_meta((int) $cid, '_aled08_feu_vert', true); }
+/* 25 novembre 2026 (Alex) : plus d'appel. Tout est automatique : l'option aled08_appel_avant (éteinte par défaut) remet l'appel
+ * et le feu vert si un jour on le veut. Éteinte, chaque chantier est traité comme s'il avait reçu son feu vert. */
+function aled08e_appel_avant() { return get_option('aled08_appel_avant', '0') === '1'; }
+function aled08e_appel_fait($cid) { return aled08e_appel_avant() ? (int) get_post_meta((int) $cid, '_aled08_feu_vert', true) : 1; }
 function aled08e_feu_vert_donner($cid, $note = '') {
     update_post_meta((int) $cid, '_aled08_feu_vert', time());
     $note = trim((string) $note);
@@ -74,7 +77,7 @@ function aled08e_feu_vert_donner($cid, $note = '') {
 }
 /* Les commandes dont le questionnaire est reçu et qui attendent l'appel d'Alex */
 function aled08e_a_appeler() {
-    if (!function_exists('aled08e_cmd_statuts_en_cours')) return [];
+    if (!aled08e_appel_avant() || !function_exists('aled08e_cmd_statuts_en_cours')) return [];
     $ids = get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'private', 'numberposts' => 40, 'fields' => 'ids', 'orderby' => 'date', 'order' => 'ASC',
         'meta_query' => [['key' => '_aled08_statut', 'value' => aled08e_cmd_statuts_en_cours(), 'compare' => 'IN'], ['key' => '_aled08_brief_le', 'compare' => 'EXISTS'], ['key' => '_aled08_feu_vert', 'compare' => 'NOT EXISTS']]]);
     return array_values(array_filter($ids, function ($cid) { return aled08e_brief_le($cid) !== '' && !get_post_meta($cid, '_aled08_brief_brouillon', true); }));
@@ -286,8 +289,8 @@ function aled08e_chantier_pages_google($cid) { return (int) get_post_meta($cid, 
 function aled08e_chantier_pages_total($cid) { return (int) get_post_meta($cid, '_aled08_pages_total', true); }
 /* Le nombre d'articles mis dans la boutique (Site Boutique) */
 function aled08e_chantier_articles($cid) { return (int) get_post_meta($cid, '_aled08_articles', true); }
-/* Alex vérifie toujours un site avant le client (option, oui par défaut). */
-function aled08e_verif_alex() { return get_option('aled08_verif_alex', '1') === '1'; }
+/* Alex vérifie un site avant le client : option, éteinte par défaut depuis le 25 novembre 2026 (tout est automatique : le contrôleur livre). */
+function aled08e_verif_alex() { return get_option('aled08_verif_alex', '0') === '1'; }
 /* Livrer la V1 au client : statut « en ligne », e-mail « Votre site est en ligne », Alex prévenu. */
 function aled08e_chantier_livrer_v1($cid, $lien = '', $par = 'atelier') {
     $c = aled08e_cmd_get($cid);

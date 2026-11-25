@@ -238,7 +238,7 @@ function aled08e_brief_html($cmd) {
     $ouvert = !$fait || (isset($_GET['mb']) && strpos(sanitize_key(wp_unslash($_GET['mb'])), 'brief') === 0);
     $mb = isset($_GET['mb']) ? sanitize_key(wp_unslash($_GET['mb'])) : '';
     $msgs = [
-        'brief_ok' => ['esp-empty', 'Merci ! Votre questionnaire est bien reçu. Je vous appelle très vite pour parler de votre site et de ce que vous attendez, puis la bande se met au travail.'],
+        'brief_ok' => ['esp-empty', (function_exists('aled08e_appel_avant') && aled08e_appel_avant()) ? 'Merci ! Votre questionnaire est bien reçu. Je vous appelle très vite pour parler de votre site et de ce que vous attendez, puis la bande se met au travail.' : 'Merci ! Votre questionnaire est bien reçu : la création de votre site commence. Vous suivez chaque étape ici.'],
         'brief_maj' => ['esp-empty', 'C’est enregistré : vos nouvelles réponses sont bien reçues.'],
         'brief_incomplet' => ['esp-warn', 'Il manque une ou plusieurs réponses obligatoires (marquées d’une étoile). Vos réponses sont gardées : complétez-les puis renvoyez.'],
         'brief_photos' => ['esp-warn', 'Vos réponses sont reçues, mais une photo n’a pas pu être envoyée (8 Mo au plus, en JPG, PNG ou WebP). Réessayez-la.'],
@@ -337,7 +337,7 @@ function aled08e_brief_html($cmd) {
       <h3>Votre questionnaire de création</h3>
       <p><?php echo $fait
           ? 'Reçu le ' . esc_html(aled08e_date($le)) . '. ' . (function_exists('aled08e_appel_fait') && !aled08e_appel_fait($cid) ? 'Je vous appelle très vite' . ($cmd['telephone'] ? ' au ' . esc_html($cmd['telephone']) : '') . ' pour parler de votre site, puis la bande se met au travail. ' : '') . 'Vous pouvez encore modifier vos réponses : je travaille toujours avec la dernière version.'
-          : 'Avec lui, puis un petit appel ensemble, on lance la création. Couleurs, ambiance, photos' . ($cmd['type'] === 'boutique' ? ', produits, livraison' : ', prix') . ' : avec vos réponses, je crée votre ' . esc_html(mb_strtolower($t ? $t['label'] : 'site')) . '. Comptez une dizaine de minutes.'; ?></p>
+          : 'Avec lui, on lance la création' . (function_exists('aled08e_appel_avant') && aled08e_appel_avant() ? ', après un petit appel ensemble' : '') . '. Couleurs, ambiance, photos' . ($cmd['type'] === 'boutique' ? ', produits, livraison' : ', prix') . ' : avec vos réponses, je crée votre ' . esc_html(mb_strtolower($t ? $t['label'] : 'site')) . '. Comptez une dizaine de minutes.'; ?></p>
     </div>
     <?php if (!$fait) echo '<em class="st st-new">À remplir</em>'; else echo '<em class="st st-done">Reçu</em>'; ?>
   </div>

@@ -26,9 +26,9 @@ Un travail renvoyé repart chez le constructeur, puis repasse au contrôle. Au t
 
 Quand plusieurs travaux attendent, le constructeur et le contrôleur suivent un ordre fixe (modifications, pages Google, sites) et peuvent se faire aider de sous-agents qui travaillent en parallèle, un par client : `travail-en-parallele.md`.
 
-## L'appel avant chaque site
+## Tout est automatique
 
-Décision d'Alex (24 novembre 2026) : une fois le questionnaire rempli, Alex reçoit un e-mail « À appeler » et appelle le client pour parler de son site et clarifier ce qu'il attend. Ensuite il donne le feu vert dans son espace (À faire › À appeler), avec une note sur l'appel. La bande ne commence qu'après ce feu vert. C'est la seule étape où Alex intervient à chaque site, par choix.
+Décision d'Alex (25 novembre 2026) : plus d'appel avant la création, plus de vérification d'Alex avant la livraison. Le questionnaire envoyé lance le site ; le contrôleur le livre quand tout est bon. Alex n'intervient que pour les cas de `escalade.md`. Côté client, on ne parle jamais d'IA ni d'outils automatiques : on dit qu'Alex crée le site, et que chaque page est vérifiée avant la mise en ligne (c'est le contrôle). On n'écrit jamais qu'Alex appelle, relit ou vérifie lui-même. Les options `aled08_appel_avant` et `aled08_verif_alex` (éteintes) remettraient l'appel ou sa vérification.
 
 ## Ce qui remonte à Alex
 

@@ -385,7 +385,7 @@ function economie() {
 // comparaison : ce que le client a chez nous, dit simplement. La seule comparaison chiffrée vit sur la page Comparatif (avec ses sources).
 // court : quatre cartes (pages métier). Bloc commun, repris tel quel sur plusieurs pages.
 const AVANTAGES = [
-  { ico: 'phone-call', c: 'lilac', t: 'Alex, en personne', d: 'Il vous appelle, crée votre site, puis le vérifie une dernière fois en entier avant la mise en ligne.', court: true },
+  { ico: 'heart-handshake', c: 'lilac', t: 'Alex, toujours là', d: 'Il crée votre site et répond à vos messages. Chaque page est vérifiée avant la mise en ligne.', court: true },
   { ico: 'chart-line', c: 'sky', t: 'Des Minis Monstres qui veillent', d: `Avec le forfait ${ABO.name}, ils sauvegardent votre site, le tiennent à jour et relèvent vos visites, que vous retrouvez dans votre espace client.`, court: true },
   { ico: 'list-checks', c: 'peach', t: 'Toutes vos pages sous les yeux', d: 'Votre espace client liste chaque page de votre site, pages de visibilité Google comprises, avec un lien pour la voir et un autre pour la modifier.', court: true },
   { ico: 'pencil', c: 'pink', t: 'Vous modifiez quand vous voulez', d: `Avec le forfait ${ABO.name}, un texte ou une photo se change en direct, depuis le bouton « Modifier mon site moi-même ».`, court: true },
@@ -781,7 +781,7 @@ function comparatifLignes() {
       ['Un support en ligne', 'pour l’outil, pas pour votre site'],
     ] },
     { id: 'delai', l: 'Délai', c: [
-      ['Quelques jours', `la création elle-même prend ${offreSite.site.delai}, après l’appel d’Alex`],
+      ['Quelques jours', `la création elle-même prend ${offreSite.site.delai}, une fois votre questionnaire envoyé`],
       ['Selon son planning', 'fixé au devis'],
       ['Selon le planning de l’équipe', 'fixé au devis'],
       ['À votre rythme', 'le temps de tout construire'],
@@ -792,8 +792,8 @@ function comparatifLignes() {
       ['Une équipe', 'chef de projet, graphiste, développeur'],
       ['Vous-même', 'avec des modèles à remplir'],
     ] },
-    { id: 'appel', court: true, l: 'Un appel et une vérification avant la mise en ligne', c: [
-      ['Oui, toujours', 'Alex vous appelle, crée votre site, puis le vérifie en entier avant la mise en ligne'],
+    { id: 'verif', court: true, l: 'Une vérification avant la mise en ligne', c: [
+      ['Oui, toujours', 'chaque page est vérifiée, sur ordinateur et sur téléphone, avant la mise en ligne'],
       ['Selon le prestataire', ''],
       ['En général, oui', 'avec des rendez-vous de suivi'],
       ['Non', 'vous relisez tout vous-même'],
@@ -844,9 +844,9 @@ function comparatifTable({ court = false, sources = true } = {}) {
 function objections() {
   const Q = [
     { ico: 'badge-check', c: 'mint', q: 'Moins cher, ce n’est pas bâclé ?', r: `Non. Alex n’a ni local ni loyer à payer : il travaille depuis chez lui. Nos modules ont été soignés une fois pour toutes, puis remplis avec votre contenu, et chaque page est vérifiée avant la mise en ligne. Le prix baisse, le soin reste entier.`, href: sections.methode.path, lien: 'Pourquoi c’est moins cher' },
-    { ico: 'user-check', c: 'sky', q: 'Qui est derrière ?', r: `Alex, depuis ${site.address.city}, dans les Ardennes. Il vous appelle avant de commencer, il relit tout, et il répond quand vous écrivez.`, href: sections.equipe.path, lien: 'Rencontrer l’équipe' },
+    { ico: 'user-check', c: 'sky', q: 'Qui est derrière ?', r: `Alex, depuis ${site.address.city}, dans les Ardennes. Il crée votre site et il répond quand vous écrivez. Chaque page est vérifiée avant la mise en ligne.`, href: sections.equipe.path, lien: 'Rencontrer l’équipe' },
     { ico: 'pencil', c: 'lilac', q: 'Et si je veux changer quelque chose ?', r: `Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois sans engagement, vous changez vous-même vos textes et vos photos, à volonté. Le reste, vous nous le demandez depuis votre espace client : c’est compris.`, href: site.espaceClient && site.espaceClient.demo ? site.espaceClient.demo : sections.monespace.path, lien: 'Essayer l’espace client' },
-    { ico: 'heart-handshake', c: 'pink', q: 'Et si le résultat ne me plaît pas ?', r: `On part de votre questionnaire et de l’appel avec Alex, pour éviter les surprises. Une fois en ligne, votre site s’ajuste : vous le modifiez, ou vous nous dites quoi changer. Et la loi vous donne 14 jours pour vous rétracter.`, href: '/conditions-generales/#9-droit-de-retractation', lien: 'Le droit de rétractation' },
+    { ico: 'heart-handshake', c: 'pink', q: 'Et si le résultat ne me plaît pas ?', r: `On part de votre questionnaire, précis, pour éviter les surprises. Une fois en ligne, votre site s’ajuste : vous le modifiez, ou vous nous dites quoi changer. Et la loi vous donne 14 jours pour vous rétracter.`, href: '/conditions-generales/#9-droit-de-retractation', lien: 'Le droit de rétractation' },
   ];
   return `<!--commun--><div class="objections">${Q.map((x) => `<article class="objection c-${x.c}">
     <span class="objection-ico" aria-hidden="true">${icon(x.ico)}</span>
@@ -863,10 +863,9 @@ function objections() {
 // monstre 'alex' : le portrait d'Alex (bestiaire), sinon un dessin de src/assets/img/mail.
 const DEROULEMENT = [
   { id: 'commande', icon: 'shopping-bag', monstre: 'mochi', color: 'mint', titre: 'Vous commandez', court: `En ligne, en deux minutes. Vous voyez le prix avant de payer, et vous pouvez régler en ${lissageTxt} fois.`, bulle: `Vous choisissez votre site sur la page Créer mon site, vous payez en ligne, et votre espace client est prêt tout de suite. ${(bande.find((b) => b.id === 'organisateur') || { nom: 'Mochi' }).nom} range votre commande.`, cle: /^creer-mon-site|command|deroulement|achat/ },
-  { id: 'questionnaire', icon: 'list-checks', monstre: 'mascotte', color: 'lilac', titre: 'Le questionnaire', court: 'Un formulaire précis dans votre espace client : votre activité, vos couleurs, vos photos.', bulle: `Des questions claires sur votre activité, vos services, vos couleurs et vos photos. C’est la base de votre site : rien n’est laissé au hasard, pas de mauvaise surprise à l’arrivée.`, cle: /questionnaire/ },
-  { id: 'appel', icon: 'phone', monstre: 'alex', color: 'sky', titre: 'Alex vous appelle', court: 'Pour bien comprendre votre activité et ce que vous attendez de votre site.', bulle: 'Alex lit vos réponses, puis vous téléphone : votre métier, vos envies, ce que vous attendez du site. C’est après cet appel, et pas avant, qu’il commence votre site.', cle: /appel/ },
-  { id: 'creation', icon: 'wand-sparkles', monstre: 'alex', color: 'peach', titre: 'Alex crée votre site', court: `À partir de vos réponses et de votre appel, en ${offreSite.site.delai}.`, bulle: `Alex part de nos modules déjà prêts et les remplit avec vos réponses : vos textes, vos photos, vos couleurs. Comptez ${offreSite.site.delai} après l’appel.`, cle: /combien-de-temps|delai|fabrique/ },
-  { id: 'verification', icon: 'user-check', monstre: 'alex', color: 'butter', titre: 'Une dernière vérification', court: 'Alex relit votre site en entier, page par page, sur ordinateur et sur téléphone.', bulle: 'Les liens, le formulaire, les textes, les horaires, les prix, la vitesse, l’affichage sur téléphone. Votre site, Alex l’a toujours vérifié en entier avant vous.', cle: /verif|controle/ },
+  { id: 'questionnaire', icon: 'list-checks', monstre: 'mascotte', color: 'lilac', titre: 'Le questionnaire', court: 'Un formulaire précis dans votre espace client : votre activité, vos couleurs, vos photos. Son envoi lance la création.', bulle: `Des questions claires sur votre activité, vos services, vos couleurs et vos photos. C’est la base de votre site : rien n’est laissé au hasard, pas de mauvaise surprise à l’arrivée.`, cle: /questionnaire/ },
+  { id: 'creation', icon: 'wand-sparkles', monstre: 'alex', color: 'peach', titre: 'Alex crée votre site', court: `À partir de vos réponses, en ${offreSite.site.delai}.`, bulle: `Alex part de nos modules déjà prêts et les remplit avec vos réponses : vos textes, vos photos, vos couleurs. Comptez ${offreSite.site.delai} après l’envoi de votre questionnaire.`, cle: /combien-de-temps|delai|fabrique/ },
+  { id: 'verification', icon: 'user-check', monstre: 'bricou', color: 'butter', titre: 'Tout est vérifié', court: 'Chaque page, chaque texte, chaque prix, sur ordinateur et sur téléphone, avant la mise en ligne.', bulle: 'Les liens, le formulaire, les textes, les horaires, les prix, la vitesse, l’affichage sur téléphone : votre site est vérifié page par page avant que vous le découvriez.', cle: /verif|controle/ },
   { id: 'en-ligne', icon: 'rocket', monstre: 'ravie', color: 'pink', titre: 'Votre site en ligne', court: 'Vous êtes prévenu, vous le découvrez et vous le partagez.', bulle: `Votre site est publié à son adresse, et vous êtes prévenu. Avec le forfait ${creationSeule.name}, on vous le remet, prêt à installer chez votre hébergeur.`, cle: /mise-en-ligne|en-ligne|livraison/ },
   { id: 'ameliorer', icon: 'sparkles', monstre: 'etoile', color: 'mint', titre: 'Les Minis Monstres veillent', court: `Avec le forfait ${forfaits[0].name}, ils sauvegardent votre site, le tiennent à jour et relèvent vos visites pour votre espace client.`, bulle: `Avec le forfait ${forfaits[0].name}, les Minis Monstres sauvegardent votre site, le tiennent à jour et relèvent ses chiffres (visites, apparitions sur Google, vitesse), que vous retrouvez dans votre espace client. Et votre site reste améliorable à tout moment : un texte, une photo, une page de plus.`, cle: /modif|amelior|changer/ },
 ];
