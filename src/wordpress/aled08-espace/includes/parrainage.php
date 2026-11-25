@@ -3,7 +3,8 @@
  * Le parrainage (25 novembre 2026, demande d'Alex : « montrer la puissance du parrainage »).
  *
  * Chaque compte a un code (aled08e_code, par exemple CAMILL-7KQ) et un lien /creer-mon-site/?code=CODE. Un nouveau client tape
- * ce code dans « Code promo ou parrainage » en commandant son site. Quand son site est en ligne :
+ * ce code dans « Code promo ou parrainage » en commandant son site. UN MOIS après la mise en ligne de son site (décision d'Alex,
+ * 25 novembre 2026 : le délai de rétractation passé, et le filleul toujours client) :
  *  - le filleul reçoit 6 mois de forfait Mini offerts (s'il a pris le forfait Mini) ;
  *  - le parrain reçoit 6 mois de forfait Mini offerts, pour CHAQUE filleul, sans limite.
  * Les mois offerts (aled08e_mois_offerts_ajouter) :
@@ -49,7 +50,47 @@ function aled08e_mois_offerts_ajouter($uid, $mois, $raison = '') {
     return aled08e_mois_txt($mois) . ' offerts, gardés pour le démarrage du forfait (' . (int) aled08e_meta($uid, 'mois_offerts') . ' mois en tout).';
 }
 
-/* Le site du filleul est en ligne : 6 mois pour lui (s'il a le forfait Mini) et 6 mois pour son parrain, une seule fois par commande */
+/* Le site du filleul est en ligne : l'avantage est programmé un mois plus tard, et le parrain est prévenu */
+function aled08e_parrainage_programmer($cmd) {
+    if (empty($cmd['parrain']) || empty($cmd['user']) || get_post_meta($cmd['id'], '_aled08_parrain_prevenu', true) || get_post_meta($cmd['id'], '_aled08_parrain_le', true)) return;
+    $p = aled08e_user_by_code($cmd['parrain']);
+    if (!$p || (int) $p->ID === (int) $cmd['user']) return;
+    $le = strtotime('+1 month');
+    update_post_meta($cmd['id'], '_aled08_parrain_le', $le);
+    if (aled08e_meta($cmd['user'], 'parrain') === '') update_user_meta($cmd['user'], 'aled08_parrain', aled08e_clean_code($cmd['parrain']));
+    wp_schedule_single_event($le, 'aled08e_parrainage_du', [(int) $cmd['id']]);
+    $mois = aled08e_parrainage_mois();
+    aled08e_cmd_journal($cmd['id'], 'Parrainage par ' . $p->display_name . ' : les ' . aled08e_mois_txt($mois) . ' offerts s’activeront le ' . aled08e_date_fr($le, false) . ' (un mois après la mise en ligne).');
+    wp_mail($p->user_email, 'Votre filleul est en ligne : vos ' . aled08e_mois_txt($mois) . ' offerts arrivent', 'Bonjour ' . aled08e_prenom($p) . ",
+
+"
+        . 'Le site de ' . $cmd['prenom'] . ($cmd['entreprise'] ? ' (' . $cmd['entreprise'] . ')' : '') . ', que vous avez parrainé, est en ligne. Merci !' . "
+
+"
+        . 'Vos ' . aled08e_mois_txt($mois) . ' de forfait Mini offerts s’activeront le ' . aled08e_date_fr($le, false) . ", un mois après la mise en ligne. Vous recevrez un e-mail ce jour-là.
+
+À bientôt,
+Alex et les Minis Monstres
+", aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
+}
+/* Un mois plus tard : l'avantage, si la commande est toujours là (pas annulée ni remboursée) */
+function aled08e_parrainage_du($cid) {
+    $c = function_exists('aled08e_cmd_get') ? aled08e_cmd_get((int) $cid) : null;
+    if (!$c || get_post_meta($c['id'], '_aled08_parrain_prevenu', true)) return;
+    $le = (int) get_post_meta($c['id'], '_aled08_parrain_le', true);
+    if (!$le || $le > time()) return;
+    if ($c['statut'] !== 'en_ligne') { update_post_meta($c['id'], '_aled08_parrain_prevenu', 1); aled08e_cmd_journal($c['id'], 'Parrainage : la commande n’est plus en ligne (' . $c['statut'] . '), aucun mois offert.'); return; }
+    aled08e_parrainage_recompenser($c);
+}
+add_action('aled08e_parrainage_du', 'aled08e_parrainage_du');
+/* Filet : chaque jour, les avantages arrivés à échéance (si la tâche programmée n'est pas partie) */
+add_action('aled08_quotidien', function () {
+    $ids = get_posts(['post_type' => ALED08E_CPT_CMD, 'post_status' => 'any', 'numberposts' => 50, 'fields' => 'ids',
+        'meta_query' => [['key' => '_aled08_parrain_le', 'value' => time(), 'compare' => '<=', 'type' => 'NUMERIC'], ['key' => '_aled08_parrain_prevenu', 'compare' => 'NOT EXISTS']]]);
+    foreach ($ids as $cid) aled08e_parrainage_du($cid);
+}, 40);
+
+/* Un mois après la mise en ligne : 6 mois pour le filleul (s'il a le forfait Mini) et 6 mois pour son parrain, une seule fois par commande */
 function aled08e_parrainage_recompenser($cmd) {
     if (empty($cmd['parrain']) || empty($cmd['user']) || get_post_meta($cmd['id'], '_aled08_parrain_prevenu', true)) return;
     $p = aled08e_user_by_code($cmd['parrain']);
@@ -63,12 +104,12 @@ function aled08e_parrainage_recompenser($cmd) {
     $nbF = count(aled08e_filleuls($p->ID));
     $h = aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>');
     wp_mail($p->user_email, 'Parrainage : ' . aled08e_mois_txt($mois) . ' de forfait Mini offerts !', 'Bonjour ' . aled08e_prenom($p) . ",\n\n"
-        . 'Bonne nouvelle : le site de ' . $cmd['prenom'] . ($cmd['entreprise'] ? ' (' . $cmd['entreprise'] . ')' : '') . ', que vous avez parrainé, est en ligne. Merci pour votre confiance !' . "\n\n"
+        . 'Ça y est : le site de ' . $cmd['prenom'] . ($cmd['entreprise'] ? ' (' . $cmd['entreprise'] . ')' : '') . ', que vous avez parrainé, est en ligne depuis un mois. Merci pour votre confiance !' . "\n\n"
         . 'Vous recevez ' . aled08e_mois_txt($mois) . ' de forfait Mini offerts. ' . $txtP . "\n"
         . 'Vous avez déjà parrainé ' . $nbF . ' site' . ($nbF > 1 ? 's' : '') . '. Chaque nouveau filleul vous rapporte encore ' . aled08e_mois_txt($mois) . ".\n\n"
         . "Votre code et votre lien de parrainage sont dans votre espace client :\n" . aled08e_url() . "\n\nÀ bientôt,\nAlex et les Minis Monstres\n", $h);
     if ($txtF !== '') wp_mail($cmd['email'], 'Votre parrainage : ' . aled08e_mois_txt($mois) . ' de forfait Mini offerts', 'Bonjour ' . $cmd['prenom'] . ",\n\n"
-        . 'Votre site est en ligne, et vous êtes venu grâce à ' . aled08e_prenom($p) . ' : vous recevez ' . aled08e_mois_txt($mois) . ' de forfait Mini offerts. ' . $txtF . "\n\n"
+        . 'Votre site est en ligne depuis un mois, et vous êtes venu grâce à ' . aled08e_prenom($p) . ' : vous recevez ' . aled08e_mois_txt($mois) . ' de forfait Mini offerts. ' . $txtF . "\n\n"
         . 'À votre tour : votre code de parrainage est dans votre espace client. Chaque proche qui crée son site avec lui vous rapporte ' . aled08e_mois_txt($mois) . " de forfait offerts, et à lui aussi.\n" . aled08e_url() . "\n\nÀ bientôt,\nAlex et les Minis Monstres\n", $h);
     wp_mail(aled08e_to(), 'Parrainage récompensé : ' . $p->display_name . ' → ' . aled08e_cmd_nom($cmd), 'Parrain : ' . $p->display_name . ' <' . $p->user_email . ">\n" . $txtP . "\n\nFilleul : " . aled08e_cmd_nom($cmd) . ' (' . $cmd['ref'] . ")\n" . ($txtF !== '' ? $txtF : 'Pas de forfait Mini : rien pour lui.') . "\n", aled08e_mail_headers());
     if (function_exists('aled08e_memoire_ajouter')) aled08e_memoire_ajouter('journal', 'Parrainage : ' . $p->display_name . ' a parrainé ' . aled08e_cmd_nom($cmd), $txtP . ' ' . $txtF, (int) $p->ID, 'claude');
@@ -99,7 +140,7 @@ function aled08e_parrainage_html($uid, $compact = false) {
     $h = '<div class="pr-bloc' . ($compact ? ' is-compact' : '') . '">';
     $h .= '<div class="pr-tete"><span class="pr-art" aria-hidden="true">' . aled08e_monster('ruban') . '</span><div><p class="pr-sur">Parrainage</p>'
         . '<h3 class="pr-titre">' . esc_html($mois) . ' mois offerts pour vous, ' . esc_html($mois) . ' mois pour votre filleul</h3>'
-        . '<p class="pr-txt">Un proche crée son site avec votre code : dès que son site est en ligne, vous recevez chacun ' . esc_html($mois) . ' mois de forfait Mini offerts (' . esc_html(aled08e_euro_txt($valeur)) . '). Sans limite : 2 filleuls, c’est un an offert.</p></div></div>';
+        . '<p class="pr-txt">Un proche crée son site avec votre code : un mois après la mise en ligne de son site, vous recevez chacun ' . esc_html($mois) . ' mois de forfait Mini offerts (' . esc_html(aled08e_euro_txt($valeur)) . '). Sans limite : 2 filleuls, c’est un an offert.</p></div></div>';
     $h .= '<div class="pr-code"><span>Votre code</span><b>' . esc_html($code) . '</b></div>';
     $h .= '<div class="pr-lien"><input class="copy-in" id="' . esc_attr($id) . '" type="text" readonly value="' . esc_attr($lien) . '" aria-label="Votre lien de parrainage">'
         . '<div class="pr-btns"><button type="button" class="btn btn-primary btn-sm" data-copy="' . esc_attr($id) . '" data-copy-msg="Lien de parrainage copié">' . aled08e_icon('link') . '<span>Copier le lien</span></button>'

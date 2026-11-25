@@ -628,7 +628,7 @@ function aled08e_cmd_set_domaine($id, $statut) {
  * C'est ici, et seulement ici, que le filleul reçoit la méta aled08_parrain : le parrain ne compte un filleul
  * « en ligne » qu'une fois le site vraiment en ligne, pas dès le formulaire de commande. */
 function aled08e_cmd_parrainage_en_ligne($cmd) {
-    if (function_exists('aled08e_parrainage_recompenser')) { aled08e_parrainage_recompenser($cmd); return; } // 25 novembre 2026 : 6 mois chacun
+    if (function_exists('aled08e_parrainage_programmer')) { aled08e_parrainage_programmer($cmd); return; } // 25 novembre 2026 : 6 mois chacun, un mois après la mise en ligne
     return;
     if (!$cmd['parrain'] || get_post_meta($cmd['id'], '_aled08_parrain_prevenu', true)) return;
     $p = aled08e_user_by_code($cmd['parrain']);

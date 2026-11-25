@@ -233,7 +233,7 @@
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (j) {
           if (cleanCode(input.value) !== c) return;
-          if (j && j.success) { st.ok = true; st.type = (j.data && j.data.type) || 'promo'; st.remise = (j.data && +j.data.remise) || 0; st.sur = (j.data && j.data.sur) || ''; st.mois = (j.data && +j.data.mois) || 0; dire(st.type === 'lot' ? tr('Félicitations ! Votre site est offert, et votre forfait Mini pendant 1 an.') : st.type === 'parrain' ? tr('Code de parrainage valable : ') + st.mois + tr(' mois de forfait Mini offerts, pour vous et pour votre parrain, dès la mise en ligne de votre site.') : tr('Code promo valable : la remise est appliquée.'), 'is-ok'); }
+          if (j && j.success) { st.ok = true; st.type = (j.data && j.data.type) || 'promo'; st.remise = (j.data && +j.data.remise) || 0; st.sur = (j.data && j.data.sur) || ''; st.mois = (j.data && +j.data.mois) || 0; dire(st.type === 'lot' ? tr('Félicitations ! Votre site est offert, et votre forfait Mini pendant 1 an.') : st.type === 'parrain' ? tr('Code de parrainage valable : ') + st.mois + tr(' mois de forfait Mini offerts, pour vous et pour votre parrain, un mois après la mise en ligne de votre site.') : tr('Code promo valable : la remise est appliquée.'), 'is-ok'); }
           else if (j && j.success === false) { st.ok = false; dire((j.data && j.data.message && (/GAGNANT/i.test(c) || /propre code/.test(j.data.message))) ? j.data.message : tr('Ce code n’est pas reconnu. Vérifiez-le, ou écrivez-nous.'), 'is-ko'); }
           else dire(tr('Le code sera vérifié au moment de commander.'));
           onChange();

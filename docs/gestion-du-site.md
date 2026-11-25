@@ -208,11 +208,7 @@ Offre du 19 novembre 2026 : les modifications sont incluses dans le forfait Mini
 
 ## 10. Le parrainage (retiré du site public)
 
-Le parrainage n'est plus proposé depuis le 19 novembre 2026 : le site, les FAQ et les CGV n'en parlent plus, et la case de la commande s'appelle « Code promo ». Les points ci-dessous décrivent le mécanisme qui existait dans l'extension, à garder seulement comme mémoire tant qu'il n'en est pas retiré.
-
-- Chaque client a un code (par exemple `LILA-7K2`) et un lien `https://www.les-minis-monstres.fr/creer-mon-site/?parrain=LILA-7K2`, onglet Parrainage, avec un bouton WhatsApp.
-- Le code suit le visiteur jusqu'à la commande (champ « Code de parrainage » de `/commander/`, prérempli). Vous le voyez dans l'e-mail de commande et dans la fiche.
-- Quand vous cliquez « Site en ligne », le parrain reçoit un e-mail et un mois offert est noté chez le parrain et chez le filleul (« Mois offerts à utiliser » dans leurs fiches). Pour l'appliquer, ajoutez un coupon ou un crédit dans Stripe sur l'abonnement concerné, puis remettez le compteur à zéro dans la fiche.
+Le parrainage est revenu le 25 novembre 2026 : voir la partie « Le parrainage : 6 mois offerts pour le parrain et pour le filleul », plus bas.
 
 ## 11. Hébergement : OVH ou o2switch, et la migration
 
@@ -521,7 +517,8 @@ Décision d'Alex (25 novembre 2026) : on insiste sur le parrainage. Le code est 
 - Chaque compte a un code (par exemple `LUCIE-B54`). Il est affiché sur l'accueil de l'espace client et dans Mon compte, rubrique « Parrainage », avec le lien et des boutons de partage : copier, WhatsApp, SMS, e-mail.
 - Un nouveau client tape ce code dans « Code promo ou parrainage ». Le formulaire annonce : « 6 mois de forfait Mini offerts, pour vous et pour votre parrain ».
 - Interdit : son propre code, être parrainé deux fois, cumuler avec un autre code.
-- Quand le site du filleul est en ligne, le filleul reçoit 6 mois de forfait Mini offerts (s'il a ce forfait). Le parrain reçoit aussi 6 mois, pour chaque filleul, sans limite.
+- À la mise en ligne du site du filleul, l'avantage est programmé **un mois plus tard** (décision d'Alex : le délai de rétractation passé). Le parrain reçoit un e-mail tout de suite, avec la date.
+- Un mois après, si la commande est toujours en ligne (ni annulée ni remboursée), le filleul reçoit 6 mois de forfait Mini offerts (s'il a ce forfait). Le parrain reçoit aussi 6 mois, pour chaque filleul, sans limite. Une tâche WordPress s'en charge, avec un filet de sécurité chaque jour.
 - Trois e-mails partent : au parrain, au filleul et à Alex.
 
 **Comment les mois sont offerts** (`aled08e_mois_offerts_ajouter`)

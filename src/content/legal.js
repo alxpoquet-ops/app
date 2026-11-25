@@ -405,7 +405,7 @@ Dans tous les cas, la visibilité Google est une obligation de moyens : les Mini
 
 Un deuxième site commandé par le même client bénéficie de ${fidelite.remiseSecondSite} % de remise sur la création. Cet avantage n’est pas convertible en argent.
 
-**Parrainage.** Chaque client a un code de parrainage, dans son espace client. Un nouveau client, le filleul, peut taper ce code dans la case « Code promo ou parrainage » en commandant son site. Une fois le site du filleul en ligne :
+**Parrainage.** Chaque client a un code de parrainage, dans son espace client. Un nouveau client, le filleul, peut taper ce code dans la case « Code promo ou parrainage » en commandant son site. Un mois après la mise en ligne du site du filleul, si sa commande n’a été ni annulée ni remboursée :
 
 - le filleul reçoit ${fidelite.parrainageMois} mois de forfait ${mini.name} offerts, s’il a choisi ce forfait ;
 - le parrain reçoit ${fidelite.parrainageMois} mois de forfait ${mini.name} offerts, pour chaque filleul, sans limite de nombre. Les mois s’ajoutent les uns aux autres.

@@ -829,7 +829,7 @@ function fidelitePage() {
   const etapes = [
     ['butter', 'key-round', '1. Votre code', 'Il vous attend dans votre espace client, avec votre lien à envoyer en un geste : WhatsApp, SMS ou e-mail.'],
     ['mint', 'wand-sparkles', '2. Votre proche crée son site', `Il tape votre code dans « Code promo ou parrainage » en commandant son ${esc(ESS.name)}.`],
-    ['pink', 'gift', `3. ${M} mois offerts, chacun`, `Dès que son site est en ligne : ${M} mois de forfait ${esc(mini.name)} offerts pour lui, et ${M} mois pour vous.`],
+    ['pink', 'gift', `3. ${M} mois offerts, chacun`, `Un mois après la mise en ligne de son site : ${M} mois de forfait ${esc(mini.name)} offerts pour lui, et ${M} mois pour vous.`],
   ];
   const paliers = [1, 2, 4, 10];
   const ligne = (n) => { const mo = n * M; const ans = mo % 12 === 0 ? ` (${mo / 12 === 1 ? 'un an' : mo / 12 + ' ans'})` : ''; return `<tr><td><b>${n}</b> filleul${n > 1 ? 's' : ''}</td><td><b>${mo} mois</b>${ans}</td><td><b>${euro(mo * mini.month)}</b></td></tr>`; };
@@ -853,13 +853,13 @@ function fidelitePage() {
 
 **Qui peut parrainer ?** Toute personne qui a un espace client des Minis Monstres. Votre code est dans votre espace, sur l’accueil et dans Mon compte, rubrique « Parrainage ».
 
-**Combien de proches puis-je parrainer ?** Autant que vous voulez. Chaque filleul dont le site est en ligne vous rapporte ${M} mois de plus, qui s’ajoutent aux précédents.
+**Combien de proches puis-je parrainer ?** Autant que vous voulez. Chaque filleul vous rapporte ${M} mois de plus, qui s’ajoutent aux précédents.
 
-**Quand les mois offerts commencent-ils ?** Dès que le site de votre filleul est en ligne. Si votre forfait est déjà en cours, ses prochaines factures sont suspendues pendant ${M} mois. S’il n’a pas encore commencé, il démarrera avec ${M} mois sans rien payer.
+**Quand les mois offerts commencent-ils ?** Un mois après la mise en ligne du site de votre filleul. Vous êtes prévenu par e-mail le jour de sa mise en ligne, puis le jour où vos mois s’activent. Si votre forfait est déjà en cours, ses prochaines factures sont suspendues pendant ${M} mois. S’il n’a pas encore commencé, il démarrera avec ${M} mois sans rien payer.
 
 **Je n’ai pas encore de site, ça marche quand même ?** Oui : vos mois offerts vous attendent, et ils commenceront avec votre forfait ${esc(mini.name)}.
 
-**Et mon filleul ?** Il reçoit ${M} mois de forfait ${esc(mini.name)} offerts, dès la mise en ligne de son site, s’il a choisi ce forfait.
+**Et mon filleul ?** Il reçoit ${M} mois de forfait ${esc(mini.name)} offerts, un mois après la mise en ligne de son site, s’il a choisi ce forfait.
 
 Les conditions complètes sont dans les [conditions générales](${'/conditions-generales/'}), article 17.`)}</div></section>
 <section class="section"><div class="container center"><div class="hero-ctas centered">${C.btn(sections.monespace.path, 'btn-primary btn-lg', 'gift', 'Mon code de parrainage')}${C.btn(sections.creer.path, 'btn-light btn-lg', 'wand-sparkles', 'Créer mon site avec un code')}</div></div></section>
