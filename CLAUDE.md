@@ -1,5 +1,6 @@
 # Les Minis Monstres : repères pour Claude
 
+- **Toujours écrire à Alex en français** : explications, résumés, comptes rendus, questions, légendes de captures et messages de fin de travail (demande d'Alex, 25 novembre 2026). Les messages de commit restent en français aussi.
 - Les extensions d'installation des sites clients sont gardées dans `extensions/` : `minis-site-essentiel.zip`, `minis-site-boutique.zip` (option e-commerce), `minis-site-visibilite.zip` (anciens Sites Visibilité seulement). Quand Alex en demande une, la lui envoyer telle quelle (après `python3 scripts/wp-export.py --sans-sdk` si le connecteur a changé). Mode d'emploi : `extensions/LISEZ-MOI.md`. Code : `src/wordpress/minis-site/`.
 - Le site se construit avec `node build.js` ; `node scripts/check.js` doit donner 0 erreur, 0 avertissement, 0 phrase dupliquée.
 - La marche à suivre pour mettre en ligne est dans `docs/gestion-du-site.md`.
