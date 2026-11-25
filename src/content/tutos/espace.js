@@ -280,6 +280,10 @@ Les trois dernières demandes apparaissent aussi sur la page « Mon site », sou
 
 > Bon à savoir : pas besoin de surveiller. Un e-mail vous prévient quand une demande attend votre accord, et quand elle est faite.
 
+## La liste de toutes vos pages
+
+Dans l’onglet **« Mon site »**, le bloc **« Mes pages »** réunit toutes les pages de votre site, y compris vos pages de visibilité Google, avec leur date de mise en ligne. Ouvrez une page avec **Voir**, changez un texte ou une photo avec **Modifier**. Un prestataire classique garde souvent ces accès pour lui : ici, tout est sous votre main.
+
 ## Et si quelque chose coince ?
 
 Un paiement en attente, un questionnaire oublié : votre espace vous le signale dès l’accueil. Pour tout le reste, ${CERISE} répond dans sa bulle, et Alex sur la page Contact.`,

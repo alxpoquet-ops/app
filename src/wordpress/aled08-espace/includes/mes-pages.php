@@ -135,6 +135,7 @@ function aled08e_mp_lire($uid, $direct = false) {
     if (is_array($c) && isset($c['etat'])) return $c;
     $derniere = get_user_meta($uid, 'aled08_mp_liste', true);
     $derniere = is_array($derniere) && isset($derniere['pages']) ? $derniere : null;
+    if ($derniere) $derniere['pages'] = aled08e_mp_completer($uid, (array) $derniere['pages']);
     if (!$direct) return ['etat' => 'attente', 'pages' => $derniere ? $derniere['pages'] : aled08e_mp_connues($uid), 'le' => $derniere ? (int) $derniere['le'] : 0, 'premiere' => !$derniere];
     $r = aled08e_lia_appel($uid, 'lister', ['type' => 'page']);
     if (is_wp_error($r) || !isset($r['contenus']) || !is_array($r['contenus'])) {
@@ -146,6 +147,13 @@ function aled08e_mp_lire($uid, $direct = false) {
     set_transient($cle, $res, 10 * MINUTE_IN_SECONDS);
     update_user_meta($uid, 'aled08_mp_liste', ['le' => $res['le'], 'pages' => $res['pages']]);
     return $res;
+}
+/* La dernière liste connue, avec les pages Google livrées depuis */
+function aled08e_mp_completer($uid, $pages) {
+    $vues = [];
+    foreach ($pages as $p) $vues[aled08e_mp_cle($p['adresse'] ?? '')] = true;
+    foreach (aled08e_mp_google($uid) as $g) if (empty($vues[aled08e_mp_cle($g['adresse'])])) $pages[] = ['titre' => $g['titre'], 'adresse' => $g['adresse'], 'google' => true, 'role' => '', 'date' => $g['date']];
+    return aled08e_mp_trier($pages);
 }
 /* Une page livrée ou changée : la liste se relit à la prochaine visite */
 function aled08e_mp_oublier($uid) { delete_transient('aled08e_mp_' . (int) $uid); }
@@ -198,7 +206,7 @@ function aled08e_mp_corps_html($uid, $r) {
             . '<span class="mp-act"><a class="btn btn-light btn-sm" href="' . esc_url($p['adresse'], ['https']) . '" target="_blank" rel="noopener" aria-label="' . esc_attr('Voir « ' . $p['titre'] . ' » (nouvel onglet)') . '">' . aled08e_icon('eye') . '<span>Voir</span></a>' . $modif . '</span>'
             . '</li>';
     };
-    $max = 8;
+    $max = 12; // au-delà, le reste se déplie (une liste plus courte sur téléphone)
     $liste = '<ul class="mp-liste">' . implode('', array_map($ligne, array_slice($pages, 0, $max))) . '</ul>';
     if (count($pages) > $max) {
         $reste = count($pages) - $max;
@@ -236,7 +244,7 @@ function aled08e_mp_html($uid) {
   if (!b) return;
   var corps = b.querySelector('[data-mp-corps]'), maj = b.querySelector('[data-mp-maj]');
   // « Modifier » sans le mode modification : on ouvre « Mes modifications », la demande commence par le nom de la page
-  function brancher() {
+  function mpBrancher() {
     [].forEach.call(b.querySelectorAll('[data-mp-go]'), function (x) {
       x.addEventListener('click', function () {
         var t = document.querySelector('[role="tab"][data-tab="' + x.getAttribute('data-mp-go') + '"]');
@@ -247,7 +255,7 @@ function aled08e_mp_html($uid) {
       });
     });
   }
-  brancher();
+  mpBrancher();
   // le raccourci de l'Accueil : on ouvre Mon site, puis on descend jusqu'au bloc
   [].forEach.call(document.querySelectorAll('[data-mp-aller]'), function (x) {
     x.addEventListener('click', function () {
@@ -259,7 +267,7 @@ function aled08e_mp_html($uid) {
   });
   if (b.getAttribute('data-mp-charger') !== '1' || !window.fetch) return;
   var fait = false;
-  function charger() {
+  function mpCharger() {
     if (fait) return; fait = true;
     b.setAttribute('aria-busy', 'true');
     var f = new FormData(); f.append('action', 'aled08e_mes_pages'); f.append('_n', b.getAttribute('data-nonce'));
@@ -269,7 +277,7 @@ function aled08e_mp_html($uid) {
         if (!j || !j.success || !j.data || typeof j.data.html !== 'string') throw new Error('reponse');
         corps.innerHTML = j.data.html;
         if (maj) maj.textContent = j.data.etat === 'ok' ? 'À jour' : '';
-        brancher();
+        mpBrancher();
       })
       .catch(function () {
         if (maj) maj.textContent = 'Mise à jour impossible pour le moment';
@@ -279,9 +287,9 @@ function aled08e_mp_html($uid) {
       .then(function () { b.removeAttribute('aria-busy'); });
   }
   if ('IntersectionObserver' in window) {
-    var o = new IntersectionObserver(function (e) { if (e.some(function (x) { return x.isIntersecting; })) { o.disconnect(); charger(); } });
+    var o = new IntersectionObserver(function (e) { if (e.some(function (x) { return x.isIntersecting; })) { o.disconnect(); mpCharger(); } });
     o.observe(b);
-  } else charger();
+  } else mpCharger();
 })();
 </script>
     <?php
@@ -293,8 +301,8 @@ function aled08e_mp_raccourci_html($uid) {
     $r = aled08e_mp_lire($uid);
     if ($r['etat'] === 'avant' || !$r['pages']) return '';
     $n = empty($r['premiere']) ? count($r['pages']) : 0;
-    return '<p class="mp-raccourci">' . aled08e_icon('file-text') . '<span>Toutes les pages de votre site sont dans « Mon site ».</span> '
-        . '<button type="button" class="link-btn" data-go="site" data-mp-aller>' . esc_html($n > 1 ? 'Voir mes ' . $n . ' pages' : ($n === 1 ? 'Voir ma page' : 'Voir mes pages')) . '</button></p>';
+    return '<p class="mp-raccourci">' . aled08e_icon('file-text') . '<span>Toutes les pages de votre site sont dans « Mon site ». '
+        . '<button type="button" class="link-btn" data-go="site" data-mp-aller>' . esc_html($n > 1 ? 'Voir mes ' . $n . ' pages' : ($n === 1 ? 'Voir ma page' : 'Voir mes pages')) . '</button></span></p>';
 }
 
 /* La mise à jour en arrière-plan : seulement les pages du client connecté */
