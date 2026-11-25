@@ -372,7 +372,7 @@ function economie() {
     <p class="eco-ligne"><span>Indépendant</span><i style="width:${w(mInde)}"></i><b>${euro(marche.vitrineMin)} à ${euro(marche.vitrineMax)}</b></p>
     <p class="eco-ligne is-nous"><span>Notre ${ESSENTIEL.name}</span><i style="width:${w(creation.prix)}"></i><b>${euro(creation.prix)}</b></p>
   </div>
-  <p>Comment c’est possible ? Pas de local, pas d’agence, pas de loyer : Alex fait tout depuis chez lui.</p>
+  <p>Comment c’est possible ? Nous avons réduit nos charges au maximum : c’est vous qui en profitez.</p>
   ${deroulants([
     deroulant('Et pour l’entretien, chaque mois ?', `<p>Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois comprennent l’hébergement, les sauvegardes, la sécurité, la maintenance et les modifications (${euro(ABO.month + DOM)} si on vous fournit aussi le nom de domaine). Les prestataires consultés demandent ${euro(marche.entretienMin)} à ${euro(marche.entretienMax)} par mois, l’hébergement étant souvent en plus : c’est bien moins cher.</p>`),
     deroulant('Nos sources, et ce qu’il faut en penser', `<p>Ces fourchettes sont publiées par des prestataires, donc à lire avec prudence. Il existe des indépendants dès ${euro(INDEPENDANT_DES)}, et l’écart est alors très faible (environ ${ecartBas} fois), ainsi que des offres à bas prix.</p>${sourcesMarche()}`, { id: 'sources' }),
@@ -396,13 +396,13 @@ function avantagesNous({ court = false } = {}) {
   const l = AVANTAGES.filter((x) => !court || x.court);
   return `<!--commun--><ul class="compris uniques${court ? ' is-court' : ''} reveal">${l.map((x) => `<li class="compris-carte c-${x.c}"><span class="compris-ico" aria-hidden="true">${icon(x.ico)}</span><h3>${esc(x.t)}</h3><p>${esc(x.d)}</p></li>`).join('')}</ul><!--/commun-->`;
 }
-// « Comment c'est possible ? » : pas de local, pas d'agence, pas de loyer (le message d'Alex du 25 novembre 2026). Bloc commun.
+// « Comment c'est possible ? » : des charges réduites au maximum, sans les détailler (décision d'Alex du 25 novembre 2026). Bloc commun.
 function prixJuste({ lien = true } = {}) {
   return `<!--commun--><div class="prix-juste reveal">
-  <span class="prix-juste-art" aria-hidden="true">${icon('house')}</span>
+  <span class="prix-juste-art" aria-hidden="true">${icon('piggy-bank')}</span>
   <div>
     <h3>Comment c’est possible ?</h3>
-    <p><strong>Pas de local, pas d’agence, pas de loyer, pas de bureaux à chauffer et à éclairer</strong> : Alex fait tout depuis chez lui. Ces frais, vous ne les payez pas.</p>
+    <p><strong>Des charges réduites au maximum</strong> : nous dépensons le moins possible pour faire tourner la maison. Ces économies se retrouvent dans votre prix.</p>
     <p>Le prix reste juste des deux côtés : doux pour vous, et assez juste pour que nous puissions bien faire notre travail, et durer.</p>
     ${lien ? `<a class="link-more" href="${sections.methode.path}">Pourquoi nos prix sont plus doux</a>` : ''}
   </div>
@@ -843,7 +843,7 @@ function comparatifTable({ court = false, sources = true } = {}) {
 // Des réponses vraies, courtes, avec un lien pour en savoir plus. Bloc commun (repris tel quel sur plusieurs pages).
 function objections() {
   const Q = [
-    { ico: 'badge-check', c: 'mint', q: 'Moins cher, ce n’est pas bâclé ?', r: `Non. Alex n’a ni local ni loyer à payer : il travaille depuis chez lui. Il crée votre site avec vos textes, vos photos et vos couleurs, et chaque page est vérifiée avant la mise en ligne. Le prix baisse, le soin reste entier.`, href: sections.methode.path, lien: 'Pourquoi c’est moins cher' },
+    { ico: 'badge-check', c: 'mint', q: 'Moins cher, ce n’est pas bâclé ?', r: `Non. Nous avons simplement réduit nos charges au strict nécessaire. Alex crée votre site avec vos textes, vos photos et vos couleurs, et chaque page est vérifiée avant la mise en ligne. Le prix baisse, le soin reste entier.`, href: sections.methode.path, lien: 'Pourquoi c’est moins cher' },
     { ico: 'user-check', c: 'sky', q: 'Qui est derrière ?', r: `Alex, depuis ${site.address.city}, dans les Ardennes. Il crée votre site et il répond quand vous écrivez. Chaque page est vérifiée avant la mise en ligne.`, href: sections.equipe.path, lien: 'Rencontrer l’équipe' },
     { ico: 'pencil', c: 'lilac', q: 'Et si je veux changer quelque chose ?', r: `Avec le forfait ${ABO.name}, ${euro(ABO.month)} par mois sans engagement, vous changez vous-même vos textes et vos photos, à volonté. Le reste, vous nous le demandez depuis votre espace client : c’est compris.`, href: site.espaceClient && site.espaceClient.demo ? site.espaceClient.demo : sections.monespace.path, lien: 'Essayer l’espace client' },
     { ico: 'heart-handshake', c: 'pink', q: 'Et si le résultat ne me plaît pas ?', r: `On part de votre questionnaire, précis, pour éviter les surprises. Une fois en ligne, votre site s’ajuste : vous le modifiez, ou vous nous dites quoi changer. Et la loi vous donne 14 jours pour vous rétracter.`, href: '/conditions-generales/#9-droit-de-retractation', lien: 'Le droit de rétractation' },

@@ -1,5 +1,5 @@
 // Mini Tuto, thème « pourquoi » : voir le format dans ./index.js.
-// Pourquoi les Minis Monstres : le prix (pas de local, pas de loyer, tout depuis chez Alex), les modules, la bande, et ce qu'Alex fait lui-même.
+// Pourquoi les Minis Monstres : le prix (des charges réduites au maximum, sans les détailler), les modules, la bande, et ce qu'Alex fait lui-même.
 // 25 novembre 2026 : ton premium, « 2 à 3 fois moins cher » (config.marche.foisTexte), le lave-vaisselle reste sur /la-maison/ seulement.
 // Exact par rapport au code : depuis le 25 novembre 2026, plus d'appel ni de feu vert, le questionnaire envoyé lance la
 // création (atelier.php) ; le contrôle par un second petit monstre avant toute livraison, les cas délicats qui remontent à Alex (regles/escalade.md), les CGV (src/content/legal.js).
@@ -57,7 +57,7 @@ module.exports = [
 
 ## Pour qui nous travaillons
 
-Artisans, commerçants, indépendants, associations, professions libérales : des activités qui font du bon travail et qui méritent d’être trouvées sur internet. D’après les repères publics affichés sur notre page [tarifs](/tarifs/), un site vitrine fait par un indépendant coûte souvent entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Chez nous, elle coûte ${marche.foisTexte} fois moins, parce qu’Alex travaille depuis chez lui : ni local, ni agence, ni loyer à faire payer.
+Artisans, commerçants, indépendants, associations, professions libérales : des activités qui font du bon travail et qui méritent d’être trouvées sur internet. D’après les repères publics affichés sur notre page [tarifs](/tarifs/), un site vitrine fait par un indépendant coûte souvent entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Chez nous, il coûte ${marche.foisTexte} fois moins, parce que nous gardons nos charges au plus bas.
 
 ## Ce que nous ne promettons pas
 
@@ -95,7 +95,7 @@ Alex a construit les Minis Monstres sans formation de développeur. Il s’appui
 2. **Combien de temps ?** Des jours ou des semaines pour un site fait entièrement à la main. Chez nous, ${DELAI} en général une fois vos éléments reçus.
 3. **Qui vérifie ?** Chez nous, un second petit monstre contrôle le travail du premier avant toute livraison, selon les règles écrites par Alex. Les cas délicats arrivent toujours chez lui.
 4. **Qui vous parle ?** Alex, la personne derrière les Minis Monstres : il répond à vos messages.
-5. **Combien ça coûte ?** Comptez souvent, chez un indépendant, pour ${marche.pagesCompare} pages de site vitrine, entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €, d’après les repères de notre page [tarifs](/tarifs/). Le ${ESS.name} coûte ${eur(ESS.price)} €, soit ${marche.foisTexte} fois moins : Alex travaille depuis chez lui, sans loyer à répercuter sur vos factures.
+5. **Combien ça coûte ?** Comptez souvent, chez un indépendant, pour ${marche.pagesCompare} pages de site vitrine, entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €, d’après les repères de notre page [tarifs](/tarifs/). Le ${ESS.name} coûte ${eur(ESS.price)} €, soit ${marche.foisTexte} fois moins : nos charges sont minimes, et vos factures aussi.
 6. **Et après ?** Avec le forfait ${mini.name}, vos modifications sont comprises dans les ${eur(mini.month)} € par mois. Avec le forfait ${AUTO}, vous repartez avec votre site.
 
 ## Quand un développeur reste le bon choix
@@ -120,15 +120,14 @@ Une application métier, un logiciel sur mesure, un très gros catalogue, une co
     duree: 3,
     h1: `Comment un site soigné peut-il coûter ${marche.foisTexte} fois moins cher ?`,
     title: 'Un site moins cher, sans rien bâcler : comment ? | Les Minis Monstres',
-    description: `Comment le ${ESS.name} coûte ${marche.foisTexte} fois moins cher qu’un site d’indépendant : ni local, ni agence, ni loyer, et un contrôle avant chaque livraison.`,
-    lead: 'Un prix doux fait parfois peur. Ici, il vient des frais que nous n’avons pas, jamais des étapes sautées. Voici comment.',
-    body: `La réponse tout de suite : nous n’avons ni local, ni agence, ni loyer à vous faire payer. Alex fait tout depuis chez lui. Le soin, lui, reste le même.
+    description: `Comment le ${ESS.name} coûte ${marche.foisTexte} fois moins cher qu’un site d’indépendant : des charges réduites au maximum, et un contrôle avant chaque livraison.`,
+    lead: 'Un prix doux fait parfois peur. Ici, il vient de charges tenues au plus bas, jamais d’étapes sautées. Voici comment.',
+    body: `La réponse tout de suite : nous avons réduit nos charges au maximum, et c’est vous qui en profitez. Le soin, lui, reste le même.
 
-## Les trois raisons du prix
+## Les deux raisons du prix
 
-1. **Ni local, ni agence, ni loyer.** Pas de bureaux à chauffer et à éclairer, pas de vitrine en ville, pas de commerciaux à rémunérer. Ces frais n’existent pas chez nous, donc ils n’apparaissent nulle part sur votre facture.
+1. **Des charges au plus bas.** Nous dépensons le strict nécessaire pour faire tourner la maison : tout ce que vous réglez sert à votre site.
 2. **Pas de réunion, pas de devis à attendre.** Un questionnaire précis suffit : Alex crée votre site avec vos réponses, vos photos et vos couleurs. Le temps qu’une agence passe en rendez-vous, il le passe sur votre site.
-3. **Aucun frais de structure.** Pas de bureaux à louer, pas de standard, pas de commercial à payer : tout ce que vous réglez sert à votre site.
 
 ## Un prix juste, pas un prix au rabais
 

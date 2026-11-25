@@ -74,12 +74,12 @@ const pages = [
     icon: 'piggy-bank',
     color: 'lilac',
     title: 'Pourquoi un site moins cher, sans rien sacrifier | Les Minis Monstres',
-    description: `Un site internet soigné, ${marche.foisTexte} fois moins cher qu’un indépendant : pas de local, pas d’agence, pas de loyer, tout fait depuis chez Alex, et tout vérifié.`,
+    description: `Un site internet soigné, ${marche.foisTexte} fois moins cher qu’un indépendant : des charges réduites au maximum, et tout vérifié.`,
     h1: 'Pourquoi sommes-nous moins chers ?',
-    lead: `Un site professionnel ${marche.foisTexte} fois moins cher qu’un indépendant, pour une raison simple : pas de local, pas d’agence, pas de loyer, pas de bureaux à chauffer et à éclairer. Alex fait tout depuis chez lui. Le soin, lui, reste entier.`,
-    resume: 'Pas de local, pas de loyer, et tout le soin.',
+    lead: `Un site professionnel ${marche.foisTexte} fois moins cher qu’un indépendant, pour une raison simple : nous avons réduit nos charges au maximum, et ces économies sont pour vous. Le soin, lui, reste entier.`,
+    resume: 'Des charges au plus bas, et tout le soin.',
     points: [
-      { icon: 'house', t: 'Pas de local, pas de loyer', d: 'Ni agence ni bureaux à chauffer : Alex travaille de chez lui, et ces frais restent hors de votre facture.' },
+      { icon: 'piggy-bank', t: 'Des charges réduites au maximum', d: 'Nous dépensons le moins possible pour faire tourner la maison, et c’est votre facture qui en profite.' },
       { icon: 'user-check', t: 'Tout vérifié, page par page', d: 'Chaque site est relu et testé sur téléphone avant sa mise en ligne.' },
       { icon: 'key-round', t: 'L’accès à tout', d: 'Votre espace client montre toutes vos pages. Vous modifiez vous-même, ou vous nous demandez.' },
       { icon: 'badge-euro', t: 'Un prix affiché', d: `${eur(ESS.price)} € le site, ${eur(BOU.price)} € avec une boutique, les mêmes pour tous, sans devis à attendre.` },
@@ -91,13 +91,13 @@ Une activité que personne ne trouve sur internet perd des clients sans le savoi
 
 Notre métier, c’est de leur apporter cette visibilité, avec un site soigné, à un tarif qu’elles peuvent se permettre.
 
-## Pas de local, pas d’agence, pas de loyer
+## Des charges réduites au maximum
 
-Une agence paie des bureaux, un loyer, le chauffage et l’éclairage de ses locaux, des commerciaux, des réunions et toute une organisation. Ces frais se retrouvent dans le prix de chaque site.
+Toute entreprise a des charges, et elles se retrouvent dans le prix de chaque site qu’elle vend.
 
-Chez nous, rien de tout cela. **Alex fait tout depuis chez lui** : pas de vitrine en ville, pas de bureaux à chauffer et à éclairer, pas d’équipe commerciale à faire vivre. Ce que nous n’avons pas à payer, vous ne le payez pas non plus.
+Nous avons fait le choix de **réduire les nôtres au maximum**. Ce que nous n’avons pas à payer, vous ne le payez pas non plus.
 
-C’est la vraie raison de notre prix. Pas une étape sautée, pas un site fait à la va-vite : seulement des frais qui n’existent pas.
+C’est la vraie raison de notre prix. Pas une étape sautée, pas un site fait à la va-vite : seulement des charges tenues au plus bas.
 
 ## Un prix juste, des deux côtés
 
@@ -123,9 +123,9 @@ Ce qui ne se voit pas est le même pour tous : le code qui fait tourner le site 
 
 Ce qui se voit, en revanche, est fait pour vous : l’ambiance, les couleurs, les polices, la mise en avant de vos photos, le ton de vos textes. Votre site est en ligne en quelques heures, puis nous l’ajustons à votre goût, avec des modifications à volonté. Le résultat ressemble à votre activité, pas à celle du voisin.
 
-## Ni local, ni agence, ni loyer
+## Moins de charges, un prix plus doux
 
-Une agence fait payer ses bureaux, son chauffage et son loyer dans chaque devis. Alex travaille depuis chez lui, dans les Ardennes : ces frais n’existent pas, et vous ne les payez donc pas. C’est la première raison de nos prix.${ESS.delai ? ` Votre site est prêt en ${ESS.delai}, avec ou sans l’option ${eco}.` : ''}
+Moins de charges pour nous, un prix plus doux pour vous : c’est la première raison de nos tarifs.${ESS.delai ? ` Votre site est prêt en ${ESS.delai}, avec ou sans l’option ${eco}.` : ''}
 
 ## Ce qui est fait pour chaque site
 
@@ -180,7 +180,7 @@ Votre espace client vous donne la main sur votre site, du premier jour au dernie
 
 Votre projet dépasse ce que nous savons bien faire, comme une application sur mesure ou un catalogue de milliers de produits ? Nous vous le disons dès le premier échange.`,
     faq: [
-      { q: 'Moins cher, ça veut dire moins bien ?', a: 'Non. Le prix baisse parce que nous n’avons ni local ni loyer à payer, pas parce que nous sautons des étapes. Chaque site est relu, testé sur téléphone et vérifié avant d’être publié.' },
+      { q: 'Moins cher, ça veut dire moins bien ?', a: 'Non. Le prix baisse parce que nous avons réduit nos charges au maximum, pas parce que nous sautons des étapes. Chaque site est relu, testé sur téléphone et vérifié avant d’être publié.' },
       { q: 'Mon site est-il fait à la chaîne ?', a: 'Non. Alex conçoit votre site à partir de vos choix : l’ambiance, les couleurs, les mots. Rien n’est publié sans vérification, et vous l’ajustez ensuite à votre goût.' },
       { q: 'Y a-t-il des frais en plus du prix affiché ?', a: `Non. Vous payez le site choisi, puis ${eur(mini.month)} € par mois seulement si vous prenez le forfait ${mini.name}. Les extras sont facultatifs, et leur prix est affiché.` },
       { q: 'Pourquoi n’y a-t-il pas de devis ?', a: 'Parce que la plupart des sites d’artisans, de commerces ou d’associations se construisent de la même façon. Un prix fixe est plus simple pour tout le monde.' },
@@ -355,7 +355,7 @@ Méfiez-vous des raccourcis : pages copiées, mots répétés à l’excès, lie
       { icon: 'user', t: 'Une vraie personne', d: 'Alex lit vos messages et vous répond.' },
       { icon: 'tag', t: 'Un prix affiché', d: 'Le même pour tous, sans devis et sans surprise.' },
       { icon: 'lock', t: 'Rien ne vous retient', d: 'Aucun abonnement imposé, et l’adresse de votre site reste à votre nom.' },
-      { icon: 'house', t: 'Ni local ni loyer', d: 'Tout se fait depuis chez Alex, et votre facture ne porte aucun loyer.' },
+      { icon: 'piggy-bank', t: 'Des charges au plus bas', d: 'Nous dépensons peu pour faire tourner la maison, et vos tarifs restent doux.' },
     ],
     body: `## Notre métier : vous rendre visible
 
@@ -401,7 +401,7 @@ Nous créons des sites vitrines à votre image, des boutiques en ligne, et des p
 
 Pour une application sur mesure, un logiciel métier ou un catalogue de milliers de produits, il faut un développeur expérimenté. Dans ce cas, nous vous orientons vers les bonnes personnes.
 
-Pas de local, pas d’agence, pas de loyer : tout se fait depuis chez Alex. Pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourquoi-moins-cher/).`,
+Nos charges restent au strict minimum, et nos tarifs suivent. Pour comprendre d’où viennent nos prix, lisez [pourquoi moins cher](/pourquoi-moins-cher/).`,
     faq: [
       { q: 'Est-ce que je parle à une vraie personne ?', a: `Oui. Les messages du formulaire de contact arrivent chez Alex, et c’est lui qui répond. Dans votre espace client, ${B('constructeur').nom} prépare vos demandes de modification avec vous, et c’est encore Alex qui les fait.` },
       { q: 'Et si un petit monstre se trompe ?', a: `Cela peut arriver, comme avec tout outil. C’est pour cela qu’un second petit monstre relit le travail du premier avant toute livraison. ${B('constructeur').nom} vous relit aussi votre demande avant de l’envoyer à Alex, et vous la confirmez.` },

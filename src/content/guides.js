@@ -290,7 +290,7 @@ Les années suivantes, il ne reste que l'abonnement : ${eur(mini.month)} € par
 
 Chez un indépendant, un site vitrine de ${marche.pagesCompare} pages se paie en général entre ${mille(marche.vitrineMin)} et ${mille(marche.vitrineMax)} €. Notre ${ESS.name}, à ${eur(ESS.price)} €, avec les mêmes parties (accueil, présentation, services, photos, contact), coûte donc ${marche.foisTexte} fois moins.
 
-La différence tient d’abord aux frais : pas de local, pas d’agence, pas de loyer, pas de bureaux à chauffer et à éclairer, puisqu’Alex fait tout depuis chez lui. Votre site, il le crée avec vos réponses : pas de réunion à caler, pas de devis à attendre. Et vous gagnez en plus un espace client où vous voyez toutes vos pages, et où vous modifiez vous-même avec le forfait ${mini.name}.
+La différence tient d’abord aux charges : nous les avons réduites au maximum, et ces économies vont dans votre poche. Votre site, Alex le crée avec vos réponses : pas de réunion à caler, pas de devis à attendre. Et vous gagnez en plus un espace client où vous voyez toutes vos pages, et où vous modifiez vous-même avec le forfait ${mini.name}.
 
 Ces chiffres viennent de prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${eur(INDEPENDANT_DES)} €, et l’écart devient alors très faible. La page [pourquoi moins cher](/pourquoi-moins-cher/) détaille tout, sources comprises.
 

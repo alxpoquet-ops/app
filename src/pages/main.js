@@ -82,7 +82,7 @@ function laMaisonPage() {
       <h2>Le mot d’Alex</h2>
       <p>J’ai créé les Minis Monstres pour les artisans, les commerçants, les associations, et pour tous ceux qui démarrent avec un petit budget.</p>
       <p>Un site fait sur mesure coûte souvent plusieurs milliers d’euros. C’est le juste prix du travail fourni. Mais beaucoup d’entrepreneurs ne peuvent pas se le permettre, alors ils restent invisibles.</p>
-      <p>Je suis autodidacte : je n’ai pas suivi d’école de développeur, j’ai appris en construisant, un site après l’autre. Je n’ai ni local, ni agence, ni loyer, ni bureaux à chauffer et à éclairer : je fais tout depuis chez moi. C’est ce qui me permet de vous proposer un prix doux, sans rien retirer au soin.</p>
+      <p>Je suis autodidacte : je n’ai pas suivi d’école de développeur, j’ai appris en construisant, un site après l’autre. J’ai réduit mes charges au maximum : c’est ce qui me permet de vous proposer un prix doux, sans rien retirer au soin.</p>
       <p>Car je tiens à faire les choses bien : chaque page est vérifiée avant la mise en ligne, et je reste là ensuite. Un prix juste, c’est aussi un prix qui me permet de vivre de mon travail, et de le faire durer.</p>
       <p>Notre époque a quelque chose de beau : les efforts peuvent enfin être récompensés. Je voudrais que chacun en profite, pas seulement ceux qui ont un gros budget.</p>
       <p class="lettre-signe"><strong>Alex</strong><span>Fondateur des Minis Monstres</span></p>
@@ -109,7 +109,7 @@ function laMaisonPage() {
     <span class="maison-vision-art" aria-hidden="true">${C.imgMonstre('bricou', 150)}</span>
     <div class="maison-vision-txt prose">
       <h2>Une maison, pas une agence</h2>
-      <p>Les Minis Monstres n’ont pas de vitrine en ville, ni de bureaux à louer. Tout se fait depuis chez Alex, dans les ${esc(site.address.department)} : pas de loyer, pas de chauffage ni d’éclairage de locaux, pas de commerciaux à payer. Ce que la maison n’a pas à dépenser, votre site ne le coûte pas.</p>
+      <p>Les Minis Monstres sont une petite maison, installée dans les ${esc(site.address.department)}. Nos charges sont réduites au strict minimum, et nos prix suivent : ce que la maison n’a pas à dépenser, votre site ne le coûte pas.</p>
       <p>Pour les tâches qui reviennent d’un site à l’autre, des outils font le travail, un peu comme un lave-vaisselle : la vaisselle est aussi propre, et le temps gagné va au reste.</p>
       <p><strong>Ce reste, c’est le plus beau du métier</strong> : comprendre votre activité, choisir les mots justes, soigner le design, vérifier chaque détail.</p>
     </div>
@@ -134,7 +134,7 @@ ${C.ctaBand({ title: 'Et si on commençait par votre site ?', text: `Le ${esc(ES
     color: 'lilac',
     bodyClass: 'page-maison',
     title: 'Notre concept : un site professionnel pour tous | Les Minis Monstres',
-    description: 'Pourquoi Les Minis Monstres existent : des sites professionnels soignés, à un prix juste, faits depuis chez Alex, sans local ni loyer, et vérifiés par lui.',
+    description: 'Pourquoi Les Minis Monstres existent : des sites professionnels soignés, à un prix juste grâce à des charges réduites au maximum, et vérifiés par Alex.',
     crumbs,
     body,
     priority: 0.8,
@@ -566,7 +566,7 @@ function comparatifPage() {
     C.deroulant('Les prix, côte à côte', md(`Un indépendant demande en général entre ${euro(marche.vitrineMin)} et ${euro(marche.vitrineMax)}. Une agence, plutôt ${euro(marche.agenceMin)} à ${euro(marche.agenceMax)}. Notre ${ESS.name}, qui contient ces mêmes parties, coûte ${euro(ESS.price)}.
 
 Ces fourchettes sont publiées par des prestataires, et chaque devis est différent. Certains indépendants vendent un site dès ${euro(C.INDEPENDANT_DES)}. L’écart est alors d’environ ${C.ecartBas} fois. Les sources sont citées sous le tableau, en haut de cette page.`), { ico: 'scale' }),
-    C.deroulant('Pourquoi ce prix ?', md(`Nous n’avons ni local, ni agence, ni loyer, ni bureaux à chauffer et à éclairer : Alex travaille depuis chez lui. Ces frais n’existent pas chez nous, donc vous ne les payez pas. Ce que vous payez, c’est le temps qu’Alex passe sur votre site, avec vos textes, vos photos et vos couleurs.
+    C.deroulant('Pourquoi ce prix ?', md(`Nous avons choisi de réduire nos charges au maximum : c’est ce qui rend ce prix possible. Ce que vous payez, c’est le temps qu’Alex passe sur votre site, avec vos textes, vos photos et vos couleurs.
 
 Le prix reste juste : assez doux pour vous, assez juste pour que nous vivions de notre travail. Le détail est sur la page [pourquoi c’est moins cher](${sections.methode.path}).`), { ico: 'piggy-bank' }),
     C.deroulant('Ce que vous avez avec votre site', md(`Votre espace client vous montre la liste de toutes vos pages, dont vos pages de visibilité Google, avec un lien pour voir ou modifier chacune.
