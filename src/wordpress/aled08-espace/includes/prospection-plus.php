@@ -398,5 +398,40 @@ function aled08e_px_bilan_reponses_lignes() {
 /* Alex, 26 novembre 2026 au soir : « envoie la première fournée maintenant ». L'option aled08_px_envoi_force_jusqua (une heure,
  * en secondes) ouvre les envois jusqu'à cette heure-là, même hors de 8 h à 18 h en semaine. Le quota du jour reste le même. */
 add_filter('aled08e_px_heure_ok', function ($ok, $t) {
-    return $ok || (int) get_option('aled08_px_envoi_force_jusqua', 0) > (int) $t;
+    if ((int) get_option('aled08_px_envoi_force_jusqua', 0) > (int) $t) return true;
+    return $ok && aled08e_px_creneau($t) !== null; // en semaine, et seulement pendant un des deux envois du jour
 }, 10, 2);
+
+/* ====================================================================== 7. deux envois par jour (Alex, 26 novembre 2026) */
+/* « 20 le matin, 20 à 12 h 30 » : les premiers mails partent dans deux créneaux seulement, chacun avec son plafond. Le Facteur
+ * passe à 8 h 28 et à 12 h 28 pour envoyer ; ses autres passages vérifient les nouvelles entreprises et préparent les maquettes.
+ * Réglage : option aled08_px_creneaux, [[heure de début, heure de fin, plafond], …] (heure de Paris). */
+function aled08e_px_creneaux() {
+    $c = get_option('aled08_px_creneaux', [[8, 10, 20], [12, 14, 20]]);
+    $out = [];
+    foreach ((array) $c as $x) if (is_array($x) && count($x) >= 3) $out[] = [(int) $x[0], (int) $x[1], max(0, (int) $x[2])];
+    return $out;
+}
+/* Le créneau en cours à l'heure $t : [début, fin, plafond] avec ses bornes en secondes, ou null */
+function aled08e_px_creneau($t = null) {
+    $t = (int) ($t ?? time());
+    $h = (int) wp_date('G', $t);
+    foreach (aled08e_px_creneaux() as $c) if ($h >= $c[0] && $h < $c[1]) {
+        $j = new DateTime('@' . $t); $j->setTimezone(wp_timezone());
+        $deb = (clone $j)->setTime($c[0], 0, 0)->getTimestamp();
+        $fin = (clone $j)->setTime($c[1], 0, 0)->getTimestamp();
+        return ['de' => $deb, 'a' => $fin, 'max' => $c[2]];
+    }
+    return null;
+}
+add_filter('aled08e_px_quota_jour', function ($q) {
+    $c = aled08e_px_creneaux();
+    return $c ? array_sum(array_column($c, 2)) : $q;
+});
+add_filter('aled08e_px_quota_restant', function ($r) {
+    if ((int) get_option('aled08_px_envoi_force_jusqua', 0) > time()) return $r;
+    $c = aled08e_px_creneau();
+    if (!$c) return $r;
+    $deja = count(array_filter(aled08e_px_envois_recents(), function ($t) use ($c) { return $t >= $c['de'] && $t < $c['a']; }));
+    return max(0, min($r, $c['max'] - $deja));
+});

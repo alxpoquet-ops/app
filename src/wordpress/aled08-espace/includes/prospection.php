@@ -29,7 +29,7 @@
  *   aled08_prospection_active        '0' (défaut) ou '1' : rien ne part tant que ce n'est pas '1'
  *   aled08_prospection_quota_depart  20 : envois par jour la première semaine (les relances comptent)
  *   aled08_prospection_quota_max     150 : plafond ; le quota monte de 20 chaque semaine depuis le premier envoi
- *   30 envois par heure au plus, en semaine de 8 h à 18 h (heure du site), et seulement quand le site et les ventes sont ouverts.
+ *   30 envois par heure au plus, en semaine, en deux envois (8 h à 10 h et 12 h à 14 h, 20 chacun : prospection-plus.php), et seulement quand le site et les ventes sont ouverts.
  *
  * Routes (administrateur, comme l'atelier) :
  *   POST /aled08/v1/atelier/prospects  {prospects: [...], zone: {departement, metier}}   ajouter (le Repéreur)
@@ -150,7 +150,7 @@ function aled08e_px_quota_jour($now = null) {
     $max = max($depart, (int) get_option('aled08_prospection_quota_max', 150));
     $premier = (int) get_option('aled08_prospection_premier_envoi', 0);
     $semaines = $premier ? (int) floor(max(0, $now - $premier) / WEEK_IN_SECONDS) : 0;
-    return (int) min($max, $depart + ALED08E_PX_PALIER * $semaines);
+    return (int) apply_filters('aled08e_px_quota_jour', (int) min($max, $depart + ALED08E_PX_PALIER * $semaines), $now);
 }
 /* Les compteurs du jour (envois, relances, clics, réponses, désinscriptions, commandes), gardés 120 jours */
 function aled08e_px_stats() { $s = get_option('aled08_prospection_stats', []); return is_array($s) ? $s : []; }
@@ -189,7 +189,7 @@ function aled08e_px_noter_envoi() {
     update_option('aled08_prospection_envois', array_slice($l, -400), false);
     if (!get_option('aled08_prospection_premier_envoi')) update_option('aled08_prospection_premier_envoi', time(), false);
 }
-function aled08e_px_quota_restant() { return max(0, aled08e_px_quota_jour() - aled08e_px_envoyes_aujourdhui()); }
+function aled08e_px_quota_restant() { return (int) apply_filters('aled08e_px_quota_restant', max(0, aled08e_px_quota_jour() - aled08e_px_envoyes_aujourdhui())); }
 
 /* ====================================================================== la liste d'opposition */
 /* Des empreintes (jamais l'adresse en clair), avec un sel propre au site : gardées même quand le prospect est effacé */
@@ -926,7 +926,7 @@ function aled08e_px_faire(WP_REST_Request $req) {
     // ----- envoyer, relancer : tous les garde-fous
     if (!aled08e_px_active()) return $err('La prospection est éteinte (option aled08_prospection_active). Rien n’est envoyé.', 403);
     if (!aled08e_px_site_pret()) return $err('Le site ou les ventes ne sont pas ouverts : on n’envoie pas une offre qu’on ne pourrait pas honorer.', 409);
-    if (!aled08e_px_heure_ok()) return $err('Les envois se font en semaine, de 8 h à 18 h (heure du site). Revenez à ce moment-là.', 409);
+    if (!aled08e_px_heure_ok()) return $err('Les envois se font en semaine, en deux fois : le matin (8 h à 10 h) et à midi (12 h à 14 h), heure de Paris. Revenez à ce moment-là.', 409);
     if (aled08e_px_oppose($p['email'], $p['siren'])) { if ($etat !== 'desinscrit') $set('desinscrit'); return $err('Ce prospect est sur la liste d’opposition : on ne lui écrit jamais.'); }
     if ($faire === 'envoyer') {
         if ($etat !== 'a_ecrire') return $err('On n’écrit qu’à un prospect « a_ecrire » (il est « ' . $etat . ' »)' . ($etat === 'nouveau' ? ' : revérifiez-le d’abord, puis « retenir ».' : '.'));
@@ -1104,7 +1104,7 @@ function aled08e_px_poste($agent) {
         $peutEnvoyer = $r['site_et_ventes_ouverts'] && $r['heure_d_envoi'] && $restant > 0;
         $w = $out['travail'];
         if ($pourquoi === '' && !$w['a_verifier'] && (!$peutEnvoyer || (!$w['a_ecrire'] && !$w['a_relancer']))) {
-            $pourquoi = !$r['site_et_ventes_ouverts'] ? 'Le site ou les ventes ne sont pas ouverts : aucun envoi.' : (!$r['heure_d_envoi'] ? 'Hors des heures d’envoi (semaine, 8 h à 18 h).' : ($restant <= 0 ? 'Quota du jour atteint.' : 'Personne à vérifier, à écrire ni à relancer.'));
+            $pourquoi = !$r['site_et_ventes_ouverts'] ? 'Le site ou les ventes ne sont pas ouverts : aucun envoi.' : (!$r['heure_d_envoi'] ? 'Hors des deux envois du jour (en semaine, 8 h à 10 h et 12 h à 14 h) : vérifie seulement les nouveaux prospects et prépare les maquettes.' : ($restant <= 0 ? 'Quota du jour atteint.' : 'Personne à vérifier, à écrire ni à relancer.'));
         }
         $out['travail']['peut_envoyer'] = $peutEnvoyer;
         $out['travail']['offre'] = aled08e_px_offre_txt();

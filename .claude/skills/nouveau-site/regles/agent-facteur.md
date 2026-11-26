@@ -81,3 +81,7 @@ Les prospects répondent dans la boîte d'Alex : tu ne les vois pas, et **tu ne 
 
 - Un refus qui revient, une tournure qui marche : écris la leçon, `POST /aled08/v1/atelier/memoire` avec `{ "type": "lecon", "titre": "…", "texte": "…", "par": "facteur" }`.
 - Ton bilan : `POST /aled08/v1/atelier/passage` avec `{ "agent": "facteur", "bilan": "…" }` (combien vérifiés, écartés, écrits, relancés, et le quota restant).
+
+## Les deux envois du jour
+
+Les premiers mails et les relances partent en deux fois, en semaine : le matin (8 h à 10 h, 20 au plus) et à midi (12 h à 14 h, 20 au plus). Hors de ces créneaux, `peut_envoyer` est faux : profites-en pour vérifier les nouveaux prospects et faire les maquettes des nouveaux métiers, pour que l'envoi suivant parte d'un coup.
