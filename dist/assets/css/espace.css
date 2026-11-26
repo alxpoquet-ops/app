@@ -1183,7 +1183,8 @@ button.is-confirmer.is-confirmer, .btn.is-confirmer.is-confirmer, .req-annul .li
 .mm-carte-art { width: 58px; height: 58px; padding: 6px; border-radius: 18px; background: var(--c); }
 .mm-carte-tete strong { display: block; color: var(--ink); font-size: 1.05rem; line-height: 1.25; overflow-wrap: anywhere; }
 .mm-carte-tete small { display: block; color: var(--muted); font-weight: 700; font-size: .88rem; line-height: 1.35; overflow-wrap: anywhere; }
-.mm-carte .btn { max-width: 100%; }
+.mm-carte .btn { max-width: 100%; min-width: 0; height: auto; white-space: normal; text-align: left; line-height: 1.25; padding-top: .55em; padding-bottom: .55em; }
+.mm-carte .btn span { white-space: normal; overflow-wrap: anywhere; } /* « Demander une modification » reste dans sa carte (Alex, 26 novembre 2026) */
 .mm-duo { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px; align-items: start; margin: 0 0 18px; }
 @media (max-width: 1099px) { .mm-duo { grid-template-columns: minmax(0, 1fr); } }
 .mm-bloc { min-width: 0; padding: 20px; border-radius: 26px; background: var(--card); box-shadow: 0 0 0 2px var(--line) inset; }

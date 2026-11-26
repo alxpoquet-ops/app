@@ -707,7 +707,6 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . $liste(array_map('esc_html', $inclus), '#fff0f6')
             . $titre('L’hébergement aussi, si vous voulez', '#176a4c')
             . $P(esc_html($heb), '0 0 10px')
-            . '<a href="' . esc_url($l['demo']) . '" style="text-decoration:none;"><img src="' . esc_url(get_template_directory_uri() . '/assets/img/mail/espace-client.jpg') . '" width="552" alt="L’espace client des Minis Monstres" style="display:block;width:100%;max-width:552px;height:auto;border:1px solid #e6e1f5;border-radius:14px;"></a>'
             . $P('Votre espace client : vos modifications, vos statistiques et vos tutos, au même endroit, depuis votre téléphone. <a href="' . esc_url($l['demo']) . '" style="color:#176a4c;font-weight:bold;">Essayer l’espace client de démo</a>', '8px 0 14px')
             . $domH
             . $P('<b>Une petite famille, de vrais prix&nbsp;:</b> ' . esc_html(rtrim(aled08e_px_atouts()[0][0], '.')) . ', un vrai suivi, et tout vous appartient.', '14px 0 14px')
