@@ -179,6 +179,7 @@ require_once __DIR__ . '/includes/stripe.php';
 require_once __DIR__ . '/includes/admin.php';
 require_once __DIR__ . '/includes/ovh.php';
 require_once __DIR__ . '/includes/provision.php';
+require_once __DIR__ . '/includes/demarrer.php'; // le client lance son site avant la fin de ses 14 jours, en signant
 require_once __DIR__ . '/includes/lia.php';
 require_once __DIR__ . '/includes/mcp.php';
 require_once __DIR__ . '/includes/echanges.php';
@@ -952,6 +953,7 @@ function aled08e_panel_commande($cmd, $u, $D) {
           <div class="esp-order">
             <p class="esp-order-head"><span>Référence <b><?php echo esc_html($cmd['ref']); ?></b></span><em class="st <?php echo esc_attr(aled08e_cmd_statuts()[$s][1] ?? 'st-new'); ?>"><?php echo esc_html(aled08e_cmd_libelle_client($s)); ?></em></p>
             <?php echo $frise; // phpcs:ignore ?>
+            <?php if (function_exists('aled08e_demarrer_html')) echo aled08e_demarrer_html($cmd); // phpcs:ignore -- « Je ne veux plus attendre » (includes/demarrer.php) ?>
             <?php if ($s === 'attente_paiement' && $cmd['paiement_en_cours']) : ?>
               <p class="esp-empty">Votre prélèvement est en cours de confirmation : cela prend quelques jours. Je vous écris dès qu’il est validé.</p>
             <?php elseif ($s === 'attente_paiement') : ?>

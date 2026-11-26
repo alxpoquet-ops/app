@@ -56,6 +56,7 @@
 .esp-pay { display: grid; gap: 10px; justify-items: start; margin: 14px 0 0; padding: 16px 18px; border-radius: 18px; background: var(--mint); color: var(--mint-dd); }
 .esp-pay p { margin: 0; font-weight: 800; }
 .esp-order .esp-pay { background: var(--card); }
+.esp-demarrer p { font-weight: 400; } .esp-demarrer p b { font-weight: 800; } .esp-demarrer .field, .esp-demarrer .field input { width: 100%; }
 
 /* ---------- forfait : boutons côte à côte ---------- */
 .esp-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
