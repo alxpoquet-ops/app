@@ -179,7 +179,9 @@ require_once __DIR__ . '/includes/stripe.php';
 require_once __DIR__ . '/includes/admin.php';
 require_once __DIR__ . '/includes/ovh.php';
 require_once __DIR__ . '/includes/provision.php';
-require_once __DIR__ . '/includes/demarrer.php'; // le client lance son site avant la fin de ses 14 jours, en signant
+require_once __DIR__ . '/includes/demarrer.php';
+require_once __DIR__ . '/includes/connecteur-maj.php'; // la dernière version du connecteur, pour la mise à jour automatique des sites clients
+if (is_file(__DIR__ . '/includes/securite.php')) require_once __DIR__ . '/includes/securite.php'; // la sécurité de base (copie de alexlia-connecteur/securite.php, faite par l'export) // le client lance son site avant la fin de ses 14 jours, en signant
 require_once __DIR__ . '/includes/lia.php';
 require_once __DIR__ . '/includes/mcp.php';
 require_once __DIR__ . '/includes/echanges.php';

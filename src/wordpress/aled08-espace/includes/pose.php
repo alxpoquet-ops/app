@@ -228,7 +228,11 @@ add_action('rest_api_init', function () {
     register_rest_route('aled08/v1', '/atelier/pose', ['methods' => 'POST', 'permission_callback' => function () { return current_user_can('manage_options'); }, 'callback' => function (WP_REST_Request $req) {
         $p = (array) $req->get_json_params();
         $cid = (int) ($p['commande'] ?? 0);
-        if (($p['faire'] ?? '') !== 'reprendre') return new WP_Error('aled08_pose', 'À faire inconnu (reprendre).', ['status' => 400]);
+        if (($p['faire'] ?? '') === 'connecteur') {
+            $v = aled08e_pose_connecteur($cid);
+            return is_wp_error($v) ? new WP_Error('aled08_pose', $v->get_error_message(), ['status' => 502]) : new WP_REST_Response(['ok' => true, 'version' => $v], 200);
+        }
+        if (($p['faire'] ?? '') !== 'reprendre') return new WP_Error('aled08_pose', 'À faire inconnu (reprendre, connecteur).', ['status' => 400]);
         delete_post_meta($cid, '_aled08_pose_reprises'); // demandée par l'atelier : deux nouveaux essais automatiques
         $r = aled08e_pose_reprendre($cid);
         if (is_wp_error($r)) return new WP_Error('aled08_pose', $r->get_error_message(), ['status' => 409]);
@@ -270,4 +274,39 @@ function aled08e_pose_livraison($cid) {
     aled08e_cmd_journal($cid, 'Livraison : ' . ($essai ? 'site d’essai laissé fermé aux moteurs de recherche' : (!empty($d['moteurs']) ? 'site ouvert aux moteurs de recherche' : 'ouverture aux moteurs ratée'))
         . (!empty($d['formulaire']) ? ', le formulaire écrit à ' . $d['formulaire'] : ', formulaire non réglé (pas de formulaire ou pas d’adresse)') . '.');
     return true;
+}
+
+/* =========================================================================
+ *  Mettre à jour le connecteur d'un site déjà livré (26 novembre 2026). Une seule fois par site : à partir de la 2.16.0, le
+ *  connecteur se met à jour tout seul (includes/connecteur-maj.php). Un petit fichier est déposé par cPanel, télécharge le
+ *  dernier connecteur depuis ce site, le déplie à la place de l'ancien, puis s'efface.
+ *  POST /aled08/v1/atelier/pose {commande, faire: "connecteur"}
+ * ========================================================================= */
+function aled08e_pose_connecteur($cid) {
+    $c = aled08e_cmd_get($cid);
+    if (!$c || !$c['domaine'] || aled08e_hebergeur() !== 'cpanel') return new WP_Error('aled08_pose', 'Commande, domaine ou hébergement cPanel introuvable.');
+    $paquet = plugins_url('pkg/alexlia-connecteur.zip', dirname(__DIR__) . '/aled08-espace.php');
+    $jeton = wp_generate_password(40, false, false);
+    $code = "<?php\nerror_reporting(0);\nheader('Content-Type: application/json; charset=utf-8');\nheader('Cache-Control: no-store');\n"
+        . "if (!hash_equals('" . hash('sha256', $jeton) . "', hash('sha256', (string) (\$_POST['t'] ?? '')))) { http_response_code(403); echo '{\"ok\":false}'; exit; }\n"
+        . "\$dit = function (\$a) { @unlink(__FILE__); echo json_encode(\$a); exit; };\n"
+        . "\$z = __DIR__ . '/minis-connecteur.zip';\n"
+        . "\$f = fopen(\$z, 'w'); \$h = curl_init(" . var_export($paquet, true) . "); curl_setopt_array(\$h, [CURLOPT_FILE => \$f, CURLOPT_FOLLOWLOCATION => true, CURLOPT_TIMEOUT => 60]); \$ok = curl_exec(\$h); \$code = (int) curl_getinfo(\$h, CURLINFO_HTTP_CODE); curl_close(\$h); fclose(\$f);\n"
+        . "if (!\$ok || \$code !== 200 || filesize(\$z) < 1000) { @unlink(\$z); \$dit(['ok' => false, 'message' => 'téléchargement raté (' . \$code . ')']); }\n"
+        . "\$a = new ZipArchive(); if (\$a->open(\$z) !== true || !\$a->extractTo(__DIR__ . '/wp-content/plugins')) { @unlink(\$z); \$dit(['ok' => false, 'message' => 'archive illisible']); }\n"
+        . "\$a->close(); @unlink(\$z);\n"
+        . "\$v = preg_match('/^\\\\s*\\\\*\\\\s*Version:\\\\s*([0-9.]+)/mi', (string) @file_get_contents(__DIR__ . '/wp-content/plugins/alexlia-connecteur/alexlia-connecteur.php'), \$m) ? \$m[1] : '';\n"
+        . "if (function_exists('opcache_reset')) @opcache_reset();\n"
+        . "\$dit(['ok' => \$v !== '', 'version' => \$v]);\n";
+    $r = aled08e_pose_uapi_post('Fileman', 'save_file_content', ['dir' => aled08e_pose_dossier($c['domaine']), 'file' => 'minis-connecteur.php', 'content' => $code, 'from_charset' => 'UTF-8', 'to_charset' => 'UTF-8', 'fallback' => 0]);
+    if (is_wp_error($r)) return $r;
+    $rep = wp_remote_post('https://' . $c['domaine'] . '/minis-connecteur.php', ['timeout' => 90, 'body' => ['t' => $jeton]]);
+    $d = is_wp_error($rep) ? null : json_decode((string) wp_remote_retrieve_body($rep), true);
+    if (!is_array($d) || empty($d['ok'])) {
+        $msg = is_wp_error($rep) ? $rep->get_error_message() : (is_array($d) ? (string) ($d['message'] ?? 'refusé') : 'réponse ' . (int) wp_remote_retrieve_response_code($rep));
+        aled08e_cmd_journal($cid, 'Mise à jour du connecteur ratée : ' . $msg);
+        return new WP_Error('aled08_pose', $msg);
+    }
+    aled08e_cmd_journal($cid, 'Connecteur mis à jour en ' . $d['version'] . ' (sécurité de base, mises à jour automatiques ensuite).');
+    return $d['version'];
 }

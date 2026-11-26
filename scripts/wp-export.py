@@ -702,6 +702,8 @@ def main():
     # extension « ALED08 Espace client »
     edir = os.path.join(OUT, 'aled08-espace')
     shutil.copytree(os.path.join(ROOT, 'src', 'wordpress', 'aled08-espace'), edir)
+    # la sécurité de base : le même fichier que celui du connecteur (une seule source : alexlia-connecteur/securite.php)
+    shutil.copy(os.path.join(ROOT, 'src', 'wordpress', 'alexlia-connecteur', 'securite.php'), os.path.join(edir, 'includes', 'securite.php'))
     shutil.copy(os.path.join(ROOT, 'src', 'assets', 'js', 'qrcode.js'), os.path.join(edir, 'qrcode.js'))
     # styles de l'espace client : servis par le thème (assets/css/espace.css) ; copie de secours dans l'extension
     shutil.copy(os.path.join(DIST, 'assets', 'css', 'espace.css'), os.path.join(edir, 'espace.css'))
@@ -775,6 +777,9 @@ def main():
         with zipfile.ZipFile(os.path.join(OUT, 'aled08-espace.zip'), 'a', zipfile.ZIP_DEFLATED) as z:
             z.write(zp, 'aled08-espace/pkg/' + dossier + '.zip', compress_type=zipfile.ZIP_STORED)
         print(dossier + '.zip', os.path.getsize(zp) // 1024, 'Ko')
+    # le connecteur, servi aux sites clients pour leur mise à jour automatique (includes/connecteur-maj.php)
+    with zipfile.ZipFile(os.path.join(OUT, 'aled08-espace.zip'), 'a', zipfile.ZIP_DEFLATED) as z:
+        z.write(os.path.join(OUT, 'alexlia-connecteur.zip'), 'aled08-espace/pkg/alexlia-connecteur.zip', compress_type=zipfile.ZIP_STORED)
     # installeur : un seul fichier à téléverser sur un WordPress neuf, il installe tout le reste (thème, extensions, pages)
     idir2 = os.path.join(OUT, 'minis-installeur')
     shutil.copytree(os.path.join(ROOT, 'src', 'wordpress', 'minis-installeur'), idir2)

@@ -2,17 +2,42 @@
 /**
  * Plugin Name: Les Minis Monstres : connecteur
  * Description: À installer sur le site d'un client. Permet à Bricou (l'IA des Minis Monstres) de modifier et mettre à jour ce site, uniquement par des actions limitées et signées : lire les pages, changer un texte, publier une actualité, ajouter une image. Chaque changement garde une révision, pour pouvoir l'annuler.
- * Version: 2.15.0
+ * Version: 2.16.1
  * Requires PHP: 7.4
  * Author: Alex & Co
  * License: GPL-2.0-or-later
  */
 defined('ABSPATH') || exit;
 
-define('ALEXLIA_CONN_VERSION', '2.15.0');
+define('ALEXLIA_CONN_VERSION', '2.16.1');
 require_once __DIR__ . '/mcp.php'; // serveur MCP intégré : les outils de Bricou, sans rien installer d'autre
 require_once __DIR__ . '/copie.php'; // la copie du site (zip HTML et CSS, ou WordPress complet), à la demande de son propriétaire
 require_once __DIR__ . '/editeur.php'; // le mode « je clique, je modifie » ouvert depuis l'application du client
+require_once __DIR__ . '/securite.php'; // 2.16.0 : la sécurité de base du site (en-têtes, comptes cachés, XML-RPC coupé, essais de connexion limités)
+
+/* 2.16.0 : la mise à jour automatique du connecteur. Deux fois par jour, WordPress demande à les-minis-monstres.fr la
+ * dernière version ; si elle est plus récente, il l'installe tout seul (mises à jour automatiques activées pour le connecteur). */
+function alexlia_conn_derniere() {
+    $c = get_site_transient('alexlia_conn_derniere');
+    if (is_array($c)) return $c;
+    $r = wp_remote_get('https://www.les-minis-monstres.fr/wp-json/aled08/v1/connecteur', ['timeout' => 10]);
+    $d = is_wp_error($r) ? null : json_decode((string) wp_remote_retrieve_body($r), true);
+    $c = is_array($d) && !empty($d['version']) && !empty($d['paquet']) && strpos((string) $d['paquet'], 'https://www.les-minis-monstres.fr/') === 0 ? ['version' => (string) $d['version'], 'paquet' => (string) $d['paquet']] : [];
+    set_site_transient('alexlia_conn_derniere', $c, 6 * HOUR_IN_SECONDS);
+    return $c;
+}
+add_filter('pre_set_site_transient_update_plugins', function ($t) {
+    if (!is_object($t)) return $t;
+    $d = alexlia_conn_derniere();
+    $f = plugin_basename(__FILE__);
+    if (!empty($d['version']) && version_compare($d['version'], ALEXLIA_CONN_VERSION, '>')) {
+        $t->response[$f] = (object) ['slug' => 'alexlia-connecteur', 'plugin' => $f, 'new_version' => $d['version'], 'package' => $d['paquet'], 'url' => 'https://www.les-minis-monstres.fr/'];
+    }
+    return $t;
+});
+add_filter('auto_update_plugin', function ($maj, $item) {
+    return (is_object($item) && ($item->plugin ?? '') === plugin_basename(__FILE__)) ? true : $maj;
+}, 10, 2);
 
 /* =========================================================================
  *  Réglage : la clé secrète partagée avec Alex & Co (Réglages › Alex & Co)

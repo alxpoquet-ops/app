@@ -66,3 +66,15 @@ Depuis le 28 juin 2025, une règle européenne demande que le commerce en ligne 
 - La page d'accueil, en clair puis en sombre : tout se lit.
 - Au clavier (touche Tab) : on atteint tout, dans un ordre logique.
 - Le poids des images du haut de page.
+
+## La sécurité (Alex, 26 novembre 2026 : « fluide et sécurisé »)
+
+Elle vient toute seule avec le connecteur (2.16.0 ou plus, fichier `alexlia-connecteur/securite.php`, le même sur les-minis-monstres.fr) : on n'ajoute pas d'extension de sécurité lourde, qui ralentirait le site.
+
+- En-têtes de sécurité (pas d'affichage dans le cadre d'un autre site, sauf l'aperçu de l'espace client des Minis Monstres), HTTPS imposé.
+- La liste des comptes et les pages d'auteur cachées aux visiteurs : l'identifiant de connexion ne se lit nulle part.
+- XML-RPC fermé, 5 essais de connexion ratés par adresse puis 15 minutes d'attente, message d'erreur qui ne dit pas ce qui est faux.
+- Version de WordPress cachée, éditeur de fichiers fermé, `readme.html`, `license.txt`, `wp-config-sample.php` effacés.
+- Les attaques par saturation (DDoS) sont filtrées avant WordPress par l'hébergeur (o2switch : protection réseau, robots refusés sur la page de connexion).
+- Le connecteur se met à jour tout seul depuis les-minis-monstres.fr (`GET /aled08/v1/connecteur`). Un site livré avant la 2.16.0 se met à jour une fois avec `POST /aled08/v1/atelier/pose {commande, faire: "connecteur"}`.
+- Le contrôleur vérifie avant la livraison : `/wp-json/wp/v2/users` répond 404 aux visiteurs, `?author=1` renvoie vers l'accueil, l'en-tête `x-content-type-options` est là.
