@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>{{ENTREPRISE}} : maquette d'exemple</title>
+<!--
+  Les Minis Monstres : maquette par métier, groupe « second-oeuvre » (plâtriers, plaquistes, carreleurs, serruriers, isolation, façades, vitrerie).
+  Faite une fois ; pour chaque prospect, seuls {{ENTREPRISE}}, {{VILLE}} et {{INITIALE}} sont remplis avec ses informations publiques.
+  Tout le reste est visiblement un exemple : rien n'est affirmé sur l'entreprise.
+  Photos : Pexels (licence Pexels, libre d'utilisation, sans mention obligatoire). Pictos : dessinés pour Les Minis Monstres.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F5F0;--card:#FFFFFF;--ink:#24211E;--muted:#5A534C;--main:#33413F;--main-d:#1F2726;--accent:#AE461C;--line:#E3DBD1;--soft:#F2E7DD;--shadow:0 12px 30px rgba(36,33,30,.10)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{position:relative;margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:17px;line-height:1.6}
+h1,h2,h3{font-family:"Barlow Semi Condensed",Inter,sans-serif;font-weight:800;line-height:1.08;margin:0 0 12px;letter-spacing:0}
+h3{font-weight:700}
+a{color:var(--accent)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+/* le filigrane, sur toute la page, au-dessus du contenu mais sans gêner la lecture */
+.filigrane{position:absolute;top:0;left:0;right:0;bottom:0;z-index:90;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='300'%3E%3Ctext x='260' y='160' text-anchor='middle' transform='rotate(-24 260 150)' font-family='Arial,Helvetica,sans-serif' font-size='26' font-weight='700' fill='%237A8CA0' fill-opacity='0.2'%3EMAQUETTE D%E2%80%99EXEMPLE %C2%B7 LES MINIS MONSTRES%3C/text%3E%3C/svg%3E");background-repeat:repeat}
+.bandeau{background:#1F2726;color:#fff;text-align:center;font-size:.9rem;font-weight:600;padding:9px 16px}
+.bandeau b{color:#F5B48F}
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.head{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:66px}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Barlow Semi Condensed",sans-serif;font-weight:800;font-size:1.35rem;color:var(--ink);text-decoration:none}
+.logo{width:40px;height:40px;border-radius:6px;background:var(--accent);color:#fff;display:grid;place-items:center;font-family:"Barlow Semi Condensed",sans-serif;font-weight:800;font-size:1.25rem}
+nav.menu{display:flex;gap:2px}
+nav.menu a{color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem;padding:8px 11px;border-radius:6px}
+nav.menu a:hover{background:var(--soft);color:var(--accent)}
+.tools{display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:11px 22px;border-radius:6px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none;border:0;font-size:1rem;white-space:nowrap}
+.btn svg{width:20px;height:20px}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.rond{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center}
+.rond svg{width:21px;height:21px}
+.burger{display:none}
+/* l'ouverture */
+.hero{position:relative;background:#1F2726;color:#fff;overflow:hidden}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(26,32,31,.97) 0%,rgba(26,32,31,.82) 46%,rgba(26,32,31,.2) 100%)}
+.hero .wrap{position:relative;z-index:1;padding-top:88px;padding-bottom:88px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:6px 14px;font-weight:600;font-size:.9rem}
+.hero h1{font-size:clamp(2.3rem,5.8vw,3.9rem);max-width:15ch;margin:18px 0 14px}
+.hero p.lead{font-size:1.15rem;max-width:52ch;color:#E6DED6;margin:0 0 26px}
+.hero .actions{display:flex;flex-wrap:wrap;gap:12px}
+.hero .btn.ghost{color:#fff;border-color:#fff}
+.metiers{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 0;padding:0;list-style:none}
+.metiers li{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);border-radius:6px;padding:5px 12px;font-weight:600;font-size:.92rem}
+/* les parties */
+section{padding:76px 0}
+section.alt{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kicker{color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:.82rem;margin:0 0 8px}
+h2{font-size:clamp(1.9rem,4.2vw,2.7rem)}
+.sous{color:var(--muted);max-width:60ch;margin:0 0 30px}
+.exemple{display:inline-block;background:#FCEDE4;color:#8A3410;border:1px dashed #DE9B78;border-radius:999px;font-size:.78rem;font-weight:700;padding:3px 10px;margin-left:8px;vertical-align:middle;letter-spacing:0;text-transform:none}
+.grille{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.carte{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:8px;padding:24px;box-shadow:var(--shadow)}
+.carte .pic{width:54px;height:54px;border-radius:8px;background:var(--soft);color:var(--main);display:grid;place-items:center;margin-bottom:14px}
+.carte .pic svg{width:30px;height:30px}
+.carte h3{font-size:1.4rem}
+.carte p{margin:0;color:var(--muted)}
+.deux{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
+.photo{border-radius:10px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/3}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.liste{list-style:none;padding:0;margin:0}
+.liste li{display:flex;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.liste li:last-child{border-bottom:0}
+.liste .ok{flex:none;width:30px;height:30px;border-radius:6px;background:var(--main);color:#fff;display:grid;place-items:center}
+.liste .ok svg{width:17px;height:17px}
+.liste b{display:block}
+/* réalisations */
+.galerie{display:grid;grid-template-columns:1.4fr 1fr 1fr;grid-template-rows:auto auto;gap:16px}
+.galerie .grande{grid-row:span 2;border-radius:10px;overflow:hidden;position:relative;min-height:340px}
+.galerie .grande img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.galerie .grande span{position:absolute;left:14px;bottom:14px;background:rgba(31,39,38,.88);color:#fff;font-weight:700;font-size:.9rem;padding:6px 12px;border-radius:6px}
+.vide{border:2px dashed #CDBFB1;border-radius:10px;background:repeating-linear-gradient(135deg,#FBF8F4 0 14px,#F5EEE6 14px 28px);display:grid;place-items:center;text-align:center;padding:22px;min-height:162px;color:var(--muted);font-weight:600}
+.vide svg{width:30px;height:30px;color:#A8988A;display:block;margin:0 auto 8px}
+.vide b{display:block;color:var(--ink)}
+.etapes{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:e}
+.etape{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:22px 20px;position:relative}
+.etape::before{counter-increment:e;content:counter(e);position:absolute;top:-16px;left:20px;width:34px;height:34px;border-radius:6px;background:var(--accent);color:#fff;font-weight:800;display:grid;place-items:center;font-family:"Barlow Semi Condensed",sans-serif;font-size:1.1rem}
+.etape h3{font-size:1.25rem;margin-top:10px}
+.etape p{margin:0;color:var(--muted);font-size:.96rem}
+.zone{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.zone span{background:#fff;border:1px solid var(--line);border-radius:6px;padding:7px 14px;font-weight:600}
+.cadre{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:26px;box-shadow:var(--shadow)}
+.cadre h3{font-size:1.4rem}
+.cadre .duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.cadre .duo div{background:var(--soft);border-radius:8px;padding:14px}
+.cadre .duo b{display:block}
+.cadre .duo span{color:var(--muted);font-size:.95rem}
+.avis{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.avis .carte{border-style:dashed;border-top:1px dashed var(--line);box-shadow:none;background:#FDFBF8}
+.etoiles{color:#D99A0B;letter-spacing:2px;font-size:1.1rem}
+.contact{background:var(--main-d);color:#fff}
+.contact h2{color:#fff}
+.contact .sous{color:#D3D9D7}
+.contact .deux{align-items:start}
+.gros-tel{display:inline-flex;align-items:center;gap:12px;font-family:"Barlow Semi Condensed",sans-serif;font-size:clamp(1.6rem,4vw,2.3rem);font-weight:800;color:#fff;text-decoration:none;background:rgba(255,255,255,.08);border:2px dashed rgba(255,255,255,.45);border-radius:8px;padding:8px 18px}
+.gros-tel svg{width:28px;height:28px;color:#F5B48F}
+.form{background:#fff;color:var(--ink);border-radius:10px;padding:26px;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.form label{display:block;font-weight:700;margin:0 0 6px}
+.form .champ{width:100%;min-height:48px;border:1px solid #B3A697;border-radius:6px;margin:0 0 14px;background:#FAF8F5}
+.form .champ.grand{min-height:100px}
+.form .piece{display:flex;align-items:center;gap:10px;border:1px dashed #B3A697;border-radius:6px;padding:11px 14px;margin:0 0 16px;color:var(--muted);font-weight:600;font-size:.95rem}
+.form .piece svg{width:20px;height:20px;flex:none}
+.form .btn{width:100%}
+footer{background:#161C1B;color:#B7BFBD;padding:40px 0 26px;font-size:.95rem}
+footer .bas{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+footer b{color:#fff}
+@media (max-width:920px){nav.menu{display:none}.burger{display:grid}.grille,.avis{grid-template-columns:1fr 1fr}.deux{grid-template-columns:1fr;gap:28px}.etapes{grid-template-columns:1fr 1fr;row-gap:30px}.galerie{grid-template-columns:1fr 1fr}.galerie .grande{grid-column:span 2;grid-row:auto;min-height:260px}}
+@media (max-width:560px){.wrap{padding:0 16px}.head{min-height:60px}.tools .btn{padding:10px 14px;min-height:44px;font-size:.95rem}.tools .btn span{display:none}.grille,.avis,.etapes,.galerie,.cadre .duo{grid-template-columns:1fr}.galerie .grande{grid-column:auto}section{padding:54px 0}.hero .wrap{padding-top:54px;padding-bottom:58px}.hero .btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="filigrane" aria-hidden="true"></div>
+<p class="bandeau">Maquette pour vous projeter, préparée pour <b>{{ENTREPRISE}}</b> par Les Minis Monstres (vue ordinateur) : votre site s’adapte aussi au téléphone, et il sera modifiable à 100 %, selon vos goûts.</p>
+
+<header>
+  <div class="wrap head">
+    <a class="brand" href="#"><span class="logo">{{INITIALE}}</span><span>{{ENTREPRISE}}</span></a>
+    <nav class="menu" aria-label="Menu"><a href="#services">Savoir-faire</a><a href="#realisations">Réalisations</a><a href="#pourquoi">Pourquoi nous</a><a href="#comment">Comment ça se passe</a><a href="#zone">Secteur</a><a href="#contact">Contact</a></nav>
+    <div class="tools">
+      <a class="btn" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.7 4.3-2.2 1.5a11 11 0 0 0 6.2 6.2l1.5-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5C10.6 20 4 13.4 3.5 5.6A1.5 1.5 0 0 1 5 4Z"/></svg><span>Appeler</span></a>
+      <span class="rond" aria-label="Clair ou sombre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></span>
+      <span class="rond burger" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>
+    </div>
+  </div>
+</header>
+
+<section class="hero" style="padding:0">
+  <img src="{{PHOTO:accueil}}" alt="">
+  <div class="wrap">
+    <span class="eyebrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5B48F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5c-4.5-4.7-7-8.3-7-11.5a7 7 0 0 1 14 0c0 3.2-2.5 6.8-7 11.5Z"/><circle cx="12" cy="10" r="2.6"/></svg>Artisan du second œuvre à {{VILLE}}</span>
+    <h1>Des murs droits, des finitions nettes, une maison qui vous ressemble</h1>
+    <p class="lead">Cloisons, plafonds, carrelage, isolation ou serrure à changer : une phrase d’accroche qui vous ressemble, écrite avec vous.</p>
+    <div class="actions"><a class="btn" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.7 4.3-2.2 1.5a11 11 0 0 0 6.2 6.2l1.5-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5C10.6 20 4 13.4 3.5 5.6A1.5 1.5 0 0 1 5 4Z"/></svg>Appeler</a><a class="btn ghost" href="#contact">Demander un devis</a></div>
+    <ul class="metiers" aria-label="Vos métiers (exemples)">
+      <li>Vos métiers ici</li><li>Vos labels, s’il y en a</li><li>{{VILLE}} et alentours</li>
+    </ul>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap">
+    <p class="kicker">Savoir-faire <span class="exemple">exemples à adapter</span></p>
+    <h2>Ce que nous faisons pour vous</h2>
+    <p class="sous">Gardez seulement vos métiers : chaque carte devient une de vos prestations, avec vos mots. Rien n’est publié sans votre accord.</p>
+    <div class="grille">
+      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="1"/><path d="M9.5 4v16M15 4v16"/><path d="M3.5 12h6"/></svg></div><h3>Plâtrerie et plaques</h3><p>Cloisons, doublages, faux plafonds, bandes et enduits : vos chantiers types.</p></div>
+      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 9.5V20h14V9.5"/><path d="M8 13c1.3-1 2.7 1 4 0s2.7 1 4 0M8 16.5c1.3-1 2.7 1 4 0s2.7 1 4 0"/></svg></div><h3>Isolation</h3><p>Combles, murs par l’intérieur ou l’extérieur : ce que vous proposez et comment.</p></div>
+      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7.5" height="7.5" rx=".8"/><rect x="13" y="3.5" width="7.5" height="7.5" rx=".8"/><rect x="3.5" y="13" width="7.5" height="7.5" rx=".8"/><rect x="13" y="13" width="7.5" height="7.5" rx=".8"/></svg></div><h3>Carrelage et faïence</h3><p>Sols, murs, douches à l’italienne, terrasses : vos réalisations en photos.</p></div>
+      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V8l8-4 8 4v12Z"/><path d="M4 12h16M4 16h16M9 8v4M15 8v4M12 12v4M7 16v4M17 16v4"/></svg></div><h3>Façades et enduits</h3><p>Ravalement, enduit, nettoyage de façade : seulement si vous le faites.</p></div>
+      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 14.5v2.5"/></svg></div><h3>Serrurerie</h3><p>Ouverture de porte, changement de serrure ou de cylindre : vos horaires d’intervention.</p></div>
+      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="1"/><path d="M12 3.5v17M4 12h16"/><path d="M7 7.5l2-2M15 15.5l2-2"/></svg></div><h3>Vitrerie</h3><p>Vitre cassée, double vitrage, miroir sur mesure : ce que vous remplacez et posez.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="realisations" class="alt">
+  <div class="wrap">
+    <p class="kicker">Réalisations <span class="exemple">vos photos de chantier ici</span></p>
+    <h2>Le travail se juge sur pièce</h2>
+    <p class="sous">Vos plus beaux chantiers, avant et après : c’est ce que vos futurs clients regardent en premier.</p>
+    <div class="galerie">
+      <div class="grande"><img src="{{PHOTO:detail}}" alt=""><span>Photo d’illustration</span></div>
+      <div class="vide"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></svg><b>Avant</b>Une photo de votre chantier</div></div>
+      <div class="vide"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></svg><b>Après</b>Le même endroit, terminé</div></div>
+      <div class="vide"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></svg><b>Un détail</b>Une finition dont vous êtes fier</div></div>
+      <div class="vide"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></svg><b>Un chantier</b>Avec deux mots d’explication</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="pourquoi">
+  <div class="wrap deux">
+    <div class="photo"><img src="{{PHOTO:atelier}}" alt=""></div>
+    <div>
+      <p class="kicker">Pourquoi nous <span class="exemple">à compléter avec vous</span></p>
+      <h2>Un artisan d’ici, soigneux jusqu’à la dernière finition</h2>
+      <ul class="liste">
+        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Votre expérience</b>Depuis quand vous exercez, et ce qui vous distingue.</span></li>
+        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Un devis détaillé</b>Comment vous établissez vos devis, gratuits ou non.</span></li>
+        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Vos garanties et assurances</b>Décennale, qualifications, labels : seulement ce que vous avez.</span></li>
+        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Un chantier protégé et nettoyé</b>Bâches, poussière, gravats : ce que vos clients apprécient.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="comment" class="alt">
+  <div class="wrap">
+    <p class="kicker">Comment ça se passe</p>
+    <h2>Du premier coup d’œil aux finitions</h2>
+    <p class="sous">Quatre étapes, à ajuster à votre façon de travailler.</p>
+    <div class="etapes">
+      <div class="etape"><h3>Vous appelez ou écrivez</h3><p>Par téléphone ou avec le formulaire, photos à l’appui si besoin.</p></div>
+      <div class="etape"><h3>On vient voir</h3><p>Mesures, état des murs et des sols, vos envies de matériaux.</p></div>
+      <div class="etape"><h3>Vous recevez le devis</h3><p>Poste par poste, sans surprise.</p></div>
+      <div class="etape"><h3>Le chantier est mené</h3><p>Aux dates prévues, et rendu propre.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="zone">
+  <div class="wrap deux">
+    <div>
+      <p class="kicker">Secteur</p>
+      <h2>À {{VILLE}} et autour</h2>
+      <p class="sous">Les communes où vous intervenez : c’est aussi ce qui aide Google à vous montrer aux bonnes personnes.</p>
+      <div class="zone"><span>{{VILLE}}</span><span>Commune voisine</span><span>Commune voisine</span><span>Commune voisine</span><span>…</span></div>
+    </div>
+    <div class="cadre">
+      <h3>Pour quels chantiers ? <span class="exemple">à adapter</span></h3>
+      <p style="margin:0;color:var(--muted)">Dites-nous pour qui vous travaillez, vos clients sauront tout de suite s’ils sont au bon endroit.</p>
+      <div class="duo">
+        <div><b>Rénovation</b><span>Maison, appartement, pièce par pièce</span></div>
+        <div><b>Neuf</b><span>Avec ou sans autres corps de métier</span></div>
+        <div><b>Particuliers</b><span>Petits et grands travaux</span></div>
+        <div><b>Professionnels</b><span>Commerces, bureaux, bailleurs</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="avis" class="alt">
+  <div class="wrap">
+    <p class="kicker">Avis <span class="exemple">vos vrais avis Google ici</span></p>
+    <h2>Ce que disent vos clients</h2>
+    <p class="sous">Jamais de faux avis : cette partie reprend seulement ceux que vos clients ont laissés.</p>
+    <div class="avis">
+      <div class="carte"><p class="etoiles">★★★★★</p><p>L’avis d’un de vos clients s’affichera ici.</p></div>
+      <div class="carte"><p class="etoiles">★★★★★</p><p>L’avis d’un de vos clients s’affichera ici.</p></div>
+      <div class="carte"><p class="etoiles">★★★★★</p><p>L’avis d’un de vos clients s’affichera ici.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap deux">
+    <div>
+      <p class="kicker" style="color:#F5B48F">Contact</p>
+      <h2>Un projet, une porte claquée, une question ?</h2>
+      <p class="sous">Appelez, ou décrivez vos travaux : le message arrive directement dans votre boîte e-mail.</p>
+      <a class="gros-tel" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.7 4.3-2.2 1.5a11 11 0 0 0 6.2 6.2l1.5-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5C10.6 20 4 13.4 3.5 5.6A1.5 1.5 0 0 1 5 4Z"/></svg>Votre numéro</a>
+      <p style="margin-top:22px;color:#D3D9D7"><b style="color:#fff">{{ENTREPRISE}}</b><br>{{VILLE}}<br>Vos horaires</p>
+    </div>
+    <div class="form" aria-label="Formulaire de demande de devis (exemple)">
+      <label>Votre nom</label><div class="champ"></div>
+      <label>Votre téléphone ou e-mail</label><div class="champ"></div>
+      <label>Vos travaux</label><div class="champ grand"></div>
+      <div class="piece"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2.5h7L17 8h3v11H4Z"/><circle cx="12" cy="13" r="3.2"/></svg>Ajouter des photos de la pièce</div>
+      <span class="btn">Envoyer</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap bas"><span><b>{{ENTREPRISE}}</b> · Second œuvre à {{VILLE}}</span><span>Mentions légales · Confidentialité</span><span>Maquette d’exemple : Les Minis Monstres</span></div>
+</footer>
+</body>
+</html>

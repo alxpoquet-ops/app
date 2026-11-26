@@ -1,0 +1,17 @@
+{
+  "groupe": "food-truck",
+  "nom": "Food trucks, friteries, snacks",
+  "mots": [
+    "food truck",
+    "foodtruck",
+    "friter",
+    "snack",
+    "kebab",
+    "burger"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/1556688/pexels-photo-1556688.jpeg",
+    "cuisine": "https://images.pexels.com/photos/776314/pexels-photo-776314.jpeg",
+    "frites": "https://images.pexels.com/photos/17429243/pexels-photo-17429243.jpeg"
+  }
+}

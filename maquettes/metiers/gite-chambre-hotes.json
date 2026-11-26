@@ -1,0 +1,17 @@
+{
+  "groupe": "gite-chambre-hotes",
+  "nom": "Gîtes, chambres d’hôtes, locations de vacances",
+  "mots": [
+    "gite",
+    "chambre d hote",
+    "chambres d hotes",
+    "hebergement",
+    "location saisonniere",
+    "camping"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/18414268/pexels-photo-18414268.jpeg",
+    "chambre": "https://images.pexels.com/photos/14465274/pexels-photo-14465274.jpeg",
+    "alentours": "https://images.pexels.com/photos/31290935/pexels-photo-31290935.jpeg"
+  }
+}
