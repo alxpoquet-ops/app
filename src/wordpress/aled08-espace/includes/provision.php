@@ -98,7 +98,8 @@ function aled08e_prov_avancer($cid, $force = false) {
     $depuis = (int) get_post_meta($cid, '_aled08_etape_depuis', true);
     $lim = aled08e_prov_limites()[$c['statut']] ?? DAY_IN_SECONDS;
     $c2 = aled08e_cmd_get($cid);
-    if ($c2 && $c2['statut'] === $c['statut'] && $depuis && time() - $depuis > $lim && !get_post_meta($cid, '_aled08_lenteur_prevenu', true)) {
+    $patiente = function_exists('aled08e_cmd_attente_fin') && aled08e_cmd_attente_fin($cid) > time(); // le client attend ses 14 jours : ce n'est pas une lenteur
+    if ($c2 && $c2['statut'] === $c['statut'] && $depuis && !$patiente && time() - $depuis > $lim && !get_post_meta($cid, '_aled08_lenteur_prevenu', true)) {
         update_post_meta($cid, '_aled08_lenteur_prevenu', 1);
         aled08e_prov_mail_owner($c, 'Mise en ligne plus longue que prévu', 'La commande ' . $c['ref'] . ' est à l’étape « ' . aled08e_cmd_statuts()[$c['statut']][0] . ' » depuis plus de ' . round($lim / HOUR_IN_SECONDS) . ' heures, sans erreur. Jetez un œil : ' . aled08e_cmd_admin_url($cid) . "\n\nJournal : voir la fiche. Le client voit « ça prend un peu plus de temps que prévu ».");
     }
@@ -157,6 +158,29 @@ function aled08e_prov_etape_domaine($c) {
         aled08e_cmd_set_domaine($cid, 'client');
         return aled08e_prov_set($cid, 'domaine_attribue', 'domaine existant du client') ? 'ok' : 'erreur';
     }
+    // Le client a choisi d'attendre ses 14 jours de rétractation (Alex, 26 novembre 2026) : le nom de domaine n'est acheté
+    // qu'après. Il peut avoir été pris entre-temps (le client l'a accepté en commandant, nous n'en sommes pas responsables) :
+    // on prend alors la forme la plus proche encore libre, et le client l'apprend dans l'e-mail « Tout est configuré ».
+    $attente = function_exists('aled08e_cmd_attente_fin') ? aled08e_cmd_attente_fin($cid) : 0;
+    if ($attente > time()) {
+        if (!get_post_meta($cid, '_aled08_domaine_attente_note', true)) {
+            update_post_meta($cid, '_aled08_domaine_attente_note', 1);
+            aled08e_cmd_journal($cid, 'Le client attend ses 14 jours de rétractation : le nom de domaine ' . $c['domaine'] . ' sera acheté le ' . wp_date('j F Y', $attente) . ', s’il est encore libre.');
+        }
+        return 'attente';
+    }
+    if ($attente && !get_post_meta($cid, '_aled08_domaine_verifie', true)) {
+        update_post_meta($cid, '_aled08_domaine_verifie', 1);
+        update_post_meta($cid, '_aled08_etape_depuis', time()); // l'étape commence vraiment maintenant
+        if (aled08e_rdap_statut($c['domaine']) === 'pris' && !aled08e_ovh_domaine_existe($c['domaine'])) {
+            $autre = aled08e_prov_domaine_remplacant($c);
+            if ($autre === '') return new WP_Error('aled08_prov', 'Le nom ' . $c['domaine'] . ' a été pris pendant les 14 jours d’attente du client, et aucune forme proche n’est libre.');
+            update_post_meta($cid, '_aled08_domaine_avant', $c['domaine']);
+            update_post_meta($cid, '_aled08_domaine', $autre);
+            aled08e_cmd_journal($cid, 'Le nom ' . $c['domaine'] . ' a été pris pendant les 14 jours d’attente : le site sera à ' . $autre . ' (forme la plus proche encore libre).');
+            $c = aled08e_cmd_get($cid);
+        }
+    }
     if (aled08e_registrar() !== 'ovh') {
         // registrar manuel : l'e-mail « commande payée » et le rappel quotidien demandent la réservation ; bouton « Domaine réservé »
         return 'attente';
@@ -183,6 +207,18 @@ function aled08e_prov_etape_domaine($c) {
     update_post_meta($cid, '_aled08_ovh_prix', $r['prix']);
     aled08e_cmd_journal($cid, 'OVH : domaine ' . $c['domaine'] . ' commandé (n° ' . $r['orderId'] . ($r['prix'] !== null ? ', ' . $r['prix'] . ' € TTC' : '') . ').');
     return aled08e_prov_set($cid, 'domaine_commande') ? 'ok' : 'erreur';
+}
+/* Un nom de remplacement, fidèle au nom de l'entreprise (jamais un mot en moins : includes/prospection-suite.php), et libre */
+function aled08e_prov_domaine_remplacant($c) {
+    if (!function_exists('aled08e_px_domaine_candidats')) return '';
+    $nom = $c['entreprise'] !== '' ? $c['entreprise'] : trim($c['prenom'] . ' ' . $c['nom']);
+    $art = preg_match('/^(la|le|les|l’|l\')\s*/iu', $nom, $m) ? mb_strtolower(str_replace("'", '’', trim($m[1]))) : '';
+    $tld = substr(strrchr((string) $c['domaine'], '.'), 1) ?: 'fr';
+    $cands = aled08e_px_domaine_candidats($nom, (string) $c['ville'], $art);
+    // même extension d'abord (.fr si le client avait choisi un .fr)
+    usort($cands, function ($a, $b) use ($tld) { return (substr(strrchr($b, '.'), 1) === $tld) <=> (substr(strrchr($a, '.'), 1) === $tld); });
+    foreach (array_slice($cands, 0, 6) as $d) if ($d !== $c['domaine'] && aled08e_rdap_statut($d) === 'libre') return $d;
+    return '';
 }
 /* Étape 2 : la commande OVH est-elle livrée ? */
 function aled08e_prov_etape_suivi_domaine($c) {
@@ -528,7 +564,9 @@ function aled08e_prov_mail_client_pret($c) {
         ? "Merci pour votre commande. Vous gardez votre nom de domaine et votre hébergement : quand votre site sera prêt, je vous remets son code, prêt à installer. Je commence la création de votre site"
         : "Tout est configuré : votre nom de domaine, l’hébergement et le certificat de sécurité. Je commence la création de votre site";
     $boite = (string) get_post_meta($c['id'], '_aled08_email_a_dire', true);
-    $corps = 'Bonjour ' . $c['prenom'] . ",\n\n" . $debut . ($delai ? ' (délai habituel : ' . $delai . ')' : '') . ".\n\n" . ($boite !== '' ? $boite . "\n\n" : '')
+    $avant = (string) get_post_meta($c['id'], '_aled08_domaine_avant', true);
+    $change = $avant !== '' ? 'Le nom ' . $avant . ' a été pris par quelqu’un d’autre pendant vos 14 jours de rétractation (comme prévu à la commande, nous ne pouvions pas le réserver avant). Votre site sera donc à ' . $c['domaine'] . ', la forme la plus proche encore libre.' . "\n\n" : '';
+    $corps = 'Bonjour ' . $c['prenom'] . ",\n\n" . $change . $debut . ($delai ? ' (délai habituel : ' . $delai . ')' : '') . ".\n\n" . ($boite !== '' ? $boite . "\n\n" : '')
         . "Prochain e-mail : quand votre site sera en ligne. D’ici là, vous suivez l’avancement ici : " . aled08e_url() . '#commande' . aled08e_prov_signature();
     $ok = wp_mail($c['email'], 'Tout est configuré, je crée votre site', $corps, aled08e_mail_headers(aled08e_data()['name'] . ' <' . aled08e_to() . '>'));
     if ($ok && $boite !== '') delete_post_meta($c['id'], '_aled08_email_a_dire');
@@ -582,6 +620,12 @@ function aled08e_prov_etat_client($c) {
         'annulee' => 'Cette commande est annulée.',
     ];
     $texte = $textes[$s] ?? '';
+    $finAttente = function_exists('aled08e_cmd_attente_fin') ? aled08e_cmd_attente_fin($c['id']) : 0;
+    if ($s === 'payee' && !$c['domaine_mien'] && $finAttente > time()) {
+        // le client a choisi d'attendre ses 14 jours : le nom n'est réservé qu'après, s'il est encore libre
+        $texte = 'Comme vous l’avez choisi, j’attends la fin de votre délai de rétractation. Votre nom de domaine sera réservé le ' . wp_date('j F Y', $finAttente) . ', s’il est encore libre à cette date : sinon, je prends la forme la plus proche encore disponible.';
+        $long = false;
+    }
     if ($inter) $texte = 'Une petite vérification est nécessaire : je m’en occupe personnellement, et je vous préviens par e-mail dès que c’est réglé.';
     elseif ($long) $texte .= ' Ça prend un peu plus de temps que prévu, c’est normal pour certains noms de domaine.';
     $pct = (int) round($idx / 6 * 100);

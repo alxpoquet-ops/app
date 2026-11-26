@@ -707,7 +707,7 @@ function aled08e_cmd_mail_client_payee($c) {
             $etape(1, 'Remplissez votre questionnaire', 'Une dizaine de minutes, dans votre espace client : vos couleurs, vos photos, vos prix ou vos produits. C’est lui qui lance la création.')
             . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">' . aled08e_mail_bouton($lien, 'Remplir mon questionnaire') . '</td></tr></table>'
             . $etape(2, $attente > time() ? 'La création commence le ' . esc_html(wp_date('j F Y', $attente)) : 'Votre site est créé', $attente > time()
-                ? 'Comme vous l’avez choisi, après votre délai de rétractation. Vous pouvez déjà remplir le questionnaire.'
+                ? 'Comme vous l’avez choisi, après votre délai de rétractation. Vous pouvez déjà remplir le questionnaire.' . ($c['domaine'] && !$c['domaine_mien'] ? ' Votre nom de domaine ' . esc_html($c['domaine']) . ' sera réservé à cette date, s’il est encore libre : il peut être pris par quelqu’un d’autre d’ici là, sans que nous en soyons responsables. Nous prendrions alors la forme la plus proche encore disponible.' : '')
                 : 'À partir de vos réponses' . ($delai ? ', en ' . esc_html($delai) : '') . '. Vous recevez un e-mail dès qu’il est en ligne.'),
             'bricou', aled08e_mail_etiquette('La suite', '#5B3FC4'))
         . $p('Pour revenir dans votre espace client : votre adresse e-mail et le mot de passe choisi à la commande, sur <a href="' . esc_url(aled08e_url()) . '" style="color:#5B3FC4;">' . esc_html(preg_replace('#^https?://(www\.)?#', '', untrailingslashit(aled08e_url()))) . '</a>.', 14)
