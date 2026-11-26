@@ -275,7 +275,7 @@ function minis_site_e_formulaire() {
     $mail['additional_headers'] = 'Reply-To: [your-email]';
     $p['mail'] = $mail;
     $p['messages'] = array_merge(is_array($p['messages'] ?? null) ? $p['messages'] : [], [
-        'mail_sent_ok' => 'Merci, votre message est bien parti. On vous répond vite.',
+        'mail_sent_ok' => 'Merci, votre message est bien parti.', // aucun délai promis : le client n'en a pas donné
         'mail_sent_ng' => 'Le message n’a pas pu partir. Réessayez dans un instant.',
         'validation_error' => 'Un champ est à corriger. Regardez juste au-dessus.',
         'invalid_required' => 'Ce champ est à remplir.',

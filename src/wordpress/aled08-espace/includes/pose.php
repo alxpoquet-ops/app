@@ -239,7 +239,8 @@ add_action('rest_api_init', function () {
 /* =========================================================================
  *  À la livraison (26 novembre 2026) : le site part réglé, sans Alex.
  *  - le formulaire de contact écrit à l'adresse donnée dans le questionnaire (« L'adresse e-mail qui reçoit les messages »),
- *    sinon à celle du compte du client : à la pose, Contact Form 7 écrit à l'administrateur (Alex) ;
+ *    sinon à celle du compte du client : à la pose, Contact Form 7 écrit à l'administrateur (Alex) ; son message de
+ *    confirmation ne promet aucun délai de réponse (« Merci, votre message est bien parti. ») ;
  *  - le site s'ouvre aux moteurs de recherche : la pose installe WordPress fermé aux moteurs, pour que le site en travaux ne
  *    soit pas lu par Google. Les sites d'essai et de démonstration (TEST-…, ESSAI-…) restent fermés.
  *  Un tout petit fichier est déposé par cPanel (comme le fichier de pose), fait ces deux réglages, puis s'efface : rien ne
@@ -259,7 +260,7 @@ function aled08e_pose_livraison($cid) {
         . ($essai ? '' : "update_option('blog_public', '1');\n\$dit['moteurs'] = get_option('blog_public') === '1';\n")
         . "\$e = " . var_export($email, true) . ";\n"
         . "\$id = (int) get_option('minis_site_formulaire');\n"
-        . "if (\$e !== '' && \$id && class_exists('WPCF7_ContactForm') && (\$f = WPCF7_ContactForm::get_instance(\$id))) { \$p = \$f->get_properties(); \$m = is_array(\$p['mail'] ?? null) ? \$p['mail'] : []; \$m['recipient'] = \$e; \$f->set_properties(['mail' => \$m]); \$f->save(); \$dit['formulaire'] = \$e; }\n"
+        . "if (\$e !== '' && \$id && class_exists('WPCF7_ContactForm') && (\$f = WPCF7_ContactForm::get_instance(\$id))) { \$p = \$f->get_properties(); \$m = is_array(\$p['mail'] ?? null) ? \$p['mail'] : []; \$m['recipient'] = \$e; \$g = is_array(\$p['messages'] ?? null) ? \$p['messages'] : []; \$g['mail_sent_ok'] = 'Merci, votre message est bien parti.'; \$f->set_properties(['mail' => \$m, 'messages' => \$g]); \$f->save(); \$dit['formulaire'] = \$e; }\n"
         . "@unlink(__FILE__);\necho json_encode(\$dit);\n";
     $r = aled08e_pose_uapi_post('Fileman', 'save_file_content', ['dir' => aled08e_pose_dossier($c['domaine']), 'file' => 'minis-livraison.php', 'content' => $code, 'from_charset' => 'UTF-8', 'to_charset' => 'UTF-8', 'fallback' => 0]);
     if (is_wp_error($r)) { aled08e_cmd_journal($cid, 'Réglages de livraison ratés : ' . $r->get_error_message()); return false; }
