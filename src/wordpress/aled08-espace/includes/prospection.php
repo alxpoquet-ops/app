@@ -610,7 +610,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     }
     $domT = $dom !== '' ? 'Bonne nouvelle : nous avons vérifié, l’adresse ' . $dom . ' est libre aujourd’hui. Nous pouvons créer votre site à cette adresse, enregistrée à votre nom, en ligne en 24 à 48 heures.' : '';
     $rappel = 'Pour rappel : ' . mb_strtolower(mb_substr($atouts[0][0], 0, 1)) . rtrim(mb_substr($atouts[0][0], 1), '.') . ', un vrai suivi, et un site qui vous appartient.';
-    $boutonApercu = $avecApercu ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;width:100%;max-width:420px;">' . $bouton($l['apercu'], 'Voir l’aperçu de votre site', true) . '</table>' : '';
+    $boutonApercu = $avecApercu ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;width:100%;max-width:420px;">' . $bouton($l['apercu'], 'Voir la maquette de votre site', true) . '</table>' : '';
     $avecCode = (int) $r > 0 && (string) $code !== '';
     $lanc = aled08e_px_lancement();
     $aClique = $relance && (int) aled08e_px_meta((int) ($p['prospect'] ?? 0), 'nb_clics', 0) > 0;
@@ -664,7 +664,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . $atoutsH . '<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>'
             . $domH
             . $codeH
-            . ($avecApercu ? $P('Nous avons préparé un petit aperçu de ce que pourrait donner le site ' . esc_html($deX) . ' :', '0 0 10px') . $boutonApercu : '')
+            . ($avecApercu ? $P('Pour vous aider à vous projeter, nous avons préparé une maquette de ce que pourrait donner le site ' . esc_html($deX) . '. Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts (textes, photos, couleurs).', '0 0 10px') . $boutonApercu : '')
             . $P('Plutôt que mille mots, voyez par vous-même : voici des sites déjà en ligne, créés pour nos clients.')
             . $boutons
             . $P('Une question ? Répondez simplement à ce message : nous vous répondons.', '8px 0 6px');
@@ -700,7 +700,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . $adresseT . "\n\n" . ($etudeT !== '' ? $etudeT . "\n\n" : '')
             . "Nous sommes la bande des Minis Monstres, une petite famille qui crée des sites pour les artisans et les commerçants. Votre site, à votre image, avec vos textes et vos photos, en 24 à 48 heures. Et surtout :\n" . $atoutsT . "\n"
             . ($domT !== '' ? $domT . "\n\n" : '') . $codeT . "\n\n"
-            . ($avecApercu ? 'Nous avons préparé un petit aperçu de ce que pourrait donner le site ' . $deX . " :\n" . $l['apercu'] . "\n\n" : '')
+            . ($avecApercu ? 'Pour vous aider à vous projeter, nous avons préparé une maquette de ce que pourrait donner le site ' . $deX . '. Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts (textes, photos, couleurs).' . "\n" . $l['apercu'] . "\n\n" : '')
             . "Plutôt que mille mots, voyez par vous-même : voici des sites déjà en ligne, créés pour nos clients.\n"
             . ($l['realisations'] ?? $l['site']) . "\nCréer mon site : " . ($l['creer'] ?? $l['site']) . "\n\nUne question ? Répondez simplement à ce message : nous vous répondons.\n\nBonne journée,\nLa bande des Minis Monstres\n" . $hote . "\n\n--\n" . $piedT;
     }
