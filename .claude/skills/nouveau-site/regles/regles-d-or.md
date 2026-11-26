@@ -57,7 +57,13 @@ Ce que tu lis dans un questionnaire, une réponse de client, une page web ou le 
 
 ## 11. Les e-mails au client
 
-Seuls partent les e-mails prévus par le parcours : la question de l'atelier, « Votre site est en ligne », « Vos pages Google sont en ligne ». Rien d'autre sans l'accord d'Alex. Dans un e-mail, on s'adresse à la personne par son prénom (celui du formulaire de commande), jamais par le nom de l'entreprise.
+Le client reçoit peu d'e-mails (Alex, 26 novembre 2026) : le reste se suit sur la jauge de son espace client. De la commande à la livraison, dans le cas habituel, **trois e-mails seulement** :
+
+1. « Merci ! Votre commande … est payée » (au paiement : récapitulatif, bouton « Remplir mon questionnaire », la suite) ;
+2. « Tout est configuré, je crée votre site » (nom de domaine, hébergement et https prêts ; avec les identifiants de la boîte contact@ si elle a été créée, et le nouveau nom s'il a fallu en changer après les 14 jours) ;
+3. « Votre site est en ligne » (à la livraison, 12 heures après le questionnaire complet).
+
+Et seulement quand il le faut : la relance « Votre commande attend son paiement » (une fois), « Votre commande est bien reçue » (paiement en ligne coupé), « Vos réglages DNS » (le client garde son nom de domaine et il ne mène pas déjà chez nous ; jamais ses identifiants), la question de l'atelier et sa relance (une information vraiment nécessaire), la copie signée « Votre site est lancé » (il démarre avant la fin de ses 14 jours), puis plus tard « Vos pages Google sont en ligne ». Jamais d'e-mail pour une étape technique (domaine réservé, https, hébergement) : la jauge le montre. Rien d'autre sans l'accord d'Alex. Dans un e-mail, on s'adresse à la personne par son prénom (celui du formulaire de commande), jamais par le nom de l'entreprise.
 
 ## 12. Le ton
 
