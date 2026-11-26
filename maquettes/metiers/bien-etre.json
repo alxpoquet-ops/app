@@ -1,0 +1,22 @@
+{
+  "groupe": "bien-etre",
+  "nom": "Bien-être : massages, réflexologie, naturopathie",
+  "mots": [
+    "massage",
+    "reflexo",
+    "naturopath",
+    "hypnos",
+    "sophro",
+    "kinesiolog",
+    "energeti",
+    "reiki",
+    "bien etre",
+    "relaxation",
+    "shiatsu"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/35884499/pexels-photo-35884499.jpeg",
+    "detente": "https://images.pexels.com/photos/6560266/pexels-photo-6560266.jpeg",
+    "reflexo": "https://images.pexels.com/photos/6628700/pexels-photo-6628700.jpeg"
+  }
+}

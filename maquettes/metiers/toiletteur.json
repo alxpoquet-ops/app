@@ -1,0 +1,16 @@
+{
+  "groupe": "toiletteur",
+  "nom": "Toiletteurs, éducateurs canins, pensions",
+  "mots": [
+    "toilett",
+    "canin",
+    "felin",
+    "pension anim",
+    "educateur canin"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/19145879/pexels-photo-19145879.jpeg",
+    "salon": "https://images.pexels.com/photos/6816850/pexels-photo-6816850.jpeg",
+    "education": "https://images.pexels.com/photos/28536059/pexels-photo-28536059.jpeg"
+  }
+}

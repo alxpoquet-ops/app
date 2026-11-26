@@ -29,12 +29,12 @@ a{color:var(--accent)}
 .bandeau b{color:#F5B48F}
 header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
 .head{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:66px}
-.brand{display:flex;align-items:center;gap:10px;font-family:"Barlow Semi Condensed",sans-serif;font-weight:800;font-size:1.35rem;color:var(--ink);text-decoration:none}
+.brand{flex:1 1 auto;display:flex;min-width:0;line-height:1.15;align-items:center;gap:10px;font-family:"Barlow Semi Condensed",sans-serif;font-weight:800;font-size:1.35rem;color:var(--ink);text-decoration:none}
 .logo{width:40px;height:40px;border-radius:6px;background:var(--accent);color:#fff;display:grid;place-items:center;font-family:"Barlow Semi Condensed",sans-serif;font-weight:800;font-size:1.25rem}
-nav.menu{display:flex;gap:2px}
-nav.menu a{color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem;padding:8px 11px;border-radius:6px}
+nav.menu{flex:none;display:flex;gap:2px}
+nav.menu a{color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem;white-space:nowrap;padding:8px 9px;border-radius:6px}
 nav.menu a:hover{background:var(--soft);color:var(--accent)}
-.tools{display:flex;align-items:center;gap:8px}
+.tools{flex:none;display:flex;align-items:center;gap:8px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:11px 22px;border-radius:6px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none;border:0;font-size:1rem;white-space:nowrap}
 .btn svg{width:20px;height:20px}
 .btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
@@ -115,8 +115,9 @@ h2{font-size:clamp(1.9rem,4.2vw,2.7rem)}
 footer{background:#161C1B;color:#B7BFBD;padding:40px 0 26px;font-size:.95rem}
 footer .bas{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 footer b{color:#fff}
-@media (max-width:920px){nav.menu{display:none}.burger{display:grid}.grille,.avis{grid-template-columns:1fr 1fr}.deux{grid-template-columns:1fr;gap:28px}.etapes{grid-template-columns:1fr 1fr;row-gap:30px}.galerie{grid-template-columns:1fr 1fr}.galerie .grande{grid-column:span 2;grid-row:auto;min-height:260px}}
-@media (max-width:560px){.wrap{padding:0 16px}.head{min-height:60px}.tools .btn{padding:10px 14px;min-height:44px;font-size:.95rem}.tools .btn span{display:none}.grille,.avis,.etapes,.galerie,.cadre .duo{grid-template-columns:1fr}.galerie .grande{grid-column:auto}section{padding:54px 0}.hero .wrap{padding-top:54px;padding-bottom:58px}.hero .btn{width:100%}}
+@media (max-width:1080px){nav.menu{display:none}.burger{display:grid}}
+@media (max-width:920px){.grille,.avis{grid-template-columns:1fr 1fr}.deux{grid-template-columns:1fr;gap:28px}.etapes{grid-template-columns:1fr 1fr;row-gap:30px}.galerie{grid-template-columns:1fr 1fr}.galerie .grande{grid-column:span 2;grid-row:auto;min-height:260px}}
+@media (max-width:560px){.wrap{padding:0 16px}.head{min-height:60px}.brand{font-size:1.05rem}.tools .btn{padding:10px 14px;min-height:44px;font-size:.95rem}.tools .btn span{display:none}.grille,.avis,.etapes,.galerie,.cadre .duo{grid-template-columns:1fr}.galerie .grande{grid-column:auto}section{padding:54px 0}.hero .wrap{padding-top:54px;padding-bottom:58px}.hero .btn{width:100%}}
 </style>
 </head>
 <body>
@@ -139,7 +140,7 @@ footer b{color:#fff}
   <img src="{{PHOTO:accueil}}" alt="">
   <div class="wrap">
     <span class="eyebrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5B48F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5c-4.5-4.7-7-8.3-7-11.5a7 7 0 0 1 14 0c0 3.2-2.5 6.8-7 11.5Z"/><circle cx="12" cy="10" r="2.6"/></svg>Artisan du second œuvre à {{VILLE}}</span>
-    <h1>Des murs droits, des finitions nettes, une maison qui vous ressemble</h1>
+    <h1>Des murs droits, des finitions soignées</h1>
     <p class="lead">Cloisons, plafonds, carrelage, isolation ou serrure à changer : une phrase d’accroche qui vous ressemble, écrite avec vous.</p>
     <div class="actions"><a class="btn" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.7 4.3-2.2 1.5a11 11 0 0 0 6.2 6.2l1.5-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5C10.6 20 4 13.4 3.5 5.6A1.5 1.5 0 0 1 5 4Z"/></svg>Appeler</a><a class="btn ghost" href="#contact">Demander un devis</a></div>
     <ul class="metiers" aria-label="Vos métiers (exemples)">

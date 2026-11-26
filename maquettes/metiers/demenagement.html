@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>{{ENTREPRISE}} : maquette d'exemple</title>
+<!--
+  Les Minis Monstres : maquette par métier, groupe « demenagement » (déménageurs, transport, livraison, coursiers).
+  Faite une fois ; pour chaque prospect, seuls {{ENTREPRISE}}, {{VILLE}} et {{INITIALE}} sont remplis avec ses informations publiques.
+  Tout le reste est visiblement un exemple : rien n'est affirmé sur l'entreprise.
+  Photos : Pexels (licence Pexels, libre d'utilisation, sans mention obligatoire). Pictos : dessinés pour Les Minis Monstres.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F5FB;--card:#FFFFFF;--ink:#1E1433;--muted:#544A68;--main:#4B2C86;--main-d:#2C1A52;--accent:#F4B70A;--accent-ink:#1E1433;--line:#E0DAEC;--soft:#EEE8F8;--shadow:0 12px 32px rgba(30,20,51,.10)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{position:relative;margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:17px;line-height:1.6}
+h1,h2,h3{font-family:Rubik,Inter,sans-serif;font-weight:800;line-height:1.1;margin:0 0 12px;letter-spacing:-.01em}
+h3{font-weight:700}
+a{color:var(--main)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+/* le filigrane, sur toute la page, au-dessus du contenu mais sans gêner la lecture */
+.filigrane{position:absolute;top:0;left:0;right:0;bottom:0;z-index:90;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='300'%3E%3Ctext x='260' y='160' text-anchor='middle' transform='rotate(-24 260 150)' font-family='Arial,Helvetica,sans-serif' font-size='26' font-weight='700' fill='%237A8CA0' fill-opacity='0.2'%3EMAQUETTE D%E2%80%99EXEMPLE %C2%B7 LES MINIS MONSTRES%3C/text%3E%3C/svg%3E");background-repeat:repeat}
+.bandeau{background:#2C1A52;color:#fff;text-align:center;font-size:.9rem;font-weight:600;padding:9px 16px}
+.bandeau b{color:#FFD45C}
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.head{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:66px}
+.brand{flex:1 1 auto;display:flex;min-width:0;line-height:1.15;align-items:center;gap:10px;font-family:Rubik,sans-serif;font-weight:800;font-size:1.2rem;color:var(--ink);text-decoration:none}
+.logo{width:40px;height:40px;border-radius:12px;background:var(--main);color:#FFD45C;display:grid;place-items:center;font-family:Rubik,sans-serif;font-weight:800}
+nav.menu{flex:none;display:flex;gap:4px}
+nav.menu a{color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem;white-space:nowrap;padding:8px 9px;border-radius:10px}
+nav.menu a:hover{background:var(--soft);color:var(--main)}
+.tools{flex:none;display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:11px 22px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:700;text-decoration:none;border:0;font-size:1rem;white-space:nowrap}
+.btn svg{width:20px;height:20px}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.rond{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center}
+.rond svg{width:21px;height:21px}
+.burger{display:none}
+/* l'ouverture */
+.hero{position:relative;background:#22143F;color:#fff;overflow:hidden}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(34,20,63,.97) 0%,rgba(34,20,63,.82) 48%,rgba(34,20,63,.22) 100%)}
+.hero .wrap{position:relative;z-index:1;padding-top:84px;padding-bottom:84px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 14px;font-weight:600;font-size:.9rem}
+.hero h1{font-size:clamp(2.1rem,5.4vw,3.5rem);max-width:15ch;margin:18px 0 14px}
+.hero h1 em{font-style:normal;color:#FFD45C}
+.hero p.lead{font-size:1.15rem;max-width:52ch;color:#E4DDF2;margin:0 0 26px}
+.hero .actions{display:flex;flex-wrap:wrap;gap:12px}
+.hero .btn.ghost{color:#fff;border-color:#fff}
+.puces{display:flex;flex-wrap:wrap;gap:10px 22px;margin:28px 0 0;padding:0;list-style:none}
+.puces li{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:.95rem}
+.puces li svg{width:20px;height:20px;color:#FFD45C}
+/* les parties */
+section{padding:76px 0}
+section.alt{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kicker{color:var(--main);font-weight:800;text-transform:uppercase;letter-spacing:.09em;font-size:.82rem;margin:0 0 8px}
+h2{font-size:clamp(1.7rem,4vw,2.5rem)}
+.sous{color:var(--muted);max-width:60ch;margin:0 0 30px}
+.exemple{display:inline-block;background:#FFF6D6;color:#7A5300;border:1px dashed #E2B53A;border-radius:999px;font-size:.78rem;font-weight:700;padding:3px 10px;margin-left:8px;vertical-align:middle;letter-spacing:0;text-transform:none}
+.grille{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.carte{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow)}
+.carte .pic{width:54px;height:54px;border-radius:14px;background:var(--soft);color:var(--main);display:grid;place-items:center;margin-bottom:14px}
+.carte .pic svg{width:30px;height:30px}
+.carte h3{font-size:1.2rem}
+.carte p{margin:0;color:var(--muted)}
+.deux{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
+.photo{border-radius:22px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/3}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.liste{list-style:none;padding:0;margin:0}
+.liste li{display:flex;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.liste li:last-child{border-bottom:0}
+.liste .ok{flex:none;width:30px;height:30px;border-radius:50%;background:var(--main);color:#fff;display:grid;place-items:center}
+.liste .ok svg{width:17px;height:17px}
+.liste b{display:block}
+/* le compte à rebours du déménagement */
+.frise{list-style:none;margin:0;padding:0;position:relative}
+.frise::before{content:"";position:absolute;left:31px;top:10px;bottom:10px;width:3px;background:var(--soft);border-radius:3px}
+.frise li{position:relative;display:flex;gap:18px;align-items:flex-start;padding:10px 0}
+.frise .j{flex:none;width:64px;height:40px;border-radius:12px;background:var(--main);color:#fff;font-family:Rubik,sans-serif;font-weight:800;display:grid;place-items:center;position:relative;z-index:1;font-size:.95rem}
+.frise li:last-child .j{background:var(--accent);color:var(--accent-ink)}
+.frise b{display:block;font-size:1.05rem}
+.frise span.t{color:var(--muted);font-size:.97rem}
+.etapes{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:e}
+.etape{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 20px;position:relative}
+.etape::before{counter-increment:e;content:counter(e);position:absolute;top:-16px;left:20px;width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:800;display:grid;place-items:center;font-family:Rubik,sans-serif}
+.etape h3{font-size:1.08rem;margin-top:10px}
+.etape p{margin:0;color:var(--muted);font-size:.96rem}
+.zone{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.zone span{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-weight:600}
+.trajet{background:var(--main-d);color:#fff;border-radius:22px;padding:30px;box-shadow:var(--shadow)}
+.trajet h3{font-size:1.35rem;color:#fff}
+.trajet .ligne{display:flex;align-items:center;gap:12px;margin:18px 0}
+.trajet .pt{flex:none;background:#fff;color:var(--ink);border-radius:999px;padding:7px 14px;font-weight:700}
+.trajet .pt.b{background:var(--accent);color:var(--accent-ink)}
+.trajet .route{flex:1;border-top:3px dashed rgba(255,255,255,.55);position:relative;min-width:30px}
+.trajet .route svg{position:absolute;left:50%;top:-17px;transform:translateX(-50%);width:30px;height:30px;color:#FFD45C;background:var(--main-d);padding:0 3px}
+.trajet p{margin:0;color:#DCD3EE}
+.avis{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.avis .carte{border-style:dashed;box-shadow:none;background:#FCFBFE}
+.etoiles{color:#E0A800;letter-spacing:2px;font-size:1.1rem}
+.contact{background:var(--main-d);color:#fff}
+.contact h2{color:#fff}
+.contact .sous{color:#DCD3EE}
+.contact .deux{align-items:start}
+.gros-tel{display:inline-flex;align-items:center;gap:12px;font-family:Rubik,sans-serif;font-size:clamp(1.5rem,4vw,2.1rem);font-weight:800;color:#fff;text-decoration:none;background:rgba(255,255,255,.1);border:2px dashed rgba(255,255,255,.45);border-radius:14px;padding:10px 18px}
+.gros-tel svg{width:28px;height:28px;color:#FFD45C}
+.form{background:#fff;color:var(--ink);border-radius:18px;padding:26px;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.form label{display:block;font-weight:700;margin:0 0 6px}
+.form .champ{width:100%;min-height:48px;border:1px solid #A89DBE;border-radius:10px;margin:0 0 14px;background:#FAF9FC}
+.form .champ.grand{min-height:90px}
+.form .cote{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form .btn{width:100%}
+footer{background:#1A0F31;color:#BDB3D1;padding:40px 0 26px;font-size:.95rem}
+footer .bas{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+footer b{color:#fff}
+@media (max-width:1080px){nav.menu{display:none}.burger{display:grid}}
+@media (max-width:920px){.grille,.avis{grid-template-columns:1fr 1fr}.deux{grid-template-columns:1fr;gap:28px}.etapes{grid-template-columns:1fr 1fr;row-gap:30px}}
+@media (max-width:560px){.wrap{padding:0 16px}.head{min-height:60px}.brand{font-size:1.05rem}.tools .btn{padding:10px 14px;min-height:44px;font-size:.95rem}.tools .btn span{display:none}.grille,.avis,.etapes,.form .cote{grid-template-columns:1fr}section{padding:54px 0}.hero .wrap{padding-top:54px;padding-bottom:58px}.hero .btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="filigrane" aria-hidden="true"></div>
+<p class="bandeau">Maquette pour vous projeter, préparée pour <b>{{ENTREPRISE}}</b> par Les Minis Monstres (vue ordinateur) : votre site s’adapte aussi au téléphone, et il sera modifiable à 100 %, selon vos goûts.</p>
+
+<header>
+  <div class="wrap head">
+    <a class="brand" href="#"><span class="logo">{{INITIALE}}</span><span>{{ENTREPRISE}}</span></a>
+    <nav class="menu" aria-label="Menu"><a href="#services">Services</a><a href="#preparer">Conseils</a><a href="#pourquoi">Pourquoi nous</a><a href="#comment">Comment ça se passe</a><a href="#zone">Secteur</a><a href="#contact">Devis</a></nav>
+    <div class="tools">
+      <a class="btn" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.7 4.3-2.2 1.5a11 11 0 0 0 6.2 6.2l1.5-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5C10.6 20 4 13.4 3.5 5.6A1.5 1.5 0 0 1 5 4Z"/></svg><span>Appeler</span></a>
+      <span class="rond" aria-label="Clair ou sombre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg></span>
+      <span class="rond burger" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>
+    </div>
+  </div>
+</header>
+
+<section class="hero" style="padding:0">
+  <img src="{{PHOTO:accueil}}" alt="">
+  <div class="wrap">
+    <span class="eyebrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFD45C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5c-4.5-4.7-7-8.3-7-11.5a7 7 0 0 1 14 0c0 3.2-2.5 6.8-7 11.5Z"/><circle cx="12" cy="10" r="2.6"/></svg>Déménagement et transport à {{VILLE}}</span>
+    <h1>Vos cartons partent, <em>vous gardez le sourire</em></h1>
+    <p class="lead">Déménagement, transport de meubles ou livraison : une phrase d’accroche qui vous ressemble, écrite avec vous.</p>
+    <div class="actions"><a class="btn" href="#contact">Demander un devis</a><a class="btn ghost" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.7 4.3-2.2 1.5a11 11 0 0 0 6.2 6.2l1.5-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5C10.6 20 4 13.4 3.5 5.6A1.5 1.5 0 0 1 5 4Z"/></svg>Appeler</a></div>
+    <ul class="puces">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Vos points forts ici</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Vos assurances et garanties</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Au départ de {{VILLE}}</li>
+    </ul>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap">
+    <p class="kicker">Services <span class="exemple">exemples à adapter</span></p>
+    <h2>Ce que nous transportons pour vous</h2>
+    <p class="sous">Chaque carte devient une de vos prestations, avec vos mots. Rien n’est publié sans votre accord.</p>
+    <div class="grille">
+      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11.5L12 4.5l8.5 7"/><path d="M5.5 10v10h13V10"/><path d="M9.5 20v-5.5h5V20"/></svg></div><h3>Déménagement de particuliers</h3><p>Studio, appartement ou maison : ce que comprend votre formule.</p></div>
+      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7" width="17" height="12.5" rx="2"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M3.5 12.5h17"/></svg></div><h3>Bureaux et commerces</h3><p>Transfert de locaux, archives, matériel : comment vous organisez tout.</p></div>
+      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><path d="M3 11a2 2 0 0 1 4 0v2h10v-2a2 2 0 0 1 4 0v5H3Z"/><path d="M5 16v2.5M19 16v2.5"/></svg></div><h3>Transport de meubles</h3><p>Un canapé, une armoire, un piano : seulement ce que vous prenez en charge.</p></div>
+      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5h11v10h-11Z"/><path d="M13.5 9.5h4l3 3.5v3.5h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></div><h3>Livraison et courses</h3><p>Colis, achats en magasin, plis urgents : vos délais et votre secteur.</p></div>
+      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8L12 4l8.5 4v9L12 21l-8.5-4Z"/><path d="M3.5 8L12 12l8.5-4M12 12v9"/><path d="M7.5 6l8.5 4"/></svg></div><h3>Emballage et cartons</h3><p>Fourniture des cartons, emballage de la vaisselle et des objets fragiles.</p></div>
+      <div class="carte"><div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20V9l9-5 9 5v11"/><path d="M7 20v-8h10v8"/><path d="M7 15h10"/></svg></div><h3>Garde-meubles</h3><p>Stocker vos affaires entre deux logements : si vous le proposez.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="preparer" class="alt">
+  <div class="wrap deux">
+    <div>
+      <p class="kicker">Bien préparer <span class="exemple">vos conseils ici</span></p>
+      <h2>Un déménagement serein, ça se prépare</h2>
+      <p class="sous">Une petite page de conseils rassure vos clients et les aide à vous trouver sur Google.</p>
+      <ul class="frise">
+        <li><span class="j">J-30</span><span><b>On demande les devis</b><span class="t">Et on réserve la date le plus tôt possible.</span></span></li>
+        <li><span class="j">J-15</span><span><b>On trie et on prévient</b><span class="t">Changement d’adresse, énergie, internet, école.</span></span></li>
+        <li><span class="j">J-7</span><span><b>On emballe</b><span class="t">Une pièce par carton, le nom de la pièce écrit dessus.</span></span></li>
+        <li><span class="j">Jour J</span><span><b>On charge, on roule, on pose</b><span class="t">Et vous retrouvez chaque carton à sa place.</span></span></li>
+      </ul>
+    </div>
+    <div class="photo"><img src="{{PHOTO:detail}}" alt=""></div>
+  </div>
+</section>
+
+<section id="pourquoi">
+  <div class="wrap deux">
+    <div class="photo"><img src="{{PHOTO:atelier}}" alt=""></div>
+    <div>
+      <p class="kicker">Pourquoi nous <span class="exemple">à compléter avec vous</span></p>
+      <h2>Une équipe d’ici, qui prend soin de vos affaires</h2>
+      <ul class="liste">
+        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Votre expérience</b>Depuis quand vous exercez, et ce qui vous distingue.</span></li>
+        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Votre matériel</b>Camions, sangles, couvertures, monte-meubles : ce que vous avez.</span></li>
+        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Vos assurances</b>Comment les biens de vos clients sont couverts pendant le transport.</span></li>
+        <li><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><b>Un devis clair</b>Visite, volume, accès, étages : ce que vous prenez en compte.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="comment" class="alt">
+  <div class="wrap">
+    <p class="kicker">Comment ça se passe</p>
+    <h2>Du premier appel au dernier carton</h2>
+    <p class="sous">Quatre étapes, à ajuster à votre façon de travailler.</p>
+    <div class="etapes">
+      <div class="etape"><h3>Vous nous contactez</h3><p>Par téléphone ou avec le formulaire de devis.</p></div>
+      <div class="etape"><h3>On estime le volume</h3><p>Chez vous, en vidéo ou avec une liste de vos meubles.</p></div>
+      <div class="etape"><h3>Vous recevez le devis</h3><p>Détaillé : volume, accès, date, options.</p></div>
+      <div class="etape"><h3>Le grand jour</h3><p>Chargement, trajet, installation dans le nouveau logement.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="zone">
+  <div class="wrap deux">
+    <div>
+      <p class="kicker">Secteur</p>
+      <h2>Au départ de {{VILLE}}</h2>
+      <p class="sous">Les communes que vous desservez, et jusqu’où vous allez : c’est aussi ce qui aide Google à vous montrer aux bonnes personnes.</p>
+      <div class="zone"><span>{{VILLE}}</span><span>Commune voisine</span><span>Commune voisine</span><span>Commune voisine</span><span>…</span></div>
+    </div>
+    <div class="trajet">
+      <h3>Près ou loin ? <span class="exemple">à préciser</span></h3>
+      <div class="ligne"><span class="pt">{{VILLE}}</span><span class="route"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5h11v10h-11Z"/><path d="M13.5 9.5h4l3 3.5v3.5h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></span><span class="pt b">Votre destination</span></div>
+      <p>Dans la ville, dans la région ou partout en France : vous indiquez jusqu’où vous allez.</p>
+    </div>
+  </div>
+</section>
+
+<section id="avis" class="alt">
+  <div class="wrap">
+    <p class="kicker">Avis <span class="exemple">vos vrais avis Google ici</span></p>
+    <h2>Ce que disent vos clients</h2>
+    <p class="sous">Jamais de faux avis : cette partie reprend seulement ceux que vos clients ont laissés.</p>
+    <div class="avis">
+      <div class="carte"><p class="etoiles">★★★★★</p><p>L’avis d’un de vos clients s’affichera ici.</p></div>
+      <div class="carte"><p class="etoiles">★★★★★</p><p>L’avis d’un de vos clients s’affichera ici.</p></div>
+      <div class="carte"><p class="etoiles">★★★★★</p><p>L’avis d’un de vos clients s’affichera ici.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap deux">
+    <div>
+      <p class="kicker" style="color:#FFD45C">Devis</p>
+      <h2>Vous déménagez bientôt ?</h2>
+      <p class="sous">Appelez, ou remplissez la demande : elle arrive directement dans votre boîte e-mail.</p>
+      <a class="gros-tel" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.7 4.3-2.2 1.5a11 11 0 0 0 6.2 6.2l1.5-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5C10.6 20 4 13.4 3.5 5.6A1.5 1.5 0 0 1 5 4Z"/></svg>Votre numéro</a>
+      <p style="margin-top:22px;color:#DCD3EE"><b style="color:#fff">{{ENTREPRISE}}</b><br>{{VILLE}}<br>Vos horaires</p>
+    </div>
+    <div class="form" aria-label="Formulaire de demande de devis (exemple)">
+      <label>Votre nom</label><div class="champ"></div>
+      <label>Votre téléphone ou e-mail</label><div class="champ"></div>
+      <div class="cote"><div><label>Ville de départ</label><div class="champ"></div></div><div><label>Ville d’arrivée</label><div class="champ"></div></div></div>
+      <div class="cote"><div><label>Date souhaitée</label><div class="champ"></div></div><div><label>Logement</label><div class="champ"></div></div></div>
+      <label>Précisions</label><div class="champ grand"></div>
+      <span class="btn">Envoyer ma demande</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap bas"><span><b>{{ENTREPRISE}}</b> · Déménagement et transport à {{VILLE}}</span><span>Mentions légales · Confidentialité</span><span>Maquette d’exemple : Les Minis Monstres</span></div>
+</footer>
+</body>
+</html>

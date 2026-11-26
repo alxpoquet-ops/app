@@ -1,0 +1,10 @@
+{
+  "groupe": "couture-retouches",
+  "nom": "Couturières, retouches, pressings, tapissiers",
+  "mots": ["coutur", "retouche", "pressing", "broderie", "tapissi", "mercerie"],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/37232390/pexels-photo-37232390.jpeg",
+    "atelier": "https://images.pexels.com/photos/6461085/pexels-photo-6461085.jpeg",
+    "fils": "https://images.pexels.com/photos/39053500/pexels-photo-39053500.jpeg"
+  }
+}

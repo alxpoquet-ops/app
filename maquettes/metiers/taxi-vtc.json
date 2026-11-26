@@ -1,0 +1,15 @@
+{
+  "groupe": "taxi-vtc",
+  "nom": "Taxis, VTC, chauffeurs",
+  "mots": [
+    "taxi",
+    "vtc",
+    "chauffeur prive",
+    "chauffeur vtc"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/37100902/pexels-photo-37100902.jpeg",
+    "volant": "https://images.pexels.com/photos/9354560/pexels-photo-9354560.jpeg",
+    "portiere": "https://images.pexels.com/photos/14541142/pexels-photo-14541142.jpeg"
+  }
+}

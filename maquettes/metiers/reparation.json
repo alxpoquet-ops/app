@@ -1,0 +1,10 @@
+{
+  "groupe": "reparation",
+  "nom": "Réparation : informatique, téléphones, électroménager, cordonnerie",
+  "mots": ["repar", "informatique", "telephon", "smartphone", "electromenager", "cordonn"],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/6755075/pexels-photo-6755075.jpeg",
+    "atelier": "https://images.pexels.com/photos/7639374/pexels-photo-7639374.jpeg",
+    "detail": "https://images.pexels.com/photos/3579538/pexels-photo-3579538.jpeg"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "groupe": "auto-ecole",
+  "nom": "Auto-écoles",
+  "mots": ["auto ecole", "conduite", "permis"],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/9518244/pexels-photo-9518244.jpeg",
+    "atelier": "https://images.pexels.com/photos/9852675/pexels-photo-9852675.jpeg",
+    "route": "https://images.pexels.com/photos/33822971/pexels-photo-33822971.jpeg"
+  }
+}

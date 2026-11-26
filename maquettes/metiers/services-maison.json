@@ -1,0 +1,19 @@
+{
+  "groupe": "services-maison",
+  "nom": "Services à domicile : ménage, petits travaux, multiservice",
+  "mots": [
+    "menage",
+    "nettoy",
+    "multiservice",
+    "multi service",
+    "petits travaux",
+    "bricol",
+    "conciergerie",
+    "repassage"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/7513158/pexels-photo-7513158.jpeg",
+    "atelier": "https://images.pexels.com/photos/4440525/pexels-photo-4440525.jpeg",
+    "detail": "https://images.pexels.com/photos/5691502/pexels-photo-5691502.jpeg"
+  }
+}

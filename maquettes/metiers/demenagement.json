@@ -1,0 +1,15 @@
+{
+  "groupe": "demenagement",
+  "nom": "Déménageurs, transport, livraison",
+  "mots": [
+    "demenag",
+    "transport",
+    "livraison",
+    "coursier"
+  ],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/7464687/pexels-photo-7464687.jpeg",
+    "atelier": "https://images.pexels.com/photos/5025659/pexels-photo-5025659.jpeg",
+    "detail": "https://images.pexels.com/photos/4246109/pexels-photo-4246109.jpeg"
+  }
+}

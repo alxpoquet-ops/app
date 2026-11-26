@@ -1,0 +1,10 @@
+{
+  "groupe": "coach-sportif",
+  "nom": "Coachs sportifs, yoga, pilates",
+  "mots": ["coach", "sport", "fitness", "yoga", "pilates", "musculation"],
+  "photos": {
+    "accueil": "https://images.pexels.com/photos/3984353/pexels-photo-3984353.jpeg",
+    "atelier": "https://images.pexels.com/photos/39219677/pexels-photo-39219677.jpeg",
+    "detail": "https://images.pexels.com/photos/7187871/pexels-photo-7187871.jpeg"
+  }
+}

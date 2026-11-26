@@ -60,8 +60,8 @@ h2{font-size:clamp(1.8rem,4vw,2.6rem)}
 /* la galerie : des cadres vides, l'artiste y met ses œuvres */
 .galerie{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .oeuvre{margin:0}
-.cadre{background:#fff;border:10px solid #fff;outline:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:4/5;display:grid;place-items:center;text-align:center;color:#fff;font-weight:600;padding:16px}
-.cadre.large{aspect-ratio:5/4}
+.cadre{background:#fff;border:10px solid #fff;outline:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:1/1;display:grid;place-items:center;text-align:center;color:#fff;font-weight:600;padding:16px}
+.cadre.large{aspect-ratio:4/3}
 .cadre.c1{background:linear-gradient(135deg,#6B2D5C,#B9472A)}
 .cadre.c2{background:linear-gradient(160deg,#2F4858,#6E8B8F)}
 .cadre.c3{background:linear-gradient(135deg,#E2B04A,#B9472A)}
@@ -99,7 +99,7 @@ h2{font-size:clamp(1.8rem,4vw,2.6rem)}
 .zone span{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-weight:600}
 .avis{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .avis .carte{border-style:dashed;box-shadow:none;background:#FFFCF9}
-.etoiles{color:#D9A243;letter-spacing:2px;font-size:1.1rem}
+.carte p.etoiles,.etoiles{color:#C98F1C;letter-spacing:2px;font-size:1.1rem}
 .contact{background:var(--prune-d);color:#fff}
 .contact h2{color:#fff}
 .contact .sous{color:#EAD7E4}
