@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 
+// Le numéro de version monte tout seul à chaque fabrication sur GitHub (LMM_VERSION_CODE), 1 sinon.
+def lmmVersionCode = Integer.parseInt(System.getenv("LMM_VERSION_CODE") ?: "1")
+
 android {
     namespace = "fr.lesminismonstres.appli"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,7 +10,7 @@ android {
         applicationId "fr.lesminismonstres.appli"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode (System.getenv("LMM_VERSION_CODE") ?: "1") as Integer
+        versionCode lmmVersionCode
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
