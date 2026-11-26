@@ -13,7 +13,24 @@ defined('ABSPATH') || exit;
 
 function aled08e_pose_auto() { return get_option('aled08_pose_auto', '1') === '1'; }
 function aled08e_pose_type($c) { return ['une-page' => 'essentiel', 'vitrine' => 'visibilite', 'boutique' => 'boutique'][$c['type']] ?? 'visibilite'; }
-function aled08e_pose_dossier($dom) { return 'public_html/' . $dom; }
+/* Le dossier du site dans le compte cPanel. Un domaine déjà attaché (par le client, ou avant nous) n'est pas forcément
+ * dans public_html/<domaine> : on demande à cPanel son vrai dossier, sinon le fichier de pose partirait au mauvais endroit. */
+function aled08e_pose_dossier($dom) {
+    static $vu = [];
+    $dom = strtolower((string) $dom);
+    if (isset($vu[$dom])) return $vu[$dom];
+    $defaut = 'public_html/' . $dom;
+    $t = get_transient('aled08_pose_dir_' . md5($dom));
+    if (is_string($t) && $t !== '') return $vu[$dom] = $t;
+    $d = function_exists('aled08e_hb_cpanel_uapi') ? aled08e_hb_cpanel_uapi('DomainInfo', 'single_domain_data', ['domain' => $dom]) : null;
+    $racine = is_array($d) ? (string) ($d['documentroot'] ?? '') : '';
+    $maison = is_array($d) ? rtrim((string) ($d['homedir'] ?? ''), '/') : '';
+    if ($racine !== '' && $maison !== '' && strpos($racine, $maison . '/') === 0 && strpos($racine, '..') === false) {
+        $rel = trim(substr($racine, strlen($maison) + 1), '/');
+        if ($rel !== '' && preg_match('#^[A-Za-z0-9._/-]+$#', $rel)) { set_transient('aled08_pose_dir_' . md5($dom), $rel, 10 * MINUTE_IN_SECONDS); return $vu[$dom] = $rel; }
+    }
+    return $vu[$dom] = $defaut;
+}
 
 /* cPanel en POST (pour envoyer un fichier entier) */
 function aled08e_pose_uapi_post($module, $func, $params) {
