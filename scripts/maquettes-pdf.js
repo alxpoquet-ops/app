@@ -22,12 +22,12 @@ const exemples = { 'plombier-chauffagiste': 'Plomberie Durand' };
     const tmp = path.join('/tmp', 'mq-' + m.groupe + '.html'); fs.writeFileSync(tmp, h);
     await p.goto('file://' + tmp, { waitUntil: 'networkidle' }).catch(() => {});
     await p.waitForTimeout(400);
-    const png = path.join('/tmp', 'mq-' + m.groupe + '.png');
-    await p.screenshot({ path: png, clip: { x: 0, y: 0, width: 1280, height: 1700 } });
+    const png = path.join('/tmp', 'mq-' + m.groupe + '.jpg');
+    await p.screenshot({ path: png, type: 'jpeg', quality: 70, clip: { x: 0, y: 0, width: 1280, height: 1700 } });
     caps.push({ ...m, png, nomEx: nom });
     console.log('capture', m.groupe);
   }
-  const pages = caps.map((c, i) => `<section><header><b>${i + 1}. ${c.nom}</b><span>maquette « ${c.groupe} », vue ordinateur, remplie pour l’exemple avec « ${c.nomEx} » à Metz</span></header><img src="data:image/png;base64,${fs.readFileSync(c.png).toString('base64')}"></section>`).join('');
+  const pages = caps.map((c, i) => `<section><header><b>${i + 1}. ${c.nom}</b><span>maquette « ${c.groupe} », vue ordinateur, remplie pour l’exemple avec « ${c.nomEx} » à Metz</span></header><img src="data:image/jpeg;base64,${fs.readFileSync(c.png).toString('base64')}"></section>`).join('');
   const doc = `<!doctype html><meta charset="utf-8"><style>@page{size:A4;margin:10mm}body{margin:0;font-family:Arial,sans-serif;color:#2e2a47}
   .titre{height:270mm;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;page-break-after:always}
   .titre h1{font-size:30px;margin:0 0 10px}.titre p{font-size:14px;max-width:150mm;line-height:1.5}

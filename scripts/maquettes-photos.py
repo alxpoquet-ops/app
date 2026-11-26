@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Les photos des maquettes préparées d'avance (maquettes/metiers/*.json) : téléchargées depuis Pexels une fois,
-allégées (1280 px de large, JPEG qualité 72), rangées dans maquettes/img/<groupe>-<repère>.jpg, puis embarquées dans
+allégées (1200 px de large, JPEG qualité 64), rangées dans maquettes/img/<groupe>-<repère>.jpg, puis embarquées dans
 l'extension par scripts/wp-export.py. À relancer après l'ajout d'une maquette : python3 scripts/maquettes-photos.py"""
 import io, json, os, re, sys, urllib.request
 from PIL import Image
@@ -18,10 +18,10 @@ for f in sorted(os.listdir(MET)):
         if not re.match(r'^https://images\.pexels\.com/photos/\d+/', url):
             print('photo refusée (pas Pexels) :', g, rep, url); erreurs += 1; continue
         try:
-            data = urllib.request.urlopen(url.split('?')[0] + '?auto=compress&cs=tinysrgb&w=1600', timeout=30).read()
+            data = urllib.request.urlopen(urllib.request.Request(url.split('?')[0] + '?auto=compress&cs=tinysrgb&w=1600', headers={'User-Agent': 'Mozilla/5.0 (compatible; LesMinisMonstres/1.0)'}), timeout=30).read()
             im = Image.open(io.BytesIO(data)).convert('RGB')
-            if im.width > 1280: im = im.resize((1280, round(im.height * 1280 / im.width)), Image.LANCZOS)
-            im.save(cible, 'JPEG', quality=72, optimize=True, progressive=True)
+            if im.width > 1200: im = im.resize((1200, round(im.height * 1200 / im.width)), Image.LANCZOS)
+            im.save(cible, 'JPEG', quality=64, optimize=True, progressive=True)
             print('ok', os.path.basename(cible), os.path.getsize(cible) // 1024, 'Ko')
         except Exception as e:
             print('échec', g, rep, e); erreurs += 1
