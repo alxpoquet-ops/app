@@ -10,7 +10,7 @@ const contact = site.email ? `e-mail à ${site.email} ou le formulaire de contac
 const addr = `${(site.legal || {}).adresse ? site.legal.adresse + ', ' : site.address.street ? site.address.street + ', ' : ''}${site.address.postalCode} ${site.address.city}`;
 const UPDATED = '2026-11-26'; // mentions légales : 26 novembre 2026, soir : le médiateur CM2C, et l'activité inscrite au SIRET. 26 novembre 2026 : le SIRET du siège et son adresse (24 novembre : le SIREN)
 const UPDATED_CONF = '2026-11-25'; // 25 novembre 2026 : le jeu-concours de Ruban (l'adresse e-mail des participants). 24 novembre : politique de confidentialité : 24 novembre 2026, les outils au mois (comptes sans site, réseaux reliés, photos, avis et devis confiés aux outils). Avant : offre du 19 novembre 2026 (abonnement facultatif, paiement des extras par carte).
-const UPDATED_CGV = '2026-11-26'; // 26 novembre 2026, soir : article 19, le médiateur CM2C. 26 novembre 2026, soir : article 11, « Ce qui n’est pas remboursé » (pas de satisfait ou remboursé, pas de résultat garanti, frais déjà engagés, contestation abusive). article 9, le nom de domaine d'un client qui attend ses 14 jours n'est réservé qu'après (il peut être pris entre-temps). 26 novembre 2026 : l'identité du prestataire en tête (SIRET et adresse du siège). 25 novembre 2026, nuit : le parrainage revient (article 17, 6 mois offerts chacun). 25 novembre 2026, soir : la copie du site se télécharge depuis l'espace client (article 3, export). 25 novembre 2026 : plus d'appel avant la création (article 11), chaque site relu par un autre outil avant la livraison (article 15). 24 novembre 2026, tard : vérification par Alex (retirée le 25). Au soir : les outils mis de côté (article 20 gardé pour les abonnements en cours, avec une phrase en tête). Plus tôt le 24 novembre : article 20, les outils au mois (essai de 14 jours sans carte, abonnement outil par outil, limites, rétractation). 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
+const UPDATED_CGV = '2026-11-26'; // 26 novembre 2026, nuit : article 14, le site du client sur la page « Nos réalisations » (refus possible). 26 novembre 2026, soir : article 19, le médiateur CM2C. 26 novembre 2026, soir : article 11, « Ce qui n’est pas remboursé » (pas de satisfait ou remboursé, pas de résultat garanti, frais déjà engagés, contestation abusive). article 9, le nom de domaine d'un client qui attend ses 14 jours n'est réservé qu'après (il peut être pris entre-temps). 26 novembre 2026 : l'identité du prestataire en tête (SIRET et adresse du siège). 25 novembre 2026, nuit : le parrainage revient (article 17, 6 mois offerts chacun). 25 novembre 2026, soir : la copie du site se télécharge depuis l'espace client (article 3, export). 25 novembre 2026 : plus d'appel avant la création (article 11), chaque site relu par un autre outil avant la livraison (article 15). 24 novembre 2026, tard : vérification par Alex (retirée le 25). Au soir : les outils mis de côté (article 20 gardé pour les abonnements en cours, avec une phrase en tête). Plus tôt le 24 novembre : article 20, les outils au mois (essai de 14 jours sans carte, abonnement outil par outil, limites, rétractation). 23 novembre 2026 : la bande fait et relit le travail (Alex pour les cas délicats), bouton de résiliation, rétractation des extras, formulaire type, garantie de conformité ; conditions générales : une seule offre, le Site Essentiel avec l'option e-commerce (21 novembre 2026)
 // La petite bande (config.bande) : six Minis Monstres, présentés par leur prénom et leur rôle. Le parrainage est retiré (19 novembre 2026).
 // Une seule mention du système automatisé qui les fait fonctionner : l'article 15 des conditions générales
 // (règlement européen sur ces systèmes, obligation de transparence). La politique de confidentialité nomme le fournisseur.
@@ -410,6 +410,8 @@ Un compte sans connexion depuis 12 mois et sans abonnement actif est supprimé a
 
 Le client garantit qu’il a le droit d’utiliser les textes, images, logos et produits qu’il fournit. Il reste responsable des informations légales propres à son activité : mentions exigées par la loi, conditions de vente de sa boutique, prix affichés.
 
+**Le site dans nos réalisations.** Une fois en ligne, le site du client peut être montré sur la page « Nos réalisations » des Minis Monstres : son nom, son adresse, sa ville et sa phrase d’accroche, avec un lien vers le site. Le client peut refuser à tout moment, par un message depuis son espace client : le site est alors retiré de la page.
+
 ## 15. Versions et outils automatisés
 
 Avec le forfait ${mini.name}, chaque version du site est conservée et peut être restaurée sur demande.
@@ -495,16 +497,16 @@ ${listeOutils}
     path: '/jeu-concours/',
     name: 'Règlement du jeu-concours',
     title: `Règlement du jeu-concours des Rubans | Les Minis Monstres`,
-    description: `Tous les 100 jours, un site internet à gagner : trouvez les 10 Rubans cachés sur le site et participez au tirage au sort. Gratuit, sans achat.`,
-    lead: 'Cinq petits monstres cadeaux se cachent sur le site. Trouvez-les tous et tentez de gagner un site internet offert.',
-    updated: '2026-11-25',
+    description: `Chaque année, un site internet à gagner : trouvez les 10 Rubans cachés sur le site et participez au tirage au sort du 25 novembre. Gratuit, sans achat.`,
+    lead: 'Dix petits monstres cadeaux se cachent sur le site. Trouvez-les tous et tentez de gagner un site internet offert, au tirage du 25 novembre.',
+    updated: '2026-11-26', // 26 novembre 2026 : une manche par an, tirage le 25 novembre (anniversaire des Minis Monstres), plus de compte à rebours
     body: `## 1. Organisateur
 
 Le jeu est organisé par Les Minis Monstres, ${exploitant}, ${addr}, ${SIRET_PRET ? `SIRET ${L.siret}` : `SIREN ${L.siren}`}.
 
 ## 2. Le principe
 
-Le jeu se joue en **manches de 100 jours**. Pendant une manche, **dix Rubans**, les petits monstres cadeaux, se cachent sur le site des Minis Monstres, deux dans chacune de ces catégories :
+Le jeu se joue en **une manche par an**, avec **un tirage au sort chaque 25 novembre**, le jour anniversaire des Minis Monstres. Pendant une manche, **dix Rubans**, les petits monstres cadeaux, se cachent sur le site des Minis Monstres, deux dans chacune de ces catégories :
 
 1. la page d’accueil du site ;
 2. l’espace client ;
@@ -512,11 +514,11 @@ Le jeu se joue en **manches de 100 jours**. Pendant une manche, **dix Rubans**, 
 4. la page Tarifs ;
 5. les questions fréquentes.
 
-**Pour jouer, il faut être connecté à son espace client** : les Rubans ne se montrent qu’aux joueurs connectés. Quand vous en trouvez un, touchez-le : il est compté. Dans votre espace client, un compteur montre combien vous en avez trouvé, donne un indice d’un ou deux mots pour chacun et affiche le temps restant avant le tirage.
+**Pour jouer, il faut être connecté à son espace client** : les Rubans ne se montrent qu’aux joueurs connectés. Quand vous en trouvez un, touchez-le : il est compté. Dans votre espace client, un compteur montre combien vous en avez trouvé, donne un indice d’un ou deux mots pour chacun et rappelle la date du tirage.
 
 Quand vous avez trouvé les dix, vous donnez votre adresse e-mail et votre numéro de portable, et vous acceptez ce règlement : vous participez au tirage au sort de la manche.
 
-À la fin de chaque manche, le tirage a lieu automatiquement, puis une nouvelle manche commence : les Rubans changent de cachette, et il faut les retrouver tous les dix pour participer de nouveau.
+Le 25 novembre, le tirage a lieu automatiquement, puis une nouvelle manche commence pour l’année suivante : les Rubans changent de cachette, et il faut les retrouver tous les dix pour participer de nouveau.
 
 ## 3. Qui peut participer
 
@@ -533,7 +535,7 @@ Participer ne coûte rien et n’oblige à rien acheter. L’espace client se cr
 
 ## 5. Dates
 
-Chaque manche dure 100 jours. La date et l’heure du prochain tirage sont affichées dans l’espace client et sur la page d’accueil du site. Le jeu peut être suspendu ou arrêté par l’organisateur ; il l’annonce alors sur le site.
+Chaque manche dure un an : le tirage a lieu le 25 novembre à 18 h, heure de Paris. La date du prochain tirage est affichée dans l’espace client et sur la page d’accueil du site. Le jeu peut être suspendu ou arrêté par l’organisateur ; il l’annonce alors sur le site.
 
 ## 6. Le lot
 
@@ -552,7 +554,7 @@ Aucun lot ne peut être échangé contre de l’argent, ni cédé à une autre p
 
 ## 7. Le tirage au sort et le gagnant
 
-À la fin de chaque manche, un tirage au sort désigne un gagnant parmi les participations valables. Il est fait par ordinateur, entièrement au hasard.
+Chaque 25 novembre, un tirage au sort désigne un gagnant parmi les participations valables. Il est fait par ordinateur, entièrement au hasard.
 
 **Le gagnant est prévenu par e-mail**, à l’adresse qu’il a donnée. S’il est déjà client, son année offerte est ajoutée le jour même. Sinon, cet e-mail contient un **code personnel, valable 30 jours**, utilisable seulement depuis son compte. Le gagnant commande son site sur la page « Créer mon site » en tapant ce code : il fait les mêmes démarches qu’un client (nom de domaine, coordonnées, puis le questionnaire de création), sans rien payer pour le ${ESS.name}, et son forfait ${mini.name} est offert pendant 6 mois. Sans commande dans les 30 jours, le lot est perdu.
 

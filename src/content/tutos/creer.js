@@ -15,7 +15,7 @@ const AUTO = creationSeule.name; // Autonome, sans abonnement
 const pageGoogle = aLaDemande.find((x) => x.id === 'packseo' && !x.retire) || { name: 'Page de visibilité Google', prix: 0, packs: [1] };
 const packs = (pageGoogle.packs || [1]).join(', ').replace(/, (\d+)$/, ' ou $1'); // « 1, 5 ou 10 »
 const FOIS = fractionne.fois, ORG = fractionne.organismes; // « 3 ou 4 », « Alma ou Klarna »
-const DELAI = ESS.delai; // « 24 à 48 heures » annoncées, après le questionnaire complet (livré en vrai 24 heures après : includes/delai.php)
+const DELAI = ESS.delai; // « en moins d’une semaine » annoncées, après le questionnaire complet (livré en vrai 12 heures après : includes/delai.php)
 
 module.exports = [
   // ------------------------------------------------------------------ l'essentiel
@@ -42,7 +42,7 @@ module.exports = [
 4. **Vous payez** sur la page de paiement sécurisée, d’un seul coup ou en ${FOIS} fois avec ${ORG}.
 5. **Vous répondez au questionnaire de création**, depuis votre espace client. Comptez une dizaine de minutes. Son envoi lance la création.
 6. **Alex crée votre site** avec vos réponses. Il est vérifié page par page avant la mise en ligne.
-7. **Votre site est en ligne**, en général ${DELAI} après l’envoi de votre questionnaire. Un e-mail vous donne le lien.
+7. **Votre site est en ligne**, en ${DELAI} après l’envoi de votre questionnaire. Un e-mail vous donne le lien.
 
 ## Ce que vous n’avez pas à faire
 
@@ -168,8 +168,8 @@ Un message vous confirme la bonne réception, et la création de votre site comm
     duree: 3,
     h1: 'Combien de temps faut-il pour avoir mon site ?',
     title: 'Combien de temps pour avoir mon site ? | Les Minis Monstres',
-    description: `Votre site est en ligne en général ${DELAI} après l’envoi de votre questionnaire. Le temps de chaque étape, ce qui peut l’allonger et comment aller plus vite.`,
-    lead: `Comptez en général ${DELAI} une fois vos éléments reçus. Voici le détail, étape par étape, et ce qui peut rallonger un peu l’attente.`,
+    description: `Votre site est en ligne en ${DELAI} après l’envoi de votre questionnaire. Chaque étape, ce qui peut l’allonger, comment aller plus vite.`,
+    lead: `Votre site arrive en ${DELAI} dès vos éléments reçus. Voici le détail, étape par étape, et ce qui peut rallonger un peu l’attente.`,
     espace: 'commande',
     body: `La réponse tout de suite : une fois votre questionnaire envoyé et vos éléments reçus, votre site est en général en ligne en ${DELAI}. Ce délai reste indicatif, comme le précisent nos [conditions générales](/conditions-generales/).
 
@@ -194,7 +194,7 @@ Un message vous confirme la bonne réception, et la création de votre site comm
 2. Préparez vos photos et vos prix à l’avance.
 3. Répondez vite si une question arrive dans « Ma commande ».
 
-> Bon à savoir : aller vite ne veut pas dire sauter des étapes. Chaque site passe par la vérification, même quand tout est prêt en 24 à 48 heures.
+> Bon à savoir : aller vite ne veut pas dire sauter des étapes. Chaque site passe par la vérification, même quand tout est prêt en moins d’une semaine.
 
 Après la mise en ligne, vos modifications n’ont pas de délai garanti : chacune est traitée dans un délai raisonnable, selon ce qu’elle demande, et vous la suivez dans votre espace client.`,
     voir: ['deroulement-d-un-achat', 'questionnaire-de-creation', 'nom-de-domaine-le-mien-ou-le-votre'],

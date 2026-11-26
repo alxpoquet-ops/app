@@ -2,13 +2,13 @@
 /**
  * Le jeu-concours des Rubans, les petits monstres cadeaux (demandes d'Alex, 25 novembre 2026).
  *
- * LE JEU, EN MANCHES DE 100 JOURS, 100 % AUTOMATIQUE
+ * LE JEU, UNE MANCHE PAR AN, TIRAGE LE 25 NOVEMBRE (l'anniversaire des Minis Monstres, Alex, 26 novembre 2026), 100 % AUTOMATIQUE
  *  - Pendant une manche, DIX Rubans se cachent sur le site, deux par catégorie du règlement (/jeu-concours/) : la page d'accueil,
  *    l'espace client, les mini-tutos, la page Tarifs et les questions fréquentes. À chaque manche, leurs cachettes changent
  *    (tirées dans une réserve d'endroits bien visibles, jamais les mêmes que la manche d'avant).
  *  - Il faut être connecté à son compte (gratuit, sans achat) pour les voir. Tout le monde joue, sauf l'équipe et les anciens gagnants.
  *    Un gagnant qui a déjà un site ou une commande reçoit un an de forfait Mini offert (ajoutés tout seuls à ses mois offerts).
- *  - Dans l'espace client, un compteur flottant montre les Rubans trouvés, un indice pour chacun et le chrono du tirage.
+ *  - Dans l'espace client, un compteur flottant montre les Rubans trouvés, un indice pour chacun et la date du tirage.
  *  - Les dix trouvés : le joueur donne son e-mail et son numéro de portable (une participation par compte, par e-mail et par
  *    numéro ; les doublons d'appareil ou d'adresse internet sont signalés).
  *  - À la fin des 100 jours, le tirage se fait tout seul (random_int). Le gagnant reçoit un e-mail « Félicitations » avec un code
@@ -195,6 +195,16 @@ function aled08e_concours_inscrits($id) {
 }
 
 /* ---------- les manches et le tirage ---------- */
+/* Un tirage par an, le jour anniversaire des Minis Monstres : le 25 novembre à 18 h, heure de Paris (Alex, 26 novembre 2026).
+   Le prochain 25 novembre à venir (au moins 7 jours plus tard : une manche ouverte le 24 novembre se tire l'année d'après). */
+function aled08e_concours_prochain_tirage($depuis = null) {
+    $d = new DateTime('@' . (int) ($depuis ?: time()));
+    $d->setTimezone(wp_timezone());
+    $t = new DateTime($d->format('Y') . '-11-25 18:00:00', wp_timezone());
+    if ($t->getTimestamp() < (int) ($depuis ?: time()) + 7 * DAY_IN_SECONDS) $t->modify('+1 year');
+    return $t->getTimestamp();
+}
+function aled08e_concours_date_tirage($fin) { return wp_date('j F Y', (int) $fin); }
 function aled08e_concours_nouvelle_manche($e, $jours = 0) {
     $jours = $jours ?: (int) ($e['jours'] ?: ALED08E_MANCHE_JOURS);
     $e['manche'] = (int) $e['manche'] + 1;
@@ -202,7 +212,8 @@ function aled08e_concours_nouvelle_manche($e, $jours = 0) {
     $e['ouvert'] = true;
     $e['ouvert_le'] = current_time('mysql');
     $e['debut'] = time();
-    $e['fin'] = time() + $jours * DAY_IN_SECONDS;
+    // un nombre de jours donné à la main (« ouvrir » avec { jours: N }) reste possible ; sinon, le prochain 25 novembre
+    $e['fin'] = $jours !== ALED08E_MANCHE_JOURS && $jours > 0 ? time() + $jours * DAY_IN_SECONDS : aled08e_concours_prochain_tirage();
     $e['jours'] = $jours;
     $e['cachettes'] = aled08e_concours_choisir((array) $e['cachettes']);
     return $e;
@@ -271,7 +282,7 @@ function aled08e_concours_mail_gagnant($t) {
         . "Pour recevoir votre site :\n"
         . "1. Connectez-vous à votre espace client, puis ouvrez « Créer mon site » avec ce lien (le code est déjà rempli) :\n   " . $lien . "\n"
         . '2. Faites les mêmes choix qu’un client : votre nom de domaine, puis vos coordonnées. Vous ne payez rien pour le site, et le forfait Mini est offert ' . ALED08E_LOT_SITE_MOIS . " mois.\n"
-        . "3. Remplissez le questionnaire de création dans votre espace : votre site est en ligne 24 à 48 heures après.\n\n"
+        . "3. Remplissez le questionnaire de création dans votre espace : votre site est en ligne en moins d’une semaine.\n\n"
         . "Si vous ajoutez l’option e-commerce, seule cette option est à payer.\n\n"
         . "Encore bravo, et à très vite !\nAlex et les Minis Monstres\n";
     return wp_mail($t['email'], 'Félicitations : vous avez gagné un site internet !', $corps, aled08e_mail_headers('Les Minis Monstres <' . aled08e_to() . '>'));
@@ -362,10 +373,10 @@ function aled08e_concours_encart_html() {
     if (!aled08e_concours_ouvert() && !$g) return '';
     $h = '<div class="jr-encart">';
     $h .= '<span class="jr-art" aria-hidden="true">' . aled08e_monster('ruban') . '</span><div class="jr-corps">';
-    $h .= '<p class="jr-sur">Le jeu des Rubans</p><h2 class="jr-titre">Un site internet à gagner tous les ' . (int) ($e['jours'] ?: ALED08E_MANCHE_JOURS) . ' jours</h2>';
+    $h .= '<p class="jr-sur">Le jeu des Rubans</p><h2 class="jr-titre">Un site internet à gagner chaque année</h2>';
     if (aled08e_concours_ouvert()) {
         $h .= '<p>Dix Rubans, de petits monstres cadeaux, se cachent sur notre site. Créez votre espace client (c’est gratuit), trouvez-les tous et participez au tirage au sort. Déjà client ? Vous jouez aussi : à gagner, un an de forfait offert.</p>';
-        $h .= '<p class="jr-chrono" data-jr-fin="' . (int) $e['fin'] . '">' . aled08e_icon('clock') . '<span>Prochain tirage dans <b data-jr-reste>' . esc_html(aled08e_concours_reste_txt($e['fin'])) . '</b>, le ' . esc_html(aled08e_date_fr((int) $e['fin'])) . ' (heure de Paris)</span></p>';
+        $h .= '<p class="jr-chrono">' . aled08e_icon('calendar-check') . '<span>Tirage au sort le <b>' . esc_html(aled08e_concours_date_tirage($e['fin'])) . '</b>, pour l’anniversaire des Minis Monstres</span></p>';
         $h .= '<p class="jr-go"><a class="btn btn-primary" href="' . esc_url(aled08e_url() . '#inscription') . '">' . aled08e_icon('gift') . '<span>Je joue</span></a> <a class="jr-regl" href="' . esc_url(home_url('/jeu-concours/')) . '">Le règlement</a></p>';
     }
     if ($g) {
@@ -435,8 +446,8 @@ add_action('wp_footer', function () {
     if (minuteur) clearInterval(minuteur);
     if (!etat || !etat.connecte || ici !== new URL(C.espace, location.href).pathname.replace(/\/?$/, '/')) return;
     var n = etat.trouves.length, T = etat.total;
-    var b = el('<div class="cc-compteur" data-cc-compteur><button type="button" class="cc-compteur-btn" aria-expanded="false" aria-controls="cc-indices"><span class="cc-compteur-art" aria-hidden="true">' + C.ruban + '</span><span class="cc-compteur-n"><b>' + n + '</b>/' + T + '</span><span class="cc-compteur-chrono">' + C.icones.clock + '<span data-cc-court></span></span><span class="sr-only"> Rubans trouvés : voir les indices et le temps restant</span></button>'
-      + '<div class="cc-indices" id="cc-indices" hidden><p class="cc-indices-t">Le jeu des Rubans</p><p class="cc-chrono">Prochain tirage dans <b data-cc-long></b> <small data-cc-date></small></p><p class="cc-lot" data-cc-lot></p><ul></ul><p class="cc-indices-fin"></p><a class="cc-indices-regl" href="' + C.reglement + '">Le règlement du jeu</a></div></div>');
+    var b = el('<div class="cc-compteur" data-cc-compteur><button type="button" class="cc-compteur-btn" aria-expanded="false" aria-controls="cc-indices"><span class="cc-compteur-art" aria-hidden="true">' + C.ruban + '</span><span class="cc-compteur-n"><b>' + n + '</b>/' + T + '</span><span class="sr-only"> Rubans trouvés : voir les indices et la date du tirage</span></button>'
+      + '<div class="cc-indices" id="cc-indices" hidden><p class="cc-indices-t">Le jeu des Rubans</p><p class="cc-chrono">Tirage au sort le <b data-cc-date></b></p><p class="cc-lot" data-cc-lot></p><ul></ul><p class="cc-indices-fin"></p><a class="cc-indices-regl" href="' + C.reglement + '">Le règlement du jeu</a></div></div>');
     var ul = b.querySelector('ul');
     etat.cachettes.forEach(function (c) { var ok = etat.trouves.indexOf(c.id) > -1; var li = el('<li class="' + (ok ? 'is-ok' : '') + '"><span class="cc-ind-ico" aria-hidden="true">' + (ok ? C.icones.check : '?') + '</span><span><b></b><small></small></span></li>'); li.querySelector('b').textContent = c.categorie + (ok ? ' : trouvé' : ''); li.querySelector('small').textContent = c.indice; ul.appendChild(li); });
     var fin = b.querySelector('.cc-indices-fin');
@@ -446,17 +457,15 @@ add_action('wp_footer', function () {
     var btn = b.querySelector('.cc-compteur-btn'), pan = b.querySelector('.cc-indices');
     btn.addEventListener('click', function () { var o = pan.hidden; pan.hidden = !o; btn.setAttribute('aria-expanded', String(o)); });
     document.body.appendChild(b);
-    b.querySelector('[data-cc-date]').textContent = 'le ' + etat.fin_txt + ', heure de Paris';
+    b.querySelector('[data-cc-date]').textContent = etat.tirage_txt || etat.fin_txt;
     b.querySelector('[data-cc-lot]').textContent = 'À gagner pour vous : ' + etat.lot + '.' + (etat.mois_offerts ? ' ' + etat.mois_offerts : '');
-    var tic = function () { b.querySelector('[data-cc-court]').textContent = reste(true); b.querySelector('[data-cc-long]').textContent = reste(false); };
-    tic(); minuteur = setInterval(tic, 1000);
   }
   // Le formulaire, une fois les dix trouvés
   function formulaire() {
     var d = document.querySelector('[data-cc-dialog]'); if (d) d.remove();
     d = el('<dialog class="cc-dialog" data-cc-dialog aria-labelledby="cc-titre"><form method="dialog" class="cc-fermer-f"><button class="cc-fermer" aria-label="Fermer">' + C.icones.x + '</button></form>'
       + '<div class="cc-art" aria-hidden="true">' + C.ruban + '</div><h2 id="cc-titre">Bravo, vous avez trouvé les ' + etat.total + ' Rubans !</h2>'
-      + '<p>Ils gardent un cadeau : <strong>' + (etat.lot || C.lot) + '</strong>.' + (etat.client ? '' : ' Le site est à vous : vous le gardez, même après les mois offerts.') + ' Le tirage a lieu dans <b>' + reste(false) + '</b> : le gagnant est prévenu par e-mail.</p>'
+      + '<p>Ils gardent un cadeau : <strong>' + (etat.lot || C.lot) + '</strong>.' + (etat.client ? '' : ' Le site est à vous : vous le gardez, même après les mois offerts.') + ' Le tirage a lieu le <b>' + (etat.tirage_txt || etat.fin_txt) + '</b> : le gagnant est prévenu par e-mail.</p>'
       + '<div class="cc-deja" hidden><p class="cc-ok">' + C.icones.check + '<span>C’est noté : vous participez au tirage au sort. Bonne chance !</span></p></div>'
       + '<form class="cc-form"><label class="cc-label" for="cc-mail">Votre adresse e-mail, pour vous prévenir si vous gagnez</label><input class="cc-input" id="cc-mail" type="email" name="email" required autocomplete="email">'
       + '<label class="cc-label" for="cc-tel">Votre numéro de portable</label><input class="cc-input" id="cc-tel" type="tel" name="tel" required autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78"><small class="cc-aide">Un numéro ne sert qu’une fois : une seule participation par personne.</small>'
@@ -521,7 +530,7 @@ function aled08e_concours_ajax_etat() {
     }
     $p = aled08e_concours_participation($u->ID);
     wp_send_json_success(['ouvert' => true, 'connecte' => true, 'total' => count($liste), 'cachettes' => $liste, 'trouves' => array_keys($trouves), 'ici' => $ici,
-        'inscrit' => (bool) $p, 'email' => $p ? $p['email'] : $u->user_email, 'fin' => (int) $e['fin'], 'fin_txt' => aled08e_date_fr((int) $e['fin']), 'lot' => aled08e_concours_lot_txt($u->ID), 'client' => aled08e_concours_est_client($u->ID), 'mois_offerts' => function_exists('aled08e_mois_offerts_txt') ? aled08e_mois_offerts_txt($u->ID) : '', 'nonce' => wp_create_nonce('aled08e_concours')]);
+        'inscrit' => (bool) $p, 'email' => $p ? $p['email'] : $u->user_email, 'fin' => (int) $e['fin'], 'fin_txt' => aled08e_date_fr((int) $e['fin']), 'tirage_txt' => aled08e_concours_date_tirage($e['fin']), 'lot' => aled08e_concours_lot_txt($u->ID), 'client' => aled08e_concours_est_client($u->ID), 'mois_offerts' => function_exists('aled08e_mois_offerts_txt') ? aled08e_mois_offerts_txt($u->ID) : '', 'nonce' => wp_create_nonce('aled08e_concours')]);
 }
 add_action('wp_ajax_aled08e_rubans', 'aled08e_concours_ajax_etat');
 add_action('wp_ajax_nopriv_aled08e_rubans', 'aled08e_concours_ajax_etat');
@@ -659,3 +668,14 @@ add_action('init', function () {
         aled08e_concours_sauver($e);
     }
 }, 45);
+
+/* Le passage au tirage annuel (26 novembre 2026) : une manche déjà ouverte sur 100 jours est tirée le prochain 25 novembre */
+add_action('init', function () {
+    if (get_option('aled08_concours_annuel') === '1') return;
+    $e = aled08e_concours_etat();
+    if (!empty($e['ouvert']) && (int) $e['fin'] > 0) {
+        $e['fin'] = aled08e_concours_prochain_tirage((int) $e['debut'] ?: time());
+        aled08e_concours_sauver($e);
+    }
+    update_option('aled08_concours_annuel', '1', false);
+}, 47);

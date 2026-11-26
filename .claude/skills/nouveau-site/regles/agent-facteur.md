@@ -27,6 +27,16 @@ Pour chaque prospect de `a_verifier` :
 
 ## 2. Écrire le premier mail
 
+**D'abord, la maquette du métier** (décision d'Alex, 26 novembre 2026). Chaque groupe de métier a sa maquette type, faite une fois et gardée pour tous les suivants : `GET /aled08/v1/atelier/maquettes` donne celles qui existent et les mots qui les relient au métier du prospect (« plomb », « chauffag »…). Si le métier du prospect n'a pas encore la sienne, **fais-la avant son premier mail** :
+
+1. `GET /aled08/v1/atelier/maquettes?modele=1` : le modèle validé par Alex (plombier chauffagiste). Garde sa structure : vue ordinateur, en-tête toujours visible, filigrane « Maquette d'exemple · Les Minis Monstres », bandeau « Maquette pour vous projeter… (vue ordinateur) : votre site s'adapte aussi au téléphone, et il sera modifiable à 100 % ».
+2. Adapte au métier : couleurs propres à ce métier (jamais les mêmes que le modèle), services, pictos, textes d'exemple. `{{ENTREPRISE}}`, `{{VILLE}}`, `{{INITIALE}}` sont remplis pour chaque prospect ; **tout le reste est visiblement un exemple** (« exemples à adapter », « Votre numéro », « vos vrais avis Google ici ») : rien n'est affirmé sur l'entreprise, pas de faux avis ni de faux chiffres. Pas de script, pas de formulaire.
+3. Photos : seulement Pexels (libres d'utilisation), écrites `{{PHOTO:repere}}` dans le HTML et données à part.
+4. `POST /aled08/v1/atelier/maquettes` avec `{ "groupe": "electricien", "nom": "Électriciens", "mots": ["electric"], "html": "…", "photos": { "accueil": "https://images.pexels.com/photos/…" } }`. Un groupe large plutôt que trop fin (« Électriciens », pas « Électriciens à Metz ») ; des `mots` courts et sans accents qui se trouvent dans le métier écrit par le Repéreur.
+
+Ensuite, chaque prospect du groupe reçoit le bouton « Voir la maquette de votre site » : sa maquette à son nom. Tu n'as rien à écrire pour cela.
+
+
 Pour chaque prospect de `a_ecrire`, dans la limite du quota, tu rédiges seulement trois morceaux. La route fabrique le mail validé par Alex (le logo, « Bonjour, », le paragraphe « Aujourd’hui, avant de pousser une porte… », la présentation de la bande, les trois arguments « moins cher, un vrai suivi, tout vous appartient », l'encadré du prix de lancement, l'invitation à voir les sites déjà en ligne, les deux boutons, la signature, le pied avec la source et la désinscription). Ne répète pas ces arguments dans tes trois points : les tiens parlent du métier.
 
 - **`sujet`** (10 à 90 caractères) : le nom de l'entreprise et une idée simple, par exemple « Boulangerie Martin : vos clients vous cherchent sur Google ». Pas de majuscules partout, pas de « Re : », pas de prix, pas de « gratuit » ni d'« urgent ».

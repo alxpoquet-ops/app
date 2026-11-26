@@ -10,4 +10,4 @@ rien n'est affirmé sur l'entreprise. Filigrane « Maquette d'exemple · Les Min
 - Photos : Pexels (licence Pexels : utilisation libre, commerciale comprise, sans mention obligatoire), dans `img/`.
 - Pictos : dessinés pour Les Minis Monstres.
 
-Pas encore branché sur les mails : la prospection est éteinte, et l'aperçu dans le mail aussi (`apercuNote: 101`).
+Branché sur les mails le 26 novembre 2026 : tout prospect dont le métier a sa maquette reçoit le bouton « Voir la maquette de votre site ». Les maquettes faites ensuite par le Facteur sont gardées sur le site (`/aled08/v1/atelier/maquettes`).

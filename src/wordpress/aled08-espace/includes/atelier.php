@@ -268,7 +268,7 @@ function aled08e_chantier_faire(WP_REST_Request $req) {
             aled08e_chantier_mail_verifier($c, $texte, $lien);
             return new WP_REST_Response(['ok' => true, 'etat' => 'a_verifier', 'note' => 'Alex vérifie le site avant de le livrer au client : rien d’autre à faire pour toi.'], 200);
         }
-        // Alex : le site part 12 heures après les informations complètes (26 novembre 2026 ; 24 h avant), jamais avant (annoncé « 24 à 48 heures »)
+        // Alex : le site part 12 heures après les informations complètes (26 novembre 2026 ; 24 h avant), jamais avant (annoncé « en moins d’une semaine »)
         $h = aled08e_livrer_a_l_heure($cid, $lien); // includes/delai.php
         if ($h) return new WP_REST_Response(['ok' => true, 'etat' => 'pret_livraison', 'livraison_le' => wp_date('Y-m-d H:i', $h), 'note' => 'Contrôle bon. Le site partira tout seul chez le client le ' . wp_date('j F Y à H:i', $h) . ' (12 heures après ses informations complètes) : rien d’autre à faire pour toi.'], 200);
         return new WP_REST_Response(['ok' => true, 'statut' => 'en_ligne'], 200);

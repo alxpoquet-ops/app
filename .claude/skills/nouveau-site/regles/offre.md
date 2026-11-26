@@ -16,7 +16,7 @@
 
 ## Ce qu'on promet
 
-- **Prêt en 24 à 48 heures**, une fois le questionnaire reçu. La base est préconfigurée.
+- **Prêt en moins d’une semaine**, une fois le questionnaire reçu. La base est préconfigurée.
 - **Pas de rendez-vous téléphonique.** Tout passe par le questionnaire de l'espace client et par les messages.
 - **Une première version (V1) en ligne**, que le client met à son goût : il modifie lui-même ses textes et ses photos, à volonté, et demande le reste.
 - **Préconfiguré ne veut pas dire identique** : ce qui est prêt d'avance, c'est le code invisible. Chaque site garde sa personnalité.
@@ -30,7 +30,7 @@
 | « Modifier mon site moi-même » (le bouton) | |
 | « option e-commerce » | « Site Boutique » |
 | « pages de visibilité Google » | « Site Visibilité », « pack SEO » |
-| « prêt en 24 à 48 heures » | « quelques jours », « révisions illimitées », « rendez-vous de découverte » |
+| « prêt en moins d’une semaine » | « quelques jours », « révisions illimitées », « rendez-vous de découverte » |
 | « votre application » ou « votre espace client » | « back-office », « tableau de bord WordPress » |
 
 ## Les questions de départ (parcours avec Alex)

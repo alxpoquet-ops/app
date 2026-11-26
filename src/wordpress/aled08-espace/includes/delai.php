@@ -2,7 +2,7 @@
 /**
  * Le délai de livraison du site (décision d'Alex, 25 novembre 2026 ; 12 heures au lieu de 24 depuis le 26 novembre 2026).
  *
- * Au client, on annonce « entre 24 et 48 heures » après le questionnaire complet. En vrai, le site est fait, contrôlé et
+ * Au client, on annonce « en moins d’une semaine » après le questionnaire complet. En vrai, le site est fait, contrôlé et
  * peaufiné tout de suite, puis gardé : il est livré exactement 12 heures après le moment où l'on a toutes les informations : le questionnaire envoyé en entier, ou la dernière réponse
  * du client à une question de l'atelier. Le site peut être prêt avant : il attend alors son heure (état « pret_livraison »)
  * et part tout seul, à l'heure dite, avec l'e-mail « Votre site est en ligne ».

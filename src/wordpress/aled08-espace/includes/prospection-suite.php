@@ -96,7 +96,7 @@ function aled08e_px_apercu_html($p, $liens) {
         . '<div class="carte vide"><b>Vos horaires</b><small>Toujours à jour : vous les changez vous-même en une minute.</small></div>'
         . '<div class="carte vide"><b>Votre adresse et un plan</b><small>Pour venir chez vous sans chercher.</small></div>'
         . '<div class="carte vide"><b>Un formulaire de contact</b><small>Vos clients vous écrivent, même quand vous êtes occupé.</small></div></div>'
-        . '<div class="fin"><h2>Ce site peut être en ligne en 24 à 48 heures</h2><p>Avec vos textes, vos photos et vos couleurs. ' . $e($offre) . ' Le site est à vous.</p>'
+        . '<div class="fin"><h2>Ce site peut être en ligne en moins d’une semaine</h2><p>Avec vos textes, vos photos et vos couleurs. ' . $e($offre) . ' Le site est à vous.</p>'
         . '<a class="oui" href="' . esc_url($liens['creer']) . '">Créer mon site</a><a class="voir" href="' . esc_url($liens['demo']) . '">Essayer la démo</a></div>'
         . '<p class="pied">' . $e(aled08e_px_identite()) . ' <a href="' . esc_url($liens['stop']) . '">Ne plus recevoir de message</a>.</p>'
         . '</div></body></html>';
@@ -138,6 +138,14 @@ add_action('init', function () {
     }
     status_header(200);
     header('Content-Type: text/html; charset=UTF-8');
+    // la maquette type de son métier, à son nom (prospection-plus.php) ; sinon l'aperçu simple
+    $g = function_exists('aled08e_mq_pour') ? aled08e_mq_pour((string) ($p['metier'] ?? '')) : '';
+    $mq = $g !== '' ? aled08e_mq_rendre($g, $p, aled08e_px_liens($id)) : '';
+    if ($mq !== '') {
+        header("Content-Security-Policy: script-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'");
+        echo $mq; // phpcs:ignore
+        exit;
+    }
     echo aled08e_px_apercu_html($p, aled08e_px_liens($id)); // phpcs:ignore
     exit;
 }, 2);
@@ -316,7 +324,7 @@ function aled08e_px_faits() {
     $mini = null;
     foreach ((array) ($D['forfaits'] ?? []) as $f) if (($f['id'] ?? '') === 'base') $mini = $f;
     $f = ['offre' => aled08e_px_offre_txt(), 'creation' => aled08e_euro_txt($prix['prix']) . ' la création du Site Essentiel' . ($lanc ? ' (prix de lancement jusqu’au ' . $lanc['jusquau'] . ', puis ' . aled08e_euro_txt($lanc['normal']) . ')' : ''),
-        'delai' => 'Le site est en ligne en 24 à 48 heures après le questionnaire rempli.',
+        'delai' => 'Le site est en ligne en moins d’une semaine après le questionnaire rempli.',
         'propriete' => 'Le site appartient au client : il peut le télécharger quand il veut depuis son espace client. Le nom de domaine est à son nom.',
         'espace_client' => 'Un espace client pour tout suivre, modifier son site soi-même et demander des modifications ; des mini-tutos gratuits expliquent chaque étape.',
         'liens' => ['site' => home_url('/'), 'tarifs' => home_url('/tarifs/'), 'demo' => home_url('/mon-espace/demo/'), 'creer' => home_url('/creer-mon-site/'), 'questions' => home_url('/faq/'), 'contact' => home_url('/contact/')]];
@@ -359,7 +367,15 @@ function aled08e_px_debrief_texte() {
     $l = [];
     $l[] = 'Bonjour Alex,';
     $l[] = '';
-    $l[] = 'La prospection, aujourd’hui ' . wp_date('l j F') . ' :';
+    $l[] = 'Le bilan du ' . wp_date('l j F') . '.';
+    $site = function_exists('aled08e_px_bilan_site_lignes') ? aled08e_px_bilan_site_lignes() : ['lignes' => [], 'alertes' => []];
+    $alertes = array_merge($site['alertes'], (array) (aled08e_px_jarvis_alertes()));
+    if ($alertes) { $l[] = ''; $l[] = 'IMPORTANT :'; foreach ($alertes as $a) $l[] = '- ' . $a; }
+    $l[] = '';
+    $l[] = 'Le site :';
+    foreach ($site['lignes'] as $x) $l[] = $x;
+    $l[] = '';
+    $l[] = 'La prospection :';
     $l[] = '';
     $l[] = '- ' . $n((int) $j['envois'] + (int) $j['relances'], 'mail envoyé', 'mails envoyés') . ' (' . $n($j['envois'], 'premier message', 'premiers messages') . ', ' . $n($j['relances'], 'relance', 'relances') . ')';
     $l[] = '- ' . $n($clics, 'clic', 'clics') . ' dans les mails';
@@ -382,20 +398,24 @@ function aled08e_px_debrief_texte() {
     $l[] = 'Le détail : ' . home_url('/mon-espace/') . ' (espace de gestion, « Prospection »).';
     return implode("\n", $l);
 }
+/* Ce que la prospection elle-même signale (pause, trop de refus…) : repris en tête du bilan */
+function aled08e_px_jarvis_alertes() {
+    $out = [];
+    if (function_exists('aled08e_px_bilan_jarvis')) { $j = aled08e_px_bilan_jarvis(); foreach ((array) ($j['a_signaler'] ?? []) as $a) $out[] = (string) $a; }
+    return $out;
+}
+/* Un bilan chaque soir (Alex, 26 novembre 2026 : « chaque soir, le nombre de mails envoyés et les infos importantes ») */
 function aled08e_px_debrief_envoyer() {
     $j = aled08e_px_stats_sur(1);
-    $bouge = array_sum(array_map('intval', $j)) > 0;
-    if (!aled08e_px_active() && !$bouge) return false; // éteinte et rien aujourd'hui : pas de mail pour rien
     $envoyes = (int) $j['envois'] + (int) $j['relances'];
-    $sujet = 'Prospection du ' . wp_date('j F') . ' : ' . $envoyes . ' mail' . ($envoyes > 1 ? 's' : '') . ', ' . (int) $j['repondus'] . ' réponse' . ((int) $j['repondus'] > 1 ? 's' : '') . ', ' . (int) $j['desinscrits'] . ' refus';
+    $sujet = 'Le bilan du ' . wp_date('j F') . ' : ' . $envoyes . ' mail' . ($envoyes > 1 ? 's' : '') . ' envoyé' . ($envoyes > 1 ? 's' : '') . ', ' . (int) $j['repondus'] . ' réponse' . ((int) $j['repondus'] > 1 ? 's' : '') . ', ' . (int) $j['commandes'] . ' commande' . ((int) $j['commandes'] > 1 ? 's' : '');
     return wp_mail(aled08e_to(), $sujet, aled08e_px_debrief_texte(), aled08e_mail_headers());
 }
-/* Chaque jour de semaine à 18 h 15, heure de Paris (une tâche à usage unique, reprogrammée : elle suit l'heure d'été) */
+/* Chaque soir à 18 h 15, heure de Paris, week-end compris (une tâche à usage unique, reprogrammée : elle suit l'heure d'été) */
 function aled08e_px_debrief_prochain() {
     $d = new DateTime('now', wp_timezone());
     $d->setTime(18, 15, 0);
     if ($d->getTimestamp() <= time() + 60) $d->modify('+1 day');
-    while ((int) $d->format('N') > 5) $d->modify('+1 day');
     return $d->getTimestamp();
 }
 add_action('aled08e_px_debrief', function () {

@@ -180,6 +180,7 @@ require_once __DIR__ . '/includes/admin.php';
 require_once __DIR__ . '/includes/ovh.php';
 require_once __DIR__ . '/includes/provision.php';
 require_once __DIR__ . '/includes/demarrer.php';
+require_once __DIR__ . '/includes/realisations.php';
 require_once __DIR__ . '/includes/connecteur-maj.php'; // la dernière version du connecteur, pour la mise à jour automatique des sites clients
 if (is_file(__DIR__ . '/includes/securite.php')) require_once __DIR__ . '/includes/securite.php'; // la sécurité de base (copie de alexlia-connecteur/securite.php, faite par l'export) // le client lance son site avant la fin de ses 14 jours, en signant
 require_once __DIR__ . '/includes/lia.php';
@@ -210,7 +211,7 @@ require_once __DIR__ . '/includes/atelier.php';
 require_once __DIR__ . '/includes/delai.php';
 require_once __DIR__ . '/includes/parrainage.php'; // le parrainage : 6 mois de forfait Mini offerts au filleul et au parrain
 require_once __DIR__ . '/includes/concours.php';
-require_once __DIR__ . '/includes/copie.php'; // « Télécharger mon site » : un zip HTML et CSS, ou WordPress complet // le jeu-concours de Ruban, le monstre cadeau (éteint par défaut) // le site livré 24 heures après les informations complètes (annoncé « entre 24 et 48 heures »)
+require_once __DIR__ . '/includes/copie.php'; // « Télécharger mon site » : un zip HTML et CSS, ou WordPress complet // le jeu-concours de Ruban, le monstre cadeau (éteint par défaut) // le site livré 12 heures après les informations complètes (annoncé « en moins d’une semaine »)
 require_once __DIR__ . '/includes/mails.php';
 require_once __DIR__ . '/includes/messages.php';
 require_once __DIR__ . '/includes/lumi.php';
@@ -222,6 +223,7 @@ require_once __DIR__ . '/includes/regles.php';
 require_once __DIR__ . '/includes/agents.php';
 require_once __DIR__ . '/includes/prospection.php'; // la prospection par e-mail (le Repéreur et le Facteur), éteinte par défaut
 require_once __DIR__ . '/includes/prospection-suite.php'; // l'aperçu personnalisé, ce qui marche, le Répondeur, le débrief du soir, la pause automatique
+require_once __DIR__ . '/includes/prospection-plus.php'; // Alex, 26 novembre 2026 : 40 km au moins, une maquette par métier, le bilan du soir (hébergement)
 require_once __DIR__ . '/includes/mirette.php';
 require_once __DIR__ . '/includes/edition.php';
 // la maison et ses ateliers (24 novembre 2026) : les outils par abonnement, le fil de la bande. L'écran de chaque outil

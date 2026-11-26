@@ -133,6 +133,9 @@ def to_blocks(fragment):
         if 'data-aled-espace' in chunk.split('>', 1)[0]:
             # le vrai espace client : connexion si déconnecté, tableau de bord sinon (extension ALED08 Espace client)
             blocks.append('<!-- wp:html -->\n[aled08_espace]' + chunk + '[/aled08_espace]\n<!-- /wp:html -->')
+        elif 'data-aled-sites' in chunk.split('>', 1)[0]:
+            # la page Réalisations : les sites livrés par l'automate s'ajoutent tout seuls (aled08-espace, includes/realisations.php)
+            blocks.append('<!-- wp:html -->\n[aled08_sites]' + chunk + '[/aled08_sites]\n<!-- /wp:html -->')
         else:
             blocks.append('<!-- wp:html -->\n' + chunk + '\n<!-- /wp:html -->')
     return '\n\n'.join(blocks)
@@ -704,6 +707,10 @@ def main():
     shutil.copytree(os.path.join(ROOT, 'src', 'wordpress', 'aled08-espace'), edir)
     # la sécurité de base : le même fichier que celui du connecteur (une seule source : alexlia-connecteur/securite.php)
     shutil.copy(os.path.join(ROOT, 'src', 'wordpress', 'alexlia-connecteur', 'securite.php'), os.path.join(edir, 'includes', 'securite.php'))
+    # les maquettes par métier pour la prospection (dossier maquettes/ : le HTML et ses photos), lues par includes/prospection-plus.php
+    mq = os.path.join(edir, 'maquettes')
+    if os.path.isdir(mq): shutil.rmtree(mq)
+    shutil.copytree(os.path.join(ROOT, 'maquettes'), mq, ignore=shutil.ignore_patterns('*.md'))
     shutil.copy(os.path.join(ROOT, 'src', 'assets', 'js', 'qrcode.js'), os.path.join(edir, 'qrcode.js'))
     # styles de l'espace client : servis par le thème (assets/css/espace.css) ; copie de secours dans l'extension
     shutil.copy(os.path.join(DIST, 'assets', 'css', 'espace.css'), os.path.join(edir, 'espace.css'))

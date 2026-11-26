@@ -31,7 +31,7 @@ function tutosAide(list) {
 const ICONS = [
   'trophy', 'smartphone', 'monitor', 'navigation', 'list-checks', 'receipt', 'circle-user', 'credit-card', 'clock', 'send', // Statistiques et sous-menus (25 novembre 2026)
   'key-round', 'shopping-bag', 'image-plus', 'plus', 'pencil', 'info', 'clock', 'sparkles', 'circle-check',
-  'megaphone', 'search', 'lock', 'zap', 'scale',
+  'megaphone', 'search', 'globe', 'arrow-right', 'store', 'lock', 'zap', 'scale',
   'house', 'message-circle', 'chart-line', 'qr-code', 'heart', 'gift', 'users', 'receipt', 'check', 'send', 'image-plus', 'download',
   'star', 'globe', 'log-out', 'whatsapp', 'pencil', 'circle-user', 'history', 'file-text', 'arrow-right', 'link', 'hourglass', 'sparkles',
   'package', 'credit-card', 'clipboard-check', 'rocket', 'circle-check', 'clock', 'shield-check', 'mail', 'triangle-alert', 'badge-euro',

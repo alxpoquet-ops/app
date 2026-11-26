@@ -6,7 +6,9 @@ Le poste t'a donné : `travail.a_trouver` (combien en trouver aujourd'hui, 50 au
 
 ## 1. Choisir la zone
 
-Prends `zone_suggeree` : un département et un métier. La tournée passe par tous les départements, les Ardennes d'abord, puis toute la France, et dans chaque département par **tous les petits métiers** : ceux de nos pages « Votre métier » (`page_metier` rempli), puis les autres (`page_metier` vide, avec leurs codes `naf`). Quand elle porte un `pourquoi`, c'est que ce métier répond mieux que les autres à nos mails : le poste t'y envoie deux fois sur trois. Quand toute la France est faite (`zone_suggeree` vide), la tournée recommence 120 jours après.
+Prends `zone_suggeree` : un département et un métier. La tournée passe par tous les départements de France, **loin d'Alex d'abord** (les Ardennes, la Marne, l'Aisne et la Meuse passent en dernier), et dans chaque département par **tous les petits métiers** : ceux de nos pages « Votre métier » (`page_metier` rempli), puis les autres (`page_metier` vide, avec leurs codes `naf`). Quand elle porte un `pourquoi`, c'est que ce métier répond mieux que les autres à nos mails : le poste t'y envoie deux fois sur trois. Quand toute la France est faite (`zone_suggeree` vide), la tournée recommence 120 jours après.
+
+**Jamais à moins de 40 km de Signy-l'Abbaye** (décision d'Alex, 26 novembre 2026 : « ceux autour, je les attire avec mes brochures »). Le site place la ville sur la carte et refuse tout prospect trop près (`refus` : « trop près d'Alex »). Écris le nom exact de la commune (pas un quartier, pas « près de… ») : dans un département voisin, une ville introuvable est refusée.
 
 ## 2. Lister les entreprises actives
 
@@ -47,7 +49,7 @@ Pour chaque prospect, coche seulement ce que tu as constaté (`criteres`, voir l
 
 ```json
 {
-  "zone": { "departement": "08", "metier": "site-internet-boulangerie-patisserie" },
+  "zone": { "departement": "57", "metier": "site-internet-boulangerie-patisserie" },
   "prospects": [
     {
       "entreprise": "Boulangerie Martin",
@@ -55,8 +57,8 @@ Pour chaque prospect, coche seulement ce que tu as constaté (`criteres`, voir l
       "raison_sociale": "MARTIN PIERRE",
       "metier": "boulangerie",
       "metier_page": "site-internet-boulangerie-patisserie",
-      "ville": "Charleville-Mézières",
-      "departement": "08",
+      "ville": "Metz",
+      "departement": "57",
       "siren": "123456782",
       "entreprise_individuelle": true,
       "date_creation": "2026-03-14",

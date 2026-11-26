@@ -28,8 +28,6 @@ try { ({ pages: PAGES_V2, PUBLIE: PAGES_V2_PUBLIE } = require('../content/pages-
 let LEXIQUE = { termes: [], PUBLIE: '' };
 try { LEXIQUE = require('../content/lexique'); } catch (e) { /* lexique pas encore écrit */ }
 const { clients } = require('../config');
-let CLIENTS_PAGES = {};
-try { CLIENTS_PAGES = require('../content/clients-pages.json'); } catch (e) { /* pas encore compté : node scripts/compter-pages.js */ }
 
 const HOME = { name: 'Accueil', path: '/' };
 const DEMO_CRUMBS = [HOME, { name: 'Mon espace', path: '/mon-espace/' }, { name: 'Démo', path: '/mon-espace/demo/' }];
@@ -128,7 +126,7 @@ function laMaisonPage() {
   </div>
 </div></section>
 
-${C.ctaBand({ title: 'Et si on commençait par votre site ?', text: `Le ${esc(ESS.name)}, ${euro(ESS.price)} la création. Le prix s’affiche avant de payer, et votre site est en ligne 24 à 48 heures après votre questionnaire.` })}`;
+${C.ctaBand({ title: 'Et si on commençait par votre site ?', text: `Le ${esc(ESS.name)}, ${euro(ESS.price)} la création. Le prix s’affiche avant de payer, et votre site est en ligne en moins d’une semaine après votre questionnaire.` })}`;
   return {
     path: MAISON.path,
     color: 'lilac',
@@ -282,43 +280,15 @@ function metierCards() {
 }
 // Cartes des sites réalisés : uniquement de vrais clients, déjà en ligne (pas notre propre site)
 const CLIENTS_EN_LIGNE = clients.filter((c) => !c.enCreation && c.url && !c.url.startsWith('/'));
-const pagesDe = (c) => (c.enCreation ? 0 : (CLIENTS_PAGES[c.domaine] || {}).pages || 0);
 const mille = (n) => String(n).replace(/\B(?=(\d{3})+$)/g, ' '); // 1180 → 1 180
-const s_ = (n) => (n > 1 ? 's' : '');
-// Prix estimé d'un site client avec la grille actuelle : le prix de son type de site (config.types) et ses pages de
-// visibilité Google prises en plus (clients[].packsSeo dans config).
-// Les fiches produits ne comptent pas comme des pages. C'est une estimation, pas le prix payé par le client.
-function estimeClient(c) {
-  const t = types.find((x) => x.id === c.type);
-  const compte = CLIENTS_PAGES[c.domaine] || {};
-  if (!t || !compte.pages) return null;
-  const produits = compte.produits || 0;
-  const pages = compte.pages - produits;
-  const pack = PAGE_GOOGLE;
-  const packs = c.packsSeo || 0;
-  const opts = [];
-  const supplement = 0;
-  const formule = forfaits.find((f) => f.id === c.forfait) || null;
-  const packsPrix = packs * pack.price.once;
-  const creationPrix = t.price;
-  return { pages, produits, pack, packs, packsPrix, supplement, opts, formule, creationPrix, total: creationPrix + packsPrix };
-}
-function clientPages(c) {
-  const e = estimeClient(c);
-  const n = e ? e.pages : pagesDe(c);
-  if (!n) return '';
-  const produits = e && e.produits ? `<span class="client-pages-prod">et <b>${e.produits}</b> produit${s_(e.produits)} en vente</span>` : '';
-  const info = `<a class="client-i" href="${sections.seo.path}" aria-label="Pourquoi chaque page compte : être trouvé sur Google">${icon('info')}</a>`;
-  return `<span class="client-pages"><span class="client-pages-n"><b>${n}</b> page${s_(n)}</span><span class="client-pages-porte">${n} porte${s_(n)} d’entrée potentielle${s_(n)} depuis Google${info}</span>${produits}</span>`;
-}
 // Les sites en cours de création (pas notre propre site) : même carte, avec un badge « En cours » et sans lien
 const CLIENTS_EN_COURS = clients.filter((c) => c.enCreation && c.url && !c.url.startsWith('/'));
-function clientCards({ max = 0, desc = true, enCours = false } = {}) {
+function clientCards({ max = 0, desc = true, enCours = false, livres = false } = {}) {
   const enLigne = max ? CLIENTS_EN_LIGNE.slice(0, max) : CLIENTS_EN_LIGNE;
   const liste = enCours ? enLigne.concat(CLIENTS_EN_COURS) : enLigne;
   return `<div class="client-cards">${liste
-    .map((c) => `<div class="client-card c-${c.color}${c.enCreation ? ' is-encours' : ''} reveal"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong>${c.enCreation ? `<span class="client-encours">${icon('clock')}En cours de création</span>` : ''}${desc && c.desc ? `<span class="client-desc">${inline(c.desc)}</span>` : ''}${c.enCreation ? '' : clientPages(c)}${c.enCreation ? `<span class="client-url is-off">${icon('globe')}${esc(c.domaine)}</span>` : `<a class="client-url" href="${c.url}" target="_blank" rel="noopener">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</a>`}</div>`)
-    .join('')}</div>`;
+    .map((c) => `<div class="client-card c-${c.color}${c.enCreation ? ' is-encours' : ''} reveal"><span class="type-ico">${icon(c.icon)}</span><span class="client-genre">${esc(c.genre)}</span><strong>${esc(c.nom)}</strong>${c.enCreation ? `<span class="client-encours">${icon('clock')}En cours de création</span>` : ''}${desc && c.desc ? `<span class="client-desc">${inline(c.desc)}</span>` : ''}${c.enCreation ? `<span class="client-url is-off">${icon('globe')}${esc(c.domaine)}</span>` : `<a class="client-url" href="${c.url}" target="_blank" rel="noopener">${icon('globe')}${esc(c.domaine)}${icon('arrow-right')}</a>`}</div>`)
+    .join('')}${livres ? '<!--minis-sites-livres-->' : ''}</div>`;
 }
 
 // ====================================================================== CRÉER MON SITE
@@ -813,7 +783,7 @@ function confirmationPage() {
     noindex: true,
     noMobileBar: true,
     title: 'Commande confirmée | Les Minis Monstres',
-    description: 'Merci pour votre commande. Votre espace client est prêt, avec le questionnaire de création : une fois envoyé, votre site est en ligne 24 à 48 heures après.',
+    description: 'Merci pour votre commande. Votre espace client est prêt, avec le questionnaire de création : une fois envoyé, votre site est en ligne en moins d’une semaine.',
     body,
   };
 }
@@ -1270,7 +1240,7 @@ function monEspacePage() {
   </div>
 </div></section>
 
-${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : en ligne en 24 à 48 heures, puis vous le modifiez à volonté, vous-même ou avec nous.' })}`;
+${C.ctaBand({ title: 'Ça vous plaît ?', text: 'Créez votre site : en ligne en moins d’une semaine, puis vous le modifiez à volonté, vous-même ou avec nous.' })}`;
   return {
     path: '/mon-espace/demo/',
     section: 'monespace',
@@ -1665,18 +1635,15 @@ ${C.ctaBand({ text: CTA_TEXTE })}`;
 function confiancePage() {
   // V2 : « Réalisations ». Uniquement de vrais clients, avec un site en ligne. Pas d'avis inventé.
   const crumbs = crumb('confiance');
-  const total = CLIENTS_EN_LIGNE.reduce((n, c) => n + pagesDe(c), 0);
-  const le = CLIENTS_EN_LIGNE.map((c) => (CLIENTS_PAGES[c.domaine] || {}).le || '').sort().pop();
   const body = `${C.pageHero({
     section: 'confiance',
     h1: 'Nos réalisations',
     lead: 'Des sites en ligne, que vous pouvez visiter. Pas de faux avis ici : allez les voir par vous-même.',
     crumbs,
   })}
-<section class="section"><div class="container">
-  ${total ? `<p class="client-total reveal"><b>${total}</b><span>pages en ligne sur les sites de nos clients${le ? `, au ${frDate(le)}` : ''}.<br>Chaque page utile est une porte d’entrée de plus depuis Google.</span></p>` : ''}
-  ${clientCards({ enCours: true })}
-  <p class="small muted center">Les fiches produits ne comptent pas comme des pages. Les sites en ligne s’ouvrent dans un nouvel onglet.</p>
+<section class="section" data-aled-sites><div class="container">
+  ${clientCards({ enCours: true, livres: true })}
+  <p class="small muted center">Les sites s’ouvrent dans un nouvel onglet. Chaque nouveau site livré s’ajoute ici.</p>
 </div></section>
 ${METIERS.length ? `<section class="section section-soft"><div class="container">
   <h2 class="section-title">Et pour votre métier ?</h2>

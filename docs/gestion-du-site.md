@@ -442,9 +442,9 @@ Toutes les règles (rien d'inventé, visuel, ce qui fait venir des demandes, Goo
 - Un client qui ne répond pas reçoit un rappel au bout de 3 jours, une seule fois.
 - La tâche programmée doit avoir le connecteur « Mini monstres » : il se règle dans claude.ai, sur la tâche elle-même.
 
-## Le délai de création : 12 heures, annoncé « 24 à 48 heures »
+## Le délai de création : 12 heures, annoncé « en moins d’une semaine »
 
-Décision d'Alex (25 novembre 2026, ramenée de 24 à 12 heures le 26 novembre 2026). Le site public et l'espace client annoncent un site en ligne « en 24 à 48 heures » après le questionnaire complet. En vrai, à chaque commande : achat reçu, site fait, contrôlé et peaufiné tout de suite, puis gardé, et il part **exactement 12 heures** après le moment où l'on a toutes les informations : l'envoi complet du questionnaire, ou la dernière réponse du client à une question de l'atelier. Le constructeur et le contrôleur passent toutes les heures, jour et nuit (17 et 47 minutes après l'heure) : il n'y a rien à lancer.
+Décision d'Alex (25 novembre 2026, ramenée de 24 à 12 heures le 26 novembre 2026). Le site public et l'espace client annoncent un site en ligne « en moins d’une semaine » après le questionnaire complet. En vrai, à chaque commande : achat reçu, site fait, contrôlé et peaufiné tout de suite, puis gardé, et il part **exactement 12 heures** après le moment où l'on a toutes les informations : l'envoi complet du questionnaire, ou la dernière réponse du client à une question de l'atelier. Le constructeur et le contrôleur passent toutes les heures, jour et nuit (17 et 47 minutes après l'heure) : il n'y a rien à lancer.
 
 Quand le contrôleur livre un site plus tôt, la commande passe à l'état « pret_livraison » avec l'heure prévue. À cette heure-là, le site passe « en ligne » et le client reçoit l'e-mail « Votre site est en ligne ». Une tâche WordPress s'en charge, avec un filet de sécurité qui vérifie toutes les 10 minutes. Le code est dans `src/wordpress/aled08-espace/includes/delai.php`. Si Alex livre lui-même un site depuis sa gestion, il part tout de suite.
 
@@ -452,14 +452,14 @@ Quand le contrôleur livre un site plus tôt, la commande passe à l'état « pr
 
 Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit('ruban')`). Le code est dans `includes/concours.php`, le règlement sur `/jeu-concours/`. Décisions d'Alex du 25 novembre 2026 : tout est automatique, en manches de 100 jours.
 
-**La manche (100 jours).**
+**La manche (un an, tirage le 25 novembre à 18 h, l'anniversaire des Minis Monstres ; décision d'Alex du 26 novembre 2026).**
 - Dix Rubans se cachent, deux par catégorie du règlement (`ALED08E_RUBANS_PAR_CATEGORIE`, décision d'Alex du 25 novembre 2026) : la page d'accueil, l'espace client, les mini-tutos, la page Tarifs et les questions fréquentes.
 - À chaque manche, leurs cachettes sont tirées au hasard dans une réserve d'endroits bien visibles (`aled08e_concours_pool()`), jamais les mêmes que la manche d'avant.
 - Le joueur doit être connecté. Tout le monde joue, sauf l'équipe et les anciens gagnants (décision d'Alex, 25 novembre 2026 : les clients aussi).
 - Un gagnant qui a déjà un site ou une commande reçoit **un an de forfait Mini offert** (12 mois, `ALED08E_LOT_CLIENT_MOIS`, décision d'Alex du 25 novembre 2026). Ils sont ajoutés tout seuls avec `aled08e_mois_offerts_ajouter`, comme le parrainage : abonnement suspendu s'il est en cours, sinon mis de côté pour le démarrage du forfait. Ils s'affichent dans son « compteur de mois offerts » : accueil de l'espace, et Mon compte › Mon forfait. Il reçoit l'e-mail « Félicitations : un an de forfait offert ! ».
 - Un clic sur un Ruban lance l'animation (saut, tour, confettis) et le compte. L'animation est jouée en JavaScript (Web Animations) et Ruban quitte la page au bout de 0,9 seconde quoi qu'il arrive ; si le serveur ne répond pas, un message s'affiche et Ruban revient à sa place.
 - Les indices tiennent en un ou deux mots (« Tirelire », « Tic-tac », « Loupe »…), jamais l'endroit exact : trouver doit demander de chercher.
-- Dans l'espace client, un compteur flottant (en bas à gauche) affiche les Rubans trouvés sur 5 et le chrono du tirage. Ouvert, il montre le temps exact et un indice par Ruban.
+- Dans l'espace client, un compteur flottant (en bas à gauche) affiche les Rubans trouvés. Ouvert, il montre la date du tirage (« Tirage au sort le 25 novembre … », pas de compte à rebours) et un indice par Ruban.
 - Les dix trouvés, le joueur donne son e-mail et son numéro de portable. Le numéro sert seulement à empêcher les doublons : on n'appelle personne.
 
 **Contre la triche :**
@@ -468,7 +468,7 @@ Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit
 - Les doublons d'appareil ou d'adresse internet sont signalés à Alex.
 - Chaque Ruban porte un jeton secret, vérifié par le serveur.
 
-**Le tirage, tout seul.** À la fin des 100 jours (tâche WordPress toutes les heures, plus un filet à la première visite) :
+**Le tirage, tout seul.** Le 25 novembre (tâche WordPress toutes les heures, plus un filet à la première visite) :
 1. Un gagnant est tiré au hasard (`random_int`).
 2. Il reçoit l'e-mail « Félicitations : vous avez gagné un site internet ! », avec un code personnel `GAGNANT-XXXXXX` valable 30 jours, seulement avec son compte.
 3. Alex reçoit une copie du résultat.
@@ -481,7 +481,7 @@ Ruban est le petit monstre cadeau : une boîte menthe avec un nœud rose (`petit
 - Un mois avant la fin des 6 mois offerts, le client reçoit un rappel. À la fin, l'offre s'arrête et il est invité à démarrer son forfait ou à télécharger son site.
 - Le site est à lui.
 
-**L'accueil.** Un encart « Le jeu des Rubans » montre le chrono et le bouton « Je joue ». Il liste les derniers gagnants (nom de l'activité, ville, lien vers le site) dès que leur site est en ligne. Jamais de faux gagnants.
+**L'accueil.** Un encart « Le jeu des Rubans » dit « Tirage au sort le 25 novembre … » et montre le bouton « Je joue ». Il liste les derniers gagnants (nom de l'activité, ville, lien vers le site) dès que leur site est en ligne. Jamais de faux gagnants.
 
 **Pour Alex** (Claude le fait sur demande), avec `POST /aled08/v1/atelier/concours` :
 - Lancer : `{"faire": "ouvrir"}`.
@@ -571,3 +571,12 @@ La durée se règle dans `src/config.js` (`fidelite.parrainageMois`, 6).
 - **Le point du soir** : un message par jour au plus, vers 18 h 30, jamais le dimanche, seulement s'il y a quelque chose d'utile. Le client l'allume ou l'éteint. L'envoi sur le téléphone n'est pas encore branché (il faut un projet Firebase, gratuit) : en attendant, le point se lit sur l'accueil.
 - **L'éteindre** : `appli.actif` à `false` dans `src/config.js`, puis export.
 
+
+
+## Le lancement de la prospection (26 novembre 2026)
+
+Alex : « commence à activer tout le système pour trouver des clients et tout faire automatiquement ».
+
+- **40 km au moins** de Signy-l'Abbaye : le site place chaque ville sur la carte (annuaire des communes de l'État, `geo.api.gouv.fr`) et refuse les prospects trop près ; ceux déjà trouvés avant la règle sont écartés tout seuls (gardés dans la liste, pour les brochures). Réglage : option `aled08_prospection_rayon_min` (40). Les départements proches (08, 51, 02, 55) passent en dernier dans la tournée.
+- **Une maquette type par groupe de métier** : `GET /aled08/v1/atelier/maquettes` (la liste ; `?modele=1` pour le modèle du plombier), `POST` pour en enregistrer une (`groupe`, `nom`, `mots`, `html`, `photos` Pexels). Le Facteur la fait avant le premier mail d'un nouveau groupe ; elle sert ensuite à tous. La maquette s'ouvre par le lien signé du mail, à son nom, sans script (en-tête de sécurité), avec la barre « Créer mon site ».
+- **Le bilan du soir**, chaque soir à 18 h 15 : sujet « Le bilan du … : N mails envoyés, … », en tête « IMPORTANT » (hébergement rempli à plus de 80 %, ressources du serveur à plus de 80 %, plus de 150 sites sur l'hébergement, pause automatique, refus en hausse), puis le site (commandes payées, sites livrés, sites en cours, place utilisée chez o2switch), puis la prospection.

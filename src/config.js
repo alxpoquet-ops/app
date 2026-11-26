@@ -173,7 +173,7 @@ marche.foisTexte = `${Math.max(1, Math.floor(marche.vitrineMin / creation.prix))
 // et les anciennes commandes les lisent : 'une-page' = le Site Essentiel (400 €), 'boutique' = le Site Essentiel + e-commerce (600 €),
 // 'vitrine' = l'ancien Site Visibilité (750 €), retiré (retire: true) : plus proposé nulle part, gardé pour les anciennes commandes.
 // Sur le site public, on montre une seule offre (typesOfferts[0]) et une case « E-commerce » qui passe la commande en 'boutique'.
-// delai : « 24 à 48 heures » (décision d'Alex, 25 novembre 2026 ; « quelques heures » avant), à partir du questionnaire complet. En vrai, le site part
+// delai : « en moins d’une semaine » (décision d'Alex, 25 novembre 2026 ; « quelques heures » avant), à partir du questionnaire complet. En vrai, le site part
 // exactement 24 heures après les informations complètes (extension : includes/delai.php), pour ne pas paraître fait trop vite.
 const INCLUS_ESSENTIEL = ['Site internet personnalisé, créé par Alex pour vous', 'Rempli avec vos informations et vos photos', 'Design adapté à votre activité', 'Compatible téléphone et ordinateur', 'Formulaire de contact', 'Bases du référencement Google', 'Mise en ligne complète', 'Modifiable par vous-même, à volonté, avec le forfait Mini', 'Export du site possible'];
 // La ligne de la liste qui a son petit « i » avec une capture (src/assets/img/options/modifier.webp)
@@ -193,7 +193,7 @@ const types = [
     vedette: true,
     price: creation.prix,
     prixNormal: creation.prixNormal, // le prix après l'offre de lancement
-    delai: '24 à 48 heures',
+    delai: 'moins d’une semaine',
     pitch: 'Votre site professionnel, créé avec vos informations, vos photos et vos couleurs.',
     qui: 'Pour exister sur internet, être joignable et présenter votre activité.',
     ideal: 'idéal pour être visible vite, à petit prix',
@@ -214,7 +214,7 @@ const types = [
     base: 'Site Essentiel',
     option: true, // le Site Essentiel avec la case « E-commerce » cochée
     info: 'Une boutique complète sur votre site : vos produits et vos services, un panier et le paiement en ligne sécurisé. Vous recevez un e-mail à chaque commande, et vous gérez votre catalogue, vos prix, vos promotions, la livraison et vos paiements vous-même, depuis votre espace client.',
-    delai: '24 à 48 heures',
+    delai: 'moins d’une semaine',
     pitch: 'Le Site Essentiel avec une boutique : vos clients choisissent, paient en ligne sur votre site, et vous recevez la commande.',
     qui: 'Pour vendre vos produits et vos services sur internet.',
     ideal: 'idéal pour vendre, avec le paiement en ligne',
@@ -289,7 +289,7 @@ const enService = { outils: false, energie: false };
 // cache : l'onglet n'apparaît pas encore (l'école attend ses premiers cours). monstre : image de src/assets/img/mail/<monstre>.png.
 const ateliers = [
   { id: 'maison', label: 'La maison', path: '/la-maison/', monstre: 'mascotte', color: 'lilac', court: 'Le concept, Alex et la petite bande' },
-  { id: 'sites', label: 'Mon Site', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: `Votre site professionnel en 24 à 48 heures, ${marche.foisTexte} fois moins cher qu’un indépendant, puis on s’en occupe chaque mois.` },
+  { id: 'sites', label: 'Mon Site', path: '/creer-mon-site/', monstre: 'bricou', color: 'mint', chef: 'Bricou', court: `Votre site professionnel en moins d’une semaine, ${marche.foisTexte} fois moins cher qu’un indépendant, puis on s’en occupe chaque mois.` },
   { id: 'ecole', label: 'Mes Tutos', path: '/mini-tuto/', monstre: 'mochi', color: 'lilac', chef: 'Mochi', court: 'De petits tutos gratuits pour tout comprendre : créer votre site avec nous, votre espace client, vos modifications, les extras.' },
   { id: 'outils', label: 'Mini Outils', path: '/outils/', monstre: 'etoile', color: 'butter', chef: 'Pépite', cache: true, court: 'Publier partout, répondre aux avis, préparer ses fiches produits : de petits monstres au travail tous les jours.' },
 ];
@@ -553,6 +553,7 @@ const extrasGroupes = [
 const boost = { prix: aLaDemande[0].prix };
 // ---------------------------------------------------------------- sites réalisés (page « Ils nous ont fait confiance »)
 // Uniquement de vrais clients, avec leur accord. desc : une phrase factuelle, pas d'avis inventé.
+// Les sites livrés par l'automate s'ajoutent tout seuls sur la page Réalisations (aled08-espace, includes/realisations.php).
 // type : le type de site de la grille (types plus haut), pour estimer son prix au tarif actuel (page Réalisations).
 // optionsCreation : les options payées une fois qu'il a (ids de options), comptées dans l'estimation.
 // seo : débuts de chemin des pages faites pour Google (conseils, lexique, pages par ville…). Elles sont comprises :
@@ -561,8 +562,6 @@ const clients = [
   { nom: 'Flore et Chenilles', domaine: 'floreetchenilles.fr', url: 'https://www.floreetchenilles.fr/', sitemap: 'https://www.floreetchenilles.fr/sitemap_index.xml', forfait: 'base', packsSeo: 2, type: 'boutique', optionsCreation: [], seo: ['/fleurs/', '/occasions/', '/conseils/', '/lexique/', '/guide/', '/fleurs-eternelles-ardennes/', '/livraison-fleurs-signy-l-abbaye/', '/artisan-fleuriste-signy-l-abbaye/'], genre: 'Boutique en ligne', icon: 'shopping-bag', color: 'mint', desc: 'Des fleurs éternelles en fil chenille, faites main à Signy-l’Abbaye, dans les Ardennes. La boutique ouvre très bientôt.' },
   { nom: 'Dodedo', domaine: 'dodedo.fr', url: 'https://dodedo.fr/', sitemap: 'https://www.dodedo.fr/sitemap.xml', forfait: 'base', packsSeo: 1, type: 'une-page', optionsCreation: [], seo: ['/comprendre/', '/conseils/'], genre: 'Site vitrine', icon: 'hand-heart', color: 'lilac', desc: 'Le site de Dominique Schneider, magnétiseur et barreur de feu. Une page d’accueil claire, entourée de pages de conseils pour être trouvé sur Google.' },
   { nom: 'Les Minis Monstres', domaine: 'les-minis-monstres.fr', url: '/', sitemap: 'https://www.les-minis-monstres.fr/wp-sitemap.xml', genre: 'Notre propre site', icon: 'sparkles', color: 'lilac', desc: 'Notre site à nous : on se fait confiance, alors on se met dedans aussi.' },
-  { nom: 'Les Notes du Temps', domaine: 'lesnotesdutemps.fr', url: 'https://www.lesnotesdutemps.fr/', sitemap: 'https://www.lesnotesdutemps.fr/sitemap.xml', forfait: 'base', genre: 'Site vitrine', icon: 'music', color: 'peach', enCreation: true, desc: 'Bientôt en ligne. Je vous le montre dès qu’il est prêt.' },
-  { nom: 'ALED08', domaine: 'aled08.fr', url: 'https://www.aled08.fr/', forfait: '', genre: 'Site vitrine', icon: 'zap', color: 'butter', enCreation: true, desc: 'Le site d’un électricien dans les Ardennes. Il sera en ligne très bientôt.' },
 ];
 
 module.exports = { lancement, ateliers, appli, outilsOffre, tutosOffre, INCLUS_INFO, typesOfferts, offreSite, modules, fractionne, optimisation, clients, site, sections, types, forfaits, forfaitsAnciens, extrasGroupes, annuel, lissage, delais, options, fidelite, paiement, boost, aLaDemande, jetonsLia, creation, marche, bande, enService, limites, evenement, creationSeule, revisionsNote, phrase };

@@ -110,7 +110,7 @@ function aled08e_px_inclus() {
         'Les textes écrits pour vous, à partir de vos réponses',
         'Vos services, vos photos, votre numéro en grand et un formulaire de contact',
         'Les bases pour être bien trouvé sur Google',
-        'La mise en ligne complète, en 24 à 48 heures',
+        'La mise en ligne complète, en moins d’une semaine',
         'Un site qui vous appartient : vous le récupérez quand vous voulez',
     ];
 }
@@ -229,12 +229,13 @@ function aled08e_px_siren_ok($s) {
     for ($i = 0; $i < 9; $i++) { $d = (int) $s[$i]; if ($i % 2 === 1) { $d *= 2; if ($d > 9) $d -= 9; } $somme += $d; }
     return $somme % 10 === 0;
 }
-/* Les départements, dans l'ordre de la tournée : les Ardennes d'abord, puis tous les autres */
+/* Les départements, dans l'ordre de la tournée : loin d'Alex d'abord, les départements proches en dernier (prospection-plus.php) */
 function aled08e_px_departements() {
     $l = [];
     for ($i = 1; $i <= 95; $i++) { if ($i === 20) { $l[] = '2A'; $l[] = '2B'; continue; } $l[] = sprintf('%02d', $i); }
     $l = array_merge($l, ['971', '972', '973', '974', '976']);
-    return array_values(array_unique(array_merge(['08'], $l)));
+    // Alex, 26 novembre 2026 : d'abord loin de chez lui (40 km au moins) ; les départements proches passent en dernier (prospection-plus.php)
+    return array_values(array_unique(apply_filters('aled08e_px_departements_ordre', $l)));
 }
 function aled08e_px_departement_ok($d) { return in_array(strtoupper((string) $d), aled08e_px_departements(), true); }
 /* Les messageries grand public : une adresse chez elles n'est acceptée que pour une entreprise individuelle, ou si elle porte
@@ -459,6 +460,8 @@ function aled08e_px_ajouter($d) {
     $refus = function ($r) use ($p) { return ['ok' => false, 'entreprise' => $p['entreprise'], 'email' => $p['email'], 'refus' => $r]; };
     foreach (['entreprise' => 'le nom de l’entreprise', 'metier' => 'le métier', 'ville' => 'la ville', 'raisons' => 'les raisons (ce que vous avez constaté)'] as $k => $lab) if ($p[$k] === '') return $refus('il manque ' . $lab);
     if (!aled08e_px_departement_ok($p['departement'])) return $refus('département inconnu (01 à 95, 2A, 2B, 971 à 976)');
+    $km = null;
+    if (function_exists('aled08e_px_refus_distance') && ($rd = aled08e_px_refus_distance($p['ville'], $p['departement'], $km)) !== '') return $refus($rd);
     if (!aled08e_px_siren_ok($p['siren'])) return $refus('SIREN absent ou faux (9 chiffres, tiré de l’annuaire des entreprises)');
     if ($p['url_source_email'] === '') return $refus('il manque l’adresse de la page où l’entreprise publie elle-même son e-mail (url_source_email)');
     if ($p['vu_sur'] !== '' && $p['url_vu_sur'] === '') return $refus('« vu_sur » sans preuve : donnez l’adresse de la page (url_vu_sur), la liste des exposants ou le profil');
@@ -479,7 +482,7 @@ function aled08e_px_ajouter($d) {
     $metas = ['etat' => $etat, 'article' => $p['article'], 'raison_sociale' => $p['raison_sociale'], 'metier' => $p['metier'], 'metier_page' => $p['metier_page'], 'ville' => $p['ville'],
         'departement' => $p['departement'], 'siren' => $p['siren'], 'ei' => $p['entreprise_individuelle'] ? 1 : 0, 'email' => $p['email'], 'url_source' => $p['url_source_email'],
         'source' => $p['source'] !== '' ? $p['source'] : aled08e_px_source_libelle($p['url_source_email']), 'site_actuel' => $p['site_actuel'], 'recherche' => $p['recherche'],
-        'note' => $note, 'criteres' => $p['criteres'], 'raisons' => $p['raisons'], 'nb_clics' => 0, 'creation' => $p['date_creation'], 'vu_sur' => $p['vu_sur'], 'url_vu_sur' => $p['url_vu_sur']];
+        'note' => $note, 'criteres' => $p['criteres'], 'raisons' => $p['raisons'], 'nb_clics' => 0, 'creation' => $p['date_creation'], 'vu_sur' => $p['vu_sur'], 'url_vu_sur' => $p['url_vu_sur'], 'distance_km' => $km === null ? '' : (int) $km];
     if ($etat === 'ecarte') $metas['ecarte_raison'] = 'Note ' . $note . ' sur 100 : sous le seuil de ' . ALED08E_PX_NOTE_MIN . '.';
     foreach ($metas as $k => $v) aled08e_px_set($id, $k, $v);
     aled08e_px_journal($id, 'Trouvé par le Repéreur (note ' . $note . ').');
@@ -502,8 +505,10 @@ function aled08e_px_lien($id, $quoi) {
 /* Les liens d'un aperçu ou d'un essai (prospect 0) : ils mènent aux vraies pages, sans rien noter */
 function aled08e_px_liens($id) {
     // l'aperçu personnalisé : éteint quand « apercuNote » dépasse 100 (data.json « prospection »), y compris dans un essai
-    $apercuOn = function_exists('aled08e_px_apercu_ok') && aled08e_px_offre()['apercu_note'] <= 100;
-    $apercu = $apercuOn && (!$id || aled08e_px_apercu_ok($id)) ? aled08e_px_apercu_lien($id) : '';
+    // une maquette type pour son métier (prospection-plus.php) : l'aperçu est toujours là, quelle que soit la note
+    $mq = $id && function_exists('aled08e_mq_pour') ? aled08e_mq_pour((string) aled08e_px_meta($id, 'metier')) : '';
+    $apercuOn = function_exists('aled08e_px_apercu_ok') && ($mq !== '' || aled08e_px_offre()['apercu_note'] <= 100);
+    $apercu = $apercuOn && (!$id || $mq !== '' || aled08e_px_apercu_ok($id)) ? aled08e_px_apercu_lien($id) : '';
     if (!$id) return aled08e_px_destinations() + ['stop' => home_url('/'), 'apercu' => $apercu];
     return ['demo' => aled08e_px_lien($id, 'demo'), 'site' => aled08e_px_lien($id, 'site'), 'creer' => aled08e_px_lien($id, 'creer'), 'realisations' => aled08e_px_lien($id, 'realisations'), 'stop' => aled08e_px_lien($id, 'stop'), 'apercu' => $apercu];
 }
@@ -620,7 +625,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
     $adresseT = 'Et c’est une adresse à vous' . ($dom !== '' ? ', comme ' . $dom . ',' : ',') . ' à mettre sur vos cartes de visite, votre vitrine et vos factures : vos clients retrouvent tout au même endroit.';
     $domH = $dom !== '' ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;"><tr><td style="background:#fff0f6;border-radius:16px;padding:14px 16px;font-size:15px;line-height:1.55;color:#2e2a47;">'
         . '<span style="display:block;font-size:12.5px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#a3305f;margin-bottom:4px;">Bonne nouvelle</span>'
-        . 'Nous avons vérifié : l’adresse <b style="font-size:17px;">' . esc_html($dom) . '</b> est libre aujourd’hui. Nous pouvons créer votre site à cette adresse, enregistrée à votre nom, en ligne en 24 à 48 heures.</td></tr></table>' : '';
+        . 'Nous avons vérifié : l’adresse <b style="font-size:17px;">' . esc_html($dom) . '</b> est libre aujourd’hui. Nous pouvons créer votre site à cette adresse, enregistrée à votre nom, en ligne en moins d’une semaine.</td></tr></table>' : '';
     // l'étude officielle, et sa source juste en dessous (data.json « prospection.etude »)
     $et = (array) ((aled08e_data()['prospection'] ?? [])['etude'] ?? []);
     $etudeH = ''; $etudeT = '';
@@ -632,7 +637,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . '<span style="display:block;margin-top:8px;font-size:12px;line-height:1.45;color:#6b6789;">Source : ' . (!empty($et['lien']) ? '<a href="' . esc_url($et['lien']) . '" style="color:#6a5bd6;">' . esc_html($et['source']) . '</a>' : esc_html($et['source'])) . '.</span></td></tr></table>';
         $etudeT = $etudeTxt . "\nSource : " . $et['source'] . (!empty($et['lien']) ? ' (' . $et['lien'] . ')' : '') . '.';
     }
-    $domT = $dom !== '' ? 'Bonne nouvelle : nous avons vérifié, l’adresse ' . $dom . ' est libre aujourd’hui. Nous pouvons créer votre site à cette adresse, enregistrée à votre nom, en ligne en 24 à 48 heures.' : '';
+    $domT = $dom !== '' ? 'Bonne nouvelle : nous avons vérifié, l’adresse ' . $dom . ' est libre aujourd’hui. Nous pouvons créer votre site à cette adresse, enregistrée à votre nom, en ligne en moins d’une semaine.' : '';
     $rappel = 'Pour rappel : ' . mb_strtolower(mb_substr($atouts[0][0], 0, 1)) . rtrim(mb_substr($atouts[0][0], 1), '.') . ', un vrai suivi, et un site qui vous appartient.';
     $boutonApercu = $avecApercu ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 6px;width:100%;max-width:420px;">' . $bouton($l['apercu'], 'Voir la maquette de votre site', true) . '</table>' : '';
     $avecCode = (int) $r > 0 && (string) $code !== '';
@@ -701,7 +706,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
             . $P('Votre vitrine sur internet, ouverte jour et nuit : vos services, vos photos, votre numéro, et une adresse à vous' . ($dom !== '' ? ' (comme <b>' . esc_html($dom) . '</b>)' : '') . ' à mettre sur vos cartes, votre véhicule et vos factures.', '0 0 8px')
             . ($ptsH ? $liste($ptsH, '#f6f3ff', '') : '')
             . $titre('Et pour vous, ça demande quoi&nbsp;?')
-            . $P('Presque rien&nbsp;! Un petit questionnaire d’une dizaine de minutes : votre métier, vos services, vos photos si vous en avez. <b>On écrit les textes, on s’occupe de tout</b>, et votre site est en ligne en 24 à 48 heures.')
+            . $P('Presque rien&nbsp;! Un petit questionnaire d’une dizaine de minutes : votre métier, vos services, vos photos si vous en avez. <b>On écrit les textes, on s’occupe de tout</b>, et votre site est en ligne en moins d’une semaine.')
             . $titre('Tout compris dans le prix', '#a3305f')
             . $codeH
             . $liste(array_map('esc_html', $inclus), '#fff0f6')
@@ -745,7 +750,7 @@ function aled08e_px_mail($p, $m, $pour, $code, $fin) {
         $texte = "Bonjour !\n\n" . $m['phrase'] . "\n\n" . ($constatT !== '' ? $constatT . "\n\n" : '')
             . ($avecApercu ? "ON A IMAGINÉ VOTRE SITE\nPour vous aider à vous projeter, voici une maquette de ce que pourrait donner le site " . $deX . ", en vue ordinateur (il s’adapte aussi parfaitement au téléphone). Ce n’est qu’une maquette : votre site sera modifiable à 100 %, selon vos goûts.\n" . $l['apercu'] . "\n\n" : '')
             . "UN SITE, C’EST QUOI ?\nVotre vitrine sur internet, ouverte jour et nuit : vos services, vos photos, votre numéro, et une adresse à vous" . ($dom !== '' ? ' (comme ' . $dom . ')' : '') . " à mettre sur vos cartes, votre véhicule et vos factures.\n" . $pt . "\n"
-            . "ET POUR VOUS, ÇA DEMANDE QUOI ?\nPresque rien ! Un petit questionnaire d’une dizaine de minutes : votre métier, vos services, vos photos si vous en avez. On écrit les textes, on s’occupe de tout, et votre site est en ligne en 24 à 48 heures.\n\n"
+            . "ET POUR VOUS, ÇA DEMANDE QUOI ?\nPresque rien ! Un petit questionnaire d’une dizaine de minutes : votre métier, vos services, vos photos si vous en avez. On écrit les textes, on s’occupe de tout, et votre site est en ligne en moins d’une semaine.\n\n"
             . "TOUT COMPRIS DANS LE PRIX\n" . $codeT . "\n- " . implode("\n- ", aled08e_px_inclus()) . "\n\n"
             . "L’HÉBERGEMENT AUSSI, SI VOUS VOULEZ\n" . aled08e_px_hebergement() . "\nVotre espace client : vos modifications, vos statistiques et vos tutos, au même endroit. Essayez la démo : " . $l['demo'] . "\n\n"
             . ($domT !== '' ? $domT . "\n\n" : '')
@@ -825,7 +830,7 @@ function aled08e_px_faire(WP_REST_Request $req) {
             }
             $m = (!empty($d['sujet']) || !empty($d['phrase'])) ? aled08e_px_morceaux($d, $pour) : ($pour === 'relancer' ? ['sujet' => '', 'phrase' => '', 'points' => []] : $p['morceaux']);
             if (is_wp_error($m)) return $m;
-            if (!empty($ex['entreprise']) && function_exists('aled08e_px_apercu_essai') && aled08e_px_offre()['apercu_note'] <= 100) $p['apercu_lien'] = aled08e_px_apercu_essai($p, $m);
+            if (!empty($ex['entreprise']) && function_exists('aled08e_px_apercu_essai') && (aled08e_px_offre()['apercu_note'] <= 100 || (function_exists('aled08e_mq_pour') && aled08e_mq_pour($p['metier']) !== ''))) $p['apercu_lien'] = aled08e_px_apercu_essai($p, $m);
             $code = 'MAIL' . aled08e_px_remise() . '-7KQ2';
             $fin = time() + aled08e_px_offre()['jours'] * DAY_IN_SECONDS;
         }
