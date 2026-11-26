@@ -150,7 +150,9 @@ function aled08e_prov_etape_domaine($c) {
         // le client garde son domaine : réglages DNS envoyés, on passe directement à l'hébergement
         if (!get_post_meta($cid, '_aled08_prov_mail_dns', true)) {
             update_post_meta($cid, '_aled08_prov_mail_dns', 1);
-            aled08e_prov_mail_client_dns($c);
+            // son domaine mène déjà chez nous (26 novembre 2026) : inutile de lui demander de changer ses réglages
+            if (aled08e_hebergeur() === 'cpanel' && function_exists('aled08e_prov_dns_ns_o2switch') && aled08e_prov_dns_ns_o2switch($c['domaine'])) aled08e_cmd_journal($cid, 'Le domaine mène déjà à notre hébergement : pas d’e-mail de réglages DNS.');
+            else aled08e_prov_mail_client_dns($c);
         }
         aled08e_cmd_set_domaine($cid, 'client');
         return aled08e_prov_set($cid, 'domaine_attribue', 'domaine existant du client') ? 'ok' : 'erreur';
@@ -266,7 +268,9 @@ function aled08e_prov_etape_ssl($c) {
         // o2switch : WordPress et l'extension du type commandé se posent tout seuls, en plusieurs passages
         if (function_exists('aled08e_pose_avancer') && aled08e_pose_avancer($c) === 'attente') return 'attente';
         aled08e_prov_mail_client_pret($c);
-        aled08e_prov_mail_owner($c, 'Tout est prêt : ' . $c['domaine'], 'Le domaine ' . $c['domaine'] . ' de la commande ' . $c['ref'] . " répond en HTTPS. L’hébergement est prêt : à vous de créer le site, puis cliquez « Site en ligne » dans la fiche :\n" . aled08e_cmd_admin_url($cid) . (get_post_meta($cid, '_aled08_wp_admin', true) ? "\n\nWordPress a été installé automatiquement : identifiants dans la fiche (note interne)." : ''));
+        // Quand WordPress s'est posé tout seul et que la bande crée les sites, Alex n'a rien à faire : pas d'e-mail (26 novembre 2026)
+        if (function_exists('aled08e_chantier_auto') && aled08e_chantier_auto() && get_post_meta($cid, '_aled08_wp_admin', true)) aled08e_cmd_journal($cid, 'Tout est prêt : la bande crée le site (rien à faire pour Alex).');
+        else aled08e_prov_mail_owner($c, 'Tout est prêt : ' . $c['domaine'], 'Le domaine ' . $c['domaine'] . ' de la commande ' . $c['ref'] . " répond en HTTPS. L’hébergement est prêt : à vous de créer le site, puis cliquez « Site en ligne » dans la fiche :\n" . aled08e_cmd_admin_url($cid) . (get_post_meta($cid, '_aled08_wp_admin', true) ? "\n\nWordPress a été installé automatiquement : identifiants dans la fiche (note interne)." : ''));
         return aled08e_prov_set($cid, 'pret', 'HTTPS actif') ? 'ok' : 'erreur';
     }
     return 'attente';
