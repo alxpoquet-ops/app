@@ -918,6 +918,9 @@ function aled08e_px_faire(WP_REST_Request $req) {
         aled08e_px_desinscrire($id, $texte !== '' ? $texte : 'Demande reçue par un autre moyen.');
         return new WP_REST_Response(['ok' => true, 'etat' => 'desinscrit'], 200);
     }
+    // le Répondeur répond lui-même, ou laisse le cas à Alex pour le bilan du soir (prospection-plus.php, 26 novembre 2026)
+    if ($faire === 'repondre' && function_exists('aled08e_px_repondre')) return aled08e_px_repondre($id, $p, $d);
+    if ($faire === 'pour_alex' && function_exists('aled08e_px_pour_alex')) return aled08e_px_pour_alex($id, $p, $d);
     if ($faire !== 'envoyer' && $faire !== 'relancer') return $err('À faire inconnu (retenir, envoyer, relancer, ecarter, repondu, rebond, desinscrire, trouver, apercu, essai).', 400);
 
     // ----- envoyer, relancer : tous les garde-fous

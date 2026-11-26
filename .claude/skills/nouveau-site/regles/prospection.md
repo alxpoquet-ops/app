@@ -187,7 +187,7 @@ La route compte, pour chaque métier, chaque département et chaque type de suje
 
 ## Les réponses
 
-Elles arrivent à l'adresse des réponses (réglage « Adresse des réponses », sinon l'adresse de réception du site), qui doit arriver dans le Gmail d'Alex. Le Répondeur désinscrit ceux qui disent non, note les adresses fausses, et **prépare un brouillon** pour les intéressés et les questions. **Aucun agent n'envoie de réponse à un prospect : Alex relit le brouillon et l'envoie.**
+Elles arrivent à l'adresse des réponses (réglage « Adresse des réponses », sinon l'adresse de réception du site), qui doit arriver dans le Gmail d'Alex. Le Répondeur désinscrit ceux qui disent non, note les adresses fausses, et **répond lui-même** aux intéressés et aux questions dont la réponse est dans les faits du poste, par la route du site, qui vérifie la réponse et l'envoie dans la même conversation (Alex, 26 novembre 2026 : pas de brouillon, pas de mail en double). Ce qu'il ne sait pas trancher va à Alex, dans le bilan du soir.
 - Le Repéreur ne garde pas plus de trois jours d'envois d'avance : le poste lui dit combien en trouver.
 
 ## Combien de temps on garde
@@ -200,7 +200,7 @@ Un prospect écarté s'efface après 180 jours, un prospect à qui l'on n'a jama
 - Écrire à une adresse qui n'a pas de source publiée par l'entreprise.
 - Changer une option de la prospection (l'allumer, le quota) : c'est Alex.
 - Promettre un prix, une remise ou un délai que la route n'a pas mis dans le mail.
-- Envoyer une réponse à un prospect : le Répondeur prépare un brouillon, c'est Alex qui l'envoie, depuis sa boîte.
+- Répondre à un prospect en dehors de la route `repondre` (jamais depuis Gmail), ou sur un sujet qui n'est pas dans les faits du poste : c'est pour Alex.
 
 
 ## Le lancement (Alex, 26 novembre 2026 : « commence à activer tout le système »)

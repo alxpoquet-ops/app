@@ -537,7 +537,7 @@ La durée se règle dans `src/config.js` (`fidelite.parrainageMois`, 6).
 **Qui fait quoi.**
 - **Le Repéreur** (chaque matin de semaine) trouve des entreprises sans site, avec une adresse e-mail qu'elles publient elles-mêmes.
 - **Le Facteur** (toutes les heures, en semaine) revérifie chaque entreprise, puis envoie le mail. Il ne fournit que le sujet, une phrase vraie et trois points : le site fabrique le mail.
-- **Le Répondeur** (trois fois par jour en semaine, avec le connecteur Gmail) lit les réponses. Il désinscrit ceux qui disent non, note les adresses fausses et prépare un brouillon de réponse dans Gmail pour les intéressés. Il n'envoie rien : Alex relit le brouillon et l'envoie.
+- **Le Répondeur** (trois fois par jour en semaine, avec le connecteur Gmail) lit les réponses. Il désinscrit ceux qui disent non, note les adresses fausses et répond lui-même aux intéressés et aux questions simples (route `repondre` : le site vérifie le texte, les montants et les liens, puis l'envoie depuis l'adresse des Minis Monstres dans la même conversation ; 4 réponses au plus par personne, une par heure). Les cas particuliers passent « pour Alex » (route `pour_alex`) et sont dans le bilan du soir. Pas de brouillon, pas de mail en double (Alex, 26 novembre 2026).
 
 **L'offre du mail** (décision d'Alex, 25 novembre 2026) : la même que pour tout le monde, le prix de lancement. Plus de code de réduction, jamais de « au lieu de ». Réglage : `prospection` dans `scripts/wp-espace-data.js` (`remise: 0`).
 
@@ -551,7 +551,7 @@ La durée se règle dans `src/config.js` (`fidelite.parrainageMois`, 6).
 - La relance, une seule : 7 jours après le mail, ou 3 jours pour ceux qui ont cliqué.
 - Le signal « entreprise récente » : créée depuis moins de 18 mois, + 15 points à la note.
 - Ce qui marche : les résultats par métier, département et type de sujet. Le Repéreur va deux fois sur trois vers le métier qui répond le mieux.
-- Le débrief du soir : chaque jour de semaine à 18 h 15 (heure de Paris), un e-mail à Alex avec les mails envoyés, les clics, les réponses, les refus, les adresses fausses, les commandes et les brouillons à envoyer.
+- Le bilan du soir : chaque jour à 18 h 15 (heure de Paris), un e-mail à Alex avec les mails envoyés, les clics, les réponses, les refus, les adresses fausses, les commandes, ce que la bande a répondu et, en tête, ce qui l'attend (« À vous »).
 - La pause automatique : plus de 5 % de désinscriptions ou plus de 8 % d'adresses fausses sur 7 jours (et au moins 40 envois) éteignent la prospection. Alex est prévenu, et lui seul la rallume.
 
 **Les deux adresses** (Réglages de l'extension, « Prospection par e-mail »).

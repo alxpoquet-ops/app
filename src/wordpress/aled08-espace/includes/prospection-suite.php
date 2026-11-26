@@ -379,10 +379,13 @@ function aled08e_px_debrief_texte() {
     $l[] = '';
     $l[] = '- ' . $n((int) $j['envois'] + (int) $j['relances'], 'mail envoyé', 'mails envoyés') . ' (' . $n($j['envois'], 'premier message', 'premiers messages') . ', ' . $n($j['relances'], 'relance', 'relances') . ')';
     $l[] = '- ' . $n($clics, 'clic', 'clics') . ' dans les mails';
-    $l[] = '- ' . $n($j['repondus'], 'réponse', 'réponses') . ', dont ' . $n($j['interesses'], 'intéressé', 'intéressés');
+    $l[] = '- ' . $n($j['repondus'], 'réponse', 'réponses') . ', dont ' . $n($j['interesses'], 'intéressé', 'intéressés') . ' ; ' . $n((int) ($j['reponses_envoyees'] ?? 0), 'réponse envoyée par la bande', 'réponses envoyées par la bande');
     $l[] = '- ' . $n($j['desinscrits'], 'refus (désinscription)', 'refus (désinscriptions)') . ' et ' . $n($j['rebonds'], 'adresse fausse', 'adresses fausses');
     $l[] = '- ' . $n($j['commandes'], 'commande', 'commandes');
-    if ((int) $j['brouillons'] > 0) { $l[] = ''; $l[] = 'À FAIRE : ' . $n($j['brouillons'], 'réponse est prête', 'réponses sont prêtes') . ' dans vos brouillons Gmail. Relisez et envoyez.'; }
+    // les réponses du jour : ce que la bande a répondu, et ce qui attend Alex (pas de brouillon, pas de mail en double)
+    $rep = function_exists('aled08e_px_bilan_reponses_lignes') ? aled08e_px_bilan_reponses_lignes() : ['repondus' => [], 'pour_alex' => []];
+    if ($rep['pour_alex']) { $l[] = ''; $l[] = 'À VOUS (la bande n’a pas la réponse) :'; foreach ($rep['pour_alex'] as $x) $l[] = $x; }
+    if ($rep['repondus']) { $l[] = ''; $l[] = 'Les réponses du jour, et ce que nous avons répondu :'; foreach ($rep['repondus'] as $x) $l[] = $x; }
     $l[] = '';
     $l[] = 'Sur 7 jours : ' . $n((int) $s['envois'] + (int) $s['relances'], 'mail', 'mails') . ', ' . $n((int) $s['clics_demo'] + (int) $s['clics_apercu'] + (int) $s['clics_site'], 'clic', 'clics') . ', ' . $n($s['repondus'], 'réponse', 'réponses')
         . ' (' . $n($s['interesses'], 'intéressé', 'intéressés') . '), ' . (int) $s['desinscrits'] . ' refus, ' . $n($s['rebonds'], 'adresse fausse', 'adresses fausses') . ', ' . $n($s['commandes'], 'commande', 'commandes') . '.';

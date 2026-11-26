@@ -277,3 +277,119 @@ add_action('init', function () {
     if (get_option('aled08_px_tri_40km') !== 'fait2' && !wp_next_scheduled('aled08e_px_tri_40km')) wp_schedule_single_event(time() + 60, 'aled08e_px_tri_40km');
 }, 46);
 add_action('aled08e_px_tri_40km', 'aled08e_px_trier_distance');
+
+/* ====================================================================== 5. le Répondeur répond lui-même (Alex, 26 novembre 2026) */
+/* « Il répond tout seul, ou me fait un récap le soir, mais je ne veux pas les mails en double de mon côté. »
+ * Plus de brouillon : le Répondeur écrit la réponse, le site la vérifie et l'envoie depuis l'adresse des Minis Monstres, dans
+ * la même conversation. Ce qu'il ne peut pas trancher (un cas particulier, un devis sur mesure) est marqué « pour Alex » : il est
+ * dans le bilan du soir, avec de quoi rappeler la personne. Aucun mail à Alex dans la journée.
+ * POST /aled08/v1/atelier/prospect {prospect, faire: "repondre", avis, resume, corps, message_id?}
+ * POST /aled08/v1/atelier/prospect {prospect, faire: "pour_alex", avis, resume}                                       */
+function aled08e_px_echange_noter($id, $x) {
+    $l = (array) aled08e_px_meta($id, 'echanges', []);
+    $l[] = $x + ['le' => time()];
+    aled08e_px_set($id, 'echanges', array_slice($l, -20));
+}
+/* Les montants et les liens permis dans une réponse : ceux des faits du poste, rien d'autre */
+function aled08e_px_reponse_refus($corps) {
+    $t = (string) $corps;
+    $f = function_exists('aled08e_px_faits') ? aled08e_px_faits() : [];
+    $tout = wp_json_encode($f, JSON_UNESCAPED_UNICODE);
+    if (preg_match('/\b(IA|AI|I\.A\.)\b/u', $t) || preg_match('/intelligence artificielle|chat ?gpt|\bgpt\b|\bclaude\b|openai|chatbot|\brobots?\b|\bagents?\b|automatique/iu', $t)) return 'on ne parle jamais d’IA, d’agent ni d’outil automatique';
+    if (preg_match('/(^|[\s«(])(je|moi)(\s|$)|(^|[\s«(])j[’\']\p{L}/iu', $t)) return 'au « nous », au nom de la bande : jamais « je »';
+    if (preg_match('/\b(urgent|dernière chance|exceptionnel(le)?|sans frais)\b/iu', $t)) return 'pas de pression ni de promesse (urgent, dernière chance, sans frais…)';
+    if (preg_match('/<[a-z\/!]/i', $t)) return 'du texte simple, sans balise';
+    preg_match_all('#https?://[^\s)>\]]+#i', $t, $u);
+    $liens = array_map('strval', array_values((array) ($f['liens'] ?? [])));
+    foreach ($u[0] as $x) if (!in_array(rtrim($x, '.,;:'), $liens, true)) return 'lien refusé (' . $x . ') : seulement ceux de « faits.liens »';
+    preg_match_all('/(\d[\d\s ]*(?:[.,]\d+)?)\s*(€|euros?\b)/iu', $t, $p);
+    foreach ($p[1] as $x) {
+        $n = preg_replace('/[\s ]/u', '', $x);
+        if (strpos($tout, $n . ' €') === false && strpos($tout, $n . "\u{a0}€") === false && strpos($tout, $n . ' euros') === false) return 'montant refusé (' . trim($x) . ' €) : seulement les prix des « faits »';
+    }
+    if (mb_strlen(trim($t)) < 40 || mb_strlen($t) > 1600) return 'une réponse de 40 à 1 600 caractères';
+    return '';
+}
+function aled08e_px_repondre($id, $p, $d) {
+    $avis = sanitize_key((string) ($d['avis'] ?? ''));
+    if (!in_array($avis, ['interesse', 'question', 'autre'], true)) return new WP_Error('aled08_px', 'avis : interesse, question ou autre.', ['status' => 400]);
+    $resume = aled08e_px_texte($d['resume'] ?? '', 300);
+    $corps = trim(str_replace("\r", '', wp_strip_all_tags((string) ($d['corps'] ?? ''))));
+    if ($resume === '') return new WP_Error('aled08_px', 'Il manque « resume » : une phrase sur ce que la personne a écrit.', ['status' => 400]);
+    if (!in_array($p['etat'], ['envoye', 'relance', 'repondu'], true)) return new WP_Error('aled08_px', 'On ne répond qu’à un prospect qui nous a répondu (il est « ' . $p['etat'] . ' »).', ['status' => 409]);
+    if (aled08e_px_oppose($p['email'], $p['siren'] ?? '')) return new WP_Error('aled08_px', 'Cette adresse a demandé à ne plus rien recevoir.', ['status' => 409]);
+    // pas de ping-pong avec un répondeur automatique : 4 réponses au plus, et une par heure
+    $ech = (array) aled08e_px_meta($id, 'echanges', []);
+    $envoyes = array_filter($ech, function ($x) { return !empty($x['envoye']); });
+    $dernier = $envoyes ? (int) end($envoyes)['le'] : 0;
+    if (count($envoyes) >= 4 || $dernier > time() - HOUR_IN_SECONDS) {
+        aled08e_px_echange_noter($id, ['avis' => $avis, 'resume' => $resume, 'pour_alex' => true, 'pourquoi' => 'déjà plusieurs réponses envoyées : à Alex de prendre la suite']);
+        aled08e_px_set($id, 'pour_alex', time());
+        return new WP_REST_Response(['ok' => true, 'envoye' => false, 'pour_alex' => true, 'pourquoi' => 'Déjà plusieurs réponses : c’est Alex qui prend la suite (dans son bilan du soir).'], 200);
+    }
+    $refus = aled08e_px_reponse_refus($corps);
+    if ($refus !== '') return new WP_Error('aled08_px', 'Réponse refusée : ' . $refus . '. Corrige, ou passe-la « pour_alex ».', ['status' => 400]);
+    // la réponse, signée par la bande, dans la même conversation
+    $hote = (string) wp_parse_url(home_url(), PHP_URL_HOST);
+    $stop = aled08e_px_lien($id, 'stop');
+    $sujet = 'Re: ' . preg_replace('/^(re\s*:\s*)+/i', '', (string) ($p['sujet'] ?: 'Votre site internet'));
+    $texte = $corps . "\n\nBonne journée,\nLa bande des Minis Monstres\n" . $hote . "\n\n--\nPour ne plus rien recevoir : " . $stop;
+    $html = '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15.5px;line-height:1.6;color:#2e2a47;">' . wpautop(make_clickable(esc_html($corps)))
+        . '<p>Bonne journée,<br><b>La bande des Minis Monstres</b><br><a href="' . esc_url(home_url('/')) . '" style="color:#5b3fc4;">' . esc_html($hote) . '</a></p>'
+        . '<p style="font-size:11.5px;color:#7a7795;">Pour ne plus rien recevoir : <a href="' . esc_url($stop) . '" style="color:#6a5bd6;">se désinscrire en un clic</a>.</p></div>';
+    $ref = (string) aled08e_px_meta($id, 'msgid');
+    $leur = preg_match('/^<[^<>\s]{3,250}>$/', (string) ($d['message_id'] ?? '')) ? (string) $d['message_id'] : '';
+    $chaine = trim($ref . ' ' . $leur);
+    $init = function ($m) use ($texte, $leur, $ref, $chaine) {
+        $m->AltBody = $texte;
+        if ($leur !== '' || $ref !== '') $m->addCustomHeader('In-Reply-To', $leur !== '' ? $leur : $ref);
+        if ($chaine !== '') $m->addCustomHeader('References', $chaine);
+    };
+    $entetes = array_values(array_filter((array) aled08e_mail_headers('Les Minis Monstres <' . aled08e_px_reponse() . '>'), function ($e) { return stripos($e, 'content-type:') !== 0; }));
+    $entetes[] = 'Content-Type: text/html; charset=UTF-8';
+    $entetes[] = 'From: "Les Minis Monstres" <' . aled08e_px_expediteur() . '>';
+    $entetes[] = 'List-Unsubscribe: <' . $stop . '>';
+    add_action('phpmailer_init', $init, 20);
+    $ok = wp_mail($p['email'], $sujet, $html, $entetes);
+    remove_action('phpmailer_init', $init, 20);
+    if (!$ok) return new WP_Error('aled08_px', 'Envoi impossible (messagerie du site) : passe-la « pour_alex ».', ['status' => 502]);
+    // on note la réponse reçue (comme « repondu ») et ce qu'on a répondu
+    if ($p['etat'] !== 'repondu') { aled08e_px_set($id, 'repondu_le', time()); aled08e_px_set($id, 'etat', 'repondu'); aled08e_px_stat('repondus'); }
+    $avant = (string) aled08e_px_meta($id, 'reponse_avis');
+    aled08e_px_set($id, 'reponse_avis', $avis);
+    if ($avis === 'interesse' && $avant !== 'interesse') aled08e_px_stat('interesses');
+    aled08e_px_stat('reponses_envoyees');
+    aled08e_px_echange_noter($id, ['avis' => $avis, 'resume' => $resume, 'envoye' => true, 'reponse' => mb_substr($corps, 0, 600)]);
+    aled08e_px_journal($id, 'A répondu (' . $avis . ') : ' . $resume . ' Réponse envoyée par la bande.');
+    delete_transient('aled08e_px_appr');
+    return new WP_REST_Response(['ok' => true, 'envoye' => true, 'a' => $p['email'], 'sujet' => $sujet], 200);
+}
+function aled08e_px_pour_alex($id, $p, $d) {
+    $avis = sanitize_key((string) ($d['avis'] ?? 'question'));
+    if (!in_array($avis, ['interesse', 'question', 'autre'], true)) $avis = 'question';
+    $resume = aled08e_px_texte($d['resume'] ?? '', 400);
+    if ($resume === '') return new WP_Error('aled08_px', 'Il manque « resume » : ce que la personne demande, en une ou deux phrases.', ['status' => 400]);
+    if (in_array($p['etat'], ['envoye', 'relance'], true)) { aled08e_px_set($id, 'repondu_le', time()); aled08e_px_set($id, 'etat', 'repondu'); aled08e_px_stat('repondus'); }
+    $avant = (string) aled08e_px_meta($id, 'reponse_avis');
+    aled08e_px_set($id, 'reponse_avis', $avis);
+    if ($avis === 'interesse' && $avant !== 'interesse') aled08e_px_stat('interesses');
+    aled08e_px_set($id, 'pour_alex', time());
+    aled08e_px_echange_noter($id, ['avis' => $avis, 'resume' => $resume, 'pour_alex' => true]);
+    aled08e_px_journal($id, 'A répondu (' . $avis . ') : ' . $resume . ' Pour Alex (bilan du soir).');
+    return new WP_REST_Response(['ok' => true, 'pour_alex' => true], 200);
+}
+/* Le résumé des réponses du jour, pour le bilan du soir */
+function aled08e_px_bilan_reponses_lignes() {
+    $l = []; $alex = [];
+    $depuis = time() - DAY_IN_SECONDS;
+    foreach (aled08e_px_liste(['etat' => ['repondu', 'commande', 'desinscrit'], 'limite' => 100, 'meta_key' => '_aled08_px_repondu_le', 'order' => 'DESC']) as $p) {
+        $id = (int) $p['prospect'];
+        foreach ((array) aled08e_px_meta($id, 'echanges', []) as $x) {
+            if ((int) ($x['le'] ?? 0) < $depuis) continue;
+            $qui = $p['entreprise'] . ($p['ville'] ? ' (' . $p['ville'] . ')' : '');
+            if (!empty($x['pour_alex'])) $alex[] = '- ' . $qui . ' : ' . $x['resume'] . (!empty($x['pourquoi']) ? ' (' . $x['pourquoi'] . ')' : '') . "\n  Pour lui répondre : " . $p['email'];
+            else $l[] = '- ' . $qui . ' : ' . $x['resume'] . "\n  Nous avons répondu : « " . mb_substr(preg_replace('/\s+/u', ' ', (string) $x['reponse']), 0, 220) . (mb_strlen((string) $x['reponse']) > 220 ? '…' : '') . ' »';
+        }
+    }
+    return ['repondus' => $l, 'pour_alex' => $alex];
+}
