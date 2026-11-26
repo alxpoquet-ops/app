@@ -393,3 +393,10 @@ function aled08e_px_bilan_reponses_lignes() {
     }
     return ['repondus' => $l, 'pour_alex' => $alex];
 }
+
+/* ====================================================================== 6. un envoi hors des heures, à la demande d'Alex */
+/* Alex, 26 novembre 2026 au soir : « envoie la première fournée maintenant ». L'option aled08_px_envoi_force_jusqua (une heure,
+ * en secondes) ouvre les envois jusqu'à cette heure-là, même hors de 8 h à 18 h en semaine. Le quota du jour reste le même. */
+add_filter('aled08e_px_heure_ok', function ($ok, $t) {
+    return $ok || (int) get_option('aled08_px_envoi_force_jusqua', 0) > (int) $t;
+}, 10, 2);
