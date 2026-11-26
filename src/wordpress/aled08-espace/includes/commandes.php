@@ -672,7 +672,7 @@ function aled08e_cmd_mail_client_nouvelle($c, $compte, $stripe) {
             ? "1. Votre paiement est confirmé par e-mail dans les minutes qui suivent (un peu plus pour un prélèvement).\n"
             : "1. Je vous envoie le lien de paiement sous 24 heures.\n")
         . ($c['domaine'] && !$c['domaine_mien'] ? '2. Je réserve le nom de domaine ' . $c['domaine'] . " à votre nom.\n" : "2. Je prépare l’hébergement de votre site.\n")
-        . "3. Je vous écris sous 24 heures pour commencer la création.\n"
+        . "3. Remplissez votre questionnaire dans votre espace client : c’est lui qui lance la création. Je vous écris quand tout est configuré, puis quand votre site est en ligne.\n"
         . "4. Vous suivez tout dans votre espace client : " . aled08e_url() . "\n"
         . "   Connectez-vous avec l’adresse e-mail et le mot de passe choisis à la commande.\n\n"
         . "Une question ? Répondez à cet e-mail.\n\nÀ bientôt,\nAlex et les Minis Monstres\n";
