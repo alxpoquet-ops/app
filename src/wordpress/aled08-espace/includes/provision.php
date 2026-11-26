@@ -197,7 +197,7 @@ function aled08e_prov_etape_suivi_domaine($c) {
     if ($st === 'delivered' || aled08e_ovh_domaine_existe($c['domaine'])) {
         aled08e_cmd_set_domaine($cid, 'reserve');
         aled08e_ovh_renouvellement_auto($c['domaine']);
-        aled08e_prov_mail_client_domaine($c);
+        aled08e_cmd_journal($c['id'], 'Nom de domaine réservé (visible sur la jauge de l’espace client, pas d’e-mail : Alex, 26 novembre 2026).');
         return aled08e_prov_set($cid, 'domaine_attribue', 'OVH : livré') ? 'ok' : 'erreur';
     }
     if ($st === 'notPaid' && !get_post_meta($cid, '_aled08_ovh_paye_tente', true)) {
@@ -311,14 +311,15 @@ function aled08e_prov_email($c) {
     }
     update_post_meta($cid, '_aled08_email_fait', 1);
     if (!empty($r['deja'])) { aled08e_cmd_journal($cid, 'Boîte contact@' . $c['domaine'] . ' déjà existante.'); return; }
-    aled08e_cmd_journal($cid, 'Boîte contact@' . $c['domaine'] . ' créée (' . $h . '). Identifiants envoyés au client.');
+    aled08e_cmd_journal($cid, 'Boîte contact@' . $c['domaine'] . ' créée (' . $h . '). Identifiants envoyés au client avec l’e-mail « Tout est configuré ».');
     $web = $h === 'ovh' ? 'https://www.ovhcloud.com/fr/mail/ (webmail OVH)' : 'https://' . (ALED08_CPANEL_HOST ?: 'webmail') . ':2096';
-    $corps = 'Bonjour ' . $c['prenom'] . ",\n\nVotre adresse e-mail professionnelle est prête :\n"
+    $corps = "Votre adresse e-mail professionnelle :\n"
         . 'Adresse : contact@' . $c['domaine'] . "\nMot de passe : " . $mdp . "\n\n"
         . "Pour la lire : " . $web . "\n"
         . ($h === 'ovh' ? "Sur votre téléphone ou Outlook : serveur entrant ssl0.ovh.net (IMAP, port 993), serveur sortant ssl0.ovh.net (SMTP, port 465), identifiant = l’adresse complète.\n" : "Sur votre téléphone ou Outlook : serveur entrant et sortant = celui de l’hébergement (IMAP 993, SMTP 465), identifiant = l’adresse complète.\n")
-        . "\nChangez le mot de passe dès votre première connexion.\n\nÀ bientôt,\n" . aled08e_data()['name'] . "\n";
-    wp_mail($c['email'], 'Votre adresse e-mail pro est prête', $corps, aled08e_mail_headers(aled08e_data()['name'] . ' <' . aled08e_to() . '>'));
+        . "Changez le mot de passe dès votre première connexion.";
+    // envoyé avec l'e-mail « Tout est configuré » (un seul e-mail au client avant la livraison), puis effacé
+    update_post_meta($cid, '_aled08_email_a_dire', $corps);
 }
 /* ---------- WordPress automatique sur OVH (expérimental, réglage), non bloquant ---------- */
 function aled08e_prov_wordpress($c) {
@@ -525,16 +526,19 @@ function aled08e_prov_mail_client_pret($c) {
     $delai = aled08e_cmd_delai_type($c);
     $debut = aled08e_est_seule($c['forfait'])
         ? "Merci pour votre commande. Vous gardez votre nom de domaine et votre hébergement : quand votre site sera prêt, je vous remets son code, prêt à installer. Je commence la création de votre site"
-        : "Tout est prêt : votre nom de domaine, l’hébergement et le certificat de sécurité. Je commence la création de votre site";
-    $corps = 'Bonjour ' . $c['prenom'] . ",\n\n" . $debut . ($delai ? ' (délai habituel : ' . $delai . ')' : '') . ".\n\nJe vous écris dès que j’ai besoin de vous (textes, photos, horaires). Vous suivez l’avancement ici : " . aled08e_url() . '#commande' . aled08e_prov_signature();
-    wp_mail($c['email'], 'Tout est prêt, je crée votre site', $corps, aled08e_mail_headers(aled08e_data()['name'] . ' <' . aled08e_to() . '>'));
+        : "Tout est configuré : votre nom de domaine, l’hébergement et le certificat de sécurité. Je commence la création de votre site";
+    $boite = (string) get_post_meta($c['id'], '_aled08_email_a_dire', true);
+    $corps = 'Bonjour ' . $c['prenom'] . ",\n\n" . $debut . ($delai ? ' (délai habituel : ' . $delai . ')' : '') . ".\n\n" . ($boite !== '' ? $boite . "\n\n" : '')
+        . "Prochain e-mail : quand votre site sera en ligne. D’ici là, vous suivez l’avancement ici : " . aled08e_url() . '#commande' . aled08e_prov_signature();
+    $ok = wp_mail($c['email'], 'Tout est configuré, je crée votre site', $corps, aled08e_mail_headers(aled08e_data()['name'] . ' <' . aled08e_to() . '>'));
+    if ($ok && $boite !== '') delete_post_meta($c['id'], '_aled08_email_a_dire');
 }
 function aled08e_prov_mail_client_dns($c) {
     $h = aled08e_hebergeur();
     $regl = $h === 'ovh'
         ? "Enregistrement A : @ vers " . (aled08e_ovh_hb_ip() ?: 'l’adresse IP que je vous confirme') . "\nEnregistrement CNAME : www vers " . $c['domaine'] . "\n"
         : "Serveurs de noms : ns1.o2switch.net et ns2.o2switch.net\n";
-    $corps = 'Bonjour ' . $c['prenom'] . ",\n\nVous gardez votre nom de domaine " . $c['domaine'] . ". Pour qu’il mène à votre nouveau site, il faut modifier ses réglages DNS chez votre fournisseur actuel :\n\n" . $regl . "\nSi vous préférez, envoyez-moi vos identifiants et je le fais pour vous. Dès que c’est en place, la suite est automatique." . aled08e_prov_signature();
+    $corps = 'Bonjour ' . $c['prenom'] . ",\n\nVous gardez votre nom de domaine " . $c['domaine'] . ". Pour qu’il mène à votre nouveau site, il faut modifier ses réglages DNS chez votre fournisseur actuel :\n\n" . $regl . "\nCe réglage se trouve dans l’espace client de votre fournisseur de nom de domaine, rubrique « Serveurs DNS » (ou « DNS »). S’il vous manque quelque chose, son assistance le fait en quelques minutes. Ne nous envoyez jamais vos identifiants : nous n’en avons pas besoin. Dès que c’est en place, la suite est automatique et vous la suivez sur la jauge de votre espace client." . aled08e_prov_signature();
     wp_mail($c['email'], 'Vos réglages DNS pour ' . $c['domaine'], $corps, aled08e_mail_headers(aled08e_data()['name'] . ' <' . aled08e_to() . '>'));
 }
 
