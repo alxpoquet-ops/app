@@ -115,18 +115,74 @@ try {
         $dire(['ok' => true, 'etape' => 'extension', 'suite' => true, 'message' => 'Extension posée.']);
     }
 
-    /* 6. l'installation du site, une étape de l'extension par appel */
+    /* 6. l'installation du site, une étape de l'extension par appel.
+     * Une extension de wordpress.org se télécharge d'abord ici, directement (comme WordPress à l'étape 1) : l'installateur de
+     * WordPress échoue parfois sur l'hébergement (aled08.fr, 26 novembre 2026 : Contact Form 7). Il reste en secours.
+     * En reprise (site déjà posé et travaillé), seules les extensions et le formulaire sont refaits : rien d'autre n'est touché. */
     if (!function_exists('minis_site_etapes')) $dire(['ok' => false, 'etape' => 'site', 'message' => 'extension inactive']);
+    $reprise = !empty($C['reprise']);
+    /* La version à poser : la dernière, sauf si elle demande un PHP plus récent que celui de l'hébergement
+     * (aled08.fr, 26 novembre 2026 : Contact Form 7 demandait PHP 8.3, le site tournait en 8.1). On prend alors la plus
+     * récente qui va, en lisant le « Requires PHP » de chaque version publiée (petit fichier readme.txt). */
+    $lire = function ($url) {
+        $c = curl_init($url);
+        curl_setopt_array($c, [CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => true, CURLOPT_TIMEOUT => 20, CURLOPT_CONNECTTIMEOUT => 10, CURLOPT_USERAGENT => 'minis-pose']);
+        $t = curl_exec($c); $code = (int) curl_getinfo($c, CURLINFO_HTTP_CODE); curl_close($c);
+        return $code === 200 && is_string($t) ? $t : '';
+    };
+    $php_demande = function ($texte) { return preg_match('/^\s*\**\s*Requires PHP:\s*([0-9.]+)/mi', (string) $texte, $m) ? $m[1] : ''; };
+    $version_qui_va = function ($slug) use ($lire, $php_demande) {
+        $info = json_decode($lire('https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request[slug]=' . rawurlencode($slug) . '&request[fields][versions]=1&request[fields][sections]=0'), true);
+        if (!is_array($info) || empty($info['download_link'])) return 'https://downloads.wordpress.org/plugin/' . $slug . '.latest-stable.zip';
+        if (empty($info['requires_php']) || version_compare(PHP_VERSION, $info['requires_php'], '>=')) return $info['download_link'];
+        $vs = array_filter(array_keys((array) ($info['versions'] ?? [])), function ($v) { return $v !== 'trunk' && preg_match('/^[0-9.]+$/', $v); });
+        usort($vs, function ($a, $b) { return version_compare($b, $a); });
+        $n = 0;
+        foreach ($vs as $v) {
+            if (version_compare($v, (string) ($info['version'] ?? '0'), '>=')) continue;
+            if (++$n > 12) break;
+            $r = $lire('https://plugins.svn.wordpress.org/' . rawurlencode($slug) . '/tags/' . rawurlencode($v) . '/readme.txt');
+            $p = $php_demande($r);
+            if ($r !== '' && ($p === '' || version_compare(PHP_VERSION, $p, '>='))) return $info['versions'][$v];
+        }
+        return '';
+    };
+    $poser_ext = function ($slug) use ($telecharger, $ici, $version_qui_va, $vider) {
+        $slug = preg_replace('/[^a-z0-9-]/', '', (string) $slug);
+        if ($slug === '') return '';
+        $deja = glob(WP_PLUGIN_DIR . '/' . $slug . '/*.php');
+        if ($deja) {
+            // déjà là : on la garde, sauf si elle ne peut pas tourner avec ce PHP (elle n'est alors pas active)
+            $trop = false;
+            foreach ($deja as $f) { $d = get_plugin_data($f, false, false); if (!empty($d['Name'])) { $trop = !empty($d['RequiresPHP']) && version_compare(PHP_VERSION, $d['RequiresPHP'], '<') && !is_plugin_active($slug . '/' . basename($f)); break; } }
+            if (!$trop) return '';
+            $vider(WP_PLUGIN_DIR . '/' . $slug);
+        }
+        $url = $version_qui_va($slug);
+        if ($url === '') return 'aucune version publiée ne tourne avec PHP ' . PHP_VERSION;
+        $a = $ici . '/minis-pose-' . $slug . '.zip';
+        $e = $telecharger($url, $a);
+        if ($e) return $e;
+        $z = new ZipArchive();
+        $ok = $z->open($a) === true && $z->extractTo(WP_PLUGIN_DIR);
+        if ($ok) $z->close();
+        @unlink($a);
+        wp_clean_plugins_cache(true);
+        return $ok ? '' : 'archive illisible';
+    };
     $faits = minis_site_etat();
     $essais = (array) ($etat['essais'] ?? []);
     foreach (minis_site_etapes() as $id => $lib) {
         if ($id === 'fin') continue;
+        if ($reprise && strpos($id, 'ext:') !== 0 && strpos($id, 'maison:') !== 0 && $id !== 'formulaire') continue;
         if (!empty($faits[$id]['ok']) || (int) ($essais[$id] ?? 0) >= 2) continue;
         $essais[$id] = (int) ($essais[$id] ?? 0) + 1;
         $noter('essais', $essais);
+        $avant = strpos($id, 'ext:') === 0 ? $poser_ext(substr($id, 4)) : '';
         ob_start();
         try { $r = minis_site_faire($id); } catch (\Throwable $e) { $r = [false, 'Erreur : ' . $e->getMessage()]; }
         ob_end_clean();
+        if (!$r[0] && $avant !== '') $r[1] .= ' Téléchargement direct : ' . $avant . '.';
         minis_site_noter($id, $r[0], $r[1]);
         $dire(['ok' => (bool) $r[0], 'etape' => 'site:' . $id, 'suite' => true, 'message' => $lib . ' : ' . $r[1]]);
     }
@@ -137,7 +193,7 @@ try {
     $rates = [];
     foreach (minis_site_etat() as $id => $e) if ($id !== 'fin' && empty($e['ok'])) $rates[] = (minis_site_etapes()[$id] ?? $id) . ' (' . ($e['texte'] ?? '') . ')';
     @unlink($fichier_etat); @unlink($zip); @unlink($ici . '/minis-pose-ext.zip'); @unlink(__FILE__);
-    $dire(['ok' => true, 'etape' => 'fin', 'suite' => false, 'fini' => true, 'rates' => $rates, 'relie' => (string) get_option('minis_site_relie'), 'message' => $fin[1]]);
+    $dire(['ok' => true, 'etape' => 'fin', 'suite' => false, 'fini' => true, 'rates' => $rates, 'relie' => (string) get_option('minis_site_relie'), 'formulaire' => function_exists('minis_site_formulaire_id') ? (int) minis_site_formulaire_id() : 0, 'message' => $fin[1]]);
 } catch (\Throwable $e) {
     $dire(['ok' => false, 'etape' => 'erreur', 'message' => $e->getMessage()]);
 }

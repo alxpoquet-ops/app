@@ -19,7 +19,7 @@ curl -s "https://dns.google/resolve?name=DOMAINE&type=A"
 
 Les sites sont hébergés chez **o2switch**. Les noms de domaine sont achetés chez **OVH**, avec les DNS `ns1.o2switch.net` et `ns2.o2switch.net`.
 
-**Chemin automatique.** Il marche seulement si les clés OVH et les accès cPanel o2switch sont saisis sur les-minis-monstres.fr (Réglages de l'espace client › Mise en ligne automatique). Dans ce cas, une commande payée lance tout : domaine, https, WordPress, extension du site, lien avec l'espace client. Code : `src/wordpress/aled08-espace/includes/provision.php` et `pose.php`. Ce chemin n'a pas encore tourné pour de vrai : au premier essai, suis le journal de la commande et corrige ce qui bloque.
+**Chemin automatique.** Il marche seulement si les clés OVH et les accès cPanel o2switch sont saisis sur les-minis-monstres.fr (Réglages de l'espace client › Mise en ligne automatique). Dans ce cas, une commande payée lance tout : domaine, https, WordPress, extension du site, lien avec l'espace client. Code : `src/wordpress/aled08-espace/includes/provision.php` et `pose.php`. Premier vrai essai le 26 novembre 2026 (aled08.fr, boulangerie de démonstration) : tout est passé seul, sauf Contact Form 7 (sa dernière version demandait PHP 8.3, le site tournait en 8.1). Depuis, la pose télécharge les extensions elle-même, prend la version la plus récente qui tourne avec le PHP du site, essaie de monter le PHP du domaine, et se relance seule si une étape rate (`POST /aled08/v1/atelier/pose {"commande": ID, "faire": "reprendre"}` pour la relancer à la main). À la livraison, le site s'ouvre à Google et le formulaire écrit à l'adresse du questionnaire.
 
 **Chemin guidé à la main.** Tant que le chemin automatique n'est pas réglé. Une étape à la fois avec Alex :
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Les Minis Monstres : installation du Site Boutique
  * Description: À mettre sur le WordPress tout neuf d'un client. À l'activation, tout se prépare tout seul : réglages, extensions, pages, menu, lien avec l'espace client. Il ne reste que le visuel.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Requires at least: 6.4
  * Requires PHP: 7.4
  * Author: Les Minis Monstres
@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Une seule de ces trois extensions sert par site. */
 if (defined('MINIS_SITE_TYPE')) return;
 define('MINIS_SITE_TYPE', 'boutique');
-define('MINIS_SITE_VERSION', '1.1.0');
+define('MINIS_SITE_VERSION', '1.1.1');
 define('MINIS_SITE_FICHIER', __FILE__);
 
 require_once __DIR__ . '/contenu.php';
@@ -200,6 +200,23 @@ function minis_site_fichier_extension($slug) {
     foreach (get_plugins() as $f => $d) if (strpos($f, $slug . '/') === 0) return $f;
     return '';
 }
+/* La version à installer : la dernière, sauf si elle demande un PHP plus récent que celui de l'hébergement ; on prend alors
+ * la plus récente qui va (26 novembre 2026 : Contact Form 7 6.2 demande PHP 8.3, aled08.fr tournait en 8.1). */
+function minis_site_lien_compatible($api, $slug) {
+    if (empty($api->requires_php) || version_compare(PHP_VERSION, $api->requires_php, '>=')) return (string) $api->download_link;
+    $vs = array_filter(array_keys((array) ($api->versions ?? [])), function ($v) { return $v !== 'trunk' && preg_match('/^[0-9.]+$/', $v); });
+    usort($vs, function ($a, $b) { return version_compare($b, $a); });
+    $n = 0;
+    foreach ($vs as $v) {
+        if (version_compare($v, (string) $api->version, '>=')) continue;
+        if (++$n > 12) break;
+        $r = wp_remote_get('https://plugins.svn.wordpress.org/' . rawurlencode($slug) . '/tags/' . rawurlencode($v) . '/readme.txt', ['timeout' => 15]);
+        if (is_wp_error($r) || (int) wp_remote_retrieve_response_code($r) !== 200) continue;
+        $p = preg_match('/^\s*\**\s*Requires PHP:\s*([0-9.]+)/mi', (string) wp_remote_retrieve_body($r), $m) ? $m[1] : '';
+        if ($p === '' || version_compare(PHP_VERSION, $p, '>=')) return (string) $api->versions[$v];
+    }
+    return '';
+}
 function minis_site_e_extension($slug) {
     if (!isset(minis_site_extensions()[$slug])) return [false, 'Extension inconnue.'];
     require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -208,13 +225,27 @@ function minis_site_e_extension($slug) {
     require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
     $f = minis_site_fichier_extension($slug);
     if (!$f) {
-        $api = plugins_api('plugin_information', ['slug' => $slug, 'fields' => ['sections' => false]]);
+        $api = plugins_api('plugin_information', ['slug' => $slug, 'fields' => ['sections' => false, 'versions' => true]]);
         if (is_wp_error($api)) return [false, 'wordpress.org ne répond pas : ' . $api->get_error_message()];
-        $up = new Plugin_Upgrader(new Automatic_Upgrader_Skin());
-        $r = $up->install($api->download_link);
-        if (is_wp_error($r)) return [false, $r->get_error_message()];
-        if (!$r) return [false, 'Le téléchargement n’a pas abouti (droits d’écriture ou connexion de l’hébergeur).'];
+        $lien = minis_site_lien_compatible($api, $slug);
+        if ($lien === '') return [false, 'Aucune version publiée ne tourne avec PHP ' . PHP_VERSION . ' : montez la version de PHP du site chez l’hébergeur.'];
+        $api->download_link = $lien;
+        $skin = new Automatic_Upgrader_Skin();
+        $up = new Plugin_Upgrader($skin);
+        $r = $up->install($lien);
         $f = minis_site_fichier_extension($slug);
+        if (!$f) {
+            // en secours (26 novembre 2026) : on télécharge l'archive et on la déplie nous-mêmes, comme pour les extensions maison
+            $pourquoi = is_wp_error($r) ? $r->get_error_message() : trim(wp_strip_all_tags(implode(' ', array_slice((array) $skin->get_upgrade_messages(), -2))));
+            $tmp = download_url($api->download_link, 120);
+            if (is_wp_error($tmp)) return [false, 'Le téléchargement n’a pas abouti : ' . $tmp->get_error_message() . ($pourquoi !== '' ? ' (' . $pourquoi . ')' : '')];
+            if (!WP_Filesystem()) { @unlink($tmp); return [false, 'WordPress ne peut pas écrire dans le dossier des extensions (droits de l’hébergeur).']; }
+            $u = unzip_file($tmp, WP_PLUGIN_DIR);
+            @unlink($tmp);
+            if (is_wp_error($u)) return [false, 'L’archive ne s’est pas dépliée : ' . $u->get_error_message()];
+            wp_clean_plugins_cache(true);
+            $f = minis_site_fichier_extension($slug);
+        }
         if (!$f) return [false, 'Installée, mais introuvable ensuite.'];
     }
     if (!is_plugin_active($f)) {

@@ -19,6 +19,13 @@ Décision d'Alex (22 novembre 2026) : LMM tourne seul. Les agents font tout ce q
 
 Créer un site, écrire une page Google, changer un texte, une photo, un prix, un horaire, une couleur, ajouter ou retirer une ligne, corriger une faute, réordonner des parties, remplir une partie « bientôt » avec ce que le client vient d'envoyer. Un doute léger : on choisit l'option la plus prudente (on n'invente rien, on retire plutôt que d'ajouter) et on le dit dans sa note.
 
+**Les réglages techniques du site du client ne remontent pas non plus** (Alex, 26 novembre 2026 : « tu dois toujours trouver une solution ») :
+
+- **Une extension manquante** (Contact Form 7, Rank Math…) : la pose se relance toute seule, deux fois au plus, et choisit une version qui tourne avec le PHP du site. Si le journal de la commande dit encore qu'une étape est « à reprendre », la conversation d'atelier lance `POST /aled08/v1/atelier/pose {"commande": ID, "faire": "reprendre"}` ; quand tout est en place, le site repart seul chez le constructeur avec le shortcode du formulaire. Un agent ne met pas le site chez Alex pour cela : il pose ce qu'il peut, note « formulaire en attente de la pose » et continue.
+- **Le site fermé aux moteurs de recherche** (« noindex ») : c'est normal pendant la création. Le site s'ouvre tout seul à Google à la livraison (sauf un site d'essai, TEST-… ou ESSAI-…, qui reste fermé).
+- **L'adresse qui reçoit les messages du formulaire** : elle est réglée toute seule à la livraison sur celle du questionnaire. L'essai d'envoi du contrôle arrive donc encore chez Alex : c'est normal.
+- Des mentions « à compléter » faute d'information du client : on les laisse, on les cite dans le résumé « À ajouter depuis votre espace client ».
+
 ## Comment remonter un cas
 
 Avec `faire: "pour_alex"` et un `texte` court, en trois temps :

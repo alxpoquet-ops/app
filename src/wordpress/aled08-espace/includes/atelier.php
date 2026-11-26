@@ -302,6 +302,7 @@ function aled08e_chantier_livrer_v1($cid, $lien = '', $par = 'atelier') {
     if ($c['user']) update_user_meta($c['user'], 'aled08_visuel_fait', wp_date('Y-m-d'));
     aled08e_cmd_set_statut($cid, 'en_ligne', $par === 'alex' ? 'V1 vérifiée et livrée par Alex.' : 'V1 livrée par l’atelier.');
     update_post_meta($cid, '_aled08_chantier', 'en_ligne');
+    if (function_exists('aled08e_pose_livraison')) aled08e_pose_livraison($cid); // includes/pose.php : formulaire vers le client, site ouvert à Google
     aled08e_cmd_journal($cid, ($par === 'alex' ? 'Alex a vérifié le site et l’a livré' : 'Atelier : V1 livrée au client') . ', e-mail « Votre site est en ligne » envoyé.');
     $nom = $c['ref'] . ' ' . ($c['entreprise'] ?: trim($c['prenom'] . ' ' . $c['nom']));
     if (function_exists('aled08e_memoire_ajouter')) aled08e_memoire_ajouter('journal', 'Site livré : ' . $nom, $par === 'alex' ? 'V1 vérifiée et livrée par Alex.' : 'V1 livrée après contrôle.', (int) $c['user'], $par === 'alex' ? 'alex' : 'controleur');
