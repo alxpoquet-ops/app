@@ -1,15 +1,15 @@
 <?php
 /**
- * Le délai de livraison du site (décision d'Alex, 25 novembre 2026).
+ * Le délai de livraison du site (décision d'Alex, 25 novembre 2026 ; 12 heures au lieu de 24 depuis le 26 novembre 2026).
  *
- * Au client, on annonce « entre 24 et 48 heures » après le questionnaire complet. En vrai, le site est livré exactement
- * 24 heures après le moment où l'on a toutes les informations : le questionnaire envoyé en entier, ou la dernière réponse
+ * Au client, on annonce « entre 24 et 48 heures » après le questionnaire complet. En vrai, le site est fait, contrôlé et
+ * peaufiné tout de suite, puis gardé : il est livré exactement 12 heures après le moment où l'on a toutes les informations : le questionnaire envoyé en entier, ou la dernière réponse
  * du client à une question de l'atelier. Le site peut être prêt avant : il attend alors son heure (état « pret_livraison »)
  * et part tout seul, à l'heure dite, avec l'e-mail « Votre site est en ligne ».
  */
 if (!defined('ABSPATH')) exit;
 
-define('ALED08E_DELAI_LIVRAISON', DAY_IN_SECONDS);
+define('ALED08E_DELAI_LIVRAISON', 12 * HOUR_IN_SECONDS);
 
 /* Le moment où l'on a eu toutes les informations (horodatage) : la dernière réponse complète du client */
 function aled08e_infos_le($cid) {
@@ -20,7 +20,7 @@ function aled08e_infos_le($cid) {
 }
 function aled08e_infos_completes($cid) { update_post_meta((int) $cid, '_aled08_infos_le', time()); }
 
-/* L'heure de livraison : 24 heures après les informations complètes (0 si on ne les a pas encore) */
+/* L'heure de livraison : 12 heures après les informations complètes (0 si on ne les a pas encore) */
 function aled08e_livraison_heure($cid) { $t = aled08e_infos_le($cid); return $t ? $t + ALED08E_DELAI_LIVRAISON : 0; }
 
 /* Le site est prêt : on le livre tout de suite si l'heure est passée, sinon on le programme. Renvoie l'heure, ou 0 si livré. */
@@ -33,7 +33,7 @@ function aled08e_livrer_a_l_heure($cid, $lien = '') {
     if ($c && $c['statut'] === 'pret') aled08e_cmd_set_statut($cid, 'en_creation', 'Site contrôlé, livraison programmée.');
     wp_clear_scheduled_hook('aled08e_livraison_programmee', [(int) $cid]);
     wp_schedule_single_event($h, 'aled08e_livraison_programmee', [(int) $cid]);
-    aled08e_cmd_journal($cid, 'Atelier : contrôle bon, livraison programmée le ' . wp_date('j F Y à H:i', $h) . ' (24 heures après les informations complètes).');
+    aled08e_cmd_journal($cid, 'Atelier : contrôle bon, livraison programmée le ' . wp_date('j F Y à H:i', $h) . ' (12 heures après les informations complètes).');
     return $h;
 }
 

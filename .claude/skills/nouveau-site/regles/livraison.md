@@ -23,7 +23,7 @@ Depuis le 22 novembre 2026, un site passe par deux agents : le constructeur le f
 
 Décision d'Alex (22 novembre 2026). Le site est promis en 24 à 48 heures : on ne fait pas attendre un client pour un détail.
 
-**Livré exactement 24 heures après les informations complètes** (décision d'Alex, 25 novembre 2026). Au client, on annonce toujours « entre 24 et 48 heures ». Le compte part du questionnaire complet, ou de la dernière réponse du client à une question. Si le site est contrôlé avant, `faire: livrer` répond `etat: pret_livraison` avec l'heure : le site part tout seul à cette heure-là, avec l'e-mail « Votre site est en ligne ». Il n'y a rien d'autre à faire. On ne dit jamais au client que son site est prêt plus tôt.
+**Fait tout de suite, livré exactement 12 heures après les informations complètes** (décision d'Alex, 25 novembre 2026, ramenée de 24 à 12 heures le 26 novembre 2026). Dès que la commande est payée et le questionnaire reçu, le site est construit, contrôlé et peaufiné ; il est ensuite gardé jusqu'à l'heure de livraison. Les agents passent toutes les heures, jour et nuit. Au client, on annonce toujours « entre 24 et 48 heures ». Le compte part du questionnaire complet, ou de la dernière réponse du client à une question. Si le site est contrôlé avant, `faire: livrer` répond `etat: pret_livraison` avec l'heure : le site part tout seul à cette heure-là, avec l'e-mail « Votre site est en ligne ». Il n'y a rien d'autre à faire. On ne dit jamais au client que son site est prêt plus tôt.
 
 **On pose une question avant de livrer seulement si l'essentiel manque :**
 

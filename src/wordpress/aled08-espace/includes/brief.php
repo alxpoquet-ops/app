@@ -165,7 +165,7 @@ add_action('template_redirect', function () {
     if ($manque) { update_post_meta($cid, '_aled08_brief_brouillon', 1); $back('brief_incomplet'); }
     delete_post_meta($cid, '_aled08_brief_brouillon');
     update_post_meta($cid, '_aled08_brief_le', current_time('mysql'));
-    if (function_exists('aled08e_infos_completes')) aled08e_infos_completes($cid); // les 24 heures avant la livraison partent d'ici
+    if (function_exists('aled08e_infos_completes')) aled08e_infos_completes($cid); // les 12 heures avant la livraison partent d'ici
     aled08e_cmd_journal($cid, $premiere ? 'Questionnaire de création reçu.' : 'Questionnaire de création mis à jour.');
     if ($premiere) delete_post_meta($cid, '_aled08_chantier'); elseif (aled08e_chantier_etat($cid) === 'question') update_post_meta($cid, '_aled08_chantier', 'reponse');
     if ($premiere && !(function_exists('aled08e_appel_fait') && aled08e_appel_fait($cid))) {

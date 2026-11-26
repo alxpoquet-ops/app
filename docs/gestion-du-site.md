@@ -442,9 +442,9 @@ Toutes les règles (rien d'inventé, visuel, ce qui fait venir des demandes, Goo
 - Un client qui ne répond pas reçoit un rappel au bout de 3 jours, une seule fois.
 - La tâche programmée doit avoir le connecteur « Mini monstres » : il se règle dans claude.ai, sur la tâche elle-même.
 
-## Le délai de création : 24 heures, annoncé « 24 à 48 heures »
+## Le délai de création : 12 heures, annoncé « 24 à 48 heures »
 
-Décision d'Alex (25 novembre 2026). Le site public et l'espace client annoncent un site en ligne « en 24 à 48 heures » après le questionnaire complet. En vrai, le site part **exactement 24 heures** après le moment où l'on a toutes les informations : l'envoi complet du questionnaire, ou la dernière réponse du client à une question de l'atelier.
+Décision d'Alex (25 novembre 2026, ramenée de 24 à 12 heures le 26 novembre 2026). Le site public et l'espace client annoncent un site en ligne « en 24 à 48 heures » après le questionnaire complet. En vrai, à chaque commande : achat reçu, site fait, contrôlé et peaufiné tout de suite, puis gardé, et il part **exactement 12 heures** après le moment où l'on a toutes les informations : l'envoi complet du questionnaire, ou la dernière réponse du client à une question de l'atelier. Le constructeur et le contrôleur passent toutes les heures, jour et nuit (17 et 47 minutes après l'heure) : il n'y a rien à lancer.
 
 Quand le contrôleur livre un site plus tôt, la commande passe à l'état « pret_livraison » avec l'heure prévue. À cette heure-là, le site passe « en ligne » et le client reçoit l'e-mail « Votre site est en ligne ». Une tâche WordPress s'en charge, avec un filet de sécurité qui vérifie toutes les 10 minutes. Le code est dans `src/wordpress/aled08-espace/includes/delai.php`. Si Alex livre lui-même un site depuis sa gestion, il part tout de suite.
 
